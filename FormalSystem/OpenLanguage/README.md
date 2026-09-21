@@ -34,7 +34,7 @@ transferred to `⊡` by mistake.
 |------|------:|-------------|
 | `Formula.lean` | 302 | `OpenFormula`, the derived operators (with `PlusFormula`'s right-hand sides), the duals `dofut` and `dopast`, `reflectTime` with `reflect_time_involution` and the `reflect_time_*` push-through lemmas, and the embedding `ofPlus` with `ofPlus_injective`, `ofPlus_reflectTime` and its `rfl` commutation pins |
 | `OpenClasses.lean` | 165 | The three history classes `stabClass`, `openFutureClass`, `openPastClass` (the stability, open-future and open-past classes of a world at a time); `sameState_equivalence`, `agreeUpTo_equivalence`, `agreeFrom_equivalence`; the inclusions, `openFutureClass_inter_openPastClass`, `openFutureClass_anti`, `openPastClass_mono`, and `paste_mem_openFutureClass_inter_openPastClass` |
-| `OpenOckhamist.lean` | 203 | The Ockhamist separating pair: `hnOpen`, `hnOpenMixed`, `hnStab` with `hnStab_eq_ofPlus`; `hnOpen_openValid` and `hnOpenMixed_openValid` over every task frame; the countermodel `SinkState`, `sinkFrame`, `sinkHistA`, `sinkHistB`, `sinkModel`; `hnStab_refuted_sinkFrame`, `not_openValid_hnStab`, `not_plusValid_hnStab` |
+| `OpenOckhamist.lean` | 392 | The Ockhamist separating pair: `hnOpen`, `hnOpenMixed`, `hnStab` with `hnStab_eq_ofPlus`; `hnOpen_openValid` and `hnOpenMixed_openValid` over every task frame; the countermodel `SinkState`, `sinkFrame`, `sinkFunA`, `sinkFunB`, `sinkFunA_isStepPath`, `sinkFunB_isStepPath`, `sinkHistA`, `sinkHistB`, `sinkModel`; `hnStab_refuted_sinkFrame`, `not_openValid_hnStab`, `not_plusValid_hnStab`; the mirror `hnOpenMirror`, `hnStabMirror`, `hnOpenMirror_eq`, `hnStabMirror_eq`, `hnOpenMirror_openValid`, `openValid_hnOpenPast`, `not_openValid_hnStabMirror`; the five converse failures `not_openValid_box_of_stab`, `not_openValid_stab_of_ofut`, `not_openValid_stab_of_opast`, `not_openValid_opast_of_ofut`, `not_openValid_ofut_of_opast`; and the five transferred refutations `not_openValid_stab_box`, `not_openValid_allFuture_stab`, `not_openValid_stab_allFuture_past`, `not_openValid_determined`, `not_openValid_somePast_stab` |
 | `OpenReversal.lean` | 306 | The converse frame of `lem:time-reflection`: `FrameOver.rev` (all four frame axioms), `TaskFrame.rev`, `TaskModel.rev`, `WorldHistory.rev`, with `rev_taskRel`, `rev_taskRel_neg`, the three `rev_rev` by `rfl`, `rev_rev_hist` and `rev_surjective`; the class swaps `sameState_rev_iff`, `agreeUpTo_rev_iff`, `agreeFrom_rev_iff`; the transport theorem `openTruthAt_rev`; `openValidOn_rev_iff` and `openValid_reflectTime` |
 | `OpenTruth.lean` | 288 | `OpenTruthAt` — the nine-clause truth recursion, the last two clauses the manuscript's for the open-future and open-past operators; the `TruthEnv` and `StabClauses` instances; the `OpenTruth.*` clause lemmas (`ofut_iff`, `opast_iff`, `dofut_iff`, `dopast_iff`); `openTruthAt_ofPlus`; pointwise S5 (`ofut_k`, `of_ofut`, `ofut_four`, `ofut_five` and the `opast` mirrors) and the ordering `stab_of_box`, `ofut_of_stab`, `opast_of_stab` |
 | `OpenValidity.lean` | 215 | `TaskFrame.OpenValidOn`, `OpenValidOnFrames`, `OpenValidIn`, `OpenValid` with `mono`, `of_forall`, `apply`, `of_not`; conservativity over L⁺ (`openValidOn_ofPlus_iff`, `openValidOnFrames_ofPlus_iff`, `openValidIn_ofPlus_iff`, `openValid_ofPlus_iff`); S5 as validities (`openValid_ofut_k`, `openValid_ofut_t`, `openValid_ofut_four`, `openValid_ofut_five` and the `opast` mirrors); the ordering `openValid_stab_of_box`, `openValid_ofut_of_stab`, `openValid_opast_of_stab` |
@@ -65,7 +65,19 @@ exclusion. Anchors are cited by `\label` or by a quotable phrase, never by line 
 | `lem:time-reflection` (truth and validity) | truth at a point is truth of the time reflection at the reflected point; validity is closed under time reflection | `openTruthAt_rev`, `openValidOn_rev_iff`, `openValid_reflectTime` (`OpenReversal.lean`) — the manuscript states the lemma for its base language; the extension to `⊡`, `▷` and `◁` through the class swaps `sameState_rev_iff`, `agreeUpTo_rev_iff`, `agreeFrom_rev_iff` is **formalization-native** |
 | the Ockhamist principle HN for the open-future operator (no paper anchor) | `Pα → ▷P▷̂α` and the mixed `Pα → ▷P⟐α` are valid over every task frame | `hnOpen_openValid`, `hnOpenMixed_openValid` (`OpenOckhamist.lean`) — **not a manuscript result** |
 | HN transposed to the stability operator (no paper anchor) | `Pp → ⊡P⟐p` is refuted on a finite integer-time frame satisfying all four axioms of `def:frame` | `hnStab_refuted_sinkFrame`, `not_openValid_hnStab`, `not_plusValid_hnStab` over `sinkFrame` (`OpenOckhamist.lean`) — **not a manuscript result**; it is what separates `⊡` from historical necessity |
+| the mirrored pair, through `lem:time-reflection` (no paper anchor) | `Fα → ◁F◁̂α` is valid at every `α`; its stability transposition `Fp → ⊡F⟐p` is not valid | `hnOpenMirror_openValid`, `openValid_hnOpenPast`, `not_openValid_hnStabMirror` (`OpenOckhamist.lean`), each one line from `openValid_reflectTime` — **not a manuscript result** |
+| footnote to the stability clause, "`⊡` is strictly weaker than `□`" | the ordering is strict at every link: `⊡p → □p`, `▷Pp → ⊡Pp` and `◁Fp → ⊡Fp` each fail | `not_openValid_box_of_stab`, `not_openValid_stab_of_ofut`, `not_openValid_stab_of_opast` (`OpenOckhamist.lean`), each on the permissive frame `NF` over `ℤ` |
+| `▷` and `◁` are incomparable (no paper anchor) | `▷Pp → ◁Pp` and `◁Fp → ▷Fp` both fail — the manuscript records only that the two classes meet in `{τ}` | `not_openValid_opast_of_ofut`, `not_openValid_ofut_of_opast` (`OpenOckhamist.lean`) — **not a manuscript result** |
+| the L⁺ refutations (no paper anchor) | the five formulas refuted for L⁺ stay invalid in L^▷ | `not_openValid_stab_box`, `not_openValid_allFuture_stab`, `not_openValid_stab_allFuture_past`, `not_openValid_determined`, `not_openValid_somePast_stab` (`OpenOckhamist.lean`), each through `openValid_ofPlus_iff` |
 | `app:gluing` (two histories) | a world whose past is `τ`'s and whose future is `σ`'s, for `σ ∈ ⟨τ⟩_x` | `paste_mem_openFutureClass_inter_openPastClass`, over `paste` of `PlusLanguage/PlusPasting.lean` |
+
+## Manuscript operators without a formalization
+
+| Manuscript item | Status |
+|---|---|
+| An axiomatization, soundness or completeness result for `▷` and `◁` | **Excluded.** The manuscript gives none — "I will omit further consideration of the restricted modals" — and none is claimed here. The S5 laws and the ordering above are validities, not axioms of a proof system |
+| The nomic operator of `sub:RestrictedModalities`, over a four-place task relation indexed by world states | **Excluded.** No formalization in this tree |
+| The world registers `↑_M`, `↓_M` of `sub:Extension` | **Excluded.** `FormalSystem/StarLanguage/` formalizes the time registers only |
 
 ## Module Invariants
 
@@ -80,6 +92,9 @@ directory needs a row in that table.**
 
 * JPL paper — `sub:RestrictedModalities`, `def:BLstar-semantics`, `def:world-history`,
   `def:frame`, `def:frame-validity`, `lem:time-reflection`, `app:gluing`
+* [M. Reynolds, *An Axiomatization of Prior's Ockhamist Logic of Historical
+  Necessity*][reynolds2003] — the HN axiom
+* [R. H. Thomason, *Combinations of Tense and Modality*][thomason1984], §4 — Kamp's AK12
 * `FormalSystem/PlusLanguage/README.md` — L⁺, the language this one extends
 * `FormalSystem/StarLanguage/README.md` — the sibling extension of L⁺ by the time registers
 

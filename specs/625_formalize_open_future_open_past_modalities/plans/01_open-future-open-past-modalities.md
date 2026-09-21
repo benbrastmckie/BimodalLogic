@@ -496,31 +496,31 @@ transposition refuted on a frame with every `FrameOver` field discharged.
 
 ---
 
-### Phase 7: The open-past mirror and the converse failures [NOT STARTED]
+### Phase 7: The open-past mirror and the converse failures [COMPLETED]
 
 **Goal**: Finish deliverables (4) and (5): the mirrored pair, and a countermodel for every converse
 of the strength ordering, including the incomparability of `▷` and `◁`.
 
 **Tasks**:
-- [ ] In `OpenOckhamist.lean`: `hnOpenMirror α := (hnOpen α).reflectTime`, `hnStabMirror p :=
-  (hnStab p).reflectTime`, with `rfl` unfoldings showing them as `Fα → ◁F◁̂α` and `Fp → ⊡F⟐p`.
-- [ ] `hnOpenMirror_openValid := openValid_reflectTime _ (hnOpen_openValid α)`;
+- [x] In `OpenOckhamist.lean`: `hnOpenMirror α := (hnOpen α).reflectTime`, `hnStabMirror p :=
+  (hnStab p).reflectTime`, with `rfl` unfoldings showing them as `Fα → ◁F◁̂α` and `Fp → ⊡F⟐p`. *(deviation: altered — `hnOpenMirror α` unfolds by `rfl` to `Fα' → ◁F◁̂α'` at `α' := α.reflectTime`, not at `α` itself; the instance at an arbitrary `α` is the added one-line corollary `openValid_hnOpenPast`, by `reflect_time_involution`. Additive: no planned declaration was dropped or restated)*
+- [x] `hnOpenMirror_openValid := openValid_reflectTime _ (hnOpen_openValid α)`;
   `not_openValid_hnStabMirror` by contraposition through `openValid_reflectTime` and
   `reflect_time_involution`. **Fallback** if Phase 5 did not land `openValid_reflectTime`: prove
   `hnOpenMirror_openValid` directly (mirror of `hn_open_pure` with `AgreeFrom`) and refute
   `hnStabMirror` on `sinkFrame.rev` directly or through `openValidOn_rev_iff`; then
   `openValid_reflectTime` moves to a recorded exclusion, which requires re-planning rather than a
   silent drop.
-- [ ] Converse failures on `NF` / `natModel` (valuation `n = 0`), each by `h.apply NF natModel
+- [x] Converse failures on `NF` / `natModel` (valuation `n = 0`), each by `h.apply NF natModel
   (natHist fun _ => 0) 0` in the house style of `PlusNonValidities.lean`:
   `not_openValid_box_of_stab` (witness history constantly `1`);
   `not_openValid_stab_of_ofut` (probe 01's `open_not_stab`, witness `if s < 0 then 1 else 0`);
   `not_openValid_stab_of_opast` (time mirror, witness `if 0 < s then 1 else 0`);
   `not_openValid_opast_of_ofut` and `not_openValid_ofut_of_opast` (the same two witnesses: they
   agree with the constant history on one side of `0` only).
-- [ ] Transfer the five existing L⁺ refutations in one line each through `openValid_ofPlus_iff`
+- [x] Transfer the five existing L⁺ refutations in one line each through `openValid_ofPlus_iff`
   (e.g. `refute_stab_box` yields `¬ OpenValid (ofPlus …)`), as a closing section.
-- [ ] Complete the component README's correspondence table: classes, clauses, inclusion /
+- [x] Complete the component README's correspondence table: classes, clauses, inclusion /
   intersection / monotonicity sentences, `lem:time-reflection`, and the three excluded operators.
 
 **Timing**: 1.5 hours

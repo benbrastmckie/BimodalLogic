@@ -44,7 +44,8 @@ second form is refuted in `PlusLanguage/PlusNonValidities.lean` (`refute_somePas
 
 ## Main Definitions
 
-- `hnOpen`, `hnOpenMixed`, `hnStab` — the three formulas
+- `hnOpen`, `hnOpenMixed`, `hnStab` — the three formulas; `hnOpenMirror`, `hnStabMirror` — their
+  time reflections
 - `SinkState`, `sinkFrame`, `sinkHistA`, `sinkHistB`, `sinkModel` — the countermodel
 
 ## Main Results
@@ -52,6 +53,14 @@ second form is refuted in `PlusLanguage/PlusNonValidities.lean` (`refute_somePas
 - `hnOpen_openValid`, `hnOpenMixed_openValid`
 - `hnStab_refuted_sinkFrame`, `not_openValid_hnStab`, and the L⁺-level `not_plusValid_hnStab`
   (`hnStab p` is an L⁺ formula: `hnStab_eq_ofPlus`)
+- **The open-past mirror**, by time reflection: `hnOpenMirror_openValid`, `openValid_hnOpenPast`
+  (`Fα → ◁F◁̂α` at every `α`), and `not_openValid_hnStabMirror` (`Fp → ⊡F⟐p` is not valid)
+- **The strength ordering is strict**: `not_openValid_box_of_stab`, `not_openValid_stab_of_ofut`,
+  `not_openValid_stab_of_opast`; and `▷`, `◁` are **incomparable**: `not_openValid_opast_of_ofut`,
+  `not_openValid_ofut_of_opast`
+- The five L⁺ refutations transferred to L^▷: `not_openValid_stab_box`,
+  `not_openValid_allFuture_stab`, `not_openValid_stab_allFuture_past`, `not_openValid_determined`,
+  `not_openValid_somePast_stab`
 
 ## References
 
@@ -199,5 +208,185 @@ theorem not_plusValid_hnStab (p : Atom) :
     ¬ PlusValid (PlusFormula.imp (PlusFormula.somePast (PlusFormula.atom p))
       (PlusFormula.stab (PlusFormula.somePast (PlusFormula.dstab (PlusFormula.atom p))))) :=
   fun h => not_openValid_hnStab p ((openValid_ofPlus_iff _).mpr h)
+
+/-! ## The open-past mirror
+
+Time reflection exchanges `▷` with `◁` and `P` with `F`, and fixes `⊡`. Since validity is closed
+under it (`openValid_reflectTime`), the separating pair has a mirror image: the principle
+`Fα → ◁F◁̂α` is valid, and its stability transposition `Fp → ⊡F⟐p` is not. -/
+
+/-- The time reflection of `hnOpen`. -/
+def hnOpenMirror (α : OpenFormula) : OpenFormula := (hnOpen α).reflectTime
+
+/-- The time reflection of `hnStab`. -/
+def hnStabMirror (p : Atom) : OpenFormula := (hnStab p).reflectTime
+
+/-- `hnOpenMirror α` is `Fα' → ◁F◁̂α'` at `α' := α.reflectTime`. -/
+theorem hnOpenMirror_eq (α : OpenFormula) :
+    hnOpenMirror α =
+      imp (someFuture α.reflectTime) (opast (someFuture (dopast α.reflectTime))) := rfl
+
+/-- `hnStabMirror p` is `Fp → ⊡F⟐p`. -/
+theorem hnStabMirror_eq (p : Atom) :
+    hnStabMirror p = imp (someFuture (atom p)) (stab (someFuture (dstab (atom p)))) := rfl
+
+/-- **The mirrored principle is valid**, by time reflection of `hnOpen_openValid`. -/
+theorem hnOpenMirror_openValid (α : OpenFormula) : OpenValid (hnOpenMirror α) :=
+  openValid_reflectTime _ (hnOpen_openValid α)
+
+/-- **`Fα → ◁F◁̂α` is valid at every `α`**: `hnOpenMirror_openValid` at `α.reflectTime`, since
+`reflectTime` is an involution. -/
+theorem openValid_hnOpenPast (α : OpenFormula) :
+    OpenValid (imp (someFuture α) (opast (someFuture (dopast α)))) := by
+  have h := hnOpenMirror_openValid α.reflectTime
+  rwa [hnOpenMirror_eq, reflect_time_involution] at h
+
+/-- **The mirrored stability transposition `Fp → ⊡F⟐p` is not valid**: were it valid, its time
+reflection `hnStab p` would be. -/
+theorem not_openValid_hnStabMirror (p : Atom) : ¬ OpenValid (hnStabMirror p) := by
+  intro h
+  have h' := openValid_reflectTime _ h
+  rw [hnStabMirror, reflect_time_involution] at h'
+  exact not_openValid_hnStab p h'
+
+/-! ## The strength ordering is strict, and `▷` and `◁` are incomparable
+
+`□ ⟹ ⊡ ⟹ ▷` and `⊡ ⟹ ◁` are validities (`OpenLanguage/OpenValidity.lean`). Each converse
+fails, and neither of `▷`, `◁` implies the other. Every countermodel is on the permissive frame
+`NF` over `ℤ` with the valuation "true at state `0` only", evaluated at the constantly-`0` world
+at time `0`, in the house style of `PlusLanguage/PlusNonValidities.lean`. -/
+
+/-- **`⊡p → □p` fails**: the constantly-`1` world is not through the present state. -/
+theorem not_openValid_box_of_stab (p : Atom) :
+    ¬ OpenValid (imp (stab (atom p)) (box (atom p))) := by
+  intro h
+  have hv := h.apply NF natModel (natHist fun _ => 0) 0
+  have hA : OpenTruthAt natModel (natHist fun _ => 0) 0 (stab (atom p)) := by
+    intro ρ hs
+    exact hs.symm
+  have hB := hv hA (natHist fun _ => 1)
+  have v' : (1 : ℕ) = 0 := hB
+  exact one_ne_zero v'
+
+/-- **`▷Pp → ⊡Pp` fails**: a world through the present state may have a different past. -/
+theorem not_openValid_stab_of_ofut (p : Atom) :
+    ¬ OpenValid (imp (ofut (somePast (atom p))) (stab (somePast (atom p)))) := by
+  intro h
+  have hv := h.apply NF natModel (natHist fun _ => 0) 0
+  have hA : OpenTruthAt natModel (natHist fun _ => 0) 0 (ofut (somePast (atom p))) := by
+    intro ρ hag
+    refine (somePast_iff _ _ _ _).mpr ⟨(-1 : ℤ), (by decide : (-1 : ℤ) < 0), ?_⟩
+    have h1 := hag (-1 : ℤ) (by decide : (-1 : ℤ) ≤ 0)
+    change (0 : ℕ) = ρ.state (-1 : ℤ) at h1
+    change ρ.state (-1 : ℤ) = (0 : ℕ)
+    exact h1.symm
+  have hB := hv hA (natHist fun s => if s < 0 then 1 else 0)
+    (by change (0 : ℕ) = (if (0 : ℤ) < 0 then 1 else 0); simp)
+  obtain ⟨s, hs, hat⟩ := (somePast_iff _ _ _ _).mp hB
+  have hs' : (s : ℤ) < 0 := hs
+  have v' : (if (s : ℤ) < 0 then (1 : ℕ) else 0) = 0 := hat
+  rw [if_pos hs'] at v'
+  exact one_ne_zero v'
+
+/-- **`◁Fp → ⊡Fp` fails**: a world through the present state may have a different future. -/
+theorem not_openValid_stab_of_opast (p : Atom) :
+    ¬ OpenValid (imp (opast (someFuture (atom p))) (stab (someFuture (atom p)))) := by
+  intro h
+  have hv := h.apply NF natModel (natHist fun _ => 0) 0
+  have hA : OpenTruthAt natModel (natHist fun _ => 0) 0 (opast (someFuture (atom p))) := by
+    intro ρ hag
+    refine (someFuture_iff _ _ _ _).mpr ⟨(1 : ℤ), (by decide : (0 : ℤ) < 1), ?_⟩
+    have h1 := hag (1 : ℤ) (by decide : (0 : ℤ) ≤ 1)
+    change (0 : ℕ) = ρ.state (1 : ℤ) at h1
+    change ρ.state (1 : ℤ) = (0 : ℕ)
+    exact h1.symm
+  have hB := hv hA (natHist fun s => if 0 < s then 1 else 0)
+    (by change (0 : ℕ) = (if (0 : ℤ) < 0 then 1 else 0); simp)
+  obtain ⟨s, hs, hat⟩ := (someFuture_iff _ _ _ _).mp hB
+  have hs' : (0 : ℤ) < s := hs
+  have v' : (if (0 : ℤ) < s then (1 : ℕ) else 0) = 0 := hat
+  rw [if_pos hs'] at v'
+  exact one_ne_zero v'
+
+/-- **`▷Pp → ◁Pp` fails**: a world that shares the future need not share the past. -/
+theorem not_openValid_opast_of_ofut (p : Atom) :
+    ¬ OpenValid (imp (ofut (somePast (atom p))) (opast (somePast (atom p)))) := by
+  intro h
+  have hv := h.apply NF natModel (natHist fun _ => 0) 0
+  have hA : OpenTruthAt natModel (natHist fun _ => 0) 0 (ofut (somePast (atom p))) := by
+    intro ρ hag
+    refine (somePast_iff _ _ _ _).mpr ⟨(-1 : ℤ), (by decide : (-1 : ℤ) < 0), ?_⟩
+    have h1 := hag (-1 : ℤ) (by decide : (-1 : ℤ) ≤ 0)
+    change (0 : ℕ) = ρ.state (-1 : ℤ) at h1
+    change ρ.state (-1 : ℤ) = (0 : ℕ)
+    exact h1.symm
+  have hB := hv hA (natHist fun s => if s < 0 then 1 else 0) (by
+    intro s hs
+    have hs' : ¬ (s : ℤ) < 0 := not_lt.mpr hs
+    change (0 : ℕ) = (if (s : ℤ) < 0 then 1 else 0)
+    rw [if_neg hs'])
+  obtain ⟨s, hs, hat⟩ := (somePast_iff _ _ _ _).mp hB
+  have hs' : (s : ℤ) < 0 := hs
+  have v' : (if (s : ℤ) < 0 then (1 : ℕ) else 0) = 0 := hat
+  rw [if_pos hs'] at v'
+  exact one_ne_zero v'
+
+/-- **`◁Fp → ▷Fp` fails**: a world that shares the past need not share the future. -/
+theorem not_openValid_ofut_of_opast (p : Atom) :
+    ¬ OpenValid (imp (opast (someFuture (atom p))) (ofut (someFuture (atom p)))) := by
+  intro h
+  have hv := h.apply NF natModel (natHist fun _ => 0) 0
+  have hA : OpenTruthAt natModel (natHist fun _ => 0) 0 (opast (someFuture (atom p))) := by
+    intro ρ hag
+    refine (someFuture_iff _ _ _ _).mpr ⟨(1 : ℤ), (by decide : (0 : ℤ) < 1), ?_⟩
+    have h1 := hag (1 : ℤ) (by decide : (0 : ℤ) ≤ 1)
+    change (0 : ℕ) = ρ.state (1 : ℤ) at h1
+    change ρ.state (1 : ℤ) = (0 : ℕ)
+    exact h1.symm
+  have hB := hv hA (natHist fun s => if 0 < s then 1 else 0) (by
+    intro s hs
+    have hs' : ¬ (0 : ℤ) < s := not_lt.mpr hs
+    change (0 : ℕ) = (if (0 : ℤ) < s then 1 else 0)
+    rw [if_neg hs'])
+  obtain ⟨s, hs, hat⟩ := (someFuture_iff _ _ _ _).mp hB
+  have hs' : (0 : ℤ) < s := hs
+  have v' : (if (0 : ℤ) < s then (1 : ℕ) else 0) = 0 := hat
+  rw [if_pos hs'] at v'
+  exact one_ne_zero v'
+
+/-! ## The L⁺ refutations, transferred
+
+The five refutations of `PlusLanguage/PlusNonValidities.lean` bound the `⊡` axiom set from above.
+Each transfers to L^▷ in one line through `openValid_ofPlus_iff`: extending the language by `▷`
+and `◁` validates none of them. -/
+
+/-- `⊡p → □⊡p` is not L^▷-valid. -/
+theorem not_openValid_stab_box (p : Atom) :
+    ¬ OpenValid (ofPlus (.imp (.stab (.atom p)) (.box (.stab (.atom p))))) :=
+  fun h => refute_stab_box p ((openValid_ofPlus_iff _).mp h)
+
+/-- `G⊡p → ⊡Gp` is not L^▷-valid. -/
+theorem not_openValid_allFuture_stab (p : Atom) :
+    ¬ OpenValid (ofPlus (.imp (PlusFormula.allFuture (.stab (.atom p)))
+      (.stab (PlusFormula.allFuture (.atom p))))) :=
+  fun h => refute_allFuture_stab p ((openValid_ofPlus_iff _).mp h)
+
+/-- `⊡GPp → G⊡Pp` is not L^▷-valid. -/
+theorem not_openValid_stab_allFuture_past (p : Atom) :
+    ¬ OpenValid (ofPlus (.imp (.stab (PlusFormula.allFuture (PlusFormula.somePast (.atom p))))
+      (PlusFormula.allFuture (.stab (PlusFormula.somePast (.atom p)))))) :=
+  fun h => refute_stab_allFuture_past p ((openValid_ofPlus_iff _).mp h)
+
+/-- `Fp → ⊡Fp` is not L^▷-valid. -/
+theorem not_openValid_determined (p : Atom) :
+    ¬ OpenValid (ofPlus (.imp (PlusFormula.someFuture (.atom p))
+      (.stab (PlusFormula.someFuture (.atom p))))) :=
+  fun h => refute_determined p ((openValid_ofPlus_iff _).mp h)
+
+/-- `P⊡p → ⊡Pp` is not L^▷-valid. -/
+theorem not_openValid_somePast_stab (p : Atom) :
+    ¬ OpenValid (ofPlus (.imp (PlusFormula.somePast (.stab (.atom p)))
+      (.stab (PlusFormula.somePast (.atom p))))) :=
+  fun h => refute_somePast_stab p ((openValid_ofPlus_iff _).mp h)
 
 end FormalSystem.OpenLanguage
