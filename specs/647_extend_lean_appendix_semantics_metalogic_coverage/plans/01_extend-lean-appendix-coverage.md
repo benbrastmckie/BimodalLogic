@@ -432,16 +432,16 @@ must be re-checked, not just the number.
 
 ---
 
-### Phase 6: The metalogic result map [NOT STARTED]
+### Phase 6: The metalogic result map [COMPLETED]
 
 **Goal**: Add the metalogic result map (item 7) to `lean-appendix-reading-source` as one table
 per frame class, with the proof routes named and the refutations stated as theorems.
 
 **Tasks**:
 
-- [ ] Add a new subsection inside `lean-appendix-reading-source` carrying four tables, one per
+- [x] Add a new subsection inside `lean-appendix-reading-source` carrying four tables, one per
       result family (soundness, weak completeness, compactness, strong completeness), each with a
-      row per frame class and columns *statement*, *declaration*, *status*. Four four-row tables
+      row per frame class and columns *statement*, *declaration*, *status*. *(deviation: altered — columns are *frame class*, *declaration*, *status*; the statement of each family is given once in the lead sentence above its table rather than repeated in sixteen cells)* Four four-row tables
       make the Base/Dense versus ZTime/RTime asymmetry visible at a glance.
 - [ ] Populate soundness: `soundness`, `soundness_dense`, `soundness_ztime`, `soundness_rtime`.
 - [ ] Populate weak completeness: `completeness_base`, `completeness_dense`,

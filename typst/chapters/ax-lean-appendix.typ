@@ -882,6 +882,138 @@ Note the `Prop`-valued `Derivable` in the conclusion: the canonical-model argume
 Together with `soundness` at the empty context, this yields the biconditional `Valid φ ↔ Derivable FrameClass.Base [] φ`.
 This is the weak, premise-free form of completeness, and @sec:completeness-theorems states the strongest form each frame class admits.
 
+=== The Result Map
+
+The two worked statements above are the entry points to a larger set.
+Each of the four metalogical results is proved, or refuted, separately at each of the four frame classes, and the four tables below are the complete map.
+Read them together rather than singly, because the pattern across them is the point.
+
+*Soundness*, that a derivation at a frame class yields truth at every model of that class:
+
+#figure(
+  table(
+    columns: 3,
+    stroke: none,
+    align: (left, left, left),
+    table.hline(),
+    table.header([*Frame class*], [*Declaration*], [*Status*]),
+    table.hline(),
+    [Base], [`soundness`], [proved],
+    [Dense], [`soundness_dense`], [proved],
+    [ZTime], [`soundness_ztime`], [proved],
+    [RTime], [`soundness_rtime`], [proved],
+    table.hline(),
+  ),
+  caption: none,
+)
+
+*Weak completeness*, that a formula valid on the class is derivable at it:
+
+#figure(
+  table(
+    columns: 3,
+    stroke: none,
+    align: (left, left, left),
+    table.hline(),
+    table.header([*Frame class*], [*Declaration*], [*Status*]),
+    table.hline(),
+    [Base], [`completeness_base`], [proved],
+    [Dense], [`completeness_dense`], [proved],
+    [ZTime], [`completeness_ztime`], [proved],
+    [RTime], [`completeness_rtime`], [proved],
+    table.hline(),
+  ),
+  caption: none,
+)
+
+Each of these has type `WeakCompleteness` at its own tag, which unfolds to the statement written out longhand in the `completeness` excerpt above.
+That excerpt and `completeness_base` are the same claim, not two, because validity on the base class and validity outright are definitionally equal:
+
+```
+example : ValidIn FrameClass.Base = Valid := rfl
+```
+
+The remaining two results are where the frame classes part company.
+*Compactness*, that a set of premises with an unsatisfiable consequence already has a finite such subset:
+
+#figure(
+  table(
+    columns: 3,
+    stroke: none,
+    align: (left, left, left),
+    table.hline(),
+    table.header([*Frame class*], [*Declaration*], [*Status*]),
+    table.hline(),
+    [Base], [`compactBase`], [proved],
+    [Dense], [`compactDense`], [proved],
+    [ZTime], [`notCompactZTime`], [refuted],
+    [RTime], [`notCompactRTime`], [refuted],
+    table.hline(),
+  ),
+  caption: none,
+)
+
+*Strong completeness*, weak completeness with an arbitrary set of premises carried along:
+
+#figure(
+  table(
+    columns: 3,
+    stroke: none,
+    align: (left, left, left),
+    table.hline(),
+    table.header([*Frame class*], [*Declaration*], [*Status*]),
+    table.hline(),
+    [Base], [`strongCompletenessBase`], [proved],
+    [Dense], [`strongCompletenessDense`], [proved],
+    [ZTime], [`notStrongCompletenessZTime`], [refuted],
+    [RTime], [`notStrongCompletenessRTime`], [refuted],
+    table.hline(),
+  ),
+  caption: none,
+)
+
+The last two tables say something a reader should not misread.
+*Refuted* is not *unproved*.
+A row marked refuted names a theorem whose statement carries a negation, proved to the same standard and audited by the same commands as every other row.
+The library is not silent about compactness at `FrameClass.ZTime`.
+It says that compactness fails there, and it says so with a witness:
+
+#leansrc("FormalSystem.Metalogic", "notCompactZTime")
+```
+theorem notCompactZTime : ¬ CompactZTime :=
+  not_compact_of_witness (archWitness_finitely_satisfiable ⟨"p", none⟩)
+    (archWitness_not_satisfiable ⟨"p", none⟩)
+```
+
+The two arguments are the two halves of a counterexample, namely a set of formulas every finite part of which is satisfiable while the whole is not.
+Both are applied to the atom built by the *anonymous constructor* `⟨"p", none⟩`, which is `Atom`'s two fields written without naming the structure, Lean supplying the type from the expected argument.
+The discrete and Dedekind refutations use different witnesses, `archWitness` at `⟨"p", none⟩` and `dedWitness` at `⟨"q", none⟩`, and the first does not port to the second.
+The discrete witness is built from `Formula.next`, which is vacuous on a densely ordered carrier, so a genuinely different set of formulas is needed on the dense side.
+@sec:dichotomy is where the mathematics of the split is argued.
+
+The proved rows compose out of one another, and the composition is legible in the Lean.
+Strong completeness at the base class is a single term:
+
+#leansrc("FormalSystem.Metalogic", "strongCompletenessBase")
+```
+theorem strongCompletenessBase : StrongCompletenessBase :=
+  strongCompleteness_of_compact compactBase completeness_base
+```
+
+`StrongCompletenessBase` is a `Prop`-valued `def` declared in a separate module, which lets the statement be named once as vocabulary and discharged elsewhere.
+The proof supplies compactness and the weak-completeness engine to one class-generic reduction, so the whole of the class-dependence sits in the two arguments rather than in the argument's shape.
+This is why the compactness row and the strong-completeness row agree at every frame class.
+
+Where the underlying proofs live is worth knowing before opening anything.
+
+- *The chronicle route*, `Metalogic/BXCanonical/`, carries the flagship completeness theorems. It builds a canonical chain of chronicles and reads a countermodel off it.
+- *The Kamp and Reynolds route*, `Metalogic/WeakCanonical/`, supplies the reflexive canonical model and the integer, real and group constructions the discrete and Dedekind cases need. It sits beside the chronicle route rather than under it, and the two import from each other.
+- *The algebraic route*, `Metalogic/Algebraic/`, supplies the Lindenbaum-Tarski quotient and the ultrafilter correspondence.
+- *Compactness* takes none of these. It is an ultraproduct over `Ultraproduct.Idx`, the finite lists drawn from the premise set, with one model per index supplied by finite satisfiability and truth pulled back by `Ultraproduct.los_truthAt`. Strong completeness then follows uniformly, as the term above shows.
+
+The single hypothesis that the frame condition survives the ultraproduct is the whole of the class-dependence, and it is exactly what fails at the discrete and Dedekind classes.
+@sec:completeness-theorems states the strongest form each frame class admits, and @sec:metalogic sets the four results in their mathematical context.
+
 === Trust-Reading Practice
 
 Two commands let a reader audit a declaration without reading its proof.
