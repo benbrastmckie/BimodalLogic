@@ -102,20 +102,25 @@ jobs:
           bash scripts/check-module-invariants.sh --no-build
           echo "::endgroup::"
 
+      # BimodalTools is named explicitly because this script defaults to ROOTS=("FormalSystem").
+      # The tooling library is outside that default, so without the second argument the 25
+      # relocated modules would leave this gate's denominator and it would keep passing.
       - name: Check copyright headers (scripts/check-copyright-headers.sh --strict)
         run: |
           set -euo pipefail
           # No --exclude: the archive left FormalSystem/ entirely (ADR-010), so the former
-          # '*/Boneyard/*' exclusion no longer excludes anything from this scanned root.
-          echo "::group::bash scripts/check-copyright-headers.sh --strict FormalSystem"
-          bash scripts/check-copyright-headers.sh --strict FormalSystem
+          # '*/Boneyard/*' exclusion no longer excludes anything from these scanned roots.
+          echo "::group::bash scripts/check-copyright-headers.sh --strict FormalSystem BimodalTools"
+          bash scripts/check-copyright-headers.sh --strict FormalSystem BimodalTools
           echo "::endgroup::"
 
+      # Same reason as the step above: readme-lint.sh also defaults to ROOTS=("FormalSystem"),
+      # and this step used to call it with no arguments at all.
       - name: Check README health (scripts/readme-lint.sh)
         run: |
           set -euo pipefail
-          echo "::group::bash scripts/readme-lint.sh"
-          bash scripts/readme-lint.sh
+          echo "::group::bash scripts/readme-lint.sh FormalSystem BimodalTools"
+          bash scripts/readme-lint.sh FormalSystem BimodalTools
           echo "::endgroup::"
 
       # Metalogic/ is allowed exactly one directory-level import cycle (BXCanonical <->

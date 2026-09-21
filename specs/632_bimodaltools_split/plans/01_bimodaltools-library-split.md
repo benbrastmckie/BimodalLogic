@@ -295,7 +295,7 @@ guards the move rather than merely describing its outcome.
 
 ---
 
-### Phase 4: Widen the out-of-harness gate invocations [NOT STARTED]
+### Phase 4: Widen the out-of-harness gate invocations [COMPLETED]
 
 **Goal**: The two CI-invoked gates that default to `FormalSystem` cover `BimodalTools` too, verified
 locally rather than on a CI round-trip.
@@ -318,6 +318,14 @@ locally rather than on a CI round-trip.
 **Verification**:
 - `bash scripts/check-copyright-headers.sh --strict FormalSystem BimodalTools` exits 0.
 - `bash scripts/readme-lint.sh FormalSystem BimodalTools` exits 0.
+  *(deviation: altered — exits 1, and so does `bash scripts/readme-lint.sh` with no arguments on
+  the unmodified tree. 21 pre-existing broken references, every one a `../Boneyard/...` relative
+  link in a `FormalSystem/**/README.md` that the archive's relocation to the repository root left
+  one directory level short. CI's "Check README health" step is red today for this reason,
+  independently of this task. The widening itself is a clean no-op: output is byte-identical apart
+  from the README count rising 60 -> 61. NOT fixed here — the 21 links are another task's
+  territory and repairing them would widen this commit's scope. See the summary's Follow-ups for
+  the exact remedy.)*
 - `.github/workflows/ci.yml` parses (e.g. `python3 -c "import yaml,sys; yaml.safe_load(open('.github/workflows/ci.yml'))"`).
 
 **Files to modify**:
