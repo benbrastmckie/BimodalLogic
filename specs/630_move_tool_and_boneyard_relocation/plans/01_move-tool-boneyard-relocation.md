@@ -1,7 +1,7 @@
 # Implementation Plan: Move tool and Boneyard relocation
 
 - **Task**: 630 - Move tool and Boneyard relocation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 11 hours
 - **Dependencies**: None blocking. No edge to task 631 in either direction (ADR-010 decision 4 disclaims dependence on the frozen-LaTeX retirement, and `latex/` carries no `Boneyard` reference). Tasks 632 and 633 depend on this one.
 - **Research Inputs**: specs/630_move_tool_and_boneyard_relocation/reports/01_move-tool-boneyard-relocation.md
@@ -108,7 +108,13 @@ edit the new script and are therefore strictly sequential.
 
 ---
 
-### Phase 1: Move tool — CLI, mapping, and rewrite classes 1-3 [NOT STARTED]
+### Phase 1: Move tool — CLI, mapping, and rewrite classes 1-3 [COMPLETED]
+
+**Completion note**: census re-measured against the current tree and matches the report exactly —
+41 external citer files (20 `docs/`, 12 `FormalSystem/`, 6 `scripts/`, 2 `typst/`, 1 root), 178
+archived `import FormalSystem.Boneyard.*` lines in 88 files, 77 external + 37 internal bare-form
+citer files. The tool's class counts (178 / 9 / 134) were confirmed against an independent
+standalone census, not just self-reported.
 
 **Goal**: `scripts/move-modules.py` exists, parses its maps, derives the path mapping, and
 implements the three citation-rewrite classes that do the bulk of the work, with per-class counts.
