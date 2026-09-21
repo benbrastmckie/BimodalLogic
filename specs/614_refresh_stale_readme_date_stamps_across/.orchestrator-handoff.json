@@ -1,19 +1,25 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 9,
-  "summary": "Revised the existing plan in place (v2); all 5 phases remain NOT STARTED and every count re-verified at HEAD ad0750d0c (21 broken, 51 stale + 2 missing, 9 violations). Corrections found by checking v1 against the tree: lakefile range is :389-403; typ line 70 cites README.md:183-184, which is false and invisible to the lint, and quotes a second sentence absent from its source; typ line 30 says 211 lines where the file and BimodalTools/README.md say 223. Added a cross-task item: REFERENCE_NORMAL_FORM.md:159-160 records the 21/9 baselines as must-stay-unchanged and task 643 verifies them; this task makes both 0.",
+  "status": "partial",
+  "phase": "implement",
+  "dispatch_seq": 13,
+  "summary": "Phase 1 committed (82beab641: readme-lint broken references 21 -> 0). Stopped in Phase 2 under territory rule (5): 21 foreign uncommitted .lean modifications under FormalSystem/, outside every declared sibling file_scope, are being written live and turn typst-sync-check Check 2b red.",
   "artifacts": [
+    {"type": "handoff", "path": "specs/614_refresh_stale_readme_date_stamps_across/handoffs/phase-2-handoff-20260921T090643.md", "summary": "Phase 2 stop record and resume point"},
+    {"type": "plan", "path": "specs/614_refresh_stale_readme_date_stamps_across/plans/01_readme-lint-citation-repair.md", "summary": "Phase 1 [COMPLETED], Phase 2 [PARTIAL] with BLOCKER entry"}
+  ],
+  "phases_completed": 1,
+  "phases_total": 5,
+  "blockers": [
     {
-      "type": "plan",
-      "path": "specs/614_refresh_stale_readme_date_stamps_across/plans/01_readme-lint-citation-repair.md",
-      "summary": "Revised 5-phase plan, 5 hours, waves [1,2] -> [3,4] -> [5]"
+      "phase": 2,
+      "target": "typst/generated/automation-module-map.typ (via scripts/typst-sync-check.sh Check 2b)",
+      "verbatim_goal": "typst-sync-check.sh exits 0 with TOTAL_VIOLATIONS=0 both in the working tree and in a clean git archive HEAD export",
+      "what_was_tried": "Applied all Phase 2 chapter and whitelist edits; Check 1 reaches TOTAL_VIOLATIONS=0. Check 2b then failed on Strategies.lean 386->403, Commands.lean 160->174, total 3325->3356. Traced to 21 uncommitted .lean modifications (mtimes 09:04-09:05 PDT) not made by this dispatch and not in any declared sibling scope.",
+      "why_it_failed": "The failure is caused by another writer's in-flight Lean edits. Regenerating the module map here would commit that writer's uncommitted line counts, and dispatch territory rule (5) requires stopping and reporting rather than proceeding."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 5,
-  "blockers": [],
-  "next_action_hint": "Dispatch implement for task 614. Task 643's baselines-unchanged verification (readme-lint 21, typst-sync 9) will read 0/0 once this task's phase 1 and 2 commits land; that delta is expected and attributable to task 614, and docs/development/REFERENCE_NORMAL_FORM.md:159-160 needs its two rows updated by task 643 or a follow-up.",
-  "continuation_path": null,
-  "sorry_inventory": []
+  "plan_markers_verified": true,
+  "continuation_path": "specs/614_refresh_stale_readme_date_stamps_across/handoffs/phase-2-handoff-20260921T090643.md",
+  "next_action_hint": "Identify and settle the writer of the 21 FormalSystem/*.lean edits, then re-dispatch 614 to resume Phase 2 at the typst compiles. R8 note: docs/development/REFERENCE_NORMAL_FORM.md:159-160 baseline 21 is now 0 as of 82beab641; the typst baseline 9 is unchanged in HEAD.",
+  "git_checkpoint": "82beab641"
 }

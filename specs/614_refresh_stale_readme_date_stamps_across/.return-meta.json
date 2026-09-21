@@ -1,23 +1,31 @@
 {
-  "status": "planned",
-  "started_at": "2026-09-21T15:22:04Z",
+  "status": "partial",
+  "started_at": "2026-09-21T16:01:47Z",
+  "ended_at": "2026-09-21T16:06:43Z",
+  "requires_user_review": true,
+  "blocked_phase": 2,
+  "review_reason": "Phase 2 stopped under territory rule (5): 21 foreign uncommitted .lean modifications under FormalSystem/, outside every declared sibling file_scope, turn typst-sync-check Check 2b red",
   "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/614_refresh_stale_readme_date_stamps_across/plans/01_readme-lint-citation-repair.md",
-      "summary": "Revised plan (v2, in place): same 5 phases, all NOT STARTED; corrects one line range, removes a false README.md:183-184 anchor and a half-verbatim quotation the lint cannot see, fixes a stale line count, enumerates the six whitelist spans, switches the invariants gate to --no-build, and adds a cross-task handoff for the 21/9 baselines recorded in REFERENCE_NORMAL_FORM.md."
-    }
+    {"type": "handoff", "path": "specs/614_refresh_stale_readme_date_stamps_across/handoffs/phase-2-handoff-20260921T090643.md", "summary": "Phase 2 stop record and resume point"}
   ],
-  "next_steps": "Run /implement 614 to execute the revised plan",
-  "dispatch_seq": 9,
+  "partial_progress": {
+    "stage": "phase_2_blocked",
+    "details": "Phase 1 committed (82beab641). Phase 2 edits applied but uncommitted in typst/chapters/p4-dataset-pipeline.typ and typst/sync-check-whitelist.txt. Phases 3-5 not opened.",
+    "phases_completed": 1,
+    "phases_total": 5
+  },
+  "verification": {
+    "verification_passed": false,
+    "build_passed": null,
+    "build_output": "A guarded full lake build exited 0 (2651 jobs) but overlapped foreign Lean edits; not valid evidence for any tree."
+  },
+  "handoff_path": "specs/614_refresh_stale_readme_date_stamps_across/handoffs/phase-2-handoff-20260921T090643.md",
   "metadata": {
-    "session_id": "sess_1790004043_997429_614",
-    "agent_type": "reviser-agent",
+    "session_id": "sess_1790004043_997429",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "phase_count": 5,
-    "estimated_hours": 5,
-    "plan_version": 2,
-    "reports_integrated": ["01_readme-stamps-lint-repair.md"]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "dispatch_seq": 13,
+    "compliance_check": "skipped"
   }
 }
