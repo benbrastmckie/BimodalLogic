@@ -335,7 +335,7 @@ than forcing the shape.
 
 ---
 
-### Phase 5: The strong-completeness refutation, and a reader-continuity pass [NOT STARTED]
+### Phase 5: The strong-completeness refutation, and a reader-continuity pass [COMPLETED]
 
 **Goal**: The file closes on a genuine negative result with prose that says what it means, and
 reads as one continuous page rather than six stitched sections.

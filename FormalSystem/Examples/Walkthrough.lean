@@ -339,4 +339,45 @@ theorem ggNotBase : ¬ Derivable FrameClass.Base [] ggFml :=
 theorem ggNotZTime : ¬ Derivable FrameClass.ZTime [] ggFml :=
   fun ⟨d⟩ => notValidZTimeGg (soundness_validIn d)
 
+/-!
+## 6. A negative result: strong completeness fails over integer time
+
+Leg 3 obtained *weak* completeness: every valid formula is derivable from no assumptions. The
+strong form asks for more — that every semantic consequence of a possibly infinite set of
+assumptions be derivable from it — and over integer time it is false. Not open, not unproven:
+refuted, and the refutation is a theorem of this library.
+-/
+
+/--
+Strong completeness fails over integer time.
+
+A result in its own right, not a gap in the development.
+-/
+theorem zTimeStrongCompletenessFails : ¬ StrongCompletenessZTime := notStrongCompletenessZTime
+
+/-!
+The witness is a family saying "`p` happens at some point in the future, but not after one
+step, nor after two, nor after three, …" — a single `F`-claim together with the negation of
+every finite iteration of the next-step operator. Over the integers any
+*finite* part of that family is satisfiable: only finitely many instants are ruled out, and
+there is always a later one left over to host `p`. The family as a whole is not, because integer
+time is Archimedean-discrete and every future instant is reached in finitely many steps. So
+compactness fails over this class, and strong completeness falls with it — a derivation is a
+finite object and can only ever consult finitely many of its assumptions.
+
+Worth being precise about the scope of the failure. Weak completeness still holds over integer
+time; it is the infinite-context form that does not. The gap between the two is exactly the
+gap between finite and infinite assumption sets, which is what compactness measures.
+
+## Where to go next
+
+- [MainResults.lean](../MainResults.lean) collects the headline metatheory — soundness,
+  the weak completeness results at each frame class, and the strong-completeness results and
+  refutations — each with its own axiom audit.
+- [BimodalProofs.lean](BimodalProofs.lean) works the proof system harder, deriving the
+  perpetuity principles that link `□` to the tense operators.
+- [TemporalStructures.lean](TemporalStructures.lean) builds more of the concrete temporal
+  orders that the countermodel in leg 5 drew on.
+-/
+
 end FormalSystem.Examples.Walkthrough
