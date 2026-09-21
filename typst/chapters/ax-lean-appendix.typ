@@ -277,6 +277,14 @@ structure Atom where
   deriving Repr, DecidableEq, BEq, Hashable
 ```
 
+// TODO: Elaborate this example. The excerpt is clear and helpful, but nothing after it says what
+// the Lean syntax means. Walk through it line by line: the `structure ... where` header; each
+// `name : Type` field line (what `String`, `Nat`, and `Option Nat` are, and why `freshIndex` is
+// optional); how an `Atom` value is built (anonymous-constructor brackets, `{ base := ..., .. }`,
+// and the generated `Atom.mk`) and how its fields are read back (`a.base`, `a.freshIndex`); and
+// what the `deriving` clause generates, one handler at a time (`Repr`, `DecidableEq`, `BEq`,
+// `Hashable`), since this is the first structure the reader meets and the later ones build on it.
+
 === Three Kinds of Binder
 
 Every signature from here on uses all three of Lean's argument brackets, so it is worth fixing them once.
@@ -299,6 +307,19 @@ The brackets record *who supplies the argument*, not what kind of thing it is.
   ),
   caption: none,
 )
+
+// TODO: Make the discussion of the three binders clear, systematic, and complete. The table names
+// them, but the prose that follows treats them unevenly: implicit gets three sentences, instance
+// is folded into the account of `class`, and explicit gets none. Explain each binder in full and
+// in the same order and shape: (1) what is written at the declaration site; (2) what the caller
+// writes, or omits, at the use site; (3) how Lean fills the argument in when it is omitted
+// (unification for implicit, instance synthesis for instance) and what error the reader sees when
+// it cannot; (4) how to override the default (`@f`, named arguments `(fc := .Dense)`); and (5) one
+// worked example from `FormalSystem/` per binder, ideally a single signature that uses all three,
+// shown once as declared and once as called. Also cover the variants a reader will meet in the
+// source: several names under one binder `(φ ψ : Formula)`, strict-implicit `⦃x : T⦄`,
+// anonymous instance binders `[DecidableEq α]` versus named ones `[inst : DecidableEq α]`,
+// `variable` declarations that add binders invisibly, and auto-bound implicits.
 
 An implicit argument is one Lean can read off the rest of the call, so writing it out would be noise.
 `perpetuity2` (@lean-appendix-derived-theorem) takes its frame class implicitly, which is what lets a single proof term serve all four frame classes.
@@ -367,6 +388,23 @@ structure FrameOver (D : TemporalOrder) where
 
 attribute [instance] FrameOver.worldNonempty
 ```
+
+// TODO: Explain the `worldNonempty` field in full; "the same instance-bracket-field pattern one
+// level down" assumes too much. Say (1) that the line has the same `name : Type` shape as every
+// other field, with `worldNonempty` the field's name; (2) what `Nonempty α` is: a `Prop`
+// (`class inductive Nonempty (α : Sort u) : Prop`, one constructor `Nonempty.intro : α → Nonempty α`)
+// recording *that* an element exists while forgetting *which*, so the field's value is a proof,
+// not data, and it encodes the requirement that the set of world states be nonempty; (3) that by
+// proof irrelevance (@lean-appendix-types-props) any two such proofs are equal, so the field
+// singles out no particular world state; (4) the contrast with `Inhabited α`, which stores a
+// specific default element, and how the source obtains an element when it needs one
+// (`F.worldNonempty.some`, which is noncomputable and rests on choice); (5) what the square
+// brackets add at the construction site (the author of a frame writes nothing; Lean finds, say,
+// `Nonempty Bool` by instance synthesis) and what the `attribute [instance]` line adds at the use
+// site (given `F`, the fact `Nonempty F.WorldState` is available to synthesis, so lemmas with a
+// `[Nonempty α]` hypothesis apply to world states unprompted). Also gloss the other field lines
+// the prose below passes over: that `comp`, `serial`, `limit` and `saturation` are proof fields
+// too, and how to read the `∀ w u, (∀ x, 0 < x → ∃ y, ...) → u = w` statement of `limit`.
 
 `worldNonempty` is the same instance-bracket-field pattern one level down, re-exported by the same kind of `attribute` line.
 It is a field rather than a binder on the structure for a stated reason: a binder must be discharged at every mention of the type, whereas a field is discharged once per frame, at the site where that frame is built.
