@@ -1219,12 +1219,12 @@
     "total": 48
   },
   "repository_health": {
-    "last_assessed": "2026-09-19T03:24:50Z",
-    "todo_count": 5,
+    "last_assessed": "2026-09-21T14:18:37Z",
+    "todo_count": 0,
     "fixme_count": 0,
     "build_errors": 0,
     "status": "healthy",
-    "phantom_paths": 0
+    "phantom_paths": 1
   },
   "last_updated": "2026-09-08T17:35:13Z",
   "vault_count": 1,
