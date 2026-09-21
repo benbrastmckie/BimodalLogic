@@ -1,30 +1,35 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-20T22:05:00Z",
+  "completed_at": "2026-09-21T01:10:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 12,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/633_upward_edges_by_relocation/plans/01_upward-edges-relocation.md",
-      "summary": "Six-phase dependency-first plan relocating the attribute modules into a new layer-0 FormalSystem/Tactic/, moving PropDecide+Meta, DeductionTheorem and Periodicity, then correcting LAYERS and installing an allowlist-equality layer-order assertion."
+      "type": "summary",
+      "path": "specs/633_upward_edges_by_relocation/summaries/01_upward-edges-relocation-summary.md",
+      "summary": "Deleted every upward import line into Automation/ from Syntax, Semantics, ProofSystem and Theorems by relocating five attribute declarations to a new layer-0 FormalSystem/Tactic/ imported by Init.lean, moved three further misfiled modules, and turned the corrected layer order into a mechanical equality assertion."
     }
   ],
-  "next_steps": "Run /implement 633 to execute the plan",
-  "dispatch_seq": 11,
-  "metadata": {
-    "session_id": "sess_1789955215_a3ad68_633",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 9,
-    "dependency_waves": [[1, 3, 4], [2], [5], [6]]
+  "completion_data": {
+    "completion_summary": "Removed the upward import edges by relocation, not renumbering: a new layer-0 FormalSystem/Tactic/ absorbs the five attribute/simp-set declarations and Init.lean imports it, deleting 11 upward lines outright; PropDecide+Meta, DeductionTheorem and Periodicity moved to the directories their dependencies imply. measure-refactor-partitions.py upward-edges now reports 0 lines into Automation from Syntax/Semantics/ProofSystem/Theorems and an empty theorems_files_importing_metalogic, with 7 total upward lines all from AxiomDischarge.lean. check-metalogic-cycles.sh gained a second assertion that the upward set EQUALS that 7-line allowlist, failing on surplus and shortfall alike (both negative tests run by hand and reverted); ORGANISATION.md and docs/ARCHITECTURE.md rewritten to the measured order.",
+    "roadmap_items": []
   },
-  "memory_candidates": [
-    {
-      "content": "Acceptance-criterion integrity when the criterion is read off a measurement script: check whether the task's own changes can alter the script's CLASSIFICATION INPUT rather than its measured subject. In BimodalLogic, scripts/measure-refactor-partitions.py derives `into_automation` by filtering an already layer-filtered `edges` list, so placing Automation at the same layer as Theorems would make every Theorems -> Automation line invisible and report zero upward edges without a single import line being deleted. A plan whose acceptance reads a derived metric must pin the metric's own configuration (here, the LAYERS table) as part of the acceptance, or rewrite the metric to scan independently of it. The general test: if the task edits the config that the measurement classifies by, the measurement can be satisfied by renumbering instead of by doing the work.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/633_upward_edges_by_relocation/plans/01_upward-edges-relocation.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["acceptance-criteria", "measurement-script", "derived-metric", "layering", "import-graph", "refactor-verification"]
-    }
-  ]
+  "metadata": {
+    "session_id": "sess_1789955215_a3ad68",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "dispatch_seq": 12,
+    "compliance_check": "skipped_no_lean_goals"
+  }
 }

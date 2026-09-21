@@ -1,18 +1,21 @@
 {
+  "status": "implemented",
+  "dispatch_seq": 12,
   "task_number": 633,
-  "phase": "plan",
-  "status": "planned",
-  "dispatch_seq": 11,
-  "phases_completed": 0,
+  "phases_completed": 6,
   "phases_total": 6,
-  "session_id": "sess_1789955215_a3ad68_633",
+  "session_id": "sess_1789955215_a3ad68",
+  "summary": "All six phases landed as six commits, each against a green build-inclusive harness. Acceptance met: measure-refactor-partitions.py upward-edges reports 0 lines into Automation/ from Syntax, Semantics, ProofSystem and Theorems, and an empty theorems_files_importing_metalogic; 7 total upward lines remain, all from Syntax/MinusLanguage/AxiomDischarge.lean, which PUBLICATION_REFACTOR.md Phase 5 owns. check-module-invariants.sh (full, build-inclusive, incl. C25) ALL CHECKS PASSED; lake build and lake build BimodalTest exit 0; typst compiles; readme-lint and typst-sync-check at their recorded red baselines with no new rows.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/633_upward_edges_by_relocation/summaries/01_upward-edges-relocation-summary.md",
+      "summary": "Implementation summary for task 633: upward-edge removal by relocation."
+    },
     {
       "type": "plan",
       "path": "specs/633_upward_edges_by_relocation/plans/01_upward-edges-relocation.md",
-      "summary": "Six-phase dependency-first plan; waves [1,3,4] -> [2] -> [5] -> [6]; 9 hours estimated."
+      "summary": "Plan with all six phase headings marked [COMPLETED]."
     }
-  ],
-  "next_phase": "implement",
-  "notes": "Plan validates clean under validate-artifact.sh --strict (0 warnings). Three corrections from research are carried into the plan and must not be re-litigated at implement time: (1) the 'cut ProofSearch.Core -> SuccessPatterns' item is struck as a no-op and recorded in docs/development/PUBLICATION_REFACTOR.md rather than implemented; (2) Automation/Tactics/Meta.lean moves to FormalSystem/Tactic/Meta.lean alongside PropDecide, or the relocation buys nothing; (3) the new layer-order assertion is an allowlist equality over 7 AxiomDischarge lines failing on surplus AND shortfall, never a zero-upward-edges check. Three operational risks from this run are recorded as R-3, R-4 and R-5 in the plan's risk table: move-modules.py collapses historical 'from X to Y' prose so every non-.lean hunk needs a hand read; a green lake build certifies nothing about the 13 lean_exe roots, so every import-graph phase gates on the build-inclusive check-module-invariants.sh (C25) and never on lake build alone; and long commands run in the foreground with a blocking call, never backgrounded or monitor-polled. Phases 1 and 2 are declared atomic-batch (duplicate attribute registration and the typst #assert make intermediate states expected-red). Pre-existing red checks recorded as baselines, not this task's to fix: readme-lint.sh 21 rows, typst-sync-check.sh sorry-total 4 vs 0 plus 9 PIPELINE.md rows."
+  ]
 }
