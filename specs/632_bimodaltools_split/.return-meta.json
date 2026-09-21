@@ -1,16 +1,30 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/632_bimodaltools_split/reports/01_bimodaltools-library-split.md",
-      "summary": "Grounds the BimodalTools split in PUBLICATION_REFACTOR.md Phase 3: confirms the 25-module/14,750-line move set, identifies FormalSystem/Automation.lean's 8 tooling imports as the real blocker, decides SuccessPatterns stays in the library, finds DatasetAssembly/PrefilterSoundness would go unreachable, and enumerates the 11 harness scan roots plus 11 bare-form citations that must be widened or hand-edited."
+      "type": "plan",
+      "path": "specs/632_bimodaltools_split/plans/01_bimodaltools-library-split.md",
+      "summary": "Nine-phase plan splitting 25 tooling modules into lean_lib BimodalTools, sequenced so every gate's scan root is widened and the B3 separation invariant lands before anything moves."
     }
   ],
+  "next_steps": "Run /implement 632 to execute the plan",
   "metadata": {
     "session_id": "sess_1789955215_a3ad68_632",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 9,
+    "estimated_hours": 11.5,
+    "dependency_waves": [[1], [2, 4], [3], [5], [6], [7], [8], [9]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When relocating code that hardcoded-scan-root linters observe (invariant harnesses, coverage gates, CI lint invocations), sequence the refactor so every gate's scan root is widened to include the NEW root in its own phase BEFORE any file moves, and add the new separation invariant before the move too. The dominant failure mode in this class of refactor is not a red build but a silent one: relocated lines leave a check's denominator and the check keeps passing vacuously. Widening first makes each edit a pure no-op on the unmoved tree, so any failure is unambiguously attributable to the widening rather than the move, and the new invariant guards the move instead of merely describing its outcome. Pair each widened root-walk with a negative test (drop a scratch file that SHOULD trip the check, confirm it fails, remove it) -- a green check after widening is not by itself evidence the widening works.",
+      "category": "PATTERN",
+      "source_artifact": "specs/632_bimodaltools_split/plans/01_bimodaltools-library-split.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["refactor-sequencing", "scan-root", "invariant-harness", "silent-coverage-loss", "negative-test", "module-relocation"]
+    }
+  ],
+  "dispatch_seq": 8
 }

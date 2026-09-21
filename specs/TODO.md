@@ -97,7 +97,7 @@ next_project_number: 642
 
 ### Publication Quality
 
-632 [RESEARCHED] — Create leanlib BimodalTools (outside defaultTargets) and...
+632 [PLANNED] — Create leanlib BimodalTools (outside defaultTargets) and...
   └─ 634 [NOT STARTED] — Merge Syntax/XLanguage/ and Semantics/XLanguage/ into...
     └─ 635 [NOT STARTED] — Run python3 scripts/measure-refactor-partitions.py --check...
       └─ 636 [NOT STARTED] — Convert every ## References entry in FormalSystem//.lean to...
@@ -225,11 +225,12 @@ Reconciliation notes: depends on task 630 only. Verified file-disjoint from the 
 ---
 
 ### 632. Bimodaltools split
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 630
 - **Research**: [632_bimodaltools_split/reports/01_bimodaltools-library-split.md]
+- **Plan**: [632_bimodaltools_split/plans/01_bimodaltools-library-split.md]
 
 **Description**: Create lean_lib BimodalTools (outside defaultTargets) and BimodalToolsTest; move the 25 tooling modules that python3 scripts/measure-refactor-partitions.py automation-partition lists (including Metalogic/Decidability/TraceExport.lean) and re-root the 12 lean_exe targets under BimodalTools.*; move the tooling tests it lists into BimodalToolsTest; make Examples/BimodalProofs.lean import specific Automation modules; decide SuccessPatterns' split; update the CI exe-root step, typst-module-map.sh and the automation-module-map generator. Acceptance: lake build writes no .olean under BimodalTools/; a new check asserts FormalSystem never imports BimodalTools; lake build BimodalToolsTest exits 0 in CI; harness green.
 
