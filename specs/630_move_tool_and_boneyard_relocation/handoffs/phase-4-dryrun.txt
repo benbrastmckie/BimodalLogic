@@ -1,0 +1,15 @@
+=== move-modules (DRY RUN) ===
+  map  FormalSystem.Boneyard -> Boneyard   (FormalSystem/Boneyard -> Boneyard)
+
+  class 1  import lines                178 occurrence(s) in   88 file(s)
+  class 2  dotted citations              9 occurrence(s) in    6 file(s)
+  class 3  slash-path citations        134 occurrence(s) in   63 file(s)
+  class 4  namespace/open/FQN            0 occurrence(s) in    0 file(s)
+  class 5  axiom baselines               0 occurrence(s) in    0 file(s)
+  class 6  tree moves                    1 subtree(s)
+           FormalSystem/Boneyard -> Boneyard
+  class 7  relative links                5 re-based in    3 file(s)
+           76 unchanged, 2 skipped (not a path in this tree), 83 scanned
+
+  audit    bare-form occurrences          241 before,   241 after, in 114 file(s)
+  files changed                           153

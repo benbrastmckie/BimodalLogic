@@ -252,7 +252,21 @@ is wrong and must be resolved, not averaged.
 
 ---
 
-### Phase 4: Full dry run against the measured census — no mutation [NOT STARTED]
+### Phase 4: Full dry run against the measured census — no mutation [COMPLETED]
+
+**Completion note — re-measured census (the carried figures for Phase 7)**: every one of the
+report's hypotheses reproduced against the current tree with no divergence. Harness `--no-build`
+exit 0, zero FAIL. 1 `Boneyard` directory (`./FormalSystem/Boneyard`). 169 archived `.lean`, 56
+archived `.md`, 225 tracked files, 169/169 carrying `#exit`. 0 live importers, 0 `.olean`. C11:
+**539 import lines across 169 files, 8 waived**. 41 external citer files (20 `docs/`, 12
+`FormalSystem/`, 6 `scripts/`, 2 `typst/`, 1 root). 178 archived `import FormalSystem.Boneyard.*`
+lines in 88 files. 9 generated inventory markers naming `dir=FormalSystem/Boneyard…`. 77 external
++ 37 internal bare-form citer files.
+
+Dry-run per-class counts: 178 / 9 / 134 / 0 / 0, one subtree move, 5 links re-based of 83 scanned,
+153 files changed. **Bare-form touch count is exactly 0** (241 occurrences before, 241 after, in
+114 files). `git status` showed no change attributable to this phase. Dry-run output recorded for
+Phase 7's diff.
 
 **Goal**: Prove the tool reproduces the research's measured census exactly, before a single file
 moves. This is the gate that catches the bare-token trap.
