@@ -303,35 +303,42 @@ immediately before editing — Phase 2's edits shift line numbers in this same f
 
 ---
 
-### Phase 4: FormalSystem/README.md counts, frame-class naming and TODO row [NOT STARTED]
+### Phase 4: FormalSystem/README.md counts, frame-class naming and TODO row [COMPLETED]
 
 **Goal**: Bring `FormalSystem/README.md` into agreement with the live `FrameClass` enum and the
 primitive-count convention, and fill the empty `MainResults.lean` inventory description
 (item 8).
 
 **Tasks**:
-- [ ] Layer table (~lines 96-118): replace the `Frame Class` column's `Discrete` with `ZTime` and
+- [x] Layer table (~lines 96-118): replace the `Frame Class` column's `Discrete` with `ZTime` and
       `Dedekind` with `RTime` (rows 6, 7, 9); fix the "Frame classification" paragraph's
       "2 Discrete-only … 2 Dedekind-only. Cumulatively (`Dense ≤ Dedekind`) …" to the live class
-      names and to figures confirmed against `Axiom.minFrameClass`.
-- [ ] Logic Variants section (~lines 158-219): retitle `### TM Base (37 constructor axioms)` to
+      names and to figures confirmed against `Axiom.minFrameClass`. *(completed)*
+- [x] Logic Variants section (~lines 158-219): retitle `### TM Base (37 constructor axioms)` to
       the primitive count; retitle `### TM Discrete` → `### TM ZTime` and `### TM Dedekind` →
       `### TM RTime` with corrected constructor arithmetic; correct their `Additional Axioms`
       bullets so derived mirrors (`prior_SZ`, `prior_S_gap`) are labelled derived rather than
-      listed as primitives.
-- [ ] Replace every citation of a nonexistent declaration in that section —
+      listed as primitives. *(completed)*
+- [x] Replace every citation of a nonexistent declaration in that section —
       `completeness_discrete`, `completeness_dedekind`, `soundness_dedekind` — with the live names
       (`completeness_ztime`, `completeness_rtime`, `soundness_rtime`); confirm each replacement
       exists with `grep -rn` under `FormalSystem/` (excluding `Boneyard/`) before writing it.
       If a live counterpart does not exist, remove the claim rather than inventing a name.
-- [ ] `### Variant Incompatibility` (~lines 215-219) and the `Key Results Proven` table
-      (~line 228, "Discrete Completeness"): same rename pass.
-- [ ] Line ~252: replace `<!-- TODO: add description -->` in the generated inventory row for
+      *(completed: confirmed all three live names exist — `completeness_ztime` in
+      `Metalogic/StrongCompleteness.lean:1120`, `completeness_rtime` at :785,
+      `soundness_rtime` in `Metalogic/Soundness.lean:1579` — before writing them)*
+- [x] `### Variant Incompatibility` (~lines 215-219) and the `Key Results Proven` table
+      (~line 228, "Discrete Completeness"): same rename pass. *(completed)*
+- [x] Line ~252: replace `<!-- TODO: add description -->` in the generated inventory row for
       `MainResults.lean` with a one-line description. Check whether the row sits inside a
       `<!-- BEGIN GENERATED -->` block that a script regenerates — if so, fix the generator's
-      description source rather than the rendered row, and note which was done.
-- [ ] Add a pointer from the layer table to `docs/reference/axiom-reference.md`'s
-      `Two axiom counts` section instead of restating the derivation here.
+      description source rather than the rendered row, and note which was done. *(completed:
+      confirmed via `scripts/readme-inventory.sh`'s deprecation notice and
+      `check-module-invariants.sh --emit-inventory`'s own header comment that the trailing
+      description column is HAND-WRITTEN and survives regeneration — edited the rendered row
+      directly, no generator change needed)*
+- [x] Add a pointer from the layer table to `docs/reference/axiom-reference.md`'s
+      `Two axiom counts` section instead of restating the derivation here. *(completed)*
 
 **Timing**: 1.25 hours
 

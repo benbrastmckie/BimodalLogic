@@ -101,10 +101,10 @@ exactly the paper's primitive axiom schemata.
 | 3b. Additional BX Temporal | 2 | Base | `temp_linearity` (TL), `F_until_equiv` (UT) |
 | 4. Interaction | 1 | Base | MF (`□φ → □Gφ`); TF is derived |
 | 5. Uniformity | 4 | Base | NP, NF, NA, NB (valid on all ordered abelian groups) |
-| 6. Prior | 1 | Discrete | Prior-UZ for discrete well-ordering |
-| 7. Z1 | 1 | Discrete | IsSuccArchimedean characteristic axiom |
+| 6. Prior | 1 | ZTime | Prior-UZ for discrete well-ordering |
+| 7. Z1 | 1 | ZTime | IsSuccArchimedean characteristic axiom |
 | 8. Density | 2 | Dense | `density` (`GGφ → Gφ`) and `dense_indicator` (`¬U(⊤,⊥)`) |
-| 9. Reynolds Dedekind | 2 | Dedekind | `prior_U_gap`, `sep` — definable-gap-freeness for real flow |
+| 9. Reynolds RTime | 2 | RTime | `prior_U_gap`, `sep` — definable-gap-freeness for real flow |
 | **Total** | **29** | | |
 
 **Derived schemata**: every past mirror is obtained from its future primary by the
@@ -113,8 +113,11 @@ linearity mirrors, modal 4 and B, and the pre-paper forms of TL, CN and TS are i
 `Theorems/Combinators.lean`), under the lowerCamelCase form of its former constructor name in the `DerivedAxioms`
 namespace.
 
-**Frame classification**: 23 Base constructors (valid on all linear orders), 2 Discrete-only, 2 Dense-only,
-2 Dedekind-only. Cumulatively (`Dense ≤ Dedekind`): Base 23, Dense 25, Discrete 25, Dedekind 27.
+**Frame classification**: 23 Base constructors (valid on all linear orders), 2 ZTime-only, 2 Dense-only,
+2 RTime-only. Cumulatively (`Dense ≤ RTime`): Base 23, Dense 25, ZTime 25, RTime 27. Counting
+every named schema instead — including the derived past-mirrors — gives 37 / 40 / 39 / 42 by
+class (45 in all); see
+[Two axiom counts](../docs/reference/axiom-reference.md#two-axiom-counts) for the full derivation.
 
 See [ProofSystem/Axioms.lean](ProofSystem/Axioms.lean) for the complete definition.
 
@@ -157,7 +160,7 @@ See BimodalReference Section 2 for formal semantic definitions.
 
 TM logic has four variants based on frame conditions:
 
-### TM Base (37 constructor axioms)
+### TM Base (23 constructor axioms)
 
 The core logic valid on all linear orders. See `FrameClass.Base` in [ProofSystem/Axioms.lean](ProofSystem/Axioms.lean).
 
@@ -172,25 +175,26 @@ Extension requiring densely ordered temporal domains. See `FrameClass.Dense`.
 - **Completeness**: `completeness_dense` in [BXCanonical/Completeness.lean](Metalogic/BXCanonical/Completeness.lean)
 - **Frame**: `DenselyOrdered D` - between any two times exists another
 
-### TM Discrete (Base + 3 discrete constructors)
+### TM ZTime (Base + 2 constructor axioms)
 
-Extension requiring discretely ordered temporal domains. See `FrameClass.Discrete`.
+Extension requiring discretely ordered temporal domains. See `FrameClass.ZTime`.
 
-- **Additional Axioms**: `prior_UZ`, `prior_SZ` (Prior's axioms), `z1` (IsSuccArchimedean)
-- **Completeness**: `completeness_discrete` in [StrongCompleteness.lean](Metalogic/StrongCompleteness.lean)
+- **Additional Axioms**: `prior_UZ`, `z1` (IsSuccArchimedean) — plus the derived past-mirror
+  `prior_SZ` (Prior's dual axiom)
+- **Completeness**: `completeness_ztime` in [StrongCompleteness.lean](Metalogic/StrongCompleteness.lean)
 - **Frame**: `SuccOrder D`, `PredOrder D`, `NoMaxOrder D`, `NoMinOrder D`
 
-### TM Dedekind (Base + 2 Dense + 3 Dedekind constructors)
+### TM RTime (Base + 2 Dense + 2 RTime constructors)
 
-Extension for dense Dedekind-complete temporal domains — the real flow. See `FrameClass.Dedekind`.
-Because `Dense ≤ Dedekind`, a Dedekind derivation admits the two density axioms as well.
+Extension for dense Dedekind-complete temporal domains — the real flow. See `FrameClass.RTime`.
+Because `Dense ≤ RTime`, a RTime derivation admits the two density axioms as well.
 
-- **Additional Axioms**: Reynolds' `prior_U_gap`, `prior_S_gap`, `sep` (definable-gap-freeness),
-  on top of `density` and `dense_indicator`
-- **Soundness**: `soundness_dedekind` in [Soundness.lean](Metalogic/Soundness.lean)
-- **Completeness**: `completeness_dedekind` in [StrongCompleteness.lean](Metalogic/StrongCompleteness.lean)
-- **Binder caveat**: both results are stated against `ValidDedekind`, *not* the density-free
-  `ValidComplete`. `density` and `dense_indicator` are admissible at `.Dedekind` and both are false
+- **Additional Axioms**: Reynolds' `prior_U_gap`, `sep` (definable-gap-freeness) — plus the
+  derived past-mirror `prior_S_gap` — on top of `density` and `dense_indicator`
+- **Soundness**: `soundness_rtime` in [Soundness.lean](Metalogic/Soundness.lean)
+- **Completeness**: `completeness_rtime` in [StrongCompleteness.lean](Metalogic/StrongCompleteness.lean)
+- **Binder caveat**: both results are stated against `ValidRTime`, *not* the density-free
+  `ValidComplete`. `density` and `dense_indicator` are admissible at `.RTime` and both are false
   on ℤ, which is nonetheless conditionally complete.
 - **Frame**: `DenselyOrdered D` plus Dedekind completeness
 
@@ -214,9 +218,9 @@ module docstring of [Conservativity.lean](Metalogic/Conservativity.lean).
 
 ### Variant Incompatibility
 
-Dense and discrete extensions are **incompatible** on any non-degenerate domain. Discrete and
-Dedekind are likewise incomparable, and `Dedekind ≰ Dense` — the order on `FrameClass` places
-`Dedekind` strictly above `Dense` and unrelated to `Discrete`.
+Dense and ZTime extensions are **incompatible** on any non-degenerate domain. ZTime and
+RTime are likewise incomparable, and `RTime ≰ Dense` — the order on `FrameClass` places
+`RTime` strictly above `Dense` and unrelated to `ZTime`.
 
 ## Key Results Proven
 
@@ -225,7 +229,7 @@ Dedekind are likewise incomparable, and `Dedekind ≰ Dense` — the order on `F
 | Soundness | `(Γ ⊢ φ) → (Γ ⊨ φ)` | Proven |
 | Deduction Theorem | `((A :: Γ) ⊢ B) → (Γ ⊢ A → B)` | Proven |
 | Dense Completeness | `valid_dense φ → (⊢ φ)` | Proven |
-| Discrete Completeness | `valid_discrete φ → (⊢ φ)` | Proven |
+| ZTime Completeness | `valid_ztime φ → (⊢ φ)` | Proven |
 | Decidability | `decide φ : DecisionResult φ` | Implemented |
 
 ## Module Structure
@@ -249,7 +253,7 @@ invariant check allowlists it by name (check C8).
 | `ForMathlib.lean` | 29 | Re-export for ForMathlib submodule (Mathlib-shaped extensions intended for upstreaming) |
 | `FormalSystem.lean` | 119 | Library aggregator: imports all submodules for unified access |
 | `Init.lean` | 26 | Library-wide root, modelled on `Mathlib.Init`: the linters and common tactics every module is meant to inherit |
-| `MainResults.lean` | 254 | <!-- TODO: add description --> |
+| `MainResults.lean` | 254 | One page listing the headline soundness/completeness metatheory, with the kernel's own `#print axioms` audit beside each result |
 | `Metalogic.lean` | 267 | Re-export for Metalogic submodule |
 | `ProofSystem.lean` | 93 | Re-export for ProofSystem submodule |
 | `Semantics.lean` | 286 | Re-export for Semantics submodule |
