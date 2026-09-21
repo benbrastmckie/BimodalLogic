@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/634_language_extension_directories_and_probe_tests/reports/01_language-extension-directories-probes.md",
+      "summary": "Phase 5 language-extension merge: a paths-only merge regresses the namespace audit (24 -> 23 unrelated, 14 files newly unrelated); recommends renaming the 16 Semantics/{X}Language namespaces to FormalSystem.{X}Language (measured: 0 collisions, 0 ambiguities, 0 external FQN citations, 25 importers), settles the Chronicle files, confirms all 9 test-root probes move now, and corrects the claim that the 21 broken README links are in scope."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789955215_a3ad68_634",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "task_number": 634,
+  "phase": "research",
+  "dispatch_seq": 13,
+  "status": "researched",
+  "phases_completed": 0,
+  "phases_total": 0,
+  "session_id": "sess_1789955215_a3ad68_634",
+  "agent_type": "lean-research-agent",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/634_language_extension_directories_and_probe_tests/reports/01_language-extension-directories-probes.md",
+      "summary": "Research report for the Phase 5 language-extension directory merge and test-root probe relocation."
+    }
+  ],
+  "next_steps": [
+    "Plan must widen task 634 file_scope: the six XLanguage sibling aggregators, FormalSystem/{Syntax,Semantics,FormalSystem}.lean, the other 7 probe files, Tests/BimodalTest.lean, four scripts/ files, PUBLICATION_REFACTOR.md and ORGANISATION.md.",
+    "Plan must add a namespace-rename phase for the 16 Semantics/{X}Language files plus MinusLanguage/Soundness.lean; a paths-only merge cannot meet the acceptance criterion.",
+    "Plan must mark the scripted-move phase Commit Mode: atomic-batch (check-metalogic-cycles.sh is red between the git mv and the allowlist edit).",
+    "Plan must prohibit move-modules.py --namespace-map and require file-granular map rows."
+  ],
+  "notes": "Task 429 verified not_started with a clean Tests/ tree, so all 9 test-root files move in this pass and no follow-up task is needed. Operational note 3 is corrected: none of readme-lint's 21 broken ../Boneyard/ links sit in a language-extension README. readme-lint.sh and typst-sync-check.sh are pre-existing red and stay out of scope."
+}
