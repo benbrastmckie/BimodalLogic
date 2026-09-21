@@ -83,6 +83,8 @@ import FormalSystem.Metalogic.Conservativity.Star.StarPasting
 import FormalSystem.Metalogic.Conservativity.Star.StarSoundness
 import FormalSystem.Metalogic.Conservativity.TMCompletenessReduction
 import FormalSystem.Metalogic.Conservativity.Z1Countermodel
+import FormalSystem.Metalogic.ConvexConsequence
+import FormalSystem.Metalogic.ConvexConsequence.Separations
 import FormalSystem.Metalogic.Core
 import FormalSystem.Metalogic.Core.MCSProperties
 import FormalSystem.Metalogic.Core.MaximalConsistent

@@ -232,25 +232,25 @@ of the box.
 
 ---
 
-### Phase 3: Fixtures and the C1 / C3 / C4 separations [NOT STARTED]
+### Phase 3: Fixtures and the C1 / C3 / C4 separations [COMPLETED]
 
 **Goal**: Create the `Metalogic/ConvexConsequence/` cluster and land the separations, including
 the strict containment of C3 in C4.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/ConvexConsequence/Separations.lean` in namespace
+- [x] Create `FormalSystem/Metalogic/ConvexConsequence/Separations.lean` in namespace
       `FormalSystem.Metalogic.ConvexConsequence`, importing `Semantics.ConvexTruth`,
       `Mathlib.Algebra.Order.Group.Int` and `Mathlib.Data.Int.SuccPred`.
-- [ ] Fixtures: `NF`, the one-point history `bdd` at 0, the two-point history `bdd01` on 0 and 1,
+- [x] Fixtures: `NF`, the one-point history `bdd` at 0, the two-point history `bdd01` on 0 and 1,
       and `totalNF`, each with membership, interval and convexity lemmas. Discharge
       `respects_task` with `(FrameOver.natFrame_rel_iff _ _ _).mpr (Or.inr rfl)`.
-- [ ] Prove `valid_C1_someFuture_top` (stated with the library's frame-level validity),
+- [x] Prove `valid_C1_someFuture_top` (stated with the library's frame-level validity),
       `refute_C3_someFuture_top`, `refute_C3_somePast_top`, `refute_C4_someFuture_top`.
-- [ ] Define `lastPoint`; prove `validC4_lastPoint` and `refute_C3_lastPoint` (both port from the
+- [x] Define `lastPoint`; prove `validC4_lastPoint` and `refute_C3_lastPoint` (both port from the
       research probe).
-- [ ] Create the sibling aggregator `FormalSystem/Metalogic/ConvexConsequence.lean` and a
-      directory `README.md`; add the import to `FormalSystem/Metalogic.lean`; regenerate the root.
-- [ ] Build the new module, the aggregator, and `FormalSystem.Metalogic`.
+- [x] Create the sibling aggregator `FormalSystem/Metalogic/ConvexConsequence.lean` and a
+      directory `README.md`; add the import to `FormalSystem/Metalogic.lean`; regenerate the root. *(deviation: altered — the README rows Phase 10 lists for `Semantics/README.md` and `Metalogic/README.md`, and the generated inventory blocks, were brought forward to this phase: the pre-phase invariant reading failed `INV` on the missing `ConvexTruth.lean` row, and the per-phase gate has to stay green. No `.lean` content is affected.)*
+- [x] Build the new module, the aggregator, and `FormalSystem.Metalogic`.
 
 **Timing**: 1.5 hours
 
