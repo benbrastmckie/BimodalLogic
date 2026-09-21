@@ -1,14 +1,22 @@
 {
-  "status": "researched",
-  "started_at": "2026-09-18T19:19:03Z",
+  "status": "planned",
   "artifacts": [
-    {"type": "report", "path": "specs/568_c3_c4_consequence_relations_as_library_definitions/reports/01_c3-c4-library-definitions.md", "summary": "C3/C4 promotion research: API drift since task 553 (PartialHistory+IsConvex, WorldHistory-indexed TruthAt, 29-constructor Axiom), all four open gaps closed as SURVIVES (NA any frame, Z1 ZTime, Prior-U Complete, Sep RTime), new C3 strictly-contained-in C4 separation, module layout and 5-phase recommendation."}
+    {
+      "type": "plan",
+      "path": "specs/568_c3_c4_consequence_relations_as_library_definitions/plans/01_c3-c4-library-definitions.md",
+      "summary": "10-phase, 18.5-hour plan promoting C3/C4 into the library: ConvexTruth definitions and germ theorems, shift invariance, separations, the 29-constructor survival table with six failures and all gap closures, past mirrors, the named cut-back box range, and 50 pinned Lean challenge statements."
+    }
   ],
+  "next_steps": "Run /implement 568 to execute the plan. Take the Lean challenge snapshot under LC_ALL=C: in the ambient en_US.UTF-8 locale lean-challenge-snapshot.sh exits 71 on this plan with a spurious identifier mismatch (locale sort-order defect in the tool, not a plan defect).",
+  "dispatch_seq": 12,
+  "memory_candidates": [],
   "metadata": {
-    "session_id": "sess_1789758953_24f7fc_568",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1790018097_6c1579_568",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "supporting_files": ["specs/568_c3_c4_consequence_relations_as_library_definitions/probes/01_gap-closures.lean"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 10,
+    "estimated_hours": 18.5,
+    "dependency_waves": [[1], [2, 3], [4, 6], [5], [7, 9], [8], [10]]
   }
 }

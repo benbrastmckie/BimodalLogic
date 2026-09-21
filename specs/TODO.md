@@ -87,14 +87,14 @@ next_project_number: 650
 ### Metalogic
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
-568 [PLANNING] — Promote the alternative consequence relations into the...
+568 [PLANNED] — Promote the alternative consequence relations into the...
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
   └─ 646 [NOT STARTED] — Machine-check the two cheap MF-correspondence results, R1 and...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
 
-647 [RESEARCHED] — Extend typst/chapters/ax-lean-appendix.typ (the back-matter...
+647 [PLANNING] — Extend typst/chapters/ax-lean-appendix.typ (the back-matter...
   └─ 648 [NOT STARTED] — Fix the defects found in typst/BimodalReference.typ and its...
     └─ 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
 
@@ -163,7 +163,7 @@ ACCEPTANCE. typst compile --root .. BimodalReference.typ with zero errors, and z
 ---
 
 ### 647. Extend lean appendix semantics metalogic coverage
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: reference-book
 - **Dependencies**: None
@@ -546,11 +546,12 @@ LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear
 ---
 
 ### 568. C3 c4 consequence relations as library definitions
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 625
 - **Research**: [568_c3_c4_consequence_relations_as_library_definitions/reports/01_c3-c4-library-definitions.md]
+- **Plan**: [568_c3_c4_consequence_relations_as_library_definitions/plans/01_c3-c4-library-definitions.md]
 
 **Description**: Promote the alternative consequence relations into the library, from `specs/553_decide_convex_history_layer_collapse/probes/02_alternative-consequence.lean` and `specs/553_decide_convex_history_layer_collapse/probes/03_axiom-survival.lean`. This is the task the author's own reframing most directly asks for: it is what makes C3 and C4 things this repository HAS rather than things a probe file mentions.
 

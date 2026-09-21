@@ -1,13 +1,17 @@
 {
-  "status": "researched",
-  "dispatch_seq": 5,
-  "phase": "research",
-  "summary": "Research complete. Gap proofs for discrete_propagate_bwd, z1, prior_U_gap, sep all machine-checked sorry-free via LSP (no lake build); C3 != C4 separated by F-top -> F G-bot; probes must be ported to PartialHistory/IsConvex and the 29-constructor Axiom set.",
+  "status": "planned",
+  "dispatch_seq": 12,
+  "phase": "plan",
+  "summary": "Plan written: 10 phases, 18.5 hours, 7 waves. 50 Lean challenge statements pinned and elaborated against the live tree with sorry bodies (well-formedness only, not truth). The research summary's claim that every row survives is kept as a hypothesis for the 11 rows that were only ever audited by argument and for prior_S_gap, which was never checked; those phases carry an escalate-if-false rule. Known tool defect: lean-challenge-snapshot.sh exits 71 on this plan in the ambient en_US.UTF-8 locale (spurious mismatch from locale-dependent sort order) and exits 0 under LC_ALL=C.",
   "artifacts": [
-    {"type": "report", "path": "specs/568_c3_c4_consequence_relations_as_library_definitions/reports/01_c3-c4-library-definitions.md", "summary": "C3/C4 library-promotion research report with verified gap closures and phasing."}
+    {
+      "type": "plan",
+      "path": "specs/568_c3_c4_consequence_relations_as_library_definitions/plans/01_c3-c4-library-definitions.md",
+      "summary": "10-phase implementation plan with 50 pinned Lean challenge statements."
+    }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 10,
   "blockers": [],
-  "next_action_hint": "plan"
+  "next_action_hint": "implement; run the challenge snapshot under LC_ALL=C"
 }
