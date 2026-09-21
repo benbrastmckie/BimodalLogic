@@ -1,7 +1,7 @@
 # Implementation Plan: Repair drifted L+ manuscript citations and pin `def:BLstar-semantics`
 
 - **Task**: 626 - Repair drifted manuscript citations in the L+ files and pin def:BLstar-semantics.
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/626_repair_lplus_manuscript_citations_pin_blstar_semantics/reports/01_repair-lplus-citations-pin-blstar.md
@@ -157,26 +157,26 @@ Phases within the same wave can execute in parallel. Phases 1 and 3 touch the sa
 
 ---
 
-### Phase 1: Repair citations in `Syntax/PlusLanguage/` [NOT STARTED]
+### Phase 1: Repair citations in `Syntax/PlusLanguage/` [COMPLETED]
 
 **Goal**: No bare manuscript line number remains as a citation in
 `FormalSystem/Syntax/PlusLanguage/Axioms.lean` or `Formula.lean`.
 
 **Tasks**:
-- [ ] Re-run the sweep over this directory to get the live site list, not the report's table:
-      `grep -rn "paper line\|paper lines\|line [0-9]\{3,\}\|footnote, line\|(line [0-9]\|lines [0-9]" FormalSystem/Syntax/PlusLanguage/`
-- [ ] Re-read each file immediately before editing it (concurrent-sibling discipline).
-- [ ] Apply the Citation Replacement Vocabulary table to every hit in `Axioms.lean` — the
+- [x] Re-run the sweep over this directory to get the live site list, not the report's table:
+      `grep -rn "paper line\|paper lines\|line [0-9]\{3,\}\|footnote, line\|(line [0-9]\|lines [0-9]" FormalSystem/Syntax/PlusLanguage/` *(completed: 17 hits, matching the Scope Hypothesis exactly — 9 in Axioms.lean, 8 in Formula.lean)*
+- [x] Re-read each file immediately before editing it (concurrent-sibling discipline). *(completed)*
+- [x] Apply the Citation Replacement Vocabulary table to every hit in `Axioms.lean` — the
       docstring-summary lines near the top of the module, the module-header `## References` line,
-      and the per-constructor docstrings for ST, S4, S5, MS and AS.
-- [ ] Apply the same table to every hit in `Formula.lean` — the module summary, the
+      and the per-constructor docstrings for ST, S4, S5, MS and AS. *(completed)*
+- [x] Apply the same table to every hit in `Formula.lean` — the module summary, the
       `## References` line, the `### The ⊡-specific operators` section banner, and the per-operator
-      docstrings for `⟐`, `Will`, `will`, `Could`, `could`.
-- [ ] For each `sub:` label written, confirm the literal `\label{sub:...}` exists in
-      `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`.
-- [ ] Confirm by `git diff` that every changed hunk lies inside a `/-- -/`, `/-! -/`, or `--`
-      comment region — no declaration, statement, or proof line is touched.
-- [ ] Re-grep this directory and confirm zero remaining hits.
+      docstrings for `⟐`, `Will`, `will`, `Could`, `could`. *(completed)*
+- [x] For each `sub:` label written, confirm the literal `\label{sub:...}` exists in
+      `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`. *(completed: confirmed `\label{sub:RestrictedModalities}` at manuscript line 1144)*
+- [x] Confirm by `git diff` that every changed hunk lies inside a `/-- -/`, `/-! -/`, or `--`
+      comment region — no declaration, statement, or proof line is touched. *(completed)*
+- [x] Re-grep this directory and confirm zero remaining hits. *(completed)*
 
 **Timing**: 45 minutes
 
@@ -202,28 +202,28 @@ in the phase's commit message or progress note rather than silently absorbing it
 
 ---
 
-### Phase 2: Repair citations in `Semantics/PlusLanguage/` [NOT STARTED]
+### Phase 2: Repair citations in `Semantics/PlusLanguage/` [COMPLETED]
 
 **Goal**: No bare manuscript line number remains as a citation in
 `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean`, `PlusNonValidities.lean`, or
 `PlusStateLocal.lean`.
 
 **Tasks**:
-- [ ] Re-run the sweep over this directory to get the live site list:
-      `grep -rn "paper line\|paper lines\|line [0-9]\{3,\}\|footnote, line\|(line [0-9]\|lines [0-9]" FormalSystem/Semantics/PlusLanguage/`
-- [ ] Re-read each file immediately before editing it.
-- [ ] `PlusTruth.lean`: apply the vocabulary table to the module summary, the `## References`
+- [x] Re-run the sweep over this directory to get the live site list:
+      `grep -rn "paper line\|paper lines\|line [0-9]\{3,\}\|footnote, line\|(line [0-9]\|lines [0-9]" FormalSystem/Semantics/PlusLanguage/` *(completed: 14 hits, matching the Scope Hypothesis exactly — 8 in PlusTruth.lean, 2 in PlusNonValidities.lean, 4 in PlusStateLocal.lean)*
+- [x] Re-read each file immediately before editing it. *(completed)*
+- [x] `PlusTruth.lean`: apply the vocabulary table to the module summary, the `## References`
       line, the `⟐` docstring, the `### The definitional validities of ⊡` banner, and the
-      `□φ → ⊡φ` docstring.
-- [ ] `PlusNonValidities.lean`: replace both *Determined* line citations by the named-schema
+      `□φ → ⊡φ` docstring. *(completed)*
+- [x] `PlusNonValidities.lean`: replace both *Determined* line citations by the named-schema
       form. Note the second site already carries a companion `app:deterministic` label citation —
-      leave that label intact and replace only the line number beside it.
-- [ ] `PlusStateLocal.lean`: replace all four atom-stability footnote citations. The site that
+      leave that label intact and replace only the line number beside it. *(completed)*
+- [x] `PlusStateLocal.lean`: replace all four atom-stability footnote citations. The site that
       already reads "`def:BLstar-semantics`'s footnote, line 1119" needs only the line number
-      dropped in favour of the quotable phrase, since the anchor is already present.
-- [ ] For each `sub:` label written, confirm the literal `\label{sub:...}` in the manuscript.
-- [ ] Confirm by `git diff` that every changed hunk lies inside a comment region.
-- [ ] Re-grep this directory and confirm zero remaining hits.
+      dropped in favour of the quotable phrase, since the anchor is already present. *(completed)*
+- [x] For each `sub:` label written, confirm the literal `\label{sub:...}` in the manuscript. *(completed: confirmed `sub:RestrictedModalities` and `sub:OpenFuture`)*
+- [x] Confirm by `git diff` that every changed hunk lies inside a comment region. *(completed)*
+- [x] Re-grep this directory and confirm zero remaining hits. *(completed)*
 
 **Timing**: 45 minutes
 

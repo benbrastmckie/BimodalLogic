@@ -19,7 +19,7 @@ paper's `($\Stability$)` clause, `def:BLstar-semantics`:
 M,τ,x ⊨ ⊡φ   iff   M,σ,x ⊨ φ for all σ ∈ ⟨τ⟩_x,
 ```
 
-where `⟨τ⟩_x := {σ ∈ H_F | σ(x) = τ(x)}` (line 1108) is the set of possible worlds that share
+where `⟨τ⟩_x := {σ ∈ H_F | σ(x) = τ(x)}` is the set of possible worlds that share
 `τ`'s world state at `x`. Here `⟨τ⟩_x` is rendered on the nose: `σ : WorldHistory F` with the
 state equation `τ.state x = σ.state x`.
 
@@ -30,8 +30,8 @@ state equation `τ.state x = σ.state x`.
 ## Main Results
 
 - The `PlusTruth.*_iff` clause lemmas, mirroring `MinusTruth.*`
-- The definitional validities of `⊡` (paper footnote, line 1118: "the monomodal logic of `⊡`
-  is S5"; line 1119: `φ → ⊡φ` for non-temporal `φ`): `stab_of_box` (`□φ → ⊡φ`), `of_stab`
+- The definitional validities of `⊡` (the footnote to the Stability clause: "the monomodal logic
+  of `⊡` is S5"; and `φ → ⊡φ` for non-temporal `φ`): `stab_of_box` (`□φ → ⊡φ`), `of_stab`
   (T), `stab_four` (4), `stab_five` (5). The atom-level `p → ⊡p` of the same footnote is **not**
   stated here: it is the `stateLocal_atom` instance of `stab_of_stateLocal`
   (`Semantics/PlusLanguage/PlusStateLocal.lean`), which proves `φ → ⊡φ` for every formula of the
@@ -52,7 +52,8 @@ file); proofs are unchanged.
 
 ## References
 
-* JPL paper `possible_worlds.tex` lines 1108, 1114, 1118-1119, 1121
+* JPL paper `possible_worlds.tex`: `def:BLstar-semantics` (the `⟨τ⟩_x` definition, the Stability
+  clause, and its footnote) and `sub:RestrictedModalities` (the dual `⟐` and the defined modals)
 * `FormalSystem/Semantics/Truth.lean` — the six L clauses being mirrored
 * `FormalSystem/Semantics/MinusLanguage/MinusTruth.lean` — the sibling native recursion for the base
   language
@@ -77,8 +78,7 @@ Truth of an L⁺ formula at a model, world history and time.
 
 The six L clauses are `TruthAt`'s verbatim (`Semantics/Truth.lean`). The `stab` clause is the
 paper's `($\Stability$)` clause of `def:BLstar-semantics`: `⊡φ` holds at `(τ, t)` iff `φ` holds at
-`(σ, t)` for every world history `σ` with `τ.state t = σ.state t` — i.e. every `σ ∈ ⟨τ⟩_t`
-(paper line 1108).
+`(σ, t)` for every world history `σ` with `τ.state t = σ.state t` — i.e. every `σ ∈ ⟨τ⟩_t`.
 -/
 def PlusTruthAt (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) : PlusFormula → Prop
   | .atom p => M.valuation (τ.state t) p
@@ -160,7 +160,7 @@ theorem or_iff (φ ψ : PlusFormula) :
     PlusTruthAt M τ t (φ.or ψ) ↔ PlusTruthAt M τ t φ ∨ PlusTruthAt M τ t ψ :=
   TruthClauses.or_iff (L := PlusFormula) M τ t PUnit.unit φ ψ
 
-/-- `⟐φ` (paper line 1121): some world history in `⟨τ⟩_t` satisfies `φ`. -/
+/-- `⟐φ` (`sub:RestrictedModalities`): some world history in `⟨τ⟩_t` satisfies `φ`. -/
 theorem dstab_iff (φ : PlusFormula) :
     PlusTruthAt M τ t (dstab φ) ↔
       ∃ σ : WorldHistory F, τ.state t = σ.state t ∧ PlusTruthAt M σ t φ :=
@@ -190,9 +190,9 @@ end PlusTruth
 
 open PlusTruth
 
-/-! ## The definitional validities of `⊡` (paper lines 1118-1119) -/
+/-! ## The definitional validities of `⊡` (the footnote to the Stability clause) -/
 
-/-- **`□φ → ⊡φ`**: `⟨τ⟩_x ⊆ H_F` (paper line 1108). -/
+/-- **`□φ → ⊡φ`**: `⟨τ⟩_x ⊆ H_F` (`def:BLstar-semantics`). -/
 theorem stab_of_box (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ : PlusFormula)
     (h : PlusTruthAt M τ t (.box φ)) : PlusTruthAt M τ t (.stab φ) :=
   fun σ _ => h σ

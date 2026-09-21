@@ -1,0 +1,17 @@
+{
+  "phase": 2,
+  "phase_name": "Repair citations in Semantics/PlusLanguage/",
+  "started_at": "2026-09-21T02:10:00Z",
+  "last_updated": "2026-09-21T02:25:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-run sweep grep over Semantics/PlusLanguage/ for live site list", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Apply vocabulary table to PlusTruth.lean", "status": "done", "files_touched": ["FormalSystem/Semantics/PlusLanguage/PlusTruth.lean"]},
+    {"id": 3, "description": "Apply vocabulary table to PlusNonValidities.lean", "status": "done", "files_touched": ["FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean"]},
+    {"id": 4, "description": "Apply vocabulary table to PlusStateLocal.lean", "status": "done", "files_touched": ["FormalSystem/Semantics/PlusLanguage/PlusStateLocal.lean"]},
+    {"id": 5, "description": "Verify sub: labels, git diff comment-only, re-grep zero hits, scoped build", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

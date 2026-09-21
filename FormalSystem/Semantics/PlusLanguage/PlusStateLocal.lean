@@ -120,7 +120,8 @@ here.
 ## References
 
 * JPL paper `def:BLstar-semantics` — the truth clauses being classified; the atom-level
-  `p → ⊡p` of its footnote (line 1119) is the `stateLocal_atom` instance of `stab_of_stateLocal`
+  `p → ⊡p` of its footnote (the footnote to the Stability clause) is the `stateLocal_atom`
+  instance of `stab_of_stateLocal`
 * `FormalSystem/Semantics/PlusLanguage/PlusTruth.lean` — `PlusTruthAt`, `stab_congr_state`,
   `stab_state_only`
 * `FormalSystem/Semantics/StarLanguage/StarStateLocal.lean` — the L⋆ twin this module mirrors arm
@@ -358,7 +359,7 @@ Left to right is `isPlusStateLocal_of_stateLocal`: every `σ ∈ ⟨τ⟩ₜ` ag
 Right to left instantiates the `⊡` clause at `τ` itself, via `rfl`.
 
 Paper: — (the formalization's own; the nearest paper-anchored statement is the atom-level
-`p → ⊡p` of `def:BLstar-semantics`'s footnote, line 1119, which this strictly extends)
+`p → ⊡p` of `def:BLstar-semantics`'s footnote, which this strictly extends)
 -/
 theorem plusStateLocal_stab_iff {F : TaskFrame} {φ : PlusFormula} (hφ : φ.StateLocal)
     (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) :
@@ -377,8 +378,8 @@ that lemma says `⊡φ` depends on the world state alone, this one says a formul
 on the world state alone is `⊡`-stable.
 
 Paper: — (the formalization's own: the manuscript states no fragment-level `φ ↔ ⊡φ` for L⁺; the
-nearest paper-anchored statement is the atom-level `p → ⊡p` of line 1119, which this strictly
-extends)
+nearest paper-anchored statement is the atom-level `p → ⊡p` of the footnote to the Stability
+clause, which this strictly extends)
 -/
 theorem plusStateLocal_plusValid_iff_stab {φ : PlusFormula} (hφ : φ.StateLocal) :
     PlusValid (PlusFormula.iff φ (.stab φ)) := by
@@ -399,7 +400,7 @@ seven-constructor recursion admits — every Boolean combination of atoms, `□`
 instance in one application, which is how `Metalogic/Conservativity/Plus/AxiomValidity.lean`
 discharges the `PlusAxiom.atom_stab` arm.
 
-Paper: — (the formalization's own; the atom instance is the footnote at line 1119)
+Paper: — (the formalization's own; the atom instance is the footnote to the Stability clause)
 -/
 theorem stab_of_stateLocal {F : TaskFrame} {φ : PlusFormula} (hφ : φ.StateLocal)
     (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)

@@ -22,8 +22,8 @@ true at world state `0` and nowhere else.
   even for atoms
 * `refute_stab_allFuture_past` — Refuted schema: `⊡GPp → G⊡Pp`; What it shows: GS
   (`stab_allFuture_valid`) genuinely needs its pure-future side condition
-* `refute_determined` — Refuted schema: `Fp → ⊡Fp`; What it shows: *Determined* (paper line 1426) is
-  refuted over a non-deterministic frame
+* `refute_determined` — Refuted schema: `Fp → ⊡Fp`; What it shows: the manuscript's *Determined*
+  schema (subsection *Open Future*, `sub:OpenFuture`) is refuted over a non-deterministic frame
 * `refute_somePast_stab` — Refuted schema: `P⊡p → ⊡Pp`; What it shows: `⟨τ⟩_t` is not closed towards
   the past
 
@@ -49,8 +49,8 @@ Transcription of Part D of the compiled stability-modal probes recorded with the
 
 ## References
 
-* JPL paper line 1426 (*Determined*), `app:deterministic` (whose second half is the
-  non-deterministic refutation)
+* JPL paper `possible_worlds.tex`, subsection *Open Future* (`sub:OpenFuture`) — the *Determined*
+  schema; `app:deterministic` (whose second half is the non-deterministic refutation)
 * `FormalSystem/Semantics/TaskFrame.lean` — `natFrame`
 
 ## Tags
