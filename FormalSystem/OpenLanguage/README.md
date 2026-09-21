@@ -34,6 +34,7 @@ transferred to `⊡` by mistake.
 |------|------:|-------------|
 | `Formula.lean` | 302 | `OpenFormula`, the derived operators (with `PlusFormula`'s right-hand sides), the duals `dofut` and `dopast`, `reflectTime` with `reflect_time_involution` and the `reflect_time_*` push-through lemmas, and the embedding `ofPlus` with `ofPlus_injective`, `ofPlus_reflectTime` and its `rfl` commutation pins |
 | `OpenClasses.lean` | 165 | The three history classes `stabClass`, `openFutureClass`, `openPastClass` (the stability, open-future and open-past classes of a world at a time); `sameState_equivalence`, `agreeUpTo_equivalence`, `agreeFrom_equivalence`; the inclusions, `openFutureClass_inter_openPastClass`, `openFutureClass_anti`, `openPastClass_mono`, and `paste_mem_openFutureClass_inter_openPastClass` |
+| `OpenTruth.lean` | 288 | `OpenTruthAt` — the nine-clause truth recursion, the last two clauses the manuscript's for the open-future and open-past operators; the `TruthEnv` and `StabClauses` instances; the `OpenTruth.*` clause lemmas (`ofut_iff`, `opast_iff`, `dofut_iff`, `dopast_iff`); `openTruthAt_ofPlus`; pointwise S5 (`ofut_k`, `of_ofut`, `ofut_four`, `ofut_five` and the `opast` mirrors) and the ordering `stab_of_box`, `ofut_of_stab`, `opast_of_stab` |
 <!-- END GENERATED -->
 
 The sibling aggregator is `FormalSystem/OpenLanguage.lean`. The library root, the repository-root
@@ -48,6 +49,7 @@ exclusion. Anchors are cited by `\label` or by a quotable phrase, never by line 
 | Paper anchor | Claim | Lean |
 |---|---|---|
 | `sub:RestrictedModalities`, the open-future and open-past operators | two primitive unary operators beside `⊡`, with duals | `OpenFormula.ofut`, `OpenFormula.opast`, `dofut`, `dopast` (`Formula.lean`); `reflectTime` exchanges the two |
+| `sub:RestrictedModalities`, the clauses for the open-future and open-past operators | `M,τ,x ⊨ ▷φ` iff `M,σ,x ⊨ φ` for all `σ` in the open-future class of `τ` at `x`; likewise `◁` over the open-past class | the `ofut` and `opast` clauses of `OpenTruthAt`, with `OpenTruth.ofut_iff` / `OpenTruth.opast_iff` (`OpenTruth.lean`) |
 | `def:BLstar-semantics` (`⟨τ⟩_x`) | `⟨τ⟩_x := {σ ∈ H_F \| σ(x) = τ(x)}`, "an equivalence class under the relation `σ ∼_x τ`" | `stabClass`, `sameState_equivalence` (`OpenClasses.lean`) |
 | `sub:RestrictedModalities`, item *Open Futures* | `\|τ⟩_x := {σ ∈ H_F \| σ(y) = τ(y) for all y ≤ x}` | `openFutureClass`, `agreeUpTo_equivalence` (`OpenClasses.lean`) |
 | `sub:RestrictedModalities`, item *Open Pasts* | `⟨τ\|_x := {σ ∈ H_F \| σ(y) = τ(y) for all y ≥ x}` | `openPastClass`, `agreeFrom_equivalence` (`OpenClasses.lean`) |

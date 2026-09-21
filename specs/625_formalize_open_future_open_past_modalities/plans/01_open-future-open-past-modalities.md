@@ -303,31 +303,31 @@ other hard-coded tuple of the three directory names found there is added to this
 
 ---
 
-### Phase 3: The truth recursion [NOT STARTED]
+### Phase 3: The truth recursion [COMPLETED]
 
 **Goal**: Deliverable (2)'s truth clauses, the clause-layer instances, truth-level conservativity
 over L⁺, and the pointwise S5 and ordering facts.
 
 **Tasks**:
-- [ ] Create `FormalSystem/OpenLanguage/OpenTruth.lean` importing `FormalSystem.Semantics.Truth`,
+- [x] Create `FormalSystem/OpenLanguage/OpenTruth.lean` importing `FormalSystem.Semantics.Truth`,
   `FormalSystem.Semantics.TruthClauses`, `FormalSystem.OpenLanguage.Formula`,
   `FormalSystem.OpenLanguage.OpenClasses` (which brings `PlusLanguage.PlusPasting`). Define `OpenTruthAt` with the nine clauses of the
   challenge preamble: seven verbatim from `PlusTruthAt`, plus
   `.ofut φ => ∀ σ, AgreeUpTo τ σ t → OpenTruthAt M σ t φ` and
   `.opast φ => ∀ σ, AgreeFrom τ σ t → OpenTruthAt M σ t φ`. The docstring quotes the manuscript's
   two clauses by phrase and names `|τ⟩_x` / `⟨τ|_x`.
-- [ ] `instance : TruthEnv OpenFormula` and `instance : StabClauses OpenFormula`, every clause field
+- [x] `instance : TruthEnv OpenFormula` and `instance : StabClauses OpenFormula`, every clause field
   `Iff.rfl` or `fun h => h`, mirroring `PlusTruth.lean`.
-- [ ] `namespace OpenTruth`: `atom_iff`, `ofut_iff`, `opast_iff` (`Iff.rfl`), `dofut_iff`,
+- [x] `namespace OpenTruth`: `atom_iff`, `ofut_iff`, `opast_iff` (`Iff.rfl`), `dofut_iff`,
   `dopast_iff` (the `dstab_iff` argument), and one-line re-exports of the inherited lemmas the later
   phases use (`somePast_iff`, `someFuture_iff`, `dstab_iff`, `stab_iff`).
-- [ ] `openTruthAt_ofPlus` by `induction φ generalizing τ t`, seven `Iff.rfl`-shaped cases, the
+- [x] `openTruthAt_ofPlus` by `induction φ generalizing τ t`, seven `Iff.rfl`-shaped cases, the
   `plusTruthAt_ofFormula` pattern.
-- [ ] Pointwise modal facts: `of_ofut`, `ofut_four`, `ofut_five`, `ofut_k`, the four `opast`
+- [x] Pointwise modal facts: `of_ofut`, `ofut_four`, `ofut_five`, `ofut_k`, the four `opast`
   mirrors, and the ordering `stab_of_box`, `ofut_of_stab`, `opast_of_stab`. Each is two to four
   lines from the `refl` / `symm` / `trans` fields of `agreeUpTo_equivalence` and
   `agreeFrom_equivalence`, which is why this module imports `OpenClasses`.
-- [ ] Add `"OpenTruth": 1`, the aggregator import, the README row; regenerate the root.
+- [x] Add `"OpenTruth": 1`, the aggregator import, the README row; regenerate the root.
 
 **Timing**: 1.5 hours
 

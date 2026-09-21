@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.OpenLanguage.Formula
 import FormalSystem.OpenLanguage.OpenClasses
+import FormalSystem.OpenLanguage.OpenTruth
 
 /-!
 # `FormalSystem.OpenLanguage` — the language L^▷: L⁺ plus the open-future and open-past modals
@@ -42,6 +43,9 @@ library theorems rather than leaving it to be rediscovered.
 - `OpenLanguage.OpenClasses` — the three history classes `⟨τ⟩_x`, `|τ⟩_x`, `⟨τ|_x`, each the
   equivalence class of an explicit relation, with the manuscript's inclusions, intersection and
   monotonicity
+- `OpenLanguage.OpenTruth` — `OpenTruthAt`, the truth recursion whose last two clauses are the
+  manuscript's clauses for `▷` and `◁`; truth-level conservativity over L⁺
+  (`openTruthAt_ofPlus`); pointwise S5 for each new operator and the strength ordering
 
 ## Design decisions
 
