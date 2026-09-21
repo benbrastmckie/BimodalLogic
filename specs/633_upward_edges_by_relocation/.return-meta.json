@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/633_upward_edges_by_relocation/reports/01_upward-edges-relocation.md",
+      "summary": "Measured 70 upward import lines at HEAD (15 into Automation, 11 of them attribute edges); simulated all four relocations and found the residual is exactly 7 AxiomDischarge lines owned by a later phase; recommends layer assignment Theorems(2) -> Metalogic(3)+Automation(3), an allowlist-equality layer assertion, moving Tactics/Meta.lean alongside PropDecide, and striking the SuccessPatterns cut as a no-op."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789955215_a3ad68_633",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "task_number": 633,
+  "phase": "research",
+  "status": "researched",
+  "dispatch_seq": 10,
+  "phases_completed": 0,
+  "phases_total": 0,
+  "session_id": "sess_1789955215_a3ad68_633",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/633_upward_edges_by_relocation/reports/01_upward-edges-relocation.md",
+      "summary": "Research report: live re-measurement of the upward-edge set, a simulation of all four relocations, the corrected layer assignment, and the five-phase dependency-first sequence with every gate and generated artifact that observes the moved paths."
+    }
+  ],
+  "next_phase": "plan",
+  "notes": "Task description reconciled against HEAD b1ab4bf3a. Three corrections the plan must carry: (1) the 'cut ProofSearch.Core -> SuccessPatterns' item is a no-op per the BimodalTools-split decision and must be struck in docs/development/PUBLICATION_REFACTOR.md rather than implemented; (2) Automation/Tactics/Meta.lean must move with PropDecide (PropDecide calls extractDerivationGoal and isNilContext from it), recommended target FormalSystem/Tactic/Meta.lean; (3) the layer-order assertion must be an allowlist equality over 7 recorded Syntax/MinusLanguage/AxiomDischarge.lean lines, which a later phase empties, not a zero-upward-edges check. Pre-existing red checks confirmed still red and not attributable to this task: readme-lint.sh (21 broken ../Boneyard/ links) and typst-sync-check.sh (sorry-total committed=4 live=0). check-module-invariants.sh --no-build and check-metalogic-cycles.sh are green at HEAD."
+}
