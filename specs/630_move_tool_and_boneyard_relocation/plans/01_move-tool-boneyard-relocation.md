@@ -1,7 +1,7 @@
 # Implementation Plan: Move tool and Boneyard relocation
 
 - **Task**: 630 - Move tool and Boneyard relocation
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 11 hours
 - **Dependencies**: None blocking. No edge to task 631 in either direction (ADR-010 decision 4 disclaims dependence on the frozen-LaTeX retirement, and `latex/` carries no `Boneyard` reference). Tasks 632 and 633 depend on this one.
 - **Research Inputs**: specs/630_move_tool_and_boneyard_relocation/reports/01_move-tool-boneyard-relocation.md

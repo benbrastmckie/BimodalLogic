@@ -9,7 +9,7 @@
     {
       "project_number": 630,
       "project_name": "move_tool_and_boneyard_relocation",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "publication-quality",
       "dependencies": [],
@@ -24,7 +24,7 @@
       ],
       "description": "Write scripts/move-modules.py (old-to-new module mapping plus optional namespace mapping; rewrites imports in FormalSystem/, Tests/ and the archive, dotted and slash paths in docs/, typst/ and the scripts/ manifests, namespace/open/FQN occurrences, the C2/C14 baselines and MainResults.lean; dry-run mode; ends by running check-module-invariants.sh --no-build). Then use it to move FormalSystem/Boneyard/ to a root-level Boneyard/ (module names Boneyard.*), update B0's search root and C11's scan root, add the two invariants ADR-010 names, and change ADR-010's status to Accepted with a pointer from ADR-009. Acceptance: lake build and lake build BimodalTest exit 0; check-module-invariants.sh green; no .olean under Boneyard/; the archive README's counts regenerate from the new location.\n\nReconciliation notes: no dependency edge to task 631 (deliverable hygiene): ADR-010 disclaims dependence on the frozen-LaTeX retirement Phase 1 performs, and Phase 1's own actions touch no path under FormalSystem/Boneyard/ -- either task may land first. Tasks 632 and 633 depend on this task, not on task 631.",
       "created": "2026-09-19T08:40:54Z",
-      "last_updated": "2026-09-21T02:02:35Z",
+      "last_updated": "2026-09-21T03:32:48Z",
       "session_id": "sess_1789955215_a3ad68",
       "artifacts": [
         {
@@ -36,9 +36,19 @@
           "path": "specs/630_move_tool_and_boneyard_relocation/plans/01_move-tool-boneyard-relocation.md",
           "type": "plan",
           "summary": "8-phase plan: build scripts/move-modules.py (7 rewrite classes, dry-run), validate it against the measured census, add invariants B1/B2, then relocate FormalSystem/Boneyard to Boneyard in one atomic move+harness-rewiring commit, assert the C11 denominator, and accept ADR-010."
+        },
+        {
+          "path": "specs/630_move_tool_and_boneyard_relocation/summaries/01_move-tool-boneyard-relocation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: the move tool, the relocation, the gate re-rooting, and the measured verification results."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Built scripts/move-modules.py, a reusable module-relocation tool with seven separately-counted rewrite classes, a dry-run mode, a sentinel-based bare-form audit and a closing harness run; then used it for its first production relocation, moving the 225-file archive from FormalSystem/Boneyard/ to a root-level Boneyard/ as git renames with zero delete+add. Every gate moved with it in one atomic commit (B0 re-rooted and its load-bearing half inverted, C11 given its own import regex, C17 and archive_dir_count re-rooted, C12/C5 widened), invariants B1 and B2 were added, and ADR-010 moved to Accepted with ADR-009 repointed. lake build, lake build BimodalTest and the full invariant harness all exit 0, with C11's denominator intact at 539/169/8 and zero sorries, zero new axioms and no axiom-baseline change.",
+      "roadmap_items": [
+        "docs/development/PUBLICATION_REFACTOR.md Phase 0 (module-move tooling) - performed",
+        "docs/development/PUBLICATION_REFACTOR.md Phase 2 (archive to the repository root) - performed; unblocks Phase 8's mk_all --check adoption"
+      ]
     },
     {
       "project_number": 631,
