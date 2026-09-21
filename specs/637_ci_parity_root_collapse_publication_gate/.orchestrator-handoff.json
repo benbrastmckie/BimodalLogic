@@ -1,26 +1,24 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 4,
-  "summary": "Researched all seven Phase 8 work items plus the three folded-in revisions, with live measurement at HEAD 657c41892. The decisive finding: collapsing the root activates Mathlib's linter.style.header on all 503 modules at once (it gates on direct import from ./FormalSystem.lean, so it is currently live on exactly one), surfacing 22 latent findings under CI's existing --wfail.",
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 12,
+  "summary": "Revised the 10-phase plan in place (version 2, 13h). Phase 1's measurement was blind: a warm lake build replays trace logs and never re-runs the root-gated header linter, so it would have reported zero and skipped the burndown. Replaced with a scratch-CWD probe verified on three files. New invariant renumbered C31 -> C33 (task 643 claims C31/C32); Phases 5-6 gated on 643.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/637_ci_parity_root_collapse_publication_gate/reports/01_ci-parity-root-collapse.md",
-      "summary": "Feasibility and cost of the mk_all root collapse, the C6 manifest burndown, mk_all/lint-style CI adoption, the release workflow and the publication gate, with measured linter debt at HEAD."
+      "type": "plan",
+      "path": "specs/637_ci_parity_root_collapse_publication_gate/plans/01_ci-parity-root-collapse.md",
+      "summary": "Revised implementation plan, version 2, 10 phases"
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 10,
   "blockers": [],
-  "user_decision": {
-    "question": "Adopting lint-style-action surfaces 258 'unicode character not on the allowlist' findings across the library's own notation (the limit-closure diamond, vector arrows, biconditional arrows). Mathlib's allowlist is Mathlib-specific and this notation is documented and load-bearing, so how should the unicode text linter be handled?",
-    "options": [
-      "Disable linter.unicodeLinter in lakefile.toml [leanOptions] with a recorded reason, and adopt every other lint-style text linter",
-      "Seed scripts/nolints-style.txt with per-file exceptions for all 258 findings, keeping the linter nominally on",
-      "Defer lint-style-action adoption entirely until the notation set is reconciled with Mathlib's allowlist upstream"
-    ],
-    "recommended": "Disable linter.unicodeLinter in lakefile.toml [leanOptions] with a recorded reason, and adopt every other lint-style text linter",
-    "blocking": false
-  }
+  "next_action_hint": "Implement. Phases 1-4, 8, 9 are free of task 643's territory; Phases 5-6 must wait until scripts/check-module-invariants.sh carries no uncommitted hunks from 643.",
+  "decisions_made": [
+    "Header-linter gate is the probe sweep, never a warm lake build --wfail",
+    "FormalSystem/Tactic/Attr.lean is not a finding and stays untouched",
+    "Generated-root invariant takes the next free check ID, expected C33"
+  ],
+  "continuation_path": null,
+  "sorry_inventory": []
 }

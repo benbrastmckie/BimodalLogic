@@ -1,11 +1,32 @@
 {
-  "status": "in_progress",
-  "artifacts": [],
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/637_ci_parity_root_collapse_publication_gate/plans/01_ci-parity-root-collapse.md",
+      "summary": "Revised 10-phase plan (version 2): header-linter debt is now measured by a verified scratch-CWD probe instead of a log-replaying warm build, the new invariant is renumbered to C33 to avoid task 643's C31/C32, and Phases 5-6 gain a start gate on 643."
+    }
+  ],
+  "next_steps": "Run /implement 637 to execute the revised plan. Phases 5 and 6 must not edit scripts/check-module-invariants.sh while task 643 holds uncommitted hunks in it.",
+  "dispatch_seq": 12,
+  "modified_files": [],
   "metadata": {
-    "session_id": "sess_1790002208_59de0b_637",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1790004043_997429_637",
+    "agent_type": "reviser-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "phase_count": 10,
+    "estimated_hours": 13,
+    "plan_version": 2,
+    "reports_integrated": ["01_ci-parity-root-collapse.md"]
   },
-  "dispatch_seq": 8
+  "memory_candidates": [
+    {
+      "content": "A warm `lake build --wfail` cannot observe a linter finding whose activation depends on a file outside the module's own trace. Mathlib's linter.style.header gates on isInLibraryRoot, which reads ./<Root>.lean at elaboration time; Lake's module trace does not include the root aggregator, so changing the root re-elaborates nothing and up-to-date modules are replayed from their .trace logs. The build stays green until the next cache miss, then goes red. Zero-footprint authoritative probe: write the would-be root to a scratch dir, cd there, and run `LEAN_PATH=$(lake env printenv LEAN_PATH) lean --root=<repo> -Dweak.linter.mathlibStandardSet=true <repo>/<file>` -- isInLibraryRoot resolves the root path against the process CWD, so nothing enters the shared tree or .lake/build. Also: a module that imports only `Lean` never loads the header linter, so text scanners mirroring the linter over-report it.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/637_ci_parity_root_collapse_publication_gate/plans/01_ci-parity-root-collapse.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lake", "wfail", "trace-replay", "linter.style.header", "isInLibraryRoot", "mk_all", "lean --root"]
+    }
+  ]
 }

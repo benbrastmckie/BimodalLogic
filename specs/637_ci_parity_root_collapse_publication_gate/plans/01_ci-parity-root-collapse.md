@@ -2,13 +2,15 @@
 
 - **Task**: 637 - CI parity, root collapse and publication gate
 - **Status**: [NOT STARTED]
-- **Effort**: 12.5 hours
+- **Effort**: 13 hours
 - **Dependencies**: 636 (complete)
 - **Research Inputs**: specs/637_ci_parity_root_collapse_publication_gate/reports/01_ci-parity-root-collapse.md
 - **Artifacts**: plans/01_ci-parity-root-collapse.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
+- **Plan Version**: 2 (revised in place, same artifact round; version 1 is commit `ad0750d0c`)
+- **Reports Integrated**: 01_ci-parity-root-collapse.md
 
 ## Overview
 
@@ -17,8 +19,9 @@ single `lake exe mk_all`-generated `FormalSystem.lean`, empty the C6 unreachable
 wire `mk_all --check` and `lint-style-action` into CI, add a tag-triggered release workflow, adopt
 the module-size and namespace-exception policy text, and close the publication gate with a
 maintainer handoff. The collapse is cheap on its own but switches Mathlib's `linter.style.header`
-from 1 module to 503 under CI's existing `--wfail`, so the measured 22-finding header debt must be
-cleared in the same change or immediately before it. Definition of done: `lake exe mk_all --lib
+from 1 module to 503 under CI's existing `--wfail`, so the latent header debt (about 21 files; see
+Phase 1's Scope Hypothesis) must be cleared immediately before it — and must be *measured* by a
+method that actually re-elaborates the modules, which a warm `lake build --wfail` does not. Definition of done: `lake exe mk_all --lib
 FormalSystem --check` green, `scripts/module-invariants-manifest.txt` empty, the release workflow's
 automatable dry-run (YAML parse plus action-pin resolution) passing, and the full
 `check-module-invariants.sh` gate set green.
@@ -39,8 +42,10 @@ taken at HEAD `657c41892`. Load-bearing findings carried into this plan:
   header is not a gate failure. `linter.style.longFile = 1500` is not approached (504 lines).
 - `linter.style.header` gates on `isInLibraryRoot` — whether `./FormalSystem.lean` *directly*
   imports the module. Today that is one module; after the collapse it is all 503, under the
-  lean-action step's existing `build-args: "--wfail"`. Measured latent debt: 22 findings (16
-  docstring-not-first, 6 broad `import Lean`).
+  lean-action step's existing `build-args: "--wfail"`. The report's latent-debt figure — 22 findings
+  (16 docstring-not-first, 6 broad `import Lean`) — came from a text scanner *mirroring* the linter,
+  not from the linter. This revision ran the real linter on three of those files and corrected the
+  figure: see "Revision Notes" below.
 - Import lines are exempt from `linter.style.longLine` (`Style.lean:471`), so the two 101-character
   generated import lines need no module renames. Risk checked and cleared.
 - The C6 manifest holds **14** live entries, not the 12 the task description implies. Nine clear
@@ -60,9 +65,53 @@ taken at HEAD `657c41892`. Load-bearing findings carried into this plan:
   any of them would touch declaration moves, importers, external FQN citations and the pinned
   `#print axioms` baselines that appear twice each in `check-module-invariants.sh`.
 
+### Revision Notes (plan version 2, dispatch 12)
+
+A forced `--plan` round with no new research report. Every phase is `[NOT STARTED]`, so nothing was
+preserved-as-completed; the ten-phase structure, ordering and recorded decisions of version 1 stand.
+The revision re-checked version 1's load-bearing claims against the tree at HEAD `ad0750d0c` and
+changed what did not survive:
+
+1. **Phase 1's measuring instrument was blind, and its Scope Hypothesis told the implementer to trust
+   it.** Version 1 generated a temporary root in the shared tree and read findings off
+   `lake build --wfail`. Lake's module trace does not include the root aggregator, so every
+   already-built module is *replayed* from its `.trace` log rather than re-elaborated, and the header
+   linter — which reads `./FormalSystem.lean` at elaboration time — never re-runs. The expected
+   observation was therefore **zero findings**, and the hypothesis line ("if the count differs from
+   22, proceed against the actual figure") would have skipped the burndown and landed a latent-red
+   collapse that detonates on the next CI cache miss. Replaced by a **zero-footprint probe**, run
+   and verified during this revision: the real `lean`, invoked from a scratch working directory that
+   holds only a generated `FormalSystem.lean`, with `--root=<repo>` and the package's `-D` options.
+   `isInLibraryRoot` resolves the root path against the process CWD, so no temporary file ever
+   enters the shared tree and nothing is written to `.lake/build`. Observed: `Kamp/EANegationFix/
+   ConcatPin.lean` fires (docstring-not-first) and goes silent when the scratch root omits it;
+   `Tactic/Meta.lean` fires (broad `import Lean`).
+2. **`FormalSystem/Tactic/Attr.lean` is not a finding.** It imports `Lean` alone, so the header
+   linter is never loaded in it; the probe reports nothing. Its docstring records that it *must*
+   import `Lean` only (an `import FormalSystem.Init` would be a cycle). Version 1 listed it for
+   narrowing; it is now explicitly left untouched. Version 1's "22 findings across 23 files" was also
+   internally inconsistent (16 + 6 = 22 files), and the linter emits several diagnostics per
+   docstring-position file, so the unit is now *files*, not diagnostics.
+3. **"Narrow `import Lean`" needed a warning.** `broadImportsCheck` also rejects `Lean.Meta`,
+   `Lean.Elab`, `Lean.Elab.Tactic` and `Std`, so narrowing to those is not a fix.
+4. **Check ID `C31` is taken.** Task 643's plan claims `C31` (bibkeys) and `C32` (docstring links)
+   and is `implementing` now, with uncommitted hunks in `scripts/check-module-invariants.sh` observed
+   at revision time. This plan's generated-root invariant is renumbered to the next free ID —
+   **expected `C33`** — and Phases 5 and 6 gain an explicit start gate on 643.
+5. **Phase 7 contradicted the style guide it edits.** `LEAN_STYLE_GUIDE.md` says "There is exactly
+   one" permanent opt-out and names `unicodeLinter` among cslib opt-outs that are "not adopted,
+   because none of those linters runs during the build". Both sentences must be rewritten, not
+   appended to.
+6. Smaller corrections: `VERSIONING.md` carries 9 `CHANGELOG` occurrences, not 5; CI's
+   `check-paper-definitions.sh` step was missing from Phase 10's gate set; the task's declared
+   `file_scope` (9 entries) covers a small fraction of this plan's footprint, which is now a named
+   risk.
+
 ### Prior Plan Reference
 
-No prior plan. This is artifact round 1 for this task.
+Version 1 of this plan is the same path at commit `ad0750d0c` (its dispatch wrote the plan but
+returned off-schema, which is why this round was forced). This file supersedes it in place, within
+artifact round 1.
 
 ### Roadmap Alignment
 
@@ -87,11 +136,14 @@ follow-up H), read through the research report rather than as a roadmap artifact
 **Goals**:
 - A single repo-root `FormalSystem.lean` generated byte-for-byte by `lake exe mk_all --lib
   FormalSystem`, with `FormalSystem/FormalSystem.lean` absorbed and deleted.
-- Zero `linter.style.header` findings under `lake build --wfail` with the generated root in place.
+- Zero `linter.style.header` findings across every `FormalSystem` module with the generated root in
+  place, established by re-elaboration (the probe sweep), not by a warm, log-replaying build.
 - `scripts/module-invariants-manifest.txt` empty, with every previously-manifested module wired into
   a build closure.
-- A new enforced invariant (next free ID: **C31**) asserting the generated root is byte-current,
-  plus its CI step and its `CI_CD_PROCESS.md` runtime-budget row.
+- A new enforced invariant asserting the generated root is byte-current — next free check ID,
+  **expected `C33`** because task 643 claims `C31` and `C32` — plus its CI step and its
+  `CI_CD_PROCESS.md` runtime-budget row. This plan writes "C33" below; every occurrence means "the
+  ID confirmed free at Phase 5's start".
 - `lint-style-action` wired and green: trailing whitespace fixed, `linter.unicodeLinter` disabled
   with a recorded reason.
 - `.github/workflows/release.yml` with `push: tags: ['v*']` and an explicit `workflow_dispatch`.
@@ -117,7 +169,8 @@ follow-up H), read through the research report rather than as a roadmap artifact
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| The collapse turns CI red via `linter.style.header` (22 measured findings, `--wfail` already live) | H | H | Phase 1 clears all 22 *before* Phase 2 lands the collapse, measured against the real linter with a temporarily generated root rather than a mirror scanner |
+| The collapse turns CI red via `linter.style.header` (`--wfail` already live) | H | H | Phase 1 clears every finding *before* Phase 2 lands the collapse, measured by the real linter through the scratch-CWD probe |
+| **A warm `lake build --wfail` reports the tree header-clean when it is not**, because up-to-date modules are replayed from their `.trace` logs and never re-elaborated against the new root. The red build then arrives later, on the first CI cache miss or toolchain bump | H | H (certain on a warm tree) | Phases 1 and 2 treat the warm build as necessary but never sufficient. The header gate is the probe sweep over all `FormalSystem/**/*.lean`, which elaborates each file afresh and writes nothing. C28's warning budget is a trace scan and shares the blind spot, so it is not evidence either |
 | Nine newly-reachable modules (80 declarations) enter `runLinter FormalSystem`'s enforced C16 half, which is at 0 today | H | M | Run `lake exe runLinter FormalSystem` inside Phase 2, before committing; any new finding is fixed, not nolisted |
 | Same nine modules enter `--wfail` and C24's `checkInitImports` closure for the first time | H | M | Phase 2 verification is a full guarded `lake build --wfail` plus `lake exe checkInitImports` |
 | **Territory collision on `scripts/check-module-invariants.sh` and `docs/development/MODULE_INVARIANTS.md`** — task 643 declares both this same cycle | H | H | Phases 5 and 6 re-read each file immediately before editing, stage only this task's own hunks (never a directory or glob `git add`), and rebase onto 643's landed changes rather than reverting them. On a foreign commit or foreign uncommitted modification, STOP and report per `context/contracts/territory.md` |
@@ -127,7 +180,9 @@ follow-up H), read through the research report rather than as a roadmap artifact
 | Wiring `DerivationBenchmark` in makes `lake test` print the whole benchmark table | M | M | Delete the five top-level `#eval` lines (the benchmark `def`s stay callable); C27's allow-list is unaffected, its 54 entries all being in `MainResults.lean` |
 | `def version` silently disappears with the absorbed file | L | H | Relocate to a new `FormalSystem/Version.lean` reachable from the generated root, bumped to `"1.0.0"` to agree with `CITATION.cff`; reconcile `VERSIONING.md`'s "version in lakefile.toml" instruction, which names a field that does not exist |
 | `--wfail` on the two tooling steps is adopted on a trace-scan alone and the runner disagrees | M | L | Phase 6 verifies with an actual `--wfail` build of both tooling roots locally, not with `warning-budget.py` output alone |
-| A generated root that drifts silently between generation and commit | M | L | C31 (Phase 5) is the durable gate; its deliberate negative test is required by `MODULE_INVARIANTS.md`'s "Adding a Check" procedure |
+| **Check-ID collision**: task 643 claims `C31`/`C32` in the same script this cycle | M | H | This plan uses the next free ID (expected `C33`); Phase 5 re-derives it from the script *and* from 643's plan before writing, and does not start while 643 holds uncommitted hunks in the script |
+| The task's declared `file_scope` (9 entries) omits most of this plan's footprint — `ci.yml`, `lakefile.toml`, `FormalSystem.lean`, `Tests/**`, `BimodalTools/**`, `docs/development/**`, `check-module-invariants.sh` | M | H | Territory overlap detection cannot see these edits, so the per-file re-read protocol is this task's only protection there. `git-snapshot.sh` in default mode will refuse on out-of-scope paths; use `--no-revert` for checkpoints. Reported to the orchestrator in this dispatch's return |
+| A generated root that drifts silently between generation and commit | M | L | C33 (Phase 5) is the durable gate; its deliberate negative test is required by `MODULE_INVARIANTS.md`'s "Adding a Check" procedure |
 
 ## Implementation Phases
 
@@ -137,47 +192,88 @@ follow-up H), read through the research report rather than as a roadmap artifact
 | 1 | 1, 8, 9 | -- |
 | 2 | 2 | 1 |
 | 3 | 3, 5 | 2 |
-| 4 | 4, 6 | 3; 5 |
+| 4 | 4, 6 | 3, 5 |
 | 5 | 7 | 6 |
 | 6 | 10 | 4, 6, 7, 8, 9 |
 
-Phases within the same wave can execute in parallel.
+Phases within the same wave can execute in parallel. In wave 4, Phase 4 is blocked by 3 and Phase 6
+by 5. Phases 5 and 6 carry an additional **external start gate** that this table cannot express:
+neither may edit `scripts/check-module-invariants.sh` while task 643 holds uncommitted hunks in it
+(see Phase 5's first task). Phases 3, 4, 8 and 9 do not touch that file and are the work to pull
+forward if the gate is closed.
 
 ---
 
 ### Phase 1: Clear the latent header-linter debt [NOT STARTED]
 
-**Goal**: Reach zero `linter.style.header` findings across `FormalSystem/` so that the collapse in
-Phase 2 can land under CI's existing `--wfail` without turning the build red.
+**Goal**: Reach zero `linter.style.header` findings across `FormalSystem/`, measured by the real
+linter under re-elaboration, so that the collapse in Phase 2 can land under CI's existing `--wfail`
+without turning the build red — now or on a later cache miss.
+
+**The probe** (verified during plan revision; this is the measuring instrument for Phases 1 and 2):
+
+```bash
+REPO=$PWD                                   # repo root
+S=<session scratchpad>/hdr637; mkdir -p "$S"
+LP=$(lake env printenv LEAN_PATH); LEANBIN=$(lake env which lean)
+# The would-be generated root, written to SCRATCH only -- never into the repo:
+( cd "$REPO" && find FormalSystem -name '*.lean' ! -path 'FormalSystem/FormalSystem.lean' \
+    | LC_ALL=C sort | sed -e 's#/#.#g' -e 's#\.lean$##' -e 's#^#import #' ) > "$S/FormalSystem.lean"
+# One file; run from $S so that isInLibraryRoot reads $S/FormalSystem.lean:
+( cd "$S" && LEAN_PATH="$LP" "$LEANBIN" --root="$REPO" \
+    -Dweak.linter.mathlibStandardSet=true -Dweak.linter.style.longFile=1500 \
+    -Dpp.unicode.fun=true -DautoImplicit=false "$REPO/<file>" 2>&1 | grep -B3 'linter.style.header false' )
+```
+
+It writes nothing under `.lake/build` and puts no temporary root in the shared working tree, so it
+is safe alongside the sibling tasks building in this tree. It costs one full elaboration per file;
+sweep with `xargs -P "$(nproc)"`, one output file per module under `$S/out/`, and treat any
+`warning:` followed by the header linter's trailer line (the one naming
+`set_option linter.style.header false`) as a finding. Keep the unfiltered output too: an `error:`
+there means the invocation is wrong (a missing `-D` option, a wrong `--root`), not that the file is
+clean.
 
 **Tasks**:
-- [ ] Copy the current `FormalSystem.lean` to a scratch file outside the repo (the session scratchpad),
-      and record its `sha256sum`.
-- [ ] Run `lake exe mk_all --lib FormalSystem` to put a temporary generated root in place. This is a
-      measurement scaffold, not the Phase 2 deliverable.
-- [ ] Run `lake build --wfail` and collect every `linter.style.header` diagnostic from the real
-      compiler. Do not re-implement the research agent's mirror scanner; the linter itself is
-      authoritative.
-- [ ] Fix each docstring-position finding by moving the module docstring above the offending command
-      (`assert_not_exists`, `namespace`, or `set_option autoImplicit false`). Expected shapes: 6 files
-      under `Semantics/` and `MinusLanguage/` with `assert_not_exists` first; 9 files, mostly under
+- [ ] Confirm the blind spot once, so the phase notes record it as observed rather than asserted: on
+      the untouched tree, `lake build --wfail` is green and re-elaborates nothing, while the probe on
+      `FormalSystem/Metalogic/Expressiveness/Kamp/EANegationFix/ConcatPin.lean` reports a finding.
+- [ ] Build the candidate list cheaply with a throwaway text pre-filter (scratchpad only, never
+      committed): files whose first non-import command is not `/-!`, and files importing `Lean`,
+      `Lean.Meta`, `Lean.Elab`, `Lean.Elab.Tactic`, `Std`, `Mathlib.Tactic` or any `Lake.*` module.
+      The pre-filter only *nominates*; it is known to over-report (`Tactic/Attr.lean`).
+- [ ] Run the probe on every candidate and record the per-file verdicts. This is the authoritative
+      finding list. Count **files**, not diagnostics — a docstring-position file emits one warning per
+      command that precedes its docstring.
+- [ ] Fix each docstring-position finding by moving the module docstring to directly after the
+      imports, above the offending command (`assert_not_exists`, `namespace`, `open`, or
+      `set_option autoImplicit false`). Expected shapes: 6 files under `Semantics/` and
+      `MinusLanguage/` with `assert_not_exists` first; 9 files, mostly under
       `Metalogic/Expressiveness/Kamp/EANegationFix/`, with `namespace` first; and
       `FormalSystem/Metalogic/Conservativity/SpCountermodel.lean` with `set_option autoImplicit false`
-      first.
-- [ ] Fix each broad-import finding by **narrowing** `import Lean` to the specific `Lean.*` modules the
-      file actually uses. Narrowing is preferred to suppression: it is what the linter asks for and it
-      costs no `set_option`. If narrowing proves infeasible for a given module, fall back to a
-      declaration-scoped suppression carrying a reason at the site (C29 requires the reason; C30
-      forbids the blanket form) and record why in the phase notes.
-- [ ] Re-run `lake build --wfail` with the temporary root still in place and confirm zero
-      `linter.style.header` findings.
-- [ ] Restore the original root by copying the scratch file back (`cp`), and verify with
-      `sha256sum -c` against the recorded hash. Do **not** use `git checkout --`/`git restore` —
-      `rules/git-workflow.md` forbids discarding working-tree changes on a dirty tree.
-- [ ] Confirm `git status --short` shows only the header-fix files changed, then run `lake build` once
-      more under the restored two-level root to confirm the fixes are harmless there too.
+      first. Where a file carries a `set_option linter.style.longFile N` baseline "after its module
+      docstring", keep that relative order.
+- [ ] Fix each broad-import finding. Try **deleting** the `import Lean` line first: all five affected
+      files also import a `FormalSystem.*` module that reaches Mathlib, which already brings in most
+      of `Lean`. If elaboration then fails, add the specific *leaf* modules the failing identifiers
+      live in. Do **not** narrow to `Lean.Meta`, `Lean.Elab`, `Lean.Elab.Tactic` or `Std` — the same
+      check rejects those. Only if no leaf set is workable, fall back to a suppression in the
+      sanctioned form with a reason at the site (C29 requires the reason; C30 forbids the blanket
+      form), and record why in the phase notes.
+- [ ] Leave `FormalSystem/Tactic/Attr.lean` untouched. The probe reports nothing for it (it imports
+      `Lean` alone, so the linter is never loaded), and its docstring records why it must stay that
+      way. Re-confirm with the probe; do not edit.
+- [ ] `lake build --wfail` after the edits. The edited files and their dependents genuinely
+      re-elaborate here, so this build is meaningful for *them*; it proves the fixes compile, not that
+      the tree is header-clean.
+- [ ] Re-run the probe on every fixed file and confirm silence.
+- [ ] Run the **full sweep** once — every `FormalSystem/**/*.lean`, not just the candidates — and
+      confirm zero findings. This is the phase's exit gate and the only exhaustive evidence; it also
+      catches whatever the pre-filter failed to nominate (duplicate imports, a malformed copyright
+      block, `linter.directoryDependency`).
+- [ ] Confirm `git status --short` lists only the header-fix files, and that `FormalSystem.lean` and
+      `FormalSystem/FormalSystem.lean` are untouched by this phase.
 
-**Timing**: 1.5 hours
+**Timing**: 1.5 hours (dominated by the full sweep's CPU time, roughly one cold project build)
 
 **Depends on**: none
 
@@ -185,25 +281,27 @@ Phase 2 can land under CI's existing `--wfail` without turning the build red.
 
 **Commit Mode**: per-substep
 
-**Scope Hypothesis**: 22 findings across 23 files (16 docstring-position, 6 broad `import Lean`),
-measured at HEAD `657c41892`. Confirm by the `lake build --wfail` diagnostic count with the temporary
-generated root in place, before any edit; if the count differs from 22, record the actual figure and
-proceed against it rather than the hypothesis.
+**Scope Hypothesis**: about **21 files** — 16 docstring-position and 5 broad `import Lean` — from the
+research scanner's 22 minus `Tactic/Attr.lean`, which the real linter does not flag. Two of the 21
+were confirmed with the probe during plan revision (`ConcatPin.lean`, `Tactic/Meta.lean`); the other
+19 are scanner nominations only. Confirm by the probe's per-file verdicts, and treat the full sweep's
+result as final. **A count of zero from `lake build --wfail` is the known blind spot, not a
+measurement** — never proceed against it. If the probe itself reports zero on `ConcatPin.lean`, the
+probe is mis-invoked: stop and fix the invocation before drawing any conclusion.
 
 **Files to modify**:
-- `FormalSystem/Tactic/Attr.lean`, `FormalSystem/Tactic/Meta.lean`,
-  `FormalSystem/Automation/Tactics/{Deduction,Search,UserTactics}.lean`,
-  `FormalSystem/Metalogic/Expressiveness/EFGameTactics.lean` - narrow `import Lean`
+- `FormalSystem/Tactic/Meta.lean`, `FormalSystem/Automation/Tactics/{Deduction,Search,UserTactics}.lean`,
+  `FormalSystem/Metalogic/Expressiveness/EFGameTactics.lean` - remove or leaf-narrow `import Lean`
 - `FormalSystem/Metalogic/Conservativity/SpCountermodel.lean` - move docstring above `set_option`
-- The remaining 15 docstring-position files, enumerated from the linter output at phase start
-- `FormalSystem.lean` - temporarily generated and then restored byte-for-byte; **not** a deliverable
-  of this phase
+- The remaining 15 docstring-position files, enumerated from the probe's output at phase start
+- **Not** `FormalSystem/Tactic/Attr.lean`, and **not** `FormalSystem.lean` — this phase no longer
+  generates a temporary root in the repository
 
 **Verification**:
-- `lake build --wfail` emits zero `linter.style.header` findings with the temporary generated root
-- `sha256sum -c` confirms `FormalSystem.lean` restored byte-for-byte
-- `git status --short` lists only the header-fix files
-- `lake build` green under the restored two-level root
+- Full probe sweep over `FormalSystem/**/*.lean` reports zero `linter.style.header` findings
+- `lake build --wfail` green (compilation of the fixes; not the header gate)
+- `git status --short` lists only the header-fix files; both root files byte-unchanged
+- Nothing was written outside the header-fix files and the session scratchpad
 
 ---
 
@@ -229,7 +327,7 @@ the intermediate states are red by construction.
       `import FormalSystem.FormalSystem`.
 - [ ] Run `lake exe mk_all --lib FormalSystem` to generate the new root. Do not hand-edit the result,
       and do not add a copyright header or docstring to it — `mk_all --check` compares byte-for-byte
-      and any addition would make the new C31 gate permanently red.
+      and any addition would make the new C33 gate (Phase 5) permanently red.
 - [ ] Rewrite the four free prose references that explain the self-named indirection as
       "load-bearing": `FormalSystem/{Plus,Minus,Star}Language/README.md` and
       `docs/development/DIRECTORY_README_STANDARD.md`. These are substantive rewrites, not path swaps.
@@ -240,10 +338,16 @@ the intermediate states are red by construction.
 - [ ] Run `lake build --wfail`, `lake exe runLinter FormalSystem`, and `lake exe checkInitImports`
       before committing. The nine newly-reachable modules enter all three closures for the first time;
       any new C16 finding is **fixed**, never added to `scripts/nolints.json`.
+- [ ] Run Phase 1's **full probe sweep again, now against the real generated root** — from the repo
+      root this time (`lake env lean --root=. <-D options> <file>`), since `./FormalSystem.lean` is
+      now the genuine article, and including the new `FormalSystem/Version.lean`. The warm
+      `lake build --wfail` above re-elaborates only the nine new modules and `Version.lean`; every
+      other module is replayed from its trace log and proves nothing about the header linter. Zero
+      findings here is the evidence that the collapse is not a deferred CI failure.
 - [ ] Stage only this task's own hunks — an explicit multi-file `git add -- <files>` list, never a
       directory or glob pathspec.
 
-**Timing**: 1.5 hours
+**Timing**: 2 hours (includes one full probe sweep)
 
 **Depends on**: 1
 
@@ -270,6 +374,8 @@ programme prose left as-is, and 8 are rewritten here. The generated root is expe
 **Verification**:
 - `lake exe mk_all --lib FormalSystem --check` exits 0
 - `lake build --wfail` green, including the nine newly-reachable modules
+- Full probe sweep against the real generated root: zero `linter.style.header` findings across every
+  `FormalSystem` module (the warm build cannot show this)
 - `lake exe runLinter FormalSystem` still reports zero un-nolisted findings
 - `lake exe checkInitImports` green
 - `bash scripts/check-module-invariants.sh --no-build` passes C5, C12 and C13 (no dangling reference
@@ -392,32 +498,44 @@ the executable's own no-side-effect invocation).
 
 ---
 
-### Phase 5: Add the C31 generated-root invariant and its CI step [NOT STARTED]
+### Phase 5: Add the generated-root invariant (expected C33) and its CI step [NOT STARTED]
 
 **Goal**: Make the byte-currency of the generated root a durable, enforced, build-free invariant that
 CI's `--no-build` pass actually runs.
 
 **Tasks**:
-- [ ] Re-read `scripts/check-module-invariants.sh` and `docs/development/MODULE_INVARIANTS.md`
-      immediately before editing: **task 643 declares both in its `file_scope` this same cycle.** Apply
-      the territory protocol — rebase onto 643's landed changes, stage only this task's hunks, STOP and
-      report on any foreign commit or foreign uncommitted modification.
-- [ ] Confirm C30 is still the highest check ID in the script before claiming C31.
-- [ ] Add check **C31** to `scripts/check-module-invariants.sh` as a build-free Python scanner: walk
+- [ ] **Start gate.** Task 643 declares `scripts/check-module-invariants.sh` and
+      `docs/development/MODULE_INVARIANTS.md` in its `file_scope`, was `implementing` at plan-revision
+      time with uncommitted hunks in the script, and its plan adds `C31`, `C32`, their `ENFORCE_` flags
+      and a third C20 assertion to exactly the regions this phase edits. Before editing, run
+      `git status --short -- scripts/check-module-invariants.sh docs/development/MODULE_INVARIANTS.md`
+      and `jq -r '.active_projects[] | select(.project_number==643) | .status' specs/state.json`. If
+      either file carries uncommitted modifications that are not this task's own, **do not edit it**:
+      mark this phase `[BLOCKED]` with the reason and report, per `context/contracts/territory.md`.
+      Nothing else in this phase is worth landing first — the CI step and the budget row both
+      presuppose the check. Interleaving two agents' uncommitted hunks in one file cannot be staged
+      apart safely.
+- [ ] Once clear, re-read both files in full. Rebase this phase's design onto whatever 643 landed;
+      stage only this task's hunks.
+- [ ] Derive the check ID rather than assuming it: take the highest `C<n>` that appears in the script
+      **or** in `specs/643_citation_gates_bibkeys_links_and_line_anchors/plans/*.md`, plus one. The
+      expectation is `C33`. Use the derived ID everywhere this plan writes "C33", including the
+      `ENFORCE_` variable name, the CI step name and the `MODULE_INVARIANTS.md` row.
+- [ ] Add check **C33** to `scripts/check-module-invariants.sh` as a build-free Python scanner: walk
       every `.lean` file under `FormalSystem/`, sort, prefix each with `import ` and the dotted module
       path, join with newlines plus a trailing newline, and compare byte-for-byte against
       `FormalSystem.lean`. This is the same reasoning that made C28 a trace-scan rather than a `lake`
       call — a check that shells out to `lake` would join the documented "Known Not-in-CI Gaps" list
       alongside C2/C6/C24.
-- [ ] Ship C31 **enforced with no soft window**, on the C24/C25/C26 precedent: it is green the day it
-      lands. Give it an `ENFORCE_C31` variable defaulting to `1` for consistency with its neighbours.
+- [ ] Ship C33 **enforced with no soft window**, on the C24/C25/C26 precedent: it is green the day it
+      lands. Give it an `ENFORCE_C33` variable defaulting to `1` for consistency with its neighbours.
 - [ ] Write the check's header block in the file's established style: what it asserts, why the scanner
       form was chosen over `lake exe mk_all --check`, and that `lake exe mk_all --lib FormalSystem
       --check` is the full-mode authoritative cross-check.
 - [ ] Run the deliberate negative test `MODULE_INVARIANTS.md`'s "Adding a Check" procedure requires:
       add a stray `.lean` file under `FormalSystem/`, observe `FAIL` **and** a non-zero script exit,
       remove it, observe `PASS`. Record both observations.
-- [ ] Add the C31 row to `docs/development/MODULE_INVARIANTS.md` (643's territory — same protocol).
+- [ ] Add the C33 row to `docs/development/MODULE_INVARIANTS.md` (643's territory — same protocol).
 - [ ] Add the CI step to `.github/workflows/ci.yml` following `CI_CD_PROCESS.md`'s "Wiring a New Check
       Script" convention: step `name:` carrying the exact invocation, `set -euo pipefail`,
       `::group::`/`::endgroup::` wrapping, appended directly before "Report results". The scanner is
@@ -433,21 +551,24 @@ CI's `--no-build` pass actually runs.
 
 **Commit Mode**: per-substep
 
-**Scope Hypothesis**: C31 is the next free check ID (C30 is the current maximum). Confirm with
-`grep -nE '^# --- C[0-9]+' scripts/check-module-invariants.sh | tail -1` and
-`grep -n 'ENFORCE_C[0-9]*=' scripts/check-module-invariants.sh` before writing.
+**Scope Hypothesis**: `C33` is the next free check ID — `C30` is the highest in the script at
+plan-revision time, and task 643's plan claims `C31` and `C32`. Confirm with
+`grep -oE '\bC[0-9]+\b' scripts/check-module-invariants.sh specs/643_*/plans/*.md | sed 's/.*:C//' | sort -n | tail -1`
+and `grep -n 'ENFORCE_C[0-9]*=' scripts/check-module-invariants.sh` before writing. Note that the
+script's `# --- C<n>` banner lines are not a complete index (several checks have no banner), so do not
+derive the maximum from banners alone.
 
 **Files to modify**:
-- `scripts/check-module-invariants.sh` - **task 643's territory**; add C31 and its `ENFORCE_C31` flag
-- `docs/development/MODULE_INVARIANTS.md` - **task 643's territory**; add the C31 row
-- `.github/workflows/ci.yml` - add the C31 CI step before "Report results"
+- `scripts/check-module-invariants.sh` - **task 643's territory**; add C33 and its `ENFORCE_C33` flag
+- `docs/development/MODULE_INVARIANTS.md` - **task 643's territory**; add the C33 row
+- `.github/workflows/ci.yml` - add the C33 CI step before "Report results"
 - `docs/development/CI_CD_PROCESS.md` - add the runtime-budget row and re-sum
 
 **Verification**:
-- `bash scripts/check-module-invariants.sh --no-build` runs C31 and reports `PASS`
+- `bash scripts/check-module-invariants.sh --no-build` runs C33 and reports `PASS`
 - Negative test: a stray `FormalSystem/_Scratch.lean` produces `FAIL` and a non-zero exit; removing it
   restores `PASS`
-- `lake exe mk_all --lib FormalSystem --check` agrees with C31's verdict
+- `lake exe mk_all --lib FormalSystem --check` agrees with C33's verdict
 - The extracted `run:` body of the new CI step executes green locally
 - `CI_CD_PROCESS.md`'s budget sums equal the sum of their own rows
 
@@ -460,7 +581,8 @@ with the tree, and act on C28's own stated revision trigger.
 
 **Tasks**:
 - [ ] Re-read `scripts/check-module-invariants.sh` immediately before editing (**task 643's
-      territory**; same protocol as Phase 5, and Phase 5's own edits must already be in the tree).
+      territory**; same start gate and protocol as Phase 5 — no edits while the file carries another
+      task's uncommitted hunks — and Phase 5's own edits must already be committed).
 - [ ] Remove the dead `C8_ALLOW_SELFNAMED` entry `"FormalSystem/FormalSystem.lean"` and rewrite the
       preceding comment paragraph that justifies it. The `Semantics/Extension/Extension.lean` entry
       stays.
@@ -530,8 +652,18 @@ the unicode linter disabled per the recorded decision.
       limit-closure diamond ×115, `⃗` vector arrows ×75, `⟺` ×28, `Ĝ` ×23) is documented and
       load-bearing, and Mathlib's allowlist is Mathlib-specific. Cross-reference the lint-suppression
       policy in `docs/development/LEAN_STYLE_GUIDE.md`, whose permanent-opt-out list this joins.
-- [ ] Add the opt-out to `LEAN_STYLE_GUIDE.md`'s permanent opt-out list, matching the existing entries'
-      shape (the `linter.hashCommand` test-library opt-out is the model).
+- [ ] Rewrite `LEAN_STYLE_GUIDE.md`'s "Permanent opt-outs" passage — appending a bullet is not
+      enough, because three of its sentences become false: (a) "There is exactly one" becomes two;
+      (b) "The library itself has no opt-out" is no longer true of a package-level option; (c) the
+      closing sentence lists `unicodeLinter` among cslib opt-outs that are "not adopted, because none
+      of those linters runs during the build at this Mathlib version" — keep the true half (it does
+      not run during the build) and record that it is now adopted because `lake exe lint-style`, a
+      text linter outside the build, does run it and reads this `[leanOptions]` block. The other three
+      (`pythonStyle`, `checkInitImports`, `allScriptsDocumented`) stay unadopted. Add the new entry in
+      the `linter.hashCommand` entry's shape, with the measured reason.
+- [ ] In the same passage, correct the existing entry's scope: it says `hashCommand` is off "on the
+      `BimodalTest` library only", but `lakefile.toml` sets it on `BimodalToolsTest` as well. A count
+      sentence is being rewritten anyway; leave it true.
 - [ ] Confirm `lake exe lint-style` now exits 0. Do **not** wire the CI step until it does — a wired
       action on an un-green tree lands a permanently-red gate.
 - [ ] Wire `leanprover-community/lint-style-action` into `.github/workflows/ci.yml`, appended directly
@@ -558,7 +690,8 @@ and Phase 2's regenerated root both change the scanned text. Work against the ob
 
 **Files to modify**:
 - `lakefile.toml` - `weak.linter.unicodeLinter = false` with a recorded reason
-- `docs/development/LEAN_STYLE_GUIDE.md` - add the permanent opt-out entry
+- `docs/development/LEAN_STYLE_GUIDE.md` - rewrite the "Permanent opt-outs" passage (count, the
+  "library itself has no opt-out" sentence, the cslib sentence, the `BimodalToolsTest` omission)
 - `.github/workflows/ci.yml` - wire `lint-style-action` before "Report results"
 - `docs/development/CI_CD_PROCESS.md` - budget row and re-sum
 - Whatever files `lint-style --fix` touches for trailing whitespace (diff reviewed before staging)
@@ -667,7 +800,8 @@ corrections the research measured as factually wrong.
       `lakefile.toml`", naming a field `lakefile.toml` does not have. Point it at
       `FormalSystem/Version.lean` instead, and at `CITATION.cff`.
 - [ ] Create a minimal `CHANGELOG.md` seeded with the `1.0.0` entry, or — if the maintainer's
-      preference is unknown — correct `VERSIONING.md`'s five references to a file that does not exist.
+      preference is unknown — correct `VERSIONING.md`'s references (9 occurrences at plan-revision
+      time) to a file that does not exist.
       Prefer creating the file: `VERSIONING.md`'s release process, `CITATION.cff`'s `1.0.0`, and the
       publication gate all assume one. Record the choice made.
 
@@ -680,9 +814,10 @@ corrections the research measured as factually wrong.
 **Commit Mode**: per-substep
 
 **Scope Hypothesis**: 8 `unrelated` namespace-audit files, 3 of them lacking the standard heading; 2
-files over 4,500 lines; 5 `CHANGELOG.md` references in `VERSIONING.md`. Confirm each with
-`measure-refactor-partitions.py namespace-audit`, `wc -l` over `FormalSystem/`, and
-`grep -c CHANGELOG docs/development/VERSIONING.md` respectively, before writing any count into prose.
+files over 4,500 lines; 9 `CHANGELOG` occurrences in `VERSIONING.md` (re-measured at plan revision;
+version 1 of this plan said 5). Confirm each with `measure-refactor-partitions.py namespace-audit`,
+`wc -l` over `FormalSystem/`, and `grep -o CHANGELOG docs/development/VERSIONING.md | wc -l`
+respectively, before writing any count into prose.
 
 **Files to modify**:
 - `ORGANISATION.md` - module-size policy, corrected `specs/` row, namespace-exception index
@@ -723,7 +858,12 @@ as satisfied rather than re-performing them, and hand the maintainer-only residu
       `lake exe lint-style`, `bash scripts/check-copyright-headers.sh --strict FormalSystem
       BimodalTools`, `bash scripts/readme-lint.sh FormalSystem BimodalTools`,
       `bash scripts/check-evidence-probes.sh`, `bash scripts/check-metalogic-cycles.sh`,
-      `bash scripts/typst-sync-check.sh`. Every one green.
+      `bash scripts/typst-sync-check.sh`, `bash scripts/check-paper-definitions.sh`. Every one green.
+      Cross-check the list against `grep -n -- '- name:' .github/workflows/ci.yml` so that every CI
+      step has a local counterpart in this run; version 1 of this plan had missed one.
+- [ ] Confirm the header gate one last time by citing Phase 2's full probe sweep, and re-probe any
+      `FormalSystem` file added or whose header region changed after it (Phases 4, 7 and 9 touch a
+      few). Do not cite `lake build --wfail` as header evidence.
 - [ ] Confirm all three stated acceptance criteria against observed output: `mk_all --check` green; C6
       manifest empty; release-workflow dry-run (YAML parse + pin resolution) passing.
 - [ ] Update `docs/development/PUBLICATION_REFACTOR.md`'s Phase 8 / follow-up H entries to record what
@@ -780,6 +920,8 @@ therefore not a challenge statement.
 ## Testing & Validation
 
 - [ ] `lake build --wfail` green, including the nine modules newly reachable from the generated root
+- [ ] Full header-linter probe sweep (Phase 1's probe, real generated root): zero findings across every
+      `FormalSystem` module. A warm build replays trace logs and cannot stand in for this
 - [ ] `lake test` green, and printing no benchmark table
 - [ ] `lake lint` (`runLinter FormalSystem` against `scripts/nolints.json`) still at zero un-nolisted
       findings — the enforced C16 half must not regress
@@ -788,12 +930,13 @@ therefore not a challenge statement.
 - [ ] `lake exe mk_all --lib FormalSystem --check` exits 0
 - [ ] `lake exe lint-style` exits 0
 - [ ] `bash scripts/check-module-invariants.sh` (full mode) green — C6 empty, C8 without the dead
-      allow-list entry, C16 and C28 agreeing with their own recorded tables, C31 passing
-- [ ] C31's deliberate negative test: a stray `.lean` file produces `FAIL` and a non-zero exit;
+      allow-list entry, C16 and C28 agreeing with their own recorded tables, C33 passing
+- [ ] C33's deliberate negative test: a stray `.lean` file produces `FAIL` and a non-zero exit;
       removing it restores `PASS`
 - [ ] `bash scripts/check-copyright-headers.sh --strict FormalSystem BimodalTools` green
 - [ ] `bash scripts/readme-lint.sh FormalSystem BimodalTools` green
-- [ ] `bash scripts/check-evidence-probes.sh`, `check-metalogic-cycles.sh`, `typst-sync-check.sh` green
+- [ ] `bash scripts/check-evidence-probes.sh`, `check-metalogic-cycles.sh`, `typst-sync-check.sh`,
+      `check-paper-definitions.sh` green
 - [ ] `.github/workflows/release.yml` parses under `yaml.safe_load` and every action pin resolves
 - [ ] Every modified CI step's `run:` body, extracted from the committed YAML rather than retyped,
       executes green locally
@@ -808,9 +951,10 @@ therefore not a challenge statement.
 - `.github/workflows/release.yml` - new
 - `CHANGELOG.md` - new (or `VERSIONING.md` corrected instead; the choice is recorded in Phase 9)
 - `scripts/module-invariants-manifest.txt` - emptied
-- `scripts/check-module-invariants.sh` - C31 added; C8, B3, C16, C28 records corrected
+- `scripts/check-module-invariants.sh` - C33 (or the ID confirmed free) added; C8, B3, C16, C28
+  records corrected
 - `scripts/check-copyright-headers.sh` - `WHY THIS EXISTS` block corrected
-- `.github/workflows/ci.yml` - C31 step, `lint-style-action` step, `--wfail` on the two tooling steps
+- `.github/workflows/ci.yml` - C33 step, `lint-style-action` step, `--wfail` on the two tooling steps
 - `lakefile.toml` - `weak.linter.unicodeLinter = false` with a recorded reason
 - `ORGANISATION.md` - module-size policy, namespace-exception index, corrected `specs/` row
 - `docs/development/{CI_CD_PROCESS,MODULE_INVARIANTS,LEAN_STYLE_GUIDE,VERSIONING,PUBLICATION_REFACTOR,DIRECTORY_README_STANDARD}.md`
@@ -821,9 +965,12 @@ therefore not a challenge statement.
 - **Per-phase**: every phase except Phase 2 uses `per-substep` commits, so a failed step is recovered
   by fixing forward from the last green commit. `rules/error-handling.md` forbids discarding
   uncommitted changes to reach a passing build.
-- **Phase 1's temporary root**: restored by `cp` from a scratch copy taken before generation, verified
-  with `sha256sum -c`. Never restored with `git checkout --` or `git restore`, which the
-  `guard-destructive-git.sh` hook blocks on a dirty tree.
+- **Phase 1 needs no restore step.** The probe's generated root lives in the session scratchpad and
+  never enters the repository, so there is nothing to put back. If a temporary root is ever found in
+  the working tree, it is a deviation from this plan: recover it with `git show HEAD:FormalSystem.lean
+  > FormalSystem.lean` only after confirming via `git diff -- FormalSystem.lean` that the file carries
+  no other change, never with `git checkout --` or `git restore`, which the `guard-destructive-git.sh`
+  hook blocks on a dirty tree.
 - **Phase 2 (`atomic-batch`)**: the only phase whose intermediate states are expected red. If it
   cannot be brought green, revert the single batch commit with `git revert` rather than a
   working-tree-discarding command. The pre-collapse root is recoverable from git history at any point.
@@ -833,7 +980,8 @@ therefore not a challenge statement.
   then the destructive command. Do not emit a bare `git-snapshot.sh 637` as a routine start-of-phase
   checkpoint; a defensive checkpoint before risky work uses `--no-revert`.
 - **Territory conflicts**: if task 643 or 614 has landed changes to a shared file, rebase this task's
-  edits onto theirs. Never revert a sibling's work to make room. On a foreign commit, foreign
+  edits onto theirs. If either still holds *uncommitted* hunks in a shared file, do not edit that file
+  at all — mark the phase `[BLOCKED]` and report (Phases 2, 5, 6). Never revert a sibling's work to make room. On a foreign commit, foreign
   uncommitted modification, or a running build this task did not start, check `git log` to confirm the
   work is not this task's own, then STOP and report.
 - **The C6 manifest** is the safety net for the reachability work: if a module cannot be wired, it can
