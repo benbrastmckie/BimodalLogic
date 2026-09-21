@@ -43,7 +43,7 @@ The L⁻/L⁺/L⋆ language-family semantics no longer lives under this director
 now a self-contained component at the library root — `FormalSystem/MinusLanguage/`,
 `FormalSystem/PlusLanguage/`, `FormalSystem/StarLanguage/` — carrying its syntax, its proof
 system and its semantics together, aggregated by `FormalSystem/MinusLanguage.lean` and its two
-siblings, which the root aggregator `FormalSystem/FormalSystem.lean` imports. This file does
+siblings, which the generated library root `FormalSystem.lean` imports. This file does
 **not** import them directly, but still reaches much of L⁺ and L⋆ transitively, through
 `DeterministicBridge` and `StateLocalTransfer` — the two cross-language bridges, which stay here
 because each spans two families. The subdirectories `Extension/`, `Ultraproduct/`,

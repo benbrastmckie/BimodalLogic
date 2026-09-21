@@ -93,7 +93,8 @@ lake env lean FormalSystem/Syntax/Formula.lean
 ## API Documentation
 
 For detailed API documentation, see:
-- Module overview: [FormalSystem.lean](../FormalSystem/FormalSystem.lean)
+- Module overview: [FormalSystem/README.md](../FormalSystem/README.md) (the library root
+  `FormalSystem.lean` is a generated import list and carries no prose)
 - Generated docs: Run `lake build :docs`
 - Architecture guide: [architecture.md](../docs/user-guide/architecture.md)
 

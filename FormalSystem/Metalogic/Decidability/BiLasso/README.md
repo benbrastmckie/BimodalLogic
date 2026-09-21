@@ -225,11 +225,12 @@ prefix rendering `U(e, g)` is event-first and is a *display* convention only.
 ## Dependencies
 
 - **Imports from**: `FormalSystem.Metalogic.Decidability.IntPresentation`
-- **Imported by**: nothing. The re-export `FormalSystem.Metalogic.Decidability.BiLasso` exists but
-  is not itself imported, so the layer is still outside the Lake build graph and is compile-checked
-  by the C6 rot guard instead. Registering it means adding one import to `Decidability.lean` and
-  deleting the corresponding lines from `scripts/module-invariants-manifest.txt` in the same
-  commit — C6 fails if a manifest entry names a module that has become reachable.
+- **Imported by**: `FormalSystem/Metalogic/Decidability.lean`, through the re-export
+  `FormalSystem.Metalogic.Decidability.BiLasso`, for the decision layer; and the generated
+  library root `FormalSystem.lean`, which imports every module in this directory directly —
+  including `Extend`, `Successor`, `Orbit` and `Agreement`, which the re-export deliberately
+  omits. Nothing here is outside the Lake build graph, and nothing here is listed in
+  `scripts/module-invariants-manifest.txt`.
 
 ## Related Documentation
 

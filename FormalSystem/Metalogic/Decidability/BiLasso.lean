@@ -82,8 +82,8 @@ fifteen manifest lines that used to record this module and its imports as known-
 deleted in the same commit that added that import: C6 of `scripts/check-module-invariants.sh`
 fails if a manifest entry names a module that has become reachable.
 
-The four modules named under "Not re-exported here" are not covered by that registration. They
-stay unreachable, and stay listed in `scripts/module-invariants-manifest.txt` so the C6 rot guard
-keeps compile-checking each of them in isolation, until the effective-periodic-extension work
-wires them in itself.
+The four modules named under "Not re-exported here" are not covered by that registration, and
+do not need to be: the generated library root `FormalSystem.lean` imports every module under
+`FormalSystem/` directly, so `lake build` compiles them whether or not an aggregator carries
+them. Their four lines in `scripts/module-invariants-manifest.txt` are gone for the same reason.
 -/

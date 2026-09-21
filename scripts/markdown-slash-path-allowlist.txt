@@ -21,3 +21,10 @@
 # accepted record has to say where the archive moved FROM, and that path deliberately no
 # longer resolves. The current location, `Boneyard/`, is gated normally.
 FormalSystem/Boneyard
+
+# `FormalSystem/FormalSystem.lean` -- the self-named inner library root, absorbed into the
+# generated repository-root `FormalSystem.lean`. docs/development/PUBLICATION_REFACTOR.md cites it
+# as history three times: the adoption table's "current state" cell, the Phase 8 work list, and the
+# quoted follow-up brief. A programme record has to say what was collapsed, and that path
+# deliberately no longer resolves. The surviving root, `FormalSystem.lean`, is gated normally.
+FormalSystem/FormalSystem.lean
