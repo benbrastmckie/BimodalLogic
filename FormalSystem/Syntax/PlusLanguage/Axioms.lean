@@ -286,7 +286,10 @@ inductive PlusAxiom : PlusFormula → Type where
       PlusAxiom ((PlusFormula.stab (φ.imp ψ)).imp ((PlusFormula.stab φ).imp (PlusFormula.stab ψ)))
   /-- ST: `⊡φ → φ` — T for `⊡` (the footnote to the Stability clause); `Semantics.of_stab`. -/
   | stab_t (φ : PlusFormula) : PlusAxiom ((PlusFormula.stab φ).imp φ)
-  /-- S4: `⊡φ → ⊡⊡φ` (the footnote to the Stability clause); `Semantics.stab_four`. -/
+  /-- S4: `⊡φ → ⊡⊡φ` (the footnote to the Stability clause); `Semantics.stab_four`. `stab_4` is
+  not among the schemata of the manuscript's commented-out TM-stability axiomatization (SK, ST,
+  S5, MS, AS, PS and US); it is derivable from SK, ST and the S5 schema, and is kept here as a
+  primitive constructor for convenience. -/
   | stab_4 (φ : PlusFormula) :
       PlusAxiom ((PlusFormula.stab φ).imp (PlusFormula.stab (PlusFormula.stab φ)))
   /-- S5: `⟐φ → ⊡⟐φ`, stated as `¬⊡¬φ → ⊡¬⊡¬φ` through `dstab` (the footnote to the Stability

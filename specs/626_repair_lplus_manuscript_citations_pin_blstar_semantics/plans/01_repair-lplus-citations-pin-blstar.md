@@ -250,7 +250,7 @@ report any divergence rather than absorbing it silently.
 
 ---
 
-### Phase 3: Record `stab_4`'s status relative to `def:TM-stability` [NOT STARTED]
+### Phase 3: Record `stab_4`'s status relative to `def:TM-stability` [COMPLETED]
 
 **Goal**: The `stab_4` constructor's docstring states that the schema is surplus to the
 manuscript's commented-out `def:TM-stability`, derivable from SK, ST and the S5 schema, and kept
@@ -290,7 +290,7 @@ for convenience — and says nothing stronger.
 
 ---
 
-### Phase 4: Pin `def:BLstar-semantics` in the record of paper definitions [NOT STARTED]
+### Phase 4: Pin `def:BLstar-semantics` in the record of paper definitions [IN PROGRESS]
 
 **Goal**: `def:BLstar-semantics` is a pinned manifest anchor with a prose entry, its
 KNOWN-ANCHORS row is gone, its world-register exclusion is preserved, and the whole-file
@@ -355,29 +355,29 @@ differs, the manuscript moved and the newly printed value and text are authorita
 
 ---
 
-### Phase 5: Record the unformalized Restricted-Modalities operators [NOT STARTED]
+### Phase 5: Record the unformalized Restricted-Modalities operators [COMPLETED]
 
 **Goal**: `FormalSystem/Syntax/StarLanguage/README.md`'s correspondence table records the
 open-future, open-past and nomic operators of subsection *Restricted Modalities* as manuscript
 operators with no formalization in this repository.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Syntax/StarLanguage/README.md`'s "Paper-label correspondence" table,
+- [x] Re-read `FormalSystem/Syntax/StarLanguage/README.md`'s "Paper-label correspondence" table,
       including the existing world-register exclusion row, and match the new row to the table's
-      three-column shape and its established "**Excluded**:" / "—" idiom.
-- [ ] Add one row recording the three operators (`⟨τ⟩`-style open future, open past, and the
+      three-column shape and its established "**Excluded**:" / "—" idiom. *(completed)*
+- [x] Add one row recording the three operators (`⟨τ⟩`-style open future, open past, and the
       nomic modal) as defined in subsection *Restricted Modalities* alongside Stability, and
-      explicitly disclaimed by the manuscript itself at the close of that subsection.
-- [ ] Place the row where the table already records the world registers as excluded — adjacent
+      explicitly disclaimed by the manuscript itself at the close of that subsection. *(completed)*
+- [x] Place the row where the table already records the world registers as excluded — adjacent
       to the existing `def:BLstar-semantics` (world registers) row — so the two exclusions read
-      together.
-- [ ] Note in the row that a separate task formalizes the open-future and open-past operators.
+      together. *(completed)*
+- [x] Note in the row that a separate task formalizes the open-future and open-past operators.
       **Write no task number**: this file is outside `specs/`, and
-      `.claude/rules/no-task-references-in-deliverables.md` forbids task-number citations there.
-- [ ] Cite the subsection by `sub:RestrictedModalities`, consistent with the table's own header
+      `.claude/rules/no-task-references-in-deliverables.md` forbids task-number citations there. *(completed: "a separate task formalizes the open-future and open-past operators", no digits)*
+- [x] Cite the subsection by `sub:RestrictedModalities`, consistent with the table's own header
       rule ("Anchors are cited by `\label` only, never by line number"), after confirming the
-      literal `\label{sub:RestrictedModalities}` in the manuscript.
-- [ ] Confirm no other row of the table was modified.
+      literal `\label{sub:RestrictedModalities}` in the manuscript. *(completed)*
+- [x] Confirm no other row of the table was modified. *(completed: git diff shows exactly one added line)*
 
 **Timing**: 20 minutes
 
