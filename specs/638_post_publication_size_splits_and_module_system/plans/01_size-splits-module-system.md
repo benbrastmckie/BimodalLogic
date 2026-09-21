@@ -233,43 +233,43 @@ sizes (hypotheses): defs ~370, mu ~440, left ~2,130, right ~2,240 lines.
 
 ---
 
-### Phase 3: Extract `SplitPointProps`; close the aggregator [NOT STARTED]
+### Phase 3: Extract `SplitPointProps`; close the aggregator [COMPLETED]
 
 **Goal**: `CaseAnalysis.lean` depends on the structure only; the theorem stays whole with its
 scoped heartbeat option; `import FormalSystem.Metalogic.Expressiveness` still means the whole
 development.
 
 **Tasks**:
-- [ ] Start from a clean tree (`git status --porcelain` empty apart from unrelated `specs/` state).
+- [x] Start from a clean tree (`git status --porcelain` empty apart from unrelated `specs/` state).
   If the batch has to be paused while red (interruption, context pressure), do not commit it:
   checkpoint with `bash .claude/scripts/git-snapshot.sh --no-revert 638` and record the reference
   in the handoff.
-- [ ] Create `GameTransfer/SplitPointProps.lean`: copyright header, import of
+- [x] Create `GameTransfer/SplitPointProps.lean`: copyright header, import of
   `...GameTransfer.DConsistencyTransport`, module docstring, namespace, `open`, the
   `/-! ## GHR93 Theorem 6: Inductive Step Infrastructure` section docstring and
   `structure SplitPointProps`, `end`.
-- [ ] Reduce `GameTransfer/SplitPoint.lean` to the theorem: import becomes
+- [x] Reduce `GameTransfer/SplitPoint.lean` to the theorem: import becomes
   `...GameTransfer.SplitPointProps`; module docstring updated; the `set_option maxHeartbeats
   800000 in` line, the three-line `--` reason comment, the docstring and
   `theorem obtain_split_point_props` stay contiguous and byte-identical; retighten the
   `linter.style.longFile` baseline from the linter's message (expected 4900 or 5000).
-- [ ] Verbatim-move check: structure block + theorem block, concatenated, `diff -B` against the
+- [x] Verbatim-move check: structure block + theorem block, concatenated, `diff -B` against the
   pristine copy's body. Must be empty.
-- [ ] `GameTransfer/CaseAnalysis.lean` line 7: re-point from `...GameTransfer.SplitPoint` to
+- [x] `GameTransfer/CaseAnalysis.lean` line 7: re-point from `...GameTransfer.SplitPoint` to
   `...GameTransfer.SplitPointProps`.
-- [ ] `WeakCanonical/Transfer.lean`: add `import FormalSystem.Metalogic.Expressiveness.GameTransfer.SplitPoint`
+- [x] `WeakCanonical/Transfer.lean`: add `import FormalSystem.Metalogic.Expressiveness.GameTransfer.SplitPoint`
   in sorted position among its imports. Without it the build breaks.
-- [ ] `FormalSystem/Metalogic/Expressiveness.lean`: add three import lines —
+- [x] `FormalSystem/Metalogic/Expressiveness.lean`: add three import lines —
   `...EFGames.GapDetectionLeft`, `...EFGames.GapDetectionRight`, `...GameTransfer.SplitPoint` —
   following the file's existing ordering convention, and update its docstring if it enumerates
   what it covers.
-- [ ] Regenerate the root: `lake exe mk_all --lib FormalSystem`.
-- [ ] Build, detached and guarded:
+- [x] Regenerate the root: `lake exe mk_all --lib FormalSystem`.
+- [x] Build, detached and guarded:
   `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- FormalSystem.Metalogic.WeakCanonical.Transfer FormalSystem.Metalogic.Expressiveness`
   under `Bash(run_in_background: true)`. This pays the long downstream rebuild once (the chain
   `CustomGame -> ... -> DConsistencyTransport -> SplitPoint` plus `Transfer`). Use only the passive
-  progress checks of `long-builds.md` while waiting; wait for the completion notification.
-- [ ] Commit the batch once green.
+  progress checks of `long-builds.md` while waiting; wait for the completion notification. *(deviation: altered — invoked as `... -- build <modules>`, the lake subcommand being required after `--`; aggregator docstring left unchanged because it enumerates topics, not files)*
+- [x] Commit the batch once green.
 
 **Timing**: 1.5 hours
 

@@ -194,6 +194,7 @@ import FormalSystem.Metalogic.Expressiveness.GameTransfer.CaseAnalysis
 import FormalSystem.Metalogic.Expressiveness.GameTransfer.ContinuationSets
 import FormalSystem.Metalogic.Expressiveness.GameTransfer.DConsistencyTransport
 import FormalSystem.Metalogic.Expressiveness.GameTransfer.SplitPoint
+import FormalSystem.Metalogic.Expressiveness.GameTransfer.SplitPointProps
 import FormalSystem.Metalogic.Expressiveness.Kamp.BracketNegationClauses
 import FormalSystem.Metalogic.Expressiveness.Kamp.ConjInterleave
 import FormalSystem.Metalogic.Expressiveness.Kamp.ContentfulFaithfulBridge

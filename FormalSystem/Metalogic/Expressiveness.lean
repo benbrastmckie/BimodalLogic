@@ -16,7 +16,10 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.DedekindINFDense
 import FormalSystem.Metalogic.Expressiveness.Kamp.KPlusFaithful
 import FormalSystem.Metalogic.Expressiveness.PriorExpressivenessDense
 import FormalSystem.Metalogic.Expressiveness.StaviConnectives
+import FormalSystem.Metalogic.Expressiveness.EFGames.GapDetectionLeft
+import FormalSystem.Metalogic.Expressiveness.EFGames.GapDetectionRight
 import FormalSystem.Metalogic.Expressiveness.EFGames.StaviCompleteness
+import FormalSystem.Metalogic.Expressiveness.GameTransfer.SplitPoint
 import FormalSystem.Metalogic.Expressiveness.GameTransfer.CaseAnalysis
 
 /-!

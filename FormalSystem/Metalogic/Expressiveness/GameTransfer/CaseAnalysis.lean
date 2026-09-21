@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Expressiveness.GameTransfer.SplitPoint
+import FormalSystem.Metalogic.Expressiveness.GameTransfer.SplitPointProps
 import FormalSystem.Metalogic.Expressiveness.EFGames.Composition
 import FormalSystem.Metalogic.Expressiveness.EFGames.CharacteristicFormula
 import Mathlib.Data.Fin.Tuple.Sort

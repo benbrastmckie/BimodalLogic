@@ -9,6 +9,7 @@ import FormalSystem.Metalogic.WeakCanonical.IntegerModel.ShiftAndGlue
 import FormalSystem.Metalogic.WeakCanonical.OrderedSum
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
 import FormalSystem.Metalogic.Expressiveness.GameTransfer.CaseAnalysis
+import FormalSystem.Metalogic.Expressiveness.GameTransfer.SplitPoint
 import FormalSystem.Semantics.Validity
 import Mathlib.Data.Int.SuccPred
 
