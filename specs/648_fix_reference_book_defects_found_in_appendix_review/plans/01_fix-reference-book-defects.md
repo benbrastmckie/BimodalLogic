@@ -346,25 +346,27 @@ before editing.
 
 ---
 
-### Phase 5: Decidability-in-practice chapter [NOT STARTED]
+### Phase 5: Decidability-in-practice chapter [COMPLETED]
 
 **Goal**: Item 4. `DecisionResult` is described with its four real constructors, and the chapter's
 other decision-procedure claims are re-checked against source.
 
 **Tasks**:
-- [ ] Replace the three-way `valid`/`invalid`/`timeout` description in
+- [x] Replace the three-way `valid`/`invalid`/`timeout` description in
       `typst/chapters/p2-decidability-practice.typ` with the four real constructors, saying what
       distinguishes the two non-verdict outcomes: fuel exhaustion means genuinely undecided;
       extraction failure means every tableau branch closed and the formula is valid but the proof
-      term was not recoverable.
-- [ ] Fix the later sentence that attributes an exhausted budget to a `timeout` outcome.
-- [ ] Leave the chapter's separate, correct citation of the certificate-outcome type — which does
-      have a `timeout` constructor — untouched.
-- [ ] Re-check the chapter's descriptions of the decision entry point, the validity and
+      term was not recoverable. *(completed)*
+- [x] Fix the later sentence that attributes an exhausted budget to a `timeout` outcome.
+      *(completed: now attributes it to `fuelExhausted`)*
+- [x] Leave the chapter's separate, correct citation of the certificate-outcome type — which does
+      have a `timeout` constructor — untouched. *(confirmed unchanged)*
+- [x] Re-check the chapter's descriptions of the decision entry point, the validity and
       satisfiability predicates, and the proof/countermodel accessors against
       `FormalSystem/Metalogic/Decidability/DecisionProcedure.lean`; research found these correct,
-      so confirm and record rather than edit unless a discrepancy appears.
-- [ ] Recompile and inspect the rendered pages.
+      so confirm and record rather than edit unless a discrepancy appears. *(completed: all five
+      confirmed correct against source, no edit needed)*
+- [x] Recompile and inspect the rendered pages. *(completed)*
 
 **Timing**: 0.75 hours
 
