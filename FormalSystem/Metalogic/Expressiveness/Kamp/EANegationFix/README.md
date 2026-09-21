@@ -42,4 +42,4 @@ directory that re-exports it.
 
 ---
 
-*Last verified: 2026-09-07*
+*Last verified: 2026-09-21*

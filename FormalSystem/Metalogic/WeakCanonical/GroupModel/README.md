@@ -45,8 +45,8 @@ Sources: Doets 1987, chapters 3 and 7; Reynolds 1992, section 8.
 
 ---
 
-**Last verified**: 2026-08-25
+**Last verified**: 2026-09-21
 
 ---
 
-*Last verified: 2026-09-07*
+*Last verified: 2026-09-21*

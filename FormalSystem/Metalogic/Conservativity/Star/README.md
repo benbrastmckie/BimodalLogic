@@ -123,3 +123,7 @@ open.
 - [`../../../StarLanguage/README.md`](../../../StarLanguage/README.md) — the language L⋆, the
   proof system's declarations, and the paper-label correspondence table
 - [`../README.md`](../README.md) — the conservativity directory as a whole
+
+---
+
+*Last verified: 2026-09-21*

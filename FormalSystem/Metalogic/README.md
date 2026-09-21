@@ -405,4 +405,4 @@ correct way to re-derive any count in this document.
 
 ---
 
-*Last verified: 2026-09-08*
+*Last verified: 2026-09-21*

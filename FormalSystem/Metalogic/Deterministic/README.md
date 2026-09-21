@@ -75,4 +75,4 @@ remaining work is the two collapses: semantic (`Erasure.lean`) and syntactic
 
 ---
 
-*Last verified: 2026-09-08*
+*Last verified: 2026-09-21*

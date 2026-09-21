@@ -29,4 +29,4 @@ equivalence to produce a finite model that preserves truth of relevant formulas.
 
 ---
 
-*Last verified: 2026-09-07*
+*Last verified: 2026-09-21*

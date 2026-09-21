@@ -32,4 +32,4 @@ and provides the basis for "shift-and-glue" constructions used in completeness p
 
 ---
 
-*Last verified: 2026-09-07*
+*Last verified: 2026-09-21*

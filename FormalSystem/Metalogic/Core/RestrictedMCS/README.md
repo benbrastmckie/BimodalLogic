@@ -32,4 +32,4 @@ set constrained to contain only formulas from a fixed finite subformula closure.
 
 ---
 
-*Last verified: 2026-09-07*
+*Last verified: 2026-09-21*

@@ -305,7 +305,7 @@ diverged from this plan and the list must follow the chapter, not the plan.
 
 ---
 
-### Phase 3: Date stamps, non-Metalogic (19 files) [IN PROGRESS]
+### Phase 3: Date stamps, non-Metalogic (19 files) [COMPLETED]
 
 **Goal**: Every README outside `FormalSystem/Metalogic/` that the lint flags carries a stamp equal
 to this phase's commit date.
@@ -315,18 +315,18 @@ land on (`date +%F` at commit time). The lint predicate is strict (`STAMP_DATE <
 a stamp equal to the commit date is green and a stamp one day earlier is not.
 
 **Tasks**:
-- [ ] Re-derive the list: `bash scripts/readme-lint.sh FormalSystem BimodalTools 2>&1 | grep -E 'STALE DATE|MISSING DATE' | grep -v 'FormalSystem/Metalogic/'`.
-- [ ] For each file, locate the **first** line matching `last verified|last updated` (case-insensitive) — that is the only line the lint reads — and rewrite its date. Preserve the line's existing shape; four shapes occur across the full 53:
+- [x] Re-derive the list: `bash scripts/readme-lint.sh FormalSystem BimodalTools 2>&1 | grep -E 'STALE DATE|MISSING DATE' | grep -v 'FormalSystem/Metalogic/'`. *(deviation: altered — the re-derived list has 20 files, not 19: `FormalSystem/Tactic/README.md` (stamped 2026-09-20) went stale when a sibling commit landed under `FormalSystem/Tactic/` on 2026-09-21. Phase 5's Scope Hypothesis anticipated restamping it if flagged; it was restamped here instead, in the same commit `06363865d`)*
+- [x] For each file, locate the **first** line matching `last verified|last updated` (case-insensitive) — that is the only line the lint reads — and rewrite its date. *(deviation: altered — applied by one scripted per-file pass rather than hand `Edit`s: for each named file it asserts the expected number of stamp-pattern lines (1, or 2 for the double-stamp files), asserts each matches one of the stamp shapes with the date directly after the label, and rewrites only the date token; `FormalSystem/README.md` was stamped only after its trailing claims were re-verified on the settled tree — guarded `lake build` exit 0 (2663 jobs), sorry census 0, `check-module-invariants.sh --no-build` ALL CHECKS PASSED, `check-paper-definitions.sh` exit 0, `typst-sync-check.sh` PASS)* Preserve the line's existing shape; four shapes occur across the full 53:
   - `*Last verified: YYYY-MM-DD*` (the 40-file majority)
   - `**Last verified**: YYYY-MM-DD`
   - `*Last verified: YYYY-MM-DD — <trailing prose>*`
   - `*Last updated: YYYY-MM-DD (<parenthetical>)*`
-- [ ] Two files in this set carry a **second** stamp line that the lint does not read; update it to the same date so the file does not contradict itself. In both, the lint reads the bold line and the italic line sits four lines below it:
+- [x] Two files in this set carry a **second** stamp line that the lint does not read; update it to the same date so the file does not contradict itself. In both, the lint reads the bold line and the italic line sits four lines below it:
   - `FormalSystem/Semantics/Correspondence/README.md` — `:76` `**Last verified**: 2026-09-02` (read by the lint), `:80` `*Last verified: 2026-09-07*`.
   - `FormalSystem/Semantics/Extension/README.md` — `:51` `**Last verified**: 2026-09-07` (read by the lint), `:55` `*Last verified: 2026-09-07*`.
-- [ ] `git diff` review: confirm every hunk changes only a date string.
-- [ ] Commit `task 614 phase 3: refresh non-Metalogic README date stamps`.
-- [ ] **After committing**, re-run the lint and confirm none of these 19 files is still flagged.
+- [x] `git diff` review: confirm every hunk changes only a date string.
+- [x] Commit `task 614 phase 3: refresh non-Metalogic README date stamps`.
+- [x] **After committing**, re-run the lint and confirm none of these 19 files is still flagged.
 
 Files (19): `BimodalTools/README.md`; `FormalSystem/README.md`; `FormalSystem/Automation/README.md`;
 `FormalSystem/Automation/ProofSearch/README.md`; `FormalSystem/Automation/Tactics/README.md`;
@@ -365,7 +365,7 @@ revision: no README outside the 53 carries a second stamp line.)
 
 ---
 
-### Phase 4: Date stamps, Metalogic subtree (34 files) [NOT STARTED]
+### Phase 4: Date stamps, Metalogic subtree (34 files) [IN PROGRESS]
 
 **Goal**: Every README under `FormalSystem/Metalogic/` that the lint flags carries a stamp equal
 to this phase's commit date, including the two files that have no stamp line at all.

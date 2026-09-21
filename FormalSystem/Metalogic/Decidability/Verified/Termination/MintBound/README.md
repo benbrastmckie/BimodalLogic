@@ -95,3 +95,7 @@ it, and nothing imports `Register.lean` except the aggregator.
 
 - [Termination README](../README.md)
 - [Verified README](../../README.md)
+
+---
+
+*Last verified: 2026-09-21*

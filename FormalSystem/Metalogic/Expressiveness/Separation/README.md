@@ -45,4 +45,4 @@ bisimulation-invariant properties expressible in the language.
 
 ---
 
-*Last verified: 2026-09-07*
+*Last verified: 2026-09-21*
