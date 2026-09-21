@@ -4,7 +4,7 @@
 
 import FormalSystem.Metalogic.Expressiveness.EFGames.Decomposition
 import FormalSystem.Metalogic.Expressiveness.EFGames.Composition
-import FormalSystem.Metalogic.Expressiveness.GameTransfer.Theorem6
+import FormalSystem.Metalogic.Expressiveness.GameTransfer.CaseAnalysis
 import Mathlib.Tactic.FinCases
 
 /-!

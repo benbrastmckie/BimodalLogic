@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Expressiveness.Kamp.Prop42ExistsForall
+import FormalSystem.Metalogic.Expressiveness.Kamp.VeeExistsForallTranslation
 import FormalSystem.Metalogic.Expressiveness.Kamp.VeeExistsForall
 import FormalSystem.Metalogic.Expressiveness.Kamp.ExistsForallLemmas
 import FormalSystem.Metalogic.Expressiveness.Kamp.IntervalType
@@ -16,7 +16,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFix.VecEANegFix
 /-!
 # Proposition 4.2 on an ARBITRARY-pin two-free-variable `∃∀`-object (Rabinovich 2014, PDF p.7)
 
-`Prop42ExistsForall.lean` negates only the endpoint-pinned, trivial-cap canonical form
+`VeeExistsForallTranslation.lean` negates only the endpoint-pinned, trivial-cap canonical form
 (`EndpointPinnedCapTrivial`). Rabinovich's Proposition 4.2 proof (Section 5, PDF p.7) negates a
 *general* two-free-variable `∃∀`-object — arbitrary pins `z₀ = x_m`, `z₁ = x_k`, contentful caps
 `β₀`, `β_{n+1}` — by **splitting its single ordered chain at the two pinned points into three
@@ -50,15 +50,16 @@ single chain at two *known* points (fixed order `below < x_m < middle < x_k < ab
 "glue along shared pins" technique as `ExistsForallLemmas.gluedChain`.
 
 Off the live import path (imported by nothing live) until it is wired into the Prop 4.3 negation
-case, mirroring how `Prop42ExistsForall.lean` and `Prop43.lean` already sit off-path.
+case, mirroring how `VeeExistsForallTranslation.lean` and `Prop43.lean` already sit off-path.
 
 ## References
 
 - [rabinovich2014], Proposition 4.2 statement (p.6), proof and the
   three-way chain split + Lemma 5.1 (p.7). Cited by PDF page; the companion markdown
   transcription is corrupt.
-- `Prop42ExistsForall.lean`: `EndpointPinnedCapTrivial`, `prop42_veeSat_negation` (middle piece).
-- `Prop35Assembly.lean`: `translateProp35`, `translateProp35_correct` (end pieces).
+- `VeeExistsForallTranslation.lean`: `EndpointPinnedCapTrivial`, `prop42_veeSat_negation` (middle
+piece).
+- `ExistsForallTranslation.lean`: `translateProp35`, `translateProp35_correct` (end pieces).
 - `ExistsForallLemmas.lean`: `gluedChain` family (backward gluing template).
 - `VecEAFormula.lean`: `VVecEA2`, `VecEA2`, `BracketFormula.trivial`, `VVecEA2.disj`.
 -/
@@ -72,7 +73,8 @@ open FormalSystem.Metalogic.Expressiveness
 
 Fin counterparts of sections 1, 2, and 5's clause constructors on
 `ExistsForallFormulaFin`/`efSatFin` (`PerFormulaExistsForall.lean`): renders switch to
-`translateProp35Fin`/`efPointTPFin`/`efIntervalSetTPFin` (`Prop35Assembly.lean` Fin section),
+`translateProp35Fin`/`efPointTPFin`/`efIntervalSetTPFin` (`ExistsForallTranslation.lean` Fin
+section),
 interval slots read the bundled partial types `ψ.intervalType`. The `VVecEA2`/`VecEA2`/
 `BracketFormula`/`TemporalPred` target layer is representation-independent and reused verbatim.
 NO alphabet instances. The section-3/4 decompose mirrors and the final assembly

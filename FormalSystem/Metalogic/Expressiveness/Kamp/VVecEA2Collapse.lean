@@ -8,8 +8,8 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.VeeExistsForall
 import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAFormula
 import FormalSystem.Metalogic.Expressiveness.Kamp.IntervalType
 import FormalSystem.Metalogic.Expressiveness.Kamp.ESigmaCapture
-import FormalSystem.Metalogic.Expressiveness.Kamp.Prop35Assembly
-import FormalSystem.Metalogic.Expressiveness.Kamp.Prop42ExistsForall
+import FormalSystem.Metalogic.Expressiveness.Kamp.ExistsForallTranslation
+import FormalSystem.Metalogic.Expressiveness.Kamp.VeeExistsForallTranslation
 import FormalSystem.Metalogic.Expressiveness.Kamp.ConjInterleave
 
 /-!
@@ -19,7 +19,7 @@ This module supplies the **disjunctive-assembly half** of the E[Σ] atom-collaps
 `VVecEA2` witness (the object the arbitrary-pin negation engine `prop42_efSat_negation_general`
 produces) back into a `VeeExistsForall` object. The bridge is Rabinovich Def 4.1 (PDF p.5-6) — the
 `VVecEA2 → VeeExistsForall` re-expression is the E[Σ] atom-collapse, the genuine reverse of the
-landed forward bridge `translateVeeProp42` (`Prop42ExistsForall.lean`, which runs
+landed forward bridge `translateVeeProp42` (`VeeExistsForallTranslation.lean`, which runs
 `VeeExistsForall → VVecEA2`).
 
 ## What is here (green): the per-clause → disjunction assembly
@@ -44,7 +44,7 @@ hNamed : ∀ (A : Formula) (y : N.carrier), N.interp (esigmaPred A) y ↔
 
 The atom-naming premise is Def 4.1's canonical-expansion property — every
 arbitrary `TL(Until,Since)` endpoint/segment `Formula` the negation engine emits
-(`Prop42NegationGeneral.lean`) is captured as an admissible-completion `IntervalType`. The capture
+(`BracketNegationClauses.lean`) is captured as an admissible-completion `IntervalType`. The capture
 map `cap : Formula → IntervalType` is obtained by `Classical.choice`/`choose` **inside** the bridge.
 Because an `ExistsForallFormula` point type is a *single* complete `UnaryType` while a captured
 truth
@@ -65,9 +65,11 @@ introduced; the axiom set is `[propext, Classical.choice, Quot.sound]`.
 
 - [rabinovich2014], Definition 4.1 (p.5-6). Cited by PDF page; the
   companion markdown transcription is corrupt.
-- `Prop42ExistsForall.lean`: `translateVeeProp42` / `translateVeeProp42_correct` (the forward
+- `VeeExistsForallTranslation.lean`: `translateVeeProp42` / `translateVeeProp42_correct` (the
+forward
 bridge).
-- `Prop42NegationGeneral.lean`: `prop42_efSat_negation_general` (produces the `VVecEA2` this lifts).
+- `BracketNegationClauses.lean`: `prop42_efSat_negation_general` (produces the `VVecEA2` this
+lifts).
 - `VeeExistsForall.lean`: `veeSat`, `veeSat_append`.
 -/
 

@@ -217,7 +217,7 @@ open FormalSystem.Metalogic.Expressiveness
 
 /-! ## The faithful carrier at `TemporalPred` level
 
-The INF-side counterpart of `HasDedekindSUP.last_occ_tp` (`Lemma53FaithfulPast.lean:171`). -/
+The INF-side counterpart of `HasDedekindSUP.last_occ_tp` (`KMinusFaithfulRendering.lean:171`). -/
 
 /-- First occurrence of a temporal predicate `P` in `(z₀,z₁)` on structures satisfying the
     **faithful** `HasDedekindINF` carrier: either the infimum sits at the left endpoint (as
@@ -225,7 +225,8 @@ The INF-side counterpart of `HasDedekindSUP.last_occ_tp` (`Lemma53FaithfulPast.l
 
     Wraps `HasDedekindINF.first_occ` (`DedekindINF.lean:140`) to accept a `TemporalPred` directly,
     following the pattern of `HasAttainedINF.first_occ_tp` (`EANegationClosure.lean`) and
-    `HasDedekindSUP.last_occ_tp` (`Lemma53FaithfulPast.lean:171`). Unlike the attained version the
+    `HasDedekindSUP.last_occ_tp` (`KMinusFaithfulRendering.lean:171`). Unlike the attained version
+    the
     disjunction is preserved rather than collapsed: that is precisely the content the faithful
     carrier adds.
 
@@ -284,7 +285,7 @@ theorem HasFaithfulDedekindINF.first_occ_tp {sig : MonadicSignature}
 /-- The third conjunct of eq (5.3) (PDF p.10): the point type `¬β₁(z) ∨ K⁺(¬β₁)(z)` carried at the
     pin `r₀`. This is eq (5.2)'s `(P₁(r₀) ∨ K⁺(P₁)(r₀))` (PDF p.8) at `P₁ := ¬β₁`, built from
     `TemporalPred.disj` (`ExistsForallNF.lean:87`) and `kplusOpenPred`
-    (`Lemma53Faithful.lean:140`).
+    (`KPlusFaithfulRendering.lean:140`).
 
     ADAPTED-FROM the `kplusPred` spelling this definition previously carried. The `K⁺` printed in
     eq (5.3) is Rabinovich's own (Definition (3), PDF p.3), which is `kplusOpen`; the tree's
@@ -360,7 +361,7 @@ at `z` together with the segment `β₂ = s1` on `(z,z₁)`, which is precisely 
 /-- Rabinovich's `Form₂` (PDF p.10): the `VVecEA2` equivalent of *"there is no `z ∈ (z₀,z₁)` such
     that `[α₁,β₂,α₂](z,z₁)`"*, i.e. no `p`-point above which `s1` holds throughout.
 
-    This is `negBoundedLeftFixAnchoredFaithful` (`BoundedFixAnchoredFaithful.lean:218`) at
+    This is `negBoundedLeftFixAnchoredFaithful` (`BoundedFixAnchoredFaithful.lean:222`) at
     `α := p` over `BracketFormula.trivial s1`; it is reused unchanged rather than re-derived. -/
 noncomputable def negFixOneTail (p s1 : TemporalPred) : VVecEA2 :=
   negBoundedLeftFixAnchoredFaithful p (BracketFormula.trivial s1)
@@ -386,7 +387,8 @@ theorem negFixOneTail_iff {sig : MonadicSignature}
 /-- **Case 1** (PDF p.9): `K⁺(¬β₁)(z₀)`, with `Form₁ = True` — *"In this case
     `¬[α₀,β₁…,β_{n-1},α_{n-1},βₙ,αₙ](z₀,z₁)` is equivalent to True."*
 
-    A pure left-endpoint condition, carried by `kplusOpenLeftBlock` (`Lemma53Faithful.lean:304`).
+    A pure left-endpoint condition, carried by `kplusOpenLeftBlock`
+    (`KPlusFaithfulRendering.lean:304`).
     The other alternative of the paper's Case 1, `¬α₀(z₀)`, is unavailable at `α₀ = ⊤`.
 
     ADAPTED-FROM the `kplusLeftBlock` spelling this definition previously carried. `K⁺` here is
@@ -826,7 +828,7 @@ theorem negFixOneR_not_holds : ¬(negFixOne s0R pR s1R).holds MR atomMapR 0 10 :
 /-- **The faithful carrier's obligation IS discharged here, at the pinned predicate.** This is
     `HasDedekindINF.first_occ` (`DedekindINF.lean:140`) read at `P := p`, `(z₀,z₁) = (0,10)`: the
     eq (5.2) point is `r₀ = 2`, reached through the `K⁺(P)(r₀)` alternative — the alternative
-    `HasDefinableINF` forbids (`hasDefinableINF_excludes_kplus`, `Lemma53.lean`) and
+    `HasDefinableINF` forbids (`hasDefinableINF_excludes_kplus`, `KPlusBracketRendering.lean`) and
     `HasDedekindINF` admits.
 
     **This statement is left at the `HasDedekindINF` shape deliberately, and that is the stronger

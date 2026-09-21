@@ -90,7 +90,8 @@ this tree's addition; it is not attributable to either paper, and it is what
 `hasDedekindINF_fails_of_interval_witness` (`Kamp/DedekindINFDense.lean:455`) turns on.
 
 **`kplus` is not edited.** It is internally coherent with `kplusFormula` — `kplus_formula_correct`
-(`Kamp/Lemma53.lean:162`) proves them equivalent — and the discrete pipeline depends on both. The
+(`Kamp/KPlusBracketRendering.lean:162`) proves them equivalent — and the discrete pipeline depends
+on both. The
 mismatch is external: the carrier apparatus built on `kplus` transcribes a different `K⁺` from the
 one the axioms are stated with. `Kamp/KPlusFaithful.lean` supplies the faithful carrier beside it
 and the shims relating the two; neither this file's statements nor its proofs change.

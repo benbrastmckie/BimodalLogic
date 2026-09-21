@@ -20,6 +20,17 @@ The gap cases (III-IV), the `ghr93_cases_II_III_IV` dispatcher, and the
 resting on sorried gap-detection lemmas; zero external call sites). The live
 `ghr93_inductive_step_discrete` in `Transfer.lean` is a distinct declaration
 and does not depend on the archived chain.
+
+The same archival took the forward-to-backward transfer chain itself —
+`ghr93_forward_to_backward_core`, `ghr93_forward_to_backward`,
+`ghr93_forward_to_backward_rank_varying` — along with the case-analysis
+declarations it rested on (`gap_cut_exists_gt`, `ghr93_cases_III_IV`).
+
+A declaration-free module `GameTransfer/Theorem6.lean` was kept for a time after
+that archival, holding nothing but an import of this file so that existing
+`import ...GameTransfer.Theorem6` lines continued to compile. It has since been
+removed and its importers re-pointed here, which is where its only content
+(this import) always led. Nothing was lost with it: it declared nothing.
 -/
 
 set_option linter.style.longFile 2300

@@ -123,7 +123,7 @@ open FormalSystem.Metalogic.Expressiveness
 
 /-! ## Pinned `VVecEA2` machinery (the `Condᵢ ∧ Formᵢ` products at a shared pin)
 
-The `VVecEA2` mirror of `EANegationFix/NegFix.lean:296`-`:426`. Structurally identical; the only
+The `VVecEA2` mirror of `EANegationFix/NegFix.lean:297`-`:427`. Structurally identical; the only
 change is that each component is a `VVecEA2` rather than a `VBracketFormula`, so the endpoint
 predicates survive the conjunction and the pinned concatenation. -/
 
@@ -296,13 +296,13 @@ theorem witness_absurd_of_kplusLeft {sig : MonadicSignature}
       (`somePointBlock`). Rabinovich's *"The basis is trivial."* (PDF p.10). No carrier.
     * `ps = (a,b) :: qs`: the three gates of the faithful `HasFaithfulDedekindINF` trichotomy.
       1. **Case 1** (PDF p.9): `K⁺(¬β₁)(z₀)`, carried by `kplusOpenLeftBlock`
-         (`Lemma53Faithful.lean:304`) as a pure left-endpoint predicate. `Form₁ = True`.
+         (`KPlusFaithfulRendering.lean:304`) as a pure left-endpoint predicate. `Form₁ = True`.
          ADAPTED-FROM the `kplusLeftBlock` spelling this disjunct previously carried; the `K⁺` of
          PDF p.10's Case 3 parenthetical is the source's conjunct-free one, and it is what makes
          the enumeration exhaustive (module docstring).
       2. **Case 2** (PDF p.10): `β₁` along `(z₀,z₁)` (via `VVecEA2.conjEverywhere`), conjoined
          with `Form₂` = the anchored Corollary 5.4(2) `negBoundedLeftFixAnchoredFaithful`
-         (`BoundedFixAnchoredFaithful.lean:218`) — *"there is no `z ∈ (z₀,z₁)` such that
+         (`BoundedFixAnchoredFaithful.lean:222`) — *"there is no `z ∈ (z₀,z₁)` such that
          `[α₁,β₂,…,βₙ,αₙ](z,z₁)`"*.
       3. **Case 3** (PDF p.10, eq (5.3)): the pin `r₀`, gated by `β₁` on `(z₀,r₀)` and the point
          type `infPinPoint β₁ = ¬β₁(r₀) ∨ K⁺(¬β₁)(r₀)`, carrying the pinned DNF of per-placement
@@ -606,7 +606,8 @@ theorem negFixListFaithful_iff {sig : MonadicSignature}
     So on any structure where `K⁺(¬β₁)(z₀)` is satisfiable, dropping Case 1 would make
     `negFixListFaithful_iff` false: the bracket fails (by `witness_absurd_of_kplusLeft`) while the
     surviving disjuncts are unsatisfiable. This is the analogue, one level up, of
-    `prior_makes_disjunct2_unreachable` (`Lemma53Faithful.lean`) and of Phase 6's `ℝ` probe: those
+`prior_makes_disjunct2_unreachable` (`KPlusFaithfulRendering.lean`) and of Phase 6's `ℝ` probe:
+    those
     two exhibit *where* the limit case is and is not reachable; this one shows *why it cannot be
     absorbed* by its neighbours.
 

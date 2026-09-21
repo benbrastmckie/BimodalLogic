@@ -1007,7 +1007,7 @@ theorem chronicleIsDensePriorSepStructure {fc : FrameClass} (hfc : FrameClass.RT
 
 /-! ### Anti-vacuity: the witness Phase 14's hypothesis wanted
 
-`uSExpressivelyCompleteOverDensePrior` (`WeakCanonical/PriorExpressivenessDense.lean:302`) is
+`uSExpressivelyCompleteOverDensePrior` (`Expressiveness/PriorExpressivenessDense.lean:302`) is
 Reynolds §5 Theorem 3 relativized to the *dense* Prior hypotheses: its witness formula's
 correctness clause binds `SemanticPriorU M atomMap` and `SemanticPriorS M atomMap`. Until this
 part, the only structures known to satisfy that pair were Phase 9's `denseWindowFlow` and the

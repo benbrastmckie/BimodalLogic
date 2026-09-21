@@ -1,5 +1,5 @@
 import FormalSystem.Metalogic.Expressiveness.Kamp.PerFormulaRender
-import FormalSystem.Metalogic.Expressiveness.Kamp.Prop35Chain
+import FormalSystem.Metalogic.Expressiveness.Kamp.UntilSinceChainSpec
 import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAClosure
 
 /-!
@@ -34,7 +34,7 @@ is unaffected.
 
 - `efPointTPFin` / `efIntervalSetTPFin`: render a partial 1-type / a per-formula interval type
   as a `TemporalPred` via `unaryToFormulaFin` (the Fin counterparts of `efPointTP` /
-  `efIntervalSetTP`, `Prop35Assembly.lean`).
+  `efIntervalSetTP`, `ExistsForallTranslation.lean`).
 - `efPointTPFin_eval` / `efIntervalSetTPFin_eval`: they read back exactly as `partialHolds` /
   `intervalHoldsFin` — both THROUGH `unaryToFormulaFin_correct`.
 - `EFFin` / `efSatFin`: the per-formula ∃∀-object over `M` and its literal Def 3.1
@@ -73,8 +73,8 @@ consumer-migration phases.
 - `PerFormulaRender.lean` (`unaryToFormulaFin`, `unaryToFormulaFin_correct`);
   `PerFormulaType.lean` (`UnaryTypeFin`, `partialHolds`, `IntervalTypeFin`,
   `intervalHoldsFin`); `Translation.lean` (`translateEF1`, `translateEF1_correct`);
-  `Prop35Chain.lean` (`buildRight_spec_iff_chain`, `buildLeft_spec_iff_chain`);
-  `Prop35Assembly.lean` (the total-type assembly this probe mirrors on the per-formula
+  `UntilSinceChainSpec.lean` (`buildRight_spec_iff_chain`, `buildLeft_spec_iff_chain`);
+  `ExistsForallTranslation.lean` (the total-type assembly this probe mirrors on the per-formula
   representation).
 -/
 
@@ -126,7 +126,7 @@ noncomputable def efIntervalSetTPFin
 
 /-- A `foldr`-of-`disj` temporal predicate holds at `y` iff some list element does (the empty
 fold is `⊥`, which never holds). Instance-free restatement of the corresponding
-`Prop35Assembly.lean` helper. -/
+`ExistsForallTranslation.lean` helper. -/
 private theorem eval_at_foldr_disj
     (N : OrderedMonadicStructure (sigE sig F)) (atomMap : Formula → (sigE sig F).preds)
     (L : List TemporalPred) (y : N.carrier) :
@@ -242,7 +242,7 @@ translation is fully correct: `efSatFin N env ψ ↔ temporal_truth N atomMap (e
 end-to-end THROUGH `unaryToFormulaFin_correct` — and reuses the representation-independent
 chain machinery (`translateEF1_correct`, `buildRight_spec_iff_chain`,
 `buildLeft_spec_iff_chain`) unchanged. Mirrors `translateProp35_correct`
-(`Prop35Assembly.lean`) with the total-type interfaces replaced by the per-formula ones; NO
+(`ExistsForallTranslation.lean`) with the total-type interfaces replaced by the per-formula ones; NO
 correctness statement is weakened and no `Fintype`/`DecidableEq` instance on the alphabet is
 consumed. -/
 theorem translateProp35Fin_correct

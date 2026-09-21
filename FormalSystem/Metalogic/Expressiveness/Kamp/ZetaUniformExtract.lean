@@ -4,14 +4,14 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Expressiveness.Kamp.Prop43Translate
+import FormalSystem.Metalogic.Expressiveness.Kamp.MonadicFormulaSubstitution
 import FormalSystem.Metalogic.Expressiveness.Kamp.ZetaPriorTransfer
 import FormalSystem.Metalogic.Expressiveness.Kamp.MonadicFormulaMap
 
 /-!
 # The `M`-uniform `∨∃∀` extraction on the per-formula layer (Rabinovich Thm 4.4, PDF p.6)
 
-`translate_correctFin` (`Prop43Translate.lean`) and the negation chain
+`translate_correctFin` (`MonadicFormulaSubstitution.lean`) and the negation chain
 (`VeeSatNegation.lean` / `EFSatNegationGeneral.lean`) emit, per model `N`, a per-formula
 `∨∃∀`-formula `Ψ` equivalent to the input monadic FO formula. The completeness spine
 (`kampPriorExpressiveCompleteness`) instead needs a *single* formula uniform over all models.
@@ -37,7 +37,8 @@ The proof bodies are the per-`N` Fin-layer proofs verbatim, re-entered after `in
   Definition 4.1 (p.5), collapse-to-atom note (p.6). Cited by PDF page; the companion markdown
   transcription is corrupt.
 - `ESigmaCapture.lean`: `capTypeFin`, `capTypeFin_atomNamed` (the direct capture).
-- `Prop43Translate.lean`: `translate_correctFin`, `ex_closure_translateFin` (the per-`N` forms).
+- `MonadicFormulaSubstitution.lean`: `translate_correctFin`, `ex_closure_translateFin` (the per-`N`
+forms).
 - `EFSatNegationGeneral.lean` / `VeeSatNegation.lean`: the per-`N` negation stack.
 -/
 

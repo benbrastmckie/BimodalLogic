@@ -43,8 +43,15 @@ The 49 loose modules group by what they transcribe:
   `ExteriorNegationPast`
 - **Prior structures and Dedekind carriers** — `KampPrior`, `PriorINF`, `DedekindINF`,
   `ZetaPriorTransfer`, `ZetaUniformExtract`
-- **Paper transcriptions** — `Prop35*`, `Prop42*`, `Prop43Translate`, `Lemma53`,
-  `Section5Correspondence` (Rabinovich 2014, Sections 3–5)
+- **Rabinovich transcriptions** (2014, Sections 3–5) — `ExistsForallTranslation`,
+  `UntilSinceChainSpec`, `ContentfulWitness`, `VeeExistsForallTranslation`,
+  `ContentfulFaithfulBridge`, `BracketNegationClauses`, `VacuousConclusionGuard`,
+  `MonadicFormulaSubstitution`, `KPlusBracketRendering`, `KPlusFaithfulRendering`,
+  `KMinusFaithfulRendering`. These carried paper-artifact filenames (`Prop35*`, `Prop42*`,
+  `Prop43Translate`, `Lemma53*`) until they were renamed to describe their content; each one's
+  paper reference is now in its module docstring, which is where a citation belongs.
+  `Section5Correspondence` keeps its name deliberately: it is a navigational guard whose purpose
+  is to be found by a reader searching for "Section 5".
 - **Normal-form zones** — `NfDepth0Generalized`, `NfZoneDepthK`, `NfZoneFlattenNavigable`,
   `NfEFold`, `NfMultiAnchorBridge`
 

@@ -78,7 +78,8 @@ of that question. It admits the whole discrete/attained pipeline through
 ## What is read, not edited
 
 `Syntax/Formula.lean`, `ProofSystem/Axioms.lean`, `Kamp/PriorINF.lean` (statements and proofs),
-`Kamp/DedekindINF.lean`, `Kamp/Lemma53.lean`, `Kamp/DedekindINFDense.lean` (statements and proofs)
+`Kamp/DedekindINF.lean`, `Kamp/KPlusBracketRendering.lean`, `Kamp/DedekindINFDense.lean` (statements
+and proofs)
 and all eight `*Faithful*` modules are **read** by this module and not edited by it. Nothing landed
 by `DedekindINFDense.lean` is deleted, reverted, restated or deprecated: the guard/trichotomy
 apparatus stays exactly as it is, it stays the tree's record of the `kplus` deviation, and

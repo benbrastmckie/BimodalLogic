@@ -80,7 +80,7 @@ rather than as prose.
    `Rabinovich's Dedekind completeness < HasFaithfulDedekindINF < HasDedekindINF <
    HasDefinableINF < HasAttainedINF`,
    so this carrier is still stronger than the paper's hypothesis, but by one link less than the
-   carrier this module previously took. `KPlusFaithful.lean:313-319` states the exclusion in
+   carrier this module previously took. `KPlusFaithful.lean:314-320` states the exclusion in
    full, including what the faithful carrier **admits** that `HasDedekindINF` refuses.
 3. **Disjunct (2) is provably dead on every Prior structure, at BOTH `K⁺` spellings.**
    `prior_makes_faithful_disjunct2_unreachable` below proves it for the source-exact `K⁺` now
@@ -90,7 +90,7 @@ rather than as prose.
    where attainment holds outright. Observability arrives only with a genuinely non-attained
    Dedekind-complete frame class, which is not constructed anywhere in this tree
    (`DedekindINF.lean:49-50` states that absence explicitly).
-   `hasDedekindINF_admits_kplus_shape` (`DedekindINF.lean:264`) must **not** be cited against
+   `hasDedekindINF_admits_kplus_shape` (`DedekindINF.lean:266`) must **not** be cited against
    this: its proof is `Or.inl h_kplus` and its own docstring admits it exhibits no structure.
 
    **Weakening the carrier did not weaken this exclusion** — that was the live risk, since
@@ -107,7 +107,7 @@ open FormalSystem.Metalogic.Expressiveness
 /-! ## `K⁺(P)` as a `TemporalPred` -/
 
 /-- `K⁺(P)` as a point type. `kplusFormula` (`PriorINF.lean:93`) is the object-language
-    spelling; `kplus_formula_correct` (`Lemma53.lean:162`) is its correctness lemma.
+    spelling; `kplus_formula_correct` (`KPlusBracketRendering.lean:162`) is its correctness lemma.
 
     Source correspondence: PDF p.8, *"K⁺(P₁)(z₀) is an atomic ... formula in the canonical
     expansion"*. The tree needs no canonical expansion: `K⁺` is outright TL-definable here. -/
@@ -141,7 +141,7 @@ def kplusOpenPred (P : TemporalPred) : TemporalPred := ⟨Formula.kPlus P.formul
 
 /-- `kplusOpenPred` evaluates to the sources' semantic `K⁺`. Mirror of `kplusPred_eval`, routed
     through the bridge lemma `kPlus_formula_correct` (`KPlusFaithful.lean:152`) rather than
-    through `kplus_formula_correct` (`Lemma53.lean:162`). -/
+    through `kplus_formula_correct` (`KPlusBracketRendering.lean:162`). -/
 theorem kplusOpenPred_eval {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : TemporalPred) (t : M.carrier) :
@@ -449,7 +449,8 @@ theorem negChainOnFaithful_iff {sig : MonadicSignature}
 
 /-! ## `lemma53` with `HasAttainedINF` weakened to `HasFaithfulDedekindINF`
 
-This is `lemma53` (`Lemma53.lean:432`) verbatim except for the carrier. `O` is hoisted out of
+This is `lemma53` (`KPlusBracketRendering.lean:432`) verbatim except for the carrier. `O` is hoisted
+out of
 `M`, `atomMap`, `z₀`, `z₁`, so it is a function of `P` alone — which is what "is equivalent to a
 `∨∃⃗∀` formula" means, and the whole content of the claim.
 
@@ -550,7 +551,8 @@ theorem prior_makes_faithful_disjunct2_unreachable {sig : MonadicSignature}
 
     Statement retained verbatim from before the re-base, and now *derived* from the source-exact
     version above (`kplusOpen_of_kplus`, `KPlusFaithful.lean:214`) rather than routed through
-    `hasDefinableINF_excludes_kplus` (`Lemma53.lean:290`). The route through `HasDefinableINF`
+`hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:290`). The route through
+    `HasDefinableINF`
     remains available and unedited; deriving instead from the stronger exclusion keeps the two
     statements from drifting apart. -/
 theorem prior_makes_disjunct2_unreachable {sig : MonadicSignature}

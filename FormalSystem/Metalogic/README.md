@@ -3,7 +3,7 @@
 Soundness, completeness, and decidability for the bimodal logic TM, combining S5
 modality with linear temporal logic.
 
-This directory is the largest thing in the repository, and `WeakCanonical/` alone is the
+This directory is the largest thing in the repository, and `Expressiveness/` alone is the
 largest thing in it. Every file and line count on this page is generated from the tree by
 `bash scripts/check-module-invariants.sh --emit-inventory` — the
 [Directory Inventory](#directory-inventory) is the rollup, and no number is restated in prose.
@@ -30,9 +30,10 @@ distinct routes to completeness, and they are siblings rather than layers.
 | Route | Directory | Approach |
 |-------|-----------|----------|
 | Chronicle | `BXCanonical/` | Chronicle construction over a canonical chain; carries the flagship theorems |
-| Kamp/Reynolds | `WeakCanonical/` | Reflexive canonical model, separation, and the Kamp/Reynolds machinery |
+| Kamp/Reynolds | `WeakCanonical/` | Reflexive canonical model, chronicle extraction and transfer, and the integer/real/group model constructions |
 | Algebraic | `Algebraic/` | Lindenbaum–Tarski quotient algebra, the ultrafilter/MCS correspondence, and the flow-frame countermodel engine |
 | Independence (support) | `Independence/` | Axiom-independence models; not a completeness route, listed here so the inventory is exhaustive |
+| Expressiveness (support) | `Expressiveness/` | Kamp/Stavi expressive completeness — monadic FO, EF games, normal forms, separation. Not a completeness route either: it answers which first-order properties a temporal formula can define. It was extracted from `WeakCanonical/` by [ADR-011](../../docs/architecture/ADR-011-Extract-Expressiveness.md) and imports nothing from `WeakCanonical/` or `BXCanonical/` |
 
 Sizes for these four directories are in the [Directory Inventory](#directory-inventory), which
 is generated; they are deliberately not restated here.
@@ -45,7 +46,8 @@ and `countermodel_dense` (`BXCanonical/Chronicle/ChronicleToCountermodelBasic.le
 The other two are **not** dead alternatives. `BXCanonical` imports from both of them,
 so all three participate in the live proof:
 
-- `BXCanonical → WeakCanonical` — 9 import lines
+- `BXCanonical → WeakCanonical` — 5 import lines
+- `BXCanonical → Expressiveness` — 4 import lines
 - `BXCanonical → Algebraic` — 4 import lines
 
 Beneath all three sits a genuinely layered core:
@@ -91,7 +93,7 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Core.lean` | 40 | `Core/` |
 | `Decidability.lean` | 169 | `Decidability/` |
 | `Deterministic.lean` | 27 | <!-- TODO: add description --> |
-| `Expressiveness.lean` | 70 | <!-- TODO: add description --> |
+| `Expressiveness.lean` | 70 | `Expressiveness/` |
 | `Independence.lean` | 115 | `Independence/` |
 | `SoundnessLemmas.lean` | 35 | `SoundnessLemmas/` |
 | `WeakCanonical.lean` | 130 | `WeakCanonical/` |
@@ -152,10 +154,10 @@ invariant check allowlists it by name (check C8; the allowlist entry is the inne
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 79 | 51,958 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 7 | 1,615 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
-| [`Expressiveness/`](Expressiveness/README.md) | 141 | 104,087 | <!-- TODO: add description --> |
+| [`Expressiveness/`](Expressiveness/README.md) | 139 | 104,097 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
 | [`Independence/`](Independence/README.md) | 22 | 5,975 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,435 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 38 | 28,509 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 38 | 28,511 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -198,7 +200,7 @@ dominates everything else in the repository:
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/WeakCanonical rows=subdirs cols=files-lines desc=no sort=lines-desc -->
 | Subdirectory | Files | Lines |
 |--------------|------:|------:|
-| `DenseModelSurgery/` | 9 | 7,914 |
+| `DenseModelSurgery/` | 9 | 7,916 |
 | `RealModel/` | 7 | 6,794 |
 | `IntegerModel/` | 6 | 5,617 |
 | `GroupModel/` | 6 | 3,373 |
@@ -216,8 +218,8 @@ sub-subtrees below. It no longer carries a local `Boneyard/`; its archived work 
 | Under `Kamp/` | Files | Lines |
 |---------------|------:|------:|
 | `NfMultiAnchorBridge/` | 47 | 41,436 |
-| `EANegationFix/` | 7 | 3,227 |
-| `EANegationFixFaithful/` | 5 | 2,664 |
+| `EANegationFix/` | 7 | 3,230 |
+| `EANegationFixFaithful/` | 5 | 2,672 |
 <!-- END GENERATED -->
 
 `Kamp/` alone is larger than every other directory in `Metalogic/` combined. Any

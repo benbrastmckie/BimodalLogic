@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Expressiveness.Kamp.Prop35Assembly
+import FormalSystem.Metalogic.Expressiveness.Kamp.ExistsForallTranslation
 import FormalSystem.Metalogic.Expressiveness.Kamp.Section5Correspondence
 
 /-!
@@ -13,7 +13,8 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.Section5Correspondence
 Bridges the Phase-3 `ExistsForallFormula` object (two free variables) to the already-landed,
 sorry-free legacy Prop 4.2 negation-closure engine (`VecEA2`/`VVecEA2`, `VVecEA2.negFix_iff`,
 `prop42_contentful_of_attained`). This mirrors, for the two-endpoint canonical form, what
-`Prop35Assembly.lean` did for Prop 3.5 (one free variable → temporal formula): it re-targets the
+`ExistsForallTranslation.lean` did for Prop 3.5 (one free variable → temporal formula): it
+re-targets the
 Phase-3 object onto the pre-existing engine rather than re-deriving negation closure.
 
 ## The endpoint-pinned canonical form
@@ -46,10 +47,11 @@ to carry caps — that would be canonical-form machinery beyond Rabinovich.
 
 - [rabinovich2014], Proposition 4.2 (p.6), proved Section 5 pp.7-11.
   Cited by PDF page; the companion markdown transcription is corrupt.
-- `Prop35Assembly.lean`: `efPointTP`, `efIntervalTP` (rendering `UnaryType`s as `TemporalPred`s).
+- `ExistsForallTranslation.lean`: `efPointTP`, `efIntervalTP` (rendering `UnaryType`s as
+`TemporalPred`s).
 - `VecEAFormula.lean`: `VecEA2`, `BracketFormula`, `VVecEA2`; `ExistsForallNF.lean`:
   `IntervalPattern.holds`, `holds_eq_zero`, `holds_eq_succ`.
-- `Section5Correspondence.lean`: `prop42_contentful_of_attained`; `Prop42Contentful.lean`:
+- `Section5Correspondence.lean`: `prop42_contentful_of_attained`; `ContentfulWitness.lean`:
   `Prop42Contentful`; `VecEANegFix.lean`: `VVecEA2.negFix`, `VVecEA2.negFix_iff`.
 -/
 
@@ -64,7 +66,8 @@ The Prop 4.2 translation on the per-formula finite object `ExistsForallFormulaFi
 (`PerFormulaExistsForall.lean`): the SHAPE of sections 1-4 survives verbatim — the target
 `VecEA2`/`BracketFormula`/`VVecEA2` layer is `TemporalPred`-level and representation-independent
 — with the point/interval renders switched to `efPointTPFin`/`efIntervalSetTPFin`
-(`Prop35Assembly.lean` §5, THROUGH `unaryToFormulaFin`) and satisfaction stated on the partial
+(`ExistsForallTranslation.lean` §5, THROUGH `unaryToFormulaFin`) and satisfaction stated on the
+partial
 relations `partialHolds`/`intervalHoldsFin`. NO `Fintype (sigE sig F).preds`, NO
 `DecidableEq (sigE sig F).preds`, NO full-alphabet `Finset.univ`: every enumeration is
 `M`-relative (Def 4.1, p.5 compatible), and NO correctness statement is weakened. -/

@@ -5,7 +5,8 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Expressiveness.Kamp.Translation
-import FormalSystem.Metalogic.Expressiveness.Kamp.Prop35ExistsForall
+import FormalSystem.Metalogic.Expressiveness.Kamp.ExistsForallFormula
+import FormalSystem.Metalogic.Expressiveness.Separation.KampTranslation
 import FormalSystem.Metalogic.Expressiveness.Kamp.VeeExistsForall
 
 /-!
@@ -13,9 +14,28 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.VeeExistsForall
 
 Completes Proposition 3.5 — every `∃∀`-formula with one free variable (Def 3.1, p.4) is
 equivalent to a `TL(Until, Since)` formula — on the Phase-3 `ExistsForallFormula` object, using
-the atomic layer (`unaryToFormula`, `Prop35ExistsForall.lean`) and the **already-proved**,
-signature-generic Until/Since chain translator `Kamp.translateEF1` / `Kamp.translateEF1_correct`
-(`Translation.lean`).
+the atomic layer and the **already-proved**, signature-generic Until/Since chain translator
+`Kamp.translateEF1` / `Kamp.translateEF1_correct` (`Translation.lean`).
+
+## Where the atomic rendering lives
+
+The atomic building block the chain rests on is the rendering of a single **unary type** — the
+quantifier-free unary `αⱼ`/`βⱼ` of the Def 3.1 object — as a temporal-logic `Formula` that reads
+back exactly as the type's realization predicate.
+
+Under the infinite `E[Σ]` alphabet of Def 4.1 (p.5) the *total-alphabet* rendering
+(`unaryToFormula` / `unaryToFormula_correct`, folding the depth-0 characteristic formula over
+`Fintype.elems` of the whole expanded signature) is not constructible: `Formula` is infinite, so
+`(sigE sig F).preds` carries no `Fintype`. The production rendering is therefore the
+per-formula-finite `unaryToFormulaFin` / `unaryToFormulaFin_correct` (`PerFormulaRender.lean`),
+which folds over the finite mentioned-atom set `M` only — the faithful Prop 3.5 content ("the
+type is a finite disjunction of the mentioned atoms"). The total-alphabet twins were retired
+with the rest of the total-type layer at the Fin switchover.
+
+This module is the documented Prop 3.5 anchor point of the chain. It absorbed that role from a
+declaration-free module `Prop35ExistsForall.lean`, which this file was the sole importer of and
+which re-exported only `Kamp.ExistsForallFormula` and `Separation.KampTranslation` — both now
+imported directly above.
 
 ## Key structural observation
 
@@ -41,7 +61,7 @@ formulation.
 - [rabinovich2014], Proposition 3.5 (p.5). Cited by PDF page; the
   companion markdown transcription is corrupt.
 - `Translation.lean`: `translateEF1`, `translateEF1_correct`, `BuildRightSpec`, `BuildLeftSpec`.
-- `Prop35ExistsForall.lean`: `unaryToFormula`, `unaryToFormula_correct`.
+- `PerFormulaRender.lean`: `unaryToFormulaFin`, `unaryToFormulaFin_correct`.
 - `ExistsForallFormula.lean`: `ExistsForallFormula`, `efSat`.
 -/
 

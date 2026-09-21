@@ -175,7 +175,7 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   strictly larger than the deterministic frames. Uniform substitution is unsound in this setting, so
   no proof here argues by substitution.
 - **Expressive completeness (Kamp, Prior structures)** (`kampPriorExpressiveCompleteness`,
-  `WeakCanonical/Kamp/KampPrior.lean`): SORRY-FREE (axioms: exactly `propext`,
+  `Expressiveness/Kamp/KampPrior.lean`): SORRY-FREE (axioms: exactly `propext`,
   `Classical.choice`, `Quot.sound`). `{U, S}` is expressively complete relative to monadic
   first-order logic **for Prior structures** — not for TM, not for all task frames. Load-bearing
   for the live completeness chain via `uSExpressivelyCompleteOverPrior`.

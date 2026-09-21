@@ -26,8 +26,8 @@ than a section of a larger file. `VecEANegFix.lean` is the interface the rest of
 ## Position in the Layering
 
 Inside `Kamp/`, which is inside `WeakCanonical/` — the Kamp/Reynolds completeness
-route. Consumed by the Prop 4.2 / 4.3 transcriptions (`Prop42Contentful.lean`,
-`Prop43Translate.lean`) and by `Kamp/EANegationFix.lean`, the loose module beside this
+route. Consumed by the Prop 4.2 / 4.3 transcriptions (`ContentfulWitness.lean`,
+`MonadicFormulaSubstitution.lean`) and by `Kamp/EANegationFix.lean`, the loose module beside this
 directory that re-exports it.
 
 ## Related Documentation

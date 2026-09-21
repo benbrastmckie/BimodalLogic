@@ -6,7 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Expressiveness.Kamp.LiftPair
 import FormalSystem.Metalogic.Expressiveness.Kamp.EFSatNegation
-import FormalSystem.Metalogic.Expressiveness.Kamp.Prop35Assembly
+import FormalSystem.Metalogic.Expressiveness.Kamp.ExistsForallTranslation
 
 /-!
 # General `∃∀`-object negation at the `∨∃∀` type (Rabinovich Prop 4.3, ¬-case, PDF p.6) — assembly
@@ -65,7 +65,8 @@ Cited by
 - `EFSatNegation.lean`: `efSat_negation_pair`, `efSat_negation_demorgan`, `pairProject_swap_efSat`.
 - `LiftPair.lean`: `liftPairV`/`liftPairV_iff`, `liftSingleV`/`liftSingleV_iff`,
   `liftSentence`/`liftSentence_iff`.
-- `Prop35Assembly.lean` / `Prop35ExistsForall.lean` / `Prop35VeeLift.lean`: the forward Prop 3.5
+- `ExistsForallTranslation.lean` / `PerFormulaRender.lean` / `Prop35VeeLift.lean`: the forward Prop
+3.5
   translation (`translateProp35_correct`, arity 1) — the reverse of which the arity-1 negation
   object
   requires.
@@ -226,7 +227,7 @@ Capture is the direct `M`-relative `capTypeFin` (singleton mentioned-atom set �
 IS an atom of the infinite expansion), the only capture shape that exists without alphabet
 finiteness, matching the bundled-`M` design of
 `ExistsForallFormulaFin`. The forward translation is `translateProp35Fin_correct`
-(`Prop35Assembly.lean` §5, THROUGH `unaryToFormulaFin`). `hNamed` is threaded, never
+(`ExistsForallTranslation.lean` §5, THROUGH `unaryToFormulaFin`). `hNamed` is threaded, never
 discharged. NOTE: the Fin general assembly (`efSat_negation_general` counterpart) additionally
 needs the Fin lift wrappers (`liftPairV`/`liftSingleV`/`liftSentence`) and the Fin pair objects
 (`pairProject`/`efSat_negation_pair`, `EFSatNegation.lean`) — those land with the

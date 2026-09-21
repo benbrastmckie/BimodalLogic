@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Expressiveness.PriorExpressivenessDense
-import FormalSystem.Metalogic.Expressiveness.Kamp.Prop43Translate
+import FormalSystem.Metalogic.Expressiveness.Kamp.MonadicFormulaSubstitution
 
 /-!
 # Reynolds §6 vocabulary: contemporaneous equivalence, `ρ`, `λ`, and Lemma 2
@@ -152,7 +152,8 @@ introduced; `ContempEquivDense` is the §6 notion, parameterized by `ε`.
 - [reynolds1992], §5, printed p.176 (the uniformity remark)
 - `uSExpressivelyCompleteOverDensePrior` (`PriorExpressivenessDense.lean:302`) — Reynolds §5
   Theorem 3, the input to Lemma 2
-- `MonadicFormula.rename` / `eval_rename` (`Kamp/Prop43Translate.lean:109`) — the variable
+- `MonadicFormula.rename` / `eval_rename` (`Kamp/MonadicFormulaSubstitution.lean:109`) — the
+variable
   reindexing `ρ` and `λ` are assembled with
 -/
 
@@ -192,7 +193,8 @@ theorem false_of_succOrder_dense {α : Type*} [LinearOrder α] [SuccOrder α]
 
 /-- `ε` with its two free variables reindexed to `i` (the `x` slot) and `j` (the `y` slot).
 
-Built from the landed `MonadicFormula.rename` (`Kamp/Prop43Translate.lean:109`) rather than a
+Built from the landed `MonadicFormula.rename` (`Kamp/MonadicFormulaSubstitution.lean:109`) rather
+than a
 fresh substitution operator. -/
 def epsAt {sig : MonadicSignature} {n : Nat} (ε : MonadicFormula sig 2) (i j : Fin n) :
     MonadicFormula sig n :=

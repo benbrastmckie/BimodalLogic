@@ -369,7 +369,7 @@ theorem neg_2var_vec_ea_indep_correct {sig : MonadicSignature}
 -- historical record of a mistake, not as guidance. `neg_2var_vec_ea` cannot supply the Prop 4.2
 -- negation case for anything: its conclusion `∃ v', v'.holds M atomMap z0 z1` never mentions the
 -- negated input `v` and follows from NO hypotheses at all. Machine refutation:
--- `prop42_conclusion_is_vacuous` (`Kamp/Prop42Vacuity.lean`), which derives that exact
+-- `prop42_conclusion_is_vacuous` (`Kamp/VacuousConclusionGuard.lean`), which derives that exact
 -- conclusion from nothing.
 --
 -- The load-bearing error above is the inference "introduces no new sorry or axiom" ⟹ "is

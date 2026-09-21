@@ -58,7 +58,8 @@ attainment consumption simply disappears — exactly as in the unanchored case.
 The head construction is reused verbatim from `BoundedFixFaithful.lean`: `endpointFailLeft` /
 `endpointFailRight` and their `_holds` characterizations are parametric in the point predicate, so
 the anchor rides in through the predicate argument and nothing about the head is re-derived here.
-The chain arm is `negChainOnFaithful` (`Lemma53Faithful.lean:217`) over the **anchored** chain
+The chain arm is `negChainOnFaithful` (`KPlusFaithfulRendering.lean:217`) over the **anchored**
+chain
 predicate lists, spliced exactly as the attained anchored definitions splice `negChainOn`.
 
 Nothing in `EANegationFix/` is deleted, weakened, or edited. `negBoundedRightFixAnchored`,
@@ -68,7 +69,7 @@ a pure addition, and the attained carriers reach the faithful ones through the l
 `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:366`).
 
 `ADAPTED-FROM`: both `_iff` statements below were first pinned at `HasDedekindINF`. Re-basing
-`negChainOnFaithful_iff` (`Lemma53Faithful.lean`) onto `HasFaithfulDedekindINF` moved the two
+`negChainOnFaithful_iff` (`KPlusFaithfulRendering.lean`) onto `HasFaithfulDedekindINF` moved the two
 carrier binders here, and nothing else: neither statement below opens the carrier — `h_INF` is
 handed to `negChainOnFaithful_iff` and to nothing else, in all four uses — so there is no
 destructure to re-shape. The change is one clause per binder.
@@ -90,13 +91,15 @@ ground truth.
 
 2. **Where the faithful carrier's weak branch is spent, named exactly.** The head disjunct of each
    anchored formula consumes **no carrier at all** — it is a point condition discharged by
-   `endpointFailLeft_holds` / `endpointFailRight_holds` (`BoundedFixFaithful.lean:121`, `:144`),
+   `endpointFailLeft_holds` / `endpointFailRight_holds` (`BoundedFixFaithful.lean:122`, `:145`),
    which have no structural hypothesis beyond `OrderedMonadicStructure`. The carrier is spent
-   entirely in the chain arm, through the `negChainOnFaithful_iff` (`Lemma53Faithful.lean`) call
+   entirely in the chain arm, through the `negChainOnFaithful_iff` (`KPlusFaithfulRendering.lean`)
+   call
    each `_iff` below makes in **both** the `mp` and the `mpr` direction. Inside that lemma the proof
    `rcases`es `h_INF.first_occ` and its **left** disjunct —
    `hk : kplusOpen M atomMap P z0`, Rabinovich's *Subcase `r₀ = z₀`* (PDF p.8) — is discharged by
-   `orderedPointsExist_combine_kplusOpen` (`Lemma53Faithful.lean`), at the source's conjunct-free
+`orderedPointsExist_combine_kplusOpen` (`KPlusFaithfulRendering.lean`), at the source's
+   conjunct-free
    `K⁺`. That is the `K⁺` branch the attained carrier deletes, and it is on the invoked code path
    in both directions of both lemmas below.
 
@@ -138,7 +141,8 @@ noncomputable def rightFoldHeadAnchored (α : TemporalPred) {n : Nat}
 
     Disjuncts, exactly the two the paper prints on p.9:
     1. `¬F₀(z₀)` — as a left-endpoint predicate, needing no carrier;
-    2. `Oₙ(F₁,…,Fₙ, z₀, z₁)` — `negChainOnFaithful` (`Lemma53Faithful.lean:217`) over the anchored
+2. `Oₙ(F₁,…,Fₙ, z₀, z₁)` — `negChainOnFaithful` (`KPlusFaithfulRendering.lean:217`) over the
+    anchored
        chain predicates.
 
     Compare `negBoundedRightFixAnchored` (`EANegationFix/BoundedFixAnchored.lean:154`), which
@@ -157,7 +161,7 @@ noncomputable def negBoundedRightFixAnchoredFaithful (α : TemporalPred) {n : Na
 
     `ADAPTED-FROM`: the previous pin of this same statement bound `HasDedekindINF`. The one clause
     that changed is the carrier binder; the statement and the proof are otherwise unchanged. The
-    swap is forced by `negChainOnFaithful_iff` (`Lemma53Faithful.lean`), which now binds the
+    swap is forced by `negChainOnFaithful_iff` (`KPlusFaithfulRendering.lean`), which now binds the
     faithful carrier, and it strictly weakens the hypothesis:
     `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:366`) runs one way only. -/
 theorem negBoundedRightFixAnchoredFaithful_iff {sig : MonadicSignature}

@@ -8,13 +8,13 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.NfZoneFlattenNavigable
 import FormalSystem.Metalogic.Expressiveness.Kamp.NfEFold
 import FormalSystem.Metalogic.Expressiveness.PriorDefs
 import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationClosure
-import FormalSystem.Metalogic.Expressiveness.Kamp.Prop42Vacuity
-import FormalSystem.Metalogic.Expressiveness.Kamp.Prop42Contentful
-import FormalSystem.Metalogic.Expressiveness.Kamp.Lemma53
+import FormalSystem.Metalogic.Expressiveness.Kamp.VacuousConclusionGuard
+import FormalSystem.Metalogic.Expressiveness.Kamp.ContentfulWitness
+import FormalSystem.Metalogic.Expressiveness.Kamp.KPlusBracketRendering
 import FormalSystem.Metalogic.Expressiveness.Kamp.Section5Correspondence
 import FormalSystem.Metalogic.Expressiveness.Kamp.DedekindINF
-import FormalSystem.Metalogic.Expressiveness.Kamp.Lemma53Faithful
-import FormalSystem.Metalogic.Expressiveness.Kamp.Lemma53FaithfulPast
+import FormalSystem.Metalogic.Expressiveness.Kamp.KPlusFaithfulRendering
+import FormalSystem.Metalogic.Expressiveness.Kamp.KMinusFaithfulRendering
 import Mathlib.Data.List.Permutation
 -- NOTE: `import ...Kamp.Lemma53FaithfulPast` lands the import edge for the SINCE/`HasDedekindSUP`
 -- MIRROR of the faithful eq (5.2) primitives (Rabinovich 2014, PDF p.8, mirrored).
@@ -60,7 +60,8 @@ import Mathlib.Data.List.Permutation
 -- that keeps every existing supplier working — but it is no longer the faithful chain's carrier.
 -- The whole re-base is still unobservable to every current consumer, because the live chain is
 -- Prior structures where attainment holds outright (`prior_makes_disjunct2_unreachable` proves
--- exactly that); `prop42_faithful_unobservable_on_prior` (`Prop42Faithful.lean`) states that limit
+-- exactly that); `prop42_faithful_unobservable_on_prior` (`ContentfulFaithfulBridge.lean`)
+-- states that limit
 -- as a theorem. This edge exists for the same reason as the Section5Correspondence and
 -- Prop42Vacuity edges below, and one more: the record of what remains undone must be reachable.
 -- What remains undone is now exactly one step — deriving the carrier from order completeness
@@ -331,7 +332,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFixFaithful.NegFixLi
 import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFixFaithful.VecEANegFixFaithful
 -- NOTE: `import ...Kamp.Prop42Faithful` lands the import edge for the TERMINUS OF THE FAITHFUL
 -- RE-BASE (Rabinovich 2014, Proposition 4.2, PDF p.6): `prop42_contentful_of_faithful`, which
--- discharges the SAME contentful target `Prop42Contentful` (`Prop42Contentful.lean:152`) that
+-- discharges the SAME contentful target `Prop42Contentful` (`ContentfulWitness.lean:152`) that
 -- `prop42_contentful_of_attained` (`Section5Correspondence.lean:187`) discharges, but from
 -- `HasFaithfulDedekindINF` ALONE where that one needs `HasAttainedINF` AND `HasAttainedSUP`. p.6
 -- states Prop 4.2 "over Dedekind complete chains" in the statement itself, which is the fidelity
@@ -360,7 +361,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFixFaithful.VecEANeg
 -- consumed. The module contains **no sorries** and every declaration is axiom-clean. Cycle-free:
 -- it imports `Kamp.Prop42Contentful`, `Kamp.EANegationFixFaithful.VecEANegFixFaithful` and
 -- `Kamp.Lemma53FaithfulPast`, all already in this file's transitive closure.
-import FormalSystem.Metalogic.Expressiveness.Kamp.Prop42Faithful
+import FormalSystem.Metalogic.Expressiveness.Kamp.ContentfulFaithfulBridge
 
 /-!
 # Multi-Anchor Characteristic Formula Bridge

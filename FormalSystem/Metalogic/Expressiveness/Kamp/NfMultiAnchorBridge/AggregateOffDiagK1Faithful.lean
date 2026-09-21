@@ -38,7 +38,7 @@ alternative, that it bottomed out on genuine attainment and the re-base was bloc
 `HasFaithfulDedekindINF` **alone**. `HasFaithfulDedekindSUP` is bound below as `_h_SUP` and never
 used, kept only so the statement stays shape-parallel with the attained original and with the
 consuming obligation `KampFaithfulExpressiveCompleteness`
-(`WeakCanonical/PriorExpressivenessDense.lean:169`). Deleting it would strengthen the result;
+(`Expressiveness/PriorExpressivenessDense.lean:169`). Deleting it would strengthen the result;
 that decision is deliberately not taken here, matching `ZetaUniformExtractFaithful.lean`.
 
 ## The fold is over `negFixFaithful`, not over `negFix`

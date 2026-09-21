@@ -21,7 +21,7 @@ Already present at the `VVecEA2` layer and **reused, not reimplemented**: `disj`
 (`NfMultiAnchorBridge/ExteriorBracket.lean:652`), `disjList`
 (`NfMultiAnchorBridge/NavigatedSpine.lean`), `singleton`
 (`NfMultiAnchorBridge/CarrierK1V.lean:2152`), `conjStruct` (`VecEAClosure.lean:222`), and
-`prependAllVec` (`Lemma53Faithful.lean:100`).
+`prependAllVec` (`KPlusFaithfulRendering.lean:100`).
 
 ## Source correspondence
 

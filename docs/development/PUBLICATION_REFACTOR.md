@@ -60,7 +60,7 @@ surface (g).
 | 3d | `private` / `protected` in use | `private` widely used, `protected` unused | **Already matches** (`protected` optional) |
 | 3e | No main-results page | `MainResults.lean` with pinned `#print axioms` (C2/C14/C21) | **Deliberately diverge**: this repository is stronger here; keep it |
 | 4a | Mathlib module-docstring sections | Mostly matching; non-standard `## Paper Specification Reference`, `## Implementation Status`; `## Tags` | **Adopt**: fold paper references into `## References`; remove `Implementation Status`; keep `## Tags` (Phase 7) |
-| 4b | Content-named files | 39 paper-numbered or history-suffixed names; declaration-free compatibility stubs | **Adopt**: content names, delete stubs, before publication (Phase 6.2) |
+| 4b | Content-named files | 12 paper-numbered names renamed and 2 declaration-free stubs deleted (the older "39" figure was a hand-written estimate no script reproduces) | **Done** (Phase 6.2): content names adopted, stubs deleted |
 | 5 | One `references.bib`; `* [Author, *Title*][key]` citation form | Two bib files; `- [key], ...` form; internal-tooling notes in references | **Adopt**: one root `references.bib` shared with typst; Mathlib link form; strip tooling notes (Phase 7). Key style stays lowercase `authorYYYY` — a deliberate divergence, internally consistent and cited from typst |
 | 6a | Mathlib Apache header on every file | Already on every live file; checked by `check-copyright-headers.sh` | **Already matches**; consider retiring the custom script if `linter.style.header` proves redundant (Phase 8) |
 | 6b | `AUTHORS.md`, no `CITATION.cff` | `CITATION.cff`, no `AUTHORS.md` | **Deliberately diverge**: keep `CITATION.cff` (what GitHub and Zenodo read); a single author needs no `AUTHORS.md` |
@@ -435,13 +435,40 @@ Split into two green commits.
   `Expressiveness/GameTransfer/`); add the sibling aggregator `Metalogic/Expressiveness.lean`;
   regenerate `typst/generated/*`, `docs/theorem-index.md`, the C2/C14 baselines and
   `MainResults.lean` in the same commit.
-- **6.2 Content renames and stub deletion.** Give the 39 paper-numbered or history-suffixed
-  files content names (what each proves), and delete declaration-free compatibility stubs after
-  confirming zero declarations in each.
-- Accept **ADR-011**; move ADR-006's status pointer accordingly.
+- **6.2 Content renames and stub deletion.** **Done.** 12 paper-numbered files were given
+  content names (what each proves) and 2 declaration-free compatibility stubs were deleted after
+  confirming zero declarations in each and re-pointing every importer.
+
+  The figure "39" in earlier drafts of this document was a hand-written estimate that no script
+  reproduces, and it conflated two different populations. To re-derive the real one:
+
+  ```bash
+  # strictly paper-numbered leaf names in the moved tree
+  find FormalSystem/Metalogic/Expressiveness -name '*.lean' -printf '%f\n' \
+    | grep -E '^(Claim|Theorem|Lemma|Prop|Cor|Corollary|Fig|Section)[0-9]'
+  ```
+
+  That yields **15**. Two of them (`GameTransfer/Theorem6.lean`,
+  `Kamp/Prop35ExistsForall.lean`) were the declaration-free stubs and were deleted rather than
+  renamed. One, `Kamp/Section5Correspondence.lean`, is deliberately kept: it is a navigational
+  guard module whose documented purpose is to be found by a reader searching for "Section 5",
+  so renaming it would defeat its function. That leaves **12 renames**, which is what was done.
+
+  The "history-suffixed" names the older figure also counted (`AggregateOffDiagK1`,
+  `SubBracket2`, `BoundedFix`, `NegFix`, `VecEANegFix`, `NfDepth0Generalized`,
+  `EFSatNegationGeneral`, and the `NfMultiAnchorBridge/Exterior*K1` family) are **not**
+  paper-artifact names and were deliberately left alone: their names already describe content
+  (`K1` is the arity k=1, `SubBracket2` the anchor-at-`x` sub-bracket, `BoundedFix` the
+  Until/Since fold). Renaming them is outside this item's scope, which is paper-artifact names.
+
+  Paper references (Rabinovich Lemma 5.3, Prop 3.5, Prop 4.2/4.3, GHR93 Claim 1, ...) were kept
+  in the module docstrings, which is where a paper citation belongs; only the filenames changed.
+- Accept **ADR-011**; move ADR-006's status pointer accordingly. **Done.**
 - **Acceptance**: `bash scripts/check-metalogic-cycles.sh` still reports exactly 1 cycle;
   `weakcanonical-partition` shows the residual set at 38 files; the full harness (with build)
-  green after each commit.
+  green after each commit. **All met.**
+
+**Phase 6 is complete.**
 
 ### Phase 7: Docstring and citation normalisation (not [CITE]; visible in published docs)
 

@@ -12,7 +12,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.KPlusFaithful
 
 `PriorInterface.lean` states the bridge's two relativizing predicates —
 `ExistProviders.correct` and `BracketCarrierCorrectVPrior` — against
-`SemanticPriorUZ` / `SemanticPriorSZ` (`WeakCanonical/PriorDefs.lean`, `:33`). This module
+`SemanticPriorUZ` / `SemanticPriorSZ` (`Expressiveness/PriorDefs.lean`, `:33`). This module
 restates both against `HasFaithfulDedekindINF` / `HasFaithfulDedekindSUP`
 (`Kamp/KPlusFaithful.lean:322`, `:339`), which are Rabinovich's eq (5.2) dichotomy (PDF p.8) at
 the source's own `K⁺` / `K⁻` (his Definitions (2)/(3), PDF p.3).
@@ -65,7 +65,7 @@ plus the §5 bracket notation `[α_0, …, α_n](z_0, z_1)`, PDF p.7, for the tw
 framing; Prop 3.5, PDF p.5, for the ∃-witness → Until/Since folding mechanism; Cor 5.4, PDF
 p.7/p.9, for per-round provider threading), while the *choice of carrier* is original work
 answering `KampFaithfulExpressiveCompleteness`
-(`WeakCanonical/PriorExpressivenessDense.lean:169`), which is stated at the faithful carrier.
+(`Expressiveness/PriorExpressivenessDense.lean:169`), which is stated at the faithful carrier.
 -/
 
 namespace FormalSystem.Metalogic.Expressiveness.Kamp

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Expressiveness.GameTransfer.Claim1
+import FormalSystem.Metalogic.Expressiveness.GameTransfer.ContinuationSets
 
 /-!
 # D-Consistency and Game Rank Downward Transport

@@ -55,7 +55,7 @@ two free variables under negation, PDF p.6.
 As at the ζ wire and at the fold, `HasFaithfulDedekindSUP` is threaded and never used:
 `negFixFaithful_iff` needs `HasFaithfulDedekindINF` alone. It is bound so the statements stay
 shape-parallel with their attained originals and with the consuming obligation
-`KampFaithfulExpressiveCompleteness` (`WeakCanonical/PriorExpressivenessDense.lean:169`). Dropping
+`KampFaithfulExpressiveCompleteness` (`Expressiveness/PriorExpressivenessDense.lean:169`). Dropping
 it would strengthen these results; that is deliberately not done here, matching
 `ZetaUniformExtractFaithful.lean` and `AggregateOffDiagK1Faithful.lean`.
 

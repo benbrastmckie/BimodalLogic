@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFix.BoundedFix
-import FormalSystem.Metalogic.Expressiveness.Kamp.Lemma53Faithful
+import FormalSystem.Metalogic.Expressiveness.Kamp.KPlusFaithfulRendering
 
 /-!
 # Corollary 5.4(1)/(2) at `VVecEA2` over the faithful carrier (Rabinovich, PDF p.9)
@@ -54,7 +54,7 @@ addition, and the attained carriers reach the faithful one through the landed sh
 `HasAttainedSUP.toHasDedekindSUP` (`DedekindINF.lean:200`).
 
 `ADAPTED-FROM`: both `_iff` statements below were first pinned at `HasDedekindINF`. Re-basing
-`negChainOnFaithful_iff` (`Lemma53Faithful.lean`) onto `HasFaithfulDedekindINF` moved the two
+`negChainOnFaithful_iff` (`KPlusFaithfulRendering.lean`) onto `HasFaithfulDedekindINF` moved the two
 carrier binders here, and nothing else: neither statement below opens the carrier, so there is no
 destructure to re-shape. The change is one clause per binder.
 
@@ -79,10 +79,11 @@ sorry-free, axiom-clean and EXIT 0 exactly as a vacuous conclusion does.
    formula consumes **no carrier at all** — it is a point condition, discharged by
    `endpointFailLeft_holds` / `endpointFailRight_holds`, which have no structural hypothesis beyond
    `OrderedMonadicStructure`. The carrier is spent entirely in the chain arm, inside
-   `negChainOnFaithful_iff` (`Lemma53Faithful.lean`), and there the `K⁺` branch is genuinely
+   `negChainOnFaithful_iff` (`KPlusFaithfulRendering.lean`), and there the `K⁺` branch is genuinely
    taken: `negChainOnFaithful_iff` `rcases`es `h_INF.first_occ` and its **left** disjunct is
    Rabinovich's *Subcase r₀ = z₀* (PDF p.8), discharged by `orderedPointsExist_combine_kplusOpen`
-   (`Lemma53Faithful.lean`) at the source's conjunct-free `K⁺`. **This module itself never opens
+   (`KPlusFaithfulRendering.lean`) at the source's conjunct-free `K⁺`. **This module itself never
+   opens
    the carrier**: `h_INF` is passed to `negChainOnFaithful_iff` and to nothing else, in all four
    uses. That branch is reached from both `negBoundedRightFixFaithful_iff` and
    `negBoundedLeftFixFaithful_iff`, in both the `mp` and the `mpr` direction, through the
@@ -179,7 +180,7 @@ noncomputable def rightFoldHead {n : Nat} (bf : BracketFormula n) : TemporalPred
 
     Disjuncts, exactly the two the paper prints:
     1. `¬F₀(z₀)` — as a left-endpoint predicate, needing no carrier;
-    2. `Oₙ(F₁,…,Fₙ, z₀, z₁)` — `negChainOnFaithful` (`Lemma53Faithful.lean:217`), the printed
+    2. `Oₙ(F₁,…,Fₙ, z₀, z₁)` — `negChainOnFaithful` (`KPlusFaithfulRendering.lean:217`), the printed
        three-disjunct Lemma 5.3.
 
     Compare `negBoundedRightFix` (`EANegationFix/BoundedFix.lean:446`), which replaces disjunct (1)
@@ -196,7 +197,7 @@ noncomputable def negBoundedRightFixFaithful {n : Nat} (bf : BracketFormula n) :
 
     `ADAPTED-FROM`: the previous pin of this same statement bound `HasDedekindINF`. The one clause
     that changed is the carrier binder; the statement and the proof are otherwise unchanged. The
-    swap is forced by `negChainOnFaithful_iff` (`Lemma53Faithful.lean`), which now binds the
+    swap is forced by `negChainOnFaithful_iff` (`KPlusFaithfulRendering.lean`), which now binds the
     faithful carrier, and it strictly weakens the hypothesis:
     `HasDedekindINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:366`) runs one way only. -/
 theorem negBoundedRightFixFaithful_iff {sig : MonadicSignature}

@@ -67,7 +67,7 @@ statements correspond.
 never consumed: `VVecEA2.negFixFaithful_iff` needs `HasFaithfulDedekindINF` alone. It is bound so
 these statements stay shape-parallel with their attained originals and with the consuming
 obligation `KampFaithfulExpressiveCompleteness`
-(`WeakCanonical/PriorExpressivenessDense.lean:169`).
+(`Expressiveness/PriorExpressivenessDense.lean:169`).
 
 ## Nothing is removed and nothing is renamed
 
@@ -412,7 +412,7 @@ noncomputable def nfCharacterizableTemporalPriorFaithful
 
 /-- **`{U,S}` expressive completeness at the faithful eq (5.2) carrier** — the faithful sibling of
 `kampPriorExpressiveCompleteness` (`KampPrior.lean`), and the witness that discharges
-`KampFaithfulExpressiveCompleteness` (`WeakCanonical/PriorExpressivenessDense.lean:169`).
+`KampFaithfulExpressiveCompleteness` (`Expressiveness/PriorExpressivenessDense.lean:169`).
 
 Proof structure identical to the original — set `k = quantifierDepth psi`, characterize each
 depth-`k` NF, take the disjunction over the NFs consistent with `psi`, and transfer along

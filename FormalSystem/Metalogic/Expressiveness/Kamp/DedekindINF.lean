@@ -5,8 +5,9 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Expressiveness.Kamp.PriorINF
-import FormalSystem.Metalogic.Expressiveness.Kamp.Lemma53
--- NOTE: `import ...Kamp.Lemma53` supplies `hasDefinableINF_excludes_kplus` (`Lemma53.lean:282`),
+import FormalSystem.Metalogic.Expressiveness.Kamp.KPlusBracketRendering
+-- NOTE: `import ...Kamp.KPlusBracketRendering` supplies `hasDefinableINF_excludes_kplus`
+-- (`KPlusBracketRendering.lean:282`),
 -- consumed by `hasDefinableINF_incompatible_with_kplus` below so that this module's strictness
 -- claim is machine-checked here rather than asserted in prose. Cycle-free: Lemma53 imports
 -- `...Kamp.VecEAFormula`, `...Kamp.PriorINF` and `...Kamp.EANegationFix.OnBuilder`, none of
@@ -66,7 +67,7 @@ Rabinovich's Dedekind completeness  <  HasDedekindINF  <  HasDefinableINF  <  Ha
   of those three shapes. This is why the chain above puts it strictly to the right of Rabinovich's
   own hypothesis: it is a definability assumption the paper derives rather than assumes.
 * `HasDedekindINF` **admits** what `HasDefinableINF` forbids: `hasDefinableINF_excludes_kplus`
-  (`Lemma53.lean:282`, axiom-clean) machine-proves that `HasDefinableINF` makes
+  (`KPlusBracketRendering.lean:282`, axiom-clean) machine-proves that `HasDefinableINF` makes
   `kplus M atomMap P z0` **impossible** whenever `P` occurs in `(z₀,z₁)` — i.e. it deletes the
   paper's disjunct (2). `HasDedekindINF` admits exactly that case, via its left disjunct.
   `hasDedekindINF_admits_kplus_shape` below records the delta as a machine-checked fact rather
@@ -106,7 +107,7 @@ via the `NfMultiAnchorBridge` import edge) and **contains no sorries**.
 
 `Section5Correspondence.lean` (page-cited table + `prop42_contentful_of_attained`, sorry-free),
 `lemma53` sorry-free at the attained carrier, `hasDefinableINF_excludes_kplus`
-(`Lemma53.lean:282`), the whole `EANegationFix/` tree, and `TemporalPred.disj` /
+(`KPlusBracketRendering.lean:282`), the whole `EANegationFix/` tree, and `TemporalPred.disj` /
 `TemporalPred.eval_at_disj` (`ExistsForallNF.lean`, `VecEAClosure.lean`) — the point-type
 primitive for eq (5.2)'s `(P₁(r₀) ∨ K⁺(P₁)(r₀))`.
 
@@ -131,7 +132,7 @@ open FormalSystem.Metalogic.Expressiveness
 
     Contrast `HasDefinableINF` (`PriorINF.lean:108`), which is the **right disjunct alone**
     (modulo `r₀ ≤ z₁` vs `r₀ < z₁`) and therefore forbids the left one outright — see
-    `hasDefinableINF_excludes_kplus` (`Lemma53.lean:282`) and
+    `hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:282`) and
     `hasDedekindINF_admits_kplus_shape` below. -/
 structure HasDedekindINF {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) : Prop where
@@ -247,7 +248,8 @@ theorem prior_hasDedekindSUP {sig : MonadicSignature}
 
 /-- **The left disjunct is reachable syntax, not dead syntax.**
 
-    `hasDefinableINF_excludes_kplus` (`Lemma53.lean:282`) proves that under `HasDefinableINF`,
+`hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:282`) proves that under
+    `HasDefinableINF`,
     `kplus M atomMap P z0` is **impossible** whenever `P` occurs in `(z₀,z₁)` — the landed carrier
     deletes the paper's disjunct (2) (PDF p.8). This theorem records the converse shape for
     `HasDedekindINF`: if a structure satisfies the faithful carrier **and** `K⁺(P)(z₀)` holds,

@@ -41,7 +41,8 @@ Off the live import path (imported by nothing on the spine); the completeness sp
 
 - [rabinovich2014], Definition 4.1 (p.5), collapse-to-atom note
   (p.6). Cited by PDF page; the companion markdown transcription is corrupt.
-- `Prop43Translate.lean`: `MonadicFormula.rename` / `eval_rename` — the variable-side naturality
+- `MonadicFormulaSubstitution.lean`: `MonadicFormula.rename` / `eval_rename` — the variable-side
+naturality
   template mirrored here on the predicate side.
 - `ESigmaExpansion.lean`: `sigE`, `oldPred`, `canonExpand`, `atom_eval_old`.
 -/

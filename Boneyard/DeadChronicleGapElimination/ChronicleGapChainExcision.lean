@@ -17,7 +17,7 @@ import FormalSystem.Metalogic.Algebraic.ParametricHistory
 import FormalSystem.Metalogic.Algebraic.ParametricCompleteness
 import FormalSystem.Metalogic.Algebraic.RestrictedParametricTruthLemma
 import FormalSystem.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
-import FormalSystem.Metalogic.Expressiveness.GameTransfer.Theorem6
+import FormalSystem.Metalogic.Expressiveness.GameTransfer.CaseAnalysis
 import FormalSystem.Semantics.Validity
 import Mathlib.Data.Int.SuccPred
 

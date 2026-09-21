@@ -41,7 +41,8 @@ once, because nothing here names Rabinovich, a section, or a lemma number.
 
 **Carrier delta**: this file assumes `HasAttainedINF`, which is strictly stronger than the
 Dedekind completeness Rabinovich's Lemma 5.3 assumes — stronger even than `HasDefinableINF`,
-which `hasDefinableINF_excludes_kplus` (`Lemma53.lean:282`) machine-refutes as already too
+which `hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:282`) machine-refutes as already
+too
 strong. See the "Attained simplification" note directly below, and
 `Section5Correspondence.lean`'s docstring for the full exclusion.
 

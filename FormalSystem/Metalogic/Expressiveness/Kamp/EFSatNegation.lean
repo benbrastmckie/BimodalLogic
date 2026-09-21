@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Expressiveness.Kamp.VVecEA2Collapse
-import FormalSystem.Metalogic.Expressiveness.Kamp.Prop42NegationGeneral
+import FormalSystem.Metalogic.Expressiveness.Kamp.BracketNegationClauses
 import FormalSystem.Metalogic.Expressiveness.Kamp.ExistsForallLemmas
 
 /-!
@@ -33,7 +33,7 @@ negates it into a disjunction:
 Each per-pair `¬ efSat ![env k, env l] (pairProject ψ k l)` is realized as a `VeeExistsForall sig F
 2`
 by composing the arbitrary-pin negation engine `prop42_efSat_negation_general`
-(`Prop42NegationGeneral.lean`, `VVecEA2`-valued, gate `env 0 < env 1` supplied by `StrictMono env`)
+(`BracketNegationClauses.lean`, `VVecEA2`-valued, gate `env 0 < env 1` supplied by `StrictMono env`)
 with the landed collapse bridge `vvecea2_collapse_bridge` (`VVecEA2Collapse.lean`). The existence
 sentence (`r = 0`) is negated through the same engine+bridge at arity `0`/`2`.
 
@@ -42,7 +42,7 @@ sentence (`r = 0`) is negated through the same engine+bridge at arity `0`/`2`.
 - [rabinovich2014], Prop 4.3 ¬-case (PDF p.6), Def 4.1 (p.5-6). Cited
   by PDF page; the companion markdown transcription is corrupt.
 - `ExistsForallLemmas.lean`: `augTarget_iff`, `pairProject`, `pairwiseProjections`, `conjSat`.
-- `Prop42NegationGeneral.lean`: `prop42_efSat_negation_general` (the arbitrary-pin `VVecEA2`
+- `BracketNegationClauses.lean`: `prop42_efSat_negation_general` (the arbitrary-pin `VVecEA2`
 engine).
 - `VVecEA2Collapse.lean`: `vvecea2_collapse_bridge` (the `VVecEA2 → VeeExistsForall` bridge).
 - `VeeExistsForall.lean`: `veeSat`, `veeSat_append`.

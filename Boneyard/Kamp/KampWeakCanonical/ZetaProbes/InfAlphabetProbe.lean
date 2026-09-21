@@ -1,4 +1,4 @@
-import FormalSystem.Metalogic.Expressiveness.Kamp.Prop35Assembly
+import FormalSystem.Metalogic.Expressiveness.Kamp.ExistsForallTranslation
 import FormalSystem.Metalogic.Expressiveness.Kamp.PerFormulaType
 
 /-!
@@ -70,7 +70,7 @@ is therefore tractable. **GO** on Phases 2-5.
   Cited by PDF page; the companion markdown transcription is corrupt.
 - `ExistsForallFormula.lean` (`UnaryType`, `IntervalType`, `unaryHolds`, `intervalHolds`,
   `ExistsForallFormula`, `efSat`); `NormalForm.lean` (`AtomKind`, `atom_eval`);
-  `Prop35Assembly.lean` (`translateProp35`); `OptionBLocalityProbe.lean` (off-path probe pattern).
+  `ExistsForallTranslation.lean` (`translateProp35`); `OptionBLocalityProbe.lean` (off-path probe pattern).
 -/
 
 #exit

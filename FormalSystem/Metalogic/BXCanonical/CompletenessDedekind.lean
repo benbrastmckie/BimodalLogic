@@ -189,13 +189,13 @@ each lives:
 
 **On the table `α(t)`.** Step 5's *"table"* of a formula and its quantifier depth is **not**
 introduced here: the tree already has it, as `table` / `table_correctness` /
-`table_depth_bound` (`WeakCanonical/Table.lean`) — `table sig atomMap ψ` is the monadic
+`table_depth_bound` (`Expressiveness/Table.lean`) — `table sig atomMap ψ` is the monadic
 first-order transcription of `ψ` with one free variable, `table_correctness` is `M ⊨ α(t) ↔
 TemporalTruth M t ψ`, and `table_depth_bound` is `(table … ψ).quantifierDepth ≤
 operatorDepth ψ`. The quantifier depth is set to `k := operatorDepth φ + 2`, *"one greater
 than the depth"* with a further `+1` so that `2 ≤ k` holds unconditionally, which is Doets'
 theorem's own standing hypothesis. `staviFoDepth`/`tableMu`
-(`WeakCanonical/EFGames/StaviCompleteness.lean`) is the μ-relativized variant used by the
+(`Expressiveness/EFGames/StaviCompleteness.lean`) is the μ-relativized variant used by the
 Stavi development and is **not** what §9 needs; the plain `table` layer is.
 
 **ADAPTED-FROM**: `countermodel_discrete_reynolds_v2`

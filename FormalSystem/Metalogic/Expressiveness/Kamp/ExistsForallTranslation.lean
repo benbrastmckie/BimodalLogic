@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Expressiveness.Kamp.Prop35Chain
+import FormalSystem.Metalogic.Expressiveness.Kamp.UntilSinceChainSpec
 import FormalSystem.Metalogic.Expressiveness.Kamp.VeeExistsForall
 import FormalSystem.Metalogic.Expressiveness.Kamp.ExistsForallNF
 import FormalSystem.Metalogic.Expressiveness.Kamp.IntervalType
@@ -17,9 +17,9 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.ExistsForallLemmas
 
 Completes Proposition 3.5 on the Phase-3 `ExistsForallFormula` object: every `∃∀`-formula with
 one free variable is equivalent to a `TL(Until, Since)` formula. This module specializes the
-generic machinery already landed — the atomic layer (`unaryToFormula`, `Prop35ExistsForall.lean`)
+generic machinery already landed — the atomic layer (`unaryToFormulaFin`, `PerFormulaRender.lean`)
 and the generic Until/Since chain bridge (`buildRight_spec_iff_chain` / `buildLeft_spec_iff_chain`,
-`Prop35Chain.lean`) — to `ψ`'s own `Fin`-indexed point/interval types, assembles the full
+`UntilSinceChainSpec.lean`) — to `ψ`'s own `Fin`-indexed point/interval types, assembles the full
 biconditional against `efSat`, and lifts the result through `VeeExistsForall` (Def 3.3, p.4).
 
 ## Contents
@@ -49,8 +49,8 @@ biconditional against `efSat`, and lifts the result through `VeeExistsForall` (D
 
 - [rabinovich2014], Proposition 3.5 (p.5), Definition 3.3 (p.4).
   Cited by PDF page; the companion markdown transcription is corrupt.
-- `Prop35ExistsForall.lean`: `unaryToFormula`, `unaryToFormula_correct`.
-- `Prop35Chain.lean`: `buildRight_spec_iff_chain`, `buildLeft_spec_iff_chain`.
+- `PerFormulaRender.lean`: `unaryToFormulaFin`, `unaryToFormulaFin_correct`.
+- `UntilSinceChainSpec.lean`: `buildRight_spec_iff_chain`, `buildLeft_spec_iff_chain`.
 - `Translation.lean`: `translateEF1`, `translateEF1_correct`.
 - `ExistsForallFormula.lean`: `ExistsForallFormula`, `efSat`.
 - `VeeExistsForall.lean`: `VeeExistsForall`, `veeSat`.

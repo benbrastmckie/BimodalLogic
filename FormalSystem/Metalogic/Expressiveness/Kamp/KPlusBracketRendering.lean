@@ -45,7 +45,7 @@ Induction on `n`.
 `atomMap`, `z₀`, `z₁`. This is not incidental packaging; it is the entire content. Were `Oₙ`
 allowed to be an arbitrary `Prop`-valued predicate, the statement would be discharged by taking
 `Oₙ := ¬(bracket holds)` itself and would say nothing whatsoever — the same contentless-witness
-failure `Prop42Vacuity.lean` refutes for `∃ v', v'.holds`. The claim has content precisely
+failure `VacuousConclusionGuard.lean` refutes for `∃ v', v'.holds`. The claim has content precisely
 because `Oₙ` must live in the `∨∃⃗∀` syntactic class and must be uniform in the model and in the
 points.
 
@@ -424,7 +424,7 @@ theorem negChainOn_holds_of_not_lt {sig : MonadicSignature}
     Building the **faithful** carrier — the disjunction of the paper's two subcases,
     `K⁺(P₁)(z₀) ∨ (∃r₀ ∈ (z₀,z₁), …)` — is not done here, but it is done: the carrier is
     `HasDedekindINF` (`DedekindINF.lean:136`) and the faithful Lemma 5.3 over it is
-    `lemma53Faithful` (`Lemma53Faithful.lean`), which restores all three printed disjuncts.
+    `lemma53Faithful` (`KPlusFaithfulRendering.lean`), which restores all three printed disjuncts.
     The two primitives an earlier version of this note recorded as missing both exist:
     the witness-shifting prepend is `BracketFormula.prepend` (`EANegation.lean:93`), and
     `TemporalPred` disjunction — which disjunct (3)'s point type `P₁ ∨ K⁺(P₁)` needs — is

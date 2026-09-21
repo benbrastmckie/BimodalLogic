@@ -282,11 +282,11 @@ theorem VecEA2.negFixFaithful_of_bracket {sig : MonadicSignature}
 
 /-- **The limit gate survives the lift.** The disjunct the faithful recursion adds and the attained
     one cannot have — Case 1, `K⁺(¬β₁)(z₀)`, PDF p.9, carried by `kplusOpenLeftBlock`
-    (`Lemma53Faithful.lean:304`) — still forces `vea.negFixFaithful` at the top of the chain.
+    (`KPlusFaithfulRendering.lean:304`) — still forces `vea.negFixFaithful` at the top of the chain.
 
     Carrier-free: the hypothesis is `kplusOpen` at `z₀` itself, not a carrier assumption that
     would produce it. The hypothesis is stated at the **source's** `K⁺` — Rabinovich's Definition
-    (3), PDF p.3 — because `kplusOpenLeftBlock` (`Lemma53Faithful.lean:304`) is what Case 1's
+    (3), PDF p.3 — because `kplusOpenLeftBlock` (`KPlusFaithfulRendering.lean:304`) is what Case 1's
     disjunct actually reads. It previously bound the tree's `kplus`, one conjunct stronger; that
     version stayed true only via `kplusOpen_of_kplus`, and an indispensability artifact stated at
     a gate strictly stronger than the one the definition carries certifies less than it appears

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Expressiveness.Kamp.Prop42Contentful
+import FormalSystem.Metalogic.Expressiveness.Kamp.ContentfulWitness
 import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFix.VecEANegFix
 
 /-!
@@ -42,7 +42,7 @@ into that corrupt conversion and should be re-cited by page as they are touched.
 |
 
 Every entry above is landed and sorry-free. `prop42_contentful_of_attained` below is what those
-entries compose to: the contentful Proposition 4.2 target stated in `Prop42Contentful.lean`,
+entries compose to: the contentful Proposition 4.2 target stated in `ContentfulWitness.lean`,
 discharged by **wiring**, not by new transcription.
 
 ## The faithful re-base table — the same chain at the faithful eq (5.2) carrier
@@ -60,15 +60,17 @@ is the *previous* pin, retained unweakened at the terminus (see the last row), a
 member below is in fact stated at the strictly weaker `HasFaithfulDedekindINF`. The two are
 comparable in one direction only — `HasDedekindINF.toHasFaithfulDedekindINF`
 (`KPlusFaithful.lean:366`) — and `prop42_faithful_covers_what_dedekind_excludes`
-(`Prop42Faithful.lean`) exhibits a structure inside the faithful carrier and outside the Dedekind
+(`ContentfulFaithfulBridge.lean`) exhibits a structure inside the faithful carrier and outside the
+Dedekind
 one, so the gap is real rather than notational.
 
 | Rabinovich (PDF page) | Faithful in-tree name | Location |
 |---|---|---|
 | Lemma 5.3 — printed **three**-disjunct `Oₙ₊₁`, disjunct (2) `K⁺(P₁)(z₀)` restored (p.8) |
-`negChainOnFaithful_iff` / `lemma53Faithful` | `Lemma53Faithful.lean:365` / `:460` |
+`negChainOnFaithful_iff` / `lemma53Faithful` | `KPlusFaithfulRendering.lean:365` / `:460` |
 | Lemma 5.3 — the `Since` mirror, `K⁻` primitives (p.8) |
-`HasFaithfulDedekindSUP.last_occ_tp`, `kminusFormula` | `Lemma53FaithfulPast.lean:254` / `:147` |
+`HasFaithfulDedekindSUP.last_occ_tp`, `kminusFormula` | `KMinusFaithfulRendering.lean:254` / `:147`
+|
 | Lemma 3.4 / Cor 5.4 plumbing — the `VVecEA2` combinators the faithful chain needs (pp.6, 9) |
 `VVecEA2.conjEverywhere_holds_iff`, `VVecEA2.concatPin_holds_iff` | `VecEACombinators.lean:116` /
 `:201` |
@@ -85,19 +87,20 @@ one, so the gap is real rather than notational.
 | Prop 4.2 / 4.3 De Morgan fold (p.6) | `VVecEA2.negFixFaithful_iff` |
 `EANegationFixFaithful/VecEANegFixFaithful.lean:244` |
 | **Prop 4.2 itself, at the faithful carrier (p.6)** | `prop42_contentful_of_faithful` |
-`Prop42Faithful.lean:193` |
+`ContentfulFaithfulBridge.lean:193` |
 | Prop 4.2 at the **previous** pin, retained unweakened (p.6) | `prop42_contentful_of_dedekind` |
-`Prop42Faithful.lean:209` |
+`ContentfulFaithfulBridge.lean:209` |
 
 Every entry is landed, sorry-free and axiom-clean. `prop42_contentful_of_faithful`
-(`Prop42Faithful.lean:193`) is what they compose to: the **same** `Prop42Contentful` target
+(`ContentfulFaithfulBridge.lean:193`) is what they compose to: the **same** `Prop42Contentful`
+target
 discharged below at `HasAttainedINF` + `HasAttainedSUP`, discharged there from
 `HasFaithfulDedekindINF` **alone**. `prop42_contentful_of_dedekind` (`:208`) is the chain's
 former terminus, kept as a one-line corollary through
 `HasDedekindINF.toHasFaithfulDedekindINF` so that every consumer written against the Dedekind pin
 still typechecks; it is a corollary of the faithful terminus, not the chain's endpoint.
 
-`Prop42Faithful.lean` also carries the re-base's cumulative exclusion statement
+`ContentfulFaithfulBridge.lean` also carries the re-base's cumulative exclusion statement
 (`prop42_faithful_unobservable_on_prior`, `:355`) and the failed-vacuity control re-run against the
 final statement (`prop42Faithful_perPoint_is_VACUOUS`, `:276`). Read those before citing any
 faithful row above as coverage of a structure the attained rows miss — on every Prior structure
@@ -124,14 +127,16 @@ HasAttainedINF
 ```
 
 The faithful carrier is **no longer deferred**: `prop42_contentful_of_dedekind`
-(`Prop42Faithful.lean`) discharges the same `Prop42Contentful` target from `HasDedekindINF` alone.
+(`ContentfulFaithfulBridge.lean`) discharges the same `Prop42Contentful` target from
+`HasDedekindINF` alone.
 The theorem below is retained unchanged because it is still consumed, and because deleting it
 would weaken the attained stack — but it is the *stronger-hypothesis* version, and new work should
 cite the faithful one.
 
 Two in-tree, machine-checked facts pin this down:
 
-* `hasDefinableINF_excludes_kplus` (`Lemma53.lean:282`, axiom-clean) proves the **weaker**
+* `hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:282`, axiom-clean) proves the
+**weaker**
   `HasDefinableINF` is *already* too strong: it makes the paper's disjunct (2)
   `K⁺(P₁)(z₀) ∧ Oₙ(P₂,…,Pₙ,z₀,z₁)` (p.8) unreachable whenever `P₁` occurs in `(z₀,z₁)`. Since
   `HasAttainedINF.toHasDefinableINF` (`PriorINF.lean:215`) shows `HasAttainedINF` implies
@@ -152,7 +157,7 @@ table above — but it is **not** yet the paper's Dedekind completeness either: 
 still a hypothesis on the structure rather than a consequence of order completeness, which is the
 one strengthening step that remains open. And the gain is not yet *observable*: on every Prior
 structure disjunct (2) and its `K⁻` dual are provably dead
-(`prop42_faithful_unobservable_on_prior`, `Prop42Faithful.lean`). Constructing a genuinely
+(`prop42_faithful_unobservable_on_prior`, `ContentfulFaithfulBridge.lean`). Constructing a genuinely
 non-attained Dedekind-complete frame class — the `ℝ` example above, as a frame class — is the next
 fidelity milestone and is owned by neither module.
 
@@ -168,9 +173,9 @@ attempt.
 ## Non-vacuity is compiler-checked
 
 `Prop42Contentful` hoists `∃ v'` outside `∀ z0 z1`, which is the whole content — see
-`Prop42Contentful.lean`'s module docstring for why both weaker orderings are vacuous. The
+`ContentfulWitness.lean`'s module docstring for why both weaker orderings are vacuous. The
 all-`⊤` escape hatch is closed by `topVVec_contentful_forces_unsat`
-(`Prop42Contentful.lean:218`): offering `topVVec` as `v'` does not discharge the goal, it commits
+(`ContentfulWitness.lean:221`): offering `topVVec` as `v'` does not discharge the goal, it commits
 the offerer to `v` being unsatisfiable on every ordered pair. The corresponding negative check —
 that the all-`⊤` term does **not** typecheck against `Prop42Contentful` — is recorded verbatim in
 this phase's handoff.
@@ -195,7 +200,8 @@ open FormalSystem.Metalogic.Expressiveness
     **Carrier, stated because the rule requires it.** This is Prop 4.2 *restricted to attained
     structures*, **not** Rabinovich's Prop 4.2 over all Dedekind complete chains. `HasAttainedINF`
     is strictly stronger than the paper's Dedekind completeness — strictly stronger even than
-    `HasDefinableINF`, which `hasDefinableINF_excludes_kplus` (`Lemma53.lean:282`) already
+    `HasDefinableINF`, which `hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:282`)
+    already
     machine-refutes as too strong. See this module's docstring for the full exclusion. Do not cite
     this theorem as Prop 4.2 simpliciter.
 

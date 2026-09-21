@@ -9,7 +9,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAFormula
 /-!
 # The contentful Proposition 4.2: target statement, endpoint cases, Section 5 route
 
-This file states the **target** that `Prop42Vacuity.lean` shows the tree does not yet have:
+This file states the **target** that `VacuousConclusionGuard.lean` shows the tree does not yet have:
 Rabinovich's actual Proposition 4.2, in a shape that is not satisfiable by the all-`⊤` block.
 It then proves the fragment of that target which needs no `INF` machinery — the two endpoint
 (de Morgan) cases — and records the Section 5 dependency chain the remaining bracket case
@@ -30,7 +30,7 @@ Both weaker orderings are vacuous and must never be accepted as Proposition 4.2:
 
 * `∀ z0 z1, ∃ v', v'.holds z0 z1` — closed by the all-`⊤` block. This is the shape the
   deleted `neg_2var_vec_ea` had; refuted from no hypotheses at all by
-  `prop42_conclusion_is_vacuous` (`Prop42Vacuity.lean`).
+  `prop42_conclusion_is_vacuous` (`VacuousConclusionGuard.lean`).
 * `∀ z0 z1, ∃ v', (v'.holds z0 z1 ↔ ¬v.holds z0 z1)` — **also** vacuous. With `z0`, `z1` fixed,
   `¬v.holds z0 z1` is a fixed truth value, so one picks the all-`⊤` block when it is true and
   an unsatisfiable block when it is false. The biconditional alone does not rescue it; the
@@ -43,7 +43,8 @@ Hoisting `v'` forces it to be a function of `v` alone, uniform in the points —
 
 `prop42_contentful_endpoint_instance` proves `Prop42Contentful` for the endpoint-only fragment.
 That the target is *satisfiable* is therefore not in doubt. That it is *not trivially*
-satisfiable is the content of `Prop42Vacuity.lean` plus the failed-vacuity check recorded in
+satisfiable is the content of `VacuousConclusionGuard.lean` plus the failed-vacuity check recorded
+in
 this file's phase artifacts: the all-`⊤` block, which discharges the vacuous shape from nothing,
 does **not** discharge `Prop42Contentful` — the `←` direction of the biconditional demands a
 block that fails wherever `v` holds, and `⊤` fails nowhere.
@@ -147,7 +148,8 @@ open FormalSystem.Metalogic.Expressiveness
     single `v'`, depending on `v` alone, that is equivalent to `¬v` at every pair of points.
 
     The `∃ v'` is hoisted outside `∀ z0 z1` deliberately. Both weaker orderings are vacuous —
-    see this file's module docstring and `Prop42Vacuity.lean`. Any candidate Proposition 4.2
+    see this file's module docstring and `VacuousConclusionGuard.lean`. Any candidate Proposition
+    4.2
     that does not have this shape is rejected. -/
 def Prop42Contentful {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
@@ -187,7 +189,8 @@ private theorem triv_top_bracket_holds {sig : MonadicSignature}
 /-! ### The all-`⊤` block, and the two endpoint cases -/
 
 /-- The all-`⊤` `VecEA2` block: the witness that makes the *vacuous* Prop 4.2 shape provable
-    from no hypotheses (`prop42_conclusion_is_vacuous`, `Prop42Vacuity.lean`). Named here so
+    from no hypotheses (`prop42_conclusion_is_vacuous`, `VacuousConclusionGuard.lean`). Named here
+    so
     the failed-vacuity check can be stated against the same object. -/
 def topBlock : VecEA2 0 :=
   { endpointLeft := TemporalPred.top
@@ -215,7 +218,7 @@ theorem topVVec_holds {sig : MonadicSignature}
 
     On the *vacuous* shape `∃ v', v'.holds z0 z1`, the all-`⊤` block is a free pass: it
     discharges the goal from nothing, for every `v`, which is precisely why that shape is not
-    Proposition 4.2 (`prop42_conclusion_is_vacuous`, `Prop42Vacuity.lean`).
+    Proposition 4.2 (`prop42_conclusion_is_vacuous`, `VacuousConclusionGuard.lean`).
 
     On `Prop42Contentful` the same escape hatch is closed. Offering `topVVec` as `v'` does not
     discharge the goal — it *commits* the offerer to `v` being unsatisfiable on every ordered

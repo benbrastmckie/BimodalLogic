@@ -18,7 +18,7 @@ open FormalSystem.Metalogic.Expressiveness
 **Correspondence guard.** `VVecEA2.negFix_iff` below is Rabinovich's Prop 4.2 / 4.3 De Morgan
 fold (**PDF p.6**, proved in Section 5, pp.7-11). The full page-cited Section 5 correspondence
 table — and `prop42_contentful_of_attained`, which wires this theorem to the contentful Prop 4.2
-target of `Prop42Contentful.lean` — is `Kamp/Section5Correspondence.lean`, reachable from
+target of `ContentfulWitness.lean` — is `Kamp/Section5Correspondence.lean`, reachable from
 `FormalSystem.lean` and so CI-protected. **Consult it before planning any Section 5 work.**
 Cite by PDF page only: the former `chunk_0012` citation here pointed into the companion `.md`
 conversion, which is corrupt (drops displayed equations, inverts `k ≠ m` to `k = m`).
@@ -26,7 +26,8 @@ conversion, which is corrupt (drops displayed equations, inverts `k ≠ m` to `k
 **Carrier delta.** `VVecEA2.negFix_iff` assumes `HasAttainedINF`/`HasAttainedSUP` — strictly
 stronger than the Dedekind completeness Rabinovich's Prop 4.2 is claimed over, and stronger even
 than `HasDefinableINF`, machine-refuted as already too strong by `hasDefinableINF_excludes_kplus`
-(`Lemma53.lean:282`). What is proved here is Prop 4.2 *restricted to attained structures*.
+(`KPlusBracketRendering.lean:282`). What is proved here is Prop 4.2 *restricted to attained
+structures*.
 
 Negation closure at the disjunction-of-`→∃∀` level (Rabinovich Prop 4.2 /
 4.3, PDF p.6). A `VecEA2` disjunct is the two-free-variable canonical form

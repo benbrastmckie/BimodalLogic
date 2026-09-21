@@ -17,7 +17,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.KPlusFaithful
 import FormalSystem.Metalogic.Expressiveness.PriorExpressivenessDense
 import FormalSystem.Metalogic.Expressiveness.StaviConnectives
 import FormalSystem.Metalogic.Expressiveness.EFGames.StaviCompleteness
-import FormalSystem.Metalogic.Expressiveness.GameTransfer.Theorem6
+import FormalSystem.Metalogic.Expressiveness.GameTransfer.CaseAnalysis
 
 /-!
 # Expressiveness: Kamp/Stavi Expressive Completeness
