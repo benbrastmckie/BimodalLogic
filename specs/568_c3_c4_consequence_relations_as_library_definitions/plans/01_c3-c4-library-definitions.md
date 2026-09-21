@@ -361,26 +361,26 @@ evaluation time is in the domain.
 
 ---
 
-### Phase 6: Frame-class rows and the gap closures [NOT STARTED]
+### Phase 6: Frame-class rows and the gap closures [COMPLETED]
 
 **Goal**: Land the six frame-class constructors' rows, three of which close gaps the source table
 left open.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/ConvexConsequence/FrameClassSurvival.lean`, importing
+- [x] Create `FormalSystem/Metalogic/ConvexConsequence/FrameClassSurvival.lean`, importing
       `Semantics.ConvexTruth` and `Metalogic.SoundnessLemmas.Separability`. Register and
       regenerate the root.
-- [ ] Port from the research probe: `c3_z1` (backward induction along iterated predecessor),
+- [x] Port from the research probe: `c3_z1` (backward induction along iterated predecessor),
       `c3_prior_U_gap` (supremum of a set capped at the refuting witness, so it lands in the
       domain; needs completeness only, not density), `c3_sep` (apply
       `SoundnessLemmas.sep_order` to the set of domain points satisfying the formula).
-- [ ] New proofs: `c3_prior_UZ` (least witness by the same predecessor iteration as Z1),
+- [x] New proofs: `c3_prior_UZ` (least witness by the same predecessor iteration as Z1),
       `c3_density` and `c3_dense_indicator` (density interpolates, convexity returns the point to
       the domain).
-- [ ] Class-level corollaries at `ValidC3In` for each row, using `sat_intro` or `obtain`.
-- [ ] Docstring on the endpoint behaviour of `K⁺`: vacuously true at a right endpoint, which only
+- [x] Class-level corollaries at `ValidC3In` for each row, using `sat_intro` or `obtain`.
+- [x] Docstring on the endpoint behaviour of `K⁺`: vacuously true at a right endpoint, which only
       helps the Reynolds consequents.
-- [ ] Scoped build.
+- [x] Scoped build.
 
 **Timing**: 2 hours
 
@@ -390,6 +390,13 @@ left open.
 
 **Scope Hypothesis**: `prior_UZ`, `density` and `dense_indicator` survive (argued-only). Same
 escalation rule as Phase 5. The dependency on Phase 3 is for the directory scaffolding only.
+
+**Phase notes**: The scope hypothesis held: `prior_UZ`, `density` and `dense_indicator` survive.
+`c3_prior_UZ` finds the least witness by induction on the predecessor-iterate count from the given
+witness, as planned. `c3_dense_indicator` spells its formula out in full rather than as
+`gapFwd.neg`, because this file does not import the module declaring `gapFwd`; the abbreviation
+unfolds to the same term. `lean_verify` on `c3_sep`, `c3_z1`, `c3_prior_U_gap`: `propext`,
+`Classical.choice`, `Quot.sound` only.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/ConvexConsequence/FrameClassSurvival.lean` - new

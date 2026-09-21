@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.ConvexConsequence.Separations
 import FormalSystem.Metalogic.ConvexConsequence.AxiomSurvival
+import FormalSystem.Metalogic.ConvexConsequence.FrameClassSurvival
 
 /-!
 # FormalSystem.Metalogic.ConvexConsequence - The Logic of the Convex-Index Relations
@@ -25,6 +26,8 @@ question, and no completeness theorem for C3 is stated here.
   (`F⊤`) and C3 from C4 (`lastPoint`)
 - `AxiomSurvival`: one theorem per base-class axiom of TM — C3-valid on every frame, or refuted
   on the integer-time frame; the six failures are all existence assertions about the order
+- `FrameClassSurvival`: the six frame-class axioms each survive C3 on their own frame class,
+  including the four verdicts an earlier survey left conditional or unresolved
 
 ## Tags
 
