@@ -23,8 +23,8 @@ truth value of `φ`, the dense-carrier calculus gives `b(U(ψ, φ)) = b(φ) ∧ 
 `b(Gφ) = b(Fφ) = b(K⁺φ) = b(K⁻φ) = b(φ)`, and then:
 
 * every axiom at `minFrameClass ≤ .Dense` is delivered wholesale by
-  `axiom_dense_valid`, since `ℚ` *is* densely ordered — this covers the 37 Base axioms
-  and both Dense axioms with no case analysis here;
+  `axiom_dense_valid`, since `ℚ` *is* densely ordered — this discharges all 23 Base
+  constructors and both Dense constructors with no case analysis here;
 * `prior_U_gap`'s antecedent `U(φ, ⊤) ∧ F(¬φ)` reduces to `b(φ) ∧ ¬b(φ)` and is vacuous;
   `prior_S_gap` dually;
 * `sep`'s inner `U(¬φ, φ)` reduces to `b(φ) ∧ ¬b(φ) = ⊥`, so the second conjunct of its

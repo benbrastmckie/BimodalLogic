@@ -57,8 +57,8 @@ includes:
 
 ## References
 
-* [TaskFrame.lean](../ProofChecker/Semantics/TaskFrame.lean) - FrameOver definition
-* [PartialHistory.lean](../ProofChecker/Semantics/PartialHistory.lean) - PartialHistory definition
+* [TaskFrame.lean](../Semantics/TaskFrame.lean) - FrameOver definition
+* [PartialHistory.lean](../Semantics/PartialHistory.lean) - PartialHistory definition
 * JPL Paper anchors `def:temporal-order` (temporal structure, quoted verbatim above) and
   `def:frame` (frame definition; see TaskFrame.lean's module docstring for the verbatim
   four-axiom statement) — cited by `\label` anchor, never by raw line number

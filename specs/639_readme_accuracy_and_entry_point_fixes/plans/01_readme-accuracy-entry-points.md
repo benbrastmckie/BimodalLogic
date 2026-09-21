@@ -437,29 +437,38 @@ under `docs/` outside these two files belongs to this phase.
 
 ---
 
-### Phase 6: Lean docstring counts and stale relative links [NOT STARTED]
+### Phase 6: Lean docstring counts and stale relative links [COMPLETED]
 
 **Goal**: Close the `.lean` half of items (1) and (4) — comment-only edits to three files.
 
 **Tasks**:
-- [ ] `FormalSystem/Examples/BimodalProofs.lean` lines 40 and 244: change
+- [x] `FormalSystem/Examples/BimodalProofs.lean` lines 40 and 244: change
       `../ProofChecker/Theorems/Perpetuity.lean` to `../Theorems/Perpetuity.lean` in both
       occurrences. `ProofChecker/` is a role name, not a directory — confirm no such directory
-      exists and that `FormalSystem/Theorems/Perpetuity.lean` does.
-- [ ] Re-grep the whole file (and `FormalSystem/Examples/`) for any further `../ProofChecker/`
-      relative link introduced by the same copy-paste.
-- [ ] `FormalSystem/Automation/BenchmarkAnchorsMain.lean` (~lines 17-18, 33, 47, 338, 340, 475-476,
+      exists and that `FormalSystem/Theorems/Perpetuity.lean` does. *(completed; also fixed the
+      adjacent `../docs/user-guide/architecture.md` link on the same line 41, which resolved to
+      the nonexistent `FormalSystem/docs/...` — corrected to `../../docs/...`)*
+- [x] Re-grep the whole file (and `FormalSystem/Examples/`) for any further `../ProofChecker/`
+      relative link introduced by the same copy-paste. *(completed: found and fixed two further
+      occurrences in `FormalSystem/Examples/TemporalStructures.lean` lines 60-61 —
+      `../ProofChecker/Semantics/{TaskFrame,PartialHistory}.lean` → `../Semantics/...`)*
+- [x] `FormalSystem/Automation/BenchmarkAnchorsMain.lean` (~lines 17-18, 33, 47, 338, 340, 475-476,
       500): the file's 45-name convention is internally consistent and stays, but retitle
       "constructors" to "schemata"/"names" wherever the referenced set includes derived mirrors
       (notably line 338's "Base-class axioms (37 constructors)" and line 340's "non-Base axioms
       (8 constructors: …)"), so `Axiom` constructors are never conflated with `DerivedAxioms`
       theorems. Leave `allAxiomNames`-related references to the 29-name list saying "constructors".
-- [ ] `FormalSystem/Metalogic/Independence/RationalWitness.lean:26`: fix "this covers the 37 Base
+      *(completed: lines 338/340 retitled to "names"; lines 17-18, 47, 475-476, 500 confirmed
+      already correct and left unchanged; also fixed line 33's stale "Dense/Discrete" — live enum
+      has no `Discrete` — to "Dense/ZTime/RTime", directly adjacent to the count fix on the same
+      line)*
+- [x] `FormalSystem/Metalogic/Independence/RationalWitness.lean:26`: fix "this covers the 37 Base
       axioms" to the primitive count. Note the line contains "covers", which exempts it from C14 —
       keep the word if the claim really is a subset claim, drop it if the corrected figure is a
-      total.
-- [ ] Add, to the `BenchmarkAnchorsMain.lean` header docstring, a one-line pointer to
-      `docs/reference/axiom-reference.md`'s `Two axiom counts` section.
+      total. *(completed: corrected figure (23) is a total — every Base primitive, not a subset —
+      so "covers" was dropped in favor of "discharges all 23 Base constructors")*
+- [x] Add, to the `BenchmarkAnchorsMain.lean` header docstring, a one-line pointer to
+      `docs/reference/axiom-reference.md`'s `Two axiom counts` section. *(completed)*
 
 **Timing**: 0.75 hours
 

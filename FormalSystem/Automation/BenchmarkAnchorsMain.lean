@@ -15,7 +15,8 @@ import FormalSystem.ProofSystem.Axioms
 
 This module generates concrete formula instances of every BX schema, each tagged by name:
 the 29 primitive axioms and the 16 derived schemata of `FormalSystem.ProofSystem.DerivedAxioms`
-(45 names in all)
+(45 names in all; see `docs/reference/axiom-reference.md`'s "Two axiom counts" section for the
+full primitive-vs-total-names derivation)
 with varied substitutions, labels them via the decision procedure, and exports
 them as JSONL records for the BMLogic-Bench benchmark.
 
@@ -30,8 +31,9 @@ vocabulary of base terms:
 For ground axioms (no parameters), we produce the single fixed formula.
 For parameterized axioms, we produce multiple instances with different substitutions.
 
-The module produces only **Base** frame class axioms (37 axioms). Dense/Discrete
-axioms are excluded since the benchmark uses FrameClass.Base throughout.
+The module produces only **Base** frame class axioms (37 names, including derived
+past-mirrors). Dense/ZTime/RTime axioms are excluded since the benchmark uses
+FrameClass.Base throughout.
 
 ## Main Definitions
 
@@ -335,10 +337,11 @@ private def nonBaseAxiomNames : List String :=
 /--
 Label a tagged formula via `matchAxiom` directly, bypassing the tableau decision procedure.
 
-For Base-class axioms (37 constructors): produces a valid label with proof trace
-referencing the matched axiom constructor.
-For non-Base axioms (8 constructors: prior_UZ, prior_SZ, z1, density, dense_indicator,
-prior_U_gap, prior_S_gap, sep): produces an invalid label with a note about frame class
+For Base-class axioms (37 names, including derived past-mirrors): produces a valid label with
+proof trace referencing the matched axiom constructor.
+For non-Base axioms (8 names: prior_UZ, prior_SZ, z1, density, dense_indicator,
+prior_U_gap, prior_S_gap, sep — six primitive constructors and two derived past-mirrors,
+`prior_SZ` and `prior_S_gap`): produces an invalid label with a note about frame class
 incompatibility.
 
 Returns `none` if `matchAxiom` fails (shouldn't happen for well-formed instances).

@@ -37,8 +37,8 @@ This file demonstrates both available notation styles:
 
 ## References
 
-* [Perpetuity.lean](../ProofChecker/Theorems/Perpetuity.lean) - P1-P6 theorems
-* [architecture.md](../docs/user-guide/architecture.md) - TM logic specification
+* [Perpetuity.lean](../Theorems/Perpetuity.lean) - P1-P6 theorems
+* [architecture.md](../../docs/user-guide/architecture.md) - TM logic specification
 -/
 
 namespace FormalSystem.Examples.BimodalProofs
@@ -241,7 +241,7 @@ This module demonstrates:
 5. Notation equivalence proofs via `rfl`
 
 For more details on the perpetuity principles, see:
-- [Perpetuity.lean](../ProofChecker/Theorems/Perpetuity.lean)
+- [Perpetuity.lean](../Theorems/Perpetuity.lean)
 -/
 
 end FormalSystem.Examples.BimodalProofs
