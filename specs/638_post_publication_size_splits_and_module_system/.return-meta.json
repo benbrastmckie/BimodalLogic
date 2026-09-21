@@ -1,17 +1,43 @@
 {
-  "status": "researched",
-  "started_at": "2026-09-21T19:15:40Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/638_post_publication_size_splits_and_module_system/reports/01_size-splits-module-system.md",
-      "summary": "Dependency-seam analysis of GapDetection.lean (four import-acyclic families, verified by scratch elaboration) and SplitPoint.lean (one seam: the SplitPointProps structure; the rest is a single 4,774-line proof), harness impact per check, and a module-system evaluation recommending deferral to its own ADR-led programme."
+      "type": "plan",
+      "path": "specs/638_post_publication_size_splits_and_module_system/plans/01_size-splits-module-system.md",
+      "summary": "Six-phase plan: scope/baseline preflight, four-module GapDetection split, SplitPointProps extraction with aggregator closure, documentation, module-system evaluation record, final gate with before/after name evidence."
     }
   ],
+  "next_steps": "Run /implement 638 to execute the plan",
   "metadata": {
     "session_id": "sess_1790018097_6c1579_638",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": [
+      "orchestrator",
+      "plan",
+      "planner-agent"
+    ],
+    "phase_count": 6,
+    "estimated_hours": 6.5,
+    "dependency_waves": [
+      [
+        1
+      ],
+      [
+        2,
+        5
+      ],
+      [
+        3
+      ],
+      [
+        4
+      ],
+      [
+        6
+      ]
+    ]
+  },
+  "memory_candidates": [],
+  "dispatch_seq": 7
 }

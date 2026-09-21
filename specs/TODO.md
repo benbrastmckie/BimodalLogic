@@ -94,7 +94,7 @@ next_project_number: 647
 
 ### Publication Quality
 
-638 [RESEARCHED] — Split EFGames/GapDetection.lean and the split-point file only...
+638 [PLANNED] — Split EFGames/GapDetection.lean and the split-point file only...
 
 ### Semantics
 
@@ -205,11 +205,12 @@ ACCEPTANCE. measure-refactor-partitions.py upward-edges reports a non-empty meas
 ---
 
 ### 638. Post publication size splits and module system
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 637
 - **Research**: [638_post_publication_size_splits_and_module_system/reports/01_size-splits-module-system.md]
+- **Plan**: [638_post_publication_size_splits_and_module_system/plans/01_size-splits-module-system.md]
 
 **Description**: Split EFGames/GapDetection.lean and the split-point file only along import-acyclic declaration families, keeping namespaces; evaluate adopting the Lean module system as its own programme. Acceptance: no fully-qualified name changes; harness green.
 
