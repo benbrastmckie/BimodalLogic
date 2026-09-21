@@ -147,6 +147,79 @@ SORRY_TOTAL_INCL_BONEYARD=$((SORRY_ALGEBRAIC + SORRY_BXCANONICAL + SORRY_BUNDLE 
 SORRY_TOTAL_EXCL_BONEYARD=$((SORRY_ALGEBRAIC + SORRY_BXCANONICAL + SORRY_BUNDLE + SORRY_WEAKCANONICAL_EXCL + SORRY_OTHER))
 
 # ---------------------------------------------------------------------------
+# Version pins
+#
+# All three are plain file reads, so they are available in --json mode (which
+# must run without a build). The toolchain file carries no trailing newline in
+# some checkouts, hence the explicit trim.
+# ---------------------------------------------------------------------------
+LEAN_TOOLCHAIN_PIN=$(tr -d '[:space:]' < "${REPO_ROOT}/lean-toolchain")
+
+# The requested tag is what lakefile.toml asks for; the resolved commit is what
+# lake actually fetched. They are reported separately because a moved tag would
+# change the second without changing the first.
+MATHLIB_TAG=$(awk '
+  /^\[\[require\]\]/ { inreq=1; name="" }
+  inreq && /^name *= *"mathlib"/ { ismathlib=1 }
+  inreq && ismathlib && /^rev *= */ {
+    gsub(/^rev *= *"/, ""); gsub(/"$/, ""); print; exit
+  }
+  /^\[\[lean_lib\]\]/ { inreq=0; ismathlib=0 }
+' "${REPO_ROOT}/lakefile.toml")
+
+MATHLIB_REV=$(python3 - "${REPO_ROOT}/lake-manifest.json" << 'PYEOF'
+import json, sys
+with open(sys.argv[1], encoding="utf-8") as fh:
+    manifest = json.load(fh)
+for pkg in manifest.get("packages", []):
+    if pkg.get("name") == "mathlib":
+        print(pkg.get("rev", ""))
+        break
+PYEOF
+)
+
+# ---------------------------------------------------------------------------
+# Repository scale
+#
+# Per-tree file and line counts over the LIVE trees only. Boneyard/ is
+# deliberately absent: an archived figure must never be foldable into a live
+# one, which is the same rule the split WeakCanonical sorry row enforces above.
+# ---------------------------------------------------------------------------
+count_lean_files() {
+  find "$1" -name '*.lean' -type f 2>/dev/null | wc -l | tr -d ' '
+}
+
+count_lean_lines() {
+  find "$1" -name '*.lean' -type f -exec cat {} + 2>/dev/null | wc -l | tr -d ' '
+}
+
+FORMALSYSTEM_FILE_COUNT=$(count_lean_files "${REPO_ROOT}/FormalSystem")
+FORMALSYSTEM_LINE_COUNT=$(count_lean_lines "${REPO_ROOT}/FormalSystem")
+TESTS_FILE_COUNT=$(count_lean_files "${REPO_ROOT}/Tests")
+TESTS_LINE_COUNT=$(count_lean_lines "${REPO_ROOT}/Tests")
+TOOLS_FILE_COUNT=$(count_lean_files "${REPO_ROOT}/BimodalTools")
+TOOLS_LINE_COUNT=$(count_lean_lines "${REPO_ROOT}/BimodalTools")
+
+# A repo-wide tracked-file count is deliberately NOT emitted. It changes on
+# every commit that adds any file anywhere, so policing it under Check 2 would
+# make the sync check fail on work that never touched a cited figure. The three
+# per-tree Lean counts above are the scale figures that carry meaning.
+
+# Cross-check: FormalSystem.lean is produced by `lake exe mk_all --lib
+# FormalSystem` and verified byte-for-byte by its --check mode, so it carries
+# exactly one import line per file under FormalSystem/. A mismatch against the
+# filesystem count is a real inconsistency (a file added without regenerating
+# the root), not a counting bug. Warn loudly and keep going: --json is consumed
+# by typst-sync-check.sh, and bricking the sync check over an unrelated mk_all
+# drift would hide every other figure it polices.
+FORMALSYSTEM_IMPORT_COUNT=$(grep -c '^import ' "${REPO_ROOT}/FormalSystem.lean" || true)
+if [[ "${FORMALSYSTEM_IMPORT_COUNT}" != "${FORMALSYSTEM_FILE_COUNT}" ]]; then
+  echo "typst-status-counts.sh: WARNING -- FormalSystem.lean has ${FORMALSYSTEM_IMPORT_COUNT}" >&2
+  echo "  import lines but FormalSystem/ has ${FORMALSYSTEM_FILE_COUNT} .lean files." >&2
+  echo "  Run 'lake exe mk_all --lib FormalSystem' to regenerate the library root." >&2
+fi
+
+# ---------------------------------------------------------------------------
 # Commit stamp
 # ---------------------------------------------------------------------------
 STAMP_COMMIT=$(git -C "${REPO_ROOT}" rev-parse --short HEAD)
@@ -171,6 +244,15 @@ JSON=$(cat << EOF
   "sorry_weakcanonical": ${SORRY_WEAKCANONICAL_ALL},
   "sorry_weakcanonical_excl_boneyard": ${SORRY_WEAKCANONICAL_EXCL},
   "sorry_other": ${SORRY_OTHER},
+  "lean_toolchain_pin": "${LEAN_TOOLCHAIN_PIN}",
+  "mathlib_tag": "${MATHLIB_TAG}",
+  "mathlib_rev": "${MATHLIB_REV}",
+  "formalsystem_file_count": ${FORMALSYSTEM_FILE_COUNT},
+  "formalsystem_line_count": ${FORMALSYSTEM_LINE_COUNT},
+  "tests_file_count": ${TESTS_FILE_COUNT},
+  "tests_line_count": ${TESTS_LINE_COUNT},
+  "tools_file_count": ${TOOLS_FILE_COUNT},
+  "tools_line_count": ${TOOLS_LINE_COUNT},
   "stamp_commit": "${STAMP_COMMIT}",
   "stamp_date": "${STAMP_DATE}"
 }
@@ -257,6 +339,21 @@ cat > "${OUT_TYP}" << EOF
 
 #let sorry-total = ${SORRY_TOTAL_INCL_BONEYARD}
 #let sorry-total-excl-boneyard = ${SORRY_TOTAL_EXCL_BONEYARD}
+
+// Version pins. lean-toolchain-pin is the whole toolchain string; mathlib-tag
+// is what lakefile.toml requests and mathlib-rev is what lake resolved it to.
+#let lean-toolchain-pin = "${LEAN_TOOLCHAIN_PIN}"
+#let mathlib-tag = "${MATHLIB_TAG}"
+#let mathlib-rev = "${MATHLIB_REV}"
+
+// Repository scale, LIVE trees only. Boneyard/ is deliberately absent so that
+// no archived figure can be folded into a live one.
+#let formalsystem-file-count = ${FORMALSYSTEM_FILE_COUNT}
+#let formalsystem-line-count = ${FORMALSYSTEM_LINE_COUNT}
+#let tests-file-count = ${TESTS_FILE_COUNT}
+#let tests-line-count = ${TESTS_LINE_COUNT}
+#let tools-file-count = ${TOOLS_FILE_COUNT}
+#let tools-line-count = ${TOOLS_LINE_COUNT}
 
 #let sorry-table = (
   ("Algebraic/", ${SORRY_ALGEBRAIC}),

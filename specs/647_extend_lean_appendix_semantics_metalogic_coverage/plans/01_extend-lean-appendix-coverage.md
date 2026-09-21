@@ -540,7 +540,7 @@ drifted before and must not be taken from memory.
 
 ---
 
-### Phase 8: Generator and Check 2 extension for scale and version figures [NOT STARTED]
+### Phase 8: Generator and Check 2 extension for scale and version figures [COMPLETED]
 
 **Goal**: Extend `scripts/typst-status-counts.sh` and `scripts/typst-sync-check.sh` Check 2
 together so the repository-scale and version figures item (10) cites are generator-derived and
@@ -548,11 +548,11 @@ cannot drift silently.
 
 **Tasks**:
 
-- [ ] Add the new figures to `typst-status-counts.sh`: the Lean toolchain pin (from
+- [x] Add the new figures to `typst-status-counts.sh`: the Lean toolchain pin (from
       `lean-toolchain`), the Mathlib requested tag (from `lakefile.toml`), the Mathlib resolved
       commit (from `lake-manifest.json`), and per-tree file and line counts for `FormalSystem/`,
       `Tests/` and `BimodalTools/`. Report any archived-tree figure separately or not at all,
-      never folded into a live figure.
+      never folded into a live figure. *(deviation: altered — a repo-wide `git ls-files` count was written and then removed: it changes on every commit that adds any file anywhere, so policing it under Check 2 would fail the sync check on work that never touched a cited figure. Repository scale is carried by the three per-tree Lean counts instead.)*
 - [ ] Emit every new figure in the `--json` branch as well as in the `status.typ` write path.
       `--json` is what Check 2 consumes and it must run without a build, so every new figure must
       be a filesystem or git read.

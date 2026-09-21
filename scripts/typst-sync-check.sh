@@ -212,7 +212,18 @@ with open(sys.argv[1], encoding="utf-8") as fh:
 
 scalar_fields = ["axiom-count", "rule-count", "base-count", "dense-only-count",
                   "ztime-only-count", "rtime-only-count",
-                  "sorry-total", "sorry-total-excl-boneyard"]
+                  "sorry-total", "sorry-total-excl-boneyard",
+                  # Repository scale. A new #let in status.typ that is NOT
+                  # listed here is never compared, which is how a cited figure
+                  # rots silently while this check stays green. Every figure
+                  # the generator emits belongs in one of the two lists.
+                  "formalsystem-file-count", "formalsystem-line-count",
+                  "tests-file-count", "tests-line-count",
+                  "tools-file-count", "tools-line-count"]
+# String-valued fields need their own comparison: the integer path below
+# matches (\d+) only, so a string field added to scalar_fields would report
+# MISSING on every run.
+string_fields = ["lean-toolchain-pin", "mathlib-tag", "mathlib-rev"]
 live_map = {
     "axiom-count": live["axiom_count"],
     "rule-count": live["rule_count"],
@@ -222,10 +233,25 @@ live_map = {
     "ztime-only-count": live["ztime_only_count"],
     "sorry-total": live["sorry_total"],
     "sorry-total-excl-boneyard": live["sorry_total_excl_boneyard"],
+    "formalsystem-file-count": live["formalsystem_file_count"],
+    "formalsystem-line-count": live["formalsystem_line_count"],
+    "tests-file-count": live["tests_file_count"],
+    "tests-line-count": live["tests_line_count"],
+    "tools-file-count": live["tools_file_count"],
+    "tools-line-count": live["tools_line_count"],
+    "lean-toolchain-pin": live["lean_toolchain_pin"],
+    "mathlib-tag": live["mathlib_tag"],
+    "mathlib-rev": live["mathlib_rev"],
 }
 mismatches = []
 for name in scalar_fields:
     m = re.search(r"#let " + re.escape(name) + r" = (\d+)", text)
+    committed = m.group(1) if m else "MISSING"
+    if str(live_map[name]) != committed:
+        mismatches.append(f"{name}: committed={committed} live={live_map[name]}")
+
+for name in string_fields:
+    m = re.search(r"#let " + re.escape(name) + r' = "([^"]*)"', text)
     committed = m.group(1) if m else "MISSING"
     if str(live_map[name]) != committed:
         mismatches.append(f"{name}: committed={committed} live={live_map[name]}")

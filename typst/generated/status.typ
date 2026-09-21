@@ -5,10 +5,10 @@
 //   scripts/typst-status-counts.sh
 //
 // Reproduces the SYNC-MAP.md Phase 1 ground-truth-counts methodology.
-// Stamped from live source at commit 21c58d0aa (2026-09-21).
+// Stamped from live source at commit 04471f58e (2026-09-21).
 // ============================================================================
 
-#let stamp-commit = "21c58d0aa"
+#let stamp-commit = "04471f58e"
 #let stamp-date = "2026-09-21"
 
 #let axiom-count = 29
@@ -20,6 +20,21 @@
 
 #let sorry-total = 4
 #let sorry-total-excl-boneyard = 0
+
+// Version pins. lean-toolchain-pin is the whole toolchain string; mathlib-tag
+// is what lakefile.toml requests and mathlib-rev is what lake resolved it to.
+#let lean-toolchain-pin = "leanprover/lean4:v4.33.0-rc1"
+#let mathlib-tag = "v4.33.0-rc1"
+#let mathlib-rev = "79d0395a1825a6264ad5d269e35e60537518955e"
+
+// Repository scale, LIVE trees only. Boneyard/ is deliberately absent so that
+// no archived figure can be folded into a live one.
+#let formalsystem-file-count = 524
+#let formalsystem-line-count = 283236
+#let tests-file-count = 67
+#let tests-line-count = 21070
+#let tools-file-count = 27
+#let tools-line-count = 14862
 
 #let sorry-table = (
   ("Algebraic/", 0),
