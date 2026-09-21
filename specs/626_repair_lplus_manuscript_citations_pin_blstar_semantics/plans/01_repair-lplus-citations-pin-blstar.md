@@ -1,7 +1,7 @@
 # Implementation Plan: Repair drifted L+ manuscript citations and pin `def:BLstar-semantics`
 
 - **Task**: 626 - Repair drifted manuscript citations in the L+ files and pin def:BLstar-semantics.
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/626_repair_lplus_manuscript_citations_pin_blstar_semantics/reports/01_repair-lplus-citations-pin-blstar.md

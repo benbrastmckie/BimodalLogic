@@ -11,9 +11,9 @@ next_project_number: 642
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,464,481,502,534,559,563,568,623,624,625,626,628,630 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,257,298,464,481,502,534,559,563,568,623,624,625,628,630 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,570,616,617,632,633 | 298,464,502,563,568,630 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,604,618,634 | 231,465,497,564,565,616,626,632,633 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,604,618,634 | 231,465,497,564,565,616,632,633 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,614,635 | 428,498,499,500,634 | algebraic-representation, decidability, documentation, ... |
 | 5 | 178,410,501,636 | 125,429,635 | algebraic-representation, decidability, formula-refactor, ... |
 | 6 | 411,637 | 410,636 | decidability, publication-quality |
@@ -72,7 +72,6 @@ next_project_number: 642
 
 ### Documentation
 
-626 [PLANNED] — Repair drifted manuscript citations in the L+ files and pin...
 614 [NOT STARTED] — readme-lint.sh reports 47 of 60 FormalSystem/README.md files...
 
 ### Formula Refactor
@@ -98,7 +97,7 @@ next_project_number: 642
 
 ### Publication Quality
 
-630 [PLANNED] — Write scripts/move-modules.py (old-to-new module mapping plus...
+630 [IMPLEMENTING] — Write scripts/move-modules.py (old-to-new module mapping plus...
   └─ 632 [NOT STARTED] — Create leanlib BimodalTools (outside defaultTargets) and...
     └─ 634 [NOT STARTED] — Merge Syntax/XLanguage/ and Semantics/XLanguage/ into...
       └─ 635 [NOT STARTED] — Run python3 scripts/measure-refactor-partitions.py --check...
@@ -256,7 +255,7 @@ Absorbed task 610 description (verbatim, task 610 is abandoned as merged into th
 ---
 
 ### 630. Move tool and boneyard relocation
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: None
@@ -313,7 +312,7 @@ DELIVER: a report mapping each cslib convention to its current state here (adopt
 ---
 
 ### 626. Repair lplus manuscript citations pin blstar semantics
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: documentation
 - **Dependencies**: None
