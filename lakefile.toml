@@ -1,7 +1,14 @@
 # Lake configuration for the BimodalLogic package.
 #
 # The package is named after the repository; the main library is `FormalSystem` and the test
-# library `BimodalTest`. This file is declarative TOML (not a Lean-syntax lakefile) because
+# library `BimodalTest`. Two further libraries carry the tooling half: `BimodalTools` (the
+# dataset / ML / benchmark modules and the 12 executable roots) and `BimodalToolsTest` (their
+# tests). `BimodalTools` is DELIBERATELY absent from `defaultTargets`: a plain `lake build`
+# must compile the published library and nothing else, so the tooling is built only by an
+# explicit `lake build BimodalTools` / `lake build BimodalToolsTest` or by a `lake exe` target.
+# Check B3 asserts the separation holds in the import direction (`FormalSystem` never imports
+# `BimodalTools`); the converse direction is sanctioned and ungated.
+# This file is declarative TOML (not a Lean-syntax lakefile) because
 # leanprover-community/docgen-action, used by .github/workflows/docs.yml, reads only
 # `lakefile.toml`. Scripts that need the declared targets read this file through
 # scripts/lake_targets.py rather than scraping it with their own regex.
@@ -41,6 +48,19 @@ leanOptions = {pp.unicode.fun = true, autoImplicit = false}
 # package's, and a later entry wins).
 [[lean_lib]]
 name = "BimodalTest"
+srcDir = "Tests"
+leanOptions = {pp.unicode.fun = true, autoImplicit = false, weak.linter.hashCommand = false}
+
+# The tooling library: dataset generation, ML export, benchmarks, and the roots of the 12
+# `lean_exe` targets below. Absent from `defaultTargets` on purpose -- see the header comment.
+[[lean_lib]]
+name = "BimodalTools"
+leanOptions = {pp.unicode.fun = true, autoImplicit = false}
+
+# Tests for the tooling library. Same `#`-command opt-out as `BimodalTest`: the moved tooling
+# tests are `#guard` / `#eval` probes, which is their content and not development leftovers.
+[[lean_lib]]
+name = "BimodalToolsTest"
 srcDir = "Tests"
 leanOptions = {pp.unicode.fun = true, autoImplicit = false, weak.linter.hashCommand = false}
 

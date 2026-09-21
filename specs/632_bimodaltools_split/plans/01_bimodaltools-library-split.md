@@ -1,7 +1,7 @@
 # Implementation Plan: BimodalTools library split
 
 - **Task**: 632 - bimodaltools_split
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 11.5 hours
 - **Dependencies**: 630 (landed — `scripts/move-modules.py` exists with one production relocation behind it)
 - **Research Inputs**: specs/632_bimodaltools_split/reports/01_bimodaltools-library-split.md
@@ -126,7 +126,7 @@ exclusively. Every later phase is sequential because Phases 3, 7, 8 and 9 all to
 
 ---
 
-### Phase 1: Declare the new Lake targets and stub aggregators [NOT STARTED]
+### Phase 1: Declare the new Lake targets and stub aggregators [COMPLETED]
 
 **Goal**: `lean_lib BimodalTools` and `lean_lib BimodalToolsTest` exist and build, with nothing yet
 moved. The tree stays green and `lake build`'s output is byte-for-byte unchanged.
@@ -162,6 +162,13 @@ moved. The tree stays green and `lake build`'s output is byte-for-byte unchanged
 - `lake build BimodalTools` and `lake build BimodalToolsTest` both exit 0.
 - `bash scripts/check-module-invariants.sh --no-build` reports 0 FAIL (the established baseline).
 - `bash scripts/readme-lint.sh FormalSystem BimodalTools` exits 0.
+  *(deviation: altered — `readme-lint.sh` exits 1 on the UNMODIFIED tree. `scripts/readme-lint.sh
+  FormalSystem` alone already reports 21 broken references, every one a `../Boneyard/...` relative
+  link in a `FormalSystem/**/README.md` left stale by the archive relocation to the repository
+  root. This is pre-existing, outside this task's scope, and makes CI's "Check README health" step
+  red today. The achievable evidence was substituted and captured: the widened invocation's output
+  is byte-identical to the unwidened one apart from the README count rising 60 -> 61. See the
+  summary's Follow-ups.)*
 
 **Files to modify**:
 - `lakefile.toml` - two new `[[lean_lib]]` blocks and an extended header comment
