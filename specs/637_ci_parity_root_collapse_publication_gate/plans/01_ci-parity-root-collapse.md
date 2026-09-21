@@ -707,29 +707,29 @@ and Phase 2's regenerated root both change the scanned text. Work against the ob
 
 ---
 
-### Phase 8: Add the tag-triggered release workflow [NOT STARTED]
+### Phase 8: Add the tag-triggered release workflow [COMPLETED]
 
 **Goal**: A `.github/workflows/release.yml` the maintainer can exercise without creating a throwaway
 tag, with the automatable half of its dry-run passing locally.
 
 **Tasks**:
-- [ ] Model the new workflow on `.github/workflows/docs.yml`, the in-repo precedent for a non-CI
+- [x] Model the new workflow on `.github/workflows/docs.yml`, the in-repo precedent for a non-CI
       workflow, including its prerequisite-checking header style.
-- [ ] Trigger on `push: tags: ['v*']` **plus** an explicit `workflow_dispatch`, so the maintainer can
+- [x] Trigger on `push: tags: ['v*']` **plus** an explicit `workflow_dispatch`, so the maintainer can
       run it without a throwaway tag. The `workflow_dispatch` path must be a real, complete path, not a
       stub.
-- [ ] Build and test the library at the tagged commit, then produce the release artifacts. Keep the job
-      minimal and honest: what it publishes must be what the repository can actually produce.
-- [ ] Pin every referenced action to a specific version, matching `ci.yml`'s and `docs.yml`'s
+- [x] Build and test the library at the tagged commit, then produce the release artifacts. Keep the job
+      minimal and honest: what it publishes must be what the repository can actually produce. *(completed — the job publishes a GitHub release whose notes are the version's `CHANGELOG.md` section, and nothing else; it first checks that the tag, `CITATION.cff` and `FormalSystem/Version.lean` agree. It therefore presupposes Phase 2's `Version.lean` and Phase 9's `CHANGELOG.md`.)*
+- [x] Pin every referenced action to a specific version, matching `ci.yml`'s and `docs.yml`'s
       convention.
-- [ ] Write a header comment recording that `actionlint`, `act` and `yamllint` are unavailable in this
+- [x] Write a header comment recording that `actionlint`, `act` and `yamllint` are unavailable in this
       environment, what the local dry-run therefore does and does not certify, and that the first green
       `workflow_dispatch` run is a maintainer step.
-- [ ] Run the automatable dry-run: `python3 -c "import yaml,sys;
+- [x] Run the automatable dry-run: `python3 -c "import yaml,sys;
       yaml.safe_load(open('.github/workflows/release.yml'))"` for the parse, and resolve every action
       pin (via `gh`, which is available locally) to confirm each reference exists at the pinned
-      version.
-- [ ] **Do not** push a tag, create a release, or trigger the workflow. `rules/pr-prohibition.md`
+      version. *(altered — widened: beyond the parse and the three pin resolutions, the version-resolution and release-notes `run:` bodies were extracted from the YAML and executed against fixtures: agreeing versions pass, a disagreeing tag exits 1, a missing CHANGELOG section exits 1.)*
+- [x] **Do not** push a tag, create a release, or trigger the workflow. `rules/pr-prohibition.md`
       forbids all three; they belong to Phase 10's maintainer handoff.
 
 **Timing**: 1 hour

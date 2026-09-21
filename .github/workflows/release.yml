@@ -1,0 +1,165 @@
+name: Release
+
+# Builds, tests and lints the library at a version tag, checks that the tag agrees with every
+# place the version is recorded, and publishes a GitHub release whose notes are that version's
+# CHANGELOG.md section.
+#
+# WHAT IT PUBLISHES. A GitHub release for the tag, and nothing else. GitHub attaches the source
+# archives (zip and tar.gz) to every release on its own, and a Lean library has no other
+# distributable: consumers depend on it through Lake's `[[require]]` by git revision, and the
+# `lean_exe` targets are deliberately not shipped as binaries (240-310 MB of linked binary per
+# root, the same measured cost that keeps them out of `defaultTargets`). The API documentation
+# is published by .github/workflows/docs.yml, not here.
+#
+# TWO TRIGGERS, ONE PATH.
+#   - `push` of a `v*` tag: the full path, ending in a published release.
+#   - `workflow_dispatch`: the SAME steps in the same order, so a maintainer can exercise the
+#     workflow without creating a throwaway tag. With `publish: false` (the default) it stops
+#     short of the one irreversible step and uploads the release notes it would have published
+#     as a workflow artifact instead. With `publish: true` it publishes, and therefore requires
+#     the run to have been started from a `v*` tag (choose the tag under "Use workflow from").
+#     Started from a branch, the prospective tag is `v` + the version in CITATION.cff.
+#
+# PREREQUISITES.
+#   - CHANGELOG.md carries a `## [X.Y.Z]` section for the version being released. The notes step
+#     fails, rather than publishing empty notes, when it does not.
+#   - The tag `vX.Y.Z`, the `version:` field of CITATION.cff and `FormalSystem.version` in
+#     FormalSystem/Version.lean all agree. docs/development/VERSIONING.md's release checklist
+#     lists the same three places.
+#   - Tags are created and pushed by the maintainer. No automation in this repository pushes a
+#     tag or creates a release outside this workflow.
+#
+# WHAT HAS AND HAS NOT BEEN VERIFIED LOCALLY. `actionlint`, `act` and `yamllint` were all
+# unavailable in the environment this file was written in. The local dry-run therefore
+# certifies three things only: the file parses as YAML (`yaml.safe_load`); every `uses:` pin
+# below resolves to an existing ref of an existing repository (checked through `gh api`); and
+# the version-resolution and release-notes `run:` bodies, extracted from this file rather than
+# retyped, behave as intended against fixtures (agreeing versions pass, a disagreeing tag
+# fails, a missing CHANGELOG section fails). It does NOT certify `${{ }}` expression syntax,
+# the `if:` condition, the lean-action step, the publish step, or the token permissions. The
+# first green `workflow_dispatch` run on the maintainer's account is what certifies the
+# workflow; until that run exists, treat this file as unexercised.
+#
+# Every action is pinned to the same major-version tags .github/workflows/ci.yml uses.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish the release (requires the run to be started from a v* tag)"
+        type: boolean
+        default: false
+
+# Creating a release needs write access to repository contents; nothing else is granted.
+permissions:
+  contents: write
+
+# Never two release runs for the same ref at once, and never cancel one that is publishing.
+concurrency:
+  group: "release-${{ github.ref }}"
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build, verify and publish the release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # Runs before the build on purpose: a version disagreement is a seconds-long check, and it
+      # should not cost a full build to discover.
+      - name: Resolve the release version and check it is recorded consistently
+        id: version
+        run: |
+          set -euo pipefail
+          cff_version=$(sed -n 's/^version:[[:space:]]*"\{0,1\}\([^"]*\)"\{0,1\}[[:space:]]*$/\1/p' CITATION.cff | head -n 1)
+          lean_version=$(sed -n 's/^def version : String := "\([^"]*\)".*$/\1/p' FormalSystem/Version.lean | head -n 1)
+          if [ -z "$cff_version" ]; then
+            echo "::error::could not read a version from CITATION.cff"
+            exit 1
+          fi
+          if [ -z "$lean_version" ]; then
+            echo "::error::could not read FormalSystem.version from FormalSystem/Version.lean"
+            exit 1
+          fi
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            tag="$GITHUB_REF_NAME"
+          else
+            tag="v${cff_version}"
+          fi
+          version="${tag#v}"
+          echo "tag=${tag} CITATION.cff=${cff_version} FormalSystem.version=${lean_version}"
+          if [ "$version" != "$cff_version" ] || [ "$version" != "$lean_version" ]; then
+            echo "::error::version mismatch: tag ${tag}, CITATION.cff ${cff_version}, FormalSystem/Version.lean ${lean_version}"
+            exit 1
+          fi
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+      # The same gate CI applies to `main`, at the commit being released: warnings fail the
+      # build, the test driver runs, and `lake lint` fails on any finding scripts/nolints.json
+      # does not grandfather. See .github/workflows/ci.yml for why `--wfail` and not `--iofail`.
+      - name: Build, test, and lint with Lean
+        uses: leanprover/lean-action@v1
+        with:
+          build: true
+          test: true
+          lint: true
+          build-args: "--wfail"
+          use-mathlib-cache: true
+
+      - name: Extract the release notes from CHANGELOG.md
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          awk -v v="$VERSION" '
+            index($0, "## [" v "]") == 1 { on = 1; next }
+            on && /^## \[/               { exit }
+            on                           { print }
+          ' CHANGELOG.md > release-notes.md
+          if ! grep -q '[^[:space:]]' release-notes.md; then
+            echo "::error::CHANGELOG.md has no non-empty '## [${VERSION}]' section"
+            exit 1
+          fi
+          echo "::group::release notes for ${VERSION}"
+          cat release-notes.md
+          echo "::endgroup::"
+
+      # The dry-run's deliverable: what a publishing run would have attached to the release.
+      - name: Upload the release notes (every run)
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes-${{ steps.version.outputs.tag }}
+          path: release-notes.md
+          if-no-files-found: error
+
+      # The one irreversible step. A tag push always publishes; a manual run publishes only when
+      # asked to, and only from a tag -- `--verify-tag` makes `gh` refuse to create the tag
+      # itself, so a release can never be cut from a commit the maintainer did not tag.
+      - name: Publish the GitHub release
+        if: github.event_name == 'push' || inputs.publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_REF_TYPE" != "tag" ]; then
+            echo "::error::publish was requested from a ${GITHUB_REF_TYPE} (${GITHUB_REF_NAME}); start the run from the ${TAG} tag"
+            exit 1
+          fi
+          gh release create "$TAG" --verify-tag --title "BimodalLogic ${TAG}" --notes-file release-notes.md
+
+      - name: Report results
+        if: always()
+        run: |
+          echo "Event: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "Tag: ${{ steps.version.outputs.tag }}"
+          echo "Published: ${{ github.event_name == 'push' || inputs.publish }}"
