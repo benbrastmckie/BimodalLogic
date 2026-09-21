@@ -94,7 +94,7 @@ next_project_number: 651
 
 ### Reference Book
 
-648 [PLANNING] — Fix the defects found in typst/BimodalReference.typ and its...
+648 [PLANNED] — Fix the defects found in typst/BimodalReference.typ and its...
   └─ 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
     └─ 650 [NOT STARTED] — Define-before-use audit of...
 
@@ -158,11 +158,12 @@ ACCEPTANCE. typst compile --root .. succeeds with zero errors for BOTH BimodalRe
 ---
 
 ### 648. Fix reference book defects found in appendix review
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: reference-book
 - **Dependencies**: Task 647
 - **Research**: [648_fix_reference_book_defects_found_in_appendix_review/reports/01_fix-reference-book-defects.md]
+- **Plan**: [648_fix_reference_book_defects_found_in_appendix_review/plans/01_fix-reference-book-defects.md]
 
 **Description**: Fix the defects found in typst/BimodalReference.typ and its surroundings during the accuracy-and-formatting review of typst/chapters/ax-lean-appendix.typ. All of them lie OUTSIDE that appendix file, which was the only file that review was allowed to touch. Re-verify each item against live source before acting: a finding that no longer reproduces is closed with a one-line note, never "fixed" anyway. Items are ordered by reader impact.
 

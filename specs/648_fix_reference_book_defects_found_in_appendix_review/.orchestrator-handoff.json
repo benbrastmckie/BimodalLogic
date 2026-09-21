@@ -1,18 +1,21 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 4,
-  "summary": "Re-verified all 9 dispatch items against live source; 8 reproduce (with corrected true figures for item 3 and a corrected chapter/docstring split for item 6), 1 sub-claim (the @machine-appendix half of item 1) does not reproduce. Discovered a currently-failing scripts/typst-sync-check.sh (5 Check-1 violations from an uncommitted, out-of-scope diff to ax-lean-appendix.typ) with an in-scope whitelist-based remedy.",
+  "status": "planned",
+  "dispatch_seq": 5,
+  "task_number": 648,
+  "phases_completed": 0,
+  "phases_total": 9,
+  "session_id": "sess_1790024508_6b72c3_648",
+  "summary": "Nine-phase plan for the nine reference-book defect items, in five dependency waves. Phase 1 exists because scripts/typst-sync-check.sh currently FAILS (5 Check-1 violations from uncommitted TODO comments inside the off-limits Lean appendix) -- re-confirmed live at plan time -- and the task's own ACCEPTANCE requires that check to PASS; the sanctioned in-scope remedy is a whitelist category, grouped with item 2's other whitelist work. Phase 3 isolates every Lean docstring edit (items 3, 5, 6) into one phase and closes by regenerating typst/generated/status.typ, because docstring edits move the FormalSystem/ line counts that sync-check Check 2 polices. Plan-time re-verification narrowed item 1: the only stale appendix-title link text is in p4-dataset-pipeline.typ, and the Lean appendix's own link names no title, so no scope exception against that file is needed beyond its title heading. Item 1 also carries a mechanic the research did not surface -- a real level-1 numbering steps the shared heading counter to its accumulated chapter value, so each appendix needs a level-1 counter reset to render A and B -- with a documented title-literal fallback.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/648_fix_reference_book_defects_found_in_appendix_review/reports/01_fix-reference-book-defects.md",
-      "summary": "Item-by-item verified findings, elaboration evidence, and recommended fixes for all 9 dispatch items plus the newly discovered sync-check blocker."
+      "type": "plan",
+      "path": "specs/648_fix_reference_book_defects_found_in_appendix_review/plans/01_fix-reference-book-defects.md",
+      "summary": "Nine phases, 8.5 hours, five dependency waves; every phase carries a verification tier and, where it asserts a count or file list, a Scope Hypothesis."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 0,
-  "blockers": [],
-  "next_action_hint": "Run /plan 648 (or the orchestrator's plan phase) to turn the report's item-by-item recommendations into a phased implementation plan. Before implementing, re-verify the Live Working-Tree Caveat (git status/diff on typst/chapters/ax-lean-appendix.typ and a fresh scripts/typst-sync-check.sh run), since that file has an uncommitted, out-of-scope diff at research time.",
-  "continuation_path": null
+  "notes": [
+    "scripts/typst-sync-check.sh FAILS at plan time with the same 5 Check-1 violations research reported; the causing diff to typst/chapters/ax-lean-appendix.typ is still uncommitted. Phase 1 re-verifies before whitelisting and closes the item as not-reproducing if the diff has gone.",
+    "The dispatch's item 3 names three omitted axioms including prior_S_gap, which does not exist as an Axiom constructor. The plan follows the research's machine-counted figures (29 axioms, 27 in tryAxiomMatch, omitted set {prior_U_gap, sep}) and instructs the implementer to re-count rather than trust either document.",
+    "The bare @machine-appendix reference sub-claim of item 1 does not reproduce and is planned as a recorded closure, not a fix; the underlying show-ref rule is still fixed."
+  ]
 }
