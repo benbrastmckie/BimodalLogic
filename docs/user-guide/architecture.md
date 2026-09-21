@@ -864,12 +864,15 @@ order rather than a flat list:
                Base
 ```
 
-- **`Base`** is the bottom element: its 37 axioms are valid on all linear temporal orders.
-- **`Dense`** extends Base with `density` (`GGφ → Gφ`) and `dense_indicator` (`¬U(⊤,⊥)`).
-- **`ZTime`** extends Base with `prior_UZ`, `prior_SZ` and `z1`, valid on discrete
-  (successor-Archimedean) frames.
-- **`RTime`** extends **Dense** with Reynolds's definable-gap axioms `prior_U_gap`,
-  `prior_S_gap` and `sep`.
+- **`Base`** is the bottom element: its 23 primitive constructors are valid on all linear
+  temporal orders (37 names including derived past-mirrors — see
+  [Two axiom counts](../reference/axiom-reference.md#two-axiom-counts)).
+- **`Dense`** extends Base with the primitives `density` (`GGφ → Gφ`) and `dense_indicator`
+  (`¬U(⊤,⊥)`).
+- **`ZTime`** extends Base with the primitives `prior_UZ` and `z1`, valid on discrete
+  (successor-Archimedean) frames, plus the derived past-mirror `prior_SZ`.
+- **`RTime`** extends **Dense** with Reynolds's definable-gap primitives `prior_U_gap` and
+  `sep`, plus the derived past-mirror `prior_S_gap`.
 
 **Why RTime sits above Dense rather than being a fourth incomparable leaf.** This is a
 primary-source placement, not an intuition. Reynolds 1992 (printed p.168) lists axioms for
@@ -1075,7 +1078,7 @@ FormalSystem/                              # Main source directory
 │   ├── Subformulas.lean                   # Subformula extraction
 │   └── SubformulaClosure/                 # Closure construction
 ├── ProofSystem/
-│   ├── Axioms.lean                        # TM axiom schemata (29 constructors, 4 layers)
+│   ├── Axioms.lean                        # TM axiom schemata (29 constructors, 4 frame-class layers)
 │   ├── Derivable.lean                     # Derivability relation
 │   └── Derivation.lean                    # DerivationTree (7 inference rules)
 ├── MinusLanguage/                          # Second object language (tense-primitive)

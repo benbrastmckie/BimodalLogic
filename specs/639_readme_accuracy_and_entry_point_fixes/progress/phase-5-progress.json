@@ -1,0 +1,17 @@
+{
+  "phase": 5,
+  "phase_name": "docs/ sibling count fixes and stale API code block",
+  "started_at": "2026-09-21T00:52:00Z",
+  "last_updated": "2026-09-21T01:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "Fix API_REFERENCE.md count sentence and per-class breakdown", "status": "done", "files_touched": ["docs/reference/API_REFERENCE.md"]},
+    {"id": 2, "description": "Delete stale inline Axiom code block, replace with pointer", "status": "done", "files_touched": ["docs/reference/API_REFERENCE.md"]},
+    {"id": 3, "description": "Re-check Axiom Categories prose for derived-theorem labelling", "status": "done", "files_touched": ["docs/reference/API_REFERENCE.md"]},
+    {"id": 4, "description": "Fix architecture.md line 867 count and derived-mirror listing", "status": "done", "files_touched": ["docs/user-guide/architecture.md"]},
+    {"id": 5, "description": "Disambiguate architecture.md line 1078 layer count", "status": "done", "files_touched": ["docs/user-guide/architecture.md"]},
+    {"id": 6, "description": "Fix additional scope surfaced by grep: implementation-status.md, FEATURE_REGISTRY.md", "status": "done", "files_touched": ["docs/project-info/implementation-status.md", "docs/project-info/FEATURE_REGISTRY.md"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0
+}

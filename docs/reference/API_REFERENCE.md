@@ -265,56 +265,48 @@ Semantic validity and consequence relations for TM logic.
 
 **Module**: `FormalSystem/ProofSystem/Axioms.lean`
 
-The **45** axiom constructors for bimodal logic TM, in four layers: Base 37, Dense 2,
-ZTime 3, RTime 3. The layer of each constructor is given by `Axiom.minFrameClass`
-(`Axioms.lean`), and the invariant `ax.minFrameClass ≤ fc` governs which may appear in a
-derivation at frame class `fc`. See
-[axiom-reference.md](axiom-reference.md) for the per-constructor breakdown.
+The `Axiom` inductive type declares **29 primitive constructors**, partitioned by
+`Axiom.minFrameClass` into four layers: Base 23, Dense +2, ZTime +2, RTime +2. The invariant
+`ax.minFrameClass ≤ fc` governs which constructor may appear in a derivation at frame class `fc`.
+Counting every named schema instead — including the past-mirrors proved as theorems in
+`DerivedAxioms` — gives 45 names in all (37/40/39/42 by class); see
+[axiom-reference.md](axiom-reference.md#two-axiom-counts) for that derivation.
 
-#### Axiom Type
+#### Constructors
 
-```lean
-inductive Axiom : Formula → Prop where
-  | prop_k (φ ψ χ : Formula) : Axiom ((φ → (ψ → χ)) → ((φ → ψ) → (φ → χ)))
-  | prop_s (φ ψ : Formula) : Axiom (φ → (ψ → φ))
-  | ex_falso (φ : Formula) : Axiom (⊥ → φ)
-  | peirce (φ ψ : Formula) : Axiom (((φ → ψ) → φ) → φ)
-  | modal_t (φ : Formula) : Axiom (□φ → φ)
-  | modal_4 (φ : Formula) : Axiom (□φ → □□φ)
-  | modal_b (φ : Formula) : Axiom (φ → □◇φ)
-  | modal_5_collapse (φ : Formula) : Axiom (◇□φ → □φ)
-  | modal_k_dist (φ ψ : Formula) : Axiom (□(φ → ψ) → (□φ → □ψ))
-  | temp_k_dist (φ ψ : Formula) : Axiom (G(φ → ψ) → (Gφ → Gψ))
-  | temp_4 (φ : Formula) : Axiom (Gφ → GGφ)
-  | temp_a (φ : Formula) : Axiom (φ → GPφ)
-  | temp_l (φ : Formula) : Axiom (△φ → GPφ)
-  | modal_future (φ : Formula) : Axiom (□φ → □Gφ)
-  | temp_future (φ : Formula) : Axiom (□φ → G□φ)
-```
+The constructor list is not transcribed here: an earlier hand-copied version of this block drifted
+stale (wrong result universe, constructors that are now derived theorems, missing layers) without
+any check catching it. See
+[`FormalSystem/ProofSystem/Axioms.lean`](../../FormalSystem/ProofSystem/Axioms.lean) for the
+authoritative `inductive Axiom : Formula → Type` declaration, and
+[axiom-reference.md](axiom-reference.md) for the maintained, per-layer constructor table with
+paper-key cross-references.
 
 #### Axiom Categories
 
-**Propositional Axioms**:
+**Propositional Axioms** (primitive):
 - **K** (Distribution): `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))`
 - **S** (Weakening): `φ → (ψ → φ)`
 - **EFQ** (Ex Falso): `⊥ → φ`
 - **Peirce**: `((φ → ψ) → φ) → φ`
 
 **S5 Modal Axioms**:
-- **MT** (Modal T): `□φ → φ` (reflexivity)
-- **M4** (Modal 4): `□φ → □□φ` (transitivity)
-- **MB** (Modal B): `φ → □◇φ` (symmetry)
-- **MK** (Modal K): `□(φ → ψ) → (□φ → □ψ)` (distribution)
+- **MT** (Modal T, primitive): `□φ → φ` (reflexivity)
+- **M4** (Modal 4, **derived**, `DerivedAxioms.modal4`): `□φ → □□φ` (transitivity)
+- **MB** (Modal B, **derived**, `DerivedAxioms.modalB`): `φ → □◇φ` (symmetry)
+- **MK** (Modal K, primitive): `□(φ → ψ) → (□φ → □ψ)` (distribution)
 
-**Temporal Axioms**:
-- **TK** (Temporal K): `G(φ → ψ) → (Gφ → Gψ)` (distribution)
-- **T4** (Temporal 4): `Gφ → GGφ` (transitivity)
-- **TA** (Temporal A): `φ → GPφ` (recurrence)
-- **TL** (Temporal L): `△φ → GPφ` (perpetuity)
+**Temporal Axioms**: the primitive basis is Burgess-Xu Until/Since (`left_mono_until_G`,
+`right_mono_until`, `connect_future`, `enrichment_until`, `self_accum_until`, `absorb_until`,
+`linear_until`, `until_F`, `temp_linearity`, `F_until_equiv`, `serial_future`), not a G/H/F/P
+axiom basis — `temp_k_dist` (TK) and `temp_4` (T4) are **derived theorems**
+(`Theorems/TemporalDerived.lean`), not axioms. See
+[axiom-reference.md](axiom-reference.md#paper-key-correspondence-bx-temporal-group) for the full
+paper-key-to-constructor correspondence table, which supersedes any G/H/F/P-basis description of
+this layer.
 
-**Modal-Temporal Interaction**:
-- **MF** (Modal-Future): `□φ → □Gφ`
-- **TF** (Temporal-Future): `□φ → G□φ`
+**Modal-Temporal Interaction**: `modal_future` (`□φ → □△φ`) is the **sole** interaction axiom —
+see [axiom-reference.md](axiom-reference.md#modal_future-the-sole-interaction-axiom).
 
 ---
 

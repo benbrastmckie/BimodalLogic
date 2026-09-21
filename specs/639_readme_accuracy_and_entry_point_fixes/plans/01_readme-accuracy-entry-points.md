@@ -368,31 +368,50 @@ output, not this list, as the work set.
 
 ---
 
-### Phase 5: docs/ sibling count fixes and stale API code block [NOT STARTED]
+### Phase 5: docs/ sibling count fixes and stale API code block [COMPLETED]
 
 **Goal**: Correct `docs/reference/API_REFERENCE.md` and `docs/user-guide/architecture.md`,
 replacing the stale hand-copied axiom block rather than patching it (Decision 3).
 
 **Tasks**:
-- [ ] `docs/reference/API_REFERENCE.md` (~line 268): replace "The **45** axiom constructors …
+- [x] `docs/reference/API_REFERENCE.md` (~line 268): replace "The **45** axiom constructors …
       Base 37, Dense 2, ZTime 3, RTime 3" with the primitive convention, and correct the per-class
       breakdown (RTime extends Dense; it does not stand alone). Link
       `docs/reference/axiom-reference.md`'s `Two axiom counts` section for the 45-name figure.
-- [ ] `docs/reference/API_REFERENCE.md` (~lines 272-293): delete the inline
+      *(completed)*
+- [x] `docs/reference/API_REFERENCE.md` (~lines 272-293): delete the inline
       `inductive Axiom : Formula → Prop` block — the universe is wrong (live type is
       `Formula → Type`), it lists `modal_4`, `modal_b`, `temp_k_dist`, `temp_4`, `temp_a`,
       `temp_l` which are derived theorems today, and it omits the Until/Since, seriality,
       uniformity, Prior, Z1 and Reynolds layers. Replace with a short pointer to
       `FormalSystem/ProofSystem/Axioms.lean` plus the per-layer table already maintained in
-      `docs/reference/axiom-reference.md`.
-- [ ] Re-check the `#### Axiom Categories` prose that follows the block (~lines 295-316): it names
+      `docs/reference/axiom-reference.md`. *(completed)*
+- [x] Re-check the `#### Axiom Categories` prose that follows the block (~lines 295-316): it names
       M4, MB, TK, T4, TA as axioms. Mark the ones that are derived theorems as derived, or fold
-      the list into the pointer.
-- [ ] `docs/user-guide/architecture.md:867`: fix "its 37 axioms are valid on all linear temporal
-      orders" to the primitive count, phrased to avoid the C14 adjacency.
-- [ ] `docs/user-guide/architecture.md:1078`: confirm "29 constructors, 4 layers" — the layer
+      the list into the pointer. *(completed: Propositional and S5 Modal rows kept and corrected
+      — M4/MB marked derived, MT/MK primitive, cross-checked against
+      `axiom-reference.md`'s Modal Axioms section; the Temporal Axioms and Modal-Temporal
+      Interaction rows were folded into a pointer instead of hand-fixed, after discovering the
+      original "TA (φ → GPφ)" label was itself a paper-key error — that formula is `TC`
+      (`connect_future`) per `axiom-reference.md`'s Paper Key Correspondence table — and that
+      the original "TF" interaction axiom does not exist (`modal_future` is documented as the
+      *sole* interaction axiom); folding into the pointer avoids re-introducing either error)*
+- [x] `docs/user-guide/architecture.md:867`: fix "its 37 axioms are valid on all linear temporal
+      orders" to the primitive count, phrased to avoid the C14 adjacency. *(completed: also fixed
+      the adjacent ZTime/RTime bullets, which listed the derived mirrors `prior_SZ`/`prior_S_gap`
+      as primitives — the same item-2-shaped defect as README.md's Additional Axioms column)*
+- [x] `docs/user-guide/architecture.md:1078`: confirm "29 constructors, 4 layers" — the layer
       count disagrees with the nine layers used elsewhere; align it to whichever the source
-      supports.
+      supports. *(completed: both counts are independently correct — 4 frame-class layers vs.
+      9 axiom-category layers are two different senses of "layer" — disambiguated to
+      "4 frame-class layers" rather than asserting either figure wrong)*
+- [x] Additional scope surfaced by the Scope Hypothesis's own grep, outside the two named files:
+      `docs/project-info/implementation-status.md:80` and `docs/project-info/FEATURE_REGISTRY.md:22`
+      carried the identical stale "Base 37 / Dense 2 / ZTime 3 / RTime 3" convention-mixing text.
+      Both fixed to the primitive convention with a pointer to `Two axiom counts`.
+      `docs/development/MODULE_INVARIANTS.md:33`'s "21 against an actual 45" and "42 → 45 change"
+      are historical narrative about an already-fixed past defect, not a current stale claim —
+      left unchanged.
 
 **Timing**: 1 hour
 
