@@ -193,7 +193,9 @@ Layer 0: Syntax (no internal dependencies)
 object languages parallel to `Syntax` + `ProofSystem` + `Semantics`, not layers of their own.
 Each is self-contained: `MinusLanguage.Formula` imports only `Syntax.Atom`, the rest of the
 syntax half imports only `Syntax` and itself, and the semantic modules beside them import
-`Semantics/` to build their truth relations on top of it.
+`Semantics/` to build their truth relations on top of it. `OpenLanguage/` — L⁺ plus the
+open-future and open-past modals — is a fourth such directory; it is semantic only, so its syntax
+half is the single file `OpenLanguage.Formula`, which imports only `PlusLanguage.Formula`.
 
 The old invariant was a *directory* separation — nothing under `Syntax/{X}Language/` imports
 `Semantics/`. The merge replaced it with a **file-level** ordering within each directory, stated
@@ -212,7 +214,7 @@ did; see `docs/ARCHITECTURE.md`'s note on what the layer table stops measuring.
 
 1. **Syntax** has no internal dependencies.
 2. **ProofSystem** depends only on Syntax.
-3. **Semantics** depends on Syntax and ProofSystem. The three language-family directories
+3. **Semantics** depends on Syntax and ProofSystem. The four language-family directories
    depend on Semantics in their semantic half; the two cross-language bridges
    (`DeterministicBridge.lean`, `StateLocalTransfer.lean`) stay under `Semantics/` and depend on
    them in turn.

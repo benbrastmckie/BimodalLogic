@@ -406,9 +406,10 @@ sits at a higher layer than its source) through `layer_of` in
 `scripts/measure-refactor-partitions.py`, which it loads by path so there is exactly one copy of
 the layer tables in the repository, and reads the graph through `scripts/lib/import_graph.py`'s
 leading-import parser rather than assertion A's own regex. `layer_of` reads two tables: `LAYERS`,
-keyed by top-level directory, and `LANGUAGE_FILE_LAYERS`, which layers the three language
-directories (`MinusLanguage/`, `PlusLanguage/`, `StarLanguage/`) **file by file**, because each
-holds syntax, proof system and semantics and no single layer fits it. It asserts that set **equals** a
+keyed by top-level directory, and `LANGUAGE_FILE_LAYERS`, which layers the four language
+directories (`MinusLanguage/`, `PlusLanguage/`, `StarLanguage/`, `OpenLanguage/`) **file by
+file**, because each holds syntax and semantics (the first three a proof system as well) and no
+single layer fits it. It asserts that set **equals** a
 recorded allowlist of 7 lines, all from
 `FormalSystem/MinusLanguage/AxiomDischarge.lean` into `Theorems/*`. Sibling aggregators are
 excluded as sources here too.
@@ -423,8 +424,8 @@ drift from the tree in either direction. A `None` layer used to be the answer fo
 path, and it cost a measurement: the three language directories went unmeasured, and the
 allowlist read empty, until they were given rows.
 
-**C — syntax before semantics.** Inside the three language directories, no layer-0 file (syntax
-and proof system) imports a layer-1 file of any of the three, nor anything under
+**C — syntax before semantics.** Inside the four language directories, no layer-0 file (syntax
+and proof system) imports a layer-1 file of any of the four, nor anything under
 `FormalSystem/Semantics/`. Before the directories were merged the `Syntax/` – `Semantics/`
 directory boundary enforced this; nothing structural does now. Such an import is already a
 surplus line under B; C exists so the failure names the invariant, and so it survives a future

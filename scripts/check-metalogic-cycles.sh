@@ -5,7 +5,7 @@
 #
 #   A. FormalSystem/Metalogic/ contains exactly ONE directory-level import cycle.
 #   B. The library-wide UPWARD import set equals a recorded 7-line allowlist.
-#   C. Inside the three language directories, no syntax module imports a semantics module.
+#   C. Inside the language directories, no syntax module imports a semantics module.
 #
 # A and B are independent: A is a single-subtree cycle claim, B is a whole-library layer-order
 # claim. C is implied by B today and is asserted separately on purpose (see its section below).
@@ -61,7 +61,8 @@
 #   keep that from recurring:
 #
 #     * THE LANGUAGE DIRECTORIES ARE LAYERED PER FILE. `MinusLanguage/`, `PlusLanguage/` and
-#       `StarLanguage/` each hold syntax, proof system and semantics, so no single layer fits
+#       `StarLanguage/` each hold syntax, proof system and semantics (`OpenLanguage/`, created
+#       after the merge, holds syntax and semantics only), so no single layer fits
 #       them; `LANGUAGE_FILE_LAYERS` in the measurement script gives every file the layer of the
 #       directory it occupied before the merge (0, 1, or 3 for `MinusLanguage/Soundness.lean`).
 #     * THE LOOKUP FAILS LOUDLY. `layer_of` raises for any module under `FormalSystem/` that
@@ -74,7 +75,7 @@
 #   Before the merge the directory boundary enforced this: nothing under a language's `Syntax/`
 #   directory imported anything from `Semantics/`. With both halves in one directory nothing
 #   structural does, so it is asserted: no layer-0 file of `LANGUAGE_FILE_LAYERS` imports a
-#   layer-1 file of any of the three language directories, nor anything under
+#   layer-1 file of any of the language directories, nor anything under
 #   `FormalSystem.Semantics`. It has a non-vacuity guard (either set empty is a failure).
 #
 #   Under the per-file layering such an import is already a SURPLUS line in assertion B. C exists
@@ -330,7 +331,7 @@ if not violations:
 
 print(f"FAIL  syntax before semantics: {len(violations)} import line(s) from a language-directory "
       f"syntax module into a semantics module")
-print("      Inside MinusLanguage/, PlusLanguage/ and StarLanguage/ the syntax and proof-system")
+print("      Inside MinusLanguage/, PlusLanguage/, StarLanguage/ and OpenLanguage/ the syntax and proof-system")
 print("      files must not import a semantics file of any language, nor anything under")
 print("      FormalSystem/Semantics/. Move the declaration that needs the import into a semantics")
 print("      file; or, if the source file really is a semantics file, reclassify it in")

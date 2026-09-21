@@ -108,7 +108,10 @@ theorem hnStab_eq_ofPlus (p : Atom) :
 
 /-- **`Pα → ▷P▷̂α` is valid.** If `α` held at `s < t` in `σ`, and `ρ` agrees with `σ` up to `t`,
 then at `s` the original `σ` is itself an open-future alternative of `ρ`: the two agree up to
-`s ≤ t`. -/
+`s ≤ t`.
+
+Paper: — (formalization-native; the manuscript gives `▷` a truth clause and supplies no logic
+for the restricted modals) -/
 theorem hnOpen_openValid (α : OpenFormula) : OpenValid (hnOpen α) := by
   refine OpenValid.of_forall fun F M σ t h ρ hag => ?_
   obtain ⟨s, hs, hα⟩ := (somePast_iff M σ t α).mp h
@@ -181,7 +184,10 @@ def sinkModel : TaskModel sinkFrame.toTaskFrame where
 
 /-- **`Pp → ⊡P⟐p` is refuted on `sinkFrame`.** At `(sinkHistA, 0)` the antecedent holds (`p` at
 time `-1`); `sinkHistB` is a stability alternative (both are at `c`); but at every `s < 0` the
-world `sinkHistB` is at `b`, and no world through `b` is at `a`. -/
+world `sinkHistB` is at `b`, and no world through `b` is at `a`.
+
+Paper: — (formalization-native; it is what separates the stability modal from Ockhamist
+historical necessity) -/
 theorem hnStab_refuted_sinkFrame (p : Atom) :
     ¬ sinkFrame.toTaskFrame.OpenValidOn (hnStab p) := by
   intro hvalid
@@ -230,7 +236,9 @@ theorem hnOpenMirror_eq (α : OpenFormula) :
 theorem hnStabMirror_eq (p : Atom) :
     hnStabMirror p = imp (someFuture (atom p)) (stab (someFuture (dstab (atom p)))) := rfl
 
-/-- **The mirrored principle is valid**, by time reflection of `hnOpen_openValid`. -/
+/-- **The mirrored principle is valid**, by time reflection of `hnOpen_openValid`.
+
+Paper: — (formalization-native; the open-past mirror of `hnOpen_openValid`) -/
 theorem hnOpenMirror_openValid (α : OpenFormula) : OpenValid (hnOpenMirror α) :=
   openValid_reflectTime _ (hnOpen_openValid α)
 

@@ -201,6 +201,21 @@ axiom set of the derivation machinery `StarAxiom` feeds.
 | — | Conservativity of TM⋆ over TM⁺, **conditional** on general TM⁺ completeness at that class | `FormalSystem.Metalogic.Conservativity.starConservative_of_plusComplete` | `FormalSystem/Metalogic/Conservativity/Star/Forward.lean` | — | pcq pinned:C14 |
 | — | The unconditional contrapositive: a TM⋆/TM⁺ separating witness is a witness of TM⁺ incompleteness | `FormalSystem.Metalogic.Conservativity.plusIncomplete_of_starNonconservative` | `FormalSystem/Metalogic/Conservativity/Star/Forward.lean` | — | pcq pinned:C14 |
 
+### L^▷ — the open-future and open-past language
+
+L^▷ is L⁺ plus the manuscript's open-future modal `▷` and open-past modal `◁`
+(`FormalSystem/OpenLanguage/`). It is **semantic only**: the manuscript supplies no logic for the
+restricted modals and none is claimed, so every row below is a validity or a refutation, never a
+derivability result. The rows record that `▷`, not the stability modal `⊡`, is the operator of
+this semantics that answers to Ockhamist historical necessity.
+
+| Paper label | Statement | Lean name | File | Frame class | Axioms |
+|-------------|-----------|-----------|------|-------------|--------|
+| — | The Ockhamist principle `Pα → ▷P▷̂α` is valid over every task frame | `FormalSystem.OpenLanguage.hnOpen_openValid` | `FormalSystem/OpenLanguage/OpenOckhamist.lean` | Base | pcq pinned:C14 |
+| — | Its stability transposition `Pp → ⊡P⟐p` is refuted on `sinkFrame`, a three-state integer-time frame satisfying all four frame axioms | `FormalSystem.OpenLanguage.hnStab_refuted_sinkFrame` | `FormalSystem/OpenLanguage/OpenOckhamist.lean` | — | pcq pinned:C14 |
+| — | L^▷ validity is closed under time reflection, which exchanges `▷` with `◁` and fixes `⊡` | `FormalSystem.OpenLanguage.openValid_reflectTime` | `FormalSystem/OpenLanguage/OpenReversal.lean` | Base | pcq pinned:C14 |
+| — | The open-past mirror of the Ockhamist principle is valid | `FormalSystem.OpenLanguage.hnOpenMirror_openValid` | `FormalSystem/OpenLanguage/OpenOckhamist.lean` | Base | pcq pinned:C14 |
+
 ### Base-language soundness
 
 | Paper label | Statement | Lean name | File | Frame class | Axioms |

@@ -1848,6 +1848,10 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Deterministic.detCompletenessZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Deterministic.detCompletenessRTime' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Deterministic.logicDeterministicEqDeterminedValid' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.OpenLanguage.hnOpen_openValid' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.OpenLanguage.hnStab_refuted_sinkFrame' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.OpenLanguage.hnOpenMirror_openValid' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.OpenLanguage.openValid_reflectTime' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -1968,6 +1972,10 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Deterministic.detCompletenessZTime
 #print axioms FormalSystem.Metalogic.Deterministic.detCompletenessRTime
 #print axioms FormalSystem.Metalogic.Deterministic.logicDeterministicEqDeterminedValid
+#print axioms FormalSystem.OpenLanguage.hnOpen_openValid
+#print axioms FormalSystem.OpenLanguage.hnStab_refuted_sinkFrame
+#print axioms FormalSystem.OpenLanguage.hnOpenMirror_openValid
+#print axioms FormalSystem.OpenLanguage.openValid_reflectTime
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \

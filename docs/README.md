@@ -50,7 +50,7 @@ the `TM` side and to the frame-class tags `.ZTime`, `.Dense` and `.RTime`.
 
 The `⁻` and `⁺` superscripts are what separate this repository's own systems from the paper's,
 and they are load-bearing throughout `FormalSystem/Metalogic/Conservativity/`. The full
-four-language table — L⁻, L, L⁺, L⋆, their operators, their logics and their Lean homes — is in
+five-language table — L⁻, L, L⁺, L⋆, L^▷, their operators, their logics and their Lean homes — is in
 [the repository README](../README.md); it is stated once there and not restated here. Earlier
 revisions of this documentation used `_f` where `_z` now stands, and used two names, `_c` and
 `_dc`, where a single `_r` now stands; those subscripts have been retired everywhere. Earlier

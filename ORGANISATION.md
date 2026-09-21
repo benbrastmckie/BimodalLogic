@@ -16,7 +16,7 @@ graph itself, with its exceptions drawn rather than described, is in
 | 2 | `Theorems/` | Derived object-logic theorems |
 | 1 | `Semantics/` | `TaskFrame`, `ConvexHistory`, `TaskModel`, `TruthAt`, validity |
 | 0 | `Syntax/`, `ProofSystem/`, `ForMathlib/`, `Init.lean`, `Tactic/`, `Version.lean` | Formulas, axioms, derivations; the shared preamble and the library's attribute declarations |
-| 0, 1, 3 — **per file** | `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/` | One object language each, syntax through semantics; [layered file by file](#the-extension-language-directories-are-layered-per-file) |
+| 0, 1, 3 — **per file** | `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/`, `OpenLanguage/` | One object language each, syntax through semantics (`OpenLanguage/` is semantic only: it has no proof system); [layered file by file](#the-extension-language-directories-are-layered-per-file) |
 
 Every module under `FormalSystem/` has a layer. `layer_of` in
 `scripts/measure-refactor-partitions.py` **raises** for one that matches no row, so a new
@@ -61,6 +61,9 @@ trusting the picture.
 
 `MinusLanguage/`, `PlusLanguage/` and `StarLanguage/` are each a self-contained object language
 at the library root, carrying its syntax, its proof system and its semantics in one directory.
+`OpenLanguage/` — L⁺ plus the open-future and open-past modals — is a fourth, created after the
+merge and layered by the same table; it has a syntax file and semantic modules, and no proof
+system. The measurement immediately below was taken on the first three, before it existed.
 **No single layer number fits such a directory, and that is measured rather than argued.** Give
 all three one layer *L* and the upward set is non-empty for every *L*, and it tracks the number
 chosen rather than the tree:
@@ -79,13 +82,17 @@ judgement about its content:
 
 | Layer | Came from | Files |
 |---|---|---|
-| 0 | `Syntax/<Lang>/` | Minus: `Formula`, `Axioms`, `Derivation`, `Translation`, `AxiomDischarge`. Plus: `Formula`, `Axioms`, `Derivation`, `Substitution`. Star: `Formula`, `Axioms`, `Derivation`, `Embedding` |
-| 1 | `Semantics/<Lang>/` | Minus: `MinusTruth`, `MinusFrame`, `MinusValidity`, `MinusSchemaValidity`. Plus: `PlusTruth`, `PlusValidity`, `PlusPasting`, `PlusNonValidities`, `PlusDeterminism`, `PlusStateLocal`, `PlusLimitClosure`. Star: `StarTruth`, `StarValidity`, `StarDeterminism`, `StarNonValidities`, `StarStateLocal` |
+| 0 | `Syntax/<Lang>/` | Minus: `Formula`, `Axioms`, `Derivation`, `Translation`, `AxiomDischarge`. Plus: `Formula`, `Axioms`, `Derivation`, `Substitution`. Star: `Formula`, `Axioms`, `Derivation`, `Embedding`. Open: `Formula` |
+| 1 | `Semantics/<Lang>/` | Minus: `MinusTruth`, `MinusFrame`, `MinusValidity`, `MinusSchemaValidity`. Plus: `PlusTruth`, `PlusValidity`, `PlusPasting`, `PlusNonValidities`, `PlusDeterminism`, `PlusStateLocal`, `PlusLimitClosure`. Star: `StarTruth`, `StarValidity`, `StarDeterminism`, `StarNonValidities`, `StarStateLocal`. Open: `OpenClasses`, `OpenTruth`, `OpenValidity`, `OpenReversal`, `OpenOckhamist` |
 | 3 | `Metalogic/Conservativity/` | `MinusLanguage/Soundness.lean`, which imports two `Metalogic/` modules |
 
-13 files at layer 0, 16 at layer 1, 1 at layer 3. The three sibling aggregators
-(`MinusLanguage.lean` and its two siblings) import layer-0 and layer-1 files and take a declared
+14 files at layer 0, 21 at layer 1, 1 at layer 3. The four sibling aggregators
+(`MinusLanguage.lean` and its three siblings) import layer-0 and layer-1 files and take a declared
 layer of 1.
+
+The `OpenLanguage/` files were created after the merge and so have no origin directory. Each
+takes the layer of the directory it would have occupied before it: the syntax file 0, the
+semantic modules 1 — which is exactly what the syntax-before-semantics assertion enforces.
 
 Origin is the rule because a content judgement could file `AxiomDischarge.lean` at layer 2 and
 empty the allowlist by assertion. That allowlist read empty once already, after the merge moved

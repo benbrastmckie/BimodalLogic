@@ -296,7 +296,10 @@ theorem openValidOn_rev_iff (F : TaskFrame) (φ : OpenFormula) :
 
 /-- **Validity is closed under time reflection.** Every task frame is the converse of its own
 converse (`TaskFrame.rev_rev`), so a validity about `▷` yields the mirrored validity about `◁`.
-Stated at the unconstrained class only. -/
+Stated at the unconstrained class only.
+
+Paper: — (formalization-native; `lem:time-reflection` is stated for the base language, and this
+is its extension to `⊡`, `▷` and `◁` at the level of validity) -/
 theorem openValid_reflectTime (φ : OpenFormula) : OpenValid φ → OpenValid φ.reflectTime := by
   intro h
   refine OpenValid.of_forall fun F M τ t => ?_

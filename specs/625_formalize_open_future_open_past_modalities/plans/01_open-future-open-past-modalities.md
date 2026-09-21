@@ -547,37 +547,51 @@ of the strength ordering, including the incomparability of `▷` and `◁`.
 
 ---
 
-### Phase 8: Pins, tests, documentation sweep and the full gate [NOT STARTED]
+### Phase 8: Pins, tests, documentation sweep and the full gate [PARTIAL]
+
+**PARTIAL — one residual item, everything else done and gated green.** Every task of this phase is
+complete in the working tree and every gate below passed (guarded full `lake build` exit 0;
+`lake build FormalSystem BimodalTest` exit 0, 2731 jobs; `check-module-invariants.sh` with build
+exit 0, 49 PASS / 0 FAIL; `check-metalogic-cycles.sh` exit 0; `mk_all --check` exit 0). The single
+residual is a **commit**, not work: the repository-root `README.md` carries this task's edits (the
+`OpenLanguage/` tree line, the L^▷ table row and mapping bullet, the regenerated totals) **together
+with another session's uncommitted TM⋆ rewrite of the same tree listing and language table**.
+`git-commit-scoped.sh` commits whole paths, so staging `README.md` would sweep that session's
+unreviewed hunks into this task's commit; it was left unstaged (under-stage, never over-stage).
+This fails condition 5 of the `[COMPLETED WITH EXCLUSIONS]` admission test ("no residual work"),
+so the phase is `[PARTIAL]` rather than exclusion-closed. **To close**: once the other session's
+`README.md` hunks are committed, run `git diff README.md`, confirm only this task's hunks remain,
+and commit `README.md` alone as `task 625 phase 8: repository README`.
 
 **Goal**: Make the results durable: axiom pins, `rfl` coincidence pins, the listings that name the
 language components, and one full run of every repository gate.
 
 **Tasks**:
-- [ ] C14: append `hnOpen_openValid`, `hnStab_refuted_sinkFrame`, `hnOpenMirror_openValid`,
+- [x] C14: append `hnOpen_openValid`, `hnStab_refuted_sinkFrame`, `hnOpenMirror_openValid`,
   `openValid_reflectTime` (fully qualified) to **both** parallel lists in
   `scripts/check-module-invariants.sh` — the `#print axioms` block and the `C14_BASELINE` heredoc —
   in the same order, with the profiles measured in Phase 6. A declaration reporting no axioms
   cannot be pinned this way; pin it in the test file instead.
-- [ ] `Tests/BimodalTest/Semantics/ValidityLayerTest.lean`: a `section LOpen` with the four
+- [x] `Tests/BimodalTest/Semantics/ValidityLayerTest.lean`: a `section LOpen` with the four
   `… = Generic… := rfl` validity pins and an `LOpenOperators` section with the derived-operator
   pins (`OpenFormula.neg φ = TruthClauses.neg φ := rfl`, … `dstab`), following `LPlus` /
   `LPlusOperators`.
-- [ ] New `Tests/BimodalTest/Semantics/OpenLanguageAxiomTest.lean` with `#guard_msgs in
+- [x] New `Tests/BimodalTest/Semantics/OpenLanguageAxiomTest.lean` with `#guard_msgs in
   #print axioms` blocks for the headline theorems (the `SaturationFiniteAxiomTest.lean` pattern);
   import it from `Tests/BimodalTest.lean`; add the row to `Tests/BimodalTest/Semantics/README.md`.
-- [ ] `FormalSystem/StarLanguage/README.md`: rewrite the `sub:RestrictedModalities` correspondence
+- [x] `FormalSystem/StarLanguage/README.md`: rewrite the `sub:RestrictedModalities` correspondence
   row — open future and open past are formalized in `FormalSystem/OpenLanguage/`, the nomic operator
   stays excluded.
-- [ ] `docs/reference/paper-definitions-of-record.md`: a `KNOWN-ANCHORS` row for
+- [x] `docs/reference/paper-definitions-of-record.md`: a `KNOWN-ANCHORS` row for
   `sub:RestrictedModalities` as `LIVE-UNPINNED`, pointing at the component.
-- [ ] Listing sweep: every prose listing of the language components gains the fourth —
+- [x] Listing sweep: every prose listing of the language components gains the fourth —
   `ORGANISATION.md` (layer-table row, the per-file section and its "13 files at layer 0, 16 at
   layer 1" figures), the module docstring of `scripts/measure-refactor-partitions.py` (same
   figures), `docs/development/MODULE_INVARIANTS.md` (assertions B and C prose),
   `docs/development/MODULE_ORGANIZATION.md`, `docs/ARCHITECTURE.md`, `README.md` (tree and language
   table), `FormalSystem/README.md` (component tables), `FormalSystem/Semantics/README.md` (the
-  pointer line to the language components), `docs/theorem-index.md` if it indexes per language.
-- [ ] Full gates: `bash scripts/check-module-invariants.sh` (with build),
+  pointer line to the language components), `docs/theorem-index.md` if it indexes per language. *(deviation: altered — (1) the root `README.md` is edited but UNCOMMITTED, see the PARTIAL note above; (2) the scope-hypothesis grep added two documents the list did not name because they list the language components: `scripts/check-metalogic-cycles.sh` (comments and its assertion-C failure message) and `docs/README.md` (its pointer to the language table); `docs/development/PUBLICATION_REFACTOR.md` and `FormalSystem/Syntax/README.md` also matched and were left alone — the first is a historical record of the merge, the second a pre-existing stale statement about `Syntax/` subdirectories; (3) the measured "one layer for all three directories: 23 / 9 / 5 / 3" figures were NOT restated for four directories, because they were not re-measured; (4) `docs/theorem-index.md` does index per language, so a four-row L^▷ section was added, which obliged a `Paper: — (reason)` line in the docstring of each of the four pinned theorems)*
+- [x] Full gates: `bash scripts/check-module-invariants.sh` (with build),
   `bash scripts/check-metalogic-cycles.sh`, `lake build BimodalTest`,
   `lake exe mk_all --lib FormalSystem --check`.
 
@@ -823,19 +837,30 @@ theorem not_openValid_ofut_of_opast (p : Atom) :
 
 ## Testing & Validation
 
-- [ ] `lake build FormalSystem` green and zero `sorry` under `FormalSystem/OpenLanguage` at the end
+- [x] `lake build FormalSystem` green and zero `sorry` under `FormalSystem/OpenLanguage` at the end
   of **every** phase
-- [ ] All 31 challenge identifiers exist with the pinned statements (modulo the `abbrev`/`def` and
+- [x] All 31 challenge identifiers exist with the pinned statements (modulo the `abbrev`/`def` and
   `OpenValidOn`/`TaskFrame.OpenValidOn` differences the authoring note records)
-- [ ] `bash scripts/check-metalogic-cycles.sh` exits 0: one Metalogic cycle, the 7-line upward
+- [x] `bash scripts/check-metalogic-cycles.sh` exits 0: one Metalogic cycle, the 7-line upward
   allowlist unchanged, assertion C holds with `OpenLanguage/Formula.lean` at layer 0
-- [ ] `lake exe mk_all --lib FormalSystem --check` exits 0
-- [ ] `bash scripts/check-module-invariants.sh` exits 0, including the four new C14 pins
-- [ ] `lake build BimodalTest` green, including the `LOpen` `rfl` pins and
+- [x] `lake exe mk_all --lib FormalSystem --check` exits 0
+- [x] `bash scripts/check-module-invariants.sh` exits 0, including the four new C14 pins
+- [x] `lake build BimodalTest` green, including the `LOpen` `rfl` pins and
   `OpenLanguageAxiomTest.lean`
-- [ ] No task number and no manuscript line number in any file outside `specs/`
-- [ ] `git diff --stat` over the task shows no edit to `FormalSystem/PlusLanguage/**` or any other
+- [x] No task number and no manuscript line number in any file outside `specs/`
+- [x] `git diff --stat` over the task shows no edit to `FormalSystem/PlusLanguage/**` or any other
   pre-existing Lean module except the generated `FormalSystem.lean`
+
+**Evidence (implementation run)**: guarded `lake build FormalSystem` exit 0 at the end of each of
+the eight phases, read from the guard's own status (`PIPESTATUS` or a redirected file, never a
+pipeline's); all 31 challenge statements restated verbatim in a scratch file and closed by
+`exact <library theorem>`, plus 13 `rfl` checks of the carrier bodies, exit 0;
+`check-metalogic-cycles.sh` exit 0 with the 7-line allowlist unchanged and assertion C counting
+14 syntax modules; `mk_all --check` "No update necessary"; `check-module-invariants.sh` with
+build exit 0, 49 PASS / 0 FAIL, the four new C14 rows echoed as matched;
+`lake build FormalSystem BimodalTest` exit 0, 2731 jobs; the task-number and line-number greps
+print nothing; `git diff --name-only` over the task names no pre-existing Lean module except the
+generated root and the two planned test files.
 
 ## Artifacts & Outputs
 

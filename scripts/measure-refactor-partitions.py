@@ -21,7 +21,7 @@ The four measurements:
                            in ORGANISATION.md (Syntax/ProofSystem/ForMathlib/
                            Init/Tactic/Version=0, Semantics=1, Theorems=2,
                            Metalogic/Automation=3, Examples/MainResults=4, and
-                           the three language directories per file at 0, 1 or
+                           the four language directories per file at 0, 1 or
                            3), grouped by source and target directory, with the
                            Theorems <-> Metalogic pair and any stale per-file
                            row called out.
@@ -56,12 +56,16 @@ Measured on the tree as it stands after the language directories were layered:
                             rows.  scripts/check-metalogic-cycles.sh asserts
                             that the upward set EQUALS its recorded 7-line
                             allowlist.
-                            The three language directories (MinusLanguage/,
-                            PlusLanguage/, StarLanguage/) are layered PER FILE
-                            by LANGUAGE_FILE_LAYERS below, keyed on each file's
-                            directory before the language-extension merge: 13
-                            files at layer 0, 16 at layer 1, 1 at layer 3.  One
-                            layer L for all three directories was measured and
+                            The four language directories (MinusLanguage/,
+                            PlusLanguage/, StarLanguage/, OpenLanguage/) are
+                            layered PER FILE by LANGUAGE_FILE_LAYERS below,
+                            keyed on each file's directory before the
+                            language-extension merge (OpenLanguage/, created
+                            after it, on the directory each file would have
+                            occupied): 14 files at layer 0, 21 at layer 1, 1
+                            at layer 3.  One layer L for the first three
+                            directories, before OpenLanguage/ existed, was
+                            measured and
                             rejected -- it leaves 23 upward lines at L=0, 9 at
                             L=1, 5 at L=2 and 3 at L=3, a set that tracks the
                             number chosen rather than the tree.  layer_of
@@ -116,7 +120,7 @@ LIB = "FormalSystem"
 # EVERY module under `FormalSystem/` has a layer: a directory through its row here, the two
 # root-level single files `Version` (0: it imports only `Init`) and `MainResults`
 # (4: it audits every headline theorem, so it sits with Examples at the top) through their own
-# rows, and a file in one of the three language directories through LANGUAGE_FILE_LAYERS below.
+# rows, and a file in one of the four language directories through LANGUAGE_FILE_LAYERS below.
 # A module that matches no row is an ERROR, not a module "with no layer" -- see `layer_of`.
 # Only the bare root `FormalSystem` (it imports everything by construction) and modules outside
 # the library have no layer.
@@ -142,8 +146,9 @@ LAYERS = {
     "Examples": 4, "MainResults": 4,
 }
 
-# The three language directories hold a language's syntax, proof system AND semantics in one
-# directory, so no single layer number describes them.  That is measured, not argued: giving all
+# The language directories hold a language's syntax, proof system AND semantics in one
+# directory, so no single layer number describes them.  That is measured, not argued (on the
+# three directories that existed at the merge; `OpenLanguage/` came later): giving all
 # three directories one layer L yields a non-empty upward set for every L (the figures are in
 # this script's module docstring and in ORGANISATION.md), and the set that survives reflects the
 # number chosen rather than the tree.  So each FILE carries its own layer.

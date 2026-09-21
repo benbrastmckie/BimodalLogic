@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Semantics.TruthClauses
 import FormalSystem.StarLanguage.StarValidity
 import FormalSystem.MinusLanguage.MinusValidity
+import FormalSystem.OpenLanguage.OpenValidity
 
 /-!
 # The abstract validity layer: definitional-coincidence regressions
@@ -110,6 +111,23 @@ example : StarValid φ = GenericValid φ := rfl
 
 end LStar
 
+/-! ### L^▷ — the open-future and open-past language
+
+L⁺ extended by `▷` and `◁`, with the same plain `(τ, x)` point as L⁺. Its validity `def`s are
+own declarations, never `abbrev`s and never delegating to the generic layer, so the coincidence
+is pinned here. -/
+
+section LOpen
+variable (F : TaskFrame) (P : TaskFrame → Prop) (fc : ProofSystem.FrameClass)
+  (φ : OpenLanguage.OpenFormula)
+
+example : TaskFrame.OpenValidOn F φ = TaskFrame.GenericValidOn F φ := rfl
+example : OpenLanguage.OpenValidOnFrames P φ = GenericValidOnFrames P φ := rfl
+example : OpenLanguage.OpenValidIn fc φ = GenericValidIn fc φ := rfl
+example : OpenLanguage.OpenValid φ = GenericValid φ := rfl
+
+end LOpen
+
 /-! ## The derived-operator coincidences, one group per object language
 
 Each language's own derived-operator `def`s are the same Łukasiewicz/`untl` encodings as the
@@ -189,6 +207,24 @@ example : StarFormula.always φ = TruthClauses.always φ := rfl
 example : StarFormula.dstab φ = TruthClauses.dstab φ := rfl
 
 end LStarOperators
+
+section LOpenOperators
+open OpenLanguage
+variable (φ ψ : OpenFormula)
+
+example : OpenFormula.neg φ = TruthClauses.neg φ := rfl
+example : (OpenFormula.top : OpenFormula) = TruthClauses.top := rfl
+example : OpenFormula.and φ ψ = TruthClauses.and φ ψ := rfl
+example : OpenFormula.or φ ψ = TruthClauses.or φ ψ := rfl
+example : OpenFormula.diamond φ = TruthClauses.diamond φ := rfl
+example : OpenFormula.someFuture φ = TruthClauses.someFuture φ := rfl
+example : OpenFormula.somePast φ = TruthClauses.somePast φ := rfl
+example : OpenFormula.allFuture φ = TruthClauses.allFuture φ := rfl
+example : OpenFormula.allPast φ = TruthClauses.allPast φ := rfl
+example : OpenFormula.always φ = TruthClauses.always φ := rfl
+example : OpenFormula.dstab φ = TruthClauses.dstab φ := rfl
+
+end LOpenOperators
 
 /-! ## A toy fifth language: the extension contract, exercised end to end
 

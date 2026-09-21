@@ -321,6 +321,7 @@ release version lives in `Version.lean`.
 | [MinusLanguage/](MinusLanguage/README.md) | Yes | L⁻ — the tense-primitive variant, `H`/`G` primitive in place of `untl`/`snce` — its logic TM⁻, and its semantics |
 | [PlusLanguage/](PlusLanguage/README.md) | Yes | L⁺ — L plus the stability modal `⊡` (`stab`, "boxdot") — its logic TM⁺, and its semantics |
 | [StarLanguage/](StarLanguage/README.md) | Yes | L⋆ — L⁺ plus the time registers `↑ⁱ`/`↓ⁱ` — its logic TM⋆, and its semantics |
+| [OpenLanguage/](OpenLanguage/README.md) | Yes | L^▷ — L⁺ plus the open-future modal `▷` and the open-past modal `◁` — semantic only (no proof system): the Ockhamist separating pair, its time-reversal mirror, S5 and the strength ordering |
 | [ProofSystem/](ProofSystem/README.md) | Yes | Axioms and derivation trees |
 | [Semantics/](Semantics/README.md) | Yes | Task frame semantics |
 | [Metalogic/](Metalogic/README.md) | Yes | Soundness, completeness, decidability |

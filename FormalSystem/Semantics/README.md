@@ -5,7 +5,9 @@ Task frame semantics for TM bimodal logic.
 The semantics of the three **extension languages** is not here. L⁻, L⁺ and L⋆ each live as a
 self-contained component at the library root — [`../MinusLanguage/`](../MinusLanguage/README.md),
 [`../PlusLanguage/`](../PlusLanguage/README.md), [`../StarLanguage/`](../StarLanguage/README.md) —
-carrying their syntax, their proof system and their semantics in one directory. What stays here
+carrying their syntax, their proof system and their semantics in one directory. A fourth,
+[`../OpenLanguage/`](../OpenLanguage/README.md), extends L⁺ by the open-future and open-past
+modals and is semantic only. What stays here
 is L's own semantics, plus the two **cross-language bridges** that span two families and so
 belong to neither: `DeterministicBridge.lean` and `StateLocalTransfer.lean`.
 
