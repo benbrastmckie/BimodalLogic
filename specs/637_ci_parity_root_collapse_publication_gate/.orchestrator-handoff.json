@@ -1,0 +1,26 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 4,
+  "summary": "Researched all seven Phase 8 work items plus the three folded-in revisions, with live measurement at HEAD 657c41892. The decisive finding: collapsing the root activates Mathlib's linter.style.header on all 503 modules at once (it gates on direct import from ./FormalSystem.lean, so it is currently live on exactly one), surfacing 22 latent findings under CI's existing --wfail.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/637_ci_parity_root_collapse_publication_gate/reports/01_ci-parity-root-collapse.md",
+      "summary": "Feasibility and cost of the mk_all root collapse, the C6 manifest burndown, mk_all/lint-style CI adoption, the release workflow and the publication gate, with measured linter debt at HEAD."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "user_decision": {
+    "question": "Adopting lint-style-action surfaces 258 'unicode character not on the allowlist' findings across the library's own notation (the limit-closure diamond, vector arrows, biconditional arrows). Mathlib's allowlist is Mathlib-specific and this notation is documented and load-bearing, so how should the unicode text linter be handled?",
+    "options": [
+      "Disable linter.unicodeLinter in lakefile.toml [leanOptions] with a recorded reason, and adopt every other lint-style text linter",
+      "Seed scripts/nolints-style.txt with per-file exceptions for all 258 findings, keeping the linter nominally on",
+      "Defer lint-style-action adoption entirely until the notation set is reconciled with Mathlib's allowlist upstream"
+    ],
+    "recommended": "Disable linter.unicodeLinter in lakefile.toml [leanOptions] with a recorded reason, and adopt every other lint-style text linter",
+    "blocking": false
+  }
+}
