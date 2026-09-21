@@ -201,29 +201,29 @@ finding to report, not a number to adjust.
 
 ---
 
-### Phase 2: Named syntax-before-semantics assertion and header rewrite [NOT STARTED]
+### Phase 2: Named syntax-before-semantics assertion and header rewrite [COMPLETED]
 
 **Goal**: Add the assertion that replaces the directory boundary the merge removed, and make the
 script's header describe what the script now does.
 
 **Tasks**:
-- [ ] Add assertion C as its own heredoc block (or a clearly separated section of B's), with its
+- [x] Add assertion C as its own heredoc block (or a clearly separated section of B's), with its
       own status variable feeding the single exit code and its own `PASS`/`FAIL` line. Reuse
-      `layer_of` and the per-file table loaded by path; do not add a second copy of the table.
-- [ ] Define the two sets from the table: syntax modules are the layer-0 files of the three
+      `layer_of` and the per-file table loaded by path; do not add a second copy of the table. *(completed: own heredoc block, SYNTAX_STATUS feeds the exit code)*
+- [x] Define the two sets from the table: syntax modules are the layer-0 files of the three
       language directories; semantics modules are their layer-1 files plus every module under
       `FormalSystem.Semantics`. A violation is any import line from the first set into the second.
-      Aggregators are excluded as sources, as in A and B.
-- [ ] Add a non-vacuity guard in the manner of the `--check` degenerate-partition branch: fail if
-      either language-directory set is empty, printing both sizes.
-- [ ] Print each violation as `SYNTAX->SEMANTICS  src -> tgt`; on failure, name the invariant and
+      Aggregators are excluded as sources, as in A and B. *(completed)*
+- [x] Add a non-vacuity guard in the manner of the `--check` degenerate-partition branch: fail if
+      either language-directory set is empty, printing both sizes. *(completed: guard intersects the table with the import graph, so a moved directory empties the sets and fails)*
+- [x] Print each violation as `SYNTAX->SEMANTICS  src -> tgt`; on failure, name the invariant and
       say what to do (move the declaration to a semantics file, or reclassify the file in the
-      per-file table and `ORGANISATION.md` together).
-- [ ] Rewrite the header: three assertions behind one exit code; the allowlist holds 7 lines under
+      per-file table and `ORGANISATION.md` together). *(completed)*
+- [x] Rewrite the header: three assertions behind one exit code; the allowlist holds 7 lines under
       the new path; delete the "allowlist is now EMPTY" passage and the "every import ... is now
       invisible" note; describe the per-file layering, the fail-loud lookup and the stale-row
       failure; update the exit-code paragraph. Update assertion B's shortfall hint, which refers
-      to the list having been emptied.
+      to the list having been emptied. *(completed)*
 
 **Timing**: 1 hour
 
