@@ -160,7 +160,14 @@ census was taken. Treat any divergence as a fact to re-measure, not a defect to 
 
 ---
 
-### Phase 2: Move tool — namespace, axiom-baseline, and `git mv` classes [NOT STARTED]
+### Phase 2: Move tool — namespace, axiom-baseline, and `git mv` classes [COMPLETED]
+
+**Completion note**: classes 4 and 5 report zero-touch for the archive mapping, as predicted. Both
+were exercised for real against two throwaway synthetic namespace maps rather than left as unrun
+code: `FormalSystem.Metalogic.BXCanonical -> …BXC` drives class 4 to 297 occurrences in 79 files
+and class 5 to the harness's 8 `AXIOM_BASELINE` lines; `FormalSystem.Metalogic.soundness -> …` drives
+class 5 to 2 occurrences across *both* of its sites, proving the `MainResults.lean` `#print axioms`
+site is live rather than dead code. A dry run leaves `git status` untouched.
 
 **Goal**: The remaining non-link rewrite classes plus the tree move and the closing harness
 invocation.

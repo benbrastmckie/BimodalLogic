@@ -53,9 +53,22 @@ from __future__ import annotations
 import argparse
 import os
 import re
+import subprocess
 import sys
 
 PRUNE_DIRS = {".git", ".lake", "build", "specs", "__pycache__", "node_modules"}
+
+HARNESS = os.path.join("scripts", "check-module-invariants.sh")
+
+# Class 5's two sites. The axiom baselines are the only place in the tree where a
+# declaration's fully-qualified name is pinned as DATA rather than as code, so a
+# namespace rename that misses them turns every pinned check red at once.
+AXIOM_BASELINE_SITES = {
+    "scripts/check-module-invariants.sh":
+        re.compile(r"^'[A-Za-z0-9_.]+' depends on axioms:"),
+    "FormalSystem/MainResults.lean":
+        re.compile(r"^#print axioms\s+[A-Za-z0-9_.]+\s*$"),
+}
 
 # Class 2/3 scope by extension, and the two path-prefixed extension sets.
 PROSE_EXT = {".lean", ".md", ".typ"}
@@ -105,6 +118,24 @@ class Mapping:
 
     def __str__(self) -> str:
         return f"{self.old_mod} -> {self.new_mod}"
+
+
+class NamespaceMapping:
+    """One `Old.Ns -> New.Ns` pair.
+
+    One pattern serves `namespace`, `open` and bare fully-qualified occurrences
+    alike: all three are the same dotted name in source text, and a rule that
+    matched only the `namespace` keyword would leave every use site behind.
+    """
+
+    def __init__(self, old_ns: str, new_ns: str) -> None:
+        self.old_ns = old_ns
+        self.new_ns = new_ns
+        self.dotted_re = re.compile(
+            r"(?<![A-Za-z0-9_.])" + re.escape(old_ns) + r"(?![A-Za-z0-9_])")
+
+    def __str__(self) -> str:
+        return f"{self.old_ns} -> {self.new_ns}"
 
 
 def module_to_path(mod: str) -> str:
@@ -193,21 +224,34 @@ def bare_form_count(text: str, mappings: list[Mapping]) -> int:
 
 def rewrite_text(path: str, text: str, mappings: list[Mapping],
                  counts: dict[str, int], files: dict[str, set[str]],
-                 sentinel: bool = False) -> str:
-    """Apply classes 1-3 line by line, counting each class separately.
+                 sentinel: bool = False,
+                 ns_mappings: list[NamespaceMapping] | None = None) -> str:
+    """Apply classes 1-5 line by line, counting each class separately.
 
     With `sentinel`, every replacement is an opaque marker carrying no module
     name. Re-running the rewrite in that mode is how the bare-form audit
     distinguishes a bare citation that survived from one the rewrite created.
     """
     applicable = classes_for(path)
-    if not applicable:
+    ns_mappings = ns_mappings or []
+    baseline_re = AXIOM_BASELINE_SITES.get(path) if ns_mappings else None
+    if not applicable and not baseline_re:
         return text
 
     out_lines = []
     for line in text.splitlines(keepends=True):
         body = line.rstrip("\n")
         newline = line[len(body):]
+
+        # Class 5 first: a baseline line is DATA, counted as a baseline rewrite
+        # rather than folded into class 4's general namespace count.
+        if baseline_re and baseline_re.match(body):
+            body, n = apply_namespace(body, ns_mappings, sentinel)
+            if n:
+                counts["baseline"] += n
+                files.setdefault("baseline", set()).add(path)
+            out_lines.append(body + newline)
+            continue
 
         if "import" in applicable:
             rewritten, hit = apply_import(body, mappings, sentinel)
@@ -228,9 +272,25 @@ def rewrite_text(path: str, text: str, mappings: list[Mapping],
             if n:
                 counts["slash"] += n
                 files.setdefault("slash", set()).add(path)
+        if ns_mappings and applicable:
+            body, n = apply_namespace(body, ns_mappings, sentinel)
+            if n:
+                counts["namespace"] += n
+                files.setdefault("namespace", set()).add(path)
 
         out_lines.append(body + newline)
     return "".join(out_lines)
+
+
+def apply_namespace(line: str, ns_mappings: list[NamespaceMapping],
+                    sentinel: bool = False) -> tuple[str, int]:
+    """Rewrite `namespace` / `open` / FQN occurrences from the namespace map."""
+    total = 0
+    for mapping in ns_mappings:
+        new = SENTINEL if sentinel else mapping.new_ns
+        line, n = mapping.dotted_re.subn(new, line)
+        total += n
+    return line, total
 
 
 def apply_import(line: str, mappings: list[Mapping],
@@ -255,6 +315,47 @@ def apply_regex(line: str, mappings: list[Mapping], attr: str,
     return line, total
 
 
+def move_trees(mappings: list[Mapping], dry_run: bool) -> tuple[list[str], int]:
+    """Class 6 -- relocate each mapped subtree with a single `git mv`.
+
+    One `git mv` of the directory, never a delete-and-add: the rename is what
+    lets `git log --follow` cross the relocation, which is the whole reason the
+    archive keeps its history rather than reappearing as 225 new files.
+    """
+    moved, failures = [], 0
+    for mapping in mappings:
+        src, dst = mapping.old_path, mapping.new_path
+        if not os.path.exists(src):
+            print(f"  skip {src} (not present)")
+            continue
+        if os.path.exists(dst):
+            print(f"  FAIL {dst} already exists; refusing to merge trees",
+                  file=sys.stderr)
+            failures += 1
+            continue
+        if dry_run:
+            moved.append(f"{rel(src)} -> {rel(dst)}")
+            continue
+        parent = os.path.dirname(dst)
+        if parent and not os.path.isdir(parent):
+            os.makedirs(parent, exist_ok=True)
+        result = subprocess.run(["git", "mv", src, dst],
+                                capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"  FAIL git mv {src} {dst}: {result.stderr.strip()}",
+                  file=sys.stderr)
+            failures += 1
+            continue
+        moved.append(f"{rel(src)} -> {rel(dst)}")
+    return moved, failures
+
+
+def run_harness() -> int:
+    """Closing step -- the invariant harness, exit code propagated verbatim."""
+    print(f"\n=== {HARNESS} --no-build ===")
+    return subprocess.run(["bash", HARNESS, "--no-build"]).returncode
+
+
 def read_text(path: str) -> str | None:
     try:
         with open(path, encoding="utf-8") as handle:
@@ -265,26 +366,31 @@ def read_text(path: str) -> str | None:
 
 def run(args: argparse.Namespace) -> int:
     mappings = load_mappings(args.module_map)
+    ns_mappings = ([NamespaceMapping(old, new)
+                    for old, new in parse_map(args.namespace_map)]
+                   if args.namespace_map else [])
 
-    counts: dict[str, int] = {"import": 0, "dotted": 0, "slash": 0}
+    counts: dict[str, int] = {"import": 0, "dotted": 0, "slash": 0,
+                              "namespace": 0, "baseline": 0}
     files: dict[str, set[str]] = {}
     bare_before = bare_after = 0
     bare_files: set[str] = set()
     changed: list[tuple[str, str]] = []
 
     for path in walk_repo():
-        if not classes_for(path):
+        if not classes_for(path) and path not in AXIOM_BASELINE_SITES:
             continue
         text = read_text(path)
         if text is None:
             continue
-        new_text = rewrite_text(path, text, mappings, counts, files)
+        new_text = rewrite_text(path, text, mappings, counts, files,
+                                ns_mappings=ns_mappings)
         # The audit re-runs the SAME rewrite with opaque replacements, so a bare
         # citation the rewrite created is not mistaken for one it preserved. A
         # rule keyed on the bare token would consume pre-existing bare citations
         # and the two counts would diverge.
         sentinel_text = rewrite_text(path, text, mappings, dict(counts), {},
-                                     sentinel=True)
+                                     sentinel=True, ns_mappings=ns_mappings)
         before = bare_form_count(text, mappings)
         after = bare_form_count(sentinel_text, mappings)
         bare_before += before
@@ -299,31 +405,45 @@ def run(args: argparse.Namespace) -> int:
             with open(path, "w", encoding="utf-8") as handle:
                 handle.write(new_text)
 
-    report(args, mappings, counts, files, changed,
+    moved, move_failures = move_trees(mappings, args.dry_run)
+
+    report(args, mappings, ns_mappings, counts, files, changed, moved,
            bare_before, bare_after, len(bare_files))
 
     if bare_before != bare_after:
         print("\nFAIL  bare-form citations were rewritten; every rule must be "
               "anchored on the full old prefix", file=sys.stderr)
         return 1
-    return 0
+    if move_failures:
+        return 1
+    if args.dry_run or args.no_verify:
+        return 0
+    return run_harness()
 
 
 def report(args: argparse.Namespace, mappings: list[Mapping],
-           counts: dict[str, int], files: dict[str, set[str]],
-           changed: list[tuple[str, str]], bare_before: int, bare_after: int,
+           ns_mappings: list[NamespaceMapping], counts: dict[str, int],
+           files: dict[str, set[str]], changed: list[tuple[str, str]],
+           moved: list[str], bare_before: int, bare_after: int,
            bare_file_count: int) -> None:
     mode = "DRY RUN" if args.dry_run else "APPLIED"
     print(f"=== move-modules ({mode}) ===")
     for mapping in mappings:
         print(f"  map  {mapping}   ({mapping.old_path} -> {mapping.new_path})")
+    for mapping in ns_mappings:
+        print(f"  ns   {mapping}")
     print()
     labels = [("import", "class 1  import lines"),
               ("dotted", "class 2  dotted citations"),
-              ("slash", "class 3  slash-path citations")]
+              ("slash", "class 3  slash-path citations"),
+              ("namespace", "class 4  namespace/open/FQN"),
+              ("baseline", "class 5  axiom baselines")]
     for key, label in labels:
         print(f"  {label:<34} {counts[key]:>5} occurrence(s) in "
               f"{len(files.get(key, ())):>4} file(s)")
+    print(f"  {'class 6  tree moves':<34} {len(moved):>5} subtree(s)")
+    for line in moved:
+        print(f"           {line}")
     print()
     print(f"  audit    bare-form occurrences        {bare_before:>5} before, "
           f"{bare_after:>5} after, in {bare_file_count} file(s)")
