@@ -27,7 +27,7 @@ For each enumerated formula, the decision procedure (`decide`, @sec:decidability
 
 - *Positive signal -- proof traces (policy network)*: for a formula decided valid, a `ProofTrace` records derivation `height`, the `axiomsUsed`, and the `rulesApplied`. "The policy network learns to predict *which axioms and rules to apply* at each step of a proof search."#footnote[`docs/training/PIPELINE.md:24-31`.]
 - *Corrective signal -- countermodels (value network)*: for a formula decided invalid, a `SimpleCountermodel` records `trueAtoms`/`falseAtoms`/`formula`. "The value network learns to estimate the probability that a given proof state leads to a valid proof... they teach the network which formula shapes are *not* theorems."#footnote[`docs/training/PIPELINE.md:33-40`.]
-- *Enriched corrective signal (Tier 2)*: `EnrichedCountermodel.lean` retains the full saturated tableau branch (which modal/temporal subformulas held or failed); the module is implemented and tested, and its integration into the main export path belongs to the pipeline's second tier.#footnote[`docs/training/PIPELINE.md:42-44`; `Automation/EnrichedCountermodel.lean` (211 lines per `Automation/README.md`).]
+- *Enriched corrective signal (Tier 2)*: `EnrichedCountermodel.lean` retains the full saturated tableau branch (which modal/temporal subformulas held or failed); the module is implemented and tested, and its integration into the main export path belongs to the pipeline's second tier.#footnote[`docs/training/PIPELINE.md:42-44`; `BimodalTools/EnrichedCountermodel.lean` (211 lines per `BimodalTools/README.md`).]
 
 == Pipeline Flow and Module Map
 
@@ -36,7 +36,7 @@ The pipeline comprises seven Lean modules -- `DataExport.lean`, `FormulaEnumerat
 
 === Anatomy of a Dataset Record
 
-Each exported JSONL line is a `DatasetRecord` (`Automation/DatasetGeneratorMain.lean`), carrying the formula in several parallel encodings alongside its label and exactly one supervisory payload.
+Each exported JSONL line is a `DatasetRecord` (`BimodalTools/DatasetGeneratorMain.lean`), carrying the formula in several parallel encodings alongside its label and exactly one supervisory payload.
 A representative valid-formula record, abridged from the schema documented at the head of `DatasetGeneratorMain.lean`:
 
 ```json

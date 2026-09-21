@@ -520,13 +520,13 @@ corresponding grep against the post-move tree (e.g. `grep -c '^import' BimodalTo
 
 ---
 
-### Phase 7: Close the bare-form citations and prose [NOT STARTED]
+### Phase 7: Close the bare-form citations and prose [COMPLETED]
 
 **Goal**: The citations `move-modules.py` deliberately does not rewrite — bare `Automation/<tool>.lean`
 forms, which are *stale* after this move rather than *correct* after it — are hand-corrected.
 
 **Tasks**:
-- [ ] Fix the bare-form citation sites enumerated by the research:
+- [x] Fix the bare-form citation sites enumerated by the research:
       `typst/chapters/p4-dataset-pipeline.typ` (EnrichedCountermodel, DatasetGeneratorMain),
       `typst/chapters/ax-machine-appendix.typ` (DataExport),
       `docs/development/NAMING_CONVENTION_DEVIATION.md` (MachineAppendixMain, DatasetGeneratorMain),
@@ -535,6 +535,16 @@ forms, which are *stale* after this move rather than *correct* after it — are 
       note C22's own hardcoded full-prefix paths were already rewritten by class 3),
       `FormalSystem/Metalogic/Decidability/README.md` (TraceExporterMain),
       `Tests/BimodalTest.lean` prose block (3 bare `Main` citations).
+      *(deviation: altered — 14 live line-sites closed, not 11. Three beyond the plan's list:
+      `NAMING_CONVENTION_DEVIATION.md:453`, the second citation on
+      `p4-dataset-pipeline.typ:30` (`Automation/README.md` -> `BimodalTools/README.md`), and
+      `BimodalTools/MachineAppendixMain.lean:40`, inside a file that itself moved. Four further
+      prose repairs the plan does not name: `FormalSystem/Metalogic/Decidability/README.md` lost
+      its `TraceExport.lean` table row and its flowchart mention entirely — the module left that
+      directory, so correcting the citation was not enough — and gained a short note saying where
+      it went and that the certificate TYPES stay; `docs/development/MODULE_INVARIANTS.md` had six
+      scan-root descriptions gone stale in Phase 2 (`B2`, `C17`, `C25N`, `C27`, `C29`, `C30`) and
+      carried no `B3` row at all, both now fixed.)*
 - [ ] Update the two tooling-namespace entries in `scripts/module-invariants-allowlist.txt` and
       their bare `Automation/...` path comments.
 - [ ] Update `FormalSystem/Automation.lean`'s module-list docstring to reflect the 8 removed
@@ -557,6 +567,21 @@ and close whichever set is larger.
 - `bash scripts/check-module-invariants.sh --no-build` reports 0 FAIL, including C20's
   `file.lean:NNN` citation check and C22.
 - `bash scripts/typst-sync-check.sh` exits 0.
+  *(deviation: altered — exits 1 BEFORE and AFTER, for a pre-existing reason this task does not
+  own. Baseline captured from a worktree at the pre-task commit: `TOTAL_VIOLATIONS=10`,
+  `MISMATCH_COUNT=2`, `MODULE_MAP_MISMATCHES=7`, exit 1. The move briefly took Check 1 from 10 to
+  **32** violations, because that check resolves every backticked identifier against the single
+  Lean source root `FormalSystem/` and 22 of the manual's dataset-pipeline and machine-appendix
+  citations name declarations that had just left it. Repaired by giving Check 1 a colon-separated
+  root LIST (`LEAN_SRC_ROOTS`, Check 1 only — Checks 2-3 still take `BIMODAL_DIR` as one
+  directory path). Check 1 is now back at the baseline set. `MODULE_MAP_MISMATCHES` was taken from
+  7 to **0** by regenerating `typst/generated/automation-module-map.typ`, which confirmed the
+  research finding that `typst-module-map.sh` needs no edit: every row it emits is a staying
+  library module. `MISMATCH_COUNT=2` is left alone deliberately — it is
+  `sorry-total: committed=4 live=0` for the row labelled "WeakCanonical/ (archived,
+  Boneyard/Kamp/)", and regenerating it would delete a true statement about archived material
+  that the generator can no longer see since the archive left `FormalSystem/`. That belongs to
+  whoever owns the archive relocation. See the summary's Follow-ups.)*
 
 **Files to modify**:
 - `typst/chapters/p4-dataset-pipeline.typ`, `typst/chapters/ax-machine-appendix.typ`

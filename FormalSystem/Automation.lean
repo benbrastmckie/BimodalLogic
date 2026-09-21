@@ -23,7 +23,9 @@ import FormalSystem.Automation.Normalization
 /-!
 # FormalSystem.Automation - Proof Automation
 
-Aggregates all Automation components for the Core TM logic layer.
+Aggregates the Automation components of the Core TM logic layer. Library only: the dataset,
+export and benchmark modules this file used to import are now `lean_lib BimodalTools`, outside
+`defaultTargets`. See `BimodalTools/README.md` for what left and why.
 
 ## Submodules
 
@@ -43,6 +45,13 @@ Aggregates all Automation components for the Core TM logic layer.
   - `PatternDatabase`: Records successful proof patterns
   - `PatternKey`: Formula structural features for pattern matching
   - `ProofStrategy`: Strategy types (Axiom, Assumption, ModusPonens, etc.)
+- `Normalization`, `NormalizationAttr`, `TruthNormAttr`, `LemmaDB`: normalization simp sets and
+  the derived-lemma database, reached directly rather than through this aggregator.
+
+Not here any more: `FormulaEnumerator`, `DatasetGenerator`, `DataExport`, `EnrichedCountermodel`,
+`DatasetAssembly`, `ProofStepExtractor`, `InterestingnessMetrics` and `PrefilterSoundness`. Those
+eight imports were this file's tooling half and the sole reason `lake build` compiled any of it;
+they are `BimodalTools.*` now.
 
 ## Usage
 

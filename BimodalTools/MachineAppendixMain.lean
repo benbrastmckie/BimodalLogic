@@ -37,7 +37,7 @@ and the rule *count* is cross-checked against the live source by
 `main` fails with a nonzero exit unless:
 - exactly 29 axiom entries are present, with name multiset equal to
   `FormalSystem.Automation.allAxiomNames` (shared with `BenchmarkAnchorsMain.lean` via
-  `Automation/AxiomNames.lean`; no missing, no extra, no duplicates);
+  `BimodalTools/AxiomNames.lean`; no missing, no extra, no duplicates);
 - exactly 7 inference-rule entries are present.
 
 ## Output Schema (JSONL, one object per line; the `"generator"` value is a stable provenance ID)

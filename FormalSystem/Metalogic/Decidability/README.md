@@ -22,6 +22,12 @@ This directory implements a tableau search procedure that:
 
 ## Modules
 
+`TraceExport.lean` used to sit here, carrying the JSON serialization for trace certificates.
+It was tooling rather than logic — its only consumer is the `trace_exporter` executable — so
+it moved to `BimodalTools/TraceExport.lean` when the tooling half left the published library.
+The certificate TYPES it serializes (`TraceEntry`, `ProofCertificate`, `TraceResult`) stay
+here, in `TraceCertificate.lean`.
+
 | Module | Purpose | Status |
 |--------|---------|--------|
 | `SignedFormula.lean` | Sign, SignedFormula, Branch types | Sorry-free |
@@ -34,7 +40,6 @@ This directory implements a tableau search procedure that:
 | `CountermodelExtraction.lean` | Extract countermodel from open branch | Sorry-free |
 | `DecisionProcedure.lean` | Main `decide` function with proof search | Sorry-free |
 | `CancellableExpansion.lean` | Runtime-only `IO` abort-aware mirror of the pure tableau core; imports `Saturation.lean` and `DecisionProcedure.lean`; not imported by the aggregator | Sorry-free |
-| `TraceExport.lean` | JSON serialization for trace certificates; consumed by `Automation/TraceExporterMain.lean` rather than by the aggregator | Sorry-free |
 | `IntPresentation.lean` | Computational presentation of a finite ℤ-time frame (`Fin card` adjacency matrix + valuation) | Sorry-free |
 | `BiLasso.lean` | Re-export for BiLasso subdirectory | Sorry-free; not itself imported by the main library build graph (one test file, `Tests/BimodalTest/Metalogic/PeriodicExtensionAxiomTest.lean`, does import it) |
 | `FMP/` | Finite model property proofs (6 files) | Sorry-free |
@@ -76,7 +81,7 @@ open FormalSystem.Metalogic.Decidability
 ## Dependency Flowchart
 
 This diagram shows the core chain only. Deliberately omitted: `IntPresentation.lean`,
-`CancellableExpansion.lean`, `TraceExport.lean`, `BiLasso.lean` (imported by one test file,
+`CancellableExpansion.lean`, `BiLasso.lean` (imported by one test file,
 `Tests/BimodalTest/Metalogic/PeriodicExtensionAxiomTest.lean`, but not by the main library build
 graph), and the `Verified/` and `Propositional/` subtrees.
 

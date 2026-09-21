@@ -35,7 +35,15 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # Two independent roots since the asset relocation: BIMODAL_DIR is the LEAN
 # SOURCE root, used for identifier and path resolution, and does NOT move.
 # TYPST_DIR is the typst tree being scanned, which now sits at the project root.
+#
 BIMODAL_DIR="${REPO_ROOT}/FormalSystem"
+# Check 1 resolves names against a LIST of Lean source roots, which BIMODAL_DIR alone stopped
+# covering when the tooling half left the published library for `lean_lib BimodalTools`. The
+# manual's dataset-pipeline and machine-appendix chapters cite identifiers that live in the
+# tooling modules (`DatasetRecord`, `axiomsUsed`, `pattern_key`, the exe root names), and a
+# single-root scan stopped resolving 22 of them the moment those modules moved. Colon-separated,
+# and used by Check 1 ONLY: Checks 2-3 below still take BIMODAL_DIR as one directory path.
+LEAN_SRC_ROOTS="${REPO_ROOT}/FormalSystem:${REPO_ROOT}/BimodalTools"
 TYPST_DIR="${REPO_ROOT}/typst"
 WHITELIST="${TYPST_DIR}/sync-check-whitelist.txt"
 MAIN_FILE="${TYPST_DIR}/BimodalReference.typ"
@@ -49,10 +57,14 @@ FAIL=0
 # ---------------------------------------------------------------------------
 echo "== Check 1: backtick name resolution ==" >&2
 
-CHECK1_REPORT=$(python3 - "${REPO_ROOT}" "${BIMODAL_DIR}" "${TYPST_DIR}" "${WHITELIST}" << 'PYEOF'
+CHECK1_REPORT=$(python3 - "${REPO_ROOT}" "${LEAN_SRC_ROOTS}" "${TYPST_DIR}" "${WHITELIST}" << 'PYEOF'
 import re, glob, os, subprocess, sys
 
-repo_root, bimodal_dir, typst_dir, whitelist_path = sys.argv[1:5]
+repo_root, bimodal_dirs_raw, typst_dir, whitelist_path = sys.argv[1:5]
+# Every Lean source root, in declaration order. `bimodal_dir` is kept as the FIRST root so the
+# messages below still name the primary one; resolution tries all of them.
+bimodal_dirs = [d for d in bimodal_dirs_raw.split(":") if d and os.path.isdir(d)]
+bimodal_dir = bimodal_dirs[0] if bimodal_dirs else bimodal_dirs_raw
 
 # Load whitelist
 whitelist = set()
@@ -78,8 +90,8 @@ for f in glob.glob(os.path.join(typst_dir, "**", "*.typ"), recursive=True):
 def grep_lean(name):
     try:
         out = subprocess.run(
-            ["grep", "-rl", "--include=*.lean", "-F", name, bimodal_dir,
-             "--exclude-dir=Boneyard"],
+            ["grep", "-rl", "--include=*.lean", "-F", name] + bimodal_dirs
+            + ["--exclude-dir=Boneyard"],
             capture_output=True, text=True, timeout=30,
         )
         return out.returncode == 0 and bool(out.stdout.strip())
@@ -136,24 +148,29 @@ for cand, files in sorted(candidates.items()):
     if is_pathlike:
         rel = cand_delined
         allow_boneyard = "Boneyard" in rel.split("/")
-        if rel.startswith("FormalSystem/"):
-            rel_bimodal = rel[len("FormalSystem/"):]
-        else:
-            rel_bimodal = rel
-        if path_exists_excl_boneyard(rel_bimodal, bimodal_dir):
+        resolved = False
+        for base in bimodal_dirs:
+            prefix = os.path.basename(base) + "/"
+            rel_bimodal = rel[len(prefix):] if rel.startswith(prefix) else rel
+            if path_exists_excl_boneyard(rel_bimodal, base):
+                resolved = True
+                break
+        if resolved:
             continue
         if path_exists_excl_boneyard(rel, repo_root):
             continue
-        if suffix_search(rel, bimodal_dir, allow_boneyard):
+        if any(suffix_search(rel, base, allow_boneyard) for base in bimodal_dirs):
             continue
         if suffix_search(rel, repo_root, allow_boneyard):
             continue
-        violations.append((cand, files, "path does not exist under the Lean source root FormalSystem/ (excl. Boneyard/ unless the candidate itself names it) nor under the repo root"))
+        roots_desc = "/, ".join(os.path.basename(b) for b in bimodal_dirs) + "/"
+        violations.append((cand, files, f"path does not exist under any Lean source root ({roots_desc}; excl. Boneyard/ unless the candidate itself names it) nor under the repo root"))
         continue
     # Bare identifier / dotted qualified name
     if grep_lean(cand):
         continue
-    violations.append((cand, files, "identifier not found in any *.lean file under the Lean source root FormalSystem/ (excl. Boneyard/)"))
+    roots_desc = "/, ".join(os.path.basename(b) for b in bimodal_dirs) + "/"
+    violations.append((cand, files, f"identifier not found in any *.lean file under the Lean source roots ({roots_desc}; excl. Boneyard/)"))
 
 if violations:
     for cand, files, reason in violations:

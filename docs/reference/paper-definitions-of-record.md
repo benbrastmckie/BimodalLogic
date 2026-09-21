@@ -158,7 +158,7 @@ existed.
      `lem:time-reflection`, so the carve-out is withdrawn and that prose now uses time-reflection
      wording. See "Label rename absorption (2026-09-18)" above.
    - **Serialized wire tags stay byte-stable.** These are the `"temporal_duality"` string literals in
-     dataset/JSON output (`Automation/DataExport.lean`, `DatasetGenerator.lean`,
+     dataset/JSON output (`BimodalTools/DataExport.lean`, `DatasetGenerator.lean`,
      `ProofStepExtractor.lean`, `ContrastiveGeneratorMain.lean`, `ProofExtractorMain.lean`), the
      `"temporalDualityCount"` key in `ProofFirstBenchmark.lean`, and the rule-name list in the
      training-pipeline sync protocol (internal, not part of the tracked deliverable). Each code

@@ -3410,7 +3410,7 @@ echo
 # ---------------------------------------------------------------------------
 # C22: the two `allAxiomNames` lists agree
 #
-# `Automation/AxiomNames.lean` and `Automation/ProofExtractorMain.lean` both declare a list
+# `BimodalTools/AxiomNames.lean` and `BimodalTools/ProofExtractorMain.lean` both declare a list
 # called `allAxiomNames`, and the duplication is DELIBERATE and documented at the second
 # site: `ProofExtractorMain.lean` is a `lean_exe` root that declares its own `main`, so it
 # cannot import the leaf module that owns the canonical list. The names are therefore not

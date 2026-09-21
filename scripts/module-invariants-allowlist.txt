@@ -12,13 +12,13 @@
 #
 # One name per line; `#` starts a comment.
 
-# `namespace BimodalTools.Enriched` -- Automation/EnrichedCountermodel.lean:48
+# `namespace BimodalTools.Enriched` -- BimodalTools/EnrichedCountermodel.lean:48
 BimodalTools.Enriched
 
 # `structure PatternKey` in namespace FormalSystem.Automation -- Automation/SuccessPatterns.lean:101
 FormalSystem.Automation.PatternKey
 
-# `structure RuleProfile` in namespace BimodalTools.DataExport -- Automation/DataExport.lean:294
+# `structure RuleProfile` in namespace BimodalTools.DataExport -- BimodalTools/DataExport.lean:294
 BimodalTools.DataExport.RuleProfile
 
 # `structure SimpleCountermodel` in namespace FormalSystem.Metalogic.Decidability

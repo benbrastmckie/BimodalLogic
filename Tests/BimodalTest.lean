@@ -83,9 +83,10 @@ deliberately excluded, for two different reasons:
   print that table on every `lake test`.
 - `Automation/FormulaMutatorTest.lean`, `Automation/ProofFirstTests.lean` —
   compile in isolation but cannot be imported here. Each pulls in an executable
-  root (`Automation/ContrastiveGeneratorMain.lean`, `Automation/ProofFirstGeneratorMain.lean`)
+  root (`BimodalTools/ContrastiveGeneratorMain.lean`,
+  `BimodalTools/ProofFirstGeneratorMain.lean`)
   that defines `main`, and this environment already has `main` from
-  `Automation/DatasetValidatorMain.lean`. Importing either yields
+  `BimodalTools/DatasetValidatorMain.lean`. Importing either yields
   "environment already contains 'main'". Fixing this means restructuring where
   `main` lives in the executable roots, not editing the tests.
 
