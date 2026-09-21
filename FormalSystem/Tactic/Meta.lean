@@ -5,7 +5,6 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.ProofSystem
-import Lean
 
 /-!
 # Reusable `MetaM` plumbing for derivability goals

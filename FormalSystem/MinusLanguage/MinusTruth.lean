@@ -8,11 +8,6 @@ import FormalSystem.Semantics.Truth
 import FormalSystem.MinusLanguage.Formula
 import FormalSystem.Semantics.TruthClauses
 
--- Lower semantic layer: must not reach the proof system (G-15). `FrameClassValidity.lean`
--- is the one documented seam that imports `ProofSystem.Axioms`; nothing below it may.
-assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
-  FormalSystem.ProofSystem.Derivable FormalSystem.ProofSystem.FrameClass
-
 /-!
 # `MinusTruthAt` — native task semantics for the tense-primitive base language L⁻
 
@@ -83,6 +78,11 @@ about the converse; see `FormalSystem/MinusLanguage.lean`'s "Module Invariant" s
 
 truth · base-language · MinusTruthAt · def:BL-semantics
 -/
+
+-- Lower semantic layer: must not reach the proof system (G-15). `FrameClassValidity.lean`
+-- is the one documented seam that imports `ProofSystem.Axioms`; nothing below it may.
+assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
+  FormalSystem.ProofSystem.Derivable FormalSystem.ProofSystem.FrameClass
 
 namespace FormalSystem.MinusLanguage
 

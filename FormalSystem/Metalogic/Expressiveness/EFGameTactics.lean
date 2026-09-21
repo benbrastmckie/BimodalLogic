@@ -5,7 +5,6 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Expressiveness.EFGames.CustomGame
-import Lean
 
 /-!
 # EF Game Automation Tactics

@@ -6,11 +6,6 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.Truth
 
--- Lower semantic layer: must not reach the proof system (G-15). `FrameClassValidity.lean`
--- is the one documented seam that imports `ProofSystem.Axioms`; nothing below it may.
-assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
-  FormalSystem.ProofSystem.Derivable FormalSystem.ProofSystem.FrameClass
-
 /-!
 # TruthTransport - Transporting truth between task models
 
@@ -43,6 +38,11 @@ to another.
 - `Truth.truthAt_of_truthIso` / `Truth.truthAt_of_truthAntiIso`: the corresponding transport
   results for the bijective and order-reversing packagings
 -/
+
+-- Lower semantic layer: must not reach the proof system (G-15). `FrameClassValidity.lean`
+-- is the one documented seam that imports `ProofSystem.Axioms`; nothing below it may.
+assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
+  FormalSystem.ProofSystem.Derivable FormalSystem.ProofSystem.FrameClass
 
 namespace FormalSystem.Semantics
 

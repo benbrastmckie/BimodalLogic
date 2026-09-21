@@ -10,7 +10,7 @@ dependency.
 | File | Lines | Description |
 |------|------:|-------------|
 | `Attr.lean` | 104 | Every attribute and named simp set the library uses: `truth_norm`, `reflect_time_norm`, `formula_unfold`, `formula_fold`, `@[tmLemma]` |
-| `Meta.lean` | 119 | Shared `MetaM` plumbing for derivability goals: goal recognition, head-symbol readers, context rebuilding |
+| `Meta.lean` | 118 | Shared `MetaM` plumbing for derivability goals: goal recognition, head-symbol readers, context rebuilding |
 <!-- END GENERATED -->
 
 ## The `Attr.lean` constraint

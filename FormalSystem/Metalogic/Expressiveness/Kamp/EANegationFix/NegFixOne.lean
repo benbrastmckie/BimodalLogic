@@ -7,11 +7,6 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFix.BoundedFixAnchored
 import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFix.ConcatPin
 
-namespace FormalSystem.Metalogic.Expressiveness.Kamp
-
-open FormalSystem.Syntax
-open FormalSystem.Metalogic.Expressiveness
-
 /-! # Lemma 5.1 fixed-formula negation: the n = 1 gated instance
 
 
@@ -32,6 +27,11 @@ Each disjunct individually implies `¬[s0, p, s1]` (no attainment needed); the
 cover direction pins the first `¬s0`-point and the last `¬s1`-point via
 `HasAttainedINF`/`HasAttainedSUP`. The ℤ counterexample below (`NegFixGateProbe`)
 machine-checks that the two-point gated shapes `B4`/`B4′` are unavoidable. -/
+
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
+
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Expressiveness
 
 /-- The one-witness bracket `[s0, p, s1]`. -/
 def bracketOne (s0 p s1 : TemporalPred) : BracketFormula 1 :=

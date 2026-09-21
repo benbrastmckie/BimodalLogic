@@ -6,7 +6,6 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.ProofSystem
 import FormalSystem.Theorems.DeductionTheorem
-import Lean
 
 /-!
 # Deduction Theorem Tactics

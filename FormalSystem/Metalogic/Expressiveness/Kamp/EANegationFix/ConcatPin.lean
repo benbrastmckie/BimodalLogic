@@ -6,11 +6,6 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFix.BoundedFix
 
-namespace FormalSystem.Metalogic.Expressiveness.Kamp
-
-open FormalSystem.Syntax
-open FormalSystem.Metalogic.Expressiveness
-
 /-! # The pinned-concatenation builder
 
 Case 3 of the fixed-formula negation recursion glues IH outputs across the
@@ -19,6 +14,11 @@ assembled from V-brackets on `(z0, r0)` and `(r0, z1)` joined at a pinned
 point type (Rabinovich chunk_0017, the A_i/B_i split; Phase 10a handoff,
 design note 2). The builder concatenates every pair of disjuncts around the
 pin; the `∃ r` and the fixed pin distribute over both disjunction lists. -/
+
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
+
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Expressiveness
 
 /-- Splitting a list-form bracket at a distinguished pin pair: the bracket
     `[s, …ps…, pin, b, …qs…]` holds iff some `r ∈ (z0, z1)` splits it into

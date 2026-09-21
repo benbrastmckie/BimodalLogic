@@ -4,7 +4,14 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-/-
+import Mathlib.Order.CountableDenseLinearOrder
+import Mathlib.Order.Hom.Set
+import Mathlib.Data.Set.Countable
+import Mathlib.Data.Rat.Denumerable
+import Mathlib.Algebra.Order.Archimedean.Real.Basic
+import FormalSystem.Init
+
+/-!
 # The order characterization of `ℝ`
 
 **Statement source**: Reynolds 1992, §8, printed p.188 — *"But then `R` being Dedekind complete,
@@ -45,12 +52,6 @@ So the order-theoretic characterization **is absent from Mathlib** and is built 
 3. `cutMap e` is strictly monotone by density of `D`, and surjective by Dedekind completeness of
    `R` played against completeness of `ℝ`. `StrictMono.orderIsoOfSurjective` finishes.
 -/
-import Mathlib.Order.CountableDenseLinearOrder
-import Mathlib.Order.Hom.Set
-import Mathlib.Data.Set.Countable
-import Mathlib.Data.Rat.Denumerable
-import Mathlib.Algebra.Order.Archimedean.Real.Basic
-import FormalSystem.Init
 
 namespace FormalSystem.Metalogic.WeakCanonical
 

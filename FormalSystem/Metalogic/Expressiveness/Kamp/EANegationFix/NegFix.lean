@@ -9,11 +9,6 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFix.ConcatPin
 import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFix.BoundedFixAnchored
 import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAConjFull
 
-namespace FormalSystem.Metalogic.Expressiveness.Kamp
-
-open FormalSystem.Syntax
-open FormalSystem.Metalogic.Expressiveness
-
 /-! # Lemma 5.1 general recursion: `BracketFormula.negFix`
 
 The general fixed-formula negation of a bracket `[β0, α0, β1, …, α_{n-1}, βn]`
@@ -57,6 +52,11 @@ The case gates:
 Recursion is on the fold-pair LIST (`negFixList`), terminating by list
 length: the A-parts need no recursion (consumed by the already-proven
 anchored fixes), and every recursive call is on a strictly shorter list. -/
+
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
+
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Expressiveness
 
 /-! ## V-level helpers -/
 

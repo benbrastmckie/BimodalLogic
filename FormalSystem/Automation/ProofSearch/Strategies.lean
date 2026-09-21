@@ -6,6 +6,23 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Automation.ProofSearch.Core
 
+/-!
+# Proof Search Strategies
+
+Search strategies layered over the bounded engine of `ProofSearch/Core.lean`: a priority-queue
+best-first search, a unified entry point that selects a strategy, and learning-enabled variants
+that record successful patterns.
+
+## Main definitions
+
+- `SearchNode`, `PriorityQueue`: the frontier of the best-first search
+- `bestFirstSearch`: priority-queue search that expands the most promising node first
+- `SearchStrategy`, `search`: the strategy selector and the unified search interface
+- `searchWithHeuristics`, `searchWithCache`: fixed-strategy convenience wrappers
+- `LearningSearchResult`, `searchWithLearning`, `batchSearchWithLearning`: search that records
+  successful patterns in a `PatternDatabase`
+-/
+
 namespace FormalSystem.Automation
 
 open FormalSystem.Syntax

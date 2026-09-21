@@ -8,11 +8,6 @@ import FormalSystem.Semantics.TaskFrame
 import Mathlib.Order.SuccPred.Basic
 import Mathlib.Order.SuccPred.Archimedean
 
--- Lower semantic layer: must not reach the proof system (G-15). `FrameClassValidity.lean`
--- is the one documented seam that imports `ProofSystem.Axioms`; nothing below it may.
-assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
-  FormalSystem.ProofSystem.Derivable FormalSystem.ProofSystem.FrameClass
-
 /-!
 # Frame Properties — `def:frame-properties` as predicates on frames
 
@@ -106,6 +101,11 @@ theory that instance resolution now covers them.
 
 frame-class · frame-properties · dense · discrete · complete · def:frame-properties
 -/
+
+-- Lower semantic layer: must not reach the proof system (G-15). `FrameClassValidity.lean`
+-- is the one documented seam that imports `ProofSystem.Axioms`; nothing below it may.
+assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
+  FormalSystem.ProofSystem.Derivable FormalSystem.ProofSystem.FrameClass
 
 namespace FormalSystem.Semantics
 

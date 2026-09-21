@@ -8,6 +8,20 @@ import FormalSystem.Tactic.Meta
 import FormalSystem.Automation.Tactics.Search
 import FormalSystem.Automation.Tactics.Deduction
 
+/-!
+# The `modal_search` tactic
+
+The user-facing proof-search tactic for derivability goals `Γ ⊢[fc] φ`, built on the bounded
+engine of `Tactics/Search.lean`.
+
+## Main definitions
+
+- `SearchConfig`: the search depth and the node-visit limit, the only two knobs the search reads
+- `modal_search`: the tactic, in its positional form (`modal_search 5`) and its named-parameter
+  form (`modal_search (depth := 5)`)
+- `parseSearchParam`, `applyParams`, `runModalSearch`: the elaboration helpers behind both forms
+-/
+
 namespace FormalSystem.Automation
 
 open FormalSystem.Syntax

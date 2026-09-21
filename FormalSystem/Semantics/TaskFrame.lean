@@ -15,11 +15,6 @@ import Mathlib.Data.Fintype.Powerset
 import Mathlib.Data.Set.Card
 import FormalSystem.Semantics.TemporalOrder
 
--- Lower semantic layer: must not reach the proof system (G-15). `FrameClassValidity.lean`
--- is the one documented seam that imports `ProofSystem.Axioms`; nothing below it may.
-assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
-  FormalSystem.ProofSystem.Derivable FormalSystem.ProofSystem.FrameClass
-
 /-!
 # TaskFrame — the frame fibration: `TemporalOrder`, `FrameOver`, and the total space
 
@@ -232,6 +227,11 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
 
 task-frame · task-relation · def:frame · saturation · nullity
 -/
+
+-- Lower semantic layer: must not reach the proof system (G-15). `FrameClassValidity.lean`
+-- is the one documented seam that imports `ProofSystem.Axioms`; nothing below it may.
+assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
+  FormalSystem.ProofSystem.Derivable FormalSystem.ProofSystem.FrameClass
 
 set_option linter.style.longFile 2500
 

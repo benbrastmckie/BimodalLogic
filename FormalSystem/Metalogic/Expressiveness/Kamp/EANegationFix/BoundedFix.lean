@@ -6,11 +6,6 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFix.OnBuilder
 
-namespace FormalSystem.Metalogic.Expressiveness.Kamp
-
-open FormalSystem.Syntax
-open FormalSystem.Metalogic.Expressiveness
-
 /-! # Corollary 5.4 mirrors
 
 Fixed-formula negation of the endpoint-moved bracket existentials
@@ -36,6 +31,11 @@ types at the interval endpoints (those live in `VecEA2`), so Rabinovich's
 `α_0(z_0)` / `α_n(z)` endpoint conjuncts are `⊤` here; his `¬F_0(z_0)`
 output disjunct correspondingly becomes the pin disjunct below rather than
 an endpoint predicate. -/
+
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
+
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Expressiveness
 
 /-! ## Temporal-predicate Until/Since builders -/
 

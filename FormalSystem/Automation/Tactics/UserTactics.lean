@@ -10,7 +10,6 @@ import FormalSystem.Theorems.Propositional.Reasoning
 import FormalSystem.Theorems.TemporalDerived
 import FormalSystem.Theorems.ModalS5
 import FormalSystem.Theorems.Perpetuity
-import Lean
 
 /-!
 # User-facing tactics, and the formula predicates they read

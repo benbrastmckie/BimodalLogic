@@ -9,11 +9,6 @@ import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Syntax.Formula
 import FormalSystem.Semantics.TruthClauses
 
--- Lower semantic layer: must not reach the proof system (G-15). `FrameClassValidity.lean`
--- is the one documented seam that imports `ProofSystem.Axioms`; nothing below it may.
-assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
-  FormalSystem.ProofSystem.Derivable FormalSystem.ProofSystem.FrameClass
-
 /-!
 # Truth - Truth Evaluation in Task Semantics
 
@@ -154,6 +149,11 @@ on no proof-system notion.
 
 truth · TruthAt · until · since · box · def:BL-semantics
 -/
+
+-- Lower semantic layer: must not reach the proof system (G-15). `FrameClassValidity.lean`
+-- is the one documented seam that imports `ProofSystem.Axioms`; nothing below it may.
+assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
+  FormalSystem.ProofSystem.Derivable FormalSystem.ProofSystem.FrameClass
 
 namespace FormalSystem.Semantics
 

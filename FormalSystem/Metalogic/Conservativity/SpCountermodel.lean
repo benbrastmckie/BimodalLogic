@@ -8,8 +8,6 @@ import FormalSystem.Metalogic.Conservativity.SpWitness
 import FormalSystem.Metalogic.Conservativity.TMCompletenessReduction
 import FormalSystem.MinusLanguage.MinusFrame
 
-set_option autoImplicit false
-
 /-!
 # The two-fibre countermodel and CEB's failing half
 
@@ -89,6 +87,8 @@ nothing is lost.
 
 conservativity · CEB · countermodel · underivability · native-soundness
 -/
+
+set_option autoImplicit false
 
 namespace FormalSystem.Metalogic
 

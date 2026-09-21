@@ -7,11 +7,6 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFix.NegFix
 import FormalSystem.Metalogic.Expressiveness.Kamp.VecEAConjFull
 
-namespace FormalSystem.Metalogic.Expressiveness.Kamp
-
-open FormalSystem.Syntax
-open FormalSystem.Metalogic.Expressiveness
-
 /-! # Prop 4.2 / 4.3 De Morgan fold: `VecEA2.negFix` and `VVecEA2.negFix`
 
 
@@ -56,6 +51,11 @@ fold `∧ᵢ ¬ϕᵢ`, closed back into `VVecEA2` by the Lemma 3.4 conjunction
 `VVecEA2.conjFull` (Phase 7), with `VVecEA2.trivialTrue` as the neutral
 element of the fold.
 -/
+
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
+
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Expressiveness
 
 /-! ## Per-disjunct negation (Prop 4.2, two-free-variable case) -/
 

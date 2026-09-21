@@ -8,13 +8,6 @@ import FormalSystem.MinusLanguage.Formula
 import Mathlib.Tactic.Push
 import Mathlib.Tactic.Tauto
 
--- Lower semantic layer: must not reach the proof system (G-15). `FrameClassValidity.lean`
--- is the one documented seam that imports `ProofSystem.Axioms`; nothing below it may.
-assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
-  FormalSystem.ProofSystem.Derivable FormalSystem.ProofSystem.FrameClass
-
-set_option autoImplicit false
-
 /-!
 # `MinusFrame` — a native L⁻ frame notion, not bound to `TaskFrame`
 
@@ -105,6 +98,13 @@ time-reflected formula `φ.reflectTime`; the L⁻ analogue of the paper's `lem:t
 
 frame · base-language · MinusFrame · universal-modality · order-reversal
 -/
+
+-- Lower semantic layer: must not reach the proof system (G-15). `FrameClassValidity.lean`
+-- is the one documented seam that imports `ProofSystem.Axioms`; nothing below it may.
+assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
+  FormalSystem.ProofSystem.Derivable FormalSystem.ProofSystem.FrameClass
+
+set_option autoImplicit false
 
 namespace FormalSystem.MinusLanguage
 

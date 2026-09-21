@@ -6,11 +6,6 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFix.BoundedFix
 
-namespace FormalSystem.Metalogic.Expressiveness.Kamp
-
-open FormalSystem.Syntax
-open FormalSystem.Metalogic.Expressiveness
-
 /-! # Anchored Corollary 5.4 mirrors
 
 Case 2 of the fixed-formula negation recursion (`BracketFormula.negFix`,
@@ -25,6 +20,11 @@ the suffix-fold chain predicates carrying `α` as their last entry. The
 paper's relink case split (`y ≤ c / y > c`) survives unchanged with the
 anchor. Base case: `∃ z ∈ (z0, z1), α(z) ∧ (β on (z0, z))  ⟺
 (β Until α)(z0) ∧ ∃ c ∈ (z0, z1), α(c)`. -/
+
+namespace FormalSystem.Metalogic.Expressiveness.Kamp
+
+open FormalSystem.Syntax
+open FormalSystem.Metalogic.Expressiveness
 
 /-! ## The anchored Until fold -/
 
