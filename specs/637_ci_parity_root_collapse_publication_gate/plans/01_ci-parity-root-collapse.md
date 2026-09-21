@@ -434,33 +434,33 @@ scripts/module-invariants-manifest.txt`.
 
 ---
 
-### Phase 4: Empty the remaining three C6 manifest entries [NOT STARTED]
+### Phase 4: Empty the remaining three C6 manifest entries [COMPLETED]
 
 **Goal**: Clear the last three manifest entries — one vestigial import, one module split, and the
 `DerivationBenchmark` `#eval` decision — leaving the manifest empty.
 
 **Tasks**:
-- [ ] `BimodalToolsTest.ProofFirstTests`: delete the vestigial
+- [x] `BimodalToolsTest.ProofFirstTests`: delete the vestigial
       `import BimodalTools.ProofFirstGeneratorMain` from
       `Tests/BimodalToolsTest/ProofFirstTests.lean`. Confirm first that nothing in the file references
       `exportToJsonl`, `writeJsonl`, `parseAtoms`, `parseForwardConfig` or `parseOutputPath`. Then wire
-      the module into `Tests/BimodalToolsTest.lean` and delete its manifest entry.
-- [ ] `BimodalToolsTest.FormulaMutatorTest`: extract `ContrastivePair` and the mutator logic from
+      the module into `Tests/BimodalToolsTest.lean` and delete its manifest entry. *(deviation: altered — the import is NOT vestigial: Test 12 calls `_root_.main args` for an end-to-end CLI smoke test, and deleting the import fails with `Unknown identifier _root_.main`. The research scanned for five named helpers and missed `main` itself. Fixed the same way as the mutator test instead: `ProofFirstGeneratorMain.lean` was split into `BimodalTools/ProofFirstGenerator.lean` (the helpers plus a new `runProofFirstGenerator`, the former body of `main`) and a thin `main`; the test imports the library half and calls `runProofFirstGenerator`, so its CLI coverage is kept. A stray task-number citation in the test's docstring title was removed in passing.)*
+- [x] `BimodalToolsTest.FormulaMutatorTest`: extract `ContrastivePair` and the mutator logic from
       `BimodalTools/ContrastiveGeneratorMain.lean` into a new `BimodalTools/ContrastiveGenerator.lean`,
       leaving `ContrastiveGeneratorMain.lean` as a thin `main` that imports it. This mirrors the
       existing `DatasetGeneratorMain` / `DatasetGenerator` pair, which is the precedent shape. Add the
       new module to the hand-maintained repo-root `BimodalTools.lean` aggregator (it carries no `main`,
       so the double-`main` constraint is not engaged), re-point
       `Tests/BimodalToolsTest/FormulaMutatorTest.lean` at it, wire the test into
-      `Tests/BimodalToolsTest.lean`, and delete the manifest entry.
-- [ ] `BimodalTest.ProofSystem.DerivationBenchmark`: delete the five top-level `#eval` lines from
+      `Tests/BimodalToolsTest.lean`, and delete the manifest entry. *(completed — the namespace was renamed with the module, `BimodalTools.ContrastiveGeneratorMain` → `BimodalTools.ContrastiveGenerator`; its only consumers were the CLI half and the test. The CLI's `ContrastiveConfig`/`parseContrastiveArgs` stay in the `Main` module with `main`. The aggregator now carries 15 non-`Main` modules; the recorded `13` in `ci.yml` and the manifest was corrected.)*
+- [x] `BimodalTest.ProofSystem.DerivationBenchmark`: delete the five top-level `#eval` lines from
       `Tests/BimodalTest/ProofSystem/DerivationBenchmark.lean`, leaving the benchmark `def`s callable.
       This keeps the compile coverage and removes the `lake test` noise that was the recorded reason
       for exclusion, and needs no archive. Wire the module into `Tests/BimodalTest.lean` and delete the
       manifest entry. Record in the module docstring that the `#eval`s were removed deliberately and
-      how to invoke the benchmark by hand.
-- [ ] Confirm `scripts/module-invariants-manifest.txt` now holds zero live entries.
-- [ ] Verify B3 stays green: `FormalSystem` must still never import `BimodalTools`. The new
+      how to invoke the benchmark by hand. *(deviation: altered — there was exactly ONE top-level `#eval`, not five; the other four the plan counted are inside the module docstring's usage example. The one was deleted.)*
+- [x] Confirm `scripts/module-invariants-manifest.txt` now holds zero live entries.
+- [x] Verify B3 stays green: `FormalSystem` must still never import `BimodalTools`. The new
       `ContrastiveGenerator.lean` lives on the tooling side only.
 
 **Timing**: 1.5 hours

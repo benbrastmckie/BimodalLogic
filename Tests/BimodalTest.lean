@@ -11,6 +11,7 @@ import BimodalTest.Syntax.LanguageDerivationTest
 import BimodalTest.ProofSystem.AxiomsTest
 import BimodalTest.ProofSystem.DerivationTest
 import BimodalTest.ProofSystem.DerivationPropertyTest
+import BimodalTest.ProofSystem.DerivationBenchmark
 import BimodalTest.Semantics.ValidityLayerTest
 import BimodalTest.Semantics.TruthTest
 import BimodalTest.Semantics.TaskFrameTest
@@ -77,16 +78,10 @@ Tests mirror the Bimodal library structure:
 - `Property/` - Property-based tests with Plausible
 - Loose `Trace*Test.lean` - trace-certificate and trace-export round-trip tests
 
-Every test module that can be imported here is imported above. One is deliberately
-excluded:
-
-- `ProofSystem/DerivationBenchmark.lean` — compiles, but ends in a top-level
-  `#eval` that runs the whole benchmark suite; importing it here would run and
-  print that table on every `lake test`.
-
-It is tracked in `scripts/module-invariants-manifest.txt`, which compile-checks it in
-isolation, so excluded code cannot rot unseen. A test module absent from both this file and
-that manifest is a gap in the gate; the invariant check fails on exactly that condition.
+Every test module under `Tests/BimodalTest/` is imported above; none is excluded.
+`scripts/module-invariants-manifest.txt`, the list of live modules outside every build closure,
+is empty. A test module absent from both this file and that manifest is a gap in the gate; the
+invariant check (C6) fails on exactly that condition.
 
 ## Running Tests
 

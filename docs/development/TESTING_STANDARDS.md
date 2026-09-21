@@ -155,9 +155,10 @@ A bare `#eval` asserts nothing: a changed value scrolls past in the build log wi
 green. Check C27 of `scripts/check-module-invariants.sh` enforces the split for directives: every
 live `#check`/`#eval`/`#print`/`#reduce`/`dbg_trace` line under `FormalSystem/` must be on
 `scripts/debug-artifact-allowlist.txt` with an exact per-file count and a reason. The only entry
-is the axiom-audit page `FormalSystem/MainResults.lean`. A module outside the Lake build graph
-keeps its probes in a test module listed in `scripts/module-invariants-manifest.txt` rather than
-imported by `Tests/BimodalTest.lean`, so C6 compile-checks it without widening the graph.
+is the axiom-audit page `FormalSystem/MainResults.lean`. Probes for any library module belong
+in a test module imported by `Tests/BimodalTest.lean`: the generated library root imports every
+module under `FormalSystem/`, so no library module is outside the Lake build graph and
+`scripts/module-invariants-manifest.txt` is empty.
 
 ## 3. Test Naming Conventions
 

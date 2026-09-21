@@ -100,19 +100,30 @@ Tests/{Theory}Test/
     └── DerivationBenchmark.lean     # Derivation benchmarks
 ```
 
-A benchmark whose trailing `#eval` should not run on every `lake test` stays out of the test root
-and is listed in `scripts/module-invariants-manifest.txt`, which compile-checks it in isolation.
+A benchmark module is imported by the test root like any other test module, so it must not
+execute its suite at elaboration time: a trailing top-level `#eval` would run, and print its
+table, on every `lake test`. `DerivationBenchmark.lean` defines its entry points and leaves
+running them to a scratch file; its module docstring shows how.
 
 ## CI Integration
 
 ### Running Benchmarks
 
-There is no aggregate runner script and no CI benchmark step. Each suite ends in a top-level
-`#eval`, so elaborating the file runs it:
+There is no aggregate runner script and no CI benchmark step. `ProofSearchBenchmark.lean` ends
+in top-level `#eval`s, so elaborating the file runs it:
 
 ```bash
 lake env lean Tests/BimodalTest/Automation/ProofSearchBenchmark.lean
-lake env lean Tests/BimodalTest/ProofSystem/DerivationBenchmark.lean
+```
+
+`DerivationBenchmark.lean` runs nothing at elaboration time. Build it, then evaluate the entry
+point wanted from a scratch file that imports it; the module docstring gives the scratch file's
+exact contents and lists the per-category entry points (`runAllDerivationBenchmarks` runs them
+all):
+
+```bash
+lake build BimodalTest.ProofSystem.DerivationBenchmark
+lake env lean /tmp/run_derivation_benchmarks.lean   # the scratch file from the docstring
 ```
 
 ### Regression Detection
@@ -176,8 +187,10 @@ Add baselines to theory's `performance-targets.md`:
 
 ### Step 3: Keep It Compiled
 
-Either import the file from the test root, or list it in `scripts/module-invariants-manifest.txt`
-so the module-invariants gate compile-checks it. A benchmark that nothing builds rots silently.
+Import the file from the test root (`Tests/BimodalTest.lean`, or `Tests/BimodalToolsTest.lean`
+for a tooling benchmark). A benchmark that nothing builds rots silently, and check C6 fails on a
+test module that is neither imported nor listed in `scripts/module-invariants-manifest.txt` —
+which is empty, and is meant to stay so.
 
 ## Best Practices
 

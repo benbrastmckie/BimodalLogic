@@ -11,12 +11,14 @@ import BimodalToolsTest.TraceCertificateTest
 import BimodalToolsTest.TraceExportTest
 import BimodalToolsTest.TraceExporterE2ETest
 import BimodalToolsTest.EnumeratorCountsTest
--- `FormulaMutatorTest` and `ProofFirstTests` are deliberately absent. Each pulls in an
--- executable root that declares a root-namespace `main`, colliding with the `main` this
--- environment already carries from `C5SmokeTest`'s `BimodalTools.DatasetValidatorMain`. Both
--- are listed in `scripts/module-invariants-manifest.txt`, where check `C6` compile-checks them
--- in isolation, so neither can rot unseen. This is the same exclusion, for the same reason,
--- that `Tests/BimodalTest.lean` carried for them before the split.
+import BimodalToolsTest.FormulaMutatorTest
+import BimodalToolsTest.ProofFirstTests
+-- `FormulaMutatorTest` and `ProofFirstTests` used to be absent: each imported an executable
+-- root that declares a root-namespace `main`, colliding with the `main` this environment
+-- already carries from `C5SmokeTest`'s `BimodalTools.DatasetValidatorMain`. Both roots have
+-- since been split into a library module plus a thin `main` (`ContrastiveGenerator` /
+-- `ContrastiveGeneratorMain`, `ProofFirstGenerator` / `ProofFirstGeneratorMain`), and the tests
+-- import the library halves, so the collision is gone.
 
 /-!
 # BimodalToolsTest - Tooling test library root

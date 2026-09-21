@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Syntax.Formula
-import BimodalTools.ContrastiveGeneratorMain
+import BimodalTools.ContrastiveGenerator
 
 /-! # Formula Mutator Test Suite
 
@@ -23,7 +23,7 @@ Tests for the single-occurrence mutation engine and contrastive pair generation.
 namespace BimodalToolsTest.FormulaMutator
 
 open FormalSystem.Syntax
-open BimodalTools.ContrastiveGeneratorMain
+open BimodalTools.ContrastiveGenerator
 
 -- Convenience atoms
 private def p : Formula := .atomS "p"

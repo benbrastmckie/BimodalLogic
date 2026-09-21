@@ -14,12 +14,16 @@ benchmark harness. A test that exercises the logic itself stays in `BimodalTest`
 straddles the two is **divided**, not moved wholesale, so library coverage stays inside
 `lake test`.
 
-## Modules that cannot be aggregated
+## Never import an executable root
 
 A test importing an executable root inherits that root's root-namespace `main`, and two such
-tests cannot share one environment. Those tests are absent from `Tests/BimodalToolsTest.lean`
-and listed in `scripts/module-invariants-manifest.txt` instead, where check `C6`
-compile-checks each in isolation.
+tests cannot share one environment. No test here does: each executable root whose logic a test
+needs is split into a library module plus a thin `main` (`DatasetGenerator` /
+`DatasetGeneratorMain`, `ContrastiveGenerator` / `ContrastiveGeneratorMain`,
+`ProofFirstGenerator` / `ProofFirstGeneratorMain`), and the test imports the library half. Every
+test module in this directory is therefore imported by `Tests/BimodalToolsTest.lean`, and none
+is listed in `scripts/module-invariants-manifest.txt`. A new test that needs the body of a
+`*Main` module should split that module the same way rather than import it.
 
 ## Contents
 

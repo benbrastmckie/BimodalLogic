@@ -15,7 +15,17 @@ Measures construction time and tree height for various derivation patterns.
 
 ## Usage
 
+This module deliberately runs nothing at elaboration time. It used to end in a top-level
+`#eval runAllDerivationBenchmarks`, which printed the whole benchmark table on every build of
+the module and was the recorded reason it could not be imported by `Tests/BimodalTest.lean`.
+That line was removed so the module could be wired into the test library: the benchmark
+definitions are compiled on every `lake test`, and none of them is executed. To run the suite
+by hand, open a scratch file that imports this module and evaluate the entry point wanted:
+
 ```lean
+import BimodalTest.ProofSystem.DerivationBenchmark
+open BimodalTest.ProofSystem.Benchmark
+
 -- Run all benchmarks
 #eval runAllDerivationBenchmarks
 
@@ -332,10 +342,3 @@ def runBenchmarksJson : IO Unit := do
   IO.println (allResultsToJson allResults)
 
 end BimodalTest.ProofSystem.Benchmark
-
-/-!
-## Run Benchmarks
--/
-
--- Run all benchmarks with summary
-#eval BimodalTest.ProofSystem.Benchmark.runAllDerivationBenchmarks

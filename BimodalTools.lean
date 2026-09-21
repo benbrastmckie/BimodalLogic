@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import BimodalTools.AtomCanonicalization
 import BimodalTools.AxiomNames
+import BimodalTools.ContrastiveGenerator
 import BimodalTools.DataExport
 import BimodalTools.DatasetAssembly
 import BimodalTools.DatasetGenerator
@@ -15,6 +16,7 @@ import BimodalTools.ForwardProofGenerator
 import BimodalTools.InterestingnessMetrics
 import BimodalTools.PrefilterSoundness
 import BimodalTools.ProofFirstBenchmark
+import BimodalTools.ProofFirstGenerator
 import BimodalTools.ProofStepExtractor
 import BimodalTools.TraceExport
 -- The 12 `*Main` modules are deliberately absent: each declares a root-namespace `main`, so two

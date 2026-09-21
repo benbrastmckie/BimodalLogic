@@ -10,6 +10,10 @@
 #   - C6 FAILS if an entry names a module that no longer exists.
 #   - Wiring a module into the build graph means DELETING its line here.
 # One module path per line; `#` starts a comment.
+#
+# THE MANIFEST IS EMPTY, and that is the intended resting state: every live module is inside a
+# build closure. The sections below are kept as the record of what used to be listed and why
+# each line went. An entry added here in future is a regression to be justified, not routine.
 
 # --- Root ------------------------------------------------------------------
 # FormalSystem.Init used to be listed here as unreachable, with a note to delete
@@ -21,7 +25,7 @@
 
 # --- Tooling (BimodalTools) ------------------------------------------------
 # `BimodalTools.ProofFirstBenchmark` used to stand here. It no longer does: the
-# `BimodalTools.lean` aggregator imports all 13 non-`Main` tooling modules, so the
+# `BimodalTools.lean` aggregator imports all 15 non-`Main` tooling modules, so the
 # benchmark harness is reachable from a Lake target root and `lake build BimodalTools`
 # compiles it. C6 fails if an entry names a reachable module, so the line was deleted in
 # the same commit as the split rather than renamed to the new module path.
@@ -48,26 +52,23 @@
 # modules that aggregator was missing -- so the line is gone and `lake build` guards it.
 
 # --- Tests -----------------------------------------------------------------
-# Test modules present under Tests/ but not imported by Tests/BimodalTest.lean,
-# so `lake build BimodalTest` never compiles them.
-# Derivation-tree benchmark harness. It compiles, but it is kept out of
-# Tests/BimodalTest.lean because its trailing top-level `#eval` would run (and print
-# the whole benchmark table) on every `lake test`. Listed here so C6 compiles it -- and
-# so also runs that `#eval` -- in isolation, which keeps the harness from rotting.
-BimodalTest.ProofSystem.DerivationBenchmark
-# Its former sibling, the semantic-evaluation benchmark, was not repaired but retired to
-# Boneyard/SemanticBenchmarkToyEvaluator/: it never called `TruthAt`, so it
-# measured nothing the library defines. That directory's README records the measurement.
-
-# These two compile in isolation but cannot be imported by Tests/BimodalTest.lean:
-# each pulls in an executable root that defines `main`, colliding with the `main`
-# from BimodalTools.DatasetValidatorMain already in that environment. They stay
-# unwired and compile-checked here.
-BimodalToolsTest.FormulaMutatorTest
-BimodalToolsTest.ProofFirstTests
-
+# Five test modules used to stand here. None does now.
+#
+# `BimodalTest.ProofSystem.DerivationBenchmark` was excluded because its trailing top-level
+# `#eval` printed the whole benchmark table on every `lake test`. The `#eval` was deleted (the
+# benchmark definitions stay callable; the module docstring says how to run them by hand) and
+# Tests/BimodalTest.lean imports the module. Its former sibling, the semantic-evaluation
+# benchmark, was not repaired but retired to Boneyard/SemanticBenchmarkToyEvaluator/: it never
+# called `TruthAt`, so it measured nothing the library defines.
+#
+# `BimodalToolsTest.FormulaMutatorTest` and `BimodalToolsTest.ProofFirstTests` were excluded
+# because each imported an executable root that defines `main`, colliding with the `main` from
+# BimodalTools.DatasetValidatorMain already in that environment. Both roots were split into a
+# library module plus a thin `main`; the tests import the library halves and
+# Tests/BimodalToolsTest.lean imports the tests.
+#
 # `BimodalTest.Metalogic.PeriodicExtensionAxiomTest` and
-# `BimodalTest.Metalogic.Decidability.BiLassoSuccessorTest` used to stand here. Their one recorded
-# reason for exclusion was that importing them from Tests/BimodalTest.lean would make
-# `BiLasso.Orbit` / `BiLasso.Successor` reachable. The generated library root reaches both
-# regardless, so Tests/BimodalTest.lean now imports the two tests and the lines are gone.
+# `BimodalTest.Metalogic.Decidability.BiLassoSuccessorTest` were excluded only so that importing
+# them from Tests/BimodalTest.lean would not make `BiLasso.Orbit` / `BiLasso.Successor`
+# reachable. The generated library root reaches both regardless, so Tests/BimodalTest.lean
+# imports the two tests.

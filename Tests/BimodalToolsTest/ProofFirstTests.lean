@@ -9,12 +9,12 @@ import FormalSystem.ProofSystem.Axioms
 import FormalSystem.ProofSystem.Derivation
 import BimodalTools.FormulaEnumerator
 import BimodalTools.ForwardProofGenerator
-import BimodalTools.ProofFirstGeneratorMain
+import BimodalTools.ProofFirstGenerator
 import BimodalTools.ProofFirstBenchmark
 import BimodalTools.DatasetGenerator
 import BimodalTools.DataExport
 
-/-! # Proof-First Integration Tests (Task 279 Phase 11)
+/-! # Proof-First Integration Tests
 
 12 integration tests covering the end-to-end forward-chaining pipeline.
 -/
@@ -240,7 +240,7 @@ private def hasWeakeningNode {fc Γ φ} : DerivationTree fc Γ φ → Bool
 #eval do
   IO.println "=== Test 12: End-to-end CLI smoke ==="
   let args := ["--max-depth", "1", "--seed", "10", "--atoms", "p", "--output", "/tmp/pf_cli.jsonl"]
-  _root_.main args
+  runProofFirstGenerator args
   let found ← (System.FilePath.mk "/tmp/pf_cli.jsonl").pathExists
   if found then
     IO.println "  [PASS] CLI produced output file"

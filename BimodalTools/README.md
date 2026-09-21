@@ -37,7 +37,8 @@ The conventions inherited from `FormalSystem/Automation/README.md` still hold he
 | `AxiomNames.lean` | 59 | <!-- TODO: add description --> |
 | `BenchmarkAnchorsMain.lean` | 598 | <!-- TODO: add description --> |
 | `BenchmarkOracleMain.lean` | 359 | <!-- TODO: add description --> |
-| `ContrastiveGeneratorMain.lean` | 1,127 | <!-- TODO: add description --> |
+| `ContrastiveGenerator.lean` | 1,025 | The formula-mutation engine: `MutationType`, `ContrastivePair`, the single-occurrence mutators, `generateContrastivePairs`, and the contrastive JSONL export |
+| `ContrastiveGeneratorMain.lean` | 122 | Executable root of `lake exe contrastive_generator`: argument parsing and `main` only; imports `ContrastiveGenerator` |
 | `DataExport.lean` | 396 | <!-- TODO: add description --> |
 | `DatasetAssembly.lean` | 342 | <!-- TODO: add description --> |
 | `DatasetGenerator.lean` | 1,728 | <!-- TODO: add description --> |
@@ -52,7 +53,8 @@ The conventions inherited from `FormalSystem/Automation/README.md` still hold he
 | `PrefilterSoundness.lean` | 172 | <!-- TODO: add description --> |
 | `ProofExtractorMain.lean` | 1,542 | <!-- TODO: add description --> |
 | `ProofFirstBenchmark.lean` | 194 | <!-- TODO: add description --> |
-| `ProofFirstGeneratorMain.lean` | 152 | <!-- TODO: add description --> |
+| `ProofFirstGenerator.lean` | 160 | The proof-first export pipeline: `exportToJsonl`, `writeJsonl`, the argument parsers, and `runProofFirstGenerator`, the whole command-line body |
+| `ProofFirstGeneratorMain.lean` | 21 | Executable root of `lake exe proof_first_generator`: `main` only; calls `runProofFirstGenerator` |
 | `ProofStepExtractor.lean` | 344 | <!-- TODO: add description --> |
 | `TableauBridgeMain.lean` | 635 | <!-- TODO: add description --> |
 | `TableauProofStepsMain.lean` | 688 | <!-- TODO: add description --> |
