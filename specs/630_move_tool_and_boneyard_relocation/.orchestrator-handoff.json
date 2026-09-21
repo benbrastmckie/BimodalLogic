@@ -1,17 +1,17 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 2,
-  "summary": "Researched the move tool and the Boneyard relocation against a verified-green harness baseline: 41 external citer files, 225 tracked archive files, C11 at 539 import lines / 169 files / 8 waived, and a seven-class design for scripts/move-modules.py. Identified three correctness traps the plan must encode: the bare `Boneyard/` citation class that must not be rewritten, relative-link re-basing that `../`-counting gets wrong, and C11/C12/C5 regex widening without which 46+ citations silently leave gate scope.",
+  "status": "planned",
+  "task_number": 630,
+  "phase": "plan",
+  "session_id": "sess_1789955215_a3ad68_630",
+  "dispatch_seq": 4,
+  "phases_completed": 0,
+  "phases_total": 8,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/630_move_tool_and_boneyard_relocation/reports/01_move-tool-boneyard-relocation.md",
-      "summary": "Design for scripts/move-modules.py plus a measured census and risk register for the FormalSystem/Boneyard -> Boneyard relocation."
+      "type": "plan",
+      "path": "specs/630_move_tool_and_boneyard_relocation/plans/01_move-tool-boneyard-relocation.md",
+      "summary": "8-phase plan: build scripts/move-modules.py (7 rewrite classes, dry-run), validate it against the measured census, add invariants B1/B2, then relocate FormalSystem/Boneyard to Boneyard in one atomic move+harness-rewiring commit, assert the C11 denominator, and accept ADR-010."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 0,
-  "blockers": [],
-  "next_action_hint": "Plan the task: Phase A writes scripts/move-modules.py with --dry-run and the seven rewrite classes; Phase B applies it to the FormalSystem.Boneyard -> Boneyard mapping with git mv; Phase C hand-edits the six harness sites (B0 root and inverted load-bearing half, C11 root and regex, C17 walk, archive_dir_count root, C12 slash_re, C5 mod_re) and adds invariants B1/B2; Phase D regenerates --emit-inventory, updates MODULE_INVARIANTS.md and README.md's tree, accepts ADR-010, repoints ADR-009, and corrects the stale ADR figures."
+  "next_steps": "Run /implement 630 to execute the plan"
 }

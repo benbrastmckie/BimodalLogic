@@ -1,16 +1,30 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/630_move_tool_and_boneyard_relocation/reports/01_move-tool-boneyard-relocation.md",
-      "summary": "Design for scripts/move-modules.py (seven rewrite classes, prefix mapping, link re-basing) plus a measured census of the FormalSystem/Boneyard -> Boneyard relocation: 41 external citer files, 539/169 C11 baseline, six hand harness edits, and two silent-gate-loss risks (C12/C5/C11 regex widening)."
+      "type": "plan",
+      "path": "specs/630_move_tool_and_boneyard_relocation/plans/01_move-tool-boneyard-relocation.md",
+      "summary": "8-phase plan: build scripts/move-modules.py (7 rewrite classes, dry-run), validate it against the measured census, add invariants B1/B2, then relocate FormalSystem/Boneyard to Boneyard in one atomic move+harness-rewiring commit, assert the C11 denominator, and accept ADR-010."
+    }
+  ],
+  "phase_count": 8,
+  "estimated_hours": 11,
+  "dependency_waves": [[1, 5], [2], [3], [4], [6], [7], [8]],
+  "next_steps": "Run /implement 630 to execute the plan",
+  "memory_candidates": [
+    {
+      "content": "When relocating a module subtree in a gated repository, the gate-pattern widening and the move itself are atomically coupled and must land in one commit. A gate regex that matches citations by their old path prefix (e.g. 'FormalSystem/...') silently drops those citations from scope the moment the prefix is stripped; widening the regex to admit the new bare prefix pre-move instead pulls not-yet-valid bare paths into scope, turning the gate red. Neither ordering is green, so the widening, the re-rooting of every scan root, and the move form one atomic batch. Two companion rules: (1) anchor every rewrite rule on the FULL old prefix, never the bare final token, since bare-token citations that were relative to the old parent often become correct repo-root paths after the move and must stay byte-identical; (2) after re-rooting a counting gate, assert its DENOMINATOR, not just its PASS -- a gate whose scan root moved but whose match regex did not will happily print PASS on a shrunken denominator.",
+      "category": "PATTERN",
+      "source_artifact": "specs/630_move_tool_and_boneyard_relocation/plans/01_move-tool-boneyard-relocation.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["module-relocation", "gate-widening", "atomic-commit", "invariant-harness", "path-prefix-rewrite", "denominator-assertion"]
     }
   ],
   "metadata": {
     "session_id": "sess_1789955215_a3ad68_630",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 4
 }
