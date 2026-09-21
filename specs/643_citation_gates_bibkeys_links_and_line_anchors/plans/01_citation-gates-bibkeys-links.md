@@ -1,7 +1,7 @@
 # Implementation Plan: Task #643
 
 - **Task**: 643 - Citation gates: bibkeys, links and line anchors
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/643_citation_gates_bibkeys_links_and_line_anchors/reports/01_citation-gates-bibkeys-links.md
@@ -134,7 +134,7 @@ touches only `scripts/reanchor-lean-citations.py` and is genuinely independent o
 
 ---
 
-### Phase 1: C31 — bibkey resolution check [NOT STARTED]
+### Phase 1: C31 — bibkey resolution check [COMPLETED]
 
 **Goal**: Every `[key]` cited inside a `## References` / `### References` block under
 `FormalSystem/`, `BimodalTools/` and `Tests/` resolves in the repository-root `references.bib`,
@@ -142,29 +142,29 @@ gated; plus an advisory report of bib entries cited by nothing.
 
 **Tasks**:
 
-- [ ] Re-read `scripts/check-module-invariants.sh` immediately before editing (sibling-territory
-      discipline).
-- [ ] Add `ENFORCE_C31=${ENFORCE_C31:-1}` to the flag block near the top of the script, with the
-      same "enforced from the outset, never flip to 0" comment C20/C21/C24 carry.
-- [ ] Implement C31 as a `python3` heredoc block placed after C30 and before the C9-DOCS block,
+- [x] Re-read `scripts/check-module-invariants.sh` immediately before editing (sibling-territory
+      discipline). *(completed)*
+- [x] Add `ENFORCE_C31=${ENFORCE_C31:-1}` to the flag block near the top of the script, with the
+      same "enforced from the outset, never flip to 0" comment C20/C21/C24 carry. *(completed)*
+- [x] Implement C31 as a `python3` heredoc block placed after C30 and before the C9-DOCS block,
       matching the surrounding `pas`/`bad`/`inf`/`soft`/`note` helper idiom and the
-      `C31_STATUS=$?` / `FAILURES=$((FAILURES + 1))` wiring.
-- [ ] Walk `.lean` files through `scripts/lib/live_walk.py`'s `live_files`, never a re-implemented
-      Boneyard exclusion.
-- [ ] Locate each `## References` / `### References` heading inside a doc comment and compute its
+      `C31_STATUS=$?` / `FAILURES=$((FAILURES + 1))` wiring. *(completed)*
+- [x] Walk `.lean` files through `scripts/lib/live_walk.py`'s `live_files`, never a re-implemented
+      Boneyard exclusion. *(completed)*
+- [x] Locate each `## References` / `### References` heading inside a doc comment and compute its
       extent (next heading of equal-or-higher level, or end of the doc comment); scan for
-      `[key]`-shaped citations **inside block interiors only**.
-- [ ] Gated half: every block-scoped key must resolve against `^@[a-z]+\{<key>,` in
-      `references.bib`. Report each dangling key as `citer:line -> [key]`.
-- [ ] Advisory half (INFO, never gated, never touches `FAILURES`): entries in `references.bib`
+      `[key]`-shaped citations **inside block interiors only**. *(completed)*
+- [x] Gated half: every block-scoped key must resolve against `^@[a-z]+\{<key>,` in
+      `references.bib`. Report each dangling key as `citer:line -> [key]`. *(completed)*
+- [x] Advisory half (INFO, never gated, never touches `FAILURES`): entries in `references.bib`
       cited by no `.lean` (`[key]`) and no `.typ` (`@key`) file — **two regexes unioned**, per the
-      Typst finding.
-- [ ] Header comment states: scope (`FormalSystem/`, `BimodalTools/`, `Tests/`), `Boneyard/`
+      Typst finding. *(completed: measured 11 unused of 77; a Lean-only scan reports 55)*
+- [x] Header comment states: scope (`FormalSystem/`, `BimodalTools/`, `Tests/`), `Boneyard/`
       excluded, `sub:` anchors out of scope, inline-prose bibkeys deliberately out of scope, and
-      why the advisory half needs two syntaxes.
-- [ ] Deliberate negative test: inject a dangling key into one `## References` block, observe both
-      `FAIL C31` **and** a non-zero script exit; revert; observe `PASS C31` and exit 0.
-- [ ] Commit the green result.
+      why the advisory half needs two syntaxes. *(completed)*
+- [x] Deliberate negative test: inject a dangling key into one `## References` block, observe both
+      `FAIL C31` **and** a non-zero script exit; revert; observe `PASS C31` and exit 0. *(completed: thomason1984 -> thomason1985 in PlusLimitClosure.lean gave FAIL C31 + exit 1; revert gave PASS + exit 0)*
+- [x] Commit the green result. *(completed)*
 
 **Timing**: 1.5 hours
 

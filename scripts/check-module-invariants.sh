@@ -93,6 +93,10 @@
 #       FormalSystem/, Tests/ and scripts/ is declaration-scoped (`... in`), the one
 #       exception being the long-file baseline `set_option linter.style.longFile N`
 #       (N > 0). Comment-masked like C29; zero baseline, no allow-list
+#   C31 Every `[key]` cited inside a `## References` / `### References` block of a live
+#       .lean docstring under FormalSystem/, BimodalTools/ and Tests/ resolves in the
+#       repository-root references.bib; bib entries cited by no .lean and no .typ file
+#       are REPORTED, never gated
 #   C9D Task-number citations under docs/ (enforced)
 #   INV Every `<!-- BEGIN GENERATED: inventory -->` block in the tree is current
 #
@@ -122,6 +126,7 @@
 #   scripts/nolint-attribute-allowlist.txt     reviewed in-source nolint attributes (C26)
 #   scripts/debug-artifact-allowlist.txt       allow-listed live debug directives (C27)
 #   scripts/warning-budget.txt                 per-file compiler-warning baseline (C28)
+#   references.bib                             the single bibliography every block-scoped key resolves in (C31)
 
 set -uo pipefail
 
@@ -666,6 +671,15 @@ ENFORCE_C29=${ENFORCE_C29:-1} # every linter suppression carries a reason (enfor
 # anti-silence guards -- an empty walk, or zero matched scoped `set_option ... in` anywhere --
 # exit 2, and exit 2 is NOT suppressed by ENFORCE_C30=0.
 ENFORCE_C30=${ENFORCE_C30:-1} # no blanket linter suppression or unscoped heartbeat budget (enforced)
+# C31 asserts that every bibkey cited inside a `## References` / `### References` block of a live
+# .lean docstring resolves in the repository-root references.bib. The tree is clean the day the
+# check lands (the two keys that once dangled were repaired by hand before any gate could see
+# them), so it ships ENFORCED with no soft window, on the C24/C25/C26 precedent. Never flip it to
+# 0 to quiet a failure: fix the key, or re-point the citation at an entry that is already
+# verified -- never invent a references.bib entry to make a key resolve. NOTE: the anti-silence
+# guards -- an unreadable references.bib, an empty walk, or zero `References` blocks found -- exit
+# 2, and exit 2 is NOT suppressed by ENFORCE_C31=0.
+ENFORCE_C31=${ENFORCE_C31:-1} # every References-block bibkey resolves in references.bib (enforced)
 # C16's second half widens the env_linter batch beyond the single `FormalSystem` library root to
 # every root declared in lakefile.toml -- the other library root and all thirteen `lean_exe`
 # roots -- because `runLinter FormalSystem` observes only the FormalSystem closure and a module
@@ -4508,6 +4522,205 @@ if [ "$C30_STATUS" -eq 2 ]; then
   # An untrustworthy scan is an error in EVERY mode.
   fail C30 "blanket-suppression scan could not be trusted (exit 2; not suppressed by ENFORCE_C30=0)"
 elif [ "$C30_STATUS" -ne 0 ] && [ "$ENFORCE_C30" -eq 1 ]; then
+  FAILURES=$((FAILURES + 1))
+fi
+echo
+
+# ---------------------------------------------------------------------------
+# C31: every bibkey cited in a `## References` block resolves in references.bib
+#
+# WHY THIS EXISTS: docs/development/REFERENCE_NORMAL_FORM.md writes a published work as
+# `* [Author, *Title*][key]`, with `key` resolving in the repository-root references.bib. C15
+# reads only the def|thm|lem|cor|app|rmk paper anchors, so nothing read the bibkeys: two of them
+# (`stavi1979` and `gabbay1980`, in FormalSystem/Metalogic/Expressiveness.lean) dangled with every
+# standing gate green, and were found by hand. The normal-form document carried the resolution
+# rule only as a one-off `comm` pipeline a maintainer had to remember to run.
+#
+# SCOPE: live .lean files under FormalSystem/, BimodalTools/ and Tests/, walked through
+# scripts/lib/live_walk.py so `Boneyard/` is excluded by the one shared definition of "live".
+# Only the INTERIOR of a `## References` / `### References` block inside a doc comment is read --
+# from the heading to the next heading of equal or higher level, or to the end of the comment.
+# Two citation shapes are read there: the reference-style second bracket `][key]`, and a bare
+# `[key]` of bibkey shape (letters, a four-digit year, an optional suffix) not followed by `(`.
+#
+# DELIBERATELY OUT OF SCOPE:
+#   * inline-prose bibkey mentions outside a References block. The normal form governs the
+#     block, not running prose, and a bracketed year-bearing token in prose is as often an
+#     interval or an index as a citation.
+#   * the `sub:` paper-anchor prefix (and every other paper anchor). Those are C15's subject, and
+#     `sub:` is ungated there on purpose; this check reads bibkeys only and never an anchor.
+#
+# ADVISORY HALF (INFO, never gated, never touches FAILURES): references.bib entries cited by no
+# .lean file and no .typ file. TWO citation syntaxes are unioned before the difference is taken,
+# because the two consumers cite differently: a .lean docstring writes `[key]`, a Typst document
+# writes `@key` (or `cite(<key>)`). Scanning only the Lean syntax reports every Typst-only entry
+# as unused -- most of the bibliography -- and an advisory that is mostly wrong is never read.
+#
+# Anti-silence: an unreadable or empty references.bib, an empty walk, or zero References blocks
+# (the tree carries hundreds) exits 2 in every mode. Runs regardless of --no-build.
+# ---------------------------------------------------------------------------
+python3 - <<'PYEOF'
+import os, re, sys
+sys.path.insert(0, os.path.join("scripts", "lib"))
+from live_walk import live_files  # noqa: E402
+
+BIB = "references.bib"
+ROOTS = ("FormalSystem", "BimodalTools", "Tests")
+TYPST_ROOT = "typst"
+
+HEAD = re.compile(r"^\s*(#{2,3})\s+References\s*$")
+ANYHEAD = re.compile(r"^\s*(#{1,6})\s+\S")
+BIBENTRY = re.compile(r"^@[A-Za-z]+\{([^,\s]+),", re.M)
+KEY_TOKEN = re.compile(r"^[A-Za-z][A-Za-z0-9_:.-]*$")
+KEY_REF = re.compile(r"\]\[([^\]]+)\]")                                  # [Author, *Title*][key]
+KEY_BARE = re.compile(r"(?<!\])\[([A-Za-z]+[0-9]{4}[A-Za-z]*)\](?![\[(])")  # [key]
+
+
+def block_keys(text):
+    """[(line, key)] for every bibkey cited inside a References block of a doc comment."""
+    out = []
+    depth = 0          # block-comment nesting depth at the START of the current line
+    level = 0          # heading level of the open References block, 0 when none is open
+    for idx, line in enumerate(text.split("\n"), 1):
+        inside = depth > 0 or "/-" in line
+        body = line
+        if level:
+            close = line.find("-/")
+            if ANYHEAD.match(line) and len(ANYHEAD.match(line).group(1)) <= level \
+                    and not HEAD.match(line):
+                level = 0
+            elif close >= 0:
+                body = line[:close]
+        if level:
+            for m in KEY_REF.finditer(body):
+                if KEY_TOKEN.match(m.group(1)):
+                    out.append((idx, m.group(1)))
+            for m in KEY_BARE.finditer(body):
+                out.append((idx, m.group(1)))
+        m = HEAD.match(line)
+        if m and inside:
+            level = len(m.group(1))
+        depth += line.count("/-") - line.count("-/")
+        if depth <= 0:
+            depth = 0
+            level = 0   # the comment closed: the block closes with it
+    return out
+
+
+# Each fixture is (source, expected [(line, key)]).
+_FIXTURES = [
+    # the normal form, resolving or not is the caller's business: the key is READ
+    ("/-!\n## References\n\n* [A. Author, *Title*][author1999], §4\n-/\n", [(4, "author1999")]),
+    # a bare year-bearing key in the block is read too
+    ("/-!\n## References\n* see [author1999]\n-/\n", [(3, "author1999")]),
+    # the `###` level is a References block as well
+    ("/--\n### References\n* [B, *T*][other2001]\n-/\ndef x := 1\n", [(3, "other2001")]),
+    # a key in running prose OUTSIDE the block is deliberately not read
+    ("/-!\nAs [author1999] shows.\n\n## References\n* `Foo/Bar.lean` — sibling\n-/\n", []),
+    # the block ends at the next heading of equal or higher level
+    ("/-!\n## References\n* [A, *T*][author1999]\n## Notes\nsee [later2005]\n-/\n",
+     [(3, "author1999")]),
+    # ... but a deeper heading stays inside it
+    ("/-!\n## References\n### Primary\n* [A, *T*][author1999]\n-/\n", [(4, "author1999")]),
+    # the block ends with the doc comment: code below it is never read
+    ("/-!\n## References\n* [A, *T*][author1999]\n-/\nexample : xs[later2005] = 0 := rfl\n",
+     [(3, "author1999")]),
+    # a `## References` line outside any comment opens nothing
+    ("-- ## References\n## References\ntheorem t : a[year2000] = 1 := rfl\n", []),
+    # paper anchors, the ungated `sub:` prefix included, are not bibkeys
+    ("/-!\n## References\n* JPL paper `sub:Logic` and `def:frame`\n-/\n", []),
+    # a markdown link and a math-shaped second bracket are not bibkeys
+    ("/-!\n## References\n* [site](https://x.org/a2020) and φ[a][1/v₂]\n-/\n", []),
+]
+
+
+def c31_self_test():
+    wrong = []
+    for k, (src, want) in enumerate(_FIXTURES):
+        got = block_keys(src)
+        if got != want:
+            wrong.append((k, want, got))
+    return wrong
+
+
+wrong = c31_self_test()
+if wrong:
+    print(f"FAIL  C31  fixture self-test: {len(wrong)} fixture(s) misjudged")
+    for k, want, got in wrong:
+        print(f"            fixture {k}: expected {want}, got {got}")
+    sys.exit(1)
+
+try:
+    bib_keys = set(BIBENTRY.findall(open(BIB, encoding="utf-8", errors="replace").read()))
+except OSError:
+    bib_keys = set()
+if not bib_keys:
+    print(f"FAIL  C31  {BIB} is missing, unreadable or carries no `@type{{key,` entry")
+    print("            (exit 2: an untrustworthy scan is an error in every mode)")
+    sys.exit(2)
+
+cited, lean_text, scanned, blocks = [], [], 0, 0
+for root in ROOTS:
+    for path in live_files(root, ".lean"):
+        try:
+            text = open(path, encoding="utf-8", errors="replace").read()
+        except OSError:
+            continue
+        scanned += 1
+        lean_text.append(text)
+        if "References" not in text:        # exact pre-filter: every block heading contains it
+            continue
+        blocks += sum(1 for l in text.split("\n") if HEAD.match(l))
+        cited += [(path, ln, key) for ln, key in block_keys(text)]
+
+if scanned == 0 or blocks == 0:
+    print(f"FAIL  C31  the walk found {scanned} live .lean file(s) and {blocks} References "
+          f"block(s) across {', '.join(ROOTS)}")
+    print("            -- silence, not a pass: the tree carries hundreds of blocks, so the walk or")
+    print("            the heading matcher stopped seeing them (exit 2 in every mode)")
+    sys.exit(2)
+
+dangling = [(p, ln, k) for p, ln, k in cited if k not in bib_keys]
+status = 0
+if dangling:
+    print(f"FAIL  C31  {len(dangling)} of {len(cited)} References-block bibkey citation(s) "
+          f"resolve to no entry in {BIB}")
+    for p, ln, k in dangling[:15]:
+        print(f"            {p}:{ln} -> [{k}]")
+    if len(dangling) > 15:
+        print(f"            ... and {len(dangling) - 15} more")
+    print("            fix the key, or re-point the citation at an entry that is already verified;")
+    print("            never invent a references.bib entry to make a key resolve")
+    status = 1
+else:
+    print(f"PASS  C31  all {len(cited)} References-block bibkey citation(s) "
+          f"({len({k for _, _, k in cited})} distinct key(s)) resolve in {BIB}")
+    print(f"            ({blocks} References block(s) in {scanned} live .lean file(s), "
+          f"{len(bib_keys)} bib entries, {len(_FIXTURES)} fixture(s) green)")
+
+# Advisory half: both consumers' syntaxes, unioned, then subtracted from the bibliography.
+lean_all = "\n".join(lean_text)
+used_lean = {k for k in bib_keys if "[" + k + "]" in lean_all}
+typ_all = "\n".join(open(p, encoding="utf-8", errors="replace").read()
+                    for p in live_files(TYPST_ROOT, ".typ"))
+typ_tokens = set(re.findall(r"@([A-Za-z][A-Za-z0-9_-]*)", typ_all)) \
+    | set(re.findall(r"<([A-Za-z][A-Za-z0-9_-]*)>", typ_all))
+used_typ = bib_keys & typ_tokens
+unused = sorted(bib_keys - used_lean - used_typ)
+print(f"INFO  C31  {len(unused)} of {len(bib_keys)} {BIB} entr(y/ies) are cited by no .lean "
+      f"`[key]` and no .typ `@key` (advisory, never gated)")
+print(f"            ({len(used_lean)} cited from .lean, {len(used_typ)} from .typ, "
+      f"{len(used_lean & used_typ)} from both; a Lean-only scan would report "
+      f"{len(bib_keys - used_lean)})")
+for i in range(0, len(unused), 6):
+    print("            " + " ".join(unused[i:i + 6]))
+sys.exit(status)
+PYEOF
+C31_STATUS=$?
+if [ "$C31_STATUS" -eq 2 ]; then
+  # An untrustworthy scan is an error in EVERY mode.
+  fail C31 "bibkey scan could not be trusted (exit 2; not suppressed by ENFORCE_C31=0)"
+elif [ "$C31_STATUS" -ne 0 ] && [ "$ENFORCE_C31" -eq 1 ]; then
   FAILURES=$((FAILURES + 1))
 fi
 echo

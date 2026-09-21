@@ -1,0 +1,36 @@
+{
+  "phase": 1,
+  "phase_name": "C31 \u2014 bibkey resolution check",
+  "started_at": "2026-09-21T15:30:00Z",
+  "last_updated": "2026-09-21T15:50:00Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Add ENFORCE_C31 flag and C31 python block (gated bibkey resolution + advisory unused entries) with header comment",
+      "status": "done",
+      "files_touched": [
+        "scripts/check-module-invariants.sh"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Deliberate negative test: injected dangling key fails with non-zero exit; revert restores PASS",
+      "status": "done",
+      "files_touched": [],
+      "note": "thomason1984 -> thomason1985 in FormalSystem/PlusLanguage/PlusLimitClosure.lean: FAIL C31 + harness exit 1; revert: PASS C31 + exit 0"
+    }
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0,
+  "measured": {
+    "block_citations": 215,
+    "distinct_keys": 22,
+    "references_blocks": 302,
+    "live_lean_files": 594,
+    "bib_entries": 77,
+    "advisory_unused": 11,
+    "lean_only_scan_unused": 55
+  }
+}
