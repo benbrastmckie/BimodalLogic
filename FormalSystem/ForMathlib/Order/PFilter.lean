@@ -48,6 +48,13 @@ are all `Iff.rfl`, and every `*_iff_dual` transport below is a definitional repa
 Boolean complement, by contrast, is a genuinely different duality; it is what the direct
 `BooleanAlgebra` section proves with, and it is deliberately not used to encode filters as ideals.
 
+## Recorded namespace exception
+
+This module is `FormalSystem.ForMathlib.Order.PFilter` but declares `namespace Order.PFilter`, so
+`scripts/measure-refactor-partitions.py namespace-audit` classifies it `unrelated`. That is
+recorded, not an oversight: the namespace is Mathlib's own, which is the point of the file — see
+the opening paragraph. `ORGANISATION.md` lists every such exception.
+
 ## Dependency rule
 
 **Nothing under `FormalSystem/ForMathlib/` imports `FormalSystem.*`.** The import direction is

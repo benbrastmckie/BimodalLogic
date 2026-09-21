@@ -30,7 +30,7 @@ declaration: unlike its sibling [`Attr.lean`](Attr.lean) it imports `FormalSyste
 reaches `FormalSystem.Init` in the usual way, and carries none of that file's attributes-only
 constraint.
 
-## Module/namespace exception, recorded
+## Recorded namespace exception
 
 This module is `FormalSystem.Tactic.Meta` but declares `namespace FormalSystem.Automation`, so
 `scripts/measure-refactor-partitions.py namespace-audit` reports it in the `unrelated` bucket.

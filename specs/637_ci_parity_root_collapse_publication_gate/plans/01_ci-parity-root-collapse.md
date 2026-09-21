@@ -593,9 +593,9 @@ with the tree, and act on C28's own stated revision trigger.
       of 17 roots**, and correct the `BimodalTest` row from `85` to `67`. The stale table predates the
       `BimodalTools`/`BimodalToolsTest` split; a recorded number disagreeing with the tree is precisely
       the defect class C14 exists to catch. Re-measure at the phase's own HEAD rather than transcribing
-      the research figures, and use the measured values.
+      the research figures, and use the measured values. *(deviation: altered — the measured figure at this phase's HEAD is **196 findings across 13 of 16 non-`FormalSystem` roots** (17 roots in all), not the research's 170, and `BimodalTest` stands at **80**, not 67. Neither movement is new debt: `BimodalTools` went 0 → 14 because Phase 4 split the mutation engine and the proof-first pipeline into library modules the aggregator imports, and `BimodalTest` went 67 → 80 because three previously unreachable test modules — invisible to the sweep — were wired in. The full per-root table is recorded in the C16 header with its date.)*
 - [x] Leave `ENFORCE_C16_ROOTS` at `0` and record the decision in its comment block: 170 findings, 67
-      of them in `BimodalTest` alone, is not a burndown this task owns.
+      of them in `BimodalTest` alone, is not a burndown this task owns. *(completed — recorded with the measured 196 / 80.)*
 - [x] Verify the `--wfail` claim directly: run `lake build BimodalTools --wfail` and
       `lake build BimodalToolsTest --wfail` locally and confirm both are green. Do not rely on
       `warning-budget.py`'s trace scan alone.
@@ -759,23 +759,23 @@ recorded as a handoff item in Phase 10, not self-certified.
 
 ---
 
-### Phase 9: Adopt the policy text and consolidate the namespace exceptions [NOT STARTED]
+### Phase 9: Adopt the policy text and consolidate the namespace exceptions [COMPLETED]
 
 **Goal**: Land the module-size policy, the namespace-exception index, and the documentation
 corrections the research measured as factually wrong.
 
 **Tasks**:
-- [ ] Add a module-size subsection to `ORGANISATION.md` adopting cslib's rule: split along dependency
+- [x] Add a module-size subsection to `ORGANISATION.md` adopting cslib's rule: split along dependency
       seams, never to satisfy a line count. Name the two files currently over 4,500 lines —
       `FormalSystem/Metalogic/Expressiveness/EFGames/GapDetection.lean` (5,094) and
       `FormalSystem/Metalogic/Expressiveness/GameTransfer/SplitPoint.lean` (4,906) — re-measuring both
       counts rather than transcribing them, and point at the existing `linter.style.longFile = 1500`
       in-source baselines as the mechanical half.
-- [ ] Fix `ORGANISATION.md`'s "Everything else" table row reading
+- [x] Fix `ORGANISATION.md`'s "Everything else" table row reading
       `| `specs/` | Task-management artefacts; not part of the deliverable |`. It contradicts the
       recorded user decision that `specs/` stays tracked and is published permanently as the project
       development record.
-- [ ] Add the eight-row namespace-exception index to `ORGANISATION.md` as the single consolidated
+- [x] Add the eight-row namespace-exception index to `ORGANISATION.md` as the single consolidated
       record: `ForMathlib/Order/PFilter` (`Order.PFilter`), `BXCanonical/Chronicle/
       ChronicleRealExtension` (`…Metalogic.Bundle`), `Decidability/BiLasso/Periodic`
       (`…Decidability.Periodic`), `WeakCanonical/DenseModelSurgery/ChronicleInstance` and
@@ -784,26 +784,26 @@ corrections the research measured as factually wrong.
       (`FormalSystem.Automation`), `Theorems/DeductionTheorem` (`FormalSystem.Metalogic.Core`). Re-run
       `python3 scripts/measure-refactor-partitions.py namespace-audit` to confirm the set is still
       exactly eight before writing the table.
-- [ ] Add the standard `## Recorded namespace exception` heading to the three module docstrings that
+- [x] Add the standard `## Recorded namespace exception` heading to the three module docstrings that
       carry a reason in prose but lack the heading:
       `FormalSystem/ForMathlib/Order/PFilter.lean`, `FormalSystem/Tactic/Meta.lean`,
-      `FormalSystem/Theorems/DeductionTheorem.lean`. Rename nothing.
-- [ ] Rewrite `scripts/check-copyright-headers.sh`'s `WHY THIS EXISTS` block. Its stated premise —
+      `FormalSystem/Theorems/DeductionTheorem.lean`. Rename nothing. *(completed — two of the three already had a section under a nonstandard heading, `## Module/namespace exception, recorded`, which was renamed in place; `PFilter.lean` got a new short section. All three re-probed silent under the header linter. `ORGANISATION.md` additionally gained a one-line `BimodalTools/` row in its "Everything else" table, which had no entry for the tooling library.)*
+- [x] Rewrite `scripts/check-copyright-headers.sh`'s `WHY THIS EXISTS` block. Its stated premise —
       "This project's lakefile sets `srcDir := "FormalSystem"`, so `./FormalSystem.lean` does not
       exist" — is factually wrong and becomes more so after the collapse. Replace it with the measured
       surviving coverage gap: post-collapse `linter.style.header` subsumes this script for all 503
       `FormalSystem` modules and is strictly stronger there, but structurally cannot reach the 12
       `BimodalTools/*Main.lean` roots (not imported by `BimodalTools.lean`, and cannot be) or anything
       under `Tests/` (`./BimodalTest.lean` does not exist and will not, since `srcDir = "Tests"`). The
-      script remains the only header gate for those 77 files. Keep the CI step unchanged.
-- [ ] Reconcile `docs/development/VERSIONING.md`: its release checklist says "Update version in
+      script remains the only header gate for those 77 files. Keep the CI step unchanged. *(altered — the rewritten block records one thing the plan's premise overstated: CI invokes the script as `--strict FormalSystem BimodalTools`, so `Tests/` (65 files) is **not** gated in CI by anything. `--strict Tests` is clean today (65/65). The CI step was kept unchanged as instructed; adding `Tests` is a one-word follow-up.)*
+- [x] Reconcile `docs/development/VERSIONING.md`: its release checklist says "Update version in
       `lakefile.toml`", naming a field `lakefile.toml` does not have. Point it at
       `FormalSystem/Version.lean` instead, and at `CITATION.cff`.
-- [ ] Create a minimal `CHANGELOG.md` seeded with the `1.0.0` entry, or — if the maintainer's
+- [x] Create a minimal `CHANGELOG.md` seeded with the `1.0.0` entry, or — if the maintainer's
       preference is unknown — correct `VERSIONING.md`'s references (9 occurrences at plan-revision
       time) to a file that does not exist.
       Prefer creating the file: `VERSIONING.md`'s release process, `CITATION.cff`'s `1.0.0`, and the
-      publication gate all assume one. Record the choice made.
+      publication gate all assume one. Record the choice made. *(completed — **created** `CHANGELOG.md`, seeded with `[Unreleased]` and a `[1.0.0] - 2026-09-07` section (the date is `CITATION.cff`'s `date-released`; the maintainer confirms it at tag time). The release workflow's version-resolution and notes-extraction bodies were re-run against the real `CHANGELOG.md`, `CITATION.cff` and `FormalSystem/Version.lean`: both exit 0, 29 lines of notes. `VERSIONING.md`'s release procedure and version-query snippets were re-pointed as well as its checklist line.)*
 
 **Timing**: 1.5 hours
 

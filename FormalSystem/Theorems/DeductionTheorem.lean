@@ -28,7 +28,7 @@ This module proves the deduction theorem for the TM logic Hilbert system.
 The deduction theorem is a foundational result needed by higher layers, particularly for MCS
 properties.
 
-## Module/namespace exception, recorded
+## Recorded namespace exception
 
 This module is `FormalSystem.Theorems.DeductionTheorem` but declares
 `namespace FormalSystem.Metalogic.Core`. That is a deliberate, recorded deviation, and it is

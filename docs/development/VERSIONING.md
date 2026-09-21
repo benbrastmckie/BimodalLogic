@@ -97,31 +97,40 @@ Before each release:
 - [ ] No lint warnings (`lake lint`)
 - [ ] No `sorry` in committed code
 - [ ] CHANGELOG.md updated
-- [ ] Version number updated in `lakefile.toml`
+- [ ] Version number updated in all three places it is recorded, which must agree: `def version`
+      in `FormalSystem/Version.lean`, the `version:` field of `CITATION.cff` (with
+      `date-released:`), and the tag itself. `lakefile.toml` has no version field
 - [ ] Documentation is current
 - [ ] Release notes written
 
 ### Creating a Release
 
 ```bash
-# 1. Update version in lakefile.toml
-# version = "0.2.0"
+# 1. Update the version in FormalSystem/Version.lean and in CITATION.cff
+#    def version : String := "0.2.0"          (FormalSystem/Version.lean)
+#    version: "0.2.0" / date-released: "..."  (CITATION.cff)
 
-# 2. Update CHANGELOG.md with release notes
+# 2. Move CHANGELOG.md's [Unreleased] entries into a new "## [0.2.0] - <date>" section
 
 # 3. Commit version bump
-git add lakefile.toml CHANGELOG.md
+git add FormalSystem/Version.lean CITATION.cff CHANGELOG.md
 git commit -m "chore: Release v0.2.0"
 
 # 4. Create tag
 git tag -a v0.2.0 -m "Release v0.2.0"
 
 # 5. Push tag
-git push origin v0.2.0
 git push origin main
-
-# 6. Create GitHub release with notes
+git push origin v0.2.0
 ```
+
+Pushing the tag triggers `.github/workflows/release.yml`, which rebuilds, tests and lints the
+tagged commit, refuses to continue unless the tag, `CITATION.cff` and
+`FormalSystem/Version.lean` agree, and publishes a GitHub release whose notes are that version's
+`CHANGELOG.md` section. To exercise the workflow without a tag, run it by hand
+(`workflow_dispatch`) with `publish` left off: it performs every step except publishing and
+uploads the release notes it would have used. Tags are created and pushed by the maintainer;
+no automation in this repository does either.
 
 ### Release Notes Format
 
@@ -273,11 +282,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ```lean
 -- In code
-#eval FormalSystem.version  -- "0.2.0"
+#eval FormalSystem.version  -- "1.0.0"; defined in FormalSystem/Version.lean
 
--- From command line
+-- From command line (the Lean toolchain, then the library's own version)
 lake env lean --version
-cat lakefile.toml | grep version
+grep 'def version' FormalSystem/Version.lean
 ```
 
 ### Version Compatibility Checking
