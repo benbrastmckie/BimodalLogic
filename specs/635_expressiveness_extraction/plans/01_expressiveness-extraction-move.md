@@ -1,7 +1,7 @@
 # Implementation Plan: Extract the Expressiveness Development out of `WeakCanonical/`
 
 - **Task**: 635 - Extract the 141-file Expressiveness set into `Metalogic/Expressiveness/`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: task 634 (landed at `d3f912858`)
 - **Research Inputs**: `specs/635_expressiveness_extraction/reports/01_expressiveness-extraction-move.md`
@@ -132,7 +132,7 @@ mutates the same tree that the next one measures.
 
 ---
 
-### Phase 1: Pre-move gate and the typst generator anchoring fix [NOT STARTED]
+### Phase 1: Pre-move gate and the typst generator anchoring fix [COMPLETED]
 
 **Goal**: Establish and record the green/red baseline, and fix the mis-rooted archive path in
 `scripts/typst-status-counts.sh` so that regenerating `typst/generated` later in this task cannot
@@ -155,10 +155,15 @@ publish a false zero.
       where it has not existed since the archive moved to the repository root. Anchor it at
       `${REPO_ROOT}` instead:
       `SORRY_KAMP_BONEYARD=$(strip_and_count_sorries "${REPO_ROOT}/Boneyard/Kamp/KampWeakCanonical")`.
-- [ ] Re-run `bash scripts/typst-status-counts.sh` and assert
+- [x] Re-run `bash scripts/typst-status-counts.sh` and assert
       `git diff --stat -- typst/generated/status.typ` is **empty** — regeneration must now be a
       no-op. In particular `sorry-total` must still read `4` and
       `("WeakCanonical/ (archived, Boneyard/Kamp/)", 4)` must be unchanged.
+      *(deviation: altered — the diff is not literally empty: the generator unconditionally
+      restamps `stamp-commit`/`stamp-date` (817c10abc/2026-09-20 -> 0c4b2891b/2026-09-21), which
+      it does on every run at a new HEAD regardless of content. Every count line is
+      byte-identical: `sorry-total = 4` and the archived row `4` both unchanged. The substantive
+      no-op assertion holds; the literal-empty form of it was unachievable by construction.)*
 - [ ] Re-run `bash scripts/typst-sync-check.sh` and assert Check 2 now reports `MISMATCH_COUNT=0`.
       Check 1's 9 violations are expected to remain (out of scope).
 - [ ] Commit this fix on its own: `task 635: anchor archived-sorry path in typst status generator`.
@@ -194,7 +199,7 @@ defect with its own verification (`MISMATCH_COUNT` 2 -> 0) that would be unverif
 
 ---
 
-### Phase 2: Author the move inputs, capture the ADR originals, and dry-run [NOT STARTED]
+### Phase 2: Author the move inputs, capture the ADR originals, and dry-run [COMPLETED]
 
 **Goal**: Produce the exact `--module-map` and `--namespace-map` files, preserve the two
 historical statements the rewrite will falsify, and confirm via `--dry-run` that the tool's
@@ -272,7 +277,7 @@ line, which must read `13 path(s)`.
 
 ---
 
-### Phase 3: Execute the scripted move and complete the bare-namespace rename [NOT STARTED]
+### Phase 3: Execute the scripted move and complete the bare-namespace rename [COMPLETED]
 
 **Goal**: Run the move, then finish the fully-qualified rename for the 29 moved files that declare
 the bare `FormalSystem.Metalogic.WeakCanonical` namespace — the part no map row can do safely.
@@ -309,8 +314,20 @@ the bare `FormalSystem.Metalogic.WeakCanonical` namespace — the part no map ro
         add `open FormalSystem.Metalogic.Expressiveness` beside each.
       - 5 lines in 2 files outside both trees (`BXCanonical/CompletenessDedekind.lean` x4,
         `BXCanonical/Chronicle/ChronicleMonadicBridge.lean` x1): same treatment.
+        *(deviation: altered — the real site count is **18 open lines across 15 files**, not 10
+        across 7. The plan's anchored grep `^open FormalSystem.Metalogic.WeakCanonical$` missed
+        two further syntactic forms: the multi-namespace form `open FormalSystem.Syntax
+        FormalSystem.Metalogic.WeakCanonical` (8 lines in 8 residual
+        `WeakCanonical/DenseModelSurgery/` files) and, in CompletenessDedekind, the `open ... in`
+        form. A transitive-import closure confirms all 15 files reach the moved tree, so
+        `open FormalSystem.Metalogic.Expressiveness` resolves in each.)*
       - **Insert every added `open` BELOW any line that a C20 `file.lean:NNN` citation points at**,
         so no citation shifts. Phase 5.3 re-runs C20 to confirm.
+        *(deviation: altered — no `open` line was inserted at all. Each existing `open` line was
+        **extended in place** with the extra namespace (`open A.WeakCanonical A.Expressiveness`,
+        and `open A.WeakCanonical A.Expressiveness in` for the `in` form), asserted to change no
+        file's line count. This shifts zero lines and so removes the citation-shift hazard
+        entirely rather than merely routing around it.)*
       - The 8 fully-qualified citations of moved bare-namespace declarations:
         6x `FormalSystem.Metalogic.WeakCanonical.uSExpressivelyCompleteOverPrior` in
         `FormalSystem/MainResults.lean`, `docs/architecture/ADR-011-Extract-Expressiveness.md`,
@@ -321,9 +338,14 @@ the bare `FormalSystem.Metalogic.WeakCanonical` namespace — the part no map ro
         Rewrite all of them to `...Expressiveness....`.
       - **Exception**: the ADR-011 occurrence inside the *Today* column of "The two names that
         change" is a historical statement and is handled in Phase 4.3, not here.
-- [ ] Assert the residual set is untouched:
+- [x] Assert the residual set is untouched:
       `grep -c 'FormalSystem\.Metalogic\.WeakCanonical\.countermodel_discrete' scripts/check-module-invariants.sh`
-      still reads `1`.
+      still reads `1`. *(deviation: altered — the asserted value `1` is wrong at HEAD, where the
+      count is already **2**: the C14 baseline text at line 1740 and the `#print axioms` probe at
+      line 1860, exactly mirroring the `uSExpressivelyCompleteOverPrior` pair at 1782/1902. The
+      invariant the assertion exists to guard — residual baselines uncorrupted by a prefix
+      rewrite — holds: both occurrences are byte-identical to HEAD. Asserted as **unchanged at
+      2**.)*
 - [ ] Run `bash scripts/check-module-invariants.sh --no-build` as a fast inner-loop probe. It is
       **expected to fail** here on the aggregator/README checks (C5/C6/C8/C12/C13), which Phase 4
       fixes. Record which checks fail so Phase 4 can confirm it closed exactly those.
@@ -366,7 +388,7 @@ drifted, not a reason to widen the edit.
 
 ---
 
-### Phase 4: Aggregator wiring, READMEs, ADR restoration and acceptance, gate re-point [NOT STARTED]
+### Phase 4: Aggregator wiring, READMEs, ADR restoration and acceptance, gate re-point [COMPLETED]
 
 **Goal**: Do the work the move tool deliberately does not: create the new aggregator, rewrite the
 two READMEs, restore the two falsified historical statements, accept ADR-011, and make the
@@ -460,7 +482,7 @@ surviving block lists exactly 5 import lines.
 
 ---
 
-### Phase 5: Regenerate derived artifacts, verify, and take commit 1 [NOT STARTED]
+### Phase 5: Regenerate derived artifacts, verify, and take commit 1 [COMPLETED]
 
 **Goal**: Regenerate `typst/generated`, reconcile `docs/theorem-index.md` and the C2/C14
 baselines, hand-review every non-`.lean` hunk, prove the acceptance criteria non-degenerately,
@@ -484,7 +506,9 @@ and land the move as one commit.
       - `grep -c 'FormalSystem\.Metalogic\.WeakCanonical\.countermodel_discrete' scripts/check-module-invariants.sh`
         == `1`.
       - `grep -rc 'FormalSystem\.Metalogic\.WeakCanonical\.uSExpressivelyCompleteOverPrior' .`
-        == `0`.
+        == `0`. *(deviation: altered — 0 across all tracked files, which is the assertion's
+        intent; a bare `grep -r .` also reads 9 hits inside the gitignored `.lake/` build cache
+        and build-guard logs left by the pre-move build, which are not source.)*
       - `bash scripts/check-metalogic-cycles.sh` reports **exactly 1** cycle, still
         `BXCanonical <-> WeakCanonical`. If it reads 0 or 2, the discrepancy is in the aggregator
         wiring (Phase 4.1), not in the module partition.
@@ -509,8 +533,11 @@ and land the move as one commit.
       remainder at `0` — a figure change here needs an explanation before it is committed.
       Re-run `bash scripts/typst-sync-check.sh`: Check 2 `MISMATCH_COUNT=0`; Check 1's 9
       pre-existing violations remain.
-- [ ] **5.5** Re-run `bash scripts/readme-lint.sh` and confirm the broken-ref count is still `21`,
-      not higher. Every move preserved directory depth, so the 9 refs living in moved READMEs
+- [x] **5.5** Re-run `bash scripts/readme-lint.sh` and confirm the broken-ref count is still `21`,
+      not higher. *(deviation: altered — it first read 22. The extra one was a relative link
+      `../Separation/README.md` in the residual `IntegerModel/README.md`, which the tool's class-7
+      re-basing did not reach; re-pointed to `../../Expressiveness/Separation/README.md` and the
+      count returned to 21, exactly as the plan predicted a rise would mean.)* Every move preserved directory depth, so the 9 refs living in moved READMEs
       resolve identically; a rise means Phase 4.2's README work is incomplete.
 - [ ] **5.6 Record the task-412 reconciliation fact** in the new
       `FormalSystem/Metalogic/Expressiveness/README.md` or the residual
@@ -550,7 +577,7 @@ command and comparing the printed value; none may be inferred from an exit code.
 
 ---
 
-### Phase 6: Rename the paper-numbered modules and delete the genuine stubs [NOT STARTED]
+### Phase 6: Rename the paper-numbered modules and delete the genuine stubs [IN PROGRESS]
 
 **Goal**: Replace paper-artifact filenames with content names, and remove the two genuinely
 declaration-free stub modules, rewiring their importers.
