@@ -1,7 +1,7 @@
 # Implementation Plan: Task #640
 
 - **Task**: 640 - Readme cold reader restructure
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: Task 639 (completed — README factual corrections already landed)
 - **Research Inputs**: specs/640_readme_cold_reader_restructure/reports/01_readme-cold-reader-restructure.md
@@ -412,26 +412,32 @@ invariant harness rather than on review of agent output.
 
 ---
 
-### Phase 5: Acceptance verification [NOT STARTED]
+### Phase 5: Acceptance verification [COMPLETED]
 
 **Goal**: Confirm every acceptance criterion against the finished file, as a distinct pass rather
 than as a side effect of the last edit.
 
 **Tasks**:
-- [ ] Read `README.md` lines 1–40 end to end as a cold reader would and confirm they state what
-      is proved and how to verify it.
-- [ ] Sweep for any surviving previous-state narration across the whole file:
-      `grep -niE 'earlier revision|used to (record|say|describe)|previously (said|described|read)|no longer (says|reads)|until the paper' README.md`
-- [ ] Confirm the generated block is untouched: run
+- [x] Read `README.md` lines 1–40 end to end as a cold reader would and confirm they state what
+      is proved and how to verify it. *(completed: lines 1-35 state what is proved at all four
+      classes, what is refuted, and the two verification commands, before `## Operators`)*
+- [x] Sweep for any surviving previous-state narration across the whole file:
+      `grep -niE 'earlier revision|used to (record|say|describe)|previously (said|described|read)|no longer (says|reads)|until the paper' README.md` *(completed: no hits)*
+- [x] Confirm the generated block is untouched: run
       `bash scripts/check-module-invariants.sh --emit-inventory`, then `git diff README.md` must
-      show no change inside the `BEGIN GENERATED` / `END GENERATED` span.
-- [ ] Confirm no task-number reference leaked into either edited file:
+      show no change inside the `BEGIN GENERATED` / `END GENERATED` span. *(completed: "no
+      generated inventory block needed a rewrite"; no diff)*
+- [x] Confirm no task-number reference leaked into either edited file:
       `grep -niE '\btasks? [0-9]+\b' README.md docs/reference/paper-definitions-of-record.md`
-- [ ] Confirm README lines ~272–276 were not reflowed: the phrase "the 45 TM" must still end one
-      source line with "schemata re-declared" beginning the next.
-- [ ] Run the full gate set, including the build this time:
+      *(completed: no hits)*
+- [x] Confirm README lines ~272–276 were not reflowed: the phrase "the 45 TM" must still end one
+      source line with "schemata re-declared" beginning the next. *(completed: still split across
+      lines 285-286)*
+- [x] Run the full gate set, including the build this time:
       `bash scripts/check-module-invariants.sh` (no `--no-build`) and `bash scripts/readme-lint.sh`.
-- [ ] Commit the completion and write the execution summary.
+      *(completed: both `ALL CHECKS PASSED` and `RESULT: PASS`; `check-paper-definitions.sh`
+      verdict unchanged — 42 recorded definitions, same as Phase 1 baseline)*
+- [x] Commit the completion and write the execution summary. *(completed)*
 
 **Timing**: 0.5 hours
 
@@ -457,16 +463,19 @@ verdict, never by inspection alone; a red gate closes nothing.
 
 ## Testing & Validation
 
-- [ ] `bash scripts/check-module-invariants.sh` (full, with build) → `ALL CHECKS PASSED`
-- [ ] `bash scripts/readme-lint.sh` → `RESULT: PASS`, 0 missing READMEs, 0 broken references
-- [ ] `bash scripts/check-paper-definitions.sh` → verdict unchanged from pre-edit baseline
-- [ ] Acceptance 1: the first 40 lines of `README.md` state what is proved and how to verify it
-- [ ] Acceptance 2: no paragraph in `README.md` describes a previous state of the README
-- [ ] Acceptance 3: `## How this repository is developed` exists and links
+- [x] `bash scripts/check-module-invariants.sh` (full, with build) → `ALL CHECKS PASSED`
+- [x] `bash scripts/readme-lint.sh` → `RESULT: PASS`, 0 missing READMEs, 0 broken references
+- [x] `bash scripts/check-paper-definitions.sh` → verdict unchanged from pre-edit baseline (42
+      recorded definitions unchanged, both before and after)
+- [x] Acceptance 1: the first 40 lines of `README.md` state what is proved and how to verify it
+      (`## Operators` now at line 35)
+- [x] Acceptance 2: no paragraph in `README.md` describes a previous state of the README
+- [x] Acceptance 3: `## How this repository is developed` exists and links
       `docs/development/MODULE_INVARIANTS.md`
-- [ ] Acceptance 4: `grep -c 'TM-plus' README.md` → 0
-- [ ] Acceptance 5: the generated inventory block is byte-identical to its regenerated form, and
-      every anchor `check-module-invariants.sh` checks still resolves
+- [x] Acceptance 4: `grep -c 'TM-plus' README.md` → 0
+- [x] Acceptance 5: the generated inventory block is byte-identical to its regenerated form, and
+      every anchor `check-module-invariants.sh` checks still resolves (`ALL CHECKS PASSED`,
+      including C15's anchor resolution)
 
 ## Artifacts & Outputs
 
