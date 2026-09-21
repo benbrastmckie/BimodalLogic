@@ -185,6 +185,9 @@ import FormalSystem.Metalogic.Expressiveness.EFGames.CustomGame
 import FormalSystem.Metalogic.Expressiveness.EFGames.Decomposition
 import FormalSystem.Metalogic.Expressiveness.EFGames.Defs
 import FormalSystem.Metalogic.Expressiveness.EFGames.GapDetection
+import FormalSystem.Metalogic.Expressiveness.EFGames.GapDetectionLeft
+import FormalSystem.Metalogic.Expressiveness.EFGames.GapDetectionRight
+import FormalSystem.Metalogic.Expressiveness.EFGames.MuRelativizedTruth
 import FormalSystem.Metalogic.Expressiveness.EFGames.StaviCompleteness
 import FormalSystem.Metalogic.Expressiveness.EFGames.TypeFormulas
 import FormalSystem.Metalogic.Expressiveness.GameTransfer.CaseAnalysis

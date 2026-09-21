@@ -161,47 +161,47 @@ must list exactly the public set found, whatever its size.
 
 ---
 
-### Phase 2: Split `GapDetection.lean` into its four families [NOT STARTED]
+### Phase 2: Split `GapDetection.lean` into its four families [COMPLETED]
 
 **Goal**: Four flat modules under `EFGames/`, declarations moved verbatim, `CustomGame.lean`
 importing only what it uses, the root regenerated.
 
 **Tasks**:
-- [ ] Start from a clean tree (`git status --porcelain` empty apart from unrelated `specs/` state).
+- [x] Start from a clean tree (`git status --porcelain` empty apart from unrelated `specs/` state).
   If the batch has to be paused while red (interruption, context pressure), do not commit it:
   checkpoint with `bash .claude/scripts/git-snapshot.sh --no-revert 638` and record the reference
   in the handoff.
-- [ ] Create `EFGames/MuRelativizedTruth.lean` (F-mu: `extendPoint_lt_iff`,
+- [x] Create `EFGames/MuRelativizedTruth.lean` (F-mu: `extendPoint_lt_iff`,
   `temporal_truth_mu_at_point`, `stavi_truth_mu_at_point`), importing `...EFGames.TypeFormulas`.
-- [ ] Create `EFGames/GapDetectionLeft.lean` (F-left: `gap_detection_unique`,
+- [x] Create `EFGames/GapDetectionLeft.lean` (F-left: `gap_detection_unique`,
   `stavi_untl_gap_detection`, `left_formula_gap_detection`), importing `...EFGames.GapDetection`
   and `...EFGames.MuRelativizedTruth`.
-- [ ] Create `EFGames/GapDetectionRight.lean` (F-right: `stavi_snce_gap_detection`,
+- [x] Create `EFGames/GapDetectionRight.lean` (F-right: `stavi_snce_gap_detection`,
   `gap_detection_unique_right`, `right_formula_gap_detection`), same two imports.
-- [ ] Reduce `EFGames/GapDetection.lean` to F-defs (the four formula definitions, both private
+- [x] Reduce `EFGames/GapDetection.lean` to F-defs (the four formula definitions, both private
   helpers, the two rank-bound theorems); rewrite its module docstring to describe the
   definitions module and point at the three siblings; remove its `set_option
   linter.style.longFile` line (it drops to roughly 370 lines).
-- [ ] Every new file: the 5-line copyright header copied from the source, then imports, then a
+- [x] Every new file: the 5-line copyright header copied from the source, then imports, then a
   `/-! # Title` module docstring, then (long files only) the longFile option, then
   `namespace FormalSystem.Metalogic.Expressiveness`, `open FormalSystem.Syntax`, the block, and
   the matching `end`. No `section`, `variable`, or attribute is needed (research side-effect scan).
-- [ ] Run the verbatim-move check BEFORE any docstring edit: concatenate, in the order defs, mu,
+- [x] Run the verbatim-move check BEFORE any docstring edit: concatenate, in the order defs, mu,
   left, right, the text between `open FormalSystem.Syntax` and the closing `end` of each of the
   four files, and `diff -B` it against the same region of the pristine copy. The diff must be
   empty.
-- [ ] Only then fix the stale sentence in `left_formula_gap_detection`'s docstring ("This is
+- [x] Only then fix the stale sentence in `left_formula_gap_detection`'s docstring ("This is
   sorry'd pending the full game-theoretic proof in Phase 4C"): the file contains no `sorry`.
   Replace it with a true statement of what the theorem proves; no task numbers, no phase labels.
-- [ ] `EFGames/CustomGame.lean` line 7: re-point the import from `...EFGames.GapDetection` to
+- [x] `EFGames/CustomGame.lean` line 7: re-point the import from `...EFGames.GapDetection` to
   `...EFGames.MuRelativizedTruth`. `ContinuationSets.lean` needs no edit.
-- [ ] Set `set_option linter.style.longFile N` directly after the module docstring of
+- [x] Set `set_option linter.style.longFile N` directly after the module docstring of
   `GapDetectionLeft.lean` and `GapDetectionRight.lean`, with N taken from the linter's message.
-- [ ] Regenerate the root: `lake exe mk_all --lib FormalSystem`. Do not hand-edit.
-- [ ] Build, detached and guarded, scoped to the five modules:
+- [x] Regenerate the root: `lake exe mk_all --lib FormalSystem`. Do not hand-edit.
+- [x] Build, detached and guarded, scoped to the five modules:
   `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- FormalSystem.Metalogic.Expressiveness.EFGames.GapDetectionLeft FormalSystem.Metalogic.Expressiveness.EFGames.GapDetectionRight FormalSystem.Metalogic.Expressiveness.EFGames.CustomGame`
-  under `Bash(run_in_background: true)`; wait for the completion notification.
-- [ ] Commit the batch once green.
+  under `Bash(run_in_background: true)`; wait for the completion notification. *(deviation: altered — the guard requires the lake subcommand after `--`, so the invocation run was `... --timeout 1800 -- build <modules>`; the shape as written exits 77 before building anything)*
+- [x] Commit the batch once green.
 
 **Timing**: 1.5 hours
 

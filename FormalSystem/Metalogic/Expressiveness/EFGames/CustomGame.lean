@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Expressiveness.EFGames.GapDetection
+import FormalSystem.Metalogic.Expressiveness.EFGames.MuRelativizedTruth
 
 /-!
 # Custom Game G_{n;r}
