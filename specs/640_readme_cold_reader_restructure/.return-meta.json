@@ -1,0 +1,40 @@
+{
+  "status": "researched",
+  "agent_type": "general-research-agent",
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "session_id": "sess_1789947599_745d6f_640",
+  "task_number": 640,
+  "dispatch_seq": 4,
+  "findings_count": 5,
+  "next_steps": "Run /plan 640 to create implementation plan",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/640_readme_cold_reader_restructure/reports/01_readme-cold-reader-restructure.md",
+      "summary": "Maps all five README-restructure acceptance items to exact line numbers and destination sections, verifies the item-1 40-line budget is currently at zero slack, confirms the saturation-footnote aside is already recorded in docs/reference/paper-definitions-of-record.md (deletion not migration), confirms C15 anchor citations survive the two paragraph deletions, and confirms both check-module-invariants.sh --no-build and readme-lint.sh are green at baseline."
+    }
+  ],
+  "memory_candidates": [
+    {
+      "content": "In this repo, scripts/readme-lint.sh's default (CI) invocation scopes to root FormalSystem only, so it does NOT check root README.md's own markdown links/paths. That coverage is actually provided by check-module-invariants.sh's C12 (slash-shaped source paths) and C13 (relative markdown links), both scoped to docs/ + README.md. When a task's acceptance criteria say 'readme-lint.sh green' for a root-README edit, also verify C12/C13 explicitly rather than assuming readme-lint.sh alone covers it.",
+      "category": "PATTERN",
+      "source_artifact": "specs/640_readme_cold_reader_restructure/reports/01_readme-cold-reader-restructure.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["readme-lint", "check-module-invariants", "C12", "C13", "root README", "link resolution"]
+    },
+    {
+      "content": "check-module-invariants.sh's C14 stale-axiom-count regex operates per source line, not per paragraph. README.md:274-275 currently contains the phrase 'the 45 TM schemata' split across a line break, which is why it does not trip C14's digit-then-word stale-count pattern despite '45' being a tracked figure. Any prose reflow/reformatting near that text should preserve the line break or reword it, or C14 will fail for a reason unrelated to the edit being made.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/640_readme_cold_reader_restructure/reports/01_readme-cold-reader-restructure.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["C14", "stale axiom count", "regex line-boundary", "README.md", "check-module-invariants"]
+    },
+    {
+      "content": "docs/reference/paper-definitions-of-record.md has an established pattern for prose-only additions that require no anchor pin or re-hash: a dated section explicitly marked 'permanent, prose only, no re-pin' (e.g. 'Language correspondence (2026-09-08)'), or a short 'Note:' appended directly to an existing per-anchor entry (e.g. def:frame-properties's 'Note: promoted into coverage by this task'). Use one of these two shapes rather than inventing a new structure when adding narrative that doesn't touch the paper-anchor MANIFEST.",
+      "category": "PATTERN",
+      "source_artifact": "specs/640_readme_cold_reader_restructure/reports/01_readme-cold-reader-restructure.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["paper-definitions-of-record", "prose only no re-pin", "anchor MANIFEST", "documentation pattern"]
+    }
+  ]
+}

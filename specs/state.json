@@ -1443,7 +1443,7 @@
     {
       "project_number": 640,
       "project_name": "readme_cold_reader_restructure",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "general",
       "topic": "publication-quality",
       "dependencies": [
@@ -1454,8 +1454,17 @@
         "docs/reference/paper-definitions-of-record.md"
       ],
       "created": "2026-09-20T18:47:56Z",
-      "last_updated": "2026-09-20T18:47:56Z",
-      "description": "Restructure the root README for a reader who arrives cold and gives it two minutes. The content is accurate and thorough but the first screen is background prose; the verified results, which are the point, start at line 166. (1) Put a short results summary directly under the opening paragraph: soundness and weak completeness at all four frame classes, strong completeness proved at Base and Dense and machine-refuted at ZTime and RTime, zero sorry and zero custom axioms in the live tree, the pinned axiom-set harness, with links to MainResults.lean and docs/theorem-index.md. (2) Move revision-history narration out of the README and into docs/reference/paper-definitions-of-record.md: the \"Earlier revisions of this README described...\" and \"The axiom-basis question this README used to record as open...\" paragraphs, and the aside about what the saturation footnote said before the 2026-09 revision. The README should state what is true now. (3) Add a short \"How this repository is developed\" section that explains, for a reader who opens specs/ or CLAUDE.md, that development is agent-assisted under a task system and that correctness rests on the Lean kernel plus the invariant harness, not on review of agent output; point to docs/development/MODULE_INVARIANTS.md. (4) Rename the Tags footer entry \"TM-plus\" to match current naming or drop the footer. (5) Keep the generated inventory block and every harness-checked anchor intact. Acceptance: the first 40 lines state what is proved and how to verify it; harness and readme-lint green; no paragraph describes a previous state of the README."
+      "last_updated": "2026-09-21T00:27:47Z",
+      "description": "Restructure the root README for a reader who arrives cold and gives it two minutes. The content is accurate and thorough but the first screen is background prose; the verified results, which are the point, start at line 166. (1) Put a short results summary directly under the opening paragraph: soundness and weak completeness at all four frame classes, strong completeness proved at Base and Dense and machine-refuted at ZTime and RTime, zero sorry and zero custom axioms in the live tree, the pinned axiom-set harness, with links to MainResults.lean and docs/theorem-index.md. (2) Move revision-history narration out of the README and into docs/reference/paper-definitions-of-record.md: the \"Earlier revisions of this README described...\" and \"The axiom-basis question this README used to record as open...\" paragraphs, and the aside about what the saturation footnote said before the 2026-09 revision. The README should state what is true now. (3) Add a short \"How this repository is developed\" section that explains, for a reader who opens specs/ or CLAUDE.md, that development is agent-assisted under a task system and that correctness rests on the Lean kernel plus the invariant harness, not on review of agent output; point to docs/development/MODULE_INVARIANTS.md. (4) Rename the Tags footer entry \"TM-plus\" to match current naming or drop the footer. (5) Keep the generated inventory block and every harness-checked anchor intact. Acceptance: the first 40 lines state what is proved and how to verify it; harness and readme-lint green; no paragraph describes a previous state of the README.",
+      "session_id": "sess_1789947599_745d6f",
+      "artifacts": [
+        {
+          "path": "specs/640_readme_cold_reader_restructure/reports/01_readme-cold-reader-restructure.md",
+          "type": "report",
+          "summary": "Line-by-line map of README.md restructure items, destination content for docs/reference/paper-definitions-of-record.md, and verified harness impact (C12-C15, C18, C21, readme-lint.sh)."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 641,
