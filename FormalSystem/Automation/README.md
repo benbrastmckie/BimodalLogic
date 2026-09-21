@@ -25,7 +25,7 @@ load-bearing tactic in this directory is `propDecide`, and the six EF-game tacti
 between them.
 
 There is no Aesop rule set. One existed and was retired for having zero consumers; see
-[`Boneyard/RetiredTactics/README.md`](../Boneyard/RetiredTactics/README.md).
+[`Boneyard/RetiredTactics/README.md`](../../Boneyard/RetiredTactics/README.md).
 
 ## Module naming
 

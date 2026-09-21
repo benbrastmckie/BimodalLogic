@@ -36,7 +36,7 @@ This subdirectory holds the tactic elaborators and the proof-search engine behin
 - `assumption_search`: context lookup with an explicit failure message
 
 There is no Aesop rule set. One existed and was retired; see
-[`Boneyard/RetiredTactics/README.md`](../../Boneyard/RetiredTactics/README.md).
+[`Boneyard/RetiredTactics/README.md`](../../../Boneyard/RetiredTactics/README.md).
 
 ## Dependencies
 

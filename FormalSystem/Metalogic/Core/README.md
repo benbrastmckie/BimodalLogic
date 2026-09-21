@@ -193,7 +193,7 @@ Aesop attributes exist anywhere in the tree, and that is deliberate.
 - The four `RestrictedMCS` boundedness lemmas (`restricted_mcs_iter_F_bound`,
   `restricted_mcs_F_bounded`, `restricted_mcs_iter_P_bound`, `restricted_mcs_P_bounded`) have
   been retired to
-  [`Boneyard/RestrictedMCSBoundedness/`](../../Boneyard/RestrictedMCSBoundedness/README.md). They
+  [`Boneyard/RestrictedMCSBoundedness/`](../../../Boneyard/RestrictedMCSBoundedness/README.md). They
   had zero references outside their own declaration site, and the consumer they were written for
   is itself archived. That directory's README records the validated `Nat.find` rewrite as the
   alternative to a verbatim resurrection.
@@ -231,7 +231,7 @@ The Core modules are prerequisites for:
 - [Metalogic README](../README.md) - Overall metalogic architecture
 - [Bundle README](../Bundle/README.md) - BFMCS completeness (uses Core)
 - [Algebraic README](../Algebraic/README.md) - Algebraic approach (uses Core)
-- [Boneyard/RestrictedMCSBoundedness](../../Boneyard/RestrictedMCSBoundedness/README.md) - the retired boundedness lemmas
+- [Boneyard/RestrictedMCSBoundedness](../../../Boneyard/RestrictedMCSBoundedness/README.md) - the retired boundedness lemmas
 
 ## References
 

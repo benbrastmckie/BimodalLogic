@@ -54,7 +54,7 @@ directly. `CaseAnalysis.lean`'s own module docstring carries the same record.
 - [Expressiveness README](../README.md)
 - [EFGames README](../EFGames/README.md)
 - [WeakCanonical README](../../WeakCanonical/README.md)
-- [ExpressiveCompleteness README](../../../Boneyard/Kamp/KampWeakCanonical/ExpressiveCompleteness/README.md) (archived)
+- [ExpressiveCompleteness README](../../../../Boneyard/Kamp/KampWeakCanonical/ExpressiveCompleteness/README.md) (archived)
 
 ---
 

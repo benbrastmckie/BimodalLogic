@@ -39,8 +39,8 @@ bisimulation-invariant properties expressible in the language.
 ## Related Documentation
 
 - [WeakCanonical README](../../WeakCanonical/README.md)
-- [DedekindZ README](../../../Boneyard/Kamp/KampWeakCanonical/Separation/DedekindZ/README.md) (archived)
-- [Hierarchy README](../../../Boneyard/Kamp/KampWeakCanonical/Separation/Hierarchy/README.md) (archived)
+- [DedekindZ README](../../../../Boneyard/Kamp/KampWeakCanonical/Separation/DedekindZ/README.md) (archived)
+- [Hierarchy README](../../../../Boneyard/Kamp/KampWeakCanonical/Separation/Hierarchy/README.md) (archived)
 - [EFGames README](../EFGames/README.md)
 
 ---

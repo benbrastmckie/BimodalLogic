@@ -10,7 +10,7 @@ This README provides an overview; BimodalReference contains the detailed specifi
 
 ## Counting Live Files: Exclude the Archive
 
-Archived code lives in exactly one place, [`Boneyard/`](Boneyard/README.md), and must be excluded
+Archived code lives in exactly one place, [`Boneyard/`](../Boneyard/README.md), and must be excluded
 from any count of this tree. B0 in the invariant script asserts the archive-directory count is
 exactly **1**, and every traversal filters on the `*/Boneyard/*` **name glob** rather than a path
 prefix, so a second archive appearing anywhere fails the gate instead of silently leaking into
@@ -18,7 +18,7 @@ the counts. [ADR-005](../docs/architecture/ADR-005-Single-Boneyard.md) records w
 the load-bearing one.
 
 **Do not hand-roll the count, and do not restate it here.** The archive's own counts are stated in
-exactly one place -- [`Boneyard/README.md`](Boneyard/README.md) -- and the live source for both
+exactly one place -- [`Boneyard/README.md`](../Boneyard/README.md) -- and the live source for both
 archived and live figures is the invariant script, which filters on the `*/Boneyard/*` **name
 glob** rather than a path prefix for every traversal:
 
@@ -321,7 +321,7 @@ invariant check allowlists it by name (check C8).
 | [Automation/](Automation/README.md) | Yes | Proof tactics and ML pipeline |
 | [Examples/](Examples/README.md) | Yes | Pedagogical examples |
 | [ForMathlib/](ForMathlib/README.md) | Yes | Mathlib-shaped extensions intended for upstreaming; nothing under it imports `FormalSystem.*` (`Mathlib → ForMathlib → FormalSystem`) |
-| [Boneyard/](Boneyard/README.md) | Yes | ARCHIVE — retired code, excluded from the live build; no `.olean` is produced under any `Boneyard` path. Its README is the single source for its counts |
+| [Boneyard/](../Boneyard/README.md) | Yes | ARCHIVE — retired code, excluded from the live build; no `.olean` is produced under any `Boneyard` path. Its README is the single source for its counts |
 
 ## Quick Reference
 
@@ -402,7 +402,7 @@ For Bimodal-specific guides and references, see [docs/](../docs/README.md):
 
 - **Parent**: [Project Root](../) | [Tests](../Tests/)
 - **Docs**: [docs/](../docs/README.md)
-- **Boneyard**: [Boneyard/](Boneyard/README.md) (archived code)
+- **Boneyard**: [Boneyard/](../Boneyard/README.md) (archived code)
 
 ---
 

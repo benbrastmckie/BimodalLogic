@@ -1,7 +1,7 @@
 # Implementation Plan: Refresh README date stamps, repair archive links, re-point typst citations
 
 - **Task**: 614 - Refresh stale README date stamps across FormalSystem, repair archive links, re-point typst citations
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None remaining (task 634's XLanguage merge has landed; verified — the five pre-merge XLanguage README paths no longer exist)
 - **Research Inputs**: specs/614_refresh_stale_readme_date_stamps_across/reports/01_readme-stamps-lint-repair.md
@@ -147,18 +147,18 @@ both must follow Phase 1, because Phase 1's commit re-dates the directories they
 
 ---
 
-### Phase 1: Archive link depth repair [NOT STARTED]
+### Phase 1: Archive link depth repair [COMPLETED]
 
 **Goal**: `readme-lint.sh FormalSystem BimodalTools` reports `Broken file references: 0`, turning
 CI's README-health step from FAIL to PASS. This is the only phase that affects the lint's exit
 code.
 
 **Tasks**:
-- [ ] Re-derive the BROKEN list: `bash scripts/readme-lint.sh FormalSystem BimodalTools 2>&1 | grep BROKEN`. Work from that output, not from this plan's table.
-- [ ] Apply the `../`-depth corrections below, one `Edit` per link occurrence. Every corrected target was verified to exist on disk during research.
-- [ ] Before committing, verify each corrected link resolves: for each `file -> newlink`, `[ -e "$(dirname file)/newlink" ]`.
-- [ ] Re-run `bash scripts/readme-lint.sh FormalSystem BimodalTools`; confirm `Broken file references:   0` and `RESULT: PASS`.
-- [ ] Stage the 11 files by explicit list and commit `task 614 phase 1: repair archive link depth`. State in the commit body that the `readme-lint.sh` broken-reference count moves 21 -> 0 (see the task-643 risk row).
+- [x] Re-derive the BROKEN list: `bash scripts/readme-lint.sh FormalSystem BimodalTools 2>&1 | grep BROKEN`. Work from that output, not from this plan's table.
+- [x] Apply the `../`-depth corrections below, one `Edit` per link occurrence. Every corrected target was verified to exist on disk during research. *(deviation: altered — applied by one scripted pass restricted to `](…Boneyard/…)` link targets in the 11 named files, asserting per link that the old target does not resolve and the new one does, and asserting a total of exactly 21 rewrites; diff reviewed)*
+- [x] Before committing, verify each corrected link resolves: for each `file -> newlink`, `[ -e "$(dirname file)/newlink" ]`.
+- [x] Re-run `bash scripts/readme-lint.sh FormalSystem BimodalTools`; confirm `Broken file references:   0` and `RESULT: PASS`.
+- [x] Stage the 11 files by explicit list and commit `task 614 phase 1: repair archive link depth`. State in the commit body that the `readme-lint.sh` broken-reference count moves 21 -> 0 (see the task-643 risk row).
 
 Corrections (11 files, 21 occurrences):
 

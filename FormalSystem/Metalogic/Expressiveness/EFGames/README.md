@@ -36,7 +36,7 @@ combinatorial core of the expressive completeness proof.
 ## Related Documentation
 
 - [WeakCanonical README](../../WeakCanonical/README.md)
-- [ExpressiveCompleteness README](../../../Boneyard/Kamp/KampWeakCanonical/ExpressiveCompleteness/README.md) (archived)
+- [ExpressiveCompleteness README](../../../../Boneyard/Kamp/KampWeakCanonical/ExpressiveCompleteness/README.md) (archived)
 
 ---
 

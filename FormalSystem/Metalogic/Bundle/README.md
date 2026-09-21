@@ -101,7 +101,7 @@ Bundle/
 The canonical-frame half of this directory -- `CanonicalFrame.lean`,
 `CanonicalTaskRelation.lean`, `SuccRelation.lean`, `Construction.lean`,
 `UntilSinceCoherence.lean` and `ModalSaturation.lean` -- was retired to
-[`Boneyard/BundleDeadHalf/`](../../Boneyard/BundleDeadHalf/README.md), whose README records what
+[`Boneyard/BundleDeadHalf/`](../../../Boneyard/BundleDeadHalf/README.md), whose README records what
 each was and why it died. Nothing in the live tree imported them once the `Core -> Bundle`
 directory import cycle was broken. Their pure-syntax and derivation-tree content did not go with
 them: the iterated-`F`/`P` machinery is now
