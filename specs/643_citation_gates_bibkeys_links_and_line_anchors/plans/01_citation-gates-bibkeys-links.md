@@ -439,7 +439,7 @@ scope.
 
 ---
 
-### Phase 6: Documentation rows, pointers, and full acceptance run [NOT STARTED]
+### Phase 6: Documentation rows, pointers, and full acceptance run [IN PROGRESS]
 
 **Goal**: Land the `MODULE_INVARIANTS.md` rows and the `REFERENCE_NORMAL_FORM.md` pointer, and
 run the build-inclusive harness for the final acceptance evidence.

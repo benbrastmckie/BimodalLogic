@@ -46,8 +46,13 @@ comm -23 \
   <(grep -oE '^@[a-z]+\{[^,]+' references.bib | sed 's/.*{//' | sort -u)
 ```
 
-must print nothing. There is exactly one bibliography, `references.bib` at the repository root;
-both typst documents render from it too, which is why they are compiled with `--root ..`.
+must print nothing. **Check C31 of `scripts/check-module-invariants.sh` gates this**, so the
+pipeline above is an explanation rather than a chore: C31 reads the interior of every
+`## References` and `### References` block in the live Lean trees and fails on any key that
+`references.bib` does not hold. It also reports — never gates — the entries that no `.lean`
+and no `.typ` file cites. See [MODULE_INVARIANTS.md](MODULE_INVARIANTS.md) for both rows.
+There is exactly one bibliography, `references.bib` at the repository root; both typst
+documents render from it too, which is why they are compiled with `--root ..`.
 
 Do not invent an entry. If a citation's bibliographic details cannot be verified from inside
 this repository, re-point it at a key that is already verified and covers the same content, or
@@ -90,6 +95,17 @@ Check C20 tier 1 gates every `file.lean:NNN` citation in the tree onto a real, n
 and tier 2 reports any that survive on a publication-facing surface. A name survives edits that
 a line number does not.
 
+Where a line number is kept, **put the declaration's name immediately before it** — the
+backticked name, then the parenthesised anchor. C20's declaration-span assertion then checks
+the line against the span of the declaration you named, which is the only way a citation
+pointing at the *wrong declaration* is ever caught: tier 1 sees only a citation pointing at
+nothing. A citation with no name is counted in the residual C20 prints at every gate, and
+nothing but tier 1 can check it.
+
+A markdown link inside a Lean docstring is legal but discouraged — the backticked
+repository-relative path above has no depth to get wrong. Where one is written, check C32
+resolves it relative to the citing file.
+
 ### Worked example
 
 `FormalSystem/PlusLanguage/PlusLimitClosure.lean` carries all three forms in one block and is
@@ -124,21 +140,39 @@ python3 scripts/reanchor-lean-citations.py --files <the files you edited>
 
 Run it **once, at the end of a batch**, after every line-count-changing edit in that batch —
 never interleaved with the edits — and **always name the batch's files explicitly**. The tool
-is not idempotent: it computes the shift from the base revision to the working tree, so a
-second run applies the same shift again and every citation ends up doubly shifted. C20 does not
-catch that, because a doubly shifted citation usually still lands on some non-blank line. The
-default file selection (everything changed since the base) makes a second run especially
-dangerous, since the citers the first run rewrote have themselves changed and join the target
-list. To recover, run `--recompute`, which rebuilds every citation from the base revision by
-content alignment and is idempotent:
+has three passes, and only the first is unsafe to repeat:
+
+- **The Δ pass (the default) is not idempotent.** It computes the shift from the base revision
+  to the working tree, so a second run applies the same shift again and every citation ends up
+  doubly shifted. C20 tier 1 does not catch that, because a doubly shifted citation usually
+  still lands on some non-blank line; C20's declaration-span assertion catches it only for a
+  citation that names its declaration, and only when the shift is larger than that
+  declaration's span. The default file selection (everything changed since the base) makes a
+  second run especially dangerous, since the citers the first run rewrote have themselves
+  changed and join the target list.
+- **`--recompute` is idempotent**, and is the recovery from a doubled Δ pass. It rebuilds every
+  citation from the base revision by content alignment. Its one blind spot: a citer line whose
+  *content* was also edited in the same batch is left as it is, because there is no
+  base-revision number on that line to trust. Re-anchor such a line by hand.
+- **`--by-name` is idempotent**, and repairs what no revision-relative pass can: a citation that
+  was already stale at the base revision. It re-points every citation that names a declaration
+  but lands outside it — exactly what C20's declaration-span assertion reports — at that
+  declaration's own line, and reports as `SKIPPED` any whose names do not single out one
+  declaration per anchor. Read its diff: a sentence that puts a declared name directly before a
+  citation of something *else* is fixed by rewording the sentence, not by this pass.
 
 ```bash
 python3 scripts/reanchor-lean-citations.py --recompute
+python3 scripts/reanchor-lean-citations.py --by-name --files <the target files>
 ```
 
 It is a maintenance tool, not a gate; the gate is C20. It refuses rather than guesses, and
-`--exact` handles a file whose body docstrings also moved. `--selftest` asserts a Δ=0 run over
-the whole tree changes zero bytes.
+`--exact` handles a file whose body docstrings also moved. `--selftest` asserts all of the
+above rather than narrating it, in five probes: a Δ=0 run over the whole tree changes zero
+bytes; a synthetic edit moves exactly the citations it should; the Δ pass run twice is repaired
+by `--recompute` and a **second `--recompute` rewrites nothing**; the content-edited-line blind
+spot behaves as stated; and the same doubled pass is detected and repaired by `--by-name`, whose
+second run likewise rewrites nothing.
 
 ## 5. Recorded baselines
 
@@ -159,6 +193,15 @@ merely that nothing failed.
 | `readme-lint.sh` broken references | 21 | unchanged — these are a separate, known-red item |
 | `typst-sync-check.sh` Check 1 | 9 violations | unchanged — likewise |
 | `typst-sync-check.sh` Checks 2, 2b, 3 | 0 mismatches | must stay 0 |
+| C31 bibkeys | 215 block citations over 22 distinct keys, 0 dangling | must stay 0 dangling |
+| C31 advisory | 11 of 77 `references.bib` entries cited by no `.lean` and no `.typ` file | advisory; may fall |
+| C32 docstring links | 8 path-shaped relative links, 0 broken | must stay 0 broken |
+| C20 declaration span | 0 named citations outside their declaration beyond the recorded baseline | must stay 0 |
+| C20 recorded baseline | 10 keys in `scripts/c20-declaration-baseline.txt` | may only fall |
+| C20 name-less residual | 155 of 1028 citations carry no declaration name; 40 more are unverifiable | should fall; a rise means citations lost their names |
+
+The C31, C32 and C20 declaration-span rows were measured when those checks were added, after
+the normalisation sweep and after 315 wrong-declaration citations were re-pointed by name.
 
 `unverifiable` is not a pass. C20 matches an unqualified citation on basename and reports an
 ambiguous or unresolvable one as `unverifiable` rather than failed; a rise in that count is a
