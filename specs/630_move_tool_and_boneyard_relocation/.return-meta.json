@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/630_move_tool_and_boneyard_relocation/reports/01_move-tool-boneyard-relocation.md",
+      "summary": "Design for scripts/move-modules.py (seven rewrite classes, prefix mapping, link re-basing) plus a measured census of the FormalSystem/Boneyard -> Boneyard relocation: 41 external citer files, 539/169 C11 baseline, six hand harness edits, and two silent-gate-loss risks (C12/C5/C11 regex widening)."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789955215_a3ad68_630",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

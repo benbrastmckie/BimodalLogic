@@ -98,7 +98,7 @@ next_project_number: 642
 
 ### Publication Quality
 
-630 [RESEARCHING] — Write scripts/move-modules.py (old-to-new module mapping plus...
+630 [RESEARCHED] — Write scripts/move-modules.py (old-to-new module mapping plus...
   └─ 632 [NOT STARTED] — Create leanlib BimodalTools (outside defaultTargets) and...
     └─ 634 [NOT STARTED] — Merge Syntax/XLanguage/ and Semantics/XLanguage/ into...
       └─ 635 [NOT STARTED] — Run python3 scripts/measure-refactor-partitions.py --check...
@@ -256,10 +256,11 @@ Absorbed task 610 description (verbatim, task 610 is abandoned as merged into th
 ---
 
 ### 630. Move tool and boneyard relocation
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: None
+- **Research**: [630_move_tool_and_boneyard_relocation/reports/01_move-tool-boneyard-relocation.md]
 
 **Description**: Write scripts/move-modules.py (old-to-new module mapping plus optional namespace mapping; rewrites imports in FormalSystem/, Tests/ and the archive, dotted and slash paths in docs/, typst/ and the scripts/ manifests, namespace/open/FQN occurrences, the C2/C14 baselines and MainResults.lean; dry-run mode; ends by running check-module-invariants.sh --no-build). Then use it to move FormalSystem/Boneyard/ to a root-level Boneyard/ (module names Boneyard.*), update B0's search root and C11's scan root, add the two invariants ADR-010 names, and change ADR-010's status to Accepted with a pointer from ADR-009. Acceptance: lake build and lake build BimodalTest exit 0; check-module-invariants.sh green; no .olean under Boneyard/; the archive README's counts regenerate from the new location.
 
