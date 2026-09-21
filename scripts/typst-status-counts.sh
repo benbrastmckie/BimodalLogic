@@ -117,7 +117,7 @@ SORRY_BUNDLE=$(strip_and_count_sorries "${METALOGIC_DIR}/Bundle")
 # "including boneyard" total; they are added back explicitly instead, so both published
 # figures mean exactly what they meant before the move.
 SORRY_WEAKCANONICAL_LIVE=$(strip_and_count_sorries "${METALOGIC_DIR}/WeakCanonical")
-SORRY_KAMP_BONEYARD=$(strip_and_count_sorries "Boneyard/Kamp/KampWeakCanonical")
+SORRY_KAMP_BONEYARD=$(strip_and_count_sorries "${REPO_ROOT}/Boneyard/Kamp/KampWeakCanonical")
 SORRY_WEAKCANONICAL_ALL=$((SORRY_WEAKCANONICAL_LIVE + SORRY_KAMP_BONEYARD))
 SORRY_WEAKCANONICAL_EXCL=${SORRY_WEAKCANONICAL_LIVE}
 
