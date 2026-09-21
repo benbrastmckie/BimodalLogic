@@ -11,10 +11,10 @@ next_project_number: 651
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,568,604,623,624,628,647 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,570,616,617,646,648 | 298,464,502,563,568,647 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,534,566,618,649 | 231,465,497,564,565,616,646,648 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543,645,650 | 428,498,499,500,534,649 | algebraic-representation, decidability, metalogic, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,568,604,623,624,628,648 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,570,616,617,646,649 | 298,464,502,563,568,648 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,534,566,618,650 | 231,465,497,564,565,616,646,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543,645 | 428,498,499,500,534 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
@@ -95,10 +95,9 @@ next_project_number: 651
 
 ### Reference Book
 
-647 [IMPLEMENTING] — Extend typst/chapters/ax-lean-appendix.typ (the back-matter...
-  └─ 648 [NOT STARTED] — Fix the defects found in typst/BimodalReference.typ and its...
-    └─ 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
-      └─ 650 [NOT STARTED] — Define-before-use audit of...
+648 [NOT STARTED] — Fix the defects found in typst/BimodalReference.typ and its...
+  └─ 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
+    └─ 650 [NOT STARTED] — Define-before-use audit of...
 
 ### Semantics
 
@@ -192,12 +191,13 @@ ACCEPTANCE. typst compile --root .. BimodalReference.typ with zero errors, and z
 ---
 
 ### 647. Extend lean appendix semantics metalogic coverage
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: reference-book
 - **Dependencies**: None
 - **Research**: [647_extend_lean_appendix_semantics_metalogic_coverage/reports/01_extend-lean-appendix-coverage.md]
 - **Plan**: [647_extend_lean_appendix_semantics_metalogic_coverage/plans/01_extend-lean-appendix-coverage.md]
+- **Summary**: [647_extend_lean_appendix_semantics_metalogic_coverage/summaries/01_extend-lean-appendix-coverage-summary.md]
 
 **Description**: Extend typst/chapters/ax-lean-appendix.typ (the back-matter appendix "Reading the Lean Formalization" of typst/BimodalReference.typ) so that a reader can read the semantic layer, a derived theorem, the metalogic result map, and the decision procedure in Lean, and not only the syntax and proof system the appendix covers today. Keep its aim: the most systematic and accessible presentation for a reader who knows the mathematics of TM but has never opened a Lean file. Introduce each Lean concept once, on a real declaration from FormalSystem/, in dependency order, and reorganize existing sections where that serves the arc rather than appending at the end. The appendix explains how to READ the Lean. It cross-references the Part I chapters (02-semantics, p2-frame-classes, 04-metalogic, p2-decidability-practice, 05-theorems) for the mathematics instead of restating it.
 
