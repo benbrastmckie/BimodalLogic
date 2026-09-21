@@ -19,9 +19,9 @@ Whereas dynamical systems theory provides mathematical resources for modeling th
 <!-- BEGIN GENERATED: inventory dir=FormalSystem rows=totals desc=no -->
 | Metric | Count |
 |--------|-------|
-| Live `.lean` files | 508 |
-| Live lines of code | 155,541 |
-| Live comment lines | 94,159 |
+| Live `.lean` files | 515 |
+| Live lines of code | 156,348 |
+| Live comment lines | 94,791 |
 <!-- END GENERATED -->
 
 The table above is generated: `bash scripts/check-module-invariants.sh --emit-inventory`
@@ -109,9 +109,10 @@ The task semantics is developed in ["The Construction of Possible Worlds"](https
 ├── FormalSystem/                 # TM bimodal logic library (live file and line counts: see the table above)
 │   ├── FormalSystem.lean         # library aggregator
 │   ├── Syntax/                   # Formula types, atoms, contexts
-│   │   ├── MinusLanguage/        # L⁻ = the tense-primitive (H/G) language, and its logic TM⁻
-│   │   ├── PlusLanguage/         # L⁺ = L plus the stability modal ⊡, and its logic TM⁺
-│   │   └── StarLanguage/         # L⋆ = L⁺ plus the time store/recall operators ↑ⁱ/↓ⁱ
+│   ├── MinusLanguage/            # L⁻ = the tense-primitive (H/G) language, and its logic TM⁻
+│   ├── PlusLanguage/             # L⁺ = L plus the stability modal ⊡, and its logic TM⁺
+│   ├── StarLanguage/             # L⋆ = L⁺ plus the time store/recall operators ↑ⁱ/↓ⁱ, and its logic TM⋆
+│   ├── OpenLanguage/             # L^▷ = L⁺ plus the open-future modal ▷ and the open-past modal ◁ (semantic only)
 │   ├── ProofSystem/              # Axioms (29 constructors, nine layers), derivation trees
 │   ├── Semantics/                # TemporalOrder, FrameOver, TaskFrame, PartialHistory, TaskModel, validity
 │   ├── Metalogic/                # Soundness, completeness, decidability
@@ -221,19 +222,20 @@ The Dense and ZTime logics are independent extensions — neither subsumes the o
 
 **`FrameClass.RTime` is the paper's TM_r.** Under the paper's current text, `cor:tm-completeness` gives TM_r as weakly complete over `ℝ`-time — the dense and Dedekind-complete orders — which is exactly what `FrameClass.RTime` denotes: `DenselyOrdered D` plus Dedekind completeness.
 
-`TM` and its extensions `TM_z`, `TM_d`, `TM_r` are the paper's own systems under the paper's own names; the languages and logics that carry a `⁻` or a `⁺` are this repository's, and are described against the paper in the table below. See [`FormalSystem/Metalogic/Conservativity.lean`](FormalSystem/Metalogic/Conservativity.lean) for the full mapping.
+`TM` and its extensions `TM_z`, `TM_d`, `TM_r` are the paper's own systems under the paper's own names; the languages and logics that carry a `⁻`, a `⁺` or a `⋆` are this repository's, and are described against the paper in the table below. See [`FormalSystem/Metalogic/Conservativity.lean`](FormalSystem/Metalogic/Conservativity.lean) for the full mapping.
 
-### The four object languages, and how they map onto the paper
+### The five object languages, and how they map onto the paper
 
-This tree carries four object languages. `L` is the paper's own language and `TM` the paper's own
-logic; the other three are this repository's, and the superscripts are Lean-only vocabulary.
+This tree carries five object languages. `L` is the paper's own language and `TM` the paper's own
+logic; the other four are this repository's, and the superscripts are Lean-only vocabulary.
 
 | Language | Operators | Logic | Lean home |
 |---|---|---|---|
 | **L⁻** | ⊥, →, □, H, G | **TM⁻** | `FormalSystem/MinusLanguage/`, `MinusFormula`, `⊢⁻[fc]` |
 | **L** | ⊥, →, □, S, U | **TM** (TM_z, TM_d, TM_r) | `FormalSystem/Syntax/` + `ProofSystem/`, `Formula`, `⊢[fc]` |
 | **L⁺** | L plus the stability modal ⊡ | **TM⁺** | `FormalSystem/PlusLanguage/`, `PlusFormula`, `⊢⁺[fc]` |
-| **L⋆** | L⁺ plus the time store/recall operators ↑ⁱ/↓ⁱ | — (semantic only; no proof system) | `FormalSystem/StarLanguage/`, `StarFormula`, the embedding `ofPlus` |
+| **L⋆** | L⁺ plus the time store/recall operators ↑ⁱ/↓ⁱ | **TM⋆** | `FormalSystem/StarLanguage/`, `StarFormula`, `⊢⋆[fc]`, the embedding `ofPlus` |
+| **L^▷** | L⁺ plus the open-future modal ▷ and the open-past modal ◁ | — (semantic only; no proof system) | `FormalSystem/OpenLanguage/`, `OpenFormula`, the embedding `ofPlus` |
 
 The manuscript has exactly **two** languages: 𝓛 and 𝓛⋆, where 𝓛⋆ bundles ⊡ with both the
 time-store/recall and the world-store/recall families (the sentence defining `\BL^\star` in
@@ -250,10 +252,23 @@ time-store/recall and the world-store/recall families (the sentence defining `\B
 - **L⋆ is the time-register fragment of the manuscript's 𝓛⋆** — ⊡ together with
   timeStore/timeRecall, which is what `app:deterministic-future` actually uses. It is built, and
   its semantics interprets the manuscript's points `(τ, x, v⃗)` per `def:BLstar-semantics`. The
-  world registers are not formalized here, and L⋆ carries **no proof system**: the manuscript
-  supplies none, and every L⋆ result here is semantic. `StarAxiom`, `StarDerivationTree`,
-  `⊢⋆[fc]` and `TM⋆` are reserved, unbuilt names. See `FormalSystem/StarLanguage/README.md` for
-  the paper-label correspondence table.
+  world registers are not formalized here. The manuscript supplies no proof system for 𝓛⋆, so
+  **TM⋆ is formalization-native**: `StarAxiom` re-declares the 53 TM⁺ schemata over
+  `StarFormula` (`modal_future` alone under a `RecallFree` side condition, since MF is refuted
+  in L⋆ by `refute_modal_future`) and adds sixteen register schemata, and `StarDerivationTree`
+  (`⊢⋆[fc]`) carries the same seven inference rules as TM and TM⁺. See
+  `FormalSystem/StarLanguage/README.md` for the paper-label correspondence table.
+- **L^▷ extends L⁺ by the two operators of the manuscript's subsection *Restricted Modalities***
+  (`sub:RestrictedModalities`): the open-future modal ▷ over the worlds that agree with the world
+  of evaluation up to the present, and the open-past modal ◁ over those that agree from the
+  present on. The manuscript gives both a truth clause and states the inclusions among the three
+  classes of worlds, then sets the restricted modals aside; it supplies no logic for them and none
+  is claimed here. L^▷ is **semantic only**. What it is for: on a task frame the present world
+  *state* fixes the alternatives of ⊡, while Ockhamist historical necessity needs the shared
+  *past*, which is ▷. The Ockhamist principle `Pα → ▷P▷̂α` is valid over every task frame
+  (`hnOpen_openValid`) and its stability transposition `Pp → ⊡P⟐p` is refuted on a finite frame
+  satisfying all four frame axioms (`hnStab_refuted_sinkFrame`). See
+  `FormalSystem/OpenLanguage/README.md`.
 
 So results stated below about L⁺ and L⋆ are results about *fragments* of the manuscript's 𝓛⋆,
 and are described that way rather than by a paper name they do not have.
@@ -285,6 +300,13 @@ schemata re-declared over `PlusFormula` (so that, e.g., `□⊡p → □G⊡p` i
 for `⊡`, `□φ → ⊡φ`, `p → ⊡p` for atoms, and two **pasting** schemata with pure-future/pure-past
 side conditions (`PlusLanguage/PlusPasting.lean`); the five refutations in
 `PlusLanguage/PlusNonValidities.lean` bound the set from above.
+
+The L⋆ side lives in `StarLanguage/` and `Metalogic/Conservativity/Star/`. TM⋆ is **sound** at
+every frame class (`star_soundness_validIn`) and **conservative over TM**, both directions, at
+all four classes (`starDerivable_ofFormula_iff`). Its conservativity over TM⁺ is proved only
+**conditionally** on TM⁺ completeness at the class (`starConservative_of_plusComplete`), with
+the unconditional contrapositive `plusIncomplete_of_starNonconservative`. Completeness of TM⋆
+is **open** at every class.
 
 **Open problems for TM⁺.**
 
