@@ -273,7 +273,7 @@
     {
       "project_number": 635,
       "project_name": "expressiveness_extraction",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "publication-quality",
       "dependencies": [
@@ -301,7 +301,16 @@
       ],
       "description": "Run python3 scripts/measure-refactor-partitions.py --check (must exit 0), then move the 141-file Expressiveness set out of Metalogic/WeakCanonical/ into Metalogic/Expressiveness/ with the namespace mapping WeakCanonical.X -> Expressiveness.X (WeakCanonical/Expressiveness/ becomes Expressiveness/GameTransfer/), in one scripted commit that also regenerates typst/generated, docs/theorem-index.md, the C2/C14 baselines and MainResults.lean; then in a second commit rename the 39 paper-numbered files to content names and delete declaration-free stubs. Change ADR-011's status to Accepted with a pointer from ADR-006. Acceptance: check-metalogic-cycles.sh reports exactly 1; residual WeakCanonical at 38 files; full harness (with build) green after each commit.\n\nReconciliation notes: depends on task 634. Task 412 cites Metalogic/WeakCanonical/GroupModel/CountermodelBase.lean; this path is confirmed to stay in the residual 38-file set (it is not in the Expressiveness subtree moved here), so no citation drift results -- record this fact in this task's own docstring/PR notes so a reader of 412 does not have to re-derive it. Task 178 depends on this task (it cites Kamp-named results this task renames).",
       "created": "2026-09-19T08:40:54Z",
-      "last_updated": "2026-09-19T08:40:54Z"
+      "last_updated": "2026-09-21T09:31:39Z",
+      "session_id": "sess_1789955215_a3ad68",
+      "artifacts": [
+        {
+          "path": "specs/635_expressiveness_extraction/reports/01_expressiveness-extraction-move.md",
+          "type": "report",
+          "summary": "Expressiveness extraction research: gate passes 141/38 at HEAD; post-move cycle count simulated at exactly 1 with Expressiveness a directory-level sink; the bare FormalSystem.Metalogic.WeakCanonical namespace is shared by 29 moved and 28 residual files so no namespace-map prefix row is safe; typst/generated regeneration would zero a true archived sorry count (root cause and one-line fix identified); the '39 paper-numbered files' figure is not mechanically reproducible."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 636,

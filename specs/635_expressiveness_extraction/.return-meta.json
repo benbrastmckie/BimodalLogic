@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/635_expressiveness_extraction/reports/01_expressiveness-extraction-move.md",
+      "summary": "Expressiveness extraction research: --check passes 141/38 at HEAD; post-move cycle count simulated at exactly 1; the bare FormalSystem.Metalogic.WeakCanonical namespace is shared by 29 moved and 28 residual files so no namespace-map prefix row is safe; typst/generated regeneration would zero a true archived sorry count (root cause and one-line fix identified); the '39 paper-numbered files' figure is not mechanically reproducible (26 under a strict re-derivation)."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789955215_a3ad68_635",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
