@@ -85,25 +85,26 @@ jobs:
       # nothing else at all. Placed after the exe-root step so it reuses that warm cache, per
       # docs/development/CI_CD_PROCESS.md's step-placement convention.
       #
-      # Deliberately NOT `--wfail`, unlike the lean-action step: the tooling tree carries warnings
-      # the library does not, and a hard stop here would gate the split on that burndown. C28's
-      # per-file warning budget is the compensating control and sees these modules through Lake's
-      # trace store -- see the decision recorded at C28 in scripts/check-module-invariants.sh.
+      # `--wfail`, like the lean-action step: compiler warnings in the tooling fail CI. This step
+      # shipped without it while the tooling tree still carried warnings the library did not; that
+      # debt is cleared (0 warnings across 0 files, and a local `--wfail` build of both tooling
+      # roots exits 0), so the hard stop is on. C28's per-file warning budget remains the
+      # diagnostic half -- see the decision recorded at C28 in scripts/check-module-invariants.sh.
       - name: Compile BimodalTools (outside defaultTargets)
         run: |
           set -euo pipefail
-          echo "::group::lake build BimodalTools"
-          lake build BimodalTools
+          echo "::group::lake build BimodalTools --wfail"
+          lake build BimodalTools --wfail
           echo "::endgroup::"
 
       # Two steps, not one: the `BimodalToolsTest` import closure does not reach
       # `DatasetAssembly` or `PrefilterSoundness`, so folding these together would leave those
-      # two compiled by nothing in CI.
+      # two compiled by nothing in CI. `--wfail` for the same reason as the step above.
       - name: Compile BimodalToolsTest
         run: |
           set -euo pipefail
-          echo "::group::lake build BimodalToolsTest"
-          lake build BimodalToolsTest
+          echo "::group::lake build BimodalToolsTest --wfail"
+          lake build BimodalToolsTest --wfail
           echo "::endgroup::"
 
       # The bi-lasso evidence probes under specs/evidence/ are machine-checked records of design

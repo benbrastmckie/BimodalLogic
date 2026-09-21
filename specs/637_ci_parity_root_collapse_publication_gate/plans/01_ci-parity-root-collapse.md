@@ -574,35 +574,35 @@ derive the maximum from banners alone.
 
 ---
 
-### Phase 6: Correct the stale invariant records and adopt `--wfail` on the tooling steps [NOT STARTED]
+### Phase 6: Correct the stale invariant records and adopt `--wfail` on the tooling steps [COMPLETED]
 
 **Goal**: Bring `check-module-invariants.sh`'s recorded measurements and decision blocks into agreement
 with the tree, and act on C28's own stated revision trigger.
 
 **Tasks**:
-- [ ] Re-read `scripts/check-module-invariants.sh` immediately before editing (**task 643's
+- [x] Re-read `scripts/check-module-invariants.sh` immediately before editing (**task 643's
       territory**; same start gate and protocol as Phase 5 — no edits while the file carries another
       task's uncommitted hunks — and Phase 5's own edits must already be committed).
-- [ ] Remove the dead `C8_ALLOW_SELFNAMED` entry `"FormalSystem/FormalSystem.lean"` and rewrite the
+- [x] Remove the dead `C8_ALLOW_SELFNAMED` entry `"FormalSystem/FormalSystem.lean"` and rewrite the
       preceding comment paragraph that justifies it. The `Semantics/Extension/Extension.lean` entry
       stays.
-- [ ] Reduce B3's two-root loop (`for f in FormalSystem.lean FormalSystem/FormalSystem.lean`) to the
+- [x] Reduce B3's two-root loop (`for f in FormalSystem.lean FormalSystem/FormalSystem.lean`) to the
       single surviving root. The `[ -f "$f" ] || continue` guard means the current form degrades safely
       rather than failing, so this is correctness of the record, not a fix for a live break.
-- [ ] Replace C16's recorded `179`-findings/14-root table with the re-measured **170 findings across 13
+- [x] Replace C16's recorded `179`-findings/14-root table with the re-measured **170 findings across 13
       of 17 roots**, and correct the `BimodalTest` row from `85` to `67`. The stale table predates the
       `BimodalTools`/`BimodalToolsTest` split; a recorded number disagreeing with the tree is precisely
       the defect class C14 exists to catch. Re-measure at the phase's own HEAD rather than transcribing
       the research figures, and use the measured values.
-- [ ] Leave `ENFORCE_C16_ROOTS` at `0` and record the decision in its comment block: 170 findings, 67
+- [x] Leave `ENFORCE_C16_ROOTS` at `0` and record the decision in its comment block: 170 findings, 67
       of them in `BimodalTest` alone, is not a burndown this task owns.
-- [ ] Verify the `--wfail` claim directly: run `lake build BimodalTools --wfail` and
+- [x] Verify the `--wfail` claim directly: run `lake build BimodalTools --wfail` and
       `lake build BimodalToolsTest --wfail` locally and confirm both are green. Do not rely on
       `warning-budget.py`'s trace scan alone.
-- [ ] Add `--wfail` to the two tooling CI build steps in `.github/workflows/ci.yml` (`lake build
+- [x] Add `--wfail` to the two tooling CI build steps in `.github/workflows/ci.yml` (`lake build
       BimodalTools`, `lake build BimodalToolsTest`) and rewrite their inline comments, which currently
       state the tooling tree carries warnings the library does not.
-- [ ] Rewrite C28's decision block to record that its stated revision trigger has fired, with the
+- [x] Rewrite C28's decision block to record that its stated revision trigger has fired, with the
       measured evidence and the date. Correct the `ENFORCE_C28` header's stale "The floor is 7, not 0"
       note — `scripts/warning-budget.txt` reads `Baseline total: 0 warning(s) across 0 file(s)`.
 

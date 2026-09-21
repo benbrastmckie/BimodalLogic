@@ -667,9 +667,10 @@ ENFORCE_C27=${ENFORCE_C27:-1} # live debug directives all allow-listed with exac
 # baseline. It shipped report-only during the burn-down that introduced it and is now ENFORCED,
 # following the pattern MODULE_INVARIANTS.md's "Adding a Check" documents for ENFORCE_C16_ROOTS
 # and C8/C9/C10: compute and print from the outset, gate the exit code behind the flag, flip the
-# default to 1 once the count reaches its floor. The floor is 7, not 0: see the recorded reason
-# in scripts/warning-budget.txt for why DenseModelSurgery/'s residual section-variable warnings
-# need a `variable`-block refactor rather than another `omit`. NOTE: the scanner's exit-2
+# default to 1 once the count reaches its floor. The floor turned out to be 0: the seven
+# residual section-variable warnings under DenseModelSurgery/ that an earlier version of this
+# note called irreducible have since been cleared, and scripts/warning-budget.txt records
+# `Baseline total: 0 warning(s) across 0 file(s)`. NOTE: the scanner's exit-2
 # conditions -- an untrustworthy measurement, an observed linter class with no disposition row,
 # or a non-zero baseline entry carrying no reason -- are NOT suppressed by ENFORCE_C28=0 and
 # fail the harness in every mode.
@@ -721,9 +722,12 @@ ENFORCE_C33=${ENFORCE_C33:-1} # the generated library root FormalSystem.lean is 
 # scan closes for declared names; this half is what closes it for shapes only ELABORATION can
 # judge, above all auto-generated structure-field projections, where whether an underscored name
 # is a violation depends on whether the field's type is a Prop.
-# NOT YET ENFORCED, on a measurement rather than a preference: the widened target carries 179
-# pre-existing findings today (see the C16 header for the per-root numbers), so enforcing it now
-# would turn the gate red on work this check's own change does not own. It is computed and
+# NOT YET ENFORCED, on a measurement rather than a preference: the widened target carries 196
+# pre-existing findings across 13 of 16 roots (re-measured 2026-09-21; see the C16 header for the
+# per-root numbers), 80 of them in `BimodalTest` alone, so enforcing it now would turn the gate
+# red on work this check's own change does not own. The decision was reviewed at the publication
+# gate and left at 0: the findings are docBlame/unusedArguments/defsWithUnderscore-class debt in
+# test and tooling code, none of it in the published library, whose own half is enforced at 0. It is computed and
 # printed at every gate instead, on the ENFORCE_C9_DOCS model, so the debt is visible rather
 # than either force-passed or blocking. Flip to 1 once the count reaches zero.
 ENFORCE_C16_ROOTS=${ENFORCE_C16_ROOTS:-0} # env_linter batch over EVERY lakefile root (NOT yet enforced)
@@ -840,20 +844,21 @@ echo
 # Modelled on B1 + B2, deliberately, rather than on a new shape:
 #   - the B2 half matches on the `import` KEYWORD, so a docstring or README that merely cites a
 #     `BimodalTools/...` path -- of which there are several, correctly -- is not a failure;
-#   - the B1 half scans the two root aggregators for the bare name, where any occurrence at all
-#     would put the tooling back into the library root's closure.
+#   - the B1 half scans the library root for the bare name, where any occurrence at all would
+#     put the tooling back into the library root's closure. There is ONE root to scan: the
+#     generated repository-root `FormalSystem.lean`. The self-named inner root this loop used to
+#     visit as well has been absorbed into it.
 # ---------------------------------------------------------------------------
 B3_HITS=()
 while IFS= read -r l; do
   [ -n "$l" ] && B3_HITS+=("$l")
 done < <(grep -rnE '^import[[:space:]]+BimodalTools(\.|[[:space:]]*$)' \
            FormalSystem --include='*.lean' 2>/dev/null)
-for f in FormalSystem.lean FormalSystem/FormalSystem.lean; do
-  [ -f "$f" ] || continue
-  while IFS= read -r l; do B3_HITS+=("$f:$l"); done < <(grep -n 'BimodalTools' "$f")
-done
+while IFS= read -r l; do
+  [ -n "$l" ] && B3_HITS+=("FormalSystem.lean:$l")
+done < <(grep -n 'BimodalTools' FormalSystem.lean 2>/dev/null)
 if [ "${#B3_HITS[@]}" -eq 0 ]; then
-  pass B3 "no module under FormalSystem/ imports BimodalTools.*, and neither root aggregator names it"
+  pass B3 "no module under FormalSystem/ imports BimodalTools.*, and the library root does not name it"
 else
   fail B3 "${#B3_HITS[@]} FormalSystem -> BimodalTools dependence(s); the split is one-way"
   for h in "${B3_HITS[@]}"; do note "$h"; done
@@ -1250,17 +1255,17 @@ for k in sorted(counts):
 # root as `MinusLanguage/`, `PlusLanguage/` and `StarLanguage/`. Both parents stay in the
 # tuple, because the re-scoping they brought with them is permanent -- every other
 # subdirectory beneath them still needs its sibling aggregator.
-# Allowlisted exception: `FormalSystem.lean` + `FormalSystem/FormalSystem.lean`.
-# That pair is the Lake `lean_lib FormalSystem` root (`srcDir := "."`,
-# `roots := #[`FormalSystem]`), so the self-named indirection is load-bearing, not a
-# convention violation.
+# The Lake `lean_lib FormalSystem` root needs no exception: it is the repository-root
+# `FormalSystem.lean`, the SIBLING of the `FormalSystem/` directory, which is exactly the
+# convention this check enforces. The self-named inner root that was once allowlisted here by
+# name has been absorbed into it, and its allowlist entry went with it -- a
+# self-named root file reappearing under `FormalSystem/` is now a C8 failure, as it should be.
 # Allowlisted exception: `Semantics/Extension/Extension.lean`. It is not an aggregator but
 # the content module of `thm:extension` (Zorn over the extension order), which happens to
 # share its directory's name; the directory's aggregator is the sibling
 # `Semantics/Extension.lean`. Renaming it would widen module-path churn for no
 # organizational gain.
 C8_ALLOW_SELFNAMED = {
-    "FormalSystem/FormalSystem.lean",
     "FormalSystem/Semantics/Extension/Extension.lean",
 }
 c8_problems = []
@@ -2573,17 +2578,28 @@ fi
 # projections of one `structure` whose fields are snake_case and data-valued), and
 # `runLinter FormalSystem` reports 0 in the same breath.
 #
-# MEASURED BEFORE DECIDING. `lake exe runLinter <Module>` accepts any module name, library root
-# or exe root alike. Sweeping all fifteen roots with the tree already built by C1 -- which is
-# the position this check runs in -- costs 44s wall clock and reports:
+# MEASURED BEFORE DECIDING, AND RE-MEASURED SINCE. `lake exe runLinter <Module>` accepts any
+# module name, library root or exe root alike. The sweep below covers every root declared in
+# lakefile.toml. Re-measured on 2026-09-21 over all seventeen (4 library roots, 13 exe roots),
+# with every root built first:
 #
-#     FormalSystem 0   ProofExtractorMain 0   BenchmarkAnchorsMain 0   TableauProofStepsMain 0
-#     ProofFirstGeneratorMain 0   DatasetValidatorMain 1   CheckInitImportsMain 1   EnumBenchmarkMain 4
-#     TraceExporterMain 5   BenchmarkOracleMain 9   TableauBridgeMain 12   MachineAppendixMain 16
-#     DatasetGeneratorMain 32   BimodalTest 85
+#     FormalSystem 0   BimodalToolsTest 0   ProofExtractorMain 0   TableauProofStepsMain 0
+#     BenchmarkAnchorsMain 1   ProofFirstGeneratorMain 1   CheckInitImportsMain 1
+#     DatasetValidatorMain 2   EnumBenchmarkMain 5   TraceExporterMain 5   BenchmarkOracleMain 10
+#     TableauBridgeMain 13   BimodalTools 14   ContrastiveGeneratorMain 15   MachineAppendixMain 16
+#     DatasetGeneratorMain 33   BimodalTest 80
 #
-# -- 179 findings outside the `FormalSystem` root, of which 56 are `defsWithUnderscore`
-# (DatasetGeneratorMain 20, BimodalTest 36) and the rest are docBlame/unusedArguments-class.
+# -- 196 findings across 13 of the 16 roots outside `FormalSystem`. A finding in a module two
+# roots reach is counted once per root, so this is a per-root sum, not a count of distinct
+# declarations. The table this replaces read 179 across fifteen roots and predated the
+# `BimodalTools` / `BimodalToolsTest` library split. Two movements since are worth naming,
+# because neither is new debt: `BimodalTools` went from 0 to 14 when the mutation engine and the
+# proof-first pipeline were split out of their `*Main` roots into library modules the aggregator
+# imports, and `BimodalTest` stands at 80 because three test modules that had been outside
+# every root -- and so invisible to this sweep -- were wired in. Findings that were always there
+# became countable. The gate prints the live figures on every full run; this block is the
+# dated record of a measurement, and C14 exists because such records drift, so re-measure
+# rather than trust it.
 #
 # THE DECISION: widen, but REPORTING-ONLY, behind ENFORCE_C16_ROOTS, which defaults to 0. The
 # scope is not clean, so enforcing it would hold the gate hostage to a burndown this change does
@@ -4308,15 +4324,22 @@ echo
 # scripts/warning-budget.py walks `.lake/build/lib/lean/**/*.trace` wholesale, so a tooling
 # module's warnings enter the budget the moment anything builds it.
 #
-# DECISION, RECORDED SO IT IS NOT READ AS AN OVERSIGHT: C28 is now the SOLE control watching
-# tooling compiler warnings. `lake build --wfail` in CI covers the `defaultTargets` closure,
-# which `BimodalTools` is deliberately outside of, and neither of the two CI steps that build
-# the tooling (`lake build BimodalTools`, `lake build BimodalToolsTest`) carries `--wfail`.
-# Adding `--wfail` there was considered and deferred: the tooling tree carries warnings today
-# that the library does not, and a hard stop would gate this split on that burndown. The
-# compensating control is this budget, which is per-file and may only decrease. If the two
-# tooling build steps ever do adopt `--wfail`, that is the point at which this note stops
-# being true and should be revised rather than deleted.
+# DECISION, REVISED 2026-09-21 -- THE TRIGGER THIS BLOCK NAMED HAS FIRED. When the tooling
+# library was split out, its two CI build steps (`lake build BimodalTools`,
+# `lake build BimodalToolsTest`) were deliberately left without `--wfail`: the tooling tree
+# carried warnings the library did not, a hard stop would have gated the split on that
+# burndown, and C28 was recorded here as the SOLE control watching tooling compiler warnings.
+# That note ended: "If the two tooling build steps ever do adopt `--wfail`, that is the point at
+# which this note stops being true and should be revised rather than deleted."
+#
+# They have. The recorded reason no longer held: scripts/warning-budget.py reported 0 warnings
+# across 0 files with every tooling root's trace warm, and -- because a trace scan shares Lake's
+# replay blind spot and is not evidence on its own -- `lake build BimodalTools --wfail` and
+# `lake build BimodalToolsTest --wfail` were both run and both exited 0. Both CI steps now carry
+# `--wfail`, so the tooling has the same two-gate arrangement as the library: `--wfail` is the
+# hard stop, and C28 is the diagnostic half that says which file and which linter, and can
+# absorb a justified exception without turning CI red. The `lean_exe` root step remains without
+# `--wfail`; its thirteen roots are thin mains over modules the two library steps already gate.
 # ---------------------------------------------------------------------------
 WARNING_BUDGET_OUT=$(python3 scripts/warning-budget.py 2>&1)
 C28_STATUS=$?
