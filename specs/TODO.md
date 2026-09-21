@@ -72,7 +72,7 @@ next_project_number: 642
 
 ### Documentation
 
-626 [NOT STARTED] — Repair drifted manuscript citations in the L+ files and pin...
+626 [RESEARCHED] — Repair drifted manuscript citations in the L+ files and pin...
 614 [NOT STARTED] — readme-lint.sh reports 47 of 60 FormalSystem/README.md files...
 
 ### Formula Refactor
@@ -98,7 +98,7 @@ next_project_number: 642
 
 ### Publication Quality
 
-630 [NOT STARTED] — Write scripts/move-modules.py (old-to-new module mapping plus...
+630 [RESEARCHING] — Write scripts/move-modules.py (old-to-new module mapping plus...
   └─ 632 [NOT STARTED] — Create leanlib BimodalTools (outside defaultTargets) and...
     └─ 634 [NOT STARTED] — Merge Syntax/XLanguage/ and Semantics/XLanguage/ into...
       └─ 635 [NOT STARTED] — Run python3 scripts/measure-refactor-partitions.py --check...
@@ -256,7 +256,7 @@ Absorbed task 610 description (verbatim, task 610 is abandoned as merged into th
 ---
 
 ### 630. Move tool and boneyard relocation
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: None
@@ -311,10 +311,11 @@ DELIVER: a report mapping each cslib convention to its current state here (adopt
 ---
 
 ### 626. Repair lplus manuscript citations pin blstar semantics
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: documentation
 - **Dependencies**: None
+- **Research**: [626_repair_lplus_manuscript_citations_pin_blstar_semantics/reports/01_repair-lplus-citations-pin-blstar.md]
 
 **Description**: Repair drifted manuscript citations in the L+ files and pin def:BLstar-semantics.
 

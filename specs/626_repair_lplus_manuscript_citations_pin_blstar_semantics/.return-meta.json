@@ -1,0 +1,44 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/626_repair_lplus_manuscript_citations_pin_blstar_semantics/reports/01_repair-lplus-citations-pin-blstar.md",
+      "summary": "Verified 15-site manuscript-citation-drift inventory across 5 L+ files (7 sites beyond the dispatch's named examples), the live sha256 and manifest/KNOWN-ANCHORS mechanics for pinning def:BLstar-semantics, the stab_4-vs-def:TM-stability derivation fact, and the exact StarLanguage README row needed for the Restricted-Modalities operators."
+    }
+  ],
+  "next_steps": "Run /plan 626 to create the implementation plan from this report's 15-site inventory, manifest-row text, and docstring/README wording guidance.",
+  "proposed_file_scope": [
+    "FormalSystem/Syntax/PlusLanguage/Axioms.lean",
+    "FormalSystem/Syntax/PlusLanguage/Formula.lean",
+    "FormalSystem/Semantics/PlusLanguage/PlusTruth.lean",
+    "FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean",
+    "FormalSystem/Semantics/PlusLanguage/PlusStateLocal.lean",
+    "docs/reference/paper-definitions-of-record.md",
+    "FormalSystem/Syntax/StarLanguage/README.md"
+  ],
+  "metadata": {
+    "session_id": "sess_1789955215_a3ad68_626",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 6
+  },
+  "memory_candidates": [
+    {
+      "content": "paper-definitions-of-record.md has a documented, precedent-backed convention: adding a manifest row for a previously LIVE-UNPINNED anchor (a coverage extension) must NOT bump the whole-file FILE_CHECKSUM/PINNED_COMMIT sentinels -- only a drift CORRECTION of an already-pinned anchor does that. Bumping on every coverage extension would turn the sentinel into a diary of touch-events. See the file's own 2026-08-13 22-anchor coverage-extension precedent (line 41) before re-pinning on any similar pin-a-new-anchor task.",
+      "category": "PATTERN",
+      "source_artifact": "specs/626_repair_lplus_manuscript_citations_pin_blstar_semantics/reports/01_repair-lplus-citations-pin-blstar.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["paper-definitions-of-record", "coverage-extension", "FILE_CHECKSUM", "manifest-pin", "drift-correction"]
+    },
+    {
+      "content": "When a grep-based citation-drift sweep is scoped to files the dispatch names 'by example' plus a broader directory sweep, do not trust the example set's file list as exhaustive -- in task 626, PlusNonValidities.lean and PlusStateLocal.lean carried 7 of 15 total drifted citations despite not being named as examples in the dispatch. Always run the full directory-level grep before writing the report's inventory table.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/626_repair_lplus_manuscript_citations_pin_blstar_semantics/reports/01_repair-lplus-citations-pin-blstar.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["citation-drift", "grep-sweep", "manuscript-line-numbers", "research-inventory"]
+    }
+  ],
+  "dispatch_seq": 1
+}

@@ -1,0 +1,19 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 1,
+  "summary": "Verified all four dispatch claims against the live manuscript and repository, extended the citation-drift inventory from the dispatch's ~8-site example set to a full 15-site table across 5 files (2 files not named by the dispatch), computed the sha256 needed to pin def:BLstar-semantics, and located the exact manifest/README insertion points.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/626_repair_lplus_manuscript_citations_pin_blstar_semantics/reports/01_repair-lplus-citations-pin-blstar.md",
+      "summary": "Full 15-site citation-drift inventory, def:BLstar-semantics verbatim text and sha256, stab_4/def:TM-stability derivation fact, and StarLanguage README row guidance for the implementation phase."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "plan_markers_verified": null,
+  "continuation_path": null,
+  "next_action_hint": "Run /plan 626 to create the implementation plan from the report's 15-site inventory and manifest/README guidance."
+}
