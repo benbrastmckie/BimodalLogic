@@ -5,6 +5,8 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.HybridLanguage.Formula
+import FormalSystem.HybridLanguage.HybridTruth
+import FormalSystem.HybridLanguage.HybridValidity
 
 /-!
 # `FormalSystem.HybridLanguage` — L⁺ plus the same-state modality, state registers and the binder
@@ -36,6 +38,16 @@ language one step short of it and a language that has it.
   right-hand sides), the universal modality `univ` and its dual `exist`, the recurrence formula
   `recF`, the transposition formula `transF`, the register-free fragment `RegFree`, and the
   embedding `ofPlus`
+
+## Semantic modules
+
+- `HybridLanguage.HybridTruth` — `HybridTruthAt`, the truth recursion relative to a register
+  vector, whose last three clauses are those of `[≡]`, the registers and the binder; the clause
+  lemmas, among them `univ_iff` (`A φ` holds iff `φ` holds at every history and time);
+  truth-level conservativity over L⁺ (`hybridTruthAt_ofPlus`)
+- `HybridLanguage.HybridValidity` — `TaskFrame.HybridValidOn`, `HybridValidOnFrames`,
+  `HybridValidIn`, `HybridValid`, each quantifying over every register vector; semantic
+  conservativity over L⁺ at every frame class (`hybridValidIn_ofPlus_iff`)
 
 ## Design decisions
 

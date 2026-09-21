@@ -303,27 +303,27 @@ other hard-coded tuple of the language directory names is extended in this phase
 
 ---
 
-### Phase 3: Hybrid truth, validity and conservativity over L⁺ [NOT STARTED]
+### Phase 3: Hybrid truth, validity and conservativity over L⁺ [COMPLETED]
 
 **Goal**: The truth recursion with a register vector, the validity layer, and the theorem that
 makes "extends L⁺" checkable.
 
 **Tasks**:
-- [ ] `FormalSystem/HybridLanguage/HybridTruth.lean` (layer 1): `HybridTruthAt` with the ten
+- [x] `FormalSystem/HybridLanguage/HybridTruth.lean` (layer 1): `HybridTruthAt` with the ten
   clauses of the challenge preamble (the seven L⁺ clauses are `PlusTruthAt`'s verbatim). Instances
   `TruthEnv HybridFormula` with `Env F := ℕ → F.WorldState` and `StabClauses HybridFormula`, every
   clause `Iff.rfl`. `namespace HybridTruth`: `atom_iff`, `stab_iff`, `same_iff`, `reg_iff`,
   `bind_iff` by `Iff.rfl`; the derived-operator lemmas as one-line instantiations of
   `TruthClauses.*`; `univ_iff` (`□△φ` iff `φ` at every history and time; from the box clause,
   `always_iff_tri` and `lt_trichotomy`, as probe lines 225-237) and `exist_iff`.
-- [ ] `hybridTruthAt_ofPlus` by induction on `φ`; the register vector is inert because `ofPlus`
+- [x] `hybridTruthAt_ofPlus` by induction on `φ`; the register vector is inert because `ofPlus`
   produces no `reg`, `bind` or `same`.
-- [ ] `FormalSystem/HybridLanguage/HybridValidity.lean`: `instance : PointTruth HybridFormula`
+- [x] `FormalSystem/HybridLanguage/HybridValidity.lean`: `instance : PointTruth HybridFormula`
   with `sat M τ t φ := ∀ r, HybridTruthAt M τ t r φ` (the L⋆ pattern);
   `TaskFrame.HybridValidOn`, `HybridValidOnFrames`, `HybridValidIn`, `HybridValid` with `mono`,
   `of_forall`, `apply`; `hybridValidOn_ofPlus_iff`, `hybridValidIn_ofPlus_iff`. The `←` direction
   of conservativity needs an inhabitant of `ℕ → G.WorldState`: use `fun _ => τ.state t`.
-- [ ] Layer rows `"HybridTruth": 1, "HybridValidity": 1`; aggregator imports; root; inventory.
+- [x] Layer rows `"HybridTruth": 1, "HybridValidity": 1`; aggregator imports; root; inventory.
 
 **Timing**: 2 hours
 

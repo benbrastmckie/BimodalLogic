@@ -15,6 +15,8 @@ import FormalSystem.ForMathlib
 import FormalSystem.ForMathlib.Order.PFilter
 import FormalSystem.HybridLanguage
 import FormalSystem.HybridLanguage.Formula
+import FormalSystem.HybridLanguage.HybridTruth
+import FormalSystem.HybridLanguage.HybridValidity
 import FormalSystem.Init
 import FormalSystem.MainResults
 import FormalSystem.Metalogic

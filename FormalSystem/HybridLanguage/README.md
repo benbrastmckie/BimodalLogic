@@ -36,6 +36,8 @@ hybrid logic that depend on a nominal being true at exactly one point do not tra
 | File | Lines | Description |
 |------|------:|-------------|
 | `Formula.lean` | 290 | `HybridFormula` (L⁺ plus `same`, `reg`, `bind`), the derived operators (with `PlusFormula`'s right-hand sides), the universal modality `univ` and its dual `exist`, the recurrence formula `recF`, the transposition formula `transF`, the register-free fragment `RegFree`, and the embedding `ofPlus` with `ofPlus_injective`, `regFree_ofPlus` and its `rfl` commutation pins |
+| `HybridTruth.lean` | 262 | `HybridTruthAt` — the ten-clause truth recursion relative to a register vector `ℕ → WorldState`, the last three clauses those of `[≡]`, the registers and the binder; the `TruthEnv` and `StabClauses` instances (the register vector is the inert environment); the `HybridTruth.*` clause lemmas (`same_iff`, `reg_iff`, `bind_iff`, `univ_iff`, `exist_iff` and the inherited derived-operator clauses); `hybridTruthAt_ofPlus` |
+| `HybridValidity.lean` | 162 | `TaskFrame.HybridValidOn`, `HybridValidOnFrames`, `HybridValidIn`, `HybridValid`, each quantifying over every register vector, with `mono`, `of_forall`, `apply`; conservativity over L⁺ (`hybridValidOn_ofPlus_iff`, `hybridValidOnFrames_ofPlus_iff`, `hybridValidIn_ofPlus_iff`, `hybridValid_ofPlus_iff`) |
 <!-- END GENERATED -->
 
 The sibling aggregator is `FormalSystem/HybridLanguage.lean`. The library root, the
@@ -55,6 +57,10 @@ exclusion. Anchors are cited by `\label` or by a quotable phrase, never by line 
 | the universal modality (no paper anchor) | `A φ := □△φ` and `E φ := ¬A¬φ` | `HybridFormula.univ`, `HybridFormula.exist` (`Formula.lean`) — **formalization-native** |
 | the recurrence and transposition formulas (no paper anchor) | `¬(i ∧ (P i ∨ F i))` and `¬(E(i ∧ F j) ∧ E(j ∧ F i))` | `HybridFormula.recF`, `HybridFormula.transF` (`Formula.lean`) — **formalization-native** |
 | the embedding of L⁺ (no paper anchor) | constructor to constructor, with a register-free image | `HybridFormula.ofPlus`, `ofPlus_injective`, `regFree_ofPlus` (`Formula.lean`) — **formalization-native** |
+| the truth clauses of the three new operators (no paper anchor) | `[≡]φ` over every (history, time) pair occupying the present world state; `i` iff the present world state is the `i`-th stored one; `↓ᵢ` stores the present world state | the `same`, `reg` and `bind` clauses of `HybridTruthAt`, with `HybridTruth.same_iff`, `reg_iff`, `bind_iff` (`HybridTruth.lean`) — **formalization-native** |
+| `def:world-history` (world histories are total) | `A φ := □△φ` ranges over every history and every time | `HybridTruth.univ_iff`, `HybridTruth.exist_iff` (`HybridTruth.lean`) — the definability is **formalization-native**; totality is the manuscript's |
+| `def:frame-validity` | validity over a frame, here at every register vector | `TaskFrame.HybridValidOn`, `HybridValidOnFrames`, `HybridValidIn`, `HybridValid` (`HybridValidity.lean`) |
+| conservativity over L⁺ (no paper anchor) | an L⁺ formula is valid in the hybrid state language iff it is L⁺-valid, at every frame class | `hybridTruthAt_ofPlus` (`HybridTruth.lean`), `hybridValidIn_ofPlus_iff`, `hybridValid_ofPlus_iff` (`HybridValidity.lean`) — **formalization-native** |
 
 ## Module Invariants
 
@@ -67,7 +73,7 @@ directory needs a row in that table.**
 
 ## References
 
-* JPL paper — `def:BLstar-semantics`, `sub:Extension`
+* JPL paper — `def:BLstar-semantics`, `def:world-history`, `def:frame-validity`, `sub:Extension`
 * [P. Blackburn, M. de Rijke, Y. Venema, *Modal Logic*][blackburn2002], §7.3 — point nominals and
   the satisfaction operator
 * `FormalSystem/PlusLanguage/README.md` — L⁺, the language this one extends
