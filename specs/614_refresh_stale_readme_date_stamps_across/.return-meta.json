@@ -1,26 +1,11 @@
 {
-  "status": "researched",
-  "artifacts": [
-    {
-      "type": "report",
-      "path": "specs/614_refresh_stale_readme_date_stamps_across/reports/01_readme-stamps-lint-repair.md",
-      "summary": "Re-derived all three sweeps at HEAD: 53 READMEs need stamps (CI's two-root invocation), 21 archive links need depth correction (all targets verified on disk), and the typst half is not a path rewrite -- 5 of 9 citations are orphaned and a straight re-point leaves CI red because /training/ is gitignored; a clean-checkout run also exposed a 10th violation (lakefile.lean)."
-    }
-  ],
-  "user_decision": {
-    "question": "Four footnotes in typst/chapters/p4-dataset-pipeline.typ cite PIPELINE.md content that was deliberately deleted from that file and consolidated into the citing chapter itself, so no re-point can make them true. How should they be resolved?",
-    "options": [
-      "A -- De-cite the four orphaned footnotes (state the sentences in the chapter's own voice) and whitelist the surviving training/PIPELINE.md spans plus lakefile.lean",
-      "B -- Un-ignore /training/ and git add -f it, then re-point all nine citations",
-      "C -- Whitelist all nine spans unchanged and edit no chapter prose"
-    ],
-    "recommended": "A -- De-cite the four orphaned footnotes (state the sentences in the chapter's own voice) and whitelist the surviving training/PIPELINE.md spans plus lakefile.lean",
-    "blocking": false
-  },
+  "status": "in_progress",
+  "artifacts": [],
   "metadata": {
     "session_id": "sess_1790002208_59de0b_614",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 5
 }
