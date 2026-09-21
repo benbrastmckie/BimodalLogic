@@ -1,16 +1,17 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 1,
-  "summary": "Verified all ten Lean-appendix coverage items against live source and compiled every candidate didactic snippet green with lake env lean; produced a signature ledger, two name corrections, the Check 1 whitelist delta, the status.typ generator extension item 10 requires, a fourteen-section arc, and a green baseline for all four acceptance gates.",
+  "status": "planned",
+  "task_number": 647,
+  "dispatch_seq": 2,
+  "session_id": "sess_1790024508_6b72c3_647",
+  "phases_completed": 0,
+  "phases_total": 10,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/647_extend_lean_appendix_semantics_metalogic_coverage/reports/01_extend-lean-appendix-coverage.md",
-      "summary": "Research report: verified declaration ledger, name corrections, snippet compilation results, whitelist and generator deltas, proposed section arc, phasing recommendation, and baseline gate state."
+      "type": "plan",
+      "path": "specs/647_extend_lean_appendix_semantics_metalogic_coverage/plans/01_extend-lean-appendix-coverage.md",
+      "summary": "Ten-phase plan extending the Lean appendix to the semantic layer, a derived theorem and its semantic counterpart, derivations as data, the metalogic result map, the decision procedure, and a generator-derived project overview, with a standing four-gate per-phase check."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 0,
-  "blockers": []
+  "next_steps": "Run /implement 647 to execute the plan",
+  "notes": "Phases 1 and 8 are independent (wave 1); phases 2-7 and 9 are serialized because they edit typst/chapters/ax-lean-appendix.typ in document order. Phase 8 is the only atomic-batch phase (generator plus sync-check plus regenerated status.typ). The appendix file carries a pre-existing uncommitted delta that this task extends and must never be reverted."
 }

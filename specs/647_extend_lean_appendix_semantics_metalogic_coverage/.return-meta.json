@@ -1,18 +1,32 @@
 {
-  "status": "researched",
-  "started_at": "2026-09-21T14:02:20-07:00",
-  "completed_at": "2026-09-21T14:12:00-07:00",
+  "status": "planned",
+  "started_at": "2026-09-21T14:14:00-07:00",
+  "completed_at": "2026-09-21T14:31:00-07:00",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/647_extend_lean_appendix_semantics_metalogic_coverage/reports/01_extend-lean-appendix-coverage.md",
-      "summary": "Verification of all ten Lean-appendix coverage items against live source, with a signature ledger, two name corrections, a compiled didactic-snippet set, the Check 1 whitelist delta, the status.typ generator extension needed for item 10, a fourteen-section arc, and a green baseline for all four acceptance gates."
+      "type": "plan",
+      "path": "specs/647_extend_lean_appendix_semantics_metalogic_coverage/plans/01_extend-lean-appendix-coverage.md",
+      "summary": "Ten-phase plan extending the Lean appendix to the semantic layer, a derived theorem and its semantic counterpart, derivations as data, the metalogic result map, the decision procedure, and a generator-derived project overview, with a standing four-gate per-phase check."
+    }
+  ],
+  "next_steps": "Run /implement 647 to execute the plan",
+  "phase_count": 10,
+  "estimated_hours": 13,
+  "dependency_waves": [[1, 8], [2], [3], [4], [5], [6], [7], [9], [10]],
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic's typst pipeline, a cited figure is only drift-proof when the generator and the checker are extended in the same change. scripts/typst-status-counts.sh writes typst/generated/status.typ, but scripts/typst-sync-check.sh Check 2 compares only a hard-coded scalar_fields list plus a live_map dict. A new #let binding added to status.typ without matching keys in both of those is invisible to the check, so a stale number sits in the book with the sync check green. Check 2's comparison also matches integers only (regex (\\d+)), so a string-valued figure such as a version pin reports MISSING on every run unless the comparison path is widened first. The generator's --json branch is what Check 2 consumes and it must run without a lake build, so any new figure has to be a filesystem or git read rather than a #print axioms read. The reliable acceptance test for such a change is perturbation: hand-edit one committed figure, confirm the check fails naming that field, restore it, confirm PASS.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/647_extend_lean_appendix_semantics_metalogic_coverage/plans/01_extend-lean-appendix-coverage.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["typst", "status.typ", "sync-check", "generated-figures", "silent-drift", "perturbation-test"]
     }
   ],
   "metadata": {
     "session_id": "sess_1790024508_6b72c3_647",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 2
 }
