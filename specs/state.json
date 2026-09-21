@@ -92,9 +92,10 @@
       ],
       "description": "Close the measurement blind spot the language-extension merge (task 634) opened. FormalSystem/PlusLanguage/, FormalSystem/MinusLanguage/ and FormalSystem/StarLanguage/ are absent from the LAYERS table in scripts/measure-refactor-partitions.py, so layer_of returns None for them and every import into and out of those directories is invisible to the upward-edge measurement.\n\nWHY IT MATTERS. Task 633 installed an allowlist-EQUALITY assertion in scripts/check-metalogic-cycles.sh over the upward-import set, holding 7 lines, all from Syntax/MinusLanguage/AxiomDischarge.lean. Task 634 moved that file and emptied the allowlist. The allowlist did not empty because those edges turned downward; it emptied because they stopped being measured. No harness check would catch a regression there today, and the only record is a note in ORGANISATION.md's layer table.\n\nDELIVER. (1) Decide how the three language directories are layered. They hold syntax, proof system and semantics in one directory, so a single layer number is wrong for them; the honest options are a per-file sub-layer (syntax files at the Syntax layer, semantics files at the Semantics layer) or a declared per-directory layer with the intra-directory order asserted separately. Record the decision and its reason. (2) Extend LAYERS and layer_of accordingly, and make layer_of fail loudly, not return None, for any path under FormalSystem/ that matches no row, so the next new directory cannot go dark silently. (3) Re-derive the upward-import set and restore the allowlist to whatever it measures: expect the 7 AxiomDischarge lines to reappear under their new path, and treat any other line as a finding to report, not to allowlist silently. (4) Add the assertion task 634's summary names: inside each language directory, no syntax module imports a semantics module (before the merge the directory boundary enforced this; now nothing does). (5) Negative-test both assertions by hand, surplus and shortfall, as task 633 did. (6) Update ORGANISATION.md and docs/ARCHITECTURE.md to the measured order and remove the blind-spot note.\n\nACCEPTANCE. measure-refactor-partitions.py upward-edges reports a non-empty measured set for the three directories; layer_of has no None path under FormalSystem/; check-metalogic-cycles.sh green with a non-vacuous allowlist and still exactly 1 cycle; both negative tests observed to fail. DEPENDENCIES: none.",
       "project_number": 642,
-      "status": "not_started",
+      "status": "researching",
       "created": "2026-09-21T14:06:48Z",
-      "last_updated": "2026-09-21T14:06:48Z"
+      "last_updated": "2026-09-21T18:00:27Z",
+      "session_id": "sess_1790004043_997429_642"
     },
     {
       "project_number": 637,
@@ -1236,7 +1237,7 @@
     {
       "project_number": 614,
       "project_name": "refresh_stale_readme_date_stamps_across",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "documentation",
       "priority": "low",
@@ -1259,7 +1260,7 @@
         "FormalSystem/README.md",
         "typst/chapters/p4-dataset-pipeline.typ"
       ],
-      "last_updated": "2026-09-21T16:01:02Z",
+      "last_updated": "2026-09-21T18:08:42Z",
       "session_id": "sess_1790004043_997429",
       "artifacts": [
         {
@@ -1276,9 +1277,15 @@
           "path": "specs/614_refresh_stale_readme_date_stamps_across/handoffs/phase-2-handoff-20260921T090643.md",
           "type": "handoff",
           "summary": "Phase 2 stop record and resume point"
+        },
+        {
+          "path": "specs/614_refresh_stale_readme_date_stamps_across/summaries/01_readme-lint-citation-repair-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary with the R8 baseline-delta note and the CI depth-1 note"
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Repaired 21 broken archive links in 11 FormalSystem READMEs, restamped 54 READMEs (adding stamps to the two that had none), and re-pointed or de-cited the nine docs/training/PIPELINE.md citations in the dataset-pipeline typst chapter with a whitelist for the gitignored target. readme-lint.sh and typst-sync-check.sh both exit 0, the latter also in a CI-shaped clean clone; both typst documents compile."
     }
   ],
   "artifacts": [

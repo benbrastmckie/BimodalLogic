@@ -11,7 +11,7 @@ next_project_number: 645
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,604,614,623,624,625,628,638,642 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,534,559,563,568,604,623,624,625,628,638,642 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,570,616,617 | 298,464,502,563,568 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -70,10 +70,6 @@ next_project_number: 645
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
 
-### Documentation
-
-614 [IMPLEMENTING] — readme-lint.sh reports 47 of 60 FormalSystem/README.md files...
-
 ### Formula Refactor
 
 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of...
@@ -98,7 +94,7 @@ next_project_number: 645
 ### Publication Quality
 
 638 [NOT STARTED] — Split EFGames/GapDetection.lean and the split-point file only...
-642 [NOT STARTED] — Close the measurement blind spot the language-extension merge...
+642 [RESEARCHING] — Close the measurement blind spot the language-extension merge...
 
 ### Semantics
 
@@ -151,7 +147,7 @@ ACCEPTANCE. All checks green on the current tree; each seen to fail on an inject
 ---
 
 ### 642. Restore layer measurement for language directories
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: general
 - **Topic**: publication-quality
 - **Dependencies**: None
@@ -359,13 +355,14 @@ POST-RELOCATION NOTE (2026-09-21). Task 630 moved the archive to the repository 
 ---
 
 ### 614. Refresh stale readme date stamps across
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: documentation
 - **Dependencies**: Task 634
 - **Research**: [614_refresh_stale_readme_date_stamps_across/reports/01_readme-stamps-lint-repair.md]
 - **Plan**: [614_refresh_stale_readme_date_stamps_across/plans/01_readme-lint-citation-repair.md]
 - **Handoff**: [614_refresh_stale_readme_date_stamps_across/handoffs/phase-2-handoff-20260921T090643.md]
+- **Summary**: [614_refresh_stale_readme_date_stamps_across/summaries/01_readme-lint-citation-repair-summary.md]
 
 **Description**: readme-lint.sh reports 47 of 60 FormalSystem/README.md files with a stale or missing date stamp (stamp predates the directory's last git-committed change), left behind by the recent Syntax/Semantics language-family nesting, Metalogic import-cycle repair, and WorldHistory retarget work. Advisory only (readme-lint.sh exits RESULT: PASS regardless), but the drift is now wide enough to warrant a single sweep. Update each listed README's date stamp to reflect its directory's current state, and add a date line to the 3 files currently missing one (Metalogic/Conservativity/Star/README.md, Metalogic/Decidability/Verified/Termination/MintBound/README.md, Syntax/StarLanguage/README.md). See specs/reviews/review-2026-09-17.md's Low Priority Issues section for the full 47-file list. Purely mechanical; re-verify with scripts/readme-lint.sh after.
 
