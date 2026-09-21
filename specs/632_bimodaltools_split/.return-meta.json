@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/632_bimodaltools_split/reports/01_bimodaltools-library-split.md",
+      "summary": "Grounds the BimodalTools split in PUBLICATION_REFACTOR.md Phase 3: confirms the 25-module/14,750-line move set, identifies FormalSystem/Automation.lean's 8 tooling imports as the real blocker, decides SuccessPatterns stays in the library, finds DatasetAssembly/PrefilterSoundness would go unreachable, and enumerates the 11 harness scan roots plus 11 bare-form citations that must be widened or hand-edited."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1789955215_a3ad68_632",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

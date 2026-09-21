@@ -104,7 +104,7 @@
     {
       "project_number": 632,
       "project_name": "bimodaltools_split",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "publication-quality",
       "dependencies": [
@@ -121,7 +121,16 @@
       ],
       "description": "Create lean_lib BimodalTools (outside defaultTargets) and BimodalToolsTest; move the 25 tooling modules that python3 scripts/measure-refactor-partitions.py automation-partition lists (including Metalogic/Decidability/TraceExport.lean) and re-root the 12 lean_exe targets under BimodalTools.*; move the tooling tests it lists into BimodalToolsTest; make Examples/BimodalProofs.lean import specific Automation modules; decide SuccessPatterns' split; update the CI exe-root step, typst-module-map.sh and the automation-module-map generator. Acceptance: lake build writes no .olean under BimodalTools/; a new check asserts FormalSystem never imports BimodalTools; lake build BimodalToolsTest exits 0 in CI; harness green.\n\nReconciliation notes: depends on task 630 only. Dispatch after tasks 298, 296 and 282 land (all three currently edit FormalSystem/Automation/ in-flight) -- this is a scheduling recommendation, not a dependency edge, so this task's own dependency array does not block on their completion. Task 231's lake exe target names are unchanged by this split (no edge needed). Task 604 depends on this task (see task 631's notes).",
       "created": "2026-09-19T08:40:54Z",
-      "last_updated": "2026-09-19T08:40:54Z"
+      "last_updated": "2026-09-21T03:43:09Z",
+      "session_id": "sess_1789955215_a3ad68",
+      "artifacts": [
+        {
+          "path": "specs/632_bimodaltools_split/reports/01_bimodaltools-library-split.md",
+          "type": "report",
+          "summary": "Research report for the BimodalTools library split: confirmed move set, SuccessPatterns decision, reachability analysis, harness scan-root inventory, citation-rewrite volume, and a 5-phase sequencing recommendation."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 633,

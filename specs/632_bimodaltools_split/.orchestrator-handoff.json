@@ -1,0 +1,20 @@
+{
+  "task_number": 632,
+  "phase": "research",
+  "dispatch_seq": 7,
+  "status": "researched",
+  "session_id": "sess_1789955215_a3ad68_632",
+  "agent_type": "lean-research-agent",
+  "phases_completed": 0,
+  "phases_total": 0,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/632_bimodaltools_split/reports/01_bimodaltools-library-split.md",
+      "summary": "Research report for the BimodalTools library split: confirmed move set, SuccessPatterns decision, reachability analysis, harness scan-root inventory, citation-rewrite volume, and a 5-phase sequencing recommendation."
+    }
+  ],
+  "summary": "Research complete. The 25-module/14,750-line move set is confirmed. Key findings: FormalSystem/Automation.lean imports 8 tooling modules (invisible to the partition script, which prunes the aggregator) and is the actual blocker; DatasetAssembly and PrefilterSoundness become unreachable after the split unless a BimodalTools.lean aggregator imports the 13 non-Main modules; SuccessPatterns should stay whole in the library (pure data, two library call sites, tooling uses only PatternKey/GoalCategory); 11 invariant checks hardcode FormalSystem as scan root and would silently lose coverage, C25N worst; the namespace rename is affordable (8 FQN fixes, 6 namespace edits, <=5 added opens) but must never use a bare FormalSystem.Automation prefix row; typst-module-map.sh needs no change; the CI exe-root step needs no change (it reads roots at run time) but two new CI build steps are required. Harness baseline verified green (0 FAIL, --no-build).",
+  "next_phase": "plan",
+  "blockers": []
+}
