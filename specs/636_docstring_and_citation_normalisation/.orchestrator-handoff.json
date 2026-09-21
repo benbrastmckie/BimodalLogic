@@ -1,19 +1,24 @@
 {
   "task_number": 636,
-  "phase": "plan",
-  "dispatch_seq": 20,
-  "status": "planned",
-  "session_id": "sess_1789955215_a3ad68_636",
-  "phases_completed": 0,
+  "phase": "implement",
+  "dispatch_seq": 21,
+  "status": "implemented",
+  "session_id": "sess_1789955215_a3ad68",
+  "phases_completed": 10,
   "phases_total": 10,
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/636_docstring_and_citation_normalisation/summaries/01_docstring-citation-normalisation-summary.md",
+      "summary": "Implementation summary with the full before/after acceptance table, every plan deviation, and six follow-ups."
+    },
+    {
       "type": "plan",
       "path": "specs/636_docstring_and_citation_normalisation/plans/01_docstring-citation-normalisation.md",
-      "summary": "10-phase implementation plan for the docstring and citation normalisation sweep across FormalSystem/, BimodalTools/ and Tests/."
+      "summary": "All ten phases marked [COMPLETED], every checklist item ticked, deviations annotated inline."
     }
   ],
-  "summary": "Ten-phase plan, ~15h, waves [1,2] then strictly serial 3-10. Ordered bib-merge-first (58 typst-only keys must exist in references.bib before prose citations can be converted) and re-anchor-tool-second (scripts/reanchor-lean-citations.py is a Phase 2 deliverable written before the first docstring edit, not a fix-up). Phases 3-9 are organised by disjoint FILE SET rather than by edit type, so each file is touched once and the C20 re-anchor runs once at the end of each phase rather than interleaved; they are serialized anyway because each repair pass rewrites citer files tree-wide. Acceptance replaced with a 12-row table measured red at HEAD b668923b1 (0 entries in target citation form vs 197 in the old bare form, 119 markdown-link cross-refs, 14 personal paths, 17 literature/ pointers, 27 Logos/ProofChecker, 12 Paper Specification Reference, 4 Implementation Status, 2 dangling bibkeys, 26 bib entries -> 84), since the task's original grep -rn 'home/benjamin' is already vacuously green. Gating is on the build-inclusive check-module-invariants.sh, never lake build, run foreground with timeout 600000. Historical-record preservation is called out per-file for Semantics/TaskFrame.lean and Metalogic/Soundness.lean; sub: anchors stay verbatim; the L+ label citations are gold standard, not conversion targets; Boneyard/ is out of scope. The unresolved-bibkey user decision is carried forward non-blocking with a re-point default isolated in its own Phase 1 checklist item.",
+  "summary": "All ten phases complete, each committed at a green boundary (commits def43e6d3 through b5dc87d2d). One bibliography: typst/bibliography.bib merged into the root references.bib at 77 entries with no duplicate key, both typst documents re-pointed and compiling (they now need --root, documented in README.md and typst/README.md). Every ## References and ### References block across FormalSystem/, BimodalTools/ and Tests/ is in the three-way normal form; all 12 Paper Specification Reference headings folded with their transcriptions preserved verbatim, all 4 Implementation Status headings removed with their pinned declaration names kept. Acceptance moved from red to green on A2 (197 -> 0), A3 (121 -> 0), A4 (14 -> 0), A5 (17 -> 0), A6 (27 -> 0), A7 (12 -> 0), A8 (4 -> 0), A9 (2 -> 0) and A11. A1 reaches 146 and A10 is 77 rather than the plan's 181 and 84: both plan targets were arithmetically wrong and the summary shows the derivation. The build-inclusive scripts/check-module-invariants.sh is ALL PASS (C1 both halves, C2, C14 both halves, C15 at 59 and 76, C19 at 94.01%, C20 tier 1 at 1028 with 0 unverifiable, tier 2 at 0, INV clean). readme-lint.sh is unchanged at 21 broken refs and typst-sync-check.sh Check 1 unchanged at 9; Check 2b went red at 4 from the sweep's line-count moves and was regenerated back to 0. Boneyard untouched, the sub: anchor census identical to its pre-sweep output. Two new deliverables: scripts/reanchor-lean-citations.py (with an idempotent --recompute repair mode) and docs/development/REFERENCE_NORMAL_FORM.md. Six follow-ups recorded in the summary, including two pre-existing drift findings for task 177.",
   "blockers": [],
-  "next_phase": "implement"
+  "next_phase": "complete"
 }
