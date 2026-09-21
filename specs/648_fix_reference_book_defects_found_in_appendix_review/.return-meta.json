@@ -1,8 +1,57 @@
 {
-  "status": "in_progress",
-  "agent_type": "general-implementation-agent",
-  "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
-  "session_id": "sess_1790024508_6b72c3",
+  "status": "implemented",
   "dispatch_seq": 6,
-  "task_number": 648
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/648_fix_reference_book_defects_found_in_appendix_review/summaries/01_fix-reference-book-defects-summary.md",
+      "summary": "Item-by-item disposition for all nine reference-book defects: eight fixed, one closed as not-reproducing, plus the Phase 1 sync-check blocker cleared. All four acceptance gates green."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Fixed all nine reference-book defects found during the appendix review: the broken appendix cross-reference show-rule (with real letter identities for both appendices), stale sync records, axiom-count/Type-valuedness disagreements across three Lean docstrings and two chapters, a wrong DecisionResult description, an incomplete introduction directory list, a machine-appendix letter mismatch, and two template hygiene issues (hanging indent, warning-free build). typst compile, typst-sync-check.sh, and lake build --wfail all green; all six touched chapter/appendix pages rendered and inspected."
+  },
+  "modified_files": [
+    "FormalSystem/Automation/Tactics/Commands.lean",
+    "FormalSystem/Automation/Tactics/README.md",
+    "FormalSystem/Automation/Tactics/Search.lean",
+    "FormalSystem/Automation/Tactics/UserTactics.lean",
+    "typst/BimodalReference.typ",
+    "typst/SYNC-MAP.md",
+    "typst/chapters/00-introduction.typ",
+    "typst/chapters/ax-lean-appendix.typ",
+    "typst/chapters/ax-machine-appendix.typ",
+    "typst/chapters/p2-decidability-practice.typ",
+    "typst/chapters/p4-dataset-pipeline.typ",
+    "typst/chapters/p4-proof-automation.typ",
+    "typst/generated/automation-module-map.typ",
+    "typst/generated/status.typ",
+    "typst/sync-check-whitelist.txt",
+    "typst/template.typ",
+    "specs/648_fix_reference_book_defects_found_in_appendix_review/summaries/01_fix-reference-book-defects-summary.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic (Typst reference-book work), a level-1 heading given custom real letter numbering via #set heading(numbering: fn, supplement: \"X\") positioned before the heading only wins over a document-wide #show heading.where(level:1): set heading(supplement: \"Y\") rule if the override is ALSO a show-set rule of the same shape, not a plain #set. A plain #set heading(supplement: ...) loses to an earlier document-wide show-set rule for the same field. Also: counter(heading).at(location) returns a multi-component array once any deeper-level heading has been seen in the document, and a single-placeholder numbering(\"1\", ..state) pattern concatenates extra components with no separator when applied to that state -- this is the root cause of a #show ref rule rendering something like \"Chapter 1534\" for an unnumbered heading referenced late in a chapter-heavy document.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/648_fix_reference_book_defects_found_in_appendix_review/summaries/01_fix-reference-book-defects-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["typst", "show ref", "heading numbering", "counter(heading)", "supplement", "show-set rule"]
+    },
+    {
+      "content": "In this BimodalLogic repo, scripts/typst-status-counts.sh / typst-sync-check.sh Check 2 compares committed generated/status.typ against a live filesystem regeneration, not against git history -- so when a concurrent, unrelated task is actively committing to FormalSystem/ during another task's work, Check 2 drifts repeatedly and chasing it mid-phase is futile (the target keeps moving). The correct strategy is to only regenerate at natural checkpoints (a phase that already touches generated files, e.g. after Lean docstring edits) and at the final acceptance-gate phase, accepting that intermediate phases may show a stale Check 2 for reasons outside the task's own scope.",
+      "category": "PATTERN",
+      "source_artifact": "specs/648_fix_reference_book_defects_found_in_appendix_review/summaries/01_fix-reference-book-defects-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["typst-sync-check", "concurrent tasks", "generated files", "Check 2", "git staging", "multi-task orchestration"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790024508_6b72c3",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 9,
+    "phases_total": 9
+  }
 }
