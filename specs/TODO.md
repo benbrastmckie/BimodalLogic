@@ -348,6 +348,7 @@ POST-RELOCATION REVISION (2026-09-21, after tasks 630 and 632-636 landed). Depen
 - **Dependencies**: Task 638
 - **Research**: [625_formalize_open_future_open_past_modalities/reports/01_open-future-open-past-modalities.md]
 - **Plan**: [625_formalize_open_future_open_past_modalities/plans/01_open-future-open-past-modalities.md]
+- **Summary**: [625_formalize_open_future_open_past_modalities/summaries/01_open-future-open-past-modalities-summary.md]
 
 **Description**: Formalize the manuscript's open-future and open-past modalities and machine-check, in the library, that the stability modal is NOT Ockhamist historical necessity while the open-future modality is.
 

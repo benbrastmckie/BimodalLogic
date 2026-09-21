@@ -384,6 +384,11 @@
           "path": "specs/625_formalize_open_future_open_past_modalities/plans/01_open-future-open-past-modalities.md",
           "type": "plan",
           "summary": "Eight-phase implementation plan with argued design and siting decisions, per-phase gates, and 31 challenge-pinned theorem statements."
+        },
+        {
+          "path": "specs/625_formalize_open_future_open_past_modalities/summaries/01_open-future-open-past-modalities-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: seven phases complete, phase 8 partial pending one README.md commit; verification fully passed."
         }
       ],
       "next_artifact_number": 2

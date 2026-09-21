@@ -1,31 +1,101 @@
 {
-  "status": "planned",
-  "dispatch_seq": 9,
+  "status": "partial",
+  "started_at": "2026-09-21T20:23:57Z",
+  "completed_at": "2026-09-21T20:58:38Z",
+  "requires_user_review": true,
+  "review_reason": "Phase 8 is [PARTIAL] with one residual item that is a commit, not work: the repository-root README.md holds this task's edits together with another session's uncommitted rewrite of the same tree listing and language table. git-commit-scoped.sh commits whole paths, so it was left unstaged rather than sweep foreign hunks into a task-625 commit. All 31 challenge theorems are proved and every verification gate passed.",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "axiom_count_baseline": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/625_formalize_open_future_open_past_modalities/plans/01_open-future-open-past-modalities.md",
-      "summary": "Eight-phase sequential plan (12.5 h) landing the open-future/open-past language L^> as a root-level component FormalSystem/OpenLanguage/, with 31 challenge-pinned theorems: the three history classes, truth and validity conservative over L+, the Ockhamist separating pair on a fully axiomatized three-state frame, the time-reversal mirror, S5 and the strength ordering with every converse refuted."
+      "type": "summary",
+      "path": "specs/625_formalize_open_future_open_past_modalities/summaries/01_open-future-open-past-modalities-summary.md",
+      "summary": "L^▷ (L⁺ plus the open-future and open-past modals) landed as FormalSystem/OpenLanguage/ with all 31 challenge theorems proved; phases 1-7 complete, phase 8 partial pending one README.md commit."
     }
   ],
-  "next_steps": "Run /implement 625 to execute the plan. Note: the task's file_scope in state.json still names FormalSystem/Semantics/OpenLanguage* paths; the plan's decision D2 sites the component at FormalSystem/OpenLanguage/ per the post-merge layout convention, so the per-phase 'Files to modify' lists are the live scope.",
+  "partial_progress": {
+    "stage": "phase_8_partial",
+    "details": "Phases 1-7 completed and committed. Phase 8: every task done and gated green; the root README.md is edited but uncommitted because it also carries another session's hunks.",
+    "phases_completed": 7,
+    "phases_total": 8
+  },
+  "handoff_path": "specs/625_formalize_open_future_open_past_modalities/handoffs/phase-8-handoff-20260921T205657Z.md",
+  "completion_data": {
+    "completion_summary": "Formalized the manuscript's open-future and open-past modalities as the semantic-only language L^▷ in FormalSystem/OpenLanguage/. The Ockhamist principle is proved valid for the open-future operator over every task frame and its stability transposition is refuted on a finite integer-time frame satisfying every frame axiom, with the time-reversal mirror, S5 for each operator, and the strict strength ordering. One README.md commit remains.",
+    "roadmap_items": []
+  },
+  "metadata": {
+    "session_id": "sess_1790018097_6c1579",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "challenge_theorems_proved": 31,
+    "challenge_theorems_total": 31,
+    "commits": [
+      "203619c1b",
+      "d50fd0fed",
+      "69087ab43",
+      "4d588a9d8",
+      "71fb8fd25",
+      "4d70aa21e",
+      "ba3034c09",
+      "a5c676b1e"
+    ],
+    "uncommitted_by_design": [
+      "README.md"
+    ]
+  },
   "memory_candidates": [
     {
-      "content": "Authoring a '## Lean Challenge Statements' block for a greenfield language: lean-challenge-snapshot.sh matches only the keywords theorem, lemma, def and instance followed by a SIMPLE name, forces that body to sorry, and discards all text between a declaration's ':=' and the next matched declaration (so namespace / end / open / variable lines placed between declarations vanish, and a dotted name like 'TaskFrame.Foo' is recorded as 'TaskFrame'). Keep every carrier in the preamble as inductive or abbrev (unmatched, so bodies survive and stay out of the identifier set), use no dotted declaration names, and switch namespaces only before the first theorem. The Goals identifier range runs from a line starting with bold 'Goals:' to the next line starting with two asterisks plus a non-G character, and captures every backticked simple identifier, so list non-challenge declarations under a separate bold heading. The tool compares a locale-sorted Goals list against a codepoint-sorted declared list: names ranked differently by en_US and C collation (uppercase versus underscore after a shared prefix) give a spurious exit 71; verify with the --dry-run flag in the default locale.",
+      "content": "lake-build-guard.sh build mode requires a lake SUBCOMMAND as the first lake argument: `-- build FormalSystem`, never `-- FormalSystem` (exit 77, nothing built). Piping the guard through `tail`/`grep` reports the pipeline's exit status, so a build that never ran reads as exit 0. Always capture the guard's own status: `set -o pipefail` with `${PIPESTATUS[0]}`, or redirect to a file and append `echo GUARD_EXIT=$?`.",
       "category": "WORKFLOW",
-      "source_artifact": "specs/625_formalize_open_future_open_past_modalities/plans/01_open-future-open-past-modalities.md",
+      "source_artifact": "specs/625_formalize_open_future_open_past_modalities/summaries/01_open-future-open-past-modalities-summary.md",
+      "confidence": 0.95,
+      "suggested_keywords": [
+        "lake-build-guard",
+        "exit 77",
+        "PIPESTATUS",
+        "pipefail",
+        "masked exit code"
+      ]
+    },
+    {
+      "content": "`lake env lean <file>` does NOT apply the lakefile's Mathlib linter options: a file can elaborate with exit 0 and no output yet raise linter warnings (e.g. the `show` tactic linter, which wants `change` when the goal is actually changed) in the real lake build. Single-file elaboration is a fast proof check only; only the guarded lake build is authoritative for a warning-free gate.",
+      "category": "PATTERN",
+      "source_artifact": "specs/625_formalize_open_future_open_past_modalities/summaries/01_open-future-open-past-modalities-summary.md",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "lake env lean",
+        "linter",
+        "show tactic",
+        "change",
+        "warning budget",
+        "C28"
+      ]
+    },
+    {
+      "content": "When a shared file carries another session's uncommitted hunks, git-commit-scoped.sh cannot commit only your hunks (it commits whole paths from the working tree). Leave the file unstaged, say so in the commit message and handoff, and mark the phase [PARTIAL]: [COMPLETED WITH EXCLUSIONS] is inadmissible because its condition 5 (no residual work) fails. Before staging any shared doc, diff it and confirm every hunk is yours.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/625_formalize_open_future_open_past_modalities/summaries/01_open-future-open-past-modalities-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["lean-challenge-snapshot", "Lean Challenge Statements", "Goals identifiers", "abbrev preamble", "locale sort", "planner"]
+      "suggested_keywords": [
+        "concurrent sessions",
+        "foreign hunks",
+        "under-stage",
+        "git-commit-scoped",
+        "PARTIAL"
+      ]
     }
-  ],
-  "metadata": {
-    "session_id": "sess_1790018097_6c1579_625",
-    "agent_type": "planner-agent",
-    "duration_seconds": 802,
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 8,
-    "estimated_hours": 12.5,
-    "dependency_waves": [[1], [2], [3], [4], [5], [6], [7], [8]]
-  }
+  ]
 }
