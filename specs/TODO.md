@@ -11,7 +11,7 @@ next_project_number: 642
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,257,298,464,481,502,534,559,563,568,623,624,625,626,628,630,640,641 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,257,298,464,481,502,534,559,563,568,623,624,625,626,628,630,641 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,570,616,617,632,633 | 298,464,502,563,568,630 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,604,618,634 | 231,465,497,564,565,616,626,632,633 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,614,635 | 428,498,499,500,634 | algebraic-representation, decidability, documentation, ... |
@@ -107,7 +107,6 @@ next_project_number: 642
             └─ 638 [NOT STARTED] — Split EFGames/GapDetection.lean and the split-point file only...
   └─ 633 [NOT STARTED] — Create Tactic/Attr.lean under the library root from...
     └─ 634 [NOT STARTED] — Merge Syntax/XLanguage/ and Semantics/XLanguage/ into... (see above)
-640 [PLANNED] — Restructure the root README for a reader who arrives cold and...
 641 [NOT STARTED] — Provide one worked-example file that an outside reader can...
 
 ### Semantics
@@ -129,12 +128,13 @@ next_project_number: 642
 ---
 
 ### 640. Readme cold reader restructure
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: publication-quality
 - **Dependencies**: Task 639
 - **Research**: [640_readme_cold_reader_restructure/reports/01_readme-cold-reader-restructure.md]
 - **Plan**: [640_readme_cold_reader_restructure/plans/01_readme-cold-reader-restructure.md]
+- **Summary**: [640_readme_cold_reader_restructure/summaries/01_readme-cold-reader-restructure-summary.md]
 
 **Description**: Restructure the root README for a reader who arrives cold and gives it two minutes. The content is accurate and thorough but the first screen is background prose; the verified results, which are the point, start at line 166. (1) Put a short results summary directly under the opening paragraph: soundness and weak completeness at all four frame classes, strong completeness proved at Base and Dense and machine-refuted at ZTime and RTime, zero sorry and zero custom axioms in the live tree, the pinned axiom-set harness, with links to MainResults.lean and docs/theorem-index.md. (2) Move revision-history narration out of the README and into docs/reference/paper-definitions-of-record.md: the "Earlier revisions of this README described..." and "The axiom-basis question this README used to record as open..." paragraphs, and the aside about what the saturation footnote said before the 2026-09 revision. The README should state what is true now. (3) Add a short "How this repository is developed" section that explains, for a reader who opens specs/ or CLAUDE.md, that development is agent-assisted under a task system and that correctness rests on the Lean kernel plus the invariant harness, not on review of agent output; point to docs/development/MODULE_INVARIANTS.md. (4) Rename the Tags footer entry "TM-plus" to match current naming or drop the footer. (5) Keep the generated inventory block and every harness-checked anchor intact. Acceptance: the first 40 lines state what is proved and how to verify it; harness and readme-lint green; no paragraph describes a previous state of the README.
 

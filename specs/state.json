@@ -1443,7 +1443,7 @@
     {
       "project_number": 640,
       "project_name": "readme_cold_reader_restructure",
-      "status": "planned",
+      "status": "completed",
       "task_type": "general",
       "topic": "publication-quality",
       "dependencies": [
@@ -1454,7 +1454,7 @@
         "docs/reference/paper-definitions-of-record.md"
       ],
       "created": "2026-09-20T18:47:56Z",
-      "last_updated": "2026-09-21T00:31:58Z",
+      "last_updated": "2026-09-21T00:57:24Z",
       "description": "Restructure the root README for a reader who arrives cold and gives it two minutes. The content is accurate and thorough but the first screen is background prose; the verified results, which are the point, start at line 166. (1) Put a short results summary directly under the opening paragraph: soundness and weak completeness at all four frame classes, strong completeness proved at Base and Dense and machine-refuted at ZTime and RTime, zero sorry and zero custom axioms in the live tree, the pinned axiom-set harness, with links to MainResults.lean and docs/theorem-index.md. (2) Move revision-history narration out of the README and into docs/reference/paper-definitions-of-record.md: the \"Earlier revisions of this README described...\" and \"The axiom-basis question this README used to record as open...\" paragraphs, and the aside about what the saturation footnote said before the 2026-09 revision. The README should state what is true now. (3) Add a short \"How this repository is developed\" section that explains, for a reader who opens specs/ or CLAUDE.md, that development is agent-assisted under a task system and that correctness rests on the Lean kernel plus the invariant harness, not on review of agent output; point to docs/development/MODULE_INVARIANTS.md. (4) Rename the Tags footer entry \"TM-plus\" to match current naming or drop the footer. (5) Keep the generated inventory block and every harness-checked anchor intact. Acceptance: the first 40 lines state what is proved and how to verify it; harness and readme-lint green; no paragraph describes a previous state of the README.",
       "session_id": "sess_1789947599_745d6f",
       "artifacts": [
@@ -1467,9 +1467,15 @@
           "path": "specs/640_readme_cold_reader_restructure/plans/01_readme-cold-reader-restructure.md",
           "type": "plan",
           "summary": "Five-phase prose-only plan restructuring root README.md for a cold reader plus one dated note in paper-definitions-of-record.md."
+        },
+        {
+          "path": "specs/640_readme_cold_reader_restructure/summaries/01_readme-cold-reader-restructure-summary.md",
+          "type": "summary",
+          "summary": "Five-phase README restructure: results summary hoisted into the first 40 lines, revision-history narration retired to paper-definitions-of-record.md, new trust-model section added, Tags footer renamed, all acceptance criteria and both harness gates green."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Restructured README.md so a cold reader learns what is proved (soundness/weak completeness at all four frame classes, strong completeness proved at Base/Dense and machine-refuted at ZTime/RTime, zero sorry/zero custom axioms, the 105-declaration axiom-set harness) within the first 40 lines (now line 35), retired three revision-history passages (two to a dated note in docs/reference/paper-definitions-of-record.md), added a 'How this repository is developed' trust-model section, and renamed the stale 'TM-plus' footer token. Full build (check-module-invariants.sh) and readme-lint.sh both pass; check-paper-definitions.sh verdict unchanged."
     },
     {
       "project_number": 641,
