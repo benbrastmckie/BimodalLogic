@@ -305,46 +305,46 @@ probe is mis-invoked: stop and fix the invocation before drawing any conclusion.
 
 ---
 
-### Phase 2: Collapse the root and sweep every reference [NOT STARTED]
+### Phase 2: Collapse the root and sweep every reference [COMPLETED]
 
 **Goal**: Replace the two-level root with one `mk_all`-generated `FormalSystem.lean`, rehouse
 `def version`, and update every prose reference the collapse invalidates — as one atomic change, since
 the intermediate states are red by construction.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/README.md` and `FormalSystem/Metalogic/README.md` immediately before
+- [x] Re-read `FormalSystem/README.md` and `FormalSystem/Metalogic/README.md` immediately before
       touching them: **task 614 declares both in its `file_scope` this same `/orchestrate` cycle.** If
       614 has already landed changes, rebase this phase's edits onto them. On a foreign commit or
       foreign uncommitted modification, check `git log` to confirm the work is not your own, then STOP
       and report rather than proceeding.
-- [ ] Create `FormalSystem/Version.lean`: an Apache-headered, module-docstringed module in
+- [x] Create `FormalSystem/Version.lean`: an Apache-headered, module-docstringed module in
       `namespace FormalSystem` carrying `def version : String := "1.0.0"`, bumped from `"0.1.0"` to
       agree with `CITATION.cff`. The docstring records that this is the single definition site and
       that `VERSIONING.md`'s release checklist points here.
-- [ ] Delete `FormalSystem/FormalSystem.lean`. This is a precondition, not a nicety: `mk_all`'s
+- [x] Delete `FormalSystem/FormalSystem.lean`. This is a precondition, not a nicety: `mk_all`'s
       `allModules.erase ml.lean` step erases the path `FormalSystem.lean`, which the walk of
       `FormalSystem/` never produces, so the file would otherwise be emitted as
       `import FormalSystem.FormalSystem`.
-- [ ] Run `lake exe mk_all --lib FormalSystem` to generate the new root. Do not hand-edit the result,
+- [x] Run `lake exe mk_all --lib FormalSystem` to generate the new root. Do not hand-edit the result,
       and do not add a copyright header or docstring to it — `mk_all --check` compares byte-for-byte
       and any addition would make the new C33 gate (Phase 5) permanently red.
-- [ ] Rewrite the four free prose references that explain the self-named indirection as
+- [x] Rewrite the four free prose references that explain the self-named indirection as
       "load-bearing": `FormalSystem/{Plus,Minus,Star}Language/README.md` and
-      `docs/development/DIRECTORY_README_STANDARD.md`. These are substantive rewrites, not path swaps.
-- [ ] Rewrite the three coordinated references in `FormalSystem/README.md` (×1) and
+      `docs/development/DIRECTORY_README_STANDARD.md`. These are substantive rewrites, not path swaps. *(altered — a fifth free reference the plan's grep scope missed was also rewritten: the module docstring of `FormalSystem/Semantics.lean`. Two stale neighbours were corrected in the same batch because the collapse is what falsified them: `Decidability/BiLasso.lean`'s "stay unreachable" paragraph and `Decidability/BiLasso/README.md`'s "Imported by: nothing". `FormalSystem/README.md`'s generated inventory gained a `Version.lean` row and lost the inner-root row.)*
+- [x] Rewrite the three coordinated references in `FormalSystem/README.md` (×1) and
       `FormalSystem/Metalogic/README.md` (×2), under the protocol above.
-- [ ] Leave `docs/development/PUBLICATION_REFACTOR.md`'s three occurrences as-is: they are programme
-      prose describing this very work.
-- [ ] Run `lake build --wfail`, `lake exe runLinter FormalSystem`, and `lake exe checkInitImports`
+- [x] Leave `docs/development/PUBLICATION_REFACTOR.md`'s three occurrences as-is: they are programme
+      prose describing this very work. *(altered — left as-is, but C12 fails on an unresolved slash-shaped path, so `FormalSystem/FormalSystem.lean` was added to `scripts/markdown-slash-path-allowlist.txt` with a recorded reason, on that file's own `FormalSystem/Boneyard` cited-as-history precedent.)*
+- [x] Run `lake build --wfail`, `lake exe runLinter FormalSystem`, and `lake exe checkInitImports`
       before committing. The nine newly-reachable modules enter all three closures for the first time;
-      any new C16 finding is **fixed**, never added to `scripts/nolints.json`.
-- [ ] Run Phase 1's **full probe sweep again, now against the real generated root** — from the repo
+      any new C16 finding is **fixed**, never added to `scripts/nolints.json`. *(completed — `lake lint` passed with zero new findings; `checkInitImports` exit 0. **Deviation: altered** — the nine manifest entries Phase 3 was to delete were deleted here instead: C6's build-free half fails the moment an entry names a reachable module, so leaving them to Phase 3 would have committed a red `--no-build` gate. Phase 3 keeps the two `BimodalTest` entries.)*
+- [x] Run Phase 1's **full probe sweep again, now against the real generated root** — from the repo
       root this time (`lake env lean --root=. <-D options> <file>`), since `./FormalSystem.lean` is
       now the genuine article, and including the new `FormalSystem/Version.lean`. The warm
       `lake build --wfail` above re-elaborates only the nine new modules and `Version.lean`; every
       other module is replayed from its trace log and proves nothing about the header linter. Zero
       findings here is the evidence that the collapse is not a deferred CI failure.
-- [ ] Stage only this task's own hunks — an explicit multi-file `git add -- <files>` list, never a
+- [x] Stage only this task's own hunks — an explicit multi-file `git add -- <files>` list, never a
       directory or glob pathspec.
 
 **Timing**: 2 hours (includes one full probe sweep)
@@ -385,31 +385,31 @@ programme prose left as-is, and 8 are rewritten here. The generated root is expe
 
 ---
 
-### Phase 3: Empty the auto-clearing half of the C6 manifest [NOT STARTED]
+### Phase 3: Empty the auto-clearing half of the C6 manifest [COMPLETED]
 
 **Goal**: Remove the eleven manifest entries that the generated root either clears outright or clears
 as a side effect, and wire the two `BimodalTest` modules whose sole reason for exclusion has gone.
 
 **Tasks**:
-- [ ] Re-measure the manifest before editing: run `bash scripts/check-module-invariants.sh --no-build`
+- [x] Re-measure the manifest before editing: run `bash scripts/check-module-invariants.sh --no-build`
       and read C6's own count. The task description implies 12 entries and the research measured 14 at
       HEAD; task 632 already deleted one line. Work against the measured figure.
-- [ ] Delete manifest entries 1–9 — `FormalSystem.Metalogic.{Core,Bundle,SoundnessLemmas}`,
+- [x] Delete manifest entries 1–9 — `FormalSystem.Metalogic.{Core,Bundle,SoundnessLemmas}`,
       `FormalSystem.Metalogic.SoundnessLemmas.CoValidity`,
       `…Kamp.NfMultiAnchorBridge.OuterGateFaithful`, and
       `…Decidability.BiLasso.{Extend,Successor,Orbit,Agreement}`. All nine are now reachable from the
       generated root; C6 fails on an entry naming a reachable module, so these are forced deletions,
-      not optional tidying.
-- [ ] Confirm no cycle was introduced: the three importer-less sibling aggregators are kept so that no
+      not optional tidying. *(deviation: altered — already done inside Phase 2's atomic batch, for the reason recorded there; this phase re-measured 5 live entries at its start, not 14.)*
+- [x] Confirm no cycle was introduced: the three importer-less sibling aggregators are kept so that no
       *content* module imports an aggregator its own contents reach. Nothing imports the root, so the
       root importing them is safe. Verify by `lake build` rather than by inspection.
-- [ ] Add `import BimodalTest.Metalogic.PeriodicExtensionAxiomTest` and
+- [x] Add `import BimodalTest.Metalogic.PeriodicExtensionAxiomTest` and
       `import BimodalTest.Metalogic.Decidability.BiLassoSuccessorTest` to `Tests/BimodalTest.lean`,
       then delete manifest entries 10 and 11. Their only recorded reason for exclusion was that
       importing them would make `BiLasso.Orbit` / `BiLasso.Successor` reachable — which they now are
       regardless.
-- [ ] Drop the now-unnecessary recorded fix for entry 5 (the one import line in
-      `NfMultiAnchorBridge.lean`) from the manifest's comment block if it names one.
+- [x] Drop the now-unnecessary recorded fix for entry 5 (the one import line in
+      `NfMultiAnchorBridge.lean`) from the manifest's comment block if it names one. *(completed — the whole Metalogic comment block was rewritten as history in Phase 2; the stale exclusion prose in `Tests/BimodalTest.lean` and `BiLassoSuccessorTest.lean` was corrected here.)*
 
 **Timing**: 1 hour
 

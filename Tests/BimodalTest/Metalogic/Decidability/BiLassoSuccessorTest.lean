@@ -10,10 +10,9 @@ import FormalSystem.Metalogic.Decidability.BiLasso.Successor
 # Bi-Lasso Successor Tests
 
 `succOf` and `predOf` in `FormalSystem/Metalogic/Decidability/BiLasso/Successor.lean` are not
-merely choice-free as proofs; they run. This module is not imported by `Tests/BimodalTest.lean`:
-`Successor` belongs to the effective-periodic-extension cluster that is outside the Lake build
-graph, so importing it here would pull that cluster in. It is listed in
-`scripts/module-invariants-manifest.txt` instead, so C6 compile-checks it in isolation.
+merely choice-free as proofs; they run. `Tests/BimodalTest.lean` imports this module, so
+`lake test` runs the rows below. `Successor` belongs to the effective-periodic-extension cluster,
+which no aggregator carries; the generated library root `FormalSystem.lean` imports it directly.
 -/
 
 namespace BimodalTest.Metalogic.Decidability.BiLassoSuccessorTest

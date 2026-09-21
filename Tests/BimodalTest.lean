@@ -24,8 +24,10 @@ import BimodalTest.Theorems.ModalS5Test
 import BimodalTest.Theorems.PerpetuityTest
 import BimodalTest.WalkthroughAxioms
 import BimodalTest.Metalogic.PropDecideTest
+import BimodalTest.Metalogic.PeriodicExtensionAxiomTest
 import BimodalTest.Metalogic.Decidability.SaturationTest
 import BimodalTest.Metalogic.Decidability.BiLassoTest
+import BimodalTest.Metalogic.Decidability.BiLassoSuccessorTest
 import BimodalTest.Metalogic.Decidability.Verified.TerminationProbes
 import BimodalTest.Metalogic.Decidability.Verified.BridgeProbes
 import BimodalTest.Metalogic.Decidability.TableauConformance
@@ -75,25 +77,16 @@ Tests mirror the Bimodal library structure:
 - `Property/` - Property-based tests with Plausible
 - Loose `Trace*Test.lean` - trace-certificate and trace-export round-trip tests
 
-Every test module that can be imported here is imported above. Three are
-deliberately excluded, for two different reasons:
+Every test module that can be imported here is imported above. One is deliberately
+excluded:
 
 - `ProofSystem/DerivationBenchmark.lean` — compiles, but ends in a top-level
   `#eval` that runs the whole benchmark suite; importing it here would run and
   print that table on every `lake test`.
-- `Automation/FormulaMutatorTest.lean`, `Automation/ProofFirstTests.lean` —
-  compile in isolation but cannot be imported here. Each pulls in an executable
-  root (`BimodalTools/ContrastiveGeneratorMain.lean`,
-  `BimodalTools/ProofFirstGeneratorMain.lean`)
-  that defines `main`, and this environment already has `main` from
-  `BimodalTools/DatasetValidatorMain.lean`. Importing either yields
-  "environment already contains 'main'". Fixing this means restructuring where
-  `main` lives in the executable roots, not editing the tests.
 
-All three are tracked in `scripts/module-invariants-manifest.txt`, which
-compile-checks each one in isolation, so excluded code cannot rot unseen. A test module absent from
-both this file and that manifest is a gap in the gate; the invariant check fails on exactly that
-condition.
+It is tracked in `scripts/module-invariants-manifest.txt`, which compile-checks it in
+isolation, so excluded code cannot rot unseen. A test module absent from both this file and
+that manifest is a gap in the gate; the invariant check fails on exactly that condition.
 
 ## Running Tests
 

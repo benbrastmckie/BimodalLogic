@@ -66,16 +66,8 @@ BimodalTest.ProofSystem.DerivationBenchmark
 BimodalToolsTest.FormulaMutatorTest
 BimodalToolsTest.ProofFirstTests
 
-# Axiom-profile evidence for the effective periodic extension result. Not imported by
-# Tests/BimodalTest.lean, and NOT unblocked by the bi-lasso re-export having landed: this
-# module imports `...BiLasso.Orbit`, which is in the effective-periodic-extension cluster
-# above and is deliberately outside the re-export, so it stays unreachable and this line
-# stays. Compile-checked here in isolation instead. DELETE this line when `Orbit` becomes
-# reachable and this module is imported by Tests/BimodalTest.lean.
-BimodalTest.Metalogic.PeriodicExtensionAxiomTest
-
-# Computability rows for `BiLasso/Successor.lean`. `Successor` is in the unreachable
-# effective-periodic-extension cluster above, so importing this module from
-# Tests/BimodalTest.lean would make that cluster reachable. Compile-checked here in isolation.
-# DELETE this line when `Successor` becomes reachable and the module is imported by the aggregator.
-BimodalTest.Metalogic.Decidability.BiLassoSuccessorTest
+# `BimodalTest.Metalogic.PeriodicExtensionAxiomTest` and
+# `BimodalTest.Metalogic.Decidability.BiLassoSuccessorTest` used to stand here. Their one recorded
+# reason for exclusion was that importing them from Tests/BimodalTest.lean would make
+# `BiLasso.Orbit` / `BiLasso.Successor` reachable. The generated library root reaches both
+# regardless, so Tests/BimodalTest.lean now imports the two tests and the lines are gone.
