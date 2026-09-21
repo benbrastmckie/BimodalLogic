@@ -150,7 +150,7 @@
     {
       "project_number": 633,
       "project_name": "upward_edges_by_relocation",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "publication-quality",
       "dependencies": [
@@ -167,13 +167,18 @@
       ],
       "description": "Create Tactic/Attr.lean under the library root from Automation/{TruthNormAttr, NormalizationAttr,LemmaDB} and import it from Init.lean; move Tactics/PropDecide.lean to Metalogic/Decidability/Propositional/Tactic.lean; move Metalogic/Core/DeductionTheorem.lean to Theorems/ keeping its namespace; move Metalogic/Decidability/FMP/Periodicity.lean to Semantics/; cut ProofSearch.Core -> SuccessPatterns; rewrite ORGANISATION.md's layer table to the measured order and extend check-metalogic-cycles.sh into a layer-order assertion. Acceptance: measure-refactor-partitions.py upward-edges reports zero lines into Automation from Syntax, Semantics, ProofSystem and Theorems and zero Theorems -> Metalogic; harness green.\n\nReconciliation notes: depends on task 630 only. Verified file-disjoint from the decidability chain (tasks 410-412, 428-430, 464, 465, 481, 482), which lives entirely under Metalogic/Decidability/Verified/ (plus Saturation.lean, Correctness.lean, ProofExtraction.lean); no edge needed.",
       "created": "2026-09-19T08:40:54Z",
-      "last_updated": "2026-09-21T04:58:17Z",
+      "last_updated": "2026-09-21T05:05:19Z",
       "session_id": "sess_1789955215_a3ad68",
       "artifacts": [
         {
           "path": "specs/633_upward_edges_by_relocation/reports/01_upward-edges-relocation.md",
           "type": "report",
           "summary": "Research report: live re-measurement of the upward-edge set, a simulation of all four relocations, the corrected layer assignment, and the five-phase dependency-first sequence with every gate and generated artifact that observes the moved paths."
+        },
+        {
+          "path": "specs/633_upward_edges_by_relocation/plans/01_upward-edges-relocation.md",
+          "type": "plan",
+          "summary": "Six-phase dependency-first plan; waves [1,3,4] -> [2] -> [5] -> [6]; 9 hours estimated."
         }
       ],
       "next_artifact_number": 2

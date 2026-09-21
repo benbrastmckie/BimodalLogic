@@ -1,18 +1,18 @@
 {
   "task_number": 633,
-  "phase": "research",
-  "status": "researched",
-  "dispatch_seq": 10,
+  "phase": "plan",
+  "status": "planned",
+  "dispatch_seq": 11,
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 6,
   "session_id": "sess_1789955215_a3ad68_633",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/633_upward_edges_by_relocation/reports/01_upward-edges-relocation.md",
-      "summary": "Research report: live re-measurement of the upward-edge set, a simulation of all four relocations, the corrected layer assignment, and the five-phase dependency-first sequence with every gate and generated artifact that observes the moved paths."
+      "type": "plan",
+      "path": "specs/633_upward_edges_by_relocation/plans/01_upward-edges-relocation.md",
+      "summary": "Six-phase dependency-first plan; waves [1,3,4] -> [2] -> [5] -> [6]; 9 hours estimated."
     }
   ],
-  "next_phase": "plan",
-  "notes": "Task description reconciled against HEAD b1ab4bf3a. Three corrections the plan must carry: (1) the 'cut ProofSearch.Core -> SuccessPatterns' item is a no-op per the BimodalTools-split decision and must be struck in docs/development/PUBLICATION_REFACTOR.md rather than implemented; (2) Automation/Tactics/Meta.lean must move with PropDecide (PropDecide calls extractDerivationGoal and isNilContext from it), recommended target FormalSystem/Tactic/Meta.lean; (3) the layer-order assertion must be an allowlist equality over 7 recorded Syntax/MinusLanguage/AxiomDischarge.lean lines, which a later phase empties, not a zero-upward-edges check. Pre-existing red checks confirmed still red and not attributable to this task: readme-lint.sh (21 broken ../Boneyard/ links) and typst-sync-check.sh (sorry-total committed=4 live=0). check-module-invariants.sh --no-build and check-metalogic-cycles.sh are green at HEAD."
+  "next_phase": "implement",
+  "notes": "Plan validates clean under validate-artifact.sh --strict (0 warnings). Three corrections from research are carried into the plan and must not be re-litigated at implement time: (1) the 'cut ProofSearch.Core -> SuccessPatterns' item is struck as a no-op and recorded in docs/development/PUBLICATION_REFACTOR.md rather than implemented; (2) Automation/Tactics/Meta.lean moves to FormalSystem/Tactic/Meta.lean alongside PropDecide, or the relocation buys nothing; (3) the new layer-order assertion is an allowlist equality over 7 AxiomDischarge lines failing on surplus AND shortfall, never a zero-upward-edges check. Three operational risks from this run are recorded as R-3, R-4 and R-5 in the plan's risk table: move-modules.py collapses historical 'from X to Y' prose so every non-.lean hunk needs a hand read; a green lake build certifies nothing about the 13 lean_exe roots, so every import-graph phase gates on the build-inclusive check-module-invariants.sh (C25) and never on lake build alone; and long commands run in the foreground with a blocking call, never backgrounded or monitor-polled. Phases 1 and 2 are declared atomic-batch (duplicate attribute registration and the typst #assert make intermediate states expected-red). Pre-existing red checks recorded as baselines, not this task's to fix: readme-lint.sh 21 rows, typst-sync-check.sh sorry-total 4 vs 0 plus 9 PIPELINE.md rows."
 }

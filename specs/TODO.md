@@ -97,7 +97,7 @@ next_project_number: 642
 
 ### Publication Quality
 
-633 [RESEARCHED] — Create Tactic/Attr.lean under the library root from...
+633 [PLANNED] — Create Tactic/Attr.lean under the library root from...
   └─ 634 [NOT STARTED] — Merge Syntax/XLanguage/ and Semantics/XLanguage/ into...
     └─ 635 [NOT STARTED] — Run python3 scripts/measure-refactor-partitions.py --check...
       └─ 636 [NOT STARTED] — Convert every ## References entry in FormalSystem//.lean to...
@@ -211,11 +211,12 @@ Reconciliation notes: depends on tasks 632, 633 and 626. Task 626 edits Syntax/P
 ---
 
 ### 633. Upward edges by relocation
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 630
 - **Research**: [633_upward_edges_by_relocation/reports/01_upward-edges-relocation.md]
+- **Plan**: [633_upward_edges_by_relocation/plans/01_upward-edges-relocation.md]
 
 **Description**: Create Tactic/Attr.lean under the library root from Automation/{TruthNormAttr, NormalizationAttr,LemmaDB} and import it from Init.lean; move Tactics/PropDecide.lean to Metalogic/Decidability/Propositional/Tactic.lean; move Metalogic/Core/DeductionTheorem.lean to Theorems/ keeping its namespace; move Metalogic/Decidability/FMP/Periodicity.lean to Semantics/; cut ProofSearch.Core -> SuccessPatterns; rewrite ORGANISATION.md's layer table to the measured order and extend check-metalogic-cycles.sh into a layer-order assertion. Acceptance: measure-refactor-partitions.py upward-edges reports zero lines into Automation from Syntax, Semantics, ProofSystem and Theorems and zero Theorems -> Metalogic; harness green.
 
