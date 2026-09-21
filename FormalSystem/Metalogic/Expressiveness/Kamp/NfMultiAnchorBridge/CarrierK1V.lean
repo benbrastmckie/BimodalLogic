@@ -668,7 +668,6 @@ private theorem k1v_zone_consistent {sig : MonadicSignature} [Fintype sig.preds]
     FIXED endpoints by `IntervalPattern.holds` monotonicity (never type-anchored — the
     refuted device of :1782-1796). -/
 private theorem k1v_bracket_extract {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (lL lR : List TemporalPred) (ptW segL segR : TemporalPred)
     (x t : M.carrier)
@@ -793,7 +792,6 @@ private theorem k1v_bracket_extract {sig : MonadicSignature} [Finite sig.preds]
     STRUCTURALLY by slot position; the monotone `ws` is the order-preservation that makes the
     structural (slot-position) bound faithful, never a formula literal (litmus PASS). -/
 theorem k1v_bracket_extract_mono {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (lL lR : List TemporalPred) (ptW segL segR : TemporalPred)
     (x t : M.carrier)
@@ -1436,7 +1434,6 @@ private theorem k1v_extract_t_nf3 {sig : MonadicSignature} [Fintype sig.preds]
     trichotomy in model order — one step of the witness-insertion construction (template:
     `existsBounded_right`'s `n+1` append case, VecEAClosure:265; Lemma 3.4 PDF p.5). -/
 private theorem k1v_sorted_insert {α : Type _} {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig)
     (q : α × M.carrier) (ps : List (α × M.carrier))
     (hs : (ps.map Prod.snd).Pairwise (· < ·))
@@ -1524,7 +1521,6 @@ theorem k1v_sorted_realization {sig : MonadicSignature} [Finite sig.preds]
     (VecEAClosure:265; Lemma 3.4 PDF p.5) with the witness tuple assembled wholesale from the
     insertion-induction output of `k1v_sorted_realization`. -/
 private theorem k1v_bracket_construct {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (lL lR : List TemporalPred) (ptW segL segR : TemporalPred)
     (x w t : M.carrier) (hxw : x < w) (hwt : w < t)

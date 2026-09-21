@@ -865,18 +865,34 @@ Package level is deliberate: a `[[lean_lib]]` table's `leanOptions` do not reach
 `[[lean_exe]]` roots, and package options reach every target. CI builds with `--wfail`, so any
 warning from the set fails the build. C28 then reports the file and the linter class that fired.
 
-**Permanent opt-outs.** There is exactly one:
+**Permanent opt-outs.** There are exactly two, both in `lakefile.toml`, each with its reason
+recorded at the site:
 
-- `weak.linter.hashCommand = false` on the `BimodalTest` library only. The `#eval`, `#guard` and
-  `#check` probes in the test files are what those files are for, not development leftovers.
-  Lake appends a library's options after the package's, and the later entry wins, so the
-  library value overrides the package set.
+- `weak.linter.hashCommand = false` on the two test libraries, `BimodalTest` and
+  `BimodalToolsTest`. The `#eval`, `#guard` and `#check` probes in the test files are what those
+  files are for, not development leftovers. Lake appends a library's options after the
+  package's, and the later entry wins, so the library value overrides the package set.
+- `weak.linter.unicodeLinter = false` at package level. This is Mathlib's unicode *allowlist*
+  linter, and the allowlist is Mathlib's own. This library's documented notation is not on it:
+  measured at adoption, 258 findings, led by the limit-closure diamond `⟐` (115), the combining
+  vector arrow of `v⃗` (74), `⟺` (28) and `Ĝ` (23). Respelling the paper's notation to satisfy
+  another project's allowlist was rejected. It is a *text* linter: it never runs during a build,
+  so this option changes no build output. `lake exe lint-style`, and the CI step that runs it,
+  reads `[leanOptions]` to decide which text linters to apply.
 
-The library itself has no opt-out. Its 11 `#guard` smoke tests, which test compiled code in a way
-a kernel `decide` would not, each carry a declaration-scoped suppression with a reason, as
-described below. cslib's four other opt-outs (`pythonStyle`, `checkInitImports`,
-`allScriptsDocumented`, `unicodeLinter`) are not adopted, because none of those linters runs
-during the build at this Mathlib version.
+Apart from that package-level text-linter option, the library itself has no opt-out. Its 11
+`#guard` smoke tests, which test compiled code in a way a kernel `decide` would not, each carry a
+declaration-scoped suppression with a reason, as described below.
+
+**The text linters.** `lake exe lint-style` runs Mathlib's text-based linters over the default
+target: trailing whitespace, whitespace before a semicolon, malformed adaptation notes,
+UpperCamelCase module names, and module names Windows forbids. All are adopted at their defaults
+and gated in CI; `lake exe lint-style --fix` repairs trailing whitespace. cslib sets four
+further options for these linters. `unicodeLinter` is the one decided above; the other three
+stay at their defaults: `pythonStyle` (off by default upstream),
+`checkInitImports` (check C24, `lake exe checkInitImports`, already asserts the same property)
+and `allScriptsDocumented` (it would make `scripts/README.md`'s completeness a gate, which has
+not been measured against this tree).
 
 **Scoped, never blanket.** A linter may be switched off for exactly one declaration, and only in
 this form:

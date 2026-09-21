@@ -196,10 +196,9 @@ theorem applyRule_emitted_world_mem {rule : TableauRule} {sf : SignedFormula}
                all_goals first
                  | (subst hy; rfl)
                  | (simp only [reduceCtorEq] at hy))
-            | (simp only [RuleResult.emitted, 
+            | (simp only [RuleResult.emitted,
                  Branch.allFuturePosFormulas, Branch.allPastPosFormulas,
                  Branch.someFutureNegFormulas, Branch.somePastNegFormulas,
-                 
                  List.map_cons, List.map_nil, List.flatten_cons, List.flatten_nil,
                  List.append_nil, List.mem_cons, List.mem_append, List.not_mem_nil,
                  or_false, List.mem_filter] at hg)
@@ -548,13 +547,13 @@ theorem resultBranch_sub {b nb : Branch} {res : RuleResult}
     (∀ x ∈ b, x ∈ nb) ∧ (∀ x ∈ nb, x ∈ res.emitted ∨ x ∈ b) := by
   cases res with
   | linear fs =>
-    simp only [nonBranchingResultBranch, branchingResultBranches, Option.toList, 
+    simp only [nonBranchingResultBranch, branchingResultBranches, Option.toList,
       List.mem_cons, List.not_mem_nil, or_false, List.append_nil] at h
     subst h
     exact ⟨fun x hx => List.mem_append_right _ hx,
       fun x hx => (List.mem_append.mp hx).imp id id⟩
   | persistent fs =>
-    simp only [nonBranchingResultBranch, branchingResultBranches, Option.toList, 
+    simp only [nonBranchingResultBranch, branchingResultBranches, Option.toList,
       List.mem_cons, List.not_mem_nil, or_false, List.append_nil] at h
     subst h
     exact ⟨fun x hx => List.mem_append_right _ hx,

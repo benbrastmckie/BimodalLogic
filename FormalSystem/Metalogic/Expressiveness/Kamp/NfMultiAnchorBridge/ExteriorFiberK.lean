@@ -35,7 +35,7 @@ which is why every marginal construction collapses (`f2_carrier_eq`, same file).
 indexes content by the full fiber element itself, so the pair separates — machine-checked in the
 companion probe module `ExteriorFiberProbeK.lean` (Phase 1.2, the GO/NO-GO gate).
 
-List conventions mirror the frozen `kvE2FutGapList` (ExteriorNegation.lean:938, read-only
+List conventions mirror the frozen `kvE2FutGapList` (ExteriorNegation.lean:935, read-only
 template) and the landed `kvESepPos` (ExteriorBracketK.lean:190): `Finset.univ.toList`
 filtered by the quant-layer bit — a stable-order, nodup, Fintype-backed enumeration.
 
@@ -54,7 +54,7 @@ open FormalSystem.Metalogic.Expressiveness.Separation (formulaDisjList formula_d
     stable-order, nodup) enumeration of the full-arity depth-`k` subs σ prescribes —
     `{s : NormalForm sig k 5 // σ.2 s = true}` as a list. This is the CONTENT index set of
     the depth-`k` clause layer (G6): clause disjuncts range over these `s` directly, never
-    over their marginal shadows. Mirrors `kvE2FutGapList` (ExteriorNegation.lean:938) /
+    over their marginal shadows. Mirrors `kvE2FutGapList` (ExteriorNegation.lean:935) /
     `kvESepPos` (ExteriorBracketK.lean:190). -/
 noncomputable def kvEFiber {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {k : Nat}
@@ -150,10 +150,10 @@ only, never content (guard G6): the CONTENT rendering of any bucket is always
 `kvEFiberPosOn P bucket` (`P.existF` on the full element), applied downstream in Phases 3-4.
 
 Chain-assembly ordering helpers (`kvEFiberZoneList`) generalize the frozen list-filter shape
-`kvE2FutGapList`/`kvE2FutRayList` (ExteriorNegation.lean:938/944) with the element source
+`kvE2FutGapList`/`kvE2FutRayList` (ExteriorNegation.lean:935/944) with the element source
 swapped from the marginal-profile universe to fiber buckets; the generic min-pick combinator
 `kvE_minPick` is a byte-identical replica of the private `kvE2_futMinPick`
-(ExteriorNegation.lean:1279-1280) exposed as a shared decl (Lemma 5.3 case-2 discrete
+(ExteriorNegation.lean:1276-1280) exposed as a shared decl (Lemma 5.3 case-2 discrete
 specialization). After this phase `ExteriorFiberK.lean` is FROZEN for waves 3-5 (H7). -/
 
 /-! ### Fiber-drop honesty (realized σ pins every positive sub to σ's atom fiber) -/
@@ -242,7 +242,7 @@ theorem kvE_fiberBucket_nonempty_iff {sig : MonadicSignature} [Fintype sig.preds
 /-! ### Chain-assembly ordering helper (fiber-bucket list-filter, side-generic)
 
 `kvEFiberZoneList σ zs4` is the depth-`k` analog of the frozen `kvE2FutGapList`/
-`kvE2FutRayList` (ExteriorNegation.lean:938/944): a nodup list-filter of the fiber, but with
+`kvE2FutRayList` (ExteriorNegation.lean:935/944): a nodup list-filter of the fiber, but with
 the element source swapped from the marginal-profile universe to the full fiber, keyed by the
 zone spec `zs4` alone. Each side (Future/Past) instantiates it with its own gap/ray/self zone
 specs in Phase 3/4 — the helper itself is side-agnostic (G6: zone read only). -/
@@ -270,7 +270,7 @@ theorem kvE_fiberZoneList_nodup {sig : MonadicSignature} [Fintype sig.preds]
 
 /-! ### Generic min-pick combinator (shared replica of the private `kvE2_futMinPick`)
 
-Byte-identical proof template of `kvE2_futMinPick` (ExteriorNegation.lean:1279-1280, `private`
+Byte-identical proof template of `kvE2_futMinPick` (ExteriorNegation.lean:1276-1280, `private`
 in the frozen file — replicated here, never imported, per postmortem rule / risk note). Fully
 `{α : Type}`-generic, so a single shared decl serves both the Future and Past chain builders
 (Lemma 5.3 case-2 discrete specialization per the mapping table). -/

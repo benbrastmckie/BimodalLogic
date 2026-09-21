@@ -636,23 +636,23 @@ figures actually observed.
 
 ---
 
-### Phase 7: Adopt `lint-style-action` [NOT STARTED]
+### Phase 7: Adopt `lint-style-action` [COMPLETED]
 
 **Goal**: Land `lake exe lint-style` as a green CI gate, with the trailing-whitespace debt cleared and
 the unicode linter disabled per the recorded decision.
 
 **Tasks**:
-- [ ] Re-measure with `lake exe lint-style` against the collapsed root and record the finding count and
+- [x] Re-measure with `lake exe lint-style` against the collapsed root and record the finding count and
       breakdown before changing anything.
-- [ ] Run `lake exe lint-style --fix` to clear the trailing-whitespace findings. Review the resulting
+- [x] Run `lake exe lint-style --fix` to clear the trailing-whitespace findings. Review the resulting
       diff before staging — `--fix` touches whatever it finds, so the diff must be confirmed to be
       whitespace-only.
-- [ ] Apply the recorded decision: add `weak.linter.unicodeLinter = false` to `lakefile.toml`'s
+- [x] Apply the recorded decision: add `weak.linter.unicodeLinter = false` to `lakefile.toml`'s
       `[leanOptions]` block with a comment recording *why* — this library's own notation (`⟐` the
       limit-closure diamond ×115, `⃗` vector arrows ×75, `⟺` ×28, `Ĝ` ×23) is documented and
       load-bearing, and Mathlib's allowlist is Mathlib-specific. Cross-reference the lint-suppression
       policy in `docs/development/LEAN_STYLE_GUIDE.md`, whose permanent-opt-out list this joins.
-- [ ] Rewrite `LEAN_STYLE_GUIDE.md`'s "Permanent opt-outs" passage — appending a bullet is not
+- [x] Rewrite `LEAN_STYLE_GUIDE.md`'s "Permanent opt-outs" passage — appending a bullet is not
       enough, because three of its sentences become false: (a) "There is exactly one" becomes two;
       (b) "The library itself has no opt-out" is no longer true of a package-level option; (c) the
       closing sentence lists `unicodeLinter` among cslib opt-outs that are "not adopted, because none
@@ -661,20 +661,20 @@ the unicode linter disabled per the recorded decision.
       text linter outside the build, does run it and reads this `[leanOptions]` block. The other three
       (`pythonStyle`, `checkInitImports`, `allScriptsDocumented`) stay unadopted. Add the new entry in
       the `linter.hashCommand` entry's shape, with the measured reason.
-- [ ] In the same passage, correct the existing entry's scope: it says `hashCommand` is off "on the
+- [x] In the same passage, correct the existing entry's scope: it says `hashCommand` is off "on the
       `BimodalTest` library only", but `lakefile.toml` sets it on `BimodalToolsTest` as well. A count
       sentence is being rewritten anyway; leave it true.
-- [ ] Confirm `lake exe lint-style` now exits 0. Do **not** wire the CI step until it does — a wired
+- [x] Confirm `lake exe lint-style` now exits 0. Do **not** wire the CI step until it does — a wired
       action on an un-green tree lands a permanently-red gate.
-- [ ] Wire `leanprover-community/lint-style-action` into `.github/workflows/ci.yml`, appended directly
+- [x] Wire `leanprover-community/lint-style-action` into `.github/workflows/ci.yml`, appended directly
       before "Report results", with a pinned action version. Record in the step's comment that
       `scripts/nolints-style.txt` is the per-project exception file and that it deliberately does not
       exist (the tool warns and proceeds with an empty exception set).
-- [ ] Record, in the same step comment, that `linter.checkInitImports` (duplicates C24 /
+- [x] Record, in the same step comment, that `linter.checkInitImports` (duplicates C24 /
       `lake exe checkInitImports`) and `linter.allScriptsDocumented` (would gate `scripts/README.md`,
       task 644's declared territory this cycle) stay at their default `false`, so that a future reader
       sees the choice rather than an accident.
-- [ ] Add the step's row to `CI_CD_PROCESS.md`'s runtime budget table and re-sum.
+- [x] Add the step's row to `CI_CD_PROCESS.md`'s runtime budget table and re-sum.
 
 **Timing**: 1 hour
 

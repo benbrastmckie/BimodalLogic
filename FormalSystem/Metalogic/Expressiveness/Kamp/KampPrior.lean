@@ -225,7 +225,6 @@ mark each original site. Chain: env bridge → trichotomy → `Formula.or` assem
     `Fin.cons x (fun _ => t)` — the `h_env_eq` bridge (KampPrior:277-291) extracted as the
     named, reusable site lemma (the shape Phases 18-19 rewrite through). -/
 theorem kampPrior_site_env_bridge {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (k : Nat)
     (sub_nf : NormalForm sig (k + 1) 2) (t : M.carrier) :
     (∃ env : Fin 1 → M.carrier,
@@ -253,7 +252,6 @@ theorem kampPrior_site_env_bridge {sig : MonadicSignature} [Finite sig.preds]
     rebuilt). The three disjuncts are exactly the shapes `nf_char2_past_formula_correct` (P4),
     `A_diag_correct`, and `nf_char2_future_formula_correct` (P5) characterize. -/
 theorem kampPrior_site_trichotomy {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (k : Nat)
     (sub_nf : NormalForm sig (k + 1) 2) (t : M.carrier) :
     (∃ env : Fin 1 → M.carrier,
@@ -274,7 +272,6 @@ theorem kampPrior_site_trichotomy {sig : MonadicSignature} [Finite sig.preds]
     the reusable citation point Phase 19 rewrites the arm through once the three arm formulas +
     correctness are supplied. -/
 theorem kampPrior_case1_trichotomy_assemble {sig : MonadicSignature} [Finite sig.preds]
-   
     (atomMap : Formula → sig.preds)
     (M : OrderedMonadicStructure sig) (k : Nat)
     (sub_nf : NormalForm sig (k + 1) 2) (t : M.carrier)
@@ -860,7 +857,6 @@ the Phase-15 verdict record above remains the authoritative narrative for them. 
     the same unfolding P4's `hunf` (Base:1266-1271) uses in-proof, here landed as the NAMED
     per-`qnf` obligation the depth-ladder rungs below are matched against. -/
 theorem kampPrior_site_perQnf_seam {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (k : Nat)
     (sub_nf : NormalForm sig (k + 1) 2) (x t : M.carrier) :
     NfEvalNf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf ↔

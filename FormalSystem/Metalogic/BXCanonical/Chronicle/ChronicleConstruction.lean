@@ -357,7 +357,7 @@ noncomputable def omegaChainElimResult (fc : FrameClass) (A : Set Formula)
     (omegaChain fc A h_mcs n).property.1
     (omegaChain fc A h_mcs n).property.2.1
     (counterexampleEnum (Nat.unpair n).2)
-   
+
 
 /--
 The f function at step n+1 is the same as the elimination result's f function.

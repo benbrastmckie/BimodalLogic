@@ -222,7 +222,7 @@ exactly one of them (`nf_exists_unique`, `NormalForm.lean:304`), and `nfToSenten
 (`NormalForm.lean:872`) renders each as an honest `MonadicSentence`. The `NormalForm` layer is
 consumed as it stands; nothing here rebuilds it.
 
-The `hn : n ≤ 1` restriction that `Kamp.nf_nvar_exist_all_depths` (`Kamp/KampPrior.lean:373`)
+The `hn : n ≤ 1` restriction that `Kamp.nf_nvar_exist_all_depths` (`Kamp/KampPrior.lean:370`)
 carries does **not** bite here: that restriction is on the *Prior-expressiveness* route, which
 needs a normal-form-to-`U`/`S` translation at `n` free variables. This module stays inside the
 monadic language and uses only the `n = 0` case.

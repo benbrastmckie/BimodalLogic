@@ -559,7 +559,6 @@ theorem cont_fails_below_gap {sig : MonadicSignature} [Fintype sig.preds] [Decid
     5. → by stavi_table_mu_correct, same StaviTemporalTruthMu
     6. → by stavi_truth_mu_at_point, same StaviTemporalTruth -/
 theorem nf_determines_stavi_truth {sig : MonadicSignature} [Finite sig.preds]
-   
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {p q : N.carrier}
     (h_same_nf : nfCharacteristic (extendedStructureWithMu N atomMap r) r 1
@@ -612,7 +611,6 @@ theorem nf_determines_stavi_truth {sig : MonadicSignature} [Finite sig.preds]
     so staviDepth A ≤ r implies staviFoDepth A ≤ 2*r, and NF at depth 2*r
     captures the truth of staviTableMu A via doets_lemma_1_1. -/
 theorem nf_determines_stavi_truth_depth {sig : MonadicSignature} [Finite sig.preds]
-   
     {N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {p q : N.carrier}
     (h_same_nf : nfCharacteristic (extendedStructureWithMu N atomMap r) (2 * r) 1

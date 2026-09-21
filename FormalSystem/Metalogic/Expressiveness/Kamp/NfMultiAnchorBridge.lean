@@ -127,7 +127,7 @@ import Mathlib.Data.List.Permutation
 -- `nf_eval_nf1_iff_efold`, `nf_quant_layer_fold_k1_gate`, the depth-0 split kit) consumed by the
 -- k=1 fold carrier `bracketEndCharK1` below.
 -- NOTE: `import ...KampPrior` was REMOVED to break the import cycle that blocked
--- wiring this bridge into `KampPrior.lean:405`. The two symbols this file used from KampPrior
+-- wiring this bridge into `KampPrior.lean:402`. The two symbols this file used from KampPrior
 -- (`nfQuantClauseTl`/`_correct`, `atomKind_arity1_is_pred`) were relocated to
 -- `NfDepth0Generalized` and reach here transitively via `NfZoneFlattenNavigable`.
 import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.Base
@@ -278,7 +278,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.EANegationFixFaithful.BoundedF
 -- exclusion theorem of the same class as `prior_makes_disjunct2_unreachable`, which would rot
 -- invisibly under `Kamp/Boneyard/`. Nothing in `EANegationFix/` is edited: `negFixOne`,
 -- `negFixOne_cover`, `negFixOne_iff` and the `ℤ` probe `NegFixGateProbe` stay live and consumed
--- (`NfMultiAnchorBridge/Base.lean:1418` cites them). The module contains no sorries and every
+-- (`NfMultiAnchorBridge/Base.lean:1417` cites them). The module contains no sorries and every
 -- declaration is axiom-clean. Cycle-free: it imports `Kamp.EANegationFix.NegFixOne`,
 -- `Kamp.EANegationFixFaithful.BoundedFixAnchoredFaithful` and `Kamp.VecEACombinators`, all already
 -- in this file's transitive closure above, plus `Mathlib.Data.Real.Basic` /

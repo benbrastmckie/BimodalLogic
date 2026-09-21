@@ -142,7 +142,7 @@ Attained (`VBracketFormula`) against faithful (`VVecEA2`, here):
 
 Nothing in `EANegationFix/` is deleted, weakened, or edited. `negFixOne`, `negFixOne_cover`,
 `negFixOne_iff` and the `ℤ` gate probe `NegFixGateProbe` all stay live and stay consumed
-(`NfMultiAnchorBridge/Base.lean:1418` cites them); everything below is a pure addition, and the
+(`NfMultiAnchorBridge/Base.lean:1417` cites them); everything below is a pure addition, and the
 attained carriers reach the faithful statement through `HasAttainedINF.toHasFaithfulDedekindINF`
 (`KPlusFaithful.lean:387`).
 

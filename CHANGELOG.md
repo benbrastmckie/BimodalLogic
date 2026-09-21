@@ -42,4 +42,4 @@ semantics. Built against Lean `v4.33.0-rc1` and Mathlib at the matching tag.
   the build. `FormalSystem.version` lives in `FormalSystem/Version.lean`.
 - Continuous integration: build, test and lint with compiler warnings as errors for the library
   and the tooling; the repository invariant suite `scripts/check-module-invariants.sh`; the
-  generated-root check; and a tag-triggered release workflow.
+  generated-root check; Mathlib's text-based style linters; and a tag-triggered release workflow.

@@ -431,7 +431,6 @@ some mu-point in (t, u). -/
 /-- Existence of the interval type formula. Same finiteness argument
     as x_t_formula_exists, applied to the finite set of types in (t, u). -/
 theorem x_interval_formula_exists {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (r : Nat) (t u : ExtendedCarrier M atomMap r) :
     ∃ A : StaviFormula, staviDepth A ≤ r ∧
@@ -599,7 +598,6 @@ theorem sf_snce_truth_mu {sig : MonadicSignature} [Finite sig.preds]
 /-- U(X_t, X_{(s,t)}) holds at s in N when t witnesses it.
     This is GHR93 Case II Step 3. -/
 theorem untl_type_holds_at_witness {sig : MonadicSignature} [Fintype sig.preds]
-   
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {s t : ExtendedCarrier M atomMap r}
     (hmu_t : MuHolds t) (hst : s < t) :
@@ -619,7 +617,6 @@ theorem untl_type_depth {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- U(X_t, X_{(s,t)}) has depth ≤ r + 4 (needed for tau transfer at rank r+4). -/
 theorem untl_type_depth_le_r_plus_4 {sig : MonadicSignature} [Fintype sig.preds]
-   
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r : Nat} {s t : ExtendedCarrier M atomMap r} :
     staviDepth (sfUntl (xTFormula M atomMap r t)
@@ -678,7 +675,6 @@ theorem untl_witness_bounded {sig : MonadicSignature} [Finite sig.preds]
     its mu-relativized truth is preserved by rankEmbed. This is a convenient
     specialization of rank_embed_stavi_truth_mu. -/
 theorem formula_transfer_rank_embed {sig : MonadicSignature} [Finite sig.preds]
-   
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
     {r r' : Nat} (h : r ≤ r')
     (t : ExtendedCarrier M atomMap r) (A : StaviFormula) :

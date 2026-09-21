@@ -1074,7 +1074,7 @@ theorem applyRule_untlPos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
   all_goals (try simp only [RuleResult.emitted] at hg)
   all_goals (try simp_all only [asUntil?_eq_iff, reduceCtorEq, List.not_mem_nil])
   all_goals (try simp only [
-    Branch.allFuturePosFormulas, Branch.someFutureNegFormulas, 
+    Branch.allFuturePosFormulas, Branch.someFutureNegFormulas,
     List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
     List.not_mem_nil, or_false] at hg)
   all_goals (try (repeat' rcases hg with hg | hg))
@@ -1107,7 +1107,7 @@ theorem applyRule_sncePos_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
   all_goals (try simp only [RuleResult.emitted] at hg)
   all_goals (try simp_all only [asSince?_eq_iff, reduceCtorEq, List.not_mem_nil])
   all_goals (try simp only [
-    Branch.allPastPosFormulas, Branch.somePastNegFormulas, 
+    Branch.allPastPosFormulas, Branch.somePastNegFormulas,
     List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
     List.not_mem_nil, or_false] at hg)
   all_goals (try (repeat' rcases hg with hg | hg))
@@ -1150,7 +1150,7 @@ theorem applyRule_untlNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
   all_goals (try simp only [RuleResult.emitted] at hg)
   all_goals (try simp_all only [asUntil?_eq_iff, reduceCtorEq, List.not_mem_nil])
   all_goals (try simp only [
-    Branch.allFuturePosFormulas, Branch.someFutureNegFormulas, 
+    Branch.allFuturePosFormulas, Branch.someFutureNegFormulas,
     List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
     List.not_mem_nil, or_false] at hg)
   all_goals (try (repeat' rcases hg with hg | hg))
@@ -1194,7 +1194,7 @@ theorem applyRule_snceNeg_closed (hC : TableauClosed C) (hsf : sf.formula ∈ C)
   all_goals (try simp only [RuleResult.emitted] at hg)
   all_goals (try simp_all only [asSince?_eq_iff, reduceCtorEq, List.not_mem_nil])
   all_goals (try simp only [
-    Branch.allPastPosFormulas, Branch.somePastNegFormulas, 
+    Branch.allPastPosFormulas, Branch.somePastNegFormulas,
     List.flatten_cons, List.flatten_nil, List.append_nil, List.mem_cons, List.mem_append,
     List.not_mem_nil, or_false] at hg)
   all_goals (try (repeat' rcases hg with hg | hg))
@@ -1344,7 +1344,7 @@ theorem applyRule_densityRule_closed (hC : TableauClosed C) (hsf : sf.formula �
   all_goals (try simp_all only [reduceCtorEq, List.not_mem_nil])
   all_goals (try simp only [
     Branch.allFuturePosFormulas,
-    List.mem_cons, 
+    List.mem_cons,
     ] at hg)
   all_goals (try (repeat' rcases hg with hg | hg))
   all_goals first

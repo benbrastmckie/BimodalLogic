@@ -21,13 +21,13 @@ exterior `x1 < x`; zone marking is `kvE2SepZPastX3` (`x1` strictly below all of 
 the six at-or-above-`x` couplings carry head coupling `(false, true)`. All of this is
 depth-INDEPENDENT — it is a fact about `zoneHolds`/order over the fixed 4-anchor environment
 `[x1, w, x, t]`, so the frozen k=2 public decls `kvE2PastPossibleZones`
-(`ExteriorNegationPast.lean:271`) and `kvE2_pastZoneClass` (`:264`), and the atom-layer bit
+(`ExteriorNegationPast.lean:269`) and `kvE2_pastZoneClass` (`:264`), and the atom-layer bit
 transfer `kvE2_zoneBit_below` (`ExteriorZoneTriage.lean:65`), are reused VERBATIM (they are
 reachable public decls; importing is not editing — frozen `git diff` stays EMPTY). The Phase-3
 Future side uses them symmetrically via `kvE2FutPossibleZones`/`kvE2_futZoneClass`.
 
 **What is genuinely depth-`k` here (the novelty).** The frozen k=2 admissibility
-(`kvE2PastAdmissible`, `ExteriorNegationPast.lean:425`) reads σ's prescriptions through the
+(`kvE2PastAdmissible`, `ExteriorNegationPast.lean:423`) reads σ's prescriptions through the
 depth-0-hardwired coordinatization `σ.2 (nf0Assemble zs χ σ.1)` over the marginal profile
 `χ : NormalForm sig 0 1`. At depth `k` that coordinatization is lossless ONLY at depth 0
 (the F2 obstruction, postmortem rules 1-3), so `kvEPastAdmissible` below reads the
@@ -82,14 +82,14 @@ the frozen k=2 public decls. Re-exposed here under the `kvE_past*` interface nam
 depth-`k` chain builder (Phase 4.2/4.3) cites. -/
 
 /-- **The nine order-possible past-exterior zone-4 specs** (`x1 < x < w < t`): the depth-`k`
-    interface alias of the frozen public `kvE2PastPossibleZones` (`ExteriorNegationPast.lean:271`).
+    interface alias of the frozen public `kvE2PastPossibleZones` (`ExteriorNegationPast.lean:269`).
     Depth-independent — a `ZoneSpec 4` list, no depth index. -/
 def kvEPastPossibleZones : List (ZoneSpec 4) := kvE2PastPossibleZones
 
 /-- **Zone-4 classification at exterior `x1`** (past side): any point's `zoneHolds` spec over
     `[x1, w, x, t]` (with `x1 < x < w < t`) is one of the nine `kvEPastPossibleZones`. The
     depth-`k` interface wrapper of the frozen public `kvE2_pastZoneClass`
-    (`ExteriorNegationPast.lean:358`); depth-independent (about points/zones/order only). -/
+    (`ExteriorNegationPast.lean:356`); depth-independent (about points/zones/order only). -/
 theorem kvE_pastZoneClass {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v x1 w x t : M.carrier)
     (hxw : x < w) (hwt : w < t) (hx1x : x1 < x)
@@ -125,7 +125,7 @@ theorem kvE_zoneHolds_of_atom {sig : MonadicSignature} [Fintype sig.preds] [Deci
 /-- **A realizer's fresh point carries σ's atom fresh profile** (past side): if σ's atom layer
     holds at `[x1, w, x, t]`, then the exterior anchor `x1` realizes the depth-0 fresh profile
     `nf0ProjFresh σ.1`. Reads the atom layer only, so it reduces to the reachable public
-    side-neutral `kvE2_futFreshProfile` (`ExteriorNegation.lean:1126`) via the depth-1 atom
+    side-neutral `kvE2_futFreshProfile` (`ExteriorNegation.lean:1123`) via the depth-1 atom
     carrier `⟨σ.1, fun _ => false⟩` (whose `.1` is σ's atom layer). Exposed for the Phase
     4.2/4.3 self-point identification. -/
 theorem kvE_pastFreshProfile {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -150,7 +150,7 @@ def kvEPastSelfZone : ZoneSpec 4 := Fin.cons (false, false) kvE2SepZPastX3
     off-fiber falsity, order-possible zones, and self-zone fresh-profile uniqueness — all
     read over the FULL fiber `NormalForm sig k 5` (navigation-only, G6; content is the
     separate `kvEFiberPosOn` channel). The depth-`k` reformulation of `kvE2PastAdmissible`
-    (`ExteriorNegationPast.lean:425`): its marginal `σ.2 (nf0Assemble zs χ σ.1)` reads are
+    (`ExteriorNegationPast.lean:423`): its marginal `σ.2 (nf0Assemble zs χ σ.1)` reads are
     replaced by direct full-fiber reads (the depth-0 assembly is F2-lossy at depth `k ≥ 1`),
     and its exactly-the-fresh-profile self-zone condition (4) by the weakened at-most-one
     form through the `kvESubBit` determinacy channel — the depth-`k` faithful replacement,
@@ -175,7 +175,7 @@ noncomputable def kvEPastAdmissible {sig : MonadicSignature} [Fintype sig.preds]
 /-- **A realizer forces order-admissibility** (past side, depth-`k`): if some exterior
     `x1 < x` realizes σ over `[x1, w, x, t]` (with `x < w < t`), then σ is order-admissible.
     Uses only the order bits — no semantic hypothesis on `M`. Structure mirrors
-    `kvE2_pastRealizer_admissible` (`ExteriorNegationPast.lean:442`): the fold bridge
+    `kvE2_pastRealizer_admissible` (`ExteriorNegationPast.lean:440`): the fold bridge
     `nf_eval_nfk_iff_efold` supplies the atom layer (condition 1 via `kvE2_zoneBit_below`),
     the off-fiber clause (condition 2), and the on-fiber existential biconditional (condition
     3, via `kvE_zoneHolds_of_atom` + `kvE_pastZoneClass`). Condition 4
@@ -280,7 +280,7 @@ theorem kvE_pastRealizer_admissible {sig : MonadicSignature} [Fintype sig.preds]
 
 The three exterior-zone-4 specs the past chain builder partitions σ's fiber by (the depth-`k`
 analogs of the frozen `kvE2PastGapBit`/`kvE2PastRayBit`/`kvE2PastSelfBit` head couplings,
-`ExteriorNegationPast.lean:223/228/233`), instantiating the side-agnostic Phase-2
+`ExteriorNegationPast.lean:221/228/233`), instantiating the side-agnostic Phase-2
 `kvEFiberZoneList σ zs4`. Head coupling encodes the relation of a fiber element's fresh point
 to the exterior anchor `x1`: `(false, true)` = strictly above `x1` (the gap `(x1, x)`),
 `(true, false)` = strictly below `x1` (the ray `(−∞, x1)`), `(false, false)` = equal to `x1`
@@ -317,7 +317,7 @@ theorem kvE_pastRayZone_mem : kvEPastRayZone ∈ kvEPastPossibleZones :=
     `kvE_minPick`, `ExteriorFiberK.lean`): from a nonempty list each of whose elements has
     some `M`-witness under `P`, extract one element with a `≤`-maximal witness dominated by a
     witness for every element. Byte-identical proof template of the frozen private
-    `kvE2_pastMaxPick` (`ExteriorNegationPast.lean:582`), `{α : Type}`-generic so the past chain
+    `kvE2_pastMaxPick` (`ExteriorNegationPast.lean:580`), `{α : Type}`-generic so the past chain
     builder (which walks the gap top-down) can sort chosen occurrences by maximal extraction.
     The shared `ExteriorFiberK.lean` only exposed the ascending `kvE_minPick` (future side); this
     is the additive Past-territory descending counterpart. -/
@@ -359,7 +359,7 @@ rendering `itemF` and model-side occurrence predicate `Q` are ABSTRACT parameter
 clause layer instantiates `itemF := fun s => P.existF 4 (renameNF rot5Fwd rot5Bwd s)` — the
 Rabinovich re-anchoring bridge, Cor 5.4(2) — over fiber elements, guard G6). Byte-identical
 descending port of the frozen private `kvE2PastChain`/`Build`/`Destruct`
-(`ExteriorNegationPast.lean:542/518/806`), with `nfDepth0CharFormula`/`nf_profile_unique`
+(`ExteriorNegationPast.lean:540/518/806`), with `nfDepth0CharFormula`/`nf_profile_unique`
 abstracted to `itemF`/`huniq`. Min/max-witness sort via the landed `kvE_pastMaxPick`. -/
 
 /-- Abstract `D`-guarded `Since` chain over a list of items, each rendered by `itemF`, visited in
@@ -487,7 +487,7 @@ theorem kvE_pastChainDestructG {sig : MonadicSignature} [Finite sig.preds]
 /-! ## The depth-`k` Past clause family (content via `kvEFiberPosOnShift`, G6 + re-anchor)
 
 The depth-`k` analogs of the frozen clause defs `kvE2PastGapD`/`RayD`/`RayForm`/`End`/`Chain`/
-`Pos`/`extNegPast` (`ExteriorNegationPast.lean:505-572`), symmetric with the Future depth-`k`
+`Pos`/`extNegPast` (`ExteriorNegationPast.lean:503-572`), symmetric with the Future depth-`k`
 family (`ExteriorNegationK.lean:358-415`). Every content-bearing position renders the FULL fiber
 element `s : NormalForm sig k 5` through the shared reindex bridge — `kvEFiberPosOnShift P`
 (disjunctions) or `P.existF 4 (renameNF rot5Fwd rot5Bwd s)` (per-item), which by
@@ -568,7 +568,7 @@ noncomputable def kvEExtNegPast {sig : MonadicSignature} [Fintype sig.preds]
 
 `kvE_extNegPast_sound`: if the complement clause of σ holds at the left anchor `x`, then no
 exterior `x1 < x` realizes σ over `[x1, w, x, t]`. Depth-`k` port of `kvE2_extNegPast_sound`
-(`ExteriorNegationPast.lean:681`): the fold decomposition `nf_eval_nfk_iff_efold` replaces the
+(`ExteriorNegationPast.lean:679`): the fold decomposition `nf_eval_nfk_iff_efold` replaces the
 depth-1 `nf_eval_depth1_fold_iff`; the content channel `kvEFiberPosOnShift` (rendered through
 the Rabinovich re-anchoring bridge `kvE_anchorBridge`) replaces the marginal
 `nfDepth0CharFormula`; visited points carry their canonical full-arity type
@@ -577,7 +577,7 @@ structure for the `P.existF` content channel. -/
 
 /-- A point strictly below `x` (with `x < w < t`) couples to `[x1, w, x, t]` as `zPastX3` below
     `w, x, t` and to `x1` by the given head pair (reachable local copy of the frozen private
-    `kvE2_pastZone4_of_below`, `ExteriorNegationPast.lean:106`). -/
+    `kvE2_pastZone4_of_below`, `ExteriorNegationPast.lean:104`). -/
 private theorem kvE_pastZoneBelow {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (v x1 w x t : M.carrier)

@@ -16,7 +16,7 @@ Reynolds 1992, §5 Theorem 3 (printed p.176), at the carrier the Dedekind route 
 expressive completeness of `{U,S}` over structures satisfying the **dense** Prior axioms
 `SemanticPriorU` / `SemanticPriorS` (`PriorDefsDense.lean:121`, `:138`), rather than the
 *integer* axioms `SemanticPriorUZ` / `SemanticPriorSZ` (`PriorDefs.lean:28`, `:39`) at which
-`uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean:358`) is pinned.
+`uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean:353`) is pinned.
 
 **Theorem 3, verbatim** (printed p.176, read from the source PDF): *"The language with U and S
 is expressively complete for the class of Prior structures."* Its "Prior structure" is defined on
@@ -70,7 +70,7 @@ machine-checks that the dense hypotheses do not supply the integer ones:
 `semanticPriorU_not_implies_semanticPriorUZ` (`PriorDefsDense.lean`) exhibits `denseRayFlow`
 satisfying `SemanticPriorU ∧ SemanticPriorS` and refuting `SemanticPriorUZ`. Its own docstring
 draws the consequence for exactly this module: *"every declaration pinned at `SemanticPriorUZ` /
-`SemanticPriorSZ` — `uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean:358`) ... and
+`SemanticPriorSZ` — `uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean:353`) ... and
 their consumers — has no dense instance obtained by reuse."* Re-exporting
 `uSExpressivelyCompleteOverPrior` at the dense hypotheses is therefore not merely unproved but
 **unavailable**, and `uSExpressivelyCompleteOverDensePrior_not_by_reuse` below restates that
@@ -102,7 +102,7 @@ unavailability as a claim about this module's own target.
 
 ## Domain restriction, inherited and stated
 
-`Kamp.nf_nvar_exist_all_depths` (`Kamp/KampPrior.lean:373`) carries `hn : n ≤ 1`, excluding the
+`Kamp.nf_nvar_exist_all_depths` (`Kamp/KampPrior.lean:370`) carries `hn : n ≤ 1`, excluding the
 arity-`n ≥ 2` arm, and `nfCharacterizableTemporalPrior` consumes it at `n = 1` only. The
 restriction is invisible in `kampPriorExpressiveCompleteness`' statement because arity-1 is all
 that statement ever needs. **It is inherited by everything here** and is not widened: the
@@ -177,7 +177,7 @@ replaced by `Kamp.HasFaithfulDedekindINF` / `Kamp.HasFaithfulDedekindSUP`
 the source's own `K⁺` rather than at this tree's `kplus`.
 
 Stated at `MonadicFormula sig 1`: the arity at which the existing chain closes, inheriting
-`Kamp.nf_nvar_exist_all_depths`' `hn : n ≤ 1` (`Kamp/KampPrior.lean:373`) rather than widening
+`Kamp.nf_nvar_exist_all_depths`' `hn : n ≤ 1` (`Kamp/KampPrior.lean:370`) rather than widening
 it. -/
 def KampFaithfulExpressiveCompleteness {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]

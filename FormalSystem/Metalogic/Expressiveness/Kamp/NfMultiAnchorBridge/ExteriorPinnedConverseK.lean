@@ -753,7 +753,6 @@ theorem kvE_futClause_sliceConstant {sig : MonadicSignature} [Fintype sig.preds]
     endpoint realizes by hypothesis; the zone channel changes only at index 0, where
     `v ≤ t < x1` and `v ≤ t < x1'` render the SAME coupling `(true, false)`. -/
 theorem kvE_futInteriorTransfer_zero {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (v x1 x1' w x t : M.carrier)
     (hvt : ¬ t < v) (htx1 : t < x1) (htx1' : t < x1')
     (hchar : NfEvalNf M 0 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t))))

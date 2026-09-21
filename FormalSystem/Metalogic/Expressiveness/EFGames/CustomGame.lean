@@ -757,7 +757,7 @@ theorem sf_K_plus_iff {sig : MonadicSignature}
     refine ⟨s, hts, hmu, ?_, ?_⟩
     · -- ⊤(s): sfVerum true at mu-point s
       obtain ⟨x, rfl⟩ := hmu
-      simp [sfVerum, StaviTemporalTruthMu, TemporalTruthMu, 
+      simp [sfVerum, StaviTemporalTruthMu, TemporalTruthMu,
 ]
     · -- ∀ mu u ∈ (t,s), ¬A(u): the invariant is ¬A^mu, which is exactly hinv
       exact hinv
@@ -779,7 +779,7 @@ theorem sf_K_minus_iff {sig : MonadicSignature}
     apply h
     refine ⟨s, hst, hmu, ?_, ?_⟩
     · obtain ⟨x, rfl⟩ := hmu
-      simp [sfVerum, StaviTemporalTruthMu, TemporalTruthMu, 
+      simp [sfVerum, StaviTemporalTruthMu, TemporalTruthMu,
 ]
     · exact hinv
   · intro h ⟨s, hst, hmu, _, hinv⟩
@@ -893,7 +893,7 @@ theorem gap_char_formula_left {sig : MonadicSignature}
   · -- S^μ(⊤, D): exists mu-point s < g with D at all mu in (s, g)
     refine ⟨extendPoint t, extendPoint_lt_gap t g ht_cut, ⟨t, rfl⟩, ?_, ?_⟩
     · -- ⊤(t)
-      simp [sfVerum, StaviTemporalTruthMu, TemporalTruthMu, 
+      simp [sfVerum, StaviTemporalTruthMu, TemporalTruthMu,
             extendPoint]
     · -- ∀ mu u ∈ (t, g), D(u)
       intro u htu hug hmu_u
@@ -933,7 +933,7 @@ theorem gap_char_formula_right {sig : MonadicSignature}
   constructor
   · -- U^μ(⊤, D): exists mu-point s > g with D at all mu in (g, s)
     refine ⟨extendPoint t, gap_lt_extendPoint g t ht_not_cut, ⟨t, rfl⟩, ?_, ?_⟩
-    · simp [sfVerum, StaviTemporalTruthMu, TemporalTruthMu, 
+    · simp [sfVerum, StaviTemporalTruthMu, TemporalTruthMu,
             extendPoint]
     · intro u hgu hut hmu_u
       obtain ⟨y, rfl⟩ := hmu_u
@@ -1050,7 +1050,7 @@ theorem gap_char_formula_implies_definable {sig : MonadicSignature}
       · intro ⟨t, ht_not_cut, hD_init⟩
         apply h_not_U
         exact ⟨extendPoint t, gap_lt_extendPoint g t ht_not_cut, ⟨t, rfl⟩,
-          (by simp [sfVerum, StaviTemporalTruthMu, TemporalTruthMu, 
+          (by simp [sfVerum, StaviTemporalTruthMu, TemporalTruthMu,
                     extendPoint]),
           fun u hgu hut hmu_u => by
             obtain ⟨y, rfl⟩ := hmu_u
@@ -1083,7 +1083,7 @@ theorem gap_char_formula_implies_definable {sig : MonadicSignature}
     · intro ⟨t, ht_cut, hD_final⟩
       apply h_not_S
       exact ⟨extendPoint t, extendPoint_lt_gap t g ht_cut, ⟨t, rfl⟩,
-        (by simp [sfVerum, StaviTemporalTruthMu, TemporalTruthMu, 
+        (by simp [sfVerum, StaviTemporalTruthMu, TemporalTruthMu,
                   extendPoint]),
         fun u htu hug hmu_u => by
           obtain ⟨y, rfl⟩ := hmu_u
@@ -1369,7 +1369,6 @@ theorem ghr93_strategy_restrict_left {sig : MonadicSignature}
                  show (n + 2 : Nat) = (n + 1) + 1 from by omega,
                  show (n + 2 : Nat) ≠ (n + 1) + 2 from by omega,
                  show (n + 1 : Nat) ≠ 0 from by omega,
-                 
                  dite_true, dite_false] at hcmp
       obtain ⟨hlt_iff, heq_iff⟩ := hcmp
       -- hlt_iff : extendPoint b < c ↔ extendPoint b' < d  (after rewriting a_pad(n) = c,

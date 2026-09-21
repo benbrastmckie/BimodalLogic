@@ -257,7 +257,6 @@ charBase χ`)
 yields a past witness `v < x` realizing `φ` — the Prop 3.5 folding mechanism (md:87-94) read at the
 left endpoint. The witness rides the `Since` evaluation point (LITMUS: no `x1 < e_i` literal). -/
 theorem kvE_nonInterior_zPastX_sound {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x : M.carrier) (fs : List Formula) (φ : Formula)
     (hmem : Formula.snce Formula.top φ ∈ fs)
@@ -272,7 +271,6 @@ endpoint `t`, the `Until` literal `untl ⊤ φ` (present when `bits zFutT χ = t
 witness `t < v` realizing `φ` — the Prop 3.5 folding mechanism (md:87-94) read at the right
 endpoint. The witness rides the `Until` evaluation point (LITMUS: no `x1 < e_i` literal). -/
 theorem kvE_nonInterior_zFutT_sound {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (fs : List Formula) (φ : Formula)
     (hmem : Formula.untl Formula.top φ ∈ fs)
@@ -286,7 +284,6 @@ theorem kvE_nonInterior_zFutT_sound {sig : MonadicSignature} [Finite sig.preds]
 endpoint `x`, the bare literal `φ = charBase χ` (present when `bits zAtX χ = true`) is realized AT
 `x` itself — the `v = x` zone (Def 3.1 md:61-74). The witness is the fixed anchor. -/
 theorem kvE_nonInterior_zAtX_sound {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x : M.carrier) (fs : List Formula) (φ : Formula)
     (hmem : φ ∈ fs)
@@ -298,7 +295,6 @@ theorem kvE_nonInterior_zAtX_sound {sig : MonadicSignature} [Finite sig.preds]
 endpoint `t`, the bare literal `φ` (present when `bits zAtT χ = true`) is realized AT `t` itself —
 the `v = t` zone (Def 3.1 md:61-74). The witness is the fixed anchor. -/
 theorem kvE_nonInterior_zAtT_sound {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (fs : List Formula) (φ : Formula)
     (hmem : φ ∈ fs)
@@ -312,7 +308,6 @@ realized AT `w` itself — the `v = w` witness self-zone (v2 nine-zone correctio
 md:61-74). The witness is the interior anchor (Amendment F3 preserved: a zone-literal fold on the
 complete 1-type, NOT a `w = e 1` provider equation). -/
 theorem kvE_nonInterior_zAtW_sound {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w : M.carrier) (fs : List Formula) (φ : Formula)
     (hmem : φ ∈ fs)
@@ -345,7 +340,6 @@ the `Since` literal `snce ⊤ φ` at the fixed left endpoint `x` — the introdu
 Prop 3.5 folding mechanism (md:87-94). The witness rides the `Since` evaluation point; the `⊤`
 segment obligation is vacuous (`temporal_truth_top`). LITMUS: no `x1 < e_i` literal. -/
 theorem kvE_nonInterior_zPastX_complete {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x v : M.carrier) (φ : Formula)
     (hv_lt : v < x)
@@ -359,7 +353,6 @@ of
 the Prop 3.5 folding mechanism (md:87-94; Cor 5.4 md:154-157). The witness rides the `Until`
 evaluation point; the `⊤` segment obligation is vacuous. LITMUS: no `x1 < e_i` literal. -/
 theorem kvE_nonInterior_zFutT_complete {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t v : M.carrier) (φ : Formula)
     (hv_lt : t < v)
@@ -371,7 +364,6 @@ theorem kvE_nonInterior_zFutT_complete {sig : MonadicSignature} [Finite sig.pred
 fixed left endpoint `x` IS its own completeness witness — the `v = x` zone (Def 3.1 md:61-74). No
 navigation: the anchor witnesses directly. -/
 theorem kvE_nonInterior_zAtX_complete {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x : M.carrier) (φ : Formula)
     (hx_phi : TemporalTruth M atomMap x φ) :
@@ -381,7 +373,6 @@ theorem kvE_nonInterior_zAtX_complete {sig : MonadicSignature} [Finite sig.preds
 /-- **`zAtT` completeness (right-boundary point-realization).** The bare literal `φ` realized AT the
 fixed right endpoint `t` IS its own completeness witness — the `v = t` zone (Def 3.1 md:61-74). -/
 theorem kvE_nonInterior_zAtT_complete {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier) (φ : Formula)
     (ht_phi : TemporalTruth M atomMap t φ) :
@@ -392,7 +383,6 @@ theorem kvE_nonInterior_zAtT_complete {sig : MonadicSignature} [Finite sig.preds
 AT the interior anchor `w` IS its own completeness witness — the `v = w` witness self-zone (v2
 nine-zone correction; Def 3.1 md:61-74; Amendment F3 preserved). -/
 theorem kvE_nonInterior_zAtW_complete {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w : M.carrier) (φ : Formula)
     (hw_phi : TemporalTruth M atomMap w φ) :

@@ -12,7 +12,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.NfEFold
 This module targets the `k`-generalized per-side exterior brackets
 (`kvEExtBracketPast/Fut` + `_sound`/`_complete`) whose determinacy inputs read depth `k`:
 the k=2 `habove`/`hbelow` hypothesis type `(χ : NormalForm sig 0 1)` at `NfEvalNf M 0 1`
-(ExteriorBracket.lean:463-466) becomes `NormalForm sig k 1` at `NfEvalNf M k 1`, with
+(ExteriorBracket.lean:462-466) becomes `NormalForm sig k 1` at `NfEvalNf M k 1`, with
 `nf_eval_unique M k` supplying determinacy and the Phase-1 bridge `nf_eval_nfk_iff_efold`
 (NfEFold.lean:652) supplying the fold characterization.
 
@@ -36,7 +36,7 @@ This module lands the **design-invariant determinacy core** of that channel:
    arity-1 shadow `χ`. At `k = 0` this is definitionally the frozen `kvE2FutAnyBit`
    (agreement lemma `kvE_futAnyBit_zero`).
 4. `kvE_futAnyBit_correct` — the depth-`k` honesty biconditional (the generalization of
-   `kvE2_futAnyBit_correct`, ExteriorNegation.lean:163): under realized `qnf`,
+   `kvE2_futAnyBit_correct`, ExteriorNegation.lean:160): under realized `qnf`,
    `(∃ v, zoneHolds … zs v ∧ NfEvalNf M k 1 (fun _ => v) χ) ↔ kvEFutAnyBit qnf zs χ`.
    This IS the depth-`k` `habove`/`hbelow` pin the Phase-2 bracket lemmas consume, in the
    exact `NormalForm sig k 1` / `NfEvalNf M k 1` shape the plan prescribes.
@@ -233,7 +233,7 @@ noncomputable def kvEFutAnyBit {sig : MonadicSignature} [Fintype sig.preds]
     decide (nf0ZoneSpec σ'.1 = zs) && decide (kvEProjFreshD σ' = χ)
 
 /-- **Depth-`k` zone-fact honesty** (the symbolic-`k` generalization of
-    `kvE2_futAnyBit_correct`, ExteriorNegation.lean:163 — Cor 5.4 zone-fact channel, one
+    `kvE2_futAnyBit_correct`, ExteriorNegation.lean:160 — Cor 5.4 zone-fact channel, one
     fold-layer deeper): under realized `qnf`, the syntactic bit reads the actual depth-`k`
     zone fact of `[w,x,t]`, for EVERY `zs`. This is the depth-`k` `habove`/`hbelow` pin in
     the exact `NormalForm sig k 1` / `NfEvalNf M k 1` shape the Phase-2 bracket lemmas
@@ -307,7 +307,7 @@ theorem kvE_futAnyBit_correct {sig : MonadicSignature} [Fintype sig.preds] [Deci
     arity, fiber-split — G1): whether σ prescribes SOME depth-`k` arity-5 sub on its own
     atom fiber, in zone-4 spec `zs4`, with fresh depth-`k` projection `χ`. This is the
     depth-`k` replacement for the k=2 equational read `σ.2 (nf0Assemble zs4 χ σ.1)`
-    (ExteriorBracket.lean:128-131): the depth-0 assembly is lossless ONLY at depth 0
+    (ExteriorBracket.lean:127-131): the depth-0 assembly is lossless ONLY at depth 0
     (NfEFold.lean:550-561), so at depth `k` the read is existential over the full-arity
     fiber — never through an assembled arity-1 re-encoding. -/
 noncomputable def kvESubBit {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -322,7 +322,7 @@ noncomputable def kvESubBit {sig : MonadicSignature} [Fintype sig.preds] [Decida
 /-- **Sub-side fold-read honesty** (the Phase-1 bridge `nf_eval_nfk_iff_efold` consumed at
     the sub level): under a realized σ, the fiber-existential read `kvESubBit` IS the
     depth-`k` zone fact of σ's own environment — the depth-`k` analog of the
-    `hquantσ`-mediated reads in `kvE2_futMarked_of_realizer` (ExteriorBracket.lean:313+),
+    `hquantσ`-mediated reads in `kvE2_futMarked_of_realizer` (ExteriorBracket.lean:312+),
     with `nf_eval_unique M k` supplying determinacy on both channels. -/
 theorem kvE_subBit_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) {k : Nat}
@@ -411,7 +411,7 @@ theorem kvE_futAnyBit_zero {sig : MonadicSignature} [Fintype sig.preds] [Decidab
 
 /-- Sanity (plan Phase-2 task): at the k=2 rung the depth-`k` honesty lemma
     `kvE_futAnyBit_correct` yields exactly the frozen `kvE2_futAnyBit_correct`
-    (ExteriorNegation.lean:163) — interderivability of the new decl with the original. -/
+    (ExteriorNegation.lean:160) — interderivability of the new decl with the original. -/
 example {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (qnf : NormalForm sig 2 3)

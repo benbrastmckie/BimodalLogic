@@ -628,11 +628,9 @@ noncomputable def futureKDist {fc : FrameClass} (A B : Formula) :
       apply DerivationTree.assumption
       simp
     exact DerivationTree.modus_ponens [A.imp B, A] A B h_imp h_a
-  
   -- Step 2: Apply generalizedTemporalK to get [G(A → B), GA] ⊢ GB
   have step2 : [(A.imp B).allFuture, A.allFuture] ⊢[fc] B.allFuture := by
     exact FormalSystem.Theorems.generalizedTemporalK [A.imp B, A] B step1
-  
   -- Step 3: Reorder context to [GA, G(A → B)] ⊢ GB using weakening
   -- We need GA at the front to apply deduction theorem
   have step3_reordered : [A.allFuture, (A.imp B).allFuture] ⊢[fc] B.allFuture := by
@@ -641,17 +639,14 @@ noncomputable def futureKDist {fc : FrameClass} (A B : Formula) :
     intro x hx
     simp only [List.mem_cons, List.not_mem_nil, or_false] at hx ⊢
     exact hx.symm
-  
   -- Step 4: Apply deduction theorem to get [G(A → B)] ⊢ GA → GB
   have step4 : [(A.imp B).allFuture] ⊢[fc] A.allFuture.imp B.allFuture := by
     exact FormalSystem.Metalogic.Core.deductionTheorem [(A.imp B).allFuture]
       A.allFuture B.allFuture step3_reordered
-  
   -- Step 5: Apply deduction theorem again to get ⊢ G(A → B) → (GA → GB)
   have step5 : [] ⊢[fc] (A.imp B).allFuture.imp (A.allFuture.imp B.allFuture) := by
     exact FormalSystem.Metalogic.Core.deductionTheorem []
       (A.imp B).allFuture (A.allFuture.imp B.allFuture) step4
-  
   exact step5
 
 /--

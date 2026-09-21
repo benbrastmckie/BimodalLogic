@@ -13,14 +13,14 @@ Builds the aggregate ∀-qnf population encoding for the `KampPrior.lean` `| 1 =
 discharges the three arm-correctness hooks (past / diagonal / future) as separate green citable
 lemmas at match arms k=0 (`sub_nf : NormalForm sig 1 2`) and k=1 (`sub_nf : NormalForm sig 2 2`),
 each concluding in the `kampPrior_case1_trichotomy_assemble` skeleton shape
-(`KampPrior.lean:1155`; disjunct shapes from `kampPrior_site_trichotomy`, `KampPrior.lean:255`).
+(`KampPrior.lean:1151`; disjunct shapes from `kampPrior_site_trichotomy`, `KampPrior.lean:254`).
 
 ## Phase-1 adjudication record (R1/R2/aggregation verdicts — BINDING)
 
 **R1 verdict (Route V confirmed; Route P refuted for interior-positive populations).** The
 literal P4/P5 `h_quant` binder pair `(quantEnd : TemporalPred) × (seg : BracketFormula 0)`
-(`nf_char2_past_formula_correct`, Base.lean:1425; `nf_char2_future_formula_correct`,
-Base.lean:1656) cannot host interior-POSITIVE population clauses: a `BracketFormula 0` has NO
+(`nf_char2_past_formula_correct`, Base.lean:1424; `nf_char2_future_formula_correct`,
+Base.lean:1655) cannot host interior-POSITIVE population clauses: a `BracketFormula 0` has NO
 point slots (`IntervalPattern.holds` at `n = 0` is purely the universal segment form,
 ExistsForallNF:106-112), so it can carry only universal-over-interval exclusions, and a closed
 `quantEnd` evaluated at the bound witness `x` cannot lay a SECOND witness strictly between `x`
@@ -34,13 +34,13 @@ and enters the skeleton via `VVecEA2.translateRight_correct` (NfToVecEA.lean:459
 skeleton-shaped conclusions, which Route V produces directly.
 
 **R2 verdict (A_diag_correct per-point hooks undischargeable; additive diag variant landed).**
-`A_diag_correct`'s hooks (Base.lean:767-773) demand, for a FIXED syntactic
+`A_diag_correct`'s hooks (Base.lean:766-773) demand, for a FIXED syntactic
 `pastEnd : NormalForm sig k 3 → TemporalPred`, the per-point biconditional
 `∀ w < t, (pastEnd qnf).EvalAt M atomMap w ↔ NfEvalNf M k 3 (Fin.cons w (fun _ => t)) qnf`.
 This is the free-anchor obstruction machine-established by `endChar0_correct`'s counterexample
-record (Base.lean:1070-1079) and by the sorry-free refutation pair
+record (Base.lean:1069-1079) and by the sorry-free refutation pair
 `endCharN0_correct_world_local_obstruction` / `endCharN0_correct_infeasible`
-(Base.lean:1984/2027): `(pastEnd qnf).EvalAt M atomMap w` depends only on the single world `w`,
+(Base.lean:1983/2027): `(pastEnd qnf).EvalAt M atomMap w` depends only on the single world `w`,
 while the RHS constrains the predicate layer at the anchor position `t` (indices 1, 2 of the
 env `[w, t, t]`) — no choice of closed `pastEnd` can bridge this. The diag arms below therefore
 do NOT instantiate `A_diag_correct`; they land additive variants with the same skeleton-shaped
@@ -70,7 +70,7 @@ strictly fewer moving parts.
 ## The six target statements (Phase 1 freeze — shapes BINDING for Phases 2-5)
 
 Conclusion shapes copied verbatim from the `kampPrior_site_trichotomy` disjuncts
-(KampPrior.lean:686-684); `h_UZ`/`h_SZ` are carried (unused) so the statements slot directly
+(KampPrior.lean:683-684); `h_UZ`/`h_SZ` are carried (unused) so the statements slot directly
 under the Prior-guarded skeleton. Delivered by Phase 3 (k=0) and Phase 5 (k=1):
 
 ```
@@ -1679,8 +1679,8 @@ end AggDiagK0
 /-! ## Phase 3 — k=0 hook discharge: the three arm lemmas (match arm k=0)
 
 The three green citable lemmas in the `kampPrior_case1_trichotomy_assemble` skeleton shape
-(KampPrior.lean:1155) at match arm k=0 (`sub_nf : NormalForm sig 1 2`). Each conclusion is the
-corresponding `kampPrior_site_trichotomy` disjunct verbatim (KampPrior.lean:686-684).
+(KampPrior.lean:1151) at match arm k=0 (`sub_nf : NormalForm sig 1 2`). Each conclusion is the
+corresponding `kampPrior_site_trichotomy` disjunct verbatim (KampPrior.lean:683-684).
 `h_UZ`/`h_SZ` are carried (unused — the k=0 aggregates need no Prior hypotheses, matching the
 k≤1 rungs `bracketEndChar_kv_correct_{zero,one}_prior`) so the statements slot directly under
 the Prior-guarded skeleton. These discharge the P4/P5 `h_quant` hooks and the `A_diag_correct`

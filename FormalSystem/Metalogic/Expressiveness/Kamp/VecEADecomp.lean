@@ -405,7 +405,6 @@ above. -/
 
 /-- When both order(i,j) and order(j,i) are true, the existential is empty. -/
 private theorem nf_3var_order_contradiction {sig : MonadicSignature} [Finite sig.preds]
-   
     (ssn : NormalForm sig 0 3)
     (i j : Fin 3) (h_ij : i ≠ j)
     (h1 : ssn (.order i j h_ij) = true)
@@ -883,7 +882,6 @@ orderings use the zone-specific constructions above. -/
     This reduces the problem of expressing the 3-var existential to
     the 2-free-variable VecEA2 formalism, which is already sorry-free. -/
 theorem nf_3var_exist_depth0_characterization {sig : MonadicSignature} [Finite sig.preds]
-   
     (ssn : NormalForm sig 0 3) (M : OrderedMonadicStructure sig) (x t : M.carrier) :
     (∃ y : M.carrier,
       NfEvalNf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) ↔

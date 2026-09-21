@@ -595,7 +595,6 @@ for any rank r. An `RDefinableGap` is a subtype of `Gap M.carrier`, so if
 `Gap M.carrier` is empty, `RDefinableGap` is also empty.
 -/
 theorem no_r_definable_gaps_of_no_gaps {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (r : Nat)
     (h_no_gaps : IsEmpty (Gap M.carrier)) :
     IsEmpty (RDefinableGap M atomMap r) :=
@@ -629,7 +628,6 @@ so that Cases III/IV are vacuous. Only uses Case I and Case II, both of which
 are sorry-free.
 -/
 theorem ghr93_inductive_step_discrete {sig : MonadicSignature} [Finite sig.preds]
-   
     (atomMap : Formula → sig.preds) (n r delta : Nat)
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -729,7 +727,6 @@ This is sorry-free because the inductive step uses only Case I and Case II,
 both of which are axiom-clean.
 -/
 theorem ghr93_forward_to_backward_discrete {sig : MonadicSignature} [Finite sig.preds]
-   
     (atomMap : Formula → sig.preds) (n r : Nat)
     {M N : OrderedMonadicStructure sig}
     {x y : ExtendedCarrier M atomMap r}
@@ -959,7 +956,6 @@ then applies the chronicle's MCS-level Prior-UZ axiom.
 -/
 theorem chronicle_semantic_prior_UZ {fc : FrameClass}
     (M : ChronicleAsPriorModel fc) (sig : MonadicSignature) [Finite sig.preds]
-       
     (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds) :
     SemanticPriorUZ (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd := by
   haveI := Classical.decEq sig.preds
@@ -1021,7 +1017,6 @@ with any atomMap. Mirror of `chronicle_semantic_prior_UZ`.
 -/
 theorem chronicle_semantic_prior_SZ {fc : FrameClass}
     (M : ChronicleAsPriorModel fc) (sig : MonadicSignature) [Finite sig.preds]
-       
     (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds) :
     SemanticPriorSZ (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd := by
   haveI := Classical.decEq sig.preds

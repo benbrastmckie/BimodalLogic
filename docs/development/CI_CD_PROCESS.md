@@ -11,7 +11,7 @@ The ProofChecker project uses GitHub Actions to automatically build, test, and l
 ```
 Push/PR → GitHub Actions → Build → Test → Lint → lean_exe roots →
   check-module-invariants.sh --no-build → check-copyright-headers.sh --strict →
-  readme-lint.sh → … → mk_all --lib FormalSystem --check → Results
+  readme-lint.sh → … → mk_all --lib FormalSystem --check → lint-style → Results
 ```
 
 **Typical CI runtime**: 7-10 minutes (with Mathlib cache), plus roughly 40s for the three
@@ -260,7 +260,8 @@ run; "minimal env, extracted body" re-derives the exact `run:` body from the com
 | `Typst sync check (scripts/typst-sync-check.sh)` | 13.6s | 14.1s | _(pending)_ |
 | `Check paper definitions (scripts/check-paper-definitions.sh)` | 0.85s (paper present, full manifest walk; 0.03s on the unchanged-checksum fast path), measured 2026-09-17 | 0.02s (paper absent: the neutral-skip path CI takes) | _(pending)_ |
 | `Check the generated library root (lake exe mk_all --lib FormalSystem --check)` | 0.84s (executable already built), measured 2026-09-21 | 0.82s | _(pending; the first run on a cold runner also compiles and links the `mk_all` executable, which the local figures exclude)_ |
-| **Sum (added local delta)** | **~57.2s** | **~44.4s** | _(pending)_ |
+| `Text-based style linters (lake exe lint-style)` | 4.1s (executable already built), measured 2026-09-21 | 4.7s | _(pending; the first run on a cold runner also compiles and links the `lint-style` executable)_ |
+| **Sum (added local delta)** | **~61.3s** | **~49.1s** | _(pending)_ |
 
 A task that wires a new check step updates this table in the same change, adding its own row
 and re-summing.
@@ -377,7 +378,7 @@ comment recording why is an accepted resolution |
 
 | Error | Cause | Fix |
 |-------|-------|-----|
-| "Trailing whitespace" | Whitespace at line end | Run `lake lint -- --fix` |
+| "This line ends with some whitespace" (`lint-style` step) | Whitespace at line end | Run `lake exe lint-style --fix` |
 | "Line exceeds 100 chars" | Long line | Break line manually |
 | "Non-breaking space" | Wrong space character | Replace with regular space |
 
@@ -409,6 +410,9 @@ bash scripts/check-copyright-headers.sh --strict --exclude '*/Boneyard/*' Formal
 
 # Check README health
 bash scripts/readme-lint.sh
+
+# Run the text-based style linters (add --fix to repair trailing whitespace)
+lake exe lint-style
 
 # Check the generated library root; after adding, moving or deleting a module under
 # FormalSystem/, regenerate it with the same command minus --check and commit the result

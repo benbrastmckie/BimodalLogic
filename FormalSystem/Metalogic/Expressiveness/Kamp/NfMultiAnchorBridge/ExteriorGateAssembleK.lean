@@ -11,7 +11,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorAm
 /-! # General-`k` `hexclExt` exterior-adjacency discharge
 
 The general-`k` mirror of the landed k=2 discharge `bracketEndChar_kvE2Ext_correct_two_prior_frag`
-(`ExteriorBracket.lean:1103`), one fold-layer deeper. It composes the general-`k` interior carrier
+(`ExteriorBracket.lean:1101`), one fold-layer deeper. It composes the general-`k` interior carrier
 `bracketEndCharKv` at depth `(k+2)` with the two adjacent exterior brackets
 `kvEExtBracketPast` / `kvEExtBracketFut` (`ExteriorBracketAssembleK.lean`) via `enrichEndpoints`
 (the degenerate Rabinovich Lemma 7.6 p.14 adjacency at the shared free anchors `x, t`), discharging
@@ -26,7 +26,7 @@ This is a purely additive leaf. Every composition input is landed sorry-free:
   re-establishment;
 - `kvE_futBundle_of_realizer` / `kvE_pastBundle_of_realizer` (`ExteriorConverter{,Past}K.lean`) —
   the `hreal`/`hsat` discharge templates;
-- `VVecEA2.enrichEndpoints` / `_holds` (`ExteriorBracket.lean:652/632`) — reused verbatim (generic
+- `VVecEA2.enrichEndpoints` / `_holds` (`ExteriorBracket.lean:651/632`) — reused verbatim (generic
   over `VVecEA2`).
 
 ## Deliverables
@@ -62,7 +62,7 @@ off-fiber σ is unrealizable at the pinned anchors — GIVEN the depth-0 atom-la
 ARBITRARY interior witness `w` from inventory already in scope (`hInt` + the callback's
 `hptW`), replicating `bracketEndChar_kv_step_sound`'s own atom-layer block
 (`InteriorGateGeneralK.lean`) with the extracted witness replaced by the callback's.
-Depth-`k` analog of the k=2 gate pin `kvE2_extGate_henv` (`ExteriorBracket.lean:753`). -/
+Depth-`k` analog of the k=2 gate pin `kvE2_extGate_henv` (`ExteriorBracket.lean:751`). -/
 
 private theorem kvExt_gate_henv {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
@@ -159,7 +159,7 @@ theorem kvE_ambientGuardForm_truth {sig : MonadicSignature} [Fintype sig.preds]
     `enrichEndpoints`; then the σ-independent ambient guard `kvEAmbientGuardForm qnf` conjoined at
     the LEFT anchor (with `Formula.top` at the right, an inert enrichment) so `.holds` carries
     `kvEAmbientDeepAnchor qnf = true`. General-`k` mirror of `bracketEndCharKvE2Ext`
-    (`ExteriorBracket.lean:691`), one fold deeper. -/
+    (`ExteriorBracket.lean:689`), one fold deeper. -/
 noncomputable def bracketEndCharKvExt {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
@@ -177,7 +177,7 @@ noncomputable def bracketEndCharKvExt {sig : MonadicSignature} [Fintype sig.pred
     conjunction, exposed): the enriched gate holds at `(x, t)` iff the interior gate holds AND the
     past bracket is true at `x` AND the future bracket is true at `t`. One-line reuse of
     `VVecEA2.enrichEndpoints_holds`. Mirror of `bracketEndChar_kvE2Ext_holds_iff`
-    (`ExteriorBracket.lean:705`). -/
+    (`ExteriorBracket.lean:703`). -/
 theorem bracketEndChar_kvExt_holds_iff {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (atomMap : Formula → sig.preds)
@@ -213,7 +213,7 @@ set_option maxHeartbeats 1600000 in
 -- elaborated in one term and the default 200000-heartbeat budget is not enough.
 /-- **General-`k` enriched gate correctness with `hexclExt` discharged internally**
     (Rabinovich Lemma 7.6 adjacency p.14, one fold deeper than the k=2
-    `bracketEndChar_kvE2Ext_correct_two_prior_frag`, `ExteriorBracket.lean:1103`). The enriched
+    `bracketEndChar_kvE2Ext_correct_two_prior_frag`, `ExteriorBracket.lean:1101`). The enriched
     composed gate `bracketEndCharKvExt` satisfies the gate biconditional under only the interior
     provider inventory (`P`/`hcharK`/`h_UZ`/`h_SZ`/`hreal`/`hexcl`, order bits) plus the bracket
     provider `Pbr`: the exterior-marked residue `hexclExt` of `bracketEndChar_kv_step_sound`

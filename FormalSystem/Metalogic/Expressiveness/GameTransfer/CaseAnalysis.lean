@@ -1499,7 +1499,7 @@ theorem ghr93_case_II {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq 
         show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 1) from by omega,
         show ¬(1 + (1 + 3 * n) = 1 + 3 * n + 1 + 2) from by omega, dite_false]
       show a_pad_big ⟨1 + (1 + 3 * n) - 1, _⟩ = c
-      simp only [a_pad_big, 
+      simp only [a_pad_big,
         show ¬(1 + 3 * n < n) from by omega,
         show 1 + (1 + 3 * n) - 1 = 1 + 3 * n from by omega, dite_false, ite_true]
     have hM_b : gameTuple x y a_pad_big e_n_pt ⟨(1 + 3 * n + 1) + 1, by omega⟩ = e_n :=

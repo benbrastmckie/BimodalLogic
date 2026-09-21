@@ -45,7 +45,7 @@ gate's ⇒-side refutes off-fiber σ internally via that kernel under a gate-der
 (`ExteriorGateAssembleK.lean`). Off-fiber exclusion is NOT D1/D2's job.
 
 This is the depth-`k` analog of the frozen k=2 brackets `kvE2ExtBracketFut`/`kvE2ExtBracketPast`
-(ExteriorBracket.lean:385/399), one fold-layer deeper. (Phase-6 AUDIT flag: the frozen k=2
+(ExteriorBracket.lean:384/399), one fold-layer deeper. (Phase-6 AUDIT flag: the frozen k=2
 brackets keep the per-σ bit keying inside a `kvE2FutMarked`-filtered range; whether the k=2
 marking pins enough of `σ.2` to escape the same defect is a recorded audit item.)
 
@@ -121,7 +121,7 @@ noncomputable def kvEExtBracketPast {sig : MonadicSignature} [Fintype sig.preds]
         if kvEPastSliceMarked qnf σ = true then kvEPastPos P σ else kvEExtNegPast P σ)
 
 /-- Bracket-at-anchor unfolds to the per-σ clause conjunction (future side, pure formula-level
-    bridge — no pins). Depth-`k` analog of `kvE2_extBracketFut_iff` (ExteriorBracket.lean:412). -/
+    bridge — no pins). Depth-`k` analog of `kvE2_extBracketFut_iff` (ExteriorBracket.lean:411). -/
 theorem kvE_extBracketFut_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (M : OrderedMonadicStructure sig) (P : ExistProviders sig atomMap k)
@@ -144,7 +144,7 @@ theorem kvE_extBracketFut_iff {sig : MonadicSignature} [Fintype sig.preds] [Deci
     exact h σ hm.1 hm.2
 
 /-- Bracket-at-anchor unfolds to the per-σ clause conjunction (past side). Depth-`k` analog of
-    `kvE2_extBracketPast_iff` (ExteriorBracket.lean:431). -/
+    `kvE2_extBracketPast_iff` (ExteriorBracket.lean:430). -/
 theorem kvE_extBracketPast_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (M : OrderedMonadicStructure sig) (P : ExistProviders sig atomMap k)

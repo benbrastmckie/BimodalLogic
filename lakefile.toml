@@ -32,6 +32,15 @@ weak.linter.mathlibStandardSet = true
 # A file over this limit carries an in-source baseline, `set_option linter.style.longFile N`,
 # after its module docstring; the linter itself checks that N stays tight.
 weak.linter.style.longFile = 1500
+# Permanent opt-out: Mathlib's unicode allowlist linter is off. It is a TEXT linter -- it never
+# runs during a build; `lake exe lint-style` (and the lint-style CI step) runs it, and reads this
+# block to decide whether to. Its allowlist is Mathlib's own, and this library's documented,
+# load-bearing notation is not on it: measured at adoption, 258 findings, led by the
+# limit-closure diamond `⟐` (115), the combining vector arrow of `v⃗` (74), `⟺` (28) and `Ĝ`
+# (23). The alternative -- respelling the paper's notation to satisfy another project's
+# allowlist -- was rejected. Every other lint-style text linter is adopted at its default. See
+# the lint-suppression policy in docs/development/LEAN_STYLE_GUIDE.md.
+weak.linter.unicodeLinter = false
 
 [[require]]
 name = "mathlib"

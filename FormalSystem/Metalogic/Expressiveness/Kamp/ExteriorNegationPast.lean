@@ -78,7 +78,6 @@ private instance : Fintype (ZoneSpec 4) :=
 /-- Profiles realized by the same point coincide (file-local copy of the side-neutral
     `ExteriorNegation.lean` private lemma; dedupe deferred to Phase 7). -/
 private theorem nf_profile_unique {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (v : M.carrier) (χ χ' : NormalForm sig 0 1)
     (h : NfEvalNf M 0 1 (fun _ => v) χ) (h' : NfEvalNf M 0 1 (fun _ => v) χ') :
     χ = χ' := by
@@ -93,7 +92,6 @@ private theorem nf_profile_unique {sig : MonadicSignature} [Finite sig.preds]
 
 /-- Every point realizes its depth-0 monadic characteristic (file-local copy, as above). -/
 private theorem nf_profile_exists {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (v : M.carrier) :
     ∃ χ : NormalForm sig 0 1, NfEvalNf M 0 1 (fun _ => v) χ :=
   ⟨nfCharacteristic M 0 1 (fun _ => v), nf_characteristic_satisfies M 0 1 (fun _ => v)⟩

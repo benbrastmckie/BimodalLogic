@@ -203,6 +203,57 @@ jobs:
           lake exe mk_all --lib FormalSystem --check
           echo "::endgroup::"
 
+      # Mathlib's text-based style linters, run on the default target's modules: trailing
+      # whitespace, whitespace before a semicolon, malformed adaptation notes, UpperCamelCase
+      # module names, and module names Windows forbids. These never run during a build.
+      #
+      # This is `lake exe lint-style`, the linting core of leanprover-community/lint-style-action,
+      # run DIRECTLY rather than through the action, on a measurement: the action's `check` mode
+      # also runs credfeto/action-no-ignored-files, which fails on any tracked path that
+      # `git check-ignore -v --no-index` prints. It prints 37 here -- 32 matches of the two
+      # NEGATION patterns that keep specs/**/.orchestrator-handoff.json and .return-meta.json
+      # tracked (`-v` prints negated matches too), and 5 deliberately force-tracked files under
+      # specs/archive/. specs/ is tracked and published on purpose as the development record, so
+      # the action would be permanently red for a reason that is policy, not defect. The action
+      # also wipes the workspace and rebuilds `lint-style` with no Mathlib cache; this step
+      # reuses the cache the lean-action step populated instead. Its two other cheap `check`-mode
+      # guards are reproduced below, since both pass and both are pure shell.
+      #
+      # Options, all read from lakefile.toml's [leanOptions]: `linter.unicodeLinter` is OFF (a
+      # recorded permanent opt-out -- this library's notation is not on Mathlib's allowlist; see
+      # the comment there). `linter.checkInitImports` stays at its default `false` because C24 /
+      # `lake exe checkInitImports` already asserts the same property, and
+      # `linter.allScriptsDocumented` stays `false` because it would make scripts/README.md's
+      # completeness a gate, which has not been measured against this tree. Both are choices,
+      # not accidents.
+      #
+      # scripts/nolints-style.txt, the per-project exception file, deliberately does not exist:
+      # the tool warns once ("nolints file could not be read; treating as empty") and proceeds
+      # with no exceptions, which is the intended state. `lake exe lint-style --fix` repairs
+      # trailing whitespace locally.
+      - name: Text-based style linters (lake exe lint-style)
+        run: |
+          set -euo pipefail
+          echo "::group::lake exe lint-style"
+          lake exe lint-style
+          echo "::endgroup::"
+          echo "::group::no Lean file has the executable bit set"
+          executable_files="$(git ls-files -s -- '*.lean' | awk '$1 == "100755" { print $4 }')"
+          if [ -n "$executable_files" ]; then
+            echo "::error::Lean files with the executable bit set:"
+            echo "$executable_files"
+            exit 1
+          fi
+          echo "::endgroup::"
+          echo "::group::no two tracked paths differ only by case"
+          case_collisions="$(git ls-files | tr '[:upper:]' '[:lower:]' | sort | uniq -d)"
+          if [ -n "$case_collisions" ]; then
+            echo "::error::tracked paths that collide on a case-insensitive filesystem:"
+            echo "$case_collisions"
+            exit 1
+          fi
+          echo "::endgroup::"
+
       - name: Report results
         if: always()
         run: |

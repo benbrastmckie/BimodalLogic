@@ -128,7 +128,7 @@ not the `M` the formula was produced from.
 
 **No**, for two independent reasons, and the phase's charter asks that this be recorded rather
 than resolved by silently generalizing the landed definition. The landed `ContempEquiv`
-(`IntegerModel/GoodStructures.lean:730`) is untouched by this module.
+(`IntegerModel/GoodStructures.lean:729`) is untouched by this module.
 
 1. **Wrong kind of object.** `ContempEquiv sig k M a b` is `VeryGood sig k (M.subinterval sig
    (min a b) (max a b))` — a semantic relation with no defining monadic formula. Reynolds' §6
@@ -136,7 +136,7 @@ than resolved by silently generalizing the landed definition. The landed `Contem
    and there is nothing to quantify over in a `VeryGood` predicate. A formula-free relation cannot
    be fed to expressive completeness, which is what Lemma 2 is.
 2. **Its equivalence theorem is unavailable at a dense carrier.** `contemp_equiv_is_equiv`
-   (`GoodStructures.lean:750`) carries `[SuccOrder M.carrier]` and `[NoMaxOrder M.carrier]`.
+   (`GoodStructures.lean:749`) carries `[SuccOrder M.carrier]` and `[NoMaxOrder M.carrier]`.
    `false_of_succOrder_dense` below proves that these two together with `DenselyOrdered` are
    *contradictory*, so on the dense flows this development targets the landed clause-(i) theorem
    has no instance at all. This is machine-checked here rather than asserted.
@@ -173,7 +173,7 @@ If `a = Order.succ a` then `Order.succ a ≤ a`, making `a` a maximum, which `No
 Otherwise `a < Order.succ a`, and density supplies `c` strictly between, whence
 `Order.succ a ≤ c < Order.succ a`.
 
-Consequence for this module: `contemp_equiv_is_equiv` (`IntegerModel/GoodStructures.lean:750`),
+Consequence for this module: `contemp_equiv_is_equiv` (`IntegerModel/GoodStructures.lean:749`),
 which establishes clause (i) for the landed `ContempEquiv`, carries `[SuccOrder M.carrier]` and
 `[NoMaxOrder M.carrier]` and therefore has **no instance** on a densely ordered flow. The landed
 `ContempEquiv` is not reusable at the dense carrier; see the module header. -/
@@ -205,7 +205,7 @@ def epsAt {sig : MonadicSignature} {n : Nat} (ε : MonadicFormula sig 2) (i j : 
 `a ∼_M b  iff  M ⊨ ε(a, b)`.
 
 Free variable `0` of `ε` is `a`, free variable `1` is `b`. This is the §6 notion; it is *not* a
-dense sibling of the landed `ContempEquiv` (`IntegerModel/GoodStructures.lean:730`), which is a
+dense sibling of the landed `ContempEquiv` (`IntegerModel/GoodStructures.lean:729`), which is a
 `VeryGood`-based relation with no defining formula — see the module header. -/
 def ContempEquivDense {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
     (ε : MonadicFormula sig 2) (a b : M.carrier) : Prop :=

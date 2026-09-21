@@ -18,9 +18,9 @@ these two. This module closes exactly that gap; nothing else at this layer is re
 Already present at the `VVecEA2` layer and **reused, not reimplemented**: `disj`/`disj_holds`
 (`VecEAFormula.lean:289`/`:292`), `conjFull`/`conjFull_iff` (`VecEAConjFull.lean:498`/`:510`),
 `trivialTrue` (`VecEAConjFull.lean:549`), `enrichEndpoints`
-(`NfMultiAnchorBridge/ExteriorBracket.lean:652`), `disjList`
+(`NfMultiAnchorBridge/ExteriorBracket.lean:651`), `disjList`
 (`NfMultiAnchorBridge/NavigatedSpine.lean`), `singleton`
-(`NfMultiAnchorBridge/CarrierK1V.lean:2152`), `conjStruct` (`VecEAClosure.lean:223`), and
+(`NfMultiAnchorBridge/CarrierK1V.lean:2148`), `conjStruct` (`VecEAClosure.lean:223`), and
 `prependAllVec` (`KPlusFaithfulRendering.lean:160`).
 
 ## Source correspondence

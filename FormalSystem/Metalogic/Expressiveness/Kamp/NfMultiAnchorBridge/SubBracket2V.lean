@@ -324,7 +324,6 @@ noncomputable def kvESubChain2V {sig : MonadicSignature} [Fintype sig.preds]
     reconstruction; a pure forward read of the F_0 chain head (Rabinovich Cor 5.4 forward,
     md:154-157). -/
 private theorem bracketFromLists3_fChainPred_at_head {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (χ0 : TemporalPred) (lXU' lUW lWT : List TemporalPred)
     (ptX1 ptW segXU segUW segWT : TemporalPred)
@@ -399,7 +398,6 @@ private theorem kvE_subChain2V_hbelow_of_realized {sig : MonadicSignature} [Fint
     `VVecEA2` disjunction carries every arrangement (rule N5), so the arrangement selected here
     always names an existing disjunct. -/
 private theorem k1v_sorted_realization3 {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig)
     (x x1 w t : M.carrier) (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
     (S_XU S_UW S_WT : List (NormalForm sig 0 1))
@@ -580,7 +578,7 @@ theorem k1v_stitch_regions {sig : MonadicSignature} [Fintype sig.preds] [Decidab
               (lt_trans (hpos e List.mem_cons_self) (ihbound y hy'))
 
 /-- **k-region arrangement build**. Folds `k1v_sorted_realization`
-    (`CarrierK1V.lean:1485`, reused verbatim) once per region: given boundary-linked, non-degenerate
+    (`CarrierK1V.lean:1482`, reused verbatim) once per region: given boundary-linked, non-degenerate
     anchors and per-region Nodup type lists each realized strictly interior, produces a
     point-tagged arrangement list `ps` mirroring the region skeleton (equal anchors), with
     per-region
@@ -589,7 +587,6 @@ theorem k1v_stitch_regions {sig : MonadicSignature} [Fintype sig.preds] [Decidab
     Distinctness within each region is type-driven (`nf_eval_unique`, NormalForm:245), inside
     `k1v_sorted_realization` — NEVER across owners at an anchor (F3/F4 preserved). -/
 private theorem k1v_realizationK_build {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) :
     ∀ (regions : List (M.carrier × M.carrier × List (NormalForm sig 0 1))),
       (∀ r ∈ regions, r.1 < r.2.1) →
@@ -698,7 +695,6 @@ theorem k1v_sorted_realizationK {sig : MonadicSignature} [Fintype sig.preds] [De
     to the three-region list `[(x,x1,S_XU),(x1,w,S_UW),(w,t,S_WT)]`. Confirms the generalization is
     faithful — no behavioural drift from the proven three-region template. -/
 theorem k1v_sorted_realizationK_regress_k3 {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig)
     (x x1 w t : M.carrier) (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
     (S_XU S_UW S_WT : List (NormalForm sig 0 1))
@@ -759,7 +755,6 @@ theorem k1v_sorted_realizationK_regress_k3 {sig : MonadicSignature} [Finite sig.
     tuple assembled wholesale from `k1v_sorted_realization3`. Cite Rabinovich Lemma 5.3
     (md:137-152). -/
 private theorem k1v_bracket_construct3 {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (lXU lUW lWT : List TemporalPred) (ptX1 ptW segXU segUW segWT : TemporalPred)
     (x x1 w t : M.carrier) (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
@@ -998,7 +993,6 @@ soundness pattern). Rabinovich Def 3.1 monotone enumeration (PDF p.4), §5 brack
     `(lXU ++ ptX1 :: lUW) ++ ptW :: lWT`; reassociated once to a per-segment single cons for the
     `getElem` navigation (Def 3.1 monotone enumeration, PDF p.4; §5 bracket PDF p.7). -/
 private theorem bracketFromLists3_extract {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (lXU lUW lWT : List TemporalPred) (ptX1 ptW segXU segUW segWT : TemporalPred)
     (z0 z1 : M.carrier)

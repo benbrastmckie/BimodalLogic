@@ -254,7 +254,6 @@ private theorem succ_iterate_le {α : Type} [Preorder α] [SuccOrder α]
 In a succ-Archimedean linear order, every bounded interval [a, b] is finite.
 -/
 theorem subinterval_finite_of_succ_archimedean (sig : MonadicSignature) [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) [SuccOrder M.carrier]
     [IsSuccArchimedean M.carrier]
     (a b : M.carrier) (hab : a ≤ b) :

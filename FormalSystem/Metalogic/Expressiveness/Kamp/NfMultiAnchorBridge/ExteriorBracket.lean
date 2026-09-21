@@ -52,8 +52,8 @@ settled design, 347 adjudication verdict (b)).
    `bracketEndChar_kvE2Ext_holds_iff` (`holds ↔ interior holds ∧ bracketPast @ x ∧
    bracketFut @ t`).
 
-All per-side `_sound`/`_complete` lemmas (ExteriorNegation.lean:1245/:1484,
-ExteriorNegationPast.lean:581/:855) are CALLED, never re-proved (H7: those files are
+All per-side `_sound`/`_complete` lemmas (ExteriorNegation.lean:1242/:1484,
+ExteriorNegationPast.lean:579/:855) are CALLED, never re-proved (H7: those files are
 read-only territory; the two small zone-coupling lifts they keep `private` are mirrored
 here file-locally, the sanctioned Phase-5/6 porting pattern).
 
@@ -75,7 +75,6 @@ private instance {n : Nat} : DecidableEq (ZoneSpec n) :=
 /-- Classical conjunction reading of the encoded `Formula.and` (file-local; the encoding
     is `(φ.imp ψ.neg).neg`, so both directions are a double-negation shuffle). -/
 private theorem temporal_truth_and_iff {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (u : M.carrier) (φ ψ : Formula) :
     TemporalTruth M atomMap u (Formula.and φ ψ) ↔
@@ -94,8 +93,8 @@ private theorem temporal_truth_and_iff {sig : MonadicSignature} [Finite sig.pred
 /-! ## The six per-side interior/boundary zone lists (the `hbits` index sets)
 
 Future side: the six at-or-below-`t` outer zones (Phase-4 `hbits` disjunction,
-ExteriorNegation.lean:1498-1498). Past side: the six at-or-above-`x` outer zones
-(Phase-6 `hbits` disjunction, ExteriorNegationPast.lean:867-869). -/
+ExteriorNegation.lean:1495-1498). Past side: the six at-or-above-`x` outer zones
+(Phase-6 `hbits` disjunction, ExteriorNegationPast.lean:865-869). -/
 
 /-- The six at-or-below-`t` outer zone-3 constants (future-side `hbits` index set). -/
 def kvE2FutBelowZones : List (ZoneSpec 3) :=
@@ -192,11 +191,11 @@ theorem kvE2_pastMarked_iff {sig : MonadicSignature} [Fintype sig.preds] [Decida
     exact ⟨⟨h1, h2⟩, fun zs hzs χ _ => h3 zs hzs χ⟩
 
 /-! ## Zone-4 / zone-3 coupling lifts (file-local mirrors of the private
-`kvE2_futZone4_below_iff` / `kvE2_pastZone4_above_iff`, ExteriorNegation.lean:379 /
-ExteriorNegationPast.lean:697 — the sanctioned Phase-5/6 private-mirror porting pattern) -/
+`kvE2_futZone4_below_iff` / `kvE2_pastZone4_above_iff`, ExteriorNegation.lean:376 /
+ExteriorNegationPast.lean:695 — the sanctioned Phase-5/6 private-mirror porting pattern) -/
 
 /-- An at-or-below-`t` zone-3 witness sits below any `x1 > t` (mirror of the private
-    ExteriorNegation.lean:334). -/
+    ExteriorNegation.lean:331). -/
 private theorem extBk_futBelow_le_t {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (w x t : M.carrier)
@@ -210,7 +209,7 @@ private theorem extBk_futBelow_le_t {sig : MonadicSignature} [Fintype sig.preds]
 
 /-- Lift an at-or-below-`t` zone-3 fact to the corresponding zone-4 fact (coupling
     `(true, false)` to a fresh `x1 > t`), and back (mirror of the private
-    ExteriorNegation.lean:346). -/
+    ExteriorNegation.lean:343). -/
 private theorem extBk_futZone4_below_iff {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier) (htx1 : t < x1)
@@ -232,7 +231,7 @@ private theorem extBk_futZone4_below_iff {sig : MonadicSignature} [Fintype sig.p
     | ⟨3, _⟩ => exact h ⟨2, by omega⟩
 
 /-- An at-or-above-`x` zone-3 witness sits above any `x1 < x` (mirror of the private
-    ExteriorNegationPast.lean:684). -/
+    ExteriorNegationPast.lean:682). -/
 private theorem extBk_pastAbove_ge_x {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (w x t : M.carrier)
@@ -246,7 +245,7 @@ private theorem extBk_pastAbove_ge_x {sig : MonadicSignature} [Fintype sig.preds
 
 /-- Lift an at-or-above-`x` zone-3 fact to the corresponding zone-4 fact (coupling
     `(false, true)` to a fresh `x1 < x`), and back (mirror of the private
-    ExteriorNegationPast.lean:697). -/
+    ExteriorNegationPast.lean:695). -/
 private theorem extBk_pastZone4_above_iff {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
     (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier) (hx1x : x1 < x)
@@ -659,7 +658,6 @@ def VVecEA2.enrichEndpoints (v : VVecEA2) (pL pR : Formula) : VVecEA2 :=
     endpoint enrichments hold at their anchors (the enrichments are disjunct-independent,
     so they factor out of the disjunction). -/
 theorem VVecEA2.enrichEndpoints_holds {sig : MonadicSignature} [Finite sig.preds]
-   
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (v : VVecEA2) (pL pR : Formula) (z0 z1 : M.carrier) :
     (v.enrichEndpoints pL pR).holds M atomMap z0 z1 ↔

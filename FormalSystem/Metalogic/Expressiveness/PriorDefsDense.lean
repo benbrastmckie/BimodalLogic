@@ -370,7 +370,7 @@ theorem semanticPriorUZ_fails_on_dense :
 `SemanticPriorUZ`. The dense ray satisfies both dense hypotheses and refutes the integer one.
 
 Consequence for this development: every declaration pinned at `SemanticPriorUZ` /
-`SemanticPriorSZ` — `uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean:358`),
+`SemanticPriorSZ` — `uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean:353`),
 `prior_hasAttainedINF` (`Kamp/PriorINF.lean:265`), `prior_hasDedekindINF`
 (`Kamp/DedekindINF.lean:230`) and their consumers — has no dense instance obtained by reuse. -/
 theorem semanticPriorU_not_implies_semanticPriorUZ :

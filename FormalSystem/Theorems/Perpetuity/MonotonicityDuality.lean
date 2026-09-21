@@ -452,23 +452,19 @@ def alwaysMono {fc : FrameClass} {A B : Formula}
   -- Step 1: Get monotonicity for each component
   have past_h : ⊢[fc] A.allPast.imp B.allPast := pastMono h
   have future_h : ⊢[fc] A.allFuture.imp B.allFuture := futureMono h
-  
   -- Step 2: Decompose △A into components
   have to_past : ⊢[fc] A.always.imp A.allPast := alwaysToPast A
   have to_present : ⊢[fc] A.always.imp A := alwaysToPresent A
   have to_future : ⊢[fc] A.always.imp A.allFuture := alwaysToFuture A
-  
   -- Step 3: Compose to get △A → HB, △A → B, △A → GB
   have comp_past : ⊢[fc] A.always.imp B.allPast := impTrans to_past past_h
   have comp_present : ⊢[fc] A.always.imp B := impTrans to_present h
   have comp_future : ⊢[fc] A.always.imp B.allFuture := impTrans to_future future_h
-  
   -- Step 4: Combine into △A → (HB ∧ (B ∧ GB))
   have present_future : ⊢[fc] A.always.imp (B.and B.allFuture) :=
     combineImpConj comp_present comp_future
   have all_three : ⊢[fc] A.always.imp (B.allPast.and (B.and B.allFuture)) :=
     combineImpConj comp_past present_future
-  
   -- Step 5: Result is definitionally equal to △B
   exact all_three
 

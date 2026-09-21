@@ -16,7 +16,7 @@ converter (Rabinovich 2014 §5, Cor 5.4 `F_i` chain). It is **off the live impor
 ## What this file lands (sorry-free)
 
 The forward direction of every depth-0 zone lemma (`nf_3var_zone_*_correct`,
-`VecEADecomp.lean:518-731`) begins by extracting, from `NfEvalNf M 0 3 [y,x,t] ssn`, the
+`VecEADecomp.lean:517-731`) begins by extracting, from `NfEvalNf M 0 3 [y,x,t] ssn`, the
 per-variable predicate facts and the six pairwise order facts (`h_o_yx`, `h_o_yt`, …). At
 depth 0 those extractions are inlined per-atom. Here they are generalized to **arbitrary
 depth `k`** as reusable lemmas:
@@ -96,7 +96,7 @@ whose **quant layer** (via `nf_characteristic_quant_succ`) is the coupled
 `∃ w, NfEvalNf M (k-1) 4 [w,y,x,t] sub`. This does not reduce to a point predicate at `y`; it
 must be resolved by an **inner `w`-zone split** (apply `exists_trichotomy_split` three times, with
 boundaries `y`, `x`, `t`), turning each `w`-zone into a depth-`(k-1)` IH temporal formula supplied
-by `nfNvarExistAllDepthsFn` (KampPrior.lean:562, correctness `:405`, gated on
+by `nfNvarExistAllDepthsFn` (KampPrior.lean:559, correctness `:405`, gated on
 `SemanticPriorUZ/SZ`). The nested (outer `y` / inner `w`) bracket assembly is Rabinovich's
 genuine Cor 5.4 `F_i` chain and is the ~400-700 line body scoped to the next dispatch. The x=t
 arm (`nf_zone_partition5`'s `y=t` point zone on the diagonal env `[t,x,t]`) is downstream of the
@@ -232,7 +232,7 @@ theorem nf3_order_iff {sig : MonadicSignature}
 /-! ### The six concrete pairwise order facts at depth k
 
 These are the exact `h_o_yx`, `h_o_yt`, `h_o_xy`, `h_o_xt`, `h_o_ty`, `h_o_tx` hypotheses that
-`reconstruct_nf_3var` (`VecEADecomp.lean:426`) consumes — here generalized to depth `k` and
+`reconstruct_nf_3var` (`VecEADecomp.lean:425`) consumes — here generalized to depth `k` and
 oriented so the carrier-side is the plain `<` on `y`, `x`, `t`. -/
 
 /-- Depth-k order fact `y < x`. -/
@@ -446,7 +446,7 @@ theorem nf_characteristic_atom_succ {sig : MonadicSignature}
     `∃ w, NfEvalNf M k (n+1) (Fin.cons w env) sub`. This is the genuine (non-projected)
     coupling: for the two-anchor env `[y,x,t]` the witness `w` and the whole configuration
     `[y,x,t]` are quantified together. It is the exact predicate the depth-`k` IH formula
-    (`nfNvarExistAllDepthsFn`, KampPrior.lean:562) internalizes as a temporal formula. -/
+    (`nfNvarExistAllDepthsFn`, KampPrior.lean:559) internalizes as a temporal formula. -/
 theorem nf_characteristic_quant_succ {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (k n : Nat)
     (env : Fin n → M.carrier) (sub : NormalForm sig k (n + 1)) :

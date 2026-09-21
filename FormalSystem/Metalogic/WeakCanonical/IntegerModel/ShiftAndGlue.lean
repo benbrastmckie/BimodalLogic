@@ -182,12 +182,12 @@ private theorem exists_cofinal_sequence {α : Type} [LinearOrder α] [Countable 
     -- a(-(m+1)) = cofinalNegSeq (enum 0) enum m < enum(m) = x (from cofinal_neg_seq_below_enum)
     have h_above : x < a (↑(m + 1)) := by
       rw [← hm]
-      simp only [a, mkCofinalSeq, show (↑(m + 1) : ℤ) ≥ 0 from by omega, 
+      simp only [a, mkCofinalSeq, show (↑(m + 1) : ℤ) ≥ 0 from by omega,
         show (↑(m + 1) : ℤ).toNat = m + 1 from by omega]
       exact cofinal_pos_seq_above_enum enum m
     have h_below : a (-(↑m + 1)) ≤ x := by
       rw [← hm]
-      simp only [a, mkCofinalSeq, show ¬((-(↑m + 1) : ℤ) ≥ 0) from by omega, 
+      simp only [a, mkCofinalSeq, show ¬((-(↑m + 1) : ℤ) ≥ 0) from by omega,
         show (-(-(↑m + 1) : ℤ) - 1).toNat = m from by omega]
       exact le_of_lt (cofinal_neg_seq_below_enum (enum 0) enum m)
     -- Apply find_last_index_below on the finite interval [-(m+1), m+1]
@@ -350,7 +350,7 @@ private theorem cumulativeOffset_step (sz : ℤ → ℕ) (i : ℤ) :
     · have hi_eq : i = -1 := by omega
       subst hi_eq
       simp only [show ¬((-1 : ℤ) ≥ 0) from by omega, show ((-1 : ℤ) + 1 ≥ 0) from by omega,
-        ↓reduceDIte, 
+        ↓reduceDIte,
         show Finset.Ico (-1 : ℤ) 0 = {-1} from by
           ext j; simp [Finset.mem_Ico]; omega]
       simp
