@@ -281,7 +281,7 @@ only the fields the prose discusses and say so.
 
 ---
 
-### Phase 3: Dependent fields, subtypes, and histories [NOT STARTED]
+### Phase 3: Dependent fields, subtypes, and histories [COMPLETED]
 
 **Goal**: Add a new section (item 2) introducing dependent fields, subtypes, and the
 predicate-versus-structure design choice, on `PartialHistory`, `IsConvex`/`IsTotal`,

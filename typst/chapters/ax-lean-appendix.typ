@@ -386,6 +386,99 @@ structure TaskFrame where
 This is the whole of the vocabulary `soundness` needs.
 Its binder list `(F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)` reads, in order, as a frame, a model over it, a history in that model, and a time in the frame's temporal order.
 
+== Dependent Fields and Subtypes <lean-appendix-dependent-fields>
+
+Histories are where dependent types stop being a slogan and start doing work.
+A history assigns a world state to each time *in its domain*, and to no other time, so the type of the assignment has to mention the domain.
+`PartialHistory` (@sec:convex-histories) says exactly that:
+
+#leansrc("FormalSystem.Semantics", "PartialHistory")
+```
+structure PartialHistory (F : TaskFrame) where
+  domain : F.Duration → Prop
+  nonempty_domain : ∃ t, domain t
+  states : (t : F.Duration) → domain t → F.WorldState
+  respects_task : ∀ (s t : F.Duration) (hs : domain s) (ht : domain t),
+    F.TaskRel (states s hs) (t - s) (states t ht)
+```
+
+The `states` field is a *dependent function*.
+The type of its second argument, `domain t`, mentions its first argument `t`, and the whole field's type mentions the earlier field `domain`.
+Reading `states` as an ordinary two-argument function would force a choice with no good answer, namely what it returns at a time outside the domain.
+A dependent field removes the question rather than answering it.
+There is nothing to return off the domain, because a caller cannot form the application at all without first producing a proof that the time is in the domain.
+So the library carries no junk values, and no lemma has to say that the junk values are never inspected.
+
+Two of the other fields repay a close reading.
+
+- `nonempty_domain` carries nonemptiness as *data* rather than as a side hypothesis on every later theorem, the same trade-off `worldNonempty` makes in @lean-appendix-structures.
+- `respects_task` is stated *unconditionally*, over every pair of times in the domain, with no `s ≤ t` guard. Negative differences are covered by the reflection convention of @lean-appendix-structures rather than excluded, and the guarded form is derived afterwards as `respects_task_le`.
+
+=== Predicates Rather Than Structures
+
+@sec:convex-histories distinguishes convex and total histories from partial ones.
+Lean could give each its own structure, and deliberately does not:
+
+#leansrc("FormalSystem.Semantics", "PartialHistory.IsTotal")
+```
+def IsTotal (τ : PartialHistory F) : Prop :=
+  ∀ t : F.Duration, τ.domain t
+
+def IsConvex (τ : PartialHistory F) : Prop :=
+  ∀ (x z : F.Duration), τ.domain x → τ.domain z →
+    ∀ (y : F.Duration), x ≤ y → y ≤ z → τ.domain y
+```
+
+Both are *predicates*, which is to say functions into `Prop`, each naming a property that a `PartialHistory` may or may not have.
+One structure then carries every history in the library, and the two conditions compose as ordinary propositions.
+`IsTotal.isConvex`, the fact that a total history is convex, is a one-line theorem under this design.
+Under the alternative it would be a conversion between two record types, and every lemma stated about one would need a twin about the other.
+
+Where a property does have to travel with its subject, Lean offers the *subtype*.
+A subtype is written as a type and a property separated by a double bar, and its inhabitants are pairs of a value and a proof of the property, with `.val` and `.property` as the two projections.
+`WorldHistory` is the total histories, packaged this way:
+
+#leansrc("FormalSystem.Semantics", "WorldHistory")
+```
+def WorldHistory (F : TaskFrame) : Type _ :=
+  {τ : PartialHistory F // τ.IsTotal}
+```
+
+This is the type that truth and validity quantify over, and it is a `def` rather than an `abbrev` so that the generic `Subtype` lemmas do not leak onto it.
+Its payoff is the accessor below.
+
+#leansrc("FormalSystem.Semantics", "WorldHistory.state")
+```
+def state (τ : WorldHistory F) (t : F.Duration) : F.WorldState :=
+  τ.val.states t (τ.property t)
+```
+
+`state` takes a time and returns a state, with no domain proof anywhere in its signature, because `τ.property` supplies that proof for every time at once.
+The dependent field of `PartialHistory` is still doing its work underneath.
+It has simply been discharged once, in this definition, instead of at every call site.
+The `@[simp]` lemma `states_eq_state` rewrites any surviving dependent projection toward `state`, so `τ.state t` is the form a reader meets in `TruthAt` and everywhere downstream.
+
+=== Models over a Frame
+
+A model adds the one thing a frame lacks, namely which atoms hold where.
+
+#leansrc("FormalSystem.Semantics", "TaskModel")
+```
+structure TaskModel (F : TaskFrame) where
+  valuation : F.WorldState → Atom → Prop
+```
+
+The field is `Prop`-valued rather than `Bool`-valued, so a valuation is read as a *family of sets of world states*, one per atom, rather than as a computation.
+Fixing an atom and collecting the states where it holds gives that set directly:
+
+```
+example (F : TaskFrame) (M : TaskModel F) (p : Atom) :
+    Set F.WorldState :=
+  {w | M.valuation w p}
+```
+
+This is the reading @sec:truth uses, and it is why the atomic clause of `TruthAt` is just membership: an atom holds at a history and a time exactly when that history's state at that time lies in the set.
+
 == Tactic Proofs vs. Term Proofs <lean-appendix-tactics>
 
 Every Lean proof is, at the kernel level, a term.
