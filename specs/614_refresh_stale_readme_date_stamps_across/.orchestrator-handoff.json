@@ -1,0 +1,26 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 1,
+  "summary": "Re-derived all three work items at HEAD: 53 READMEs need date stamps (CI runs readme-lint.sh with two roots, so BimodalTools/README.md is in scope), 21 archive links across 11 files need ../-depth correction with every target verified on disk, and the typst half is materially larger than a path rewrite -- five of the nine PIPELINE.md citations are orphaned, all four surviving ones have wrong line numbers, /training/ is gitignored so a straight re-point leaves CI red, and a clean-checkout run exposed a 10th violation (lakefile.lean) that the local tree masks.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/614_refresh_stale_readme_date_stamps_across/reports/01_readme-stamps-lint-repair.md",
+      "summary": "Four-phase remediation plan with the full 53-file stamp list, the 21-link correction table, per-citation typst disposition, and clean-export verification procedure."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "user_decision": {
+    "question": "Four footnotes in typst/chapters/p4-dataset-pipeline.typ cite PIPELINE.md content that was deliberately deleted from that file and consolidated into the citing chapter itself, so no re-point can make them true. How should they be resolved?",
+    "options": [
+      "A -- De-cite the four orphaned footnotes (state the sentences in the chapter's own voice) and whitelist the surviving training/PIPELINE.md spans plus lakefile.lean",
+      "B -- Un-ignore /training/ and git add -f it, then re-point all nine citations",
+      "C -- Whitelist all nine spans unchanged and edit no chapter prose"
+    ],
+    "recommended": "A -- De-cite the four orphaned footnotes (state the sentences in the chapter's own voice) and whitelist the surviving training/PIPELINE.md spans plus lakefile.lean",
+    "blocking": false
+  }
+}
