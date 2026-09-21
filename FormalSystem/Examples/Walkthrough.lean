@@ -161,4 +161,46 @@ and hands back the truth of the formula *at that point*, for a reader who wants 
 evaluated somewhere concrete rather than quantified away; see `Metalogic/Soundness.lean`.
 -/
 
+/-!
+## 4. The decision procedure
+
+TM is decidable, and the library ships the procedure that decides it: a tableau search wrapped
+in `isValid φ fc : Bool`, which is by definition `(decide φ (fc := fc)).isValid`. The underlying
+`decide` returns a `DecisionResult`, a four-way verdict whose `valid` constructor *carries an
+actual `⊢ φ` derivation tree* — which is why the previous section could point here for the tree
+that completeness does not hand back.
+
+The statement below is settled by `decide`, and that is the whole point: there is no tactic
+cleverness in the proof term, only the kernel running the tableau on this formula and observing
+that it comes back `true`. The computation is the proof.
+-/
+
+-- Do not replace `by decide` here with `native_decide`. `native_decide` delegates the
+-- computation to compiled code and injects `Lean.ofReduceBool` into the axiom set, which would
+-- break the axiom contract this file is audited against. If a formula is ever too large for
+-- `by decide`, shrink the formula.
+/-- The tableau procedure returns a valid verdict on `□p → p`, by kernel computation. -/
+theorem tIsValid : isValid tFml = true := by decide
+
+/--
+The verdict, converted into semantic validity by the procedure's soundness bridge.
+
+`isValid_sound` is the thin entry point over `sound_of_isValid`, which is where the work
+happens: it case-splits the `DecisionResult` and, in the `valid` case, feeds the carried
+derivation tree to soundness.
+-/
+theorem tValidViaTableau : ⊨ tFml := isValid_sound tFml FrameClass.Base tIsValid
+
+/-!
+`tValidViaTableau` and `tValid` are the same statement reached by two unrelated roads: one by a
+derivation written out by hand, one by a search the kernel ran. That they agree is reassuring
+but not accidental — soundness is what licenses both.
+
+One direction only, though. `isValid φ = true` implies validity; `isValid φ = false` does **not**
+in general imply that `φ` is invalid. A `false` can also mean the search ran out of fuel or
+failed to extract a proof from a closed tableau, and the correctness file states the sound
+direction alone for exactly that reason. Read a `true` as a theorem and a `false` as *no verdict
+yet*.
+-/
+
 end FormalSystem.Examples.Walkthrough

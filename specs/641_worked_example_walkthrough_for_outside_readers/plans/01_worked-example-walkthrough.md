@@ -225,7 +225,7 @@ derivability, with the asymmetry between the two directions spelled out.
 
 ---
 
-### Phase 3: The tableau and its soundness bridge [NOT STARTED]
+### Phase 3: The tableau and its soundness bridge [COMPLETED]
 
 **Goal**: The reader sees the decision procedure produce a verdict on the same formula, and sees
 the verdict converted into the same validity the hand derivation reached.
