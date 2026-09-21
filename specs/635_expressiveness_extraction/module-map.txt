@@ -1,0 +1,13 @@
+FormalSystem.Metalogic.WeakCanonical.Expressiveness -> FormalSystem.Metalogic.Expressiveness.GameTransfer
+FormalSystem.Metalogic.WeakCanonical.Kamp -> FormalSystem.Metalogic.Expressiveness.Kamp
+FormalSystem.Metalogic.WeakCanonical.EFGames -> FormalSystem.Metalogic.Expressiveness.EFGames
+FormalSystem.Metalogic.WeakCanonical.Separation -> FormalSystem.Metalogic.Expressiveness.Separation
+FormalSystem.Metalogic.WeakCanonical.NormalForm -> FormalSystem.Metalogic.Expressiveness.NormalForm
+FormalSystem.Metalogic.WeakCanonical.MonadicFO -> FormalSystem.Metalogic.Expressiveness.MonadicFO
+FormalSystem.Metalogic.WeakCanonical.StaviConnectives -> FormalSystem.Metalogic.Expressiveness.StaviConnectives
+FormalSystem.Metalogic.WeakCanonical.PriorDefs -> FormalSystem.Metalogic.Expressiveness.PriorDefs
+FormalSystem.Metalogic.WeakCanonical.PriorDefsDense -> FormalSystem.Metalogic.Expressiveness.PriorDefsDense
+FormalSystem.Metalogic.WeakCanonical.PriorExpressiveness -> FormalSystem.Metalogic.Expressiveness.PriorExpressiveness
+FormalSystem.Metalogic.WeakCanonical.PriorExpressivenessDense -> FormalSystem.Metalogic.Expressiveness.PriorExpressivenessDense
+FormalSystem.Metalogic.WeakCanonical.Table -> FormalSystem.Metalogic.Expressiveness.Table
+FormalSystem.Metalogic.WeakCanonical.EFGameTactics -> FormalSystem.Metalogic.Expressiveness.EFGameTactics
