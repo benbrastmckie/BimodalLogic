@@ -1,7 +1,7 @@
 # Implementation Plan: Task #568
 
 - **Task**: 568 - C3/C4 consequence relations as library definitions
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 18.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/568_c3_c4_consequence_relations_as_library_definitions/reports/01_c3-c4-library-definitions.md
@@ -152,32 +152,32 @@ Build invocation used throughout (detached, guarded, never a foreground `lake bu
 
 ---
 
-### Phase 1: Core definitions, clause lemmas and germ structure [NOT STARTED]
+### Phase 1: Core definitions, clause lemmas and germ structure [COMPLETED]
 
 **Goal**: Land `FormalSystem/Semantics/ConvexTruth.lean` with the C3/C4 definitions and everything
 that needs no shift invariance, wired into the build.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/ConvexTruth.lean` in namespace `FormalSystem.Semantics`,
+- [x] Create `FormalSystem/Semantics/ConvexTruth.lean` in namespace `FormalSystem.Semantics`,
       importing `Semantics.Truth`, `Semantics.Validity`, `Semantics.FrameProperty`,
       `Semantics.FrameClassValidity` and `Semantics.Extension.Extension`. Copyright header and
       module docstring per the repository standards.
-- [ ] Define `TruthAtConvex`, `ValidC3`, `IsInterval`, `ValidC4` exactly as in the challenge
+- [x] Define `TruthAtConvex`, `ValidC3`, `IsInterval`, `ValidC4` exactly as in the challenge
       preamble, as `def`. The box clause carries the convexity hypothesis on the quantified
       history.
-- [ ] Define `ValidC3In`, `ValidC4In` (mirroring `ValidIn`) and `ConsequenceC3`, `ConsequenceC4`
+- [x] Define `ValidC3In`, `ValidC4In` (mirroring `ValidIn`) and `ConsequenceC3`, `ConsequenceC4`
       with a finite context (mirroring `ConsequenceOnFrames`).
-- [ ] Prove the clause lemmas. `and_iff`, `someFuture_iff`, `allFuture_iff`, `kPlus_iff`,
+- [x] Prove the clause lemmas. `and_iff`, `someFuture_iff`, `allFuture_iff`, `kPlus_iff`,
       `kMinus_iff` port from the research probe; `somePast_iff`, `allPast_iff` are their duals.
-- [ ] Prove `IsInterval.isConvex` and `PartialHistory.point_isConvex`.
-- [ ] Prove `validC3_imp_validC4`, `truthC3_box_indep`, `germ_untl_false`, `germ_snce_false`,
+- [x] Prove `IsInterval.isConvex` and `PartialHistory.point_isConvex`.
+- [x] Prove `validC3_imp_validC4`, `truthC3_box_indep`, `germ_untl_false`, `germ_snce_false`,
       `c3_box_untl_unsat`, `c3_box_snce_unsat`, `c3_nec`, `c3_valid_imp_germ_valid`. Germs use the
       library's `PartialHistory.point` and `F.worldNonempty.some`; do not define a second
       one-point history.
-- [ ] Module docstring: what C3 is (the task's wording), the quoted paper footnote, C2 retired by
+- [x] Module docstring: what C3 is (the task's wording), the quoted paper footnote, C2 retired by
       the index type, and the box-range working default with its rationale.
-- [ ] Register: import line in `FormalSystem/Semantics.lean`; regenerate `FormalSystem.lean`.
-- [ ] Scoped build of the new module, then of `FormalSystem.Semantics`.
+- [x] Register: import line in `FormalSystem/Semantics.lean`; regenerate `FormalSystem.lean`.
+- [x] Scoped build of the new module, then of `FormalSystem.Semantics`.
 
 **Timing**: 2 hours
 

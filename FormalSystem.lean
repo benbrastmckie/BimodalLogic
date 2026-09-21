@@ -429,6 +429,7 @@ import FormalSystem.ProofSystem.Derivation
 import FormalSystem.ProofSystem.DerivedAxioms
 import FormalSystem.ProofSystem.LinearityDerivedFacts
 import FormalSystem.Semantics
+import FormalSystem.Semantics.ConvexTruth
 import FormalSystem.Semantics.Correspondence
 import FormalSystem.Semantics.Correspondence.DurationFrames
 import FormalSystem.Semantics.Correspondence.FwdRec

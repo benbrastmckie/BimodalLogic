@@ -23,6 +23,7 @@ import FormalSystem.Semantics.TruthTransport
 import FormalSystem.Semantics.ShiftSet
 import FormalSystem.Semantics.Ultraproduct
 import FormalSystem.Semantics.Validity
+import FormalSystem.Semantics.ConvexTruth
 import FormalSystem.Semantics.DeterministicBridge
 import FormalSystem.Semantics.StateLocalTransfer
 import FormalSystem.Semantics.DurationClassification
@@ -120,6 +121,10 @@ against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a 
   stability tier, and L⋆'s environment is its stored-time vector
 - `Truth`: Recursive truth evaluation `M,τ,t ⊨ φ` for formulas at model-history-time triples
 - `Validity`: Semantic validity `⊨ φ` and consequence `Γ ⊨ φ` quantifying over all temporal types
+- `ConvexTruth`: the convex-index consequence relations C3 and C4 — `TruthAtConvex`, a truth
+  recursion written beside `TruthAt` at a partial-history index, with the box over the convex
+  histories through the evaluation time and the tenses restricted to the index's domain;
+  `ValidC3` / `ValidC4`, the germ theorems, and shift invariance `truthC3_timeShift`
 - `StateLocalTransfer`: `stateLocal_ofPlus_iff` — the two state-locality fragments agree along
   `ofPlus`, as a **biconditional**, so the L⁺ fragment is exactly the `ofPlus`-preimage of the L⋆
   one. Its own module rather than either fragment's, so that the L⁺ conservativity route does not
