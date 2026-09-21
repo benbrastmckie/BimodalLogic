@@ -23,6 +23,9 @@ Inputs
                       typst sync map and the architecture decision records),
                       whose prose states where things USED to be; nothing clears
                       the defaults.
+--strict              Promote every identical-sides warning (a rewrite that makes
+                      the two sides of one sentence or one table row identical,
+                      `from X to Y` becoming `from Y to Y`) to a non-zero exit.
 --dry-run             Report what would change; touch nothing.
 --no-verify           Skip the closing harness run (for composing several maps
                       into one commit).
@@ -52,10 +55,11 @@ total does not distinguish "left alone" from "rewritten twice".
 
 Exclusions: specs/ (the task-management record legitimately names old paths, and
 C5/C9/C10 all exclude it), .git/, .lake/, build/, __pycache__/, and this file
-itself with its fixture tests -- its worked examples describe what a relocation does in general and are
-not citations of any particular tree location, so rewriting them turns the
-documentation into nonsense ("anchored on the full old prefix `X`, never the
-bare token `X`") while every real citation is rewritten correctly.
+itself together with its fixture tests -- its worked examples describe what a
+relocation does in general and are not citations of any particular tree
+location, so rewriting them turns the documentation into nonsense ("anchored on
+the full old prefix `X`, never the bare token `X`") while every real citation is
+rewritten correctly.
 """
 
 from __future__ import annotations
@@ -383,6 +387,69 @@ def apply_regex(line: str, mappings: list[Mapping], attr: str,
     return line, total
 
 
+# The identical-sides check. A side is name-shaped: it contains a `/` or a `.`,
+# optionally wrapped in backticks or quotes. The connector set is closed.
+_SIDE = r"[`'\"]?([A-Za-z0-9_][A-Za-z0-9_./-]*)[`'\"]?"
+CONNECTOR_RE = re.compile(
+    _SIDE + r"(?:\s+(?:to|into)\s+|\s*(?:->|→|=>)\s*)" + _SIDE)
+
+
+def side_pairs(line: str) -> list[tuple[str, str]]:
+    """The two-sided constructs on one line, as (side, side) string pairs.
+
+    Two constructs only: two name-shaped tokens joined by a connector, and a
+    markdown table row -- every unordered pair of its non-empty cells, not only
+    adjacent ones, because a provenance table puts its two path columns apart.
+    """
+    pairs = []
+    for match in CONNECTOR_RE.finditer(line):
+        left, right = (side.rstrip(".") for side in match.groups())
+        if all("/" in side or "." in side for side in (left, right)):
+            pairs.append((left, right))
+    if line.lstrip().startswith("|"):
+        cells = [cell.strip() for cell in line.split("|") if cell.strip()]
+        pairs.extend((cells[i], cells[j]) for i in range(len(cells))
+                     for j in range(i + 1, len(cells)))
+    return pairs
+
+
+def rewrite_fragment(path: str, fragment: str, mappings: list[Mapping],
+                     ns_mappings: list[NamespaceMapping]) -> str:
+    """Classes 2-4 applied to a fragment of a line from `path`, counting nothing."""
+    applicable = classes_for(path)
+    if "dotted" in applicable:
+        fragment, _ = apply_regex(fragment, mappings, "dotted_re", "new_mod")
+    if "slash" in applicable:
+        fragment, _ = apply_regex(fragment, mappings, "slash_re", "new_path_slash")
+    if ns_mappings and applicable:
+        fragment, _ = apply_namespace(fragment, ns_mappings)
+    return fragment
+
+
+def identical_sides(path: str, before: str, after: str, mappings: list[Mapping],
+                    ns_mappings: list[NamespaceMapping]) -> list[tuple[int, str, str]]:
+    """Lines whose rewrite made two sides identical that differed before.
+
+    A syntactic before/after comparison, not a tense detector: it catches
+    `from X to Y` collapsing into `from Y to Y`, and nothing subtler. Sides are
+    read from the BEFORE line and rewritten in isolation, which avoids aligning
+    tokens across the two lines; a pair already identical before is not a
+    finding. `rewrite_text` preserves lines, so the two texts zip by index.
+    """
+    hits = []
+    for lineno, (old, new) in enumerate(zip(before.splitlines(),
+                                            after.splitlines()), 1):
+        if old == new:
+            continue
+        for left, right in side_pairs(old):
+            if left != right and (rewrite_fragment(path, left, mappings, ns_mappings)
+                                  == rewrite_fragment(path, right, mappings,
+                                                      ns_mappings)):
+                hits.append((lineno, old, new))
+                break
+    return hits
+
+
 LINK_RE = re.compile(r"(?<=\]\()([^)\s]+)(?=[)\s])")
 
 NON_PATH_PREFIXES = ("http://", "https://", "ftp://", "mailto:", "#", "/")
@@ -584,6 +651,7 @@ def run(args: argparse.Namespace) -> int:
     skip_matched = 0
     skipped: list[tuple[str, int]] = []
     skipped_moved: list[str] = []
+    side_warnings: list[str] = []
 
     for path in walk_repo():
         skip = matches_any(path, no_rewrite)
@@ -630,6 +698,17 @@ def run(args: argparse.Namespace) -> int:
             bare_files.add(path)
         if new_text != text:
             changed.append((path, new_text))
+            # Here and not inside `rewrite_text`, which runs twice per file; and
+            # only for files that will be written. Kept apart from the bare-form
+            # audit above: no shared counter and no shared exit branch. The map
+            # files reuse the `old -> new` separator but are never walked.
+            for lineno, old, new in identical_sides(path, text, new_text, mappings,
+                                                    ns_mappings):
+                side_warnings.append(path)
+                print(f"WARN  {path}:{lineno}: the rewrite made two sides of this "
+                      f"line identical; if it states where something USED to be, "
+                      f"revert it by hand\n        before: {old.strip()}\n"
+                      f"        after:  {new.strip()}", file=sys.stderr)
 
     if not args.dry_run:
         for path, new_text in changed:
@@ -640,13 +719,17 @@ def run(args: argparse.Namespace) -> int:
 
     report(args, mappings, ns_mappings, counts, files, changed, moved,
            link_stats, bare_before, bare_after, len(bare_files), moved_files,
-           skip_matched, skipped, skipped_moved)
+           skip_matched, skipped, skipped_moved, side_warnings)
 
     if bare_before != bare_after:
         print("\nFAIL  bare-form citations were rewritten; every rule must be "
               "anchored on the full old prefix", file=sys.stderr)
         return 1
     if move_failures:
+        return 1
+    if side_warnings and getattr(args, "strict", False):
+        print(f"\nFAIL  {len(side_warnings)} identical-sides warning(s) under "
+              f"--strict", file=sys.stderr)
         return 1
     if not moved:
         print("\nFAIL  rows were requested and nothing moved; every stem in the "
@@ -663,7 +746,7 @@ def report(args: argparse.Namespace, mappings: list[Mapping],
            moved: list[str], link_stats: dict[str, int], bare_before: int,
            bare_after: int, bare_file_count: int, moved_files: int,
            skip_matched: int, skipped: list[tuple[str, int]],
-           skipped_moved: list[str]) -> None:
+           skipped_moved: list[str], side_warnings: list[str]) -> None:
     mode = "DRY RUN" if args.dry_run else "APPLIED"
     print(f"=== move-modules ({mode}) ===")
     for mapping in mappings:
@@ -697,6 +780,8 @@ def report(args: argparse.Namespace, mappings: list[Mapping],
     print(f"  audit    bare-form occurrences        {bare_before:>5} before, "
           f"{bare_after:>5} after, in {bare_file_count} file(s)")
     print(f"  files changed                         {len(changed):>5}")
+    print(f"  {'warnings identical-sides':<34} {len(side_warnings):>5} warning(s) in "
+          f"{len(set(side_warnings))} file(s)")
     print()
     print(f"  {'skipped  --no-rewrite':<34} {skip_matched:>5} file(s) matched, "
           f"{len(skipped)} would have been rewritten (review by hand)")
@@ -722,6 +807,10 @@ def main(argv: list[str]) -> int:
                              "defaults (" + ", ".join(DEFAULT_NO_REWRITE) + "); "
                              "nothing clears the defaults. `**/` matches zero or "
                              "more directories; `*` and `?` never cross a `/`")
+    parser.add_argument("--strict", action="store_true",
+                        help="exit non-zero on any identical-sides warning (a "
+                             "rewrite that turns `from X to Y` into `from Y to Y`, "
+                             "in a sentence or a table row)")
     parser.add_argument("--dry-run", action="store_true",
                         help="report only; write nothing and move nothing")
     parser.add_argument("--no-verify", action="store_true",

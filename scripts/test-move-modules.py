@@ -87,7 +87,7 @@ def run_tool(**overrides) -> tuple[int, str, str]:
     map through `sys.exit(str)`, so SystemExit becomes a return code here.
     """
     options = {"module_map": None, "namespace_map": None, "dry_run": False,
-               "no_verify": True, "no_rewrite": None}
+               "no_verify": True, "no_rewrite": None, "strict": False}
     options.update(overrides)
     args = argparse.Namespace(**options)
     out, err = io.StringIO(), io.StringIO()
@@ -281,6 +281,77 @@ class NoRewriteTest(unittest.TestCase):
                     self.assertEqual(handle.read(), body)
             with open("scripts/other.py", encoding="utf-8") as handle:
                 self.assertNotEqual(handle.read(), body)
+
+
+class IdenticalSidesTest(unittest.TestCase):
+    """A rewrite that collapses `from X to Y` into `from Y to Y` is reported."""
+
+    MAP = ["FormalSystem.Old -> FormalSystem.New"]
+
+    def run_with(self, files: dict[str, str], **flags) -> tuple[int, str, str]:
+        files = dict(files)
+        files["FormalSystem/Old/M.lean"] = "namespace Old\nend Old\n"
+        with fixture_repo(files):
+            return run_tool(module_map=write_map(self.MAP), dry_run=True, **flags)
+
+    def test_prose_sentence_warns_and_strict_fails(self) -> None:
+        files = {"docs/notes.md": (
+            "# Notes\n"
+            "\n"
+            "Moved from `FormalSystem/Old` to `FormalSystem/New` last year.\n"
+            "Renamed FormalSystem.Old -> FormalSystem.New.\n")}
+        rc, out, err = self.run_with(files)
+        self.assertEqual(rc, 0, err)
+        self.assertIn("docs/notes.md:3", err)
+        self.assertIn("docs/notes.md:4", err)
+        self.assertIn("Moved from `FormalSystem/Old` to `FormalSystem/New`", err)
+        self.assertIn("Moved from `FormalSystem/New` to `FormalSystem/New`", err)
+        self.assertRegex(out, r"identical-sides\s+2 warning\(s\) in 1 file\(s\)")
+        rc, out, err = self.run_with(files, strict=True)
+        self.assertNotEqual(rc, 0)
+        self.assertIn("--strict", err)
+
+    def test_table_row_with_non_adjacent_columns_warns(self) -> None:
+        files = {"docs/notes.md": (
+            "| Before | Note | After |\n"
+            "|--------|------|-------|\n"
+            "| FormalSystem/Old | some note | FormalSystem/New |\n")}
+        rc, out, err = self.run_with(files)
+        self.assertEqual(rc, 0, err)
+        self.assertIn("docs/notes.md:3", err)
+        self.assertRegex(out, r"identical-sides\s+1 warning\(s\) in 1 file\(s\)")
+        rc, out, err = self.run_with(files, strict=True)
+        self.assertNotEqual(rc, 0)
+
+    def test_apply_mode_warns_too(self) -> None:
+        files = {"docs/notes.md": "Moved from `FormalSystem/Old` to `FormalSystem/New`.\n",
+                 "FormalSystem/Old/M.lean": "namespace Old\nend Old\n"}
+        with fixture_repo(files):
+            rc, out, err = run_tool(module_map=write_map(self.MAP))
+            self.assertEqual(rc, 0, err)
+            self.assertIn("docs/notes.md:1", err)
+
+    def test_sides_already_identical_do_not_warn(self) -> None:
+        files = {"docs/notes.md": (
+            "Compare `FormalSystem/Old` to `FormalSystem/Old` and note no change.\n"
+            "| FormalSystem/Old | FormalSystem/Old |\n")}
+        rc, out, err = self.run_with(files, strict=True)
+        self.assertEqual(rc, 0, err)
+        self.assertNotIn("docs/notes.md", err)
+
+    def test_rewritten_line_without_two_sides_does_not_warn(self) -> None:
+        files = {"docs/notes.md": "See `FormalSystem/Old/M.lean` for the definition.\n"}
+        rc, out, err = self.run_with(files, strict=True)
+        self.assertEqual(rc, 0, err)
+        self.assertEqual(class_count(out, "class 3  slash-path citations"), 1)
+        self.assertNotIn("docs/notes.md", err)
+
+    def test_skipped_file_is_never_checked(self) -> None:
+        files = {"Boneyard/X/README.md":
+                 "Moved from `FormalSystem/Old` to `FormalSystem/New`.\n"}
+        rc, out, err = self.run_with(files, strict=True)
+        self.assertEqual(rc, 0, err)
+        self.assertNotIn("Boneyard/X/README.md", err)
 
 
 class GlobTranslatorTest(unittest.TestCase):

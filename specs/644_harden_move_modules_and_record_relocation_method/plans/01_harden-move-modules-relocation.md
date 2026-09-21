@@ -570,7 +570,7 @@ listing four). Confirm at implementation time by running the translator against 
 
 ---
 
-### Phase 5: Deliverable (2) — identical-sides warning and --strict [NOT STARTED]
+### Phase 5: Deliverable (2) — identical-sides warning and --strict [COMPLETED]
 
 **Goal**: A warning whenever a rewrite makes the two sides of one sentence or one table row
 identical, promoted to a non-zero exit under `--strict`, kept wholly separate from the existing
@@ -578,38 +578,38 @@ bare-form audit.
 
 **Tasks**:
 
-- [ ] Re-read `scripts/move-modules.py` in full before editing.
-- [ ] Write the fixture tests first and observe red. Every fixture file here lives at a path the
-      `--no-rewrite` defaults do NOT match (e.g. `docs/notes.md`), or the detector never sees it:
-  - [ ] Prose: a line reading "moved from `FormalSystem/Old` to `FormalSystem/New`" under the map
+- [x] Re-read `scripts/move-modules.py` in full before editing. *(completed)*
+- [x] Write the fixture tests first and observe red. Every fixture file here lives at a path the
+      `--no-rewrite` defaults do NOT match (e.g. `docs/notes.md`), or the detector never sees it: *(completed)*
+  - [x] Prose: a line reading "moved from `FormalSystem/Old` to `FormalSystem/New`" under the map
         row `FormalSystem.Old -> FormalSystem.New`. Assert a warning naming the file and line
-        number, `rc == 0` without `--strict`, `rc != 0` with `--strict`.
-  - [ ] Table, non-adjacent columns: a three-column markdown row
+        number, `rc == 0` without `--strict`, `rc != 0` with `--strict`. *(completed)*
+  - [x] Table, non-adjacent columns: a three-column markdown row
         `| FormalSystem/Old | some note | FormalSystem/New |` under the same map. Assert the same
-        (guards D9's all-pairs rule).
-  - [ ] Negative (the R2 false-positive guard): a line whose two sides were ALREADY identical
-        before the rewrite. Assert no warning is emitted, under `--strict` too.
-  - [ ] Negative: a line the rewrite changes but which contains no two-sided construct at all.
-        Assert no warning.
-  - [ ] Negative (D9's skipped-file rule): the prose line placed in `Boneyard/X/README.md` with
-        `--strict`. Assert `rc == 0` and no warning — the file is skipped, not written.
-- [ ] Implement the detector per Decision D9: in `run()`, after `new_text` is computed and only
+        (guards D9's all-pairs rule). *(completed)*
+  - [x] Negative (the R2 false-positive guard): a line whose two sides were ALREADY identical
+        before the rewrite. Assert no warning is emitted, under `--strict` too. *(completed)*
+  - [x] Negative: a line the rewrite changes but which contains no two-sided construct at all.
+        Assert no warning. *(completed)*
+  - [x] Negative (D9's skipped-file rule): the prose line placed in `Boneyard/X/README.md` with
+        `--strict`. Assert `rc == 0` and no warning — the file is skipped, not written. *(completed)*
+- [x] Implement the detector per Decision D9: in `run()`, after `new_text` is computed and only
       for files headed into `changed`, zip BEFORE and AFTER lines by index, skip unchanged lines,
       extract side strings from the BEFORE line by the two constructs D9 fixes, and warn when
       `a != b` and `rw(a) == rw(b)`. Implement `rw` as a small helper that applies the per-line
       class 2/3/4 rewrite to a string with throwaway counters — do not route it through the real
       `counts` dict. Warning text carries the file path, the line number, and both forms of the
-      line.
-- [ ] Add `--strict` (`action="store_true"`): any such warning becomes a non-zero exit at the end
-      of `run()`. Without it, warnings are printed and the exit code is unaffected.
-- [ ] Keep this entirely separate from `bare_form_count` and the sentinel re-run: no shared
+      line. *(completed)*
+- [x] Add `--strict` (`action="store_true"`): any such warning becomes a non-zero exit at the end
+      of `run()`. Without it, warnings are printed and the exit code is unaffected. *(completed)*
+- [x] Keep this entirely separate from `bare_form_count` and the sentinel re-run: no shared
       counter, no shared exit branch, and the bare-form audit's unconditional-fail behavior is
-      untouched. Do not call the detector from the sentinel pass.
-- [ ] Add a warning-count line to `report()` (count of warnings and of files carrying them).
-- [ ] Note as a code comment that `--module-map`/`--namespace-map` files themselves reuse the
+      untouched. Do not call the detector from the sentinel pass. *(completed)*
+- [x] Add a warning-count line to `report()` (count of warnings and of files carrying them). *(completed)*
+- [x] Note as a code comment that `--module-map`/`--namespace-map` files themselves reuse the
       `old -> new` separator but are not part of the repository walk (they live under `specs/`,
-      which `PRUNE_DIRS` prunes), so the detector cannot trip on them.
-- [ ] Re-run the whole fixture suite green.
+      which `PRUNE_DIRS` prunes), so the detector cannot trip on them. *(completed)*
+- [x] Re-run the whole fixture suite green. *(completed)*
 
 **Timing**: 1.5 hours
 
