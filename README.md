@@ -25,7 +25,7 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 |--------|-------|
 | Live `.lean` files | 533 |
 | Live lines of code | 164,405 |
-| Live comment lines | 98,103 |
+| Live comment lines | 98,106 |
 | Archived `.lean` files | 169 |
 | Archived lines | 91,983 |
 <!-- END GENERATED -->

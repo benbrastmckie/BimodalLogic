@@ -1,0 +1,27 @@
+{
+  "phase": 7,
+  "phase_name": "Acceptance gate",
+  "started_at": "2026-09-21T01:32:00Z",
+  "last_updated": "2026-09-21T01:50:00Z",
+  "objectives": [
+    {"id": 1, "description": "Run check-module-invariants.sh --no-build, confirm C14/C21/C22", "status": "done", "files_touched": ["README.md", "FormalSystem/Automation/README.md"]},
+    {"id": 2, "description": "Run readme-lint.sh", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Anti-regression regex sweep over full changed set", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Direct count audit across all named files", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Anonymous-reader link sweep", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Confirm no task-number references introduced", "status": "done", "files_touched": []},
+    {"id": 7, "description": "Confirm items 5 and 6 remain satisfied", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "7.1",
+      "description": "check-module-invariants.sh --emit-inventory regeneration of README.md and FormalSystem/Automation/README.md generated inventory blocks",
+      "type": "altered",
+      "reason": "Editing .lean docstrings in Phase 6 shifted line counts, staling the generated inventory tables in README.md and FormalSystem/Automation/README.md; these are mechanically regenerated (not hand-authored), so the fix is a pure count regeneration with no prose change, run as part of Phase 7's acceptance gate rather than a separate phase.",
+      "annotation": "*(deviation: altered — pulled the mechanical INV regeneration into Phase 7's acceptance gate)*"
+    }
+  ]
+}

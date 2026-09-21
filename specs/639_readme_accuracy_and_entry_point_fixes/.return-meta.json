@@ -1,9 +1,59 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/639_readme_accuracy_and_entry_point_fixes/summaries/01_readme-accuracy-entry-points-summary.md",
+      "summary": "Execution summary for the README axiom-count convention fix, navigational-defect repairs, and the Phase 7 direct count audit table."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Wrote a single canonical 'Two axiom counts' derivation in docs/reference/axiom-reference.md and swept README.md, FormalSystem/README.md, docs/reference/API_REFERENCE.md, docs/user-guide/architecture.md, two further docs/project-info files, and four Lean docstrings into agreement with it, while also fixing the Project Structure tree nesting, adding a MainResults.lean entry-point link, repairing five stale ../ProofChecker/ relative links, and aligning the paper citation year. check-module-invariants.sh --no-build and readme-lint.sh are both green."
+  },
+  "modified_files": [
+    "docs/reference/axiom-reference.md",
+    "README.md",
+    "FormalSystem/README.md",
+    "docs/reference/API_REFERENCE.md",
+    "docs/user-guide/architecture.md",
+    "docs/project-info/implementation-status.md",
+    "docs/project-info/FEATURE_REGISTRY.md",
+    "FormalSystem/Examples/BimodalProofs.lean",
+    "FormalSystem/Examples/TemporalStructures.lean",
+    "FormalSystem/Automation/BenchmarkAnchorsMain.lean",
+    "FormalSystem/Metalogic/Independence/RationalWitness.lean",
+    "FormalSystem/Automation/README.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When a repo documents the same underlying quantity under two legitimate but differently-scoped conventions (e.g. primitive-constructor count vs. total-named-schema count including derived mirrors), write the derivation exactly once in a canonical reference file and have every other occurrence link to it with an explicit label, rather than restating or re-deriving the arithmetic per file. Re-typing a corrected figure independently in each file recreates the same drift risk that caused the original staleness.",
+      "category": "PATTERN",
+      "source_artifact": "specs/639_readme_accuracy_and_entry_point_fixes/summaries/01_readme-accuracy-entry-points-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["documentation-drift", "canonical-derivation", "counting-convention", "single-source-of-truth"]
+    },
+    {
+      "content": "A stale-count regex tripwire (e.g. check-module-invariants.sh's C14) that requires a specific digit adjacent to a specific word (\"axiom\"/\"constructor\"/\"schema\") is blind to bare numeric claims in table cells or prose that omit the trigger word on the same line (e.g. \"| Base | 37 |\" or a line-wrapped \"45 TM\\nschemata\"). A green run of such a check is evidence the check didn't fire, not evidence the documented counts are correct — verify by direct comparison against the source of truth (here, Axiom.minFrameClass) rather than trusting the gate's exit code alone.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/639_readme_accuracy_and_entry_point_fixes/summaries/01_readme-accuracy-entry-points-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["regex-blind-spot", "stale-count-check", "verification-gate", "false-confidence"]
+    },
+    {
+      "content": "In a README with a `<!-- BEGIN GENERATED: inventory ... -->` block, only the trailing hand-written description column survives regeneration untouched; every other column (file/line counts) must be refreshed via the project's `--emit-inventory` mechanism after any edit that changes line counts, never hand-patched. Editing adjacent Lean docstrings without re-running the generator leaves the inventory table's counts silently stale.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/639_readme_accuracy_and_entry_point_fixes/summaries/01_readme-accuracy-entry-points-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["generated-inventory", "emit-inventory", "readme-generation", "line-count-drift"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1789947599_745d6f",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 7,
+    "phases_total": 7
   }
 }

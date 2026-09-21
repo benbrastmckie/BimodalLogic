@@ -1,7 +1,7 @@
 # Implementation Plan: Task #639
 
 - **Task**: 639 - README accuracy and entry point fixes
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6.75 hours
 - **Dependencies**: task 631 (README.md Logos/ProofChecker naming, latex/ retirement) — confirmed already landed
 - **Research Inputs**: specs/639_readme_accuracy_and_entry_point_fixes/reports/01_readme-accuracy-entry-points.md
@@ -497,32 +497,47 @@ BenchmarkAnchors line anchors above. Confirm with
 
 ---
 
-### Phase 7: Acceptance gate [NOT STARTED]
+### Phase 7: Acceptance gate [COMPLETED]
 
 **Goal**: Verify the stated acceptance criteria end to end, by direct comparison rather than by
 trusting a check that is known blind to these defects.
 
 **Tasks**:
-- [ ] `bash scripts/check-module-invariants.sh --no-build` — green, and specifically confirm C14,
-      C21 and C22 report as expected.
-- [ ] `bash scripts/readme-lint.sh` — green.
-- [ ] Run C14's own regex over the full changed set as an anti-regression check:
+- [x] `bash scripts/check-module-invariants.sh --no-build` — green, and specifically confirm C14,
+      C21 and C22 report as expected. *(completed: first run surfaced an unrelated-but-real
+      `FAIL INV` — 2 generated-inventory blocks, `README.md` and
+      `FormalSystem/Automation/README.md`, gone stale from the `.lean` comment-line-count changes
+      in Phase 6; repaired with `bash scripts/check-module-invariants.sh --emit-inventory`, a pure
+      mechanical count regeneration with no prose changes. Full re-run: `ALL CHECKS PASSED`, C14
+      "no stale axiom or sorry counts", C21 "all 27 declarations pinned", C22 "the two
+      allAxiomNames lists agree (29 names each)")*
+- [x] `bash scripts/readme-lint.sh` — green. *(completed: RESULT: PASS)*
+- [x] Run C14's own regex over the full changed set as an anti-regression check:
       `grep -rniE '\b(14|21|42|44|45)[[:space:]]+([A-Za-z⁺+]+[[:space:]]+)?(axiom|constructor|schema)' docs README.md`
       and the `.lean` variant over `FormalSystem` (excluding `Boneyard/`, requiring `axiom`,
-      excluding `covers`) — both must return nothing newly introduced.
-- [ ] Direct count audit: for each of README.md, FormalSystem/README.md,
+      excluding `covers`) — both must return nothing newly introduced. *(completed: both return
+      nothing)*
+- [x] Direct count audit: for each of README.md, FormalSystem/README.md,
       docs/reference/API_REFERENCE.md, docs/user-guide/architecture.md,
       FormalSystem/Automation/BenchmarkAnchorsMain.lean,
       FormalSystem/Metalogic/Independence/RationalWitness.lean — list every axiom-count figure the
       file now states and check it against `Axiom.minFrameClass` / `allAxiomNames` /
-      `scripts/typst-status-counts.sh`. Record the audit table in the summary.
-- [ ] Anonymous-reader link sweep: resolve every relative link in README.md and
+      `scripts/typst-status-counts.sh`. Record the audit table in the summary. *(completed — see
+      the audit table in the implementation summary)*
+- [x] Anonymous-reader link sweep: resolve every relative link in README.md and
       FormalSystem/README.md from the repo root; confirm no link points into a private or
-      gitignored path (BimodalHarness stays plain text; `training/` is gitignored).
-- [ ] Confirm no task-number reference was introduced into any file outside `specs/**`
-      (`bash scripts/check-task-references.sh` if present).
-- [ ] Confirm items 5 and 6 remain satisfied (no `latex/BimodalReference.pdf` reference; the two
-      BimodalHarness mentions still plain text).
+      gitignored path (BimodalHarness stays plain text; `training/` is gitignored). *(completed:
+      scripted sweep of every `](...)` target in both files against the filesystem — zero broken)*
+- [x] Confirm no task-number reference was introduced into any file outside `specs/**`
+      (`bash scripts/check-task-references.sh` if present). *(completed: the `.claude/`-deployed
+      `check-task-references.sh` scans only the agent-system meta-repo's own four tree roots
+      (`agent-system/extensions`, `.opencode`, `lua`, `.memory`), none of which cover this task's
+      files, so it does not apply here; ran a direct `grep -niE '\btask[[:space:]]+#?[0-9]+\b'`
+      over all eleven edited files instead — zero matches)*
+- [x] Confirm items 5 and 6 remain satisfied (no `latex/BimodalReference.pdf` reference; the two
+      BimodalHarness mentions still plain text). *(completed: zero `latex/BimodalReference.pdf`
+      hits under README.md/docs/; both BimodalHarness mentions — README.md:380,
+      docs/README.md:333 — confirmed still plain text, not links)*
 
 **Timing**: 0.5 hours
 
@@ -542,14 +557,14 @@ trusting a check that is known blind to these defects.
 
 ## Testing & Validation
 
-- [ ] `bash scripts/check-module-invariants.sh --no-build` exits 0
-- [ ] `bash scripts/readme-lint.sh` exits 0
-- [ ] No axiom-count figure in any of the eight named files disagrees with
+- [x] `bash scripts/check-module-invariants.sh --no-build` exits 0
+- [x] `bash scripts/readme-lint.sh` exits 0
+- [x] No axiom-count figure in any of the eight named files disagrees with
       `FormalSystem/ProofSystem/Axioms.lean`
-- [ ] Every relative link in README.md and FormalSystem/README.md resolves from the repo root
-- [ ] Every `.lean` diff hunk lies strictly inside a comment region
-- [ ] No newly-introduced match for C14's stale-count regex
-- [ ] No task-number reference outside `specs/**`
+- [x] Every relative link in README.md and FormalSystem/README.md resolves from the repo root
+- [x] Every `.lean` diff hunk lies strictly inside a comment region
+- [x] No newly-introduced match for C14's stale-count regex
+- [x] No task-number reference outside `specs/**`
 
 ## Artifacts & Outputs
 

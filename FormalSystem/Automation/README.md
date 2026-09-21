@@ -53,7 +53,7 @@ The rule is enforced by `scripts/check-module-invariants.sh` check C25N.
 |------|-------|-------------|
 | `AtomCanonicalization.lean` | 141 | Canonical form for formulas under atom permutation, so formulas identical up to atom renaming collapse to one dataset entry |
 | `AxiomNames.lean` | 59 | The canonical 29 `ProofSystem.Axiom` constructor names in `Axioms.lean` source order, extracted into a leaf module |
-| `BenchmarkAnchorsMain.lean` | 588 | Benchmark anchor formulas: ground-truth valid/invalid formula pairs |
+| `BenchmarkAnchorsMain.lean` | 591 | Benchmark anchor formulas: ground-truth valid/invalid formula pairs |
 | `BenchmarkOracleMain.lean` | 353 | Batch oracle: reads formula JSON, runs decision procedure, outputs JSONL labels |
 | `ContrastiveGeneratorMain.lean` | 1,121 | Formula mutator: systematic mutation for dataset augmentation |
 | `DataExport.lean` | 396 | Core data export: JSONL serialization for formula-label pairs |
