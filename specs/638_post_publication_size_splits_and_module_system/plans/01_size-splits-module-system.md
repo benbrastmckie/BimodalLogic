@@ -347,13 +347,13 @@ scope.
 
 ---
 
-### Phase 5: Module-system evaluation record [NOT STARTED]
+### Phase 5: Module-system evaluation record [COMPLETED]
 
 **Goal**: The evaluation the task asks for exists as a durable document a future programme can
 start from, with the verdict "not now; its own programme; decision record first".
 
 **Tasks**:
-- [ ] Write `docs/development/MODULE_SYSTEM_EVALUATION.md` from report 01's "External Resources"
+- [x] Write `docs/development/MODULE_SYSTEM_EVALUATION.md` from report 01's "External Resources"
   and R6, restated as verified facts about the pinned toolchain, with sections: verdict; what was
   tested and how (the three probes, reproducible command shape); upstream adoption counts at the
   pinned Mathlib tag; the two binding constraints (a `module` cannot import a non-`module`, so
@@ -364,12 +364,12 @@ start from, with the verdict "not now; its own programme; decision record first"
   defer; reasons it is eventually worth doing; recommended programme order (decision record,
   then parsers with fixtures while the tree is still plain, then bottom-up conversion, then
   `mk_all --module` and the root check, then narrowing exposure).
-- [ ] Re-verify each count before writing it (they are a snapshot): re-run the greps from the
-  report's appendix; state the date and the toolchain beside the numbers.
-- [ ] `docs/development/README.md`: add the index row.
-- [ ] `docs/development/PUBLICATION_REFACTOR.md`: in convention-map row 3a and the Phase 9
+- [x] Re-verify each count before writing it (they are a snapshot): re-run the greps from the
+  report's appendix; state the date and the toolchain beside the numbers. *(deviation: altered — re-derived values differ from the report in three places and the re-derived ones were written: `private` is 765 under `FormalSystem/` (994 across all three trees) not 768; Mathlib exposure/meta counts are 4,941 / 2,699 / 531; the import-parser list drops `typst-status-counts.sh` and `test-move-modules.py`, which only emit or fixture plain imports, and adds `measure-refactor-partitions.py` and `reanchor-lean-citations.py`. All three probes were re-run and reproduced.)*
+- [x] `docs/development/README.md`: add the index row.
+- [x] `docs/development/PUBLICATION_REFACTOR.md`: in convention-map row 3a and the Phase 9
   bullet, add a pointer to the new document. Change nothing else there in this phase.
-- [ ] No Lean file is touched. No task numbers in the document.
+- [x] No Lean file is touched. No task numbers in the document.
 
 **Timing**: 1 hour
 

@@ -54,7 +54,7 @@ surface (g).
 | 2a | Namespace follows path below a documented prefix | 279 equal-or-descendant, 187 ancestor, 24 unrelated | **Adopt** for the unrelated set: relocate files to where their namespace says they live (Phases 4-5; zero FQN churn for the 15 language-extension files) |
 | 2b | Deliberate path/namespace split (`Logics/` vs `Logic`) | None | **Deliberately diverge**: one logic, no reason to introduce a split |
 | 2c | Project-named root (`Cslib`) | Root `FormalSystem`, a recent deliberate rename | **Deliberately diverge (reaffirm)**: renaming again is churn with no structural benefit |
-| 3a | Lean module system (`module` / `public import` / `@[expose]`) | Not used | **Deliberately diverge for now**: changes no citable name, so it can follow publication as its own programme (Phase 9) |
+| 3a | Lean module system (`module` / `public import` / `@[expose]`) | Not used | **Deliberately diverge for now**: changes no citable name, so it can follow publication as its own programme (Phase 9); evaluated in [MODULE_SYSTEM_EVALUATION.md](MODULE_SYSTEM_EVALUATION.md) |
 | 3b | No top-level automation layer; automation beside the logic it serves | `Automation/` as layer 4, imported from layers 0-2 | **Adopt partially**: attributes go down to `Tactic/`, `PropDecide` moves beside `Kalmar`; user tactics stay in `Automation/` (Phases 3-4) |
 | 3c | Per-logic ordering Syntax -> ProofSystem -> Semantics -> Theorems -> Metalogic | ORGANISATION.md puts Metalogic below Theorems, but 29 Metalogic files import Theorems | **Adopt**: fix the layer table to the measured order and move `Core/DeductionTheorem.lean` into `Theorems/` (Phase 4) |
 | 3d | `private` / `protected` in use | `private` widely used, `protected` unused | **Already matches** (`protected` optional) |
@@ -554,7 +554,8 @@ Split into two green commits.
 
 - Split the two files over 4,500 lines (`EFGames/GapDetection.lean`, the split-point file)
   only along import-acyclic declaration families, keeping declaration namespaces.
-- Evaluate the Lean module system (`module` / `public import`) as its own programme.
+- Evaluate the Lean module system (`module` / `public import`) as its own programme. The
+  evaluation is recorded in [MODULE_SYSTEM_EVALUATION.md](MODULE_SYSTEM_EVALUATION.md).
 - **[CITE]**: no, provided splits keep namespaces. **ADR**: a new one if the module system is
   adopted.
 
