@@ -1,7 +1,7 @@
 # Implementation Plan: Task #638
 
 - **Task**: 638 - Post-publication size splits and the Lean module system
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6.5 hours
 - **Dependencies**: Task 637 (completed)
 - **Research Inputs**: specs/638_post_publication_size_splits_and_module_system/reports/01_size-splits-module-system.md
@@ -393,29 +393,29 @@ value.
 
 ---
 
-### Phase 6: Final gate and acceptance evidence [NOT STARTED]
+### Phase 6: Final gate and acceptance evidence [COMPLETED]
 
 **Goal**: Direct evidence for both acceptance clauses: no fully-qualified name changes; harness
 green.
 
 **Tasks**:
-- [ ] Full build, detached and guarded:
+- [x] Full build, detached and guarded:
   `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 --` (default targets) under
   `Bash(run_in_background: true)`; wait for the completion notification. Zero errors; no new
-  warnings on any touched path.
-- [ ] `lake exe mk_all --lib FormalSystem --check`.
-- [ ] `bash scripts/check-module-invariants.sh` in full mode, so the build-dependent checks
+  warnings on any touched path. *(deviation: altered — invoked as `... --timeout 1800 -- build`; 2,667 jobs, exit 0, zero warnings anywhere in the output)*
+- [x] `lake exe mk_all --lib FormalSystem --check`.
+- [x] `bash scripts/check-module-invariants.sh` in full mode, so the build-dependent checks
   (axiom baselines, import resolution, every-module-reaches-Init) run, not only the static ones.
-- [ ] `bash scripts/readme-lint.sh`.
-- [ ] After-state evidence: the Phase 1 scratch file with its imports changed to
+- [x] `bash scripts/readme-lint.sh`.
+- [x] After-state evidence: the Phase 1 scratch file with its imports changed to
   `...EFGames.GapDetectionLeft`, `...EFGames.GapDetectionRight`, `...GameTransfer.SplitPoint`, run
   with `lake env lean`; save as `evidence/names-axioms-after.txt`;
   `diff evidence/names-axioms-before.txt evidence/names-axioms-after.txt` must be empty.
-- [ ] Confirm the two private helpers still live in `GapDetection.lean` (so their mangled names
+- [x] Confirm the two private helpers still live in `GapDetection.lean` (so their mangled names
   are unchanged).
-- [ ] If `PUBLICATION_REFACTOR.md` carries a status line for its Phase 9, update it to say the
-  splits landed and the module-system evaluation is recorded; if it carries none, add none.
-- [ ] Fix forward on any red check; re-run the failing check, then the whole gate.
+- [x] If `PUBLICATION_REFACTOR.md` carries a status line for its Phase 9, update it to say the
+  splits landed and the module-system evaluation is recorded; if it carries none, add none. *(no status line exists for that phase; none added)*
+- [x] Fix forward on any red check; re-run the failing check, then the whole gate.
 
 **Timing**: 1 hour
 
@@ -443,14 +443,14 @@ module.
 
 ## Testing & Validation
 
-- [ ] Verbatim-move `diff -B` empty for both splits (Phases 2, 3)
-- [ ] Guarded full `lake build` exits 0; zero new warnings on touched paths
-- [ ] `lake exe mk_all --lib FormalSystem --check` passes
-- [ ] `bash scripts/check-module-invariants.sh` (full mode) passes
-- [ ] `bash scripts/readme-lint.sh` passes
-- [ ] `names-axioms-before.txt` and `names-axioms-after.txt` are identical
-- [ ] No `sorry`, no new axiom, no `module` keyword introduced
-- [ ] Both Boneyard imports (`EFGames.GapDetection`, `GameTransfer.SplitPoint`) still resolve
+- [x] Verbatim-move `diff -B` empty for both splits (Phases 2, 3)
+- [x] Guarded full `lake build` exits 0; zero new warnings on touched paths
+- [x] `lake exe mk_all --lib FormalSystem --check` passes
+- [x] `bash scripts/check-module-invariants.sh` (full mode) passes
+- [x] `bash scripts/readme-lint.sh` passes
+- [x] `names-axioms-before.txt` and `names-axioms-after.txt` are identical
+- [x] No `sorry`, no new axiom, no `module` keyword introduced
+- [x] Both Boneyard imports (`EFGames.GapDetection`, `GameTransfer.SplitPoint`) still resolve
 
 ## Artifacts & Outputs
 
