@@ -28,6 +28,7 @@ compile-checks each in isolation.
 |------|------:|-------------|
 | `C5SmokeTest.lean` | 249 | <!-- TODO: add description --> |
 | `DatasetGeneratorTest.lean` | 552 | <!-- TODO: add description --> |
+| `EnumeratorCountsTest.lean` | 91 | <!-- TODO: add description --> |
 | `FormulaMutatorTest.lean` | 194 | <!-- TODO: add description --> |
 | `InterestingnessTest.lean` | 354 | <!-- TODO: add description --> |
 | `ProofFirstTests.lean` | 250 | <!-- TODO: add description --> |

@@ -594,22 +594,30 @@ and close whichever set is larger.
 
 ---
 
-### Phase 8: Split NormalizationTest, drop the C6 manifest line, record the SuccessPatterns decision [NOT STARTED]
+### Phase 8: Split NormalizationTest, drop the C6 manifest line, record the SuccessPatterns decision [COMPLETED]
 
 **Goal**: The one test that straddles the split is divided rather than moved, the manifest
 simplification the aggregator enables is taken, and the `SuccessPatterns` decision is written down
 where the next reader will look for it.
 
 **Tasks**:
-- [ ] Split `Tests/BimodalTest/Automation/NormalizationTest.lean` (588 lines). Only two regions
+- [x] Split `Tests/BimodalTest/Automation/NormalizationTest.lean` (588 lines). Only two regions
       depend on the enumerator: the `decide`-timing block (around lines 233-250, referencing
       `smallConfig` / `enumerateUpToDepth`) and `section EnumeratorCounts` (around lines 560-586).
       Extract exactly those into `Tests/BimodalToolsTest/EnumeratorCountsTest.lean`. Everything
       else stays, so the library's normalization coverage stays inside `lake test`.
 - [ ] Wire the new test into `Tests/BimodalToolsTest.lean`; confirm the retained file no longer
       imports any `BimodalTools` module.
-- [ ] Delete the C6 manifest line for `FormalSystem.Automation.ProofFirstBenchmark` in
-      `scripts/check-module-invariants.sh`. The `BimodalTools.lean` aggregator now makes that
+- [x] Delete the C6 manifest line for `FormalSystem.Automation.ProofFirstBenchmark` in
+      `scripts/check-module-invariants.sh`.
+      *(deviation: altered — done in Phase 6, not here, and in `scripts/module-invariants-manifest.txt`
+      rather than in the harness script (the plan named the wrong file; the manifest is a separate
+      data file). It could not wait: the moment `BimodalTools.lean` aggregated the 13 non-`Main`
+      modules, `ProofFirstBenchmark` became reachable and C6's stale-manifest branch failed, so
+      Phase 6 could not close green without it. Deleted rather than renamed, as the plan intended.
+      `FormulaMutatorTest` and `ProofFirstTests` remain manifested with their paths updated to
+      `BimodalToolsTest.*`, confirmed by `PASS C6 all 14 unreachable live module(s) are
+      manifested`.)* The `BimodalTools.lean` aggregator now makes that
       module reachable, so the manifest entry is deleted rather than renamed — a net simplification.
       Confirm `FormulaMutatorTest` and `ProofFirstTests` remain C6-manifested (they import an exe
       root carrying `main`) with their paths updated by the move.
@@ -632,6 +640,11 @@ where the next reader will look for it.
 on the enumerator is a hypothesis. Confirm it mechanically: after the split, the retained file must
 produce zero matches for `grep -nE 'BimodalTools|FormulaEnumerator|enumerateUpToDepth|smallConfig'`.
 If a third region surfaces, extract it too and record the divergence.
+
+**Confirmed**: exactly two regions, as hypothesized — the Section 7 `decide`-timing `#eval` and
+`section EnumeratorCounts`. The retained file produces zero matches for that grep and no longer
+imports `BimodalTools.FormulaEnumerator`; it keeps 49 `normalizeFormula` occurrences and 83
+`#guard`/`normalizeFormula` lines, so library normalization coverage stays inside `lake test`.
 
 **Verification**:
 - `lake test` exits 0 and the retained `NormalizationTest.lean` still carries its `Normalization`

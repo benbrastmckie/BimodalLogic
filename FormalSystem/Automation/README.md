@@ -1,14 +1,18 @@
 # Automation
 
-Proof automation tactics and ML dataset generation pipeline for TM bimodal logic.
+Proof automation tactics for TM bimodal logic: normalization simp sets, the derived-lemma
+database, the bounded proof-search engine, and the tactic elaborators.
 
-This directory serves two purposes, and they are very unequal in size:
-1. **Proof automation**: custom Lean 4 tactics for TM derivability goals
-2. **ML dataset pipeline**: formula enumeration, labelling, validation and export for ML
-   benchmarks
+**This directory used to serve two purposes, very unequal in size.** The second was the ML
+dataset pipeline — formula enumeration, labelling, validation and JSONL export — and it was the
+larger half by an order of magnitude: 24 of the 31 modules here, 14,527 lines against roughly
+2,100. It has left, together with `Metalogic/Decidability/TraceExport.lean`, for
+`lean_lib BimodalTools` at the repository root. `BimodalTools` sits outside `defaultTargets`, so
+`lake build` no longer compiles any of it; see [`BimodalTools/README.md`](../../BimodalTools/README.md).
 
-**The ML pipeline is the larger half by an order of magnitude**, and it is what most of the
-files here are. It rests on `ProofSearch/` and on the decision procedure in `Metalogic/`.
+What remains here is library code, reachable from the published `FormalSystem` target. The
+dependence runs one way and check `B3` says so: `BimodalTools` imports this directory, and
+nothing here may import `BimodalTools`.
 
 **`modal_search` is the pedagogical entry point, not library infrastructure.** It is the only
 proof-search tactic — `tm_auto`, `temporal_search` and `propositional_search` were removed
@@ -59,6 +63,34 @@ The rule is enforced by `scripts/check-module-invariants.sh` check C25N.
 | `ProofSearch/` | — | Proof search engine: bounded derivation search (Core.lean, Strategies.lean) |
 | `Tactics/` | — | Tactic elaborators: `modal_search`, `apply_axiom`, `modal_t`, `assumption_search`, `deduction`, `undischarge`, `propDecide` (Commands.lean, UserTactics.lean, Deduction.lean, Meta.lean, PropDecide.lean, Search.lean) |
 <!-- END GENERATED -->
+
+## Decision: `SuccessPatterns` stays, undivided
+
+`SuccessPatterns.lean` was the one genuinely ambiguous module in the library/tooling split, and
+the decision was to leave it here **whole** rather than divide it. Three reasons, in order of
+weight:
+
+1. **There is no IO/JSON half to split off.** The module is pure data and pure functions:
+   `PatternKey`, `GoalCategory`, `ProofStrategy`, `PatternDatabase` and the lookup/record
+   operations over them. Nothing in it serializes, reads a file, or touches `IO`. A split would
+   have to invent a seam rather than follow one.
+2. **It has live library call sites.** `ProofSearch/Core.lean` imports it directly;
+   `ProofSearch/Strategies.lean` uses `PatternDatabase` and `recordSuccess` through that import
+   (`searchWithLearning`, `bestFirstSearch`), and
+   `Tests/BimodalTest/Automation/ProofSearchBenchmark.lean` exercises the path. Moving it would
+   put a `FormalSystem -> BimodalTools` edge into the published library — exactly what `B3`
+   forbids — or force `ProofSearch/` out of the library behind it.
+3. **The tooling reaches it the sanctioned way.** `BimodalTools` needs the `PatternKey` /
+   `GoalCategory` vocabulary (`ProofFirstGeneratorMain` and `BenchmarkAnchorsMain` both call
+   `PatternKey.fromFormula`, and `DataExport` serializes both types), and it gets there by
+   importing `FormalSystem.Automation.SuccessPatterns`. That is the permitted
+   direction and costs nothing.
+
+**This supersedes `docs/development/PUBLICATION_REFACTOR.md` Phase 4's bullet "cut
+`ProofSearch.Core -> SuccessPatterns`".** That bullet assumed `SuccessPatterns` was tooling and
+that the edge was therefore a library-to-tooling dependency to be broken. It is not: both ends
+stay in the library, the edge is library-internal, and there is nothing to cut. When Phase 4 is
+planned, that bullet is a no-op — do not re-derive the cut from the bullet's wording.
 
 ## Proof Automation Components
 
