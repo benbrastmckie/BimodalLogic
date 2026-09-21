@@ -97,6 +97,7 @@ of the same formula were each checked to converge on the normal form under bare 
 | `Gφ` | `future_iff` | `∀ s, t < s → TruthAt M τ s φ` |
 | `Hφ` | `past_iff` | `∀ s, s < t → TruthAt M τ s φ` |
 | `△φ` | `always_iff` | `∀ s, TruthAt M τ s φ` |
+| `□△φ` | `box_always_iff` | `∀ σ s, TruthAt M σ s φ` (untagged; the universal modality) |
 | `K⁺φ` | `kPlus_iff` | `∀ s, t < s → ∃ r, t < r ∧ r < s ∧ TruthAt M τ r φ` |
 | `K⁻φ` | `kMinus_iff` | `∀ s, s < t → ∃ r, s < r ∧ r < t ∧ TruthAt M τ r φ` |
 | `M(φ,ψ)` | `strong_release_iff` | the `untl` clause with a nested `and` |
@@ -499,6 +500,24 @@ Collapsing the three strict cases into one unrestricted `∀ s` is what removes 
     · exact hf s h
   · intro h
     exact ⟨fun s _ => h s, h t, fun s _ => h s⟩
+
+/-- Truth of `□△φ`: `φ` holds at **every** world history and **every** time. The universal
+modality `A φ := □△φ` is therefore definable in the base language.
+
+The only semantic fact used is that a `WorldHistory` is total: `□` reaches every history at the
+present time and `△` then reaches every time of that history, so no (history, time) pair is left
+out. Over partial histories the second step would stop at the boundary of the history's domain.
+
+Deliberately plain: tagged neither `@[simp]` nor `@[truth_norm]`, so the library's simp set is
+unchanged (`box_iff` followed by `always_iff` already normalizes the left-hand side).
+
+Paper: — (formalization-native; the paper defines no universal modality) -/
+theorem box_always_iff
+    {F : TaskFrame} {M : TaskModel F} {τ : WorldHistory F} {t : F.Duration}
+    (φ : Formula) :
+    TruthAt M τ t φ.always.box ↔ ∀ (σ : WorldHistory F) (s : F.Duration), TruthAt M σ s φ := by
+  rw [box_iff]
+  exact forall_congr' fun σ => always_iff φ
 
 /-! ### The density operators -/
 
