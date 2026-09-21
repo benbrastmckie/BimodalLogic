@@ -1,7 +1,7 @@
 # Implementation Plan: Task #638
 
 - **Task**: 638 - Post-publication size splits and the Lean module system
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6.5 hours
 - **Dependencies**: Task 637 (completed)
 - **Research Inputs**: specs/638_post_publication_size_splits_and_module_system/reports/01_size-splits-module-system.md
@@ -105,15 +105,15 @@ the case where the module system is ADOPTED, so no ADR is written here.
 Phases within the same wave can execute in parallel. Phases 2 and 5 touch disjoint files (Lean
 sources vs. `docs/development/`); Phase 5 runs no build.
 
-### Phase 1: Preflight — scope, seams, before-state evidence [NOT STARTED]
+### Phase 1: Preflight — scope, seams, before-state evidence [COMPLETED]
 
 **Goal**: Make the change safe to start: the recorded scope covers every file the change touches,
 the cut points are re-derived from the live files, and the "no name changes" baseline exists.
 
 **Tasks**:
-- [ ] Confirm both target files are unmodified relative to `HEAD` and still 5,094 / 4,906 lines; if
+- [x] Confirm both target files are unmodified relative to `HEAD` and still 5,094 / 4,906 lines; if
   not, re-derive everything below from the live content.
-- [ ] Union-add the missing paths to task 638's `file_scope` in `specs/state.json` through
+- [x] Union-add the missing paths to task 638's `file_scope` in `specs/state.json` through
   `bash .claude/scripts/state-write.sh` (additions only, `+=` then `unique`; never a wholesale
   array assignment; never touch another task's entry). Paths to add:
   `FormalSystem/Metalogic/Expressiveness/EFGames/MuRelativizedTruth.lean`,
@@ -122,19 +122,19 @@ the cut points are re-derived from the live files, and the "no name changes" bas
   `.../GameTransfer/CaseAnalysis.lean`, `FormalSystem/Metalogic/WeakCanonical/Transfer.lean`,
   `FormalSystem/Metalogic/Expressiveness.lean`, `docs/development/MODULE_SYSTEM_EVALUATION.md`,
   `docs/development/README.md`, `docs/development/PUBLICATION_REFACTOR.md`.
-- [ ] Re-derive the three GapDetection cut points and the one SplitPoint cut point by declaration
+- [x] Re-derive the three GapDetection cut points and the one SplitPoint cut point by declaration
   name and `/-!` section opener, and record them (with the first and last line of text of each
   block) in `specs/638_post_publication_size_splits_and_module_system/evidence/cut-points.md`.
   Expected: F-mu opens at the `/-! ### Mu-Relativized Truth at Actual Points` header; F-left at
   `/-! ### Gap Uniqueness for Lemma 9`; F-right at `/-! ### GHR93 Lemma 9 (Gap detection
   correctness, right direction)`; the SplitPoint cut falls between the end of
   `structure SplitPointProps` and the `set_option maxHeartbeats 800000 in` line.
-- [ ] Capture the before-state: a scratch Lean file (session scratchpad, not the tree) importing
+- [x] Capture the before-state: a scratch Lean file (session scratchpad, not the tree) importing
   `...EFGames.GapDetection` and `...GameTransfer.SplitPoint` that runs `#print axioms` on each
   public declaration of the two files, executed with `lake env lean`. Save the output as
   `evidence/names-axioms-before.txt` in the task directory. If the `.olean` files are stale, build
   the two modules first with the guarded, detached invocation.
-- [ ] Save pristine copies of both files to the scratchpad (`git show HEAD:<path>`) for the
+- [x] Save pristine copies of both files to the scratchpad (`git show HEAD:<path>`) for the
   verbatim-move diff in Phases 2 and 3.
 
 **Timing**: 0.5 hours
