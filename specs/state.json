@@ -1480,7 +1480,7 @@
     {
       "project_number": 641,
       "project_name": "worked_example_walkthrough_for_outside_readers",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "publication-quality",
       "dependencies": [
@@ -1493,7 +1493,7 @@
         "README.md"
       ],
       "created": "2026-09-20T18:47:56Z",
-      "last_updated": "2026-09-21T01:10:10Z",
+      "last_updated": "2026-09-21T01:15:34Z",
       "description": "Provide one worked-example file that an outside reader can open and follow end to end, ahead of the larger Examples expansion. Examples/BimodalProofs.lean, which the README advertises as the demo, is a list of one-line `example := perpetuityN _` applications and shows none of the metatheory. Add FormalSystem/Examples/Walkthrough.lean (name open) that, on concrete formulas: builds a DerivationTree by hand and again with the automation; applies `soundness` to obtain validity; applies `completeness` in the other direction; runs the tableau `isValid` procedure and uses `sound_of_isValid`; exhibits one frame-class-sensitive formula (derivable at Dense, not at Base or ZTime) using the existing independence results; and states one refutation such as notStrongCompletenessZTime with a sentence on what it means. Prose docstrings should carry a reader who knows modal logic but not this codebase. Do not cite Kamp-named declarations, so that the file is unaffected by the later Expressiveness rename. Wire it into the library aggregator, link it from the README as the demo, and keep it sorry-free with the standard three axioms. Acceptance: lake build green; harness green; `#print axioms` on each example shows exactly propext, Classical.choice, Quot.sound or fewer. Task 178 then extends this file rather than starting from BimodalProofs.lean.",
       "session_id": "sess_1789947599_745d6f",
       "artifacts": [
@@ -1501,6 +1501,11 @@
           "path": "specs/641_worked_example_walkthrough_for_outside_readers/reports/01_worked-example-walkthrough.md",
           "type": "report",
           "summary": "Research report: verified Lean shapes for every walkthrough leg, harness/wiring obligations, and a five-phase decomposition."
+        },
+        {
+          "path": "specs/641_worked_example_walkthrough_for_outside_readers/plans/01_worked-example-walkthrough.md",
+          "type": "plan",
+          "summary": "Six-phase sequential plan for FormalSystem/Examples/Walkthrough.lean plus its axiom-assertion test file and seven wiring edits."
         }
       ],
       "next_artifact_number": 2

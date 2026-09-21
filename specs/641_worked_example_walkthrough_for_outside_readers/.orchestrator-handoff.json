@@ -1,18 +1,17 @@
 {
+  "status": "planned",
   "task_number": 641,
-  "phase": "research",
-  "status": "researched",
-  "dispatch_seq": 7,
   "session_id": "sess_1789947599_745d6f_641",
+  "dispatch_seq": 8,
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 6,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/641_worked_example_walkthrough_for_outside_readers/reports/01_worked-example-walkthrough.md",
-      "summary": "Research report: verified Lean shapes for every walkthrough leg, harness/wiring obligations, and a five-phase decomposition."
+      "type": "plan",
+      "path": "specs/641_worked_example_walkthrough_for_outside_readers/plans/01_worked-example-walkthrough.md",
+      "summary": "Six-phase sequential plan for FormalSystem/Examples/Walkthrough.lean plus its axiom-assertion test file and seven wiring edits."
     }
   ],
-  "summary": "Research complete. Every required leg of the walkthrough was compiled against the live build and axiom-audited: all sit at [propext] or [propext, Classical.choice, Quot.sound]. The tableau leg is provable by plain `by decide` in ~2s (no native_decide needed). A sorry-free path exists end to end.",
-  "next_action": "plan"
+  "next_steps": "Run /implement 641 to execute the plan",
+  "blockers": []
 }

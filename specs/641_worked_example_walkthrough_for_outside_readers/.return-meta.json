@@ -1,16 +1,22 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/641_worked_example_walkthrough_for_outside_readers/reports/01_worked-example-walkthrough.md",
-      "summary": "Compiled-and-verified Lean shapes for all six walkthrough legs (hand derivation, modal_search, soundness_validIn, completeness_base, isValid + isValid_sound via plain by decide, Dense-derivable/Base-and-ZTime-underivable density instance via one blip countermodel), plus the full harness and wiring obligation list for adding a file under FormalSystem/Examples/."
+      "type": "plan",
+      "path": "specs/641_worked_example_walkthrough_for_outside_readers/plans/01_worked-example-walkthrough.md",
+      "summary": "Six-phase sequential plan adding FormalSystem/Examples/Walkthrough.lean (24 named, docstringed declarations covering all six required legs), a Tests/BimodalTest/WalkthroughAxioms.lean #guard_msgs axiom audit, and seven wiring edits including the README demo repoint and the INV inventory regeneration."
     }
   ],
+  "next_steps": "Run /implement 641 to execute the plan",
+  "phase_count": 6,
+  "estimated_hours": 6.5,
+  "dependency_waves": [[1], [2], [3], [4], [5], [6]],
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1789947599_745d6f_641",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 8
 }

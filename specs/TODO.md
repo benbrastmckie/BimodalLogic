@@ -107,7 +107,7 @@ next_project_number: 642
             └─ 638 [NOT STARTED] — Split EFGames/GapDetection.lean and the split-point file only...
   └─ 633 [NOT STARTED] — Create Tactic/Attr.lean under the library root from...
     └─ 634 [NOT STARTED] — Merge Syntax/XLanguage/ and Semantics/XLanguage/ into... (see above)
-641 [RESEARCHED] — Provide one worked-example file that an outside reader can...
+641 [PLANNED] — Provide one worked-example file that an outside reader can...
 
 ### Semantics
 
@@ -118,11 +118,12 @@ next_project_number: 642
 ## Tasks
 
 ### 641. Worked example walkthrough for outside readers
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: publication-quality
 - **Dependencies**: Task 639
 - **Research**: [641_worked_example_walkthrough_for_outside_readers/reports/01_worked-example-walkthrough.md]
+- **Plan**: [641_worked_example_walkthrough_for_outside_readers/plans/01_worked-example-walkthrough.md]
 
 **Description**: Provide one worked-example file that an outside reader can open and follow end to end, ahead of the larger Examples expansion. Examples/BimodalProofs.lean, which the README advertises as the demo, is a list of one-line `example := perpetuityN _` applications and shows none of the metatheory. Add FormalSystem/Examples/Walkthrough.lean (name open) that, on concrete formulas: builds a DerivationTree by hand and again with the automation; applies `soundness` to obtain validity; applies `completeness` in the other direction; runs the tableau `isValid` procedure and uses `sound_of_isValid`; exhibits one frame-class-sensitive formula (derivable at Dense, not at Base or ZTime) using the existing independence results; and states one refutation such as notStrongCompletenessZTime with a sentence on what it means. Prose docstrings should carry a reader who knows modal logic but not this codebase. Do not cite Kamp-named declarations, so that the file is unaffected by the later Expressiveness rename. Wire it into the library aggregator, link it from the README as the demo, and keep it sorry-free with the standard three axioms. Acceptance: lake build green; harness green; `#print axioms` on each example shows exactly propext, Classical.choice, Quot.sound or fewer. Task 178 then extends this file rather than starting from BimodalProofs.lean.
 
