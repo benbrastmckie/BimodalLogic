@@ -272,27 +272,27 @@ the strict containment of C3 in C4.
 
 ---
 
-### Phase 4: Ported survival rows and the six failures [NOT STARTED]
+### Phase 4: Ported survival rows and the six failures [COMPLETED]
 
 **Goal**: Land every row whose proof already exists in the archived probes, repaired for the
 current API.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/ConvexConsequence/AxiomSurvival.lean`, importing
+- [x] Create `FormalSystem/Metalogic/ConvexConsequence/AxiomSurvival.lean`, importing
       `Separations` (for the fixtures). Register it in the aggregator and regenerate the root.
-- [ ] Propositional rows: `c3_prop_k`, `c3_prop_s`, `c3_ex_falso`, `c3_peirce`. Argued-only in the
+- [x] Propositional rows: `c3_prop_k`, `c3_prop_s`, `c3_ex_falso`, `c3_peirce`. Argued-only in the
       source table but immediate from the `imp`/`bot` clauses.
-- [ ] S5 rows: `c3_modal_t`, `c3_modal_4`, `c3_modal_b`, `c3_modal_5_collapse`,
+- [x] S5 rows: `c3_modal_t`, `c3_modal_4`, `c3_modal_b`, `c3_modal_5_collapse`,
       `c3_modal_k_dist`. Each now threads the convexity hypothesis of the box clause.
-- [ ] Ported tense rows: `c3_connect_future`, `c3_until_F`, `c3_F_until_equiv`.
-- [ ] `c3_modal_future`, via `c3_box_time_uniform`.
-- [ ] `c3_discrete_propagate_bwd`, ported from the research probe.
-- [ ] Endpoint helper lemmas on `bdd01` (a forward gap at 0, none at 1; a backward gap at 1, none
+- [x] Ported tense rows: `c3_connect_future`, `c3_until_F`, `c3_F_until_equiv`.
+- [x] `c3_modal_future`, via `c3_box_time_uniform`.
+- [x] `c3_discrete_propagate_bwd`, ported from the research probe.
+- [x] Endpoint helper lemmas on `bdd01` (a forward gap at 0, none at 1; a backward gap at 1, none
       at 0), then the six refutations: `refute_C3_serial_future`, `refute_C3_serial_past`,
       `refute_C3_discrete_symm_fwd`, `refute_C3_discrete_symm_bwd`,
       `refute_C3_discrete_propagate_fwd`, `refute_C3_discrete_box_necessity`. The last is
       `c3_box_untl_unsat` applied to a named axiom.
-- [ ] Scoped build.
+- [x] Scoped build.
 
 **Timing**: 2 hours
 
@@ -303,6 +303,12 @@ current API.
 **Scope Hypothesis**: 15 survival theorems and 6 refutations land in this phase. Confirm the count
 against the Goals list at phase close; any row moved to Phase 5 is recorded in the phase notes, not
 dropped.
+
+**Phase notes**: The scope hypothesis's count was checked against the Goals list at phase close
+and is off by one: 14 survival theorems land here, not 15 (4 propositional, 5 S5, 3 ported tense,
+`c3_modal_future`, `c3_discrete_propagate_bwd`), plus the 6 refutations. No row was moved or
+dropped; the seven remaining tense rows are Phase 5's, as planned. `gapFwd` / `gapBwd` are
+declared here as `abbrev`s, since this is the first file to use them.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/ConvexConsequence/AxiomSurvival.lean` - new

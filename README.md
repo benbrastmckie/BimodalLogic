@@ -19,9 +19,9 @@ Whereas dynamical systems theory provides mathematical resources for modeling th
 <!-- BEGIN GENERATED: inventory dir=FormalSystem rows=totals desc=no -->
 | Metric | Count |
 |--------|-------|
-| Live `.lean` files | 518 |
-| Live lines of code | 156,633 |
-| Live comment lines | 95,089 |
+| Live `.lean` files | 519 |
+| Live lines of code | 156,745 |
+| Live comment lines | 95,209 |
 <!-- END GENERATED -->
 
 The table above is generated: `bash scripts/check-module-invariants.sh --emit-inventory`

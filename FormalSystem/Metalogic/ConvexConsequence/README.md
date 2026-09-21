@@ -18,5 +18,6 @@ system is claimed in this directory; that is a completeness question.
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/ConvexConsequence -->
 | File | Lines | Description |
 |------|------:|-------------|
+| `AxiomSurvival.lean` | 283 | One theorem per base-class axiom of TM: C3-valid on every frame (`c3_*`) or refuted on the integer-time frame (`refute_C3_*`). The six failures — both seriality axioms, both discrete-symmetry axioms, forward gap propagation and gap necessity — are all existence assertions about the temporal order |
 | `Separations.lean` | 182 | The integer-time fixtures `NF`, `bdd`, `bdd01`, `totalNF`, and the separations: `F⊤` is C1-valid and refuted under C3 and C4; `lastPoint` (`F⊤ → F G⊥`) is C4-valid and refuted under C3, so the containment of C3 in C4 is strict |
 <!-- END GENERATED -->
