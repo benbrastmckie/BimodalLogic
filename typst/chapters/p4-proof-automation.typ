@@ -58,7 +58,7 @@ It was retired on measurement, not on a design change: because the rules lived i
 
 The deeper reason Aesop's automatic proof reconstruction does not work over these goals at all, even setting reachability aside: `Axiom` is `Prop`-valued while `DerivationTree` is `Type`-valued, and Aesop's reconstruction machinery is built for `Prop`-valued goals (per `Tactics/Search.lean`'s docstring, which is why the live search engines below work at the meta level with `mkAppM` instead).
 
-Both retired modules were moved unchanged to `FormalSystem/Boneyard/RetiredTactics/`; see that directory's `README.md` for the full inventory and the invocation count that retired it.
+Both retired modules were moved unchanged to `Boneyard/RetiredTactics/`; see that directory's `README.md` for the full inventory and the invocation count that retired it.
 
 == Bounded Proof Search <sec:proof-search-engine>
 

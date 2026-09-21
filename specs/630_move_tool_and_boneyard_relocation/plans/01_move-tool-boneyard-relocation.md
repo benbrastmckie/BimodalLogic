@@ -348,7 +348,29 @@ so the atomic move batch carries less.
 
 ---
 
-### Phase 6: The move — tool run, harness re-rooting, and gate widening in one commit [NOT STARTED]
+### Phase 6: The move — tool run, harness re-rooting, and gate widening in one commit [COMPLETED]
+
+**Completion note**: the realized run reproduced Phase 4's dry run exactly (178 / 9 / 134 / 0 / 0,
+one subtree, 5 links re-based of 83 scanned, bare-form audit 241 = 241, 153 files changed). The
+archive moved as 225 renames (115 `R`, 110 `RM`), zero delete+add. All six harness hand edits
+landed; the Scope Hypothesis's "is there a seventh site?" grep found none — every remaining
+`Boneyard` occurrence in the harness is either prose or a directory-*name* prune, which ADR-005's
+rule keeps correct on both sides of the move. Post-move harness: `ALL CHECKS PASSED`, exit 0, with
+C11 still reading **539 archived import lines in 169 files, 8 waived**.
+
+Of the 54 bare-form-only citer files, 53 are byte-identical; the 54th is `README.md`, whose single
+changed bare-form line is the deliberate tree-diagram restructure.
+
+**Deviations**:
+- `--emit-inventory` was run *inside* this batch rather than deferred to Phase 7. Phase 6's own
+  acceptance criterion is that the closing harness run exits 0, and `INV` is red until the archive
+  README regenerates from its new location, so deferring it would have meant committing a
+  knowingly-red batch. Phase 7 still re-runs and re-checks it independently.
+- The tool rewrote its own docstring, turning three worked examples into self-contradictions
+  ("anchored on the FULL old prefix -- `Boneyard`, never the bare token `Boneyard`"). The examples
+  were restored and `scripts/move-modules.py` added to the tool's own exclusion set: its examples
+  describe relocation in general and are not citations of any tree location. This is a real defect
+  the first production use surfaced, which is exactly what a first production use is for.
 
 **Goal**: Relocate the archive and bring every gate with it, atomically. Intermediate per-file
 states are expected red: the harness cannot be green between the widening and the move.
