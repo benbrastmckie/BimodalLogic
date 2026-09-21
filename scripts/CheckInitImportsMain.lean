@@ -49,6 +49,14 @@ def main : IO UInt32 := do
   CoreM.withImportModules #[`FormalSystem] (searchPath := searchPath) (trustLevel := 1024) do
     let env ← getEnv
     let graph := env.importGraph.transitiveClosure
+    -- SCOPE DECISION, RECORDED SO IT IS NOT READ AS AN OVERSIGHT: the ``name.getRoot =
+    -- `FormalSystem`` filter deliberately excludes `BimodalTools.*`. `FormalSystem.Init` is the
+    -- PUBLISHED LIBRARY's root, and this check asserts a property of that library's closure --
+    -- that every module in it reaches the shared preamble. The tooling library imports
+    -- `FormalSystem` and therefore inherits `Init` transitively wherever it needs it, but a
+    -- tooling module is not obliged to reach a library root it is not part of. Widening this
+    -- filter to the tooling was considered when the split landed and rejected on that ground;
+    -- the tooling's own gate is `lake build BimodalTools` plus check `B3`, not this one.
     let noInitGraph :=
       graph.filter
           (fun name imports => name.getRoot = `FormalSystem ∧ !imports.contains `FormalSystem.Init)

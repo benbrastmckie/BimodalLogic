@@ -8,7 +8,10 @@
 #   B0  Boneyard exclusion self-test (the single archive must be found and excluded)
 #   B1  `Boneyard` appears in neither lakefile.toml nor the root aggregator
 #       FormalSystem.lean -- the archive is outside the build description
-#   B2  No live .lean under FormalSystem/ or Tests/ imports `Boneyard.*`
+#   B2  No live .lean under FormalSystem/, Tests/ or BimodalTools/ imports `Boneyard.*`
+#   B3  No .lean under FormalSystem/ imports `BimodalTools.*`, and neither root
+#       aggregator names it -- the library/tooling split is one-way. The converse
+#       direction (BimodalTools -> FormalSystem) is sanctioned and deliberately ungated.
 #   C1  `lake build` exits 0
 #   C2  `#print axioms` for the four flagship theorems matches the recorded baseline
 #   C3  ZERO structural `sorry`, asserted BY CONTENT (never by line number)
@@ -767,6 +770,46 @@ if [ "${#B2_HITS[@]}" -eq 0 ]; then
 else
   fail B2 "${#B2_HITS[@]} live import(s) of the archive"
   for h in "${B2_HITS[@]}"; do note "$h"; done
+fi
+echo
+
+# ---------------------------------------------------------------------------
+# B3: the published library never depends on the tooling library
+#
+# `BimodalTools` carries the dataset / ML / benchmark half that used to live under
+# `FormalSystem/Automation/` and `FormalSystem/Metalogic/Decidability/TraceExport.lean`. It is a
+# `lean_lib` deliberately outside `defaultTargets`, so `lake build` compiles none of it. That
+# exclusion only means anything while the dependence runs ONE WAY, and this check is what says
+# so: a single `import BimodalTools.X` under `FormalSystem/` would drag the whole tooling tree
+# back into the published library's closure and `lake build` would compile it again, silently.
+#
+# THE CONVERSE DIRECTION IS THE SANCTIONED ONE AND MUST NOT BE GATED. `BimodalTools` imports
+# `FormalSystem` freely -- that is how the tooling reaches the syntax, the proof system and the
+# decision procedure it exists to exercise, and it is the whole reason the split is a split
+# rather than a fork. Do not "fix" the asymmetry below by adding the mirror-image grep; the
+# asymmetry IS the invariant.
+#
+# Modelled on B1 + B2, deliberately, rather than on a new shape:
+#   - the B2 half matches on the `import` KEYWORD, so a docstring or README that merely cites a
+#     `BimodalTools/...` path -- of which there are several, correctly -- is not a failure;
+#   - the B1 half scans the two root aggregators for the bare name, where any occurrence at all
+#     would put the tooling back into the library root's closure.
+# ---------------------------------------------------------------------------
+B3_HITS=()
+while IFS= read -r l; do
+  [ -n "$l" ] && B3_HITS+=("$l")
+done < <(grep -rnE '^import[[:space:]]+BimodalTools(\.|[[:space:]]*$)' \
+           FormalSystem --include='*.lean' 2>/dev/null)
+for f in FormalSystem.lean FormalSystem/FormalSystem.lean; do
+  [ -f "$f" ] || continue
+  while IFS= read -r l; do B3_HITS+=("$f:$l"); done < <(grep -n 'BimodalTools' "$f")
+done
+if [ "${#B3_HITS[@]}" -eq 0 ]; then
+  pass B3 "no module under FormalSystem/ imports BimodalTools.*, and neither root aggregator names it"
+else
+  fail B3 "${#B3_HITS[@]} FormalSystem -> BimodalTools dependence(s); the split is one-way"
+  for h in "${B3_HITS[@]}"; do note "$h"; done
+  note "the sanctioned direction is BimodalTools -> FormalSystem; move the caller, not the import"
 fi
 echo
 

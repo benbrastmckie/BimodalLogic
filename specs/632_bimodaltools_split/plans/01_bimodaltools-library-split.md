@@ -256,7 +256,7 @@ any listed check that turns out not to hardcode a root.
 
 ---
 
-### Phase 3: Add the B3 separation invariant and record the C24 decision [NOT STARTED]
+### Phase 3: Add the B3 separation invariant and record the C24 decision [COMPLETED]
 
 **Goal**: The invariant that makes the split enforceable exists and passes *before* the move, so it
 guards the move rather than merely describing its outcome.
