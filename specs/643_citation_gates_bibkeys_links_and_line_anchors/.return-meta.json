@@ -1,0 +1,42 @@
+{
+  "status": "researched",
+  "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/643_citation_gates_bibkeys_links_and_line_anchors/reports/01_citation-gates-bibkeys-links.md",
+      "summary": "Confirms all three gaps (bibkey resolution, docstring markdown links, C20 declaration-name checking) are real and unaddressed, but empirically shows the tree is currently clean on every one (0 dangling bibkeys, 0 broken docstring links, C20 both tiers green); proves --recompute is already idempotent by reproducing task 636's double-shift bug against a disposable clone; and surfaces the declaration-span design question for C20's strengthening with a live worked example."
+    }
+  ],
+  "next_steps": "Run /plan 643 to create an implementation plan covering: (1) C31 bibkey-resolution check + advisory unused-bib report (two citation syntaxes: [key] in Lean, @key in Typst); (2) C32 docstring markdown-link check with a path-shaped filter to avoid false positives from inline math notation; (3) a --selftest addition to reanchor-lean-citations.py covering the double-run-then-recompute scenario, plus a fixture for a citer line edited for content in the same batch (recompute's known blind spot); (4) the C20 declaration-span cross-check mechanism (reusing C15's declaration-location logic), applied to Formula.lean, DerivedAxioms.lean and KPlusFaithful.lean with the residual bare-citation count recorded rather than driven to zero; (5) MODULE_INVARIANTS.md rows for C31/C32 and a REFERENCE_NORMAL_FORM.md pointer/update.",
+  "metadata": {
+    "session_id": "sess_1790002208_59de0b_643",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 3,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 6
+  },
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, a naive `\\[.*?\\]\\(...\\)` markdown-link regex over .lean docstrings produces heavy false positives in the FormalSystem/Metalogic/Expressiveness/Kamp/NfMultiAnchorBridge/ subtree, where inline math notation like `[z_0, z_1](x, y)` (function application written bracket-then-paren) parses as a link. Any future markdown-link-in-docstring scanner over this tree must require the link target to be path-shaped (matches a conservative path-token grammar and contains '/' or a recognized extension) before treating it as a link to resolve.",
+      "category": "PATTERN",
+      "source_artifact": "specs/643_citation_gates_bibkeys_links_and_line_anchors/reports/01_citation-gates-bibkeys-links.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["markdown-link", "docstring", "false-positive", "regex", "Kamp", "NfMultiAnchorBridge"]
+    },
+    {
+      "content": "BimodalLogic's scripts/reanchor-lean-citations.py already has an idempotent --recompute mode (added by task 636) that repairs the documented double-run-of-the-Δ-pass bug: it recomputes each citation by diffing citer/target file content against a base revision and only rewrites a citer line whose content is byte-identical to the base except for the citation digits. Verified empirically (disposable clone, reproduced the double-shift on KPlusFaithful.lean's 72 citations, ran --recompute twice): the second run changes 0 lines. Known blind spot: a citer line that was ALSO content-edited (not just digit-shifted) in the same batch is silently left un-repaired, since the tool refuses rather than guesses.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/643_citation_gates_bibkeys_links_and_line_anchors/reports/01_citation-gates-bibkeys-links.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["reanchor-lean-citations", "recompute", "idempotent", "C20", "citation-gate"]
+    },
+    {
+      "content": "BimodalLogic's typst/ tree cites bibliography entries with Typst's native @key syntax (e.g. @brastmckie2026construction), not the Lean-docstring [key] markdown-link-bracket syntax. Any 'which references.bib entries are cited by nothing' advisory scan across both trees needs two separate regexes unioned together, or it will over-report unused entries for every Typst-only-cited key.",
+      "category": "CONFIG",
+      "source_artifact": "specs/643_citation_gates_bibkeys_links_and_line_anchors/reports/01_citation-gates-bibkeys-links.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["references.bib", "typst", "citation-syntax", "bibkey"]
+    }
+  ]
+}
