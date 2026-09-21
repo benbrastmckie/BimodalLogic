@@ -1,12 +1,20 @@
 #!/usr/bin/env bash
 # check-metalogic-cycles.sh
 #
-# Assert that FormalSystem/Metalogic/ contains exactly ONE directory-level import cycle.
+# TWO INDEPENDENT ASSERTIONS BEHIND ONE EXIT CODE:
+#
+#   A. FormalSystem/Metalogic/ contains exactly ONE directory-level import cycle.
+#   B. The library-wide UPWARD import set equals a recorded 7-line allowlist.
+#
+# Neither subsumes the other: A is a single-subtree cycle claim, B is a whole-library layer-order
+# claim. The script exits 0 only when both hold, and prints the result of both before exiting.
 #
 # WHY THIS EXISTS: "Metalogic/ has exactly one directory-level cycle" was, until this script
 # landed, an argued claim -- re-derived by hand from a grep every time someone needed to trust it,
 # and recorded in Metalogic/README.md as prose that could and did go stale. The claim is
-# mechanical, so it is checked mechanically. `Metalogic/README.md` cites this script.
+# mechanical, so it is checked mechanically. `Metalogic/README.md` cites this script. The layer
+# order added in assertion B was in exactly the same position: ORGANISATION.md stated a table
+# that the tree had not matched for some time, and nothing noticed.
 #
 # WHAT A "DIRECTORY-LEVEL EDGE" IS: for every live .lean file at
 # `Metalogic/<Src>/...`, every `import FormalSystem.Metalogic.<Dst>...` where `<Dst>` names a real
@@ -24,13 +32,37 @@
 #      archive is `Boneyard/`, outside this subtree), but the guard is cheap and the
 #      repository has had a nested archive before.
 #
+# ASSERTION B -- THE LAYER-ORDER ALLOWLIST:
+#   It reads the layer table and the import graph from the SAME places the measurement script
+#   does -- `LAYERS` in scripts/measure-refactor-partitions.py, loaded by importlib so there is
+#   exactly one copy of that table in the repository, and scripts/lib/import_graph.py's leading-
+#   import parser rather than assertion A's own regex (a bare `^import` grep additionally matches
+#   usage examples inside module docstrings; see that module's header).
+#
+#   Sibling aggregators (`FormalSystem/<X>.lean` beside `<X>/`, at any depth) are excluded as edge
+#   SOURCES for the same reason assertion A excludes them: an aggregator's whole job is to import
+#   its own directory's contents, so counting it as a source manufactures findings out of a
+#   convention artifact. They are NOT excluded as targets.
+#
+#   It asserts the upward set EQUALS the allowlist -- it fails on a SURPLUS and on a SHORTFALL
+#   alike, in the same spirit as assertion A's "zero cycles is a finding, not a pass" branch. A
+#   shortfall means the work that empties the allowlist has landed and this list is now stale,
+#   which someone should confirm rather than have silently absorbed.
+#
+#   The 7 allowlisted lines all come from FormalSystem/Syntax/MinusLanguage/AxiomDischarge.lean.
+#   THE WORK THAT EMPTIES THEM: docs/development/PUBLICATION_REFACTOR.md Phase 5, the
+#   {Plus,Minus,Star}Language directory merges, which move that file out of `Syntax/` entirely.
+#   Until then the lines are recorded, not excused.
+#
 # NOT WIRED INTO check-module-invariants.sh, deliberately: that harness is the phase gate for the
-# whole tree, and this is a single-subtree structural assertion with its own exit code. Run it
+# whole tree, and these are standalone structural assertions with their own exit code. Run it
 # directly. It is catalogued in docs/development/MODULE_INVARIANTS.md and cited by
 # FormalSystem/Metalogic/README.md.
 #
-# Exit codes: 0 exactly one cycle; 1 any other count (including zero -- a zero would mean the
-# documented BXCanonical <-> WeakCanonical pair vanished, which is a finding, not a silent pass).
+# Exit codes: 0 both assertions hold; 1 either fails. Assertion A fails on any cycle count other
+# than one (including zero -- a zero would mean the documented BXCanonical <-> WeakCanonical pair
+# vanished, which is a finding, not a silent pass). Assertion B fails on any surplus or shortfall
+# against the allowlist.
 
 set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -39,7 +71,8 @@ cd "$ROOT" || exit 1
 BASE="FormalSystem/Metalogic"
 [ -d "$BASE" ] || { echo "FAIL  no $BASE directory under $ROOT"; exit 1; }
 
-python3 - "$BASE" <<'PYEOF'
+CYCLES_STATUS=0
+python3 - "$BASE" <<'PYEOF' || CYCLES_STATUS=$?
 import os, re, sys
 
 base = sys.argv[1]
@@ -94,3 +127,99 @@ if n == 0:
     print("      pair is expected to be present. Confirm it was broken deliberately.")
 sys.exit(1)
 PYEOF
+
+# ---------------------------------------------------------------------------
+# Assertion B: the library-wide upward import set equals the recorded allowlist
+# ---------------------------------------------------------------------------
+
+echo
+LAYERS_STATUS=0
+python3 - <<'PYEOF' || LAYERS_STATUS=$?
+import importlib.util
+import os
+import sys
+
+root = os.getcwd()
+sys.path.insert(0, os.path.join(root, "scripts", "lib"))
+from import_graph import ImportGraph  # noqa: E402
+
+# One copy of the layer table in the repository, not two.  The measurement
+# script's filename is not an importable identifier, so it is loaded by path.
+_spec = importlib.util.spec_from_file_location(
+    "_measure_refactor_partitions",
+    os.path.join(root, "scripts", "measure-refactor-partitions.py"),
+)
+_measure = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_measure)
+LAYERS, LIB, layer_of = _measure.LAYERS, _measure.LIB, _measure.layer_of
+
+# The recorded allowlist.  Owner of the work that empties it: PUBLICATION_REFACTOR.md
+# Phase 5 (the {Plus,Minus,Star}Language merges), which moves AxiomDischarge.lean out
+# of Syntax/.  Derived by running `measure-refactor-partitions.py upward-edges`, not
+# hand-copied from a plan.
+_DISCHARGE = f"{LIB}.Syntax.MinusLanguage.AxiomDischarge"
+ALLOWLIST = frozenset(
+    (_DISCHARGE, f"{LIB}.Theorems.{t}")
+    for t in (
+        "Combinators",
+        "DedekindDerived",
+        "DeductionTheorem",
+        "DiscreteUnfolding",
+        "GeneralizedNecessitation",
+        "Propositional.Core",
+        "TemporalDerived",
+    )
+)
+
+g = ImportGraph()
+
+
+def is_sibling_aggregator(module):
+    """``FormalSystem.Metalogic.Core`` with ``Metalogic/Core/`` beside it -- excluded
+    as an edge source (see this script's header)."""
+    path = g.modules.get(module)
+    return bool(path) and os.path.isdir(path[: -len(".lean")])
+
+
+measured = set()
+for src in g.modules:
+    if not src.startswith(LIB + "."):
+        continue
+    ls = layer_of(src)
+    if ls is None or is_sibling_aggregator(src):
+        continue
+    for tgt in g.edges[src]:
+        lt = layer_of(tgt)
+        if lt is not None and lt > ls:
+            measured.add((src, tgt))
+
+surplus = sorted(measured - ALLOWLIST)
+shortfall = sorted(ALLOWLIST - measured)
+
+for s, t in surplus:
+    print(f"SURPLUS    {s} -> {t}")
+for s, t in shortfall:
+    print(f"SHORTFALL  {s} -> {t}")
+
+if not surplus and not shortfall:
+    print(f"PASS  upward import set is exactly the recorded {len(ALLOWLIST)} line(s), all from")
+    print(f"      {_DISCHARGE}")
+    sys.exit(0)
+
+print(f"FAIL  upward import set is not the recorded allowlist "
+      f"({len(surplus)} surplus, {len(shortfall)} shortfall)")
+if surplus:
+    print("      A surplus is a new upward edge. Relocate the module, or -- if the edge is")
+    print("      genuinely correct -- change the layer table in")
+    print("      scripts/measure-refactor-partitions.py and ORGANISATION.md together.")
+if shortfall:
+    print("      A shortfall is a finding, not a pass: it means an allowlisted line was removed")
+    print("      (PUBLICATION_REFACTOR.md Phase 5 is the work that does this). Confirm it landed")
+    print("      deliberately, then delete the entry from ALLOWLIST above.")
+sys.exit(1)
+PYEOF
+
+if [ "$CYCLES_STATUS" -eq 0 ] && [ "$LAYERS_STATUS" -eq 0 ]; then
+  exit 0
+fi
+exit 1

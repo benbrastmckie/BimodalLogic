@@ -18,10 +18,11 @@ Usage (run from the repository root):
 The four measurements:
 
   upward-edges             Every import that runs *up* the layer stack recorded
-                           in ORGANISATION.md (Syntax/ProofSystem/ForMathlib=0,
-                           Semantics=1, Metalogic=2, Theorems=3, Automation=4,
-                           Examples=5), grouped by source and target directory,
-                           with the Theorems <-> Metalogic pair called out.
+                           in ORGANISATION.md (Syntax/ProofSystem/ForMathlib/
+                           Init/Tactic=0, Semantics=1, Theorems=2,
+                           Metalogic/Automation=3, Examples=4), grouped by source
+                           and target directory, with the Theorems <-> Metalogic
+                           pair called out.
   weakcanonical-partition  Each module under Metalogic/WeakCanonical/ classified
                            by whether BXCanonical is in its transitive closure;
                            the proposed Expressiveness set (EXPRESSIVENESS_SET
@@ -42,28 +43,35 @@ only when the Expressiveness set has no edge into the residual WeakCanonical
 set and none into BXCanonical.  Never weaken it; if it fails, the offending
 edges are the work, and the relocation has to be dependency-first.
 
-Measured on commit 220e94ea4 (the tree the programme was written against):
-  upward-edges              16 import lines from the five lower layers into
-                            Automation, 11 of them into the attribute-only
-                            files TruthNormAttr and LemmaDB (the programme's
-                            source analysis had said 17 and 12; the script is
-                            right).  Those two files, and NormalizationAttr
-                            beside them, no longer exist: their five
-                            declarations were merged into
-                            FormalSystem/Tactic/Attr.lean, which Init.lean
-                            imports, and all 11 lines were deleted outright;
-                            4 Theorems files import
-                            Metalogic.Core.DeductionTheorem; 29 Metalogic files
-                            import Theorems across 47 lines
+Measured on the tree as it stands after the upward-edge relocation:
+  upward-edges              7 import lines in total, all from
+                            Syntax/MinusLanguage/AxiomDischarge.lean into
+                            Theorems/*; 0 into Automation from any of the four
+                            acceptance source directories (Syntax, Semantics,
+                            ProofSystem, Theorems); 0 Theorems files import
+                            Metalogic; 29 Metalogic files import Theorems.
+                            scripts/check-metalogic-cycles.sh asserts that the
+                            upward set EQUALS those 7 lines.
   weakcanonical-partition   Expressiveness 141 files / 104,087 lines,
                             residual 38 files / 28,472 lines, 0 leaking edges;
                             BXCanonical-free by closure: 150 of 179
   automation-partition      9 library-needed modules (3,419 lines), 4
                             user-facing tactic modules (1,238), 25 tooling
                             modules including TraceExport (14,747)
-  namespace-audit           279 equal-or-descendant / 187 ancestor / 24
-                            unrelated / 43 with no namespace; 15 of the 24 are
-                            the {Plus,Minus,Star}Language files (not 17)
+  namespace-audit           24 unrelated, two of them recorded exceptions whose
+                            own module docstrings explain them
+                            (Theorems.DeductionTheorem, namespace
+                            Metalogic.Core; Tactic.Meta, namespace Automation);
+                            15 of the 24 are the {Plus,Minus,Star}Language files
+
+For the tree the programme was originally written against (commit 220e94ea4),
+upward-edges reported 16 lines from the then-five lower layers into Automation,
+11 of them into the attribute-only files TruthNormAttr and LemmaDB, and 4
+Theorems files importing Metalogic.Core.DeductionTheorem.  Those three attribute
+modules no longer exist -- their five declarations were merged into
+FormalSystem/Tactic/Attr.lean, which Init.lean imports, and all 11 lines were
+deleted outright -- and DeductionTheorem.lean now lives under Theorems/.
+
 Where a document and this output disagree, this output is right; the document
 records the discrepancy rather than the other way round.
 """
@@ -78,15 +86,28 @@ from import_graph import ImportGraph, first_namespace  # noqa: E402
 
 LIB = "FormalSystem"
 
-# ORGANISATION.md's layer table.  A top-level module such as `FormalSystem.Init`
-# or `FormalSystem.MainResults` has no layer and never contributes an edge.
+# ORGANISATION.md's layer table.  A top-level module such as `FormalSystem.MainResults`
+# has no layer and never contributes an edge.
+#
+# This is the MEASURED order, not an aspirational one.  Two entries are
+# load-bearing and are easy to get wrong:
+#
+#   * `Tactic: 0`.  Without it `layer_of` returns None for every `Tactic` module
+#     and the directory contributes no edge in either direction, so the layer-0
+#     placement of the attribute declarations would be invisible here.
+#   * `Theorems` (2) strictly BELOW `Metalogic` (3), and `Automation` (3) BESIDE
+#     `Metalogic` rather than above it.  Both follow the measurement: 50 Metalogic
+#     modules import Theorems and none of the reverse remains, and the surviving
+#     `Decidability -> {ProofSearch, Normalization}` lines are library automation
+#     called from the decision procedure, which is an intra-layer edge, not an
+#     upward one.  See ORGANISATION.md, which states the same table in prose.
 LAYERS = {
-    "Syntax": 0, "ProofSystem": 0, "ForMathlib": 0, "Init": 0,
+    "Syntax": 0, "ProofSystem": 0, "ForMathlib": 0, "Init": 0, "Tactic": 0,
     "Semantics": 1,
-    "Metalogic": 2,
-    "Theorems": 3,
-    "Automation": 4,
-    "Examples": 5,
+    "Theorems": 2,
+    "Metalogic": 3,
+    "Automation": 3,
+    "Examples": 4,
 }
 
 WEAK = f"{LIB}.Metalogic.WeakCanonical"
@@ -157,12 +178,27 @@ def measure_upward_edges(g):
     classes = {}
     for src, tgt in edges:
         classes.setdefault((top_dir(src), top_dir(tgt)), []).append((src, tgt))
+    # The four ACCEPTANCE source directories -- Syntax, Semantics, ProofSystem,
+    # Theorems -- are all strictly below Automation (3) in the table above, so an
+    # import line from any of them into Automation is visible in `edges` and is
+    # counted here.  `Metalogic` is BESIDE Automation, so a Metalogic -> Automation
+    # line is intra-layer, absent from `edges`, and therefore uncounted; it stays
+    # in this tuple so that a future table change that moves Metalogic back down
+    # starts counting those lines again instead of silently dropping them.
+    #
+    # DO NOT "simplify" this by deriving the source set from LAYERS.  Reading the
+    # acceptance directories off an already layer-filtered list is exactly how a
+    # renumber -- moving Automation beside Theorems, say -- could make a quarter of
+    # the acceptance criterion read zero without a single file moving.
     into_automation = [(s, t) for s, t in edges if top_dir(t) == "Automation"
                        and top_dir(s) in ("Syntax", "Semantics", "ProofSystem", "Theorems", "Metalogic")]
     # Both directions of the Theorems <-> Metalogic pair are computed directly
-    # rather than read off `edges`: the table puts Metalogic (2) below Theorems
-    # (3), so only Metalogic -> Theorems counts as "upward" above, while the
-    # reverse direction is what the table calls downward and is invisible there.
+    # rather than read off `edges`.  The table puts Theorems (2) below Metalogic
+    # (3), so Metalogic -> Theorems is the DOWNWARD direction and is invisible in
+    # `edges`, while Theorems -> Metalogic is what `edges` would show.  That
+    # asymmetry is the opposite way round from the table this script carried
+    # before the relocation, which is exactly why both directions are computed
+    # here rather than being read off a list whose contents flip with a renumber.
     theorems_to_metalogic = sorted({s for s in lib_modules if top_dir(s) == "Theorems"
                                     for t in g.edges[s] if top_dir(t) == "Metalogic"})
     metalogic_to_theorems = sorted({s for s in lib_modules if top_dir(s) == "Metalogic"
@@ -179,7 +215,8 @@ def measure_upward_edges(g):
 def print_upward_edges(r):
     print("## Upward edges (source layer below target layer per ORGANISATION.md)\n")
     print(f"Total upward import lines: {r['edge_count']} "
-          f"({r['into_automation_line_count']} from the five lower layers into Automation)\n")
+          f"({r['into_automation_line_count']} from the four acceptance source "
+          f"directories plus Metalogic into Automation)\n")
     for cls, pairs in r["classes"].items():
         print(f"### {cls} ({len(pairs)} lines)\n")
         print(md_table(["Source module", "Imports"], pairs))

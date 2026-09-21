@@ -380,7 +380,7 @@ them in the listed order (1, 3, 4); true parallel execution requires separate wo
 
 ---
 
-### Phase 5: Correct LAYERS and install the layer-order assertion [NOT STARTED]
+### Phase 5: Correct LAYERS and install the layer-order assertion [COMPLETED]
 
 - **Goal:** Make the measured layer order the recorded one, and turn it into a mechanical
   assertion that fails on surplus and shortfall alike.

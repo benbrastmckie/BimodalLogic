@@ -325,19 +325,37 @@ line.
 ## Sibling scripts, not part of this harness
 
 `scripts/check-metalogic-cycles.sh` is a standalone structural check with its own exit code,
-deliberately not wired into `check-module-invariants.sh`. It enumerates the directory-level import
-edges inside `FormalSystem/Metalogic/` — excluding sibling aggregators as edge *sources*, since an
-aggregator importing its own directory is a convention artifact rather than a design cycle — and
-asserts the cycle count is exactly **1**, the documented `BXCanonical` <-> `WeakCanonical` pair:
+deliberately not wired into `check-module-invariants.sh`. It makes **two independent assertions
+behind one exit code**, and neither subsumes the other:
+
+**A — the cycle count.** It enumerates the directory-level import edges inside
+`FormalSystem/Metalogic/` — excluding sibling aggregators as edge *sources*, since an aggregator
+importing its own directory is a convention artifact rather than a design cycle — and asserts the
+cycle count is exactly **1**, the documented `BXCanonical` <-> `WeakCanonical` pair.
+
+**B — the layer order.** It computes the library-wide *upward* import set (an import whose target
+directory sits at a higher layer than its source) against the `LAYERS` table in
+`scripts/measure-refactor-partitions.py`, which it loads by path so there is exactly one copy of
+that table in the repository, and reads the graph through `scripts/lib/import_graph.py`'s
+leading-import parser rather than assertion A's own regex. It asserts that set **equals** a
+recorded allowlist of 7 lines, all from
+`FormalSystem/Syntax/MinusLanguage/AxiomDischarge.lean` into `Theorems/*`. Sibling aggregators are
+excluded as sources here too.
 
 ```bash
-bash scripts/check-metalogic-cycles.sh   # prints every edge in the cycle; exit 1 on any other count
+bash scripts/check-metalogic-cycles.sh   # prints both results; exit 1 if either fails
 ```
 
-It exists because that count used to be prose in
-[`FormalSystem/Metalogic/README.md`](../../FormalSystem/Metalogic/README.md), re-derived by hand
-whenever someone needed to trust it, and it went stale. Zero cycles is a failure too, not a pass:
-the pair is expected to be present, so its disappearance is a finding.
+Both assertions exist for the same reason: each claim used to be prose that nothing checked.
+The cycle count lived in [`FormalSystem/Metalogic/README.md`](../../FormalSystem/Metalogic/README.md)
+and the layer order in [`ORGANISATION.md`](../../ORGANISATION.md); both were re-derived by hand
+whenever someone needed to trust them, and both went stale.
+
+**Neither assertion treats a shrinking finding as a pass.** Zero cycles is a failure: the
+`BXCanonical` <-> `WeakCanonical` pair is expected to be present, so its disappearance is a
+finding. Likewise B fails on a *shortfall* as well as a surplus — a missing allowlist line means
+the work that removes it (PUBLICATION_REFACTOR.md Phase 5, the `{Plus,Minus,Star}Language` merges,
+which move `AxiomDischarge.lean` out of `Syntax/`) has landed and the allowlist is now stale.
 
 `scripts/measure-refactor-partitions.py` is the second sibling, with the same posture: not wired
 into the harness, run directly, its own exit code. It regenerates every structural count the
