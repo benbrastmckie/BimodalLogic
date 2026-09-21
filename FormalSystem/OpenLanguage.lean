@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.OpenLanguage.Formula
 import FormalSystem.OpenLanguage.OpenClasses
 import FormalSystem.OpenLanguage.OpenTruth
+import FormalSystem.OpenLanguage.OpenValidity
 
 /-!
 # `FormalSystem.OpenLanguage` — the language L^▷: L⁺ plus the open-future and open-past modals
@@ -46,6 +47,9 @@ library theorems rather than leaving it to be rediscovered.
 - `OpenLanguage.OpenTruth` — `OpenTruthAt`, the truth recursion whose last two clauses are the
   manuscript's clauses for `▷` and `◁`; truth-level conservativity over L⁺
   (`openTruthAt_ofPlus`); pointwise S5 for each new operator and the strength ordering
+- `OpenLanguage.OpenValidity` — `TaskFrame.OpenValidOn`, `OpenValidOnFrames`, `OpenValidIn`,
+  `OpenValid`; semantic conservativity of L^▷ over L⁺ at every frame class; S5 for `▷` and for
+  `◁`, and the strength ordering `□ ⟹ ⊡ ⟹ ▷`, `⊡ ⟹ ◁`, as validities
 
 ## Design decisions
 

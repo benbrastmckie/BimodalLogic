@@ -348,28 +348,28 @@ over L⁺, and the pointwise S5 and ordering facts.
 
 ---
 
-### Phase 4: Validity, conservativity, S5 and the strength ordering [NOT STARTED]
+### Phase 4: Validity, conservativity, S5 and the strength ordering [COMPLETED]
 
 **Goal**: The validity layer for L^▷, conservativity over L⁺ at every validity notion, and the
 positive half of deliverable (5).
 
 **Tasks**:
-- [ ] Create `FormalSystem/OpenLanguage/OpenValidity.lean` on the `PlusValidity.lean` template:
+- [x] Create `FormalSystem/OpenLanguage/OpenValidity.lean` on the `PlusValidity.lean` template:
   `instance : PointTruth OpenFormula`; then, in a `namespace FormalSystem.Semantics` block,
   `def TaskFrame.OpenValidOn`; back in `FormalSystem.OpenLanguage`, `OpenValidOnFrames`,
   `OpenValidIn`, `OpenValid`. **Own `def`s, never `abbrev`, bodies never delegating to
   `Generic*`** — only theorem bodies delegate. The file's *first* `namespace` must be
   `FormalSystem.OpenLanguage`.
-- [ ] `OpenValidOnFrames.mono`, `OpenValidIn.mono`, `OpenValid.of_forall`, `OpenValid.apply`,
+- [x] `OpenValidOnFrames.mono`, `OpenValidIn.mono`, `OpenValid.of_forall`, `OpenValid.apply`,
   `OpenValid.of_not`, delegating to the generic layer.
-- [ ] Conservativity: `openValidOn_ofPlus_iff`, `openValidOnFrames_ofPlus_iff`,
+- [x] Conservativity: `openValidOn_ofPlus_iff`, `openValidOnFrames_ofPlus_iff`,
   `openValidIn_ofPlus_iff`, `openValid_ofPlus_iff`, from `openTruthAt_ofPlus`.
-- [ ] S5 as validities: `openValid_ofut_k`, `openValid_ofut_t`, `openValid_ofut_four`,
+- [x] S5 as validities: `openValid_ofut_k`, `openValid_ofut_t`, `openValid_ofut_four`,
   `openValid_ofut_five` and the four `opast` mirrors, each `OpenValid.of_forall` over the Phase 3
   pointwise lemma.
-- [ ] Ordering as validities: `openValid_stab_of_box`, `openValid_ofut_of_stab`,
+- [x] Ordering as validities: `openValid_stab_of_box`, `openValid_ofut_of_stab`,
   `openValid_opast_of_stab`.
-- [ ] Add `"OpenValidity": 1`, the aggregator import, the README row; regenerate the root.
+- [x] Add `"OpenValidity": 1`, the aggregator import, the README row; regenerate the root.
 
 **Timing**: 1.5 hours
 
