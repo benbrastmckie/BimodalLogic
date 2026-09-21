@@ -1,27 +1,17 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 2,
-  "summary": "Research report written. The open-future/open-past relations already exist as AgreeUpTo/AgreeFrom in PlusPasting.lean; FrameOver.ofStep supplies the finite refutation frame with every TaskFrame field; two green probes compile the HN separating pair against the live PlusTruthAt and a full FrameOver.rev time reversal (rev rev = id by rfl). Recommendation: an extension language OpenFormula (L+ plus ofut/opast) in Semantics/OpenLanguage/ with one sibling aggregator, using the TruthClauses/ValidityLayer extension contracts; five phases proposed.",
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 9,
+  "summary": "Plan written: eight sequential phases, 12.5 hours. Decision D1 adopts the extension language OpenFormula (L+ plus ofut/opast) over semantic operators; decision D2 sites it at FormalSystem/OpenLanguage/ (flat namespace FormalSystem.OpenLanguage) per the post-merge layout convention, with the required LANGUAGE_FILE_LAYERS rows planned. Both research probes were re-compiled green against the relocated tree (probe 02 needs `open FormalSystem.PlusLanguage`; AgreeUpTo now lives in that namespace). The 31-theorem Lean Challenge block type-checks standalone and lean-challenge-snapshot.sh --dry-run exits 0 in the default locale.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/625_formalize_open_future_open_past_modalities/reports/01_open-future-open-past-modalities.md",
-      "summary": "Research report: live-definition inventory, manuscript extraction, compiled probe results, argued design decision, module layout, phase decomposition, gate obligations."
-    },
-    {
-      "type": "implementation",
-      "path": "specs/625_formalize_open_future_open_past_modalities/probes/01_sink-frame-hn-refutation.lean",
-      "summary": "Green probe: three-state frame via FrameOver.ofStep, HN-stab refutation against PlusTruthAt, NF fallback, open-future validity in pure and mixed form, open-not-stab witness."
-    },
-    {
-      "type": "implementation",
-      "path": "specs/625_formalize_open_future_open_past_modalities/probes/02_frame-reversal.lean",
-      "summary": "Green probe: FrameOver.rev with all four axiom fields, rev rev = id by rfl, revHist, AgreeUpTo <-> AgreeFrom under reversal."
+      "type": "plan",
+      "path": "specs/625_formalize_open_future_open_past_modalities/plans/01_open-future-open-past-modalities.md",
+      "summary": "Eight-phase implementation plan with argued design and siting decisions, per-phase gates, and 31 challenge-pinned theorem statements."
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 8,
   "blockers": [],
-  "next_action_hint": "Dispatch the plan phase; the report's Recommendations section carries the proposed module layout, statement names, and five-phase decomposition."
+  "next_action_hint": "Dispatch implement, Phase 1. The task's state.json file_scope predates decision D2 and still names FormalSystem/Semantics/OpenLanguage* paths; the live scope is the plan's per-phase Files-to-modify lists (FormalSystem/OpenLanguage/**, scripts/measure-refactor-partitions.py, generated FormalSystem.lean, READMEs, tests, C14 pins)."
 }

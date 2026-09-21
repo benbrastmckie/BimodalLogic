@@ -95,7 +95,7 @@ next_project_number: 647
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
-625 [RESEARCHED] — Formalize the manuscript's open-future and open-past...
+625 [PLANNED] — Formalize the manuscript's open-future and open-past...
   └─ 628 [RESEARCHED] — Investigate expressive extensions that make recurrence and...
 645 [NOT STARTED] — Port the translation-product proof device from the task 624...
 
@@ -244,11 +244,12 @@ POST-RELOCATION REVISION (2026-09-21, after tasks 630 and 632-636 landed). Depen
 ---
 
 ### 625. Formalize open future open past modalities
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 638
 - **Research**: [625_formalize_open_future_open_past_modalities/reports/01_open-future-open-past-modalities.md]
+- **Plan**: [625_formalize_open_future_open_past_modalities/plans/01_open-future-open-past-modalities.md]
 
 **Description**: Formalize the manuscript's open-future and open-past modalities and machine-check, in the library, that the stability modal is NOT Ockhamist historical necessity while the open-future modality is.
 
