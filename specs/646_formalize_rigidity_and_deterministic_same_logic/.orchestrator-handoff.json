@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 16,
+  "summary": "Research report written: R1 (deterministic same-logic) and R2 (rigidity) are both fully proved in lean_run_code scratch against the current tree with standard axioms only; the report carries the verbatim proof text, the corrections to the source reports, and the plumbing checklist.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/646_formalize_rigidity_and_deterministic_same_logic/reports/01_rigidity-same-logic-research.md",
+      "summary": "R1 and R2 both proved sorry-free in scratch against the current tree (proof text in appendix); records the stale A.1 helper fix, the Seriality refinement to the rigidity statement, compiled sharpness witnesses, siting against the existing ValidDetIn vocabulary, and the C15 anchor constraint."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": []
+}

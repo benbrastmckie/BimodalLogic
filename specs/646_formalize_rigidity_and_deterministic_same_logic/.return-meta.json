@@ -1,0 +1,29 @@
+{
+  "status": "researched",
+  "dispatch_seq": 16,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/646_formalize_rigidity_and_deterministic_same_logic/reports/01_rigidity-same-logic-research.md",
+      "summary": "R1 and R2 both proved sorry-free in scratch against the current tree (proof text in appendix); records the stale A.1 helper fix, the Seriality refinement to the rigidity statement, compiled sharpness witnesses, siting against the existing ValidDetIn vocabulary, and the C15 anchor constraint."
+    }
+  ],
+  "next_steps": "Plan task 646: four phases (SameLogic.lean; Rigidity.lean core; sharpness witnesses; READMEs, inventory, full gate). Phases 1 and 2 are independent.",
+  "proposed_file_scope": [
+    "FormalSystem/Semantics/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "docs/theorem-index.md"
+  ],
+  "modified_files": [],
+  "metadata": {
+    "session_id": "sess_1790018097_6c1579_646",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "research",
+      "lean-research-agent"
+    ],
+    "findings_count": 6
+  }
+}

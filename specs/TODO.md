@@ -89,7 +89,7 @@ next_project_number: 651
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-646 [RESEARCHING] — Machine-check the two cheap MF-correspondence results, R1 and...
+646 [RESEARCHED] — Machine-check the two cheap MF-correspondence results, R1 and...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -230,10 +230,11 @@ ACCEPTANCE. typst compile --root .. BimodalReference.typ with zero errors. scrip
 ---
 
 ### 646. Formalize rigidity and deterministic same logic
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 568, Task 628
+- **Research**: [646_formalize_rigidity_and_deterministic_same_logic/reports/01_rigidity-same-logic-research.md]
 
 **Description**: Machine-check the two cheap MF-correspondence results, R1 and R2, split out of task 543 so that they are not held behind that task's ShiftSet-reconciliation dependency. Land real proofs; no sorry, no new axiom. SOURCE MATERIAL, outside this repository, read before starting: /home/benjamin/Philosophy/Papers/PossibleWorlds/specs/archive/136_rewrite_mf_paragraph_frame_correspondence/reports/03_worlds-topological-categorical-characterization.md (rigidity, section 4.3.6), /home/benjamin/Philosophy/Papers/PossibleWorlds/specs/archive/136_rewrite_mf_paragraph_frame_correspondence/reports/04_dense-correspondent-and-rigidity.md (the refinement and scope limits), and /home/benjamin/Philosophy/Papers/PossibleWorlds/specs/archive/136_rewrite_mf_paragraph_frame_correspondence/reports/05_lean-verification-and-formalization-program.md (THE ROADMAP: elaborated statements, effort estimates, Mathlib dependencies, and Appendix A.1's scratch elaboration of R1). Re-verify every claim those reports make about this tree before relying on it: they were checked against an earlier layout, and modules have since moved.
 
