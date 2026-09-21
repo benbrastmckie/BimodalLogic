@@ -52,6 +52,7 @@ Not gates — invoked on demand to (re)generate or validate the training/benchma
 |--------|---------|
 | `lake_targets.py` | The single reader every script and CI step uses to enumerate the Lake targets declared in `lakefile.toml`, applying Lake's own defaults. |
 | `measure-refactor-partitions.py` | Regenerates every structural-partition number cited in `docs/development/PUBLICATION_REFACTOR.md` and ADR-011 from the live tree. |
+| `move-modules.py` | Relocates Lean modules from one auditable `old.module -> new.module` mapping, rewriting imports, dotted and slash citations, namespace/FQN occurrences, the axiom baselines and relative links in moved markdown, then performing the `git mv` and running the invariant harness. |
 | `readme-inventory.sh` | Deprecated shim: module-inventory tables are now machine-owned via a `<!-- BEGIN GENERATED: inventory dir=... -->` block rather than pasted in by hand. |
 
 ## `lib/` helper modules

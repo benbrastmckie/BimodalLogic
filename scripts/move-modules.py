@@ -315,6 +315,60 @@ def apply_regex(line: str, mappings: list[Mapping], attr: str,
     return line, total
 
 
+LINK_RE = re.compile(r"(?<=\]\()([^)\s]+)(?=[)\s])")
+
+NON_PATH_PREFIXES = ("http://", "https://", "ftp://", "mailto:", "#", "/")
+
+
+def map_repo_path(path: str, mappings: list[Mapping]) -> str:
+    """Apply the path mapping to a repo-relative path, longest prefix first."""
+    for mapping in mappings:
+        old = mapping.old_path_slash
+        if path == old or path.startswith(old + "/"):
+            return mapping.new_path_slash + path[len(old):]
+    return path
+
+
+def rebase_links(path: str, text: str, mappings: list[Mapping],
+                 stats: dict[str, int]) -> str:
+    """Class 7 -- re-base relative links in a markdown file the mapping moves.
+
+    Resolve-map-recompute, never `../`-counting: resolve the target against the
+    file's OLD directory to a repo-relative path, apply the path mapping to that
+    path, then recompute the relative path from the file's NEW directory. A
+    heuristic that merely strips one `../` per level of depth change gets the
+    cases wrong where the target itself stays put but the file's distance to the
+    repository root changes in the other direction -- and those links generally
+    sit outside the docs/ scope any link gate covers, so nothing would catch it.
+    """
+    old_dir = os.path.dirname(path)
+    new_dir = os.path.dirname(map_repo_path(path, mappings))
+
+    def replace(match: re.Match[str]) -> str:
+        raw = match.group(1)
+        target, sep, fragment = raw.partition("#")
+        if not target or target.startswith(NON_PATH_PREFIXES):
+            stats["skipped"] += 1
+            return raw
+        trailing = "/" if target.endswith("/") else ""
+        resolved = os.path.normpath(os.path.join(old_dir, target))
+        if not os.path.exists(resolved):
+            # Not a link to anything in this tree: either an already-broken link
+            # or a `](a)`-shaped regex false positive. Either way, not ours to
+            # rewrite -- a relocation is not the place to repair a broken link.
+            stats["skipped"] += 1
+            return raw
+        recomputed = rel(os.path.relpath(map_repo_path(rel(resolved), mappings),
+                                         new_dir or "."))
+        if recomputed + trailing == target:
+            stats["unchanged"] += 1
+            return raw
+        stats["rebased"] += 1
+        return recomputed + trailing + sep + fragment
+
+    return LINK_RE.sub(replace, text)
+
+
 def move_trees(mappings: list[Mapping], dry_run: bool) -> tuple[list[str], int]:
     """Class 6 -- relocate each mapped subtree with a single `git mv`.
 
@@ -372,6 +426,7 @@ def run(args: argparse.Namespace) -> int:
 
     counts: dict[str, int] = {"import": 0, "dotted": 0, "slash": 0,
                               "namespace": 0, "baseline": 0}
+    link_stats: dict[str, int] = {"rebased": 0, "unchanged": 0, "skipped": 0}
     files: dict[str, set[str]] = {}
     bare_before = bare_after = 0
     bare_files: set[str] = set()
@@ -383,7 +438,15 @@ def run(args: argparse.Namespace) -> int:
         text = read_text(path)
         if text is None:
             continue
-        new_text = rewrite_text(path, text, mappings, counts, files,
+        # Class 7 runs FIRST, while the file is still at its old location: every
+        # link target is resolved relative to where the file is now.
+        if path.endswith(".md") and map_repo_path(path, mappings) != path:
+            text_for_rewrite = rebase_links(path, text, mappings, link_stats)
+            if text_for_rewrite != text:
+                files.setdefault("link", set()).add(path)
+        else:
+            text_for_rewrite = text
+        new_text = rewrite_text(path, text_for_rewrite, mappings, counts, files,
                                 ns_mappings=ns_mappings)
         # The audit re-runs the SAME rewrite with opaque replacements, so a bare
         # citation the rewrite created is not mistaken for one it preserved. A
@@ -408,7 +471,7 @@ def run(args: argparse.Namespace) -> int:
     moved, move_failures = move_trees(mappings, args.dry_run)
 
     report(args, mappings, ns_mappings, counts, files, changed, moved,
-           bare_before, bare_after, len(bare_files))
+           link_stats, bare_before, bare_after, len(bare_files))
 
     if bare_before != bare_after:
         print("\nFAIL  bare-form citations were rewritten; every rule must be "
@@ -424,8 +487,8 @@ def run(args: argparse.Namespace) -> int:
 def report(args: argparse.Namespace, mappings: list[Mapping],
            ns_mappings: list[NamespaceMapping], counts: dict[str, int],
            files: dict[str, set[str]], changed: list[tuple[str, str]],
-           moved: list[str], bare_before: int, bare_after: int,
-           bare_file_count: int) -> None:
+           moved: list[str], link_stats: dict[str, int], bare_before: int,
+           bare_after: int, bare_file_count: int) -> None:
     mode = "DRY RUN" if args.dry_run else "APPLIED"
     print(f"=== move-modules ({mode}) ===")
     for mapping in mappings:
@@ -444,6 +507,12 @@ def report(args: argparse.Namespace, mappings: list[Mapping],
     print(f"  {'class 6  tree moves':<34} {len(moved):>5} subtree(s)")
     for line in moved:
         print(f"           {line}")
+    scanned = sum(link_stats.values())
+    print(f"  {'class 7  relative links':<34} {link_stats['rebased']:>5} "
+          f"re-based in {len(files.get('link', ())):>4} file(s)")
+    print(f"           {link_stats['unchanged']} unchanged, "
+          f"{link_stats['skipped']} skipped (not a path in this tree), "
+          f"{scanned} scanned")
     print()
     print(f"  audit    bare-form occurrences        {bare_before:>5} before, "
           f"{bare_after:>5} after, in {bare_file_count} file(s)")

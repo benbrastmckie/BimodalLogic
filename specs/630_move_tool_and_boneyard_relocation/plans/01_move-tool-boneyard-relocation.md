@@ -202,7 +202,14 @@ invocation.
 
 ---
 
-### Phase 3: Move tool — relative-link re-basing and the script inventory row [NOT STARTED]
+### Phase 3: Move tool — relative-link re-basing and the script inventory row [COMPLETED]
+
+**Completion note**: the dry-run link breakdown reproduces the report's partition exactly — 83
+scanned, 76 unchanged, 5 re-based, 2 skipped as non-paths. Both `FormalSystem/`-insertion cases
+(`Kamp/KampWeakCanonical/ExpressiveCompleteness/README.md` and
+`Kamp/KampWeakCanonical/Separation/Hierarchy/README.md`, each pointing at a live
+`Metalogic/WeakCanonical/…` README) land in the re-based set with the segment correctly inserted,
+which is precisely what a `../`-counting heuristic would have got wrong.
 
 **Goal**: Class 7, the subtlest rewrite, implemented by the correct algorithm; the new script is
 registered in the directory's inventory.
