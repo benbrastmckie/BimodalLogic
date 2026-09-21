@@ -17,16 +17,24 @@
 #import "../generated/status.typ": axiom-count, rule-count, sorry-total-excl-boneyard, lean-toolchain-pin, mathlib-tag, mathlib-rev, formalsystem-file-count, formalsystem-line-count, tests-file-count, tests-line-count, tools-file-count, tools-line-count
 
 #pagebreak()
-#heading(numbering: none)[Appendix: Reading the Lean Formalization] <lean-appendix>
+// Appendix identity. This is a real appendix, not an unnumbered chapter: the
+// level-1 heading counter is reset so the title numbers as letter "A" (not
+// the accumulated chapter count), and the supplement is overridden from the
+// document-wide "Chapter" to "Appendix" so @lean-appendix reads "Appendix A"
+// rather than "Chapter A". The machine-readable appendix that follows
+// continues the same counter to letter "B" (see its own numbering block).
+#counter(heading).update(0)
+#show heading.where(level: 1): set heading(supplement: "Appendix")
+#set heading(numbering: (..n) => numbering("A", n.pos().first()))
+#heading[Reading the Lean Formalization] <lean-appendix>
 
 // --- Appendix-local formatting (scoped to this file by #include) ------------
 //
-// Section numbering. The appendix title is an unnumbered level-1 heading, and
-// an unnumbered heading does not step the heading counter, so without the two
-// lines below the sections would continue the preceding chapter's numbering.
-// They are numbered A.1, A.2, ... instead, which is also how @-references to
-// them render ("Section A.4").
-#counter(heading).update((..n) => (n.pos().first(), 0))
+// Section numbering. The appendix title above carries real letter numbering,
+// which auto-resets the level-2 counter to 0, so the sections below start
+// numbering fresh at A.1, A.2, ... which is also how @-references to them
+// render ("Section A.4"). The "A." prefix is hardcoded per this file, the
+// same file-local pattern the machine-readable appendix repeats with "B.".
 #set heading(numbering: (..n) => "A." + numbering("1.1", ..n.pos().slice(1)))
 
 // Code blocks. 8pt fits 71 monospace columns in the text width, so no excerpt
