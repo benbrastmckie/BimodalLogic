@@ -1,5 +1,5 @@
 ---
-next_project_number: 647
+next_project_number: 648
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 647
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,604,623,624,625 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,604,623,624,625,647 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,568,616,617,628 | 298,464,502,563,625 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,570,618,646 | 231,465,497,564,565,568,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,534,543 | 428,498,499,500,646 | algebraic-representation, decidability, incompleteness, ... |
@@ -92,14 +92,54 @@ next_project_number: 647
   └─ 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
   └─ 646 [NOT STARTED] — Machine-check the two cheap MF-correspondence results, R1 and...
 
+### Reference Book
+
+647 [NOT STARTED] — Extend typst/chapters/ax-lean-appendix.typ (the back-matter...
+
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
-625 [PLANNED] — Formalize the manuscript's open-future and open-past...
+625 [IMPLEMENTING] — Formalize the manuscript's open-future and open-past...
   └─ 628 [RESEARCHED] — Investigate expressive extensions that make recurrence and...
 645 [NOT STARTED] — Port the translation-product proof device from the task 624...
 
 ## Tasks
+
+### 647. Extend lean appendix semantics metalogic coverage
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: reference-book
+- **Dependencies**: None
+
+**Description**: Extend typst/chapters/ax-lean-appendix.typ (the back-matter appendix "Reading the Lean Formalization" of typst/BimodalReference.typ) so that a reader can read the semantic layer, a derived theorem, the metalogic result map, and the decision procedure in Lean, and not only the syntax and proof system the appendix covers today. Keep its aim: the most systematic and accessible presentation for a reader who knows the mathematics of TM but has never opened a Lean file. Introduce each Lean concept once, on a real declaration from FormalSystem/, in dependency order, and reorganize existing sections where that serves the arc rather than appending at the end. The appendix explains how to READ the Lean. It cross-references the Part I chapters (02-semantics, p2-frame-classes, 04-metalogic, p2-decidability-practice, 05-theorems) for the mathematics instead of restating it.
+
+COVERAGE TO ADD. Verify every name and signature against live source before quoting. This list was checked for existence only, so re-derive, never transcribe.
+
+(1) Semantic structures. TemporalOrder as a bundled structure with instance-bracket fields (addCommGroup, linearOrder, isOrderedAddMonoid, nontrivial) and the coercion that lets F.Duration be used as a type (#check on soundness prints F.Duration.carrier, which the appendix's soundness walkthrough currently leaves unexplained). FrameOver with WorldState, worldNonempty, PosRel over D.PositiveCone, and the comp / serial / limit / saturation fields stated over TaskFrame.reflect PosRel. The reflection convention F.TaskRel := TaskFrame.reflect F.PosRel, with reflection a derived theorem rather than a field. TaskFrame packaging Duration with toFibre, and the accessors F.Duration, F.WorldState, F.TaskRel.
+
+(2) Histories. PartialHistory with its dependent states field (no junk values off the domain), nonempty_domain and respects_task. IsConvex and IsTotal as predicates rather than separate structures. WorldHistory as the subtype {τ // τ.IsTotal} with .val and .property. WorldHistory.state, which needs no domain proof. The valuation reading of TaskModel (the set of states where valuation w p holds). Lean concepts introduced here: dependent fields, subtypes, and the predicate-versus-structure design choice.
+
+(3) Definition by structural recursion. TruthAt shown clause by clause beside the Formula constructors: pattern matching, .atom-style constructor patterns, box quantifying over all world histories, the strict untl and snce clauses, and the guard-first argument order of untl and snce stated explicitly. PlusFormula.stab with its PlusTruthAt clause (histories in the same state at t) as the example of extending a language by one constructor.
+
+(4) Reading a derived theorem. perpetuity2 as a worked def: the implicit {fc : FrameClass} binder giving one proof term for all four frame classes, the have and exact steps, reuse of perpetuity1 and contraposition, and the ⊢[fc] notation. Explain implicit, explicit and instance binders once. Show the MF instance ⊢ φ.box.imp φ.allFuture.box closed by modal_search.
+
+(5) The semantic counterpart. timeShift_preserves_truth as an iff statement, obtained from the generic transport truthAt_of_truthCorr at shiftCorr rather than by a bespoke induction. modal_future_valid. The remark that soundness is what makes the syntactic and semantic routes agree, with the MF case of the soundness proof being where time-shift invariance is used.
+
+(6) Functions on derivations. DerivationTree.lift by structural recursion (le_trans in the axiom case, the same recursion elsewhere). The FrameClass partial order Base ≤ Dense ≤ RTime and Base ≤ ZTime. The fact that only the axiom constructor checks minFrameClass. Derivations being data is what lets decide return them, height recurse on them, and the dataset pipeline export them.
+
+(7) The metalogic result map, as one table per frame class. soundness, soundness_dense, soundness_ztime, soundness_rtime. completeness_base, completeness_dense, completeness_ztime, completeness_rtime. compactBase, strongCompletenessBase, compactDense, strongCompletenessDense as proved. notCompactZTime, notStrongCompletenessZTime, notCompactRTime, notStrongCompletenessRTime as machine-checked refutations: refutations are theorems, one finitely satisfiable and unsatisfiable witness set per class. Show strongCompletenessBase as a one-line term proof (strongCompleteness_of_compact compactBase completeness_base) whose statement is a named Prop-valued def, and notCompactZTime with the anonymous-constructor Atom ⟨"p", none⟩. Name the proof routes and where they live: the chronicle canonical model in Metalogic/BXCanonical/, the Kamp-Reynolds and algebraic routes beside it, and compactness by an ultraproduct over finite sublists with strong completeness then following uniformly.
+
+(8) A name is not a proof. Extend the Trust-Reading Practice subsection with the lesson that a reader audits the statement, never the name. A classical disjunction (⊨ φ) ∨ ¬(⊨ φ) is provable by Classical.em and is no decision procedure at all, which is why such a declaration was retired (the "Retired as vacuous" note in FormalSystem/Metalogic/Decidability.lean) and why Decidable (⊨ φ) is the statement that matters.
+
+(9) The decision procedure's types. DecisionResult with its four constructors (valid carrying ⊢ φ, invalid carrying SimpleCountermodel, fuelExhausted, extractionFailed). decide with its default arguments (searchDepth := 10, tableauFuel := 1000, fc := .Base) as the example of optional parameters. sound_of_isValid. An honest split of what is established (valid verdicts carry proof terms, rule soundness, termination measures, the countermodel bridge) from what is open (the converse ⊨ φ → isValid, hence Decidable (⊨ φ), and totality against a formula-dependent budget).
+
+(10) Project overview additions to the directory tour. The import-layer order of the top-level directories (Syntax, ProofSystem, Semantics, Metalogic, Theorems, Automation). The four proof systems TM, TM⁻, TM⁺ and TM⋆ with their directories, each over the four frame classes, including TM⁺ soundness and its conservativity over TM (FormalSystem/Metalogic/Conservativity.lean). The pinned Lean and Mathlib version. Repository size. Every count (lines, files, axioms) must come from typst/generated/status.typ or from a generator extended for the purpose, never hand-typed. Open or in-progress items must be phrased durably and point to where the book states them as open problems, never as dated progress notes.
+
+CONSTRAINTS. No semicolons in prose anywhere in the appendix, existing or new. The only permitted semicolon is inside the literal Lean macro body `apply DerivationTree.axiom; refine ?_`, which is code. One sentence per source line, short sentences, lists and tables in the style the file already uses, bold for introduced terms. Keep the file-local formatting block (A.n section numbering, 8pt unbreakable code blocks, sticky #leansrc labels, list and figure spacing) and the two snippet kinds: #leansrc excerpts verbatim up to whitespace with docstrings omitted and lines re-broken to at most 71 columns, and didactic examples compiled first with lake env lean in a scratch file outside FormalSystem/ and Tests/. Keep the existing labels (lean-appendix and lean-appendix-*) stable, and give new sections new lean-appendix-* labels. No task numbers and no specs/ paths in the file. Every backticked span must resolve under Check 1 of scripts/typst-sync-check.sh, and that includes backticks inside comments. Additions to typst/sync-check-whitelist.txt are allowed only for didactic identifiers and generic syntax illustrations, each under a category comment.
+
+ACCEPTANCE. typst compile --root .. BimodalReference.typ with zero errors. scripts/typst-sync-check.sh PASS. .claude/scripts/typst-element-lint.sh PASS on the file. Every rendered appendix page inspected (pdftoppm to PNG) for wrapped code lines, orphaned source labels and collisions between blocks and paragraphs. Every quoted signature diffed against live source. grep finds no prose semicolon in the file. The dated appendix entry in typst/SYNC-MAP.md updated to describe the new coverage.
+
+---
 
 ### 646. Formalize rigidity and deterministic same logic
 - **Status**: [NOT STARTED]
@@ -244,7 +284,7 @@ POST-RELOCATION REVISION (2026-09-21, after tasks 630 and 632-636 landed). Depen
 ---
 
 ### 625. Formalize open future open past modalities
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 638
