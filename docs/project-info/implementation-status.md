@@ -135,7 +135,8 @@ Module-by-module implementation status for the Bimodal TM logic library.
 
 | Module | Status | Notes |
 |--------|--------|-------|
-| `Automation/Tactics/` (`Commands`, `Deduction`, `Meta`, `PropDecide`, `Search`, `UserTactics`) | ✅ | Core tactics working |
+| `Automation/Tactics/` (`Commands`, `Deduction`, `Search`, `UserTactics`) | ✅ | Core tactics working |
+| `Tactic/Meta.lean` | ✅ | The shared `MetaM` plumbing, at layer 0 because its consumers span `Automation/` and `Metalogic/` |
 | `Automation/ProofSearch/Core.lean` | ✅ | Builds cleanly |
 | `Automation/ProofSearch/Strategies.lean` | ✅ | Builds cleanly |
 

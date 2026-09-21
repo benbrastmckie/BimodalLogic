@@ -50,7 +50,7 @@ under `Boneyard/` and are labelled as such.
 |--------|---------|--------|
 | `../Algebraic.lean` | Re-export module for the Algebraic package. **Sibling aggregator**, at `FormalSystem/Metalogic/Algebraic.lean` — not a file inside this directory | Complete |
 | `LindenbaumQuotient.lean` | Quotient by provable equivalence | **Sorry-free** |
-| `BooleanStructure.lean` | Boolean algebra instance; the `*_quot` lattice/complement laws are closed by `propDecide` (`Automation/Tactics/PropDecide.lean`), the three hypothesis-driven ones via a `propDecide` tautology + `Combinators.pairing` + modus ponens | **Sorry-free** |
+| `BooleanStructure.lean` | Boolean algebra instance; the `*_quot` lattice/complement laws are closed by `propDecide` (`../Decidability/Propositional/Tactic.lean`), the three hypothesis-driven ones via a `propDecide` tautology + `Combinators.pairing` + modus ponens | **Sorry-free** |
 | `InteriorOperators.lean` | Box as interior operator; H monotonicity | **Sorry-free** |
 | `TenseS5Algebra.lean` | Tense S5 algebra structure | **Archived** (3 sorries; moved to `Boneyard/UltrafilterFrame/`) |
 | `UltrafilterMCS.lean` | MCS ↔ `Order.PrimeFilter LindenbaumAlg` bijection, packaged as `SetMaximalConsistent.ultrafilterEquiv`; consumes `FormalSystem/ForMathlib/Order/PFilter.lean` | **Sorry-free** |
@@ -82,7 +82,7 @@ truth lemma is re-hosted on `bundleFlowFrame` in `FlowFrame.lean`.
 ```
 Boolean Algebra Path:
 
-    Automation/Tactics/PropDecide          Mathlib (Order.PrimeIdeal, Order.PrimeSeparator)
+    Decidability/Propositional/Tactic      Mathlib (Order.PrimeIdeal, Order.PrimeSeparator)
                 │                                        │
                 v                                        v
                 LindenbaumQuotient            ForMathlib/Order/PFilter  (Order.PFilter.IsProper /
@@ -228,7 +228,7 @@ imports `FormalSystem.Metalogic.Decidability.Propositional.Tactic` and discharge
 already minimal) state their conditional form as a closed tautology, close it with `propDecide`,
 and combine with the hypotheses through `Combinators.pairing` and modus ponens. There is no
 cycle: nothing under `Metalogic/Decidability/`, `Metalogic/Core/`, `Theorems/` or `Automation/`
-imports an `Algebraic.*` module, so `Automation/Tactics/PropDecide.lean` sits strictly below this
+imports an `Algebraic.*` module, so `../Decidability/Propositional/Tactic.lean` sits strictly below this
 directory.
 
 **What the layer now offers downstream** (durable anchors): Lindenbaum's lemma on the filter side,

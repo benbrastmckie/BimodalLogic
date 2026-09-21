@@ -29,7 +29,8 @@ BimodalLogic/
 │   │   └── StarLanguage/       # L⋆ truth, validity, determinism (aggregator Semantics/StarLanguage.lean)
 │   ├── Metalogic/              # Soundness, completeness, decidability, independence
 │   ├── Theorems/               # Derived theorems (perpetuity, combinators, propositional)
-│   ├── Automation/             # Proof tactics, search, dataset generation
+│   ├── Tactic/                 # Layer 0: Attr.lean (the library's attributes, imported by Init.lean), Meta.lean
+│   ├── Automation/             # Proof tactics and proof search (the dataset tooling is lean_lib BimodalTools)
 │   ├── Examples/               # Pedagogical examples
 │   └── Boneyard/               # Archived work (excluded from every invariant check)
 ├── Tests/

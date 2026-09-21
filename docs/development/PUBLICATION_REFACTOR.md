@@ -84,6 +84,7 @@ BimodalLogic/
 ├── FormalSystem/
 │   ├── Init.lean                   # Mathlib.Init, Mathlib.Tactic.Common, Tactic.Attr
 │   ├── Tactic/Attr.lean            # register_simp_attr / register_label_attr (from Automation/{TruthNormAttr,NormalizationAttr,LemmaDB})
+│   ├── Tactic/Meta.lean            # shared MetaM plumbing (from Automation/Tactics/); consumers in both Automation/ and Metalogic/
 │   ├── ForMathlib/                 # unchanged
 │   ├── Syntax/                     # TM syntax only (Plus/Minus/Star moved out)
 │   ├── ProofSystem/
@@ -166,6 +167,7 @@ it goes into `BimodalTools` for uniformity. C25 and C25N read roots from the lak
 | `Metalogic/Conservativity/MinusLanguageSoundness.lean` | `FormalSystem.Semantics` | `MinusLanguage/Soundness.lean` | `FormalSystem.MinusLanguage` | yes (small) |
 | `Automation/{TruthNormAttr,LemmaDB,NormalizationAttr}` | attribute names only | `Tactic/Attr.lean` | attribute names unchanged | none |
 | `Automation/Tactics/PropDecide.lean` | `...Decidability.Propositional.PropForm` (already) | `Metalogic/Decidability/Propositional/Tactic.lean` | unchanged | none |
+| `Automation/Tactics/Meta.lean` | `FormalSystem.Automation` | `Tactic/Meta.lean` | **keep** (recorded exception; added at Phase 4, not anticipated by this map) | none. It had to move with `PropDecide`, which calls `extractDerivationGoal` and `isNilContext` from it; leaving it under `Automation/` would have traded one `Metalogic -> Automation` line for another |
 | `Metalogic/Core/DeductionTheorem.lean` | `FormalSystem.Metalogic.Core` | `Theorems/DeductionTheorem.lean` | **keep** (recorded ancestor-style exception) | none; alternative: rename in Phase 6's FQN pass |
 | `Metalogic/WeakCanonical/{Kamp,EFGames,Separation,...}` (141 files) | `...Metalogic.WeakCanonical.*` | `Metalogic/Expressiveness/...` | `Metalogic.Expressiveness.*` | **yes, citeable; two main-results entries** |
 | `Metalogic/WeakCanonical/Expressiveness/*` | `...WeakCanonical.Expressiveness` | `Metalogic/Expressiveness/GameTransfer/*` | `...Expressiveness.GameTransfer` | yes |
@@ -257,13 +259,14 @@ commit `220e94ea4`:
 | Expressiveness set | 141 files, 104,087 lines, 0 edges into the residual set or `BXCanonical` |
 | Residual `WeakCanonical` | 38 files, 28,472 lines |
 | `BXCanonical`-free by closure | 150 of 179 modules |
-| Import lines from the five lower layers into `Automation` | 16, of which 11 into the attribute-only files |
-| `Theorems` files importing `Metalogic` | 4, all `Metalogic.Core.DeductionTheorem` |
-| `Metalogic` files importing `Theorems` | 29 files, 47 lines |
+| Import lines from the lower layers into `Automation` | **0** since Phase 4 landed. Was 16, of which 11 into the attribute-only files; the 11 were deleted outright when the five declarations moved to `Tactic/Attr.lean`, the `PropDecide` line went with that module to `Metalogic/Decidability/Propositional/`, and the remaining 3 (`Decidability -> {ProofSearch, Normalization}`) became intra-layer under the corrected table |
+| `Theorems` files importing `Metalogic` | **0** since Phase 4 landed. Was 4, all `Metalogic.Core.DeductionTheorem`, which is now `Theorems/DeductionTheorem.lean` |
+| `Metalogic` files importing `Theorems` | 29 files, 50 lines (was 47; `DeductionTheorem.lean`'s move added 3, since its three `Metalogic/` consumers now cross the directory boundary) |
+| Total upward import lines, library-wide | 7, all `Syntax/MinusLanguage/AxiomDischarge.lean -> Theorems/*`; owned by Phase 5 below and asserted by equality in `check-metalogic-cycles.sh` |
 | Automation modules the library needs by closure | 9 (3,419 lines) |
 | User-facing tactic modules (library API, imported by no library file) | 4 (1,238 lines) |
 | Tooling modules, including `TraceExport` | 25 (14,747 lines); 12 are exe roots |
-| Namespace vs directory | 279 equal-or-descendant, 187 ancestor, 24 unrelated, 43 without a namespace |
+| Namespace vs directory | 24 unrelated, two of them recorded exceptions added by Phase 4 whose own module docstrings explain them (`Theorems.DeductionTheorem`, namespace `Metalogic.Core`; `Tactic.Meta`, namespace `Automation`); `PropDecide` and `Periodicity` left the bucket on the same phase, so the total is unchanged |
 | C6 manifest (unreachable live modules) | 15 entries |
 | Loose files at the `Tests/BimodalTest/` root | 12: 8 `*Probe.lean` and `TableauConformance.lean` (all importing only `Metalogic.Decidability.*`), 3 `Trace*` (importing `TraceExport`) |
 
@@ -354,15 +357,32 @@ release tag. Every phase ends with `lake build`, `lake build BimodalTest` and
 - Move `Metalogic/Decidability/FMP/Periodicity.lean` to `Semantics/Periodicity.lean` (its
   namespace already says so).
 - Re-document `Decidability -> ProofSearch / Normalization` as a legitimate "Decidability
-  depends on library automation" edge, placing library automation *below* Decidability in the
-  corrected layer table; cut `ProofSearch.Core -> SuccessPatterns` per Phase 3's decision.
-- Rewrite ORGANISATION.md's layer table to the measured order (Syntax / ProofSystem / ForMathlib
-  -> Semantics -> Theorems -> Metalogic -> Examples, with library automation beside Metalogic)
-  and extend `check-metalogic-cycles.sh` into a layer-order assertion.
+  depends on library automation" edge, placing library automation *beside* Metalogic in the
+  corrected layer table, which makes those three lines intra-layer rather than upward.
+- ~~cut `ProofSearch.Core -> SuccessPatterns`~~ — **STRUCK, not done.** This bullet was a no-op
+  and is recorded here rather than deleted so it is not rediscovered as unfinished work. Both
+  endpoints are inside `Automation/`, so the edge is intra-directory under every candidate layer
+  assignment and contributes nothing to the upward count. Phase 3 independently decided that
+  `SuccessPatterns` stays whole in the library rather than splitting with the tooling: it is pure
+  data, it has two library call sites (`ProofSearch/Core.lean` and `ProofSearch/Strategies.lean`),
+  and the tooling importers use only `PatternKey`, `GoalCategory` and `goalCategory`. Cutting the
+  edge would mean splitting a 417-line data module to no measured end.
+- Rewrite ORGANISATION.md's layer table to the measured order
+  (`{Syntax, ProofSystem, ForMathlib, Init, Tactic}` 0 -> `Semantics` 1 -> `Theorems` 2 ->
+  `{Metalogic, Automation}` 3 -> `Examples` 4) and extend `check-metalogic-cycles.sh` into a
+  layer-order assertion.
 - **Acceptance**: `python3 scripts/measure-refactor-partitions.py upward-edges` reports zero
   lines into `Automation` from Syntax, Semantics, ProofSystem and Theorems, and zero
   `Theorems -> Metalogic`; the layer assertion passes. **ADR**: none (ADR-008's
   `Semantics -> ProofSystem` edge is untouched).
+
+**Status: LANDED.** Every bullet above is done except the struck `SuccessPatterns` cut. The
+acceptance command reports 0 into `Automation` from all four source directories and an empty
+`theorems_files_importing_metalogic`; `check-metalogic-cycles.sh` asserts both its cycle count
+and the new layer order and exits 0. The 7 residual upward lines, all from
+`Syntax/MinusLanguage/AxiomDischarge.lean`, are **Phase 5's** — the `{Plus,Minus,Star}Language`
+merges move that file out of `Syntax/`. They are recorded in the script's allowlist, which fails
+on a shortfall as well as a surplus, so Phase 5 landing is a finding rather than a silent pass.
 
 ### Phase 5: Language-extension directories and namespace/path agreement — [CITE] (paths only; FQNs unchanged for the 15 files)
 
@@ -375,8 +395,11 @@ release tag. Every phase ends with `lake build`, `lake build BimodalTest` and
 - Move the 8 loose Decidability probes and `TableauConformance.lean` into
   `Tests/BimodalTest/Metalogic/Decidability/`.
 - **Acceptance**: `namespace-audit` reports at most the recorded exceptions in the unrelated
-  bucket (`ForMathlib/Order/PFilter.lean`, `PropDecide` until Phase 4 lands, the decided
+  bucket (`ForMathlib/Order/PFilter.lean`, the two exceptions Phase 4 recorded in their own
+  module docstrings — `Theorems/DeductionTheorem.lean` and `Tactic/Meta.lean` — and the decided
   Chronicle files); no loose `.lean` at the test root except the `Property.lean` aggregator.
+  Additionally: moving `AxiomDischarge.lean` out of `Syntax/` empties the 7-line allowlist in
+  `check-metalogic-cycles.sh`, which fails on that shortfall until the entries are deleted.
   **ADR**: none.
 
 ### Phase 6: Extract `Metalogic/Expressiveness/` — [CITE] (largest name change; two main-results entries)

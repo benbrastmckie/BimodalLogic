@@ -33,7 +33,7 @@ every field discharged, so nothing is re-discharged by hand here.
 - `IntPresentation.step_iff` — the presented frame's one-step relation is the presentation's `step`
 - `IntPresentation.isStepPath_iff` — its bi-infinite step-paths are the `step`-walks
 - `IntPresentation.card_worldState` — the presented carrier has exactly `card` states, so the
-  `Nat.card`-shaped bounds from `FMP/Periodicity.lean` are literally `card`
+  `Nat.card`-shaped bounds from `../../Semantics/Periodicity.lean` are literally `card`
 
 ## `Fin card`, never `Finite`
 
@@ -164,7 +164,7 @@ it is never read back out to drive a computation. -/
 /-- The presented frame's world states are `Fin card`, definitionally. -/
 theorem worldState_eq : P.toTaskFrame.WorldState = Fin P.card := rfl
 
-/-- The presented carrier has exactly `card` states, so `FMP/Periodicity.lean`'s
+/-- The presented carrier has exactly `card` states, so `../../Semantics/Periodicity.lean`'s
 `Nat.card`-shaped bounds read literally as `card` on a presentation. -/
 theorem card_worldState : Nat.card P.toTaskFrame.WorldState = P.card := by
   rw [worldState_eq]; simp

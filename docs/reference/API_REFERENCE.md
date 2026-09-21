@@ -349,6 +349,11 @@ inductive DerivationTree : Context → Formula → Prop where
 
 **Module**: `FormalSystem/Automation/Tactics/`
 
+Two members of the tactic surface live elsewhere: `propDecide` is
+`FormalSystem/Metalogic/Decidability/Propositional/Tactic.lean` and the shared `MetaM` plumbing
+is `FormalSystem/Tactic/Meta.lean`. Both are reachable from `import FormalSystem.Automation`,
+which imports the former.
+
 Custom tactics for modal and temporal reasoning. `tm_auto`, `temporal_search`, and
 `propositional_search` were consolidated into `modal_search` (their `SearchConfig` weight
 fields differed but `searchProof` never read them) and have been removed.

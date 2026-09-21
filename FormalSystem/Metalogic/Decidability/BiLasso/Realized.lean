@@ -83,7 +83,8 @@ The pigeonhole datum, as a **type** rather than as a value in an ambient infinit
 `SmallModel.lean`'s `pigeonDatum` lands in `Fin P.card × Finset Formula`, which is not finite;
 `pigeonDatum_mem` records that its second component is confined to `(subformulaClosure φ).powerset`.
 Refining the second component into that `Finset`'s coercion is what makes the whole thing a
-`Fintype`, and hence what makes the pigeonhole helpers of `FMP/Periodicity.lean` — all of which
+`Fintype`, and hence what makes the pigeonhole helpers of
+`../../../Semantics/Periodicity.lean` — all of which
 are stated at `[Finite W]` — applicable.
 
 Declared `abbrev` rather than `def` so that the product's `Fintype`, `DecidableEq` and `Finite`
@@ -117,7 +118,7 @@ theorem card_pigeonState (P : IntPresentation) (φ : Formula) :
 /--
 The same count in `Nat.card` normal form.
 
-**This is the form the downstream bounds use**, because `FMP/Periodicity.lean`'s
+**This is the form the downstream bounds use**, because `../../../Semantics/Periodicity.lean`'s
 `exists_lt_iter_of_card_le` and `exists_repeat_of_card_lt` are both stated with `Nat.card`. Both
 normal forms are recorded so that neither consumer has to insert a conversion at its use site.
 -/

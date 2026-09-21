@@ -36,7 +36,7 @@ landed `(state, type)` datum unchanged and puts the degeneralisation in the *wal
 - Marks are supplied by the history itself: `typeAt_fulfillingSeq` (`SmallModel.lean`) says a
   genuine history discharges its own eventualities.
 - The stretches *between* marks are shortened independently by
-  `exists_lt_iter_of_card_le` (`FMP/Periodicity.lean`), each down to fewer than
+  `exists_lt_iter_of_card_le` (`../../../Semantics/Periodicity.lean`), each down to fewer than
   `Nat.card (PigeonState P φ)` steps. Shortening excises a loop between two positions carrying the
   *same* datum, so it moves no mark: the marks sit at segment endpoints, and endpoints are what
   the shortening preserves.
@@ -190,7 +190,8 @@ theorem iter_seqStep (d : ℤ → PigeonState P φ) (a : ℤ) (n : ℕ) :
 **Any iterate shortens to one of length below the carrier's cardinality**, between the same
 endpoints.
 
-Repeated application of `exists_lt_iter_of_card_le` (`FMP/Periodicity.lean`). The fuel parameter
+Repeated application of `exists_lt_iter_of_card_le`
+(`../../../Semantics/Periodicity.lean`). The fuel parameter
 `k` is an artefact of doing the strong induction by ordinary recursion; `exists_iter_lt_card` below
 is the form every call site uses.
 -/

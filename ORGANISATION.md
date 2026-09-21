@@ -7,28 +7,51 @@ graph itself, with its exceptions drawn rather than described, is in
 
 ## The library
 
-`FormalSystem/` is a six-layer stack. Each layer imports downward:
+`FormalSystem/` is a five-layer stack. Each layer imports downward:
 
 | Layer | Directory | Holds |
 |---|---|---|
-| 5 | `Examples/` | Worked derivations and pedagogical material |
-| 4 | `Automation/` | Tactics, proof search, the ML dataset pipeline |
-| 3 | `Theorems/` | Derived object-logic theorems |
-| 2 | `Metalogic/` | Soundness, completeness, compactness, decidability |
+| 4 | `Examples/` | Worked derivations and pedagogical material |
+| 3 | `Metalogic/`, `Automation/` | Soundness, completeness, compactness, decidability; tactics and proof search |
+| 2 | `Theorems/` | Derived object-logic theorems |
 | 1 | `Semantics/` | `TaskFrame`, `ConvexHistory`, `TaskModel`, `TruthAt`, validity |
-| 0 | `Syntax/`, `ProofSystem/`, `PlusLanguage/`, `ForMathlib/` | Formulas, axioms, derivations |
+| 0 | `Syntax/`, `ProofSystem/`, `ForMathlib/`, `Init.lean`, `Tactic/` | Formulas, axioms, derivations; the shared preamble and the library's attribute declarations |
 
-Two edges run *upward* through that stack, and both are deliberate:
+This is the **measured** order, not an aspiration. Two entries in it are easy to misread:
 
-* **`Semantics → ProofSystem`.** `Semantics/FrameClassValidity.lean` is the only module under
-  `Semantics/` that imports from `ProofSystem/`. It defines `FrameClass.Sat`, the semantic
+* **`Metalogic/` and `Automation/` share layer 3.** They are beside each other, not stacked. 50
+  `Metalogic/` import lines reach into `Theorems/`, so Metalogic sits above it; and the surviving
+  `Decidability/ → {ProofSearch, Normalization}` lines are the decision procedure calling library
+  automation, which is a legitimate **intra-layer** edge. Placing `Automation/` above `Metalogic/`
+  would make those three lines upward exceptions; placing it below would make them downward and
+  say something false about which depends on which. Beside is what the tree does.
+* **`Tactic/` is at layer 0, below everything.** `Tactic/Attr.lean` declares every attribute and
+  named simp set the library uses, and `FormalSystem/Init.lean` imports it, so all of them reach
+  every module transitively. That is why no module imports it directly. It carries an
+  attributes-only constraint for exactly this reason — see
+  [`FormalSystem/Tactic/README.md`](FormalSystem/Tactic/README.md). `Tactic/Meta.lean` beside it
+  is ordinary metaprogramming placed at layer 0 because its consumers are spread across
+  `Automation/` and `Metalogic/`.
+
+Two classes of edge run *upward* through that stack, and both are recorded:
+
+* **`Semantics → ProofSystem`.** Both are at layer 0, so this is not upward at all under the
+  table above; it is called out because it is the only module under `Semantics/` that imports from
+  `ProofSystem/`. `Semantics/FrameClassValidity.lean` defines `FrameClass.Sat`, the semantic
   reading of the proof-side frame-class tag, so that both sides can be indexed by the same tag
   instead of by a hand-maintained binder list that would drift.
-* **`Decidability → Automation`.** The tableau decision procedure feeds the dataset pipeline.
+* **`Syntax/MinusLanguage/AxiomDischarge.lean → Theorems/*`, 7 lines.** The only genuinely upward
+  set left in the library. The L⁻ axiom-discharge proofs need the derived object-logic theorems.
+  The work that removes them is the `{Plus,Minus,Star}Language` directory merges in
+  [docs/development/PUBLICATION_REFACTOR.md](docs/development/PUBLICATION_REFACTOR.md), which move
+  that file out of `Syntax/` entirely.
 
-Neither closes a cycle. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) draws both, explains the
-relocations that were considered and rejected, and gives the commands that re-derive the graph
-from the tree rather than trusting the picture.
+Neither closes a cycle, and the second set is asserted mechanically rather than trusted:
+`bash scripts/check-metalogic-cycles.sh` fails if the upward set is anything other than exactly
+those 7 lines — on a surplus and on a shortfall alike.
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) draws the graph, explains the relocations that were
+considered and rejected, and gives the commands that re-derive it from the tree rather than
+trusting the picture.
 
 `Boneyard/` is outside the stack: it is the archive, it is not compiled, and no
 live module imports it. Read [its README](Boneyard/README.md) before resurrecting
@@ -60,6 +83,13 @@ anything from it — the argument order of two constructors changed after most o
 The layering claims above are structural, so they are checkable rather than asserted:
 
 ```bash
+# the layer table above, re-derived from the tree: every upward import line, grouped
+python3 scripts/measure-refactor-partitions.py upward-edges
+
+# the same claim as a gate: exactly one Metalogic cycle, and the upward set is exactly
+# the recorded 7 AxiomDischarge lines (fails on a surplus AND on a shortfall)
+bash scripts/check-metalogic-cycles.sh
+
 # the single Semantics -> ProofSystem edge
 grep -rn '^import FormalSystem.ProofSystem' --include='*.lean' FormalSystem/Semantics/
 
@@ -70,6 +100,10 @@ find .lake/build -path '*Boneyard*' -name '*.olean'
 # the full structural check suite
 bash scripts/check-module-invariants.sh --no-build
 ```
+
+The table above and the `LAYERS` dictionary in `scripts/measure-refactor-partitions.py` say the
+same thing and must be changed together; `check-metalogic-cycles.sh` loads that dictionary rather
+than keeping a second copy.
 
 ## Tags
 

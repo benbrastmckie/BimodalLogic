@@ -102,7 +102,10 @@ other parameter name is silently ignored.
 
 Closes any derivability goal whose imp/bot skeleton is a propositional tautology, by
 reflection. Schematic in the reification environment, so it does not care which atoms appear.
-This is the one tactic in `Automation/Tactics/` that library proofs actually depend on.
+This is the one tactic of the set that library proofs actually depend on, and the only one
+that does not live in `Automation/Tactics/`: it is `Metalogic/Decidability/Propositional/Tactic.lean`,
+beside the Kalmár soundness theorem it applies. `FormalSystem/Automation.lean` imports it, so
+`import FormalSystem.Automation` still brings it into scope.
 
 ### `deduction`, `deduction n`, `undischarge`
 

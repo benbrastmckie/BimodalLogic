@@ -436,7 +436,7 @@ them in the listed order (1, 3, 4); true parallel execution requires separate wo
 
 ---
 
-### Phase 6: Rewrite the layer documentation and correct the programme record [NOT STARTED]
+### Phase 6: Rewrite the layer documentation and correct the programme record [COMPLETED]
 
 - **Goal:** Make the prose agree with the measurement, and record the two programme corrections so
   neither is rediscovered as unfinished work.
