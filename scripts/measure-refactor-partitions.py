@@ -203,7 +203,8 @@ LANGUAGE_FILE_LAYERS = {
     },
     "HybridLanguage": {
         "Formula": 0,
-        "HybridInvariance": 1, "HybridRecurrence": 1, "HybridTruth": 1, "HybridValidity": 1,
+        "HybridInvariance": 1, "HybridRecurrence": 1, "HybridTransposition": 1, "HybridTruth": 1,
+        "HybridValidity": 1,
     },
 }
 

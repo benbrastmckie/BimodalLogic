@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.HybridLanguage.Formula
 import FormalSystem.HybridLanguage.HybridInvariance
 import FormalSystem.HybridLanguage.HybridRecurrence
+import FormalSystem.HybridLanguage.HybridTransposition
 import FormalSystem.HybridLanguage.HybridTruth
 import FormalSystem.HybridLanguage.HybridValidity
 
@@ -58,6 +59,11 @@ language one step short of it and a language that has it.
   validates it (`recF_not_validIn`) while the recurrence-free members of every class do
   (`recF_validOnFrames_recurrenceFree`). The minimal resource is a state-identity test across two
   times of one history
+- `HybridLanguage.HybridTransposition` — any transposition of two world states forces a
+  recurrence (`recurrenceFree_not_transposed`, by pasting); the transposition formula
+  `¬(E(i ∧ F j) ∧ E(j ∧ F i))` is valid on the recurrence-free frames (`transF_valid`), defines
+  them (`transF_defines`), is refuted on the permissive frame with two distinct named states
+  (`transF_refuted_distinct`), and is valid at no frame class (`transF_not_validIn`)
 
 ## Design decisions
 
@@ -73,7 +79,8 @@ which only a syntax can state. No constructor is added to `PlusFormula`, `PlusAx
 
 **A root-level component.** Every object language of this library is a self-contained directory
 at the library root under a flat namespace, and this one follows them. Its dependencies are
-language-to-language (`PlusLanguage`), the same shape as `OpenLanguage → PlusLanguage`.
+language-to-language (`PlusLanguage.PlusPasting`, `PlusLanguage.PlusNonValidities`), the same
+shape as `OpenLanguage → PlusLanguage`.
 
 **Semantic only.** The component has no proof system, and no axiomatization, soundness or
 completeness claim is made for any of its operators. In particular no naming rule is stated.
@@ -112,6 +119,7 @@ row there.
 
 * JPL paper `def:BLstar-semantics` — `⟨τ⟩_x` and the `⊡` clause
 * JPL paper `sub:Extension` — the manuscript's registers
+* JPL paper `app:gluing` — gluing histories, the step by which transposition forces recurrence
 * [P. Blackburn, M. de Rijke, Y. Venema, *Modal Logic*][blackburn2002], §7.3 — point nominals and
   the satisfaction operator
 * `FormalSystem/Semantics/HistoryMorphism.lean` — history-lifting morphisms and

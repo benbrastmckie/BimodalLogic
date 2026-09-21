@@ -412,31 +412,31 @@ frame class from its recurrence-free members.
 
 ---
 
-### Phase 6: Q2 - transposition forces recurrence [NOT STARTED]
+### Phase 6: Q2 - transposition forces recurrence [COMPLETED]
 
 **Goal**: The transposition formula, its frame-level core, and the refutation with two distinct
 named states.
 
 **Tasks**:
-- [ ] `FormalSystem/HybridLanguage/HybridTransposition.lean`, importing
+- [x] `FormalSystem/HybridLanguage/HybridTransposition.lean`, importing
   `FormalSystem.PlusLanguage.PlusPasting` and `FormalSystem.PlusLanguage.PlusNonValidities`.
   First the frame-level lemma `recurrenceFree_not_transposed`: time-shift `τ₂` by `s₂ - t₁`,
   `paste τ₁ (τ₂.timeShift (s₂ - t₁)) t₁`, read the shared state off at `s₁` (through
   `paste_agreeUpTo`) and at `t₁ + (t₂ - s₂)` (through `paste_agreeFrom`), contradict `hG` - the
   arithmetic of probe lines 410-420 with `paste` in place of `exists_splice`.
-- [ ] `transF_valid` from that lemma after unfolding with `and_iff`, `exist_iff`,
+- [x] `transF_valid` from that lemma after unfolding with `and_iff`, `exist_iff`,
   `someFuture_iff`, `reg_iff`. Follow this decomposition; do not inline the frame-level lemma.
-- [ ] `transF_refuted_of_recur` (probe 474-480), `transF_defines` (`→` from
+- [x] `transF_refuted_of_recur` (probe 474-480), `transF_defines` (`→` from
   `transF_refuted_of_recur` and `lt_or_gt_of_ne`, as the body of the probe's
   `transF_not_validIn`; `←` from `transF_valid`), `transF_not_validIn` from `transF_defines`.
-- [ ] `transF_refuted_distinct` over `NF`: histories `natHist (fun x => if x = 0 then 1 else 0)`
+- [x] `transF_refuted_distinct` over `NF`: histories `natHist (fun x => if x = 0 then 1 else 0)`
   and `natHist (fun x => if x = 1 then 1 else 0)`, registers `fun n => if n = 0 then 1 else 0`,
   time `0`. Chain the clause `Iff`s by hand (probe lines 523-530); `simp` does not match across
   the `NF.Duration` / `ℤ` carrier.
-- [ ] Docstring: any transposition, of equal or distinct states, forces a recurrence, so
+- [x] Docstring: any transposition, of equal or distinct states, forces a recurrence, so
   recurrence-free frames are transposition-free and the converse fails on the one-state frame;
   cite the manuscript's "chess games which transpose move order" passage and `app:gluing`.
-- [ ] Layer row, aggregator import, root, inventory, README correspondence rows.
+- [x] Layer row, aggregator import, root, inventory, README correspondence rows.
 
 **Timing**: 1.75 hours
 
