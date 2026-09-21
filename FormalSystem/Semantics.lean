@@ -14,6 +14,7 @@ import FormalSystem.Semantics.Periodicity
 import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
 import FormalSystem.Semantics.FrameAxioms
+import FormalSystem.Semantics.HistoryMorphism
 import FormalSystem.Semantics.Extension
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.TruthClauses
@@ -83,6 +84,14 @@ because each spans two families. The subdirectories `Extension/`, `Ultraproduct/
   state assignments on a *nonempty* time set; carries the totality predicate `IsTotal`, the
   convexity predicate `IsConvex`, the extension relation `Extends`, time shift, and
   `WorldHistory`, the *world histories* (the paper's possible worlds), i.e. the total ones
+- `HistoryMorphism`: history-lifting morphisms between task frames over one temporal order
+  (`HistMap`, `HistMorphism`, the image history `HistMap.mapH`, the pulled-back model
+  `HistMap.pullM`) and the frame property `TaskFrame.RecurrenceFree` — no world history visits a
+  world state twice — with the witness that every frame class contains a frame with recurrence
+  (`exists_sat_not_recurrenceFree`). The language-independent layer beneath
+  `FormalSystem/HybridLanguage/` and `FormalSystem/QuantLanguage/`: such a morphism preserves
+  pulled-back valuations, the history and time structure and the same-state relation, but not
+  state identity
 - `FrameAxioms`: *Saturation*, *Seriality*, and the interpolation half of *Compositionality* as
   hypothesis-form `Prop`s over a bare task relation (`def:frame`), the derived `lem:nullity`,
   and `def:constraints` — the constraints a partial history imposes on a new duration

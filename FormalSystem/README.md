@@ -264,7 +264,7 @@ release version lives in `Version.lean`.
 | `OpenLanguage.lean` | 111 | Re-export for the OpenLanguage component: L^▷, L⁺ plus the open-future modal `▷` and the open-past modal `◁` (semantic only; no proof system) |
 | `PlusLanguage.lean` | 82 | <!-- TODO: add description --> |
 | `ProofSystem.lean` | 93 | Re-export for ProofSystem submodule |
-| `Semantics.lean` | 249 | Re-export for Semantics submodule |
+| `Semantics.lean` | 258 | Re-export for Semantics submodule |
 | `StarLanguage.lean` | 81 | <!-- TODO: add description --> |
 | `Syntax.lean` | 93 | Re-export for Syntax submodule |
 | `Tactic.lean` | 39 | Sibling aggregator for `Tactic/`, the layer-0 metaprogramming directory |

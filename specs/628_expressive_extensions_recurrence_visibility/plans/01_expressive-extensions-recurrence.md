@@ -1,7 +1,7 @@
 # Implementation Plan: Task #628
 
 - **Task**: 628 - Expressive extensions that make recurrence and transposition visible (state nominals, state registers, propositional quantifiers)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 15 hours
 - **Dependencies**: Task 625 (completed; supplies the root-level language-component pattern and `paste`'s consumer precedent). Related, not blocking: 645 (translation-product port), 559, 624.
 - **Research Inputs**: specs/628_expressive_extensions_recurrence_visibility/reports/01_expressive-extensions-recurrence.md; compiled probe specs/628_expressive_extensions_recurrence_visibility/probes/01_nominals-registers-quantifiers.lean
@@ -193,30 +193,30 @@ the normal form of `docs/development/REFERENCE_NORMAL_FORM.md` with keys resolvi
 `references.bib` (`blackburn2002` is present; do not cite a work the corpus does not hold). Proofs
 are transcribed from the probe and adapted, not rediscovered.
 
-### Phase 1: The frame-level layer and the universal modality in L [NOT STARTED]
+### Phase 1: The frame-level layer and the universal modality in L [COMPLETED]
 
 **Goal**: Land everything language-independent: the theorem in `Truth.lean`, history-lifting
 morphisms, recurrence-freeness and its class witnesses.
 
 **Tasks**:
-- [ ] `FormalSystem/Semantics/Truth.lean`: inside `namespace Truth`, after `always_iff`, add
+- [x] `FormalSystem/Semantics/Truth.lean`: inside `namespace Truth`, after `always_iff`, add
   `box_always_iff` with the pinned signature; proof is `box_iff` followed by
   `forall_congr'` over `always_iff`. **Untagged**: neither `@[simp]` nor `@[truth_norm]` (the
   simp set of the whole library must not change). Add its row to the module docstring's clause
   table. Docstring: the universal modality `A φ := □△φ` ranges over all (history, time) pairs,
   using only that `WorldHistory` is total; with a `Paper: —` line giving the reason. Build
   with `--timeout 3600`, commit alone as sub-step 1.1.
-- [ ] Create `FormalSystem/Semantics/HistoryMorphism.lean` (`namespace FormalSystem.Semantics`):
+- [x] Create `FormalSystem/Semantics/HistoryMorphism.lean` (`namespace FormalSystem.Semantics`):
   `HistMap`, `HistMorphism` (`extends HistMap`), `HistMap.mapH` via `WorldHistory.ofTotal`,
   `@[simp] HistMap.mapH_state := rfl`, `HistMap.pullM`, `TaskFrame.RecurrenceFree`,
   `trivialFrame_not_recurrenceFree` (probe lines 425-436, with the constant history inlined or
   kept as a `private def`), `exists_sat_not_recurrenceFree` (probe lines 444-457 verbatim,
   including the explicit `inferInstanceAs` arguments). Library carriers are `def`, not `abbrev`.
-- [ ] Module docstring: a history-lifting morphism preserves pulled-back valuations, the
+- [x] Module docstring: a history-lifting morphism preserves pulled-back valuations, the
   history/time structure and the same-state relation, but **not state identity** (report §2.4);
   recurrence-freeness is the frame property that distinction is about; the translation
   projection is the intended instance and lives with the translation product, not here.
-- [ ] Register: import the module from `FormalSystem/Semantics.lean` and add it to that
+- [x] Register: import the module from `FormalSystem/Semantics.lean` and add it to that
   aggregator's submodule list; regenerate the root with `lake exe mk_all --lib FormalSystem`;
   `bash scripts/check-module-invariants.sh --emit-inventory` and fill the new description cell in
   `FormalSystem/Semantics/README.md`.
