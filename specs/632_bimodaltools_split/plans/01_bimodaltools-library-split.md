@@ -179,7 +179,7 @@ moved. The tree stays green and `lake build`'s output is byte-for-byte unchanged
 
 ---
 
-### Phase 2: Widen the harness scan roots [NOT STARTED]
+### Phase 2: Widen the harness scan roots [COMPLETED]
 
 **Goal**: Every check in `scripts/check-module-invariants.sh` that hardcodes `FormalSystem` as a
 scan root also walks `BimodalTools`, landed and observable on the still-unmoved tree, so any
@@ -194,12 +194,30 @@ resulting failure is unambiguously attributable to the widening and not to the m
       C25N (stray `Main`, the `("FormalSystem","Tests","scripts")` tuple), C26 (snake_case/nolint,
       both sites), C27 (debug directives), C28 (warning budget), C29 and C30 (linter suppressions,
       the `ROOTS` tuple).
-- [ ] Where a check already walks `Tests`, confirm `Tests/BimodalToolsTest/` is picked up for free
+      *(deviation: altered — reconciled against an independent grep of the script. **C16 needed no
+      edit and was not edited**: its enforced half is `runLinter FormalSystem`, scoped to the
+      FormalSystem import closure BY CONSTRUCTION, and widening it would mean linting the tooling
+      against `scripts/nolints.json` — a burndown outside this task; its reporting half already
+      reads the root list from `lakefile.toml` at run time and picked the two new libraries up the
+      moment Phase 1 declared them. **C28 likewise needed no edit**: it has no source scan root at
+      all, since `scripts/warning-budget.py` walks `.lake/build/lib/lean/**/*.trace` wholesale.
+      Both non-edits are now recorded as in-file decisions at their check headers. Three checks the
+      list omits DO hardcode a root and were widened: **B2** (live imports of the archive),
+      **C15** (paper-anchor citers, two sites) and **C23** (naming regressions, two sites). C7's
+      rollup gained a third `BimodalTools` column; C4/C5/C6/C8 were widened through the shared
+      graph block's `LIB_ROOTS`/`TEST_SRC_ROOTS` tables rather than per-check.)*
+- [x] Where a check already walks `Tests`, confirm `Tests/BimodalToolsTest/` is picked up for free
       (it lives under `Tests/`) rather than adding a redundant root.
-- [ ] **Negative-test C25N**: create a scratch `BimodalTools/ScratchMain.lean`, run the harness,
+- [x] **Negative-test C25N**: create a scratch `BimodalTools/ScratchMain.lean`, run the harness,
       confirm it reports `FAIL C25N` naming that file, then delete the scratch file and confirm the
       harness returns to 0 FAIL. A green C25N alone is not evidence the widening works.
-- [ ] Record, as a comment beside C28, the decision that C28's warning budget is the sole control
+      *(deviation: altered — a SECOND negative test was added beyond the plan's one. A scratch
+      `BimodalTools/Scratch.lean` carrying a structural `sorry` and a bare
+      `set_option linter.unusedVariables false` produced `FAIL C3`, `FAIL C6`, `FAIL C29`,
+      `FAIL C30` and `FAIL INV` simultaneously, then green on deletion — evidence that the
+      `live_lean_files`/`live_files` widenings and the reachability walk bind to `BimodalTools`
+      rather than merely mentioning it.)*
+- [x] Record, as a comment beside C28, the decision that C28's warning budget is the sole control
       watching tooling compiler warnings after the split, because neither new `lake build` CI step
       carries `--wfail`.
 
@@ -221,10 +239,20 @@ any listed check that turns out not to hardcode a root.
   Because nothing has moved, a pure widening must be a no-op; a new failure here is a real
   pre-existing defect in the tooling tree that the check was not previously seeing, and must be
   investigated, not suppressed.
+  *(deviation: altered — the widening was NOT a no-op. C5 immediately reported
+  `docs/development/PUBLICATION_REFACTOR.md:147: BimodalTools.DatasetGeneratorMain`. Investigated
+  rather than suppressed: it is a FORWARD reference inside a fenced TOML block illustrating the
+  post-split lakefile, and C5 does not skip fenced blocks. It is neither a defect nor a stale
+  path — it resolves for real once Phase 6 moves the module. Closed with a TEMPORARY,
+  explicitly self-deleting entry in `scripts/module-invariants-allowlist.txt` whose comment
+  instructs its own deletion in the Phase 6 commit; Phase 6 deletes it and Phase 9 confirms C5
+  reports no stale allowlist entry.)*
 - The C25N negative test produced `FAIL C25N` and then returned to green.
 
 **Files to modify**:
 - `scripts/check-module-invariants.sh` - scan-root widening across the enumerated checks
+- `scripts/module-invariants-allowlist.txt` - one temporary forward-reference entry (deleted in
+  Phase 6)
 
 ---
 

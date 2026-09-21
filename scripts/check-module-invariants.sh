@@ -760,10 +760,10 @@ B2_HITS=()
 while IFS= read -r l; do
   [ -n "$l" ] && B2_HITS+=("$l")
 done < <(grep -rnE '^import[[:space:]]+Boneyard(\.|[[:space:]]*$)' \
-           FormalSystem Tests --include='*.lean' 2>/dev/null \
+           FormalSystem Tests BimodalTools --include='*.lean' 2>/dev/null \
            | grep -v '/Boneyard/')
 if [ "${#B2_HITS[@]}" -eq 0 ]; then
-  pass B2 "no live module under FormalSystem/ or Tests/ imports Boneyard.*"
+  pass B2 "no live module under FormalSystem/, Tests/ or BimodalTools/ imports Boneyard.*"
 else
   fail B2 "${#B2_HITS[@]} live import(s) of the archive"
   for h in "${B2_HITS[@]}"; do note "$h"; done
@@ -853,14 +853,14 @@ echo
 # ---------------------------------------------------------------------------
 SORRY_HITS=$(grep -rnE --include='*.lean' \
   '(^[[:space:]]*sorry[[:space:]]*$)|(:=[[:space:]]*sorry[[:space:]]*$)|(\bexact sorry\b)|(<;> sorry)' \
-  FormalSystem | grep -v '/Boneyard/')
+  FormalSystem BimodalTools | grep -v '/Boneyard/')
 SORRY_COUNT=$(printf '%s' "$SORRY_HITS" | grep -c . || true)
 
 if [ "$SORRY_COUNT" -ne 0 ]; then
   fail C3 "expected zero structural sorries, found $SORRY_COUNT"
   while IFS= read -r l; do note "$l"; done <<<"$SORRY_HITS"
 else
-  pass C3 "structural sorry inventory is ZERO across FormalSystem/ (Boneyard/ excluded)"
+  pass C3 "structural sorry inventory is ZERO across FormalSystem/ and BimodalTools/ (Boneyard/ excluded)"
 fi
 echo
 
@@ -890,8 +890,16 @@ BONEYARD = os.sep + "Boneyard"
 sys.path.insert(0, os.path.join("scripts", "lib"))
 from live_walk import live_files  # noqa: E402
 
+# The four library roots, and where each one's modules live on disk. `BimodalTools`
+# and `BimodalToolsTest` joined when the tooling half left the published library: the
+# graph checks below are the ones that would otherwise have lost 25 modules from their
+# denominator and kept passing. `srcDir` is "Tests" for both test libraries and the
+# repository root for both source libraries, mirroring lakefile.toml.
+TEST_SRC_ROOTS = ("BimodalTest", "BimodalToolsTest")
+LIB_ROOTS = ("FormalSystem", "BimodalTest", "BimodalTools", "BimodalToolsTest")
+
 def mod_to_path(m):
-    base = "Tests" if m.split(".")[0] == "BimodalTest" else "."
+    base = "Tests" if m.split(".")[0] in TEST_SRC_ROOTS else "."
     return os.path.normpath(os.path.join(base, *m.split("."))) + ".lean"
 
 def path_to_mod(p):
@@ -901,9 +909,14 @@ def path_to_mod(p):
     return None
 
 lean_files = (live_files("FormalSystem", ".lean") + live_files("Tests", ".lean")
-              + (["FormalSystem.lean"]
-                 if os.path.isfile("FormalSystem.lean") else []))
-imp_re = re.compile(r"^import\s+((?:FormalSystem|BimodalTest)(?:\.[A-Za-z0-9_]+)*)\s*$", re.M)
+              + live_files("BimodalTools", ".lean")
+              + [f for f in ("FormalSystem.lean", "BimodalTools.lean")
+                 if os.path.isfile(f)])
+# Longest root first: `BimodalTools` is a prefix of `BimodalToolsTest`, and an
+# alternation that offered the short one first would match it and then have to
+# backtrack. Sorting removes the dependence on that backtracking entirely.
+ROOT_ALT = "|".join(sorted(LIB_ROOTS, key=len, reverse=True))
+imp_re = re.compile(r"^import\s+((?:" + ROOT_ALT + r")(?:\.[A-Za-z0-9_]+)*)\s*$", re.M)
 
 graph, texts = {}, {}
 for p in lean_files:
@@ -927,7 +940,7 @@ if dangling:
     for p, i, t in dangling:
         note(f"{p}:{i}: import {t}  ->  {mod_to_path(t)} (missing)")
 else:
-    pas("C4", f"all {total_imports} FormalSystem/BimodalTest import lines resolve")
+    pas("C4", f"all {total_imports} import lines across the {len(LIB_ROOTS)} library roots resolve")
 
 # --- C5: markdown module paths ---------------------------------------------
 allow = set()
@@ -945,10 +958,10 @@ for root, dirs, files in os.walk("."):
         if f.endswith(".md"):
             md_files.append(os.path.relpath(os.path.join(root, f), "."))
 
-mod_re = re.compile(r"\b(?:FormalSystem|BimodalTest|Boneyard)(?:\.[A-Z][A-Za-z0-9_]*)+")
+mod_re = re.compile(r"\b(?:" + ROOT_ALT + r"|Boneyard)(?:\.[A-Z][A-Za-z0-9_]*)+")
 
 def resolves(m):
-    base = "Tests" if m.split(".")[0] == "BimodalTest" else "."
+    base = "Tests" if m.split(".")[0] in TEST_SRC_ROOTS else "."
     p = os.path.normpath(os.path.join(base, *m.split(".")))
     return os.path.isfile(p + ".lean") or os.path.isdir(p)
 
@@ -1111,7 +1124,8 @@ else:
 # --- C7: live inventory (informational) -------------------------------------
 inf("C7", f"{len(lean_files)} live .lean files "
           f"({len(live_files('FormalSystem', '.lean'))} FormalSystem / "
-          f"{len(live_files('Tests', '.lean'))} Tests); "
+          f"{len(live_files('Tests', '.lean'))} Tests / "
+          f"{len(live_files('BimodalTools', '.lean'))} BimodalTools); "
           f"{len(seen)} reachable, {len(unreachable)} unreachable")
 counts = {}
 for p in live_files("FormalSystem", ".lean"):
@@ -1124,8 +1138,11 @@ for k in sorted(counts):
 
 # --- C8: aggregator convention ----------------------------------------------
 # Convention: a directory `X/` has exactly one sibling aggregator `X.lean`.
-# Walked parents: `FormalSystem/`, `FormalSystem/Metalogic/`, `FormalSystem/Syntax/` and
-# `FormalSystem/Semantics/`.
+# Walked parents: `FormalSystem/`, `FormalSystem/Metalogic/`, `FormalSystem/Syntax/`,
+# `FormalSystem/Semantics/` and `BimodalTools/`.
+# `BimodalTools` joined when the tooling half left the published library. It is flat today,
+# so the walk finds no subdirectory there; the parent is listed anyway so that the first
+# subdirectory someone adds under it arrives inside the convention rather than outside it.
 # `FormalSystem/Syntax` joined the tuple when the L-minus/L-plus/L-star language family was
 # nested under it; that move brought `Syntax/MinusLanguage/`, `Syntax/PlusLanguage/` and
 # `Syntax/StarLanguage/` (each arriving with its own sibling aggregator) plus the
@@ -1152,7 +1169,9 @@ C8_ALLOW_SELFNAMED = {
 }
 c8_problems = []
 for parent in ("FormalSystem", "FormalSystem/Metalogic", "FormalSystem/Syntax",
-               "FormalSystem/Semantics"):
+               "FormalSystem/Semantics", "BimodalTools"):
+    if not os.path.isdir(parent):
+        continue
     for d in sorted(os.listdir(parent)):
         full = os.path.join(parent, d)
         if not os.path.isdir(full) or d == "Boneyard":
@@ -1175,7 +1194,7 @@ if c8_problems:
     for m in c8_problems:
         note(m)
 else:
-    pas("C8", "every FormalSystem/, Metalogic/, Syntax/ and Semantics/ subdirectory has exactly one sibling aggregator")
+    pas("C8", "every FormalSystem/, Metalogic/, Syntax/, Semantics/ and BimodalTools/ subdirectory has exactly one sibling aggregator")
 
 # --- C11: archive import resolution ----------------------------------------
 # The Boneyard is uncompiled, so `lake build` cannot notice when an archived
@@ -1931,7 +1950,7 @@ else
   grep -rhoE '\b(def|thm|lem|cor|app|rmk):[A-Za-z0-9][A-Za-z0-9_-]*' \
     --include='*.lean' --include='*.md' --include='*.typ' --exclude-dir=Boneyard \
     --exclude="$(basename "$C15_RECORD")" \
-    FormalSystem Tests typst docs README.md 2>/dev/null \
+    FormalSystem Tests BimodalTools typst docs README.md 2>/dev/null \
     | sort -u > "$C15_CITED" || true
 
   C15_UNKNOWN=$(comm -23 "$C15_CITED" "$C15_KNOWN")
@@ -1944,7 +1963,7 @@ else
     printf '%s\n' "$C15_UNKNOWN" | head -15 | while IFS= read -r a; do
       [ -z "$a" ] && continue
       loc=$(grep -rlF "$a" --include='*.lean' --include='*.md' --include='*.typ' \
-              FormalSystem Tests typst docs README.md 2>/dev/null \
+              FormalSystem Tests BimodalTools typst docs README.md 2>/dev/null \
               | grep -v '/Boneyard/' | head -2 | tr '\n' ' ')
       note "$a  <- $loc"
     done
@@ -2138,7 +2157,7 @@ def resolve(ref):
         return c[0], None
     return None, ("ambiguous" if len(c) > 1 else "unresolved")
 
-SCAN_ROOTS = ["FormalSystem", "docs", "typst", "Tests", "scripts", "README.md"]
+SCAN_ROOTS = ["FormalSystem", "BimodalTools", "docs", "typst", "Tests", "scripts", "README.md"]
 SELF = os.path.join("scripts", "check-module-invariants.sh")
 files = []
 for r in SCAN_ROOTS:
@@ -2330,6 +2349,15 @@ fi
 # reason that pattern exists. The first half above -- `runLinter FormalSystem` against
 # scripts/nolints.json -- stays ENFORCED and unchanged; this half neither relaxes it nor
 # depends on it, and no existing ENFORCE_ flag was flipped to accommodate the widening.
+#
+# `BimodalTools` NEEDED NO EDIT HERE, unlike almost every other check in this file. The
+# enforced half is scoped to the FormalSystem closure BY CONSTRUCTION -- `runLinter <Module>`
+# observes a package by importing it -- and the tooling library is deliberately outside that
+# closure, so widening the enforced half would mean linting `BimodalTools` against
+# scripts/nolints.json, which is a burndown this split does not own. The reporting half below
+# reads its root list from lakefile.toml at run time, so it picked up `BimodalTools` and
+# `BimodalToolsTest` the moment those targets were declared. Recorded because "C16 was not
+# widened" otherwise reads as an omission.
 # ---------------------------------------------------------------------------
 if [ "$RUN_BUILD" -eq 1 ]; then
   C16_LOG=$(mktemp)
@@ -2447,7 +2475,7 @@ decl_re = re.compile(
 field_re = re.compile(r"^[A-Za-z_][A-Za-z0-9_']*\s*:")
 
 findings = []
-for path in live_lean_files("FormalSystem"):
+for path in live_lean_files("FormalSystem") + live_lean_files("BimodalTools"):
     stack, frames = [], []
     try:
         lines = open(path, encoding="utf-8", errors="replace").readlines()
@@ -2556,7 +2584,7 @@ UPPER_ALLOW = {"CAggOdSwap_clause_iff", "CAggOdSwap_clause_iff_faithful", "O_zer
 
 decls2 = []      # (ns, base, private, path, line)
 lemmas = []
-for path in live_lean_files("FormalSystem"):
+for path in live_lean_files("FormalSystem") + live_lean_files("BimodalTools"):
     stack, frames, depth = [], [], 0
     try:
         lines = open(path, encoding="utf-8", errors="replace").readlines()
@@ -2842,7 +2870,7 @@ def strip_comments(lines):
         code.append("".join(out))
     return inside, code
 
-lean_files = live_lean_files("FormalSystem")
+lean_files = live_lean_files("FormalSystem") + live_lean_files("BimodalTools")
 
 # The simp sets are DISCOVERED, never hardcoded: every attribute registered with
 # `register_simp_attr` anywhere in the live tree joins the exclusion set the day
@@ -3223,7 +3251,7 @@ KEYWORDS = ["class", "instance", "lemma", "theorem", "def", "abbrev", "structure
 kw_total = {k: 0 for k in KEYWORDS}
 kw_refined = {k: 0 for k in KEYWORDS}
 
-for path in live_lean_files("FormalSystem"):
+for path in live_lean_files("FormalSystem") + live_lean_files("BimodalTools"):
     text = open(path, encoding="utf-8", errors="replace").read()
     lines = text.split("\n")
     n = len(lines)
@@ -3577,7 +3605,7 @@ for target, root, src in exes:
     if last != expected:
         print("BADROOT lean_exe %s: root %s ends in %s, expected %s" % (target, root, last, expected))
     root_paths.add(os.path.normpath(os.path.join(src, *root.split(".")) + ".lean"))
-for top in ("FormalSystem", "Tests", "scripts"):
+for top in ("FormalSystem", "Tests", "scripts", "BimodalTools"):
     for dirpath, dirs, files in os.walk(top):
         dirs[:] = [x for x in dirs if x != "Boneyard"]
         for f in files:
@@ -3683,7 +3711,7 @@ def underscored(name):
     return "_" in last_component(name).rstrip("_")
 
 bad = []
-for path in live_lean_files("FormalSystem"):
+for path in live_lean_files("FormalSystem") + live_lean_files("BimodalTools"):
     stack, frames, depth = [], [], 0
     try:
         lines = open(path, encoding="utf-8", errors="replace").readlines()
@@ -3775,7 +3803,7 @@ def names_in(text):
     return [t for t in text.split() if IDENT.match(t)]
 
 unlisted = []
-for path in live_lean_files("FormalSystem"):
+for path in live_lean_files("FormalSystem") + live_lean_files("BimodalTools"):
     try:
         lines = open(path, encoding="utf-8", errors="replace").readlines()
     except OSError:
@@ -3947,7 +3975,7 @@ except OSError:
     sys.exit(1)
 
 tree = {}
-for path in live_files("FormalSystem", ".lean"):
+for path in live_files("FormalSystem", ".lean") + live_files("BimodalTools", ".lean"):
     try:
         text = open(path, encoding="utf-8", errors="replace").read()
     except OSError:
@@ -4030,6 +4058,22 @@ echo
 # guard both exit 2, and exit 2 is NOT suppressed by ENFORCE_C28=0. A measurement this harness
 # cannot trust is an error in every mode: a report-only window is permission to carry known
 # warnings, never permission to read silence as success.
+#
+# SCAN ROOT, AND WHY THIS CHECK NEEDED NO WIDENING FOR `BimodalTools`. Every other check in
+# this file that hardcoded `FormalSystem` as a scan root was widened when the tooling half
+# moved to `lean_lib BimodalTools`. C28 was not, because it has no source scan root at all:
+# scripts/warning-budget.py walks `.lake/build/lib/lean/**/*.trace` wholesale, so a tooling
+# module's warnings enter the budget the moment anything builds it.
+#
+# DECISION, RECORDED SO IT IS NOT READ AS AN OVERSIGHT: C28 is now the SOLE control watching
+# tooling compiler warnings. `lake build --wfail` in CI covers the `defaultTargets` closure,
+# which `BimodalTools` is deliberately outside of, and neither of the two CI steps that build
+# the tooling (`lake build BimodalTools`, `lake build BimodalToolsTest`) carries `--wfail`.
+# Adding `--wfail` there was considered and deferred: the tooling tree carries warnings today
+# that the library does not, and a hard stop would gate this split on that burndown. The
+# compensating control is this budget, which is per-file and may only decrease. If the two
+# tooling build steps ever do adopt `--wfail`, that is the point at which this note stops
+# being true and should be revised rather than deleted.
 # ---------------------------------------------------------------------------
 WARNING_BUDGET_OUT=$(python3 scripts/warning-budget.py 2>&1)
 C28_STATUS=$?
@@ -4097,7 +4141,7 @@ sys.path.insert(0, os.path.join("scripts", "lib"))
 from live_walk import live_files  # noqa: E402
 from lean_debug_artifacts import mask, self_test  # noqa: E402
 
-ROOTS = ("FormalSystem", "Tests", "scripts")
+ROOTS = ("FormalSystem", "Tests", "scripts", "BimodalTools")
 SUPPRESSION = re.compile(r"^\s*set_option\s+(linter\.[A-Za-z0-9_.']+)\s+false\b")
 STACKED = re.compile(r"^\s*set_option\s+\S+.*\bin\s*$")
 
@@ -4303,7 +4347,7 @@ sys.path.insert(0, os.path.join("scripts", "lib"))
 from live_walk import live_files  # noqa: E402
 from lean_debug_artifacts import mask  # noqa: E402
 
-ROOTS = ("FormalSystem", "Tests", "scripts")
+ROOTS = ("FormalSystem", "Tests", "scripts", "BimodalTools")
 SETOPT = re.compile(r"^\s*set_option\s+(\S+)\s+(\S+)(.*)$")
 
 
