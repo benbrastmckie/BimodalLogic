@@ -1,18 +1,19 @@
 {
   "task_number": 636,
-  "phase": "research",
-  "dispatch_seq": 19,
-  "status": "researched",
+  "phase": "plan",
+  "dispatch_seq": 20,
+  "status": "planned",
   "session_id": "sess_1789955215_a3ad68_636",
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 10,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/636_docstring_and_citation_normalisation/reports/01_docstring-citation-normalisation.md",
-      "summary": "Baseline measurement and conversion plan for docstring/citation normalisation across FormalSystem/, BimodalTools/ and Tests/."
+      "type": "plan",
+      "path": "specs/636_docstring_and_citation_normalisation/plans/01_docstring-citation-normalisation.md",
+      "summary": "10-phase implementation plan for the docstring and citation normalisation sweep across FormalSystem/, BimodalTools/ and Tests/."
     }
   ],
-  "summary": "All acceptance gates are already green at HEAD eae409d04 (full build-inclusive check-module-invariants.sh passes; lake build 2651 jobs exit 0; both typst docs compile; the literal grep -rn 'home/benjamin' FormalSystem Tests returns 0 hits), so acceptance cannot evidence the work -- gate on the delta instead. 713 ## References entries across 282 headings classified: only 181 are bibliographic, 532 are module cross-references. Bib merge has exactly 4 key collisions, all differing, with per-key direction measured by compiling each entry through typst (notes do not render under IEEE, so root's commentary is safe); 6 same-work-different-key pairs cost 18 .typ citation edits. Dominant gated risk is C20 tier 1: 582 of 1028 file:line citations target the 295-file edit set, but 297/298 headings sit in the leading module docstring so a single per-file delta repairs them exactly. 27 Logos/ProofChecker occurrences, none historical, all strippable; 14 tilde personal paths; 37 broken docstring links, all targets resolvable. Two bibkeys (stavi1979, gabbay1980) resolve to nothing and need a non-blocking user decision.",
-  "next_phase": "plan"
+  "summary": "Ten-phase plan, ~15h, waves [1,2] then strictly serial 3-10. Ordered bib-merge-first (58 typst-only keys must exist in references.bib before prose citations can be converted) and re-anchor-tool-second (scripts/reanchor-lean-citations.py is a Phase 2 deliverable written before the first docstring edit, not a fix-up). Phases 3-9 are organised by disjoint FILE SET rather than by edit type, so each file is touched once and the C20 re-anchor runs once at the end of each phase rather than interleaved; they are serialized anyway because each repair pass rewrites citer files tree-wide. Acceptance replaced with a 12-row table measured red at HEAD b668923b1 (0 entries in target citation form vs 197 in the old bare form, 119 markdown-link cross-refs, 14 personal paths, 17 literature/ pointers, 27 Logos/ProofChecker, 12 Paper Specification Reference, 4 Implementation Status, 2 dangling bibkeys, 26 bib entries -> 84), since the task's original grep -rn 'home/benjamin' is already vacuously green. Gating is on the build-inclusive check-module-invariants.sh, never lake build, run foreground with timeout 600000. Historical-record preservation is called out per-file for Semantics/TaskFrame.lean and Metalogic/Soundness.lean; sub: anchors stay verbatim; the L+ label citations are gold standard, not conversion targets; Boneyard/ is out of scope. The unresolved-bibkey user decision is carried forward non-blocking with a re-point default isolated in its own Phase 1 checklist item.",
+  "blockers": [],
+  "next_phase": "implement"
 }

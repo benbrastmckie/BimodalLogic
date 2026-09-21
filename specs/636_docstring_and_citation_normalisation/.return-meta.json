@@ -1,22 +1,48 @@
 {
-  "status": "researched",
-  "completed_at": "2026-09-21T11:29:02Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/636_docstring_and_citation_normalisation/reports/01_docstring-citation-normalisation.md",
-      "summary": "Baseline measurement and conversion plan for docstring/citation normalisation: all acceptance gates already green at HEAD (incl. the literal home/benjamin grep), 713 References entries classified (181 bibliographic vs 532 cross-references), 4-key bib merge with per-key direction measured through typst, and C20 tier 1 (582/1028 citations in the edit set) identified as the dominant gated regression risk with an exact per-file-delta repair recipe."
+      "type": "plan",
+      "path": "specs/636_docstring_and_citation_normalisation/plans/01_docstring-citation-normalisation.md",
+      "summary": "10-phase file-set-ordered plan for the ~295-file docstring and citation sweep, with a bib-merge-first ordering, a pre-built C20 re-anchor tool, and a 12-row red-now/green-after acceptance table replacing the vacuously-green original criteria."
     }
   ],
+  "next_steps": "Run /implement 636 to execute the plan",
   "user_decision": {
     "blocking": false,
-    "question": "Two bibkeys cited in FormalSystem/Metalogic/Expressiveness.lean:67,69 resolve to nothing in either bibliography: 'stavi1979' (the Stavi connectives, Dedekind-incomplete case) and 'gabbay1980' (the separation property). Should each get a new references.bib entry, or be re-pointed to an existing key (StaviConnectives.lean already cites gabbay1994 Ch.9 s.3 for the same content, and gabbayhodkinsonreynolds1994 Ch.10 is the tree's usual separation citation)?",
-    "context": "Affects two lines in one file. Not currently gated -- C15 reads only def|thm|lem|cor|app|rmk anchors, not bracket bibkeys -- so both have dangled undetected. Every other part of the sweep can proceed without this answer."
+    "question": "Two bibkeys cited in FormalSystem/Metalogic/Expressiveness.lean:67,69 resolve to nothing in either bibliography: 'stavi1979' (the Stavi connectives, Dedekind-incomplete case) and 'gabbay1980' (the separation property). Should each get a new references.bib entry, or be re-pointed to an existing key?",
+    "options": [
+      "Re-point both to existing verified keys (PLAN DEFAULT): stavi1979 -> gabbay1994 Ch.9 s.3, gabbay1980 -> gabbay1994 Ch.10",
+      "Author two new references.bib entries (requires the user to supply the bibliographic details)",
+      "Leave both lines exactly as they are and defer"
+    ],
+    "recommended": "Re-point both to existing verified keys (PLAN DEFAULT): stavi1979 -> gabbay1994 Ch.9 s.3, gabbay1980 -> gabbay1994 Ch.10",
+    "context": "Unanswered from the research phase. The plan proceeds on the re-point default and isolates it as its own checklist item in Phase 1, so it can be changed without touching the rest of the sweep. Rationale for the default: a new entry's bibliographic details cannot be verified from inside this repository, and an invented citation is worse than a re-pointed one. If the implementer finds the existing keys do not cover the cited content, the plan instructs it to leave both lines unchanged and report rather than invent an entry. Not currently gated -- C15 reads only def|thm|lem|cor|app|rmk anchors, not bracket bibkeys -- so both have dangled undetected. Every other part of the sweep proceeds regardless."
   },
+  "memory_candidates": [
+    {
+      "content": "When a codebase gates on file:line citations (a harness check that every 'File.ext:NNN' reference lands on a real non-blank line), phase a large comment/docstring sweep by FILE SET, not by edit type. Every edit to a file shifts the line numbers that cite into it, so touching a file once per edit-type means N rounds of line-shift repair on the same file. Organise each phase around a disjoint directory subtree, perform ALL edit types for that subtree in one pass, then run the re-anchor repair once at the end of the phase -- never interleaved. Build the re-anchor tool as a deliverable of a phase that runs BEFORE the first content edit, and validate it with a delta=0 no-op run over the whole tree. The structural precondition that makes the repair a single integer per file: the cited headings sit inside the leading docstring, so everything below shifts by new_line_count - old_line_count. Serialize the file-set phases even though their file sets are disjoint, because each one's repair pass rewrites citer files anywhere in the tree.",
+      "category": "PATTERN",
+      "source_artifact": "specs/636_docstring_and_citation_normalisation/plans/01_docstring-citation-normalisation.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["line-number-citations", "docstring-sweep", "phase-decomposition", "re-anchor", "file-set-phasing", "gated-invariants"]
+    },
+    {
+      "content": "Before planning against a task's stated acceptance criteria, measure them at HEAD. Criteria written before predecessor tasks reshaped the tree are often already vacuously green -- a literal grep whose pattern no longer matches the form the target data actually takes (e.g. 'home/benjamin' when the paths are written '~/Projects/...'). A green acceptance line cannot evidence that the work happened. The fix is an acceptance table with a measured 'Now' column and a 'Target' column, where every row is demonstrably RED at baseline, plus a separate list of gates that must remain unchanged-green. Re-measure any known-red adjacent baseline too and assert the count is UNCHANGED, so the sweep is provably not the cause of a new failure.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/636_docstring_and_citation_normalisation/plans/01_docstring-citation-normalisation.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["acceptance-criteria", "baseline-measurement", "vacuously-green", "red-now-green-after", "plan-validation"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1789955215_a3ad68_636",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 10,
+    "estimated_hours": 15,
+    "dependency_waves": [[1, 2], [3], [4], [5], [6], [7], [8], [9], [10]]
+  },
+  "dispatch_seq": 20
 }

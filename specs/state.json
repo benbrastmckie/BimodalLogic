@@ -326,7 +326,7 @@
     {
       "project_number": 636,
       "project_name": "docstring_and_citation_normalisation",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "publication-quality",
       "dependencies": [
@@ -344,13 +344,18 @@
       ],
       "description": "Convert every ## References entry in FormalSystem/**/*.lean to Mathlib's * [Author, *Title*][key] form resolving in the root references.bib; merge typst/bibliography.bib into it and point typst at the root file; fold ## Paper Specification Reference into ## References and remove ## Implementation Status; strip tooling notes, personal paths and Logos and ProofChecker wording from library docstrings, Examples/ and tests. Acceptance: C14, C15, C19 green; grep -rn 'home/benjamin' FormalSystem Tests empty; typst compiles.\n\nReconciliation notes: depends on task 635. Tasks 563, 564, 565, 566, 567, 616, 617 and 618 (the categorical-front new-file tasks) are unrelated mathematics with no dependency on this task's schedule; they should adopt this task's citation form (the * [Author, *Title*][key] form against the root references.bib) once it lands, or migrate to it if drafted first -- a convention note, not a blocking dependency. Task 177 stays a separate task (its residual scope is drift re-audit plus the Axiom Reference update, materially different from this task's citation-form normalisation) but depends on this task in addition to task 635.",
       "created": "2026-09-19T08:40:54Z",
-      "last_updated": "2026-09-21T11:29:25Z",
+      "last_updated": "2026-09-21T11:37:43Z",
       "session_id": "sess_1789955215_a3ad68",
       "artifacts": [
         {
           "path": "specs/636_docstring_and_citation_normalisation/reports/01_docstring-citation-normalisation.md",
           "type": "report",
           "summary": "Baseline measurement and conversion plan for docstring/citation normalisation across FormalSystem/, BimodalTools/ and Tests/."
+        },
+        {
+          "path": "specs/636_docstring_and_citation_normalisation/plans/01_docstring-citation-normalisation.md",
+          "type": "plan",
+          "summary": "10-phase implementation plan for the docstring and citation normalisation sweep across FormalSystem/, BimodalTools/ and Tests/."
         }
       ],
       "next_artifact_number": 2
