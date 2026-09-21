@@ -1,17 +1,17 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 18,
-  "summary": "Measured every candidate layering for FormalSystem/{Plus,Minus,Star}Language/. No single per-directory layer is consistent (L=0/1/2/3 give 23/9/5/3 upward lines). Recommended a per-file sub-layer keyed on each file's pre-merge directory (13 files at 0, 16 at 1, MinusLanguage/Soundness at 3); prototyped on the live import graph it measures exactly the 7 AxiomDischarge -> Theorems lines and nothing else. Fail-loud layer_of also needs rows for MainResults and Version.",
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 19,
+  "summary": "Six-phase, 5.5-hour plan written from the round-01 research. Phase 1 is a declared atomic batch over both scripts (per-file layer table keyed on pre-merge origin, fail-loud layer_of, stale-row report, allowlist restored from measured output) because either half alone leaves check-metalogic-cycles.sh red in CI. Phase 2 adds the named syntax-before-semantics assertion with a non-vacuity guard; Phase 3 runs six hand negative tests with save-and-restore; Phases 4 and 5 (parallel) update six repository documents, the three language READMEs and the three aggregator docstrings; Phase 6 re-runs the whole gate. The three aggregator .lean files are added beyond the task's recorded file_scope (docstring-only; measured rebuild about 30 modules).",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/642_restore_layer_measurement_for_language_directories/reports/01_restore-layer-measurement-language.md",
-      "summary": "Layering decision with measured alternatives, the 30-row origin table, prototype results for surplus/shortfall/unmapped cases, and the seven document groups that record the stale measurement."
+      "type": "plan",
+      "path": "specs/642_restore_layer_measurement_for_language_directories/plans/01_restore-layer-measurement-language.md",
+      "summary": "Six-phase plan covering the layer table and fail-loud lookup, restored allowlist, third assertion, negative tests, document updates and final gate."
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 6,
   "blockers": [],
-  "next_action_hint": "Plan the implementation: extend LAYERS and layer_of, restore the 7-line allowlist, add the syntax-before-semantics assertion, run the hand negative tests, update the documents."
+  "next_action_hint": "Implement Phase 1 as one atomic commit over scripts/measure-refactor-partitions.py and scripts/check-metalogic-cycles.sh; if the measured upward set is anything other than the 7 AxiomDischarge lines, block and report rather than allowlist."
 }

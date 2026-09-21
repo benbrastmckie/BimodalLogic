@@ -1,21 +1,22 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/642_restore_layer_measurement_for_language_directories/reports/01_restore-layer-measurement-language.md",
-      "summary": "Layering decision for the three language directories with measured alternatives, the 30-row per-file origin table, prototype results, and the full list of documents recording the stale measurement."
+      "type": "plan",
+      "path": "specs/642_restore_layer_measurement_for_language_directories/plans/01_restore-layer-measurement-language.md",
+      "summary": "Six-phase plan: per-file layer table with fail-loud layer_of and restored 7-line allowlist (atomic batch over both scripts), named syntax-before-semantics assertion, hand negative tests, core document updates, language READMEs and aggregator docstrings, whole-gate re-verification."
     }
   ],
-  "dispatch_seq": 18,
-  "next_steps": "Run /plan 642 to create implementation plan",
+  "dispatch_seq": 19,
+  "next_steps": "Run /implement 642 to execute the plan",
   "metadata": {
     "session_id": "sess_1790004043_997429_642",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 420,
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 7
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 5.5,
+    "dependency_waves": [[1], [2], [3], [4, 5], [6]]
   },
   "proposed_file_scope": [
     "scripts/measure-refactor-partitions.py",
@@ -28,22 +29,10 @@
     "docs/development/PUBLICATION_REFACTOR.md",
     "FormalSystem/MinusLanguage/README.md",
     "FormalSystem/PlusLanguage/README.md",
-    "FormalSystem/StarLanguage/README.md"
+    "FormalSystem/StarLanguage/README.md",
+    "FormalSystem/MinusLanguage.lean",
+    "FormalSystem/PlusLanguage.lean",
+    "FormalSystem/StarLanguage.lean"
   ],
-  "memory_candidates": [
-    {
-      "content": "When a directory merge moves files out of a measured layer table, an equality-asserted allowlist can empty because the edges stopped being measured rather than because they turned downward. Before accepting an emptied allowlist, enumerate the modules for which the layer lookup returns no value. A lookup that returns None for an unknown path makes this failure silent; raising for any path under the library root, and returning None only for foreign modules, makes the next new directory fail loudly instead.",
-      "category": "PATTERN",
-      "source_artifact": "specs/642_restore_layer_measurement_for_language_directories/reports/01_restore-layer-measurement-language.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["layer table", "allowlist", "vacuous pass", "import graph", "fail loudly", "measurement blind spot"]
-    },
-    {
-      "content": "To classify files in a merged directory without inviting a gerrymandered result, key each file on the directory it occupied before the merge, read from the merge commit's rename table (git show -M --name-status <commit>). A content judgement can be tuned until an inconvenient edge disappears; an origin rule cannot. Test a proposed single per-directory layer by measuring the upward set at every candidate value: if every value gives a non-empty set, the directory genuinely spans layers.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/642_restore_layer_measurement_for_language_directories/reports/01_restore-layer-measurement-language.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["git rename table", "directory merge", "layering", "classification rule", "upward edges"]
-    }
-  ]
+  "memory_candidates": []
 }
