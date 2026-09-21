@@ -9,7 +9,7 @@
     {
       "project_number": 630,
       "project_name": "move_tool_and_boneyard_relocation",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "topic": "publication-quality",
       "dependencies": [],
@@ -24,8 +24,8 @@
       ],
       "description": "Write scripts/move-modules.py (old-to-new module mapping plus optional namespace mapping; rewrites imports in FormalSystem/, Tests/ and the archive, dotted and slash paths in docs/, typst/ and the scripts/ manifests, namespace/open/FQN occurrences, the C2/C14 baselines and MainResults.lean; dry-run mode; ends by running check-module-invariants.sh --no-build). Then use it to move FormalSystem/Boneyard/ to a root-level Boneyard/ (module names Boneyard.*), update B0's search root and C11's scan root, add the two invariants ADR-010 names, and change ADR-010's status to Accepted with a pointer from ADR-009. Acceptance: lake build and lake build BimodalTest exit 0; check-module-invariants.sh green; no .olean under Boneyard/; the archive README's counts regenerate from the new location.\n\nReconciliation notes: no dependency edge to task 631 (deliverable hygiene): ADR-010 disclaims dependence on the frozen-LaTeX retirement Phase 1 performs, and Phase 1's own actions touch no path under FormalSystem/Boneyard/ -- either task may land first. Tasks 632 and 633 depend on this task, not on task 631.",
       "created": "2026-09-19T08:40:54Z",
-      "last_updated": "2026-09-21T01:55:26Z",
-      "session_id": "sess_1789955215_a3ad68",
+      "last_updated": "2026-09-21T01:55:59Z",
+      "session_id": "sess_1789955215_a3ad68_630",
       "artifacts": [
         {
           "path": "specs/630_move_tool_and_boneyard_relocation/reports/01_move-tool-boneyard-relocation.md",
@@ -346,13 +346,13 @@
     {
       "project_number": 626,
       "project_name": "repair_lplus_manuscript_citations_pin_blstar_semantics",
-      "status": "researched",
+      "status": "planned",
       "task_type": "general",
       "description": "Repair drifted manuscript citations in the L+ files and pin def:BLstar-semantics.\n\nWHAT IS WRONG (verified 2026-09-18). (a) FormalSystem/Syntax/PlusLanguage/Axioms.lean cites the manuscript by LINE NUMBER in about eight docstrings (\"paper line 1108\", \"paper footnote, line 1118\", \"line 1119\"); the manuscript /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex has moved, and the stability clause is now near line 1155 with its footnote near 1158-1161. FormalSystem/Semantics/PlusLanguage/PlusTruth.lean carries the same kind of citation. Line numbers will drift again; labels and quotable phrases will not. (b) docs/reference/paper-definitions-of-record.md records def:BLstar-semantics as LIVE-UNPINNED on the ground that the stability clause is quoted in this repository only in paraphrase. It has since been checked verbatim against the source: the clause \"M,tau,x satisfies Stability phi iff M,sigma,x satisfies phi for all sigma in <tau>_x\" appears in the subsection Restricted Modalities and again inside def:BLstar-semantics in the appendix, and it is PlusTruthAt's stab arm word for word, with StarTruthAt passing the register vector unchanged to sigma (specs/559_nondeterministic_canonical_model_tm_star_completeness/reports/04_semantics-first-task-frames.md section 3.2, items 3 and 4).\n\nDELIVER. (1) Replace every manuscript line-number citation in the two files by a label citation or a quotable phrase (def:BLstar-semantics; \"the footnote to the Stability clause\"); grep the rest of FormalSystem/Syntax/PlusLanguage, Semantics/PlusLanguage, Syntax/StarLanguage and Semantics/StarLanguage for the same pattern and fix what is found. (2) Pin def:BLstar-semantics in docs/reference/paper-definitions-of-record.md from the appendix block, following that file's existing row conventions, and update its KNOWN-ANCHORS row; keep the recorded exclusion of the world registers. (3) Add one docstring sentence at the stab_4 constructor: it is surplus to the manuscript's commented-out def:TM-stability, being derivable from SK, ST and the S5 schema, and is kept for convenience; say nothing stronger and do not remove the constructor. (4) Record, where the StarLanguage correspondence table already records the world registers as excluded, that the open-future, open-past and nomic operators of the subsection Restricted Modalities are manuscript operators without a formalization here (a separate task, 625, formalizes the first two; do not reference its number in any file outside specs/).\n\nCONSTRAINTS. Docstring and documentation edits only: no declaration, statement or proof changes. Run the repository's anchor gate (the C15 check in scripts/check-module-invariants.sh) and a guarded scoped build of the touched modules (bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- <Module>), detached, before completing. No task numbers in any file outside specs/. DEPENDENCIES: none.",
       "topic": "documentation",
       "dependencies": [],
       "created": "2026-09-19T00:49:20Z",
-      "last_updated": "2026-09-21T01:55:07Z",
+      "last_updated": "2026-09-21T02:01:40Z",
       "session_id": "sess_1789955215_a3ad68",
       "file_scope": [
         "FormalSystem/Semantics/PlusLanguage/PlusNonValidities.lean",
@@ -368,6 +368,11 @@
           "path": "specs/626_repair_lplus_manuscript_citations_pin_blstar_semantics/reports/01_repair-lplus-citations-pin-blstar.md",
           "type": "report",
           "summary": "Full 15-site citation-drift inventory, def:BLstar-semantics verbatim text and sha256, stab_4/def:TM-stability derivation fact, and StarLanguage README row guidance for the implementation phase."
+        },
+        {
+          "path": "specs/626_repair_lplus_manuscript_citations_pin_blstar_semantics/plans/01_repair-lplus-citations-pin-blstar.md",
+          "type": "plan",
+          "summary": "Six-phase plan with a citation replacement vocabulary table, per-phase Scope Hypothesis lines, and the C15 + check-paper-definitions + guarded scoped build gate set."
         }
       ],
       "next_artifact_number": 2
