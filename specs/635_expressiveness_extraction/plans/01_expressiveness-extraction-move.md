@@ -1,7 +1,7 @@
 # Implementation Plan: Extract the Expressiveness Development out of `WeakCanonical/`
 
 - **Task**: 635 - Extract the 141-file Expressiveness set into `Metalogic/Expressiveness/`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9 hours
 - **Dependencies**: task 634 (landed at `d3f912858`)
 - **Research Inputs**: `specs/635_expressiveness_extraction/reports/01_expressiveness-extraction-move.md`
@@ -577,7 +577,7 @@ command and comparing the printed value; none may be inferred from an exit code.
 
 ---
 
-### Phase 6: Rename the paper-numbered modules and delete the genuine stubs [IN PROGRESS]
+### Phase 6: Rename the paper-numbered modules and delete the genuine stubs [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Replace paper-artifact filenames with content names, and remove the two genuinely
 declaration-free stub modules, rewiring their importers.
@@ -588,7 +588,9 @@ declaration-free stub modules, rewiring their importers.
       files" is not mechanically reproducible — it comes from a hand-written inventory row
       (`docs/development/PUBLICATION_REFACTOR.md:63`) and no script produces it. The strict
       re-derivation gives **14** paper-numbered names, of which 2 are deleted in 6.2, leaving
-      **12 renames**. Proposed targets (each is a *proposal* — confirm against the file's headline
+      **12 renames**. *(deviation: altered — the strict re-derivation over the post-move tree
+      gives **15**, not 14: the plan missed `Kamp/Section5Correspondence.lean`. It is excluded
+      with evidence in the Reasoned Exclusions table below, so the rename count stands at 12.)* Proposed targets (each is a *proposal* — confirm against the file's headline
       declarations and check for a sibling collision **before** executing):
 
       | Current module (post-move) | Proposed content name | Headline content |
@@ -637,6 +639,7 @@ declaration-free stub modules, rewiring their importers.
 |---|---|---|
 | `Kamp/NfMultiAnchorBridge.lean` (413 ln, declaration-free) | Sibling re-export aggregator for `Kamp/NfMultiAnchorBridge/`; C8 requires it and `Kamp/KampPrior.lean:10` imports it. Not a stub. | `grep -rn 'import FormalSystem.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge$'` -> 1 importer; file body is an import block plus a documented split record. |
 | `Kamp/EANegationFix.lean` (35 ln, declaration-free) | Sibling re-export shim for `Kamp/EANegationFix/`, with 7 imports and a documented Phase-R1 split order. Two importers. **The research report's "delete 3, not 4" wrongly classes this as a true stub.** | `grep -rn 'import FormalSystem.Metalogic.WeakCanonical.Kamp.EANegationFix$'` -> `Kamp/NfMultiAnchorBridge.lean:221`, `Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean:8`; file body is 7 `import` lines plus the split docstring. |
+| `Kamp/Section5Correspondence.lean` | A 15th strictly paper-numbered name the plan's derivation of 14 missed. It is NOT renamed: it is a navigational guard module whose entire documented purpose is to be found by a reader searching for "Section 5". Its docstring states it exists "so that the next reader finds the correspondence instead of re-deriving it" after the material was re-planned from scratch by successive agents despite being present and sorry-free for thirteen months. Renaming it away from `Section5` would defeat the function it was written to serve. | File header: "**Read this before planning any Section 5 work.** Rabinovich's Section 5 ... is **already transcribed in this tree** ... It was discoverable by `grep` for thirteen months and was nonetheless re-planned from scratch"; the file is a correspondence table, CI-protected by reachability from `FormalSystem.lean`. |
 | The 12 "history-suffixed" modules (`EFSatNegationGeneral`, `NfDepth0Generalized`, `EANegationFix/{BoundedFix,NegFix,VecEANegFix}`, `NfMultiAnchorBridge/{AggregateOffDiagK1,AggregatePointMergeK1,ExteriorFiberKitK1,ExteriorNavFutK1,ExteriorNavPastK1,SubBracket2}`) | Not paper-numbered. Their names already describe content (`K1` is the arity k=1, `SubBracket2` the anchor-at-`x` sub-bracket, `BoundedFix` the Until/Since fold). The task's scope is paper-artifact names -> content names; these are already content names. | Docstring headings read e.g. "Off-diagonal k=1 aggregate: zone classifier + per-qnf dispatcher", "Since-navigated w-package `navPackLeft`" — content descriptions, not paper artifact numbers. |
 
 **Timing**: 1.5 hours
@@ -669,7 +672,7 @@ and by enumerating its importers with `grep -rn 'import <module>$'`.
 
 ---
 
-### Phase 7: Reconcile the programme docs, full verification, and take commit 2 [NOT STARTED]
+### Phase 7: Reconcile the programme docs, full verification, and take commit 2 [COMPLETED]
 
 **Goal**: Correct the unreproducible inventory figure, run the full build-inclusive harness, and
 land the renames as the second commit.
@@ -728,8 +731,10 @@ pre-existing baselines (21 broken refs, Check 1's 9). Confirm by re-running `rea
 - [ ] `bash scripts/check-metalogic-cycles.sh` reports exactly 1 cycle after each commit.
 - [ ] `bash scripts/check-module-invariants.sh` (build-inclusive, no `--no-build`) green after each
       of the two commits — this, not `lake build`, is the acceptance gate.
-- [ ] `find FormalSystem/Metalogic/Expressiveness -name '*.lean' | wc -l` == 141 and
+- [x] `find FormalSystem/Metalogic/Expressiveness -name '*.lean' | wc -l` == 141 and
       `find FormalSystem/Metalogic/WeakCanonical -name '*.lean' | wc -l` == 38.
+      *(deviation: altered — 141/38 after commit 1, then **139**/38 after commit 2, which deletes
+      the 2 declaration-free stubs. Both are the intended values at their respective commits.)*
 - [ ] No occurrence of `FormalSystem.Metalogic.WeakCanonical` survives inside
       `FormalSystem/Metalogic/Expressiveness/` except as a hand-reviewed reference to the residual
       development.
