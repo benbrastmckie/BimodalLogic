@@ -40,6 +40,8 @@ instantiate `Semantics/ValidityLayer.lean`.
 | File | Lines | Description |
 |------|------:|-------------|
 | `Formula.lean` | 214 | `QuantFormula` (the base language plus `all`), the derived operators (with `Formula`'s right-hand sides), the universal modality `univ` and its dual `exist`, the atom formula `isAtom`, the quantified recurrence sentence `qRec`, and the embedding `ofFormula` with `ofFormula_injective` and its `rfl` commutation pins |
+| `QuantInvariance.lean` | 120 | `pulledBack` — the lifted (clock-independent) propositions along a history-lifting map; `pullM_updateAtom` (by `rfl`); `lifted_invariance` — truth under the lifted family at the pulled-back model equals standard truth at the image history, along any history-lifting morphism |
+| `QuantRecurrence.lean` | 171 | `isAtom_iff` — under the standard semantics `Atom(p)` holds iff `p` is true at exactly one occurring world state (the `←` direction from `cor:occurrence`); `qRec_valid` and `qRec_defines` — the quantified recurrence sentence is valid on a frame iff the frame is `TaskFrame.RecurrenceFree`; `standard_not_invariant` — standard quantifier truth is not invariant along a history-lifting morphism from a recurrence-free frame onto a frame with recurrence |
 | `QuantTruth.lean` | 265 | `TaskModel.updateAtom` with `updateAtom_valuation_self` and `updateAtom_valuation_of_ne`; `QuantTruthAt` — the seven-clause truth recursion relative to an admissible family `Set (Set WorldState)`; the `TruthEnv` and `UntlClauses` instances (the family is the inert environment); the `QuantTruth.*` clause lemmas (`all_iff`, `univ_iff`, `exist_iff` and the inherited derived-operator clauses); `quantTruthAt_ofFormula` |
 <!-- END GENERATED -->
 
@@ -58,6 +60,11 @@ exclusion. Anchors are cited by `\label` or by a quotable phrase, never by line 
 | the propositional quantifier (no paper anchor) | `∀p φ` re-interprets `p` by every admissible set of world states | `QuantFormula.all` (`Formula.lean`); the `all` clause of `QuantTruthAt`, `QuantTruth.all_iff` (`QuantTruth.lean`) — **formalization-native** |
 | `def:world-history` (world histories are total) | `A φ := □△φ` ranges over every history and every time | `QuantFormula.univ`, `QuantFormula.exist`; `QuantTruth.univ_iff`, `QuantTruth.exist_iff` — the definability is **formalization-native**; totality is the manuscript's |
 | conservativity over L (no paper anchor) | a formula of the base language is true in the quantifier language iff it is true in L, whatever the admissible family | `QuantFormula.ofFormula`, `ofFormula_injective` (`Formula.lean`); `quantTruthAt_ofFormula` (`QuantTruth.lean`) — **formalization-native** |
+| invisibility of quantifiers over lifted propositions (no paper anchor) | when `∀p` ranges over the preimages of state sets along a history-lifting morphism, truth is invariant along it | `pulledBack`, `pullM_updateAtom`, `lifted_invariance` (`QuantInvariance.lean`) — **formalization-native** |
+| `cor:occurrence` | every world state occurs at any prescribed time in some possible world | consumed by `isAtom_iff` (`QuantRecurrence.lean`) through `PartialHistory.occurrence`, to obtain `E p` from a world state satisfying `p` |
+| the atom formula (no paper anchor) | under the standard semantics `E p ∧ ∀q (A(p → q) ∨ A(p → ¬q))` says that `p` is true at exactly one occurring world state | `QuantFormula.isAtom`, `isAtom_iff` — **formalization-native**; it names a **world state**, not an instant |
+| `sub:WorldStates`, "taking world states to be strictly ordered prevents the same world state from occurring more than once in any history" | recurrence is what a world state admits and an instant does not | `qRec_valid`, `qRec_defines` (`QuantRecurrence.lean`): `∀p (Atom(p) → ¬(p ∧ (P p ∨ F p)))` is valid on a frame iff no world history visits a world state twice — the definability is **formalization-native** |
+| standard quantifiers are visible (no paper anchor) | standard quantifier truth is not invariant along a history-lifting morphism from a recurrence-free frame onto a frame with recurrence | `standard_not_invariant` (`QuantRecurrence.lean`), the contrast with `lifted_invariance` — **formalization-native** |
 
 ## Module Invariants
 
@@ -70,7 +77,7 @@ directory needs a row in that table.**
 
 ## References
 
-* JPL paper — `def:BL-semantics`, `def:world-history`
+* JPL paper — `def:BL-semantics`, `def:world-history`, `cor:occurrence`, `sub:WorldStates`
 * `FormalSystem/Semantics/HistoryMorphism.lean` — history-lifting morphisms and
   recurrence-freeness
 * `FormalSystem/HybridLanguage/README.md` — the sibling component, which names world states by

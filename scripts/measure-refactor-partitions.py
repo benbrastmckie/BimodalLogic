@@ -208,7 +208,7 @@ LANGUAGE_FILE_LAYERS = {
     },
     "QuantLanguage": {
         "Formula": 0,
-        "QuantTruth": 1,
+        "QuantInvariance": 1, "QuantRecurrence": 1, "QuantTruth": 1,
     },
 }
 

@@ -5,6 +5,8 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.QuantLanguage.Formula
+import FormalSystem.QuantLanguage.QuantInvariance
+import FormalSystem.QuantLanguage.QuantRecurrence
 import FormalSystem.QuantLanguage.QuantTruth
 
 /-!
@@ -38,6 +40,13 @@ relation.
 - `QuantLanguage.QuantTruth` — `TaskModel.updateAtom`; `QuantTruthAt`, the truth recursion
   relative to an admissible family; the clause lemmas, among them `all_iff` and `univ_iff`;
   truth-level conservativity over L (`quantTruthAt_ofFormula`)
+- `QuantLanguage.QuantInvariance` — `pulledBack`, the lifted propositions along a history-lifting
+  map; `lifted_invariance`: when the quantifier ranges over the lifted propositions only, truth is
+  invariant along any history-lifting morphism, so such quantifiers see no recurrence
+- `QuantLanguage.QuantRecurrence` — under the standard semantics the atom formula names a world
+  state (`isAtom_iff`), the quantified recurrence sentence defines recurrence-freeness
+  (`qRec_defines`), and quantifier truth is not invariant along a history-lifting morphism from a
+  recurrence-free frame onto a frame with recurrence (`standard_not_invariant`)
 
 ## Design decisions
 
@@ -83,6 +92,8 @@ row there.
 ## References
 
 * JPL paper `def:BL-semantics` — the base clauses; a sentence letter denotes a set of world states
+* JPL paper `cor:occurrence` — every world state occurs in some possible world, consumed by
+  `isAtom_iff`
 * `FormalSystem/Semantics/HistoryMorphism.lean` — history-lifting morphisms and
   recurrence-freeness
 * `FormalSystem/HybridLanguage.lean` — the sibling component, which names world states by

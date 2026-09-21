@@ -444,6 +444,8 @@ import FormalSystem.ProofSystem.DerivedAxioms
 import FormalSystem.ProofSystem.LinearityDerivedFacts
 import FormalSystem.QuantLanguage
 import FormalSystem.QuantLanguage.Formula
+import FormalSystem.QuantLanguage.QuantInvariance
+import FormalSystem.QuantLanguage.QuantRecurrence
 import FormalSystem.QuantLanguage.QuantTruth
 import FormalSystem.Semantics
 import FormalSystem.Semantics.ConvexTruth

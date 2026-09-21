@@ -498,26 +498,26 @@ admissible family and conservativity over L.
 
 ---
 
-### Phase 8: Q1 and Q3 for quantifiers - lifted invariance, the atom formula, recurrence [NOT STARTED]
+### Phase 8: Q1 and Q3 for quantifiers - lifted invariance, the atom formula, recurrence [COMPLETED]
 
 **Goal**: Quantifiers over lifted propositions are invisible; standard quantifiers manufacture a
 state nominal and so see recurrence.
 
 **Tasks**:
-- [ ] `FormalSystem/QuantLanguage/QuantInvariance.lean`: `pulledBack`, `pullM_updateAtom`
+- [x] `FormalSystem/QuantLanguage/QuantInvariance.lean`: `pulledBack`, `pullM_updateAtom`
   (`TaskModel` extensionality then `rfl`, or `rfl` outright), `lifted_invariance` by induction
   (probe lines 692-729 with `pullM_updateAtom` for `pullV_update`).
-- [ ] `FormalSystem/QuantLanguage/QuantRecurrence.lean`, importing
+- [x] `FormalSystem/QuantLanguage/QuantRecurrence.lean`, importing
   `FormalSystem.Semantics.Extension.Extension` for `PartialHistory.occurrence`: `isAtom_iff`
   (probe 781-799; `→` instantiates the quantifier at the singleton of the witness state, `←` gets
   `E p` from `cor:occurrence` and chooses the disjunct by `w ∈ S`; `hpq` is used exactly where the
   probe used `n ≠ n + 1`), `qRec_valid`, `qRec_defines`, `standard_not_invariant` (probe 802-852).
-- [ ] Docstrings: `isAtom_iff` is the world-proposition construction read over sets of world
+- [x] Docstrings: `isAtom_iff` is the world-proposition construction read over sets of world
   states, so it names a **world state**, not an instant, and thereby exhibits what an instant
   cannot - recurrence; cite the manuscript's discussion in `sub:WorldStates` by quotable phrase
   rather than any work the corpus does not hold. `lifted_invariance` versus
   `standard_not_invariant` is the contrast the admissible family exists to state.
-- [ ] Layer rows, aggregator imports, root, inventory, README correspondence rows.
+- [x] Layer rows, aggregator imports, root, inventory, README correspondence rows.
 
 **Timing**: 2 hours
 
