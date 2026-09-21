@@ -1,0 +1,16 @@
+{
+  "phase": 1,
+  "phase_name": "Fixture harness scaffolding",
+  "started_at": "2026-09-21T09:05:00Z",
+  "last_updated": "2026-09-21T09:15:00Z",
+  "objectives": [
+    {"id": 1, "description": "Baseline check-module-invariants.sh --no-build before any change", "status": "done", "files_touched": [],
+     "note": "GREEN: ALL CHECKS PASSED (rc=0, 17.7s). Harness last commit at baseline: 18799fcd9. Any later redness is therefore this task's or a sibling's in-flight edit, not pre-existing."},
+    {"id": 2, "description": "scripts/test-move-modules.py harness: importlib loader, fixture_repo, run_tool, write_map, snapshot, baseline smoke test", "status": "done", "files_touched": ["scripts/test-move-modules.py"]},
+    {"id": 3, "description": "scripts/README.md row", "status": "done", "files_touched": ["scripts/README.md"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}

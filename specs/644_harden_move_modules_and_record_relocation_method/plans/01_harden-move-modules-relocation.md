@@ -1,7 +1,7 @@
 # Implementation Plan: Harden move-modules and record relocation method
 
 - **Task**: 644 - Harden move-modules and record relocation method
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/644_harden_move_modules_and_record_relocation_method/reports/01_harden-move-modules-relocation.md
@@ -278,7 +278,7 @@ therefore strictly serialized.
 
 ---
 
-### Phase 1: Fixture harness scaffolding [NOT STARTED]
+### Phase 1: Fixture harness scaffolding [COMPLETED]
 
 **Goal**: A stdlib-only test harness at `scripts/test-move-modules.py` that can build a
 disposable git repo, invoke `move-modules.py`'s `run()` in process, capture stdout/stderr, and
@@ -287,37 +287,37 @@ today's unmodified tool.
 
 **Tasks**:
 
-- [ ] Capture a baseline `bash scripts/check-module-invariants.sh --no-build` result before any
+- [x] Capture a baseline `bash scripts/check-module-invariants.sh --no-build` result before any
       change and record the outcome (green/red, and which checks if red) in the progress file,
       together with `git log -1 --format=%h -- scripts/check-module-invariants.sh`, so Phase 7 can
-      tell this task's redness from a sibling's in-flight harness edit (R5).
-- [ ] Create `scripts/test-move-modules.py` using stdlib `unittest` only; runnable as
-      `python3 scripts/test-move-modules.py`.
-- [ ] Load the tool with `importlib.util.spec_from_file_location("move_modules", <abs path>)` —
+      tell this task's redness from a sibling's in-flight harness edit (R5). *(completed)*
+- [x] Create `scripts/test-move-modules.py` using stdlib `unittest` only; runnable as
+      `python3 scripts/test-move-modules.py`. *(completed)*
+- [x] Load the tool with `importlib.util.spec_from_file_location("move_modules", <abs path>)` —
       the hyphen in the filename makes a plain `import` impossible. Resolve the absolute path
       from `__file__` at import time, BEFORE any `os.chdir`, and keep the repository root in a
-      module-level constant for Phase 7's replay test.
-- [ ] Implement a `fixture_repo(files: dict[str, str])` context manager: `tempfile.TemporaryDirectory()`,
+      module-level constant for Phase 7's replay test. *(completed)*
+- [x] Implement a `fixture_repo(files: dict[str, str])` context manager: `tempfile.TemporaryDirectory()`,
       write each file (creating parents), `git init -q`, `git -c user.email=... -c user.name=... add`
       + `commit -q`, `os.chdir` in and restore the original CWD on exit (in a `finally`). `run()`
-      walks `.` and `move_trees` shells out to `git mv`, so a real git repo at the CWD is required.
-- [ ] Implement a single centralized `run_tool(**overrides) -> tuple[int, str, str]` helper that
+      walks `.` and `move_trees` shells out to `git mv`, so a real git repo at the CWD is required. *(completed)*
+- [x] Implement a single centralized `run_tool(**overrides) -> tuple[int, str, str]` helper that
       builds the `argparse.Namespace` with every current flag defaulted
       (`module_map`, `namespace_map=None`, `dry_run=False`, `no_verify=True`) and captures output
       via `contextlib.redirect_stdout`/`redirect_stderr` around `move_modules.run(args)`. It must
       catch `SystemExit` and translate it into a return code plus the message on stderr —
       `parse_map` reports a malformed map with `sys.exit(str)`. Every later phase adds its new
-      flag's default in this one place.
-- [ ] Add a `write_map(lines)` helper producing a temporary `old -> new` mapping file OUTSIDE the
+      flag's default in this one place. *(completed)*
+- [x] Add a `write_map(lines)` helper producing a temporary `old -> new` mapping file OUTSIDE the
       fixture repo's walked tree (a second temp directory), so a map file is never itself a
-      rewrite or detector target.
-- [ ] Add a `snapshot(paths)` helper returning `{path: bytes}` for byte-identity assertions; four
-      later tests assert "nothing was written".
-- [ ] Add one baseline smoke test: a fixture with `FormalSystem/Foo/Bar.lean`, a citing
+      rewrite or detector target. *(completed)*
+- [x] Add a `snapshot(paths)` helper returning `{path: bytes}` for byte-identity assertions; four
+      later tests assert "nothing was written". *(completed)*
+- [x] Add one baseline smoke test: a fixture with `FormalSystem/Foo/Bar.lean`, a citing
       `docs/x.md` (dotted and slash forms) and a citing `FormalSystem/Other.lean` import line;
-      assert `rc == 0`, non-zero class 1/2/3 counts in the report, and the file actually moved.
-- [ ] Add the `test-move-modules.py` row to `scripts/README.md` (that file states every script
-      under `scripts/` is named in it), next to the existing `move-modules.py` row.
+      assert `rc == 0`, non-zero class 1/2/3 counts in the report, and the file actually moved. *(completed)*
+- [x] Add the `test-move-modules.py` row to `scripts/README.md` (that file states every script
+      under `scripts/` is named in it), next to the existing `move-modules.py` row. *(completed)*
 
 **Timing**: 1.5 hours
 
