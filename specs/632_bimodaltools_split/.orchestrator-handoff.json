@@ -1,20 +1,21 @@
 {
-  "task_number": 632,
-  "phase": "plan",
-  "dispatch_seq": 8,
-  "status": "planned",
-  "session_id": "sess_1789955215_a3ad68_632",
-  "agent_type": "planner-agent",
-  "phases_completed": 0,
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 9,
+  "summary": "Split the 25 tooling modules (14,527 lines) and 8 tooling tests out of FormalSystem into lean_lib BimodalTools and lean_lib BimodalToolsTest, both outside defaultTargets, with the 12 lean_exe targets re-rooted under BimodalTools.* and a new one-way B3 import invariant. All 9 plan phases COMPLETED; full invariant harness reports 0 FAIL and a default lake build emits no .olean under BimodalTools.",
+  "phases_completed": 9,
   "phases_total": 9,
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/632_bimodaltools_split/summaries/01_bimodaltools-library-split-summary.md",
+      "summary": "Implementation summary: what moved, the decisions, every plan deviation, and the captured acceptance evidence."
+    },
+    {
       "type": "plan",
       "path": "specs/632_bimodaltools_split/plans/01_bimodaltools-library-split.md",
-      "summary": "Nine-phase plan splitting 25 tooling modules into lean_lib BimodalTools, sequenced so every gate's scan root is widened and the B3 separation invariant lands before anything moves."
+      "summary": "Nine-phase plan, all phases [COMPLETED], with inline deviation annotations on the affected checklist items."
     }
   ],
-  "summary": "Plan complete: 9 phases, 11.5 hours, 8 dependency waves. The central structural commitment is that Phases 2-4 widen every hardcoded gate scan root and Phase 3 adds the new B3 separation invariant BEFORE anything moves, so each widening is a verifiable no-op on the unmoved tree and the invariant guards the move rather than describing its outcome; C25N and B3 each carry a negative test. Phase 6 is the only atomic-batch phase (the tree does not build between the move-modules.py run, the 8 Automation.lean import deletions, the aggregator re-points, the 12 exe re-roots and the namespace hand-edits) and is preceded by a dry-run review phase and a clean-tree precondition on FormalSystem/Automation/. Phases 7-9 close the 11 bare-form citations move-modules.py will not rewrite, split NormalizationTest rather than moving it, and assert all four acceptance criteria -- including the .olean check against .lake/build/lib/lean/BimodalTools/ rather than the source tree, which would be empty for the wrong reason. Plan passes validate-artifact.sh --strict with 0 warnings.",
-  "next_phase": "implement",
   "blockers": []
 }

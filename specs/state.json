@@ -104,7 +104,7 @@
     {
       "project_number": 632,
       "project_name": "bimodaltools_split",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "publication-quality",
       "dependencies": [
@@ -121,7 +121,7 @@
       ],
       "description": "Create lean_lib BimodalTools (outside defaultTargets) and BimodalToolsTest; move the 25 tooling modules that python3 scripts/measure-refactor-partitions.py automation-partition lists (including Metalogic/Decidability/TraceExport.lean) and re-root the 12 lean_exe targets under BimodalTools.*; move the tooling tests it lists into BimodalToolsTest; make Examples/BimodalProofs.lean import specific Automation modules; decide SuccessPatterns' split; update the CI exe-root step, typst-module-map.sh and the automation-module-map generator. Acceptance: lake build writes no .olean under BimodalTools/; a new check asserts FormalSystem never imports BimodalTools; lake build BimodalToolsTest exits 0 in CI; harness green.\n\nReconciliation notes: depends on task 630 only. Dispatch after tasks 298, 296 and 282 land (all three currently edit FormalSystem/Automation/ in-flight) -- this is a scheduling recommendation, not a dependency edge, so this task's own dependency array does not block on their completion. Task 231's lake exe target names are unchanged by this split (no edge needed). Task 604 depends on this task (see task 631's notes).",
       "created": "2026-09-19T08:40:54Z",
-      "last_updated": "2026-09-21T03:49:25Z",
+      "last_updated": "2026-09-21T04:43:48Z",
       "session_id": "sess_1789955215_a3ad68",
       "artifacts": [
         {
@@ -133,9 +133,19 @@
           "path": "specs/632_bimodaltools_split/plans/01_bimodaltools-library-split.md",
           "type": "plan",
           "summary": "Nine-phase plan splitting 25 tooling modules into lean_lib BimodalTools, sequenced so every gate's scan root is widened and the B3 separation invariant lands before anything moves."
+        },
+        {
+          "path": "specs/632_bimodaltools_split/summaries/01_bimodaltools-library-split-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: what moved, the decisions, every plan deviation, and the captured acceptance evidence."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Relocated the 25 tooling modules (14,527 lines) and 8 tooling tests out of the published FormalSystem library into lean_lib BimodalTools and lean_lib BimodalToolsTest, both outside defaultTargets, re-rooting the 12 lean_exe targets under BimodalTools.* with their names unchanged. Every harness and CI gate that hardcoded FormalSystem as a scan root was widened and negative-tested BEFORE the move, and a new B3 invariant asserts the split is one-way. A default lake build now emits no .olean under BimodalTools; the partition script reports an empty tooling set; the full invariant harness reports 0 FAIL.",
+      "roadmap_items": [
+        "docs/development/PUBLICATION_REFACTOR.md Phase 3 discharged",
+        "PUBLICATION_REFACTOR.md Phase 4's `cut ProofSearch.Core -> SuccessPatterns` bullet superseded and recorded as a no-op"
+      ]
     },
     {
       "project_number": 633,
