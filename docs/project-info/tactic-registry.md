@@ -15,7 +15,7 @@ This registry provides a high-level view of tactic implementation status across 
 | `apply_axiom` | Apply TM axiom by unification | ✅ Complete | `FormalSystem/Automation/Tactics/UserTactics.lean` |
 | `modal_t` | Apply axiom MT (□φ → φ) | ✅ Complete | `FormalSystem/Automation/Tactics/UserTactics.lean` |
 | `assumption_search` | Search context for matching assumption | ✅ Complete | `FormalSystem/Automation/Tactics/UserTactics.lean` |
-| `propDecide` | Reflective propositional tautology decision | ✅ Complete | `FormalSystem/Automation/Tactics/PropDecide.lean` |
+| `propDecide` | Reflective propositional tautology decision | ✅ Complete | `FormalSystem/Metalogic/Decidability/Propositional/Tactic.lean` |
 | `deduction` | Apply the deduction theorem `n` times | ✅ Complete | `FormalSystem/Automation/Tactics/Deduction.lean` |
 | `undischarge` | Reverse-direction deduction theorem application | ✅ Complete | `FormalSystem/Automation/Tactics/Deduction.lean` |
 | `s5_simp` | Simplify S5 modal formulas | 📋 Planned | N/A |

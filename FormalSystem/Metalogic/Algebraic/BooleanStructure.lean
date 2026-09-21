@@ -5,7 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Algebraic.LindenbaumQuotient
-import FormalSystem.Automation.Tactics.PropDecide
+import FormalSystem.Metalogic.Decidability.Propositional.Tactic
 import Mathlib.Order.BooleanAlgebra.Defs
 import Mathlib.Order.BooleanAlgebra.Basic
 

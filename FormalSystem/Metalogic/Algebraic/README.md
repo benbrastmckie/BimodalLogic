@@ -222,7 +222,7 @@ exactly the TODO's name and shape.
 
 **`propDecide` in `BooleanStructure.lean`.** The lattice and complement laws of the Boolean
 algebra are closed propositional tautologies over the representatives, so `BooleanStructure.lean`
-imports `FormalSystem.Automation.Tactics.PropDecide` and discharges them by
+imports `FormalSystem.Metalogic.Decidability.Propositional.Tactic` and discharges them by
 `induction … using Quotient.ind with | _ φ =>` / `change Derives …` / `unfold Derives` /
 `propDecide`. The three hypothesis-driven laws (`le_inf_quot`, `sup_le_quot`; `le_trans_quot` was
 already minimal) state their conditional form as a closed tautology, close it with `propDecide`,
@@ -296,7 +296,7 @@ This directory additionally provides:
 - **Mathlib**: `BooleanAlgebra`, `Quotient`, `Multiset.inf`, `Order.PFilter` / `Order.PFilter.IsPrime`
   (`Mathlib/Order/PrimeIdeal.lean`), `Mathlib/Order/PrimeSeparator.lean`
 - **ProofChecker**: `FormalSystem.ProofSystem`, `FormalSystem.Metalogic.Core`,
-  `FormalSystem.ForMathlib.Order.PFilter`, `FormalSystem.Automation.Tactics.PropDecide`
+  `FormalSystem.ForMathlib.Order.PFilter`, `FormalSystem.Metalogic.Decidability.Propositional.Tactic`
 
 ## Related Documentation
 

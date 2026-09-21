@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Init
 import FormalSystem.Tactic.Attr
+import FormalSystem.Tactic.Meta
 
 /-!
 # FormalSystem.Tactic — the library's layer-0 metaprogramming directory
@@ -20,6 +21,13 @@ of a mathematical dependency.
   `reflect_time_norm`, `formula_unfold`, `formula_fold`, `@[tmLemma]`). Imports `Lean` only.
   `FormalSystem/Init.lean` imports it, so every module in the library inherits the declarations
   transitively and nothing imports it directly.
+- `Tactic.Meta`: the shared `MetaM` plumbing for derivability goals — goal recognition,
+  head-symbol readers, context rebuilding. Ordinary metaprogramming, imported directly by the
+  tactic modules that use it (`Automation/Tactics/{Commands,Search}.lean` and
+  `Metalogic/Decidability/Propositional/Tactic.lean`). It carries none of `Attr.lean`'s
+  attributes-only constraint: it imports `FormalSystem.ProofSystem` and reaches `Init` normally.
+  It is here because its consumers are spread across `Automation/` and `Metalogic/` and it has no
+  natural home above either.
 
 ## Why this aggregator imports `FormalSystem.Init`
 

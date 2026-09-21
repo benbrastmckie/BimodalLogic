@@ -45,7 +45,7 @@ Four user-facing tactics automate common derivation patterns.
   #item[`modal_search` (`Tactics/Commands.lean`) -- the single proof-search entry point. Three syntax forms: `modal_search` alone (default depth 10, visitLimit 1000), a bare custom depth (`modal_search 5`), and named parameters (`modal_search (depth := 20)`, or `modal_search (depth := 20) (visitLimit := 2000)` for both). It runs the bounded search engine below (@sec:proof-search-engine).]
 ]
 
-Two further tactics round out the surface: `deduction`/`deduction n`/`undischarge` (`Tactics/Deduction.lean`) apply the frame-class-polymorphic deduction theorem to transform a goal `Γ ⊢[fc] A → B` into `(A :: Γ) ⊢[fc] B` and back, built on `apply` rather than a syntactic match so it sees through `def`s like `Formula.neg`; and `propDecide` (`Tactics/PropDecide.lean`) reflectively decides any derivability goal whose implication/bot skeleton is a propositional tautology, reifying non-imp/bot subterms as opaque `PropForm` variables and closing with the kernel `decide` tactic (never `native_decide`).
+Two further tactics round out the surface: `deduction`/`deduction n`/`undischarge` (`Tactics/Deduction.lean`) apply the frame-class-polymorphic deduction theorem to transform a goal `Γ ⊢[fc] A → B` into `(A :: Γ) ⊢[fc] B` and back, built on `apply` rather than a syntactic match so it sees through `def`s like `Formula.neg`; and `propDecide` (`Metalogic/Decidability/Propositional/Tactic.lean`) reflectively decides any derivability goal whose implication/bot skeleton is a propositional tautology, reifying non-imp/bot subterms as opaque `PropForm` variables and closing with the kernel `decide` tactic (never `native_decide`).
 
 `modal_search` is the sole survivor of what were once four search-entry tactics: per `FormalSystem/Automation.lean`'s module docstring, it "replaced `temporal_search`, `propositional_search` and `tm_auto`, which differed from it only in `SearchConfig` weight fields that `searchProof` never read, and which have been removed."
 
@@ -107,13 +107,13 @@ The loop is deliberately conservative: patterns only ever *reorder* the search f
 `EFGameTactics.lean` (331 lines, sorry-free), at `FormalSystem/Metalogic/WeakCanonical/EFGameTactics.lean` (not under `Automation/`), is a narrower-purpose module: tactic macros (`simp_game_tuple`, `game_tuple_unfold`) plus pivot-order (`pivot_chain_order'`) and winning-condition (`winning_condition_tac`) helpers automating repetitive steps in the `WeakCanonical/EFGames` Ehrenfeucht-Fraïssé game infrastructure, built specifically for the Gabbay-Hodkinson-Reynolds expressive-completeness proof technique @gabbayhodkinsonreynolds1994.
 The module belongs to the discrete-case expressiveness infrastructure of the metalogic chapter: the GHR EF-game technique is the classical descendant of Kamp-style expressive-completeness arguments @kamp1971formalproperties for temporal logic over linear orders, and `EFGameTactics.lean` automates the game-position bookkeeping that technique requires.
 
+Two further modules of the tactic surface sit outside `Automation/` as well, and so have no row in the map below. `propDecide` is `FormalSystem/Metalogic/Decidability/Propositional/Tactic.lean`, placed beside the Kalmar soundness theorem it applies; the shared `MetaM` plumbing both it and `Tactics/Commands.lean` read is `FormalSystem/Tactic/Meta.lean`, at the library's layer 0 because its consumers are spread across `Automation/` and `Metalogic/`. `FormalSystem/Automation.lean` still imports the propositional tactic, so the user-facing surface is unchanged: only the file locations differ.
+
 == Module Map
 
 #let roles = (
   "Tactics/Commands.lean": [The `modal_search` tactic: its `SearchConfig`, its two syntax forms, and the elaborators that run the search],
   "Tactics/Deduction.lean": [`deduction`, `deduction n`, `undischarge`: frame-class-polymorphic applications of `deductionTheorem`],
-  "Tactics/Meta.lean": [Shared `MetaM` plumbing for derivability goals: goal recognition, head-symbol readers, context rebuilding],
-  "Tactics/PropDecide.lean": [`propDecide`: reflective tautology tactic for the propositional fragment],
   "Tactics/Search.lean": [The bounded proof-search engine behind `modal_search`: `searchProof` and its five strategies, in `TacticM` because `Axiom` is `Prop`-valued and `DerivationTree` is `Type`-valued],
   "Tactics/UserTactics.lean": [The hand-written tactics -- `apply_axiom`, `modal_t`, `assumption_search` -- and the `Formula` predicates deciding when they apply],
   "ProofSearch/Core.lean": [`boundedSearch`, `iddfsSearch`, heuristic scoring, memoization -- the larger search engine reached from `decide`'s fast path, not from any tactic],

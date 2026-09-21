@@ -18,11 +18,12 @@ import Lean
 The tactics a proof author writes by hand, plus the four `Formula` predicates and extractors
 that decide when they apply. This is one of the three files that replaced the 1,210-line
 `Tactics/Helpers.lean`; the other two are
-[`Meta.lean`](Meta.lean) (the reusable `MetaM` plumbing) and [`Search.lean`](Search.lean) (the
-proof-search engine). The split was made because those three concerns had different consumers
-and only the middle one was actually reused: `PropDecide.lean` and `Commands.lean` both reach
-into `Meta.lean`, `Commands.lean` alone reaches into `Search.lean`, and nothing outside this
-file uses what is here.
+[`Meta.lean`](../../Tactic/Meta.lean) (the reusable `MetaM` plumbing, since relocated to layer 0)
+and [`Search.lean`](Search.lean) (the proof-search engine). The split was made because those
+three concerns had different consumers and only the middle one was actually reused:
+`Metalogic/Decidability/Propositional/Tactic.lean` and `Commands.lean` both reach into
+`Meta.lean`, `Commands.lean` alone reaches into `Search.lean`, and nothing outside this file
+uses what is here.
 
 Nothing in this file imports either of the other two, and neither imports this one. The three
 declaration sets are disjoint.

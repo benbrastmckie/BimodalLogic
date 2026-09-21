@@ -16,10 +16,8 @@
   ("SuccessPatterns.lean", 417, true),
   ("Tactics/Commands.lean", 160, true),
   ("Tactics/Deduction.lean", 181, true),
-  ("Tactics/Meta.lean", 99, true),
-  ("Tactics/PropDecide.lean", 158, true),
   ("Tactics/Search.lean", 624, true),
-  ("Tactics/UserTactics.lean", 273, true),
+  ("Tactics/UserTactics.lean", 274, true),
 )
 
-#let automation-module-total = 3577
+#let automation-module-total = 3321

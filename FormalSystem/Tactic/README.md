@@ -10,6 +10,7 @@ dependency.
 | File | Lines | Description |
 |------|------:|-------------|
 | `Attr.lean` | 104 | Every attribute and named simp set the library uses: `truth_norm`, `reflect_time_norm`, `formula_unfold`, `formula_fold`, `@[tmLemma]` |
+| `Meta.lean` | 119 | Shared `MetaM` plumbing for derivability goals: goal recognition, head-symbol readers, context rebuilding |
 <!-- END GENERATED -->
 
 ## The `Attr.lean` constraint
@@ -33,6 +34,20 @@ Because `Init` carries the declarations on every module's behalf, nothing in the
 `import FormalSystem.Automation.{TruthNormAttr,NormalizationAttr,LemmaDB}` lines that `Syntax/`,
 `Semantics/`, `ProofSystem/` and `Theorems/` used to carry were deleted outright when these
 declarations moved here.
+
+## `Meta.lean` carries no such constraint
+
+`Meta.lean` is ordinary metaprogramming: the shared `MetaM` plumbing for derivability goals —
+goal recognition, head-symbol readers, context rebuilding. It imports `FormalSystem.ProofSystem`
+and `Lean`, reaches `FormalSystem.Init` in the usual way, needs no C24 exception, and is imported
+by name at each of its three consumers (`Automation/Tactics/{Commands,Search}.lean` and
+`Metalogic/Decidability/Propositional/Tactic.lean`).
+
+It is in this directory for a different reason from `Attr.lean`: not a compilation-unit
+constraint, but the absence of a natural home. Its consumers are spread across `Automation/` and
+`Metalogic/`, so leaving it under `Automation/Tactics/` meant relocating `propDecide` into
+`Metalogic/Decidability/Propositional/` would merely have traded one `Metalogic -> Automation`
+import line for another.
 
 ## Related Documentation
 

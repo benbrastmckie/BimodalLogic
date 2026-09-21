@@ -6,7 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Automation.Tactics.UserTactics
 import FormalSystem.Automation.Tactics.Commands
-import FormalSystem.Automation.Tactics.PropDecide
+import FormalSystem.Metalogic.Decidability.Propositional.Tactic
 import FormalSystem.Automation.ProofSearch.Core
 import FormalSystem.Automation.ProofSearch.Strategies
 import FormalSystem.Automation.SuccessPatterns

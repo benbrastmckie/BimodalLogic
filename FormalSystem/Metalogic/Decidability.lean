@@ -16,6 +16,7 @@ import FormalSystem.Metalogic.Decidability.IntPresentation
 import FormalSystem.Metalogic.Decidability.Propositional.PropForm
 import FormalSystem.Metalogic.Decidability.Propositional.Kalmar
 import FormalSystem.Metalogic.Decidability.Propositional.Decidable
+import FormalSystem.Metalogic.Decidability.Propositional.Tactic
 import FormalSystem.Metalogic.Decidability.Verified.RuleSpec
 import FormalSystem.Metalogic.Decidability.Verified.Termination.SubformulaProperty
 import FormalSystem.Metalogic.Decidability.Verified.Termination.TimeTypeBound

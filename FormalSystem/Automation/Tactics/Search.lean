@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Automation.Tactics.Meta
+import FormalSystem.Tactic.Meta
 import FormalSystem.Theorems.GeneralizedNecessitation
 import FormalSystem.Theorems.Propositional.Reasoning
 import FormalSystem.Theorems.TemporalDerived
@@ -26,8 +26,9 @@ cannot be written, and the same mismatch is why Aesop's proof reconstruction doe
 these goals.
 
 This is the third of the three files that replaced the 1,210-line `Tactics/Helpers.lean`,
-alongside [`UserTactics.lean`](UserTactics.lean) and [`Meta.lean`](Meta.lean). It imports
-`Meta.lean` and nothing else from the trio.
+alongside [`UserTactics.lean`](UserTactics.lean) and
+[`Meta.lean`](../../Tactic/Meta.lean), which now sits at layer 0 because tactics under both
+`Automation/` and `Metalogic/` consume it. It imports `Meta.lean` and nothing else from the trio.
 
 **Open question, recorded rather than acted on.** `FormalSystem/Automation/ProofSearch/` is a
 second, larger search engine with its own strategies, its own weights (which it actually reads)

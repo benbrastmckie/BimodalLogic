@@ -19,6 +19,22 @@
 # or removed module under these globs therefore changes the live
 # regeneration automatically, so Check 2 fails loudly instead of drifting.
 #
+# TWO TACTIC MODULES ARE DELIBERATELY OUT OF GLOB SCOPE, and the chapter
+# narrates both the way it already narrates EFGameTactics.lean:
+#   * `propDecide` is FormalSystem/Metalogic/Decidability/Propositional/Tactic.lean,
+#     beside the Kalmar soundness theorem it applies. Keeping it under
+#     Automation/Tactics/ was the only reason Metalogic/Algebraic/
+#     BooleanStructure.lean carried an upward import into Automation/.
+#   * the shared MetaM plumbing is FormalSystem/Tactic/Meta.lean, at layer 0,
+#     because tactics under BOTH Automation/ and Metalogic/ consume it;
+#     relocating propDecide alone would have traded one Metalogic -> Automation
+#     line for another.
+# FormalSystem/Automation.lean still imports the propositional tactic, so the
+# user-facing tactic surface is unchanged -- only the file locations moved.
+# Neither module has a row in the generated map or in the chapter's hand-written
+# `roles` dictionary, and the chapter's #assert(roles.len() ==
+# automation-module-map.len()) is what holds the two lists in step.
+#
 # Columns emitted per row: (path, lines, sorry_free). `path` is relative to
 # FormalSystem/Automation/. `sorry_free` uses the SAME comment-stripped
 # `\bsorry\b` methodology as typst-status-counts.sh's strip_and_count_sorries

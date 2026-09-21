@@ -228,7 +228,7 @@ them in the listed order (1, 3, 4); true parallel execution requires separate wo
 
 ---
 
-### Phase 2: Relocate PropDecide and its Meta.lean dependency [NOT STARTED]
+### Phase 2: Relocate PropDecide and its Meta.lean dependency [COMPLETED]
 
 - **Goal:** Move the propositional-decision tactic under `Metalogic/Decidability/` and its shared
   `MetaM` plumbing to layer 0, so the `Metalogic -> Automation` `PropDecide` line disappears

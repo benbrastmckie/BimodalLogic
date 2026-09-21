@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Automation.Tactics.PropDecide
+import FormalSystem.Metalogic.Decidability.Propositional.Tactic
 import FormalSystem.Metalogic.Decidability.Propositional.Decidable
 
 /-!
