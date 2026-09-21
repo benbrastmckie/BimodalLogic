@@ -1,7 +1,7 @@
 # Implementation Plan: Task #643
 
 - **Task**: 643 - Citation gates: bibkeys, links and line anchors
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/643_citation_gates_bibkeys_links_and_line_anchors/reports/01_citation-gates-bibkeys-links.md
