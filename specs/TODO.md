@@ -11,12 +11,12 @@ next_project_number: 647
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,604,623,624,625,638 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,568,616,617,628 | 298,464,502,563,625 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,570,618,646 | 231,465,497,564,565,568,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,534,543 | 428,498,499,500,646 | algebraic-representation, decidability, incompleteness, ... |
-| 5 | 410,501,645 | 125,429,534 | algebraic-representation, decidability, semantics |
-| 6 | 411 | 410 | decidability |
+| 1 | 127,128,178,257,298,464,481,502,559,563,604,623,624,638 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,625 | 298,464,502,563,638 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,568,618,628 | 231,465,497,564,565,616,625 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543,570,646 | 428,498,499,500,568 | algebraic-representation, decidability, metalogic |
+| 5 | 410,501,534 | 125,429,646 | algebraic-representation, decidability, incompleteness |
+| 6 | 411,645 | 410,534 | decidability, semantics |
 | 7 | 430 | 411 | decidability |
 | 8 | 177,412 | 430 | decidability, formula-refactor |
 | 9 | 482 | 412 | decidability |
@@ -248,7 +248,7 @@ POST-RELOCATION REVISION (2026-09-21, after tasks 630 and 632-636 landed). Depen
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: semantics
-- **Dependencies**: None
+- **Dependencies**: Task 638
 - **Research**: [625_formalize_open_future_open_past_modalities/reports/01_open-future-open-past-modalities.md]
 
 **Description**: Formalize the manuscript's open-future and open-past modalities and machine-check, in the library, that the stability modal is NOT Ockhamist historical necessity while the open-future modality is.
