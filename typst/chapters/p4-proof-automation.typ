@@ -10,6 +10,7 @@
 
 #import "../template.typ": *
 #import "../generated/automation-module-map.typ": automation-module-map, automation-module-total
+#import "../generated/status.typ": axiom-count
 
 // Thousands-separator for line counts (max value in practice is 4 digits,
 // but this handles any width via a single recursive comma insertion).
@@ -39,7 +40,7 @@
 Four user-facing tactics automate common derivation patterns.
 
 #items[
-  #item[`apply_axiom` (`Tactics/UserTactics.lean`) -- expands to `apply DerivationTree.axiom; refine ?_`, unifying the goal with an axiom schema and letting Lean infer the axiom's formula parameters via `refine`.]
+  #item[`apply_axiom` (`Tactics/UserTactics.lean`) -- expands to `apply DerivationTree.axiom; refine ?_`, applying the generic axiom constructor and leaving the axiom witness (`h : Axiom φ`) and frame-class side condition (`h_fc`) as open goals for the caller to discharge; it does not unify with a schema or infer the formula parameters itself.]
   #item[`modal_t` (`Tactics/UserTactics.lean`) -- named for the T axiom $square.stroked φ arrow.r φ$; its macro body expands identically to `apply_axiom`'s (`apply DerivationTree.axiom; refine ?_`), so it applies to any axiom-shaped goal.]
   #item[`assumption_search` (`Tactics/UserTactics.lean`) -- searches the local context for an assumption matching the goal by definitional equality, with an explicit failure message on miss (unlike the built-in `assumption`).]
   #item[`modal_search` (`Tactics/Commands.lean`) -- the single proof-search entry point. Three syntax forms: `modal_search` alone (default depth 10, visitLimit 1000), a bare custom depth (`modal_search 5`), and named parameters (`modal_search (depth := 20)`, or `modal_search (depth := 20) (visitLimit := 2000)` for both). It runs the bounded search engine below (@sec:proof-search-engine).]
@@ -56,7 +57,7 @@ A typical invocation: given a goal of the shape "$square.stroked φ arrow.r squa
 A dedicated Aesop rule set (named, by its own removed declaration, after the logic) once existed, populated across two modules (`Boneyard/RetiredTactics/AesopRuleSet.lean`, `Boneyard/RetiredTactics/AesopRules.lean`, 322 lines total) with rule-set-scoped attributes over the seven axioms most amenable to direct application, their forward-chaining variants, three inference-rule apply rules, and four normalization unfold rules.
 It was retired on measurement, not on a design change: because the rules lived in that *dedicated* rule set rather than Aesop's default one, plain `aesop` never saw them, and reaching them required an explicit rule-set-qualified invocation naming it -- of which there was none, anywhere in the live tree or in `Tests/`. The rule set therefore had zero consumers of any kind: it was not merely unused, it was unreachable.
 
-The deeper reason Aesop's automatic proof reconstruction does not work over these goals at all, even setting reachability aside: `Axiom` is `Prop`-valued while `DerivationTree` is `Type`-valued, and Aesop's reconstruction machinery is built for `Prop`-valued goals (per `Tactics/Search.lean`'s docstring, which is why the live search engines below work at the meta level with `mkAppM` instead).
+The deeper reason Aesop's automatic proof reconstruction does not work over these goals at all, even setting reachability aside: `Axiom` and `DerivationTree` are both `Type`-valued, not `Prop`-valued, and Aesop's reconstruction machinery is built for `Prop`-valued goals (per `Tactics/Search.lean`'s docstring, which is why the live search engines below work at the meta level with `mkAppM` instead).
 
 Both retired modules were moved unchanged to `Boneyard/RetiredTactics/`; see that directory's `README.md` for the full inventory and the invocation count that retired it.
 
@@ -66,7 +67,7 @@ Two independent search engines live under `Automation/`, with different interfac
 
 === The tactic engine (`Tactics/Search.lean`)
 
-`searchProof` is what `modal_search` runs. It tries, in order: `tryAxiomMatch` (42 of the 45 axiom schemata; the three Layer-9 Reynolds Dedekind axioms `prior_U_gap`, `prior_S_gap` and `sep` are outside its list), `tryLemmaMatch` (tagged-lemma matching), `tryAssumptionMatch` (context lookup), `tryModusPonens` (backward-chaining decomposition), `tryModalK` (reduce $square.stroked Gamma tack.r square.stroked φ$ to $Gamma tack.r φ$), and `tryTemporalK` (the temporal analogue). This is a bounded depth-first search under an `IO.Ref`-threaded visit counter (`modal_search`'s `visitLimit`, default 1000), working entirely in `TacticM` and constructing proof terms directly with `mkAppM` -- the same `Prop`/`Type` mismatch discussed above rules out returning ordinary proof witnesses.
+`searchProof` is what `modal_search` runs. It tries, in order: `tryAxiomMatch` (27 of the #axiom-count axiom schemata; the two Layer-9 Reynolds Dedekind axioms `prior_U_gap` and `sep` are outside its list), `tryLemmaMatch` (tagged-lemma matching), `tryAssumptionMatch` (context lookup), `tryModusPonens` (backward-chaining decomposition), `tryModalK` (reduce $square.stroked Gamma tack.r square.stroked φ$ to $Gamma tack.r φ$), and `tryTemporalK` (the temporal analogue). This is a bounded depth-first search under an `IO.Ref`-threaded visit counter (`modal_search`'s `visitLimit`, default 1000), working entirely in `TacticM` and constructing proof terms directly with `mkAppM` -- the same `Type`-valuedness discussed above is why it does not return ordinary proof witnesses.
 
 === The `ProofSearch/` engine (`ProofSearch/Core.lean`, `ProofSearch/Strategies.lean`)
 
@@ -114,7 +115,7 @@ Two further modules of the tactic surface sit outside `Automation/` as well, and
 #let roles = (
   "Tactics/Commands.lean": [The `modal_search` tactic: its `SearchConfig`, its two syntax forms, and the elaborators that run the search],
   "Tactics/Deduction.lean": [`deduction`, `deduction n`, `undischarge`: frame-class-polymorphic applications of `deductionTheorem`],
-  "Tactics/Search.lean": [The bounded proof-search engine behind `modal_search`: `searchProof` and its five strategies, in `TacticM` because `Axiom` is `Prop`-valued and `DerivationTree` is `Type`-valued],
+  "Tactics/Search.lean": [The bounded proof-search engine behind `modal_search`: `searchProof` and its five strategies, in `TacticM` because `Axiom` and `DerivationTree` are both `Type`-valued, not `Prop`-valued],
   "Tactics/UserTactics.lean": [The hand-written tactics -- `apply_axiom`, `modal_t`, `assumption_search` -- and the `Formula` predicates deciding when they apply],
   "ProofSearch/Core.lean": [`boundedSearch`, `iddfsSearch`, heuristic scoring, memoization -- the larger search engine reached from `decide`'s fast path, not from any tactic],
   "ProofSearch/Strategies.lean": [Best-first search, `SearchStrategy` dispatcher, learning variant],

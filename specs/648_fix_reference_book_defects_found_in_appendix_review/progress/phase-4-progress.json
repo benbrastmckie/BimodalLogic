@@ -1,0 +1,20 @@
+{
+  "phase": 4,
+  "phase_name": "Proof-automation chapter accuracy",
+  "started_at": "2026-09-22T00:00:00Z",
+  "last_updated": "2026-09-22T00:15:00Z",
+  "objectives": [
+    {"id": 1, "description": "Add generated-status import, use generated axiom count in place of typed totals", "status": "done", "files_touched": ["typst/chapters/p4-proof-automation.typ"]},
+    {"id": 2, "description": "Correct coverage claim to 27/29, name exactly the two omitted axioms", "status": "done", "files_touched": ["typst/chapters/p4-proof-automation.typ"]},
+    {"id": 3, "description": "Correct both Prop-valued occurrences (prose + module-map table)", "status": "done", "files_touched": ["typst/chapters/p4-proof-automation.typ"]},
+    {"id": 4, "description": "Correct apply_axiom item", "status": "done", "files_touched": ["typst/chapters/p4-proof-automation.typ"]},
+    {"id": 5, "description": "Leave modal_t item unchanged", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Recompile and inspect rendered pages", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "notes": [
+    "OBSERVATION: scripts/typst-sync-check.sh Check 2 continues to fail, and while investigating it, observed formalsystem-file-count increasing live between two consecutive regenerations run seconds apart (531 -> 532 -> 533) -- confirming a concurrent session is ACTIVELY editing FormalSystem/ files right now, not just leaving stale uncommitted work. Chasing a moving target with repeated regeneration inside this phase is not productive; regenerated once (closer to current, committed as an improvement) and deferred final resolution to the Phase 9 gate, per the same reasoning recorded in the Phase 2 and Phase 3 handoffs. Checks 1, 2b, and 3 (the checks phase 4's own typst edits affect) are all clean."
+  ]
+}

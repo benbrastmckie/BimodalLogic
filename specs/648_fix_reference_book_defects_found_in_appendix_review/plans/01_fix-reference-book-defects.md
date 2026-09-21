@@ -303,24 +303,27 @@ implementation time, not by trusting these figures.
 
 ---
 
-### Phase 4: Proof-automation chapter accuracy [NOT STARTED]
+### Phase 4: Proof-automation chapter accuracy [COMPLETED]
 
 **Goal**: Items 3, 5 and 6 on the chapter side. The automation chapter agrees with the corrected
 docstrings and with live source.
 
 **Tasks**:
-- [ ] Add the generated-status import to `typst/chapters/p4-proof-automation.typ` and use the
+- [x] Add the generated-status import to `typst/chapters/p4-proof-automation.typ` and use the
       generated axiom count in place of the typed totals, per the dispatch's "prefer the generated
       axiom-count" instruction. Keep `tryAxiomMatch`'s own list length as a typed numeral and note
-      in the summary that it has no generator.
-- [ ] Correct the coverage claim to the machine-verified figures, naming exactly the two omitted
-      axioms. Remove the nonexistent third name.
-- [ ] Correct both occurrences of the `Axiom`-is-`Prop`-valued claim (prose and module-map table)
-      to the same true statement Phase 3 wrote into the docstrings.
-- [ ] Correct the `apply_axiom` item: it does not unify with a schema or infer formula parameters;
-      it applies the constructor and leaves the side goals open.
-- [ ] Leave the chapter's `modal_t` item exactly as it stands — it is already correct.
-- [ ] Recompile and inspect the rendered Tactics and module-map pages.
+      in the summary that it has no generator. *(completed: `#import "../generated/status.typ":
+      axiom-count`, used as `#axiom-count` in place of the typed "29")*
+- [x] Correct the coverage claim to the machine-verified figures, naming exactly the two omitted
+      axioms. Remove the nonexistent third name. *(completed: "27 of the #axiom-count... prior_U_gap
+      and sep", `prior_S_gap` removed)*
+- [x] Correct both occurrences of the `Axiom`-is-`Prop`-valued claim (prose and module-map table)
+      to the same true statement Phase 3 wrote into the docstrings. *(completed)*
+- [x] Correct the `apply_axiom` item: it does not unify with a schema or infer formula parameters;
+      it applies the constructor and leaves the side goals open. *(completed)*
+- [x] Leave the chapter's `modal_t` item exactly as it stands — it is already correct. *(confirmed
+      unchanged)*
+- [x] Recompile and inspect the rendered Tactics and module-map pages. *(completed)*
 
 **Timing**: 1 hour
 
