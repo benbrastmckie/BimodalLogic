@@ -253,32 +253,32 @@ wired, and a materially smaller one means it is too tight and is hiding real lin
 
 ---
 
-### Phase 3: `--recompute` idempotency selftest and its blind-spot fixture [NOT STARTED]
+### Phase 3: `--recompute` idempotency selftest and its blind-spot fixture [COMPLETED]
 
 **Goal**: Turn the manually-verified `--recompute` idempotency into a re-runnable, asserted
 property, and encode the one known blind spot as a tested, documented limitation.
 
 **Tasks**:
 
-- [ ] Re-read `scripts/reanchor-lean-citations.py` immediately before editing.
-- [ ] Add `selftest 3: double-run then --recompute` to the existing `selftest()` function,
+- [x] Re-read `scripts/reanchor-lean-citations.py` immediately before editing. *(completed)*
+- [x] Add `selftest 3: double-run then --recompute` to the existing `selftest()` function,
       following selftest 2's snapshot/restore discipline exactly (snapshot every citer it will
       touch; restore in a `finally`; skip cleanly when the working tree carries modified `.lean`
-      files, as selftests 1 and 2 already do).
-- [ ] The probe sequence, mirroring the reproduction research performed by hand: insert 3 padding
+      files, as selftests 1 and 2 already do). *(completed)*
+- [x] The probe sequence, mirroring the reproduction research performed by hand: insert 3 padding
       lines into the probe file's leading docstring → run the Δ pass over it **twice** → assert the
       doubled shift is observed (`+6` where `+3` is correct) → run `recompute()` → assert every
       citation is back at exactly `+3` → run `recompute()` again → assert it reports 0 citation
-      lines across 0 citer files.
-- [ ] Add `selftest 4: recompute's content-edit blind spot` — a citer line that is *also*
+      lines across 0 citer files. *(completed: observed 72 citations at +6, then 72 lines across 19 citers recomputed to +3, then 0 across 0)*
+- [x] Add `selftest 4: recompute's content-edit blind spot` — a citer line that is *also*
       content-edited in the same batch as the double-shift is asserted to be left **un-repaired**,
       with the printed line naming it as the tool's stated refuse-rather-than-guess behaviour.
-      This asserts the documented limitation; it is not a failure.
-- [ ] Update the module docstring's usage block and `recompute()`'s own docstring to name both new
-      selftests.
-- [ ] Run `python3 scripts/reanchor-lean-citations.py --selftest` on a clean tree; all four probes
-      green; confirm the tree is byte-identical afterwards (`git status --porcelain` clean).
-- [ ] Commit the green result.
+      This asserts the documented limitation; it is not a failure. *(completed: ChronicleMonadicBridge.lean:769 left at +6, the 71 others repaired to +3)*
+- [x] Update the module docstring's usage block and `recompute()`'s own docstring to name both new
+      selftests. *(completed)*
+- [x] Run `python3 scripts/reanchor-lean-citations.py --selftest` on a clean tree; all four probes
+      green; confirm the tree is byte-identical afterwards (`git status --porcelain` clean). *(completed: exit 0, all four probes green, only the tool itself modified afterwards)*
+- [x] Commit the green result. *(completed)*
 
 **Timing**: 1.5 hours
 

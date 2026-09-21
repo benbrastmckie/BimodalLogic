@@ -29,7 +29,10 @@ some other non-blank line. The default `--files` (every `.lean` changed vs `--ba
 makes this easy to trip: after the first run the rewritten CITERS are changed too,
 so they join the target list. Always pass the batch's own edited files explicitly,
 and run once. To recover from a double run, use `--recompute`, which recomputes every
-citation from `--base` by content alignment and is idempotent.
+citation from `--base` by content alignment and is idempotent -- `--selftest` probe 3
+asserts exactly that sequence. Its one blind spot, pinned by probe 4: a citer line whose
+CONTENT was also edited in the same batch is left as it is, because there is no
+base-revision number on that line to trust. Re-anchor such a line by hand.
 
 REFUSALS. The tool refuses rather than guesses, and reports what it refused:
   * a file whose leading `/-! … -/` block it cannot locate;
@@ -66,7 +69,10 @@ USAGE
     # repair a tree the Δ pass was run over twice (idempotent; safe to rerun)
     python3 scripts/reanchor-lean-citations.py --recompute
 
-    # no-op validation: a Δ=0 run over the whole tree must change zero bytes
+    # validation probes: (1) a Δ=0 run over the whole tree changes zero bytes; (2) a
+    # synthetic +3 moves exactly the citations it should; (3) a doubled Δ pass is repaired
+    # by --recompute and a second --recompute is a no-op; (4) --recompute's one blind spot,
+    # a citer line content-edited in the same batch, is left un-repaired, by design
     python3 scripts/reanchor-lean-citations.py --selftest
 """
 
@@ -329,7 +335,20 @@ def recompute(rev: str, dry_run: bool) -> int:
     difflib; for a line that differs from `rev` ONLY in its citation numbers, it takes
     `rev`'s number and maps it through the target file's own `rev`->now line map. A line
     carrying a real content edit is left alone, since there is no `rev` number to trust.
+
+    Both properties are asserted, not narrated: `--selftest` probe 3 runs the Δ pass twice,
+    recomputes, and requires a SECOND recompute to report 0 citation lines across 0 citer
+    files; probe 4 pins the content-edited-line limitation above as the stated
+    refuse-rather-than-guess behaviour.
     """
+    fixed, touched = recompute_counts(rev, dry_run)
+    verb = "would recompute" if dry_run else "recomputed"
+    print("%s %d citation line(s) across %d citer file(s)" % (verb, fixed, touched))
+    return 0
+
+
+def recompute_counts(rev: str, dry_run: bool) -> tuple[int, int]:
+    """`recompute`'s body: returns (citation lines rebuilt, citer files touched)."""
     live = live_lean_files()
     resolve = make_resolver(live)
 
@@ -359,6 +378,8 @@ def recompute(rev: str, dry_run: bool) -> int:
             continue
         o = o.split("\n")
         n = open(citer, encoding="utf-8").read().split("\n")
+        if o == n:
+            continue
         out = list(n)
         changed = False
         for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(a=o, b=n, autojunk=False).get_opcodes():
@@ -384,14 +405,19 @@ def recompute(rev: str, dry_run: bool) -> int:
             touched += 1
             if not dry_run:
                 open(citer, "w", encoding="utf-8").write("\n".join(out))
-    verb = "would recompute" if dry_run else "recomputed"
-    print("%s %d citation line(s) across %d citer file(s)" % (verb, fixed, touched))
-    return 0
+    return fixed, touched
 
 
 def selftest(rev: str) -> int:
-    """Δ=0 over the whole tree must be a byte-exact no-op; a synthetic +3 must move
-    exactly the citations into the edited file and nothing else."""
+    """Four probes. (1) Δ=0 over the whole tree must be a byte-exact no-op. (2) A synthetic
+    +3 must move exactly the citations into the edited file and nothing else. (3) The Δ pass
+    run TWICE must produce the doubled shift, `--recompute` must repair it to exactly +3,
+    and a second `--recompute` must be a no-op. (4) A citer line that was ALSO content-edited
+    in the same batch must be left un-repaired by `--recompute` -- the documented limitation,
+    asserted so that it stays a stated behaviour and never becomes a silent one.
+
+    Every probe snapshots what it will touch and restores it in a `finally`; all of them skip
+    cleanly when the working tree carries modified .lean files."""
     ok = True
 
     print("== selftest 1: Δ=0 no-op over every live .lean file ==")
@@ -469,6 +495,93 @@ def selftest(rev: str) -> int:
         for c, t in snapshot.items():
             open(c, "w", encoding="utf-8").write(t)
         print("  restored every file touched by the probe")
+
+    norm_target = os.path.normpath(target)
+
+    def shifts() -> dict[int, list[tuple[str, int]]]:
+        """{shift: [(citer, citer line)]} over the citations into the probe file that lie
+        BELOW its leading docstring, plus a -1 bucket for any other citation that moved."""
+        out: dict[int, list[tuple[str, int]]] = {}
+        for citer, rows in before.items():
+            now = []
+            for i, l in enumerate(open(citer, encoding="utf-8",
+                                       errors="replace").read().split("\n"), 1):
+                for ref, num in CITE.findall(l):
+                    now.append((i, ref, num))
+            for (i0, r0, n0), (i1, r1, n1) in zip(rows, now):
+                if resolve(r0) == norm_target and int(n0) > end:
+                    out.setdefault(int(n1) - int(n0), []).append((citer, i1))
+                elif n0 != n1:
+                    out.setdefault(-1, []).append((citer, i1))
+        return out
+
+    def double_run() -> None:
+        padded = orig.split("\n")
+        padded[end - 1:end - 1] = ["-- selftest padding"] * 3
+        open(target, "w", encoding="utf-8").write("\n".join(padded))
+        # The mistake itself: the same Δ pass over the same batch, twice.
+        reanchor([target], rev, exact=False, dry_run=False, quiet=True)
+        reanchor([target], rev, exact=False, dry_run=False, quiet=True)
+
+    def restore() -> None:
+        open(target, "w", encoding="utf-8").write(orig)
+        for c, t in snapshot.items():
+            open(c, "w", encoding="utf-8").write(t)
+        print("  restored every file touched by the probe")
+
+    print("== selftest 3: the Δ pass run twice, then --recompute, then --recompute again ==")
+    try:
+        double_run()
+        got = shifts()
+        doubled = len(got.get(6, []))
+        print("  after two Δ passes: %d citation(s) at +6 where +3 is correct (the double "
+              "shift C20 tier 1 cannot see)" % doubled)
+        if doubled == 0 or set(got) - {6}:
+            print("  FAIL: expected every citation below the docstring at +6, got shifts %s"
+                  % sorted(got))
+            ok = False
+        fixed, touched = recompute_counts(rev, dry_run=False)
+        got = shifts()
+        print("  first --recompute: recomputed %d citation line(s) across %d citer file(s); "
+              "%d citation(s) now at +3" % (fixed, touched, len(got.get(3, []))))
+        if fixed == 0 or set(got) - {3} or len(got.get(3, [])) != doubled:
+            print("  FAIL: expected all %d citation(s) back at exactly +3, got shifts %s"
+                  % (doubled, {k: len(v) for k, v in got.items()}))
+            ok = False
+        fixed2, touched2 = recompute_counts(rev, dry_run=False)
+        print("  second --recompute: recomputed %d citation line(s) across %d citer file(s) "
+              "(0 across 0 = idempotent)" % (fixed2, touched2))
+        if (fixed2, touched2) != (0, 0) or shifts() != got:
+            print("  FAIL: a second --recompute changed the tree")
+            ok = False
+    finally:
+        restore()
+
+    print("== selftest 4: --recompute's content-edit blind spot (a documented limitation) ==")
+    try:
+        double_run()
+        victim = next(((c, i) for c, i in sorted(shifts().get(6, [])) if c != norm_target), None)
+        if victim is None:
+            print("  SKIP: no citer other than the probe file cites below its docstring")
+        else:
+            vc, vi = victim
+            vl = open(vc, encoding="utf-8", errors="replace").read().split("\n")
+            vl[vi - 1] += " -- selftest content edit"
+            open(vc, "w", encoding="utf-8").write("\n".join(vl))
+            recompute_counts(rev, dry_run=False)
+            got = shifts()
+            left = got.get(6, [])
+            print("  %s:%d was content-edited in the same batch as the double shift" % (vc, vi))
+            print("  --recompute left %d citation(s) on that line at +6 and repaired %d other(s) "
+                  "to +3" % (len(left), len(got.get(3, []))))
+            print("  (refuse-rather-than-guess: a content-edited line has no base-revision "
+                  "number to trust; re-anchor it by hand)")
+            if not left or {c_i for c_i in left} != {victim} or set(got) - {3, 6}:
+                print("  FAIL: expected ONLY the content-edited line un-repaired, got shifts %s"
+                      % {k: sorted(set(v)) if k != 3 else len(v) for k, v in got.items()})
+                ok = False
+    finally:
+        restore()
 
     return 0 if ok else 1
 

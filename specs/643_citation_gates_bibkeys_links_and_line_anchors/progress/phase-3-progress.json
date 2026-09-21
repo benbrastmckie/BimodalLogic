@@ -1,0 +1,15 @@
+{
+  "phase": 3,
+  "phase_name": "--recompute idempotency selftest and its blind-spot fixture",
+  "started_at": "2026-09-21T16:12:00Z",
+  "last_updated": "2026-09-21T16:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "selftest 3: double Δ run, --recompute, second --recompute is a no-op", "status": "done", "files_touched": ["scripts/reanchor-lean-citations.py"], "note": "72 citations at +6; first recompute 72 lines / 19 citers back to +3; second recompute 0 / 0"},
+    {"id": 2, "description": "selftest 4: content-edit blind spot asserted as documented limitation", "status": "done", "files_touched": ["scripts/reanchor-lean-citations.py"], "note": "1 citation left at +6 on the content-edited line, 71 repaired"},
+    {"id": 3, "description": "Docstrings updated; full --selftest green and tree byte-identical afterwards", "status": "done", "files_touched": ["scripts/reanchor-lean-citations.py"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}
