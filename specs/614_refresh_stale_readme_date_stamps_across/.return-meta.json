@@ -1,11 +1,23 @@
 {
-  "status": "in_progress",
-  "artifacts": [],
+  "status": "planned",
+  "started_at": "2026-09-21T15:22:04Z",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/614_refresh_stale_readme_date_stamps_across/plans/01_readme-lint-citation-repair.md",
+      "summary": "Revised plan (v2, in place): same 5 phases, all NOT STARTED; corrects one line range, removes a false README.md:183-184 anchor and a half-verbatim quotation the lint cannot see, fixes a stale line count, enumerates the six whitelist spans, switches the invariants gate to --no-build, and adds a cross-task handoff for the 21/9 baselines recorded in REFERENCE_NORMAL_FORM.md."
+    }
+  ],
+  "next_steps": "Run /implement 614 to execute the revised plan",
+  "dispatch_seq": 9,
   "metadata": {
-    "session_id": "sess_1790002208_59de0b_614",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1790004043_997429_614",
+    "agent_type": "reviser-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 5
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "phase_count": 5,
+    "estimated_hours": 5,
+    "plan_version": 2,
+    "reports_integrated": ["01_readme-stamps-lint-repair.md"]
+  }
 }
