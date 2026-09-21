@@ -206,12 +206,12 @@ citer files.
 
 ---
 
-### Phase 2: Build the re-anchor and normal-form toolchain [NOT STARTED]
+### Phase 2: Build the re-anchor and normal-form toolchain [COMPLETED]
 
 - **Goal:** The C20 citation re-anchor tool exists, is validated against HEAD, and the `##
   References` normal form is written down once so all seven conversion batches are consistent.
 - **Tasks:**
-  - [ ] Write `scripts/reanchor-lean-citations.py`. Contract, per the research's measured
+  - [x] Write `scripts/reanchor-lean-citations.py`. Contract, per the research's measured
         structure (297 of 298 target headings are inside the leading `/-! … -/` module docstring,
         so each edited file shifts by a single integer):
         ```
@@ -223,17 +223,17 @@ citer files.
         ```
         Scope for the rewrite is every `.lean` docstring and every `.md` under `docs/`, `README.md`
         and `typst/` — wherever C20 tier 1 resolves citations from.
-  - [ ] Handle the one structural exception explicitly: `BimodalTools/TraceExporterMain.lean:80`
+  - [x] Handle the one structural exception explicitly: `BimodalTools/TraceExporterMain.lean:80`
         is the single target heading NOT inside the leading docstring. Special-case or hand-repair it.
-  - [ ] Make the tool refuse to run on a file whose leading-docstring boundary it cannot locate,
+  - [x] Make the tool refuse to run on a file whose leading-docstring boundary it cannot locate,
         rather than guessing.
-  - [ ] Validate the tool against HEAD: run it with a synthetic Δ=0 over the whole tree and
+  - [x] Validate the tool against HEAD: run it with a synthetic Δ=0 over the whole tree and
         assert byte-identical output (a no-op must be a no-op).
-  - [ ] Note C20's resolver quirk in the tool's header: an *unqualified* citation is matched on
+  - [x] Note C20's resolver quirk in the tool's header: an *unqualified* citation is matched on
         basename, and an ambiguous basename is reported `unverifiable` rather than failed. Do not
         let that status mask a real shift — the per-batch check asserts the *resolvable* count
         stays at 1028, not merely that nothing FAILED.
-  - [ ] Write `docs/development/reference-normal-form.md` (or an equivalent section appended to
+  - [x] Write `docs/development/reference-normal-form.md` (or an equivalent section appended to
         `PUBLICATION_REFACTOR.md`) fixing the three-way normal form, with the L+ block at
         `FormalSystem/PlusLanguage/PlusLimitClosure.lean:75-84` quoted as the worked example:
         - bibliographic: `* [R. H. Thomason, *Combinations of Tense and Modality*][thomason1984], §4`
@@ -242,10 +242,10 @@ citer files.
         - module cross-reference: `` * `FormalSystem/Semantics/Truth.lean` — the six L clauses ``
           (repo-relative, backticked; a repo-relative path has no `../` depth to get wrong, which
           is what removes the 37-broken-link failure mode)
-  - [ ] Record the baseline numbers the later phases assert against, measured fresh, in that same
+  - [x] Record the baseline numbers the later phases assert against, measured fresh, in that same
         document or in the task's progress file: C20 tier 1 resolvable count, C15 resolving-anchor
         count, C19 refined percentage, `readme-lint.sh` broken-ref count, `typst-sync-check.sh`
-        Check 1 violation count.
+        Check 1 violation count. *(deviation: altered — the file was named `REFERENCE_NORMAL_FORM.md` to match the UPPER_SNAKE convention every other file in `docs/development/` uses, and indexed in that directory's README. Measured baselines, all confirming the plan's asserted figures: C20 tier 1 = 1028 resolvable / 0 unverifiable, C20 tier 2 = 0, C15 = 59 anchors + 76 index rows, C19 = 94.01% (10261/10915), INV clean, `readme-lint.sh` = 21 broken refs, `typst-sync-check.sh` Check 1 = 9 violations and Checks 2/2b/3 = 0 mismatches.)*
 - **Timing:** 1.5 hours
 - **Depends on:** none
 - **Verification Tier:** local

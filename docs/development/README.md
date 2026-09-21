@@ -19,6 +19,7 @@ Core standards for code quality and consistency:
 | Document | Description |
 |----------|-------------|
 | [LEAN_STYLE_GUIDE.md](LEAN_STYLE_GUIDE.md) | Comprehensive coding conventions and documentation requirements |
+| [REFERENCE_NORMAL_FORM.md](REFERENCE_NORMAL_FORM.md) | The shape of every `## References` block, and the gate baselines a docstring sweep holds constant |
 | [TESTING_STANDARDS.md](TESTING_STANDARDS.md) | Test requirements, coverage targets, and test patterns |
 | [QUALITY_METRICS.md](QUALITY_METRICS.md) | Quality targets and performance benchmarks |
 
