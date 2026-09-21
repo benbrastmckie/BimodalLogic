@@ -377,23 +377,23 @@ makes "extends L⁺" checkable.
 
 ---
 
-### Phase 5: Q2 - recurrence is definable by one state register [NOT STARTED]
+### Phase 5: Q2 - recurrence is definable by one state register [COMPLETED]
 
 **Goal**: The recurrence formula defines recurrence-freeness, free or bound, and separates every
 frame class from its recurrence-free members.
 
 **Tasks**:
-- [ ] `FormalSystem/HybridLanguage/HybridRecurrence.lean`: `recF_valid`, `bindRec_valid`,
+- [x] `FormalSystem/HybridLanguage/HybridRecurrence.lean`: `recF_valid`, `bindRec_valid`,
   `recF_defines`, `bindRec_defines` (probe lines 318-361; the refuting assignment is
   `fun _ => τ.state s` and the model `⟨fun _ _ => False⟩`), stated through
   `TaskFrame.HybridValidOn`.
-- [ ] `recF_not_validIn` from `exists_sat_not_recurrenceFree` and `recF_defines`;
+- [x] `recF_not_validIn` from `exists_sat_not_recurrenceFree` and `recF_defines`;
   `recF_validOnFrames_recurrenceFree`.
-- [ ] Docstring: **the minimal resource** is a state-identity test across two times of one
+- [x] Docstring: **the minimal resource** is a state-identity test across two times of one
   history (report §2.4); every other clause tests state identity only up to the kernel of a
   history-lifting morphism. `Paper:` lines cite the manuscript's recurrence passage in
   `sec:Construction` by quotable phrase.
-- [ ] Layer row, aggregator import, root, inventory, README correspondence rows.
+- [x] Layer row, aggregator import, root, inventory, README correspondence rows.
 
 **Timing**: 1.25 hours
 

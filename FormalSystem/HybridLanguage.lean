@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.HybridLanguage.Formula
 import FormalSystem.HybridLanguage.HybridInvariance
+import FormalSystem.HybridLanguage.HybridRecurrence
 import FormalSystem.HybridLanguage.HybridTruth
 import FormalSystem.HybridLanguage.HybridValidity
 
@@ -52,6 +53,11 @@ language one step short of it and a language that has it.
 - `HybridLanguage.HybridInvariance` — `regFree_invariance`: truth of every register-free formula,
   so of every L⁺ formula and of every `[≡]φ`, is invariant along any history-lifting morphism. The
   same-state modality tests state identity across times and still cannot see recurrence
+- `HybridLanguage.HybridRecurrence` — the recurrence formula `¬(i ∧ (P i ∨ F i))` defines
+  recurrence-freeness, free (`recF_defines`) or bound (`bindRec_defines`); no frame class
+  validates it (`recF_not_validIn`) while the recurrence-free members of every class do
+  (`recF_validOnFrames_recurrenceFree`). The minimal resource is a state-identity test across two
+  times of one history
 
 ## Design decisions
 

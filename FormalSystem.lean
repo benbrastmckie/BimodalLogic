@@ -16,6 +16,7 @@ import FormalSystem.ForMathlib.Order.PFilter
 import FormalSystem.HybridLanguage
 import FormalSystem.HybridLanguage.Formula
 import FormalSystem.HybridLanguage.HybridInvariance
+import FormalSystem.HybridLanguage.HybridRecurrence
 import FormalSystem.HybridLanguage.HybridTruth
 import FormalSystem.HybridLanguage.HybridValidity
 import FormalSystem.Init
