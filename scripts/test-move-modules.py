@@ -87,7 +87,8 @@ def run_tool(**overrides) -> tuple[int, str, str]:
     map through `sys.exit(str)`, so SystemExit becomes a return code here.
     """
     options = {"module_map": None, "namespace_map": None, "dry_run": False,
-               "no_verify": True, "no_rewrite": None, "strict": False}
+               "no_verify": True, "no_rewrite": None, "strict": False,
+               "namespace_paths": None}
     options.update(overrides)
     args = argparse.Namespace(**options)
     out, err = io.StringIO(), io.StringIO()
@@ -352,6 +353,121 @@ class IdenticalSidesTest(unittest.TestCase):
         rc, out, err = self.run_with(files, strict=True)
         self.assertEqual(rc, 0, err)
         self.assertNotIn("Boneyard/X/README.md", err)
+
+
+def read(path: str) -> str:
+    with open(path, encoding="utf-8") as handle:
+        return handle.read()
+
+
+AUTOMATION_NS = "namespace FormalSystem.Automation\nend FormalSystem.Automation\n"
+
+SHARED_PREFIX_FILES = {
+    "FormalSystem/Automation/A.lean": AUTOMATION_NS,
+    "FormalSystem/Automation/B.lean": AUTOMATION_NS,
+    "FormalSystem/Automation/Stay.lean": AUTOMATION_NS,
+    "FormalSystem/User.lean": "import FormalSystem.Automation.A\nopen FormalSystem.Automation\n",
+}
+SHARED_PREFIX_MAP = ["FormalSystem.Automation.A -> Tools.A",
+                     "FormalSystem.Automation.B -> Tools.B"]
+SHARED_PREFIX_NS = ["FormalSystem.Automation -> Tools"]
+
+
+class NamespaceMapTest(unittest.TestCase):
+    """A namespace row shared between moved and staying files is refused or scoped."""
+
+    def test_in_move_set_handles_both_row_granularities(self) -> None:
+        with fixture_repo({"x.txt": "x\n"}):
+            mappings = move_modules.load_mappings(write_map(
+                SHARED_PREFIX_MAP + ["FormalSystem.Dir -> FormalSystem.NewDir"]))
+        in_set = move_modules.in_move_set
+        self.assertTrue(in_set("FormalSystem/Automation/A.lean", mappings))
+        self.assertTrue(in_set("FormalSystem/Dir/Deep/X.lean", mappings))
+        self.assertFalse(in_set("FormalSystem/Automation/Stay.lean", mappings))
+        self.assertFalse(in_set("FormalSystem/Automation/AB.lean", mappings))
+
+    def test_declaration_outside_the_move_set_is_refused(self) -> None:
+        with fixture_repo(SHARED_PREFIX_FILES):
+            before = snapshot()
+            rc, out, err = run_tool(module_map=write_map(SHARED_PREFIX_MAP),
+                                    namespace_map=write_map(SHARED_PREFIX_NS))
+            self.assertNotEqual(rc, 0)
+            self.assertIn("FormalSystem/Automation/Stay.lean:1", err)
+            self.assertIn("namespace FormalSystem.Automation", err)
+            self.assertIn("--namespace-paths", err)
+            # The moved files declare the same namespace and are NOT offenders.
+            self.assertNotIn("A.lean", err)
+            self.assertNotIn("B.lean", err)
+            # The `open` site merely cites the prefix: a legitimate rewrite site.
+            self.assertNotIn("User.lean", err)
+            self.assertEqual(snapshot(), before)
+            self.assertFalse(os.path.exists("Tools"))
+
+    def test_namespace_paths_scopes_class_four(self) -> None:
+        with fixture_repo(SHARED_PREFIX_FILES):
+            rc, out, err = run_tool(
+                module_map=write_map(SHARED_PREFIX_MAP),
+                namespace_map=write_map(SHARED_PREFIX_NS),
+                namespace_paths=["FormalSystem/Automation/?.lean",
+                                 "FormalSystem/User.lean"])
+            self.assertEqual(rc, 0, err)
+            self.assertEqual(read("Tools/A.lean"), "namespace Tools\nend Tools\n")
+            self.assertEqual(read("Tools/B.lean"), "namespace Tools\nend Tools\n")
+            self.assertEqual(read("FormalSystem/User.lean"),
+                             "import Tools.A\nopen Tools\n")
+            self.assertEqual(read("FormalSystem/Automation/Stay.lean"), AUTOMATION_NS)
+            self.assertRegex(out, r"--namespace-paths\s+3 file\(s\) in scope")
+
+    def test_class_five_baselines_are_never_scoped_out(self) -> None:
+        files = dict(SHARED_PREFIX_FILES)
+        files["FormalSystem/MainResults.lean"] = (
+            "#print axioms FormalSystem.Automation.thm\n")
+        with fixture_repo(files):
+            rc, out, err = run_tool(
+                module_map=write_map(SHARED_PREFIX_MAP),
+                namespace_map=write_map(SHARED_PREFIX_NS),
+                namespace_paths=["FormalSystem/Automation/?.lean"])
+            self.assertEqual(rc, 0, err)
+            self.assertEqual(read("FormalSystem/MainResults.lean"),
+                             "#print axioms Tools.thm\n")
+            self.assertEqual(class_count(out, "class 5  axiom baselines"), 1)
+            # Out of scope, so its `open` is left alone.
+            self.assertIn("open FormalSystem.Automation", read("FormalSystem/User.lean"))
+
+    def test_declaration_consumed_by_class_two_is_not_refused(self) -> None:
+        files = {
+            "FormalSystem/M/Kamp/X.lean":
+                "namespace FormalSystem.M.Kamp\nend FormalSystem.M.Kamp\n",
+            "Archive/K.lean":
+                "namespace FormalSystem.M.Kamp\nend FormalSystem.M.Kamp\n",
+        }
+        with fixture_repo(files):
+            row = ["FormalSystem.M.Kamp -> FormalSystem.E.Kamp"]
+            rc, out, err = run_tool(module_map=write_map(row),
+                                    namespace_map=write_map(row))
+            self.assertEqual(rc, 0, err)
+            self.assertEqual(read("Archive/K.lean"),
+                             "namespace FormalSystem.E.Kamp\nend FormalSystem.E.Kamp\n")
+            self.assertEqual(class_count(out, "class 4  namespace/open/FQN"), 0)
+
+    def test_unshared_namespace_without_scope_is_rewritten_everywhere(self) -> None:
+        files = {
+            "FormalSystem/Old/M.lean": "namespace Old.Ns\nend Old.Ns\n",
+            "FormalSystem/User.lean": "import FormalSystem.Old.M\nopen Old.Ns\n",
+            "docs/x.md": "The `Old.Ns.thm` lemma.\n",
+        }
+        with fixture_repo(files):
+            rc, out, err = run_tool(
+                module_map=write_map(["FormalSystem.Old -> FormalSystem.New"]),
+                namespace_map=write_map(["Old.Ns -> New.Ns"]))
+            self.assertEqual(rc, 0, err)
+            self.assertEqual(read("FormalSystem/New/M.lean"),
+                             "namespace New.Ns\nend New.Ns\n")
+            self.assertEqual(read("FormalSystem/User.lean"),
+                             "import FormalSystem.New.M\nopen New.Ns\n")
+            self.assertEqual(read("docs/x.md"), "The `New.Ns.thm` lemma.\n")
+            self.assertEqual(class_count(out, "class 4  namespace/open/FQN"), 4)
+            self.assertNotIn("--namespace-paths", out)
 
 
 class GlobTranslatorTest(unittest.TestCase):

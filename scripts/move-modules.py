@@ -17,6 +17,14 @@ Inputs
                       namespace/open/FQN and axiom-baseline rewrite classes. A
                       relocation that changes no declaration's namespace needs
                       none.
+--namespace-paths GLOB
+                      Repeatable. Scopes the namespace/open/FQN class to matching
+                      files, named by their PRE-move paths, for a prefix shared
+                      between moved and staying files. Include the external
+                      `open` and FQN sites that should follow the rename. The
+                      dotted-citation class and the axiom baselines are never
+                      scoped. Without it, a row that would rewrite a `namespace`
+                      declaration outside the move set is refused.
 --no-rewrite GLOB     Repeatable. A path or glob whose files are walked and
                       reported but NEVER written, by any class. Values add to the
                       built-in defaults (the archive's provenance READMEs, the
@@ -297,12 +305,20 @@ def bare_form_count(text: str, mappings: list[Mapping]) -> int:
 def rewrite_text(path: str, text: str, mappings: list[Mapping],
                  counts: dict[str, int], files: dict[str, set[str]],
                  sentinel: bool = False,
-                 ns_mappings: list[NamespaceMapping] | None = None) -> str:
+                 ns_mappings: list[NamespaceMapping] | None = None,
+                 ns_in_scope: bool = True,
+                 declarations: list[tuple[str, int, str]] | None = None) -> str:
     """Apply classes 1-5 line by line, counting each class separately.
 
     With `sentinel`, every replacement is an opaque marker carrying no module
     name. Re-running the rewrite in that mode is how the bare-form audit
     distinguishes a bare citation that survived from one the rewrite created.
+
+    `ns_in_scope` is false for a file --namespace-paths leaves out: class 4 is
+    skipped there. Class 5 is NOT: a baseline pins a fully-qualified name as
+    data and must track the rename wherever the scope is drawn. `declarations`
+    collects every `namespace` DECLARATION line class 4 rewrites, as
+    (path, lineno, line), for the refusal in `run`.
     """
     applicable = classes_for(path)
     ns_mappings = ns_mappings or []
@@ -311,7 +327,7 @@ def rewrite_text(path: str, text: str, mappings: list[Mapping],
         return text
 
     out_lines = []
-    for line in text.splitlines(keepends=True):
+    for lineno, line in enumerate(text.splitlines(keepends=True), 1):
         body = line.rstrip("\n")
         newline = line[len(body):]
 
@@ -344,14 +360,23 @@ def rewrite_text(path: str, text: str, mappings: list[Mapping],
             if n:
                 counts["slash"] += n
                 files.setdefault("slash", set()).add(path)
-        if ns_mappings and applicable:
+        if ns_mappings and applicable and ns_in_scope:
+            # Whatever classes 2-3 already rewrote is gone from `body` by now, so
+            # a declaration that coincides with a moved module prefix yields
+            # n == 0 here and is never collected.
+            declares = NAMESPACE_DECL_RE.match(body)
             body, n = apply_namespace(body, ns_mappings, sentinel)
             if n:
                 counts["namespace"] += n
                 files.setdefault("namespace", set()).add(path)
+                if declares and declarations is not None and not sentinel:
+                    declarations.append((path, lineno, line.rstrip("\n")))
 
         out_lines.append(body + newline)
     return "".join(out_lines)
+
+
+NAMESPACE_DECL_RE = re.compile(r"^\s*namespace\s")
 
 
 def apply_namespace(line: str, ns_mappings: list[NamespaceMapping],
@@ -462,6 +487,19 @@ def map_repo_path(path: str, mappings: list[Mapping]) -> str:
         if path == old or path.startswith(old + "/"):
             return mapping.new_path_slash + path[len(old):]
     return path
+
+
+def in_move_set(path: str, mappings: list[Mapping]) -> bool:
+    """Whether the module map moves this repo-relative path. Pure: no filesystem.
+
+    `map_repo_path` compares against the extension-free stem and `stem + "/"`, so
+    on its own it never recognises the `stem + ".lean"` a file-granular row
+    moves. The second clause cannot misfire: if the stem is a directory only, no
+    `stem.lean` exists, and if both exist the run was refused as ambiguous.
+    """
+    if map_repo_path(path, mappings) != path:
+        return True
+    return any(path == m.old_path_slash + ".lean" for m in mappings)
 
 
 def rebase_links(path: str, text: str, mappings: list[Mapping],
@@ -652,6 +690,9 @@ def run(args: argparse.Namespace) -> int:
     skipped: list[tuple[str, int]] = []
     skipped_moved: list[str] = []
     side_warnings: list[str] = []
+    ns_paths = compile_globs(getattr(args, "namespace_paths", None) or [])
+    ns_scope_files = 0
+    declarations: list[tuple[str, int, str]] = []
 
     for path in walk_repo():
         skip = matches_any(path, no_rewrite)
@@ -662,13 +703,17 @@ def run(args: argparse.Namespace) -> int:
         text = read_text(path)
         if text is None:
             continue
+        ns_in_scope = not ns_paths or matches_any(path, ns_paths)
+        if ns_paths and ns_in_scope:
+            ns_scope_files += 1
         if skip:
             # What the rewrite WOULD do, on throwaway counters: the class counts
             # below describe writes that happen, and none happens here. No class
             # 7 either, and no bare-form accounting -- with nothing written a
             # before/after delta is vacuous.
             would = dict.fromkeys(counts, 0)
-            rewrite_text(path, text, mappings, would, {}, ns_mappings=ns_mappings)
+            rewrite_text(path, text, mappings, would, {}, ns_mappings=ns_mappings,
+                         ns_in_scope=ns_in_scope)
             if sum(would.values()):
                 skipped.append((path, sum(would.values())))
             if path.endswith(".md") and map_repo_path(path, mappings) != path:
@@ -683,13 +728,17 @@ def run(args: argparse.Namespace) -> int:
         else:
             text_for_rewrite = text
         new_text = rewrite_text(path, text_for_rewrite, mappings, counts, files,
-                                ns_mappings=ns_mappings)
+                                ns_mappings=ns_mappings, ns_in_scope=ns_in_scope,
+                                declarations=declarations)
         # The audit re-runs the SAME rewrite with opaque replacements, so a bare
         # citation the rewrite created is not mistaken for one it preserved. A
         # rule keyed on the bare token would consume pre-existing bare citations
         # and the two counts would diverge.
+        # Same scope as the real pass, or the two bare-form counts diverge for a
+        # reason that has nothing to do with bare forms.
         sentinel_text = rewrite_text(path, text, mappings, dict(counts), {},
-                                     sentinel=True, ns_mappings=ns_mappings)
+                                     sentinel=True, ns_mappings=ns_mappings,
+                                     ns_in_scope=ns_in_scope)
         before = bare_form_count(text, mappings)
         after = bare_form_count(sentinel_text, mappings)
         bare_before += before
@@ -702,13 +751,32 @@ def run(args: argparse.Namespace) -> int:
             # only for files that will be written. Kept apart from the bare-form
             # audit above: no shared counter and no shared exit branch. The map
             # files reuse the `old -> new` separator but are never walked.
-            for lineno, old, new in identical_sides(path, text, new_text, mappings,
-                                                    ns_mappings):
+            for lineno, old, new in identical_sides(
+                    path, text, new_text, mappings,
+                    ns_mappings if ns_in_scope else []):
                 side_warnings.append(path)
                 print(f"WARN  {path}:{lineno}: the rewrite made two sides of this "
                       f"line identical; if it states where something USED to be, "
                       f"revert it by hand\n        before: {old.strip()}\n"
                       f"        after:  {new.strip()}", file=sys.stderr)
+
+    # A namespace row is refused for what class 4 WOULD rewrite, not for what
+    # exists: a `namespace` declaration in a file that stays put. A file that
+    # merely cites the prefix (`open`, an FQN) is a legitimate rewrite site.
+    # Nothing has been written or moved yet.
+    offenders = [d for d in declarations if not in_move_set(d[0], mappings)]
+    if offenders:
+        print("FAIL  --namespace-map would rewrite a `namespace` declaration in "
+              f"{len({d[0] for d in offenders})} file(s) outside the move set:",
+              file=sys.stderr)
+        for path, lineno, line in offenders:
+            print(f"        {path}:{lineno}: {line.strip()}", file=sys.stderr)
+        print("      The prefix is shared between moved and staying files. Scope "
+              "the rewrite away from these files with --namespace-paths (naming "
+              "the moved files and every external `open`/FQN site that should "
+              "follow), or drop the row and rename by hand. Nothing was written.",
+              file=sys.stderr)
+        return 1
 
     if not args.dry_run:
         for path, new_text in changed:
@@ -719,7 +787,8 @@ def run(args: argparse.Namespace) -> int:
 
     report(args, mappings, ns_mappings, counts, files, changed, moved,
            link_stats, bare_before, bare_after, len(bare_files), moved_files,
-           skip_matched, skipped, skipped_moved, side_warnings)
+           skip_matched, skipped, skipped_moved, side_warnings,
+           ns_scope_files if ns_paths else None)
 
     if bare_before != bare_after:
         print("\nFAIL  bare-form citations were rewritten; every rule must be "
@@ -746,7 +815,8 @@ def report(args: argparse.Namespace, mappings: list[Mapping],
            moved: list[str], link_stats: dict[str, int], bare_before: int,
            bare_after: int, bare_file_count: int, moved_files: int,
            skip_matched: int, skipped: list[tuple[str, int]],
-           skipped_moved: list[str], side_warnings: list[str]) -> None:
+           skipped_moved: list[str], side_warnings: list[str],
+           ns_scope_files: int | None) -> None:
     mode = "DRY RUN" if args.dry_run else "APPLIED"
     print(f"=== move-modules ({mode}) ===")
     for mapping in mappings:
@@ -762,6 +832,9 @@ def report(args: argparse.Namespace, mappings: list[Mapping],
     for key, label in labels:
         print(f"  {label:<34} {counts[key]:>5} occurrence(s) in "
               f"{len(files.get(key, ())):>4} file(s)")
+        if key == "namespace" and ns_scope_files is not None:
+            print(f"           scoped by --namespace-paths   {ns_scope_files} "
+                  f"file(s) in scope")
     print(f"  {'class 6  tree moves':<34} {len(moved):>5} path(s)")
     for line in moved:
         print(f"           {line}")
@@ -801,6 +874,14 @@ def main(argv: list[str]) -> int:
                         help="file of `old.module -> new.module` lines")
     parser.add_argument("--namespace-map",
                         help="optional file of `Old.Ns -> New.Ns` lines")
+    parser.add_argument("--namespace-paths", action="append",
+                        metavar="PATH_OR_GLOB",
+                        help="repeatable; scope the namespace/open/FQN class to "
+                             "matching files, named by their PRE-move paths. You "
+                             "must include the external `open`/FQN sites that "
+                             "should follow the rename: scoping to the moved files "
+                             "alone drops them. Dotted module citations and the "
+                             "axiom baselines are never scoped")
     parser.add_argument("--no-rewrite", action="append", metavar="PATH_OR_GLOB",
                         help="repeatable; files that are reported but never "
                              "written, by any class. Values ADD to the built-in "

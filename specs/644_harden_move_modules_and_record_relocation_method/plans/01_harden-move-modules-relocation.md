@@ -632,7 +632,7 @@ bare-form audit.
 
 ---
 
-### Phase 6: Deliverable (4) — namespace-map refusal and --namespace-paths [NOT STARTED]
+### Phase 6: Deliverable (4) — namespace-map refusal and --namespace-paths [COMPLETED]
 
 **Goal**: `--namespace-map` refuses a row that would rewrite a `namespace` declaration in a file
 outside the move set, printing every offending file; and `--namespace-paths` scopes class-4
@@ -640,49 +640,49 @@ rewrites to an explicit user-supplied path/glob list.
 
 **Tasks**:
 
-- [ ] Re-read `scripts/move-modules.py` in full before editing.
-- [ ] Write the fixture tests first and observe red:
-  - [ ] Refusal, file-granular shape (the tooling-library split): module rows move two single
+- [x] Re-read `scripts/move-modules.py` in full before editing. *(completed)*
+- [x] Write the fixture tests first and observe red: *(completed)*
+  - [x] Refusal, file-granular shape (the tooling-library split): module rows move two single
         files (`FormalSystem.Automation.A -> Tools.A`, `...B -> Tools.B`); a namespace row
         `FormalSystem.Automation -> Tools`; a staying `FormalSystem/Automation/Stay.lean` declares
         `namespace FormalSystem.Automation`. Run in APPLY mode. Assert `rc != 0`, exactly
         `Stay.lean` printed with its declaring line and line number — and NOT `A.lean`/`B.lean`,
         which declare the same namespace but are in the move set (this is the assertion v1's D7
-        would have failed) — and every file byte-unchanged with nothing moved.
-  - [ ] Scoped: the same fixture plus `--namespace-paths` covering only the two moved files and
+        would have failed) — and every file byte-unchanged with nothing moved. *(completed)*
+  - [x] Scoped: the same fixture plus `--namespace-paths` covering only the two moved files and
         one external `open` site. Assert `rc == 0`, the moved files' and the `open` site's
-        namespaces rewritten, `Stay.lean` byte-identical.
-  - [ ] No false refusal when class 2 consumes the declaration (the Expressiveness-extraction
+        namespaces rewritten, `Stay.lean` byte-identical. *(completed)*
+  - [x] No false refusal when class 2 consumes the declaration (the Expressiveness-extraction
         shape): a directory row `FormalSystem.M.Kamp -> FormalSystem.E.Kamp`, a namespace row with
         the same two names, and an `Archive/K.lean` outside the move set declaring
         `namespace FormalSystem.M.Kamp`. Assert `rc == 0`, `Archive/K.lean` rewritten, and the
         report's class 4 count is 0 (class 2 did it). This is green against the unmodified tool
-        and must stay green — it is the guard against re-introducing v1's D6.
-  - [ ] Negative: a fixture with no shared prefix and no `--namespace-paths`. Assert behavior is
-        byte-identical to today's (guards R6).
-- [ ] Implement `in_move_set(path, mappings)` per Decision D7, with both clauses, as a standalone
-      function. Do not modify `map_repo_path`.
-- [ ] Implement the refusal per Decision D6 inside the existing data flow: give `rewrite_text` an
+        and must stay green — it is the guard against re-introducing v1's D6. *(completed)*
+  - [x] Negative: a fixture with no shared prefix and no `--namespace-paths`. Assert behavior is
+        byte-identical to today's (guards R6). *(completed)*
+- [x] Implement `in_move_set(path, mappings)` per Decision D7, with both clauses, as a standalone
+      function. Do not modify `map_repo_path`. *(completed)*
+- [x] Implement the refusal per Decision D6 inside the existing data flow: give `rewrite_text` an
       optional collector argument; at the class-4 step, when not in sentinel mode and the
       substitution count is non-zero and the pre-class-4 line matches `^\s*namespace\s`, append
       `(path, lineno, original_line)`. In `run()`, after the walk loop and BEFORE the write loop,
       filter the collector by `not in_move_set(...)`; if anything remains, print every offender
       and the remedy (`--namespace-paths`, or drop the row and rename by hand) to stderr and
       return non-zero. Nothing has been written or moved at that point, so no reordering of
-      `run()` is needed.
-- [ ] Add `--namespace-paths` (`action="append"`, repeatable, path or glob) reusing Phase 4's glob
+      `run()` is needed. *(completed)*
+- [x] Add `--namespace-paths` (`action="append"`, repeatable, path or glob) reusing Phase 4's glob
       translator verbatim. When supplied, the class-4 step runs only in matching files. Pass the
       same scope to BOTH `rewrite_text` calls (the real pass and the sentinel re-run), or the
-      bare-form audit's two counts diverge for a reason unrelated to bare forms.
-- [ ] Per Decision D5, class 5 axiom baselines are never scoped out: the two
+      bare-form audit's two counts diverge for a reason unrelated to bare forms. *(completed)*
+- [x] Per Decision D5, class 5 axiom baselines are never scoped out: the two
       `AXIOM_BASELINE_SITES` entries are always rewritten regardless of `--namespace-paths`. Add a
-      code comment stating why.
-- [ ] A `--no-rewrite` file can never be a refusal offender (it is not written); make the
-      collector pass skip it, consistent with D9's treatment.
-- [ ] Document in the flag's help text that the user is responsible for including external
+      code comment stating why. *(completed)*
+- [x] A `--no-rewrite` file can never be a refusal offender (it is not written); make the
+      collector pass skip it, consistent with D9's treatment. *(completed)*
+- [x] Document in the flag's help text that the user is responsible for including external
       citation sites in the scope — scoping to strictly the moved files would drop legitimate
-      external `open`/FQN rewrites — and that class 2 is not scoped by this flag.
-- [ ] Re-run the whole fixture suite green.
+      external `open`/FQN rewrites — and that class 2 is not scoped by this flag. *(completed)*
+- [x] Re-run the whole fixture suite green. *(completed)*
 
 **Timing**: 1.5 hours
 
