@@ -162,6 +162,23 @@ For detailed setup instructions, see [Installation Guide](docs/installation/BASI
 
 ---
 
+## How this repository is developed
+
+Development here is agent-assisted, driven by a task system whose artifacts (research reports,
+plans, implementation summaries) live under `specs/` and are git-tracked — visible to anyone
+browsing this repository. A local contributor additionally has a `CLAUDE.md` at the repository
+root that configures the agent tooling; it is gitignored and will not appear on the GitHub page.
+
+The trust model this implies is deliberate: **correctness does not rest on review of agent
+output.** It rests on the Lean kernel — every headline result in `FormalSystem/MainResults.lean`
+is machine-checked, sorry-free, with its axiom set printed — together with the invariant harness,
+which turns "nothing broke" into a command with an exit code rather than a judgement call. See
+[`docs/development/MODULE_INVARIANTS.md`](docs/development/MODULE_INVARIANTS.md) for the full
+per-check rationale, and [`CONTRIBUTING.md`](CONTRIBUTING.md)'s AI-Assisted Development section
+for the commands the agent tooling exposes.
+
+---
+
 ## Metalogical Results
 
 The metalogic is organized around a base axiom system with three extensions: Dense, ZTime, and RTime. Every flagship soundness and completeness result below is `SORRY-FREE (sorryAx-free; axioms: exactly propext, Classical.choice, Quot.sound)`. Weak completeness and finite-context consequence completeness are proven for **all four** frame classes — Base, Dense, ZTime, and RTime.

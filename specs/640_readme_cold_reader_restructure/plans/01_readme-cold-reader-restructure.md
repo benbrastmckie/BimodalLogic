@@ -349,18 +349,19 @@ those live numbers rather than from this plan's figures.
 
 ---
 
-### Phase 4: "How this repository is developed" section [NOT STARTED]
+### Phase 4: "How this repository is developed" section [COMPLETED]
 
 **Goal**: Add a short section telling a reader who opens `specs/` or `CLAUDE.md` that development
 is agent-assisted under a task system, and that correctness rests on the Lean kernel plus the
 invariant harness rather than on review of agent output.
 
 **Tasks**:
-- [ ] Place the section where it carries no line-40 constraint — immediately after `## Installation`
+- [x] Place the section where it carries no line-40 constraint — immediately after `## Installation`
       and before `## Metalogical Results` is the natural reading position (a reader who has just
       built the project is the one who would next wonder how it is maintained). The
       `## Documentation` / `## Related Projects` neighborhood is an acceptable alternative.
-- [ ] Author the section. It is new content, not relocated content: no existing prose in
+      *(completed: placed immediately after Installation, before Metalogical Results)*
+- [x] Author the section. It is new content, not relocated content: no existing prose in
       `README.md`, `docs/`, or `CONTRIBUTING.md` currently states this trust model. It must:
       - say that development is agent-assisted, driven by a task system whose artifacts live in
         `specs/` (git-tracked, and therefore visible to anyone browsing the repository);
@@ -373,16 +374,20 @@ invariant harness rather than on review of agent output.
         command with an exit code);
       - link `docs/development/MODULE_INVARIANTS.md` as the primary target. That file opens with
         exactly this framing and carries the per-check table (C1–C30) of what is asserted.
-- [ ] Add a secondary pointer to `CONTRIBUTING.md`'s existing `## 10. AI-Assisted Development`
+      *(completed: two-paragraph section covering all four points)*
+- [x] Add a secondary pointer to `CONTRIBUTING.md`'s existing `## 10. AI-Assisted Development`
       section for the *workflow* half (what the commands do), keeping this new section focused on
       the *epistemics* half. The two must be complementary, not duplicative — do not restate
-      CONTRIBUTING.md's command list here.
-- [ ] Cross-check against `## Verifying the main theorems` (further down the file) so the two
+      CONTRIBUTING.md's command list here. *(completed: one pointer sentence, no command list
+      restated)*
+- [x] Cross-check against `## Verifying the main theorems` (further down the file) so the two
       sections agree and neither contradicts the other. This section asserts the trust model; that
-      one gives the commands.
-- [ ] Use no task numbers. `.claude/rules/no-task-references-in-deliverables.md` applies to
-      `README.md`; cite durable anchors (filenames, section headings) instead.
-- [ ] Re-run both gates and commit.
+      one gives the commands. *(completed: consistent — both cite the Lean kernel plus
+      check-module-invariants.sh, no contradiction)*
+- [x] Use no task numbers. `.claude/rules/no-task-references-in-deliverables.md` applies to
+      `README.md`; cite durable anchors (filenames, section headings) instead. *(completed:
+      grep for task-number pattern found no hits)*
+- [x] Re-run both gates and commit. *(completed: both green)*
 
 **Timing**: 0.75 hours
 
