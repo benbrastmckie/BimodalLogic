@@ -1,5 +1,5 @@
 ---
-next_project_number: 648
+next_project_number: 649
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 648
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,604,623,624,625,647 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,604,623,624,625,647,648 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,568,616,617,628 | 298,464,502,563,625 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,570,618,646 | 231,465,497,564,565,568,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,534,543 | 428,498,499,500,646 | algebraic-representation, decidability, incompleteness, ... |
@@ -95,6 +95,7 @@ next_project_number: 648
 ### Reference Book
 
 647 [NOT STARTED] — Extend typst/chapters/ax-lean-appendix.typ (the back-matter...
+648 [NOT STARTED] — Fix the defects found in typst/BimodalReference.typ and its...
 
 ### Semantics
 
@@ -104,6 +105,38 @@ next_project_number: 648
 645 [NOT STARTED] — Port the translation-product proof device from the task 624...
 
 ## Tasks
+
+### 648. Fix reference book defects found in appendix review
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: reference-book
+- **Dependencies**: None
+
+**Description**: Fix the defects found in typst/BimodalReference.typ and its surroundings during the accuracy-and-formatting review of typst/chapters/ax-lean-appendix.typ. All of them lie OUTSIDE that appendix file, which was the only file that review was allowed to touch. Re-verify each item against live source before acting: a finding that no longer reproduces is closed with a one-line note, never "fixed" anyway. Items are ordered by reader impact.
+
+(1) BROKEN CROSS-REFERENCES TO THE APPENDICES (rendering bug, high). The show-ref rule in typst/BimodalReference.typ rewrites every reference to a level-1 heading as "Chapter N" using numbering("1", ..counter(heading).at(el.location())). Both appendix titles are UNNUMBERED level-1 headings, so the rule prints the whole heading counter run together. Observed in the compiled PDF: @lean-appendix renders as "Chapter 1534" twice in chapters/00-introduction.typ (the Outline paragraph and the How to Read This Book paragraph), and a reference to @machine-appendix renders as "Chapter 1512". Make the rule handle el.numbering == none (render the appendix by title, or give the appendices a real appendix numbering such as "Appendix A" and "Appendix B" and a matching supplement). Decide the appendix naming once and apply it to BOTH appendix files and the table of contents: ax-lean-appendix.typ already numbers its sections A.1 to A.9 through a file-local counter reset and numbering function, so the natural end state is titles "Appendix A: ..." and "Appendix B: ...", with the machine appendix's unnumbered level-2 headings reconsidered for consistency. Acceptance: grep of pdftotext output finds no "Chapter 1" followed by three or more digits, and every reference to either appendix reads correctly.
+
+(2) STALE RECORDS ABOUT THE LEAN APPENDIX (medium). The dated entry "2026-09-17 Addition -- Lean 4 Appendix" in typst/SYNC-MAP.md and the "Lean appendix: appendix-local didactic identifiers" comment in typst/sync-check-whitelist.txt both call the #leansrc excerpts "byte-exact" and cite a scratch file by its task-directory path, which has since been archived and is an ephemeral path in any case. The appendix now states the true policy in its own header: excerpts are verbatim up to whitespace with docstrings omitted and lines re-broken, and didactic examples are compiled with lake env lean in a scratch file outside FormalSystem/ and Tests/. Bring both records in line, describe the revised appendix (A.n section numbering, turnstile-notation table, naming-convention table, directory tour including the *Language/ directories, Tactic/ and MainResults.lean, the #print axioms output), and remove the task-directory path. Whitelist entries that the revised appendix no longer uses may be pruned only after confirming no other chapter uses them.
+
+(3) AXIOM-SCHEMA COUNT DISAGREEMENT (medium, touches Lean docstrings). typst/generated/status.typ reports axiom-count = 29 and the Axiom inductive in FormalSystem/ProofSystem/Axioms.lean has 29 constructors. The docstring of the modal_search syntax in FormalSystem/Automation/Tactics/Commands.lean says tryAxiomMatch covers "27 of the 29" and omits the two Layer-9 Reynolds Dedekind axioms. The docstring in FormalSystem/Automation/Tactics/Search.lean says "42 of the tree's 45", and typst/chapters/p4-proof-automation.typ repeats "42 of the 45 axiom schemata" and names THREE omitted axioms (prior_U_gap, prior_S_gap, sep). Count the entries tryAxiomMatch actually carries, establish the true figures and the true omitted set, and make the two docstrings and the chapter agree. Prefer the generated axiom-count in the chapter over a typed numeral.
+
+(4) DecisionResult CONSTRUCTORS (medium). typst/chapters/p2-decidability-practice.typ describes DecisionResult as one of valid, invalid, or timeout. Live source (FormalSystem/Metalogic/Decidability/DecisionProcedure.lean) has four constructors: valid (proof : ⊢ φ), invalid (counter : SimpleCountermodel), fuelExhausted, extractionFailed. The sync check does not catch this because "timeout" greps elsewhere. Correct the description, say what distinguishes the two non-verdict outcomes, and check the chapter's other statements about decide, isValid, isSatisfiable, getProof? and getCountermodel? against source while there.
+
+(5) Axiom IS Type-VALUED (medium). The module-map description for Tactics/Search.lean in typst/chapters/p4-proof-automation.typ says the engine runs in TacticM "because Axiom is Prop-valued and DerivationTree is Type-valued", and the modal_search docstring in Commands.lean speaks of "the Axiom Prop vs Type issue". Live source declares inductive Axiom : Formula → Type. Establish the real reason the search runs in TacticM and correct the chapter and the docstring.
+
+(6) apply_axiom DESCRIPTION (low). The docstring of the apply_axiom macro in FormalSystem/Automation/Tactics/UserTactics.lean, and the chapter's item for it in p4-proof-automation.typ, describe it as unifying the goal with an axiom schema and inferring the formula parameters. The macro body is apply DerivationTree.axiom followed by refine ?_, which applies the axiom constructor and leaves the h : Axiom _ and h_fc side goals open for the caller. Verify by elaborating an example, then align both descriptions with the behavior. Check the modal_t item the same way.
+
+(7) INTRODUCTION'S PROJECT STRUCTURE LIST (low). The list in chapters/00-introduction.typ omits MinusLanguage/, PlusLanguage/, StarLanguage/, OpenLanguage/, ForMathlib/, Tactic/ and MainResults.lean, and credits the training-data pipeline to Automation/ and Examples/ although lakefile.toml places the dataset, ML and benchmark modules in the separate BimodalTools library. Align it with the directory tour in the Lean appendix, in the introduction's own brief register.
+
+(8) MACHINE APPENDIX METAVARIABLE LETTERS (low). The JSON-shape table in chapters/ax-machine-appendix.typ writes untl and snce with "event": <φ> and "guard": <ψ>, following the docstring convention untl ψ φ in BimodalTools/DataExport.lean. Everywhere else the book writes the guard as φ and the event as ψ (guard-first). The paragraph below the table explains that the keys are by role, so nothing is wrong, but the letters invite a misreading. Swap the letters in the table so guard is φ and event is ψ, or add one clause saying which letter is which, and keep the CONFIRM(lean) comment accurate.
+
+(9) TEMPLATE AND BUILD HYGIENE (low). (a) The #items / #item environment in typst/template.typ renders items with a leading dash, no hanging indent and no left indent, so wrapped lines return to the margin (see the Tactics section of the Proof Automation chapter). Give it a hanging indent, or replace its uses with native lists plus the spacing the environment was meant to supply. (b) Every compile warns "unknown font family: new computer modern sans", raised from thmbox's title-fonts and sans-fonts defaults. Pass an available font to thmbox-init or to the environment styles in template.typ so the build is warning-free. (c) Code blocks outside the Lean appendix still wrap and sit tight against the following paragraph, for example the decide signature in p2-decidability-practice.typ. Consider promoting the appendix's file-local rules (8pt unbreakable raw blocks with explicit spacing, sticky #leansrc label) into template.typ so that every chapter gets them, then delete the local copies from the appendix.
+
+CONSTRAINTS. No task numbers and no specs/ paths in any deliverable. Every backticked span in typst/ must resolve under Check 1 of scripts/typst-sync-check.sh, comments included. Lean edits here are docstring-only, so no statement or proof changes, and the build must stay green under lake build --wfail. Do not edit typst/chapters/ax-lean-appendix.typ except for item (1)'s title change and item (9c)'s removal of rules that were promoted to the template, since a separate task owns that file's content.
+
+ACCEPTANCE. typst compile --root .. BimodalReference.typ with zero errors, and zero warnings if (9b) is done. scripts/typst-sync-check.sh PASS. lake build --wfail green if any .lean file was touched. Rendered pages inspected for every chapter touched. A short summary listing each item as fixed, closed as not reproducing, or deferred with a reason.
+
+---
 
 ### 647. Extend lean appendix semantics metalogic coverage
 - **Status**: [NOT STARTED]
