@@ -1,17 +1,26 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "dispatch_seq": 9,
   "task_number": 641,
-  "session_id": "sess_1789947599_745d6f_641",
-  "dispatch_seq": 8,
-  "phases_completed": 0,
+  "phases_completed": 6,
   "phases_total": 6,
+  "session_id": "sess_1789947599_745d6f",
+  "summary": "FormalSystem/Examples/Walkthrough.lean created and wired: six legs of the TM metatheory on two concrete formulas, 25 named declarations, axiom sets asserted with #guard_msgs in the test library, README demo pointer repointed. Full lake build, lake build BimodalTest, check-module-invariants.sh (42 checks) and readme-lint.sh all green; zero sorries, zero new axioms, zero warnings.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/641_worked_example_walkthrough_for_outside_readers/plans/01_worked-example-walkthrough.md",
-      "summary": "Six-phase sequential plan for FormalSystem/Examples/Walkthrough.lean plus its axiom-assertion test file and seven wiring edits."
+      "type": "summary",
+      "path": "specs/641_worked_example_walkthrough_for_outside_readers/summaries/01_worked-example-walkthrough-summary.md",
+      "summary": "Implementation summary for the worked-example walkthrough."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Examples/Walkthrough.lean",
+      "summary": "The walkthrough module: 383 lines, 25 named sorry-free declarations."
+    },
+    {
+      "type": "source",
+      "path": "Tests/BimodalTest/WalkthroughAxioms.lean",
+      "summary": "25 #guard_msgs-pinned #print axioms assertions over the walkthrough."
     }
-  ],
-  "next_steps": "Run /implement 641 to execute the plan",
-  "blockers": []
+  ]
 }

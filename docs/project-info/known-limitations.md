@@ -109,8 +109,9 @@ Resolved by the reorganization into `Automation/ProofSearch/Core.lean` and
 
 ### Description
 
-`FormalSystem/Examples/` contains exactly two files, `BimodalProofs.lean` and
-`TemporalStructures.lean`, both sorry-free (0 total, as of the current build).
+`FormalSystem/Examples/` contains exactly three files, `Walkthrough.lean`,
+`BimodalProofs.lean` and `TemporalStructures.lean`, all sorry-free (0 total, as of the current
+build).
 
 ### Impact
 

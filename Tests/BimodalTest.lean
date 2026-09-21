@@ -22,6 +22,7 @@ import BimodalTest.Theorems.PropositionalTest
 import BimodalTest.Theorems.ModalS4Test
 import BimodalTest.Theorems.ModalS5Test
 import BimodalTest.Theorems.PerpetuityTest
+import BimodalTest.WalkthroughAxioms
 import BimodalTest.Metalogic.PropDecideTest
 import BimodalTest.Metalogic.Decidability.SaturationTest
 import BimodalTest.Metalogic.Decidability.BiLassoTest

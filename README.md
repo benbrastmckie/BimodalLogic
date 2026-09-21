@@ -8,7 +8,7 @@
 
 This repository implements the **bimodal fragment** of the [Logos](https://logos-labs.ai/) in Lean 4, establishing soundness and completeness for a logic designed for reasoning about future contingency in non-deterministic dynamical systems. The **task semantics** evaluates formulas at both a history and a time, where histories are functions from times to world-states constrained by the task relation which encodes the possible transitions between world-states over a duration of time.
 
-**Results at a glance**: TM is sound and weakly complete at all four frame classes — Base, Dense, ZTime, RTime. Strong completeness is **proved** at Base and Dense (`strongCompletenessBase`, `strongCompletenessDense`, via an ultraproduct compactness argument) and **machine-refuted** at ZTime and RTime (`notStrongCompletenessZTime`, `notStrongCompletenessRTime`) — results in their own right, not open gaps. Every headline result is sorry-free at exactly Lean's own classical axioms (`propext`, `Classical.choice`, `Quot.sound`), and the pinned axiom-set harness (`scripts/check-module-invariants.sh`) checks the axiom sets of 105 declarations, so a drift in any of them is a hard stop rather than a new baseline. **Main Results**: [MainResults.lean](FormalSystem/MainResults.lean) — one page listing the headline soundness/completeness metatheory with the kernel's own `#print axioms` audit beside each result. **Demo**: [BimodalProofs.lean](FormalSystem/Examples/BimodalProofs.lean) — sorry-free demonstration proofs. The full per-theorem ledger — statement, Lean name, frame class, and pinned axiom set — is in [docs/theorem-index.md](docs/theorem-index.md), the single ledger.
+**Results at a glance**: TM is sound and weakly complete at all four frame classes — Base, Dense, ZTime, RTime. Strong completeness is **proved** at Base and Dense (`strongCompletenessBase`, `strongCompletenessDense`, via an ultraproduct compactness argument) and **machine-refuted** at ZTime and RTime (`notStrongCompletenessZTime`, `notStrongCompletenessRTime`) — results in their own right, not open gaps. Every headline result is sorry-free at exactly Lean's own classical axioms (`propext`, `Classical.choice`, `Quot.sound`), and the pinned axiom-set harness (`scripts/check-module-invariants.sh`) checks the axiom sets of 105 declarations, so a drift in any of them is a hard stop rather than a new baseline. **Main Results**: [MainResults.lean](FormalSystem/MainResults.lean) — one page listing the headline soundness/completeness metatheory with the kernel's own `#print axioms` audit beside each result. **Demo**: [Walkthrough.lean](FormalSystem/Examples/Walkthrough.lean) — a worked end-to-end walkthrough for a reader new to the repository: a derivation built by hand and by the automation, soundness out to validity, completeness back, the tableau decision procedure, frame-class sensitivity by one concrete countermodel, and a proved strong-completeness refutation. The full per-theorem ledger — statement, Lean name, frame class, and pinned axiom set — is in [docs/theorem-index.md](docs/theorem-index.md), the single ledger.
 
 Whereas dynamical systems theory provides mathematical resources for modeling the evolution of both deterministic and non-deterministic systems, a bimodal logic with tense and modal operators provides inferential resources for conducting verified reasoning about such systems, drawing fast and principled inferences about past and future contingency despite incomplete information by encoding the constraints on possible transitions into the logical framework itself. The repository implements the syntax, task semantics, proof theory, and metalogic for the _Bimodal Logic of Tense and Modality_ (TM), which combines S5 modal operators with the Since/Until linear tense operators.
 
@@ -19,9 +19,9 @@ Whereas dynamical systems theory provides mathematical resources for modeling th
 <!-- BEGIN GENERATED: inventory dir=FormalSystem rows=totals desc=no -->
 | Metric | Count |
 |--------|-------|
-| Live `.lean` files | 533 |
-| Live lines of code | 164,405 |
-| Live comment lines | 98,106 |
+| Live `.lean` files | 534 |
+| Live lines of code | 164,464 |
+| Live comment lines | 98,354 |
 | Archived `.lean` files | 169 |
 | Archived lines | 91,983 |
 <!-- END GENERATED -->

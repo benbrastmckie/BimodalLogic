@@ -1,7 +1,7 @@
 # Implementation Plan: Task #641
 
 - **Task**: 641 - Worked example walkthrough for outside readers
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/641_worked_example_walkthrough_for_outside_readers/reports/01_worked-example-walkthrough.md
@@ -145,26 +145,31 @@ mid-plan may reorder 2/3/4 freely.
 first leg: a derivation tree built by hand and the same theorem found by the automation.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Examples/Walkthrough.lean` with the standard copyright header
+- [x] Create `FormalSystem/Examples/Walkthrough.lean` with the standard copyright header
       (2026, Apache 2.0, Benjamin Brast-McKie) matching `FormalSystem/Examples.lean`
-- [ ] Imports: `FormalSystem.Metalogic`, `FormalSystem.Semantics`, `FormalSystem.Automation`
+- [x] Imports: `FormalSystem.Metalogic`, `FormalSystem.Semantics`, `FormalSystem.Automation`
       (mirroring `MainResults.lean` plus the tactic module). Add nothing not actually used
-- [ ] Write the `/-! # ... -/` module docstring: what TM is in two sentences, who the file is
+- [x] Write the `/-! # ... -/` module docstring: what TM is in two sentences, who the file is
       for, and a "How to read this page" roadmap naming the six legs in order. State the axiom
       contract by description (never transcribe `#print axioms` output — C14)
-- [ ] Open `namespace FormalSystem.Examples.Walkthrough`
-- [ ] Define `pF : Formula` (the atom) and `tFml : Formula` (the modal-T instance
+- [x] Open `namespace FormalSystem.Examples.Walkthrough`
+- [x] Define `pF : Formula` (the atom) and `tFml : Formula` (the modal-T instance
       `pF.box.imp pF`), each with a docstring naming the formula in ordinary modal notation
-- [ ] Define `tByHand : ⊢ tFml` via `DerivationTree.axiom [] _ (Axiom.modal_t pF) (by decide)`,
+      *(deviation: altered — a third declaration `pAtom : Atom := Atom.mkBase "p"` was added and
+      `pF := Formula.atom pAtom`, definitionally the research probe's `Formula.atomS "p"`, so
+      that the modal leg and the density leg share one atom. `permissive_realizes` in Phase 4
+      needs the `Atom`, not the `Formula`, and without `pAtom` the countermodel would have had
+      to reintroduce it locally.)*
+- [x] Define `tByHand : ⊢ tFml` via `DerivationTree.axiom [] _ (Axiom.modal_t pF) (by decide)`,
       with a docstring walking the reader through the `axiom` constructor's frame-class gate
       `h_fc : h.minFrameClass ≤ fc` and why it is `by decide` here
-- [ ] Define `boxedT : ⊢ (pF.box.imp pF).box` via `DerivationTree.necessitation`, so the reader
+- [x] Define `boxedT : ⊢ (pF.box.imp pF).box` via `DerivationTree.necessitation`, so the reader
       sees a tree with structure rather than a single leaf
-- [ ] Define `tByAuto : ⊢ tFml := by modal_search`, with a docstring contrasting the two routes
-- [ ] Write the prose note that `⊢ φ` is a `Type` (a tree), not a `Prop` — which is why these
+- [x] Define `tByAuto : ⊢ tFml := by modal_search`, with a docstring contrasting the two routes
+- [x] Write the prose note that `⊢ φ` is a `Type` (a tree), not a `Prop` — which is why these
       are `def`s — and that `Derivable` is its `Nonempty` shadow. This is the single most
       load-bearing orientation sentence in the file
-- [ ] Add `import FormalSystem.Examples.Walkthrough` to `FormalSystem/Examples.lean` and a
+- [x] Add `import FormalSystem.Examples.Walkthrough` to `FormalSystem/Examples.lean` and a
       matching bullet to its `## Modules` list and its `Or import specific example modules`
       code block
 
@@ -195,15 +200,15 @@ first leg: a derivation tree built by hand and the same theorem found by the aut
 derivability, with the asymmetry between the two directions spelled out.
 
 **Tasks**:
-- [ ] Add `theorem tValid : ⊨ tFml := soundness_validIn tByHand`, with a docstring saying what
+- [x] Add `theorem tValid : ⊨ tFml := soundness_validIn tByHand`, with a docstring saying what
       `⊨` unfolds to (`ValidIn .Base`) and what `soundness_validIn` consumes and produces
-- [ ] Add `theorem tDerivable : Derivable FrameClass.Base [] tFml := completeness_base tFml tValid`,
+- [x] Add `theorem tDerivable : Derivable FrameClass.Base [] tFml := completeness_base tFml tValid`,
       with a docstring naming `WeakCompleteness fc := ∀ ψ, ValidIn fc ψ → Derivable fc [] ψ`
-- [ ] Write the asymmetry paragraph: soundness takes a `DerivationTree` and returns a truth;
+- [x] Write the asymmetry paragraph: soundness takes a `DerivationTree` and returns a truth;
       completeness returns only `Derivable` = `Nonempty (DerivationTree …)`, so the round trip
       does **not** hand the tree back. Say explicitly that this is a fact about the completeness
       proof being non-constructive, not an oversight in the statement
-- [ ] Optionally mention (prose only, no declaration) the configuration-level `soundness` form
+- [x] Optionally mention (prose only, no declaration) the configuration-level `soundness` form
       with its explicit model, history and time, and point at `Metalogic/Soundness.lean` for a
       reader who wants to see truth evaluated at a point
 
@@ -231,15 +236,15 @@ derivability, with the asymmetry between the two directions spelled out.
 the verdict converted into the same validity the hand derivation reached.
 
 **Tasks**:
-- [ ] Add `theorem tIsValid : isValid tFml = true := by decide`, with a docstring explaining
+- [x] Add `theorem tIsValid : isValid tFml = true := by decide`, with a docstring explaining
       that `isValid φ fc = (decide φ (fc := fc)).isValid` and that the kernel is evaluating the
       tableau itself — the proof term is the computation
-- [ ] Add `theorem tValidViaTableau : ⊨ tFml := isValid_sound tFml FrameClass.Base tIsValid`
-- [ ] Write the prose noting that this reaches the *same* conclusion as `tValid` by a completely
+- [x] Add `theorem tValidViaTableau : ⊨ tFml := isValid_sound tFml FrameClass.Base tIsValid`
+- [x] Write the prose noting that this reaches the *same* conclusion as `tValid` by a completely
       different route, and that **the converse is open**: a `false` verdict is not in general a
       proof of non-validity. Quote the direction the correctness file itself states rather than
       overclaiming
-- [ ] Add an explicit in-file comment that `native_decide` must never replace `by decide` here,
+- [x] Add an explicit in-file comment that `native_decide` must never replace `by decide` here,
       with the one-line reason (it injects `Lean.ofReduceBool` and breaks the axiom contract)
 
 **Timing**: 0.75 hours
@@ -274,39 +279,39 @@ substitution in the phase notes.
 `ZTime`, with the refutation carried by a countermodel concrete enough to picture.
 
 **Tasks**:
-- [ ] Define `ggFml : Formula` — the density instance `GGp → Gp` at a concrete atom — with a
+- [x] Define `ggFml : Formula` — the density instance `GGp → Gp` at a concrete atom — with a
       docstring giving the formula in ordinary tense notation and saying what density means
-- [ ] Define `ggAtDense : DerivationTree FrameClass.Dense [] ggFml` via
+- [x] Define `ggAtDense : DerivationTree FrameClass.Dense [] ggFml` via
       `DerivationTree.axiom [] _ (Axiom.density _) (le_refl _)`. Use `le_refl _`, **not**
       `by decide`: research confirmed `by decide` fails on a schematic formula variable
       ("Expected type must not contain free variables") and `by decide +revert` then fails to
       synthesize `Decidable` under the binder
-- [ ] Write the paragraph explaining that the frame-class gate on the `axiom` constructor is
+- [x] Write the paragraph explaining that the frame-class gate on the `axiom` constructor is
       what makes this structural: `Axiom.density` has `minFrameClass = .Dense`, so the same
       constructor call is simply not type-correct at `Base` or `ZTime`
-- [ ] Build the countermodel: `abbrev Dz : TemporalOrder := TemporalOrder.of ℤ`,
+- [x] Build the countermodel: `abbrev Dz : TemporalOrder := TemporalOrder.of ℤ`,
       `noncomputable instance instSuccDz`, `instance instNoMaxDz`,
       `noncomputable def blipF : Dz.carrier → Bool := fun t => decide (t ≠ (1 : ℤ))`, and
       `noncomputable abbrev blipFrame : TaskFrame := (permissiveFrame Dz instSuccDz instNoMaxDz).toTaskFrame`.
       `blipFrame` must be an `abbrev`, not a `def`, for `isZTime_of_instances` to apply
-- [ ] Add `theorem gapStep (s r : ℤ) (hs : 0 < s) (hr : s < r) : r ≠ 1 := by omega` as a
+- [x] Add `theorem gapStep (s r : ℤ) (hs : 0 < s) (hr : s < r) : r ≠ 1 := by omega` as a
       standalone `ℤ`-typed helper, with a comment recording *why* it is separate: `omega`
       silently drops hypotheses whose `<` lives at `Dz.carrier`, even under an `(x : ℤ)`
       ascription, so the arithmetic is stated at `ℤ` and transported by definitional equality
-- [ ] Add `theorem blipFrame_isZTime : blipFrame.IsZTime := TaskFrame.isZTime_of_instances _`
-- [ ] Add `theorem blipRefutes : ¬ blipFrame.ValidOn ggFml`, using `permissive_realizes`,
+- [x] Add `theorem blipFrame_isZTime : blipFrame.IsZTime := TaskFrame.isZTime_of_instances _`
+- [x] Add `theorem blipRefutes : ¬ blipFrame.ValidOn ggFml`, using `permissive_realizes`,
       `permissiveHist`/`permissiveModel` and `simp only [blipF, decide_eq_true_eq]`. Write time
       points as `((0 : ℤ) : Dz.carrier)`; never write `(Dz : Type)`, which ascribes the
       `TemporalOrder` itself
-- [ ] Add `theorem notValidGg : ¬ Valid ggFml := fun h => blipRefutes (h _ trivial)` and
+- [x] Add `theorem notValidGg : ¬ Valid ggFml := fun h => blipRefutes (h _ trivial)` and
       `theorem notValidZTimeGg : ¬ ValidZTime ggFml := fun h => blipRefutes (h _ blipFrame_isZTime)`,
       with the prose point that **one** frame discharges both because it is simultaneously
       unconstrained (`FrameClass.Sat .Base = True`) and `IsZTime`
-- [ ] Add `theorem ggNotBase : ¬ Derivable FrameClass.Base [] ggFml` and
+- [x] Add `theorem ggNotBase : ¬ Derivable FrameClass.Base [] ggFml` and
       `theorem ggNotZTime : ¬ Derivable FrameClass.ZTime [] ggFml`, both
       `fun ⟨d⟩ => … (soundness_validIn d)`, and write the paragraph naming this as the standard
       use of soundness: to prove something is *not* derivable, exhibit a model
-- [ ] Prose: describe the blip informally ("an atom false at exactly one instant of ℤ") so the
+- [x] Prose: describe the blip informally ("an atom false at exactly one instant of ℤ") so the
       reader can picture the refutation without reading the proof term
 
 **Timing**: 1.5 hours
@@ -341,20 +346,20 @@ than forcing the shape.
 reads as one continuous page rather than six stitched sections.
 
 **Tasks**:
-- [ ] Add `theorem zTimeStrongCompletenessFails : ¬ StrongCompletenessZTime := notStrongCompletenessZTime`,
+- [x] Add `theorem zTimeStrongCompletenessFails : ¬ StrongCompletenessZTime := notStrongCompletenessZTime`,
       with a docstring restating the result in words
-- [ ] Write the two-sentence gloss: the witness family is `{Fp} ∪ {¬Xⁿ p : n ∈ ℕ}`; every finite
+- [x] Write the two-sentence gloss: the witness family is `{Fp} ∪ {¬Xⁿ p : n ∈ ℕ}`; every finite
       subset is satisfiable over ℤ, the whole set is satisfiable nowhere Archimedean-discrete, so
       compactness fails at `ZTime` and strong completeness with it. Say plainly that this is a
       *result*, not an open gap — weak completeness still holds at `ZTime`; it is the infinite-
       context form that fails
-- [ ] Do not cite any declaration under `Metalogic/WeakCanonical/` (the ADR-011 Expressiveness
+- [x] Do not cite any declaration under `Metalogic/WeakCanonical/` (the ADR-011 Expressiveness
       rename); verify by grepping the finished file for `Kamp` and for `WeakCanonical`
-- [ ] Reader-continuity pass over the whole module: check the "How to read this page" roadmap in
+- [x] Reader-continuity pass over the whole module: check the "How to read this page" roadmap in
       the module docstring still matches the section order; add one-sentence transitions between
       the six legs; confirm every declaration has a docstring that a newcomer can use; confirm no
       sentence assumes repository-specific vocabulary it has not introduced
-- [ ] Re-read the file against C14: no transcribed `#print axioms` output, no restated axiom or
+- [x] Re-read the file against C14: no transcribed `#print axioms` output, no restated axiom or
       schema count anywhere in the prose
 
 **Timing**: 1 hour
@@ -378,38 +383,44 @@ reads as one continuous page rather than six stitched sections.
 
 ---
 
-### Phase 6: Axiom assertions, wiring, inventory, and the full harness [NOT STARTED]
+### Phase 6: Axiom assertions, wiring, inventory, and the full harness [COMPLETED]
 
 **Goal**: The acceptance criterion is asserted rather than observed, the module is reachable from
 every place a reader would look, and the whole repository harness is green.
 
 **Tasks**:
-- [ ] Create `Tests/BimodalTest/WalkthroughAxioms.lean`: import
+- [x] Create `Tests/BimodalTest/WalkthroughAxioms.lean`: import
       `FormalSystem.Examples.Walkthrough`, and for each named declaration write
       `#guard_msgs in #print axioms FormalSystem.Examples.Walkthrough.<name>` with the expected
       string. This makes a drift a build failure, not a scrollback diff
-- [ ] Add `import BimodalTest.WalkthroughAxioms` to `Tests/BimodalTest.lean`
-- [ ] Confirm every asserted axiom set is `[propext]` or
+- [x] Add `import BimodalTest.WalkthroughAxioms` to `Tests/BimodalTest.lean`
+- [x] Confirm every asserted axiom set is `[propext]` or
       `[propext, Classical.choice, Quot.sound]` and nothing more. Any other axiom — in
       particular `Lean.ofReduceBool` — is a hard stop, not a new baseline
-- [ ] Repoint the root `README.md` `**Demo**:` link (line 11) from `BimodalProofs.lean` to
+- [x] Repoint the root `README.md` `**Demo**:` link (line 11) from `BimodalProofs.lean` to
       `[Walkthrough.lean](FormalSystem/Examples/Walkthrough.lean)` with a one-clause description
       ("a worked end-to-end walkthrough: derivation, soundness, completeness, decision procedure,
       frame-class sensitivity"). No task numbers anywhere in this edit (C9)
-- [ ] Add a `Walkthrough.lean` row to `FormalSystem/Examples/README.md`'s Contents table,
+- [x] Add a `Walkthrough.lean` row to `FormalSystem/Examples/README.md`'s Contents table,
       extend its Purpose bullets, and bump its `*Last verified: …*` line to today
-- [ ] Update `docs/project-info/known-limitations.md:112` — the "contains exactly two files"
+- [x] Update `docs/project-info/known-limitations.md:112` — the "contains exactly two files"
       sentence — to reflect three files, keeping the resolved-limitation framing intact
-- [ ] Update `docs/user-guide/examples.md`: add `Walkthrough.lean` to the Additional Resources
+- [x] Update `docs/user-guide/examples.md`: add `Walkthrough.lean` to the Additional Resources
       Lean-source list (~line 958) and mention it in the canonical-import prose (~line 5) as the
       recommended starting point
-- [ ] `grep -n '^#' FormalSystem/Examples/Walkthrough.lean` — must return nothing, so no
+      *(deviation: altered — the Phase 6 Scope Hypothesis sweep turned up three further sites
+      naming `BimodalProofs.lean` that the plan's file list does not cover. They are recorded in
+      the summary and left unedited: `docs/development/MODULE_ORGANIZATION.md:477` sits in a
+      list that is already stale in ways predating this task, `docs/project-info/implementation-status.md:151`
+      is a per-file status table, and `typst/chapters/p4-dual-verification.typ` describes
+      `BimodalProofs.lean`'s own content accurately rather than pointing at it as the demo.)*
+- [x] `grep -n '^#' FormalSystem/Examples/Walkthrough.lean` — must return nothing, so no
       `scripts/debug-artifact-allowlist.txt` entry is needed (C27)
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory` to regenerate the INV
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory` to regenerate the INV
       blocks in `README.md` and `FormalSystem/README.md`, then
       `bash scripts/check-module-invariants.sh --emit-inventory --check` to confirm a second
       rewrite would change nothing
-- [ ] Run the full `bash scripts/check-module-invariants.sh` and `bash scripts/readme-lint.sh`
+- [x] Run the full `bash scripts/check-module-invariants.sh` and `bash scripts/readme-lint.sh`
 
 **Timing**: 1.5 hours
 
@@ -568,20 +579,20 @@ end FormalSystem.Examples.Walkthrough
 
 ## Testing & Validation
 
-- [ ] `lake build` green across the whole package, including the test library
-- [ ] Zero new warnings (`scripts/warning-budget.txt` baseline is 0 across 0 files;
+- [x] `lake build` green across the whole package, including the test library
+- [x] Zero new warnings (`scripts/warning-budget.txt` baseline is 0 across 0 files;
       `linter.hashCommand` is blocking outside `Tests/`)
-- [ ] `bash scripts/check-module-invariants.sh` exits 0 (C9 task numbers, C14 stale literals,
+- [x] `bash scripts/check-module-invariants.sh` exits 0 (C9 task numbers, C14 stale literals,
       C16 docstring coverage, C24 `Init` imports, C26 naming, C27 debug directives, C28 warnings)
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0 after
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0 after
       regeneration
-- [ ] `bash scripts/readme-lint.sh` exits 0
-- [ ] `#guard_msgs in #print axioms` passes for every named walkthrough declaration, each at
+- [x] `bash scripts/readme-lint.sh` exits 0
+- [x] `#guard_msgs in #print axioms` passes for every named walkthrough declaration, each at
       `[propext]` or `[propext, Classical.choice, Quot.sound]` and nothing more
-- [ ] No `sorry` in `FormalSystem/Examples/Walkthrough.lean` or
+- [x] No `sorry` in `FormalSystem/Examples/Walkthrough.lean` or
       `Tests/BimodalTest/WalkthroughAxioms.lean`
-- [ ] No `Kamp`/`WeakCanonical` citation in the new file
-- [ ] `import FormalSystem.Examples.Walkthrough` resolves from a scratch file, confirming the
+- [x] No `Kamp`/`WeakCanonical` citation in the new file
+- [x] `import FormalSystem.Examples.Walkthrough` resolves from a scratch file, confirming the
       module is genuinely reachable by a reader following the README
 
 ## Artifacts & Outputs

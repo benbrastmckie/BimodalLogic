@@ -4,6 +4,8 @@ This document provides comprehensive examples of modal, temporal, and bimodal re
 
 **Canonical import path:** `import FormalSystem.Examples` (or a specific module such as `FormalSystem.Examples.BimodalProofs`).
 
+**New to the repository?** Start with `FormalSystem/Examples/Walkthrough.lean`, a single page that carries one formula through a hand-built derivation, the automation, soundness, completeness, the tableau decision procedure, frame-class sensitivity and a proved strong-completeness refutation. This document is the broader catalogue; the walkthrough is the guided tour.
+
 ## 1. Modal Logic Examples
 
 ### Automated Proof Search
@@ -955,6 +957,7 @@ See also: [known-limitations.md](../project-info/known-limitations.md) for statu
 ### Additional Resources
 
 - **Lean Source Files**:
+  - `FormalSystem/Examples/Walkthrough.lean` - End-to-end walkthrough of the metatheory
   - `FormalSystem/Examples/BimodalProofs.lean` - Combined modal-temporal proofs
   - `FormalSystem/Examples/TemporalStructures.lean` - Temporal logic examples
   - `FormalSystem/Theorems/Combinators.lean` - Proof combinators used above
