@@ -157,6 +157,11 @@ LAYERS = {
 #   from Metalogic/Conservativity/           -> 3   (`MinusLanguage/Soundness.lean` only; it
 #                                                    imports two Metalogic modules)
 #
+# A file created AFTER the merge (everything under `OpenLanguage/`) has no origin directory; it
+# takes the layer of the directory it would have occupied before the merge: a syntax file
+# (`Syntax/<Lang>/`) takes 0, a semantic file (`Semantics/<Lang>/`) takes 1 -- which is what
+# assertion C of scripts/check-metalogic-cycles.sh already enforces.
+#
 # A content judgement is deliberately NOT the rule.  It could file `AxiomDischarge` -- whose 7
 # imports of `Theorems` are the whole measured upward set -- at layer 2 and empty the allowlist
 # in scripts/check-metalogic-cycles.sh by assertion.  That allowlist once emptied because these
@@ -185,6 +190,9 @@ LANGUAGE_FILE_LAYERS = {
         "Axioms": 0, "Derivation": 0, "Embedding": 0, "Formula": 0,
         "StarDeterminism": 1, "StarNonValidities": 1, "StarStateLocal": 1, "StarTruth": 1,
         "StarValidity": 1,
+    },
+    "OpenLanguage": {
+        "OpenClasses": 1,
     },
 }
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #625
 
 - **Task**: 625 - Formalize the manuscript's open-future and open-past modalities and machine-check that the stability modal is NOT Ockhamist historical necessity while the open-future modality is
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12.5 hours
 - **Dependencies**: 638 (completed; its module split and the earlier language-extension merge are the tree this plan targets). Related, not blocking: 559, 624
 - **Research Inputs**: specs/625_formalize_open_future_open_past_modalities/reports/01_open-future-open-past-modalities.md; probes `probes/01_sink-frame-hn-refutation.lean` and `probes/02_frame-reversal.lean` (both re-compiled green at plan time against the relocated tree, see Research Integration)
@@ -190,7 +190,7 @@ running two of them in one working tree at once would collide.
 **Gate that closes every phase** (tiering below governs in-phase granularity only):
 
 ```bash
-bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- FormalSystem   # or: lake build FormalSystem
+bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem   # *(deviation: altered — the guard requires a lake subcommand as its first lake argument; the original `-- FormalSystem` exits 77 before any build is attempted, and piping it through `tail` masks that as exit 0)*
 grep -rn "sorry" FormalSystem/OpenLanguage FormalSystem/OpenLanguage.lean          # must print nothing
 lake exe mk_all --lib FormalSystem --check                                          # C33
 bash scripts/check-metalogic-cycles.sh                                              # assertions A, B, C
@@ -198,42 +198,42 @@ bash scripts/check-metalogic-cycles.sh                                          
 
 then one commit, `task 625 phase {P}: {name}`, staging an explicit file list.
 
-### Phase 1: Component scaffold and the three history classes [NOT STARTED]
+### Phase 1: Component scaffold and the three history classes [COMPLETED]
 
 **Goal**: Create the `OpenLanguage` component so that it is layered, aggregated and in the root
 closure from its first commit, and land deliverable (1).
 
 **Tasks**:
-- [ ] Create `FormalSystem/OpenLanguage/OpenClasses.lean`, first `namespace FormalSystem.OpenLanguage`,
+- [x] Create `FormalSystem/OpenLanguage/OpenClasses.lean`, first `namespace FormalSystem.OpenLanguage`,
   importing `FormalSystem.PlusLanguage.PlusPasting`, opening `FormalSystem.Semantics` and
   `FormalSystem.PlusLanguage`. Declare `stabClass`, `openFutureClass`, `openPastClass` as
   `def … : Set (WorldHistory F)` with the bodies fixed in the challenge preamble, and
   `mem_stabClass_iff` / `mem_openFutureClass_iff` / `mem_openPastClass_iff` by `Iff.rfl`.
-- [ ] Prove the three `Equivalence` theorems (`sameState_equivalence`, `agreeUpTo_equivalence`,
+- [x] Prove the three `Equivalence` theorems (`sameState_equivalence`, `agreeUpTo_equivalence`,
   `agreeFrom_equivalence`); these are what make each class "an equivalence class of an explicit
   relation".
-- [ ] Prove the inclusions `openFutureClass_subset_stabClass` (`hag x le_rfl`),
+- [x] Prove the inclusions `openFutureClass_subset_stabClass` (`hag x le_rfl`),
   `openPastClass_subset_stabClass`, and `stabClass_subset_univ` (the type `WorldHistory F` is
   `H_F`); the intersection `openFutureClass_inter_openPastClass` (`WorldHistory.ext_state` plus
   `le_total`); `openFutureClass_anti` and `openPastClass_mono` from `agreeUpTo_mono` /
   `agreeFrom_mono` — the manuscript's "moving forward in time narrows the open futures and widens
   the open pasts".
-- [ ] Optional, if under 15 lines: `paste_mem_openFutureClass_inter_openPastClass`, the two-way
-  pasting of `app:gluing` (`paste τ σ x h ∈ openFutureClass τ x ∩ openPastClass σ x`).
-- [ ] Create the aggregator `FormalSystem/OpenLanguage.lean` with the component's module docstring:
+- [x] Optional, if under 15 lines: `paste_mem_openFutureClass_inter_openPastClass`, the two-way
+  pasting of `app:gluing` (`paste τ σ x h ∈ openFutureClass τ x ∩ openPastClass σ x`). *(deviation: altered — `app:gluing` had no row in `docs/reference/paper-definitions-of-record.md`, so a `LIVE-UNPINNED` KNOWN-ANCHORS row was added in this phase, before the citation, as C15 requires; that file was planned for Phase 8 only)*
+- [x] Create the aggregator `FormalSystem/OpenLanguage.lean` with the component's module docstring:
   the grammar of L^▷, the module list, decisions D1-D3 in durable wording (no task numbers), the
   three manuscript operators without a formalization (nomic operator, world registers, any
   axiomatization or completeness claim), and a `## References` block in normal form.
-- [ ] Create `FormalSystem/OpenLanguage/README.md` modelled on `FormalSystem/StarLanguage/README.md`,
+- [x] Create `FormalSystem/OpenLanguage/README.md` modelled on `FormalSystem/StarLanguage/README.md`,
   with a `<!-- BEGIN GENERATED: inventory dir=FormalSystem/OpenLanguage -->` block and a
   "Paper-label correspondence" table started with the class rows.
-- [ ] Add `"OpenLanguage": {"OpenClasses": 1}` to `LANGUAGE_FILE_LAYERS` in
+- [x] Add `"OpenLanguage": {"OpenClasses": 1}` to `LANGUAGE_FILE_LAYERS` in
   `scripts/measure-refactor-partitions.py` and extend the rule comment above the table with one
   sentence: a file created after the merge has no origin directory and takes the layer of the
   directory it would have occupied (`Syntax/<Lang>/` → 0, `Semantics/<Lang>/` → 1).
-- [ ] Regenerate the root with `lake exe mk_all --lib FormalSystem`; run
+- [x] Regenerate the root with `lake exe mk_all --lib FormalSystem`; run
   `bash scripts/check-module-invariants.sh --emit-inventory` and replace the
-  `<!-- TODO: add description -->` cells it creates for the new rows.
+  `<!-- TODO: add description -->` cells it creates for the new rows. *(deviation: altered — the emitter also rewrote the totals block of the repository-root `README.md`, which carries another session's uncommitted hunks; it is left unstaged here, under-staging rather than sweeping foreign edits into this commit)*
 
 **Timing**: 1.5 hours
 

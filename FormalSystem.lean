@@ -403,6 +403,8 @@ import FormalSystem.MinusLanguage.MinusTruth
 import FormalSystem.MinusLanguage.MinusValidity
 import FormalSystem.MinusLanguage.Soundness
 import FormalSystem.MinusLanguage.Translation
+import FormalSystem.OpenLanguage
+import FormalSystem.OpenLanguage.OpenClasses
 import FormalSystem.PlusLanguage
 import FormalSystem.PlusLanguage.Axioms
 import FormalSystem.PlusLanguage.Derivation
