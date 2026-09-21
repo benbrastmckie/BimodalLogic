@@ -88,9 +88,9 @@ split is untouched. The eq (5.3) pin's *own* `K⁺` moved one phase earlier, wit
 Cite [rabinovich2014] by **PDF page only**.
 
 Inside Case 3 the limit alternative appears a second time, in the pin's own point type:
-eq (5.3)'s third conjunct is `¬β₁(z) ∨ K⁺(¬β₁)(z)` (`infPinPoint`, `NegFixOneFaithful.lean:177`),
+eq (5.3)'s third conjunct is `¬β₁(z) ∨ K⁺(¬β₁)(z)` (`infPinPoint`, `NegFixOneFaithful.lean:298`),
 not `¬β₁(z)`. The step that consumes it is `bracketOne_witness_le_infPin`
-(`NegFixOneFaithful.lean:319`) — carrier-free, and despite its name stated about a bare `β₁`-prefix
+(`NegFixOneFaithful.lean:449`) — carrier-free, and despite its name stated about a bare `β₁`-prefix
 condition rather than about `bracketOne`, so it applies verbatim at every peel of this recursion.
 Its `K⁺` branch is discharged by **density**, producing no witness point; that is exactly why the
 possibly-unattained infimum suffices here.
@@ -261,7 +261,7 @@ theorem vecPinnedListToV_holds_iff {sig : MonadicSignature}
     throughout `(z₀,x)`, so a bracket `[α₀,β₁,α₁,…]` has no first witness at all and fails
     outright. Rabinovich's *"In this case `¬[α₀,β₁,…](z₀,z₁)` is equivalent to True"* (PDF p.9).
 
-    The companion of `bracketOne_witness_le_infPin` (`NegFixOneFaithful.lean:319`) at the *left
+    The companion of `bracketOne_witness_le_infPin` (`NegFixOneFaithful.lean:449`) at the *left
     endpoint*: there the pin sits strictly inside `(z₀,z₁)` and confines the witness to `(z₀,r₀]`;
     here it sits at `z₀` itself and leaves no room at all. Like that lemma, the `K⁺` alternative is
     discharged by density, so this consumes **no carrier**.
@@ -301,7 +301,7 @@ theorem witness_absurd_of_kplusLeft {sig : MonadicSignature}
          the enumeration exhaustive (module docstring).
       2. **Case 2** (PDF p.10): `β₁` along `(z₀,z₁)` (via `VVecEA2.conjEverywhere`), conjoined
          with `Form₂` = the anchored Corollary 5.4(2) `negBoundedLeftFixAnchoredFaithful`
-         (`BoundedFixAnchoredFaithful.lean:220`) — *"there is no `z ∈ (z₀,z₁)` such that
+         (`BoundedFixAnchoredFaithful.lean:235`) — *"there is no `z ∈ (z₀,z₁)` such that
          `[α₁,β₂,…,βₙ,αₙ](z,z₁)`"*.
       3. **Case 3** (PDF p.10, eq (5.3)): the pin `r₀`, gated by `β₁` on `(z₀,r₀)` and the point
          type `infPinPoint β₁ = ¬β₁(r₀) ∨ K⁺(¬β₁)(r₀)`, carrying the pinned DNF of per-placement
@@ -651,7 +651,7 @@ theorem negFixListFaithful_case1_is_indispensable {sig : MonadicSignature}
 /-- The faithful recursion is available wherever the attained one is, and needs only the INF half:
     `HasAttainedINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:387`) supplies the carrier, and
     `HasAttainedSUP` is not required at all. The shim mirrors
-    `negFixOneFaithful_iff_of_attained` (`NegFixOneFaithful.lean:500`).
+    `negFixOneFaithful_iff_of_attained` (`NegFixOneFaithful.lean:652`).
 
     ADAPTED-FROM the previous routing through `HasAttainedINF.toHasDedekindINF`
     (`DedekindINF.lean:170`). The statement is unchanged; only the composite that reaches the

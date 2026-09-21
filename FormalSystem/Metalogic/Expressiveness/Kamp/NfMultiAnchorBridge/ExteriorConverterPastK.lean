@@ -9,7 +9,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorNe
 /-! # Depth-`k` Past-side exterior-negation converter — the reverse `_complete`
 
 The Past dual of `ExteriorConverterK.lean`: the reverse of the green `kvE_extNegPast_sound`
-(`ExteriorNegationPastK.lean:541`). Assuming the positive local-existence form `kvEPastPos` at
+(`ExteriorNegationPastK.lean:637`). Assuming the positive local-existence form `kvEPastPos` at
 the left anchor `x`, we destruct the Cor 5.4 `Since` chain to an exterior endpoint `x1 < x` and
 reconstruct `NfEvalNf M (k+1) 4 [x1,w,x,t] σ`, contradicting the carried non-realization
 hypothesis `hcl`.
@@ -31,7 +31,7 @@ open FormalSystem.Metalogic.Expressiveness.Separation
 
 /-! ## Admissibility conjunct-2 reader (off-fiber falsity, Past)
 
-Conjunct 2 of `kvEPastAdmissible` (`ExteriorNegationPastK.lean:137`) is byte-identical to the
+Conjunct 2 of `kvEPastAdmissible` (`ExteriorNegationPastK.lean:161`) is byte-identical to the
 Future conjunct 2: every bit-true full-arity sub sits on `σ`'s atom fiber. -/
 
 /-- **Past admissibility ⇒ fiber dichotomy**: under `kvEPastAdmissible σ`, every full-arity sub

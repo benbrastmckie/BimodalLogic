@@ -88,7 +88,7 @@ arithmetic and is retained: `(⊤ U ¬P)(t) = ∃ s > t, ∀ r ∈ (t,s), ¬P(r)
 `t`, not `F(¬P)` — so `¬(⊤ U ¬P)(t) = ∀ s > t, ∃ r ∈ (t,s), P(r)`, "`P` is dense above `t`".
 That last formula **is** the sources' `K⁺`. `kplus` conjoins `¬P(t)` to it. The extra conjunct is
 this tree's addition; it is not attributable to either paper, and it is what
-`hasDedekindINF_fails_of_interval_witness` (`Kamp/DedekindINFDense.lean:457`) turns on.
+`hasDedekindINF_fails_of_interval_witness` (`Kamp/DedekindINFDense.lean:492`) turns on.
 
 **`kplus` is not edited.** It is internally coherent with `kplusFormula` — `kplus_formula_correct`
 (`Kamp/KPlusBracketRendering.lean:161`) proves them equivalent — and the discrete pipeline depends
@@ -108,9 +108,9 @@ and the shims relating the two; neither this file's statements nor its proofs ch
     *"`K+(F)` holds at a moment `t` iff `t = inf({t′ | t′ > t and F holds at t′})`"*) and
     Reynolds' (printed p.168: `K⁺A` for `¬U(⊤,¬A)`) are the second conjunct alone. The
     source-exact operator is `kplusOpen` (`Kamp/KPlusFaithful.lean`), the `Prop`-level reading of
-    `Formula.kPlus` (`Syntax/Formula.lean:197`); see the name-collision warning at
-    `Syntax/Formula.lean:189` and this section's comment block above. `kplus` is strictly stronger,
-    and `kplus_iff_not_and_kplusOpen` states the difference exactly. -/
+    `Formula.kPlus` (`Syntax/Formula.lean:197`), whose name-collision warning is at
+    `Syntax/Formula.lean:189`; see also this section's comment block above. `kplus` is strictly
+    stronger, and `kplus_iff_not_and_kplusOpen` states the difference exactly. -/
 def kplus {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : Formula) (t : M.carrier) : Prop :=
@@ -129,7 +129,7 @@ noncomputable def kplusFormula (P : Formula) : Formula :=
     `t = sup({t′ | t′ < t and F holds at t′})`"*) and Reynolds' (printed p.168: `K⁻A` for
     `¬S(⊤,¬A)`) are the second conjunct alone. The source-exact operator is `kminusOpen`
     (`Kamp/KPlusFaithful.lean`), the `Prop`-level reading of `Formula.kMinus`
-    (`Syntax/Formula.lean:193`). -/
+    (`Syntax/Formula.lean:210`). -/
 def kminus {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (P : Formula) (t : M.carrier) : Prop :=

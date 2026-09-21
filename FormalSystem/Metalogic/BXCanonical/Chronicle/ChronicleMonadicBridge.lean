@@ -569,11 +569,11 @@ Part 4's `chronicleMonadic_truth_correspondence` is bounded by `subformulaClosur
 the closure an atom of `φ` need not be a predicate symbol of `mkSigFrom root`, so `TemporalTruth`
 cannot read it back as membership of `φ` itself. Reynolds' clause 3 needs *all* substitution
 instances, so this part removes the bound the only way it can be removed — by replacing `φ` on
-the MCS side with its **effective formula** `effectiveFormula` (`Transfer.lean:1011`), which
+the MCS side with its **effective formula** `effectiveFormula` (`Transfer.lean:857`), which
 rewrites each atom and each box-subformula through the signature round trip and leaves the
 temporal skeleton alone.
 
-This is `chronicle_temporal_truth_effective` (`Transfer.lean:1033`) transposed from
+This is `chronicle_temporal_truth_effective` (`Transfer.lean:878`) transposed from
 `ChronicleAsPriorModel` over an arbitrary domain to a `BFMCS` family over `ℚ`. The five cases are
 the ones Part 4 already discharges; only the atom and box cases change (they become `Iff.rfl`,
 since the effective formula is *defined* to be the round trip), and the Until/Since cases now
@@ -642,7 +642,7 @@ be taken at the effective formula rather than at the original. -/
     chronicleEff root (Formula.kPlus a) = Formula.kPlus (chronicleEff root a) := rfl
 
 /-- `chronicleEff` commutes with `K⁻`, since `Formula.kMinus` is `¬S(⊤,¬·)`
-(`Syntax/Formula.lean:193`). -/
+(`Syntax/Formula.lean:210`). -/
 @[simp] theorem chronicleEff_kMinus :
     chronicleEff root (Formula.kMinus a) = Formula.kMinus (chronicleEff root a) := rfl
 
@@ -772,7 +772,7 @@ Step 3's bridge lemma is the one the plan names: `Axiom.prior_U_gap` is stated w
 `Formula.kPlus` (`ProofSystem/Axioms.lean:445`; `Syntax/Formula.lean:197`), and
 `kPlus_formula_correct` is what reads it semantically. `kplusFormula` (`Kamp/PriorINF.lean:~93`)
 is **not** substituted for it — the two differ by a conjunct and the name-collision warning at
-`Syntax/Formula.lean:189` says so.
+`Formula.kPlus` (`Syntax/Formula.lean:189`) says so.
 
 Reynolds gives no argument beyond the quoted sentence, so the Lean execution of steps 1-3 is
 original glue on a sourced statement. -/

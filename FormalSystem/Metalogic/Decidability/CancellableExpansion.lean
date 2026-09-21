@@ -255,7 +255,7 @@ decreasing_by all_goals simp_wf
 
 
 /--
-Cancellable `IO` mirror of `buildTableau` (Saturation.lean:557).
+Cancellable `IO` mirror of `buildTableau` (Saturation.lean:1161).
 
 Builds a complete tableau for `¬φ` using the two cancellable helpers; an
 observed abort surfaces as `none` (→ `.fuelExhausted` upstream).
@@ -331,7 +331,7 @@ def decideCancellable (abortRef : IO.Ref Bool) (φ : Formula)
               return .invalid (extractCountermodelSimple φ_n openBranch hSat)
 
 /--
-Cancellable `IO` mirror of `decideAutoAdaptive` (DecisionProcedure.lean:198).
+Cancellable `IO` mirror of `decideAutoAdaptive` (DecisionProcedure.lean:385).
 
 Runs `decideCancellable` at the single fuel tier and tags the result. An
 aborted run returns `(.fuelExhausted, "adaptive_timeout")`.

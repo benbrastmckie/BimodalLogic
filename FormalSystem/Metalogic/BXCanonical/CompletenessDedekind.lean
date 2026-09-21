@@ -245,7 +245,7 @@ built at the wrong MCS and still typecheck. -/
 /--
 **Root placement.** The chronicle bundle's evaluation family takes the value `A` at time `0`.
 
-`Chronicle.rooted_cantor_fmcs_dense_at_s` (`ChronicleToCountermodelBasic.lean:515`) at `s = 0`,
+`Chronicle.rooted_cantor_fmcs_dense_at_s` (`ChronicleToCountermodelBasic.lean:502`) at `s = 0`,
 composed with `cantorBfmcsDense`'s `evalFamily := rootedCantorFmcsDense fc A h_mcs h_box 0`.
 Reynolds 1992, §9, printed p.189, *"`M₀ ⊨ A₀(0)`"*.
 -/

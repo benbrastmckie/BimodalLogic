@@ -16,15 +16,15 @@ this tree's `kplus`.
 
 ## Three spellings of `K⁺`, and which transcribes which source
 
-This tree carries three, and the reader must keep them apart. The name-collision warning at
-`Syntax/Formula.lean:164-179` names the first two; this module adds the third and, with the bridge
-lemmas below, reduces the number of *unbridged* spellings from two to zero.
+This tree carries three, and the reader must keep them apart. The name-collision warning of
+`Formula.kPlus` (`Syntax/Formula.lean:188-193`) names the first two; this module adds the
+third and, with the bridge lemmas below, reduces the *unbridged* spellings from two to zero.
 
 * `Formula.kPlus` (`Syntax/Formula.lean:181`), object level, `(untl ⊤ φ.neg).neg` — transcribes
   **the sources, exactly**.
 * `kplusOpen` (**this module**), `Prop` level, `∀ s > t, ∃ r ∈ (t,s), P(r)` — transcribes **the
   sources, exactly**; it is the semantic reading of `Formula.kPlus`.
-* `kplus` (`Kamp/PriorINF.lean:87`), `Prop` level, `¬P(t) ∧ ∀ s > t, ∃ r ∈ (t,s), P(r)` —
+* `kplus` (`Kamp/PriorINF.lean:114`), `Prop` level, `¬P(t) ∧ ∀ s > t, ∃ r ∈ (t,s), P(r)` —
   transcribes **neither source**: strictly stronger, by the added `¬P(t)`.
 * `kplusFormula` (`Kamp/PriorINF.lean:~93`), object level, `P.neg ∧ ¬(⊤ U P.neg)` — the
   object-level spelling of `kplus`, not of the sources' `K⁺`.
@@ -39,7 +39,7 @@ The two source definitions, read verbatim from the corpus at this revision:
   abbreviation table, §1, **printed p.168**: `K⁺A` — *"for `¬U(⊤, ¬A)`"* — reading *"`A` will be
   true arbitrarily soon"*; with `U(A,B)(t)` iff *"there is `s > t` such that `A(s)` and for all
   `u`, if `t < u < s` then `B(u)`"*. Corroborated by Gabbay-Hodkinson-Reynolds 1994 §10.3.1
-  (`K⁺q = ¬U(⊤,¬q)`), which `Syntax/Formula.lean:164-179` already cites.
+  (`K⁺q = ¬U(⊤,¬q)`), which `Formula.kPlus` (`Syntax/Formula.lean:185-186`) already cites.
 
 **Neither source's `K⁺` carries a `¬A` conjunct at the point of evaluation.** Rabinovich's
 `Until` takes its eventuality as the *second* argument, so his `(¬F) Until True` is Reynolds'
@@ -108,7 +108,7 @@ open FormalSystem.Metalogic.Expressiveness
     `t = inf({t′ | t′ > t and F holds at t′})`"*. Reynolds 1992, abbreviation table §1, printed
     p.168: `K⁺A` for `¬U(⊤,¬A)`, *"`A` will be true arbitrarily soon"*.
 
-    **This is `kplus` (`Kamp/PriorINF.lean:87`) minus its first conjunct**, and the first conjunct
+    **This is `kplus` (`Kamp/PriorINF.lean:114`) minus its first conjunct**, and the first conjunct
     `¬P(t)` is **this tree's addition, not the sources'**. Neither Rabinovich's nor Reynolds'
     `K⁺` says anything about whether `P` holds at the point of evaluation. `kplus` is therefore
     strictly stronger than the operator both papers define; `kplusOpen` is what they define.
@@ -144,7 +144,7 @@ truth condition**. These two lemmas are that bridge. -/
 
     `TemporalTruth M atomMap t (Formula.kPlus P) ↔ kplusOpen M atomMap P t`.
 
-    `Formula.kPlus P` is `(untl P.neg ⊤).neg` (`Syntax/Formula.lean:181`), which is Reynolds'
+    `Formula.kPlus P` is `(untl P.neg ⊤).neg` (`Syntax/Formula.lean:197`), which is Reynolds'
     `¬U(⊤,¬P)` (abbreviation table §1, printed p.168) letter for letter under
     `Formula.untl`'s truth clause (`Table.lean:188`). Unwinding: `U(⊤,¬P)(t)` says some `(t,s)` is
     entirely `P`-free, so its negation says every `(t,s)` contains a point at which `P` holds —
@@ -172,7 +172,7 @@ theorem kPlus_formula_correct {sig : MonadicSignature}
 
 /-- **The bridge, mirrored: `Formula.kMinus` is `kminusOpen`.**
 
-    `Formula.kMinus P` is `(snce P.neg ⊤).neg` (`Syntax/Formula.lean:193`), Reynolds' `¬S(⊤,¬P)`
+    `Formula.kMinus P` is `(snce P.neg ⊤).neg` (`Syntax/Formula.lean:210`), Reynolds' `¬S(⊤,¬P)`
     (printed p.168). `DerivedAxioms.priorSGap` (`ProofSystem/Axioms.lean:392`) and `Axiom.sep`
     (`:390`) are stated with it. -/
 theorem kMinus_formula_correct {sig : MonadicSignature}
@@ -269,7 +269,7 @@ noncomputable abbrev denseClosedRayFlow : OrderedMonadicStructure densePriorSig 
 
     Consequences, both load-bearing:
     * `truth_or_kplus_of_kplusOpen` is a strict one-way implication, so the trichotomy
-      `HasDenseDedekindINF` (`DedekindINFDense.lean:189`) is **strictly weaker at the left
+      `HasDenseDedekindINF` (`DedekindINFDense.lean:224`) is **strictly weaker at the left
       disjunct** than the dichotomy `HasFaithfulDedekindINF` below.
     * `HasDenseDedekindINF → HasFaithfulDedekindINF` is **not** available and is not attempted
       here: a consumer handed the trichotomy's `P(z₀)` disjunct cannot recover `kplusOpen P z₀`,
@@ -397,7 +397,7 @@ theorem HasAttainedSUP.toHasFaithfulDedekindSUP {sig : MonadicSignature}
   h.toHasDedekindSUP.toHasFaithfulDedekindSUP
 
 /-- **The faithful carrier supplies Phase 10's trichotomy**
-    (`HasDenseDedekindINF`, `DedekindINFDense.lean:189`), via `truth_or_kplus_of_kplusOpen`.
+    (`HasDenseDedekindINF`, `DedekindINFDense.lean:224`), via `truth_or_kplus_of_kplusOpen`.
 
     So nothing Phase 10 landed is stranded by the re-base: `DedekindINFDense.lean`'s carrier
     remains derivable, remains consumed, and remains the tree's record of the `kplus` deviation. -/
@@ -423,7 +423,7 @@ theorem HasFaithfulDedekindSUP.toHasDenseDedekindSUP {sig : MonadicSignature}
     · exact Or.inr (Or.inr h_right)
 
 /-- The faithful carrier also supplies the *guarded* carrier
-    (`HasGuardedDedekindINF`, `DedekindINFDense.lean:128`), by composing with
+    (`HasGuardedDedekindINF`, `DedekindINFDense.lean:165`), by composing with
     `HasDenseDedekindINF.toHasGuardedDedekindINF`. Recorded so that no consumer of Phase 10's
     material has to route through the trichotomy by hand. -/
 theorem HasFaithfulDedekindINF.toHasGuardedDedekindINF {sig : MonadicSignature}
@@ -470,7 +470,7 @@ the **interval**, never on `z₀`, which is why no guard appears anywhere below.
     5. `r₀ < z₁`, because `P` occurs at some `x ∈ (z₀,z₁)` while `¬P` holds on `(z₀,r₀)`.
     6. Steps 4-5 are eq (5.2) verbatim — the right disjunct.
 
-    **Compare `prior_hasGuardedDedekindINF_dense` (`DedekindINFDense.lean:328`)**, which needs the
+    **Compare `prior_hasGuardedDedekindINF_dense` (`DedekindINFDense.lean:363`)**, which needs the
     endpoint guard `¬P(z₀)` at step 2 precisely because the failure of the tree's `kplus` might be
     in its *first* conjunct rather than its second. At the source's `K⁺` there is no first
     conjunct, so there is nothing to guard. The two derivations are otherwise the same proof.
@@ -566,7 +566,7 @@ theorem prior_hasFaithfulDedekindSUP_dense {sig : MonadicSignature}
 
 /-! ## THE PROBE: does the interval-witness refutation survive the conjunct-free antecedent?
 
-`hasDedekindINF_fails_of_interval_witness` (`DedekindINFDense.lean:457`) refutes `HasDedekindINF`
+`hasDedekindINF_fails_of_interval_witness` (`DedekindINFDense.lean:492`) refutes `HasDedekindINF`
 on any densely ordered flow carrying a formula that holds at `z₀` **and** throughout `(z₀,z₁)`.
 Its left-disjunct arm is `exact h_left.1 h_at` — it kills `kplus`'s **first conjunct**, the one
 neither source has. The question this section settles by machine is whether the refutation still
@@ -611,13 +611,13 @@ theorem kminusOpen_of_interval_witness {sig : MonadicSignature}
     exact ⟨r, lt_trans h_z0s hr0, hr1, h_on r hr0 hr1⟩
 
 /-- **THE PROBE, stated head to head.** Under *exactly* the hypotheses of
-    `hasDedekindINF_fails_of_interval_witness` (`DedekindINFDense.lean:457`) — a densely ordered
+    `hasDedekindINF_fails_of_interval_witness` (`DedekindINFDense.lean:492`) — a densely ordered
     flow, `P` at `z₀`, `P` throughout `(z₀,z₁)` — the tree's carrier `HasDedekindINF` is refuted
     while the source-exact carrier's **left disjunct holds**.
 
     **So the refutation does not survive the conjunct-free antecedent.** The interval-witness
     refutation is a theorem about the extra `¬P(z₀)` conjunct that `kplus`
-    (`Kamp/PriorINF.lean:87`) carries and that neither Rabinovich's nor Reynolds' `K⁺` has. Under
+    (`Kamp/PriorINF.lean:114`) carries and that neither Rabinovich's nor Reynolds' `K⁺` has. Under
     the sources' `K⁺` there is no failure to refute: `P` is true arbitrarily soon after `z₀`, so
     the paper's `Subcase r₀ = z₀` fires and eq (5.2) is never needed.
 
@@ -640,7 +640,7 @@ theorem hasFaithfulDedekindINF_survives_interval_witness {sig : MonadicSignature
     `z₀ = 1/2`, `z₁ = 1`, `P` the atom true exactly on `(0,1)`.
 
     This is precisely the point at which `denseWindow_endpoint_disjunct_forced`
-    (`DedekindINFDense.lean:597`) proves that `P(z₀)` holds and **both** of `HasDedekindINF`'s
+    (`DedekindINFDense.lean:632`) proves that `P(z₀)` holds and **both** of `HasDedekindINF`'s
     disjuncts fail, forcing the trichotomy's third disjunct. At the source's `K⁺` the left
     disjunct holds there, so no third disjunct is forced. -/
 theorem denseWindow_kplusOpen_at_half :
@@ -694,7 +694,7 @@ theorem hasFaithfulDedekindSUP_of_dense_window :
     buys something real: a structure the faithful carrier admits and the tree's carrier does not.
 
     Note that this is the *same* separation `hasGuardedDedekindINF_not_implies_hasDedekindINF`
-    (`DedekindINFDense.lean:556`) records for the guarded carrier — but obtained here with **no
+    (`DedekindINFDense.lean:591`) records for the guarded carrier — but obtained here with **no
     guard and no third disjunct**. -/
 theorem hasFaithfulDedekindINF_not_implies_hasDedekindINF :
     ∃ (M : OrderedMonadicStructure densePriorSig) (atomMap : Formula → densePriorSig.preds),

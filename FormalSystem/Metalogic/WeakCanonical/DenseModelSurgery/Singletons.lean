@@ -111,7 +111,7 @@ conjunct that is in neither Reynolds nor Rabinovich.
 
 ## `SemanticSepOpen` and the layering it preserves
 
-`SemanticSep` (`BXCanonical/Chronicle/ChronicleMonadicBridge.lean:863`) is the same statement as
+`SemanticSep` (`BXCanonical/Chronicle/ChronicleMonadicBridge.lean:799`) is the same statement as
 `SemanticSepOpen` below, character for character in its body. It is **restated** here rather than
 imported for the reason `ChronicleInstance.lean` records: `ChronicleMonadicBridge`'s transitive
 closure is roughly 280 modules, and `DenseModelSurgery/` is a low-level parametric §6/§7 layer
@@ -229,7 +229,7 @@ Sep:   K⁺φ ∧ ¬K⁺(φ ∧ U(φ,¬φ)) → K⁺(K⁺φ ∧ K⁻φ)
 ```
 
 The body is character-for-character `SemanticSep`
-(`BXCanonical/Chronicle/ChronicleMonadicBridge.lean:863`). It is restated rather than imported
+(`BXCanonical/Chronicle/ChronicleMonadicBridge.lean:799`). It is restated rather than imported
 purely to keep this parametric §6/§7 layer off `ChronicleMonadicBridge`'s ~280-module closure;
 see the module header. `SemanticSep` is untouched, and the two are shown defeq by use, in
 `ChronicleInstance.lean`. -/

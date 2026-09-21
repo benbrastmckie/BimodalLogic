@@ -75,7 +75,7 @@ Outstanding, and deliberately not claimed anywhere below:
 
 1. **The branching arms.** Everything here covers `.extended` steps and the `NoSplit` invariant.
    `expandBranchWithFuel`'s `.split` / `.splitOrdered` arms fold over sub-branches and can report
-   `none` through `resolveOpenArm` (`Saturation.lean:663-664, :686-689`), which is a distinct
+   `none` through `resolveOpenArm` (`Saturation.lean:738-739, :686-689`), which is a distinct
    obligation from the step bound and from the budget guard.
 2. **`buildTableau_isSome` is false as an unconditional statement**, and this is a defect of the
    *statement*, not of the engine. `buildTableau` calls `expandBranchWithFuel` at the default

@@ -98,7 +98,7 @@ variable {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
 
 /-! ## Lemma 13: no class ends at a gap ⇒ every class is closed
 
-`EndsInGapOnRight` (`DenseModelSurgery/Defs.lean:308`) is stated in terms of
+`EndsInGapOnRight` (`DenseModelSurgery/Defs.lean:510`) is stated in terms of
 `ContempEquivDense M ε`; Phase 25's `contempEquivDense_epsDense_iff` identifies that with
 `SimDense` at Reynolds' own `ε`. The first two lemmas do that translation once, so the
 mathematics below is stated in `SimDense` alone.

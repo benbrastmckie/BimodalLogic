@@ -29,7 +29,7 @@ This module is the faithful separate-bracket route for the k=2 gate. Source mapp
   reduction (md:78) → UNBUILT; the target shape is `Prop42Contentful.Prop42Contentful` (the
   declaration formerly cited here was vacuous and has been deleted — see `Prop42Vacuity`).
   **Lemma 3.4** V-exists-forall closure (md:84-85) → `VVecEA2.conjStruct`
-  (`VecEAClosure.lean:196`).
+  (`VecEAClosure.lean:223`).
 - **NOTE (outer-connector boundary)**: the shared-interior-witness conjunction (`∃ w, ⋀_σ ...`) —
   the outer quant-layer connector joining the per-σ halves — is the ONE unbuilt object.
   It is owned by the outer quant-layer connector; this module deliberately provides only the per-σ
@@ -580,7 +580,7 @@ theorem k1v_stitch_regions {sig : MonadicSignature} [Fintype sig.preds] [Decidab
               (lt_trans (hpos e List.mem_cons_self) (ihbound y hy'))
 
 /-- **k-region arrangement build**. Folds `k1v_sorted_realization`
-    (`CarrierK1V.lean:1449`, reused verbatim) once per region: given boundary-linked, non-degenerate
+    (`CarrierK1V.lean:1485`, reused verbatim) once per region: given boundary-linked, non-degenerate
     anchors and per-region Nodup type lists each realized strictly interior, produces a
     point-tagged arrangement list `ps` mirroring the region skeleton (equal anchors), with
     per-region

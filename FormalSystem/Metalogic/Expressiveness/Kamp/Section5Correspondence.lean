@@ -138,12 +138,12 @@ Two in-tree, machine-checked facts pin this down:
 **weaker**
   `HasDefinableINF` is *already* too strong: it makes the paper's disjunct (2)
   `K⁺(P₁)(z₀) ∧ Oₙ(P₂,…,Pₙ,z₀,z₁)` (p.8) unreachable whenever `P₁` occurs in `(z₀,z₁)`. Since
-  `HasAttainedINF.toHasDefinableINF` (`PriorINF.lean:216`) shows `HasAttainedINF` implies
+  `HasAttainedINF.toHasDefinableINF` (`PriorINF.lean:256`) shows `HasAttainedINF` implies
   `HasDefinableINF`, `HasAttainedINF` is *a fortiori* too strong.
 * `OnBuilder.lean` admits the deviation in its own docstring: "On Prior structures the INF
   is always attained (`HasAttainedINF`), so the K⁺ disjunct is vacuous". The whole
   `EANegationFix/` development is built on that simplification. It is sound on Prior structures
-  (`prior_hasAttainedINF`, `PriorINF.lean:225`) and is the right thing at the live-path
+  (`prior_hasAttainedINF`, `PriorINF.lean:265`) and is the right thing at the live-path
   boundary — but it is a **deviation from the paper**, not a transcription of it.
 
 Concretely, `HasAttainedINF` excludes structures where an infimum exists but is not attained:
@@ -160,7 +160,7 @@ structure disjunct (2) and its `K⁻` dual are provably dead
 non-attained Dedekind-complete frame class — the `ℝ` example above, as a frame class — is the next
 fidelity milestone and is owned by neither module.
 
-**Standing prohibition.** `BracketFormula.negFix_iff` (`NegFix.lean:669`) is **INF-anchored** — it
+**Standing prohibition.** `BracketFormula.negFix_iff` (`NegFix.lean:695`) is **INF-anchored** — it
 assumes `HasAttainedINF`/`HasAttainedSUP`. It is therefore **not** a refutation of the ruling that
 the model-*independent* Prop 4.2 backward direction is unfixable at the `BracketFormula` level (the
 B.1 / "PHASE 3 RESOLUTION" note after `neg_2var_vec_ea_indep_correct` in
@@ -190,7 +190,7 @@ open FormalSystem.Metalogic.Expressiveness
     For every `VVecEA2` formula `v`, there is a single `VVecEA2` formula `v'` — depending on `v`
     alone, uniform in the points — equivalent to `¬v` on every ordered pair. The witness is
     `v.negFix` (`VecEANegFix.lean:135`), the Prop 4.3 De Morgan fold, and the biconditional is
-    `VVecEA2.negFix_iff` (`VecEANegFix.lean:164`).
+    `VVecEA2.negFix_iff` (`VecEANegFix.lean:184`).
 
     This is the milestone the faithful path had been missing since the "PHASE 3 RESOLUTION" fallback
     in `Boneyard/.../NegationIndep.lean`. It is reached by **wiring** the already-landed Section 5

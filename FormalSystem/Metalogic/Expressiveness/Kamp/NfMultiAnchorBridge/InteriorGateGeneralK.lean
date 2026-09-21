@@ -13,7 +13,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorBr
 
 A NEW **leaf sibling** of `PriorInterface.lean` / `OuterGate.lean` inside `NfMultiAnchorBridge/`.
 It is **purely additive**: nothing here re-proves or edits the frozen carrier
-`bracketEndCharKv` (`CarrierKv.lean:238`), the provider interface `ExistProviders` /
+`bracketEndCharKv` (`CarrierKv.lean:256`), the provider interface `ExistProviders` /
 `BracketCarrierCorrectVPrior` (`PriorInterface.lean/60`), or the k=2 template family in
 `OuterGate.lean`. Those are treated as verified INPUTS; this file only *applies* them.
 
@@ -27,7 +27,7 @@ sorry-free, and axiom-clean, consumed by the consumer-side reshape `endIntervalS
 
 ## CRITICAL — the general-`k` statement is PROVIDER-GUARDED, not unconditional (finding F1)
 
-`bracketEndChar_kv_factors` (`CarrierKv.lean:422`) proves the depth-`k` carrier factors through ONLY
+`bracketEndChar_kv_factors` (`CarrierKv.lean:450`) proves the depth-`k` carrier factors through ONLY
 the atom layer + the off-fiber Prop + the fiber-EXISTENTIAL fold bits: two quant layers agreeing on
 that data yield EQUAL carriers even when they disagree on the marking of individual depth-`k`
 arity-4
@@ -36,14 +36,14 @@ the UNCONDITIONAL k ≥ 2 soundness direction is REFUTED (a lossy carrier cannot
 sub realized a fiber). Therefore the deliverable is the **provider-guarded** shape: the target
 predicate is `BracketCarrierCorrectVPrior` (`PriorInterface.lean:60`) — the UZ/SZ-relativized,
 provider-conditional variant — mirroring the k=2 template `bracketEndChar_kvE2_sound_two_prior_frag`
-(`OuterGate.lean`) / `bracketEndChar_kvE2_complete_two_prior` (`OuterGate.lean:148`) and the
+(`OuterGate.lean`) / `bracketEndChar_kvE2_complete_two_prior` (`OuterGate.lean:156`) and the
 consumer's `EndIntervalCorrectPrior`. An unconditional general-`k` statement is a
 known dead end (F1) and MUST NOT be pursued.
 
 ## Recursion structure
 
 - **Base k = 0 / k = 1** (delivered upstream, CONSUMED not rebuilt): the target predicate is
-  discharged by `bracketEndChar_kv_correct_zero_prior` (`PriorInterface.lean:80`) and
+  discharged by `bracketEndChar_kv_correct_zero_prior` (`PriorInterface.lean:91`) and
   `bracketEndChar_kv_correct_one_prior` (`PriorInterface.lean:95`). Phase 1 (this file) validates
   the
   FREEZE by re-deriving those two base rungs against the frozen `InteriorGateTarget` Prop.
@@ -67,7 +67,7 @@ UZ/SZ-relativized `BracketCarrierCorrectVPrior` (`PriorInterface.lean:60`) appli
 carrier `bracketEndCharKv`. This is the byte-quotable conclusion the consumer (the consumer-side
 reshape `endIntervalStepPrior` in `EndIntervalConsumerK.lean` / `EndIntervalCorrectPrior`)
 consumes, and the conclusion the k=2 template
-`bracketEndChar_kvE2_correct_two_prior_frag` (`OuterGate.lean:360`) already delivers at `k = 2`
+`bracketEndChar_kvE2_correct_two_prior_frag` (`OuterGate.lean:394`) already delivers at `k = 2`
 under
 its fragment/provider binders. Freezing it as a `def` (not a `theorem`) records the target without a
 proof obligation; the `∀ k` theorem is assembled in Phase 6.
@@ -83,7 +83,7 @@ provider-guarded shape BEFORE any step proof is attempted. -/
     k)`
     — the UZ/SZ-relativized carrier correctness at the FIXED anchor pair `(x, t)`
     (`PriorInterface.lean:60`). Frozen per finding F1 (see the file header): the UNCONDITIONAL k ≥ 2
-    variant is refuted by `bracketEndChar_kv_factors` (`CarrierKv.lean:422`), so the deliverable is
+    variant is refuted by `bracketEndChar_kv_factors` (`CarrierKv.lean:450`), so the deliverable is
     the provider-conditional predicate, mirroring the k=2 template's `_two_prior` shape and the task
     349 Phase 5 consumer `EndIntervalCorrectPrior`. -/
 def InteriorGateTarget {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -95,7 +95,7 @@ def InteriorGateTarget {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq
 
 /-- **Base-rung reconciliation, k = 0**. The k = 0 instance
     of the frozen `InteriorGateTarget` is discharged by the landed base rung
-    `bracketEndChar_kv_correct_zero_prior` (`PriorInterface.lean:80`) verbatim. This confirms the
+    `bracketEndChar_kv_correct_zero_prior` (`PriorInterface.lean:91`) verbatim. This confirms the
     frozen provider-guarded predicate weakens cleanly to the unconditional depth-0 base (the k = 0
     provider obligations are vacuously satisfiable). No chain step is shortcut (G5): pure
     consumption. -/
@@ -109,7 +109,7 @@ theorem interiorGateTarget_zero {sig : MonadicSignature} [Fintype sig.preds] [De
 /-- **Base-rung reconciliation, k = 1**. The k = 1 instance
     of the frozen `InteriorGateTarget`, under the depth-0 provider agreement `h0` (satisfied by the
     Phase-14 instantiation by construction, `KampPrior:397` at depth 0), is discharged by the landed
-    base rung `bracketEndChar_kv_correct_one_prior` (`PriorInterface.lean:95`) verbatim. This
+    base rung `bracketEndChar_kv_correct_one_prior` (`PriorInterface.lean:107`) verbatim. This
     confirms the frozen provider-guarded predicate weakens cleanly to the first successor base rung.
     No chain step is shortcut (G5): pure consumption. -/
 theorem interiorGateTarget_one {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -123,7 +123,7 @@ theorem interiorGateTarget_one {sig : MonadicSignature} [Fintype sig.preds] [Dec
 /-! ## Phase 2 — depth-`k` provider / char-layer truth bridges
 
 The general-`k` analogs of the k=2 char-formula bridges `bracketEndChar_kvE2_hcb`
-(`OuterGate.lean:102`) and `_hck` (`OuterGate.lean:124`). The char-BASE bridge `_hcb` is already
+(`OuterGate.lean:110`) and `_hck` (`OuterGate.lean:124`). The char-BASE bridge `_hcb` is already
 depth-0-general (it is about `nfDepth0CharFormula`, independent of the fold depth), so it is
 consumed directly from `OuterGate.lean` — the atom-layer point-type bridge for the endpoint/pivot
 `E[Σ]` literals. The provider bridge `_hck` is generalized here from the hard-wired depth-1
@@ -135,7 +135,7 @@ the
 `insertEnv` collapse is pure `Fin 0` bookkeeping, not a fold step. -/
 
 /-- **Depth-`k` provider-layer truth bridge** (general-`k` analog of
-    `bracketEndChar_kvE2_hck`, `OuterGate.lean:124`). For a depth-`k` provider bundle
+    `bracketEndChar_kvE2_hck`, `OuterGate.lean:132`). For a depth-`k` provider bundle
     `P : ExistProviders sig atomMap k`, the depth-`k` existential provider formula `P.existF 0 χ` is
     truth-equivalent to the arity-1 depth-`k` evaluation, via `ExistProviders.correct` at `n = 0`
     and
@@ -162,7 +162,7 @@ theorem interiorGate_hck {sig : MonadicSignature} [Fintype sig.preds] [Decidable
     exact ⟨Fin.elim0, by rw [insertEnv_zero]; exact h⟩
 
 /-- **Depth-0 char-base truth bridge** (re-export of the depth-0-general
-    `bracketEndChar_kvE2_hcb`, `OuterGate.lean:102`). The standard-instantiation depth-0
+    `bracketEndChar_kvE2_hcb`, `OuterGate.lean:110`). The standard-instantiation depth-0
     characteristic formula is truth-equivalent to the arity-1 depth-0 evaluation. Depth-0 and
     fold-depth-independent, so it is the SAME bridge at every `k` — named here for the step proof's
     endpoint/witness base types (`xType`/`tType`/`ptW`, the depth-0 atom-layer projections). -/
@@ -189,7 +189,7 @@ copy of the corresponding `kvBody` `let`. The replica is proved DEFINITIONALLY E
 successor carrier by `rfl` (`bracketEndChar_kv_succ_eq`) — the `@dite _ gate (Classical.dec gate)`
 decidability instance is reproduced EXACTLY so the defeq goes through. Once exposed, the carrier's
 `.holds` destructures (via the already-available `VVecEA2.holds_flatMap_map`,
-`NavigatedSpine.lean:220`)
+`NavigatedSpine.lean:221`)
 into the off-fiber gate conjunct ∧ the `S_L`/`S_R` permutation-arrangement disjunction
 (`bracketEndChar_kv_succ_holds_iff`). The fold-bit read is kept FIBER-EXISTENTIAL (`igFoldBit`,
 `decide (∃ sub, …)`) — NOT collapsed pointwise (that collapse is valid only at `k = 1` via
@@ -366,7 +366,7 @@ set_option maxHeartbeats 1600000 in
 -- its full provider inventory in a single declaration; the default 200000-heartbeat budget is
 -- not enough to typecheck it.
 /-- **Defeq bridge: the successor carrier IS the public replica**. The `k+1`
-    branch of `bracketEndCharKv` (`CarrierKv.lean:244-249`) is `kvBody` at the depth-`k`
+    branch of `bracketEndCharKv` (`CarrierKv.lean:256-261`) is `kvBody` at the depth-`k`
     providers,
     and `igBody` is a verbatim copy of `kvBody`'s body, so the two are DEFINITIONALLY EQUAL — pure
     `rfl`, no semantics. This exposes the frozen private carrier's structure for destructuring. -/
@@ -388,7 +388,7 @@ theorem bracketEndChar_kv_succ_eq {sig : MonadicSignature} [Fintype sig.preds]
 /-- **`holds` destructuring of the public replica**. The replica's `VVecEA2.holds`
     splits into the gate conjunct ∧ the `S_L`/`S_R` permutation-arrangement disjunction. On-gate the
     body is the `flatMap`/`map` disjunct list (destructured by `VVecEA2.holds_flatMap_map`,
-    `NavigatedSpine.lean:220`); off-gate it is the empty disjunction `⟨[]⟩` whose `holds` is `False`
+    `NavigatedSpine.lean:221`); off-gate it is the empty disjunction `⟨[]⟩` whose `holds` is `False`
     (matching the failed gate on the RHS). No chain step is shortcut (G5): pure list-membership and
     `dite` computation. -/
 theorem igBody_holds_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -673,7 +673,7 @@ theorem igFoldBit_realize_iff {sig : MonadicSignature} [Fintype sig.preds] [Deci
 
 /-! ## Phase 4b — reused depth-1 completeness machinery (private helpers + depth-`k` sort)
 
-The depth-1 completeness engine `bracketEndChar_k1v_complete` (`CarrierK1V.lean:1631`) is built from
+The depth-1 completeness engine `bracketEndChar_k1v_complete` (`CarrierK1V.lean:1668`) is built from
 several PRIVATE helpers that are DEPTH-AGNOSTIC (the arrangement insertion sort `k1v_sorted_insert`,
 generic over the point-type `α`; the bracket assembler `k1v_bracket_construct`, over
 `List TemporalPred`; the arity-3 endpoint 1-type extractors `k1v_extract_x_nf3`/`_t_nf3`/`_y_nf`,
@@ -690,7 +690,7 @@ open private k1v_sorted_insert k1v_zoneHolds_cons_iff k1v_extract_x_nf3 k1v_extr
   FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.CarrierK1V
 
 /-- **Depth-`k` arrangement selection** (general-`k` analog of
-    `k1v_sorted_realization`, `CarrierK1V.lean:1449`). Every list of complete depth-`k` 1-types each
+    `k1v_sorted_realization`, `CarrierK1V.lean:1485`). Every list of complete depth-`k` 1-types each
     realized somewhere strictly inside `(a, b)` admits a simultaneous arrangement — a permutation
     tagged with realizing points in strictly increasing model order. Distinctness is automatic:
     distinct complete `k`-types exclude each other at any single point (`nf_eval_unique M k 1`).
@@ -735,7 +735,7 @@ theorem igk_sorted_realization {sig : MonadicSignature} [Finite sig.preds]
 
 The completeness half of the k→k+1 step. From a genuine depth-`(k+1)` realizer at bracket witness
 `w`, the successor carrier `.holds` at the FIXED endpoints `(x, t)`. This is the general-`k`
-transcription of `bracketEndChar_k1v_complete` (`CarrierK1V.lean:1631`) with three substitutions:
+transcription of `bracketEndChar_k1v_complete` (`CarrierK1V.lean:1668`) with three substitutions:
 
 1. the pointwise depth-1 fold bit `(efoldOfNf1 qnf).2 (zs, χ)` → the fiber-existential
    `igFoldBit qnf zs χ`, its fold biconditional supplied by `igFoldBit_realize_iff` (Phase 4b);
@@ -1077,7 +1077,7 @@ under the depth-`k` PROVIDER OBLIGATIONS, reconstruct the arity-3 realizer
 `∃ w, NfEvalNf M (k+1) 3 [w,x,t] qnf`. This is the general-`k` analog of the k=2 template
 `bracketEndChar_kvE2_sound_two_prior_frag` (`OuterGate.lean`), one fold-layer deeper.
 
-**The F1 information channel (`bracketEndChar_kv_factors`, `CarrierKv.lean:422`).** The successor
+**The F1 information channel (`bracketEndChar_kv_factors`, `CarrierKv.lean:450`).** The successor
 carrier's fold data is fiber-EXISTENTIAL (`igFoldBit`): from the carrier's `.holds` one recovers
 only
 *that some* marked depth-`k` arity-4 sub sits in a `(zone, χ)` fiber, never *which* sub — the
@@ -1229,14 +1229,14 @@ The k→k+1 step biconditional `bracketEndChar_kv_step_correct` = ⟨sound (Phas
 at symbolic `k+1`. It carries the UNION of the two halves' hypotheses: the completeness half's
 provider agreement `hcharK` + `SemanticPriorUZ`/`SZ` (⇐), and the soundness half's provider
 realization/exclusion obligations `hreal`/`hexcl`/`hexclExt` (⇒). This mirrors the k=2 assembly
-`bracketEndChar_kvE2_correct_two_prior_frag` (`OuterGate.lean:360`), which likewise carries
+`bracketEndChar_kvE2_correct_two_prior_frag` (`OuterGate.lean:394`), which likewise carries
 `P`/`h_UZ`/`h_SZ`/`hrealI`/`hrealB`/`hexcl`/`hexclExt`.
 
 **Shape note (the Phase 6 ∀-`k` open frontier).** This step biconditional is provider-OBLIGATION
 carrying. The frozen `InteriorGateTarget` (`BracketCarrierCorrectVPrior`, `PriorInterface.lean:60`)
 is
 the CLEAN, obligation-FREE biconditional. Per finding F1 (`bracketEndChar_kv_factors`,
-`CarrierKv.lean:422`) the clean biconditional is REFUTED at `k ≥ 2` (the lossy fold determines
+`CarrierKv.lean:450`) the clean biconditional is REFUTED at `k ≥ 2` (the lossy fold determines
 `.holds` but not the realizer), and even at `k = 2` only the obligation-carrying fragment
 `_correct_two_prior_frag` exists — never a clean `BracketCarrierCorrectVPrior` instance. Assembling
 the ∀-`k` `InteriorGateTarget` deliverable by `Nat.rec` would require DISCHARGING `hreal`/`hexcl`/

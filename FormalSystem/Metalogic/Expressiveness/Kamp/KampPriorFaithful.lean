@@ -330,7 +330,7 @@ theorem nf_nvar_exist_all_depths_faithful
       absurd hn2 (by omega)
 
 /-- Convenience wrapper at the faithful carrier — the faithful sibling of
-`nfNvarExistAllDepthsFn` (`KampPrior.lean:558`). -/
+`nfNvarExistAllDepthsFn` (`KampPrior.lean:562`). -/
 noncomputable def nfNvarExistAllDepthsFnFaithful
     {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)
@@ -339,7 +339,7 @@ noncomputable def nfNvarExistAllDepthsFnFaithful
   (nf_nvar_exist_all_depths_faithful atomMap h_surj k n hn sub_nf).choose
 
 /-- Correctness of the convenience wrapper at the faithful carrier — the faithful sibling of
-`nf_nvar_exist_all_depths_fn_correct` (`KampPrior.lean:566`). -/
+`nf_nvar_exist_all_depths_fn_correct` (`KampPrior.lean:570`). -/
 theorem nf_nvar_exist_all_depths_fn_correct_faithful
     {sig : MonadicSignature} [Fintype sig.preds]
     (atomMap : Formula → sig.preds)

@@ -96,7 +96,7 @@ noncomputable def endIntervalPrior {sig : MonadicSignature} [Fintype sig.preds]
 /-! ## Phase 3 — the 3-arm depth-cased obligation-carrying motive -/
 
 /-- **Obligation-carrying correctness motive** `EndIntervalCorrectPrior`. The
-    depth-cased `Prop` mirroring `InteriorGateAllK` (`InteriorGateGeneralK.lean:1242`), three arms:
+    depth-cased `Prop` mirroring `InteriorGateAllK` (`InteriorGateGeneralK.lean:1338`), three arms:
     - `0`: the clean, obligation-free depth-0 biconditional (`BracketCarrierCorrectVPrior` on the
       depth-0 carrier).
     - `1`: the interior-only depth-1 biconditional, carrying only the depth-0 char agreement `h0`
@@ -237,7 +237,7 @@ set_option maxHeartbeats 1600000 in
     - `k = 0`: the depth-0 singleton base via `bracketEndChar_k0_correct` (reuse of the
       `endInterval_zero_correct` argument, `CarrierK1V.lean`).
     - `k = 1`: the interior-only depth-1 rung `bracketEndChar_kv_correct_one_prior`
-      (`PriorInterface.lean:95`), carrying only `h0`.
+      (`PriorInterface.lean:107`), carrying only `h0`.
     - `k = m+2`: consumes the exterior-composed discharge `bracketEndChar_kvExt_correct_prior`
       (`ExteriorGateAssembleK.lean`), THREADING the 7 interior + 4 slice-keyed exterior obligations
       outward (not discharging them). `hexclExt` is discharged internally by the consumed lemma.
@@ -327,21 +327,21 @@ realization recursion (with row 5) |
 ambients discharge it via `kvE_fiberConsistent_of_realized`; the doppelgänger fake `qnfG1` FAILS it
 — the `kvE_probeM1_interiorHreal_NOGO` countermodel is outside the population) |
 | 7 | `hexclExt` — exterior adjacency exclusion | **DISCHARGED INTERNALLY** by
-`bracketEndChar_kvExt_correct_prior` (`ExteriorGateAssembleK.lean:180`; ⇒-side guard split →
+`bracketEndChar_kvExt_correct_prior` (`ExteriorGateAssembleK.lean:246`; ⇒-side guard split →
 `kvE_extBracket{Past,Fut}_sound`) | n/a — NOT a binder of `EndIntervalCorrectPrior` (verified at
 the 16-argument call site, `endInterval_step_correct` m+2 arm) |
 | 8 | `hslicePast` — ⇐-side slice honesty, DEEP-anchored (the `kvEDeepOnFiber` re-key:
 `kvEDeepOnFiber qnf σ = true` replaces the depth-0 row antecedent) | hypothesis-side; **m = 0
-DISCHARGED** by `kvE_hslicePast_supply_zero` (`ExteriorPinnedConversePastK.lean:824`) through the
+DISCHARGED** by `kvE_hslicePast_supply_zero` (`ExteriorPinnedConversePastK.lean:846`) through the
 `kvE_deepOnFiber_zero` adapter | general m: general-m realization recursion (re-keyed) |
 | 9 | `hsliceFut` — ⇐-side slice honesty, DEEP-anchored | hypothesis-side; **m = 0 DISCHARGED** by
-`kvE_hsliceFut_supply_zero` (`ExteriorPinnedConverseK.lean:1303`) through the
+`kvE_hsliceFut_supply_zero` (`ExteriorPinnedConverseK.lean:1334`) through the
 `kvE_deepOnFiber_zero` adapter | general m: general-m realization recursion (re-keyed) |
 | 10 | `hexclSlicePast` — ⇒-side per-σ exclusion residue (BYTE-STABLE) | hypothesis-side; **m = 0
-DISCHARGED** by `kvE_hexclSlicePast_supply_zero` (`ExteriorPinnedConversePastK.lean:771`) | general
+DISCHARGED** by `kvE_hexclSlicePast_supply_zero` (`ExteriorPinnedConversePastK.lean:792`) | general
 m: general-m realization recursion |
 | 11 | `hexclSliceFut` — ⇒-side per-σ exclusion residue (BYTE-STABLE) | hypothesis-side; **m = 0
-DISCHARGED** by `kvE_hexclSliceFut_supply_zero` (`ExteriorPinnedConverseK.lean:1244`) | general m:
+DISCHARGED** by `kvE_hexclSliceFut_supply_zero` (`ExteriorPinnedConverseK.lean:1274`) | general m:
 general-m realization recursion |
 | 12 | `hexclDeepPast` — ⇒-side residue for on-row guard-FALSE bit-false σ | hypothesis-side; **m =
 0 VACUOUS** (`kvE_deepOnFiber_zero`: on-row + guard-false contradictory) | general m: general-m

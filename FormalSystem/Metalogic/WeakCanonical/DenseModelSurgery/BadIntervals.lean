@@ -200,7 +200,7 @@ changes. The new theorem is proved from scratch rather than by generalising eith
   maximal-among-bad-intervals reading from it, so the rendering is checked rather than asserted.
 * *"the class includes its left hand end point"* is rendered as the existence of a class-mate `w`
   with no class-mate strictly below it, matching the `¬ v < w` idiom `ClassBeginsWith`
-  (`Lemma5.lean:281`) and `ClassBeginsAtGapStart` (`Lemma34.lean:441`) already use.
+  (`Lemma5.lean:289`) and `ClassBeginsAtGapStart` (`Lemma34.lean:449`) already use.
 
 ## Honest caveat, carried forward
 
@@ -1037,7 +1037,7 @@ package below carries both. -/
 
 omit [IsDualClosed C] in
 /-- **`λ` is a property of the `∼`-class**, the mirror of `endsInGapOnRight_congr`
-(`Lemma34.lean:245`). Reynolds uses it silently on both sides. -/
+(`Lemma34.lean:252`). Reynolds uses it silently on both sides. -/
 theorem endsInGapOnLeft_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] {t u : M.carrier}
     (htu : ContempEquivDense M ε t u) : EndsInGapOnLeft M ε t ↔ EndsInGapOnLeft M ε u := by
@@ -1067,7 +1067,7 @@ theorem endsInGapOnLeft_congr {ε : MonadicFormula sig 2} (hε : IsContempEquivD
   exact ⟨main htu, main (contemp_symm hε M htu)⟩
 
 omit [IsDualClosed C] in
-/-- **The class has no first point**, the mirror of `exists_contemp_gt` (`Lemma34.lean:268`):
+/-- **The class has no first point**, the mirror of `exists_contemp_gt` (`Lemma34.lean:276`):
 `λ(t)`'s second conjunct at `z := t`, with reflexivity. -/
 theorem exists_contemp_lt {ε : MonadicFormula sig 2} (hε : IsContempEquivDenseOn ε C)
     (M : OrderedMonadicStructure sig) [InStructureClass C M] {t : M.carrier}

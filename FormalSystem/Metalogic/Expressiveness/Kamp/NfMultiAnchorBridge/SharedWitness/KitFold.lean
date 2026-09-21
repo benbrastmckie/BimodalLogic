@@ -27,13 +27,13 @@ open FormalSystem.Metalogic.Expressiveness.Separation
 
 Thread the per-σ bundles produced by the hypothesis-free `kvE2_sepBody_extract` (Phase 2)
 through the `_parts` reducers into the closer `kvE_subBracket2V_sound_of_parts`
-(`SubBracket2V.lean:1298`, consume-only) to obtain each positive owner's `nf_eval`. This is a
+(`SubBracket2V.lean:1352`, consume-only) to obtain each positive owner's `nf_eval`. This is a
 kit APPLICATION, not a bit-proof: every `σ.2 (nf0Assemble … χ σ.1) = true` occurrence below
 is the *antecedent* of a per-owner `bit ⟹ witness` implication carried by that owner's OWN
 enumeration `σ.2` — self-owned, never a cross-σ goal (plan v4 Postmortem Constraints; the
 deleted plan-02 R3 stays deleted). `hgate` is the explicit outer-gate hypothesis threaded
 verbatim (the Amendment F3 pattern of `kvE_subBracket2V_sound_of_outer`,
-`SubBracket2V.lean:1491`) — never assumed, never discharged vacuously here; its carrier-side
+`SubBracket2V.lean:1565`) — never assumed, never discharged vacuously here; its carrier-side
 derivable pieces live in the Phase 9 (O4) section above and its assembly is downstream
 Rabinovich 2014: Notation 5.2 bracket bundles (pp.7-8), Cor 5.4
 bounded interior placement (p.9). -/
@@ -79,7 +79,7 @@ theorem kvE2_sepBundleL_sound {sig : MonadicSignature} [Fintype sig.preds] [Deci
 
 /-- **RIGHT-interior kit application** (Phase 3 — the plan-v4 MEDIUM-risk residual,
     discharged by the anticipated kit-application lemma). The landed closer
-    `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1298`) does NOT serve this class
+    `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1352`) does NOT serve this class
     directly — three signature facts, each read off HEAD source:
     (a) its `hgate` conclusion opens with `a < w` (`SubBracket2V.lean:1313`), but
     `KvE2SepBundleR` supplies the anchor with `w < x1`, so a truthful gate can never be fed
@@ -90,7 +90,7 @@ theorem kvE2_sepBundleL_sound {sig : MonadicSignature} [Fintype sig.preds] [Deci
     (c) the bundle's witnesses live in the right-interior middle region `kvE2SepZWX1`
     (`w < v < x1`), a zone the left closer's gate-backward clause does not exempt.
     This lemma is the geometry-correct mirror, proved from scratch against the same engine
-    (`nf_eval_depth1_fold_iff`, `CarrierKv.lean:466`): the gate's backward clause exempts
+    (`nf_eval_depth1_fold_iff`, `CarrierKv.lean:495`): the gate's backward clause exempts
     `kvE2SepZWX1` (instead of `kvESub2ZXU`), whose witnesses the bundle supplies. The
     left closer's `a < w ∧ w < t` head conjuncts are NOT mirrored: in the right geometry the
     corresponding order facts (`w < a`, `a < t`) are already the gate's own antecedents, and
@@ -228,7 +228,7 @@ theorem kvE2_sepBody_kit_sound {sig : MonadicSignature} [Fintype sig.preds] [Dec
 
 Reassemble `∃ w, NfEvalNf M 2 3 [w,x,t] qnf` from the per-σ realizations delivered by
 `kvE2_sepBody_kit_sound` (Phase 3). There is NO landed depth-2 quant-layer fold engine
-(`nf_quant_layer_fold_iff`, `NfEFold.lean:392`, folds depth-0 inner subs; the k=2 quant layer
+(`nf_quant_layer_fold_iff`, `NfEFold.lean:412`, folds depth-0 inner subs; the k=2 quant layer
 ranges over depth-1 subs), so this theorem IS the assembly: it derives the outer atom layer
 from the carrier's own endpoint/witness point types (`kvE2SepEpL`/`kvE2SepEpR`/`kvE2SepPtW`
 head conjuncts through `nfPred_correct`) plus the six outer order bits, zone-classifies the
@@ -244,7 +244,7 @@ hypotheses in the Amendment-F3 style (`kvE_subBracket2V_sound_of_outer` composit
   provider instantiation `charK := P.existF 0`, never assumed here.
 - `hexcl` — the outer forward (exclusion) clause: negative subs are unrealized. The depth-2
   carrier pins per-σ content only up to (outer zone, projected 1-type) — the machine-checked
-  information-loss record `bracketEndChar_kv_factors` (`CarrierKv.lean:422`) — so this clause
+  information-loss record `bracketEndChar_kv_factors` (`CarrierKv.lean:450`) — so this clause
   is provider-conditional in exactly the A1 sense (`PriorInterface.lean:47-59`) and is
   threaded verbatim, never assumed and never discharged vacuously here.
 
@@ -422,7 +422,7 @@ theorem kvE2_outer_fold {sig : MonadicSignature} [Fintype sig.preds] [DecidableE
 -- ============================================================================
 
 /-- **Single-positive-sub fragment predicate** (local restatement of
-    `OuterGate.KvE2SepFragment`, `OuterGate.lean:192`). Restated here rather than imported
+    `OuterGate.KvE2SepFragment`, `OuterGate.lean:224`). Restated here rather than imported
     because `OuterGate` imports `SharedWitness` (importing back would create a cycle); the two
     definitions are byte-identical and `OuterGate`'s definitional `rfl` bridges them at the 335
     consumption site. `qnf`'s positive-sub list is exactly the singleton `[σ0]` with `σ0`
@@ -625,7 +625,7 @@ theorem kvE2_sepBundleR_sound_frag {sig : MonadicSignature} [Fintype sig.preds]
     finite witness family `ws : Fin (k+1) → M.carrier`, any point `v` is EITHER one of the
     witnesses, OR below the first, OR strictly between two consecutive witnesses, OR above the
     last — exactly the four segment regions of `IntervalPattern.holds_eq_succ`
-    (`ExistsForallNF.lean:198-203`). Model-general (rides `M.carrier`'s `LinearOrder`); carries
+    (`ExistsForallNF.lean:209-214`). Model-general (rides `M.carrier`'s `LinearOrder`); carries
     no fold/bracket content. This converts an arbitrary model point of an interior forward-zone
     into the region whose landed segment/witness channel closes it. Additive. -/
 theorem kvE2_sep_locate_witness {sig : MonadicSignature} [Finite sig.preds]

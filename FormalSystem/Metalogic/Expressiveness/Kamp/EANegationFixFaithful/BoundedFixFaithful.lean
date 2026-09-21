@@ -30,7 +30,7 @@ sound but it is not free: recovering such an `r` is exactly what forces `HasAtta
 `negBoundedRightFix_iff` a second time, over and above the copy that Lemma 5.3 consumes. The module
 docstring at `EANegationFix/BoundedFix.lean:406-410` says so in as many words.
 
-`VVecEA2` (`VecEAFormula.lean:278`) is the type that **does** carry endpoint predicates:
+`VVecEA2` (`VecEAFormula.lean:274`) is the type that **does** carry endpoint predicates:
 `VecEA2.holds` (`VecEAFormula.lean:269`) is
 `endpointLeft(z₀) ∧ endpointRight(z₁) ∧ bracket(z₀,z₁)`. At this type Rabinovich's `¬F₀(z₀)` is
 writable *as printed*, as a left-endpoint predicate on an otherwise trivial block. No first-`¬s`
@@ -177,7 +177,7 @@ noncomputable def rightFoldHead {n : Nat} (bf : BracketFormula n) : TemporalPred
 
     Disjuncts, exactly the two the paper prints:
     1. `¬F₀(z₀)` — as a left-endpoint predicate, needing no carrier;
-    2. `Oₙ(F₁,…,Fₙ, z₀, z₁)` — `negChainOnFaithful` (`KPlusFaithfulRendering.lean:215`), the printed
+    2. `Oₙ(F₁,…,Fₙ, z₀, z₁)` — `negChainOnFaithful` (`KPlusFaithfulRendering.lean:338`), the printed
        three-disjunct Lemma 5.3.
 
     Compare `negBoundedRightFix` (`EANegationFix/BoundedFix.lean:446`), which replaces disjunct (1)

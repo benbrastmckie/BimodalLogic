@@ -2390,9 +2390,7 @@ mismatched, unnamed = [], []
 for p in files:
     plines = open(p, encoding="utf-8", errors="replace").read().split("\n")
     for idx, l in enumerate(plines):
-        group = -1
-        for ref, n, _s, _e, is_cont, col in lc.anchors_in(l, CITE):
-            group = group + 1 if is_cont else 0
+        for ref, n, _s, _e, is_cont, col, pos, size in lc.grouped_anchors(l, CITE):
             target, _why = resolve(ref)
             if target is None:
                 continue
@@ -2401,7 +2399,7 @@ for p in files:
                     cache[target] = open(target, encoding="utf-8",
                                          errors="replace").read().split("\n")
                 spans[target] = lc.decl_spans(cache[target])
-            verdict, chain, wanted = lc.judge(plines, idx, col, n, group, spans[target], CITE)
+            verdict, chain, wanted = lc.judge(plines, idx, col, n, pos, size, spans[target], CITE)
             if is_cont:
                 conts += 1
             else:
@@ -2464,7 +2462,7 @@ else:
     note("(%d inside the named declaration's span, %d on %s; %d `:NNN` continuation(s) read)"
          % (inside, on_baseline, DECL_BASELINE, conts))
 if on_baseline:
-    soft("declaration span: %d recorded mismatch(es) on %s still to repair with --by-name"
+    soft("declaration span: %d recorded mismatch(es) on %s still to repair (--by-name, or by hand where it reports SKIPPED)"
          % (on_baseline, DECL_BASELINE))
 if stale:
     inf("declaration span: %d baseline key(s) no longer fail; prune them from %s"

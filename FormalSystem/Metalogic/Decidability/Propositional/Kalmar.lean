@@ -21,7 +21,7 @@ environment `env : Nat → Formula`.
 
 `DerivationTree.weakening` (`ProofSystem/Derivation.lean`) provides general context
 weakening: `Γ ⊢[fc] φ → Γ ⊆ Δ → Δ ⊢[fc] φ`, for arbitrary `Γ Δ : Context = List Formula`.
-`Derivable.weaken` (`ProofSystem/Derivable.lean:140`) covers the Prop-valued (`|-!`)
+`Derivable.weaken` (`ProofSystem/Derivable.lean:147`) covers the Prop-valued (`|-!`)
 analogue. Both are used freely below (no additional weakening lemma is needed).
 
 ## Noncomputability

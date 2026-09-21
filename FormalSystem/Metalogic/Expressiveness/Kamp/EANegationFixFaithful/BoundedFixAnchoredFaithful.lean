@@ -43,7 +43,7 @@ the copy Lemma 5.3 consumes:
 * `negBoundedLeftFixAnchored_iff` (`:392`) spends `h_SUP.last_occ_tp` at `:468` — and
   `HasAttainedSUP` enters that statement for no other reason.
 
-`VVecEA2` (`VecEAFormula.lean:278`) does carry endpoint predicates: `VecEA2.holds`
+`VVecEA2` (`VecEAFormula.lean:274`) does carry endpoint predicates: `VecEA2.holds`
 (`VecEAFormula.lean:269`) is `endpointLeft(z₀) ∧ endpointRight(z₁) ∧ bracket(z₀,z₁)`. At that type
 `¬F₀(z₀)` is writable *as printed*, no first-`¬β` point has to be produced, and the second
 attainment consumption simply disappears — exactly as in the unanchored case.
@@ -58,7 +58,7 @@ attainment consumption simply disappears — exactly as in the unanchored case.
 The head construction is reused verbatim from `BoundedFixFaithful.lean`: `endpointFailLeft` /
 `endpointFailRight` and their `_holds` characterizations are parametric in the point predicate, so
 the anchor rides in through the predicate argument and nothing about the head is re-derived here.
-The chain arm is `negChainOnFaithful` (`KPlusFaithfulRendering.lean:215`) over the **anchored**
+The chain arm is `negChainOnFaithful` (`KPlusFaithfulRendering.lean:338`) over the **anchored**
 chain
 predicate lists, spliced exactly as the attained anchored definitions splice `negChainOn`.
 
@@ -89,7 +89,7 @@ Everything below cites **PDF pp.9-10**.
 
 2. **Where the faithful carrier's weak branch is spent, named exactly.** The head disjunct of each
    anchored formula consumes **no carrier at all** — it is a point condition discharged by
-   `endpointFailLeft_holds` / `endpointFailRight_holds` (`BoundedFixFaithful.lean:119`, `:145`),
+   `endpointFailLeft_holds` / `endpointFailRight_holds` (`BoundedFixFaithful.lean:128`, `:151`),
    which have no structural hypothesis beyond `OrderedMonadicStructure`. The carrier is spent
    entirely in the chain arm, through the `negChainOnFaithful_iff` (`KPlusFaithfulRendering.lean`)
    call
@@ -129,7 +129,7 @@ open FormalSystem.Metalogic.Expressiveness
 /-- `F₀` of the anchored Cor 5.4(1), as the tree spells it: `F₀ := β₁ Until F₁` with
     `F₁ := untilFoldAnchored α` of the fold pairs and `β₁ := bf.segmentTypes 0`. The anchor `α` is
     Rabinovich's `Fₙ := αₙ` (PDF p.9) read at the peeled outermost point type; `rightFoldHead`
-    (`BoundedFixFaithful.lean:162`) is the `α := ⊤` reading of the same definition. -/
+    (`BoundedFixFaithful.lean:172`) is the `α := ⊤` reading of the same definition. -/
 noncomputable def rightFoldHeadAnchored (α : TemporalPred) {n : Nat}
     (bf : BracketFormula n) : TemporalPred :=
   TemporalPred.untl (untilFoldAnchored α bf.foldPairs) (bf.segmentTypes ⟨0, Nat.succ_pos n⟩)
@@ -139,7 +139,7 @@ noncomputable def rightFoldHeadAnchored (α : TemporalPred) {n : Nat}
 
     Disjuncts, exactly the two the paper prints on p.9:
     1. `¬F₀(z₀)` — as a left-endpoint predicate, needing no carrier;
-2. `Oₙ(F₁,…,Fₙ, z₀, z₁)` — `negChainOnFaithful` (`KPlusFaithfulRendering.lean:215`) over the
+2. `Oₙ(F₁,…,Fₙ, z₀, z₁)` — `negChainOnFaithful` (`KPlusFaithfulRendering.lean:338`) over the
     anchored
        chain predicates.
 
@@ -216,7 +216,7 @@ theorem negBoundedRightFixAnchoredFaithful_iff {sig : MonadicSignature}
 
 /-- `Ĝ` of the anchored Cor 5.4(2), as the tree spells it: `Ĝ := βₙ Since G₁` with
     `G₁ := sinceFoldAnchored α` of the reversed fold pairs and `βₙ := bf.segmentTypes n`. Mirror of
-    `rightFoldHeadAnchored`; `leftFoldHead` (`BoundedFixFaithful.lean:233`) is its `α := ⊤`
+    `rightFoldHeadAnchored`; `leftFoldHead` (`BoundedFixFaithful.lean:250`) is its `α := ⊤`
     reading. -/
 noncomputable def leftFoldHeadAnchored (α : TemporalPred) {n : Nat}
     (bf : BracketFormula n) : TemporalPred :=

@@ -42,7 +42,7 @@ as holding **over Dedekind complete chains**, which is precisely the carrier thi
 lemmas are anchored to (via `HasFaithfulDedekindINF`, `KPlusFaithful.lean:325`) rather than the
 strictly stronger attainment the landed chain assumes. Lemma 5.1's recursion, PDF **pp.10-11**,
 supplies the bracket leg and is consumed opaquely here through `negFixListFaithful_iff`
-(`NegFixListFaithful.lean:331`).
+(`NegFixListFaithful.lean:390`).
 
 ## What the migrated type buys at the lift
 
@@ -291,12 +291,12 @@ theorem VecEA2.negFixFaithful_of_bracket {sig : MonadicSignature}
     version stayed true only via `kplusOpen_of_kplus`, and an indispensability artifact stated at
     a gate strictly stronger than the one the definition carries certifies less than it appears
     to. Re-pointed here for the same reason `negFixListFaithful_case1_is_indispensable`
-    (`NegFixListFaithful.lean:540`) was re-pointed: the two are comparable, so re-pointing
+    (`NegFixListFaithful.lean:623`) was re-pointed: the two are comparable, so re-pointing
     strengthens rather than duplicates. Every consumer holding the old `kplus` form recovers this
     one by `kplusOpen_of_kplus`.
 
     This is the Phase-8 counterpart of `negFixListFaithful_case1_is_indispensable`
-    (`NegFixListFaithful.lean:540`): that one shows the limit disjunct cannot be absorbed by its
+    (`NegFixListFaithful.lean:623`): that one shows the limit disjunct cannot be absorbed by its
     neighbours *inside* the recursion, this one shows it is not quietly discarded *by the lift*.
     Together they exclude the two ways a three-disjunct recursion degrades into a two-disjunct one
     without any statement in this module becoming false. -/
@@ -322,7 +322,7 @@ theorem VecEA2.negFixFaithful_carries_limit_gate {sig : MonadicSignature}
     `HasAttainedINF.toHasFaithfulDedekindINF` (`KPlusFaithful.lean:387`) supplies the carrier, and
     `HasAttainedSUP` — which `VVecEA2.negFix_iff` (`EANegationFix/VecEANegFix.lean:183`) requires —
     is not needed at all. Mirrors `negFixListFaithful_iff_of_attained`
-    (`NegFixListFaithful.lean:572`).
+    (`NegFixListFaithful.lean:659`).
 
     The shim runs attained → faithful. No declaration in this module runs it in the opposite
     direction; a faithful → attained use would be a strengthening, not a lift. -/

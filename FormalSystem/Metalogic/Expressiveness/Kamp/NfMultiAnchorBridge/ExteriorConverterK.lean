@@ -8,7 +8,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.NfMultiAnchorBridge.ExteriorNe
 
 /-! # Depth-`k` Future-side exterior-negation converter — the reverse `_complete`
 
-The reverse direction of the green `kvE_extNegFut_sound` (`ExteriorNegationK.lean:535`): from the
+The reverse direction of the green `kvE_extNegFut_sound` (`ExteriorNegationK.lean:572`): from the
 complement clause holding at `t` it is the **producer** direction we reverse — assuming the
 positive local-existence form `kvEFutPos` at `t`, we reconstruct an exterior anchor `x1 > t`
 realizing `σ` over `[x1, w, x, t]`, contradicting the carried non-realization hypothesis `hcl`.
@@ -29,9 +29,9 @@ exterior provider:
   bare converse is false), and env-dependent at arity 5 (report 03 Deliverable 2), so it
   is carried, not discharged here.
 
-The depth-`k` chain destructor `kvE_futChainDestructG` (`ExteriorNegationK.lean:296`, the Cor 5.4
+The depth-`k` chain destructor `kvE_futChainDestructG` (`ExteriorNegationK.lean:325`, the Cor 5.4
 `Oₙ` re-anchoring engine, GREEN) drives the length-`n` recursion; the reconstruction reassembles
-`NfEvalNf M (k+1) 4 [x1,w,x,t] σ` via `nf_eval_nfk_iff_efold` (`NfEFold.lean:628`). Off-fiber
+`NfEvalNf M (k+1) 4 [x1,w,x,t] σ` via `nf_eval_nfk_iff_efold` (`NfEFold.lean:652`). Off-fiber
 falsity of `σ.2` comes from the admissibility conjunct 2. Purely additive NEW leaf module; no
 frozen file is touched. -/
 
@@ -230,7 +230,7 @@ discharge template below proves both carried obligations are SOUND: whenever the
 produces a GENUINE exterior realizer `NfEvalNf M (k+1) 4 [x1,w,x,t] σ` (as it does when it picks
 `x1` by the Rabinovich inf/sup), the carried `hreal`/`hsat` shapes both hold. It is the faithful
 Option-B "at-anchor determinacy reader" (report 01 Deliverable 5): a direct read through
-`nf_eval_nfk_iff_efold` (`NfEFold.lean:628`) — the below-`t`/at-anchor fiber determinacy — closing
+`nf_eval_nfk_iff_efold` (`NfEFold.lean:652`) — the below-`t`/at-anchor fiber determinacy — closing
 the loop that the carried hypotheses are not debt but a dischargeable interface. -/
 
 /-- **Discharge template** (Future): from an actual realizer of `σ` at the reconstructed anchor

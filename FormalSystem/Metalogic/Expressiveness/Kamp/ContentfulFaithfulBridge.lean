@@ -14,7 +14,7 @@ import FormalSystem.Metalogic.Expressiveness.Kamp.KMinusFaithfulRendering
 This module is the terminus of the faithful re-base. It discharges the contentful Proposition 4.2
 target `Prop42Contentful` (`ContentfulWitness.lean:150`) from `HasFaithfulDedekindINF`
 (`KPlusFaithful.lean:325`) **alone**, where the landed `prop42_contentful_of_attained`
-(`Section5Correspondence.lean:186`) needs `HasAttainedINF` **and** `HasAttainedSUP`.
+(`Section5Correspondence.lean:209`) needs `HasAttainedINF` **and** `HasAttainedSUP`.
 
 ## Source correspondence
 
@@ -56,7 +56,7 @@ Proposition 4.2 one strengthening step away from the paper, where the attained v
 
 **What the newly closed step buys, machine-checked rather than argued.** The move from
 `HasDedekindINF` to `HasFaithfulDedekindINF` drops the extra `¬P(z₀)` conjunct that this tree's
-`kplus` (`PriorINF.lean:87`) carries and that neither Rabinovich's `K⁺` (Definition (3), PDF p.3)
+`kplus` (`PriorINF.lean:114`) carries and that neither Rabinovich's `K⁺` (Definition (3), PDF p.3)
 nor Reynolds' has. It is a **strict** weakening, and the gain is exhibited at a concrete structure
 by `prop42_faithful_covers_what_dedekind_excludes` below: `denseWindowFlow` is a dense Prior
 model satisfying the former and refuting the latter, so Proposition 4.2 is available there from
@@ -76,7 +76,7 @@ below close the three failure modes, rather than asserting their absence:
    — `∃ v'` *inside* `∀ z₀ z₁` — from **no carrier hypothesis at all**. That it compiles is what
    makes it worthless, and it is the control showing `Prop42Contentful`'s hoisted `∃ v'` is a
    different statement. Same template as `lemma53Faithful_perPoint_is_VACUOUS`
-   (`KPlusFaithfulRendering.lean:352`).
+   (`KPlusFaithfulRendering.lean:495`).
 2. **`⊤`-collapsed witness.** Closed upstream by `topVVec_contentful_forces_unsat`
    (`ContentfulWitness.lean:228`): offering the all-`⊤` formula as `v'` does not discharge
    `Prop42Contentful`, it commits the offerer to `v` being unsatisfiable on every ordered pair.
@@ -170,7 +170,7 @@ theorem prop42_witness_exposes_negFixFaithful {sig : MonadicSignature}
     (`KPlusFaithful.lean:325`) alone: no `HasDedekindSUP`, no `HasDedekindINF`, no `HasAttained*`.
     That is Rabinovich's eq (5.2) dichotomy stated at the **source's own** `K⁺` (his Definition
     (3), PDF p.3) — three strengthening steps weaker than `prop42_contentful_of_attained`
-    (`Section5Correspondence.lean:186`) and one step weaker than
+    (`Section5Correspondence.lean:209`) and one step weaker than
     `prop42_contentful_of_dedekind` below, which is now its corollary.
 
     **What this carrier excludes** (honesty charter Rule 6). It forbids exactly those structures
@@ -223,7 +223,7 @@ theorem prop42_contentful_of_dedekind {sig : MonadicSignature}
     from the previous pin.
 
     This is the faithful sibling of the role `prop42_contentful_of_attained`
-    (`Section5Correspondence.lean:186`) plays for the attained chain: it is what stops the
+    (`Section5Correspondence.lean:209`) plays for the attained chain: it is what stops the
     correspondence rotting into a chain of definitions nothing inhabits. The final conjunct is the
     part that makes it a guard rather than a carrier fact — it names `Prop42Contentful` itself,
     so a future weakening of the negation chain that made the target unreachable would break this
@@ -246,7 +246,7 @@ theorem prop42_faithful_covers_what_dedekind_excludes :
 /-- **The landed attained Proposition 4.2 is now a corollary, and its `HasAttainedSUP` argument is
     unused.**
 
-    `prop42_contentful_of_attained` (`Section5Correspondence.lean:132`) takes `h_INF :
+    `prop42_contentful_of_attained` (`Section5Correspondence.lean:209`) takes `h_INF :
     HasAttainedINF` *and* `h_SUP : HasAttainedSUP`, because `VVecEA2.negFix_iff`
     (`EANegationFix/VecEANegFix.lean:183`) needs both. Routed through the faithful chain, the SUP
     half is not needed at all: `HasAttainedINF.toHasFaithfulDedekindINF`
@@ -267,7 +267,7 @@ carrier hypothesis at all** — one picks the empty disjunction when the right h
 the all-`⊤` formula when it is true. That it compiles is exactly what makes it worthless, and it is
 the control showing the hoisted `Prop42Contentful` discharged above is not the same statement.
 
-Same template as `lemma53Faithful_perPoint_is_VACUOUS` (`KPlusFaithfulRendering.lean:352`), re-run
+Same template as `lemma53Faithful_perPoint_is_VACUOUS` (`KPlusFaithfulRendering.lean:495`), re-run
 against
 the FINAL statement of the re-base rather than against Lemma 5.3. -/
 
@@ -305,11 +305,11 @@ carries what the faithful re-base was built to restore. -/
     previously bound the tree's `kplus`, one conjunct stronger than the gate
 `kplusOpenLeftBlock` (`KPlusFaithfulRendering.lean:302`) actually reads; re-pointed here for the
     same
-    reason `negFixListFaithful_case1_is_indispensable` (`NegFixListFaithful.lean:540`) was, since
+    reason `negFixListFaithful_case1_is_indispensable` (`NegFixListFaithful.lean:623`) was, since
     an indispensability artifact stated at a strictly stronger gate certifies less than it
     appears to. Consumers holding the old `kplus` form recover this one by `kplusOpen_of_kplus`.
     This is the outer-fold counterpart of `VecEA2.negFixFaithful_carries_limit_gate`
-    (`EANegationFixFaithful/VecEANegFixFaithful.lean:281`) — that one shows the gate is not
+    (`EANegationFixFaithful/VecEANegFixFaithful.lean:303`) — that one shows the gate is not
     discarded by the `VecEA2` lift, this one shows it is not absorbed by the outer De Morgan fold
     on the way to `Prop42Contentful`'s witness. Together they exclude the two ways the restored
     limit disjunct could vanish between the recursion and the headline theorem without any
@@ -338,8 +338,8 @@ in this tree actually inhabits, the gain is **not observable**. -/
     On a structure that is a Prior structure in the future direction (`SemanticPriorUZ`) and in the
     past direction (`SemanticPriorSZ`), the paper's disjunct (2) `K⁺(P)(z₀)` (PDF p.8) and its
     Since dual `K⁻(P)(z₁)` are **both** unreachable whenever `P` occurs strictly inside `(z₀,z₁)`.
-    The two halves are `prior_makes_disjunct2_unreachable` (`KPlusFaithfulRendering.lean:380`) and
-    `prior_makes_kminus_disjunct_unreachable` (`KMinusFaithfulRendering.lean:352`); this is their
+    The two halves are `prior_makes_disjunct2_unreachable` (`KPlusFaithfulRendering.lean:556`) and
+    `prior_makes_kminus_disjunct_unreachable` (`KMinusFaithfulRendering.lean:487`); this is their
     conjunction, stated once so that the cumulative claim has a single machine-checked home.
 
     **Consequence, and the honest scope of this task.** Every declaration landed across the

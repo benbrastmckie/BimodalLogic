@@ -135,7 +135,7 @@ RE-FLATTENING a depth-`(k+1)` obligation to a `∨` of FLAT exists-forall blocks
 alphabet with QUANTIFIER-FREE point types (**Lemma 5.1**, md:134-135) — never by nesting a depth-k
 characteristic. The Boolean halves the codebase genuinely had landed are the two positive ones:
 - **binary disjunction**: `VVecEA2.disj_holds` (VecEAFormula.lean);
-- **conjunction**: `VVecEA2.conj_holds_vvecEA2` (VecEAClosure.lean:239).
+- **conjunction**: `VVecEA2.conj_holds_vvecEA2` (VecEAClosure.lean:266).
 The **negation** half (Prop 4.2) was never landed and is OPEN: the declaration once cited here
 was vacuous and has been deleted. See `Prop42Vacuity`.
 

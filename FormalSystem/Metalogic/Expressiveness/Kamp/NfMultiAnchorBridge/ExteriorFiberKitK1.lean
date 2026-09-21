@@ -21,7 +21,7 @@ exterior witness `w`, position 1 = the pin `x`, position 2 = the origin `t`).
    `extProbeChi`) and all other fibers bit-FALSE (in particular the interior fiber
    `x < v < t` with the same point type). Its clause iff `extProbe_clause_iff` is proved
    end-to-end through the intended device: the depth-1 fold engine
-   `nf_eval_depth1_fold_iff` (CarrierKv.lean:466) + the depth-0 split-kit round-trips
+   `nf_eval_depth1_fold_iff` (CarrierKv.lean:495) + the depth-0 split-kit round-trips
    (`nf0_zoneSpec_assemble` / `nf0_projFresh_assemble` / `nf0_dropFresh_assemble`,
    NfEFold.lean) + the zone reading lemmas below. Named corollaries
    `extProbe_bitTrue_realized` / `extProbe_bitFalse_excluded` read the two probed fibers

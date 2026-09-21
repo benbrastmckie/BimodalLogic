@@ -79,7 +79,7 @@ relativizes to the **open** `(z,t)`, matching `OrderedMonadicStructure.openSubin
 guards. The two cannot be interchanged — the whole force of `ε` is that its inner interval
 excludes its endpoints, so that `ε(a,b)` says exactly *"`M | (a,b)` is very good"*.
 
-`relativizeAt` (`DenseModelSurgery/Lemma5.lean:685`) is a different operator again: it
+`relativizeAt` (`DenseModelSurgery/Lemma5.lean:697`) is a different operator again: it
 relativizes to an `ε`-**class**, cut out by a binary formula at a single parameter. Reynolds'
 `γ(z,t)` needs **two** parameters cutting out an interval, which is `relativizeOpen`'s job.
 

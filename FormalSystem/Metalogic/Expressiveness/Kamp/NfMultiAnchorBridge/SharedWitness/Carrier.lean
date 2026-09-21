@@ -81,7 +81,7 @@ theorem kvE2_sepBody_gate_fail {sig : MonadicSignature} [Fintype sig.preds] [Dec
 /-- **O2 — arrangement-product membership collapse** for the joint enumeration: on the
     gate-true branch, the carrier holds at the fixed endpoints iff SOME pair of left/right
     interleavings' disjunct holds. Carrier-specific instantiation of the landed structural
-    collapse `VVecEA2.holds_flatMap_map` (`NavigatedSpine.lean:220`), applying by
+    collapse `VVecEA2.holds_flatMap_map` (`NavigatedSpine.lean:221`), applying by
     `rw [dif_pos]` because the disjunct builder and both interleaving sets are TOP-LEVEL
     defs (crux failed-closer-3 lesson: no `let`-buried `S_L`/`S_R`/`mkDisjunct`). -/
 theorem kvE2_sepBody_holds_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -105,7 +105,7 @@ theorem kvE2_sepBody_holds_iff {sig : MonadicSignature} [Fintype sig.preds] [Dec
     exact ⟨_, ⟨wo, hwo, rfl⟩, hvea⟩
 
 /-! ## O1b — non-vacuity (fresh analog of `kvE_subBracket2V_nonvacuous`,
-`SubBracket2V.lean:1433`; FM-vac discipline: the honest configuration must take the
+`SubBracket2V.lean:1799`; FM-vac discipline: the honest configuration must take the
 gate-true branch and produce a NON-empty disjunct list, so no later direction can close
 vacuously). -/
 
@@ -317,7 +317,7 @@ private theorem kvE2_sep_dropFresh_eq {sig : MonadicSignature} [Fintype sig.pred
     exact kvE2_sep_boolEq (h4.symm.trans h3)
 
 /-- **Arity-3 outer zone consistency** (fresh analog of the private arity-4
-    `kvE_sub2V_zone_consistent`, `SubBracket2V.lean:1278` — template only, new code):
+    `kvE_sub2V_zone_consistent`, `SubBracket2V.lean:1622` — template only, new code):
     a point realized in some zone relative to the honest `[w,x,t]` (with `x < w < t`)
     sits in one of the SEVEN consistent outer zones (Def 3.1, PDF pp.2-3). -/
 private theorem kvE2_sep_zone3_consistent {sig : MonadicSignature} [Fintype sig.preds]
@@ -502,11 +502,11 @@ theorem kvE2_sep_zone4_consistentR {sig : MonadicSignature} [Fintype sig.preds]
             (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h3.1 (lt_asymm hut), h3.2.mp hut⟩)))))))))
 
 /-- **The depth-2 joint gate holds for an honest `qnf`** (the arity-3 lift of
-    `kvE_subBracket2V_gate_holds_of_honest`, `SubBracket2V.lean:1400`): from an honest
+    `kvE_subBracket2V_gate_holds_of_honest`, `SubBracket2V.lean:1755`): from an honest
     depth-2 realization at `[w,x,t]` under `x < w < t`, all four gate clauses hold —
     (i)/(ii) by realizing each positive sub and reading its atom layer against the model
     (Prop 4.2, PDF p.3); (iii) via the landed depth-1 fold decomposition
-    (`nf_eval_depth1_fold_iff`, `CarrierKv.lean:466`); (iv) by CONSUMING the landed per-σ
+    (`nf_eval_depth1_fold_iff`, `CarrierKv.lean:495`); (iv) by CONSUMING the landed per-σ
     honest gate lemma at the realized fresh witness. -/
 theorem kvE2_sepGate_holds_of_honest {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds]
@@ -603,7 +603,7 @@ theorem kvE2_sepGate_holds_of_honest {sig : MonadicSignature} [Fintype sig.preds
     `kvE2SepS σ kvESub2ZUW`. These are exactly the `hrealXU`/`hrealUW` inputs the joint
     slot sort consumes to place each foreign χ-slot on the model-correct side of `x1_σ` (so
     that `kvE2SepCompat` holds via `kvE2_sepCompat_lX1_eq`/`_lX1_after_eq`). Reuses the
-    do-not-edit extractor `kvE_subBracket2_complete_extract` (`SubBracket2.lean:606`); no new
+    do-not-edit extractor `kvE_subBracket2_complete_extract` (`SubBracket2.lean:645`); no new
     model reasoning, and NO `x1 < e_i` model-order literal is exposed (LITMUS: the anchor
     `x1_σ` is an interval endpoint of the witness bundle, never compared to a slot index). -/
 private theorem kvE2_sepHonestBundleL {sig : MonadicSignature} [Fintype sig.preds]

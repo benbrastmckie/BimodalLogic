@@ -226,7 +226,7 @@ The middle disjunct of `nf_zone_exists_trichotomy_k1` is the **diagonal** term
 **constant** environment `[t, t]` (both anchors collapse onto the fixed origin `t`). The goal is to
 characterize this by an arity-1 characteristic formula (`char_k1`) applied to a **value-duplication
 collapse** of `sub_nf`, per Obstruction 1: factor through `renameNF_eval_diag0`
-(NfDepth0Generalized.lean:1651) + `char_k1_correct`, NEVER per-variable projection.
+(NfDepth0Generalized.lean:1697) + `char_k1_correct`, NEVER per-variable projection.
 
 ### Collapse / expand maps (arity 2 ↔ 1)
 

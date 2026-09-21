@@ -21,7 +21,7 @@ points of a bracket configuration coincide, the merged point takes the CONJOINED
 and the configuration collapses to one fewer free variable. Here the merge is positions
 (0,1) of the arity-3 population env (witness `w` onto anchor `x`), the exact mirror of the
 delivered diagonal-seam merge at positions (1,2) (`agg_diag_collapse_k1`,
-AggregateHookDischarge.lean:1908).
+AggregateHookDischarge.lean:1922).
 
 ## R9 genericity probe (FIRST deliverable — risk retirement)
 
@@ -30,9 +30,9 @@ at the (1,2) merge (`aggExpand23`/`aggMerge32`). The probe below
 (`aggPm01Probe_clause_iff`) encodes the (0,1) merge END-TO-END for ONE concrete qnf (the
 all-false probe qnf) and proves its clause iff, machine-confirming that
 
-- `renameNF` (NfDepth0Generalized.lean:375),
-- `renameNF_eval_diag0` (NfDepth0Generalized.lean:1651), and
-- `agg_rename_fixpoint_of_eval` (AggregateHookDischarge.lean:1854)
+- `renameNF` (NfDepth0Generalized.lean:389),
+- `renameNF_eval_diag0` (NfDepth0Generalized.lean:1697), and
+- `agg_rename_fixpoint_of_eval` (AggregateHookDischarge.lean:1867)
 
 are rename-generic at position (0,1): all three are applied at the new rename pair
 `aggPmExpand01`/`aggPmMerge01` (row level) and `liftIdx aggPmExpand01`/`liftIdx aggPmMerge01`
@@ -48,7 +48,7 @@ are rename-generic at position (0,1): all three are applied at the new rename pa
    of the duplicated-head evaluation forces the gate, via the fixpoint engine).
 5. `aggPm01_clause_iff` — the clause iff: duplicated-head evaluation ↔ gate ∧ fixed-anchor
    collapsed evaluation. `aggPm01ClauseK1(_iff)` — the dite carrier gating non-fixpoint qnf
-   to `⊥` exactly as `aggPosDiagK1` (AggregateHookDischarge.lean:2000).
+   to `⊥` exactly as `aggPosDiagK1` (AggregateHookDischarge.lean:2015).
 6. `aggPm01_fold_iff` / `aggPm01_clause_fold_iff` — the collapsed side characterized via the
    depth-1 fold engine `nf_eval_depth1_fold_iff` at n=2 (CarrierKv.lean:466), handing the
    clause to the delivered agg2 kit downstream (Phase 16 dispatcher).
@@ -359,7 +359,7 @@ theorem aggPm01ClauseK1_iff {sig : MonadicSignature} [Fintype sig.preds] [Decida
 /-! ## Fold characterization of the collapsed side (n=2, delivered fold engine) -/
 
 /-- **Fold characterization at n=2**: the fixed-anchor collapsed evaluation re-fibers via the
-    delivered depth-1 fold engine (`nf_eval_depth1_fold_iff`, CarrierKv.lean:466) into its
+    delivered depth-1 fold engine (`nf_eval_depth1_fold_iff`, CarrierKv.lean:495) into its
     atom layer plus zone-bounded monadic `(ZoneSpec 2 × NormalForm sig 0 1)` fibers plus the
     off-fiber falsity clause — the exact shape the delivered agg2 kit consumes. -/
 theorem aggPm01_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
@@ -647,7 +647,7 @@ theorem aggPm02ClauseK1_iff {sig : MonadicSignature} [Fintype sig.preds] [Decida
 /-! ## Fold characterization of the collapsed side (n=2, delivered fold engine) -/
 
 /-- **Fold characterization at n=2**: the fixed-anchor collapsed evaluation re-fibers via the
-    delivered depth-1 fold engine (`nf_eval_depth1_fold_iff`, CarrierKv.lean:466) into its
+    delivered depth-1 fold engine (`nf_eval_depth1_fold_iff`, CarrierKv.lean:495) into its
     atom layer plus zone-bounded monadic `(ZoneSpec 2 × NormalForm sig 0 1)` fibers plus the
     off-fiber falsity clause — the exact shape the delivered agg2 kit consumes. -/
 theorem aggPm02_fold_iff {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]

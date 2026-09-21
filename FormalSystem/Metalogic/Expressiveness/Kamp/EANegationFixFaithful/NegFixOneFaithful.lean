@@ -83,7 +83,7 @@ read at the left endpoint, never at the pin.
 **Which `K⁺`.** Rabinovich's `K⁺`, Definition (3), PDF p.3 — *"`K⁺(F)` holds at a moment `t` iff
 `t = inf({t′ | t′ > t and F holds at t′})`"* — and Reynolds' `K⁺A := ¬U(⊤,¬A)`, *"`A` will be
 true arbitrarily soon"* (printed p.168), say **nothing about whether `F` holds at `t` itself**.
-That is `kplusOpen` (`KPlusFaithful.lean:118`). This tree's `kplus` (`PriorINF.lean:87`) carries
+That is `kplusOpen` (`KPlusFaithful.lean:118`). This tree's `kplus` (`PriorINF.lean:114`) carries
 an extra first conjunct `¬F(t)` that is **this tree's addition, not the sources'**.
 
 **The tree's `kplus` would not make the split exhaustive**, and the failure is exactly at the
@@ -215,7 +215,7 @@ open FormalSystem.Metalogic.Expressiveness
 
 /-! ## The faithful carrier at `TemporalPred` level
 
-The INF-side counterpart of `HasDedekindSUP.last_occ_tp` (`KMinusFaithfulRendering.lean:168`). -/
+The INF-side counterpart of `HasDedekindSUP.last_occ_tp` (`KMinusFaithfulRendering.lean:220`). -/
 
 /-- First occurrence of a temporal predicate `P` in `(z₀,z₁)` on structures satisfying the
     **faithful** `HasDedekindINF` carrier: either the infimum sits at the left endpoint (as
@@ -223,7 +223,7 @@ The INF-side counterpart of `HasDedekindSUP.last_occ_tp` (`KMinusFaithfulRenderi
 
     Wraps `HasDedekindINF.first_occ` (`DedekindINF.lean:138`) to accept a `TemporalPred` directly,
     following the pattern of `HasAttainedINF.first_occ_tp` (`EANegationClosure.lean`) and
-    `HasDedekindSUP.last_occ_tp` (`KMinusFaithfulRendering.lean:168`). Unlike the attained version
+    `HasDedekindSUP.last_occ_tp` (`KMinusFaithfulRendering.lean:220`). Unlike the attained version
     the
     disjunction is preserved rather than collapsed: that is precisely the content the faithful
     carrier adds.
@@ -359,7 +359,7 @@ at `z` together with the segment `β₂ = s1` on `(z,z₁)`, which is precisely 
 /-- Rabinovich's `Form₂` (PDF p.10): the `VVecEA2` equivalent of *"there is no `z ∈ (z₀,z₁)` such
     that `[α₁,β₂,α₂](z,z₁)`"*, i.e. no `p`-point above which `s1` holds throughout.
 
-    This is `negBoundedLeftFixAnchoredFaithful` (`BoundedFixAnchoredFaithful.lean:220`) at
+    This is `negBoundedLeftFixAnchoredFaithful` (`BoundedFixAnchoredFaithful.lean:235`) at
     `α := p` over `BracketFormula.trivial s1`; it is reused unchanged rather than re-derived. -/
 noncomputable def negFixOneTail (p s1 : TemporalPred) : VVecEA2 :=
   negBoundedLeftFixAnchoredFaithful p (BracketFormula.trivial s1)

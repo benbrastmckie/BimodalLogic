@@ -38,7 +38,7 @@ INPUTS**; this file only *applies* them.
 5. **Assembled `bracketEndChar_kvE2_correct_two_prior_frag` — DELIVERED**:
    the fragment-restricted, interior+boundary-scoped `holds ↔ ∃ w` gate combining 3 (⇐,
    unconditional) with 4 (⇒), mirroring `bracketEndChar_kv_correct_one_prior`
-   (`PriorInterface.lean:95`). The k=2 interior+boundary GO gate consumed by the KampPrior provider
+   (`PriorInterface.lean:107`). The k=2 interior+boundary GO gate consumed by the KampPrior provider
    instantiation at `KampPrior.lean`; exterior arrangements ride the adjacent
    brackets composed at the anchors `x, t`.
 
@@ -210,7 +210,7 @@ sanctioned hypothesis beyond the provider shape — NOT a provider-conditional f
 
     NON-VACUITY NOTE (2026-07-11 — REPAIRED & REALIZABLE): the earlier VACUITY
     NOTE flagged the GLOBAL singleton demand (`kvE2SepPos qnf = [σ0]`) as unrealizable —
-    `nf_exists_unique` (NormalForm.lean:287) forces ≥3 positive bits on every realized `qnf` (335
+    `nf_exists_unique` (NormalForm.lean:304) forces ≥3 positive bits on every realized `qnf` (335
     report 07 Refutation 1). The interior-restriction repair SWAPPED the carrier list to the
     INTERIOR-restricted
     singleton `kvE2SepPosI` (SW:211, above; the at-point positives zAtX/zAtW/zAtT are excluded by
@@ -370,7 +370,7 @@ theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature} [Finty
 
 The fragment-restricted, interior+boundary-scoped instance of the `BracketCarrierCorrectVPrior`
 body (`PriorInterface.lean:60`), mirroring the k ≤ 1 assembly `bracketEndChar_kv_correct_one_prior`
-(`PriorInterface.lean:95`): the ⇒ direction is the Phase-B/D soundness half over the pin-anchored
+(`PriorInterface.lean:107`): the ⇒ direction is the Phase-B/D soundness half over the pin-anchored
 fold; the ⇐ direction is the Phase-2 completeness half, UNCONDITIONAL (the fragment/interior
 restriction gates only ⇒). Provider conditionality enters exactly as the named hypotheses
 `hrealI`/`hrealB`/`hexcl` (discharged by the Phase-14 provider) and `hexclExt` (the
@@ -388,7 +388,7 @@ restriction gates only ⇒). Provider conditionality enters exactly as the named
     verbatim as the exterior-reflatten provider hand-off (Prop 4.3 re-flatten / Lemma 7.6 adjacency
     —
     adjacent exterior brackets composed at the anchors, NEVER discharged on this bracket).
-    Mirrors `bracketEndChar_kv_correct_one_prior` (PriorInterface.lean:95). Consumed by the
+    Mirrors `bracketEndChar_kv_correct_one_prior` (PriorInterface.lean:107). Consumed by the
     KampPrior provider
     instantiation at `KampPrior.lean` under `KvE2SepFragment qnf`. -/
 theorem bracketEndChar_kvE2_correct_two_prior_frag {sig : MonadicSignature} [Fintype sig.preds]

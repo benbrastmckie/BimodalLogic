@@ -192,7 +192,7 @@ theorem kvE2_pastMarked_iff {sig : MonadicSignature} [Fintype sig.preds] [Decida
     exact ⟨⟨h1, h2⟩, fun zs hzs χ _ => h3 zs hzs χ⟩
 
 /-! ## Zone-4 / zone-3 coupling lifts (file-local mirrors of the private
-`kvE2_futZone4_below_iff` / `kvE2_pastZone4_above_iff`, ExteriorNegation.lean:346 /
+`kvE2_futZone4_below_iff` / `kvE2_pastZone4_above_iff`, ExteriorNegation.lean:379 /
 ExteriorNegationPast.lean:697 — the sanctioned Phase-5/6 private-mirror porting pattern) -/
 
 /-- An at-or-below-`t` zone-3 witness sits below any `x1 > t` (mirror of the private

@@ -17,7 +17,7 @@ and this file only runs alongside it.
 
 ## Why a fold
 
-`NfEvalNf` (`NormalForm.lean:209-216`) grows environment arity `n → n+1` at every
+`NfEvalNf` (`NormalForm.lean:225-232`) grows environment arity `n → n+1` at every
 depth descent, coupling a fresh existential witness jointly to *all* fixed endpoints
 (the arity-4 residual that NO-GOed the k=1 gate). Rabinovich never grows arity
 with depth: a quantified witness `x_j` touches the rest of the formula through exactly
@@ -404,7 +404,7 @@ R3, not here. -/
       PDF p.4; the Lemma-3.4/Prop-3.5 objects the bracket machinery evaluates), quantifying only
       over `ZoneSpec n × NormalForm sig 0 1` — no `(n+1)`-ary object remains.
     - RHS, second conjunct: the explicit off-fiber falsity clause — subs whose env-restriction
-      is not `r` are forced false (via `nf_eval_unique`, NormalForm.lean:256).
+      is not `r` are forced false (via `nf_eval_unique`, NormalForm.lean:272).
 
     Stated at GENERAL `n`: the proof is index-structural, and 309-R3's inside-out iteration
     (Prop 4.3, PDF p.6) applies this same lemma at growing env arities. The gate corollary

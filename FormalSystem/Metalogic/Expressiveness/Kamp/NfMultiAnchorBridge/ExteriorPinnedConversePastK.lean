@@ -18,7 +18,7 @@ The Past-side mirrors of the Phase-3 Future slice defs (`ExteriorPinnedConverseK
 (chunk_0023:25) footprint discipline — the Past clause family
 `kvEPastPos`/`kvEPastEnd`/`kvEPastGapD`/`kvEExtNegPast` reads `σ.2` exclusively through
 the three PAST exterior zone lists (`kvEPastGapZone`/`kvEPastRayZone`/`kvEPastSelfZone`,
-ExteriorNegationPastK.lean:207-213), so the honest bracket key must be a function of the same
+ExteriorNegationPastK.lean:290-296), so the honest bracket key must be a function of the same
 data. `kvEPastSliceMarked` re-keys `kvEExtBracketPast`'s per-σ if-then-else in Phase 3b
 (`ExteriorBracketAssembleK.lean`), exactly as `kvEFutSliceMarked` re-keys the Future bracket.
 
@@ -138,7 +138,7 @@ the Future's does). -/
 /-- **Admissibility ⇒ zone marking** (Past): under `kvEPastAdmissible σ`, the atom base
     layer `σ.1` carries the exterior-past zone marking `kvE2SepZPastX3` (`x1` strictly
     below each of `w`, `x`, `t`). Boolean conjunct-1 read of `kvEPastAdmissible`
-    (ExteriorNegationPastK.lean:134). -/
+    (ExteriorNegationPastK.lean:161). -/
 theorem kvE_pastAdmissible_zoneMark {sig : MonadicSignature} [Fintype sig.preds]
     [DecidableEq sig.preds] {k : Nat}
     (σ : NormalForm sig (k + 1) 4) (hadm : kvEPastAdmissible σ = true) :
@@ -151,7 +151,7 @@ theorem kvE_pastAdmissible_zoneMark {sig : MonadicSignature} [Fintype sig.preds]
 /-! ### Self-zone coincidence (Past mirror of `kvE_futSelfZone_coincide`) -/
 
 /-- **Past self-zone coincidence**: the self-zone head coupling `(false, false)`
-    (`kvEPastSelfZone`, ExteriorNegationPastK.lean:213) forces fresh/slot-0 coincidence on
+    (`kvEPastSelfZone`, ExteriorNegationPastK.lean:146) forces fresh/slot-0 coincidence on
     any linear order — a point `v` in the self zone relative to ANY environment `env`
     satisfies `v = env 0`. Pure `lt_trichotomy` on the index-0 coupling (byte-identical to
     the Future proof: both self zones carry the `(false, false)` head). -/
@@ -314,7 +314,7 @@ theorem kvE_pastInteriorTransfer_zero {sig : MonadicSignature} [Finite sig.preds
 ExteriorNegationPastK.lean:487 and cannot be imported) -/
 
 /-- File-local replica of the private `kvE_pastZoneBelow`
-    (ExteriorNegationPastK.lean:487): a point strictly below `x` (with `x < w < t`)
+    (ExteriorNegationPastK.lean:581): a point strictly below `x` (with `x < w < t`)
     couples to `[x1, w, x, t]` as `zPastX3` below `w, x, t` and to `x1` by the given
     head pair. -/
 private theorem kvE_pastZone4_of_below {sig : MonadicSignature} [Fintype sig.preds]
@@ -461,9 +461,9 @@ theorem kvE_pastSliceUnique_zero {sig : MonadicSignature} [Fintype sig.preds]
 
 /-! ### Private navigation helpers for the slice-id (Past mirrors of the Future file's
 private `kvE_projFresh_zero`/`kvE_futGapItem_pinned_zero`/`kvE_futRayItem_pinned_zero`,
-ExteriorPinnedConverseK.lean:774-832; replication precedent as above) -/
+ExteriorPinnedConverseK.lean:800-858; replication precedent as above) -/
 
-/-- File-local replica of the private `nfk_projFresh_zero` (CarrierKv.lean:89 — `private`,
+/-- File-local replica of the private `nfk_projFresh_zero` (CarrierKv.lean:97 — `private`,
     replicated per the established precedent, never imported): at depth 0 the prefix
     projection coincides with the split kit's `nf0ProjFresh`. -/
 private theorem kvE_pastProjFresh_zero {sig : MonadicSignature} [Fintype sig.preds]
@@ -534,14 +534,14 @@ private theorem kvE_pastRayItem_pinned_zero {sig : MonadicSignature} [Fintype si
 
 /-- **Past exterior-slice identification at m = 0** (Rabinovich Cor 5.4(2) ⇐ under the
     Def 7.13 segment discipline; verbatim mirror of `kvE_futSliceId_of_end_zero`,
-    ExteriorPinnedConverseK.lean:891 — UNBLOCKED by the Phase-4a conjunct-4 restoration): at
+    ExteriorPinnedConverseK.lean:922 — UNBLOCKED by the Phase-4a conjunct-4 restoration): at
     a destructor-selected exterior-past endpoint `x1 < x` carrying the endpoint/walk truths,
     under the level-up ambient, the endpoint's HONEST complete type σ★ is qnf-marked,
     pinned-realized at `[x1, w, x, t]`, and agrees with σ on the atom layer and on every
     Past exterior-zone marking. (σ★ := `nfCharacteristic M 1 4 [x1, w, x, t]`; item content
     in `hocc` is the raw shift-bridged form `P.existF 4 (renameNF rot5Fwd rot5Bwd s)`, the
     Past clause family's per-item convention — `kvEPastRayForm`,
-    ExteriorNegationPastK.lean:426.)
+    ExteriorNegationPastK.lean:518.)
 
     Proof route (the Future's five steps, machine-validated end-to-end as the Phase-4a gate
     probe): (1) totality + ambient marking of σ★; (2) atom layer via `kvE_pastAtomPinned_zero`

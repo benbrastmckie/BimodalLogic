@@ -47,7 +47,9 @@ DECL = re.compile(
     r"([A-Za-z_][A-Za-z0-9_.'!?]*)")
 IDENT = re.compile(r"`([A-Za-z_][A-Za-z0-9_.'!?]*)`")
 _CONT = re.compile(r"`?\s*[,/]\s*`?(:?)(\d+)\b")
-_SENTENCE_END = re.compile(r"[.;]\s")
+# A full stop ends a sentence; a semicolon does not -- `` `foo` (`A.lean:1`; `B.lean:2`) `` is one
+# citation group in two files, and its name belongs to both halves.
+_SENTENCE_END = re.compile(r"\.\s")
 _BULLET = re.compile(r"(?:^|\s)[*\-]\s")
 
 PASS, FAIL, UNVERIFIABLE, RESIDUAL = "pass", "fail", "unverifiable", "residual"
@@ -171,12 +173,27 @@ def anchors_in(line, cite_re):
     return out
 
 
-def judge(lines, idx, col, number, position, decls, cite_re):
+def grouped_anchors(line, cite_re):
+    """`anchors_in`, with each anchor's 0-based position in its citation group and the group's
+    size appended: (ref, number, start, end, is_continuation, column, position, group size)."""
+    groups = []
+    for a in anchors_in(line, cite_re):
+        if a[4] and groups:
+            groups[-1].append(a)
+        else:
+            groups.append([a])
+    return [a + (k, len(g)) for g in groups for k, a in enumerate(g)]
+
+
+def judge(lines, idx, col, number, position, group_size, decls, cite_re):
     """(verdict, chain, wanted): `wanted` is the declaration a FAIL should be re-pointed at.
 
     `position` is the citation's 0-based place within its own citation group (0 for the
-    citation itself, 1.. for its continuations); it pairs the k-th anchor with the k-th name
-    when the chain and the group are the same length.
+    citation itself, 1.. for its continuations) and `group_size` the number of anchors in that
+    group. `wanted` is offered only when the chain and the group are the SAME length, pairing
+    the k-th anchor with the k-th name. When they differ -- `` `a` + `b` (`F.lean:3/9`) ``,
+    where prose cuts the chain to `b` alone -- nothing says which anchor is whose, so a FAIL
+    is still reported but no repair target is guessed.
     """
     sentence = _sentence(lines, idx, col)
     chain, stated = name_chain(sentence, cite_re)
@@ -190,9 +207,7 @@ def judge(lines, idx, col, number, position, decls, cite_re):
     if not unique:
         return UNVERIFIABLE, chain, None
     wanted = None
-    if len(chain) == 1:
-        wanted = unique[0][1]
-    elif position < len(chain) and len(resolved[position][1]) == 1:
+    if len(chain) == group_size and len(resolved[position][1]) == 1:
         wanted = resolved[position][1][0]
     return FAIL, chain, wanted
 
@@ -259,12 +274,21 @@ def self_test():
         lines = src.split("\n")
         got = []
         for idx, line in enumerate(lines):
-            group = -1
-            for ref, num, _s, _e, cont, col in anchors_in(line, cite):
-                group = group + 1 if cont else 0
-                got.append((num, judge(lines, idx, col, num, group, decls, cite)[0]))
+            for ref, num, _s, _e, cont, col, pos, size in grouped_anchors(line, cite):
+                got.append((num, judge(lines, idx, col, num, pos, size, decls, cite)[0]))
         if got != want:
             failures.append((k, want, got))
+    # A repair target is offered only when chain and group are the same length.
+    for src, want in ((["`first_result` (`T.lean:14`)"], ["first_result"]),
+                      (["`first_result` / `second_result` (`T.lean:4`, `:5`)"],
+                       ["first_result", "Ns.second_result"]),
+                      (["`helper` + `first_result` (`T.lean:4/5`)"], [None, None])):
+        got = []
+        for ref, num, _s, _e, cont, col, pos, size in grouped_anchors(src[0], cite):
+            w = judge(src, 0, col, num, pos, size, decls, cite)[2]
+            got.append(w.name if w else None)
+        if got != want:
+            failures.append(("repair target: " + src[0], want, got))
     return failures
 
 

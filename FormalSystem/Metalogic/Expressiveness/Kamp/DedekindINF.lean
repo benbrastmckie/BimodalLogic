@@ -77,7 +77,7 @@ deferred to a future dedicated complete-proof-system effort, not abandoned and n
 
 **Why deferred — this is fidelity-only work with zero operational value.** The live goal chain in
 this tree runs on **Prior structures**, where INF/SUP attainment holds outright
-(`prior_hasAttainedINF`, `PriorINF.lean:225`, from the UZ axiom). Nothing in this tree ever
+(`prior_hasAttainedINF`, `PriorINF.lean:265`, from the UZ axiom). Nothing in this tree ever
 evaluates against a non-attained Dedekind complete chain, so nothing downstream can observe the
 difference between `HasAttainedINF` and `HasDedekindINF`. `prior_hasDedekindINF` below closes
 that boundary: the faithful carrier is *available* on the live path whenever it is wanted.
@@ -85,12 +85,12 @@ that boundary: the faithful carrier is *available* on the live path whenever it 
 The deferred re-base, precisely:
 
 1. **Lemma 5.3 (p.8)** — `negChainOnFaithful` over `HasDedekindINF`, restoring the printed
-   **three**-disjunct `Oₙ₊₁`. The landed `negChainOn` (`EANegationFix/OnBuilder.lean:150`)
+   **three**-disjunct `Oₙ₊₁`. The landed `negChainOn` (`EANegationFix/OnBuilder.lean:181`)
    truncates it to two by dropping disjunct (2). The result type must be `VVecEA2`, not
    `VBracketFormula`: disjunct (2) conjoins the endpoint predicate `K⁺(P₁)` at `z₀`, which
    `VBracketFormula` cannot carry.
-2. **Lemma 5.1 (pp.9-10)** — re-base `BracketFormula.negFix_iff` (`EANegationFix/NegFix.lean:669`).
-3. **Prop 4.2 (p.6)** — re-base `VVecEA2.negFix_iff` (`EANegationFix/VecEANegFix.lean:164`) and
+2. **Lemma 5.1 (pp.9-10)** — re-base `BracketFormula.negFix_iff` (`EANegationFix/NegFix.lean:695`).
+3. **Prop 4.2 (p.6)** — re-base `VVecEA2.negFix_iff` (`EANegationFix/VecEANegFix.lean:184`) and
    hence `prop42_contentful_of_attained` (`Section5Correspondence.lean`) off the attained pin.
 
 **Deliberately not stated as `sorry`.** Those three targets are recorded here as prose and in the
@@ -128,7 +128,7 @@ open FormalSystem.Metalogic.Expressiveness
     * eq (5.2) verbatim: a first-occurrence point `r₀ ∈ (z₀,z₁)` with `¬P` on `(z₀,r₀)` and
       `P(r₀) ∨ K⁺(P)(r₀)`.
 
-    Contrast `HasDefinableINF` (`PriorINF.lean:109`), which is the **right disjunct alone**
+    Contrast `HasDefinableINF` (`PriorINF.lean:149`), which is the **right disjunct alone**
     (modulo `r₀ ≤ z₁` vs `r₀ < z₁`) and therefore forbids the left one outright — see
     `hasDefinableINF_excludes_kplus` (`KPlusBracketRendering.lean:281`) and
     `hasDedekindINF_admits_kplus_shape` below. -/
@@ -226,7 +226,7 @@ the precise statement of why the deferred work has zero operational value: on Pr
 faithful carrier is derivable from the attained one, so no consumer can tell them apart. -/
 
 /-- Prior structures satisfy the faithful `HasDedekindINF`, via `prior_hasAttainedINF`
-    (`PriorINF.lean:225`) and the shim. The `K⁺` disjuncts are never needed: the UZ axiom
+    (`PriorINF.lean:265`) and the shim. The `K⁺` disjuncts are never needed: the UZ axiom
     supplies an attained first occurrence outright. -/
 theorem prior_hasDedekindINF {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)

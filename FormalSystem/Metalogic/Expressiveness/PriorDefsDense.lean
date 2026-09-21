@@ -43,7 +43,7 @@ Unfolding the temporal operators with this tree's `TemporalTruth` (`Table.lean:1
   constructor's guard-first arguments);
 * `U(⊤,p)(t)` is therefore *"`p` holds throughout some initial stretch above `t`"*;
 * `F¬p(t)` is *"`¬p` somewhere above `t`"*;
-* `K⁺(A)(s)` is `kplus` (`Kamp/PriorINF.lean:87`): `¬A(s) ∧ ∀ u > s, ∃ r ∈ (s,u), A(r)`, so
+* `K⁺(A)(s)` is `kplus` (`Kamp/PriorINF.lean:114`): `¬A(s) ∧ ∀ u > s, ∃ r ∈ (s,u), A(r)`, so
   `K⁺(¬p)(s)` is `p(s) ∧ ∀ u > s, ∃ r ∈ (s,u), ¬p(r)`.
 
 The definitions below carry that unfolding literally, with the object-level negation read as
@@ -371,7 +371,7 @@ theorem semanticPriorUZ_fails_on_dense :
 
 Consequence for this development: every declaration pinned at `SemanticPriorUZ` /
 `SemanticPriorSZ` — `uSExpressivelyCompleteOverPrior` (`PriorExpressiveness.lean:358`),
-`prior_hasAttainedINF` (`Kamp/PriorINF.lean:231`), `prior_hasDedekindINF`
+`prior_hasAttainedINF` (`Kamp/PriorINF.lean:265`), `prior_hasDedekindINF`
 (`Kamp/DedekindINF.lean:230`) and their consumers — has no dense instance obtained by reuse. -/
 theorem semanticPriorU_not_implies_semanticPriorUZ :
     ∃ (M : OrderedMonadicStructure densePriorSig) (atomMap : Formula → densePriorSig.preds),

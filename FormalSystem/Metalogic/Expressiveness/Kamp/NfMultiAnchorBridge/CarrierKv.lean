@@ -72,8 +72,8 @@ def atomKindCastLE {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig
     (`Fin.cons x env`), so the variables of interest stay a prefix at every layer and the
     recursion is uniform in `k`. This is the projection direction of Rabinovich's monadic
     E[Σ]-atom extraction (Def 4.1, PDF p.5): the complete depth-`k` type of a variable prefix,
-    read off the complete type of the whole tuple. Decidability of the existential is via the
-    `Fintype`/`DecidableEq` instances on `NormalForm` (NormalForm.lean:182/184). -/
+    read off the complete type of the whole tuple. Decidability of the existential is via
+    `normalFormFintype` / `normalFormDecEq` (NormalForm.lean:199/207), on `NormalForm`. -/
 noncomputable def nfkTake {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] :
     {k : Nat} → {m n : Nat} → m ≤ n → NormalForm sig k n → NormalForm sig k m
   | 0, _, _, h, nf => fun a => nf (atomKindCastLE h a)

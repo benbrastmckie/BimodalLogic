@@ -71,7 +71,7 @@ def kvE2SepZFutT3 : ZoneSpec 3 :=
 /-! ## Inner zone constants (Def 3.1, PDF pp.2-3 — a 1-type point `v` relative to `[x1,w,x,t]`)
 
 The three interior patterns `kvESub2ZXU`/`kvESub2ZUW`/`kvESub2ZWT`
-(`SubBracket2.lean:123-133`) are CONSUMED, not rebuilt. The bit patterns are
+(`SubBracket2.lean:141-151`) are CONSUMED, not rebuilt. The bit patterns are
 placement-generic: for a LEFT-interior σ (`x < x1 < w`) the pattern `kvESub2ZXU` reads
 "`x < v < x1`" and `kvESub2ZWT` reads "`w < v < t`"; for a RIGHT-interior σ
 (`w < x1 < t`) the SAME pattern `kvESub2ZXU` reads "`x < v < w`" and `kvESub2ZWT`

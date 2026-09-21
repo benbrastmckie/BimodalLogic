@@ -698,7 +698,7 @@ of the `Nodup` universe list — so it is CONSUMED, not re-derived. -/
 /-! ### The joint engine inputs (cross-owner value→gap partition)
 
 The remaining Phase-1 deliverable: boundary-linked region lists `kvE2SepHonestRegionsL/R`
-feeding `k1v_sorted_realizationK` (SubBracket2V.lean:639-646), with the five preconditions
+feeding `k1v_sorted_realizationK` (SubBracket2V.lean:668-675), with the five preconditions
 `hpos`/`hlink`/`hnd`/`hreal`/`hbdry` bundled as `kvE2_sepHonest_engineInputs`.
 
 **Design (cycle-8 resolution, consumed not re-derived):**
@@ -1170,7 +1170,7 @@ theorem kvE2_sepHonest_engineInputs {sig : MonadicSignature} [Fintype sig.preds]
 
 /-! ### Global monotone bracket witness (engine invocation + stitch)
 
-`kvE2_sepHonest_witnesses` invokes `k1v_sorted_realizationK` (SubBracket2V.lean:639) once per
+`kvE2_sepHonest_witnesses` invokes `k1v_sorted_realizationK` (SubBracket2V.lean:668) once per
 side on the Phase-1 region lists and stitches the two `interleaveK` chains around the single
 shared pivot `w` into the globally strictly monotone bracket witness chain, with per-side
 range bounds `x < · < w` (LEFT) and `w < · < t` (RIGHT). The full engine `Forall₂` data is

@@ -1599,7 +1599,7 @@ omit [Fintype sig.preds] in
 **Cutting a set-shaped restriction down to an interval is cutting `M` down to that interval** —
 provided the interval lies inside the set, which for a `∼`-class is convexity (Lemma 12).
 
-The dense analogue of `openSubOpenSubEquiv` (`EpsilonDense.lean:150`), for a `restrictSet` outer
+The dense analogue of `openSubOpenSubEquiv` (`EpsilonDense.lean:154`), for a `restrictSet` outer
 cut rather than an `openSubinterval` one.
 -/
 theorem kEquiv_restrictSet_openSub [Finite sig.preds] (k : Nat) (M : OrderedMonadicStructure sig)

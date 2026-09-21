@@ -80,7 +80,7 @@ open FormalSystem.Metalogic.Expressiveness.Separation
 /-! ## Helper 1: admissibility conjunct-1 reader (zone marking of the atom layer)
 
 The sibling of the conjunct-2 readers `kvE_futAdmissible_onFiber`/`_offFiber`
-(ExteriorConverterK.lean:63/:73): a navigation-only read of the already-landed admissibility
+(ExteriorConverterK.lean:70/:73): a navigation-only read of the already-landed admissibility
 Boolean, exposing conjunct 1 — the `zFutT3` zone marking of `σ.1`. -/
 
 /-- **Admissibility ⇒ zone marking**: under `kvEFutAdmissible σ`, the atom base layer `σ.1`
@@ -105,7 +105,7 @@ shape `kvE_fiberPosOnShift_correct` delivers) and the fresh witness is the known
 index-0 coupling trichotomy pins the env's `x1`-slot to the witness. -/
 
 /-- **Self-zone coincidence**: the self-zone head coupling `(false, false)`
-    (`kvEFutSelfZone`, ExteriorNegationK.lean:70) forces fresh/slot-0 coincidence on any
+    (`kvEFutSelfZone`, ExteriorNegationK.lean:77) forces fresh/slot-0 coincidence on any
     linear order — a point `v` in the self zone relative to ANY environment `env` satisfies
     `v = env 0`. Pure `lt_trichotomy` on the index-0 coupling. -/
 theorem kvE_futSelfZone_coincide {sig : MonadicSignature} [Fintype sig.preds]
@@ -273,7 +273,7 @@ theorem kvE_futPos_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [Dec
 
 /-- **Gap guard from a realizer**: a pinned exterior realizer of `σ` renders the gap
     disjunction `kvEFutGapD P σ` uniformly on `(t, x1)`. The `hD` step of
-    `kvE_extNegFut_sound` (ExteriorNegationK.lean:552), exposed as a public supply lemma. -/
+    `kvE_extNegFut_sound` (ExteriorNegationK.lean:572), exposed as a public supply lemma. -/
 theorem kvE_futGapD_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
@@ -295,7 +295,7 @@ theorem kvE_futGapD_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [De
 
 /-- **Endpoint description from a realizer**: a pinned exterior realizer of `σ` forces the
     endpoint truth `kvEFutEnd P σ` at `x1`. The `hend` step of `kvE_extNegFut_sound`
-    (ExteriorNegationK.lean:564), exposed as a public supply lemma. -/
+    (ExteriorNegationK.lean:572), exposed as a public supply lemma. -/
 theorem kvE_futEnd_of_realizer {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds]
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
@@ -794,7 +794,7 @@ theorem kvE_futInteriorTransfer_zero {sig : MonadicSignature} [Finite sig.preds]
 
 /-! ### Private navigation helpers (replicas + zone bookkeeping) -/
 
-/-- File-local replica of the private `nfk_projFresh_zero` (CarrierKv.lean:89 — `private`,
+/-- File-local replica of the private `nfk_projFresh_zero` (CarrierKv.lean:97 — `private`,
     replicated per the `kvE_minPick`/`p3_projFresh_zero` precedent, never imported): at
     depth 0 the prefix projection coincides with the split kit's `nf0ProjFresh`. -/
 private theorem kvE_projFresh_zero {sig : MonadicSignature} [Fintype sig.preds]

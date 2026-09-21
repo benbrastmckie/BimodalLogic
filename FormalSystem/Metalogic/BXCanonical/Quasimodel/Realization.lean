@@ -166,7 +166,7 @@ enriched seed lies in `w.formulas`, so `w.is_mcs.1` discharges any
 
 This matches the `h_neg_in = false` branch of
 `enriched_seed_consistent_until` above and the one-line proof of
-`chain_step_seed_consistent` in `Construction.lean:677-690`; it is the
+`chain_step_seed_consistent` in `Construction.lean:632-645`; it is the
 lifting lemma Phase 5's stricter seed (C.4) consumes for the
 `h.formulas ∪ GContent v.formulas` chunk. -/
 

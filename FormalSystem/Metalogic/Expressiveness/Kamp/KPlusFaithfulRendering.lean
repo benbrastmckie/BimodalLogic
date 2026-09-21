@@ -30,7 +30,7 @@ with eq (5.2)
 ## ADAPTED-FROM: this module previously pinned `HasDedekindINF` (`DedekindINF.lean:134`)
 
 **What changed, in one clause**: disjunct (2)'s left conjunct moved from the tree's `kplus`
-(`PriorINF.lean:87`, which carries an extra `¬P(z₀)` conjunct that neither source states) to the
+(`PriorINF.lean:114`, which carries an extra `¬P(z₀)` conjunct that neither source states) to the
 sources' own `K⁺` — `Formula.kPlus` (`Syntax/Formula.lean:181`) at the object level, `kplusOpen`
 (`KPlusFaithful.lean:118`) at the `Prop` level. Nothing else about the transcription moved: the
 three printed disjuncts, the recursion on `(z₀,z₁)` in the boundary subcase, and eq (5.2)'s point
@@ -78,8 +78,8 @@ rather than as prose.
    `Rabinovich's Dedekind completeness < HasFaithfulDedekindINF < HasDedekindINF <
    HasDefinableINF < HasAttainedINF`,
    so this carrier is still stronger than the paper's hypothesis, but by one link less than the
-   carrier this module previously took. `KPlusFaithful.lean:317-320` states the exclusion in
-   full, including what the faithful carrier **admits** that `HasDedekindINF` refuses.
+   carrier this module previously took. `HasFaithfulDedekindINF` (`KPlusFaithful.lean:317-320`)
+   states the exclusion, and what the faithful carrier **admits** that `HasDedekindINF` refuses.
 3. **Disjunct (2) is provably dead on every Prior structure, at BOTH `K⁺` spellings.**
    `prior_makes_faithful_disjunct2_unreachable` below proves it for the source-exact `K⁺` now
    gating disjunct (2), and `prior_makes_disjunct2_unreachable` — kept, and now derived from it —
@@ -104,7 +104,7 @@ open FormalSystem.Metalogic.Expressiveness
 
 /-! ## `K⁺(P)` as a `TemporalPred` -/
 
-/-- `K⁺(P)` as a point type. `kplusFormula` (`PriorINF.lean:94`) is the object-language
+/-- `K⁺(P)` as a point type. `kplusFormula` (`PriorINF.lean:121`) is the object-language
     spelling; `kplus_formula_correct` (`KPlusBracketRendering.lean:161`) is its correctness lemma.
 
     Source correspondence: PDF p.8, *"K⁺(P₁)(z₀) is an atomic ... formula in the canonical
@@ -124,13 +124,13 @@ theorem kplusPred_eval {sig : MonadicSignature}
     (`Syntax/Formula.lean:181`) has been in the tree all along, and `kPlus_formula_correct`
     (`KPlusFaithful.lean:155`) is its correctness lemma against `kplusOpen`.
 
-    ADAPTED-FROM `kplusPred` above, which is pinned at `kplusFormula` (`PriorINF.lean:94`). What
+    ADAPTED-FROM `kplusPred` above, which is pinned at `kplusFormula` (`PriorINF.lean:121`). What
     changed: `kplusFormula` conjoins `¬P(t)`, and that conjunct is this tree's addition. Neither
     Rabinovich 2014 (`K⁺` definition, PDF p.3 — *"`K+(F)` … is an abbreviation for
     `¬((¬F)UntilTrue)`"*) nor Reynolds 1992 (abbreviation table §1, printed p.168 — `K⁺A` for
     `¬U(⊤,¬A)`, *"`A` will be true arbitrarily soon"*) says anything about the point of
-    evaluation. `Syntax/Formula.lean:164-179` carries the standing name-collision warning between
-    the two spellings; this declaration is the `TemporalPred`-level side of that distinction.
+    evaluation. `Formula.kPlus` (`Syntax/Formula.lean:188-193`) carries the name-collision
+    warning between the two spellings; this is the `TemporalPred`-level side of that distinction.
 
     Source correspondence: Rabinovich 2014, Lemma 5.3, PDF p.8 — *"`K⁺(P₁)(z₀)` is an atomic (and
     hence a `∨∃⃗∀`) formula in the canonical expansion"*. As for `kplusPred`, no canonical
@@ -519,7 +519,7 @@ proved dead first, with the tree's spelling derived from it. -/
 
 /-- **On Prior structures, disjunct (2) is unreachable — at the SOURCES' `K⁺`.**
 
-    `SemanticPriorUZ` gives `HasAttainedINF` (`prior_hasAttainedINF`, `PriorINF.lean:231`), whose
+    `SemanticPriorUZ` gives `HasAttainedINF` (`prior_hasAttainedINF`, `PriorINF.lean:243`), whose
     `first_occ` hands back an attained `r₀ > z₀` with `¬P` throughout `(z₀,r₀)`. The sources' `K⁺`
     says `P` occurs in *every* interval `(z₀,s)`; instantiate it at `s := r₀` and the two collide.
     No use is made of the tree's extra `¬P(z₀)` conjunct, which is why the weaker gate is dead for

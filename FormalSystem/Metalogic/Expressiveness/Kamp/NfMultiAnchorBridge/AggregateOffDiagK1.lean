@@ -25,7 +25,7 @@ every order pattern of the witness `w` against the pins. Given the ambient `x < 
 consistent patterns are exactly `w<x`, `w=x`, `x<w<t`, `w=t`, `t<w`; every other
 order-bit row of `qnf.1` is unrealizable (the 3-bot channel). The interior channel's
 `endInterval_correct`-style consumer is the delivered UZ/SZ-relativized rung
-`bracketEndChar_kv_correct_one_prior` (PriorInterface.lean:95; see also the recursion
+`bracketEndChar_kv_correct_one_prior` (PriorInterface.lean:107; see also the recursion
 consumer `endIntervalPrior_correct_le_one`, EndIntervalConsumerK.lean).
 
 ## Structure
@@ -145,7 +145,7 @@ private theorem aggOd_row_clash {b : Bool} (h1 : b = true) (h2 : b = false) : Fa
 /-! ### Eval-forcing lemmas: any realizer forces the row of its witness position
 
 Each extracts the atom layer via the delivered fold engine `nf_eval_depth1_fold_iff`
-(CarrierKv.lean:466) and reads the six order atoms (`AtomEval M env (.order i j _) =
+(CarrierKv.lean:495) and reads the six order atoms (`AtomEval M env (.order i j _) =
 env i < env j`, definitionally). -/
 
 omit [DecidableEq sig.preds] in
@@ -1124,7 +1124,7 @@ theorem CAggPtT.clause_iff (M : OrderedMonadicStructure sig)
 
 The delivered depth-1 fixed-endpoint bracket carrier `bracketEndCharKv` with the
 depth-0 provider `nfDepth0CharFormula` (`h0 := rfl`), consumed through the
-UZ/SZ-relativized rung `bracketEndChar_kv_correct_one_prior` (PriorInterface.lean:95;
+UZ/SZ-relativized rung `bracketEndChar_kv_correct_one_prior` (PriorInterface.lean:107;
 the recursion-consumer packaging of the same rung is `endIntervalPrior_correct_le_one`
 / `endInterval_correct` in EndIntervalConsumerK.lean). `aggOdRowInt`'s six conjuncts
 are the rung's six order hypotheses VERBATIM. -/
@@ -1350,7 +1350,7 @@ theorem aggPop1_correct (M : OrderedMonadicStructure sig)
 classification (`aggOdRow*F`/`aggOdClassifyF`) stays unconsumed. The future arm
 reuses the SAME `x < t`-keyed dispatcher `CAggOd` through the BIJECTIVE index swap
 `aggOdSwap12` (the involution of `Fin 3` fixing the witness slot 0 and swapping the
-pin slots 1 ↔ 2), transported by `renameNF_eval_iff` (NfDepth0Generalized.lean:442
+pin slots 1 ↔ 2), transported by `renameNF_eval_iff` (NfDepth0Generalized.lean:456
 — the full bidirectional rename congruence, applicable exactly because the swap is
 a bijection, unlike the Phase-12 merge maps): at pins `(z0, z1) = (t, x)` with the
 flipped ambient `t < x`, `CAggOd.clause_iff` yields the population existential at
@@ -1529,7 +1529,7 @@ noncomputable def kampArmPastK1 (sub_nf : NormalForm sig 2 2) : Formula :=
 
 /-- **k=1 past-arm hook discharge** (hook-discharge lemma 5/6): the past-arm formula
     realizes the past disjunct of `kampPrior_site_trichotomy` at match arm k=1.
-    Enters the skeleton via `VVecEA2.translateRight_correct` (NfToVecEA.lean:452,
+    Enters the skeleton via `VVecEA2.translateRight_correct` (NfToVecEA.lean:459,
     Route V — Phase-1 R1 verdict); pins bridged by `aggOd_holdsRight_iff_holds`;
     per-pin content = `conjFull_iff` + atom locus + `aggPop1_correct` + the
     definitional depth-(1+1) seam. Unlike k=0, the Prior hypotheses are USED
@@ -1559,7 +1559,7 @@ noncomputable def kampArmFutureK1 (sub_nf : NormalForm sig 2 2) : Formula :=
 /-- **k=1 future-arm hook discharge** (hook-discharge lemma 6/6): the future-arm
     formula realizes the future disjunct of `kampPrior_site_trichotomy` at match arm
     k=1. Enters the skeleton via `VVecEA2.translateLeft_correct`
-    (VecEATranslation.lean:550, Route V — dual); pins bridged by
+    (VecEATranslation.lean:561, Route V — dual); pins bridged by
     `aggOd_holdsLeft_iff_holds`; the population rides `aggPop1F_correct` (the
     `aggOdSwap12` transport of the SAME dispatcher — see the §10 decision record). -/
 theorem kampArm_future_k1_correct (sub_nf : NormalForm sig 2 2) :

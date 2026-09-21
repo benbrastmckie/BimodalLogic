@@ -450,10 +450,9 @@ def by_name(targets: list[str] | None, dry_run: bool, quiet: bool = False) -> tu
         out = list(lines)
         changed = False
         for idx, line in enumerate(lines):
-            group = -1
             edits = []
-            for ref, num, s0, e0, is_cont, col in lean_citations.anchors_in(line, CITE):
-                group = group + 1 if is_cont else 0
+            for ref, num, s0, e0, is_cont, col, pos, size in \
+                    lean_citations.grouped_anchors(line, CITE):
                 target = resolve(ref)
                 if target is None or (want is not None and target not in want):
                     continue
@@ -461,7 +460,7 @@ def by_name(targets: list[str] | None, dry_run: bool, quiet: bool = False) -> tu
                     spans[target] = lean_citations.decl_spans(
                         open(target, encoding="utf-8", errors="replace").read().split("\n"))
                 verdict, chain, wanted = lean_citations.judge(
-                    lines, idx, col, num, group, spans[target], CITE)
+                    lines, idx, col, num, pos, size, spans[target], CITE)
                 if verdict != lean_citations.FAIL:
                     continue
                 where = "%s:%d -> %s:%d (names %s)" % (citer, idx + 1, ref, num, "/".join(chain))

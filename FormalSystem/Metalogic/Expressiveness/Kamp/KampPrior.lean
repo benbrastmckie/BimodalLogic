@@ -976,7 +976,7 @@ set_option maxHeartbeats 1600000 in
 /-- **General-`k` supply-site certificate** `kampPrior_site_rungK_gate_match`.
     The general-`k` mirror of `kampPrior_site_rung2_gate_match` (`:761`), one fold-family deeper:
     the per-`qnf` seam restatement of the exterior-composed discharge
-    `bracketEndChar_kvExt_correct_prior` (`ExteriorGateAssembleK.lean:106`) at depth `(k+2)`, for
+    `bracketEndChar_kvExt_correct_prior` (`ExteriorGateAssembleK.lean:246`) at depth `(k+2)`, for
     ALL `k` (uniformly subsuming the k=2 arm as the `k = 0` member). It CARRIES the eleven
     obligations — the seven interior (`P`/`hcharK`/`h_UZ`/`h_SZ`/`hreal`/`hexcl` + the internalized
     `hexclExt`) and the four SLICE-KEYED exterior obligations (`hslice*`/`hexclSlice*`, the slice

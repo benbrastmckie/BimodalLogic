@@ -818,7 +818,7 @@ predicate explicitly without having to re-derive it.
 initial witness `w0 : BXPoint` is the MCS starting point supplied by
 Frame.lean's Until/Since context (the point at which the eventuality
 resolution obligation is raised). Concretely, for
-`bx_until_eventuality_resolution` (Frame.lean:656) the starting point
+`bx_until_eventuality_resolution` (Frame.lean:689) the starting point
 is the MCS `w` at which `φ U ψ ∈ w.formulas` is witnessed, and
 `h0.formulas = sigmaSignature w Sigma` by construction, so the subset
 hypothesis `h0_sub` reduces to `sigma_signature_mem_witness` under
