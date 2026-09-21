@@ -188,3 +188,29 @@ file:line
 # --- Lean appendix: lean-lsp MCP tool name (editor tooling, not a Lean
 # identifier) ---
 lean_declaration_file
+
+# --- Dataset-pipeline chapter: citations of training/PIPELINE.md, the
+# operational quick-reference that chapters/p4-dataset-pipeline.typ is the
+# canonical narrative for. The training/ directory is deliberately
+# gitignored (see .gitignore), so it is absent from any clean checkout and
+# Check 1 -- which resolves by filesystem existence -- would pass on a
+# developer's disk and fail on CI. These spans are therefore never resolved
+# by the check, and their line ranges are not re-verified by any gate; each
+# is paired in the chapter with the section heading it points at, which
+# survives line drift. One exact-match entry per surviving span ---
+training/PIPELINE.md
+training/PIPELINE.md:230
+training/PIPELINE.md:389-403
+training/PIPELINE.md:576
+training/PIPELINE.md:578-592
+training/PIPELINE.md:651-676
+
+# --- Lean appendix: deliberate negative reference. ax-lean-appendix.typ's
+# "Lake and Project Layout" section says the project is configured by
+# lakefile.toml "rather than by a Lean-syntax lakefile.lean"; the repository
+# has no lakefile.lean, and the span resolves locally only through
+# .lake/packages/mathlib/lakefile.lean, so it fails on a clean checkout.
+# Exact-match and global: a future citation of lakefile.lean elsewhere in
+# typst/ would also be suppressed, which is acceptable while the repository
+# has no such file ---
+lakefile.lean

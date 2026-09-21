@@ -1,7 +1,7 @@
 // ============================================================================
 // p4-dataset-pipeline.typ
 // Part II chapter -- The BMLogic Dataset Pipeline
-// Canonical narrative for docs/training/PIPELINE.md (which holds the
+// Canonical narrative for training/PIPELINE.md (which holds the
 // operational quick-reference). Centerpiece chapter for the
 // AI-training-practitioner audience.
 // ============================================================================
@@ -19,20 +19,20 @@
 == The Practitioner Thesis, Restated
 
 Decidable fragments (@sec:decidability-practice) are a target for full automation; the full logic is a target for training AI systems to reason proof-theoretically, because every enumerated formula's decision yields a *deterministically checkable* training signal -- a kernel-checked proof term or an explicit countermodel, never a merely-plausible label.
-This chapter is the canonical narrative home of that pipeline; `docs/training/PIPELINE.md` holds the operational quick-reference.
+This chapter is the canonical narrative home of that pipeline; `training/PIPELINE.md` holds the operational quick-reference.
 
 == Dual-Signal Architecture
 
 For each enumerated formula, the decision procedure (`decide`, @sec:decidability-practice) yields exactly one of two supervisory signals:
 
-- *Positive signal -- proof traces (policy network)*: for a formula decided valid, a `ProofTrace` records derivation `height`, the `axiomsUsed`, and the `rulesApplied`. "The policy network learns to predict *which axioms and rules to apply* at each step of a proof search."#footnote[`docs/training/PIPELINE.md:24-31`.]
-- *Corrective signal -- countermodels (value network)*: for a formula decided invalid, a `SimpleCountermodel` records `trueAtoms`/`falseAtoms`/`formula`. "The value network learns to estimate the probability that a given proof state leads to a valid proof... they teach the network which formula shapes are *not* theorems."#footnote[`docs/training/PIPELINE.md:33-40`.]
-- *Enriched corrective signal (Tier 2)*: `EnrichedCountermodel.lean` retains the full saturated tableau branch (which modal/temporal subformulas held or failed); the module is implemented and tested, and its integration into the main export path belongs to the pipeline's second tier.#footnote[`docs/training/PIPELINE.md:42-44`; `BimodalTools/EnrichedCountermodel.lean` (211 lines per `BimodalTools/README.md`).]
+- *Positive signal -- proof traces (policy network)*: for a formula decided valid, a `ProofTrace` records derivation `height`, the `axiomsUsed`, and the `rulesApplied`. The policy network learns to predict *which axioms and rules to apply* at each step of a proof search.
+- *Corrective signal -- countermodels (value network)*: for a formula decided invalid, a `SimpleCountermodel` records `trueAtoms`/`falseAtoms`/`formula`. The value network learns to estimate the probability that a given proof state leads to a valid proof; countermodels teach it which formula shapes are *not* theorems.
+- *Enriched corrective signal (Tier 2)*: `EnrichedCountermodel.lean` retains the full saturated tableau branch (which modal/temporal subformulas held or failed); the module is implemented and tested, and its integration into the main export path belongs to the pipeline's second tier.#footnote[`training/PIPELINE.md:230`, the "Design Rationale" of its `EnrichedCountermodel.lean` section; `BimodalTools/EnrichedCountermodel.lean` (223 lines per `BimodalTools/README.md`).]
 
 == Pipeline Flow and Module Map
 
 `FormulaEnumerator.lean` enumerates formulas up to a depth/size bound; `DatasetGenerator.lean` labels each via `decide`, extracting a proof trace or countermodel; `DatasetGeneratorMain.lean` (JSONL, feeding the `dataset_generator` executable) and `DatasetAssembly.lean` (structured JSON, feeding a Python tensor-conversion script) export the labeled dataset.
-The pipeline comprises seven Lean modules -- `DataExport.lean`, `FormulaEnumerator.lean`, `DatasetGenerator.lean`, `EnrichedCountermodel.lean`, `DatasetAssembly.lean`, `DatasetGeneratorMain.lean`, and `DatasetValidatorMain.lean` -- with `DataExport.lean` serving as a shared dependency of the other six rather than a pipeline stage in its own right.#footnote[`docs/training/PIPELINE.md`, Module Reference section.]
+The pipeline comprises seven Lean modules -- `DataExport.lean`, `FormulaEnumerator.lean`, `DatasetGenerator.lean`, `EnrichedCountermodel.lean`, `DatasetAssembly.lean`, `DatasetGeneratorMain.lean`, and `DatasetValidatorMain.lean` -- with `DataExport.lean` serving as a shared dependency of the other six rather than a pipeline stage in its own right.#footnote[`training/PIPELINE.md`, Module Reference section.]
 
 === Anatomy of a Dataset Record
 
@@ -58,7 +58,7 @@ The record design encodes the dual-signal contract structurally: `proof_trace` (
 The redundant formula encodings serve different consumers: `formula_str` for human inspection, `formula_ast` (the `Formula.toJson` tag schema) for tokenizer-free tree models, an S-expression and a prefix-notation token list for sequence models, and folded variants that restore derived-operator vocabulary ($not$, $and$, $or$, $diamond.stroked$) for models trained on the surface language.
 `pattern_key` mirrors the structural features the proof-search learning layer uses (@sec:proof-automation), and `metrics` records difficulty measures (complexity, modal depth, temporal depth) that support curriculum ordering and stratified splits downstream.
 
-Two `lake exe` executables compile from this pipeline:#footnote[`docs/training/PIPELINE.md:428-437`, quoting the `lakefile.toml` executable declarations.]
+Two `lake exe` executables compile from this pipeline:#footnote[`training/PIPELINE.md:389-403`, "Executable Targets", quoting the `lakefile.toml` executable declarations.]
 
 #items[
   #item[`dataset_generator` (root `BimodalTools.DatasetGeneratorMain`) -- the main JSONL export executable.]
@@ -67,7 +67,8 @@ Two `lake exe` executables compile from this pipeline:#footnote[`docs/training/P
 
 == BimodalHarness Integration: Artifact-Only
 
-"The integration between the two repositories is *artifact-only*: BimodalHarness never calls Lean at runtime. Instead, it reads JSONL files exported by `lake exe dataset_generator` and synced via a sync command."#footnote[`README.md:183-184` and `docs/training/PIPELINE.md:14`, near-identical wording in both places; sync mechanism detailed at `docs/training/PIPELINE.md:612`.]
+"The integration between the two repositories is *artifact-only*: BimodalHarness never calls Lean at runtime."#footnote[`training/PIPELINE.md:576`, "BimodalHarness Integration"; the sync mechanism is detailed at `training/PIPELINE.md:578-592`, "Sync Mechanism".]
+Instead, it reads JSONL files exported by `lake exe dataset_generator` and synced via a sync command.
 The sync mechanism is a plain file-sync step: generate JSONL in BimodalLogic, a sync command copies `data/` to the BimodalHarness data directory, and BimodalHarness's Python side reads the synced files -- no cross-repository Lean dependency at training or inference time.
 
 == The Tier-1 Feasibility Gate
@@ -90,15 +91,15 @@ A small-config gate (modal depth 2, temporal depth 2, max size 8, 3 atoms) ran 3
     [$lt$ 90% same decision], [$lt$ 90%], [92.6%], [FAIL],
     table.hline(),
   ),
-  caption: [Tier-1 feasibility gate results (`docs/training/PIPELINE.md:687-740`): overall gate decision *FAILED*, 3 of 6 hard criteria not met.],
+  caption: [Tier-1 feasibility gate results: overall gate decision *FAILED*, 3 of 6 hard criteria not met. The gate table is this chapter's own; the tested configuration and the conformance run are recorded at `training/PIPELINE.md:651-676`, "Feasibility Gate Results (Tier 1)".],
 )
 
 This is the "sizable remaining project" the introduction's practitioner thesis points to: the raw enumeration over-produces non-theorems (92.6% invalid, only 3.2% valid against a 15% minimum target), so a naive dataset is imbalanced and low-variance on the policy side.
 
 == The Tier-2 Response: Theorem Mining
 
-The recommended response is *not* to abandon the dual-signal approach but to change how formulas are sourced for labeling: "Generate formulas by composing known axiom instances (apply modus ponens closure to BX axiom schemata). This guarantees new valid formulas at higher complexity."#footnote[`docs/training/PIPELINE.md:744-762`, "Priority 1: Address Provability Ratio (Gate Blocker)."]
-Complementary approaches noted in the same source: biased enumeration (a two-pass valid-template-plus-random-padding strategy) and restricting to smaller formula sizes.
+The recommended response is *not* to abandon the dual-signal approach but to change how formulas are sourced for labeling: generate formulas by composing known axiom instances (applying modus ponens closure to the BX axiom schemata), which guarantees new valid formulas at higher complexity.
+Two complementary approaches are biased enumeration (a two-pass valid-template-plus-random-padding strategy) and restricting to smaller formula sizes.
 The pipeline's second tier therefore comprises two components: the theorem-mining generator, sourcing valid formulas by axiom composition as above, and the wiring of `EnrichedCountermodel.lean` into the main export path, activating the richer corrective signal noted earlier.
 `EnrichedCountermodel.lean` itself is implemented and tested; the generator and the wiring constitute the second tier's engineering scope.
 
@@ -110,4 +111,4 @@ The artifact is regenerated commit-stamped via `scripts/typst-machine-appendix.s
 
 == Operational Pointer
 
-`docs/training/PIPELINE.md` holds the build/run commands and configuration knobs; this chapter is the canonical architecture narrative.
+`training/PIPELINE.md` holds the build/run commands and configuration knobs; this chapter is the canonical architecture narrative.
