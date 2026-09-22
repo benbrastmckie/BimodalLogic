@@ -1,17 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 18,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/654_infinite_frame_rigidity_countable_real_durations/reports/01_infinite-frame-rigidity-countable-real.md",
-      "summary": "Settles Q1-Q4 with two sorry-free compiled probes under probes/: over ℝ every task frame with countably many world states is static (new theorem, needs a Sierpinski theorem Mathlib lacks); the rational clock is the countable non-static witness over ℚ; Q3 settled as a local-clock theorem with the injectivity reading UNVERIFIED; promotion plan for ForMathlib/Topology/Sierpinski.lean plus Correspondence/RigidityReal.lean."
+      "type": "plan",
+      "path": "specs/654_infinite_frame_rigidity_countable_real_durations/plans/01_promote-countable-real-rigidity.md",
+      "summary": "Six-phase promotion plan for the countable-carrier rigidity results over the reals: Sierpinski's partition theorem into ForMathlib/Topology, the frame-level Q2/Q3 results into a new Correspondence/RigidityReal.lean, the rational-clock sharpness witness, documentation wiring, and C14 axiom pinning plus the full gate sweep."
     }
   ],
   "metadata": {
     "session_id": "sess_1790104191_b13256_654",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 7,
+    "dependency_waves": [[1, 4], [2], [3], [5], [6]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When promoting a research probe into this Lean tree, split it by DEPENDENCY LEVEL rather than by topic. A probe that proves a domain result via a general mathematical lemma Mathlib lacks yields two library modules, not one: the Mathlib-shaped lemma goes to FormalSystem/ForMathlib/<Area>/ (which may import nothing from FormalSystem.*, checkable by `grep -rn '^import FormalSystem' FormalSystem/ForMathlib/` returning nothing), and the domain result goes beside — never inside — the existing module it extends. The deciding test for 'beside, not inside' is the target module's own stated import discipline: Correspondence/Rigidity.lean's docstring advertises exactly TaskFrame plus Mathlib.Algebra.Order.Archimedean.Defs and states it 'takes no topology', so a topology-consuming sibling (RigidityReal.lean) is correct and folding it in would falsify a docstring the tree treats as a contract. Siting a witness follows import weight, not thematic fit: a cardinality-sharpness witness needing Mathlib.Analysis.Real.Cardinality belongs with the real-analysis module even when it shares a role with witnesses in a lighter sharpness module. Promotion also carries a fixed wiring set: sibling aggregator import plus its docstring bullet, directory README (generated inventory blocks are regenerated with `check-module-invariants.sh --emit-inventory`, hand-maintained tables are edited by hand — check which before editing), a docs/theorem-index.md row, PAIRED entries appended in the same order to both the C14_BASELINE and C14LEAN heredocs in scripts/check-module-invariants.sh, and `lake exe mk_all --lib FormalSystem` regeneration (never a hand-edit of FormalSystem.lean, which C33 compares byte-for-byte).",
+      "category": "PATTERN",
+      "source_artifact": "specs/654_infinite_frame_rigidity_countable_real_durations/plans/01_promote-countable-real-rigidity.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["probe-promotion", "ForMathlib", "import-discipline", "module-wiring", "C14-baseline", "mk_all"]
+    }
+  ],
+  "next_steps": "Run /implement 654 to execute the plan",
+  "dispatch_seq": 20
 }
