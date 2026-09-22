@@ -116,6 +116,8 @@ class — see `deterministic_not_plusDefinable` above.
 | `app:deterministic` | The same over the deterministic ℤ-time frames | `FormalSystem.Metalogic.Deterministic.detCompletenessZTime` | `FormalSystem/Metalogic/Deterministic/Completeness.lean` | ZTime | pcq |
 | `app:deterministic` | The same over the deterministic dense Dedekind-complete frames | `FormalSystem.Metalogic.Deterministic.detCompletenessRTime` | `FormalSystem/Metalogic/Deterministic/Completeness.lean` | RTime | pcq |
 | `app:deterministic` | The logic of the deterministic frames and the logic of the *Determined*-valid frames coincide, at every class | `FormalSystem.Metalogic.Deterministic.logicDeterministicEqDeterminedValid` | `FormalSystem/Metalogic/Deterministic/Completeness.lean` | — | pcq |
+| `app:deterministic` | The deterministic task frames determine the same L-logic as all task frames, at every class: `ValidIn fc φ ↔ ValidDetIn fc φ`, proved semantically through the shift-set representation | `FormalSystem.Metalogic.Deterministic.validIn_iff_validDetIn` | `FormalSystem/Metalogic/Deterministic/SameLogic.lean` | — | pcq pinned:C14 |
+| `app:deterministic` | The same at `.Base` in the manuscript's unbundled shape: `Valid φ` iff `φ` is true at every point of every model over every deterministic frame | `FormalSystem.Metalogic.Deterministic.valid_iff_valid_deterministic` | `FormalSystem/Metalogic/Deterministic/SameLogic.lean` | Base | pcq pinned:C14 |
 
 ### Non-redundancy of the TM⁺ axiom set
 
@@ -161,6 +163,8 @@ class — see `deterministic_not_plusDefinable` above.
 | — | The two state-locality fragments agree along `ofPlus`, as a biconditional: the L⁺ fragment is exactly the `ofPlus`-preimage of the L⋆ one | `FormalSystem.Semantics.stateLocal_ofPlus_iff` | `FormalSystem/Semantics/StateLocalTransfer.lean` | — | `[]` |
 | — | `sent:det` is valid over the forward-deterministic `F^N` at **every** state-local instance, not only at sentence letters | `FormalSystem.Metalogic.Independence.fn_sentDet_stateLocal` | `FormalSystem/Metalogic/Independence/ForwardDeterministicFrame.lean` | — | pcq |
 | — | The two-sided bound: valid at every state-local instance, refuted at `P p`, which lies outside the fragment | `FormalSystem.Metalogic.Independence.fn_sentDet_bounds` | `FormalSystem/Metalogic/Independence/ForwardDeterministicFrame.lean` | — | pcq |
+| — | Rigidity: over a dense Archimedean duration group, a task frame is static (`w ⇒ₓ u ↔ w = u`) iff it has a uniform dwell time (one `x₀ > 0` with `(w)_{x₀} = {w}` for every `w`) | `FormalSystem.Semantics.FrameOver.static_iff_uniformDwell` | `FormalSystem/Semantics/Correspondence/Rigidity.lean` | — | pcq pinned:C14 |
+| — | Every task frame with finitely many world states over a dense Archimedean duration group is static; both hypotheses are sharp (`RigiditySharpness.lean`) | `FormalSystem.Semantics.FrameOver.static_of_finite` | `FormalSystem/Semantics/Correspondence/Rigidity.lean` | — | pcq pinned:C14 |
 
 ### Conservativity — TM⁻ over L⁻, TM over TM⁻, TM⁺ over TM
 

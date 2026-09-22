@@ -42,3 +42,8 @@ FormalSystem.StarLanguage.StarDerivationTree
 # ADR-010 and by PUBLICATION_REFACTOR.md's Phase 2 record of the rename. Naming the old
 # prefix is the point; it resolves to nothing by construction after the move.
 FormalSystem.Boneyard
+
+# `structure FrameOver` and `namespace FrameOver` in namespace FormalSystem.Semantics
+# -- Semantics/TaskFrame.lean; the theorem-index rows for `FrameOver.static_iff_uniformDwell`
+# and `FrameOver.static_of_finite` (Semantics/Correspondence/Rigidity.lean) cite it fully qualified
+FormalSystem.Semantics.FrameOver

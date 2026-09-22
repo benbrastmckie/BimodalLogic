@@ -56,7 +56,7 @@ live file and subdirectory here, and no row for anything else.
 | Ultraproduct.lean | Aggregator for `Ultraproduct/` |
 | Ultraproduct/ | The dependent ultraproduct of shift sets and Łoś's theorem: `Carrier`, `IndexFilter`, `ShiftSetProduct`, `Los` (4 files) |
 | Correspondence.lean | Aggregator for `Correspondence/` |
-| Correspondence/ | The frame-class Galois layer: `Galois`, `Indicator`, `DurationFrames`, `FwdRec`, `FwdRecPeriodicity`, `FwdRecBridge` (6 files) |
+| Correspondence/ | The frame-class Galois layer: `Galois`, `Indicator`, `DurationFrames`, `FwdRec`, `FwdRecPeriodicity`, `FwdRecBridge`, and the rigidity theorem with its sharpness witnesses, `Rigidity`, `RigiditySharpness` (8 files) |
 
 ## Key Definitions
 

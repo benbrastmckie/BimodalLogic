@@ -93,7 +93,7 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `ConvexConsequence.lean` | 44 | Aggregator for the metatheory of the convex-index consequence relations C3 and C4; holds no declarations |
 | `Core.lean` | 40 | `Core/` |
 | `Decidability.lean` | 167 | `Decidability/` |
-| `Deterministic.lean` | 27 | <!-- TODO: add description --> |
+| `Deterministic.lean` | 30 | <!-- TODO: add description --> |
 | `Expressiveness.lean` | 77 | `Expressiveness/` |
 | `Independence.lean` | 115 | `Independence/` |
 | `SoundnessLemmas.lean` | 35 | `SoundnessLemmas/` |
@@ -153,7 +153,7 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`ConvexConsequence/`](ConvexConsequence/README.md) | 6 | 1,405 | The metatheory of the convex-index consequence relations C3 and C4 of `Semantics/ConvexTruth.lean`: the separations from C1 and from each other, and the axiom-survival table as one theorem per row |
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
 | [`Decidability/`](Decidability/README.md) | 79 | 51,952 | Tableau decision procedure and countermodel extraction |
-| [`Deterministic/`](Deterministic/README.md) | 7 | 1,614 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
+| [`Deterministic/`](Deterministic/README.md) | 8 | 1,747 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Expressiveness/`](Expressiveness/README.md) | 143 | 104,211 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
 | [`Independence/`](Independence/README.md) | 22 | 5,973 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,434 | Per-axiom validity lemmas feeding `Soundness.lean` |
@@ -271,6 +271,7 @@ what is landed and what is open, and the split is load-bearing enough to record 
 | conservativity over TM, both directions, all four classes | **landed** — `Conservativity/Plus/Forward.lean` |
 | completeness of TM⁺ + *Determined* over the **deterministic** frames, all four classes | **landed** — `Deterministic/Completeness.lean` |
 | the logic of the deterministic frames coincides with the logic of the *Determined*-valid frames | **landed** — `Deterministic/Completeness.lean` |
+| the logic of the deterministic frames coincides with the logic of all task frames (for L, at every class) | **landed** — `Deterministic/SameLogic.lean` |
 | `⊡` is not definable in L | **landed** — `Independence/StabUndefinable.lean` |
 | the two pasting schemata are not derivable from the naive `⊡`-set | **landed** — `Independence/PastingIndependence.lean` |
 | **completeness of the current TM⁺ axiom set at `.Base`** | **FALSE** — `Independence/PlusIncompleteness.lean`, `plus_incomplete_base` |

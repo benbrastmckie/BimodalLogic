@@ -1858,6 +1858,10 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.QuantLanguage.lifted_invariance' depends on axioms: [propext, Quot.sound]
 'FormalSystem.QuantLanguage.qRec_defines' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.QuantLanguage.standard_not_invariant' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Deterministic.validIn_iff_validDetIn' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Deterministic.valid_iff_valid_deterministic' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.FrameOver.static_iff_uniformDwell' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.FrameOver.static_of_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -1988,6 +1992,10 @@ import FormalSystem
 #print axioms FormalSystem.QuantLanguage.lifted_invariance
 #print axioms FormalSystem.QuantLanguage.qRec_defines
 #print axioms FormalSystem.QuantLanguage.standard_not_invariant
+#print axioms FormalSystem.Metalogic.Deterministic.validIn_iff_validDetIn
+#print axioms FormalSystem.Metalogic.Deterministic.valid_iff_valid_deterministic
+#print axioms FormalSystem.Semantics.FrameOver.static_iff_uniformDwell
+#print axioms FormalSystem.Semantics.FrameOver.static_of_finite
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \
