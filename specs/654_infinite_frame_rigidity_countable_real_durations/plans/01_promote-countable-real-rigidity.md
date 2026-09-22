@@ -436,36 +436,36 @@ the only file changed.
 
 ---
 
-### Phase 5: Documentation wiring [NOT STARTED]
+### Phase 5: Documentation wiring [COMPLETED]
 
 **Goal**: every documentation surface that indexes these results carries them, and
 `Rigidity.lean` points at its new topology-consuming neighbour.
 
 **Tasks**:
-- [ ] Add a cross-reference paragraph to `Rigidity.lean`'s module docstring, in its existing
+- [x] Add a cross-reference paragraph to `Rigidity.lean`'s module docstring, in its existing
       `## Scope note: time-indexed frames` section or in a new sibling scope note: over a
       Dedekind-complete duration order a **countable** carrier already forces static, with no
       density and no Archimedean hypothesis
       (`Semantics/Correspondence/RigidityReal.lean`, `FrameOver.static_of_countable`), and that
       module is kept separate precisely because it consumes topology, which this one's `##
       Import discipline` section promises not to. Do not otherwise touch `Rigidity.lean`.
-- [ ] Add two rows to the hand-written Modules table in
+- [x] Add two rows to the hand-written Modules table in
       `FormalSystem/Semantics/Correspondence/README.md` — one for `RigidityReal.lean`, and an
       updated line count and description for `RigiditySharpness.lean`. This table is **not**
       wrapped in a `BEGIN GENERATED` block; it is hand-maintained, unlike
       `ForMathlib/README.md`'s.
-- [ ] Add a Key Results bullet to the same README for `FrameOver.static_of_countable`, naming
+- [x] Add a Key Results bullet to the same README for `FrameOver.static_of_countable`, naming
       the axiom division of labour in one line and pointing at `RigidityReal.lean`.
-- [ ] Extend the `## Dependencies` section of that README if the new module introduces an import
+- [x] Extend the `## Dependencies` section of that README if the new module introduces an import
       edge it does not already record (it introduces `FormalSystem.ForMathlib.Topology` and
       `FormalSystem.Semantics.Extension` into the Correspondence subtree).
-- [ ] Add a row to `docs/theorem-index.md` beside the two existing Rigidity rows: paper label
+- [x] Add a row to `docs/theorem-index.md` beside the two existing Rigidity rows: paper label
       `—`, statement "Over `ℝ` every task frame with countably many world states is static — no
       finiteness, density or Archimedean hypothesis", Lean name
       `FormalSystem.Semantics.FrameOver.static_of_countable`, file
       `FormalSystem/Semantics/Correspondence/RigidityReal.lean`, frame class `—`, axioms
       `pcq pinned:C14`. Path only, no line numbers.
-- [ ] Re-run `bash scripts/check-module-invariants.sh --emit-inventory` to refresh any generated
+- [x] Re-run `bash scripts/check-module-invariants.sh --emit-inventory` to refresh any generated
       block whose line counts moved.
 
 **Timing**: 0.75 hours

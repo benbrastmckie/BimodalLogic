@@ -66,11 +66,28 @@ frames, and `ℚ` is exactly where the two boundaries disagree: it is Archimedea
 below applies to task frames over it, and it is not Dedekind-complete, so the time-indexed
 theorem does not.
 
+## Scope note: countable carriers over a Dedekind-complete order
+
+The finiteness hypothesis below is not the boundary either. Over a Dedekind-complete duration
+order — `ℝ` — a **countable** carrier already forces a static frame, with no finiteness, no
+density and no Archimedean hypothesis at all: that is
+`Semantics/Correspondence/RigidityReal.lean`'s `FrameOver.static_of_countable`. What replaces
+density and the Archimedean property there is Dedekind completeness, entering through Baire's
+theorem and Sierpiński's theorem on countable closed partitions of the line
+(`ForMathlib/Topology/Sierpinski.lean`); the chop below is not run at all.
+
+That module is kept separate from this one precisely because it consumes topology, which the
+`## Import discipline` section here promises this module does not. `ℚ` is where the two
+statements come apart: it is dense and Archimedean, so the theorem below applies to its
+finite-carrier frames, and it is not Dedekind-complete, so countability does not suffice over it
+— `Rigidity.ratClock_not_static` in `RigiditySharpness.lean` is the witness.
+
 ## Sharpness
 
 Both hypotheses of `FrameOver.static_iff_uniformDwell` are needed; the compiled witnesses live in
 `Semantics/Correspondence/RigiditySharpness.lean` (density cannot be dropped: `ℤ`; the
-Archimedean property cannot be dropped: `ℚ ×ₗ ℚ`).
+Archimedean property cannot be dropped: `ℚ ×ₗ ℚ`). That module also records that finiteness
+cannot be weakened to countability over a dense Archimedean order (`ratClock_not_static`).
 
 ## Import discipline
 

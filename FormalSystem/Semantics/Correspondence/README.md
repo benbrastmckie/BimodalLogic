@@ -35,8 +35,9 @@ Two distinctions are load-bearing throughout and are documented at their stateme
 | `FwdRec.lean` | 119 | `TaskFrame.FwdRec` — forward recurrence at covering pairs, over bundled frames — the `validOn_iff_total` bridge, and the *atomic* density correspondence at an arbitrary duration group. |
 | `FwdRecPeriodicity.lean` | 485 | The `Walk`/`MinCyc` apparatus: `AllRec` forces every bi-infinite walk in a digraph to be periodic, by way of determinism along walks. Plus truth periodicity from a *per-history* period, and the fact that periodic histories validate the whole density schema. |
 | `FwdRecBridge.lean` | 155 | The frame/digraph dictionary at `ℤ` — walks are total histories and conversely — under which `FwdRec` is exactly `AllRec`. Gives full-schema exactness at `ℤ` and `Mod densitySchema` on the `ℤ` fibre. |
-| `Rigidity.lean` | 258 | `TaskFrame.Static` and `TaskFrame.UniformDwell`, the Archimedean chop `eq_of_rel_of_step` stated at the hypothesis it uses, and the rigidity theorem: over a dense Archimedean duration group a frame is static iff it has a uniform dwell time, so every finite-carrier frame over such an order is static. |
-| `RigiditySharpness.lean` | 181 | Both rigidity hypotheses are sharp: the permissive frame over any successor order (so over `ℤ`, Archimedean but not dense) is not static, and a two-state frame over `ℚ ×ₗ ℚ` (dense but provably not Archimedean, `lexRat_not_archimedean`) is not static. |
+| `Rigidity.lean` | 285 | `TaskFrame.Static` and `TaskFrame.UniformDwell`, the Archimedean chop `eq_of_rel_of_step` stated at the hypothesis it uses, and the rigidity theorem: over a dense Archimedean duration group a frame is static iff it has a uniform dwell time, so every finite-carrier frame over such an order is static. |
+| `RigiditySharpness.lean` | 216 | Every rigidity hypothesis is sharp: the permissive frame over any successor order (so over `ℤ`, Archimedean but not dense) is not static; a two-state frame over `ℚ ×ₗ ℚ` (dense but provably not Archimedean, `lexRat_not_archimedean`) is not static; and the rational clock (`ratClock_not_static`) is countable, dense and Archimedean but not static, so finiteness cannot be weakened to countability over a merely dense Archimedean order. |
+| `RigidityReal.lean` | 351 | The `ℝ` boundary: `FrameOver.static_of_countable` — over `ℝ`, every task frame with **countably** many world states is static, with no finiteness, density or Archimedean hypothesis. Carries the sharp `constant_of_countable_range`, the *Limit*-only `levels_closed`, the two-point application `exists_history_of_taskRel` of `thm:extension`, the local-clock results `range_uncountable_of_nonconstant` / `uncountable_image_of_not_localConst` / `exists_local_clock`, and the cardinality-sharpness witnesses `realClock_not_static` and the `paddedClock` family. |
 
 ## Key Results
 
@@ -54,9 +55,19 @@ Two distinctions are load-bearing throughout and are documented at their stateme
   a dense Archimedean duration group, static is the same as having a uniform dwell time, and a
   finite carrier always has one; the collapse direction uses only interpolation and the dwell
   bound, the biconditional additionally uses *Seriality* and the reflection law.
-- `Rigidity.permissiveFrame_not_static`, `Rigidity.lexRatFrame_not_static` and
-  `Rigidity.lexRat_not_archimedean` (`RigiditySharpness.lean`) — the two hypotheses of the
-  rigidity theorem are each necessary.
+- `Rigidity.permissiveFrame_not_static`, `Rigidity.lexRatFrame_not_static`,
+  `Rigidity.lexRat_not_archimedean` and `Rigidity.ratClock_not_static`
+  (`RigiditySharpness.lean`) — the hypotheses of the rigidity theorem are each necessary:
+  density, the Archimedean property, and (over a merely dense Archimedean order) finiteness
+  rather than countability.
+- `FrameOver.static_of_countable` (`RigidityReal.lean`) — over `ℝ`, a **countable** carrier
+  already forces a static frame. *Saturation* supplies a total history through `thm:extension`
+  (the sole source of `Classical.choice` here), *Limit* makes its level sets closed, Sierpiński's
+  theorem (`ForMathlib/Topology/Sierpinski.lean`) collapses it, and *Seriality* plus the
+  reflection law give the positive half of `Static`; density and the Archimedean property are not
+  used at all, Dedekind completeness replacing them. Sharp in cardinality
+  (`Rigidity.realClock_not_static`, `Rigidity.paddedClock_not_static`) and in the duration order
+  (`Rigidity.ratClock_not_static`).
 - **See also**, for the *non*-closure complement of the two corollaries above:
   `sat_dedekind_ssubset_mod_axiomSet` (`Metalogic/Independence/RationalWitness.lean`) and
   `sat_discrete_ssubset_mod_axiomSet` (`Metalogic/Independence/LexIntWitness.lean`). Together with
@@ -71,8 +82,11 @@ Two distinctions are load-bearing throughout and are documented at their stateme
   `Mathlib.Order.Concept` (`Galois.lean` only — a Mathlib leaf, opening no new
   `FormalSystem`-internal seam), and `Mathlib.Algebra.Order.Archimedean.Defs` (`Rigidity.lean`
   only, for `Archimedean.arch`), plus `FormalSystem.Semantics.Frames.Standard`,
-  `FormalSystem.Semantics.LexCarrier` and `Mathlib.Data.Int.SuccPred` (`RigiditySharpness.lean`
-  only)
+  `FormalSystem.Semantics.LexCarrier`, `Mathlib.Data.Int.SuccPred` and
+  `Mathlib.Data.Rat.Denumerable` (`RigiditySharpness.lean` only), and
+  `FormalSystem.Semantics.Extension`, `FormalSystem.ForMathlib.Topology.Sierpinski` and
+  `Mathlib.Analysis.Real.Cardinality` (`RigidityReal.lean` only — the two edges this subtree did
+  not previously carry are the extension theorem and `ForMathlib/Topology/`)
 - **Imported by**: `FormalSystem.Semantics` (the aggregator), and
   `FormalSystem.Metalogic.Independence.{RationalWitness, LexIntWitness}`, which supply the two
   frames showing `Sat .Dedekind` and `Sat .Discrete` are *not* closed
@@ -85,8 +99,8 @@ Two distinctions are load-bearing throughout and are documented at their stateme
 
 ---
 
-**Last verified**: 2026-09-21
+**Last verified**: 2026-09-22
 
 ---
 
-*Last verified: 2026-09-21*
+*Last verified: 2026-09-22*
