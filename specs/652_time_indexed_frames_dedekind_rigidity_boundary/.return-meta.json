@@ -1,22 +1,29 @@
 {
-  "status": "planned",
-  "dispatch_seq": 15,
+  "status": "implemented",
+  "dispatch_seq": 16,
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/652_time_indexed_frames_dedekind_rigidity_boundary/plans/02_time-indexed-dedekind-rigidity.md",
-      "summary": "Six-phase plan for the time-indexed frame structure, the Dedekind positive theorem, the Q sqrt-2 sharpness witness, the optional Z witness, gate wiring and the Rigidity.lean scope-note replacement; carries a four-identifier Lean Challenge Statements block."
+      "type": "summary",
+      "path": "specs/652_time_indexed_frames_dedekind_rigidity_boundary/summaries/02_time-indexed-dedekind-rigidity-summary.md",
+      "summary": "Time-indexed frame structure, the Dedekind positive theorem constantHistories_of_lub, the Q sqrt-2 and Z sharpness witnesses, the duration-vs-time comparison, the Rigidity.lean scope-note replacement and all gate wiring."
     }
   ],
-  "phase_count": 6,
-  "estimated_hours": 5,
-  "dependency_waves": [[1], [2], [3, 4], [5], [6]],
-  "memory_candidates": [],
-  "next_steps": "Run /implement 652 to execute the plan",
+  "completion_data": {
+    "completion_summary": "Turned the Rigidity.lean scope note into theorems: FormalSystem/Semantics/TimeIndexed.lean defines the time-indexed frame structure at the frame-correspondence program's field names and proves that over a densely ordered, Dedekind-complete time order a finite-stated frame satisfying Limit has only constant histories; FormalSystem/Semantics/TimeIndexedSharpness.lean witnesses both hypotheses with a two-state Q frame switching across sqrt(2) and a Z frame switching across 0, plus the duration-vs-time comparison table. lake build --wfail is green with zero warnings, check-module-invariants.sh reports ALL CHECKS PASSED, and lean_verify reports standard axioms only on both C14-pinned theorems.",
+    "roadmap_items": []
+  },
   "metadata": {
-    "session_id": "sess_1790104191_b13256_652",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1790104191_b13256",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed"
   }
 }
