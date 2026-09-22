@@ -1,0 +1,19 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 3,
+  "summary": "Research for task 655: 𝒩_F characterizes Limit (Limit iff 𝒩_F T1, no other hypothesis, machine-checked); 𝒯_F is finer than 𝒩_F so app:topology-t1 is a corollary without reflection; four-state funnel, ℤ collapse, ℝ named frames and a T1-non-Hausdorff two-origin frame compiled sorry-free; recommendation (a) with draft statements; 'regular' collision check and Lean identifier scheme.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "/home/benjamin/Projects/BimodalLogic/specs/655_topology_characterizing_limit_nbhd_vs_subbasis/reports/01_topology-characterizing-limit.md",
+      "summary": "Numbered report answering Q1-Q6 with a results table and refactor specification."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "plan_markers_verified": null,
+  "continuation_path": null,
+  "next_action_hint": "Plan phase: lift specs/655_.../probes/*.lean into FormalSystem/Semantics/StateTopology.lean per report section 5 (refactor task 656 owns the FrameOver.IsRegular split)."
+}

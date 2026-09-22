@@ -1,0 +1,56 @@
+{
+  "status": "researched",
+  "started_at": "2026-09-22T00:00:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/reports/01_topology-characterizing-limit.md",
+      "summary": "Verdict-first report: Limit iff 𝒩_F is T1 with no other hypothesis (machine-checked), 𝒯_F is finer than 𝒩_F (correcting report 03), four-state funnel and two-origin witnesses compiled, recommendation (a) with draft statements, regular-naming collision check and Lean identifier scheme."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790093706_3bec6d_655",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "research",
+      "lean-research-agent"
+    ],
+    "duration_seconds": 1966,
+    "findings_count": 7
+  },
+  "dispatch_seq": 3,
+  "next_steps": "Run /plan 655 (or let task 656 consume section 5's refactor specification: StateTopology module, TopologicalSpace instance on the general frame, named Limit predicate, FrameOver.IsRegular class).",
+  "proposed_file_scope": [],
+  "memory_candidates": [
+    {
+      "content": "For a bare task relation, the cone-neighbourhood topology N_F (O open iff each w in O has a cone (w)_x inside O) is T1 iff the subset-half of Limit, with no other hypothesis; given nullity R w 0 w the cone-subbasis topology T_F is always finer (an N_F-open set is a union of cones), so T1 for T_F follows by t1Space_antitone without the reflection convention. Probe idiom: define the topology with a `where` block discharging isOpen_inter via a min radius and cone_mono; compare topologies with TopologicalSpace.le_def / le_generateFrom_iff_subset_isOpen; prove equality with TopologicalSpace.ext + funext + propext.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/probes/NbhdTopology.lean",
+      "confidence": 0.85,
+      "suggested_keywords": [
+        "topology",
+        "T1Space",
+        "Limit",
+        "cone",
+        "nbhdTopology",
+        "t1Space_antitone",
+        "generateFrom"
+      ]
+    },
+    {
+      "content": "Finite counterexample frames over Fin n: define R by sign cases (x = 0, 0 < x, x < 0), prove R_zero/R_pos/R_neg simp characterizations, then Compositionality reduces after `simp only [R_pos ...]` and `revert w v` to `decide` (Fintype.decidableExistsFintype handles the exists). Membership in an arbitrary Set (Fin n) is not decidable: chase such goals with explicit step lemmas and a `match u with` over the literals instead of decide.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/probes/FourState.lean",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "Fin",
+        "decide",
+        "counterexample",
+        "task frame",
+        "Compositional"
+      ]
+    }
+  ]
+}
