@@ -6,7 +6,9 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.Extension
 import FormalSystem.Semantics.Correspondence.Rigidity
+import FormalSystem.Semantics.Frames.Standard
 import FormalSystem.ForMathlib.Topology.Sierpinski
+import Mathlib.Analysis.Real.Cardinality
 
 /-!
 # Over `ℝ`, a countable carrier already forces a static frame
@@ -181,5 +183,169 @@ theorem static_of_countable [Countable F.WorldState] : Static F.TaskRel := by
     subst hh
     exact (F.reflection w x w).mpr hv
 
+/-! ## Q3: what a non-static frame over `ℝ` must contain -/
+
+/-- **A non-constant history over `ℝ` has uncountable range.** The contrapositive of
+`constant_of_countable_range`, recorded separately because it is the form the cardinality
+census uses. -/
+theorem range_uncountable_of_nonconstant (τ : WorldHistory F.toTaskFrame) {s t : ℝ}
+    (h : τ.state s ≠ τ.state t) : ¬ (Set.range τ.state).Countable :=
+  fun hc => h (constant_of_countable_range F τ hc s t)
+
+/--
+**The local-clock theorem.** At a time where a history is not locally constant, *every*
+time-window already carries uncountably many world states.
+
+The window is reached without leaving `ℝ`: compose the history with the continuous retraction
+of `ℝ` onto `[t-r, t+r]`. Its level sets are still closed and its range is the window's image,
+so if that image were countable the Sierpiński collapse would make the history constant on the
+window — that is, locally constant at `t`.
+-/
+theorem uncountable_image_of_not_localConst (τ : WorldHistory F.toTaskFrame) {t : ℝ}
+    (ht : t ∉ Sierpinski.locallyConstantLocus τ.state) {r : ℝ} (hr : 0 < r) :
+    ¬ (τ.state '' Set.Icc (t - r) (t + r)).Countable := by
+  intro hcount
+  set p : ℝ → ℝ := fun s => max (t - r) (min (t + r) s) with hp
+  have hpcont : Continuous p := continuous_const.max (continuous_const.min continuous_id)
+  have hpmem : ∀ s, p s ∈ Set.Icc (t - r) (t + r) :=
+    fun s => ⟨le_max_left _ _, max_le (by linarith) (min_le_left _ _)⟩
+  have hrange : (Set.range (τ.state ∘ p)).Countable := by
+    refine Set.Countable.mono ?_ hcount
+    rintro _ ⟨s, rfl⟩
+    exact ⟨p s, hpmem s, rfl⟩
+  have hclosed : ∀ a, IsClosed (Sierpinski.levelSet (τ.state ∘ p) a) :=
+    fun a => (levels_closed F τ a).preimage hpcont
+  have hconst := Sierpinski.const_of_countable_range (τ.state ∘ p) hrange hclosed
+  refine ht (Sierpinski.mem_locallyConstantLocus_iff.mpr (mem_interior.mpr
+    ⟨Set.Ioo (t - r) (t + r), ?_, isOpen_Ioo, ⟨by linarith, by linarith⟩⟩))
+  intro y hy
+  have h1 : p y = y := by
+    rw [hp]
+    simp only
+    rw [min_eq_right (le_of_lt hy.2), max_eq_right (le_of_lt hy.1)]
+  have h2 : p t = t := by
+    rw [hp]
+    simp only
+    rw [min_eq_right (by linarith), max_eq_right (by linarith)]
+  have hyt := hconst y t
+  simp only [Function.comp_apply, h1, h2] at hyt
+  exact hyt
+
+/--
+**A non-constant history over `ℝ` reads a clock somewhere.** There is a time `t` such that every
+window `[t-r, t+r]`, however short, carries uncountably many world states.
+
+This is the exact sense — and the *only* sense established here — in which a non-static frame
+over `ℝ` must "contain a clock". The stronger reading, that some history is **injective on an
+interval**, is **UNVERIFIED**: the obstruction is whether a history that is injective on no
+interval can still satisfy the composition half of `def:frame#Compositionality`, and nothing in
+this module settles it. See this task's research report for the full statement of the
+obstruction; `static_of_countable` does not depend on it.
+-/
+theorem exists_local_clock (τ : WorldHistory F.toTaskFrame) {s₀ t₀ : ℝ}
+    (hne : τ.state s₀ ≠ τ.state t₀) :
+    ∃ t : ℝ, ∀ r : ℝ, 0 < r → ¬ (τ.state '' Set.Icc (t - r) (t + r)).Countable := by
+  have hB : ((Sierpinski.locallyConstantLocus τ.state)ᶜ : Set ℝ).Nonempty := by
+    rcases Set.eq_empty_or_nonempty ((Sierpinski.locallyConstantLocus τ.state)ᶜ) with he | hne'
+    · exact absurd (Sierpinski.const_of_isPreconnected (h := τ.state) isPreconnected_univ
+        (by rw [Set.compl_empty_iff.mp he]) (Set.mem_univ t₀) s₀ (Set.mem_univ s₀)) hne
+    · exact hne'
+  obtain ⟨t, ht⟩ := hB
+  exact ⟨t, fun r hr => uncountable_image_of_not_localConst F τ ht hr⟩
+
 end FrameOver
 end FormalSystem.Semantics
+
+/-!
+## The cardinality-sharpness witnesses
+
+`static_of_countable` is sharp in cardinality, and the two witnesses below say so. Both are
+clocks: their state space carries a clock reading, which is exactly the escape the theorem
+leaves open, and which the manuscript's standing caveat rules out of the intended reading of a
+world state.
+
+`paddedClock` fills the whole *uncountable* row of the cardinality census at once — at `ℤ`, `ℚ`,
+`ℚ ×ₗ ℚ` and `ℝ` alike — since it is defined over an arbitrary `(D : TemporalOrder)`. Its first
+coordinate is a clock and its second is inert `ℝ`-ballast; the presenting relation is functional,
+so *Saturation* is `TaskFrame.saturation_of_fib_subsingleton` and *Limit* is
+`TaskFrame.limit_of_shift` at the first projection.
+
+These live here rather than in `RigiditySharpness.lean` because they are the sharpness of *this*
+module's theorem and need `Mathlib.Analysis.Real.Cardinality`, which that module does not
+otherwise import.
+-/
+
+namespace FormalSystem.Semantics.Rigidity
+
+open FormalSystem.Semantics TaskFrame
+
+/-- **The real clock is not static.** The translation frame on `ℝ` — states `ℝ`, with
+`w ⇒_x u ↔ u = w + x` — satisfies all four frame axioms and moves `0` to `1` in duration `1`.
+Its carrier is uncountable, so it does not contradict `FrameOver.static_of_countable`; it is
+what shows that theorem's countability hypothesis cannot simply be dropped. -/
+theorem realClock_not_static : ¬ Static (translationFrame realOrder).TaskRel := by
+  intro h
+  have h1 : (0 : ℝ) = 1 := (h (0 : ℝ) (1 : ℝ) (1 : ℝ)).mp (by simp [translationFrame_taskRel])
+  exact absurd h1 (by norm_num)
+
+/-- The presenting relation of `paddedClock`: the first coordinate translates by the duration
+and the second is inert. -/
+def padRel (D : TemporalOrder) : (↑D × ℝ) → ↑D → (↑D × ℝ) → Prop :=
+  fun w d u => u.1 = w.1 + d ∧ u.2 = w.2
+
+/-- **The padded clock over an arbitrary duration order**: the translation flow on `↑D` paired
+with inert `ℝ`-ballast. The ballast is there only to make the carrier uncountable whatever `D`
+is, so that one frame fills the uncountable row of the census at every duration order at once. -/
+noncomputable def paddedClock (D : TemporalOrder) : FrameOver D :=
+  haveI : Nonempty (↑D × ℝ) := ⟨(0, 0)⟩
+  FrameOver.ofReflective (↑D × ℝ) (padRel D)
+    (by
+      intro w d u
+      constructor
+      · rintro ⟨h1, h2⟩; exact ⟨by rw [h1]; simp, h2.symm⟩
+      · rintro ⟨h1, h2⟩; exact ⟨by rw [h1]; simp, h2.symm⟩)
+    (TaskFrame.comp_of
+      (by
+        rintro w v x y _ _ ⟨h1, h2⟩
+        exact ⟨(w.1 + x, w.2), ⟨rfl, rfl⟩, h1.trans (add_assoc _ _ _).symm, h2⟩)
+      (by
+        rintro w u v x y _ _ ⟨h1, h2⟩ ⟨h3, h4⟩
+        exact ⟨by rw [h3, h1, add_assoc], by rw [h4, h2]⟩))
+    (by
+      intro w x _
+      exact ⟨⟨(w.1 + x, w.2), rfl, rfl⟩, ⟨(w.1 - x, w.2), by simp, rfl⟩⟩)
+    (TaskFrame.limit_of_shift (D := ↑D) Prod.fst (fun _ _ _ h => h.1)
+      (by rintro w u ⟨h1, h2⟩; rw [add_zero] at h1; exact Prod.ext h1 h2))
+    (TaskFrame.saturation_of_fib_subsingleton (by
+      rintro w x u ⟨h1, h2⟩ u' ⟨h3, h4⟩
+      exact Prod.ext (h1.trans h3.symm) (h2.trans h4.symm)))
+
+/-- The task relation of `paddedClock`, read off `FrameOver.ofReflective_taskRel` rather than by
+unfolding the frame. -/
+@[simp] theorem paddedClock_taskRel {D : TemporalOrder} (w : ↑D × ℝ) (x : ↑D) (u : ↑D × ℝ) :
+    (paddedClock D).TaskRel w x u ↔ (u.1 = w.1 + x ∧ u.2 = w.2) := FrameOver.ofReflective_taskRel
+
+/-- **The padded clock has uncountably many world states**, whatever `D` is: the ballast embeds
+`ℝ` into the carrier. -/
+theorem paddedClock_uncountable (D : TemporalOrder) :
+    ¬ Countable (paddedClock D).WorldState := by
+  intro h
+  haveI : Countable (↑D × ℝ) := h
+  have hc : Countable ℝ := Function.Injective.countable
+    (f := fun r : ℝ => ((0 : ↑D), r)) (fun a b hab => congrArg Prod.snd hab)
+  exact Cardinal.not_countable_real (Set.countable_univ_iff.mpr hc)
+
+/-- **The padded clock is not static**, whatever `D` is: any positive duration moves the clock
+coordinate. Together with `paddedClock_uncountable` this fills the uncountable row of the
+cardinality census at `ℤ`, `ℚ`, `ℚ ×ₗ ℚ` and `ℝ` in one declaration. -/
+theorem paddedClock_not_static (D : TemporalOrder) :
+    ¬ Static (paddedClock D).TaskRel := by
+  intro h
+  obtain ⟨x, hx⟩ := TaskFrame.exists_pos_of_nontrivial (D := ↑D)
+  have h1 : ((0 : ↑D), (0 : ℝ)) = ((0 : ↑D) + x, (0 : ℝ)) :=
+    (h _ x _).mp ((paddedClock_taskRel _ _ _).mpr ⟨rfl, rfl⟩)
+  have h2 := congrArg Prod.fst h1
+  simp only [zero_add] at h2
+  exact absurd h2.symm (ne_of_gt hx)
+
+end FormalSystem.Semantics.Rigidity

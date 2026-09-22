@@ -322,39 +322,39 @@ block before the phase closes, not left undeclared.
 
 ---
 
-### Phase 3: Q3 and the cardinality-sharpness witnesses [NOT STARTED]
+### Phase 3: Q3 and the cardinality-sharpness witnesses [COMPLETED]
 
 **Goal**: `RigidityReal.lean` additionally carries the Q3 local-clock results and the two
 witnesses showing the Q2 boundary is sharp in cardinality.
 
 **Tasks**:
-- [ ] Add `import Mathlib.Analysis.Real.Cardinality` (for `Cardinal.not_countable_real`) and
+- [x] Add `import Mathlib.Analysis.Real.Cardinality` (for `Cardinal.not_countable_real`) and
       `FormalSystem.Semantics.Frames.Standard` (for `translationFrame` /
       `translationFrame_taskRel`) to `RigidityReal.lean`.
-- [ ] Transcribe `Probe.range_uncountable_of_nonconstant`,
+- [x] Transcribe `Probe.range_uncountable_of_nonconstant`,
       `Probe.uncountable_image_of_not_localConst` and `Probe.exists_local_clock` from probe `02`
       into the `FrameOver` namespace, updating `Sierp.U` to
       `Sierpinski.locallyConstantLocus`.
-- [ ] In `exists_local_clock`'s docstring, state plainly what is and is not proved: at a time
+- [x] In `exists_local_clock`'s docstring, state plainly what is and is not proved: at a time
       where the history is not locally constant, *every* window carries uncountably many world
       states; the stronger reading — that some history is **injective on an interval** — is
       **UNVERIFIED**, with the obstruction being whether a history that is injective on no
       interval can satisfy the composition half of `def:frame#Compositionality`. Point at this
       task's report for the full statement of the obstruction.
-- [ ] Transcribe `Probe.realClock_not_static` and the padded-clock block (`Probe.padRel`,
+- [x] Transcribe `Probe.realClock_not_static` and the padded-clock block (`Probe.padRel`,
       `Probe.paddedClock`, `Probe.paddedClock_taskRel`, `Probe.paddedClock_uncountable`,
       `Probe.paddedClock_not_static`) from
       `probes/01_clock-frames.lean` into `namespace FormalSystem.Semantics.Rigidity` inside
       `RigidityReal.lean` — see Decision 1 for why here and not in `RigiditySharpness.lean`.
-- [ ] Use explicit `add_assoc`/`add_comm` rather than `abel` anywhere the goal mentions `↑D` for
+- [x] Use explicit `add_assoc`/`add_comm` rather than `abel` anywhere the goal mentions `↑D` for
       an abstract `(D : TemporalOrder)`; the report's Tactic Survey records `abel` failing there.
-- [ ] Keep `paddedClock_taskRel` `@[simp]`, as the probe has it.
-- [ ] Docstring every added declaration; state in the padded-clock block's header that it fills
+- [x] Keep `paddedClock_taskRel` `@[simp]`, as the probe has it.
+- [x] Docstring every added declaration; state in the padded-clock block's header that it fills
       the whole uncountable row of the report's census table at `ℤ`, `ℚ`, `ℚ ×ₗ ℚ` and `ℝ` at
       once, that its relation is functional so *Saturation* is
       `TaskFrame.saturation_of_fib_subsingleton` and *Limit* is `TaskFrame.limit_of_shift` at
       the first projection.
-- [ ] `lake build --wfail` green.
+- [x] `lake build --wfail` green.
 
 **Timing**: 1.25 hours
 
@@ -363,7 +363,14 @@ witnesses showing the Q2 boundary is sharp in cardinality.
 **Verification Tier**: local
 
 **Scope Hypothesis**: 8 further declarations added to a single existing module, approximately
-180 lines, and **no** change to any signature outside that module. Confirm the second half by
+180 lines, and **no** change to any signature outside that module. *(Confirmed at implementation
+time with one correction: the count is **9**, not 8 — the plan's own `- **Goals**:` list and
+`## Lean Challenge Statements` block 3 both enumerate nine declarations for this phase
+(`range_uncountable_of_nonconstant`, `uncountable_image_of_not_localConst`, `exists_local_clock`,
+`realClock_not_static`, `padRel`, `paddedClock`, `paddedClock_taskRel`, `paddedClock_uncountable`,
+`paddedClock_not_static`), so the "8" was an arithmetic slip in this field, not a divergence in
+the declaration set; nothing in the Challenge block needed reconciling. 166 lines added, and
+`git diff --stat` lists `RigidityReal.lean` as the only `.lean` file changed.)* Confirm the second half by
 `git diff --stat` showing `RigidityReal.lean` as the only `.lean` file touched by this phase; if
 any other module changed, the phase is `interface`, not `local`, and its verification must widen
 accordingly before it closes.
