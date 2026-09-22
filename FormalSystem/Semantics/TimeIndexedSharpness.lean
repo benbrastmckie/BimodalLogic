@@ -79,6 +79,14 @@ point in it.
 `Mathlib.NumberTheory.Real.Irrational` is imported for `irrational_sqrt_two` and is confined to
 this module, so the shared `TimeIndexed.lean` infrastructure stays at `TaskFrame` weight for the
 frame-correspondence program that also consumes it.
+
+That confinement is load-bearing, not merely tidy. The import carries
+`Int.instConditionallyCompleteLinearOrder` with it, and any module that can see that instance may
+elaborate an `ℤ` order construction through it and lose computability --
+`Metalogic/Decidability/Verified/Bridge/Embed.lean`'s `finOrderEmbInt` is the concrete case. So
+`FormalSystem/Semantics.lean` imports `TimeIndexed` but **not** this module: the generated library
+root imports it directly, which keeps it built and gated without putting the instance in scope for
+the rest of the tree. Import this module by name wherever the witnesses are wanted.
 -/
 
 namespace FormalSystem.Semantics

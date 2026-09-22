@@ -32,7 +32,6 @@ import FormalSystem.Semantics.DurationClassification
 import FormalSystem.Semantics.LexCarrier
 import FormalSystem.Semantics.IntTransfer
 import FormalSystem.Semantics.TimeIndexed
-import FormalSystem.Semantics.TimeIndexedSharpness
 import FormalSystem.Semantics.Correspondence
 
 /-!
@@ -190,7 +189,14 @@ against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a 
   non-constant history, so Dedekind completeness cannot be dropped; `zSwitchFrame` over `ℤ` does
   the same for density. The module docstring sets the Archimedean boundary of
   `Correspondence/Rigidity.lean` beside the Dedekind one, `ℚ` being the order at which they
-  disagree
+  disagree.
+  **This file deliberately does not import it.** The witness needs
+  `Mathlib.NumberTheory.Real.Irrational`, which carries `Int.instConditionallyCompleteLinearOrder`
+  with it; routing that through this aggregator puts the instance in scope for everything
+  downstream, and `Metalogic/Decidability/Verified/Bridge/Embed.lean`'s `finOrderEmbInt` then
+  elaborates through it and stops being computable. The generated library root imports the module
+  directly, so it is still built and still gated -- the root is a leaf, so nothing inherits its
+  instance environment. Import it by name where it is wanted
 - `IntTransfer`: carrier normalization for the discrete branch -- a generic transport of
   frames, `TaskModel`, `PartialHistory`, and `TruthAt` along any ordered-group isomorphism
   `e : D ≃+o E` (via the `HEq`-free `Aligned` relation rather than a history `Equiv`), composed

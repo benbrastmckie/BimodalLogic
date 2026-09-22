@@ -1,11 +1,11 @@
 # Implementation Plan: Task #652
 
 - **Task**: 652 - Define time-indexed task frames and prove the Dedekind-completeness rigidity boundary, with a compiled ℚ counterexample
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/652_time_indexed_frames_dedekind_rigidity_boundary/reports/01_time-indexed-dedekind-rigidity.md` (plus its two compiled-green probes under `probes/`)
-- **Artifacts**: plans/02_time-indexed-dedekind-rigidity.md (this file)
+- **Artifacts**: plans/02_time-indexed-dedekind-rigidity.md (this file), summaries/02_time-indexed-dedekind-rigidity-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -327,38 +327,48 @@ README/table cell.
 
 ---
 
-### Phase 5: Gate wiring — aggregator, README, root, theorem index, C14 pins [IN PROGRESS]
+### Phase 5: Gate wiring — aggregator, README, root, theorem index, C14 pins [COMPLETED]
 
 **Goal**: Wire both new modules into every gate the repository enforces, so the full check suite
 can run green.
 
 **Tasks**:
-- [ ] `FormalSystem/Semantics.lean`: add `import FormalSystem.Semantics.TimeIndexed` and
+- [x] `FormalSystem/Semantics.lean`: add `import FormalSystem.Semantics.TimeIndexed` and
       `import FormalSystem.Semantics.TimeIndexedSharpness`, and a `## Submodules` prose bullet for
-      each, matching the existing bullets' register.
-- [ ] `FormalSystem/Semantics/README.md`: add one `| File | Description |` row per module in the
+      each, matching the existing bullets' register. *(deviation: altered — only the `TimeIndexed`
+      import was added. Importing `TimeIndexedSharpness` here routes
+      `Mathlib.NumberTheory.Real.Irrational`, and with it
+      `Int.instConditionallyCompleteLinearOrder`, into every module downstream of this aggregator;
+      `Metalogic/Decidability/Verified/Bridge/Embed.lean`'s `finOrderEmbInt` then elaborates
+      through that instance and fails to compile as a computable definition. This was caught by
+      the full `--wfail` build, not predicted. Both prose bullets are present and the excluded
+      import is documented at the bullet and in the witness module's own `## Import discipline`
+      section. The generated root imports the module directly, so reachability (C6), the INV row
+      and the C14 pin are all unaffected — the root is a leaf and nothing inherits its instance
+      environment.)*
+- [x] `FormalSystem/Semantics/README.md`: add one `| File | Description |` row per module in the
       layering order (not alphabetical). The block is registered
       `<!-- INVENTORY: hand-maintained (dir=FormalSystem/Semantics) -->`, so edit the rows by hand;
       the `INV` check asserts a row for every live file and no row for anything else. Only if the
       check reports the block as generated does `bash scripts/check-module-invariants.sh
       --emit-inventory` apply (the old `readme-inventory.sh` is a deprecated shim).
-- [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem`. **Never hand-edit**
+- [x] Regenerate the library root: `lake exe mk_all --lib FormalSystem`. **Never hand-edit**
       `FormalSystem.lean`.
-- [ ] `docs/theorem-index.md`: add two rows, modelled on the two existing `Rigidity.lean` rows at
+- [x] `docs/theorem-index.md`: add two rows, modelled on the two existing `Rigidity.lean` rows at
       the same location — one for `FormalSystem.Semantics.TimeIndexed.constantHistories_of_lub`,
       one for `FormalSystem.Semantics.TimeIndexed.qSwitchFrame_not_constantHistories`, each with
       `Paper: —` and `Axioms: pcq pinned:C14`.
-- [ ] `scripts/check-module-invariants.sh`: add the two `#print axioms` lines to the `C14LEAN`
+- [x] `scripts/check-module-invariants.sh`: add the two `#print axioms` lines to the `C14LEAN`
       heredoc **and** the two matching `'…' depends on axioms: [propext, Classical.choice,
       Quot.sound]` rows to the `C14_BASELINE` heredoc, both immediately after the existing
       `static_iff_uniformDwell` / `static_of_finite` entries. The two heredocs are compared by
       **exact string equality** and must stay in the same order — edit each heredoc in a single
       edit so no intermediate half-updated state is committed.
-- [ ] Confirm C15's second assertion is satisfied: each newly ledger-listed declaration's own
+- [x] Confirm C15's second assertion is satisfied: each newly ledger-listed declaration's own
       `/-- -/` block carries a `Paper: — (reason)` line (added in Phases 1-2; verify, do not
       re-add).
-- [ ] C24 needs no action: both modules reach `FormalSystem.Init` through `Semantics.TaskFrame`.
-- [ ] Re-read each shared file immediately before editing it and stage only this task's own hunks
+- [x] C24 needs no action: both modules reach `FormalSystem.Init` through `Semantics.TaskFrame`.
+- [x] Re-read each shared file immediately before editing it and stage only this task's own hunks
       with an explicit file list — never `git add -A`, `git add .`, or a directory/glob pathspec.
 
 **Timing**: 1 hour
@@ -375,6 +385,14 @@ five paths (plus the two new modules from Phases 1-3), and the `INV` check's own
 hand-maintained question. If `check-module-invariants.sh` names a sixth gated file, add it and record
 the divergence rather than skipping the gate.
 
+*Scope-hypothesis outcome*: confirmed. `git status --short` showed exactly the five wiring paths
+plus the two new modules and the `specs/**` artifacts; no sixth gated file appeared. The README
+block is hand-maintained as asserted, so the rows were edited by hand and no `--emit-inventory`
+run applied. `lake exe mk_all --lib FormalSystem` added the two root imports and exits non-zero
+when it rewrites the file, which is its update convention, not a failure. The five-file set held,
+but the aggregator's content diverged from the plan: see the deviation annotation on the first
+checklist item.
+
 **Files to modify**:
 - `FormalSystem/Semantics.lean` - two imports plus two `## Submodules` bullets
 - `FormalSystem/Semantics/README.md` - two inventory rows
@@ -390,28 +408,28 @@ the divergence rather than skipping the gate.
 
 ---
 
-### Phase 6: Full gate run and acceptance [NOT STARTED]
+### Phase 6: Full gate run and acceptance [COMPLETED]
 
 **Goal**: Run the repository's complete acceptance set and confirm every criterion in the task
 description.
 
 **Tasks**:
-- [ ] Run `lake build --wfail` detached, per `context/project/lean4/operations/long-builds.md` and
+- [x] Run `lake build --wfail` detached, per `context/project/lean4/operations/long-builds.md` and
       `context/patterns/bounded-build-waiter.md`: hard timeout, writer liveness via `kill -0` on the
       captured PID (never `ps | grep` or `pgrep -f`), one waiter per log. Confirm exit 0 with zero
       warnings.
-- [ ] `lean_verify` on `FormalSystem.Semantics.TimeIndexed.constantHistories_of_lub` and on
+- [x] `lean_verify` on `FormalSystem.Semantics.TimeIndexed.constantHistories_of_lub` and on
       `FormalSystem.Semantics.TimeIndexed.qSwitchFrame_not_constantHistories`: standard axioms only,
       no `sorryAx`.
-- [ ] `bash scripts/check-module-invariants.sh` — all checks pass, C14 included (this is a
+- [x] `bash scripts/check-module-invariants.sh` — all checks pass, C14 included (this is a
       hard stop, never a new baseline: if C14 diverges, fix the tree, do not rewrite the baseline).
-- [ ] `lake exe mk_all --lib FormalSystem --check` exits 0.
-- [ ] `grep -rn "sorry" FormalSystem/Semantics/TimeIndexed.lean
+- [x] `lake exe mk_all --lib FormalSystem --check` exits 0.
+- [x] `grep -rn "sorry" FormalSystem/Semantics/TimeIndexed.lean
       FormalSystem/Semantics/TimeIndexedSharpness.lean` returns nothing.
-- [ ] Confirm no task-number reference reached any file outside `specs/**`
+- [x] Confirm no task-number reference reached any file outside `specs/**`
       (`.claude/rules/no-task-references-in-deliverables.md`), and that no docstring cites the
       manuscript by line number.
-- [ ] If a build failure arises in a file outside this task's file scope, check `git log` first: it
+- [x] If a build failure arises in a file outside this task's file scope, check `git log` first: it
       may be concurrent sibling task 655's in-flight edit rather than a regression here. Report it;
       do not "fix" a sibling's file.
 
@@ -497,17 +515,17 @@ theorem static_of_lub_of_realized [DenselyOrdered ↑D]
 
 ## Testing & Validation
 
-- [ ] `lake build --wfail` exits 0 with zero warnings (run detached, bounded waiter)
-- [ ] `lean_verify FormalSystem.Semantics.TimeIndexed.constantHistories_of_lub` — standard axioms
+- [x] `lake build --wfail` exits 0 with zero warnings (run detached, bounded waiter)
+- [x] `lean_verify FormalSystem.Semantics.TimeIndexed.constantHistories_of_lub` — standard axioms
       only, no `sorryAx`
-- [ ] `lean_verify FormalSystem.Semantics.TimeIndexed.qSwitchFrame_not_constantHistories` — standard
+- [x] `lean_verify FormalSystem.Semantics.TimeIndexed.qSwitchFrame_not_constantHistories` — standard
       axioms only, no `sorryAx`
-- [ ] `bash scripts/check-module-invariants.sh` — all checks pass (C8, C14, C15, C24, INV included)
-- [ ] `lake exe mk_all --lib FormalSystem --check` exits 0
-- [ ] No `sorry` in either new module
-- [ ] No task-number reference outside `specs/**`; no line-number manuscript citation in any
+- [x] `bash scripts/check-module-invariants.sh` — all checks pass (C8, C14, C15, C24, INV included)
+- [x] `lake exe mk_all --lib FormalSystem --check` exits 0
+- [x] No `sorry` in either new module
+- [x] No task-number reference outside `specs/**`; no line-number manuscript citation in any
       docstring
-- [ ] `Rigidity.lean`'s diff is confined to the module docstring's scope-note section
+- [x] `Rigidity.lean`'s diff is confined to the module docstring's scope-note section
 
 ## Artifacts & Outputs
 
