@@ -1,7 +1,7 @@
 # Implementation Plan: Promote the countable-carrier rigidity results over ℝ
 
 - **Task**: 654 - infinite_frame_rigidity_countable_real_durations
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7 hours
 - **Dependencies**: 646, 652 (time-indexed frames and the Dedekind boundary — both already
   landed; `Semantics/TimeIndexed.lean` and `Semantics/TimeIndexedSharpness.lean` exist in-tree)
@@ -168,25 +168,25 @@ Phases within the same wave can execute in parallel. Phases 1 and 4 touch disjoi
 share only `FormalSystem.lean`, which is regenerated rather than hand-edited; if they are run in
 parallel, the `mk_all` regeneration must be run once after both land rather than once per phase.
 
-### Phase 1: Sierpiński's theorem into ForMathlib [NOT STARTED]
+### Phase 1: Sierpiński's theorem into ForMathlib [COMPLETED]
 
 **Goal**: `FormalSystem/ForMathlib/Topology/Sierpinski.lean` exists, compiles under
 `lake build --wfail`, imports nothing from `FormalSystem.*`, and carries the eight declarations
 pinned in `## Lean Challenge Statements` block 1.
 
 **Tasks**:
-- [ ] Run a collision check on the new base identifiers (`levelSet`, `locallyConstantLocus`,
+- [x] Run a collision check on the new base identifiers (`levelSet`, `locallyConstantLocus`,
       `mem_levelSet`, `isOpen_locallyConstantLocus`, `mem_locallyConstantLocus_iff`,
       `const_of_isPreconnected`, `const_of_isClosed_levelSet`, `const_of_countable_range`) with
       `lean_local_search` or `grep -rn` over `FormalSystem/`, before writing anything.
-- [ ] Create `FormalSystem/ForMathlib/Topology/Sierpinski.lean` with the standard copyright
+- [x] Create `FormalSystem/ForMathlib/Topology/Sierpinski.lean` with the standard copyright
       header and the narrowed import list, already compiled green by the research phase:
       `Mathlib.Topology.Baire.CompleteMetrizable`, `Mathlib.Topology.Baire.Lemmas`,
       `Mathlib.Topology.Order.Monotone`, `Mathlib.Topology.Order.IntermediateValue`,
       `Mathlib.Topology.Instances.Real.Lemmas`. **No `import Mathlib`, and no
       `import FormalSystem.*`** — the dependency rule in `ForMathlib/README.md` is checkable by
       `grep -rn '^import FormalSystem' FormalSystem/ForMathlib/` returning nothing.
-- [ ] Write a module docstring stating what the theorem is, that Mathlib does not carry it (the
+- [x] Write a module docstring stating what the theorem is, that Mathlib does not carry it (the
       four `Sierpinski*` hits in Mathlib are all the Sierpiński *space*), and the proof outline:
       the locally-constant locus is open; on its complement — closed, hence complete, hence
       Baire — `nonempty_interior_of_iUnion_of_closed` produces a window on which one value
@@ -194,34 +194,34 @@ pinned in `## Lean Challenge Statements` block 1.
       `IsClosed.csSup_mem`/`IsClosed.csInf_mem`, contradicting membership in the complement.
       Record explicitly that the proof does **not** need the complement to be perfect, which is
       where the textbook proof spends most of its effort.
-- [ ] Transcribe `Probe.Sierp` from
+- [x] Transcribe `Probe.Sierp` from
       `specs/654_infinite_frame_rigidity_countable_real_durations/probes/02_countable-real-rigidity.lean`
       (section `Sierp`, `namespace Sierp` through `end Sierp`) under `namespace Sierpinski`,
       applying the renames fixed under Decisions. The two definition bodies, which the Challenge
       block pins as `sorry` by format rule, are:
       `levelSet h a := {t | h t = a}` and `locallyConstantLocus h := ⋃ a, interior (levelSet h a)`.
-- [ ] Generalize `levelSet`, `locallyConstantLocus`, `mem_levelSet`,
+- [x] Generalize `levelSet`, `locallyConstantLocus`, `mem_levelSet`,
       `isOpen_locallyConstantLocus`, `mem_locallyConstantLocus_iff` and
       `const_of_isPreconnected` to `{α : Type*} [TopologicalSpace α]`, `{W : Type*}`; keep
       `const_of_isClosed_levelSet` and `const_of_countable_range` at `ℝ`. Widen `Type` to
       `Type*` throughout.
-- [ ] Preserve the probe's `omit [Countable W] in` lines wherever the generalized statement no
+- [x] Preserve the probe's `omit [Countable W] in` lines wherever the generalized statement no
       longer needs the instance — the report records that this exact linter bit a sibling task.
-- [ ] Give every one of the eight declarations a docstring (C19 floor is 90%).
-- [ ] Create `FormalSystem/ForMathlib/Topology/README.md`, modelled on
+- [x] Give every one of the eight declarations a docstring (C19 floor is 90%).
+- [x] Create `FormalSystem/ForMathlib/Topology/README.md`, modelled on
       `FormalSystem/ForMathlib/Order/README.md`: the "imports nothing from `FormalSystem.*`"
       paragraph, a `<!-- BEGIN GENERATED: inventory dir=FormalSystem/ForMathlib/Topology -->`
       block, a Key Definitions section, Related Documentation links, and a `*Last verified:*`
       line.
-- [ ] Add `import FormalSystem.ForMathlib.Topology.Sierpinski` to `FormalSystem/ForMathlib.lean`
+- [x] Add `import FormalSystem.ForMathlib.Topology.Sierpinski` to `FormalSystem/ForMathlib.lean`
       and a matching bullet to its `## Contents` docstring list.
-- [ ] Add a Role description for the new `Topology/` row to `FormalSystem/ForMathlib/README.md`
+- [x] Add a Role description for the new `Topology/` row to `FormalSystem/ForMathlib/README.md`
       (the generated block is `rows=subdirs`, so the row itself appears automatically; the
       trailing Role column is hand-written), then regenerate:
       `bash scripts/check-module-invariants.sh --emit-inventory`.
-- [ ] Regenerate the root module list: `lake exe mk_all --lib FormalSystem`. Never hand-edit
+- [x] Regenerate the root module list: `lake exe mk_all --lib FormalSystem`. Never hand-edit
       `FormalSystem.lean` (C33 compares it byte-for-byte).
-- [ ] `lake build --wfail` green on the touched modules.
+- [x] `lake build --wfail` green on the touched modules.
 
 **Timing**: 1.5 hours
 

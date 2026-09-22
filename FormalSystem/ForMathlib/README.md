@@ -35,6 +35,7 @@ that import on its consumers' behalf. This is the sole recorded C24 exception, d
 | Directory | Files | Lines | Role |
 |-----------|------:|------:|------|
 | [`Order/`](Order/README.md) | 1 | 270 | Proper, maximal and prime filters (`Order.PFilter.IsProper`, `Order.PFilter.IsMaximal`, `Order.PrimeFilter`) |
+| [`Topology/`](Topology/README.md) | 1 | 245 | Sierpiński's theorem on countable closed partitions of the line (`Sierpinski.const_of_isClosed_levelSet`, `Sierpinski.const_of_countable_range`) |
 <!-- END GENERATED -->
 
 ## Related Documentation
@@ -43,6 +44,8 @@ that import on its consumers' behalf. This is the sole recorded C24 exception, d
   dependency rule
 - [`Order/`](Order/README.md) — proper, maximal and prime filters, the filter side of Mathlib's
   `Order/Ideal.lean` and `Order/PrimeIdeal.lean`
+- [`Topology/`](Topology/README.md) — Sierpiński's theorem on countable closed partitions of the
+  line, which Mathlib does not carry
 - [`Metalogic/Algebraic/`](../Metalogic/Algebraic/README.md) — the consumer: the
   Lindenbaum–Tarski quotient and the ultrafilter/MCS correspondence
 - [FormalSystem README](../README.md)

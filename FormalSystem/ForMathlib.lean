@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.ForMathlib.Order.PFilter
+import FormalSystem.ForMathlib.Topology.Sierpinski
 import FormalSystem.Init
 
 /-!
@@ -26,4 +27,8 @@ strictly `Mathlib → ForMathlib → FormalSystem.* → downstream`.
 * `FormalSystem.ForMathlib.Order.PFilter` — proper, maximal and prime filters
   (`Order.PFilter.IsProper`, `Order.PFilter.IsMaximal`, `Order.PrimeFilter`), the filter side of
   `Mathlib/Order/Ideal.lean` and `Mathlib/Order/PrimeIdeal.lean`.
+* `FormalSystem.ForMathlib.Topology.Sierpinski` — Sierpiński's theorem on countable closed
+  partitions of the line (`Sierpinski.const_of_isClosed_levelSet`,
+  `Sierpinski.const_of_countable_range`), which Mathlib does not carry: its `Sierpinski*`
+  declarations are all about the Sierpiński *space*.
 -/
