@@ -1,19 +1,58 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 22,
-  "summary": "Four-phase plan (5.5 h) to transcribe the compiled translation-product probe into FormalSystem/Semantics/Frames/TranslationProduct.lean and FormalSystem/Metalogic/Independence/TranslationProductCoarse.lean, then wire aggregators, READMEs, generated root/inventory, theorem-index rows and C14 pins, gated by lake build --wfail, mk_all --check, check-module-invariants.sh and lean_verify.",
+  "status": "implemented",
+  "dispatch_seq": 23,
+  "task_number": 645,
+  "session_id": "sess_1790055313_734854",
+  "phases_completed": 4,
+  "phases_total": 4,
+  "summary": "Translation product ported as two modules; all gates green (lake build --wfail, check-module-invariants.sh, mk_all --check, metalogic cycles); three flagship theorems at standard axioms and pinned under C14.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/645_port_translation_product_into_library/plans/01_port-translation-product.md",
-      "summary": "Implementation plan: 4 phases in 3 waves (Module 1 in two phases, Module 2 in parallel with the second, then wiring and gates)."
+      "type": "summary",
+      "path": "specs/645_port_translation_product_into_library/summaries/01_port-translation-product-summary.md",
+      "summary": "Implementation summary"
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Semantics/Frames/TranslationProduct.lean",
+      "summary": "Module 1"
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Metalogic/Independence/TranslationProductCoarse.lean",
+      "summary": "Module 2"
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 4,
+  "commits": [
+    "513333bd2",
+    "01302519f",
+    "903e538aa",
+    "d06f76693"
+  ],
+  "modified_files": [
+    "FormalSystem/Semantics/Frames/TranslationProduct.lean",
+    "FormalSystem/Metalogic/Independence/TranslationProductCoarse.lean",
+    "FormalSystem.lean",
+    "FormalSystem/Semantics/Frames.lean",
+    "FormalSystem/Metalogic/Independence.lean",
+    "FormalSystem/Semantics.lean",
+    "FormalSystem/Semantics/README.md",
+    "FormalSystem/Semantics/Frames/README.md",
+    "FormalSystem/Metalogic/Independence/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/README.md",
+    "README.md",
+    "docs/theorem-index.md",
+    "scripts/check-module-invariants.sh",
+    "specs/evidence/translation-product/limit-idle-mirror.lean",
+    "specs/645_port_translation_product_into_library/plans/01_port-translation-product.md",
+    "specs/645_port_translation_product_into_library/summaries/01_port-translation-product-summary.md"
+  ],
+  "written_at": "2026-09-22T07:47:31Z",
   "blockers": [],
+  "phase": "implement",
+  "git_checkpoint": "d06f76693",
+  "sorry_inventory": [],
   "plan_markers_verified": true,
-  "continuation_path": null,
-  "next_action_hint": "Dispatch implement for task 645 starting at Phase 1 (Module 1 header, docstring, relation, frame, histories)."
+  "next_action_hint": "Task complete: every plan phase is [COMPLETED] and every gate is green; postflight may mark the task completed."
 }

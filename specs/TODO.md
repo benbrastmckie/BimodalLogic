@@ -11,7 +11,7 @@ next_project_number: 651
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,645,649 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,649 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -20,7 +20,7 @@ next_project_number: 651
 | 7 | 430 | 411 | decidability |
 | 8 | 412 | 430 | decidability |
 | 9 | 482 | 412 | decidability |
-| 10 | 177 | 178,282,296,481,482,543,645 | formula-refactor |
+| 10 | 177 | 178,282,296,481,482,543 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -95,7 +95,6 @@ next_project_number: 651
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
-645 [PLANNED] — Port the translation-product proof device from the task 624...
 
 ## Tasks
 
@@ -246,12 +245,13 @@ CONSTRAINTS. The library root FormalSystem.lean is generated: regenerate it with
 ---
 
 ### 645. Port translation product into library
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 534
 - **Research**: [645_port_translation_product_into_library/reports/01_port-translation-product.md]
 - **Plan**: [645_port_translation_product_into_library/plans/01_port-translation-product.md]
+- **Summary**: [645_port_translation_product_into_library/summaries/01_port-translation-product-summary.md]
 
 **Description**: Port the translation-product proof device from the task 624 probe into the library, as two modules with no new axioms and no sorry (about 450 lines, transcribed and restated against the live definitions, not rediscovered). SOURCE, read before planning: specs/624_translation_product_task_semantics_visibility/probes/01_translation-product-live.lean (compiled, sorry-free, against the live tree) and specs/624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md, Recommendation 1, which fixes the module layout and the declaration list.
 
