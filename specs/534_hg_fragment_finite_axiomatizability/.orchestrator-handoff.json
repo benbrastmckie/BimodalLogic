@@ -1,19 +1,34 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 19,
-  "summary": "Wrote a five-phase lean4 plan (8.5h) machine-checking the honestly obtainable half of the positive per-class verdict: MinusExt extension calculus and soundness engine, Sigma_fc soundness rows and strictness over TM- at Base/ZTime, conditional completeness via chain bundles with ChainComplete as an explicit never-asserted hypothesis, an L- deduction layer with the four box-globality derivations, and wiring/docs/C14 pins plus the reworded paper footnote hand-off.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 20,
+  "summary": "All five plan phases closed: MinusExt closure + soundness engine, FragmentAxiomatization verdict record (Σ_fc, soundness, strictness, conditional completeness with ChainComplete explicit), MinusDeduction (L⁻ deduction theorem + □-globality derivations), and the wiring/ledger pass; full build, invariants and cycle gates green.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/534_hg_fragment_finite_axiomatizability/plans/01_hg-fragment-axiomatizability.md",
-      "summary": "Five-phase implementation plan with dependency waves [[1,4],[2],[3],[5]] and a Lean Challenge Statements block pinning 18 identifiers."
+      "type": "summary",
+      "path": "specs/534_hg_fragment_finite_axiomatizability/summaries/01_hg-fragment-axiomatizability-summary.md",
+      "summary": "Implementation summary with per-class verdict and reworded paper footnote."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Metalogic/Conservativity/FragmentAxiomatization.lean",
+      "summary": "Canonical per-class verdict record."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Metalogic/Conservativity/MinusExt.lean",
+      "summary": "MinusExt closure and soundness engine."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Metalogic/Conservativity/MinusDeduction.lean",
+      "summary": "L⁻ deduction theorem and □-globality derivations."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 5,
   "phases_total": 5,
   "blockers": [],
   "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Dispatch implement: Phases 1 and 4 are independent (wave 1); Phase 5 is the only phase touching shared files and runs the full gate."
+  "next_action_hint": "Task complete; postflight may mark COMPLETED. Paper footnote rewording is an external follow-up."
 }
