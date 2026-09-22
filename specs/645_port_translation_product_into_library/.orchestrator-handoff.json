@@ -1,0 +1,18 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 21,
+  "summary": "Research for porting the translation-product proof device: the source probe recompiles sorry- and warning-free against the current tree with two import-path repairs (PlusLanguage/StarLanguage moved) and no linter suppression; HistMap/HistMorphism/TaskFrame.RecurrenceFree are already live in Semantics/HistoryMorphism.lean and must be imported, not re-declared; layering allows the single Semantics/Frames module to import StarLanguage.StarValidity (StateLocalTransfer precedent); Module 2 should be a separate Independence file; axiom profiles are pcq (prodRel_saturation propext+Quot.sound); docstring hazards identified (app:abundant not in the C15 record, specs/624_ path fails C9, liftM shadows core) with a declaration map, phase decomposition and the full wiring/gate checklist.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/645_port_translation_product_into_library/reports/01_port-translation-product.md",
+      "summary": "Port research: drift since the probe, live overlaps, layering, naming, docstring/C15/C9 constraints, declaration map, phase plan and gate checklist for the two translation-product modules."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "next_action_hint": "Plan: four phases (Module 1 frame+histories; Module 1 invariances+class theorems; Module 2; wiring/regeneration/pins/gates) per report R7; decide D3 (optional translationProduct.proj) and D4 (no_recurrence naming); copy probe 02 to specs/evidence/ for a C9-safe docstring citation (R5).",
+  "git_checkpoint": null
+}

@@ -95,7 +95,7 @@ next_project_number: 651
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
-645 [NOT STARTED] — Port the translation-product proof device from the task 624...
+645 [RESEARCHED] — Port the translation-product proof device from the task 624...
 
 ## Tasks
 
@@ -246,10 +246,11 @@ CONSTRAINTS. The library root FormalSystem.lean is generated: regenerate it with
 ---
 
 ### 645. Port translation product into library
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 534
+- **Research**: [645_port_translation_product_into_library/reports/01_port-translation-product.md]
 
 **Description**: Port the translation-product proof device from the task 624 probe into the library, as two modules with no new axioms and no sorry (about 450 lines, transcribed and restated against the live definitions, not rediscovered). SOURCE, read before planning: specs/624_translation_product_task_semantics_visibility/probes/01_translation-product-live.lean (compiled, sorry-free, against the live tree) and specs/624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md, Recommendation 1, which fixes the module layout and the declaration list.
 

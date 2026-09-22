@@ -149,7 +149,7 @@
     {
       "project_number": 645,
       "project_name": "port_translation_product_into_library",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Port the translation-product proof device from the task 624 probe into the library, as two modules with no new axioms and no sorry (about 450 lines, transcribed and restated against the live definitions, not rediscovered). SOURCE, read before planning: specs/624_translation_product_task_semantics_visibility/probes/01_translation-product-live.lean (compiled, sorry-free, against the live tree) and specs/624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md, Recommendation 1, which fixes the module layout and the declaration list.\n\nMODULE 1, FormalSystem/Semantics/Frames/TranslationProduct.lean: prodRel; the transfer theorems prodRel_reflection, prodRel_comp, prodRel_serial, prodRel_limit, prodRel_saturation and saturation_of_prodRel; FrameOver.translationProduct (that name, not \"x D\"); translationProduct_taskRel, translationProduct_sat, translationProduct_deterministic_iff; colourClock, liftH, projH, projH_liftH, liftH_projH, clock_eq, no_recurrence, no_transposition; the three invariances truth_invariance, plus_invariance, star_invariance; the *ValidOn_of_prod lemmas; and validIn_iff_recurrenceFree, plusValidIn_iff_recurrenceFree, starValidIn_iff_recurrenceFree. MODULE 2, FormalSystem/Metalogic/Independence/TranslationProductCoarse.lean (or an addendum to PastedCoarseModels.lean if the planner finds that cleaner): liftK, c_invariance, pasteClosed_liftK, pasteClosed_of_liftK, c_refuted_lift.\n\nWHAT IT IS FOR, and the docstring obligation. The translation product is a PROOF DEVICE showing what the object languages L, L+ and L-star cannot see of a task frame (recurrence and transposition); it is never an intended model. The module docstring must carry that standing caveat, describe the construction as time-unfolding, cite the manuscript by label or quotable phrase (never by line number), and record the frame-level non-reflection example (p -> Gp valid on the one-state frame, refuted on its product). Probe 02's zeroFix results have no live home, because no non-Limit frame type exists; leave them as the mirror record and cite them from the docstring.\n\nOUT OF SCOPE: the optional third module Semantics/HistoryMorphism.lean (HistMap, HistMorphism and the categorical reading), any manuscript edit, and anything about the stability modal beyond state-locality -- the report's Q5 records that the device is silent there.\n\nCONSTRAINTS. The library root FormalSystem.lean is generated: regenerate it with `lake exe mk_all --lib FormalSystem` and never hand-edit it; the root-freshness check in scripts/check-module-invariants.sh fails otherwise. Every new module is now directly imported by the root, so the header linter applies under --wfail: a module docstring must be the first command after the imports, and no broad `import Lean` or `import Mathlib`. Add the two modules to their sibling aggregators (Semantics/Frames.lean, Metalogic/Independence.lean) and to the directory READMEs, and re-emit the generated inventory blocks with --emit-inventory. No task numbers in any file outside specs/. ACCEPTANCE: lake build --wfail green; no sorry and no new axiom (lean_verify on the three *ValidIn_iff_recurrenceFree theorems returns standard axioms only); check-module-invariants.sh all checks pass; `lake exe mk_all --lib FormalSystem --check` exits 0.\n\nReconciliation notes: split out of research task 624, whose description forbids implementation inside that task. Shares the generated root and README inventory blocks with every other task that adds a module, and Semantics/Frames/README.md with task 625; do not run concurrently with those.",
       "topic": "semantics",
@@ -168,7 +168,16 @@
         "README.md"
       ],
       "created": "2026-09-21T18:49:42Z",
-      "last_updated": "2026-09-21T18:57:26Z"
+      "last_updated": "2026-09-22T07:03:18Z",
+      "session_id": "sess_1790055313_734854",
+      "artifacts": [
+        {
+          "path": "specs/645_port_translation_product_into_library/reports/01_port-translation-product.md",
+          "type": "report",
+          "summary": "Port research: drift since the probe, live overlaps, layering, naming, docstring/C15/C9 constraints, declaration map, phase plan and gate checklist for the two translation-product modules."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_name": "harden_move_modules_and_record_relocation_method",
