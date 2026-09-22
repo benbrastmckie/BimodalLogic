@@ -1,69 +1,41 @@
 {
-  "status": "partial",
-  "started_at": "2026-09-22T19:11:00Z",
-  "completed_at": "2026-09-22T19:24:00Z",
-  "dispatch_seq": 14,
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "vacuous_count_task_files": 0,
-    "axiom_count": 14,
-    "axiom_count_baseline": 14,
-    "build_passed": true,
-    "build_output": "Build completed successfully (2709 jobs); lake-build-guard exit_status=0; zero error: lines"
-  },
-  "requires_user_review": true,
-  "review_reason": "Two items. (1) Plan compliance fails mechanically: 12 of 13 pinned Goals identifiers resolve; RTO_triangle is absent because the statement is FALSE (refutation compiled as not_triangle_RTO). Phase 3 is [COMPLETED WITH EXCLUSIONS], not [BLOCKED] - both of its headline theorems are proved with their pinned signatures unchanged, by the direct cone-openness route the prior cycle's BLOCKER itself recorded. (2) plan-compliance.md routes a decomposition change on a .lean file through [BLOCKED] plus escalation BEFORE the change. That escalation happened in cycle 3; dispatch 14 re-dispatched implement on the same unrevised plan, and this agent read that as reaffirmation and executed the recorded repair route rather than blocking a third time. That reading is a judgment call, not a rule the system states. The pre-existing vacuous hit (FormalSystem/Examples/TemporalStructures.lean:483) is untouched by this task and outside its file scope.",
-  "user_decision": {
-    "question": "The plan's Lean Challenge Statements block still pins RTO_triangle : Triangle' RTO, which is false (compiled refutation: not_triangle_RTO). plan-compliance.md forbids an implementer editing a recorded Challenge, so the entry was left in place with a Reasoned Exclusions record. How should that entry be retired?",
-    "options": [
-      "Run /revise on task 655 to delete RTO_triangle and the Triangle' scaffolding from Phase 3 and from the Lean Challenge Statements block, leaving the exclusion record as history",
-      "Leave the plan as it stands - the Reasoned Exclusions record plus the compiled not_triangle_RTO already document the divergence, and the task is finished",
-      "Reject the route taken: revert commit cc8903f22, restore Phase 3 to [BLOCKED], and require a reviser pass before any implementation of Phase 3"
-    ],
-    "recommended": "Run /revise on task 655 to delete RTO_triangle and the Triangle' scaffolding from Phase 3 and from the Lean Challenge Statements block, leaving the exclusion record as history",
-    "blocking": false
-  },
+  "status": "planned",
+  "started_at": "2026-09-22T19:30:00Z",
+  "completed_at": "2026-09-22T19:48:00Z",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/summaries/01_topology-characterizing-limit-summary.md",
-      "summary": "Implementation summary: all six phases closed; Phase 3 completed with one reasoned exclusion (a false pinned lemma); full verification log."
-    },
-    {
-      "type": "implementation",
-      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/probes/TwoOrigins.lean",
-      "summary": "Two-origin frame: Triangle' refuted, all cones proved N_F-open, T_F = N_F, and T_F not Hausdorff."
-    },
-    {
-      "type": "report",
-      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/reports/01_topology-characterizing-limit.md",
-      "summary": "Report reconciled with the six compiled probes: citations, results table, verification log, and a table of every surviving UNVERIFIED label with its reason."
-    },
-    {
       "type": "plan",
-      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/plans/01_topology-characterizing-limit.md",
-      "summary": "All six phase markers closed; Phase 3 carries a Reasoned Exclusions record; Testing & Validation checklist discharged."
+      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/plans/02_topology-characterizing-limit.md",
+      "summary": "Revision 02: retires the false pinned Challenge RTO_triangle : Triangle' RTO, pins the delivered intermediate isOpen_nbhdTopology_cone_RTO in its place, restates Phase 3's route as the four cone-membership lemmas feeding isOpen_nbhdTopology_cone_RTO, and records the 'Triangle is sufficient but not necessary for cone-openness' finding. Phases 1, 2, 4, 5, 6 unchanged; the BLOCKER and Reasoned Exclusions records retained verbatim as history."
     }
   ],
-  "completion_data": {
-    "completion_summary": "Hardened the task-655 topology deliverable to six sorry-free probes (1983 lines, 51 declarations audited to [propext, Classical.choice, Quot.sound]) and reconciled the report against them. This dispatch closed Phase 3 - proving that every cone of the two-origin frame is N_F-open, hence T_F = N_F and T_F is not Hausdorff there, after refuting the plan's pinned Triangle' route - and Phase 6, the report reconciliation. New mathematical content: the Triangle condition is sufficient but not necessary for cone-openness.",
-    "roadmap_items": []
-  },
-  "partial_progress": {
-    "stage": "all_phases_closed",
-    "details": "Phases 1, 2, 4, 5, 6 [COMPLETED]; Phase 3 [COMPLETED WITH EXCLUSIONS] (RTO_triangle excluded as false). Returned partial only because the mechanical plan-compliance check counts that exclusion as a miss, and because the route decision warrants user review.",
-    "phases_completed": 6,
-    "phases_total": 6
+  "next_steps": "No implementation work remains: all six phases are closed against this plan and lake build is green. Orchestrator postflight should link plans/02_topology-characterizing-limit.md as the task's plan artifact (same-type supersession of the 01 link), advance next_artifact_number to 3, and commit with `task 655: revise plan (v2)`.",
+  "verification": {
+    "plan_format_validation": "validate-artifact.sh ... plan --strict => PASS, 0 warnings",
+    "challenge_block_typecheck": "extracted standalone and run through `lake env lean` on the pinned toolchain: exit 0, zero `error:` lines, exactly 13 `declaration uses \\`sorry\\`` warnings (one per pinned identifier)",
+    "pin_resolution": "13/13 pinned identifiers resolve to a compiled declaration under probes/ (was 12/13 in revision 01)"
   },
   "metadata": {
     "session_id": "sess_1790104191_b13256",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "failed",
-    "compliance_detail": "12/13 Goals identifiers resolve in probes/; RTO_triangle excluded as a false statement with a compiled refutation",
-    "dispatch_seq_discrepancy": "The dispatch file .dispatch/14.md declares dispatch_seq: 14; the teammate dispatch message declared dispatch_seq: 12. The generated dispatch file was treated as authoritative and 14 is echoed here and in the orchestrator handoff."
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "revision_mode": "plan_revision",
+    "dispatch_seq": 17,
+    "artifact_number": 2,
+    "supersedes": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/plans/01_topology-characterizing-limit.md",
+    "phase_count": 6,
+    "phases_preserved": [1, 2, 4, 5, 6],
+    "phases_revised": [3],
+    "phases_added": [],
+    "phases_removed": [],
+    "estimated_hours": 10,
+    "reports_integrated": ["01_topology-characterizing-limit.md"],
+    "revision_inputs": [
+      "summaries/01_topology-characterizing-limit-summary.md",
+      "probes/TwoOrigins.lean (compiled refutation not_triangle_RTO)",
+      ".decisions.json (user decision, 2026-09-22T21:18:44Z)"
+    ],
+    "prior_meta_preserved_at": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/.return-meta.implement-14.json",
+    "not_committed": "The revised plan is written but uncommitted; state.json and TODO.md were not touched, per the reviser-agent contract. Orchestrator postflight owns both."
   }
 }
