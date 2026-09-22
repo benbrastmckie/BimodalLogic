@@ -1,19 +1,30 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 4,
-  "summary": "Wrote a seven-phase plan for proving ChainComplete FrameClass.Dense ∅ (five new Conservativity modules: L⁻ MCS layer, derived TM⁻ theorems, canonical relations with density and weak linearity, a two-part Burgess ℚ-chronicle construction, and the truth lemma plus theorem and corollaries), followed by wiring, ledger rows with C14 pins, and the docstring revisions the proof forces. Class choice (.Dense, Ax = ∅) is justified in the plan; the five target signatures were type-checked at planning time.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 7,
+  "summary": "Proved ChainComplete FrameClass.Dense ∅ (chainComplete_dense) sorry-free with standard axioms only, via an L⁻ MCS layer, canonical relations with density from DN and weak linearity from TL, and the Burgess 1984 §2.5 ℚ-chronicle construction; landed the corollaries minusExt_iff_tmFrag_dense, minusValidIn_chainValidIn, tmMinusComplete_dense and forward_dense, wired five new modules into the aggregator, root, README inventory, theorem index (C14-pinned) and invariants baseline, and revised every docstring that called the .Dense row open. Full guarded lake build --wfail green (2709 jobs, zero warnings); check-module-invariants.sh ALL CHECKS PASSED; mk_all --check and check-metalogic-cycles.sh exit 0.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/651_chain_complete_dense_tm_minus/plans/01_chain-complete-dense.md",
-      "summary": "Seven-phase implementation plan with dependency waves, verification tiers, scope hypotheses, and pinned Lean Challenge Statements."
+      "type": "summary",
+      "path": "specs/651_chain_complete_dense_tm_minus/summaries/01_chain-complete-dense-summary.md",
+      "summary": "Implementation summary: all seven phases closed, five Goal theorems proved, gates green, deviations recorded."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Metalogic/Conservativity/MinusChainCompleteness.lean",
+      "summary": "chainComplete_dense and its four corollaries (propext, Classical.choice, Quot.sound only)."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Metalogic/Conservativity/MinusChronicle.lean",
+      "summary": "exists_chronicle_through: the ℚ-chronicle construction at .Dense."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 7,
   "phases_total": 7,
   "blockers": [],
   "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Dispatch implement for task 651 starting at Phase 1 (Phases 1 and 2 are independent and may run in parallel)."
+  "next_action_hint": "None; task complete. Commits 9fa4b4aa9..eb87e7e0b (phases 1-7 plus 'complete implementation'). The .RTime row remains open; a lean4 pattern note on the TR-mirroring and chronicle-stage idioms is a possible follow-up task.",
+  "git_checkpoint": "eb87e7e0b"
 }

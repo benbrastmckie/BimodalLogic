@@ -1,30 +1,103 @@
 {
-  "status": "planned",
-  "dispatch_seq": 4,
+  "status": "implemented",
+  "started_at": "2026-09-22T17:06:49Z",
+  "completed_at": "2026-09-22T18:10:28Z",
+  "dispatch_seq": 7,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/651_chain_complete_dense_tm_minus/plans/01_chain-complete-dense.md",
-      "summary": "Seven-phase plan proving ChainComplete FrameClass.Dense ∅ via an L⁻ MCS layer, canonical relations, a Burgess-style ℚ-chronicle construction, and a chainSat truth lemma across five new Conservativity modules, with the three corollaries, ledger/C14 pins, and the docstring revisions the proof forces."
+      "type": "summary",
+      "path": "specs/651_chain_complete_dense_tm_minus/summaries/01_chain-complete-dense-summary.md",
+      "summary": "Implementation summary: chainComplete_dense and its four corollaries proved sorry-free via an L⁻ canonical model and a ℚ-chronicle construction; all gates green."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Metalogic/Conservativity/MinusChainCompleteness.lean",
+      "summary": "chainComplete_dense, minusExt_iff_tmFrag_dense, minusValidIn_chainValidIn, tmMinusComplete_dense, forward_dense (standard axioms only)."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Metalogic/Conservativity/MinusChronicle.lean",
+      "summary": "Burgess §2.5 ℚ-chronicle construction: exists_chronicle_through at .Dense."
     }
   ],
-  "next_steps": "Run /implement 651 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1790093706_3bec6d_651",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 7,
-    "estimated_hours": 13.5,
-    "dependency_waves": [[1, 2], [3], [4], [5], [6], [7]]
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "axiom_count_baseline": 14,
+    "build_passed": true,
+    "build_evidence": "lake-build-guard build --wfail: 'Build completed successfully (2709 jobs)', guard exit 0, zero warnings; .olean newer than source for every touched module and the three aggregators; check-module-invariants.sh ALL CHECKS PASSED (49 PASS, exit 0); mk_all --check 0; check-metalogic-cycles.sh 0",
+    "vacuous_note": "repo-wide grep has one pre-existing hit (FormalSystem/Examples/TemporalStructures.lean:483), unchanged since the dispatch-start commit and outside this task's files"
   },
+  "completion_data": {
+    "completion_summary": "Proved ChainComplete FrameClass.Dense ∅ (chainComplete_dense) sorry-free with standard axioms only, via a MinusFormula-typed MCS layer, canonical relations with density from DN and weak linearity from TL, and the Burgess 1984 §2.5 step-by-step ℚ-chronicle construction; landed the corollaries minusExt_iff_tmFrag_dense, minusValidIn_chainValidIn, tmMinusComplete_dense and forward_dense, wired five new modules into the aggregator, root, README inventory, theorem index (C14-pinned) and invariants baseline, and revised every docstring that called the .Dense row open or never asserted.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/Metalogic/Conservativity/MinusMCS.lean",
+    "FormalSystem/Metalogic/Conservativity/MinusTemporalDerived.lean",
+    "FormalSystem/Metalogic/Conservativity/MinusCanonicalFrame.lean",
+    "FormalSystem/Metalogic/Conservativity/MinusChronicle.lean",
+    "FormalSystem/Metalogic/Conservativity/MinusChainCompleteness.lean",
+    "FormalSystem.lean",
+    "FormalSystem/Metalogic.lean",
+    "FormalSystem/Metalogic/Conservativity.lean",
+    "FormalSystem/Metalogic/Conservativity/ChainBundleTruth.lean",
+    "FormalSystem/Metalogic/Conservativity/DenseObstructionTransfer.lean",
+    "FormalSystem/Metalogic/Conservativity/Fragment.lean",
+    "FormalSystem/Metalogic/Conservativity/FragmentAxiomatization.lean",
+    "FormalSystem/Metalogic/Conservativity/MinusExt.lean",
+    "FormalSystem/Metalogic/Conservativity/Plus.lean",
+    "FormalSystem/Metalogic/Conservativity/README.md",
+    "FormalSystem/Metalogic/Conservativity/TMCompletenessReduction.lean",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/README.md",
+    "README.md",
+    "docs/theorem-index.md",
+    "scripts/check-module-invariants.sh",
+    "specs/651_chain_complete_dense_tm_minus/plans/01_chain-complete-dense.md",
+    "specs/651_chain_complete_dense_tm_minus/summaries/01_chain-complete-dense-summary.md",
+    "specs/651_chain_complete_dense_tm_minus/handoffs/phase-5-handoff-20260922T173435Z.md"
+  ],
   "memory_candidates": [
     {
-      "content": "ChainValidIn (Conservativity/FragmentAxiomatization.lean) quantifies over bundles of copies of ONE ordered group D, so any L⁻ completeness route must build a countable chain directly (Burgess §2.5 ω-stage construction on ℚ from the canonical G-relation, with a Finset-supported stage, a disjunctive placement lemma, and an interpolation lemma) rather than taking the full canonical model plus generated submodel plus bulldozing — the latter yields uncountable, pairwise non-isomorphic R-components that do not land in the quantifier. The bundle index is one canBox-class of chronicles; the ◇-witness case of the truth lemma is closed by chronicle existence through the witness MCS. The Formula-typed canonical models (Core/, BXCanonical/) cannot be imported for this: the route is circular via the very forward-conservativity statement being proved, so the L⁻ side gets its own MCS layer mirroring Core/MaximalConsistent.lean.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/651_chain_complete_dense_tm_minus/plans/01_chain-complete-dense.md",
+      "content": "L⁻-side (MinusFormula) derivations: prove the future-side theorem once in a context via minusDeductionTheorem, then obtain every past-side twin with `ofReflect (by simp [MinusFormula.reflectTime, MinusFormula.reflectTime_involution]) (futureThm φ.reflectTime)` — a one-line TR transport. Use hyp₀/hyp₁/hyp₂ positional assumption helpers instead of `by simp` membership autoparams, which break when a derived operator (neg/and) appears in unfolded form.",
+      "category": "TECHNIQUE",
+      "source_artifact": "FormalSystem/Metalogic/Conservativity/MinusTemporalDerived.lean",
+      "confidence": 0.85,
+      "suggested_keywords": ["MinusFormula", "time_reflection", "reflectTime_involution", "DerivationTree", "TR mirror"]
+    },
+    {
+      "content": "Burgess-style step-by-step chronicle over ℚ in Lean: represent a stage as `s : ℚ → Option Point` with a `Finset` support and a coherence proof; reduce coherence of `Function.update s r Δ` to two one-sided conditions (`coherent_upd_of`), so placement (weak linearity + Finset.max'/min' + exists_between) and interpolation (density + seriality) each supply just those; enumerate requirements with `exists_surjective_nat` composed with `Nat.unpair` so each recurs; take the limit with Classical.choose and `limit_eq_of_labelled` by monotonicity. Wrap each `Classical.choose` branch in its own `dif` def with `le_*`/`*_spec` lemmas proved by `by_cases` + `rw [dif_pos/dif_neg]` (split_ifs names are unreliable).",
+      "category": "PATTERN",
+      "source_artifact": "FormalSystem/Metalogic/Conservativity/MinusChronicle.lean",
       "confidence": 0.8,
-      "suggested_keywords": ["ChainValidIn", "chain bundle", "canonical model", "Burgess", "MinusFormula", "completeness"]
+      "suggested_keywords": ["chronicle", "step-by-step construction", "Finset.max'", "Function.update", "Classical.choose", "canonical model"]
+    },
+    {
+      "content": "Repo gates that bite after a green scoped build: `--wfail` rejects `show` (use `change`) and >100-char lines even inside docstrings; the C16 env-linter rejects underscores in `def` names (theorems may keep snake_case); C15 requires every theorem-index row's declaration docstring to carry `Paper: <anchor>` or `Paper: — (reason)`; the README inventory must be re-emitted after any line-count change; any docstring edit invalidates dependents' oleans, so the final full build must be re-run after the last prose edit.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/651_chain_complete_dense_tm_minus/summaries/01_chain-complete-dense-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["wfail", "check-module-invariants", "C16", "C15", "naming linter", "emit-inventory"]
     }
-  ]
+  ],
+  "reflection": {
+    "what_worked": "Writing each module against a concrete API design for the downstream phases, elaborating with `lake env lean` before the guarded build, and using MCS-level membership lemmas (imp_mem_iff, and_mem_iff, mp_of_theorem) so canonical-frame proofs stay short.",
+    "what_was_hard": "Style and naming gates surfaced only at the final invariants run (underscored def names, Paper: lines, long docstring lines), forcing two extra full builds; Finset extrema proofs needed care with proof-irrelevant `Nonempty` witnesses inside `max'`.",
+    "what_was_missed": "The Mathlib naming linter for defs and the C15 Paper-line rule were not anticipated in the plan; the first full build was started before the last docstring edits landed, so its verdict had to be discarded.",
+    "successes": "All five Goal theorems proved with standard axioms and zero sorries, every gate green, seven phases closed and committed individually."
+  },
+  "next_steps": "None for this task; the .RTime row remains open and a lean4 pattern note on the TR-mirroring/chronicle idioms is a possible follow-up task.",
+  "metadata": {
+    "session_id": "sess_1790093706_3bec6d",
+    "agent_type": "lean-implementation-agent",
+    "duration_seconds": 3819,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "phases_completed": 7,
+    "phases_total": 7,
+    "compliance_check": "passed"
+  }
 }
