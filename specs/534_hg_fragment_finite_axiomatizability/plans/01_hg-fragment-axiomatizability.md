@@ -299,7 +299,7 @@ Phase 2 module (roughly 100 lines); confirm at implementation time that `fc.Sat`
 
 ---
 
-### Phase 4: `MinusDeduction.lean` — L⁻ deduction theorem and the `□`-globality derivations [NOT STARTED]
+### Phase 4: `MinusDeduction.lean` — L⁻ deduction theorem and the `□`-globality derivations [COMPLETED]
 
 **Goal**: Supply the L⁻-side propositional layer the report's Lemma U needs and machine-check
 its first bullet as direct TM⁻ derivations: `□χ → G□χ`, `□χ → H□χ`, `¬□χ → G¬□χ`, `¬□χ → H¬□χ`
@@ -307,36 +307,40 @@ at every `fc`. These are the facts that make `□` globally constant, hence univ
 model.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Conservativity/MinusDeduction.lean` importing
+- [x] Create `FormalSystem/Metalogic/Conservativity/MinusDeduction.lean` importing
       `FormalSystem.MinusLanguage` (the aggregator; it does not import `Semantics`), namespace
       `FormalSystem.Metalogic.Conservativity`, docstring stating this is the
       `MinusLanguage.DerivationTree` mirror of `FormalSystem/Theorems/DeductionTheorem.lean`
       restricted to what the `□`-globality derivations consume, and that nothing here is
-      semantic.
-- [ ] Mirror, constructor-for-constructor, `deductionAxiom`, `deductionAssumptionSame`
+      semantic. *(deviation: altered — imports `FormalSystem.MinusLanguage.Derivation` directly rather
+      than the `FormalSystem.MinusLanguage` aggregator, because the aggregator does import the
+      semantic modules (`MinusTruth`, `MinusValidity`, …; see its own docstring), which would
+      contradict this phase's "syntax-only" verification bullet; the narrower import is the
+      one that satisfies it)*
+- [x] Mirror, constructor-for-constructor, `deductionAxiom`, `deductionAssumptionSame`
       (identity `Γ ⊢⁻ A → A` via `prop_k`/`prop_s`), `deductionAssumptionOther`, `deductionMp`,
       and `minusDeductionTheorem : (A :: Γ) ⊢⁻[fc] B → Γ ⊢⁻[fc] A.imp B` by structural recursion
       on the L⁻ derivation. The MN/TN/TR cases are empty-context and cannot occur with a
       non-empty `A :: Γ`; discharge them exactly as `DeductionTheorem.lean` does (by the context
       equation `A :: Γ = []` being impossible).
-- [ ] Add `minusDeductionConverse` (`Γ ⊢⁻ A.imp B → (A :: Γ) ⊢⁻ B`, via `weakening` + MP) and
+- [x] Add `minusDeductionConverse` (`Γ ⊢⁻ A.imp B → (A :: Γ) ⊢⁻ B`, via `weakening` + MP) and
       the three propositional combinators the target derivations need, each as a `def`
       returning a derivation: `minusImpTrans`, `minusContrapos` (`⊢⁻ (A → B) → (¬B → ¬A)`), and
       `minusDne` (`⊢⁻ ¬¬A → A`, from `peirce` + `ex_falso`, mirroring
       `Theorems/Propositional/Core.lean`'s route).
-- [ ] Derive `boxImpBoxBox : ⊢⁻[fc] χ.box.imp χ.box.box` (MT contraposed gives
+- [x] Derive `boxImpBoxBox : ⊢⁻[fc] χ.box.imp χ.box.box` (MT contraposed gives
       `□χ → ¬□¬□χ`, i.e. `□χ → ◇□χ`, then M5) and `notBoxImpBoxNotBox : ⊢⁻[fc] χ.box.neg.imp χ.box.neg.box`
       (M5 contraposed plus `minusDne`).
-- [ ] Derive `boxGlobalFuture : ⊢⁻[fc] χ.box.imp χ.box.allFuture` (`boxImpBoxBox`, then MF
+- [x] Derive `boxGlobalFuture : ⊢⁻[fc] χ.box.imp χ.box.allFuture` (`boxImpBoxBox`, then MF
       `□□χ → □G□χ`, then MT `□G□χ → G□χ`, chained by `minusImpTrans`) and
       `notBoxGlobalFuture : ⊢⁻[fc] χ.box.neg.imp χ.box.neg.allFuture` (same route from
       `notBoxImpBoxNotBox`).
-- [ ] Derive `boxGlobalPast` and `notBoxGlobalPast` by `time_reflection` on the `Future`
+- [x] Derive `boxGlobalPast` and `notBoxGlobalPast` by `time_reflection` on the `Future`
       derivations at `χ.reflectTime`, then rewriting with `reflectTime_involution` and the
       `@[simp]` `reflectTime_*` push-through lemmas so the statement lands at `χ` (the same
       involution-instantiation trick the report describes; if the rewrite is fragile, state the
       lemma at `χ.reflectTime.reflectTime` first and transport).
-- [ ] Scoped build (guarded, detached); `lean_verify` on the four `*Global*` declarations.
+- [x] Scoped build (guarded, detached); `lean_verify` on the four `*Global*` declarations.
 
 **Timing**: 2 hours
 
