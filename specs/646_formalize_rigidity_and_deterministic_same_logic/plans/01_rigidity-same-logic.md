@@ -1,7 +1,7 @@
 # Implementation Plan: Task #646
 
 - **Task**: 646 - Formalize rigidity (R2) and deterministic same-logic (R1)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None blocking. Imports `Semantics/ShiftSet.lean` read-only; independent of task 543 (which keeps R3, R4, Theorem B and every edit to `ShiftSet.lean`).
 - **Research Inputs**: specs/646_formalize_rigidity_and_deterministic_same_logic/reports/01_rigidity-same-logic-research.md
@@ -110,25 +110,25 @@ Phases within the same wave can execute in parallel. Phases 1 and 2 share no sou
 regenerate `FormalSystem.lean`, which `mk_all` produces idempotently from the tree, so if they run
 in one worktree regenerate the root once more (and `--check`) before the commit that includes it.
 
-### Phase 1: R2 core — `Semantics/Correspondence/Rigidity.lean` [NOT STARTED]
+### Phase 1: R2 core — `Semantics/Correspondence/Rigidity.lean` [COMPLETED]
 
 **Goal**: Land the rigidity theorem and its finite-carrier corollary as a new module, at the
 hypothesis the proof actually uses, with the two refinements recorded in docstrings, wired into
 its aggregator and directory README and the generated root.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/Correspondence/Rigidity.lean` with the standard copyright
+- [x] Create `FormalSystem/Semantics/Correspondence/Rigidity.lean` with the standard copyright
   block, imports `FormalSystem.Semantics.TaskFrame` and `Mathlib.Algebra.Order.Archimedean.Defs`
   (upgrade to `.Basic` only if `.Defs` proves insufficient for `exists_between`), then the `/-! -/`
   module docstring. No `import Mathlib`.
-- [ ] Transcribe research Appendix A.1, in order, into `namespace FormalSystem.Semantics`:
+- [x] Transcribe research Appendix A.1, in order, into `namespace FormalSystem.Semantics`:
   `TaskFrame.Static`, `TaskFrame.UniformDwell` (both `def`, cone-equality form `cone R w x₀ = {w}`),
   `TaskFrame.eq_of_rel_of_step` (`[Archimedean D]` only; choice-free),
   `TaskFrame.eq_of_rel_of_uniform_radius` (density enters here only), then in `namespace FrameOver`:
   `static_of_uniformDwell`, `uniformDwell_of_static`, `static_iff_uniformDwell` (headline),
   `uniformDwell_of_finite` (no order hypothesis; `[Finite F.WorldState]`, not `Fintype`),
   `static_of_finite` (headline). Use `theorem`, never `lemma`.
-- [ ] Docstrings on every declaration (C19). The module docstring and the two headlines must:
+- [x] Docstrings on every declaration (C19). The module docstring and the two headlines must:
   cite `def:frame#Limit`, `def:frame#Compositionality`, `def:frame#Seriality` by label or
   quotable phrase, never line number; record that the biconditional uses Seriality and the
   reflection law while the collapse direction uses only interpolation and the dwell bound; carry
@@ -138,20 +138,20 @@ its aggregator and directory README and the generated root.
   from the source's minimal-`n` chain; contain no task numbers and no `app:rigidity`. Put a
   `Paper: — (the manuscript states no rigidity theorem; stated at the hypothesis the proof uses)`
   line on `static_iff_uniformDwell` and `static_of_finite` (C15 round trip for Phase 4's rows).
-- [ ] Scoped build: `lake build --wfail FormalSystem.Semantics.Correspondence.Rigidity`; fix
+- [x] Scoped build: `lake build --wfail FormalSystem.Semantics.Correspondence.Rigidity`; fix
   forward on any lint (long lines, unused binders) — never weaken a statement to silence a lint.
-- [ ] `lean_verify` on `FormalSystem.Semantics.FrameOver.static_iff_uniformDwell` and
+- [x] `lean_verify` on `FormalSystem.Semantics.FrameOver.static_iff_uniformDwell` and
   `FormalSystem.Semantics.FrameOver.static_of_finite`: standard axioms only, no `sorryAx`.
   Record `eq_of_rel_of_step`'s `[propext, Quot.sound]` profile in its docstring only if
   `lean_verify` confirms it in-tree.
-- [ ] Add `import FormalSystem.Semantics.Correspondence.Rigidity` and a one-line `## Modules`
+- [x] Add `import FormalSystem.Semantics.Correspondence.Rigidity` and a one-line `## Modules`
   bullet to `FormalSystem/Semantics/Correspondence.lean`; add a `## Modules` table row
   (File | Lines | Description; the Lines cell is regenerated in Phase 4) and a `## Key Results`
   bullet naming both headlines to `FormalSystem/Semantics/Correspondence/README.md`. One sentence
   per row; do not paste the module docstring (C18).
-- [ ] `lake exe mk_all --lib FormalSystem` then `lake exe mk_all --lib FormalSystem --check`
+- [x] `lake exe mk_all --lib FormalSystem` then `lake exe mk_all --lib FormalSystem --check`
   (exit 0). Never hand-edit `FormalSystem.lean`.
-- [ ] Commit per green sub-step (module green; aggregator + README + root green), staging by
+- [x] Commit per green sub-step (module green; aggregator + README + root green), staging by
   explicit path: the module, `Correspondence.lean`, `Correspondence/README.md`, `FormalSystem.lean`.
 
 **Timing**: 1.5 hours
@@ -179,18 +179,18 @@ docstrings are duplicating the README and should be trimmed.
 
 ---
 
-### Phase 2: R1 — `Metalogic/Deterministic/SameLogic.lean` [NOT STARTED]
+### Phase 2: R1 — `Metalogic/Deterministic/SameLogic.lean` [COMPLETED]
 
 **Goal**: Land the deterministic same-logic theorem, with its one-line helper, as a new module
 stated against the tree's existing `ValidDetIn` vocabulary, wired into its aggregator, README
 and the generated root — without touching `ShiftSet.lean`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Deterministic/SameLogic.lean` with the copyright block,
+- [x] Create `FormalSystem/Metalogic/Deterministic/SameLogic.lean` with the copyright block,
   imports `FormalSystem.Semantics.ShiftSet` and `FormalSystem.Metalogic.Deterministic.Validity`
   (`FrameProperty`'s `Deterministic` arrives through the latter's closure; do **not** import
   `FormalSystem.Metalogic.Compactness`), then the `/-! -/` module docstring.
-- [ ] Transcribe research Appendix A.2 verbatim. Layout is load-bearing: first
+- [x] Transcribe research Appendix A.2 verbatim. Layout is load-bearing: first
   `namespace FormalSystem.Semantics … end FormalSystem.Semantics` holding
   `ShiftSet.frame_deterministic` with body
   `fun w d => TaskFrame.fib_subsingleton_of_functional (f := S.sh) (fun w d u => S.fibre_taskRel w d u) w d`;
@@ -200,7 +200,7 @@ and the generated root — without touching `ShiftSet.lean`.
   `valid_iff_valid_deterministic` (headline; the task description's shape, minus the retired
   `τ.IsTotal` hypothesis, via `Valid`, `validIn_iff_validDetIn`, `ValidDetIn.apply`,
   `ValidDetIn.of_forall`).
-- [ ] Docstrings on every declaration. The module docstring must say why this route is the
+- [x] Docstrings on every declaration. The module docstring must say why this route is the
   deliverable although `Engines.lean` + TM soundness already yield `ValidDetIn fc φ → ValidIn fc φ`
   at the four tagged classes: it is semantic and per-model (each `(F, M, τ, t)` is matched by a
   deterministic `(F', M', τ', t)` agreeing on every formula), it does not route through
@@ -209,16 +209,16 @@ and the generated root — without touching `ShiftSet.lean`.
   is the fact the pure `reverse_repr ∘ forward_repr` composition was missing and may later
   relocate beside `reverse_repr` without renaming (no task citation). Put a
   `Paper: \`app:deterministic\`` line on both headlines.
-- [ ] Scoped build: `lake build --wfail FormalSystem.Metalogic.Deterministic.SameLogic`; fix forward.
-- [ ] `lean_verify` on `FormalSystem.Metalogic.Deterministic.validIn_iff_validDetIn` and
+- [x] Scoped build: `lake build --wfail FormalSystem.Metalogic.Deterministic.SameLogic`; fix forward.
+- [x] `lean_verify` on `FormalSystem.Metalogic.Deterministic.validIn_iff_validDetIn` and
   `FormalSystem.Metalogic.Deterministic.valid_iff_valid_deterministic`: standard axioms only,
   no `sorryAx`.
-- [ ] Add `import FormalSystem.Metalogic.Deterministic.SameLogic` to
+- [x] Add `import FormalSystem.Metalogic.Deterministic.SameLogic` to
   `FormalSystem/Metalogic/Deterministic.lean` and extend its module docstring by one clause; add
   a `SameLogic.lean` row (File | Role) and a `## Key Results` bullet naming both headlines to
   `FormalSystem/Metalogic/Deterministic/README.md`.
-- [ ] `lake exe mk_all --lib FormalSystem` then `--check` (exit 0).
-- [ ] Commit per green sub-step, staging by explicit path: the module, `Deterministic.lean`,
+- [x] `lake exe mk_all --lib FormalSystem` then `--check` (exit 0).
+- [x] Commit per green sub-step, staging by explicit path: the module, `Deterministic.lean`,
   `Deterministic/README.md`, `FormalSystem.lean`.
 
 **Timing**: 1 hour
@@ -245,24 +245,24 @@ must be empty at every commit (the non-edit is a hard constraint).
 
 ---
 
-### Phase 3: Sharpness witnesses — `Semantics/Correspondence/RigiditySharpness.lean` [NOT STARTED]
+### Phase 3: Sharpness witnesses — `Semantics/Correspondence/RigiditySharpness.lean` [COMPLETED]
 
 **Goal**: Make "the hypotheses of the rigidity theorem are sharp" a theorem rather than a remark:
 density cannot be dropped, and the Archimedean property cannot be dropped, each by a compiled
 witness stated against Phase 1's `TaskFrame.Static`.
 
 **Tasks**:
-- [ ] Decide and record the siting: a sibling module `RigiditySharpness.lean` keeps
+- [x] Decide and record the siting: a sibling module `RigiditySharpness.lean` keeps
   `Rigidity.lean` import-light (`TaskFrame` + `Archimedean.Defs` only). This is a planning
   choice, not the task's; the file is a proposed `file_scope` addition. If the implementer
   prefers one module, append the section to `Rigidity.lean` instead and add the two imports
   there — either is acceptable; do not do both.
-- [ ] Create the module with imports `FormalSystem.Semantics.Correspondence.Rigidity`,
+- [x] Create the module with imports `FormalSystem.Semantics.Correspondence.Rigidity`,
   `FormalSystem.Semantics.Frames.Standard`, `FormalSystem.Semantics.LexCarrier` (the latter
   supplies `Mathlib.Data.Prod.Lex`, `Mathlib.Algebra.Order.Monoid.Prod`,
   `Mathlib.Data.Rat.Cast.Order`; do not import `Mathlib.Algebra.Order.Group.Prod`, absent from
   this checkout), then the `/-! -/` module docstring.
-- [ ] Transcribe research Appendix A.3 into a namespace (`FormalSystem.Semantics.Rigidity` or the
+- [x] Transcribe research Appendix A.3 into a namespace (`FormalSystem.Semantics.Rigidity` or the
   implementer's equivalent) with C26-compliant, docstringed names:
   `permissiveFrame_not_static (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D) : ¬ TaskFrame.Static (permissiveFrame D so nm).TaskRel`;
   `abbrev LexRat := ℚ ×ₗ ℚ`; `lexRatRel`; `lexRatRel_refl`, `lexRatRel_comp`, `lexRatRel_serial`,
@@ -271,15 +271,15 @@ witness stated against Phase 1's `TaskFrame.Static`.
   `lexRatFrame_not_static : ¬ TaskFrame.Static lexRatFrame.TaskRel`; `lexRat_fst_nsmul`;
   `lexRat_not_archimedean : ¬ Archimedean LexRat`; plus `example : DenselyOrdered LexRat := inferInstance`
   turned into a named `instance`-free `theorem` or left as an `example` if C17/C19 accept it.
-- [ ] Docstrings: state which hypothesis each witness removes and why the other still holds
+- [x] Docstrings: state which hypothesis each witness removes and why the other still holds
   (`ℤ` is Archimedean but not dense; `ℚ ×ₗ ℚ` is dense but not Archimedean); note
   `LexCarrier.lean`'s `not_archimedean` covers `α ×ₗ ℤ` only, which is why a fresh lemma exists.
   No task numbers.
-- [ ] Scoped build with `--wfail`; fix forward (`galR_limit`'s case split already uses
+- [x] Scoped build with `--wfail`; fix forward (`galR_limit`'s case split already uses
   `simp only`; keep it).
-- [ ] `lean_verify` on `permissiveFrame_not_static`, `lexRatFrame_not_static`,
+- [x] `lean_verify` on `permissiveFrame_not_static`, `lexRatFrame_not_static`,
   `lexRat_not_archimedean`: standard axioms only.
-- [ ] Add the import and `## Modules` bullet to `Correspondence.lean`, a table row and a
+- [x] Add the import and `## Modules` bullet to `Correspondence.lean`, a table row and a
   `## Key Results` bullet to `Correspondence/README.md`; `mk_all` + `--check`; commit per green
   sub-step by explicit path.
 
@@ -305,44 +305,44 @@ transcription. If the module exceeds 200 lines the docstrings are over-explainin
 
 ---
 
-### Phase 4: Parent READMEs, generated inventory, theorem ledger [NOT STARTED]
+### Phase 4: Parent READMEs, generated inventory, theorem ledger [COMPLETED]
 
 **Goal**: Bring every documentation surface that counts or lists these modules back into
 agreement with the tree, and register the four headlines in the per-theorem ledger with a
 machine pin.
 
 **Tasks**:
-- [ ] `FormalSystem/Semantics/README.md`: the hand-maintained `Correspondence/` row (currently
+- [x] `FormalSystem/Semantics/README.md`: the hand-maintained `Correspondence/` row (currently
   "`Galois`, `Indicator`, `DurationFrames`, `FwdRec`, `FwdRecPeriodicity`, `FwdRecBridge` (6 files)")
   gains `Rigidity` and `RigiditySharpness` and the corrected count. This file carries no
   generated block, so it is a manual edit.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory` to rewrite the generated blocks
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory` to rewrite the generated blocks
   (`FormalSystem/Metalogic/README.md`'s `Deterministic.lean` line count and `Deterministic/`
   subdir files/lines row; `FormalSystem/README.md` and `README.md` totals; the
   `Correspondence/README.md` Lines cells), then `--emit-inventory --check` (exit 0). Do not hand
   edit inside a `BEGIN GENERATED` block.
-- [ ] `FormalSystem/Metalogic/README.md`: in the TM⁺ metatheory rows table (the
+- [x] `FormalSystem/Metalogic/README.md`: in the TM⁺ metatheory rows table (the
   `Deterministic/` block near "the logic of the deterministic frames coincides with …"), add one
   hand row: the logic of the deterministic frames coincides with the logic of all task frames,
   at every class — **landed** — `Deterministic/SameLogic.lean`. Replace the
   `<!-- TODO: add description -->` on the `Deterministic.lean` aggregator row only if it sits
   outside a generated block; otherwise leave it.
-- [ ] `docs/theorem-index.md`: add rows, fully qualified Lean names, path only, no line numbers:
+- [x] `docs/theorem-index.md`: add rows, fully qualified Lean names, path only, no line numbers:
   - `—` | a task frame over a dense Archimedean order is static iff it has a uniform dwell time | `FormalSystem.Semantics.FrameOver.static_iff_uniformDwell` | `FormalSystem/Semantics/Correspondence/Rigidity.lean` | — | pcq
   - `—` | every task frame over such an order with finitely many world states is static | `FormalSystem.Semantics.FrameOver.static_of_finite` | same file | — | pcq
   - `app:deterministic` | deterministic task frames determine the same logic as all task frames, at every class | `FormalSystem.Metalogic.Deterministic.validIn_iff_validDetIn` | `FormalSystem/Metalogic/Deterministic/SameLogic.lean` | — | pcq
   - `app:deterministic` | the same at `.Base` in the paper's unbundled shape | `FormalSystem.Metalogic.Deterministic.valid_iff_valid_deterministic` | same file | Base | pcq
   The Axioms cell must match what `lean_verify` reported in Phases 1-2 (write it out literally if
   it is not exactly `pcq`).
-- [ ] Pin those four declarations: append their `'<name>' depends on axioms: [...]` lines to the
+- [x] Pin those four declarations: append their `'<name>' depends on axioms: [...]` lines to the
   C14 baseline heredoc in `scripts/check-module-invariants.sh` (the block that pins the
   `docs/theorem-index.md` headline rows), so the Axioms column stays generated rather than
   typed. This file is a proposed `file_scope` addition. If the heredoc mechanism turns out to
   need more than an appended line per declaration, drop the four ledger rows instead of leaving
   them unpinned, and say so in the summary.
-- [ ] Confirm the C15 round trip: each ledger-row declaration's docstring carries the `Paper:`
+- [x] Confirm the C15 round trip: each ledger-row declaration's docstring carries the `Paper:`
   line written in Phases 1-2 (`—` + reason for R2, `` `app:deterministic` `` for R1).
-- [ ] Commit by explicit path: the two parent READMEs, the root READMEs the inventory touched,
+- [x] Commit by explicit path: the two parent READMEs, the root READMEs the inventory touched,
   `docs/theorem-index.md`, `scripts/check-module-invariants.sh`.
 
 **Timing**: 1 hour
@@ -371,34 +371,34 @@ list — confirm with `git status --short` and stage only what changed.
 
 ---
 
-### Phase 5: Full acceptance gate and summary [NOT STARTED]
+### Phase 5: Full acceptance gate and summary [COMPLETED]
 
 **Goal**: Run the task's acceptance bar unabridged over the finished tree and write the
 implementation summary.
 
 **Tasks**:
-- [ ] Regenerate the root one final time (`lake exe mk_all --lib FormalSystem`) in case a
+- [x] Regenerate the root one final time (`lake exe mk_all --lib FormalSystem`) in case a
   concurrent session added a module, then `--check` (exit 0).
-- [ ] `lake build --wfail` (full library). Background it if it exceeds the tool timeout and wait
+- [x] `lake build --wfail` (full library). Background it if it exceeds the tool timeout and wait
   per `context/patterns/bounded-build-waiter.md` (hard timeout, `kill -0` on the captured PID,
   one waiter per log). Fix forward on any warning; never discard uncommitted work to reach green.
-- [ ] `lean_verify` on all four headlines (`static_iff_uniformDwell`, `static_of_finite`,
+- [x] `lean_verify` on all four headlines (`static_iff_uniformDwell`, `static_of_finite`,
   `validIn_iff_validDetIn`, `valid_iff_valid_deterministic`) and the three sharpness theorems:
   every axiom set ⊆ `[propext, Classical.choice, Quot.sound]`, no `sorryAx`. Record the literal
   sets in the summary.
-- [ ] `bash scripts/check-module-invariants.sh` — all checks pass (C2, C3, C9 no task numbers,
+- [x] `bash scripts/check-module-invariants.sh` — all checks pass (C2, C3, C9 no task numbers,
   C14 baselines incl. the new pins, C15 anchors + `Paper:` round trip, C17 dead declarations,
   C18 duplicated prose, C19 docstring floor, C23/C26 naming, C24 `FormalSystem.Init` reachability,
   C27 no in-file `#print axioms`, C33 root byte-equality). Fix forward per check; never add an
   allowlist entry to quiet a new failure.
-- [ ] `bash scripts/check-task-references.sh` (or the equivalent C9 run) clean over the new files.
-- [ ] `git diff --quiet -- FormalSystem/Semantics/ShiftSet.lean` succeeds against the pre-task
+- [x] `bash scripts/check-task-references.sh` (or the equivalent C9 run) clean over the new files.
+- [x] `git diff --quiet -- FormalSystem/Semantics/ShiftSet.lean` succeeds against the pre-task
   baseline `61b2dc82e`.
-- [ ] Write `specs/646_formalize_rigidity_and_deterministic_same_logic/summaries/01_rigidity-same-logic-summary.md`
+- [x] Write `specs/646_formalize_rigidity_and_deterministic_same_logic/summaries/01_rigidity-same-logic-summary.md`
   per summary-format.md: what landed, the two R2 refinements (Seriality/reflection in the
   biconditional; density used once), the R1 helper fix, the sharpness witnesses, literal axiom
   profiles, gate outputs, and any file_scope additions actually used.
-- [ ] Final commit by explicit path; `task 646: complete implementation`.
+- [x] Final commit by explicit path; `task 646: complete implementation`.
 
 **Timing**: 0.75 hours
 
@@ -499,14 +499,14 @@ theorem valid_iff_valid_deterministic (φ : Formula) :
 
 ## Testing & Validation
 
-- [ ] Per-phase scoped `lake build --wfail <module>` green before any aggregator edit
-- [ ] `lean_verify` on the four headlines and three sharpness theorems: axioms ⊆ `[propext, Classical.choice, Quot.sound]`, no `sorryAx`
-- [ ] `lake build --wfail` (full) green at Phase 5
-- [ ] `bash scripts/check-module-invariants.sh` all PASS at Phase 5; `--emit-inventory --check` exit 0 at Phases 4 and 5
-- [ ] `lake exe mk_all --lib FormalSystem --check` exit 0 after every root regeneration
-- [ ] `git diff --quiet 61b2dc82e -- FormalSystem/Semantics/ShiftSet.lean` succeeds at every commit
-- [ ] No task numbers in any new or edited file outside `specs/` (C9 / `check-task-references.sh`)
-- [ ] No `app:rigidity` anywhere in the tree (`grep -rn "app:rigidity" FormalSystem docs` empty)
+- [x] Per-phase scoped `lake build --wfail <module>` green before any aggregator edit
+- [x] `lean_verify` on the four headlines and three sharpness theorems: axioms ⊆ `[propext, Classical.choice, Quot.sound]`, no `sorryAx`
+- [x] `lake build --wfail` (full) green at Phase 5
+- [x] `bash scripts/check-module-invariants.sh` all PASS at Phase 5; `--emit-inventory --check` exit 0 at Phases 4 and 5
+- [x] `lake exe mk_all --lib FormalSystem --check` exit 0 after every root regeneration
+- [x] `git diff --quiet 61b2dc82e -- FormalSystem/Semantics/ShiftSet.lean` succeeds at every commit
+- [x] No task numbers in any new or edited file outside `specs/` (C9 / `check-task-references.sh`)
+- [x] No `app:rigidity` anywhere in the tree (`grep -rn "app:rigidity" FormalSystem docs` empty)
 
 ## Artifacts & Outputs
 
