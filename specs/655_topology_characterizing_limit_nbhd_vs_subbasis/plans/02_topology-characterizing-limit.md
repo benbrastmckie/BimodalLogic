@@ -1,7 +1,7 @@
 # Implementation Plan: Task #655
 
 - **Task**: 655 - Topology characterizing Limit: cone-neighbourhood topology 𝒩_F vs subbasis topology 𝒯_F
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/655_topology_characterizing_limit_nbhd_vs_subbasis/reports/01_topology-characterizing-limit.md;
