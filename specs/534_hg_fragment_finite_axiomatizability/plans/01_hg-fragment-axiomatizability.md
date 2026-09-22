@@ -1,7 +1,7 @@
 # Implementation Plan: Task #534
 
 - **Task**: 534 - H/G-fragment finite axiomatizability (TMFrag per frame class)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8.5 hours
 - **Dependencies**: None (builds on the landed `Metalogic/Conservativity/` tree)
 - **Research Inputs**: specs/534_hg_fragment_finite_axiomatizability/reports/01_hg-fragment-axiomatizability.md
@@ -110,41 +110,41 @@ No roadmap context provided in the dispatch; no ROADMAP.md consulted.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: `MinusExt` — the theorems-only extension calculus and its soundness engine [NOT STARTED]
+### Phase 1: `MinusExt` — the theorems-only extension calculus and its soundness engine [COMPLETED]
 
 **Goal**: Define `MinusExt fc Ax : MinusFormula → Prop`, the closure of TM⁻ at `fc` plus an
 arbitrary schema-instance set `Ax` under MP, MN, TN, TR, and prove the one engine every
 soundness row instantiates: `MinusExt fc Ax ⊆ TMFrag fc` whenever `Ax ⊆ TMFrag fc`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Conservativity/MinusExt.lean` with the copyright header,
+- [x] Create `FormalSystem/Metalogic/Conservativity/MinusExt.lean` with the copyright header,
       `import FormalSystem.Metalogic.Conservativity.Fragment`, namespace
       `FormalSystem.Metalogic.Conservativity`, and a module docstring stating: what `MinusExt`
       is, that it is theorems-only (no context, matching TM⁻'s MN/TN/TR discipline), that it
       is `Prop`-valued (unlike `MinusLanguage.DerivationTree`, because nothing pattern-matches
       it into a `Type`), and that it neither states nor approaches forward conservativity.
-- [ ] Declare `inductive MinusExt (fc : FrameClass) (Ax : Set MinusFormula) : MinusFormula → Prop`
+- [x] Declare `inductive MinusExt (fc : FrameClass) (Ax : Set MinusFormula) : MinusFormula → Prop`
       with constructors `tm` (`MinusLanguage.Derivable fc [] φ → MinusExt fc Ax φ`),
       `ax` (`φ ∈ Ax → MinusExt fc Ax φ`), `mp`, `mn` (`□`), `tn` (`G`), `tr`
       (`MinusFormula.reflectTime`).
-- [ ] Prove `minusExt_of_derivable` (the `tm` constructor, exported as a theorem),
+- [x] Prove `minusExt_of_derivable` (the `tm` constructor, exported as a theorem),
       `minusExt_mono` (`Ax₁ ⊆ Ax₂ → MinusExt fc Ax₁ φ → MinusExt fc Ax₂ φ`, induction), and
       `minusExt_empty_iff` (`MinusExt fc ∅ φ ↔ MinusLanguage.Derivable fc [] φ`; the backward
       direction is `tm`, the forward direction is induction using
       `MinusLanguage.DerivationTree.modus_ponens/necessitation/temporal_necessitation/time_reflection`
       on the `Nonempty` witnesses).
-- [ ] Prove the four `TMFrag` closure lemmas the engine needs, each a one-liner on the TM side:
+- [x] Prove the four `TMFrag` closure lemmas the engine needs, each a one-liner on the TM side:
       `tmFrag_mp` (`ProofSystem.DerivationTree.modus_ponens` under `tr_imp`),
       `tmFrag_mn` (`necessitation` under `tr_box`), `tmFrag_tn` (`temporal_necessitation` under
       `tr_allFuture`), `tmFrag_reflectTime` (`time_reflection` transported along
       `MinusLanguage.tr_reflectTime`, exactly as in `translate`'s `time_reflection` case in
       `Conservativity/Backward.lean`).
-- [ ] Prove `minusExt_le_tmFrag (hAx : ∀ ψ ∈ Ax, TMFrag fc ψ) : MinusExt fc Ax φ → TMFrag fc φ`
+- [x] Prove `minusExt_le_tmFrag (hAx : ∀ ψ ∈ Ax, TMFrag fc ψ) : MinusExt fc Ax φ → TMFrag fc φ`
       by induction on `MinusExt`: `tm` is `tmMinus_le_tmFrag`, `ax` is `hAx`, the rules are the
       four closure lemmas.
-- [ ] Add an acceptance `example` that `MinusExt fc ∅ φ → TMFrag fc φ` typechecks from
+- [x] Add an acceptance `example` that `MinusExt fc ∅ φ → TMFrag fc φ` typechecks from
       `minusExt_le_tmFrag` with the vacuous hypothesis.
-- [ ] Scoped build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Conservativity.MinusExt`
+- [x] Scoped build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Conservativity.MinusExt`
       (detached, `run_in_background: true`); `lean_verify` on `minusExt_le_tmFrag`.
 
 **Timing**: 1.5 hours
