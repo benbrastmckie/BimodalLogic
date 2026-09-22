@@ -208,19 +208,19 @@ cell in `TwoOrigins.lean`.
 
 ---
 
-### Phase 4: The hedgehog frame and its checkable axioms [NOT STARTED]
+### Phase 4: The hedgehog frame and its checkable axioms [COMPLETED]
 
 **Goal**: Realise the hedgehog of report item 2.3 as a compiled frame over `D = ℝ`: one centre
 `c`, countably many rays `p n t` indexed by `n : ℕ`, with the two-origin frame's drift law on
 each ray and no cross-ray tasks. Prove Seriality, Compositionality and Limit for it.
 
 **Tasks**:
-- [ ] Create `probes/Hedgehog.lean` with the same header structure as `TwoOrigins.lean` (imports, `open`, namespace, restated `Limit'`, `IsHistory'`, `coneTopology'`, `nbhdTopology'`, `t1Space_nbhdTopology_iff_limit'`), and the `inductive HH` / `def RHH` exactly as pinned below (the pinned block uses `abbrev` only to keep the snapshot extractor from counting them; the probe uses `def`).
-- [ ] Prove `RHH_refl (w) (x) (hx : 0 ≤ x) : RHH w x w` and `RHH_serial` (as for `RTO`).
-- [ ] Prove `RHH_compositional` by transcribing `RTO_compositional` case by case: in every `p n t`/`p m s` case the extra `n = m` conjunct is obtained by `subst` from the hypothesis or supplied by `rfl` for the interpolating point, which lies on the same ray as its endpoints.
-- [ ] Prove `RHH_limit` by transcribing `RTO_limit`: the `c`/`p` cases are as before; the `p n t`/`p m s` case first extracts `n = m` from any single witness, then runs the `|s - t| < x` argument.
-- [ ] Derive `t1Space_nbhdTopology_RHH` from `RHH_limit` (one line).
-- [ ] Recompile; append `#print axioms` for `RHH_serial`, `RHH_compositional`, `RHH_limit`; commit: `task 655 phase 4: hedgehog frame and axioms`.
+- [x] Create `probes/Hedgehog.lean` with the same header structure as `TwoOrigins.lean` (imports, `open`, namespace, restated `Limit'`, `IsHistory'`, `coneTopology'`, `nbhdTopology'`, `t1Space_nbhdTopology_iff_limit'`), and the `inductive HH` / `def RHH` exactly as pinned below (the pinned block uses `abbrev` only to keep the snapshot extractor from counting them; the probe uses `def`). *(completed)*
+- [x] Prove `RHH_refl (w) (x) (hx : 0 ≤ x) : RHH w x w` and `RHH_serial` (as for `RTO`). *(completed)*
+- [x] Prove `RHH_compositional` by transcribing `RTO_compositional` case by case: in every `p n t`/`p m s` case the extra `n = m` conjunct is obtained by `subst` from the hypothesis or supplied by `rfl` for the interpolating point, which lies on the same ray as its endpoints. *(completed: `rintro ⟨rfl, h⟩` / `obtain ⟨rfl, _⟩` for the hypotheses, `⟨rfl, …⟩` for the interpolating point)*
+- [x] Prove `RHH_limit` by transcribing `RTO_limit`: the `c`/`p` cases are as before; the `p n t`/`p m s` case first extracts `n = m` from any single witness, then runs the `|s - t| < x` argument. *(completed: `n = m` from the witness at `x = 1`)*
+- [x] Derive `t1Space_nbhdTopology_RHH` from `RHH_limit` (one line). *(completed)*
+- [x] Recompile; append `#print axioms` for `RHH_serial`, `RHH_compositional`, `RHH_limit`; commit: `task 655 phase 4: hedgehog frame and axioms`. *(completed: exit 0 on first compile, no warnings; all four `[propext, Classical.choice, Quot.sound]`)*
 
 **Timing**: 2 hours (time-boxed)
 
