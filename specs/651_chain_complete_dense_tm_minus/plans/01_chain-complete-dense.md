@@ -1,7 +1,7 @@
 # Implementation Plan: Task #651
 
 - **Task**: 651 - chain_complete_dense_tm_minus
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13.5 hours
 - **Dependencies**: 534 (landed; the Conservativity layer this plan builds on is in-tree)
 - **Research Inputs**: specs/651_chain_complete_dense_tm_minus/reports/01_chain-complete-dense-route.md
@@ -125,28 +125,30 @@ is detached through `bash .claude/scripts/lake-build-guard.sh build --timeout 18
 Docstrings cite Burgess 1984 §2.5 by section, `def:BL-semantics` by label; no line numbers, no
 task numbers (the write-time gate blocks them outside `specs/`).
 
-### Phase 1: MinusMCS.lean — the L⁻ maximal-consistent-set layer [NOT STARTED]
+### Phase 1: MinusMCS.lean — the L⁻ maximal-consistent-set layer [COMPLETED]
 
 **Goal**: A `MinusFormula`-typed mirror of `Metalogic/Core/MaximalConsistent.lean` and the
 closure properties of `Core/MCSProperties.lean`, sufficient for every MCS argument in Phases 3–6.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Conservativity/MinusMCS.lean` with copyright header, imports
+- [x] Create `FormalSystem/Metalogic/Conservativity/MinusMCS.lean` with copyright header, imports
   (`FormalSystem.Metalogic.Conservativity.MinusDeduction`, `Mathlib.Order.Zorn`), then module
   docstring naming `Core/MaximalConsistent.lean` and `Core/MCSProperties.lean` as copy sources
-- [ ] Transcribe the probe's §1 verbatim: `MinusConsistent`, `MinusSetConsistent`,
+  *(deviation: altered — imports `MinusTemporalDerived` (which imports `MinusDeduction`) so the
+  one propositional derivation both modules need, `negImpImp`, is defined once)*
+- [x] Transcribe the probe's §1 verbatim: `MinusConsistent`, `MinusSetConsistent`,
   `MinusSetMaximalConsistent`, polymorphic `exists_maximal_of_chainClosed`,
   `finite_list_in_chain_member`, `minus_consistent_chain_union`, `minus_set_lindenbaum`,
   `neg_consistent_of_not_minus_derivable`
-- [ ] Add `MPoint fc` (the subtype) and `MinusSetMaximalConsistent.finite_subset_consistent`
-- [ ] Closure properties, each mirroring its `Core` namesake on top of `minusDeductionTheorem`:
+- [x] Add `MPoint fc` (the subtype) and `MinusSetMaximalConsistent.finite_subset_consistent`
+- [x] Closure properties, each mirroring its `Core` namesake on top of `minusDeductionTheorem`:
   `closed_under_derivation` (finite `L ⊆ S`, `L ⊢⁻ φ` ⟹ `φ ∈ S`), `theorem_in_mcs`,
   `mp_of_theorem`, `implication_property`, `negation_complete` (`mem_or_neg_mem`),
   `neg_excludes`, `bot_not_mem`, `not_mem_iff_neg_mem`, `imp_mem_iff : (φ.imp ψ) ∈ S ↔ (φ ∈ S →
   ψ ∈ S)`, `and_mem_iff`, `neg_neg_mem_iff`
-- [ ] Duality inside an MCS: `someFuture_mem_iff : ψ.someFuture ∈ S ↔ ψ.neg.allFuture ∉ S`,
+- [x] Duality inside an MCS: `someFuture_mem_iff : ψ.someFuture ∈ S ↔ ψ.neg.allFuture ∉ S`,
   `somePast_mem_iff`, `diamond_mem_iff` (each is `not_mem_iff_neg_mem` unfolded)
-- [ ] `lean_verify` a sample (`minus_set_lindenbaum`, `imp_mem_iff`): standard axioms only
+- [x] `lean_verify` a sample (`minus_set_lindenbaum`, `imp_mem_iff`): standard axioms only
 
 **Timing**: 2 hours
 
@@ -169,33 +171,33 @@ theorem — re-check against `Core/MCSProperties.lean` before continuing.
 
 ---
 
-### Phase 2: MinusTemporalDerived.lean — derived TM⁻ theorems and TR mirrors [NOT STARTED]
+### Phase 2: MinusTemporalDerived.lean — derived TM⁻ theorems and TR mirrors [COMPLETED]
 
 **Goal**: Every derivation-level lemma the canonical relations and chronicle need, future-side
 proved once, past-side obtained by time reflection.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Conservativity/MinusTemporalDerived.lean` (imports
+- [x] Create `FormalSystem/Metalogic/Conservativity/MinusTemporalDerived.lean` (imports
   `MinusDeduction`; module docstring names `Theorems/GeneralizedNecessitation.lean` as the copy
   source for the generalized K rule)
-- [ ] `minusGeneralizedTemporalK : Γ ⊢⁻[fc] φ → Context.map allFuture Γ ⊢⁻[fc] φ.allFuture`
+- [x] `minusGeneralizedTemporalK : Γ ⊢⁻[fc] φ → Context.map allFuture Γ ⊢⁻[fc] φ.allFuture`
   (induction on `Γ` through `minusDeductionTheorem`, `temporal_necessitation`, `temp_k` — the
   L⁻ transposition of `generalizedTemporalK`)
-- [ ] `minusGeneralizedModalK : Γ ⊢⁻[fc] φ → Context.map box Γ ⊢⁻[fc] φ.box` (same induction
+- [x] `minusGeneralizedModalK : Γ ⊢⁻[fc] φ → Context.map box Γ ⊢⁻[fc] φ.box` (same induction
   with `necessitation`, `modal_k`)
-- [ ] Future-side theorems, each `⊢⁻[fc]`: `gAnd : (Gφ ∧ Gψ) → G(φ ∧ ψ)`; `fMono : ⊢ φ → ψ ⟹
+- [x] Future-side theorems, each `⊢⁻[fc]`: `gAnd : (Gφ ∧ Gψ) → G(φ ∧ ψ)`; `fMono : ⊢ φ → ψ ⟹
   ⊢ Fφ → Fψ`; `gAndF : (Gχ ∧ Fψ) → F(χ ∧ ψ)`; `notFBot : ⊢ (F⊥).neg`; `notF_of_not : ⊢ χ.neg
   ⟹ ⊢ (Fχ).neg`; `g4` (= `temp_4`), `tcFuture` (= `temp_connect`), `serialF` (= `temp_serial`)
   as named wrappers
-- [ ] The one DN use: `fF_of_f : ⊢⁻[.Dense] Fψ → FFψ` (contrapose `Axiom.dn`, gate by `le_refl`)
-- [ ] Modal: `boxImpBoxG` (= `modal_future` wrapper); `boxImpBoxH : ⊢⁻[fc] □φ → □Hφ` by
+- [x] The one DN use: `fF_of_f : ⊢⁻[.Dense] Fψ → FFψ` (contrapose `Axiom.dn`, gate by `le_refl`)
+- [x] Modal: `boxImpBoxG` (= `modal_future` wrapper); `boxImpBoxH : ⊢⁻[fc] □φ → □Hφ` by
   `time_reflection` of `modal_future` at `φ.reflectTime`, transported by
   `reflectTime_involution` (the `boxGlobalPast` idiom)
-- [ ] Past mirrors by TR, never by hand: `hAnd`, `minusGeneralizedPastK`, `pMono`, `hAndP`,
+- [x] Past mirrors by TR, never by hand: `hAnd`, `minusGeneralizedPastK`, `pMono`, `hAndP`,
   `notPBot`, `notP_of_not`, `h4`, `tcPast : ⊢ φ → HFφ`, `serialP : ⊢ P⊤`, `tlPast` (the
   reflection of `temp_linearity`); prove any needed `@[simp] reflectTime_*` helper missing from
   `MinusLanguage/Formula.lean` locally rather than editing that module
-- [ ] `lean_verify` on `fF_of_f`, `tlPast`, `minusGeneralizedTemporalK`
+- [x] `lean_verify` on `fF_of_f`, `tlPast`, `minusGeneralizedTemporalK`
 
 **Timing**: 2 hours
 
@@ -218,37 +220,37 @@ re-derived by hand — replace it with the TR idiom.
 
 ---
 
-### Phase 3: MinusCanonicalFrame.lean — canonical relations, existence, density, linearity [NOT STARTED]
+### Phase 3: MinusCanonicalFrame.lean — canonical relations, existence, density, linearity [COMPLETED]
 
 **Goal**: `canR`/`canBox` on `MPoint`s with every relational lemma the chronicle construction and
 truth lemma consume; density stated at `.Dense`, everything else at variable `fc`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Conservativity/MinusCanonicalFrame.lean` (imports `MinusMCS`,
+- [x] Create `FormalSystem/Metalogic/Conservativity/MinusCanonicalFrame.lean` (imports `MinusMCS`,
   `MinusTemporalDerived`; docstring names `BXCanonical/Frame.lean` and `TruthLemma.lean` as copy
   sources: `BxLe`↔`canR`, `BxModalEquiv`↔`canBox`, `g_content_set_consistent`,
   `bx_forward_witness`, `bx_modal_witness`, `F_from_witness`)
-- [ ] `canR`, `canBox` as in the probe (on `Set MinusFormula`, used at `MPoint` carriers);
+- [x] `canR`, `canBox` as in the probe (on `Set MinusFormula`, used at `MPoint` carriers);
   `GContent Γ := {χ | Gχ ∈ Γ}`, `HContent`, `BoxContent`
-- [ ] `canR_trans` (T4); `canR_iff_past : canR Γ Δ ↔ ∀ χ, Hχ ∈ Δ → χ ∈ Γ` (⇒ by TC through
+- [x] `canR_trans` (T4); `canR_iff_past : canR Γ Δ ↔ ∀ χ, Hχ ∈ Δ → χ ∈ Γ` (⇒ by TC through
   `neg_excludes`; ⇐ by `tcPast`); `F_of_canR : canR Γ Δ → ψ ∈ Δ → Fψ ∈ Γ` and `P_of_canR`
-- [ ] Existence: `gContent_insert_consistent` (Lindenbaum seed consistency via
+- [x] Existence: `gContent_insert_consistent` (Lindenbaum seed consistency via
   `minusGeneralizedTemporalK` + `gAnd`), `exists_canR_of_F : Fψ ∈ Γ → ∃ Δ : MPoint, canR Γ Δ ∧
   ψ ∈ Δ`; past mirror `exists_canR_of_P` via `canR_iff_past`; `exists_canR_serial` (TS),
   `exists_canR_serial_past` (`serialP`)
-- [ ] **Density** (`.Dense` only): `exists_canR_between : canR Γ Δ → ∃ Θ, canR Γ Θ ∧ canR Θ Δ`
+- [x] **Density** (`.Dense` only): `exists_canR_between : canR Γ Δ → ∃ Θ, canR Γ Θ ∧ canR Θ Δ`
   — Lindenbaum on `GContent Γ ∪ HContent Δ`; consistency by the report §3.3 derivation chain
   (`gAnd`, `hAnd`, `F_of_canR`, `fF_of_f`, `gAndF` twice, `notF_of_not`, `notFBot`); `canR Θ Δ`
   from `canR_iff_past`
-- [ ] **Weak linearity**, both sides: `canR_weakLinear_right : canR Γ Δ₁ → canR Γ Δ₂ → Δ₁ = Δ₂ ∨
+- [x] **Weak linearity**, both sides: `canR_weakLinear_right : canR Γ Δ₁ → canR Γ Δ₂ → Δ₁ = Δ₂ ∨
   canR Δ₁ Δ₂ ∨ canR Δ₂ Δ₁` (TL; each disjunct refuted via `notF_of_not`; the `Δ₁ = Δ₂` branch by
   `Subtype.ext` + `mem_or_neg_mem`), and `canR_weakLinear_left` (mirror via `tlPast` and
   `canR_iff_past`)
-- [ ] Box: `canBox_refl` (T), `canBox_trans` (4 via `boxImpBoxBox`), `canBox_symm` (B via
+- [x] Box: `canBox_refl` (T), `canBox_trans` (4 via `boxImpBoxBox`), `canBox_symm` (B via
   `minusModalB`), `exists_canBox_of_dia : ◇ψ ∈ Γ → ∃ Δ, canBox Γ Δ ∧ ψ ∈ Δ`
   (`minusGeneralizedModalK`), `canBox_of_canR : canBox Γ Δ → canR Δ Δ' → canBox Γ Δ'` (MF) and
   `canBox_of_canR_rev` (`boxImpBoxH`)
-- [ ] `lean_verify` on `exists_canR_between`, `canR_weakLinear_right`, `exists_canBox_of_dia`
+- [x] `lean_verify` on `exists_canR_between`, `canR_weakLinear_right`, `exists_canBox_of_dia`
 
 **Timing**: 2 hours
 
@@ -271,7 +273,7 @@ also that `grep -n "FrameClass.Dense" MinusCanonicalFrame.lean` hits only `exist
 
 ---
 
-### Phase 4: MinusChronicle.lean part A — stages, placement, interpolation [NOT STARTED]
+### Phase 4: MinusChronicle.lean part A — stages, placement, interpolation [IN PROGRESS]
 
 **Goal**: The finite-stage representation and the three single-stage lemmas (`insert_future`,
 `insert_past`, `fill`) that the ω-construction iterates; all at `.Dense`.
