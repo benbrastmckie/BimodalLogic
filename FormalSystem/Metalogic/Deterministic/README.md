@@ -52,6 +52,7 @@ remaining work is the two collapses: semantic (`Erasure.lean`) and syntactic
 | `Soundness.lean` | `detSoundness` over the *Determined*-valid frames, plus consistency |
 | `Collapse.lean` | the derived-rule layer and the **syntactic** collapse `detDerivable_iff_erasePlus` |
 | `Completeness.lean` | `detCompleteness*`, `logicDeterministicEqDeterminedValid`, the intermediate-class transfers, and `detDerivable_ofFormula_iff` (conservativity over TM) |
+| `SameLogic.lean` | `validIn_iff_validDetIn` and `valid_iff_valid_deterministic`: for `L`, the deterministic frames determine the same logic as all task frames at every class, by the shift-set round trip plus `ShiftSet.frame_deterministic` |
 
 ## Key Results
 
@@ -63,6 +64,9 @@ remaining work is the two collapses: semantic (`Erasure.lean`) and syntactic
 - `detDerivable_ofFormula_iff` — TM⁺ + *Determined* is conservative over TM, at every class
 - `determinedValid_not_deterministic` — the inclusion is strict, so the coincidence is a
   statement about logics and not about frames
+- `validIn_iff_validDetIn` / `valid_iff_valid_deterministic` — for `L`, restricting validity to
+  the deterministic frames changes nothing, at every class; proved semantically and per-model
+  through the shift-set representation, not through a completeness engine
 
 ## Related Documentation
 

@@ -11,6 +11,7 @@ import FormalSystem.Metalogic.Deterministic.System
 import FormalSystem.Metalogic.Deterministic.Soundness
 import FormalSystem.Metalogic.Deterministic.Collapse
 import FormalSystem.Metalogic.Deterministic.Completeness
+import FormalSystem.Metalogic.Deterministic.SameLogic
 
 /-!
 # `Metalogic/Deterministic/` — the deterministic metatheory of TM⁺
@@ -18,7 +19,9 @@ import FormalSystem.Metalogic.Deterministic.Completeness
 Aggregator for the subtree carrying the deterministic-frame metatheory of TM⁺: the validity
 notions restricted to `TaskFrame.Deterministic`, the determinism of the completeness engines'
 own countermodel frames, the `⊡`-erasure and the semantic collapse, the extended system
-TM⁺ + *Determined*, and the deterministic completeness theorem with the coincidence corollary.
+TM⁺ + *Determined*, the deterministic completeness theorem with the coincidence corollary, and
+the semantic fact that for `L` the deterministic frames determine the same logic as all task
+frames at every class (`SameLogic.lean`).
 
 **General (nondeterministic) TM⁺ completeness is not here, and is not stated anywhere in this
 tree.** For the current axiom set it is false at `.Base`
