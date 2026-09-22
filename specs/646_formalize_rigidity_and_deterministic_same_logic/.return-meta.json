@@ -1,30 +1,151 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-22T05:44:20Z",
+  "completed_at": "2026-09-22T06:14:03Z",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/646_formalize_rigidity_and_deterministic_same_logic/plans/01_rigidity-same-logic.md",
-      "summary": "5-phase plan landing R2 (Rigidity.lean), R1 (SameLogic.lean) and the sharpness witnesses (RigiditySharpness.lean) from the research report's compiled scratch, with aggregator, README, inventory, root, theorem-ledger and C14-pin plumbing, and a full acceptance gate; challenge block pins 9 identifiers."
+      "type": "summary",
+      "path": "specs/646_formalize_rigidity_and_deterministic_same_logic/summaries/01_rigidity-same-logic-summary.md",
+      "summary": "R2 (rigidity: static iff uniform dwell over dense Archimedean orders; finite frames static) and R1 (deterministic frames determine the same L-logic at every class) landed sorry-free with compiled sharpness witnesses."
     }
   ],
-  "next_steps": "Run /implement 646 to execute the plan",
-  "phase_count": 5,
-  "estimated_hours": 5,
-  "dependency_waves": [[1, 2], [3], [4], [5]],
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "axiom_count_baseline": 14,
+    "build_passed": true,
+    "notes": "Full `lake build --wfail` via lake-build-guard: exit 0, 0 error:/0 warning: lines, .olean newer than source for every touched module. check-module-invariants.sh exit 0 (all checks PASS incl. C14 with the four new pins). mk_all --check exit 0. axiom_count is the raw `^axiom ` grep over all roots, identical file-for-file to baseline 61b2dc82e; vacuous grep's one repo-wide hit (Examples/TemporalStructures.lean int_domain_universal := trivial) predates this task and has a genuinely True-valued goal."
+  },
+  "lean_verify": {
+    "FormalSystem.Semantics.FrameOver.static_iff_uniformDwell": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "FormalSystem.Semantics.FrameOver.static_of_finite": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "FormalSystem.Semantics.TaskFrame.eq_of_rel_of_step": [
+      "propext",
+      "Quot.sound"
+    ],
+    "FormalSystem.Metalogic.Deterministic.validIn_iff_validDetIn": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "FormalSystem.Metalogic.Deterministic.valid_iff_valid_deterministic": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "FormalSystem.Semantics.ShiftSet.frame_deterministic": [
+      "propext",
+      "Quot.sound"
+    ],
+    "FormalSystem.Semantics.Rigidity.permissiveFrame_not_static": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "FormalSystem.Semantics.Rigidity.intPermissiveFrame_not_static": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "FormalSystem.Semantics.Rigidity.lexRatFrame_not_static": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "FormalSystem.Semantics.Rigidity.lexRat_not_archimedean": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "modified_files": [
+    "FormalSystem/Semantics/Correspondence/Rigidity.lean",
+    "FormalSystem/Semantics/Correspondence/RigiditySharpness.lean",
+    "FormalSystem/Metalogic/Deterministic/SameLogic.lean",
+    "FormalSystem/Semantics/Correspondence.lean",
+    "FormalSystem/Metalogic/Deterministic.lean",
+    "FormalSystem/Semantics/Correspondence/README.md",
+    "FormalSystem/Metalogic/Deterministic/README.md",
+    "FormalSystem/Semantics/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/README.md",
+    "README.md",
+    "FormalSystem.lean",
+    "docs/theorem-index.md",
+    "scripts/check-module-invariants.sh",
+    "scripts/module-invariants-allowlist.txt"
+  ],
+  "proposed_file_scope": [
+    "FormalSystem/Semantics/Correspondence/RigiditySharpness.lean",
+    "FormalSystem/Semantics/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "scripts/check-module-invariants.sh",
+    "scripts/module-invariants-allowlist.txt"
+  ],
+  "completion_data": {
+    "completion_summary": "Landed R2 (over a dense Archimedean duration group a task frame is static iff it has a uniform dwell time, hence every finite-carrier frame over such an order is static; core chop stated at [Archimedean D] only, density used once) and R1 (ValidIn fc φ ↔ ValidDetIn fc φ at every class via the shift-set round trip plus the new helper ShiftSet.frame_deterministic) as three new sorry-free modules with compiled sharpness witnesses for both R2 hypotheses; lake build --wfail green, all module invariants pass, four headlines pinned in C14 and rowed in docs/theorem-index.md.",
+    "roadmap_items": []
+  },
   "memory_candidates": [
     {
-      "content": "Adding a new library module to BimodalLogic's FormalSystem tree has a fixed plumbing checklist beyond the .lean file itself, and every item is gated: (1) an import line + `## Modules` bullet in the directory aggregator; (2) a table row + `## Key Results` bullet in the directory README (naming headlines there also clears C17's dead-declaration scan); (3) parent READMEs: some carry hand-maintained file lists with counts (e.g. `Semantics/README.md`'s Correspondence row), others carry `BEGIN GENERATED` inventory blocks re-emitted by `scripts/check-module-invariants.sh --emit-inventory` (never hand-edited); (4) `lake exe mk_all --lib FormalSystem` regenerates the root, `--check` gates it (C33 byte-compares); (5) any `docs/theorem-index.md` row needs the declaration's docstring to carry a `Paper:` line (anchor or `—` + reason, C15 round trip) AND a `#print axioms` line in the C14 baseline heredoc, because the ledger's Axioms column is generated from baselines, never typed. Plan these as one phase after the modules land, not as afterthoughts.",
-      "category": "PATTERN",
-      "source_artifact": "specs/646_formalize_rigidity_and_deterministic_same_logic/plans/01_rigidity-same-logic.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["new-module-checklist", "mk_all", "emit-inventory", "theorem-index", "C14-baseline", "aggregator"]
+      "content": "In BimodalLogic, `fun _ _ _ => Iff.rfl` does not close `S.frame.TaskRel w d u ↔ u = S.sh w d` for a ShiftSet (the fibre is presented through TaskFrame.reflect); use `S.fibre_taskRel w d u`. Likewise ofReflective-built frames are read through `FrameOver.ofReflective_taskRel`, never by unfolding.",
+      "keywords": [
+        "lean4",
+        "ShiftSet",
+        "fibre_taskRel",
+        "ofReflective",
+        "reflect"
+      ]
+    },
+    {
+      "content": "`SuccOrder ℤ` is not in scope from FormalSystem.Semantics.TaskFrame's closure; import `Mathlib.Data.Int.SuccPred` (as Metalogic/Soundness.lean does) and recover it on `(TemporalOrder.of ℤ).carrier` with `inferInstanceAs (SuccOrder ℤ)`.",
+      "keywords": [
+        "lean4",
+        "SuccOrder",
+        "TemporalOrder.of",
+        "inferInstanceAs",
+        "Mathlib.Data.Int.SuccPred"
+      ]
+    },
+    {
+      "content": "check-module-invariants.sh's C5 treats any all-capitalized dotted `FormalSystem.*` name in docs as a module path; a theorem-index row for a declaration in a namespace that is not a module (e.g. FormalSystem.Semantics.FrameOver.foo) needs an entry in scripts/module-invariants-allowlist.txt, which documents exactly that exemption class. Also: never pass --help to that script; it starts a full run.",
+      "keywords": [
+        "check-module-invariants",
+        "C5",
+        "allowlist",
+        "theorem-index"
+      ]
     }
   ],
-  "metadata": {
-    "session_id": "sess_1790055313_734854_646",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  "reflection": {
+    "what_worked": "Transcribing the research appendix verbatim after it had been re-elaborated against the live tree: two of three modules compiled first time under --wfail, and the one failure was a missing instance import.",
+    "what_was_hard": "The repository's gates are many and opinionated (C5 module-path regex vs namespace names, C14 twin heredocs, generated inventory blocks, generated root); each needed one careful read of the script rather than guessing.",
+    "what_was_missed": "A plan-file edit script used a substring that also occurred inside prose and briefly duplicated the plan; caught by the heading grep and reconstructed before commit. Anchor edit scripts on unique line-start patterns.",
+    "successes": "Every acceptance criterion in the task description met: lake build --wfail green, lean_verify standard axioms only, check-module-invariants.sh all pass, mk_all --check exit 0, ShiftSet.lean untouched."
   },
-  "dispatch_seq": 17
+  "metadata": {
+    "session_id": "sess_1790055313_734854",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "compliance_note": "Automated spot-check flagged `def` (a prose token) and `frame_deterministic` (declared dotted as `theorem ShiftSet.frame_deterministic`, as the plan's challenge note anticipated); both confirmed present by hand.",
+    "phases_completed": 5,
+    "phases_total": 5,
+    "final_commit": "a06d5b88d"
+  }
 }

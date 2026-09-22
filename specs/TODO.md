@@ -11,9 +11,9 @@ next_project_number: 651
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,646,649 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,534,564,565,567,616,617,650 | 298,464,502,563,646,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,618,645 | 231,465,497,534,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,534,559,563,570,604,623,624,649 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,645,650 | 298,464,502,534,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -89,7 +89,6 @@ next_project_number: 651
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-646 [PLANNED] — Machine-check the two cheap MF-correspondence results, R1 and...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -230,12 +229,13 @@ ACCEPTANCE. typst compile --root .. BimodalReference.typ with zero errors. scrip
 ---
 
 ### 646. Formalize rigidity and deterministic same logic
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 568, Task 628
 - **Research**: [646_formalize_rigidity_and_deterministic_same_logic/reports/01_rigidity-same-logic-research.md]
 - **Plan**: [646_formalize_rigidity_and_deterministic_same_logic/plans/01_rigidity-same-logic.md]
+- **Summary**: [646_formalize_rigidity_and_deterministic_same_logic/summaries/01_rigidity-same-logic-summary.md]
 
 **Description**: Machine-check the two cheap MF-correspondence results, R1 and R2, split out of task 543 so that they are not held behind that task's ShiftSet-reconciliation dependency. Land real proofs; no sorry, no new axiom. SOURCE MATERIAL, outside this repository, read before starting: /home/benjamin/Philosophy/Papers/PossibleWorlds/specs/archive/136_rewrite_mf_paragraph_frame_correspondence/reports/03_worlds-topological-categorical-characterization.md (rigidity, section 4.3.6), /home/benjamin/Philosophy/Papers/PossibleWorlds/specs/archive/136_rewrite_mf_paragraph_frame_correspondence/reports/04_dense-correspondent-and-rigidity.md (the refinement and scope limits), and /home/benjamin/Philosophy/Papers/PossibleWorlds/specs/archive/136_rewrite_mf_paragraph_frame_correspondence/reports/05_lean-verification-and-formalization-program.md (THE ROADMAP: elaborated statements, effort estimates, Mathlib dependencies, and Appendix A.1's scratch elaboration of R1). Re-verify every claim those reports make about this tree before relying on it: they were checked against an earlier layout, and modules have since moved.
 
