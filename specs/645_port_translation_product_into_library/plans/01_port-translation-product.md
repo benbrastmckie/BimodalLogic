@@ -1,7 +1,7 @@
 # Implementation Plan: Task #645
 
 - **Task**: 645 - Port the translation-product proof device into the library
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours
 - **Dependencies**: None at the artifact level (task 534 is recorded as a state.json dependency and is complete). Do not run concurrently with task 625 (shares `Semantics/Frames/README.md`) or with any other module-adding task (shares the generated root and README inventory blocks).
 - **Research Inputs**: specs/645_port_translation_product_into_library/reports/01_port-translation-product.md
@@ -108,7 +108,7 @@ needs only Phase 1's `translationProduct`, `translationProduct_taskRel`, `liftH`
 `projH_liftH`, `liftH_projH` and `liftModel`, which is why `liftModel` and `liftH_through` are
 placed in Phase 1 rather than with the invariances.
 
-### Phase 1: Module 1 — relation, live frame, histories, module docstring [NOT STARTED]
+### Phase 1: Module 1 — relation, live frame, histories, module docstring [COMPLETED]
 
 **Goal**: Create `FormalSystem/Semantics/Frames/TranslationProduct.lean` with the copyright
 header, imports, the complete module docstring, and the probe's `Bare`, `Frame` and `Histories`
@@ -116,13 +116,13 @@ material transcribed against live names (probe lines 50-313, plus `liftModel` an
 `liftH_through` from lines 319-326), building green under `--wfail` as a scoped module.
 
 **Tasks**:
-- [ ] Header, in `Standard.lean`'s exact shape: copyright block; `import Mathlib.Tactic.Abel`,
+- [x] Header, in `Standard.lean`'s exact shape: copyright block; `import Mathlib.Tactic.Abel`,
       `import FormalSystem.StarLanguage.StarValidity`,
       `import FormalSystem.Semantics.HistoryMorphism` (transitively `PlusValidity`, `Validity`,
       `TaskFrame`, `PartialHistory`; do NOT import `Frames.Standard`, `Mathlib`, or `Lean`);
       then the module docstring as the first command; then `namespace FormalSystem.Semantics`
       and `open FormalSystem.Syntax FormalSystem.PlusLanguage FormalSystem.StarLanguage`.
-- [ ] Module docstring (R3 of the report), sections in this order: title; the standing caveat in
+- [x] Module docstring (R3 of the report), sections in this order: title; the standing caveat in
       the first paragraph (a PROOF DEVICE showing what L, L⁺ and L⋆ cannot see of a task frame —
       recurrence and transposition — never an intended model; a state carrying a clock reading is
       not a world state in the manuscript's sense); the construction as time-unfolding, quoting
@@ -138,30 +138,30 @@ material transcribed against live names (probe lines 50-313, plus `liftModel` an
       correspondence` in `HistoryMorphism.lean`'s style (the manuscript defines no product of task
       frames; formalization-native); a one-line axiom note (`pcq`, provenance
       `TaskFrame.limit_of_shift`).
-- [ ] Section `Bare` (`variable {D : TemporalOrder} {W : Type} (R : W → ↑D → W → Prop)`):
+- [x] Section `Bare` (`variable {D : TemporalOrder} {W : Type} (R : W → ↑D → W → Prop)`):
       `prodRel`, `prodRel_reflection`, `prodRel_comp`, `prodRel_serial`, `prodRel_limit`,
       `prodRel_const_clock`, `prodRel_fib_image`, `prodRel_seg_image` (helpers; `private` is
       acceptable), `prodRel_saturation`, `saturation_of_prodRel`, `colourClock`
-      (`[Finite W] [Nonempty W]`, no Limit hypothesis). Proofs verbatim from the probe.
-- [ ] Section `Frame` (`variable {D : TemporalOrder} (F : FrameOver D)`):
+      (`[Finite W] [Nonempty W]`, no Limit hypothesis). Proofs verbatim from the probe. *(deviation: altered — five goal-changing `show` tactics became `change` (`linter.style.show` fires under the package's linter set; the probe was compiled outside it))*
+- [x] Section `Frame` (`variable {D : TemporalOrder} (F : FrameOver D)`):
       `FrameOver.translationProduct : FrameOver D` (probe `prodFrame`),
       `@[simp] FrameOver.translationProduct_taskRel`, `FrameOver.translationProduct_sat`
       (`cases fc <;> exact Iff.rfl`), `FrameOver.translationProduct_deterministic_iff`.
-- [ ] Histories: `liftH`, `projH`, `liftH_state`, `projH_state`, `projH_liftH`, `clock_eq`,
+- [x] Histories: `liftH`, `projH`, `liftH_state`, `projH_state`, `projH_liftH`, `clock_eq`,
       `liftH_projH`, `no_recurrence`, `no_transposition`,
       `translationProduct_recurrenceFree : F.translationProduct.toTaskFrame.RecurrenceFree`
       (against the live predicate; body `fun τ' _ _ h => no_recurrence F τ' h`), then
       `liftModel` (probe `liftM`) and `liftH_through`.
-- [ ] Per-declaration docstrings rewritten with durable anchors only: no `Probe624`, no
+- [x] Per-declaration docstrings rewritten with durable anchors only: no `Probe624`, no
       "probe NNN/NN", no "report NN §", no "for NNN", no manuscript line numbers. Pinned labels
       available: `def:frame`, `def:world-history`, `lem:nullity`, `cor:saturation-finite`
       (`colourClock`), `def:deterministic` (`translationProduct_deterministic_iff`).
-- [ ] Scoped build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build
+- [x] Scoped build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build
       FormalSystem.Semantics.Frames.TranslationProduct` (detached, `run_in_background: true`),
       green with zero warnings.
-- [ ] `grep -nE '[0-9]{3,4}' FormalSystem/Semantics/Frames/TranslationProduct.lean` — read every
+- [x] `grep -nE '[0-9]{3,4}' FormalSystem/Semantics/Frames/TranslationProduct.lean` — read every
       hit; the only legitimate matches are the copyright year and numerals inside Lean code.
-- [ ] Commit: `task 645 phase 1: translation product — relation, frame, histories`.
+- [x] Commit: `task 645 phase 1: translation product — relation, frame, histories`.
 
 **Timing**: 1.5 hours
 
