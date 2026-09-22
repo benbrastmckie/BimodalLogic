@@ -17,6 +17,11 @@ import FormalSystem.Metalogic.Conservativity.FragmentCompactness
 import FormalSystem.Metalogic.Conservativity.MinusExt
 import FormalSystem.Metalogic.Conservativity.FragmentAxiomatization
 import FormalSystem.Metalogic.Conservativity.MinusDeduction
+import FormalSystem.Metalogic.Conservativity.MinusTemporalDerived
+import FormalSystem.Metalogic.Conservativity.MinusMCS
+import FormalSystem.Metalogic.Conservativity.MinusCanonicalFrame
+import FormalSystem.Metalogic.Conservativity.MinusChronicle
+import FormalSystem.Metalogic.Conservativity.MinusChainCompleteness
 import FormalSystem.Metalogic.Conservativity.Plus
 import FormalSystem.Metalogic.Conservativity.Star
 
@@ -76,9 +81,11 @@ This module proves the **backward** direction only.
 
 # THE FORWARD DIRECTION IS NOT OPEN WORK — DO NOT ATTEMPT IT
 
-The converse, `TM ⊢ tr φ ⟹ TM⁻ ⊢ φ`, is **refuted** for the Base and Discrete rows and
-**open** for the other two. This section exists so that a future dispatch reading only this
-file does not re-attempt it. The evidence below is this repository's own axiom set, not an
+The converse, `TM ⊢ tr φ ⟹ TM⁻ ⊢ φ`, is **refuted** for the Base and Discrete rows,
+**proved** at `.Dense` (`Conservativity/MinusChainCompleteness.lean`'s `forward_dense`, through
+`chainComplete_dense`), and **open** at `.RTime`. This section exists so that a future
+dispatch reading only this file does not re-attempt the refuted rows or state the general
+schema. The evidence below is this repository's own axiom set, not an
 appeal to the source.
 
 ## Why it must not be `sorry`-ed
@@ -223,9 +230,13 @@ over TM⁻, is answered per class in `Conservativity/FragmentAxiomatization.lean
 verdict record**: Σ_Base = (Sp), Σ_ZTime = Z1, Σ_Dense = Σ_RTime = ∅. Soundness `TM⁻ + Σ_fc ⊆
 TMFrag fc` at all four classes and strictness `TM⁻ ⊊ TM⁻ + Σ_fc` at `.Base`/`.ZTime` are
 machine-checked (through `Conservativity/MinusExt.lean`'s theorems-only closure `MinusExt`);
-completeness `TMFrag fc ⊆ TM⁻ + Σ_fc` is **not machine-checked** — it is literature-backed
-(Burgess 1984 §§2.5–2.7, Venema 2001 Thm 3.3) and appears in Lean only as the explicit hypothesis
-`ChainComplete fc Ax` of `minusExt_iff_tmFrag_of_chainComplete`, which no declaration concludes.
+completeness `TMFrag fc ⊆ TM⁻ + Σ_fc` is **machine-checked at `.Dense` only**
+(`Conservativity/MinusChainCompleteness.lean`'s `chainComplete_dense`, the Burgess 1984 §2.5
+ℚ-chronicle construction over an L⁻ canonical model built in `MinusMCS.lean`,
+`MinusTemporalDerived.lean`, `MinusCanonicalFrame.lean` and `MinusChronicle.lean`, giving
+`minusExt_iff_tmFrag_dense` unconditionally); at `.Base`, `.ZTime` and `.RTime` it is
+literature-backed (Burgess 1984 §§2.6–2.7, Venema 2001 Thm 3.3) and appears in Lean only as the
+explicit hypothesis `ChainComplete fc Ax` of `minusExt_iff_tmFrag_of_chainComplete`.
 `Conservativity/MinusDeduction.lean` supplies the L⁻ deduction theorem and the four `□`-globality
 derivations that the universal-modality reduction behind that hypothesis rests on.
 
@@ -256,10 +267,12 @@ whose unconditional half says any separating witness for non-conservativity is a
 incompleteness. TM⋆ completeness is open under two named obstructions and is asserted nowhere;
 see `Conservativity/Star/README.md`.
 
-## CED / CEC — open
+## CED — closed positively; CEC — open
 
-No counterexample analogous to the CEB and CEF witnesses is known for CED. CEC inherits that
-openness, plus an independent doubt: whether CO alone axiomatizes the same L⁻-logic as
+CED is **proved**: `Conservativity/MinusChainCompleteness.lean`'s `forward_dense : Forward .Dense`,
+obtained from `tmMinusComplete_dense` through `tmMinusCompleteDense_iff_forwardDense`, so no
+counterexample of the CEB/CEF shape exists at `.Dense`. CEC remains open, plus an independent
+doubt: whether CO alone axiomatizes the same L⁻-logic as
 the full Reynolds triple is itself open, and the converse direction (CO deriving the Reynolds
 gap axioms) is separately **refuted** in
 `FormalSystem.Metalogic.Independence.CoNotPriorU`. "Open" here means open in the source, not
@@ -379,7 +392,20 @@ Each entry reads *Module* — *Contents*:
   MP/MN/TN/TR, and the soundness engine `minusExt_le_tmFrag`
 * `Conservativity/FragmentAxiomatization.lean` — the canonical per-class verdict record:
   `sigmaBase`, `sigmaZTime`, the four soundness rows, strictness over TM⁻, and conditional
-  completeness `minusExt_iff_tmFrag_of_chainComplete` (hypothesis `ChainComplete`, never asserted)
+  completeness `minusExt_iff_tmFrag_of_chainComplete` (hypothesis `ChainComplete`, asserted at
+  `.Dense` only, by `MinusChainCompleteness.lean`)
+* `Conservativity/MinusTemporalDerived.lean` — derived TM⁻ theorems as `DerivationTree` terms:
+  generalized K rules, `gAnd`/`gAndF`/`fMono`, the one DN use `fFOfF`, and every past mirror by
+  TR
+* `Conservativity/MinusMCS.lean` — maximal consistent sets over `MinusFormula`: Lindenbaum
+  (`minus_set_lindenbaum`), `MPoint fc`, and the closure/duality lemmas
+* `Conservativity/MinusCanonicalFrame.lean` — the canonical relations `canR`/`canBox` with
+  witnesses, seriality, density at `.Dense` (`exists_canR_between`) and weak linearity both ways
+* `Conservativity/MinusChronicle.lean` — the Burgess §2.5 ω-stage construction of a ℚ-chronicle
+  through any `MPoint .Dense` (`exists_chronicle_through`)
+* `Conservativity/MinusChainCompleteness.lean` — `chainComplete_dense`,
+  `minusExt_iff_tmFrag_dense`, `minusValidIn_chainValidIn`, `tmMinusComplete_dense`,
+  `forward_dense`
 * `Conservativity/MinusDeduction.lean` — the L⁻ deduction theorem `minusDeductionTheorem` and the
   `□`-globality derivations `boxGlobalFuture`, `boxGlobalPast`, `notBoxGlobalFuture`,
   `notBoxGlobalPast`
@@ -399,7 +425,10 @@ FragmentCompactness ← Plus/Forward`, with `SpWitness` hanging off `MinusLangua
 `ProofSystem/`), and the `Plus/` chain `Atomization ← AxiomValidity ← PlusSoundness ← Forward`
 hanging off `Fragment`. `MinusExt` hangs off `Fragment`; `FragmentAxiomatization` off `MinusExt`,
 `SpWitness`, `SpCountermodel`, `ChainBundleTruth` and `DenseObstructionTransfer` jointly; and
-`MinusDeduction` is a leaf importing only `MinusLanguage/Derivation.lean`. The `Star/` chain
+`MinusDeduction` is a leaf importing only `MinusLanguage/Derivation.lean`; the L⁻ canonical-model
+chain `MinusTemporalDerived ← MinusMCS ← MinusCanonicalFrame ← MinusChronicle ←
+MinusChainCompleteness` hangs off `MinusDeduction`, with `MinusChainCompleteness` also importing
+`FragmentAxiomatization` and `TMCompletenessReduction`. The `Star/` chain
 `StarAxiomValidity ← StarSoundness ← Forward` hangs off
 the `Plus/` one at two points: `Star/StarAxiomValidity` imports `Plus/AxiomValidity` (for the two
 TM⁺ dispatch lemmas the closed uniformity arms transport) and `Star/Forward` imports `Plus/Forward`

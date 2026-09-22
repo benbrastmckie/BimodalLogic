@@ -46,9 +46,11 @@ easier composition, routing `⊢[Base] tr φ` through TM's own soundness to `Val
 ## Main Definitions
 
 - `TMMinusComplete fc` — "TM⁻ is complete over the frames of `fc`": every `fc`-L⁻-valid formula is
-  TM⁻-derivable at `fc`. Unasserted, at every tag.
+  TM⁻-derivable at `fc`. Unasserted in this module; asserted at `.Dense` only, by
+  `Conservativity/MinusChainCompleteness.lean`'s `tmMinusComplete_dense`.
 - `Forward fc` — the forward-conservativity statement at `fc`, literally `Conservativity.lean`'s
-  forbidden `forward` theorem restricted to one frame class. Unasserted, at every tag.
+  forbidden `forward` theorem restricted to one frame class. Unasserted in this module; asserted
+  at `.Dense` only, by `forward_dense` in the same module as above.
 - `TMMinusCompleteBase`, `TMMinusCompleteZTime`, `ForwardBase`, `ForwardZTime` — the two tags this
   module named before the generalization, retained as instantiations with their statements
   unchanged.
@@ -70,7 +72,7 @@ the two that are open; it is prose, not a declaration, and asserts none of the f
 **This is the canonical location for the status of all four rows.** Each row asks the same
 question — is TM⁻ (at that frame class) weakly complete for base-language validity over that class,
 equivalently does forward conservativity hold there — and by `tmMinusComplete_iff_forward` the two
-readings never come apart. Two rows are closed, two are not.
+readings never come apart. Three rows are closed (two negatively, one positively), one is not.
 
 The complementary question — which **finite** H/G schema set closes each gap natively, so that
 `TM⁻ + Σ_fc` is the fragment `TMFrag fc` — is recorded per class in
@@ -81,25 +83,35 @@ with soundness machine-checked at all four classes and completeness literature-b
   (`Conservativity/SpCountermodel.lean`), witnessed by `Sp` on the two-fibre `ℤ ⊕ ℝ` model
 * `.ZTime` — System: TM⁻_z; Status: **refuted**; Evidence: `tmMinusCompleteZTime_refuted`
   (`Conservativity/Z1Countermodel.lean`), witnessed by `Z1` on `ℚ ×ₗ ℤ`
-* `.Dense` — System: TM⁻_d; Status: **open; expected complete, no obstruction found**; Evidence: see
-  below. Expected complete by classical theorem (Burgess 1984 §2.5 + the universal-modality
-  reduction); **not machine-checked** — see `Conservativity/FragmentAxiomatization.lean`, where
-  the only Lean form is `minusExt_empty_iff_tmFrag_dense_of_chainComplete` with its hypothesis
-  explicit
+* `.Dense` — System: TM⁻_d; Status: **closed, complete**; Evidence: `tmMinusComplete_dense` and
+  `forward_dense` (`Conservativity/MinusChainCompleteness.lean`), from `chainComplete_dense` —
+  the classical theorem (Burgess 1984 §2.5 + the universal-modality reduction) **machine-checked**
+  by an L⁻ canonical model and a ℚ-chronicle construction; see below
 * `.RTime` — System: TM⁻_dc; Status: **open; obstruction named**; Evidence: see below. Expected
   complete by classical theorem (Burgess 1984 §2.7 + the universal-modality reduction); **not
   machine-checked** — see `Conservativity/FragmentAxiomatization.lean`, where the only Lean form is
   `minusExt_empty_iff_tmFrag_rtime_of_chainComplete` with its hypothesis explicit
 
-Both closed rows are closed by a *dichotomy witness*: a schema valid over the class because the
-class splits into two subclasses that H/G can tell apart, while no single derivation covers both.
-That is the shape of argument the two open rows do not admit, which is the whole reason they are
-open in the direction they are.
+Both negatively closed rows are closed by a *dichotomy witness*: a schema valid over the class
+because the class splits into two subclasses that H/G can tell apart, while no single derivation
+covers both. That is the shape of argument the `.Dense` and `.RTime` rows do not admit, which is
+why `.Dense` closed positively and `.RTime` is open in the direction it is.
 
-### `.Dense` — expected complete, unproved
+### `.Dense` — complete, machine-checked
 
-**No obstruction is known, and both known witnesses provably fail to transfer.**
-`Conservativity/DenseObstructionTransfer.lean` machine-checks both halves:
+**The row is closed positively.** `Conservativity/MinusChainCompleteness.lean` proves
+`chainComplete_dense : ChainComplete FrameClass.Dense ∅` by the route this subsection previously
+listed as missing, all on the base-language side: a maximal-consistent-set layer over
+`MinusFormula` (`MinusMCS.lean`), the canonical relations with density from `DN` and weak
+linearity from `TL` (`MinusCanonicalFrame.lean`), and — in place of bulldozing plus a
+countable-ℚ realization — Burgess 1984 §2.5's step-by-step construction of a single ℚ-indexed
+chronicle from any seed (`MinusChronicle.lean`), with the bundle indexed by one `canBox`-class.
+`tmMinusComplete_dense` then follows through `minusValidIn_chainValidIn`, and `forward_dense`
+through `tmMinusCompleteDense_iff_forwardDense` below.
+
+Before that proof landed, the evidence for the row was the transfer facts of
+`Conservativity/DenseObstructionTransfer.lean`, kept here as the record of why no dichotomy
+witness was ever expected:
 
 * `spDerivableDense` — the `.Base` witness `Sp` is a **theorem** of TM⁻_d (its right disjunct's
   inner formula is `Axiom.dn`), so it is not an underivable validity. `spDerivableRTime` says
@@ -108,27 +120,15 @@ open in the direction they are.
   frame over ℚ, so it is not a validity of the class at all.
 
 `FrameClass.Dense` does not split into two H/G-definable subclasses the way `.Base` (dense versus
-least-positive durations) and `.ZTime` (Archimedean versus not) do, so no dichotomy witness of the
-known shape is available. **This is evidence, not proof.** It rules out the two witnesses that
-exist in this tree; it says nothing about some third witness.
+least-positive durations) and `.ZTime` (Archimedean versus not) do, and the completeness proof
+confirms that no witness of any shape exists.
 
-**What a positive answer still needs**, at declaration granularity. The *transfer* half is already
-closed: `not_minusValidIn_of_not_chainSat` (`Conservativity/ChainBundleTruth.lean`) turns a
-chain-model refutation into a task-frame refutation at any tag the flow frame satisfies, with
-`not_minusValidDense_of_not_chainSat` the ℚ instantiation, and the frame construction it consumes
-(`multiFamTaskFrameGen`, `Metalogic/Algebraic/FlowFrame.lean`) was already generic. What is missing
-is the *canonical model*, all of it on the base-language side:
-
-1. a maximal-consistent-set layer over `MinusFormula`. `Metalogic/Core/`'s apparatus
-   (`MaximalConsistent.lean`, `MCSProperties.lean`, `DeductionTheorem.lean`) is stated over
-   `Formula` throughout and does not transfer;
-2. canonicity for the eleven Base axioms plus `DN`;
-3. bulldozing the canonical clusters into chains;
-4. realization of each countable dense unbounded chain as ℚ, for which Mathlib's
-   `Order.iso_of_countable_dense` is the off-the-shelf step.
-
-Borrowing `Metalogic/BXCanonical/Chronicle/` instead is **not** an option, and the reason is worth
-recording because it is not obvious: that machinery starts from a `SetMaximalConsistent` set of
+The *transfer* half of the route is `not_minusValidIn_of_not_chainSat`
+(`Conservativity/ChainBundleTruth.lean`), which turns a chain-model refutation into a task-frame
+refutation at any tag the flow frame satisfies; the canonical-model half is the new
+`Minus*` modules named above. Borrowing `Metalogic/BXCanonical/Chronicle/` for that half was
+**not** an option, and the reason is worth recording because it is not obvious: that machinery
+starts from a `SetMaximalConsistent` set of
 `Formula`s, so using it would require "`{¬φ}` is TM⁻_d-consistent ⟹ `{tr ¬φ}` is TM_d-consistent",
 which is the contrapositive of the very forward-conservativity statement being proved. The route
 is circular, not merely inconvenient.
@@ -176,11 +176,12 @@ Two things make this row harder than `.Dense` rather than merely later:
 `Metalogic/Conservativity.lean`'s standing prohibition is: **do not state a completeness or
 forward-conservativity theorem for L⁻ ⊂ L and discharge it with `sorry`.** It is not a prohibition
 on *proving* one. `forward` is refuted at `.Base` and `.ZTime`, so a `sorry` there would be an
-unsound placeholder rather than deferred debt; at `.Dense` and `.RTime` the statements are simply
-open, and a genuine proof of either would be welcome. What is forbidden at all four tags is
-asserting one without a proof — and, equally, reading the `.Dense` row above as though the expected
-answer had been established. It has not been. Every `TMMinusComplete` and `Forward` proposition in
-this module is a `def`, referenced as a statement and never the conclusion of a theorem.
+unsound placeholder rather than deferred debt; at `.Dense` both statements are now genuinely
+proved (`tmMinusComplete_dense`, `forward_dense`), and at `.RTime` they are simply open, a genuine
+proof welcome. What is forbidden at all four tags is asserting one without a proof. Every
+`TMMinusComplete` and `Forward` proposition in this module is a `def`, referenced as a statement
+and never the conclusion of a theorem *here*; the `.Dense` instances are concluded in
+`Conservativity/MinusChainCompleteness.lean`.
 
 ## References
 
@@ -219,8 +220,10 @@ and `.RTime` rows did not exist. -/
 
 /--
 **"TM⁻ is complete over the frames of `fc`."** Every `fc`-L⁻-valid formula is derivable in TM⁻ at
-`fc`. **Unasserted** — this `def` states the proposition so it can be named and related to
-`Forward` below; it is never the conclusion of a `theorem` in this tree, at any tag.
+`fc`. This `def` states the proposition so it can be named and related to `Forward` below; it is
+never the conclusion of a `theorem` in this module. In the tree it is concluded at exactly one tag,
+`.Dense` (`Conservativity/MinusChainCompleteness.lean`'s `tmMinusComplete_dense`), refuted at
+`.Base` and `.ZTime`, and open at `.RTime`.
 -/
 def TMMinusComplete (fc : FrameClass) : Prop :=
   ∀ φ : MinusFormula, MinusValidIn fc φ → MinusLanguage.Derivable fc [] φ
@@ -228,7 +231,8 @@ def TMMinusComplete (fc : FrameClass) : Prop :=
 /--
 **"Forward conservativity holds at `fc`."** Literally the `forward` theorem
 `Conservativity.lean`'s module docstring shows must never be stated or `sorry`-ed, restricted to
-one tag. **Unasserted**, for the same reason.
+one tag. Never the conclusion of a `theorem` in this module; in the tree, concluded at `.Dense`
+only (`forward_dense`), refuted at `.Base` and `.ZTime`, open at `.RTime`.
 -/
 def Forward (fc : FrameClass) : Prop :=
   ∀ φ : MinusFormula, ProofSystem.Derivable fc [] (tr φ) → MinusLanguage.Derivable fc [] φ
@@ -307,8 +311,9 @@ theorem tmMinusCompleteZTime_iff_forwardZTime : TMMinusCompleteZTime ↔ Forward
 `FrameClass.Dense` and `FrameClass.RTime` carry weak-completeness engines of their own
 (`completeness_dense` and `completeness_rtime`, the latter being Reynolds 1992 §9 Theorem 7 as
 formalized in this tree), so the same equivalence holds at those tags. Neither row existed before
-the collapse, and neither costs anything beyond naming it. Both sides remain **unasserted** at
-both tags, exactly as at `.Base` and `.ZTime`. -/
+the collapse, and neither costs anything beyond naming it. At `.Dense` both sides are now proved
+(`tmMinusComplete_dense`, `forward_dense`, in `Conservativity/MinusChainCompleteness.lean`, which
+consumes the `.Dense` row below); at `.RTime` both remain **unasserted**. -/
 
 /-- **The `.Dense` row.** `tmMinusComplete_iff_forward completeness_dense`. -/
 theorem tmMinusCompleteDense_iff_forwardDense :

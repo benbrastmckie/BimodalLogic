@@ -47,8 +47,10 @@ Compactness of the fragment at `.Base` and `.Dense` is the sibling module
 The native finite Hilbert axiomatization of the fragment over `MinusFormula` is pinned per class
 in `Conservativity/FragmentAxiomatization.lean` — Σ_Base = (Sp), Σ_ZTime = Z1,
 Σ_Dense = Σ_RTime = ∅ — with soundness `TM⁻ + Σ_fc ⊆ TMFrag fc` and conditional completeness
-(hypothesis `ChainComplete`, never asserted) machine-checked, and unconditional completeness
-literature-backed only (Burgess 1984, Venema 2001); the definition here is unchanged by it.
+(hypothesis `ChainComplete`, asserted at `.Dense` only) machine-checked, unconditional
+completeness machine-checked at `.Dense` (`Conservativity/MinusChainCompleteness.lean`) and
+literature-backed at the other three classes (Burgess 1984, Venema 2001); the definition here is
+unchanged by it.
 
 ## References
 

@@ -157,7 +157,8 @@ theorem not_chainValidIn_dense_of_rat_refutation (φ : MinusFormula) (I : Type) 
 /-- **Chain-completeness of TM⁻_d.** Every formula valid on every chain bundle in
 `FrameClass.Dense` is in `MinusExt .Dense ∅`, i.e. is a TM⁻_d theorem.
 
-Paper: Burgess 1984 §2.5 (the tense logic of ℚ) with the universal-modality reduction.
+Paper: — (formalization-native; the classical source is Burgess 1984 §2.5, the tense logic of
+ℚ, composed with the universal-modality reduction, neither of which is a manuscript anchor)
 -/
 theorem chainComplete_dense : ChainComplete FrameClass.Dense ∅ := by
   intro φ hv
@@ -179,7 +180,10 @@ theorem minusExt_iff_tmFrag_dense (φ : MinusFormula) :
 /-! ## Corollaries: `TMMinusComplete .Dense` and `Forward .Dense` -/
 
 /-- Task-frame validity implies chain-bundle validity, at any class: the contrapositive of
-`not_minusValidIn_of_not_chainSat`. -/
+`not_minusValidIn_of_not_chainSat`.
+
+Paper: — (formalization-native; the chain-bundle semantics is this tree's construction)
+-/
 theorem minusValidIn_chainValidIn {fc : FrameClass} {φ : MinusFormula}
     (h : MinusValidIn fc φ) : ChainValidIn fc φ := by
   intro D I _ hSat v q
@@ -190,7 +194,8 @@ theorem minusValidIn_chainValidIn {fc : FrameClass} {φ : MinusFormula}
 `TMCompletenessReduction.lean`'s status table, closed: `MinusValidIn .Dense φ` gives
 `ChainValidIn .Dense φ`, hence `MinusExt .Dense ∅ φ`, hence `⊢⁻[.Dense] φ`.
 
-Paper: Burgess 1984 §2.5 with the universal-modality reduction.
+Paper: — (formalization-native; TM⁻ names no paper system, and the classical source is Burgess
+1984 §2.5 rather than a manuscript anchor)
 -/
 theorem tmMinusComplete_dense : TMMinusComplete FrameClass.Dense :=
   fun φ h => minusExt_empty_iff.mp (chainComplete_dense φ (minusValidIn_chainValidIn h))

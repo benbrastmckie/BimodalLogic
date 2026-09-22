@@ -51,8 +51,8 @@ soundness composed with the truth-transfer bridge `plusValidIn_ofFormula_iff` an
 completeness engine at `fc`. No TM⁺ completeness is used. Semantic conservativity,
 `PlusValidIn fc (ofFormula φ) ↔ ValidIn fc φ`, is `PlusLanguage/PlusValidity.lean`'s
 `plusValidIn_ofFormula_iff`. The composed pair L⁻ ⊂ L⁺ inherits the L⁻ ⊂ L status exactly:
-backward at every class (`plus_of_tmMinus`), forward not asserted (refuted at `.Base` and `.ZTime`,
-open at `.Dense` and `.RTime` — `Metalogic/Conservativity.lean`).
+backward at every class (`plus_of_tmMinus`), forward refuted at `.Base` and `.ZTime`, proved at
+`.Dense` (`forward_dense`), open at `.RTime` — `Metalogic/Conservativity.lean`).
 
 ## What is open, and is not promised here
 

@@ -30,7 +30,9 @@ two different and independent reasons:
   density axiom `Axiom.dn`, so `⊢⁻[.Dense] □(DN ψ)` by necessitation, and `Sp` follows by
   `Axiom.prop_s` and modus ponens. A schema derivable in the system cannot witness the system's
   incompleteness. Since `Dense ≤ RTime`, the same derivation runs at `.RTime`
-  (`spDerivableRTime`), so this half covers both open rows at once.
+  (`spDerivableRTime`), so this half covers both rows that were open when it was written — `.Dense`
+  has since closed positively (`Conservativity/MinusChainCompleteness.lean`) and `.RTime` remains
+  open.
 * `Z1` stops being **valid**. It is refuted here on the flow frame over ℚ, at the same valuation
   `p := {x | 1 ≤ x}` that makes `Gp ↔ p` pointwise on any dense unbounded chain. So it is not
   `MinusValidDense`, and a formula that is not valid over the class cannot witness a validity the
@@ -45,7 +47,9 @@ way, and this module is the machine-checked form of that observation — the two
 schemata are provably unavailable.
 
 Negatively: **this is not a completeness proof and does not approach one.** Ruling out the two
-witnesses that happen to be in the tree says nothing about the existence of some third witness.
+witnesses that happen to be in the tree says nothing about the existence of some third witness;
+at `.Dense` that question is now settled by the actual completeness proof `chainComplete_dense`
+(`Conservativity/MinusChainCompleteness.lean`), which this module played no part in.
 No theorem here concludes in `TMMinusComplete _` or `Forward _`, and the standing prohibition in
 `Metalogic/Conservativity.lean` — never state a completeness or forward-conservativity theorem
 and discharge it with `sorry` — applies to this module in full. The current status of all four
@@ -69,8 +73,8 @@ are not variants of one another.
 
 ## Main Results
 
-- `spDerivableDense`, `spDerivableRTime` — the `.Base` witness is a theorem of both open
-  systems, hence separates neither
+- `spDerivableDense`, `spDerivableRTime` — the `.Base` witness is a theorem of both `TM⁻_d` and
+  `TM⁻_r`, hence separates neither
 - `q_atom_iff`, `q_gp_iff_p` — the ℚ model's valuation lemma and the pointwise `Gp ↔ p` collapse
 - `q_G_Gp_imp_p`, `q_F_Gp`, `q_not_Gp`, `q_not_true_at_zero` — the three `Z1` parts and their
   combination at the base point `0`
@@ -144,7 +148,8 @@ lemma for `DerivationTree` in this tree, so the derivation is restated rather th
 the two proofs are deliberately kept literally parallel so that a future weakening lemma can
 replace both at once.
 
-Together with `spDerivableDense` this closes the `Sp` half for **both** open rows.
+Together with `spDerivableDense` this closes the `Sp` half for both the `.Dense` and `.RTime`
+rows.
 -/
 noncomputable def spDerivableRTime (φ ψ : MinusFormula) :
     ⊢⁻[FrameClass.RTime] Sp φ ψ :=

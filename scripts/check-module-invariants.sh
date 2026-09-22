@@ -1822,6 +1822,11 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Conservativity.tmMinus_lt_minusExt_sigmaZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Conservativity.tmFrag_chainValidIn' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Conservativity.minusExt_iff_tmFrag_of_chainComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.chainComplete_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.minusExt_iff_tmFrag_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.minusValidIn_chainValidIn' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.tmMinusComplete_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.forward_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Conservativity.boxGlobalFuture' depends on axioms: [propext]
 'FormalSystem.Metalogic.Conservativity.boxGlobalPast' depends on axioms: [propext]
 'FormalSystem.Metalogic.Conservativity.notBoxGlobalFuture' depends on axioms: [propext]
@@ -1970,6 +1975,11 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Conservativity.tmMinus_lt_minusExt_sigmaZTime
 #print axioms FormalSystem.Metalogic.Conservativity.tmFrag_chainValidIn
 #print axioms FormalSystem.Metalogic.Conservativity.minusExt_iff_tmFrag_of_chainComplete
+#print axioms FormalSystem.Metalogic.Conservativity.chainComplete_dense
+#print axioms FormalSystem.Metalogic.Conservativity.minusExt_iff_tmFrag_dense
+#print axioms FormalSystem.Metalogic.Conservativity.minusValidIn_chainValidIn
+#print axioms FormalSystem.Metalogic.Conservativity.tmMinusComplete_dense
+#print axioms FormalSystem.Metalogic.Conservativity.forward_dense
 #print axioms FormalSystem.Metalogic.Conservativity.boxGlobalFuture
 #print axioms FormalSystem.Metalogic.Conservativity.boxGlobalPast
 #print axioms FormalSystem.Metalogic.Conservativity.notBoxGlobalFuture

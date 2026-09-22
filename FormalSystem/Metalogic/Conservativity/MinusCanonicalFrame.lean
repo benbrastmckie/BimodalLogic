@@ -21,7 +21,7 @@ carriers, together with every relational fact the ℚ-chronicle construction
 ## Frame-class discipline
 
 Everything is stated at a variable `fc` except **density**, `exists_canR_between`, which
-consumes `fF_of_f` (the one DN use) and is therefore stated at `FrameClass.Dense` only. Nothing
+consumes `fFOfF` (the one DN use) and is therefore stated at `FrameClass.Dense` only. Nothing
 here concludes a completeness statement; the relations are the raw material of one.
 
 ## Main Results
@@ -274,7 +274,7 @@ def cutList {φ : MinusFormula} (Γ' : Context) :
 consistent. A refutation from `A ++ B` (`A ⊆ GContent Γ`, `B ⊆ HContent Δ`) gives, with
 `b := ⋀ B`: `G¬b ∈ Γ` (generalized temporal K), `Hb ∈ Δ` (`hAnd`), hence `F(Hb) ∈ Γ` and, by
 DN, `FF(Hb) ∈ Γ`; `G(GP¬b) ∈ Γ` by TC under `G`; two applications of `gAndF` land
-`FF(P¬b ∧ Hb) ∈ Γ`, refuted by `notPNegAndH` under `notF_of_not` twice. -/
+`FF(P¬b ∧ Hb) ∈ Γ`, refuted by `notPNegAndH` under `notFOfNot` twice. -/
 theorem gContent_union_hContent_consistent (Γ Δ : MPoint FrameClass.Dense)
     (h : canR Γ.1 Δ.1) :
     MinusSetConsistent FrameClass.Dense (GContent Γ.1 ∪ HContent Δ.1) := by
@@ -309,14 +309,14 @@ theorem gContent_union_hContent_consistent (Γ Δ : MPoint FrameClass.Dense)
       (minusGeneralizedTemporalK A d₂)
   have hHb : b.allPast ∈ Δ.1 := Δ.2.allPast_conj_mem B hB
   have hFHb : b.allPast.someFuture ∈ Γ.1 := F_of_canR h hHb
-  have hFFHb : b.allPast.someFuture.someFuture ∈ Γ.1 := Γ.2.mp_of_theorem (fF_of_f _) hFHb
+  have hFFHb : b.allPast.someFuture.someFuture ∈ Γ.1 := Γ.2.mp_of_theorem (fFOfF _) hFHb
   have hGGP : b.neg.somePast.allFuture.allFuture ∈ Γ.1 :=
     Γ.2.mp_of_theorem (gMono (tcFuture b.neg)) hGnb
   have h₁ : (b.neg.somePast.allFuture.and b.allPast.someFuture).someFuture ∈ Γ.1 :=
     Γ.2.mp_of_theorem (gAndF _ _) (Γ.2.and_mem_iff.mpr ⟨hGGP, hFFHb⟩)
   have h₂ : (b.neg.somePast.and b.allPast).someFuture.someFuture ∈ Γ.1 :=
     Γ.2.mp_of_theorem (fMono (gAndF _ _)) h₁
-  exact Γ.2.not_mem_of_neg_theorem (notF_of_not (notF_of_not (notPNegAndH b))) h₂
+  exact Γ.2.not_mem_of_neg_theorem (notFOfNot (notFOfNot (notPNegAndH b))) h₂
 
 /-- **Density** (`.Dense` only): between any `Γ R Δ` lies a `Θ` with `Γ R Θ R Δ`. Lindenbaum
 on `GContent Γ ∪ HContent Δ`, with `Θ R Δ` read off the past characterisation. -/
@@ -427,10 +427,10 @@ theorem canR_weakLinear_right {Γ Δ₁ Δ₂ : MPoint fc} (h₁ : canR Γ.1 Δ�
   have hTL := Γ.2.mp_of_theorem (tlFuture (tlL α β γ) (tlR α β γ))
     (Γ.2.and_mem_iff.mpr ⟨hF₁, hF₂⟩)
   rcases Γ.2.or_mem_iff.mp hTL with hd₁ | hd
-  · exact Γ.2.not_mem_of_neg_theorem (notF_of_not (notTLDisj₁ α β γ)) hd₁
+  · exact Γ.2.not_mem_of_neg_theorem (notFOfNot (notTLDisj₁ α β γ)) hd₁
   rcases Γ.2.or_mem_iff.mp hd with hd₂ | hd₃
-  · exact Γ.2.not_mem_of_neg_theorem (notF_of_not (notTLDisj₂ α β γ)) hd₂
-  · exact Γ.2.not_mem_of_neg_theorem (notF_of_not (notTLDisj₃ α β γ)) hd₃
+  · exact Γ.2.not_mem_of_neg_theorem (notFOfNot (notTLDisj₂ α β γ)) hd₂
+  · exact Γ.2.not_mem_of_neg_theorem (notFOfNot (notTLDisj₃ α β γ)) hd₃
 
 /-- **Left weak linearity** (the TR mirror of TL): two predecessors of a point are equal or
 comparable. -/
@@ -454,10 +454,10 @@ theorem canR_weakLinear_left {Γ Δ₁ Δ₂ : MPoint fc} (h₁ : canR Δ₁.1 �
   have hTL := Γ.2.mp_of_theorem (tlPast (tlLP α β γ) (tlRP α β γ))
     (Γ.2.and_mem_iff.mpr ⟨hP₁, hP₂⟩)
   rcases Γ.2.or_mem_iff.mp hTL with hd₁ | hd
-  · exact Γ.2.not_mem_of_neg_theorem (notP_of_not (notTLDisjP₁ α β γ)) hd₁
+  · exact Γ.2.not_mem_of_neg_theorem (notPOfNot (notTLDisjP₁ α β γ)) hd₁
   rcases Γ.2.or_mem_iff.mp hd with hd₂ | hd₃
-  · exact Γ.2.not_mem_of_neg_theorem (notP_of_not (notTLDisjP₂ α β γ)) hd₂
-  · exact Γ.2.not_mem_of_neg_theorem (notP_of_not (notTLDisjP₃ α β γ)) hd₃
+  · exact Γ.2.not_mem_of_neg_theorem (notPOfNot (notTLDisjP₂ α β γ)) hd₂
+  · exact Γ.2.not_mem_of_neg_theorem (notPOfNot (notTLDisjP₃ α β γ)) hd₃
 
 /-! ## The modal relation -/
 

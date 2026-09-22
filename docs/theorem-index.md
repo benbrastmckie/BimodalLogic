@@ -195,7 +195,12 @@ The translation product `F.translationProduct` (`FormalSystem/Semantics/Frames/T
 | — | `TM⁻ ⊊ TM⁻ + (Sp)`, witnessed by `Sp p p` | `FormalSystem.Metalogic.Conservativity.tmMinus_lt_minusExt_sigmaBase` | `FormalSystem/Metalogic/Conservativity/FragmentAxiomatization.lean` | Base | pcq pinned:C14 |
 | — | `TM⁻_z ⊊ TM⁻_z + Z1`, witnessed by `Z1 p` | `FormalSystem.Metalogic.Conservativity.tmMinus_lt_minusExt_sigmaZTime` | `FormalSystem/Metalogic/Conservativity/FragmentAxiomatization.lean` | ZTime | pcq pinned:C14 |
 | — | Fragment theorems are chain-bundle valid | `FormalSystem.Metalogic.Conservativity.tmFrag_chainValidIn` | `FormalSystem/Metalogic/Conservativity/FragmentAxiomatization.lean` | — | pcq pinned:C14 |
-| — | Conditional completeness: `TM⁻ + Ax = TMFrag fc` given `ChainComplete fc Ax` (hypothesis never discharged) | `FormalSystem.Metalogic.Conservativity.minusExt_iff_tmFrag_of_chainComplete` | `FormalSystem/Metalogic/Conservativity/FragmentAxiomatization.lean` | — | pcq pinned:C14 |
+| — | Conditional completeness: `TM⁻ + Ax = TMFrag fc` given `ChainComplete fc Ax` (discharged at `.Dense` by `chainComplete_dense`) | `FormalSystem.Metalogic.Conservativity.minusExt_iff_tmFrag_of_chainComplete` | `FormalSystem/Metalogic/Conservativity/FragmentAxiomatization.lean` | — | pcq pinned:C14 |
+| — | Chain-completeness of TM⁻_d: `ChainComplete FrameClass.Dense ∅`, by an L⁻ canonical model and the Burgess §2.5 ℚ-chronicle construction | `FormalSystem.Metalogic.Conservativity.chainComplete_dense` | `FormalSystem/Metalogic/Conservativity/MinusChainCompleteness.lean` | Dense | pcq pinned:C14 |
+| — | `TM⁻_d = TMFrag .Dense` unconditionally | `FormalSystem.Metalogic.Conservativity.minusExt_iff_tmFrag_dense` | `FormalSystem/Metalogic/Conservativity/MinusChainCompleteness.lean` | Dense | pcq pinned:C14 |
+| — | Task-frame validity implies chain-bundle validity, at every class | `FormalSystem.Metalogic.Conservativity.minusValidIn_chainValidIn` | `FormalSystem/Metalogic/Conservativity/MinusChainCompleteness.lean` | — | pcq pinned:C14 |
+| — | `TMMinusComplete FrameClass.Dense`: TM⁻_d is weakly complete over the dense task frames | `FormalSystem.Metalogic.Conservativity.tmMinusComplete_dense` | `FormalSystem/Metalogic/Conservativity/MinusChainCompleteness.lean` | Dense | pcq pinned:C14 |
+| — | `Forward FrameClass.Dense`: forward proof-theoretic conservativity of TM over TM⁻ at `.Dense` | `FormalSystem.Metalogic.Conservativity.forward_dense` | `FormalSystem/Metalogic/Conservativity/MinusChainCompleteness.lean` | Dense | pcq pinned:C14 |
 | — | `⊢⁻ □χ → G□χ`, `□`-globality (future) | `FormalSystem.Metalogic.Conservativity.boxGlobalFuture` | `FormalSystem/Metalogic/Conservativity/MinusDeduction.lean` | — | `[propext]` pinned:C14 |
 | — | `⊢⁻ □χ → H□χ`, `□`-globality (past, by TR) | `FormalSystem.Metalogic.Conservativity.boxGlobalPast` | `FormalSystem/Metalogic/Conservativity/MinusDeduction.lean` | — | `[propext]` pinned:C14 |
 | — | `⊢⁻ ¬□χ → G¬□χ`, negated `□`-globality (future) | `FormalSystem.Metalogic.Conservativity.notBoxGlobalFuture` | `FormalSystem/Metalogic/Conservativity/MinusDeduction.lean` | — | `[propext]` pinned:C14 |
@@ -294,8 +299,9 @@ Three of the rows above are negative results, and they are easy to misread as un
 - **Strong completeness at `ZTime` and `RTime` is machine-refuted**, not open.
   `notStrongCompletenessZTime` and `notStrongCompletenessRTime` settle both negatively, which is
   why only the weak forms appear for those two classes.
-- **Forward proof-theoretic conservativity of TM over TM⁻ is refuted at `Base` and `ZTime`** and
-  open at `Dense` and `RTime`. Both refutations are machine-checked:
+- **Forward proof-theoretic conservativity of TM over TM⁻ is refuted at `Base` and `ZTime`**,
+  proved at `Dense` (`forward_dense`, above), and open at `RTime`. Both refutations are
+  machine-checked:
   `FormalSystem.Metalogic.tmMinusCompleteBase_refuted`
   (`FormalSystem/Metalogic/Conservativity/SpCountermodel.lean`, over the native `MinusFrame`
   semantics) and `FormalSystem.Metalogic.tmMinusCompleteZTime_refuted`

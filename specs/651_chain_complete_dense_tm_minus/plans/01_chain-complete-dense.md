@@ -1,7 +1,7 @@
 # Implementation Plan: Task #651
 
 - **Task**: 651 - chain_complete_dense_tm_minus
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 13.5 hours
 - **Dependencies**: 534 (landed; the Conservativity layer this plan builds on is in-tree)
 - **Research Inputs**: specs/651_chain_complete_dense_tm_minus/reports/01_chain-complete-dense-route.md
@@ -190,6 +190,9 @@ proved once, past-side obtained by time reflection.
   ⟹ ⊢ (Fχ).neg`; `g4` (= `temp_4`), `tcFuture` (= `temp_connect`), `serialF` (= `temp_serial`)
   as named wrappers
 - [x] The one DN use: `fF_of_f : ⊢⁻[.Dense] Fψ → FFψ` (contrapose `Axiom.dn`, gate by `le_refl`)
+  *(deviation: altered — landed as `fFOfF`; likewise `notF_of_not`/`notP_of_not` landed as
+  `notFOfNot`/`notPOfNot`, because Mathlib's naming linter (gate C16) rejects underscores in
+  `def` names)*
 - [x] Modal: `boxImpBoxG` (= `modal_future` wrapper); `boxImpBoxH : ⊢⁻[fc] □φ → □Hφ` by
   `time_reflection` of `modal_future` at `φ.reflectTime`, transported by
   `reflectTime_involution` (the `boxGlobalPast` idiom)
@@ -428,59 +431,89 @@ Challenge Statements`.
 
 ---
 
-### Phase 7: Wiring, ledgers, status prose, and gates [IN PROGRESS]
+## Lean Challenge Statements` verbatim
+
+---
+
+## Lean Challenge Statements` verbatim
+
+---
+
+## Lean Challenge Statements` verbatim
+
+---
+
+
+## Lean Challenge Statements` verbatim
+
+---
+
+## Lean Challenge Statements` verbatim
+
+---
+
+## Lean Challenge Statements` verbatim
+
+---
+
+### Phase 7: Wiring, ledgers, status prose, and gates [COMPLETED]
 
 **Goal**: The library knows about the new modules, every ledger and docstring tells the truth
 about `.Dense`, and all repository gates are green.
 
 **Tasks**:
-- [ ] Add the five new modules to `FormalSystem/Metalogic/Conservativity.lean`'s import block, and
+- [x] Add the five new modules to `FormalSystem/Metalogic/Conservativity.lean`'s import block, and
   a bullet for each in its module docstring's module list (with the `.Dense` row now described as
   machine-checked and the `.RTime` obstruction paragraph left untouched)
-- [ ] Regenerate the root: `lake exe mk_all --lib FormalSystem`; never hand-edit
+- [x] Regenerate the root: `lake exe mk_all --lib FormalSystem`; never hand-edit
   `FormalSystem.lean`
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory` to refresh
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory` to refresh
   `FormalSystem/Metalogic/Conservativity/README.md`'s generated block; then hand-fill the five new
   rows' descriptions, revise the README's forward-row status line ("**open** at `.Dense` and
   `.RTime`" → machine-checked at `.Dense`, open at `.RTime`), the `FragmentAxiomatization.lean`
   row description, and the `ChainComplete` bullet
-- [ ] `FragmentAxiomatization.lean` docstrings: module docstring ("nothing here concludes
+- [x] `FragmentAxiomatization.lean` docstrings: module docstring ("nothing here concludes
   `ChainComplete fc Ax`" → concluded at `.Dense` by `chainComplete_dense` in
   `MinusChainCompleteness.lean`, hypothesis at the other three), the `.Dense` verdict bullet
   (completeness: **machine-checked**), the `ChainComplete` docstring ("No declaration in this
   tree concludes it" → exactly one does, at `.Dense`), and
   `minusExt_empty_iff_tmFrag_dense_of_chainComplete`'s docstring (both propositions now asserted,
   pointing at the unconditional `minusExt_iff_tmFrag_dense`)
-- [ ] `TMCompletenessReduction.lean`: the `.Dense` row of the four-row status table (**closed**,
+- [x] `TMCompletenessReduction.lean`: the `.Dense` row of the four-row status table (**closed**,
   `tmMinusComplete_dense`/`forward_dense`), retitle and rewrite the "`.Dense` — expected complete,
   unproved" subsection to record the landed route and drop the four-item "What a positive answer
   still needs" list (keep the circularity paragraph about `BXCanonical/Chronicle/`), and the
   "Two rows are closed, two are not" sentence; the `.RTime` subsection stays as is
-- [ ] `ChainBundleTruth.lean` module docstring: "It is **not** a completeness proof … the converse
+- [x] `ChainBundleTruth.lean` module docstring: "It is **not** a completeness proof … the converse
   is not proved" → the converse is now proved at `.Dense` (`minusValidIn_chainValidIn` +
   `chainComplete_dense`), still open at `.RTime`; `not_minusValidIn_of_not_chainSat`'s docstring
   likewise
-- [ ] `Conservativity.lean` module docstring (`ChainComplete … which no declaration concludes`,
+- [x] `Conservativity.lean` module docstring (`ChainComplete … which no declaration concludes`,
   the "hypothesis `ChainComplete`, never asserted" bullet), `MinusExt.lean`'s and
   `Fragment.lean`'s "never asserted" phrases, and `FormalSystem/Metalogic.lean`'s "explicit,
   never-asserted hypothesis `ChainComplete`" sentence — each revised to "asserted at `.Dense`
   only"
-- [ ] `docs/theorem-index.md`: in the Conservativity section add rows for the five Goal theorems
+- [x] `docs/theorem-index.md`: in the Conservativity section add rows for the five Goal theorems
   (`pcq pinned:C14`, class `Dense`; `minusValidIn_chainValidIn` class `—`); revise the existing
   `minusExt_iff_tmFrag_of_chainComplete` row's "(hypothesis never discharged)" to "(discharged at
   `.Dense` by `chainComplete_dense`)"; revise the "Forward proof-theoretic conservativity … open
   at `Dense` and `RTime`" bullet in the refutations-not-gaps section
-- [ ] `scripts/check-module-invariants.sh`: run `#print axioms` on each of the five names, paste
+- [x] `scripts/check-module-invariants.sh`: run `#print axioms` on each of the five names, paste
   the exact output lines into the `C14BASE` heredoc and the matching `#print axioms` lines into
   `C14LEAN`, in the same relative position as the existing
   `minusExt_iff_tmFrag_of_chainComplete` entries
-- [ ] Full guarded `lake build --wfail`; `bash scripts/check-module-invariants.sh` (all checks,
+- [x] Full guarded `lake build --wfail`; `bash scripts/check-module-invariants.sh` (all checks,
   including C14 and the inventory `--check`); `lake exe mk_all --lib FormalSystem --check`;
   `bash scripts/check-metalogic-cycles.sh`
-- [ ] Final grep sweep across `FormalSystem/Metalogic/Conservativity/`,
+- [x] Final grep sweep across `FormalSystem/Metalogic/Conservativity/`,
   `FormalSystem/Metalogic.lean`, `docs/theorem-index.md` for `never asserted`, `not
   machine-checked`, `open at`, `ChainComplete`, `TMMinusComplete` — every remaining hit must be
   about `.Base`/`.ZTime`/`.RTime` or the general conditional theorem, not `.Dense`
+  *(deviation: altered — the sweep found three further `.Dense`-scoped sites outside the plan's
+  list, edited in this phase per the Scope Hypothesis: `Conservativity/Plus.lean` ("open at
+  `.Dense` and `.RTime`"), `Conservativity/DenseObstructionTransfer.lean` ("both open rows",
+  four passages), and the README's "two open rows" sentence; `--emit-inventory` also refreshed
+  the rollup blocks of `FormalSystem/Metalogic/README.md`, `FormalSystem/README.md`, `README.md`)*
 
 **Timing**: 1.5 hours
 
@@ -546,21 +579,21 @@ end FormalSystem.Metalogic.Conservativity
 
 ## Testing & Validation
 
-- [ ] Each new module builds scoped with `--wfail` at its phase close (Phases 1–6), with
+- [x] Each new module builds scoped with `--wfail` at its phase close (Phases 1–6), with
   `grep -c sorry` = 0 and no vacuous placeholders (`rules/lean4.md`)
-- [ ] `lean_verify` on the five Goal names: `[propext, Classical.choice, Quot.sound]` or a subset,
+- [x] `lean_verify` on the five Goal names: `[propext, Classical.choice, Quot.sound]` or a subset,
   never `sorryAx`
-- [ ] `exists_canR_between`, `fF_of_f`, `Chronicle`, `exists_chronicle_through`, and everything in
+- [x] `exists_canR_between`, `fF_of_f`, `Chronicle`, `exists_chronicle_through`, and everything in
   `MinusChainCompleteness.lean` are at `FrameClass.Dense`; nothing concludes `ChainComplete` at
   any other class (`grep -n "ChainComplete FrameClass\.\(Base\|ZTime\|RTime\)"` finds only the
   pre-existing conditional corollaries)
-- [ ] Full guarded `lake build --wfail` green; `check-module-invariants.sh` all pass;
+- [x] Full guarded `lake build --wfail` green; `check-module-invariants.sh` all pass;
   `mk_all --check` 0; `check-metalogic-cycles.sh` 0
-- [ ] Statement fidelity: the implemented signatures of the five Goal theorems match the challenge
+- [x] Statement fidelity: the implemented signatures of the five Goal theorems match the challenge
   block verbatim (`lean-challenge-snapshot.sh --check 651 .` is advisory; a drift finding is
   investigated under `rules/plan-compliance.md`, never silently reconciled)
-- [ ] No task-number references in any file outside `specs/` (the write-time gate blocks them)
-- [ ] Concurrency discipline: every commit stages an explicit file list; `git log` checked before
+- [x] No task-number references in any file outside `specs/` (the write-time gate blocks them)
+- [x] Concurrency discipline: every commit stages an explicit file list; `git log` checked before
   reporting any foreign modification
 
 ## Artifacts & Outputs

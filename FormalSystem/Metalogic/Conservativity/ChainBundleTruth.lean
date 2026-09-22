@@ -40,17 +40,19 @@ single interface any future canonical-model work consumes. The frame constructio
 needs was already in-tree and generic (`multiFamTaskFrameGen` discharges all four frame axioms for
 an arbitrary temporal order), so no frame-building appears here either.
 
-It is **not** a completeness proof and does not approach one. The missing content is entirely on
-the other side: a canonical model built from base-language maximal-consistent sets, canonicity for
-the eleven Base axioms plus `DN`, bulldozing, and a countable-ℚ realization. None of that is here,
-no theorem in this module concludes in `TMMinusComplete _` or `Forward _`, and the standing
-prohibition in `Metalogic/Conservativity.lean` — never state a completeness or
-forward-conservativity theorem and discharge it with `sorry` — applies in full. The current four-row
-status is recorded in `Conservativity/TMCompletenessReduction.lean`'s module docstring.
+It is **not** itself a completeness proof. The other half — a canonical model built from
+base-language maximal-consistent sets and a ℚ-chronicle construction — lives in
+`Conservativity/MinusMCS.lean`, `MinusCanonicalFrame.lean`, `MinusChronicle.lean` and
+`MinusChainCompleteness.lean`, and closes the `.Dense` row (`chainComplete_dense`,
+`tmMinusComplete_dense`, `forward_dense`). No theorem in *this* module concludes in
+`TMMinusComplete _` or `Forward _`, and the standing prohibition in `Metalogic/Conservativity.lean`
+— never state a completeness or forward-conservativity theorem and discharge it with `sorry` —
+applies in full. The current four-row status is recorded in
+`Conservativity/TMCompletenessReduction.lean`'s module docstring.
 
-In particular, the converse of `not_minusValidIn_of_not_chainSat` is **not** proved and is not
-available: nothing here says that a formula underivable in the system has a chain-model
-refutation. That implication is the completeness direction itself.
+The converse of `not_minusValidIn_of_not_chainSat` — a formula underivable in the system has a
+chain-model refutation — is the completeness direction itself. It is proved at `.Dense`
+(`minusValidIn_chainValidIn` composed with `chainComplete_dense`) and remains open at `.RTime`.
 
 ## Main Results
 
@@ -188,9 +190,10 @@ Every ingredient is already generic: the model is `⟨v⟩` (`TaskModel` has one
 is `multiFamHistoryGen q.1 q.2`, and the bridge is
 `chainBundle_truth_lemma` read at time `0`, where `q.2 + 0 = q.2` puts the base point back at `q`.
 
-**The converse is not proved here and is not available.** "Every `fc`-underivable formula has a
-chain-model refutation" is the completeness direction, and is exactly what
-`Conservativity/TMCompletenessReduction.lean` records as unasserted at all four tags.
+**The converse is not proved here.** "Every `fc`-underivable formula has a chain-model
+refutation" is the completeness direction: proved at `.Dense` in
+`Conservativity/MinusChainCompleteness.lean`, refuted at `.Base`/`.ZTime`, open at `.RTime`, as
+`Conservativity/TMCompletenessReduction.lean` records.
 -/
 theorem not_minusValidIn_of_not_chainSat {fc : FrameClass}
     (hSat : fc.Sat (multiFamTaskFrameGen D FamIdx))

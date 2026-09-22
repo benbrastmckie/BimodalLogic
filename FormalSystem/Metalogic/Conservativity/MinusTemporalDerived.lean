@@ -23,13 +23,13 @@ hand.
 * Monotonicity and generalized K: `gMono`, `boxMono`, `minusGeneralizedTemporalK`
   (`Γ ⊢⁻ φ ⟹ map G Γ ⊢⁻ Gφ`, the L⁻ transposition of
   `Theorems/GeneralizedNecessitation.lean`'s `generalizedTemporalK`), `minusGeneralizedModalK`.
-* Future-side temporal: `gAnd`, `fMono`, `gAndF`, `notFBot`, `notF_of_not`, `notGAndFNeg`,
+* Future-side temporal: `gAnd`, `fMono`, `gAndF`, `notFBot`, `notFOfNot`, `notGAndFNeg`,
   `notFNegAndG`, `g4`, `tcFuture`, `serialF`, `gTop`.
-* The single DN use: `fF_of_f : ⊢⁻[.Dense] Fψ → FFψ`, `Axiom.dn` contraposed. It is the only
+* The single DN use: `fFOfF : ⊢⁻[.Dense] Fψ → FFψ`, `Axiom.dn` contraposed. It is the only
   declaration in this module stated at `FrameClass.Dense`.
 * Modal-temporal: `boxImpBoxG` (MF) and its TR mirror `boxImpBoxH`.
 * Past mirrors by TR: `pastNecessitation`, `hK`, `hMono`, `minusGeneralizedPastK`, `hAnd`,
-  `pMono`, `hAndP`, `notPBot`, `notP_of_not`, `notHAndPNeg`, `notPNegAndH`, `h4`, `tcPast`,
+  `pMono`, `hAndP`, `notPBot`, `notPOfNot`, `notHAndPNeg`, `notPNegAndH`, `h4`, `tcPast`,
   `serialP`, `hTop`, `tlPast`.
 
 ## References
@@ -210,7 +210,7 @@ def notFBot : ⊢⁻[fc] MinusFormula.bot.someFuture.neg :=
   mpC (minusNotNotIntro MinusFormula.top.allFuture) gTop
 
 /-- From `⊢⁻ ¬χ`, `⊢⁻ ¬Fχ`. -/
-def notF_of_not {χ : MinusFormula} (d : ⊢⁻[fc] χ.neg) : ⊢⁻[fc] χ.someFuture.neg :=
+def notFOfNot {χ : MinusFormula} (d : ⊢⁻[fc] χ.neg) : ⊢⁻[fc] χ.someFuture.neg :=
   minusImpTrans (fMono (φ := χ) (ψ := .bot) d) notFBot
 
 /-- `⊢⁻ ¬(Gβ ∧ F¬β)`: `Gβ → G¬¬β` and `F¬β = ¬G¬¬β`. -/
@@ -245,7 +245,7 @@ def serialF : ⊢⁻[fc] MinusFormula.top.someFuture :=
 
 /-- **The one DN use.** `⊢⁻[.Dense] Fψ → FFψ`: contrapose `Axiom.dn` at `¬ψ` (`Fψ → ¬GG¬ψ`),
 then `¬GG¬ψ → FFψ` by contraposing `gMono (minusDne _)`. -/
-def fF_of_f (ψ : MinusFormula) :
+def fFOfF (ψ : MinusFormula) :
     ⊢⁻[FrameClass.Dense] ψ.someFuture.imp ψ.someFuture.someFuture :=
   minusImpTrans
     (minusContrapos (.axiom [] _ (Axiom.dn ψ.neg) (le_refl FrameClass.Dense)))
@@ -316,7 +316,7 @@ def notPBot : ⊢⁻[fc] MinusFormula.bot.somePast.neg :=
   ofReflect (by simp [MinusFormula.reflectTime]) notFBot
 
 /-- From `⊢⁻ ¬χ`, `⊢⁻ ¬Pχ`. -/
-def notP_of_not {χ : MinusFormula} (d : ⊢⁻[fc] χ.neg) : ⊢⁻[fc] χ.somePast.neg :=
+def notPOfNot {χ : MinusFormula} (d : ⊢⁻[fc] χ.neg) : ⊢⁻[fc] χ.somePast.neg :=
   minusImpTrans (pMono (φ := χ) (ψ := .bot) d) notPBot
 
 /-- `⊢⁻ ¬(Hβ ∧ P¬β)`: TR on `notGAndFNeg`. -/

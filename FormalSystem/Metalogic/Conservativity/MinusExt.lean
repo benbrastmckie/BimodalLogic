@@ -150,9 +150,10 @@ theorem tmFrag_reflectTime {fc : FrameClass} {φ : MinusFormula} (h : TMFrag fc 
 TM⁻ + `Ax` proves at `fc` is in the fragment at `fc`: `tm` is `tmMinus_le_tmFrag`, `ax` is the
 hypothesis, and the four rules are the four closure lemmas above.
 
-This is the half of "TM⁻ + Σ_fc = TMFrag fc" that is machine-checked unconditionally; the other
-half lives behind the explicit `ChainComplete` hypothesis in
-`Conservativity/FragmentAxiomatization.lean`.
+This is the half of "TM⁻ + Σ_fc = TMFrag fc" that is machine-checked unconditionally at every
+class; the other half lives behind the explicit `ChainComplete` hypothesis in
+`Conservativity/FragmentAxiomatization.lean`, discharged at `.Dense` only by
+`Conservativity/MinusChainCompleteness.lean`.
 
 Paper: — (formalization-native; the H/G-fragment is this tree's construction)
 -/

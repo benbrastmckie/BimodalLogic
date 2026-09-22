@@ -59,8 +59,10 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   Σ_Dense = Σ_RTime = ∅), with the Σ_fc soundness rows `minusExt_sigmaBase_le_tmFrag`,
   `minusExt_sigmaZTime_le_tmFrag`, `minusExt_empty_le_tmFrag_dense`,
   `minusExt_empty_le_tmFrag_rtime` machine-checked through
-  `Metalogic/Conservativity/MinusExt.lean`'s `minusExt_le_tmFrag`, and completeness present only
-  as the explicit, never-asserted hypothesis `ChainComplete` of
+  `Metalogic/Conservativity/MinusExt.lean`'s `minusExt_le_tmFrag`, and completeness
+  machine-checked at `.Dense` only (`Metalogic/Conservativity/MinusChainCompleteness.lean`'s
+  `chainComplete_dense`, `minusExt_iff_tmFrag_dense`, `tmMinusComplete_dense`, `forward_dense`)
+  and present at the other three classes only as the explicit hypothesis `ChainComplete` of
   `minusExt_iff_tmFrag_of_chainComplete`. Its consequence relation is compact
   at `.Base` and `.Dense` (`minusCompactBase`, `minusCompactDense`,
   `Metalogic/Conservativity/FragmentCompactness.lean`); the Discrete/Dedekind non-compactness

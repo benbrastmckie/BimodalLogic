@@ -15,10 +15,12 @@ import FormalSystem.Metalogic.Conservativity.DenseObstructionTransfer
 
 **Read `Metalogic/Conservativity.lean`'s module docstring first.** Nothing here states,
 approaches, or `sorry`s forward conservativity (`Forward fc`) or TM⁻-completeness
-(`TMMinusComplete fc`), and — the new prohibition this module adds — **nothing here concludes
-`ChainComplete fc Ax`** for any `fc`, `Ax`. That proposition is the single explicit hypothesis
-of every completeness-shaped theorem below, and it is supplied by the classical literature on
-paper, never by a Lean declaration.
+(`TMMinusComplete fc`), and **nothing here concludes `ChainComplete fc Ax`** for any `fc`, `Ax`.
+That proposition is the single explicit hypothesis of every completeness-shaped theorem below.
+It is concluded at exactly one class, `.Dense` with `Ax = ∅`, by
+`Conservativity/MinusChainCompleteness.lean`'s `chainComplete_dense` (a machine-checked L⁻
+canonical model); at the other three classes it is supplied by the classical literature on paper,
+never by a Lean declaration.
 
 ## The question
 
@@ -49,8 +51,10 @@ Per class, the three cells behind each verdict:
   conditional form `minusExt_sigmaBase_iff_tmFrag_of_chainComplete`.
 * **`.Dense`** — soundness `TM⁻_d ⊆ TMFrag .Dense`: machine-checked,
   `minusExt_empty_le_tmFrag_dense`. No strictness claim (Σ = ∅). Completeness
-  `TMFrag .Dense ⊆ TM⁻_d`: **not machine-checked** — Burgess 1984 §2.5, the tense logic of ℚ;
-  conditional form `minusExt_empty_iff_tmFrag_dense_of_chainComplete`.
+  `TMFrag .Dense ⊆ TM⁻_d`: **machine-checked** — `chainComplete_dense` in
+  `Conservativity/MinusChainCompleteness.lean` (Burgess 1984 §2.5, the tense logic of ℚ, as a
+  step-by-step ℚ-chronicle construction), discharging the hypothesis of the conditional form
+  `minusExt_empty_iff_tmFrag_dense_of_chainComplete` to give `minusExt_iff_tmFrag_dense`.
 * **`.ZTime`** — soundness `TM⁻_z + Z1 ⊆ TMFrag .ZTime`: machine-checked,
   `minusExt_sigmaZTime_le_tmFrag`. Strictness `TM⁻_z ⊊ TM⁻_z + Z1`: machine-checked,
   `tmMinus_lt_minusExt_sigmaZTime`. Completeness `TMFrag .ZTime ⊆ TM⁻_z + Z1`: **not
@@ -79,7 +83,8 @@ and the four `□`-globality derivations `boxGlobalFuture`, `boxGlobalPast`,
 `notBoxGlobalFuture`, `notBoxGlobalPast` in `Conservativity/MinusDeduction.lean`). So the
 completeness question for `TM⁻ + Σ_fc` over task frames reduces to completeness of its tense
 part over `D`-chain bundles, which is what `ChainComplete fc Ax` names, and which the classical
-theorems settle on paper. **`ChainComplete` is never asserted here.**
+theorems settle on paper. **`ChainComplete` is never asserted here**; it is asserted at `.Dense`
+only, in `MinusChainCompleteness.lean`.
 
 ## What is machine-checked here
 
@@ -228,8 +233,9 @@ example (φ ψ : MinusFormula) : MinusExt FrameClass.RTime ∅ (Sp φ ψ) :=
 
 /-! ## Conditional completeness via chain bundles
 
-The completeness half, `TMFrag fc ⊆ TM⁻ + Σ_fc`, with its hypothesis **explicit and never
-discharged**. The hypothesis is `ChainComplete fc Ax`: completeness of `MinusExt fc Ax` for the
+The completeness half, `TMFrag fc ⊆ TM⁻ + Σ_fc`, with its hypothesis **explicit, and discharged
+in this tree at `.Dense` only** (`MinusChainCompleteness.lean`). The hypothesis is
+`ChainComplete fc Ax`: completeness of `MinusExt fc Ax` for the
 chain-bundle semantics `chainSat` of `Conservativity/ChainBundleTruth.lean`, over every flow frame
 in `fc`. That is exactly where the classical H/G completeness theorems (Burgess 1984 §2.5–2.7,
 Venema 2001 Thm 3.3) plus the universal-modality reduction do their work on paper; the report's
@@ -268,9 +274,11 @@ is in `MinusExt fc Ax`.
 This is the proposition the classical theorems — Burgess 1984 §2.5 (ℚ), §2.6 (discrete orders),
 §2.7 (ℝ); Venema 2001 Thm 3.3 (ℤ) — together with the universal-modality reduction (MF + TR + S5
 make `□` universal on a task model) establish **on paper** for `(fc, Σ_fc)` at each of the four
-classes. **No declaration in this tree concludes it**, at any `fc`/`Ax`, and none may be added
-with `sorry`: it appears below only as an explicit hypothesis, so that the machine-checked
-theorems say exactly "given chain-completeness, the fragment is `TM⁻ + Ax`" and nothing more.
+classes. **Exactly one declaration in this tree concludes it**: `chainComplete_dense`
+(`Conservativity/MinusChainCompleteness.lean`), at `fc := .Dense`, `Ax := ∅`, by a machine-checked
+ℚ-chronicle canonical model. At the other three classes no declaration concludes it, and none may
+be added with `sorry`: below it appears only as an explicit hypothesis, so that the theorems here
+say exactly "given chain-completeness, the fragment is `TM⁻ + Ax`" and nothing more.
 -/
 def ChainComplete (fc : FrameClass) (Ax : Set MinusFormula) : Prop :=
   ∀ φ : MinusFormula, ChainValidIn fc φ → MinusExt fc Ax φ
@@ -305,8 +313,10 @@ theorem minusExt_sigmaZTime_iff_tmFrag_of_chainComplete
 
 Composed with `minusExt_empty_iff`, this reads "TM⁻_d is complete for `MinusValidIn .Dense`
 given chain-completeness" — the `.Dense` row of `TMCompletenessReduction.lean`'s
-`TMMinusComplete`, conditionally. Neither `TMMinusComplete .Dense` nor `ChainComplete .Dense ∅`
-is asserted. -/
+`TMMinusComplete`, conditionally. Both propositions are now asserted unconditionally in
+`Conservativity/MinusChainCompleteness.lean`: `chainComplete_dense` discharges the hypothesis,
+giving `minusExt_iff_tmFrag_dense`, and `tmMinusComplete_dense` closes the `TMMinusComplete`
+row. -/
 theorem minusExt_empty_iff_tmFrag_dense_of_chainComplete
     (h : ChainComplete FrameClass.Dense ∅) (φ : MinusFormula) :
     MinusExt FrameClass.Dense ∅ φ ↔ TMFrag FrameClass.Dense φ :=
