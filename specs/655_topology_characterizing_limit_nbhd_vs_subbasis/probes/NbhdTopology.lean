@@ -335,11 +335,11 @@ def QuickFwd (R : W → D → W → Prop) (w u : W) : Prop :=
 def NoOneWay (R : W → D → W → Prop) : Prop :=
   ∀ w u, QuickFwd R w u → QuickFwd R u w
 
+omit [Nontrivial D] in
 /-- **The gap between `𝒯_F`-T1 and Limit is exactly the one-way instantaneous pairs**: given
 the reflection convention, the composition half of *Compositionality*, and *NoOneWay*, `𝒯_F`
 being T1 implies *Limit*. (Contrapositively: every frame with `𝒯_F` T1 and *Limit* failing
 contains a one-way instantaneous pair, as the four-state funnel does.) -/
-omit [Nontrivial D] in
 theorem limit_of_t1Space_coneTopology {R : W → D → W → Prop}
     (hrefl : ∀ w d u, R w d u → R u (-d) w)
     (hcomp : ∀ w u v x y, 0 ≤ x → 0 ≤ y → R w x u → R u y v → R w (x + y) v)
@@ -395,5 +395,21 @@ theorem limit_of_t1Space_coneTopology {R : W → D → W → Prop}
   haveI := hT1
   have hopen : IsOpen ({u}ᶜ : Set W) := isOpen_compl_singleton
   exact hgen _ hopen (fun h => hne (Set.mem_singleton_iff.mp h).symm) rfl
+
+/-! ## Axiom audit: every headline theorem uses only `propext`, `Classical.choice`, `Quot.sound` -/
+
+#print axioms t1Space_nbhdTopology_iff_limit
+#print axioms coneTopology_le_nbhdTopology
+#print axioms t1Space_coneTopology_of_limit
+#print axioms r0Space_nbhdTopology_of_limit
+#print axioms r0Space_coneTopology_of_limit
+#print axioms limit_eq_iff
+#print axioms nbhdTopology_isClosed_iff
+#print axioms nbhdTopology_eq_mkOfNhds
+#print axioms continuous_nbhdTopology_of_history
+#print axioms finalTopology_le_nbhdTopology
+#print axioms isOpen_cone_of_triangle
+#print axioms coneTopology_eq_nbhdTopology_iff
+#print axioms limit_of_t1Space_coneTopology
 
 end FormalSystem.Semantics.TaskFrame

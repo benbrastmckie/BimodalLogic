@@ -193,4 +193,14 @@ theorem nbhdTopology_drift : nbhdTopology' driftRel = (inferInstance : Topologic
 theorem coneTopology_drift : coneTopology' driftRel = nbhdTopology' driftRel :=
   coneTopology_eq_nbhdTopology_real _ driftRel_zero two_pos cone_driftRel
 
+/-! ## Axiom audit: every headline theorem uses only `propext`, `Classical.choice`, `Quot.sound` -/
+
+#print axioms cone_metricRel
+#print axioms cone_translationRel
+#print axioms cone_driftRel
+#print axioms coneTopology_metric
+#print axioms t2Space_nbhd_metric
+#print axioms not_discrete_nbhd_metric
+#print axioms not_discreteTopology_real
+
 end FormalSystem.Semantics.TaskFrame

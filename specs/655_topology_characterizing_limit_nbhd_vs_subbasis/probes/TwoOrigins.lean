@@ -208,4 +208,12 @@ theorem not_t2Space_nbhdTopology_RTO : ¬ @T2Space TO (nbhdTopology' RTO) := by
     show min x x' / 2 < x'; linarith [min_le_left x x', min_le_right x x', lt_min hx hx']))
   exact Set.disjoint_left.mp hd htU htV
 
+/-! ## Axiom audit: every headline theorem uses only `propext`, `Classical.choice`, `Quot.sound` -/
+
+#print axioms RTO_serial
+#print axioms RTO_compositional
+#print axioms RTO_limit
+#print axioms t1Space_nbhdTopology_RTO
+#print axioms not_t2Space_nbhdTopology_RTO
+
 end FormalSystem.Semantics.TaskFrame

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #655
 
 - **Task**: 655 - Topology characterizing Limit: cone-neighbourhood topology 𝒩_F vs subbasis topology 𝒯_F
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/655_topology_characterizing_limit_nbhd_vs_subbasis/reports/01_topology-characterizing-limit.md
@@ -95,19 +95,19 @@ Phases within the same wave can execute in parallel (they touch disjoint files: 
 `FourState.lean`, Phase 3 edits `NbhdTopology.lean` and `TwoOrigins.lean`, Phase 4 creates
 `Hedgehog.lean`).
 
-### Phase 1: Baseline re-verification and axiom audit [NOT STARTED]
+### Phase 1: Baseline re-verification and axiom audit [COMPLETED]
 
 **Goal**: Establish that the five research-round probes still compile on the current tree and
 replace the report's unevidenced "zero axioms beyond Mathlib's" with recorded `#print axioms`
 output.
 
 **Tasks**:
-- [ ] Confirm `git log -1` and `git status --short` show nothing unexpected outside the sibling task directories named in the dispatch's Territory section (651, 653); if a foreign modification touches `FormalSystem/`, stop and report per `context/contracts/territory.md`.
-- [ ] Compare the mtime of `FormalSystem/Semantics/TaskFrame.lean` with `.lake/build/lib/lean/FormalSystem/Semantics/TaskFrame.olean`; only if the source is newer, rebuild that one module: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Semantics.TaskFrame`, detached via `Bash(run_in_background: true)`, waited on per `context/patterns/bounded-build-waiter.md`.
-- [ ] Run `lake env lean <probe>` on each of `NbhdTopology.lean`, `FourState.lean`, `IntPartition.lean`, `RealFrames.lean`, `TwoOrigins.lean`; capture exit code and full output to the scratchpad.
-- [ ] Append a trailing `#print axioms` line per headline theorem to each probe (the headline names are the ones the report's section 7 table cites), recompile, and confirm every output lists only `propext`, `Classical.choice`, `Quot.sound` (or a subset). Keep the lines in the probes: they make the axiom claim self-checking on every compile.
-- [ ] `grep -n -E 'sorry|native_decide|admit' probes/*.lean` -- the only permitted hit is the word "sorry" in a docstring.
-- [ ] Commit: `task 655 phase 1: baseline re-verification and axiom audit` (stage the five probe files by explicit path).
+- [x] Confirm `git log -1` and `git status --short` show nothing unexpected outside the sibling task directories named in the dispatch's Territory section (651, 653); if a foreign modification touches `FormalSystem/`, stop and report per `context/contracts/territory.md`. *(completed: HEAD `d9cfc7f61`; only sibling `.return-meta.json`/plan files and the shared `specs/TODO.md`, `state.json`, `events.jsonl` modified; `FormalSystem/`, `Tests/` clean)*
+- [x] Compare the mtime of `FormalSystem/Semantics/TaskFrame.lean` with `.lake/build/lib/lean/FormalSystem/Semantics/TaskFrame.olean`; only if the source is newer, rebuild that one module: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Semantics.TaskFrame`, detached via `Bash(run_in_background: true)`, waited on per `context/patterns/bounded-build-waiter.md`. *(completed: olean mtime 1790011263 > source 1790006647; no rebuild needed)*
+- [x] Run `lake env lean <probe>` on each of `NbhdTopology.lean`, `FourState.lean`, `IntPartition.lean`, `RealFrames.lean`, `TwoOrigins.lean`; capture exit code and full output to the scratchpad. *(deviation: altered — `NbhdTopology.lean` as committed at `9ec16ee08` did NOT compile: `341:73 error: unexpected token 'omit'; expected 'lemma'`, because `omit [Nontrivial D] in` sat between the docstring and `theorem limit_of_t1Space_coneTopology`; moved the `omit` above the docstring (the file's own idiom at line 58). The other four compiled unchanged. After the fix all five exit 0 with zero `error:` lines.)*
+- [x] Append a trailing `#print axioms` line per headline theorem to each probe (the headline names are the ones the report's section 7 table cites), recompile, and confirm every output lists only `propext`, `Classical.choice`, `Quot.sound` (or a subset). Keep the lines in the probes: they make the axiom claim self-checking on every compile. *(completed: 36 theorems audited — 13 NbhdTopology, 7 FourState, 4 IntPartition, 7 RealFrames, 5 TwoOrigins — every one `[propext, Classical.choice, Quot.sound]`)*
+- [x] `grep -n -E 'sorry|native_decide|admit' probes/*.lean` -- the only permitted hit is the word "sorry" in a docstring. *(completed: single hit, `NbhdTopology.lean:18` docstring)*
+- [x] Commit: `task 655 phase 1: baseline re-verification and axiom audit` (stage the five probe files by explicit path).
 
 **Timing**: 0.75 hours
 

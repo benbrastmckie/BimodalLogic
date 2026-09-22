@@ -132,4 +132,11 @@ theorem discreteTopology_nbhdTopology_int_iff (R : W → ℤ → W → Prop) :
   rw [discreteTopology_iff_isOpen_singleton]
   simp only [nbhdTopology_isOpen_iff_int, Set.mem_singleton_iff, forall_eq]
 
+/-! ## Axiom audit: every headline theorem uses only `propext`, `Classical.choice`, `Quot.sound` -/
+
+#print axioms nbhdTopology_isOpen_iff_int
+#print axioms coneTopology_eq_nbhdTopology_int
+#print axioms limit_int_iff
+#print axioms discreteTopology_nbhdTopology_int_iff
+
 end FormalSystem.Semantics.TaskFrame

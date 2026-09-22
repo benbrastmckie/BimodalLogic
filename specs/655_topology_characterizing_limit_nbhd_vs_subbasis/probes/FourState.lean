@@ -282,4 +282,14 @@ theorem not_noOneWay_R4 [DenselyOrdered D] :
     · subst hy; rw [R4_zero] at hR; exact absurd hR (by decide)
     · rw [R4_pos hy] at hR; revert hR; decide
 
+/-! ## Axiom audit: every headline theorem uses only `propext`, `Classical.choice`, `Quot.sound` -/
+
+#print axioms R4_compositional
+#print axioms R4_saturation
+#print axioms R4_not_limit
+#print axioms discreteTopology_coneTopology_R4
+#print axioms nbhdTopology_R4_eq_top
+#print axioms not_isOpen_cone_R4
+#print axioms not_noOneWay_R4
+
 end FormalSystem.Semantics.TaskFrame
