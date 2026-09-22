@@ -1,7 +1,7 @@
 # Implementation Plan: Task #655
 
 - **Task**: 655 - Topology characterizing Limit: cone-neighbourhood topology 𝒩_F vs subbasis topology 𝒯_F
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/655_topology_characterizing_limit_nbhd_vs_subbasis/reports/01_topology-characterizing-limit.md
@@ -294,22 +294,22 @@ with machine-checked evidence.
 
 ---
 
-### Phase 6: Reconcile the report and record the verification log [NOT STARTED]
+### Phase 6: Reconcile the report and record the verification log [COMPLETED]
 
 **Goal**: Make the report's text, results table and refactor specification agree exactly with what
 the probes now prove, and turn the research-time verification claims into cited evidence.
 
 **Tasks**:
-- [ ] Re-read the report immediately before editing (sibling dispatches share the tree).
-- [ ] Section 1.6: replace "(UNVERIFIED in Lean; re-derived)" with the `R4_sep` citation and note that the proof needs neither density nor an Archimedean order.
-- [ ] Section 2.3: cite `finalTopology_ne_nbhdTopology_RHH` (and the hedgehog probe) for "no in general"; keep the hedgehog's Saturation labelled UNVERIFIED; keep the "frame condition equivalent to 𝒩_F = final" open.
-- [ ] Sections 3.2/3.3: cite `coneTopology_eq_nbhdTopology_RTO` and `not_t2Space_coneTopology_RTO`; section 3.5: cite `discreteTopology_nbhdTopology_iff`.
-- [ ] Section 7 table: update the cells listed in this plan's Research Integration table with declaration names; every remaining UNVERIFIED cell must still say UNVERIFIED. Verify by grepping the probes for each cited name (`grep -n "theorem <name>" probes/*.lean` must hit for every name cited anywhere in the report).
-- [ ] Executive summary: replace "zero axioms beyond Mathlib's" with the Phase 1 evidence ("`#print axioms` on every headline theorem lists only `propext`, `Classical.choice`, `Quot.sound`").
-- [ ] Artifacts block and Appendix: add `probes/Hedgehog.lean`; add a "Verification log" appendix listing each probe, its `lake env lean` exit code, and the axiom output, taken from the scratchpad logs of Phases 1-5.
-- [ ] Section 5 item 4 (counterexamples module for the refactor): add the sep witness, the hedgehog, and the 𝒯_F-discontinuity witnesses to the list of facts the refactor should lift; item 6: remove whatever is no longer "not library-grade yet".
-- [ ] Also correct the research handoff's misdirection in the report's Decisions: one sentence stating that lifting into `FormalSystem/Semantics/StateTopology.lean` is the refactor task's job, not this one's.
-- [ ] Commit: `task 655 phase 6: reconcile report with hardened probes` (stage the report by explicit path).
+- [x] Re-read the report immediately before editing (sibling dispatches share the tree). *(completed: read in full immediately before the first edit; `git status --short` showed no foreign modification to it)*
+- [x] Section 1.6: replace "(UNVERIFIED in Lean; re-derived)" with the `R4_sep` citation and note that the proof needs neither density nor an Archimedean order. *(completed)*
+- [x] Section 2.3: cite `finalTopology_ne_nbhdTopology_RHH` (and the hedgehog probe) for "no in general"; keep the hedgehog's Saturation labelled UNVERIFIED; keep the "frame condition equivalent to 𝒩_F = final" open. *(completed: 2.3 also rewritten to describe the frame and the separating set as compiled — `RHH` has no tips and `hedgehogOpen` is the shrinking-initial-segment set — rather than the research round's spoke-with-tips sketch, which the probe does not realise)*
+- [x] Sections 3.2/3.3: cite `coneTopology_eq_nbhdTopology_RTO` and `not_t2Space_coneTopology_RTO`; section 3.5: cite `discreteTopology_nbhdTopology_iff`. *(completed in 3.3 and 3.5; 3.2 needed no change — it is about the metric/𝔉¹/𝔉° frames, whose `coneTopology_*` citations were already present. 2.4 gained the new finding that `Triangle` is sufficient but not necessary for cone-openness.)*
+- [x] Section 7 table: update the cells listed in this plan's Research Integration table with declaration names; every remaining UNVERIFIED cell must still say UNVERIFIED. Verify by grepping the probes for each cited name (`grep -n "theorem <name>" probes/*.lean` must hit for every name cited anywhere in the report). *(completed: Hausdorff/𝒯_F, Discrete/𝒩_F, History-continuity/𝒯_F, Final-topology/𝒩_F, Cones-open and `𝒯_F` vs `𝒩_F` cells updated. Grep check run over all 187 backticked identifiers in the report: 93 resolve to a probe declaration, 27 to a `FormalSystem/` declaration, and every remainder is a Mathlib name, a metavariable, or prose — no unresolved declaration-shaped citation.)*
+- [x] Executive summary: replace "zero axioms beyond Mathlib's" with the Phase 1 evidence ("`#print axioms` on every headline theorem lists only `propext`, `Classical.choice`, `Quot.sound`"). *(completed: as a dedicated **Axioms** bullet naming the 51 audited declarations, plus the Artifacts block wording)*
+- [x] Artifacts block and Appendix: add `probes/Hedgehog.lean`; add a "Verification log" appendix listing each probe, its `lake env lean` exit code, and the axiom output, taken from the scratchpad logs of Phases 1-5. *(completed; the log rows were re-run in one pass at the end of Phase 6 rather than taken from the Phase 1-5 scratchpads, so the recorded exit codes and axiom counts describe the final state of the files)*
+- [x] Section 5 item 4 (counterexamples module for the refactor): add the sep witness, the hedgehog, and the 𝒯_F-discontinuity witnesses to the list of facts the refactor should lift; item 6: remove whatever is no longer "not library-grade yet". *(completed; item 6 now separates "still a paper argument" from "open mathematically")*
+- [x] Also correct the research handoff's misdirection in the report's Decisions: one sentence stating that lifting into `FormalSystem/Semantics/StateTopology.lean` is the refactor task's job, not this one's. *(completed, plus a second Decisions bullet recording the `Triangle'` refutation and the route actually taken)*
+- [x] Commit: `task 655 phase 6: reconcile report with hardened probes` (stage the report by explicit path). *(completed)*
 
 **Timing**: 1.5 hours
 
@@ -320,6 +320,13 @@ the probes now prove, and turn the research-time verification claims into cited 
 **Scope Hypothesis**: the UNVERIFIED labels to touch are the seven rows of this plan's Research
 Integration table; confirm by `grep -c UNVERIFIED reports/01_topology-characterizing-limit.md`
 before and after, and by listing every label that remains with its reason.
+
+*(Confirmed: `grep -c UNVERIFIED` was **16** before and is **12** after. The rise from the naive
+expectation is deliberate — five substantive labels remain, each an explicit Non-Goal or an
+open question, and section 7 now carries a table listing every one of them with its reason,
+which itself contains the word. Discharged: 1.6 `sep`, 3.5 discreteness, 2.3 final-topology
+separation, the Hausdorff/𝒯_F cell, the History-continuity/𝒯_F cell, and the executive
+summary's axiom claim.)*
 
 **Files to modify**:
 - `specs/655_topology_characterizing_limit_nbhd_vs_subbasis/reports/01_topology-characterizing-limit.md` - citations, table cells, appendix, refactor spec items 4 and 6
@@ -456,12 +463,12 @@ end FormalSystem.Semantics.TaskFrame
 
 ## Testing & Validation
 
-- [ ] `lake env lean` exits 0 on each of the six probes (`NbhdTopology`, `FourState`, `IntPartition`, `RealFrames`, `TwoOrigins`, `Hedgehog`).
-- [ ] `grep -n -E 'sorry|native_decide|admit' probes/*.lean` matches only the docstring word in `NbhdTopology.lean`.
-- [ ] Every `#print axioms` line's output is a subset of `{propext, Classical.choice, Quot.sound}`.
-- [ ] Every declaration name cited in the report resolves by grep to a probe or library declaration.
-- [ ] `git status --short` shows no modification outside `specs/655_topology_characterizing_limit_nbhd_vs_subbasis/` attributable to this task; `FormalSystem/` and `Tests/` untouched.
-- [ ] The plan's phase headings carry the closed six-value marker vocabulary only.
+- [x] `lake env lean` exits 0 on each of the six probes (`NbhdTopology`, `FourState`, `IntPartition`, `RealFrames`, `TwoOrigins`, `Hedgehog`). *(re-run in one pass at the end of Phase 6; all six exit 0, no warnings)*
+- [x] `grep -n -E 'sorry|native_decide|admit' probes/*.lean` matches only the docstring word in `NbhdTopology.lean`. *(one match: `NbhdTopology.lean:18` "Results (all sorry-free):")*
+- [x] Every `#print axioms` line's output is a subset of `{propext, Classical.choice, Quot.sound}`. *(51 audited declarations; zero `sorryAx`/`ofReducedBool`/`trustCompiler`)*
+- [x] Every declaration name cited in the report resolves by grep to a probe or library declaration. *(187 backticked identifiers scanned; 93 probe, 27 `FormalSystem/`, remainder Mathlib names / metavariables / prose)*
+- [x] `git status --short` shows no modification outside `specs/655_topology_characterizing_limit_nbhd_vs_subbasis/` attributable to this task; `FormalSystem/` and `Tests/` untouched. *(verified before each commit; the only other dirty paths are the pre-existing `specs/TODO.md`, `specs/events.jsonl`, `specs/state.json` and the untracked sibling task directory 652)*
+- [x] The plan's phase headings carry the closed six-value marker vocabulary only. *(Phases 1, 2, 4, 5, 6 `[COMPLETED]`; Phase 3 `[COMPLETED WITH EXCLUSIONS]`)*
 
 ## Artifacts & Outputs
 
