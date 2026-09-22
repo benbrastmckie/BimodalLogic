@@ -236,7 +236,7 @@ implementation time that `DenseObstructionTransfer.lean` is reachable from the c
 
 ---
 
-### Phase 3: `FragmentAxiomatization.lean` part B — conditional completeness via chain bundles [NOT STARTED]
+### Phase 3: `FragmentAxiomatization.lean` part B — conditional completeness via chain bundles [COMPLETED]
 
 **Goal**: State the completeness half with its hypothesis explicit and never discharged: if
 `MinusExt fc Ax` is complete for the chain-bundle semantics of `ChainBundleTruth.lean`, then
@@ -245,23 +245,23 @@ implementation time that `DenseObstructionTransfer.lean` is reachable from the c
 hypothesis", with Lemma U folded into the hypothesis.
 
 **Tasks**:
-- [ ] Define `ChainValidIn (fc : FrameClass) (φ : MinusFormula) : Prop :=
+- [x] Define `ChainValidIn (fc : FrameClass) (φ : MinusFormula) : Prop :=
       ∀ (D : TemporalOrder) (FamIdx : Type) [Nonempty FamIdx],
         fc.Sat (multiFamTaskFrameGen D FamIdx) → ∀ v q, chainSat (D := D) v q φ`,
       copying the binder shapes of `not_minusValidIn_of_not_chainSat` verbatim; docstring: "valid
       on every disjoint union of `D`-chains whose flow frame lies in `fc`, with `□` universal".
-- [ ] Prove `tmFrag_chainValidIn : TMFrag fc φ → ChainValidIn fc φ`: `tmFrag_sound` gives
+- [x] Prove `tmFrag_chainValidIn : TMFrag fc φ → ChainValidIn fc φ`: `tmFrag_sound` gives
       `MinusValidIn fc φ`; for each `D`, `FamIdx`, `hSat`, `v`, `q`, argue by contradiction with
       `not_minusValidIn_of_not_chainSat hSat v q φ`.
-- [ ] Define `ChainComplete (fc : FrameClass) (Ax : Set MinusFormula) : Prop :=
+- [x] Define `ChainComplete (fc : FrameClass) (Ax : Set MinusFormula) : Prop :=
       ∀ φ, ChainValidIn fc φ → MinusExt fc Ax φ`, with a docstring that says in so many words:
       this is the proposition the classical theorems (Burgess 1984 §2.5–2.7, Venema 2001 Thm 3.3)
       plus the universal-modality reduction establish on paper for `(fc, Σ_fc)` at each class;
       **no declaration in this tree concludes it**, and none may be added with `sorry`.
-- [ ] Prove `minusExt_iff_tmFrag_of_chainComplete (hcc : ChainComplete fc Ax)
+- [x] Prove `minusExt_iff_tmFrag_of_chainComplete (hcc : ChainComplete fc Ax)
       (hAx : ∀ ψ ∈ Ax, TMFrag fc ψ) (φ) : MinusExt fc Ax φ ↔ TMFrag fc φ` — forward is
       `minusExt_le_tmFrag hAx`, backward is `hcc φ ∘ tmFrag_chainValidIn`.
-- [ ] Add the four per-class corollaries with the hypothesis still explicit:
+- [x] Add the four per-class corollaries with the hypothesis still explicit:
       `minusExt_sigmaBase_iff_tmFrag_of_chainComplete (h : ChainComplete .Base sigmaBase)`,
       `minusExt_sigmaZTime_iff_tmFrag_of_chainComplete (h : ChainComplete .ZTime sigmaZTime)`,
       `minusExt_empty_iff_tmFrag_dense_of_chainComplete (h : ChainComplete .Dense ∅)`,
@@ -270,9 +270,9 @@ hypothesis", with Lemma U folded into the hypothesis.
       `MinusValidIn` given chain-completeness" — state that reading in the docstring, and note it
       relates to `TMMinusComplete .Dense` / `.RTime` in `TMCompletenessReduction.lean` without
       asserting either.
-- [ ] Add an acceptance `example` showing the contrapositive shape a future refutation probe
+- [x] Add an acceptance `example` showing the contrapositive shape a future refutation probe
       would consume: `¬ MinusExt fc Ax φ → ChainComplete fc Ax → ¬ ChainValidIn fc φ`.
-- [ ] Scoped build (guarded, detached); `lean_verify` on `tmFrag_chainValidIn` and
+- [x] Scoped build (guarded, detached); `lean_verify` on `tmFrag_chainValidIn` and
       `minusExt_iff_tmFrag_of_chainComplete`.
 
 **Timing**: 1.5 hours

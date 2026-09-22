@@ -211,4 +211,113 @@ example (φ ψ : MinusFormula) : MinusExt FrameClass.Dense ∅ (Sp φ ψ) :=
 example (φ ψ : MinusFormula) : MinusExt FrameClass.RTime ∅ (Sp φ ψ) :=
   MinusExt.tm ⟨spDerivableRTime φ ψ⟩
 
+/-! ## Conditional completeness via chain bundles
+
+The completeness half, `TMFrag fc ⊆ TM⁻ + Σ_fc`, with its hypothesis **explicit and never
+discharged**. The hypothesis is `ChainComplete fc Ax`: completeness of `MinusExt fc Ax` for the
+chain-bundle semantics `chainSat` of `Conservativity/ChainBundleTruth.lean`, over every flow frame
+in `fc`. That is exactly where the classical H/G completeness theorems (Burgess 1984 §2.5–2.7,
+Venema 2001 Thm 3.3) plus the universal-modality reduction do their work on paper; the report's
+Lemma U (normal form under global `□`) and Lemma I (intersection by boxed disjunction) are folded
+into it and are not formalized. -/
+
+/--
+**Chain-bundle validity at `fc`.** `φ` holds at every point of every disjoint union of
+`D`-chains whose flow frame `multiFamTaskFrameGen D FamIdx` lies in `fc`, under every valuation,
+with `□` universal (the `chainSat` box clause quantifies over all points of all chains).
+
+Binder shapes copied from `not_minusValidIn_of_not_chainSat`.
+-/
+def ChainValidIn (fc : FrameClass) (φ : MinusFormula) : Prop :=
+  ∀ (D : TemporalOrder) (FamIdx : Type) [Nonempty FamIdx],
+    fc.Sat (multiFamTaskFrameGen D FamIdx) →
+      ∀ (v : FamIdx × (D : Type) → Atom → Prop) (q : FamIdx × (D : Type)), chainSat v q φ
+
+/--
+**Fragment theorems are chain-bundle valid.** `tmFrag_sound` gives `MinusValidIn fc φ`; at each
+chain bundle in `fc`, a point refuting `φ` would refute `MinusValidIn fc φ` by
+`not_minusValidIn_of_not_chainSat`.
+
+Paper: — (formalization-native; the H/G-fragment is this tree's construction)
+-/
+theorem tmFrag_chainValidIn {fc : FrameClass} {φ : MinusFormula} (h : TMFrag fc φ) :
+    ChainValidIn fc φ := by
+  intro D FamIdx _ hSat v q
+  by_contra hn
+  exact not_minusValidIn_of_not_chainSat hSat v q φ hn (tmFrag_sound φ h)
+
+/--
+**"`TM⁻ + Ax` is complete for chain bundles in `fc`."** Every chain-bundle-valid formula at `fc`
+is in `MinusExt fc Ax`.
+
+This is the proposition the classical theorems — Burgess 1984 §2.5 (ℚ), §2.6 (discrete orders),
+§2.7 (ℝ); Venema 2001 Thm 3.3 (ℤ) — together with the universal-modality reduction (MF + TR + S5
+make `□` universal on a task model) establish **on paper** for `(fc, Σ_fc)` at each of the four
+classes. **No declaration in this tree concludes it**, at any `fc`/`Ax`, and none may be added
+with `sorry`: it appears below only as an explicit hypothesis, so that the machine-checked
+theorems say exactly "given chain-completeness, the fragment is `TM⁻ + Ax`" and nothing more.
+-/
+def ChainComplete (fc : FrameClass) (Ax : Set MinusFormula) : Prop :=
+  ∀ φ : MinusFormula, ChainValidIn fc φ → MinusExt fc Ax φ
+
+/--
+**Conditional completeness.** Given chain-completeness of `TM⁻ + Ax` at `fc` and `Ax ⊆ TMFrag fc`,
+the extension *is* the fragment: forward is `minusExt_le_tmFrag`, backward is the hypothesis
+applied to `tmFrag_chainValidIn`.
+
+Paper: — (formalization-native; the H/G-fragment is this tree's construction)
+-/
+theorem minusExt_iff_tmFrag_of_chainComplete {fc : FrameClass} {Ax : Set MinusFormula}
+    (hcc : ChainComplete fc Ax) (hAx : ∀ ψ ∈ Ax, TMFrag fc ψ) (φ : MinusFormula) :
+    MinusExt fc Ax φ ↔ TMFrag fc φ :=
+  ⟨minusExt_le_tmFrag hAx, fun h => hcc φ (tmFrag_chainValidIn h)⟩
+
+/-! ### The four per-class corollaries, hypothesis still explicit -/
+
+/-- `.Base`: given chain-completeness of `TM⁻ + (Sp)`, `TM⁻ + (Sp) = TMFrag .Base`. -/
+theorem minusExt_sigmaBase_iff_tmFrag_of_chainComplete
+    (h : ChainComplete FrameClass.Base sigmaBase) (φ : MinusFormula) :
+    MinusExt FrameClass.Base sigmaBase φ ↔ TMFrag FrameClass.Base φ :=
+  minusExt_iff_tmFrag_of_chainComplete h sigmaBase_le_tmFrag φ
+
+/-- `.ZTime`: given chain-completeness of `TM⁻_z + Z1`, `TM⁻_z + Z1 = TMFrag .ZTime`. -/
+theorem minusExt_sigmaZTime_iff_tmFrag_of_chainComplete
+    (h : ChainComplete FrameClass.ZTime sigmaZTime) (φ : MinusFormula) :
+    MinusExt FrameClass.ZTime sigmaZTime φ ↔ TMFrag FrameClass.ZTime φ :=
+  minusExt_iff_tmFrag_of_chainComplete h sigmaZTime_le_tmFrag φ
+
+/-- `.Dense`: given chain-completeness of `TM⁻_d`, `TM⁻_d = TMFrag .Dense`.
+
+Composed with `minusExt_empty_iff`, this reads "TM⁻_d is complete for `MinusValidIn .Dense`
+given chain-completeness" — the `.Dense` row of `TMCompletenessReduction.lean`'s
+`TMMinusComplete`, conditionally. Neither `TMMinusComplete .Dense` nor `ChainComplete .Dense ∅`
+is asserted. -/
+theorem minusExt_empty_iff_tmFrag_dense_of_chainComplete
+    (h : ChainComplete FrameClass.Dense ∅) (φ : MinusFormula) :
+    MinusExt FrameClass.Dense ∅ φ ↔ TMFrag FrameClass.Dense φ :=
+  minusExt_iff_tmFrag_of_chainComplete h (fun _ hψ => absurd hψ (Set.notMem_empty _)) φ
+
+/-- `.RTime`: given chain-completeness of `TM⁻_r`, `TM⁻_r = TMFrag .RTime`.
+
+The same reading as the `.Dense` corollary, for `TMMinusComplete .RTime`; neither side is
+asserted. -/
+theorem minusExt_empty_iff_tmFrag_rtime_of_chainComplete
+    (h : ChainComplete FrameClass.RTime ∅) (φ : MinusFormula) :
+    MinusExt FrameClass.RTime ∅ φ ↔ TMFrag FrameClass.RTime φ :=
+  minusExt_iff_tmFrag_of_chainComplete h (fun _ hψ => absurd hψ (Set.notMem_empty _)) φ
+
+/-! ### Acceptance checks -/
+
+/-- The contrapositive shape a future refutation probe would consume: a formula outside
+`TM⁻ + Ax` is, given chain-completeness, refuted on some chain bundle in `fc`. -/
+example {fc : FrameClass} {Ax : Set MinusFormula} {φ : MinusFormula}
+    (hn : ¬ MinusExt fc Ax φ) (hcc : ChainComplete fc Ax) : ¬ ChainValidIn fc φ :=
+  fun hv => hn (hcc φ hv)
+
+/-- The `.Dense` corollary composed with `minusExt_empty_iff`: TM⁻_d-theoremhood is fragment
+membership, given chain-completeness. -/
+example (h : ChainComplete FrameClass.Dense ∅) (φ : MinusFormula) :
+    MinusLanguage.Derivable FrameClass.Dense [] φ ↔ TMFrag FrameClass.Dense φ :=
+  minusExt_empty_iff.symm.trans (minusExt_empty_iff_tmFrag_dense_of_chainComplete h φ)
+
 end FormalSystem.Metalogic.Conservativity
