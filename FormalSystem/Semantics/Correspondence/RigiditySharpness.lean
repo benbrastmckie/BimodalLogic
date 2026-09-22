@@ -8,14 +8,16 @@ import FormalSystem.Semantics.Correspondence.Rigidity
 import FormalSystem.Semantics.Frames.Standard
 import FormalSystem.Semantics.LexCarrier
 import Mathlib.Data.Int.SuccPred
+import Mathlib.Data.Rat.Denumerable
 
 /-!
 # Sharpness of the rigidity hypotheses
 
 `Semantics/Correspondence/Rigidity.lean` proves that over a **dense Archimedean** duration group
 a task frame is static iff it has a uniform dwell time, and hence that every finite-carrier frame
-over such an order is static. This module makes the remark "both hypotheses are needed" a pair
-of compiled witnesses, each a two-state frame with a uniform dwell time that is not static.
+over such an order is static. This module makes the remark "every hypothesis is needed" a set of
+compiled witnesses. The first two are two-state frames with a uniform dwell time that are not
+static; the third weakens finiteness to countability and loses staticity with it.
 
 * **Density cannot be dropped.** Over any successor order without a maximum — `ℤ` in
   particular, which is Archimedean — the permissive frame `permissiveFrame` on `Bool`
@@ -29,6 +31,12 @@ of compiled witnesses, each a two-state frame with a uniform dwell time that is 
   the state iff its duration has a nonzero *first* coordinate — has the uniform dwell radius
   `(0, 1)`, below which every duration has first coordinate `0`, yet the duration `(1, 0)` moves
   `true` to `false`. This is `lexRatFrame_not_static`.
+* **Finiteness cannot be weakened to countability.** `FrameOver.static_of_finite` asks for a
+  *finite* carrier, and over a dense Archimedean order that cannot be relaxed to a countable
+  one: the rational clock — states `ℚ`, `w ⇒_x u ↔ u = w + x`, over the dense Archimedean order
+  `ℚ` — is countable and not static. This is `ratClock_not_static`. (Over `ℝ` the same
+  weakening *is* available, because Dedekind completeness replaces density and the Archimedean
+  property: `Semantics/Correspondence/RigidityReal.lean`'s `FrameOver.static_of_countable`.)
 
 `LexCarrier.lean`'s `not_archimedean` covers `α ×ₗ ℤ` only, and its second coordinate is what
 carries the discreteness the ℤ-time witnesses need there; the fresh lemma here is for `ℚ ×ₗ ℚ`,
@@ -38,7 +46,8 @@ Both frames are built through `FrameOver.ofReflective` from a presenting relatio
 relations are read off with `FrameOver.ofReflective_taskRel` (or the `@[simp]` bridge
 `permissiveFrame_taskRel`), never by unfolding. `Mathlib.Data.Int.SuccPred` is imported for the
 `SuccOrder ℤ` instance that `intPermissiveFrame_not_static` recovers on the carrier of
-`TemporalOrder.of ℤ`.
+`TemporalOrder.of ℤ`, and `Mathlib.Data.Rat.Denumerable` for the `Countable ℚ` instance
+`ratClock_not_static` records.
 -/
 
 namespace FormalSystem.Semantics.Rigidity
@@ -177,5 +186,31 @@ theorem lexRat_not_archimedean : ¬ Archimedean LexRat := by
 /-- **`ℚ ×ₗ ℚ` is densely ordered**, by Mathlib's instance for lexicographic products; recorded
 so the witness's two hypotheses are both visible as theorems. -/
 theorem lexRat_denselyOrdered : DenselyOrdered LexRat := inferInstance
+
+/-! ## Finiteness cannot be weakened to countability -/
+
+/-- The rationals as a duration order: dense and Archimedean, and countable. -/
+abbrev ratOrder : TemporalOrder := TemporalOrder.of ℚ
+
+/--
+**The rational clock is not static**, so the *finiteness* hypothesis of
+`FrameOver.static_of_finite` cannot be weakened to countability.
+
+The carrier here is `ℚ`, and it is countable — the instance is `inferInstanceAs (Countable ℚ)`,
+which is why this module imports `Mathlib.Data.Rat.Denumerable`. The duration order is likewise
+`ℚ`, which is both densely ordered and Archimedean — so every hypothesis of the rigidity theorem
+other than finiteness holds — and the frame is nevertheless not static, since the duration `1`
+moves the state `0` to the state `1`. Countable plus dense plus Archimedean is therefore not
+enough for rigidity, and the escape is exactly a state space that carries a clock reading.
+
+Over `ℝ` the weakening *is* available: `FrameOver.static_of_countable`
+(`Semantics/Correspondence/RigidityReal.lean`) needs neither finiteness nor density nor the
+Archimedean property, because Dedekind completeness replaces them. `ℚ` is precisely where the
+two boundaries disagree.
+-/
+theorem ratClock_not_static : ¬ Static (translationFrame ratOrder).TaskRel := by
+  intro h
+  have h1 : (0 : ℚ) = 1 := (h (0 : ℚ) (1 : ℚ) (1 : ℚ)).mp (by simp [translationFrame_taskRel])
+  exact absurd h1 (by norm_num)
 
 end FormalSystem.Semantics.Rigidity

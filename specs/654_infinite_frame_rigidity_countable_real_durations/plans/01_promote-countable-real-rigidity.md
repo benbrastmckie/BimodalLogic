@@ -388,29 +388,32 @@ accordingly before it closes.
 
 ---
 
-### Phase 4: `ratClock_not_static` into RigiditySharpness.lean [NOT STARTED]
+### Phase 4: `ratClock_not_static` into RigiditySharpness.lean [COMPLETED]
 
 **Goal**: the rational clock — countable, dense, Archimedean, not static — is a library-citable
 witness that the finiteness hypothesis of `FrameOver.static_of_finite` cannot be weakened to
 countability.
 
 **Tasks**:
-- [ ] Add `import Mathlib.Data.Rat.Denumerable` to
+- [x] Add `import Mathlib.Data.Rat.Denumerable` to
       `FormalSystem/Semantics/Correspondence/RigiditySharpness.lean` (for the `Countable ℚ`
       instance); `Frames.Standard` and `Rigidity` are already imported there.
-- [ ] Add `noncomputable abbrev ratOrder : TemporalOrder := TemporalOrder.of ℚ` and
+- [x] Add `abbrev ratOrder : TemporalOrder := TemporalOrder.of ℚ` *(deviation: altered —
+      `noncomputable` dropped. `TemporalOrder.of ℚ` is computable, as the existing
+      `Metalogic/Conservativity/MinusChainCompleteness.lean` abbrev and probe `01` both show;
+      `noncomputable` on it is rejected by Lean. The statement is unaffected.)* and
       `theorem ratClock_not_static` to `namespace FormalSystem.Semantics.Rigidity`, transcribed
       from `probes/01_clock-frames.lean`. Note the probe's finding that `norm_num at h` does not
       reduce through the `FrameOver.WorldState` projection: use
       `absurd h1 (by norm_num)` with an explicit `(0 : ℚ) = 1` ascription.
-- [ ] Docstring it as the countability-sharpness witness for `static_of_finite`, and state in
+- [x] Docstring it as the countability-sharpness witness for `static_of_finite`, and state in
       the docstring that the *carrier* here is `ℚ` and is countable
       (`inferInstanceAs (Countable ℚ)`), the duration order is dense and Archimedean, and the
       frame is nevertheless not static — so countable plus dense plus Archimedean is not enough
       for rigidity; the escape is a state space that carries a clock reading.
-- [ ] Extend `RigiditySharpness.lean`'s module docstring with a third bullet for this witness,
+- [x] Extend `RigiditySharpness.lean`'s module docstring with a third bullet for this witness,
       beside the two existing "density cannot be dropped" / "Archimedean cannot be dropped" ones.
-- [ ] `lake build --wfail` green.
+- [x] `lake build --wfail` green.
 
 **Timing**: 0.5 hours
 
