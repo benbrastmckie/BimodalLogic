@@ -1,0 +1,24 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 1,
+  "summary": "Research for ChainComplete .Dense ∅ found no obstruction and fixed the route: keep .Dense/∅; build a new L⁻-typed MCS layer, canonical relations (density from DN, weak linearity from TL), a Burgess-style ω-stage chronicle on ℚ, and a truth lemma over one □-class of chronicles. A sorry-free probe compiles the Lindenbaum layer, the definitions, the final assembly shape and every Mathlib name consumed.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/651_chain_complete_dense_tm_minus/reports/01_chain-complete-dense-route.md",
+      "summary": "Route, lemma-by-lemma paper checks, six-phase decomposition, class-choice justification, and the docstring/theorem-index consequences of proving chainComplete_dense."
+    },
+    {
+      "type": "probe",
+      "path": "specs/651_chain_complete_dense_tm_minus/probes/01_minus-mcs-lindenbaum-and-assembly.lean",
+      "summary": "Compiled sorry-free probe (lake env lean, exit 0)."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "plan_markers_verified": null,
+  "continuation_path": null,
+  "next_action_hint": "Plan from the report's six phases; decide scope of the corollaries tmMinusComplete_dense / forward_dense and the mandatory docstring revisions listed in report §5."
+}

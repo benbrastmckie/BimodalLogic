@@ -83,7 +83,7 @@ next_project_number: 657
 
 ### Incompleteness
 
-651 [NOT STARTED] — Machine-check chain-completeness of TM⁻d at Dense,...
+651 [RESEARCHED] — Machine-check chain-completeness of TM⁻d at Dense,...
 
 ### Metalogic
 
@@ -101,8 +101,8 @@ next_project_number: 657
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
-653 [NOT STARTED] — RESEARCH TASK, verdict-first: what DOES see recurrence and...
-655 [NOT STARTED] — RESEARCH TASK, verdict-first: which topology on the state...
+653 [RESEARCHING] — RESEARCH TASK, verdict-first: what DOES see recurrence and...
+655 [RESEARCHING] — RESEARCH TASK, verdict-first: which topology on the state...
   └─ 656 [NOT STARTED] — Refactor the task-frame definitions so that a task frame is...
 
 ## Tasks
@@ -118,7 +118,7 @@ next_project_number: 657
 ---
 
 ### 655. Topology characterizing limit nbhd vs subbasis
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
@@ -138,7 +138,7 @@ next_project_number: 657
 ---
 
 ### 653. What sees recurrence language extensions
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 645
@@ -158,10 +158,11 @@ next_project_number: 657
 ---
 
 ### 651. Chain complete dense tm minus
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: incompleteness
 - **Dependencies**: Task 534
+- **Research**: [651_chain_complete_dense_tm_minus/reports/01_chain-complete-dense-route.md]
 
 **Description**: Machine-check chain-completeness of TM⁻_d at Dense, discharging one ChainComplete row of the H/G-fragment axiomatization. THE OBJECT: FormalSystem/Metalogic/Conservativity/FragmentAxiomatization.lean states the per-class verdict that the H/G-fragment TMFrag fc is finitely axiomatizable over TM⁻ in L⁻, with soundness (MinusExt fc Ax ⊆ TMFrag fc, via minusExt_le_tmFrag in MinusExt.lean) machine-checked at all four classes and completeness carried ONLY as the explicit, never-asserted hypothesis `ChainComplete fc Ax : ∀ φ, ChainValidIn fc φ → MinusExt fc Ax φ` of minusExt_iff_tmFrag_of_chainComplete. The completeness halves are literature-backed (Burgess 1984 §§2.5-2.7, Venema 2001 Thm 3.3, via the universal-modality reduction). THE GOAL: prove `ChainComplete FrameClass.Dense ∅` -- that TM⁻_d alone (no extra schema; sigmaDense is empty) is complete for L⁻ over chain bundles at the dense class -- as a real theorem, turning that row of the verdict table from literature-backed into machine-checked and validating the whole conditional-completeness scaffold. Dense is chosen because it needs no extra schema; if research finds Base (TM⁻ + Sp, sigmaBase) or ZTime (TM⁻_z + Z1, sigmaZTime) genuinely cheaper given the existing infrastructure, the planner may switch classes, but exactly one class is in scope and the choice must be justified in the plan. ROUTE: a canonical model in the H/G language (maximal TM⁻_d-consistent sets of MinusFormula, the canonical temporal order, a Lindenbaum lemma, a truth lemma) landing in a chain bundle that ChainValidIn quantifies over, then density of the canonical order from the TM⁻_d axioms. READ FIRST: FragmentAxiomatization.lean (the whole module, including the status docstrings and the 'Paper note'), MinusExt.lean, ChainBundleTruth.lean (chainSat, not_minusValidIn_of_not_chainSat, and the 'single interface any future canonical-model work consumes' docstring), TMCompletenessReduction.lean, the L⁻ modules under FormalSystem/MinusLanguage/ (Derivation, MinusTruth, MinusValidity, Soundness, Translation), and the research reports of the completeness research task (specs/559_.../reports/) for what canonical-model machinery already exists in this tree and for TM⁻ specifically -- reuse it, do not build a second canonical model beside an existing one. The Lindenbaum/maximal-consistent-set infrastructure of the base-language completeness proof under FormalSystem/Metalogic/ is the model for how to state these. DELIVERABLES: the theorem `chainComplete_dense : ChainComplete FrameClass.Dense ∅` (or the justified alternative class) sorry-free; the corollary `minusExt_iff_tmFrag_dense : ∀ φ, MinusExt FrameClass.Dense ∅ φ ↔ TMFrag FrameClass.Dense φ` obtained by instantiating minusExt_iff_tmFrag_of_chainComplete; the status docstring row in FragmentAxiomatization.lean updated from literature-backed to machine-checked for that class only; a theorem-index row with a C14 pin. A precisely located obstruction (which lemma, which axiom, what the canonical order fails to satisfy) reported with a compiled probe is a complete outcome. HARD CONSTRAINT, inherited: never state a completeness theorem and discharge it with sorry; ChainComplete at the other three classes stays a hypothesis. CONSTRAINTS: the library root FormalSystem.lean is generated -- regenerate with `lake exe mk_all --lib FormalSystem`, never hand-edit; every new module is directly imported by the root, so the header linter applies under --wfail (module docstring first after the imports, no broad imports); add any new module to its sibling aggregator and directory README and re-emit inventory blocks with --emit-inventory; docstrings cite the manuscript by label or quotable phrase, never by line number, and carry no task numbers. ACCEPTANCE: lake build --wfail green; lean_verify on chainComplete_dense and minusExt_iff_tmFrag_dense returns standard axioms only, no sorryAx; check-module-invariants.sh all checks pass; `lake exe mk_all --lib FormalSystem --check` exits 0.
 
