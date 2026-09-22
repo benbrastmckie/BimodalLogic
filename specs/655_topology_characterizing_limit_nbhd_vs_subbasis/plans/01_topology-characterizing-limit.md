@@ -237,20 +237,20 @@ each ray and no cross-ray tasks. Prove Seriality, Compositionality and Limit for
 
 ---
 
-### Phase 5: 𝒩_F is strictly below the final topology; 𝒯_F-discontinuity inside the class [NOT STARTED]
+### Phase 5: 𝒩_F is strictly below the final topology; 𝒯_F-discontinuity inside the class [COMPLETED]
 
 **Goal**: Separate 𝒩_F from the final topology of all histories on the hedgehog, and give an
 in-class witness that histories need not be 𝒯_F-continuous, closing report item 2.3's main claim
 with machine-checked evidence.
 
 **Tasks**:
-- [ ] Define `hedgehogOpen : Set HH := {v | ∀ n t, v = HH.p n t → t.1 < 1 / ((n : ℝ) + 1)}` (the complement of the "tips" `p n ⟨1/(n+1)⟩` and everything beyond them).
-- [ ] Prove `not_isOpen_nbhdTopology_hedgehogOpen`: `c ∈ hedgehogOpen`, but for any `x > 0` choose `n` with `1/(n+1) < x` (`exists_nat_one_div_lt`), and `p n ⟨1/(n+1), _⟩ ∈ cone RHH c x` is not in the set.
-- [ ] Prove three history lemmas: `RHH_history_single_ray` (`τ a = p n t → τ b = p m s → n = m`, from `RHH` at duration `b - a` or its reflection), `RHH_history_centre_past` (`τ z = c → s ≤ z → τ s = c`, since `p _ t ⇒_x c` needs `t ≤ -x`, impossible for `x ≥ 0`), and `RHH_history_reach` (`τ z = c → τ (z + s) = p n t → t.1 ≤ s`).
-- [ ] Prove `isOpen_preimage_hedgehogOpen_of_history` via `isOpen_iff_forall_mem_open`/`Metric.isOpen_iff` on ℝ: at `z` with `τ z = c`, by cases on whether `τ` ever visits a ray after `z`; if it visits ray `n₀`, radius `1/(n₀+1)` works by `single_ray` + `reach` + `centre_past`; if never, radius `1` works. At `z` with `τ z = p n t` and `t < 1/(n+1)`, radius `1/(n+1) - t` works because `RHH (p n t) s (τ (z + s))` bounds `|t' - t| ≤ |s|` on the same ray (or lands at `c`, which is in the set).
-- [ ] Prove `finalTopology_ne_nbhdTopology_RHH`: if the two topologies were equal, `hedgehogOpen` would be 𝒩_F-open because it is open in every `coinduced τ.1` (`isOpen_iSup_iff`, `isOpen_coinduced`), contradicting the second task.
-- [ ] Prove `not_continuous_coneTopology_RHH_history`: `{c} = cone RHH (p 0 ⟨1,_⟩) 2 ∩ cone RHH (p 1 ⟨1,_⟩) 2` (cross-ray cones meet only at the centre, and `c ∈ (p n t)_x` iff `t < x`), so `{c}` is 𝒯_F-open; the history `τ s := if s ≤ 0 then c else p 0 ⟨s, _⟩` respects `RHH` (four sign cases) and `τ ⁻¹' {c} = Set.Iic 0` is not open.
-- [ ] Recompile; append `#print axioms` for the four new headline theorems; commit: `task 655 phase 5: hedgehog final-topology separation`.
+- [x] Define `hedgehogOpen : Set HH := {v | ∀ n t, v = HH.p n t → t.1 < 1 / ((n : ℝ) + 1)}` (the complement of the "tips" `p n ⟨1/(n+1)⟩` and everything beyond them). *(completed, plus `c_mem_hedgehogOpen`)*
+- [x] Prove `not_isOpen_nbhdTopology_hedgehogOpen`: `c ∈ hedgehogOpen`, but for any `x > 0` choose `n` with `1/(n+1) < x` (`exists_nat_one_div_lt`), and `p n ⟨1/(n+1), _⟩ ∈ cone RHH c x` is not in the set. *(completed)*
+- [x] Prove three history lemmas: `RHH_history_single_ray` (`τ a = p n t → τ b = p m s → n = m`, from `RHH` at duration `b - a` or its reflection), `RHH_history_centre_past` (`τ z = c → s ≤ z → τ s = c`, since `p _ t ⇒_x c` needs `t ≤ -x`, impossible for `x ≥ 0`), and `RHH_history_reach` (`τ z = c → τ (z + s) = p n t → t.1 ≤ s`). *(completed)*
+- [x] Prove `isOpen_preimage_hedgehogOpen_of_history` via `isOpen_iff_forall_mem_open`/`Metric.isOpen_iff` on ℝ: at `z` with `τ z = c`, by cases on whether `τ` ever visits a ray after `z`; if it visits ray `n₀`, radius `1/(n₀+1)` works by `single_ray` + `reach` + `centre_past`; if never, radius `1` works. At `z` with `τ z = p n t` and `t < 1/(n+1)`, radius `1/(n+1) - t` works because `RHH (p n t) s (τ (z + s))` bounds `|t' - t| ≤ |s|` on the same ray (or lands at `c`, which is in the set). *(completed, via `Metric.isOpen_iff`; the case split is on whether `τ` visits a ray at any time, which suffices since `single_ray` pins the ray and `centre_past` rules out visits before `z`)*
+- [x] Prove `finalTopology_ne_nbhdTopology_RHH`: if the two topologies were equal, `hedgehogOpen` would be 𝒩_F-open because it is open in every `coinduced τ.1` (`isOpen_iSup_iff`, `isOpen_coinduced`), contradicting the second task. *(completed)*
+- [x] Prove `not_continuous_coneTopology_RHH_history`: `{c} = cone RHH (p 0 ⟨1,_⟩) 2 ∩ cone RHH (p 1 ⟨1,_⟩) 2` (cross-ray cones meet only at the centre, and `c ∈ (p n t)_x` iff `t < x`), so `{c}` is 𝒯_F-open; the history `τ s := if s ≤ 0 then c else p 0 ⟨s, _⟩` respects `RHH` (four sign cases) and `τ ⁻¹' {c} = Set.Iic 0` is not open. *(completed; the inline facts are named `c_mem_cone_p`, `singleton_c_eq_inter_cone`, `isOpen_coneTopology_singleton_c`; the history uses a dependent `if` to carry `0 < s`)*
+- [x] Recompile; append `#print axioms` for the four new headline theorems; commit: `task 655 phase 5: hedgehog final-topology separation`. *(completed: exit 0, no warnings; all 8 audited theorems in the file `[propext, Classical.choice, Quot.sound]`)*
 
 **Timing**: 2 hours (time-boxed)
 

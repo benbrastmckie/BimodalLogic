@@ -201,11 +201,187 @@ theorem RHH_limit : Limit' RHH := by
 theorem t1Space_nbhdTopology_RHH : @T1Space HH (nbhdTopology' RHH) :=
   (t1Space_nbhdTopology_iff_limit' RHH).mpr RHH_limit
 
+/-! ## `𝒩_F` is strictly below the final topology of all histories -/
+
+/-- The centre together with the ray points `p n t` below the `n`-th ray's "tip" `1/(n+1)`. -/
+def hedgehogOpen : Set HH := {v | ∀ n t, v = p n t → t.1 < 1 / ((n : ℝ) + 1)}
+
+theorem c_mem_hedgehogOpen : c ∈ hedgehogOpen := fun _ _ h => HH.noConfusion h
+
+/-- **`hedgehogOpen` is not `𝒩_F`-open**: every cone at the centre contains the tip
+`p n ⟨1/(n+1)⟩` of some ray, since `1/(n+1) < x` for some `n`. -/
+theorem not_isOpen_nbhdTopology_hedgehogOpen : ¬ IsOpen[nbhdTopology' RHH] hedgehogOpen := by
+  intro h
+  obtain ⟨x, hx, hc⟩ := h c c_mem_hedgehogOpen
+  obtain ⟨n, hn⟩ := exists_nat_one_div_lt hx
+  have hpos : 0 < 1 / ((n : ℝ) + 1) := by positivity
+  have hmem : p n ⟨1 / ((n : ℝ) + 1), hpos⟩ ∈ cone RHH c x :=
+    ⟨1 / ((n : ℝ) + 1), by rw [abs_of_pos hpos]; exact hn,
+      mem_Fib.mpr (show 1 / ((n : ℝ) + 1) ≤ 1 / ((n : ℝ) + 1) from le_rfl)⟩
+  exact lt_irrefl _ (hc hmem n _ rfl)
+
+/-- A history visits at most one ray. -/
+theorem RHH_history_single_ray {τ : ℝ → HH} (hτ : IsHistory' RHH τ) {a b : ℝ} {n m : ℕ}
+    {t s : {t : ℝ // 0 < t}} (ha : τ a = p n t) (hb : τ b = p m s) : n = m := by
+  have h := hτ a b
+  rw [ha, hb] at h
+  exact h.1
+
+/-- The centre persists into the past: a history at `c` at time `z` was at `c` at every
+earlier time (a ray point reaches `c` only in negative duration). -/
+theorem RHH_history_centre_past {τ : ℝ → HH} (hτ : IsHistory' RHH τ) {z s : ℝ} (hz : τ z = c)
+    (hs : s ≤ z) : τ s = c := by
+  rcases hτs : τ s with _ | ⟨n, t⟩
+  · rfl
+  · exfalso
+    have h := hτ s z
+    rw [hz, hτs] at h
+    change t.1 ≤ -(z - s) at h
+    linarith [t.2]
+
+/-- Leaving the centre takes time: `τ z = c` and `τ (z + s) = p n t` force `t ≤ s`. -/
+theorem RHH_history_reach {τ : ℝ → HH} (hτ : IsHistory' RHH τ) {z s : ℝ} {n : ℕ}
+    {t : {t : ℝ // 0 < t}} (hz : τ z = c) (hs : τ (z + s) = p n t) : t.1 ≤ s := by
+  have h := hτ z (z + s)
+  rw [hz, hs] at h
+  change t.1 ≤ z + s - z at h
+  linarith
+
+/-- **Every history pulls `hedgehogOpen` back to an open set.** At a centre time, if the
+history ever visits a ray it visits only that ray `n₀`, and reaching `p n₀ t` from the centre
+takes time `≥ t`, so radius `1/(n₀+1)` works; if it never visits a ray any radius works. At a
+ray time `p n t` with `t < 1/(n+1)`, the drift law bounds `|t' - t| ≤ |s|` on the same ray, so
+radius `1/(n+1) - t` works. -/
+theorem isOpen_preimage_hedgehogOpen_of_history {τ : ℝ → HH} (hτ : IsHistory' RHH τ) :
+    IsOpen (τ ⁻¹' hedgehogOpen) := by
+  rw [Metric.isOpen_iff]
+  intro z hz
+  rcases hτz : τ z with _ | ⟨n, t⟩
+  · by_cases hvisit : ∃ n₀ s t₀, τ s = p n₀ t₀
+    · obtain ⟨n₀, s₀, t₀, hs₀⟩ := hvisit
+      refine ⟨1 / ((n₀ : ℝ) + 1), by positivity, ?_⟩
+      intro y hy
+      rw [Metric.mem_ball, Real.dist_eq] at hy
+      show ∀ m t', τ y = p m t' → t'.1 < 1 / ((m : ℝ) + 1)
+      intro m t' hy'
+      have hm : m = n₀ := RHH_history_single_ray hτ hy' hs₀
+      subst hm
+      rcases le_or_gt y z with hyz | hyz
+      · have := RHH_history_centre_past hτ hτz hyz
+        rw [hy'] at this
+        exact HH.noConfusion this
+      · have hr := RHH_history_reach hτ hτz (s := y - z) (by simpa using hy')
+        linarith [le_abs_self (y - z)]
+    · push Not at hvisit
+      refine ⟨1, one_pos, ?_⟩
+      intro y _
+      show ∀ m t', τ y = p m t' → t'.1 < 1 / ((m : ℝ) + 1)
+      intro m t' hy'
+      exact absurd hy' (hvisit m y t')
+  · have ht : t.1 < 1 / ((n : ℝ) + 1) := hz n t hτz
+    refine ⟨1 / ((n : ℝ) + 1) - t.1, sub_pos.mpr ht, ?_⟩
+    intro y hy
+    rw [Metric.mem_ball, Real.dist_eq] at hy
+    show ∀ m t', τ y = p m t' → t'.1 < 1 / ((m : ℝ) + 1)
+    intro m t' hy'
+    have h := hτ z y
+    rw [hτz, hy'] at h
+    obtain ⟨rfl, h⟩ := h
+    have hdist : |t'.1 - t.1| ≤ |y - z| := by
+      rcases h with ⟨h1, h2, h3⟩ | ⟨h1, h2, h3⟩
+      · rw [abs_of_nonneg h1, abs_of_nonneg (by linarith)]; linarith
+      · rw [abs_of_neg h1, abs_of_nonpos (by linarith)]; linarith
+    linarith [le_abs_self (t'.1 - t.1)]
+
+/-- **`𝒩_F` is strictly below the final topology of all histories**: `hedgehogOpen` is open
+in every `coinduced τ`, hence in their supremum, but not in `𝒩_F`. -/
+theorem finalTopology_ne_nbhdTopology_RHH :
+    (⨆ τ : {τ : ℝ → HH // IsHistory' RHH τ}, coinduced τ.1 inferInstance) ≠
+      nbhdTopology' RHH := by
+  intro heq
+  apply not_isOpen_nbhdTopology_hedgehogOpen
+  rw [← heq, isOpen_iSup_iff]
+  intro τ
+  rw [isOpen_coinduced]
+  exact isOpen_preimage_hedgehogOpen_of_history τ.2
+
+/-! ## A history that is not `𝒯_F`-continuous, inside the class -/
+
+/-- `c ∈ (p n t)_x` iff `t < x`. -/
+theorem c_mem_cone_p {n : ℕ} {t : {t : ℝ // 0 < t}} {x : ℝ} :
+    c ∈ cone RHH (p n t) x ↔ t.1 < x := by
+  constructor
+  · rintro ⟨y, hy, hR⟩
+    change t.1 ≤ -y at hR
+    linarith [(abs_lt.mp hy).1]
+  · intro h
+    exact ⟨-t.1, by rw [abs_neg, abs_of_pos t.2]; exact h, show t.1 ≤ -(-t.1) by rw [neg_neg]⟩
+
+/-- Two cross-ray cones meet only at the centre. -/
+theorem singleton_c_eq_inter_cone :
+    ({c} : Set HH) = cone RHH (p 0 ⟨1, one_pos⟩) 2 ∩ cone RHH (p 1 ⟨1, one_pos⟩) 2 := by
+  ext v
+  constructor
+  · rintro rfl
+    exact ⟨c_mem_cone_p.mpr (show (1 : ℝ) < 2 by norm_num),
+      c_mem_cone_p.mpr (show (1 : ℝ) < 2 by norm_num)⟩
+  · rintro ⟨⟨y, _, h0⟩, ⟨y', _, h1⟩⟩
+    cases v with
+    | c => rfl
+    | p n t => exact absurd ((mem_Fib.mp h0).1.trans (mem_Fib.mp h1).1.symm) (by decide)
+
+/-- `{c}` is `𝒯_F`-open (a finite intersection of cones). -/
+theorem isOpen_coneTopology_singleton_c : IsOpen[coneTopology' RHH] ({c} : Set HH) := by
+  rw [singleton_c_eq_inter_cone]
+  letI := coneTopology' RHH
+  exact IsOpen.inter (isOpen_generateFrom_of_mem ⟨_, _, two_pos, rfl⟩)
+    (isOpen_generateFrom_of_mem ⟨_, _, two_pos, rfl⟩)
+
+/-- **A hedgehog history that is not `𝒯_F`-continuous**: "`c` until time `0`, then out ray
+`0` at unit speed" respects `RHH`, but the preimage of the `𝒯_F`-open `{c}` is `(-∞, 0]`. -/
+theorem not_continuous_coneTopology_RHH_history :
+    ∃ τ : ℝ → HH, IsHistory' RHH τ ∧ ¬ @Continuous ℝ HH _ (coneTopology' RHH) τ := by
+  refine ⟨fun s => if h : s ≤ 0 then c else p 0 ⟨s, not_le.mp h⟩, ?_, ?_⟩
+  · intro x y
+    dsimp only
+    split_ifs with hx hy hy
+    · trivial
+    · show y ≤ y - x; linarith
+    · show x ≤ -(y - x); linarith
+    · show (0 : ℕ) = 0 ∧ ((0 ≤ y - x ∧ x ≤ y ∧ y ≤ x + (y - x)) ∨
+        (y - x < 0 ∧ y ≤ x ∧ x ≤ y - (y - x)))
+      refine ⟨rfl, ?_⟩
+      rcases le_or_gt x y with hxy | hxy
+      · exact Or.inl ⟨by linarith, hxy, by linarith⟩
+      · exact Or.inr ⟨by linarith, hxy.le, by linarith⟩
+  · intro hcont
+    letI := coneTopology' RHH
+    have hpre := hcont.isOpen_preimage ({c} : Set HH) isOpen_coneTopology_singleton_c
+    have hpre' : (fun s : ℝ => if h : s ≤ 0 then c else p 0 ⟨s, not_le.mp h⟩) ⁻¹'
+        ({c} : Set HH) = Set.Iic 0 := by
+      ext s
+      simp only [Set.mem_preimage, Set.mem_singleton_iff, Set.mem_Iic]
+      split_ifs with hs
+      · exact ⟨fun _ => hs, fun _ => rfl⟩
+      · exact ⟨fun h => h.elim, fun h => absurd h hs⟩
+    rw [hpre', Metric.isOpen_iff] at hpre
+    obtain ⟨ε, hε, hb⟩ := hpre 0 (Set.mem_Iic.mpr le_rfl)
+    have hmem : ε / 2 ∈ Metric.ball (0 : ℝ) ε := by
+      rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_of_pos (half_pos hε)]
+      exact half_lt_self hε
+    have := hb hmem
+    rw [Set.mem_Iic] at this
+    linarith
+
 /-! ## Axiom audit: every headline theorem uses only `propext`, `Classical.choice`, `Quot.sound` -/
 
 #print axioms RHH_serial
 #print axioms RHH_compositional
 #print axioms RHH_limit
 #print axioms t1Space_nbhdTopology_RHH
+#print axioms not_isOpen_nbhdTopology_hedgehogOpen
+#print axioms isOpen_preimage_hedgehogOpen_of_history
+#print axioms finalTopology_ne_nbhdTopology_RHH
+#print axioms not_continuous_coneTopology_RHH_history
 
 end FormalSystem.Semantics.TaskFrame
