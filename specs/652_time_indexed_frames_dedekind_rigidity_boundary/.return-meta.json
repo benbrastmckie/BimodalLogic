@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "dispatch_seq": 13,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/652_time_indexed_frames_dedekind_rigidity_boundary/reports/01_time-indexed-dedekind-rigidity.md",
+      "summary": "Time-indexed frame structure at report 05's field names, the Dedekind+dense positive theorem (constant histories, not relation-level Static -- correction reported), the compiled two-state Q witness switching across sqrt 2, the 2x2 comparison with the Archimedean duration-indexed boundary, siting/wiring/C14/C15 checklist. Compiled-green probes accompany it at probes/01_positive_theorem.lean and probes/02_rat_witness.lean."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790104191_b13256_652",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "research",
+      "lean-research-agent"
+    ]
+  }
+}
