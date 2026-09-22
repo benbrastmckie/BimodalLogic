@@ -1,45 +1,34 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "phase": "implement",
-  "dispatch_seq": 14,
-  "summary": "All six plan phases are now closed: this dispatch completed Phase 3 (every cone of the two-origin frame proved N_F-open, hence T_F = N_F and T_F not Hausdorff there) and Phase 6 (report reconciled against the six compiled probes). Returned partial, not implemented, because the plan's pinned RTO_triangle is FALSE and was excluded with a compiled refutation, which the mechanical plan-compliance check counts as a miss, and because executing the repair route on an unrevised plan was a judgment call the user should review.",
+  "dispatch_seq": 19,
+  "summary": "Task 655 verified complete against the user-ratified plan revision 02. The revision retired the false pinned Challenge RTO_triangle : Triangle' RTO and pinned the delivered intermediate isOpen_nbhdTopology_cone_RTO in its place, which clears the single plan-compliance miss that made cycle 4 return partial: 13/13 pinned identifiers now resolve to compiled declarations under probes/. All six probes recompile at lake env lean exit 0 with zero errors and zero warnings (51 axiom-audited declarations, all exactly [propext, Classical.choice, Quot.sound]); the full guarded lake build is green (2712 jobs, exit 0, 0 error: lines); sorry count 0; axiom count 14, unchanged from baseline. No Lean or report content changed in this dispatch: the summary was rewritten to cite revision 02 and the plan-level status closed to [COMPLETED].",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/summaries/01_topology-characterizing-limit-summary.md",
-      "summary": "Implementation summary: all six phases closed, Phase 3 completed with one reasoned exclusion, full verification log."
+      "summary": "Rewritten against revision 02: plan reference, plan-compliance verdict (now passed, 13/13), Phase 3 deviation scoping, status-vocabulary reconciliation, and the retired reviser follow-up."
+    },
+    {
+      "type": "plan",
+      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/plans/02_topology-characterizing-limit.md",
+      "summary": "Governing plan; plan-level status closed to [COMPLETED]. Phases 1, 2, 4, 5, 6 [COMPLETED]; Phase 3 [COMPLETED WITH EXCLUSIONS], its BLOCKER and Reasoned Exclusions records retained as history."
     },
     {
       "type": "report",
       "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/reports/01_topology-characterizing-limit.md",
-      "summary": "Report reconciled with the six compiled probes: citations, results table, verification log, surviving-UNVERIFIED table."
+      "summary": "Q1-Q6 report reconciled against the six compiled probes; unchanged this dispatch."
     },
     {
       "type": "implementation",
-      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/probes/TwoOrigins.lean",
-      "summary": "Triangle' refuted; all cones N_F-open; T_F = N_F; T_F not Hausdorff."
-    },
-    {
-      "type": "plan",
-      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/plans/01_topology-characterizing-limit.md",
-      "summary": "All six phase markers closed; Phase 3 carries a Reasoned Exclusions record."
+      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/probes",
+      "summary": "Six sorry-free probes (NbhdTopology, FourState, IntPartition, RealFrames, TwoOrigins, Hedgehog); unchanged this dispatch, re-verified green."
     }
   ],
   "phases_completed": 6,
   "phases_total": 6,
   "blockers": [],
-  "user_decision": {
-    "question": "The plan's Lean Challenge Statements block still pins RTO_triangle : Triangle' RTO, which is false (compiled refutation: not_triangle_RTO). plan-compliance.md forbids an implementer editing a recorded Challenge, so the entry was left in place with a Reasoned Exclusions record. How should that entry be retired?",
-    "options": [
-      "Run /revise on task 655 to delete RTO_triangle and the Triangle' scaffolding from Phase 3 and from the Lean Challenge Statements block, leaving the exclusion record as history",
-      "Leave the plan as it stands - the Reasoned Exclusions record plus the compiled not_triangle_RTO already document the divergence, and the task is finished",
-      "Reject the route taken: revert commit cc8903f22, restore Phase 3 to [BLOCKED], and require a reviser pass before any implementation of Phase 3"
-    ],
-    "recommended": "Run /revise on task 655 to delete RTO_triangle and the Triangle' scaffolding from Phase 3 and from the Lean Challenge Statements block, leaving the exclusion record as history",
-    "blocking": false
-  },
   "plan_markers_verified": true,
-  "continuation_path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/handoffs/phase-6-handoff-20260922T192145Z.md",
-  "next_action_hint": "No implementation work remains. Either run /revise to retire the false RTO_triangle Challenge entry, or close the task; the follow-on frame-refactor task consumes report section 5.",
-  "git_checkpoint": "8975c9d17"
+  "next_action_hint": "No implementation work remains and no user decision is outstanding; the prior cycle's question was answered and executed by revision 02. Postflight can link plans/02 (same-type supersession) and summaries/01 and close the task. The follow-on frame-refactor task consumes report section 5.",
+  "git_checkpoint": "6c6369e32"
 }

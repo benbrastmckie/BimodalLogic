@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 18,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/654_infinite_frame_rigidity_countable_real_durations/reports/01_infinite-frame-rigidity-countable-real.md",
+      "summary": "Settles Q1-Q4 with two sorry-free compiled probes under probes/: over ℝ every task frame with countably many world states is static (new theorem, needs a Sierpinski theorem Mathlib lacks); the rational clock is the countable non-static witness over ℚ; Q3 settled as a local-clock theorem with the injectivity reading UNVERIFIED; promotion plan for ForMathlib/Topology/Sierpinski.lean plus Correspondence/RigidityReal.lean."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790104191_b13256_654",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

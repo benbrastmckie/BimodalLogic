@@ -1,41 +1,47 @@
 {
-  "status": "planned",
-  "started_at": "2026-09-22T19:30:00Z",
-  "completed_at": "2026-09-22T19:48:00Z",
+  "status": "implemented",
+  "started_at": "2026-09-22T22:35:00Z",
+  "completed_at": "2026-09-22T22:47:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/summaries/01_topology-characterizing-limit-summary.md",
+      "summary": "Implementation summary rewritten against plan revision 02: all six phases closed, 13/13 pinned identifiers resolve, full verification log."
+    },
     {
       "type": "plan",
       "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/plans/02_topology-characterizing-limit.md",
-      "summary": "Revision 02: retires the false pinned Challenge RTO_triangle : Triangle' RTO, pins the delivered intermediate isOpen_nbhdTopology_cone_RTO in its place, restates Phase 3's route as the four cone-membership lemmas feeding isOpen_nbhdTopology_cone_RTO, and records the 'Triangle is sufficient but not necessary for cone-openness' finding. Phases 1, 2, 4, 5, 6 unchanged; the BLOCKER and Reasoned Exclusions records retained verbatim as history."
+      "summary": "Governing plan, revision 02; plan-level status closed to [COMPLETED], all six phase markers closed."
+    },
+    {
+      "type": "report",
+      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/reports/01_topology-characterizing-limit.md",
+      "summary": "Q1-Q6 answered and reconciled against the six compiled probes."
     }
   ],
-  "next_steps": "No implementation work remains: all six phases are closed against this plan and lake build is green. Orchestrator postflight should link plans/02_topology-characterizing-limit.md as the task's plan artifact (same-type supersession of the 01 link), advance next_artifact_number to 3, and commit with `task 655: revise plan (v2)`.",
-  "verification": {
-    "plan_format_validation": "validate-artifact.sh ... plan --strict => PASS, 0 warnings",
-    "challenge_block_typecheck": "extracted standalone and run through `lake env lean` on the pinned toolchain: exit 0, zero `error:` lines, exactly 13 `declaration uses \\`sorry\\`` warnings (one per pinned identifier)",
-    "pin_resolution": "13/13 pinned identifiers resolve to a compiled declaration under probes/ (was 12/13 in revision 01)"
+  "completion_data": {
+    "completion_summary": "Verified task 655's delivered work against the user-ratified plan revision 02, which retired the false pinned Challenge RTO_triangle : Triangle' RTO and pinned the delivered intermediate isOpen_nbhdTopology_cone_RTO in its place. All 13 identifiers pinned in the revised plan now resolve to compiled declarations under probes/ (was 12/13 against revision 01), all six probes recompile with lake env lean at exit 0 with zero errors and zero warnings across 51 axiom-audited declarations, and the full library build is green. The implementation summary was rewritten to cite revision 02 and the plan-level status closed; no Lean or report content changed in this dispatch.",
+    "roadmap_items": []
   },
   "metadata": {
     "session_id": "sess_1790104191_b13256",
-    "agent_type": "reviser-agent",
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "revision_mode": "plan_revision",
-    "dispatch_seq": 17,
-    "artifact_number": 2,
-    "supersedes": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/plans/01_topology-characterizing-limit.md",
-    "phase_count": 6,
-    "phases_preserved": [1, 2, 4, 5, 6],
-    "phases_revised": [3],
-    "phases_added": [],
-    "phases_removed": [],
-    "estimated_hours": 10,
-    "reports_integrated": ["01_topology-characterizing-limit.md"],
-    "revision_inputs": [
-      "summaries/01_topology-characterizing-limit-summary.md",
-      "probes/TwoOrigins.lean (compiled refutation not_triangle_RTO)",
-      ".decisions.json (user decision, 2026-09-22T21:18:44Z)"
-    ],
-    "prior_meta_preserved_at": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/.return-meta.implement-14.json",
-    "not_committed": "The revised plan is written but uncommitted; state.json and TODO.md were not touched, per the reviser-agent contract. Orchestrator postflight owns both."
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "dispatch_seq": 19,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "compliance_detail": "13/13 Goals identifiers of plans/02 resolve via the plan's own declared check (grep -n \"theorem <name>\" probes/*.lean). The contract's canonical arm greps the resolved source roots (FormalSystem, Tests/BimodalTest, BimodalTools) and reports all 13 absent there by design: this task's Non-Goals forbid any edit under FormalSystem/ and the probes are deliberately not Lake modules.",
+    "vacuous_scope_note": "The repo-wide vacuous grep matches 1 line, FormalSystem/Examples/TemporalStructures.lean:483 (int_domain_universal := trivial), introduced at c9775647f (2025-12-04), pre-existing and outside this task's file scope. vacuous_count is reported as 0 for this task's files.",
+    "build_evidence": "lake-build-guard.sh build --timeout 1800 -- build, detached: guard exit_status=0, 'Build completed successfully (2712 jobs)', 0 error: lines. Tier 3 olean-freshness check vacuous: no module under any resolved source root was touched by this task.",
+    "probe_axiom_audit": "NbhdTopology 14, FourState 9, IntPartition 4, RealFrames 7, TwoOrigins 9, Hedgehog 8 = 51 declarations; zero sorryAx/ofReducedBool/trustCompiler matches.",
+    "phases_executed_this_dispatch": "none (all six phases were already closed against the plan this revision supersedes); this dispatch verified, reconciled the summary, and closed the plan-level status",
+    "commit": "6c6369e32"
   }
 }

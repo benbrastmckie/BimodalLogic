@@ -1,5 +1,5 @@
 ---
-next_project_number: 657
+next_project_number: 658
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 657
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,649,654,655 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650,656 | 298,464,502,563,649,654,655 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,618,657 | 231,465,497,564,565,616,656 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500,656 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -85,7 +85,7 @@ next_project_number: 657
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-654 [NOT STARTED] — RESEARCH TASK with compiled probes, verdict-first: which...
+654 [RESEARCHING] — RESEARCH TASK with compiled probes, verdict-first: which...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -98,8 +98,19 @@ next_project_number: 657
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
 655 [IMPLEMENTING] — RESEARCH TASK, verdict-first: which topology on the state...
   └─ 656 [NOT STARTED] — Refactor the task-frame definitions so that a task frame is...
+    └─ 657 [NOT STARTED] — RESEARCH TASK, verdict-first: are Compositionality,...
 
 ## Tasks
+
+### 657. Audit frame constraints history restriction
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: Task 656
+
+**Description**: RESEARCH TASK, verdict-first: are Compositionality, Seriality, Limit and Saturation the right constraints on a task frame, given the manuscript's aims -- the right number, the right strength, the right shape -- and what should be added, dropped, weakened or restated? Reports and sorry-free probes under this task's directory only; no changes to FormalSystem/ or Tests/ except a final promotion phase if the planner judges a probe library-grade. DEPENDS ON the task-frame refactor: until the four constraints are independent predicates on a general frame rather than fields of FrameOver, "which subset suffices for X" is not statable, which is that refactor's own stated motivation. THE ANCHOR CASE, named by the user: partial histories should be identifiable as restrictions of complete histories. NOTE WHAT IS ALREADY PROVED, do not redo it: FormalSystem/Semantics/Extension/ proves thm:extension (every partial history is extended by some possible world) and cor:occurrence, via lem:constraint (the constraints a partial history imposes on a new duration form a directed, nonempty family) -> lem:admissible (constraint membership = plain fiber membership, giving a one-point extension) -> lem:step (one arbitrary duration; THE SOLE Saturation consumption site in the entire development) -> Zorn's lemma over PartialHistoryOrder. PeriodicExtension.lean gives a Zorn-free constructive route over Z-time with a finite carrier. So the open questions are not whether extension holds but: (Q1) NECESSITY. Is Saturation necessary for the extension property, or only sufficient? State the converse precisely -- does "every partial history extends to a total one" imply Saturation, and over which class -- and settle it or produce the counterexample. Saturation is the least intuitive of the four constraints and the only one stated over directed families of fibers and segments; if a weaker or more perspicuous condition buys thm:extension, that is a direct improvement to the paper's axiom list. Report exactly which of the four constraints each link in the chain consumes, at the granularity the refactor now makes statable. (Q2) THE IDENTIFICATION, which is strictly stronger than extension. "Partial histories ARE the restrictions of complete histories" is a biconditional: the easy direction is that every restriction of a possible world is a partial history (check that it really is easy, and that it needs no constraint); the hard direction is thm:extension. Determine whether the identification holds at the level of the ORDER too (PartialHistoryOrder.lean) and not merely pointwise -- is the restriction map from complete histories onto partial histories a surjection with the structure the paper wants, and does it respect the extension order -- and whether the paper should DEFINE partial histories as restrictions and derive the current definition, rather than the reverse. Say which presentation makes def:world-history and thm:extension cleaner. (Q3) THE OTHER CONSTRAINTS, each audited against the aims. Seriality is stated as a conjunction of forward and backward existence under a 0 <= x proviso; Compositionality is a biconditional both of whose halves are load bearing (Interpolates and forward_comp); Limit is now known to be exactly "the cone-neighbourhood topology is T1" (see the topology research task's report; the user has RATIFIED option (a), so the manuscript will define the topology as the cone-neighbourhood topology and state app:topology-t1 as a biconditional). For each constraint ask: is it independent of the other three (exhibit a frame satisfying the rest and failing it -- several already exist as compiled witnesses and should be cited, not rebuilt); is it used at its stated strength anywhere, or would a weaker form do throughout; and does any result in the tree secretly need a constraint the paper does not list (the reflection convention and nullity are the suspects, since they are conventions and derived facts rather than axioms). (Q4) WHAT IS MISSING. Given the aims -- task frames as dynamical systems, possible worlds as continuous paths, world states as recurring and reusable with time outside the state -- is there a constraint the paper SHOULD have and does not? Candidates to evaluate, not a closed list: a mixed-sign composition or triangle condition (the topology research shows Triangle is sufficient but NOT necessary for cones to be open, and that the primitive level leaves mixed-sign composition inexpressible); determinism as an optional class rather than an axiom; and any condition that would force the cone-neighbourhood topology to coincide with the final topology of all histories (shown strictly finer in general, with the hedgehog witness, and a frame condition equivalent to it left OPEN by that report -- this is the single most interesting gap and a plausible headline result for this task). (Q5) THE VERDICT, for the paper. A table of the four constraints against what each buys (which theorems die without it), what each costs (which natural frames it excludes), and a recommendation per constraint: keep as stated / restate / weaken / drop / add. Where a change is recommended, give the exact replacement statement in the paper's house style and name every manuscript site that would have to change. HARD CONSTRAINTS: every claimed frame-axiom or independence fact carries a sorry-free probe or the label UNVERIFIED; reuse the existing compiled witnesses (the four-state funnel, the two-origin half-line, the hedgehog, the rigidity sharpness frames, the lexicographic-rational frame) rather than rebuilding them, citing them by declaration name; every claim about the manuscript cites a label or quotable phrase, never a line number outside specs/; a precisely located obstruction or a well-argued "the four constraints are already right" is a complete outcome -- this task must not manufacture a change in order to justify itself. OUTPUT: a numbered report with the Q5 table; the probes; and, if anything is recommended for promotion, the module siting and names. The user will make the corresponding manuscript edits to possible_worlds.tex only after this task and the refactor are both complete.
+
+---
 
 ### 656. Refactor task frames general with frame constraints
 - **Status**: [NOT STARTED]
@@ -125,7 +136,7 @@ next_project_number: 657
 ---
 
 ### 654. Infinite frame rigidity countable real durations
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 646, Task 652
