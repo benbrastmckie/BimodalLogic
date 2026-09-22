@@ -1,30 +1,79 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "started_at": "2026-09-22T17:07:02Z",
+  "completed_at": "2026-09-22T17:26:00Z",
+  "requires_user_review": true,
+  "blocked_phase": 3,
+  "review_reason": "Phase 3 blocked: the plan's pinned Challenge statement `RTO_triangle : Triangle' RTO` is false (compiled refutation in the plan's BLOCKER entry); per plan-compliance.md Statement Fidelity the phase was marked [BLOCKED] rather than rerouted. Phases 1, 2, 4, 5 completed; Phase 6 depends on 3 and was not opened. Plan revision needed: prove coneTopology_eq_nbhdTopology_RTO via direct cone-openness (radii recorded in the BLOCKER).",
+  "verification": {
+    "verification_passed": false,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "axiom_count_baseline": 14,
+    "build_passed": true,
+    "build_output": "Build completed successfully (2704 jobs); lake-build-guard exit_status=0; 0 error lines",
+    "probes_compiled": ["NbhdTopology.lean", "FourState.lean", "IntPartition.lean", "RealFrames.lean", "TwoOrigins.lean", "Hedgehog.lean"],
+    "probe_axiom_audit": "47 theorems, all [propext, Classical.choice, Quot.sound]"
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/plans/01_topology-characterizing-limit.md",
-      "summary": "Six-phase plan hardening the research deliverable: axiom audit of the five probes, new sorry-free probes discharging the report's checkable UNVERIFIED labels (sep-without-Limit on the funnel, dwell-time discreteness, cone topology on the two-origin frame, the hedgehog frame separating the neighbourhood topology from the final topology), and report reconciliation; no library or manuscript edits."
+      "type": "summary",
+      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/summaries/01_topology-characterizing-limit-summary.md",
+      "summary": "Probes hardened: R4_sep, funnel/hedgehog T_F-discontinuity, dwell-time discreteness, hedgehog final-topology separation proved sorry-free; Phase 3 blocked on a false pinned lemma."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/probes/Hedgehog.lean",
+      "summary": "New hedgehog frame probe: Seriality, Compositionality, Limit, and N_F strictly below the final topology of all histories."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/handoffs/phase-5-handoff-20260922T172329Z.md",
+      "summary": "Resume point after Phase 5; Phase 6 gated on the Phase 3 plan revision."
     }
   ],
-  "next_steps": "Run /implement 655 to execute the plan",
+  "partial_progress": {
+    "stage": "phase_3_blocked",
+    "details": "Phases 1, 2, 4, 5 [COMPLETED]; Phase 3 [BLOCKED] (RTO_triangle false; discreteTopology_nbhdTopology_iff done); Phase 6 [NOT STARTED] (depends on 3). See plan file for blocker documentation.",
+    "phases_completed": 4,
+    "phases_total": 6
+  },
+  "modified_files": [
+    "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/probes/NbhdTopology.lean",
+    "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/probes/FourState.lean",
+    "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/probes/IntPartition.lean",
+    "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/probes/RealFrames.lean",
+    "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/probes/TwoOrigins.lean",
+    "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/probes/Hedgehog.lean",
+    "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/plans/01_topology-characterizing-limit.md",
+    "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/summaries/01_topology-characterizing-limit-summary.md"
+  ],
+  "next_steps": "Revise the plan's Phase 3 per its BLOCKER entry (drop RTO_triangle; route coneTopology_eq_nbhdTopology_RTO through cone-openness), then re-dispatch implement for Phases 3 and 6.",
   "memory_candidates": [
     {
-      "content": "For a lean4 research task whose deliverable is a report plus probe files under specs/ (not Lake modules), the implement round is 'harden the deliverable': re-verify probes, append #print axioms lines so the axiom claim is self-checking, discharge UNVERIFIED labels that fit a bounded budget as new probes, and reconcile the report's table with declaration names. The plan-format Lean Challenge Statements section must still be written; because lean-challenge-snapshot.sh counts every theorem/lemma/def/instance and truncates anything after a matched declaration's ':=', restate supporting definitions as abbrev/inductive placed BEFORE the first theorem so the declared identifier set equals the Goals set exactly, and type-check the block with lake env lean at planning time. The Comparator route itself is inapplicable to specs/-resident probes.",
-      "category": "WORKFLOW",
+      "content": "Lean 4: `omit [Inst] in` must precede the docstring of the declaration it scopes; placing it between the docstring and `theorem` is a parse error (\"unexpected token 'omit'; expected 'lemma'\"). A research-round probe was committed uncompilable because of this.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/probes/NbhdTopology.lean",
+      "confidence": 0.9,
+      "suggested_keywords": ["lean4", "omit", "docstring", "syntax"]
+    },
+    {
+      "content": "For a task frame with mixed-sign paths (e.g. the half-line with two origins: o ⇒_y p t ⇒_z o' with y>0>z), a 'triangle' shortcut condition |t| ≤ |y|+|z| is FALSE even though every cone is N_F-open; cone-openness must be proved directly with per-cone radii, not via a triangle inequality.",
+      "category": "INSIGHT",
       "source_artifact": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/plans/01_topology-characterizing-limit.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["lean4", "research-task", "probes", "challenge-statements", "print-axioms", "plan-format"]
+      "confidence": 0.85,
+      "suggested_keywords": ["task-frame", "topology", "two-origins", "triangle", "cone-open"]
     }
   ],
   "metadata": {
-    "session_id": "sess_1790093706_3bec6d_655",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1790093706_3bec6d",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 10,
-    "dependency_waves": [[1], [2, 3, 4], [5], [6]]
-  },
-  "dispatch_seq": 6
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "dispatch_seq": 9,
+    "compliance_check": "failed",
+    "compliance_missing": ["RTO_triangle", "coneTopology_eq_nbhdTopology_RTO", "not_t2Space_coneTopology_RTO"],
+    "territory_observation": "Untracked sibling files under FormalSystem/Metalogic/Conservativity/ (MinusCanonicalFrame, MinusMCS, MinusTemporalDerived) — task 651's declared scope, in flight; not touched."
+  }
 }

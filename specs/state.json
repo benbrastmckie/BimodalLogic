@@ -55,6 +55,11 @@
           "path": "/home/benjamin/Projects/BimodalLogic/specs/655_topology_characterizing_limit_nbhd_vs_subbasis/plans/01_topology-characterizing-limit.md",
           "type": "plan",
           "summary": "Six-phase implementation plan with Lean Challenge Statements pinning 13 new theorem statements (type-checked at planning time)."
+        },
+        {
+          "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/summaries/01_topology-characterizing-limit-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: four phases closed, Phase 3 blocked on a false pinned lemma, verification log."
         }
       ],
       "next_artifact_number": 2
