@@ -1,7 +1,7 @@
 # Implementation Plan: Task #652
 
 - **Task**: 652 - Define time-indexed task frames and prove the Dedekind-completeness rigidity boundary, with a compiled ℚ counterexample
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/652_time_indexed_frames_dedekind_rigidity_boundary/reports/01_time-indexed-dedekind-rigidity.md` (plus its two compiled-green probes under `probes/`)
@@ -108,43 +108,43 @@ No `roadmap_path` was provided in the dispatch context and no roadmap consultati
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: TimeIndexed.lean — structure, predicates, positive theorem [NOT STARTED]
+### Phase 1: TimeIndexed.lean — structure, predicates, positive theorem [COMPLETED]
 
 **Goal**: Create `FormalSystem/Semantics/TimeIndexed.lean` carrying the time-indexed frame
 structure at report 05's field names and the Dedekind positive theorem, elaborating clean under
 `--wfail` with standard axioms only.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/TimeIndexed.lean` with the Apache header block, then
+- [x] Create `FormalSystem/Semantics/TimeIndexed.lean` with the Apache header block, then
       `import FormalSystem.Semantics.TaskFrame` and `import Mathlib.Algebra.Order.Group.Bounds`,
       then the `/-! ... -/` module docstring immediately after the imports (header-linter order).
-- [ ] Module docstring content: what a time-indexed frame is and how it differs from `FrameOver`;
+- [x] Module docstring content: what a time-indexed frame is and how it differs from `FrameOver`;
       that the field names are report 05's and deliberately **not** `FrameOver`'s, so the MF
       frame-correspondence Theorem A consumes the structure unchanged; that Theorem A is the other
       intended consumer of this module; a pointer to `TimeIndexedSharpness.lean` for the comparison
       and the ℚ witness. Cite the manuscript by label or quotable phrase, never by line number.
       No task numbers anywhere in the file.
-- [ ] Declare `structure TimeIndexed (D : TemporalOrder)` with fields `W : Type`,
+- [x] Declare `structure TimeIndexed (D : TemporalOrder)` with fields `W : Type`,
       `[nonempty : Nonempty W]`, `R : W → ↑D → ↑D → W → Prop`.
-- [ ] Declare the predicate family as `def`s on `TimeIndexed D` (matching the bare-relation-predicate
+- [x] Declare the predicate family as `def`s on `TimeIndexed D` (matching the bare-relation-predicate
       idiom `TaskFrame.Compositional` / `Serial` / `Interpolates` already uses): `Hist`, `Limit`,
       `Compositional`, `Serial`, `Converse`, `Static`, `ConstantHistories`, `Stationary`, `P`.
       `Stationary` and `P` carry no theorem here; they exist because report 05 states Theorem A in
       terms of them. Say so in their docstrings.
-- [ ] Prove `exists_uniform_radius_of_finite`, transcribed from
+- [x] Prove `exists_uniform_radius_of_finite`, transcribed from
       `probes/01_positive_theorem.lean` (contrapositive of `Limit` per state, then `Finset.inf'`
       over `univ`). Uses `push Not`, not `push_neg`.
-- [ ] Prove `locally_constant_of_finite` — instantiate the previous at `w := τ t`, feed it `hτ t s`.
-- [ ] Prove `constantHistories_of_lub` with the `IsLUB` sup argument, transcribed verbatim. No
+- [x] Prove `locally_constant_of_finite` — instantiate the previous at `w := τ t`, feed it `hτ t s`.
+- [x] Prove `constantHistories_of_lub` with the `IsLUB` sup argument, transcribed verbatim. No
       topology, no `ConditionallyCompleteLinearOrder` instance: Dedekind completeness enters as the
       repository's Prop-valued `h_lub` binder per `DurationClassification.lean`'s stated convention.
-- [ ] Prove `static_of_lub_of_realized` from `constantHistories_of_lub` plus the two named extra
+- [x] Prove `static_of_lub_of_realized` from `constantHistories_of_lub` plus the two named extra
       hypotheses (see *Correction Carried Forward*); ~4 lines.
-- [ ] Give each of the four theorems a `/-- -/` docstring carrying a `Paper: — (reason)` line in
+- [x] Give each of the four theorems a `/-- -/` docstring carrying a `Paper: — (reason)` line in
       `Rigidity.lean`'s style (C15's second assertion), and record in the
       `constantHistories_of_lub` docstring the hypotheses the proof does **not** use:
       Compositionality, Seriality, Saturation, the converse convention, unboundedness, topology.
-- [ ] Build the module alone and confirm zero errors and zero warnings; run `#print axioms` on
+- [x] Build the module alone and confirm zero errors and zero warnings; run `#print axioms` on
       `constantHistories_of_lub` and confirm `[propext, Classical.choice, Quot.sound]`.
 
 **Timing**: 1 hour
@@ -158,6 +158,12 @@ structure at report 05's field names and the Dedekind positive theorem, elaborat
 implementation time with `wc -l` on the created file and `git status --short` showing exactly one
 untracked path; if either diverges (in particular if an existing file needed editing), record the
 divergence in the progress file before proceeding.
+
+*Scope-hypothesis outcome*: file count confirmed (exactly one new file, no existing file edited),
+line count diverged — 298 lines against the ~110 estimate. The excess is entirely module- and
+declaration-level docstring prose (the shared-infrastructure rationale, the not-consumed-hypothesis
+record, and the two-hypothesis gap note the plan's *Correction Carried Forward* mandates); the Lean
+content matches the probe line for line.
 
 **Files to modify**:
 - `FormalSystem/Semantics/TimeIndexed.lean` - new file (structure, nine predicate `def`s, four
