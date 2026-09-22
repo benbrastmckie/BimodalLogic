@@ -1,7 +1,7 @@
 # Implementation Plan: Task #653
 
 - **Task**: 653 - What sees recurrence and transposition in a task frame: state registers, state nominals, since/until, and the stability modal (verdict-first)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: 645 (translation-product port; delivered). Related, not blocking: 624 (originating report), 628 (hybrid/quantifier port; delivered), 651 (sibling, concurrently editing `FormalSystem/Metalogic/Conservativity/**` and `FormalSystem.lean` — never touched here).
 - **Research Inputs**: specs/653_what_sees_recurrence_language_extensions/reports/01_what-sees-recurrence.md; compiled probes specs/653_what_sees_recurrence_language_extensions/probes/0{1,2,3}_*.lean
@@ -176,7 +176,7 @@ in the Appendix A line, not silently reconciled.
 
 ---
 
-### Phase 2: Probe 04 — the quantified transposition sentence defines recurrence-freeness [IN PROGRESS]
+### Phase 2: Probe 04 — the quantified transposition sentence defines recurrence-freeness [COMPLETED]
 
 **Goal**: Close UNVERIFIED item 6: under standard propositional quantification, the transposition
 sentence built from two quantified state-naming letters is valid on a frame iff the frame is
@@ -260,15 +260,16 @@ fourth atom or a further inequality is needed, the pinned statement is wrong and
 
 ---
 
-### Phase 3: Hand-off summary — follow-up task description, manuscript remark, completeness notes [NOT STARTED]
+### Phase 3: Hand-off summary — follow-up task description, manuscript remark, completeness notes [COMPLETED]
 
 **Goal**: Put each of the report's three recommendations into the form its consumer needs,
 without acting on any of them.
 
 **Tasks**:
-- [ ] Write `summaries/01_what-sees-recurrence-summary.md` per `summary-format.md`: what Phases
+- [x] Write `summaries/01_what-sees-recurrence-summary.md` per `summary-format.md`: what Phases
   1–2 verified and measured; the four-probe inventory with profiles; then three hand-off sections.
-- [ ] **Follow-up port task (Recommendation i)**: a ready-to-paste `/task` description — type
+  *(completed)*
+- [x] **Follow-up port task (Recommendation i)**: a ready-to-paste `/task` description — type
   `lean4`; title "Port the translation-product invariance and hybrid-determinism probes into the
   library"; the file targets copied from report Recommendation 1 (the meta-theorem, stability
   bijection and `projH_mem_stabClass` in `Semantics/Frames/TranslationProduct.lean`; new
@@ -284,23 +285,25 @@ without acting on any of them.
   constraints (no new axiom; every probe declaration ported, none rediscovered; the
   "proof device, never an intended model" caveat restated in every new docstring); dependencies:
   none blocking (645 and 628 delivered); estimate ~400 lines, one round. State plainly that this
-  task did not create it.
-- [ ] **Manuscript remark (Recommendation ii)**: the §5.3 draft verbatim, its placement
+  task did not create it. *(completed: summary §Follow-ups 1)*
+- [x] **Manuscript remark (Recommendation ii)**: the §5.3 draft verbatim, its placement
   (`sub:Conclusion`, immediately after the unfolding sentence; alternative `sec:Construction`
   after "it is by specifying a time x in a history τ ..."), the optional one-clause addition at
   `sub:Extension`, and the repository evidence to cite for each half (`*ValidIn_iff_recurrenceFree`;
   `recF_defines`, `bindRec_defines`, `transF_defines`; after the port, the ported names). No
-  manuscript edit.
-- [ ] **Completeness take-aways (Recommendation iii)**: items (a)–(d) restated as a block the
+  manuscript edit. *(completed: summary §Follow-ups 2)*
+- [x] **Completeness take-aways (Recommendation iii)**: items (a)–(d) restated as a block the
   completeness research can cite by this summary's path, each tied to its compiled witness
   (`classValid_iff_recurrenceFree_of_prodInvariant`, `hybridValidOn_incomparable`,
   `boxFree_histMap_invariance`, `blc_cRefuted_product`, `deterministic_not_hybridDefinable`).
-- [ ] Final checks: `git diff --stat HEAD~2` (or the two phase commits) names only paths under
+  *(completed: summary §Follow-ups 3)*
+- [x] Final checks: `git diff --stat HEAD~2` (or the two phase commits) names only paths under
   `specs/653_what_sees_recurrence_language_extensions/`; `grep -rn "task 653" FormalSystem Tests
   docs scripts README.md` prints nothing (nothing there was touched, so this is a no-op
-  confirmation).
-- [ ] Commit: `task 653: complete implementation`, staging the summary (and the plan's status
-  markers).
+  confirmation). *(completed: `git show --name-only 786ac9300 247e3b785` lists four paths, all
+  under the task directory; the grep prints nothing)*
+- [x] Commit: `task 653: complete implementation`, staging the summary (and the plan's status
+  markers). *(completed)*
 
 **Timing**: 0.5 hours
 
