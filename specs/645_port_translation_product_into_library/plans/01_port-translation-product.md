@@ -1,7 +1,7 @@
 # Implementation Plan: Task #645
 
 - **Task**: 645 - Port the translation-product proof device into the library
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: None at the artifact level (task 534 is recorded as a state.json dependency and is complete). Do not run concurrently with task 625 (shares `Semantics/Frames/README.md`) or with any other module-adding task (shares the generated root and README inventory blocks).
 - **Research Inputs**: specs/645_port_translation_product_into_library/reports/01_port-translation-product.md
@@ -310,64 +310,64 @@ instead of pointing to it.
 
 ---
 
-### Phase 4: Wiring, evidence record, generated surfaces, pins, full gates [NOT STARTED]
+### Phase 4: Wiring, evidence record, generated surfaces, pins, full gates [COMPLETED]
 
 **Goal**: Import both modules from their aggregators, document them, copy the mirror record to
 `specs/evidence/`, regenerate the root and inventory blocks, pin the three flagship theorems
 under C14 with theorem-index rows, and pass every acceptance gate.
 
 **Tasks**:
-- [ ] `FormalSystem/Semantics/Frames.lean`: add
+- [x] `FormalSystem/Semantics/Frames.lean`: add
       `import FormalSystem.Semantics.Frames.TranslationProduct` and a `## Modules` bullet
       (`Frames.TranslationProduct` — the translation product `FrameOver.translationProduct`, a
       proof device for what L, L⁺ and L⋆ cannot see of a frame).
-- [ ] `FormalSystem/Metalogic/Independence.lean`: add
+- [x] `FormalSystem/Metalogic/Independence.lean`: add
       `import FormalSystem.Metalogic.Independence.TranslationProductCoarse` and a `## Contents`
       bullet. Do NOT add a numbered result to the "Five results are carried here" list — the
       device is not an underivability result.
-- [ ] `FormalSystem/Semantics.lean` docstring, at the clause "`DeterministicBridge` and
+- [x] `FormalSystem/Semantics.lean` docstring, at the clause "`DeterministicBridge` and
       `StateLocalTransfer` — the two cross-language bridges": add one clause naming
       `Frames.TranslationProduct` as a third cross-language module reached through the `Frames`
       aggregator.
-- [ ] `FormalSystem/Semantics/README.md` row for `Frames/`: "`Standard` (1 file)" becomes 2 files
+- [x] `FormalSystem/Semantics/README.md` row for `Frames/`: "`Standard` (1 file)" becomes 2 files
       with a one-line mention of `TranslationProduct`.
-- [ ] `FormalSystem/Semantics/Frames/README.md` (RE-READ the file first; task 625 shares it):
+- [x] `FormalSystem/Semantics/Frames/README.md` (RE-READ the file first; task 625 shares it):
       `## Key Definitions` bullet for `FrameOver.translationProduct` and the three flagship
       theorems; in the generated block, fill the trailing description column for the new row AND
       the existing `Standard.lean` row (currently `<!-- TODO: add description -->`).
-- [ ] `FormalSystem/Metalogic/Independence/README.md`: generated-block description for the new
+- [x] `FormalSystem/Metalogic/Independence/README.md`: generated-block description for the new
       row; one sentence under the result-8 paragraph noting that coarse refutations and
       paste-closure transfer to the translation product.
-- [ ] `mkdir -p specs/evidence/translation-product` and copy
+- [x] `mkdir -p specs/evidence/translation-product` and copy
       `specs/624_translation_product_task_semantics_visibility/probes/02_limit-idle-mirror.lean`
       to `specs/evidence/translation-product/limit-idle-mirror.lean` unchanged (Mathlib-only;
       `lake env lean specs/evidence/translation-product/limit-idle-mirror.lean` exits 0). Confirm
       the Module 1 docstring's `## Limit` note cites exactly this path.
-- [ ] `docs/theorem-index.md`: three rows (label `—`, axioms `pcq pinned:C14`) for
+- [x] `docs/theorem-index.md`: three rows (label `—`, axioms `pcq pinned:C14`) for
       `FormalSystem.Semantics.validIn_iff_recurrenceFree`,
       `FormalSystem.Semantics.plusValidIn_iff_recurrenceFree`,
       `FormalSystem.Semantics.starValidIn_iff_recurrenceFree`, file
       `FormalSystem/Semantics/Frames/TranslationProduct.lean`, under a new
       `### The translation product` subsection placed after "Characterization and definability".
-- [ ] `scripts/check-module-invariants.sh`: append three lines to the `C14BASE` heredoc
+- [x] `scripts/check-module-invariants.sh`: append three lines to the `C14BASE` heredoc
       (`'FormalSystem.Semantics.validIn_iff_recurrenceFree' depends on axioms: [propext,
       Classical.choice, Quot.sound]` and the two siblings) and the three matching
       `#print axioms FormalSystem.Semantics.…` lines to the `C14LEAN` heredoc, in the same order
       (the two heredocs are compared by exact string equality).
-- [ ] `lake exe mk_all --lib FormalSystem` (never hand-edit `FormalSystem.lean`).
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory` — last, immediately before the
+- [x] `lake exe mk_all --lib FormalSystem` (never hand-edit `FormalSystem.lean`).
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory` — last, immediately before the
       gates. Expected touched files: `FormalSystem/Semantics/Frames/README.md`,
       `FormalSystem/Metalogic/Independence/README.md`, `FormalSystem/README.md`, root `README.md`.
-      Diff-read each; a change to any other file is a finding to investigate, not to stage.
-- [ ] Full build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`
+      Diff-read each; a change to any other file is a finding to investigate, not to stage. *(deviation: altered — `--emit-inventory` also rewrote `FormalSystem/Metalogic/README.md` (the `Independence.lean` line count and `Independence/` totals), fully explained by this task and staged; the two directory READMEs were hand-edited with correct counts and were not rewritten; the emission was run twice because a 100-column fix to `Semantics.lean` after the first run changed its line count)*
+- [x] Full build: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`
       (detached), then confirm the `--wfail` configuration reports zero warnings.
-- [ ] Gates: `lake exe mk_all --lib FormalSystem --check` exit 0;
+- [x] Gates: `lake exe mk_all --lib FormalSystem --check` exit 0;
       `bash scripts/check-module-invariants.sh` (full, with build) all checks pass, including
       C14 (new pins match), C15 (the three `Paper: —` lines resolve), C33, INV;
       `bash scripts/check-metalogic-cycles.sh` passes (assertion B: no new upward edge).
-- [ ] `lean_verify` on the three flagship theorems once more against the full build: standard
+- [x] `lean_verify` on the three flagship theorems once more against the full build: standard
       axioms only.
-- [ ] Commit: `task 645 phase 4: wiring, evidence record, pins and gates`, staging only the
+- [x] Commit: `task 645 phase 4: wiring, evidence record, pins and gates`, staging only the
       files in this phase's list plus the two modules (explicit path list, never a directory
       pathspec).
 
@@ -434,16 +434,16 @@ end FormalSystem.Semantics
 
 ## Testing & Validation
 
-- [ ] Phase 1-3: scoped builds of each new module green with zero warnings and zero `sorry`.
-- [ ] Phase 2: `check-module-invariants.sh --no-build` clean on C9/C15/C23/C26 for Module 1.
-- [ ] Phase 4: full `lake build --wfail` green.
-- [ ] Phase 4: `lake exe mk_all --lib FormalSystem --check` exit 0.
-- [ ] Phase 4: `check-module-invariants.sh` (full) all checks pass; `check-metalogic-cycles.sh`
+- [x] Phase 1-3: scoped builds of each new module green with zero warnings and zero `sorry`.
+- [x] Phase 2: `check-module-invariants.sh --no-build` clean on C9/C15/C23/C26 for Module 1.
+- [x] Phase 4: full `lake build --wfail` green.
+- [x] Phase 4: `lake exe mk_all --lib FormalSystem --check` exit 0.
+- [x] Phase 4: `check-module-invariants.sh` (full) all checks pass; `check-metalogic-cycles.sh`
       passes.
-- [ ] Phase 4: `lean_verify` on the three flagship theorems returns
+- [x] Phase 4: `lean_verify` on the three flagship theorems returns
       `[propext, Classical.choice, Quot.sound]` and no sorry.
-- [ ] Phase 4: `lake env lean specs/evidence/translation-product/limit-idle-mirror.lean` exit 0.
-- [ ] Every phase: `grep -nE '[0-9]{3,4}'` over the new module reviewed; no task numbers,
+- [x] Phase 4: `lake env lean specs/evidence/translation-product/limit-idle-mirror.lean` exit 0.
+- [x] Every phase: `grep -nE '[0-9]{3,4}'` over the new module reviewed; no task numbers,
       probe/report numbers, or manuscript line numbers in any file outside `specs/`.
 
 ## Artifacts & Outputs

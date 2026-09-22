@@ -362,6 +362,7 @@ import FormalSystem.Metalogic.Independence.StabUndefinable
 import FormalSystem.Metalogic.Independence.StarDiscrimination
 import FormalSystem.Metalogic.Independence.StateSetTruth
 import FormalSystem.Metalogic.Independence.StaticFrame
+import FormalSystem.Metalogic.Independence.TranslationProductCoarse
 import FormalSystem.Metalogic.QTime
 import FormalSystem.Metalogic.SetConsequence
 import FormalSystem.Metalogic.Soundness
@@ -476,6 +477,7 @@ import FormalSystem.Semantics.FrameClassValidity
 import FormalSystem.Semantics.FrameProperty
 import FormalSystem.Semantics.Frames
 import FormalSystem.Semantics.Frames.Standard
+import FormalSystem.Semantics.Frames.TranslationProduct
 import FormalSystem.Semantics.HistoryMorphism
 import FormalSystem.Semantics.IntNormalForm
 import FormalSystem.Semantics.IntTransfer

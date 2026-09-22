@@ -26,6 +26,7 @@ import FormalSystem.Metalogic.Independence.ForwardDeterministicFrame
 import FormalSystem.Metalogic.Independence.LimitClosureFrame
 import FormalSystem.Metalogic.Independence.LimitClosureCountermodel
 import FormalSystem.Metalogic.Independence.PlusIncompleteness
+import FormalSystem.Metalogic.Independence.TranslationProductCoarse
 
 /-!
 # Independence results
@@ -95,6 +96,12 @@ Galois-closed, in contrast with the paper's bare classes.
   closed; `blc_cRefuted` and `blc_not_plusDerivable_base`.
 * `Independence/PlusIncompleteness.lean` — the assembly: `plus_incomplete_base` and
   `not_plus_complete_base`.
+* `Independence/TranslationProductCoarse.lean` — coarse models on the translation product
+  (`Semantics/Frames/TranslationProduct.lean`, a proof device, never an intended model): `liftK`,
+  `c_invariance`, paste-closure in both directions (`pasteClosed_liftK`, `pasteClosed_of_liftK`)
+  and the transfer of coarse refutations to a recurrence-free frame with *Limit* for free
+  (`c_refuted_lift`). Not an underivability result in its own right; the route a future one
+  over a non-Limit frame would take.
 
 ## The method
 

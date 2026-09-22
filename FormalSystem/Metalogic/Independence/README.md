@@ -53,6 +53,11 @@ eventually-false Boolean sequences: closed under splicing, not closed under limi
 the coarsened countermodel is a dense, non-closed bundle — PS and US say paste-closed, MF says
 translation-closed, nothing says closed. Under `⊡ = id` the formula is a tautology, hence a
 theorem of TM⁺ + *Determined*, so the countermodel is necessarily nondeterministic.
+Coarse refutations and paste-closure also transfer to the translation product of the underlying
+frame (`TranslationProductCoarse.lean`: `c_refuted_lift`, `pasteClosed_liftK`,
+`pasteClosed_of_liftK`), which is recurrence-free and satisfies *Limit* for free in the same
+frame class — the route by which a coarse countermodel found over a frame without Limit would
+become one over a frame with it.
 
 Results 6 and 7 leave the language rather than the semantics: they are stated over **L⋆**
 (`FormalSystem/StarLanguage/`), L⁺ plus the manuscript's time store/recall operators. The
@@ -92,6 +97,7 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 | `StarDiscrimination.lean` | 189 | = [3/2, ∞)`), `fzero_refutes_sentDet`, `f1_sentDet`, and `star_discriminates_where_plus_cannot` — one `StarFormula` separates `F°` from `F¹` where `cor:no-characterization` shows no `PlusFormula` set can. |
 | `StateSetTruth.lean` | 236 | `satSet` and `plusTruthAt_iff_mem_satSet`: over an (H1)+(H2) frame, L⁺ truth depends only on the world state of evaluation. Plus `plusValidOn_iff_satSet_univ` and `determined_of_orderFlow`. |
 | `StaticFrame.lean` | 323 | The static frame at an arbitrary duration group: every nonzero duration loops, so truth is time-invariant, and the `untl`/`snce` clauses collapse into a small constant-truth calculus (general, dense and discrete forms, plus `K⁺`/`K⁻` and `Axiom.z1`). Turns every later axiom check into a rewrite. |
+| `TranslationProductCoarse.lean` | 133 | Coarse models on the translation product (`Semantics/Frames/TranslationProduct.lean`, a proof device, never an intended model): `liftK` lifts a coarse model with the coarsening forgetting the clock; `c_invariance` — coarse truth is preserved by the projection; `pasteClosed_liftK` / `pasteClosed_of_liftK` — paste-closure transfers in both directions; `c_refuted_lift` — a coarse refutation on `F` is a coarse refutation on the recurrence-free, Limit-for-free product in the same frame class. |
 <!-- END GENERATED -->
 
 ## Key Results

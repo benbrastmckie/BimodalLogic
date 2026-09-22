@@ -1873,6 +1873,9 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Deterministic.valid_iff_valid_deterministic' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.FrameOver.static_iff_uniformDwell' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.FrameOver.static_of_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.validIn_iff_recurrenceFree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.plusValidIn_iff_recurrenceFree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.starValidIn_iff_recurrenceFree' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2018,6 +2021,9 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Deterministic.valid_iff_valid_deterministic
 #print axioms FormalSystem.Semantics.FrameOver.static_iff_uniformDwell
 #print axioms FormalSystem.Semantics.FrameOver.static_of_finite
+#print axioms FormalSystem.Semantics.validIn_iff_recurrenceFree
+#print axioms FormalSystem.Semantics.plusValidIn_iff_recurrenceFree
+#print axioms FormalSystem.Semantics.starValidIn_iff_recurrenceFree
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \

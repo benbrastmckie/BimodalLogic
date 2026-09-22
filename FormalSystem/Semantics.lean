@@ -49,8 +49,10 @@ system and its semantics together, aggregated by `FormalSystem/MinusLanguage.lea
 siblings, which the generated library root `FormalSystem.lean` imports. This file does
 **not** import them directly, but still reaches much of L⁺ and L⋆ transitively, through
 `DeterministicBridge` and `StateLocalTransfer` — the two cross-language bridges, which stay here
-because each spans two families. The subdirectories `Extension/`, `Ultraproduct/`,
-`Correspondence/` and `Frames/` are imported through their sibling aggregators
+because each spans two families — and, through the `Frames` aggregator,
+`Frames.TranslationProduct`, the third cross-language module, whose truth invariances span all
+three. The subdirectories `Extension/`, `Ultraproduct/`, `Correspondence/` and `Frames/` are
+imported through their sibling aggregators
 `Semantics/Extension.lean` and so on.
 
 - `TemporalOrder`: `def:temporal-order` reified — "a nontrivial totally ordered abelian

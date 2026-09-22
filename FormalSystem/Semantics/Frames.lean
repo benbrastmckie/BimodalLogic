@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.Frames.Standard
+import FormalSystem.Semantics.Frames.TranslationProduct
 
 /-!
 # `FormalSystem.Semantics.Frames` — the standard-frame index
@@ -15,4 +16,7 @@ Aggregator for `Semantics/Frames/`. See `Semantics/Frames/README.md`.
 
 - `Frames.Standard` — the concrete standard task frames the development builds directly
   (`translationFrame`, `permissiveFrame`)
+- `Frames.TranslationProduct` — the translation product `FrameOver.translationProduct`, a proof
+  device for what `L`, `L⁺` and `L⋆` cannot see of a frame (recurrence and transposition); never
+  an intended model
 -/

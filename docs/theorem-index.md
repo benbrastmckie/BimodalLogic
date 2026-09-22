@@ -166,6 +166,16 @@ class — see `deterministic_not_plusDefinable` above.
 | — | Rigidity: over a dense Archimedean duration group, a task frame is static (`w ⇒ₓ u ↔ w = u`) iff it has a uniform dwell time (one `x₀ > 0` with `(w)_{x₀} = {w}` for every `w`) | `FormalSystem.Semantics.FrameOver.static_iff_uniformDwell` | `FormalSystem/Semantics/Correspondence/Rigidity.lean` | — | pcq pinned:C14 |
 | — | Every task frame with finitely many world states over a dense Archimedean duration group is static; both hypotheses are sharp (`RigiditySharpness.lean`) | `FormalSystem.Semantics.FrameOver.static_of_finite` | `FormalSystem/Semantics/Correspondence/Rigidity.lean` | — | pcq pinned:C14 |
 
+### The translation product
+
+The translation product `F.translationProduct` (`FormalSystem/Semantics/Frames/TranslationProduct.lean`) is a proof device, never an intended model: it shows that no object language sees recurrence at the level of a frame class.
+
+| Paper label | Statement | Lean name | File | Frame class | Axioms |
+|-------------|-----------|-----------|------|-------------|--------|
+| — | At every frame class, L-validity over the class equals L-validity over its recurrence-free members: every member is covered by its translation product, which is recurrence-free and in the class | `FormalSystem.Semantics.validIn_iff_recurrenceFree` | `FormalSystem/Semantics/Frames/TranslationProduct.lean` | — | pcq pinned:C14 |
+| — | The same for L⁺: `PlusValidIn fc φ ↔ PlusValidOnFrames (fun G => fc.Sat G ∧ G.RecurrenceFree) φ` | `FormalSystem.Semantics.plusValidIn_iff_recurrenceFree` | `FormalSystem/Semantics/Frames/TranslationProduct.lean` | — | pcq pinned:C14 |
+| — | The same for L⋆, at every register vector: the store/recall clauses are inert under the projection | `FormalSystem.Semantics.starValidIn_iff_recurrenceFree` | `FormalSystem/Semantics/Frames/TranslationProduct.lean` | — | pcq pinned:C14 |
+
 ### Conservativity — TM⁻ over L⁻, TM over TM⁻, TM⁺ over TM
 
 | Paper label | Statement | Lean name | File | Frame class | Axioms |

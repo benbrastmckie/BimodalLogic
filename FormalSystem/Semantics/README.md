@@ -28,7 +28,7 @@ live file and subdirectory here, and no row for anything else.
 | TemporalOrder.lean | `TemporalOrder` — a nontrivial totally ordered abelian group, `def:temporal-order`'s object, bundled with its four algebraic instances; `intOrder` |
 | TaskFrame.lean | Task frame structure (worlds, times, accessibility), the fibre/total-space pair, the class-helper families A-D, and the frame constants |
 | Frames.lean | Aggregator for `Frames/` |
-| Frames/ | The standard-frame index: `Standard` (1 file) — home of `translationFrame` and `permissiveFrame`, and the linked census of every other standard frame |
+| Frames/ | The standard-frame index (2 files): `Standard` — home of `translationFrame` and `permissiveFrame`, and the linked census of every other standard frame; `TranslationProduct` — the translation product `FrameOver.translationProduct`, a proof device showing what L, L⁺ and L⋆ cannot see of a frame (recurrence, transposition), never an intended model |
 | FrameProperty.lean | Frame properties as predicates on `TaskFrame` (`IsDense`, `IsDiscrete`, `IsSuccArchDiscrete`, `IsComplete`, `IsDedekind`, and `Deterministic`), and the `FrameClass` ordering they induce |
 | FrameClassValidity.lean | `FrameClass.Sat` and the `sat_intro` binder adapters: validity relative to a frame class |
 | IntNormalForm.lean | The ℤ-frame normal form: over `D = ℤ` a frame is its one-step relation |
