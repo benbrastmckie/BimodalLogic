@@ -1,40 +1,39 @@
 {
-  "status": "researched",
-  "started_at": "2026-09-22T16:16:08Z",
-  "completed_at": "2026-09-22T16:30:44Z",
-  "dispatch_seq": 2,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/653_what_sees_recurrence_language_extensions/reports/01_what-sees-recurrence.md",
-      "summary": "Verdict-first report: every morphism-invariant language (L, L+, L*, L-open, L+ with same-state) is blind to recurrence by one compiled meta-theorem; state nominals/registers see recurrence and transposition but not determinism (compiled); since/until blind along any history-lifting map; blc is the only live limit-closure schema and the product keeps its countermodel; manuscript remark drafted for sub:Conclusion."
+      "type": "plan",
+      "path": "specs/653_what_sees_recurrence_language_extensions/plans/01_what-sees-recurrence.md",
+      "summary": "Three-phase, 3-hour plan confined to the task directory: live-tree re-verification of probes 01-03 with axiom profiles, a fourth probe closing the quantified transposition sentence (qTrans_defines, statement type-checked at plan time), and a hand-off summary drafting the follow-up port task, the manuscript remark and the completeness notes."
     }
   ],
-  "next_steps": "Optional small port of probes 01-02 into the library (see Recommendation 1); manuscript remark per section 5.3; no plan/implementation implied by this research task.",
-  "modified_files": [],
-  "proposed_file_scope": [],
+  "next_steps": "Run /implement 653 to execute the plan",
+  "dispatch_seq": 5,
+  "user_decision": {
+    "question": "The research recommends two actions this task's contract forbids it from taking (no FormalSystem/ or manuscript edits): a ~400-line port of probes 01, 02 and 04 into the library, and a one-paragraph remark in the manuscript at sub:Conclusion. Should the port be opened as a follow-up lean4 task from the description Phase 3 drafts in the summary?",
+    "options": [
+      "Open the follow-up port task from the drafted description once this task completes; apply the manuscript remark by hand",
+      "Leave both recommendations in the summary; open no follow-up task"
+    ],
+    "recommended": "Open the follow-up port task from the drafted description once this task completes; apply the manuscript remark by hand",
+    "blocking": false
+  },
   "memory_candidates": [
     {
-      "content": "Blindness to recurrence in the task semantics reduces to one hypothesis: invariance of the truth predicate along the translation projection for lifted models (Probe653.classValid_iff_recurrenceFree_of_prodInvariant). Decision table for a new operator: consults one history's times only -> invariant along any HistMap (since/until); quantifies histories at the present time -> needs onto (box) or lift (stability, same-state); agreement on a ray -> needs the product's unique lift (open future/past); state identity across two times of one history -> not invariant (state registers, binder, standard propositional quantifiers).",
-      "category": "INSIGHT",
-      "source_artifact": "specs/653_what_sees_recurrence_language_extensions/reports/01_what-sees-recurrence.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["translation-product", "history-lifting-morphism", "recurrence", "invariance", "hybrid-language", "open-language"]
-    },
-    {
-      "content": "State nominals/registers and time registers see disjoint frame features: state nominals define recurrence-freeness (recF_defines) but F-drift and F-translation validate the same hybrid sentences (hsatSet bridge extends satSet with reg/bind/same as state-local clauses), so determinism stays undefinable; time registers define determinism (Det-pm) but are blind to recurrence (star_invariance).",
-      "category": "INSIGHT",
-      "source_artifact": "specs/653_what_sees_recurrence_language_extensions/probes/02_nominals-break-product.lean",
-      "confidence": 0.8,
-      "suggested_keywords": ["determinism", "state-set-bridge", "hybrid-language", "star-language", "definability"]
+      "content": "When /orchestrate dispatches a plan for a verdict-first RESEARCH task whose description forbids library changes (file_scope confined to specs/{NNN}/probes and reports), the plan stays inside the task directory: (1) re-verify the research probes against source-rebuilt .oleans of their imported modules before trusting `lake env lean` exit 0, and pin axiom profiles on scratch copies; (2) close only the UNVERIFIED items that are routinely checkable with an additional probe whose statement is type-checked at plan time and pinned as the sole Lean Challenge identifier; (3) the report's recommendations that need FormalSystem/ or out-of-repo edits become a hand-off summary (ready-to-paste /task description with file_scope, remark text and placement) plus a non-blocking user_decision, never phases of this task. The port is a separate task with its own file_scope so lock-overlap detection against concurrent siblings holds.",
+      "category": "PATTERN",
+      "source_artifact": "specs/653_what_sees_recurrence_language_extensions/plans/01_what-sees-recurrence.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["verdict-first", "research-task-plan", "probe-verification", "stale-olean", "file-scope", "follow-up-task"]
     }
   ],
   "metadata": {
     "session_id": "sess_1790093706_3bec6d_653",
-    "agent_type": "lean-research-agent",
-    "duration_seconds": 1500,
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "findings_count": 5
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 3,
+    "dependency_waves": [[1], [2], [3]]
   }
 }

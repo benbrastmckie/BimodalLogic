@@ -1,34 +1,28 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 2,
-  "summary": "Research delivered: three sorry-free probes (568 lines) and a numbered report answering Q1-Q5. Every morphism-invariant language (L, L+, L*, the open-future/open-past language, L+ with the same-state modality) is blind to recurrence by one compiled meta-theorem; state nominals/registers see recurrence and transposition but not determinism; since/until is blind along any history-lifting map; blc is the only live limit-closure schema and the product keeps its countermodel; a manuscript remark is drafted for sub:Conclusion.",
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 5,
+  "summary": "Plan written: three sequential phases (3 hours) confined to the task directory, as the task's contract and file_scope require. Phase 1 re-verifies probes 01-03 against source-rebuilt .oleans and pins their axiom profiles; Phase 2 adds probe 04 closing the quantified transposition sentence (qTrans_defines, statement type-checked against the live tree at plan time and pinned as the sole challenge identifier); Phase 3 writes the hand-off summary carrying the follow-up port task description, the manuscript remark text and placement, and the completeness take-aways. No FormalSystem/, Tests/, or manuscript edit is planned; a non-blocking user_decision asks whether to open the port as a follow-up task.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/653_what_sees_recurrence_language_extensions/reports/01_what-sees-recurrence.md",
-      "summary": "Verdict-first research report with feature-by-language table, five verdicts, and three recommendations."
-    },
-    {
-      "type": "probe",
-      "path": "specs/653_what_sees_recurrence_language_extensions/probes/01_invariant-languages-blind.lean",
-      "summary": "Meta-theorem, stability-class bijection, open-language invariance, same-state class corollary, since/until HistMap invariance."
-    },
-    {
-      "type": "probe",
-      "path": "specs/653_what_sees_recurrence_language_extensions/probes/02_nominals-break-product.lean",
-      "summary": "Nominals separate a frame from its product; register clause non-invariance; incomparable frame validity; determinism not hybrid-definable."
-    },
-    {
-      "type": "probe",
-      "path": "specs/653_what_sees_recurrence_language_extensions/probes/03_limit-closure-device.lean",
-      "summary": "The product keeps the blc coarse countermodel and its paste-closure."
+      "type": "plan",
+      "path": "specs/653_what_sees_recurrence_language_extensions/plans/01_what-sees-recurrence.md",
+      "summary": "Three-phase plan: live-tree probe re-verification, probe 04 (qTrans_defines), hand-off summary."
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 3,
   "blockers": [],
   "plan_markers_verified": null,
   "continuation_path": null,
-  "next_action_hint": "Research task; no plan phase is implied. Optional follow-up: port probes 01-02 (Recommendation 1) and add the manuscript remark (section 5.3)."
+  "next_action_hint": "Run /implement 653. Phase 1 must run the guarded scoped build of the nine imported modules before any `lake env lean` on a probe; sibling 651 is editing Conservativity/** and FormalSystem.lean concurrently, which this plan never touches.",
+  "user_decision": {
+    "question": "The research recommends two actions this task's contract forbids it from taking (no FormalSystem/ or manuscript edits): a ~400-line port of probes 01, 02 and 04 into the library, and a one-paragraph remark in the manuscript at sub:Conclusion. Should the port be opened as a follow-up lean4 task from the description Phase 3 drafts in the summary?",
+    "options": [
+      "Open the follow-up port task from the drafted description once this task completes; apply the manuscript remark by hand",
+      "Leave both recommendations in the summary; open no follow-up task"
+    ],
+    "recommended": "Open the follow-up port task from the drafted description once this task completes; apply the manuscript remark by hand",
+    "blocking": false
+  }
 }
