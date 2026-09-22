@@ -1815,6 +1815,17 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Conservativity.tmFrag_complete_rtime' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Conservativity.tmMinus_le_tmFrag' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Conservativity.tmMinus_lt_tmFrag_ztime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.minusExt_le_tmFrag' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.minusExt_sigmaBase_le_tmFrag' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.minusExt_sigmaZTime_le_tmFrag' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.tmMinus_lt_minusExt_sigmaBase' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.tmMinus_lt_minusExt_sigmaZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.tmFrag_chainValidIn' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.minusExt_iff_tmFrag_of_chainComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Conservativity.boxGlobalFuture' depends on axioms: [propext]
+'FormalSystem.Metalogic.Conservativity.boxGlobalPast' depends on axioms: [propext]
+'FormalSystem.Metalogic.Conservativity.notBoxGlobalFuture' depends on axioms: [propext]
+'FormalSystem.Metalogic.Conservativity.notBoxGlobalPast' depends on axioms: [propext]
 'FormalSystem.Metalogic.Conservativity.minusCompactBase' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Conservativity.minusCompactDense' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Conservativity.plus_soundness_validIn' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1949,6 +1960,17 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Conservativity.tmFrag_complete_rtime
 #print axioms FormalSystem.Metalogic.Conservativity.tmMinus_le_tmFrag
 #print axioms FormalSystem.Metalogic.Conservativity.tmMinus_lt_tmFrag_ztime
+#print axioms FormalSystem.Metalogic.Conservativity.minusExt_le_tmFrag
+#print axioms FormalSystem.Metalogic.Conservativity.minusExt_sigmaBase_le_tmFrag
+#print axioms FormalSystem.Metalogic.Conservativity.minusExt_sigmaZTime_le_tmFrag
+#print axioms FormalSystem.Metalogic.Conservativity.tmMinus_lt_minusExt_sigmaBase
+#print axioms FormalSystem.Metalogic.Conservativity.tmMinus_lt_minusExt_sigmaZTime
+#print axioms FormalSystem.Metalogic.Conservativity.tmFrag_chainValidIn
+#print axioms FormalSystem.Metalogic.Conservativity.minusExt_iff_tmFrag_of_chainComplete
+#print axioms FormalSystem.Metalogic.Conservativity.boxGlobalFuture
+#print axioms FormalSystem.Metalogic.Conservativity.boxGlobalPast
+#print axioms FormalSystem.Metalogic.Conservativity.notBoxGlobalFuture
+#print axioms FormalSystem.Metalogic.Conservativity.notBoxGlobalPast
 #print axioms FormalSystem.Metalogic.Conservativity.minusCompactBase
 #print axioms FormalSystem.Metalogic.Conservativity.minusCompactDense
 #print axioms FormalSystem.Metalogic.Conservativity.plus_soundness_validIn

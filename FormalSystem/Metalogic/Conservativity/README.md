@@ -31,13 +31,16 @@ than deferred debt.
 | `Backward.lean` | 212 | <!-- TODO: add description --> |
 | `ChainBundleTruth.lean` | 240 | The valuation-only truth lemma for the flow frames of `Metalogic/Algebraic/FlowFrame.lean`: `chainSat` (Kripke satisfaction on a disjoint union of `D`-chains, `□` universal) and `chainBundle_truth_lemma`, plus the transfer corollary `not_minusValidIn_of_not_chainSat` and its ℚ/ℝ instantiations |
 | `DenseObstructionTransfer.lean` | 283 | Machine-checked evidence that neither closed row's separating witness transfers to the dense classes: `Sp` is a theorem of both `TM⁻_d` and `TM⁻_dc` (`spDerivableDense`, `spDerivableRTime`), and `Z1` is refuted on the flow frame over ℚ (`not_minusValidDense_z1`) |
-| `Fragment.lean` | 192 | <!-- TODO: add description --> |
+| `Fragment.lean` | 195 | <!-- TODO: add description --> |
+| `FragmentAxiomatization.lean` | 338 | The canonical per-class verdict record for the native H/G axiomatization of `TMFrag`: Σ_Base = (Sp), Σ_ZTime = Z1, Σ_Dense = Σ_RTime = ∅; soundness `TM⁻ + Σ_fc ⊆ TMFrag fc` at all four classes and strictness over TM⁻ at Base/ZTime machine-checked; completeness literature-backed only, present in Lean solely as the explicit hypothesis `ChainComplete` of `minusExt_iff_tmFrag_of_chainComplete` |
 | `FragmentCompactness.lean` | 151 | <!-- TODO: add description --> |
+| `MinusDeduction.lean` | 319 | Syntax-only L⁻ layer: the deduction theorem for TM⁻ (`minusDeductionTheorem`, computable, by structural recursion over a subset-generalized statement), its converse, five propositional combinators, S5's B and 4, and the four `□`-globality derivations `boxGlobalFuture`/`boxGlobalPast`/`notBoxGlobalFuture`/`notBoxGlobalPast` |
+| `MinusExt.lean` | 180 | `MinusExt fc Ax`, the `Prop`-valued theorems-only closure of TM⁻ at `fc` plus a schema-instance set `Ax` under MP/MN/TN/TR, with `minusExt_empty_iff` (it is TM⁻ at `Ax = ∅`) and the soundness engine `minusExt_le_tmFrag` (`Ax ⊆ TMFrag fc → MinusExt fc Ax ⊆ TMFrag fc`) |
 | `Plus.lean` | 76 | <!-- TODO: add description --> |
 | `SpCountermodel.lean` | 399 | CEB's failing half: native L⁻ soundness for TM⁻ against `MinusLanguage/MinusFrame.lean`'s `TaskFrame`-free semantics (`minusFrameValid_of_axiom`, `minusFrameValid_of_derivation`), the two-fibre countermodel `ℤ ⊕ ℝ`, and the deliverables `not_derivable_sp` and `tmMinusCompleteBase_refuted` |
 | `SpWitness.lean` | 136 | <!-- TODO: add description --> |
 | `Star.lean` | 60 | Aggregator for the L⋆ metatheory; holds no declarations. |
-| `TMCompletenessReduction.lean` | 311 | <!-- TODO: add description --> |
+| `TMCompletenessReduction.lean` | 324 | <!-- TODO: add description --> |
 | `Z1Countermodel.lean` | 200 | <!-- TODO: add description --> |
 | `Plus/` | — | <!-- TODO: add description --> |
 | `Star/` | — | The register extension L⋆ = L⁺ + `↑ⁱ`/`↓ⁱ` and its logic TM⋆: axiom validity, soundness, conservativity over TM (unconditional) and over TM⁺ (a conditional pair, whose hypothesis is refuted at Base by `Metalogic/Independence/PlusIncompleteness.lean` and open elsewhere), and the completeness OPEN record. |
@@ -70,6 +73,18 @@ than deferred debt.
   both open systems, and `Z1` is not a validity of the dense class. Evidence about the two open
   rows, and **not** a completeness result; the four-row status is in
   `TMCompletenessReduction.lean`'s module docstring
+- `MinusExt` / `minusExt_le_tmFrag` — TM⁻ plus a schema set as a theorems-only closure, and the
+  soundness engine: anything `TM⁻ + Ax` proves is in the fragment whenever `Ax` is
+- `sigmaBase` / `sigmaZTime` with the four soundness rows `minusExt_*_le_tmFrag` and the two
+  strictness rows `tmMinus_lt_minusExt_sigmaBase` / `tmMinus_lt_minusExt_sigmaZTime` — the native
+  axiomatization verdict per class, Σ_Base = (Sp), Σ_ZTime = Z1, Σ_Dense = Σ_RTime = ∅; the
+  canonical record is `FragmentAxiomatization.lean`'s module docstring
+- `minusExt_iff_tmFrag_of_chainComplete` — conditional completeness: `TM⁻ + Ax = TMFrag fc` given
+  `ChainComplete fc Ax` (completeness over `chainSat` bundles), a hypothesis the classical H/G
+  completeness theorems supply on paper and **no declaration in the tree concludes**
+- `minusDeductionTheorem` and `boxGlobalFuture` / `boxGlobalPast` / `notBoxGlobalFuture` /
+  `notBoxGlobalPast` — the L⁻ deduction theorem and the proof-theoretic side of "`□` is
+  universal on a task model", at every frame class
 - `plusDerivable_ofFormula_iff` — conservativity of TM⁺ over TM in both directions
 - `starDerivable_ofFormula_iff` — conservativity of **TM⋆** over TM in both directions, at all
   four classes and unconditionally; with `starConservative_of_plusComplete` and its unconditional
@@ -86,4 +101,4 @@ than deferred debt.
 
 ---
 
-*Last verified: 2026-09-21*
+*Last verified: 2026-09-22*

@@ -14,6 +14,9 @@ import FormalSystem.Metalogic.Conservativity.ChainBundleTruth
 import FormalSystem.Metalogic.Conservativity.SpCountermodel
 import FormalSystem.Metalogic.Conservativity.Fragment
 import FormalSystem.Metalogic.Conservativity.FragmentCompactness
+import FormalSystem.Metalogic.Conservativity.MinusExt
+import FormalSystem.Metalogic.Conservativity.FragmentAxiomatization
+import FormalSystem.Metalogic.Conservativity.MinusDeduction
 import FormalSystem.Metalogic.Conservativity.Plus
 import FormalSystem.Metalogic.Conservativity.Star
 
@@ -215,6 +218,17 @@ are rows in `docs/theorem-index.md`, which is the status of record and is not re
 along `tr` at `.Base` and `.Dense` **only** (`Conservativity/FragmentCompactness.lean`): the
 Discrete and Dedekind non-compactness witnesses lie outside `range tr`, so nothing transfers there.
 
+**Native axiomatization of the fragment.** Whether `TMFrag fc` is finitely axiomatizable *in L⁻*,
+over TM⁻, is answered per class in `Conservativity/FragmentAxiomatization.lean`, the **canonical
+verdict record**: Σ_Base = (Sp), Σ_ZTime = Z1, Σ_Dense = Σ_RTime = ∅. Soundness `TM⁻ + Σ_fc ⊆
+TMFrag fc` at all four classes and strictness `TM⁻ ⊊ TM⁻ + Σ_fc` at `.Base`/`.ZTime` are
+machine-checked (through `Conservativity/MinusExt.lean`'s theorems-only closure `MinusExt`);
+completeness `TMFrag fc ⊆ TM⁻ + Σ_fc` is **not machine-checked** — it is literature-backed
+(Burgess 1984 §§2.5–2.7, Venema 2001 Thm 3.3) and appears in Lean only as the explicit hypothesis
+`ChainComplete fc Ax` of `minusExt_iff_tmFrag_of_chainComplete`, which no declaration concludes.
+`Conservativity/MinusDeduction.lean` supplies the L⁻ deduction theorem and the four `□`-globality
+derivations that the universal-modality reduction behind that hypothesis rests on.
+
 ## The stability extension L⁺
 
 The other extension direction, L ⊂ L⁺ (L plus the paper's stability modal `⊡`,
@@ -361,6 +375,14 @@ Each entry reads *Module* — *Contents*:
   four classes, `TM⁻ ⊆ TMFrag`, `TM⁻ ⊊ TMFrag` at `.ZTime`
 * `Conservativity/FragmentCompactness.lean` — `MinusCompact`, `minusCompactBase`,
   `minusCompactDense` — base-language compactness transferred along `tr`
+* `Conservativity/MinusExt.lean` — `MinusExt fc Ax`, TM⁻ plus a schema set closed under
+  MP/MN/TN/TR, and the soundness engine `minusExt_le_tmFrag`
+* `Conservativity/FragmentAxiomatization.lean` — the canonical per-class verdict record:
+  `sigmaBase`, `sigmaZTime`, the four soundness rows, strictness over TM⁻, and conditional
+  completeness `minusExt_iff_tmFrag_of_chainComplete` (hypothesis `ChainComplete`, never asserted)
+* `Conservativity/MinusDeduction.lean` — the L⁻ deduction theorem `minusDeductionTheorem` and the
+  `□`-globality derivations `boxGlobalFuture`, `boxGlobalPast`, `notBoxGlobalFuture`,
+  `notBoxGlobalPast`
 * `Conservativity/Plus.lean` — aggregator for the L⁺ side: TM⁺ soundness at every class and
   conservativity of TM⁺ over TM in both directions (`plusDerivable_ofFormula_iff`)
 * `Conservativity/Star.lean` — aggregator for the L⋆ side: TM⋆ soundness at every class,
@@ -375,7 +397,10 @@ FragmentCompactness ← Plus/Forward`, with `SpWitness` hanging off `MinusLangua
 `SpCountermodel` hanging off `SpWitness` and `TMCompletenessReduction` jointly (it also imports
 `MinusLanguage/MinusFrame.lean`, which is outside this directory and reaches nothing in
 `ProofSystem/`), and the `Plus/` chain `Atomization ← AxiomValidity ← PlusSoundness ← Forward`
-hanging off `Fragment`. The `Star/` chain `StarAxiomValidity ← StarSoundness ← Forward` hangs off
+hanging off `Fragment`. `MinusExt` hangs off `Fragment`; `FragmentAxiomatization` off `MinusExt`,
+`SpWitness`, `SpCountermodel`, `ChainBundleTruth` and `DenseObstructionTransfer` jointly; and
+`MinusDeduction` is a leaf importing only `MinusLanguage/Derivation.lean`. The `Star/` chain
+`StarAxiomValidity ← StarSoundness ← Forward` hangs off
 the `Plus/` one at two points: `Star/StarAxiomValidity` imports `Plus/AxiomValidity` (for the two
 TM⁺ dispatch lemmas the closed uniformity arms transport) and `Star/Forward` imports `Plus/Forward`
 (for the four completeness engines and `plusValidIn_ofFormula_iff`).

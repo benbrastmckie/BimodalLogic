@@ -72,13 +72,24 @@ question — is TM⁻ (at that frame class) weakly complete for base-language va
 equivalently does forward conservativity hold there — and by `tmMinusComplete_iff_forward` the two
 readings never come apart. Two rows are closed, two are not.
 
+The complementary question — which **finite** H/G schema set closes each gap natively, so that
+`TM⁻ + Σ_fc` is the fragment `TMFrag fc` — is recorded per class in
+`Conservativity/FragmentAxiomatization.lean`: Σ_Base = (Sp), Σ_ZTime = Z1, Σ_Dense = Σ_RTime = ∅,
+with soundness machine-checked at all four classes and completeness literature-backed only.
+
 * `.Base` — System: TM⁻; Status: **refuted**; Evidence: `tmMinusCompleteBase_refuted`
   (`Conservativity/SpCountermodel.lean`), witnessed by `Sp` on the two-fibre `ℤ ⊕ ℝ` model
 * `.ZTime` — System: TM⁻_z; Status: **refuted**; Evidence: `tmMinusCompleteZTime_refuted`
   (`Conservativity/Z1Countermodel.lean`), witnessed by `Z1` on `ℚ ×ₗ ℤ`
 * `.Dense` — System: TM⁻_d; Status: **open; expected complete, no obstruction found**; Evidence: see
-  below
-* `.RTime` — System: TM⁻_dc; Status: **open; obstruction named**; Evidence: see below
+  below. Expected complete by classical theorem (Burgess 1984 §2.5 + the universal-modality
+  reduction); **not machine-checked** — see `Conservativity/FragmentAxiomatization.lean`, where
+  the only Lean form is `minusExt_empty_iff_tmFrag_dense_of_chainComplete` with its hypothesis
+  explicit
+* `.RTime` — System: TM⁻_dc; Status: **open; obstruction named**; Evidence: see below. Expected
+  complete by classical theorem (Burgess 1984 §2.7 + the universal-modality reduction); **not
+  machine-checked** — see `Conservativity/FragmentAxiomatization.lean`, where the only Lean form is
+  `minusExt_empty_iff_tmFrag_rtime_of_chainComplete` with its hypothesis explicit
 
 Both closed rows are closed by a *dichotomy witness*: a schema valid over the class because the
 class splits into two subclasses that H/G can tell apart, while no single derivation covers both.
@@ -145,7 +156,9 @@ all three. None of those three axioms is expressible in `MinusFormula`, which ha
 So the `.RTime` row reduces to: **discharge `SemanticPriorU`, `SemanticPriorS` and
 `SemanticSepOpen` — or find weaker H/G-sufficient replacements for D1/D2 — on a base-language
 canonical structure, from `CO` alone.** Nothing in this tree or in Mathlib bears on whether `CO`
-suffices.
+suffices. The named obstruction is specific to the Doets route: it does not bear on Burgess's
+A7 route (Burgess 1984 §2.7), whose completeness axiom A7 `CO` subsumes on paper, as recorded in
+`Conservativity/FragmentAxiomatization.lean`.
 
 Two things make this row harder than `.Dense` rather than merely later:
 

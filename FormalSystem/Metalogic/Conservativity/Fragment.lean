@@ -42,10 +42,13 @@ Compactness of the fragment at `.Base` and `.Dense` is the sibling module
 
 ## Why the fragment, and not a finite axiomatization
 
-`TMFrag` is defined *through* TM; a native finite Hilbert axiomatization of the H/G-fragment of
-TM over `MinusFormula` is open research and is not attempted here. What the fragment gives is an
-honest, complete logic of `MinusValidIn` at every frame class, which TM⁻ itself is not
-(`tmMinusCompleteZTime_refuted`).
+`TMFrag` is defined *through* TM. What the fragment gives is an honest, complete logic of
+`MinusValidIn` at every frame class, which TM⁻ itself is not (`tmMinusCompleteZTime_refuted`).
+The native finite Hilbert axiomatization of the fragment over `MinusFormula` is pinned per class
+in `Conservativity/FragmentAxiomatization.lean` — Σ_Base = (Sp), Σ_ZTime = Z1,
+Σ_Dense = Σ_RTime = ∅ — with soundness `TM⁻ + Σ_fc ⊆ TMFrag fc` and conditional completeness
+(hypothesis `ChainComplete`, never asserted) machine-checked, and unconditional completeness
+literature-backed only (Burgess 1984, Venema 2001); the definition here is unchanged by it.
 
 ## References
 

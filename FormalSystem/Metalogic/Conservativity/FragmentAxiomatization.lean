@@ -92,6 +92,21 @@ theorems settle on paper. **`ChainComplete` is never asserted here.**
   theorem `minusExt_iff_tmFrag_of_chainComplete` with its four per-class corollaries — the
   completeness half with its hypothesis explicit.
 
+## Paper note
+
+The JPL paper's source (`possible_worlds.tex`, `sub:Logic`) carries a commented-out footnote after
+"TM⁻ owes its strength to since and until" asserting that the Past/Future language admits **no**
+complete finite axiomatization of this fragment. That negative claim is **not supportable** and
+should not be un-commented as drafted: on the classical results above, every one of the four
+fragments is finitely axiomatizable over TM⁻ in L⁻. The footnote should instead say that TM⁻ is
+incomplete at `.Base` and `.ZTime` (machine-checked here: `tmMinusCompleteBase_refuted`,
+`tmMinusCompleteZTime_refuted`), and that TM⁻ + (DD) and TM⁻_z + Z1 are complete for all task
+frames and for ℤ-time respectively, while TM⁻_d and TM⁻_r are already complete — by the classical
+H/G completeness results (Burgess 1984 §§2.5–2.7, Venema 2001 Thm 3.3) and the universal-modality
+reduction, with the soundness halves machine-checked in this module and the completeness halves
+literature-backed. Since the fragment is r.e. through TM in any case, only the *finite*
+axiomatizability claim carries content, and it is positive.
+
 ## References
 
 * `FormalSystem/Metalogic/Conservativity/MinusExt.lean` — `MinusExt`, `minusExt_le_tmFrag`

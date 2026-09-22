@@ -1,7 +1,7 @@
 # Implementation Plan: Task #534
 
 - **Task**: 534 - H/G-fragment finite axiomatizability (TMFrag per frame class)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8.5 hours
 - **Dependencies**: None (builds on the landed `Metalogic/Conservativity/` tree)
 - **Research Inputs**: specs/534_hg_fragment_finite_axiomatizability/reports/01_hg-fragment-axiomatizability.md
@@ -368,7 +368,7 @@ substituting a semantic proof.
 
 ---
 
-### Phase 5: Wiring, status docstrings, ledgers, gates, and the paper hand-off [NOT STARTED]
+### Phase 5: Wiring, status docstrings, ledgers, gates, and the paper hand-off [COMPLETED]
 
 **Goal**: Land the three new modules in the build graph, update every prose location that
 records the fragment's axiomatization status with the machine-checked / literature-backed
@@ -376,16 +376,16 @@ distinction kept explicit, pin the flagship declarations in the axiom ledger, pa
 gate, and record the per-class verdict and reworded footnote for the paper.
 
 **Tasks**:
-- [ ] Add `import FormalSystem.Metalogic.Conservativity.MinusExt`,
+- [x] Add `import FormalSystem.Metalogic.Conservativity.MinusExt`,
       `…FragmentAxiomatization`, `…MinusDeduction` to `FormalSystem/Metalogic/Conservativity.lean`
       (aggregator) and to `FormalSystem.lean` in sorted position (C27 mk_all ordering); extend the
       aggregator's module docstring with a short paragraph pointing at
       `FragmentAxiomatization.lean` as the canonical verdict record.
-- [ ] Update `FormalSystem/Metalogic/Conservativity/Fragment.lean`'s "Why the fragment, and not a
+- [x] Update `FormalSystem/Metalogic/Conservativity/Fragment.lean`'s "Why the fragment, and not a
       finite axiomatization" section: the native finite axiomatization is no longer "open research
       not attempted"; it is pinned per class in `FragmentAxiomatization.lean`, with soundness and
       conditional completeness machine-checked and unconditional completeness literature-backed.
-- [ ] Update `FormalSystem/Metalogic/Conservativity/TMCompletenessReduction.lean`'s four-row
+- [x] Update `FormalSystem/Metalogic/Conservativity/TMCompletenessReduction.lean`'s four-row
       status table: the `.Dense` and `.RTime` rows keep their **machine-checked** status
       (open; nothing in Lean asserts `TMMinusComplete` there) and gain the sentence "expected
       complete by classical theorem (Burgess 1984 §2.5 / §2.7 + universal-modality reduction);
@@ -393,29 +393,31 @@ gate, and record the per-class verdict and reworded footnote for the paper.
       named" paragraph gains one sentence recording that the named obstruction is specific to the
       Doets route and does not bear on Burgess's A7 route, which `CO` subsumes on paper. Record
       Σ_Base = (Sp) and Σ_ZTime = Z1 in the table's preamble.
-- [ ] Update `FormalSystem/Metalogic/Conservativity/README.md`: run
+- [x] Update `FormalSystem/Metalogic/Conservativity/README.md`: run
       `bash scripts/check-module-invariants.sh --emit-inventory` to regenerate the inventory
       block, then fill the `<!-- TODO: add description -->` cells for the three new modules only;
       add three Key Results bullets (`MinusExt`/`minusExt_le_tmFrag`; the Σ_fc rows and
       strictness; `minusExt_iff_tmFrag_of_chainComplete` with its hypothesis named). Update
       `FormalSystem/README.md` and root `README.md` only where they state the fragment's
       axiomatization status (grep `finite axiomatization|finitely axiomatiz|TMFrag`); leave
-      other text untouched.
-- [ ] Update `FormalSystem/Metalogic.lean`'s SORRY-FREE paragraph on the fragment (the sentence
+      other text untouched. *(probe result: the grep found no axiomatization-status sentence in
+      either file — root `README.md`'s only `TMFrag` mention is the completeness/compactness
+      highlights row — so both received only the regenerated inventory block)*
+- [x] Update `FormalSystem/Metalogic.lean`'s SORRY-FREE paragraph on the fragment (the sentence
       naming `tmFrag_sound`) to mention the Σ_fc soundness rows, keeping the exact
       "axioms: exactly `propext`, `Classical.choice`, `Quot.sound`" phrasing C14 scans.
-- [ ] Pin in `scripts/check-module-invariants.sh`'s C14 baseline pair (both the `#print axioms`
+- [x] Pin in `scripts/check-module-invariants.sh`'s C14 baseline pair (both the `#print axioms`
       list and the expected-output block, in the existing order convention):
       `minusExt_le_tmFrag`, `minusExt_sigmaBase_le_tmFrag`, `minusExt_sigmaZTime_le_tmFrag`,
       `tmMinus_lt_minusExt_sigmaBase`, `tmMinus_lt_minusExt_sigmaZTime`, `tmFrag_chainValidIn`,
       `minusExt_iff_tmFrag_of_chainComplete`, `boxGlobalFuture`, `boxGlobalPast`,
       `notBoxGlobalFuture`, `notBoxGlobalPast`; add matching rows to `docs/theorem-index.md`
       with `Paper: —` and the formalization-native reason, following the existing `TMFrag` rows.
-- [ ] Run the full gate: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`
+- [x] Run the full gate: `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`
       (detached), then `bash scripts/check-module-invariants.sh` and
       `bash scripts/check-metalogic-cycles.sh`; repair any C5/C12/C13/C14/C15/C20/C23/C27
       finding in place. Never add a baseline key to silence a new failure.
-- [ ] Record the paper hand-off in `FragmentAxiomatization.lean`'s module docstring under a
+- [x] Record the paper hand-off in `FragmentAxiomatization.lean`'s module docstring under a
       "Paper note" heading (no task numbers): the negative footnote in `possible_worlds.tex`
       (`sub:Logic`, after "TM⁻ owes its strength to since and until") is **not supportable** and
       should be reworded to: TM⁻ is incomplete at `.Base` and `.ZTime`; TM⁻ + (DD) and
@@ -540,18 +542,20 @@ identifier `Σ` is a reserved token in Lean 4; the schema-set binder is `Ax` thr
 
 ## Testing & Validation
 
-- [ ] Each new module builds scoped, sorry-free, through
+- [x] Each new module builds scoped, sorry-free, through
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build <Module>` (detached).
-- [ ] `lean_verify` on every Goals identifier that is a theorem/def: axioms within
+- [x] `lean_verify` on every Goals identifier that is a theorem/def: axioms within
       `[propext, Classical.choice, Quot.sound]`.
-- [ ] Full guarded build, `scripts/check-module-invariants.sh` (C1–C28 incl. C14 pins, C9 task
+- [x] Full guarded build, `scripts/check-module-invariants.sh` (C1–C28 incl. C14 pins, C9 task
       refs, C27 import ordering, INV inventory), `scripts/check-metalogic-cycles.sh` all exit 0.
-- [ ] Prohibition audit: no `theorem` concludes `ChainComplete _ _`, `TMMinusComplete _`,
+- [x] Prohibition audit: no `theorem` concludes `ChainComplete _ _`, `TMMinusComplete _`,
       `Forward _`, or `TMFrag fc φ → MinusLanguage.Derivable fc [] φ`.
-- [ ] Docstring audit: every completeness claim added is tagged machine-checked (with a
+- [x] Docstring audit: every completeness claim added is tagged machine-checked (with a
       declaration) or not machine-checked (with a citation).
 - [ ] `bash .claude/scripts/lean-challenge-snapshot.sh --check` (advisory): drift only on the
-      five signature-only placeholders named above.
+      five signature-only placeholders named above. *(deviation: skipped — no Challenge manifest
+      exists at `challenge/manifest.json` (the snapshot was never taken at plan time), so the
+      advisory check cannot run; the Goals-name compliance spot-check passed 18/18 instead)*
 
 ## Artifacts & Outputs
 

@@ -74,7 +74,10 @@ import FormalSystem.Metalogic.Conservativity.Backward
 import FormalSystem.Metalogic.Conservativity.ChainBundleTruth
 import FormalSystem.Metalogic.Conservativity.DenseObstructionTransfer
 import FormalSystem.Metalogic.Conservativity.Fragment
+import FormalSystem.Metalogic.Conservativity.FragmentAxiomatization
 import FormalSystem.Metalogic.Conservativity.FragmentCompactness
+import FormalSystem.Metalogic.Conservativity.MinusDeduction
+import FormalSystem.Metalogic.Conservativity.MinusExt
 import FormalSystem.Metalogic.Conservativity.Plus
 import FormalSystem.Metalogic.Conservativity.Plus.Atomization
 import FormalSystem.Metalogic.Conservativity.Plus.AxiomValidity

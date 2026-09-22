@@ -54,9 +54,17 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   direction is refuted, TM is not the complete logic of base-language validity; the fragment
   `TMFrag fc φ := TM ⊢[fc] tr φ` is — sound (`tmFrag_sound`), complete at all four classes
   (`tmFrag_complete_*`), containing TM everywhere (`tmMinus_le_tmFrag`) and strictly at `.ZTime`
-  (`tmMinus_lt_tmFrag_ztime`). Its consequence relation is compact at `.Base` and `.Dense`
-  (`minusCompactBase`, `minusCompactDense`, `Metalogic/Conservativity/FragmentCompactness.lean`);
-  the Discrete/Dedekind non-compactness witnesses lie outside `range tr` and do not transfer.
+  (`tmMinus_lt_tmFrag_ztime`). Its native H/G axiomatization is pinned per class in
+  `Metalogic/Conservativity/FragmentAxiomatization.lean` (Σ_Base = (Sp), Σ_ZTime = Z1,
+  Σ_Dense = Σ_RTime = ∅), with the Σ_fc soundness rows `minusExt_sigmaBase_le_tmFrag`,
+  `minusExt_sigmaZTime_le_tmFrag`, `minusExt_empty_le_tmFrag_dense`,
+  `minusExt_empty_le_tmFrag_rtime` machine-checked through
+  `Metalogic/Conservativity/MinusExt.lean`'s `minusExt_le_tmFrag`, and completeness present only
+  as the explicit, never-asserted hypothesis `ChainComplete` of
+  `minusExt_iff_tmFrag_of_chainComplete`. Its consequence relation is compact
+  at `.Base` and `.Dense` (`minusCompactBase`, `minusCompactDense`,
+  `Metalogic/Conservativity/FragmentCompactness.lean`); the Discrete/Dedekind non-compactness
+  witnesses lie outside `range tr` and do not transfer.
 - **The stability extension L⁺ / TM⁺** (`Metalogic/Conservativity/Plus.lean`, over
   `FormalSystem/PlusLanguage/` and `PlusLanguage/`): SORRY-FREE (axioms: exactly
   `propext`, `Classical.choice`, `Quot.sound`). Soundness of TM⁺ at every frame class
