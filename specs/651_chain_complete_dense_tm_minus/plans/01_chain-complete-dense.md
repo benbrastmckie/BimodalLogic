@@ -376,37 +376,37 @@ stage algebra to its own module rather than adding a `set_option` baseline.
 
 ---
 
-### Phase 6: MinusChainCompleteness.lean — bundle, truth lemma, the theorem and corollaries [IN PROGRESS]
+### Phase 6: MinusChainCompleteness.lean — bundle, truth lemma, the theorem and corollaries [COMPLETED]
 
 **Goal**: The five Goal theorems, sorry-free, with the exact signatures pinned under `## Lean
 Challenge Statements`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Conservativity/MinusChainCompleteness.lean` (imports
+- [x] Create `FormalSystem/Metalogic/Conservativity/MinusChainCompleteness.lean` (imports
   `MinusChronicle`, `FragmentAxiomatization`, `TMCompletenessReduction`; neither of those two may
   import the new modules — no cycle)
-- [ ] Fix `Γ₀ : MPoint .Dense`; `FamIdx Γ₀ := {c : Chronicle // ∀ q, canBox Γ₀ (c.c q)}`;
+- [x] Fix `Γ₀ : MPoint .Dense`; `FamIdx Γ₀ := {c : Chronicle // ∀ q, canBox Γ₀ (c.c q)}`;
   `instance : Nonempty (FamIdx Γ₀)` from `exists_chronicle_through Γ₀` + `canBox_refl` +
   `chronicle_canBox_closed`; valuation `val Γ₀ : FamIdx Γ₀ × ↑(TemporalOrder.of ℚ) → Atom →
   Prop := fun p a => MinusFormula.atom a ∈ p.1.1.c p.2`
-- [ ] `truth_lemma : ∀ ψ (c : FamIdx Γ₀) (q : ℚ), chainSat (val Γ₀) (c, q) ψ ↔ ψ ∈ c.1.c q` by
+- [x] `truth_lemma : ∀ ψ (c : FamIdx Γ₀) (q : ℚ), chainSat (val Γ₀) (c, q) ψ ↔ ψ ∈ c.1.c q` by
   induction on `ψ` generalising `c q`: `atom` (rfl), `bot` (`bot_not_mem`), `imp` (`imp_mem_iff`),
   `allFuture` (⇒ `coh`; ⇐ `someFuture_mem_iff` + `witF`), `allPast` (⇒ `coh` + `canR_iff_past`;
   ⇐ `witP`), `box` (⇒ `canBox_symm`/`canBox_trans` through `Γ₀`; ⇐ `diamond_mem_iff`,
   `exists_canBox_of_dia`, `exists_chronicle_through Δ`, membership in `FamIdx Γ₀` by
   `canBox_trans` + `chronicle_canBox_closed`, IH at `(c', 0)`)
-- [ ] `refutation_engine : ¬ Derivable .Dense [] φ → ∃ (FamIdx : Type) (_ : Nonempty FamIdx) v q,
+- [x] `refutation_engine : ¬ Derivable .Dense [] φ → ∃ (FamIdx : Type) (_ : Nonempty FamIdx) v q,
   ¬ chainSat v q φ` (`neg_consistent_of_not_minus_derivable`, `minus_set_lindenbaum`, the
   truth lemma at `(c₀, 0)` with `neg_excludes`)
-- [ ] `chainComplete_dense` by transcribing the probe's `chainComplete_dense_of_engine` and
+- [x] `chainComplete_dense` by transcribing the probe's `chainComplete_dense_of_engine` and
   `not_chainValidIn_dense_of_rat_refutation` (the `.Dense` side condition is `inferInstance`)
-- [ ] `minusExt_iff_tmFrag_dense := minusExt_empty_iff_tmFrag_dense_of_chainComplete
+- [x] `minusExt_iff_tmFrag_dense := minusExt_empty_iff_tmFrag_dense_of_chainComplete
   chainComplete_dense`
-- [ ] `minusValidIn_chainValidIn` (contrapositive of `not_minusValidIn_of_not_chainSat`);
+- [x] `minusValidIn_chainValidIn` (contrapositive of `not_minusValidIn_of_not_chainSat`);
   `tmMinusComplete_dense` (`minusExt_empty_iff.mp ∘ chainComplete_dense φ ∘
   minusValidIn_chainValidIn`); `forward_dense := tmMinusCompleteDense_iff_forwardDense.mp
   tmMinusComplete_dense`
-- [ ] `lean_verify` on all five Goal names: standard axioms only, no `sorryAx`
+- [x] `lean_verify` on all five Goal names: standard axioms only, no `sorryAx`
 
 **Timing**: 2 hours
 
@@ -428,7 +428,7 @@ Challenge Statements`.
 
 ---
 
-### Phase 7: Wiring, ledgers, status prose, and gates [NOT STARTED]
+### Phase 7: Wiring, ledgers, status prose, and gates [IN PROGRESS]
 
 **Goal**: The library knows about the new modules, every ledger and docstring tells the truth
 about `.Dense`, and all repository gates are green.
