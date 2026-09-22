@@ -1,24 +1,19 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 1,
-  "summary": "Research for ChainComplete .Dense ∅ found no obstruction and fixed the route: keep .Dense/∅; build a new L⁻-typed MCS layer, canonical relations (density from DN, weak linearity from TL), a Burgess-style ω-stage chronicle on ℚ, and a truth lemma over one □-class of chronicles. A sorry-free probe compiles the Lindenbaum layer, the definitions, the final assembly shape and every Mathlib name consumed.",
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 4,
+  "summary": "Wrote a seven-phase plan for proving ChainComplete FrameClass.Dense ∅ (five new Conservativity modules: L⁻ MCS layer, derived TM⁻ theorems, canonical relations with density and weak linearity, a two-part Burgess ℚ-chronicle construction, and the truth lemma plus theorem and corollaries), followed by wiring, ledger rows with C14 pins, and the docstring revisions the proof forces. Class choice (.Dense, Ax = ∅) is justified in the plan; the five target signatures were type-checked at planning time.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/651_chain_complete_dense_tm_minus/reports/01_chain-complete-dense-route.md",
-      "summary": "Route, lemma-by-lemma paper checks, six-phase decomposition, class-choice justification, and the docstring/theorem-index consequences of proving chainComplete_dense."
-    },
-    {
-      "type": "probe",
-      "path": "specs/651_chain_complete_dense_tm_minus/probes/01_minus-mcs-lindenbaum-and-assembly.lean",
-      "summary": "Compiled sorry-free probe (lake env lean, exit 0)."
+      "type": "plan",
+      "path": "specs/651_chain_complete_dense_tm_minus/plans/01_chain-complete-dense.md",
+      "summary": "Seven-phase implementation plan with dependency waves, verification tiers, scope hypotheses, and pinned Lean Challenge Statements."
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 7,
   "blockers": [],
-  "plan_markers_verified": null,
+  "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Plan from the report's six phases; decide scope of the corollaries tmMinusComplete_dense / forward_dense and the mandatory docstring revisions listed in report §5."
+  "next_action_hint": "Dispatch implement for task 651 starting at Phase 1 (Phases 1 and 2 are independent and may run in parallel)."
 }

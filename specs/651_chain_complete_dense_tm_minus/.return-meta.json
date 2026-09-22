@@ -1,65 +1,30 @@
 {
-  "status": "researched",
-  "started_at": "2026-09-22T16:16:04Z",
-  "completed_at": "2026-09-22T17:05:00Z",
+  "status": "planned",
+  "dispatch_seq": 4,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/651_chain_complete_dense_tm_minus/reports/01_chain-complete-dense-route.md",
-      "summary": "Route for ChainComplete .Dense ∅: keep .Dense/∅; new L⁻-typed MCS layer, canonical relations (density from DN, weak linearity from TL), a Burgess-style ω-stage chronicle on ℚ, and a truth lemma over one □-class of chronicles; no obstruction; six-phase decomposition and the docstring/index consequences."
-    },
-    {
-      "type": "probe",
-      "path": "specs/651_chain_complete_dense_tm_minus/probes/01_minus-mcs-lindenbaum-and-assembly.lean",
-      "summary": "Sorry-free compiled probe: L⁻ Lindenbaum via polymorphic Zorn step, canR/canBox/Chronicle definitions, the ℚ-bundle refutation-to-¬ChainValidIn assembly, and #check of every Mathlib name the construction consumes."
+      "type": "plan",
+      "path": "specs/651_chain_complete_dense_tm_minus/plans/01_chain-complete-dense.md",
+      "summary": "Seven-phase plan proving ChainComplete FrameClass.Dense ∅ via an L⁻ MCS layer, canonical relations, a Burgess-style ℚ-chronicle construction, and a chainSat truth lemma across five new Conservativity modules, with the three corollaries, ledger/C14 pins, and the docstring revisions the proof forces."
     }
   ],
-  "next_steps": "Plan task 651 from the report's six-phase decomposition (MCS layer, derived TM⁻ theorems, canonical frame, ℚ chronicle, bundle+truth lemma+chainComplete_dense, wiring/records). Planner must decide whether the corollaries tmMinusComplete_dense / forward_dense are in scope (recommended: yes, final phase).",
-  "partial_progress": {
-    "stage": "done",
-    "details": "Report and probe written; probe compiled exit 0."
-  },
+  "next_steps": "Run /implement 651 to execute the plan",
   "metadata": {
     "session_id": "sess_1790093706_3bec6d_651",
-    "agent_type": "lean-research-agent",
-    "duration_seconds": 2940,
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 7,
+    "estimated_hours": 13.5,
+    "dependency_waves": [[1, 2], [3], [4], [5], [6], [7]]
   },
   "memory_candidates": [
     {
-      "content": "ChainValidIn quantifies over bundles of copies of ONE ordered group D, so a TM⁻ canonical model must produce a countable chain (ℚ) directly; generated-submodel + bulldozing of the full canonical model does not land in a chain bundle. Build the chain by Burgess-style ω-stage insertion on ℚ with finite support per stage and requirements enumerated infinitely often (surjection ℕ → Req composed with Nat.unpair).",
+      "content": "ChainValidIn (Conservativity/FragmentAxiomatization.lean) quantifies over bundles of copies of ONE ordered group D, so any L⁻ completeness route must build a countable chain directly (Burgess §2.5 ω-stage construction on ℚ from the canonical G-relation, with a Finset-supported stage, a disjunctive placement lemma, and an interpolation lemma) rather than taking the full canonical model plus generated submodel plus bulldozing — the latter yields uncountable, pairwise non-isomorphic R-components that do not land in the quantifier. The bundle index is one canBox-class of chronicles; the ◇-witness case of the truth lemma is closed by chronicle existence through the witness MCS. The Formula-typed canonical models (Core/, BXCanonical/) cannot be imported for this: the route is circular via the very forward-conservativity statement being proved, so the L⁻ side gets its own MCS layer mirroring Core/MaximalConsistent.lean.",
       "category": "INSIGHT",
-      "source_artifact": "specs/651_chain_complete_dense_tm_minus/reports/01_chain-complete-dense-route.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["chain bundle", "canonical model", "TM-minus", "step-by-step", "countability"]
-    },
-    {
-      "content": "Every past-side TM⁻ lemma is obtained by TR on the future lemma at χ.reflectTime, transported along reflectTime_involution (the boxGlobalPast idiom); never re-derive H-lemmas by hand.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/651_chain_complete_dense_tm_minus/reports/01_chain-complete-dense-route.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["reflectTime", "time reflection", "TM-minus", "past mirror"]
+      "source_artifact": "specs/651_chain_complete_dense_tm_minus/plans/01_chain-complete-dense.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["ChainValidIn", "chain bundle", "canonical model", "Burgess", "MinusFormula", "completeness"]
     }
-  ],
-  "modified_files": [
-    "specs/651_chain_complete_dense_tm_minus/reports/01_chain-complete-dense-route.md",
-    "specs/651_chain_complete_dense_tm_minus/probes/01_minus-mcs-lindenbaum-and-assembly.lean"
-  ],
-  "proposed_file_scope": [
-    "FormalSystem/Metalogic/Conservativity/MinusMCS.lean",
-    "FormalSystem/Metalogic/Conservativity/MinusTemporalDerived.lean",
-    "FormalSystem/Metalogic/Conservativity/MinusCanonicalFrame.lean",
-    "FormalSystem/Metalogic/Conservativity/MinusChronicle.lean",
-    "FormalSystem/Metalogic/Conservativity/MinusChainCompleteness.lean",
-    "FormalSystem/Metalogic/Conservativity/FragmentAxiomatization.lean",
-    "FormalSystem/Metalogic/Conservativity/TMCompletenessReduction.lean",
-    "FormalSystem/Metalogic/Conservativity/ChainBundleTruth.lean",
-    "FormalSystem/Metalogic/Conservativity.lean",
-    "FormalSystem/Metalogic/Conservativity/README.md",
-    "FormalSystem.lean",
-    "docs/theorem-index.md",
-    "scripts/check-module-invariants.sh"
-  ],
-  "errors": []
+  ]
 }
