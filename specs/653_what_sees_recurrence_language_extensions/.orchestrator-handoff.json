@@ -1,0 +1,34 @@
+{
+  "status": "researched",
+  "phase": "research",
+  "dispatch_seq": 2,
+  "summary": "Research delivered: three sorry-free probes (568 lines) and a numbered report answering Q1-Q5. Every morphism-invariant language (L, L+, L*, the open-future/open-past language, L+ with the same-state modality) is blind to recurrence by one compiled meta-theorem; state nominals/registers see recurrence and transposition but not determinism; since/until is blind along any history-lifting map; blc is the only live limit-closure schema and the product keeps its countermodel; a manuscript remark is drafted for sub:Conclusion.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/653_what_sees_recurrence_language_extensions/reports/01_what-sees-recurrence.md",
+      "summary": "Verdict-first research report with feature-by-language table, five verdicts, and three recommendations."
+    },
+    {
+      "type": "probe",
+      "path": "specs/653_what_sees_recurrence_language_extensions/probes/01_invariant-languages-blind.lean",
+      "summary": "Meta-theorem, stability-class bijection, open-language invariance, same-state class corollary, since/until HistMap invariance."
+    },
+    {
+      "type": "probe",
+      "path": "specs/653_what_sees_recurrence_language_extensions/probes/02_nominals-break-product.lean",
+      "summary": "Nominals separate a frame from its product; register clause non-invariance; incomparable frame validity; determinism not hybrid-definable."
+    },
+    {
+      "type": "probe",
+      "path": "specs/653_what_sees_recurrence_language_extensions/probes/03_limit-closure-device.lean",
+      "summary": "The product keeps the blc coarse countermodel and its paste-closure."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "plan_markers_verified": null,
+  "continuation_path": null,
+  "next_action_hint": "Research task; no plan phase is implied. Optional follow-up: port probes 01-02 (Recommendation 1) and add the manuscript remark (section 5.3)."
+}

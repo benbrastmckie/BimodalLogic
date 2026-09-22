@@ -1,0 +1,40 @@
+{
+  "status": "researched",
+  "started_at": "2026-09-22T16:16:08Z",
+  "completed_at": "2026-09-22T16:30:44Z",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/653_what_sees_recurrence_language_extensions/reports/01_what-sees-recurrence.md",
+      "summary": "Verdict-first report: every morphism-invariant language (L, L+, L*, L-open, L+ with same-state) is blind to recurrence by one compiled meta-theorem; state nominals/registers see recurrence and transposition but not determinism (compiled); since/until blind along any history-lifting map; blc is the only live limit-closure schema and the product keeps its countermodel; manuscript remark drafted for sub:Conclusion."
+    }
+  ],
+  "next_steps": "Optional small port of probes 01-02 into the library (see Recommendation 1); manuscript remark per section 5.3; no plan/implementation implied by this research task.",
+  "modified_files": [],
+  "proposed_file_scope": [],
+  "memory_candidates": [
+    {
+      "content": "Blindness to recurrence in the task semantics reduces to one hypothesis: invariance of the truth predicate along the translation projection for lifted models (Probe653.classValid_iff_recurrenceFree_of_prodInvariant). Decision table for a new operator: consults one history's times only -> invariant along any HistMap (since/until); quantifies histories at the present time -> needs onto (box) or lift (stability, same-state); agreement on a ray -> needs the product's unique lift (open future/past); state identity across two times of one history -> not invariant (state registers, binder, standard propositional quantifiers).",
+      "category": "INSIGHT",
+      "source_artifact": "specs/653_what_sees_recurrence_language_extensions/reports/01_what-sees-recurrence.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["translation-product", "history-lifting-morphism", "recurrence", "invariance", "hybrid-language", "open-language"]
+    },
+    {
+      "content": "State nominals/registers and time registers see disjoint frame features: state nominals define recurrence-freeness (recF_defines) but F-drift and F-translation validate the same hybrid sentences (hsatSet bridge extends satSet with reg/bind/same as state-local clauses), so determinism stays undefinable; time registers define determinism (Det-pm) but are blind to recurrence (star_invariance).",
+      "category": "INSIGHT",
+      "source_artifact": "specs/653_what_sees_recurrence_language_extensions/probes/02_nominals-break-product.lean",
+      "confidence": 0.8,
+      "suggested_keywords": ["determinism", "state-set-bridge", "hybrid-language", "star-language", "definability"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790093706_3bec6d_653",
+    "agent_type": "lean-research-agent",
+    "duration_seconds": 1500,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "findings_count": 5
+  }
+}
