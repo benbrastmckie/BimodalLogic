@@ -36,6 +36,7 @@ Two distinctions are load-bearing throughout and are documented at their stateme
 | `FwdRecPeriodicity.lean` | 485 | The `Walk`/`MinCyc` apparatus: `AllRec` forces every bi-infinite walk in a digraph to be periodic, by way of determinism along walks. Plus truth periodicity from a *per-history* period, and the fact that periodic histories validate the whole density schema. |
 | `FwdRecBridge.lean` | 155 | The frame/digraph dictionary at `ℤ` — walks are total histories and conversely — under which `FwdRec` is exactly `AllRec`. Gives full-schema exactness at `ℤ` and `Mod densitySchema` on the `ℤ` fibre. |
 | `Rigidity.lean` | 258 | `TaskFrame.Static` and `TaskFrame.UniformDwell`, the Archimedean chop `eq_of_rel_of_step` stated at the hypothesis it uses, and the rigidity theorem: over a dense Archimedean duration group a frame is static iff it has a uniform dwell time, so every finite-carrier frame over such an order is static. |
+| `RigiditySharpness.lean` | 181 | Both rigidity hypotheses are sharp: the permissive frame over any successor order (so over `ℤ`, Archimedean but not dense) is not static, and a two-state frame over `ℚ ×ₗ ℚ` (dense but provably not Archimedean, `lexRat_not_archimedean`) is not static. |
 
 ## Key Results
 
@@ -53,6 +54,9 @@ Two distinctions are load-bearing throughout and are documented at their stateme
   a dense Archimedean duration group, static is the same as having a uniform dwell time, and a
   finite carrier always has one; the collapse direction uses only interpolation and the dwell
   bound, the biconditional additionally uses *Seriality* and the reflection law.
+- `Rigidity.permissiveFrame_not_static`, `Rigidity.lexRatFrame_not_static` and
+  `Rigidity.lexRat_not_archimedean` (`RigiditySharpness.lean`) — the two hypotheses of the
+  rigidity theorem are each necessary.
 - **See also**, for the *non*-closure complement of the two corollaries above:
   `sat_dedekind_ssubset_mod_axiomSet` (`Metalogic/Independence/RationalWitness.lean`) and
   `sat_discrete_ssubset_mod_axiomSet` (`Metalogic/Independence/LexIntWitness.lean`). Together with
@@ -66,7 +70,9 @@ Two distinctions are load-bearing throughout and are documented at their stateme
   single documented `Semantics → ProofSystem` edge), `FormalSystem.Semantics.DurationClassification`,
   `Mathlib.Order.Concept` (`Galois.lean` only — a Mathlib leaf, opening no new
   `FormalSystem`-internal seam), and `Mathlib.Algebra.Order.Archimedean.Defs` (`Rigidity.lean`
-  only, for `Archimedean.arch`)
+  only, for `Archimedean.arch`), plus `FormalSystem.Semantics.Frames.Standard`,
+  `FormalSystem.Semantics.LexCarrier` and `Mathlib.Data.Int.SuccPred` (`RigiditySharpness.lean`
+  only)
 - **Imported by**: `FormalSystem.Semantics` (the aggregator), and
   `FormalSystem.Metalogic.Independence.{RationalWitness, LexIntWitness}`, which supply the two
   frames showing `Sat .Dedekind` and `Sat .Discrete` are *not* closed

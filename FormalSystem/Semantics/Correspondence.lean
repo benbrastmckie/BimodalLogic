@@ -11,6 +11,7 @@ import FormalSystem.Semantics.Correspondence.DurationFrames
 import FormalSystem.Semantics.Correspondence.FwdRecPeriodicity
 import FormalSystem.Semantics.Correspondence.FwdRecBridge
 import FormalSystem.Semantics.Correspondence.Rigidity
+import FormalSystem.Semantics.Correspondence.RigiditySharpness
 
 /-!
 # `FormalSystem.Semantics.Correspondence` — the frame-class Galois layer
@@ -31,4 +32,6 @@ Aggregator for `Semantics/Correspondence/`. See `Semantics/Correspondence/README
   histories are walks
 - `Correspondence.Rigidity` — over a dense Archimedean order a task frame is static iff it has a
   uniform dwell time, so every finite-carrier frame over such an order is static
+- `Correspondence.RigiditySharpness` — compiled witnesses that neither density (`ℤ`) nor the
+  Archimedean property (`ℚ ×ₗ ℚ`) can be dropped from the rigidity theorem
 -/
