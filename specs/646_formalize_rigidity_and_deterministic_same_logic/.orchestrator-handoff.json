@@ -1,16 +1,17 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 16,
-  "summary": "Research report written: R1 (deterministic same-logic) and R2 (rigidity) are both fully proved in lean_run_code scratch against the current tree with standard axioms only; the report carries the verbatim proof text, the corrections to the source reports, and the plumbing checklist.",
+  "status": "planned",
+  "summary": "Plan written: 5 phases, ~5 hours. Wave 1 lands R2 (Semantics/Correspondence/Rigidity.lean) and R1 (Metalogic/Deterministic/SameLogic.lean) in parallel from the research report's compiled scratch proofs; wave 2 adds the sharpness witnesses (RigiditySharpness.lean, proposed file_scope addition, with a fold-into-Rigidity.lean fallback); wave 3 reconciles parent READMEs, re-emits generated inventory, adds four theorem-ledger rows with C14 pins (scripts/check-module-invariants.sh proposed as file_scope addition, with a drop-the-rows fallback); wave 4 runs the full acceptance gate (lake build --wfail, lean_verify x7, check-module-invariants.sh, mk_all --check) and writes the summary. R2 stated at the hypothesis the proof uses (core chop lemma Archimedean-only; density enters once; biconditional's Seriality/reflection dependence recorded). Challenge block pins 9 identifiers.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/646_formalize_rigidity_and_deterministic_same_logic/reports/01_rigidity-same-logic-research.md",
-      "summary": "R1 and R2 both proved sorry-free in scratch against the current tree (proof text in appendix); records the stale A.1 helper fix, the Seriality refinement to the rigidity statement, compiled sharpness witnesses, siting against the existing ValidDetIn vocabulary, and the C15 anchor constraint."
+      "type": "plan",
+      "path": "specs/646_formalize_rigidity_and_deterministic_same_logic/plans/01_rigidity-same-logic.md",
+      "summary": "5-phase implementation plan for R2 rigidity and R1 deterministic same-logic, with Lean Challenge Statements pinning 9 identifiers."
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
-  "blockers": []
+  "phases_total": 5,
+  "blockers": [],
+  "phase": "plan",
+  "next_action_hint": "Dispatch implement. Phases 1 and 2 are independent (wave 1); do not edit FormalSystem/Semantics/ShiftSet.lean at any point; regenerate FormalSystem.lean via mk_all before each commit that includes it.",
+  "dispatch_seq": 17
 }
