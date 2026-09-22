@@ -8,7 +8,8 @@ import FormalSystem.Metalogic.Conservativity.MinusCanonicalFrame
 import Mathlib.Algebra.Order.Field.Rat
 import Mathlib.Algebra.Order.Field.Basic
 import Mathlib.Data.Finset.Max
-import Mathlib.Data.Countable.Defs
+import Mathlib.Data.Countable.Basic
+import Mathlib.Data.Rat.Encodable
 import Mathlib.Data.Nat.Pairing
 
 /-!
@@ -360,5 +361,318 @@ theorem fill (s : Stage) {r : ℚ} (hr : s.s r = none) (hne : s.supp.Nonempty) :
     · exact haboveEmpty hA q Θ' hgt hΘ'
 
 end Stage
+
+/-! ## Requirements and their enumeration -/
+
+/-- A requirement: label the rational (`inl r`), or witness an `F`-formula (`inr (q, ψ, true)`)
+or a `P`-formula (`inr (q, ψ, false)`) at the rational `q`. -/
+abbrev Req := ℚ ⊕ (ℚ × MinusFormula × Bool)
+
+instance : Nonempty Req := ⟨Sum.inl 0⟩
+
+/-- Enumeration in which every requirement recurs at arbitrarily late stages: compose a
+surjection `ℕ → R` with `Nat.unpair`'s first projection. -/
+theorem exists_enum_infinitely_often {R : Type} [Countable R] [Nonempty R] :
+    ∃ e : ℕ → R, ∀ r : R, ∀ m : ℕ, ∃ n, m ≤ n ∧ e n = r := by
+  obtain ⟨f, hf⟩ := exists_surjective_nat R
+  refine ⟨fun n => f (Nat.unpair n).1, fun r m => ?_⟩
+  obtain ⟨k, hk⟩ := hf r
+  refine ⟨Nat.pair k m, Nat.right_le_pair k m, ?_⟩
+  simp only [Nat.unpair_pair]
+  exact hk
+
+/-- A fixed enumeration of requirements in which each recurs infinitely often. -/
+noncomputable def enum : ℕ → Req :=
+  Classical.choose (exists_enum_infinitely_often (R := Req))
+
+theorem enum_spec (r : Req) (m : ℕ) : ∃ n, m ≤ n ∧ enum n = r :=
+  Classical.choose_spec (exists_enum_infinitely_often (R := Req)) r m
+
+/-! ## The step function
+
+Each branch either leaves the stage alone or extends it at a fresh rational with a coherence
+proof supplied by the Phase-A lemmas. Everything is noncomputable through `Classical.choose`. -/
+
+namespace Stage
+
+open Classical in
+/-- Place a `canR`-successor `Δ` of the label at `q`: no-op if some `q' > q` already carries
+`Δ`, else extend at the fresh slot `insert_future` provides. -/
+noncomputable def placeF (s : Stage) {q : ℚ} {Γ Δ : DPoint} (hq : s.s q = some Γ)
+    (hR : canR Γ.1 Δ.1) : Stage :=
+  if h₁ : ∃ q' > q, s.s q' = some Δ then s
+  else
+    let h₂ := (s.insert_future hq hR).resolve_left h₁
+    s.extend (Classical.choose h₂) Δ (Classical.choose_spec h₂).2.2
+
+theorem le_placeF (s : Stage) {q : ℚ} {Γ Δ : DPoint} (hq : s.s q = some Γ)
+    (hR : canR Γ.1 Δ.1) : s.le (s.placeF hq hR) := by
+  unfold placeF
+  by_cases h₁ : ∃ q' > q, s.s q' = some Δ
+  · rw [dif_pos h₁]; exact s.le_refl
+  · rw [dif_neg h₁]
+    exact s.le_extend Δ _ (Classical.choose_spec ((s.insert_future hq hR).resolve_left h₁)).2.1
+
+theorem placeF_spec (s : Stage) {q : ℚ} {Γ Δ : DPoint} (hq : s.s q = some Γ)
+    (hR : canR Γ.1 Δ.1) : ∃ q' > q, (s.placeF hq hR).s q' = some Δ := by
+  unfold placeF
+  by_cases h₁ : ∃ q' > q, s.s q' = some Δ
+  · rw [dif_pos h₁]; exact h₁
+  · rw [dif_neg h₁]
+    refine ⟨Classical.choose ((s.insert_future hq hR).resolve_left h₁),
+      (Classical.choose_spec ((s.insert_future hq hR).resolve_left h₁)).1, ?_⟩
+    rw [extend_s, upd_self]
+
+open Classical in
+/-- Place a `canR`-predecessor `Δ` of the label at `q`, mirror of `placeF`. -/
+noncomputable def placeP (s : Stage) {q : ℚ} {Γ Δ : DPoint} (hq : s.s q = some Γ)
+    (hR : canR Δ.1 Γ.1) : Stage :=
+  if h₁ : ∃ q' < q, s.s q' = some Δ then s
+  else
+    let h₂ := (s.insert_past hq hR).resolve_left h₁
+    s.extend (Classical.choose h₂) Δ (Classical.choose_spec h₂).2.2
+
+theorem le_placeP (s : Stage) {q : ℚ} {Γ Δ : DPoint} (hq : s.s q = some Γ)
+    (hR : canR Δ.1 Γ.1) : s.le (s.placeP hq hR) := by
+  unfold placeP
+  by_cases h₁ : ∃ q' < q, s.s q' = some Δ
+  · rw [dif_pos h₁]; exact s.le_refl
+  · rw [dif_neg h₁]
+    exact s.le_extend Δ _ (Classical.choose_spec ((s.insert_past hq hR).resolve_left h₁)).2.1
+
+theorem placeP_spec (s : Stage) {q : ℚ} {Γ Δ : DPoint} (hq : s.s q = some Γ)
+    (hR : canR Δ.1 Γ.1) : ∃ q' < q, (s.placeP hq hR).s q' = some Δ := by
+  unfold placeP
+  by_cases h₁ : ∃ q' < q, s.s q' = some Δ
+  · rw [dif_pos h₁]; exact h₁
+  · rw [dif_neg h₁]
+    refine ⟨Classical.choose ((s.insert_past hq hR).resolve_left h₁),
+      (Classical.choose_spec ((s.insert_past hq hR).resolve_left h₁)).1, ?_⟩
+    rw [extend_s, upd_self]
+
+open Classical in
+/-- The `inl r` branch: label `r` by `fill` if it is unlabelled. -/
+noncomputable def stepFill (s : Stage) (r : ℚ) : Stage :=
+  if hr : s.s r = none then
+    if hne : s.supp.Nonempty then
+      s.extend r (Classical.choose (s.fill hr hne)) (Classical.choose_spec (s.fill hr hne))
+    else s
+  else s
+
+theorem le_stepFill (s : Stage) (r : ℚ) : s.le (s.stepFill r) := by
+  unfold stepFill
+  by_cases hr : s.s r = none
+  · by_cases hne : s.supp.Nonempty
+    · rw [dif_pos hr, dif_pos hne]; exact s.le_extend _ _ hr
+    · rw [dif_pos hr, dif_neg hne]; exact s.le_refl
+  · rw [dif_neg hr]; exact s.le_refl
+
+theorem stepFill_spec (s : Stage) (r : ℚ) (hne : s.supp.Nonempty) :
+    ∃ Γ, (s.stepFill r).s r = some Γ := by
+  unfold stepFill
+  by_cases hr : s.s r = none
+  · rw [dif_pos hr, dif_pos hne]
+    exact ⟨_, by rw [extend_s, upd_self]⟩
+  · rw [dif_neg hr]
+    exact Option.ne_none_iff_exists'.mp hr
+
+open Classical in
+/-- The `inr (q, ψ, true)` branch: if `q` is labelled and `Fψ` holds there, place a witness. -/
+noncomputable def stepF (s : Stage) (q : ℚ) (ψ : MinusFormula) : Stage :=
+  if h : ∃ Γ : DPoint, s.s q = some Γ ∧ ψ.someFuture ∈ Γ.1 then
+    s.placeF (Classical.choose_spec h).1
+      (Classical.choose_spec (exists_canR_of_F _ (Classical.choose_spec h).2)).1
+  else s
+
+theorem le_stepF (s : Stage) (q : ℚ) (ψ : MinusFormula) : s.le (s.stepF q ψ) := by
+  unfold stepF
+  by_cases h : ∃ Γ : DPoint, s.s q = some Γ ∧ ψ.someFuture ∈ Γ.1
+  · rw [dif_pos h]; exact s.le_placeF _ _
+  · rw [dif_neg h]; exact s.le_refl
+
+theorem stepF_spec (s : Stage) {q : ℚ} {Γ : DPoint} (ψ : MinusFormula) (hq : s.s q = some Γ)
+    (hψ : ψ.someFuture ∈ Γ.1) :
+    ∃ q' > q, ∃ Δ : DPoint, (s.stepF q ψ).s q' = some Δ ∧ ψ ∈ Δ.1 := by
+  have h : ∃ Γ : DPoint, s.s q = some Γ ∧ ψ.someFuture ∈ Γ.1 := ⟨Γ, hq, hψ⟩
+  unfold stepF
+  rw [dif_pos h]
+  obtain ⟨q', hq', hΔ⟩ := s.placeF_spec (Classical.choose_spec h).1
+    (Classical.choose_spec (exists_canR_of_F _ (Classical.choose_spec h).2)).1
+  exact ⟨q', hq', _, hΔ, (Classical.choose_spec (exists_canR_of_F _ (Classical.choose_spec h).2)).2⟩
+
+open Classical in
+/-- The `inr (q, ψ, false)` branch: if `q` is labelled and `Pψ` holds there, place a witness. -/
+noncomputable def stepP (s : Stage) (q : ℚ) (ψ : MinusFormula) : Stage :=
+  if h : ∃ Γ : DPoint, s.s q = some Γ ∧ ψ.somePast ∈ Γ.1 then
+    s.placeP (Classical.choose_spec h).1
+      (Classical.choose_spec (exists_canR_of_P _ (Classical.choose_spec h).2)).1
+  else s
+
+theorem le_stepP (s : Stage) (q : ℚ) (ψ : MinusFormula) : s.le (s.stepP q ψ) := by
+  unfold stepP
+  by_cases h : ∃ Γ : DPoint, s.s q = some Γ ∧ ψ.somePast ∈ Γ.1
+  · rw [dif_pos h]; exact s.le_placeP _ _
+  · rw [dif_neg h]; exact s.le_refl
+
+theorem stepP_spec (s : Stage) {q : ℚ} {Γ : DPoint} (ψ : MinusFormula) (hq : s.s q = some Γ)
+    (hψ : ψ.somePast ∈ Γ.1) :
+    ∃ q' < q, ∃ Δ : DPoint, (s.stepP q ψ).s q' = some Δ ∧ ψ ∈ Δ.1 := by
+  have h : ∃ Γ : DPoint, s.s q = some Γ ∧ ψ.somePast ∈ Γ.1 := ⟨Γ, hq, hψ⟩
+  unfold stepP
+  rw [dif_pos h]
+  obtain ⟨q', hq', hΔ⟩ := s.placeP_spec (Classical.choose_spec h).1
+    (Classical.choose_spec (exists_canR_of_P _ (Classical.choose_spec h).2)).1
+  exact ⟨q', hq', _, hΔ, (Classical.choose_spec (exists_canR_of_P _ (Classical.choose_spec h).2)).2⟩
+
+/-- One construction step, dispatching on the requirement. -/
+noncomputable def step (s : Stage) : Req → Stage
+  | Sum.inl r => s.stepFill r
+  | Sum.inr (q, ψ, true) => s.stepF q ψ
+  | Sum.inr (q, ψ, false) => s.stepP q ψ
+
+theorem le_step (s : Stage) (r : Req) : s.le (s.step r) := by
+  rcases r with r | ⟨q, ψ, _ | _⟩
+  · exact s.le_stepFill r
+  · exact s.le_stepP q ψ
+  · exact s.le_stepF q ψ
+
+end Stage
+
+/-! ## The ω-sequence of stages from a seed -/
+
+section Construction
+
+variable (Γ₀ : DPoint)
+
+/-- The seed stage `{0 ↦ Γ₀}`. -/
+noncomputable def seed : Stage where
+  s := fun q => if q = 0 then some Γ₀ else none
+  supp := {0}
+  supp_spec := by
+    intro q
+    by_cases h : q = 0 <;> simp [h]
+  coh := by
+    intro q q' Γ Δ hlt hq hq'
+    simp only at hq hq'
+    split_ifs at hq hq' with h h'
+    · subst h; subst h'; exact absurd hlt (lt_irrefl _)
+
+@[simp] theorem seed_zero : (seed Γ₀).s 0 = some Γ₀ := by simp [seed]
+
+/-- The stages: iterate `step` along the enumeration from the seed. -/
+noncomputable def stages : ℕ → Stage
+  | 0 => seed Γ₀
+  | n + 1 => (stages n).step (enum n)
+
+theorem stages_succ (n : ℕ) : stages Γ₀ (n + 1) = (stages Γ₀ n).step (enum n) := rfl
+
+theorem stages_mono {m n : ℕ} (h : m ≤ n) : (stages Γ₀ m).le (stages Γ₀ n) := by
+  induction h with
+  | refl => exact Stage.le_refl _
+  | step _ ih => exact Stage.le_trans ih (Stage.le_step _ _)
+
+theorem stages_zero_label (n : ℕ) : (stages Γ₀ n).s 0 = some Γ₀ :=
+  stages_mono Γ₀ (Nat.zero_le n) 0 Γ₀ (seed_zero Γ₀)
+
+theorem stages_supp_nonempty (n : ℕ) : (stages Γ₀ n).supp.Nonempty :=
+  ⟨0, (stages Γ₀ n).mem_supp_of_some (stages_zero_label Γ₀ n)⟩
+
+/-- Every rational is labelled at some stage: the `inl q` requirement recurs, and `fill`
+labels `q` the first time it fires while `q` is unlabelled. -/
+theorem exists_stage_labelled (q : ℚ) : ∃ n Γ, (stages Γ₀ n).s q = some Γ := by
+  obtain ⟨n, -, hn⟩ := enum_spec (Sum.inl q) 0
+  obtain ⟨Γ, hΓ⟩ := (stages Γ₀ n).stepFill_spec q (stages_supp_nonempty Γ₀ n)
+  refine ⟨n + 1, Γ, ?_⟩
+  rw [stages_succ, hn]
+  exact hΓ
+
+/-! ## The limit -/
+
+/-- The limit labelling: the (eventually constant) label of `q` along the stages. -/
+noncomputable def limitChain (q : ℚ) : DPoint :=
+  Classical.choose (Classical.choose_spec (exists_stage_labelled Γ₀ q))
+
+theorem limitChain_spec (q : ℚ) : ∃ n, (stages Γ₀ n).s q = some (limitChain Γ₀ q) :=
+  ⟨_, Classical.choose_spec (Classical.choose_spec (exists_stage_labelled Γ₀ q))⟩
+
+/-- Labels never change once placed, so any stage's label of `q` is the limit label. -/
+theorem limit_eq_of_labelled {n : ℕ} {q : ℚ} {Γ : DPoint} (h : (stages Γ₀ n).s q = some Γ) :
+    limitChain Γ₀ q = Γ := by
+  obtain ⟨n', hn'⟩ := limitChain_spec Γ₀ q
+  have h₁ := stages_mono Γ₀ (Nat.le_max_left n n') q Γ h
+  have h₂ := stages_mono Γ₀ (Nat.le_max_right n n') q _ hn'
+  rw [h₁] at h₂
+  exact (Option.some.inj h₂).symm
+
+theorem limit_coh {q q' : ℚ} (h : q < q') :
+    canR (limitChain Γ₀ q).1 (limitChain Γ₀ q').1 := by
+  obtain ⟨n, hn⟩ := limitChain_spec Γ₀ q
+  obtain ⟨n', hn'⟩ := limitChain_spec Γ₀ q'
+  exact (stages Γ₀ (max n n')).coh q q' _ _ h
+    (stages_mono Γ₀ (Nat.le_max_left n n') q _ hn)
+    (stages_mono Γ₀ (Nat.le_max_right n n') q' _ hn')
+
+/-- `F`-witnessing of the limit: once `q` is labelled, the requirement `(q, ψ, true)` recurs,
+and `stepF` places a witness above `q`. -/
+theorem limit_witF (q : ℚ) (ψ : MinusFormula) (hψ : ψ.someFuture ∈ (limitChain Γ₀ q).1) :
+    ∃ q', q < q' ∧ ψ ∈ (limitChain Γ₀ q').1 := by
+  obtain ⟨n₀, hn₀⟩ := limitChain_spec Γ₀ q
+  obtain ⟨n, hn₀n, hn⟩ := enum_spec (Sum.inr (q, ψ, true)) n₀
+  have hq : (stages Γ₀ n).s q = some (limitChain Γ₀ q) := stages_mono Γ₀ hn₀n q _ hn₀
+  obtain ⟨q', hq', Δ, hΔ, hψΔ⟩ := (stages Γ₀ n).stepF_spec ψ hq hψ
+  refine ⟨q', hq', ?_⟩
+  have hlab : (stages Γ₀ (n + 1)).s q' = some Δ := by
+    rw [stages_succ, hn]
+    exact hΔ
+  rw [limit_eq_of_labelled Γ₀ hlab]
+  exact hψΔ
+
+/-- `P`-witnessing of the limit, the mirror of `limit_witF`. -/
+theorem limit_witP (q : ℚ) (ψ : MinusFormula) (hψ : ψ.somePast ∈ (limitChain Γ₀ q).1) :
+    ∃ q', q' < q ∧ ψ ∈ (limitChain Γ₀ q').1 := by
+  obtain ⟨n₀, hn₀⟩ := limitChain_spec Γ₀ q
+  obtain ⟨n, hn₀n, hn⟩ := enum_spec (Sum.inr (q, ψ, false)) n₀
+  have hq : (stages Γ₀ n).s q = some (limitChain Γ₀ q) := stages_mono Γ₀ hn₀n q _ hn₀
+  obtain ⟨q', hq', Δ, hΔ, hψΔ⟩ := (stages Γ₀ n).stepP_spec ψ hq hψ
+  refine ⟨q', hq', ?_⟩
+  have hlab : (stages Γ₀ (n + 1)).s q' = some Δ := by
+    rw [stages_succ, hn]
+    exact hΔ
+  rw [limit_eq_of_labelled Γ₀ hlab]
+  exact hψΔ
+
+end Construction
+
+/-! ## Chronicles -/
+
+/-- A ℚ-chronicle: a coherent, `F`/`P`-witnessing labelling of ℚ by maximal TM⁻_d-consistent
+sets. The chain the truth lemma runs along; the bundle index of
+`Conservativity/MinusChainCompleteness.lean` is the subtype of these lying in one
+`canBox`-class. Reflexive points may label many rationals; no injectivity is required. -/
+structure Chronicle where
+  /-- The labelling. -/
+  c : ℚ → DPoint
+  /-- Coherence: `q < q' ⟹ c q R c q'`. -/
+  coh : ∀ q q', q < q' → canR (c q).1 (c q').1
+  /-- Every `F`-formula at `q` is witnessed above `q`. -/
+  witF : ∀ q ψ, ψ.someFuture ∈ (c q).1 → ∃ q', q < q' ∧ ψ ∈ (c q').1
+  /-- Every `P`-formula at `q` is witnessed below `q`. -/
+  witP : ∀ q ψ, ψ.somePast ∈ (c q).1 → ∃ q', q' < q ∧ ψ ∈ (c q').1
+
+/-- **Chronicle existence** (`.Dense` only): every maximal TM⁻_d-consistent set lies at `0` on
+some ℚ-chronicle — the limit of the stages seeded at it. -/
+theorem exists_chronicle_through (Γ₀ : DPoint) : ∃ c : Chronicle, c.c 0 = Γ₀ :=
+  ⟨⟨limitChain Γ₀, fun _ _ h => limit_coh Γ₀ h, limit_witF Γ₀, limit_witP Γ₀⟩,
+    limit_eq_of_labelled Γ₀ (stages_zero_label Γ₀ 0)⟩
+
+/-- A chronicle stays inside one `canBox`-class: `Γ ~ c q₀` gives `Γ ~ c q` for every `q`, by
+MF along the chain (`canBox_of_canR`) and its mirror. -/
+theorem chronicle_canBox_closed (c : Chronicle) {Γ : DPoint} {q₀ : ℚ}
+    (h : canBox Γ.1 (c.c q₀).1) : ∀ q, canBox Γ.1 (c.c q).1 := by
+  intro q
+  rcases lt_trichotomy q₀ q with hlt | rfl | hgt
+  · exact canBox_of_canR h (c.coh q₀ q hlt)
+  · exact h
+  · exact canBox_of_canR_rev h (c.coh q q₀ hgt)
 
 end FormalSystem.Metalogic.Conservativity

@@ -326,32 +326,35 @@ into named helper lemmas before continuing to part B.
 
 ---
 
-### Phase 5: MinusChronicle.lean part B — enumeration, iteration, limit, box-class closure [IN PROGRESS]
+### Phase 5: MinusChronicle.lean part B — enumeration, iteration, limit, box-class closure [COMPLETED]
 
 **Goal**: `exists_chronicle_through : ∀ Γ : MPoint .Dense, ∃ c : Chronicle, c.c 0 = Γ`, plus
 the `canBox`-closure of a chronicle.
 
 **Tasks**:
-- [ ] `Req := ℚ ⊕ (ℚ × MinusFormula × Bool)`; instances `Countable Req`, `Nonempty Req`;
+- [x] `Req := ℚ ⊕ (ℚ × MinusFormula × Bool)`; instances `Countable Req`, `Nonempty Req`;
   transcribe the probe's `exists_enum_infinitely_often` and fix an enumeration `e : ℕ → Req`
-- [ ] `step : Stage → Req → Stage`, dispatching: `.inl r` → if `r ∉ supp` apply `fill` (choice),
+- [x] `step : Stage → Req → Stage`, dispatching: `.inl r` → if `r ∉ supp` apply `fill` (choice),
   else no-op; `.inr (q, ψ, true)` → if `s q = some Γ` and `ψ.someFuture ∈ Γ`, take
   `exists_canR_of_F` then `insert_future` (no-op on its first disjunct, `update` on its second);
   `.inr (q, ψ, false)` → the `P` mirror; each branch returns a `Stage` with `s ≤ step s r`
-- [ ] `stages : ℕ → Stage` by iteration from the seed stage `{0 ↦ Γ}` (`supp = {0}`,
+  *(deviation: altered — the three branches are the named functions `stepFill`/`stepF`/`stepP`
+  (with `placeF`/`placeP` for the insertion step) so each has its own `le_*` and `*_spec` lemma;
+  `step` dispatches to them)*
+- [x] `stages : ℕ → Stage` by iteration from the seed stage `{0 ↦ Γ}` (`supp = {0}`,
   `coherent` vacuously); `stages_mono : m ≤ n → stages m ≤ stages n`
-- [ ] Every rational is eventually labelled: `exists_stage_labelled : ∀ q, ∃ n Γ, (stages n).s q
+- [x] Every rational is eventually labelled: `exists_stage_labelled : ∀ q, ∃ n Γ, (stages n).s q
   = some Γ` (the `.inl q` requirement recurs; `fill` fires the first time it is unlabelled)
-- [ ] The limit `limitChain : ℚ → Set MinusFormula` via `Classical.choose` on
+- [x] The limit `limitChain : ℚ → Set MinusFormula` via `Classical.choose` on
   `exists_stage_labelled`, with `limit_eq_of_labelled : (stages n).s q = some Γ → limitChain q =
   Γ` (monotonicity)
-- [ ] `limit_mcs`, `limit_coh` (evaluate both points at `max n n'`), `limit_witF` (`Fψ ∈
+- [x] `limit_mcs`, `limit_coh` (evaluate both points at `max n n'`), `limit_witF` (`Fψ ∈
   limitChain q` ⟹ labelled at some `n₀` ⟹ requirement `(q, ψ, true)` recurs at `n ≥ n₀` ⟹ the
   step's witness is at `q' > q` in `stages (n+1)` ⟹ `ψ ∈ limitChain q'`), `limit_witP`
-- [ ] Assemble `exists_chronicle_through`
-- [ ] `chronicle_canBox_closed : canBox Γ (c.c q₀) → ∀ q, canBox Γ (c.c q)` (by `canBox_of_canR`
+- [x] Assemble `exists_chronicle_through`
+- [x] `chronicle_canBox_closed : canBox Γ (c.c q₀) → ∀ q, canBox Γ (c.c q)` (by `canBox_of_canR`
   for `q₀ < q`, `canBox_of_canR_rev` for `q < q₀`, via `c.coh`)
-- [ ] `lean_verify` on `exists_chronicle_through`
+- [x] `lean_verify` on `exists_chronicle_through`
 
 **Timing**: 2 hours
 
@@ -373,7 +376,7 @@ stage algebra to its own module rather than adding a `set_option` baseline.
 
 ---
 
-### Phase 6: MinusChainCompleteness.lean — bundle, truth lemma, the theorem and corollaries [NOT STARTED]
+### Phase 6: MinusChainCompleteness.lean — bundle, truth lemma, the theorem and corollaries [IN PROGRESS]
 
 **Goal**: The five Goal theorems, sorry-free, with the exact signatures pinned under `## Lean
 Challenge Statements`.
