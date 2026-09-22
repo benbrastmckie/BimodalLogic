@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "dispatch_seq": 15,
+  "task_number": 652,
+  "phase": "plan",
+  "phases_completed": 0,
+  "phases_total": 6,
+  "session_id": "sess_1790104191_b13256_652",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/652_time_indexed_frames_dedekind_rigidity_boundary/plans/02_time-indexed-dedekind-rigidity.md",
+      "summary": "Six-phase implementation plan for time-indexed frames and the Dedekind rigidity boundary."
+    }
+  ],
+  "next_steps": "Run /implement 652 to execute the plan"
+}

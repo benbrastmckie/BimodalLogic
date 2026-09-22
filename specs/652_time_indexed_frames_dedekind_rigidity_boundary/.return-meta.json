@@ -1,21 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 13,
+  "status": "planned",
+  "dispatch_seq": 15,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/652_time_indexed_frames_dedekind_rigidity_boundary/reports/01_time-indexed-dedekind-rigidity.md",
-      "summary": "Time-indexed frame structure at report 05's field names, the Dedekind+dense positive theorem (constant histories, not relation-level Static -- correction reported), the compiled two-state Q witness switching across sqrt 2, the 2x2 comparison with the Archimedean duration-indexed boundary, siting/wiring/C14/C15 checklist. Compiled-green probes accompany it at probes/01_positive_theorem.lean and probes/02_rat_witness.lean."
+      "type": "plan",
+      "path": "specs/652_time_indexed_frames_dedekind_rigidity_boundary/plans/02_time-indexed-dedekind-rigidity.md",
+      "summary": "Six-phase plan for the time-indexed frame structure, the Dedekind positive theorem, the Q sqrt-2 sharpness witness, the optional Z witness, gate wiring and the Rigidity.lean scope-note replacement; carries a four-identifier Lean Challenge Statements block."
     }
   ],
+  "phase_count": 6,
+  "estimated_hours": 5,
+  "dependency_waves": [[1], [2], [3, 4], [5], [6]],
+  "memory_candidates": [],
+  "next_steps": "Run /implement 652 to execute the plan",
   "metadata": {
     "session_id": "sess_1790104191_b13256_652",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "research",
-      "lean-research-agent"
-    ]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   }
 }
