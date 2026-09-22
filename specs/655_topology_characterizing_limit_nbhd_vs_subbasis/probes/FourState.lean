@@ -1,6 +1,7 @@
 import Mathlib.Topology.Separation.Basic
 import Mathlib.Topology.Order
 import Mathlib.Topology.Order.Basic
+import Mathlib.Topology.MetricSpace.Basic
 import FormalSystem.Semantics.TaskFrame
 
 /-!
@@ -282,6 +283,136 @@ theorem not_noOneWay_R4 [DenselyOrdered D] :
     · subst hy; rw [R4_zero] at hR; exact absurd hR (by decide)
     · rw [R4_pos hy] at hR; revert hR; decide
 
+/-! ## Histories over the funnel
+
+A history over `R4` is constant on a down-set of low states and on the complementary up-set of
+high states (`R4_history_low_past`, `R4_history_high_future`). The separation property `sep`
+of `ShiftSet.lean` (`σ = y·τ` for arbitrarily small `|y|` implies `σ = τ`) therefore holds on
+the funnel's histories although *Limit* fails (`R4_sep`): so `rev_sep` is genuinely one-way.
+The proof uses neither density nor an Archimedean order — only that a shift-invariance set of a
+funnel history is convex (`R4_history_invariant_of_le`). -/
+
+def IsHistory' {W : Type} (R : W → D → W → Prop) (τ : D → W) : Prop :=
+  ∀ x y, R (τ x) (y - x) (τ y)
+
+omit [Nontrivial D] in
+/-- A low state persists into the past: if `σ t` is low then `σ s = σ t` for all `s ≤ t`. -/
+theorem R4_history_low_past {σ : D → Fin 4} (hσ : IsHistory' R4 σ) {s t : D} (hst : s ≤ t)
+    (hlow : (σ t).val < 2) : σ s = σ t := by
+  have h := hσ s t
+  rcases eq_or_lt_of_le hst with rfl | hlt
+  · rfl
+  · rw [R4_pos (sub_pos.mpr hlt)] at h
+    rcases h with h | h
+    · exact h
+    · exact absurd h.2 (not_le.mpr hlow)
+
+omit [Nontrivial D] in
+/-- A high state persists into the future: if `σ t` is high then `σ s = σ t` for all `t ≤ s`. -/
+theorem R4_history_high_future {σ : D → Fin 4} (hσ : IsHistory' R4 σ) {s t : D} (hts : t ≤ s)
+    (hhigh : 2 ≤ (σ t).val) : σ s = σ t := by
+  have h := hσ t s
+  rcases eq_or_lt_of_le hts with rfl | hlt
+  · rfl
+  · rw [R4_pos (sub_pos.mpr hlt)] at h
+    rcases h with h | h
+    · exact h.symm
+    · exact absurd h.1 (not_lt.mpr hhigh)
+
+omit [LinearOrder D] [IsOrderedAddMonoid D] [Nontrivial D] in
+/-- If two shifts of `σ` agree then `σ` is fixed by their difference. -/
+theorem R4_history_shift_fixed {σ : D → Fin 4} {a b : D} (h : ∀ t, σ (t + a) = σ (t + b))
+    (u : D) : σ (u + (a - b)) = σ u := by
+  have := h (u - b)
+  rwa [sub_add_cancel, show u - b + a = u + (a - b) by abel] at this
+
+omit [Nontrivial D] in
+/-- The shift-invariance set of a funnel history is convex: invariance under `s ≥ 0` gives
+invariance under every `y` with `0 ≤ y ≤ s`. -/
+theorem R4_history_invariant_of_le {σ : D → Fin 4} (hσ : IsHistory' R4 σ) {s : D}
+    (hs : ∀ u, σ (u + s) = σ u) {y : D} (hy0 : 0 ≤ y) (hys : y ≤ s) (u : D) :
+    σ (u + y) = σ u := by
+  rcases lt_or_ge (σ u).val 2 with hlow | hhigh
+  · have hlow' : (σ (u + s)).val < 2 := by rw [hs u]; exact hlow
+    rw [R4_history_low_past hσ ((add_le_add_iff_left u).mpr hys) hlow', hs u]
+  · exact R4_history_high_future hσ (le_add_of_nonneg_right hy0) hhigh
+
+/-- **`sep` holds on the funnel's histories although *Limit* fails**: if `τ` is a shift of the
+history `σ` by arbitrarily small durations, then `τ = σ`. This is `ShiftSet.sep` for `H_{R4}`;
+`rev_sep` (Limit ⟹ sep) is therefore genuinely one-directional. -/
+theorem R4_sep {τ σ : D → Fin 4} (hσ : IsHistory' R4 σ)
+    (h : ∀ x : D, 0 < x → ∃ y : D, |y| < x ∧ ∀ t, τ t = σ (t + y)) : τ = σ := by
+  obtain ⟨x₀, hx₀⟩ := exists_pos_duration' (D := D)
+  obtain ⟨y₁, _, hτ₁⟩ := h x₀ hx₀
+  by_cases hy₁0 : y₁ = 0
+  · subst hy₁0; funext t; rw [hτ₁ t, add_zero]
+  obtain ⟨y₂, hy₂, hτ₂⟩ := h |y₁| (abs_pos.mpr hy₁0)
+  -- `σ` is fixed by `d := y₁ - y₂ ≠ 0`, hence by `|d| > 0`.
+  have hd : ∀ u, σ (u + (y₁ - y₂)) = σ u :=
+    R4_history_shift_fixed (fun t => (hτ₁ t).symm.trans (hτ₂ t))
+  have hdne : y₁ - y₂ ≠ 0 := by
+    intro h0; rw [sub_eq_zero] at h0; subst h0; exact lt_irrefl _ hy₂
+  have hs : ∀ u, σ (u + |y₁ - y₂|) = σ u := by
+    intro u
+    rcases le_or_gt 0 (y₁ - y₂) with hd0 | hd0
+    · rw [abs_of_nonneg hd0]; exact hd u
+    · rw [abs_of_neg hd0]
+      have := hd (u + -(y₁ - y₂))
+      rw [neg_add_cancel_right] at this
+      exact this.symm
+  -- A shift `y₃` with `|y₃| < |d|` then fixes `σ` by convexity, so `τ = y₃·σ = σ`.
+  obtain ⟨y₃, hy₃, hτ₃⟩ := h _ (abs_pos.mpr hdne)
+  have hy₃inv : ∀ u, σ (u + y₃) = σ u := by
+    intro u
+    rcases le_or_gt 0 y₃ with hy0 | hy0
+    · rw [abs_of_nonneg hy0] at hy₃
+      exact R4_history_invariant_of_le hσ hs hy0 hy₃.le u
+    · rw [abs_of_neg hy0] at hy₃
+      have := R4_history_invariant_of_le hσ hs (neg_nonneg.mpr hy0.le) hy₃.le (u + y₃)
+      rw [add_neg_cancel_right] at this
+      exact this.symm
+  funext t
+  rw [hτ₃ t, hy₃inv t]
+
+/-! ## A history that is not `𝒯_F`-continuous
+
+Over `D = ℝ`, the history "`1` before time `0`, `2` from time `0` on" respects `R4`, but `{2}`
+is `𝒯_F`-open (`𝒯_F` is discrete) and its preimage `[0, ∞)` is not open in `ℝ`. Histories are
+always `𝒩_F`-continuous (`continuous_nbhdTopology_of_history`); they need not be
+`𝒯_F`-continuous. -/
+
+/-- **A funnel history that is not `𝒯_F`-continuous.** -/
+theorem not_continuous_coneTopology_R4_history :
+    ∃ τ : ℝ → Fin 4, IsHistory' (R4 (D := ℝ)) τ ∧
+      ¬ @Continuous ℝ (Fin 4) _ (coneTopology' (R4 (D := ℝ))) τ := by
+  refine ⟨fun t => if t < 0 then 1 else 2, ?_, ?_⟩
+  · intro x y
+    dsimp only
+    split_ifs with hx hy hy
+    · exact R4_refl _ _
+    · exact (R4_pos (by linarith)).mpr (Or.inr ⟨by decide, by decide⟩)
+    · exact (R4_neg (by linarith)).mpr (Or.inr ⟨by decide, by decide⟩)
+    · exact R4_refl _ _
+  · intro hcont
+    letI := coneTopology' (R4 (D := ℝ))
+    haveI := discreteTopology_coneTopology_R4 (D := ℝ)
+    have hpre := hcont.isOpen_preimage ({2} : Set (Fin 4)) (isOpen_discrete _)
+    have hpre' : (fun t : ℝ => if t < 0 then (1 : Fin 4) else 2) ⁻¹' ({2} : Set (Fin 4)) =
+        Set.Ici 0 := by
+      ext t
+      simp only [Set.mem_preimage, Set.mem_singleton_iff, Set.mem_Ici]
+      split_ifs with ht
+      · exact ⟨fun h => absurd h (by decide), fun h => absurd ht (not_lt.mpr h)⟩
+      · exact ⟨fun _ => not_lt.mp ht, fun _ => rfl⟩
+    rw [hpre', Metric.isOpen_iff] at hpre
+    obtain ⟨ε, hε, hb⟩ := hpre 0 (Set.mem_Ici.mpr le_rfl)
+    have hmem : -(ε / 2) ∈ Metric.ball (0 : ℝ) ε := by
+      rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_neg, abs_of_pos (half_pos hε)]
+      exact half_lt_self hε
+    have := hb hmem
+    rw [Set.mem_Ici] at this
+    linarith
+
 /-! ## Axiom audit: every headline theorem uses only `propext`, `Classical.choice`, `Quot.sound` -/
 
 #print axioms R4_compositional
@@ -291,5 +422,7 @@ theorem not_noOneWay_R4 [DenselyOrdered D] :
 #print axioms nbhdTopology_R4_eq_top
 #print axioms not_isOpen_cone_R4
 #print axioms not_noOneWay_R4
+#print axioms R4_sep
+#print axioms not_continuous_coneTopology_R4_history
 
 end FormalSystem.Semantics.TaskFrame

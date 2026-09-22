@@ -133,7 +133,7 @@ table for backticked identifiers.
 
 ---
 
-### Phase 2: The funnel: `sep` without Limit, and a 𝒯_F-discontinuous history [NOT STARTED]
+### Phase 2: The funnel: `sep` without Limit, and a 𝒯_F-discontinuous history [COMPLETED]
 
 **Goal**: Discharge report item 1.6 (the separation property of `ShiftSet.lean` holds on the
 funnel's histories while Limit fails, so `rev_sep` is genuinely one-directional) and the
@@ -141,13 +141,13 @@ general-class claim that histories need not be 𝒯_F-continuous, both as additi
 `FourState.lean` where `R4` already lives.
 
 **Tasks**:
-- [ ] Add a section `/-! ## Histories over the funnel -/` to `FourState.lean` with `IsHistory'` restated from `NbhdTopology.lean` (`∀ x y, R (τ x) (y - x) (τ y)`), over the file's general `D`.
-- [ ] Prove the two structural lemmas: `R4_history_low_past` (if `(τ t).val < 2` then `τ s = τ t` for all `s ≤ t`; from `R4_neg` at duration `s - t < 0`, the second disjunct needs `2 ≤ (τ t).val`, contradiction) and `R4_history_high_future` (if `2 ≤ (τ t).val` then `τ s = τ t` for all `t ≤ s`; from `R4_pos`, symmetric).
-- [ ] Prove `R4_history_shift_fixed`: if `∀ t, σ (t + a) = σ (t + b)` then `∀ u, σ (u + (a - b)) = σ u` (substitute `u = t + b`).
-- [ ] Prove `R4_sep` with the statement pinned below. Sketch: if `τ ≠ σ`, pick `t` with `τ t ≠ σ t`. From `h` at `x = 1`-style positive duration obtain `y₁` (if `y₁ = 0` then `τ = σ`, done); from `h` at `|y₁|` obtain `y₂` with `|y₂| < |y₁|`, so `d := y₁ - y₂ ≠ 0` and `σ` is fixed by `d`. Now `σ (t + y₁) = τ t ≠ σ t`, so by the structural lemmas either (`σ t` low, `σ (t + y₁)` high, hence `t + y₁ > t` and, using `d`-invariance and `low_past`/`high_future`, `t + d` and `t - d` are both low and both high -- contradiction) or the mirror case. No density and no Archimedean property is used; the only order facts are `t + d ≤ t ↔ d ≤ 0` and `abs_lt`.
-- [ ] Prove `not_continuous_coneTopology_R4_history` (statement pinned below) at `D = ℝ`: the history `τ t := if t < 0 then 1 else 2` respects `R4` (four sign cases, each closed by `R4_pos`/`R4_neg`/`R4_zero`), `{2}` is `𝒯_F`-open by `discreteTopology_coneTopology_R4`, and `τ ⁻¹' {2} = Set.Ici 0` is not open in ℝ (an open set containing `0` contains `-ε`).
-- [ ] Recompile `FourState.lean`; add `#print axioms R4_sep` and `#print axioms not_continuous_coneTopology_R4_history`.
-- [ ] Commit: `task 655 phase 2: funnel sep and discontinuity witnesses`.
+- [x] Add a section `/-! ## Histories over the funnel -/` to `FourState.lean` with `IsHistory'` restated from `NbhdTopology.lean` (`∀ x y, R (τ x) (y - x) (τ y)`), over the file's general `D`. *(completed)*
+- [x] Prove the two structural lemmas: `R4_history_low_past` (if `(τ t).val < 2` then `τ s = τ t` for all `s ≤ t`; from `R4_neg` at duration `s - t < 0`, the second disjunct needs `2 ≤ (τ t).val`, contradiction) and `R4_history_high_future` (if `2 ≤ (τ t).val` then `τ s = τ t` for all `t ≤ s`; from `R4_pos`, symmetric). *(completed; both via `R4_pos` at the positive duration `t - s` resp. `s - t`, equivalent to the `R4_neg` route)*
+- [x] Prove `R4_history_shift_fixed`: if `∀ t, σ (t + a) = σ (t + b)` then `∀ u, σ (u + (a - b)) = σ u` (substitute `u = t + b`). *(completed)*
+- [x] Prove `R4_sep` with the statement pinned below. Sketch: if `τ ≠ σ`, pick `t` with `τ t ≠ σ t`. From `h` at `x = 1`-style positive duration obtain `y₁` (if `y₁ = 0` then `τ = σ`, done); from `h` at `|y₁|` obtain `y₂` with `|y₂| < |y₁|`, so `d := y₁ - y₂ ≠ 0` and `σ` is fixed by `d`. Now `σ (t + y₁) = τ t ≠ σ t`, so by the structural lemmas either (`σ t` low, `σ (t + y₁)` high, hence `t + y₁ > t` and, using `d`-invariance and `low_past`/`high_future`, `t + d` and `t - d` are both low and both high -- contradiction) or the mirror case. No density and no Archimedean property is used; the only order facts are `t + d ≤ t ↔ d ≤ 0` and `abs_lt`. *(deviation: altered — the pinned statement is proved verbatim, but the sketch's closing case split ("`t + d` and `t − d` both low and both high") only closes when `2·y₂ ≤ y₁`, which nothing guarantees; replaced by one extra helper `R4_history_invariant_of_le` (the shift-invariance set of a funnel history is convex: invariance under `s ≥ 0` gives invariance under every `0 ≤ y ≤ s`) and a third application of `h` at radius `|d|`, whose witness `y₃` then fixes `σ` by convexity, so `τ = y₃·σ = σ`. Still no density and no Archimedean property; the order facts used are `abs_of_nonneg/neg`, `sub_pos`, `add_le_add_iff_left`, `le_add_of_nonneg_right`.)*
+- [x] Prove `not_continuous_coneTopology_R4_history` (statement pinned below) at `D = ℝ`: the history `τ t := if t < 0 then 1 else 2` respects `R4` (four sign cases, each closed by `R4_pos`/`R4_neg`/`R4_zero`), `{2}` is `𝒯_F`-open by `discreteTopology_coneTopology_R4`, and `τ ⁻¹' {2} = Set.Ici 0` is not open in ℝ (an open set containing `0` contains `-ε`). *(completed; added `import Mathlib.Topology.MetricSpace.Basic` for `Metric.isOpen_iff` on ℝ)*
+- [x] Recompile `FourState.lean`; add `#print axioms R4_sep` and `#print axioms not_continuous_coneTopology_R4_history`. *(completed: exit 0, no warnings; both `[propext, Classical.choice, Quot.sound]`)*
+- [x] Commit: `task 655 phase 2: funnel sep and discontinuity witnesses`.
 
 **Timing**: 2 hours
 
