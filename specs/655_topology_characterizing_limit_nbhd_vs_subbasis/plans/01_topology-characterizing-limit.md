@@ -164,17 +164,34 @@ general-class claim that histories need not be 𝒯_F-continuous, both as additi
 
 ---
 
-### Phase 3: Dwell-time discreteness and 𝒯_F = 𝒩_F on the two-origin frame [NOT STARTED]
+### Phase 3: Dwell-time discreteness and 𝒯_F = 𝒩_F on the two-origin frame [BLOCKED]
+
+**BLOCKER** (Phase 3):
+- **What failed**: the pinned Challenge statement `RTO_triangle : Triangle' RTO` is **false**, so the phase's third task, and the fourth task that routes `coneTopology_eq_nbhdTopology_RTO` through it, cannot be executed as written. The task list's claim that the `o → p → o` case is "trivial or impossible" is wrong: `o b ⇒_y p t` needs only `t ≤ y` and `p t ⇒_z o b'` needs only `t ≤ -z`, so the mixed-sign two-step path `o true ⇒₁ p ⟨1⟩ ⇒₋₁ o false` is a legitimate path between the two origins, and `RTO (o true) t (o false)` is `true = false` for every `t` — no shortcut exists at any duration.
+- **What was tried**: a compiled refutation (scratchpad, `lake env lean`, exit 0, axioms `[propext, Classical.choice, Quot.sound]`), reproduced here so the reviser can re-run it against `TwoOrigins.lean`'s own `RTO` and the pinned `Triangle'`:
+  ```lean
+  theorem not_triangle_RTO : ¬ Triangle' RTO := by
+    intro h
+    obtain ⟨t, _, hR⟩ := h (o true) (p ⟨1, one_pos⟩) (o false) 1 (-1)
+      (show (1 : ℝ) ≤ 1 from le_rfl) (show (1 : ℝ) ≤ -(-1) by norm_num)
+    exact Bool.noConfusion (hR : true = false)
+  ```
+- **Why it's stuck**: `plan-compliance.md` (Statement Fidelity) forbids quietly proving a different statement under the same name or quietly editing the recorded Challenge; a false pinned statement is exactly the "genuinely wrong recorded statement" case it names, whose sanctioned route is `[BLOCKED]` plus escalation. The two *headline* results of this phase remain true and are the actual deliverable; only the intermediate route is wrong.
+- **What is needed** (for the reviser; one plan revision): drop `RTO_triangle` and the `Triangle'` scaffolding from this phase and from the Lean Challenge Statements block, and prove `coneTopology_eq_nbhdTopology_RTO` by the direct route the report already provides in general form (`coneTopology_eq_nbhdTopology_iff`: `𝒯_F = 𝒩_F` iff every cone is `𝒩_F`-open, given `RTO_refl w 0 le_rfl`). Every cone of `RTO` *is* `𝒩_F`-open; the explicit radii, checked by hand:
+  - `cone RTO (o b) x = {o b} ∪ {p t : t < x}`; at `o b` use radius `x`; at `p t` (`t < x`) use radius `min t (x - t)` — no origin lies in `cone RTO (p t) ε` when `ε ≤ t` (an origin needs `t ≤ -y`, i.e. `|y| ≥ t`), and a ray point `p s` there has `s ≤ t + y < t + ε ≤ x` or `s ≤ t`.
+  - `cone RTO (p t) x = {p s : |s - t| < x} ∪ (if t < x then {o true, o false} else ∅)`; at `p s` use radius `x - |s - t|` (a ray point stays within `x` of `t`; an origin enters only if `s < x - |s - t|`, whence `t ≤ s + |s - t| < x`, so the origins are already in the cone); at an origin (`t < x`) use radius `x - t` (`o b ∈` since `t < x`; `p s` with `s < x - t` has `|s - t| < x`).
+  So the replacement decomposition is: a `mem_cone_RTO` characterisation lemma (two cases on the centre), `isOpen_nbhdTopology_cone_RTO : ∀ w x, 0 < x → IsOpen[nbhdTopology' RTO] (cone RTO w x)`, then `coneTopology_eq_nbhdTopology_RTO` via the restated `coneTopology_eq_nbhdTopology_iff'`, and `not_t2Space_coneTopology_RTO` exactly as planned. The restated `coneTopology'`/`coneTopology_le_nbhdTopology'` from the second task are still needed; `Triangle'`/`isOpen_cone_of_triangle'`/`coneTopology_eq_nbhdTopology_of_triangle'` are not.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder; do NOT weaken `Triangle'` (e.g. to same-sign `y, z`) under the same name.
 
 **Goal**: Discharge report item 3.5 in `NbhdTopology.lean` and the "𝒯_F over ℝ is not Hausdorff"
 cell in `TwoOrigins.lean`.
 
 **Tasks**:
-- [ ] In `NbhdTopology.lean`, after `nbhdTopology_isClosed_iff`, prove `discreteTopology_nbhdTopology_iff` (statement pinned below) via Mathlib's `singletons_open_iff_discrete` (confirm the name with `lean_local_search` first; the fallback is `discreteTopology_iff_forall_isOpen` plus `isOpen_singleton`): a singleton `{w}` is 𝒩_F-open iff some cone at `w` is contained in it, by `nbhdTopology_isOpen_iff`.
-- [ ] In `TwoOrigins.lean`, restate `Triangle'` (as in the pinned block) and the two general lemmas `isOpen_cone_of_triangle'`/`coneTopology_eq_nbhdTopology_of_triangle'` verbatim from `NbhdTopology.lean` specialised to `D = ℝ` (this file is standalone, per the report's Decisions), together with `coneTopology'` and the ℝ-specialised `coneTopology_le_nbhdTopology'` already present in `RealFrames.lean`.
-- [ ] Prove `RTO_triangle`: nine constructor cases on `(w, u, v)`; witnesses: `o → o → v`: `t := z`; `o → p t → p s`: `t := |y| + |z|` (since `s ≤ t + |z| ≤ y + |z|`); `p t → o → p s`: `t := s - t` (sign split, using `t ≤ -y` and `s ≤ z`); `p t → p r → p s`: `t := s - t` (`|s - t| ≤ |s - r| + |r - t| ≤ |z| + |y|`); `p t → p r → o`: `t := -(|y| + |z|)`; `p t → o → o`: `t := y`; the two `o → o → o`/`o → p → o` cases are trivial or impossible. Every arithmetic goal is `linarith` after `abs_of_nonneg`/`abs_of_neg` rewrites, exactly as in `RTO_compositional`.
-- [ ] Prove `coneTopology_eq_nbhdTopology_RTO` from `RTO_refl w 0 le_rfl` and `RTO_triangle`, then `not_t2Space_coneTopology_RTO` by rewriting with it and applying `not_t2Space_nbhdTopology_RTO`.
-- [ ] Recompile both probes; append `#print axioms` for the three new headline theorems; commit: `task 655 phase 3: dwell-time discreteness and two-origins cone topology`.
+- [x] In `NbhdTopology.lean`, after `nbhdTopology_isClosed_iff`, prove `discreteTopology_nbhdTopology_iff` (statement pinned below) via Mathlib's `singletons_open_iff_discrete` (confirm the name with `lean_local_search` first; the fallback is `discreteTopology_iff_forall_isOpen` plus `isOpen_singleton`): a singleton `{w}` is 𝒩_F-open iff some cone at `w` is contained in it, by `nbhdTopology_isOpen_iff`. *(completed: via `discreteTopology_iff_isOpen_singleton` (the name that exists on the pinned Mathlib; `singletons_open_iff_discrete` does not) + `simp only [nbhdTopology_isOpen_iff, Set.mem_singleton_iff, forall_eq]`, the same shape as `discreteTopology_nbhdTopology_int_iff`; `NbhdTopology.lean` exits 0, axioms standard)*
+- [ ] In `TwoOrigins.lean`, restate `Triangle'` (as in the pinned block) and the two general lemmas `isOpen_cone_of_triangle'`/`coneTopology_eq_nbhdTopology_of_triangle'` verbatim from `NbhdTopology.lean` specialised to `D = ℝ` (this file is standalone, per the report's Decisions), together with `coneTopology'` and the ℝ-specialised `coneTopology_le_nbhdTopology'` already present in `RealFrames.lean`. *(not started — scaffolding only for the blocked route; see BLOCKER)*
+- [ ] Prove `RTO_triangle`: nine constructor cases on `(w, u, v)`; witnesses: `o → o → v`: `t := z`; `o → p t → p s`: `t := |y| + |z|` (since `s ≤ t + |z| ≤ y + |z|`); `p t → o → p s`: `t := s - t` (sign split, using `t ≤ -y` and `s ≤ z`); `p t → p r → p s`: `t := s - t` (`|s - t| ≤ |s - r| + |r - t| ≤ |z| + |y|`); `p t → p r → o`: `t := -(|y| + |z|)`; `p t → o → o`: `t := y`; the two `o → o → o`/`o → p → o` cases are trivial or impossible. Every arithmetic goal is `linarith` after `abs_of_nonneg`/`abs_of_neg` rewrites, exactly as in `RTO_compositional`. *(BLOCKED — statement is false; see BLOCKER)*
+- [ ] Prove `coneTopology_eq_nbhdTopology_RTO` from `RTO_refl w 0 le_rfl` and `RTO_triangle`, then `not_t2Space_coneTopology_RTO` by rewriting with it and applying `not_t2Space_nbhdTopology_RTO`. *(BLOCKED — depends on `RTO_triangle`; both statements are true and the direct route is spelled out in the BLOCKER)*
+- [ ] Recompile both probes; append `#print axioms` for the three new headline theorems; commit: `task 655 phase 3: dwell-time discreteness and two-origins cone topology`. *(partial: `NbhdTopology.lean` recompiled with `#print axioms discreteTopology_nbhdTopology_iff`; committed as `task 655 phase 3: dwell-time discreteness (TwoOrigins blocked)`)*
 
 **Timing**: 1.5 hours
 

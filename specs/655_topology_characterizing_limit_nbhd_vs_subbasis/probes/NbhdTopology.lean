@@ -110,6 +110,15 @@ theorem nbhdTopology_isClosed_iff (R : W → D → W → Prop) (C : Set W) :
     obtain ⟨u, hu, huC⟩ := Set.not_subset.mp (hne x hx)
     exact ⟨u, hu, by simpa using huC⟩
 
+/-- **`𝒩_F` is discrete iff every state has a dwell time**: some `x > 0` with `(w)_x = {w}`
+(here `(w)_x ⊆ {w}`; equality follows under `R w 0 w`). A *uniform* dwell time over dense
+Archimedean `D` forces the static frame; the pointwise condition here does not. -/
+theorem discreteTopology_nbhdTopology_iff (R : W → D → W → Prop) :
+    @DiscreteTopology W (nbhdTopology R) ↔ ∀ w, ∃ x, 0 < x ∧ cone R w x ⊆ {w} := by
+  letI := nbhdTopology R
+  rw [discreteTopology_iff_isOpen_singleton]
+  simp only [nbhdTopology_isOpen_iff, Set.mem_singleton_iff, forall_eq]
+
 /-! ## Q1: Limit ↔ `𝒩_F` is T1, and `𝒯_F` is finer than `𝒩_F` -/
 
 /-- **Limit (⊆ half) ↔ `𝒩_F` is T1.** No other frame condition is consumed in either
@@ -405,6 +414,7 @@ theorem limit_of_t1Space_coneTopology {R : W → D → W → Prop}
 #print axioms r0Space_coneTopology_of_limit
 #print axioms limit_eq_iff
 #print axioms nbhdTopology_isClosed_iff
+#print axioms discreteTopology_nbhdTopology_iff
 #print axioms nbhdTopology_eq_mkOfNhds
 #print axioms continuous_nbhdTopology_of_history
 #print axioms finalTopology_le_nbhdTopology
