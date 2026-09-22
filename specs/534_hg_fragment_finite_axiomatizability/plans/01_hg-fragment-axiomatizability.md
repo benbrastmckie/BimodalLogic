@@ -170,19 +170,19 @@ rewrite on `ProofSystem.Derivable` (it may need `Nonempty.elim` then `⟨… ▸
 
 ---
 
-### Phase 2: `FragmentAxiomatization.lean` part A — Σ_fc, the four soundness rows, and strictness over TM⁻ [NOT STARTED]
+### Phase 2: `FragmentAxiomatization.lean` part A — Σ_fc, the four soundness rows, and strictness over TM⁻ [COMPLETED]
 
 **Goal**: Pin the candidate axiom sets and machine-check the requested soundness half,
 `TM⁻ + Σ_fc ⊆ TMFrag fc`, at all four classes, together with `TM⁻ ⊊ TM⁻ + Σ_fc` at `.Base` and
 `.ZTime` from the landed countermodels.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Conservativity/FragmentAxiomatization.lean` importing
+- [x] Create `FormalSystem/Metalogic/Conservativity/FragmentAxiomatization.lean` importing
       `FormalSystem.Metalogic.Conservativity.MinusExt`,
       `FormalSystem.Metalogic.Conservativity.SpWitness`, and
       `FormalSystem.Metalogic.Conservativity.ChainBundleTruth`; namespace
       `FormalSystem.Metalogic.Conservativity`.
-- [ ] Write the module docstring as the **canonical verdict record**: a four-row table
+- [x] Write the module docstring as the **canonical verdict record**: a four-row table
       (`.Base`: TM⁻ + (Sp), `.Dense`: TM⁻_d, `.ZTime`: TM⁻_z + Z1, `.RTime`: TM⁻_r), each row
       naming what is machine-checked here (soundness; strictness at Base/ZTime; conditional
       completeness, Phase 3) versus what is literature-backed and **not machine-checked**
@@ -191,26 +191,26 @@ rewrite on `ProofSystem.Derivable` (it may need `Nonempty.elim` then `⟨… ▸
       Segerberg 1970 / Goldblatt are not in the corpus). Name the universal-modality reduction
       (MF + TR + S5) as the bridge and state explicitly that `ChainComplete` is never asserted.
       Cite no task numbers.
-- [ ] Define `sigmaBase : Set MinusFormula := {χ | ∃ φ ψ, χ = Sp φ ψ}` and
+- [x] Define `sigmaBase : Set MinusFormula := {χ | ∃ φ ψ, χ = Sp φ ψ}` and
       `sigmaZTime : Set MinusFormula := {χ | ∃ φ, χ = Z1 φ}`; note in docstrings that
       `.Dense` and `.RTime` use `∅` and need no named set.
-- [ ] Prove `sigmaBase_le_tmFrag : ∀ ψ ∈ sigmaBase, TMFrag FrameClass.Base ψ` from
+- [x] Prove `sigmaBase_le_tmFrag : ∀ ψ ∈ sigmaBase, TMFrag FrameClass.Base ψ` from
       `sp_translate`, and `sigmaZTime_le_tmFrag : ∀ ψ ∈ sigmaZTime, TMFrag FrameClass.ZTime ψ`
       from `z1_translate` (`tmFrag_z1_ztime`).
-- [ ] Prove the four soundness rows: `minusExt_sigmaBase_le_tmFrag`,
+- [x] Prove the four soundness rows: `minusExt_sigmaBase_le_tmFrag`,
       `minusExt_sigmaZTime_le_tmFrag` (via `minusExt_le_tmFrag` and the two membership lemmas),
       and `minusExt_empty_le_tmFrag_dense`, `minusExt_empty_le_tmFrag_rtime` (via
       `minusExt_le_tmFrag` with the vacuous hypothesis, or `minusExt_empty_iff` + `tmMinus_le_tmFrag`).
-- [ ] Prove strictness over TM⁻: `tmMinus_lt_minusExt_sigmaBase :
+- [x] Prove strictness over TM⁻: `tmMinus_lt_minusExt_sigmaBase :
       ∃ φ, MinusExt .Base sigmaBase φ ∧ ¬ MinusLanguage.Derivable .Base [] φ` with witness
       `Sp (.atom a) (.atom a)` for `a := Atom.mkBase "p"` (membership by `MinusExt.ax`,
       non-derivability by `not_derivable_sp a`), and `tmMinus_lt_minusExt_sigmaZTime` with
       witness `Z1 (.atom (Atom.mkBase "p"))` and `not_minus_derivable_z1`.
-- [ ] Add the two dense-side sanity examples: `Sp φ ψ ∈` the fragment at `.Dense` and `.RTime`
+- [x] Add the two dense-side sanity examples: `Sp φ ψ ∈` the fragment at `.Dense` and `.RTime`
       is already a TM⁻ theorem there (`spDerivableDense`, `spDerivableRTime` from
       `DenseObstructionTransfer.lean`), so `MinusExt .Dense ∅ (Sp φ ψ)` holds via `tm` — one
       `example` each, documenting why Σ_Dense and Σ_RTime carry no (Sp).
-- [ ] Scoped build of `FormalSystem.Metalogic.Conservativity.FragmentAxiomatization` (guarded,
+- [x] Scoped build of `FormalSystem.Metalogic.Conservativity.FragmentAxiomatization` (guarded,
       detached); `lean_verify` on the two Σ soundness rows and both strictness theorems.
 
 **Timing**: 1.5 hours
