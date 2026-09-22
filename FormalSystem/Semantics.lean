@@ -31,6 +31,8 @@ import FormalSystem.Semantics.StateLocalTransfer
 import FormalSystem.Semantics.DurationClassification
 import FormalSystem.Semantics.LexCarrier
 import FormalSystem.Semantics.IntTransfer
+import FormalSystem.Semantics.TimeIndexed
+import FormalSystem.Semantics.TimeIndexedSharpness
 import FormalSystem.Semantics.Correspondence
 
 /-!
@@ -173,6 +175,22 @@ against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a 
   `ShiftSet.forward_repr` on both sides. Łoś is deliberately not attacked at `TruthAt` directly:
   `ShiftTruth`'s `box` clause quantifies over the carrier the ultraproduct quotients, while
   `TruthAt`'s quantifies over possible worlds, and `forward_repr` already reconciles the two
+- `TimeIndexed`: the time-indexed frame structure -- states plus a relation indexed by an ordered
+  *pair of times* rather than by a duration -- its predicate family (`Hist`, `Limit`,
+  `Compositional`, `Serial`, `Converse`, `Static`, `ConstantHistories`, `Stationary`, `P`), and
+  the Dedekind rigidity boundary `constantHistories_of_lub`: over a densely ordered,
+  Dedekind-complete time order, finitely many states plus *Limit* force every history to be
+  constant, by a supremum argument that never touches *Compositionality*. Shared infrastructure
+  rather than a local convenience -- the manuscript's frame-correspondence Theorem A is its other
+  intended consumer, which is why its field names are that program's and deliberately not
+  `FrameOver`'s
+- `TimeIndexedSharpness`: both hypotheses of `TimeIndexed.constantHistories_of_lub` witnessed, and
+  the duration-vs-time comparison. `qSwitchFrame`, the two-state frame over `ℚ` whose state flips
+  across `√2`, satisfies *Converse*, *Seriality*, *Compositionality* and *Limit* yet has a
+  non-constant history, so Dedekind completeness cannot be dropped; `zSwitchFrame` over `ℤ` does
+  the same for density. The module docstring sets the Archimedean boundary of
+  `Correspondence/Rigidity.lean` beside the Dedekind one, `ℚ` being the order at which they
+  disagree
 - `IntTransfer`: carrier normalization for the discrete branch -- a generic transport of
   frames, `TaskModel`, `PartialHistory`, and `TruthAt` along any ordered-group isomorphism
   `e : D ≃+o E` (via the `HEq`-free `Aligned` relation rather than a history `Equiv`), composed

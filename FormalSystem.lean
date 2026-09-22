@@ -495,6 +495,8 @@ import FormalSystem.Semantics.StateLocalTransfer
 import FormalSystem.Semantics.TaskFrame
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.TemporalOrder
+import FormalSystem.Semantics.TimeIndexed
+import FormalSystem.Semantics.TimeIndexedSharpness
 import FormalSystem.Semantics.Truth
 import FormalSystem.Semantics.TruthClauses
 import FormalSystem.Semantics.TruthTransport

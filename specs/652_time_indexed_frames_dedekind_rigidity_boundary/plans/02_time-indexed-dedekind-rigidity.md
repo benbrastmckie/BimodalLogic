@@ -179,16 +179,16 @@ content matches the probe line for line.
 
 ---
 
-### Phase 2: TimeIndexedSharpness.lean — the ℚ witness and the comparison [NOT STARTED]
+### Phase 2: TimeIndexedSharpness.lean — the ℚ witness and the comparison [COMPLETED]
 
 **Goal**: Create `FormalSystem/Semantics/TimeIndexedSharpness.lean` with the two-state ℚ frame
 switching across `√2`, all four time-indexed frame conditions, refutations of both `Static` and
 `ConstantHistories`, and the duration-vs-time comparison docstring (deliverable 4).
 
 **Tasks**:
-- [ ] Create the file with the Apache header, `import FormalSystem.Semantics.TimeIndexed` and
+- [x] Create the file with the Apache header, `import FormalSystem.Semantics.TimeIndexed` and
       `import Mathlib.NumberTheory.Real.Irrational`, then the module docstring immediately after.
-- [ ] Module docstring: the `RigiditySharpness.lean`-style narrative, plus the 4-row comparison
+- [x] Module docstring: the `RigiditySharpness.lean`-style narrative, plus the 4-row comparison
       table (ℤ / ℚ ×ₗ ℚ / ℚ / ℝ against dense, Archimedean, Dedekind, duration-indexed outcome,
       time-indexed outcome) from the research report's R6. Call out the ℚ row as the entire point:
       it is the one order where the two boundaries disagree. State why in one sentence with
@@ -199,25 +199,25 @@ switching across `√2`, all four time-indexed frame conditions, refutations of 
       (Dedekind, no Compositionality). Cite `Metalogic.Independence.rat_not_complete` in prose as
       the order-level companion of this frame-level witness — **no import**; `Semantics/` never
       imports `Metalogic/`.
-- [ ] Also record in the docstring the mechanism `exists_radius` encodes: the dwell exists at every
+- [x] Also record in the docstring the mechanism `exists_radius` encodes: the dwell exists at every
       rational time but is not uniform in time — the radius returned at `x` shrinks to `0` as `x`
       approaches `√2`. That is exactly why `Limit` holds while rigidity fails.
-- [ ] Transcribe `belowCut`, `cut_not_rat`, `belowCut_mono`, `one_belowCut`, `two_not_belowCut`,
+- [x] Transcribe `belowCut`, `cut_not_rat`, `belowCut_mono`, `one_belowCut`, `two_not_belowCut`,
       `exists_radius` from `probes/02_rat_witness.lean`. `exists_radius` needs
       `rw [Rat.cast_abs, Rat.cast_sub]` before `exact_mod_cast` — plain `push_cast` does not reach
       inside `|·|` here.
-- [ ] Transcribe `switchRel` in its already-converse-symmetric shape (not forward-relation plus a
+- [x] Transcribe `switchRel` in its already-converse-symmetric shape (not forward-relation plus a
       reflection convention) and define `qSwitchFrame : TimeIndexed (TemporalOrder.of ℚ)` with
       `W := Bool`, `R := switchRel`. Use `TemporalOrder.of ℚ`, not a fresh `⟨ℚ⟩` bundler.
-- [ ] Prove `qSwitchFrame_converse`, `qSwitchFrame_serial`, `qSwitchFrame_limit`,
+- [x] Prove `qSwitchFrame_converse`, `qSwitchFrame_serial`, `qSwitchFrame_limit`,
       `qSwitchFrame_compositional`. The compositional proof is `by_cases`×3, `cases w <;> cases v`,
       then `simp_all [belowCut_mono hxy, belowCut_mono hyz]` — exactly two simp arguments.
-- [ ] Prove `qSwitchFrame_not_static`; define `switchHist` (noncomputable, `open Classical in`),
+- [x] Prove `qSwitchFrame_not_static`; define `switchHist` (noncomputable, `open Classical in`),
       prove `switchHist_mem` and `qSwitchFrame_not_constantHistories`.
-- [ ] Add a `Paper: — (reason)` line to the `/-- -/` docstring of
+- [x] Add a `Paper: — (reason)` line to the `/-- -/` docstring of
       `qSwitchFrame_not_constantHistories` (it becomes a theorem-index row in Phase 4) and to any
       other declaration this phase puts on the ledger.
-- [ ] Rename probe identifiers to the library names throughout: `qSwitch` → `qSwitchFrame` and the
+- [x] Rename probe identifiers to the library names throughout: `qSwitch` → `qSwitchFrame` and the
       `qSwitch_*` theorems → `qSwitchFrame_*`.
 
 **Timing**: 1.25 hours
@@ -246,19 +246,23 @@ switching across `√2`, all four time-indexed frame conditions, refutations of 
 
 ---
 
-### Phase 3: The ℤ witness closing the sharpness square [NOT STARTED]
+### Phase 3: The ℤ witness closing the sharpness square [COMPLETED]
 
 **Goal**: Witness the `[DenselyOrdered ↑D]` hypothesis of the positive theorem, so that both of its
 hypotheses are witnessed — the discipline `RigiditySharpness.lean` already follows for its own
 theorem's two hypotheses.
 
 **Tasks**:
-- [ ] Append to `FormalSystem/Semantics/TimeIndexedSharpness.lean` a second witness over
+- [x] Append to `FormalSystem/Semantics/TimeIndexedSharpness.lean` a second witness over
       `TemporalOrder.of ℤ`: `W = Bool`, relation
       `w = u ∨ (w = false ∧ u = true ∧ x < 0 ∧ 0 ≤ y) ∨ (the converse disjunct)`.
-- [ ] Prove its `Limit` (cheaply: `|s - t| < 1` forces `s = t` over ℤ) and that its switching
-      history is non-constant, so the frame is not static.
-- [ ] Add a docstring sentence and a comparison-table cross-reference: ℤ is Dedekind-complete but
+- [x] Prove its `Limit` (cheaply: `|s - t| < 1` forces `s = t` over ℤ) and that its switching
+      history is non-constant, so the frame is not static. *(deviation: altered — `omega` and a
+      flexible `simp` both failed on the carrier `↑(TemporalOrder.of ℤ)`, whose order and group
+      instances are bundle projections that neither tactic matches syntactically; `omega` is now
+      run on a `∀ a b : ℤ` helper and the history-membership proof is explicit `if_pos`/`if_neg`
+      case work, which also clears the `linter.flexible` warning that `--wfail` would promote)*
+- [x] Add a docstring sentence and a comparison-table cross-reference: ℤ is Dedekind-complete but
       not densely ordered, so density is the hypothesis this witness shows cannot be dropped, while
       the ℚ witness shows the same for Dedekind completeness.
 
@@ -285,25 +289,25 @@ README/table cell.
 
 ---
 
-### Phase 4: Replace the Rigidity.lean scope note with a cross-reference [NOT STARTED]
+### Phase 4: Replace the Rigidity.lean scope note with a cross-reference [COMPLETED]
 
 **Goal**: Discharge the standing `## Scope note: time-indexed frames` section in
 `Rigidity.lean`, replacing the "proved nowhere" note with a pointer to the two new modules.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Semantics/Correspondence/Rigidity.lean` immediately before editing
+- [x] Re-read `FormalSystem/Semantics/Correspondence/Rigidity.lean` immediately before editing
       (concurrent-sibling territory rule).
-- [ ] Replace the body of the `## Scope note: time-indexed frames` section with a cross-reference
+- [x] Replace the body of the `## Scope note: time-indexed frames` section with a cross-reference
       naming `FormalSystem.Semantics.TimeIndexed.constantHistories_of_lub` and
       `FormalSystem.Semantics.TimeIndexed.qSwitchFrame_not_constantHistories`, and the two module
       paths.
-- [ ] **Keep the phrase "force constant histories"**; do not upgrade it to "static". The note was
+- [x] **Keep the phrase "force constant histories"**; do not upgrade it to "static". The note was
       accurate as written and the positive theorem concludes `ConstantHistories`, not `Static`.
       Mention `static_of_lub_of_realized` as the conditional relation-level corollary and name its
       extra hypotheses.
-- [ ] Add no import to `Rigidity.lean` — the cross-reference is prose only, so no new edge enters
+- [x] Add no import to `Rigidity.lean` — the cross-reference is prose only, so no new edge enters
       the import graph.
-- [ ] Confirm no other change to the file: this is the one edit to `Rigidity.lean` the task permits.
+- [x] Confirm no other change to the file: this is the one edit to `Rigidity.lean` the task permits.
 
 **Timing**: 0.25 hours
 
@@ -323,7 +327,7 @@ README/table cell.
 
 ---
 
-### Phase 5: Gate wiring — aggregator, README, root, theorem index, C14 pins [NOT STARTED]
+### Phase 5: Gate wiring — aggregator, README, root, theorem index, C14 pins [IN PROGRESS]
 
 **Goal**: Wire both new modules into every gate the repository enforces, so the full check suite
 can run green.
