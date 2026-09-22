@@ -128,7 +128,7 @@
     {
       "project_number": 652,
       "project_name": "time_indexed_frames_dedekind_rigidity_boundary",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Define time-indexed task frames and prove the Dedekind-completeness rigidity boundary, with a compiled ℚ counterexample. CONTEXT: FormalSystem/Semantics/Correspondence/Rigidity.lean proves static_iff_uniformDwell and static_of_finite for duration-indexed frames (FrameOver D) under [DenselyOrdered D] [Archimedean D], and RigiditySharpness.lean shows neither hypothesis can be dropped (permissiveFrame_not_static over a discrete order; lexRatFrame_not_static over ℚ ×ₗ ℚ with lexRat_not_archimedean). Its module docstring carries a SCOPE NOTE, proved nowhere: 'for frames whose relation is indexed by times -- a different structure, not defined in this library -- the analogous rigidity boundary is Dedekind completeness of the time order rather than the Archimedean property: over ℝ, finitely many states plus Limit alone force constant histories by connectedness, while over ℚ a two-state time-indexed frame that switches across an irrational gap is not static.' This task turns that note into theorems. SOURCE MATERIAL, outside this repository, read before starting: /home/benjamin/Philosophy/Papers/PossibleWorlds/specs/archive/136_rewrite_mf_paragraph_frame_correspondence/reports/04_dense-correspondent-and-rigidity.md (the refinement and its scope limits) and reports/05_lean-verification-and-formalization-program.md (the elaborated TimeIndexed structure, written for Theorem A over ℤ-time). Re-verify every claim those reports make about this tree; modules have moved since they were written. DELIVERABLES. (1) A new module FormalSystem/Semantics/TimeIndexed.lean (siting may be revised by the planner) defining the time-indexed frame structure exactly as report 05 elaborates it -- states W, a linearly ordered time T, a relation indexed by pairs of times or by a time and a duration, with the Limit and Compositionality analogues -- and its notion of history and of Static. THIS STRUCTURE IS SHARED INFRASTRUCTURE: the MF frame-correspondence task (R4, Theorem A over ℤ-time) will consume it, so state it at the generality report 05 needs, name the fields as report 05 names them, and record in the module docstring that Theorem A is its other intended consumer. (2) The positive theorem: over a Dedekind-complete (conditionally complete) linear time order, a time-indexed frame with finitely many states satisfying Limit has only constant histories, i.e. is static; the proof is by connectedness of the order (a finite partition of a connected order into the level sets of a history has one nonempty part) -- state it at the hypothesis the proof actually uses (ConditionallyCompleteLinearOrder plus whatever density/unboundedness the connectedness argument needs; Mathlib supplies these), and do not claim more. (3) The compiled sharpness witness: a two-state time-indexed frame over ℚ that switches across an irrational cut (e.g. below and above √2), satisfying every field of the structure including Limit, that is not static -- showing Dedekind completeness cannot be dropped. (4) The comparison, in the docstring: why the duration-indexed boundary is Archimedean and the time-indexed one is Dedekind, with the ℚ ×ₗ ℚ and ℚ witnesses side by side. If the statement in the scope note turns out false or needs a stronger hypothesis, the compiled counterexample or corrected statement IS the deliverable -- report it, never weaken silently. OUT OF SCOPE: Theorem A itself, anything touching FormalSystem/Semantics/ShiftSet.lean, and any edit to Rigidity.lean beyond replacing the scope note with a cross-reference to the new module. CONSTRAINTS: the library root FormalSystem.lean is generated -- regenerate with `lake exe mk_all --lib FormalSystem`, never hand-edit; every new module is directly imported by the root, so the header linter applies under --wfail (module docstring first after the imports, no broad imports); add the module to its sibling aggregator and directory README and re-emit inventory blocks with --emit-inventory; theorem-index rows with C14 pins for the positive theorem and the witness; docstrings cite the manuscript by label or quotable phrase, never by line number, and carry no task numbers. ACCEPTANCE: lake build --wfail green; lean_verify on the positive theorem and the ℚ witness returns standard axioms only, no sorryAx; check-module-invariants.sh all checks pass; `lake exe mk_all --lib FormalSystem --check` exits 0.",
       "topic": "metalogic",
@@ -145,9 +145,16 @@
         "scripts/check-module-invariants.sh"
       ],
       "created": "2026-09-22T14:45:03Z",
-      "last_updated": "2026-09-22T19:10:19Z",
-      "session_id": "sess_1790104191_b13256_652",
-      "next_artifact_number": 2
+      "last_updated": "2026-09-22T19:27:19Z",
+      "session_id": "sess_1790104191_b13256",
+      "next_artifact_number": 3,
+      "artifacts": [
+        {
+          "path": "specs/652_time_indexed_frames_dedekind_rigidity_boundary/reports/01_time-indexed-dedekind-rigidity.md",
+          "type": "report",
+          "summary": "Time-indexed frame structure at report 05's field names, the Dedekind+dense positive theorem (constant histories, not relation-level Static -- correction reported), the compiled two-state Q witness switching across sqrt 2, the 2x2 comparison with the Archimedean duration-indexed boundary, siting/wiring/C14/C15 checklist. Compiled-green probes accompany it at probes/01_positive_theorem.lean and probes/02_rat_witness.lean."
+        }
+      ]
     },
     {
       "project_number": 651,
