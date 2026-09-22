@@ -188,7 +188,7 @@ green; a count outside 280-420 means a section was dropped or the docstring was 
 
 ---
 
-### Phase 2: Module 1 — invariances, class-validity theorems, non-reflection example [NOT STARTED]
+### Phase 2: Module 1 — invariances, class-validity theorems, non-reflection example [COMPLETED]
 
 **Goal**: Complete Module 1 with the three truth invariances, the three `*ValidOn_of_prod`
 lemmas, the three flagship `*ValidIn_iff_recurrenceFree` theorems, `frame_validity_not_reflected`,
@@ -196,36 +196,36 @@ and the projection morphism instance; scoped build green; `--no-build` invariant
 file's docstrings.
 
 **Tasks**:
-- [ ] Section `Frame` (continued): `truth_invariance`, `plus_invariance`, `star_invariance`
+- [x] Section `Frame` (continued): `truth_invariance`, `plus_invariance`, `star_invariance`
       (probe lines 328-432, verbatim; the model argument is `liftModel F M`).
-- [ ] `plusValidOn_of_prod`, `starValidOn_of_prod`, `validOn_of_prod` (probe lines 443-461),
+- [x] `plusValidOn_of_prod`, `starValidOn_of_prod`, `validOn_of_prod` (probe lines 443-461),
       docstring noting the converse fails (`frame_validity_not_reflected`).
-- [ ] `FrameOver.translationProductProj : HistMorphism F.translationProduct F` (probe `prodProj`,
+- [x] `FrameOver.translationProductProj : HistMorphism F.translationProduct F` (probe `prodProj`,
       lines 628-634) — the instance `HistoryMorphism.lean`'s docstring says "lives with the
       translation product". Name chosen over `translationProduct.proj` to avoid nesting a
       declaration under a `def`'s namespace and over `translationProduct_proj` because C26
       forbids non-trailing underscores in `def` names.
-- [ ] Section `ClassValidity`: `plusValidIn_iff_recurrenceFree`, `validIn_iff_recurrenceFree`,
+- [x] Section `ClassValidity`: `plusValidIn_iff_recurrenceFree`, `validIn_iff_recurrenceFree`,
       `starValidIn_iff_recurrenceFree` with RHS predicate `fun G => fc.Sat G ∧ G.RecurrenceFree`
       (exact signatures in `## Lean Challenge Statements`). Each docstring ends with the line
       `Paper: — (formalization-native; the paper defines no product of task frames)` in
       `HistoryMorphism.lean`'s exact style (C15's second assertion requires it once the
       theorem-index rows exist).
-- [ ] `frame_validity_not_reflected` (probe lines 509-536) with the atom inlined as
-      `⟨"p", none⟩` (no global `p₀`); docstring cites `sub:AbsoluteTime`'s *Abundance* clause by
+- [x] `frame_validity_not_reflected` (probe lines 509-536) with the atom inlined as
+      `⟨"p", none⟩` (no global `p₀`); *(deviation: altered — the two goal-changing `show`s became `change`, as in Phase 1)* docstring cites `sub:AbsoluteTime`'s *Abundance* clause by
       quotation, never `app:abundant` and never a line range.
-- [ ] `end FormalSystem.Semantics`; scoped build green with zero warnings.
-- [ ] `bash scripts/check-module-invariants.sh --no-build` — read the C9, C15, C23, C26 results
+- [x] `end FormalSystem.Semantics`; scoped build green with zero warnings.
+- [x] `bash scripts/check-module-invariants.sh --no-build` — read the C9, C15, C23, C26 results
       for the new file; fix any docstring finding at source. (C33/INV/C14 findings about the
       unwired module are expected at this point and are Phase 4's job — record them, do not
       chase them here.)
-- [ ] `grep -nE '[0-9]{3,4}' FormalSystem/Semantics/Frames/TranslationProduct.lean` — re-read
+- [x] `grep -nE '[0-9]{3,4}' FormalSystem/Semantics/Frames/TranslationProduct.lean` — re-read
       every hit.
-- [ ] `lean_verify` on `FormalSystem.Semantics.validIn_iff_recurrenceFree`,
+- [x] `lean_verify` on `FormalSystem.Semantics.validIn_iff_recurrenceFree`,
       `FormalSystem.Semantics.plusValidIn_iff_recurrenceFree`,
       `FormalSystem.Semantics.starValidIn_iff_recurrenceFree`: expect exactly
       `[propext, Classical.choice, Quot.sound]`, no sorry.
-- [ ] Commit: `task 645 phase 2: translation product — invariances and class validity`.
+- [x] Commit: `task 645 phase 2: translation product — invariances and class validity`.
 
 **Timing**: 1.5 hours
 

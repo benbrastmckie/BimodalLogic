@@ -412,6 +412,243 @@ theorem liftH_through (ρ : WorldHistory F.toTaskFrame) (a : F.WorldState × ↑
     (h : a.1 = ρ.state t) : (liftH F ρ (a.2 - t)).state t = a :=
   Prod.ext h.symm (by change a.2 - t + t = a.2; exact sub_add_cancel _ _)
 
+/-! ### Truth invariance under the projection, for `L`, `L⁺` and `L⋆` -/
+
+/-- **`L`: truth is preserved by the projection**, for lifted models. The `□` clause ranges over
+all histories of the product; each is the lift of its projection, so the quantifier transfers. -/
+theorem truth_invariance (M : TaskModel F.toTaskFrame) :
+    ∀ (φ : Formula) (τ' : WorldHistory F.translationProduct.toTaskFrame) (t : ↑D),
+      TruthAt (liftModel F M) τ' t φ ↔ TruthAt M (projH F τ') t φ := by
+  intro φ
+  induction φ with
+  | atom p => intro τ' t; exact Iff.rfl
+  | bot => intro τ' t; exact Iff.rfl
+  | imp a b ih1 ih2 => intro τ' t; exact imp_congr (ih1 τ' t) (ih2 τ' t)
+  | box a ih =>
+    intro τ' t
+    constructor
+    · intro h ρ
+      have := (ih (liftH F ρ 0) t).1 (h _)
+      rwa [projH_liftH] at this
+    · intro h σ'; exact (ih σ' t).2 (h _)
+  | untl a b ih1 ih2 =>
+    intro τ' t
+    exact exists_congr fun s => and_congr_right fun _ =>
+      and_congr (ih2 τ' s) (forall_congr' fun r => imp_congr_right fun _ =>
+        imp_congr_right fun _ => ih1 τ' r)
+  | snce a b ih1 ih2 =>
+    intro τ' t
+    exact exists_congr fun s => and_congr_right fun _ =>
+      and_congr (ih2 τ' s) (forall_congr' fun r => imp_congr_right fun _ =>
+        imp_congr_right fun _ => ih1 τ' r)
+
+/-- **`L⁺`: truth is preserved by the projection**, for lifted models. The `⊡` clause is where
+the clock matters: a history through the projected state lifts to a history through the product
+state itself, with the clock offset read off that state (`liftH_through`). -/
+theorem plus_invariance (M : TaskModel F.toTaskFrame) :
+    ∀ (φ : PlusFormula) (τ' : WorldHistory F.translationProduct.toTaskFrame) (t : ↑D),
+      PlusTruthAt (liftModel F M) τ' t φ ↔ PlusTruthAt M (projH F τ') t φ := by
+  intro φ
+  induction φ with
+  | atom p => intro τ' t; exact Iff.rfl
+  | bot => intro τ' t; exact Iff.rfl
+  | imp a b ih1 ih2 => intro τ' t; exact imp_congr (ih1 τ' t) (ih2 τ' t)
+  | box a ih =>
+    intro τ' t
+    constructor
+    · intro h ρ
+      have := (ih (liftH F ρ 0) t).1 (h _)
+      rwa [projH_liftH] at this
+    · intro h σ'; exact (ih σ' t).2 (h _)
+  | untl a b ih1 ih2 =>
+    intro τ' t
+    exact exists_congr fun s => and_congr_right fun _ =>
+      and_congr (ih2 τ' s) (forall_congr' fun r => imp_congr_right fun _ =>
+        imp_congr_right fun _ => ih1 τ' r)
+  | snce a b ih1 ih2 =>
+    intro τ' t
+    exact exists_congr fun s => and_congr_right fun _ =>
+      and_congr (ih2 τ' s) (forall_congr' fun r => imp_congr_right fun _ =>
+        imp_congr_right fun _ => ih1 τ' r)
+  | stab a ih =>
+    intro τ' t
+    constructor
+    · intro h ρ hρ
+      have hl := liftH_through F ρ (τ'.state t) t hρ
+      have := (ih _ t).1 (h _ hl.symm)
+      rwa [projH_liftH] at this
+    · intro h σ' he
+      exact (ih σ' t).2 (h _ (congrArg Prod.fst he))
+
+/-- **`L⋆`: truth is preserved by the projection, at every register vector**, for lifted
+models. The two register clauses are inert (`def:BLstar-semantics`): `timeStore` updates the
+vector and `timeRecall` moves the time, and neither touches the history. Recurrence is
+therefore invisible to `L⋆` as well. -/
+theorem star_invariance (M : TaskModel F.toTaskFrame) :
+    ∀ (φ : StarFormula) (τ' : WorldHistory F.translationProduct.toTaskFrame) (t : ↑D)
+      (v : ℕ → ↑D),
+      StarTruthAt (liftModel F M) τ' t v φ ↔ StarTruthAt M (projH F τ') t v φ := by
+  intro φ
+  induction φ with
+  | atom p => intro τ' t v; exact Iff.rfl
+  | bot => intro τ' t v; exact Iff.rfl
+  | imp a b ih1 ih2 => intro τ' t v; exact imp_congr (ih1 τ' t v) (ih2 τ' t v)
+  | box a ih =>
+    intro τ' t v
+    constructor
+    · intro h ρ
+      have := (ih (liftH F ρ 0) t v).1 (h _)
+      rwa [projH_liftH] at this
+    · intro h σ'; exact (ih σ' t v).2 (h _)
+  | untl a b ih1 ih2 =>
+    intro τ' t v
+    exact exists_congr fun s => and_congr_right fun _ =>
+      and_congr (ih2 τ' s v) (forall_congr' fun r => imp_congr_right fun _ =>
+        imp_congr_right fun _ => ih1 τ' r v)
+  | snce a b ih1 ih2 =>
+    intro τ' t v
+    exact exists_congr fun s => and_congr_right fun _ =>
+      and_congr (ih2 τ' s v) (forall_congr' fun r => imp_congr_right fun _ =>
+        imp_congr_right fun _ => ih1 τ' r v)
+  | stab a ih =>
+    intro τ' t v
+    constructor
+    · intro h ρ hρ
+      have hl := liftH_through F ρ (τ'.state t) t hρ
+      have := (ih _ t v).1 (h _ hl.symm)
+      rwa [projH_liftH] at this
+    · intro h σ' he
+      exact (ih σ' t v).2 (h _ (congrArg Prod.fst he))
+  | timeStore i a ih => intro τ' t v; exact ih τ' t _
+  | timeRecall i a ih => intro τ' t v; exact ih τ' _ v
+
+/-! ### Frame validity passes from the product to the base -/
+
+/-- Frame validity of an `L⁺` formula on the product implies frame validity on `F`: lift the
+model and the history. The converse fails — see `frame_validity_not_reflected`. -/
+theorem plusValidOn_of_prod (φ : PlusFormula)
+    (h : F.translationProduct.toTaskFrame.PlusValidOn φ) : F.toTaskFrame.PlusValidOn φ := by
+  intro M τ t
+  have := (plus_invariance F M φ (liftH F τ 0) t).1 (h _ _ _)
+  rwa [projH_liftH] at this
+
+/-- Frame validity of an `L⋆` formula on the product implies frame validity on `F`. The
+converse fails — see `frame_validity_not_reflected`. -/
+theorem starValidOn_of_prod (φ : StarFormula)
+    (h : F.translationProduct.toTaskFrame.StarValidOn φ) : F.toTaskFrame.StarValidOn φ := by
+  intro M τ t v
+  have := (star_invariance F M φ (liftH F τ 0) t v).1 (h _ _ _ _)
+  rwa [projH_liftH] at this
+
+/-- Frame validity of an `L` formula on the product implies frame validity on `F`. The
+converse fails — see `frame_validity_not_reflected`. -/
+theorem validOn_of_prod (φ : Formula)
+    (h : F.translationProduct.toTaskFrame.ValidOn φ) : F.toTaskFrame.ValidOn φ := by
+  intro M τ t
+  have := (truth_invariance F M φ (liftH F τ 0) t).1 (h _ _ _)
+  rwa [projH_liftH] at this
+
+/-- **The projection is a history-lifting morphism** — the intended instance of `HistMorphism`.
+`forth` is the first conjunct of the task relation, `lift` is `liftH_through`, `onto` is the
+lift at offset `0`. -/
+def FrameOver.translationProductProj : HistMorphism F.translationProduct F where
+  toFun := Prod.fst
+  forth := fun _ _ _ h => ((FrameOver.translationProduct_taskRel F _ _ _).1 h).1
+  lift := fun τ a t h => ⟨liftH F τ (a.2 - t), liftH_through F τ a t h, fun _ => rfl⟩
+  onto := fun τ => ⟨liftH F τ 0, fun _ => rfl⟩
+
 end Frame
+
+/-! ## Class validity equals validity over the recurrence-free members -/
+
+section ClassValidity
+
+/-- **At every frame class, `L⁺`-validity over the class equals `L⁺`-validity over its
+recurrence-free members.** The recurrence-free members are a subclass (⇒); every frame of the
+class is covered by its translation product, which is recurrence-free and lies in the class (⇐).
+The two object languages therefore cannot see recurrence at the level of a frame class — the
+class-level statement behind `HybridLanguage/`'s and `QuantLanguage/`'s frame-level invariances.
+
+Paper: — (formalization-native; the paper defines no product of task frames) -/
+theorem plusValidIn_iff_recurrenceFree (fc : FormalSystem.ProofSystem.FrameClass)
+    (φ : PlusFormula) :
+    PlusValidIn fc φ ↔ PlusValidOnFrames (fun G => fc.Sat G ∧ G.RecurrenceFree) φ := by
+  constructor
+  · intro h G hG; exact h G hG.1
+  · intro h G hG
+    have hp : G.toFibre.translationProduct.toTaskFrame.PlusValidOn φ :=
+      h _ ⟨(FrameOver.translationProduct_sat G.toFibre fc).2 hG,
+        translationProduct_recurrenceFree G.toFibre⟩
+    exact plusValidOn_of_prod G.toFibre φ hp
+
+/-- **At every frame class, `L`-validity over the class equals `L`-validity over its
+recurrence-free members.** See `plusValidIn_iff_recurrenceFree`.
+
+Paper: — (formalization-native; the paper defines no product of task frames) -/
+theorem validIn_iff_recurrenceFree (fc : FormalSystem.ProofSystem.FrameClass) (φ : Formula) :
+    ValidIn fc φ ↔ ValidOnFrames (fun G => fc.Sat G ∧ G.RecurrenceFree) φ := by
+  constructor
+  · intro h G hG; exact h G hG.1
+  · intro h G hG
+    have hp : G.toFibre.translationProduct.toTaskFrame.ValidOn φ :=
+      h _ ⟨(FrameOver.translationProduct_sat G.toFibre fc).2 hG,
+        translationProduct_recurrenceFree G.toFibre⟩
+    exact validOn_of_prod G.toFibre φ hp
+
+/-- **At every frame class, `L⋆`-validity over the class equals `L⋆`-validity over its
+recurrence-free members.** See `plusValidIn_iff_recurrenceFree`; the register clauses are inert
+(`star_invariance`).
+
+Paper: — (formalization-native; the paper defines no product of task frames) -/
+theorem starValidIn_iff_recurrenceFree (fc : FormalSystem.ProofSystem.FrameClass)
+    (φ : StarFormula) :
+    StarValidIn fc φ ↔ StarValidOnFrames (fun G => fc.Sat G ∧ G.RecurrenceFree) φ := by
+  constructor
+  · intro h G hG; exact h G hG.1
+  · intro h G hG
+    have hp : G.toFibre.translationProduct.toTaskFrame.StarValidOn φ :=
+      h _ ⟨(FrameOver.translationProduct_sat G.toFibre fc).2 hG,
+        translationProduct_recurrenceFree G.toFibre⟩
+    exact starValidOn_of_prod G.toFibre φ hp
+
+/-- **Frame-level validity is not reflected by the product.** On the one-state frame `p → Gp`
+is valid (every history is constant); on its product — the translation frame on `D` — the
+clock-dependent valuation `V (u, e) p := e ≤ 0` refutes it at time `0`. The product validates
+strictly fewer formulas than its base: the projection transports truth for lifted valuations
+only, and the extra valuations on `W × D` are exactly the manuscript's abundant two-dimensional
+models (`sub:AbsoluteTime`, *Abundance*: "for every `w ∈ W` and `x, y ∈ T`, there is some
+`w' ∈ W` that is time-shifted from `x` to `y`"). This is why the class-level theorems above
+quantify over a frame class and never argue frame by frame. -/
+theorem frame_validity_not_reflected {D : TemporalOrder} :
+    ∃ φ : PlusFormula,
+      (FrameOver.trivialFrame (D := ↑D)).toTaskFrame.PlusValidOn φ ∧
+      ¬ (FrameOver.trivialFrame (D := ↑D)).translationProduct.toTaskFrame.PlusValidOn φ := by
+  refine ⟨(PlusFormula.atom ⟨"p", none⟩).imp
+    (PlusFormula.allFuture (PlusFormula.atom ⟨"p", none⟩)), ?_, ?_⟩
+  · intro M τ t hp
+    rw [PlusTruth.allFuture_iff]
+    intro s _
+    haveI : Subsingleton (FrameOver.trivialFrame (D := ↑D)).WorldState :=
+      inferInstanceAs (Subsingleton Unit)
+    have : τ.state s = τ.state t := Subsingleton.elim _ _
+    change M.valuation (τ.state s) ⟨"p", none⟩
+    rw [this]; exact hp
+  · intro h
+    obtain ⟨x, hx⟩ := TaskFrame.exists_pos_of_nontrivial (D := ↑D)
+    let M : TaskModel (FrameOver.trivialFrame (D := ↑D)).translationProduct.toTaskFrame :=
+      ⟨fun a _ => a.2 ≤ 0⟩
+    let τ : WorldHistory (FrameOver.trivialFrame (D := ↑D)).translationProduct.toTaskFrame :=
+      liftH _ (WorldHistory.ofTotal _ (fun _ => ()) fun _ _ =>
+        FrameOver.trivialFrame_taskRel.mpr True.intro) 0
+    have h1 := h M τ 0
+    have hp : PlusTruthAt M τ 0 (PlusFormula.atom ⟨"p", none⟩) := by
+      change (0 : ↑D) + 0 ≤ 0
+      rw [add_zero]
+    have h2 := (PlusTruth.allFuture_iff _ _ _ _).1 (h1 hp) x hx
+    have h3 : (0 : ↑D) + x ≤ 0 := h2
+    rw [zero_add] at h3
+    exact absurd hx (not_lt.2 h3)
+
+end ClassValidity
 
 end FormalSystem.Semantics
