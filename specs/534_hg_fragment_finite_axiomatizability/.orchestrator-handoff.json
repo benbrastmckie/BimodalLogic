@@ -1,16 +1,19 @@
 {
-  "status": "researched",
-  "summary": "Positive verdict at all four classes: TMFrag_Base = TM- + (Sp/DD); TMFrag_Dense = TM-_d; TMFrag_ZTime = TM-_z + Z1; TMFrag_RTime = TM-_r, via Burgess 1984 s2.5-2.7, Venema 2001 Thm 3.3, and a universal-modality reduction (MF+TR+S5 make box universal). Paper's negative footnote is not supportable; machine-checkable now: soundness TM- + Sigma <= TMFrag and conditional completeness.",
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 19,
+  "summary": "Wrote a five-phase lean4 plan (8.5h) machine-checking the honestly obtainable half of the positive per-class verdict: MinusExt extension calculus and soundness engine, Sigma_fc soundness rows and strictness over TM- at Base/ZTime, conditional completeness via chain bundles with ChainComplete as an explicit never-asserted hypothesis, an L- deduction layer with the four box-globality derivations, and wiring/docs/C14 pins plus the reworded paper footnote hand-off.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/534_hg_fragment_finite_axiomatizability/reports/01_hg-fragment-axiomatizability.md",
-      "summary": "Positive verdict at all four classes: TMFrag_Base = TM- + (Sp/DD); TMFrag_Dense = TM-_d; TMFrag_ZTime = TM-_z + Z1; TMFrag_RTime = TM-_r, via Burgess 1984 s2.5-2.7, Venema 2001 Thm 3.3, and a universal-modality reduction (MF+TR+S5 make box universal). Paper's negative footnote is not supportable; machine-checkable now: soundness TM- + Sigma <= TMFrag and conditional completeness."
+      "type": "plan",
+      "path": "specs/534_hg_fragment_finite_axiomatizability/plans/01_hg-fragment-axiomatizability.md",
+      "summary": "Five-phase implementation plan with dependency waves [[1,4],[2],[3],[5]] and a Lean Challenge Statements block pinning 18 identifiers."
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 5,
   "blockers": [],
-  "dispatch_seq": 3,
-  "next_action_hint": "plan: soundness via TMMinusExt Hilbert system + conditional completeness; report positive verdict to paper so footnote is reworded"
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implement: Phases 1 and 4 are independent (wave 1); Phase 5 is the only phase touching shared files and runs the full gate."
 }

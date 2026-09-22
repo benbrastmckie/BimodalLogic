@@ -1,20 +1,31 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/534_hg_fragment_finite_axiomatizability/reports/01_hg-fragment-axiomatizability.md",
-      "summary": "Positive verdict at all four classes: TMFrag_Base = TM- + (Sp/DD); TMFrag_Dense = TM-_d; TMFrag_ZTime = TM-_z + Z1; TMFrag_RTime = TM-_r, via Burgess 1984 s2.5-2.7, Venema 2001 Thm 3.3, and a universal-modality reduction (MF+TR+S5 make box universal). Paper's negative footnote is not supportable; machine-checkable now: soundness TM- + Sigma <= TMFrag and conditional completeness."
+      "type": "plan",
+      "path": "specs/534_hg_fragment_finite_axiomatizability/plans/01_hg-fragment-axiomatizability.md",
+      "summary": "Five-phase lean4 plan: MinusExt extension calculus with soundness engine, per-class Sigma_fc soundness rows and strictness over TM-, conditional completeness via chain bundles with ChainComplete as an explicit never-asserted hypothesis, L- deduction layer with box-globality derivations, and wiring/docs/C14 pins plus the paper footnote hand-off."
     }
   ],
+  "next_steps": "Run /implement 534 to execute the plan",
   "metadata": {
-    "session_id": "sess_1789758953_24f7fc_534",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1790055313_734854_534",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "research",
-      "lean-research-agent"
-    ]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "task_number": 534,
+    "phase_count": 5,
+    "estimated_hours": 8.5,
+    "dependency_waves": [[1, 4], [2], [3], [5]]
+  },
+  "memory_candidates": [
+    {
+      "content": "Conditional completeness for an H/G-language Hilbert extension over task-frame semantics can be machine-checked in two lines without formalizing pure tense logic: define ChainValidIn fc phi (valid on every disjoint union of D-chains whose flow frame is in fc, box universal) and ChainComplete fc Ax := forall phi, ChainValidIn fc phi -> MinusExt fc Ax phi; then TMFrag fc phi -> ChainValidIn fc phi follows from tmFrag_sound plus the contrapositive of not_minusValidIn_of_not_chainSat (Conservativity/ChainBundleTruth.lean), and MinusExt fc Ax = TMFrag fc holds given ChainComplete. The whole classical content (Burgess 1984, Venema 2001, universal-modality reduction via MF+TR+S5) sits inside the hypothesis, which is never asserted, so the tree's forward-conservativity prohibition is respected. Same shape as tmMinusComplete_iff_forward's engine-as-hypothesis pattern.",
+      "category": "PATTERN",
+      "source_artifact": "specs/534_hg_fragment_finite_axiomatizability/plans/01_hg-fragment-axiomatizability.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["conditional-completeness", "chainSat", "universal-modality", "TMFrag", "MinusExt", "hypothesis-as-engine"]
+    }
+  ],
+  "dispatch_seq": 19
 }
