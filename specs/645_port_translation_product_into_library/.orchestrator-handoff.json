@@ -1,18 +1,19 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 21,
-  "summary": "Research for porting the translation-product proof device: the source probe recompiles sorry- and warning-free against the current tree with two import-path repairs (PlusLanguage/StarLanguage moved) and no linter suppression; HistMap/HistMorphism/TaskFrame.RecurrenceFree are already live in Semantics/HistoryMorphism.lean and must be imported, not re-declared; layering allows the single Semantics/Frames module to import StarLanguage.StarValidity (StateLocalTransfer precedent); Module 2 should be a separate Independence file; axiom profiles are pcq (prodRel_saturation propext+Quot.sound); docstring hazards identified (app:abundant not in the C15 record, specs/624_ path fails C9, liftM shadows core) with a declaration map, phase decomposition and the full wiring/gate checklist.",
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 22,
+  "summary": "Four-phase plan (5.5 h) to transcribe the compiled translation-product probe into FormalSystem/Semantics/Frames/TranslationProduct.lean and FormalSystem/Metalogic/Independence/TranslationProductCoarse.lean, then wire aggregators, READMEs, generated root/inventory, theorem-index rows and C14 pins, gated by lake build --wfail, mk_all --check, check-module-invariants.sh and lean_verify.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/645_port_translation_product_into_library/reports/01_port-translation-product.md",
-      "summary": "Port research: drift since the probe, live overlaps, layering, naming, docstring/C15/C9 constraints, declaration map, phase plan and gate checklist for the two translation-product modules."
+      "type": "plan",
+      "path": "specs/645_port_translation_product_into_library/plans/01_port-translation-product.md",
+      "summary": "Implementation plan: 4 phases in 3 waves (Module 1 in two phases, Module 2 in parallel with the second, then wiring and gates)."
     }
   ],
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 4,
   "blockers": [],
-  "next_action_hint": "Plan: four phases (Module 1 frame+histories; Module 1 invariances+class theorems; Module 2; wiring/regeneration/pins/gates) per report R7; decide D3 (optional translationProduct.proj) and D4 (no_recurrence naming); copy probe 02 to specs/evidence/ for a C9-safe docstring citation (R5).",
-  "git_checkpoint": null
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implement for task 645 starting at Phase 1 (Module 1 header, docstring, relation, frame, histories)."
 }
