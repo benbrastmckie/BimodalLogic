@@ -5,8 +5,8 @@
 **Completed**: 2026-09-22T16:40:00Z
 **Effort**: ~25 minutes of agent time; three compiled probes (568 lines, 26 declarations, sorry-free), one report
 **Dependencies**: The translation-product port (`FormalSystem/Semantics/Frames/TranslationProduct.lean`, delivered) and, read as established, the hybrid/quantifier port (`FormalSystem/HybridLanguage/`, `FormalSystem/QuantLanguage/`, `Semantics/HistoryMorphism.lean`, delivered by task 628 after the originating report was written). Task 624 is related, not blocking.
-**Sources/Inputs**: - Library (read, not modified): `Semantics/Frames/TranslationProduct.lean` (`prodRel_*`, `liftH`/`projH`, `liftH_through`, `clock_eq`, `liftH_projH`, `no_recurrence`, `no_transposition`, `truth_invariance`, `plus_invariance`, `star_invariance`, `*ValidOn_of_prod`, `*ValidIn_iff_recurrenceFree`, `frame_validity_not_reflected`, `FrameOver.translationProductProj`), `Semantics/HistoryMorphism.lean` (`HistMap`, `HistMorphism`, `TaskFrame.RecurrenceFree`, `exists_sat_not_recurrenceFree`), `HybridLanguage/{Formula,HybridTruth,HybridValidity,HybridInvariance,HybridRecurrence,HybridTransposition}.lean` and `README.md`, `QuantLanguage/QuantRecurrence.lean` and `README.md`, `OpenLanguage/{OpenTruth,OpenValidity,OpenClasses}.lean` and `README.md`, `StarLanguage/StarTruth.lean`, `PlusLanguage/{PlusLimitClosure,PlusPasting}.lean`, `Metalogic/Independence/{README.md,StateSetTruth,OrderTransfer,DeterminismUndefinable,TranslationProductCoarse,LimitClosureCountermodel,LimitClosureFrame}.lean`, `Syntax/Formula.lean`, `Semantics/Truth.lean`. - Prior reports (read as established, not redone): `specs/624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md`; `specs/628_expressive_extensions_recurrence_visibility/reports/01_expressive-extensions-recurrence.md` and `summaries/01_expressive-extensions-recurrence-summary.md`; `specs/559_.../reports/04_semantics-first-task-frames.md` (for `LC_n`, cited by name only) and `probes/03_morphisms-clock-rule-lc-schema.lean` (`lcN`, a ℤ-mirror definition). - Manuscript `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`, read at `sub:WorldStates`, `sub:AbsoluteTime`, `sec:Construction`, `sub:RestrictedModalities`, `sub:Extension`, `sub:OpenFuture`, `sub:DynamicalSystems`, `sub:Conclusion`, `app:TaskSemantics` (`def:frame`, `lem:nullity`), `def:BLstar-semantics`, `app:drift`, `cor:no-characterization`. Cited below by label or quotable phrase only. - Literature, held in `~/Projects/Literature/sources/`: Venema 2001 (`venema_2001/sec03_since-and-until.md`, Theorem 4.1 (Kamp)); Venema 1993 (`venema_1993_since/sec01_...md`, verified conversion, the IR-rule discussion); Blackburn-de Rijke-Venema 2002 (`blackburn_2002/ch07_since-until-hybrid.md`, unverified scan, §7.3 p. 437). Not held, labelled *recalled* where used: Areces-Blackburn-Marx 2000, Blackburn & ten Cate 2006, ten Cate 2006, Kamp 1968's original (held as `kamp_1968_tense-logic-linear-order` but not re-read; the Venema statement is used). - Probes written this round (all sorry-free, `lake env lean` exit 0): `probes/01_invariant-languages-blind.lean`, `probes/02_nominals-break-product.lean`, `probes/03_limit-closure-device.lean`.
-**Artifacts**: - `specs/653_what_sees_recurrence_language_extensions/reports/01_what-sees-recurrence.md` (this report) - `specs/653_what_sees_recurrence_language_extensions/probes/01_invariant-languages-blind.lean` - `specs/653_what_sees_recurrence_language_extensions/probes/02_nominals-break-product.lean` - `specs/653_what_sees_recurrence_language_extensions/probes/03_limit-closure-device.lean`
+**Sources/Inputs**: - Library (read, not modified): `Semantics/Frames/TranslationProduct.lean` (`prodRel_*`, `liftH`/`projH`, `liftH_through`, `clock_eq`, `liftH_projH`, `no_recurrence`, `no_transposition`, `truth_invariance`, `plus_invariance`, `star_invariance`, `*ValidOn_of_prod`, `*ValidIn_iff_recurrenceFree`, `frame_validity_not_reflected`, `FrameOver.translationProductProj`), `Semantics/HistoryMorphism.lean` (`HistMap`, `HistMorphism`, `TaskFrame.RecurrenceFree`, `exists_sat_not_recurrenceFree`), `HybridLanguage/{Formula,HybridTruth,HybridValidity,HybridInvariance,HybridRecurrence,HybridTransposition}.lean` and `README.md`, `QuantLanguage/QuantRecurrence.lean` and `README.md`, `OpenLanguage/{OpenTruth,OpenValidity,OpenClasses}.lean` and `README.md`, `StarLanguage/StarTruth.lean`, `PlusLanguage/{PlusLimitClosure,PlusPasting}.lean`, `Metalogic/Independence/{README.md,StateSetTruth,OrderTransfer,DeterminismUndefinable,TranslationProductCoarse,LimitClosureCountermodel,LimitClosureFrame}.lean`, `Syntax/Formula.lean`, `Semantics/Truth.lean`. - Prior reports (read as established, not redone): `specs/624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md`; `specs/628_expressive_extensions_recurrence_visibility/reports/01_expressive-extensions-recurrence.md` and `summaries/01_expressive-extensions-recurrence-summary.md`; `specs/559_.../reports/04_semantics-first-task-frames.md` (for `LC_n`, cited by name only) and `probes/03_morphisms-clock-rule-lc-schema.lean` (`lcN`, a ℤ-mirror definition). - Manuscript `/home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`, read at `sub:WorldStates`, `sub:AbsoluteTime`, `sec:Construction`, `sub:RestrictedModalities`, `sub:Extension`, `sub:OpenFuture`, `sub:DynamicalSystems`, `sub:Conclusion`, `app:TaskSemantics` (`def:frame`, `lem:nullity`), `def:BLstar-semantics`, `app:drift`, `cor:no-characterization`. Cited below by label or quotable phrase only. - Literature, held in `~/Projects/Literature/sources/`: Venema 2001 (`venema_2001/sec03_since-and-until.md`, Theorem 4.1 (Kamp)); Venema 1993 (`venema_1993_since/sec01_...md`, verified conversion, the IR-rule discussion); Blackburn-de Rijke-Venema 2002 (`blackburn_2002/ch07_since-until-hybrid.md`, unverified scan, §7.3 p. 437). Not held, labelled *recalled* where used: Areces-Blackburn-Marx 2000, Blackburn & ten Cate 2006, ten Cate 2006, Kamp 1968's original (held as `kamp_1968_tense-logic-linear-order` but not re-read; the Venema statement is used). - Probes written this round (all sorry-free, `lake env lean` exit 0): `probes/01_invariant-languages-blind.lean`, `probes/02_nominals-break-product.lean`, `probes/03_limit-closure-device.lean`; written at implementation, same standard: `probes/04_quantified-transposition.lean`.
+**Artifacts**: - `specs/653_what_sees_recurrence_language_extensions/reports/01_what-sees-recurrence.md` (this report) - `specs/653_what_sees_recurrence_language_extensions/probes/01_invariant-languages-blind.lean` - `specs/653_what_sees_recurrence_language_extensions/probes/02_nominals-break-product.lean` - `specs/653_what_sees_recurrence_language_extensions/probes/03_limit-closure-device.lean` - `specs/653_what_sees_recurrence_language_extensions/probes/04_quantified-transposition.lean` (added at implementation)
 **Standards**: report-format.md, subagent-return.md
 
 ## Executive Summary
@@ -65,9 +65,10 @@
   (`plusValidIn_iff_recurrenceFree` and `recF_defines`). Draft text in §5.
 - **Recommendations**: (i) no new extension needs study for *visibility* — the hybrid state
   language (`HybridLanguage/`) is the answer and should keep that name; the one worthwhile
-  follow-up is a small port of probes 01-02 (~350 lines: the meta-theorem, the stability
+  follow-up is a small port of probes 01-02 and 04 (~400 lines: the meta-theorem, the stability
   bijection, L^▷ invariance, the `[≡]` class corollary, `hsatSet` and
-  `deterministic_not_hybridDefinable`); (ii) yes, the manuscript merits the recurrence remark;
+  `deterministic_not_hybridDefinable`, and `qTrans_defines`); (ii) yes, the manuscript merits
+  the recurrence remark;
   (iii) the completeness research may WLOG use clocked canonical frames for every language
   *without* state nominals, and must not once they enter; nominals help neither with closure
   nor with determinism.
@@ -415,7 +416,7 @@ L + `∀p` are added because the tree has them.
 | Feature | tense-only (U/S, no □) | L | L⁺ (+⊡) | L^▷ (+▷,◁) | L⋆ (+time registers) | L⁺ + [≡] | L⁺ + state nominals / ↓ | L + ∀p (standard) |
 |---|---|---|---|---|---|---|---|---|
 | Recurrence | invisible (`boxFree_histMap_invariance`) | invisible (`validIn_iff_recurrenceFree`) | invisible (`plusValidIn_iff_recurrenceFree`) | invisible (`openValidIn_iff_recurrenceFree`) | invisible (`starValidIn_iff_recurrenceFree`) | invisible (`regFreeValidIn_iff_recurrenceFree`) | **visible** (`recF_defines`, `bindRec_defines`; `recF_separates`) | **visible** (`qRec_defines`, `standard_not_invariant`) |
-| Transposition | invisible (same) | invisible (same + `no_transposition`) | invisible | invisible | invisible | invisible | **visible** (`transF_defines`, `transF_refuted_distinct`) | visible (paper: two quantified atoms; UNVERIFIED) |
+| Transposition | invisible (same) | invisible (same + `no_transposition`) | invisible | invisible | invisible | invisible | **visible** (`transF_defines`, `transF_refuted_distinct`) | **visible** (`qTrans_defines`, probe 04) |
 | Limit beyond Nullity | invisible | invisible | invisible | invisible | invisible | invisible | invisible | invisible |
 | Saturation (vs. Comp+Serial+Limit) | OPEN | OPEN | OPEN | OPEN | OPEN | OPEN | OPEN | OPEN |
 | Determinism | invisible | invisible (`cor:no-characterization`) | invisible (`deterministic_not_plusDefinable`) | UNVERIFIED (expected invisible: `▷`/`◁` classes are state-local on a flow) | **visible** (`deterministic_starDefinable`, `star_discriminates_where_plus_cannot`) | invisible (`fzero_hybridValidOn_iff_f1`) | invisible (`deterministic_not_hybridDefinable`) | UNVERIFIED (expected visible via `Atom(p)` plus next-step patterns over ZTime only) |
@@ -439,7 +440,8 @@ in general, so this cell is genuinely UNVERIFIED rather than routine.
    *visibility*: the question is closed by `HybridLanguage/` (state registers = state nominals =
    the binder), and that component's name and README already carry the quotient caveat. Keep the
    name "hybrid state language"; do not open a "state nominal" task separately. The one
-   worthwhile follow-up is a **port of probes 01-02** (~350 lines, no new axioms, one round):
+   worthwhile follow-up is a **port of probes 01-02 and 04** (~400 lines, no new axioms, one
+   round):
    - `Semantics/Frames/TranslationProduct.lean`: `classValid_iff_recurrenceFree_of_prodInvariant`
      (then restate the three `*ValidIn_iff_recurrenceFree` as instances), `stabClass_lift_unique`,
      `projH_mem_stabClass`;
@@ -453,7 +455,9 @@ in general, so this cell is genuinely UNVERIFIED rather than routine.
    - `Semantics/Truth.lean` or a small `Semantics/TenseFragment.lean`: `BoxFree`,
      `boxFree_histMap_invariance`;
    - `Metalogic/Independence/TranslationProductCoarse.lean`: `blc_cRefuted_product`,
-     `liftK_eK_pasteClosed` as the worked instance.
+     `liftK_eK_pasteClosed` as the worked instance;
+   - `QuantLanguage/QuantRecurrence.lean`: `qTrans`, `qTrans_valid`, `qTrans_defines` (probe
+     04, added at implementation).
    Probe 03's two lines can go straight in. Every declaration compiles against the live tree.
 2. **(ii) Manuscript.** Yes: the single remark of §5.3, at `sub:Conclusion` after the unfolding
    sentence, citing the repository for both halves. Optionally one clause in `sub:Extension`
@@ -552,6 +556,14 @@ Imports `Semantics.Frames.TranslationProduct`, `HybridLanguage.{HybridRecurrence
 `probes/03_limit-closure-device.lean` (44 lines): `blc_cRefuted_product`, `liftK_eK_pasteClosed`.
 Imports `Metalogic.Independence.{TranslationProductCoarse,LimitClosureCountermodel}`.
 
+`probes/04_quantified-transposition.lean` (94 lines; written at implementation): `qTrans` (an
+`abbrev`, no axioms), `qTrans_valid`, `qTrans_defines` — both theorems measured
+`[propext, Classical.choice, Quot.sound]`, the choice entering through
+`PartialHistory.occurrence` (`isAtom_iff`) and `paste` (`recurrenceFree_not_transposed`); no
+`sorryAx`. Imports `QuantLanguage.QuantRecurrence`, `HybridLanguage.HybridTransposition`.
+`lake env lean` exit 0 with no output against the `.olean`s rebuilt in the Phase 1
+re-verification.
+
 Axiom profiles (`#print axioms` on scratch copies): `boxFree_histMap_invariance` and
 `hybridTruthAt_iff_mem_hsatSet` — `[propext]`; every other theorem listed —
 `[propext, Classical.choice, Quot.sound]`, the choice entering through the landed
@@ -585,7 +597,12 @@ per declaration; `sorryAx` appears nowhere. Per probe:
 3. Determinism under L^▷ (§6 table; not routine, see the row note).
 4. Determinism under standard `∀p` (§6 table; 628 §4.2's relativisation sketch).
 5. Limit-beyond-Nullity for the nominal and quantifier columns via `zeroFix` (§6 row note).
-6. The quantified transposition sentence (§6; 628 Appendix B item 4, unchanged).
+6. ~~The quantified transposition sentence (§6; 628 Appendix B item 4, unchanged).~~ **Closed at
+   implementation by probe 04**: `qTrans_defines` — `∀p ∀q (Atom_r(p) → Atom_r(q) →
+   ¬(E(p ∧ F q) ∧ E(q ∧ F p)))` is valid on a frame iff the frame is recurrence-free — is now
+   compiled, sorry-free, against the live tree; the `←` direction is
+   `recurrenceFree_not_transposed` reused verbatim, the `→` direction instantiates both
+   quantifiers at the singleton of a recurring state.
 7. Every first-order temporal operator is blind over ℤ/ℝ-time (§3.2; from Kamp's theorem, held
    as Venema 2001 Thm 4.1, plus 3.1's mechanism).
 8. Decidability/axiomatizability of TM⁺ + state nominals at each tag (628 §4, unchanged).

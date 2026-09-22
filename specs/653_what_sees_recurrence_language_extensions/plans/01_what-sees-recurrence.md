@@ -114,7 +114,7 @@ proposed for `FormalSystem/`"); every build runs through
 only after that guarded build; the manuscript is cited by label or quotable phrase; commits are
 `task 653 phase {P}: {name}` with an explicit file list.
 
-### Phase 1: Re-verify probes 01–03 against the live tree and pin their axiom profiles [IN PROGRESS]
+### Phase 1: Re-verify probes 01–03 against the live tree and pin their axiom profiles [COMPLETED]
 
 **Goal**: Turn the research round's compile claim into evidence that holds against fresh
 `.olean`s, and record the measured axiom profiles in the report.
@@ -176,21 +176,23 @@ in the Appendix A line, not silently reconciled.
 
 ---
 
-### Phase 2: Probe 04 — the quantified transposition sentence defines recurrence-freeness [NOT STARTED]
+### Phase 2: Probe 04 — the quantified transposition sentence defines recurrence-freeness [IN PROGRESS]
 
 **Goal**: Close UNVERIFIED item 6: under standard propositional quantification, the transposition
 sentence built from two quantified state-naming letters is valid on a frame iff the frame is
 recurrence-free.
 
 **Tasks**:
-- [ ] Create `probes/04_quantified-transposition.lean` with the research round's header form,
+- [x] Create `probes/04_quantified-transposition.lean` with the research round's header form,
   imports `FormalSystem.QuantLanguage.QuantRecurrence` and
   `FormalSystem.HybridLanguage.HybridTransposition`, `namespace Probe653`, and `open
   FormalSystem.Syntax FormalSystem.Semantics FormalSystem.QuantLanguage` (add
   `FormalSystem.QuantLanguage.QuantTruth` and `FormalSystem.HybridLanguage` as the proofs need).
-- [ ] `qTrans p q r` exactly as the challenge block below spells it (the `abbrev` body is part of
-  the statement; do not re-associate the connectives).
-- [ ] `qTrans_valid (hG : G.RecurrenceFree) (M) (τ) (t) (hpq hpr hqr) : QuantTruthAt M τ t
+  *(completed: both extra `open`s were needed)*
+- [x] `qTrans p q r` exactly as the challenge block below spells it (the `abbrev` body is part of
+  the statement; do not re-associate the connectives). *(completed: `diff` against the challenge
+  block is empty)*
+- [x] `qTrans_valid (hG : G.RecurrenceFree) (M) (τ) (t) (hpq hpr hqr) : QuantTruthAt M τ t
   Set.univ (qTrans p q r)`: after `all_iff` twice, `imp_iff`, `isAtom_iff _ _ _ hpr` and
   `isAtom_iff _ _ _ hqr` (the updated model's `p`- and `q`-valuations are read through
   `TaskModel.updateAtom_valuation_self` / `updateAtom_valuation_of_ne _ hpq`, as `qRec_valid`
@@ -199,22 +201,26 @@ recurrence-free.
   `ρ₁.state s₁ = w_p`, `ρ₁.state t₁ = w_q`; `E(q ∧ F p)` gives `ρ₂`, `s₂ < t₂` with
   `ρ₂.state s₂ = w_q`, `ρ₂.state t₂ = w_p`; close with
   `recurrenceFree_not_transposed hG ρ₁ ρ₂ h₁ h₂ hi hj` where `hi : ρ₁.state s₁ = ρ₂.state t₂`
-  and `hj : ρ₁.state t₁ = ρ₂.state s₂` are the two uniqueness chains.
-- [ ] `qTrans_defines` with the pinned signature. `←` is `qTrans_valid`. `→` mirrors
+  and `hj : ρ₁.state t₁ = ρ₂.state s₂` are the two uniqueness chains. *(completed exactly as
+  written; the three inequalities were exactly the hypotheses consumed — scope hypothesis
+  confirmed, no fourth atom needed)*
+- [x] `qTrans_defines` with the pinned signature. `←` is `qTrans_valid`. `→` mirrors
   `qRec_defines`: `by_contra`, obtain `τ`, `s ≠ t`, `τ.state s = τ.state t`; specialise at the
   model `⟨fun _ _ => False⟩`, instantiate both quantifiers at `{τ.state s}`; discharge the two
   `Atom` premises by `⟨τ.state s, Set.mem_singleton _, fun ρ u hu => hu⟩`; refute the negation
   by exhibiting both existentials on `τ` at `min`/`max` of `s, t` via `lt_or_gt_of_ne` (both
   named states are the same state — a same-state transposition, exactly as
-  `transF_refuted_of_recur`).
-- [ ] Docstrings: the sentence is the quantified form of `transF` with `Atom(·)` manufacturing the
+  `transF_refuted_of_recur`). *(completed; signature `diff` against the challenge block is empty)*
+- [x] Docstrings: the sentence is the quantified form of `transF` with `Atom(·)` manufacturing the
   nominal (report §2.1, `HybridRecurrence.lean`'s "minimal resource"); the `←` direction is the
   hybrid frame-level core reused verbatim, which is the content of "state nominals and standard
-  quantifiers see the same features". No manuscript line numbers.
-- [ ] Axiom profile on a scratch copy: `#print axioms Probe653.qTrans_defines`; record the
+  quantifiers see the same features". No manuscript line numbers. *(completed)*
+- [x] Axiom profile on a scratch copy: `#print axioms Probe653.qTrans_defines`; record the
   measured profile (expected `[propext, Classical.choice, Quot.sound]` through
   `PartialHistory.occurrence` and `paste`; record what is measured, not what is expected).
-- [ ] Report edits in `reports/01_what-sees-recurrence.md`: (a) header `Artifacts` line and
+  *(completed: measured `[propext, Classical.choice, Quot.sound]` for both theorems, `qTrans`
+  none; recorded in Appendix A)*
+- [x] Report edits in `reports/01_what-sees-recurrence.md`: (a) header `Artifacts` line and
   `Sources/Inputs` probe list gain probe 04; (b) §6 table cell Transposition × "L + ∀p
   (standard)" becomes "**visible** (`qTrans_defines`, probe 04)"; (c) Appendix A gains a probe 04
   entry with line count, declarations and measured profile; (d) Appendix B item 6 is marked
@@ -222,8 +228,12 @@ recurrence-free.
   list gains "`QuantLanguage/QuantRecurrence.lean`: `qTrans`, `qTrans_valid`, `qTrans_defines`"
   and its line estimate becomes "~400 lines"; (f) the §6 row note "the quantified transposition
   sentence (§6; 628 Appendix B item 4, unchanged)" is updated to say it is now compiled.
-- [ ] Commit: `task 653 phase 2: quantified transposition probe`, staging the new probe and the
-  report.
+  *(completed; (d) and (f) are the same sentence — Appendix B item 6 is the only occurrence of
+  that phrase — so one edit covers both; the Executive Summary's "~350 lines" mention was also
+  updated to keep it consistent with Recommendation 1 — deviation: altered, one extra
+  consistency edit)*
+- [x] Commit: `task 653 phase 2: quantified transposition probe`, staging the new probe and the
+  report. *(completed)*
 
 **Timing**: 1.5 hours
 
