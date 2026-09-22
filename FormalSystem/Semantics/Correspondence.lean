@@ -10,6 +10,7 @@ import FormalSystem.Semantics.Correspondence.FwdRec
 import FormalSystem.Semantics.Correspondence.DurationFrames
 import FormalSystem.Semantics.Correspondence.FwdRecPeriodicity
 import FormalSystem.Semantics.Correspondence.FwdRecBridge
+import FormalSystem.Semantics.Correspondence.Rigidity
 
 /-!
 # `FormalSystem.Semantics.Correspondence` — the frame-class Galois layer
@@ -28,4 +29,6 @@ Aggregator for `Semantics/Correspondence/`. See `Semantics/Correspondence/README
 - `Correspondence.FwdRecPeriodicity` — walks, minimal cycles, and per-history periodicity
 - `Correspondence.FwdRecBridge` — the `ℤ` bridge: a task frame over `ℤ` is a digraph and its
   histories are walks
+- `Correspondence.Rigidity` — over a dense Archimedean order a task frame is static iff it has a
+  uniform dwell time, so every finite-carrier frame over such an order is static
 -/
