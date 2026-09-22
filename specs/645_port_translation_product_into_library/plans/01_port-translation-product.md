@@ -260,34 +260,34 @@ was dropped.
 
 ---
 
-### Phase 3: Module 2 — coarse-model lifting [NOT STARTED]
+### Phase 3: Module 2 — coarse-model lifting [COMPLETED]
 
 **Goal**: Create `FormalSystem/Metalogic/Independence/TranslationProductCoarse.lean` carrying
 `liftK`, `c_invariance`, `pasteClosed_liftK`, `pasteClosed_of_liftK`, `c_refuted_lift` (probe
 lines 702-775), building green as a scoped module.
 
 **Tasks**:
-- [ ] Header in `Standard.lean`'s shape; imports
+- [x] Header in `Standard.lean`'s shape; imports
       `FormalSystem.Semantics.Frames.TranslationProduct` and
       `FormalSystem.Metalogic.Independence.PastedCoarseModels`; module docstring first; then
       `namespace FormalSystem.Metalogic.Independence`, `open FormalSystem.Syntax
       FormalSystem.PlusLanguage FormalSystem.Semantics CTruth` (as `PastedCoarseModels.lean`
       does), `variable {D : TemporalOrder} (F : FrameOver D)`.
-- [ ] Module docstring: what transfers (coarse refutations and paste-closure) and in which
+- [x] Module docstring: what transfers (coarse refutations and paste-closure) and in which
       direction; the standing "proof device, never an intended model" caveat in one sentence with
       a pointer to `Semantics/Frames/TranslationProduct.lean` for the full statement; why this is
       a separate file from `PastedCoarseModels.lean` (that module is upstream of
       `LimitClosureCountermodel` and `PlusIncompleteness`, is written over a bare `TaskFrame`,
       and must not acquire `StarLanguage.StarValidity` in its closure); `Paper: —` line.
-- [ ] `liftK`, `c_invariance`, `pasteClosed_liftK`, `pasteClosed_of_liftK`, `c_refuted_lift`
+- [x] `liftK`, `c_invariance`, `pasteClosed_liftK`, `pasteClosed_of_liftK`, `c_refuted_lift`
       verbatim, with `prodFrame` -> `F.translationProduct`, `liftM` -> `liftModel`.
-- [ ] Docstrings with durable anchors only (same rule as Phases 1-2).
-- [ ] Scoped build: `... -- build FormalSystem.Metalogic.Independence.TranslationProductCoarse`,
+- [x] Docstrings with durable anchors only (same rule as Phases 1-2).
+- [x] Scoped build: `... -- build FormalSystem.Metalogic.Independence.TranslationProductCoarse`,
       green, zero warnings.
-- [ ] `lean_verify` on `FormalSystem.Metalogic.Independence.c_refuted_lift`: expect
+- [x] `lean_verify` on `FormalSystem.Metalogic.Independence.c_refuted_lift`: expect
       `[propext, Classical.choice, Quot.sound]`, no sorry.
-- [ ] `grep -nE '[0-9]{3,4}'` over the new file; read every hit.
-- [ ] Commit: `task 645 phase 3: translation product — coarse-model lifting`.
+- [x] `grep -nE '[0-9]{3,4}'` over the new file; read every hit.
+- [x] Commit: `task 645 phase 3: translation product — coarse-model lifting`.
 
 **Timing**: 1 hour
 
