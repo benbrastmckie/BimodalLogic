@@ -1,39 +1,76 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-22T17:06:58Z",
+  "dispatch_seq": 8,
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "vacuous_note": "One pre-existing repo-wide grep hit (FormalSystem/Examples/TemporalStructures.lean int_domain_universal := trivial, a genuine proof of a universal domain predicate) is untouched by this task; 0 in every file this task touched.",
+    "axiom_count": 14,
+    "axiom_baseline": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/653_what_sees_recurrence_language_extensions/plans/01_what-sees-recurrence.md",
-      "summary": "Three-phase, 3-hour plan confined to the task directory: live-tree re-verification of probes 01-03 with axiom profiles, a fourth probe closing the quantified transposition sentence (qTrans_defines, statement type-checked at plan time), and a hand-off summary drafting the follow-up port task, the manuscript remark and the completeness notes."
+      "type": "summary",
+      "path": "specs/653_what_sees_recurrence_language_extensions/summaries/01_what-sees-recurrence-summary.md",
+      "summary": "Re-verified probes 01-03 with pinned axiom profiles, closed UNVERIFIED item 6 with probe 04 (qTrans_defines), and wrote the three hand-offs (port task description, manuscript remark, completeness take-aways)."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/653_what_sees_recurrence_language_extensions/probes/04_quantified-transposition.lean",
+      "summary": "Sorry-free probe: the quantified transposition sentence is valid on a frame iff the frame is recurrence-free (qTrans, qTrans_valid, qTrans_defines)."
+    },
+    {
+      "type": "report",
+      "path": "specs/653_what_sees_recurrence_language_extensions/reports/01_what-sees-recurrence.md",
+      "summary": "Research report updated at implementation: Appendix A re-verification and measured profiles, probe 04 entry, table cell and Appendix B item 6 closed, Recommendation 1 port list extended."
     }
   ],
-  "next_steps": "Run /implement 653 to execute the plan",
-  "dispatch_seq": 5,
-  "user_decision": {
-    "question": "The research recommends two actions this task's contract forbids it from taking (no FormalSystem/ or manuscript edits): a ~400-line port of probes 01, 02 and 04 into the library, and a one-paragraph remark in the manuscript at sub:Conclusion. Should the port be opened as a follow-up lean4 task from the description Phase 3 drafts in the summary?",
-    "options": [
-      "Open the follow-up port task from the drafted description once this task completes; apply the manuscript remark by hand",
-      "Leave both recommendations in the summary; open no follow-up task"
-    ],
-    "recommended": "Open the follow-up port task from the drafted description once this task completes; apply the manuscript remark by hand",
-    "blocking": false
+  "completion_data": {
+    "completion_summary": "All four probes compile sorry-free against source-rebuilt .oleans with measured axiom profiles recorded; the quantified transposition sentence now defines recurrence-freeness (qTrans_defines, byte-identical to the plan's challenge signature). The summary carries the ready-to-paste follow-up port task description, the manuscript remark's verbatim text and placement, and the completeness take-aways; nothing outside the task directory was changed.",
+    "roadmap_items": []
   },
+  "modified_files": [
+    "specs/653_what_sees_recurrence_language_extensions/probes/04_quantified-transposition.lean",
+    "specs/653_what_sees_recurrence_language_extensions/reports/01_what-sees-recurrence.md",
+    "specs/653_what_sees_recurrence_language_extensions/plans/01_what-sees-recurrence.md",
+    "specs/653_what_sees_recurrence_language_extensions/summaries/01_what-sees-recurrence-summary.md",
+    "specs/653_what_sees_recurrence_language_extensions/handoffs/phase-1-handoff-20260922T171000Z.md",
+    "specs/653_what_sees_recurrence_language_extensions/handoffs/phase-2-handoff-20260922T171300Z.md"
+  ],
   "memory_candidates": [
     {
-      "content": "When /orchestrate dispatches a plan for a verdict-first RESEARCH task whose description forbids library changes (file_scope confined to specs/{NNN}/probes and reports), the plan stays inside the task directory: (1) re-verify the research probes against source-rebuilt .oleans of their imported modules before trusting `lake env lean` exit 0, and pin axiom profiles on scratch copies; (2) close only the UNVERIFIED items that are routinely checkable with an additional probe whose statement is type-checked at plan time and pinned as the sole Lean Challenge identifier; (3) the report's recommendations that need FormalSystem/ or out-of-repo edits become a hand-off summary (ready-to-paste /task description with file_scope, remark text and placement) plus a non-blocking user_decision, never phases of this task. The port is a separate task with its own file_scope so lock-overlap detection against concurrent siblings holds.",
-      "category": "PATTERN",
-      "source_artifact": "specs/653_what_sees_recurrence_language_extensions/plans/01_what-sees-recurrence.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["verdict-first", "research-task-plan", "probe-verification", "stale-olean", "file-scope", "follow-up-task"]
+      "content": "When a plan's challenge block pins a Lean theorem whose proof composes two landed results (here isAtom_iff/qRec_defines from QuantRecurrence and recurrenceFree_not_transposed from HybridTransposition), the plan-specified tactic script compiled on the first lake env lean run; the cheap pre-checks that made this reliable were (1) a guarded scoped build of every imported module so .oleans are fresh, (2) a grep for clashing clause-lemma names across opened namespaces (and_iff, exist_iff exist in six namespaces here) before choosing the open lines, and (3) a diff of the abbrev and theorem signature text against the plan block rather than an eyeball check.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/653_what_sees_recurrence_language_extensions/probes/04_quantified-transposition.lean",
+      "confidence": 0.7,
+      "suggested_keywords": ["lean4", "challenge-statement", "signature-diff", "clause-lemma-ambiguity", "fresh-olean"]
+    },
+    {
+      "content": "A bare grep -c '^theorem' over a Lean file over-counts when a docstring line begins with the word 'theorem' (probe 03 reported 3 for 2 declarations). When a plan's Scope Hypothesis pins a declaration count, confirm the count by listing the matches, not by the number alone, before recording a discrepancy.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/653_what_sees_recurrence_language_extensions/reports/01_what-sees-recurrence.md",
+      "confidence": 0.6,
+      "suggested_keywords": ["lean4", "grep", "declaration-count", "scope-hypothesis"]
     }
   ],
+  "reflection": {
+    "what_worked": "The plan's step-by-step tactic script for qTrans_valid and qTrans_defines was executable as written; building QuantRecurrence in the Phase 1 scoped build meant Phase 2 needed no second build.",
+    "what_was_hard": "Nothing in the proofs; the only friction was bookkeeping — the axiom paragraph in Appendix A stated 'every other theorem' as the choice triple when four declarations (three defs and one theorem) are lighter, which had to be recorded rather than silently reconciled.",
+    "what_was_missed": "Handoff filenames were stamped with guessed future timestamps and had to be renamed to the real clock in the final commit.",
+    "successes": "Four sorry-free probes, 30 measured axiom profiles, one new definability theorem with a signature byte-identical to the challenge block, and every commit confined to the task directory."
+  },
+  "next_steps": "Open the follow-up lean4 port task from the description in the summary's Follow-ups 1 (per the prior-cycle decision); apply the manuscript remark by hand from Follow-ups 2.",
   "metadata": {
-    "session_id": "sess_1790093706_3bec6d_653",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1790093706_3bec6d",
+    "agent_type": "lean-implementation-agent",
+    "duration_seconds": 720,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 3,
-    "dependency_waves": [[1], [2], [3]]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "phases_completed": 3,
+    "phases_total": 3,
+    "compliance_check": "passed"
   }
 }
