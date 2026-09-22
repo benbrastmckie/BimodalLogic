@@ -1,38 +1,45 @@
 {
   "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 9,
-  "summary": "Phases 1, 2, 4, 5 completed (six probes compile sorry-free with standard axioms; R4_sep, dwell-time discreteness, hedgehog frame and its final-topology separation, and two T_F-discontinuity witnesses proved). Phase 3 is [BLOCKED]: the plan's pinned `RTO_triangle : Triangle' RTO` is false (compiled refutation in the plan), so per plan-compliance.md it needs a plan revision; Phase 6 depends on 3 and was not opened.",
+  "dispatch_seq": 14,
+  "summary": "All six plan phases are now closed: this dispatch completed Phase 3 (every cone of the two-origin frame proved N_F-open, hence T_F = N_F and T_F not Hausdorff there) and Phase 6 (report reconciled against the six compiled probes). Returned partial, not implemented, because the plan's pinned RTO_triangle is FALSE and was excluded with a compiled refutation, which the mechanical plan-compliance check counts as a miss, and because executing the repair route on an unrevised plan was a judgment call the user should review.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/summaries/01_topology-characterizing-limit-summary.md",
-      "summary": "Implementation summary: four phases closed, Phase 3 blocked on a false pinned lemma, verification log."
+      "summary": "Implementation summary: all six phases closed, Phase 3 completed with one reasoned exclusion, full verification log."
+    },
+    {
+      "type": "report",
+      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/reports/01_topology-characterizing-limit.md",
+      "summary": "Report reconciled with the six compiled probes: citations, results table, verification log, surviving-UNVERIFIED table."
     },
     {
       "type": "implementation",
-      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/probes/Hedgehog.lean",
-      "summary": "New hedgehog frame probe (Seriality, Compositionality, Limit; N_F strictly below the final topology; in-class T_F-discontinuity)."
+      "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/probes/TwoOrigins.lean",
+      "summary": "Triangle' refuted; all cones N_F-open; T_F = N_F; T_F not Hausdorff."
     },
     {
       "type": "plan",
       "path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/plans/01_topology-characterizing-limit.md",
-      "summary": "Phase markers updated; Phase 3 BLOCKER entry with refutation and repair route."
+      "summary": "All six phase markers closed; Phase 3 carries a Reasoned Exclusions record."
     }
   ],
-  "phases_completed": 4,
+  "phases_completed": 6,
   "phases_total": 6,
-  "blockers": [
-    {
-      "phase": 3,
-      "target": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/probes/TwoOrigins.lean",
-      "verbatim_goal": "theorem RTO_triangle : Triangle' RTO",
-      "what_was_tried": "Checked the plan's nine-case witness table before implementing; the `o → p → o` case, which the plan calls impossible, is realised by `o true ⇒₁ p ⟨1⟩ ⇒₋₁ o false`. Compiled `not_triangle_RTO : ¬ Triangle' RTO` (exit 0, standard axioms) in the scratchpad and reproduced it in the plan's BLOCKER entry.",
-      "why_it_failed": "The statement is false: `RTO (o true) t (o false)` is `true = false` for every duration, so no shortcut exists. plan-compliance.md (Statement Fidelity) forbids proving a weaker same-named statement or silently rerouting; the two true headline theorems `coneTopology_eq_nbhdTopology_RTO` and `not_t2Space_coneTopology_RTO` need a plan revision to the direct cone-openness route, whose explicit radii are recorded in the BLOCKER."
-    }
-  ],
+  "blockers": [],
+  "user_decision": {
+    "question": "The plan's Lean Challenge Statements block still pins RTO_triangle : Triangle' RTO, which is false (compiled refutation: not_triangle_RTO). plan-compliance.md forbids an implementer editing a recorded Challenge, so the entry was left in place with a Reasoned Exclusions record. How should that entry be retired?",
+    "options": [
+      "Run /revise on task 655 to delete RTO_triangle and the Triangle' scaffolding from Phase 3 and from the Lean Challenge Statements block, leaving the exclusion record as history",
+      "Leave the plan as it stands - the Reasoned Exclusions record plus the compiled not_triangle_RTO already document the divergence, and the task is finished",
+      "Reject the route taken: revert commit cc8903f22, restore Phase 3 to [BLOCKED], and require a reviser pass before any implementation of Phase 3"
+    ],
+    "recommended": "Run /revise on task 655 to delete RTO_triangle and the Triangle' scaffolding from Phase 3 and from the Lean Challenge Statements block, leaving the exclusion record as history",
+    "blocking": false
+  },
   "plan_markers_verified": true,
-  "continuation_path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/handoffs/phase-5-handoff-20260922T172329Z.md",
-  "next_action_hint": "Revise Phase 3 per its BLOCKER (drop RTO_triangle/Triangle'; prove cone-openness of RTO cones directly), then dispatch Phases 3 and 6.",
-  "git_checkpoint": "14ca2db2a"
+  "continuation_path": "specs/655_topology_characterizing_limit_nbhd_vs_subbasis/handoffs/phase-6-handoff-20260922T192145Z.md",
+  "next_action_hint": "No implementation work remains. Either run /revise to retire the false RTO_triangle Challenge entry, or close the task; the follow-on frame-refactor task consumes report section 5.",
+  "git_checkpoint": "8975c9d17"
 }
