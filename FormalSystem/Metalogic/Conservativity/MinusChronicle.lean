@@ -1,0 +1,364 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
+import FormalSystem.Metalogic.Conservativity.MinusCanonicalFrame
+import Mathlib.Algebra.Order.Field.Rat
+import Mathlib.Algebra.Order.Field.Basic
+import Mathlib.Data.Finset.Max
+import Mathlib.Data.Countable.Defs
+import Mathlib.Data.Nat.Pairing
+
+/-!
+# ℚ-chronicles through a TM⁻_d maximal consistent set
+
+The step-by-step construction of Burgess, *Basic Tense Logic* (1984), §2.5 — the tense logic of
+ℚ — transposed to the L⁻ canonical relations of `Conservativity/MinusCanonicalFrame.lean`. From
+any maximal TM⁻_d-consistent seed `Γ₀`, an ω-sequence of finite-support partial labellings
+`ℚ → Option (MPoint .Dense)` is built, each stage coherent for `canR`, each requirement
+(label a rational; witness an `F`- or `P`-formula at a labelled rational) recurring infinitely
+often in the enumeration; the union is a total labelling `ℚ → MPoint .Dense` that is coherent
+and `F`/`P`-witnessing — a **chronicle** — with `Γ₀` at `0`.
+
+**Nothing here generalises beyond `FrameClass.Dense`.** The interpolation lemma `fill` consumes
+`exists_canR_between`, the one density lemma, and every declaration below is stated at
+`MPoint FrameClass.Dense` (`DPoint`). A "for all `fc`" chronicle theorem would be false at
+`.Base` and `.ZTime`.
+
+## Design
+
+* A `Stage` is a labelling `s : ℚ → Option DPoint` with a `Finset` support and a coherence
+  proof; `Stage.upd` is the raw single-point update and `Stage.extend` re-packages it with its
+  coherence proof. `coherent_upd_of` reduces coherence of an update at `r` to two one-sided
+  conditions (below `r`, above `r`), which is what the three placement lemmas supply.
+* `insert_future` / `insert_past` place a `canR`-successor / predecessor of a labelled point
+  either at an already-labelled rational or at a fresh one, using weak linearity to find the
+  slot; `fill` labels a fresh rational using density, or seriality at the ends.
+* Reflexive points may label many rationals: coherence needs only `canR`, never injectivity.
+
+## Main Results
+
+* `Stage.insert_future`, `Stage.insert_past`, `Stage.fill` — the single-stage lemmas
+* `exists_chronicle_through` — every `Γ₀ : DPoint` lies at `0` on some `Chronicle`
+* `chronicle_canBox_closed` — a chronicle stays inside one `canBox`-class
+
+## References
+
+* Burgess, *Basic Tense Logic* (1984), §2.5 — the step-by-step construction over ℚ
+* `FormalSystem/Metalogic/Conservativity/MinusCanonicalFrame.lean` — the relations consumed
+
+## Tags
+
+conservativity · base-language · chronicle · step-by-step · rationals
+-/
+
+namespace FormalSystem.Metalogic.Conservativity
+
+open FormalSystem.Syntax
+open FormalSystem.ProofSystem (FrameClass)
+open FormalSystem.MinusLanguage
+
+/-- Maximal TM⁻_d-consistent sets: the only points this module labels rationals with. -/
+abbrev DPoint := MPoint FrameClass.Dense
+
+/-- A partial labelling is coherent when labelled rationals in order stand in `canR`. -/
+def coherent (s : ℚ → Option DPoint) : Prop :=
+  ∀ q q' Γ Δ, q < q' → s q = some Γ → s q' = some Δ → canR Γ.1 Δ.1
+
+/-- A finite-support coherent partial labelling of ℚ. -/
+structure Stage where
+  /-- The labelling. -/
+  s : ℚ → Option DPoint
+  /-- Its support. -/
+  supp : Finset ℚ
+  /-- `supp` is exactly the labelled rationals. -/
+  supp_spec : ∀ q, q ∈ supp ↔ (s q).isSome
+  /-- Coherence. -/
+  coh : coherent s
+
+namespace Stage
+
+/-- The extension order: every label of `s` is a label of `s'`. -/
+def le (s s' : Stage) : Prop := ∀ q Γ, s.s q = some Γ → s'.s q = some Γ
+
+theorem le_refl (s : Stage) : s.le s := fun _ _ h => h
+
+theorem le_trans {s₁ s₂ s₃ : Stage} (h₁ : s₁.le s₂) (h₂ : s₂.le s₃) : s₁.le s₃ :=
+  fun q Γ h => h₂ q Γ (h₁ q Γ h)
+
+theorem mem_supp_of_some (s : Stage) {q : ℚ} {Γ : DPoint} (h : s.s q = some Γ) : q ∈ s.supp :=
+  (s.supp_spec q).mpr (by simp [h])
+
+theorem exists_some_of_mem (s : Stage) {q : ℚ} (h : q ∈ s.supp) : ∃ Γ, s.s q = some Γ :=
+  Option.isSome_iff_exists.mp ((s.supp_spec q).mp h)
+
+theorem eq_none_of_notMem (s : Stage) {q : ℚ} (h : q ∉ s.supp) : s.s q = none := by
+  cases hq : s.s q with
+  | none => rfl
+  | some Γ => exact absurd (s.mem_supp_of_some hq) h
+
+/-- The raw single-point update `s[r ↦ Δ]`. -/
+def upd (s : Stage) (r : ℚ) (Δ : DPoint) : ℚ → Option DPoint :=
+  Function.update s.s r (some Δ)
+
+@[simp] theorem upd_self (s : Stage) (r : ℚ) (Δ : DPoint) : s.upd r Δ r = some Δ := by
+  unfold upd
+  exact Function.update_self r (some Δ) s.s
+
+theorem upd_of_ne (s : Stage) {q r : ℚ} (h : q ≠ r) (Δ : DPoint) : s.upd r Δ q = s.s q := by
+  unfold upd
+  exact Function.update_of_ne h (some Δ) s.s
+
+/-- Re-package an update whose coherence has been established. -/
+def extend (s : Stage) (r : ℚ) (Δ : DPoint) (hcoh : coherent (s.upd r Δ)) : Stage where
+  s := s.upd r Δ
+  supp := insert r s.supp
+  supp_spec := by
+    intro q
+    by_cases hq : q = r
+    · subst hq; simp
+    · rw [Finset.mem_insert, upd_of_ne s hq, s.supp_spec]
+      simp [hq]
+  coh := hcoh
+
+@[simp] theorem extend_s (s : Stage) (r : ℚ) (Δ : DPoint) (hcoh : coherent (s.upd r Δ)) :
+    (s.extend r Δ hcoh).s = s.upd r Δ := rfl
+
+theorem le_extend (s : Stage) {r : ℚ} (Δ : DPoint) (hcoh : coherent (s.upd r Δ))
+    (hr : s.s r = none) : s.le (s.extend r Δ hcoh) := by
+  intro q Γ hq
+  have hne : q ≠ r := by
+    rintro rfl
+    rw [hr] at hq
+    exact absurd hq (by simp)
+  rw [extend_s, upd_of_ne s hne]
+  exact hq
+
+/-- Coherence of `s[r ↦ Δ]` at an unlabelled `r` reduces to the two one-sided conditions. -/
+theorem coherent_upd_of (s : Stage) (r : ℚ) (Δ : DPoint) (hr : s.s r = none)
+    (hbelow : ∀ q Θ, q < r → s.s q = some Θ → canR Θ.1 Δ.1)
+    (habove : ∀ q Θ, r < q → s.s q = some Θ → canR Δ.1 Θ.1) : coherent (s.upd r Δ) := by
+  intro q q' Γ Θ hlt hq hq'
+  by_cases hqr : q = r
+  · subst hqr
+    rw [upd_self] at hq
+    rw [upd_of_ne s (ne_of_gt hlt)] at hq'
+    obtain rfl := Option.some.inj hq
+    exact habove q' Θ hlt hq'
+  · by_cases hq'r : q' = r
+    · subst hq'r
+      rw [upd_self] at hq'
+      rw [upd_of_ne s hqr] at hq
+      obtain rfl := Option.some.inj hq'
+      exact hbelow q Γ hlt hq
+    · rw [upd_of_ne s hqr] at hq
+      rw [upd_of_ne s hq'r] at hq'
+      exact s.coh q q' Γ Θ hlt hq hq'
+
+/-! ## Placement -/
+
+/-- **Future placement.** A `canR`-successor `Δ` of the label at `q` is either already the label
+of some `q' > q`, or can be placed coherently at a fresh `r > q`. The slot is found by weak
+linearity: among labelled points after `q` whose label does not reach `Δ`, the least one, `q₁`,
+either equals `Δ` or lies `canR`-above it, and then `r` goes just below `q₁`; if there is no
+such point, `r` goes above the whole support. -/
+theorem insert_future (s : Stage) {q : ℚ} {Γ Δ : DPoint} (hq : s.s q = some Γ)
+    (hR : canR Γ.1 Δ.1) :
+    (∃ q' > q, s.s q' = some Δ) ∨ (∃ r > q, s.s r = none ∧ coherent (s.upd r Δ)) := by
+  classical
+  let U := s.supp.filter (fun q' => q < q' ∧ ∀ Θ : DPoint, s.s q' = some Θ → ¬ canR Θ.1 Δ.1)
+  have hqsupp : q ∈ s.supp := s.mem_supp_of_some hq
+  have hbelow_gen : ∀ q'' Θ, q'' ≤ q → s.s q'' = some Θ → canR Θ.1 Δ.1 := by
+    intro q'' Θ hle hq''
+    rcases lt_or_eq_of_le hle with hlt | rfl
+    · exact canR_trans (s.coh q'' q Θ Γ hlt hq'' hq) hR
+    · rw [hq] at hq''
+      obtain rfl := Option.some.inj hq''
+      exact hR
+  have hnotU : ∀ q'' Θ, q < q'' → q'' ∉ U → s.s q'' = some Θ → canR Θ.1 Δ.1 := by
+    intro q'' Θ hgt hnot hq''
+    by_contra hn
+    exact hnot (Finset.mem_filter.mpr ⟨s.mem_supp_of_some hq'', hgt, fun Θ' h' => by
+      rw [hq''] at h'
+      obtain rfl := Option.some.inj h'
+      exact hn⟩)
+  by_cases hU : U = ∅
+  · obtain ⟨r, hr⟩ := exists_gt (s.supp.max' ⟨q, hqsupp⟩)
+    have hrnot : r ∉ s.supp := fun hmem => absurd (s.supp.le_max' r hmem) (not_le.mpr hr)
+    have hrq : q < r := lt_of_le_of_lt (s.supp.le_max' q hqsupp) hr
+    have hrnone := s.eq_none_of_notMem hrnot
+    refine Or.inr ⟨r, hrq, hrnone, s.coherent_upd_of r Δ hrnone ?_ ?_⟩
+    · intro q'' Θ _ hq''
+      rcases le_or_gt q'' q with hle | hgt
+      · exact hbelow_gen q'' Θ hle hq''
+      · exact hnotU q'' Θ hgt (by simp [hU]) hq''
+    · intro q'' Θ hlt hq''
+      exact absurd (s.supp.le_max' q'' (s.mem_supp_of_some hq''))
+        (not_le.mpr (lt_trans hr hlt))
+  · have hUne : U.Nonempty := Finset.nonempty_iff_ne_empty.mpr hU
+    obtain ⟨hq₁supp, hqq₁, hq₁bad⟩ := Finset.mem_filter.mp (U.min'_mem hUne)
+    obtain ⟨Θ₁, hΘ₁⟩ := s.exists_some_of_mem hq₁supp
+    have hnot : ¬ canR Θ₁.1 Δ.1 := hq₁bad Θ₁ hΘ₁
+    have hΓΘ₁ : canR Γ.1 Θ₁.1 := s.coh q _ Γ Θ₁ hqq₁ hq hΘ₁
+    rcases canR_weakLinear_right hΓΘ₁ hR with heq | hΘΔ | hΔΘ
+    · exact Or.inl ⟨U.min' hUne, hqq₁, heq ▸ hΘ₁⟩
+    · exact absurd hΘΔ hnot
+    · let B := s.supp.filter (· < U.min' hUne)
+      have hqB : q ∈ B := Finset.mem_filter.mpr ⟨hqsupp, hqq₁⟩
+      have hBne : B.Nonempty := ⟨q, hqB⟩
+      have hmlt : B.max' hBne < U.min' hUne := (Finset.mem_filter.mp (B.max'_mem hBne)).2
+      have hqm : q ≤ B.max' hBne := B.le_max' q hqB
+      obtain ⟨r, hmr, hrq₁⟩ := exists_between hmlt
+      have hrnot : r ∉ s.supp := by
+        intro hmem
+        exact absurd (B.le_max' r (Finset.mem_filter.mpr ⟨hmem, hrq₁⟩)) (not_le.mpr hmr)
+      have hrnone := s.eq_none_of_notMem hrnot
+      refine Or.inr ⟨r, lt_of_le_of_lt hqm hmr, hrnone, s.coherent_upd_of r Δ hrnone ?_ ?_⟩
+      · intro q'' Θ hlt hq''
+        rcases le_or_gt q'' q with hle | hgt
+        · exact hbelow_gen q'' Θ hle hq''
+        · have hq''q₁ : q'' < U.min' hUne := lt_trans hlt hrq₁
+          exact hnotU q'' Θ hgt
+            (fun hmem => absurd (U.min'_le q'' hmem) (not_le.mpr hq''q₁)) hq''
+      · intro q'' Θ hlt hq''
+        have hnotB : q'' ∉ B :=
+          fun hmem => absurd (B.le_max' q'' hmem) (not_le.mpr (lt_trans hmr hlt))
+        have hq₁le : U.min' hUne ≤ q'' :=
+          le_of_not_gt (fun h => hnotB (Finset.mem_filter.mpr ⟨s.mem_supp_of_some hq'', h⟩))
+        rcases lt_or_eq_of_le hq₁le with hlt' | heq
+        · exact canR_trans hΔΘ (s.coh _ q'' Θ₁ Θ hlt' hΘ₁ hq'')
+        · rw [← heq, hΘ₁] at hq''
+          obtain rfl := Option.some.inj hq''
+          exact hΔΘ
+
+/-- **Past placement**, the mirror of `insert_future` with `canR_weakLinear_left`. -/
+theorem insert_past (s : Stage) {q : ℚ} {Γ Δ : DPoint} (hq : s.s q = some Γ)
+    (hR : canR Δ.1 Γ.1) :
+    (∃ q' < q, s.s q' = some Δ) ∨ (∃ r < q, s.s r = none ∧ coherent (s.upd r Δ)) := by
+  classical
+  let U := s.supp.filter (fun q' => q' < q ∧ ∀ Θ : DPoint, s.s q' = some Θ → ¬ canR Δ.1 Θ.1)
+  have hqsupp : q ∈ s.supp := s.mem_supp_of_some hq
+  have habove_gen : ∀ q'' Θ, q ≤ q'' → s.s q'' = some Θ → canR Δ.1 Θ.1 := by
+    intro q'' Θ hle hq''
+    rcases lt_or_eq_of_le hle with hlt | rfl
+    · exact canR_trans hR (s.coh q q'' Γ Θ hlt hq hq'')
+    · rw [hq] at hq''
+      obtain rfl := Option.some.inj hq''
+      exact hR
+  have hnotU : ∀ q'' Θ, q'' < q → q'' ∉ U → s.s q'' = some Θ → canR Δ.1 Θ.1 := by
+    intro q'' Θ hlt hnot hq''
+    by_contra hn
+    exact hnot (Finset.mem_filter.mpr ⟨s.mem_supp_of_some hq'', hlt, fun Θ' h' => by
+      rw [hq''] at h'
+      obtain rfl := Option.some.inj h'
+      exact hn⟩)
+  by_cases hU : U = ∅
+  · obtain ⟨r, hr⟩ := exists_lt (s.supp.min' ⟨q, hqsupp⟩)
+    have hrnot : r ∉ s.supp := fun hmem => absurd (s.supp.min'_le r hmem) (not_le.mpr hr)
+    have hrq : r < q := lt_of_lt_of_le hr (s.supp.min'_le q hqsupp)
+    have hrnone := s.eq_none_of_notMem hrnot
+    refine Or.inr ⟨r, hrq, hrnone, s.coherent_upd_of r Δ hrnone ?_ ?_⟩
+    · intro q'' Θ hlt hq''
+      exact absurd (s.supp.min'_le q'' (s.mem_supp_of_some hq''))
+        (not_le.mpr (lt_trans hlt hr))
+    · intro q'' Θ _ hq''
+      rcases le_or_gt q q'' with hle | hlt
+      · exact habove_gen q'' Θ hle hq''
+      · exact hnotU q'' Θ hlt (by simp [hU]) hq''
+  · have hUne : U.Nonempty := Finset.nonempty_iff_ne_empty.mpr hU
+    obtain ⟨hq₁supp, hq₁q, hq₁bad⟩ := Finset.mem_filter.mp (U.max'_mem hUne)
+    obtain ⟨Θ₁, hΘ₁⟩ := s.exists_some_of_mem hq₁supp
+    have hnot : ¬ canR Δ.1 Θ₁.1 := hq₁bad Θ₁ hΘ₁
+    have hΘ₁Γ : canR Θ₁.1 Γ.1 := s.coh _ q Θ₁ Γ hq₁q hΘ₁ hq
+    rcases canR_weakLinear_left hΘ₁Γ hR with heq | hΘΔ | hΔΘ
+    · exact Or.inl ⟨U.max' hUne, hq₁q, heq ▸ hΘ₁⟩
+    · let A := s.supp.filter (U.max' hUne < ·)
+      have hqA : q ∈ A := Finset.mem_filter.mpr ⟨hqsupp, hq₁q⟩
+      have hAne : A.Nonempty := ⟨q, hqA⟩
+      have hnlt : U.max' hUne < A.min' hAne := (Finset.mem_filter.mp (A.min'_mem hAne)).2
+      have hnq : A.min' hAne ≤ q := A.min'_le q hqA
+      obtain ⟨r, hq₁r, hrn⟩ := exists_between hnlt
+      have hrnot : r ∉ s.supp := by
+        intro hmem
+        exact absurd (A.min'_le r (Finset.mem_filter.mpr ⟨hmem, hq₁r⟩)) (not_le.mpr hrn)
+      have hrnone := s.eq_none_of_notMem hrnot
+      refine Or.inr ⟨r, lt_of_lt_of_le hrn hnq, hrnone, s.coherent_upd_of r Δ hrnone ?_ ?_⟩
+      · intro q'' Θ hlt hq''
+        have hnotA : q'' ∉ A :=
+          fun hmem => absurd (A.min'_le q'' hmem) (not_le.mpr (lt_trans hlt hrn))
+        have hq''le : q'' ≤ U.max' hUne :=
+          le_of_not_gt (fun h => hnotA (Finset.mem_filter.mpr ⟨s.mem_supp_of_some hq'', h⟩))
+        rcases lt_or_eq_of_le hq''le with hlt' | heq
+        · exact canR_trans (s.coh q'' _ Θ Θ₁ hlt' hq'' hΘ₁) hΘΔ
+        · rw [heq, hΘ₁] at hq''
+          obtain rfl := Option.some.inj hq''
+          exact hΘΔ
+      · intro q'' Θ hlt hq''
+        rcases le_or_gt q q'' with hle | hlt'
+        · exact habove_gen q'' Θ hle hq''
+        · have hq₁q'' : U.max' hUne < q'' := lt_trans hq₁r hlt
+          exact hnotU q'' Θ hlt'
+            (fun hmem => absurd (U.le_max' q'' hmem) (not_le.mpr hq₁q'')) hq''
+    · exact absurd hΔΘ hnot
+
+/-- **Interpolation.** An unlabelled rational of a stage with non-empty support can be labelled
+coherently: by density between the nearest labels on either side, by seriality (or its mirror)
+when there is a label on one side only. -/
+theorem fill (s : Stage) {r : ℚ} (hr : s.s r = none) (hne : s.supp.Nonempty) :
+    ∃ Θ : DPoint, coherent (s.upd r Θ) := by
+  classical
+  let B := s.supp.filter (· < r)
+  let A := s.supp.filter (r < ·)
+  have hbelowOf : ∀ (hB : B.Nonempty) (Θm Θ : DPoint), s.s (B.max' hB) = some Θm →
+      canR Θm.1 Θ.1 → ∀ q Θ', q < r → s.s q = some Θ' → canR Θ'.1 Θ.1 := by
+    intro hB Θm Θ hm hRm q Θ' hqr hq
+    have hqB : q ∈ B := Finset.mem_filter.mpr ⟨s.mem_supp_of_some hq, hqr⟩
+    rcases lt_or_eq_of_le (B.le_max' q hqB) with hlt | heq
+    · exact canR_trans (s.coh q _ Θ' Θm hlt hq hm) hRm
+    · have hmq : s.s q = some Θm := by rw [heq]; exact hm
+      rw [hmq] at hq
+      obtain rfl := Option.some.inj hq
+      exact hRm
+  have haboveOf : ∀ (hA : A.Nonempty) (Θn Θ : DPoint), s.s (A.min' hA) = some Θn →
+      canR Θ.1 Θn.1 → ∀ q Θ', r < q → s.s q = some Θ' → canR Θ.1 Θ'.1 := by
+    intro hA Θn Θ hn hRn q Θ' hrq hq
+    have hqA : q ∈ A := Finset.mem_filter.mpr ⟨s.mem_supp_of_some hq, hrq⟩
+    rcases lt_or_eq_of_le (A.min'_le q hqA) with hlt | heq
+    · exact canR_trans hRn (s.coh _ q Θn Θ' hlt hn hq)
+    · have hnq : s.s q = some Θn := by rw [← heq]; exact hn
+      rw [hnq] at hq
+      obtain rfl := Option.some.inj hq
+      exact hRn
+  have hbelowEmpty : ¬ B.Nonempty → ∀ q (Θ' : DPoint), q < r → s.s q = some Θ' → False :=
+    fun hB q Θ' hqr hq => hB ⟨q, Finset.mem_filter.mpr ⟨s.mem_supp_of_some hq, hqr⟩⟩
+  have haboveEmpty : ¬ A.Nonempty → ∀ q (Θ' : DPoint), r < q → s.s q = some Θ' → False :=
+    fun hA q Θ' hrq hq => hA ⟨q, Finset.mem_filter.mpr ⟨s.mem_supp_of_some hq, hrq⟩⟩
+  by_cases hB : B.Nonempty <;> by_cases hA : A.Nonempty
+  · obtain ⟨Θm, hm⟩ := s.exists_some_of_mem (Finset.mem_filter.mp (B.max'_mem hB)).1
+    obtain ⟨Θn, hn⟩ := s.exists_some_of_mem (Finset.mem_filter.mp (A.min'_mem hA)).1
+    have hmn : B.max' hB < A.min' hA :=
+      lt_trans (Finset.mem_filter.mp (B.max'_mem hB)).2 (Finset.mem_filter.mp (A.min'_mem hA)).2
+    obtain ⟨Θ, h₁, h₂⟩ := exists_canR_between (s.coh _ _ Θm Θn hmn hm hn)
+    exact ⟨Θ, s.coherent_upd_of r Θ hr (hbelowOf hB Θm Θ hm h₁) (haboveOf hA Θn Θ hn h₂)⟩
+  · obtain ⟨Θm, hm⟩ := s.exists_some_of_mem (Finset.mem_filter.mp (B.max'_mem hB)).1
+    obtain ⟨Θ, h₁⟩ := exists_canR_serial Θm
+    exact ⟨Θ, s.coherent_upd_of r Θ hr (hbelowOf hB Θm Θ hm h₁)
+      (fun q Θ' hrq hq => (haboveEmpty hA q Θ' hrq hq).elim)⟩
+  · obtain ⟨Θn, hn⟩ := s.exists_some_of_mem (Finset.mem_filter.mp (A.min'_mem hA)).1
+    obtain ⟨Θ, h₂⟩ := exists_canR_serial_past Θn
+    exact ⟨Θ, s.coherent_upd_of r Θ hr (fun q Θ' hqr hq => (hbelowEmpty hB q Θ' hqr hq).elim)
+      (haboveOf hA Θn Θ hn h₂)⟩
+  · exfalso
+    obtain ⟨q, hq⟩ := hne
+    obtain ⟨Θ', hΘ'⟩ := s.exists_some_of_mem hq
+    rcases lt_trichotomy q r with hlt | rfl | hgt
+    · exact hbelowEmpty hB q Θ' hlt hΘ'
+    · rw [hr] at hΘ'
+      exact absurd hΘ' (by simp)
+    · exact haboveEmpty hA q Θ' hgt hΘ'
+
+end Stage
+
+end FormalSystem.Metalogic.Conservativity

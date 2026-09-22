@@ -273,33 +273,35 @@ also that `grep -n "FrameClass.Dense" MinusCanonicalFrame.lean` hits only `exist
 
 ---
 
-### Phase 4: MinusChronicle.lean part A — stages, placement, interpolation [IN PROGRESS]
+### Phase 4: MinusChronicle.lean part A — stages, placement, interpolation [COMPLETED]
 
 **Goal**: The finite-stage representation and the three single-stage lemmas (`insert_future`,
 `insert_past`, `fill`) that the ω-construction iterates; all at `.Dense`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Conservativity/MinusChronicle.lean` (imports
+- [x] Create `FormalSystem/Metalogic/Conservativity/MinusChronicle.lean` (imports
   `MinusCanonicalFrame`, `Mathlib.Data.Finset.Max`, `Mathlib.Data.Countable.Defs`,
   `Mathlib.Data.Nat.Pairing`; docstring: Burgess 1984 §2.5 step-by-step construction; state
   explicitly that nothing here generalises beyond `.Dense`)
-- [ ] `structure Chronicle` exactly as the probe §2 (`c : ℚ → Set MinusFormula`, `mcs`, `coh`,
+- [x] `structure Chronicle` exactly as the probe §2 (`c : ℚ → Set MinusFormula`, `mcs`, `coh`,
   `witF`, `witP`) at `fc := .Dense`; **no** injectivity field (reflexive MCSs may label many
-  rationals)
-- [ ] `coherent (s : ℚ → Option (MPoint .Dense)) : Prop := ∀ q q' Γ Δ, q < q' → s q = some Γ →
+  rationals) *(deviation: altered — `c : ℚ → MPoint .Dense`, so the probe's `mcs` field is
+  `(c q).2` and no separate field is carried; declared in part B alongside its constructor)*
+- [x] `coherent (s : ℚ → Option (MPoint .Dense)) : Prop := ∀ q q' Γ Δ, q < q' → s q = some Γ →
   s q' = some Δ → canR Γ Δ`; `structure Stage` with `s`, `supp : Finset ℚ`, `supp_spec : ∀ q,
   q ∈ supp ↔ (s q).isSome`, `coh : coherent s`; extension order `Stage.le s s' := ∀ q Γ, s.s q =
   some Γ → s'.s q = some Γ` with `le_refl`, `le_trans`
-- [ ] `Stage.update (s) (r) (Δ)` (the `s[r ↦ Δ]` writer) with `supp` = `insert r s.supp`, and
-  its `le` lemma
-- [ ] `insert_future : s.s q = some Γ → canR Γ Δ → (∃ q' > q, s.s q' = some Δ) ∨ (∃ r > q,
+- [x] `Stage.update (s) (r) (Δ)` (the `s[r ↦ Δ]` writer) with `supp` = `insert r s.supp`, and
+  its `le` lemma *(deviation: altered — split into the raw function `Stage.upd` and the packaged
+  `Stage.extend s r Δ hcoh`, since a `Stage` carries its coherence proof)*
+- [x] `insert_future : s.s q = some Γ → canR Γ Δ → (∃ q' > q, s.s q' = some Δ) ∨ (∃ r > q,
   s.s r = none ∧ coherent (s.update r Δ).s)` — proof per report §3.4: `U := s.supp.filter (fun q'
   => q < q' ∧ ¬ canR (s q') Δ)`; `U = ∅` ⟹ `r > s.supp.max'` by `NoMaxOrder`; `U ≠ ∅` ⟹ `q₁ :=
   U.min'`, `canR_weakLinear_right` at `Γ`, then `Δ = s q₁` (first disjunct) or `canR Δ (s q₁)`
   and `r` by `exists_between` strictly between `(s.supp.filter (· < q₁)).max'` and `q₁`
-- [ ] `insert_past` — the mirror (`canR_weakLinear_left`, `canR_iff_past`, `NoMinOrder`,
+- [x] `insert_past` — the mirror (`canR_weakLinear_left`, `canR_iff_past`, `NoMinOrder`,
   `Finset.min'`)
-- [ ] `fill : r ∉ s.supp → s.supp.Nonempty → ∃ Θ, coherent (s.update r Θ).s` by cases on
+- [x] `fill : r ∉ s.supp → s.supp.Nonempty → ∃ Θ, coherent (s.update r Θ).s` by cases on
   `(s.supp.filter (· < r)).Nonempty` × `(s.supp.filter (r < ·)).Nonempty`: both →
   `exists_canR_between`; below only → `exists_canR_serial`; above only →
   `exists_canR_serial_past`; neither is excluded by `s.supp.Nonempty`
@@ -324,7 +326,7 @@ into named helper lemmas before continuing to part B.
 
 ---
 
-### Phase 5: MinusChronicle.lean part B — enumeration, iteration, limit, box-class closure [NOT STARTED]
+### Phase 5: MinusChronicle.lean part B — enumeration, iteration, limit, box-class closure [IN PROGRESS]
 
 **Goal**: `exists_chronicle_through : ∀ Γ : MPoint .Dense, ∃ c : Chronicle, c.c 0 = Γ`, plus
 the `canBox`-closure of a chronicle.
