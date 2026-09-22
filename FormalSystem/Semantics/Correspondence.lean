@@ -12,6 +12,7 @@ import FormalSystem.Semantics.Correspondence.FwdRecPeriodicity
 import FormalSystem.Semantics.Correspondence.FwdRecBridge
 import FormalSystem.Semantics.Correspondence.Rigidity
 import FormalSystem.Semantics.Correspondence.RigiditySharpness
+import FormalSystem.Semantics.Correspondence.RigidityReal
 
 /-!
 # `FormalSystem.Semantics.Correspondence` — the frame-class Galois layer
@@ -34,4 +35,7 @@ Aggregator for `Semantics/Correspondence/`. See `Semantics/Correspondence/README
   uniform dwell time, so every finite-carrier frame over such an order is static
 - `Correspondence.RigiditySharpness` — compiled witnesses that neither density (`ℤ`) nor the
   Archimedean property (`ℚ ×ₗ ℚ`) can be dropped from the rigidity theorem
+- `Correspondence.RigidityReal` — over `ℝ` a **countable** carrier already forces a static
+  frame, with no finiteness, density or Archimedean hypothesis: Dedekind completeness replaces
+  them, by way of Sierpiński's theorem in `ForMathlib/Topology/Sierpinski.lean`
 -/

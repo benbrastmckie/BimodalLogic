@@ -469,6 +469,7 @@ import FormalSystem.Semantics.Correspondence.FwdRecPeriodicity
 import FormalSystem.Semantics.Correspondence.Galois
 import FormalSystem.Semantics.Correspondence.Indicator
 import FormalSystem.Semantics.Correspondence.Rigidity
+import FormalSystem.Semantics.Correspondence.RigidityReal
 import FormalSystem.Semantics.Correspondence.RigiditySharpness
 import FormalSystem.Semantics.DeterministicBridge
 import FormalSystem.Semantics.DurationClassification

@@ -259,20 +259,20 @@ phase, with the failing goal as Evidence.
 
 ---
 
-### Phase 2: RigidityReal.lean — the Q2 headline [NOT STARTED]
+### Phase 2: RigidityReal.lean — the Q2 headline [COMPLETED]
 
 **Goal**: `FormalSystem/Semantics/Correspondence/RigidityReal.lean` exists with the four
 frame-level core results, `static_of_countable` among them, and is wired into the Correspondence
 aggregator.
 
 **Tasks**:
-- [ ] Collision-check `levels_closed`, `exists_history_of_taskRel`, `constant_of_countable_range`
+- [x] Collision-check `levels_closed`, `exists_history_of_taskRel`, `constant_of_countable_range`
       and `static_of_countable` against the `FrameOver` namespace before writing.
-- [ ] Create `FormalSystem/Semantics/Correspondence/RigidityReal.lean` with the copyright header
+- [x] Create `FormalSystem/Semantics/Correspondence/RigidityReal.lean` with the copyright header
       and imports `FormalSystem.Semantics.Extension`,
       `FormalSystem.Semantics.Correspondence.Rigidity`,
       `FormalSystem.ForMathlib.Topology.Sierpinski`. No `import Mathlib`.
-- [ ] Write a module docstring that states the theorem, states the axiom division of labour
+- [x] Write a module docstring that states the theorem, states the axiom division of labour
       exactly as the report records it — *Saturation* supplies the total history through
       `thm:extension` (which is where Zorn, and hence `Classical.choice`, enters); *Limit* makes
       the level sets closed; *Seriality* plus the reflection law give the positive half of
@@ -280,22 +280,22 @@ aggregator.
       records that density and the Archimedean property are **not** used, Dedekind completeness
       via Baire replacing them. Cite manuscript anchors by label (`def:frame#Limit`,
       `def:frame-properties`, `def:world-history`, `thm:extension`), never by line number.
-- [ ] Declare `noncomputable abbrev realOrder : TemporalOrder := TemporalOrder.of ℝ` (the
+- [x] Declare `noncomputable abbrev realOrder : TemporalOrder := TemporalOrder.of ℝ` (the
       probe's `RO`, renamed).
-- [ ] Transcribe `Probe.levels_closed`, `Probe.exists_history` (renamed
+- [x] Transcribe `Probe.levels_closed`, `Probe.exists_history` (renamed
       `exists_history_of_taskRel`), `Probe.constant_of_countable_range` and
       `Probe.static_of_countable` from probe `02`, lines beginning at
       `/-! ## The frame-level consequences over ℝ -/`, into `namespace FormalSystem.Semantics`,
       `namespace FrameOver`, updating the `Sierp.*` references to the Phase 1 names.
-- [ ] Note in `exists_history_of_taskRel`'s docstring that the domain `{0, x}` is not convex, so
+- [x] Note in `exists_history_of_taskRel`'s docstring that the domain `{0, x}` is not convex, so
       this is `thm:extension` and not `cor:occurrence` — the same construction
       `Semantics/DeterministicBridge.lean`'s `deterministic_of_singletonClasses` uses.
-- [ ] Docstring every declaration.
-- [ ] Add `import FormalSystem.Semantics.Correspondence.RigidityReal` to
+- [x] Docstring every declaration.
+- [x] Add `import FormalSystem.Semantics.Correspondence.RigidityReal` to
       `FormalSystem/Semantics/Correspondence.lean` and a matching `## Modules` bullet to its
       docstring.
-- [ ] Regenerate `FormalSystem.lean` with `lake exe mk_all --lib FormalSystem`.
-- [ ] `lake build --wfail` green.
+- [x] Regenerate `FormalSystem.lean` with `lake exe mk_all --lib FormalSystem`.
+- [x] `lake build --wfail` green.
 
 **Timing**: 1.5 hours
 
