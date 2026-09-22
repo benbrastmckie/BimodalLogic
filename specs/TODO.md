@@ -11,9 +11,9 @@ next_project_number: 657
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,649,652,655 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650,654 | 298,464,502,563,649,652 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,618,656 | 231,465,497,564,565,616,654,655 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,649,654,655 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,656 | 298,464,502,563,649,654,655 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500,656 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -85,8 +85,7 @@ next_project_number: 657
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-652 [PLANNED] — Define time-indexed task frames and prove the...
-  └─ 654 [NOT STARTED] — RESEARCH TASK with compiled probes, verdict-first: which...
+654 [NOT STARTED] — RESEARCH TASK with compiled probes, verdict-first: which...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -97,7 +96,7 @@ next_project_number: 657
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
-655 [PLANNED] — RESEARCH TASK, verdict-first: which topology on the state...
+655 [IMPLEMENTING] — RESEARCH TASK, verdict-first: which topology on the state...
   └─ 656 [NOT STARTED] — Refactor the task-frame definitions so that a task frame is...
 
 ## Tasks
@@ -113,7 +112,7 @@ next_project_number: 657
 ---
 
 ### 655. Topology characterizing limit nbhd vs subbasis
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
@@ -149,12 +148,13 @@ next_project_number: 657
 ---
 
 ### 652. Time indexed frames dedekind rigidity boundary
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 646
 - **Research**: [652_time_indexed_frames_dedekind_rigidity_boundary/reports/01_time-indexed-dedekind-rigidity.md]
 - **Plan**: [652_time_indexed_frames_dedekind_rigidity_boundary/plans/02_time-indexed-dedekind-rigidity.md]
+- **Summary**: [652_time_indexed_frames_dedekind_rigidity_boundary/summaries/02_time-indexed-dedekind-rigidity-summary.md]
 
 **Description**: Define time-indexed task frames and prove the Dedekind-completeness rigidity boundary, with a compiled ℚ counterexample. CONTEXT: FormalSystem/Semantics/Correspondence/Rigidity.lean proves static_iff_uniformDwell and static_of_finite for duration-indexed frames (FrameOver D) under [DenselyOrdered D] [Archimedean D], and RigiditySharpness.lean shows neither hypothesis can be dropped (permissiveFrame_not_static over a discrete order; lexRatFrame_not_static over ℚ ×ₗ ℚ with lexRat_not_archimedean). Its module docstring carries a SCOPE NOTE, proved nowhere: 'for frames whose relation is indexed by times -- a different structure, not defined in this library -- the analogous rigidity boundary is Dedekind completeness of the time order rather than the Archimedean property: over ℝ, finitely many states plus Limit alone force constant histories by connectedness, while over ℚ a two-state time-indexed frame that switches across an irrational gap is not static.' This task turns that note into theorems. SOURCE MATERIAL, outside this repository, read before starting: /home/benjamin/Philosophy/Papers/PossibleWorlds/specs/archive/136_rewrite_mf_paragraph_frame_correspondence/reports/04_dense-correspondent-and-rigidity.md (the refinement and its scope limits) and reports/05_lean-verification-and-formalization-program.md (the elaborated TimeIndexed structure, written for Theorem A over ℤ-time). Re-verify every claim those reports make about this tree; modules have moved since they were written. DELIVERABLES. (1) A new module FormalSystem/Semantics/TimeIndexed.lean (siting may be revised by the planner) defining the time-indexed frame structure exactly as report 05 elaborates it -- states W, a linearly ordered time T, a relation indexed by pairs of times or by a time and a duration, with the Limit and Compositionality analogues -- and its notion of history and of Static. THIS STRUCTURE IS SHARED INFRASTRUCTURE: the MF frame-correspondence task (R4, Theorem A over ℤ-time) will consume it, so state it at the generality report 05 needs, name the fields as report 05 names them, and record in the module docstring that Theorem A is its other intended consumer. (2) The positive theorem: over a Dedekind-complete (conditionally complete) linear time order, a time-indexed frame with finitely many states satisfying Limit has only constant histories, i.e. is static; the proof is by connectedness of the order (a finite partition of a connected order into the level sets of a history has one nonempty part) -- state it at the hypothesis the proof actually uses (ConditionallyCompleteLinearOrder plus whatever density/unboundedness the connectedness argument needs; Mathlib supplies these), and do not claim more. (3) The compiled sharpness witness: a two-state time-indexed frame over ℚ that switches across an irrational cut (e.g. below and above √2), satisfying every field of the structure including Limit, that is not static -- showing Dedekind completeness cannot be dropped. (4) The comparison, in the docstring: why the duration-indexed boundary is Archimedean and the time-indexed one is Dedekind, with the ℚ ×ₗ ℚ and ℚ witnesses side by side. If the statement in the scope note turns out false or needs a stronger hypothesis, the compiled counterexample or corrected statement IS the deliverable -- report it, never weaken silently. OUT OF SCOPE: Theorem A itself, anything touching FormalSystem/Semantics/ShiftSet.lean, and any edit to Rigidity.lean beyond replacing the scope note with a cross-reference to the new module. CONSTRAINTS: the library root FormalSystem.lean is generated -- regenerate with `lake exe mk_all --lib FormalSystem`, never hand-edit; every new module is directly imported by the root, so the header linter applies under --wfail (module docstring first after the imports, no broad imports); add the module to its sibling aggregator and directory README and re-emit inventory blocks with --emit-inventory; theorem-index rows with C14 pins for the positive theorem and the witness; docstrings cite the manuscript by label or quotable phrase, never by line number, and carry no task numbers. ACCEPTANCE: lake build --wfail green; lean_verify on the positive theorem and the ℚ witness returns standard axioms only, no sorryAx; check-module-invariants.sh all checks pass; `lake exe mk_all --lib FormalSystem --check` exits 0.
 

@@ -1,17 +1,16 @@
 {
-  "status": "planned",
-  "dispatch_seq": 15,
-  "task_number": 652,
-  "phase": "plan",
-  "phases_completed": 0,
-  "phases_total": 6,
-  "session_id": "sess_1790104191_b13256_652",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 16,
+  "summary": "All six plan phases complete: two new modules (TimeIndexed.lean, TimeIndexedSharpness.lean) carrying the time-indexed frame structure, the Dedekind positive theorem, the Q sqrt-2 and Z sharpness witnesses and the duration-vs-time comparison, plus the Rigidity.lean scope-note replacement and full gate wiring. lake build --wfail green (0 errors, 0 warnings), check-module-invariants.sh ALL CHECKS PASSED, mk_all --check clean, lean_verify standard axioms only.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/652_time_indexed_frames_dedekind_rigidity_boundary/plans/02_time-indexed-dedekind-rigidity.md",
-      "summary": "Six-phase implementation plan for time-indexed frames and the Dedekind rigidity boundary."
+      "type": "summary",
+      "path": "specs/652_time_indexed_frames_dedekind_rigidity_boundary/summaries/02_time-indexed-dedekind-rigidity-summary.md",
+      "summary": "Execution summary including the reported ConstantHistories-vs-Static correction and the Semantics-aggregator import deviation."
     }
   ],
-  "next_steps": "Run /implement 652 to execute the plan"
+  "phases_completed": 6,
+  "phases_total": 6,
+  "blockers": []
 }
