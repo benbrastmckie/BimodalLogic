@@ -558,6 +558,25 @@ Axiom profiles (`#print axioms` on scratch copies): `boxFree_histMap_invariance`
 `limit_of_shift`/`exists_ne` route of `TranslationProduct.lean` and through the real carrier of
 `F°`/`F¹`, never through a choice principle of these probes. No `sorryAx`; no new axiom.
 
+**Re-verification at implementation (2026-09-22).** The nine imported modules were rebuilt from
+source through the build guard (exit 0, `Build completed successfully`, zero `error:`, every
+`.olean` newer than its source) before any `lake env lean`; each probe then elaborated with exit
+0 and no output (no warning of any kind). Every declaration named above was found in its probe by
+`grep`. Profiles were re-measured on scratch copies (deleted afterwards), one `#print axioms`
+per declaration; `sorryAx` appears nowhere. Per probe:
+
+- `probes/01_invariant-languages-blind.lean` — re-verified against source-rebuilt `.olean`s;
+  profiles as listed, with one refinement: `BoxFree` is a `def` and depends on no axiom at all
+  (the paragraph above covers theorems only).
+- `probes/02_nominals-break-product.lean` — re-verified against source-rebuilt `.olean`s; three
+  measured profiles are lighter than the paragraph above states: `hybridValidOn_iff_hsatSet_univ`
+  is `[propext, Quot.sound]` (no `Classical.choice`), the private `constHist` is
+  `[propext, Quot.sound]`, and the `def` `hsatSet` is `[propext]`. Every other declaration
+  listed is as stated.
+- `probes/03_limit-closure-device.lean` — re-verified against source-rebuilt `.olean`s; profiles
+  as listed. (A bare `grep -c "^theorem"` reports 3 for this file; the third hit is the docstring
+  line "theorem of TM⁺", so the declaration count is the 2 listed.)
+
 ### B. UNVERIFIED items, by name
 
 1. World-register invariance along the projection (§1.6; identical induction shape to the time

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #653
 
 - **Task**: 653 - What sees recurrence and transposition in a task frame: state registers, state nominals, since/until, and the stability modal (verdict-first)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: 645 (translation-product port; delivered). Related, not blocking: 624 (originating report), 628 (hybrid/quantifier port; delivered), 651 (sibling, concurrently editing `FormalSystem/Metalogic/Conservativity/**` and `FormalSystem.lean` — never touched here).
 - **Research Inputs**: specs/653_what_sees_recurrence_language_extensions/reports/01_what-sees-recurrence.md; compiled probes specs/653_what_sees_recurrence_language_extensions/probes/0{1,2,3}_*.lean
@@ -114,37 +114,45 @@ proposed for `FormalSystem/`"); every build runs through
 only after that guarded build; the manuscript is cited by label or quotable phrase; commits are
 `task 653 phase {P}: {name}` with an explicit file list.
 
-### Phase 1: Re-verify probes 01–03 against the live tree and pin their axiom profiles [NOT STARTED]
+### Phase 1: Re-verify probes 01–03 against the live tree and pin their axiom profiles [IN PROGRESS]
 
 **Goal**: Turn the research round's compile claim into evidence that holds against fresh
 `.olean`s, and record the measured axiom profiles in the report.
 
 **Tasks**:
-- [ ] Confirm every `import` of the three probes resolves to a source file (a `MISSING` is a
+- [x] Confirm every `import` of the three probes resolves to a source file (a `MISSING` is a
   report defect to record, not a probe to edit): `FormalSystem.Semantics.Frames.TranslationProduct`,
   `FormalSystem.OpenLanguage.OpenValidity`, `FormalSystem.HybridLanguage.{HybridInvariance,
   HybridValidity, HybridRecurrence, HybridTransposition}`,
   `FormalSystem.Metalogic.Independence.{DeterminismUndefinable, TranslationProductCoarse,
-  LimitClosureCountermodel}`. (All nine resolved at plan time.)
-- [ ] Guarded, detached, scoped build of those nine modules so their `.olean`s are fresh from
+  LimitClosureCountermodel}`. (All nine resolved at plan time.) *(completed: all nine resolve)*
+- [x] Guarded, detached, scoped build of those nine modules so their `.olean`s are fresh from
   source. Read the guard's verdict; on a lock held by another session, wait per the bounded
-  waiter contract.
-- [ ] `lake env lean` on each of `probes/01_invariant-languages-blind.lean`,
+  waiter contract. *(completed: guard exit 0, 2099 jobs, zero `error:`, all `.olean`s newer than
+  source; `QuantLanguage.QuantRecurrence` was built in the same invocation so Phase 2 elaborates
+  against the same fresh build — deviation: altered, ten modules instead of nine)*
+- [x] `lake env lean` on each of `probes/01_invariant-languages-blind.lean`,
   `probes/02_nominals-break-product.lean`, `probes/03_limit-closure-device.lean`: exit 0, no
   warning. `grep -n "sorry" probes/*.lean` matches only the docstring phrase "sorry-free".
-- [ ] Axiom profiles: copy each probe to the scratchpad directory (never into the task
+  *(completed: three runs, exit 0, empty output each)*
+- [x] Axiom profiles: copy each probe to the scratchpad directory (never into the task
   directory), append `#print axioms Probe653.<name>` for every declaration Appendix A lists, run
   `lake env lean` on the copy, and compare with Appendix A (`[propext]` for
   `boxFree_histMap_invariance` and `hybridTruthAt_iff_mem_hsatSet`; `[propext, Classical.choice,
-  Quot.sound]` for every other listed theorem; no `sorryAx`). Delete the copies.
-- [ ] Cross-check that every backticked declaration name the report attributes to a probe
+  Quot.sound]` for every other listed theorem; no `sorryAx`). Delete the copies. *(completed:
+  27 profiles measured; four lighter than stated — `BoxFree` none, `constHist` and
+  `hybridValidOn_iff_hsatSet_univ` `[propext, Quot.sound]`, `hsatSet` `[propext]` — recorded in
+  Appendix A; no `sorryAx`; copies deleted)*
+- [x] Cross-check that every backticked declaration name the report attributes to a probe
   (Appendix A inventory and the table's evidence cells) exists in that probe by `grep`. A name in
   the report absent from the probes is a report defect: fix the report, not the probe.
-- [ ] Edit `reports/01_what-sees-recurrence.md` Appendix A: one line per probe, "Re-verified at
+  *(completed: all 27 present)*
+- [x] Edit `reports/01_what-sees-recurrence.md` Appendix A: one line per probe, "Re-verified at
   implementation, 2026-09-22, against source-rebuilt `.olean`s of the nine imported modules;
   profiles as listed." Record any discrepancy found instead of the word "as listed".
-- [ ] Commit: `task 653 phase 1: re-verify probes against the live tree`, staging the report
-  only (nothing else changed).
+  *(completed)*
+- [x] Commit: `task 653 phase 1: re-verify probes against the live tree`, staging the report
+  only (nothing else changed). *(completed)*
 
 **Timing**: 0.75 hours
 
