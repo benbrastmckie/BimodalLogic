@@ -48,13 +48,23 @@ same argument, and the induction avoids a well-foundedness detour.
 ## Scope note: time-indexed frames
 
 The hypotheses here are about the duration group `D` of a task frame, whose task relation is
-indexed by *durations*. For frames whose relation is indexed by *times* — a different structure,
-not defined in this library — the analogous rigidity boundary is Dedekind completeness of the
-time order rather than the Archimedean property: over `ℝ`, finitely many states plus *Limit*
-alone force constant histories by connectedness, while over `ℚ` a two-state time-indexed frame
-that switches across an irrational gap is not static. Nothing about time-indexed frames is
-proved here; this note only records that the Archimedean hypothesis below should not be read as
-the boundary for them.
+indexed by *durations*. Frames whose relation is indexed by *times* are a different structure
+with a different rigidity boundary — Dedekind completeness of the time order rather than the
+Archimedean property — and they now have their own modules: `Semantics/TimeIndexed.lean` defines
+`TimeIndexed` and proves `TimeIndexed.constantHistories_of_lub`, that over a densely ordered,
+Dedekind-complete time order finitely many states plus *Limit* alone **force constant
+histories**; `Semantics/TimeIndexedSharpness.lean` proves
+`TimeIndexed.qSwitchFrame_not_constantHistories`, that over `ℚ` a two-state time-indexed frame
+switching across an irrational gap satisfies *Limit* and is not constant-historied, so
+completeness cannot be dropped.
+
+The conclusion there is constancy of histories, not the relation-level `Static` of this module:
+`TimeIndexed.static_of_lub_of_realized` reaches `Static` only from two further hypotheses, a
+reflexivity law and a realization law sending each permitted passage to a history that takes it.
+The Archimedean hypothesis below should accordingly not be read as the boundary for time-indexed
+frames, and `ℚ` is exactly where the two boundaries disagree: it is Archimedean, so the theorem
+below applies to task frames over it, and it is not Dedekind-complete, so the time-indexed
+theorem does not.
 
 ## Sharpness
 
