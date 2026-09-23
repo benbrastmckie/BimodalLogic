@@ -1,7 +1,7 @@
 # Implementation Plan: Task #657
 
 - **Task**: 657 - audit_frame_constraints_history_restriction
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 11.5 hours
 - **Dependencies**: Task 656 (general frames + `FrameOver.IsRegular`; the refactor that made this
   audit statable), Task 659 (the existing constraint witnesses this plan cites rather than
@@ -158,7 +158,7 @@ Phases within the same wave can execute in parallel; each wave-1 phase edits a d
 
 ---
 
-### Phase 1: `FrameOver.reflection_of_limit` and the reflection docstring correction [NOT STARTED]
+### Phase 1: `FrameOver.reflection_of_limit` and the reflection docstring correction [COMPLETED]
 
 **Goal**: Record in the library that the reflection law costs *Limit* **alone**, and delete the
 docstring sentence that says otherwise. This is the report's R3 and R7 rank 2, and it is the
@@ -167,10 +167,14 @@ foundation Phase 2 consumes.
 **Tasks**:
 - [ ] Read `probes/Completion.lean:111-133` (`reflection_of_limit`) and locate `FrameOver.reflection`
       at `FormalSystem/Semantics/TaskFrame.lean:1158`
-- [ ] Transcribe the probe's proof as `FrameOver.reflection_of_limit (F : FrameOver D)
+- [x] Transcribe the probe's proof as `FrameOver.reflection_of_limit (F : FrameOver D)
       (hlim : TaskFrame.Limit F.TaskRel) (w : F.WorldState) (d : ↑D) …` — a hypothesis binder, **not**
       an `[F.IsRegular]` instance binder; that is the whole point of the declaration. Site it
-      immediately before `reflection`
+      immediately before `reflection` *(deviation: altered — landed at `[propext, Classical.choice,
+      Quot.sound]`, not the plan's predicted `[propext]`; the probe's figure was measured at the
+      `TaskFrame` level, and `FrameOver.eq_of_taskRel_zero_of_limit` at this level already carries
+      choice. `FrameOver.reflection`'s own profile is byte-identical before and after, which is the
+      invariant that mattered.)*
 - [ ] Re-prove `FrameOver.reflection` as `reflection_of_limit F F.limit …` (or whatever the
       `IsRegular` accessor for *Limit* is named — read it off the class rather than guessing), leaving
       its statement byte-identical so no call site changes
@@ -209,17 +213,21 @@ committing. A delta above ~40 lines means the probe proof was transcribed with s
 
 ---
 
-### Phase 2: New module `Extension/Completion.lean` — the exact condition `thm:extension` needs [NOT STARTED]
+### Phase 2: New module `Extension/Completion.lean` — the exact condition `thm:extension` needs [COMPLETED]
 
 **Goal**: Land the audit's headline Q1 result: `Completion` is what `lem:step` actually consumes,
 it is equivalent to the one-point extension property, and it yields `thm:extension` in full from
 *Seriality* + *Limit* with no *Saturation* and no *Compositionality*.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/Extension/Completion.lean` with the standard copyright header,
+- [x] Create `FormalSystem/Semantics/Extension/Completion.lean` with the standard copyright header,
       importing `FormalSystem.Semantics.Extension.Admissible` and
       `FormalSystem.Semantics.PartialHistoryOrder` (the Zorn layer, needed by
-      `extension_of_completion`; it carries no frame constraint)
+      `extension_of_completion`; it carries no frame constraint) *(deviation: altered — imports
+      `Extension.Step`, not `Extension.Admissible`. `completion_of_isRegular` is defined as
+      `completion_of_onePointExtension (fun τ z => step F τ z)`, so `step` must be in scope;
+      `Step.lean` imports `Admissible.lean`, so the closure is unchanged apart from `Step` itself.
+      The aggregator import in Phase 9 is correspondingly sited after `Step`, not before it.)*
 - [ ] Write the module docstring in the directory's house style: the paper anchors it serves
       (`lem:step`, `lem:admissible`, `thm:extension`), the verdict it records (*Saturation* is
       sufficient, `Completion` is exactly necessary-and-sufficient for the one-point extension
@@ -267,7 +275,7 @@ figure above ~320 means scaffolding was carried over that `Admissible.lean` alre
 
 ---
 
-### Phase 3: `HasNearest` and `extension_of_isZTime` — *Saturation* is redundant over discrete time [NOT STARTED]
+### Phase 3: `HasNearest` and `extension_of_isZTime` — *Saturation* is redundant over discrete time [COMPLETED]
 
 **Goal**: Turn `lem:step`'s own closing remark into a theorem: over `def:BX-z`'s ℤ-time,
 `thm:extension` follows from *Compositionality* + *Seriality* + *Limit* alone.
@@ -323,7 +331,7 @@ split the discrete-time section into its own module rather than raising the ceil
 
 ---
 
-### Phase 4: The restriction map — constraint-free core [NOT STARTED]
+### Phase 4: The restriction map — constraint-free core [COMPLETED]
 
 **Goal**: Land the easy direction of the anchor case, which the audit certified costs **no frame
 constraint and not even `[F.IsRegular]`**, plus the two order-level facts that are equally free.
@@ -377,7 +385,7 @@ that a dependency was inlined rather than cited.
 
 ---
 
-### Phase 5: The identification at `[F.IsRegular]` — `cor:restriction`'s hard direction [NOT STARTED]
+### Phase 5: The identification at `[F.IsRegular]` — `cor:restriction`'s hard direction [COMPLETED]
 
 **Goal**: Land the hard direction and the order-level surjection, at the module that already owns
 `thm:extension`, so the corollary sits directly beneath the theorem it is.
@@ -421,7 +429,7 @@ that a dependency was inlined rather than cited.
 
 ---
 
-### Phase 6: The last two independence witnesses — the void frame and the bump frame [NOT STARTED]
+### Phase 6: The last two independence witnesses — the void frame and the bump frame [COMPLETED]
 
 **Goal**: Complete the independence matrix in-tree. Every one of `def:frame`'s four constraints
 then has a compiled witness satisfying the other three and failing it.

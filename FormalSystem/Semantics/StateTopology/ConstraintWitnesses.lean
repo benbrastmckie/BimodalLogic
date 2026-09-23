@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
+import Mathlib.Data.Int.SuccPred
 import Mathlib.Data.Rat.Lemmas
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
@@ -57,6 +58,36 @@ completeness reason, and it is what licenses the claim that the real-carrier wit
 (`StateTopology/Counterexamples.lean`'s `TwoOrigins`) is over `ℝ` on purpose. The witness is the
 `⊇`-directed family of rational intervals straddling the Dedekind cut `{q : q² < 2} | {q : 2 < q²}`,
 which has no rational point: `straddleFamily`.
+
+## The void and bump frames: *Seriality* and *Compositionality* are independent
+
+`voidFrame`, `bumpFrame`. Two frames on `Bool` over `ℤ`-time, each satisfying three of
+`def:frame`'s constraints and failing the fourth. The void frame is the **empty** task relation:
+*Compositionality* and *Limit* hold vacuously, *Saturation* holds because the carrier is finite,
+and *Seriality* fails at `x = 0` because no state has a successor. The bump frame is the identity
+at duration `0`, the **total** relation at duration `±1`, and the identity again from `|d| ≥ 2`
+outwards: *Seriality*, *Limit* and *Saturation* hold, and *Compositionality* fails because two
+`±1` steps compose to a duration-`2` pair that the `|d| ≥ 2` identity clause refuses.
+
+**With these two, the independence matrix for `def:frame` is complete.** Every one of the four
+constraints now has a compiled witness satisfying the other three and failing it:
+
+* *Compositionality* fails at the **bump frame**: `bumpFrame_serial`, `bumpFrame_limit`,
+  `bumpFrame_saturation`, `bumpFrame_not_compositional` (below).
+* *Seriality* fails at the **void frame**: `voidFrame_compositional`, `voidFrame_limit`,
+  `voidFrame_saturation`, `voidFrame_not_serial` (below).
+* *Limit* fails at the **four-state funnel**: `funnel_serial`, `funnel_compositional`,
+  `funnel_saturation`, `funnel_not_limit` (in `StateTopology/Counterexamples.lean`).
+* *Saturation* fails at the **rational two-origin frame**: `RationalTwoOrigins.rel_serial`,
+  `.rel_compositional`, `.rel_limit`, `.not_rel_saturation` (above).
+
+**A packaging asymmetry, recorded rather than papered over.** Three of the four rows are certified
+at the **frame** level — the statements are about a `FrameOver`'s `TaskRel`. The *Saturation* row
+is certified at the **bare-relation** level only: `RationalTwoOrigins.rel` carries no `FrameOver`
+wrapper, because wrapping it would need a reflection law for its carrier that this module does not
+prove. The independence is genuine at exactly the level `def:frame` states its constraints — they
+are conditions on the task relation — but the row should not be read as claiming a `FrameOver`
+witness it does not have.
 
 ## Import weight
 
@@ -578,5 +609,151 @@ theorem not_rel_saturation : ¬ TaskFrame.Saturation rel := by
     exact absurd hs'2 (by simp only []; linarith)
 
 end RationalTwoOrigins
+
+/-! ## The void frame: *Seriality* is independent of the other three -/
+
+/-- The **empty** task relation on `Bool` over `ℤ`-time. -/
+def voidRel : Bool → ℤ → Bool → Prop := fun _ _ _ => False
+
+/-- The void relation obeys the reflection law: both sides are `False`. -/
+theorem voidRel_refl_law : ∀ w d u, voidRel w d u ↔ voidRel u (-d) w := by
+  intro w d u; exact Iff.rfl
+
+/--
+**The void frame** `V` — the independence witness for *Seriality*.
+
+Nothing is related to anything at any duration. *Compositionality* and *Limit* are vacuous,
+*Saturation* is free because `Bool` is finite, and *Seriality* fails outright: it demands a
+successor and a predecessor at every `x ≥ 0`, and the empty relation supplies neither.
+
+No `IsRegular` instance is declared for this frame, by construction — it fails a constraint.
+-/
+def voidFrame : FrameOver intOrder :=
+  FrameOver.ofReflective Bool voidRel voidRel_refl_law
+
+theorem voidFrame_taskRel : voidFrame.TaskRel = voidRel :=
+  FrameOver.ofReflective_taskRel_eq
+
+/-- *Compositionality* holds **vacuously**: both halves of the biconditional are `False`. -/
+theorem voidFrame_compositional : TaskFrame.Compositional voidFrame.TaskRel := by
+  rw [voidFrame_taskRel]
+  intro w v x y _ _
+  exact ⟨fun h => h.elim, fun ⟨_, h, _⟩ => h.elim⟩
+
+/-- *Limit* holds **vacuously**: the cone hypothesis cannot be met, since no duration relates
+anything. -/
+theorem voidFrame_limit : TaskFrame.Limit voidFrame.TaskRel := by
+  rw [voidFrame_taskRel]
+  intro w u h
+  obtain ⟨y, _, hy⟩ := h 1 (by norm_num)
+  exact hy.elim
+
+/-- *Saturation* holds **for free**, by `cor:saturation-finite`
+(`TaskFrame.saturation_of_finite`) — the carrier `Bool` is finite. It is not proved by hand. -/
+theorem voidFrame_saturation : TaskFrame.Saturation voidFrame.TaskRel := by
+  rw [voidFrame_taskRel]
+  exact TaskFrame.saturation_of_finite voidRel
+
+/-- **The independence witness for *Seriality***: no state has a `0`-successor. -/
+theorem voidFrame_not_serial : ¬ TaskFrame.Serial voidFrame.TaskRel := by
+  rw [voidFrame_taskRel]
+  intro h
+  obtain ⟨⟨u, hu⟩, _⟩ := h false 0 le_rfl
+  exact hu.elim
+
+/-! ## The bump frame: *Compositionality* is independent of the other three -/
+
+/--
+The **bump** relation on `Bool` over `ℤ`-time: the identity at duration `0`, the total relation at
+duration `±1`, and the identity again from `|d| ≥ 2` outwards.
+-/
+def bumpRel : Bool → ℤ → Bool → Prop :=
+  fun w d u => (d = 0 ∧ w = u) ∨ |d| = 1 ∨ (2 ≤ |d| ∧ w = u)
+
+/-- The bump relation obeys the reflection law: every clause is symmetric under `d ↦ -d` together
+with `w ↔ u`, since `|-d| = |d|` and `-d = 0 ↔ d = 0`. -/
+theorem bumpRel_refl_law : ∀ w d u, bumpRel w d u ↔ bumpRel u (-d) w := by
+  intro w d u
+  simp only [bumpRel, abs_neg, neg_eq_zero]
+  constructor
+  · rintro (⟨h1, h2⟩ | h | ⟨h1, h2⟩)
+    · exact Or.inl ⟨h1, h2.symm⟩
+    · exact Or.inr (Or.inl h)
+    · exact Or.inr (Or.inr ⟨h1, h2.symm⟩)
+  · rintro (⟨h1, h2⟩ | h | ⟨h1, h2⟩)
+    · exact Or.inl ⟨h1, h2.symm⟩
+    · exact Or.inr (Or.inl h)
+    · exact Or.inr (Or.inr ⟨h1, h2.symm⟩)
+
+/--
+**The bump frame** `B` — the independence witness for *Compositionality*.
+
+The shape that refutes composition is the single "bump" at `|d| = 1`: a step of duration `1` may
+change the state, but a pair of such steps must land in the duration-`2` clause, where only the
+identity is permitted. So `ff ⇒₁ tt` and `tt ⇒₁ tt` hold while `ff ⇏₂ tt`, and the `←` half of
+`def:frame#Compositionality`'s biconditional fails.
+
+*Seriality* holds because every state relates to itself at every `x ≥ 0` (through the `d = 0`,
+`|d| = 1` or `2 ≤ |d|` clause as `x` dictates). *Limit* is free by
+`TaskFrame.limit_of_succOrder`, because the time is `ℤ` and the only duration-`0` pairs are the
+identity. *Saturation* is free by `cor:saturation-finite` (`TaskFrame.saturation_of_finite`),
+because the carrier `Bool` is finite. Neither is proved by hand.
+
+No `IsRegular` instance is declared for this frame, by construction — it fails a constraint.
+-/
+def bumpFrame : FrameOver intOrder :=
+  FrameOver.ofReflective Bool bumpRel bumpRel_refl_law
+
+theorem bumpFrame_taskRel : bumpFrame.TaskRel = bumpRel :=
+  FrameOver.ofReflective_taskRel_eq
+
+/-- *Seriality* holds: every state is its own successor and predecessor at every `x ≥ 0`. -/
+theorem bumpFrame_serial : TaskFrame.Serial bumpFrame.TaskRel := by
+  rw [bumpFrame_taskRel]
+  have key : ∀ (w : Bool) (x : ℤ), 0 ≤ x → bumpRel w x w := by
+    intro w x hx
+    by_cases h0 : x = 0
+    · exact Or.inl ⟨h0, rfl⟩
+    by_cases h1 : x = 1
+    · exact Or.inr (Or.inl (by rw [h1]; norm_num))
+    · refine Or.inr (Or.inr ⟨?_, rfl⟩)
+      rw [abs_of_nonneg hx]
+      omega
+  intro w x hx
+  exact ⟨⟨w, key w x hx⟩, ⟨w, key w x hx⟩⟩
+
+/-- *Limit* holds, through `TaskFrame.limit_of_succOrder`: the time is `ℤ`, so it suffices that
+the duration-`0` pairs are exactly the identity. -/
+theorem bumpFrame_limit : TaskFrame.Limit bumpFrame.TaskRel := by
+  rw [bumpFrame_taskRel]
+  haveI : SuccOrder (intOrder.carrier) := (inferInstance : SuccOrder ℤ)
+  haveI : NoMaxOrder (intOrder.carrier) := (inferInstance : NoMaxOrder ℤ)
+  refine TaskFrame.limit_of_succOrder (fun w u hR => ?_)
+  rcases hR with ⟨_, h2⟩ | h | ⟨h1, _⟩
+  · exact h2.symm
+  · norm_num at h
+  · norm_num at h1
+
+/-- *Saturation* holds **for free**, by `cor:saturation-finite`
+(`TaskFrame.saturation_of_finite`) — the carrier `Bool` is finite. -/
+theorem bumpFrame_saturation : TaskFrame.Saturation bumpFrame.TaskRel := by
+  rw [bumpFrame_taskRel]
+  exact TaskFrame.saturation_of_finite bumpRel
+
+/--
+**The independence witness for *Compositionality***: `ff ⇒₁ tt` and `tt ⇒₁ tt`, yet `ff ⇏₂ tt`,
+so the composition (`←`) half of the biconditional fails.
+-/
+theorem bumpFrame_not_compositional : ¬ TaskFrame.Compositional bumpFrame.TaskRel := by
+  rw [bumpFrame_taskRel]
+  intro h
+  have hone : |(1 : ℤ)| = 1 := by norm_num
+  have hrhs : ∃ u, bumpRel false 1 u ∧ bumpRel u 1 true :=
+    ⟨true, Or.inr (Or.inl hone), Or.inr (Or.inl hone)⟩
+  have hlhs := (h false true 1 1 (by norm_num) (by norm_num)).mpr hrhs
+  rcases hlhs with ⟨h1, _⟩ | h1 | ⟨_, h2⟩
+  · norm_num at h1
+  · norm_num at h1
+  · norm_num at h2
 
 end FormalSystem.Semantics.StateTopology
