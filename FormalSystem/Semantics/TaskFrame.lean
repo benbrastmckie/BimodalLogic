@@ -13,6 +13,7 @@ import Mathlib.Data.Set.Lattice
 import Mathlib.Order.Minimal
 import Mathlib.Data.Fintype.Powerset
 import Mathlib.Data.Set.Card
+import Mathlib.Topology.Order.Compact
 import FormalSystem.Semantics.TemporalOrder
 
 /-!
@@ -268,7 +269,9 @@ task-frame · task-relation · def:frame · saturation · nullity
 assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
   FormalSystem.ProofSystem.Derivable FormalSystem.ProofSystem.FrameClass
 
-set_option linter.style.longFile 2600
+-- Raised from 2600 for `exists_mem_image_of_directedFamily` and its `Set.Icc` specialisation,
+-- which belong beside `DirectedFamily`; not for parking unrelated material.
+set_option linter.style.longFile 2700
 
 namespace FormalSystem.Semantics
 
@@ -490,6 +493,55 @@ sets"); the nonemptiness of its *members* is a separate hypothesis wherever
 -/
 def DirectedFamily {W : Type} (S : Set (Set W)) : Prop :=
   S.Nonempty ∧ ∀ S₁ ∈ S, ∀ S₂ ∈ S, ∃ S' ∈ S, S' ⊆ S₁ ∩ S₂
+
+/--
+**The shadow lemma.** A `⊇`-directed family (`DirectedFamily`) of nonempty sets whose images
+under `φ` are compact and closed has a point of `X` lying in every member's image.
+
+This is a two-line wrapper around Mathlib's
+`IsCompact.nonempty_iInter_of_directed_nonempty_isCompact_isClosed`: its *only* content is the
+translation from `DirectedFamily S` — which is stated over the *members* of `S`, with the
+witness required to sit inside the binary intersection — to the `Directed (· ⊇ ·)` shape that
+Mathlib's Cantor-intersection lemma takes over an index type.
+
+It is the one frame-independent piece of the *Saturation* proofs for the two-origin half-line and
+the hedgehog (`Semantics/StateTopology/Counterexamples.lean`). Lifting the common *image* point
+back to a common *element* does **not** generalise: it uses the frame's own fibre structure over
+the accumulation point, and the two witnesses need genuinely different arguments there (the
+two-origin frame needs directedness to pick one of the two origins at `r = 0`; the hedgehog needs
+directedness to pick one ray at `r > 0`, and `r = 0` is free because the centre is the unique
+preimage of `0`). So this is the honest generality.
+-/
+theorem exists_mem_image_of_directedFamily {W : Type} {X : Type} [TopologicalSpace X]
+    (φ : W → X) {S : Set (Set W)} (hdir : DirectedFamily S)
+    (hne : ∀ s ∈ S, s.Nonempty)
+    (hc : ∀ s ∈ S, IsCompact (φ '' s)) (hcl : ∀ s ∈ S, IsClosed (φ '' s)) :
+    ∃ r : X, ∀ s ∈ S, r ∈ φ '' s := by
+  obtain ⟨hSne, hdirS⟩ := hdir
+  haveI : Nonempty ↥S := hSne.to_subtype
+  have hdirec : Directed (· ⊇ ·) (fun i : ↥S => φ '' (i : Set W)) := by
+    rintro ⟨s₁, h₁⟩ ⟨s₂, h₂⟩
+    obtain ⟨s', hs', hsub⟩ := hdirS s₁ h₁ s₂ h₂
+    exact ⟨⟨s', hs'⟩, Set.image_mono (hsub.trans Set.inter_subset_left),
+      Set.image_mono (hsub.trans Set.inter_subset_right)⟩
+  obtain ⟨r, hr⟩ := IsCompact.nonempty_iInter_of_directed_nonempty_isCompact_isClosed _
+    hdirec (fun i => (hne i.1 i.2).image _) (fun i => hc i.1 i.2) (fun i => hcl i.1 i.2)
+  rw [Set.mem_iInter] at hr
+  exact ⟨r, fun s hs => hr ⟨s, hs⟩⟩
+
+/--
+The `Set.Icc`-shaped specialisation both *Saturation* witnesses actually use: over a
+`CompactIccSpace`, a member whose shadow is a closed interval needs no separate compactness or
+closedness argument.
+-/
+theorem exists_mem_image_of_directedFamily_Icc {W : Type} {X : Type} [TopologicalSpace X]
+    [LinearOrder X] [OrderClosedTopology X] [CompactIccSpace X]
+    (φ : W → X) {S : Set (Set W)} (hdir : DirectedFamily S)
+    (hne : ∀ s ∈ S, s.Nonempty) (hIcc : ∀ s ∈ S, ∃ a b : X, φ '' s = Set.Icc a b) :
+    ∃ r : X, ∀ s ∈ S, r ∈ φ '' s :=
+  exists_mem_image_of_directedFamily φ hdir hne
+    (fun s hs => by obtain ⟨a, b, h⟩ := hIcc s hs; rw [h]; exact isCompact_Icc)
+    (fun s hs => by obtain ⟨a, b, h⟩ := hIcc s hs; rw [h]; exact isClosed_Icc)
 
 /--
 `s` is a fiber of the relation `R`: one of the two separate classes of sets the *Saturation*
