@@ -326,31 +326,34 @@ paper's closure-based R0/T1 definitions visibly match Mathlib's `R0Space`/`T1Spa
 
 ---
 
-### Phase 6: Raise `docs/theorem-index.md` to Citation Granularity [NOT STARTED]
+### Phase 6: Raise `docs/theorem-index.md` to Citation Granularity [COMPLETED]
 
 **Goal**: Fix the collection's principal defect. A manuscript reader follows a name; the ledger is
 where names are looked up, and two of the three labels the appendix carries have no row at all.
 
 **Tasks**:
-- [ ] Add a "Notation and naming" row mapping the revised `def:task-topology`'s `𝒯_F` to
+- [x] Add a "Notation and naming" row mapping the revised `def:task-topology`'s `𝒯_F` to
       `TaskFrame.nbhdTopology` / `FrameOver.stateTopology`, and the footnote's superseded topology
-      to `TaskFrame.coneTopology` / `FrameOver.coneTop`
-- [ ] Add ledger rows for the replacement `def:task-topology`
+      to `TaskFrame.coneTopology` / `FrameOver.coneTop` *(two rows, added to the existing
+      `## Notation and naming` table rather than to the ledger, which is where that table lives)*
+- [x] Add ledger rows for the replacement `def:task-topology`
       (`nbhdTopology_isOpen_iff`, `FrameOver.isOpen_iff`) and for `app:topology-r0`
       (`FrameOver.r0Space_stateTopology`, `TaskFrame.r0Space_nbhdTopology_of_limit`)
-- [ ] Add rows for `t1Space_nbhdTopology_iff_limit`, the new equality-form biconditional,
+- [x] Add rows for `t1Space_nbhdTopology_iff_limit`, the new equality-form biconditional,
       `limit_eq_iff`, `FrameOver.iInter_cone_eq_singleton`,
       `continuous_nbhdTopology_of_history` / `FrameOver.continuous_of_history`,
       `coneTopology_le_nbhdTopology`, `limit_of_t1Space_coneTopology`, `funnel_saturation`,
       `funnel_one_way_pair`
-- [ ] Add a row for every Gap A and Gap B promotion from Phases 2 and 3
-- [ ] Use the exact row schema C15 enforces:
+- [x] Add a row for every Gap A and Gap B promotion from Phases 2 and 3
+- [x] Use the exact row schema C15 enforces:
       `| {Paper label or —} | {Statement, one line} | \`{Fully qualified Lean name}\` | \`{File path, no line numbers}\` | {Frame class or —} | {Axioms} |`
-- [ ] Use plain `pcq` unless pinning is deliberately wanted; pinning is a **paired** edit in
+- [x] Use plain `pcq` unless pinning is deliberately wanted; pinning is a **paired** edit in
       `scripts/check-module-invariants.sh` (the expected-output heredoc and the `#print axioms`
-      list) and must be done in both places or not at all
-- [ ] Verify the C15 round trip: every row's declaration carries a `Paper:` line in its own `/--`
-      docstring
+      list) and must be done in both places or not at all *(no row pinned; every `pcq` value was
+      read off a `#print axioms` run against the built modules, not assumed)*
+- [x] Verify the C15 round trip: every row's declaration carries a `Paper:` line in its own `/--`
+      docstring *(37 ledger rows added, 156 rows total; eleven pre-existing declarations gained
+      `Paper:` lines so their new rows could satisfy the round trip)*
 
 **Timing**: 1.5 hours
 

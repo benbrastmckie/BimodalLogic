@@ -52,10 +52,10 @@ level and `FrameOver.stateTopology` at the frame level. The subbasis topology th
 previously called `𝒯_F`, and now records only in a footnote, is this module's
 `TaskFrame.coneTopology` / `FrameOver.coneTop`.
 
-| Manuscript | This module (relation level) | This module (frame level) |
+| Manuscript | Relation level | Frame level |
 |---|---|---|
 | `𝒯_F` of the revised `def:task-topology` | `TaskFrame.nbhdTopology` | `FrameOver.stateTopology` |
-| the superseded subbasis topology of the footnote | `TaskFrame.coneTopology` | `FrameOver.coneTop` |
+| the footnote's superseded subbasis topology | `TaskFrame.coneTopology` | `FrameOver.coneTop` |
 
 The Lean names are **not** renamed to follow the symbol: `nbhdTopology` and `coneTopology` say
 which construction is meant, which the reassigned symbol no longer does. Docstrings below write
@@ -644,7 +644,11 @@ long as it is discharged explicitly. Never spell a frame carrier as the bare Mat
 a topological statement; go through these. -/
 
 /-- If every positive cone of a relation on `ℝ` is a Euclidean ball of radius `c · x`, then `𝒩_F`
-**is** the usual topology on `ℝ`. -/
+**is** the usual topology on `ℝ`.
+
+Paper: — (formalization-native; the paper names no real carrier and no bridge to a metric
+topology)
+-/
 theorem nbhdTopology_eq_real (R : ℝ → ℝ → ℝ → Prop) {c : ℝ} (hc : 0 < c)
     (hcone : ∀ r x, 0 < x → cone R r x = Metric.ball r (c * x)) :
     nbhdTopology R = (inferInstance : TopologicalSpace ℝ) := by
@@ -665,7 +669,10 @@ theorem nbhdTopology_eq_real (R : ℝ → ℝ → ℝ → Prop) {c : ℝ} (hc : 
     exact hb
 
 /-- If every positive cone is a Euclidean ball and every state loops at zero, then `𝒯_F = 𝒩_F` on
-a real carrier: the cones are themselves open. -/
+a real carrier: the cones are themselves open.
+
+Paper: — (formalization-native; the paper compares no two topologies on a state space)
+-/
 theorem coneTopology_eq_nbhdTopology_real (R : ℝ → ℝ → ℝ → Prop) (h0 : ∀ r, R r 0 r) {c : ℝ}
     (hc : 0 < c) (hcone : ∀ r x, 0 < x → cone R r x = Metric.ball r (c * x)) :
     coneTopology R = nbhdTopology R := by

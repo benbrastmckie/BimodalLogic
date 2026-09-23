@@ -120,7 +120,11 @@ theorem nbhdTopology_isOpen_iff_int (R : W → ℤ → W → Prop) {O : Set W} :
     rw [cone_int_one]
     exact fun u hu => h w hw u hu
 
-/-- Over `ℤ`, *Limit* is exactly `⇒₀ ⊆ id`. -/
+/-- Over `ℤ`, *Limit* is exactly `⇒₀ ⊆ id`: a discrete duration group leaves the constraint with
+nothing to say beyond injectivity at duration zero.
+
+Paper: `def:frame#Limit`
+-/
 theorem limit_int_iff (R : W → ℤ → W → Prop) : Limit R ↔ ∀ w u, R w 0 u → u = w := by
   constructor
   · intro h w u hR
@@ -130,7 +134,11 @@ theorem limit_int_iff (R : W → ℤ → W → Prop) : Limit R ↔ ∀ w u, R w 
     rw [Int.abs_lt_one_iff] at hy
     exact h w u (hy ▸ hR)
 
-/-- Over `ℤ`, `𝒩_F` is discrete exactly when *Limit* holds. -/
+/-- Over `ℤ`, `𝒩_F` is discrete exactly when *Limit* holds — so over a discrete duration group
+*Limit*, discreteness and T1 all coincide.
+
+Paper: — (formalization-native; the paper states no discreteness criterion)
+-/
 theorem discreteTopology_nbhdTopology_int_iff (R : W → ℤ → W → Prop) :
     @DiscreteTopology W (nbhdTopology R) ↔ Limit R := by
   rw [discreteTopology_nbhdTopology_iff, limit_int_iff]
@@ -290,7 +298,11 @@ theorem funnel_saturation : Saturation (funnelFrame (D := D)).TaskRel := by
 /-! ### *Limit* fails — the acceptance test -/
 
 /-- Over a densely ordered duration type, membership in a positive cone of the funnel relation is
-the *symmetric* funnel relation: a low state and a high state lie in each other's every cone. -/
+the *symmetric* funnel relation: a low state and a high state lie in each other's every cone. This
+is the cone computation the four-state funnel rests on.
+
+Paper: `def:task-relation`
+-/
 theorem mem_cone_funnelRel [DenselyOrdered ↑D] {w u : Fin 4} {x : ↑D} (hx : 0 < x) :
     u ∈ cone (funnelRel (D := D)) w x ↔
       (w = u ∨ (w.val < 2 ∧ 2 ≤ u.val) ∨ (u.val < 2 ∧ 2 ≤ w.val)) := by
@@ -332,7 +344,11 @@ theorem funnel_not_limit [DenselyOrdered ↑D] :
   rw [funnelFrame_taskRel_eq]; exact funnelRel_not_limit
 
 /-- Each singleton is the finite intersection of the cones centred at the members of one cone,
-`{w} = ⋂_{v ∈ (w)_x} (v)_x` — a decidable check over the four states. -/
+`{w} = ⋂_{v ∈ (w)_x} (v)_x` — a decidable check over the four states. This is why `𝒯_F` is
+discrete on the funnel while `𝒩_F` is indiscrete, and *Limit* fails.
+
+Paper: — (formalization-native; the paper does not compute the subbasis topology on an example)
+-/
 theorem funnelRel_singleton_eq_biInter_cone [DenselyOrdered ↑D] (w : Fin 4) {x : ↑D}
     (hx : 0 < x) :
     ({w} : Set (Fin 4)) = ⋂ v ∈ cone (funnelRel (D := D)) w x, cone (funnelRel (D := D)) v x := by
@@ -1374,7 +1390,12 @@ theorem singleton_c_eq_inter_cone :
     | c => rfl
     | p n t => exact absurd ((mem_Fib.mp h0).1.trans (mem_Fib.mp h1).1.symm) (by decide)
 
-/-- `{c}` is `𝒯_F`-open: it is a finite intersection of cones. -/
+/-- `{c}` is `𝒯_F`-open: it is a finite intersection of cones. With
+`not_isOpen_nbhdTopology_singleton_c` this is the bracket that separates the two topologies by
+name (`coneTopology_ne_nbhdTopology`).
+
+Paper: — (formalization-native; the paper does not compare the two topologies)
+-/
 theorem isOpen_coneTopology_singleton_c : IsOpen[coneTopology rel] ({c} : Set HH) := by
   rw [singleton_c_eq_inter_cone]
   letI := coneTopology rel
