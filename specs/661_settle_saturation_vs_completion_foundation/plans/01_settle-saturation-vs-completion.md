@@ -1,11 +1,11 @@
 # Implementation Plan: Land the Saturation-vs-Completion verdict in the library
 
 - **Task**: 661 - Settle the Saturation vs Completion question by probe, and judge the outcome against a primitives-level foundation criterion
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8 hours
 - **Dependencies**: 660 (completed); 657 (frame-constraint audit, R1/R4 origin)
 - **Research Inputs**: `specs/661_settle_saturation_vs_completion_foundation/reports/01_saturation-vs-completion-verdict.md`
-- **Artifacts**: plans/01_settle-saturation-vs-completion.md (this file)
+- **Artifacts**: plans/01_settle-saturation-vs-completion.md (this file); summaries/01_settle-saturation-vs-completion-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: true
@@ -643,34 +643,91 @@ if a declaration landed under a different name, the row must follow the code, no
 
 ---
 
-### Phase 7: Full gate and recorded verdict [NOT STARTED]
+### Phase 7: Full gate and recorded verdict [COMPLETED]
 
 **Goal**: Prove the tree is green end to end, prove no pinned anchor moved, and leave the R1/R4
 verdict and its remaining follow-up work stated in one place.
 
 **Tasks**:
 
-- [ ] Run the full gate set and record each result verbatim: `lake build`;
+- [x] Run the full gate set and record each result verbatim: `lake build`;
       `bash scripts/check-module-invariants.sh`; `bash scripts/check-paper-definitions.sh`;
       `bash scripts/check-evidence-probes.sh`; `bash scripts/check-metalogic-cycles.sh`;
       `bash scripts/check-copyright-headers.sh`; `bash scripts/readme-lint.sh`.
-- [ ] Confirm `check-paper-definitions.sh` reports no anchor moved — this is the concrete evidence
+- [x] Confirm `check-paper-definitions.sh` reports no anchor moved — this is the concrete evidence
       for the no-manuscript-edits non-goal, not a formality.
-- [ ] Re-run both source probes under the linted invocation as a cross-check that the promoted
-      copies say what the probes said:
+- [x] *(deviation: altered — the in-place re-run is unsatisfiable, and this phase's own Phases 2
+      and 3 are why; see the Phase record below for the substitute cross-check that was run
+      instead.)* Re-run both source probes under the linted invocation as a cross-check that the
+      promoted copies say what the probes said:
       `lake env lean -D weak.linter.mathlibStandardSet=true -D autoImplicit=false
       specs/661_settle_saturation_vs_completion_foundation/probes/*.lean`. Leave the probe files
       in place; they are the reproduction record, and the report's Appendix cites them.
-- [ ] Confirm the tree is sorry-free: `grep -rn "\bsorry\b" FormalSystem/ --include=*.lean`
+- [x] Confirm the tree is sorry-free: `grep -rn "\bsorry\b" FormalSystem/ --include=*.lean`
       returns nothing new relative to the pre-task baseline.
-- [ ] Write the execution summary at
+- [x] Write the execution summary at
       `specs/661_settle_saturation_vs_completion_foundation/summaries/01_settle-saturation-vs-completion-summary.md`,
       stating the verdict (R4, on the strictness result plus the primitives criterion), what
       landed, and the two pieces of follow-up work this task deliberately did not do: the
       manuscript pass implementing R4 (including restating the clause `Fib`-free and moving the
       ball-space footnote onto a *Saturation* remark), and the `FrameOver.IsRegular` field swap
       with its five transport sites.
-- [ ] Commit.
+- [x] Commit.
+
+**Phase record — every gate, verbatim**:
+
+| Gate | Result |
+|---|---|
+| `lake build` (guarded, detached) | exit 0, **2,725 jobs**, 0 `error:`, 0 `warning:` |
+| `check-module-invariants.sh` | exit 0, **ALL CHECKS PASSED** (C15: 61 anchors, 191 rows; C5: 14 allowlisted) |
+| `check-paper-definitions.sh` | exit 0, **all 43 recorded definitions unchanged -- pass** |
+| `check-evidence-probes.sh` | exit 0, **all 5 wired probe(s) compile** (1 pre-existing SKIP) |
+| `check-metalogic-cycles.sh` | exit 0 |
+| `check-copyright-headers.sh` | exit 0, missing 0 of 559 |
+| `readme-lint.sh` | exit 0, **RESULT: PASS** |
+
+Build verdict read on all three tiers: guard exit 0; the success line with a zero `error:` count
+over the captured streams; and an `.olean`-newer-than-source check on each of the four modules
+this task touched (`TaskFrame`, `Extension/Completion`, `Extension/Step`,
+`StateTopology/ConstraintWitnesses`) — all four fresh.
+
+**No pinned anchor moved.** `check-paper-definitions.sh` notes that `possible_worlds.tex` itself
+differs from its recorded checksum, but attributes that to commit `bbea72d4`, which predates
+this task; **all 43 recorded definitions are unchanged**, and this task edited no `.tex` file, no
+`verbatim:` block and no `sha256:` line. `docs/reference/paper-definitions-of-record.md` is
+byte-identical (sha256 `89fad0c30066722948c8235516d12a9e43a68f280a13a67af39a9f2f8ffdc4a7`).
+
+**The probe cross-check, and why it could not be run as written.** Both probes
+`import FormalSystem.Semantics.StateTopology.ConstraintWitnesses`, and Phases 2 and 3 put the
+probes' own declarations into that module. Compiling a probe in place therefore now fails: 18
+errors for `CompletionRationalTwoOrigins.lean` and 12 for `SeparatingFrame.lean`, and **every one
+of the 30 is `has already been declared`** — not one is a mathematical failure. The step is
+unsatisfiable by construction, and the plan's own promotion goal is what makes it so.
+
+The substantive check was run by the one route available. Each probe was copied to a scratch file
+with **only its namespace renamed** (`RationalTwoOrigins` → `RationalTwoOriginsProbe`,
+`SeparatingFrame` → `SeparatingFrameProbe`; the probe files themselves were left untouched, as
+the plan requires) and recompiled against the current library under the same linted invocation.
+**Both exit 0**, and `#print axioms` on all seven probe theorems reports exactly `propext`,
+`Classical.choice`, `Quot.sound`. The single warning is a `longLine` on the renamed
+`#print axioms` line, which the rename itself pushed from 97 to 102 characters — an artifact of
+the copy, not of the probe. So the probes' own proof scripts still elaborate verbatim against the
+promoted library, which is what the cross-check existed to establish.
+
+**Sorry-free, and honest about the two crude counters.**
+`lean-sorry-census.sh` over the four resolved source roots reports `sorry_count: 0` with an empty
+inventory, and C3 independently reports a zero structural sorry inventory. The vacuous-definition
+grep reports one hit, `FormalSystem/Examples/TemporalStructures.lean:495`
+(`int_domain_universal … := trivial`): byte-identical at the pre-task baseline `bf707543f`, not
+in this task's file scope, and not vacuous in substance — `intTimeHistory.domain` **is** the
+universally true predicate, so `trivial` proves it honestly. The `^axiom ` grep briefly read 15
+against a baseline of 14; the extra "declaration" was a **docstring prose line** that a Phase 1
+reflow left beginning with the word "axiom". The line was rewrapped, the count is back to 14, and
+no `axiom` declaration was added at any point — C2's four flagship sets and C14's full pinned set
+both match their baselines.
+
+**Follow-up recorded** (also in the summary): the manuscript pass implementing R4, and the
+`FrameOver.IsRegular` `saturation` → `completion` field swap with its five transport sites.
 
 **Timing**: 1 hour
 
@@ -812,24 +869,24 @@ end FormalSystem.Semantics
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 with zero `error:` and zero `warning:` lines, at every phase boundary.
-- [ ] Every modified `FormalSystem/**` module is silent under
+- [x] `lake build` exits 0 with zero `error:` and zero `warning:` lines, at every phase boundary.
+- [x] Every modified `FormalSystem/**` module is silent under
       `lake env lean -D weak.linter.mathlibStandardSet=true -D autoImplicit=false` — the package's
       own linter set, which plain `lake env lean` does not apply (the hazard recorded in task
       659's summary).
-- [ ] `#print axioms` reports exactly `propext`, `Classical.choice`, `Quot.sound` for each of the
+- [x] `#print axioms` reports exactly `propext`, `Classical.choice`, `Quot.sound` for each of the
       eleven pinned declarations, and no `sorryAx` anywhere.
-- [ ] `bash scripts/check-module-invariants.sh` passes, including C15 with the new theorem-index
+- [x] `bash scripts/check-module-invariants.sh` passes, including C15 with the new theorem-index
       rows and C30 with any `longFile` baseline added in Phase 3.
-- [ ] `bash scripts/check-paper-definitions.sh` reports no pinned anchor moved, and
+- [x] `bash scripts/check-paper-definitions.sh` reports no pinned anchor moved, and
       `docs/reference/paper-definitions-of-record.md` is unmodified.
-- [ ] `bash scripts/check-evidence-probes.sh` still passes all five wired probes (task 660's
+- [x] `bash scripts/check-evidence-probes.sh` still passes all five wired probes (task 660's
       repair must not regress).
-- [ ] `bash scripts/check-metalogic-cycles.sh`, `bash scripts/check-copyright-headers.sh` and
+- [x] `bash scripts/check-metalogic-cycles.sh`, `bash scripts/check-copyright-headers.sh` and
       `bash scripts/readme-lint.sh` all exit 0.
-- [ ] Both files under `specs/661_settle_saturation_vs_completion_foundation/probes/` still
+- [x] Both files under `specs/661_settle_saturation_vs_completion_foundation/probes/` still
       compile warning-free.
-- [ ] `git diff` across the task's commits touches only: `FormalSystem/Semantics/TaskFrame.lean`,
+- [x] `git diff` across the task's commits touches only: `FormalSystem/Semantics/TaskFrame.lean`,
       `FormalSystem/Semantics/Extension/Completion.lean`,
       `FormalSystem/Semantics/Extension/Step.lean`,
       `FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean`, the two module READMEs,

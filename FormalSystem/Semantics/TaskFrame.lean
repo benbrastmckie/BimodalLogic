@@ -576,9 +576,9 @@ def IsSegment {W : Type} (R : W → D → W → Prop) (s : Set W) : Prop :=
 of *Compositionality* and the biconditional itself, and *Limit* — together with `Completion`, the
 proposed replacement for the fourth of them, stated at the same level and in the same vocabulary
 so that the comparison is a comparison of two `def:frame` clauses rather than of a clause and a
-lemma. `Limit` is *definitionally* the literal transcribed shape the development used before the
-axiom had a name, so the discharge helpers `limit_of_succOrder` and `limit_of_shift` below
-conclude it without restatement.
+lemma. `Limit` is *definitionally* the literal transcribed shape the development used before
+the axiom had a name, so the discharge helpers `limit_of_succOrder` and `limit_of_shift`
+below conclude it without restatement.
 
 **These predicates are the sole form in which the axioms are available.** Where the `FrameOver`
 structure carries the corresponding fields, `FrameOver.saturation` must be *definitionally*
