@@ -1,7 +1,7 @@
 # Implementation Plan: Repair the filtered-frame-is-universal evidence probe
 
 - **Task**: 660 - Repair check-evidence-probes.sh: phase7-filtered-frame-is-universal does not compile
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1 hour
 - **Dependencies**: None (task 661 depends on this task; 660 must fully complete first)
 - **Research Inputs**: `specs/660_repair_check_evidence_probes_filtered_frame/reports/01_repair-filtered-frame-probe.md`
@@ -112,34 +112,37 @@ auditable instead of looking like an oversight.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Replace the three tactic proofs with verified term-mode proofs [NOT STARTED]
+### Phase 1: Replace the three tactic proofs with verified term-mode proofs [COMPLETED]
 
 **Goal**: `specs/evidence/bi-lasso-decision-layer/phase7-filtered-frame-is-universal.lean`
 compiles with exit 0 and empty output, with all three `example` signatures unchanged.
 
 **Tasks**:
-- [ ] Read the probe file and confirm its current shape: three `example`s at lines 9-12, 16-21,
-      and 25-29, each proved by a `simp` citing `FrameOver.ofReflective_taskRel_eq`.
-- [ ] Replace Probe A's proof body (`by simp [...]`) with the term
+- [x] Read the probe file and confirm its current shape: three `example`s at lines 9-12, 16-21,
+      and 25-29, each proved by a `simp` citing `FrameOver.ofReflective_taskRel_eq`. *(confirmed verbatim)*
+- [x] Replace Probe A's proof body (`by simp [...]`) with the term
       `(RefinedFilteredTaskFrame.rel_iff intOrder phi w 1 u).mpr (Or.inl one_ne_zero)`.
-- [ ] Replace Probe B's proof body (`by intro n; simp [...]`) with the term
+- [x] Replace Probe B's proof body (`by intro n; simp [...]`) with the term
       `fun n => (RefinedFilteredTaskFrame.rel_iff intOrder phi (f n) 1 (f (n + 1))).mpr (Or.inl one_ne_zero)`.
-- [ ] Replace Probe C's proof body (`by simp [...]`) with the term
+- [x] Replace Probe C's proof body (`by simp [...]`) with the term
       `(RefinedFilteredTaskFrame.rel_iff intOrder phi w d u).mpr (Or.inl hd)`.
-- [ ] Do NOT substitute `ofReflectiveRegular_taskRel` / `ofReflectiveRegular_taskRel_eq` into the
+- [x] Do NOT substitute `ofReflectiveRegular_taskRel` / `ofReflectiveRegular_taskRel_eq` into the
       existing `simp` calls. Research compiled that variant: it leaves the identical unsolved goal
       and the identical unused-lemma warning.
-- [ ] Leave the imports, the three `open` lines, the three `example` signatures, and the three
-      explanatory comments (lines 8, 14-15, 23-24) exactly as they are.
-- [ ] Confirm research recommendation 2: check whether any inline comment names the broken
+- [x] Leave the imports, the three `open` lines, the three `example` signatures, and the three
+      explanatory comments (lines 8, 14-15, 23-24) exactly as they are. *(deviation: altered — the
+      three statements are byte-identical, but each signature's trailing ` := by` became ` :=`;
+      dropping the `by` proof-mode marker is unavoidable for a term-mode proof and changes no
+      part of the proposition)*
+- [x] Confirm research recommendation 2: check whether any inline comment names the broken
       citation `ofReflective_taskRel_eq`. It currently does not, so expect no comment edit here.
-- [ ] Add one short comment above Probe A naming why the bridge lemma is cited rather than
+- [x] Add one short comment above Probe A naming why the bridge lemma is cited rather than
       unfolding the frame — the `_proof_4` unfolded-`TaskFrame.Limit` transparency reason — with a
       pointer to `FormalSystem/Semantics/TaskFrame.lean`'s `ofReflective_taskRel` docstring.
-- [ ] Run `lake env lean specs/evidence/bi-lasso-decision-layer/phase7-filtered-frame-is-universal.lean`
-      and confirm exit 0 with empty output. A warning (including `unusedSimpArgs`) is a failure of
+- [x] Run `lake env lean specs/evidence/bi-lasso-decision-layer/phase7-filtered-frame-is-universal.lean`
+      and confirm exit 0 with empty output. *(exit 0, empty output)* A warning (including `unusedSimpArgs`) is a failure of
       this phase, not a pass.
-- [ ] Commit the file once green.
+- [x] Commit the file once green.
 
 **Timing**: 0.5 hours
 
