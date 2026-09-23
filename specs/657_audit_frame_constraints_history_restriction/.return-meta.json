@@ -1,0 +1,30 @@
+{
+  "status": "researched",
+  "dispatch_seq": 7,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/657_audit_frame_constraints_history_restriction/reports/01_audit-frame-constraints-restriction.md",
+      "summary": "Verdict-first audit of def:frame's four constraints: all four certified independent (two new witnesses), Saturation localized to the exact condition thm:extension needs (Completion) and shown redundant over discrete time, the partial-history/restriction identification settled pointwise and at the extension order, three candidate fifth constraints rejected on compiled grounds, plus the Q5 keep/restate/weaken/drop table and seven recommendations."
+    }
+  ],
+  "user_decision": {
+    "question": "Should def:frame keep Saturation as stated, or replace it with the Completion constraint this round isolated (the exact condition thm:extension consumes, implied by Saturation, not known to imply it)?",
+    "options": [
+      "Keep Saturation as stated, and add Completion as a recorded lemma before lem:step (report R1) - preserves the Cmiel-Kuhlmann-Kuhlmann ball-space anchoring and cor:saturation-finite unchanged",
+      "Replace Saturation by Completion in def:frame (report R4) - deletes def:frame's directed-family opening clause outright and makes lem:step immediate, at the cost of the ball-space footnote and a restatement of cor:saturation-finite"
+    ],
+    "recommended": "Keep Saturation as stated, and add Completion as a recorded lemma before lem:step (report R1) - preserves the Cmiel-Kuhlmann-Kuhlmann ball-space anchoring and cor:saturation-finite unchanged",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1790146139_4979e4_657",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "research",
+      "lean-research-agent"
+    ]
+  }
+}
