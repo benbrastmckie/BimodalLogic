@@ -26,12 +26,44 @@ The proof is a composition, not a re-derivation. Each of its three inputs is alr
   `PartialHistory.adjoin` then realizes as an actual `PartialHistory` extending `τ` with `z` in
   its domain.
 
-## The sole *Saturation* application site
+## The sole *Saturation* **elimination** site
 
-*Saturation* is applied **here and nowhere else**. `lem:constraint` explicitly does not consume it
-(it is what *supplies* this site its directed-family-of-nonempty-sets hypothesis), and
-`lem:admissible` explicitly does not consume it either. A `grep` for `Saturation` across
-`FormalSystem/` should therefore find exactly one consuming proof — the proof of `step` below.
+`step` is the sole site in the development where *Saturation* is **eliminated into a
+non-*Saturation* conclusion**. `lem:constraint` does not consume it (it is what *supplies* this
+site its directed-family-of-nonempty-sets hypothesis), and `lem:admissible` does not consume it
+either.
+
+**This is not the claim that `F.saturation` occurs once.** An earlier version of this docstring
+predicted that a `grep` for `Saturation` across `FormalSystem/` would turn up a single consuming
+proof; that prediction is false as measured. `F.saturation` is *applied* at six sites in proof
+bodies, and the five that are not `step` each take
+*Saturation* in and give *Saturation* back out — they are transports and restatements, not
+eliminations:
+
+- `FormalSystem/OpenLanguage/OpenReversal.lean` (`FrameOver.rev_isRegular`) — *Saturation* of a
+  frame's reversal, from *Saturation* of the frame;
+- `FormalSystem/Semantics/IntTransfer.lean` (`FrameOver.map`) — *Saturation* transported along an
+  order isomorphism of durations;
+- `FormalSystem/Semantics/Frames/TranslationProduct.lean` (`FrameOver.translationProduct`) —
+  *Saturation* of a product, from *Saturation* of a factor;
+- `FormalSystem/Metalogic/Decidability/Verified/Bridge/RegionFrame.lean`
+  (`regionFrame_saturation`) and
+  `FormalSystem/Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean`
+  (`zTaskFrameV2_saturation`) — the constructed frames' own *Saturation* facts, read off frames
+  that already carry it.
+
+`FormalSystem/Semantics/TaskFrame.lean`'s occurrences are the accessor definitions and their
+`example` acceptance tests, not applications at all.
+
+## What `step` actually consumes: *Completion*
+
+`Extension/Completion.lean` isolates the condition this site needs and shows it is **equivalent**
+to the one-point extension property `step` concludes: `PartialHistory.Completion`. *Saturation*
+enters only to establish it (`completion_of_isRegular`, which routes through this very proof), and
+once *Completion* is assumed, `thm:extension` follows from *Seriality* and *Limit* with no
+*Saturation* and no *Compositionality* (`extension_of_completion`). Over `def:BX-z`'s ℤ-time,
+*Saturation* is redundant outright (`extension_of_isZTime`), which is this lemma's own closing
+remark made precise.
 
 ### The frame-axiom-field invariant, discharged
 

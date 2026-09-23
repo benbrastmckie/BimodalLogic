@@ -490,7 +490,7 @@ then has a compiled witness satisfying the other three and failing it.
 
 ---
 
-### Phase 7: The two remaining docstring defects [NOT STARTED]
+### Phase 7: The two remaining docstring defects [COMPLETED]
 
 **Goal**: Delete the two false claims the audit located in `Extension/`, replacing each with the
 claim the audit actually verified. (The third, in `FrameOver.reflection`, lands in Phase 1 — it is

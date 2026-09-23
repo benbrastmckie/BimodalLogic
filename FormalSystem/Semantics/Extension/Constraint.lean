@@ -224,7 +224,18 @@ Every fiber constraint is nonempty, by *Seriality*.
 
 For a domain time `t ≤ z` this is the successor half of *Seriality* at the nonnegative duration
 `z - t`; for `t ≥ z` it is the predecessor half at `t - z`, turned around by the converse
-convention. No other axiom is used.
+convention.
+
+**Axioms consumed: *Seriality* and *Limit*.** The `t ≥ z` branch turns the predecessor instance
+around through `FrameOver.reflection`, whose `d = 0` case is discharged by
+`eq_of_taskRel_zero` — that is *Limit*, and the zero case is genuinely reachable here, at `t = z`.
+*Compositionality* and *Saturation* are not consumed.
+
+A *Limit*-free route exists in principle: `FrameOver.reflection`'s `d ≠ 0` branch is definitional
+content of the reflection convention (`TaskFrame.reflect_reflection_of_ne`) and costs nothing. No
+declaration in this module takes it. The one declaration in the tree that does is
+`PartialHistory.completion_of_hasNearest` (`Extension/Completion.lean`), which excludes
+`z ∈ dom τ` first and so keeps every duration it reflects at provably nonzero.
 -/
 theorem nonempty_fib_of_serial [F.IsRegular] {τ : PartialHistory F} {z t : F.Duration}
     (ht : τ.domain t) : (Fib F.TaskRel (τ.states t ht) (z - t)).Nonempty := by
@@ -404,7 +415,20 @@ each by deleting the corresponding hypothesis and observing the failure:
 *Compositionality* is therefore consumed in **both** of its directions here. *Saturation* is
 **not** consumed: it is applied only at `lem:step`, the sole application site the paper names, and
 this lemma is precisely what supplies that application its directed-family-of-nonempty-sets
-hypothesis. *Limit* is not consumed either.
+hypothesis.
+
+***Limit* is consumed**, at the level of the elaborated proof term, contrary to what this
+docstring formerly claimed. `constraint` reaches `FrameOver.reflection` on three paths —
+`fib_subset_fib_of_le_of_le'`, `nonempty_fib_of_serial` and `nonempty_seg_of_interpolates` — and
+`reflection`'s `d = 0` branch is discharged by `eq_of_taskRel_zero`, which is *Limit*. The zero
+case is genuinely reachable: `nonempty_fib_of_serial` at `t = z` invokes `reflection` at duration
+`0`. So the accurate consumption list is `C→`, `C←`, `S`, `L` — and **not** `Sat`.
+
+A *Limit*-free route exists in principle, since `reflection`'s `d ≠ 0` branch is definitional
+(`TaskFrame.reflect_reflection_of_ne`), but no declaration in the current tree takes it here. The
+one declaration that does take exactly that route is
+`PartialHistory.completion_of_hasNearest` (`Extension/Completion.lean`), by excluding
+`z ∈ dom τ` before reflecting anything.
 
 The paper's `z ∈ D \ X` proviso is not assumed: see this module's docstring for why the lemma
 holds a fortiori when `z` is itself a domain time.
