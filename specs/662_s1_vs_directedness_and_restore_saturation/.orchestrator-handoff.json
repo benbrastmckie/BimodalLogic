@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 2,
+  "summary": "Wrote a 10-phase, 15-hour implementation plan restoring Saturation (in its directed S1d form) as def:frame's fourth constraint and demoting Completion to the derived condition lem:step consumes, with four new machine-checkable results: the nest condition S1 plus S1d-implies-S1, the correction that both existing witnesses refute S1 and not merely S1d, a hypothesis-weakening of the monotonicity lemmas off the IsRegular instance, and the countable-domain sufficiency theorem.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/662_s1_vs_directedness_and_restore_saturation/plans/01_restore-saturation-settle-nests.md",
+      "summary": "10 phases in 6 waves, 13 pinned Lean declarations, 17 in-tree prose regions reversed, zero manuscript and zero .claude/ writes."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 10,
+  "blockers": []
+}
