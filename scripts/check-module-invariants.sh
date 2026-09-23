@@ -1903,6 +1903,25 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Semantics.StateTopology.RationalTwoOrigins.not_rel_saturation' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.StateTopology.MetricFrame.finalTopology_eq_nbhdTopology' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.StateTopology.MetricFrame.isRegular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.FrameOver.reflection_of_limit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.PartialHistory.completion_iff_onePointExtension' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.PartialHistory.completion_of_isRegular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.PartialHistory.extension_of_completion' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.PartialHistory.completion_of_hasNearest' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.PartialHistory.extension_of_isZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.PartialHistory.restrict_isPartialHistory' depends on axioms: [propext]
+'FormalSystem.Semantics.PartialHistory.eq_restrict_of_extends' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Semantics.PartialHistory.exists_restrict_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.PartialHistory.exists_worldHistory_restricting_pair' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.PartialHistory.restrict_le_restrict_iff' depends on axioms: [propext]
+'FormalSystem.Semantics.StateTopology.voidFrame_compositional' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Semantics.StateTopology.voidFrame_limit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.voidFrame_saturation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.voidFrame_not_serial' depends on axioms: [propext, Quot.sound]
+'FormalSystem.Semantics.StateTopology.bumpFrame_serial' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.bumpFrame_limit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.bumpFrame_saturation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.bumpFrame_not_compositional' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2078,6 +2097,25 @@ import FormalSystem
 #print axioms FormalSystem.Semantics.StateTopology.RationalTwoOrigins.not_rel_saturation
 #print axioms FormalSystem.Semantics.StateTopology.MetricFrame.finalTopology_eq_nbhdTopology
 #print axioms FormalSystem.Semantics.StateTopology.MetricFrame.isRegular
+#print axioms FormalSystem.Semantics.FrameOver.reflection_of_limit
+#print axioms FormalSystem.Semantics.PartialHistory.completion_iff_onePointExtension
+#print axioms FormalSystem.Semantics.PartialHistory.completion_of_isRegular
+#print axioms FormalSystem.Semantics.PartialHistory.extension_of_completion
+#print axioms FormalSystem.Semantics.PartialHistory.completion_of_hasNearest
+#print axioms FormalSystem.Semantics.PartialHistory.extension_of_isZTime
+#print axioms FormalSystem.Semantics.PartialHistory.restrict_isPartialHistory
+#print axioms FormalSystem.Semantics.PartialHistory.eq_restrict_of_extends
+#print axioms FormalSystem.Semantics.PartialHistory.exists_restrict_eq
+#print axioms FormalSystem.Semantics.PartialHistory.exists_worldHistory_restricting_pair
+#print axioms FormalSystem.Semantics.PartialHistory.restrict_le_restrict_iff
+#print axioms FormalSystem.Semantics.StateTopology.voidFrame_compositional
+#print axioms FormalSystem.Semantics.StateTopology.voidFrame_limit
+#print axioms FormalSystem.Semantics.StateTopology.voidFrame_saturation
+#print axioms FormalSystem.Semantics.StateTopology.voidFrame_not_serial
+#print axioms FormalSystem.Semantics.StateTopology.bumpFrame_serial
+#print axioms FormalSystem.Semantics.StateTopology.bumpFrame_limit
+#print axioms FormalSystem.Semantics.StateTopology.bumpFrame_saturation
+#print axioms FormalSystem.Semantics.StateTopology.bumpFrame_not_compositional
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \

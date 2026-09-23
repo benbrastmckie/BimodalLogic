@@ -159,6 +159,8 @@ a *single* possible world restricting onto both — this says that restriction i
 **order-surjection** onto the partial histories, not merely a pointwise surjection: every instance
 of the extension relation is realized inside one possible world, and no spurious instances are
 created. That pair of facts is the order-level form of the anchor case.
+
+Paper: `def:world-history`
 -/
 theorem restrict_le_restrict_iff (h : WorldHistory F) {X Y : F.Duration → Prop}
     (hX : ∃ t, X t) (hY : ∃ t, Y t) :

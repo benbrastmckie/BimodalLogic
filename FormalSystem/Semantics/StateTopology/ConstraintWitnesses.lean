@@ -634,14 +634,18 @@ def voidFrame : FrameOver intOrder :=
 theorem voidFrame_taskRel : voidFrame.TaskRel = voidRel :=
   FrameOver.ofReflective_taskRel_eq
 
-/-- *Compositionality* holds **vacuously**: both halves of the biconditional are `False`. -/
+/-- *Compositionality* holds **vacuously**: both halves of the biconditional are `False`. 
+Paper: `def:frame#Compositionality`
+-/
 theorem voidFrame_compositional : TaskFrame.Compositional voidFrame.TaskRel := by
   rw [voidFrame_taskRel]
   intro w v x y _ _
   exact ⟨fun h => h.elim, fun ⟨_, h, _⟩ => h.elim⟩
 
 /-- *Limit* holds **vacuously**: the cone hypothesis cannot be met, since no duration relates
-anything. -/
+anything. 
+Paper: `def:frame#Limit`
+-/
 theorem voidFrame_limit : TaskFrame.Limit voidFrame.TaskRel := by
   rw [voidFrame_taskRel]
   intro w u h
@@ -649,12 +653,16 @@ theorem voidFrame_limit : TaskFrame.Limit voidFrame.TaskRel := by
   exact hy.elim
 
 /-- *Saturation* holds **for free**, by `cor:saturation-finite`
-(`TaskFrame.saturation_of_finite`) — the carrier `Bool` is finite. It is not proved by hand. -/
+(`TaskFrame.saturation_of_finite`) — the carrier `Bool` is finite. It is not proved by hand. 
+Paper: `cor:saturation-finite`
+-/
 theorem voidFrame_saturation : TaskFrame.Saturation voidFrame.TaskRel := by
   rw [voidFrame_taskRel]
   exact TaskFrame.saturation_of_finite voidRel
 
-/-- **The independence witness for *Seriality***: no state has a `0`-successor. -/
+/-- **The independence witness for *Seriality***: no state has a `0`-successor. 
+Paper: `def:frame#Seriality`
+-/
 theorem voidFrame_not_serial : ¬ TaskFrame.Serial voidFrame.TaskRel := by
   rw [voidFrame_taskRel]
   intro h
@@ -707,7 +715,9 @@ def bumpFrame : FrameOver intOrder :=
 theorem bumpFrame_taskRel : bumpFrame.TaskRel = bumpRel :=
   FrameOver.ofReflective_taskRel_eq
 
-/-- *Seriality* holds: every state is its own successor and predecessor at every `x ≥ 0`. -/
+/-- *Seriality* holds: every state is its own successor and predecessor at every `x ≥ 0`. 
+Paper: `def:frame#Seriality`
+-/
 theorem bumpFrame_serial : TaskFrame.Serial bumpFrame.TaskRel := by
   rw [bumpFrame_taskRel]
   have key : ∀ (w : Bool) (x : ℤ), 0 ≤ x → bumpRel w x w := by
@@ -723,7 +733,9 @@ theorem bumpFrame_serial : TaskFrame.Serial bumpFrame.TaskRel := by
   exact ⟨⟨w, key w x hx⟩, ⟨w, key w x hx⟩⟩
 
 /-- *Limit* holds, through `TaskFrame.limit_of_succOrder`: the time is `ℤ`, so it suffices that
-the duration-`0` pairs are exactly the identity. -/
+the duration-`0` pairs are exactly the identity. 
+Paper: `def:frame#Limit`
+-/
 theorem bumpFrame_limit : TaskFrame.Limit bumpFrame.TaskRel := by
   rw [bumpFrame_taskRel]
   haveI : SuccOrder (intOrder.carrier) := (inferInstance : SuccOrder ℤ)
@@ -735,7 +747,9 @@ theorem bumpFrame_limit : TaskFrame.Limit bumpFrame.TaskRel := by
   · norm_num at h1
 
 /-- *Saturation* holds **for free**, by `cor:saturation-finite`
-(`TaskFrame.saturation_of_finite`) — the carrier `Bool` is finite. -/
+(`TaskFrame.saturation_of_finite`) — the carrier `Bool` is finite. 
+Paper: `cor:saturation-finite`
+-/
 theorem bumpFrame_saturation : TaskFrame.Saturation bumpFrame.TaskRel := by
   rw [bumpFrame_taskRel]
   exact TaskFrame.saturation_of_finite bumpRel
@@ -743,6 +757,8 @@ theorem bumpFrame_saturation : TaskFrame.Saturation bumpFrame.TaskRel := by
 /--
 **The independence witness for *Compositionality***: `ff ⇒₁ tt` and `tt ⇒₁ tt`, yet `ff ⇏₂ tt`,
 so the composition (`←`) half of the biconditional fails.
+
+Paper: `def:frame#Compositionality`
 -/
 theorem bumpFrame_not_compositional : ¬ TaskFrame.Compositional bumpFrame.TaskRel := by
   rw [bumpFrame_taskRel]

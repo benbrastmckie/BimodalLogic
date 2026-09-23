@@ -553,6 +553,8 @@ theorem restrict_states (h : WorldHistory F) (X : F.Duration → Prop) (hX : ∃
 /--
 **The easy direction, stated as a claim rather than a construction**: the restriction of a
 possible world to any nonempty set of times is a partial history. Constraint-free.
+
+Paper: `def:world-history`
 -/
 theorem restrict_isPartialHistory (h : WorldHistory F) (X : F.Duration → Prop) (hX : ∃ t, X t) :
     ∃ τ : PartialHistory F, τ.domain = X ∧
@@ -597,6 +599,8 @@ This is an equality of `PartialHistory` values, not a pointwise agreement, which
 *Transcription note.* A non-dependent `congrArg` on the structure literal does **not** typecheck
 here: `respects_task`'s type depends on `states`, so rewriting `states` under the constructor is a
 dependent rewrite. Destructure `τ`, substitute the `states` field by `funext`, and close by `rfl`.
+
+Paper: `def:world-history`
 -/
 theorem eq_restrict_of_extends {τ : PartialHistory F} {h : WorldHistory F}
     (hext : Extends h.val τ) : restrict h τ.domain τ.nonempty_domain = τ := by

@@ -1158,7 +1158,10 @@ the hypothesis itself — so *Seriality* is never reached.
 *Limit*-only form separately is the point: the reflection convention is the cheapest law in the
 apparatus, and the extension chain's *Limit* consumption is entirely traceable to it.
 
-Paper: `def:task-relation` (the reflection convention), `def:frame#Limit`
+It is *Limit* that the zero case consumes, i.e. `def:frame`'s third constraint; the law itself is
+the reflection convention of `def:task-relation`.
+
+Paper: `def:task-relation`
 -/
 theorem reflection_of_limit (F : FrameOver D) (hlim : TaskFrame.Limit F.TaskRel)
     (w : F.WorldState) (d : ↑D) (u : F.WorldState) :

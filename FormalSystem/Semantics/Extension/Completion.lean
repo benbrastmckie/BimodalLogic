@@ -176,7 +176,9 @@ theorem onePointExtension_of_completion (hser : TaskFrame.Serial F.TaskRel)
   exact ⟨adjoin τ z u hadm, adjoin_extends τ z u hadm, adjoin_domain_self τ z u hadm⟩
 
 /-- The equivalence, at any frame satisfying *Seriality* and *Limit*: *Completion* **is** the
-one-point extension property. -/
+one-point extension property. 
+Paper: — (the equivalence is the audit's own; the manuscript has no anchor for it)
+-/
 theorem completion_iff_onePointExtension (hser : TaskFrame.Serial F.TaskRel)
     (hlim : TaskFrame.Limit F.TaskRel) : Completion F ↔ OnePointExtension F :=
   ⟨onePointExtension_of_completion hser hlim, completion_of_onePointExtension⟩
@@ -190,6 +192,8 @@ theorem completion_iff_onePointExtension (hser : TaskFrame.Serial F.TaskRel)
 `PartialHistory.step`, which is the sole site in the development where *Saturation* is eliminated
 into a conclusion that does not itself mention *Saturation*; everything downstream of this lemma
 consumes `Completion` instead.
+
+Paper: `lem:step`
 -/
 theorem completion_of_isRegular [F.IsRegular] : Completion F :=
   completion_of_onePointExtension (fun τ z => step F τ z)
@@ -206,6 +210,8 @@ frame constraint, so the only inputs are *Completion*, *Seriality* and *Limit*.
 binder at all. That is the machine-checked form of the claim that the Zorn layer and `def:frame`'s
 four constraints meet only at `extension`: the order-theoretic half of the extension theorem is
 constraint-free, and every constraint the theorem consumes is visible in this signature.
+
+Paper: `thm:extension`
 -/
 theorem extension_of_completion (hser : TaskFrame.Serial F.TaskRel)
     (hlim : TaskFrame.Limit F.TaskRel) (hC : Completion F) (τ : PartialHistory F) :
@@ -280,6 +286,8 @@ reflection it performs is at a provably nonzero duration, where the reflection l
 (`TaskFrame.reflect_reflection_of_ne`). This is the one *Limit*-free route through the extension
 chain in the whole tree; `Extension/Constraint.lean`'s `constraint` and `nonempty_fib_of_serial`
 do **not** take it, and their docstrings record that.
+
+Paper: `lem:step`
 -/
 theorem completion_of_hasNearest (hN : HasNearest F.Duration)
     (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel) :
@@ -374,6 +382,8 @@ further classes discharge it outright rather than assuming it: `TaskFrame.satura
 deterministic relation). And `Extension/PeriodicExtension.lean` confirms the discrete-time point
 from the constructive side independently, building a doubly ultimately periodic total history over
 ℤ-time with a finite carrier and no appeal to Zorn's lemma at all.
+
+Paper: `def:BX-z`
 -/
 theorem extension_of_isZTime (hZ : F.IsZTime)
     (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)

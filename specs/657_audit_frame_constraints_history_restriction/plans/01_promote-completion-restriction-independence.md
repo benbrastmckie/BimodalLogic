@@ -615,7 +615,7 @@ script diff means the generalization went further than needed and should be trim
 
 ---
 
-### Phase 9: Wire the new module into the generated root and refresh the READMEs [NOT STARTED]
+### Phase 9: Wire the new module into the generated root and refresh the READMEs [COMPLETED]
 
 **Goal**: `Extension/Completion.lean` reaches the build through the generated root and through the
 directory aggregator, and every README that inventories these directories records the new content.
@@ -669,7 +669,7 @@ picked up something unintended and must be investigated before proceeding.
 
 ---
 
-### Phase 10: Certification sweep — theorem index and C14 axiom pins [NOT STARTED]
+### Phase 10: Certification sweep — theorem index and C14 axiom pins [COMPLETED]
 
 **Goal**: Every document that records what the library certifies records the new truth.
 

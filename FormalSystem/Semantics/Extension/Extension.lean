@@ -147,9 +147,9 @@ reasons, recorded here because the choice is not obvious from the declarations a
 4. The paper's own `def:world-history` reads the tiers in the coherence direction, and the
    identification is exactly the kind of fact a corollary should state.
 
-The corollary is therefore stated, not built in. Note that `cor:restriction` is a **proposed**
-paper label for it, not a live one: no such anchor exists in the manuscript yet, and this module
-cites the declarations rather than the label.
+The corollary is therefore stated, not built in. The manuscript has **no anchor for it yet** —
+the audit proposes one — so this module cites the declarations rather than a label, and no
+label-shaped token for it appears anywhere in the tree.
 
 ## Main Definitions
 
@@ -248,7 +248,9 @@ theorem isRestriction_of_isRegular (F : TaskFrame) [F.IsRegular] (τ : PartialHi
   extension F τ
 
 /-- The surjection, spelled out: every partial history is literally `restrict h` for some possible
-world `h`, on the nose, not merely up to pointwise agreement. -/
+world `h`, on the nose, not merely up to pointwise agreement. 
+Paper: `thm:extension`
+-/
 theorem exists_restrict_eq (F : TaskFrame) [F.IsRegular] (τ : PartialHistory F) :
     ∃ h : WorldHistory F, restrict h τ.domain τ.nonempty_domain = τ := by
   obtain ⟨h, hext⟩ := extension F τ
@@ -262,6 +264,8 @@ identification is not merely a pointwise surjection onto the partial histories: 
 the extension relation is realized inside one possible world. With
 `PartialHistory.restrict_le_restrict_iff`, which is free, this makes restriction an
 order-surjection.
+
+Paper: `thm:extension`
 -/
 theorem exists_worldHistory_restricting_pair (F : TaskFrame) [F.IsRegular]
     {τ σ : PartialHistory F} (hle : τ ≤ σ) :
