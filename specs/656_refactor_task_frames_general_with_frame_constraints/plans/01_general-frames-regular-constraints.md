@@ -271,7 +271,7 @@ consumer edits" goal actually asks for.
 
 ---
 
-### Phase 3: `Semantics/StateTopology.lean` [NOT STARTED]
+### Phase 3: `Semantics/StateTopology.lean` [COMPLETED]
 
 **Goal**: Land the neighbourhood topology as the sole `TopologicalSpace` instance on a general
 frame's state space, the Limit characterisation, the derived separation instances on the regular
@@ -279,16 +279,21 @@ class, and the real-carrier bridge lemmas — all while the old fields are still
 topology lands before any consumer churn.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/StateTopology.lean`, lifting `nbhdTopology`, `coneTopology` and `t1Space_nbhdTopology_iff_limit` from task 655's `NbhdTopology.lean` probe with their docstrings.
-- [ ] Put `set_option warn.classDefReducibility false` at module scope with a comment recording why (`nbhdTopology` is a `def` of class type; `@[instance_reducible]` was rejected because it changes unification's unfolding eagerness and would interact with the carrier-keying ambiguity).
-- [ ] Add `instance FrameOver.stateTopology (F : FrameOver D) : TopologicalSpace F.WorldState := nbhdTopology F.TaskRel`.
-- [ ] Add `theorem FrameOver.t1Space_iff_limit (F : FrameOver D) : T1Space F.WorldState ↔ TaskFrame.Limit F.TaskRel := t1Space_nbhdTopology_iff_limit F.TaskRel` — on the **general** frame.
-- [ ] Add `instance (F : FrameOver D) [F.IsRegular] : T1Space F.WorldState := (t1Space_iff_limit F).mpr F.limit`, and record in the module docstring that `R0Space` follows free from Mathlib's `T1Space → R0Space`.
-- [ ] Add `def FrameOver.coneTop (F : FrameOver D) : TopologicalSpace F.WorldState := coneTopology F.TaskRel` as a plain `def` with **no** instance, so there is exactly one `TopologicalSpace` on a state space. Docstring must say why.
-- [ ] Lift the real-carrier bridge lemmas from task 655's `RealFrames.lean` probe (`nbhdTopology_eq_real` and siblings) in this same phase.
-- [ ] State history continuity with the order topology on `D` as **binders**, never a global instance, to avoid diamonds at `intOrder`/`ℚ`/`ℝ`.
-- [ ] Do **not** add the module to `FormalSystem/Semantics.lean`. Regenerate the root with `lake exe mk_all --lib FormalSystem` so the root reaches it.
-- [ ] Full `--wfail` build plus test library; `#print axioms` on `FrameOver.t1Space_iff_limit` and the derived `T1Space` instance must return Mathlib's standard three only.
+- [x] Create `FormalSystem/Semantics/StateTopology.lean`, lifting `nbhdTopology`, `coneTopology` and `t1Space_nbhdTopology_iff_limit` from task 655's `NbhdTopology.lean` probe with their docstrings. *(completed — the whole probe lifted: both topologies, the closed-set and discreteness characterisations, `limit_eq_iff`, the cone-filter/`mkOfNhds` block, history continuity, the triangle condition, and `limit_of_t1Space_coneTopology`)*
+- [x] Put `set_option warn.classDefReducibility false` at module scope with a comment recording why. *(completed)*
+- [x] Add `instance FrameOver.stateTopology`. *(completed)*
+- [x] Add `theorem FrameOver.t1Space_iff_limit` — on the **general** frame. *(completed; axioms = the standard three)*
+- [x] Add the derived `T1Space` instance on the regular class and record that `R0Space` follows free. *(completed as `FrameOver.instT1SpaceOfRegular`, with an `example … := inferInstance` pinning the R0 claim rather than asserting it)*
+- [x] Add `def FrameOver.coneTop` as a plain `def` with **no** instance. *(completed, with `coneTop_le_stateTopology`, `t1Space_coneTop` and `r0Space_coneTop` as the `app:topology-t1`/`app:topology-r0` frame-level forms)*
+- [x] Lift the real-carrier bridge lemmas from task 655's `RealFrames.lean` probe. *(completed — `nbhdTopology_eq_real`, `coneTopology_eq_nbhdTopology_real`, `not_discreteTopology_real`, stated against the generic `nbhdTopology`/`coneTopology` rather than the probe's ℝ-specialised copies; the probe's named ℝ frames themselves belong to Phase 9)*
+- [x] State history continuity with the order topology on `D` as **binders**, never a global instance. *(completed at both the bare-relation and the frame level)*
+- [x] Do **not** add the module to `FormalSystem/Semantics.lean`. Regenerate the root with `lake exe mk_all --lib FormalSystem`. *(completed — `grep -c StateTopology FormalSystem/Semantics.lean` = 0; the root carries the import; `mk_all --check` exits 0)*
+- [x] Full `--wfail` build plus test library; `#print axioms` on `FrameOver.t1Space_iff_limit` and the derived `T1Space` instance must return Mathlib's standard three only. *(completed — 2781 jobs green, 0 `error:` lines; `lean_verify` on both returns `[propext, Classical.choice, Quot.sound]`)*
+- [x] *(carried over from Phase 1)* Rewrite `exists_uniform_radius_of_finite`'s "Status" paragraph, which claimed "no topology exists anywhere in this library". *(completed here, where the claim first became false; re-verified by a scoped `--wfail` build of `FormalSystem.Semantics.TaskFrame`, a docstring-only change that cannot affect dependents' elaboration)*
+
+**Scope Hypothesis outcome**: asserted "roughly 40 new declarations". Actual: 40 `def`/`theorem`/
+`instance` declarations in `StateTopology.lean` (625 lines). Within the asserted band; the Phase 10
+C19 docstring budget needs no re-scoping.
 
 **Timing**: 2 hours
 

@@ -1326,12 +1326,14 @@ axiom, not a defect — but it means the filtration and FMP frames cannot remain
 dense-polymorphic once *Limit* is carried as a frame axiom. The move of FMP to `ℤ` is
 therefore forced by the axiom rather than being a convenience.
 
-**Status.** This is the deliberate substitute for the paper's cone-topology T1 result
-(`app:topology-r0`). Formalizing that result requires first building the cone topology — `(w)_x`
-as a basis, a proof that it *is* a basis, a `TopologicalSpace` instance — and no topology exists
-anywhere in this library; the infrastructure, not the one-line proof, is the cost. This lemma
-gives a machine-checked consequence of *Limit* in the same cost bracket, is topology-free,
-and has direct bearing on the finite-model constructions.
+**Status.** This lemma predates the state topology and remains the topology-free route to the
+same consequence: it is stated over a bare relation, imports nothing from `Mathlib.Topology`, and
+bears directly on the finite-model constructions. The paper's topological results themselves now
+exist, in `Semantics/StateTopology.lean`: `𝒩_F`, the cone-neighbourhood topology, is the state
+space's `TopologicalSpace` instance, `FrameOver.t1Space_iff_limit` proves it T1 exactly when
+*Limit* holds, and `app:topology-t1`/`app:topology-r0` are proved for the cone topology `𝒯_F` of
+`def:task-topology`. That module is deliberately a leaf, outside the `Semantics` aggregator, so
+this lemma stays usable without pulling `Mathlib.Topology` into every consumer of `TaskFrame`.
 -/
 theorem exists_uniform_radius_of_finite {W : Type} [Finite W]
     (R : W → D → W → Prop)
