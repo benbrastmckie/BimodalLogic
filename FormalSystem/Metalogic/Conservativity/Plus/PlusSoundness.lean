@@ -148,10 +148,10 @@ theorem plus_soundness_valid {φ : PlusFormula} (h : PlusDerivable FrameClass.Ba
 
 /-- Soundness of TM⁺ at `.Base` (context form). -/
 theorem plus_soundness_base (Γ : PlusContext) (φ : PlusFormula)
-    (d : PlusDerivationTree FrameClass.Base Γ φ) (F : TaskFrame) (M : TaskModel F)
-    (τ : WorldHistory F) (t : F.Duration)
+    (d : PlusDerivationTree FrameClass.Base Γ φ) (F : TaskFrame) [F.IsRegular]
+    (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, PlusTruthAt M τ t ψ) : PlusTruthAt M τ t φ :=
-  plus_soundness_in Γ φ d F trivial M τ t h_ctx
+  plus_soundness_in Γ φ d F inferInstance M τ t h_ctx
 
 /-- Soundness of TM⁺ at `.Dense`. -/
 theorem plus_soundness_dense {φ : PlusFormula} (h : PlusDerivable FrameClass.Dense [] φ) :
@@ -184,7 +184,7 @@ theorem plus_not_derivable_nil_bot :
     ¬ PlusDerivable FrameClass.Base [] PlusFormula.bot := by
   intro h
   obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (FrameOver.trivialFrame (D := ℤ))
-  exact plus_soundness_validIn h (FrameOver.trivialFrame (D := ℤ)) trivial
+  exact plus_soundness_validIn h (FrameOver.trivialFrame (D := ℤ)) inferInstance
     TaskModel.allFalse τ 0
 
 end FormalSystem.Metalogic.Conservativity

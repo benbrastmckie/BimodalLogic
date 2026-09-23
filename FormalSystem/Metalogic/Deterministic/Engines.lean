@@ -77,12 +77,12 @@ theorem derivable_of_validDetBase (φ : Formula) (h_valid : ValidDetIn FrameClas
     (Formula.box Chronicle.nextTop.neg) with h_box_dense | h_not_box_dense
   · obtain ⟨F, hdet, TM, τ, t, h_not_true⟩ :=
       countermodel_dense_enriched M hM_mcs φ h_neg_in h_box_dense
-    exact h_not_true (ValidDetIn.apply h_valid F.toTaskFrame trivial hdet TM τ t)
+    exact h_not_true (ValidDetIn.apply h_valid F.toTaskFrame inferInstance hdet TM τ t)
   · rcases SetMaximalConsistent.negation_complete hM_mcs
       (Formula.box Chronicle.nextTop) with h_box_discrete | h_not_box_discrete
     · obtain ⟨F, hdet, TM, τ, t, h_not_true⟩ :=
         WeakCanonical.countermodel_discrete M hM_mcs φ h_neg_in h_box_discrete
-      exact h_not_true (ValidDetIn.apply h_valid F trivial hdet TM τ t)
+      exact h_not_true (ValidDetIn.apply h_valid F inferInstance hdet TM τ t)
     · exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.Base M hM_mcs
         h_not_box_dense h_not_box_discrete)
 
@@ -101,7 +101,7 @@ theorem derivable_of_validDetDense (φ : Formula) (h_valid : ValidDetIn FrameCla
   · obtain ⟨F, hdet, TM, τ, t, h_not_true⟩ :=
       countermodel_dense_enriched M hM_mcs φ h_neg_in h_box_dense
     exact h_not_true
-      (ValidDetIn.apply h_valid F.toTaskFrame inferInstance hdet TM τ t)
+      (ValidDetIn.apply h_valid F.toTaskFrame ⟨inferInstance, inferInstance⟩ hdet TM τ t)
   · have h_ax : DerivationTree FrameClass.Dense [] Chronicle.nextTop.neg :=
       DerivationTree.axiom [] _ Axiom.dense_indicator (by trivial)
     have h_box : DerivationTree FrameClass.Dense [] Chronicle.nextTop.neg.box :=
@@ -140,7 +140,7 @@ theorem derivable_of_validDetZTime (φ : Formula) (h_valid : ValidDetIn FrameCla
     · obtain ⟨F, hsucc, hpred, hsuccArch, hpredArch, hdet, TM, τ, t, h_not_true⟩ :=
         WeakCanonical.countermodel_discrete_reynolds_v2 M hM_mcs φ h_neg_in h_box_discrete
       exact h_not_true (ValidDetIn.apply h_valid F
-        ⟨hsucc, hpred, hsuccArch, hpredArch⟩ hdet TM τ t)
+        ⟨inferInstance, hsucc, hpred, hsuccArch, hpredArch⟩ hdet TM τ t)
     · exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.ZTime M hM_mcs
         h_not_box_dense h_not_box_discrete)
 
@@ -158,7 +158,7 @@ theorem derivable_of_validDetRTime (φ : Formula) (h_valid : ValidDetIn FrameCla
   obtain ⟨F, hdet, TM, τ, t, h_not_true⟩ :=
     countermodel_dedekind_dense (by decide) M hM_mcs φ h_neg_in h_box_dense
   exact h_not_true (ValidDetIn.apply h_valid F.toTaskFrame
-    ⟨inferInstance, real_lub_of_bddAbove⟩ hdet TM τ t)
+    ⟨inferInstance, inferInstance, real_lub_of_bddAbove⟩ hdet TM τ t)
 
 /-- The four rows as one statement, by cases on the frame-class tag: `FrameClass` has exactly the
 four constructors, so no class is left out. -/

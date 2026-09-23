@@ -289,7 +289,7 @@ variable {D : TemporalOrder} (F : FrameOver D)
 the corresponding field of `F`; the Limit field uses only `F.eq_of_taskRel_zero`.
 
 A proof device, never an intended model: see the module docstring. -/
-def FrameOver.translationProduct : FrameOver D :=
+def FrameOver.translationProduct [F.IsRegular] : FrameOver D :=
   haveI : Nonempty ↑D := ⟨0⟩
   FrameOver.ofReflective (F.WorldState × ↑D) (prodRel F.TaskRel) (prodRel_reflection _ F.reflection)
     (prodRel_comp _ F.comp) (prodRel_serial _ F.serial)
@@ -297,16 +297,20 @@ def FrameOver.translationProduct : FrameOver D :=
     (prodRel_saturation _ F.saturation)
 
 /-- The task relation of the product, unfolded. -/
-@[simp] theorem FrameOver.translationProduct_taskRel (a : F.WorldState × ↑D) (x : ↑D)
-    (b : F.WorldState × ↑D) :
+@[simp] theorem FrameOver.translationProduct_taskRel [F.IsRegular] (a : F.WorldState × ↑D)
+    (x : ↑D) (b : F.WorldState × ↑D) :
     F.translationProduct.TaskRel a x b ↔ F.TaskRel a.1 x b.1 ∧ b.2 = a.2 + x :=
   FrameOver.ofReflective_taskRel
 
 /-- The product lies in exactly the same frame class as `F`, at every tag: the four tags
 constrain the temporal order only, and the product keeps `D`. -/
-theorem FrameOver.translationProduct_sat (fc : FormalSystem.ProofSystem.FrameClass) :
+theorem FrameOver.translationProduct_sat [F.IsRegular]
+    (fc : FormalSystem.ProofSystem.FrameClass) :
     fc.Sat F.translationProduct.toTaskFrame ↔ fc.Sat F.toTaskFrame := by
-  cases fc <;> exact Iff.rfl
+  cases fc <;>
+    first
+      | exact ⟨fun _ => inferInstance, fun _ => inferInstance⟩
+      | exact ⟨fun h => ⟨inferInstance, h.2⟩, fun h => ⟨inferInstance, h.2⟩⟩
 
 /-- The product preserves and reflects determinism (`def:deterministic`): it is neutral on
 it. -/

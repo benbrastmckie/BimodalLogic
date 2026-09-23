@@ -60,7 +60,7 @@ theorem not_validZTime_of_satAtState
     (h : SatAtState P w φ.neg) : ¬ ValidZTime φ := by
   obtain ⟨τ, t, -, htr⟩ := h
   intro hv
-  exact htr (hv P.toTaskFrame (TaskFrame.isZTime_of_instances _) P.toModel τ t)
+  exact htr (hv P.toTaskFrame ⟨inferInstance, TaskFrame.isZTime_of_instances _⟩ P.toModel τ t)
 
 theorem validZTime_iff_check
     (canon : Formula → IntPresentation)

@@ -136,12 +136,20 @@ theorem SemanticConsequence.of_forall {Γ : Context} {φ : Formula}
     SemanticConsequence Γ φ :=
   fun F _ M τ t => h F M τ t
 
+/-- Introduce `SemanticConsequence` from its pre-abbreviation binder shape **at the regular
+frames** — the shape it is equivalent to. See `Valid.of_forall_regular`. -/
+theorem SemanticConsequence.of_forall_regular {Γ : Context} {φ : Formula}
+    (h : ∀ (F : TaskFrame) [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
+      (∀ ψ ∈ Γ, TruthAt M τ t ψ) → TruthAt M τ t φ) :
+    SemanticConsequence Γ φ :=
+  fun F _ M τ t => h F M τ t
+
 /-- Eliminate `SemanticConsequence` into its pre-abbreviation binder shape. -/
 theorem SemanticConsequence.apply {Γ : Context} {φ : Formula}
-    (h : SemanticConsequence Γ φ) (F : TaskFrame) (M : TaskModel F)
+    (h : SemanticConsequence Γ φ) (F : TaskFrame) [F.IsRegular] (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration)
     (hall : ∀ ψ ∈ Γ, TruthAt M τ t ψ) : TruthAt M τ t φ :=
-  h F trivial M τ t hall
+  h F inferInstance M τ t hall
 
 /--
 A context is satisfiable in temporal type `D` if there exists a model where all formulas
@@ -257,16 +265,25 @@ empty, and `F.ValidOn ⊥` would be a theorem rather than a refutation. What rul
 exactly `cor:occurrence`'s closing clause — `H_F ≠ ∅` — so the frame axioms it consumes appear
 here as hypotheses.
 
-**Wholly frame-intrinsic.** *Saturation*, *Seriality*, *Interpolation* and *Limit* are not
-arguments: `FrameOver` carries them as structure fields, and `cor:occurrence` reads them off the
-frame. Neither is a world state: the carrier's nonemptiness is the `nonempty` field, so the
-statement is the bare `¬ F.ValidOn ⊥` with `F` its only argument, exactly as `def:frame`'s
-"nonempty set of world states" licenses.
+**The four constraints arrive as an instance, not as arguments.** *Saturation*, *Seriality*,
+*Compositionality* and *Limit* are `def:frame`'s frame conditions, carried by
+`TaskFrame.IsRegular` rather than by the frame structure's fields, and `cor:occurrence` reads
+them off the class. They are not positional hypotheses: `[F.IsRegular]` is supplied by synthesis
+at every call site, exactly as the fields were read off the frame before the general/regular
+split. Neither is a world state an argument: the carrier's nonemptiness is the `worldNonempty`
+field, so the statement is the bare `¬ F.ValidOn ⊥` with `F` its only explicit argument, exactly
+as `def:frame`'s "nonempty set of world states" licenses.
+
+Regularity is genuinely needed and is not decoration: the extension chain
+(`Semantics/Extension/`) consumes all four constraints, and a general frame with an empty history
+set would validate `⊥`. `TaskFrame.ValidOn` itself takes no binder — it quantifies over
+`WorldHistory F`, which is general-frame data — so only this non-vacuity theorem constrains the
+frame.
 
 The model witness is `TaskModel.allFalse`; any model would do, since `⊥`'s truth clause is
 `False` independently of the valuation.
 -/
-theorem not_validOn_bot (F : TaskFrame) : ¬ F.ValidOn Formula.bot := by
+theorem not_validOn_bot (F : TaskFrame) [F.IsRegular] : ¬ F.ValidOn Formula.bot := by
   intro hvalid
   obtain ⟨τ, _⟩ := PartialHistory.occurrence F F.worldNonempty.some 0
   exact Truth.bot_false (hvalid TaskModel.allFalse τ 0)
@@ -274,12 +291,13 @@ theorem not_validOn_bot (F : TaskFrame) : ¬ F.ValidOn Formula.bot := by
 /--
 `cor:occurrence`'s closing clause restated in the shape this section consumes it: `H_F` has an
 inhabitant, so the `∀ τ : WorldHistory F` in `ValidOn` is a non-vacuous quantifier. Everything it
-rests on — the four axioms and the carrier's nonemptiness — is a field of the frame.
+rests on is available without a positional hypothesis — the four `def:frame` constraints through
+the `[F.IsRegular]` instance, and the carrier's nonemptiness as a field of the frame.
 
 This is a thin restatement of `PartialHistory.hF_nonempty`, kept here so the reason
 `not_validOn_bot` holds is legible next to the statement itself.
 -/
-theorem hF_nonempty_of_frameAxioms (F : TaskFrame) : Nonempty (WorldHistory F) :=
+theorem hF_nonempty_of_frameAxioms (F : TaskFrame) [F.IsRegular] : Nonempty (WorldHistory F) :=
   PartialHistory.hF_nonempty F F.worldNonempty.some
 
 end TaskFrame
@@ -371,16 +389,29 @@ Notation for validity: `⊨ φ` means `Valid φ`.
 notation:50 "⊨ " φ:50 => Valid φ
 
 /-- Introduce `Valid` from its explicit binder shape. The `.Base` class imposes no frame
-condition, so the `Sat .Base` argument (`True`) is discharged here rather than at each call site. -/
+condition beyond `def:frame`'s own four, so the `Sat .Base` argument (`F.IsRegular`) is discharged
+here rather than at each call site.
+
+The frame binder is bare: this is the *sufficient* form, for a formula true at every frame of the
+general structure. Where the soundness argument consumes a `def:frame` constraint, use
+`Valid.of_forall_regular`. -/
 theorem Valid.of_forall {φ : Formula}
     (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
       TruthAt M τ t φ) :
     Valid φ :=
   GenericValid.of_forall (L := Formula) (φ := φ) h
 
+/-- Introduce `Valid` from its explicit binder shape **at the regular frames** — the shape `Valid`
+is equivalent to. See `GenericValid.of_forall_regular`. -/
+theorem Valid.of_forall_regular {φ : Formula}
+    (h : ∀ (F : TaskFrame) [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
+      TruthAt M τ t φ) :
+    Valid φ :=
+  GenericValid.of_forall_regular (L := Formula) (φ := φ) h
+
 /-- Eliminate `Valid` into its explicit binder shape; the `Sat .Base` argument is discharged
 here, not at the call site. -/
-theorem Valid.apply {φ : Formula} (h : Valid φ) (F : TaskFrame) (M : TaskModel F)
+theorem Valid.apply {φ : Formula} (h : Valid φ) (F : TaskFrame) [F.IsRegular] (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration) : TruthAt M τ t φ :=
   GenericValid.apply (L := Formula) (φ := φ) h F M τ t
 
@@ -406,14 +437,21 @@ temporal type and the frame, `ValidOn` leaves both fixed. Stated as a theorem ra
 introduced as an abbreviation, exactly so that the equivalence is a proof obligation the build
 checks and not a definitional identity asserted by fiat.
 
-Both directions only discharge or supply the vacuous `Sat .Base` argument. No mathematical
+Both directions only discharge or supply the `Sat .Base` argument, which is `F.IsRegular` — the
+four `def:frame` constraints, carried as a class on the general frame structure. No mathematical
 content is added in either direction; that is the point of the statement.
+
+**The right-hand side binds `[F.IsRegular]`, and must.** A bare `∀ F : TaskFrame` would quantify
+over frames violating `def:frame`, which is strictly more than `Valid` claims; the biconditional
+would then be false rather than content-free. Before the general/regular split the binder was
+absent because every `TaskFrame` satisfied the constraints by construction of the type, so the
+two spellings denoted the same thing.
 -/
 theorem valid_iff_forall_validOn (φ : Formula) :
-    Valid φ ↔ ∀ (F : TaskFrame), F.ValidOn φ := by
+    Valid φ ↔ ∀ (F : TaskFrame) [F.IsRegular], F.ValidOn φ := by
   constructor
-  · intro h F M τ x
-    exact h F trivial M τ x
+  · intro h F _ M τ x
+    exact h F inferInstance M τ x
   · intro h F _ M τ x
     exact h F M τ x
 
@@ -421,7 +459,8 @@ theorem valid_iff_forall_validOn (φ : Formula) :
 The forward half of `valid_iff_forall_validOn`, in the direction that gets used: a valid formula
 is valid over any particular frame.
 -/
-theorem validOn_of_valid {φ : Formula} (h : Valid φ) (F : TaskFrame) : F.ValidOn φ :=
+theorem validOn_of_valid {φ : Formula} (h : Valid φ) (F : TaskFrame) [F.IsRegular] :
+    F.ValidOn φ :=
   (valid_iff_forall_validOn φ).mp h F
 
 end Validity
@@ -568,8 +607,16 @@ line up.
 *definably* Dedekind-complete model: "there may be gaps in the order but ... you wouldn't know
 that just looking at the behaviour of temporal formulas". So no single axiom characterises this
 class; `Axiom.prior_U_gap` / `DerivedAxioms.priorSGap` / `Axiom.sep` are the definable-gap proxy.
+
+**Regularity is conjoined into the frame predicate**, exactly as `FrameClass.Sat` conjoins it at
+every tag. `FrameOver` is the general frame structure, so `ValidOnFrames TaskFrame.IsComplete`
+alone would range over Complete frames that violate `def:frame`'s four constraints — a strictly
+wider class than this predicate ever denoted, and one over which no soundness theorem holds. The
+class denoted is unchanged; the regularity is now written down instead of being a consequence of
+the type.
 -/
-def ValidComplete (φ : Formula) : Prop := ValidOnFrames TaskFrame.IsComplete φ
+def ValidComplete (φ : Formula) : Prop :=
+  ValidOnFrames (fun F => F.IsRegular ∧ F.IsComplete) φ
 
 /--
 A formula is valid over **dense Dedekind-complete** temporal orders. This is the real-flow
@@ -622,8 +669,12 @@ the same way, but needs a consequence layer indexed by frame predicates rather t
 stated here. *Set-based* strong completeness (compactness) over ℚ-time is open: the ultraproduct
 route that gives it over the dense class does not stay inside ℚ-time, since an ultrapower of `ℚ` is
 non-Archimedean and so fails commensurability.
+
+**Regularity is conjoined into the frame predicate**, for the reason recorded at
+`ValidComplete`.
 -/
-def ValidQTime (φ : Formula) : Prop := ValidOnFrames TaskFrame.IsQTime φ
+def ValidQTime (φ : Formula) : Prop :=
+  ValidOnFrames (fun F => F.IsRegular ∧ F.IsQTime) φ
 
 namespace Validity
 
@@ -673,7 +724,7 @@ axiom set here for `Th(ℤ) ∩ Th(ℝ)`). That this predicate still lands insid
 bridge to `ValidRTime` falling out of `ValidOnFrames.mono` like every other bridge — is the
 whole reason the primitive is indexed by a frame predicate rather than by a tag. -/
 theorem validComplete_iff_validOnFrames_isComplete (φ : Formula) :
-    ValidComplete φ ↔ ValidOnFrames TaskFrame.IsComplete φ := Iff.rfl
+    ValidComplete φ ↔ ValidOnFrames (fun F => F.IsRegular ∧ F.IsComplete) φ := Iff.rfl
 
 /--
 Validity implies validity over dense orders: every valid formula is ValidDense.
@@ -693,7 +744,7 @@ Validity implies validity over Dedekind-complete orders: every valid formula is
 quantifies over every `D` satisfying the weaker binder set.
 -/
 theorem valid_implies_validComplete {φ : Formula} (h : Valid φ) : ValidComplete φ :=
-  ValidOnFrames.mono (fun _ _ => trivial) ((valid_iff_validIn_base φ).mp h)
+  ValidOnFrames.mono (fun _ hF => hF.1) ((valid_iff_validIn_base φ).mp h)
 
 /--
 Validity implies validity over dense Dedekind-complete orders: every valid formula is
@@ -713,7 +764,7 @@ proves the weaker `ValidRTime`, and anything genuinely established at
 -/
 theorem validRTime_of_validComplete {φ : Formula} (h : ValidComplete φ) :
     ValidRTime φ :=
-  ValidOnFrames.mono (fun _ => TaskFrame.isComplete_of_isRTime) h
+  ValidOnFrames.mono (fun _ hF => ⟨hF.1, TaskFrame.isComplete_of_isRTime hF.2⟩) h
 
 /--
 Dense validity implies ℚ-time validity: every ℚ-time frame is dense
@@ -721,7 +772,7 @@ Dense validity implies ℚ-time validity: every ℚ-time frame is dense
 (`Metalogic/QTime.lean`), which needs completeness.
 -/
 theorem validQTime_of_validDense {φ : Formula} (h : ValidDense φ) : ValidQTime φ :=
-  ValidOnFrames.mono (fun _ => TaskFrame.isDense_of_isQTime) h
+  ValidOnFrames.mono (fun _ hF => ⟨hF.1, TaskFrame.isDense_of_isQTime hF.2⟩) h
 
 /--
 Valid formulas are semantic consequences of empty context.
@@ -730,12 +781,12 @@ theorem valid_iff_empty_consequence (φ : Formula) :
     (⊨ φ) ↔ ([] ⊨ φ) := by
   constructor
   · intro h
-    refine SemanticConsequence.of_forall ?_
-    intro F M τ t _
+    refine SemanticConsequence.of_forall_regular ?_
+    intro F _ M τ t _
     exact h.apply F M τ t
   · intro h
-    refine Valid.of_forall ?_
-    intro F M τ t
+    refine Valid.of_forall_regular ?_
+    intro F _ M τ t
     exact h.apply F M τ t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
 
 /--
@@ -744,8 +795,8 @@ Semantic consequence is monotonic: adding premises preserves consequences.
 theorem consequence_monotone {Γ Δ : Context} {φ : Formula} :
     Γ ⊆ Δ → (Γ ⊨ φ) → (Δ ⊨ φ) := by
   intro h_sub h_cons
-  refine SemanticConsequence.of_forall ?_
-  intro F M τ t h_delta
+  refine SemanticConsequence.of_forall_regular ?_
+  intro F _ M τ t h_delta
   exact h_cons.apply F M τ t (fun ψ hψ => h_delta ψ (h_sub hψ))
 
 /--
@@ -753,7 +804,7 @@ If a formula is valid, it is a semantic consequence of any context.
 -/
 theorem valid_consequence (φ : Formula) (Γ : Context) :
     (⊨ φ) → (Γ ⊨ φ) :=
-  fun h => SemanticConsequence.of_forall fun F M τ t _ => h.apply F M τ t
+  fun h => SemanticConsequence.of_forall_regular fun F _ M τ t _ => h.apply F M τ t
 
 /--
 Context with all formulas true implies each formula individually true.
@@ -841,8 +892,8 @@ Proof: □φ at `(τ, t)` means `∀ σ : WorldHistory F, TruthAt φ at (σ, t)`
 -/
 theorem valid_of_valid_box {φ : Formula} (h : Valid (Formula.box φ)) :
     Valid φ := by
-  refine Valid.of_forall ?_
-  intro F M τ t
+  refine Valid.of_forall_regular ?_
+  intro F _ M τ t
   exact h.apply F M τ t τ
 
 end Validity

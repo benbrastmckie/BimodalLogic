@@ -113,13 +113,24 @@ open FormalSystem.Syntax FormalSystem.ProofSystem Order
 /-! ## The two maps -/
 
 /--
-The **validity relation** between task frames and formulas, as a bare relation.
+The **validity relation** between task frames and formulas, as a bare relation: `F` is a
+**regular** frame and `φ` is valid on it.
 
 `Th` and `Mod` are the upper and lower polars of this relation in the sense of
 `Mathlib.Order.Concept`, so every theorem in this section is a projection of a Mathlib lemma
 specialised at `validOnRel`.
+
+**Why regularity is part of the relation.** `FrameOver` is the general frame structure and
+`def:frame`'s four constraints are a class on it (`Semantics/TaskFrame.lean`, "General frames and
+the regular class"), so `Set TaskFrame` is the collection of *all* frames, regular or not. A
+correspondence theory whose ambient universe were that collection would be a different subject:
+`Mod S` would contain, for every `S`, general frames with no world histories at all, which
+validate everything vacuously, and no frame class defined by an order property would be
+Galois-closed. Conjoining `F.IsRegular` relativises the whole polarity to the paper's frames,
+which is what every theorem below was always about. The relation is otherwise unchanged, and
+`Mod S ⊆ {F | F.IsRegular}` for every nonempty `S`.
 -/
-def validOnRel (F : TaskFrame) (φ : Formula) : Prop := F.ValidOn φ
+def validOnRel (F : TaskFrame) (φ : Formula) : Prop := F.IsRegular ∧ F.ValidOn φ
 
 /--
 The **theory** of a class of frames: the formulas valid on every member.
@@ -127,7 +138,8 @@ The **theory** of a class of frames: the formulas valid on every member.
 `Th` is the right adjoint of the connection; it takes unions of frame classes to intersections of
 theories, which is antitonicity (`th_anti`).
 
-This is `upperPolar validOnRel`, and is `rfl`-defeq to `{φ | ∀ F ∈ K, F.ValidOn φ}`.
+This is `upperPolar validOnRel`, and is `rfl`-defeq to
+`{φ | ∀ F ∈ K, F.IsRegular ∧ F.ValidOn φ}`.
 -/
 abbrev Th : Set TaskFrame → Set Formula := upperPolar validOnRel
 
@@ -139,7 +151,8 @@ The **model class** of a set of formulas: the frames validating every member.
 Galois-closed?" the same question — and, over Mathlib, is literally the definition of
 `GaloisClosed`.
 
-This is `lowerPolar validOnRel`, and is `rfl`-defeq to `{F | ∀ φ ∈ S, F.ValidOn φ}`.
+This is `lowerPolar validOnRel`, and is `rfl`-defeq to
+`{F | ∀ φ ∈ S, F.IsRegular ∧ F.ValidOn φ}`.
 -/
 abbrev Mod : Set Formula → Set TaskFrame := lowerPolar validOnRel
 
@@ -245,7 +258,9 @@ theorem galoisClosed_univ : GaloisClosed (Set.univ : Set TaskFrame) := Order.IsE
 To show a frame class `K` is Galois-closed it suffices to exhibit a single formula `φ` that is
 
 * valid on every member of `K` (`hmem : φ ∈ Th K`), and
-* valid on *no* frame outside `K` (`hback`, stated positively).
+* valid on *no* **regular** frame outside `K` (`hback`, stated positively). Regularity is a
+  hypothesis of `hback` because `validOnRel` carries it: a non-regular frame is outside the
+  polarity's reach and imposes no obligation.
 
 Such a `φ` is an *indicator* for `K`. Both closure corollaries in
 `Semantics/Correspondence/Indicator.lean` — for the dense class and for the paper-Discrete class —
@@ -259,9 +274,10 @@ load-bearing.
 Paper: — (formalization-native; the indicator mechanism is this tree's, not the paper's)
 -/
 theorem galoisClosed_of_indicator {K : Set TaskFrame} (φ : Formula)
-    (hmem : φ ∈ Th K) (hback : ∀ F : TaskFrame, F.ValidOn φ → F ∈ K) : GaloisClosed K :=
+    (hmem : φ ∈ Th K) (hback : ∀ F : TaskFrame, F.IsRegular → F.ValidOn φ → F ∈ K) :
+    GaloisClosed K :=
   galoisClosed_iff.mpr
-    (Set.Subset.antisymm (fun _ hF => hback _ (hF hmem)) (subset_mod_th K))
+    (Set.Subset.antisymm (fun _ hF => hback _ (hF hmem).1 (hF hmem).2) (subset_mod_th K))
 
 /--
 **The indicator mechanism, as an iff.** This is the entry point call sites use.
@@ -270,10 +286,16 @@ theorem galoisClosed_of_indicator {K : Set TaskFrame} (φ : Formula)
 and every correspondence result in this development already produces that biconditional
 (`validOn_neg_nextTop_iff`, `validOn_nextTop_iff_isDiscrete`, …). Passing it whole means a
 closure corollary is one application with no glue.
+
+`hK` records that `K` consists of regular frames, which every class this is applied to does by
+construction: the polarity is relativised to the regular frames (see `validOnRel`), so a class
+containing a non-regular frame could not be an extent of it.
 -/
 theorem galoisClosed_of_indicator_iff {K : Set TaskFrame} (φ : Formula)
-    (h : ∀ F : TaskFrame, F.ValidOn φ ↔ F ∈ K) : GaloisClosed K :=
-  galoisClosed_of_indicator φ (fun F hF => (h F).mpr hF) (fun F hv => (h F).mp hv)
+    (hK : ∀ F ∈ K, F.IsRegular)
+    (h : ∀ F : TaskFrame, F.IsRegular → (F.ValidOn φ ↔ F ∈ K)) : GaloisClosed K :=
+  galoisClosed_of_indicator φ (fun F hF => ⟨hK F hF, (h F (hK F hF)).mpr hF⟩)
+    (fun F hreg hv => (h F hreg).mp hv)
 
 /-! ## Reified formula sets -/
 

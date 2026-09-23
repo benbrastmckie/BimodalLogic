@@ -112,7 +112,13 @@ Paper: `app:deterministic`
 -/
 theorem validIn_iff_validDetIn (fc : FrameClass) (φ : Formula) :
     ValidIn fc φ ↔ ValidDetIn fc φ :=
-  validOnFrames_iff_deterministic (fun F M h => by cases fc <;> exact h) φ
+  validOnFrames_iff_deterministic
+    (fun F M h => by
+      cases fc <;>
+        first
+          | exact inferInstance
+          | exact ⟨inferInstance, h.2⟩)
+    φ
 
 /--
 **The same at `.Base`, in the manuscript's unbundled shape**: `φ` is valid iff it is true at
@@ -124,10 +130,15 @@ do the rest.
 Paper: `app:deterministic`
 -/
 theorem valid_iff_valid_deterministic (φ : Formula) :
-    Valid φ ↔ ∀ (F : TaskFrame), F.Deterministic → ∀ (M : TaskModel F)
+    Valid φ ↔ ∀ (F : TaskFrame) [F.IsRegular], F.Deterministic → ∀ (M : TaskModel F)
       (τ : WorldHistory F) (t : F.Duration), TruthAt M τ t φ := by
   rw [Valid, validIn_iff_validDetIn]
-  exact ⟨fun h F hD M τ t => h.apply F trivial hD M τ t,
-    fun h => ValidDetIn.of_forall fun F _ hD => h F hD⟩
+  constructor
+  · intro h F _ hD M τ t
+    exact h.apply F inferInstance hD M τ t
+  · intro h
+    refine ValidDetIn.of_forall fun F hs hD => ?_
+    haveI := hs
+    exact h F hD
 
 end FormalSystem.Metalogic.Deterministic

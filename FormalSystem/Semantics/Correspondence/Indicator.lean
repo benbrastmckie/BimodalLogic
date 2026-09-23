@@ -91,7 +91,7 @@ the model and history needed to witness that come from `TaskModel.allFalse` and
 `TaskFrame.hF_nonempty_of_frameAxioms` — the latter wholly frame-intrinsic, so no side condition
 leaks into the statement.
 -/
-theorem validOn_neg_nextTop_iff (F : TaskFrame) :
+theorem validOn_neg_nextTop_iff (F : TaskFrame) [F.IsRegular] :
     F.ValidOn (Formula.next Formula.top).neg ↔ DenselyOrdered F.Duration := by
   constructor
   · intro h
@@ -111,7 +111,7 @@ immediate successor.
 This is the raw order statement, without the paper's `(∃ y, x < y)` guard;
 `validOn_nextTop_iff_isDiscrete` supplies the guarded form.
 -/
-theorem validOn_nextTop_iff (F : TaskFrame) :
+theorem validOn_nextTop_iff (F : TaskFrame) [F.IsRegular] :
     F.ValidOn (Formula.next Formula.top) ↔ ∀ x : F.Duration, ∃ y, IsLeast {z | x < z} y := by
   constructor
   · intro h x
@@ -134,7 +134,7 @@ supplies a positive duration `p`, so `x < x + p` witnesses the guard at every `x
 step the two conditions are inequivalent on a trivial carrier — which is exactly why the paper
 writes the guard.
 -/
-theorem validOn_nextTop_iff_isDiscrete (F : TaskFrame) :
+theorem validOn_nextTop_iff_isDiscrete (F : TaskFrame) [F.IsRegular] :
     F.ValidOn (Formula.next Formula.top) ↔ F.IsDiscrete := by
   rw [validOn_nextTop_iff]
   refine ⟨fun h x _ => h x, fun h x => h x ?_⟩
@@ -159,7 +159,10 @@ Paper: `app:dense`
 -/
 theorem galoisClosed_sat_dense :
     GaloisClosed {F : TaskFrame | FrameClass.Sat FrameClass.Dense F} :=
-  galoisClosed_of_indicator_iff _ validOn_neg_nextTop_iff
+  galoisClosed_of_indicator_iff _ (fun _ hF => hF.1)
+    (fun F hreg => by
+      haveI := hreg
+      exact (validOn_neg_nextTop_iff F).trans ⟨fun hd => ⟨hreg, hd⟩, fun h => h.2⟩)
 
 /--
 **The paper-Discrete class is Galois-closed**: `Mod (Th {F | F.IsDiscrete}) = {F | F.IsDiscrete}`.
@@ -176,8 +179,11 @@ Restating this corollary over `Sat .ZTime` would contradict that witness.
 Paper: `app:discrete`
 -/
 theorem galoisClosed_isDiscrete :
-    GaloisClosed {F : TaskFrame | F.IsDiscrete} :=
-  galoisClosed_of_indicator_iff _ validOn_nextTop_iff_isDiscrete
+    GaloisClosed {F : TaskFrame | F.IsRegular ∧ F.IsDiscrete} :=
+  galoisClosed_of_indicator_iff _ (fun _ hF => hF.1)
+    (fun F hreg => by
+      haveI := hreg
+      exact (validOn_nextTop_iff_isDiscrete F).trans ⟨fun hd => ⟨hreg, hd⟩, fun h => h.2⟩)
 
 /-- Spot-check of the framing in `galoisClosed_sat_dense`'s docstring: `Axiom.dense_indicator`'s
 `minFrameClass` really is `FrameClass.Dense`, by `rfl`. -/

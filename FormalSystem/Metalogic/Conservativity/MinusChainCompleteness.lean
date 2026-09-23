@@ -152,7 +152,7 @@ condition for `multiFamTaskFrameGen (TemporalOrder.of ℚ) I` is `inferInstance`
 theorem not_chainValidIn_dense_of_rat_refutation (φ : MinusFormula) (I : Type) [Nonempty I]
     (v : I × (ratOrder : Type) → Atom → Prop) (q : I × (ratOrder : Type))
     (h : ¬ chainSat v q φ) : ¬ ChainValidIn FrameClass.Dense φ :=
-  fun hv => h (hv ratOrder I inferInstance v q)
+  fun hv => h (hv ratOrder I ⟨inferInstance, inferInstance⟩ v q)
 
 /-- **Chain-completeness of TM⁻_d.** Every formula valid on every chain bundle in
 `FrameClass.Dense` is in `MinusExt .Dense ∅`, i.e. is a TM⁻_d theorem.

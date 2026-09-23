@@ -2412,7 +2412,7 @@ theorem truthAt_of_validZTime {F : FrameOver (TemporalOrder.of D)} {M : TaskMode
     {φ : Formula} [so : SuccOrder D] [po : PredOrder D]
     [hsa : IsSuccArchimedean D] [hpa : IsPredArchimedean D] (h : ValidZTime φ)
     (τ : WorldHistory F) (t : D) : TruthAt M τ t φ :=
-  h F.toTaskFrame ⟨so, po, hsa, hpa⟩ M τ t
+  h F.toTaskFrame ⟨inferInstance, so, po, hsa, hpa⟩ M τ t
 
 /-- `T(F ψ)` gives `T(U(ψ, ¬ψ))` at the **same** label — the consequent of Prior-UZ, whose
 antecedent is the source formula. On a discrete order `F ψ` has a *nearest* `ψ`-point, and `¬ψ`

@@ -135,10 +135,10 @@ theorem determinedValid_not_deterministic :
   ⟨Independence.F0, Independence.fzero_determined, Independence.fzero_not_deterministic⟩
 
 /-- The strict inclusion at `.Base`, where `F°` is admitted by every frame class condition
-(`Sat .Base` is `True`). -/
+(`Sat .Base` is `TaskFrame.IsRegular`, which `F°` satisfies). -/
 theorem determinedSat_not_detSat_base :
     ∃ F : TaskFrame, DeterminedSat FrameClass.Base F ∧ ¬ DetSat FrameClass.Base F :=
-  ⟨Independence.F0, ⟨trivial, Independence.fzero_determined⟩,
+  ⟨Independence.F0, ⟨inferInstance, Independence.fzero_determined⟩,
     fun h => Independence.fzero_not_deterministic h.2⟩
 
 /-! ## Monotonicity

@@ -146,9 +146,9 @@ theorem mod_densitySchema_int :
   rw [← density_schema_iff_fwdRec F]
   constructor
   · intro h φ
-    exact h ⟨φ, rfl⟩
+    exact (h ⟨φ, rfl⟩).2
   · rintro h φ ⟨ψ, rfl⟩
-    exact h ψ
+    exact ⟨inferInstance, h ψ⟩
 
 end Bridge
 

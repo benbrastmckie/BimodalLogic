@@ -206,7 +206,7 @@ theorem hnStab_refuted_sinkFrame (p : Atom) :
 
 /-- HN transposed to `⊡` is not L^▷-valid. -/
 theorem not_openValid_hnStab (p : Atom) : ¬ OpenValid (hnStab p) :=
-  fun h => hnStab_refuted_sinkFrame p (h sinkFrame.toTaskFrame trivial)
+  fun h => hnStab_refuted_sinkFrame p (h sinkFrame.toTaskFrame inferInstance)
 
 /-- HN transposed to `⊡` is not L⁺-valid: the refutation is a fact about the stability language,
 transferred along `openValid_ofPlus_iff`. -/

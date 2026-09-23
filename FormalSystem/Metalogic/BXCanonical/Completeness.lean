@@ -294,7 +294,7 @@ theorem derivable_of_validQTime (φ : Formula) :
   · -- Dense case: □(F'T) ∈ M — countermodel on Rat, a ℚ-time frame
     obtain ⟨F, _hdet, TM, τ, t, h_not_true⟩ :=
       countermodel_dense_enriched M hM_mcs φ h_neg_in h_box_dense
-    exact h_not_true (h_valid_qtime F.toTaskFrame (isQTime_rat F) TM τ t)
+    exact h_not_true (h_valid_qtime F.toTaskFrame ⟨inferInstance, isQTime_rat F⟩ TM τ t)
   · -- Non-dense case: ¬□(F'T) ∈ M. But the dense_indicator axiom ¬U(⊤,⊥)
     -- is a Dense theorem, so □(¬U(⊤,⊥)) = □(F'T) is in every Dense-MCS.
     -- Contradiction with h_not_box_dense : ¬□(F'T) ∈ M.
@@ -429,7 +429,7 @@ theorem derivable_of_validZTime (φ : Formula) :
       -- `haveI`-introduced *copy* of `hsucc` is a fresh opaque fvar that `hsuccArch`'s type does
       -- not mention, and synthesis then fails to match the two.
       exact h_not_true
-        (h_valid_ztime F ⟨hsucc, hpred, hsuccArch, hpredArch⟩ TM τ t)
+        (h_valid_ztime F ⟨inferInstance, hsucc, hpred, hsuccArch, hpredArch⟩ TM τ t)
     · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — eliminated by structural axiom
       exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.ZTime M hM_mcs
           h_not_box_dense h_not_box_discrete)

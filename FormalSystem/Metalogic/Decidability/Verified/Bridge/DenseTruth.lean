@@ -665,7 +665,7 @@ theorem not_validDense_of_hasOpen (hV : branchOrderValid b ord = true)
   intro hval
   obtain ⟨t, ht⟩ := exists_countermodel_dense ℚ strictMono_intCast_rat hV fc hSat hOpen hTot hBA
     hCheck hTW hw₀ hroot
-  exact ht (hval (regionFrame WorldIndex (BranchTime b) ℚ) inferInstance _ _ t)
+  exact ht (hval (regionFrame WorldIndex (BranchTime b) ℚ) ⟨inferInstance, inferInstance⟩ _ _ t)
 
 /-! ### Headline result, at `ℝ` -/
 
@@ -688,7 +688,7 @@ theorem not_validRTime_of_hasOpen (hV : branchOrderValid b ord = true)
   obtain ⟨t, ht⟩ := exists_countermodel_dense ℝ strictMono_intCast_real hV fc hSat hOpen hTot hBA
     hCheck hTW hw₀ hroot
   exact ht (hval (regionFrame WorldIndex (BranchTime b) ℝ)
-    ⟨inferInstance, fun s hs hb => ⟨sSup s, isLUB_csSup hs hb⟩⟩ _ _ t)
+    ⟨inferInstance, inferInstance, fun s hs hb => ⟨sSup s, isLUB_csSup hs hb⟩⟩ _ _ t)
 
 end DenseCarrier
 

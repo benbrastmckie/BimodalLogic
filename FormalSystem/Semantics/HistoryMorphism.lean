@@ -160,16 +160,17 @@ Paper: — (formalization-native; the paper names no recurrence property of fram
 theorem exists_sat_not_recurrenceFree (fc : FrameClass) :
     ∃ G : TaskFrame, fc.Sat G ∧ ¬ G.RecurrenceFree := by
   cases fc with
-  | Base => exact ⟨(FrameOver.trivialFrame (D := ℤ)).toTaskFrame, trivial,
+  | Base => exact ⟨(FrameOver.trivialFrame (D := ℤ)).toTaskFrame, inferInstance,
       trivialFrame_not_recurrenceFree⟩
   | Dense => exact ⟨(FrameOver.trivialFrame (D := ℚ)).toTaskFrame,
-      inferInstanceAs (DenselyOrdered ℚ), trivialFrame_not_recurrenceFree⟩
+      ⟨inferInstance, inferInstanceAs (DenselyOrdered ℚ)⟩, trivialFrame_not_recurrenceFree⟩
   | ZTime => exact ⟨(FrameOver.trivialFrame (D := ℤ)).toTaskFrame,
-      @TaskFrame.isZTime_of_instances _ (inferInstanceAs (SuccOrder ℤ))
+      ⟨inferInstance, @TaskFrame.isZTime_of_instances _ (inferInstanceAs (SuccOrder ℤ))
         (inferInstanceAs (PredOrder ℤ)) (inferInstanceAs (IsSuccArchimedean ℤ))
-        (inferInstanceAs (IsPredArchimedean ℤ)), trivialFrame_not_recurrenceFree⟩
+        (inferInstanceAs (IsPredArchimedean ℤ))⟩, trivialFrame_not_recurrenceFree⟩
   | RTime => exact ⟨(FrameOver.trivialFrame (D := ℝ)).toTaskFrame,
-      ⟨inferInstanceAs (DenselyOrdered ℝ), fun s hne hbdd => ⟨sSup s, isLUB_csSup hne hbdd⟩⟩,
+      ⟨inferInstance,
+        ⟨inferInstanceAs (DenselyOrdered ℝ), fun s hne hbdd => ⟨sSup s, isLUB_csSup hne hbdd⟩⟩⟩,
       trivialFrame_not_recurrenceFree⟩
 
 end FormalSystem.Semantics

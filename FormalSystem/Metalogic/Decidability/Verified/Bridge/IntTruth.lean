@@ -1091,7 +1091,7 @@ theorem not_validZTime_of_hasOpen_int (hV : branchOrderValid b ord = true)
       hne
       χ l₀.world (f i)).2 hneg
     (hval (regionFrame WorldIndex (BranchTime b) ℤ)
-      (TaskFrame.isZTime_of_instances _) (normModel b ord f)
+      ⟨inferInstance, TaskFrame.isZTime_of_instances _⟩ (normModel b ord f)
       (regionHistory f l₀.world (0 : ℤ)) (f i))
 
 end IntCarrier

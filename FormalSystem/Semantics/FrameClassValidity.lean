@@ -27,11 +27,18 @@ below.
 
 ## The interpretation of record
 
-* `.Base` — `Sat`: `True`; Anchor: — (unconstrained: `def:logical-consequence`'s own class)
-* `.Dense` — `Sat`: `TaskFrame.IsDense`; Anchor: `def:frame-properties`, Dense clause
-* `.ZTime` — `Sat`: `TaskFrame.IsZTime`; Anchor: `def:BX-z` (narrowing to ℤ-time)
-* `.RTime` — `Sat`: `TaskFrame.IsRTime`; Anchor: `def:frame-properties` Complete + Dense;
-  `cor:tm-completeness`'s TM_r clause
+Every tag carries `TaskFrame.IsRegular` — the four `def:frame` constraints — because `FrameOver`
+is the **general** frame structure and the constraints are frame conditions on it
+(`Semantics/TaskFrame.lean`, "General frames and the regular class"). The paper's frames *are*
+the regular ones, so the class each tag denotes is unchanged; what changed is that the regularity
+is now written down here rather than being true by construction of the type.
+
+* `.Base` — `Sat`: `TaskFrame.IsRegular`; Anchor: — (`def:logical-consequence`'s own class:
+  unconstrained beyond `def:frame` itself)
+* `.Dense` — `Sat`: `IsRegular ∧ TaskFrame.IsDense`; Anchor: `def:frame-properties`, Dense clause
+* `.ZTime` — `Sat`: `IsRegular ∧ TaskFrame.IsZTime`; Anchor: `def:BX-z` (narrowing to ℤ-time)
+* `.RTime` — `Sat`: `IsRegular ∧ TaskFrame.IsRTime`; Anchor: `def:frame-properties` Complete +
+  Dense; `cor:tm-completeness`'s TM_r clause
 
 Two of these are the *narrowed* member of a split pair, and deliberately so — interpreting
 `.ZTime` by the bare `TaskFrame.IsDiscrete`, or `.RTime` by the bare `TaskFrame.IsComplete`,
@@ -99,19 +106,24 @@ is what keeps the constraint and the tag from drifting apart.
 
 Per-constructor anchors:
 
-* `.Base ↦ True`. The unconstrained class: `def:logical-consequence` quantifies over all models
-  with no frame-side restriction, and `Axiom.minFrameClass` sends 23 of the 29 axiom constructors
-  here.
-* `.Dense ↦ TaskFrame.IsDense`. `def:frame-properties`' Dense clause. `Axiom.density` (`GGφ → Gφ`)
-  and `Axiom.dense_indicator` (`¬(⊥ U ⊤)`) carry `.Dense`.
+* `.Base ↦ TaskFrame.IsRegular`. The unconstrained class: `def:logical-consequence` quantifies
+  over all models with no frame-side restriction *beyond `def:frame`'s own four constraints*, and
+  `Axiom.minFrameClass` sends 23 of the 29 axiom constructors here. **This is the lever that keeps
+  `Valid`'s meaning fixed** across the general/regular split: `FrameOver` no longer carries the
+  constraints as fields, so `∀ F : TaskFrame` alone would quantify over frames that violate them
+  and every soundness theorem would become false. Writing the constraints here, at the one point
+  where a tag acquires its semantic meaning, leaves `Valid`, `ValidIn` and `ValidOnFrames`
+  denoting exactly the collections they always denoted.
+* `.Dense ↦ IsRegular ∧ TaskFrame.IsDense`. `def:frame-properties`' Dense clause, conjoined with
+  regularity. `Axiom.density` (`GGφ → Gφ`) and `Axiom.dense_indicator` (`¬(⊥ U ⊤)`) carry `.Dense`.
   The tag keeps the paper's name, not `QTime`; see `FrameClass` for why.
-* `.ZTime ↦ TaskFrame.IsZTime`, **not** `TaskFrame.IsDiscrete`. `def:BX-z`'s closing
+* `.ZTime ↦ IsRegular ∧ TaskFrame.IsZTime`, **not** `TaskFrame.IsDiscrete`. `def:BX-z`'s closing
   sentence narrows the discrete class over which BX_z and TM_z are sound and complete to exactly
   the frames over ℤ-time — `UZ` and `Z1` fail over every discrete order that is not Archimedean —
   and it is that narrowed class `Axiom.prior_UZ`, `DerivedAxioms.priorSZ` and `Axiom.z1` are sound
   over. Interpreting `.ZTime` by the bare Discrete clause would silently widen the class under
   `soundness_ztime`.
-* `.RTime ↦ TaskFrame.IsRTime`, **not** `TaskFrame.IsComplete`. `FrameClass.RTime` sits
+* `.RTime ↦ IsRegular ∧ TaskFrame.IsRTime`, **not** `TaskFrame.IsComplete`. `FrameClass.RTime` sits
   strictly above `FrameClass.Dense`, so `density` and `dense_indicator` are admissible in a
   `.RTime` derivation, and both are false on `ℤ` — which satisfies the bare Complete clause.
   The dense-and-complete narrowing is what `cor:tm-completeness`'s TM_r clause names — its
@@ -122,34 +134,49 @@ Per-constructor anchors:
 `Sat` carries `@[reducible]` deliberately. Lean registers a hypothesis in the local instance
 cache only if `isClass?` can see a class head after whnf at *reducible* transparency, so a single
 non-reducible `def` anywhere in the chain
-`Sat .Dense F ⇝ TaskFrame.IsDense F ⇝ DenselyOrdered ↑F.Duration` blocks registration outright —
-`Sat` sits *above* `IsDense` in that chain, so making `IsDense` an `abbrev` alone is not enough.
-Both links must be reducible together. Removing this attribute silently regresses every
-`sat_intro`/`Sat`-hypothesis site from "instance found" to "instance not found", with no error at
-this declaration.
+`Sat .Base F ⇝ TaskFrame.IsRegular F ⇝ FrameOver.IsRegular F.toFibre` blocks registration
+outright — `Sat` sits *above* `IsRegular` in that chain, and `TaskFrame.IsRegular` is an `abbrev`
+for the same reason. Both links must be reducible together. Removing this attribute silently
+regresses every `sat_intro`/`Sat`-hypothesis site from "instance found" to "instance not found",
+with no error at this declaration.
+
+At `.Base` this is the whole mechanism: a bare `intro h` on a `Sat .Base F` hypothesis registers
+`F.IsRegular` in the local instance cache, so `F.comp`, `F.serial`, `F.limit` and `F.saturation`
+elaborate at the site with nothing written. At the three constrained tags the value is a
+conjunction rather than a class, so `sat_intro` is **required** there and is no longer optional at
+`.Dense`; it strips the regularity conjunct (which the `obtain` registers) and leaves the caller's
+`h` bound to the tag's own frame condition, exactly the shape a bare `intro h` used to produce.
 -/
 @[reducible]
 def FrameClass.Sat : FrameClass → TaskFrame → Prop
-  | .Base, _ => True
-  | .Dense, F => F.IsDense
-  | .ZTime, F => F.IsZTime
-  | .RTime, F => F.IsRTime
+  | .Base, F => F.IsRegular
+  | .Dense, F => F.IsRegular ∧ F.IsDense
+  | .ZTime, F => F.IsRegular ∧ F.IsZTime
+  | .RTime, F => F.IsRegular ∧ F.IsRTime
 
 /--
 `sat_intro h` normalises a `FrameClass.Sat fc F` hypothesis named `h` into whatever the tag
 `fc` actually needs, uniformly across all four tags, so that no call site has to write a
 positional `@`-application or a tag-specific destructuring pattern.
 
+The macro is two nested `first` blocks. The outer one strips the regularity conjunct, guarded by
+the type ascription `($h : _ ∧ _)`: at `.Base` the value is the *class* `TaskFrame.IsRegular`,
+not a conjunction, the ascription fails, and the whole macro degrades to `skip`. The guard is
+load-bearing — without it, `obtain` would happily destructure `IsRegular`'s own four fields and
+*remove* the frame's regularity instance from the context. The inner block is then the pre-split
+macro verbatim, acting on exactly the hypothesis shape a bare `intro h` used to produce.
+
 Per tag, with `Sat` reducible (see the docstring above):
 
-* `.Base` — `Sat .Base F` is `True`; nothing to do, the `skip` branch fires.
-* `.Dense` — `Sat .Dense F` is `TaskFrame.IsDense F` is `DenselyOrdered ↑F.Duration`, and the
-  whole reducible chain exists so that `intro h` alone already registers `h` in the local
-  instance cache. The `skip` branch fires and `exists_between` is available.
-* `.ZTime` — `Sat .ZTime F` is `TaskFrame.IsZTime F`, a four-component
-  existential; `obtain ⟨_, _, _, _⟩` lands `SuccOrder`, `PredOrder`, `IsSuccArchimedean` and
+* `.Base` — `Sat .Base F` is `TaskFrame.IsRegular F`, a class; `intro h` has already registered
+  it, the ascription guard fails, and the `skip` branch fires. Nothing to do.
+* `.Dense` — `Sat .Dense F` is `IsRegular F ∧ TaskFrame.IsDense F`. The outer `obtain` registers
+  regularity and rebinds `h` to `DenselyOrdered ↑F.Duration`, which the reducible chain then
+  registers as well, so `exists_between` is available.
+* `.ZTime` — after the strip, `h` is `TaskFrame.IsZTime F`, a four-component existential;
+  `obtain ⟨_, _, _, _⟩` lands `SuccOrder`, `PredOrder`, `IsSuccArchimedean` and
   `IsPredArchimedean` in the instance cache.
-* `.RTime` — `Sat .RTime F` is `TaskFrame.IsRTime F`, i.e. `IsDense F ∧ IsComplete F`;
+* `.RTime` — after the strip, `h` is `TaskFrame.IsRTime F`, i.e. `IsDense F ∧ IsComplete F`;
   `obtain ⟨_, h⟩` registers the density instance and rebinds the *completeness* conjunct under
   the caller's own name `h`, so it stays reachable under the spelling the caller wrote.
 
@@ -169,19 +196,23 @@ Per tag, with `Sat` reducible (see the docstring above):
 The caller's `h` is passed back explicitly (rather than the macro inventing a name) because macro
 hygiene would otherwise make a macro-introduced binder inaccessible at the call site.
 
-**Where to write it, and where not to.** At `.ZTime` and `.RTime` it does real work and is
-required. At `.Base` and `.Dense` it reduces to `skip` — the frame condition is either `True` or
-already an instance the moment it is `intro`ed — and `linter.unusedTactic` reports
-`'sat_intro h' tactic does nothing` at `.Dense`. The convention adopted across this development is
-therefore to **omit `sat_intro` at `.Base` and `.Dense` sites** rather than to silence the linter
-locally; writing it there buys nothing and costs a warning. It is still safe to write at a
-*generic* `fc`, where it degrades to `skip`.
+**Where to write it, and where not to.** At `.Dense`, `.ZTime` and `.RTime` it does real work and
+is **required**: the `Sat` value is a conjunction, so a bare `intro h` leaves `h` bound to the
+pair rather than to the frame condition. (This is a change from the pre-split convention, which
+recorded `.Dense` as a site where the macro was a no-op and should be omitted. It is a no-op no
+longer.) At `.Base` it still reduces to `skip` — `intro h` has already registered the frame's
+regularity — and `linter.unusedTactic` reports `'sat_intro h' tactic does nothing` there, so
+**omit it at `.Base` sites** rather than silencing the linter locally. It remains safe to write at
+a *generic* `fc`, where it degrades to `skip`.
 -/
 macro "sat_intro " h:ident : tactic =>
   `(tactic|
     first
-      | obtain ⟨_, _, _, _⟩ := $h
-      | obtain ⟨_, $h:ident⟩ := $h
+      | (obtain ⟨_, $h:ident⟩ := ($h : _ ∧ _);
+         first
+           | obtain ⟨_, _, _, _⟩ := $h
+           | obtain ⟨_, $h:ident⟩ := $h
+           | skip)
       | skip)
 
 /--
@@ -201,9 +232,9 @@ theorem FrameClass.Sat.anti {fc₁ fc₂ : FrameClass} (h : fc₁ ≤ fc₂) {F 
     fc₂.Sat F → fc₁.Sat F := by
   cases fc₁ <;> cases fc₂ <;>
     first
-      | exact fun _ => trivial
       | exact id
-      | exact TaskFrame.isDense_of_isRTime
+      | exact And.left
+      | exact fun hs => ⟨hs.1, TaskFrame.isDense_of_isRTime hs.2⟩
       | exact absurd h (by decide)
 
 end FormalSystem.ProofSystem

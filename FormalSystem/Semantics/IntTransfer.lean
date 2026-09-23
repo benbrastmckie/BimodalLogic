@@ -324,7 +324,7 @@ successor half.
 theorem validZTime_iff_validInt (φ : Formula) : ValidZTime φ ↔ ValidInt φ := by
   constructor
   · intro h F M τ t
-    exact h F.toTaskFrame (TaskFrame.isZTime_of_instances _) M τ t
+    exact h F.toTaskFrame ⟨inferInstance, TaskFrame.isZTime_of_instances _⟩ M τ t
   · intro h F hF M τ t
     sat_intro hF
     -- Ascribe the target at `↑intOrder`, not at `ℤ`: the transport's `E` is a `TemporalOrder`,

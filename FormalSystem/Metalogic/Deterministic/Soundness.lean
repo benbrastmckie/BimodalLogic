@@ -214,7 +214,7 @@ theorem det_not_derivable_nil_bot :
     ¬ DetDerivable FrameClass.Base [] PlusFormula.bot := by
   intro h
   obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms Independence.F1
-  exact (detSoundness h).apply Independence.F1 trivial
+  exact (detSoundness h).apply Independence.F1 inferInstance
     (deterministic_determinedValid Independence.f1_deterministic)
     TaskModel.allFalse τ 0
 

@@ -107,7 +107,7 @@ successor half.
 -/
 theorem lexIntStaticFrame_not_sat :
     lexIntStaticFrame ∉ {F : TaskFrame | FrameClass.Sat FrameClass.ZTime F} := by
-  rintro ⟨so, _, hsa, _⟩
+  rintro ⟨-, so, _, hsa, _⟩
   exact LexInt.not_archimedean (@archimedean_of_succ (ℤ ×ₗ ℤ) _ _ _ so _ hsa)
 
 /--
@@ -122,6 +122,7 @@ theorem lexIntStaticFrame_mem_mod :
   have hdisc : ∀ x : ℤ ×ₗ ℤ, ∃ y, IsLeast {z : ℤ ×ₗ ℤ | x < z} y :=
     fun x => ⟨_, isLeast_succ_of_isLeast_pos LexInt.isLeast_pos x⟩
   rintro φ ⟨ax, hax⟩
+  refine ⟨inferInstance, ?_⟩
   by_cases hb : ax.minFrameClass ≤ FrameClass.Base
   · exact Validity.validOn_of_valid (axiom_valid ax hb) lexIntStaticFrame
   · cases ax with
@@ -157,7 +158,7 @@ theorem validOn_nextTop_of_mem_mod_discrete {F : TaskFrame}
     F.ValidOn (Formula.next Formula.top) := by
   intro M τ x
   obtain ⟨p, hp⟩ := TaskFrame.exists_pos_of_nontrivial (D := F.Duration.carrier)
-  have hstep := hF ⟨Axiom.prior_UZ Formula.top, by decide⟩ M τ x
+  have hstep := (hF ⟨Axiom.prior_UZ Formula.top, by decide⟩).2 M τ x
   have hF_top : TruthAt M τ x (Formula.someFuture Formula.top) := by
     rw [Truth.some_future_iff]
     exact ⟨x + p, lt_add_of_pos_right x hp, fun h => h⟩
@@ -170,7 +171,7 @@ theorem validOn_nextTop_of_mem_mod_discrete {F : TaskFrame}
 theorem sat_ztime_subset_mod_axiomSet :
     {F : TaskFrame | FrameClass.Sat FrameClass.ZTime F} ⊆
       Semantics.Mod (AxiomSet FrameClass.ZTime) :=
-  fun F hF _ ⟨ax, hax⟩ => axiom_ztime_valid ax hax F hF
+  fun F hF _ ⟨ax, hax⟩ => ⟨hF.1, axiom_ztime_valid ax hax F hF⟩
 
 /--
 **The lower half of the sandwich is strict**: `Sat .ZTime ⊊ Mod (AxiomSet .ZTime)`, with

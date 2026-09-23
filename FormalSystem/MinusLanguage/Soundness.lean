@@ -319,11 +319,11 @@ theorem)
 -/
 theorem minus_soundness (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.Base Γ φ)
-    (F : TaskFrame) (M : TaskModel F)
+    (F : TaskFrame) [F.IsRegular] (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ :=
-  minus_soundness_in Γ φ d F trivial M τ t h_ctx
+  minus_soundness_in Γ φ d F inferInstance M τ t h_ctx
 
 /--
 **Soundness of L⁻ at `FrameClass.Dense`.** `minus_soundness_in` at `fc = .Dense`, with the
@@ -335,11 +335,11 @@ theorem)
 -/
 theorem minus_soundness_dense (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.Dense Γ φ)
-    (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
+    (F : TaskFrame) [F.IsRegular] [DenselyOrdered F.Duration] (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ :=
-  minus_soundness_in Γ φ d F ‹DenselyOrdered F.Duration› M τ t h_ctx
+  minus_soundness_in Γ φ d F ⟨inferInstance, ‹DenselyOrdered F.Duration›⟩ M τ t h_ctx
 
 /--
 **Soundness of L⁻ at `FrameClass.ZTime`.** `minus_soundness_in` at `fc = .ZTime`, with the
@@ -351,13 +351,13 @@ theorem)
 -/
 theorem minus_soundness_ztime (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.ZTime Γ φ)
-    (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
+    (F : TaskFrame) [F.IsRegular] [SuccOrder F.Duration] [PredOrder F.Duration]
     [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ :=
   minus_soundness_in Γ φ d F
-    ⟨‹SuccOrder F.Duration›, ‹PredOrder F.Duration›,
+    ⟨inferInstance, ‹SuccOrder F.Duration›, ‹PredOrder F.Duration›,
       ‹IsSuccArchimedean F.Duration›, ‹IsPredArchimedean F.Duration›⟩
     M τ t h_ctx
 
@@ -375,13 +375,13 @@ theorem)
 -/
 theorem minus_soundness_rtime (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.RTime Γ φ)
-    (F : TaskFrame) [DenselyOrdered F.Duration]
+    (F : TaskFrame) [F.IsRegular] [DenselyOrdered F.Duration]
     (h_lub : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ :=
-  minus_soundness_in Γ φ d F ⟨‹DenselyOrdered F.Duration›, h_lub⟩ M τ t h_ctx
+  minus_soundness_in Γ φ d F ⟨inferInstance, ‹DenselyOrdered F.Duration›, h_lub⟩ M τ t h_ctx
 
 /-! ## Empty-context validity forms -/
 
@@ -573,7 +573,7 @@ theorem minus_not_derivable_nil_bot_ztime :
   rintro ⟨d⟩
   obtain ⟨τ⟩ := TaskFrame.hF_nonempty_of_frameAxioms (FrameOver.trivialFrame (D := ℤ))
   exact minus_soundness_ztime_valid d (FrameOver.trivialFrame (D := ℤ))
-    (TaskFrame.isZTime_of_instances _) TaskModel.allFalse τ 0
+    ⟨inferInstance, TaskFrame.isZTime_of_instances _⟩ TaskModel.allFalse τ 0
 
 /-! ## Native spot checks
 

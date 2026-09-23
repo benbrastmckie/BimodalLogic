@@ -97,7 +97,10 @@ Homed in this module rather than in `Semantics/ShiftSet.lean`: its only consumer
 theorem sat_ofModel_frame {fc : ProofSystem.FrameClass} {F : TaskFrame} (M : TaskModel F)
     (h : fc.Sat F) :
     fc.Sat (ShiftSet.ofModel F M).frame := by
-  cases fc <;> exact h
+  cases fc <;>
+    first
+      | exact inferInstance
+      | exact ⟨inferInstance, h.2⟩
 
 /--
 **Model existence at any frame class whose `Sat` survives the ultraproduct.**
@@ -159,11 +162,12 @@ theorem modelExistence_of_satPreserved {fc : ProofSystem.FrameClass}
 **Model existence for `FrameClass.Base`.** Every finitely satisfiable `Γ : Set Formula` has a
 single model satisfying all of `Γ` at once.
 
-`modelExistence_of_satPreserved` at `.Base`, where `Sat .Base` is `True` and the preservation
-hypothesis is discharged by `trivial` with nothing to check.
+`modelExistence_of_satPreserved` at `.Base`, where `Sat .Base` is `TaskFrame.IsRegular` and the
+preservation hypothesis is discharged by synthesis: the ultraproduct shift-set frame carries its
+own regularity instance.
 -/
 theorem modelExistenceBase : ModelExistenceBase :=
-  modelExistence_of_satPreserved (fun _ _ _ _ => trivial)
+  modelExistence_of_satPreserved (fun _ _ _ _ => inferInstance)
 
 /--
 **Model existence for `FrameClass.Dense`.** `modelExistence_of_satPreserved` at `.Dense`, where
@@ -178,8 +182,8 @@ safe here.
 -/
 theorem modelExistenceDense : ModelExistenceDense :=
   modelExistence_of_satPreserved (fun u T S hS => by
-    haveI : ∀ i, DenselyOrdered ((S i).frame.Duration : Type) := hS
-    exact (inferInstance : DenselyOrdered (uShiftSet u S).frame.Duration))
+    haveI : ∀ i, DenselyOrdered ((S i).frame.Duration : Type) := fun i => (hS i).2
+    exact ⟨inferInstance, (inferInstance : DenselyOrdered (uShiftSet u S).frame.Duration)⟩)
 
 /-- **Compactness for `FrameClass.Base`**, from model existence via the class-generic bridge
 `compact_of_modelExistence`. `ModelExistenceBase` *is* `ModelExistence .Base` and `CompactBase`

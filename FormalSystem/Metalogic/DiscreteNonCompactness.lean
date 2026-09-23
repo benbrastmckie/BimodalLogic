@@ -205,7 +205,7 @@ theorem archWitness_finitely_satisfiable (p : Atom) (L : List Formula)
     (hL : ∀ ψ ∈ L, ψ ∈ archWitness p) : SatisfiableZTimeSet {ψ | ψ ∈ L} := by
   classical
   refine SatisfiableSet.of_forall (fc := FrameClass.ZTime) (FrameOver.natFrame (D := ℤ))
-    (TaskFrame.isZTime_of_instances _) zModel
+    ⟨inferInstance, TaskFrame.isZTime_of_instances _⟩ zModel
     (zHistory ((L.map witIdx).sum : ℕ)) 0 ?_
   set N : ℕ := (L.map witIdx).sum with hNdef
   intro ψ hψ
@@ -237,7 +237,7 @@ theorem archWitness_finitely_satisfiable (p : Atom) (L : List Formula)
     the originals. Naming them and re-installing with `haveI` would drop the value and break
     definitional equality with the instances baked into `F`'s and `M`'s types. -/
 theorem archWitness_not_satisfiable (p : Atom) : ¬ SatisfiableZTimeSet (archWitness p) := by
-  rintro ⟨F, ⟨_, _, _, _⟩, M, τ, t, h⟩
+  rintro ⟨F, ⟨-, _, _, _, _⟩, M, τ, t, h⟩
   haveI : NoMaxOrder F.Duration := inferInstance
   have hF : TruthAt M τ t ((Formula.atom p).someFuture) := by
     apply h; simp

@@ -320,18 +320,48 @@ C19 docstring sweep in Phase 10 accordingly.
 
 ---
 
-### Phase 4: Validity chain — the `FrameClass.Sat` lever [NOT STARTED]
+### Phase 4: Validity chain — the `FrameClass.Sat` lever [COMPLETED]
 
 **Goal**: Fix the meaning of validity across the coming strip, so that no soundness or
 completeness theorem changes. This is the one place meaning could silently change.
 
 **Tasks**:
-- [ ] Redefine `FrameClass.Sat`: `.Base F => F.IsRegular`; `.Dense F => F.IsRegular ∧ F.IsDense`; `.ZTime F => F.IsRegular ∧ F.IsZTime`; `.RTime F => F.IsRegular ∧ F.IsRTime`. Keep the `@[reducible]` attribute — it is load-bearing, not decorative: it is what makes a bare `intro h` register the frame condition in the local instance cache.
-- [ ] Leave `Valid`, `ValidIn`, `ValidOnFrames`, `GenericValidIn`, `GenericValidOnFrames`, `Valid.apply` and `Valid.of_forall` **byte-identical**. Confirm with `git diff` that no line in those definitions changed.
-- [ ] Extend the `sat_intro` macro's `obtain` patterns for the three conjunctive tags by one component each. The `.Base` branch needs no change — verified in `probes/RegularClass.lean` that `G.comp` elaborates after a bare `intro h`.
-- [ ] Add `[F.IsRegular]` to `TaskFrame.not_validOn_bot` and `TaskFrame.hF_nonempty_of_frameAxioms`. Rewrite `not_validOn_bot`'s docstring, whose claim that the axioms are "not arguments: `FrameOver` carries them as structure fields" becomes false — it must say they arrive through the class.
-- [ ] Leave `TaskFrame.ValidOn` without a binder: it quantifies over `WorldHistory F`, which is general-frame data. Only the non-vacuity theorem needs the class.
-- [ ] Full `--wfail` build plus test library.
+- [x] Redefine `FrameClass.Sat`: `.Base F => F.IsRegular`; `.Dense F => F.IsRegular ∧ F.IsDense`; `.ZTime F => F.IsRegular ∧ F.IsZTime`; `.RTime F => F.IsRegular ∧ F.IsRTime`. Keep the `@[reducible]` attribute. *(completed; `FrameClass.Sat.anti`'s 16-case proof re-derived for the conjunctive shapes)*
+- [x] Leave `Valid`, `ValidIn`, `ValidOnFrames`, `GenericValidIn`, `GenericValidOnFrames` **byte-identical**. *(completed for those five — `git diff` shows no change to any of their definition lines)* *(deviation: altered — `Valid.apply`/`GenericValid.apply` **must** gain `[F.IsRegular]`: they eliminate into a bare `∀ F`, which after the strip ranges over frames the hypothesis says nothing about. `SemanticConsequence.apply` likewise. See the extra bullet below.)*
+- [x] Extend the `sat_intro` macro's `obtain` patterns. *(deviation: altered — the plan's "one component each" is unsafe: `Sat .Base` is now the four-field class `IsRegular`, and a bare `obtain ⟨_, _, _, _, _⟩` **matches it**, silently destroying the frame's regularity instance. The macro instead wraps the pre-split body in a regularity strip guarded by the type ascription `($h : _ ∧ _)`, which fails at `.Base` and degrades the whole macro to `skip`. Verified by direct elaboration at all four tag shapes before the edit.)*
+- [x] Add `[F.IsRegular]` to `TaskFrame.not_validOn_bot` and `TaskFrame.hF_nonempty_of_frameAxioms`, and rewrite `not_validOn_bot`'s docstring. *(completed)*
+- [x] Leave `TaskFrame.ValidOn` without a binder. *(completed — unchanged)*
+- [x] Full `--wfail` build plus test library. *(completed — 2781 jobs, guard exit 0, 0 `error:` lines, 0 warnings)*
+
+**Additional migrations this phase forced, all recorded in the summary's migration table:**
+
+- `Valid.of_forall` / `GenericValid.of_forall` / `SemanticConsequence.of_forall` keep their **bare**
+  `∀ F` hypothesis (the *sufficient* form, which every constraint-free axiom supplies), and a new
+  `…of_forall_regular` sibling takes `∀ F [F.IsRegular]` (the *equivalent* form, for a soundness
+  argument that reads a constraint off the frame). Adding the binder to `of_forall` itself was
+  tried first and rejected: it would have forced an `intro F _ M τ t` edit at every propositional
+  and modal soundness proof in the tree, for results that consume no constraint at all.
+- `Valid.apply`, `GenericValid.apply`, `SemanticConsequence.apply`, `Validity.validOn_of_valid`
+  and `Validity.valid_iff_forall_validOn` gain `[F.IsRegular]`. `valid_iff_forall_validOn`'s
+  right-hand side would otherwise quantify over general frames and the biconditional would be
+  false rather than content-free.
+- `ValidComplete` and `ValidQTime` conjoin `F.IsRegular` into their frame predicates. They are
+  `ValidOnFrames` at a bare frame property, bypassing `Sat` entirely, so the `Sat` lever alone
+  does **not** reach them; without this they would have silently widened to the general Complete
+  and ℚ-time frames, over which their soundness bridges are false.
+- The `Th`/`Mod` correspondence polarity is relativised: `Semantics.validOnRel` becomes
+  `F.IsRegular ∧ F.ValidOn φ`. Over general frames `Mod S` would contain frames with no world
+  histories at all, which validate everything vacuously, and no order-defined class would be
+  Galois-closed — `galoisClosed_sat_dense` would become false rather than merely unproved.
+  `galoisClosed_of_indicator{,_iff}` gain the corresponding hypotheses, and
+  `galoisClosed_isDiscrete` is restated at `{F | F.IsRegular ∧ F.IsDiscrete}`.
+- `Indicator`'s three `validOn_*_iff` lemmas gain `[F.IsRegular]` (they build a world history via
+  `hF_nonempty_of_frameAxioms`).
+- `Metalogic.soundness{,_dense,_ztime,_rtime}`, `MinusLanguage.minus_soundness{,_dense,_ztime,_rtime}`,
+  `plus_soundness_base`, `Deterministic.valid_iff_valid_deterministic`,
+  `Independence.CValid`, and `Frames.FrameOver.translationProduct{,_taskRel,_sat}` gain
+  `[F.IsRegular]`; every `trivial` discharging a `Sat .Base` slot becomes `inferInstance`, and
+  every positional `Sat` witness at a constrained tag gains its regularity component.
 
 **Timing**: 1.5 hours
 

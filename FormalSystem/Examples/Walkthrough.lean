@@ -320,16 +320,18 @@ theorem blipRefutes : ¬ blipFrame.ValidOn ggFml := by
   exact hbad rfl
 
 /-- `GGp → Gp` is not valid over the base class: the blip frame is a base frame. -/
-theorem notValidGg : ¬ Valid ggFml := fun h => blipRefutes (h _ trivial)
+theorem notValidGg : ¬ Valid ggFml := fun h => blipRefutes (h _ inferInstance)
 
 /-- `GGp → Gp` is not valid over integer time either: the blip frame is an integer-time frame. -/
-theorem notValidZTimeGg : ¬ ValidZTime ggFml := fun h => blipRefutes (h _ blipFrame_isZTime)
+theorem notValidZTimeGg : ¬ ValidZTime ggFml :=
+  fun h => blipRefutes (h _ ⟨inferInstance, blipFrame_isZTime⟩)
 
 /-!
 Note how little separates those two. `notValidGg` discharges the base-class membership
-condition with `trivial`, because the base class constrains nothing; `notValidZTimeGg`
-discharges the integer-time condition with `blipFrame_isZTime`. Same frame, same refutation,
-two different certificates that it belongs to the class in question.
+condition by instance synthesis, because the base class constrains nothing beyond `def:frame`'s
+own four constraints, which the blip frame carries as its `IsRegular` instance;
+`notValidZTimeGg` pairs that same instance with `blipFrame_isZTime`. Same frame, same
+refutation, two different certificates that it belongs to the class in question.
 
 Now soundness runs backwards. If the formula were derivable over a class it would be valid over
 that class; it is not valid, so it is not derivable. This is the standard use of soundness —

@@ -209,23 +209,45 @@ theorem GenericValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : L} (h :
 /-! ### The `.Base` binder-shape adapters
 
 `GenericValid` is `GenericValidIn` at the unconstrained class, whose frame condition
-`Sat .Base` is `True`. These three discharge that vacuous argument so that no call site has to
-bind it. The frame-predicate and frame-class notions need no adapters: their quantifiers already
-range over `WorldHistory F`, so `intro` and application open them directly. -/
+`Sat .Base` is `TaskFrame.IsRegular` — `def:frame`'s four constraints, which `FrameOver` carries
+as a class rather than as fields. These three discharge that argument as an *instance*, so that no
+call site has to bind it positionally. The frame-predicate and frame-class notions need no
+adapters: their quantifiers already range over `WorldHistory F`, so `intro` and application open
+them directly. -/
 
-/-- Introduce `GenericValid` from its explicit binder shape; the `Sat .Base` argument (`True`) is
-discharged here rather than at each call site. -/
+/-- Introduce `GenericValid` from its explicit binder shape; the `Sat .Base` argument
+(`F.IsRegular`) is discharged here rather than at each call site.
+
+The frame binder is bare, with no `[F.IsRegular]`: this is the *sufficient* form, for a result
+that holds at every frame of the general structure and consumes no `def:frame` constraint — which
+is every propositional and modal axiom in the tree. Where a proof does consume a constraint, use
+`GenericValid.of_forall_regular`, which is the *equivalent* form. -/
 theorem GenericValid.of_forall {φ : L}
     (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration),
       PointTruth.sat M τ x φ) :
     GenericValid φ :=
   fun F _ M τ x => h F M τ x
 
+/-- Introduce `GenericValid` from its explicit binder shape **at the regular frames**: the shape
+`GenericValid` is actually equivalent to.
+
+`FrameOver` is the general frame structure and `def:frame`'s four constraints are a class on it
+(`Semantics/TaskFrame.lean`, "General frames and the regular class"), so `GenericValid` claims
+truth at the regular frames only. `of_forall` above asks for every frame, which is strictly more
+and is exactly what an axiom whose soundness argument touches no constraint can supply; this
+variant asks for precisely what `GenericValid` gives back, and is the entry point for a soundness
+argument that reads `F.comp`, `F.serial`, `F.limit` or `F.saturation` off the frame. -/
+theorem GenericValid.of_forall_regular {φ : L}
+    (h : ∀ (F : TaskFrame) [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration),
+      PointTruth.sat M τ x φ) :
+    GenericValid φ :=
+  fun F _ M τ x => h F M τ x
+
 /-- Eliminate `GenericValid` into its explicit binder shape; the `Sat .Base` argument is
 discharged here, not at the call site. -/
-theorem GenericValid.apply {φ : L} (h : GenericValid φ) (F : TaskFrame) (M : TaskModel F)
-    (τ : WorldHistory F) (x : F.Duration) : PointTruth.sat M τ x φ :=
-  h F trivial M τ x
+theorem GenericValid.apply {φ : L} (h : GenericValid φ) (F : TaskFrame) [F.IsRegular]
+    (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration) : PointTruth.sat M τ x φ :=
+  h F inferInstance M τ x
 
 /-- The contrapositive of `GenericValid.of_forall`, in the shape a countermodel extraction wants:
 from a failure of validity it hands back a failure of the explicit ∀-statement, which `push Not`

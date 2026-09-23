@@ -387,38 +387,39 @@ theorem cTruthAt_iff_atomize (K : CoarseModel F) (e : Encoding) (φ : PlusFormul
 system is sound for. There is no frame-class parameter — the argument is run at `.Base`, which is
 where the two pasting schemata sit. -/
 def CValid (φ : PlusFormula) : Prop :=
-  ∀ (F : TaskFrame) (K : CoarseModel F) (τ : WorldHistory F) (t : F.Duration), CTruthAt K τ t φ
+  ∀ (F : TaskFrame) [F.IsRegular] (K : CoarseModel F) (τ : WorldHistory F) (t : F.Duration),
+    CTruthAt K τ t φ
 
 /-- **TM schema soundness over coarsened models**: the atomization of `φ` being a `.Base`-admissible
 TM axiom instance makes `φ` coarsely valid. -/
 theorem cValid_of_tm (e : Encoding) (φ : PlusFormula) (ax : Axiom (atomize e φ))
     (h : ax.minFrameClass ≤ FrameClass.Base) : CValid φ :=
-  fun F K τ t => (cTruthAt_iff_atomize K e φ τ t).mpr
-    (axiom_validIn ax h F trivial (K.atomModel e) τ t)
+  fun F _ K τ t => (cTruthAt_iff_atomize K e φ τ t).mpr
+    (axiom_validIn ax h F inferInstance (K.atomModel e) τ t)
 
 /-- The reflection form, via `atomize_reflectTime` at the conjugated encoding. -/
 theorem cValid_reflect_time_of_tm (e : Encoding) (φ : PlusFormula)
     (ax : Axiom (atomize e.reflectTime φ))
     (h : ax.minFrameClass ≤ FrameClass.Base) : CValid φ.reflectTime :=
-  fun F K τ t => (cTruthAt_iff_atomize K e φ.reflectTime τ t).mpr
+  fun F _ K τ t => (cTruthAt_iff_atomize K e φ.reflectTime τ t).mpr
     (by
       rw [atomize_reflectTime]
-      exact axiom_reflect_time_validIn ax h F trivial (K.atomModel e) τ t)
+      exact axiom_reflect_time_validIn ax h F inferInstance (K.atomModel e) τ t)
 
 /-- The derivation-taking form of `cValid_of_tm`, for base-class TM theorems (in particular the
 derived schemata of `FormalSystem.ProofSystem.DerivedAxioms`). -/
 theorem cValid_of_tm_deriv (e : Encoding) (φ : PlusFormula)
     (d : DerivationTree FrameClass.Base [] (atomize e φ)) : CValid φ :=
-  fun F K τ t => (cTruthAt_iff_atomize K e φ τ t).mpr
-    (soundness_validIn d F trivial (K.atomModel e) τ t)
+  fun F _ K τ t => (cTruthAt_iff_atomize K e φ τ t).mpr
+    (soundness_validIn d F inferInstance (K.atomModel e) τ t)
 
 /-- The derivation-taking form of `cValid_reflect_time_of_tm`. -/
 theorem cValid_reflect_time_of_tm_deriv (e : Encoding) (φ : PlusFormula)
     (d : DerivationTree FrameClass.Base [] (atomize e.reflectTime φ)) : CValid φ.reflectTime :=
-  fun F K τ t => (cTruthAt_iff_atomize K e φ.reflectTime τ t).mpr
+  fun F _ K τ t => (cTruthAt_iff_atomize K e φ.reflectTime τ t).mpr
     (by
       rw [atomize_reflectTime]
-      exact (derivable_valid_and_reflect_time_validIn d).2 F trivial (K.atomModel e) τ t)
+      exact (derivable_valid_and_reflect_time_validIn d).2 F inferInstance (K.atomModel e) τ t)
 
 /-! ## The six naive `⊡` schemata are coarsely valid
 
@@ -428,22 +429,22 @@ against `SameUnder` in place of the state equation. AS is the one that consumes 
 /-- SK: the universal-quantifier shape of the coarsened `stab` clause. -/
 theorem cValid_stab_k (φ ψ : PlusFormula) :
     CValid ((PlusFormula.stab (φ.imp ψ)).imp ((PlusFormula.stab φ).imp (PlusFormula.stab ψ))) :=
-  fun _ _ _ _ h1 h2 σ hs => h1 σ hs (h2 σ hs)
+  fun _ _ _ _ _ h1 h2 σ hs => h1 σ hs (h2 σ hs)
 
 /-- ST: reflexivity of `π`-agreement. -/
 theorem cValid_stab_t (φ : PlusFormula) : CValid ((PlusFormula.stab φ).imp φ) :=
-  fun _ K τ t h => h τ (SameUnder.refl K τ t)
+  fun _ _ K τ t h => h τ (SameUnder.refl K τ t)
 
 /-- S4: transitivity of `π`-agreement. -/
 theorem cValid_stab_4 (φ : PlusFormula) :
     CValid ((PlusFormula.stab φ).imp (PlusFormula.stab (PlusFormula.stab φ))) := by
-  intro F K τ t h σ hσsame ρ hρsame
+  intro F _ K τ t h σ hσsame ρ hρsame
   exact h ρ (hσsame.trans hρsame)
 
 /-- S5: symmetry together with transitivity of `π`-agreement. -/
 theorem cValid_stab_5 (φ : PlusFormula) :
     CValid ((dstab φ).imp (PlusFormula.stab (dstab φ))) := by
-  intro F K τ t h σ hσsame hstab
+  intro F _ K τ t h σ hσsame hstab
   apply h
   intro ρ hρsame
   exact hstab ρ (hσsame.symm.trans hρsame)
@@ -451,12 +452,12 @@ theorem cValid_stab_5 (φ : PlusFormula) :
 /-- MS: the `π`-class is a subset of all world histories. -/
 theorem cValid_box_stab (φ : PlusFormula) :
     CValid ((PlusFormula.box φ).imp (PlusFormula.stab φ)) :=
-  fun _ _ _ _ h σ _ => h σ
+  fun _ _ _ _ _ h σ _ => h σ
 
 /-- AS: `atom_inv` — the valuation cannot separate states in the same `π`-fibre. -/
 theorem cValid_atom_stab (p : Atom) :
     CValid ((PlusFormula.atom p).imp (PlusFormula.stab (PlusFormula.atom p))) := by
-  intro F K τ t h σ hs
+  intro F _ K τ t h σ hs
   exact K.atom_inv hs p h
 
 /-! ## The dispatch
@@ -699,19 +700,19 @@ theorem naive_cValid_and_reflect_time {φ : PlusFormula}
   | .modus_ponens _ psi' _ d1 d2, hn =>
     have h1 := naive_cValid_and_reflect_time d1 hn.1
     have h2 := naive_cValid_and_reflect_time d2 hn.2
-    exact ⟨fun F K τ t => (h1.1 F K τ t) (h2.1 F K τ t),
-      fun F K τ t => (h1.2 F K τ t) (h2.2 F K τ t)⟩
+    exact ⟨fun F _ K τ t => (h1.1 F K τ t) (h2.1 F K τ t),
+      fun F _ K τ t => (h1.2 F K τ t) (h2.2 F K τ t)⟩
   | .necessitation psi' d', hn =>
     have h := naive_cValid_and_reflect_time d' hn
-    exact ⟨fun F K _ t σ => h.1 F K σ t, fun F K _ t σ => h.2 F K σ t⟩
+    exact ⟨fun F _ K _ t σ => h.1 F K σ t, fun F _ K _ t σ => h.2 F K σ t⟩
   | .temporal_necessitation psi' d', hn =>
     have h := naive_cValid_and_reflect_time d' hn
     constructor
-    · intro F K τ t
+    · intro F _ K τ t
       rw [CTruth.allFuture_iff]
       intro s _
       exact h.1 F K τ s
-    · intro F K τ t
+    · intro F _ K τ t
       rw [reflect_time_all_future, CTruth.allPast_iff]
       intro s _
       exact h.2 F K τ s

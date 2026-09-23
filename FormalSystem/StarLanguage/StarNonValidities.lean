@@ -109,7 +109,7 @@ theorem refute_sentDet (p : Atom) :
 /-- The same refutation at the level of unrestricted L⋆ validity: `sent:det` is not valid. -/
 theorem not_starValid_sentDet (p : Atom) :
     ¬ StarValid (sentDet (ofPlus (PlusFormula.atom p))) :=
-  fun h => refute_sentDet p (h NF trivial)
+  fun h => refute_sentDet p (h NF inferInstance)
 
 /-! ## MF is not an L⋆ schema -/
 

@@ -301,7 +301,7 @@ class: the `Sat .RTime` slot is `IsDense ∧ IsComplete`, and only its second co
 used. -/
 theorem dedWitness_not_satisfiable (q : Atom) :
     ¬ SatisfiableRTimeSet (dedWitness q) := by
-  rintro ⟨F, ⟨-, hlub⟩, M, τ, t, h⟩
+  rintro ⟨F, ⟨-, -, hlub⟩, M, τ, t, h⟩
   exact dedWitness_core q M τ t hlub h
 
 /-! ## The `ℝ` model for finite satisfiability
@@ -428,7 +428,8 @@ theorem dedWitness_finitely_satisfiable (q : Atom) (L : List Formula)
   classical
   set N : ℕ := (L.map qDepth).sum with hNdef
   refine SatisfiableSet.of_forall (fc := FrameClass.RTime) (rShift q N).frame
-    ⟨inferInstance, fun _ hne hbd => Real.exists_isLUB hne hbd⟩ (rM q N) (rH q N) 0 ?_
+    ⟨inferInstance, inferInstance, fun _ hne hbd => Real.exists_isLUB hne hbd⟩
+    (rM q N) (rH q N) 0 ?_
   intro ψ hψ
   have hmem := hL ψ hψ
   simp only [mem_dedWitness_iff] at hmem

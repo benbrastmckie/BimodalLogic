@@ -282,36 +282,36 @@ theorem c3_sep (hR : F.IsRTime) (φ : Formula) :
 /-- `prior_UZ` is C3-valid on the ℤ-time class. -/
 theorem validC3In_priorUZ (φ : Formula) :
     ValidC3In .ZTime (φ.someFuture.imp (Formula.untl φ.neg φ)) :=
-  fun _F hF => c3_prior_UZ hF φ
+  fun _F hF => c3_prior_UZ hF.2 φ
 
 /-- `z1` is C3-valid on the ℤ-time class. -/
 theorem validC3In_z1 (φ : Formula) :
     ValidC3In .ZTime ((φ.allFuture.imp φ).allFuture.imp
       (φ.allFuture.someFuture.imp φ.allFuture)) :=
-  fun _F hF => c3_z1 hF φ
+  fun _F hF => c3_z1 hF.2 φ
 
 /-- `density` is C3-valid on the dense class. -/
 theorem validC3In_density (φ : Formula) :
     ValidC3In .Dense (φ.allFuture.allFuture.imp φ.allFuture) :=
-  fun _F hF => c3_density hF φ
+  fun _F hF => c3_density hF.2 φ
 
 /-- `dense_indicator` is C3-valid on the dense class. -/
 theorem validC3In_denseIndicator :
     ValidC3In .Dense (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).neg :=
-  fun _F hF => c3_dense_indicator hF
+  fun _F hF => c3_dense_indicator hF.2
 
 /-- `prior_U_gap` is C3-valid on the ℝ-time class. Only the completeness half of the class
 condition is used. -/
 theorem validC3In_priorUGap (φ : Formula) :
     ValidC3In .RTime ((Formula.and (Formula.untl φ Formula.top) φ.neg.someFuture).imp
       (Formula.untl φ (Formula.or φ.neg (Formula.kPlus φ.neg)))) :=
-  fun _F hF => c3_prior_U_gap hF.2 φ
+  fun _F hF => c3_prior_U_gap hF.2.2 φ
 
 /-- `sep` is C3-valid on the ℝ-time class. -/
 theorem validC3In_sep (φ : Formula) :
     ValidC3In .RTime ((Formula.and (Formula.kPlus φ)
         (Formula.kPlus (Formula.and φ (Formula.untl φ.neg φ))).neg).imp
       (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))) :=
-  fun _F hF => c3_sep hF φ
+  fun _F hF => c3_sep hF.2 φ
 
 end FormalSystem.Metalogic.ConvexConsequence

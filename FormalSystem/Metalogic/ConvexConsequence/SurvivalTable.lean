@@ -84,12 +84,12 @@ theorem c3_survival_table {φ : Formula} (a : Axiom φ) (h : a.failsC3 = false) 
   | discrete_propagate_fwd => exact absurd h (by decide)
   | discrete_propagate_bwd => exact fun _ _ => c3_discrete_propagate_bwd
   | discrete_box_necessity => exact absurd h (by decide)
-  | prior_UZ φ => exact fun _ hF => c3_prior_UZ hF φ
-  | z1 φ => exact fun _ hF => c3_z1 hF φ
-  | density φ => exact fun _ hF => c3_density hF φ
-  | dense_indicator => exact fun _ hF => c3_dense_indicator hF
-  | prior_U_gap φ => exact fun _ hF => c3_prior_U_gap hF.2 φ
-  | sep φ => exact fun _ hF => c3_sep hF φ
+  | prior_UZ φ => exact fun _ hF => c3_prior_UZ hF.2 φ
+  | z1 φ => exact fun _ hF => c3_z1 hF.2 φ
+  | density φ => exact fun _ hF => c3_density hF.2 φ
+  | dense_indicator => exact fun _ hF => c3_dense_indicator hF.2
+  | prior_U_gap φ => exact fun _ hF => c3_prior_U_gap hF.2.2 φ
+  | sep φ => exact fun _ hF => c3_sep hF.2 φ
 
 /-- **The failure half of the table**: every axiom of TM flagged by `Axiom.failsC3` is refuted
 under C3 on the integer-time frame `NF`. -/

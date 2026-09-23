@@ -126,8 +126,9 @@ theorem ratStaticFrame_mem_mod :
     by_contra hn
     exact hpq fun hp hq => hn ⟨hp, hq⟩
   rintro φ ⟨ax, hax⟩
+  refine ⟨inferInstance, ?_⟩
   by_cases hb : ax.minFrameClass ≤ FrameClass.Dense
-  · exact axiom_dense_valid ax hb ratStaticFrame ratStaticFrame_isDense
+  · exact axiom_dense_valid ax hb ratStaticFrame ⟨inferInstance, ratStaticFrame_isDense⟩
   · cases ax with
     | prior_U_gap ψ =>
         intro M τ x hant
@@ -157,7 +158,7 @@ theorem ratStaticFrame_mem_mod :
 -/
 theorem ratStaticFrame_not_sat :
     ratStaticFrame ∉ {F : TaskFrame | FrameClass.Sat FrameClass.RTime F} :=
-  fun h => rat_not_complete h.2
+  fun h => rat_not_complete h.2.2
 
 /-! ## The Dedekind sandwich -/
 
@@ -165,7 +166,7 @@ theorem ratStaticFrame_not_sat :
 theorem sat_rtime_subset_mod_axiomSet :
     {F : TaskFrame | FrameClass.Sat FrameClass.RTime F} ⊆
       Semantics.Mod (AxiomSet FrameClass.RTime) :=
-  fun F hF _ ⟨ax, hax⟩ => axiom_rtime_valid ax hax F hF
+  fun F hF _ ⟨ax, hax⟩ => ⟨hF.1, axiom_rtime_valid ax hax F hF⟩
 
 /--
 **The lower half of the sandwich is strict**: `Sat .RTime ⊊ Mod (AxiomSet .RTime)`, with
@@ -191,8 +192,10 @@ the model class validates `¬X⊤` and `Semantics.validOn_neg_nextTop_iff` conve
 -/
 theorem mod_axiomSet_rtime_subset_sat_dense :
     Semantics.Mod (AxiomSet FrameClass.RTime) ⊆
-      {F : TaskFrame | FrameClass.Sat FrameClass.Dense F} :=
-  fun F hF => (validOn_neg_nextTop_iff F).mp
-    (hF ⟨Axiom.dense_indicator, by decide⟩)
+      {F : TaskFrame | FrameClass.Sat FrameClass.Dense F} := by
+  intro F hF
+  obtain ⟨hreg, hvalid⟩ := hF ⟨Axiom.dense_indicator, by decide⟩
+  haveI := hreg
+  exact ⟨hreg, (validOn_neg_nextTop_iff F).mp hvalid⟩
 
 end FormalSystem.Metalogic.Independence

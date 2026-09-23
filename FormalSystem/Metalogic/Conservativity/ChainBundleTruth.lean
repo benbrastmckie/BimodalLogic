@@ -218,7 +218,7 @@ theorem not_minusValidDense_of_not_chainSat
     (q : FamIdx × ((TemporalOrder.of ℚ) : Type)) (φ : MinusFormula)
     (h : ¬ chainSat v q φ) : ¬ MinusValidDense φ :=
   not_minusValidIn_of_not_chainSat (fc := FrameClass.Dense) (D := TemporalOrder.of ℚ)
-    inferInstance v q φ h
+    ⟨inferInstance, inferInstance⟩ v q φ h
 
 /--
 **The `.RTime` instantiation**, at chains of reals.
@@ -238,6 +238,6 @@ theorem not_minusValidRTime_of_not_chainSat
     (q : FamIdx × ((TemporalOrder.of ℝ) : Type)) (φ : MinusFormula)
     (h : ¬ chainSat v q φ) : ¬ MinusValidRTime φ :=
   not_minusValidIn_of_not_chainSat (fc := FrameClass.RTime) (D := TemporalOrder.of ℝ)
-    ⟨inferInstance, fun _ hne hbdd => Real.exists_isLUB hne hbdd⟩ v q φ h
+    ⟨inferInstance, inferInstance, fun _ hne hbdd => Real.exists_isLUB hne hbdd⟩ v q φ h
 
 end FormalSystem.Metalogic

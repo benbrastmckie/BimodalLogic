@@ -739,6 +739,7 @@ theorem starValid_discrete_box_necessity_reflect_time :
 theorem starValid_density (φ : StarFormula) :
     StarValidIn FrameClass.Dense ((φ.allFuture.allFuture).imp φ.allFuture) := by
   refine fun F h_dense M τ t v => ?_
+  sat_intro h_dense
   simp only [StarTruth.imp_iff, StarTruth.allFuture_iff]
   intro h_GG s hts
   obtain ⟨r, htr, hrs⟩ := @DenselyOrdered.dense F.Duration _ h_dense t s hts
@@ -750,6 +751,7 @@ constructor — mirroring `Metalogic/Soundness.lean`'s `density_reflect_time_val
 theorem starValid_density_reflect_time (φ : StarFormula) :
     StarValidIn FrameClass.Dense ((φ.allPast.allPast).imp φ.allPast) := by
   refine fun F h_dense M τ t v => ?_
+  sat_intro h_dense
   simp only [StarTruth.imp_iff, StarTruth.allPast_iff]
   intro h_HH s hst
   obtain ⟨r, hsr, hrt⟩ := @DenselyOrdered.dense F.Duration _ h_dense s t hst

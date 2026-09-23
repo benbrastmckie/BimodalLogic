@@ -481,6 +481,7 @@ but `DenselyOrdered` provides r with t < r < s, contradiction. -/
 theorem dense_indicator_valid :
     ValidDense (Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).neg := by
   intro F h_dense M τ t
+  sat_intro h_dense
   simp only [truth_norm]
   intro ⟨s, hts, _h_top, h_guard⟩
   obtain ⟨r, htr, hrs⟩ := @DenselyOrdered.dense F.Duration _ h_dense t s hts
@@ -492,6 +493,7 @@ find r with t < r < s by density, then h_GG(r)(s) gives φ(s). -/
 theorem density_valid (φ : Formula) :
     ValidDense ((φ.allFuture.allFuture).imp φ.allFuture) := by
   intro F h_dense M τ t
+  sat_intro h_dense
   simp only [truth_norm]
   intro h_GG s hts
   -- h_GG : ∀ r > t, ∀ q > r, φ(q)
@@ -1192,7 +1194,8 @@ every densely ordered frame. Given a `¬φ` point `s < t`, density supplies `r` 
 `r` then witnesses `P(¬Hφ)`, which is what the reflected antecedent forbids. -/
 theorem density_reflect_time_valid (φ : Formula) :
     ValidDense ((φ.allFuture.allFuture.imp φ.allFuture).reflectTime) := by
-  intro F _ M τ t
+  intro F h_dense M τ t
+  sat_intro h_dense
   simp only [reflect_time_norm, Formula.reflectTime, truth_norm]
   intro h_HH s hst
   obtain ⟨r, hsr, hrt⟩ := exists_between hst
@@ -1203,7 +1206,8 @@ past density indicator. `S(⊤,⊥)` at `t` needs an `s < t` with `(s,t)` empty,
 -/
 theorem dense_indicator_reflect_time_valid :
     ValidDense ((Formula.untl Formula.bot (Formula.bot.imp Formula.bot)).neg.reflectTime) := by
-  intro F _ M τ t
+  intro F h_dense M τ t
+  sat_intro h_dense
   simp only [Formula.reflectTime, Formula.neg, TruthAt]
   intro ⟨s, hst, _h_top, h_guard⟩
   obtain ⟨r, hsr, hrt⟩ := exists_between hst
@@ -1435,11 +1439,11 @@ Paper: `thm:TM-soundness`
 -/
 theorem soundness (Γ : Context) (φ : Formula)
     (d : DerivationTree FrameClass.Base Γ φ)
-    (F : TaskFrame) (M : TaskModel F)
+    (F : TaskFrame) [F.IsRegular] (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     TruthAt M τ t φ := by
-  exact soundness_in Γ φ d F trivial M τ t h_ctx
+  exact soundness_in Γ φ d F inferInstance M τ t h_ctx
 
 /-! ### Dense-frame instances
 
@@ -1490,11 +1494,11 @@ Paper: `thm:TM-soundness`
 -/
 theorem soundness_dense (Γ : Context) (φ : Formula)
     (d : DerivationTree FrameClass.Dense Γ φ)
-    (F : TaskFrame) [DenselyOrdered F.Duration] (M : TaskModel F)
+    (F : TaskFrame) [F.IsRegular] [DenselyOrdered F.Duration] (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     TruthAt M τ t φ := by
-  exact soundness_in Γ φ d F ‹DenselyOrdered F.Duration› M τ t h_ctx
+  exact soundness_in Γ φ d F ⟨inferInstance, ‹DenselyOrdered F.Duration›⟩ M τ t h_ctx
 
 /-! ### Discrete-frame instances
 
@@ -1529,13 +1533,13 @@ Paper: `thm:TM-soundness`
 -/
 theorem soundness_ztime (Γ : Context) (φ : Formula)
     (d : DerivationTree FrameClass.ZTime Γ φ)
-    (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration]
+    (F : TaskFrame) [F.IsRegular] [SuccOrder F.Duration] [PredOrder F.Duration]
     [IsSuccArchimedean F.Duration] [IsPredArchimedean F.Duration] (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     TruthAt M τ t φ := by
   exact soundness_in Γ φ d F
-    ⟨‹SuccOrder F.Duration›, ‹PredOrder F.Duration›,
+    ⟨inferInstance, ‹SuccOrder F.Duration›, ‹PredOrder F.Duration›,
       ‹IsSuccArchimedean F.Duration›, ‹IsPredArchimedean F.Duration›⟩
     M τ t h_ctx
 
@@ -1578,13 +1582,13 @@ Paper: `thm:TM-soundness`
 -/
 theorem soundness_rtime (Γ : Context) (φ : Formula)
     (d : DerivationTree FrameClass.RTime Γ φ)
-    (F : TaskFrame) [DenselyOrdered F.Duration]
+    (F : TaskFrame) [F.IsRegular] [DenselyOrdered F.Duration]
     (h_lub : ∀ s : Set F.Duration, s.Nonempty → BddAbove s → ∃ x, IsLUB s x)
     (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     TruthAt M τ t φ := by
-  exact soundness_in Γ φ d F ⟨‹DenselyOrdered F.Duration›, h_lub⟩ M τ t h_ctx
+  exact soundness_in Γ φ d F ⟨inferInstance, ‹DenselyOrdered F.Duration›, h_lub⟩ M τ t h_ctx
 
 /-! ## Consistency of the Base System
 
@@ -1648,7 +1652,7 @@ theorem not_derivable_nil_bot_ztime :
   exact Truth.bot_false
     (FormalSystem.Metalogic.soundness_ztime_valid d
       (FrameOver.trivialFrame (D := ℤ))
-      (Semantics.TaskFrame.isZTime_of_instances _)
+      ⟨inferInstance, Semantics.TaskFrame.isZTime_of_instances _⟩
       TaskModel.allFalse τ 0)
 
 end FormalSystem.Metalogic

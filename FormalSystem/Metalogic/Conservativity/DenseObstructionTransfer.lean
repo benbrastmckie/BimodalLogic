@@ -283,6 +283,6 @@ is not a validity of the class.
 -/
 theorem not_minusValidDense_z1 (p : Atom) :
     ¬ MinusValidDense (Conservativity.Z1 (MinusFormula.atom p)) := fun h =>
-  q_not_true_at_zero p (h qF inferInstance qTM qτ 0)
+  q_not_true_at_zero p (h qF ⟨inferInstance, inferInstance⟩ qTM qτ 0)
 
 end FormalSystem.Metalogic
