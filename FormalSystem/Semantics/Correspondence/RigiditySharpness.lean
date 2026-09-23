@@ -45,10 +45,24 @@ whose second coordinate is dense so that `DenselyOrdered` holds.
 Both frames are built through `FrameOver.ofReflectiveRegular` from a presenting relation, so
 their task
 relations are read off with `FrameOver.ofReflectiveRegular_taskRel` (or the `@[simp]` bridge
-`permissiveFrame_taskRel`), never by unfolding. `Mathlib.Data.Int.SuccPred` is imported for the
-`SuccOrder ℤ` instance that `intPermissiveFrame_not_static` recovers on the carrier of
-`TemporalOrder.of ℤ`, and `Mathlib.Data.Rat.Denumerable` for the `Countable ℚ` instance
-`ratClock_not_static` records.
+`permissiveFrame_taskRel`), never by unfolding.
+
+**The workaround has become the architecture.** `Correspondence/Rigidity.lean` states its core
+lemmas over bare relations (`TaskFrame.Static`, `TaskFrame.eq_of_rel_of_step`) precisely because
+`def:frame`'s four constraints used to be *fields* of `FrameOver`, so a sharpness witness could
+not be exhibited as a frame satisfying some constraints and not others. That is no longer a
+workaround: `FrameOver` is now the general frame structure and the constraints are the class
+`FrameOver.IsRegular` on it (`Semantics/TaskFrame.lean`, "General frames and the regular class").
+The witnesses here are regular frames — each carries a named `IsRegular` instance from the regular
+constructor's auto-instance — and what they refute is an *order* hypothesis (density, the
+Archimedean property, finiteness), never a `def:frame` constraint; so their statements are
+unchanged by the split. Witnesses that refute a `def:frame` constraint itself now live in
+`Semantics/StateTopology/Counterexamples.lean`, where the four-state funnel fails *Limit* and
+the two-origin and hedgehog frames decline to claim *Saturation*.
+
+`Mathlib.Data.Int.SuccPred` is imported for the `SuccOrder ℤ` instance that
+`intPermissiveFrame_not_static` recovers on the carrier of `TemporalOrder.of ℤ`, and
+`Mathlib.Data.Rat.Denumerable` for the `Countable ℚ` instance `ratClock_not_static` records.
 -/
 
 namespace FormalSystem.Semantics.Rigidity

@@ -602,21 +602,42 @@ constraint through one of them gained it too. The final count is **59 files** to
 
 ---
 
-### Phase 9: `StateTopology/Counterexamples.lean` — the acceptance test [NOT STARTED]
+### Phase 9: `StateTopology/Counterexamples.lean` — the acceptance test [COMPLETED]
 
 **Goal**: Land the frames the whole refactor exists to make expressible, as ordinary frames of
 the general structure with the constraints they satisfy proved as separate facts. The four-state
 funnel is the named acceptance test that the refactor achieved its purpose.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/StateTopology/Counterexamples.lean`, outside the `Semantics.lean` aggregator, reached only by the generated root. Confirm the aggregator convention C8 is satisfied (`StateTopology.lean` sits beside `StateTopology/`, and there is no `StateTopology/StateTopology.lean`).
-- [ ] **The four-state funnel (acceptance test)**: lift task 655's `FourState.lean` probe. Build `funnelFrame` as a general `FrameOver D` over `Fin 4` via the 3-argument `ofReflective`. Prove Seriality, Compositionality and Saturation as separate facts (Saturation via `TaskFrame.saturation_of_finite`, which needs a `Finite` instance in scope; `Finite Bool` requires `Mathlib.Data.Finite.Prod` at this import set). Prove `funnel_not_limit : ¬ TaskFrame.Limit funnelFrame.TaskRel`. Prove `funnel_t1Space_coneTopology`: the cone topology on the funnel's state space is T1 **while Limit fails** — the exact witness the task names. Record in the module docstring that the funnel is deliberately **not** an `IsRegular` instance.
-- [ ] **Separation without Limit**: instantiate `ShiftSet.rev_sep_of_limit`'s contrapositive shape at the funnel — separation holds on it (task 655's `R4_sep`) although Limit does not — and state it as a named fact.
-- [ ] **The two-origin half-line and the hedgehog**: lift from task 655's `TwoOrigins.lean` and `Hedgehog.lean` probes as general frames with Seriality, Compositionality and Limit proved as separate facts. **Saturation is explicitly not claimed**; each docstring must say so and say why (the paper "shadow map" argument is not yet a Lean proof). Both carriers are `ℝ`-based, so `noncomputable def` is required, as is the `TemporalOrder.of Real` abbreviation.
-- [ ] **The ℤ partition facts**: lift from task 655's `IntPartition.lean` probe.
-- [ ] **The rigidity sharpness witnesses**: confirm `Correspondence/RigiditySharpness.lean`'s witnesses are now statable as general frames with their satisfied constraints proved separately; restate any that were previously forced through the bare-relation workaround, and record in the module docstring that the workaround has become the architecture.
-- [ ] Never spell a frame carrier as the bare Mathlib type in a topological statement; use the bridge lemmas from Phase 3 at every real-carrier site.
-- [ ] Regenerate the root with `lake exe mk_all --lib FormalSystem`. Full `--wfail` build plus test library.
+- [x] Create `FormalSystem/Semantics/StateTopology/Counterexamples.lean`, outside the `Semantics.lean` aggregator, reached only by the generated root. *(completed — `grep -c StateTopology FormalSystem/Semantics.lean` = 0; the root carries the import; C8 satisfied: `StateTopology.lean` sits beside `StateTopology/` and there is no `StateTopology/StateTopology.lean`)*
+- [x] **The four-state funnel (acceptance test)**: lift task 655's `FourState.lean` probe. *(completed — `funnelFrame`, `funnel_serial`, `funnel_compositional`, `funnel_saturation`, `funnel_not_limit`, `funnel_t1Space_coneTopology`, plus `funnelRel_nbhdTopology_eq_top`, `funnel_not_t1Space`, `funnelRel_not_isOpen_cone`, `funnel_one_way_pair` and `funnel_not_continuous_coneTopology`; the module docstring records that it is deliberately not an `IsRegular` instance)* *(deviation: altered — built as a **literal structure**, not via the 3-argument `ofReflective`. `ofReflective` is a plain `def`, so `funnelFrame.WorldState` would reduce to `Fin 4` only at default transparency, and the funnel's proofs are `decide` calls and `Fin 4` numerals that need it at *reducible* transparency. This is the tree's own recorded convention, stated in `ofReflective`'s docstring. The reflection law is still proved (`funnelRel_reflection`) and is what `funnelFrame_taskRel_eq` rests on.)*
+- [x] **Separation without Limit** *(completed as `funnel_sep_of_history`, with the four supporting history lemmas)*
+- [x] **The two-origin half-line and the hedgehog**: lift from task 655's `TwoOrigins.lean` and `Hedgehog.lean` probes as general frames with Seriality, Compositionality and Limit proved as separate facts, *Saturation* explicitly not claimed. *(completed — `TwoOrigins.frame` with `frame_serial`/`frame_compositional`/`frame_limit`/`frame_t1Space`/`frame_not_t2Space`, and `Hedgehog.frame` with the same four plus `finalTopology_ne_nbhdTopology` and `not_continuous_coneTopology_history`. Both docstrings say *Saturation* is not claimed and why; neither is an `IsRegular` instance.)*
+- [x] **The ℤ partition facts**: lift from task 655's `IntPartition.lean` probe. *(completed — `TaskFrame.cone_int_one`, `nbhdTopology_isOpen_iff_int`, `limit_int_iff`, `discreteTopology_nbhdTopology_int_iff`)*
+- [x] **The rigidity sharpness witnesses** *(completed — confirmed statable as general frames: each is an `ofReflectiveRegular` frame carrying a named `IsRegular` instance, and what each refutes is an **order** hypothesis (density, Archimedean, finiteness) rather than a `def:frame` constraint, so no statement moved. `RigiditySharpness.lean`'s module docstring now records that the bare-relation workaround has become the architecture, and points at the Counterexamples module for witnesses that refute a constraint itself.)*
+- [x] Never spell a frame carrier as the bare Mathlib type in a topological statement. *(completed, and the hazard bit: `funnelFrame` is `@[reducible]`, so `funnelFrame.WorldState` reduces to `Fin 4` and Mathlib's discrete `instTopologicalSpaceFin` outranks `FrameOver.stateTopology`. Every topological statement about a frame in this module names its topology explicitly with `@`, and `funnel_not_t1Space`'s docstring records why.)*
+- [x] Regenerate the root with `lake exe mk_all --lib FormalSystem`. Full `--wfail` build plus test library. *(completed — 2782 jobs, guard exit 0, 0 `error:` and 0 `warning:` lines; `lean_verify` on `funnel_not_limit` and `funnel_t1Space_coneTopology` returns the standard three axioms)*
+
+**Scope Hypothesis outcome**: asserted that task 655's four probes (1352 lines) "lift with only the
+frame-layer wrapper added". **They did not.** Three adaptations were needed and are reported here
+rather than absorbed:
+
+1. The funnel's constraints had to be proved over the bare relation first and transported to the
+   frame by `funnelFrame_taskRel_eq`, because `decide` cannot run on a goal mentioning
+   `funnelFrame.WorldState` (a type containing the free variable `D`).
+2. `funnelFrame` had to be a literal structure rather than an `ofReflective` application, for
+   reducibility (see the deviation above).
+3. Making it reducible then exposed `Fin 4`'s own Mathlib topology, so every topological statement
+   about the frame names its topology explicitly.
+
+None of this is new mathematics — each probe's *proofs* transferred verbatim — but the frame-layer
+wrapper was not the only change, and the hypothesis is recorded as falsified.
+
+**Deviation (process)**: the plan's Rollback/Contingency offered landing the funnel alone and
+reporting the two-origin and hedgehog as a reasoned exclusion if the probes did not lift verbatim.
+That trigger fired (see the Scope Hypothesis outcome), but the contingency was **not** taken: both
+frames were landed in full, because the three adaptations above turned out to be mechanical rather
+than mathematical. No exclusion is claimed for this phase.
 
 **Timing**: 2 hours
 

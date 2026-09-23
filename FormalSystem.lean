@@ -495,6 +495,7 @@ import FormalSystem.Semantics.Periodicity
 import FormalSystem.Semantics.ShiftSet
 import FormalSystem.Semantics.StateLocalTransfer
 import FormalSystem.Semantics.StateTopology
+import FormalSystem.Semantics.StateTopology.Counterexamples
 import FormalSystem.Semantics.TaskFrame
 import FormalSystem.Semantics.TaskModel
 import FormalSystem.Semantics.TemporalOrder
