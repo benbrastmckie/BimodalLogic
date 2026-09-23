@@ -148,7 +148,7 @@ Out of scope: changing IsRegular's fields, and unbundling binders that are legit
 - **Topic**: semantics
 - **Dependencies**: Task 661
 - **Research**: [662_s1_vs_directedness_and_restore_saturation/reports/01_s1-vs-directedness-restore-saturation.md]
-- **Plan**: [662_s1_vs_directedness_and_restore_saturation/plans/01_restore-saturation-settle-nests.md]
+- **Plan**: [662_s1_vs_directedness_and_restore_saturation/plans/02_restore-saturation-settle-nests.md]
 
 **Description**: Settle whether plain S1 suffices or directedness is forced, search for a better fourth frame constraint, and otherwise restore Saturation as the def:frame constraint in place of Completion
 

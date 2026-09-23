@@ -1,40 +1,26 @@
 {
   "status": "planned",
-  "dispatch_seq": 2,
   "artifacts": [
     {
       "type": "plan",
-      "path": "specs/662_s1_vs_directedness_and_restore_saturation/plans/01_restore-saturation-settle-nests.md",
-      "summary": "10-phase, 15-hour plan restoring Saturation (S1-directed) as def:frame's fourth constraint, landing the nest condition S1 with the S1d-implies-S1 check, the correction that both existing witnesses refute S1, and the countable-domain sufficiency result, then reversing 17 in-tree prose regions."
+      "path": "specs/662_s1_vs_directedness_and_restore_saturation/plans/02_restore-saturation-settle-nests.md",
+      "summary": "Revised 10-phase plan (v2, supersedes 01_): the general ball-space layer re-sited to FormalSystem/ForMathlib/Order/BallSpace.lean with the task-relation instantiation left in the semantics tree, plus the elimination-site prose correction folded into the existing prose phases."
     }
   ],
-  "next_steps": "Run /implement 662 to execute the plan",
-  "phase_count": 10,
-  "estimated_hours": 15,
-  "dependency_waves": [[1, 3], [2, 4], [5, 7], [6, 8], [9], [10]],
-  "user_decision": {
-    "question": "Research raised this as non-blocking in the prior cycle and it was not answered, so it is re-raised once here because it fixes def:frame's fourth constraint. Question 1 is settled only in part: S1 (the textbook nest condition) provably suffices for lem:step over every history with a countable domain, which covers all of Z-time and Q-time; it does not suffice in general, and the separating frame that would prove that needs a Hahn group over omega_1 as duration type -- a research-scale Lean construction with no Mathlib support. How should Question 1 be closed? The plan is written to option 1; picking another changes only Phase 1's def:frame choice and register, not the four new theorems.",
-    "options": [
-      "Close on the naturalness verdict -- keep S_1^d as def:frame's fourth constraint, land the countable-domain sufficiency theorem plus the correction that both existing witnesses also refute S_1, and declare the Hahn-group separating frame an explicit non-goal with its recipe recorded (this is what the plan does)",
-      "Close only after the separating frame -- hold Question 1 open and scope the omega_1 Hahn-group construction as implementation work in this task",
-      "Close on the sufficiency theorem alone -- adopt S_1 as def:frame's fourth constraint and accept that lem:step then carries an order-character hypothesis on the history's domain"
-    ],
-    "recommended": "Close on the naturalness verdict -- keep S_1^d as def:frame's fourth constraint, land the countable-domain sufficiency theorem plus the correction that both existing witnesses also refute S_1, and declare the Hahn-group separating frame an explicit non-goal with its recipe recorded (this is what the plan does)",
-    "blocking": false
-  },
-  "memory_candidates": [
-    {
-      "content": "When a plan's value rests on proving a result WITHOUT a particular axiom (e.g. 'condition X suffices, Saturation is not needed'), check whether the supporting lemmas are bound to a BUNDLED typeclass that carries that axiom. In BimodalLogic, fiber/segment monotonicity lemmas were stated at [F.IsRegular], a class bundling Compositionality, Seriality, Limit AND Saturation; any 'Saturation-free' theorem proved through them would have been silently vacuous. The fix is a hypothesis-weakening phase that restates each supporting lemma with the single explicit hypothesis its proof actually consumes and demotes the original to a one-line corollary, so no call site changes. Schedule that phase BEFORE the phases that depend on the honesty, and add a verification gate ('no theorem in this section carries the instance binder'). Generalizes to any codebase where axioms are bundled into a structure or typeclass and an independence/minimality result is wanted.",
-      "category": "PATTERN",
-      "source_artifact": "specs/662_s1_vs_directedness_and_restore_saturation/plans/01_restore-saturation-settle-nests.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["bundled-typeclass", "hypothesis-weakening", "vacuous-independence", "lean4", "instance-binder", "minimality-result"]
-    }
-  ],
+  "next_steps": "Run /implement 662 (or /orchestrate 662 --implement) to execute the revised plan; Phase 1 and Phase 3 form wave 1 and are file-disjoint.",
   "metadata": {
     "session_id": "sess_1790191863_059c13_662",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "phase_count": 10,
+    "estimated_hours": 16.5,
+    "plan_version": 2,
+    "superseded_plan": "specs/662_s1_vs_directedness_and_restore_saturation/plans/01_restore-saturation-settle-nests.md",
+    "reports_integrated": ["01_s1-vs-directedness-restore-saturation.md"],
+    "dependency_waves": [[1, 3], [2, 4], [5, 7], [6, 8], [9], [10]],
+    "revision_deltas": [
+      "siting: S1/nest/cofinal-nest general layer moved to FormalSystem/ForMathlib/Order/BallSpace.lean (new module, Mathlib-only imports); TaskFrame.NestSaturation, SeparatingFrame.nest and PartialHistory.HasCofinalNest remain project-side instantiations; Phases 1, 2, 4, 5, 9, 10 adjusted; four registration obligations (C8, C24, C33, generated inventory blocks) added to Phase 1",
+      "prose drift: Extension.lean:51 and :226 corrected from 'sole application site' to 'sole elimination site', with an 8-occurrence unattributed sweep across Extension.lean/Step.lean/Semantics.lean folded into Phases 6, 7 and 9; attributed 'the paper names' phrasing and docs/reference/paper-definitions-of-record.md explicitly preserved"
+    ]
   }
 }

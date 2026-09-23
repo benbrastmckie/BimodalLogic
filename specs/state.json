@@ -50,12 +50,12 @@
           "summary": "Settles S1-vs-directedness (S1 suffices over countable-character D; directedness recommended kept on naturalness grounds), finds no better fourth constraint than Saturation, and measures the exact prose-only reversal surface for restoring Saturation over Completion."
         },
         {
-          "path": "specs/662_s1_vs_directedness_and_restore_saturation/plans/01_restore-saturation-settle-nests.md",
+          "path": "specs/662_s1_vs_directedness_and_restore_saturation/plans/02_restore-saturation-settle-nests.md",
           "type": "plan",
-          "summary": "10 phases in 6 waves, 13 pinned Lean declarations, 17 in-tree prose regions reversed, zero manuscript and zero .claude/ writes."
+          "summary": "Revised 10-phase plan (v2, supersedes 01_): the general ball-space layer re-sited to FormalSystem/ForMathlib/Order/BallSpace.lean with the task-relation instantiation left in the semantics tree, plus the elimination-site prose correction folded into the existing prose phases."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 3
     },
     {
       "project_number": 661,
