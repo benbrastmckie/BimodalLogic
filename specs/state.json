@@ -9,7 +9,7 @@
     {
       "project_number": 661,
       "project_name": "settle_saturation_vs_completion_foundation",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Settle the Saturation vs Completion question by probe, and judge the outcome against a primitives-level foundation criterion.\n\nPrimary probe, decisive either way: does StateTopology.RationalTwoOrigins.rel satisfy Completion? It already satisfies Compositionality, Seriality and Limit and fails Saturation (not_rel_saturation, via nested rational straddle sets whose common point would have to be irrational). extension_of_completion makes this checkable without Zorn. Either exhibit one coherent family of rational times whose fiber intersection is empty, in which case Completion fails, the rational carrier is not the separator, and the converse Completion implies Saturation stays open; or prove no such family exists, which separates the two conditions, settles the converse negatively, and establishes that Saturation is strictly stronger than thm:extension needs.\n\nFoundation criterion, and the point of the exercise: the constraint chosen for def:frame must be stated in the primitives of the theory, namely the state set W, the temporal order D and the task relation itself, and not in objects the theory builds from them. Conditions on partial histories, world histories or their extension order belong in lemmas and theorems as emergent properties, never as frame constraints on the primitive. Evaluate the candidates on exactly this axis. CoherentCompletion is already the bare-relation form, quantifying over an index set within D and a family of states coherent under the task relation, with no notion of history mentioned; check that R4's drafted LaTeX matches it clause for clause, and that the PartialHistory-shaped Completion together with the bridge completion_iff_coherentCompletion then reads as a derived recognition lemma rather than a definitional dependency. Assess Saturation on the same axis: its directedness side condition is stated in subset inclusion with no reference to the task relation, and it needs the fiber and segment classification to pick out eligible members at all.\n\nSecondary: if the rational carrier is not the separator, identify the next candidate. A separating frame must fail TotalComp, since saturation_of_completion proves the converse under TotalComp plus Limit, and the drift frame F0 refutes TotalComp while satisfying all four constraints. Also determine whether any finitary or two-point form of Completion exists, or whether the infinitary quantifier is essential to it as a completeness condition.\n\nOutcome wanted: a verdict on R1 versus R4 grounded in the probe result and the primitives criterion. No manuscript edits.",
       "topic": "semantics",
@@ -18,7 +18,7 @@
         660
       ],
       "created": "2026-09-23T15:45:43Z",
-      "last_updated": "2026-09-23T16:49:40Z",
+      "last_updated": "2026-09-23T18:01:46Z",
       "session_id": "sess_1790178757_3ad6c9",
       "artifacts": [
         {
@@ -30,9 +30,15 @@
           "path": "specs/661_settle_saturation_vs_completion_foundation/plans/01_settle-saturation-vs-completion.md",
           "type": "plan",
           "summary": "Eight-phase plan landing the Saturation-vs-Completion verdict in the Lean library; no manuscript edits."
+        },
+        {
+          "path": "specs/661_settle_saturation_vs_completion_foundation/summaries/01_settle-saturation-vs-completion-summary.md",
+          "type": "summary",
+          "summary": "Execution summary: the R4 verdict, what landed in the library and the ledgers, and the two follow-ups deliberately not done."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Completion is now declared over a bare task relation beside the other three def:frame constraints, and a machine-checked separating frame shows it is a strict weakening of Saturation, settling the converse negatively. Both probes are promoted into the library as permanent witnesses, the finitary case is discharged so the infinitary quantifier is shown essential, and no in-tree prose still records the converse as open. No manuscript file was touched and all 43 pinned paper definitions are unchanged."
     },
     {
       "project_number": 660,

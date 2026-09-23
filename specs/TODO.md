@@ -11,7 +11,7 @@ next_project_number: 662
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,649,661 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,649 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -95,17 +95,17 @@ next_project_number: 662
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
-661 [PLANNED] — Settle the Saturation vs Completion question by probe, and...
 
 ## Tasks
 
 ### 661. Settle saturation vs completion foundation
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 657, Task 660
 - **Research**: [661_settle_saturation_vs_completion_foundation/reports/01_saturation-vs-completion-verdict.md]
 - **Plan**: [661_settle_saturation_vs_completion_foundation/plans/01_settle-saturation-vs-completion.md]
+- **Summary**: [661_settle_saturation_vs_completion_foundation/summaries/01_settle-saturation-vs-completion-summary.md]
 
 **Description**: Settle the Saturation vs Completion question by probe, and judge the outcome against a primitives-level foundation criterion.
 
