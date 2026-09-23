@@ -1,27 +1,33 @@
 {
-  "status": "researched",
-  "dispatch_seq": 4,
+  "status": "planned",
+  "dispatch_seq": 5,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/661_settle_saturation_vs_completion_foundation/reports/01_saturation-vs-completion-verdict.md",
-      "summary": "Settles Saturation vs Completion: the rational carrier fails both, but a verified separating frame (W=Q, D=Z, unit drift) proves Completion is strictly weaker; verdict favours R4 with a Fib-free clause."
+      "type": "plan",
+      "path": "specs/661_settle_saturation_vs_completion_foundation/plans/01_settle-saturation-vs-completion.md",
+      "summary": "Eight-phase plan landing the Saturation-vs-Completion verdict in the Lean library: bare-relation TaskFrame.Completion, both probes promoted as permanent witnesses, stale open-converse docstrings retired, and the finitary-Completion claim discharged. No manuscript edits."
     }
   ],
-  "user_decision": {
-    "question": "Now that Completion is proved strictly weaker than Saturation (machine-checked separating frame), should def:frame's fourth constraint be replaced by the bare Completion clause (R4), or should Saturation stay and Completion be recorded as a lemma (R1)?",
-    "options": [
-      "R4 - replace def:frame's fourth constraint with the Fib-free Completion clause, delete the opening directed-family clause, and demote Saturation to a remark that keeps the ball-space footnote",
-      "R1 - keep Saturation in def:frame, record Completion as lem:completion in bare form, and add a remark that Saturation is strictly stronger with the new witness"
-    ],
-    "recommended": "R4 - replace def:frame's fourth constraint with the Fib-free Completion clause, delete the opening directed-family clause, and demote Saturation to a remark that keeps the ball-space footnote",
-    "blocking": false
-  },
-  "next_steps": "Plan phase: promote the two probes into the library (SeparatingFrame beside RationalTwoOrigins or into Extension/Completion.lean), correct the three docstrings that record the converse as open, and discharge the finitary-Completion claim via a hypothesis-weakened completion_of_nearest_at.",
+  "next_steps": "Run /implement 661 to execute the plan",
+  "phase_count": 8,
+  "estimated_hours": 8,
+  "dependency_waves": [[1, 8], [2, 4], [3], [5, 6], [7]],
+  "memory_candidates": [
+    {
+      "content": "Frame-constraint separations in the BimodalLogic task-frame development are predicted by how a constraint's quantifier is indexed. A TIME-indexed condition (Completion: a coherent family indexed by a subset X of the temporal order D) collapses to a two-point condition over any order with nearest times, because the constraint imposed by the nearest domain time on each side of the target is the subset-least one. A BALL-indexed condition (Saturation: a supseteq-directed family of fibers and segments) is not indexed by times at all and never collapses, so it can shrink onto a Dedekind cut of the state carrier even when the durations are discrete. Consequence for planning: to separate a time-indexed condition from a ball-indexed one, look at DISCRETE time with an incomplete (dense but non-complete) state carrier; dense time is structurally dead, because over a dense order any coherent family accumulating at a time pinches the witness onto a single real limit. This single distinction underlies three separate results (completion_of_hasNearest, extension_of_isZTime, and the W=Q/D=Z separating frame).",
+      "category": "INSIGHT",
+      "source_artifact": "specs/661_settle_saturation_vs_completion_foundation/plans/01_settle-saturation-vs-completion.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["frame-constraints", "saturation", "completion", "time-indexed", "ball-indexed", "discrete-time"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1790178757_3ad6c9_661",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": 8,
+    "dependency_waves": [[1, 8], [2, 4], [3], [5, 6], [7]]
   }
 }

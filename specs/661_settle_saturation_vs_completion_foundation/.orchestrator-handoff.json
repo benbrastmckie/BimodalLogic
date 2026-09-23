@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 5,
+  "summary": "Authored an eight-phase implementation plan landing the Saturation-vs-Completion verdict in the Lean library: a bare-relation TaskFrame.Completion stated beside the other def:frame constraints, both sorry-free probes promoted into ConstraintWitnesses.lean as permanent witnesses, every in-tree docstring asserting the converse is open corrected, and the finitary-Completion claim discharged via a hypothesis-weakened completion_of_nearest_at. Manuscript edits and the FrameOver.IsRegular field swap are explicit non-goals.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/661_settle_saturation_vs_completion_foundation/plans/01_settle-saturation-vs-completion.md",
+      "summary": "Eight-phase plan landing the Saturation-vs-Completion verdict in the Lean library; no manuscript edits."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 8,
+  "blockers": [],
+  "next_action_hint": "Run /implement 661 to execute the plan"
+}
