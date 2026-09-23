@@ -59,6 +59,38 @@ module does not own — `BFMCS` in the bundle layer, `FrameConditionFor` and `Te
 the decidability bridge — the frame is written `FrameOver (TemporalOrder.of D)`. That is the
 same fibre, named through `TemporalOrder.of`, and it is why that constructor is permanent.
 
+## General frames and the regular class
+
+**The paper introduces task frames in general, names the class satisfying all four constraints
+*regular*, and then drops the qualifier because attention is restricted to the regular frames.**
+This module mirrors that exactly, and this paragraph is the one place in the development that
+says so.
+
+`FrameOver D` — and hence `TaskFrame` — is the **general** notion: a nonempty type of world
+states and a primitive task relation on the positive cone, extended to all durations by the
+reflection convention, and nothing more. `def:frame`'s four constraints — *Compositionality*,
+*Seriality*, *Limit*, *Saturation* — are **frame constraints**, carried by the `Prop`-valued
+class `FrameOver.IsRegular` (and `TaskFrame.IsRegular`, its delegation to the fibre), so a frame
+satisfying some of them and not others is still a frame. Each constraint additionally exists as
+a standalone predicate over a bare relation — `TaskFrame.Compositional`, `TaskFrame.Serial`,
+`TaskFrame.Limit`, `TaskFrame.Saturation` — so any subset of them can be assumed, and a result
+can be stated at the constraint it actually uses rather than at all four.
+
+That is not a stylistic preference. Results such as "the cone-neighbourhood topology is T1
+exactly when *Limit* holds" (`FrameOver.t1Space_iff_limit`), the four-state funnel on which the
+cone topology is T1 while *Limit* fails, and the rigidity sharpness witnesses are all *about*
+frames that satisfy some constraints and not others; none of them is expressible while the
+constraints are structure fields, because there is then no such thing as a frame that violates
+one. `Semantics/Correspondence/Rigidity.lean` had already worked around this by stating its core
+lemmas over bare relations; the split makes that the architecture rather than the workaround.
+
+Where the paper drops the qualifier, the Lean takes `[F.IsRegular]` as an instance binder, so a
+consumer reads exactly as it did when the constraints were fields: `F.comp`, `F.serial`,
+`F.limit` and `F.saturation` keep their names, their statements and their spelling at every use
+site. Validity is unaffected: `ProofSystem.FrameClass.Sat .Base` is `F.IsRegular`
+(`Semantics/FrameClassValidity.lean`), so `Valid`, `ValidIn` and `ValidOnFrames` quantify over
+the regular frames exactly as they always have.
+
 ## Paper specification, transcribed
 
 **Task Frames (`def:frame`)**:
@@ -234,7 +266,7 @@ task-frame · task-relation · def:frame · saturation · nullity
 assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
   FormalSystem.ProofSystem.Derivable FormalSystem.ProofSystem.FrameClass
 
-set_option linter.style.longFile 2500
+set_option linter.style.longFile 2600
 
 namespace FormalSystem.Semantics
 
@@ -940,6 +972,73 @@ theorem reflect_posRel (F : FrameOver D) (w : F.WorldState) (d : ↑D) (u : F.Wo
 -- `TaskRel` is not reducible: the Step Lemma's consumption of `F.saturation` depends on it.
 example (F : FrameOver D) : TaskFrame.Serial F.TaskRel := F.serial
 example (F : FrameOver D) : TaskFrame.Saturation F.TaskRel := F.saturation
+
+/-!
+### The *regular* frames: `def:frame`'s four constraints as a class on a general frame
+
+`FrameOver D` is the **general** notion of a frame over `D`. The four constraints are carried by
+the `Prop`-valued class below, on a general frame, rather than being part of what a frame *is*.
+See this module's header, "General frames and the regular class", for the paper alignment.
+-/
+
+/--
+**The *regular* task frames**: those satisfying all four of `def:frame`'s constraints.
+
+Each field is stated by *citation* of the bare-relation predicate of record, over the extended
+relation `F.TaskRel`, exactly as the corresponding `FrameOver` field is. That is load bearing and
+not decorative: the Step Lemma consumes *Saturation* literally (`Semantics/Extension/Step.lean`),
+and a restated-but-equivalent field would stop typechecking there.
+
+Carrying the constraints as a class rather than as structure fields is what makes a frame
+satisfying *some* of them expressible: the four-state funnel of
+`Semantics/StateTopology/Counterexamples.lean` is *Serial*, *Compositional* and *Saturated* and
+fails *Limit*, and could not be written down at all while the constraints were fields.
+
+**Namespaced as `FrameOver.IsRegular`, never bare `IsRegular`.** Mathlib's own `IsRegular`
+(cancellable elements of a monoid) and its `RegularSpace` are unrelated notions that must not be
+shadowed, and `Mathlib.Topology.Separation.Basic` comes into scope in
+`Semantics/StateTopology.lean`.
+-/
+class IsRegular (F : FrameOver D) : Prop where
+  /-- **The paper's *Compositionality* constraint, in full** (`def:frame#Compositionality`,
+  verbatim: "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and
+  $u \Rightarrow_y v$ for some $u \in W$"), stated by citation as `TaskFrame.Compositional` of
+  the extended relation. Both directions are load bearing: the `←` (composition) half is
+  projected out as `FrameOver.forward_comp` and the `→` (interpolation) half as
+  `FrameOver.interpolates`. -/
+  comp : TaskFrame.Compositional F.TaskRel
+  /-- **The paper's *Seriality* constraint** (`def:frame#Seriality`, verbatim:
+  "$w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$"), stated by citation as
+  `TaskFrame.Serial` of the extended relation: every state has an `x`-successor and an
+  `x`-predecessor at every `x ≥ 0`. -/
+  serial : TaskFrame.Serial F.TaskRel
+  /-- **The paper's *Limit* constraint** (`def:frame#Limit`, verbatim:
+  "$\bigcap\limits_{x > 0} (w)_x = \set{w}$"), stated by citation as `TaskFrame.Limit` of the
+  extended relation: if `u` lies in every positive cone of `w`, then `u` is `w`. This is the one
+  constraint the state topology sees — `FrameOver.t1Space_iff_limit` proves that the
+  cone-neighbourhood topology is T1 exactly when it holds. -/
+  limit : TaskFrame.Limit F.TaskRel
+  /-- **The paper's *Saturation* constraint** (`def:frame#Saturation`, verbatim:
+  "$\bigcap \mathcal{S} \neq \emptyset$ for any $\supseteq$-directed family $\mathcal{S}$
+  of nonempty fibers and segments"), stated by citation as `TaskFrame.Saturation` of the extended
+  relation. This is the field the Step Lemma consumes at the sole application site the paper
+  names, which is why it must be *literally* the recorded predicate. -/
+  saturation : TaskFrame.Saturation F.TaskRel
+
+/--
+**Temporary scaffolding, deleted when the constraint fields are retired.**
+
+While `FrameOver` still carries `comp`, `serial`, `limit` and `saturation` as fields, every frame
+is regular by construction, so the class is supplied blanket from the fields. This is what lets
+the class and the fields coexist: consumers can take `[F.IsRegular]` without any construction
+site having to change, and the tree stays green through the migration.
+
+It is removed in the same change that deletes the four fields; at that point `IsRegular` is
+supplied by `FrameOver.instIsRegularOfReflective` at frames built by `ofReflectiveRegular`, and
+by a named instance at each literal-structure frame.
+-/
+instance instIsRegularOfFields (F : FrameOver D) : F.IsRegular :=
+  ⟨F.comp, F.serial, F.limit, F.saturation⟩
 
 /--
 **`lem:nullity`, at the fibre: every world state loops at duration zero.**
@@ -2194,6 +2293,21 @@ instance worldNonempty (F : TaskFrame) : Nonempty F.WorldState := F.toFibre.worl
 @[reducible] def TaskRel (F : TaskFrame) : F.WorldState → F.Duration → F.WorldState → Prop :=
   F.toFibre.TaskRel
 
+/--
+**The *regular* total-space frames**, by delegation to the fibre: `G` is regular exactly when
+its fibre is. An `abbrev`, not a `def`, so that instance synthesis sees through it — `G.IsRegular`
+and `G.toFibre.IsRegular` are the same class as far as the instance cache is concerned, which is
+what keeps the fibre-level instances usable at the total space with no transport.
+
+The total space *has* a `FrameOver` rather than restating one, so the constraints exist exactly
+once here too, just as they do for `comp`/`serial`/`limit`/`saturation` below.
+-/
+abbrev IsRegular (G : TaskFrame) : Prop := G.toFibre.IsRegular
+
+/-- A regular fibre makes its total-space frame regular. Definitionally the identity; declared so
+that a `[G.toFibre.IsRegular]` hypothesis discharges a `G.IsRegular` goal by synthesis. -/
+instance instIsRegular (G : TaskFrame) [h : G.toFibre.IsRegular] : G.IsRegular := h
+
 /-- Zero-duration tasks relate exactly identical states (`lem:nullity` plus its
 injectivity-at-zero converse). -/
 theorem nullity_identity (F : TaskFrame) : ∀ w u, F.TaskRel w 0 u ↔ w = u :=
@@ -2363,6 +2477,17 @@ example (F : FrameOver D) : TaskFrame.Limit F.TaskRel := F.limit
 example (F : FrameOver D) :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.limit
 example (F : FrameOver D) : Nonempty F.WorldState := inferInstance
+
+-- (b') The regular class. Each constraint is available through the class exactly as it is
+-- through the field, and structure eta survives the split: the fibre/total-space round trip is
+-- still the identity, and the class delegates across it by synthesis.
+example (F : FrameOver D) [h : F.IsRegular] : TaskFrame.Serial F.TaskRel := h.serial
+example (F : FrameOver D) [h : F.IsRegular] : TaskFrame.Limit F.TaskRel := h.limit
+example (F : FrameOver D) [h : F.IsRegular] : TaskFrame.Saturation F.TaskRel := h.saturation
+example (F : FrameOver D) [h : F.IsRegular] : TaskFrame.Compositional F.TaskRel := h.comp
+example (G : TaskFrame) : (⟨G.Duration, G.toFibre⟩ : TaskFrame) = G := rfl
+example (F : FrameOver D) : (FrameOver.toTaskFrame F).toFibre = F := rfl
+example (F : FrameOver D) [F.IsRegular] : (FrameOver.toTaskFrame F).IsRegular := inferInstance
 
 -- (c) The two finite shapes. `finite_world` is a plain *field*, not an instance, so the `haveI`
 -- is required at every use site of `saturation_of_finite`; that is what these two pin.

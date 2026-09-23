@@ -234,19 +234,26 @@ shape, and retire the docstrings that record the deliberate non-naming. Nothing 
 
 ---
 
-### Phase 2: Introduce `class FrameOver.IsRegular` alongside the fields [NOT STARTED]
+### Phase 2: Introduce `class FrameOver.IsRegular` alongside the fields [COMPLETED]
 
 **Goal**: Land the class, the same-named theorem re-exports, the total-space delegation, and a
 blanket instance derived from the still-present fields, so that the tree is green with **zero**
 consumer edits. This is the "introduce alongside" step the process requirements demand.
 
 **Tasks**:
-- [ ] Declare `class FrameOver.IsRegular (F : FrameOver D) : Prop` with fields `comp`, `serial`, `limit`, `saturation`, each stated by citation as the corresponding bare-relation predicate of `F.TaskRel`. Namespace it as `FrameOver.IsRegular`, **never** bare `IsRegular` — Mathlib's `IsRegular` (cancellable monoid elements) and `RegularSpace` must not be shadowed, and `Mathlib.Topology.Separation.Basic` enters scope in Phase 3.
-- [ ] Add the blanket instance `instance (F : FrameOver D) : F.IsRegular := ⟨F.comp, F.serial, F.limit, F.saturation⟩`, reading the fields directly. This is temporary scaffolding, deleted in Phase 8; say so in its docstring.
-- [ ] Add `abbrev TaskFrame.IsRegular (G : TaskFrame) : Prop := G.toFibre.IsRegular` plus `instance (G : TaskFrame) [h : G.toFibre.IsRegular] : G.IsRegular := h`.
-- [ ] Write the module docstring paragraph required by requirement (9), in `TaskFrame.lean` and nowhere else: the paper introduces the general notion of a task frame, names the class satisfying all four constraints *regular*, and drops the qualifier thereafter because attention is restricted to the regular frames. Cite the manuscript by label or quotable phrase, never by line number.
-- [ ] Confirm structure eta survives: `example (G : TaskFrame) : (⟨G.Duration, G.toFibre⟩ : TaskFrame) = G := rfl` and `example (F : FrameOver D) : (FrameOver.toTaskFrame F).toFibre = F := rfl`.
-- [ ] Full `--wfail` build plus test library.
+- [x] Declare `class FrameOver.IsRegular (F : FrameOver D) : Prop` with fields `comp`, `serial`, `limit`, `saturation`, each stated by citation as the corresponding bare-relation predicate of `F.TaskRel`. Namespace it as `FrameOver.IsRegular`, **never** bare `IsRegular` — Mathlib's `IsRegular` (cancellable monoid elements) and `RegularSpace` must not be shadowed, and `Mathlib.Topology.Separation.Basic` enters scope in Phase 3. *(completed)*
+- [x] Add the blanket instance `instance (F : FrameOver D) : F.IsRegular := ⟨F.comp, F.serial, F.limit, F.saturation⟩`, reading the fields directly. This is temporary scaffolding, deleted in Phase 8; say so in its docstring. *(completed as `FrameOver.instIsRegularOfFields`)*
+- [x] Add `abbrev TaskFrame.IsRegular (G : TaskFrame) : Prop := G.toFibre.IsRegular` plus `instance (G : TaskFrame) [h : G.toFibre.IsRegular] : G.IsRegular := h`. *(completed)*
+- [x] Write the module docstring paragraph required by requirement (9), in `TaskFrame.lean` and nowhere else. *(completed — new module-header section "General frames and the regular class")*
+- [x] Confirm structure eta survives. *(completed — both `example`s plus a class-delegation `example` land in the definitional-content section and elaborate)*
+- [x] Full `--wfail` build plus test library. *(completed — 2780 jobs, guard exit 0, 0 `error:` lines; `git diff --name-only` over the library shows exactly `FormalSystem/Semantics/TaskFrame.lean`)*
+
+**Deviation (altered)**: the same-named theorem re-exports (`FrameOver.comp`/`serial`/`limit`/
+`saturation` at `[F.IsRegular]`) named in this phase's Goal **cannot** be declared while the
+fields of the same names are still present — the names would collide. They land in Phase 8, in
+the same edit that deletes the fields. Nothing is lost: with the fields present, `F.comp` already
+resolves to the field, so consumer text is byte-identical either way, which is what the "zero
+consumer edits" goal actually asks for.
 
 **Timing**: 1.5 hours
 
