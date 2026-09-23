@@ -23,12 +23,12 @@
     {
       "project_number": 660,
       "project_name": "repair_check_evidence_probes_filtered_frame",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Repair check-evidence-probes.sh: specs/evidence/bi-lasso-decision-layer/phase7-filtered-frame-is-universal.lean fails to compile, so the gate cannot exit 0. The probe cites FrameOver.ofReflective_taskRel_eq against a frame built by ofReflectiveRegular; substituting the correct lemma does not fix it, because RefinedFilteredTaskFrame._proof_4 carries a definitionally-unfolded TaskFrame.Limit, so no syntactic rewrite matches. Pre-existing and unrelated to the frame-constraints audit that surfaced it; that task reverted its attempted fix rather than half-repair the decision layer, and closed its gate phase [COMPLETED WITH EXCLUSIONS]. Needs either a proof-term-level repair (not a rewrite) or a restatement of the probe against the regular constructor",
       "topic": "repo-hygiene",
       "created": "2026-09-23T15:42:43Z",
-      "last_updated": "2026-09-23T16:05:04Z",
+      "last_updated": "2026-09-23T16:11:32Z",
       "session_id": "sess_1790178757_3ad6c9",
       "artifacts": [
         {
@@ -40,9 +40,15 @@
           "path": "specs/660_repair_check_evidence_probes_filtered_frame/plans/01_repair-filtered-frame-probe.md",
           "type": "plan",
           "summary": "Two-phase plan to repair the phase7-filtered-frame-is-universal evidence probe with compiler-verified term-mode proofs citing RefinedFilteredTaskFrame.rel_iff, then green the check-evidence-probes.sh gate."
+        },
+        {
+          "path": "specs/660_repair_check_evidence_probes_filtered_frame/summaries/01_repair-filtered-frame-probe-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for the filtered-frame probe repair."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Replaced the three failing simp proofs in specs/evidence/bi-lasso-decision-layer/phase7-filtered-frame-is-universal.lean with term-mode proofs citing the frame's own bridge lemma RefinedFilteredTaskFrame.rel_iff, sidestepping the unfolded-TaskFrame.Limit transparency failure in RefinedFilteredTaskFrame._proof_4. The probe now compiles at exit 0 with empty output and bash scripts/check-evidence-probes.sh reports all 5 wired probes PASS at exit 0. All three example propositions are byte-identical to their pre-repair form; no file under FormalSystem/ or scripts/ was modified."
     },
     {
       "project_number": 659,
