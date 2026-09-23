@@ -1,39 +1,30 @@
 {
-  "status": "planned",
-  "dispatch_seq": 8,
+  "status": "implemented",
+  "started_at": "2026-09-23T00:00:00Z",
+  "completed_at": "2026-09-23T00:00:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/657_audit_frame_constraints_history_restriction/plans/01_promote-completion-restriction-independence.md",
-      "summary": "11-phase, 11.5-hour promotion plan landing the audit's Completion lemma, the discrete-time Saturation-redundancy result, the partial-history/restriction identification, the Limit-only reflection law and the last two independence witnesses, plus three docstring corrections and an evidence-probe relocation for the one probe deliberately not promoted."
+      "type": "summary",
+      "path": "specs/657_audit_frame_constraints_history_restriction/summaries/01_promote-completion-restriction-independence-summary.md",
+      "summary": "Promoted the frame-constraint audit's five probes into FormalSystem/: the Completion module, the discrete-time redundancy of Saturation, the restriction identification, the Limit-only reflection law, the last two independence witnesses, three docstring corrections, and one relocated evidence probe."
     }
   ],
-  "next_steps": "Run /implement 657 to execute the plan",
-  "phase_count": 11,
-  "estimated_hours": 11.5,
-  "dependency_waves": 6,
-  "memory_candidates": [
-    {
-      "content": "In this repo, a sorry-free Lean probe written under specs/{NNN}_{SLUG}/probes/ is NOT a durable record: when /todo archives the task the whole directory moves to specs/archive/, which .gitignore excludes, so the probe leaves version control entirely (absent from a fresh clone). scripts/check-evidence-probes.sh documents this exact incident and the remedy: probes that record a DESIGN OBSTRUCTION (a machine-checked reason the code has the shape it has, e.g. 'this axiom must not be added because a frame the paper needs fails it') belong under specs/evidence/{collection}/, which is task-independent and tracked, and must be wired into that script's WIRED list so lake env lean compile-checks them outside the build graph. When planning a promotion round from a research task's probes, triage each probe into one of three outcomes: promote into FormalSystem/ (reusable positive content), relocate to specs/evidence/ and wire the guard (obstruction records, refuted conditions the library must not contain), or let it lapse (content fully superseded by a promoted declaration). Never leave an obstruction probe in the task directory. Note that the script's EVIDENCE variable is a single hard-coded directory, so adding a second collection requires generalizing its loop, not just appending to WIRED.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/657_audit_frame_constraints_history_restriction/plans/01_promote-completion-restriction-independence.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["probe", "evidence", "archive", "gitignore", "promotion", "obstruction"]
-    }
-  ],
-  "user_decision": {
-    "question": "The research round's open question (Saturation kept as stated vs. replaced by Completion in def:frame) is still unanswered. This plan takes the recommended branch -- Saturation stays, Completion lands as a LEMMA in a new Extension/Completion.lean. Confirm, or say to take R4 instead?",
-    "options": [
-      "Confirm R1: keep Saturation as stated; Completion lands as a lemma in Extension/Completion.lean (the plan as written) - the ball-space anchoring and cor:saturation-finite are untouched, and the manuscript edit is an addition rather than a replacement",
-      "Take R4 instead: Completion becomes def:frame's fourth constraint - this relocates Completion out of Extension/Completion.lean into the constraint layer (FrameAxioms/TaskFrame), changes Phase 2's siting and Phase 9's wiring, and makes Compositionality drop out of thm:extension entirely"
-    ],
-    "recommended": "Confirm R1: keep Saturation as stated; Completion lands as a lemma in Extension/Completion.lean (the plan as written) - the ball-space anchoring and cor:saturation-finite are untouched, and the manuscript edit is an addition rather than a replacement",
-    "blocking": false
+  "completion_data": {
+    "completion_summary": "All eleven phases landed. def:frame's four constraints are kept exactly as stated (D1); what was promoted is a set of results about them: FormalSystem/Semantics/Extension/Completion.lean (Completion is equivalent to the one-point extension property, thm:extension follows from it with no [F.IsRegular] binder at all, and Saturation is redundant over ZTime), the restriction identification pointwise and at the extension order, FrameOver.reflection_of_limit, and the void and bump frames completing the independence matrix. Three false docstring claims were deleted and replaced with the audited ones. Full lake build is green with zero warnings, check-module-invariants.sh exits 0 including C14's 19 new axiom pins and C15, and the sorry census is zero.",
+    "roadmap_items": []
   },
   "metadata": {
-    "session_id": "sess_1790146139_4979e4_657",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1790146139_4979e4",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed"
   }
 }

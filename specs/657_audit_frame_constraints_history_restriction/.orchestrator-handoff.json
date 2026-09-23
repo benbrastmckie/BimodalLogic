@@ -1,16 +1,21 @@
 {
-  "status": "planned",
-  "dispatch_seq": 8,
+  "status": "implemented",
+  "dispatch_seq": 9,
   "task_number": 657,
-  "phases_completed": 0,
+  "phases_completed": 11,
   "phases_total": 11,
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/657_audit_frame_constraints_history_restriction/summaries/01_promote-completion-restriction-independence-summary.md",
+      "summary": "Execution summary with the per-declaration axiom record, the re-derived Saturation application sites, the Non-Goals confirmation table, and the R1/R2/R3/R5 manuscript handoff blocks."
+    },
+    {
       "type": "plan",
       "path": "specs/657_audit_frame_constraints_history_restriction/plans/01_promote-completion-restriction-independence.md",
-      "summary": "11-phase promotion plan for the frame-constraint audit: Completion lemma module, discrete-time Saturation redundancy, the restriction identification, the Limit-only reflection law, the last two independence witnesses, three docstring corrections, and an evidence-probe relocation."
+      "summary": "All 11 phases marked [COMPLETED], except Phase 8 which is [COMPLETED WITH EXCLUSIONS] with a Reasoned Exclusions record for a pre-existing unrelated evidence-probe failure."
     }
   ],
-  "next_steps": "Run /implement 657 to execute the plan",
-  "session_id": "sess_1790146139_4979e4_657"
+  "next_steps": "Task complete. The user makes the R1/R2/R3/R5 manuscript edits to possible_worlds.tex after the task-frame refactor is also complete; the summary's manuscript-handoff section carries each block with its promoted declaration names and manuscript sites. Two follow-ups are recommended as successor tasks: repairing specs/evidence/bi-lasso-decision-layer/phase7-filtered-frame-is-universal.lean (pre-existing citation drift from the ofReflective/ofReflectiveRegular split, which keeps check-evidence-probes.sh from exiting 0), and R6, the final-topology coincidence condition.",
+  "session_id": "sess_1790146139_4979e4"
 }
