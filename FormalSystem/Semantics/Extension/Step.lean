@@ -65,6 +65,15 @@ once *Completion* is assumed, `thm:extension` follows from *Seriality* and *Limi
 *Saturation* is redundant outright (`extension_of_isZTime`), which is this lemma's own closing
 remark made precise.
 
+**And *Completion* is *strictly* weaker than what this site assumes.** The relative strength of
+the two conditions is settled, not open: `StateTopology.SeparatingFrame.srel_completion` together
+with `StateTopology.SeparatingFrame.not_srel_saturation` exhibits a relation satisfying
+*Seriality*, *Compositionality*, *Limit* and *Completion* and failing *Saturation*, so
+`Completion → Saturation` is **false**. The measurement above — that this is the sole
+*Saturation* elimination site — therefore has a sharper reading than it once did: the only thing
+`def:frame`'s *Saturation* buys the development, it buys through a strictly weaker condition that
+could have been assumed instead.
+
 ### The frame-axiom-field invariant, discharged
 
 `step` once took *Saturation* as an explicit hypothesis binder `hSph`, against the day the

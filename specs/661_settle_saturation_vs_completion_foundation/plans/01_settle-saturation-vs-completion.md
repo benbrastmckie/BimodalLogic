@@ -473,14 +473,14 @@ insertion is the sanctioned repair, a restatement is not.
 
 ---
 
-### Phase 5: Retire every "the converse is open" claim [NOT STARTED]
+### Phase 5: Retire every "the converse is open" claim [COMPLETED]
 
 **Goal**: Leave no in-tree prose asserting the strictness question is open, and record the settled
 verdict where the next reader of the extension chain will meet it.
 
 **Tasks**:
 
-- [ ] Rewrite `FormalSystem/Semantics/Extension/Completion.lean`'s module-docstring section
+- [x] Rewrite `FormalSystem/Semantics/Extension/Completion.lean`'s module-docstring section
       currently headed `## This module does **not** propose changing def:frame`. Its final
       sentence ("Whether the replacement would be a *strict* weakening is the converse
       `Completion → Saturation`, which is left open") is now false. Replace the section with one
@@ -490,22 +490,50 @@ verdict where the next reader of the extension chain will meet it.
       favours the bare `TaskFrame.Completion` clause (R4) as `def:frame`'s fourth constraint; and
       the manuscript change and the `FrameOver.IsRegular` field swap are deliberately **not** made
       here — name them as follow-up work rather than leaving the reader to infer it.
-- [ ] Rewrite `FormalSystem/Semantics/Extension/Step.lean`'s `## What step actually consumes:
+- [x] Rewrite `FormalSystem/Semantics/Extension/Step.lean`'s `## What step actually consumes:
       *Completion*` section to match: keep its "sole elimination site" measurement (which Phase 7
       relies on and which nothing has invalidated), and update any sentence that presents the
       relative strength of the two conditions as unknown.
-- [ ] Sweep the whole tree for the claim in any phrasing, not only at the three known sites:
+- [x] Sweep the whole tree for the claim in any phrasing, not only at the three known sites:
       `grep -rn "left open\|stays open\|not known to be a strict\|strictly stronger"
       FormalSystem/ docs/ --include=*.lean --include=*.md`. Evaluate every hit; most will be
       unrelated (there are several about other open questions) — change only those about
       *Saturation* vs *Completion*, and leave a note in the phase record for any hit deliberately
       left alone.
-- [ ] Specifically check `docs/reference/paper-definitions-of-record.md` for the ball-space
+- [x] Specifically check `docs/reference/paper-definitions-of-record.md` for the ball-space
       footnote language ("at least as strong as", and the standing instruction not to restore
       "strictly stronger"). That instruction is about the `S₁ᵈ ⇒ S₁` ball-space claim, **not**
       about *Saturation* vs *Completion*, and it is a pinned-anchor file: do **not** edit it.
       Confirm in the phase record that it was read and left unchanged.
-- [ ] Run `lake build`; commit.
+- [x] Run `lake build`; commit.
+
+**Phase record**: the Scope Hypothesis was **corrected, not confirmed**, and in two ways.
+
+1. **The plan's own grep misses the one real hit.** `grep -rn "left open\|stays open\|..."` is
+   line-based, and `Extension/Completion.lean`'s sentence is wrapped across two source lines
+   ("… which is left / open"), so the literal command in the task list returns **nothing** for
+   that file. A wrap-tolerant regex over `FormalSystem/` and `docs/` was run instead and found
+   exactly one relevant site — that one. It has been rewritten.
+2. **`Extension/Step.lean` carried no claim that the question was open.** Its
+   `## What step actually consumes` section never stated the relative strength as unknown, so
+   there was nothing to correct; the settled verdict was **added** to it instead, keeping its
+   "sole elimination site" measurement verbatim (Phase 7 relies on it).
+
+So the report's count of three sites resolves to: one stale sentence
+(`Extension/Completion.lean`, rewritten), one site needing an addition rather than a correction
+(`Extension/Step.lean`), and the promoted probe text already handled in Phase 2. **No fourth
+site exists.** Every other `left open` / `strictly stronger` hit in the tree is unrelated —
+tableau saturation in `Metalogic/Decidability/`, Kamp carrier strength in
+`Metalogic/Expressiveness/`, and similar — and each was left alone deliberately.
+
+`docs/reference/paper-definitions-of-record.md` was **read and left unchanged**: its ball-space
+language is the `S₁ᵈ ⇒ S₁` claim and the standing instruction not to restore "strictly stronger"
+*there*, which is about spherical completeness and not about *Saturation* vs *Completion*.
+sha256 unchanged at `89fad0c30066722948c8235516d12a9e43a68f280a13a67af39a9f2f8ffdc4a7`, and
+`git status --short` on it is empty.
+
+`lake build` 2,725 jobs exit 0 with zero `error:` and zero `warning:`; the wrap-tolerant sweep
+now returns **zero** relevant hits.
 
 **Timing**: 1 hour
 

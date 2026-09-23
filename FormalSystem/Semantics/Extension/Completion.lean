@@ -83,14 +83,46 @@ be — the two-point case for `s ≤ z ≤ t` is `TaskFrame.Interpolates`, which
 *Compositionality* itself. The infinitary quantifier carries all of the completeness content, and
 there is no finite axiomatisation of *Completion* to be had.
 
-## This module does **not** propose changing `def:frame`
+## The converse is **false**: *Completion* is a strict weakening of *Saturation*
 
-The audit's verdict is to keep all four constraints exactly as stated. `Completion` is landed here
-as a **lemma about** task frames — a sharpening of what the extension chain consumes — never as a
-constraint field, and never as a replacement for *Saturation* in `def:frame`. Whether the
-replacement would be a *strict* weakening is the converse `Completion → Saturation`, which is left
-open; see this module's `specs/` audit report for the argument and for the one probe that would
-settle it.
+*Saturation* implies *Completion* (`completion_of_isRegular`, through `lem:step`). The converse
+`Completion → Saturation` was once open; it is now **settled negatively**, by a machine-checked
+separating frame. `StateTopology.SeparatingFrame.srel` — unit-speed drift on `ℚ` over `ℤ`-time,
+`w ⇒ₓ v` iff `|v - w| ≤ |x|` — satisfies *Seriality*, *Compositionality*, *Limit* and
+*Completion* (`SeparatingFrame.srel_completion`) while **failing** *Saturation*
+(`SeparatingFrame.not_srel_saturation`). So *Completion* is a **strict** weakening of
+*Saturation*, unconditionally.
+
+The mechanism is worth stating, because it is what the whole comparison turns on. *Completion*'s
+quantifier is indexed by **times**, so it collapses wherever the temporal order has nearest times
+— which is exactly the `completion_of_hasNearest` argument, and exactly why the separating frame
+satisfies it. *Saturation*'s quantifier is indexed by **balls** (fibres and segments, ordered by
+inclusion and by nothing else), which no discreteness of the duration order reaches; so a
+`⊇`-directed family of them can shrink onto a Dedekind cut of the carrier however discrete the
+durations are.
+
+**The primitives-level reading favours the bare `TaskFrame.Completion` clause as `def:frame`'s
+fourth constraint.** A frame constraint may mention the state set `W`, the duration type `D` and
+the task relation, and nothing the theory builds from them. `TaskFrame.Completion` mentions
+exactly those. *Saturation* does not: it needs the fibre/segment classification to pick out
+eligible members at all, and its directedness side condition is stated in subset inclusion with
+no reference to the task relation. Strictness plus the primitives criterion is the whole case for
+the replacement.
+
+**Two things this module deliberately does not do**, named here so no reader has to infer them:
+
+1. **The manuscript is not touched.** Restating `def:frame`'s fourth clause `Fib`-free, deleting
+   its opening directed-family clause and demoting *Saturation* to a remark that keeps the
+   ball-space footnote is a manuscript pass, and `def:frame` is a pinned anchor with a recorded
+   checksum in `docs/reference/paper-definitions-of-record.md`. That pass is follow-up work.
+2. **`FrameOver.IsRegular` still carries a `saturation` field.** Swapping it for a `completion`
+   field would need *Completion* analogues at the five transport sites that currently take
+   *Saturation* in and give it back out (`FrameOver.rev_isRegular`, `FrameOver.map`,
+   `FrameOver.translationProduct`, `regionFrame_saturation`, `zTaskFrameV2_saturation`). That is
+   a larger change and is also follow-up work.
+
+Until those two land, `Completion` remains a **lemma about** task frames here — a sharpening of
+what the extension chain consumes — rather than a constraint field.
 
 ## References
 
