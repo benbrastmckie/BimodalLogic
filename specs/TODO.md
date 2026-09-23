@@ -1,5 +1,5 @@
 ---
-next_project_number: 662
+next_project_number: 663
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 662
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,649 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,649,662 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -95,8 +95,35 @@ next_project_number: 662
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
+662 [NOT STARTED] — Settle whether plain S1 suffices or directedness is forced,...
 
 ## Tasks
+
+### 662. S1 vs directedness and restore saturation
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: Task 661
+
+**Description**: Settle whether plain S1 suffices or directedness is forced, search for a better fourth frame constraint, and otherwise restore Saturation as the def:frame constraint in place of Completion
+
+Governing criterion, which overrides minimality: the fourth constraint of def:frame is chosen for NATURALNESS, not for being the weakest hypothesis that makes thm:extension go through. A frame constraint must be a property of the structure <W, D, =>> as such. Tight hypotheses belong in theorems; natural closure conditions belong in definitions. The test is what a condition is ABOUT, not what vocabulary it is written in.
+
+Why Completion loses under that criterion. Completion's hypothesis clause is def:world-history's clause verbatim -- "a family {w_t} on a nonempty X subset-of D with w_s =>_(t-s) w_t" IS a partial history. Stating it Fib-free removes the word, not the aboutness, so the bare form is a disguise rather than a cure. Worse, completion_iff_onePointExtension makes Completion provably equivalent, under Seriality and Limit, to "the construction thm:extension performs succeeds" -- an axiom in the shape of its own theorem. It also forward-references: def:frame precedes def:world-history. Saturation looks backward instead, to def:task-relation, and Fib R w x = {u | R w x u} with Seg R w v x y = Fib R w x INTERSECT Fib R v (-y) are the relation repackaged as subsets, not new constructions -- a real difference in kind from a function on a subset of times.
+
+Already settled and machine-checked (do not re-derive; cite and build on). Saturation -> Completion via completion_of_isRegular routing through lem:step, the sole elimination site in the development. Completion -> Saturation is FALSE: StateTopology.SeparatingFrame in FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean (W = Q, D = Z, srel w x v iff |v - w| <= |x|) satisfies Serial, Compositional, Limit and Completion while failing Saturation. RationalTwoOrigins fails both. completion_of_hasNearest gives Completion from nearest times plus Compositionality and Seriality alone, so Completion is nearly free over discrete time. All sorry-free (propext, Classical.choice, Quot.sound only). Under the naturalness criterion these results are a SHARPNESS RESULT about a definition worth keeping, not an argument for replacing it.
+
+Question 1, the primary one: is the =>-directed form (S_1^d in the Cmiel-Kuhlmann-Kuhlmann hierarchy) FORCED, or would the standard nest condition S_1 (spherical completeness) suffice? This matters because def:frame currently uses a STRENGTHENING of the textbook notion, which on naturalness grounds looks like a liability unless it is forced -- and if it is forced, the strengthening becomes a virtue with a motivation. Unverified sketch to check or refute, not to assume: for the family {Fib(tau(t), z-t)} that step needs, Compositionality makes the fibers decrease as t rises toward z from below and decrease as t falls toward z from above, giving two nests; but the SEGMENTS pairing a below-constraint with an above-constraint are indexed by a pair (t1, t2), directed by (max t1, min t2), and are genuinely two-dimensional rather than totally ordered. If that is right, S_1^d is the exact algebraic shadow of a history constraining a moment from both sides at once, and the directedness is Compositionality's doing. Note directed families do not reduce to chains in general -- a maximal chain in a directed poset need not be cofinal -- so a negative answer is plausible. Settle it by proof or by a machine-checked frame satisfying S_1 and failing lem:step / Completion. Nothing in the library currently addresses nests.
+
+Question 2: given the naturalness criterion, is there anything BETTER than Saturation available? Assess candidates on: statable in W, D and => or in the relation's own induced geometry, before def:world-history; membership in a recognized genus with transferable theory rather than sui generis; robustness to future constructions beyond this one extension theorem; and whether it has an intuitive motivation that does not route through the theory's own constructions. Known dead ends, do not re-explore: no finitary or two-point form exists (finitary Completion follows from Compositionality plus Seriality, while the rational carrier satisfies Compositionality and fails Completion, so no condition implied by Compositionality can be equivalent), and no dense-time drift frame can separate Saturation from Completion (the pinching argument). Saturation's own motivation, for comparison: => induces a geometry on W whose balls are the fibers and segments, and Saturation says that geometry has no gaps -- any consistently shrinking system of balls contains an actual state.
+
+Question 3, conditional on 1 and 2: if nothing better is found, make Saturation the fourth constraint of def:frame and demote Completion. Target architecture: def:frame carries Saturation (with S_1 in place of S_1^d if Question 1 permits); lem:completion derives Completion in the BARE form immediately before lem:step; thm:extension takes Completion as an explicit hypothesis so the minimality is recorded where minimality belongs -- extension_of_completion already elaborates with no IsRegular instance binder, which is the machine-checked form of exactly that claim; and a remark records that Saturation is strictly stronger, citing SeparatingFrame as the witness, with the ball-space footnote attached there.
+
+Current state of the tree, verify rather than trust. FrameOver.IsRegular still carries a saturation field -- the field swap was an explicit non-goal of the prior work -- so Lean's operative def:frame constraint is STILL Saturation and no proofs need undoing. TaskFrame.Completion was added as a sibling bare-relation definition in TaskFrame.lean's "frame axioms in bare-relation form" section, both witnesses were promoted into ConstraintWitnesses.lean, and in-tree docstrings were rewritten to present the replacement as adopted. The reversal is therefore positioning, siting and prose, not mathematics. Keep every theorem and both witnesses; they are the sharpness result. The manuscript was never edited and still says Saturation, so a Saturation outcome also re-aligns tree and paper.
+
+Scope: Lean library and in-tree documentation. Manuscript edits are out of scope. Do not weigh churn, migration cost or effort as considerations against the better final product -- quality of the end state is the only criterion.
+
+---
 
 ### 661. Settle saturation vs completion foundation
 - **Status**: [COMPLETED]
