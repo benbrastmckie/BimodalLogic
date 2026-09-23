@@ -1,12 +1,13 @@
 # Implementation Plan: Promote the countable-carrier rigidity results over ℝ
 
 - **Task**: 654 - infinite_frame_rigidity_countable_real_durations
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 7 hours
 - **Dependencies**: 646, 652 (time-indexed frames and the Dedekind boundary — both already
   landed; `Semantics/TimeIndexed.lean` and `Semantics/TimeIndexedSharpness.lean` exist in-tree)
 - **Research Inputs**: `specs/654_infinite_frame_rigidity_countable_real_durations/reports/01_infinite-frame-rigidity-countable-real.md`
-- **Artifacts**: plans/01_promote-countable-real-rigidity.md (this file)
+- **Artifacts**: plans/01_promote-countable-real-rigidity.md (this file),
+  summaries/01_promote-countable-real-rigidity-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -494,13 +495,13 @@ this phase is not `prose` and must be re-verified at `full` before closing.
 
 ---
 
-### Phase 6: C14 axiom pinning and the full gate sweep [NOT STARTED]
+### Phase 6: C14 axiom pinning and the full gate sweep [COMPLETED]
 
 **Goal**: `static_of_countable` is machine-pinned rather than prose-only, and the whole gate set
 is green.
 
 **Tasks**:
-- [ ] Append `'FormalSystem.Semantics.FrameOver.static_of_countable' depends on axioms:
+- [x] Append `'FormalSystem.Semantics.FrameOver.static_of_countable' depends on axioms:
       [propext, Classical.choice, Quot.sound]` to the `C14_BASELINE` heredoc in
       `scripts/check-module-invariants.sh`, immediately after the existing
       `FrameOver.static_of_finite` line, and append the matching
@@ -508,21 +509,21 @@ is green.
       heredoc **at the same position**. The two heredocs are compared by exact string equality
       and must list the same declarations in the same order — the script's own header comment
       states this; edit them together.
-- [ ] Decide and record whether `Sierpinski.const_of_isClosed_levelSet` is also pinned. Default:
+- [x] Decide and record whether `Sierpinski.const_of_isClosed_levelSet` is also pinned. Default:
       yes, appended to both heredocs after the `static_of_countable` pair, since it is the one
       import Mathlib does not supply and the `docs/theorem-index.md` row's claim rests on it.
       If it is not pinned, it must not be described as pinned anywhere.
-- [ ] Run the full gate set and record each result:
+- [x] Run the full gate set and record each result:
       - `lake build --wfail`
       - `bash scripts/check-module-invariants.sh`
       - `lake exe mk_all --lib FormalSystem --check`
       - `bash scripts/check-module-invariants.sh --emit-inventory --check`
-- [ ] Run `lean_verify` on every promoted theorem named in `## Lean Challenge Statements` and
+- [x] Run `lean_verify` on every promoted theorem named in `## Lean Challenge Statements` and
       confirm `[propext, Classical.choice, Quot.sound]` with no `sorryAx` on each.
-- [ ] If C28 (per-file warning budget) flags either new module, add its entry to
+- [x] If C28 (per-file warning budget) flags either new module, add its entry to
       `scripts/warning-budget.txt` only if the warnings are genuinely irreducible; otherwise fix
       the warnings.
-- [ ] Commit. Do not push and do not open a PR.
+- [x] Commit. Do not push and do not open a PR.
 
 **Timing**: 1 hour
 
@@ -664,23 +665,23 @@ end FormalSystem.Semantics.Rigidity
 
 ## Testing & Validation
 
-- [ ] `lake build --wfail` exits 0 with the full tree built
-- [ ] `bash scripts/check-module-invariants.sh` reports PASS on every check, with C14 asserting
+- [x] `lake build --wfail` exits 0 with the full tree built
+- [x] `bash scripts/check-module-invariants.sh` reports PASS on every check, with C14 asserting
       the new `static_of_countable` baseline entry and C3 finding zero structural `sorry`
-- [ ] `lake exe mk_all --lib FormalSystem --check` exits 0 (C33's byte-for-byte root list)
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` finds no stale
+- [x] `lake exe mk_all --lib FormalSystem --check` exits 0 (C33's byte-for-byte root list)
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` finds no stale
       generated inventory block
-- [ ] `lean_verify` on `Sierpinski.const_of_isClosed_levelSet`,
+- [x] `lean_verify` on `Sierpinski.const_of_isClosed_levelSet`,
       `FormalSystem.Semantics.FrameOver.static_of_countable`,
       `FormalSystem.Semantics.FrameOver.levels_closed`,
       `FormalSystem.Semantics.FrameOver.exists_local_clock`,
       `FormalSystem.Semantics.Rigidity.ratClock_not_static` and
       `FormalSystem.Semantics.Rigidity.paddedClock_not_static`: each reports
       `[propext, Classical.choice, Quot.sound]` and no `sorryAx`
-- [ ] `grep -rn '^import FormalSystem' FormalSystem/ForMathlib/` returns nothing (the ForMathlib
+- [x] `grep -rn '^import FormalSystem' FormalSystem/ForMathlib/` returns nothing (the ForMathlib
       dependency rule)
-- [ ] No promoted module contains a bare `import Mathlib`
-- [ ] Every identifier named under `- **Goals**:` resolves to a real declaration in the tree
+- [x] No promoted module contains a bare `import Mathlib`
+- [x] Every identifier named under `- **Goals**:` resolves to a real declaration in the tree
 
 ## Artifacts & Outputs
 

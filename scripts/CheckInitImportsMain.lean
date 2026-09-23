@@ -42,6 +42,7 @@ def exceptions : List Name := [
   -- beside the directory rather than under it, carries the import instead, so every *consumer* of
   -- this module still reaches `FormalSystem.Init`.
   `FormalSystem.ForMathlib.Order.PFilter,
+  `FormalSystem.ForMathlib.Topology.Sierpinski,
   -- `FormalSystem/Tactic/Attr.lean` declares the library's attributes and named simp sets, and
   -- `FormalSystem.Init` imports IT so that every module inherits them transitively. The reverse
   -- edge -- `Tactic.Attr` importing `Init` -- would therefore close the cycle

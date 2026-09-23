@@ -1878,6 +1878,8 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Deterministic.valid_iff_valid_deterministic' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.FrameOver.static_iff_uniformDwell' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.FrameOver.static_of_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.FrameOver.static_of_countable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Sierpinski.const_of_isClosed_levelSet' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.TimeIndexed.constantHistories_of_lub' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.TimeIndexed.qSwitchFrame_not_constantHistories' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.validIn_iff_recurrenceFree' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -2033,6 +2035,8 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Deterministic.valid_iff_valid_deterministic
 #print axioms FormalSystem.Semantics.FrameOver.static_iff_uniformDwell
 #print axioms FormalSystem.Semantics.FrameOver.static_of_finite
+#print axioms FormalSystem.Semantics.FrameOver.static_of_countable
+#print axioms Sierpinski.const_of_isClosed_levelSet
 #print axioms FormalSystem.Semantics.TimeIndexed.constantHistories_of_lub
 #print axioms FormalSystem.Semantics.TimeIndexed.qSwitchFrame_not_constantHistories
 #print axioms FormalSystem.Semantics.validIn_iff_recurrenceFree

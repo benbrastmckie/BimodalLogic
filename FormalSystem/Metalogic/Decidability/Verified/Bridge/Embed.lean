@@ -72,8 +72,18 @@ theorem embed_finite_to_dense (T : Type) [LinearOrder T] [Finite T]
 
 Hand-rolled, deliberately: `ℤ` is not densely ordered, so `embed_finite_to_dense` does not apply
 to it under any weakening of its hypotheses. See the module docstring.
+
+The `letI` pins the `Preorder ℤ` that `OrderEmbedding.ofStrictMono` elaborates against, and is
+load-bearing for *computability*, not for correctness. Once
+`Mathlib.Data.Int.ConditionallyCompleteOrder` is anywhere in this file's import closure — it
+arrives transitively with any ℝ-topology import, and `Semantics/Correspondence/RigidityReal.lean`
+now puts one there — instance search resolves `Preorder ℤ` through
+`Int.instConditionallyCompleteLinearOrder`, whose `sSup`/`sInf` fields are noncomputable, and
+this `def` stops compiling. Routing through `Int.instLinearOrder` keeps the embedding computable
+and leaves the statement and the proof untouched.
 -/
 def finOrderEmbInt (n : ℕ) : Fin n ↪o ℤ :=
+  letI : Preorder ℤ := Int.instLinearOrder.toPartialOrder.toPreorder
   OrderEmbedding.ofStrictMono (fun i => (i.val : ℤ)) (by
     intro i j hij
     simp only []

@@ -258,7 +258,7 @@ release version lives in `Version.lean`.
 | `Examples.lean` | 36 | Re-export for Examples submodule |
 | `ForMathlib.lean` | 34 | Re-export for ForMathlib submodule (Mathlib-shaped extensions intended for upstreaming) |
 | `HybridLanguage.lean` | 133 | Re-export for the HybridLanguage component: L⁺ plus the same-state modality `[≡]`, state registers and the state binder `↓` (semantic only; no proof system) |
-| `Init.lean` | 32 | Library-wide root, modelled on `Mathlib.Init`: the linters and common tactics every module is meant to inherit |
+| `Init.lean` | 33 | Library-wide root, modelled on `Mathlib.Init`: the linters and common tactics every module is meant to inherit |
 | `MainResults.lean` | 254 | One page listing the headline soundness/completeness metatheory, with the kernel's own `#print axioms` audit beside each result |
 | `Metalogic.lean` | 279 | Re-export for Metalogic submodule |
 | `MinusLanguage.lean` | 69 | <!-- TODO: add description --> |

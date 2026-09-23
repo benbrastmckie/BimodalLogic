@@ -26,7 +26,8 @@ The rule is stated for the files *under* this directory, not for the sibling agg
 aggregator `FormalSystem/ForMathlib.lean` imports `FormalSystem.Init` in addition to its members:
 every `FormalSystem` module must transitively import `FormalSystem.Init` (enforced check C24 in
 `scripts/check-module-invariants.sh`), and the modules here may not, so the aggregator carries
-that import on its consumers' behalf. This is the sole recorded C24 exception, documented in
+that import on its consumers' behalf. Every module under this directory is therefore a recorded
+C24 exception, listed in `scripts/CheckInitImportsMain.lean` and documented in
 `FormalSystem/Init.lean`. It is not a violation of the dependency rule.
 
 ## Modules
