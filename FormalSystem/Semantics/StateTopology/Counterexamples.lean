@@ -37,25 +37,33 @@ Two consequences make it the witness this refactor exists for:
 `funnelFrame` is deliberately **not** an `IsRegular` instance, and must never be given one: its
 whole content is that it is a frame which is not regular.
 
-## Two more frames, with a different constraint profile
+## Two more frames: regular task frames
 
 `TwoOrigins.frame` (the half-line with two origins) and `Hedgehog.frame` (a centre with countably
-many rays) each satisfy *Seriality*, *Compositionality* and *Limit*, each proved separately, and
-**do not claim *Saturation***. That is deliberate and is stated in their own docstrings: the
-paper's argument for *Saturation* on them runs through a "shadow" map that is not formalised
-here, and supplying it would be new mathematics rather than a consequence of this refactor.
-Neither is an `IsRegular` instance. Their profile — three constraints proved, one not claimed —
-is exactly what the general frame structure is for.
+many rays) satisfy **all four** of `def:frame`'s constraints — *Seriality*, *Compositionality*,
+*Limit* and *Saturation*, each proved separately — and both are `FrameOver.IsRegular` instances.
+They are therefore genuine task frames, not merely structures with three of the four constraints.
 
-* `TwoOrigins.frame_t1Space` and `TwoOrigins.frame_not_t2Space` — a state space that is **T1 but
-  not Hausdorff**. *Limit* gives T1 (`FrameOver.t1Space_iff_limit`); nothing in `def:frame` gives
-  T2, because the two origins are distinct states whose short-task futures overlap at every
-  scale.
-* `Hedgehog.finalTopology_ne_nbhdTopology` — `TaskFrame.finalTopology_le_nbhdTopology` says
-  `𝒩_F` sits below the final topology of all histories; this frame shows the inclusion is
-  **strict**. A cone at the centre reaches every ray at once, while a history follows one ray.
-* `Hedgehog.not_continuous_coneTopology_history` — even inside the three-constraint class, a
-  history need not be `𝒯_F`-continuous.
+*Saturation* on both runs through a **shadow** map into `ℝ` (`TwoOrigins.shadow`,
+`Hedgehog.shadow`): every fibre and every nonempty segment has closed bounded shadow, so a
+`⊇`-directed family of them has a common shadow point by
+`TaskFrame.exists_mem_image_of_directedFamily_Icc`, and the frame's own fibre structure lifts that
+point back to a common element. Completeness of the carrier is essential and not decorative: the
+literal transcription of the two-origin relation over `ℚ` **fails** *Saturation*
+(`RationalTwoOrigins.not_rel_saturation`, in `StateTopology/ConstraintWitnesses.lean`).
+
+* `TwoOrigins.taskFrame_t1_not_t2` (and its components `TwoOrigins.frame_t1Space`,
+  `TwoOrigins.frame_not_t2Space`) — **some task frame** is T1 and not Hausdorff. *Limit* gives T1
+  (`FrameOver.t1Space_iff_limit`); nothing in `def:frame` gives T2, because the two origins are
+  distinct states whose short-task futures overlap at every scale.
+* `Hedgehog.finalTopology_ne_nbhdTopology` (on the task frame `Hedgehog.taskFrame_t1Space`
+  certifies) — `TaskFrame.finalTopology_le_nbhdTopology` says `𝒩_F` sits below the final topology
+  of all histories; this frame shows the inclusion is **strict**. A cone at the centre reaches
+  every ray at once, while a history follows one ray. Contrast
+  `StateTopology/MetricFrame.lean`, where the two topologies coincide: the separation is a feature
+  of branching, not of the cone construction.
+* `Hedgehog.not_continuous_coneTopology_history` — even on a regular task frame, a history need
+  not be `𝒯_F`-continuous.
 
 ## Supporting facts
 
@@ -92,7 +100,12 @@ set_option warn.classDefReducibility false
 -- three more aggregator entries, three more README rows and three more import edges into a tree
 -- that keeps this collection out of `Semantics.lean` on purpose. Keep the ceiling tight; raise it
 -- only when a witness genuinely grows, never to park unrelated material here.
-set_option linter.style.longFile 1700
+-- Raised 1700 -> 2200 for the two *Saturation* developments (`TwoOrigins` and `Hedgehog`), which
+-- are the fourth constraint of witnesses already hosted here and so genuinely belong in this
+-- module. The three frames added alongside them (the ghost ray, the ℚ two-origin frame and the
+-- metric frame) were sited in new leaf modules -- `StateTopology/ConstraintWitnesses.lean` and
+-- `StateTopology/MetricFrame.lean` -- rather than parked here, per the instruction above.
+set_option linter.style.longFile 2200
 
 open Topology TopologicalSpace Set
 
@@ -636,12 +649,12 @@ T1 (by `FrameOver.t1Space_iff_limit`, since *Limit* holds) and **not Hausdorff**
 two origins and a ray: both origins loop at every duration, either origin reaches the ray point
 `p t` in any duration `x ≥ t`, and the ray drifts forward at speed at most `1`.
 
-**`Saturation` is deliberately NOT claimed for this frame**, and it is not an oversight. The
-paper's argument for it goes through a "shadow" map `W → [0, ∞)` collapsing the two origins, and
-that argument is not formalised here; opening it would be new mathematical work rather than a
-consequence of the general/regular split. What this frame is *for* is exactly the profile it
-has — three constraints proved, one not claimed — which the general frame structure is what makes
-writable. It is therefore **not** an `IsRegular` instance either.
+**All four `def:frame` constraints hold**, including *Saturation* (`rel_saturation`,
+`frame_saturation`), so this is a genuine task frame and a `FrameOver.IsRegular` instance. The
+*Saturation* proof is the shadow argument: `shadow` collapses the two origins to `0` and sends
+each ray point `p t` to `t`; see the "*Saturation*: the shadow argument" section below.
+`taskFrame_t1_not_t2` is the sharp statement this buys — **some task frame is T1 and not
+Hausdorff**.
 
 The separation failure is the point: the two origins are distinct states (*Limit* holds, so no
 instantaneous transition joins them) whose short-task futures overlap at every scale. T1 is a
@@ -803,8 +816,8 @@ noncomputable abbrev twoOriginRealOrder : TemporalOrder := TemporalOrder.of ℝ
 
 A literal structure, for the reason recorded at `funnelFrame`: the case analyses below need the
 carrier to reduce to `TO` at reducible transparency. It carries no `def:frame` constraint as part
-of its data; `frame_serial`, `frame_compositional` and `frame_limit` are the three it satisfies,
-and *Saturation* is deliberately not claimed. It is therefore **not** an `IsRegular` instance.
+of its data — `frame_serial`, `frame_compositional`, `frame_limit` and `frame_saturation` are all
+four proved separately — and the `IsRegular` instance is assembled from them further down.
 -/
 @[reducible] noncomputable def frame : FrameOver twoOriginRealOrder where
   WorldState := TO
@@ -1070,14 +1083,283 @@ theorem frame_not_t2Space_coneTop : ¬ @T2Space frame.WorldState frame.coneTop :
   rw [frame_coneTop_eq_stateTopology]
   exact frame_not_t2Space
 
+/-! ### *Saturation*: the shadow argument
+
+The frame satisfies `def:frame`'s fourth constraint too, so it is a genuine **task frame** and a
+`FrameOver.IsRegular` instance. The argument is the *shadow map* `W → ℝ` sending both origins to
+`0` and each ray point `p t` to `t`: every fibre and every nonempty segment has closed bounded
+shadow (`shadow_isIcc`), so a `⊇`-directed family of them has a common shadow point `r` by
+`TaskFrame.exists_mem_image_of_directedFamily_Icc`. Lifting `r` back to a common *element* is the
+part the general lemma cannot do: if `r > 0` the ray point `p r` is the unique preimage and lies
+in every member; if `r = 0` every member contains an origin, and directedness forbids one member
+containing only `o true` while another contains only `o false`.
+-/
+
+/-- The shadow map `W → ℝ`: both origins go to `0`, and `p t` goes to `t`. Its image is contained
+in `[0, ∞)`. -/
+def shadow : TO → ℝ
+  | o _ => 0
+  | p u => u.1
+
+@[simp] theorem shadow_o (c : Bool) : shadow (o c) = 0 := rfl
+
+@[simp] theorem shadow_p (u : {t : ℝ // 0 < t}) : shadow (p u) = u.1 := rfl
+
+/-- A *band*: a set of origins together with a real interval of ray points. Every fibre and every
+segment of `rel` is one (`fib_band`, `seg_band`), and bands are closed under intersection
+(`band_inter`). -/
+def band (O : Set Bool) (a b : ℝ) : Set TO :=
+  {w | match w with
+       | o c => c ∈ O
+       | p u => a ≤ u.1 ∧ u.1 ≤ b}
+
+@[simp] theorem o_mem_band {c : Bool} {O : Set Bool} {a b : ℝ} :
+    o c ∈ band O a b ↔ c ∈ O := Iff.rfl
+
+@[simp] theorem p_mem_band {u : {t : ℝ // 0 < t}} {O : Set Bool} {a b : ℝ} :
+    p u ∈ band O a b ↔ a ≤ u.1 ∧ u.1 ≤ b := Iff.rfl
+
+/-- Bands are closed under intersection. -/
+theorem band_inter (O₁ O₂ : Set Bool) (a₁ b₁ a₂ b₂ : ℝ) :
+    band O₁ a₁ b₁ ∩ band O₂ a₂ b₂ = band (O₁ ∩ O₂) (max a₁ a₂) (min b₁ b₂) := by
+  ext u
+  cases u with
+  | o c => exact Iff.rfl
+  | p s =>
+    simp only [Set.mem_inter_iff, p_mem_band, max_le_iff, le_min_iff]
+    constructor
+    · rintro ⟨⟨h1, h2⟩, ⟨h3, h4⟩⟩; exact ⟨⟨h1, h3⟩, h2, h4⟩
+    · rintro ⟨⟨h1, h3⟩, h2, h4⟩; exact ⟨⟨h1, h2⟩, h3, h4⟩
+
+/-- The invariant every fibre and every nonempty segment of `rel` satisfies: a band either carries
+at least one origin and reaches down to `0`, or carries no origin and starts strictly above `0`.
+This is what makes the shadow a *closed* interval rather than a half-open one. -/
+def Good (O : Set Bool) (a : ℝ) : Prop := (O.Nonempty ∧ a ≤ 0) ∨ (O = ∅ ∧ 0 < a)
+
+/-- The shadow of a `Good` band is a closed bounded interval. -/
+theorem shadow_band {O : Set Bool} {a b : ℝ} (hG : Good O a) :
+    shadow '' band O a b = Icc (max a 0) (max b 0) := by
+  ext r
+  constructor
+  · rintro ⟨w, hw, rfl⟩
+    cases w with
+    | o c =>
+      rcases hG with ⟨_, ha⟩ | ⟨hO, _⟩
+      · exact ⟨by simp [max_eq_right ha], by simp⟩
+      · exact absurd (o_mem_band.mp hw) (by simp [hO])
+    | p u =>
+      obtain ⟨h1, h2⟩ := p_mem_band.mp hw
+      exact ⟨max_le h1 (le_of_lt u.2), le_trans h2 (le_max_left _ _)⟩
+  · rintro ⟨h1, h2⟩
+    rcases hG with ⟨⟨c, hc⟩, ha⟩ | ⟨hO, ha⟩
+    · rw [max_eq_right ha] at h1
+      rcases eq_or_lt_of_le h1 with h0 | h0
+      · exact ⟨o c, hc, by simp [h0.symm]⟩
+      · have hb : r ≤ b := by
+          rcases le_or_gt b 0 with hbn | hbp
+          · rw [max_eq_right hbn] at h2; linarith
+          · rw [max_eq_left (le_of_lt hbp)] at h2; exact h2
+        exact ⟨p ⟨r, h0⟩, ⟨le_trans ha (le_of_lt h0), hb⟩, rfl⟩
+    · rw [max_eq_left (le_of_lt ha)] at h1
+      have h0 : 0 < r := lt_of_lt_of_le ha h1
+      have hb : r ≤ b := by
+        rcases le_or_gt b 0 with hbn | hbp
+        · rw [max_eq_right hbn] at h2; linarith
+        · rw [max_eq_left (le_of_lt hbp)] at h2; exact h2
+      exact ⟨p ⟨r, h0⟩, ⟨h1, hb⟩, rfl⟩
+
+/-- Every fibre of `rel` is a `Good` band.
+
+The extra conjunct `O.Nonempty → O = univ ∨ b ≤ x` is what `seg_band` consumes: a fibre that
+carries *some* origin either carries *both* (the backward fibre of a ray point, which reaches past
+the origins) or is bounded above by its own duration. Without it the `{o true} ∩ {o false} = ∅`
+case of `seg_band` could not be ruled out. -/
+theorem fib_band (w : TO) (x : ℝ) :
+    ∃ O a b, Good O a ∧ (O.Nonempty → O = univ ∨ b ≤ x) ∧ Fib rel w x = band O a b := by
+  cases w with
+  | o c =>
+    refine ⟨{c}, 0, x, Or.inl ⟨⟨c, rfl⟩, le_rfl⟩, fun _ => Or.inr le_rfl, ?_⟩
+    ext u
+    cases u with
+    | o c' =>
+      exact ⟨fun h => (show c = c' from h).symm, fun h => (show c' = c from h).symm⟩
+    | p s =>
+      exact ⟨fun h => ⟨le_of_lt s.2, show s.1 ≤ x from h⟩,
+             fun h => show s.1 ≤ x from h.2⟩
+  | p t =>
+    rcases le_or_gt 0 x with hx | hx
+    · refine ⟨∅, t.1, t.1 + x, Or.inr ⟨rfl, t.2⟩, fun h => absurd h (by simp), ?_⟩
+      ext u
+      cases u with
+      | o c =>
+        exact ⟨fun h => absurd (show t.1 ≤ -x from h) (by linarith [t.2]),
+               fun h => absurd h (by simp)⟩
+      | p s =>
+        constructor
+        · rintro (⟨_, h2, h3⟩ | ⟨h1, _, _⟩)
+          · exact ⟨h2, h3⟩
+          · linarith
+        · rintro ⟨h1, h2⟩; exact Or.inl ⟨hx, h1, h2⟩
+    · rcases le_or_gt t.1 (-x) with ht | ht
+      · refine ⟨univ, t.1 + x, t.1, Or.inl ⟨⟨true, Set.mem_univ true⟩, by linarith⟩,
+          fun _ => Or.inl rfl, ?_⟩
+        ext u
+        cases u with
+        | o c => exact ⟨fun _ => Set.mem_univ c, fun _ => show t.1 ≤ -x from ht⟩
+        | p s =>
+          constructor
+          · rintro (⟨h1, _, _⟩ | ⟨_, h2, h3⟩)
+            · linarith
+            · exact ⟨by linarith, h2⟩
+          · rintro ⟨h1, h2⟩; exact Or.inr ⟨hx, h2, by linarith⟩
+      · refine ⟨∅, t.1 + x, t.1, Or.inr ⟨rfl, by linarith⟩, fun h => absurd h (by simp), ?_⟩
+        ext u
+        cases u with
+        | o c =>
+          exact ⟨fun h => absurd (show t.1 ≤ -x from h) (by linarith),
+                 fun h => absurd h (by simp)⟩
+        | p s =>
+          constructor
+          · rintro (⟨h1, _, _⟩ | ⟨_, h2, h3⟩)
+            · linarith
+            · exact ⟨by linarith, h2⟩
+          · rintro ⟨h1, h2⟩; exact Or.inr ⟨hx, h2, by linarith⟩
+
+/-- Every nonempty segment of `rel` is a `Good` band.
+
+**Why the `{o true} ∩ {o false} = ∅` case cannot arise**, which is the one genuine gap in the
+paper's shadow argument and is therefore discharged explicitly here. A segment is
+`Seg rel w v x y = Fib rel w x ∩ Fib rel v (-y)` with `x, y ≥ 0`. Suppose both fibres carry an
+origin but no common one: then the second fibre's origin set is a singleton, so `fib_band`'s
+second conjunct gives `b₂ ≤ -y ≤ 0` for its upper endpoint. The intersection therefore contains no
+origin (they disagree) and no ray point either (a ray point has strictly positive coordinate,
+while the band's upper endpoint is nonpositive) — contradicting the segment's nonemptiness. So
+whenever the two origin sets are disjoint, at least one fibre carried no origin at all, and its
+lower endpoint was already strictly positive. -/
+theorem seg_band {w v : TO} {x y : ℝ} (_hx : 0 ≤ x) (hy : 0 ≤ y)
+    (hne : (Seg rel w v x y).Nonempty) :
+    ∃ O a b, Good O a ∧ Seg rel w v x y = band O a b := by
+  obtain ⟨O₁, a₁, b₁, hG₁, -, hE₁⟩ := fib_band w x
+  obtain ⟨O₂, a₂, b₂, hG₂, hU₂, hE₂⟩ := fib_band v (-y)
+  refine ⟨O₁ ∩ O₂, max a₁ a₂, min b₁ b₂, ?_, by rw [Seg, hE₁, hE₂, band_inter]⟩
+  rcases Set.eq_empty_or_nonempty (O₁ ∩ O₂) with hI | hI
+  · -- No origins survive: the lower endpoint must be positive.
+    rcases hG₁ with ⟨hn₁, ha₁⟩ | ⟨hO₁, ha₁⟩
+    · rcases hG₂ with ⟨hn₂, ha₂⟩ | ⟨hO₂, ha₂⟩
+      · -- Both fibres carry origins, but no common one: the band is empty, contradiction.
+        exfalso
+        have hnu : O₂ ≠ univ := by
+          rintro rfl
+          obtain ⟨c, hc⟩ := hn₁
+          exact absurd (Set.eq_empty_iff_forall_notMem.mp hI c) (by simp [hc])
+        have hb₂ : b₂ ≤ -y := (hU₂ hn₂).resolve_left hnu
+        obtain ⟨u, hu⟩ := hne
+        rw [Seg, hE₁, hE₂, band_inter] at hu
+        cases u with
+        | o c => exact absurd (o_mem_band.mp hu) (by rw [hI]; simp)
+        | p r =>
+          obtain ⟨-, h2⟩ := p_mem_band.mp hu
+          have : r.1 ≤ -y := le_trans (le_trans h2 (min_le_right _ _)) hb₂
+          linarith [r.2]
+      · exact Or.inr ⟨hI, lt_of_lt_of_le ha₂ (le_max_right _ _)⟩
+    · exact Or.inr ⟨hI, lt_of_lt_of_le ha₁ (le_max_left _ _)⟩
+  · -- A common origin survives: both lower endpoints are nonpositive.
+    obtain ⟨c, hc₁, hc₂⟩ := hI
+    have ha₁ : a₁ ≤ 0 := by
+      rcases hG₁ with ⟨-, h⟩ | ⟨hO₁, -⟩
+      · exact h
+      · exact absurd hc₁ (by rw [hO₁]; simp)
+    have ha₂ : a₂ ≤ 0 := by
+      rcases hG₂ with ⟨-, h⟩ | ⟨hO₂, -⟩
+      · exact h
+      · exact absurd hc₂ (by rw [hO₂]; simp)
+    exact Or.inl ⟨⟨c, hc₁, hc₂⟩, max_le ha₁ ha₂⟩
+
+/-- Every nonempty fibre or segment of `rel` has a closed, bounded shadow. -/
+theorem shadow_isIcc {s : Set TO} (hcls : IsFiber rel s ∨ IsSegment rel s) (hne : s.Nonempty) :
+    ∃ a b, shadow '' s = Icc a b := by
+  obtain ⟨O, a, b, hG, hE⟩ : ∃ O a b, Good O a ∧ s = band O a b := by
+    rcases hcls with ⟨w, x, rfl⟩ | ⟨w, v, x, y, hx, hy, rfl⟩
+    · obtain ⟨O, a, b, hG, -, hE⟩ := fib_band w x
+      exact ⟨O, a, b, hG, hE⟩
+    · exact seg_band hx hy hne
+  exact ⟨max a 0, max b 0, by rw [hE, shadow_band hG]⟩
+
+/-- **The two-origin frame satisfies *Saturation*** (`def:frame#Saturation`).
+
+The compactness half is `TaskFrame.exists_mem_image_of_directedFamily_Icc`; what is left here is
+the lifting step, which is frame-specific. Note that the analogous relation over a **rational**
+carrier does *not* satisfy *Saturation* — see
+`RationalTwoOrigins.not_rel_saturation` in `StateTopology/ConstraintWitnesses.lean`. The witness is
+over `ℝ` precisely because the shadow argument consumes completeness of the carrier. -/
+theorem rel_saturation : TaskFrame.Saturation rel := by
+  intro S hdir hmem
+  obtain ⟨-, hdirS⟩ := id hdir
+  obtain ⟨r, hrS⟩ := TaskFrame.exists_mem_image_of_directedFamily_Icc shadow hdir
+    (fun s hs => (hmem s hs).2) (fun s hs => shadow_isIcc (hmem s hs).1 (hmem s hs).2)
+  rcases lt_or_ge 0 r with hrpos | hrle
+  · -- `r > 0`: the unique shadow preimage of `r` is the ray point `p r`.
+    refine ⟨p ⟨r, hrpos⟩, Set.mem_sInter.mpr ?_⟩
+    intro s hs
+    obtain ⟨w, hw, hws⟩ := hrS s hs
+    cases w with
+    | o c => rw [shadow_o] at hws; exact absurd hws.symm (by linarith)
+    | p u =>
+      rw [shadow_p] at hws
+      have hu : u = ⟨r, hrpos⟩ := Subtype.ext hws
+      rwa [hu] at hw
+  · -- `r = 0`: every member contains an origin, and directedness picks a common one.
+    have horigin : ∀ s ∈ S, ∃ c : Bool, o c ∈ s := by
+      intro s hs
+      obtain ⟨w, hw, hws⟩ := hrS s hs
+      cases w with
+      | o c => exact ⟨c, hw⟩
+      | p u => rw [shadow_p] at hws; exact absurd hws (by intro h; linarith [u.2])
+    by_cases htrue : ∀ s ∈ S, o true ∈ s
+    · exact ⟨o true, Set.mem_sInter.mpr htrue⟩
+    by_cases hfalse : ∀ s ∈ S, o false ∈ s
+    · exact ⟨o false, Set.mem_sInter.mpr hfalse⟩
+    exfalso
+    push Not at htrue hfalse
+    obtain ⟨s₁, hs₁, hn₁⟩ := htrue
+    obtain ⟨s₂, hs₂, hn₂⟩ := hfalse
+    obtain ⟨s', hs', hsub⟩ := hdirS s₁ hs₁ s₂ hs₂
+    obtain ⟨c, hc⟩ := horigin s' hs'
+    cases c with
+    | true => exact hn₁ (hsub hc).1
+    | false => exact hn₂ (hsub hc).2
+
+/-- **The frame satisfies *Saturation***, as a fact about the frame. -/
+theorem frame_saturation : TaskFrame.Saturation frame.TaskRel := by
+  rw [frame_taskRel_eq]; exact rel_saturation
+
+/-- **The half-line with two origins is a *regular* frame** — a genuine `def:frame` task frame,
+with all four constraints proved. -/
+instance : frame.IsRegular where
+  comp := frame_compositional
+  serial := frame_serial
+  limit := frame_limit
+  saturation := frame_saturation
+
+/-- **Some TASK FRAME is T1 and not Hausdorff.** This is the sharp form of the witness the
+topology appendix consumes: not merely "some structure satisfying three of the four constraints",
+but a genuine `def:frame` task frame.
+
+Paper: `app:topology-t1` (the T1 half); the non-Hausdorff half is formalization-native. -/
+theorem taskFrame_t1_not_t2 :
+    @T1Space frame.WorldState (FrameOver.stateTopology frame) ∧
+      ¬ @T2Space frame.WorldState (FrameOver.stateTopology frame) :=
+  ⟨FrameOver.instT1SpaceOfRegular frame, frame_not_t2Space⟩
+
 end TwoOrigins
 
 /-! ## The hedgehog: `𝒩_F` is strictly below the final topology of all histories
 
 A centre and countably many rays, each carrying the two-origin frame's drift law, with no
-cross-ray tasks. It satisfies *Seriality*, *Compositionality* and *Limit*; **`Saturation` is again
-deliberately not claimed**, for the reason recorded at `TwoOrigins`, and it is **not** an
-`IsRegular` instance.
+cross-ray tasks. It satisfies **all four** `def:frame` constraints — *Seriality*,
+*Compositionality*, *Limit* and *Saturation* — and is a `FrameOver.IsRegular` instance. The
+*Saturation* proof is the shadow argument again, mirrored; see the "*Saturation*: the shadow
+argument, mirrored" section below.
 
 What it shows: `TaskFrame.finalTopology_le_nbhdTopology` says `𝒩_F` is *below* the final topology
 of all histories, and this frame shows the inclusion is **strict**. The set
@@ -1234,8 +1516,8 @@ theorem rel_reflection (w : HH) (x : ℝ) (u : HH) : rel w x u ↔ rel u (-x) w 
 
 /--
 **The hedgehog, as a general task frame.** A literal structure, for the reason recorded at
-`funnelFrame`. It carries no `def:frame` constraint as part of its data; three are proved
-separately and *Saturation* is not claimed, so it is **not** an `IsRegular` instance.
+`funnelFrame`. It carries no `def:frame` constraint as part of its data; all four are proved
+separately, and the `IsRegular` instance is assembled from them further down.
 -/
 @[reducible] noncomputable def frame : FrameOver TwoOrigins.twoOriginRealOrder where
   WorldState := HH
@@ -1504,6 +1786,261 @@ Paper: `def:task-topology`
 theorem coneTopology_lt_nbhdTopology : coneTopology rel < nbhdTopology rel :=
   lt_of_le_of_ne (coneTopology_le_nbhdTopology rel (fun w => rel_refl w 0 le_rfl))
     coneTopology_ne_nbhdTopology
+
+/-! ### *Saturation*: the shadow argument, mirrored
+
+The hedgehog too satisfies `def:frame`'s fourth constraint, so it is a genuine **task frame** and
+a `FrameOver.IsRegular` instance — which is exactly what upgrades `finalTopology_ne_nbhdTopology`
+from a statement about a structure into the obstruction it is meant to be.
+
+The shadow map `W → ℝ` sends the centre to `0` and each ray point `p n t` to `t`, and the
+compactness half is again `TaskFrame.exists_mem_image_of_directedFamily_Icc`. The **lifting step is
+the mirror image of the two-origin one**: there, `r > 0` was free (the ray point `p r` is the
+unique preimage) and `r = 0` needed directedness to choose between the two origins; here `r = 0` is
+free (the centre is the unique preimage of `0`) and `r > 0` needs directedness to fix a single
+ray, which is what `common_ray` packages. The hypothesis `common_ray` consumes — that each member's
+ray scope is `univ` or a singleton — is the second conjunct of `fib_band`/`class_band`.
+-/
+
+/-- The shadow map `W → ℝ`: the centre goes to `0`, and `p n t` goes to `t`. -/
+def shadow : HH → ℝ
+  | c => 0
+  | p _ u => u.1
+
+@[simp] theorem shadow_c : shadow c = 0 := rfl
+
+@[simp] theorem shadow_p (n : ℕ) (u : {t : ℝ // 0 < t}) : shadow (p n u) = u.1 := rfl
+
+/-- A *band*: optionally the centre, together with a real interval on a set of rays. -/
+def band (k : Prop) (N : Set ℕ) (a b : ℝ) : Set HH :=
+  {w | match w with
+       | c => k
+       | p n u => n ∈ N ∧ a ≤ u.1 ∧ u.1 ≤ b}
+
+@[simp] theorem c_mem_band {k : Prop} {N : Set ℕ} {a b : ℝ} :
+    c ∈ band k N a b ↔ k := Iff.rfl
+
+@[simp] theorem p_mem_band {n : ℕ} {u : {t : ℝ // 0 < t}} {k : Prop} {N : Set ℕ} {a b : ℝ} :
+    p n u ∈ band k N a b ↔ n ∈ N ∧ a ≤ u.1 ∧ u.1 ≤ b := Iff.rfl
+
+/-- The invariant every fibre and every segment satisfies: the centre is present exactly when the
+interval reaches down to `0`. -/
+def Good (k : Prop) (a : ℝ) : Prop := (k ∧ a ≤ 0) ∨ (¬ k ∧ 0 < a)
+
+/-- Bands are closed under intersection. -/
+theorem band_inter (k₁ k₂ : Prop) (N₁ N₂ : Set ℕ) (a₁ b₁ a₂ b₂ : ℝ) :
+    band k₁ N₁ a₁ b₁ ∩ band k₂ N₂ a₂ b₂ =
+      band (k₁ ∧ k₂) (N₁ ∩ N₂) (max a₁ a₂) (min b₁ b₂) := by
+  ext u
+  cases u with
+  | c => exact Iff.rfl
+  | p n s =>
+    simp only [Set.mem_inter_iff, p_mem_band, max_le_iff, le_min_iff]
+    constructor
+    · rintro ⟨⟨h1, h2, h3⟩, ⟨h4, h5, h6⟩⟩; exact ⟨⟨h1, h4⟩, ⟨h2, h5⟩, h3, h6⟩
+    · rintro ⟨⟨h1, h4⟩, ⟨h2, h5⟩, h3, h6⟩; exact ⟨⟨h1, h2, h3⟩, ⟨h4, h5, h6⟩⟩
+
+/-- **Every fibre of the hedgehog relation is a `Good` band on `univ` or on a single ray.**
+
+The `N = univ ∨ N.Subsingleton` conjunct is what `common_ray` consumes: a fibre either reaches
+every ray (it passed through the centre) or stays on the one ray it started from. -/
+theorem fib_band (w : HH) (x : ℝ) :
+    ∃ (k : Prop) (N : Set ℕ) (a b : ℝ),
+      Good k a ∧ (N = univ ∨ N.Subsingleton) ∧ Fib rel w x = band k N a b := by
+  cases w with
+  | c =>
+    refine ⟨True, univ, 0, x, Or.inl ⟨trivial, le_rfl⟩, Or.inl rfl, ?_⟩
+    ext u
+    cases u with
+    | c => exact ⟨fun _ => trivial, fun _ => trivial⟩
+    | p m s =>
+      exact ⟨fun h => ⟨Set.mem_univ m, le_of_lt s.2, show s.1 ≤ x from h⟩,
+             fun h => show s.1 ≤ x from h.2.2⟩
+  | p n t =>
+    rcases le_or_gt 0 x with hx | hx
+    · refine ⟨False, {n}, t.1, t.1 + x, Or.inr ⟨not_false, t.2⟩,
+        Or.inr (Set.subsingleton_singleton), ?_⟩
+      ext u
+      cases u with
+      | c => exact ⟨fun h => absurd (show t.1 ≤ -x from h) (by linarith [t.2]), False.elim⟩
+      | p m s =>
+        constructor
+        · rintro ⟨rfl, ⟨-, h2, h3⟩ | ⟨h1, -, -⟩⟩
+          · exact ⟨rfl, h2, h3⟩
+          · linarith
+        · rintro ⟨hm, h1, h2⟩
+          exact ⟨(Set.mem_singleton_iff.mp hm).symm, Or.inl ⟨hx, h1, h2⟩⟩
+    · rcases le_or_gt t.1 (-x) with ht | ht
+      · refine ⟨True, {n}, t.1 + x, t.1, Or.inl ⟨trivial, by linarith⟩,
+          Or.inr (Set.subsingleton_singleton), ?_⟩
+        ext u
+        cases u with
+        | c => exact ⟨fun _ => trivial, fun _ => show t.1 ≤ -x from ht⟩
+        | p m s =>
+          constructor
+          · rintro ⟨rfl, ⟨h1, -, -⟩ | ⟨-, h2, h3⟩⟩
+            · linarith
+            · exact ⟨rfl, by linarith, h2⟩
+          · rintro ⟨hm, h1, h2⟩
+            exact ⟨(Set.mem_singleton_iff.mp hm).symm, Or.inr ⟨hx, h2, by linarith⟩⟩
+      · refine ⟨False, {n}, t.1 + x, t.1, Or.inr ⟨not_false, by linarith⟩,
+          Or.inr (Set.subsingleton_singleton), ?_⟩
+        ext u
+        cases u with
+        | c => exact ⟨fun h => absurd (show t.1 ≤ -x from h) (by linarith), False.elim⟩
+        | p m s =>
+          constructor
+          · rintro ⟨rfl, ⟨h1, -, -⟩ | ⟨-, h2, h3⟩⟩
+            · linarith
+            · exact ⟨rfl, by linarith, h2⟩
+          · rintro ⟨hm, h1, h2⟩
+            exact ⟨(Set.mem_singleton_iff.mp hm).symm, Or.inr ⟨hx, h2, by linarith⟩⟩
+
+/-- **Every fibre and every segment of the hedgehog relation is a `Good` band**, and the
+`N = univ ∨ N.Subsingleton` conjunct survives intersection. -/
+theorem class_band {s : Set HH} (hcls : IsFiber rel s ∨ IsSegment rel s) :
+    ∃ (k : Prop) (N : Set ℕ) (a b : ℝ),
+      Good k a ∧ (N = univ ∨ N.Subsingleton) ∧ s = band k N a b := by
+  rcases hcls with ⟨w, x, rfl⟩ | ⟨w, v, x, y, -, -, rfl⟩
+  · exact fib_band w x
+  · obtain ⟨k₁, N₁, a₁, b₁, hG₁, hN₁, hE₁⟩ := fib_band w x
+    obtain ⟨k₂, N₂, a₂, b₂, hG₂, hN₂, hE₂⟩ := fib_band v (-y)
+    refine ⟨k₁ ∧ k₂, N₁ ∩ N₂, max a₁ a₂, min b₁ b₂, ?_, ?_,
+      by rw [Seg, hE₁, hE₂, band_inter]⟩
+    · rcases hG₁ with ⟨hk₁, ha₁⟩ | ⟨hk₁, ha₁⟩
+      · rcases hG₂ with ⟨hk₂, ha₂⟩ | ⟨hk₂, ha₂⟩
+        · exact Or.inl ⟨⟨hk₁, hk₂⟩, max_le ha₁ ha₂⟩
+        · exact Or.inr ⟨fun h => hk₂ h.2, lt_of_lt_of_le ha₂ (le_max_right _ _)⟩
+      · exact Or.inr ⟨fun h => hk₁ h.1, lt_of_lt_of_le ha₁ (le_max_left _ _)⟩
+    · rcases hN₁ with rfl | hs₁
+      · rcases hN₂ with rfl | hs₂
+        · exact Or.inl (by simp)
+        · exact Or.inr (hs₂.anti Set.inter_subset_right)
+      · exact Or.inr (hs₁.anti Set.inter_subset_left)
+
+/-- Every nonempty fibre or segment has a closed bounded shadow. -/
+theorem shadow_isIcc {s : Set HH} (hcls : IsFiber rel s ∨ IsSegment rel s) (hne : s.Nonempty) :
+    ∃ a' b', shadow '' s = Icc a' b' := by
+  obtain ⟨k, N, a, b, hG, -, rfl⟩ := class_band hcls
+  rcases Set.eq_empty_or_nonempty N with rfl | ⟨n, hn⟩
+  · -- No rays survive: the band is `{c}` (it is nonempty, so the centre is present).
+    refine ⟨0, 0, ?_⟩
+    have hk : k := by
+      obtain ⟨w, hw⟩ := hne
+      cases w with
+      | c => exact hw
+      | p m s => exact absurd (p_mem_band.mp hw).1 (by simp)
+    ext r
+    constructor
+    · rintro ⟨w, hw, rfl⟩
+      cases w with
+      | c => simp
+      | p m s => exact absurd (p_mem_band.mp hw).1 (by simp)
+    · intro hr
+      rw [Set.mem_Icc] at hr
+      exact ⟨c, hk, by simp [le_antisymm hr.2 hr.1]⟩
+  · refine ⟨max a 0, max b 0, ?_⟩
+    ext r
+    constructor
+    · rintro ⟨w, hw, rfl⟩
+      cases w with
+      | c =>
+        rcases hG with ⟨-, ha⟩ | ⟨hk, -⟩
+        · exact ⟨by simp [max_eq_right ha], by simp⟩
+        · exact absurd (c_mem_band.mp hw) hk
+      | p m s =>
+        obtain ⟨-, h1, h2⟩ := p_mem_band.mp hw
+        exact ⟨max_le h1 (le_of_lt s.2), le_trans h2 (le_max_left _ _)⟩
+    · rintro ⟨h1, h2⟩
+      have hb : 0 < r → r ≤ b := by
+        intro h0
+        rcases le_or_gt b 0 with hbn | hbp
+        · rw [max_eq_right hbn] at h2; linarith
+        · rw [max_eq_left (le_of_lt hbp)] at h2; exact h2
+      rcases hG with ⟨hk, ha⟩ | ⟨hk, ha⟩
+      · rw [max_eq_right ha] at h1
+        rcases eq_or_lt_of_le h1 with h0 | h0
+        · exact ⟨c, hk, by simp [h0.symm]⟩
+        · exact ⟨p n ⟨r, h0⟩, ⟨hn, le_trans ha (le_of_lt h0), hb h0⟩, rfl⟩
+      · rw [max_eq_left (le_of_lt ha)] at h1
+        have h0 : 0 < r := lt_of_lt_of_le ha h1
+        exact ⟨p n ⟨r, h0⟩, ⟨hn, h1, hb h0⟩, rfl⟩
+
+/-- Directedness plus "each member's ray scope is `univ` or a singleton" picks a **common ray**.
+This is the hedgehog's analogue of the two-origin frame's choice between `o true` and `o false`,
+and it is the step that does not factor through any general compactness lemma. -/
+theorem common_ray {S : Set (Set HH)} (u : {t : ℝ // 0 < t})
+    (hdirS : ∀ s₁ ∈ S, ∀ s₂ ∈ S, ∃ s' ∈ S, s' ⊆ s₁ ∩ s₂)
+    (hA : ∀ s ∈ S, ∃ n, p n u ∈ s)
+    (hone : ∀ s ∈ S, ∀ n m, p n u ∈ s → p m u ∈ s → n = m ∨ ∀ j, p j u ∈ s) :
+    ∃ n, ∀ s ∈ S, p n u ∈ s := by
+  by_cases hall : ∀ s ∈ S, ∀ j, p j u ∈ s
+  · exact ⟨0, fun s hs => hall s hs 0⟩
+  · push Not at hall
+    obtain ⟨s₀, hs₀, j₀, hj₀⟩ := hall
+    obtain ⟨n₀, hn₀⟩ := hA s₀ hs₀
+    refine ⟨n₀, fun s hs => ?_⟩
+    obtain ⟨s', hs', hsub⟩ := hdirS s hs s₀ hs₀
+    obtain ⟨n', hn'⟩ := hA s' hs'
+    have hn'₀ : p n' u ∈ s₀ := (hsub hn').2
+    rcases hone s₀ hs₀ n' n₀ hn'₀ hn₀ with rfl | hbad
+    · exact (hsub hn').1
+    · exact absurd (hbad j₀) hj₀
+
+/-- **The hedgehog satisfies *Saturation*** (`def:frame#Saturation`). -/
+theorem rel_saturation : TaskFrame.Saturation rel := by
+  intro S hdir hmem
+  obtain ⟨-, hdirS⟩ := id hdir
+  obtain ⟨r, hrS⟩ := TaskFrame.exists_mem_image_of_directedFamily_Icc shadow hdir
+    (fun s hs => (hmem s hs).2) (fun s hs => shadow_isIcc (hmem s hs).1 (hmem s hs).2)
+  rcases lt_or_ge 0 r with hrpos | hrle
+  · -- `r > 0`: every member meets the circle of radius `r`; directedness fixes the ray.
+    have hA : ∀ s ∈ S, ∃ n, p n ⟨r, hrpos⟩ ∈ s := by
+      intro s hs
+      obtain ⟨w, hw, hws⟩ := hrS s hs
+      cases w with
+      | c => rw [shadow_c] at hws; exact absurd hws.symm (by linarith)
+      | p m v =>
+        rw [shadow_p] at hws
+        exact ⟨m, by rwa [show v = ⟨r, hrpos⟩ from Subtype.ext hws] at hw⟩
+    have hone : ∀ s ∈ S, ∀ n m, p n ⟨r, hrpos⟩ ∈ s → p m ⟨r, hrpos⟩ ∈ s →
+        n = m ∨ ∀ j, p j ⟨r, hrpos⟩ ∈ s := by
+      intro s hs n m hn hm
+      obtain ⟨k, N, a, b, -, hN, hE⟩ := class_band (hmem s hs).1
+      rw [hE] at hn hm ⊢
+      obtain ⟨hnN, ha, hb⟩ := p_mem_band.mp hn
+      rcases hN with rfl | hsub
+      · exact Or.inr fun j => ⟨Set.mem_univ j, ha, hb⟩
+      · exact Or.inl (hsub hnN (p_mem_band.mp hm).1)
+    obtain ⟨n, hn⟩ := common_ray (S := S) ⟨r, hrpos⟩ hdirS hA hone
+    exact ⟨p n ⟨r, hrpos⟩, Set.mem_sInter.mpr hn⟩
+  · -- `r = 0`: the centre is the only shadow preimage of `0`, so it lies in every member.
+    refine ⟨c, Set.mem_sInter.mpr fun s hs => ?_⟩
+    obtain ⟨w, hw, hws⟩ := hrS s hs
+    cases w with
+    | c => exact hw
+    | p m v => rw [shadow_p] at hws; exact absurd hws (by intro h; linarith [v.2])
+
+/-- **The hedgehog frame satisfies *Saturation***, as a fact about the frame. -/
+theorem frame_saturation : TaskFrame.Saturation frame.TaskRel := by
+  rw [frame_taskRel_eq]; exact rel_saturation
+
+/-- **The hedgehog is a *regular* frame** — a genuine `def:frame` task frame, with all four
+constraints proved. -/
+instance : frame.IsRegular where
+  comp := frame_compositional
+  serial := frame_serial
+  limit := frame_limit
+  saturation := frame_saturation
+
+/-- **Some TASK FRAME separates `𝒩_F` from the final topology of all histories.** The `IsRegular`
+instance above is what upgrades `finalTopology_ne_nbhdTopology` from a statement about a structure
+satisfying three of the four constraints into a statement about a `def:frame` task frame — which
+is what makes it the standing obstruction to identifying the two topologies.
+
+Paper: `app:topology-t1` -/
+theorem taskFrame_t1Space : @T1Space frame.WorldState (FrameOver.stateTopology frame) :=
+  FrameOver.instT1SpaceOfRegular frame
 
 end Hedgehog
 
