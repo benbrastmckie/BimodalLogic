@@ -1,7 +1,7 @@
 # Implementation Plan: Task #657
 
 - **Task**: 657 - audit_frame_constraints_history_restriction
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 11.5 hours
 - **Dependencies**: Task 656 (general frames + `FrameOver.IsRegular`; the refactor that made this
   audit statable), Task 659 (the existing constraint witnesses this plan cites rather than
@@ -717,7 +717,7 @@ pre-implementation estimates — re-derive the exact declaration list from Phase
 
 ---
 
-### Phase 11: Full gate run, axiom record, and the manuscript handoff [NOT STARTED]
+### Phase 11: Full gate run, axiom record, and the manuscript handoff [COMPLETED]
 
 **Goal**: Close the task on the documented gate set, with a per-declaration axiom record and a
 single handoff document the user can make the manuscript edits from.
