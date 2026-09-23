@@ -80,7 +80,8 @@ hypothesis `p ≠ q` is used exactly once, to read `p` off the model updated at 
 
 Paper: — (formalization-native; the `←` direction consumes `cor:occurrence`)
 -/
-theorem isAtom_iff (M : TaskModel G) (τ : WorldHistory G) (t : G.Duration) {p q : Atom}
+theorem isAtom_iff [G.IsRegular]
+    (M : TaskModel G) (τ : WorldHistory G) (t : G.Duration) {p q : Atom}
     (hpq : p ≠ q) :
     QuantTruthAt M τ t Set.univ (QuantFormula.isAtom p q) ↔
       ∃ w, M.valuation w p ∧
@@ -106,7 +107,7 @@ proposition that names a state and is true at two times of one history makes the
 that state twice.
 
 Paper: — (formalization-native; the paper's languages have no propositional quantifiers) -/
-theorem qRec_valid (hG : G.RecurrenceFree) (M : TaskModel G) (τ : WorldHistory G)
+theorem qRec_valid [G.IsRegular] (hG : G.RecurrenceFree) (M : TaskModel G) (τ : WorldHistory G)
     (t : G.Duration) {p q : Atom} (hpq : p ≠ q) :
     QuantTruthAt M τ t Set.univ (QuantFormula.qRec p q) := by
   rw [QuantFormula.qRec, all_iff]
@@ -125,7 +126,7 @@ nominal itself; the model is irrelevant.
 
 Paper: — (formalization-native; the paper's languages have no propositional quantifiers)
 -/
-theorem qRec_defines (G : TaskFrame) {p q : Atom} (hpq : p ≠ q) :
+theorem qRec_defines (G : TaskFrame) [G.IsRegular] {p q : Atom} (hpq : p ≠ q) :
     (∀ (M : TaskModel G) (τ : WorldHistory G) (t : G.Duration),
       QuantTruthAt M τ t Set.univ (QuantFormula.qRec p q)) ↔ G.RecurrenceFree := by
   constructor
@@ -153,7 +154,8 @@ Contrast `lifted_invariance`.
 
 Paper: — (formalization-native; the paper defines no morphism of task frames)
 -/
-theorem standard_not_invariant {D : TemporalOrder} {F' F : FrameOver D} (g : HistMorphism F' F)
+theorem standard_not_invariant {D : TemporalOrder} {F' F : FrameOver D} [F'.IsRegular]
+    [F.IsRegular] (g : HistMorphism F' F)
     (hF' : F'.toTaskFrame.RecurrenceFree) (hF : ¬ F.toTaskFrame.RecurrenceFree) :
     ¬ ∀ (φ : QuantFormula) (M : TaskModel F.toTaskFrame) (τ' : WorldHistory F'.toTaskFrame)
         (t : ↑D),

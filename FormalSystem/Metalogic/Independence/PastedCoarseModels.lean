@@ -189,7 +189,7 @@ theorem c_snce_paste (hK : K.PasteClosed) (τ : WorldHistory F) (t : F.Duration)
 
 /-- Validity over every paste-closed coarse model, at every world history and time. -/
 def PCValid (φ : PlusFormula) : Prop :=
-  ∀ (F : TaskFrame) (K : CoarseModel F), K.PasteClosed →
+  ∀ (F : TaskFrame) [F.IsRegular] (K : CoarseModel F), K.PasteClosed →
     ∀ (τ : WorldHistory F) (t : F.Duration), CTruthAt K τ t φ
 
 /--
@@ -201,17 +201,17 @@ with reflected forms `c_paste'` and `c_snce_paste`.
 theorem plusAxiom_pcValid {φ : PlusFormula} (ax : PlusAxiom φ)
     (hb : ax.minFrameClass ≤ FrameClass.Base) : PCValid φ ∧ PCValid φ.reflectTime := by
   by_cases hn : PlusAxiom.IsNaive ax
-  · exact ⟨fun F K _ => naiveAxiom_cValid ax hn hb F K,
-      fun F K _ => naiveAxiom_cValid_reflect_time ax hn hb F K⟩
+  · exact ⟨fun F _ K _ => naiveAxiom_cValid ax hn hb F K,
+      fun F _ K _ => naiveAxiom_cValid_reflect_time ax hn hb F K⟩
   · cases ax
     case paste a0 a1 h0 h1 =>
-      refine ⟨fun F K hK τ t => c_paste hK τ t h0 h1, ?_⟩
+      refine ⟨fun F _ K hK τ t => c_paste hK τ t h0 h1, ?_⟩
       simp only [PlusFormula.reflectTime, reflect_time_dstab, reflect_time_and]
-      exact fun F K hK τ t => c_paste' hK τ t h0.reflectTime h1.reflectTime
+      exact fun F _ K hK τ t => c_paste' hK τ t h0.reflectTime h1.reflectTime
     case untl_paste a0 a1 h0 h1 =>
-      refine ⟨fun F K hK τ t => c_untl_paste hK τ t h0 h1, ?_⟩
+      refine ⟨fun F _ K hK τ t => c_untl_paste hK τ t h0 h1, ?_⟩
       simp only [PlusFormula.reflectTime, reflect_time_dstab]
-      exact fun F K hK τ t => c_snce_paste hK τ t h0.reflectTime h1.reflectTime
+      exact fun F _ K hK τ t => c_snce_paste hK τ t h0.reflectTime h1.reflectTime
     all_goals exact absurd trivial hn
 
 /--
@@ -228,19 +228,19 @@ theorem plus_pcValid_and_reflect_time {φ : PlusFormula}
   | .modus_ponens _ psi' _ d1 d2 =>
     have h1 := plus_pcValid_and_reflect_time d1
     have h2 := plus_pcValid_and_reflect_time d2
-    exact ⟨fun F K hK τ t => (h1.1 F K hK τ t) (h2.1 F K hK τ t),
-      fun F K hK τ t => (h1.2 F K hK τ t) (h2.2 F K hK τ t)⟩
+    exact ⟨fun F _ K hK τ t => (h1.1 F K hK τ t) (h2.1 F K hK τ t),
+      fun F _ K hK τ t => (h1.2 F K hK τ t) (h2.2 F K hK τ t)⟩
   | .necessitation psi' d' =>
     have h := plus_pcValid_and_reflect_time d'
-    exact ⟨fun F K hK _ t σ => h.1 F K hK σ t, fun F K hK _ t σ => h.2 F K hK σ t⟩
+    exact ⟨fun F _ K hK _ t σ => h.1 F K hK σ t, fun F _ K hK _ t σ => h.2 F K hK σ t⟩
   | .temporal_necessitation psi' d' =>
     have h := plus_pcValid_and_reflect_time d'
     constructor
-    · intro F K hK τ t
+    · intro F _ K hK τ t
       rw [CTruth.allFuture_iff]
       intro s _
       exact h.1 F K hK τ s
-    · intro F K hK τ t
+    · intro F _ K hK τ t
       rw [reflect_time_all_future, CTruth.allPast_iff]
       intro s _
       exact h.2 F K hK τ s
@@ -266,7 +266,8 @@ model is not a `.Base` theorem of TM⁺.
 
 Paper: — (formalization-native)
 -/
-theorem not_plusDerivable_of_pcRefuted {φ : PlusFormula} (F : TaskFrame) (K : CoarseModel F)
+theorem not_plusDerivable_of_pcRefuted {φ : PlusFormula} (F : TaskFrame) [F.IsRegular]
+    (K : CoarseModel F)
     (hK : K.PasteClosed) (τ : WorldHistory F) (t : F.Duration) (h : ¬ CTruthAt K τ t φ) :
     ¬ PlusDerivable FrameClass.Base [] φ :=
   fun ⟨d⟩ => h ((plus_pcValid_and_reflect_time d).1 F K hK τ t)

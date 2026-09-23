@@ -191,6 +191,11 @@ def regionFrame (W _ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
       (fun s u h => Prod.ext h.1.symm (by rw [h.2, add_zero])))
     (TaskFrame.saturation_of_fib_subsingleton (regionRel_fib_subsingleton W D))
 
+/-- **The region frame is regular**, through the regular constructor's auto-instance. -/
+instance regionFrame_isRegular (W _ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] [Nontrivial D] : (regionFrame W _ι D).IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
+
 @[simp]
 theorem regionFrame_taskRel (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] (s : W × D) (d : D) (s' : W × D) :

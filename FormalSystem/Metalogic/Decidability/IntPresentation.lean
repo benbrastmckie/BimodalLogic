@@ -135,6 +135,12 @@ contrast.
 @[reducible] def toFibre : FrameOver intOrder :=
   FrameOver.ofStep P.stepRel P.fwd P.bwd
 
+/-- **The presented frame is regular**: the four `def:frame` constraints, inherited from
+`FrameOver.ofStep`, which pays them all from bi-seriality alone over ℤ. Named here because
+instance synthesis does not unfold `FrameOver.ofStep` on its own. -/
+instance toFibre_isRegular : P.toFibre.IsRegular :=
+  FrameOver.ofStep_isRegular P.stepRel P.fwd P.bwd
+
 /--
 The presented frame as a **total-space** value — the fibre, included by the constructor.
 

@@ -192,7 +192,8 @@ By induction on `n`. The base case is the derived `nullity_identity` (`⇒₀` i
 step case is the `comp` field — the paper's biconditional *Compositionality*
 (`def:frame#Compositionality`) — instantiated at `x = n`, `y = 1`, both nonnegative.
 -/
-theorem taskRel_natCast_iff_iter (F : FrameOver intOrder) (n : ℕ) (w u : F.WorldState) :
+theorem taskRel_natCast_iff_iter (F : FrameOver intOrder) [F.IsRegular] (n : ℕ)
+    (w u : F.WorldState) :
     F.TaskRel w (n : ℤ) u ↔ iter F.step n w u := by
   induction n generalizing u with
   | zero => simpa using F.nullity_identity w u
@@ -219,7 +220,7 @@ uses.
 `Int.natAbs` is the right index on both sides because `(-d).natAbs = d.natAbs`: a backward task of
 duration `d < 0` is a forward `|d|`-step path traversed in the other direction.
 -/
-theorem taskRel_eq_iter (F : FrameOver intOrder) (w u : F.WorldState) (d : ℤ) :
+theorem taskRel_eq_iter (F : FrameOver intOrder) [F.IsRegular] (w u : F.WorldState) (d : ℤ) :
     F.TaskRel w d u ↔
       (0 ≤ d → iter F.step d.natAbs w u) ∧ (d ≤ 0 → iter F.step d.natAbs u w) := by
   constructor
@@ -302,7 +303,8 @@ theorem iter_of_isStepPath {F : FrameOver intOrder} {f : ℤ → F.WorldState} (
     rwa [show ((n + 1 : ℕ) : ℤ) = (n : ℤ) + 1 by push_cast; rfl, hs]
 
 /-- A bi-infinite step-path satisfies the all-pairs task-respect obligation. -/
-theorem respects_of_isStepPath {F : FrameOver intOrder} {f : ℤ → F.WorldState} (h : IsStepPath F f)
+theorem respects_of_isStepPath {F : FrameOver intOrder} [F.IsRegular] {f : ℤ → F.WorldState}
+    (h : IsStepPath F f)
     (s t : ℤ) : F.TaskRel (f s) (t - s) (f t) := by
   refine (F.taskRel_eq_iter (f s) (f t) (t - s)).mpr ⟨fun hd => ?_, fun hd => ?_⟩
   · have hst : t = s + ((t - s).natAbs : ℤ) := by omega
@@ -317,12 +319,13 @@ The possible world determined by a bi-infinite step-path. Every field is dischar
 adjacency: the domain is all of ℤ (so `nonempty_domain` and `convex` are trivial), and
 `respects_task` is `respects_of_isStepPath`.
 -/
-def worldHistoryOfStepPath (F : FrameOver intOrder) (f : ℤ → F.WorldState) (h : IsStepPath F f) :
+def worldHistoryOfStepPath (F : FrameOver intOrder) [F.IsRegular]
+    (f : ℤ → F.WorldState) (h : IsStepPath F f) :
     WorldHistory F :=
   WorldHistory.ofTotal F.toTaskFrame f (respects_of_isStepPath h)
 
 @[simp]
-theorem worldHistoryOfStepPath.path (F : FrameOver intOrder) (f : ℤ → F.WorldState)
+theorem worldHistoryOfStepPath.path (F : FrameOver intOrder) [F.IsRegular] (f : ℤ → F.WorldState)
     (h : IsStepPath F f) :
     (worldHistoryOfStepPath F f h).path = f := rfl
 
@@ -341,7 +344,7 @@ it steps between consecutive times. The forward direction instantiates `def:worl
 all-pairs task-respect at consecutive times; the converse rebuilds the all-pairs obligation from
 adjacency alone, by `taskRel_eq_iter` and induction on the gap.
 -/
-theorem mem_HF_iff_adjacent (F : FrameOver intOrder) (f : ℤ → F.WorldState) :
+theorem mem_HF_iff_adjacent (F : FrameOver intOrder) [F.IsRegular] (f : ℤ → F.WorldState) :
     (∃ τ : WorldHistory F, τ.path = f) ↔ IsStepPath F f := by
   constructor
   · rintro ⟨τ, rfl⟩; exact τ.isStepPath
@@ -353,7 +356,8 @@ total, task-respect at consecutive times is equivalent to task-respect at all pa
 direction is the substantive one — it is what lets a construction discharge `respects_task` from a
 single adjacency hypothesis.
 -/
-theorem isTotal_respects_iff_adjacent (F : FrameOver intOrder) (f : ℤ → F.WorldState) :
+theorem isTotal_respects_iff_adjacent (F : FrameOver intOrder) [F.IsRegular]
+    (f : ℤ → F.WorldState) :
     (∀ s t : ℤ, F.TaskRel (f s) (t - s) (f t)) ↔ IsStepPath F f := by
   constructor
   · intro h n
@@ -480,6 +484,11 @@ def ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
       rw [ofStepRel_of_nonneg (le_refl (0 : ℤ))] at h
       simpa [eq_comm] using h)
     (TaskFrame.saturation_of_finite (ofStepRel R₁))
+
+/-- **`ofStep` is regular**, through the regular constructor's auto-instance. -/
+instance ofStep_isRegular {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
+    (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) : (ofStep R₁ fwd bwd).IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
 
 @[simp]
 theorem ofStep_taskRel {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)

@@ -132,6 +132,14 @@ Only the `.Base` pair: it discharges the vacuous `Sat .Base` argument. `PlusVali
 
 /-- Introduce `PlusValid` from its explicit binder shape; the `Sat .Base` argument (`True`) is
 discharged here. Mirror of `Valid.of_forall`. -/
+theorem PlusValid.of_forall_regular {φ : PlusFormula}
+    (h : ∀ (F : TaskFrame) [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
+      PlusTruthAt M τ t φ) :
+    PlusValid φ :=
+  GenericValid.of_forall_regular (L := PlusFormula) (φ := φ) h
+
+/-- Introduce `PlusValid` from its pre-abbreviation binder shape at **every** frame — the
+sufficient form, for a formula whose truth argument consumes no `def:frame` constraint. -/
 theorem PlusValid.of_forall {φ : PlusFormula}
     (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
       PlusTruthAt M τ t φ) :
@@ -139,7 +147,8 @@ theorem PlusValid.of_forall {φ : PlusFormula}
   GenericValid.of_forall (L := PlusFormula) (φ := φ) h
 
 /-- Eliminate `PlusValid` into its explicit binder shape. Mirror of `Valid.apply`. -/
-theorem PlusValid.apply {φ : PlusFormula} (h : PlusValid φ) (F : TaskFrame) (M : TaskModel F)
+theorem PlusValid.apply {φ : PlusFormula} (h : PlusValid φ) (F : TaskFrame) [F.IsRegular]
+    (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration) : PlusTruthAt M τ t φ :=
   GenericValid.apply (L := PlusFormula) (φ := φ) h F M τ t
 

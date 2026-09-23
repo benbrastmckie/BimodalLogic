@@ -116,6 +116,14 @@ theorem HybridValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : HybridFo
 
 /-- Introduce `HybridValid` from its explicit binder shape; the `Sat .Base` argument (`True`) is
 discharged here. -/
+theorem HybridValid.of_forall_regular {φ : HybridFormula}
+    (h : ∀ (F : TaskFrame) [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration)
+      (r : ℕ → F.WorldState), HybridTruthAt M τ x r φ) :
+    HybridValid φ :=
+  GenericValid.of_forall_regular (L := HybridFormula) (φ := φ) h
+
+/-- Introduce `HybridValid` from its explicit binder shape at **every** frame — the sufficient
+form. -/
 theorem HybridValid.of_forall {φ : HybridFormula}
     (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration)
       (r : ℕ → F.WorldState), HybridTruthAt M τ x r φ) :
@@ -123,7 +131,7 @@ theorem HybridValid.of_forall {φ : HybridFormula}
   GenericValid.of_forall (L := HybridFormula) (φ := φ) h
 
 /-- Eliminate `HybridValid` into its explicit binder shape. -/
-theorem HybridValid.apply {φ : HybridFormula} (h : HybridValid φ) (F : TaskFrame)
+theorem HybridValid.apply {φ : HybridFormula} (h : HybridValid φ) (F : TaskFrame) [F.IsRegular]
     (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration) (r : ℕ → F.WorldState) :
     HybridTruthAt M τ x r φ :=
   GenericValid.apply (L := HybridFormula) (φ := φ) h F M τ x r

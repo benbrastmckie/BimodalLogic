@@ -278,6 +278,13 @@ def colourClock [Finite W] [Nonempty W]
     (prodRel_serial R hS) (prodRel_limit R h0)
     (prodRel_saturation R (TaskFrame.saturation_of_finite R))
 
+/-- **The colour clock is regular**, through the regular constructor's auto-instance. -/
+instance colourClock_isRegular [Finite W] [Nonempty W]
+    (hR : ∀ w d u, R w d u ↔ R u (-d) w) (hC : TaskFrame.Compositional R)
+    (hS : TaskFrame.Serial R) (h0 : ∀ w u, R w 0 u → u = w) :
+    (colourClock R hR hC hS h0).IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
+
 end Bare
 
 /-! ## The product of a live frame -/
@@ -297,6 +304,12 @@ def FrameOver.translationProduct [F.IsRegular] : FrameOver D :=
     (prodRel_limit _ fun _ _ h => (F.eq_of_taskRel_zero h).symm)
     (prodRel_saturation _ F.saturation)
 
+/-- **The translation product of a regular frame is regular**, through the regular constructor's
+auto-instance. -/
+instance FrameOver.translationProduct_isRegular [F.IsRegular] :
+    F.translationProduct.IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
+
 /-- The task relation of the product, unfolded. -/
 @[simp] theorem FrameOver.translationProduct_taskRel [F.IsRegular] (a : F.WorldState × ↑D)
     (x : ↑D) (b : F.WorldState × ↑D) :
@@ -315,7 +328,7 @@ theorem FrameOver.translationProduct_sat [F.IsRegular]
 
 /-- The product preserves and reflects determinism (`def:deterministic`): it is neutral on
 it. -/
-theorem FrameOver.translationProduct_deterministic_iff :
+theorem FrameOver.translationProduct_deterministic_iff [F.IsRegular] :
     F.translationProduct.toTaskFrame.Deterministic ↔ F.toTaskFrame.Deterministic := by
   constructor
   · intro h w d u hu u' hu'
@@ -335,7 +348,7 @@ theorem FrameOver.translationProduct_deterministic_iff :
 
 /-- The lift of a history of `F` with clock offset `c`: at time `t` it occupies
 `(ρ.state t, c + t)`. -/
-def liftH (ρ : WorldHistory F.toTaskFrame) (c : ↑D) :
+def liftH [F.IsRegular] (ρ : WorldHistory F.toTaskFrame) (c : ↑D) :
     WorldHistory F.translationProduct.toTaskFrame :=
   WorldHistory.ofTotal _ (fun t => (ρ.state t, c + t)) (by
     intro s t
@@ -343,24 +356,27 @@ def liftH (ρ : WorldHistory F.toTaskFrame) (c : ↑D) :
       ⟨ρ.respects_task s t, by change c + t = c + s + (t - s); abel⟩)
 
 /-- The projection of a history of the product: forget the clock. -/
-def projH (τ' : WorldHistory F.translationProduct.toTaskFrame) : WorldHistory F.toTaskFrame :=
+def projH [F.IsRegular]
+    (τ' : WorldHistory F.translationProduct.toTaskFrame) : WorldHistory F.toTaskFrame :=
   WorldHistory.ofTotal _ (fun t => (τ'.state t).1)
     (fun s t => ((FrameOver.translationProduct_taskRel F _ _ _).1 (τ'.respects_task s t)).1)
 
 /-- The state of a lifted history. -/
-@[simp] theorem liftH_state (ρ : WorldHistory F.toTaskFrame) (c t : ↑D) :
+@[simp] theorem liftH_state [F.IsRegular] (ρ : WorldHistory F.toTaskFrame) (c t : ↑D) :
     (liftH F ρ c).state t = (ρ.state t, c + t) := rfl
 
 /-- The state of a projected history. -/
-@[simp] theorem projH_state (τ' : WorldHistory F.translationProduct.toTaskFrame) (t : ↑D) :
+@[simp] theorem projH_state [F.IsRegular]
+    (τ' : WorldHistory F.translationProduct.toTaskFrame) (t : ↑D) :
     (projH F τ').state t = (τ'.state t).1 := rfl
 
 /-- Projecting a lift recovers the history. -/
-theorem projH_liftH (ρ : WorldHistory F.toTaskFrame) (c : ↑D) : projH F (liftH F ρ c) = ρ :=
+theorem projH_liftH [F.IsRegular]
+    (ρ : WorldHistory F.toTaskFrame) (c : ↑D) : projH F (liftH F ρ c) = ρ :=
   WorldHistory.ext_state fun _ => rfl
 
 /-- The clock along any history of the product is time plus a constant. -/
-theorem clock_eq (τ' : WorldHistory F.translationProduct.toTaskFrame) (t : ↑D) :
+theorem clock_eq [F.IsRegular] (τ' : WorldHistory F.translationProduct.toTaskFrame) (t : ↑D) :
     (τ'.state t).2 = (τ'.state 0).2 + t := by
   have := ((FrameOver.translationProduct_taskRel F _ _ _).1 (τ'.respects_task 0 t)).2
   rwa [sub_zero] at this
@@ -368,12 +384,12 @@ theorem clock_eq (τ' : WorldHistory F.translationProduct.toTaskFrame) (t : ↑D
 /-- **Histories of the product are exactly history-plus-offset pairs**: lifting the projection
 at the clock reading at `0` recovers the history. Lifts are unique and no Extension Theorem is
 needed. -/
-theorem liftH_projH (τ' : WorldHistory F.translationProduct.toTaskFrame) :
+theorem liftH_projH [F.IsRegular] (τ' : WorldHistory F.translationProduct.toTaskFrame) :
     liftH F (projH F τ') (τ'.state 0).2 = τ' :=
   WorldHistory.ext_state fun t => Prod.ext rfl (clock_eq F τ' t).symm
 
 /-- **No history of the product visits a world state twice.** -/
-theorem no_recurrence (τ' : WorldHistory F.translationProduct.toTaskFrame) {s t : ↑D}
+theorem no_recurrence [F.IsRegular] (τ' : WorldHistory F.translationProduct.toTaskFrame) {s t : ↑D}
     (h : τ'.state s = τ'.state t) : s = t := by
   have h2 : (τ'.state s).2 = (τ'.state t).2 := by rw [h]
   rw [clock_eq F τ' s, clock_eq F τ' t] at h2
@@ -382,7 +398,7 @@ theorem no_recurrence (τ' : WorldHistory F.translationProduct.toTaskFrame) {s t
 /-- **No two histories of the product transpose two world states**: the clock is monotone, so
 the same pair of states cannot be visited in opposite orders. (In an ordered abelian group
 `s + s = t + t` forces `s = t`.) -/
-theorem no_transposition :
+theorem no_transposition [F.IsRegular] :
     ¬ ∃ (τ σ : WorldHistory F.translationProduct.toTaskFrame) (s t : ↑D),
       s ≠ t ∧ τ.state s = σ.state t ∧ τ.state t = σ.state s := by
   rintro ⟨τ, σ, s, t, hne, h1, h2⟩
@@ -403,17 +419,20 @@ theorem no_transposition :
   · exact absurd h5 (ne_of_gt (add_lt_add hgt hgt))
 
 /-- The product is recurrence-free, against the live predicate `TaskFrame.RecurrenceFree`. -/
-theorem translationProduct_recurrenceFree : F.translationProduct.toTaskFrame.RecurrenceFree :=
+theorem translationProduct_recurrenceFree [F.IsRegular]
+    : F.translationProduct.toTaskFrame.RecurrenceFree :=
   fun τ' _ _ h => no_recurrence F τ' h
 
 /-- The lift of a model: the valuation ignores the clock, since sentence letters denote sets
 of world states (`def:BL-semantics`). -/
-def liftModel (M : TaskModel F.toTaskFrame) : TaskModel F.translationProduct.toTaskFrame :=
+def liftModel [F.IsRegular]
+    (M : TaskModel F.toTaskFrame) : TaskModel F.translationProduct.toTaskFrame :=
   ⟨fun a p => M.valuation a.1 p⟩
 
 /-- The lift of a history through a given product state at a given time: choosing the offset
 `a.2 - t` puts the lift at `a` at time `t`. -/
-theorem liftH_through (ρ : WorldHistory F.toTaskFrame) (a : F.WorldState × ↑D) (t : ↑D)
+theorem liftH_through [F.IsRegular]
+    (ρ : WorldHistory F.toTaskFrame) (a : F.WorldState × ↑D) (t : ↑D)
     (h : a.1 = ρ.state t) : (liftH F ρ (a.2 - t)).state t = a :=
   Prod.ext h.symm (by change a.2 - t + t = a.2; exact sub_add_cancel _ _)
 
@@ -421,7 +440,7 @@ theorem liftH_through (ρ : WorldHistory F.toTaskFrame) (a : F.WorldState × ↑
 
 /-- **`L`: truth is preserved by the projection**, for lifted models. The `□` clause ranges over
 all histories of the product; each is the lift of its projection, so the quantifier transfers. -/
-theorem truth_invariance (M : TaskModel F.toTaskFrame) :
+theorem truth_invariance [F.IsRegular] (M : TaskModel F.toTaskFrame) :
     ∀ (φ : Formula) (τ' : WorldHistory F.translationProduct.toTaskFrame) (t : ↑D),
       TruthAt (liftModel F M) τ' t φ ↔ TruthAt M (projH F τ') t φ := by
   intro φ
@@ -450,7 +469,7 @@ theorem truth_invariance (M : TaskModel F.toTaskFrame) :
 /-- **`L⁺`: truth is preserved by the projection**, for lifted models. The `⊡` clause is where
 the clock matters: a history through the projected state lifts to a history through the product
 state itself, with the clock offset read off that state (`liftH_through`). -/
-theorem plus_invariance (M : TaskModel F.toTaskFrame) :
+theorem plus_invariance [F.IsRegular] (M : TaskModel F.toTaskFrame) :
     ∀ (φ : PlusFormula) (τ' : WorldHistory F.translationProduct.toTaskFrame) (t : ↑D),
       PlusTruthAt (liftModel F M) τ' t φ ↔ PlusTruthAt M (projH F τ') t φ := by
   intro φ
@@ -489,7 +508,7 @@ theorem plus_invariance (M : TaskModel F.toTaskFrame) :
 models. The two register clauses are inert (`def:BLstar-semantics`): `timeStore` updates the
 vector and `timeRecall` moves the time, and neither touches the history. Recurrence is
 therefore invisible to `L⋆` as well. -/
-theorem star_invariance (M : TaskModel F.toTaskFrame) :
+theorem star_invariance [F.IsRegular] (M : TaskModel F.toTaskFrame) :
     ∀ (φ : StarFormula) (τ' : WorldHistory F.translationProduct.toTaskFrame) (t : ↑D)
       (v : ℕ → ↑D),
       StarTruthAt (liftModel F M) τ' t v φ ↔ StarTruthAt M (projH F τ') t v φ := by
@@ -531,7 +550,7 @@ theorem star_invariance (M : TaskModel F.toTaskFrame) :
 
 /-- Frame validity of an `L⁺` formula on the product implies frame validity on `F`: lift the
 model and the history. The converse fails — see `frame_validity_not_reflected`. -/
-theorem plusValidOn_of_prod (φ : PlusFormula)
+theorem plusValidOn_of_prod [F.IsRegular] (φ : PlusFormula)
     (h : F.translationProduct.toTaskFrame.PlusValidOn φ) : F.toTaskFrame.PlusValidOn φ := by
   intro M τ t
   have := (plus_invariance F M φ (liftH F τ 0) t).1 (h _ _ _)
@@ -539,7 +558,7 @@ theorem plusValidOn_of_prod (φ : PlusFormula)
 
 /-- Frame validity of an `L⋆` formula on the product implies frame validity on `F`. The
 converse fails — see `frame_validity_not_reflected`. -/
-theorem starValidOn_of_prod (φ : StarFormula)
+theorem starValidOn_of_prod [F.IsRegular] (φ : StarFormula)
     (h : F.translationProduct.toTaskFrame.StarValidOn φ) : F.toTaskFrame.StarValidOn φ := by
   intro M τ t v
   have := (star_invariance F M φ (liftH F τ 0) t v).1 (h _ _ _ _)
@@ -547,7 +566,7 @@ theorem starValidOn_of_prod (φ : StarFormula)
 
 /-- Frame validity of an `L` formula on the product implies frame validity on `F`. The
 converse fails — see `frame_validity_not_reflected`. -/
-theorem validOn_of_prod (φ : Formula)
+theorem validOn_of_prod [F.IsRegular] (φ : Formula)
     (h : F.translationProduct.toTaskFrame.ValidOn φ) : F.toTaskFrame.ValidOn φ := by
   intro M τ t
   have := (truth_invariance F M φ (liftH F τ 0) t).1 (h _ _ _)
@@ -556,7 +575,7 @@ theorem validOn_of_prod (φ : Formula)
 /-- **The projection is a history-lifting morphism** — the intended instance of `HistMorphism`.
 `forth` is the first conjunct of the task relation, `lift` is `liftH_through`, `onto` is the
 lift at offset `0`. -/
-def FrameOver.translationProductProj : HistMorphism F.translationProduct F where
+def FrameOver.translationProductProj [F.IsRegular] : HistMorphism F.translationProduct F where
   toFun := Prod.fst
   forth := fun _ _ _ h => ((FrameOver.translationProduct_taskRel F _ _ _).1 h).1
   lift := fun τ a t h => ⟨liftH F τ (a.2 - t), liftH_through F τ a t h, fun _ => rfl⟩
@@ -581,6 +600,7 @@ theorem plusValidIn_iff_recurrenceFree (fc : FormalSystem.ProofSystem.FrameClass
   constructor
   · intro h G hG; exact h G hG.1
   · intro h G hG
+    haveI := hG.isRegular
     have hp : G.toFibre.translationProduct.toTaskFrame.PlusValidOn φ :=
       h _ ⟨(FrameOver.translationProduct_sat G.toFibre fc).2 hG,
         translationProduct_recurrenceFree G.toFibre⟩
@@ -590,11 +610,13 @@ theorem plusValidIn_iff_recurrenceFree (fc : FormalSystem.ProofSystem.FrameClass
 recurrence-free members.** See `plusValidIn_iff_recurrenceFree`.
 
 Paper: — (formalization-native; the paper defines no product of task frames) -/
-theorem validIn_iff_recurrenceFree (fc : FormalSystem.ProofSystem.FrameClass) (φ : Formula) :
+theorem validIn_iff_recurrenceFree
+    (fc : FormalSystem.ProofSystem.FrameClass) (φ : Formula) :
     ValidIn fc φ ↔ ValidOnFrames (fun G => fc.Sat G ∧ G.RecurrenceFree) φ := by
   constructor
   · intro h G hG; exact h G hG.1
   · intro h G hG
+    haveI := hG.isRegular
     have hp : G.toFibre.translationProduct.toTaskFrame.ValidOn φ :=
       h _ ⟨(FrameOver.translationProduct_sat G.toFibre fc).2 hG,
         translationProduct_recurrenceFree G.toFibre⟩
@@ -611,6 +633,7 @@ theorem starValidIn_iff_recurrenceFree (fc : FormalSystem.ProofSystem.FrameClass
   constructor
   · intro h G hG; exact h G hG.1
   · intro h G hG
+    haveI := hG.isRegular
     have hp : G.toFibre.translationProduct.toTaskFrame.StarValidOn φ :=
       h _ ⟨(FrameOver.translationProduct_sat G.toFibre fc).2 hG,
         translationProduct_recurrenceFree G.toFibre⟩

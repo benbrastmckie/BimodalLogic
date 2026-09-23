@@ -87,6 +87,10 @@ def intTimeFrame : FrameOver intOrder :=
     TaskFrame.limit_of_subsingleton
     TaskFrame.saturation_of_subsingleton
 
+/-- **`intTimeFrame` is regular**, through the regular constructor's auto-instance. -/
+instance intTimeFrame_isRegular : intTimeFrame.IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
+
 /-- `intTimeFrame`'s task relation is total. -/
 @[simp]
 theorem intTimeFrame_taskRel {w u : intTimeFrame.WorldState} {d : ↑intOrder} :
@@ -163,6 +167,10 @@ def intNatFrame : FrameOver intOrder :=
     (TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl)
     (TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl)
     (TaskFrame.saturation_of_permissive fun _ _ _ => Iff.rfl)
+
+/-- **`intNatFrame` is regular**, through the regular constructor's auto-instance. -/
+instance intNatFrame_isRegular : intNatFrame.IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
 
 /-! ### `intNatFrame` discharges `def:frame`'s four axioms (permissive class) -/
 
@@ -254,6 +262,10 @@ def intBoolFrame : FrameOver intOrder :=
     (TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl)
     (TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl)
     (TaskFrame.saturation_of_permissive fun _ _ _ => Iff.rfl)
+
+/-- **`intBoolFrame` is regular**, through the regular constructor's auto-instance. -/
+instance intBoolFrame_isRegular : intBoolFrame.IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
 
 /-! ### `intBoolFrame` discharges `def:frame`'s four axioms (permissive class) -/
 

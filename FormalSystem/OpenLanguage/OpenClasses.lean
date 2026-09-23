@@ -156,7 +156,8 @@ theorem openPastClass_mono (τ : WorldHistory F) {x y : F.Duration} (h : x ≤ y
 
 /-- For `σ ∈ ⟨τ⟩_x`, the pasted world `τ|(-∞,x] ⌢ σ|(x,∞)` lies in `τ`'s open-future class and in
 `σ`'s open-past class at `x`: the two-history instance of `app:gluing`. -/
-theorem paste_mem_openFutureClass_inter_openPastClass (τ σ : WorldHistory F) (x : F.Duration)
+theorem paste_mem_openFutureClass_inter_openPastClass [F.IsRegular]
+    (τ σ : WorldHistory F) (x : F.Duration)
     (h : τ.state x = σ.state x) :
     paste τ σ x h ∈ openFutureClass τ x ∩ openPastClass σ x :=
   ⟨fun s hs => (paste_agreeUpTo τ σ x h s hs).symm,

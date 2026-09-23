@@ -152,6 +152,10 @@ noncomputable def lexRatFrame : FrameOver (TemporalOrder.of LexRat) :=
   FrameOver.ofReflectiveRegular Bool lexRatRel lexRatRel_refl lexRatRel_comp lexRatRel_serial
     lexRatRel_limit (saturation_of_finite lexRatRel)
 
+/-- **`lexRatFrame` is regular**, through the regular constructor's auto-instance. -/
+noncomputable instance lexRatFrame_isRegular : lexRatFrame.IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
+
 /--
 **`lexRatFrame` is not static**: the duration `(1, 0)` relates `true` to `false`. Its carrier is
 finite, so it has a uniform dwell time; its duration group is densely ordered

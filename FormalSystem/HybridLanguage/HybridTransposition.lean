@@ -76,7 +76,8 @@ meet at `t₁`, and the pasted history occupies the first state at `s₁` and ag
 `t₁ + (t₂ - s₂)`.
 
 Paper: — (formalization-native; the pasting step is the two-history instance of `app:gluing`) -/
-theorem recurrenceFree_not_transposed (hG : G.RecurrenceFree) (τ₁ τ₂ : WorldHistory G)
+theorem recurrenceFree_not_transposed [G.IsRegular] (hG : G.RecurrenceFree)
+    (τ₁ τ₂ : WorldHistory G)
     {s₁ t₁ s₂ t₂ : G.Duration} (h₁ : s₁ < t₁) (h₂ : s₂ < t₂)
     (hi : τ₁.state s₁ = τ₂.state t₂) (hj : τ₁.state t₁ = τ₂.state s₂) : False := by
   -- shift `τ₂` so that it occupies the second state at time `t₁`
@@ -94,7 +95,8 @@ theorem recurrenceFree_not_transposed (hG : G.RecurrenceFree) (τ₁ τ₂ : Wor
 assignment: two histories through `i` then `j`, respectively `j` then `i`, are a transposition.
 
 Paper: — (formalization-native; the paper states no formula expressing transposition) -/
-theorem transF_valid (hG : G.RecurrenceFree) (M : TaskModel G) (τ : WorldHistory G)
+theorem transF_valid [G.IsRegular] (hG : G.RecurrenceFree) (M : TaskModel G)
+    (τ : WorldHistory G)
     (t : G.Duration) (r : ℕ → G.WorldState) (i j : ℕ) :
     HybridTruthAt M τ t r (HybridFormula.transF i j) := by
   simp only [HybridFormula.transF, neg_iff, and_iff, exist_iff, someFuture_iff, reg_iff]
@@ -116,7 +118,7 @@ frame is recurrence-free. The forward direction is `transF_refuted_of_recur`, th
 `transF_valid`.
 
 Paper: — (formalization-native; the paper states no formula expressing transposition) -/
-theorem transF_defines (G : TaskFrame) :
+theorem transF_defines (G : TaskFrame) [G.IsRegular] :
     G.HybridValidOn (HybridFormula.transF 0 1) ↔ G.RecurrenceFree := by
   constructor
   · intro h τ s t hst
@@ -157,6 +159,7 @@ theorem transF_not_validIn (fc : ProofSystem.FrameClass) :
     ¬ HybridValidIn fc (HybridFormula.transF 0 1) := by
   intro h
   obtain ⟨G, hG, hrec⟩ := exists_sat_not_recurrenceFree fc
+  haveI := hG.isRegular
   exact hrec ((transF_defines G).1 (h G hG))
 
 end FormalSystem.HybridLanguage

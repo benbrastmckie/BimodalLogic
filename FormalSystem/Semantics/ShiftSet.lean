@@ -193,10 +193,6 @@ frames built on a shift set (`Metalogic/Independence/RealTranslationFrame.lean`)
   WorldState := S.Carrier
   worldNonempty := S.carrier_nonempty
   PosRel w x u := u = S.sh w x
-  comp := TaskFrame.compositional_reflect_of_reflective S.shRel_reflection S.shRel_comp
-  serial := TaskFrame.serial_reflect_of_reflective S.shRel_reflection S.shRel_serial
-  limit := TaskFrame.limit_reflect_of_reflective S.shRel_reflection S.sep
-  saturation := TaskFrame.saturation_reflect_of_reflective S.shRel_reflection S.shRel_saturation
 
 /-- **The induced frame is regular.** Three constraints come free from functionality plus the
 group action; *Limit* is exactly the shift set's `sep` field. This is the class instance a general
@@ -222,6 +218,11 @@ from the pre-fibration definition and is load bearing: `hist`'s `respects_task` 
 under `S.frame.Duration`.
 -/
 @[reducible] def frame (S : ShiftSet D) : TaskFrame := S.fibre.toTaskFrame
+
+/-- **The induced total-space frame is regular**, by delegation to `fibre_isRegular`. Named at the
+total space as well as at the fibre because instance synthesis does not project through
+`FrameOver.toTaskFrame` on its own. -/
+instance frame_isRegular (S : ShiftSet D) : S.frame.IsRegular := S.fibre_isRegular
 
 /-- The induced world history through `w`: the shift orbit `t ↦ sh w t`. -/
 def hist (S : ShiftSet D) (w : S.Carrier) : WorldHistory S.frame :=

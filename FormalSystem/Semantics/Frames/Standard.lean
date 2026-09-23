@@ -99,6 +99,10 @@ def translationFrame (D : TemporalOrder) : FrameOver D :=
       (by intro w u h; rw [show u = w + 0 from h, add_zero]))
     (TaskFrame.saturation_of_fib_subsingleton translationRel_fib_subsingleton)
 
+/-- **The translation frame is regular**, through the regular constructor's auto-instance. -/
+instance translationFrame_isRegular (D : TemporalOrder) : (translationFrame D).IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
+
 @[simp] theorem translationFrame_taskRel {D : TemporalOrder} (w x u : ↑D) :
     (translationFrame D).TaskRel w x u ↔ u = w + x := FrameOver.ofReflectiveRegular_taskRel
 
@@ -125,6 +129,11 @@ def permissiveFrame (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder �
     (TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl)
     (TaskFrame.limit_of_permissive fun _ _ _ => Iff.rfl)
     (TaskFrame.saturation_of_permissive fun _ _ _ => Iff.rfl)
+
+/-- **The permissive frame is regular**, through the regular constructor's auto-instance. -/
+instance permissiveFrame_isRegular (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder ↑D) :
+    (permissiveFrame D so nm).IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
 
 @[simp] theorem permissiveFrame_taskRel {D : TemporalOrder} (so : SuccOrder ↑D)
     (nm : NoMaxOrder ↑D) (w : Bool) (d : ↑D) (u : Bool) :

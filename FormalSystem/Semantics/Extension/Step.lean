@@ -124,7 +124,7 @@ The frame axioms are taken from the structure's own fields — `F.saturation` he
 theorem quantifies over a frame alone, with no axiom hypotheses. *Limit* reaches
 `lem:admissible` the same way, where it is needed for `lem:nullity` at `z` itself.
 -/
-theorem step (F : TaskFrame) (τ : PartialHistory F) (z : F.Duration) :
+theorem step (F : TaskFrame) [F.IsRegular] (τ : PartialHistory F) (z : F.Duration) :
     ∃ σ : PartialHistory F, Extends σ τ ∧ σ.domain z := by
   by_cases hz : τ.domain z
   · -- `z` is already a domain time: `τ` itself is the extension, no axiom needed.

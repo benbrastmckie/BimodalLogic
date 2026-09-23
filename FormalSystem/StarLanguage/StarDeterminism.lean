@@ -266,7 +266,7 @@ valuation is the **singleton** `|p| = {τ(y)}`. Then `τ` itself refutes the `�
 `thm:extension` and hence to Zorn's lemma. `#print axioms` reports `Classical.choice`, as it
 must; no choice-free pin is claimed.
 -/
-theorem deterministic_of_detPM
+theorem deterministic_of_detPM [F.IsRegular]
     (h : ∀ p : Atom, F.StarValidOn (detPM (StarFormula.atom p))) : F.Deterministic := by
   refine deterministic_of_singletonClasses ?_
   intro τ σ x hsame y
@@ -307,7 +307,7 @@ Recorded as a **report-level result pending paper integration** (the PossibleWor
 determinism-axiom-correspondence report, §4), never as manuscript text. **A theorem of ZFC**,
 through the (⇒) direction.
 -/
-theorem deterministic_starDefinable (F : TaskFrame) :
+theorem deterministic_starDefinable (F : TaskFrame) [F.IsRegular] :
     ((∀ p : Atom, F.StarValidOn (detPM (StarFormula.atom p))) ↔ F.Deterministic) ∧
       (F.Deterministic ↔ ∀ φ : StarFormula, F.StarValidOn (detPM φ)) :=
   ⟨⟨deterministic_of_detPM, fun hD p => detPM_of_deterministic hD (StarFormula.atom p)⟩,

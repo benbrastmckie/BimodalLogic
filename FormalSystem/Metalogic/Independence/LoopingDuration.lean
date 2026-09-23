@@ -53,7 +53,7 @@ def LoopingDuration (F : FrameOver D) (π : ↑D) : Prop :=
   π ≠ 0 ∧ ∀ w u, F.TaskRel w π u ↔ u = w
 
 /-- The negation of a looping duration is a looping duration, by the reflection convention. -/
-theorem LoopingDuration.neg {F : FrameOver D} {π : ↑D} (h : LoopingDuration F π) :
+theorem LoopingDuration.neg {F : FrameOver D} [F.IsRegular] {π : ↑D} (h : LoopingDuration F π) :
     LoopingDuration F (-π) := by
   refine ⟨neg_ne_zero.mpr h.1, fun w u => ?_⟩
   have hconv := F.reflection w (-π) u
@@ -61,7 +61,8 @@ theorem LoopingDuration.neg {F : FrameOver D} {π : ↑D} (h : LoopingDuration F
   exact hconv.trans ((h.2 u w).trans eq_comm)
 
 /-- A frame with a looping duration has a **positive** one. -/
-theorem LoopingDuration.exists_pos {F : FrameOver D} {π : ↑D} (h : LoopingDuration F π) :
+theorem LoopingDuration.exists_pos {F : FrameOver D} [F.IsRegular]
+    {π : ↑D} (h : LoopingDuration F π) :
     ∃ p : D, 0 < p ∧ LoopingDuration F p := by
   rcases lt_trichotomy π 0 with hlt | heq | hgt
   · exact ⟨-π, neg_pos.mpr hlt, h.neg⟩
@@ -148,7 +149,8 @@ if `ψ` holds at every past time then it holds at every future time.
 Given a future point `s`, the Archimedean property supplies a whole number of loops carrying `s`
 strictly below `t`. `ψ` holds there because `Hψ` does, and Lemma B carries it back up to `s`.
 -/
-theorem allPast_imp_allFuture {F : FrameOver D} [Archimedean ↑D] (M : TaskModel F) {π : ↑D}
+theorem allPast_imp_allFuture {F : FrameOver D} [F.IsRegular] [Archimedean ↑D] (M : TaskModel F)
+    {π : ↑D}
     (h : LoopingDuration F π) (ψ : Formula) (τ : WorldHistory F) (t : ↑D)
     (hH : TruthAt M τ t ψ.allPast) : TruthAt M τ t ψ.allFuture := by
   obtain ⟨p, hp, hlp⟩ := h.exists_pos
@@ -172,7 +174,8 @@ theorem allPast_imp_allFuture {F : FrameOver D} [Archimedean ↑D] (M : TaskMode
 The past mirror of Lemma C: `Gψ → Hψ`. Free from the same argument, and consumed by the
 `time_reflection` closure of the `CO` derivation system.
 -/
-theorem allFuture_imp_allPast {F : FrameOver D} [Archimedean ↑D] (M : TaskModel F) {π : ↑D}
+theorem allFuture_imp_allPast {F : FrameOver D} [F.IsRegular] [Archimedean ↑D] (M : TaskModel F)
+    {π : ↑D}
     (h : LoopingDuration F π) (ψ : Formula) (τ : WorldHistory F) (t : ↑D)
     (hG : TruthAt M τ t ψ.allFuture) : TruthAt M τ t ψ.allPast := by
   obtain ⟨p, hp, hlp⟩ := h.exists_pos
@@ -196,7 +199,7 @@ theorem allFuture_imp_allPast {F : FrameOver D} [Archimedean ↑D] (M : TaskMode
 `Formula.co ψ = △(Hψ → F(Hψ)) → (Hψ → Gψ)`, and the consequent is already valid here by
 Lemma C, so the antecedent is discarded.
 -/
-theorem co_true {F : FrameOver D} [Archimedean ↑D] (M : TaskModel F) {π : ↑D}
+theorem co_true {F : FrameOver D} [F.IsRegular] [Archimedean ↑D] (M : TaskModel F) {π : ↑D}
     (h : LoopingDuration F π) (ψ : Formula) (τ : WorldHistory F) (t : ↑D) :
     TruthAt M τ t (Formula.co ψ) :=
   fun _ hH => allPast_imp_allFuture M h ψ τ t hH

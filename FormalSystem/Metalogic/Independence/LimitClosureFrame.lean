@@ -273,10 +273,6 @@ that `WorldState` reduces to `EW` and `Duration` to `ℤ`. -/
 @[reducible] def eFrameOver : FrameOver (TemporalOrder.of ℤ) where
   WorldState := EW
   PosRel w x u := eRel w x u
-  comp := TaskFrame.compositional_reflect_of_reflective eRel_reflection eRel_comp
-  serial := TaskFrame.serial_reflect_of_reflective eRel_reflection eRel_serial
-  limit := TaskFrame.limit_reflect_of_reflective eRel_reflection eRel_limit
-  saturation := TaskFrame.saturation_reflect_of_reflective eRel_reflection eRel_saturation
 
 /-- **The limit-closure frame is regular**: the four `def:frame` constraints as a class instance
 on the general frame. -/

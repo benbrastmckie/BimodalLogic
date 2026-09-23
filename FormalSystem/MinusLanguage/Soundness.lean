@@ -458,8 +458,8 @@ private theorem minus_derivable_valid_and_reflect_time_valid_zTimeSucc {φ : Min
               (minus_soundness_valid (.time_reflection _ (.axiom [] _ h_ax hbase)))⟩
     · cases h_ax with
       | df ψ =>
-          exact ⟨fun F _ _ M τ t => df_valid_of_succOrder M τ t ψ,
-                 fun F _ _ M τ t => reflectTime_df_valid_of_predOrder M τ t ψ.reflectTime⟩
+          exact ⟨fun F _ _ _ M τ t => df_valid_of_succOrder M τ t ψ,
+                 fun F _ _ _ M τ t => reflectTime_df_valid_of_predOrder M τ t ψ.reflectTime⟩
       | dn _ => exact absurd h_fc (show ¬ (FrameClass.Dense ≤ FrameClass.ZTime) by decide)
       | co _ => exact absurd h_fc (show ¬ (FrameClass.RTime ≤ FrameClass.ZTime) by decide)
       | _ => exact absurd trivial hbase
@@ -467,16 +467,16 @@ private theorem minus_derivable_valid_and_reflect_time_valid_zTimeSucc {φ : Min
   | .modus_ponens _ ψ' _ d1 d2 =>
     obtain ⟨h1_valid, h1_swap⟩ := minus_derivable_valid_and_reflect_time_valid_zTimeSucc d1
     obtain ⟨h2_valid, h2_swap⟩ := minus_derivable_valid_and_reflect_time_valid_zTimeSucc d2
-    exact ⟨fun F _ _ M τ t => h1_valid F M τ t (h2_valid F M τ t),
-           fun F _ _ M τ t => h1_swap F M τ t (h2_swap F M τ t)⟩
+    exact ⟨fun F _ _ _ M τ t => h1_valid F M τ t (h2_valid F M τ t),
+           fun F _ _ _ M τ t => h1_swap F M τ t (h2_swap F M τ t)⟩
   | .necessitation _ d' =>
     obtain ⟨h_valid, h_swap⟩ := minus_derivable_valid_and_reflect_time_valid_zTimeSucc d'
-    exact ⟨fun F _ _ M _τ t σ => h_valid F M σ t,
-           fun F _ _ M _τ t σ => h_swap F M σ t⟩
+    exact ⟨fun F _ _ _ M _τ t σ => h_valid F M σ t,
+           fun F _ _ _ M _τ t σ => h_swap F M σ t⟩
   | .temporal_necessitation _ d' =>
     obtain ⟨h_valid, h_swap⟩ := minus_derivable_valid_and_reflect_time_valid_zTimeSucc d'
-    exact ⟨fun F _ _ M τ t s _hs => h_valid F M τ s,
-           fun F _ _ M τ t s _hs => h_swap F M τ s⟩
+    exact ⟨fun F _ _ _ M τ t s _hs => h_valid F M τ s,
+           fun F _ _ _ M τ t s _hs => h_swap F M τ s⟩
   | .time_reflection _ d' =>
     obtain ⟨h_valid, h_swap⟩ := minus_derivable_valid_and_reflect_time_valid_zTimeSucc d'
     exact ⟨h_swap, by rw [MinusFormula.reflectTime_involution]; exact h_valid⟩
@@ -502,7 +502,7 @@ exactly.
 -/
 theorem minus_soundness_ztime_succ (Γ : MinusLanguage.Context) (φ : MinusFormula)
     (d : MinusLanguage.DerivationTree FrameClass.ZTime Γ φ)
-    (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration] (M : TaskModel F)
+    (F : TaskFrame) [F.IsRegular] [SuccOrder F.Duration] [PredOrder F.Duration] (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration)
     (h_ctx : ∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) :
     MinusTruthAt M τ t φ := by
@@ -534,7 +534,7 @@ theorem minus_soundness_ztime_succ (Γ : MinusLanguage.Context) (φ : MinusFormu
 /-- Empty-context form of `minus_soundness_ztime_succ`. -/
 theorem minus_soundness_ztime_succ_valid {φ : MinusFormula}
     (d : MinusLanguage.DerivationTree FrameClass.ZTime [] φ) : MinusValidZTimeSucc φ :=
-  fun F so po M τ t => minus_soundness_ztime_succ [] φ d F M τ t (by simp)
+  fun F _ so po M τ t => minus_soundness_ztime_succ [] φ d F M τ t (by simp)
 
 /-! ## Consistency
 

@@ -116,6 +116,14 @@ theorem OpenValidIn.mono {fc₁ fc₂ : ProofSystem.FrameClass} {φ : OpenFormul
 
 /-- Introduce `OpenValid` from its explicit binder shape; the `Sat .Base` argument (`True`) is
 discharged here. -/
+theorem OpenValid.of_forall_regular {φ : OpenFormula}
+    (h : ∀ (F : TaskFrame) [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
+      OpenTruthAt M τ t φ) :
+    OpenValid φ :=
+  GenericValid.of_forall_regular (L := OpenFormula) (φ := φ) h
+
+/-- Introduce `OpenValid` from its explicit binder shape at **every** frame — the sufficient
+form. See `Valid.of_forall_regular` for the equivalent form. -/
 theorem OpenValid.of_forall {φ : OpenFormula}
     (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
       OpenTruthAt M τ t φ) :
@@ -123,7 +131,8 @@ theorem OpenValid.of_forall {φ : OpenFormula}
   GenericValid.of_forall (L := OpenFormula) (φ := φ) h
 
 /-- Eliminate `OpenValid` into its explicit binder shape. -/
-theorem OpenValid.apply {φ : OpenFormula} (h : OpenValid φ) (F : TaskFrame) (M : TaskModel F)
+theorem OpenValid.apply {φ : OpenFormula} (h : OpenValid φ) (F : TaskFrame) [F.IsRegular]
+    (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration) : OpenTruthAt M τ t φ :=
   GenericValid.apply (L := OpenFormula) (φ := φ) h F M τ t
 
@@ -136,21 +145,22 @@ theorem OpenValid.of_not {φ : OpenFormula} (h : ¬ OpenValid φ) :
 /-! ## Semantic conservativity of L^▷ over L⁺ -/
 
 /-- Conservativity at a single frame. -/
-theorem openValidOn_ofPlus_iff (F : TaskFrame) (φ : PlusFormula) :
+theorem openValidOn_ofPlus_iff (F : TaskFrame) [F.IsRegular] (φ : PlusFormula) :
     F.OpenValidOn (ofPlus φ) ↔ F.PlusValidOn φ :=
   ⟨fun h M τ t => (openTruthAt_ofPlus M τ t φ).mp (h M τ t),
     fun h M τ t => (openTruthAt_ofPlus M τ t φ).mpr (h M τ t)⟩
 
 /-- Conservativity at a bare frame predicate. -/
-theorem openValidOnFrames_ofPlus_iff (P : TaskFrame → Prop) (φ : PlusFormula) :
+theorem openValidOnFrames_ofPlus_iff (P : TaskFrame → Prop) (hP : ∀ F, P F → F.IsRegular)
+    (φ : PlusFormula) :
     OpenValidOnFrames P (ofPlus φ) ↔ PlusValidOnFrames P φ :=
-  ⟨fun h F hF => (openValidOn_ofPlus_iff F φ).mp (h F hF),
-    fun h F hF => (openValidOn_ofPlus_iff F φ).mpr (h F hF)⟩
+  ⟨fun h F hF => haveI := hP F hF; (openValidOn_ofPlus_iff F φ).mp (h F hF),
+    fun h F hF => haveI := hP F hF; (openValidOn_ofPlus_iff F φ).mpr (h F hF)⟩
 
 /-- **Semantic conservativity of L^▷ over L⁺, at every frame class.** -/
 theorem openValidIn_ofPlus_iff (fc : ProofSystem.FrameClass) (φ : PlusFormula) :
     OpenValidIn fc (ofPlus φ) ↔ PlusValidIn fc φ :=
-  openValidOnFrames_ofPlus_iff fc.Sat φ
+  openValidOnFrames_ofPlus_iff fc.Sat (fun _ h => h.isRegular) φ
 
 /-- Semantic conservativity at the unconstrained class: an L⁺ formula is L^▷-valid iff it is
 L⁺-valid. -/
@@ -162,54 +172,57 @@ theorem openValid_ofPlus_iff (φ : PlusFormula) : OpenValid (ofPlus φ) ↔ Plus
 /-- **K for `▷`**. -/
 theorem openValid_ofut_k (φ ψ : OpenFormula) :
     OpenValid (imp (ofut (imp φ ψ)) (imp (ofut φ) (ofut ψ))) :=
-  OpenValid.of_forall fun _ M τ t h hφ => ofut_k M τ t φ ψ h hφ
+  OpenValid.of_forall_regular fun _ _ M τ t h hφ => ofut_k M τ t φ ψ h hφ
 
 /-- **T for `▷`**: `▷φ → φ`. -/
 theorem openValid_ofut_t (φ : OpenFormula) : OpenValid (imp (ofut φ) φ) :=
-  OpenValid.of_forall fun _ M τ t h => of_ofut M τ t φ h
+  OpenValid.of_forall_regular fun _ _ M τ t h => of_ofut M τ t φ h
 
 /-- **4 for `▷`**: `▷φ → ▷▷φ`. -/
-theorem openValid_ofut_four (φ : OpenFormula) : OpenValid (imp (ofut φ) (ofut (ofut φ))) :=
-  OpenValid.of_forall fun _ M τ t h => ofut_four M τ t φ h
+theorem openValid_ofut_four
+    (φ : OpenFormula) : OpenValid (imp (ofut φ) (ofut (ofut φ))) :=
+  OpenValid.of_forall_regular fun _ _ M τ t h => ofut_four M τ t φ h
 
 /-- **5 for `▷`**: `▷̂φ → ▷▷̂φ`. -/
 theorem openValid_ofut_five (φ : OpenFormula) :
     OpenValid (imp (dofut φ) (ofut (dofut φ))) :=
-  OpenValid.of_forall fun _ M τ t h => ofut_five M τ t φ h
+  OpenValid.of_forall_regular fun _ _ M τ t h => ofut_five M τ t φ h
 
 /-! ## S5 for `◁` -/
 
 /-- **K for `◁`**. -/
 theorem openValid_opast_k (φ ψ : OpenFormula) :
     OpenValid (imp (opast (imp φ ψ)) (imp (opast φ) (opast ψ))) :=
-  OpenValid.of_forall fun _ M τ t h hφ => opast_k M τ t φ ψ h hφ
+  OpenValid.of_forall_regular fun _ _ M τ t h hφ => opast_k M τ t φ ψ h hφ
 
 /-- **T for `◁`**: `◁φ → φ`. -/
 theorem openValid_opast_t (φ : OpenFormula) : OpenValid (imp (opast φ) φ) :=
-  OpenValid.of_forall fun _ M τ t h => of_opast M τ t φ h
+  OpenValid.of_forall_regular fun _ _ M τ t h => of_opast M τ t φ h
 
 /-- **4 for `◁`**: `◁φ → ◁◁φ`. -/
 theorem openValid_opast_four (φ : OpenFormula) :
     OpenValid (imp (opast φ) (opast (opast φ))) :=
-  OpenValid.of_forall fun _ M τ t h => opast_four M τ t φ h
+  OpenValid.of_forall_regular fun _ _ M τ t h => opast_four M τ t φ h
 
 /-- **5 for `◁`**: `◁̂φ → ◁◁̂φ`. -/
 theorem openValid_opast_five (φ : OpenFormula) :
     OpenValid (imp (dopast φ) (opast (dopast φ))) :=
-  OpenValid.of_forall fun _ M τ t h => opast_five M τ t φ h
+  OpenValid.of_forall_regular fun _ _ M τ t h => opast_five M τ t φ h
 
 /-! ## The strength ordering `□ ⟹ ⊡ ⟹ ▷` and `⊡ ⟹ ◁` -/
 
 /-- **`□φ → ⊡φ`**. -/
 theorem openValid_stab_of_box (φ : OpenFormula) : OpenValid (imp (box φ) (stab φ)) :=
-  OpenValid.of_forall fun _ M τ t h => stab_of_box M τ t φ h
+  OpenValid.of_forall_regular fun _ _ M τ t h => stab_of_box M τ t φ h
 
 /-- **`⊡φ → ▷φ`**: stability is the stronger necessity. -/
-theorem openValid_ofut_of_stab (φ : OpenFormula) : OpenValid (imp (stab φ) (ofut φ)) :=
-  OpenValid.of_forall fun _ M τ t h => ofut_of_stab M τ t φ h
+theorem openValid_ofut_of_stab
+    (φ : OpenFormula) : OpenValid (imp (stab φ) (ofut φ)) :=
+  OpenValid.of_forall_regular fun _ _ M τ t h => ofut_of_stab M τ t φ h
 
 /-- **`⊡φ → ◁φ`**. -/
-theorem openValid_opast_of_stab (φ : OpenFormula) : OpenValid (imp (stab φ) (opast φ)) :=
-  OpenValid.of_forall fun _ M τ t h => opast_of_stab M τ t φ h
+theorem openValid_opast_of_stab
+    (φ : OpenFormula) : OpenValid (imp (stab φ) (opast φ)) :=
+  OpenValid.of_forall_regular fun _ _ M τ t h => opast_of_stab M τ t φ h
 
 end FormalSystem.OpenLanguage

@@ -326,8 +326,8 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.RTime �
     (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_dense : Formula.box Chronicle.nextTop.neg ∈ A) :
-    ∃ (F : FrameOver (TemporalOrder.of ℝ)) (_ : F.toTaskFrame.Deterministic) (TM : TaskModel F)
-      (τ : WorldHistory F) (t : ℝ),
+    ∃ (F : FrameOver (TemporalOrder.of ℝ)) (_ : F.IsRegular) (_ : F.toTaskFrame.Deterministic)
+      (TM : TaskModel F) (τ : WorldHistory F) (t : ℝ),
       ¬TruthAt TM τ t φ := by
   classical
   -- The finite monadic language and the depth Reynolds sets "one greater than the depth".
@@ -374,7 +374,7 @@ theorem countermodel_dedekind_dense {fc : FrameClass} (hfc : FrameClass.RTime �
       TruthAt TM (multiFamHistoryGen f w₀) t ψ ↔
         TemporalTruth ((Rf f).toOrdered sig) (mkAtomMapFwd φ) (realFlowPoint (hR f) (w₀ + t))
           ψ by
-    refine ⟨multiFamTaskFrameGen (TemporalOrder.of ℝ) FamIdx,
+    refine ⟨multiFamTaskFrameGen (TemporalOrder.of ℝ) FamIdx, inferInstance,
       Algebraic.multiFamTaskFrameGen_deterministic, TM, multiFamHistoryGen f₀ 0,
       s₀.val, ?_⟩
     intro h_truth_phi
@@ -603,8 +603,9 @@ theorem completeness_rtime_engine (ψ : Formula) :
   obtain ⟨M, hM_sup, hM_mcs⟩ := set_lindenbaum {Formula.neg ψ} h_cons
   have h_neg_in : Formula.neg ψ ∈ M := hM_sup (Set.mem_singleton _)
   have h_box_dense : Formula.box Chronicle.nextTop.neg ∈ M := dedekind_box_dense_mem hM_mcs
-  obtain ⟨F, _hdet, TM, τ, t, h_not_true⟩ :=
+  obtain ⟨F, hreg, _hdet, TM, τ, t, h_not_true⟩ :=
     countermodel_dedekind_dense (by decide) M hM_mcs ψ h_neg_in h_box_dense
+  haveI := hreg
   exact h_not_true
     (h_valid F.toTaskFrame ⟨inferInstance, inferInstance, real_lub_of_bddAbove⟩ TM τ t)
 

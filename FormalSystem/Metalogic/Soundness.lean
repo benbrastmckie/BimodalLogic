@@ -333,8 +333,9 @@ theorem serial_future_axiom_valid :
 
 /-- The paper's TS, `F(⊤)` (`Axiom.serial_future`), is valid: `serial_future_axiom_valid` at the
 trivially true antecedent. -/
-theorem serial_future_paper_valid : ⊨ (Formula.someFuture (Formula.bot.imp Formula.bot)) :=
-  Valid.of_forall fun F M τ t => (serial_future_axiom_valid.apply F M τ t) id
+theorem serial_future_paper_valid :
+    ⊨ (Formula.someFuture (Formula.bot.imp Formula.bot)) :=
+  Valid.of_forall_regular fun F _ M τ t => (serial_future_axiom_valid.apply F M τ t) id
 
 /-- Serial past axiom is valid on nontrivial orders: `⊤ → P(⊤)`.
 For any time t in a nontrivial ordered group, there exists s < t. -/
@@ -870,8 +871,8 @@ This is semantic: if φ holds at all (M, τ, t), then for any model at any time,
 □φ holds because we quantify over all world histories, and φ holds at all of them.
 -/
 theorem necessitation_preserves_valid {φ : Formula} (h : ⊨ φ) : ⊨ (Formula.box φ) := by
-  refine Valid.of_forall ?_
-  intro F M τ t
+  refine Valid.of_forall_regular ?_
+  intro F _ M τ t
   simp only [truth_norm]
   intro σ
   exact h.apply F M σ t
@@ -881,10 +882,10 @@ Temporal necessitation preserves validity: if φ is universally valid, then Gφ 
 
 This is semantic: if φ holds at all (M, τ, t), then at any time s ≥ t, φ holds at (τ, s).
 -/
-theorem temporal_necessitation_preserves_valid {φ : Formula} (h : ⊨ φ) : ⊨
-    (Formula.allFuture φ) := by
-  refine Valid.of_forall ?_
-  intro F M τ t
+theorem temporal_necessitation_preserves_valid {φ : Formula} (h : ⊨ φ) :
+    ⊨ (Formula.allFuture φ) := by
+  refine Valid.of_forall_regular ?_
+  intro F _ M τ t
   simp only [Truth.future_iff]
   intro s _hts
   exact h.apply F M τ s

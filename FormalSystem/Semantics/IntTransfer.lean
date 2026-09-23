@@ -125,7 +125,7 @@ under an ordered-group isomorphism the fiber and segment predicates (`TaskFrame.
 `TaskFrame.Seg`) pick out the *identical* subsets of `WorldState`, so `F.saturation` is handed
 back the **same** directed family. No directedness argument is reconstructed.
 -/
-def FrameOver.map (F : FrameOver D) (e : ↑D ≃+o ↑E) : FrameOver E :=
+def FrameOver.map (F : FrameOver D) [F.IsRegular] (e : ↑D ≃+o ↑E) : FrameOver E :=
   FrameOver.ofReflectiveRegular F.WorldState (fun w d u => F.TaskRel w (e.symm d) u)
     (by
       intro w d u
@@ -168,9 +168,16 @@ def FrameOver.map (F : FrameOver D) (e : ↑D ≃+o ↑E) : FrameOver E :=
         · simpa using (map_le_map_iff e.symm (a := 0) (b := y)).mpr hy
         · simp [TaskFrame.Seg, TaskFrame.Fib, map_neg])
 
+/-- **The transported frame is regular** when the source is, through the regular constructor's
+auto-instance. -/
+instance FrameOver.map_isRegular (F : FrameOver D) [F.IsRegular] (e : ↑D ≃+o ↑E) :
+    (F.map e).IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
+
 /-- The transported frame's task relation is the original one, reindexed by `e.symm`. -/
 @[simp]
-theorem FrameOver.map_taskRel (F : FrameOver D) (e : ↑D ≃+o ↑E) (w : F.WorldState) (d : ↑E)
+theorem FrameOver.map_taskRel (F : FrameOver D) [F.IsRegular]
+    (e : ↑D ≃+o ↑E) (w : F.WorldState) (d : ↑E)
     (u : F.WorldState) : (FrameOver.map F e).TaskRel w d u ↔ F.TaskRel w (e.symm d) u :=
   FrameOver.ofReflectiveRegular_taskRel
 
@@ -178,14 +185,15 @@ theorem FrameOver.map_taskRel (F : FrameOver D) (e : ↑D ≃+o ↑E) (w : F.Wor
 Transport a task model along `e`. The valuation is carried over verbatim: `FrameOver.map` leaves
 `WorldState` unchanged, so `M.valuation` already has the right type.
 -/
-def TaskModel.map {F : FrameOver D} (M : TaskModel F.toTaskFrame) (e : ↑D ≃+o ↑E) :
+def TaskModel.map {F : FrameOver D} [F.IsRegular] (M : TaskModel F.toTaskFrame) (e : ↑D ≃+o ↑E) :
     TaskModel (FrameOver.map F e).toTaskFrame where
   valuation := M.valuation
 
 /--
 Push a history forward along `e`: the domain and states are reindexed by `e.symm`.
 -/
-def PartialHistory.map {F : FrameOver D} (τ : PartialHistory F.toTaskFrame) (e : ↑D ≃+o ↑E) :
+def PartialHistory.map {F : FrameOver D} [F.IsRegular]
+    (τ : PartialHistory F.toTaskFrame) (e : ↑D ≃+o ↑E) :
     PartialHistory (FrameOver.map F e).toTaskFrame where
   domain := fun n => τ.domain (e.symm n)
   nonempty_domain := by
@@ -200,7 +208,8 @@ def PartialHistory.map {F : FrameOver D} (τ : PartialHistory F.toTaskFrame) (e 
     simpa [map_sub] using this
 
 /-- Push a world history forward along `e`. Totality is read off at `e.symm n`. -/
-def WorldHistory.map {F : FrameOver D} (τ : WorldHistory F.toTaskFrame) (e : ↑D ≃+o ↑E) :
+def WorldHistory.map {F : FrameOver D} [F.IsRegular]
+    (τ : WorldHistory F.toTaskFrame) (e : ↑D ≃+o ↑E) :
     WorldHistory (FrameOver.map F e).toTaskFrame :=
   ⟨PartialHistory.map τ.val e, fun n => τ.property (e.symm n)⟩
 
@@ -211,7 +220,7 @@ This is the direction `truthAt_map`'s `box` case needs: `□` quantifies over hi
 *ambient* frame, so the forward direction is handed a
 `PartialHistory (FrameOver.map F e).toTaskFrame` and must produce a `PartialHistory F`.
 -/
-def PartialHistory.comap {F : FrameOver D} (e : ↑D ≃+o ↑E)
+def PartialHistory.comap {F : FrameOver D} [F.IsRegular] (e : ↑D ≃+o ↑E)
     (σ' : PartialHistory (FrameOver.map F e).toTaskFrame) : PartialHistory F.toTaskFrame where
   domain := fun t => σ'.domain (e t)
   nonempty_domain := by
@@ -230,7 +239,7 @@ def PartialHistory.comap {F : FrameOver D} (e : ↑D ≃+o ↑E)
     exact h3
 
 /-- Pull a world history back along `e`. Totality is read off at `e t`. -/
-def WorldHistory.comap {F : FrameOver D} (e : ↑D ≃+o ↑E)
+def WorldHistory.comap {F : FrameOver D} [F.IsRegular] (e : ↑D ≃+o ↑E)
     (σ' : WorldHistory (FrameOver.map F e).toTaskFrame) : WorldHistory F.toTaskFrame :=
   ⟨PartialHistory.comap e σ'.val, fun t => σ'.property (e t)⟩
 
@@ -240,12 +249,13 @@ Two world histories over corresponding frames agree pointwise under `e`.
 Because `(FrameOver.map F e).WorldState` is **definitionally** `F.WorldState`, this is an
 ordinary non-dependent equation between two `F.WorldState` terms.
 -/
-def Aligned {F : FrameOver D} (e : ↑D ≃+o ↑E)
+def Aligned {F : FrameOver D} [F.IsRegular] (e : ↑D ≃+o ↑E)
     (σ : WorldHistory F.toTaskFrame) (σ' : WorldHistory (FrameOver.map F e).toTaskFrame) : Prop :=
   ∀ n : ↑E, σ'.state n = σ.state (e.symm n)
 
 /-- A world history is aligned with its own forward transport, definitionally. -/
-theorem aligned_map {F : FrameOver D} (e : ↑D ≃+o ↑E) (τ : WorldHistory F.toTaskFrame) :
+theorem aligned_map {F : FrameOver D} [F.IsRegular]
+    (e : ↑D ≃+o ↑E) (τ : WorldHistory F.toTaskFrame) :
     Aligned e τ (τ.map e) :=
   fun _ => rfl
 
@@ -255,7 +265,7 @@ A pulled-back world history is aligned with the one it came from.
 Unlike `aligned_map` this is not definitional: the state equation sits at `e (e.symm n)` rather
 than `n`, and is transported along `e.apply_symm_apply`.
 -/
-theorem aligned_comap {F : FrameOver D} (e : ↑D ≃+o ↑E)
+theorem aligned_comap {F : FrameOver D} [F.IsRegular] (e : ↑D ≃+o ↑E)
     (σ' : WorldHistory (FrameOver.map F e).toTaskFrame) :
     Aligned e (WorldHistory.comap e σ') σ' :=
   fun n => (congrArg σ'.state (e.apply_symm_apply n)).symm
@@ -268,7 +278,7 @@ and `WorldHistory.comap` (backward).
 The `atom` field is the state agreement of `Aligned` at one time, with `e.symm_apply_apply`
 bridging `e.symm (e t)` and `t`.
 -/
-def alignedCorr {F : FrameOver D} (e : ↑D ≃+o ↑E) (M : TaskModel F.toTaskFrame) :
+def alignedCorr {F : FrameOver D} [F.IsRegular] (e : ↑D ≃+o ↑E) (M : TaskModel F.toTaskFrame) :
     TruthCorr M (TaskModel.map M e) where
   dur := e.toOrderIso
   Rel := Aligned e
@@ -287,7 +297,8 @@ This is `Truth.truthAt_of_truthCorr` at the instance `alignedCorr e M`; the six-
 lives there, generalised over both histories and the time exactly as this theorem's statement is.
 Statement unchanged (arbitrary aligned pair), so `validZTime_iff_validInt` is untouched.
 -/
-theorem truthAt_map {F : FrameOver D} (e : ↑D ≃+o ↑E) (M : TaskModel F.toTaskFrame) (φ : Formula) :
+theorem truthAt_map {F : FrameOver D} [F.IsRegular]
+    (e : ↑D ≃+o ↑E) (M : TaskModel F.toTaskFrame) (φ : Formula) :
     ∀ (σ : WorldHistory F.toTaskFrame) (σ' : WorldHistory (FrameOver.map F e).toTaskFrame),
       Aligned e σ σ' →
       ∀ t : ↑D, (TruthAt M σ t φ ↔ TruthAt (TaskModel.map M e) σ' (e t) φ) :=
@@ -302,8 +313,8 @@ eight instance binders of `ValidZTime` vanish here: `ℤ` supplies every one of 
 Mathlib with no instance work.
 -/
 def ValidInt (φ : Formula) : Prop :=
-  ∀ (F : FrameOver intOrder) (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame) (t : ℤ),
-    TruthAt M τ t φ
+  ∀ (F : FrameOver intOrder) [F.IsRegular] (M : TaskModel F.toTaskFrame)
+    (τ : WorldHistory F.toTaskFrame) (t : ℤ), TruthAt M τ t φ
 
 /--
 **Carrier normalization.** Quantifying over every discrete duration carrier is the same as
@@ -323,7 +334,7 @@ successor half.
 -/
 theorem validZTime_iff_validInt (φ : Formula) : ValidZTime φ ↔ ValidInt φ := by
   constructor
-  · intro h F M τ t
+  · intro h F _ M τ t
     exact h F.toTaskFrame ⟨inferInstance, TaskFrame.isZTime_of_instances _⟩ M τ t
   · intro h F hF M τ t
     sat_intro hF

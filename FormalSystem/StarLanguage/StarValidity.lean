@@ -140,6 +140,14 @@ over `WorldHistory F` directly, so `intro` and application open them. -/
 
 /-- Introduce `StarValid` from its explicit binder shape; the `Sat .Base` argument (`True`) is
 discharged here. -/
+theorem StarValid.of_forall_regular {φ : StarFormula}
+    (h : ∀ (F : TaskFrame) [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration)
+      (v : ℕ → F.Duration), StarTruthAt M τ x v φ) :
+    StarValid φ :=
+  GenericValid.of_forall_regular (L := StarFormula) (φ := φ) h
+
+/-- Introduce `StarValid` from its explicit binder shape at **every** frame — the sufficient
+form. -/
 theorem StarValid.of_forall {φ : StarFormula}
     (h : ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (x : F.Duration)
       (v : ℕ → F.Duration), StarTruthAt M τ x v φ) :
@@ -147,7 +155,8 @@ theorem StarValid.of_forall {φ : StarFormula}
   GenericValid.of_forall (L := StarFormula) (φ := φ) h
 
 /-- Eliminate `StarValid` into its explicit binder shape. -/
-theorem StarValid.apply {φ : StarFormula} (h : StarValid φ) (F : TaskFrame) (M : TaskModel F)
+theorem StarValid.apply {φ : StarFormula} (h : StarValid φ) (F : TaskFrame) [F.IsRegular]
+    (M : TaskModel F)
     (τ : WorldHistory F) (x : F.Duration) (v : ℕ → F.Duration) :
     StarTruthAt M τ x v φ :=
   GenericValid.apply (L := StarFormula) (φ := φ) h F M τ x v

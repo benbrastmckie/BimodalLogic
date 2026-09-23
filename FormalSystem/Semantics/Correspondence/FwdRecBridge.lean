@@ -90,14 +90,14 @@ private theorem int_covers (n : ℤ) : n - 1 < n ∧ ∀ r : ℤ, n - 1 < r → 
   ⟨by omega, fun _ h1 h2 => by omega⟩
 
 /-- **`FwdRec` over `ℤ` is exactly the digraph hypothesis `AllRec`.** -/
-theorem allRec_of_fwdRec (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec) :
+theorem allRec_of_fwdRec (F : FrameOver intOrder) [F.IsRegular] (hF : F.toTaskFrame.FwdRec) :
     Walk.AllRec F.step := by
   intro σ hσ n
   exact hF (FrameOver.worldHistoryOfStepPath F σ hσ) (n - 1) n (int_covers n).1 (int_covers n).2
     (fun w => ∃ m : ℤ, n < m ∧ σ m = w) (fun r hr => ⟨r, hr, rfl⟩)
 
 /-- **Over `ℤ`, `FwdRec F` forces every total history to be periodic.** -/
-theorem hist_periodic (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec)
+theorem hist_periodic (F : FrameOver intOrder) [F.IsRegular] (hF : F.toTaskFrame.FwdRec)
     (τ : WorldHistory F.toTaskFrame) :
     ∃ π : ℤ, 0 < π ∧ ∀ n : ℤ, τ.state (n + π) = τ.state n :=
   Walk.periodic (allRec_of_fwdRec F hF) (WorldHistory.isStepPath τ)
@@ -106,7 +106,7 @@ theorem hist_periodic (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec)
 **The structural shape of a `FwdRec` frame over `ℤ`**: the one-step relation is *deterministic*
 along histories — two world histories that agree at one time agree one step later.
 -/
-theorem hist_deterministic (F : FrameOver intOrder) (hF : F.toTaskFrame.FwdRec)
+theorem hist_deterministic (F : FrameOver intOrder) [F.IsRegular] (hF : F.toTaskFrame.FwdRec)
     (τ ρ : WorldHistory F.toTaskFrame) (t : ℤ) (h : τ.state t = ρ.state t) :
     τ.state (t + 1) = ρ.state (t + 1) :=
   Walk.succ_unique' (allRec_of_fwdRec F hF) (WorldHistory.isStepPath τ)
@@ -120,7 +120,7 @@ exactly when `F.FwdRec`. Contrast
 `Semantics.validOn_atomic_density_iff_fwdRec`, which is the *atomic* statement and holds at an
 arbitrary duration group; the two are stated separately and deliberately not merged.
 -/
-theorem density_schema_iff_fwdRec (F : FrameOver intOrder) :
+theorem density_schema_iff_fwdRec (F : FrameOver intOrder) [F.IsRegular] :
     (∀ φ : Formula,
         F.toTaskFrame.ValidOn (φ.allFuture.allFuture.imp φ.allFuture)) ↔ F.toTaskFrame.FwdRec := by
   constructor
@@ -140,15 +140,18 @@ restriction is not removable and what remains open without it.
 -/
 theorem mod_densitySchema_int :
     {F : FrameOver intOrder | F.toTaskFrame ∈ Mod densitySchema}
-      = {F : FrameOver intOrder | F.toTaskFrame.FwdRec} := by
+      = {F : FrameOver intOrder | F.IsRegular ∧ F.toTaskFrame.FwdRec} := by
   ext F
   simp only [Set.mem_setOf_eq]
-  rw [← density_schema_iff_fwdRec F]
   constructor
-  · intro h φ
-    exact (h ⟨φ, rfl⟩).2
-  · rintro h φ ⟨ψ, rfl⟩
-    exact ⟨inferInstance, h ψ⟩
+  · intro h
+    have hreg : F.IsRegular := (h ⟨Formula.bot, rfl⟩).1
+    haveI := hreg
+    exact ⟨hreg, (density_schema_iff_fwdRec F).mp fun φ => (h ⟨φ, rfl⟩).2⟩
+  · rintro ⟨hreg, h⟩
+    haveI := hreg
+    rintro φ ⟨ψ, rfl⟩
+    exact ⟨hreg, (density_schema_iff_fwdRec F).mpr h ψ⟩
 
 end Bridge
 

@@ -75,12 +75,12 @@ variable {F : TaskFrame}
 /-! ## Pasting two world histories at a shared state -/
 
 /-- `ρ`'s states up to and including `t`, `σ`'s states after `t`. -/
-def pasteFun (ρ σ : WorldHistory F) (t : F.Duration) : F.Duration → F.WorldState :=
+def pasteFun [F.IsRegular] (ρ σ : WorldHistory F) (t : F.Duration) : F.Duration → F.WorldState :=
   fun s => if s ≤ t then ρ.state s else σ.state s
 
 /-- The task relation across the seam: from a `ρ`-state at `s ≤ t` to a `σ`-state at `s' > t`,
 by *Compositionality* through the shared state at `t`. -/
-theorem paste_rel_le_lt (ρ σ : WorldHistory F) (t : F.Duration)
+theorem paste_rel_le_lt [F.IsRegular] (ρ σ : WorldHistory F) (t : F.Duration)
     (hsame : ρ.state t = σ.state t) {s s' : F.Duration} (hs : s ≤ t) (hs' : ¬ s' ≤ t) :
     F.TaskRel (ρ.state s) (s' - s) (σ.state s') := by
   have h1 : F.TaskRel (ρ.state s) (t - s) (ρ.state t) := ρ.respects_task s t
@@ -94,7 +94,8 @@ theorem paste_rel_le_lt (ρ σ : WorldHistory F) (t : F.Duration)
 
 /-- The pasted state function respects the task relation: composition across `t`
 (`TaskFrame.comp`), the reflection convention for the reverse orientation. -/
-theorem paste_rel (ρ σ : WorldHistory F) (t : F.Duration) (hsame : ρ.state t = σ.state t) :
+theorem paste_rel [F.IsRegular]
+    (ρ σ : WorldHistory F) (t : F.Duration) (hsame : ρ.state t = σ.state t) :
     ∀ s s' : F.Duration, F.TaskRel (pasteFun ρ σ t s) (s' - s) (pasteFun ρ σ t s') := by
   intro s s'
   unfold pasteFun
@@ -105,7 +106,7 @@ theorem paste_rel (ρ σ : WorldHistory F) (t : F.Duration) (hsame : ρ.state t 
   · rw [if_neg hs, if_neg hs']; exact σ.respects_task s s'
 
 /-- **Pasting.** If `ρ(t) = σ(t)` then `ρ|(-∞,t] ⌢ σ|(t,∞)` is a world history. -/
-def paste (ρ σ : WorldHistory F) (t : F.Duration) (hsame : ρ.state t = σ.state t) :
+def paste [F.IsRegular] (ρ σ : WorldHistory F) (t : F.Duration) (hsame : ρ.state t = σ.state t) :
     WorldHistory F :=
   WorldHistory.ofTotal F (pasteFun ρ σ t) (paste_rel ρ σ t hsame)
 
@@ -128,7 +129,7 @@ theorem agreeUpTo_mono {τ σ : WorldHistory F} {t s : F.Duration} (hst : s ≤ 
   fun r hrs => h r (le_trans hrs hst)
 
 /-- The pasted history agrees with `σ` from `t` onward (at `t` itself by the shared state). -/
-theorem paste_agreeFrom (ρ σ : WorldHistory F) (t : F.Duration)
+theorem paste_agreeFrom [F.IsRegular] (ρ σ : WorldHistory F) (t : F.Duration)
     (hsame : ρ.state t = σ.state t) : AgreeFrom (paste ρ σ t hsame) σ t := by
   intro s hts
   change pasteFun ρ σ t s = σ.state s
@@ -140,7 +141,7 @@ theorem paste_agreeFrom (ρ σ : WorldHistory F) (t : F.Duration)
   · rw [if_neg h]
 
 /-- The pasted history agrees with `ρ` up to `t`. -/
-theorem paste_agreeUpTo (ρ σ : WorldHistory F) (t : F.Duration)
+theorem paste_agreeUpTo [F.IsRegular] (ρ σ : WorldHistory F) (t : F.Duration)
     (hsame : ρ.state t = σ.state t) : AgreeUpTo (paste ρ σ t hsame) ρ t := by
   intro s hst
   change pasteFun ρ σ t s = ρ.state s
@@ -203,7 +204,7 @@ theorem truth_congr_agreeUpTo (M : TaskModel F) {φ : PlusFormula} (hφ : IsPure
 
 /-- **PS (same-time pasting)**: `⟐φ⁺ ∧ ⟐ψ⁻ → ⟐(φ⁺ ∧ ψ⁻)` for pure-future `φ⁺` and pure-past
 `ψ⁻`: the `ψ⁻`-witness up to `t` pasted with the `φ⁺`-witness after `t` satisfies both. -/
-theorem paste_valid (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+theorem paste_valid [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     {φ ψ : PlusFormula} (hφ : IsPureFuture φ) (hψ : IsPurePast ψ) :
     PlusTruthAt M τ t (.imp (dstab φ) (.imp (dstab ψ) (dstab (φ.and ψ)))) := by
   intro h1 h2
@@ -219,7 +220,7 @@ theorem paste_valid (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
 /-- **PS with the conjuncts exchanged**: `⟐ψ⁻ ∧ ⟐φ⁺ → ⟐(ψ⁻ ∧ φ⁺)` for pure-past `ψ⁻` and
 pure-future `φ⁺`. This is exactly the temporal dual of `paste_valid` (the `paste` axiom's
 `reflectTime` instance), proved by the same pasting argument. -/
-theorem paste_valid' (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
+theorem paste_valid' [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
     {ψ φ : PlusFormula} (hψ : IsPurePast ψ) (hφ : IsPureFuture φ) :
     PlusTruthAt M τ t (.imp (dstab ψ) (.imp (dstab φ) (dstab (ψ.and φ)))) := by
   intro h2 h1
@@ -234,7 +235,7 @@ theorem paste_valid' (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
 
 /-- **FS**: `F⟐φ⁺ → ⟐Fφ⁺` for pure-future `φ⁺`: paste `τ` up to the witnessing future time with
 the `φ⁺`-witness after it. -/
-theorem future_dstab_valid (M : TaskModel F) (τ : WorldHistory F)
+theorem future_dstab_valid [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) {φ : PlusFormula} (hφ : IsPureFuture φ) :
     PlusTruthAt M τ t (.imp (someFuture (dstab φ)) (dstab (someFuture φ))) := by
   intro h
@@ -249,7 +250,7 @@ theorem future_dstab_valid (M : TaskModel F) (τ : WorldHistory F)
 
 /-- **GS**: `⊡Gφ⁺ → G⊡φ⁺` for pure-future `φ⁺` — the contrapositive reading of FS. Needs the
 purity restriction: `⊡GPp → G⊡Pp` is refuted (`PlusLanguage/PlusNonValidities.lean`). -/
-theorem stab_allFuture_valid (M : TaskModel F) (τ : WorldHistory F)
+theorem stab_allFuture_valid [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) {φ : PlusFormula} (hφ : IsPureFuture φ) :
     PlusTruthAt M τ t (.imp (.stab (allFuture φ)) (allFuture (.stab φ))) := by
   intro h
@@ -262,7 +263,7 @@ theorem stab_allFuture_valid (M : TaskModel F) (τ : WorldHistory F)
 /-- **US (future pasting)**: `(α⁻ U ⟐φ⁺) → ⟐(α⁻ U φ⁺)` for pure-past `α⁻` and pure-future
 `φ⁺`. FS is the instance `α⁻ := ⊤`. The pasted history keeps `τ`'s past, so the pure-past guard
 on `(t, y)` is untouched, and the `φ⁺`-witness after `y` supplies the event. -/
-theorem untl_dstab_valid (M : TaskModel F) (τ : WorldHistory F)
+theorem untl_dstab_valid [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) {α φ : PlusFormula} (hα : IsPurePast α) (hφ : IsPureFuture φ) :
     PlusTruthAt M τ t (.imp (.untl α (dstab φ)) (dstab (.untl α φ))) := by
   intro h
@@ -283,7 +284,7 @@ the `snce` mirror of US, and the temporal dual of the `untl_paste` axiom. The wi
 past time `y < t` is pasted up to `y` with `τ` after `y`: the pasted history keeps `τ`'s future
 (so it shares `τ`'s state at `t` and the pure-future guard on `(y, t)` sees `τ`), and its past
 up to `y` is `ρ`'s, where the pure-past event holds. -/
-theorem snce_dstab_valid (M : TaskModel F) (τ : WorldHistory F)
+theorem snce_dstab_valid [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) {α φ : PlusFormula} (hα : IsPureFuture α) (hφ : IsPurePast φ) :
     PlusTruthAt M τ t (.imp (.snce α (dstab φ)) (dstab (.snce α φ))) := by
   intro h
@@ -307,33 +308,37 @@ class-free (valid over every task frame), so `PlusValid` — validity at `.Base`
 strongest statement and lifts to any class by `PlusValidIn.mono`. -/
 
 /-- PS as a `PlusValid`. -/
-theorem paste_plusValid {φ ψ : PlusFormula} (hφ : IsPureFuture φ) (hψ : IsPurePast ψ) :
+theorem paste_plusValid
+    {φ ψ : PlusFormula} (hφ : IsPureFuture φ) (hψ : IsPurePast ψ) :
     PlusValid (.imp (dstab φ) (.imp (dstab ψ) (dstab (φ.and ψ)))) :=
-  PlusValid.of_forall fun _ M τ t => paste_valid M τ t hφ hψ
+  PlusValid.of_forall_regular fun _ _ M τ t => paste_valid M τ t hφ hψ
 
 /-- PS with the conjuncts exchanged, as a `PlusValid`. -/
-theorem paste'_plusValid {ψ φ : PlusFormula} (hψ : IsPurePast ψ) (hφ : IsPureFuture φ) :
+theorem paste'_plusValid
+    {ψ φ : PlusFormula} (hψ : IsPurePast ψ) (hφ : IsPureFuture φ) :
     PlusValid (.imp (dstab ψ) (.imp (dstab φ) (dstab (ψ.and φ)))) :=
-  PlusValid.of_forall fun _ M τ t => paste_valid' M τ t hψ hφ
+  PlusValid.of_forall_regular fun _ _ M τ t => paste_valid' M τ t hψ hφ
 
 /-- US as a `PlusValid`. -/
-theorem untl_paste_starValid {α φ : PlusFormula} (hα : IsPurePast α) (hφ : IsPureFuture φ) :
+theorem untl_paste_starValid
+    {α φ : PlusFormula} (hα : IsPurePast α) (hφ : IsPureFuture φ) :
     PlusValid (.imp (.untl α (dstab φ)) (dstab (.untl α φ))) :=
-  PlusValid.of_forall fun _ M τ t => untl_dstab_valid M τ t hα hφ
+  PlusValid.of_forall_regular fun _ _ M τ t => untl_dstab_valid M τ t hα hφ
 
 /-- SS as a `PlusValid`. -/
-theorem snce_paste_plusValid {α φ : PlusFormula} (hα : IsPureFuture α) (hφ : IsPurePast φ) :
+theorem snce_paste_plusValid
+    {α φ : PlusFormula} (hα : IsPureFuture α) (hφ : IsPurePast φ) :
     PlusValid (.imp (.snce α (dstab φ)) (dstab (.snce α φ))) :=
-  PlusValid.of_forall fun _ M τ t => snce_dstab_valid M τ t hα hφ
+  PlusValid.of_forall_regular fun _ _ M τ t => snce_dstab_valid M τ t hα hφ
 
 /-- FS as a `PlusValid`. -/
 theorem future_dstab_plusValid {φ : PlusFormula} (hφ : IsPureFuture φ) :
     PlusValid (.imp (someFuture (dstab φ)) (dstab (someFuture φ))) :=
-  PlusValid.of_forall fun _ M τ t => future_dstab_valid M τ t hφ
+  PlusValid.of_forall_regular fun _ _ M τ t => future_dstab_valid M τ t hφ
 
 /-- GS as a `PlusValid`. -/
 theorem stab_allFuture_plusValid {φ : PlusFormula} (hφ : IsPureFuture φ) :
     PlusValid (.imp (.stab (allFuture φ)) (allFuture (.stab φ))) :=
-  PlusValid.of_forall fun _ M τ t => stab_allFuture_valid M τ t hφ
+  PlusValid.of_forall_regular fun _ _ M τ t => stab_allFuture_valid M τ t hφ
 
 end FormalSystem.PlusLanguage

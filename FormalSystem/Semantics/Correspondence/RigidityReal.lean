@@ -91,7 +91,7 @@ variable (F : FrameOver realOrder)
 `|y| < r` from `b` to `a`. `def:world-history`'s `respects_task` then keeps every time within
 `r` of a `b`-time out of the `a`-level set.
 -/
-theorem levels_closed (τ : WorldHistory F.toTaskFrame) (a : F.WorldState) :
+theorem levels_closed [F.IsRegular] (τ : WorldHistory F.toTaskFrame) (a : F.WorldState) :
     IsClosed {t : ℝ | τ.state t = a} := by
   rw [← isOpen_compl_iff, Metric.isOpen_iff]
   intro t ht
@@ -117,7 +117,7 @@ construction is the one already used by `Semantics/DeterministicBridge.lean`'s
 `deterministic_of_singletonClasses`. This is the sole consumer of *Saturation* in this module,
 and hence the sole source of `Classical.choice`.
 -/
-theorem exists_history_of_taskRel (w u : F.WorldState) (x : ℝ) (hx : x ≠ 0)
+theorem exists_history_of_taskRel [F.IsRegular] (w u : F.WorldState) (x : ℝ) (hx : x ≠ 0)
     (hR : F.TaskRel w x u) :
     ∃ σ : WorldHistory F.toTaskFrame, σ.state 0 = w ∧ σ.state x = u := by
   have hne0 : ¬ ((0 : ℝ) = x) := fun h0 => hx h0.symm
@@ -141,7 +141,7 @@ theorem exists_history_of_taskRel (w u : F.WorldState) (x : ℝ) (hx : x ≠ 0)
 /-- **Every world history over `ℝ` whose range is countable is constant.** The sharp form of
 the rigidity below: it is the range, not the carrier, that has to be countable. *Limit* makes
 the level sets closed, and Sierpiński collapses them. -/
-theorem constant_of_countable_range (τ : WorldHistory F.toTaskFrame)
+theorem constant_of_countable_range [F.IsRegular] (τ : WorldHistory F.toTaskFrame)
     (hcount : (Set.range τ.state).Countable) : ∀ s t : ℝ, τ.state s = τ.state t :=
   Sierpinski.const_of_countable_range τ.state hcount (levels_closed F τ)
 
@@ -163,7 +163,7 @@ does not suffice.
 
 Paper: — (the manuscript states no rigidity theorem; stated at the hypothesis the proof uses)
 -/
-theorem static_of_countable [Countable F.WorldState] : Static F.TaskRel := by
+theorem static_of_countable [F.IsRegular] [Countable F.WorldState] : Static F.TaskRel := by
   have fwd : ∀ w x u, F.TaskRel w x u → w = u := by
     intro w x u hR
     by_cases hx : x = 0
@@ -188,7 +188,8 @@ theorem static_of_countable [Countable F.WorldState] : Static F.TaskRel := by
 /-- **A non-constant history over `ℝ` has uncountable range.** The contrapositive of
 `constant_of_countable_range`, recorded separately because it is the form the cardinality
 census uses. -/
-theorem range_uncountable_of_nonconstant (τ : WorldHistory F.toTaskFrame) {s t : ℝ}
+theorem range_uncountable_of_nonconstant [F.IsRegular] (τ : WorldHistory F.toTaskFrame)
+    {s t : ℝ}
     (h : τ.state s ≠ τ.state t) : ¬ (Set.range τ.state).Countable :=
   fun hc => h (constant_of_countable_range F τ hc s t)
 
@@ -201,7 +202,7 @@ of `ℝ` onto `[t-r, t+r]`. Its level sets are still closed and its range is the
 so if that image were countable the Sierpiński collapse would make the history constant on the
 window — that is, locally constant at `t`.
 -/
-theorem uncountable_image_of_not_localConst (τ : WorldHistory F.toTaskFrame) {t : ℝ}
+theorem uncountable_image_of_not_localConst [F.IsRegular] (τ : WorldHistory F.toTaskFrame) {t : ℝ}
     (ht : t ∉ Sierpinski.locallyConstantLocus τ.state) {r : ℝ} (hr : 0 < r) :
     ¬ (τ.state '' Set.Icc (t - r) (t + r)).Countable := by
   intro hcount
@@ -242,7 +243,7 @@ interval can still satisfy the composition half of `def:frame#Compositionality`,
 this module settles it. See this task's research report for the full statement of the
 obstruction; `static_of_countable` does not depend on it.
 -/
-theorem exists_local_clock (τ : WorldHistory F.toTaskFrame) {s₀ t₀ : ℝ}
+theorem exists_local_clock [F.IsRegular] (τ : WorldHistory F.toTaskFrame) {s₀ t₀ : ℝ}
     (hne : τ.state s₀ ≠ τ.state t₀) :
     ∃ t : ℝ, ∀ r : ℝ, 0 < r → ¬ (τ.state '' Set.Icc (t - r) (t + r)).Countable := by
   have hB : ((Sierpinski.locallyConstantLocus τ.state)ᶜ : Set ℝ).Nonempty := by
@@ -319,6 +320,10 @@ noncomputable def paddedClock (D : TemporalOrder) : FrameOver D :=
     (TaskFrame.saturation_of_fib_subsingleton (by
       rintro w x u ⟨h1, h2⟩ u' ⟨h3, h4⟩
       exact Prod.ext (h1.trans h3.symm) (h2.trans h4.symm)))
+
+/-- **The padded clock is regular**, through the regular constructor's auto-instance. -/
+noncomputable instance paddedClock_isRegular (D : TemporalOrder) : (paddedClock D).IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
 
 /-- The task relation of `paddedClock`, read off `FrameOver.ofReflectiveRegular_taskRel` rather
 than by unfolding the frame. -/

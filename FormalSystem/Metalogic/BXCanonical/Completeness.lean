@@ -142,13 +142,13 @@ theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := fc) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_dense : Formula.box Chronicle.nextTop.neg ∈ A) :
-    ∃ (F : FrameOver (TemporalOrder.of Rat)) (_ : F.toTaskFrame.Deterministic)
+    ∃ (F : FrameOver (TemporalOrder.of Rat)) (_ : F.IsRegular) (_ : F.toTaskFrame.Deterministic)
       (TM : TaskModel F) (τ : WorldHistory F) (t : Rat),
       ¬TruthAt TM τ t φ := by
   let bfmcs := Chronicle.cantorBfmcsDense fc A h_mcs h_box_dense
   let fam₀ := Chronicle.rootedCantorFmcsDense fc A h_mcs h_box_dense 0
   have hfam₀ : fam₀ ∈ bfmcs.families := ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩
-  refine ⟨bundleFlowFrame bfmcs, Algebraic.bundleFlowFrame_deterministic bfmcs,
+  refine ⟨bundleFlowFrame bfmcs, inferInstance, Algebraic.bundleFlowFrame_deterministic bfmcs,
     bundleFlowModel bfmcs,
     bundleFlowHistory ⟨fam₀, hfam₀⟩ 0,
     0, ?_⟩
@@ -226,15 +226,17 @@ theorem completeness (φ : Formula) :
   rcases SetMaximalConsistent.negation_complete hM_mcs
     (Formula.box Chronicle.nextTop.neg) with h_box_dense | h_not_box_dense
   · -- Dense case: □(F'T) ∈ M — countermodel on Rat (countermodel_dense_enriched)
-    obtain ⟨F, _hdet, TM, τ, t, h_not_true⟩ :=
+    obtain ⟨F, hreg, _hdet, TM, τ, t, h_not_true⟩ :=
       countermodel_dense_enriched M hM_mcs φ h_neg_in h_box_dense
+    haveI := hreg
     exact h_not_true (h_valid.apply F TM τ t)
   · -- Non-dense: ¬□(F'T) ∈ M. Sub-split on □(U(T,bot)).
     rcases SetMaximalConsistent.negation_complete hM_mcs
       (Formula.box Chronicle.nextTop) with h_box_discrete | h_not_box_discrete
     · -- Purely discrete case: □(U(T,bot)) ∈ M — all box-equivalent MCS's are discrete
-      obtain ⟨F, _hdet, TM, τ, t, h_not_true⟩ :=
+      obtain ⟨F, hreg, _hdet, TM, τ, t, h_not_true⟩ :=
         WeakCanonical.countermodel_discrete M hM_mcs φ h_neg_in h_box_discrete
+      haveI := hreg
       exact h_not_true (h_valid.apply F TM τ t)
     · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — eliminated by structural axiom
       exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.Base M hM_mcs
@@ -292,8 +294,9 @@ theorem derivable_of_validQTime (φ : Formula) :
   rcases SetMaximalConsistent.negation_complete hM_mcs
     (Formula.box Chronicle.nextTop.neg) with h_box_dense | h_not_box_dense
   · -- Dense case: □(F'T) ∈ M — countermodel on Rat, a ℚ-time frame
-    obtain ⟨F, _hdet, TM, τ, t, h_not_true⟩ :=
+    obtain ⟨F, hreg, _hdet, TM, τ, t, h_not_true⟩ :=
       countermodel_dense_enriched M hM_mcs φ h_neg_in h_box_dense
+    haveI := hreg
     exact h_not_true (h_valid_qtime F.toTaskFrame ⟨inferInstance, isQTime_rat F⟩ TM τ t)
   · -- Non-dense case: ¬□(F'T) ∈ M. But the dense_indicator axiom ¬U(⊤,⊥)
     -- is a Dense theorem, so □(¬U(⊤,⊥)) = □(F'T) is in every Dense-MCS.
@@ -415,9 +418,10 @@ theorem derivable_of_validZTime (φ : Formula) :
     rcases SetMaximalConsistent.negation_complete hM_mcs
       (Formula.box Chronicle.nextTop) with h_box_discrete | h_not_box_discrete
     · -- Discrete case: □(U(T,bot)) ∈ M — countermodel on ℤ via Reynolds pipeline
-      obtain ⟨F, hsucc, hpred, hsuccArch, hpredArch, _hdet, TM, τ, t, h_not_true⟩ :=
+      obtain ⟨F, hreg, hsucc, hpred, hsuccArch, hpredArch, _hdet, TM, τ, t, h_not_true⟩ :=
         FormalSystem.Metalogic.WeakCanonical.countermodel_discrete_reynolds_v2
           M hM_mcs φ h_neg_in h_box_discrete
+      haveI := hreg
       -- The four CARRIER side conditions arrive as ordinary hypotheses out of the existential;
       -- `ValidIn` takes the frame condition as the single `Sat .ZTime F` slot, so
       -- the four are packaged back into the existential they came from. The four ALGEBRA binders
@@ -429,7 +433,7 @@ theorem derivable_of_validZTime (φ : Formula) :
       -- `haveI`-introduced *copy* of `hsucc` is a fresh opaque fvar that `hsuccArch`'s type does
       -- not mention, and synthesis then fails to match the two.
       exact h_not_true
-        (h_valid_ztime F ⟨inferInstance, hsucc, hpred, hsuccArch, hpredArch⟩ TM τ t)
+        (h_valid_ztime F ⟨hreg, hsucc, hpred, hsuccArch, hpredArch⟩ TM τ t)
     · -- Mixed case: ¬□(F'T) ∧ ¬□(U(T,bot)) ∈ M — eliminated by structural axiom
       exact False.elim (Chronicle.mcs_mixed_case_absurd FrameClass.ZTime M hM_mcs
           h_not_box_dense h_not_box_discrete)

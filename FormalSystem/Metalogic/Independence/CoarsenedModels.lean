@@ -747,7 +747,8 @@ theorem naive_cValid {φ : PlusFormula} (h : NaiveDerivable FrameClass.Base [] �
   h.elim fun d hn => (naive_cValid_and_reflect_time d hn).1
 
 /-- The contrapositive, in the shape a refutation consumes. -/
-theorem not_naiveDerivable_of_cRefuted {φ : PlusFormula} (F : TaskFrame) (K : CoarseModel F)
+theorem not_naiveDerivable_of_cRefuted {φ : PlusFormula} (F : TaskFrame) [F.IsRegular]
+    (K : CoarseModel F)
     (τ : WorldHistory F) (t : F.Duration) (h : ¬ CTruthAt K τ t φ) :
     ¬ NaiveDerivable FrameClass.Base [] φ :=
   fun hd => h (naive_cValid hd F K τ t)

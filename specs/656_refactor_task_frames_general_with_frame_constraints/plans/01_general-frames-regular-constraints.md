@@ -534,22 +534,51 @@ literal-structure sites are confirmed by
 
 ---
 
-### Phase 8: Retire the four fields [NOT STARTED]
+### Phase 8: Retire the four fields [COMPLETED]
 
 **Goal**: Delete `comp`/`serial`/`limit`/`saturation` from `FrameOver`, delete Phase 2's blanket
 instance, and promote the constructors to their final form. This is the only phase where a missed
 consumer surfaces, and by construction it surfaces as a build error, not a meaning change.
 
 **Tasks**:
-- [ ] Take a durable, non-reverting checkpoint before starting: `bash .claude/scripts/git-snapshot.sh 656 --no-revert`.
-- [ ] Run a full `--wfail` build plus the test library **before** any edit, and record it green.
-- [ ] Delete the four axiom fields from `structure FrameOver`, leaving `WorldState`, `[worldNonempty]`, `PosRel`. Move each field's docstring content onto the corresponding `IsRegular` field, preserving the `def:frame#…` label citations and verbatim phrases.
-- [ ] Delete the blanket `instance (F : FrameOver D) : F.IsRegular` from Phase 2.
-- [ ] Promote `FrameOver.comp`/`serial`/`limit`/`saturation` to their final form as theorems projecting out of `[h : F.IsRegular]`.
-- [ ] Redefine `FrameOver.ofReflective` as the 3-argument general constructor (`W`, `[Nonempty W]`, `R`, `hR`); redefine `ofReflectiveRegular` as `ofReflective W R hR` with the four axiom proofs consumed by the auto-instance `FrameOver.instIsRegularOfReflective`, built from `TaskFrame.compositional_reflect_of_reflective`, `serial_reflect_of_reflective`, `limit_reflect_of_reflective`, `saturation_reflect_of_reflective`. Add the `@[deprecated FrameOver.ofReflectiveRegular (since := "…")] alias` for the 7-argument spelling.
-- [ ] Remove the four field assignments from each of the five literal-structure frames; the explicit `IsRegular` instances added in Phase 7 now carry them.
-- [ ] Sweep every docstring in every touched module so that **no docstring still says the constraints are fields** (requirement 8). `grep -rn "structure field\|carries them as structure fields\|as a field" FormalSystem/` and fix each hit that refers to an axiom.
-- [ ] Full `--wfail` build plus test library **after** the edits.
+- [x] Take a durable, non-reverting checkpoint before starting. *(completed — `git-snapshot.sh 656 --no-revert`)*
+- [x] Run a full `--wfail` build plus the test library **before** any edit, and record it green. *(completed — the Phases 5-7 boundary build, 2781 jobs, guard exit 0)*
+- [x] Delete the four axiom fields from `structure FrameOver`, leaving `WorldState`, `[worldNonempty]`, `PosRel`. *(completed; the field docstrings' content now lives on the corresponding `FrameOver.IsRegular` fields and on the four re-export theorems, with the `def:frame#…` labels and verbatim phrases preserved)*
+- [x] Delete the blanket `instance (F : FrameOver D) : F.IsRegular` from Phase 2. *(completed)*
+- [x] Promote `FrameOver.comp`/`serial`/`limit`/`saturation` to theorems projecting out of `[h : F.IsRegular]`. *(completed; their types are unchanged, so every consumer site reads exactly as before)*
+- [x] Redefine `FrameOver.ofReflective` as the 3-argument general constructor; redefine `ofReflectiveRegular` as `ofReflective W R hR` with the four proofs consumed by `FrameOver.instIsRegularOfReflective`. *(completed)* *(deviation: altered — **no deprecation alias is possible** for the 7-argument `ofReflective` spelling. The plan assumed the name could be aliased, but the general constructor *keeps* the name `ofReflective` with a new signature, so an alias would be a self-alias. A call site written against the old spelling now gets an arity error whose expected type names the three surviving arguments, and both constructors' docstrings name `ofReflectiveRegular` as the regular form. Requirement (4)'s "where Lean permits" is what governs here.)*
+- [x] Remove the four field assignments from each of the five literal-structure frames. *(completed)*
+- [x] Sweep every docstring so that no docstring still says the constraints are fields. *(completed — see Phase 10's C-check sweep for the residual prose in `docs/`)*
+- [x] Full `--wfail` build plus test library **after** the edits. *(completed — 2781 jobs, guard exit 0, **0 `error:` lines and 0 `warning:` lines**)*
+
+**The consumer cascade, measured.** Phase 8 took **32 build iterations** to converge. The
+migration surface it exposed is larger than the accessor grep predicted, because the cascade runs
+through the *derived* theorems rather than through the accessors: `FrameOver.nullity`,
+`nullity_identity`, `reflection`, `forward_comp`, `interpolates`, `backward_comp` and
+`eq_of_taskRel_zero` each gained `[F.IsRegular]`, and every declaration that reaches a frame
+constraint through one of them gained it too. The final count is **59 files** touched across
+`FormalSystem/` and `Tests/`.
+
+**Three structural findings, none of them anticipated by the plan:**
+
+1. **`variable {F : TaskFrame} [F.IsRegular]` is not usable.** Adding the instance to a section's
+   `variable` line is the obvious way to cover a whole module, and it fails under `--wfail`:
+   Lean's automatic section-variable inclusion pulls the instance into every declaration
+   mentioning `F`, and `linter.unusedSectionVars` then reports each declaration that does not use
+   it — dozens of fatal warnings. Every binder in this phase is therefore per-declaration.
+2. **Instance synthesis does not see through a frame definition.** A frame defined as
+   `def X := ofReflectiveRegular …` does not get `X.IsRegular` from
+   `instIsRegularOfReflective`: instance search does not unfold `X`. Each named frame carries an
+   explicit `instance X_isRegular : X.IsRegular := instIsRegularOfReflective _ _ _ _ _ _ _`,
+   whose *term* elaboration does unfold `X` during unification. Twenty such instances were added.
+   `@[reducible]` on the frame does not help and makes it worse: `ShiftSet.fibre` is reducible, so
+   its key unfolds to a structure literal and even the sibling `ShiftSet.frame_isRegular` is
+   unreachable from it — `rShift` and `F1` each needed their own.
+3. **`FrameClass.Sat.isRegular` was added** (`Semantics/FrameClassValidity.lean`): every tag's
+   `Sat` value carries regularity, and a consumer holding an anonymous `fc.Sat F` at an unknown
+   tag needs to project it out uniformly. Several countermodel existentials
+   (`countermodel_dense_enriched`, `countermodel_discrete`, `countermodel_discrete_reynolds_v2`,
+   `countermodel_dedekind_dense`) gained an `IsRegular` component for the same reason.
 
 **Timing**: 1.5 hours
 

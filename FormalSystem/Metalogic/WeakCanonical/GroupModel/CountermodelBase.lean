@@ -147,7 +147,7 @@ theorem countermodel_discrete (A : Set Formula)
     (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box nextTop ∈ A) :
-    ∃ (F : TaskFrame) (_ : F.Deterministic) (TM : TaskModel F)
+    ∃ (F : TaskFrame) (_ : F.IsRegular) (_ : F.Deterministic) (TM : TaskModel F)
       (τ : WorldHistory F) (t : ↑F.Duration),
       ¬TruthAt TM τ t φ := by
   -- FamIdx: type of box-equivalent Base MCSes (one per S5 accessibility class)
@@ -195,7 +195,7 @@ theorem countermodel_discrete (A : Set Formula)
     -- Package the existential (four fewer instance slots than the Discrete original: no
     -- `SuccOrder`/`PredOrder`/`IsSuccArchimedean`/`IsPredArchimedean`).
     refine ⟨(multiFamTaskFrameGen (TemporalOrder.of (ℚ ×ₗ ℤ)) FamIdx).toTaskFrame,
-      Algebraic.multiFamTaskFrameGen_deterministic, TM,
+      inferInstance, Algebraic.multiFamTaskFrameGen_deterministic, TM,
       multiFamHistoryGen f₀ 0,
       s₀, ?_⟩
     intro h_truth_phi

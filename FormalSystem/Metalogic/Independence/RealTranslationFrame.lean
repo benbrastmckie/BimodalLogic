@@ -131,6 +131,14 @@ the point of the route — see the module docstring.
 -/
 @[reducible] noncomputable def F1 : TaskFrame := oneShift.frame
 
+/-- **`F¹` is regular**: `ShiftSet.fibre_isRegular` supplies the four `def:frame` constraints from
+the action laws plus the shift set's `sep` field. Named at this frame because `ShiftSet.fibre` is
+`@[reducible]`, so the generic `ShiftSet.frame_isRegular` key unfolds to a structure literal and
+instance search does not reach it here. -/
+noncomputable instance f1_isRegular : F1.IsRegular :=
+  ShiftSet.fibre_isRegular oneShift
+
+
 /-- `F¹`'s task relation is translation (`ShiftSet.fibre_taskRel`). -/
 theorem f1_taskRel_iff (w x u : ↑realTemporalOrder) : F1.TaskRel w x u ↔ u = w + x :=
   oneShift.fibre_taskRel w x u

@@ -153,7 +153,7 @@ from adjacency alone.
 No `IntPresentation` appears here, and none can: see this module's docstring on why the effective
 counterpart is a separate theorem rather than a corollary.
 -/
-theorem extend_periodic {F : FrameOver intOrder} [Finite F.WorldState]
+theorem extend_periodic {F : FrameOver intOrder} [F.IsRegular] [Finite F.WorldState]
     (τ : PartialHistory F.toTaskFrame) (a b : ℤ) (hab : a ≤ b)
     (hdom : ∀ t : ℤ, τ.domain t ↔ a ≤ t ∧ t ≤ b) :
     ∃ σ : WorldHistory F, PartialHistory.Extends σ.val τ ∧
@@ -305,7 +305,7 @@ theorem iter_of_adjacent {F : FrameOver intOrder} (w : ℤ → F.WorldState) (a 
     exact ⟨w (s + (n : ℤ)), ih s hs (by omega), hw (s + (n : ℤ)) (by omega) (by omega)⟩
 
 /-- Adjacency along a window discharges the guarded task-respect obligation on that window. -/
-theorem taskRel_of_adjacent {F : FrameOver intOrder} (w : ℤ → F.WorldState) (a b : ℤ)
+theorem taskRel_of_adjacent {F : FrameOver intOrder} [F.IsRegular] (w : ℤ → F.WorldState) (a b : ℤ)
     (hw : ∀ t : ℤ, a ≤ t → t < b → F.step (w t) (w (t + 1)))
     (s t : ℤ) (hs : a ≤ s) (hst : s ≤ t) (htb : t ≤ b) :
     F.TaskRel (w s) (t - s) (w t) := by
@@ -322,7 +322,8 @@ up to some `M` bounding `S`, agreeing with the history at `a` and at every membe
 The induction is on `S.card`, peeling off the largest member and joining it to the previous
 frontier with an explicit path of exactly the right length.
 -/
-theorem exists_filler {F : FrameOver intOrder} (τ : PartialHistory F.toTaskFrame) (a : ℤ)
+theorem exists_filler {F : FrameOver intOrder} [F.IsRegular]
+    (τ : PartialHistory F.toTaskFrame) (a : ℤ)
     (ha : τ.domain a) :
     ∀ (n : ℕ) (S : Finset ℤ), S.card = n → (∀ t ∈ S, a < t) → (∀ t ∈ S, τ.domain t) →
       ∃ (M : ℤ) (w : ℤ → F.WorldState),
@@ -399,7 +400,8 @@ The `convex` hypothesis of the contiguous case is dropped: the domain need only 
 conclusion is unchanged — a possible world extending the given history, ultimately periodic in
 both directions with both periods bounded by the number of world states.
 -/
-theorem extend_periodic_of_finite_domain {F : FrameOver intOrder} [Finite F.WorldState]
+theorem extend_periodic_of_finite_domain {F : FrameOver intOrder} [F.IsRegular]
+    [Finite F.WorldState]
     (τ : PartialHistory F.toTaskFrame) (hfin : {t : ℤ | τ.domain t}.Finite) :
     ∃ σ : WorldHistory F, PartialHistory.Extends σ.val τ ∧
       ∃ n₀ p₀ n₁ p₁ : ℤ, 0 < p₀ ∧ 0 < p₁ ∧

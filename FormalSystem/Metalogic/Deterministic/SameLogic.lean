@@ -87,13 +87,14 @@ deterministic by `ShiftSet.frame_deterministic`; `forward_repr` and `reverse_rep
 truth of `φ` back. The stability hypothesis `hP` is what a concrete class has to supply; for
 the four `FrameClass` tags it is a case split (`validIn_iff_validDetIn`).
 -/
-theorem validOnFrames_iff_deterministic {P : TaskFrame → Prop}
-    (hP : ∀ (F : TaskFrame) (M : TaskModel F), P F → P (ShiftSet.ofModel F M).frame)
+theorem validOnFrames_iff_deterministic {P : TaskFrame → Prop} (hreg : ∀ F, P F → F.IsRegular)
+    (hP : ∀ (F : TaskFrame) [F.IsRegular] (M : TaskModel F), P F → P (ShiftSet.ofModel F M).frame)
     (φ : Formula) :
     ValidOnFrames P φ ↔ ValidOnFrames (fun F => P F ∧ F.Deterministic) φ := by
   constructor
   · exact ValidOnFrames.mono (fun _ h => h.1)
   · intro h F hF M τ t
+    haveI := hreg F hF
     have h3 := h _ ⟨hP F M hF, ShiftSet.frame_deterministic (ShiftSet.ofModel F M)⟩
       (ShiftSet.ofModel F M).model ((ShiftSet.ofModel F M).hist τ) t
     exact (ShiftSet.reverse_repr F M τ t φ).mp
@@ -113,7 +114,12 @@ Paper: `app:deterministic`
 theorem validIn_iff_validDetIn (fc : FrameClass) (φ : Formula) :
     ValidIn fc φ ↔ ValidDetIn fc φ :=
   validOnFrames_iff_deterministic
-    (fun F M h => by
+    (fun _ h => by
+      cases fc <;>
+        first
+          | exact h
+          | exact h.1)
+    (fun F _ M h => by
       cases fc <;>
         first
           | exact inferInstance

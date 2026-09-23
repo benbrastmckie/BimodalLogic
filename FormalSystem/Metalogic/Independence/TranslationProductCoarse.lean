@@ -58,7 +58,8 @@ variable {D : TemporalOrder} (F : FrameOver D)
 
 /-- The lift of a coarse model to the translation product: the underlying model is `liftModel`,
 and the coarsening forgets the clock. -/
-def liftK (K : CoarseModel F.toTaskFrame) : CoarseModel F.translationProduct.toTaskFrame where
+def liftK [F.IsRegular]
+    (K : CoarseModel F.toTaskFrame) : CoarseModel F.translationProduct.toTaskFrame where
   toModel := liftModel F K.toModel
   Cls := K.Cls
   π := fun a => K.π a.1
@@ -67,7 +68,7 @@ def liftK (K : CoarseModel F.toTaskFrame) : CoarseModel F.translationProduct.toT
 /-- **Coarse truth is preserved by the projection.** The `⊡` clause consults `SameUnder`, which
 compares `π`-images; since the lifted `π` ignores the clock, the lift at offset `0` of a
 witnessing history is again a witness. -/
-theorem c_invariance (K : CoarseModel F.toTaskFrame) :
+theorem c_invariance [F.IsRegular] (K : CoarseModel F.toTaskFrame) :
     ∀ (φ : PlusFormula) (τ' : WorldHistory F.translationProduct.toTaskFrame) (t : ↑D),
       CTruthAt (liftK F K) τ' t φ ↔ CTruthAt K (projH F τ') t φ := by
   intro φ
@@ -105,7 +106,7 @@ theorem c_invariance (K : CoarseModel F.toTaskFrame) :
 
 /-- **The lift of a paste-closed coarse model is paste-closed**: project the two histories,
 splice on `F`, lift the splice at offset `0`. -/
-theorem pasteClosed_liftK (K : CoarseModel F.toTaskFrame) (hK : K.PasteClosed) :
+theorem pasteClosed_liftK [F.IsRegular] (K : CoarseModel F.toTaskFrame) (hK : K.PasteClosed) :
     (liftK F K).PasteClosed := by
   intro ρ' σ' t hs
   obtain ⟨η, h1, h2⟩ := hK (projH F ρ') (projH F σ') t hs
@@ -113,7 +114,8 @@ theorem pasteClosed_liftK (K : CoarseModel F.toTaskFrame) (hK : K.PasteClosed) :
 
 /-- Conversely, paste-closure of the lift gives paste-closure of `K`: lift the two histories at
 offset `0`, splice on the product, project the splice. -/
-theorem pasteClosed_of_liftK (K : CoarseModel F.toTaskFrame) (hK : (liftK F K).PasteClosed) :
+theorem pasteClosed_of_liftK [F.IsRegular]
+    (K : CoarseModel F.toTaskFrame) (hK : (liftK F K).PasteClosed) :
     K.PasteClosed := by
   intro ρ σ t hs
   obtain ⟨η', h1, h2⟩ := hK (liftH F ρ 0) (liftH F σ 0) t hs
@@ -122,7 +124,8 @@ theorem pasteClosed_of_liftK (K : CoarseModel F.toTaskFrame) (hK : (liftK F K).P
 /-- **Coarse refutations transfer to the product**: a coarse countermodel on `F`, over any
 temporal order, is a coarse countermodel on the clocked frame, which is recurrence-free and
 satisfies *Limit* for free. -/
-theorem c_refuted_lift (K : CoarseModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame)
+theorem c_refuted_lift [F.IsRegular]
+    (K : CoarseModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame)
     (t : ↑D) (φ : PlusFormula) (h : ¬ CTruthAt K τ t φ) :
     ¬ CTruthAt (liftK F K) (liftH F τ 0) t φ := by
   intro h'

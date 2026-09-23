@@ -298,7 +298,8 @@ holds without it.
 
 *Saturation* is not consumed.
 -/
-theorem admissible (τ : PartialHistory F) {z : F.Duration} (hz : ¬ τ.domain z) (u : F.WorldState) :
+theorem admissible [F.IsRegular]
+    (τ : PartialHistory F) {z : F.Duration} (hz : ¬ τ.domain z) (u : F.WorldState) :
     AdjoinRespects τ z u ↔ ∀ c ∈ Constraints τ z, u ∈ c := by
   rw [fibers]
   constructor

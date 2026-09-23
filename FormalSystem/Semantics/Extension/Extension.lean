@@ -145,7 +145,7 @@ The four axioms are **`FrameOver` fields that `step` projects off `F` for itself
 this theorem takes and forwards. Nothing here applies any of them; in particular this is not a
 second *Saturation* application site.
 -/
-theorem isTotal_of_isMax (F : TaskFrame) {τ : PartialHistory F} (hmax : IsMax τ) :
+theorem isTotal_of_isMax (F : TaskFrame) [F.IsRegular] {τ : PartialHistory F} (hmax : IsMax τ) :
     τ.IsTotal := by
   intro z
   obtain ⟨σ, hext, hσz⟩ := step F τ z
@@ -176,7 +176,7 @@ here: a total domain is trivially convex, `PartialHistory.IsTotal.isConvex`.)
 **These two are the whole proof.** *Saturation* is not threaded in directly — `step`, which remains
 its sole application site, reads it off the frame as `F.saturation`.
 -/
-theorem extension (F : TaskFrame) (τ : PartialHistory F) :
+theorem extension (F : TaskFrame) [F.IsRegular] (τ : PartialHistory F) :
     ∃ σ : WorldHistory F, Extends σ.val τ := by
   obtain ⟨μ, hle, hmax⟩ := exists_maximal_extension τ
   have htot : μ.IsTotal := isTotal_of_isMax F hmax
@@ -194,7 +194,7 @@ This is the history `cor:occurrence` extends via `thm:extension`. The paper's fo
 argument, which reached an arbitrary time by time-shifting, is not used and must not be
 reintroduced — see this module's docstring.
 -/
-def point (F : TaskFrame) (w : F.WorldState) (x : F.Duration) : PartialHistory F where
+def point (F : TaskFrame) [F.IsRegular] (w : F.WorldState) (x : F.Duration) : PartialHistory F where
   domain := fun t => t = x
   nonempty_domain := ⟨x, rfl⟩
   states := fun _ _ => w
@@ -205,7 +205,8 @@ def point (F : TaskFrame) (w : F.WorldState) (x : F.Duration) : PartialHistory F
     simpa [sub_self] using (F.nullity_identity w w).mpr rfl
 
 @[simp]
-theorem point_states (F : TaskFrame) (w : F.WorldState) (x : F.Duration) (t : F.Duration)
+theorem point_states (F : TaskFrame) [F.IsRegular]
+    (w : F.WorldState) (x : F.Duration) (t : F.Duration)
     (ht : (point F w x).domain t) : (point F w x).states t ht = w := rfl
 
 /--
@@ -223,7 +224,7 @@ via `thm:extension`. The extension agrees with the one-point history at `x`, whi
 how the recorded source literally reads; the axioms reach `step` as the frame's own fields. See
 this module's docstring.
 -/
-theorem occurrence (F : TaskFrame) (w : F.WorldState) (x : F.Duration) :
+theorem occurrence (F : TaskFrame) [F.IsRegular] (w : F.WorldState) (x : F.Duration) :
     ∃ τ : WorldHistory F, τ.state x = w := by
   obtain ⟨τ, hext⟩ := extension F (point F w x)
   exact ⟨τ, hext.agree x rfl⟩
@@ -239,7 +240,8 @@ holding a state passes it, and a caller holding none passes `F.worldNonempty.som
 `Semantics/Validity.lean`'s `hF_nonempty_of_frameAxioms` is the second case, and reads literally
 `PartialHistory.hF_nonempty F F.worldNonempty.some`.
 -/
-theorem hF_nonempty (F : TaskFrame) (w : F.WorldState) : Nonempty (WorldHistory F) :=
+theorem hF_nonempty (F : TaskFrame) [F.IsRegular] (w : F.WorldState) :
+    Nonempty (WorldHistory F) :=
   let ⟨τ, _⟩ := occurrence F w 0
   ⟨τ⟩
 

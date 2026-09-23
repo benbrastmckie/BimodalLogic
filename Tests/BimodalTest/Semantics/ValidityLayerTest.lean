@@ -65,7 +65,8 @@ statement-preserving. `rfl` and nothing else: if any of these ever needs a `show
 the corresponding instance is no longer the language's own validity relation. -/
 
 section L
-variable (F : TaskFrame) (P : TaskFrame → Prop) (fc : ProofSystem.FrameClass) (φ : Syntax.Formula)
+variable (F : TaskFrame) [F.IsRegular] (P : TaskFrame → Prop) (fc : ProofSystem.FrameClass)
+  (φ : Syntax.Formula)
 
 example : TaskFrame.ValidOn F φ = TaskFrame.GenericValidOn F φ := rfl
 example : ValidOnFrames P φ = GenericValidOnFrames P φ := rfl
@@ -347,7 +348,7 @@ instance : BoolClauses Toy where
 Every `example` below elaborates from the three instances above and nothing else. -/
 
 section Inherited
-variable (F : TaskFrame) (P : TaskFrame → Prop) (fc : ProofSystem.FrameClass)
+variable (F : TaskFrame) [F.IsRegular] (P : TaskFrame → Prop) (fc : ProofSystem.FrameClass)
   (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration) (φ ψ : Toy)
 
 -- The four validity notions.

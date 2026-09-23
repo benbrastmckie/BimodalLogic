@@ -142,7 +142,7 @@ This is *Compositionality*'s composition half (`TaskFrame.forward_comp`) applied
 own task-respect step `τ(a) ⇒_{b-a} τ(b)`, with both durations `b - a` and `z - b` nonnegative so
 that the axiom's positive-cone proviso is met.
 -/
-theorem fib_subset_fib_of_le_of_le {τ : PartialHistory F} {z a b : F.Duration}
+theorem fib_subset_fib_of_le_of_le [F.IsRegular] {τ : PartialHistory F} {z a b : F.Duration}
     (ha : τ.domain a) (hb : τ.domain b) (hab : a ≤ b) (hbz : b ≤ z) :
     Fib F.TaskRel (τ.states b hb) (z - b) ⊆ Fib F.TaskRel (τ.states a ha) (z - a) := by
   intro u hu
@@ -161,7 +161,7 @@ The mirror image of `fib_subset_fib_of_le_of_le`. Both fiber durations are now n
 the composition is performed on the reflected pair — `u ⇒_{b-z} τ(b)` and `τ(b) ⇒_{a-b} τ(a)` —
 and the reflection convention (`FrameOver.reflection`) carries the result back.
 -/
-theorem fib_subset_fib_of_le_of_le' {τ : PartialHistory F} {z a b : F.Duration}
+theorem fib_subset_fib_of_le_of_le' [F.IsRegular] {τ : PartialHistory F} {z a b : F.Duration}
     (ha : τ.domain a) (hb : τ.domain b) (hba : b ≤ a) (hzb : z ≤ b) :
     Fib F.TaskRel (τ.states b hb) (z - b) ⊆ Fib F.TaskRel (τ.states a ha) (z - a) := by
   intro u hu
@@ -181,7 +181,7 @@ When `z` is itself a domain time, its own zero-duration fiber is contained in th
 imposed by every other domain time. Immediate from the two monotonicity lemmas, splitting on
 whether `t` lies below or above `z`.
 -/
-theorem fib_zero_subset {τ : PartialHistory F} {z t : F.Duration}
+theorem fib_zero_subset [F.IsRegular] {τ : PartialHistory F} {z t : F.Duration}
     (hz : τ.domain z) (ht : τ.domain t) :
     Fib F.TaskRel (τ.states z hz) (z - z) ⊆ Fib F.TaskRel (τ.states t ht) (z - t) := by
   rcases le_total t z with h | h
@@ -192,7 +192,7 @@ theorem fib_zero_subset {τ : PartialHistory F} {z t : F.Duration}
 Segment monotonicity: shrinking a constraint segment's endpoints towards `z` (from `t` up to `t'`
 below `z`, and from `s` down to `s'` above `z`) tightens the constraint.
 -/
-theorem seg_subset_seg {τ : PartialHistory F} {z t s t' s' : F.Duration}
+theorem seg_subset_seg [F.IsRegular] {τ : PartialHistory F} {z t s t' s' : F.Duration}
     (ht : τ.domain t) (hs : τ.domain s) (ht' : τ.domain t') (hs' : τ.domain s')
     (htt' : t ≤ t') (ht'z : t' ≤ z) (hzs' : z ≤ s') (hs's : s' ≤ s) :
     Seg F.TaskRel (τ.states t' ht') (τ.states s' hs') (z - t') (s' - z)
@@ -206,7 +206,8 @@ When `z` is a domain time, its zero-duration fiber is contained in *every* const
 fibers by `fib_zero_subset`, segments because a segment is the intersection of its two endpoint
 fiber conditions (`seg_eq_inter_fib`).
 -/
-theorem fib_zero_subset_of_mem_Constraints {τ : PartialHistory F} {z : F.Duration} (hz : τ.domain z)
+theorem fib_zero_subset_of_mem_Constraints [F.IsRegular]
+    {τ : PartialHistory F} {z : F.Duration} (hz : τ.domain z)
     {c : Set F.WorldState} (hc : c ∈ Constraints τ z) :
     Fib F.TaskRel (τ.states z hz) (z - z) ⊆ c := by
   rcases hc with ⟨t, s, ht, hs, _, _, rfl⟩ | ⟨t, ht, _, rfl⟩
@@ -225,7 +226,7 @@ For a domain time `t ≤ z` this is the successor half of *Seriality* at the non
 `z - t`; for `t ≥ z` it is the predecessor half at `t - z`, turned around by the converse
 convention. No other axiom is used.
 -/
-theorem nonempty_fib_of_serial {τ : PartialHistory F} {z t : F.Duration}
+theorem nonempty_fib_of_serial [F.IsRegular] {τ : PartialHistory F} {z t : F.Duration}
     (ht : τ.domain t) : (Fib F.TaskRel (τ.states t ht) (z - t)).Nonempty := by
   rcases le_total t z with h | h
   · obtain ⟨u, hu⟩ := (F.serial (τ.states t ht) (z - t) (sub_nonneg.mpr h)).1
@@ -243,7 +244,8 @@ both summands positive because `t < z < s`. Interpolating at that split produces
 `τ(t) ⇒_{z-t} u` and `u ⇒_{s-z} τ(s)`; the reflection convention rewrites the second conjunct as
 `τ(s) ⇒_{-(s-z)} u`, which is exactly membership in `[τ(t), τ(s)]_{z-t}^{s-z}`.
 -/
-theorem nonempty_seg_of_interpolates {τ : PartialHistory F} {z t s : F.Duration} (ht : τ.domain t)
+theorem nonempty_seg_of_interpolates [F.IsRegular] {τ : PartialHistory F} {z t s : F.Duration}
+    (ht : τ.domain t)
     (hs : τ.domain s) (htz : t < z) (hzs : z < s) :
     (Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z)).Nonempty := by
   have hrel : F.TaskRel (τ.states t ht) ((z - t) + (s - z)) (τ.states s hs) := by
@@ -257,7 +259,8 @@ theorem nonempty_seg_of_interpolates {τ : PartialHistory F} {z t s : F.Duration
 
 /-- Every constraint on `z` is nonempty: the two cases of `def:constraints`, discharged by
 *Seriality* and by the interpolation half of *Compositionality* respectively. -/
-theorem nonempty_of_mem_Constraints {τ : PartialHistory F} {z : F.Duration} {c : Set F.WorldState}
+theorem nonempty_of_mem_Constraints [F.IsRegular] {τ : PartialHistory F} {z : F.Duration}
+    {c : Set F.WorldState}
     (hc : c ∈ Constraints τ z) : c.Nonempty := by
   rcases hc with ⟨t, s, ht, hs, htz, hzs, rfl⟩ | ⟨t, ht, _, rfl⟩
   · exact nonempty_seg_of_interpolates ht hs htz hzs
@@ -300,7 +303,8 @@ side condition on fiber members is what makes two of the four cases collapse:
   strictly on the same side of `z` (a strict straddle would pair them), and the refining member is
   the fiber at the time nearer `z` — `max` below, `min` above.
 -/
-theorem exists_mem_subset_inter {τ : PartialHistory F} {z : F.Duration} {c₁ c₂ : Set F.WorldState}
+theorem exists_mem_subset_inter [F.IsRegular] {τ : PartialHistory F} {z : F.Duration}
+    {c₁ c₂ : Set F.WorldState}
     (hc₁ : c₁ ∈ Constraints τ z) (hc₂ : c₂ ∈ Constraints τ z) :
     ∃ c ∈ Constraints τ z, c ⊆ c₁ ∩ c₂ := by
   rcases hc₁ with ⟨t₁, s₁, ht₁, hs₁, ht₁z, hzs₁, rfl⟩ | ⟨t₁, ht₁, hnp₁, rfl⟩
@@ -405,7 +409,7 @@ hypothesis. *Limit* is not consumed either.
 The paper's `z ∈ D \ X` proviso is not assumed: see this module's docstring for why the lemma
 holds a fortiori when `z` is itself a domain time.
 -/
-theorem constraint (τ : PartialHistory F) (z : F.Duration) :
+theorem constraint [F.IsRegular] (τ : PartialHistory F) (z : F.Duration) :
     DirectedFamily (Constraints τ z) ∧ ∀ c ∈ Constraints τ z, c.Nonempty :=
   ⟨⟨nonempty_Constraints τ z, fun _ h₁ _ h₂ => exists_mem_subset_inter h₁ h₂⟩,
     fun _ hc => nonempty_of_mem_Constraints hc⟩

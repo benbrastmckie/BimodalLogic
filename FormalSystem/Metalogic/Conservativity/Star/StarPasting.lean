@@ -141,7 +141,7 @@ for pure-future `φ⁺` and pure-past `ψ⁻`. The L⋆ counterpart of `Semantic
 semantic content of `StarAxiom.paste`.
 
 Paper: `possible_worlds.tex`, the PS schema -/
-theorem star_paste_valid (M : TaskModel F) (τ : WorldHistory F)
+theorem star_paste_valid [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (v : ℕ → F.Duration) {φ ψ : StarFormula}
     (hφ : StarIsPureFuture φ) (hψ : StarIsPurePast ψ) :
     StarTruthAt M τ t v
@@ -162,7 +162,7 @@ pure-past `α⁻` and pure-future `φ⁺`. The L⋆ counterpart of `Semantics.un
 semantic content of `StarAxiom.untl_paste`.
 
 Paper: `possible_worlds.tex`, the US schema -/
-theorem star_untl_paste_valid (M : TaskModel F) (τ : WorldHistory F)
+theorem star_untl_paste_valid [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (v : ℕ → F.Duration) {α φ : StarFormula}
     (hα : StarIsPurePast α) (hφ : StarIsPureFuture φ) :
     StarTruthAt M τ t v
@@ -187,7 +187,7 @@ pure-past `ψ⁻` and pure-future `φ⁺`. This is the temporal dual of `star_pa
 congruences applied in the other order. The L⁺ counterpart is `Semantics.paste_valid'`.
 
 Paper: `possible_worlds.tex`, the PS schema -/
-theorem star_paste_valid' (M : TaskModel F) (τ : WorldHistory F)
+theorem star_paste_valid' [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (v : ℕ → F.Duration) {ψ φ : StarFormula}
     (hψ : StarIsPurePast ψ) (hφ : StarIsPureFuture φ) :
     StarTruthAt M τ t v
@@ -209,7 +209,7 @@ witness `ρ` at a past time `y < t` is pasted up to `y` with `τ` after `y`. The
 `Semantics.snce_dstab_valid`.
 
 Paper: `possible_worlds.tex`, the US schema (past mirror) -/
-theorem star_snce_paste_valid (M : TaskModel F) (τ : WorldHistory F)
+theorem star_snce_paste_valid [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) (v : ℕ → F.Duration) {α φ : StarFormula}
     (hα : StarIsPureFuture α) (hφ : StarIsPurePast φ) :
     StarTruthAt M τ t v

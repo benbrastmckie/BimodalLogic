@@ -77,7 +77,7 @@ at which every formula of `Γ` is true.
 Binder-for-binder mirror of `Semantics.SemanticConsequence`.
 -/
 def MinusSemanticConsequence (Γ : MinusLanguage.Context) (φ : MinusFormula) : Prop :=
-  ∀ (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
+  ∀ (F : TaskFrame) [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
     (∀ ψ ∈ Γ, MinusTruthAt M τ t ψ) →
     MinusTruthAt M τ t φ
 
@@ -156,9 +156,18 @@ theorem MinusValid.of_forall {φ : MinusFormula}
     MinusValid φ :=
   GenericValid.of_forall (L := MinusFormula) (φ := φ) h
 
+/-- Introduce `MinusValid` from its pre-abbreviation binder shape **at the regular frames** — the
+shape it is equivalent to. The L⁻ mirror of `Valid.of_forall_regular`. -/
+theorem MinusValid.of_forall_regular {φ : MinusFormula}
+    (h : ∀ (F : TaskFrame) [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration),
+      MinusTruthAt M τ t φ) :
+    MinusValid φ :=
+  GenericValid.of_forall_regular (L := MinusFormula) (φ := φ) h
+
 /-- Eliminate `MinusValid` into its pre-abbreviation binder shape. The L⁻ mirror of `Valid.apply`.
 -/
-theorem MinusValid.apply {φ : MinusFormula} (h : MinusValid φ) (F : TaskFrame) (M : TaskModel F)
+theorem MinusValid.apply {φ : MinusFormula} (h : MinusValid φ) (F : TaskFrame) [F.IsRegular]
+    (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration) : MinusTruthAt M τ t φ :=
   GenericValid.apply (L := MinusFormula) (φ := φ) h F M τ t
 
@@ -214,7 +223,7 @@ carrier `ℚ ×ₗ ℤ` (`Semantics/LexCarrier.lean`) that `Metalogic/Conservati
 countermodel is built over.
 -/
 def MinusValidZTimeSucc (φ : MinusFormula) : Prop :=
-  ∀ (F : TaskFrame) [SuccOrder F.Duration] [PredOrder F.Duration] (M : TaskModel F)
+  ∀ (F : TaskFrame) [F.IsRegular] [SuccOrder F.Duration] [PredOrder F.Duration] (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration), MinusTruthAt M τ t φ
 
 /-- `MinusValid` weakens to `MinusValidZTimeSucc`, mirroring
@@ -229,9 +238,10 @@ is **not** any `MinusValidIn fc` — no `FrameClass.Sat` variant bundles just `S
 `minus_soundness_ztime_succ` needs for the non-Archimedean carrier `ℚ ×ₗ ℤ`. Adding such a tag to
 `FrameClass` to make this a corollary would widen the proof side's class lattice to serve a semantic
 convenience. Leave it as a direct lambda. -/
-theorem MinusValidity.minusValid_implies_minusValidZTimeSucc {φ : MinusFormula} (h : MinusValid φ) :
+theorem MinusValidity.minusValid_implies_minusValidZTimeSucc
+    {φ : MinusFormula} (h : MinusValid φ) :
     MinusValidZTimeSucc φ :=
-  fun F _ _ M τ t => h.apply F M τ t
+  fun F _ _ _ M τ t => h.apply F M τ t
 
 /--
 Validity over **dense Dedekind-complete** temporal orders: the least-upper-bound hypothesis
@@ -294,11 +304,11 @@ and this two-branch script stays. -/
 theorem minusValid_iff_empty_consequence (φ : MinusFormula) :
     MinusValid φ ↔ MinusSemanticConsequence [] φ := by
   constructor
-  · intro h F M τ t _
+  · intro h F _ M τ t _
     exact h.apply F M τ t
   · intro h
-    refine MinusValid.of_forall ?_
-    intro F M τ t
+    refine MinusValid.of_forall_regular ?_
+    intro F _ M τ t
     exact h F M τ t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
 
 end MinusValidity

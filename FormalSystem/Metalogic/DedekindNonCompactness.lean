@@ -343,6 +343,12 @@ contradiction `|u - w| < |u - w|`. -/
     exact lt_irrefl _ hy
   A := fun p x => p = q ∧ ∃ k : ℤ, (k:ℝ) = x ∧ 1 ≤ k ∧ k ≤ (N:ℤ)
 
+/-- **The shifted real witness frame is regular**, from the shift set's own constraint instance.
+Named here because `ShiftSet.fibre` is `@[reducible]`, so the generic `ShiftSet.frame_isRegular`
+key unfolds to a structure literal and instance search does not reach it. -/
+noncomputable instance rShift_isRegular (q : Atom) (N : ℕ) : (rShift q N).frame.IsRegular :=
+  ShiftSet.fibre_isRegular (rShift q N)
+
 /-- The task model induced by `rShift`. -/
 noncomputable def rM (q : Atom) (N : ℕ) : TaskModel (rShift q N).frame := (rShift q N).model
 

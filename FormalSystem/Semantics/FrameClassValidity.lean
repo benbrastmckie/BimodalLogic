@@ -216,6 +216,16 @@ macro "sat_intro " h:ident : tactic =>
       | skip)
 
 /--
+**Every frame class consists of regular frames.** Each tag's `Sat` value carries
+`TaskFrame.IsRegular`, at `.Base` as the whole value and at the three constrained tags as the
+first conjunct; this projects it out uniformly, so a consumer holding an anonymous `fc.Sat F`
+hypothesis at an unknown tag can register the frame's regularity with `haveI`.
+-/
+theorem FrameClass.Sat.isRegular {fc : FrameClass} {F : TaskFrame} (h : fc.Sat F) :
+    F.IsRegular := by
+  cases fc <;> first | exact h | exact h.1
+
+/--
 `Sat` is **antitone** in the `FrameClass` order: a larger class tag denotes a *more constrained*
 collection of frames, so climbing the order shrinks the frame class.
 
@@ -225,8 +235,9 @@ Everything downstream — `Semantics.ValidIn.mono`, and the set-consequence mono
 in the same direction as `DerivationTree.lift` without either lemma restating the argument.
 
 The proof is a 16-case split. Four cases are reflexivity, one is the `Dense ≤ RTime` projection
-`TaskFrame.isDense_of_isRTime`, four are `Sat .Base = True`, and the remaining seven have an
-absurd order hypothesis discharged by `decide` against `FrameClass`'s `DecidableRel` instance.
+`TaskFrame.isDense_of_isRTime` on the tag's own conjunct, four project the shared regularity
+conjunct out at `.Base`, and the remaining seven have an absurd order hypothesis discharged by
+`decide` against `FrameClass`'s `DecidableRel` instance.
 -/
 theorem FrameClass.Sat.anti {fc₁ fc₂ : FrameClass} (h : fc₁ ≤ fc₂) {F : TaskFrame} :
     fc₂.Sat F → fc₁.Sat F := by

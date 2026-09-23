@@ -343,6 +343,11 @@ noncomputable def RefinedFilteredTaskFrame [SuccOrder ↑D] [NoMaxOrder ↑D]
     (TaskFrame.saturation_of_permissive fun w d u => by
       by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd])
 
+/-- **The refined filtered frame is regular**, through the regular constructor's auto-instance. -/
+noncomputable instance RefinedFilteredTaskFrame_isRegular [SuccOrder ↑D] [NoMaxOrder ↑D]
+    (phi : Formula) : (RefinedFilteredTaskFrame (D := D) phi).IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
+
 /-! ### `RefinedFilteredTaskFrame` discharges `def:frame`'s four axioms
 
 `refinedFilteredTaskRel` — `if d = 0 then w = u else True` — is the *permissive* relation class

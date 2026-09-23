@@ -127,7 +127,8 @@ Two transcription notes:
 
 **This is a theorem of ZFC**, via `thm:extension`'s appeal to Zorn's lemma.
 -/
-theorem deterministic_of_singletonClasses (h : F.SingletonClasses) : F.Deterministic := by
+theorem deterministic_of_singletonClasses [F.IsRegular]
+    (h : F.SingletonClasses) : F.Deterministic := by
   rw [TaskFrame.deterministic_iff]
   intro w u v x hu hv
   by_cases hx : x = 0
@@ -168,7 +169,7 @@ theorem deterministic_of_singletonClasses (h : F.SingletonClasses) : F.Determini
 
 The (⇒) half is choice-free; the (⇐) half is a theorem of ZFC. See this module's docstring.
 -/
-theorem deterministic_iff_singletonClasses (F : TaskFrame) :
+theorem deterministic_iff_singletonClasses (F : TaskFrame) [F.IsRegular] :
     F.Deterministic ↔ F.SingletonClasses :=
   ⟨singletonClasses_of_deterministic, deterministic_of_singletonClasses⟩
 

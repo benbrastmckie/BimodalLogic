@@ -214,10 +214,6 @@ reason `fzeroFrame` carries it — without it `FN.WorldState` does not reduce to
 @[reducible] def fnFrameOver : FrameOver (TemporalOrder.of ℤ) where
   WorldState := ℕ
   PosRel w x u := fnRel w x u
-  comp := TaskFrame.compositional_reflect_of_reflective fn_reflection fn_comp
-  serial := TaskFrame.serial_reflect_of_reflective fn_reflection fn_serial
-  limit := TaskFrame.limit_reflect_of_reflective fn_reflection fn_limit
-  saturation := TaskFrame.saturation_reflect_of_reflective fn_reflection fn_saturation
 
 /-- **`F^N` is regular**: the four `def:frame` constraints as a class instance on the general
 frame. -/

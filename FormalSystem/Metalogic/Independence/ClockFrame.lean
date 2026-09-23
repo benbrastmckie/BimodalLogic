@@ -195,6 +195,10 @@ def clockFrame : FrameOver (TemporalOrder.of ℚ) :=
     clockRel_limit
     clockRel_saturation
 
+/-- **The clock frame is regular**, through the regular constructor's auto-instance. -/
+instance clockFrame_isRegular : clockFrame.IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
+
 @[simp] theorem clockFrame_worldState : clockFrame.WorldState = ClockState := rfl
 
 @[simp] theorem clockFrame_taskRel (w : ClockState) (x : ℚ) (u : ClockState) :

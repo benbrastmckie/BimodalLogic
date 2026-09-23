@@ -94,6 +94,11 @@ duration. Its duration group is discrete but not Archimedean, hence not successo
 -/
 def lexIntStaticFrame : TaskFrame := (FrameOver.staticFrame Bool (D := ℤ ×ₗ ℤ)).toTaskFrame
 
+/-- The witness is regular: it is a static frame, and `FrameOver.staticFrame` is built by the
+regular constructor. -/
+instance lexIntStaticFrame_isRegular : lexIntStaticFrame.IsRegular :=
+  FrameOver.staticFrame_isRegular (D := ℤ ×ₗ ℤ) Bool
+
 /--
 **The witness is not in `Sat .ZTime`.**
 
@@ -195,7 +200,9 @@ The upper bound is the **paper's** Discrete class, not `Sat .ZTime`; the two are
 and `sat_ztime_ssubset_mod_axiomSet` is the proof that they are.
 -/
 theorem mod_axiomSet_discrete_subset_isDiscrete :
-    Semantics.Mod (AxiomSet FrameClass.ZTime) ⊆ {F : TaskFrame | F.IsDiscrete} :=
-  fun _ hF => (validOn_nextTop_iff_isDiscrete _).mp (validOn_nextTop_of_mem_mod_discrete hF)
+    Semantics.Mod (AxiomSet FrameClass.ZTime) ⊆ {F : TaskFrame | F.IsDiscrete} := by
+  intro F hF
+  haveI := (hF ⟨Axiom.prior_UZ Formula.top, by decide⟩).1
+  exact (validOn_nextTop_iff_isDiscrete F).mp (validOn_nextTop_of_mem_mod_discrete hF)
 
 end FormalSystem.Metalogic.Independence

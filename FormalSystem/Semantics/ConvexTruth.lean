@@ -290,7 +290,8 @@ theorem IsInterval.isConvex {τ : PartialHistory F} (h : IsInterval τ) : τ.IsC
 
 /-- The one-point partial history `{⟨x, w⟩}` is convex: its domain is a singleton. It is a legal
 C3 index at its own point, for every world state `w` — a **germ**. -/
-theorem PartialHistory.point_isConvex (F : TaskFrame) (w : F.WorldState) (x : F.Duration) :
+theorem PartialHistory.point_isConvex (F : TaskFrame) [F.IsRegular]
+    (w : F.WorldState) (x : F.Duration) :
     (PartialHistory.point F w x).IsConvex := by
   intro a c ha hc y hay hyc
   have ha' : a = x := ha
@@ -324,14 +325,16 @@ theorem truthC3_box_indep (M : TaskModel F) (τ τ' : PartialHistory F) (x : F.D
 
 /-- At a germ, `φ U ψ` is false: its witness would have to lie in a one-point domain and be
 strictly later than that point. -/
-theorem germ_untl_false (M : TaskModel F) (w : F.WorldState) (x : F.Duration) (ψ φ : Formula) :
+theorem germ_untl_false [F.IsRegular]
+    (M : TaskModel F) (w : F.WorldState) (x : F.Duration) (ψ φ : Formula) :
     ¬ TruthAtConvex M (PartialHistory.point F w x) x (Formula.untl ψ φ) := by
   rintro ⟨s, hs, hxs, -, -⟩
   have hs' : s = x := hs
   exact lt_irrefl x (hs' ▸ hxs)
 
 /-- At a germ, `φ S ψ` is false, symmetrically. -/
-theorem germ_snce_false (M : TaskModel F) (w : F.WorldState) (x : F.Duration) (ψ φ : Formula) :
+theorem germ_snce_false [F.IsRegular]
+    (M : TaskModel F) (w : F.WorldState) (x : F.Duration) (ψ φ : Formula) :
     ¬ TruthAtConvex M (PartialHistory.point F w x) x (Formula.snce ψ φ) := by
   rintro ⟨s, hs, hsx, -, -⟩
   have hs' : s = x := hs
@@ -347,14 +350,14 @@ is closed under necessitation, so it derives `□F⊤`; under C3 that formula is
 but unsatisfiable. The failure falls on every formula whose body under `□` has a binary tense
 operator as its principal connective, not on `F⊤` alone.
 -/
-theorem c3_box_untl_unsat (M : TaskModel F) (τ : PartialHistory F) (x : F.Duration)
+theorem c3_box_untl_unsat [F.IsRegular] (M : TaskModel F) (τ : PartialHistory F) (x : F.Duration)
     (ψ φ : Formula) : ¬ TruthAtConvex M τ x (Formula.box (Formula.untl ψ φ)) := fun h =>
   germ_untl_false M F.worldNonempty.some x ψ φ
     (h (PartialHistory.point F F.worldNonempty.some x)
       (PartialHistory.point_isConvex F F.worldNonempty.some x) rfl)
 
 /-- The past dual of `c3_box_untl_unsat`: `□(φ S ψ)` is C3-unsatisfiable. -/
-theorem c3_box_snce_unsat (M : TaskModel F) (τ : PartialHistory F) (x : F.Duration)
+theorem c3_box_snce_unsat [F.IsRegular] (M : TaskModel F) (τ : PartialHistory F) (x : F.Duration)
     (ψ φ : Formula) : ¬ TruthAtConvex M τ x (Formula.box (Formula.snce ψ φ)) := fun h =>
   germ_snce_false M F.worldNonempty.some x ψ φ
     (h (PartialHistory.point F F.worldNonempty.some x)
@@ -372,7 +375,7 @@ Combined with `c3_nec` and `c3_box_untl_unsat`, this is the governing constraint
 validities: each must survive evaluation at a one-point domain, where every binary tense
 operator is false. `F⊤` does not, which is why seriality goes.
 -/
-theorem c3_valid_imp_germ_valid {φ : Formula} (h : ValidC3 F φ) (M : TaskModel F)
+theorem c3_valid_imp_germ_valid [F.IsRegular] {φ : Formula} (h : ValidC3 F φ) (M : TaskModel F)
     (w : F.WorldState) (x : F.Duration) :
     TruthAtConvex M (PartialHistory.point F w x) x φ :=
   h M (PartialHistory.point F w x) (PartialHistory.point_isConvex F w x) x rfl

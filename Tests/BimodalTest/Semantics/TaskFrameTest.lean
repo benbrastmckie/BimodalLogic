@@ -66,6 +66,10 @@ example : (FrameOver.natFrame (D := Int)).TaskRel (0 : Nat) 10 (42 : Nat) :=
 -- below still exercises the same frame and the same relation, definitionally.
 def customFrame : FrameOver intOrder := FormalSystem.Examples.TemporalStructures.intBoolFrame
 
+/-- `customFrame` inherits `intBoolFrame`'s regularity. -/
+instance customFrame_isRegular : customFrame.IsRegular :=
+  FormalSystem.Examples.TemporalStructures.intBoolFrame_isRegular
+
 -- Test: Custom frame satisfies properties
 example : customFrame.TaskRel true 0 true := customFrame.nullity true
 example : customFrame.TaskRel false 5 true :=

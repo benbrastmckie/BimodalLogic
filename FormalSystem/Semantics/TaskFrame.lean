@@ -852,63 +852,6 @@ structure FrameOver (D : TemporalOrder) where
   reflection convention, `FrameOver.TaskRel := TaskFrame.reflect PosRel`.
   -/
   PosRel : WorldState → D.PositiveCone → WorldState → Prop
-  /--
-  **The paper's *Compositionality* axiom, in full** (`def:frame#Compositionality`, verbatim:
-  "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$ for some
-  $u \in W$").
-
-  Stated by citation as `TaskFrame.Compositional` of the extended relation, never restated
-  inline. Unfolded it is
-
-  ```
-  ∀ w v x y, 0 ≤ x → 0 ≤ y → (TaskRel w (x + y) v ↔ ∃ u, TaskRel w x u ∧ TaskRel u y v)
-  ```
-
-  Both directions are load bearing. Its `←` (composition) half is projected back out as the
-  derived `FrameOver.forward_comp`, and its `→` (interpolation) half as `FrameOver.interpolates`,
-  definitionally `TaskFrame.Interpolates TaskRel`.
-
-  The `0 ≤ x`, `0 ≤ y` hypotheses are `def:frame`'s blanket proviso; at such durations the
-  extended relation is the primitive one (`TaskFrame.reflect_of_nonneg`), so the field says
-  exactly what the paper's axiom says of `PosRel`. Composition over negative durations is
-  derived (`backward_comp`); mixed-sign composition is inexpressible at the primitive level
-  rather than prohibited.
-  -/
-  comp : TaskFrame.Compositional (TaskFrame.reflect PosRel)
-  /--
-  **The paper's *Seriality* axiom** (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and
-  $v \Rightarrow_x w$ for some $u, v \in W$"), stated by citation as `TaskFrame.Serial` of the
-  extended relation — the bare-relation predicate of record, never restated inline.
-  Every state has an `x`-successor and an `x`-predecessor at every `x ≥ 0`.
-  -/
-  serial : TaskFrame.Serial (TaskFrame.reflect PosRel)
-  /--
-  **The paper's *Limit* axiom** (`def:frame#Limit`, verbatim:
-  "$\bigcap\limits_{x > 0} (w)_x = \set{w}$"), stated by citation as `TaskFrame.Limit` of the
-  extended relation — the bare-relation predicate of record, never restated inline. Unfolded it
-  is the literal transcribed shape, `∀ w u, (∀ x, 0 < x → ∃ y, |y| < x → …) → u = w`: if `u` lies
-  in every positive cone of `w`, then `u` is `w`. Cones range over durations of either sign, so
-  the axiom is stated over the extended relation.
-
-  The citation is *definitional*, so this is exactly what `TaskFrame.limit_of_succOrder`,
-  `TaskFrame.limit_of_shift`, and the class helpers conclude, and exactly what
-  `TaskFrame.nullity_of_serial_limit` consumes to derive `lem:nullity`; no construction site
-  needed adaptation when the shape acquired its name. Instantiating its cone witness at `y := 0`
-  also yields injectivity at zero (`FrameOver.eq_of_taskRel_zero`).
-  -/
-  limit : TaskFrame.Limit (TaskFrame.reflect PosRel)
-  /--
-  **The paper's *Saturation* axiom** (`def:frame#Saturation`, verbatim:
-  "$\bigcap \mathcal{S} \neq \emptyset$ for any $\supseteq$-directed family $\mathcal{S}$ of
-  nonempty fibers
-  and segments"), stated by citation as `TaskFrame.Saturation` of the extended relation — the
-  bare-relation predicate of record, never restated inline.
-
-  This field is the one the Step Lemma consumes (`Semantics/Extension/Step.lean`), which is why
-  it must be *literally* `TaskFrame.Saturation`: a restatement, however equivalent, would make
-  that consumption fail to typecheck. Fibers and segments stay two separate classes.
-  -/
-  saturation : TaskFrame.Saturation (TaskFrame.reflect PosRel)
 
 attribute [instance] FrameOver.worldNonempty
 
@@ -1022,20 +965,46 @@ class IsRegular (F : FrameOver D) : Prop where
   names, which is why it must be *literally* the recorded predicate. -/
   saturation : TaskFrame.Saturation F.TaskRel
 
-/--
-**Temporary scaffolding, deleted when the constraint fields are retired.**
+/-!
+#### The four constraints, re-exported under their original names
 
-While `FrameOver` still carries `comp`, `serial`, `limit` and `saturation` as fields, every frame
-is regular by construction, so the class is supplied blanket from the fields. This is what lets
-the class and the fields coexist: consumers can take `[F.IsRegular]` without any construction
-site having to change, and the tree stays green through the migration.
-
-It is removed in the same change that deletes the four fields; at that point `IsRegular` is
-supplied by `FrameOver.instIsRegularOfReflective` at frames built by `ofReflectiveRegular`, and
-by a named instance at each literal-structure frame.
+`F.comp`, `F.serial`, `F.limit` and `F.saturation` were fields of `FrameOver` before the
+general/regular split. They are theorems now, projecting out of the `[F.IsRegular]` instance, and
+their **types are unchanged**: every consumer site in the development reads exactly as it did,
+with the instance supplied by synthesis rather than by the structure. No deprecation alias is
+needed or possible — the names are retained, so an alias would be a self-alias.
 -/
-instance instIsRegularOfFields (F : FrameOver D) : F.IsRegular :=
-  ⟨F.comp, F.serial, F.limit, F.saturation⟩
+
+/-- **The paper's *Compositionality* constraint, in full** (`def:frame#Compositionality`,
+verbatim: "$w \Rightarrow_{x + y} v$ if and only if $w \Rightarrow_x u$ and $u \Rightarrow_y v$
+for some $u \in W$"), at a regular frame. Its `←` (composition) half is projected back out as
+`FrameOver.forward_comp` and its `→` (interpolation) half as `FrameOver.interpolates`. The
+`0 ≤ x`, `0 ≤ y` hypotheses are `def:frame`'s blanket proviso; at such durations the extended
+relation is the primitive one (`TaskFrame.reflect_of_nonneg`), so this says exactly what the
+paper's axiom says of `PosRel`. -/
+theorem comp (F : FrameOver D) [h : F.IsRegular] : TaskFrame.Compositional F.TaskRel := h.comp
+
+/-- **The paper's *Seriality* constraint** (`def:frame#Seriality`, verbatim:
+"$w \Rightarrow_x u$ and $v \Rightarrow_x w$ for some $u, v \in W$") at a regular frame: every
+state has an `x`-successor and an `x`-predecessor at every `x ≥ 0`. -/
+theorem serial (F : FrameOver D) [h : F.IsRegular] : TaskFrame.Serial F.TaskRel := h.serial
+
+/-- **The paper's *Limit* constraint** (`def:frame#Limit`, verbatim:
+"$\bigcap\limits_{x > 0} (w)_x = \set{w}$") at a regular frame, by citation of
+`TaskFrame.Limit`. Unfolded it is the literal transcribed shape: if `u` lies in every positive
+cone of `w`, then `u` is `w`. This is exactly what `TaskFrame.limit_of_succOrder`,
+`TaskFrame.limit_of_shift` and the class helpers conclude, and exactly what
+`TaskFrame.nullity_of_serial_limit` consumes to derive `lem:nullity`. -/
+theorem limit (F : FrameOver D) [h : F.IsRegular] : TaskFrame.Limit F.TaskRel := h.limit
+
+/-- **The paper's *Saturation* constraint** (`def:frame#Saturation`, verbatim:
+"$\bigcap \mathcal{S} \neq \emptyset$ for any $\supseteq$-directed family $\mathcal{S}$ of
+nonempty fibers and segments") at a regular frame. This is the one the Step Lemma consumes
+(`Semantics/Extension/Step.lean`), which is why the class field must be *literally*
+`TaskFrame.Saturation`: a restatement, however equivalent, would make that consumption fail to
+typecheck. Fibers and segments stay two separate classes. -/
+theorem saturation (F : FrameOver D) [h : F.IsRegular] : TaskFrame.Saturation F.TaskRel :=
+  h.saturation
 
 -- The constraints cite the bare-relation predicates at `F.TaskRel` definitionally, although
 -- `TaskRel` is not reducible: the Step Lemma's consumption of `F.saturation` depends on it.
@@ -1192,15 +1161,9 @@ instead, with `PosRel w x u := R w ↑x u`, and cites `TaskFrame.reflect_restric
 bridge and a named `IsRegular` instance for its constraints.
 -/
 def ofReflective (W : Type) [Nonempty W] (R : W → ↑D → W → Prop)
-    (hR : ∀ w d u, R w d u ↔ R u (-d) w) (hcomp : TaskFrame.Compositional R)
-    (hser : TaskFrame.Serial R) (hlim : TaskFrame.Limit R)
-    (hsat : TaskFrame.Saturation R) : FrameOver D where
+    (_hR : ∀ w d u, R w d u ↔ R u (-d) w) : FrameOver D where
   WorldState := W
   PosRel w x u := R w (x : ↑D) u
-  comp := TaskFrame.compositional_reflect_of_reflective hR hcomp
-  serial := TaskFrame.serial_reflect_of_reflective hR hser
-  limit := TaskFrame.limit_reflect_of_reflective hR hlim
-  saturation := TaskFrame.saturation_reflect_of_reflective hR hsat
 
 /--
 **A regular frame presented by a two-sided relation**: `ofReflective` together with the four
@@ -1217,10 +1180,10 @@ Deliberately **not** `@[reducible]`: instance synthesis keys
 `ofReflective` during search, leaving the four constraint proofs as uninferrable parameters.
 -/
 def ofReflectiveRegular (W : Type) [Nonempty W] (R : W → ↑D → W → Prop)
-    (hR : ∀ w d u, R w d u ↔ R u (-d) w) (hcomp : TaskFrame.Compositional R)
-    (hser : TaskFrame.Serial R) (hlim : TaskFrame.Limit R)
-    (hsat : TaskFrame.Saturation R) : FrameOver D :=
-  ofReflective W R hR hcomp hser hlim hsat
+    (hR : ∀ w d u, R w d u ↔ R u (-d) w) (_hcomp : TaskFrame.Compositional R)
+    (_hser : TaskFrame.Serial R) (_hlim : TaskFrame.Limit R)
+    (_hsat : TaskFrame.Saturation R) : FrameOver D :=
+  ofReflective W R hR
 
 /--
 **The auto-instance**: a frame built by `ofReflectiveRegular` is regular, with each constraint
@@ -1249,10 +1212,8 @@ states have type `W`, not `(ofReflective W …).WorldState`, at reducible transp
 by this lemma.
 -/
 theorem ofReflective_taskRel {W : Type} [Nonempty W] {R : W → ↑D → W → Prop}
-    {hR : ∀ w d u, R w d u ↔ R u (-d) w} {hcomp : TaskFrame.Compositional R}
-    {hser : TaskFrame.Serial R} {hlim : TaskFrame.Limit R} {hsat : TaskFrame.Saturation R}
-    {w u : W} {d : ↑D} :
-    (ofReflective W R hR hcomp hser hlim hsat).TaskRel w d u ↔ R w d u :=
+    {hR : ∀ w d u, R w d u ↔ R u (-d) w} {w u : W} {d : ↑D} :
+    (ofReflective W R hR).TaskRel w d u ↔ R w d u :=
   TaskFrame.reflect_restrict_iff hR
 
 /-- The same bridge at the regular constructor. `ofReflectiveRegular` is `ofReflective` with the
@@ -1268,9 +1229,8 @@ theorem ofReflectiveRegular_taskRel {W : Type} [Nonempty W] {R : W → ↑D → 
 /-- The task relation of a frame built by `ofReflective` is the presenting relation, as an
 equation of relations. -/
 theorem ofReflective_taskRel_eq {W : Type} [Nonempty W] {R : W → ↑D → W → Prop}
-    {hR : ∀ w d u, R w d u ↔ R u (-d) w} {hcomp : TaskFrame.Compositional R}
-    {hser : TaskFrame.Serial R} {hlim : TaskFrame.Limit R} {hsat : TaskFrame.Saturation R} :
-    (ofReflective W R hR hcomp hser hlim hsat).TaskRel = R :=
+    {hR : ∀ w d u, R w d u ↔ R u (-d) w} :
+    (ofReflective W R hR).TaskRel = R :=
   TaskFrame.reflect_eq_of_reflective R hR
 
 /-- The same equation at the regular constructor. -/
@@ -2062,6 +2022,13 @@ theorem trivialFrame_taskRel {w u : (trivialFrame (D := D)).WorldState} {d : D} 
     (trivialFrame (D := D)).TaskRel w d u ↔ True :=
   ofReflectiveRegular_taskRel
 
+/-- **`trivialFrame` is regular**: its four `def:frame` constraints, through the regular
+constructor's auto-instance. Named here because instance synthesis does not unfold a frame
+definition on its own — the frame is a `def` whose body is an `ofReflectiveRegular` application,
+and only unification sees through it. -/
+instance trivialFrame_isRegular : (trivialFrame (D := D)).IsRegular :=
+  instIsRegularOfReflective _ _ _ _ _ _ _
+
 /-! #### `trivialFrame` discharges `def:frame`'s four axioms (total class, Helper A) -/
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
@@ -2121,6 +2088,11 @@ def staticFrame (W : Type) [Nonempty W] {D : Type} [AddCommGroup D] [LinearOrder
     (serial_of_eq fun _ _ _ => Iff.rfl)
     (limit_of_eq fun _ _ _ => Iff.rfl)
     (saturation_of_eq fun _ _ _ => Iff.rfl)
+
+/-- **`staticFrame` is regular**, through the regular constructor's auto-instance. -/
+instance staticFrame_isRegular (W : Type) [Nonempty W] :
+    (staticFrame W (D := D)).IsRegular :=
+  instIsRegularOfReflective _ _ _ _ _ _ _
 
 /-! #### `staticFrame` discharges `def:frame`'s four axioms (equality class, Helper C) -/
 
@@ -2189,6 +2161,10 @@ def natFrame {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     (serial_of_permissive fun _ _ _ => Iff.rfl)
     (limit_of_permissive fun _ _ _ => Iff.rfl)
     (saturation_of_permissive fun _ _ _ => Iff.rfl)
+
+/-- **`natFrame` is regular**, through the regular constructor's auto-instance. -/
+instance natFrame_isRegular [SuccOrder D] [NoMaxOrder D] : (natFrame (D := D)).IsRegular :=
+  instIsRegularOfReflective _ _ _ _ _ _ _
 
 /-! #### `natFrame` discharges `def:frame`'s four axioms (permissive class, Helper B) -/
 

@@ -108,7 +108,7 @@ This is the partial-history lemma; the formula-set lemma with the same base name
 (`Metalogic/Core/MaximalConsistent.lean`), is unrelated. `Q` is arbitrary: `LCProp` below is one
 instance, and the instance at an `ω`-indexed recurrence schema is not stated here.
 -/
-theorem PartialHistory.exists_maximal_of_chainClosed (Q : PartialHistory F → Prop)
+theorem PartialHistory.exists_maximal_of_chainClosed [F.IsRegular] (Q : PartialHistory F → Prop)
     (hQ : ∀ (c : Set (PartialHistory F)) (hc : IsChain (· ≤ ·) c) (hne : c.Nonempty),
       (∀ μ ∈ c, Q μ) → Q (chainSup c hc hne))
     {μ₀ : PartialHistory F} (h₀ : Q μ₀) :
@@ -200,7 +200,7 @@ history through `w` at `t` can be continued — on a possibly different history 
 state — to a later `P`-point, then a single world history through `w` at `t` reaches a `P`-point
 and returns to `P` after each of its `P`-points.
 -/
-theorem limit_history (P : F.WorldState → Prop) (t : F.Duration) (w : F.WorldState)
+theorem limit_history [F.IsRegular] (P : F.WorldState → Prop) (t : F.Duration) (w : F.WorldState)
     (h1 : ∃ τ₀ : WorldHistory F, τ₀.state t = w ∧ ∃ s, t < s ∧ P (τ₀.state s))
     (h2 : ∀ ρ : WorldHistory F, ρ.state t = w → ∀ s, t < s → P (ρ.state s) →
         ∃ η : WorldHistory F, η.state s = ρ.state s ∧ ∃ s', s < s' ∧ P (η.state s')) :
@@ -256,7 +256,7 @@ is closed under the limit the formula describes. `limit_history` at the predicat
 Paper: — (formalization-native)
 -/
 theorem blc_plusValid (p : Atom) : PlusValid (blc p) := by
-  refine PlusValid.of_forall fun F M σ t => ?_
+  refine PlusValid.of_forall_regular fun F _ M σ t => ?_
   intro h
   rw [and_iff] at h
   obtain ⟨hA, hB⟩ := h

@@ -167,6 +167,12 @@ noncomputable def multiFamTaskFrameGen (D : TemporalOrder) (FamIdx : Type) [None
       (fun w u h => Prod.ext h.1.symm (by rw [h.2, add_zero])))
     (TaskFrame.saturation_of_fib_subsingleton (flowRel_fib_subsingleton D FamIdx))
 
+/-- **The generic multi-family flow frame is regular**, through the regular constructor's
+auto-instance. -/
+noncomputable instance multiFamTaskFrameGen_isRegular (D : TemporalOrder) (FamIdx : Type)
+    [Nonempty FamIdx] : (multiFamTaskFrameGen D FamIdx).IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
+
 /-- The generic flow frame's task relation is the deterministic clock. -/
 @[simp]
 theorem multiFamGen_taskRel {FamIdx : Type} [Nonempty FamIdx] (w : FamIdx × ↑D) (d : ↑D)
@@ -453,6 +459,12 @@ the deterministic clock. -/
 noncomputable def bundleFlowFrame (B : BFMCS (fc := fc) D) :
     FrameOver (TemporalOrder.of D) :=
   multiFamTaskFrameGen (TemporalOrder.of D) {fam : FMCS (fc := fc) D // fam ∈ B.families}
+
+/-- **The bundle flow frame is regular**, by specialization of the generic flow frame's
+instance. -/
+noncomputable instance bundleFlowFrame_isRegular (B : BFMCS (fc := fc) D) :
+    (bundleFlowFrame B).IsRegular :=
+  multiFamTaskFrameGen_isRegular (TemporalOrder.of D) _
 
 /-- **The bundle flow frame is deterministic** (`def:deterministic`), by specialization of
 `multiFamTaskFrameGen_deterministic` — `bundleFlowFrame` *is* the generic flow frame at the

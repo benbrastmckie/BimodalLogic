@@ -50,15 +50,15 @@ Property: Frame nullity holds for all frames.
 For any frame F and world w, TaskRel w 0 w.
 This is enforced by the `FrameOver` structure.
 -/
-theorem frame_nullity_property (F : FrameOver intOrder) (w : F.WorldState) :
+theorem frame_nullity_property (F : FrameOver intOrder) [F.IsRegular] (w : F.WorldState) :
     F.TaskRel w 0 w :=
   F.nullity w
 
 /-!
 Test: Frame nullity (verifies generator produces valid frames).
 -/
-example : ∀ (F : FrameOver intOrder) (w : F.WorldState), F.TaskRel w 0 w := by
-  intro F w
+example : ∀ (F : FrameOver intOrder) [F.IsRegular] (w : F.WorldState), F.TaskRel w 0 w := by
+  intro F _ w
   exact F.nullity w
 
 /-!
@@ -70,7 +70,7 @@ This is enforced by the `FrameOver` structure.
 -- NOTE (Task 365): `compositionality` was replaced by `forward_comp`, which is restricted to
 -- non-negative durations (`0 ≤ x`, `0 ≤ y`) — the unrestricted mixed-sign law is no longer a
 -- frame property. Added the non-negativity hypotheses to match the current structure.
-theorem frame_compositionality_property (F : FrameOver intOrder)
+theorem frame_compositionality_property (F : FrameOver intOrder) [F.IsRegular]
     (w u v : F.WorldState) (x y : Int) (hx : 0 ≤ x) (hy : 0 ≤ y)
     (h1 : F.TaskRel w x u) (h2 : F.TaskRel u y v) :
     F.TaskRel w (x + y) v :=
@@ -79,9 +79,9 @@ theorem frame_compositionality_property (F : FrameOver intOrder)
 /-!
 Test: Frame compositionality (verifies generator produces valid frames).
 -/
-example : ∀ (F : FrameOver intOrder) (w u v : F.WorldState) (x y : Int),
+example : ∀ (F : FrameOver intOrder) [F.IsRegular] (w u v : F.WorldState) (x y : Int),
     0 ≤ x → 0 ≤ y → F.TaskRel w x u → F.TaskRel u y v → F.TaskRel w (x + y) v := by
-  intro F w u v x y hx hy h1 h2
+  intro F _ w u v x y hx hy h1 h2
   exact F.forward_comp w u v x y hx hy h1 h2
 
 /-! ## Trivial Frame Properties -/
@@ -236,14 +236,14 @@ Property: All constructed frames satisfy nullity.
 This is a meta-property: any frame we can construct must satisfy nullity
 because it's required by the structure definition.
 -/
-example (F : FrameOver intOrder) : ∀ w, F.TaskRel w 0 w := by
+example (F : FrameOver intOrder) [F.IsRegular] : ∀ w, F.TaskRel w 0 w := by
   intro w
   exact F.nullity w
 
 /-!
 Property: All constructed frames satisfy compositionality.
 -/
-example (F : FrameOver intOrder) :
+example (F : FrameOver intOrder) [F.IsRegular] :
     ∀ w u v x y, 0 ≤ x → 0 ≤ y → F.TaskRel w x u → F.TaskRel u y v → F.TaskRel w (x + y) v := by
   intro w u v x y hx hy h1 h2
   exact F.forward_comp w u v x y hx hy h1 h2

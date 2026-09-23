@@ -224,10 +224,6 @@ neither the order instances nor the state-set recursion can be stated. -/
 @[reducible] noncomputable def fzeroFrame : FrameOver realTemporalOrder where
   WorldState := ℝ
   PosRel w x u := fzeroRel w x u
-  comp := TaskFrame.compositional_reflect_of_reflective fzero_reflection fzero_comp
-  serial := TaskFrame.serial_reflect_of_reflective fzero_reflection fzero_serial
-  limit := TaskFrame.limit_reflect_of_reflective fzero_reflection fzero_limit
-  saturation := TaskFrame.saturation_reflect_of_reflective fzero_reflection fzero_saturation
 
 /-- **`F°` is regular**: the four `def:frame` constraints, as the class instance a general frame
 carries them in. The proofs are the ones the structure literal above assigns; the instance is

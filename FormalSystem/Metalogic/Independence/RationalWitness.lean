@@ -108,6 +108,11 @@ the gap the witness exploits.
 -/
 def ratStaticFrame : TaskFrame := (FrameOver.staticFrame Bool (D := ℚ)).toTaskFrame
 
+/-- The witness is regular: it is a static frame, and `FrameOver.staticFrame` is built by the
+regular constructor. -/
+instance ratStaticFrame_isRegular : ratStaticFrame.IsRegular :=
+  FrameOver.staticFrame_isRegular (D := ℚ) Bool
+
 /-- The witness frame is dense: `ℚ` is densely ordered. -/
 theorem ratStaticFrame_isDense : ratStaticFrame.IsDense :=
   inferInstanceAs (DenselyOrdered ℚ)

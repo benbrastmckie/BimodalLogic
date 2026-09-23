@@ -473,6 +473,10 @@ noncomputable def zTaskFrameV2 : FrameOver intOrder :=
     (TaskFrame.limit_of_shift id (fun _ _ _ h => h) (fun _ _ h => by omega))
     (TaskFrame.saturation_of_fib_subsingleton zShiftRel_fib_subsingleton)
 
+/-- **`zTaskFrameV2` is regular**, through the regular constructor's auto-instance. -/
+noncomputable instance zTaskFrameV2_isRegular : zTaskFrameV2.IsRegular :=
+  FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
+
 /-- `zTaskFrameV2`'s task relation is the shift `u = w + d`. -/
 @[simp]
 theorem zTaskFrameV2_taskRel (w d u : ℤ) : zTaskFrameV2.TaskRel w d u ↔ u = w + d :=
@@ -755,6 +759,11 @@ independent one. -/
 noncomputable def multiFamTaskFrame (FamIdx : Type) [Nonempty FamIdx] : FrameOver intOrder :=
   Algebraic.multiFamTaskFrameGen intOrder FamIdx
 
+/-- **`multiFamTaskFrame` is regular**, by specialization of the generic flow frame's instance. -/
+noncomputable instance multiFamTaskFrame_isRegular (FamIdx : Type) [Nonempty FamIdx] :
+    (multiFamTaskFrame FamIdx).IsRegular :=
+  Algebraic.multiFamTaskFrameGen_isRegular intOrder FamIdx
+
 /-! ### `multiFamTaskFrame` discharges `def:frame`'s four axioms (by specialization)
 
 `multiFamTaskFrame` is now *literally* `Algebraic.multiFamTaskFrameGen intOrder FamIdx`, not
@@ -878,7 +887,7 @@ theorem countermodel_discrete_reynolds_v2
     (h_mcs : SetMaximalConsistent (fc := FrameClass.ZTime) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)
     (h_box_discrete : Formula.box nextTop ∈ A) :
-    ∃ (F : TaskFrame) (_ : SuccOrder ↑F.Duration) (_ : PredOrder ↑F.Duration)
+    ∃ (F : TaskFrame) (_ : F.IsRegular) (_ : SuccOrder ↑F.Duration) (_ : PredOrder ↑F.Duration)
       (_ : IsSuccArchimedean ↑F.Duration) (_ : IsPredArchimedean ↑F.Duration)
       (_ : F.Deterministic)
       (TM : TaskModel F) (τ : WorldHistory F) (t : ↑F.Duration),
@@ -945,7 +954,7 @@ theorem countermodel_discrete_reynolds_v2
           (toCarrier (h_lo f) (h_hi f) (w₀ + t)) ψ by
     -- Package the existential
     refine ⟨(multiFamTaskFrame FamIdx).toTaskFrame,
-      inferInstance, inferInstance, inferInstance, inferInstance,
+      inferInstance, inferInstance, inferInstance, inferInstance, inferInstance,
       multiFamTaskFrame_deterministic FamIdx, TM,
       multiFamHistory f₀ 0,
       s₀.val, ?_⟩

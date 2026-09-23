@@ -94,8 +94,8 @@ handed straight back.
 Homed in this module rather than in `Semantics/ShiftSet.lean`: its only consumer is
 `modelExistence_of_satPreserved` immediately below. The converse
 (`fc.Sat F` from `fc.Sat (ofModel F M).frame`) is deliberately not stated — nothing wants it. -/
-theorem sat_ofModel_frame {fc : ProofSystem.FrameClass} {F : TaskFrame} (M : TaskModel F)
-    (h : fc.Sat F) :
+theorem sat_ofModel_frame {fc : ProofSystem.FrameClass} {F : TaskFrame} [F.IsRegular]
+    (M : TaskModel F) (h : fc.Sat F) :
     fc.Sat (ShiftSet.ofModel F M).frame := by
   cases fc <;>
     first
@@ -141,6 +141,10 @@ theorem modelExistence_of_satPreserved {fc : ProofSystem.FrameClass}
   -- apply here; `Nonempty.some` extracts the per-index witness instead, and its named fields
   -- replace what `choose`'s six output names used to stand for.
   let P : ∀ i : Idx Γ, PointedModel fc {ψ | ψ ∈ i.val} := fun i => (hfin i.val i.property).some
+  -- Every witness frame is regular: it lies in the class, and every class consists of regular
+  -- frames (`FrameClass.Sat.isRegular`). Registered as a local Pi-instance so that
+  -- `ShiftSet.ofModel` elaborates at each index.
+  haveI hreg : ∀ i : Idx Γ, (P i).Frame.IsRegular := fun i => (P i).inClass.isRegular
   refine SatisfiableSet.of_forall
     (uShiftSet (idxUF Γ) (fun i => ShiftSet.ofModel (P i).Frame (P i).Model)).frame
     (hpres (idxUF Γ) (fun i => (P i).Frame.Duration)
