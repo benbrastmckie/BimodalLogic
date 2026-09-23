@@ -291,7 +291,7 @@ elaborates at a dense duration type, and nothing outside `FMP/` refers to any of
 noncomputable def RefinedFilteredTaskFrame [SuccOrder ↑D] [NoMaxOrder ↑D]
     (phi : Formula) : FrameOver D :=
   haveI : Nonempty (FilteredWorld phi) := filteredWorld_nonempty phi
-  FrameOver.ofReflective (FilteredWorld phi) (refinedFilteredTaskRel D phi)
+  FrameOver.ofReflectiveRegular (FilteredWorld phi) (refinedFilteredTaskRel D phi)
     (by
       intro w d u
       simp only [refinedFilteredTaskRel]
@@ -357,7 +357,7 @@ proposition. -/
 theorem RefinedFilteredTaskFrame.rel_iff [SuccOrder ↑D] [NoMaxOrder ↑D] (phi : Formula) :
     ∀ w d u, (RefinedFilteredTaskFrame D phi).TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := by
   intro w d u
-  refine FrameOver.ofReflective_taskRel.trans ?_
+  refine FrameOver.ofReflectiveRegular_taskRel.trans ?_
   by_cases hd : d = 0
   · simp only [refinedFilteredTaskRel, hd, ↓reduceIte, ne_eq, not_true_eq_false, false_or]
     exact Iff.rfl

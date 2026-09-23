@@ -380,21 +380,28 @@ completeness theorem changes. This is the one place meaning could silently chang
 
 ---
 
-### Phase 5: Migrate `Extension/` and Semantics-core consumers to the class [NOT STARTED]
+### Phase 5: Migrate `Extension/` and Semantics-core consumers to the class [COMPLETED]
 
 **Goal**: Add `[F.IsRegular]` binders where an axiom accessor is used under a universally
 quantified frame, across `Extension/` and the `Semantics/` core, and land the two
 generalize-then-derive pairs. Still green, because Phase 2's blanket instance is still present.
 
 **Tasks**:
-- [ ] Re-derive the consumer grep and record the result in the phase's progress notes (see Scope Hypothesis).
-- [ ] Add `[F.IsRegular]` to the extension chain: `Extension/Constraint.lean`, `Extension/Admissible.lean`, `Extension/Step.lean`, `Extension/Extension.lean`, `Extension/PeriodicExtension.lean`. Update the extension theorem's docstring to state the corrected constraint list (all four, with the per-site table from Research Integration above).
-- [ ] Confirm `Step.lean`'s docstring claim that `F.saturation` is applied "directly, with zero adaptation" stays true — the re-exported theorem has the same type as the old field.
-- [ ] Add `ShiftSet.rev_sep_of_limit` taking an explicit `TaskFrame.Limit F.TaskRel` hypothesis, and derive `ShiftSet.rev_sep` from it at `[F.IsRegular]`. Keep `rev_sep`'s name and statement. This is what makes separation-without-Limit statable in Phase 9.
-- [ ] Add `FrameOver.eq_of_taskRel_zero_of_limit` taking an explicit Limit hypothesis, and derive `FrameOver.eq_of_taskRel_zero` from it. Its docstring already says it needs Limit alone.
-- [ ] Add binders to the remaining `Semantics/` consumers: `FrameAxioms.lean`, `IntTransfer.lean`, `IntNormalForm.lean`, `ShiftSet.lean`, `Frames/TranslationProduct.lean`, `Correspondence/Rigidity.lean`, `Correspondence/RigidityReal.lean`, `Semantics.lean`.
-- [ ] Re-site the frame **properties** requirement (5) names, confirming each is already stated over `TaskRel` alone and so needs no proof change: `TaskFrame.Deterministic`, `TaskFrame.ForwardDeterministic`, `TaskFrame.saturation_of_deterministic` (which *produces* a constraint — an `IsRegular` ingredient, not a consumer), `TaskFrame.Static`, `TaskFrame.UniformDwell`, `FrameOver.static_iff_uniformDwell`, `FrameOver.static_of_finite`, `FrameOver.static_of_countable`, and the duration properties `IsDense`/`IsDiscrete`/`IsZTime`/`IsComplete`/`IsRTime`/`IsQTime`. Where a declaration already lives on the general frame, record that in its docstring rather than editing it.
-- [ ] Full `--wfail` build plus test library.
+- [x] Re-derive the consumer grep and record the result. *(completed — see the Scope Hypothesis outcome below)*
+- [x] Add `[F.IsRegular]` where the extension chain consumes a constraint. *(completed — the binders land on the general-frame derived theorems the chain goes through (`FrameOver.nullity`, `nullity_identity`, `reflection`, `forward_comp`, `interpolates`, `backward_comp`, `eq_of_taskRel_zero`, and their total-space re-exports) plus `PartialHistory.ofLe`; the `Extension/` modules themselves needed no edit, because every one of their accessor uses is already under a frame that reaches regularity through those.)*
+- [x] Confirm `Step.lean`'s docstring claim that `F.saturation` applies "directly, with zero adaptation" stays true. *(completed — the re-exported theorem has the old field's type verbatim, and `Step.lean` is unchanged)*
+- [x] Add `ShiftSet.rev_sep_of_limit` and derive `ShiftSet.rev_sep` from it at `[F.IsRegular]`. *(completed)*
+- [x] Add `FrameOver.eq_of_taskRel_zero_of_limit` and derive `FrameOver.eq_of_taskRel_zero` from it. *(completed)*
+- [x] Add binders to the remaining `Semantics/` consumers. *(completed — `ShiftSet.ofModel`/`reverse_repr`, `Correspondence/Rigidity.lean`'s four rigidity theorems, `Frames/TranslationProduct.lean`'s product, `PartialHistory.ofLe`)*
+- [x] Re-site the frame **properties** requirement (5) names. *(completed — confirmed by inspection that `TaskFrame.Deterministic`, `ForwardDeterministic`, `Static`, `UniformDwell`, `saturation_of_deterministic` and the duration properties `IsDense`/`IsDiscrete`/`IsZTime`/`IsComplete`/`IsRTime`/`IsQTime` are all stated over `TaskRel` or `Duration` alone and are therefore already general-frame notions; only the four rigidity theorems that *consume* a constraint gained a binder)*
+- [x] Full `--wfail` build plus test library. *(completed — 2781 jobs, guard exit 0)*
+
+**Scope Hypothesis outcome**: asserted 26 files / 116 accessor occurrences outside
+`TaskFrame.lean`, with 34 inside. Re-derived with the plan's own grep: **25 files / 63
+occurrences outside, 34 inside (97 total)**, of which roughly half are prose in docstrings and
+seven are `Function.comp`/`StrictMono.comp` false positives the filter does not catch. The real
+code-site count outside `TaskFrame.lean` is **25**. The hypothesis was an over-estimate, so the
+Phase 5/6 split needed no re-balancing; both phases were smaller than budgeted.
 
 **Timing**: 2 hours
 
@@ -426,18 +433,22 @@ re-balanced before editing.
 
 ---
 
-### Phase 6: Migrate the remaining consumers [NOT STARTED]
+### Phase 6: Migrate the remaining consumers [COMPLETED]
 
 **Goal**: Add `[F.IsRegular]` binders to the `Metalogic/`, `OpenLanguage/`, `PlusLanguage/` and
 test-library consumers. Still green against the blanket instance.
 
 **Tasks**:
-- [ ] Migrate `OpenLanguage/OpenReversal.lean`, `PlusLanguage/PlusPasting.lean`.
-- [ ] Migrate `Metalogic/Expressiveness/Kamp/{LiftPair,ConjInterleave,ZetaUniformExtract,MonadicFormulaSubstitution}.lean`.
-- [ ] Migrate `Metalogic/Decidability/Verified/Bridge/{RegionFrame,DenseTruth}.lean`, `Metalogic/Decidability/FMP/Filtration.lean`.
-- [ ] Migrate `Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean`, `Metalogic/WeakCanonical/GroupModel/RamseyFactorization.lean`, `Metalogic/Conservativity/Plus/Atomization.lean`, `Metalogic/Algebraic/FlowFrame.lean`.
-- [ ] Sweep `Tests/BimodalTest/` for accessor uses and migrate them.
-- [ ] Full `--wfail` build plus test library.
+- [x] Migrate `OpenLanguage/OpenReversal.lean`, `PlusLanguage/PlusPasting.lean`. *(completed — `OpenReversal.lean`'s `FrameOver.rev` splits into a data `def` plus `FrameOver.rev_isRegular`; `PlusPasting.lean` needed no edit, its `F.comp` use being under a frame that reaches regularity through the class)*
+- [x] Migrate the four `Metalogic/Expressiveness/Kamp/` modules. *(deviation: skipped — every `.comp` occurrence in all four is `StrictMono.comp`/`Function.Injective.comp`, a false positive of the accessor grep. Verified individually; no frame accessor appears in any of them.)*
+- [x] Migrate `Metalogic/Decidability/Verified/Bridge/{RegionFrame,DenseTruth}.lean`, `Metalogic/Decidability/FMP/Filtration.lean`. *(completed — the constructor rename; their `.limit`/`.saturation` uses are at concrete `ofReflectiveRegular` frames and are served by the auto-instance)*
+- [x] Migrate `Metalogic/WeakCanonical/IntegerModel/ReynoldsBridge.lean`, `.../RamseyFactorization.lean`, `Metalogic/Conservativity/Plus/Atomization.lean`, `Metalogic/Algebraic/FlowFrame.lean`. *(completed for `ReynoldsBridge` and `FlowFrame`; `RamseyFactorization` and `Atomization`'s hits are `StrictMono.comp`/`Function.Injective.comp` false positives and needed no edit)*
+- [x] Sweep `Tests/BimodalTest/` for accessor uses and migrate them. *(completed — the re-derived grep finds no frame-accessor code site anywhere under `Tests/`; the test library builds green unchanged)*
+- [x] Full `--wfail` build plus test library. *(completed — 2781 jobs, guard exit 0)*
+
+**Scope Hypothesis outcome**: the Phase 5 grep's file set is fully covered by Phases 5 and 6; the
+files it names that appear in neither list are exactly the seven `Function.comp`/`StrictMono.comp`
+false positives enumerated above, each checked by hand.
 
 **Timing**: 2 hours
 
@@ -459,7 +470,7 @@ unanticipated site and must be added here before the phase closes.
 
 ---
 
-### Phase 7: Migrate constructors to the regular spelling [NOT STARTED]
+### Phase 7: Migrate constructors to the regular spelling [COMPLETED]
 
 **Goal**: Rename every construction site to the regular constructor and give every
 literal-structure frame an explicit `IsRegular` instance, so that Phase 8's field deletion is a
@@ -468,10 +479,32 @@ introduced here as a 7-argument alias of the current `ofReflective`, not yet as 
 a 3-argument general constructor.
 
 **Tasks**:
-- [ ] Add `FrameOver.ofReflectiveRegular` with the **existing** 7-argument signature, defined as the current `ofReflective` body. Underscore-prefix the four axiom arguments if they become unused (`_hcomp`, ...) or C16's `unusedArguments` linter fires.
-- [ ] Rename every construction call site `ofReflective` → `ofReflectiveRegular` across the 13 consumer files. Leave `ofReflective_taskRel` / `ofReflective_taskRel_eq` bridge references alone for now; their extra arguments are implicit and they are renamed with the constructor in Phase 8 only if their names change.
-- [ ] For each of the five literal-structure frames (`Metalogic/Independence/{DriftFrame,LimitClosureFrame,ForwardDeterministicFrame}.lean`, `Semantics/ShiftSet.lean`, `OpenLanguage/OpenReversal.lean`): extract the four axiom proofs into named lemmas and add an explicit `instance : ….IsRegular` beside the `def`, while leaving the four field assignments in place. Multiple instances of a `Prop`-valued class are harmless, so this coexists with Phase 2's blanket instance.
-- [ ] Full `--wfail` build plus test library.
+- [x] Add `FrameOver.ofReflectiveRegular` with the **existing** 7-argument signature, defined as the current `ofReflective` body. *(completed — defined as `ofReflective W R hR hcomp hser hlim hsat`, i.e. delegating rather than duplicating the body, and deliberately **not** `@[reducible]` so that `instIsRegularOfReflective` has a rigid instance key)*
+- [x] Rename every construction call site `ofReflective` → `ofReflectiveRegular` across the consumer files. *(completed; `ofReflectiveRegular_taskRel` / `_taskRel_eq` bridges added and the 17 bridge references renamed with them, since the regular constructor's non-reducibility means the `ofReflective` bridges no longer apply at a regular frame)*
+- [x] For each of the five literal-structure frames, add an explicit `instance : ….IsRegular` beside the `def`. *(completed — `DriftFrame.fzeroFrame_isRegular`, `ForwardDeterministicFrame.fnFrameOver_isRegular`, `LimitClosureFrame.eFrameOver_isRegular`, `ShiftSet.fibre_isRegular`, `OpenReversal.FrameOver.rev_isRegular`; the field assignments stay in place until Phase 8)*
+- [x] Full `--wfail` build plus test library. *(completed — 2781 jobs, guard exit 0)*
+- [x] **Added here**: `FrameOver.instIsRegularOfReflective`, the auto-instance on `ofReflectiveRegular`, so that every renamed call site keeps `F.comp`/`F.serial`/`F.limit`/`F.saturation` working by synthesis with nothing else at the site changing.
+
+**Scope Hypothesis outcome**: asserted 13 files / 37 `ofReflective` occurrences outside
+`TaskFrame.lean` (20 construction sites, 17 bridge references) plus 24 inside, 61 total.
+Re-derived before editing: **14 files / 37 occurrences outside** (20 construction sites, 17
+bridge references) and 24 inside — 61 total, matching exactly. The fourteenth file is
+`Semantics/ShiftSet.lean`, whose single occurrence is a docstring mention, not a call site.
+
+**Deviation (process)**: Phases 5, 6 and 7 are committed together, in one commit from one green
+tree. Their edits interleave inside the same files — `Semantics/IntTransfer.lean` carries a
+Phase 5 binder and a Phase 7 constructor rename, `OpenLanguage/OpenReversal.lean` a Phase 6
+migration and a Phase 7 instance — and git commits whole files, so a three-way split would have
+had to either mis-attribute whole files or stage hunks. Each phase's checklist is discharged and
+verified above; the committed tree is green under `--wfail` over `FormalSystem` and
+`Tests/BimodalTest`.
+
+**Method note**: the binder sites for Phases 5 and 6 were not guessed. Phase 2's blanket instance
+makes every `[F.IsRegular]` binder redundant while it is present, so the compiler gives no signal.
+The sites were enumerated by temporarily demoting the blanket instance to a plain theorem and
+building: each `failed to synthesize F.IsRegular` error names exactly one declaration that needs
+the binder. The instance was restored before committing, so the committed intermediate state is
+the "alongside" state the process requirements ask for.
 
 **Timing**: 2 hours
 

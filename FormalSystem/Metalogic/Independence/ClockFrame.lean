@@ -40,7 +40,8 @@ not a model of the intended interpretation. Three points make the witness legiti
 
 * `clockFrame` is a genuine value of the `ℚ` fibre, `FrameOver (TemporalOrder.of ℚ)`. Every one of
   `def:frame`'s four axioms — *Compositionality*, *Seriality*, *Limit*, *Saturation* — is discharged
-  below, together with the reflection law its two-sided presentation (`FrameOver.ofReflective`)
+  below, together with the reflection law its two-sided presentation
+  (`FrameOver.ofReflectiveRegular`)
   additionally requires.
 * Because it is a genuine frame over a densely ordered `ℚ`, every base and density axiom holds in
   every model on it, for free, by `soundness_dense`. Nothing has to be checked by hand.
@@ -169,7 +170,7 @@ naming decision is deferred to the phase that deletes the transitional layer.
 -/
 def clockFrame : FrameOver (TemporalOrder.of ℚ) :=
   haveI : Nonempty ClockState := ⟨0⟩
-  FrameOver.ofReflective ClockState clockRel
+  FrameOver.ofReflectiveRegular ClockState clockRel
     (by
       intro w d u
       constructor
@@ -197,7 +198,7 @@ def clockFrame : FrameOver (TemporalOrder.of ℚ) :=
 @[simp] theorem clockFrame_worldState : clockFrame.WorldState = ClockState := rfl
 
 @[simp] theorem clockFrame_taskRel (w : ClockState) (x : ℚ) (u : ClockState) :
-    clockFrame.TaskRel w x u ↔ u = w + cmk x := FrameOver.ofReflective_taskRel
+    clockFrame.TaskRel w x u ↔ u = w + cmk x := FrameOver.ofReflectiveRegular_taskRel
 
 /-- The clock frame inhabits the `ℚ` fibre: the sanity check the plan names. -/
 example : Nonempty (FrameOver (TemporalOrder.of ℚ)) := ⟨clockFrame⟩

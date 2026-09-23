@@ -64,7 +64,7 @@ theorem translationRel_fib_subsingleton {D : TemporalOrder} (w x : ↑D) :
 **The translation frame over `D`**: world states are durations, and `w ⇒_x u` exactly when
 `u = w + x`.
 
-The `FrameOver.ofReflective` obligations: the reflection law is group arithmetic;
+The `FrameOver.ofReflectiveRegular` obligations: the reflection law is group arithmetic;
 *Compositionality* interpolates through `w + x`; *Seriality* has `w + x` and `w - x` as the two
 witnesses; *Limit* is `TaskFrame.limit_of_shift` at the identity position function; and
 *Saturation* is Helper D (`TaskFrame.saturation_of_fib_subsingleton`) applied to
@@ -72,7 +72,7 @@ witnesses; *Limit* is `TaskFrame.limit_of_shift` at the identity position functi
 -/
 def translationFrame (D : TemporalOrder) : FrameOver D :=
   haveI : Nonempty ↑D := ⟨0⟩
-  FrameOver.ofReflective ↑D (fun w x u => u = w + x)
+  FrameOver.ofReflectiveRegular ↑D (fun w x u => u = w + x)
     (by
       intro w d u
       constructor
@@ -100,7 +100,7 @@ def translationFrame (D : TemporalOrder) : FrameOver D :=
     (TaskFrame.saturation_of_fib_subsingleton translationRel_fib_subsingleton)
 
 @[simp] theorem translationFrame_taskRel {D : TemporalOrder} (w x u : ↑D) :
-    (translationFrame D).TaskRel w x u ↔ u = w + x := FrameOver.ofReflective_taskRel
+    (translationFrame D).TaskRel w x u ↔ u = w + x := FrameOver.ofReflectiveRegular_taskRel
 
 /-! ## The permissive frame -/
 
@@ -119,7 +119,7 @@ def permissiveFrame (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder �
   letI := so
   letI := nm
   -- Every obligation is a one-line citation of Helper B (`*_of_permissive`).
-  FrameOver.ofReflective Bool (fun w d u => d ≠ 0 ∨ w = u)
+  FrameOver.ofReflectiveRegular Bool (fun w d u => d ≠ 0 ∨ w = u)
     (TaskFrame.reflection_of_permissive fun _ _ _ => Iff.rfl)
     (TaskFrame.comp_of_permissive fun _ _ _ => Iff.rfl)
     (TaskFrame.serial_of_permissive fun _ _ _ => Iff.rfl)
@@ -128,6 +128,7 @@ def permissiveFrame (D : TemporalOrder) (so : SuccOrder ↑D) (nm : NoMaxOrder �
 
 @[simp] theorem permissiveFrame_taskRel {D : TemporalOrder} (so : SuccOrder ↑D)
     (nm : NoMaxOrder ↑D) (w : Bool) (d : ↑D) (u : Bool) :
-    (permissiveFrame D so nm).TaskRel w d u ↔ (d ≠ 0 ∨ w = u) := FrameOver.ofReflective_taskRel
+    (permissiveFrame D so nm).TaskRel w d u ↔ (d ≠ 0 ∨ w = u) :=
+  FrameOver.ofReflectiveRegular_taskRel
 
 end FormalSystem.Semantics

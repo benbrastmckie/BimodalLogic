@@ -126,7 +126,7 @@ under an ordered-group isomorphism the fiber and segment predicates (`TaskFrame.
 back the **same** directed family. No directedness argument is reconstructed.
 -/
 def FrameOver.map (F : FrameOver D) (e : ↑D ≃+o ↑E) : FrameOver E :=
-  FrameOver.ofReflective F.WorldState (fun w d u => F.TaskRel w (e.symm d) u)
+  FrameOver.ofReflectiveRegular F.WorldState (fun w d u => F.TaskRel w (e.symm d) u)
     (by
       intro w d u
       simpa [map_neg] using F.reflection w (e.symm d) u)
@@ -172,7 +172,7 @@ def FrameOver.map (F : FrameOver D) (e : ↑D ≃+o ↑E) : FrameOver E :=
 @[simp]
 theorem FrameOver.map_taskRel (F : FrameOver D) (e : ↑D ≃+o ↑E) (w : F.WorldState) (d : ↑E)
     (u : F.WorldState) : (FrameOver.map F e).TaskRel w d u ↔ F.TaskRel w (e.symm d) u :=
-  FrameOver.ofReflective_taskRel
+  FrameOver.ofReflectiveRegular_taskRel
 
 /--
 Transport a task model along `e`. The valuation is carried over verbatim: `FrameOver.map` leaves

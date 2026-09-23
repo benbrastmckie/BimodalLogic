@@ -184,7 +184,8 @@ which, the zero-duration law, is now a derived theorem rather than a field). The
 is genuinely *not* free is `limit`; it is exactly `S.sep`. The reflection law the transport needs
 (`shRel_reflection`) is also free.
 
-Written as a literal structure rather than through `FrameOver.ofReflective`, and `@[reducible]`,
+Written as a literal structure rather than through `FrameOver.ofReflectiveRegular`, and
+`@[reducible]`,
 so that `S.fibre.WorldState` reduces to `S.Carrier` at reducible transparency; downstream
 frames built on a shift set (`Metalogic/Independence/RealTranslationFrame.lean`) depend on that.
 -/
@@ -192,6 +193,15 @@ frames built on a shift set (`Metalogic/Independence/RealTranslationFrame.lean`)
   WorldState := S.Carrier
   worldNonempty := S.carrier_nonempty
   PosRel w x u := u = S.sh w x
+  comp := TaskFrame.compositional_reflect_of_reflective S.shRel_reflection S.shRel_comp
+  serial := TaskFrame.serial_reflect_of_reflective S.shRel_reflection S.shRel_serial
+  limit := TaskFrame.limit_reflect_of_reflective S.shRel_reflection S.sep
+  saturation := TaskFrame.saturation_reflect_of_reflective S.shRel_reflection S.shRel_saturation
+
+/-- **The induced frame is regular.** Three constraints come free from functionality plus the
+group action; *Limit* is exactly the shift set's `sep` field. This is the class instance a general
+frame carries its constraints in, with the same proofs the structure literal above assigns. -/
+instance fibre_isRegular (S : ShiftSet D) : S.fibre.IsRegular where
   comp := TaskFrame.compositional_reflect_of_reflective S.shRel_reflection S.shRel_comp
   serial := TaskFrame.serial_reflect_of_reflective S.shRel_reflection S.shRel_serial
   limit := TaskFrame.limit_reflect_of_reflective S.shRel_reflection S.sep
@@ -313,20 +323,25 @@ theorem ts_add {F : TaskFrame} (σ : WorldHistory F) (a b : F.Duration) :
       σ.state (r + b + a) = σ.state (r + (a + b)))
 
 /--
-The separation condition, discharged on total histories **straight out of `F.limit`**.
+The separation condition on total histories, **at the constraint it actually uses: *Limit*
+alone**, taken as an explicit hypothesis rather than read off a regular frame.
 
 At each time `t`, `σ.respects_task t (t + y)` turns a witnessing shift `τ = σ.timeShift y` into
-`F.TaskRel (σ.state t) y (τ.state t)`, and `F.limit` then collapses the two states;
-`WorldHistory.ext_state` lifts that to equality of histories.
+`F.TaskRel (σ.state t) y (τ.state t)`, and *Limit* then collapses the two states;
+`WorldHistory.ext_state` lifts that to equality of histories. Nothing else is consumed — no
+*Seriality*, *Compositionality* or *Saturation*, and no property of the frame beyond the one
+inequality.
 
-**No new frame hypothesis is needed.** That is precisely why the `sep` field is the right axiom
-and the stronger free-action axiom is not: freeness is not dischargeable here at all — a
-constant total history is fixed by every shift.
+Stating it this way is what makes **separation without *Limit*** expressible: `sep` is a
+condition on a general frame's histories, and a frame can be exhibited on which it holds although
+*Limit* fails (`Semantics/StateTopology/Counterexamples.lean`). `ShiftSet.rev_sep` below is this
+theorem at a regular frame, with its original statement.
 -/
-theorem rev_sep {F : TaskFrame} (σ τ : WorldHistory F)
+theorem rev_sep_of_limit {F : TaskFrame} (hlim : TaskFrame.Limit F.TaskRel)
+    (σ τ : WorldHistory F)
     (h : ∀ x : F.Duration, 0 < x → ∃ y : F.Duration, |y| < x ∧ τ = σ.timeShift y) : τ = σ := by
   refine WorldHistory.ext_state fun t => ?_
-  refine F.limit (σ.state t) (τ.state t) ?_
+  refine hlim (σ.state t) (τ.state t) ?_
   intro x hx
   obtain ⟨y, hy, hEq⟩ := h x hx
   refine ⟨y, hy, ?_⟩
@@ -335,6 +350,20 @@ theorem rev_sep {F : TaskFrame} (σ τ : WorldHistory F)
     σ.respects_task t (t + y)
   rw [add_sub_cancel_left] at h2
   exact h2
+
+/--
+The separation condition, discharged on total histories **straight out of `F.limit`**.
+
+`rev_sep_of_limit` at a regular frame; the statement is unchanged from when the constraints were
+fields of `FrameOver`.
+
+**No new frame hypothesis is needed.** That is precisely why the `sep` field is the right axiom
+and the stronger free-action axiom is not: freeness is not dischargeable here at all — a
+constant total history is fixed by every shift.
+-/
+theorem rev_sep {F : TaskFrame} [F.IsRegular] (σ τ : WorldHistory F)
+    (h : ∀ x : F.Duration, 0 < x → ∃ y : F.Duration, |y| < x ∧ τ = σ.timeShift y) : τ = σ :=
+  rev_sep_of_limit F.limit σ τ h
 
 /--
 **REVERSE DIRECTION**: every task model induces a shift set.
@@ -346,7 +375,7 @@ reads each atom off at time `0` of the history.
 `carrier_nonempty` is where `Classical.choice` enters the reverse direction, and its only
 entry point: `PartialHistory.hF_nonempty` is Zorn-based.
 -/
-def ofModel (F : TaskFrame) (M : TaskModel F) : ShiftSet F.Duration where
+def ofModel (F : TaskFrame) [F.IsRegular] (M : TaskModel F) : ShiftSet F.Duration where
   Carrier := WorldHistory F
   carrier_nonempty := PartialHistory.hF_nonempty F F.worldNonempty.some
   sh := WorldHistory.timeShift
@@ -363,8 +392,8 @@ Shift-set truth on `ofModel F M` is truth in `M`. The `atom` case is where
 *unconditional* — the shift-closure hypothesis it once carried is retired, not renamed) is
 consumed; every other case is a structural transport.
 -/
-theorem reverse_repr (F : TaskFrame) (M : TaskModel F) (τ : WorldHistory F) (t : F.Duration)
-    (φ : Formula) :
+theorem reverse_repr (F : TaskFrame) [F.IsRegular] (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Duration) (φ : Formula) :
     ShiftTruth (ShiftSet.ofModel F M) τ t φ ↔ TruthAt M τ t φ := by
   induction φ generalizing τ t with
   | atom p =>

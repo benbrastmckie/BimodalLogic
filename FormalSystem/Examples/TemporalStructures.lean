@@ -79,7 +79,7 @@ This is the default temporal structure used in most temporal logic applications.
 Discrete time steps with integer arithmetic. WorldState is Unit (trivial).
 -/
 def intTimeFrame : FrameOver intOrder :=
-  FrameOver.ofReflective Unit (fun _ _ _ => True)
+  FrameOver.ofReflectiveRegular Unit (fun _ _ _ => True)
     (fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩)
     (TaskFrame.comp_of (TaskFrame.interpolates_of_total fun _ _ _ => trivial)
       fun _ _ _ _ _ _ _ _ _ => trivial)
@@ -91,7 +91,7 @@ def intTimeFrame : FrameOver intOrder :=
 @[simp]
 theorem intTimeFrame_taskRel {w u : intTimeFrame.WorldState} {d : ↑intOrder} :
     intTimeFrame.TaskRel w d u ↔ True :=
-  FrameOver.ofReflective_taskRel
+  FrameOver.ofReflectiveRegular_taskRel
 
 /-! ### `intTimeFrame` discharges `def:frame`'s four axioms (total class) -/
 
@@ -127,7 +127,7 @@ A slightly more complex frame with `Nat` world states. Task relation is `d ≠ 0
 so that duration zero relates only equal states while remaining permissive for non-zero durations.
 -/
 def intNatFrame : FrameOver intOrder :=
-  FrameOver.ofReflective Nat (fun w d u => d ≠ 0 ∨ w = u)
+  FrameOver.ofReflectiveRegular Nat (fun w d u => d ≠ 0 ∨ w = u)
     (fun w d u => by
       constructor
       · intro h
@@ -169,7 +169,7 @@ def intNatFrame : FrameOver intOrder :=
 /-- `intNatFrame`'s relation is the permissive class `d ≠ 0 ∨ w = u`. -/
 theorem intNatFrame_rel_iff :
     ∀ w d u, intNatFrame.TaskRel w d u ↔ (d ≠ 0 ∨ w = u) :=
-  fun _ _ _ => FrameOver.ofReflective_taskRel
+  fun _ _ _ => FrameOver.ofReflectiveRegular_taskRel
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `intNatFrame`, via the `w = u` disjunct. -/
@@ -220,7 +220,7 @@ and *Complete*. None of the three is an axiom-discharge source: two are correspo
 and one is a frame-class predicate. `def:frame` is the source of record for all four discharges.
 -/
 def intBoolFrame : FrameOver intOrder :=
-  FrameOver.ofReflective Bool (fun w d u => d ≠ 0 ∨ w = u)
+  FrameOver.ofReflectiveRegular Bool (fun w d u => d ≠ 0 ∨ w = u)
     (fun w d u => by
       constructor
       · intro h
@@ -260,7 +260,7 @@ def intBoolFrame : FrameOver intOrder :=
 /-- `intBoolFrame`'s relation is the permissive class `d ≠ 0 ∨ w = u`. -/
 theorem intBoolFrame_rel_iff :
     ∀ w d u, intBoolFrame.TaskRel w d u ↔ (d ≠ 0 ∨ w = u) :=
-  fun _ _ _ => FrameOver.ofReflective_taskRel
+  fun _ _ _ => FrameOver.ofReflectiveRegular_taskRel
 
 /-- *Seriality* (`def:frame#Seriality`, verbatim: "$w \Rightarrow_x u$ and $v \Rightarrow_x w$
 for some $u, v \in W$") for `intBoolFrame`, via the `w = u` disjunct. -/

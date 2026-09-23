@@ -185,7 +185,7 @@ lemma-shaped constructor over the single `PartialHistory` structure, and it exis
 because the paper's own `%` comment at `def:world-history` says the negative-difference instances
 are *covered by the reflection convention* rather than separately required.
 -/
-def ofLe (domain : F.Duration → Prop) (nonempty_domain : ∃ t, domain t)
+def ofLe [F.IsRegular] (domain : F.Duration → Prop) (nonempty_domain : ∃ t, domain t)
     (states : (t : F.Duration) → domain t → F.WorldState)
     (respects_le : ∀ (s t : F.Duration) (hs : domain s) (ht : domain t),
       s ≤ t → F.TaskRel (states s hs) (t - s) (states t ht)) :

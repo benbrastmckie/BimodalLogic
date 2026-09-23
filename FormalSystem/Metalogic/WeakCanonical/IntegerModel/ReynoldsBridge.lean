@@ -464,7 +464,7 @@ theorem zShiftRel_fib_subsingleton (w x : ℤ) :
 
 /-- A `FrameOver intOrder` with WorldState = ℤ. Task relation: u = w + d (deterministic). -/
 noncomputable def zTaskFrameV2 : FrameOver intOrder :=
-  FrameOver.ofReflective ℤ (fun w d u => u = w + d)
+  FrameOver.ofReflectiveRegular ℤ (fun w d u => u = w + d)
     (fun w d u => by constructor <;> intro h <;> omega)
     (TaskFrame.comp_of
       (fun w v x y _ _ h => ⟨w + x, rfl, by omega⟩)
@@ -476,7 +476,7 @@ noncomputable def zTaskFrameV2 : FrameOver intOrder :=
 /-- `zTaskFrameV2`'s task relation is the shift `u = w + d`. -/
 @[simp]
 theorem zTaskFrameV2_taskRel (w d u : ℤ) : zTaskFrameV2.TaskRel w d u ↔ u = w + d :=
-  FrameOver.ofReflective_taskRel
+  FrameOver.ofReflectiveRegular_taskRel
 
 /-! ### `zTaskFrameV2` discharges `def:frame`'s four axioms (deterministic shift at `ℤ`)
 

@@ -188,7 +188,7 @@ frame's own interpolation; the reflection law extends it to negative `x`. The po
 `u` with `w ⇒_x u` exists, and the collapse identifies it with `w`.
 -/
 theorem static_of_uniformDwell [DenselyOrdered ↑D] [Archimedean ↑D] (F : FrameOver D)
-    (h : UniformDwell F.TaskRel) : Static F.TaskRel := by
+    [F.IsRegular] (h : UniformDwell F.TaskRel) : Static F.TaskRel := by
   obtain ⟨x₀, hx₀, hcone⟩ := h
   have key := eq_of_rel_of_uniform_radius F.interpolates hx₀
     (fun w u y hy hR => by
@@ -240,8 +240,8 @@ reflection law. Both hypotheses are sharp — see `RigiditySharpness.lean`.
 
 Paper: — (the manuscript states no rigidity theorem; stated at the hypothesis the proof uses)
 -/
-theorem static_iff_uniformDwell [DenselyOrdered ↑D] [Archimedean ↑D] (F : FrameOver D) :
-    Static F.TaskRel ↔ UniformDwell F.TaskRel :=
+theorem static_iff_uniformDwell [DenselyOrdered ↑D] [Archimedean ↑D] (F : FrameOver D)
+    [F.IsRegular] : Static F.TaskRel ↔ UniformDwell F.TaskRel :=
   ⟨F.uniformDwell_of_static, F.static_of_uniformDwell⟩
 
 /--
@@ -251,7 +251,7 @@ the minimum over the finite carrier is uniform. No order hypothesis on `D` beyon
 `TemporalOrder` carries — over `ℤ`, for instance, the radius `1` works vacuously, which is
 exactly why density is needed in `static_of_finite`.
 -/
-theorem uniformDwell_of_finite (F : FrameOver D) [Finite F.WorldState] :
+theorem uniformDwell_of_finite (F : FrameOver D) [F.IsRegular] [Finite F.WorldState] :
     UniformDwell F.TaskRel := by
   classical
   haveI := Fintype.ofFinite F.WorldState
@@ -278,7 +278,7 @@ dynamics at all.
 Paper: — (the manuscript states no rigidity theorem; stated at the hypothesis the proof uses)
 -/
 theorem static_of_finite [DenselyOrdered ↑D] [Archimedean ↑D] (F : FrameOver D)
-    [Finite F.WorldState] : Static F.TaskRel :=
+    [F.IsRegular] [Finite F.WorldState] : Static F.TaskRel :=
   F.static_of_uniformDwell F.uniformDwell_of_finite
 
 end FrameOver

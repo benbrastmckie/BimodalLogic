@@ -229,6 +229,16 @@ neither the order instances nor the state-set recursion can be stated. -/
   limit := TaskFrame.limit_reflect_of_reflective fzero_reflection fzero_limit
   saturation := TaskFrame.saturation_reflect_of_reflective fzero_reflection fzero_saturation
 
+/-- **`F°` is regular**: the four `def:frame` constraints, as the class instance a general frame
+carries them in. The proofs are the ones the structure literal above assigns; the instance is
+what makes them reachable as `fzeroFrame.comp` and siblings once the constraints are no longer
+structure fields. -/
+noncomputable instance fzeroFrame_isRegular : fzeroFrame.IsRegular where
+  comp := TaskFrame.compositional_reflect_of_reflective fzero_reflection fzero_comp
+  serial := TaskFrame.serial_reflect_of_reflective fzero_reflection fzero_serial
+  limit := TaskFrame.limit_reflect_of_reflective fzero_reflection fzero_limit
+  saturation := TaskFrame.saturation_reflect_of_reflective fzero_reflection fzero_saturation
+
 /-- `F°` as a `TaskFrame`, the shape validity and truth are stated over. -/
 @[reducible] noncomputable def F0 : TaskFrame := fzeroFrame.toTaskFrame
 

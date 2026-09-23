@@ -274,7 +274,7 @@ def colourClock [Finite W] [Nonempty W]
     (hR : ∀ w d u, R w d u ↔ R u (-d) w) (hC : TaskFrame.Compositional R)
     (hS : TaskFrame.Serial R) (h0 : ∀ w u, R w 0 u → u = w) : FrameOver D :=
   haveI : Nonempty ↑D := ⟨0⟩
-  FrameOver.ofReflective (W × ↑D) (prodRel R) (prodRel_reflection R hR) (prodRel_comp R hC)
+  FrameOver.ofReflectiveRegular (W × ↑D) (prodRel R) (prodRel_reflection R hR) (prodRel_comp R hC)
     (prodRel_serial R hS) (prodRel_limit R h0)
     (prodRel_saturation R (TaskFrame.saturation_of_finite R))
 
@@ -291,7 +291,8 @@ the corresponding field of `F`; the Limit field uses only `F.eq_of_taskRel_zero`
 A proof device, never an intended model: see the module docstring. -/
 def FrameOver.translationProduct [F.IsRegular] : FrameOver D :=
   haveI : Nonempty ↑D := ⟨0⟩
-  FrameOver.ofReflective (F.WorldState × ↑D) (prodRel F.TaskRel) (prodRel_reflection _ F.reflection)
+  FrameOver.ofReflectiveRegular (F.WorldState × ↑D) (prodRel F.TaskRel)
+    (prodRel_reflection _ F.reflection)
     (prodRel_comp _ F.comp) (prodRel_serial _ F.serial)
     (prodRel_limit _ fun _ _ h => (F.eq_of_taskRel_zero h).symm)
     (prodRel_saturation _ F.saturation)
@@ -300,7 +301,7 @@ def FrameOver.translationProduct [F.IsRegular] : FrameOver D :=
 @[simp] theorem FrameOver.translationProduct_taskRel [F.IsRegular] (a : F.WorldState × ↑D)
     (x : ↑D) (b : F.WorldState × ↑D) :
     F.translationProduct.TaskRel a x b ↔ F.TaskRel a.1 x b.1 ∧ b.2 = a.2 + x :=
-  FrameOver.ofReflective_taskRel
+  FrameOver.ofReflectiveRegular_taskRel
 
 /-- The product lies in exactly the same frame class as `F`, at every tag: the four tags
 constrain the temporal order only, and the product keeps `D`. -/

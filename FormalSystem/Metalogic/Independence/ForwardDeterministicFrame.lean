@@ -219,6 +219,14 @@ reason `fzeroFrame` carries it — without it `FN.WorldState` does not reduce to
   limit := TaskFrame.limit_reflect_of_reflective fn_reflection fn_limit
   saturation := TaskFrame.saturation_reflect_of_reflective fn_reflection fn_saturation
 
+/-- **`F^N` is regular**: the four `def:frame` constraints as a class instance on the general
+frame. -/
+instance fnFrameOver_isRegular : fnFrameOver.IsRegular where
+  comp := TaskFrame.compositional_reflect_of_reflective fn_reflection fn_comp
+  serial := TaskFrame.serial_reflect_of_reflective fn_reflection fn_serial
+  limit := TaskFrame.limit_reflect_of_reflective fn_reflection fn_limit
+  saturation := TaskFrame.saturation_reflect_of_reflective fn_reflection fn_saturation
+
 /-- `F^N` as a `TaskFrame`. -/
 @[reducible] def FN : TaskFrame := fnFrameOver.toTaskFrame
 

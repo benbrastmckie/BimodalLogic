@@ -149,7 +149,7 @@ conclude from. Every consumer elaborates at `intOrder`, or at the temporal order
 each of which supplies it at its construction site rather than at every mention. -/
 noncomputable def multiFamTaskFrameGen (D : TemporalOrder) (FamIdx : Type) [Nonempty FamIdx] :
     FrameOver D :=
-  FrameOver.ofReflective (FamIdx × ↑D) (fun p d q => p.1 = q.1 ∧ q.2 = p.2 + d)
+  FrameOver.ofReflectiveRegular (FamIdx × ↑D) (fun p d q => p.1 = q.1 ∧ q.2 = p.2 + d)
     (fun _ _ _ => by
       constructor
       · rintro ⟨h1, h2⟩; exact ⟨h1.symm, by rw [h2]; abel⟩
@@ -172,7 +172,7 @@ noncomputable def multiFamTaskFrameGen (D : TemporalOrder) (FamIdx : Type) [None
 theorem multiFamGen_taskRel {FamIdx : Type} [Nonempty FamIdx] (w : FamIdx × ↑D) (d : ↑D)
     (u : FamIdx × ↑D) :
     (multiFamTaskFrameGen D FamIdx).TaskRel w d u ↔ (w.1 = u.1 ∧ u.2 = w.2 + d) :=
-  FrameOver.ofReflective_taskRel
+  FrameOver.ofReflectiveRegular_taskRel
 
 /-- World history for `multiFamTaskFrameGen`, visiting `(f, w₀ + t)` at each time `t`; a
 `WorldHistory` (total) by construction.

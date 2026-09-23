@@ -450,7 +450,7 @@ relation *does* fit a choice-free class helper — see `saturation_of_finite`'s 
 -/
 def ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
     (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) : FrameOver intOrder :=
-  FrameOver.ofReflective W (ofStepRel R₁)
+  FrameOver.ofReflectiveRegular W (ofStepRel R₁)
     (fun w d u => by
       constructor
       · rintro ⟨h1, h2⟩
@@ -484,7 +484,7 @@ def ofStep {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
 @[simp]
 theorem ofStep_taskRel {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)
     (fwd : ∀ w, ∃ u, R₁ w u) (bwd : ∀ w, ∃ v, R₁ v w) :
-    (ofStep R₁ fwd bwd).TaskRel = ofStepRel R₁ := FrameOver.ofReflective_taskRel_eq
+    (ofStep R₁ fwd bwd).TaskRel = ofStepRel R₁ := FrameOver.ofReflectiveRegular_taskRel_eq
 
 /-- The one-step relation of a synthesized frame is the relation it was synthesized from. -/
 theorem ofStep_step {W : Type} [Finite W] [Nonempty W] (R₁ : W → W → Prop)

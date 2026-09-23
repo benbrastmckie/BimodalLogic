@@ -167,7 +167,7 @@ binder because the very same `D` is consumed as a bare type by `FrameConditionFo
 def regionFrame (W _ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] :
     FrameOver (TemporalOrder.of D) :=
-  FrameOver.ofReflective (W × D) (fun s d s' => s.1 = s'.1 ∧ s'.2 = s.2 + d)
+  FrameOver.ofReflectiveRegular (W × D) (fun s d s' => s.1 = s'.1 ∧ s'.2 = s.2 + d)
     (by
       intro s d s'
       constructor
@@ -195,7 +195,7 @@ def regionFrame (W _ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
 theorem regionFrame_taskRel (W ι D : Type) [Nonempty W] [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] [Nontrivial D] (s : W × D) (d : D) (s' : W × D) :
     (regionFrame W ι D).TaskRel s d s' ↔ (s.1 = s'.1 ∧ s'.2 = s.2 + d) :=
-  FrameOver.ofReflective_taskRel
+  FrameOver.ofReflectiveRegular_taskRel
 
 /-! ### `regionFrame` discharges `def:frame`'s four axioms
 

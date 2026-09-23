@@ -298,7 +298,7 @@ with inert `ℝ`-ballast. The ballast is there only to make the carrier uncounta
 is, so that one frame fills the uncountable row of the census at every duration order at once. -/
 noncomputable def paddedClock (D : TemporalOrder) : FrameOver D :=
   haveI : Nonempty (↑D × ℝ) := ⟨(0, 0)⟩
-  FrameOver.ofReflective (↑D × ℝ) (padRel D)
+  FrameOver.ofReflectiveRegular (↑D × ℝ) (padRel D)
     (by
       intro w d u
       constructor
@@ -320,10 +320,11 @@ noncomputable def paddedClock (D : TemporalOrder) : FrameOver D :=
       rintro w x u ⟨h1, h2⟩ u' ⟨h3, h4⟩
       exact Prod.ext (h1.trans h3.symm) (h2.trans h4.symm)))
 
-/-- The task relation of `paddedClock`, read off `FrameOver.ofReflective_taskRel` rather than by
-unfolding the frame. -/
+/-- The task relation of `paddedClock`, read off `FrameOver.ofReflectiveRegular_taskRel` rather
+than by unfolding the frame. -/
 @[simp] theorem paddedClock_taskRel {D : TemporalOrder} (w : ↑D × ℝ) (x : ↑D) (u : ↑D × ℝ) :
-    (paddedClock D).TaskRel w x u ↔ (u.1 = w.1 + x ∧ u.2 = w.2) := FrameOver.ofReflective_taskRel
+    (paddedClock D).TaskRel w x u ↔ (u.1 = w.1 + x ∧ u.2 = w.2) :=
+  FrameOver.ofReflectiveRegular_taskRel
 
 /-- **The padded clock has uncountably many world states**, whatever `D` is: the ballast embeds
 `ℝ` into the carrier. -/

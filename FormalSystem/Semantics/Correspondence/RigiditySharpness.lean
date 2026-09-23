@@ -42,8 +42,9 @@ static; the third weakens finiteness to countability and loses staticity with it
 carries the discreteness the ℤ-time witnesses need there; the fresh lemma here is for `ℚ ×ₗ ℚ`,
 whose second coordinate is dense so that `DenselyOrdered` holds.
 
-Both frames are built through `FrameOver.ofReflective` from a presenting relation, so their task
-relations are read off with `FrameOver.ofReflective_taskRel` (or the `@[simp]` bridge
+Both frames are built through `FrameOver.ofReflectiveRegular` from a presenting relation, so
+their task
+relations are read off with `FrameOver.ofReflectiveRegular_taskRel` (or the `@[simp]` bridge
 `permissiveFrame_taskRel`), never by unfolding. `Mathlib.Data.Int.SuccPred` is imported for the
 `SuccOrder ℤ` instance that `intPermissiveFrame_not_static` recovers on the carrier of
 `TemporalOrder.of ℤ`, and `Mathlib.Data.Rat.Denumerable` for the `Countable ℚ` instance
@@ -148,7 +149,7 @@ theorem lexRatRel_limit :
 /-- The two-state task frame over `ℚ ×ₗ ℚ` presented by `lexRatRel`; saturation is free on a
 finite carrier. -/
 noncomputable def lexRatFrame : FrameOver (TemporalOrder.of LexRat) :=
-  FrameOver.ofReflective Bool lexRatRel lexRatRel_refl lexRatRel_comp lexRatRel_serial
+  FrameOver.ofReflectiveRegular Bool lexRatRel lexRatRel_refl lexRatRel_comp lexRatRel_serial
     lexRatRel_limit (saturation_of_finite lexRatRel)
 
 /--
@@ -159,7 +160,7 @@ finite, so it has a uniform dwell time; its duration group is densely ordered
 theorem lexRatFrame_not_static : ¬ Static lexRatFrame.TaskRel := by
   intro h
   have : lexRatRel true (toLex ((1 : ℚ), (0 : ℚ))) false := Or.inl (by simp)
-  exact Bool.noConfusion ((h true _ false).mp (FrameOver.ofReflective_taskRel.mpr this))
+  exact Bool.noConfusion ((h true _ false).mp (FrameOver.ofReflectiveRegular_taskRel.mpr this))
 
 /-- The first coordinate of an `ℕ`-multiple in `ℚ ×ₗ ℚ` is the multiple of the first coordinate. -/
 theorem lexRat_fst_nsmul (n : ℕ) (x : LexRat) : (ofLex (n • x)).1 = n • (ofLex x).1 := by

@@ -115,6 +115,47 @@ def FrameOver.rev (F : FrameOver D) : FrameOver D where
       change F.TaskRel u x w ∧ F.TaskRel u (-y) v ↔ F.TaskRel v y u ∧ F.TaskRel w (-x) u
       rw [F.reflection u x w, F.reflection u (-y) v, neg_neg, and_comm]
 
+/-- **The converse of a regular frame is regular.** All four `def:frame` constraints are
+inherited: *Compositionality* by commuting the two factors, *Seriality* by exchanging its
+conjuncts, *Limit* by symmetry of equality, and *Saturation* by mapping each fibre and segment to
+its mirror through the reflection convention. Stated as a class instance on the general frame, so
+that `F.rev.comp` and its siblings are found by synthesis exactly where `F.comp` is. -/
+instance FrameOver.rev_isRegular (F : FrameOver D) [F.IsRegular] : F.rev.IsRegular where
+  comp := by
+    intro w v x y hx hy
+    have h := F.comp v w y x hy hx
+    rw [add_comm] at h
+    change reflect F.PosRel v (x + y) w ↔ ∃ u, reflect F.PosRel u x w ∧ reflect F.PosRel v y u
+    rw [h]
+    constructor
+    · rintro ⟨u, h1, h2⟩; exact ⟨u, h2, h1⟩
+    · rintro ⟨u, h1, h2⟩; exact ⟨u, h2, h1⟩
+  serial := by
+    intro w x hx
+    obtain ⟨⟨u, hu⟩, ⟨v, hv⟩⟩ := F.serial w x hx
+    exact ⟨⟨v, hv⟩, ⟨u, hu⟩⟩
+  limit := by
+    intro w u h
+    exact (F.limit u w h).symm
+  saturation := by
+    intro S hdir hmem
+    refine F.saturation S hdir ?_
+    intro s hs
+    obtain ⟨hcls, hne⟩ := hmem s hs
+    refine ⟨?_, hne⟩
+    rcases hcls with ⟨w, x, rfl⟩ | ⟨w, v, x, y, hx, hy, rfl⟩
+    · left
+      refine ⟨w, -x, ?_⟩
+      ext u
+      change F.TaskRel u x w ↔ F.TaskRel w (-x) u
+      exact F.reflection u x w
+    · right
+      refine ⟨v, w, y, x, hy, hx, ?_⟩
+      ext u
+      change F.TaskRel u x w ∧ F.TaskRel u (-y) v ↔ F.TaskRel v y u ∧ F.TaskRel w (-x) u
+      rw [F.reflection u x w, F.reflection u (-y) v, neg_neg, and_comm]
+
+
 /-- The converse frame's task relation is the converse of the original's. -/
 theorem FrameOver.rev_taskRel (F : FrameOver D) (w : F.WorldState) (d : ↑D) (u : F.WorldState) :
     F.rev.TaskRel w d u ↔ F.TaskRel u d w := Iff.rfl
