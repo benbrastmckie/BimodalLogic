@@ -96,6 +96,9 @@ they are not re-litigated here or in the four-axiom frame alignment work.
 - `PartialHistory.timeShift` — time shift on partial histories
 - `PartialHistory.ofTotal` — the total history of a bare state function
 - `WorldHistory F` — the paper's `H_F`, with `state`, `ofTotal`, `timeShift` and `ext_state`
+- `PartialHistory.restrict` — the restriction of a possible world to a nonempty set of times
+- `PartialHistory.IsRestriction` — "is the restriction of some possible world", the alternative
+  presentation of `def:world-history` the audit evaluates
 
 ## Main Results
 
@@ -103,6 +106,10 @@ they are not re-litigated here or in the four-axiom frame alignment work.
 - `PartialHistory.total_nonempty` — totality implies the nonemptiness field is derivable
 - `PartialHistory.IsTotal.isConvex` — a world history is convex
 - `PartialHistory.isTotal_timeShift` / `isConvex_timeShift` — both predicates survive time shift
+- `PartialHistory.restrict_isPartialHistory` — the easy direction of the identification: every
+  restriction of a possible world is a partial history, at **no** frame constraint
+- `PartialHistory.eq_restrict_of_extends` — a partial history extended by a possible world is that
+  world's restriction to its own domain, on the nose
 
 ## References
 
@@ -497,5 +504,107 @@ theorem timeShift_state (τ : WorldHistory F) (Δ t : F.Duration) :
     (τ.timeShift Δ).state t = τ.state (t + Δ) := rfl
 
 end WorldHistory
+
+/-!
+## The restriction map — the easy direction of the identification
+
+`def:world-history`'s two tiers are related by *restriction*: cut a possible world down to a
+nonempty set of times and what is left is a partial history. This section lands that direction and
+the order facts that come with it for free.
+
+The identification's **hard** direction — every partial history *is* such a restriction — is
+`thm:extension` and lives in `Semantics/Extension/`; nothing in this section depends on it, and
+nothing in this section costs a frame constraint.
+-/
+
+namespace PartialHistory
+
+variable {F : TaskFrame}
+
+/--
+**The restriction of a possible world `h` to a nonempty set `X` of times.**
+
+**No frame constraint is used** — not *Compositionality*, not *Seriality*, not *Limit*, not
+*Saturation*, and not even an ambient `[F.IsRegular]` instance. The construction's four fields are
+the time set, the nonemptiness hypothesis, the world history's own states, and its own
+`respects_task`, **with no glue at all**: the coherence condition of a restriction *is* the
+possible world's coherence condition, read at a smaller index set. That is the whole reason this
+direction of the identification is free, and it is why `def:world-history` can keep coherence
+primitive and derive restriction rather than the reverse.
+
+Paper: `def:world-history` (the extension relation between the tiers)
+-/
+def restrict (h : WorldHistory F) (X : F.Duration → Prop) (hX : ∃ t, X t) :
+    PartialHistory F where
+  domain := X
+  nonempty_domain := hX
+  states := fun t _ => h.state t
+  respects_task := fun s t _ _ => h.respects_task s t
+
+@[simp]
+theorem restrict_domain (h : WorldHistory F) (X : F.Duration → Prop) (hX : ∃ t, X t)
+    (t : F.Duration) : (restrict h X hX).domain t ↔ X t := Iff.rfl
+
+@[simp]
+theorem restrict_states (h : WorldHistory F) (X : F.Duration → Prop) (hX : ∃ t, X t)
+    (t : F.Duration) (ht : (restrict h X hX).domain t) :
+    (restrict h X hX).states t ht = h.state t := rfl
+
+/--
+**The easy direction, stated as a claim rather than a construction**: the restriction of a
+possible world to any nonempty set of times is a partial history. Constraint-free.
+-/
+theorem restrict_isPartialHistory (h : WorldHistory F) (X : F.Duration → Prop) (hX : ∃ t, X t) :
+    ∃ τ : PartialHistory F, τ.domain = X ∧
+      ∀ (t : F.Duration) (ht : τ.domain t), τ.states t ht = h.state t :=
+  ⟨restrict h X hX, rfl, fun _ _ => rfl⟩
+
+/-- A possible world extends each of its own restrictions. -/
+theorem extends_restrict (h : WorldHistory F) (X : F.Duration → Prop) (hX : ∃ t, X t) :
+    Extends h.val (restrict h X hX) where
+  subset := fun t _ => h.property t
+  agree := fun _ _ => rfl
+
+/-- Restricting a possible world to the whole of `D` returns it. -/
+theorem restrict_univ (h : WorldHistory F) :
+    restrict h (fun _ => True) ⟨0, trivial⟩ = h.val := by
+  obtain ⟨⟨d, n, s, r⟩, htot⟩ := h
+  obtain rfl : (fun _ : F.Duration => True) = d :=
+    funext fun t => propext ⟨fun _ => htot t, fun _ => trivial⟩
+  rfl
+
+/-! ### Being a restriction -/
+
+/--
+**The alternative definition of a partial history**: `τ` *is* the restriction of some possible
+world to `dom τ`.
+
+Stated as `Extends h.val τ`, which is exactly `τ = restrict h τ.domain τ.nonempty_domain`
+(`eq_restrict_of_extends`). This is the presentation the audit asks about — define partial
+histories as restrictions, derive coherence — and it is deliberately **not** the library's
+definition; see `Semantics/Extension/Extension.lean`'s `## The identification` section for the
+four reasons the coherence definition stays primitive.
+-/
+def IsRestriction (τ : PartialHistory F) : Prop := ∃ h : WorldHistory F, Extends h.val τ
+
+/--
+**A partial history extended by a possible world *is* that world's restriction to its own
+domain, on the nose.**
+
+This is an equality of `PartialHistory` values, not a pointwise agreement, which is what makes
+`IsRestriction` and "is literally `restrict h _ _`" the same claim.
+
+*Transcription note.* A non-dependent `congrArg` on the structure literal does **not** typecheck
+here: `respects_task`'s type depends on `states`, so rewriting `states` under the constructor is a
+dependent rewrite. Destructure `τ`, substitute the `states` field by `funext`, and close by `rfl`.
+-/
+theorem eq_restrict_of_extends {τ : PartialHistory F} {h : WorldHistory F}
+    (hext : Extends h.val τ) : restrict h τ.domain τ.nonempty_domain = τ := by
+  obtain ⟨d, n, s, r⟩ := τ
+  obtain rfl : (fun (t : F.Duration) (_ : d t) => h.state t) = s :=
+    funext fun t => funext fun ht => hext.agree t ht
+  rfl
+
+end PartialHistory
 
 end FormalSystem.Semantics

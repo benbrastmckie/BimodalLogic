@@ -136,6 +136,39 @@ theorem timeShift_timeShift_neg_le (τ : PartialHistory F) (Δ : F.Duration) :
   ⟨fun t ht => (timeShift_timeShift_neg_domain_iff τ Δ t).mp ht,
    fun t ht => (timeShift_timeShift_neg_states τ Δ t ht _).symm⟩
 
+/-! ## Restriction and the extension order -/
+
+/--
+**Restriction is monotone in the time set**: a larger time set gives a larger partial history in
+the extension order.
+
+Constraint-free, like `PartialHistory.restrict` itself — this file's declarations carry no frame
+constraint at all, which is the structural invariant of the Zorn layer.
+-/
+theorem restrict_mono (h : WorldHistory F) {X Y : F.Duration → Prop}
+    (hX : ∃ t, X t) (hY : ∃ t, Y t) (hXY : ∀ t, X t → Y t) :
+    restrict h X hX ≤ restrict h Y hY :=
+  le_def.mpr ⟨hXY, fun _ _ => rfl⟩
+
+/--
+**Restriction reflects as well as preserves the order**: two restrictions of the *same* possible
+world stand in the extension order exactly as their time sets stand in inclusion.
+
+Together with `Extension.exists_worldHistory_restricting_pair` — which produces, for any `τ ≤ σ`,
+a *single* possible world restricting onto both — this says that restriction is an
+**order-surjection** onto the partial histories, not merely a pointwise surjection: every instance
+of the extension relation is realized inside one possible world, and no spurious instances are
+created. That pair of facts is the order-level form of the anchor case.
+-/
+theorem restrict_le_restrict_iff (h : WorldHistory F) {X Y : F.Duration → Prop}
+    (hX : ∃ t, X t) (hY : ∃ t, Y t) :
+    restrict h X hX ≤ restrict h Y hY ↔ ∀ t, X t → Y t := by
+  constructor
+  · intro hle t ht
+    exact (le_def.mp hle).subset t ht
+  · intro hXY
+    exact restrict_mono h hX hY hXY
+
 /-! ## Chain unions and Zorn's lemma -/
 
 /-- Any two members of a chain agree on their common domain. -/
