@@ -278,7 +278,12 @@ the frame. -/
 theorem funnel_compositional : Compositional (funnelFrame (D := D)).TaskRel := by
   rw [funnelFrame_taskRel_eq]; exact funnelRel_compositional
 
-/-- **The funnel satisfies *Saturation*** (`def:frame#Saturation`), as a fact about the frame. -/
+/-- **The funnel satisfies *Saturation*** (`def:frame#Saturation`), as a fact about the frame.
+With `funnel_serial`, `funnel_compositional` and `funnel_not_limit` this is the profile that
+makes the funnel a three-of-four witness rather than a degenerate one.
+
+Paper: `def:frame#Saturation`
+-/
 theorem funnel_saturation : Saturation (funnelFrame (D := D)).TaskRel := by
   rw [funnelFrame_taskRel_eq]; exact funnelRel_saturation
 
@@ -452,7 +457,11 @@ theorem funnelRel_not_isOpen_cone [DenselyOrdered ↑D] {x : ↑D} (hx : 0 < x) 
 
 /-- **The funnel contains a one-way instantaneous pair**: `0 ⇒_y 2` for arbitrarily small `y ≥ 0`,
 and never `2 ⇒_y 0`. This is the configuration `TaskFrame.limit_of_t1Space_coneTopology` says must
-be present whenever `𝒯_F` is T1 and *Limit* fails, and it is why *NoOneWay* is not free. -/
+be present whenever `𝒯_F` is T1 and *Limit* fails, and it is why *NoOneWay* is not free.
+
+Paper: — (formalization-native; *NoOneWay* and instantaneous reachability are this development's
+notions, not the paper's)
+-/
 theorem funnel_one_way_pair [DenselyOrdered ↑D] :
     QuickFwd (funnelRel (D := D)) 0 2 ∧ ¬ QuickFwd (funnelRel (D := D)) 2 0 := by
   constructor
@@ -873,18 +882,22 @@ theorem not_triangle : ¬ TaskFrame.Triangle rel := by
 The second clause holding for **both** origins is the whole reason this frame is not Hausdorff.
 -/
 
-/-- An origin lies in a positive cone at an origin exactly when they are the same origin.
+/-- An origin lies in a positive cone at an origin exactly when they are the same origin. This
+is the *Cone* clause of `def:task-relation`, computed on this frame.
 
-Paper: `def:task-relation` (the *Cone* clause, computed on this frame) -/
+Paper: `def:task-relation`
+-/
 theorem o_mem_cone_o {b b' : Bool} {x : ℝ} (hx : 0 < x) :
     o b' ∈ cone rel (o b) x ↔ b = b' := by
   constructor
   · rintro ⟨y, _, hR⟩; exact hR
   · intro h; exact ⟨0, by rwa [abs_zero], h⟩
 
-/-- A ray point lies in a cone at an origin exactly when it is nearer than the radius.
+/-- A ray point lies in a cone at an origin exactly when it is nearer than the radius. This is
+the *Cone* clause of `def:task-relation`, computed on this frame.
 
-Paper: `def:task-relation` (the *Cone* clause, computed on this frame) -/
+Paper: `def:task-relation`
+-/
 theorem p_mem_cone_o {b : Bool} {t : {t : ℝ // 0 < t}} {x : ℝ} :
     p t ∈ cone rel (o b) x ↔ t.1 < x := by
   constructor
@@ -895,9 +908,11 @@ theorem p_mem_cone_o {b : Bool} {t : {t : ℝ // 0 < t}} {x : ℝ} :
     exact ⟨t.1, by rwa [abs_of_pos t.2], show t.1 ≤ t.1 from le_rfl⟩
 
 /-- An origin lies in a cone at a ray point exactly when the ray point is nearer than the
-radius — for **both** origins, which is why this frame is not Hausdorff.
+radius — for **both** origins, which is why this frame is not Hausdorff. This is the *Cone*
+clause of `def:task-relation`, computed on this frame.
 
-Paper: `def:task-relation` (the *Cone* clause, computed on this frame) -/
+Paper: `def:task-relation`
+-/
 theorem o_mem_cone_p {b : Bool} {t : {t : ℝ // 0 < t}} {x : ℝ} :
     o b ∈ cone rel (p t) x ↔ t.1 < x := by
   constructor
@@ -909,9 +924,11 @@ theorem o_mem_cone_p {b : Bool} {t : {t : ℝ // 0 < t}} {x : ℝ} :
     change t.1 ≤ -(-t.1)
     linarith
 
-/-- On the ray the cones are Euclidean intervals.
+/-- On the ray the cones are Euclidean intervals — the *Cone* clause of `def:task-relation`,
+computed on this frame.
 
-Paper: `def:task-relation` (the *Cone* clause, computed on this frame) -/
+Paper: `def:task-relation`
+-/
 theorem p_mem_cone_p {t s : {t : ℝ // 0 < t}} {x : ℝ} :
     p s ∈ cone rel (p t) x ↔ |s.1 - t.1| < x := by
   constructor
@@ -990,8 +1007,11 @@ theorem isOpen_nbhdTopology_cone (w : TO) (x : ℝ) (hx : 0 < x) :
 (`TaskFrame.coneTopology_eq_nbhdTopology_iff`) rather than by the shortcut condition, which fails
 here (`not_triangle`).
 
-Paper: `def:task-topology` (the subbasis topology it defines coincides here with the
-cone-neighbourhood topology) -/
+The subbasis topology `def:task-topology` defines therefore coincides here with the
+cone-neighbourhood topology.
+
+Paper: `def:task-topology`
+-/
 theorem coneTopology_eq_nbhdTopology : coneTopology rel = nbhdTopology rel :=
   (TaskFrame.coneTopology_eq_nbhdTopology_iff (fun w => rel_refl w 0 le_rfl)).mpr
     isOpen_nbhdTopology_cone
@@ -1008,9 +1028,10 @@ theorem not_t2Space_coneTopology : ¬ @T2Space TO (coneTopology rel) := by
 /-! #### The frame-level forms — the register a manuscript cites -/
 
 /-- **The two topologies coincide on the two-origin frame**, as a fact about the frame:
-`𝒯_F` and `𝒩_F` are the same topology on this state space.
+`𝒯_F` and `𝒩_F` are the same topology on this state space — `def:task-topology` at a frame.
 
-Paper: `def:task-topology` (at a frame) -/
+Paper: `def:task-topology`
+-/
 theorem frame_coneTop_eq_stateTopology : frame.coneTop = FrameOver.stateTopology frame := by
   unfold FrameOver.coneTop FrameOver.stateTopology
   rw [frame_taskRel_eq]; exact coneTopology_eq_nbhdTopology
@@ -1406,9 +1427,11 @@ below gives the other: no positive cone at `c` is contained in `{c}`. Together t
 two topologies by name, in both the `≠` form and the sharper strict-fineness form.
 -/
 
-/-- Every positive cone at the centre meets every ray: `t < x → p n t ∈ (c)_x`.
+/-- Every positive cone at the centre meets every ray: `t < x → p n t ∈ (c)_x`. This is the
+*Cone* clause of `def:task-relation`, computed at the hedgehog's centre.
 
-Paper: `def:task-relation` (the *Cone* clause, computed at the hedgehog's centre) -/
+Paper: `def:task-relation`
+-/
 theorem p_mem_cone_c {n : ℕ} {t : {t : ℝ // 0 < t}} {x : ℝ} (ht : t.1 < x) :
     p n t ∈ cone rel c x :=
   ⟨t.1, by rw [abs_of_pos t.2]; exact ht, show t.1 ≤ t.1 from le_rfl⟩
@@ -1428,7 +1451,10 @@ theorem not_isOpen_nbhdTopology_singleton_c :
 cones, hence `𝒯_F`-open (`isOpen_coneTopology_singleton_c`), but no cone at `c` is contained in it
 (`not_isOpen_nbhdTopology_singleton_c`), so `{c}` is not `𝒩_F`-open.
 
-Paper: `def:task-topology` (the topology it defines is not the cone-neighbourhood topology) -/
+So the topology `def:task-topology` defines is not the cone-neighbourhood topology.
+
+Paper: `def:task-topology`
+-/
 theorem coneTopology_ne_nbhdTopology : coneTopology rel ≠ nbhdTopology rel := by
   intro heq
   exact not_isOpen_nbhdTopology_singleton_c (heq ▸ isOpen_coneTopology_singleton_c)
@@ -1441,7 +1467,11 @@ at least `t₂`'s open sets — that is, `t₁` is the **finer** topology. So
 `TaskFrame.coneTopology_le_nbhdTopology` gives `≤` from `w ⇒₀ w`, and
 `coneTopology_ne_nbhdTopology` rules out equality.
 
-Paper: `def:task-topology` (strictly finer than the cone-neighbourhood topology here) -/
+So the topology `def:task-topology` defines is strictly finer than the cone-neighbourhood
+topology here.
+
+Paper: `def:task-topology`
+-/
 theorem coneTopology_lt_nbhdTopology : coneTopology rel < nbhdTopology rel :=
   lt_of_le_of_ne (coneTopology_le_nbhdTopology rel (fun w => rel_refl w 0 le_rfl))
     coneTopology_ne_nbhdTopology

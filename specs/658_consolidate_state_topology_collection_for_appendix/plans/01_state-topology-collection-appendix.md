@@ -236,28 +236,31 @@ at implementation time.
 
 ---
 
-### Phase 4: Add the Missing Frame-Level and Draft-Form Declarations [IN PROGRESS]
+### Phase 4: Add the Missing Frame-Level and Draft-Form Declarations [COMPLETED]
 
 **Goal**: Complete the frame layer in exactly the places option (a) moves the appendix to, so
 every appendix citation lands on a name in the frame register rather than on an anonymous
 `example` or a reader-assembled argument.
 
 **Tasks**:
-- [ ] Add `FrameOver.isOpen_iff` — the replacement `def:task-topology`'s one-clause Open Sets
+- [x] Add `FrameOver.isOpen_iff` — the replacement `def:task-topology`'s one-clause Open Sets
       definition at the frame level (`Iff.rfl`)
-- [ ] Add `FrameOver.r0Space_stateTopology` — `app:topology-r0` under the new topology, named.
+- [x] Add `FrameOver.r0Space_stateTopology` — `app:topology-r0` under the new topology, named.
       Decide the fate of the anonymous `example` it supersedes: either replace it or demote it to
       a comment; do not leave two live certifications of the same fact without a note saying why
-- [ ] Add `FrameOver.iInter_cone_eq_singleton` — the paper's equality form of *Limit* at a
+      *(deviation: altered — the `example` was removed outright rather than demoted to a comment, and `instT1SpaceOfRegular`'s docstring was re-pointed at the named theorem, so exactly one live certification remains)*
+- [x] Add `FrameOver.iInter_cone_eq_singleton` — the paper's equality form of *Limit* at a
       regular frame
-- [ ] Add `TaskFrame.t1Space_nbhdTopology_iff_iInter_cone_of_serial` — `app:topology-t1` exactly
+- [x] Add `TaskFrame.t1Space_nbhdTopology_iff_iInter_cone_of_serial` — `app:topology-t1` exactly
       as the appendix drafts it, under *Seriality* alone
-- [ ] In the last docstring, record that the library's `t1Space_nbhdTopology_iff_limit` consumes
+- [x] In the last docstring, record that the library's `t1Space_nbhdTopology_iff_limit` consumes
       **no** frame constraint, and that *Seriality* is needed only to upgrade the ⊆-half *Limit*
       to the paper's equality form — the appendix gains a sharper theorem for free
 - [x] Add `Paper:` lines to all four docstrings, with the real anchors where they exist
       (`def:task-topology`, `app:topology-r0`, `app:topology-t1`)
-- [ ] Prefix any unused binder with `_` (the source of the one warning research hit)
+      *(`iInter_cone_eq_singleton` carries `def:frame#Limit`, the anchor its statement is)*
+- [x] Prefix any unused binder with `_` (the source of the one warning research hit)
+      *(`fun w _x hx` in `iInter_cone_eq_singleton`; the module compiles with zero warnings)*
 
 **Timing**: 1.0 hours
 
@@ -279,27 +282,31 @@ every appendix citation lands on a name in the frame register rather than on an 
 
 ---
 
-### Phase 5: Symbol-Correspondence Notes and the Formulation Bridges [NOT STARTED]
+### Phase 5: Symbol-Correspondence Notes and the Formulation Bridges [COMPLETED]
 
 **Goal**: Make the Lean names readable from a manuscript that has reassigned `𝒯_F`, and make the
 paper's closure-based R0/T1 definitions visibly match Mathlib's `R0Space`/`T1Space`.
 
 **Tasks**:
-- [ ] Add a symbol-correspondence paragraph to `StateTopology.lean`'s module header: the revised
+- [x] Add a symbol-correspondence paragraph to `StateTopology.lean`'s module header: the revised
       `def:task-topology`'s `𝒯_F` is Lean's `TaskFrame.nbhdTopology` / `FrameOver.stateTopology`;
       the footnote's superseded subbasis topology is Lean's `TaskFrame.coneTopology` /
-      `FrameOver.coneTop`
-- [ ] Mirror the correspondence in both topology `def` docstrings
-- [ ] Record in the module header Mathlib's `TopologicalSpace` order convention (`t₁ ≤ t₂` means
-      `t₁` is finer), with `coneTopology_le_nbhdTopology` as the worked example
-- [ ] Record in the module header the deliberate namespace asymmetry — the funnel's declarations
+      `FrameOver.coneTop` *(header section "Reading these names from the manuscript", with a
+      two-row correspondence table)*
+- [x] Mirror the correspondence in both topology `def` docstrings
+- [x] Record in the module header Mathlib's `TopologicalSpace` order convention (`t₁ ≤ t₂` means
+      `t₁` is finer), with `coneTopology_le_nbhdTopology` as the worked example *(header section
+      "The order on `TopologicalSpace` runs the way Mathlib runs it")*
+- [x] Record in the module header the deliberate namespace asymmetry — the funnel's declarations
       sit flat under `StateTopology.funnel_*` while the other two witnesses are nested under
       `StateTopology.TwoOrigins.*` / `StateTopology.Hedgehog.*` — and that this is a decision, not
       an oversight
-- [ ] Add the R0 bridge: the paper's `w ∈ cl{u} ↔ u ∈ cl{w}` against Mathlib's `R0Space`, via
+- [x] Add the R0 bridge: the paper's `w ∈ cl{u} ↔ u ∈ cl{w}` against Mathlib's `R0Space`, via
       `specializes_iff_mem_closure` — a one-line `theorem` if it is clean, otherwise an explicit
-      docstring sentence naming the Mathlib lemma
-- [ ] Add the milder T1 bridge: the paper's `cl{w} = {w}` against Mathlib's `T1Space`
+      docstring sentence naming the Mathlib lemma *(stated as the declaration
+      `TaskFrame.r0Space_iff_mem_closure_comm`, axioms `[propext, Classical.choice, Quot.sound]`)*
+- [x] Add the milder T1 bridge: the paper's `cl{w} = {w}` against Mathlib's `T1Space`
+      *(`TaskFrame.t1Space_iff_closure_singleton`, same axiom profile)*
 
 **Timing**: 0.75 hours
 

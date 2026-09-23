@@ -44,6 +44,45 @@ converse needs a further hypothesis (`TaskFrame.limit_of_t1Space_coneTopology`),
 four-state funnel of `Semantics/StateTopology/Counterexamples.lean` is the witness that the gap
 is real.
 
+## Reading these names from the manuscript: the symbol correspondence
+
+The manuscript's revised `def:task-topology` **reassigns the symbol** `𝒯_F`. It now names the
+cone-*neighbourhood* topology, which in this module is `TaskFrame.nbhdTopology` at the relation
+level and `FrameOver.stateTopology` at the frame level. The subbasis topology the manuscript
+previously called `𝒯_F`, and now records only in a footnote, is this module's
+`TaskFrame.coneTopology` / `FrameOver.coneTop`.
+
+| Manuscript | This module (relation level) | This module (frame level) |
+|---|---|---|
+| `𝒯_F` of the revised `def:task-topology` | `TaskFrame.nbhdTopology` | `FrameOver.stateTopology` |
+| the superseded subbasis topology of the footnote | `TaskFrame.coneTopology` | `FrameOver.coneTop` |
+
+The Lean names are **not** renamed to follow the symbol: `nbhdTopology` and `coneTopology` say
+which construction is meant, which the reassigned symbol no longer does. Docstrings below write
+`𝒩_F` for the neighbourhood topology and `𝒯_F` for the subbasis topology throughout, the
+pre-revision convention, so that the two are never ambiguous inside this development.
+
+## The order on `TopologicalSpace` runs the way Mathlib runs it
+
+`t₁ ≤ t₂` means `t₁` has **at least** `t₂`'s open sets — that is, `t₁` is the **finer**
+topology. Worked example: `TaskFrame.coneTopology_le_nbhdTopology` reads
+`coneTopology R ≤ nbhdTopology R` and says `𝒯_F` is finer than `𝒩_F`; the strict form on a
+frame where they differ is `coneTopology R < nbhdTopology R`
+(`StateTopology.Hedgehog.coneTopology_lt_nbhdTopology`). Every fineness sentence in this module
+and its `Counterexamples` sibling is written against this line.
+
+## Namespace shape in the counterexample module: a decision, not an oversight
+
+In `Semantics/StateTopology/Counterexamples.lean` the four-state funnel's declarations sit flat
+under `StateTopology.funnel_*` / `StateTopology.funnelRel_*`, while the two real witnesses are
+nested under `StateTopology.TwoOrigins.*` and `StateTopology.Hedgehog.*`. The asymmetry is
+deliberate: the two real witnesses each carry a carrier type, a relation and a frame of their own
+whose short names (`rel`, `frame`, `c`, `p`, `o`) would collide across witnesses and with the
+general layer, so each needs a namespace; the funnel is built on `Fin 4` and a single relation,
+needs no private short names, and its `funnel`-prefixed names are already unambiguous. Renaming
+it into a `Funnel` namespace was weighed and rejected — it would break every existing citation of
+`funnel_not_limit` and `funnel_t1Space_coneTopology` for no gain in discoverability.
+
 ## Import weight: this module is a leaf
 
 `Semantics.lean` deliberately does **not** import this module, and neither does anything else
@@ -69,7 +108,14 @@ would collide at `intOrder`, `ℚ` and `ℝ`.
 ## Main results
 
 - `TaskFrame.t1Space_nbhdTopology_iff_limit` — `𝒩_F` is T1 iff *Limit*
+- `TaskFrame.t1Space_nbhdTopology_iff_iInter_cone_of_serial` — the same biconditional against the
+  paper's *equality* form of *Limit*, under *Seriality*
+- `TaskFrame.t1Space_iff_closure_singleton`, `TaskFrame.r0Space_iff_mem_closure_comm` — the
+  paper's closure formulations of *T1* and *R0* against Mathlib's `T1Space` and `R0Space`
 - `FrameOver.t1Space_iff_limit` — the same, at a general frame
+- `FrameOver.isOpen_iff` — the revised `def:task-topology`'s one-clause Open Sets definition
+- `FrameOver.r0Space_stateTopology` — `app:topology-r0` for `𝒩_F`, named
+- `FrameOver.iInter_cone_eq_singleton` — the paper's equality form of *Limit* at a regular frame
 - `FrameOver.instT1SpaceOfRegular` — a regular frame's state space is T1 (hence R0, free from
   Mathlib's `T1Space → R0Space`)
 - `TaskFrame.t1Space_coneTopology_of_limit`, `TaskFrame.r0Space_coneTopology_of_limit` —
@@ -115,6 +161,14 @@ Recorded source (`def:task-topology`, verbatim): "the result of closing $B_\F$ u
 union and finite intersection".
 
 A plain `def`, never an instance — see this module's header, "Which topology gets the instance".
+
+**Symbol correspondence**: under the manuscript's revised `def:task-topology` this is *not* what
+`𝒯_F` names any more — the revision reassigns that symbol to the cone-neighbourhood topology
+(`nbhdTopology`) and records this subbasis topology in a footnote instead. Docstrings in this
+development keep the pre-revision reading, writing `𝒯_F` for this topology throughout. See the
+module header, "Reading these names from the manuscript".
+
+Paper: `def:task-topology`
 -/
 def coneTopology (R : W → D → W → Prop) : TopologicalSpace W :=
   generateFrom {s | ∃ w x, 0 < x ∧ s = cone R w x}
@@ -127,6 +181,13 @@ This is a topology with no frame constraint assumed — only `[Nontrivial D]`, s
 radius exists at all (`TaskFrame.exists_pos_of_nontrivial`). It is the one that characterises
 *Limit* exactly (`t1Space_nbhdTopology_iff_limit`), and the one `FrameOver.stateTopology`
 installs as the state space's instance.
+
+**Symbol correspondence**: this is what the manuscript's revised `def:task-topology` names
+`𝒯_F`, its one-clause Open Sets definition being `nbhdTopology_isOpen_iff` (at a frame,
+`FrameOver.isOpen_iff`). Docstrings in this development keep the pre-revision reading and write
+`𝒩_F` for it. See the module header, "Reading these names from the manuscript".
+
+Paper: `def:task-topology`
 -/
 def nbhdTopology (R : W → D → W → Prop) : TopologicalSpace W where
   IsOpen O := ∀ w ∈ O, ∃ x, 0 < x ∧ cone R w x ⊆ O
@@ -144,7 +205,11 @@ def nbhdTopology (R : W → D → W → Prop) : TopologicalSpace W where
     exact ⟨x, hx, hc.trans (subset_sUnion_of_mem hO)⟩
 
 /-- Unfolding lemma for `𝒩_F`-openness, stated so that no consumer unfolds the structure
-instance directly. -/
+instance directly. This one clause is the revised `def:task-topology`'s Open Sets definition over
+a bare relation; `FrameOver.isOpen_iff` is the same fact at a frame.
+
+Paper: `def:task-topology`
+-/
 theorem nbhdTopology_isOpen_iff (R : W → D → W → Prop) {O : Set W} :
     IsOpen[nbhdTopology R] O ↔ ∀ w ∈ O, ∃ x, 0 < x ∧ cone R w x ⊆ O :=
   Iff.rfl
@@ -190,6 +255,8 @@ No other frame constraint is consumed in either direction; `[Nontrivial D]` is u
 `𝒩_F` is a topology at all. This is the biconditional the general-frame refactor exists to make
 statable: `Limit` is a hypothesis *about* the relation, not a field of a structure, so both
 directions are about frames that may or may not satisfy it.
+
+Paper: `app:topology-t1`
 -/
 theorem t1Space_nbhdTopology_iff_limit (R : W → D → W → Prop) :
     @T1Space W (nbhdTopology R) ↔ Limit R := by
@@ -217,7 +284,11 @@ theorem t1Space_nbhdTopology_iff_limit (R : W → D → W → Prop) :
 
 /-- **`𝒯_F` is finer than `𝒩_F`** (in Mathlib's order, `coneTopology R ≤ nbhdTopology R`), given
 only that every state loops at duration zero: an `𝒩_F`-open set is the union of the cones it
-contains. The two topologies are therefore comparable, not incomparable. -/
+contains. The two topologies are therefore comparable, not incomparable. Read the direction off
+this module's header, "The order on `TopologicalSpace` runs the way Mathlib runs it".
+
+Paper: — (formalization-native; the paper compares no two topologies on a state space)
+-/
 theorem coneTopology_le_nbhdTopology (R : W → D → W → Prop) (h0 : ∀ w, R w 0 w) :
     coneTopology R ≤ nbhdTopology R := by
   rw [TopologicalSpace.le_def]
@@ -242,7 +313,11 @@ theorem t1Space_coneTopology_of_limit (R : W → D → W → Prop) (h0 : ∀ w, 
   t1Space_antitone (coneTopology_le_nbhdTopology R h0)
     ((t1Space_nbhdTopology_iff_limit R).mpr hlim)
 
-/-- `𝒩_F` is R0 under *Limit*, since T1 implies R0. -/
+/-- `𝒩_F` is R0 under *Limit*, since T1 implies R0. Under the revised `def:task-topology` this
+is what `app:topology-r0` asserts; `FrameOver.r0Space_stateTopology` is its frame-level form.
+
+Paper: `app:topology-r0`
+-/
 theorem r0Space_nbhdTopology_of_limit (R : W → D → W → Prop) (hlim : Limit R) :
     @R0Space W (nbhdTopology R) := by
   letI := nbhdTopology R
@@ -256,9 +331,58 @@ theorem r0Space_coneTopology_of_limit (R : W → D → W → Prop) (h0 : ∀ w, 
   haveI := t1Space_coneTopology_of_limit R h0 hlim
   infer_instance
 
+/-! ### The paper's closure formulations against Mathlib's separation classes
+
+`def:task-topology`'s *T1* and *R0* clauses are stated with closures — `cl{w} = {w}` and
+`w ∈ cl{u} ↔ u ∈ cl{w}` — while this development states them with Mathlib's `T1Space` and
+`R0Space`, which are defined by closed singletons and by symmetry of specialization. The two
+bridges below make that match a checked fact rather than a reader's assumption, so a manuscript
+may cite the Lean results while stating the clauses in its own closure idiom. They are facts of
+general topology: no task frame, no cone and no duration carrier enters either one.
+-/
+
+/-- **The paper's *T1* clause against Mathlib's `T1Space`**: `cl{w} = {w}` for every point.
+This is the *T1* clause of `def:task-topology`.
+
+Paper: `def:task-topology`
+-/
+theorem t1Space_iff_closure_singleton {X : Type*} [TopologicalSpace X] :
+    T1Space X ↔ ∀ w : X, closure ({w} : Set X) = {w} := by
+  constructor
+  · intro _ _
+    exact closure_singleton
+  · intro h
+    rw [t1Space_iff_specializes_imp_eq]
+    intro x y hxy
+    have hy : y ∈ closure ({x} : Set X) := specializes_iff_mem_closure.mp hxy
+    rw [h x, Set.mem_singleton_iff] at hy
+    exact hy.symm
+
+/-- **The paper's *R0* clause against Mathlib's `R0Space`**: `w ∈ cl{u}` exactly when
+`u ∈ cl{w}`. Mathlib defines `R0Space` as symmetry of the specialization order, and
+`specializes_iff_mem_closure` is what identifies the two readings.
+
+Only one direction of the biconditional need be assumed on the right: the statement is symmetric
+in `w` and `u`, so the implication gives the equivalence.
+
+Paper: `app:topology-r0`
+-/
+theorem r0Space_iff_mem_closure_comm {X : Type*} [TopologicalSpace X] :
+    R0Space X ↔ ∀ w u : X, w ∈ closure ({u} : Set X) → u ∈ closure ({w} : Set X) := by
+  constructor
+  · intro h w u hwu
+    haveI := h
+    exact specializes_iff_mem_closure.mp (specializes_iff_mem_closure.mpr hwu).symm
+  · intro h
+    refine ⟨⟨fun x y hxy => ?_⟩⟩
+    exact specializes_iff_mem_closure.mpr (h y x (specializes_iff_mem_closure.mp hxy))
+
 /-- The paper's **equality** form of *Limit*, `⋂_{x>0} (w)_x = {w}`, is `𝒩_F` T1 together with
 the `⊇` half `w ∈ (w)_x`; the `⊇` half follows from `R w 0 w` (`lem:nullity`). This is why
-`TaskFrame.Limit` transcribes only the `⊆` inclusion. -/
+`TaskFrame.Limit` transcribes only the `⊆` inclusion.
+
+Paper: `def:frame#Limit`
+-/
 theorem limit_eq_iff (R : W → D → W → Prop) :
     (∀ w, ⋂ x > (0 : D), cone R w x = {w}) ↔
       (@T1Space W (nbhdTopology R) ∧ ∀ w x, 0 < x → w ∈ cone R w x) := by
@@ -365,7 +489,12 @@ def IsHistory (R : W → D → W → Prop) (τ : D → W) : Prop :=
   ∀ x y, R (τ x) (y - x) (τ y)
 
 /-- **Every history is continuous** from the order topology on `D` to `𝒩_F` — unconditionally,
-with no frame constraint consumed. -/
+with no frame constraint consumed. This is the history-continuity lemma the revised topology
+appendix adds; `FrameOver.continuous_of_history` is its frame-level form.
+
+Paper: — (formalization-native; the continuity lemma the revised appendix adds carries no label
+in the paper)
+-/
 theorem continuous_nbhdTopology_of_history [TopologicalSpace D] [OrderTopology D]
     (R : W → D → W → Prop) {τ : D → W} (hτ : IsHistory R τ) :
     @Continuous D W _ (nbhdTopology R) τ := by
@@ -441,7 +570,11 @@ omit [Nontrivial D] in
 /-- **The gap between `𝒯_F`-T1 and *Limit* is exactly the one-way instantaneous pairs**: given
 the reflection convention, the composition half of *Compositionality*, and *NoOneWay*, `𝒯_F`
 being T1 implies *Limit*. Contrapositively, every frame with `𝒯_F` T1 and *Limit* failing
-contains a one-way instantaneous pair — as the four-state funnel does. -/
+contains a one-way instantaneous pair — as the four-state funnel does. It is the converse of
+`app:topology-t1` for `𝒯_F`, which is not free.
+
+Paper: `app:topology-t1`
+-/
 theorem limit_of_t1Space_coneTopology {R : W → D → W → Prop}
     (hrefl : ∀ w d u, R w d u → R u (-d) w)
     (hcomp : ∀ w u v x y, 0 ≤ x → 0 ≤ y → R w x u → R u y v → R w (x + y) v)
@@ -676,7 +809,12 @@ theorem r0Space_coneTop (F : FrameOver D) [F.IsRegular] :
   TaskFrame.r0Space_coneTopology_of_limit F.TaskRel F.nullity F.limit
 
 /-- **Every world history is continuous** into the state topology, from the order topology on the
-duration carrier. The order topology is an explicit binder, never a global instance. -/
+duration carrier. The order topology is an explicit binder, never a global instance. This is the
+frame-level form of the history-continuity lemma the revised topology appendix adds.
+
+Paper: — (formalization-native; the continuity lemma the revised appendix adds carries no label
+in the paper)
+-/
 theorem continuous_of_history (F : FrameOver D) [TopologicalSpace (↑D : Type)]
     [OrderTopology (↑D : Type)] {τ : (↑D : Type) → F.WorldState}
     (hτ : TaskFrame.IsHistory F.TaskRel τ) : Continuous τ :=
