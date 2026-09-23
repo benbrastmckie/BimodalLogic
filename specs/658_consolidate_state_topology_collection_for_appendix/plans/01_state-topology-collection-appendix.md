@@ -1,11 +1,11 @@
 # Implementation Plan: Task #658
 
 - **Task**: 658 - Consolidate the state-space topology into a library-grade, citable collection for the manuscript appendix
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10.5 hours
 - **Dependencies**: None blocking. MUST NOT run concurrently with the sibling open-questions task (Saturation for the two real witnesses; R0 without *Limit*) or with the frame-constraints audit task — all three touch `FormalSystem/Semantics/StateTopology.lean` and its `Counterexamples` sibling.
 - **Research Inputs**: `specs/658_consolidate_state_topology_collection_for_appendix/reports/01_state-topology-collection-appendix.md` (plus the seed report `SEED.md` and the three compiled probe files under `probes/`)
-- **Artifacts**: plans/01_state-topology-collection-appendix.md (this file)
+- **Artifacts**: plans/01_state-topology-collection-appendix.md (this file), summaries/01_state-topology-collection-appendix-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -378,7 +378,7 @@ rather than counting to twenty.
 
 ---
 
-### Phase 7: Give the Collection a Front Door [IN PROGRESS]
+### Phase 7: Give the Collection a Front Door [COMPLETED]
 
 **Goal**: Make the collection reachable from the repository's public surfaces. Today it appears
 only in `FormalSystem/Semantics/README.md`, which is a defect for a collection whose stated
@@ -414,7 +414,7 @@ purpose is to be cited from a published appendix.
 
 ---
 
-### Phase 8: The Appendix Support Table [IN PROGRESS]
+### Phase 8: The Appendix Support Table [COMPLETED]
 
 **Goal**: The headline deliverable — a durable, citable document mapping every element the
 refactored appendix will contain to the exact Lean declaration that certifies it, with its axiom
@@ -463,18 +463,20 @@ profile, and naming every statement the manuscript would assert that the library
 
 ---
 
-### Phase 9: A Non-Vacuous Test Witness [NOT STARTED]
+### Phase 9: A Non-Vacuous Test Witness [COMPLETED]
 
 **Goal**: `Tests/BimodalTest/` contains zero references to the topology collection, so the
 acceptance criterion "green over `Tests/BimodalTest`" is currently vacuous for it.
 
 **Tasks**:
-- [ ] Add a minimal test module under `Tests/BimodalTest/Semantics/` exercising the headline
+- [x] Add a minimal test module under `Tests/BimodalTest/Semantics/` exercising the headline
       declarations: the biconditional, the R0 result, the history-continuity lemma, and one Gap A
-      and one Gap B promotion
-- [ ] Keep it a **leaf** module, for the same import-weight reason as the library modules
-- [ ] Wire it into the test aggregator per the repository's aggregator convention (C8), and add
-      its README row if the test tree requires one
+      and one Gap B promotion *(`Tests/BimodalTest/Semantics/StateTopologyTest.lean`: seven
+      consuming theorems plus nine `#guard_msgs`-gated axiom pins)*
+- [x] Keep it a **leaf** module, for the same import-weight reason as the library modules
+- [x] Wire it into the test aggregator per the repository's aggregator convention (C8), and add
+      its README row if the test tree requires one *(`Tests/BimodalTest.lean` import plus a
+      `Tests/BimodalTest/Semantics/README.md` row)*
 
 **Timing**: 1.0 hours
 
@@ -493,26 +495,36 @@ acceptance criterion "green over `Tests/BimodalTest`" is currently vacuous for i
 
 ---
 
-### Phase 10: Full Gate Set, Wiring and Closeout [NOT STARTED]
+### Phase 10: Full Gate Set, Wiring and Closeout [COMPLETED]
 
 **Goal**: Bring every gate green simultaneously and confirm no invariant regressed.
 
 **Tasks**:
-- [ ] Regenerate the library root with `lake exe mk_all --lib FormalSystem`, never by hand, and
+- [x] Regenerate the library root with `lake exe mk_all --lib FormalSystem`, never by hand, and
       confirm `lake exe mk_all --lib FormalSystem --check` exits 0 (C33 checks byte-currency)
-- [ ] Run `lake build --wfail` over the library and `Tests/BimodalTest`; confirm green and zero
-      warnings against C28's zero budget
-- [ ] Run `bash scripts/check-module-invariants.sh` in full (build half included) and confirm
-      ALL CHECKS PASSED
-- [ ] Re-assert the import-weight lever: `grep -rn "import FormalSystem.Semantics.StateTopology"
+      *(regenerated: exit 0, no diff — the root already imported both modules; `--check` exit 0;
+      C33 PASS, 556 import lines)*
+- [x] Run `lake build --wfail` over the library and `Tests/BimodalTest`; confirm green and zero
+      warnings against C28's zero budget *(library: exit 0, 2,722 jobs, 0 errors, 0 warnings.
+      `lake build BimodalTest --wfail`: exit 0, 2,782 jobs, 0 errors, 0 warnings — the test library
+      is absent from `defaultTargets`, so it needs its own invocation. C28 PASS at 0)*
+- [x] Run `bash scripts/check-module-invariants.sh` in full (build half included) and confirm
+      ALL CHECKS PASSED *(ALL CHECKS PASSED; zero FAIL lines)*
+- [x] Re-assert the import-weight lever: `grep -rn "import FormalSystem.Semantics.StateTopology"
       FormalSystem/` names only `Counterexamples.lean`, and `FormalSystem/Semantics.lean` imports
-      neither module
-- [ ] Confirm zero `sorry` in both topology modules
-- [ ] Read C17's dead-declaration report and confirm the promotions are absent from it, the ledger
-      rows having supplied the occurrences
-- [ ] Confirm C19 docstring coverage has not fallen below its floor
-- [ ] Confirm no task numbers were introduced outside `specs/` and no `file:line` citation was
-      introduced anywhere
+      neither module *(confirmed; the one new importer is the test module under `Tests/`, outside
+      the published library)*
+- [x] Confirm zero `sorry` in both topology modules *(`lean-sorry-census.sh` over all four
+      resolved roots: `sorry_count: 0`, empty inventory)*
+- [x] Read C17's dead-declaration report and confirm the promotions are absent from it, the ledger
+      rows having supplied the occurrences *(C17 INFO count fell from 754 to 740 across the task,
+      despite twenty new declarations — the ledger rows and the test module supplied occurrences
+      for every promotion)*
+- [x] Confirm C19 docstring coverage has not fallen below its floor *(94.02% refined against a
+      90% floor, up from 94.01% at baseline)*
+- [x] Confirm no task numbers were introduced outside `specs/` and no `file:line` citation was
+      introduced anywhere *(C9 and C9D both PASS; a direct grep over the new content finds no
+      `task N` and no `.lean:N` citation)*
 
 **Timing**: 1.0 hours
 
@@ -532,18 +544,20 @@ acceptance criterion "green over `Tests/BimodalTest`" is currently vacuous for i
 
 ## Testing & Validation
 
-- [ ] `lake build --wfail` green over the library and `Tests/BimodalTest`, zero warnings
-- [ ] `bash scripts/check-module-invariants.sh` reports ALL CHECKS PASSED
-- [ ] `lake exe mk_all --lib FormalSystem --check` exits 0
-- [ ] Zero `sorry` in `StateTopology.lean` and `Counterexamples.lean`
-- [ ] Every promoted and newly stated declaration has axiom profile
-      `[propext, Classical.choice, Quot.sound]`
-- [ ] Every new `docs/theorem-index.md` row satisfies C15's round trip (a `Paper:` line at the
-      declaration)
-- [ ] The import-weight lever holds: no new importer of either topology module under
+- [x] `lake build --wfail` green over the library and `Tests/BimodalTest`, zero warnings
+- [x] `bash scripts/check-module-invariants.sh` reports ALL CHECKS PASSED
+- [x] `lake exe mk_all --lib FormalSystem --check` exits 0
+- [x] Zero `sorry` in `StateTopology.lean` and `Counterexamples.lean`
+- [x] Every promoted and newly stated declaration has axiom profile
+      `[propext, Classical.choice, Quot.sound]` *(all twenty, read off `#print axioms` against the
+      built modules; nine additionally `#guard_msgs`-pinned in the test module)*
+- [x] Every new `docs/theorem-index.md` row satisfies C15's round trip (a `Paper:` line at the
+      declaration) *(all 156 rows PASS)*
+- [x] The import-weight lever holds: no new importer of either topology module under
       `FormalSystem/`, and `FormalSystem/Semantics.lean` imports neither
-- [ ] Every Lean name cited in the appendix support table resolves in the tree
-- [ ] No line-number citations and no task numbers outside `specs/`
+- [x] Every Lean name cited in the appendix support table resolves in the tree *(58 distinct
+      names, each checked by grep)*
+- [x] No line-number citations and no task numbers outside `specs/`
 
 ## Artifacts & Outputs
 

@@ -23,6 +23,7 @@ import BimodalTest.Semantics.ConvexTruthTest
 import BimodalTest.Semantics.SemanticPropertyTest
 import BimodalTest.Semantics.DependentUltraproductProbe
 import BimodalTest.Semantics.QTimeTest
+import BimodalTest.Semantics.StateTopologyTest
 import BimodalTest.Theorems.PropositionalTest
 import BimodalTest.Theorems.ModalS4Test
 import BimodalTest.Theorems.ModalS5Test

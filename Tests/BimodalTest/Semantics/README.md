@@ -17,6 +17,7 @@ Tests for task frame semantics.
 | DependentUltraproductProbe.lean | Axiom-profile regression check over the promoted ultraproduct modules |
 | ValidityLayerTest.lean | Definitional-coincidence regressions for the abstract validity layer: each language's validity `def`s and derived operators against the generic `PointTruth`/`TruthClauses` ones, plus a toy fifth-language conformance check |
 | QTimeTest.lean | ℚ-time frames: `isQTime_rat`, the ℤ non-example, `validQTime_iff_validDense`, and axiom-profile guards |
+| StateTopologyTest.lean | Regression witness for the state-topology collection, whose two modules are leaves with no other in-tree consumer: the T1 biconditional in both forms, the open-set criterion, R0 and the equality form of *Limit* at a regular frame, history continuity, the two-origin and hedgehog promotions, and nine axiom-profile guards |
 
 ## Coverage
 
@@ -24,6 +25,7 @@ Tests for task frame semantics.
 - Truth evaluation at convex histories
 - Validity checking
 - Axiom profiles of the finite-carrier *Saturation* discharge and the ultraproduct construction
+- The state topology of a task frame, and the declarations the manuscript's topology appendix cites
 
 ## Related
 
