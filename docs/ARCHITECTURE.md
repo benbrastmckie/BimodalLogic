@@ -143,6 +143,23 @@ declarations on every module's behalf. Before the relocation those five declarat
 modules under `Automation/`, which is why `Syntax/`, `Semantics/`, `ProofSystem/` and `Theorems/`
 each carried an upward import into `Automation/` — eleven lines, all now deleted.
 
+## The state topology is a leaf, on purpose
+
+`Semantics/StateTopology.lean` and its `StateTopology/Counterexamples.lean` sibling are imported
+by **nothing** under `FormalSystem/` except each other; the generated library root reaches them
+directly, which it can because the root is itself a leaf. `Semantics.lean` deliberately does not
+import either.
+
+This is an import-weight lever, not an oversight. `Mathlib.Topology.*` carries order and
+completeness instances with it, and routing them through the `Semantics` aggregator would put
+them in scope for every downstream module. Doing so has produced a `Preorder ℤ` diamond twice —
+once in the time-indexed-frames work (fixed by keeping `TimeIndexedSharpness` out of the
+aggregator) and once in the countable-`ℝ` rigidity work (fixed by pinning the instance at
+`finOrderEmbInt`). Import these two modules by name where their results are wanted; do not add
+either to an aggregator. For the same reason, history continuity takes the order topology on the
+duration carrier as an explicit **binder** rather than a global instance, which would collide at
+`intOrder`, `ℚ` and `ℝ`.
+
 ## The three completeness routes
 
 `Metalogic/` is not one completeness proof but three, and they are siblings rather than layers:
@@ -179,6 +196,8 @@ bash scripts/check-module-invariants.sh     # B0, C4 imports, C8 aggregators, an
 ## Related documentation
 
 - [`theorem-index.md`](theorem-index.md) — the per-theorem ledger
+- [`reference/state-topology-appendix-support.md`](reference/state-topology-appendix-support.md) —
+  the state-topology collection against the manuscript's topology appendix
 - [`architecture/`](architecture/README.md) — the ADRs
 - [`../FormalSystem/README.md`](../FormalSystem/README.md) — per-layer module tables
 - [`../FormalSystem/Metalogic/README.md`](../FormalSystem/Metalogic/README.md) — the three routes

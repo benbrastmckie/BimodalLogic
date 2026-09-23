@@ -86,6 +86,14 @@ it and the generated library root reaches it directly. See that module's header.
 -- class type, which `warn.classDefReducibility` reports at every mention.
 set_option warn.classDefReducibility false
 
+-- A recorded length ceiling, not a suppression. This module carries four unrelated witnesses --
+-- the ℤ layer, the four-state funnel, the two-origin half-line and the hedgehog -- deliberately
+-- in one file: each is a leaf whose only consumer is a citation, and splitting them would cost
+-- three more aggregator entries, three more README rows and three more import edges into a tree
+-- that keeps this collection out of `Semantics.lean` on purpose. Keep the ceiling tight; raise it
+-- only when a witness genuinely grows, never to park unrelated material here.
+set_option linter.style.longFile 1700
+
 open Topology TopologicalSpace Set
 
 namespace FormalSystem.Semantics.TaskFrame

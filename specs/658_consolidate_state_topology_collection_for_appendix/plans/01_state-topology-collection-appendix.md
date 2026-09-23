@@ -378,7 +378,7 @@ rather than counting to twenty.
 
 ---
 
-### Phase 7: Give the Collection a Front Door [NOT STARTED]
+### Phase 7: Give the Collection a Front Door [IN PROGRESS]
 
 **Goal**: Make the collection reachable from the repository's public surfaces. Today it appears
 only in `FormalSystem/Semantics/README.md`, which is a defect for a collection whose stated
@@ -414,7 +414,7 @@ purpose is to be cited from a published appendix.
 
 ---
 
-### Phase 8: The Appendix Support Table [NOT STARTED]
+### Phase 8: The Appendix Support Table [IN PROGRESS]
 
 **Goal**: The headline deliverable — a durable, citable document mapping every element the
 refactored appendix will contain to the exact Lean declaration that certifies it, with its axiom

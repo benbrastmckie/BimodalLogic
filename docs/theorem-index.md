@@ -173,6 +173,10 @@ class — see `deterministic_not_plusDefinable` above.
 
 ### The state topology, and frames that satisfy some constraints and not others
 
+For the manuscript-facing view of this section — each element of the task-semantics topology
+appendix against the declaration that certifies it, plus the statements the library does **not**
+certify — see [`reference/state-topology-appendix-support.md`](reference/state-topology-appendix-support.md).
+
 `def:frame`'s four constraints are frame **conditions** on the general frame structure
 `FrameOver`, carried by the class `FrameOver.IsRegular` rather than as fields
 (`FormalSystem/Semantics/TaskFrame.lean`, "General frames and the regular class"). Every row below

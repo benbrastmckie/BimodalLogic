@@ -278,6 +278,34 @@ Semantic validity and consequence relations for TM logic.
 
 ---
 
+### State Topology (`FormalSystem.Semantics.TaskFrame` / `FormalSystem.Semantics.FrameOver`)
+
+**Modules**: `FormalSystem/Semantics/StateTopology.lean`,
+`FormalSystem/Semantics/StateTopology/Counterexamples.lean`
+
+The topology a task frame's cones put on its state space. Both modules are **leaves**: nothing
+under `FormalSystem/` imports them except each other, and `Semantics.lean` imports neither. Import
+them by name; do not add either to an aggregator.
+
+#### Entry Points
+
+| Name | Kind | Role |
+|------|------|------|
+| `TaskFrame.nbhdTopology` | `def` | The cone-**neighbourhood** topology: `O` is open exactly when every member has a positive cone inside `O`. This is what the manuscript's revised `def:task-topology` names `𝒯_F` |
+| `TaskFrame.coneTopology` | `def` | The cone-**subbasis** topology: the cones closed under arbitrary union and finite intersection. The manuscript's superseded reading of `𝒯_F` |
+| `FrameOver.stateTopology` | `instance` | The **only** `TopologicalSpace` instance on a state space in this development, namely `nbhdTopology` at the frame's task relation |
+| `FrameOver.coneTop` | `def` | `coneTopology` at a frame — a plain `def`, no instance, so that a state space carries exactly one topology |
+| `FrameOver.isOpen_iff` | `theorem` | Open sets in one clause, so no consumer unfolds the instance |
+| `TaskFrame.t1Space_nbhdTopology_iff_limit` | `theorem` | The headline: T1 **iff** *Limit*, no frame constraint consumed |
+| `TaskFrame.IsHistory`, `TaskFrame.continuous_nbhdTopology_of_history` | `def`, `theorem` | Histories over a bare relation, and their unconditional continuity |
+| `TaskFrame.Triangle`, `TaskFrame.QuickFwd`, `TaskFrame.NoOneWay` | `def` | The conditions under which the two topologies agree, and under which subbasis-T1 recovers *Limit* |
+
+Per-theorem coverage is in [`../theorem-index.md`](../theorem-index.md); the mapping onto the
+manuscript's topology appendix is in
+[`state-topology-appendix-support.md`](state-topology-appendix-support.md).
+
+---
+
 ## Proof System
 
 ### Axioms (`FormalSystem.ProofSystem.Axioms`)

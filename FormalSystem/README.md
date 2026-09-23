@@ -156,6 +156,27 @@ The interaction axiom MF ensures coherence between modal and temporal reasoning.
 
 See BimodalReference Section 2 for formal semantic definitions.
 
+### The State Topology
+
+A task frame's cones `(w)_x` put a topology on its state space, and the whole of it lives in two
+leaf modules: `Semantics/StateTopology.lean` (the general-relation layer, then the frame layer)
+and `Semantics/StateTopology/Counterexamples.lean` (four witnesses — the `ℤ` collapse, the
+four-state funnel, the half-line with two origins, and the hedgehog). Neither is reachable from
+`Semantics.lean`, deliberately: `Mathlib.Topology.*` brings order and completeness instances with
+it, and routing them through the aggregator would put them in scope for every downstream module.
+
+| Result | Statement |
+|--------|-----------|
+| `TaskFrame.t1Space_nbhdTopology_iff_limit` | The cone-neighbourhood topology is T1 **if and only if** the relation satisfies *Limit* — no frame constraint consumed in either direction |
+| `FrameOver.isOpen_iff` | Open sets, in one clause: a set is open exactly when it contains a positive cone around each of its members |
+| `FrameOver.r0Space_stateTopology` | The state topology of a regular frame is R0 |
+| `TaskFrame.continuous_nbhdTopology_of_history` | Every possible world is a continuous path, unconditionally |
+| `StateTopology.TwoOrigins.frame_not_t2Space_coneTop` | T1 does not give Hausdorff, and the failure is a property of the frame: both topologies coincide there and neither separates the origins |
+
+The per-theorem ledger is [`docs/theorem-index.md`](../docs/theorem-index.md); the
+manuscript-facing mapping, with the statements the library does **not** certify named explicitly,
+is [`docs/reference/state-topology-appendix-support.md`](../docs/reference/state-topology-appendix-support.md).
+
 ## Logic Variants
 
 TM logic has four variants based on frame conditions:

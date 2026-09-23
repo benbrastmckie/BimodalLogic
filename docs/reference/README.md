@@ -19,6 +19,7 @@ Most reference materials are theory-specific. See:
 | Document | Description |
 |----------|-------------|
 | [API_REFERENCE.md](API_REFERENCE.md) | Project-wide API documentation (key types, functions, and modules) |
+| [state-topology-appendix-support.md](state-topology-appendix-support.md) | Maps each element of the manuscript's task-semantics topology appendix to the Lean declaration that certifies it, with axiom profiles, and names every statement the library does **not** certify. Keyed by paper label and quotable phrase, never by line number |
 
 ## Records of Record
 

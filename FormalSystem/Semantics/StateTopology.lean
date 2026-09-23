@@ -129,6 +129,10 @@ would collide at `intOrder`, `ℚ` and `ℝ`.
 ## References
 
 - JPL paper `def:task-topology`, `app:topology-t1`, `app:topology-r0`
+- [`state-topology-appendix-support.md`](../../docs/reference/state-topology-appendix-support.md) —
+  each element of the manuscript's topology appendix against the declaration that certifies it,
+  with the statements the library does **not** certify named explicitly
+- [`theorem-index.md`](../../docs/theorem-index.md) — the per-theorem ledger
 -/
 
 -- `nbhdTopology`, `coneTopology` and `FrameOver.coneTop` are `def`s whose result type is the
