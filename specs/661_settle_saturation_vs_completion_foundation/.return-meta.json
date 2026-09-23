@@ -1,0 +1,27 @@
+{
+  "status": "researched",
+  "dispatch_seq": 4,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/661_settle_saturation_vs_completion_foundation/reports/01_saturation-vs-completion-verdict.md",
+      "summary": "Settles Saturation vs Completion: the rational carrier fails both, but a verified separating frame (W=Q, D=Z, unit drift) proves Completion is strictly weaker; verdict favours R4 with a Fib-free clause."
+    }
+  ],
+  "user_decision": {
+    "question": "Now that Completion is proved strictly weaker than Saturation (machine-checked separating frame), should def:frame's fourth constraint be replaced by the bare Completion clause (R4), or should Saturation stay and Completion be recorded as a lemma (R1)?",
+    "options": [
+      "R4 - replace def:frame's fourth constraint with the Fib-free Completion clause, delete the opening directed-family clause, and demote Saturation to a remark that keeps the ball-space footnote",
+      "R1 - keep Saturation in def:frame, record Completion as lem:completion in bare form, and add a remark that Saturation is strictly stronger with the new witness"
+    ],
+    "recommended": "R4 - replace def:frame's fourth constraint with the Fib-free Completion clause, delete the opening directed-family clause, and demote Saturation to a remark that keeps the ball-space footnote",
+    "blocking": false
+  },
+  "next_steps": "Plan phase: promote the two probes into the library (SeparatingFrame beside RationalTwoOrigins or into Extension/Completion.lean), correct the three docstrings that record the converse as open, and discharge the finitary-Completion claim via a hypothesis-weakened completion_of_nearest_at.",
+  "metadata": {
+    "session_id": "sess_1790178757_3ad6c9_661",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

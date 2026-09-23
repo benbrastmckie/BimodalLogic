@@ -95,15 +95,16 @@ next_project_number: 662
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
-661 [NOT STARTED] — Settle the Saturation vs Completion question by probe, and...
+661 [RESEARCHED] — Settle the Saturation vs Completion question by probe, and...
 
 ## Tasks
 
 ### 661. Settle saturation vs completion foundation
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 657, Task 660
+- **Research**: [661_settle_saturation_vs_completion_foundation/reports/01_saturation-vs-completion-verdict.md]
 
 **Description**: Settle the Saturation vs Completion question by probe, and judge the outcome against a primitives-level foundation criterion.
 
