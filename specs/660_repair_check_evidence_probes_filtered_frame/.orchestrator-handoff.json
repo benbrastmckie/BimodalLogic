@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 2,
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/660_repair_check_evidence_probes_filtered_frame/plans/01_repair-filtered-frame-probe.md",
+      "summary": "Two-phase plan to repair the phase7-filtered-frame-is-universal evidence probe with compiler-verified term-mode proofs citing RefinedFilteredTaskFrame.rel_iff, then green the check-evidence-probes.sh gate."
+    }
+  ],
+  "next_steps": "Run /implement 660 to execute the plan",
+  "session_id": "sess_1790178757_3ad6c9_660"
+}

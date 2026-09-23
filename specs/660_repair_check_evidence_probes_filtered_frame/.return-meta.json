@@ -1,17 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/660_repair_check_evidence_probes_filtered_frame/reports/01_repair-filtered-frame-probe.md",
-      "summary": "Root-causes the phase7 evidence-probe compile failure to RefinedFilteredTaskFrame._proof_4 carrying an unfolded TaskFrame.Limit, and records a compiler-verified sorry-free term-mode repair citing RefinedFilteredTaskFrame.rel_iff."
+      "type": "plan",
+      "path": "specs/660_repair_check_evidence_probes_filtered_frame/plans/01_repair-filtered-frame-probe.md",
+      "summary": "Two-phase plan to repair the phase7-filtered-frame-is-universal evidence probe with compiler-verified term-mode proofs citing RefinedFilteredTaskFrame.rel_iff, then green the check-evidence-probes.sh gate."
+    }
+  ],
+  "phase_count": 2,
+  "estimated_hours": 1,
+  "dependency_waves": [[1], [2]],
+  "next_steps": "Run /implement 660 to execute the plan",
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, a frame built by FrameOver.ofReflectiveRegular must never be unfolded inside simp/rw to reach its TaskRel; cite the frame's own named bridge lemma instead (e.g. RefinedFilteredTaskFrame.rel_iff). Reason: TaskFrame.Limit is a semireducible def and TaskFrame.limit_of_permissive/limit_of_succOrder/limit_of_shift are declared with the UNFOLDED return shape, so the auto-generated _proof_4 of such a frame carries an unfolded type while the constructor expects TaskFrame.Limit R. Any tactic match that re-typechecks the constructor application under reducible/implicit transparency then fails with 'pattern not found' plus an application type mismatch naming _proof_4 -- a misleading diagnostic that looks like cited-lemma drift and is not fixed by substituting a differently-named taskRel lemma. The sibling proofs (_proof_2 Compositional, _proof_3 Serial, _proof_5 Saturation) are folded and fine, which makes the asymmetry easy to miss. Term-mode application at default transparency sidesteps the whole class. The convention is documented in TaskFrame.lean's ofReflective_taskRel docstring; it affects every ofReflectiveRegular frame whose hlim comes from those helpers (RegionFrame, FlowFrame, ForwardDeterministicFrame, LimitClosureFrame and others).",
+      "category": "PATTERN",
+      "source_artifact": "specs/660_repair_check_evidence_probes_filtered_frame/plans/01_repair-filtered-frame-probe.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["ofReflectiveRegular", "TaskFrame.Limit", "transparency", "bridge-lemma", "simp-unfold", "frame-constructor"]
     }
   ],
   "metadata": {
     "session_id": "sess_1790178757_3ad6c9_660",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 2
 }
