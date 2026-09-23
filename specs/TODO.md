@@ -95,15 +95,16 @@ next_project_number: 663
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
-662 [NOT STARTED] — Settle whether plain S1 suffices or directedness is forced,...
+662 [RESEARCHED] — Settle whether plain S1 suffices or directedness is forced,...
 
 ## Tasks
 
 ### 662. S1 vs directedness and restore saturation
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 661
+- **Research**: [662_s1_vs_directedness_and_restore_saturation/reports/01_s1-vs-directedness-restore-saturation.md]
 
 **Description**: Settle whether plain S1 suffices or directedness is forced, search for a better fourth frame constraint, and otherwise restore Saturation as the def:frame constraint in place of Completion
 

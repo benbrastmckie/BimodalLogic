@@ -1,0 +1,27 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/662_s1_vs_directedness_and_restore_saturation/reports/01_s1-vs-directedness-restore-saturation.md",
+      "summary": "Settles S1-vs-directedness (S1 suffices over countable-character D; directedness recommended kept on naturalness grounds), finds no better fourth constraint than Saturation, and measures the exact prose-only reversal surface for restoring Saturation over Completion."
+    }
+  ],
+  "user_decision": {
+    "question": "The dispatch asked to settle Question 1 'by proof or by a machine-checked frame satisfying S_1 and failing lem:step'. Research settles it by proof only for duration types of countable order-character (Z, Q, R), where S_1 provably suffices; the general case needs a frame over a non-archimedean duration type with uncountable coinitiality (a Hahn group over omega_1), which is a research-scale Lean construction with no Mathlib support. How should Question 1 be closed?",
+    "options": [
+      "Close on the naturalness verdict — keep S_1^d, land the countable-character sufficiency theorem plus the correction that both existing witnesses also refute S_1, and declare the Hahn-group separating frame an explicit non-goal with its recipe recorded",
+      "Close only after the separating frame — hold Question 1 open and scope the omega_1 Hahn-group construction as implementation work in this task",
+      "Close on the sufficiency theorem alone — adopt S_1 as def:frame's fourth constraint and accept that lem:step then carries an order-character hypothesis on D"
+    ],
+    "recommended": "Close on the naturalness verdict — keep S_1^d, land the countable-character sufficiency theorem plus the correction that both existing witnesses also refute S_1, and declare the Hahn-group separating frame an explicit non-goal with its recipe recorded",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1790191863_059c13_662",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
