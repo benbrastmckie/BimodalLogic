@@ -1,30 +1,34 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-22T23:20:00Z",
+  "completed_at": "2026-09-23T00:05:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/654_infinite_frame_rigidity_countable_real_durations/plans/01_promote-countable-real-rigidity.md",
-      "summary": "Six-phase promotion plan for the countable-carrier rigidity results over the reals: Sierpinski's partition theorem into ForMathlib/Topology, the frame-level Q2/Q3 results into a new Correspondence/RigidityReal.lean, the rational-clock sharpness witness, documentation wiring, and C14 axiom pinning plus the full gate sweep."
+      "type": "summary",
+      "path": "specs/654_infinite_frame_rigidity_countable_real_durations/summaries/01_promote-countable-real-rigidity-summary.md",
+      "summary": "Promoted the countable-carrier rigidity results over the reals: Sierpinski's theorem into a new ForMathlib/Topology module and FrameOver.static_of_countable plus the Q3 and cardinality-sharpness witnesses into a new Correspondence/RigidityReal module, fully wired, gated and C14-pinned."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1790104191_b13256_654",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 7,
-    "dependency_waves": [[1, 4], [2], [3], [5], [6]]
+  "completion_data": {
+    "completion_summary": "All six phases of the promotion plan executed. Over the reals, every task frame with countably many world states is now proved static with no finiteness, density or Archimedean hypothesis (FormalSystem.Semantics.FrameOver.static_of_countable), resting on a new Mathlib-shaped Sierpinski module that Mathlib does not carry. Two new modules plus the ratClock_not_static witness landed green; lake build --wfail exits 0 over 2720 jobs with zero warnings, check-module-invariants.sh reports ALL CHECKS PASSED, and all 22 promoted declarations carry standard axioms or a strict subset with no sorryAx.",
+    "roadmap_items": []
   },
-  "memory_candidates": [
-    {
-      "content": "When promoting a research probe into this Lean tree, split it by DEPENDENCY LEVEL rather than by topic. A probe that proves a domain result via a general mathematical lemma Mathlib lacks yields two library modules, not one: the Mathlib-shaped lemma goes to FormalSystem/ForMathlib/<Area>/ (which may import nothing from FormalSystem.*, checkable by `grep -rn '^import FormalSystem' FormalSystem/ForMathlib/` returning nothing), and the domain result goes beside — never inside — the existing module it extends. The deciding test for 'beside, not inside' is the target module's own stated import discipline: Correspondence/Rigidity.lean's docstring advertises exactly TaskFrame plus Mathlib.Algebra.Order.Archimedean.Defs and states it 'takes no topology', so a topology-consuming sibling (RigidityReal.lean) is correct and folding it in would falsify a docstring the tree treats as a contract. Siting a witness follows import weight, not thematic fit: a cardinality-sharpness witness needing Mathlib.Analysis.Real.Cardinality belongs with the real-analysis module even when it shares a role with witnesses in a lighter sharpness module. Promotion also carries a fixed wiring set: sibling aggregator import plus its docstring bullet, directory README (generated inventory blocks are regenerated with `check-module-invariants.sh --emit-inventory`, hand-maintained tables are edited by hand — check which before editing), a docs/theorem-index.md row, PAIRED entries appended in the same order to both the C14_BASELINE and C14LEAN heredocs in scripts/check-module-invariants.sh, and `lake exe mk_all --lib FormalSystem` regeneration (never a hand-edit of FormalSystem.lean, which C33 compares byte-for-byte).",
-      "category": "PATTERN",
-      "source_artifact": "specs/654_infinite_frame_rigidity_countable_real_durations/plans/01_promote-countable-real-rigidity.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["probe-promotion", "ForMathlib", "import-discipline", "module-wiring", "C14-baseline", "mk_all"]
-    }
-  ],
-  "next_steps": "Run /implement 654 to execute the plan",
-  "dispatch_seq": 20
+  "metadata": {
+    "session_id": "sess_1790104191_b13256",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "collateral_repairs": [
+      "FormalSystem/Metalogic/Decidability/Verified/Bridge/Embed.lean: finOrderEmbInt pins its Preorder Int instance; the new import closure made instance search resolve it through the noncomputable Int.instConditionallyCompleteLinearOrder. Statement and proof unchanged.",
+      "scripts/CheckInitImportsMain.lean, FormalSystem/Init.lean, FormalSystem/ForMathlib/README.md: the new ForMathlib module added to C24's exceptions list, and the now-false 'sole recorded C24 exception' prose generalised."
+    ]
+  }
 }
