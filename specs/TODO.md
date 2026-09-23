@@ -95,7 +95,7 @@ next_project_number: 658
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
-656 [PLANNED] — Refactor the task-frame definitions so that a task frame is...
+656 [IMPLEMENTING] — Refactor the task-frame definitions so that a task frame is...
   └─ 657 [NOT STARTED] — RESEARCH TASK, verdict-first: are Compositionality,...
 
 ## Tasks
@@ -111,7 +111,7 @@ next_project_number: 658
 ---
 
 ### 656. Refactor task frames general with frame constraints
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 655, Task 651, Task 652, Task 654

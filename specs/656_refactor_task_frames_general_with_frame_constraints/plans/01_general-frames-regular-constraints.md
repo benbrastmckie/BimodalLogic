@@ -666,7 +666,7 @@ silently.
 
 ---
 
-### Phase 10: Documentation, inventory and gates [NOT STARTED]
+### Phase 10: Documentation, inventory and gates [IN PROGRESS]
 
 **Goal**: Bring every generated artifact, document, index and invariant gate into agreement with
 the refactored tree, and close the migration table.
