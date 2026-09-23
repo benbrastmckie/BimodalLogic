@@ -1,32 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/658_consolidate_state_topology_collection_for_appendix/reports/01_state-topology-collection-appendix.md",
-      "summary": "Verifies the seed inventory against the live tree, de-risks Gap A and Gap B by compiling both promotion blocks sorry-free with standard axioms, answers the four organization questions, and delivers the appendix support table with five uncertified manuscript statements flagged."
-    },
+      "type": "plan",
+      "path": "specs/658_consolidate_state_topology_collection_for_appendix/plans/01_state-topology-collection-appendix.md",
+      "summary": "10-phase plan consolidating the state-space topology into a citable collection: Gap A/B promotions, four frame-level declarations, citation-granularity ledger rows, and the appendix support table."
+    }
+  ],
+  "memory_candidates": [
     {
-      "type": "probe",
-      "path": "specs/658_consolidate_state_topology_collection_for_appendix/probes/GapA_TwoOrigins.lean",
-      "summary": "Deliverable 1, compiled verbatim against the live library: not_triangle, four cone-membership lemmas, isOpen_nbhdTopology_cone, coneTopology_eq_nbhdTopology, not_t2Space_coneTopology, plus two frame-level wrappers."
-    },
-    {
-      "type": "probe",
-      "path": "specs/658_consolidate_state_topology_collection_for_appendix/probes/GapB_Hedgehog.lean",
-      "summary": "Deliverable 2, compiled: the named hedgehog inequality coneTopology_ne_nbhdTopology plus the stronger strict form coneTopology_lt_nbhdTopology."
-    },
-    {
-      "type": "probe",
-      "path": "specs/658_consolidate_state_topology_collection_for_appendix/probes/FrameLevelAdditions.lean",
-      "summary": "Compiled: the drafted app:topology-t1 biconditional as one declaration, plus FrameOver.isOpen_iff, r0Space_stateTopology and iInter_cone_eq_singleton, the three frame-level names the appendix needs and the library lacks."
+      "content": "In a Lean library gated by a per-theorem ledger plus a dead-declaration census, promoting terminal counterexample declarations (results nothing else in the library references) and adding their ledger rows must be planned as one arc, not as separate rounds. The census's occurrence corpus includes non-spec markdown, so the ledger row is itself the occurrence that keeps the promoted declaration off the dead-declaration report. Planning them apart produces a round that is green but flagged, followed by a second round that only un-flags it.",
+      "category": "PATTERN",
+      "source_artifact": "specs/658_consolidate_state_topology_collection_for_appendix/plans/01_state-topology-collection-appendix.md",
+      "confidence": 0.65,
+      "suggested_keywords": ["lean", "theorem-index", "dead-declaration-census", "counterexample-promotion", "phase-sequencing", "ledger-rows"]
     }
   ],
   "metadata": {
     "session_id": "sess_1790146139_4979e4_658",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 10,
+    "estimated_hours": 10.5,
+    "dependency_waves": 6
+  },
+  "next_steps": "Run /implement 658 to execute the plan",
+  "dispatch_seq": 2
 }

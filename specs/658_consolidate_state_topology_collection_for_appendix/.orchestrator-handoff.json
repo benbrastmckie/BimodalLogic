@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "task_number": 658,
+  "session_id": "sess_1790146139_4979e4_658",
+  "dispatch_seq": 2,
+  "phases_completed": 0,
+  "phases_total": 10,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/658_consolidate_state_topology_collection_for_appendix/plans/01_state-topology-collection-appendix.md",
+      "summary": "10-phase plan consolidating the state-space topology into a citable collection: Gap A/B promotions, four frame-level declarations, citation-granularity ledger rows, and the appendix support table."
+    }
+  ],
+  "next_steps": "Run /implement 658 to execute the plan"
+}
