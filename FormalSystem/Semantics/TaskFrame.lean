@@ -511,6 +511,9 @@ the accumulation point, and the two witnesses need genuinely different arguments
 two-origin frame needs directedness to pick one of the two origins at `r = 0`; the hedgehog needs
 directedness to pick one ray at `r > 0`, and `r = 0` is free because the centre is the unique
 preimage of `0`). So this is the honest generality.
+
+Paper: — (formalization-native; a `DirectedFamily`-shaped wrapper around Mathlib's
+Cantor-intersection lemma, serving `def:frame`'s *Saturation* clause)
 -/
 theorem exists_mem_image_of_directedFamily {W : Type} {X : Type} [TopologicalSpace X]
     (φ : W → X) {S : Set (Set W)} (hdir : DirectedFamily S)
@@ -533,6 +536,8 @@ theorem exists_mem_image_of_directedFamily {W : Type} {X : Type} [TopologicalSpa
 The `Set.Icc`-shaped specialisation both *Saturation* witnesses actually use: over a
 `CompactIccSpace`, a member whose shadow is a closed interval needs no separate compactness or
 closedness argument.
+
+Paper: — (formalization-native; see `exists_mem_image_of_directedFamily`)
 -/
 theorem exists_mem_image_of_directedFamily_Icc {W : Type} {X : Type} [TopologicalSpace X]
     [LinearOrder X] [OrderClosedTopology X] [CompactIccSpace X]

@@ -55,3 +55,12 @@ FormalSystem.Semantics.FrameOver
 # is not a module: both frames live in the single module `StateTopology/Counterexamples.lean`.
 FormalSystem.Semantics.StateTopology.TwoOrigins
 FormalSystem.Semantics.StateTopology.Hedgehog
+
+# `namespace GhostRay` and `namespace RationalTwoOrigins`, both inside
+# `namespace FormalSystem.Semantics.StateTopology` -- Semantics/StateTopology/ConstraintWitnesses.lean.
+# Same shape as the TwoOrigins/Hedgehog entries above: the theorem-index and appendix-support rows
+# for `GhostRay.frame_not_r0Space` and `RationalTwoOrigins.not_rel_saturation` cite them fully
+# qualified, and the namespace prefix is not a module -- both frames live in the single module
+# `StateTopology/ConstraintWitnesses.lean`.
+FormalSystem.Semantics.StateTopology.GhostRay
+FormalSystem.Semantics.StateTopology.RationalTwoOrigins

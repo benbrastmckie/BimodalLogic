@@ -273,7 +273,10 @@ theorem frame_saturation : TaskFrame.Saturation (frame c).TaskRel := by
 frame, with all four constraints proved.
 
 Stated as a plain theorem rather than an `instance` because the positivity hypothesis cannot be
-synthesised; `instMetricFrameOneIsRegular` below pins the unit-speed case for synthesis. -/
+synthesised; `instMetricFrameOneIsRegular` below pins the unit-speed case for synthesis.
+
+Paper: `def:frame`
+-/
 theorem isRegular (hc : 0 < c) : (frame c).IsRegular where
   comp := frame_compositional c hc
   serial := frame_serial c hc.le

@@ -234,7 +234,8 @@ theorem isClosed_singleton_r0 : IsClosed[nbhdTopology rel] ({r 0} : Set GH) := b
 fragile as *T1*: it too fails as soon as *Limit* is dropped, even with *Seriality* and
 *Compositionality* in force.
 
-Paper: `app:topology-r0` -/
+Paper: `app:topology-r0`
+-/
 theorem not_r0Space_nbhdTopology : ¬ @R0Space GH (nbhdTopology rel) := by
   letI := nbhdTopology rel
   intro h
@@ -275,13 +276,19 @@ theorem frame_serial : Serial frame.TaskRel := by
 theorem frame_compositional : Compositional frame.TaskRel := by
   rw [frame_taskRel_eq]; exact rel_compositional
 
+/-- **The ghost-ray frame fails *Limit***, as a fact about the frame. It is a corollary of the
+*R0* failure rather than a direct computation: *Limit* would force `𝒩_F` to be R0.
+
+Paper: `def:frame#Limit`
+-/
 theorem frame_not_limit : ¬ TaskFrame.Limit frame.TaskRel := by
   rw [frame_taskRel_eq]; exact not_limit
 
 /-- **The frame's state topology is not R0.** The frame-level form of
 `not_r0Space_nbhdTopology`, and the declaration the topology appendix cites.
 
-Paper: `app:topology-r0` -/
+Paper: `app:topology-r0`
+-/
 theorem frame_not_r0Space : ¬ @R0Space frame.WorldState (FrameOver.stateTopology frame) := by
   intro h
   refine not_r0Space_nbhdTopology ?_
@@ -485,7 +492,10 @@ of the cut while crossing strictly past `s` — and the member cut at `t` theref
 Note on scope: `TaskFrame.Saturation` is a **bare-relation** predicate, needing only
 `[AddCommGroup] [LinearOrder] [IsOrderedAddMonoid] [Nontrivial]` on the duration type, all of which
 `ℚ` has. So no `TemporalOrder.of ℚ` is required here. A frame-level form would need one; that was
-not investigated. -/
+not investigated.
+
+Paper: `def:frame#Saturation`
+-/
 theorem not_rel_saturation : ¬ TaskFrame.Saturation rel := by
   intro hsat
   have hone : ((1 : ℚ)) ^ 2 < 2 := by norm_num

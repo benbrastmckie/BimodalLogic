@@ -1891,6 +1891,18 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Semantics.StateTopology.funnel_serial' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.StateTopology.funnel_compositional' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.StateTopology.funnel_saturation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.TaskFrame.exists_mem_image_of_directedFamily' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.TaskFrame.exists_mem_image_of_directedFamily_Icc' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.TaskFrame.finalTopology_eq_of_surjective_open_history' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.TwoOrigins.frame_saturation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.TwoOrigins.taskFrame_t1_not_t2' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.Hedgehog.frame_saturation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.Hedgehog.taskFrame_t1Space' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.GhostRay.frame_not_limit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.GhostRay.frame_not_r0Space' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.RationalTwoOrigins.not_rel_saturation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.MetricFrame.finalTopology_eq_nbhdTopology' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.MetricFrame.isRegular' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2054,6 +2066,18 @@ import FormalSystem
 #print axioms FormalSystem.Semantics.StateTopology.funnel_serial
 #print axioms FormalSystem.Semantics.StateTopology.funnel_compositional
 #print axioms FormalSystem.Semantics.StateTopology.funnel_saturation
+#print axioms FormalSystem.Semantics.TaskFrame.exists_mem_image_of_directedFamily
+#print axioms FormalSystem.Semantics.TaskFrame.exists_mem_image_of_directedFamily_Icc
+#print axioms FormalSystem.Semantics.TaskFrame.finalTopology_eq_of_surjective_open_history
+#print axioms FormalSystem.Semantics.StateTopology.TwoOrigins.frame_saturation
+#print axioms FormalSystem.Semantics.StateTopology.TwoOrigins.taskFrame_t1_not_t2
+#print axioms FormalSystem.Semantics.StateTopology.Hedgehog.frame_saturation
+#print axioms FormalSystem.Semantics.StateTopology.Hedgehog.taskFrame_t1Space
+#print axioms FormalSystem.Semantics.StateTopology.GhostRay.frame_not_limit
+#print axioms FormalSystem.Semantics.StateTopology.GhostRay.frame_not_r0Space
+#print axioms FormalSystem.Semantics.StateTopology.RationalTwoOrigins.not_rel_saturation
+#print axioms FormalSystem.Semantics.StateTopology.MetricFrame.finalTopology_eq_nbhdTopology
+#print axioms FormalSystem.Semantics.StateTopology.MetricFrame.isRegular
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \

@@ -48,7 +48,6 @@ either convention.
 | Status | Meaning |
 |---|---|
 | `certified` | A named declaration exists in the tree today and is sorry-free with standard axioms |
-| `pending-sibling` | Blocked on the sibling open-questions work (*Saturation* for the two real witnesses; R0 without *Limit*). **Not** attempted here, by design |
 | `not-certified` | No declaration certifies the statement as the appendix would phrase it. Some of these are over-claims the library actively refutes; see "Statements the library does not certify" |
 
 `pcq` abbreviates exactly `[propext, Classical.choice, Quot.sound]`, the profile of every
@@ -85,7 +84,7 @@ modules, not assumed.
 | `app:topology-r0`, at a regular frame | the same, named in the frame register | `FormalSystem.Semantics.FrameOver.r0Space_stateTopology` | `pcq` | `certified` |
 | `app:topology-r0`, the paper's closure phrasing | `w ∈ cl{u}` exactly when `u ∈ cl{w}` **is** Mathlib's `R0Space`, via `specializes_iff_mem_closure` | `FormalSystem.Semantics.TaskFrame.r0Space_iff_mem_closure_comm` | `pcq` | `certified` |
 | `app:topology-r0`, for the superseded topology | the footnote's topology is R0 too, under *Limit* and nullity | `FormalSystem.Semantics.TaskFrame.r0Space_coneTopology_of_limit`, `FormalSystem.Semantics.FrameOver.r0Space_coneTop` | `pcq` | `certified` |
-| "R0 can fail without *Limit*" | a *Seriality* + *Compositionality* structure whose topology is not R0 | — | — | **`pending-sibling`** |
+| "R0 can fail without *Limit*" | a *Seriality* + *Compositionality* **task frame** whose state topology is not R0 — the ghost ray | `FormalSystem.Semantics.StateTopology.GhostRay.frame_not_r0Space` (relation level: `...GhostRay.not_r0Space_nbhdTopology`), with `...GhostRay.frame_serial`, `...GhostRay.frame_compositional`, `...GhostRay.frame_not_limit` | `pcq` | `certified` |
 
 ## 4. The new history-continuity lemma
 
@@ -117,12 +116,15 @@ sharpest available form of a claim the appendix is likely to want.
 
 | Candidate manuscript element | Statement | Certifying declaration | Axiom profile | Status |
 |---|---|---|---|---|
-| "T1 does not give Hausdorff" | the half-line with two origins is T1 and **not** Hausdorff | `FormalSystem.Semantics.StateTopology.TwoOrigins.frame_t1Space` with `...TwoOrigins.frame_not_t2Space` | `pcq` | `certified` (but see flag 3 for "task frame") |
-| "and that is a property of the frame, not of the choice of topology" | on that frame the two topologies **coincide**, and neither is Hausdorff | `FormalSystem.Semantics.StateTopology.TwoOrigins.frame_coneTop_eq_stateTopology`, `...TwoOrigins.frame_not_t2Space_coneTop` | `pcq` | `certified` (see flag 3) |
+| "T1 does not give Hausdorff" | the half-line with two origins is a **task frame** that is T1 and **not** Hausdorff | `FormalSystem.Semantics.StateTopology.TwoOrigins.taskFrame_t1_not_t2` (components: `...TwoOrigins.frame_t1Space`, `...TwoOrigins.frame_not_t2Space`; regularity: `...TwoOrigins.frame_saturation`) | `pcq` | `certified` |
+| "and that is a property of the frame, not of the choice of topology" | on that frame the two topologies **coincide**, and neither is Hausdorff | `FormalSystem.Semantics.StateTopology.TwoOrigins.frame_coneTop_eq_stateTopology`, `...TwoOrigins.frame_not_t2Space_coneTop` | `pcq` | `certified` |
 | "the shortcut condition is sufficient but not necessary" | *Triangle* implies the two topologies agree, yet they agree on the two-origin frame where *Triangle* **fails** | `FormalSystem.Semantics.TaskFrame.coneTopology_eq_nbhdTopology_of_triangle`, `FormalSystem.Semantics.StateTopology.TwoOrigins.not_triangle`, `...TwoOrigins.coneTopology_eq_nbhdTopology` | `pcq` | `certified` |
 | "cone-openness is the exact criterion" | the two topologies agree **iff** every cone is open in the neighbourhood topology | `FormalSystem.Semantics.TaskFrame.coneTopology_eq_nbhdTopology_iff` | `pcq` | `certified` |
-| "the two topologies really can differ" | on the hedgehog they differ, and the subbasis topology is **strictly** finer | `FormalSystem.Semantics.StateTopology.Hedgehog.coneTopology_ne_nbhdTopology`, `...Hedgehog.coneTopology_lt_nbhdTopology` | `pcq` | `certified` (see flag 3) |
-| "the state topology is strictly below the final topology" | the hedgehog separates them | `FormalSystem.Semantics.StateTopology.Hedgehog.finalTopology_ne_nbhdTopology` | `pcq` | `certified` (see flag 3) |
+| "the two topologies really can differ" | on the hedgehog — itself a **task frame** — they differ, and the subbasis topology is **strictly** finer | `FormalSystem.Semantics.StateTopology.Hedgehog.coneTopology_ne_nbhdTopology`, `...Hedgehog.coneTopology_lt_nbhdTopology`, with `...Hedgehog.frame_saturation` | `pcq` | `certified` |
+| "the state topology is strictly below the final topology" | the hedgehog — a **task frame** — separates them | `FormalSystem.Semantics.StateTopology.Hedgehog.finalTopology_ne_nbhdTopology`, with `...Hedgehog.frame_saturation` and `...Hedgehog.taskFrame_t1Space` | `pcq` | `certified` |
+| "but they coincide on the metric frame" | one surjective open history collapses the final topology onto `𝒩_F`, and the straight line at full speed is one — so the hedgehog's separation is a feature of **branching**, not of the cone construction | `FormalSystem.Semantics.TaskFrame.finalTopology_eq_of_surjective_open_history`, `FormalSystem.Semantics.StateTopology.MetricFrame.finalTopology_eq_nbhdTopology` | `pcq` | `certified` |
+| "*Saturation* on the real witnesses needs the reals" | the two-origin relation transcribed verbatim over `ℚ` keeps *Seriality*, *Compositionality* and *Limit* and **fails *Saturation*** | `FormalSystem.Semantics.StateTopology.RationalTwoOrigins.not_rel_saturation`, with `...RationalTwoOrigins.rel_serial`, `...rel_compositional`, `...rel_limit` | `pcq` | `certified` |
+| "the shadow argument, in its reusable form" | a `⊇`-directed family of nonempty sets whose images under a map into a compact space are closed has a common image point | `FormalSystem.Semantics.TaskFrame.exists_mem_image_of_directedFamily`, `...exists_mem_image_of_directedFamily_Icc` | `pcq` | `certified` |
 | "over a discrete duration group everything collapses" | over `ℤ` both topologies are the partition topology of `⇒₀`, and *Limit* ⟺ discrete ⟺ T1 | `FormalSystem.Semantics.TaskFrame.cone_int_one`, `...nbhdTopology_isOpen_iff_int`, `...limit_int_iff`, `...discreteTopology_nbhdTopology_int_iff` | `pcq` | `certified` |
 | "on the named real frames the topology is the Euclidean one" | when the cones are Euclidean balls, the neighbourhood topology **is** the usual topology on `ℝ`, and the two topologies coincide | `FormalSystem.Semantics.TaskFrame.nbhdTopology_eq_real`, `...coneTopology_eq_nbhdTopology_real` | `pcq` | `certified` |
 | "the topology is discrete exactly under a pointwise dwell time" | discreteness is equivalent to every state having a radius that isolates it | `FormalSystem.Semantics.TaskFrame.discreteTopology_nbhdTopology_iff` | `pcq` | `certified` |
@@ -136,9 +138,12 @@ This is the section to read before asserting anything as proved.
 library refutes the definite article.** What is certified is that every history is continuous
 (`continuous_nbhdTopology_of_history`) and that the state topology is *coarser* than the final
 topology of all histories (`finalTopology_le_nbhdTopology`). `Hedgehog.finalTopology_ne_nbhdTopology`
-shows that containment is **strict** on a structure satisfying *Seriality*, *Compositionality* and
-*Limit*, so the state topology is **not** the finest topology making worlds continuous, and no
-characterization of it in those terms is available. Safe wordings: "a topology in which every
+shows that containment is **strict** on a **task frame** (all four `def:frame` constraints —
+`Hedgehog.frame_saturation`), so the state topology is **not** the finest topology making worlds
+continuous, and no characterization of it in those terms is available. The separation is a feature
+of branching: on the metric frame the two **do** coincide
+(`MetricFrame.finalTopology_eq_nbhdTopology`), and one surjective open history is enough in
+general (`finalTopology_eq_of_surjective_open_history`). Safe wordings: "a topology in which every
 possible world is a continuous path", or the sharp form that *is* certified — it is the finest
 topology in which every neighbourhood of `w` contains a cone at `w`
 (`nbhdTopology_le_of_coneFilter_le_nhds`).
@@ -150,17 +155,37 @@ instance and drop the reason, or state the general lemma first. If the reason is
 use the fineness direction the library proves: `coneTopology ≤ nbhdTopology` in Mathlib's order
 **means the subbasis topology is finer**.
 
-**3. Every claim that the two-origin or the hedgehog witness is a *task frame*.**
-`pending-sibling`. Neither claims *Saturation* and neither is an `IsRegular` instance — both
-docstrings say so deliberately. As the library stands, "there is a **task frame** that is T1 and
-not Hausdorff" is **not certified**; what is certified is "there is a structure satisfying
-*Seriality*, *Compositionality* and *Limit* that is T1 and not Hausdorff". The same qualification
-attaches to every hedgehog row. Closing this is the sibling open-questions task, not this one.
+**3. Every claim that the two-origin or the hedgehog witness is a *task frame*.** **Closed —
+`certified`.** Both now prove *Saturation* (`TwoOrigins.frame_saturation`,
+`Hedgehog.frame_saturation`) and both are `FrameOver.IsRegular` instances, so "there is a **task
+frame** that is T1 and not Hausdorff" is certified outright, by
+`TwoOrigins.taskFrame_t1_not_t2`. The former qualification — "a structure satisfying *Seriality*,
+*Compositionality* and *Limit*" — is no longer needed anywhere, and should not be reintroduced.
 
-**4. "Without *Limit*, the topology need not be R0."** `pending-sibling`. The witness — the
-hedgehog plus a further state related to every tip at every positive duration — was never built
-in Lean and was an explicit non-goal of the prior round. The contrasting positive fact (over `ℤ`,
-with symmetric `⇒₀`, the partition topology is R0) **is** certified, by the four `*_int*` results.
+The proof is the shadow argument: a map into `ℝ` under which every fibre and every nonempty
+segment has closed bounded image, plus
+`TaskFrame.exists_mem_image_of_directedFamily_Icc`, plus a frame-specific lifting step. That the
+carrier is `ℝ` is load-bearing and not incidental — the same relation over `ℚ` **fails**
+*Saturation* (`RationalTwoOrigins.not_rel_saturation`).
+
+**4. "Without *Limit*, the topology need not be R0."** **Closed — `certified`**, by
+`GhostRay.frame_not_r0Space`. The carrier is a ghost `γ` together with a two-sided ray; `γ` loops
+at every duration and reaches every strictly positive ray point in every strictly positive
+duration, and nothing reaches `γ` forward. *Seriality* and *Compositionality* hold, *Limit* fails,
+and the specialization order is not symmetric: `r 0 ∈ cl{γ}` while `γ ∉ cl{r 0}`.
+
+The previously recorded witness — the hedgehog plus a further state related to every *tip* — was
+**replaced**, not built. It could not have worked as stated: the asymmetry it needed is between
+the extra state and a ray's *endpoint*, and the hedgehog's rays have no endpoint but the centre,
+which every ray already reaches.
+
+**The verdict this settles: R0 is exactly as fragile as T1.** Both fail as soon as *Limit* is
+dropped, with *Seriality* and *Compositionality* still in force. `app:topology-r0`'s derivation
+from `app:topology-t1` is therefore already optimal and needs no separate frame-level argument —
+leave it alone.
+
+The contrasting positive fact (over `ℤ`, with symmetric `⇒₀`, the partition topology is R0)
+**is** certified, by the four `*_int*` results.
 
 **5. The paper-versus-Mathlib formulation gap for *R0* and *T1*.** **Closed.** The paper states
 both with closures and this development states both with Mathlib's separation classes;
@@ -194,7 +219,9 @@ lake build --wfail                          # the whole library, zero warnings
 - [`../theorem-index.md`](../theorem-index.md) — the single per-theorem ledger
 - [`paper-definitions-of-record.md`](paper-definitions-of-record.md) — the pinned paper-anchor manifest
 - [`../../FormalSystem/Semantics/StateTopology.lean`](../../FormalSystem/Semantics/StateTopology.lean) — the general-relation and frame-level layers
-- [`../../FormalSystem/Semantics/StateTopology/Counterexamples.lean`](../../FormalSystem/Semantics/StateTopology/Counterexamples.lean) — the four witnesses
+- [`../../FormalSystem/Semantics/StateTopology/Counterexamples.lean`](../../FormalSystem/Semantics/StateTopology/Counterexamples.lean) — the funnel, the two-origin half-line and the hedgehog
+- [`../../FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean`](../../FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean) — the ghost ray (R0 fails without *Limit*) and the ℚ two-origin frame (*Saturation* fails)
+- [`../../FormalSystem/Semantics/StateTopology/MetricFrame.lean`](../../FormalSystem/Semantics/StateTopology/MetricFrame.lean) — the metric frame, where `𝒩_F` is the final topology of all histories
 - [`../../FormalSystem/Semantics/README.md`](../../FormalSystem/Semantics/README.md) — the module tables
 
 ## Tags

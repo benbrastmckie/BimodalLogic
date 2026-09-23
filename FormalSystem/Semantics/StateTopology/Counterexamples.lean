@@ -1329,7 +1329,10 @@ theorem rel_saturation : TaskFrame.Saturation rel := by
     | true => exact hn₁ (hsub hc).1
     | false => exact hn₂ (hsub hc).2
 
-/-- **The frame satisfies *Saturation***, as a fact about the frame. -/
+/-- **The frame satisfies *Saturation***, as a fact about the frame.
+
+Paper: `def:frame#Saturation`
+-/
 theorem frame_saturation : TaskFrame.Saturation frame.TaskRel := by
   rw [frame_taskRel_eq]; exact rel_saturation
 
@@ -1343,9 +1346,11 @@ instance : frame.IsRegular where
 
 /-- **Some TASK FRAME is T1 and not Hausdorff.** This is the sharp form of the witness the
 topology appendix consumes: not merely "some structure satisfying three of the four constraints",
-but a genuine `def:frame` task frame.
+but a genuine `def:frame` task frame. The T1 half is the paper's; the non-Hausdorff half is
+formalization-native.
 
-Paper: `app:topology-t1` (the T1 half); the non-Hausdorff half is formalization-native. -/
+Paper: `app:topology-t1`
+-/
 theorem taskFrame_t1_not_t2 :
     @T1Space frame.WorldState (FrameOver.stateTopology frame) ∧
       ¬ @T2Space frame.WorldState (FrameOver.stateTopology frame) :=
@@ -2021,7 +2026,10 @@ theorem rel_saturation : TaskFrame.Saturation rel := by
     | c => exact hw
     | p m v => rw [shadow_p] at hws; exact absurd hws (by intro h; linarith [v.2])
 
-/-- **The hedgehog frame satisfies *Saturation***, as a fact about the frame. -/
+/-- **The hedgehog frame satisfies *Saturation***, as a fact about the frame.
+
+Paper: `def:frame#Saturation`
+-/
 theorem frame_saturation : TaskFrame.Saturation frame.TaskRel := by
   rw [frame_taskRel_eq]; exact rel_saturation
 
@@ -2038,7 +2046,8 @@ instance above is what upgrades `finalTopology_ne_nbhdTopology` from a statement
 satisfying three of the four constraints into a statement about a `def:frame` task frame — which
 is what makes it the standing obstruction to identifying the two topologies.
 
-Paper: `app:topology-t1` -/
+Paper: `app:topology-t1`
+-/
 theorem taskFrame_t1Space : @T1Space frame.WorldState (FrameOver.stateTopology frame) :=
   FrameOver.instT1SpaceOfRegular frame
 
