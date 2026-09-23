@@ -1,0 +1,47 @@
+{
+  "status": "researched",
+  "dispatch_seq": 4,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/659_settle_saturation_witnesses_and_r0_without_limit/reports/01_saturation-witnesses-r0-limit.md",
+      "summary": "Verdict-first report settling Q1 (Saturation proved for both witness frames; both now FrameOver.IsRegular), Q2 (R0 fails without Limit, via a new ghost-ray witness replacing the unverified modified-hedgehog sketch), Q3.2 (metric frame: cone-neighbourhood and final topologies coincide), plus the rational-carrier non-Saturation contrast and a new certified obstruction for Q3.1."
+    },
+    {
+      "type": "probe",
+      "path": "specs/659_settle_saturation_witnesses_and_r0_without_limit/probes/TwoOriginsSaturation.lean",
+      "summary": "Sorry-free Saturation for the two-origin half-line via the band normal form and the shadow map; frame.IsRegular instance; taskFrame_t1_not_t2."
+    },
+    {
+      "type": "probe",
+      "path": "specs/659_settle_saturation_witnesses_and_r0_without_limit/probes/HedgehogSaturation.lean",
+      "summary": "Sorry-free Saturation for the hedgehog, one ray at a time via common_ray; frame.IsRegular instance."
+    },
+    {
+      "type": "probe",
+      "path": "specs/659_settle_saturation_witnesses_and_r0_without_limit/probes/GhostRayR0.lean",
+      "summary": "Sorry-free witness that the cone-neighbourhood topology need not be R0 once Limit is dropped (Seriality and Compositionality hold)."
+    },
+    {
+      "type": "probe",
+      "path": "specs/659_settle_saturation_witnesses_and_r0_without_limit/probes/RationalTwoOrigins.lean",
+      "summary": "Sorry-free proof that the rational-carrier two-origin relation satisfies Seriality, Compositionality and Limit but fails Saturation."
+    },
+    {
+      "type": "probe",
+      "path": "specs/659_settle_saturation_witnesses_and_r0_without_limit/probes/MetricFinalTopology.lean",
+      "summary": "Sorry-free proof that on the metric frame the cone-neighbourhood topology equals the final topology of all histories, plus the general surjective-open-history criterion."
+    },
+    {
+      "type": "probe",
+      "path": "specs/659_settle_saturation_witnesses_and_r0_without_limit/probes/ShadowLemma.lean",
+      "summary": "The extractable general lemma: a directed family of nonempty sets with compact closed images under a map has a common image point."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790146139_4979e4_659",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
