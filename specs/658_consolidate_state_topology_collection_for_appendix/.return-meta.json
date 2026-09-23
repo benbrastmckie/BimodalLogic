@@ -1,0 +1,32 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/658_consolidate_state_topology_collection_for_appendix/reports/01_state-topology-collection-appendix.md",
+      "summary": "Verifies the seed inventory against the live tree, de-risks Gap A and Gap B by compiling both promotion blocks sorry-free with standard axioms, answers the four organization questions, and delivers the appendix support table with five uncertified manuscript statements flagged."
+    },
+    {
+      "type": "probe",
+      "path": "specs/658_consolidate_state_topology_collection_for_appendix/probes/GapA_TwoOrigins.lean",
+      "summary": "Deliverable 1, compiled verbatim against the live library: not_triangle, four cone-membership lemmas, isOpen_nbhdTopology_cone, coneTopology_eq_nbhdTopology, not_t2Space_coneTopology, plus two frame-level wrappers."
+    },
+    {
+      "type": "probe",
+      "path": "specs/658_consolidate_state_topology_collection_for_appendix/probes/GapB_Hedgehog.lean",
+      "summary": "Deliverable 2, compiled: the named hedgehog inequality coneTopology_ne_nbhdTopology plus the stronger strict form coneTopology_lt_nbhdTopology."
+    },
+    {
+      "type": "probe",
+      "path": "specs/658_consolidate_state_topology_collection_for_appendix/probes/FrameLevelAdditions.lean",
+      "summary": "Compiled: the drafted app:topology-t1 biconditional as one declaration, plus FrameOver.isOpen_iff, r0Space_stateTopology and iInter_cone_eq_singleton, the three frame-level names the appendix needs and the library lacks."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790146139_4979e4_658",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
