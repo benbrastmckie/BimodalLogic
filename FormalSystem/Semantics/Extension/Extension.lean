@@ -105,6 +105,52 @@ is universally given rather than existentially witnessed. Time-shift machinery s
 separately (`PartialHistory.timeShift`, `WorldHistory.timeShift`) but
 plays no role here.
 
+## The identification: partial histories **are** the restrictions of possible worlds
+
+`thm:extension` is one half of a biconditional, and the halves cost wildly different things.
+
+* **Every restriction of a possible world is a partial history.** This is
+  `PartialHistory.restrict` and `PartialHistory.restrict_isPartialHistory`
+  (`Semantics/PartialHistory.lean`), and it costs **no frame constraint at all** — not even an
+  ambient `[F.IsRegular]` instance. The coherence condition of a restriction simply *is* the
+  possible world's own `respects_task`, read at a smaller index set, with no glue.
+* **Every partial history is such a restriction.** This is `isRestriction_of_isRegular` below, and
+  it is `thm:extension` exactly and nothing more: `eq_restrict_of_extends` converts "extended by a
+  possible world" into "equal to that world's restriction to its own domain" for free, so the
+  entire content of this direction is the extension theorem.
+
+**The identification holds at the order too, not merely pointwise.**
+`exists_worldHistory_restricting_pair` shows that whenever `τ ≤ σ`, a *single* possible world
+restricts onto both; `PartialHistory.restrict_le_restrict_iff`
+(`Semantics/PartialHistoryOrder.lean`) shows that two restrictions of one possible world stand in
+the extension order exactly as their time sets stand in inclusion. Together these say that
+restriction is an **order-surjection** onto the partial histories: every instance of the extension
+relation is realized inside one possible world, and no spurious instances are created.
+
+## Why `def:world-history` keeps coherence primitive rather than defining by restriction
+
+The asymmetry above invites the opposite presentation — *define* a partial history as a
+restriction of a possible world, and derive coherence. The library deliberately does not, for four
+reasons, recorded here because the choice is not obvious from the declarations alone.
+
+1. It would make `thm:extension` a **tautology** while relocating rather than removing its
+   content: something would still have to prove that the coherent functions are exactly the
+   restrictions, and that something is this theorem under another name.
+2. `lem:constraint` and `lem:admissible` would **presuppose the world they build**. Both are
+   stated about a partial history and a new time; if partial histories were restrictions of
+   possible worlds, each lemma's hypothesis would already carry a total history, and the
+   construction would be circular.
+3. The Zorn argument would lose its poset. `Semantics/PartialHistoryOrder.lean` needs a partial
+   order with **chain suprema**, and the chain supremum of a family of coherent functions is
+   built by gluing states (`chainSup`); there is no corresponding construction on restrictions
+   without already having the total history.
+4. The paper's own `def:world-history` reads the tiers in the coherence direction, and the
+   identification is exactly the kind of fact a corollary should state.
+
+The corollary is therefore stated, not built in. Note that `cor:restriction` is a **proposed**
+paper label for it, not a live one: no such anchor exists in the manuscript yet, and this module
+cites the declarations rather than the label.
+
 ## Main Definitions
 
 - `PartialHistory.point` — the one-point partial history `{⟨x, w⟩}`
@@ -114,6 +160,9 @@ plays no role here.
 - `PartialHistory.isTotal_of_isMax` — maximal implies total (the converse of `isMax_of_total`)
 - `PartialHistory.extension` — `thm:extension`
 - `PartialHistory.occurrence` — `cor:occurrence`, frame-intrinsic form
+- `PartialHistory.isRestriction_of_isRegular`, `exists_restrict_eq` — the identification's hard
+  direction, pointwise
+- `PartialHistory.exists_worldHistory_restricting_pair` — the identification at the extension order
 
 ## References
 
@@ -181,6 +230,46 @@ theorem extension (F : TaskFrame) [F.IsRegular] (τ : PartialHistory F) :
   obtain ⟨μ, hle, hmax⟩ := exists_maximal_extension τ
   have htot : μ.IsTotal := isTotal_of_isMax F hmax
   exact ⟨⟨μ, htot⟩, le_def.mp hle⟩
+
+/-! ## The identification: every partial history is a restriction -/
+
+/--
+**The identification, hard direction.** In a regular frame every partial history is the
+restriction of a possible world.
+
+This is exactly `thm:extension` — `IsRestriction` unfolds to "extended by some possible world" —
+and it is where *Seriality*, *Limit* and *Saturation* are spent. (Per
+`Extension/Completion.lean`, *Completion* may stand in for *Saturation* and *Compositionality*
+drops out entirely.) The converse inclusion, `PartialHistory.restrict_isPartialHistory`, costs
+nothing at all; see this module's `## The identification` section.
+-/
+theorem isRestriction_of_isRegular (F : TaskFrame) [F.IsRegular] (τ : PartialHistory F) :
+    IsRestriction τ :=
+  extension F τ
+
+/-- The surjection, spelled out: every partial history is literally `restrict h` for some possible
+world `h`, on the nose, not merely up to pointwise agreement. -/
+theorem exists_restrict_eq (F : TaskFrame) [F.IsRegular] (τ : PartialHistory F) :
+    ∃ h : WorldHistory F, restrict h τ.domain τ.nonempty_domain = τ := by
+  obtain ⟨h, hext⟩ := extension F τ
+  exact ⟨h, eq_restrict_of_extends hext⟩
+
+/--
+**The surjection carries the order.**
+
+Whenever `τ ≤ σ` in the extension order, a *single* possible world restricts onto both. So the
+identification is not merely a pointwise surjection onto the partial histories: every instance of
+the extension relation is realized inside one possible world. With
+`PartialHistory.restrict_le_restrict_iff`, which is free, this makes restriction an
+order-surjection.
+-/
+theorem exists_worldHistory_restricting_pair (F : TaskFrame) [F.IsRegular]
+    {τ σ : PartialHistory F} (hle : τ ≤ σ) :
+    ∃ h : WorldHistory F, restrict h τ.domain τ.nonempty_domain = τ ∧
+      restrict h σ.domain σ.nonempty_domain = σ := by
+  obtain ⟨h, hext⟩ := extension F σ
+  refine ⟨h, eq_restrict_of_extends ?_, eq_restrict_of_extends hext⟩
+  exact le_def.mp (le_trans hle (le_def.mpr hext))
 
 /-! ## `cor:occurrence`, frame-intrinsic form -/
 
