@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Semantics.Extension.Constraint
 import FormalSystem.Semantics.Extension.Admissible
 import FormalSystem.Semantics.Extension.Step
+import FormalSystem.Semantics.Extension.Completion
 import FormalSystem.Semantics.Extension.Extension
 import FormalSystem.Semantics.Extension.PeriodicExtension
 
@@ -21,6 +22,9 @@ Aggregator for `Semantics/Extension/`. See `Semantics/Extension/README.md`.
   family of nonempty sets
 - `Extension.Admissible` — `lem:admissible`: the one-point extension is a partial history
 - `Extension.Step` — `lem:step`: every partial history extends by one arbitrary duration
+- `Extension.Completion` — `Completion`: the exact condition `lem:step` consumes, equivalent to the
+  one-point extension property; `thm:extension` from *Completion* + *Seriality* + *Limit*; and the
+  discrete-time redundancy of *Saturation* over `def:BX-z`'s ℤ-time
 - `Extension.Extension` — `thm:extension` and `cor:occurrence` in hypothesis form. This is a
   content module that shares its directory's name, not an aggregator; this file is the
   directory's aggregator

@@ -475,6 +475,7 @@ import FormalSystem.Semantics.DeterministicBridge
 import FormalSystem.Semantics.DurationClassification
 import FormalSystem.Semantics.Extension
 import FormalSystem.Semantics.Extension.Admissible
+import FormalSystem.Semantics.Extension.Completion
 import FormalSystem.Semantics.Extension.Constraint
 import FormalSystem.Semantics.Extension.Extension
 import FormalSystem.Semantics.Extension.PeriodicExtension
