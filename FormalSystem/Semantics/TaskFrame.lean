@@ -156,7 +156,7 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
 - `FrameOver.comp`: the paper's biconditional *Compositionality* (`0 ≤ x`, `0 ≤ y`), stated as
   `TaskFrame.Compositional TaskRel`
 - `FrameOver.serial`, `FrameOver.limit`, `FrameOver.saturation`: *Seriality*, *Limit*, and
-  *Saturation*, stated as `TaskFrame.Serial TaskRel`, *Limit*'s literal transcribed shape, and
+  *Saturation*, stated as `TaskFrame.Serial TaskRel`, `TaskFrame.Limit TaskRel`, and
   `TaskFrame.Saturation TaskRel`
 - `FrameOver.forward_comp`: the `←` (composition) half of `comp`, derived; its statement is
   verbatim that of the former field of the same name
@@ -173,10 +173,11 @@ routes are `limit_of_succOrder` and `limit_of_shift` below.
   `TaskFrame.IsFiber`, `TaskFrame.IsSegment`: the `def:task-relation` / `⊇`-directed
   apparatus over a bare relation
 - `TaskFrame.Saturation`, `TaskFrame.Serial`, `TaskFrame.Interpolates`,
-  `TaskFrame.Compositional`: `def:frame`'s axioms as predicates over a bare relation, hosted
-  above the structure so that its fields cite them *definitionally* (a field's type may only
-  mention earlier declarations). *Limit* is deliberately unnamed and used in its literal
-  transcribed shape
+  `TaskFrame.Compositional`, `TaskFrame.Limit`: `def:frame`'s axioms as predicates over a bare
+  relation, hosted above the structure so that its fields cite them *definitionally* (a field's
+  type may only mention earlier declarations). All four axioms are named; `TaskFrame.Limit` is
+  *definitionally* the literal transcribed shape the development used before it had a name, so
+  every discharge helper and construction site reads unchanged
 
 ## Main Results
 
@@ -478,10 +479,10 @@ def IsSegment {W : Type} (R : W → D → W → Prop) (s : Set W) : Prop :=
 ## The frame axioms in bare-relation form
 
 `def:frame`'s four axioms, stated as `Prop`-valued predicates over a bare task relation
-`R : W → D → W → Prop`. Three of them live here — *Saturation*, *Seriality*, and the
-interpolation half of *Compositionality*; *Limit* is deliberately left unnamed and used in its
-literal transcribed shape (see the discharge helpers `limit_of_succOrder` and `limit_of_shift`
-above).
+`R : W → D → W → Prop`. All four live here — *Saturation*, *Seriality*, the interpolation half
+of *Compositionality* and the biconditional itself, and *Limit*. `Limit` is *definitionally* the
+literal transcribed shape the development used before the axiom had a name, so the discharge
+helpers `limit_of_succOrder` and `limit_of_shift` below conclude it without restatement.
 
 **These predicates are the sole form in which the axioms are available.** Where the `FrameOver`
 structure carries the corresponding fields, `FrameOver.saturation` must be *definitionally*
@@ -598,6 +599,29 @@ The `0 ≤ x`, `0 ≤ y` provisos are `def:frame`'s blanket condition on its axi
 -/
 def Compositional {W : Type} (R : W → D → W → Prop) : Prop :=
   ∀ w v x y, 0 ≤ x → 0 ≤ y → (R w (x + y) v ↔ ∃ u, R w x u ∧ R u y v)
+
+/--
+The *Limit* axiom, over a bare task relation.
+
+Recorded source (`def:frame#Limit`, verbatim): "$\bigcap\limits_{x > 0} (w)_x = \set{w}$".
+
+This is the literal transcribed shape the development has always used — if `u` lies in every
+positive cone of `w`, then `u` is `w` — now given a name so that it can appear on the right of a
+biconditional (`FrameOver.t1Space_iff_limit`) and be assumed independently of the other three
+constraints. The name is *definitionally* the old shape: every proof that concluded
+`∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w` discharges `Limit R` with no adaptation,
+and `TaskFrame.limit_of_succOrder`, `TaskFrame.limit_of_shift` and the class helpers below are
+stated in that shape unchanged.
+
+Only the `⊆` half of the paper's set equation is transcribed. The `⊇` half — `w` lies in each of
+its own positive cones — is `lem:nullity` (`TaskFrame.nullity_of_serial_limit`), derived rather
+than postulated, so carrying it here would duplicate a theorem as an axiom.
+
+Cones range over durations of either sign, so the predicate is stated over the extended
+relation; at a frame that is `TaskFrame.reflect PosRel`.
+-/
+def Limit {W : Type} (R : W → D → W → Prop) : Prop :=
+  ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w
 
 omit [IsOrderedAddMonoid D] [Nontrivial D] in
 /--
@@ -826,16 +850,19 @@ structure FrameOver (D : TemporalOrder) where
   serial : TaskFrame.Serial (TaskFrame.reflect PosRel)
   /--
   **The paper's *Limit* axiom** (`def:frame#Limit`, verbatim:
-  "$\bigcap\limits_{x > 0} (w)_x = \set{w}$"), in the literal transcribed shape: if `u` lies in
-  every positive cone of `w`, then `u` is `w`. Cones range over durations of either sign, so the
-  axiom is stated over the extended relation.
+  "$\bigcap\limits_{x > 0} (w)_x = \set{w}$"), stated by citation as `TaskFrame.Limit` of the
+  extended relation — the bare-relation predicate of record, never restated inline. Unfolded it
+  is the literal transcribed shape, `∀ w u, (∀ x, 0 < x → ∃ y, |y| < x → …) → u = w`: if `u` lies
+  in every positive cone of `w`, then `u` is `w`. Cones range over durations of either sign, so
+  the axiom is stated over the extended relation.
 
-  This is exactly what `TaskFrame.limit_of_succOrder`, `TaskFrame.limit_of_shift`, and the
-  class helpers conclude, and exactly what `TaskFrame.nullity_of_serial_limit` consumes to
-  derive `lem:nullity`. Instantiating its cone witness at `y := 0` also yields injectivity at
-  zero (`FrameOver.eq_of_taskRel_zero`).
+  The citation is *definitional*, so this is exactly what `TaskFrame.limit_of_succOrder`,
+  `TaskFrame.limit_of_shift`, and the class helpers conclude, and exactly what
+  `TaskFrame.nullity_of_serial_limit` consumes to derive `lem:nullity`; no construction site
+  needed adaptation when the shape acquired its name. Instantiating its cone witness at `y := 0`
+  also yields injectivity at zero (`FrameOver.eq_of_taskRel_zero`).
   -/
-  limit : ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ TaskFrame.reflect PosRel w y u) → u = w
+  limit : TaskFrame.Limit (TaskFrame.reflect PosRel)
   /--
   **The paper's *Saturation* axiom** (`def:frame#Saturation`, verbatim:
   "$\bigcap \mathcal{S} \neq \emptyset$ for any $\supseteq$-directed family $\mathcal{S}$ of
@@ -2184,9 +2211,9 @@ theorem reflection (F : TaskFrame) (w : F.WorldState) (d : F.Duration) (u : F.Wo
 /-- *Seriality* (`def:frame#Seriality`), by citation. -/
 theorem serial (F : TaskFrame) : TaskFrame.Serial F.TaskRel := F.toFibre.serial
 
-/-- *Limit* (`def:frame#Limit`), in the literal transcribed shape. -/
-theorem limit (F : TaskFrame) :
-    ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.toFibre.limit
+/-- *Limit* (`def:frame#Limit`), by citation. `TaskFrame.Limit` is definitionally the literal
+transcribed shape, so a consumer that spells the shape out still discharges against this. -/
+theorem limit (F : TaskFrame) : TaskFrame.Limit F.TaskRel := F.toFibre.limit
 
 /-- *Saturation* (`def:frame#Saturation`), by citation. This is the field the Step Lemma consumes,
 which is why it must be literally the recorded predicate. -/
@@ -2321,6 +2348,9 @@ example (F : TaskFrame) : TaskFrame.Saturation F.TaskRel := F.saturation
 example (F : TaskFrame) : TaskFrame.Compositional F.TaskRel := F.comp
 example (F : TaskFrame) : TaskFrame.Interpolates F.TaskRel :=
   TaskFrame.interpolates_of_comp F.comp
+example (F : TaskFrame) : TaskFrame.Limit F.TaskRel := F.limit
+-- `Limit` is definitionally the literal transcribed shape, so the pre-naming spelling still
+-- elaborates by citation alone; that is what makes the naming a no-op for every consumer.
 example (F : TaskFrame) :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.limit
 
@@ -2329,6 +2359,7 @@ example (F : FrameOver D) : TaskFrame.Serial F.TaskRel := F.serial
 example (F : FrameOver D) : TaskFrame.Saturation F.TaskRel := F.saturation
 example (F : FrameOver D) : TaskFrame.Compositional F.TaskRel := F.comp
 example (F : FrameOver D) : TaskFrame.Interpolates F.TaskRel := F.interpolates
+example (F : FrameOver D) : TaskFrame.Limit F.TaskRel := F.limit
 example (F : FrameOver D) :
     ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ F.TaskRel w y u) → u = w := F.limit
 example (F : FrameOver D) : Nonempty F.WorldState := inferInstance

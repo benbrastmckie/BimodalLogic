@@ -1,7 +1,7 @@
 # Implementation Plan: General Task Frames with Regular Frame Constraints
 
 - **Task**: 656 - Refactor task frames: general frames with the four constraints as frame conditions, the constrained class named *regular*
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 17.5 hours
 - **Dependencies**: 651, 652, 654, 655 (all completed)
 - **Research Inputs**: `specs/656_refactor_task_frames_general_with_frame_constraints/reports/01_general-frames-regular-constraints.md`
@@ -206,17 +206,17 @@ additionally depends on Phase 3 transitively, through Phases 4-6.
 
 ---
 
-### Phase 1: Name `TaskFrame.Limit` [NOT STARTED]
+### Phase 1: Name `TaskFrame.Limit` [COMPLETED]
 
 **Goal**: Give the Limit axiom a name definitionally equal to its current literal transcribed
 shape, and retire the docstrings that record the deliberate non-naming. Nothing else moves.
 
 **Tasks**:
-- [ ] Re-check `specs/state.json` for any task with status `implementing` whose scope touches `FormalSystem/`; stop and report if one is found.
-- [ ] Add `def Limit {W : Type} (R : W → D → W → Prop) : Prop := ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w` in namespace `FormalSystem.Semantics.TaskFrame`, beside `Serial`/`Saturation`/`Compositional`, with a docstring citing `def:frame#Limit` by label and its verbatim phrase (never by line number).
-- [ ] Restate the `FrameOver.limit` field's type as `TaskFrame.Limit (TaskFrame.reflect PosRel)`, by citation like `serial` and `saturation` already are. Confirm the change is definitional (the field's proofs at every construction site must still typecheck unchanged).
-- [ ] Rewrite the three docstrings that record the deliberate non-naming: the module header's "Alignment status" bullet, the `limit` field docstring, and `exists_uniform_radius_of_finite`'s "Status" paragraph.
-- [ ] Full `--wfail` build of `FormalSystem` plus `Tests/BimodalTest`, detached through the build guard.
+- [x] Re-check `specs/state.json` for any task with status `implementing` whose scope touches `FormalSystem/`; stop and report if one is found. *(completed — only task 656 itself is `implementing`)*
+- [x] Add `def Limit {W : Type} (R : W → D → W → Prop) : Prop := ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w` in namespace `FormalSystem.Semantics.TaskFrame`, beside `Serial`/`Saturation`/`Compositional`, with a docstring citing `def:frame#Limit` by label and its verbatim phrase (never by line number). *(completed)*
+- [x] Restate the `FrameOver.limit` field's type as `TaskFrame.Limit (TaskFrame.reflect PosRel)`, by citation like `serial` and `saturation` already are. Confirm the change is definitional (the field's proofs at every construction site must still typecheck unchanged). *(completed — whole tree rebuilt green with no construction-site edit; `TaskFrame.limit` re-export restated by citation too)*
+- [x] Rewrite the three docstrings that record the deliberate non-naming: the module header's "Alignment status" bullet, the `limit` field docstring, and `exists_uniform_radius_of_finite`'s "Status" paragraph. *(deviation: altered — the two non-naming docstrings (module-header bullet list, the bare-relation-predicates section header) plus the `limit` field docstring and the `TaskFrame.limit` re-export docstring were rewritten here; `exists_uniform_radius_of_finite`'s "Status" paragraph records that no topology exists, not that Limit is unnamed, and its rewrite is deferred to Phase 3 where `Semantics/StateTopology.lean` actually exists, so the docstring is never false at a phase boundary)*
+- [x] Full `--wfail` build of `FormalSystem` plus `Tests/BimodalTest`, detached through the build guard. *(completed — 2780 jobs, guard exit 0, 0 `error:` lines)*
 
 **Timing**: 1 hour
 
