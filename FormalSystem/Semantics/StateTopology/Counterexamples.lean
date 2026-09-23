@@ -842,6 +842,189 @@ theorem frame_not_t2Space : ¬ @T2Space frame.WorldState (FrameOver.stateTopolog
     rw [frame_taskRel_eq]
   rwa [hEq] at h
 
+/-! ### The cone topology `𝒯_F` on this frame
+
+*Triangle* — the mixed-sign shortcut condition of `StateTopology.lean` — **fails** here, yet
+every cone is still `𝒩_F`-open, so the two topologies coincide anyway. That makes this frame the
+library's witness that *Triangle* is sufficient but not necessary for cone-openness, and it is
+what lets the separation failure be stated as a property of the **frame** rather than of a choice
+of topology.
+-/
+
+/-- **The mixed-sign shortcut condition *Triangle* FAILS on this frame.** `o true ⇒₁ p ⟨1⟩` and
+`p ⟨1⟩ ⇒₋₁ o false` are both tasks, but no single duration joins the two origins, since
+`rel (o b) t (o b')` is `b = b'` at every duration.
+
+Read together with `coneTopology_eq_nbhdTopology` below — which holds here regardless — this is
+the library's only witness that *Triangle* is **sufficient but not necessary** for cone-openness.
+`TaskFrame.coneTopology_eq_nbhdTopology_of_triangle` is the sufficiency half; this frame shows the
+implication does not reverse.
+
+Paper: — (formalization-native; *Triangle* is a condition of this development, not of the paper) -/
+theorem not_triangle : ¬ TaskFrame.Triangle rel := by
+  intro h
+  obtain ⟨t, _, hR⟩ := h (o true) (p ⟨1, one_pos⟩) (o false) 1 (-1)
+    (show (1 : ℝ) ≤ 1 from le_rfl) (show (1 : ℝ) ≤ -(-1) by norm_num)
+  exact Bool.noConfusion (hR : true = false)
+
+/-! #### Cone membership, computed
+
+`(o b)_x = {o b} ∪ {p t : t < x}` and `(p t)_x = {p s : |s - t| < x} ∪ {o true, o false : t < x}`.
+The second clause holding for **both** origins is the whole reason this frame is not Hausdorff.
+-/
+
+/-- An origin lies in a positive cone at an origin exactly when they are the same origin.
+
+Paper: `def:task-relation` (the *Cone* clause, computed on this frame) -/
+theorem o_mem_cone_o {b b' : Bool} {x : ℝ} (hx : 0 < x) :
+    o b' ∈ cone rel (o b) x ↔ b = b' := by
+  constructor
+  · rintro ⟨y, _, hR⟩; exact hR
+  · intro h; exact ⟨0, by rwa [abs_zero], h⟩
+
+/-- A ray point lies in a cone at an origin exactly when it is nearer than the radius.
+
+Paper: `def:task-relation` (the *Cone* clause, computed on this frame) -/
+theorem p_mem_cone_o {b : Bool} {t : {t : ℝ // 0 < t}} {x : ℝ} :
+    p t ∈ cone rel (o b) x ↔ t.1 < x := by
+  constructor
+  · rintro ⟨y, hy, hR⟩
+    change t.1 ≤ y at hR
+    exact lt_of_le_of_lt hR (lt_of_le_of_lt (le_abs_self y) hy)
+  · intro h
+    exact ⟨t.1, by rwa [abs_of_pos t.2], show t.1 ≤ t.1 from le_rfl⟩
+
+/-- An origin lies in a cone at a ray point exactly when the ray point is nearer than the
+radius — for **both** origins, which is why this frame is not Hausdorff.
+
+Paper: `def:task-relation` (the *Cone* clause, computed on this frame) -/
+theorem o_mem_cone_p {b : Bool} {t : {t : ℝ // 0 < t}} {x : ℝ} :
+    o b ∈ cone rel (p t) x ↔ t.1 < x := by
+  constructor
+  · rintro ⟨y, hy, hR⟩
+    change t.1 ≤ -y at hR
+    exact lt_of_le_of_lt hR (lt_of_le_of_lt (neg_le_abs y) hy)
+  · intro h
+    refine ⟨-t.1, by rwa [abs_neg, abs_of_pos t.2], ?_⟩
+    change t.1 ≤ -(-t.1)
+    linarith
+
+/-- On the ray the cones are Euclidean intervals.
+
+Paper: `def:task-relation` (the *Cone* clause, computed on this frame) -/
+theorem p_mem_cone_p {t s : {t : ℝ // 0 < t}} {x : ℝ} :
+    p s ∈ cone rel (p t) x ↔ |s.1 - t.1| < x := by
+  constructor
+  · rintro ⟨y, hy, hR⟩
+    rcases hR with ⟨h1, h2, h3⟩ | ⟨h1, h2, h3⟩
+    · rw [abs_of_nonneg h1] at hy
+      rw [abs_of_nonneg (by linarith : (0 : ℝ) ≤ s.1 - t.1)]
+      linarith
+    · rw [abs_of_neg h1] at hy
+      rw [abs_of_nonpos (by linarith : s.1 - t.1 ≤ (0 : ℝ))]
+      linarith
+  · intro h
+    rcases le_or_gt t.1 s.1 with hts | hts
+    · exact ⟨s.1 - t.1, h, Or.inl ⟨by linarith, hts, by linarith⟩⟩
+    · exact ⟨s.1 - t.1, h, Or.inr ⟨by linarith, by linarith, by linarith⟩⟩
+
+/-- **Every cone of `rel` is `𝒩_F`-open**, with explicit radii: at `p t ∈ (o b)_x` use
+`min t (x - t)` — small enough to exclude both origins, since an origin in `(p t)_ε` needs
+`t < ε`; at `p s ∈ (p t)_x` use `x - |s - t|`; at `o b ∈ (p t)_x` use `x - t`.
+
+These three radii are the content: they are what makes `coneTopology_eq_nbhdTopology` available
+on a frame where *Triangle* fails.
+
+Paper: — (formalization-native; cone-openness is this development's criterion, not the paper's) -/
+theorem isOpen_nbhdTopology_cone (w : TO) (x : ℝ) (hx : 0 < x) :
+    IsOpen[nbhdTopology rel] (cone rel w x) := by
+  cases w with
+  | o b =>
+    intro u hu
+    cases u with
+    | o b' =>
+      obtain rfl : b = b' := (o_mem_cone_o hx).mp hu
+      exact ⟨x, hx, subset_rfl⟩
+    | p t =>
+      have ht : t.1 < x := p_mem_cone_o.mp hu
+      refine ⟨min t.1 (x - t.1), lt_min t.2 (by linarith), fun v hv => ?_⟩
+      cases v with
+      | o b' =>
+        exact absurd (o_mem_cone_p.mp hv) (by have := min_le_left t.1 (x - t.1); linarith)
+      | p s =>
+        have hs : |s.1 - t.1| < min t.1 (x - t.1) := p_mem_cone_p.mp hv
+        refine p_mem_cone_o.mpr ?_
+        have h1 : s.1 - t.1 ≤ |s.1 - t.1| := le_abs_self _
+        have h2 := min_le_right t.1 (x - t.1)
+        linarith
+  | p t =>
+    intro u hu
+    cases u with
+    | o b =>
+      have ht : t.1 < x := o_mem_cone_p.mp hu
+      refine ⟨x - t.1, by linarith, fun v hv => ?_⟩
+      cases v with
+      | o b' => exact o_mem_cone_p.mpr ht
+      | p s =>
+        have hs : s.1 < x - t.1 := p_mem_cone_o.mp hv
+        refine p_mem_cone_p.mpr ?_
+        rw [abs_lt]
+        constructor <;> linarith [s.2, t.2]
+    | p s =>
+      have hs : |s.1 - t.1| < x := p_mem_cone_p.mp hu
+      refine ⟨x - |s.1 - t.1|, by linarith, fun v hv => ?_⟩
+      cases v with
+      | o b =>
+        have h1 : s.1 < x - |s.1 - t.1| := o_mem_cone_p.mp hv
+        refine o_mem_cone_p.mpr ?_
+        have h2 : t.1 - s.1 ≤ |s.1 - t.1| := by
+          rw [abs_sub_comm]; exact le_abs_self _
+        linarith
+      | p r =>
+        have h1 : |r.1 - s.1| < x - |s.1 - t.1| := p_mem_cone_p.mp hv
+        refine p_mem_cone_p.mpr ?_
+        have h2 : |r.1 - t.1| ≤ |r.1 - s.1| + |s.1 - t.1| := abs_sub_le _ _ _
+        linarith
+
+/-- **`𝒯_F = 𝒩_F` on the two-origin frame**, by cone-openness
+(`TaskFrame.coneTopology_eq_nbhdTopology_iff`) rather than by the shortcut condition, which fails
+here (`not_triangle`).
+
+Paper: `def:task-topology` (the subbasis topology it defines coincides here with the
+cone-neighbourhood topology) -/
+theorem coneTopology_eq_nbhdTopology : coneTopology rel = nbhdTopology rel :=
+  (TaskFrame.coneTopology_eq_nbhdTopology_iff (fun w => rel_refl w 0 le_rfl)).mpr
+    isOpen_nbhdTopology_cone
+
+/-- **`𝒯_F` is not Hausdorff either** on this frame: it coincides with `𝒩_F`, which separates
+neither origin from the other. So being T1 and not Hausdorff is a property of the **frame**, not
+an artefact of which of the two topologies is chosen.
+
+Paper: — (formalization-native; the paper states no separation axiom beyond `app:topology-t1`) -/
+theorem not_t2Space_coneTopology : ¬ @T2Space TO (coneTopology rel) := by
+  rw [coneTopology_eq_nbhdTopology]
+  exact not_t2Space_nbhdTopology
+
+/-! #### The frame-level forms — the register a manuscript cites -/
+
+/-- **The two topologies coincide on the two-origin frame**, as a fact about the frame:
+`𝒯_F` and `𝒩_F` are the same topology on this state space.
+
+Paper: `def:task-topology` (at a frame) -/
+theorem frame_coneTop_eq_stateTopology : frame.coneTop = FrameOver.stateTopology frame := by
+  unfold FrameOver.coneTop FrameOver.stateTopology
+  rw [frame_taskRel_eq]; exact coneTopology_eq_nbhdTopology
+
+/-- **Neither topology on this frame is Hausdorff.** With `frame_t1Space` and
+`frame_coneTop_eq_stateTopology` this is the sharp form of the witness: a state space that is T1
+and not T2, where the failure cannot be blamed on the choice between `𝒯_F` and `𝒩_F` because the
+two coincide.
+
+Paper: — (formalization-native; the paper states no separation axiom beyond `app:topology-t1`) -/
+theorem frame_not_t2Space_coneTop : ¬ @T2Space frame.WorldState frame.coneTop := by
+  rw [frame_coneTop_eq_stateTopology]
+  exact frame_not_t2Space
+
 end TwoOrigins
 
 /-! ## The hedgehog: `𝒩_F` is strictly below the final topology of all histories

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #658
 
 - **Task**: 658 - Consolidate the state-space topology into a library-grade, citable collection for the manuscript appendix
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10.5 hours
 - **Dependencies**: None blocking. MUST NOT run concurrently with the sibling open-questions task (Saturation for the two real witnesses; R0 without *Limit*) or with the frame-constraints audit task — all three touch `FormalSystem/Semantics/StateTopology.lean` and its `Counterexamples` sibling.
 - **Research Inputs**: `specs/658_consolidate_state_topology_collection_for_appendix/reports/01_state-topology-collection-appendix.md` (plus the seed report `SEED.md` and the three compiled probe files under `probes/`)
@@ -121,18 +121,18 @@ deliberately serialized; phases 4 and 5 likewise.
 
 ---
 
-### Phase 1: Baseline Capture and Probe Re-Verification [NOT STARTED]
+### Phase 1: Baseline Capture and Probe Re-Verification [COMPLETED]
 
 **Goal**: Establish the pre-state every later phase is measured against, and confirm the three
 probe files still compile verbatim against the current HEAD before any file is edited.
 
 **Tasks**:
-- [ ] Confirm no sibling task is mid-implementation against `FormalSystem/Semantics/StateTopology.lean` or its `Counterexamples` sibling (`specs/state.json`)
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and record the pass line, the C19 docstring-coverage percentage and the C28 warning count
-- [ ] Run `lake build --wfail` over the library and `Tests/BimodalTest` and record the result
-- [ ] Record the import-weight baseline: `grep -rn "import FormalSystem.Semantics.StateTopology" FormalSystem/` (expected: `Counterexamples.lean` only) and confirm `FormalSystem/Semantics.lean` imports neither module
-- [ ] Re-run each of the three probe files against the current tree and confirm zero errors, zero warnings, and axioms exactly `[propext, Classical.choice, Quot.sound]`
-- [ ] Record the current `docs/theorem-index.md` topology row count and which declarations they name
+- [x] Confirm no sibling task is mid-implementation against `FormalSystem/Semantics/StateTopology.lean` or its `Counterexamples` sibling (`specs/state.json`) *(only this task is `implementing`)*
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and record the pass line, the C19 docstring-coverage percentage and the C28 warning count *(ALL CHECKS PASSED; C19 refined 94.01% (floor 90%), unrefined 91.61%; C28 0 warnings; C15 119 rows; C33 556 imports)*
+- [x] Run `lake build --wfail` over the library and `Tests/BimodalTest` and record the result *(exit 0, 2722 jobs, 0 errors, 0 warnings)*
+- [x] Record the import-weight baseline: `grep -rn "import FormalSystem.Semantics.StateTopology" FormalSystem/` (expected: `Counterexamples.lean` only) and confirm `FormalSystem/Semantics.lean` imports neither module *(confirmed: `Counterexamples.lean` plus the generated root `FormalSystem.lean`; `Semantics.lean` imports neither)*
+- [x] Re-run each of the three probe files against the current tree and confirm zero errors, zero warnings, and axioms exactly `[propext, Classical.choice, Quot.sound]` *(all three compile clean via `lake env lean`; 18 declarations, every axiom profile standard)*
+- [x] Record the current `docs/theorem-index.md` topology row count and which declarations they name *(five rows: `FrameOver.t1Space_iff_limit`, `StateTopology.funnel_t1Space_coneTopology`, `StateTopology.funnel_not_limit`, `StateTopology.TwoOrigins.frame_not_t2Space`, `StateTopology.Hedgehog.finalTopology_ne_nbhdTopology`)*
 
 **Timing**: 0.5 hours
 
@@ -153,28 +153,28 @@ time; if any differs, record the drift before proceeding rather than assuming th
 
 ---
 
-### Phase 2: Promote Gap A — the Two-Origin Cone-Topology Side [NOT STARTED]
+### Phase 2: Promote Gap A — the Two-Origin Cone-Topology Side [COMPLETED]
 
 **Goal**: Land the two-origin frame's cone-topology results in the library so the manuscript can
 say that non-Hausdorffness is a property of the frame rather than an artefact of which topology
 is chosen.
 
 **Tasks**:
-- [ ] Transplant from `probes/GapA_TwoOrigins.lean` into the `TwoOrigins` namespace of
+- [x] Transplant from `probes/GapA_TwoOrigins.lean` into the `TwoOrigins` namespace of
       `FormalSystem/Semantics/StateTopology/Counterexamples.lean`: `not_triangle`,
       `o_mem_cone_o`, `p_mem_cone_o`, `o_mem_cone_p`, `p_mem_cone_p`,
       `isOpen_nbhdTopology_cone`, `coneTopology_eq_nbhdTopology`, `not_t2Space_coneTopology`
-- [ ] Transplant the two frame-level wrappers `frame_coneTop_eq_stateTopology` and
+- [x] Transplant the two frame-level wrappers `frame_coneTop_eq_stateTopology` and
       `frame_not_t2Space_coneTop` (these are what the appendix actually cites — they speak about
       a *frame*, matching the manuscript's register)
-- [ ] Drop the probe's `'`-shims in favour of the library's own `Limit`, `nbhdTopology`,
+- [x] Drop the probe's `'`-shims in favour of the library's own `Limit`, `nbhdTopology`,
       `coneTopology`, `Triangle`; use the library's `rel` rather than the probe's `RTO`
-- [ ] Add a `Paper:` line to every new docstring — `—` plus a one-clause reason for the
+- [x] Add a `Paper:` line to every new docstring — `—` plus a one-clause reason for the
       formalization-native results, following `TwoOrigins.frame_not_t2Space`'s existing pattern
-- [ ] State in `not_triangle`'s docstring that it is the library's only witness that *Triangle*
+- [x] State in `not_triangle`'s docstring that it is the library's only witness that *Triangle*
       is **sufficient but not necessary** for cone-openness, naming
       `coneTopology_eq_nbhdTopology_of_triangle` as the sufficiency half
-- [ ] Preserve the explicit radii (`min t (x-t)`, `x - |s-t|`, `x - t`) in
+- [x] Preserve the explicit radii (`min t (x-t)`, `x - |s-t|`, `x - t`) in
       `isOpen_nbhdTopology_cone`'s docstring; they are the quotable content
 
 **Timing**: 1.5 hours
