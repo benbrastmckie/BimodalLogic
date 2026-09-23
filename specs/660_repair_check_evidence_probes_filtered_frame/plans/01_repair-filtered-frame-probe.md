@@ -1,11 +1,11 @@
 # Implementation Plan: Repair the filtered-frame-is-universal evidence probe
 
 - **Task**: 660 - Repair check-evidence-probes.sh: phase7-filtered-frame-is-universal does not compile
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Dependencies**: None (task 661 depends on this task; 660 must fully complete first)
 - **Research Inputs**: `specs/660_repair_check_evidence_probes_filtered_frame/reports/01_repair-filtered-frame-probe.md`
-- **Artifacts**: plans/01_repair-filtered-frame-probe.md (this file)
+- **Artifacts**: plans/01_repair-filtered-frame-probe.md (this file), summaries/01_repair-filtered-frame-probe-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -172,21 +172,27 @@ line appears in the diff).
 
 ---
 
-### Phase 2: Run the full gate and confirm the probe suite is green [NOT STARTED]
+### Phase 2: Run the full gate and confirm the probe suite is green [COMPLETED]
 
 **Goal**: `bash scripts/check-evidence-probes.sh` reports all five wired probes passing and exits
 0, with no regression elsewhere.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-evidence-probes.sh` and confirm exit 0 with all five wired probes
-      `PASS` and `spike-untl-unfolding-and-fwd-obstruction` still `SKIP (deferred)`.
-- [ ] Confirm the deferred probe's status is unchanged from the documented baseline — this task
-      must neither wire it nor alter its deferral.
-- [ ] Run `lake build` as a no-regression confirmation only. Because no file under
+- [x] Run `bash scripts/check-evidence-probes.sh` and confirm exit 0 with all five wired probes
+      `PASS` and `spike-untl-unfolding-and-fwd-obstruction` still `SKIP (deferred)`. *(exit 0;
+      banner reads `PASS  all 5 wired probe(s) compile`; Scope Hypothesis confirmed: 5 wired + 1
+      deferred)*
+- [x] Confirm the deferred probe's status is unchanged from the documented baseline — this task
+      must neither wire it nor alter its deferral. *(still `SKIP (deferred: frame-class uniformity
+      work)`; `scripts/check-evidence-probes.sh` untouched)*
+- [x] Run `lake build` as a no-regression confirmation only. Because no file under
       `FormalSystem/` changed, this is expected to be a cached no-op; it is not the acceptance
-      criterion for the repair (research recommendation 4). Record its result either way.
-- [ ] Re-read the final diff for the whole task and confirm it touches exactly the one probe file.
-- [ ] Commit any remaining task artifacts and close the phase.
+      criterion for the repair (research recommendation 4). Record its result either way. *(exit
+      0, `Build completed successfully (2725 jobs)`, zero `error:` lines)*
+- [x] Re-read the final diff for the whole task and confirm it touches exactly the one probe file.
+      *(`git diff --name-only HEAD~1 HEAD`: the probe plus two `specs/660_.../` artifacts; zero
+      paths under `FormalSystem/`, `Tests/`, `BimodalTools/`, or `scripts/`)*
+- [x] Commit any remaining task artifacts and close the phase.
 
 **Timing**: 0.5 hours
 
@@ -219,13 +225,15 @@ than adjusting the expectation silently.
 
 ## Testing & Validation
 
-- [ ] `lake env lean specs/evidence/bi-lasso-decision-layer/phase7-filtered-frame-is-universal.lean`
+- [x] `lake env lean specs/evidence/bi-lasso-decision-layer/phase7-filtered-frame-is-universal.lean`
       exits 0 with empty output — no errors and no warnings.
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0 and reports all 5 wired probes passing.
-- [ ] The three `example` signatures in the probe are byte-identical to their pre-repair form.
-- [ ] The probe contains no `sorry` and introduces no axiom.
-- [ ] No file under `FormalSystem/` or `scripts/` is modified.
-- [ ] `lake build` shows no regression.
+- [x] `bash scripts/check-evidence-probes.sh` exits 0 and reports all 5 wired probes passing.
+- [x] The three `example` signatures in the probe are byte-identical to their pre-repair form.
+      *(deviation: altered — the three propositions are byte-identical; each signature's trailing
+      ` := by` became ` :=`, the proof-mode marker term mode requires)*
+- [x] The probe contains no `sorry` and introduces no axiom.
+- [x] No file under `FormalSystem/` or `scripts/` is modified.
+- [x] `lake build` shows no regression.
 
 ## Artifacts & Outputs
 
