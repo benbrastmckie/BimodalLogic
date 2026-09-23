@@ -11,6 +11,10 @@ import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
+-- `Extension.Completion` is imported for exactly one declaration, `PartialHistory.hasNearest_int`,
+-- which `SeparatingFrame.srel_completion` consumes. This module is a leaf — nothing under
+-- `FormalSystem/` imports it — so the edge adds weight to nothing else.
+import FormalSystem.Semantics.Extension.Completion
 import FormalSystem.Semantics.StateTopology
 
 /-!
@@ -100,13 +104,25 @@ constraints now has a compiled witness satisfying the other three and failing it
 * *Saturation* fails at the **rational two-origin frame**: `RationalTwoOrigins.rel_serial`,
   `.rel_compositional`, `.rel_limit`, `.not_rel_saturation` (above).
 
-**A packaging asymmetry, recorded rather than papered over.** Three of the four rows are certified
-at the **frame** level — the statements are about a `FrameOver`'s `TaskRel`. The *Saturation* row
-is certified at the **bare-relation** level only: `RationalTwoOrigins.rel` carries no `FrameOver`
-wrapper, because wrapping it would need a reflection law for its carrier that this module does not
-prove. The independence is genuine at exactly the level `def:frame` states its constraints — they
-are conditions on the task relation — but the row should not be read as claiming a `FrameOver`
-witness it does not have.
+**And a fifth row, which is a *separation* rather than an independence.** *Completion*
+(`TaskFrame.Completion`) is the audit's proposed replacement for `def:frame`'s fourth constraint.
+*Saturation* implies it, and the converse is **false**: the separating frame — unit-speed drift on
+`ℚ` over `ℤ`-time — satisfies *Seriality*, *Compositionality*, *Limit* **and** *Completion*
+(`SeparatingFrame.srel_serial`, `.srel_compositional`, `.srel_limit`, `.srel_completion`) while
+failing *Saturation* (`SeparatingFrame.not_srel_saturation`). So **`Completion → Saturation` is
+false unconditionally, and *Completion* is a strict weakening of *Saturation***. The mechanism is
+the one this module's rational-carrier section names: *Completion*'s quantifier is indexed by
+**times**, so it collapses over an order with nearest times, while *Saturation*'s is indexed by
+**balls**, which no discreteness of the duration order reaches.
+
+**A packaging asymmetry, recorded rather than papered over.** Three of the four independence rows
+are certified at the **frame** level — the statements are about a `FrameOver`'s `TaskRel`. The
+*Saturation* row and the whole of the fifth, separating row are certified at the
+**bare-relation** level only: neither `RationalTwoOrigins.rel` nor `SeparatingFrame.srel` carries
+a `FrameOver` wrapper, because wrapping either would need a reflection law for its carrier that
+this module does not prove. The results are genuine at exactly the level `def:frame` states its
+constraints — they are conditions on the task relation — but no row should be read as claiming a
+`FrameOver` witness it does not have.
 
 ## Import weight
 
@@ -860,6 +876,336 @@ theorem not_rel_completion : ¬ TaskFrame.Completion rel := by
       nlinarith [hhigh, herr, hsmall, hn]
 
 end RationalTwoOrigins
+
+/-! ## The separating frame: *Completion* holds and *Saturation* fails -/
+
+namespace SeparatingFrame
+
+open FormalSystem.Semantics FormalSystem.Semantics.TaskFrame
+open FormalSystem.Semantics.PartialHistory (hasNearest_int)
+
+/-!
+`W = ℚ`, `D = ℤ`, `w ⇒_x v` iff `|v - w| ≤ |x|` — unit-speed drift on a rationally incomplete
+carrier over **discrete** time. This is the theorem of the collection rather than one more
+independence row: it separates *Completion* from *Saturation*, and so settles the converse
+`Completion → Saturation` negatively.
+
+Three facts a reader needs, in the order they matter:
+
+1. ***Completion* holds by the nearest-times argument, and needs no completeness of the carrier
+   at all** (`srel_completion`). `ℤ` has a nearest domain time on each side of the target time
+   `z` (`PartialHistory.hasNearest_int`), so the constraint that nearest time imposes is the
+   `⊆`-least one and the witness is read off it. No intersection of infinitely many shrinking
+   constraints is ever demanded. This is `PartialHistory.completion_of_hasNearest`'s argument,
+   run at the bare relation because `srel` carries no `FrameOver` wrapper.
+
+2. ***Saturation* fails, because fibres and segments are not indexed by times**
+   (`not_srel_saturation`). A `⊇`-directed family of *segments* is ordered by inclusion and by
+   nothing else; the durations being integers constrains the family not at all. So the family of
+   rational intervals `[a, b]` with `a² < 2 < b²` — each realised as the segment
+   `[b-1, a+1]_1^1` — shrinks onto the Dedekind cut `{q : q² < 2} | {q : 2 < q²}`, which has no
+   rational point. The contrast with (1) is the whole content of the separation: **time-indexed
+   quantifiers collapse over an order with nearest times, ball-indexed ones never do.**
+
+3. **The separation is realised over ℤ-time** — precisely the region where
+   `PartialHistory.extension_of_isZTime` already shows *Saturation* is redundant for
+   `thm:extension`. So *Saturation* excludes ordinary discrete-time frames with a dense state
+   space, and `thm:extension` has no need of that exclusion. Together with
+   `RationalTwoOrigins.not_rel_completion` above — which rules the dense-time family out
+   entirely — this is why the separator had to be discrete.
+
+**Why `not_srel_totalComp` is here.** The converse *does* hold under mixed-sign composition plus
+*Limit* (`saturation_of_completion`, in the `specs/evidence/frame-constraints-audit/` probe), so
+any separating frame **must** fail mixed-sign composition. This frame does
+(`not_srel_totalComp`): the theorem is the consistency check on the separation, not a stray
+result.
+-/
+
+/-- Unit-speed drift on `ℚ` over `ℤ`-time. -/
+def srel (w : ℚ) (x : ℤ) (v : ℚ) : Prop := |v - w| ≤ |(x : ℚ)|
+
+theorem srel_iff {w : ℚ} {x : ℤ} {v : ℚ} : srel w x v ↔ |v - w| ≤ |(x : ℚ)| := Iff.rfl
+
+theorem srel_of_nonneg {w : ℚ} {x : ℤ} {v : ℚ} (hx : 0 ≤ x) :
+    srel w x v ↔ |v - w| ≤ (x : ℚ) := by
+  rw [srel_iff, abs_of_nonneg (by exact_mod_cast hx : (0 : ℚ) ≤ (x : ℚ))]
+
+/-! ### *Seriality*, *Compositionality*, *Limit* -/
+
+/-- **The separating frame satisfies *Seriality***: every state is its own successor and
+predecessor, since `|w - w| = 0 ≤ |x|`. -/
+theorem srel_serial : Serial srel := by
+  intro w x hx
+  have h : srel w x w := by
+    rw [srel_iff, sub_self, abs_zero]
+    exact abs_nonneg _
+  exact ⟨⟨w, h⟩, ⟨w, h⟩⟩
+
+/-- **The separating frame satisfies *Compositionality***: a drift of at most `x + y` splits at
+whichever intermediate point the two budgets allow. -/
+theorem srel_compositional : Compositional srel := by
+  intro w v x y hx hy
+  have hx' : (0 : ℚ) ≤ (x : ℚ) := by exact_mod_cast hx
+  have hy' : (0 : ℚ) ≤ (y : ℚ) := by exact_mod_cast hy
+  rw [srel_of_nonneg (by omega : (0 : ℤ) ≤ x + y)]
+  push_cast
+  constructor
+  · intro h
+    rw [abs_le] at h
+    rcases le_total v (w - x) with hlt | hge
+    · refine ⟨w - (x : ℚ), ?_, ?_⟩
+      · rw [srel_of_nonneg hx, show w - (x : ℚ) - w = -(x : ℚ) by ring, abs_neg,
+          abs_of_nonneg hx']
+      · rw [srel_of_nonneg hy, abs_le]; constructor <;> linarith
+    · rcases le_total (w + x) v with hge' | hle'
+      · refine ⟨w + (x : ℚ), ?_, ?_⟩
+        · rw [srel_of_nonneg hx, show w + (x : ℚ) - w = (x : ℚ) by ring, abs_of_nonneg hx']
+        · rw [srel_of_nonneg hy, abs_le]; constructor <;> linarith
+      · refine ⟨v, ?_, ?_⟩
+        · rw [srel_of_nonneg hx, abs_le]; constructor <;> linarith
+        · rw [srel_of_nonneg hy, sub_self, abs_zero]; exact hy'
+  · rintro ⟨u, hu1, hu2⟩
+    rw [srel_of_nonneg hx, abs_le] at hu1
+    rw [srel_of_nonneg hy, abs_le] at hu2
+    rw [abs_le]
+    constructor <;> linarith [hu1.1, hu1.2, hu2.1, hu2.2]
+
+/-- **The separating frame satisfies *Limit***: the only duration of absolute value below `1` is
+`0`, and a zero-duration task pins the state. -/
+theorem srel_limit : TaskFrame.Limit srel := by
+  intro w u h
+  obtain ⟨y, hy, hR⟩ := h 1 one_pos
+  have hy0 : y = 0 := by
+    rcases abs_lt.mp hy with ⟨h1, h2⟩
+    omega
+  subst hy0
+  rw [srel_iff] at hR
+  simp only [Int.cast_zero, abs_zero] at hR
+  have h0 : u - w = 0 := abs_eq_zero.mp (le_antisymm hR (abs_nonneg _))
+  linarith
+
+/-! ### *Completion* holds: `ℤ` has nearest times -/
+
+/--
+**The separating frame satisfies *Completion*.**
+
+`ℤ` has nearest times (`PartialHistory.hasNearest_int`), so the constraint imposed by the nearest
+domain time on each side of `z` is the `⊆`-least one and the witness is read off it — no
+completeness of the carrier `ℚ` is demanded anywhere. Two-sided, the witness is the larger of the
+two one-sided endpoints; one-sided, it is the nearest time's own state.
+
+Paper: — (*Completion* is the audit's proposed replacement for `def:frame`'s fourth constraint
+and has no anchor in the manuscript)
+-/
+theorem srel_completion : TaskFrame.Completion srel := by
+  intro X hXne w hw z
+  obtain ⟨hlow, hhigh⟩ := hasNearest_int X z
+  -- coherence, in ℚ-arithmetic form
+  have hcoh : ∀ (s t : ℤ) (hs : X s) (ht : X t), |w t ht - w s hs| ≤ |(t : ℚ) - (s : ℚ)| := by
+    intro s t hs ht
+    have h := hw s t hs ht
+    rw [srel_iff] at h
+    push_cast at h
+    exact h
+  by_cases hbelow : ∃ t, X t ∧ t ≤ z
+  · obtain ⟨tm, htm, htmz, htmax⟩ := hlow hbelow
+    by_cases habove : ∃ t, X t ∧ z ≤ t
+    · obtain ⟨tp, htp, hztp, htmin⟩ := hhigh habove
+      have htmzq : (tm : ℚ) ≤ (z : ℚ) := by exact_mod_cast htmz
+      have hztpq : (z : ℚ) ≤ (tp : ℚ) := by exact_mod_cast hztp
+      have hspan0 := hcoh tm tp htm htp
+      rw [abs_of_nonneg (by linarith : (0 : ℚ) ≤ (tp : ℚ) - (tm : ℚ))] at hspan0
+      rw [abs_le] at hspan0
+      have hlmax : w tm htm - ((z : ℚ) - (tm : ℚ))
+          ≤ max (w tm htm - ((z : ℚ) - (tm : ℚ))) (w tp htp - ((tp : ℚ) - (z : ℚ))) :=
+        le_max_left _ _
+      have hrmax : w tp htp - ((tp : ℚ) - (z : ℚ))
+          ≤ max (w tm htm - ((z : ℚ) - (tm : ℚ))) (w tp htp - ((tp : ℚ) - (z : ℚ))) :=
+        le_max_right _ _
+      have hub1 : max (w tm htm - ((z : ℚ) - (tm : ℚ))) (w tp htp - ((tp : ℚ) - (z : ℚ)))
+          ≤ w tm htm + ((z : ℚ) - (tm : ℚ)) :=
+        max_le (by linarith) (by linarith [hspan0.2])
+      have hub2 : max (w tm htm - ((z : ℚ) - (tm : ℚ))) (w tp htp - ((tp : ℚ) - (z : ℚ)))
+          ≤ w tp htp + ((tp : ℚ) - (z : ℚ)) :=
+        max_le (by linarith [hspan0.1]) (by linarith)
+      refine ⟨max (w tm htm - ((z : ℚ) - (tm : ℚ))) (w tp htp - ((tp : ℚ) - (z : ℚ))),
+        fun t ht => ?_⟩
+      rw [srel_iff]
+      push_cast
+      rw [abs_le]
+      rcases le_total t z with htz | hzt
+      · have hle : t ≤ tm := htmax t ht htz
+        have hcast : (t : ℚ) ≤ (tm : ℚ) := by exact_mod_cast hle
+        have hgap := hcoh t tm ht htm
+        rw [abs_of_nonneg (by linarith : (0 : ℚ) ≤ (tm : ℚ) - (t : ℚ)),
+          abs_sub_comm, abs_le] at hgap
+        have htzq : (t : ℚ) ≤ (z : ℚ) := by exact_mod_cast htz
+        rw [abs_of_nonneg (by linarith : (0 : ℚ) ≤ (z : ℚ) - (t : ℚ))]
+        constructor <;> linarith [hgap.1, hgap.2]
+      · have hge : tp ≤ t := htmin t ht hzt
+        have hcast : (tp : ℚ) ≤ (t : ℚ) := by exact_mod_cast hge
+        have hgap := hcoh t tp ht htp
+        rw [abs_of_nonpos (by linarith : (tp : ℚ) - (t : ℚ) ≤ 0), abs_le] at hgap
+        have hztq : (z : ℚ) ≤ (t : ℚ) := by exact_mod_cast hzt
+        rw [abs_of_nonpos (by linarith : (z : ℚ) - (t : ℚ) ≤ 0)]
+        constructor <;> linarith [hgap.1, hgap.2]
+    · -- domain entirely at or below `z`
+      refine ⟨w tm htm, fun t ht => ?_⟩
+      have htz : t ≤ z := le_of_not_ge fun h => habove ⟨t, ht, h⟩
+      have hle : t ≤ tm := htmax t ht htz
+      have hcast : (t : ℚ) ≤ (tm : ℚ) := by exact_mod_cast hle
+      have htmzq : (tm : ℚ) ≤ (z : ℚ) := by exact_mod_cast htmz
+      have htzq : (t : ℚ) ≤ (z : ℚ) := by exact_mod_cast htz
+      have hgap := hcoh t tm ht htm
+      rw [abs_of_nonneg (by linarith : (0 : ℚ) ≤ (tm : ℚ) - (t : ℚ)), abs_sub_comm,
+        abs_le] at hgap
+      rw [srel_iff]
+      push_cast
+      rw [abs_le, abs_of_nonneg (by linarith : (0 : ℚ) ≤ (z : ℚ) - (t : ℚ))]
+      constructor <;> linarith [hgap.1, hgap.2]
+  · -- domain entirely at or above `z`
+    have habove : ∃ t, X t ∧ z ≤ t := by
+      obtain ⟨t, ht⟩ := hXne
+      exact ⟨t, ht, le_of_not_ge fun h => hbelow ⟨t, ht, h⟩⟩
+    obtain ⟨tp, htp, hztp, htmin⟩ := hhigh habove
+    refine ⟨w tp htp, fun t ht => ?_⟩
+    have hzt : z ≤ t := le_of_not_ge fun h => hbelow ⟨t, ht, h⟩
+    have hge : tp ≤ t := htmin t ht hzt
+    have hcast : (tp : ℚ) ≤ (t : ℚ) := by exact_mod_cast hge
+    have hztpq : (z : ℚ) ≤ (tp : ℚ) := by exact_mod_cast hztp
+    have hztq : (z : ℚ) ≤ (t : ℚ) := by exact_mod_cast hzt
+    have hgap := hcoh t tp ht htp
+    rw [abs_of_nonpos (by linarith : (tp : ℚ) - (t : ℚ) ≤ 0), abs_le] at hgap
+    rw [srel_iff]
+    push_cast
+    rw [abs_le, abs_of_nonpos (by linarith : (z : ℚ) - (t : ℚ) ≤ 0)]
+    constructor <;> linarith [hgap.1, hgap.2]
+
+/-! ### *Saturation* fails: segments shrink onto a Dedekind cut -/
+
+/-- The rational interval `[a, b]`, realised as the segment `[b-1, a+1]_1^1`. -/
+theorem mem_sseg {a b q : ℚ} (hab : b - a ≤ 2) :
+    q ∈ Seg srel (b - 1) (a + 1) 1 1 ↔ a ≤ q ∧ q ≤ b := by
+  simp only [Seg, Set.mem_inter_iff, mem_Fib, srel_iff]
+  constructor
+  · rintro ⟨h1, h2⟩
+    rw [abs_le] at h1 h2
+    norm_num at h1 h2
+    exact ⟨by linarith [h2.1], by linarith [h1.2]⟩
+  · rintro ⟨h1, h2⟩
+    constructor <;> · rw [abs_le]; norm_num; constructor <;> linarith
+
+-- The `1 ≤ b` conjunct is load bearing and easy to lose. Without it, `2 < b ^ 2` also admits
+-- `b ≤ -2`, and then `[a, b]` is empty rather than a nonempty segment, so the `s.Nonempty` half
+-- of *Saturation*'s member condition fails. `RationalTwoOrigins.straddleFamily` needs no such
+-- guard because its endpoints are `{t : ℚ // 0 < t}`; porting the argument to a bare-`ℚ` carrier
+-- is exactly where the guard goes missing.
+/-- The `⊇`-directed family of rational intervals straddling the cut at `√2`. -/
+def straddle : Set (Set ℚ) :=
+  {s | ∃ a b : ℚ, 1 ≤ a ∧ a ^ 2 < 2 ∧ 2 < b ^ 2 ∧ 1 ≤ b ∧ b ≤ 2 ∧
+    s = Seg srel (b - 1) (a + 1) 1 1}
+
+theorem lt_of_straddle {a b : ℚ} (ha0 : 0 < a) (hb0 : 0 < b) (ha : a ^ 2 < 2) (hb : 2 < b ^ 2) :
+    a < b := by
+  by_contra hc
+  exact absurd hb (not_lt.mpr (by nlinarith [not_lt.mp hc]))
+
+/--
+**The ℚ-over-ℤ drift relation FAILS *Saturation***, although it satisfies *Completion*
+(`srel_completion`), *Seriality*, *Compositionality* and *Limit*.
+
+**So `Completion → Saturation` is false, unconditionally, and *Completion* is a *strict*
+weakening of *Saturation*.** Durations are integers, so no coherent family of states can
+accumulate and *Completion* is safe; but fibres and segments are not indexed by times, and a
+`⊇`-directed family of them shrinks onto the cut `{q : q² < 2} | {q : 2 < q²}`, which has no
+rational point.
+
+Paper: `def:frame#Saturation`
+-/
+theorem not_srel_saturation : ¬ TaskFrame.Saturation srel := by
+  intro hsat
+  have hone : ((1 : ℚ)) ^ 2 < 2 := by norm_num
+  have htwo : (2 : ℚ) < ((2 : ℚ)) ^ 2 := by norm_num
+  have hwidth : ∀ {a b : ℚ}, 1 ≤ a → b ≤ 2 → b - a ≤ 2 := by intro a b h1 h2; linarith
+  have hne : straddle.Nonempty := ⟨_, ⟨1, 2, le_rfl, hone, htwo, by norm_num, le_rfl, rfl⟩⟩
+  have hdir : DirectedFamily straddle := by
+    refine ⟨hne, ?_⟩
+    rintro s₁ ⟨a₁, b₁, ha₁1, ha₁, hb₁, hb₁1, hb₁2, rfl⟩ s₂ ⟨a₂, b₂, ha₂1, ha₂, hb₂, hb₂1, hb₂2, rfl⟩
+    have haM : (max a₁ a₂) ^ 2 < 2 := by
+      rcases max_choice a₁ a₂ with h | h <;> rw [h] <;> assumption
+    have hbM : 2 < (min b₁ b₂) ^ 2 := by
+      rcases min_choice b₁ b₂ with h | h <;> rw [h] <;> assumption
+    have hA1 : (1 : ℚ) ≤ max a₁ a₂ := le_max_of_le_left ha₁1
+    have hB2 : min b₁ b₂ ≤ 2 := min_le_of_left_le hb₁2
+    refine ⟨_, ⟨max a₁ a₂, min b₁ b₂, hA1, haM, hbM, le_min hb₁1 hb₂1, hB2, rfl⟩, ?_⟩
+    intro q hq
+    rw [mem_sseg (hwidth hA1 hB2)] at hq
+    simp only [max_le_iff, le_min_iff] at hq
+    exact ⟨(mem_sseg (hwidth ha₁1 hb₁2)).mpr ⟨hq.1.1, hq.2.1⟩,
+      (mem_sseg (hwidth ha₂1 hb₂2)).mpr ⟨hq.1.2, hq.2.2⟩⟩
+  have hmem : ∀ s ∈ straddle, (IsFiber srel s ∨ IsSegment srel s) ∧ s.Nonempty := by
+    rintro s ⟨a, b, ha1, ha, hb, hb1, hb2, rfl⟩
+    refine ⟨Or.inr ⟨b - 1, a + 1, 1, 1, by norm_num, by norm_num, rfl⟩,
+      ⟨a, (mem_sseg (hwidth ha1 hb2)).mpr
+        ⟨le_rfl, le_of_lt (lt_of_straddle (by linarith) (by linarith) ha hb)⟩⟩⟩
+  obtain ⟨q, hq⟩ := hsat straddle hdir hmem
+  have hbase : Seg srel ((2 : ℚ) - 1) ((1 : ℚ) + 1) 1 1 ∈ straddle :=
+    ⟨1, 2, le_rfl, hone, htwo, by norm_num, le_rfl, rfl⟩
+  obtain ⟨hq1, hq2⟩ := (mem_sseg (by norm_num : (2 : ℚ) - 1 ≤ 2)).mp (Set.mem_sInter.mp hq _ hbase)
+  -- the Newton step `t = (2q+2)/(q+2)` crosses `q` while staying on its own side of the cut
+  have hpos : (0 : ℚ) < q + 2 := by linarith
+  set t : ℚ := (2 * q + 2) / (q + 2) with ht
+  have ht1 : 1 ≤ t := by
+    rw [ht, le_div_iff₀ hpos]; linarith
+  have ht2 : t ≤ 2 := by
+    rw [ht, div_le_iff₀ hpos]; linarith
+  have htsq : t ^ 2 - 2 = 2 * (q ^ 2 - 2) / (q + 2) ^ 2 := by rw [ht]; field_simp; ring
+  have htdiff : t - q = (2 - q ^ 2) / (q + 2) := by rw [ht]; field_simp; ring
+  rcases lt_trichotomy (q ^ 2) 2 with hlt | heq | hgt
+  · have htlt : t ^ 2 < 2 := by
+      have : t ^ 2 - 2 < 0 := by
+        rw [htsq]; exact div_neg_of_neg_of_pos (by linarith) (by positivity)
+      linarith
+    have hts : q < t := by
+      have : 0 < t - q := by rw [htdiff]; exact div_pos (by linarith) hpos
+      linarith
+    have hm : Seg srel ((2 : ℚ) - 1) (t + 1) 1 1 ∈ straddle :=
+      ⟨t, 2, ht1, htlt, htwo, by norm_num, le_rfl, rfl⟩
+    obtain ⟨hlow, -⟩ := (mem_sseg (by linarith : (2 : ℚ) - t ≤ 2)).mp (Set.mem_sInter.mp hq _ hm)
+    linarith
+  · exact RationalTwoOrigins.sq_ne_two q heq
+  · have htgt : 2 < t ^ 2 := by
+      have : 0 < t ^ 2 - 2 := by
+        rw [htsq]; exact div_pos (by linarith) (by positivity)
+      linarith
+    have hst : t < q := by
+      have : t - q < 0 := by
+        rw [htdiff]; exact div_neg_of_neg_of_pos (by linarith) hpos
+      linarith
+    have hm : Seg srel (t - 1) ((1 : ℚ) + 1) 1 1 ∈ straddle :=
+      ⟨1, t, le_rfl, hone, htgt, ht1, ht2, rfl⟩
+    obtain ⟨-, hhigh⟩ := (mem_sseg (by linarith : t - 1 ≤ 2)).mp (Set.mem_sInter.mp hq _ hm)
+    linarith
+
+/-! ### Consistency with `saturation_of_completion`: mixed-sign composition fails here -/
+
+/-- Mixed-sign composition, as declared in `specs/evidence/frame-constraints-audit/`: composition
+with **no** sign proviso on the two durations. -/
+def TotalComp {W : Type} {D : Type} [AddCommGroup D] (R : W → D → W → Prop) : Prop :=
+  ∀ w u v x y, R w x u → R u y v → R w (x + y) v
+
+/-- **Mixed-sign composition fails here**, as it must: `saturation_of_completion` proves the
+converse `Completion → Saturation` under `TotalComp` plus *Limit*, so any frame separating the
+two has to refute `TotalComp`. Drifting `0 ⇒₁ 1 ⇒₋₁ 2` would compose to `0 ⇒₀ 2`. -/
+theorem not_srel_totalComp : ¬ TotalComp srel := by
+  intro h
+  have h1 : srel 0 1 1 := by rw [srel_iff]; norm_num
+  have h2 : srel 1 (-1) 2 := by rw [srel_iff]; norm_num
+  have h3 := h 0 1 2 1 (-1) h1 h2
+  rw [srel_iff] at h3
+  norm_num at h3
+
+end SeparatingFrame
 
 /-! ## The void frame: *Seriality* is independent of the other three -/
 

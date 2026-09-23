@@ -299,7 +299,7 @@ needed, say so in the phase record rather than adding it silently.
 
 ---
 
-### Phase 3: Promote the separating frame [NOT STARTED]
+### Phase 3: Promote the separating frame [COMPLETED]
 
 **Goal**: Land the theorem — a relation satisfying *Seriality*, *Compositionality*, *Limit* and
 *Completion* while failing *Saturation* — so that "*Completion* is strictly weaker" is a
@@ -307,22 +307,22 @@ machine-checked library fact rather than a claim in a `specs/` report.
 
 **Tasks**:
 
-- [ ] Transcribe `specs/661_settle_saturation_vs_completion_foundation/probes/SeparatingFrame.lean`
+- [x] Transcribe `specs/661_settle_saturation_vs_completion_foundation/probes/SeparatingFrame.lean`
       into `FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean` as a new
       `namespace SeparatingFrame`, sited after `RationalTwoOrigins` and before the void frame.
-- [ ] Drop the probe's local `CoherentCompletionRel` and state the positive result as
+- [x] Drop the probe's local `CoherentCompletionRel` and state the positive result as
       `theorem srel_completion : TaskFrame.Completion srel` (renamed from
       `srel_coherentCompletion`, for the same reason as Phase 2's rename).
-- [ ] Carry over `srel`, `srel_iff`, `srel_of_nonneg`, `srel_serial`, `srel_compositional`,
+- [x] Carry over `srel`, `srel_iff`, `srel_of_nonneg`, `srel_serial`, `srel_compositional`,
       `srel_limit`, `mem_sseg`, `straddle`, `lt_of_straddle`, `not_srel_saturation`, `TotalComp`
       and `not_srel_totalComp`.
-- [ ] Add `import FormalSystem.Semantics.Extension.Completion` for `hasNearest_int`, with an
+- [x] Add `import FormalSystem.Semantics.Extension.Completion` for `hasNearest_int`, with an
       import-block comment naming exactly what it is for and noting that this module is a leaf so
       the edge adds weight to nothing else. **If** the import produces an instance diamond or a
       measurable elaboration slowdown, take the pre-authorised fallback instead: inline the ℤ
       nearest-times argument from `Int.exists_greatest_of_bdd` / `Int.exists_least_of_bdd` and
       import `Mathlib.Data.Int.LeastGreatest` only. Record which route was taken.
-- [ ] Write the namespace docstring to carry the three facts a reader needs: (a) *Completion*
+- [x] Write the namespace docstring to carry the three facts a reader needs: (a) *Completion*
       holds by the nearest-times argument and needs no completeness of the carrier at all; (b)
       *Saturation* fails because fibres and segments are **not indexed by times**, so a
       `⊇`-directed family of them can shrink onto a Dedekind cut even though the durations are
@@ -330,22 +330,33 @@ machine-checked library fact rather than a claim in a `specs/` report.
       `extension_of_isZTime` already shows *Saturation* is redundant for `thm:extension` — so
       *Saturation* excludes ordinary discrete-time frames with a dense state space, and
       `thm:extension` has no need of that exclusion.
-- [ ] Record the `1 ≤ b` guard in a comment on `straddle`: without it `2 < b²` admits `b ≤ −2` and
+- [x] Record the `1 ≤ b` guard in a comment on `straddle`: without it `2 < b²` admits `b ≤ −2` and
       the member is empty rather than a nonempty segment. `not_rel_saturation`'s analogous family
       is protected by its `{t : ℚ // 0 < t}` subtype instead, so the guard is easy to lose when
       porting the argument to a bare-`ℚ` carrier.
-- [ ] Note in the same docstring why `not_srel_totalComp` is present: `saturation_of_completion`
+- [x] Note in the same docstring why `not_srel_totalComp` is present: `saturation_of_completion`
       (the `specs/evidence/frame-constraints-audit/` probe) proves the converse under `TotalComp` +
       *Limit*, so a separating frame **must** fail `TotalComp`; this theorem is the consistency
       check, not a stray result.
-- [ ] Extend the module docstring's **packaging asymmetry** paragraph to cover the new witnesses:
+- [x] Extend the module docstring's **packaging asymmetry** paragraph to cover the new witnesses:
       they are bare-relation certificates with no `FrameOver` wrapper, genuine at exactly the level
       `def:frame` states its constraints, and must not be read as claiming a `FrameOver` witness
       they do not have.
-- [ ] Extend the module docstring's independence-matrix section with the new, fifth row: the
+- [x] Extend the module docstring's independence-matrix section with the new, fifth row: the
       *Saturation*/*Completion* separation, naming `srel_completion` and `not_srel_saturation`.
-- [ ] Add `Paper:` lines to `srel_completion` and `not_srel_saturation`.
-- [ ] Run `lake build` and the linted single-file check; commit.
+- [x] Add `Paper:` lines to `srel_completion` and `not_srel_saturation`.
+- [x] Run `lake build` and the linted single-file check; commit.
+
+**Phase record**: the **`Extension.Completion` import route was taken**, not the pre-authorised
+inline fallback — no instance diamond and no measurable elaboration slowdown appeared (the linted
+single-file check remained silent and fast), so `hasNearest_int` is consumed directly. Measured
+against the Scope Hypothesis: `ConstraintWitnesses.lean` is now **1,372 lines** (hypothesis:
+~1,250–1,300), under the 1,500 `longFile` limit, so **no baseline was added** — correctly, since
+the plan requires one if and only if the count exceeds 1,500. `lake build` 2,725 jobs exit 0 with
+zero `error:` and zero `warning:`; `#print axioms` on `srel_serial`, `srel_compositional`,
+`srel_limit`, `srel_completion`, `not_srel_saturation` and `not_srel_totalComp` each reports
+exactly `propext`, `Classical.choice`, `Quot.sound`; `scripts/check-metalogic-cycles.sh` exits 0
+with the new intra-library edge in place.
 
 **Timing**: 1.5 hours
 
