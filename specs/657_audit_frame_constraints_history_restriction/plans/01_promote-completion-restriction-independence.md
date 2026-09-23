@@ -549,7 +549,7 @@ in a different file.)
 
 ---
 
-### Phase 8: Relocate the mixed-sign obstruction to `specs/evidence/` and guard it [NOT STARTED]
+### Phase 8: Relocate the mixed-sign obstruction to `specs/evidence/` and guard it [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Keep the Q4 verdict "mixed-sign composition is not addable" alive as a compile-guarded,
 version-controlled record — without giving a refuted condition a home in `FormalSystem/`.
@@ -575,8 +575,11 @@ version-controlled record — without giving a refuted condition a home in `Form
       built library, so it *can* import — unlike a task-directory probe
 - [ ] Add the file to `WIRED` and add its row to the script's WIRED comment table, in the table's
       existing two-column style
-- [ ] Add a `README.md` to `specs/evidence/frame-constraints-audit/` if the sibling collections have
-      one; match whatever convention `specs/evidence/translation-product/` uses
+- [x] Add a `README.md` to `specs/evidence/frame-constraints-audit/` if the sibling collections have
+      one; match whatever convention `specs/evidence/translation-product/` uses *(deviation: skipped
+      — neither `specs/evidence/bi-lasso-decision-layer/` nor `specs/evidence/translation-product/`
+      carries a README; the convention is a header docstring in each probe, which the relocated file
+      now has. `ls specs/evidence/*/README.md` returns nothing.)*
 - [ ] Leave the other four probes where they are — their content is promoted in Phases 1-6, so the
       library is now the record and the probe copies are redundant
 
@@ -595,9 +598,15 @@ script diff means the generalization went further than needed and should be trim
   `specs/657_.../probes/MixedSign.lean`, re-headed, imports rewired
 - `scripts/check-evidence-probes.sh` - generalize `EVIDENCE`; add the WIRED entry and its table row
 
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `bash scripts/check-evidence-probes.sh` exiting 0 | The pre-existing wired probe `bi-lasso-decision-layer/phase7-filtered-frame-is-universal` does not compile, for a reason wholly independent of this task: it cites `FrameOver.ofReflective_taskRel_eq` against a frame built by `ofReflectiveRegular`, the constructor split introduced by task 656. The correct lemma `ofReflectiveRegular_taskRel_eq` does not fire either — `RefinedFilteredTaskFrame._proof_4` carries a definitionally-unfolded `TaskFrame.Limit`, so no syntactic rewrite matches. Repairing it is real work on an unrelated decision layer, and this plan's Phase 8 is explicit that the existing entries' behavior must stay byte-identical. | `lake env lean specs/evidence/bi-lasso-decision-layer/phase7-filtered-frame-is-universal.lean` fails at HEAD~ as well as at HEAD (the citation predates every commit in this task); `git log --oneline -3 -- <that file>` shows its last edit was task 609, before task 656's `ofReflective` → `ofReflectiveRegular` split (`git log --oneline -6 -- FormalSystem/Semantics/TaskFrame.lean`). The four other wired probes, including the new one, report PASS. |
+
 **Verification**:
-- `bash scripts/check-evidence-probes.sh` passes, reporting PASS for the four existing probes **and**
-  the new one
+- `bash scripts/check-evidence-probes.sh` reports PASS for the new probe and for three of the four
+  pre-existing ones; see Reasoned Exclusions for the fourth
 - `lake env lean specs/evidence/frame-constraints-audit/mixed-sign-composition-obstruction.lean`
   prints only its `#print axioms` lines
 - `grep -c "def Completion\|def TotalComp" ` on `FormalSystem/` shows `Completion` once (Phase 2) and

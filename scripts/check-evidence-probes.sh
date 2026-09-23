@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Compile-check the bi-lasso decision layer's evidence probes.
+# Compile-check the tracked evidence probes under `specs/evidence/`.
 #
 # WHAT A PROBE IS.  Each file under the evidence directory below is a machine-checked record of a
 # design obstruction: a `sorry`-free Lean file whose theorems REFUTE something the plan for the
@@ -34,30 +34,51 @@ set -uo pipefail
 
 cd "$(dirname "$0")/.." || exit 1
 
-EVIDENCE="specs/evidence/bi-lasso-decision-layer"
+# Collection-relative: each WIRED entry below is a path under `specs/evidence/`, so several
+# probe collections can be guarded by the one loop.
+EVIDENCE="specs/evidence"
 
 # --- WIRED --------------------------------------------------------------------------------
-# probe                                    | the decision it holds in place
-# -----------------------------------------|--------------------------------------------------
-# phase3-scan-bound-is-false                | no bound computed from the lasso's segment lengths
-#                                          | alone can drive a semantic scan -- this is why the
-#                                          | layer enumerates annotations instead of evaluating
-# phase7-filtered-frame-is-universal        | the filtered frame's one-step relation is
-#                                          | universal, so it carries no dynamics -- this is why
-#                                          | the layer presents frames rather than filtering
-# phase12-check-not-compositional           | the `imp` case admits no compositional reading --
-#                                          | this is why `check`'s two existentials sit OUTSIDE
-#                                          | any recursion on the formula
-# phase10-origin-anchoring-obstruction      | no recurrence of the type at the point of interest
-#                                          | need exist -- this is what stops `check` being
-#                                          | re-anchored at position 0.  Load-bearing: it is the
-#                                          | probe a future dispatch is most likely to try to
-#                                          | contradict, since anchoring looks like a cleanup
+# probe (path under specs/evidence/)                        | the decision it holds in place
+# ----------------------------------------------------------|-----------------------------------
+# bi-lasso-decision-layer/phase3-scan-bound-is-false         | no bound computed from the lasso's
+#                                                           | segment lengths alone can drive a
+#                                                           | semantic scan -- this is why the
+#                                                           | layer enumerates annotations instead
+#                                                           | of evaluating
+# bi-lasso-decision-layer/phase7-filtered-frame-is-universal | the filtered frame's one-step
+#                                                           | relation is universal, so it carries
+#                                                           | no dynamics -- this is why the layer
+#                                                           | presents frames rather than
+#                                                           | filtering
+# bi-lasso-decision-layer/phase12-check-not-compositional    | the `imp` case admits no
+#                                                           | compositional reading -- this is why
+#                                                           | `check`'s two existentials sit
+#                                                           | OUTSIDE any recursion on the formula
+# bi-lasso-decision-layer/phase10-origin-anchoring-obstruction | no recurrence of the type at the
+#                                                           | point of interest need exist -- this
+#                                                           | is what stops `check` being
+#                                                           | re-anchored at position 0.
+#                                                           | Load-bearing: it is the probe a
+#                                                           | future dispatch is most likely to
+#                                                           | try to contradict, since anchoring
+#                                                           | looks like a cleanup
+# frame-constraints-audit/mixed-sign-composition-obstruction | mixed-sign composition (`TotalComp`)
+#                                                           | must NOT be added to `def:frame` --
+#                                                           | the drift frame `F°` satisfies all
+#                                                           | four constraints and fails it, and
+#                                                           | `app:drift` needs `F°` for
+#                                                           | `cor:no-characterization`.  It also
+#                                                           | carries the positive half:
+#                                                           | `Completion -> Saturation` holds
+#                                                           | UNDER `TotalComp`, which locates the
+#                                                           | obstruction exactly
 WIRED=(
-  "phase3-scan-bound-is-false"
-  "phase7-filtered-frame-is-universal"
-  "phase12-check-not-compositional"
-  "phase10-origin-anchoring-obstruction"
+  "bi-lasso-decision-layer/phase3-scan-bound-is-false"
+  "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
+  "bi-lasso-decision-layer/phase12-check-not-compositional"
+  "bi-lasso-decision-layer/phase10-origin-anchoring-obstruction"
+  "frame-constraints-audit/mixed-sign-composition-obstruction"
 )
 
 # --- DEFERRED -----------------------------------------------------------------------------
@@ -68,7 +89,7 @@ WIRED=(
 # uniformity work is expected to change.  Wiring it now would freeze a question that is still
 # open.  When that work lands, repair it under the same no-weakening rule as the wired probes
 # (track the API; never delete or restate an obstruction to make it pass), then wire it in.
-DEFERRED=("spike-untl-unfolding-and-fwd-obstruction")
+DEFERRED=("bi-lasso-decision-layer/spike-untl-unfolding-and-fwd-obstruction")
 
 failures=0
 echo "Evidence probes (compile-checked outside the build graph)"
@@ -76,7 +97,7 @@ echo "========================================================="
 
 for probe in "${WIRED[@]}"; do
   file="$EVIDENCE/$probe.lean"
-  printf '  %-46s ' "$probe"
+  printf '  %-62s ' "$probe"
   if [ ! -f "$file" ]; then
     echo "FAIL (missing: $file)"
     failures=$((failures + 1))
@@ -92,7 +113,7 @@ for probe in "${WIRED[@]}"; do
 done
 
 for probe in "${DEFERRED[@]}"; do
-  printf '  %-46s ' "$probe"
+  printf '  %-62s ' "$probe"
   if [ -f "$EVIDENCE/$probe.lean" ]; then
     echo "SKIP (deferred: frame-class uniformity work)"
   else

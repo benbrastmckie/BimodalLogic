@@ -1,33 +1,43 @@
 import FormalSystem.Semantics.Extension
+import FormalSystem.Semantics.Extension.Completion
 import FormalSystem.Metalogic.Independence.DriftFrame
 
 /-!
-# Probe: is *Saturation* **necessary** for `thm:extension`? — the mixed-sign obstruction, located
+# Evidence probe: **mixed-sign composition must not be added to `def:frame`**
 
-The `Completion` probe shows that the condition `thm:extension` actually needs is
+## The design decision this holds in place
 
-> *Completion.* `⋂_{t ∈ X} Fib(w_t, z - t) ≠ ∅` for every coherent family `{w_t}_{t ∈ X}` and
-> every `z ∈ D`,
+`TaskFrame.TotalComp` — `def:frame`'s *Compositionality* with its `x, y ≥ 0` provisos dropped —
+**must not become a constraint on a task frame**, and must not acquire a home under
+`FormalSystem/`. `not_totalComp_F0` below exhibits a concrete failure of it at the drift frame
+`F°` (`FormalSystem.Metalogic.Independence.fzeroFrame`), which `fzeroFrame_isRegular` certifies as
+a *regular* task frame — all four of `def:frame`'s constraints hold there. `F°` is the frame
+`app:drift` supplies for `cor:no-characterization`, so adding mixed-sign composition to
+`def:frame` would delete a frame the paper's own independence argument needs.
 
-which *Saturation* implies. This probe settles the converse, and it settles it **conditionally**:
+That is why `TotalComp` is declared **here**, outside the build graph, and not in the library: a
+condition the library must *not* satisfy should not be sitting in the library inviting a future
+reader to add it. `grep -rn "TotalComp" FormalSystem/` returning nothing is the invariant this
+file protects.
 
-* `saturation_of_completion` — *Completion* implies *Saturation* as soon as the frame satisfies
-  **mixed-sign composition** (`TotalComp`) and *Limit*. So over that subclass *Saturation* is
-  exactly as strong as `thm:extension`, and is necessary as well as sufficient.
-* `TotalComp` is **not** available: `not_totalComp_fzeroFrame` exhibits a concrete failure of it
-  at the drift frame `F°` (`FormalSystem.Metalogic.Independence.fzeroFrame`), which
-  `fzeroFrame_isRegular` certifies as a *regular* task frame — all four of `def:frame`'s
-  constraints hold there. `F°` is the frame `app:drift` uses for `cor:no-characterization`, so
-  mixed-sign composition cannot be added to `def:frame` without destroying a result the paper
-  needs.
+## The positive content it also carries, which is what locates the obstruction
 
-Together: the converse `Completion → Saturation` holds modulo mixed-sign composition, and
-mixed-sign composition is independent of the four constraints and refuted by a frame the paper
-relies on. The unconditional converse is therefore **open**, with the obstruction located exactly.
+`saturation_of_completion` — *Completion* (`FormalSystem.Semantics.PartialHistory.Completion`,
+the exact condition `thm:extension` consumes) implies *Saturation* **as soon as** the frame
+satisfies mixed-sign composition and *Limit*. So over that subclass *Saturation* is exactly as
+strong as `thm:extension`, and is necessary as well as sufficient.
 
-`def:frame`'s *Compositionality* is confined to `x, y ≥ 0`; `TotalComp` below is the same law with
-the sign provisos dropped. It is strictly stronger than `TaskFrame.Triangle`
-(`Semantics/StateTopology.lean`), which only asks for *some* shortcut duration of bounded size.
+Together with `not_totalComp_F0` this locates the obstruction exactly: the converse
+`Completion → Saturation` holds modulo mixed-sign composition, and mixed-sign composition is
+independent of the four constraints and refuted by a frame the paper relies on. The
+**unconditional** converse is therefore open, and this file records precisely where it stops.
+
+`TotalComp` is strictly stronger than `TaskFrame.Triangle` (`Semantics/StateTopology.lean`),
+which only asks for *some* shortcut duration of bounded size. Mixed-sign composition is also
+inexpressible at the primitive level, since primitive durations are nonnegative; it is expressible
+here only because the extended relation is two-sided.
+
+Compiled outside the build graph by `scripts/check-evidence-probes.sh`. Sorry-free.
 -/
 
 namespace FormalSystem.Semantics
@@ -36,33 +46,13 @@ open TaskFrame
 
 namespace PartialHistory
 
-/-! ## Local copies from `probes/Completion.lean`
+/-! ## Mixed-sign composition
 
-Probe files are checked standalone, so they cannot import one another.
+Unlike a task-directory probe, an evidence probe is compiled by `lake env lean` **against the
+built library**, so it can import. `Completion` and `FrameOver.reflection_of_limit` are therefore
+consumed from `FormalSystem.Semantics.Extension.Completion` and
+`FormalSystem.Semantics.TaskFrame` rather than copied.
 -/
-
-/-- Copy of `probes/Completion.lean`'s `Completion`. -/
-def Completion (F : TaskFrame) : Prop :=
-  ∀ (τ : PartialHistory F) (z : F.Duration),
-    ∃ u : F.WorldState, ∀ (t : F.Duration) (ht : τ.domain t),
-      F.TaskRel (τ.states t ht) (z - t) u
-
-/-- Copy of `probes/Completion.lean`'s `reflection_of_limit`. -/
-theorem reflection_of_limit {F : TaskFrame} (hlim : TaskFrame.Limit F.TaskRel)
-    (w : F.WorldState) (d : F.Duration) (u : F.WorldState) :
-    F.TaskRel w d u ↔ F.TaskRel u (-d) w := by
-  rcases eq_or_ne d 0 with rfl | hd
-  · rw [neg_zero]
-    constructor
-    · intro hR
-      obtain rfl := F.toFibre.eq_of_taskRel_zero_of_limit hlim hR
-      exact hR
-    · intro hR
-      obtain rfl := F.toFibre.eq_of_taskRel_zero_of_limit hlim hR
-      exact hR
-  · exact TaskFrame.reflect_reflection_of_ne hd
-
-/-! ## Mixed-sign composition -/
 
 /--
 **Mixed-sign composition**: `def:frame`'s *Compositionality* with its `x, y ≥ 0` provisos dropped,
@@ -92,7 +82,7 @@ theorem saturation_of_completion (hlim : TaskFrame.Limit F.TaskRel)
     TaskFrame.Saturation F.TaskRel := by
   intro S hdir hmem
   obtain ⟨hSne, hdirS⟩ := hdir
-  have hrefl := reflection_of_limit (F := F) hlim
+  have hrefl := F.toFibre.reflection_of_limit hlim
   -- Coherence of the demanded states, from directedness plus mixed-sign composition.
   have coh : ∀ (A B : Set F.WorldState), A ∈ S → B ∈ S →
       ∀ (w v : F.WorldState) (s t : F.Duration),
