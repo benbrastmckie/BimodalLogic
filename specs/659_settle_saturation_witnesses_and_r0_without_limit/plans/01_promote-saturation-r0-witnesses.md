@@ -1,7 +1,7 @@
 # Implementation Plan: Task #659
 
 - **Task**: 659 - Settle saturation witnesses and R0 without Limit
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 12.75 hours
 - **Dependencies**: Task 658 (same module; already complete — `b13b357c0 task 658: complete implementation`)
 - **Research Inputs**: `specs/659_settle_saturation_witnesses_and_r0_without_limit/reports/01_saturation-witnesses-r0-limit.md`
