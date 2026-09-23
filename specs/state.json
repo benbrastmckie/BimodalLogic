@@ -4,8 +4,32 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 663,
+  "next_project_number": 665,
   "active_projects": [
+    {
+      "project_number": 663,
+      "project_name": "hypothesis_honesty_lint_isregular_overbinding",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Add a repo-wide hypothesis-honesty gate so no constraint-independence claim silently carries the bundling IsRegular class.\n\nMeasured starting point (verify rather than trust): FormalSystem/Semantics/TaskFrame.lean:1044 defines `class IsRegular` with exactly four fields -- comp, serial, limit, saturation. A grep for instance binders (`[F.IsRegular]`, `[IsRegular`, `[inst : IsRegular`) returns 225 occurrences across 43 files, led by TaskFrame.lean (36), Frames/TranslationProduct.lean (24), IntTransfer.lean (14), Validity.lean (11) and PlusLanguage/PlusPasting.lean (11). Against that, the sites that actually consume the saturation field are few: three real proof sites -- Extension/Step.lean:176 (the sole ELIMINATION site), IntTransfer.lean:160 and OpenLanguage/OpenReversal.lean:109 (both transports that build a derived frame's saturation field out of F.saturation) -- plus TranslationProduct.lean:305 and four `example` sanity checks in TaskFrame.lean. So the large majority of binders carry Saturation without touching it.\n\nThe defect is NOT over-binding as such, and this task must not become a blanket unbundling. For ordinary soundness, validity and transfer theorems, `[F.IsRegular]` is the correct ambient hypothesis and stripping it would be churn with no gain. The defect bites in exactly one situation: when a theorem's statement, name or docstring ASSERTS that a result holds without some constraint, while the instance binder silently supplies that constraint anyway. Such a result is vacuous as a minimality claim and the vacuity is invisible at the call site.\n\nThis hazard is already identified and hand-fixed at one location. The task \"settle S1 vs directedness and restore Saturation\" names it as its central honesty hazard and dedicates a phase to it: the three fiber/segment monotonicity lemmas (fib_subset_fib_of_le_of_le, fib_subset_fib_of_le_of_le', seg_subset_seg) are stated at `[F.IsRegular]` but consume only F.forward_comp and F.reflection -- Compositionality plus a FrameOver field, never F.saturation. That phase restates each with the explicit hcomp hypothesis its proof actually uses, demotes the originals to one-line corollaries so no call site changes, and writes a local validation gate forbidding the instance binder on anything downstream. That is the pattern to generalize; this task should build on it rather than redo it, and should run only after it has landed.\n\nScope: (a) audit the 225 binder sites and classify each as legitimate-ambient or independence-claiming, recording the classification so it is re-runnable rather than a one-time human read; (b) fix the independence-claiming ones on the established pattern (explicit hypothesis, original kept as corollary, no call-site churn); (c) add a mechanical check, sited alongside the existing repo lints such as scripts/check-module-invariants.sh and scripts/check-paper-definitions.sh, that fails when a theorem carrying an independence claim also carries the bundling class. Decide deliberately how the check recognizes an independence claim -- a docstring marker is likely more robust than prose pattern-matching -- and document the convention wherever the other module invariants are documented.\n\nOut of scope: changing IsRegular's fields, and unbundling binders that are legitimately ambient.\n",
+      "topic": "semantics",
+      "dependencies": [
+        662
+      ],
+      "created": "2026-09-23T20:13:33Z",
+      "last_updated": "2026-09-23T20:13:33Z"
+    },
+    {
+      "project_number": 664,
+      "project_name": "ingest_cmiel_kuhlmann_ball_space_source",
+      "status": "not_started",
+      "task_type": "general",
+      "description": "Acquire and ingest the Cmiel-Kuhlmann-Kuhlmann ball-space paper into the literature corpus, which currently has no copy of it.\n\nMeasured gap (verify rather than trust): the manuscript's def:frame carries a footnote citing \\cite{Cmiel2021} for the claim that the nonempty fibers and segments form a BALL SPACE, and that Saturation is the downward-directed-intersection condition S_1^d of that hierarchy -- the nest condition S_1 with a directed system of balls in place of a nest. That citation has no local backing document: no entry matching Kuhlmann, ball space, spherically complete or ultrametric appears in ~/Projects/Literature/index.json or in specs/literature-index.json, and a filename search across ~/Projects/Literature/ returns nothing.\n\nWhy this matters rather than being bookkeeping. Research on the S1-versus-directedness question had to proceed without the primary source and was able to settle only part of it: S_1 provably suffices for the step lemma over every history with a countable domain (covering Z-time and Q-time), while directedness can only be forced over a non-archimedean duration type with an omega_1-coinitial positive cone. The converse direction S_1 -> S_1^d remains open, and the manuscript has already withdrawn its earlier \"strictly stronger\" wording in favour of \"at least as strong as\", so the strictness question is live rather than settled. Both the open direction and the ball-space framing route through the cited hierarchy, and neither can be grounded against the source while the source is absent. Note also that Mathlib has no spherical-completeness API at all, so there is no secondary formal reference to fall back on.\n\nScope: locate the paper (Cmiel, Kuhlmann and Kuhlmann, ball spaces; the manuscript's own bibliography entry is the starting point for exact title and venue), then run /literature to convert and index it so it is discoverable by future --lit dispatches. Record in the sub-index what the hierarchy's S_1 and S_1^d conditions are as the source states them, so later work can check the project's usage against the source's own definitions rather than against paraphrase.\n\nOut of scope: any Lean change, and any edit to the manuscript.\n",
+      "topic": "literature",
+      "dependencies": [],
+      "created": "2026-09-23T20:13:33Z",
+      "last_updated": "2026-09-23T20:13:33Z"
+    },
     {
       "project_number": 662,
       "project_name": "s1_vs_directedness_and_restore_saturation",
