@@ -200,19 +200,19 @@ implementation time; the probe file, not this plan, is authoritative on the coun
 
 ---
 
-### Phase 3: Close Gap B — Name the Hedgehog Inequality [NOT STARTED]
+### Phase 3: Close Gap B — Name the Hedgehog Inequality [COMPLETED]
 
 **Goal**: Turn the bracketed hedgehog fact into named declarations, in both the `≠` form the task
 asks for and the stronger strict-fineness form research found.
 
 **Tasks**:
-- [ ] Transplant from `probes/GapB_Hedgehog.lean` into the `Hedgehog` namespace of the same
+- [x] Transplant from `probes/GapB_Hedgehog.lean` into the `Hedgehog` namespace of the same
       module: `p_mem_cone_c`, `not_isOpen_nbhdTopology_singleton_c`,
       `coneTopology_ne_nbhdTopology`, `coneTopology_lt_nbhdTopology`
-- [ ] Add `Paper:` lines to all four docstrings
-- [ ] In the docstrings, state the fineness direction explicitly and correctly: in Mathlib's order
+- [x] Add `Paper:` lines to all four docstrings
+- [x] In the docstrings, state the fineness direction explicitly and correctly: in Mathlib's order
       `coneTopology rel < nbhdTopology rel` says `𝒯_F` is **strictly finer** than `𝒩_F`
-- [ ] Cross-reference `isOpen_coneTopology_singleton_c` (the existing half of the bracket) from
+- [x] Cross-reference `isOpen_coneTopology_singleton_c` (the existing half of the bracket) from
       the new inequality's docstring, so a reader arrives at the pair
 
 **Timing**: 0.75 hours
@@ -255,7 +255,7 @@ every appendix citation lands on a name in the frame register rather than on an 
 - [ ] In the last docstring, record that the library's `t1Space_nbhdTopology_iff_limit` consumes
       **no** frame constraint, and that *Seriality* is needed only to upgrade the ⊆-half *Limit*
       to the paper's equality form — the appendix gains a sharper theorem for free
-- [ ] Add `Paper:` lines to all four docstrings, with the real anchors where they exist
+- [x] Add `Paper:` lines to all four docstrings, with the real anchors where they exist
       (`def:task-topology`, `app:topology-r0`, `app:topology-t1`)
 - [ ] Prefix any unused binder with `_` (the source of the one warning research hit)
 

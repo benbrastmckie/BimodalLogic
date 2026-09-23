@@ -1398,6 +1398,54 @@ theorem not_continuous_coneTopology_history :
     rw [Set.mem_Iic] at hle
     linarith
 
+/-! ### `𝒯_F` is strictly finer than `𝒩_F` here — the named inequality
+
+`isOpen_coneTopology_singleton_c` above gives one half of the bracket: `{c}` is `𝒯_F`-open,
+because it is a finite intersection of cross-ray cones. `not_isOpen_nbhdTopology_singleton_c`
+below gives the other: no positive cone at `c` is contained in `{c}`. Together they separate the
+two topologies by name, in both the `≠` form and the sharper strict-fineness form.
+-/
+
+/-- Every positive cone at the centre meets every ray: `t < x → p n t ∈ (c)_x`.
+
+Paper: `def:task-relation` (the *Cone* clause, computed at the hedgehog's centre) -/
+theorem p_mem_cone_c {n : ℕ} {t : {t : ℝ // 0 < t}} {x : ℝ} (ht : t.1 < x) :
+    p n t ∈ cone rel c x :=
+  ⟨t.1, by rw [abs_of_pos t.2]; exact ht, show t.1 ≤ t.1 from le_rfl⟩
+
+/-- **`{c}` is not `𝒩_F`-open**: every positive cone at `c` escapes it along ray `0`. This is the
+half of the bracket that `isOpen_coneTopology_singleton_c` does not supply.
+
+Paper: — (formalization-native; the paper does not compare the two topologies) -/
+theorem not_isOpen_nbhdTopology_singleton_c :
+    ¬ IsOpen[nbhdTopology rel] ({c} : Set HH) := by
+  intro h
+  obtain ⟨x, hx, hsub⟩ := h c rfl
+  have := hsub (p_mem_cone_c (n := 0) (t := ⟨x / 2, by positivity⟩) (by dsimp; linarith))
+  exact HH.noConfusion (Set.mem_singleton_iff.mp this)
+
+/-- **`𝒯_F ≠ 𝒩_F` on the hedgehog** — the named inequality. `{c}` is a finite intersection of
+cones, hence `𝒯_F`-open (`isOpen_coneTopology_singleton_c`), but no cone at `c` is contained in it
+(`not_isOpen_nbhdTopology_singleton_c`), so `{c}` is not `𝒩_F`-open.
+
+Paper: `def:task-topology` (the topology it defines is not the cone-neighbourhood topology) -/
+theorem coneTopology_ne_nbhdTopology : coneTopology rel ≠ nbhdTopology rel := by
+  intro heq
+  exact not_isOpen_nbhdTopology_singleton_c (heq ▸ isOpen_coneTopology_singleton_c)
+
+/-- **`𝒯_F` is STRICTLY finer than `𝒩_F`** on the hedgehog.
+
+Read the direction off Mathlib's order on `TopologicalSpace`, in which `t₁ ≤ t₂` means `t₁` has
+at least `t₂`'s open sets — that is, `t₁` is the **finer** topology. So
+`coneTopology rel < nbhdTopology rel` says `𝒯_F` is strictly finer than `𝒩_F`:
+`TaskFrame.coneTopology_le_nbhdTopology` gives `≤` from `w ⇒₀ w`, and
+`coneTopology_ne_nbhdTopology` rules out equality.
+
+Paper: `def:task-topology` (strictly finer than the cone-neighbourhood topology here) -/
+theorem coneTopology_lt_nbhdTopology : coneTopology rel < nbhdTopology rel :=
+  lt_of_le_of_ne (coneTopology_le_nbhdTopology rel (fun w => rel_refl w 0 le_rfl))
+    coneTopology_ne_nbhdTopology
+
 end Hedgehog
 
 end FormalSystem.Semantics.StateTopology
