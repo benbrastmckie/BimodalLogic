@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/660_repair_check_evidence_probes_filtered_frame/reports/01_repair-filtered-frame-probe.md",
+      "summary": "Root-causes the phase7 evidence-probe compile failure to RefinedFilteredTaskFrame._proof_4 carrying an unfolded TaskFrame.Limit, and records a compiler-verified sorry-free term-mode repair citing RefinedFilteredTaskFrame.rel_iff."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790178757_3ad6c9_660",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
