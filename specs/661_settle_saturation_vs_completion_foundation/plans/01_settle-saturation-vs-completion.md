@@ -228,7 +228,7 @@ reports `[propext]`; `coherentCompletion_iff_rel` is `Iff.rfl` and reports `[pro
 
 ---
 
-### Phase 2: Promote the rational-carrier *Completion* failure [NOT STARTED]
+### Phase 2: Promote the rational-carrier *Completion* failure [COMPLETED]
 
 **Goal**: Record in the library that the rational two-origin relation fails *Completion* as well
 as *Saturation* — the primary probe's answer — together with the dense-time pinching argument that
@@ -236,19 +236,19 @@ makes it a general obstruction rather than one dead end.
 
 **Tasks**:
 
-- [ ] Transcribe `specs/661_settle_saturation_vs_completion_foundation/probes/CompletionRationalTwoOrigins.lean`
+- [x] Transcribe `specs/661_settle_saturation_vs_completion_foundation/probes/CompletionRationalTwoOrigins.lean`
       into `FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean`, into the existing
       `namespace RationalTwoOrigins`, immediately after `not_rel_saturation`.
-- [ ] **Drop the probe's local `CoherentCompletionRel` definition entirely** and state the result
+- [x] **Drop the probe's local `CoherentCompletionRel` definition entirely** and state the result
       as `theorem not_rel_completion : ¬ TaskFrame.Completion rel`, against Phase 1's library
       predicate. The rename from `not_rel_coherentCompletion` is deliberate: it matches
       `not_rel_saturation`'s naming and the library predicate's name.
-- [ ] Carry over the supporting declarations unchanged in content: `nt`, `nt_succ`, `nt_inv`,
+- [x] Carry over the supporting declarations unchanged in content: `nt`, `nt_succ`, `nt_inv`,
       `nt_one_le`, `nt_sq_gt`, `nt_err`, `nt_succ_le`, `nt_antitone`, `nt_le_start`, `nt_step`,
       `tm`, `phi`, `phi_le_succ`, `phi_mono`, `phi_pos`, `pow_half_inj`, `key`, `stateAt`.
-- [ ] Add whatever Mathlib import the transcription needs that the target module lacks (the probe
+- [x] Add whatever Mathlib import the transcription needs that the target module lacks (the probe
       carries `Mathlib.Algebra.Order.Archimedean.Basic`); add nothing it does not need.
-- [ ] **Rewrite the stale paragraph.** The probe's module docstring says the rational carrier is
+- [x] **Rewrite the stale paragraph.** The probe's module docstring says the rational carrier is
       not a separator "and `Completion → Saturation` stays open". The second clause is false. The
       promoted docstring must instead say: the rational carrier is not the separator because it
       fails both constraints; the converse is settled negatively by `SeparatingFrame` (Phase 3);
@@ -257,10 +257,18 @@ makes it a general obstruction rather than one dead end.
       because `φ` nondecreasing and `φ − id` nonincreasing pinch the admissible interval shut, so
       **no dense-time frame with a continuous-drift relation can separate the two conditions** and
       searching for one is wasted effort.
-- [ ] Record the `3/2` Newton seed decision in a short comment: with seed `2` the first Newton
+- [x] Record the `3/2` Newton seed decision in a short comment: with seed `2` the first Newton
       step exactly equals the first time gap, leaving no slack in `phi`'s monotonicity.
-- [ ] Add a `Paper:` line to `not_rel_completion`'s docstring (see Phase 6's C15 obligation).
-- [ ] Run `lake build` and the linted single-file check; commit.
+- [x] Add a `Paper:` line to `not_rel_completion`'s docstring (see Phase 6's C15 obligation).
+- [x] Run `lake build` and the linted single-file check; commit.
+
+**Phase record**: measured against the Scope Hypothesis — `git diff --stat` reports **251
+insertions** (hypothesis: ~230), **one** new Mathlib import (`Mathlib.Algebra.Order.Archimedean.
+Basic`, for `exists_pow_lt_of_lt_one`) and **zero** intra-library imports, as predicted. The
+module is now 1,026 lines, under the 1,500 `longFile` limit, so no baseline was added. `lake
+build` 2,725 jobs exit 0 with zero `error:` and zero `warning:`; the linted single-file check is
+silent; `#print axioms ... not_rel_completion` reports exactly `propext`, `Classical.choice`,
+`Quot.sound`; `grep -n "stays open"` on the module returns nothing.
 
 **Timing**: 1.5 hours
 
