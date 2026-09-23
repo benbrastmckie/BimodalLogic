@@ -1,5 +1,5 @@
 ---
-next_project_number: 661
+next_project_number: 662
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 661
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,649,660 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,649,660,661 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -99,8 +99,27 @@ next_project_number: 661
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
+661 [NOT STARTED] — Settle the Saturation vs Completion question by probe, and...
 
 ## Tasks
+
+### 661. Settle saturation vs completion foundation
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: Task 657
+
+**Description**: Settle the Saturation vs Completion question by probe, and judge the outcome against a primitives-level foundation criterion.
+
+Primary probe, decisive either way: does StateTopology.RationalTwoOrigins.rel satisfy Completion? It already satisfies Compositionality, Seriality and Limit and fails Saturation (not_rel_saturation, via nested rational straddle sets whose common point would have to be irrational). extension_of_completion makes this checkable without Zorn. Either exhibit one coherent family of rational times whose fiber intersection is empty, in which case Completion fails, the rational carrier is not the separator, and the converse Completion implies Saturation stays open; or prove no such family exists, which separates the two conditions, settles the converse negatively, and establishes that Saturation is strictly stronger than thm:extension needs.
+
+Foundation criterion, and the point of the exercise: the constraint chosen for def:frame must be stated in the primitives of the theory, namely the state set W, the temporal order D and the task relation itself, and not in objects the theory builds from them. Conditions on partial histories, world histories or their extension order belong in lemmas and theorems as emergent properties, never as frame constraints on the primitive. Evaluate the candidates on exactly this axis. CoherentCompletion is already the bare-relation form, quantifying over an index set within D and a family of states coherent under the task relation, with no notion of history mentioned; check that R4's drafted LaTeX matches it clause for clause, and that the PartialHistory-shaped Completion together with the bridge completion_iff_coherentCompletion then reads as a derived recognition lemma rather than a definitional dependency. Assess Saturation on the same axis: its directedness side condition is stated in subset inclusion with no reference to the task relation, and it needs the fiber and segment classification to pick out eligible members at all.
+
+Secondary: if the rational carrier is not the separator, identify the next candidate. A separating frame must fail TotalComp, since saturation_of_completion proves the converse under TotalComp plus Limit, and the drift frame F0 refutes TotalComp while satisfying all four constraints. Also determine whether any finitary or two-point form of Completion exists, or whether the infinitary quantifier is essential to it as a completeness condition.
+
+Outcome wanted: a verdict on R1 versus R4 grounded in the probe result and the primitives criterion. No manuscript edits.
+
+---
 
 ### 660. Repair check evidence probes filtered frame
 - **Status**: [NOT STARTED]
