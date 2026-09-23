@@ -1,0 +1,18 @@
+{
+  "status": "planned",
+  "task_number": 659,
+  "phase": "plan",
+  "session_id": "sess_1790146139_4979e4_659",
+  "dispatch_seq": 5,
+  "phases_completed": 0,
+  "phases_total": 11,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/659_settle_saturation_witnesses_and_r0_without_limit/plans/01_promote-saturation-r0-witnesses.md",
+      "summary": "11-phase promotion plan for the settled Saturation, R0 and metric-frame results."
+    }
+  ],
+  "next_steps": "Run /implement 659 to execute the plan",
+  "notes": "Research settled every question; this plan is promotion-only. Phases 1-4 (the appendix-blocking Q1 work) are independent of the Q2/Q3 module work in phases 6-8."
+}
