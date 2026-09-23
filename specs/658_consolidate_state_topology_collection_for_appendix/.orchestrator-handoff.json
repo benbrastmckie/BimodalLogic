@@ -1,16 +1,41 @@
 {
-  "status": "planned",
+  "status": "implemented",
   "task_number": 658,
-  "session_id": "sess_1790146139_4979e4_658",
-  "dispatch_seq": 2,
-  "phases_completed": 0,
+  "dispatch_seq": 3,
+  "session_id": "sess_1790146139_4979e4",
+  "phases_completed": 10,
   "phases_total": 10,
+  "summary": "All ten plan phases completed. Promoted the two-origin frame's cone-topology side (not_triangle, four cone-membership lemmas with explicit radii, coneTopology_eq_nbhdTopology, not_t2Space_coneTopology, and the two frame-level wrappers) and named the hedgehog inequality in both forms; added FrameOver.isOpen_iff, FrameOver.r0Space_stateTopology (retiring the anonymous example), FrameOver.iInter_cone_eq_singleton, TaskFrame.t1Space_nbhdTopology_iff_iInter_cone_of_serial and the two closure/Mathlib formulation bridges; raised docs/theorem-index.md by 37 ledger rows plus 2 notation rows; produced docs/reference/state-topology-appendix-support.md as the headline artifact; wired front doors in FormalSystem/README.md, docs/ARCHITECTURE.md, docs/reference/API_REFERENCE.md and both Semantics READMEs; and added a leaf test module that gives the collection its first in-tree consumer. Twenty new library declarations, every one sorry-free with axioms [propext, Classical.choice, Quot.sound]. Gates: lake build --wfail exit 0 over the library (2722 jobs) and over Tests/BimodalTest (2782 jobs) with zero warnings; check-module-invariants.sh ALL CHECKS PASSED; lake exe mk_all --lib FormalSystem --check exit 0; sorry count 0; axiom count 14, unchanged from baseline; import-weight lever intact.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/658_consolidate_state_topology_collection_for_appendix/plans/01_state-topology-collection-appendix.md",
-      "summary": "10-phase plan consolidating the state-space topology into a citable collection: Gap A/B promotions, four frame-level declarations, citation-granularity ledger rows, and the appendix support table."
+      "type": "summary",
+      "path": "specs/658_consolidate_state_topology_collection_for_appendix/summaries/01_state-topology-collection-appendix-summary.md",
+      "summary": "Implementation summary for the state-topology collection consolidation."
+    },
+    {
+      "type": "reference",
+      "path": "docs/reference/state-topology-appendix-support.md",
+      "summary": "The appendix support table: manuscript element to certifying declaration, with axiom profiles and the uncertified list."
+    },
+    {
+      "type": "code",
+      "path": "FormalSystem/Semantics/StateTopology.lean",
+      "summary": "Six new declarations, the retired anonymous R0 example, and three new module-header sections (symbol correspondence, order convention, namespace asymmetry)."
+    },
+    {
+      "type": "code",
+      "path": "FormalSystem/Semantics/StateTopology/Counterexamples.lean",
+      "summary": "Fourteen new declarations across the TwoOrigins and Hedgehog namespaces."
+    },
+    {
+      "type": "code",
+      "path": "Tests/BimodalTest/Semantics/StateTopologyTest.lean",
+      "summary": "New leaf test module: seven consuming theorems plus nine guard_msgs-gated axiom pins."
     }
   ],
-  "next_steps": "Run /implement 658 to execute the plan"
+  "next_steps": [
+    "The sibling open-questions task remains: Saturation for the two-origin and hedgehog witnesses (which would let the manuscript call either a task frame), and R0 without Limit. Both are recorded pending-sibling in the support table with the dependency named.",
+    "The support table flags two manuscript over-claims to hedge: 'the topology that makes worlds continuous paths' (the hedgehog refutes the definite article) and 'T1 is inherited by finer topologies' as the reason the old topology is T1."
+  ],
+  "blockers": []
 }

@@ -1,30 +1,37 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-23T00:09:00Z",
+  "completed_at": "2026-09-23T01:58:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/658_consolidate_state_topology_collection_for_appendix/plans/01_state-topology-collection-appendix.md",
-      "summary": "10-phase plan consolidating the state-space topology into a citable collection: Gap A/B promotions, four frame-level declarations, citation-granularity ledger rows, and the appendix support table."
-    }
-  ],
-  "memory_candidates": [
+      "type": "summary",
+      "path": "specs/658_consolidate_state_topology_collection_for_appendix/summaries/01_state-topology-collection-appendix-summary.md",
+      "summary": "Promoted the two-origin cone-topology side and the named hedgehog inequality, added the frame-level and formulation-bridge declarations, raised the theorem index to citation granularity, and produced the appendix support table."
+    },
     {
-      "content": "In a Lean library gated by a per-theorem ledger plus a dead-declaration census, promoting terminal counterexample declarations (results nothing else in the library references) and adding their ledger rows must be planned as one arc, not as separate rounds. The census's occurrence corpus includes non-spec markdown, so the ledger row is itself the occurrence that keeps the promoted declaration off the dead-declaration report. Planning them apart produces a round that is green but flagged, followed by a second round that only un-flags it.",
-      "category": "PATTERN",
-      "source_artifact": "specs/658_consolidate_state_topology_collection_for_appendix/plans/01_state-topology-collection-appendix.md",
-      "confidence": 0.65,
-      "suggested_keywords": ["lean", "theorem-index", "dead-declaration-census", "counterexample-promotion", "phase-sequencing", "ledger-rows"]
+      "type": "reference",
+      "path": "docs/reference/state-topology-appendix-support.md",
+      "summary": "The headline deliverable: each element of the manuscript's topology appendix against the Lean declaration that certifies it, with axiom profiles, plus every statement the library does not certify."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1790146139_4979e4_658",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 10,
-    "estimated_hours": 10.5,
-    "dependency_waves": 6
+  "completion_data": {
+    "completion_summary": "Closed the state-topology collection's promotion gap (the two-origin frame's cone-topology side, including not_triangle and the frame-level coincidence, plus the named hedgehog inequality in both the != and strict-fineness forms), added the four frame-level declarations and two formulation bridges the revised appendix cites, raised docs/theorem-index.md from 5 topology rows to 42, and produced the appendix support table at docs/reference/state-topology-appendix-support.md keyed by paper label rather than line number. Twenty new library declarations, all sorry-free with standard axioms; a new leaf test module gives the collection its first in-tree consumer and pins nine axiom profiles. All four acceptance gates green: lake build --wfail over the library (2722 jobs) and Tests/BimodalTest (2782 jobs) with zero warnings, check-module-invariants.sh ALL CHECKS PASSED, mk_all --check exit 0.",
+    "roadmap_items": []
   },
-  "next_steps": "Run /implement 658 to execute the plan",
-  "dispatch_seq": 2
+  "metadata": {
+    "session_id": "sess_1790146139_4979e4",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "phases_completed": 10,
+    "phases_total": 10
+  }
 }
