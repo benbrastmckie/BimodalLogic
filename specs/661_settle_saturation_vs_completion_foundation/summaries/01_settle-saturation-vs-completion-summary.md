@@ -3,7 +3,7 @@
 - **Task**: 661 - Settle the Saturation vs Completion question by probe, and judge the outcome against a primitives-level foundation criterion
 - **Status**: [COMPLETED]
 - **Started**: 2026-09-23T16:50:58Z
-- **Completed**: 2026-09-23T18:20:00Z
+- **Completed**: 2026-09-23T18:01:03Z
 - **Effort**: ~1.5 hours wall clock (most of it full-library rebuilds)
 - **Dependencies**: 660 (completed); 657 (frame-constraint audit, R1/R4 origin)
 - **Artifacts**: plans/01_settle-saturation-vs-completion.md
