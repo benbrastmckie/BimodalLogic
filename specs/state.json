@@ -4,8 +4,18 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 660,
+  "next_project_number": 661,
   "active_projects": [
+    {
+      "project_number": 660,
+      "project_name": "repair_check_evidence_probes_filtered_frame",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Repair check-evidence-probes.sh: specs/evidence/bi-lasso-decision-layer/phase7-filtered-frame-is-universal.lean fails to compile, so the gate cannot exit 0. The probe cites FrameOver.ofReflective_taskRel_eq against a frame built by ofReflectiveRegular; substituting the correct lemma does not fix it, because RefinedFilteredTaskFrame._proof_4 carries a definitionally-unfolded TaskFrame.Limit, so no syntactic rewrite matches. Pre-existing and unrelated to the frame-constraints audit that surfaced it; that task reverted its attempted fix rather than half-repair the decision layer, and closed its gate phase [COMPLETED WITH EXCLUSIONS]. Needs either a proof-term-level repair (not a rewrite) or a restatement of the probe against the regular constructor",
+      "topic": "repo-hygiene",
+      "created": "2026-09-23T15:42:43Z",
+      "last_updated": "2026-09-23T15:42:43Z"
+    },
     {
       "project_number": 659,
       "project_name": "settle_saturation_witnesses_and_r0_without_limit",

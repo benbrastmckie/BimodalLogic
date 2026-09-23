@@ -1,5 +1,5 @@
 ---
-next_project_number: 660
+next_project_number: 661
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 660
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,649 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,649,660 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -92,11 +92,25 @@ next_project_number: 660
 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
   └─ 650 [NOT STARTED] — Define-before-use audit of...
 
+### Repo Hygiene
+
+660 [NOT STARTED] — Repair check-evidence-probes.sh:...
+
 ### Semantics
 
 624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
 
 ## Tasks
+
+### 660. Repair check evidence probes filtered frame
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Repair check-evidence-probes.sh: specs/evidence/bi-lasso-decision-layer/phase7-filtered-frame-is-universal.lean fails to compile, so the gate cannot exit 0. The probe cites FrameOver.ofReflective_taskRel_eq against a frame built by ofReflectiveRegular; substituting the correct lemma does not fix it, because RefinedFilteredTaskFrame._proof_4 carries a definitionally-unfolded TaskFrame.Limit, so no syntactic rewrite matches. Pre-existing and unrelated to the frame-constraints audit that surfaced it; that task reverted its attempted fix rather than half-repair the decision layer, and closed its gate phase [COMPLETED WITH EXCLUSIONS]. Needs either a proof-term-level repair (not a rewrite) or a restatement of the probe against the regular constructor
+
+---
 
 ### 659. Settle saturation witnesses and r0 without limit
 - **Status**: [COMPLETED]
