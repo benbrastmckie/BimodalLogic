@@ -1,33 +1,32 @@
 {
-  "status": "planned",
-  "dispatch_seq": 5,
+  "status": "implemented",
+  "started_at": "2026-09-23T16:50:58Z",
+  "completed_at": "2026-09-23T18:00:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/661_settle_saturation_vs_completion_foundation/plans/01_settle-saturation-vs-completion.md",
-      "summary": "Eight-phase plan landing the Saturation-vs-Completion verdict in the Lean library: bare-relation TaskFrame.Completion, both probes promoted as permanent witnesses, stale open-converse docstrings retired, and the finitary-Completion claim discharged. No manuscript edits."
+      "type": "summary",
+      "path": "specs/661_settle_saturation_vs_completion_foundation/summaries/01_settle-saturation-vs-completion-summary.md",
+      "summary": "Execution summary: the R4 verdict, what landed in the library and the ledgers, and the two follow-ups deliberately not done."
     }
   ],
-  "next_steps": "Run /implement 661 to execute the plan",
-  "phase_count": 8,
-  "estimated_hours": 8,
-  "dependency_waves": [[1, 8], [2, 4], [3], [5, 6], [7]],
-  "memory_candidates": [
-    {
-      "content": "Frame-constraint separations in the BimodalLogic task-frame development are predicted by how a constraint's quantifier is indexed. A TIME-indexed condition (Completion: a coherent family indexed by a subset X of the temporal order D) collapses to a two-point condition over any order with nearest times, because the constraint imposed by the nearest domain time on each side of the target is the subset-least one. A BALL-indexed condition (Saturation: a supseteq-directed family of fibers and segments) is not indexed by times at all and never collapses, so it can shrink onto a Dedekind cut of the state carrier even when the durations are discrete. Consequence for planning: to separate a time-indexed condition from a ball-indexed one, look at DISCRETE time with an incomplete (dense but non-complete) state carrier; dense time is structurally dead, because over a dense order any coherent family accumulating at a time pinches the witness onto a single real limit. This single distinction underlies three separate results (completion_of_hasNearest, extension_of_isZTime, and the W=Q/D=Z separating frame).",
-      "category": "INSIGHT",
-      "source_artifact": "specs/661_settle_saturation_vs_completion_foundation/plans/01_settle-saturation-vs-completion.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["frame-constraints", "saturation", "completion", "time-indexed", "ball-indexed", "discrete-time"]
-    }
-  ],
+  "completion_data": {
+    "completion_summary": "Completion is now declared over a bare task relation beside the other three def:frame constraints, and a machine-checked separating frame shows it is a strict weakening of Saturation, settling the converse negatively. Both probes are promoted into the library as permanent witnesses, the finitary case is discharged so the infinitary quantifier is shown essential, and no in-tree prose still records the converse as open. No manuscript file was touched and all 43 pinned paper definitions are unchanged.",
+    "roadmap_items": []
+  },
   "metadata": {
-    "session_id": "sess_1790178757_3ad6c9_661",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1790178757_3ad6c9",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 8,
-    "estimated_hours": 8,
-    "dependency_waves": [[1, 8], [2, 4], [3], [5, 6], [7]]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "phases_completed": 8,
+    "phases_total": 8
   }
 }
