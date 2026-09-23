@@ -59,6 +59,8 @@ live file and subdirectory here, and no row for anything else.
 | Ultraproduct/ | The dependent ultraproduct of shift sets and Łoś's theorem: `Carrier`, `IndexFilter`, `ShiftSetProduct`, `Los` (4 files) |
 | Correspondence.lean | Aggregator for `Correspondence/` |
 | Correspondence/ | The frame-class Galois layer: `Galois`, `Indicator`, `DurationFrames`, `FwdRec`, `FwdRecPeriodicity`, `FwdRecBridge`, and the rigidity theorem with its sharpness witnesses, `Rigidity`, `RigiditySharpness` (8 files) |
+| StateTopology.lean | The state topology of a task frame: the cone-neighbourhood topology `𝒩_F` as the sole `TopologicalSpace` instance on a **general** frame's state space, the cone-subbasis topology `𝒯_F` of `def:task-topology` as a plain `def` with no instance, and `FrameOver.t1Space_iff_limit` — `𝒩_F` is T1 exactly when the frame satisfies *Limit*. **Deliberately outside this aggregator**: `Mathlib.Topology.*` brings order and completeness instances with it, and routing them through `Semantics.lean` would put them in scope for every downstream module. The generated library root imports it directly |
+| StateTopology/ | Frames that satisfy some `def:frame` constraints and not others: `Counterexamples` (1 file). The four-state funnel is *Serial*, *Compositional* and *Saturated* and fails *Limit*, with `𝒯_F` T1 on it nonetheless; the two-origin half-line is T1 and not Hausdorff; the hedgehog puts `𝒩_F` strictly below the final topology of all histories. A leaf, for the same import-weight reason |
 
 ## Key Definitions
 
@@ -79,8 +81,10 @@ relation `step w u := TaskRel w 1 u`, in both directions:
   case is *Compositionality* at `y = 1`, and the negative case is the reflection law
   (`FrameOver.reflection`).
 - **Synthesis** — `TaskFrame.ofStep`: a bi-serial relation on a finite nonempty carrier generates a
-  `TaskFrame ℤ` with every obligation of `FrameOver.ofReflective` discharged (the reflection law,
-  `comp`, `serial`, `limit`, `saturation`, plus the nonempty carrier). All but one are free from the normal form; *Seriality* is
+  `TaskFrame ℤ` with every obligation of `FrameOver.ofReflectiveRegular` discharged (the reflection
+  law, the nonempty carrier, and the four `def:frame` constraints *Compositionality*, *Seriality*,
+  *Limit* and *Saturation*, which are the fields of the class `FrameOver.IsRegular` rather than of
+  the frame). All but one are free from the normal form; *Seriality* is
   the one genuine obligation, and the module records the `Unit`-carrier counterexample showing that
   neither finiteness nor discreteness supplies it.
 - **History space** — `mem_HF_iff_adjacent`: `H_F` over ℤ is exactly the set of bi-infinite

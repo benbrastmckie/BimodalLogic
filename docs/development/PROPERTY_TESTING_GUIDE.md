@@ -292,8 +292,9 @@ Properties that hold for ALL values:
 -- Complexity is always positive
 #test ∀ φ : Formula, φ.complexity ≥ 1
 
--- Frame nullity
-#test ∀ (F : FrameOver intOrder) (w : F.WorldState), F.TaskRel w 0 w
+-- Frame nullity, at a regular frame (`lem:nullity` is derived from *Seriality* and *Limit*,
+-- which `FrameOver` carries as the class `FrameOver.IsRegular`, not as fields)
+#test ∀ (F : FrameOver intOrder) [F.IsRegular] (w : F.WorldState), F.TaskRel w 0 w
 ```
 
 ### 2. Algebraic Properties

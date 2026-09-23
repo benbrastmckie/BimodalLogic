@@ -344,7 +344,7 @@ noncomputable def RefinedFilteredTaskFrame [SuccOrder ↑D] [NoMaxOrder ↑D]
       by_cases hd : d = 0 <;> simp [refinedFilteredTaskRel, hd])
 
 /-- **The refined filtered frame is regular**, through the regular constructor's auto-instance. -/
-noncomputable instance RefinedFilteredTaskFrame_isRegular [SuccOrder ↑D] [NoMaxOrder ↑D]
+noncomputable instance RefinedFilteredTaskFrame.isRegular [SuccOrder ↑D] [NoMaxOrder ↑D]
     (phi : Formula) : (RefinedFilteredTaskFrame (D := D) phi).IsRegular :=
   FrameOver.instIsRegularOfReflective _ _ _ _ _ _ _
 

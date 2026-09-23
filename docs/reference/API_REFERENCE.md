@@ -137,21 +137,30 @@ structure TemporalOrder where
   [addCommGroup : AddCommGroup carrier] [linearOrder : LinearOrder carrier]
   [isOrderedAddMonoid : IsOrderedAddMonoid carrier] [nontrivial : Nontrivial carrier]
 
--- The fibre over a fixed temporal order: the sole declaration site of the frame axioms
+-- The fibre over a fixed temporal order: the GENERAL frame, three fields of data and no more
 structure FrameOver (D : TemporalOrder) where
   WorldState : Type
   [worldNonempty : Nonempty WorldState]
   PosRel : WorldState → D.PositiveCone → WorldState → Prop   -- primitive, on D⁺
-  comp, serial, limit, saturation : ...                      -- over reflect PosRel
 
 -- The task relation, extended from D⁺ by the reflection convention (a definition, not a field)
 def FrameOver.TaskRel (F : FrameOver D) : F.WorldState → D → F.WorldState → Prop :=
   TaskFrame.reflect F.PosRel
 
+-- `def:frame`'s four constraints, as a class ON the general frame: the REGULAR frames
+class FrameOver.IsRegular (F : FrameOver D) : Prop where
+  comp       : TaskFrame.Compositional F.TaskRel
+  serial     : TaskFrame.Serial F.TaskRel
+  limit      : TaskFrame.Limit F.TaskRel
+  saturation : TaskFrame.Saturation F.TaskRel
+
 -- The total space of the fibration, `Σ (D : TemporalOrder), FrameOver D`
 structure TaskFrame where
   Duration : TemporalOrder
   toFibre  : FrameOver Duration
+
+-- Regularity at the total space, by delegation to the fibre
+abbrev TaskFrame.IsRegular (G : TaskFrame) : Prop := G.toFibre.IsRegular
 ```
 
 **Fields of `TaskFrame`**:
@@ -159,25 +168,35 @@ structure TaskFrame where
 - `toFibre`: the frame over that order
 
 **Fields of `FrameOver`** (reachable on a `TaskFrame` through delegating accessors, so
-`F.WorldState`, `F.TaskRel` and `F.saturation` all read as before):
+`F.WorldState` and `F.TaskRel` read as before):
 - `WorldState`, `worldNonempty`: the nonempty type of world states
 - `PosRel w x u`: the primitive relation (`def:task-relation`) at a nonnegative duration `x : D⁺`
-- `comp`: biconditional *Compositionality* on the positive cone
-- `serial`, `limit`, `saturation`: `def:frame`'s *Seriality*, *Limit* and *Saturation*
 
-All four axiom fields are stated over the extended relation `TaskFrame.reflect PosRel`, which is
-`F.TaskRel` by definition (`w ⇒_x u` means `u` is reachable from `w` by a task of duration `x`).
+**General frames and the regular class.** The paper introduces task frames in general, names the
+class satisfying all four constraints *regular*, and drops the qualifier thereafter; `FrameOver`
+mirrors that. The four constraints are **not** fields — they are the `Prop`-valued class
+`FrameOver.IsRegular`, so a frame satisfying some of them and not others is still a frame. Each
+also exists as a standalone predicate over a bare relation (`TaskFrame.Compositional`,
+`TaskFrame.Serial`, `TaskFrame.Limit`, `TaskFrame.Saturation`), so any subset can be assumed.
+`F.comp`, `F.serial`, `F.limit` and `F.saturation` are theorems taking `[F.IsRegular]`, with the
+types the old fields had, so every consumer site is unchanged. All four are stated over the
+extended relation `TaskFrame.reflect PosRel`, which is `F.TaskRel` by definition.
 
 **The reflection convention**: `TaskFrame.reflect` extends a primitive relation on `D⁺` to all of
 `D` (`reflect_of_nonneg`, `reflect_of_neg`, `reflect_coe`). The reflection law
 `FrameOver.reflection : F.TaskRel w d u ↔ F.TaskRel u (-d) w` (re-exported as
-`TaskFrame.reflection`) is a theorem. A frame presented by a two-sided relation `R` satisfying the
-reflection law is built with `FrameOver.ofReflective W R hR hcomp hser hlim hsat`, whose bridge is
-the lemma `ofReflective_taskRel`, from which each such frame states its own `@[simp]` bridge.
+`TaskFrame.reflection`) is a theorem at `[F.IsRegular]`. A **general** frame presented by a
+two-sided relation `R` satisfying the reflection law is built with
+`FrameOver.ofReflective W R hR`; a **regular** one with
+`FrameOver.ofReflectiveRegular W R hR hcomp hser hlim hsat`, which registers its constraints
+through the instance `FrameOver.instIsRegularOfReflective`. Their bridges are
+`ofReflective_taskRel` and `ofReflectiveRegular_taskRel`, from which each frame states its own
+`@[simp]` bridge.
 
 **Derived, not fields**: `FrameOver.nullity` (`TaskRel w 0 w`, the paper's `lem:nullity`, from
-`serial` and `limit`), `FrameOver.eq_of_taskRel_zero` (injectivity at zero, from `limit` alone),
-and their conjunction `FrameOver.nullity_identity` (`TaskRel w 0 u ↔ w = u`).
+*Seriality* and *Limit*), `FrameOver.eq_of_taskRel_zero_of_limit` (injectivity at zero, from
+*Limit* alone, as an explicit hypothesis) with `FrameOver.eq_of_taskRel_zero` derived from it at
+`[F.IsRegular]`, and their conjunction `FrameOver.nullity_identity` (`TaskRel w 0 u ↔ w = u`).
 
 **Paper Alignment**: Matches the JPL paper definition (app:TaskSemantics, def:frame,
 possible_worlds.tex:2423-2451; body statement at possible_worlds.tex:908-926).

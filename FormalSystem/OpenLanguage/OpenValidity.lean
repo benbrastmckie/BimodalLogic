@@ -144,23 +144,24 @@ theorem OpenValid.of_not {φ : OpenFormula} (h : ¬ OpenValid φ) :
 
 /-! ## Semantic conservativity of L^▷ over L⁺ -/
 
-/-- Conservativity at a single frame. -/
-theorem openValidOn_ofPlus_iff (F : TaskFrame) [F.IsRegular] (φ : PlusFormula) :
+/-- Conservativity at a single frame. Stated at the **general** frame: the translation
+`openTruthAt_ofPlus` is a fact about the truth clauses alone, so no `def:frame` constraint is
+consumed and no `[F.IsRegular]` binder is owed. -/
+theorem openValidOn_ofPlus_iff (F : TaskFrame) (φ : PlusFormula) :
     F.OpenValidOn (ofPlus φ) ↔ F.PlusValidOn φ :=
   ⟨fun h M τ t => (openTruthAt_ofPlus M τ t φ).mp (h M τ t),
     fun h M τ t => (openTruthAt_ofPlus M τ t φ).mpr (h M τ t)⟩
 
 /-- Conservativity at a bare frame predicate. -/
-theorem openValidOnFrames_ofPlus_iff (P : TaskFrame → Prop) (hP : ∀ F, P F → F.IsRegular)
-    (φ : PlusFormula) :
+theorem openValidOnFrames_ofPlus_iff (P : TaskFrame → Prop) (φ : PlusFormula) :
     OpenValidOnFrames P (ofPlus φ) ↔ PlusValidOnFrames P φ :=
-  ⟨fun h F hF => haveI := hP F hF; (openValidOn_ofPlus_iff F φ).mp (h F hF),
-    fun h F hF => haveI := hP F hF; (openValidOn_ofPlus_iff F φ).mpr (h F hF)⟩
+  ⟨fun h F hF => (openValidOn_ofPlus_iff F φ).mp (h F hF),
+    fun h F hF => (openValidOn_ofPlus_iff F φ).mpr (h F hF)⟩
 
 /-- **Semantic conservativity of L^▷ over L⁺, at every frame class.** -/
 theorem openValidIn_ofPlus_iff (fc : ProofSystem.FrameClass) (φ : PlusFormula) :
     OpenValidIn fc (ofPlus φ) ↔ PlusValidIn fc φ :=
-  openValidOnFrames_ofPlus_iff fc.Sat (fun _ h => h.isRegular) φ
+  openValidOnFrames_ofPlus_iff fc.Sat φ
 
 /-- Semantic conservativity at the unconstrained class: an L⁺ formula is L^▷-valid iff it is
 L⁺-valid. -/

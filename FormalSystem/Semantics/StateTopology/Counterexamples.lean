@@ -317,6 +317,10 @@ of state `0`, yet `2 ≠ 0`.
 
 This is one half of the acceptance test. It is not a statement *about* a regular frame with a
 constraint removed — it is a statement about a frame, of a constraint that frame does not have.
+
+*Limit* is the constraint this frame does not satisfy.
+
+Paper: `def:frame#Limit`
 -/
 theorem funnel_not_limit [DenselyOrdered ↑D] :
     ¬ TaskFrame.Limit (funnelFrame (D := D)).TaskRel := by
@@ -361,6 +365,10 @@ evidence that the general/regular split achieved its purpose.
 Mathematically it says the converse of `app:topology-t1` is **false**: `𝒯_F` being T1 does not
 give *Limit* back. The gap is exactly the one-way instantaneous pairs
 (`TaskFrame.limit_of_t1Space_coneTopology`), and `funnel_one_way_pair` exhibits one.
+
+This refutes the converse of that result.
+
+Paper: `app:topology-t1`
 -/
 theorem funnel_t1Space_coneTopology [DenselyOrdered ↑D] :
     @T1Space (Fin 4) (FrameOver.coneTop (funnelFrame (D := D))) := by
@@ -750,8 +758,12 @@ theorem rel_reflection (w : TO) (x : ℝ) (u : TO) : rel w x u ↔ rel u (-x) w 
           · exact Or.inr ⟨by linarith, h2, by linarith⟩
         · exact Or.inl ⟨by linarith, h2, by linarith⟩
 
-/-- The real line as a temporal order, for this frame's duration type. -/
-noncomputable abbrev realOrder : TemporalOrder := TemporalOrder.of ℝ
+/-- The real line as a temporal order, for this frame's duration type. Named
+`twoOriginRealOrder` rather than `realOrder` because `Semantics.realOrder`
+(`Correspondence/RigidityReal.lean`) already carries that base name, and C17's
+dead-declaration census keys on the last dot-segment: two declarations sharing a base name mask
+each other and neither can ever be reported dead. -/
+noncomputable abbrev twoOriginRealOrder : TemporalOrder := TemporalOrder.of ℝ
 
 /--
 **The half-line with two origins, as a general task frame.**
@@ -761,7 +773,7 @@ carrier to reduce to `TO` at reducible transparency. It carries no `def:frame` c
 of its data; `frame_serial`, `frame_compositional` and `frame_limit` are the three it satisfies,
 and *Saturation* is deliberately not claimed. It is therefore **not** an `IsRegular` instance.
 -/
-@[reducible] noncomputable def frame : FrameOver realOrder where
+@[reducible] noncomputable def frame : FrameOver twoOriginRealOrder where
   WorldState := TO
   worldNonempty := ⟨o true⟩
   PosRel w x u := rel w (x : ℝ) u
@@ -819,7 +831,9 @@ theorem not_t2Space_nbhdTopology : ¬ @T2Space TO (nbhdTopology rel) := by
 
 /-- **The frame's state topology is not Hausdorff**, as a fact about the frame. A T1 state space
 that is not T2: *Limit* gives the first (`frame_t1Space`) and no `def:frame` constraint gives the
-second. -/
+second.
+
+Paper: — (formalization-native; the paper states no separation axiom beyond `app:topology-t1`) -/
 theorem frame_not_t2Space : ¬ @T2Space frame.WorldState (FrameOver.stateTopology frame) := by
   intro h
   refine not_t2Space_nbhdTopology ?_
@@ -995,7 +1009,7 @@ theorem rel_reflection (w : HH) (x : ℝ) (u : HH) : rel w x u ↔ rel u (-x) w 
 `funnelFrame`. It carries no `def:frame` constraint as part of its data; three are proved
 separately and *Saturation* is not claimed, so it is **not** an `IsRegular` instance.
 -/
-@[reducible] noncomputable def frame : FrameOver TwoOrigins.realOrder where
+@[reducible] noncomputable def frame : FrameOver TwoOrigins.twoOriginRealOrder where
   WorldState := HH
   worldNonempty := ⟨c⟩
   PosRel w x u := rel w (x : ℝ) u
@@ -1118,6 +1132,8 @@ theorem isOpen_preimage_hedgehogOpen_of_history {τ : ℝ → HH} (hτ : TaskFra
 `TaskFrame.finalTopology_le_nbhdTopology` gives the inclusion unconditionally; this frame shows
 it is strict. `hedgehogOpen` is open in every history's coinduced topology, hence in their
 supremum, and is not `𝒩_F`-open.
+
+Paper: — (formalization-native; the paper does not compare `𝒩_F` with a final topology)
 -/
 theorem finalTopology_ne_nbhdTopology :
     (⨆ τ : {τ : ℝ → HH // TaskFrame.IsHistory rel τ}, coinduced τ.1 inferInstance) ≠

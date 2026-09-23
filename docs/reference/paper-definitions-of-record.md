@@ -895,7 +895,9 @@ Re-pinned when the paper renamed the *converse convention* to the *reflection co
 (wording only; the stipulation `w ⇒_{-x} u ≔ u ⇒_x w` is unchanged). The Lean encoding follows the
 paragraph's shape: the primitive relation `FrameOver.PosRel` lives on `D⁺`, the extended relation
 is the definition `FrameOver.TaskRel := TaskFrame.reflect PosRel`, and the reflection law is the
-theorem `FrameOver.reflection`, not a structure field.
+theorem `FrameOver.reflection`, not a structure field. `PosRel` and the state type are, together
+with the carrier's nonemptiness, the *whole* of a frame's data: `def:frame`'s four axioms are
+constraints on that data, not part of it — see `def:frame` below.
 
 ```latex
 \begin{Ddef} \label{def:task-relation}
@@ -965,6 +967,18 @@ flagging "`def:frame` changed":
 
 Note: **Compositionality is a biconditional**, not a one-directional implication — this is load
 bearing (the right-to-left direction is used directly in, e.g., the constraint-family proofs).
+
+**How the four axioms are encoded.** They are **not** fields of `FrameOver`. `FrameOver` is the
+*general* frame structure — a nonempty state type and the primitive relation on `D⁺`, and nothing
+more — and the four are frame **constraints** on it, carried by the `Prop`-valued class
+`FrameOver.IsRegular` (`Semantics/TaskFrame.lean`); the class satisfying all four is the class of
+*regular* frames, and the qualifier is dropped thereafter exactly as the paper drops it. Each is
+also a standalone predicate over a bare relation — `TaskFrame.Compositional`, `TaskFrame.Serial`,
+`TaskFrame.Limit`, `TaskFrame.Saturation` — so any subset can be assumed and a result can be
+stated at the constraint it uses. `F.comp`, `F.serial`, `F.limit` and `F.saturation` remain the
+names, now as theorems taking `[F.IsRegular]`, with the types the fields had. Witnesses that
+satisfy some constraints and not others live in `Semantics/StateTopology/Counterexamples.lean`;
+they are not expressible while the constraints are fields, which is why the encoding changed.
 
 **2026-09-07 wave — two changes inside this block, both load bearing:**
 

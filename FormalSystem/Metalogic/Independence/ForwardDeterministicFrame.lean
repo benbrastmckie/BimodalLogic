@@ -209,7 +209,8 @@ theorem fn_saturation : TaskFrame.Saturation (D := TemporalOrder.of ℤ) fnRel :
 
 /-! ## The frame -/
 
-/-- **`F^N` is a task frame**: all five `FrameOver` axiom fields. `@[reducible]` for the same
+/-- **`F^N` is a task frame**: the general `FrameOver` data, with `def:frame`'s four constraints
+supplied separately by the `IsRegular` instance below. `@[reducible]` for the same
 reason `fzeroFrame` carries it — without it `FN.WorldState` does not reduce to `ℕ`. -/
 @[reducible] def fnFrameOver : FrameOver (TemporalOrder.of ℤ) where
   WorldState := ℕ

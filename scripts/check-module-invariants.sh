@@ -1885,6 +1885,12 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Semantics.validIn_iff_recurrenceFree' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.plusValidIn_iff_recurrenceFree' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.starValidIn_iff_recurrenceFree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.FrameOver.t1Space_iff_limit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.funnel_not_limit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.funnel_t1Space_coneTopology' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.funnel_serial' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.funnel_compositional' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.funnel_saturation' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2042,6 +2048,12 @@ import FormalSystem
 #print axioms FormalSystem.Semantics.validIn_iff_recurrenceFree
 #print axioms FormalSystem.Semantics.plusValidIn_iff_recurrenceFree
 #print axioms FormalSystem.Semantics.starValidIn_iff_recurrenceFree
+#print axioms FormalSystem.Semantics.FrameOver.t1Space_iff_limit
+#print axioms FormalSystem.Semantics.StateTopology.funnel_not_limit
+#print axioms FormalSystem.Semantics.StateTopology.funnel_t1Space_coneTopology
+#print axioms FormalSystem.Semantics.StateTopology.funnel_serial
+#print axioms FormalSystem.Semantics.StateTopology.funnel_compositional
+#print axioms FormalSystem.Semantics.StateTopology.funnel_saturation
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \

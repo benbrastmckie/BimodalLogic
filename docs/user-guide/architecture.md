@@ -462,8 +462,16 @@ group T = ⟨T, +, ≤⟩". Standard instances include:
 
 The temporal order is a **component of the frame**, not a type parameter — `def:frame` reads
 `F = ⟨W, 𝔇, ⇒⟩`. Two structures express that: `FrameOver D` is the *fibre* over a fixed temporal
-order and the sole declaration site of the frame axioms, and `TaskFrame` is the *total space*,
-definitionally `Σ (D : TemporalOrder), FrameOver D`.
+order, and `TaskFrame` is the *total space*, definitionally `Σ (D : TemporalOrder), FrameOver D`.
+
+**Frames are general; the constrained class is *regular*.** The paper introduces task frames in
+general, names the class satisfying all four `def:frame` constraints *regular*, and then drops the
+qualifier because attention is restricted to those. The Lean mirrors that: `FrameOver` carries
+exactly the data — a nonempty state type and the primitive relation — and *Compositionality*,
+*Seriality*, *Limit* and *Saturation* are **frame constraints**, carried by the `Prop`-valued class
+`FrameOver.IsRegular`. A frame satisfying some of them and not others is still a frame, which is
+what makes results *about* the constraints statable at all: "the cone-neighbourhood topology is T1
+exactly when *Limit* holds" has content only if some frame fails *Limit*.
 
 ```lean
 -- def:temporal-order, reified: a nontrivial totally ordered abelian group, as one object
@@ -472,12 +480,20 @@ structure TemporalOrder where
   [addCommGroup : AddCommGroup carrier] [linearOrder : LinearOrder carrier]
   [isOrderedAddMonoid : IsOrderedAddMonoid carrier] [nontrivial : Nontrivial carrier]
 
--- The fibre: frames over a FIXED temporal order. The frame axioms live here, once.
+-- The fibre: GENERAL frames over a FIXED temporal order. Three fields of data, no constraints.
 structure FrameOver (D : TemporalOrder) where
-  WorldState : Type                                  -- Set of world states (W)
-  TaskRel : WorldState → D → WorldState → Prop      -- Task relation (⇒)
-  comp, converse, serial, limit, saturation : ...
+  WorldState : Type                                          -- Set of world states (W)
+  [worldNonempty : Nonempty WorldState]
+  PosRel : WorldState → D.PositiveCone → WorldState → Prop   -- primitive relation on D⁺
+  -- `TaskRel` (the two-sided relation ⇒) is a DEFINITION: `TaskFrame.reflect PosRel`
   -- `nullity_identity` (TaskRel w 0 u ↔ w = u) is a derived theorem, not a field
+
+-- `def:frame`'s four constraints, as a class ON the general frame: the REGULAR frames
+class FrameOver.IsRegular (F : FrameOver D) : Prop where
+  comp       : TaskFrame.Compositional F.TaskRel
+  serial     : TaskFrame.Serial F.TaskRel
+  limit      : TaskFrame.Limit F.TaskRel
+  saturation : TaskFrame.Saturation F.TaskRel
 
 -- The total space: the temporal order is the field `Duration`
 structure TaskFrame where
@@ -488,6 +504,11 @@ structure TaskFrame where
 #check FrameOver intOrder            -- frames whose duration order is ℤ
 #check (FrameOver.trivialFrame : FrameOver (TemporalOrder.of Int))
 ```
+
+`F.comp`, `F.serial`, `F.limit` and `F.saturation` are theorems taking `[F.IsRegular]`, with the
+types the old fields had, so a consumer reads exactly as it did when the constraints were fields.
+Validity is unaffected: `ProofSystem.FrameClass.Sat .Base` is `TaskFrame.IsRegular`, so `Valid`,
+`ValidIn` and `ValidOnFrames` quantify over the regular frames, as they always have.
 
 Because `Duration` is a field, a property of the temporal order alone is an ordinary predicate on
 a frame — which is what makes `def:frame-properties` (Discrete / Dense / Complete) sayable of a

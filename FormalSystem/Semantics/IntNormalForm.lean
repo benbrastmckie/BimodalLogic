@@ -101,7 +101,8 @@ and quoting them at a ℤ-frame overstates its cost by a wide margin.
 
 ## References
 
-* `Semantics/TaskFrame.lean` — the `FrameOver` structure and its four axiom fields
+* `Semantics/TaskFrame.lean` — the general `FrameOver` structure and the class
+  `FrameOver.IsRegular` carrying `def:frame`'s four constraints
 * `Semantics/DurationClassification.lean` — the Hölder discrete-or-dense dichotomy
 
 ## Tags

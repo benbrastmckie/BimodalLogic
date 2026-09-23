@@ -337,6 +337,10 @@ Stating it this way is what makes **separation without *Limit*** expressible: `s
 condition on a general frame's histories, and a frame can be exhibited on which it holds although
 *Limit* fails (`Semantics/StateTopology/Counterexamples.lean`). `ShiftSet.rev_sep` below is this
 theorem at a regular frame, with its original statement.
+
+*Limit* is the sole constraint it consumes.
+
+Paper: `def:frame#Limit`
 -/
 theorem rev_sep_of_limit {F : TaskFrame} (hlim : TaskFrame.Limit F.TaskRel)
     (σ τ : WorldHistory F)

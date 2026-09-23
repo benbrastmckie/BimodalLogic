@@ -31,7 +31,7 @@ repository's metalogic is proved in.
 | `MinusFrame.lean` | 315 | `MinusFrame` — a native L⁻ frame notion not bound to `TaskFrame` (points with an unbounded, transitive, irreflexive, forward- and backward-linear strict order, no group structure), its truth recursion `MinusFrameTruth` with `□` as the universal modality, `MinusFrameValid`, the `MinusFrameTruth.*` characterization family, and the time-reflection transfer lemma `truth_reflectTime`; the frame class a countermodel to `(Sp)` lives on |
 | `MinusSchemaValidity.lean` | 174 | DF/DN semantic lemmas (Lemmas B/C) and DF's `PredOrder` past-dual, consumed by `Metalogic/Conservativity/SpWitness.lean` and `minus_soundness_ztime_succ` |
 | `MinusTruth.lean` | 224 | `MinusTruthAt` — the same truth relation for the tense-primitive base language, by native six-clause recursion on `MinusFormula` per `def:BL-semantics` (not `TruthAt ∘ tr`) |
-| `MinusValidity.lean` | 306 | `MinusValid`, `MinusSemanticConsequence`, `MinusValidDense`, `MinusValidZTime`, `MinusValidZTimeSucc`, `MinusValidRTime` — binder-for-binder base-language mirrors of Validity.lean |
+| `MinusValidity.lean` | 316 | `MinusValid`, `MinusSemanticConsequence`, `MinusValidDense`, `MinusValidZTime`, `MinusValidZTimeSucc`, `MinusValidRTime` — binder-for-binder base-language mirrors of Validity.lean |
 | `Soundness.lean` | 615 | The truth-transfer bridge `truthAt_tr`, and L⁻ soundness at `FrameClass.Base` and its three extensions, by composition through `Conservativity.translate` |
 | `Translation.lean` | 266 | `tr : MinusFormula → Formula` and `trCtx` — the translation into the primary language, sending each L⁻ primitive to the primary operator of the same name |
 <!-- END GENERATED -->

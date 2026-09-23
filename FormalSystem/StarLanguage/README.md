@@ -46,7 +46,7 @@ the whole point of this language, and it must be broken in a *separate* type.
 | `StarNonValidities.lean` | 197 | `app:deterministic-future`'s negative half: `refute_sentDet` over `NF`, the same countermodel `refute_determined` uses, and `not_starValid_sentDet`; also `refute_modal_future` and `refute_erasure` |
 | `StarStateLocal.lean` | 375 | The **state-locality** fragment of L⋆: `StarFormula.StateLocal` (syntactic) and `IsStateLocal` (semantic); the soundness induction `isStateLocal_of_stateLocal`, the three non-preservation witnesses on `NF`, and the headline `φ ↔ ⊡φ` |
 | `StarTruth.lean` | 410 | `StarTruthAt` — the truth recursion for L⋆ over the manuscript's points `(τ, x, v⃗)`; the `StarTruth.*` clause lemmas; `starTruthAt_ofPlus`; and the transport layer `star_truth_congr_ext`, `update_shift_comm`, `starTruthAt_timeShift` (the vector **shifted**, never dropped) |
-| `StarValidity.lean` | 265 | `TaskFrame.StarValidOn`, `StarValidOnFrames`, `StarValidIn`, `StarValid` — L⋆ mirrors of Validity.lean with the stored-time vector as an extra binder; `starValidOn_ofPlus`; `settledDisj`, `sentDet` (`sent:det`), `sentDet_unfold`, and `not_starValidOn_sentDet` |
+| `StarValidity.lean` | 274 | `TaskFrame.StarValidOn`, `StarValidOnFrames`, `StarValidIn`, `StarValid` — L⋆ mirrors of Validity.lean with the stored-time vector as an extra binder; `starValidOn_ofPlus`; `settledDisj`, `sentDet` (`sent:det`), `sentDet_unfold`, and `not_starValidOn_sentDet` |
 <!-- END GENERATED -->
 
 The sibling aggregator is `FormalSystem/StarLanguage.lean`. The library root, the repository-root

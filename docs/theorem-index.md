@@ -169,6 +169,24 @@ class — see `deterministic_not_plusDefinable` above.
 | — | The time-indexed rigidity boundary is Dedekind, not Archimedean: over a densely ordered, Dedekind-complete time order, a time-indexed frame with finitely many states satisfying *Limit* has only constant histories | `FormalSystem.Semantics.TimeIndexed.constantHistories_of_lub` | `FormalSystem/Semantics/TimeIndexed.lean` | — | pcq pinned:C14 |
 | — | Dedekind completeness cannot be dropped: over `ℚ` a two-state time-indexed frame switching across `√2` satisfies *Limit* and every other frame condition, yet has a non-constant history | `FormalSystem.Semantics.TimeIndexed.qSwitchFrame_not_constantHistories` | `FormalSystem/Semantics/TimeIndexedSharpness.lean` | — | pcq pinned:C14 |
 
+### The state topology, and frames that satisfy some constraints and not others
+
+`def:frame`'s four constraints are frame **conditions** on the general frame structure
+`FrameOver`, carried by the class `FrameOver.IsRegular` rather than as fields
+(`FormalSystem/Semantics/TaskFrame.lean`, "General frames and the regular class"). Every row below
+is a statement that the split makes expressible: it either characterises a constraint, or is about
+a frame that violates one.
+
+| Paper label | Statement | Lean name | File | Frame class | Axioms |
+|---|---|---|---|---|---|
+| `app:topology-t1` | The cone-neighbourhood topology `𝒩_F` on a **general** frame's state space is T1 **if and only if** the frame satisfies *Limit* | `FormalSystem.Semantics.FrameOver.t1Space_iff_limit` | `FormalSystem/Semantics/StateTopology.lean` | — | pcq pinned:C14 |
+| `app:topology-t1` | The converse of `app:topology-t1` is false for the cone topology `𝒯_F`: on the four-state funnel `𝒯_F` is T1 (indeed discrete) **while *Limit* fails** | `FormalSystem.Semantics.StateTopology.funnel_t1Space_coneTopology` | `FormalSystem/Semantics/StateTopology/Counterexamples.lean` | — | pcq pinned:C14 |
+| `def:frame#Limit` | *Limit* fails on the four-state funnel: state `2` lies in every positive cone of state `0` | `FormalSystem.Semantics.StateTopology.funnel_not_limit` | `FormalSystem/Semantics/StateTopology/Counterexamples.lean` | — | pcq pinned:C14 |
+| `def:frame#Limit` | Injectivity at zero, at the constraint it uses: *Limit* alone, with no *Seriality*, *Compositionality* or *Saturation* | `FormalSystem.Semantics.FrameOver.eq_of_taskRel_zero_of_limit` | `FormalSystem/Semantics/TaskFrame.lean` | — | `[propext]` |
+| `def:frame#Limit` | Separation of shift-related histories, at the constraint it uses: *Limit* alone. Its converse fails — separation holds on the funnel, where *Limit* does not (`funnel_sep_of_history`) | `FormalSystem.Semantics.ShiftSet.rev_sep_of_limit` | `FormalSystem/Semantics/ShiftSet.lean` | — | `[propext, Quot.sound]` |
+| — | A state space that is T1 but **not Hausdorff**: the half-line with two origins satisfies *Seriality*, *Compositionality* and *Limit* (and does not claim *Saturation*) | `FormalSystem.Semantics.StateTopology.TwoOrigins.frame_not_t2Space` | `FormalSystem/Semantics/StateTopology/Counterexamples.lean` | — | pcq |
+| — | `𝒩_F` is **strictly** below the final topology of all histories: the hedgehog separates them | `FormalSystem.Semantics.StateTopology.Hedgehog.finalTopology_ne_nbhdTopology` | `FormalSystem/Semantics/StateTopology/Counterexamples.lean` | — | pcq |
+
 ### The translation product
 
 The translation product `F.translationProduct` (`FormalSystem/Semantics/Frames/TranslationProduct.lean`) is a proof device, never an intended model: it shows that no object language sees recurrence at the level of a frame class.

@@ -312,6 +312,12 @@ and `lem:step`:
 
 ### THE INVARIANT (binding on the four-axiom `TaskFrame` alignment work)
 
+> **Where this landed.** The four constraints are *not* fields of `FrameOver`/`TaskFrame`. They
+> are the fields of the `Prop`-valued class `FrameOver.IsRegular` (`Semantics/TaskFrame.lean`),
+> which is what lets a frame satisfy some and not others. The invariant below is unaffected and
+> still binding — it is about *definitional citation*, not about where the citation is written —
+> and `Semantics/TaskFrame.lean`'s definitional-content `example`s are the check that enforces it.
+
 When the axiom fields are added to `TaskFrame`:
 
 - `TaskFrame.spherical` must be **definitionally** `Spherical TaskRel`,

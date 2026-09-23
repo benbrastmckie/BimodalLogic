@@ -566,6 +566,10 @@ of `FrameOver`, the right-hand side was true of every frame by construction and 
 had no content; as a constraint on a general frame it is a genuine characterisation, and the
 four-state funnel (`Semantics/StateTopology/Counterexamples.lean`) is a frame at which the
 left-hand side of the `𝒯_F` analogue holds while the right-hand side fails.
+
+The paper states the `𝒯_F` direction; this is the `𝒩_F` biconditional.
+
+Paper: `app:topology-t1`
 -/
 theorem t1Space_iff_limit (F : FrameOver D) :
     T1Space F.WorldState ↔ TaskFrame.Limit F.TaskRel :=

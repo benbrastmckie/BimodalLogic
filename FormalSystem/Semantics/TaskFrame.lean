@@ -277,9 +277,9 @@ namespace FormalSystem.Semantics
 
 The fiber/cone/segment/directed-family apparatus and three of `def:frame`'s four axioms are
 declared **before** the frame structure, not after it. That ordering is load bearing: a
-structure field's type may only mention declarations that precede it, so these are the
-declarations the structure's axiom fields are stated from. Everything here is over a bare
-relation `R : W → D → W → Prop`, so nothing in this block depends on the structure.
+class field's type may only mention declarations that precede it, so these are the
+declarations the constraint fields of `FrameOver.IsRegular` are stated from. Everything here is
+over a bare relation `R : W → D → W → Prop`, so nothing in this block depends on the structure.
 -/
 
 namespace TaskFrame
@@ -722,11 +722,11 @@ theorem nullity_of_serial_limit {W : Type} {R : W → D → W → Prop}
 
 A two-sided relation `R` satisfying the reflection law is the extension of its own restriction
 to `D⁺` (`reflect_eq_of_reflective`). The lemmas below transport that fact to the relation itself
-and to each `def:frame` axiom, so that a frame whose relation is most naturally written on all of
-`D` can supply its primitive as that restriction, `fun w x u => R w ↑x u`, and discharge
-every axiom field against `R` directly. `FrameOver.ofReflective` packages all five; a frame that
-must stay a literal structure (for instance so that its world-state type reduces at reducible
-transparency) cites them field by field.
+and to each `def:frame` constraint, so that a frame whose relation is most naturally written on all
+of `D` can supply its primitive as that restriction, `fun w x u => R w ↑x u`, and discharge
+every constraint against `R` directly. `FrameOver.ofReflectiveRegular` packages all five; a frame
+that must stay a literal structure (for instance so that its world-state type reduces at reducible
+transparency) cites them one by one in its own `IsRegular` instance.
 
 Each transport is a `rw` along `reflect_eq_of_reflective`, never an `▸` cast, whose motive would
 pick up the nested `reflect`.
@@ -877,8 +877,8 @@ variable {D : TemporalOrder}
 the reflection convention (`def:task-relation`).
 
 A plain (non-`@[reducible]`) definition, so `simp` does not unfold it into the `dite` of
-`TaskFrame.reflect` at an abstract frame. The axiom fields are stated over
-`TaskFrame.reflect F.PosRel`, so `F.serial : Serial F.TaskRel` and its siblings still hold by
+`TaskFrame.reflect` at an abstract frame. The constraint fields of `FrameOver.IsRegular` are
+stated over this definition, so `F.serial : Serial F.TaskRel` and its siblings still hold by
 citation (see the definitional-content checks at the end of this module). Reason about it with
 `reflection`, `taskRel_of_nonneg`, `taskRel_of_neg`, `taskRel_coe`, and at a frame built by
 `ofReflective`, `ofReflective_taskRel`.
@@ -905,9 +905,9 @@ theorem taskRel_coe (F : FrameOver D) {w u : F.WorldState} (x : D.PositiveCone) 
 /--
 The extended primitive relation *is* the task relation, by definition.
 
-A `@[simp]` fold, not an unfold: the axiom fields' declared types mention
-`TaskFrame.reflect F.PosRel`, and this lemma restates a field instance (`F.comp w v x y hx hy`,
-say) in terms of `F.TaskRel`, so it rewrites against goals phrased over `F.TaskRel`.
+A `@[simp]` fold, not an unfold: a goal that has unfolded `F.TaskRel` mentions
+`TaskFrame.reflect F.PosRel`, and this lemma restates it in terms of `F.TaskRel`, the form the
+constraints (`F.comp w v x y hx hy`, say) and every lemma about them are phrased over.
 -/
 @[simp]
 theorem reflect_posRel (F : FrameOver D) (w : F.WorldState) (d : ↑D) (u : F.WorldState) :
@@ -925,7 +925,8 @@ See this module's header, "General frames and the regular class", for the paper 
 **The *regular* task frames**: those satisfying all four of `def:frame`'s constraints.
 
 Each field is stated by *citation* of the bare-relation predicate of record, over the extended
-relation `F.TaskRel`, exactly as the corresponding `FrameOver` field is. That is load bearing and
+relation `F.TaskRel`, exactly as the corresponding `FrameOver` field was before the constraints
+became a class. That is load bearing and
 not decorative: the Step Lemma consumes *Saturation* literally (`Semantics/Extension/Step.lean`),
 and a restated-but-equivalent field would stop typechecking there.
 
@@ -1030,6 +1031,10 @@ forces `u = w`.
 
 `FrameOver.eq_of_taskRel_zero` below is this theorem at `[F.IsRegular]`, and keeps its original
 statement; a frame that satisfies *Limit* and nothing else uses this one directly.
+
+*Limit* is the sole constraint it consumes.
+
+Paper: `def:frame#Limit`
 -/
 theorem eq_of_taskRel_zero_of_limit (F : FrameOver D) (hlim : TaskFrame.Limit F.TaskRel)
     {w u : F.WorldState} (h : F.TaskRel w 0 u) : w = u :=
@@ -1062,10 +1067,10 @@ theorem nullity_identity (F : FrameOver D) [F.IsRegular] :
 If a task of duration `x ≥ 0` takes `w` to `u`, and a task of duration `y ≥ 0` takes `u` to `v`,
 then a task of duration `x + y` takes `w` to `v`.
 
-This was a structure field in its own right until the `comp` field landed carrying the paper's
-full biconditional (`def:frame#Compositionality`). Its statement here is that former field's,
+This was a postulate in its own right until `comp` landed carrying the paper's full
+biconditional (`def:frame#Compositionality`). Its statement here is that former postulate's,
 verbatim, so every consumer applies it exactly as before; only its status changed, from
-postulate to projection.
+postulate to projection — now out of the `comp` constraint of `FrameOver.IsRegular`.
 -/
 theorem forward_comp (F : FrameOver D) [F.IsRegular] (w u v : F.WorldState) (x y : ↑D)
     (hx : 0 ≤ x) (hy : 0 ≤ y) (h1 : F.TaskRel w x u) (h2 : F.TaskRel u y v) :
@@ -2264,10 +2269,10 @@ as instance-implicit *fields* rather than as instance binders on the structure, 
 already recorded for `worldNonempty`: a binder must be supplied at every mention of the type,
 whereas a field is discharged once per frame at its construction site.
 
-Instance-implicit fields are in scope for the types of later fields, so the four axiom fields
-still cite the bare-relation predicates of record *definitionally* — see the definitional-content
-`example`s at the end of this module, which are what keep the frame and the Step Lemma chain
-from drifting apart.
+Instance-implicit fields are in scope for the types of later fields, so the four constraint
+fields of `FrameOver.IsRegular` still cite the bare-relation predicates of record
+*definitionally* — see the definitional-content `example`s at the end of this module, which are
+what keep the frame and the Step Lemma chain from drifting apart.
 -/
 structure TaskFrame where
   /-- The temporal order: the type of task durations (`def:temporal-order`). -/
@@ -2493,15 +2498,16 @@ end RoundTripIdentity
 
 /-! ## The definitional-content checks, at all three ambient shapes
 
-The Cross-Task Acceptance Criterion for the axiom fields is that each is *literally* the recorded
-bare-relation predicate, never an equivalent restatement — because the Step Lemma
-(`Semantics/Extension/Step.lean`) consumes the predicates, and an inert field that merely
+The Cross-Task Acceptance Criterion for the four constraints is that each is *literally* the
+recorded bare-relation predicate, never an equivalent restatement — because the Step Lemma
+(`Semantics/Extension/Step.lean`) consumes the predicates, and an inert constraint that merely
 *implied* them would let the frame and the chain drift apart silently. Each `example` below
-elaborates by citation alone, and would fail the moment a field's statement were restated.
+elaborates by citation alone, and would fail the moment a constraint's statement were restated.
 
 The check is run once per shape a frame is written in — the bundled `TaskFrame`, the fibre
-`FrameOver D` (the sole declaration site of the axioms), and the two finite forms — plus the
-`TemporalOrder.of` identity that lets a frame over an ambient carrier be the same fibre.
+`FrameOver D` (the fibre the class `FrameOver.IsRegular` constrains), and the two finite forms
+— plus the `TemporalOrder.of` identity that lets a frame over an ambient carrier be the same
+fibre.
 
 Merged from three sections — `BundledDefinitionalContent`, `DefinitionalContent` and
 `FibreDefinitionalContent` — that repeated the same four checks once per shape.

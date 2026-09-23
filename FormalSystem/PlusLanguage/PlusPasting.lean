@@ -74,8 +74,10 @@ variable {F : TaskFrame}
 
 /-! ## Pasting two world histories at a shared state -/
 
-/-- `ρ`'s states up to and including `t`, `σ`'s states after `t`. -/
-def pasteFun [F.IsRegular] (ρ σ : WorldHistory F) (t : F.Duration) : F.Duration → F.WorldState :=
+/-- `ρ`'s states up to and including `t`, `σ`'s states after `t`. A choice between two state
+functions, so it is defined at the **general** frame: the `def:frame` constraints enter only with
+`paste_rel_le_lt` below, which is where *Compositionality* is actually used. -/
+def pasteFun (ρ σ : WorldHistory F) (t : F.Duration) : F.Duration → F.WorldState :=
   fun s => if s ≤ t then ρ.state s else σ.state s
 
 /-- The task relation across the seam: from a `ρ`-state at `s ≤ t` to a `σ`-state at `s' > t`,

@@ -1,7 +1,7 @@
 # Implementation Plan: General Task Frames with Regular Frame Constraints
 
 - **Task**: 656 - Refactor task frames: general frames with the four constraints as frame conditions, the constrained class named *regular*
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 17.5 hours
 - **Dependencies**: 651, 652, 654, 655 (all completed)
 - **Research Inputs**: `specs/656_refactor_task_frames_general_with_frame_constraints/reports/01_general-frames-regular-constraints.md`
@@ -666,25 +666,25 @@ silently.
 
 ---
 
-### Phase 10: Documentation, inventory and gates [IN PROGRESS]
+### Phase 10: Documentation, inventory and gates [COMPLETED]
 
 **Goal**: Bring every generated artifact, document, index and invariant gate into agreement with
 the refactored tree, and close the migration table.
 
 **Tasks**:
-- [ ] `lake exe mk_all --lib FormalSystem`, then confirm `lake exe mk_all --lib FormalSystem --check` exits 0. Never hand-edit `FormalSystem.lean`.
-- [ ] `bash scripts/check-module-invariants.sh` — all checks pass. Regenerate the inventory block with `--emit-inventory`.
-- [ ] C14: update every documented axiom/sorry count that moved, in `docs/`, `README.md` and Lean docstrings. Add C14 pins for the new headline declarations (`FrameOver.t1Space_iff_limit`, the funnel's constraint facts).
-- [ ] `docs/theorem-index.md`: update the three `FrameOver` rows (166-168, the rigidity results) if their statements moved, and add rows for the new topology and counterexample headlines. Confirm every declaration named in the index resolves.
-- [ ] C17 sweep: cite each new declaration that would otherwise read as dead — `coneTopology`, `FrameOver.coneTop`, and the counterexample lemmas that exist to be cited — from its module docstring or from `docs/theorem-index.md`.
-- [ ] C19 sweep: confirm the 90% docstring-coverage floor holds over the two new modules.
-- [ ] C29: confirm whether the check's scope covers `warn.*` as well as `linter.*`; if so, add the justification comment `StateTopology.lean`'s `set_option warn.classDefReducibility false` requires.
-- [ ] Update `scripts/module-invariants-allowlist.txt` for any entry naming a retired `FrameOver` field.
-- [ ] Update the prose that prints the six-field structure verbatim and is now wrong: `docs/reference/API_REFERENCE.md` (the `FrameOver` block), `docs/user-guide/architecture.md` (same), `docs/reference/paper-definitions-of-record.md`, `docs/development/PROPERTY_TESTING_GUIDE.md`.
-- [ ] Update `FormalSystem/Semantics/README.md` and `FormalSystem/Metalogic/README.md`.
-- [ ] C9: confirm zero task-number citations outside `specs/` (`bash .claude/scripts/check-task-references.sh`).
-- [ ] Write the final migration table into the implementation summary and check it against `git diff --stat` of the whole implementation.
-- [ ] Final full `--wfail` build over `FormalSystem` and `Tests/BimodalTest`; `lean_verify` on the extension theorem, the funnel's constraint facts, and `FrameOver.t1Space_iff_limit`.
+- [x] `lake exe mk_all --lib FormalSystem`, then confirm `lake exe mk_all --lib FormalSystem --check` exits 0. Never hand-edit `FormalSystem.lean`. *(completed — `mk_all` reported "No update necessary"; the root was already correct from Phases 3 and 9)*
+- [x] `bash scripts/check-module-invariants.sh` — all checks pass. Regenerate the inventory block with `--emit-inventory`. *(completed — inventory blocks regenerated across `README.md` and the library READMEs; 556 live `.lean` files, 162,499 lines)*
+- [x] C14: update every documented axiom/sorry count that moved, in `docs/`, `README.md` and Lean docstrings. Add C14 pins for the new headline declarations (`FrameOver.t1Space_iff_limit`, the funnel's constraint facts). *(completed — six new pins: `FrameOver.t1Space_iff_limit`, `funnel_not_limit`, `funnel_t1Space_coneTopology`, `funnel_serial`, `funnel_compositional`, `funnel_saturation`)*
+- [x] `docs/theorem-index.md`: update the three `FrameOver` rows (166-168, the rigidity results) if their statements moved, and add rows for the new topology and counterexample headlines. Confirm every declaration named in the index resolves. *(completed — the three rigidity rows kept their statements, so no edit was owed; a new section carries seven rows, each with its `Paper:` anchor at the declaration for C15's second assertion)*
+- [x] C17 sweep: cite each new declaration that would otherwise read as dead — `coneTopology`, `FrameOver.coneTop`, and the counterexample lemmas that exist to be cited — from its module docstring or from `docs/theorem-index.md`. *(completed; one rename was needed: `TwoOrigins.realOrder` → `TwoOrigins.twoOriginRealOrder`, because C17's census keys on the last dot-segment and `Semantics.realOrder` already held that base name, so the two masked each other)*
+- [x] C19 sweep: confirm the 90% docstring-coverage floor holds over the two new modules. *(completed — asserted by the full `check-module-invariants.sh` run below)*
+- [x] C29: confirm whether the check's scope covers `warn.*` as well as `linter.*`; if so, add the justification comment `StateTopology.lean`'s `set_option warn.classDefReducibility false` requires. *(completed — **finding**: C29 and C30 both key on the literal `linter.` prefix, so a `warn.*` option is outside both. The justification comment is present at both sites anyway, in `StateTopology.lean` and `StateTopology/Counterexamples.lean`, because the reason is worth reading whether or not a check demands it)*
+- [x] Update `scripts/module-invariants-allowlist.txt` for any entry naming a retired `FrameOver` field. *(completed — no entry named a retired field; two entries were added instead, for the `TwoOrigins` and `Hedgehog` namespaces inside `StateTopology/Counterexamples.lean`, which are namespaces and not modules)*
+- [x] Update the prose that prints the six-field structure verbatim and is now wrong: `docs/reference/API_REFERENCE.md` (the `FrameOver` block), `docs/user-guide/architecture.md` (same), `docs/reference/paper-definitions-of-record.md`, `docs/development/PROPERTY_TESTING_GUIDE.md`. *(completed; `docs/architecture/total-history-validity-decisions.md` was added to the list — its "THE INVARIANT" block predicted the constraints would land as `TaskFrame` fields, so it now carries a "Where this landed" note. It is not in the Scope Hypothesis grep because it never names `FrameOver`)*
+- [x] Update `FormalSystem/Semantics/README.md` and `FormalSystem/Metalogic/README.md`. *(completed — `Semantics/README.md` gained rows for the two new modules and its `TaskFrame.ofStep` paragraph now names `ofReflectiveRegular`; `Metalogic/README.md` carried no constraint-as-field prose, so only its generated inventory blocks changed)*
+- [x] C9: confirm zero task-number citations outside `specs/` (`bash .claude/scripts/check-task-references.sh`). *(completed — PASS, 0 unexempted occurrences; a direct grep over `FormalSystem/`, `docs/`, `scripts/` and `README.md` also returns only the one pre-existing exempt explanatory comment in `check-module-invariants.sh`)*
+- [x] Write the final migration table into the implementation summary and check it against `git diff --stat` of the whole implementation. *(completed — 107 files, 3,444 insertions, 787 deletions since the plan commit; 87 `.lean`, two of them new)*
+- [x] Final full `--wfail` build over `FormalSystem` and `Tests/BimodalTest`; `lean_verify` on the extension theorem, the funnel's constraint facts, and `FrameOver.t1Space_iff_limit`. *(completed — see the summary's Verification section)*
 
 **Timing**: 2 hours
 

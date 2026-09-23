@@ -47,3 +47,11 @@ FormalSystem.Boneyard
 # -- Semantics/TaskFrame.lean; the theorem-index rows for `FrameOver.static_iff_uniformDwell`
 # and `FrameOver.static_of_finite` (Semantics/Correspondence/Rigidity.lean) cite it fully qualified
 FormalSystem.Semantics.FrameOver
+
+# `namespace TwoOrigins` and `namespace Hedgehog`, both inside
+# `namespace FormalSystem.Semantics.StateTopology` -- Semantics/StateTopology/Counterexamples.lean.
+# The theorem-index rows for `TwoOrigins.frame_not_t2Space` and
+# `Hedgehog.finalTopology_ne_nbhdTopology` cite them fully qualified, and the namespace prefix
+# is not a module: both frames live in the single module `StateTopology/Counterexamples.lean`.
+FormalSystem.Semantics.StateTopology.TwoOrigins
+FormalSystem.Semantics.StateTopology.Hedgehog
