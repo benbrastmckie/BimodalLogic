@@ -1,0 +1,27 @@
+{
+  "status": "researched",
+  "dispatch_seq": "22",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/656_refactor_task_frames_general_with_frame_constraints/reports/01_general-frames-regular-constraints.md",
+      "summary": "Verified class-based general/regular frame split (FrameOver stripped to 3 fields + class FrameOver.IsRegular), honest ~45-55 file migration surface (not 165), the FrameClass.Sat .Base lever that keeps Valid's meaning, the corrected list of constraints thm:extension consumes (all four), and the user-ratified nbhdTopology instance on the general frame with its two named hazards."
+    },
+    {
+      "type": "probe",
+      "path": "specs/656_refactor_task_frames_general_with_frame_constraints/probes/RegularClass.lean",
+      "summary": "Compiled, sorry-free miniature of the class architecture: IsRegular class, same-named re-exports, eta, total-space delegation, def+instance construction split, ofReflectiveRegular auto-instance, FrameClass.Sat lever, deprecation alias, and a non-regular four-state funnel frame."
+    },
+    {
+      "type": "probe",
+      "path": "specs/656_refactor_task_frames_general_with_frame_constraints/probes/TopologyInstance.lean",
+      "summary": "Compiled, sorry-free: TopologicalSpace instance on the general frame's state space, Limit iff T1, derived T1Space/R0Space on the regular class, and the R-carrier instance-keying probe; standard axioms only."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790104191_b13256_656",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
