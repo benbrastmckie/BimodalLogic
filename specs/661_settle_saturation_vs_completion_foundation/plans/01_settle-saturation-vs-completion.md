@@ -389,7 +389,7 @@ do not split the module.
 
 ---
 
-### Phase 4: Discharge the finitary-*Completion* claim [NOT STARTED]
+### Phase 4: Discharge the finitary-*Completion* claim [COMPLETED]
 
 **Goal**: Turn the report's one ARGUED step into a machine-checked one, so the claim that
 *Completion*'s infinitary quantifier is essential rests on two checked endpoints: the finitary
@@ -398,39 +398,52 @@ form follows from *Compositionality* + *Seriality*, and the rational carrier sat
 
 **Tasks**:
 
-- [ ] In `FormalSystem/Semantics/Extension/Completion.lean`, add the pointwise predicate
+- [x] In `FormalSystem/Semantics/Extension/Completion.lean`, add the pointwise predicate
       `def NearestAt {D : Type} [LinearOrder D] (X : D → Prop) (z : D) : Prop` carrying the two
       conjuncts currently written inline inside `HasNearest`.
-- [ ] Redefine `HasNearest D := ∀ (X : D → Prop) (z : D), NearestAt X z`. Confirm `hasNearest_int`
+- [x] Redefine `HasNearest D := ∀ (X : D → Prop) (z : D), NearestAt X z`. Confirm `hasNearest_int`
       and `hasNearest_of_succPred` still compile with their existing proofs — the redefinition is
       definitional, so `intro X z; constructor` should continue to work. If either breaks, insert
       an `unfold NearestAt` rather than restating the theorem.
-- [ ] Add `theorem completion_of_nearest_at (τ : PartialHistory F) (z : F.Duration)
+- [x] Add `theorem completion_of_nearest_at (τ : PartialHistory F) (z : F.Duration)
       (hN : NearestAt τ.domain z) (hcomp : TaskFrame.Compositional F.TaskRel)
       (hser : TaskFrame.Serial F.TaskRel) : ∃ u : F.WorldState, ∀ (t : F.Duration)
       (ht : τ.domain t), F.TaskRel (τ.states t ht) (z - t) u`, by lifting
       `completion_of_hasNearest`'s body verbatim and replacing its single
       `obtain ⟨hlow, hhigh⟩ := hN τ.domain z` with `obtain ⟨hlow, hhigh⟩ := hN`.
-- [ ] Re-derive `completion_of_hasNearest` from it in one line
+- [x] Re-derive `completion_of_hasNearest` from it in one line
       (`fun τ z => completion_of_nearest_at τ z (hN τ.domain z) hcomp hser`), so the existing
       theorem keeps its exact statement and there is one proof, not two.
-- [ ] Add `theorem nearestAt_of_finite {D} [LinearOrder D] {X : D → Prop} (hfin :
+- [x] Add `theorem nearestAt_of_finite {D} [LinearOrder D] {X : D → Prop} (hfin :
       {t | X t}.Finite) (z : D) : NearestAt X z`, from the finiteness of `{t | X t ∧ t ≤ z}` and
       `{t | X t ∧ z ≤ t}` in a linear order.
-- [ ] Add `theorem completion_of_finite_domain (τ : PartialHistory F)
+- [x] Add `theorem completion_of_finite_domain (τ : PartialHistory F)
       (hfin : {t | τ.domain t}.Finite) (z : F.Duration)
       (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel) :
       ∃ u : F.WorldState, ∀ (t : F.Duration) (ht : τ.domain t),
       F.TaskRel (τ.states t ht) (z - t) u` as the composition of the two.
-- [ ] Add a short module-docstring subsection recording the payoff: the finitary form is a
+- [x] Add a short module-docstring subsection recording the payoff: the finitary form is a
       consequence of *Compositionality* + *Seriality*, the rational two-origin relation satisfies
       *Compositionality* and fails *Completion* (`RationalTwoOrigins.not_rel_completion`), hence
       **no condition implied by *Compositionality* can be equivalent to *Completion*** — in
       particular no finitary or two-point form can be, and the infinitary quantifier carries all
       the completeness content. Note that the two-point case for `s ≤ z ≤ t` is
       `TaskFrame.Interpolates`.
-- [ ] Add `Paper:` lines to the new declarations.
-- [ ] Run `lake build` and the linted single-file check; commit.
+- [x] Add `Paper:` lines to the new declarations.
+- [x] Run `lake build` and the linted single-file check; commit.
+
+**Phase record**: the Scope Hypothesis **held** — `HasNearest`'s redefinition broke nothing.
+`hasNearest_int` and `hasNearest_of_succPred` compile with their existing proofs unchanged
+(`intro X z; constructor` still sees through the definition), so **no `unfold NearestAt` was
+needed** and no consumer was restated. `nearestAt_of_finite` is proved from
+`Set.Finite.exists_maximal` / `Set.Finite.exists_minimal` (Mathlib), needing no new import.
+`git diff` confirms `completion_of_hasNearest` keeps its exact statement and
+`extension_of_hasNearest` / `extension_of_isZTime` are untouched; only the proof of the first
+changed (it is now one line of `completion_of_nearest_at`). `lake build` 2,725 jobs exit 0 with
+zero `error:` and zero `warning:`; the linted single-file check is silent; `#print axioms` on
+`completion_of_finite_domain`, `completion_of_nearest_at`, `nearestAt_of_finite` and
+`completion_of_hasNearest` each reports exactly `propext`, `Classical.choice`, `Quot.sound` —
+**no `sorryAx`**.
 
 **Timing**: 1.5 hours
 

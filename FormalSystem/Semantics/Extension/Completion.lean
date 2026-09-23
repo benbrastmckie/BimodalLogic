@@ -49,6 +49,9 @@ of it on histories.
   satisfying *Seriality* and *Limit*.
 * `completion_of_isRegular` — *Saturation* (through the existing `lem:step`) gives *Completion*.
   This is the sole route by which *Saturation* enters.
+* `completion_of_finite_domain` — the **finitary** form of *Completion*, from *Compositionality*
+  and *Seriality* over any temporal order; with `RationalTwoOrigins.not_rel_completion` it shows
+  the infinitary quantifier is essential.
 * `extension_of_completion` — *Completion* plus *Seriality* plus *Limit* gives `thm:extension` in
   full, through the existing Zorn scaffolding (`exists_maximal_extension`), which is itself
   constraint-free.
@@ -63,6 +66,22 @@ member: exactly when the history's domain has a nearest time on each side of the
 alone — and, because it excludes `z ∈ dom τ` first, with **no *Limit*** either. `hasNearest_int`
 and `hasNearest_of_succPred` supply the order-side hypothesis, and `extension_of_hasNearest` and
 `extension_of_isZTime` close `thm:extension` over ℤ-time with **no** *Saturation*.
+
+## The infinitary quantifier in *Completion* is essential
+
+The argument consumes its nearest-times hypothesis at exactly one set and one target, so the
+hypothesis is stated pointwise as `NearestAt` and `completion_of_hasNearest` is one line of
+`completion_of_nearest_at`. That weakening buys the finitary case outright: a **finite** domain
+has a nearest time on each side of any target in any linear order at all
+(`nearestAt_of_finite`), so `completion_of_finite_domain` gives the *Completion* conclusion from
+*Compositionality* and *Seriality* over **any** temporal order.
+
+Pair that with `StateTopology.RationalTwoOrigins.not_rel_completion`: a relation that satisfies
+*Compositionality* and **fails** *Completion*. Hence **no condition implied by *Compositionality*
+can be equivalent to *Completion***, and in particular no finitary form and no two-point form can
+be — the two-point case for `s ≤ z ≤ t` is `TaskFrame.Interpolates`, which is one half of
+*Compositionality* itself. The infinitary quantifier carries all of the completeness content, and
+there is no finite axiomatisation of *Completion* to be had.
 
 ## This module does **not** propose changing `def:frame`
 
@@ -242,16 +261,31 @@ theorem extension_of_completion (hser : TaskFrame.Serial F.TaskRel)
 /-! ## Discrete time: nearest times, and the redundancy of *Saturation* -/
 
 /--
+**Nearest times, at one set and one target.** The pointwise form: if `X` has a member at or below
+`z` then it has a greatest such, and dually above.
+
+This is the form the argument actually consumes — `completion_of_hasNearest` uses its
+`HasNearest` hypothesis at exactly one set and one target — and splitting it out is what lets the
+finitary case be discharged (`nearestAt_of_finite`) without any property of the order at all.
+
+Paper: — (a hypothesis-shaping device of the audit's; the manuscript has no anchor for it)
+-/
+def NearestAt {D : Type} [LinearOrder D] (X : D → Prop) (z : D) : Prop :=
+  ((∃ t, X t ∧ t ≤ z) → ∃ t, X t ∧ t ≤ z ∧ ∀ t', X t' → t' ≤ z → t' ≤ t) ∧
+  ((∃ t, X t ∧ z ≤ t) → ∃ t, X t ∧ z ≤ t ∧ ∀ t', X t' → z ≤ t' → t ≤ t')
+
+/--
 **Nearest times.** Every nonempty one-sided part of a subset of `D` has a nearest member.
 
 This is a property of the linear order `D` **alone**, with no reference to any frame. `ℤ` has it
 (`hasNearest_int`), and so does every successor/predecessor-Archimedean order
 (`hasNearest_of_succPred`); `ℚ` and `ℝ` do not.
+
+Definitionally `NearestAt` at every set and every target, so the two are interchangeable and the
+existing discharge proofs below are unaffected by the split.
 -/
 def HasNearest (D : Type) [LinearOrder D] : Prop :=
-  ∀ (X : D → Prop) (z : D),
-    ((∃ t, X t ∧ t ≤ z) → ∃ t, X t ∧ t ≤ z ∧ ∀ t', X t' → t' ≤ z → t' ≤ t) ∧
-    ((∃ t, X t ∧ z ≤ t) → ∃ t, X t ∧ z ≤ t ∧ ∀ t', X t' → z ≤ t' → t ≤ t')
+  ∀ (X : D → Prop) (z : D), NearestAt X z
 
 /-- `ℤ` has nearest times: a set of integers bounded above has a greatest element, and dually. -/
 theorem hasNearest_int : HasNearest ℤ := by
@@ -289,8 +323,12 @@ theorem hasNearest_of_succPred (D : Type) [LinearOrder D] [SuccOrder D] [PredOrd
     exact ⟨b, hbmem.1, hbmem.2, fun t' h1 h2 => hblb ⟨h1, h2⟩⟩
 
 /--
-*Completion* holds as soon as the temporal order has nearest times, given *Compositionality* and
-*Seriality*.
+The *Completion* conclusion at **one** history and **one** target time, from a nearest time on
+each side of that target, given *Compositionality* and *Seriality*.
+
+This is `completion_of_hasNearest` weakened to the single instance of the nearest-times
+hypothesis its proof actually consumes; `completion_of_hasNearest` is now one line of it, and
+`completion_of_finite_domain` is the other consumer.
 
 **No *Saturation*, and — this is the sharp part — no *Limit* either.** This is `lem:step`'s own
 recorded closing remark made precise: the `⊆`-least constraint is the one imposed by the nearest
@@ -305,12 +343,13 @@ do **not** take it, and their docstrings record that.
 
 Paper: `lem:step`
 -/
-theorem completion_of_hasNearest (hN : HasNearest F.Duration)
-    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel) :
-    Completion F := by
+theorem completion_of_nearest_at (τ : PartialHistory F) (z : F.Duration)
+    (hN : NearestAt τ.domain z) (hcomp : TaskFrame.Compositional F.TaskRel)
+    (hser : TaskFrame.Serial F.TaskRel) :
+    ∃ u : F.WorldState, ∀ (t : F.Duration) (ht : τ.domain t),
+      F.TaskRel (τ.states t ht) (z - t) u := by
   have hfwd := TaskFrame.forward_of_comp hcomp
   have hint := TaskFrame.interpolates_of_comp hcomp
-  intro τ z
   by_cases hzd : τ.domain z
   · -- `z` is already a domain time: its own state is the witness.
     exact ⟨τ.states z hzd, fun t ht => τ.respects_task t z ht hzd⟩
@@ -321,7 +360,7 @@ theorem completion_of_hasNearest (hN : HasNearest F.Duration)
     have hne : t - z ≠ 0 := sub_ne_zero_of_ne (fun hEq => hzd (hEq ▸ ht))
     have := (TaskFrame.reflect_reflection_of_ne (P := F.toFibre.PosRel) hne).mp h
     rwa [neg_sub] at this
-  obtain ⟨hlow, hhigh⟩ := hN τ.domain z
+  obtain ⟨hlow, hhigh⟩ := hN
   by_cases hbelow : ∃ t, τ.domain t ∧ t ≤ z
   · obtain ⟨tm, htm, htmz, htmax⟩ := hlow hbelow
     by_cases habove : ∃ t, τ.domain t ∧ z ≤ t
@@ -372,6 +411,64 @@ theorem completion_of_hasNearest (hN : HasNearest F.Duration)
     have hsum : (tp - z) + (t - tp) = t - z := by abel
     rw [hsum] at this
     exact hrefl t ht u this
+
+/--
+*Completion* holds as soon as the temporal order has nearest times, given *Compositionality* and
+*Seriality*.
+
+**No *Saturation*, and no *Limit*.** One line of `completion_of_nearest_at`, which carries the
+argument; the statement is unchanged from when the argument lived here.
+
+Paper: `lem:step`
+-/
+theorem completion_of_hasNearest (hN : HasNearest F.Duration)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel) :
+    Completion F :=
+  fun τ z => completion_of_nearest_at τ z (hN τ.domain z) hcomp hser
+
+/-! ### The finitary case: no property of the order at all -/
+
+/--
+**A finite set has a nearest member on each side of any target**, in any linear order.
+
+No discreteness, no completeness, no Archimedean hypothesis: finiteness alone. This is what makes
+the finitary form of *Completion* a consequence of *Compositionality* and *Seriality*, which is
+in turn what shows *Completion*'s infinitary quantifier is essential.
+
+Paper: — (the finitary reduction is the audit's own; the manuscript has no anchor for it)
+-/
+theorem nearestAt_of_finite {D : Type} [LinearOrder D] {X : D → Prop}
+    (hfin : {t | X t}.Finite) (z : D) : NearestAt X z := by
+  constructor
+  · rintro ⟨t₀, ht₀, hle⟩
+    have hs : {t | X t ∧ t ≤ z}.Finite := hfin.subset (fun t ht => ht.1)
+    obtain ⟨a, ha⟩ := hs.exists_maximal ⟨t₀, ht₀, hle⟩
+    exact ⟨a, ha.prop.1, ha.prop.2, fun t' h1 h2 => le_of_not_gt fun hgt =>
+      absurd (ha.le_of_ge (y := t') ⟨h1, h2⟩ hgt.le) (not_le_of_gt hgt)⟩
+  · rintro ⟨t₀, ht₀, hge⟩
+    have hs : {t | X t ∧ z ≤ t}.Finite := hfin.subset (fun t ht => ht.1)
+    obtain ⟨a, ha⟩ := hs.exists_minimal ⟨t₀, ht₀, hge⟩
+    exact ⟨a, ha.prop.1, ha.prop.2, fun t' h1 h2 => le_of_not_gt fun hgt =>
+      absurd (ha.le_of_le (y := t') ⟨h1, h2⟩ hgt.le) (not_le_of_gt hgt)⟩
+
+/--
+**Finitary *Completion*** — the *Completion* conclusion at a history with a **finite** domain,
+from *Compositionality* and *Seriality* alone, over **any** temporal order.
+
+Together with `StateTopology.RationalTwoOrigins.not_rel_completion` — a relation satisfying
+*Compositionality* and failing *Completion* — this shows that **no condition implied by
+*Compositionality* can be equivalent to *Completion***, and in particular that no finitary or
+two-point form of *Completion* can be. The infinitary quantifier carries all of the completeness
+content.
+
+Paper: `lem:step`
+-/
+theorem completion_of_finite_domain (τ : PartialHistory F)
+    (hfin : {t : F.Duration | τ.domain t}.Finite) (z : F.Duration)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel) :
+    ∃ u : F.WorldState, ∀ (t : F.Duration) (ht : τ.domain t),
+      F.TaskRel (τ.states t ht) (z - t) u :=
+  completion_of_nearest_at τ z (nearestAt_of_finite hfin z) hcomp hser
 
 /--
 Over a temporal order with nearest times, the one-point extension property — and hence
