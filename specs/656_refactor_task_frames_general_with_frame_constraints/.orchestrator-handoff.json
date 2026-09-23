@@ -1,16 +1,22 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 23,
-  "summary": "Authored a 10-phase, 17.5-hour sequential implementation plan for the general/regular task-frame refactor: strip FrameOver to three data fields behind class FrameOver.IsRegular with same-named theorem re-exports, land the neighbourhood topology and counterexample modules per the ratified decisions, and keep lake build --wfail green at every phase boundary. Strict artifact validation passes with zero warnings.",
+  "dispatch_seq": 25,
+  "status": "implemented",
+  "phases_completed": 10,
+  "phases_total": 10,
+  "summary": "Phase 10 (documentation, inventory and gates) completed, closing the task-frame general/regular refactor. Full lake build --wfail over FormalSystem and BimodalTest is green (2782 jobs, 0 errors, 0 warnings); mk_all --check exits 0; check-module-invariants.sh reports ALL CHECKS PASSED; zero sorry; axiom count unchanged at 14.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/656_refactor_task_frames_general_with_frame_constraints/summaries/01_general-frames-regular-constraints-summary.md",
+      "summary": "Implementation summary with the complete migration table, checked against git diff --stat (109 files, 3503 insertions, 819 deletions since the plan commit)."
+    },
     {
       "type": "plan",
       "path": "specs/656_refactor_task_frames_general_with_frame_constraints/plans/01_general-frames-regular-constraints.md",
-      "summary": "10-phase sequential refactor plan with a complete old-to-new migration table, per-phase Scope Hypotheses re-derived from fresh greps, and the four-state funnel as the named acceptance test."
+      "summary": "All ten phases marked [COMPLETED]; Phase 10's checklist annotated with per-item completion and findings."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 10,
-  "blockers": []
+  "next_steps": [
+    "The manuscript edits to possible_worlds.tex (introduce the general notion, name the constrained class 'regular', drop the qualifier, restate app:topology-t1 as the 𝒩_F biconditional) are the user's, to be made separately now that the refactor has landed."
+  ]
 }
