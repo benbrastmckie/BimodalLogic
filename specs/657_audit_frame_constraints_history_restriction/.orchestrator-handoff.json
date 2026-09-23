@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "dispatch_seq": 8,
+  "task_number": 657,
+  "phases_completed": 0,
+  "phases_total": 11,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/657_audit_frame_constraints_history_restriction/plans/01_promote-completion-restriction-independence.md",
+      "summary": "11-phase promotion plan for the frame-constraint audit: Completion lemma module, discrete-time Saturation redundancy, the restriction identification, the Limit-only reflection law, the last two independence witnesses, three docstring corrections, and an evidence-probe relocation."
+    }
+  ],
+  "next_steps": "Run /implement 657 to execute the plan",
+  "session_id": "sess_1790146139_4979e4_657"
+}

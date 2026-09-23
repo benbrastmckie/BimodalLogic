@@ -1,30 +1,39 @@
 {
-  "status": "researched",
-  "dispatch_seq": 7,
+  "status": "planned",
+  "dispatch_seq": 8,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/657_audit_frame_constraints_history_restriction/reports/01_audit-frame-constraints-restriction.md",
-      "summary": "Verdict-first audit of def:frame's four constraints: all four certified independent (two new witnesses), Saturation localized to the exact condition thm:extension needs (Completion) and shown redundant over discrete time, the partial-history/restriction identification settled pointwise and at the extension order, three candidate fifth constraints rejected on compiled grounds, plus the Q5 keep/restate/weaken/drop table and seven recommendations."
+      "type": "plan",
+      "path": "specs/657_audit_frame_constraints_history_restriction/plans/01_promote-completion-restriction-independence.md",
+      "summary": "11-phase, 11.5-hour promotion plan landing the audit's Completion lemma, the discrete-time Saturation-redundancy result, the partial-history/restriction identification, the Limit-only reflection law and the last two independence witnesses, plus three docstring corrections and an evidence-probe relocation for the one probe deliberately not promoted."
+    }
+  ],
+  "next_steps": "Run /implement 657 to execute the plan",
+  "phase_count": 11,
+  "estimated_hours": 11.5,
+  "dependency_waves": 6,
+  "memory_candidates": [
+    {
+      "content": "In this repo, a sorry-free Lean probe written under specs/{NNN}_{SLUG}/probes/ is NOT a durable record: when /todo archives the task the whole directory moves to specs/archive/, which .gitignore excludes, so the probe leaves version control entirely (absent from a fresh clone). scripts/check-evidence-probes.sh documents this exact incident and the remedy: probes that record a DESIGN OBSTRUCTION (a machine-checked reason the code has the shape it has, e.g. 'this axiom must not be added because a frame the paper needs fails it') belong under specs/evidence/{collection}/, which is task-independent and tracked, and must be wired into that script's WIRED list so lake env lean compile-checks them outside the build graph. When planning a promotion round from a research task's probes, triage each probe into one of three outcomes: promote into FormalSystem/ (reusable positive content), relocate to specs/evidence/ and wire the guard (obstruction records, refuted conditions the library must not contain), or let it lapse (content fully superseded by a promoted declaration). Never leave an obstruction probe in the task directory. Note that the script's EVIDENCE variable is a single hard-coded directory, so adding a second collection requires generalizing its loop, not just appending to WIRED.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/657_audit_frame_constraints_history_restriction/plans/01_promote-completion-restriction-independence.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["probe", "evidence", "archive", "gitignore", "promotion", "obstruction"]
     }
   ],
   "user_decision": {
-    "question": "Should def:frame keep Saturation as stated, or replace it with the Completion constraint this round isolated (the exact condition thm:extension consumes, implied by Saturation, not known to imply it)?",
+    "question": "The research round's open question (Saturation kept as stated vs. replaced by Completion in def:frame) is still unanswered. This plan takes the recommended branch -- Saturation stays, Completion lands as a LEMMA in a new Extension/Completion.lean. Confirm, or say to take R4 instead?",
     "options": [
-      "Keep Saturation as stated, and add Completion as a recorded lemma before lem:step (report R1) - preserves the Cmiel-Kuhlmann-Kuhlmann ball-space anchoring and cor:saturation-finite unchanged",
-      "Replace Saturation by Completion in def:frame (report R4) - deletes def:frame's directed-family opening clause outright and makes lem:step immediate, at the cost of the ball-space footnote and a restatement of cor:saturation-finite"
+      "Confirm R1: keep Saturation as stated; Completion lands as a lemma in Extension/Completion.lean (the plan as written) - the ball-space anchoring and cor:saturation-finite are untouched, and the manuscript edit is an addition rather than a replacement",
+      "Take R4 instead: Completion becomes def:frame's fourth constraint - this relocates Completion out of Extension/Completion.lean into the constraint layer (FrameAxioms/TaskFrame), changes Phase 2's siting and Phase 9's wiring, and makes Compositionality drop out of thm:extension entirely"
     ],
-    "recommended": "Keep Saturation as stated, and add Completion as a recorded lemma before lem:step (report R1) - preserves the Cmiel-Kuhlmann-Kuhlmann ball-space anchoring and cor:saturation-finite unchanged",
+    "recommended": "Confirm R1: keep Saturation as stated; Completion lands as a lemma in Extension/Completion.lean (the plan as written) - the ball-space anchoring and cor:saturation-finite are untouched, and the manuscript edit is an addition rather than a replacement",
     "blocking": false
   },
   "metadata": {
     "session_id": "sess_1790146139_4979e4_657",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "research",
-      "lean-research-agent"
-    ]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   }
 }
