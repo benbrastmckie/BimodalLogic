@@ -520,6 +520,39 @@ theorem finalTopology_le_nbhdTopology [TopologicalSpace D] [OrderTopology D]
       nbhdTopology R :=
   iSup_le fun τ => continuous_iff_coinduced_le.mp (continuous_nbhdTopology_of_history R τ.2)
 
+/-- **A single surjective open history collapses the final topology onto `𝒩_F`.** The converse
+half of `finalTopology_le_nbhdTopology`, and the positive criterion for the open question of when
+`𝒩_F` coincides with the final topology induced by *all* histories.
+
+Proof shape: `le_iSup` makes every final-open `O` open in the topology coinduced by the single
+history `τ` alone, so `τ ⁻¹' O` is `D`-open; `hopen` then makes `τ '' (τ ⁻¹' O)` `𝒩_F`-open, and
+surjectivity identifies that image with `O`.
+
+The reading worth recording is that **one** good history suffices: the criterion is a condition on
+a single map, not on the relation. No relation-level hypothesis appears, and in particular no
+frame constraint is consumed. The known obstruction in the other direction is that the extension
+theorem yields one history per escape, never one history witnessing all escapes at once — which is
+exactly what the hedgehog of `Semantics/StateTopology/Counterexamples.lean` exploits to separate
+the two topologies. `Semantics/StateTopology/MetricFrame.lean` specialises this lemma to the
+metric frame, where the straight line at full speed is surjective and open.
+
+Paper: — (formalization-native)
+-/
+theorem finalTopology_eq_of_surjective_open_history [TopologicalSpace D] [OrderTopology D]
+    (R : W → D → W → Prop) {τ : D → W} (hτ : IsHistory R τ)
+    (hsurj : Function.Surjective τ)
+    (hopen : ∀ U : Set D, IsOpen U → IsOpen[nbhdTopology R] (τ '' U)) :
+    (⨆ σ : {σ : D → W // IsHistory R σ}, coinduced σ.1 ‹TopologicalSpace D›) =
+      nbhdTopology R := by
+  refine le_antisymm (finalTopology_le_nbhdTopology R) ?_
+  intro O hO
+  have hcoin : IsOpen[coinduced τ ‹TopologicalSpace D›] O :=
+    le_iSup (fun σ : {σ : D → W // IsHistory R σ} => coinduced σ.1 ‹TopologicalSpace D›) ⟨τ, hτ⟩
+      O hO
+  rw [isOpen_coinduced] at hcoin
+  have := hopen _ hcoin
+  rwa [Set.image_preimage_eq _ hsurj] at this
+
 /-! ## When are the cones `𝒩_F`-open? The triangle (mixed-sign) condition -/
 
 /-- A triangle condition: any two-step path can be shortcut by a single task no longer than the
