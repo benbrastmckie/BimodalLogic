@@ -145,18 +145,19 @@ each carried an upward import into `Automation/` — eleven lines, all now delet
 
 ## The state topology is a leaf, on purpose
 
-`Semantics/StateTopology.lean` and its `StateTopology/Counterexamples.lean` sibling are imported
-by **nothing** under `FormalSystem/` except each other; the generated library root reaches them
+`Semantics/StateTopology.lean` and its three `StateTopology/` siblings — `Counterexamples.lean`,
+`ConstraintWitnesses.lean` and `MetricFrame.lean` — are imported by **nothing** under
+`FormalSystem/` except `StateTopology.lean` itself; the generated library root reaches them
 directly, which it can because the root is itself a leaf. `Semantics.lean` deliberately does not
-import either.
+import any of them.
 
 This is an import-weight lever, not an oversight. `Mathlib.Topology.*` carries order and
 completeness instances with it, and routing them through the `Semantics` aggregator would put
 them in scope for every downstream module. Doing so has produced a `Preorder ℤ` diamond twice —
 once in the time-indexed-frames work (fixed by keeping `TimeIndexedSharpness` out of the
 aggregator) and once in the countable-`ℝ` rigidity work (fixed by pinning the instance at
-`finOrderEmbInt`). Import these two modules by name where their results are wanted; do not add
-either to an aggregator. For the same reason, history continuity takes the order topology on the
+`finOrderEmbInt`). Import these modules by name where their results are wanted; do not add
+any of them to an aggregator. For the same reason, history continuity takes the order topology on the
 duration carrier as an explicit **binder** rather than a global instance, which would collide at
 `intOrder`, `ℚ` and `ℝ`.
 
