@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 23,
+  "summary": "Authored a 10-phase, 17.5-hour sequential implementation plan for the general/regular task-frame refactor: strip FrameOver to three data fields behind class FrameOver.IsRegular with same-named theorem re-exports, land the neighbourhood topology and counterexample modules per the ratified decisions, and keep lake build --wfail green at every phase boundary. Strict artifact validation passes with zero warnings.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/656_refactor_task_frames_general_with_frame_constraints/plans/01_general-frames-regular-constraints.md",
+      "summary": "10-phase sequential refactor plan with a complete old-to-new migration table, per-phase Scope Hypotheses re-derived from fresh greps, and the four-state funnel as the named acceptance test."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 10,
+  "blockers": []
+}

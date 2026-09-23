@@ -1,27 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": "22",
+  "status": "planned",
+  "dispatch_seq": "23",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/656_refactor_task_frames_general_with_frame_constraints/reports/01_general-frames-regular-constraints.md",
-      "summary": "Verified class-based general/regular frame split (FrameOver stripped to 3 fields + class FrameOver.IsRegular), honest ~45-55 file migration surface (not 165), the FrameClass.Sat .Base lever that keeps Valid's meaning, the corrected list of constraints thm:extension consumes (all four), and the user-ratified nbhdTopology instance on the general frame with its two named hazards."
-    },
-    {
-      "type": "probe",
-      "path": "specs/656_refactor_task_frames_general_with_frame_constraints/probes/RegularClass.lean",
-      "summary": "Compiled, sorry-free miniature of the class architecture: IsRegular class, same-named re-exports, eta, total-space delegation, def+instance construction split, ofReflectiveRegular auto-instance, FrameClass.Sat lever, deprecation alias, and a non-regular four-state funnel frame."
-    },
-    {
-      "type": "probe",
-      "path": "specs/656_refactor_task_frames_general_with_frame_constraints/probes/TopologyInstance.lean",
-      "summary": "Compiled, sorry-free: TopologicalSpace instance on the general frame's state space, Limit iff T1, derived T1Space/R0Space on the regular class, and the R-carrier instance-keying probe; standard axioms only."
+      "type": "plan",
+      "path": "specs/656_refactor_task_frames_general_with_frame_constraints/plans/01_general-frames-regular-constraints.md",
+      "summary": "10-phase, 17.5-hour sequential refactor stripping FrameOver to three data fields behind class FrameOver.IsRegular, with the topology and counterexample modules, a complete migration table, and a green --wfail build at every phase boundary."
     }
   ],
+  "phase_count": 10,
+  "estimated_hours": 17.5,
+  "dependency_waves": [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]],
+  "memory_candidates": [
+    {
+      "content": "Refactoring a Lean structure's axiom fields into a Prop-valued class is safely sequenced as introduce-alongside-then-retire: (1) add `class S.IsP` whose fields cite the same predicates, plus a blanket `instance (s : S) : s.IsP := <built from the still-present fields>`; (2) migrate every consumer to `[s.IsP]` binders and every constructor to a regular-spelled variant, verifying against a green tree the whole time because the blanket instance still discharges synthesis; (3) delete the fields and the blanket instance in one dedicated phase. The blanket instance is what makes the intermediate states compile, so the risky deletion becomes a phase whose failures are localized compile errors rather than silent meaning changes. Two companions matter: re-export each old field under its ORIGINAL name as a theorem taking the class binder, so consumer text stays byte-identical and no deprecation alias is needed; and check every reducible predicate that quantifies over the structure (here a FrameClass.Sat table feeding `Valid`) because the strip silently widens such quantifiers unless the predicate is redefined to require the class.",
+      "category": "PATTERN",
+      "source_artifact": "specs/656_refactor_task_frames_general_with_frame_constraints/plans/01_general-frames-regular-constraints.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lean4", "typeclass-refactor", "structure-fields-to-class", "blanket-instance", "migration-sequencing", "green-at-every-phase"]
+    }
+  ],
+  "next_steps": "Run /implement 656 to execute the plan",
   "metadata": {
     "session_id": "sess_1790104191_b13256_656",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   }
 }
