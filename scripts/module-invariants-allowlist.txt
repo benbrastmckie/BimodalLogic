@@ -64,3 +64,16 @@ FormalSystem.Semantics.StateTopology.Hedgehog
 # `StateTopology/ConstraintWitnesses.lean`.
 FormalSystem.Semantics.StateTopology.GhostRay
 FormalSystem.Semantics.StateTopology.RationalTwoOrigins
+
+# `namespace SeparatingFrame`, inside `namespace FormalSystem.Semantics.StateTopology`
+# -- Semantics/StateTopology/ConstraintWitnesses.lean. Same shape as the GhostRay and
+# RationalTwoOrigins entries above: the theorem-index rows for `SeparatingFrame.srel_completion`
+# and `SeparatingFrame.not_srel_saturation` cite the namespace fully qualified, and it is not a
+# module -- the frame lives in the single module `StateTopology/ConstraintWitnesses.lean`.
+FormalSystem.Semantics.StateTopology.SeparatingFrame
+
+# `def Completion` in `namespace FormalSystem.Semantics.TaskFrame` -- Semantics/TaskFrame.lean.
+# A DECLARATION, not a module: `TaskFrame` is a structure with a namespace of the same name, and
+# `Completion` is the bare-relation form of `def:frame`'s proposed fourth constraint declared in
+# it. The theorem-index row cites it fully qualified.
+FormalSystem.Semantics.TaskFrame.Completion

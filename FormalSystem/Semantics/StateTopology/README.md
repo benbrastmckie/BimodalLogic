@@ -15,7 +15,7 @@ module — twice.
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Semantics/StateTopology -->
 | File | Lines | Description |
 |------|------:|-------------|
-| `ConstraintWitnesses.lean` | 775 | Witnesses whose content is a `def:frame` constraint or a separation property **failing**: the ghost ray (*Serial*, *Compositional*, no *Limit*, `𝒩_F` not R0 — `GhostRay.frame_not_r0Space`) and the ℚ-carrier two-origin frame (first three constraints, ***Saturation* fails* — `RationalTwoOrigins.not_rel_saturation`). |
+| `ConstraintWitnesses.lean` | 1,372 | Witnesses whose content is a `def:frame` constraint or a separation property **failing**: the ghost ray (*Serial*, *Compositional*, no *Limit*, `𝒩_F` not R0 — `GhostRay.frame_not_r0Space`) the ℚ-carrier two-origin frame (first three constraints, ***Saturation* fails* — `RationalTwoOrigins.not_rel_saturation`, and *Completion* fails too — `RationalTwoOrigins.not_rel_completion`), and the separating frame (*Serial*, *Compositional*, *Limit* and ***Completion***, ***Saturation* fails* — `SeparatingFrame.srel_completion`, `SeparatingFrame.not_srel_saturation`). |
 | `Counterexamples.lean` | 2,056 | Frames satisfying some `def:frame` constraints and not others: the four-state funnel (no *Limit*, `𝒯_F` T1 anyway), and the two **regular task frames** the appendix cites — the two-origin half-line (T1, not Hausdorff) and the hedgehog (`𝒩_F` strictly below the final topology of all histories), both with *Saturation* proved by the shadow argument. |
 | `MetricFrame.lean` | 290 | The metric frame (a task of duration `y` moves distance at most `c` times the size of `y` on the carrier `ℝ`), previously only prose: regular at every positive speed, and the frame on which `𝒩_F` **is** the final topology of all histories (`MetricFrame.finalTopology_eq_nbhdTopology`). |
 <!-- END GENERATED -->
@@ -46,7 +46,16 @@ module — twice.
   *Compositionality* and *Limit* survive the move; ***Saturation* does not**
   (`RationalTwoOrigins.not_rel_saturation`). The witness is the family of rational intervals
   straddling the cut `{q : q² < 2} | {q : 2 < q²}`. This is why the real-carrier witness is over
-  `ℝ`.
+  `ℝ`. It **also** fails *Completion* (`RationalTwoOrigins.not_rel_completion`), so it is not a
+  separator for the two conditions — and the pinching argument in its docstring shows no
+  dense-time drift frame can be.
+- `SeparatingFrame` — unit-speed drift on `ℚ` over `ℤ`-time, `w ⇒ₓ v` iff `|v - w| ≤ |x|`. It
+  satisfies *Seriality*, *Compositionality*, *Limit* **and** *Completion*
+  (`SeparatingFrame.srel_completion`) while **failing *Saturation***
+  (`SeparatingFrame.not_srel_saturation`). So `Completion → Saturation` is **false** and
+  *Completion* is a **strict** weakening of *Saturation*. `not_srel_totalComp` is the
+  consistency check: the converse does hold under mixed-sign composition plus *Limit*, so a
+  separating frame has to refute it.
 
 **`MetricFrame.lean`** — the metric frame, named at last.
 

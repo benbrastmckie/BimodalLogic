@@ -23,6 +23,14 @@ README formerly made — `F.saturation` is *applied* at six sites, and the other
 `PartialHistory.Completion`, a condition **equivalent** to the one-point extension property, so
 *Saturation* is sufficient for `thm:extension` but is strictly more than it needs.
 
+**Strictly more, now in the demonstrated sense.** The condition is stated over a bare task
+relation as `TaskFrame.Completion` (`../TaskFrame.lean`), beside `Saturation`, `Serial`,
+`Compositional` and `Limit`, and the converse `Completion → Saturation` is **false**:
+`StateTopology.SeparatingFrame` satisfies *Seriality*, *Compositionality*, *Limit* and
+*Completion* and fails *Saturation*. `Completion.lean` records the verdict and the two pieces of
+follow-up it deliberately does not do (the manuscript pass, and the `FrameOver.IsRegular` field
+swap).
+
 `PeriodicExtension.lean` is a constructive alternative over `ℤ`-time with a finite carrier,
 where Zorn's lemma is more than is needed: a bounded history has two orbits leaving it, and
 over a finite carrier both must eventually repeat. `Completion.lean`'s `extension_of_isZTime`
@@ -35,11 +43,11 @@ makes the same point from the Zorn side and in full generality — over `def:BX-
 | File | Lines | Description |
 |------|-------|-------------|
 | `Admissible.lean` | 331 | `lem:fibers` (RETIRED paper anchor; resolves against the record's DANGLING entry, not a live `\label`) and `lem:admissible` — rewrites membership in *every* constraint as membership in a plain fiber, turning that into a one-point extension of the partial history. |
-| `Completion.lean` | 388 | `PartialHistory.Completion` — the exact condition `lem:step` consumes, proved **equivalent** to the one-point extension property; `extension_of_completion` derives `thm:extension` from *Completion* + *Seriality* + *Limit* with no `[F.IsRegular]` binder at all; and `HasNearest` / `extension_of_isZTime` show *Saturation* is redundant over discrete time. |
+| `Completion.lean` | 543 | `PartialHistory.Completion` — the exact condition `lem:step` consumes, proved **equivalent** to the one-point extension property; `extension_of_completion` derives `thm:extension` from *Completion* + *Seriality* + *Limit* with no `[F.IsRegular]` binder at all; `HasNearest` / `extension_of_isZTime` show *Saturation* is redundant over discrete time; and `completion_of_finite_domain` shows the finitary form is free, so the infinitary quantifier is essential. |
 | `Constraint.lean` | 443 | `lem:constraint` — the constraints a partial history imposes on a new duration form a *directed* family of *nonempty* sets. That is the whole of the lemma; the admissibility characterization is split out into `Admissible.lean`. |
 | `Extension.lean` | 339 | `thm:extension` and `cor:occurrence` — every partial history is extended by some possible world, and every world state occurs at any prescribed time in some possible world. Also the identification `isRestriction_of_isRegular` / `exists_restrict_eq` / `exists_worldHistory_restricting_pair`, and the recorded argument for keeping `def:world-history` primitive. |
 | `PeriodicExtension.lean` | 452 | A constructive alternative over `ℤ`-time with a finite carrier: a bounded history's two departing orbits must repeat, giving a periodic total extension without Zorn's lemma. |
-| `Step.lean` | 176 | `lem:step` — the Step Lemma: every partial history extends by one arbitrary duration. The join point of the chain, and the sole *Saturation* **elimination** site. |
+| `Step.lean` | 185 | `lem:step` — the Step Lemma: every partial history extends by one arbitrary duration. The join point of the chain, and the sole *Saturation* **elimination** site. |
 
 ## Key Results
 
@@ -57,6 +65,12 @@ makes the same point from the Zorn side and in full generality — over `def:BX-
   with no `[F.IsRegular]` binder, which certifies that the Zorn layer is constraint-free.
 - `PartialHistory.extension_of_isZTime` (`Completion.lean`) — over ℤ-time, `thm:extension` needs no
   *Saturation* at all.
+- `PartialHistory.completion_of_finite_domain` (`Completion.lean`) — the **finitary** form of
+  *Completion*, from *Compositionality* and *Seriality* over any temporal order, via the
+  pointwise `NearestAt` and `nearestAt_of_finite`. With
+  `StateTopology.RationalTwoOrigins.not_rel_completion` it shows no condition implied by
+  *Compositionality* can be equivalent to *Completion*, so the infinitary quantifier is
+  essential.
 - `PartialHistory.exists_restrict_eq` and `exists_worldHistory_restricting_pair`
   (`Extension.lean`) — partial histories are exactly the restrictions of possible worlds,
   pointwise and at the extension order. The converse direction,

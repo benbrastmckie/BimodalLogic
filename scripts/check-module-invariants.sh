@@ -1901,6 +1901,9 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Semantics.StateTopology.GhostRay.frame_not_limit' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.StateTopology.GhostRay.frame_not_r0Space' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.StateTopology.RationalTwoOrigins.not_rel_saturation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.RationalTwoOrigins.not_rel_completion' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.SeparatingFrame.srel_completion' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.StateTopology.SeparatingFrame.not_srel_saturation' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.StateTopology.MetricFrame.finalTopology_eq_nbhdTopology' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.StateTopology.MetricFrame.isRegular' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.FrameOver.reflection_of_limit' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1908,6 +1911,7 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Semantics.PartialHistory.completion_of_isRegular' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.PartialHistory.extension_of_completion' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.PartialHistory.completion_of_hasNearest' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.PartialHistory.completion_of_finite_domain' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.PartialHistory.extension_of_isZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.PartialHistory.restrict_isPartialHistory' depends on axioms: [propext]
 'FormalSystem.Semantics.PartialHistory.eq_restrict_of_extends' depends on axioms: [propext, Quot.sound]
@@ -2095,6 +2099,9 @@ import FormalSystem
 #print axioms FormalSystem.Semantics.StateTopology.GhostRay.frame_not_limit
 #print axioms FormalSystem.Semantics.StateTopology.GhostRay.frame_not_r0Space
 #print axioms FormalSystem.Semantics.StateTopology.RationalTwoOrigins.not_rel_saturation
+#print axioms FormalSystem.Semantics.StateTopology.RationalTwoOrigins.not_rel_completion
+#print axioms FormalSystem.Semantics.StateTopology.SeparatingFrame.srel_completion
+#print axioms FormalSystem.Semantics.StateTopology.SeparatingFrame.not_srel_saturation
 #print axioms FormalSystem.Semantics.StateTopology.MetricFrame.finalTopology_eq_nbhdTopology
 #print axioms FormalSystem.Semantics.StateTopology.MetricFrame.isRegular
 #print axioms FormalSystem.Semantics.FrameOver.reflection_of_limit
@@ -2102,6 +2109,7 @@ import FormalSystem
 #print axioms FormalSystem.Semantics.PartialHistory.completion_of_isRegular
 #print axioms FormalSystem.Semantics.PartialHistory.extension_of_completion
 #print axioms FormalSystem.Semantics.PartialHistory.completion_of_hasNearest
+#print axioms FormalSystem.Semantics.PartialHistory.completion_of_finite_domain
 #print axioms FormalSystem.Semantics.PartialHistory.extension_of_isZTime
 #print axioms FormalSystem.Semantics.PartialHistory.restrict_isPartialHistory
 #print axioms FormalSystem.Semantics.PartialHistory.eq_restrict_of_extends
