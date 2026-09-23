@@ -1,7 +1,7 @@
 # Implementation Plan: Land the Saturation-vs-Completion verdict in the library
 
 - **Task**: 661 - Settle the Saturation vs Completion question by probe, and judge the outcome against a primitives-level foundation criterion
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8 hours
 - **Dependencies**: 660 (completed); 657 (frame-constraint audit, R1/R4 origin)
 - **Research Inputs**: `specs/661_settle_saturation_vs_completion_foundation/reports/01_saturation-vs-completion-verdict.md`
@@ -152,7 +152,7 @@ Do not re-ask this question.
 Phases within the same wave can execute in parallel. Phases 2 and 3 are deliberately serialised
 although both are witness promotions: they edit the same file.
 
-### Phase 1: State *Completion* over a bare task relation [NOT STARTED]
+### Phase 1: State *Completion* over a bare task relation [COMPLETED]
 
 **Goal**: Make `def:frame`'s candidate fourth constraint expressible in the primitives `W`, `D`
 and `⇒` alone, at the same level the other three are already stated, and make
@@ -160,14 +160,14 @@ and `⇒` alone, at the same level the other three are already stated, and make
 
 **Tasks**:
 
-- [ ] In `FormalSystem/Semantics/TaskFrame.lean`, inside the `## The frame axioms in bare-relation
+- [x] In `FormalSystem/Semantics/TaskFrame.lean`, inside the `## The frame axioms in bare-relation
       form` section (the block containing `Saturation`, `Serial`, `Interpolates`, `Compositional`,
       `Limit`), add `def Completion {W : Type} (R : W → D → W → Prop) : Prop` with the body
       transcribed from `PartialHistory.CoherentCompletion`: quantify over `X : D → Prop`, a
       nonemptiness witness `∃ t, X t`, a family `w : (t : D) → X t → W`, the coherence hypothesis
       `∀ s t hs ht, R (w s hs) (t - s) (w t ht)`, and a target `z : D`, concluding
       `∃ u : W, ∀ t ht, R (w t ht) (z - t) u`.
-- [ ] Give it a docstring in the idiom of its four neighbours, recording: (a) that this is the
+- [x] Give it a docstring in the idiom of its four neighbours, recording: (a) that this is the
       `Fib`-free form of R4's proposed fourth constraint, mentioning only `W`, `D` and `⇒`; (b)
       that a coherent family indexed by a nonempty `X` **is** a partial history
       (`def:world-history`), so the condition is extensionally about partial histories while
@@ -177,20 +177,33 @@ and `⇒` alone, at the same level the other three are already stated, and make
       prose only, landed in Phase 3); and (d) a `Paper:` line — `def:frame#Saturation` is the
       wrong anchor, so use `—` plus the one-clause reason that the clause is a proposed
       replacement not yet in the pinned `def:frame`.
-- [ ] Update the section docstring that currently reads "All four live here" so it remains true
+- [x] Update the section docstring that currently reads "All four live here" so it remains true
       once a fifth predicate is present — it should say the four `def:frame` constraints plus the
       proposed replacement for the fourth.
-- [ ] In `FormalSystem/Semantics/Extension/Completion.lean`, redefine
+- [x] In `FormalSystem/Semantics/Extension/Completion.lean`, redefine
       `PartialHistory.CoherentCompletion (F : TaskFrame) : Prop := TaskFrame.Completion F.TaskRel`
       and confirm `completion_iff_coherentCompletion` still compiles unchanged (it should: the
       redefinition is definitional and the proof is two constructor applications per direction).
       Do not restate or reprove it.
-- [ ] Add `theorem coherentCompletion_iff_rel : CoherentCompletion F ↔ TaskFrame.Completion
+- [x] Add `theorem coherentCompletion_iff_rel : CoherentCompletion F ↔ TaskFrame.Completion
       F.TaskRel := Iff.rfl`, so the bridge is citable by name rather than by unfolding.
-- [ ] Update the module docstring's two-form paragraph (`## The two forms of *Completion*`, and
+- [x] Update the module docstring's two-form paragraph (`## The two forms of *Completion*`, and
       the `## What this module establishes` list) to name the new bare predicate and say where it
       lives.
-- [ ] Run `lake build`; record the job count and confirm zero `error:` and zero `warning:` lines.
+- [x] Run `lake build`; record the job count and confirm zero `error:` and zero `warning:` lines.
+      *(2,725 jobs, exit 0, zero `error:` and zero `warning:` lines.)*
+- [x] *(deviation: added — `TaskFrame.lean` crossed its in-source `longFile` baseline at 2,701
+      lines; the existing `set_option linter.style.longFile 2700` was raised to the linter's own
+      suggested 2900 and its comment extended. Sanctioned under invariant C30 in exactly the form
+      Phase 3 pre-authorises for `ConstraintWitnesses.lean`.)*
+
+**Phase record**: `TaskFrame.Completion` is sited immediately after `TaskFrame.Limit` in the
+bare-relation axiom section and picks up the section's four duration instances
+(`AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid`, `Nontrivial`), exactly as `Saturation`
+does; no `omit` was needed and `unusedSectionVars` did not fire. No `TaskFrame.Completion` /
+`PartialHistory.Completion` ambiguity error appeared at any site, so no reference was qualified.
+`completion_iff_coherentCompletion` compiles unchanged (proof body byte-identical) and still
+reports `[propext]`; `coherentCompletion_iff_rel` is `Iff.rfl` and reports `[propext]`.
 
 **Timing**: 1.5 hours (most of it the rebuild)
 
@@ -585,7 +598,7 @@ verdict and its remaining follow-up work stated in one place.
 
 ---
 
-### Phase 8: Record the time-indexed vs ball-indexed distinction [NOT STARTED]
+### Phase 8: Record the time-indexed vs ball-indexed distinction [COMPLETED]
 
 **Goal**: Capture the load-bearing intuition behind three separate results — that time-indexed
 quantifiers collapse over orders with nearest times while ball-indexed ones never do — which is
@@ -593,23 +606,32 @@ currently recorded only inside Lean docstrings.
 
 **Tasks**:
 
-- [ ] Resolve the source store per `.claude/rules/source-store-deploy-boundary.md`: read
+- [x] Resolve the source store per `.claude/rules/source-store-deploy-boundary.md`: read
       `.claude-extensions.json`, take the `formal` extension's `source_dir`, and confirm it exists
       on disk. **Do not hand-author anything under `.claude/`** — that tree is a disposable deploy
       artifact and the edit would be wiped by the next regeneration. If the source store does not
       resolve, file a `/task` describing the needed file instead and mark this phase
       `[COMPLETED WITH EXCLUSIONS]` with that task as the evidence.
-- [ ] Write `<source_dir>/context/project/logic/domain/frame-constraint-landscape.md` recording:
+- [x] Write `<source_dir>/context/project/logic/domain/frame-constraint-landscape.md` recording:
       the time-indexed/ball-indexed distinction; the four `def:frame` constraints' independence
       matrix with its witnesses; and the two separations — *Saturation* vs *Completion*, and dense
       vs discrete time. Cite the Lean declarations by fully-qualified name.
-- [ ] Add a matching entry to `<source_dir>/index-entries.json`, following the shape of the
+- [x] Add a matching entry to `<source_dir>/index-entries.json`, following the shape of the
       existing `project/logic/domain/*` entries exactly: `path`, `summary`, `category: "domain"`,
       `line_count`, `load_when.agents` (`logic-research-agent`, `formal-research-agent`),
       `load_when.task_types` (`logic`, `formal`), `domain: "project"`, `subdomain: "logic"`.
-- [ ] Validate the JSON (`python3 -m json.tool` on the edited file) before finishing.
-- [ ] Do **not** redeploy as part of this phase; note in the phase record that the deployed
+- [x] Validate the JSON (`python3 -m json.tool` on the edited file) before finishing.
+- [x] Do **not** redeploy as part of this phase; note in the phase record that the deployed
       `.claude/` tree is already flagged stale for `core` and that redeployment is the user's call.
+
+**Phase record**: `source_dir` resolved from `.claude-extensions.json`'s `formal` entry to
+`/home/benjamin/.config/nvim/agent-system/extensions/formal` (exists on disk). Written:
+`context/project/logic/domain/frame-constraint-landscape.md` (159 lines) and a matching
+`index-entries.json` entry at `project/logic/domain/frame-constraint-landscape.md` — the path
+shape the existing `project/logic/domain/*` entries use (no `context/` prefix). `python3 -m
+json.tool` succeeds on the edited file. Nothing was written under `.claude/**`
+(`git status --short .claude/` is empty). **Not redeployed**: the deployed `.claude/` tree is
+already flagged stale for `core`, and redeployment is the user's call.
 
 **Timing**: 0.5 hours
 

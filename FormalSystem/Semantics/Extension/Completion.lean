@@ -23,12 +23,24 @@ The condition, stated over a bare relation and with no reference to histories:
 > *Completion.* `⋂_{t ∈ X} Fib(w_t, z - t) ≠ ∅` for every nonempty `X ⊆ D`, every coherent
 > family `{w_t}_{t ∈ X} ⊆ W` (`w_s ⇒_{t - s} w_t` for all `s, t ∈ X`), and every `z ∈ D`.
 
+That condition is declared **as a bare-relation predicate**, `TaskFrame.Completion`
+(`Semantics/TaskFrame.lean`), beside `Saturation`, `Serial`, `Compositional` and `Limit`: it
+mentions the state set `W`, the duration type `D` and the task relation, and nothing else — no
+`Fib`, no fiber/segment classification, no notion of history. That is the level `def:frame` states
+its constraints at, which is why the predicate is sited there rather than here.
+
 A coherent family indexed by a nonempty `X` **is** a partial history (`def:world-history`), so the
-`PartialHistory`-shaped form `Completion` and the relation-shaped form `CoherentCompletion` are
-interchangeable; both are given, and `completion_iff_coherentCompletion` bridges them.
+`PartialHistory`-shaped form `Completion` and the relation-shaped form `CoherentCompletion` — the
+latter *definitionally* `TaskFrame.Completion F.TaskRel` — are interchangeable;
+`completion_iff_coherentCompletion` bridges them, and `coherentCompletion_iff_rel` names the
+definitional identity. Both bridges are recognition lemmas carrying **zero** frame constraints, so
+the `PartialHistory` form is a recognition of the bare condition, never a definitional dependency
+of it on histories.
 
 ## What this module establishes
 
+* `coherentCompletion_iff_rel` — the frame-level spelling of the condition **is**
+  `TaskFrame.Completion F.TaskRel`, by `Iff.rfl`.
 * `completion_of_onePointExtension` — the extension property gives *Completion*, at **no** frame
   constraint whatever.
 * `onePointExtension_of_completion` — *Completion* plus *Seriality* plus *Limit* gives the
@@ -96,18 +108,22 @@ def Completion (F : TaskFrame) : Prop :=
       F.TaskRel (τ.states t ht) (z - t) u
 
 /--
-*Completion*, in bare-relation form: no notion of history is used, only a coherent family.
+*Completion*, in bare-relation form at a frame: no notion of history is used, only a coherent
+family.
 
-This is the shape in which the condition could be stated inside `def:frame` itself, were the
-replacement option ever taken. It is landed here precisely so that option is expressible without
-re-deriving it; the library does **not** take it.
+This is **definitionally** `TaskFrame.Completion F.TaskRel` — the bare-relation predicate of
+record, which lives beside `Saturation`, `Serial`, `Compositional` and `Limit` in
+`Semantics/TaskFrame.lean`, in the primitives `W`, `D` and `⇒` alone. It is the shape in which the
+condition is stated inside `def:frame` itself if the replacement option is taken, and the audit's
+recommendation is that it should be. This name is retained as the frame-level spelling; use
+`coherentCompletion_iff_rel` to move between the two by name.
 -/
 def CoherentCompletion (F : TaskFrame) : Prop :=
-  ∀ (X : F.Duration → Prop), (∃ t, X t) →
-    ∀ (w : (t : F.Duration) → X t → F.WorldState),
-      (∀ (s t : F.Duration) (hs : X s) (ht : X t), F.TaskRel (w s hs) (t - s) (w t ht)) →
-      ∀ z : F.Duration, ∃ u : F.WorldState,
-        ∀ (t : F.Duration) (ht : X t), F.TaskRel (w t ht) (z - t) u
+  TaskFrame.Completion F.TaskRel
+
+/-- The frame-level spelling **is** the bare-relation predicate of record, definitionally. -/
+theorem coherentCompletion_iff_rel : CoherentCompletion F ↔ TaskFrame.Completion F.TaskRel :=
+  Iff.rfl
 
 /-- The two forms are the same condition: a coherent family on a nonempty index set *is* a
 partial history. -/

@@ -270,8 +270,10 @@ assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.Deriva
   FormalSystem.ProofSystem.Derivable FormalSystem.ProofSystem.FrameClass
 
 -- Raised from 2600 for `exists_mem_image_of_directedFamily` and its `Set.Icc` specialisation,
--- which belong beside `DirectedFamily`; not for parking unrelated material.
-set_option linter.style.longFile 2700
+-- which belong beside `DirectedFamily`; raised again from 2700 for `TaskFrame.Completion`, the
+-- proposed fourth constraint, which belongs beside the other bare-relation axiom predicates.
+-- Not for parking unrelated material.
+set_option linter.style.longFile 2900
 
 namespace FormalSystem.Semantics
 
@@ -571,9 +573,12 @@ def IsSegment {W : Type} (R : W → D → W → Prop) (s : Set W) : Prop :=
 
 `def:frame`'s four axioms, stated as `Prop`-valued predicates over a bare task relation
 `R : W → D → W → Prop`. All four live here — *Saturation*, *Seriality*, the interpolation half
-of *Compositionality* and the biconditional itself, and *Limit*. `Limit` is *definitionally* the
-literal transcribed shape the development used before the axiom had a name, so the discharge
-helpers `limit_of_succOrder` and `limit_of_shift` below conclude it without restatement.
+of *Compositionality* and the biconditional itself, and *Limit* — together with `Completion`, the
+proposed replacement for the fourth of them, stated at the same level and in the same vocabulary
+so that the comparison is a comparison of two `def:frame` clauses rather than of a clause and a
+lemma. `Limit` is *definitionally* the literal transcribed shape the development used before the
+axiom had a name, so the discharge helpers `limit_of_succOrder` and `limit_of_shift` below
+conclude it without restatement.
 
 **These predicates are the sole form in which the axioms are available.** Where the `FrameOver`
 structure carries the corresponding fields, `FrameOver.saturation` must be *definitionally*
@@ -713,6 +718,45 @@ relation; at a frame that is `TaskFrame.reflect PosRel`.
 -/
 def Limit {W : Type} (R : W → D → W → Prop) : Prop :=
   ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w
+
+/--
+The *Completion* condition, over a bare task relation: `def:frame`'s **proposed** fourth
+constraint, in the primitives `W`, `D` and `⇒` alone.
+
+Unfolded, it reads: for every nonempty index set `X ⊆ D`, every family `{w_t}_{t ∈ X} ⊆ W`
+coherent under the task relation (`w_s ⇒_{t - s} w_t` for all `s, t ∈ X`), and every `z ∈ D`,
+there is a `u ∈ W` with `w_t ⇒_{z - t} u` for every `t ∈ X`.
+
+**No `Fib`, no fiber/segment classification, no notion of history.** That is the point of stating
+it here rather than downstream: the only vocabulary is the state set `W`, the duration type `D`
+and the relation itself, which is exactly the level `Saturation`, `Serial`, `Compositional` and
+`Limit` are stated at, and exactly what a `def:frame` constraint may mention.
+
+**It is about partial histories without naming one.** A coherent family indexed by a nonempty `X`
+*is* a partial history (`def:world-history`), so the condition is extensionally a condition on
+partial histories — but it quantifies over an index set and a dependent family rather than over a
+structure, so nothing here forward-references `def:world-history`, and the
+`PartialHistory`-shaped form `PartialHistory.Completion` together with the bridge
+`PartialHistory.completion_iff_coherentCompletion` is a *recognition* lemma rather than a
+definitional dependency. `PartialHistory.CoherentCompletion` is definitionally this predicate at
+`F.TaskRel` (`PartialHistory.coherentCompletion_iff_rel`).
+
+**Strictly weaker than *Saturation*.** *Saturation* implies it (through `lem:step`;
+`PartialHistory.completion_of_isRegular`), and the converse is **false**:
+`StateTopology.SeparatingFrame.srel` satisfies *Seriality*, *Compositionality*, *Limit* and this
+condition (`StateTopology.SeparatingFrame.srel_completion`) while failing *Saturation*
+(`StateTopology.SeparatingFrame.not_srel_saturation`). It is therefore the weakest of the two that
+`thm:extension` can be run from — `PartialHistory.extension_of_completion` — and it is the clause
+recommended as `def:frame`'s fourth constraint in place of *Saturation*.
+
+Paper: — (a proposed replacement for `def:frame`'s fourth constraint, not yet in the pinned
+`def:frame`; the manuscript still carries *Saturation* there)
+-/
+def Completion {W : Type} (R : W → D → W → Prop) : Prop :=
+  ∀ (X : D → Prop), (∃ t, X t) →
+    ∀ (w : (t : D) → X t → W),
+      (∀ (s t : D) (hs : X s) (ht : X t), R (w s hs) (t - s) (w t ht)) →
+      ∀ z : D, ∃ u : W, ∀ (t : D) (ht : X t), R (w t ht) (z - t) u
 
 omit [IsOrderedAddMonoid D] [Nontrivial D] in
 /--
