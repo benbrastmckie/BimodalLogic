@@ -1145,28 +1145,51 @@ theorem interpolates (F : FrameOver D) [F.IsRegular] : Interpolates F.TaskRel :=
   interpolates_of_comp F.comp
 
 /--
+**The reflection law from *Limit* alone**: `w ⇒_d u ↔ u ⇒_{-d} w` at every duration, for any
+general frame whose task relation satisfies *Limit* — no other constraint, and no `IsRegular`
+instance.
+
+The proof splits on `d`. Off zero the law is definitional content of `TaskFrame.reflect`
+(`reflect_reflection_of_ne`) and costs nothing at all. At zero, `eq_of_taskRel_zero_of_limit`
+(*Limit*) collapses `w ⇒_0 u` to `w = u` in each direction, and the reflected instance is then
+the hypothesis itself — so *Seriality* is never reached.
+
+`reflection` below is this theorem at `[F.IsRegular]`, with its original statement. Recording the
+*Limit*-only form separately is the point: the reflection convention is the cheapest law in the
+apparatus, and the extension chain's *Limit* consumption is entirely traceable to it.
+
+Paper: `def:task-relation` (the reflection convention), `def:frame#Limit`
+-/
+theorem reflection_of_limit (F : FrameOver D) (hlim : TaskFrame.Limit F.TaskRel)
+    (w : F.WorldState) (d : ↑D) (u : F.WorldState) :
+    F.TaskRel w d u ↔ F.TaskRel u (-d) w := by
+  rcases eq_or_ne d 0 with rfl | hd
+  · rw [neg_zero]
+    constructor
+    · intro h
+      obtain rfl := F.eq_of_taskRel_zero_of_limit hlim h
+      exact h
+    · intro h
+      obtain rfl := F.eq_of_taskRel_zero_of_limit hlim h
+      exact h
+  · exact TaskFrame.reflect_reflection_of_ne hd
+
+/--
 **The reflection law**: `w ⇒_d u ↔ u ⇒_{-d} w` at every duration.
 
 This is the paper's reflection convention (`def:task-relation`, verbatim: "extended to negative
 durations by the \textit{reflection convention} $w \Rightarrow_{-x} u \coloneq u \Rightarrow_{x} w$
 for $x \geq 0$") read back as a law of the extended relation. It is a **theorem**, not a field:
 off zero it is definitional content of `TaskFrame.reflect` (`reflect_reflection_of_ne`), and at
-zero it follows from the derived zero-duration law — `eq_of_taskRel_zero` (*Limit*) turns
-`w ⇒_0 u` into `w = u`, and `nullity` (*Seriality* plus *Limit*) supplies the reflected
-instance.
+zero it is `eq_of_taskRel_zero` (*Limit*) applied in both directions — in the `←` direction the
+hypothesis `u ⇒_0 w` gives `u = w` and is then itself the reflected instance.
+
+*Limit* is the sole constraint consumed: this is `reflection_of_limit F F.limit` with the
+`IsRegular` instance supplying the hypothesis, and nothing else is used.
 -/
 theorem reflection (F : FrameOver D) [F.IsRegular] (w : F.WorldState) (d : ↑D)
-    (u : F.WorldState) : F.TaskRel w d u ↔ F.TaskRel u (-d) w := by
-  rcases eq_or_ne d 0 with rfl | hd
-  · rw [neg_zero]
-    constructor
-    · intro h
-      obtain rfl := F.eq_of_taskRel_zero h
-      exact h
-    · intro h
-      obtain rfl := F.eq_of_taskRel_zero h
-      exact h
-  · exact TaskFrame.reflect_reflection_of_ne hd
+    (u : F.WorldState) : F.TaskRel w d u ↔ F.TaskRel u (-d) w :=
+  F.reflection_of_limit F.limit w d u
 
 /--
 Derived backward compositionality: tasks compose in the backward direction.
