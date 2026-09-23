@@ -236,7 +236,7 @@ at implementation time.
 
 ---
 
-### Phase 4: Add the Missing Frame-Level and Draft-Form Declarations [NOT STARTED]
+### Phase 4: Add the Missing Frame-Level and Draft-Form Declarations [IN PROGRESS]
 
 **Goal**: Complete the frame layer in exactly the places option (a) moves the appendix to, so
 every appendix citation lands on a name in the frame register rather than on an anonymous
