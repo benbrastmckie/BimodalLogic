@@ -36,6 +36,7 @@ is listed in `scripts/module-invariants-manifest.txt`. A new test that needs the
 | `FormulaMutatorTest.lean` | 194 | <!-- TODO: add description --> |
 | `InterestingnessTest.lean` | 354 | <!-- TODO: add description --> |
 | `ProofFirstTests.lean` | 250 | <!-- TODO: add description --> |
+| `TableauBridgeTest.lean` | 165 | <!-- TODO: add description --> |
 | `TraceCertificateTest.lean` | 225 | <!-- TODO: add description --> |
 | `TraceExportTest.lean` | 162 | <!-- TODO: add description --> |
 | `TraceExporterE2ETest.lean` | 139 | <!-- TODO: add description --> |

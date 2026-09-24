@@ -28,6 +28,51 @@ The conventions inherited from `FormalSystem/Automation/README.md` still hold he
   (`DatasetAssembly`); `XExtractor` extracts (`ProofStepExtractor`); `XGenerator` generates
   (`DatasetGenerator`, `ForwardProofGenerator`).
 
+## Tableau bridge protocol
+
+`lake exe tableau_bridge` is a persistent REPL speaking JSONL over stdin/stdout: one JSON request
+per line in, one JSON response per line out. It is the differential oracle a model checker can
+query for the bimodal theory. The protocol lives in `TableauBridge.lean`'s module docstring; this
+section records the two parts a consumer has to get right.
+
+**Frame class.** `frame_class` accepts exactly `"Base"`, `"Dense"`, `"ZTime"`, `"Discrete"` (an
+alias for `"ZTime"`) and `"RTime"` (the Dedekind class — incomparable with `ZTime`, not a
+superclass of it). The key may be omitted, and then defaults to `"Base"`. Any *other* value is
+rejected with `{"status": "error", "message": "unknown frame_class: ..."}`, and the REPL stays
+alive for the next line. Earlier revisions silently coerced every unrecognized string — including
+`"RTime"` — to `.Base`, so a request could be answered at a frame class it never asked for.
+
+**Theorem-backed vs. heuristic invalidity.** An `invalid` response from `tableau_decide` or
+`countermodel` carries an additive `"gates"` object:
+
+```json
+{"status": "invalid",
+ "countermodel": {...},
+ "gates": {"time_order_total": true, "box_anchored_check": true,
+           "region_label_check": true, "temporal_witness_check": true,
+           "branch_order_valid": true, "saturated": true,
+           "no_closure": true, "root_denied": true,
+           "gated": true},
+ "formula_string": "(p → q)",
+ "time_ms": 3}
+```
+
+The eight booleans are the hypotheses of `not_valid_of_hasOpen_int` and
+`not_validZTime_of_hasOpen_int`
+(`FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean`), evaluated on the open
+saturated branch the verdict came from; `"gated"` is their conjunction.
+
+- `"gated": true` — the verdict is **theorem-backed**: those results apply to this branch, and the
+  formula's invalidity may be cited through them.
+- `"gated": false` — the verdict is **heuristic**: it is the decision procedure's own, with no
+  theorem behind it. It is not a claim that the formula is valid. At `"ZTime"` today
+  `region_label_check` and `temporal_witness_check` are measured `false` on open branches, so
+  `"gated"` is `false` there; surfacing that is the field's purpose.
+
+`"status": "invalid"` and every pre-existing field are unchanged — `"gates"` is purely additive,
+so a consumer that ignores the key is unaffected. The rows pinning all of this are
+`Tests/BimodalToolsTest/TableauBridgeTest.lean`.
+
 ## Contents
 
 <!-- BEGIN GENERATED: inventory dir=BimodalTools -->
@@ -56,10 +101,11 @@ The conventions inherited from `FormalSystem/Automation/README.md` still hold he
 | `ProofFirstGenerator.lean` | 160 | The proof-first export pipeline: `exportToJsonl`, `writeJsonl`, the argument parsers, and `runProofFirstGenerator`, the whole command-line body |
 | `ProofFirstGeneratorMain.lean` | 21 | Executable root of `lake exe proof_first_generator`: `main` only; calls `runProofFirstGenerator` |
 | `ProofStepExtractor.lean` | 344 | <!-- TODO: add description --> |
-| `TableauBridgeMain.lean` | 635 | <!-- TODO: add description --> |
+| `TableauBridge.lean` | 840 | The tableau bridge library: the JSONL protocol, the request parsers, `BranchGates` and the theorem-hypothesis evaluator, the command handlers, and `replLoop` |
+| `TableauBridgeMain.lean` | 23 | Executable root of `lake exe tableau_bridge`: `main` only; calls `TableauBridge.replLoop` |
 | `TableauProofStepsMain.lean` | 688 | <!-- TODO: add description --> |
 | `TraceExport.lean` | 229 | <!-- TODO: add description --> |
 | `TraceExporterMain.lean` | 265 | <!-- TODO: add description --> |
 <!-- END GENERATED -->
 
-*Last verified: 2026-09-21*
+*Last verified: 2026-09-24*

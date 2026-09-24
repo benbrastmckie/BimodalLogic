@@ -45,6 +45,61 @@ JSONL over stdin/stdout (one JSON object per line).
 {"status": "valid", "proof_trace": {...}, "time_ms": 12}
 ```
 
+### `frame_class`
+
+Accepted values, and nothing else:
+
+| Value        | Frame class | Note                                            |
+|--------------|-------------|-------------------------------------------------|
+| `"Base"`     | `.Base`     | the default when the key is absent              |
+| `"Dense"`    | `.Dense`    |                                                 |
+| `"ZTime"`    | `.ZTime`    |                                                 |
+| `"Discrete"` | `.ZTime`    | alias for `"ZTime"`                             |
+| `"RTime"`    | `.RTime`    | the Dedekind class; incomparable with `.ZTime`  |
+
+Any other value is **rejected** with `{"status": "error", "message": "unknown frame_class: ..."}`
+and the REPL stays alive for the next line. An absent `frame_class` still defaults to `"Base"`;
+only an unrecognized one is an error. Earlier revisions silently coerced every unrecognized
+string — including `"RTime"` — to `.Base` and answered as though the requested class had been
+honoured.
+
+### `"gates"` on an `invalid` verdict
+
+`tableau_decide` and `countermodel` both carry an additive `"gates"` object on their `invalid`
+arm. `"status": "invalid"` and every pre-existing field are unchanged; consumers that ignore the
+new key are unaffected.
+
+```json
+{"status": "invalid",
+ "countermodel": {...},
+ "gates": {"time_order_total": true, "box_anchored_check": true,
+           "region_label_check": true, "temporal_witness_check": true,
+           "branch_order_valid": true, "saturated": true,
+           "no_closure": true, "root_denied": true,
+           "gated": true},
+ "formula_string": "(p → q)",
+ "time_ms": 3}
+```
+
+The eight booleans are the hypotheses of `not_valid_of_hasOpen_int` and
+`not_validZTime_of_hasOpen_int`
+(`FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean`), evaluated on the open
+saturated branch this verdict came from; `"gated"` is their conjunction.
+
+**`"gated": true` licenses exactly one claim**: that `not_valid_of_hasOpen_int` (and, for a
+request at `"ZTime"`, `not_validZTime_of_hasOpen_int`) applies to this branch, so the formula's
+invalidity is backed by a Lean theorem and may be cited as such.
+
+**`"gated": false` means the verdict is heuristic** — the decision procedure's own, with no
+theorem behind it. It is *not* a claim that the formula is valid, and it is not a report of an
+error. At `"ZTime"` today `region_label_check` and `temporal_witness_check` are measured `false`
+on open branches, so `"gated"` is `false` there; that is a fact about the current `.ZTime` rules,
+and making it visible is the point of the field.
+
+`"gates": null` appears if the gate re-run does not land on an open branch. That arm is
+unreachable whenever the verdict is `invalid` — both paths run `buildTableau φ (soundFuel φ) fc`
+— and exists so the case is handled rather than guessed at.
+
 ## Usage
 
 ```

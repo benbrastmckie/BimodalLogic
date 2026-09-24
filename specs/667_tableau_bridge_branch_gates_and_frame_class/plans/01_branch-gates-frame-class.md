@@ -401,7 +401,7 @@ with `#guard_msgs` instead rather than dropping the case.
 
 ---
 
-### Phase 6: Documentation [IN PROGRESS]
+### Phase 6: Documentation [COMPLETED]
 
 **Goal**: the protocol change and the frame-class vocabulary are documented where a consumer will
 look, and the generated inventory is current.
@@ -421,9 +421,17 @@ look, and the generated inventory is current.
 - [ ] Fill in the `<!-- TODO: add description -->` cell for `TableauBridgeMain.lean` and add one
       for the new `TableauBridge.lean`, following the `ContrastiveGenerator`/`ContrastiveGeneratorMain`
       pair's wording.
-- [ ] Re-emit the generated block with
+- [x] Re-emit the generated block with
       `bash scripts/check-module-invariants.sh --emit-inventory`, then confirm with
       `bash scripts/check-module-invariants.sh --emit-inventory --check`.
+      *(deviation: altered — the emitter rewrites every registered block, and three besides
+      `BimodalTools/README.md` were stale: `Tests/BimodalToolsTest/README.md` (this task's new
+      test module — kept), and `FormalSystem/Metalogic/README.md` + the root `README.md`, whose
+      blocks count `FormalSystem/` files. `Decidability/` moved 79 -> 85 files there, matching
+      sibling task 665's new uncommitted `FormalSystem/Metalogic/Decidability/WitnessFamily/*.lean`
+      modules; this task touched nothing under `FormalSystem/`. Per this phase's Scope Hypothesis
+      and the cross-task territory contract, those two were restored to their committed content
+      rather than re-emitted, so they remain INV-stale on 665's account. Reported, not "fixed".)*
 - [ ] Update the `*Last verified:*` date line at the foot of the README.
 
 **Timing**: 1 hour
@@ -452,7 +460,7 @@ stop and report rather than re-emitting blocks this task did not cause to change
 
 ---
 
-### Phase 7: Full gate and close-out [NOT STARTED]
+### Phase 7: Full gate and close-out [IN PROGRESS]
 
 **Goal**: every acceptance criterion is demonstrated green in one pass, in dependency order.
 
