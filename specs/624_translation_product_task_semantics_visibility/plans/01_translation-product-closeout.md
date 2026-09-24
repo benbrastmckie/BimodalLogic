@@ -1,7 +1,7 @@
 # Implementation Plan: Task #624
 
 - **Task**: 624 - translation_product_task_semantics_visibility
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md
@@ -176,7 +176,7 @@ another task's deliverables), report it as a finding for a new task rather than 
 
 ---
 
-### Phase 2: Forward report §2.4 to task 618 [NOT STARTED]
+### Phase 2: Forward report §2.4 to task 618 [COMPLETED]
 
 **Goal**: Give the one un-forwarded recommendation a recipient, by appending a dated
 reconciliation note to task 618's description recording report §2.4's three categorical questions
@@ -187,9 +187,9 @@ already present, mark this phase `[COMPLETED WITH EXCLUSIONS]` with that finding
 and proceed to Phase 3.
 
 **Tasks**:
-- [ ] Re-read `specs/state.json` immediately before editing (sibling task 662 is in flight on
+- [x] Re-read `specs/state.json` immediately before editing (sibling task 662 is in flight on
       this same working tree with no declared `file_scope`).
-- [ ] Draft the note. It must: be dated; name the source artifact by path
+- [x] Draft the note. It must: be dated; name the source artifact by path
       (`specs/624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md`,
       §2.4); state the three questions in the report's own terms — (a) is
       `Path(prodFrame F)` the pullback of `len : Path(F) → BD⁺` along `(D, ≤) → BD⁺` on the nose,
@@ -199,17 +199,17 @@ and proceed to Phase 3.
       a discrete fibration over `D` — and state explicitly that these are an **appendix item, not
       a scope expansion**, to be taken up only once `Path(F)` exists, consistent with 618's
       existing HARD SCOPE LIMIT.
-- [ ] Name the live module `FormalSystem/Semantics/Frames/TranslationProduct.lean` in the note so
+- [x] Name the live module `FormalSystem/Semantics/Frames/TranslationProduct.lean` in the note so
       a future reader of 618 reaches the definitions without going through `specs/`.
-- [ ] Apply the note by appending to task 618's `.description` with a targeted `jq` filter
+- [x] Apply the note by appending to task 618's `.description` with a targeted `jq` filter
       selecting `.project_number == 618` (positive comparison only — never `!=`, per
       `.claude/context/patterns/jq-escaping-workarounds.md`). Do not touch `.artifacts`,
       `.dependencies`, `.status`, or any other task's entry.
-- [ ] Diff the result: `jq` the new and old `specs/state.json` and confirm the only difference is
+- [x] Diff the result: `jq` the new and old `specs/state.json` and confirm the only difference is
       task 618's `.description` (and its `last_updated`, if the helper sets one). Confirm the
       file is still valid JSON and that the `active_projects` array length is unchanged.
-- [ ] Regenerate TODO.md: `bash .claude/scripts/generate-todo.sh`. Never hand-edit `specs/TODO.md`.
-- [ ] Stage by explicit filename only (`git add -- specs/state.json specs/TODO.md`) and commit.
+- [x] Regenerate TODO.md: `bash .claude/scripts/generate-todo.sh`. Never hand-edit `specs/TODO.md`.
+- [x] Stage by explicit filename only (`git add -- specs/state.json specs/TODO.md`) and commit.
       Never a directory or glob pathspec; never `git add -A`; never `git commit -am`.
 
 **Timing**: 0.5 hours
@@ -236,28 +236,28 @@ and proceed to Phase 3.
 
 ---
 
-### Phase 3: Write the closeout summary and record terminal disposition [NOT STARTED]
+### Phase 3: Write the closeout summary and record terminal disposition [COMPLETED]
 
 **Goal**: Leave a legible record of why task 624 closes with no implementation of its own, what
 each of its recommendations became, and which of its open questions belong to which other task.
 
 **Tasks**:
-- [ ] Write `specs/624_translation_product_task_semantics_visibility/summaries/01_translation-product-closeout-summary.md`
+- [x] Write `specs/624_translation_product_task_semantics_visibility/summaries/01_translation-product-closeout-summary.md`
       following `.claude/context/formats/summary-format.md`.
-- [ ] Include the reconciliation ledger from Phase 1 as a table: recommendation, verdict,
+- [x] Include the reconciliation ledger from Phase 1 as a table: recommendation, verdict,
       evidence (file path, theorem name, or task number), and the command that established it.
-- [ ] Include an **open-questions ownership** table transcribing report Appendix B's UNVERIFIED
+- [x] Include an **open-questions ownership** table transcribing report Appendix B's UNVERIFIED
       items against their owning task: the dense saturated BLC countermodel and the `.Dense` form
       of paste-closed soundness → 559; the categorical pullback reading → 618 (forwarded in
       Phase 2); the recurrence-free-but-clockless cover (§2.3, ~80 lines of `ℤ`-walk bookkeeping,
       deliberately left on paper) → no owner, recorded as a deliberate non-goal; the stability-
       modal residue → 653 (completed).
-- [ ] State the terminal disposition plainly: task 624 is complete **as research**; its
+- [x] State the terminal disposition plainly: task 624 is complete **as research**; its
       deliverables are the report and the two sorry-free probes; it produced no change to
       `FormalSystem/` or `Tests/` by design.
-- [ ] Record any Phase 1 finding that fell outside scope (per that phase's Scope Hypothesis) as a
+- [x] Record any Phase 1 finding that fell outside scope (per that phase's Scope Hypothesis) as a
       named candidate for a new task, with enough detail to create one — do not create it here.
-- [ ] Stage by explicit filename and commit.
+- [x] Stage by explicit filename and commit.
 
 **Timing**: 0.5 hours
 
@@ -284,15 +284,15 @@ each of its recommendations became, and which of its open questions belong to wh
 
 ## Testing & Validation
 
-- [ ] No file under `FormalSystem/` or `Tests/` is modified by any phase (`git diff --name-only`
+- [x] No file under `FormalSystem/` or `Tests/` is modified by any phase (`git diff --name-only`
       against the phase-start commit lists nothing under either tree).
-- [ ] `specs/state.json` remains valid JSON with an unchanged `active_projects` length, and the
+- [x] `specs/state.json` remains valid JSON with an unchanged `active_projects` length, and the
       only field changed is task 618's `.description` (plus its `last_updated`).
-- [ ] `specs/TODO.md` is regenerated by `generate-todo.sh`, never hand-edited, and its artifact
+- [x] `specs/TODO.md` is regenerated by `generate-todo.sh`, never hand-edited, and its artifact
       links use the bracket-only `[path]` form.
-- [ ] Every commit stages only explicitly named files; `git log --stat` for this task's commits
+- [x] Every commit stages only explicitly named files; `git log --stat` for this task's commits
       shows no file outside `specs/`.
-- [ ] The summary's reconciliation ledger accounts for all four recommendations and all Appendix B
+- [x] The summary's reconciliation ledger accounts for all four recommendations and all Appendix B
       UNVERIFIED items.
 
 ## Artifacts & Outputs
