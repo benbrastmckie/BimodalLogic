@@ -1,7 +1,7 @@
 # Implementation Plan: Witness-family certificate soundness
 
 - **Task**: 665 - Witness-family certificate soundness (the quasimodel / ShiftSet route, soundness half)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 15 hours
 - **Dependencies**: None blocking. Held-stable neighbour: `FormalSystem/Metalogic/Decidability/BiLasso/Basic.lean`. Concurrent sibling this cycle: task 667 (no declared file scope).
 - **Research Inputs**: `specs/665_witness_family_certificate_soundness/reports/01_witness-family-certificate-soundness.md`; compiled spike `specs/665_witness_family_certificate_soundness/evidence/t1-agreement-spike.lean`
@@ -130,7 +130,7 @@ opportunity: Phase 5 needs Phases 3 and 4, Phase 6 needs only Phase 3.
 
 ---
 
-### Phase 1: Set-level subformula closure [NOT STARTED]
+### Phase 1: Set-level subformula closure [COMPLETED]
 
 **Goal**: `WitnessFamily/Closure.lean` — the set-level closure a certificate's target set needs,
 since `subformulaClosure` is single-formula only.
@@ -175,7 +175,7 @@ obstacle.
 
 ---
 
-### Phase 2: `LabelledLasso` and `WitnessFamily` [NOT STARTED]
+### Phase 2: `LabelledLasso` and `WitnessFamily` [IN PROGRESS]
 
 **Goal**: `WitnessFamily/Basic.lean` — the presentation-free datatype over
 `Periodic.unrollOf`, with the decoded label function and the two periodicities. Field names are
