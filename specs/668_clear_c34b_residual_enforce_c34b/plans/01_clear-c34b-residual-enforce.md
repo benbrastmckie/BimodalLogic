@@ -401,7 +401,7 @@ gate's own output at phase close.
 
 ---
 
-### Phase 5: Restate `nullity_identity` at *Seriality* and *Limit* [NOT STARTED]
+### Phase 5: Restate `nullity_identity` at *Seriality* and *Limit* [COMPLETED]
 
 **Goal**: Add the first of three new binder-free twins and demote `FrameOver.nullity_identity` to
 a one-line corollary of it, with its signature line byte-identical.

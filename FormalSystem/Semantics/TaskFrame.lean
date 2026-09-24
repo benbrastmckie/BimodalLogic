@@ -1288,15 +1288,42 @@ theorem eq_of_taskRel_zero (F : FrameOver D) [F.IsRegular] {w u : F.WorldState}
   F.eq_of_taskRel_zero_of_limit F.limit h
 
 /--
+**Zero duration iff identity, at the hypotheses the proof consumes: *Seriality* and *Limit*.**
+
+Stated with *Seriality* and *Limit* as explicit hypotheses rather than through the regular class,
+because that is genuinely all it needs. Reflexivity at zero is
+`TaskFrame.nullity_of_serial_limit` (*Seriality* at `x = 0` closed by *Limit*); injectivity at
+zero is `eq_of_taskRel_zero_of_limit` (*Limit* alone). *Compositionality* and *Saturation* are
+reached by neither half.
+
+`FrameOver.nullity_identity` below is this theorem at `[F.IsRegular]`, and keeps its original
+statement; a frame that satisfies *Seriality* and *Limit* and nothing else uses this one directly.
+
+Constraints consumed: Seriality, Limit
+
+Paper: `lem:nullity`, `def:frame#Limit`
+-/
+theorem nullity_identity_of_serial_limit (F : FrameOver D)
+    (hser : TaskFrame.Serial F.TaskRel) (hlim : TaskFrame.Limit F.TaskRel) :
+    ∀ w u, F.TaskRel w 0 u ↔ w = u :=
+  fun _ _ => ⟨F.eq_of_taskRel_zero_of_limit hlim,
+    fun h => h ▸ TaskFrame.nullity_of_serial_limit hser hlim _⟩
+
+/--
 **Zero duration iff identity: a zero-duration task relates exactly the identical states.**
 
 The conjunction of `nullity` (reflexivity, from *Seriality* plus *Limit*) and
 `eq_of_taskRel_zero` (injectivity, from *Limit* alone). It is a theorem, not a structure field:
 the frame class is exactly the paper's four `def:frame` axioms over a primitive relation on `D⁺`.
+
+`nullity_identity_of_serial_limit` above is the explicit-hypothesis form, which is the general
+one; this is that form at a regular frame, with its original statement unchanged.
+
+Constraints consumed: Seriality, Limit
 -/
 theorem nullity_identity (F : FrameOver D) [F.IsRegular] :
     ∀ w u, F.TaskRel w 0 u ↔ w = u :=
-  fun _ _ => ⟨F.eq_of_taskRel_zero, fun h => h ▸ F.nullity _⟩
+  F.nullity_identity_of_serial_limit F.serial F.limit
 
 /--
 **Composition on the positive cone — the `←` projection of the `comp` field.**
