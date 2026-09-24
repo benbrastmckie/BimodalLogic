@@ -175,7 +175,7 @@ obstacle.
 
 ---
 
-### Phase 2: `LabelledLasso` and `WitnessFamily` [IN PROGRESS]
+### Phase 2: `LabelledLasso` and `WitnessFamily` [COMPLETED]
 
 **Goal**: `WitnessFamily/Basic.lean` — the presentation-free datatype over
 `Periodic.unrollOf`, with the decoded label function and the two periodicities. Field names are
@@ -226,7 +226,7 @@ and the alignment layer must be added to this module before those phases proceed
 
 ---
 
-### Phase 3: The three certificate predicates and the target [NOT STARTED]
+### Phase 3: The three certificate predicates and the target [IN PROGRESS]
 
 **Goal**: `WitnessFamily/Predicates.lean` — `LocalCoherentLab`, `FulfillingLab`, `BoxFaithful`,
 `Target`, transcribed from the spike onto the real datatype.
@@ -269,7 +269,7 @@ file's, recording the correspondence in the docstring.
 
 ---
 
-### Phase 4: The standard shift-set model [NOT STARTED]
+### Phase 4: The standard shift-set model [IN PROGRESS]
 
 **Goal**: `WitnessFamily/Std.lean` — `WitnessFamily.std : ShiftSet intOrder`, its ℤ-time
 membership and its frame-class satisfaction.
