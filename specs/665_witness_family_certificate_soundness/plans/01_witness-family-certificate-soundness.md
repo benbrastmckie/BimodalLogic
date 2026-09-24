@@ -226,7 +226,7 @@ and the alignment layer must be added to this module before those phases proceed
 
 ---
 
-### Phase 3: The three certificate predicates and the target [IN PROGRESS]
+### Phase 3: The three certificate predicates and the target [COMPLETED]
 
 **Goal**: `WitnessFamily/Predicates.lean` — `LocalCoherentLab`, `FulfillingLab`, `BoxFaithful`,
 `Target`, transcribed from the spike onto the real datatype.
@@ -269,7 +269,7 @@ file's, recording the correspondence in the docstring.
 
 ---
 
-### Phase 4: The standard shift-set model [IN PROGRESS]
+### Phase 4: The standard shift-set model [COMPLETED]
 
 **Goal**: `WitnessFamily/Std.lean` — `WitnessFamily.std : ShiftSet intOrder`, its ℤ-time
 membership and its frame-class satisfaction.
@@ -314,7 +314,7 @@ and should be flagged before proceeding.
 
 ---
 
-### Phase 5: T1 agreement and T1' consequence corollaries [NOT STARTED]
+### Phase 5: T1 agreement and T1' consequence corollaries [COMPLETED]
 
 **Goal**: `WitnessFamily/Agreement.lean` — the agreement theorem and the three consequence
 corollaries ModelChecker reports.
@@ -363,7 +363,7 @@ hypothesis and should be reported in the phase's commit message.
 
 ---
 
-### Phase 6: Decidability part A — label windows and `LocalCoherentLab` [NOT STARTED]
+### Phase 6: Decidability part A — label windows and `LocalCoherentLab` [IN PROGRESS]
 
 **Goal**: `WitnessFamily/Decide.lean` (first tranche) — the label-window machinery and the
 `LocalCoherentLab` window collapse, transposed from `BiLasso/Decide.lean`.
