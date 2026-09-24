@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 11,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/663_hypothesis_honesty_lint_isregular_overbinding/reports/01_hypothesis-honesty-lint-isregular.md",
+      "summary": "Audit of the 258 IsRegular instance-binder sites, the eight independence-claiming ones that must be fixed, and a C34 build-free gate design keyed on a `Constraints consumed:` docstring marker."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790269483_76154e_663",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
