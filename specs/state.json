@@ -9,14 +9,14 @@
     {
       "project_number": 667,
       "project_name": "tableau_bridge_branch_gates_and_frame_class",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Run the four branch gates on the tableau bridge's invalid path and reject unknown frame-class tags. Currently lake exe tableau_bridge (BimodalTools/TableauBridgeMain.lean) returns {\"status\": \"invalid\", \"countermodel\": ...} from an open saturated branch without evaluating timeOrderTotal, boxAnchoredCheck, regionLabelCheck and temporalWitnessCheck, yet these are exactly the hypotheses of not_validZTime_of_hasOpen_int and not_valid_of_hasOpen_int (Metalogic/Decidability/Verified/Bridge/IntTruth.lean:1045, :1073), so an invalid verdict is theorem-backed only when they pass. Separately, parseFrameClass (TableauBridgeMain.lean:297-302) maps any unrecognized string, including \"RTime\", to Base silently.\n\nDELIVERABLES.\n1. On the .invalid arm of handleDecide (and the countermodel command), evaluate the four gates on the returned branch and its TimeOrdering, and add a \"gates\" object to the response with one boolean per gate plus \"gated\": true iff all pass. Keep \"status\": \"invalid\" unchanged so existing consumers are not broken; the new field is additive.\n2. Reject unknown frame_class values with {\"status\": \"error\", \"message\": ...} instead of defaulting to Base; accept \"Base\", \"Dense\", \"ZTime\", \"Discrete\" (alias) and \"RTime\" (mapped to the Dedekind / RTime class if the engine supports it, otherwise rejected with a message saying so).\n3. Document both changes in the module docstring's protocol section and in BimodalTools/README.md.\n\nMOTIVATION. ModelChecker (~/Projects/ModelChecker) is adopting this bridge as its differential oracle for the bimodal theory at the ZTime class and needs to know which invalid verdicts it may cite via the Lean theorem and which are only heuristic; see ~/Projects/ModelChecker/specs/184_refactor_bimodal_theory_tests_green_and_paper_lean_aligned/reports/01_finite-certificate-redesign.md, section 5.\n\nACCEPTANCE. Tests in Tests/BimodalToolsTest/ covering a gated invalid verdict, an ungated one, and the frame_class rejection; lake build BimodalTools green.",
       "topic": "decidability",
       "effort": "2-4 hours",
       "dependencies": [],
       "created": "2026-09-24T18:34:03Z",
-      "last_updated": "2026-09-24T23:21:21Z",
+      "last_updated": "2026-09-24T23:21:48Z",
       "session_id": "sess_1790290549_f9337e06",
       "artifacts": [
         {
@@ -50,14 +50,14 @@
     {
       "project_number": 665,
       "project_name": "witness_family_certificate_soundness",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Prove soundness of witness-family certificates: a labelled bi-lasso family satisfying local coherence, fulfilment and box faithfulness presents a ShiftSet model over intOrder whose truth agrees with the labels on the subformula closure, so any such family refutes a Z-time consequence. This is the soundness half of the quasimodel / ShiftSet route, split out from task 623 so that it lands first and independently; 623 keeps the completeness (compression) half and the Decidable (ValidZTime) assembly.\n\nMOTIVATION. The ModelChecker repository (~/Projects/ModelChecker, task 184 there) is being redesigned so that its Z3 search returns exactly this finite object for premises Γ and conclusions Σ over discrete time. The theorem here is what makes such an output a machine-checkable countermodel. Probe476.fmp_false (specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean) rules out finite IntPresentations as the searched object, and BiLasso/Agreement.lean's three limits rule out bare windows, so the labelled family is the right definition. Full design rationale: ~/Projects/ModelChecker/specs/184_refactor_bimodal_theory_tests_green_and_paper_lean_aligned/reports/02_partial-model-formal-results.md (sections 1-3).\n\nDEFINITIONS TO ADD (presentation-free; do not index by IntPresentation).\n- LabelledLasso: back, mid, fwd : List (Finset Formula), back ≠ [], fwd ≠ [], every label ⊆ subformulaClosure of the target set; decoded label function L : ℤ → Finset Formula by the three-segment scheme of BiLasso.unrollOf (Basic.lean:127; Periodic.lean already states the decoding at an arbitrary inhabited type). Origin pinned as in BiLasso.\n- WitnessFamily: a box guess bx : Formula → Bool (read only at χ with box χ in the closure) and a nonempty list of LabelledLasso, with lasso 0 the main one.\n- LocalCoherentLab: the LocalCoherent clauses of BiLasso/Annotation.lean:301 minus the atom and presentation clauses (bot absent; imp iff; box χ ∈ L t ↔ bx χ; untl/snce one-step unfolding with t+1 / t-1). Atoms are unconstrained: the valuation is the atom part of the label.\n- FulfillingLab: Fulfilling (Annotation.lean:336) verbatim on the decoded label function.\n- BoxFaithful: for each box χ in the closure, bx χ = true ↔ ∀ i t, χ ∈ L_i t.\n- Target Γ Σ: some t with Γ ⊆ L_0 t and Σ ∩ L_0 t = ∅.\n- WitnessFamily.std : ShiftSet intOrder with Carrier := Fin (k+1) × ℤ, sh (i,t) d := (i, t+d), A p (i,t) := atom p ∈ L_i t. sh_zero and sh_add are arithmetic; sep is trivial over ℤ. Its frame, model and histories are ShiftSet.frame / ShiftSet.model / ShiftSet.hist (Semantics/ShiftSet.lean), all landed; total_eq_orbit gives that the model's world histories are exactly the lassos and their shifts; membership in the Z-time class is TaskFrame.isZTime_of_instances.\n\nTHEOREMS.\n(T1) Agreement: for a family satisfying LocalCoherentLab, FulfillingLab and BoxFaithful, ∀ i t (χ ∈ closure), TruthAt std.model (std.hist (i,0)) t χ ↔ χ ∈ L_i t. Proof by induction on χ through ShiftSet.forward_repr; untl/snce via Unfold.lean's truth_untl_succ / truth_snce_pred plus fulfilment, as in BiLasso/TruthLemma.lean's truth_along_annot (the single-lasso, oracle-relative version). The one new step is that BoxFaithful makes bx a sound oracle for std, which is immediate because std's histories are exactly the lassos.\n(T1') Consequence corollaries: Target Γ Σ implies, for every σ ∈ Σ, ¬ SemanticConsequenceIn FrameClass.ZTime Γ σ (Semantics/Validity.lean), and via FrameClass.Sat.anti also ¬ SemanticConsequenceIn FrameClass.Base Γ σ; plus the joint form ∃ F in ZTime, M, τ, t with every γ ∈ Γ true and every σ ∈ Σ false at (τ, t), which is the statement ModelChecker reports. Mirror not_validZTime_of_satAtState (BiLasso/Assembly.lean:58).\n(T2) Decidable instances for LocalCoherentLab, FulfillingLab, BoxFaithful and Target that compute by bounded window scans (adapt BiLasso/Decide.lean's window collapses from Annot to LabelledLasso). Computable, not necessarily choice-free; do not promise choice-freedom (see Check.lean's note on wlem_of_saturation).\n(T3) Non-vacuity: a family for □(p ∨ Fp ∨ Pp) ∧ □(p → ¬Pp) (one lasso, p only at 0) accepted by the T2 instances, and a #guard that no family with all segment lengths ≤ 2 exists for the negation of the bimodal axiom MF. BiLasso/Examples.lean is the precedent.\n\nCONSTRAINTS. Sorry-free; axiom set within [propext, Classical.choice, Quot.sound]; Basic.lean is held stable (BiLasso README) so add modules beside it, e.g. Metalogic/Decidability/BiLasso/Family/*.lean or Metalogic/Decidability/WitnessFamily/*.lean; update the BiLasso README module table and Decidability README. Field names should be stable because the ModelChecker JSON export mirrors them field for field. Do not attempt the completeness (compression) direction here; that stays in task 623.\n\nACCEPTANCE. T1, T1', T2, T3 landed sorry-free; lake build green; check-module-invariants.sh green; README tables updated.",
       "topic": "decidability",
       "effort": "1-2 weeks",
       "dependencies": [],
       "created": "2026-09-24T18:33:47Z",
-      "last_updated": "2026-09-24T23:21:05Z",
+      "last_updated": "2026-09-24T23:50:28Z",
       "session_id": "sess_1790290549_f9337e06",
       "artifacts": [
         {
@@ -69,9 +69,15 @@
           "path": "specs/665_witness_family_certificate_soundness/plans/01_witness-family-certificate-soundness.md",
           "type": "plan",
           "summary": "10-phase, 15-hour plan for the witness-family certificate soundness half (T1, T1', T2, T3) in a new presentation-free WitnessFamily/ subdirectory."
+        },
+        {
+          "path": "specs/665_witness_family_certificate_soundness/summaries/01_witness-family-certificate-soundness-summary.md",
+          "type": "summary",
+          "summary": "Witness-family certificates: T1, T1', T2 and T3 landed sorry-free in a new presentation-free WitnessFamily/ directory."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Landed the soundness half of the quasimodel / ShiftSet route as FormalSystem/Metalogic/Decidability/WitnessFamily/ (7 modules, 2042 lines, plus aggregator and README). A labelled bi-lasso family satisfying local coherence, fulfilment and box faithfulness provably presents a ShiftSet intOrder model whose truth agrees with its labels on the target closure, so any such family with a Target refutes a Z-time consequence. All four certificate predicates decide by bounded window scans that compute; both non-vacuity directions are witnessed and no family can target a Z-time validity."
     },
     {
       "project_number": 664,

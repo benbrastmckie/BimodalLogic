@@ -11,8 +11,8 @@ next_project_number: 669
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,665,667 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,623,650,666 | 298,464,502,563,649,665,667 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,667 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,666 | 298,464,502,563,649,667 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -69,11 +69,9 @@ next_project_number: 669
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-665 [PLANNED] — Prove soundness of witness-family certificates: a labelled...
-  └─ 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
+623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
+667 [IMPLEMENTING] — Run the four branch gates on the tableau bridge's invalid...
   └─ 666 [NOT STARTED] — Add a certificate re-verification executable, lake exe...
-667 [PLANNED] — Run the four branch gates on the tableau bridge's invalid...
-  └─ 666 [NOT STARTED] — Add a certificate re-verification executable, lake exe... (see above)
 
 ### Formula Refactor
 
@@ -104,7 +102,7 @@ next_project_number: 669
 
 ### 667. Tableau bridge branch gates and frame class
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -145,12 +143,13 @@ ACCEPTANCE. Round-trip test: the non-vacuity family from the soundness task seri
 
 ### 665. Witness family certificate soundness
 - **Effort**: 1-2 weeks
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [665_witness_family_certificate_soundness/reports/01_witness-family-certificate-soundness.md]
 - **Plan**: [665_witness_family_certificate_soundness/plans/01_witness-family-certificate-soundness.md]
+- **Summary**: [665_witness_family_certificate_soundness/summaries/01_witness-family-certificate-soundness-summary.md]
 
 **Description**: Prove soundness of witness-family certificates: a labelled bi-lasso family satisfying local coherence, fulfilment and box faithfulness presents a ShiftSet model over intOrder whose truth agrees with the labels on the subformula closure, so any such family refutes a Z-time consequence. This is the soundness half of the quasimodel / ShiftSet route, split out from task 623 so that it lands first and independently; 623 keeps the completeness (compression) half and the Decidable (ValidZTime) assembly.
 
