@@ -363,7 +363,7 @@ hypothesis and should be reported in the phase's commit message.
 
 ---
 
-### Phase 6: Decidability part A — label windows and `LocalCoherentLab` [IN PROGRESS]
+### Phase 6: Decidability part A — label windows and `LocalCoherentLab` [COMPLETED]
 
 **Goal**: `WitnessFamily/Decide.lean` (first tranche) — the label-window machinery and the
 `LocalCoherentLab` window collapse, transposed from `BiLasso/Decide.lean`.
@@ -407,7 +407,7 @@ re-measure with `wc -l` rather than trusting either number.
 
 ---
 
-### Phase 7: Decidability part B — the fulfilment block [NOT STARTED]
+### Phase 7: Decidability part B — the fulfilment block [COMPLETED]
 
 **Goal**: `WitnessFamily/Decide.lean` (second tranche) — the eventuality-obligation descent and
 the `FulfillingLab` window collapse.
@@ -445,7 +445,7 @@ helper here.
 
 ---
 
-### Phase 8: Decidability part C — `BoxFaithful`, `Target`, T2 assembly [NOT STARTED]
+### Phase 8: Decidability part C — `BoxFaithful`, `Target`, T2 assembly [COMPLETED]
 
 **Goal**: `WitnessFamily/Decide.lean` (third tranche) — the two remaining predicates, completing T2.
 
@@ -484,7 +484,7 @@ required must be reported before being added.
 
 ---
 
-### Phase 9: T3 non-vacuity and impossibility [NOT STARTED]
+### Phase 9: T3 non-vacuity and impossibility [IN PROGRESS]
 
 **Goal**: `WitnessFamily/Examples.lean` — the positive witness, the separation witness, and the
 impossibility theorem that replaces the infeasible `#guard`.
