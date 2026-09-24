@@ -4,8 +4,22 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 666,
+  "next_project_number": 667,
   "active_projects": [
+    {
+      "project_number": 666,
+      "project_name": "check_certificate_executable",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Add a certificate re-verification executable, lake exe check_certificate, that reads a JSON witness-family certificate emitted by ModelChecker and reports whether it is a valid Z-time countermodel. Depends on the witness-family soundness task, whose LabelledLasso / WitnessFamily structures and Decidable instances (LocalCoherentLab, FulfillingLab, BoxFaithful, Target) it consumes.\n\nINPUT. One JSON object: premises and conclusions as formula ASTs in the tag format BimodalTools/TableauBridgeMain.lean's pFormula already parses; a box guess as a list of (formula, bool) pairs; and a list of lassos, each with back, mid, fwd as lists of label sets, each label set a list of formula ASTs. Document the schema next to the TableauBridge protocol in BimodalTools/README.md so the two JSON interfaces sit together; field names mirror the Lean structure exactly.\n\nOUTPUT. A single JSON line: {\"status\": \"countermodel\"} when all four conditions hold (optionally with the falsifying position), otherwise {\"status\": \"rejected\", \"failed\": [...]} naming which condition failed and at which lasso and position. Never report validity.\n\nPLACEMENT. BimodalTools/CheckCertificateMain.lean as the executable root (lake exe check_certificate, root-naming convention per BimodalTools/README.md), with the parsing and decoding in BimodalTools/CertificateImport.lean so it can be tested from Tests/BimodalToolsTest/. Add the lake exe target to lakefile.toml.\n\nACCEPTANCE. Round-trip test: the non-vacuity family from the soundness task serialized to JSON is accepted; a family with one broken fulfilment obligation is rejected naming that obligation; lake build BimodalTools green; the executable finishes in well under a second on families with total segment length under 100.",
+      "topic": "decidability",
+      "effort": "4-8 hours",
+      "dependencies": [
+        665
+      ],
+      "created": "2026-09-24T18:33:55Z",
+      "last_updated": "2026-09-24T18:33:55Z"
+    },
     {
       "project_number": 665,
       "project_name": "witness_family_certificate_soundness",

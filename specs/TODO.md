@@ -1,5 +1,5 @@
 ---
-next_project_number: 666
+next_project_number: 667
 ---
 
 # TODO
@@ -12,7 +12,7 @@ next_project_number: 666
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,662,664,665 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650,663 | 298,464,502,563,649,662 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,663,666 | 298,464,502,563,649,662,665 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -71,6 +71,7 @@ next_project_number: 666
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
 665 [NOT STARTED] — Prove soundness of witness-family certificates: a labelled...
+  └─ 666 [NOT STARTED] — Add a certificate re-verification executable, lake exe...
 
 ### Formula Refactor
 
@@ -103,6 +104,25 @@ next_project_number: 666
   └─ 663 [NOT STARTED] — Add a repo-wide hypothesis-honesty gate so no...
 
 ## Tasks
+
+### 666. Check certificate executable
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 665
+
+**Description**: Add a certificate re-verification executable, lake exe check_certificate, that reads a JSON witness-family certificate emitted by ModelChecker and reports whether it is a valid Z-time countermodel. Depends on the witness-family soundness task, whose LabelledLasso / WitnessFamily structures and Decidable instances (LocalCoherentLab, FulfillingLab, BoxFaithful, Target) it consumes.
+
+INPUT. One JSON object: premises and conclusions as formula ASTs in the tag format BimodalTools/TableauBridgeMain.lean's pFormula already parses; a box guess as a list of (formula, bool) pairs; and a list of lassos, each with back, mid, fwd as lists of label sets, each label set a list of formula ASTs. Document the schema next to the TableauBridge protocol in BimodalTools/README.md so the two JSON interfaces sit together; field names mirror the Lean structure exactly.
+
+OUTPUT. A single JSON line: {"status": "countermodel"} when all four conditions hold (optionally with the falsifying position), otherwise {"status": "rejected", "failed": [...]} naming which condition failed and at which lasso and position. Never report validity.
+
+PLACEMENT. BimodalTools/CheckCertificateMain.lean as the executable root (lake exe check_certificate, root-naming convention per BimodalTools/README.md), with the parsing and decoding in BimodalTools/CertificateImport.lean so it can be tested from Tests/BimodalToolsTest/. Add the lake exe target to lakefile.toml.
+
+ACCEPTANCE. Round-trip test: the non-vacuity family from the soundness task serialized to JSON is accepted; a family with one broken fulfilment obligation is rejected naming that obligation; lake build BimodalTools green; the executable finishes in well under a second on families with total segment length under 100.
+
+---
 
 ### 665. Witness family certificate soundness
 - **Effort**: 1-2 weeks
