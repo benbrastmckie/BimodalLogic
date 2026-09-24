@@ -41,6 +41,7 @@ def exceptions : List Name := [
   -- here would break that rule. The sibling aggregator `FormalSystem/ForMathlib.lean`, which sits
   -- beside the directory rather than under it, carries the import instead, so every *consumer* of
   -- this module still reaches `FormalSystem.Init`.
+  `FormalSystem.ForMathlib.Order.BallSpace,
   `FormalSystem.ForMathlib.Order.PFilter,
   `FormalSystem.ForMathlib.Topology.Sierpinski,
   -- `FormalSystem/Tactic/Attr.lean` declares the library's attributes and named simp sets, and

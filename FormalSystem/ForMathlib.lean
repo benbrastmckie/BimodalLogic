@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
+import FormalSystem.ForMathlib.Order.BallSpace
 import FormalSystem.ForMathlib.Order.PFilter
 import FormalSystem.ForMathlib.Topology.Sierpinski
 import FormalSystem.Init
@@ -24,6 +25,11 @@ strictly `Mathlib → ForMathlib → FormalSystem.* → downstream`.
 
 ## Contents
 
+* `FormalSystem.ForMathlib.Order.BallSpace` — ball spaces in the sense of Ćmiel, Kuhlmann and
+  Kuhlmann: nests (`Order.IsNest`), spherical completeness `S₁` over an arbitrary ball predicate
+  (`Order.SphericallyComplete`), cofinal nests (`Order.HasCofinalNest`), the hierarchy's
+  implication `S₁ᵈ → S₁` in members-witness form (`Order.IsNest.exists_subset_inter`) and the
+  reduction `Order.sInter_nonempty_of_sphericallyComplete`. Mathlib carries no ball-space API.
 * `FormalSystem.ForMathlib.Order.PFilter` — proper, maximal and prime filters
   (`Order.PFilter.IsProper`, `Order.PFilter.IsMaximal`, `Order.PrimeFilter`), the filter side of
   `Mathlib/Order/Ideal.lean` and `Mathlib/Order/PrimeIdeal.lean`.

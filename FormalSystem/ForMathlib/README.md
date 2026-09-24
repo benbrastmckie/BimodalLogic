@@ -35,7 +35,7 @@ C24 exception, listed in `scripts/CheckInitImportsMain.lean` and documented in
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/ForMathlib rows=subdirs cols=files-lines link=yes -->
 | Directory | Files | Lines | Role |
 |-----------|------:|------:|------|
-| [`Order/`](Order/README.md) | 1 | 270 | Proper, maximal and prime filters (`Order.PFilter.IsProper`, `Order.PFilter.IsMaximal`, `Order.PrimeFilter`) |
+| [`Order/`](Order/README.md) | 2 | 399 | Proper, maximal and prime filters (`Order.PFilter.IsProper`, `Order.PFilter.IsMaximal`, `Order.PrimeFilter`) |
 | [`Topology/`](Topology/README.md) | 1 | 245 | Sierpiński's theorem on countable closed partitions of the line (`Sierpinski.const_of_isClosed_levelSet`, `Sierpinski.const_of_countable_range`) |
 <!-- END GENERATED -->
 

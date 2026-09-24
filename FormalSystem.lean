@@ -12,6 +12,7 @@ import FormalSystem.Examples.BimodalProofs
 import FormalSystem.Examples.TemporalStructures
 import FormalSystem.Examples.Walkthrough
 import FormalSystem.ForMathlib
+import FormalSystem.ForMathlib.Order.BallSpace
 import FormalSystem.ForMathlib.Order.PFilter
 import FormalSystem.ForMathlib.Topology.Sierpinski
 import FormalSystem.HybridLanguage
