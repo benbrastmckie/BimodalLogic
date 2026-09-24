@@ -1230,7 +1230,13 @@ theorem limit (F : FrameOver D) [h : F.IsRegular] : TaskFrame.Limit F.TaskRel :=
 nonempty fibers and segments") at a regular frame. This is the one the Step Lemma consumes
 (`Semantics/Extension/Step.lean`), which is why the class field must be *literally*
 `TaskFrame.Saturation`: a restatement, however equivalent, would make that consumption fail to
-typecheck. Fibers and segments stay two separate classes. -/
+typecheck. Fibers and segments stay two separate classes.
+
+A re-export, not a consumption: the whole proof term is `h.saturation`, this class field under the
+name it carried before the general/regular split. The marker below records the one constraint the
+term reaches, which is the field itself.
+
+Constraints consumed: Saturation -/
 theorem saturation (F : FrameOver D) [h : F.IsRegular] : TaskFrame.Saturation F.TaskRel :=
   h.saturation
 
@@ -2642,7 +2648,12 @@ transcribed shape, so a consumer that spells the shape out still discharges agai
 theorem limit (F : TaskFrame) [F.IsRegular] : TaskFrame.Limit F.TaskRel := F.toFibre.limit
 
 /-- *Saturation* (`def:frame#Saturation`), by citation. This is the field the Step Lemma consumes,
-which is why it must be literally the recorded predicate. -/
+which is why it must be literally the recorded predicate.
+
+A re-export, not a consumption: the whole proof term is `F.toFibre.saturation`, the fibre's own
+field read at the total space.
+
+Constraints consumed: Saturation -/
 theorem saturation (F : TaskFrame) [F.IsRegular] : TaskFrame.Saturation F.TaskRel :=
   F.toFibre.saturation
 

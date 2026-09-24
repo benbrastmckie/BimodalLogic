@@ -308,7 +308,7 @@ record the measured pair; Phase 8 writes the measured numbers into
 
 ---
 
-### Phase 3: Mark the two field re-exports [NOT STARTED]
+### Phase 3: Mark the two field re-exports [COMPLETED]
 
 **Goal**: Clear the two rows that route (a) cannot reach in principle, by marking them honestly at
 the one field each projects and letting the new re-export rule discharge C34a.
