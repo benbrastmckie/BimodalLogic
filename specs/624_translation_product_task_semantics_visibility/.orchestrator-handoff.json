@@ -1,29 +1,18 @@
 {
-  "status": "researched",
-  "phase": "research",
-  "dispatch_seq": 1,
-  "summary": "Translation product is a live task frame at every FrameOver field and class (Saturation compiled); recurrence/transposition invisible to L, L+ and L* (L* settled); class validity equals validity over recurrence-free members at every tag; Limit idle beyond reflexivity of the zero task; coarse-model compatibility compiled; dense BLC countermodel scoped to the ordinal-budget colour structure's Saturation.",
+  "status": "planned",
+  "task_number": 624,
+  "phase": "plan",
+  "session_id": "sess_1790269483_76154e_624",
+  "dispatch_seq": 4,
+  "phases_completed": 0,
+  "phases_total": 3,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md",
-      "summary": "Verdict-first research report on what the translation product shows about the task semantics, with feature-by-language visibility table and recommendations for port, manuscript remark, and task 559."
-    },
-    {
-      "type": "implementation",
-      "path": "specs/624_translation_product_task_semantics_visibility/probes/01_translation-product-live.lean",
-      "summary": "Sorry-free probe against the live FormalSystem structures (53 declarations)."
-    },
-    {
-      "type": "implementation",
-      "path": "specs/624_translation_product_task_semantics_visibility/probes/02_limit-idle-mirror.lean",
-      "summary": "Sorry-free Mathlib-only mirror: Limit is idle beyond reflexivity of the zero task."
+      "type": "plan",
+      "path": "specs/624_translation_product_task_semantics_visibility/plans/01_translation-product-closeout.md",
+      "summary": "Three-phase closeout plan: verify the reconciliation ledger against the live tree, forward report section 2.4's three categorical questions to task 618, and write the closeout summary."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 0,
-  "blockers": [],
-  "plan_markers_verified": null,
-  "continuation_path": null,
-  "next_action_hint": "Plan phase: scope the FormalSystem port (Recommendation 1 of the report) as the implementation deliverable; route Recommendation 3 to task 559 and section 2.4 to task 618."
+  "next_steps": "Run /implement 624 to execute the plan",
+  "notes": "Task 624 is complete as research: recommendation 1 (the port) was delivered by task 645 (completed, three sorry-free modules in FormalSystem/), recommendation 3 is absorbed into task 559's description, and the Q5 residue plus the manuscript-remark question are carried by task 653 (completed). The only outstanding recommendation is number 4, the categorical pullback questions of report section 2.4, which task 618's description does not yet mention; phase 2 forwards it. No FormalSystem/ or Tests/ change is planned, per the task's own scope constraint."
 }

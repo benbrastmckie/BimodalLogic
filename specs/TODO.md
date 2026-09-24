@@ -6,7 +6,7 @@ next_project_number: 665
 
 ## Task Order
 
-*Updated 2026-09-23. Generated from state.json dependency graph.*
+*Updated 2026-09-24. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -98,8 +98,8 @@ next_project_number: 665
 
 ### Semantics
 
-624 [RESEARCHED] — RESEARCH TASK, verdict-first: what the translation product...
-662 [PLANNED] — Settle whether plain S1 suffices or directedness is forced,...
+624 [PLANNED] — RESEARCH TASK, verdict-first: what the translation product...
+662 [IMPLEMENTING] — Settle whether plain S1 suffices or directedness is forced,...
   └─ 663 [NOT STARTED] — Add a repo-wide hypothesis-honesty gate so no...
 
 ## Tasks
@@ -143,7 +143,7 @@ Out of scope: changing IsRegular's fields, and unbundling binders that are legit
 ---
 
 ### 662. S1 vs directedness and restore saturation
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 661
@@ -624,11 +624,12 @@ POST-RELOCATION NOTE (2026-09-21), written after this task's research. (A) LAYOU
 ---
 
 ### 624. Translation product task semantics visibility
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
 - **Research**: [624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md]
+- **Plan**: [624_translation_product_task_semantics_visibility/plans/01_translation-product-closeout.md]
 
 **Description**: RESEARCH TASK, verdict-first: what the translation product shows about the task semantics. Reports and sorry-free probe files under this task's directory only; no changes to FormalSystem/ or Tests/; do not begin implementation here.
 
