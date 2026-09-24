@@ -1,60 +1,47 @@
 {
-  "status": "partial",
-  "started_at": "2026-09-24T00:00:00Z",
-  "completed_at": "2026-09-24T10:57:04.362857",
-  "requires_user_review": true,
-  "blocked_phase": 3,
-  "review_reason": "Phase 3 is [BLOCKED]: the plan's pinned Challenge signature for `fib_subset_fib_of_compositional'` states a false proposition (countermodel recorded), and repairing it changes four pinned signatures, which plan-compliance.md reserves for the user. Phases 4, 5, 6, 9 and 10 sit behind it.",
+  "status": "implemented",
+  "started_at": "2026-09-24T18:12:32Z",
+  "completed_at": "2026-09-24T20:05:00Z",
   "verification": {
-    "verification_passed": false,
+    "verification_passed": true,
     "sorry_count": 0,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true,
-    "notes": "lake build exits 0 with zero errors and zero warnings; #print axioms is clean (propext, Classical.choice, Quot.sound) on every declaration landed; no new axioms (12 in FormalSystem/, unchanged). verification_passed is false ONLY because a phase is [BLOCKED], not because any check failed. Two gate failures are pre-existing and untouched by this task: check-module-invariants C5 (declaration names written in module-path shape in the gitignored .claude/ deploy copy of frame-constraint-landscape.md) and check-paper-definitions (one drifted anchor, def:id, in a manuscript file no commit here touches)."
+    "notes": "lake build exit 0, 2726 jobs, zero error: and zero warning: lines over both captured streams; every .olean for a module this task touched is newer than its source. #print axioms on all eighteen pinned declarations reports only propext, Classical.choice, Quot.sound (several report fewer). No new axioms: 12 in FormalSystem/, identical to the count at the task's first commit. The vacuous-pattern grep's single hit is FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal, a genuine theorem whose statement unfolds to True for the universal-domain example, last touched by a different task and not by this one. scripts/check-module-invariants.sh reports ALL CHECKS PASSED (C5, C15, C16, C24, C30, C33 and the generated inventory blocks included); lake exe runLinter FormalSystem reports Linting passed; readme-lint.sh, check-evidence-probes.sh, check-metalogic-cycles.sh and check-copyright-headers.sh all exit 0. check-paper-definitions.sh exits 1 on one pre-existing drifted anchor (def:id) in a manuscript file no commit of this task touches; docs/reference/paper-definitions-of-record.md is confirmed unmodified."
   },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/662_s1_vs_directedness_and_restore_saturation/summaries/02_restore-saturation-settle-nests-summary.md",
-      "summary": "Four of ten plan phases closed: the ForMathlib ball-space layer, the nest condition S1 with S1d -> S1 machine-checked, both witnesses shown to refute S1, the fibers-only candidate closed, and the in-.lean Completion advocacy reversed. Phase 3 blocked on a false pinned Challenge signature."
+      "summary": "All ten phases closed: S1 suffices over every countable domain so the directedness is not forced, no better fourth constraint exists, and Saturation is kept with Completion demoted to the derived condition."
     },
     {
-      "type": "handoff",
-      "path": "specs/662_s1_vs_directedness_and_restore_saturation/handoffs/phase-8-handoff-20260924105629.md",
-      "summary": "Dispatch-close handoff: what landed, what is blocked, what not to redo."
+      "type": "plan",
+      "path": "specs/662_s1_vs_directedness_and_restore_saturation/plans/02_restore-saturation-settle-nests.md",
+      "summary": "Ten-phase plan, all phases [COMPLETED], with per-phase Scope Hypothesis results and deviations recorded inline."
     }
   ],
   "modified_files": [
-    "FormalSystem/ForMathlib/Order/BallSpace.lean",
-    "FormalSystem/ForMathlib.lean",
-    "FormalSystem.lean",
-    "scripts/CheckInitImportsMain.lean",
+    "FormalSystem/Semantics/Extension/Constraint.lean",
+    "FormalSystem/Semantics/Extension/Completion.lean",
+    "FormalSystem/Semantics/Extension/Step.lean",
+    "FormalSystem/Semantics/Extension/Extension.lean",
+    "FormalSystem/Semantics/TaskFrame.lean",
+    "FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean",
+    "FormalSystem/Semantics.lean",
+    "FormalSystem/Semantics/Extension/README.md",
+    "FormalSystem/Semantics/StateTopology/README.md",
     "FormalSystem/ForMathlib/README.md",
     "FormalSystem/ForMathlib/Order/README.md",
     "FormalSystem/README.md",
     "README.md",
-    "FormalSystem/Semantics/TaskFrame.lean",
-    "FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean",
-    "FormalSystem/Semantics/StateTopology/README.md",
-    "FormalSystem/Semantics/Extension/Constraint.lean"
+    "docs/theorem-index.md",
+    "scripts/module-invariants-allowlist.txt"
   ],
-  "partial_progress": {
-    "stage": "phase_3_blocked",
-    "details": "Phases 1, 2, 7, 8 [COMPLETED] and committed; Phase 3 [BLOCKED] with its unprimed half landed and green; Phases 4, 5, 6, 9, 10 [NOT STARTED], all behind Phase 3.",
-    "phases_completed": 4,
-    "phases_total": 10
-  },
-  "handoff_path": "specs/662_s1_vs_directedness_and_restore_saturation/handoffs/phase-8-handoff-20260924105629.md",
-  "user_decision": {
-    "question": "Phase 3's pinned Lean Challenge signature for `PartialHistory.fib_subset_fib_of_compositional'` states a false proposition (countermodel recorded in the plan's Phase 3 BLOCKER block): the plan's ground for it -- that `F.reflection` is a `FrameOver` field needing no instance -- is false as measured, since both `FrameOver.reflection` and `TaskFrame.reflection` are derived theorems carrying `[F.IsRegular]` and proved from *Limit*. Adding a hypothesis to a pinned Challenge signature is a change `.claude/rules/plan-compliance.md` reserves for you.",
-    "options": [
-      "Add `(hlim : TaskFrame.Limit F.TaskRel)` beside `hcomp` on the four affected pinned signatures (`fib_subset_fib_of_compositional'`, `seg_subset_seg_of_compositional`, `hasCofinalNest_of_countable`, `sInter_constraints_nonempty_of_countable`) -- verified to elaborate, and the phase Goal is preserved because *Limit* is not *Saturation*",
-      "Take the reflection law itself as the hypothesis instead (`hrefl : forall w d u, F.TaskRel w d u <-> F.TaskRel u (-d) w`) -- equally sound, but not a `def:frame` constraint and so a less natural thing for a theorem to consume",
-      "Leave Phase 3 blocked and re-plan Phases 3-5 around a different decomposition"
-    ],
-    "recommended": "Add `(hlim : TaskFrame.Limit F.TaskRel)` beside `hcomp` on the four affected pinned signatures (`fib_subset_fib_of_compositional'`, `seg_subset_seg_of_compositional`, `hasCofinalNest_of_countable`, `sInter_constraints_nonempty_of_countable`) -- verified to elaborate, and the phase Goal is preserved because *Limit* is not *Saturation*",
-    "blocking": true
+  "completion_data": {
+    "completion_summary": "Settled that the task frame's fourth constraint need not be directed: over any history with countably many times -- hence over both instantiated carriers, Z-time and Q-time -- the standard nest condition S1 buys exactly what the directed S1d buys at lem:step, so the directedness is kept on the naturalness criterion rather than extracted from a theorem. No candidate better than Saturation was found: Completion loses because its hypothesis clause is def:world-history's clause verbatim and it is provably equivalent to the success of the construction its own theorem performs, and the fibers-only weakening loses because segments are load bearing. Saturation is therefore kept as def:frame's constraint with Completion demoted to the derived condition, and the extension chain's prose, the theorem index and four module READMEs were reversed to match.",
+    "roadmap_items": []
   },
   "metadata": {
     "session_id": "sess_1790269483_76154e",
@@ -65,6 +52,7 @@
       "implement",
       "skill-lean-implementation"
     ],
-    "compliance_check": "passed"
+    "compliance_check": "passed",
+    "dispatch_seq": 10
   }
 }

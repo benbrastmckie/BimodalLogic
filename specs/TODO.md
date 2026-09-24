@@ -11,8 +11,8 @@ next_project_number: 668
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,662,664,665,667 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,623,650,663,666 | 298,464,502,563,649,662,665 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,663,664,665,667 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,623,650,666 | 298,464,502,563,649,665 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -101,8 +101,7 @@ next_project_number: 668
 
 ### Semantics
 
-662 [IMPLEMENTING] — Settle whether plain S1 suffices or directedness is forced,...
-  └─ 663 [NOT STARTED] — Add a repo-wide hypothesis-honesty gate so no...
+663 [NOT STARTED] — Add a repo-wide hypothesis-honesty gate so no...
 
 ## Tasks
 
@@ -216,7 +215,7 @@ Out of scope: changing IsRegular's fields, and unbundling binders that are legit
 ---
 
 ### 662. S1 vs directedness and restore saturation
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 661
