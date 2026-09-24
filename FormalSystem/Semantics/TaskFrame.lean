@@ -935,6 +935,8 @@ directly.
 
 It is stated over a bare relation and placed ahead of the `FrameOver` structure so that the
 fibre-level `FrameOver.nullity` can be read off the `serial` and `limit` fields directly.
+
+Constraints consumed: Seriality, Limit
 -/
 theorem nullity_of_serial_limit {W : Type} {R : W → D → W → Prop}
     (hSer : Serial R)
@@ -1250,6 +1252,8 @@ example (F : FrameOver D) [F.IsRegular] : TaskFrame.Saturation F.TaskRel := F.sa
 
 Derived, not postulated: *Seriality* at `x = 0` plus *Limit*, via
 `TaskFrame.nullity_of_serial_limit`. Choice-free.
+
+Constraints consumed: Seriality, Limit
 -/
 theorem nullity (F : FrameOver D) [F.IsRegular] (w : F.WorldState) : F.TaskRel w 0 w :=
   TaskFrame.nullity_of_serial_limit F.serial F.limit w
@@ -1337,6 +1341,8 @@ apparatus, and the extension chain's *Limit* consumption is entirely traceable t
 It is *Limit* that the zero case consumes, i.e. `def:frame`'s third constraint; the law itself is
 the reflection convention of `def:task-relation`.
 
+Constraints consumed: Limit
+
 Paper: `def:task-relation`
 -/
 theorem reflection_of_limit (F : FrameOver D) (hlim : TaskFrame.Limit F.TaskRel)
@@ -1365,6 +1371,8 @@ hypothesis `u ⇒_0 w` gives `u = w` and is then itself the reflected instance.
 
 *Limit* is the sole constraint consumed: this is `reflection_of_limit F F.limit` with the
 `IsRegular` instance supplying the hypothesis, and nothing else is used.
+
+Constraints consumed: Limit
 -/
 theorem reflection (F : FrameOver D) [F.IsRegular] (w : F.WorldState) (d : ↑D)
     (u : F.WorldState) : F.TaskRel w d u ↔ F.TaskRel u (-d) w :=

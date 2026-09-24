@@ -354,7 +354,7 @@ intend and must be diagnosed before Phase 4.
 
 ---
 
-### Phase 4: Mark the two rows whose binder-free twins already exist [NOT STARTED]
+### Phase 4: Mark the two rows whose binder-free twins already exist [COMPLETED]
 
 **Goal**: Clear `FrameOver.nullity` and `FrameOver.reflection` at zero Lean cost, by marking them
 and the twins they already name so the existing delegation rule discharges C34a.
