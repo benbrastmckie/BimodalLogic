@@ -69,10 +69,11 @@ next_project_number: 669
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-665 [NOT STARTED] — Prove soundness of witness-family certificates: a labelled...
+665 [RESEARCHED] — Prove soundness of witness-family certificates: a labelled...
   └─ 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
-  └─ 666 [NOT STARTED] — Add a certificate re-verification executable, lake exe... (also depends on 667)
-667 [NOT STARTED] — Run the four branch gates on the tableau bridge's invalid...
+  └─ 666 [NOT STARTED] — Add a certificate re-verification executable, lake exe...
+667 [RESEARCHING] — Run the four branch gates on the tableau bridge's invalid...
+  └─ 666 [NOT STARTED] — Add a certificate re-verification executable, lake exe... (see above)
 
 ### Formula Refactor
 
@@ -103,7 +104,7 @@ next_project_number: 669
 
 ### 667. Tableau bridge branch gates and frame class
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -142,10 +143,11 @@ ACCEPTANCE. Round-trip test: the non-vacuity family from the soundness task seri
 
 ### 665. Witness family certificate soundness
 - **Effort**: 1-2 weeks
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
+- **Research**: [665_witness_family_certificate_soundness/reports/01_witness-family-certificate-soundness.md]
 
 **Description**: Prove soundness of witness-family certificates: a labelled bi-lasso family satisfying local coherence, fulfilment and box faithfulness presents a ShiftSet model over intOrder whose truth agrees with the labels on the subformula closure, so any such family refutes a Z-time consequence. This is the soundness half of the quasimodel / ShiftSet route, split out from task 623 so that it lands first and independently; 623 keeps the completeness (compression) half and the Decidable (ValidZTime) assembly.
 

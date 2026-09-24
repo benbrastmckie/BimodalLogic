@@ -1,0 +1,33 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/665_witness_family_certificate_soundness/reports/01_witness-family-certificate-soundness.md",
+      "summary": "T1/T1' machine-verified sorry-free in a compiled spike; T2 is a ~650-line label-only transposition of BiLasso/Decide.lean; T3's negative #guard is infeasible by ~12 orders of magnitude and needs a scope decision."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/665_witness_family_certificate_soundness/evidence/t1-agreement-spike.lean",
+      "summary": "262-line compiled spike: WitnessFamily.std ShiftSet, the agreement induction through ShiftSet.forward_repr, and the three consequence corollaries; zero sorry, axioms [propext, Classical.choice, Quot.sound]."
+    }
+  ],
+  "user_decision": {
+    "question": "T3's second deliverable -- a #guard that no witness family with all segment lengths <= 2 exists for the negation of MF -- is computationally infeasible: subformulaClosure(MF.neg) has card 10, so up to 1024^6 (~1.2e18) label assignments must be enumerated for a single lasso. Which substitute should the plan carry?",
+    "options": [
+      "Prove a theorem no_witnessFamily_of_MF_neg directly (BoxFaithful makes bx a global constant, so MF.neg's two box clauses are contradictory at any single family) -- recommended",
+      "Hand-build a rejected family and #guard !decide (...), mirroring BiLasso/Examples.lean's negAnnot -- recommended alongside option 1",
+      "Keep the enumeration but shrink to segment lengths exactly (1,0,1) over a hand-picked 2-formula sub-closure (smoke test only)",
+      "Keep the acceptance criterion as written and accept that the #guard will not terminate"
+    ],
+    "blocking": false,
+    "recommendation": "Options 1 and 2 together. They deliver the content T3 was reaching for -- a real impossibility result plus genuine predicate separation -- at no enumeration cost."
+  },
+  "metadata": {
+    "session_id": "sess_1790290549_f9337e06_665",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
