@@ -2,7 +2,7 @@
 
 - **Task**: 663 - Add a repo-wide hypothesis-honesty gate so no constraint-independence claim
   silently carries the bundling `IsRegular` class
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 11 hours
 - **Dependencies**: Task "settle S1 vs directedness and restore Saturation" (landed; its Phase 3
   established the explicit-hypothesis-plus-corollary pattern this plan generalizes)
@@ -173,43 +173,59 @@ Phase 3 owns `FormalSystem/Semantics/Extension/Constraint.lean`, Phase 5 owns
 
 ---
 
-### Phase 1: Re-measure the population and land the C34 census reporter [NOT STARTED]
+### Phase 1: Re-measure the population and land the C34 census reporter [COMPLETED]
 
 **Goal**: Replace every inherited count with a freshly measured one, and make the measurement
 re-runnable by landing it as the ungated census half of C34 rather than as prose in an artifact.
 
 **Tasks**:
-- [ ] Re-measure the binder population from the current tree: total bracketed `IsRegular`
+- [x] Re-measure the binder population from the current tree: total bracketed `IsRegular`
       occurrences and the file count, via
       `grep -rnE '\[[^]]*IsRegular[^]]*\]' --include=*.lean FormalSystem/ Tests/`. Record what the
       tree says today; do NOT reconcile against the report's or this plan's figures.
-- [ ] Re-locate `class IsRegular` and confirm its four fields are still `comp`, `serial`, `limit`,
+      *(measured: 259 occurrences across 47 files; led by `Semantics/TaskFrame.lean` 47,
+      `Frames/TranslationProduct.lean` 24, `Semantics/IntTransfer.lean` 14,
+      `Extension/Constraint.lean` 14, `Semantics/Validity.lean` 11, `PlusLanguage/PlusPasting.lean` 11.
+      C34's declaration-level census reads 212 binder-carrying declarations in 46 files — the raw
+      grep counts `variable`-block binders and multiple binders per declaration too.)*
+- [x] Re-locate `class IsRegular` and confirm its four fields are still `comp`, `serial`, `limit`,
       `saturation`. If a field has changed, STOP and report — the marker vocabulary is derived from
-      this list.
-- [ ] Re-confirm the eight fix sites exist at the names pinned in `## Lean Challenge Statements`
+      this list. *(confirmed: `FormalSystem/Semantics/TaskFrame.lean:1170`, all four fields
+      unchanged; the line has drifted from the description's 1044.)*
+- [x] Re-confirm the eight fix sites exist at the names pinned in `## Lean Challenge Statements`
       below (`fib_zero_subset`, `fib_zero_subset_of_mem_Constraints`, `nonempty_fib_of_serial`,
       `nonempty_seg_of_interpolates`, `nonempty_of_mem_Constraints`, `exists_mem_subset_inter`,
       `constraint` in `Constraint.lean`; `admissible` in `Admissible.lean`) and still carry
       `[F.IsRegular]`. Record any that have moved or already been fixed.
-- [ ] Confirm the highest allocated invariant number in `scripts/check-module-invariants.sh` is
+      *(all eight confirmed present and still binder-carrying: `Constraint.lean` 250, 301, 332,
+      350, 365, 409, 528; `Admissible.lean` 301. None already fixed; fix set neither grew nor
+      shrank.)*
+- [x] Confirm the highest allocated invariant number in `scripts/check-module-invariants.sh` is
       still C33, so C34 is the correct next allocation. If a higher one exists, take the next free
       number and use it consistently everywhere below.
-- [ ] Add the C34 block to `scripts/check-module-invariants.sh`, CENSUS PORTION ONLY: a table-driven
+- [x] Add the C34 block to `scripts/check-module-invariants.sh`, CENSUS PORTION ONLY: a table-driven
       `(class, field-vocabulary)` header (one row: `IsRegular` ->
       `{Compositionality, Seriality, Limit, Saturation}`), the walk via
       `scripts/lib/live_walk.py::live_files`, declaration spans via
       `scripts/lib/lean_citations.py::decl_spans`, and comment masking via
       `scripts/lib/lean_debug_artifacts.py::mask` / `comments_only`.
-- [ ] Print the census at every run, never gated: total bracketed-binder sites; sites carrying a
+- [x] Print the census at every run, never gated: total bracketed-binder sites; sites carrying a
       `Constraints consumed:` marker; marked-and-*Saturation*-free sites; unmarked binder sites.
-- [ ] Add the anti-silence guard (exit 2, NOT suppressed by `ENFORCE_C34=0`): an empty walk, or zero
+- [x] Add the anti-silence guard (exit 2, NOT suppressed by `ENFORCE_C34=0`): an empty walk, or zero
       declaration spans recovered, is a broken matcher and fails loudly. Zero markers is expected at
       this phase and must NOT trip the guard yet — guard on walk and span recovery only.
-- [ ] Add a fixture self-test alongside the existing per-check self-tests, with at minimum: a
+      *(deviation: altered — a third condition was added, zero bracketed binder sites recovered.
+      It is the same broken-matcher signal as the two the plan names and is disjoint from the
+      zero-marker case the plan carves out; all three exit-2 paths were exercised.)*
+- [x] Add a fixture self-test alongside the existing per-check self-tests, with at minimum: a
       bracketed-binder declaration (must match), a declaration whose CONCLUSION mentions `IsRegular`
       (must not match), and a `variable` block binder (must not be counted as a declaration site).
-- [ ] Run `bash scripts/check-module-invariants.sh` and confirm C34 reports without failing and
-      without perturbing any existing check's status.
+      *(nine fixtures landed, covering all three required cases plus a docstring-quoted binder, an
+      in-proof `haveI` mention, `None`, a malformed vocabulary token, and an `@[simp]`-attributed
+      declaration whose doc block must stay attached.)*
+- [x] Run `bash scripts/check-module-invariants.sh` and confirm C34 reports without failing and
+      without perturbing any existing check's status. *(`--no-build` pass: ALL CHECKS PASSED,
+      exit 0, zero FAIL lines; C34 prints its census as an ungated `INFO`.)*
 
 **Timing**: 2 hours
 
