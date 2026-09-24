@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 4,
+  "summary": "Wrote a 7-phase implementation plan for task 667: library/Main split of the tableau bridge, an eight-boolean BranchGates object on both invalid arms with \"gated\" as the full theorem-hypothesis conjunction, fallible frame-class parsing accepting RTime, acceptance tests, and documentation.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/667_tableau_bridge_branch_gates_and_frame_class/plans/01_branch-gates-frame-class.md",
+      "summary": "7-phase plan: module split, BranchGates evaluator, handler wiring, frame-class rejection, tests, docs, full gate."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 7,
+  "blockers": []
+}
