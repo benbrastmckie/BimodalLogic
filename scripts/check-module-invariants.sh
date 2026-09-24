@@ -110,8 +110,10 @@
 #   C34 No constraint-independence claim over a bundling class. C34a (enforced): a
 #       `Constraints consumed:` marker omitting a constraint sits over no binder that
 #       supplies it, unless it DELEGATES to a declaration carrying the identical list
-#       and no such binder. C34b (soft): every bracketed-binder declaration whose
-#       docstring reads as a constraint claim carries a marker line. Bracketed-binder
+#       and no such binder, or RE-EXPORTS one field of the class as its whole proof
+#       term with a marker naming exactly that field. C34b (enforced): every
+#       bracketed-binder declaration whose docstring reads as a constraint claim
+#       carries a marker line. Bracketed-binder
 #       only, so an `IsRegular`-CONCLUDING declaration is out of scope; comment-masked,
 #       so the marker's own explanatory prose is not a self-failure. An ungated census
 #       of the binder population prints at every run
@@ -726,23 +728,28 @@ ENFORCE_C33=${ENFORCE_C33:-1} # the generated library root FormalSystem.lean is 
 # C34 asserts hypothesis honesty over a bundling constraint class, in two halves with two flags.
 #
 # C34a (STRUCTURAL, enforced) -- a `Constraints consumed:` marker omitting a constraint must not
-# sit over a binder that supplies it. Its discharge is DELEGATION: a binder-carrying declaration
-# passes when its code names a declaration carrying the identical marker list and mentioning no
-# bundling class, which is the corollary-with-a-binder-free-twin arrangement that makes such a
-# claim honest in the first place. A bare claim over a binder, delegating to nothing, fails. The
-# tree satisfies this the day the check lands, so it ships ENFORCED on the C31/C32/C33 precedent.
+# sit over a binder that supplies it. It has TWO discharges. DELEGATION: the declaration's code
+# names a declaration carrying the identical marker list and mentioning no bundling class, which
+# is the corollary-with-a-binder-free-twin arrangement that makes such a claim honest in the first
+# place. FIELD RE-EXPORT: the declaration's whole proof term is one field projection off its own
+# bound instance, and its marker names exactly that field's constraint -- a re-export of a field
+# is not a claim about consumption, and delegation cannot reach one even in principle, since any
+# restatement of "the class supplies this field" must name the class. A bare claim over a binder,
+# discharged by neither, fails. The tree satisfies this the day the check lands, so it ships
+# ENFORCED on the C31/C32/C33 precedent.
 #
-# C34b (TRIGGER, not yet enforced) -- a bracketed-binder declaration whose docstring reads as a
+# C34b (TRIGGER, enforced) -- a bracketed-binder declaration whose docstring reads as a
 # constraint claim must carry a marker line. This half is a trigger, never a verdict: its only
 # remedy is a marker line, so a false positive costs one line of docstring and never a redesign.
-# It ships at 0 with its hit list printed because the residual's honest remedy is a binder-free
+# It shipped soft at 0 for one window, because the residual's honest remedy was a binder-free
 # restatement rather than a marker -- the soft-then-enforced ladder C24 and C9D already occupy.
-# Flip it to 1 once the printed list is clear; do not narrow the heuristic to quiet a row.
+# That residual is now clear and the default is 1; `ENFORCE_C34B=0` still softens it for a local
+# investigation. Do not narrow the heuristic to quiet a row.
 #
 # NOTE: a fixture-self-test failure, an empty walk, zero declaration spans, zero bracketed binder
 # sites, or zero markers exits 2, and exit 2 is NOT suppressed by either flag.
 ENFORCE_C34A=${ENFORCE_C34A:-1} # no independence claim propped up by a bundling binder (enforced)
-ENFORCE_C34B=${ENFORCE_C34B:-0} # every binder-carrying claim carries a marker (not yet enforced)
+ENFORCE_C34B=${ENFORCE_C34B:-1} # every binder-carrying claim carries a marker (enforced)
 export ENFORCE_C34A ENFORCE_C34B
 # C16's second half widens the env_linter batch beyond the single `FormalSystem` library root to
 # every root declared in lakefile.toml -- the other library root and all thirteen `lean_exe`
@@ -5475,7 +5482,7 @@ from lean_debug_artifacts import mask, comments_only  # noqa: E402
 
 ROOTS = ("FormalSystem", "Tests")
 ENFORCE_A = os.environ.get("ENFORCE_C34A", "1") == "1"
-ENFORCE_B = os.environ.get("ENFORCE_C34B", "0") == "1"
+ENFORCE_B = os.environ.get("ENFORCE_C34B", "1") == "1"
 
 # (class, field-vocabulary): the closed, case-sensitive marker vocabulary each bundling class
 # stands for. One row today; a second bundling class is a second row.
@@ -5949,7 +5956,7 @@ if hits:
     print("            binder supplies, the declaration needs a binder-free twin first -- see")
     print("            docs/development/REFERENCE_NORMAL_FORM.md's constraint-consumption form")
     if not ENFORCE_B:
-        print("            set ENFORCE_C34B=1 to make this exit-code-affecting once the list is clear")
+        print("            (softened: ENFORCE_C34B=0 is set, so this is not exit-code-affecting)")
     failed = failed or ENFORCE_B
 else:
     print(f"PASS  C34b no unmarked binder-carrying declaration reads as a constraint claim")

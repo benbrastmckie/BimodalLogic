@@ -566,7 +566,7 @@ with no remaining projection off `F`, and by the gate's hit list naming neither 
 
 ---
 
-### Phase 8: Flip `ENFORCE_C34B=1`, document the discharge vocabulary, close on the full gate set [NOT STARTED]
+### Phase 8: Flip `ENFORCE_C34B=1`, document the discharge vocabulary, close on the full gate set [COMPLETED]
 
 **Goal**: Make the trigger half enforced once the measured residual is zero, and leave the two
 documents describing what the gate actually does rather than what it was going to do.
@@ -635,6 +635,9 @@ inspection.
   discharge-vocabulary sentence
 - `docs/development/REFERENCE_NORMAL_FORM.md` - section 3: the enumerated discharge rules with
   measured surfaces, the deferred broad rule, the corrected cross-reference
+- `README.md` - the generated inventory block, regenerated via `--emit-inventory`
+  *(deviation: altered — not in the declared file list; the three new declarations made the
+  INV check's committed line counts stale, and regenerating is the remedy INV itself names)*
 
 **Verification**:
 - Full `lake build` exits 0: zero errors, zero warnings, sorry-free, `axiom_count` 14

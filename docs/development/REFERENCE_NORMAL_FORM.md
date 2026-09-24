@@ -173,21 +173,60 @@ marker line therefore lists `Saturation`, and sits beside that sentence rather t
 Inside the declaration's own `/--` block, not a `/-!` module block and not a `--` comment beside
 the statement: **check C34 of `scripts/check-module-invariants.sh` gates this**, and it reads the
 block through the same declaration-span machinery C20 uses, walking back past any `@[…]`
-attribute lines. C34 has two assertions and a census:
+attribute lines. C34 has two assertions and a census, and **both assertions are enforced**:
 
-- **C34a** — a marker whose list omits a constraint must sit over a declaration whose code does
-  not carry the bundling class at all. The scan runs from the declaration's keyword line to the
-  end of its span with comments masked, so the docstring's own prose is excluded by construction
-  and an in-proof `haveI : F.IsRegular` is caught.
+- **C34a** — a marker whose list omits a constraint its own binder supplies must be
+  *discharged*. The scan runs from the declaration's keyword line to the end of its span with
+  comments masked, so the docstring's own prose is excluded by construction and an in-proof
+  `haveI : F.IsRegular` is caught; it truncates at the first top-level command after the keyword
+  line, `example` and `omit` included, so a neighbouring anonymous declaration's binder is never
+  attributed to it. There are exactly three ways a marker passes, and the gate's own `PASS C34a`
+  line reports the live count of each:
+  1. **The marker omits nothing.** An all-four list claims nothing and is exempt by
+     construction. *Measured live surface: 7 declarations.*
+  2. **Delegation to a binder-free twin.** The declaration's code names another declaration
+     carrying the *identical* marker list and mentioning no bundling class anywhere in its span.
+     This is the fix pattern of record — prove the claim at the explicit hypotheses the proof
+     consumes, keep the binder-carrying original as a one-line corollary whose signature line is
+     byte-identical so no call site moves — and it is what keeps C34a from failing on exactly
+     the arrangement that makes such a claim honest. *Measured live surface: 18 declarations.*
+  3. **Field re-export.** A declaration whose whole proof term is one field projection off its
+     own bound instance or off the binder's subject (`h.saturation`, `F.toFibre.saturation`),
+     marked at exactly that one field's constraint. Re-exporting a field is not a claim about
+     consumption: the declaration *is* that field, under the name it carried before the bundling
+     class existed. Rule 2 cannot reach these even in principle, because any restatement of "the
+     class supplies this field" must name the class and so cannot be a binder-free twin. Narrow
+     and fail-closed at every step: exactly one bundling class in the binders, exactly one `:=`
+     in the span, a tail matching the projection shape *in full* (so a body that applies a
+     further lemma to the projection is not a re-export), no other field of the class anywhere in
+     the projection chain, and the marker naming exactly the one projected field. *Measured live
+     surface: 8 declarations recognizable tree-wide, 2 of them marked and discharging today.*
 - **C34b** — a declaration carrying a bracketed `[F.IsRegular]` binder whose docstring reads as
   an independence claim must carry a marker line. This half is a *trigger*, never a verdict: its
   only remedy is a marker line, so a false positive costs one line and nothing else.
 - an **ungated census** of the binder population, printed at every run, which is the re-runnable
   classification record rather than a one-time human read.
 
-See [MODULE_INVARIANTS.md](MODULE_INVARIANTS.md)'s `C34a (enforced) / C34b (soft)` row for the
-full rationale: why the marker lives at the site rather than in a central manifest, why it is a
-docstring line rather than a Lean attribute, and why the trigger half ships soft. Retrofitting the line onto an
+**Considered and deferred: the broad projection rule.** A wider version of rule 3 — a
+declaration passes when its marker names exactly the class fields its body projects, with no
+requirement that the projection be the whole proof term — was measured and declined. On this tree
+it would auto-discharge 46 of the 212 binder-carrying declarations, against 8 for the narrow
+re-export form, so it is a genuine widening of the gate's discharge vocabulary rather than a
+restatement of it. What decided it is a blind spot the measurement does not show: *transitive*
+consumption through a called declaration carrying its own `[F.IsRegular]` binder is invisible to
+any projection scan, so the broad rule would silently certify a marker whose elaborated term
+reaches a constraint through a callee. Rule 2 shares that blind spot and is recorded here as
+doing so; the narrow form at least confines it to declarations whose entire proof term is one
+visible projection.
+
+**A follow-up, recorded rather than filed.** Six of the eight recognizable field re-exports —
+`FrameOver.comp`/`serial`/`limit` and their `TaskFrame` counterparts — carry no marker. None
+triggers C34b, so none is required; marking them would exercise rule 3 across its whole surface
+rather than only the *Saturation* pair that could not be reached any other way.
+
+See [MODULE_INVARIANTS.md](MODULE_INVARIANTS.md)'s `C34a / C34b (both enforced)` row for the
+full rationale: why the marker lives at the site rather than in a central manifest, and why it is
+a docstring line rather than a Lean attribute. Retrofitting the line onto an
 ordinary ambient theorem is permitted by this form and required by nothing: `[F.IsRegular]` is
 the correct hypothesis for a soundness, validity or transfer result, and the defect the form
 exists to catch is the *conjunction* of an independence claim with the bundling class, never the
