@@ -8,6 +8,10 @@ import BimodalTools.DatasetGenerator
 import BimodalTools.DataExport
 import BimodalTools.ProofStepExtractor
 import BimodalTools.EnrichedCountermodel
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.BranchOrder
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.BoxSaturation
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.RegionLabel
+import FormalSystem.Metalogic.Decidability.Verified.Bridge.TemporalGate
 
 /-!
 # Tableau Bridge: REPL for Live Formula Queries
@@ -66,6 +70,7 @@ namespace BimodalTools.TableauBridge
 open FormalSystem.Syntax
 open FormalSystem.ProofSystem
 open FormalSystem.Metalogic.Decidability
+open FormalSystem.Metalogic.Decidability.Verified.Bridge
 open FormalSystem.Automation
 open BimodalTools.DataExport
 open BimodalTools.ProofStepExtractor
@@ -293,14 +298,27 @@ structure BridgeRequest where
 
 /--
 Parse a frame class string to a `FrameClass` value.
-Unrecognized strings default to `.Base`.
+
+The accepted vocabulary is exactly `"Base"`, `"Dense"`, `"ZTime"`, `"Discrete"` and `"RTime"`.
+`"Discrete"` is an accepted alias for `"ZTime"`; `"RTime"` is the Dedekind class, which the
+tableau engine genuinely supports (`allRulesForFC` has a live `rTimeRules` arm). `ZTime` and
+`RTime` are *incomparable* in `FrameClass`'s partial order (`FormalSystem/ProofSystem/Axioms.lean`,
+the `LE FrameClass` instance), so neither is an alias for the other.
+
+Every other string is **rejected** with an `.error`, which `parseRequest` propagates and
+`replLoop` renders as `{"status": "error", "message": ...}`. This replaces an earlier
+silent `_ => .Base` fallback, under which a request at `"RTime"` — or at a typo — was decided
+at `.Base` and answered as though the requested class had been honoured.
 -/
-def parseFrameClass (s : String) : FrameClass :=
+def parseFrameClass (s : String) : Except String FrameClass :=
   match s with
-  | "Dense" => .Dense
-  | "ZTime" => .ZTime
-  | "Discrete" => .ZTime
-  | _ => .Base
+  | "Base" => .ok .Base
+  | "Dense" => .ok .Dense
+  | "ZTime" => .ok .ZTime
+  | "Discrete" => .ok .ZTime
+  | "RTime" => .ok .RTime
+  | _ =>
+    .error s!"unknown frame_class: '{s}' (expected one of: Base, Dense, ZTime, Discrete, RTime)"
 
 /--
 Parse a command string to a `BridgeCommand`.
@@ -379,7 +397,7 @@ partial def parseRequest (line : String) : Except String BridgeRequest := do
       st := st'
     else if key == "frame_class" then
       let (val, st') ← pString st'
-      frameClass := parseFrameClass val
+      frameClass ← parseFrameClass val
       st := st'
     else if key == "timeout_ms" then
       let (_val, st') ← pNat st'
@@ -417,50 +435,175 @@ def mkPongResponse : String :=
   "{\"status\": \"pong\"}"
 
 /-!
+## Branch Gates
+
+An `"invalid"` verdict is produced from a saturated open branch. That branch refutes the formula
+*as a Lean theorem* only when the branch also satisfies the hypothesis bundle of
+`not_valid_of_hasOpen_int` / `not_validZTime_of_hasOpen_int`
+(`FormalSystem/Metalogic/Decidability/Verified/Bridge/IntTruth.lean`). The bridge evaluates that
+bundle and reports it, so a consumer can tell a theorem-backed refutation from a heuristic one.
+-/
+
+/--
+The hypothesis bundle of `not_valid_of_hasOpen_int` / `not_validZTime_of_hasOpen_int`, evaluated
+as booleans on the open saturated branch a `.invalid` verdict came from.
+
+The task's protocol change names four gates (`timeOrderTotal`, `boxAnchoredCheck`,
+`regionLabelCheck`, `temporalWitnessCheck`); each keeps its own field here. The remaining four
+fields are the rest of what the two theorems actually consume, and they are not redundant:
+`branchOrderValid` is strictly **stronger** than `timeOrderTotal` (a cycle makes every time
+reachable from every other, so `timeOrderTotal` reports `true` on an inconsistent order while
+`branchOrderValid` rejects it on irreflexivity — pinned in
+`Tests/BimodalTest/Metalogic/Decidability/Verified/BridgeProbes.lean`). Reporting only the four
+named gates would therefore let a cyclic time order be read as theorem-backed.
+
+`gated` is accordingly the conjunction of all eight fields, and it is exactly the claim
+"`not_valid_of_hasOpen_int` (and, at `.ZTime`, `not_validZTime_of_hasOpen_int`) applies to this
+branch". `gated = false` means the `"invalid"` verdict is the decision procedure's own and is
+*not* backed by either theorem; it is not a claim that the formula is valid.
+-/
+structure BranchGates where
+  /-- `timeOrderTotal b ord`: every pair of known times is comparable under `ord`. -/
+  timeOrderTotal : Bool
+  /-- `boxAnchoredCheck b`: every `□`-obligation is anchored at a known world. -/
+  boxAnchored : Bool
+  /-- `regionLabelCheck b ord`: the branch's labels agree with the region structure. -/
+  regionLabel : Bool
+  /-- `temporalWitnessCheck b ord`: every eventuality has its witness on the branch. -/
+  temporalWitness : Bool
+  /-- `branchOrderValid b ord` (`hV`): total **and** irreflexive **and** transitive. Strictly
+      stronger than `timeOrderTotal`; see this structure's docstring. -/
+  branchOrderValid : Bool
+  /-- `findUnexpanded b (timeOrd := ord) = none` (`hSat`).
+
+      Computed at `findUnexpanded`'s **default** `fc := .Base`, deliberately *not* at the
+      request's frame class. That is how `not_valid_of_hasOpen_int` states `hSat`: its `fc`
+      argument is threaded to `hOpen`/`findClosure`, while `hSat` is written without one and so
+      takes the default. `ExpandedTableau.hasOpen` carries its own saturation certificate at the
+      tableau's actual `fc`; that is a different proposition, and computing it here would make
+      `gated` a claim the theorem does not license. -/
+  saturated : Bool
+  /-- `findClosure b fc = none` (`hOpen`), at the **request's** frame class — this is the one the
+      theorem takes as an explicit argument. -/
+  noClosure : Bool
+  /-- The root-denial pair `hw₀`/`hroot`: `F(φ)` sits on the branch at `Label.initial`, and that
+      label's world is among the branch's known worlds. Both are needed, so they are reported as
+      one field rather than split. -/
+  rootDenied : Bool
+  deriving Repr, DecidableEq
+
+/--
+`true` exactly when every hypothesis of `not_valid_of_hasOpen_int` /
+`not_validZTime_of_hasOpen_int` holds on the branch — i.e. when the `"invalid"` verdict is
+theorem-backed rather than heuristic.
+-/
+def BranchGates.gated (g : BranchGates) : Bool :=
+  g.timeOrderTotal && g.boxAnchored && g.regionLabel && g.temporalWitness
+    && g.branchOrderValid && g.saturated && g.noClosure && g.rootDenied
+
+/-- Serialize the gates as a JSON object: one key per field, plus `"gated"`. -/
+def BranchGates.toJson (g : BranchGates) : String :=
+  "{\"time_order_total\": " ++ toString g.timeOrderTotal
+  ++ ", \"box_anchored_check\": " ++ toString g.boxAnchored
+  ++ ", \"region_label_check\": " ++ toString g.regionLabel
+  ++ ", \"temporal_witness_check\": " ++ toString g.temporalWitness
+  ++ ", \"branch_order_valid\": " ++ toString g.branchOrderValid
+  ++ ", \"saturated\": " ++ toString g.saturated
+  ++ ", \"no_closure\": " ++ toString g.noClosure
+  ++ ", \"root_denied\": " ++ toString g.rootDenied
+  ++ ", \"gated\": " ++ toString g.gated
+  ++ "}"
+
+/--
+Evaluate the eight hypotheses on a branch already in hand.
+
+`fc` is the frame class the tableau was built at; it reaches `findClosure` only. See
+`BranchGates.saturated`'s docstring for why `findUnexpanded` is *not* given it.
+-/
+def gatesOfBranch (φ : Formula) (b : Branch) (ord : TimeOrdering) (fc : FrameClass) :
+    BranchGates :=
+  { timeOrderTotal := timeOrderTotal b ord
+  , boxAnchored := boxAnchoredCheck b
+  , regionLabel := regionLabelCheck b ord
+  , temporalWitness := temporalWitnessCheck b ord
+  , branchOrderValid := branchOrderValid b ord
+  , saturated := (findUnexpanded b (timeOrd := ord)).isNone
+  , noClosure := (findClosure b fc).isNone
+  , rootDenied := b.hasNegAt φ Label.initial && b.knownWorlds.contains Label.initial.world
+  }
+
+/--
+Rebuild the tableau for `φ` at `fc` and evaluate the gates on its open branch.
+
+`buildTableau φ (soundFuel φ) fc` is the exact call `decideAuto` makes (via `decide`), and
+`buildTableau` is pure and total, so the branch recovered here is the same one the `.invalid`
+verdict came from. `DecisionResult` discards the branch and the `TimeOrdering`, which is why a
+re-run rather than a projection is used — the same mechanism `extractCountermodelData` already
+relies on.
+
+Returns `none` when the rebuild does not land on an open branch. That arm is unreachable whenever
+`decideAuto` returned `.invalid`; it exists so the case is handled rather than guessed at.
+-/
+def evalBranchGates (φ : Formula) (fc : FrameClass) : Option BranchGates :=
+  match buildTableau φ (soundFuel φ) fc with
+  | some (.hasOpen b ord _ _) => some (gatesOfBranch φ b ord fc)
+  | _ => none
+
+/-- Render an `Option BranchGates` as the value of the response's `"gates"` key. -/
+def gatesJson : Option BranchGates → String
+  | none => "null"
+  | some g => g.toJson
+
+/-!
 ## Command Handlers
 -/
 
 /--
-Handle a `tableau_decide` command.
+The pure body of a `tableau_decide` response: the opening brace and every field except
+`"time_ms"`, which `handleDecide` splices on. Everything the command computes is pure, so the
+whole response shape is decidable from a `#guard` without an `IO` harness — which is what
+`Tests/BimodalToolsTest/TableauBridgeTest.lean` uses.
 
 Runs `decideAuto` on the formula and returns:
 - For valid: proof trace, rule profile, and metrics
-- For invalid: simple countermodel
+- For invalid: simple countermodel, plus the `"gates"` object (see `BranchGates`)
 - For fuel exhaustion: timeout status; for a closed tableau with no proof term:
   `valid_no_proof_term` status (R7 — a closed tableau is never reported undecided)
 -/
-def handleDecide (φ : Formula) (fc : FrameClass) : IO String := do
-  let startTime ← IO.monoMsNow
-  let result := decideAuto φ fc
-  let endTime ← IO.monoMsNow
-  let elapsed := endTime - startTime
-  match result with
+def decideResponseBody (φ : Formula) (fc : FrameClass) : String :=
+  match decideAuto φ fc with
   | .valid proof =>
     let trace := extractProofTrace proof
     let rp := walkDerivationTree proof
-    return "{\"status\": \"valid\""
+    "{\"status\": \"valid\""
       ++ ", \"proof_trace\": " ++ trace.toJson
       ++ ", \"rule_profile\": " ++ rp.toJson
       ++ ", \"formula_string\": \"" ++ escapeJsonString φ.prettyPrint ++ "\""
-      ++ ", \"time_ms\": " ++ toString elapsed
-      ++ "}"
   | .invalid cm =>
-    return "{\"status\": \"invalid\""
+    -- `"gates"` is additive: `"status"` stays `"invalid"` and every pre-existing field is
+    -- unchanged. `"gated": true` is what licenses citing `not_valid_of_hasOpen_int` /
+    -- `not_validZTime_of_hasOpen_int` for this verdict; `false` marks it heuristic.
+    "{\"status\": \"invalid\""
       ++ ", \"countermodel\": " ++ cm.toJson
+      ++ ", \"gates\": " ++ gatesJson (evalBranchGates φ fc)
       ++ ", \"formula_string\": \"" ++ escapeJsonString φ.prettyPrint ++ "\""
-      ++ ", \"time_ms\": " ++ toString elapsed
-      ++ "}"
   | .fuelExhausted =>
-    return "{\"status\": \"timeout\""
+    "{\"status\": \"timeout\""
       ++ ", \"formula_string\": \"" ++ escapeJsonString φ.prettyPrint ++ "\""
-      ++ ", \"time_ms\": " ++ toString elapsed
-      ++ "}"
   | .extractionFailed =>
     -- Closed tableau, no proof term: valid, not undecided (R7).
-    return "{\"status\": \"valid_no_proof_term\""
+    "{\"status\": \"valid_no_proof_term\""
       ++ ", \"formula_string\": \"" ++ escapeJsonString φ.prettyPrint ++ "\""
-      ++ ", \"time_ms\": " ++ toString elapsed
-      ++ "}"
+
+/--
+Handle a `tableau_decide` command: time `decideResponseBody` and close the object with
+`"time_ms"`.
+-/
+def handleDecide (φ : Formula) (fc : FrameClass) : IO String := do
+  let startTime ← IO.monoMsNow
+  let body := decideResponseBody φ fc
+  let endTime ← IO.monoMsNow
+  return body ++ ", \"time_ms\": " ++ toString (endTime - startTime) ++ "}"
 
 /--
 Handle a `tableau_steps` command.
@@ -503,23 +646,39 @@ def handleSteps (φ : Formula) (fc : FrameClass) : IO String := do
 /--
 Handle a `countermodel` command.
 
-Runs `decideAuto` on the formula. If invalid, returns the simple countermodel
-plus enriched countermodel data.
+Runs `decideAuto` on the formula. If invalid, returns the simple countermodel, the enriched and
+semantic countermodel data, and the `"gates"` object (see `BranchGates`).
 -/
 def handleCountermodel (φ : Formula) (fc : FrameClass) : IO String := do
   let startTime ← IO.monoMsNow
-  -- `decideAuto` decides at `soundFuel φ`; bind the same fuel and
-  -- pass it explicitly to `extractCountermodelData` so the countermodel re-run
-  -- matches the deciding fuel (fuel-bounded variant). The bridge has no
-  -- wall-clock timeout, so no abort ref is threaded here (out of scope; see
-  -- research Section 8).
+  -- `decideAuto` decides at `soundFuel φ`; bind the same fuel and reuse it for the
+  -- countermodel/gates re-run below, so that re-run matches the deciding tableau exactly
+  -- (same fuel, same frame class). The bridge has no wall-clock timeout, so no abort ref is
+  -- threaded here (out of scope; see research Section 8).
   let fuel := soundFuel φ
   let result := decideAuto φ fc
   let endTime ← IO.monoMsNow
   let elapsed := endTime - startTime
   match result with
   | .invalid cm =>
-    let (ecm, scmSummary) := extractCountermodelData φ fuel
+    -- ONE `buildTableau` re-run feeds both the gates and the enriched/semantic countermodels,
+    -- so the invalid path performs one extra build rather than two.
+    --
+    -- `extractCountermodelData` is deliberately not called here. Its `buildTableau φ fuel` call
+    -- takes the `fc` **default** of `.Base`, so a `countermodel` request at `"ZTime"` used to
+    -- extract its enriched countermodel from a `.Base` tableau while the verdict came from a
+    -- `.ZTime` one. Inlining the body at the request's `fc` fixes that without changing a
+    -- signature that has other call sites.
+    let (gates, ecm, scmSummary) :
+        Option BranchGates × Option Enriched.EnrichedCountermodel ×
+          Option SemanticCountermodelSummary :=
+      match buildTableau φ fuel fc with
+      | some (.hasOpen b ord _ _) =>
+        ( some (gatesOfBranch φ b ord fc)
+        , some (Enriched.extractEnrichedCountermodel φ b)
+        , some (SemanticCountermodelSummary.fromSemanticCountermodel
+                  (extractSemanticCountermodel φ b ord)) )
+      | _ => (none, none, none)
     let ecmStr := match ecm with
       | none => "null"
       | some e => e.toJson
@@ -530,6 +689,7 @@ def handleCountermodel (φ : Formula) (fc : FrameClass) : IO String := do
       ++ ", \"countermodel\": " ++ cm.toJson
       ++ ", \"enriched_countermodel\": " ++ ecmStr
       ++ ", \"semantic_countermodel\": " ++ scmStr
+      ++ ", \"gates\": " ++ gatesJson gates
       ++ ", \"consistent\": " ++ toString cm.isConsistent
       ++ ", \"formula_string\": \"" ++ escapeJsonString φ.prettyPrint ++ "\""
       ++ ", \"time_ms\": " ++ toString elapsed

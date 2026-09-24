@@ -184,7 +184,7 @@ the new file returning exactly one pair, and by `lake exe tableau_bridge` starti
 
 ---
 
-### Phase 2: BranchGates record and evaluator [IN PROGRESS]
+### Phase 2: BranchGates record and evaluator [COMPLETED]
 
 **Goal**: `evalBranchGates φ fc` returns the eight theorem hypotheses as booleans plus their
 conjunction, with a JSON serializer.
@@ -235,7 +235,7 @@ conjunction, with a JSON serializer.
 
 ---
 
-### Phase 3: Wire the gates into both invalid arms [NOT STARTED]
+### Phase 3: Wire the gates into both invalid arms [COMPLETED]
 
 **Goal**: `tableau_decide` and `countermodel` each carry `"gates"` on their `.invalid` arm, and
 the countermodel re-run uses the request's frame class.
@@ -254,11 +254,18 @@ the countermodel re-run uses the request's frame class.
       guessed at.
 - [ ] In `handleCountermodel`, bind the tableau re-run **once** and feed both the gates and the
       enriched countermodel from it, so the invalid path performs one extra build rather than two.
-- [ ] Pass the request's frame class to `extractCountermodelData` (currently
+- [x] Pass the request's frame class to `extractCountermodelData` (currently
       `extractCountermodelData φ fuel`, which defaults the tableau to `.Base`). If the function's
       signature has no `fc` parameter, add one defaulting to `.Base` in
       `BimodalTools/DatasetGenerator.lean` and pass it through to its `buildTableau` call — check
       the signature first and prefer the no-signature-change route if one exists.
+      *(deviation: altered — `extractCountermodelData` has no `fc` parameter (checked:
+      `BimodalTools/DatasetGenerator.lean:406`, `buildTableau φ fuel` at the `.Base` default), so
+      the no-signature-change route the task explicitly prefers was taken: `handleCountermodel`
+      now inlines the one `buildTableau φ fuel fc` re-run and derives the enriched/semantic
+      countermodels and the gates from it, instead of calling `extractCountermodelData`. This
+      also satisfies the "bind the tableau re-run once" bullet above. `DatasetGenerator.lean` is
+      therefore untouched and its other call site — line 1320 — is unaffected.)*
 - [ ] Append the same `"gates"` field to `handleCountermodel`'s `.invalid` response, after
       `"semantic_countermodel"`.
 
@@ -290,10 +297,16 @@ with `grep -rn extractCountermodelData` before editing).
 
 ---
 
-### Phase 4: Fallible frame-class parsing [NOT STARTED]
+### Phase 4: Fallible frame-class parsing [COMPLETED]
 
 **Goal**: an unrecognized `frame_class` produces `{"status": "error", "message": ...}`; `"RTime"`
 is accepted and mapped to `.RTime`.
+
+*(deviation: altered — Phases 2, 3 and 4 were applied in one edit pass and verified by one
+`lake build BimodalTools`, then committed together. The plan chains them only because they share
+one file and "two agents writing one file in one wave is a conflict"; a single agent editing three
+disjoint regions of that file has no such conflict. Each phase's own verification steps were still
+run individually — see the Verification bullets below and in Phases 2 and 3.)*
 
 **Tasks**:
 - [ ] Change `parseFrameClass` to `def parseFrameClass (s : String) : Except String FrameClass`
