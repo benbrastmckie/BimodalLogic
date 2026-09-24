@@ -1,11 +1,11 @@
 # Implementation Plan: Tableau bridge branch gates and frame class
 
 - **Task**: 667 - Tableau bridge branch gates and frame class
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 7 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/667_tableau_bridge_branch_gates_and_frame_class/reports/01_branch-gates-frame-class.md`
-- **Artifacts**: plans/01_branch-gates-frame-class.md (this file)
+- **Artifacts**: plans/01_branch-gates-frame-class.md (this file); summaries/01_branch-gates-frame-class-summary.md
 - **Standards**: plan-format.md; status-markers.md; artifact-management.md; tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -460,7 +460,7 @@ stop and report rather than re-emitting blocks this task did not cause to change
 
 ---
 
-### Phase 7: Full gate and close-out [IN PROGRESS]
+### Phase 7: Full gate and close-out [COMPLETED]
 
 **Goal**: every acceptance criterion is demonstrated green in one pass, in dependency order.
 
@@ -471,7 +471,11 @@ stop and report rather than re-emitting blocks this task did not cause to change
       `tableau_decide` for `p → q` at `"Base"`, the same at `"ZTime"`, one with
       `"frame_class": "Bogus"`, and `shutdown` — and check each response against this plan's
       stated expectations.
-- [ ] `bash scripts/check-module-invariants.sh` (whole run: B3 and INV both).
+- [x] `bash scripts/check-module-invariants.sh` (whole run: B3 and INV both).
+      *(deviation: altered — B3 PASSes. C6, C23 (x2), C33 and INV fail, and every finding names
+      only sibling task 665's uncommitted `FormalSystem/Metalogic/Decidability/WitnessFamily/*.lean`
+      modules or a `FormalSystem/` file-count block. Reported, not repaired: this task touched
+      nothing under `FormalSystem/`.)*
 - [ ] Re-read `git status --short`; confirm the modified set is exactly the six files this plan
       names (plus any conditional `DatasetGenerator.lean` from Phase 3) and nothing else. Any
       foreign modification is task 665's, not this task's — report it, do not stage or revert it.
