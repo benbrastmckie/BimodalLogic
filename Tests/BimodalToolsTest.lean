@@ -13,6 +13,7 @@ import BimodalToolsTest.TraceExporterE2ETest
 import BimodalToolsTest.EnumeratorCountsTest
 import BimodalToolsTest.FormulaMutatorTest
 import BimodalToolsTest.ProofFirstTests
+import BimodalToolsTest.TableauBridgeTest
 -- `FormulaMutatorTest` and `ProofFirstTests` used to be absent: each imported an executable
 -- root that declares a root-namespace `main`, colliding with the `main` this environment
 -- already carries from `C5SmokeTest`'s `BimodalTools.DatasetValidatorMain`. Both roots have

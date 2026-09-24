@@ -343,7 +343,7 @@ run individually — see the Verification bullets below and in Phases 2 and 3.)*
 
 ---
 
-### Phase 5: Acceptance tests [NOT STARTED]
+### Phase 5: Acceptance tests [COMPLETED]
 
 **Goal**: the three acceptance cases are pinned in `Tests/BimodalToolsTest/` and fail the build if
 they regress.
@@ -360,10 +360,13 @@ they regress.
       `temporalWitness = false`, `gated = false`, and the other six `true`. Add a comment
       recording that this is the measured current behaviour of the `.ZTime` rules
       (`priorUZ`/`priorSZ` on the seriality-minted `T(F ⊤)`), not an assertion that it is correct.
-- [ ] Row C (response shape): `decideResponseBody (p → q) .Base` contains `"status": "invalid"`
+- [x] Row C (response shape): `decideResponseBody (p → q) .Base` contains `"status": "invalid"`
       and `"gated": true`; the same at `.ZTime` contains `"gated": false`. Use substring checks
       (`String.isInfixOf` or the codebase's existing equivalent) rather than pinning the whole
       string, so an unrelated additive field does not break the row.
+      *(deviation: altered — neither `String.isInfixOf` nor `String.containsSubstr` exists at this
+      toolchain, and the codebase had no equivalent, so the test file defines a two-line private
+      `hasSub` on `String.splitOn` and self-tests it with a positive and a negative row.)*
 - [ ] Row D (frame_class): `parseFrameClass "RTime"` is `.ok .RTime`, `parseFrameClass "Discrete"`
       is `.ok .ZTime`, and `parseFrameClass "Bogus"` is an `.error`.
 - [ ] Row E (end-to-end rejection): `parseRequest` on a full line carrying
@@ -398,7 +401,7 @@ with `#guard_msgs` instead rather than dropping the case.
 
 ---
 
-### Phase 6: Documentation [NOT STARTED]
+### Phase 6: Documentation [IN PROGRESS]
 
 **Goal**: the protocol change and the frame-class vocabulary are documented where a consumer will
 look, and the generated inventory is current.
