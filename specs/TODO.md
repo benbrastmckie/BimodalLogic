@@ -99,7 +99,7 @@ next_project_number: 665
 ### Semantics
 
 624 [PLANNED] — RESEARCH TASK, verdict-first: what the translation product...
-662 [IMPLEMENTING] — Settle whether plain S1 suffices or directedness is forced,...
+662 [PARTIAL] — Settle whether plain S1 suffices or directedness is forced,...
   └─ 663 [NOT STARTED] — Add a repo-wide hypothesis-honesty gate so no...
 
 ## Tasks
@@ -143,12 +143,13 @@ Out of scope: changing IsRegular's fields, and unbundling binders that are legit
 ---
 
 ### 662. S1 vs directedness and restore saturation
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 661
 - **Research**: [662_s1_vs_directedness_and_restore_saturation/reports/01_s1-vs-directedness-restore-saturation.md]
 - **Plan**: [662_s1_vs_directedness_and_restore_saturation/plans/02_restore-saturation-settle-nests.md]
+- **Summary**: [662_s1_vs_directedness_and_restore_saturation/summaries/02_restore-saturation-settle-nests-summary.md]
 
 **Description**: Settle whether plain S1 suffices or directedness is forced, search for a better fourth frame constraint, and otherwise restore Saturation as the def:frame constraint in place of Completion
 

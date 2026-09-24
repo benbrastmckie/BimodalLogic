@@ -1,16 +1,40 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Wrote a 10-phase, 15-hour implementation plan restoring Saturation (in its directed S1d form) as def:frame's fourth constraint and demoting Completion to the derived condition lem:step consumes, with four new machine-checkable results: the nest condition S1 plus S1d-implies-S1, the correction that both existing witnesses refute S1 and not merely S1d, a hypothesis-weakening of the monotonicity lemmas off the IsRegular instance, and the countable-domain sufficiency theorem.",
+  "status": "partial",
+  "phase": "implement",
+  "dispatch_seq": 5,
+  "summary": "Four of the plan's ten phases closed and committed (the ForMathlib ball-space layer with S1d -> S1 machine-checked, both witnesses shown to refute S1, the fibers-only candidate closed, and the in-.lean Completion advocacy reversed to the derived register). Phase 3 is [BLOCKED] because its pinned Challenge signature states a false proposition, which holds up Phases 4, 5, 6, 9 and 10.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/662_s1_vs_directedness_and_restore_saturation/plans/01_restore-saturation-settle-nests.md",
-      "summary": "10 phases in 6 waves, 13 pinned Lean declarations, 17 in-tree prose regions reversed, zero manuscript and zero .claude/ writes."
+      "type": "summary",
+      "path": "specs/662_s1_vs_directedness_and_restore_saturation/summaries/02_restore-saturation-settle-nests-summary.md",
+      "summary": "Four of ten plan phases closed: the ForMathlib ball-space layer, the nest condition S1 with S1d -> S1 machine-checked, both witnesses shown to refute S1, the fibers-only candidate closed, and the in-.lean Completion advocacy reversed. Phase 3 blocked on a false pinned Challenge signature."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/662_s1_vs_directedness_and_restore_saturation/handoffs/phase-8-handoff-20260924105629.md",
+      "summary": "Dispatch-close handoff: what landed, what is blocked, what not to redo."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 4,
   "phases_total": 10,
-  "blockers": []
+  "continuation_path": "specs/662_s1_vs_directedness_and_restore_saturation/handoffs/phase-8-handoff-20260924105629.md",
+  "blockers": [
+    {
+      "phase": 3,
+      "target": "FormalSystem/Semantics/Extension/Constraint.lean :: PartialHistory.fib_subset_fib_of_compositional'",
+      "verbatim_goal": "Add the mirror `fib_subset_fib_of_compositional'` the same way (its extra ingredient, `F.reflection`, is a `FrameOver` field and needs no instance).",
+      "what_was_tried": "Transcribed the existing `fib_subset_fib_of_le_of_le'` proof with the composition half projected out of `hcomp`; it still needs `F.reflection`, which is a derived theorem carrying `[F.IsRegular]` (`FrameOver.reflection` at TaskFrame.lean:1332 and `TaskFrame.reflection` at :2602, both `F.reflection_of_limit F.limit`). Located the obstruction at `b = z < a`, where the goal reduces to injectivity at duration zero. Built a countermodel confirming the pinned statement is false, not merely unproved (W = {p,q}, primitive `P w x u := R0 w u` at every x >= 0 with R0 = {(p,p),(p,q),(q,q)}: Compositional holds, Fib(p,0) = {p,q} is not contained in Fib(p,-1) = {p}, and Limit fails as it must). Verified the repair -- adding `hlim : TaskFrame.Limit F.TaskRel` and routing through `FrameOver.reflection_of_limit` -- elaborates with no instance binder and no sorry.",
+      "why_it_failed": "The recorded Challenge signature is wrong, so no implementation can satisfy it. plan-compliance.md's Statement Fidelity section names adding a hypothesis to a pinned Challenge signature as a prohibited weakening and directs that a genuinely wrong recorded statement be raised as a blocker rather than repaired in place, in either direction."
+    }
+  ],
+  "user_decision": {
+    "question": "Phase 3's pinned Lean Challenge signature for `PartialHistory.fib_subset_fib_of_compositional'` states a false proposition (countermodel recorded in the plan's Phase 3 BLOCKER block): the plan's ground for it -- that `F.reflection` is a `FrameOver` field needing no instance -- is false as measured, since both `FrameOver.reflection` and `TaskFrame.reflection` are derived theorems carrying `[F.IsRegular]` and proved from *Limit*. Adding a hypothesis to a pinned Challenge signature is a change `.claude/rules/plan-compliance.md` reserves for you.",
+    "options": [
+      "Add `(hlim : TaskFrame.Limit F.TaskRel)` beside `hcomp` on the four affected pinned signatures (`fib_subset_fib_of_compositional'`, `seg_subset_seg_of_compositional`, `hasCofinalNest_of_countable`, `sInter_constraints_nonempty_of_countable`) -- verified to elaborate, and the phase Goal is preserved because *Limit* is not *Saturation*",
+      "Take the reflection law itself as the hypothesis instead (`hrefl : forall w d u, F.TaskRel w d u <-> F.TaskRel u (-d) w`) -- equally sound, but not a `def:frame` constraint and so a less natural thing for a theorem to consume",
+      "Leave Phase 3 blocked and re-plan Phases 3-5 around a different decomposition"
+    ],
+    "recommended": "Add `(hlim : TaskFrame.Limit F.TaskRel)` beside `hcomp` on the four affected pinned signatures (`fib_subset_fib_of_compositional'`, `seg_subset_seg_of_compositional`, `hasCofinalNest_of_countable`, `sInter_constraints_nonempty_of_countable`) -- verified to elaborate, and the phase Goal is preserved because *Limit* is not *Saturation*",
+    "blocking": true
+  }
 }
