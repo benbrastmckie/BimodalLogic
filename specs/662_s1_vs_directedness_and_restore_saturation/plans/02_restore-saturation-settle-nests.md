@@ -1204,43 +1204,71 @@ with evidence.
 
 ---
 
-### Phase 9: Theorem index, module READMEs, and the docs advocacy line [NOT STARTED]
+### Phase 9: Theorem index, module READMEs, and the docs advocacy line [COMPLETED]
 
 **Goal**: Make the documentation layer say what the tree now says. Three markdown regions carry
 the reversal and every new declaration needs an index row.
 
 **Tasks**:
 
-- [ ] `docs/theorem-index.md`: rewrite the one docs advocacy line ("`def:frame`'s proposed fourth
+- [x] `docs/theorem-index.md`: rewrite the one docs advocacy line ("`def:frame`'s proposed fourth
       constraint") and its supporting rows into the derived register, and add rows for every
       declaration landed in Phases 1–5 (and Phase 8 if it landed). Each row's anchor must match
       the `Paper:` line already written in that declaration's doc comment — invariant C15 checks
       both halves, and the doc comments were written in the same sub-step as the declarations
       precisely so this phase never retrofits one.
-- [ ] `FormalSystem/Semantics/Extension/README.md`: rewrite the *Completion* section to present
+- [x] `FormalSystem/Semantics/Extension/README.md`: rewrite the *Completion* section to present
       it as the derived condition, and add the nest-reduction material.
-- [ ] `FormalSystem/Semantics/StateTopology/README.md`: rewrite the witnesses section to record
+- [x] `FormalSystem/Semantics/StateTopology/README.md`: rewrite the witnesses section to record
       that both witnesses refute `S₁`, not merely `S₁ᵈ`, with the corrected independence matrix.
-- [ ] `FormalSystem/Semantics.lean`'s module-list docstring: check the `Extension.Step` /
+- [x] `FormalSystem/Semantics.lean`'s module-list docstring: check the `Extension.Step` /
       `Extension.Completion` entries for the same advocacy register and correct if present. This
       file also carries one **elimination-site** hit at `:114` ("**the sole application site of
       the *Saturation* axiom** in the development") — unattributed and therefore measured-false;
       correct it to the elimination register, consistently with Phase 6.
-- [ ] **`ForMathlib` narrative documentation** (the generated inventory blocks already landed in
+- [x] **`ForMathlib` narrative documentation** (the generated inventory blocks already landed in
       Phase 1; this is the prose): add a `Key Definitions` entry per new declaration to
       `FormalSystem/ForMathlib/Order/README.md`, extend its opening paragraph so the directory is
       no longer described as only the filter side of `Order/Ideal.lean`, add a
       `Related Documentation` pointer to the consumer (`Semantics/TaskFrame.lean`), and add the
       matching row/bullet to `FormalSystem/ForMathlib/README.md`'s `Related Documentation`.
       Refresh the `Last verified` date in both (readme-lint Check 4).
-- [ ] `docs/theorem-index.md` rows for the five `Order.*` declarations use the `—`-plus-reason
+- [x] `docs/theorem-index.md` rows for the five `Order.*` declarations use the `—`-plus-reason
       anchor form their doc comments carry, matching C15's two halves.
-- [ ] **Do not touch `docs/reference/paper-definitions-of-record.md`.** Its `lem:step` entries
+- [x] **Do not touch `docs/reference/paper-definitions-of-record.md`.** Its `lem:step` entries
       record the paper's own "sole *Spherical* application site" wording; that is an attribution,
       the paper is not edited by this task, and the file is a pinned-anchor record checked by
       `check-paper-definitions.sh`.
-- [ ] `bash scripts/readme-lint.sh` and `bash scripts/check-module-invariants.sh` both exit 0.
+- [x] `bash scripts/readme-lint.sh` and `bash scripts/check-module-invariants.sh` both exit 0.
       Commit.
+
+**Scope Hypothesis result**: **confirmed with one correction and two additions**, all three of
+which were repairs the phase's own gates caught rather than regions the research missed.
+- The 3 markdown regions, the 2 `ForMathlib` READMEs and the `Semantics.lean:114` elimination-site
+  hit were all present and were all corrected. `grep -rln 'Completion' docs/architecture/` returns
+  **nothing**, so the claim of **0 ADR sites** is confirmed, not assumed.
+- **C15 correction**: three Phase-1 declarations in `TaskFrame.lean` carried
+  `Paper: def:frame#Saturation (parenthetical)`, a form C15 cannot match — it requires the value to
+  be exactly `` `anchor` ``. Their `Paper:` lines were normalised to `` Paper: `def:frame#Saturation` ``
+  with the parenthetical moved into the docstring body, which is the tree's established convention
+  everywhere else. Three new index rows also had to swap label cells to match their declarations'
+  `— (reason)` / anchor form, and one carried a wrong qualified name
+  (`StateTopology.FiberSaturation` for `StateTopology.SeparatingFrame.FiberSaturation`).
+- **C5 addition**: C5 resolves a dotted name as a *file path*, so a `CapitalCase` declaration name
+  is indistinguishable from a module path and must go on
+  `scripts/module-invariants-allowlist.txt` — the documented, permanent exemption. Eleven entries
+  were added: the three new `def`s and the eight names the landscape file cites, which is the
+  pre-existing C5 failure the prior cycle's handoff assigned to this phase.
+- **C16 addition**: `SeparatingFrame.FiberSaturation` (Phase 8) carried four unused instance
+  binders. They were removed rather than grandfathered in `nolints.json`; `lake exe runLinter
+  FormalSystem` now reports "Linting passed".
+
+**Verification result**: `bash scripts/readme-lint.sh` exits 0 (RESULT: PASS, 0 broken references,
+0 missing READMEs). `bash scripts/check-module-invariants.sh` passes, C15 and C5 and INV included.
+`grep -rn 'proposed fourth constraint\|proposed replacement' docs/ FormalSystem/ --include=*.md`
+returns nothing; `grep -rn 'application site' FormalSystem/Semantics.lean docs/` leaves only
+attributed occurrences plus the two untouched hits in
+`docs/reference/paper-definitions-of-record.md`, which `git status --short` confirms is unmodified.
 
 **Timing**: 1.5 hours
 

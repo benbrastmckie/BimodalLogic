@@ -700,8 +700,10 @@ theory Mathlib happens not to carry and mentions no project notion at all; this 
 instantiation at the frame's own ball space of nonempty fibers and segments, and
 `nestSaturation_iff_sphericallyComplete` records that identification by `Iff.rfl`.
 
-Paper: def:frame#Saturation (the ball-space footnote's $\mathbf{S}_1$, the condition the axiom is
-there said to be at least as strong as)
+The anchor below is `def:frame`'s *Saturation* clause because this is the footnote's
+$\mathbf{S}_1$ — the condition the axiom is there said to be at least as strong as.
+
+Paper: `def:frame#Saturation`
 -/
 def NestSaturation {W : Type} (R : W → D → W → Prop) : Prop :=
   ∀ S : Set (Set W), Order.IsNest S →
@@ -716,8 +718,10 @@ This is what makes the transferable ball-space theory apply to this development 
 resemble it. It is also the acceptance test that the two spellings never drift apart: edit either
 side incompatibly and `Iff.rfl` stops elaborating, and that failure *is* the test.
 
-Paper: def:frame#Saturation (the ball-space footnote's identification of the fibers and segments
-as a ball space)
+The anchor below is `def:frame`'s *Saturation* clause because this records the footnote's own
+identification of the fibers and segments as a ball space.
+
+Paper: `def:frame#Saturation`
 -/
 theorem nestSaturation_iff_sphericallyComplete {W : Type} {R : W → D → W → Prop} :
     NestSaturation R ↔ Order.SphericallyComplete (fun s : Set W => IsFiber R s ∨ IsSegment R s) :=
@@ -735,7 +739,10 @@ three-line application: a nest's own nonemptiness plus that lemma is exactly a `
 The converse is **open**. Neither `¬ Saturation` witness in the development bears on it: both fail
 the nest condition too (`StateTopology.SeparatingFrame.not_srel_nestSaturation`).
 
-Paper: def:frame#Saturation (the ball-space footnote's "at least as strong as")
+The anchor below is `def:frame`'s *Saturation* clause because this is the footnote's "at least as
+strong as", machine-checked.
+
+Paper: `def:frame#Saturation`
 -/
 theorem nestSaturation_of_saturation {W : Type} {R : W → D → W → Prop}
     (h : Saturation R) : NestSaturation R := by

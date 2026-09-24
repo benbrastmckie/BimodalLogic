@@ -15,7 +15,7 @@ module — twice.
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Semantics/StateTopology -->
 | File | Lines | Description |
 |------|------:|-------------|
-| `ConstraintWitnesses.lean` | 1,728 | Witnesses whose content is a `def:frame` constraint or a separation property **failing**: the ghost ray (*Serial*, *Compositional*, no *Limit*, `𝒩_F` not R0 — `GhostRay.frame_not_r0Space`) the ℚ-carrier two-origin frame (first three constraints, ***Saturation* fails* — `RationalTwoOrigins.not_rel_saturation`, and *Completion* fails too — `RationalTwoOrigins.not_rel_completion`), and the separating frame (*Serial*, *Compositional*, *Limit* and ***Completion***, ***Saturation* fails* — `SeparatingFrame.srel_completion`, `SeparatingFrame.not_srel_saturation`). |
+| `ConstraintWitnesses.lean` | 1,727 | Witnesses whose content is a `def:frame` constraint or a separation property **failing**: the ghost ray (*Serial*, *Compositional*, no *Limit*, `𝒩_F` not R0 — `GhostRay.frame_not_r0Space`) the ℚ-carrier two-origin frame (first three constraints, ***Saturation* fails* — `RationalTwoOrigins.not_rel_saturation`, and *Completion* fails too — `RationalTwoOrigins.not_rel_completion`), and the separating frame (*Serial*, *Compositional*, *Limit* and ***Completion***, ***Saturation* fails* — `SeparatingFrame.srel_completion`, `SeparatingFrame.not_srel_saturation`). |
 | `Counterexamples.lean` | 2,056 | Frames satisfying some `def:frame` constraints and not others: the four-state funnel (no *Limit*, `𝒯_F` T1 anyway), and the two **regular task frames** the appendix cites — the two-origin half-line (T1, not Hausdorff) and the hedgehog (`𝒩_F` strictly below the final topology of all histories), both with *Saturation* proved by the shadow argument. |
 | `MetricFrame.lean` | 290 | The metric frame (a task of duration `y` moves distance at most `c` times the size of `y` on the carrier `ℝ`), previously only prose: regular at every positive speed, and the frame on which `𝒩_F` **is** the final topology of all histories (`MetricFrame.finalTopology_eq_nbhdTopology`). |
 <!-- END GENERATED -->
@@ -48,7 +48,8 @@ module — twice.
   straddling the cut `{q : q² < 2} | {q : 2 < q²}`. This is why the real-carrier witness is over
   `ℝ`. It **also** fails *Completion* (`RationalTwoOrigins.not_rel_completion`), so it is not a
   separator for the two conditions — and the pinching argument in its docstring shows no
-  dense-time drift frame can be.
+  dense-time drift frame can be. It also fails the **nest** condition `S₁`
+  (`RationalTwoOrigins.not_rel_nestSaturation`), not merely the `⇒`-directed condition `S₁ᵈ`.
 - `SeparatingFrame` — unit-speed drift on `ℚ` over `ℤ`-time, `w ⇒ₓ v` iff `|v - w| ≤ |x|`. It
   satisfies *Seriality*, *Compositionality*, *Limit* **and** *Completion*
   (`SeparatingFrame.srel_completion`) while **failing *Saturation***
@@ -56,6 +57,29 @@ module — twice.
   *Completion* is a **strict** weakening of *Saturation*. `not_srel_totalComp` is the
   consistency check: the converse does hold under mixed-sign composition plus *Limit*, so a
   separating frame has to refute it.
+
+  **Correction of a standing assumption.** It fails the **nest** condition `S₁`
+  (`SeparatingFrame.not_srel_nestSaturation`) as well, witnessed by the explicit cofinal nest
+  `SeparatingFrame.nest` — the intervals `[phi (n+2), nt n]` decreasing onto the cut at `√2`. So
+  **neither** witness separates `S₁` from `S₁ᵈ`: both refute `S₁`, and the sharpness result above
+  is about `S₁` as much as about `S₁ᵈ`. Whether `S₁ → S₁ᵈ` holds at the frame level is **open**,
+  and nothing in this directory bears on it.
+- **Segments are load bearing.** `SeparatingFrame` satisfies the fibers-only weakening of
+  *Saturation* (`FiberSaturation`, `SeparatingFrame.srel_fiberSaturation`) while failing
+  *Saturation* itself, so dropping segments from `def:frame`'s fourth constraint would weaken it
+  strictly. The fibers-only candidate for a simpler fourth constraint is therefore closed.
+
+### The independence matrix
+
+| Constraint | Witness that fails it | Also fails `S₁`? |
+|---|---|---|
+| *Seriality* | `voidFrame` (`voidFrame_not_serial`) | n/a — it satisfies *Saturation* |
+| *Compositionality* | `bumpFrame` (`bumpFrame_not_compositional`) | n/a — it satisfies *Saturation* |
+| *Limit* | `GhostRay` (`GhostRay.frame_not_limit`) | n/a |
+| *Saturation* | `RationalTwoOrigins` (`not_rel_saturation`), `SeparatingFrame` (`not_srel_saturation`) | **yes, both** |
+
+The matrix is complete for all four constraints, and the right-hand column is what records that
+no existing witness distinguishes the nest condition from the directed one.
 
 **`MetricFrame.lean`** — the metric frame, named at last.
 
@@ -79,4 +103,4 @@ module — twice.
 
 ---
 
-*Last verified: 2026-09-23*
+*Last verified: 2026-09-24*

@@ -111,8 +111,10 @@ against `docs/reference/paper-definitions-of-record.md`'s DANGLING entry, not a 
 `Semantics/Extension/Admissible.lean`'s header for the full note.
 
 - `Extension.Step`: `lem:step` — every partial history extends by one arbitrary duration; the
-  join of `lem:constraint`, *Saturation*, and `lem:admissible`, and **the sole application site of
-  the *Saturation* axiom** in the development
+  join of `lem:constraint`, *Saturation*, and `lem:admissible`, and **the sole *elimination* site
+  of the *Saturation* axiom** in the development — the only place it is spent on a conclusion that
+  does not itself mention it. `F.saturation` is *applied* at five further sites, all transports
+  that take *Saturation* in and give it back out; see `Extension/Step.lean`'s header
 - `Extension.Extension`: `thm:extension` — every partial history is extended by some possible
   world, proved from Zorn over the extension order plus `lem:step` and nothing else — and
   `cor:occurrence` in **hypothesis form**: every world state occurs at any prescribed time in some

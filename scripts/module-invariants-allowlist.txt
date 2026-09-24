@@ -77,3 +77,28 @@ FormalSystem.Semantics.StateTopology.SeparatingFrame
 # `Completion` is the bare-relation form of `def:frame`'s proposed fourth constraint declared in
 # it. The theorem-index row cites it fully qualified.
 FormalSystem.Semantics.TaskFrame.Completion
+
+# `def NestSaturation` in namespace FormalSystem.Semantics.TaskFrame -- Semantics/TaskFrame.lean:706
+FormalSystem.Semantics.TaskFrame.NestSaturation
+
+# `def HasCofinalNest` in namespace FormalSystem.Semantics.PartialHistory -- Semantics/Extension/Completion.lean
+FormalSystem.Semantics.PartialHistory.HasCofinalNest
+
+# `def FiberSaturation` in namespace FormalSystem.Semantics.StateTopology.SeparatingFrame -- StateTopology/ConstraintWitnesses.lean:1453
+FormalSystem.Semantics.StateTopology.SeparatingFrame.FiberSaturation
+
+# The four `def:frame` constraints as bare-relation predicates, cited by name in
+# context/project/logic/domain/frame-constraint-landscape.md -- Semantics/TaskFrame.lean
+FormalSystem.Semantics.TaskFrame.Serial
+FormalSystem.Semantics.TaskFrame.Compositional
+FormalSystem.Semantics.TaskFrame.Limit
+FormalSystem.Semantics.TaskFrame.Saturation
+
+# `def Interpolates` (one half of Compositionality) -- Semantics/TaskFrame.lean
+FormalSystem.Semantics.TaskFrame.Interpolates
+
+# `def NearestAt` / `def CoherentCompletion` / `def Completion` in namespace
+# FormalSystem.Semantics.PartialHistory -- Semantics/Extension/Completion.lean
+FormalSystem.Semantics.PartialHistory.NearestAt
+FormalSystem.Semantics.PartialHistory.CoherentCompletion
+FormalSystem.Semantics.PartialHistory.Completion

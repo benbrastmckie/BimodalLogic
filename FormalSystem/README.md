@@ -287,7 +287,7 @@ release version lives in `Version.lean`.
 | `PlusLanguage.lean` | 82 | <!-- TODO: add description --> |
 | `ProofSystem.lean` | 93 | Re-export for ProofSystem submodule |
 | `QuantLanguage.lean` | 106 | Re-export for the QuantLanguage component: the base language plus propositional quantifiers `∀p`, relative to a family of admissible propositions (semantic only; no proof system) |
-| `Semantics.lean` | 284 | Re-export for Semantics submodule |
+| `Semantics.lean` | 286 | Re-export for Semantics submodule |
 | `StarLanguage.lean` | 81 | <!-- TODO: add description --> |
 | `Syntax.lean` | 93 | Re-export for Syntax submodule |
 | `Tactic.lean` | 39 | Sibling aggregator for `Tactic/`, the layer-0 metaprogramming directory |

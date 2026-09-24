@@ -1450,8 +1450,7 @@ be an addition that nothing else needs.
 Paper: — (formalization-native; the fibers-only weakening of `def:frame`'s *Saturation*, stated
 here only to be refuted as a candidate)
 -/
-def FiberSaturation {W : Type} {D : Type} [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] [Nontrivial D] (R : W → D → W → Prop) : Prop :=
+def FiberSaturation {W : Type} {D : Type} (R : W → D → W → Prop) : Prop :=
   ∀ S : Set (Set W), DirectedFamily S →
     (∀ s ∈ S, IsFiber R s ∧ s.Nonempty) → (⋂₀ S).Nonempty
 
