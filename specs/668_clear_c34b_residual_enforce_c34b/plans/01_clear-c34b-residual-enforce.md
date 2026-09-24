@@ -2,7 +2,7 @@
 
 - **Task**: 668 - Clear the 8-row C34b residual in the hypothesis-honesty gate, then flip
   `ENFORCE_C34B=1` so the trigger half of invariant C34 is enforced alongside C34a
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9 hours
 - **Dependencies**: None (direct follow-up to the completed hypothesis-honesty-lint work, which
   landed C34 with C34a enforced and C34b soft)

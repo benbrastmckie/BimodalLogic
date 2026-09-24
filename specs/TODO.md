@@ -11,7 +11,7 @@ next_project_number: 669
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,665,667,668 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,665,667 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,623,650,666 | 298,464,502,563,649,665 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -99,19 +99,16 @@ next_project_number: 669
 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
   └─ 650 [NOT STARTED] — Define-before-use audit of...
 
-### Semantics
-
-668 [PLANNED] — Clear the 8-row C34b residual in the hypothesis-honesty gate,...
-
 ## Tasks
 
 ### 668. Clear c34b residual enforce c34b
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
 - **Research**: [668_clear_c34b_residual_enforce_c34b/reports/01_clear-c34b-residual-enforce.md]
 - **Plan**: [668_clear_c34b_residual_enforce_c34b/plans/01_clear-c34b-residual-enforce.md]
+- **Summary**: [668_clear_c34b_residual_enforce_c34b/summaries/01_clear-c34b-residual-enforce-summary.md]
 
 **Description**: Clear the 8-row C34b residual in the hypothesis-honesty gate, then flip ENFORCE_C34B=1 so the trigger half of invariant C34 is enforced alongside C34a.
 

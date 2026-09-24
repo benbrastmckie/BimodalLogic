@@ -9,13 +9,13 @@
     {
       "project_number": 668,
       "project_name": "clear_c34b_residual_enforce_c34b",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Clear the 8-row C34b residual in the hypothesis-honesty gate, then flip ENFORCE_C34B=1 so the trigger half of invariant C34 is enforced alongside C34a.\n\nDirect follow-up to the completed hypothesis-honesty-lint work, which landed invariant C34 in scripts/check-module-invariants.sh with its structural half (C34a) ENFORCED and its trigger half (C34b) shipped SOFT at ENFORCE_C34B=0. C34b is soft only because of a residual hit list that the prior work reported rather than absorbed, per its plan's Scope Hypothesis. Until C34b is enforced, the gate's anti-silence property is incomplete: an opt-in marker convention with only a structural half is bypassable by simply not marking a declaration.\n\nMEASURED STARTING POINT -- re-measure rather than trust. These figures drift under the work itself and have done so three times already: an original baseline of 225 binder sites across 43 files was stale by the time research ran, which re-measured 258/47, which read 259 during planning and 261/47 at close. Census at the prior task's close: 261 raw bracketed IsRegular occurrences across 47 files; 212 declarations carrying a bracketed bundling binder in 46 files; 29 declarations carrying a `Constraints consumed:` marker, 22 of those omitting Saturation, 18 of those binder-carrying and discharged by delegation; 194 binder-carrying declarations with no marker; C34b residual 8. The C34 census reporter is ungated and re-runnable -- start from its output, not from this paragraph, and do not bake any figure here into a pinned statement or acceptance value.\n\nTHE EIGHT ROWS. FormalSystem/Semantics/Correspondence/Rigidity.lean: static_iff_uniformDwell. FormalSystem/Semantics/Correspondence/RigidityReal.lean: levels_closed, constant_of_countable_range. FormalSystem/Semantics/TaskFrame.lean: FrameOver.saturation, nullity, nullity_identity, FrameOver.reflection, TaskFrame.saturation.\n\nWHY A MARKER LINE ALONE WILL NOT DO. Each row carries a binder; each would need a marker omitting a constraint that its own binder supplies; and none has a binder-free declaration to delegate to. So the honest remedy is a binder-free twin, not a marker line -- the established pattern: restate at the explicit hypotheses the proof actually consumes, keep the original as a one-line corollary whose signature line is byte-identical so no call site moves.\n\nTWO ROUTES, AND DECIDING BETWEEN THEM IS THE FIRST QUESTION. (a) Eight binder-free restatements on the established pattern. (b) A second, projection-shaped C34a discharge rule: a declaration passes when it names exactly the class fields its marker lists. Route (b) would discharge four of the eight (levels_closed, both saturation projections, FrameOver.reflection) and may be cheaper than eight restatements, leaving four for route (a). Assess cost and naturalness rather than assuming; a projection-shaped rule is a genuine widening of the gate's discharge vocabulary and must not silently admit cases it was not meant to.\n\nHARD CONSTRAINTS. This is NOT a blanket unbundling: [F.IsRegular] remains the correct ambient hypothesis for ordinary soundness, validity and transfer theorems, and 194 binder-carrying declarations were deliberately left alone by the prior work -- do not touch them. Do not change IsRegular's fields (comp, serial, limit, saturation). Every original signature line stays byte-identical, checked mechanically against base blobs, so no call site moves. The six genuine Saturation consumers already marked (each consuming all four fields) must be marked, never changed. Full lake build must stay green: zero errors, zero warnings, sorry-free, axiom_count unchanged at 14. check-module-invariants.sh --no-build must pass with BOTH C34a and C34b enforced at close.\n\nOUT OF SCOPE, EXPLICITLY. check-paper-definitions.sh (a def:id drift in the paper's LaTeX sources) and typst-sync-check.sh Check 2 (generated/status.typ counts stale by roughly 23 files and 13,150 lines) both exit 1 on the prior task's base commit and were verified in a detached worktree to be pre-existing. They belong to separate work; do not absorb them here, and do not let them be read as regressions from this task.\n\nDONE MEANS: the C34b hit list is zero as measured by the gate's own census, ENFORCE_C34B=1 is committed, both halves of C34 are enforced, and the MODULE_INVARIANTS.md C34 row plus REFERENCE_NORMAL_FORM.md section 3 reflect the final discharge vocabulary.",
       "topic": "semantics",
       "dependencies": [],
       "created": "2026-09-24T20:57:14Z",
-      "last_updated": "2026-09-24T21:24:53Z",
+      "last_updated": "2026-09-24T22:17:24Z",
       "session_id": "sess_1790283758_0df08b",
       "artifacts": [
         {
@@ -27,9 +27,15 @@
           "path": "specs/668_clear_c34b_residual_enforce_c34b/plans/01_clear-c34b-residual-enforce.md",
           "type": "plan",
           "summary": "Eight-phase implementation plan: 9 hours, six dependency waves, three pinned Lean challenge statements."
+        },
+        {
+          "path": "specs/668_clear_c34b_residual_enforce_c34b/summaries/01_clear-c34b-residual-enforce-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for the C34b residual clearance and the ENFORCE_C34B flip."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Cleared the C34b residual from 8 to 0 as measured by the gate's own census and flipped ENFORCE_C34B to 1, so both halves of invariant C34 are now enforced. Six rows were restated at the hypotheses their proofs consume (three against new binder-free twins, three against twins that already existed), every original surviving as a one-line corollary with a byte-identical signature line; the two irreducible field re-exports were discharged by a new, narrow field re-export rule pinned by eight new fixtures including six must-fail cases. Full lake build green (2726 jobs, zero errors, zero warnings), sorry-free, axiom count unchanged at 14, and check-module-invariants.sh reports ALL CHECKS PASSED with PASS C34a and PASS C34b."
     },
     {
       "project_number": 667,

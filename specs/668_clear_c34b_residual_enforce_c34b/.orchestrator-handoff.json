@@ -1,20 +1,39 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Eight-phase plan clearing the 8-row C34b residual and flipping ENFORCE_C34B=1. Route question settled by necessity, not cost: two rows are IsRegular field re-exports that route (a) cannot reach in principle, so a narrow field-re-export discharge rule is required alongside six explicit-hypothesis restatements (three new binder-free twins, two that already exist, one reused). Phase 1 re-measures and closes the example/omit span-bleed precondition; Phase 8 flips the flag last and corrects both docs.",
+  "task_number": 668,
+  "dispatch_seq": 3,
+  "phase": "implement",
+  "status": "implemented",
+  "phases_completed": 8,
+  "phases_total": 8,
+  "session_id": "sess_1790283758_0df08b",
+  "summary": "Cleared the C34b residual from 8 to 0 and enforced ENFORCE_C34B=1, so both halves of invariant C34 are enforced. Six rows restated at their consumed hypotheses (three new binder-free twins, three existing), every original kept as a one-line corollary with a byte-identical signature line; the two irreducible field re-exports discharged by a new narrow field re-export rule with eight new fixtures, six of them must-fail. Full lake build green (2726 jobs, zero errors, zero warnings), sorry-free, axiom count 14, check-module-invariants.sh ALL CHECKS PASSED with PASS C34a and PASS C34b.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/668_clear_c34b_residual_enforce_c34b/summaries/01_clear-c34b-residual-enforce-summary.md",
+      "summary": "Implementation summary for the C34b residual clearance and the ENFORCE_C34B flip."
+    },
     {
       "type": "plan",
       "path": "specs/668_clear_c34b_residual_enforce_c34b/plans/01_clear-c34b-residual-enforce.md",
-      "summary": "Eight-phase implementation plan: 9 hours, six dependency waves, three pinned Lean challenge statements."
+      "summary": "Eight-phase plan, all phases marked [COMPLETED] with inline deviation annotations."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 8,
-  "blockers": [],
-  "plan_markers_verified": true,
-  "skeleton": false,
-  "sorry_inventory": [],
-  "next_action_hint": "Run /implement 668 to execute the plan; Phase 1 must re-measure the census before any Lean edit."
+  "verification": {
+    "verification_passed": true,
+    "build_passed": true,
+    "sorry_count": 0,
+    "axiom_count": 14,
+    "gate": "check-module-invariants.sh: ALL CHECKS PASSED (PASS C34a, PASS C34b)"
+  },
+  "deviations": [
+    "Phase 2: eight new C34 fixtures rather than seven -- a sixth must-fail case pins the projection-chain field check that no other fixture reached.",
+    "Phase 8: README.md regenerated via --emit-inventory, although not in the plan's declared file list; the three new declarations made the INV check's committed line counts stale.",
+    "Phase 1: two truncation fixtures rather than one, covering both example and omit."
+  ],
+  "follow_ups": [
+    "Six unmarked field re-exports (FrameOver.comp/serial/limit and the TaskFrame counterparts) would exercise the new rule across its whole surface; none triggers C34b, so none is required. Recorded in REFERENCE_NORMAL_FORM.md section 3.",
+    "The broad projection rule stays deferred, measured at 46 of 212 against 8 for the narrow form, with the deciding blind spot recorded.",
+    "check-paper-definitions.sh and typst-sync-check.sh Check 2 both fail on the base commit -- verified pre-existing in a detached worktree at that commit -- and belong to separate work."
+  ]
 }
