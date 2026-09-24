@@ -2,7 +2,7 @@
 
 - **Task**: 668 - Clear the 8-row C34b residual in the hypothesis-honesty gate, then flip
   `ENFORCE_C34B=1` so the trigger half of invariant C34 is enforced alongside C34a
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: None (direct follow-up to the completed hypothesis-honesty-lint work, which
   landed C34 with C34a enforced and C34b soft)
@@ -168,7 +168,7 @@ sequential only because all three own the same file,
 
 ---
 
-### Phase 1: Re-measure, and truncate the declaration scan at `example`/`omit` [NOT STARTED]
+### Phase 1: Re-measure, and truncate the declaration scan at `example`/`omit` [COMPLETED]
 
 **Goal**: Replace every inherited figure with a freshly measured one, and close the span-bleed
 precondition that would otherwise make the new discharge rule fail on the very rows it exists for

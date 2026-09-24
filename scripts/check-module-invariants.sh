@@ -5490,8 +5490,16 @@ MARKER = re.compile(r"Constraints consumed:\s*([^\n]*)")
 # the earlier one's span. Scanning through it would attribute a `variable [F.IsRegular]` binder
 # to whatever theorem happened to precede it -- exactly the must-not-match case the fixtures
 # pin. The scan therefore truncates at the first top-level command after the keyword line.
+#
+# `example` and `omit` are in this list for the same reason and are worth naming: `example` is
+# an anonymous declaration, so it is in neither `lean_citations.DECL` nor any span of its own,
+# and an `example (F : FrameOver D) [F.IsRegular] : ...` sitting under a theorem would put that
+# binder -- and every identifier of the example's proof -- inside the theorem's scanned body.
+# `omit [F.IsRegular] in` is the same shape one keyword further out: a top-level modifier line
+# that belongs to the declaration BELOW it, never to the one above.
 TOPLEVEL = re.compile(
-    r"^\s*(?:variable|universe|namespace|end|section|open|attribute|set_option|deriving)\b|^\s*/-!")
+    r"^\s*(?:variable|universe|namespace|end|section|open|attribute|set_option|deriving"
+    r"|example|omit)\b|^\s*/-!")
 IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_.'!?]*")
 
 # C34b's TRIGGER heuristic, read over the declaration's own doc block. It fires when a sentence
@@ -5663,6 +5671,17 @@ _FIXTURES = [
     ("/-- Constraints consumed: None -/\ntheorem p : True := trivial\n", [], []),
     # an `@[simp]` attribute line does not detach a declaration from its doc block
     ("/-- Constraints consumed: Limit -/\n@[simp]\ntheorem s (hlim : L) : True := trivial\n",
+     [], []),
+    # the `example` truncation: an `example` is ANONYMOUS, so it opens no span of its own and
+    # without the truncation its bracketed binder is attributed to the marked declaration ABOVE
+    # it -- turning an honest binder-free marker into a C34a violation out of thin air
+    ("/-- Constraints consumed: Limit -/\ntheorem tw (hlim : L) : True := trivial\n\n"
+     "example (F : FrameOver D) [F.IsRegular] : True := trivial\n",
+     [], []),
+    # the same one keyword further out: `omit [..] in` modifies the declaration BELOW it, so it
+    # must not be read as a binder of the declaration above it either
+    ("/-- Constraints consumed: Limit -/\ntheorem tw2 (hlim : L) : True := trivial\n\n"
+     "omit [F.IsRegular] in\ntheorem below (hlim : L) : True := trivial\n",
      [], []),
 ]
 
