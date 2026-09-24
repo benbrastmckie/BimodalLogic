@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import Mathlib.Data.Int.LeastGreatest
+import Mathlib.Data.Rat.Denumerable
 import Mathlib.Order.SuccPred.Archimedean
 import FormalSystem.Semantics.Extension.Step
 import FormalSystem.Semantics.FrameProperty
@@ -590,6 +591,232 @@ theorem sInter_constraints_nonempty_of_nestSaturation
   Order.sInter_nonempty_of_sphericallyComplete
     (TaskFrame.nestSaturation_iff_sphericallyComplete.mp hS1)
     (fun _ hc => isFiber_or_isSegment_of_mem_Constraints hc) hne hcof
+
+/-! ### The carrier discharge: a countable domain has a cofinal nest -/
+
+/--
+**The carrier discharge.** A history with countably many times has a cofinal nest of constraints.
+
+No hypothesis on `D` at all — countability is a property of *the history's own domain*, stated
+directly, in the idiom this module already uses for `NearestAt`. That is deliberate: the
+alternative route through `Archimedean D` is not available, because Mathlib carries no Hölder
+embedding with which to discharge it, and a condition on `D` smuggled into the frame is the wrong
+shape besides. Every subset of `ℤ` and of `ℚ` is countable, so the hypothesis is free at both
+carriers this development instantiates (see the two `example`s below).
+
+**The regimes, as measured.** The plan for this result predicted two, on the strength of
+`IsPaired`'s recorded global collapse; the proof has **three**, and the extra one is the
+collapse's own stated side condition rather than a defect in it. `IsPaired`'s docstring records
+the collapse only for `z ∉ X` — "`z ∉ X` is what makes the two disjuncts exhaustive at every
+`t ∈ X`" — and `def:constraints` carries `z ∈ D \ X` in its statement, but Lean's `Constraints`
+deliberately does not, siting that proviso at the use sites instead. So the degenerate case is
+live here and has to be discharged:
+
+- **`z` is itself a domain time.** Then `z` is not paired with anything (neither disjunct of
+  `IsPaired` can hold at `t = z`), so `Fib(τ(z), 0)` is a constraint, and it is contained in every
+  other one: in a fiber by whichever monotonicity lemma the side of `z` selects, and in a segment
+  because a segment is the intersection of its two endpoint fibers. The singleton `{Fib(τ(z), 0)}`
+  is therefore already a cofinal nest. No countability, no construction.
+- **One-sided domain** (`z ∉ X`, and `X` has no time on one side of `z`). No `t ∈ X` is paired, so
+  `Constraints τ z` is fibers only, and `fib_subset_fib_of_compositional` (all times below `z`) or
+  its primed mirror (all times above) makes the whole family a chain. Take `C = Constraints τ z`;
+  cofinality is `c' = c`. Still no countability, and still no construction — the two sides are one
+  regime discharged by the two mirror lemmas, not two regimes.
+- **Straddling domain** (`z ∉ X`, and `X` has times on both sides). Every `t ∈ X` is paired, so
+  `Constraints τ z` is segments only, indexed by `A × Bᵒᵖ` with `A = X ∩ (-∞, z)` and
+  `B = X ∩ (z, ∞)`. **This is the only regime that uses `hcount`**: enumerate `A` and `B` as
+  `a, b : ℕ → D`, form the running extrema `A'(n) = max_{i ≤ n} a(i)` and `B'(n) = min_{i ≤ n}
+  b(i)` — each is one of the enumerated values, hence again a domain time on the right side of
+  `z` — and take `C = {Seg(τ(A' n), τ(B' n), z - A' n, B' n - z) | n : ℕ}`. Chain-ness is
+  `seg_subset_seg_of_compositional` against `A'` monotone and `B'` antitone; cofinality is: given
+  `(t, s)`, pick `n` past both of their indices. The two-dimensional index is collapsed to one
+  dimension by the diagonal, which is exactly why a nest suffices here.
+
+All three regimes discharge the same `Order.IsNest` obligation, so the split is over the
+*construction* of `C`, never over the shape of the conclusion.
+
+**The boundary of the result.** `ℝ`-time histories may have uncountable domains, and the `ℝ` case
+needs a separate order-separability argument which is **not** attempted here. This does **not**
+settle `S₁ → S₁ᵈ`: a genuine failure of `HasCofinalNest` needs mismatched one-sided cofinal
+characters, hence a non-archimedean `D` of uncountable coinitiality, which is a recorded non-goal.
+
+Paper: — (the manuscript has no anchor for the nest reduction)
+-/
+theorem hasCofinalNest_of_countable (hcomp : TaskFrame.Compositional F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel)
+    (τ : PartialHistory F) (z : F.Duration)
+    (hcount : {t : F.Duration | τ.domain t}.Countable) : HasCofinalNest τ z := by
+  by_cases hz : τ.domain z
+  · -- `z` is itself a domain time: its own zero-duration fiber is already a cofinal nest.
+    have key : ∀ (t : F.Duration) (ht : τ.domain t),
+        TaskFrame.Fib F.TaskRel (τ.states z hz) (z - z)
+          ⊆ TaskFrame.Fib F.TaskRel (τ.states t ht) (z - t) := by
+      intro t ht
+      rcases le_total t z with h | h
+      · exact fib_subset_fib_of_compositional hcomp ht hz h le_rfl
+      · exact fib_subset_fib_of_compositional' hcomp hlim ht hz h le_rfl
+    refine ⟨{TaskFrame.Fib F.TaskRel (τ.states z hz) (z - z)}, ?_, ⟨⟨_, rfl⟩, ?_⟩, ?_⟩
+    · rintro c rfl
+      exact mem_Constraints.mpr (Or.inr ⟨z, hz, by
+        rintro (⟨h, -⟩ | ⟨h, -⟩) <;> exact absurd h (lt_irrefl z), rfl⟩)
+    · exact Set.Subsingleton.isChain Set.subsingleton_singleton
+    · rintro c (⟨t, s, ht, hs, htz, hzs, rfl⟩ | ⟨t, ht, -, rfl⟩)
+      · exact ⟨_, rfl, by rw [seg_eq_inter_fib]; exact Set.subset_inter (key t ht) (key s hs)⟩
+      · exact ⟨_, rfl, key t ht⟩
+  · by_cases hB : ∃ s, τ.domain s ∧ z < s
+    · by_cases hA : ∃ t, τ.domain t ∧ t < z
+      · -- Straddling domain: segments only, diagonalised through the running extrema.
+        have hrange : ∀ n : ℕ, (Finset.range (n + 1)).Nonempty := fun n =>
+          Finset.nonempty_range_iff.mpr (Nat.succ_ne_zero n)
+        obtain ⟨t₀, ht₀, ht₀z⟩ := hA
+        obtain ⟨s₀, hs₀, hzs₀⟩ := hB
+        obtain ⟨a, ha⟩ := (hcount.mono (fun t (h : τ.domain t ∧ t < z) => h.1)).exists_eq_range
+            ⟨t₀, ht₀, ht₀z⟩
+        obtain ⟨b, hb⟩ := (hcount.mono (fun t (h : τ.domain t ∧ z < t) => h.1)).exists_eq_range
+            ⟨s₀, hs₀, hzs₀⟩
+        have haA : ∀ i, τ.domain (a i) ∧ a i < z := fun i => by
+          have : a i ∈ {t : F.Duration | τ.domain t ∧ t < z} := by rw [ha]; exact ⟨i, rfl⟩
+          exact this
+        have hbB : ∀ i, τ.domain (b i) ∧ z < b i := fun i => by
+          have : b i ∈ {t : F.Duration | τ.domain t ∧ z < t} := by rw [hb]; exact ⟨i, rfl⟩
+          exact this
+        obtain ⟨A', hA'dom, hA'lt, hA'mono, hA'ge⟩ :
+            ∃ A' : ℕ → F.Duration, (∀ n, τ.domain (A' n)) ∧ (∀ n, A' n < z) ∧
+              (∀ n m, n ≤ m → A' n ≤ A' m) ∧ (∀ i n, i ≤ n → a i ≤ A' n) := by
+          refine ⟨fun n => (Finset.range (n + 1)).sup' (hrange n) a, ?_, ?_, ?_, ?_⟩
+          · intro n
+            dsimp only
+            obtain ⟨i, -, hi⟩ := Finset.exists_mem_eq_sup' (hrange n) a
+            rw [hi]; exact (haA i).1
+          · intro n
+            dsimp only
+            obtain ⟨i, -, hi⟩ := Finset.exists_mem_eq_sup' (hrange n) a
+            rw [hi]; exact (haA i).2
+          · intro n m hnm
+            dsimp only
+            exact Finset.sup'_mono a (Finset.range_mono (Nat.succ_le_succ hnm)) _
+          · intro i n hin
+            dsimp only
+            exact Finset.le_sup' a (Finset.mem_range.mpr (Nat.lt_succ_of_le hin))
+        obtain ⟨B', hB'dom, hB'gt, hB'anti, hB'le⟩ :
+            ∃ B' : ℕ → F.Duration, (∀ n, τ.domain (B' n)) ∧ (∀ n, z < B' n) ∧
+              (∀ n m, n ≤ m → B' m ≤ B' n) ∧ (∀ i n, i ≤ n → B' n ≤ b i) := by
+          refine ⟨fun n => (Finset.range (n + 1)).inf' (hrange n) b, ?_, ?_, ?_, ?_⟩
+          · intro n
+            dsimp only
+            obtain ⟨i, -, hi⟩ := Finset.exists_mem_eq_inf' (hrange n) b
+            rw [hi]; exact (hbB i).1
+          · intro n
+            dsimp only
+            obtain ⟨i, -, hi⟩ := Finset.exists_mem_eq_inf' (hrange n) b
+            rw [hi]; exact (hbB i).2
+          · intro n m hnm
+            dsimp only
+            exact Finset.inf'_mono b (Finset.range_mono (Nat.succ_le_succ hnm)) _
+          · intro i n hin
+            dsimp only
+            exact Finset.inf'_le b (Finset.mem_range.mpr (Nat.lt_succ_of_le hin))
+        refine ⟨Set.range (fun n => TaskFrame.Seg F.TaskRel (τ.states (A' n) (hA'dom n))
+            (τ.states (B' n) (hB'dom n)) (z - A' n) (B' n - z)), ?_, ⟨⟨_, ⟨0, rfl⟩⟩, ?_⟩, ?_⟩
+        · rintro c ⟨n, rfl⟩
+          exact mem_Constraints.mpr
+            (Or.inl ⟨A' n, B' n, hA'dom n, hB'dom n, hA'lt n, hB'gt n, rfl⟩)
+        · rintro c₁ ⟨n, rfl⟩ c₂ ⟨m, rfl⟩ -
+          rcases le_total n m with h | h
+          · exact Or.inr (seg_subset_seg_of_compositional hcomp hlim (hA'dom n) (hB'dom n)
+              (hA'dom m) (hB'dom m) (hA'mono n m h) (le_of_lt (hA'lt m)) (le_of_lt (hB'gt m))
+              (hB'anti n m h))
+          · exact Or.inl (seg_subset_seg_of_compositional hcomp hlim (hA'dom m) (hB'dom m)
+              (hA'dom n) (hB'dom n) (hA'mono m n h) (le_of_lt (hA'lt n)) (le_of_lt (hB'gt n))
+              (hB'anti m n h))
+        · rintro c (⟨t, s, ht, hs, htz, hzs, rfl⟩ | ⟨t, ht, hnp, rfl⟩)
+          · have hta : t ∈ Set.range a := by rw [← ha]; exact ⟨ht, htz⟩
+            have hsb : s ∈ Set.range b := by rw [← hb]; exact ⟨hs, hzs⟩
+            obtain ⟨i, rfl⟩ := hta
+            obtain ⟨j, rfl⟩ := hsb
+            refine ⟨_, ⟨max i j, rfl⟩, ?_⟩
+            exact seg_subset_seg_of_compositional hcomp hlim ht hs (hA'dom _) (hB'dom _)
+              (hA'ge i _ (le_max_left i j)) (le_of_lt (hA'lt _)) (le_of_lt (hB'gt _))
+              (hB'le j _ (le_max_right i j))
+          · exfalso
+            refine hnp ?_
+            rcases lt_trichotomy t z with h | h | h
+            · exact Or.inl ⟨h, ⟨s₀, hs₀, hzs₀⟩⟩
+            · exact absurd (h ▸ ht) hz
+            · exact Or.inr ⟨h, ⟨t₀, ht₀, ht₀z⟩⟩
+      · -- One-sided domain, all of it above `z`: fibers only, a chain by the primed lemma.
+        have hmem : ∀ c ∈ Constraints τ z, ∃ (t : F.Duration) (ht : τ.domain t), z ≤ t ∧
+            c = TaskFrame.Fib F.TaskRel (τ.states t ht) (z - t) := by
+          rintro c (⟨t, s, ht, hs, htz, hzs, rfl⟩ | ⟨t, ht, -, rfl⟩)
+          · exact absurd ⟨t, ht, htz⟩ hA
+          · refine ⟨t, ht, ?_, rfl⟩
+            rcases lt_trichotomy t z with h | h | h
+            · exact absurd ⟨t, ht, h⟩ hA
+            · exact absurd (h ▸ ht) hz
+            · exact le_of_lt h
+        refine ⟨Constraints τ z, subset_rfl, ⟨nonempty_Constraints τ z, ?_⟩,
+          fun c hc => ⟨c, hc, subset_rfl⟩⟩
+        rintro c₁ h₁ c₂ h₂ -
+        obtain ⟨t₁, ht₁, hzt₁, rfl⟩ := hmem c₁ h₁
+        obtain ⟨t₂, ht₂, hzt₂, rfl⟩ := hmem c₂ h₂
+        rcases le_total t₁ t₂ with h | h
+        · exact Or.inl (fib_subset_fib_of_compositional' hcomp hlim ht₂ ht₁ h hzt₁)
+        · exact Or.inr (fib_subset_fib_of_compositional' hcomp hlim ht₁ ht₂ h hzt₂)
+    · -- One-sided domain, all of it below `z`: fibers only, a chain by the unprimed lemma.
+      have hmem : ∀ c ∈ Constraints τ z, ∃ (t : F.Duration) (ht : τ.domain t), t ≤ z ∧
+          c = TaskFrame.Fib F.TaskRel (τ.states t ht) (z - t) := by
+        rintro c (⟨t, s, ht, hs, htz, hzs, rfl⟩ | ⟨t, ht, -, rfl⟩)
+        · exact absurd ⟨s, hs, hzs⟩ hB
+        · refine ⟨t, ht, ?_, rfl⟩
+          rcases lt_trichotomy t z with h | h | h
+          · exact le_of_lt h
+          · exact absurd (h ▸ ht) hz
+          · exact absurd ⟨t, ht, h⟩ hB
+      refine ⟨Constraints τ z, subset_rfl, ⟨nonempty_Constraints τ z, ?_⟩,
+        fun c hc => ⟨c, hc, subset_rfl⟩⟩
+      rintro c₁ h₁ c₂ h₂ -
+      obtain ⟨t₁, ht₁, ht₁z, rfl⟩ := hmem c₁ h₁
+      obtain ⟨t₂, ht₂, ht₂z, rfl⟩ := hmem c₂ h₂
+      rcases le_total t₁ t₂ with h | h
+      · exact Or.inr (fib_subset_fib_of_compositional hcomp ht₁ ht₂ h ht₂z)
+      · exact Or.inl (fib_subset_fib_of_compositional hcomp ht₂ ht₁ h ht₁z)
+
+/--
+**The headline.** Over any history with countably many times — automatic for `ℤ`-time and
+`ℚ`-time, since every subset of `ℤ` or of `ℚ` is countable — the nest condition `S₁` buys exactly
+what `S₁ᵈ` buys at `lem:step`.
+
+So the answer to "is the `⇒`-directed form forced?" is **no, not over any carrier this development
+instantiates**. The directedness of `def:frame`'s fourth constraint is therefore *not* a tightness
+requirement that the extension theorem extracts; it is kept on the naturalness criterion — the
+geometry `⇒` induces on `W` has no gaps, and a `⊇`-directed system of balls is the form that
+condition takes when it is stated about the geometry rather than about one construction's index
+set. This theorem is the sharpness result that records the fact, not a case for weakening
+`def:frame`.
+
+What it does **not** say: nothing here establishes `S₁ → S₁ᵈ` at the frame level. That implication
+is false in the shape one would first try to state it, and the counterexample space for it lives
+over non-archimedean carriers of uncountable coinitiality, outside this development.
+
+Paper: — (the manuscript has no anchor for the nest reduction)
+-/
+theorem sInter_constraints_nonempty_of_countable
+    (hS1 : TaskFrame.NestSaturation F.TaskRel) (hcomp : TaskFrame.Compositional F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel)
+    (τ : PartialHistory F) (z : F.Duration)
+    (hne : ∀ c ∈ Constraints τ z, c.Nonempty)
+    (hcount : {t : F.Duration | τ.domain t}.Countable) :
+    (⋂₀ Constraints τ z).Nonempty :=
+  sInter_constraints_nonempty_of_nestSaturation hS1 τ z hne
+    (hasCofinalNest_of_countable hcomp hlim τ z hcount)
+
+/-- Acceptance test: the countability hypothesis is free over `ℤ`-time, since every subset of `ℤ`
+is countable. -/
+example (X : Set ℤ) : X.Countable := X.to_countable
+
+/-- Acceptance test: the countability hypothesis is free over `ℚ`-time too, so both instantiated
+carriers are covered with no hypothesis on `D` at all. -/
+example (X : Set ℚ) : X.Countable := X.to_countable
 
 end PartialHistory
 

@@ -800,7 +800,7 @@ discrete time` narrative is not interrupted. Siting only; nothing else changed.
 
 ---
 
-### Phase 5: `S₁` suffices over every countable domain — hence over `ℤ`- and `ℚ`-time [NOT STARTED]
+### Phase 5: `S₁` suffices over every countable domain — hence over `ℤ`- and `ℚ`-time [COMPLETED]
 
 **Goal**: Discharge `HasCofinalNest` from a directly stated order property, following the tree's
 own `NearestAt`/`HasNearest` pattern and **not** routing through `Archimedean D` (Mathlib has no
@@ -810,13 +810,13 @@ hypothesis on `D` at all.
 
 **Tasks**:
 
-- [ ] Add `theorem hasCofinalNest_of_countable (hcomp : TaskFrame.Compositional F.TaskRel)
+- [x] Add `theorem hasCofinalNest_of_countable (hcomp : TaskFrame.Compositional F.TaskRel)
       (hlim : TaskFrame.Limit F.TaskRel) (τ : PartialHistory F) (z : F.Duration)
       (hcount : {t : F.Duration | τ.domain t}.Countable) : HasCofinalNest τ z`, using **only** the
       Phase 3 `_of_compositional` monotonicity lemmas. *(deviation: altered — `hlim` added under
       the same user authorization as Phase 3's; the straddling regime routes through
       `seg_subset_seg_of_compositional`, which consumes *Limit*.)*
-- [ ] Split on `IsPaired`'s recorded global collapse rather than on four ad hoc cases. There are
+- [x] Split on `IsPaired`'s recorded global collapse rather than on four ad hoc cases. There are
       exactly two regimes, and the docstring must say so:
       - **One-sided domain** (no `t ∈ X` is paired): `Constraints τ z` is fibers only, and
         `fib_subset_fib_of_compositional` (below `z`) or its primed mirror (above `z`) makes the
@@ -831,11 +831,11 @@ hypothesis on `D` at all.
         given `(t, s)`, pick `n` past both indices. Both regimes discharge the same
         `Order.IsNest C` obligation, so the case split is over the *construction* of `C`, never
         over the shape of the conclusion.
-- [ ] Docstring records **why this is the right hypothesis shape**: it is a property of the
+- [x] Docstring records **why this is the right hypothesis shape**: it is a property of the
       history's domain, stated directly, in the idiom of `NearestAt`; it is *not* a property of
       `D` smuggled into the frame; and it deliberately avoids `Archimedean D`, which Mathlib
       cannot discharge without a Hölder embedding it does not have.
-- [ ] Add `theorem sInter_constraints_nonempty_of_countable
+- [x] Add `theorem sInter_constraints_nonempty_of_countable
       (hS1 : TaskFrame.NestSaturation F.TaskRel) (hcomp : TaskFrame.Compositional F.TaskRel)
       (hlim : TaskFrame.Limit F.TaskRel) (τ : PartialHistory F) (z : F.Duration)
       (hne : ∀ c ∈ Constraints τ z, c.Nonempty)
@@ -845,18 +845,41 @@ hypothesis on `D` at all.
       *(deviation: altered — `hlim` added under the same user authorization, inherited from
       `hasCofinalNest_of_countable`. Neither `hcomp` nor `hlim` is *Saturation*, so the printed
       statement still contains no `IsRegular`, and the non-vacuity check below is unweakened.)*
-- [ ] Add two `example`s as acceptance tests — not pinned theorems — recording that a subset of
+- [x] Add two `example`s as acceptance tests — not pinned theorems — recording that a subset of
       `ℤ` and a subset of `ℚ` are automatically countable, so the hypothesis is free at both
       instantiated carriers. Keep them in the tree's existing `example` idiom (`TaskFrame.lean`'s
       field-invariant examples are the model).
-- [ ] Docstring records the **boundary of the result**, in the register the strength table fixes:
+- [x] Docstring records the **boundary of the result**, in the register the strength table fixes:
       `ℝ`-time histories may have uncountable domains, and the `ℝ` case needs a separate
       order-separability argument that is **not** attempted here; a genuine failure of
       `HasCofinalNest` needs mismatched one-sided cofinal characters, hence a non-archimedean `D`
       of uncountable coinitiality, which is this task's recorded non-goal. Do **not** write this
       as settling `S₁ → S₁ᵈ`.
-- [ ] Confirm the `longFile` hypothesis below. `lake build` green, sorry-free, warning-free;
+- [x] Confirm the `longFile` hypothesis below. `lake build` green, sorry-free, warning-free;
       `#print axioms` clean. Commit.
+
+**Scope Hypothesis result**: (a) **corrected, not confirmed** — the discharge has **three**
+regimes in Lean, not two. The extra one is the collapse's own stated side condition, not a defect
+in it: `IsPaired`'s docstring records the global collapse only for `z ∉ X`, and `def:constraints`
+carries `z ∈ D \ X` in its statement, but Lean's `Constraints` deliberately sites that proviso at
+the use sites instead — so `z ∈ dom τ` is live here and is a genuine third regime (`z` is paired
+with nothing, `Fib(τ(z), 0)` is a constraint, and the singleton `{Fib(τ(z), 0)}` is already a
+cofinal nest). Per this hypothesis's own instruction the case was **not** added silently: the
+theorem's docstring now enumerates all three regimes and says why the predicted count was two.
+The plan's own two regimes survive intact — the one-sided regime is one regime discharged by the
+two mirror lemmas, and only the straddling regime uses `hcount`.
+(b) **confirmed**: `Extension/Completion.lean` is **823 lines** after Phases 4 and 5, against the
+1500-line `longFile` limit; no in-source baseline was needed.
+
+**Deviation**: `import Mathlib.Data.Rat.Denumerable` was added, because the `ℚ` acceptance test
+needs the `Countable ℚ` instance and no existing import supplied it. The `ℤ` test needed nothing.
+
+**Verification result**: `lake build` exit 0, 2726 jobs, zero `error:` and zero `warning:` lines.
+`#print axioms` on both `hasCofinalNest_of_countable` and
+`sInter_constraints_nonempty_of_countable` reports exactly `propext`, `Classical.choice`,
+`Quot.sound`; neither printed statement contains `IsRegular` or `Saturation`. `grep -n
+'Archimedean' Extension/Completion.lean` returns one new hit, in prose saying the `Archimedean D`
+route is **not** taken — no new hypothesis of that shape.
 
 **Timing**: 2 hours
 
