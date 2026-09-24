@@ -908,7 +908,7 @@ is wrong and the docstring must be corrected rather than the case added silently
 
 ---
 
-### Phase 6: Prose reversal in the extension chain [NOT STARTED]
+### Phase 6: Prose reversal in the extension chain [COMPLETED]
 
 **Goal**: Stop the extension chain's own account of itself from presenting *Completion* as
 `def:frame`'s proposed fourth constraint. *Completion* is the derived condition `lem:step`
@@ -917,7 +917,7 @@ canonical site is rewritten **first**, because every other advocacy region echoe
 
 **Tasks**:
 
-- [ ] **First**, rewrite `Extension/Completion.lean`'s architecture-target block (the "Two things
+- [x] **First**, rewrite `Extension/Completion.lean`'s architecture-target block (the "Two things
       this module deliberately does not do" block, currently naming a pending manuscript pass and
       a pending `IsRegular` field swap). Replace it with the settled architecture: `def:frame`
       carries *Saturation*; `completion_of_isRegular` **derives** *Completion* in the bare form
@@ -925,7 +925,7 @@ canonical site is rewritten **first**, because every other advocacy region echoe
       hypothesis — and already elaborates with **no `[F.IsRegular]` instance binder**, which is
       the machine-checked form of exactly that claim; and the manuscript already says *Saturation*,
       so no manuscript pass is pending. Nothing is "until those two land" any more.
-- [ ] Rewrite the "**The primitives-level reading favours the bare `TaskFrame.Completion` clause
+- [x] Rewrite the "**The primitives-level reading favours the bare `TaskFrame.Completion` clause
       as `def:frame`'s fourth constraint**" block. It must become the **sharpness** statement: the
       bare clause is available at the primitives level, which is what makes the comparison
       meaningful; and the comparison's verdict, under the governing criterion, is that *Completion*
@@ -935,31 +935,31 @@ canonical site is rewritten **first**, because every other advocacy region echoe
       *Limit*, to "the construction `thm:extension` performs succeeds", i.e. an axiom in the shape
       of its own theorem. Add: *Saturation* looks backward instead, to `def:task-relation`, and
       `Fib`/`Seg` are the relation repackaged as subsets, not new constructions.
-- [ ] Rewrite the module docstring regions that site *Completion* at `def:frame`'s level, and the
+- [x] Rewrite the module docstring regions that site *Completion* at `def:frame`'s level, and the
       `CoherentCompletion` docstring's "the audit's recommendation is that it should be".
-- [ ] Rewrite the two later regions ("*Completion* witness in place of the *Saturation* witness";
+- [x] Rewrite the two later regions ("*Completion* witness in place of the *Saturation* witness";
       "`thm:extension` in full, with *Saturation* replaced by *Completion*") into the derived
       register.
-- [ ] Add a **remark region** recording that *Saturation* is strictly stronger than *Completion*,
+- [x] Add a **remark region** recording that *Saturation* is strictly stronger than *Completion*,
       citing `SeparatingFrame.srel_completion` + `not_srel_saturation` as the witness, with the
       ball-space footnote attached there — the dispatch's target architecture, and the one place
       the "strictly stronger" phrase is **correct** (it is about *Saturation* vs *Completion*,
       never about `S₁ᵈ` vs `S₁`).
-- [ ] Rewrite `Extension/Step.lean`'s two regions. Keep "What `step` actually consumes:
+- [x] Rewrite `Extension/Step.lean`'s two regions. Keep "What `step` actually consumes:
       *Completion*" — it is true and machine-checked. Change only the closing register: "the only
       thing `def:frame`'s *Saturation* buys the development, it buys through a strictly weaker
       condition that **could have been assumed instead**" becomes a statement that the measurement
       records **the exact strength the axiom is spent at**, with the minimality recorded in
       `thm:extension`'s hypothesis rather than migrated into `def:frame`.
-- [ ] Rewrite `Extension/Extension.lean`'s "*Completion* may stand in for *Saturation*" region to
+- [x] Rewrite `Extension/Extension.lean`'s "*Completion* may stand in for *Saturation*" region to
       the same register.
-- [ ] **The elimination-site correction (Revision Note (v2), item 2).** Fix
+- [x] **The elimination-site correction (Revision Note (v2), item 2).** Fix
       `Extension/Extension.lean:51` ("it reaches `step` — which remains its sole application
       site") and `:226` ("`step`, which remains its sole application site") to say **sole
       *elimination* site**, or wording equivalent to and consistent with `Step.lean:36-40`'s
       standing measurement. Line numbers are as of this plan's writing and are stale the moment
       Phases 4 and 5 land — locate by content.
-- [ ] Sweep the rest of the extension chain for the same measured-false phrasing and correct each
+- [x] Sweep the rest of the extension chain for the same measured-false phrasing and correct each
       **unattributed, tree-level** occurrence to the elimination register, keeping every
       *attributed* occurrence ("the sole application site **the paper names**") exactly as it is:
       `Extension/Extension.lean:22` (the chain diagram's "(the sole *Saturation* application
@@ -971,17 +971,38 @@ canonical site is rewritten **first**, because every other advocacy region echoe
       forty lines above it in the same file, and it is the sentence the correction was written
       against. `Extension/Constraint.lean:416` is **attributed** and is left alone unless the
       sweep finds the attribution has been dropped.
-- [ ] Record, in `Step.lean`'s module docstring beside the existing measurement, that the
+- [x] Record, in `Step.lean`'s module docstring beside the existing measurement, that the
       correction has now been propagated — naming the three confirmed non-`step` application sites
       (`IntTransfer.lean` `FrameOver.map`, `OpenReversal.lean` `FrameOver.rev_isRegular`,
       `Frames/TranslationProduct.lean` `FrameOver.translationProduct`, all transports building a
       derived frame's `saturation` field from `F.saturation`) — so the next reader meets the
       measurement and its propagation together rather than the measurement and a live
       contradiction.
-- [ ] Cross-check every rewritten region against the four-row strength table in this plan's
+- [x] Cross-check every rewritten region against the four-row strength table in this plan's
       Overview. `lake build` green (docstring edits can break elaboration if a hunk escapes a
       comment boundary — this is exactly the `prose` tier's named blind spot, so the build is run
       regardless). Commit.
+
+**Scope Hypothesis result**: both counts **confirmed**, with the advocacy set now empty.
+(a) `grep -rn 'proposed\|recommend\|replacement\|stand in for' FormalSystem/Semantics/Extension/*.lean`
+returns **nothing**. (b) `grep -rn 'application site' FormalSystem/Semantics/Extension/` leaves
+only attributed occurrences — `Admissible.lean:103`, `Step.lean:110` and `Constraint.lean:508`,
+all "the sole application site **the paper names**" — plus two sentences in the new propagation
+note that use the phrase to *draw* the distinction. All eight unattributed occurrences are now in
+the elimination register: `Extension.lean:22`, `:51`, `:195`, `:226`; `Step.lean:10`, `:13-14`,
+`:171`, `:179`. No region outside the enumerated set needed changing, so neither count was an
+undercount.
+
+**Deviation**: three lines were rewrapped after the rewrite pushed them past the 100-character
+limit (`Step.lean`, `Extension.lean`, `Completion.lean`) — the `longLine` linter caught them on
+the first build and they were fixed before the phase closed. Also, the new declarations from
+Phases 4 and 5 were added to `Completion.lean`'s "What this module establishes" list while that
+docstring was open, rather than deferring a second pass over the same block to Phase 9.
+
+**Verification result**: every changed hunk lies inside a `/-!` or `/--` region — checked
+mechanically over `git diff -U0`, which shows **zero** added lines beginning with a Lean
+declaration or command keyword. `lake build` exit 0, 2726 jobs, zero `error:` and zero `warning:`
+lines. `git status --short docs/reference/paper-definitions-of-record.md` is empty.
 
 **Timing**: 2 hours
 

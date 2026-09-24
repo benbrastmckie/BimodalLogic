@@ -12,7 +12,7 @@ import FormalSystem.Semantics.FrameProperty
 import FormalSystem.Semantics.PartialHistoryOrder
 
 /-!
-# *Completion* — the exact frame-level condition `thm:extension` consumes
+# *Completion* — the derived condition `thm:extension` actually consumes
 
 `def:frame`'s *Saturation* is eliminated at exactly one site in the whole development,
 `lem:step` (`FormalSystem.Semantics.PartialHistory.step`). This module isolates the condition that
@@ -27,8 +27,10 @@ The condition, stated over a bare relation and with no reference to histories:
 That condition is declared **as a bare-relation predicate**, `TaskFrame.Completion`
 (`Semantics/TaskFrame.lean`), beside `Saturation`, `Serial`, `Compositional` and `Limit`: it
 mentions the state set `W`, the duration type `D` and the task relation, and nothing else — no
-`Fib`, no fiber/segment classification, no notion of history. That is the level `def:frame` states
-its constraints at, which is why the predicate is sited there rather than here.
+`Fib`, no fiber/segment classification, no notion of history. It is sited there so that it can be
+*compared* with the constraints in their own vocabulary, not because it is one of them: it is the
+**derived** condition the extension chain consumes, and `def:frame`'s fourth constraint is
+*Saturation*. See "Why *Completion* is a derived condition" below.
 
 A coherent family indexed by a nonempty `X` **is** a partial history (`def:world-history`), so the
 `PartialHistory`-shaped form `Completion` and the relation-shaped form `CoherentCompletion` — the
@@ -55,7 +57,16 @@ of it on histories.
   the infinitary quantifier is essential.
 * `extension_of_completion` — *Completion* plus *Seriality* plus *Limit* gives `thm:extension` in
   full, through the existing Zorn scaffolding (`exists_maximal_extension`), which is itself
-  constraint-free.
+  constraint-free. This is where the minimality is recorded.
+* `HasCofinalNest` / `sInter_constraints_nonempty_of_nestSaturation` — the nest condition `S₁`
+  (`TaskFrame.NestSaturation`) plus a cofinal nest inside `Constraints τ z` gives what `lem:step`
+  consumes. Stated as a property of the constraint family: the frame-level `S₁ → Saturation` is
+  **not** available and must never be stated.
+* `hasCofinalNest_of_countable` / `sInter_constraints_nonempty_of_countable` — over any history
+  with countably many times, hence over both `ℤ`-time and `ℚ`-time, `S₁` buys exactly what `S₁ᵈ`
+  buys at `lem:step`. **The directedness of `def:frame`'s fourth constraint is therefore not
+  forced**; it is kept on the naturalness criterion, and this is the sharpness result recording
+  the fact.
 
 ## Discrete time: *Saturation* is redundant over `def:BX-z`'s ℤ-time
 
@@ -102,28 +113,68 @@ inclusion and by nothing else), which no discreteness of the duration order reac
 `⊇`-directed family of them can shrink onto a Dedekind cut of the carrier however discrete the
 durations are.
 
-**The primitives-level reading favours the bare `TaskFrame.Completion` clause as `def:frame`'s
-fourth constraint.** A frame constraint may mention the state set `W`, the duration type `D` and
-the task relation, and nothing the theory builds from them. `TaskFrame.Completion` mentions
-exactly those. *Saturation* does not: it needs the fibre/segment classification to pick out
-eligible members at all, and its directedness side condition is stated in subset inclusion with
-no reference to the task relation. Strictness plus the primitives criterion is the whole case for
-the replacement.
+## Why *Completion* is a **derived condition** and not `def:frame`'s fourth constraint
 
-**Two things this module deliberately does not do**, named here so no reader has to infer them:
+*Completion* is stated at the primitives level — `TaskFrame.Completion` mentions `W`, `D` and `⇒`
+and nothing the theory builds from them — and that is what makes the comparison with *Saturation*
+meaningful at all. It is **not** what makes *Completion* a candidate constraint, and the
+comparison's verdict, under the criterion that a frame constraint must be a property of the
+structure `⟨W, D, ⇒⟩` *as such*, is that *Completion* loses:
 
-1. **The manuscript is not touched.** Restating `def:frame`'s fourth clause `Fib`-free, deleting
-   its opening directed-family clause and demoting *Saturation* to a remark that keeps the
-   ball-space footnote is a manuscript pass, and `def:frame` is a pinned anchor with a recorded
-   checksum in `docs/reference/paper-definitions-of-record.md`. That pass is follow-up work.
-2. **`FrameOver.IsRegular` still carries a `saturation` field.** Swapping it for a `completion`
-   field would need *Completion* analogues at the five transport sites that currently take
-   *Saturation* in and give it back out (`FrameOver.rev_isRegular`, `FrameOver.map`,
-   `FrameOver.translationProduct`, `regionFrame_saturation`, `zTaskFrameV2_saturation`). That is
-   a larger change and is also follow-up work.
+- **Its hypothesis clause is `def:world-history`'s clause verbatim.** "A family `{w_t}` on a
+  nonempty `X ⊆ D` with `w_s ⇒_{t-s} w_t`" **is** a partial history;
+  `completion_iff_coherentCompletion` below is the machine-checked identification. Stating it
+  `Fib`-free removes the *word* "history", not the aboutness — so the bare form is a disguise
+  rather than a cure. The test is what a condition is *about*, not what vocabulary it is
+  written in.
+- **It is an axiom in the shape of its own theorem.** `completion_iff_onePointExtension` makes
+  *Completion* provably equivalent, under *Seriality* and *Limit*, to "the construction
+  `thm:extension` performs succeeds". A definition may not assume the success of the construction
+  a theorem about it is supposed to establish.
+- **It forward-references.** `def:frame` precedes `def:world-history`; *Completion* looks forward
+  to it.
 
-Until those two land, `Completion` remains a **lemma about** task frames here — a sharpening of
-what the extension chain consumes — rather than a constraint field.
+*Saturation* looks **backward** instead, to `def:task-relation`: `Fib R w x = {u | R w x u}` and
+`Seg R w v x y = Fib R w x ∩ Fib R v (-y)` are the relation repackaged as subsets, not new
+constructions — a difference in kind from a function on a subset of times. Read that way,
+*Saturation* says the geometry `⇒` induces on `W`, whose balls are the fibers and segments, has
+no gaps: any consistently shrinking system of balls contains an actual state.
+
+So the settled architecture, which this module and `Extension/Step.lean` now describe rather than
+propose, is:
+
+1. **`def:frame` carries *Saturation*.** `FrameOver.IsRegular`'s `saturation` field is the
+   operative constraint and stays that way; the manuscript already says *Saturation*, so tree and
+   paper agree and no manuscript pass is pending.
+2. **`completion_of_isRegular` *derives* *Completion*** in the bare form, immediately before the
+   sole elimination site `lem:step`.
+3. **`extension_of_completion` takes *Completion* as an explicit hypothesis**, so the minimality
+   is recorded where minimality belongs — in a theorem's hypotheses, not in a definition. It
+   already elaborates with **no `[F.IsRegular]` instance binder**, which is the machine-checked
+   form of exactly that claim.
+
+Nothing here is pending on anything else landing.
+
+## Remark: *Saturation* is strictly stronger than *Completion*
+
+The strictness is a **sharpness result about a definition worth keeping**, not a case for
+replacing it. *Saturation* implies *Completion* (`completion_of_isRegular`, through `lem:step`);
+the converse is **false**, witnessed by `StateTopology.SeparatingFrame.srel` —
+`W = ℚ`, `D = ℤ`, `w ⇒ₓ v` iff `|v - w| ≤ |x|` — which satisfies *Seriality*, *Compositionality*,
+*Limit* and *Completion* (`SeparatingFrame.srel_completion`) while failing *Saturation*
+(`SeparatingFrame.not_srel_saturation`).
+
+**The ball-space footnote, attached here.** `def:frame`'s *Saturation* clause is the
+`⇒`-directed form `S₁ᵈ` of the Ćmiel–Kuhlmann–Kuhlmann ball-space hierarchy, over the ball space
+of nonempty fibers and segments; the standard nest condition `S₁` is `TaskFrame.NestSaturation`,
+and `TaskFrame.nestSaturation_of_saturation` machine-checks the footnote's `S₁ᵈ → S₁`. The
+directedness is **not forced**: over any history with countably many times — hence over both
+`ℤ`-time and `ℚ`-time — `S₁` buys exactly what `S₁ᵈ` buys at `lem:step`
+(`sInter_constraints_nonempty_of_countable`, in this module). It is kept because it is the form
+the no-gaps reading of the induced geometry takes when stated about the geometry rather than
+about one construction's index set. The separating frame fails `S₁` too
+(`SeparatingFrame.not_srel_nestSaturation`), so neither existing witness separates the two forms,
+and the sharpness result above is about `S₁` as much as about `S₁ᵈ`.
 
 ## References
 
@@ -165,9 +216,10 @@ family.
 
 This is **definitionally** `TaskFrame.Completion F.TaskRel` — the bare-relation predicate of
 record, which lives beside `Saturation`, `Serial`, `Compositional` and `Limit` in
-`Semantics/TaskFrame.lean`, in the primitives `W`, `D` and `⇒` alone. It is the shape in which the
-condition is stated inside `def:frame` itself if the replacement option is taken, and the audit's
-recommendation is that it should be. This name is retained as the frame-level spelling; use
+`Semantics/TaskFrame.lean`, in the primitives `W`, `D` and `⇒` alone. Stating it in that
+vocabulary is what makes it comparable with the constraints; it is **not** a proposal that it
+become one. `def:frame`'s fourth constraint is *Saturation*, and `completion_of_isRegular`
+derives this condition from it. This name is retained as the frame-level spelling; use
 `coherentCompletion_iff_rel` to move between the two by name.
 -/
 def CoherentCompletion (F : TaskFrame) : Prop :=
@@ -212,8 +264,9 @@ theorem completion_of_onePointExtension (h : OnePointExtension F) : Completion F
 /--
 *Completion* plus *Seriality* plus *Limit* gives the one-point extension property.
 
-**No *Saturation*, and no *Compositionality*.** This is the `lem:admissible` argument run with the
-*Completion* witness in place of the *Saturation* witness: the four pair-cases of `AdjoinRespects`
+**No *Saturation*, and no *Compositionality*.** This is the `lem:admissible` argument run from the
+*Completion* witness — the state `lem:step` obtains by eliminating *Saturation*, here taken as a
+hypothesis instead: the four pair-cases of `AdjoinRespects`
 are `τ`'s own task-respect, the *Completion* fiber condition, that same condition through the
 reflection law (`FrameOver.reflection_of_limit`, which costs *Limit* alone), and `lem:nullity`
 (`TaskFrame.nullity_of_serial_limit`) at the new time.
@@ -269,7 +322,14 @@ theorem completion_of_isRegular [F.IsRegular] : Completion F :=
 /-! ## `thm:extension` from *Completion* -/
 
 /--
-`thm:extension` in full, with *Saturation* replaced by *Completion*.
+`thm:extension` in full, from *Completion* — the derived condition — rather than from
+`def:frame`'s *Saturation* directly.
+
+**This signature is where the minimality is recorded**, and recording it here rather than in
+`def:frame` is the point: a theorem's hypotheses are where a tight hypothesis belongs, and a
+definition is where a natural closure condition belongs. *Saturation* is strictly stronger than
+what this theorem needs (see the module docstring's strictness remark), and that is a sharpness
+fact about `def:frame`, not a defect in it.
 
 The Zorn scaffolding (`exists_maximal_extension`, `Semantics/PartialHistoryOrder.lean`) carries no
 frame constraint, so the only inputs are *Completion*, *Seriality* and *Limit*.

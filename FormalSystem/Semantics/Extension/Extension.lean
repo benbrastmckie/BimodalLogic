@@ -19,7 +19,7 @@ The chain, in order, is
 
 `def:constraints` → `lem:constraint` → `lem:fibers` (RETIRED anchor; see below) → `lem:admissible`
 → `lem:step` (the sole
-*Saturation* application site) → `thm:extension` (Zorn) → `cor:occurrence`.
+*Saturation* elimination site) → `thm:extension` (Zorn) → `cor:occurrence`.
 
 ## Paper specification, transcribed
 
@@ -48,10 +48,10 @@ paper source — is the citation source of record.
 2. `PartialHistory.step` (`lem:step`).
 
 *Saturation* is **not** threaded into `extension`'s proof directly: it reaches `step` — which
-remains its sole application site — as the projection `F.saturation` off the frame, taken by `step`
-itself. Nothing in this module applies *Saturation*, *Seriality*, *Interpolation*, or *Limit* to
-anything; all four are `FrameOver` fields rather than hypothesis binders, so what this module
-passes along is the frame `F`, never the axioms.
+remains its sole **elimination** site — as the projection `F.saturation` off the frame, taken by
+`step` itself. Nothing in this module applies *Saturation*, *Seriality*, *Interpolation*, or
+*Limit* to anything; all four are `FrameOver` fields rather than hypothesis binders, so what this
+module passes along is the frame `F`, never the axioms.
 
 The maximal-to-total direction is isolated as `isTotal_of_isMax`, the converse companion to
 `PartialHistoryOrder`'s `isMax_of_total`. That companion is exactly where `lem:step` is spent:
@@ -192,7 +192,7 @@ extending `τ` with `z` in its domain; maximality then forces `τ` to extend `σ
 
 The four axioms are **`FrameOver` fields that `step` projects off `F` for itself**, not hypotheses
 this theorem takes and forwards. Nothing here applies any of them; in particular this is not a
-second *Saturation* application site.
+second *Saturation* elimination site.
 -/
 theorem isTotal_of_isMax (F : TaskFrame) [F.IsRegular] {τ : PartialHistory F} (hmax : IsMax τ) :
     τ.IsTotal := by
@@ -223,7 +223,7 @@ is exactly its `H_F` membership. (The appendix's route through convex histories 
 here: a total domain is trivially convex, `PartialHistory.IsTotal.isConvex`.)
 
 **These two are the whole proof.** *Saturation* is not threaded in directly — `step`, which remains
-its sole application site, reads it off the frame as `F.saturation`.
+its sole **elimination** site, reads it off the frame as `F.saturation`.
 -/
 theorem extension (F : TaskFrame) [F.IsRegular] (τ : PartialHistory F) :
     ∃ σ : WorldHistory F, Extends σ.val τ := by
@@ -239,8 +239,11 @@ restriction of a possible world.
 
 This is exactly `thm:extension` — `IsRestriction` unfolds to "extended by some possible world" —
 and it is where *Seriality*, *Limit* and *Saturation* are spent. (Per
-`Extension/Completion.lean`, *Completion* may stand in for *Saturation* and *Compositionality*
-drops out entirely.) The converse inclusion, `PartialHistory.restrict_isPartialHistory`, costs
+`Extension/Completion.lean`, the condition actually consumed is the **derived** *Completion*,
+which `completion_of_isRegular` obtains from *Saturation*, and *Compositionality* drops out
+entirely. *Completion* is strictly weaker than *Saturation* — that is a sharpness fact about
+`def:frame`'s fourth constraint, recorded in `extension_of_completion`'s hypotheses, not a
+proposal to replace it.) The converse inclusion, `PartialHistory.restrict_isPartialHistory`, costs
 nothing at all; see this module's `## The identification` section.
 -/
 theorem isRestriction_of_isRegular (F : TaskFrame) [F.IsRegular] (τ : PartialHistory F) :

@@ -7,11 +7,13 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Semantics.Extension.Admissible
 
 /-!
-# `lem:step`: the Step Lemma — the sole *Saturation* application site
+# `lem:step`: the Step Lemma — the sole *Saturation* elimination site
 
 This module lands the Step Lemma: every partial history extends by one arbitrary duration. It is
 the join point of the whole extension chain, and it is **the only place in the development where
-the *Saturation* axiom is consumed**.
+the *Saturation* axiom is eliminated** — the only place it is spent on a conclusion that does not
+itself mention it. The five other sites that apply `F.saturation` take it in and give it back
+out; they are enumerated below.
 
 The proof is a composition, not a re-derivation. Each of its three inputs is already proved:
 
@@ -55,6 +57,18 @@ eliminations:
 `FormalSystem/Semantics/TaskFrame.lean`'s occurrences are the accessor definitions and their
 `example` acceptance tests, not applications at all.
 
+**The correction has been propagated.** Every unattributed, tree-level sentence in the extension
+chain that once called `step` *Saturation*'s sole **application** site now says **elimination**
+site — this module's own title and `:158`, and `Extension/Extension.lean`'s chain diagram, its
+"what `thm:extension` consumes" section, `isTotal_of_isMax` and `extension`. Sentences that
+*attribute* the phrase to the paper ("the sole application site **the paper names**", here and in
+`Extension/Constraint.lean` and `Extension/Admissible.lean`) are correct as they stand and are
+deliberately left unchanged. The three transports that build a derived frame's `saturation` field
+out of `F.saturation` — `IntTransfer.lean`'s `FrameOver.map`, `OpenReversal.lean`'s
+`FrameOver.rev_isRegular` and `Frames/TranslationProduct.lean`'s `FrameOver.translationProduct` —
+are the confirmed non-`step` application sites that make the distinction load bearing; the
+remaining two listed above read *Saturation* off frames that already carry it.
+
 ## What `step` actually consumes: *Completion*
 
 `Extension/Completion.lean` isolates the condition this site needs and shows it is **equivalent**
@@ -69,10 +83,17 @@ remark made precise.
 the two conditions is settled, not open: `StateTopology.SeparatingFrame.srel_completion` together
 with `StateTopology.SeparatingFrame.not_srel_saturation` exhibits a relation satisfying
 *Seriality*, *Compositionality*, *Limit* and *Completion* and failing *Saturation*, so
-`Completion → Saturation` is **false**. The measurement above — that this is the sole
-*Saturation* elimination site — therefore has a sharper reading than it once did: the only thing
-`def:frame`'s *Saturation* buys the development, it buys through a strictly weaker condition that
-could have been assumed instead.
+`Completion → Saturation` is **false**.
+
+Read correctly, that measures **the exact strength the axiom is spent at**, and the minimality it
+measures is recorded where minimality belongs: in `extension_of_completion`'s hypotheses, which
+take *Completion* explicitly and elaborate with no `[F.IsRegular]` binder at all. It is **not** a
+case for migrating *Completion* into `def:frame`. *Completion*'s hypothesis clause is
+`def:world-history`'s clause verbatim and `completion_iff_onePointExtension` makes it equivalent
+to "the construction `thm:extension` performs succeeds"; *Saturation* instead says the geometry
+`⇒` induces on `W` — whose balls are the fibers and segments of `def:task-relation` — has no
+gaps. Tight hypotheses belong in theorems; natural closure conditions belong in definitions. See
+`Extension/Completion.lean`'s "Why *Completion* is a derived condition" for the full comparison.
 
 ### The frame-axiom-field invariant, discharged
 
@@ -147,7 +168,7 @@ Closing remark of the recorded source (verbatim, load bearing for the discrete c
 family has a $\subseteq$-least member, that member already contains a candidate and
 \textit{Saturation} is not needed." That remark is recorded, not exploited: the proof below takes
 the general route through *Saturation*, which is what the paper's own proof does, and which is what
-makes this the axiom's sole application site. A discrete-duration specialization that picks the
+makes this the axiom's sole elimination site. A discrete-duration specialization that picks the
 `⊆`-least constraint directly would discharge `hSph` without the axiom; nothing here depends on
 that route existing.
 
@@ -155,9 +176,11 @@ that route existing.
 fibers and segments, *Saturation* provides a common member, and `lem:admissible` certifies the
 extension.
 
-**This is the sole *Saturation* application site.** `F.saturation` — the structure field itself —
-is consumed in the proof body below. It is not decoration: a field whose statement differed from
-`TaskFrame.Saturation TaskRel` would make this proof fail to elaborate. See this module's
+**This is the sole *Saturation* elimination site.** `F.saturation` — the structure field itself —
+is consumed in the proof body below, and this is the only place in the development where it is
+spent on a conclusion that does not itself mention *Saturation*. It is not decoration: a field
+whose statement differed from `TaskFrame.Saturation TaskRel` would make this proof fail to
+elaborate. See this module's
 docstring for the frame-axiom-field invariant that discharges.
 
 The frame axioms are taken from the structure's own fields — `F.saturation` here, and
