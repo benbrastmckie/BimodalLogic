@@ -115,6 +115,15 @@ the one this module's rational-carrier section names: *Completion*'s quantifier 
 **times**, so it collapses over an order with nearest times, while *Saturation*'s is indexed by
 **balls**, which no discreteness of the duration order reaches.
 
+**What the two `¬ Saturation` witnesses do *not* establish.** Both of them fail the **nest**
+condition `S₁` (`TaskFrame.NestSaturation`) as well as the `⊇`-directed condition `S₁ᵈ`
+(`TaskFrame.Saturation`): their straddle families contain a cofinal nest, exhibited as
+`RationalTwoOrigins.nest` and `SeparatingFrame.nest` and used by
+`RationalTwoOrigins.not_rel_nestSaturation` and `SeparatingFrame.not_srel_nestSaturation`. So
+neither witness separates the two forms, and **neither bears on whether `S₁ → S₁ᵈ`**, which stays
+open. Reading `not_srel_saturation` as evidence about directedness was a standing assumption of
+the collection; these two theorems retire it.
+
 **A packaging asymmetry, recorded rather than papered over.** Three of the four independence rows
 are certified at the **frame** level — the statements are about a `FrameOver`'s `TaskRel`. The
 *Saturation* row and the whole of the fifth, separating row are certified at the
@@ -138,6 +147,13 @@ See `docs/ARCHITECTURE.md`'s "The state topology is a leaf, on purpose".
 -- Inherited from `Semantics/StateTopology.lean`: `coneTopology` and `nbhdTopology` are `def`s of
 -- class type, which `warn.classDefReducibility` reports at every mention.
 set_option warn.classDefReducibility false
+
+-- Raised from the 1500 default for `SeparatingFrame.nest` and `not_srel_nestSaturation`, which
+-- correct a standing assumption about the witnesses already hosted here and so belong beside
+-- them. `docs/ARCHITECTURE.md` records that nothing under `FormalSystem/` imports this module, so
+-- a sibling module importing it would falsify that record; the baseline is the sanctioned
+-- response instead. Not for parking unrelated material.
+set_option linter.style.longFile 1700
 
 open Topology TopologicalSpace Set
 
@@ -739,6 +755,37 @@ theorem phi_pos (n : ℕ) : 0 < phi n := by
   have h0 : phi 0 = 1 / 2 := by norm_num [phi, nt]
   linarith [h0, this]
 
+/--
+The Newton-minus-gap sequence stays strictly below the cut: `phi n ^ 2 < 2`.
+
+With `e = (1/2)^n` and `x = nt n`, the invariants `nt_err` (`x² - 2 ≤ e/4`) and `nt_one_le`
+(`x ≥ 1`) give `(x - e)² - 2 ≤ e(1/4 - 2x + e) ≤ -3e/4 < 0`, since `0 < e ≤ 1`.
+
+Paper: — (formalization-native; an invariant of the Newton iteration used to exhibit the cofinal
+nest inside `SeparatingFrame.straddle`)
+-/
+theorem phi_sq_lt_two (n : ℕ) : phi n ^ 2 < 2 := by
+  have hx := nt_one_le n
+  have herr := nt_err n
+  have hepos : (0 : ℚ) < (1 / 2 : ℚ) ^ n := by positivity
+  have hele : (1 / 2 : ℚ) ^ n ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
+  have hpow : (1 / 2 : ℚ) ^ (n + 2) = (1 / 2 : ℚ) ^ n / 4 := by rw [pow_add]; ring
+  simp only [phi]
+  nlinarith [herr, hx, hepos, hele, hpow]
+
+-- The index shift by two is load bearing, for the same reason the `1 ≤ b` conjunct of
+-- `SeparatingFrame.straddle` is: `phi 0 = 1/2` and `phi 1 = 11/12` both fail that conjunct, so a
+-- nest indexed by `phi n` would leave `straddle` rather than sit inside it. `phi 2 = 475/408`.
+/--
+From index `2` on, `phi` clears `1`.
+
+Paper: — (formalization-native; supplies `SeparatingFrame.straddle`'s `1 ≤ a` conjunct for the
+cofinal nest)
+-/
+theorem one_le_phi_add_two (n : ℕ) : 1 ≤ phi (n + 2) := by
+  have h2 : (1 : ℚ) ≤ phi 2 := by norm_num [phi, nt]
+  exact h2.trans (phi_mono (by omega))
+
 /-- The times are pairwise distinct: `(1/2)^m = (1/2)^n` only at `m = n`. -/
 theorem pow_half_inj {m n : ℕ} (h : (1 / 2 : ℚ) ^ m = (1 / 2 : ℚ) ^ n) : m = n := by
   by_contra hne
@@ -874,6 +921,101 @@ theorem not_rel_completion : ¬ TaskFrame.Completion rel := by
         rw [h3] at hpm
         nlinarith [hpm]
       nlinarith [hhigh, herr, hsmall, hn]
+
+/-! ### The failure is of the **nest** condition `S₁` here too -/
+
+/--
+The cofinal **nest** inside `straddleFamily`: the intervals `[phi (n+2), nt n]`, decreasing onto
+the cut at `√2`. `nt` descends to the cut from above and `phi` ascends to it from below, so the
+family is a `⊆`-chain outright.
+
+No `1 ≤ a` guard is needed here, unlike `SeparatingFrame.nest`: this carrier's segment endpoints
+are already `{t : ℚ // 0 < t}`, so `phi_pos` suffices. The index is still shifted by two, to keep
+the two witnesses' nests literally the same intervals.
+
+Paper: `def:frame#Saturation`
+-/
+def nest : Set (Set TQ) :=
+  {s | ∃ n : ℕ, s = Seg rel (p ⟨phi (n + 2), phi_pos (n + 2)⟩)
+    (p ⟨nt n, by linarith [nt_one_le n]⟩)
+    (nt n - phi (n + 2)) (nt n - phi (n + 2))}
+
+/--
+**The ℚ-carrier two-origin relation fails the nest condition `S₁`**, not merely the `⊇`-directed
+condition `S₁ᵈ` (`not_rel_saturation`).
+
+The companion of `SeparatingFrame.not_srel_nestSaturation`, and it makes the correction uniform:
+**neither** of the development's `¬ Saturation` witnesses separates the directed form from the
+nest form, so neither bears on whether `S₁ → S₁ᵈ`. That question stays open; see
+`TaskFrame.Saturation`'s docstring for what a witness would have to look like.
+
+Paper: `def:frame#Saturation`
+-/
+theorem not_rel_nestSaturation : ¬ TaskFrame.NestSaturation rel := by
+  intro hS1
+  have hlt : ∀ n : ℕ, phi (n + 2) < nt n := fun n =>
+    lt_of_straddle (phi_pos (n + 2)) (by linarith [nt_one_le n])
+      (phi_sq_lt_two (n + 2)) (nt_sq_gt n)
+  have hmemiff : ∀ (n : ℕ) (w : TQ),
+      w ∈ Seg rel (p ⟨phi (n + 2), phi_pos (n + 2)⟩) (p ⟨nt n, by linarith [nt_one_le n]⟩)
+          (nt n - phi (n + 2)) (nt n - phi (n + 2))
+        ↔ ∃ s : {t : ℚ // 0 < t}, w = p s ∧ phi (n + 2) ≤ s.1 ∧ s.1 ≤ nt n := by
+    intro n w
+    exact mem_straddle (a := ⟨phi (n + 2), phi_pos (n + 2)⟩)
+      (b := ⟨nt n, by linarith [nt_one_le n]⟩) (hlt n) w
+  have hne : nest.Nonempty := ⟨_, ⟨0, rfl⟩⟩
+  have hchain : IsChain (· ⊆ ·) nest := by
+    rintro s₁ ⟨m, rfl⟩ s₂ ⟨n, rfl⟩ -
+    rcases le_total m n with h | h
+    · refine Or.inr fun w hw => ?_
+      rw [hmemiff] at hw ⊢
+      obtain ⟨s, hs, h1, h2⟩ := hw
+      exact ⟨s, hs, le_trans (phi_mono (by omega)) h1, le_trans h2 (nt_antitone h)⟩
+    · refine Or.inl fun w hw => ?_
+      rw [hmemiff] at hw ⊢
+      obtain ⟨s, hs, h1, h2⟩ := hw
+      exact ⟨s, hs, le_trans (phi_mono (by omega)) h1, le_trans h2 (nt_antitone h)⟩
+  have hmem : ∀ s ∈ nest, (IsFiber rel s ∨ IsSegment rel s) ∧ s.Nonempty := by
+    rintro s ⟨n, rfl⟩
+    refine ⟨Or.inr ⟨_, _, _, _, by linarith [hlt n], by linarith [hlt n], rfl⟩,
+      ⟨p ⟨phi (n + 2), phi_pos (n + 2)⟩,
+        (hmemiff n _).mpr ⟨⟨phi (n + 2), phi_pos (n + 2)⟩, rfl, le_rfl, (hlt n).le⟩⟩⟩
+  obtain ⟨w, hw⟩ := hS1 nest ⟨hne, hchain⟩ hmem
+  obtain ⟨v, hv, -, -⟩ := (hmemiff 0 w).mp (Set.mem_sInter.mp hw _ ⟨0, rfl⟩)
+  subst hv
+  have hband : ∀ n : ℕ, phi (n + 2) ≤ v.1 ∧ v.1 ≤ nt n := by
+    intro n
+    obtain ⟨s, hs, h1, h2⟩ := (hmemiff n _).mp (Set.mem_sInter.mp hw _ ⟨n, rfl⟩)
+    have : s = v := by injection hs with h; exact h.symm
+    subst this
+    exact ⟨h1, h2⟩
+  have hq1 : (1 : ℚ) ≤ v.1 := le_trans (one_le_phi_add_two 0) (hband 0).1
+  have hle : v.1 ^ 2 ≤ 2 := by
+    by_contra hcon
+    have hc := lt_of_not_ge hcon
+    obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one (show (0 : ℚ) < v.1 ^ 2 - 2 by linarith)
+      (show (1 / 2 : ℚ) < 1 by norm_num)
+    have hb := (hband n).2
+    have herr := nt_err n
+    have h1 := nt_one_le n
+    have hsmall : (1 / 2 : ℚ) ^ (n + 2) ≤ (1 / 2 : ℚ) ^ n :=
+      pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega)
+    nlinarith [hb, herr, h1, hsmall, hn]
+  have hge : (2 : ℚ) ≤ v.1 ^ 2 := by
+    by_contra hcon
+    have hc := lt_of_not_ge hcon
+    obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one (show (0 : ℚ) < (2 - v.1 ^ 2) / 3 by linarith)
+      (show (1 / 2 : ℚ) < 1 by norm_num)
+    have ha := (hband n).1
+    have hsq := nt_sq_gt (n + 2)
+    have hstart := nt_le_start (n + 2)
+    have hepos : (0 : ℚ) < (1 / 2 : ℚ) ^ (n + 2) := by positivity
+    have hsmall : (1 / 2 : ℚ) ^ (n + 2) ≤ (1 / 2 : ℚ) ^ n :=
+      pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega)
+    have hphi : phi (n + 2) = nt (n + 2) - (1 / 2 : ℚ) ^ (n + 2) := rfl
+    have h1 := one_le_phi_add_two n
+    nlinarith [ha, hsq, hstart, hepos, hsmall, hn, hphi, h1]
+  exact sq_ne_two v.1 (le_antisymm hle hge)
 
 end RationalTwoOrigins
 
@@ -1186,6 +1328,108 @@ theorem not_srel_saturation : ¬ TaskFrame.Saturation srel := by
       ⟨1, t, le_rfl, hone, htgt, ht1, ht2, rfl⟩
     obtain ⟨-, hhigh⟩ := (mem_sseg (by linarith : t - 1 ≤ 2)).mp (Set.mem_sInter.mp hq _ hm)
     linarith
+
+/-! ### The failure is of the **nest** condition `S₁`, not merely of `S₁ᵈ` -/
+
+/--
+The cofinal **nest** inside `straddle`: the intervals `[phi (n+2), nt n]`, in the `mem_sseg`
+realisation `Seg srel (nt n - 1) (phi (n + 2) + 1) 1 1`, decreasing onto the cut at `√2`.
+
+`nt` descends to the cut from above and `phi` ascends to it from below, so this family is a
+`⊆`-chain outright — no directedness is needed to refine two of its members. Its existence is
+what makes the separating frame a witness against the nest condition `S₁` and not merely against
+the `⊇`-directed condition `S₁ᵈ`.
+
+Paper: `def:frame#Saturation`
+-/
+def nest : Set (Set ℚ) :=
+  {s | ∃ n : ℕ, s = Seg srel (RationalTwoOrigins.nt n - 1)
+    (RationalTwoOrigins.phi (n + 2) + 1) 1 1}
+
+/--
+**Correction of a standing assumption.** The ℚ-over-ℤ drift relation satisfies *Seriality*,
+*Compositionality*, *Limit* and *Completion*, and fails the **nest** condition
+`S₁` (`TaskFrame.NestSaturation`) — not merely the `⊇`-directed condition `S₁ᵈ`
+(`TaskFrame.Saturation`, `not_srel_saturation`).
+
+So the existing sharpness result is about `S₁`, and **neither existing `¬ Saturation` witness
+says anything about directedness**: the converse `S₁ → S₁ᵈ` stays open, and closing it would need
+a duration type with mismatched one-sided cofinal characters (see `TaskFrame.Saturation`'s
+docstring for the recipe). It was tempting to read `not_srel_saturation` as bearing on that
+question; it does not, and this theorem is what settles the reading rather than leaving it as an
+inference.
+
+The nest is `nest` — the intervals `[phi (n+2), nt n]` — and the three obligations are discharged
+where `not_srel_saturation` discharges its own: membership by `mem_sseg`, nonemptiness by
+`lt_of_straddle`, and emptiness of the intersection by two `exists_pow_lt_of_lt_one` squeezes
+pinning any common point to `q² = 2`, which `RationalTwoOrigins.sq_ne_two` refutes.
+
+Paper: `def:frame#Saturation`
+-/
+theorem not_srel_nestSaturation : ¬ TaskFrame.NestSaturation srel := by
+  intro hS1
+  have nest_width : ∀ n : ℕ,
+      RationalTwoOrigins.nt n - RationalTwoOrigins.phi (n + 2) ≤ 2 := fun n => by
+    linarith [RationalTwoOrigins.nt_le_start n, RationalTwoOrigins.one_le_phi_add_two n]
+  have nest_lt : ∀ n : ℕ,
+      RationalTwoOrigins.phi (n + 2) < RationalTwoOrigins.nt n := fun n =>
+    lt_of_straddle (by linarith [RationalTwoOrigins.one_le_phi_add_two n])
+      (by linarith [RationalTwoOrigins.nt_one_le n])
+      (RationalTwoOrigins.phi_sq_lt_two (n + 2)) (RationalTwoOrigins.nt_sq_gt n)
+  have hmemiff : ∀ (n : ℕ) (q : ℚ),
+      q ∈ Seg srel (RationalTwoOrigins.nt n - 1) (RationalTwoOrigins.phi (n + 2) + 1) 1 1
+        ↔ RationalTwoOrigins.phi (n + 2) ≤ q ∧ q ≤ RationalTwoOrigins.nt n :=
+    fun n q => mem_sseg (nest_width n)
+  have hne : nest.Nonempty := ⟨_, ⟨0, rfl⟩⟩
+  have hchain : IsChain (· ⊆ ·) nest := by
+    rintro s₁ ⟨m, rfl⟩ s₂ ⟨n, rfl⟩ -
+    rcases le_total m n with h | h
+    · refine Or.inr fun q hq => ?_
+      rw [hmemiff] at hq ⊢
+      exact ⟨le_trans (RationalTwoOrigins.phi_mono (by omega)) hq.1,
+        le_trans hq.2 (RationalTwoOrigins.nt_antitone h)⟩
+    · refine Or.inl fun q hq => ?_
+      rw [hmemiff] at hq ⊢
+      exact ⟨le_trans (RationalTwoOrigins.phi_mono (by omega)) hq.1,
+        le_trans hq.2 (RationalTwoOrigins.nt_antitone h)⟩
+  have hmem : ∀ s ∈ nest, (IsFiber srel s ∨ IsSegment srel s) ∧ s.Nonempty := by
+    rintro s ⟨n, rfl⟩
+    refine ⟨Or.inr ⟨RationalTwoOrigins.nt n - 1, RationalTwoOrigins.phi (n + 2) + 1, 1, 1,
+      by norm_num, by norm_num, rfl⟩,
+      ⟨RationalTwoOrigins.phi (n + 2), (hmemiff n _).mpr ⟨le_rfl, (nest_lt n).le⟩⟩⟩
+  obtain ⟨q, hq⟩ := hS1 nest ⟨hne, hchain⟩ hmem
+  have hband : ∀ n : ℕ,
+      RationalTwoOrigins.phi (n + 2) ≤ q ∧ q ≤ RationalTwoOrigins.nt n := fun n =>
+    (hmemiff n q).mp (Set.mem_sInter.mp hq _ ⟨n, rfl⟩)
+  have hq1 : (1 : ℚ) ≤ q :=
+    le_trans (RationalTwoOrigins.one_le_phi_add_two 0) (hband 0).1
+  have hle : q ^ 2 ≤ 2 := by
+    by_contra hcon
+    have hc := lt_of_not_ge hcon
+    obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one (show (0 : ℚ) < q ^ 2 - 2 by linarith)
+      (show (1 / 2 : ℚ) < 1 by norm_num)
+    have hb := (hband n).2
+    have herr := RationalTwoOrigins.nt_err n
+    have h1 := RationalTwoOrigins.nt_one_le n
+    have hsmall : (1 / 2 : ℚ) ^ (n + 2) ≤ (1 / 2 : ℚ) ^ n :=
+      pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega)
+    nlinarith [hb, herr, h1, hsmall, hn]
+  have hge : (2 : ℚ) ≤ q ^ 2 := by
+    by_contra hcon
+    have hc := lt_of_not_ge hcon
+    obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one (show (0 : ℚ) < (2 - q ^ 2) / 3 by linarith)
+      (show (1 / 2 : ℚ) < 1 by norm_num)
+    have ha := (hband n).1
+    have hsq := RationalTwoOrigins.nt_sq_gt (n + 2)
+    have hstart := RationalTwoOrigins.nt_le_start (n + 2)
+    have hepos : (0 : ℚ) < (1 / 2 : ℚ) ^ (n + 2) := by positivity
+    have hsmall : (1 / 2 : ℚ) ^ (n + 2) ≤ (1 / 2 : ℚ) ^ n :=
+      pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega)
+    have hphi : RationalTwoOrigins.phi (n + 2)
+        = RationalTwoOrigins.nt (n + 2) - (1 / 2 : ℚ) ^ (n + 2) := rfl
+    have h1 := RationalTwoOrigins.one_le_phi_add_two n
+    nlinarith [ha, hsq, hstart, hepos, hsmall, hn, hphi, h1]
+  exact RationalTwoOrigins.sq_ne_two q (le_antisymm hle hge)
 
 /-! ### Consistency with `saturation_of_completion`: mixed-sign composition fails here -/
 

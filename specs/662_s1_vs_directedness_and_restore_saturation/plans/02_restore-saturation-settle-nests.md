@@ -507,7 +507,7 @@ the phase notes — **never** add a `FormalSystem` import to `ForMathlib/`.
 
 ---
 
-### Phase 2: Both existing witnesses refute `S₁`, not merely `S₁ᵈ` [NOT STARTED]
+### Phase 2: Both existing witnesses refute `S₁`, not merely `S₁ᵈ` [COMPLETED]
 
 **Goal**: Correct the standing assumption that `SeparatingFrame` separates the directed form from
 the nest form. Exhibit the cofinal nest inside `straddle` and conclude
@@ -516,24 +516,24 @@ the nest form. Exhibit the cofinal nest inside `straddle` and conclude
 
 **Tasks**:
 
-- [ ] In `FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean`, in the
+- [x] In `FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean`, in the
       `RationalTwoOrigins` namespace beside the existing `phi` lemmas, add
       `theorem phi_sq_lt_two (n : ℕ) : phi n ^ 2 < 2`. Expected discharge: `nlinarith` with
       `nt_err n`, `nt_one_le n`, `pow_pos` and `pow_le_one` bounds on `(1/2 : ℚ)^n`. The algebra,
       pre-computed: with `e = (1/2)^n` and `x = nt n`, `x² - 2 ≤ e/4` and `x ≥ 1` and `e ≤ 1` give
       `(x - e)² - 2 ≤ e(1/4 - 2x + e) ≤ -3e/4 < 0`.
-- [ ] Add `theorem one_le_phi_add_two (n : ℕ) : 1 ≤ phi (n + 2)`, from `phi_mono (le_add_self)`
+- [x] Add `theorem one_le_phi_add_two (n : ℕ) : 1 ≤ phi (n + 2)`, from `phi_mono (le_add_self)`
       and `phi 2 = 475/408 ≥ 1` by `norm_num [phi, nt]`. Record in a one-line comment **why the
       index is shifted by two** — `phi 0 = 1/2` and `phi 1 = 11/12` both fail `straddle`'s
       load-bearing `1 ≤ a` conjunct, the same trap the file's existing comment at the `straddle`
       definition already warns about.
-- [ ] In the `SeparatingFrame` namespace, add
+- [x] In the `SeparatingFrame` namespace, add
       `def nest : Set (Set ℚ) := {s | ∃ n : ℕ, s = Seg srel (RationalTwoOrigins.nt n - 1)
       (RationalTwoOrigins.phi (n + 2) + 1) 1 1}` — i.e. the intervals
       `[phi (n+2), nt n]` in the `mem_sseg` realisation. Cross-namespace reference to
       `RationalTwoOrigins` is the file's own established idiom (`not_srel_saturation` already
       cites `RationalTwoOrigins.sq_ne_two`).
-- [ ] Add `theorem not_srel_nestSaturation : ¬ TaskFrame.NestSaturation srel`, assembling the
+- [x] Add `theorem not_srel_nestSaturation : ¬ TaskFrame.NestSaturation srel`, assembling the
       `Order.IsNest nest` obligation out of its two conjuncts:
       (a) `nest.Nonempty` — witness `n = 0`; (b) `IsChain (· ⊆ ·) nest` — for `m ≤ n`,
       `phi (m+2) ≤ phi (n+2)` by `phi_mono` and `nt n ≤ nt m` by `nt_antitone`, then `mem_sseg`
@@ -544,17 +544,21 @@ the nest form. Exhibit the cofinal nest inside `straddle` and conclude
       any `q` in every member satisfies `phi (n+2) ≤ q ≤ nt n` for all `n`, so `q² ≤ 2` and
       `q² ≥ 2` by two `exists_pow_lt_of_lt_one` squeezes (the same lemma the file already uses at
       `not_rel_completion`), hence `q² = 2`, refuted by `sq_ne_two`.
-- [ ] Docstring on `not_srel_nestSaturation` records the correction explicitly: the separating
+- [x] Docstring on `not_srel_nestSaturation` records the correction explicitly: the separating
       frame satisfies *Seriality*, *Compositionality*, *Limit* and *Completion* and fails **`S₁`**,
       so the existing sharpness result is about the nest condition and **says nothing about
       directedness**. Add the `Paper:` line (`def:frame#Saturation`) for C15.
-- [ ] Attempt the `RationalTwoOrigins` analogue `¬ TaskFrame.NestSaturation rel` opportunistically
+- [x] Attempt the `RationalTwoOrigins` analogue `¬ TaskFrame.NestSaturation rel` opportunistically
       — the same `nt`/`phi` sequences live in that namespace and `straddleFamily`'s endpoints are
       `{t : ℚ // 0 < t}`, so no `1 ≤ a` guard is needed. **It is not a committed deliverable**: if
       it does not fall out within 20 minutes, stop and record one line in the module docstring
-      saying the `SeparatingFrame` result already establishes the correction.
-- [ ] Confirm the `longFile` hypothesis below; apply the pre-authorised in-source baseline if
-      crossed. `lake build` green, sorry-free, warning-free; `#print axioms` clean on the three new
+      saying the `SeparatingFrame` result already establishes the correction. *(landed:
+      `RationalTwoOrigins.nest` + `not_rel_nestSaturation`; the exit was not needed)*
+- [x] Confirm the `longFile` hypothesis below; apply the pre-authorised in-source baseline if
+      crossed. *(deviation: altered — the 1500-line limit WAS crossed (1616 lines), so the
+      pre-authorised `set_option linter.style.longFile 1700` baseline was added; scope-hypothesis
+      (b) is disconfirmed and (a) grew to 6 committed declarations, since the opportunistic fifth
+      landed and brought its own `nest` def with it)* `lake build` green, sorry-free, warning-free; `#print axioms` clean on the three new
       declarations. Commit.
 
 **Timing**: 2 hours
