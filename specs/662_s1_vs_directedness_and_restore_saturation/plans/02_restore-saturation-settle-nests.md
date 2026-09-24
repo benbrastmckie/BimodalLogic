@@ -3,7 +3,7 @@
 - **Task**: 662 - Settle whether plain S1 suffices or directedness is forced, search for a better
   fourth frame constraint, and otherwise restore Saturation as the def:frame constraint in place
   of Completion
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 16.5 hours
 - **Dependencies**: 661 (completed — supplies both witnesses and the *Completion* results this
   plan re-sites); 659, 657 (completed, upstream of 661)
@@ -1305,18 +1305,18 @@ occurrences, with `docs/reference/paper-definitions-of-record.md`'s two hits unt
 
 ---
 
-### Phase 10: Source-store context note, full gate set, and summary [NOT STARTED]
+### Phase 10: Source-store context note, full gate set, and summary [COMPLETED]
 
 **Goal**: Record the distinctions this task fixed where the next agent will meet them, then prove
 the whole tree is green, sorry-free, warning-free and unchanged where it must be unchanged.
 
 **Tasks**:
 
-- [ ] Resolve the source store, do not assume it: read `.claude-extensions.json`, take the
+- [x] Resolve the source store, do not assume it: read `.claude-extensions.json`, take the
       `formal` extension's `source_dir`, confirm it exists on disk. **Never write under
       `.claude/**`** — it is a disposable deploy artifact and a hand-authored file there is wiped
       by the next regeneration.
-- [ ] Extend `<source_dir>/context/project/logic/domain/frame-constraint-landscape.md` (it already
+- [x] Extend `<source_dir>/context/project/logic/domain/frame-constraint-landscape.md` (it already
       exists, created by the prior wave) with two additions, not a new file: (i) the **four-row
       strength table** from this plan's Overview, naming which relations are settled, which is
       open, and where the "do not restore *strictly stronger*" instruction lives; (ii) the
@@ -1328,13 +1328,27 @@ the whole tree is green, sorry-free, warning-free and unchanged where it must be
       tree, and the split line is mechanical (`grep -rn '^import FormalSystem'
       FormalSystem/ForMathlib/` must stay empty), with the four registration obligations (C8, C24,
       C33, the generated inventory blocks) landing in the same phase as the new module.
-- [ ] If the file's index entry needs updating, update `<source_dir>/index-entries.json` and
+- [x] If the file's index entry needs updating, update `<source_dir>/index-entries.json` and
       confirm it parses (`python3 -m json.tool`).
-- [ ] Run the full gate set (see Testing & Validation) and fix anything it catches.
-- [ ] Write `summaries/01_restore-saturation-settle-nests-summary.md` recording: the three answers,
+- [x] Run the full gate set (see Testing & Validation) and fix anything it catches.
+- [x] Write `summaries/01_restore-saturation-settle-nests-summary.md` recording: the three answers,
       the declarations landed, the Phase 8 outcome, the recorded non-goal with its recipe, and the
       fact that no manuscript file was touched.
-- [ ] Final commit.
+- [x] Final commit.
+
+**Deviation**: the summary was written to
+`summaries/02_restore-saturation-settle-nests-summary.md`, not `01_...`, because this task's
+artifact round is 2 — the prior cycle already opened `02_` and this dispatch continues that round
+rather than starting a new one. The `01_` path in the plan's task text predates the round-2 plan
+revision.
+
+**Verification result**: source store resolved from `.claude-extensions.json` as
+`~/.config/nvim/agent-system/extensions/formal` and confirmed on disk; the landscape file was
+**extended**, not replaced (159 -> 241 lines), and `index-entries.json` was updated and re-parsed
+with `python3 -m json.tool`. `git status --short` shows **no file written under `.claude/`**. The
+full gate set is recorded in the summary's `## Verification` section; the one non-green item is
+`check-paper-definitions.sh`'s pre-existing `def:id` drift in a manuscript file this task does not
+touch, with `docs/reference/paper-definitions-of-record.md` confirmed unmodified.
 
 **Timing**: 1.5 hours
 
@@ -1531,31 +1545,36 @@ end FormalSystem.Semantics
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 with zero `error:` and zero `warning:` lines, at every phase boundary.
-- [ ] Every modified `FormalSystem/**` module is silent under
+- [x] `lake build` exits 0 with zero `error:` and zero `warning:` lines, at every phase boundary.
+- [x] Every modified `FormalSystem/**` module is silent under
       `lake env lean -D weak.linter.mathlibStandardSet=true -D autoImplicit=false` — the package's
       own linter set, which plain `lake env lean` does not apply.
-- [ ] `#print axioms` reports exactly `propext`, `Classical.choice`, `Quot.sound` for each of the
+- [x] `#print axioms` reports exactly `propext`, `Classical.choice`, `Quot.sound` for each of the
       **eighteen** pinned declarations (five in `ForMathlib`, thirteen project-side), and
       `grep -rn 'sorry' FormalSystem/ --include=*.lean` finds no new occurrence.
-- [ ] **The `ForMathlib/` dependency rule holds**: `grep -rn '^import FormalSystem'
+- [x] **The `ForMathlib/` dependency rule holds**: `grep -rn '^import FormalSystem'
       FormalSystem/ForMathlib/` returns nothing, and `lake exe checkInitImports` exits 0 with
       `FormalSystem.ForMathlib.Order.BallSpace` present in the `exceptions` list (C24).
-- [ ] **The new module is fully registered**: `FormalSystem/ForMathlib.lean` imports it (C8),
+- [x] **The new module is fully registered**: `FormalSystem/ForMathlib.lean` imports it (C8),
       `FormalSystem.lean` is byte-current against `lake exe mk_all --lib FormalSystem` (C33),
       `bash scripts/check-module-invariants.sh --emit-inventory --check` reports no pending
       rewrite (INV), and `bash scripts/check-copyright-headers.sh` exits 0.
-- [ ] **No theorem introduced by Phases 4 or 5 carries `[F.IsRegular]`.** Verified by reading the
+- [x] **No theorem introduced by Phases 4 or 5 carries `[F.IsRegular]`.** Verified by reading the
       `#print axioms` statement output and by
       `grep -n 'IsRegular' FormalSystem/Semantics/Extension/Completion.lean` over the new section.
       This is the honesty gate of the whole `S₁`-sufficiency result.
-- [ ] `bash scripts/check-module-invariants.sh` passes, including C15 with the new theorem-index
+- [x] `bash scripts/check-module-invariants.sh` passes, including C15 with the new theorem-index
       rows and C30 with any `longFile` baseline added in Phases 2, 5 or 8.
-- [ ] `bash scripts/check-paper-definitions.sh` reports no pinned anchor moved, and
-      `docs/reference/paper-definitions-of-record.md` is unmodified.
-- [ ] `bash scripts/check-evidence-probes.sh`, `bash scripts/check-metalogic-cycles.sh`,
+- [x] `bash scripts/check-paper-definitions.sh` reports no pinned anchor moved, and
+      `docs/reference/paper-definitions-of-record.md` is unmodified. *(The script exits 1 on
+      **one pre-existing drifted anchor, `def:id`**, in a manuscript file no commit of this task
+      touches. The clause this item actually asserts holds: `git status --short
+      docs/reference/paper-definitions-of-record.md` is empty, so no pinned anchor moved.)*
+- [x] `bash scripts/check-evidence-probes.sh`, `bash scripts/check-metalogic-cycles.sh`,
       `bash scripts/check-copyright-headers.sh` and `bash scripts/readme-lint.sh` all exit 0.
-- [ ] `git diff --stat` across the task's commits touches only:
+- [x] `git diff --stat` across the task's commits touches only *(plus
+      `scripts/module-invariants-allowlist.txt`, which Phase 9's C5 repair required; recorded as a
+      deviation there)*:
       `FormalSystem/ForMathlib/Order/BallSpace.lean` (new), `FormalSystem/ForMathlib.lean`,
       `FormalSystem/ForMathlib/README.md`, `FormalSystem/ForMathlib/Order/README.md`,
       `FormalSystem.lean`, `scripts/CheckInitImportsMain.lean`,
@@ -1566,14 +1585,14 @@ end FormalSystem.Semantics
       `specs/662_s1_vs_directedness_and_restore_saturation/**`, and the resolved source-store paths
       from Phase 10. **No `typst/**` file and no `.claude/**` file appears, and
       `docs/reference/paper-definitions-of-record.md` is unmodified.**
-- [ ] Elimination-site sweep: `grep -rn 'application site' FormalSystem/ --include=*.lean` returns
+- [x] Elimination-site sweep: `grep -rn 'application site' FormalSystem/ --include=*.lean` returns
       only sentences that explicitly attribute the phrase to the paper. No sentence anywhere under
       `FormalSystem/` asserts in the tree's own voice that `step` is *Saturation*'s sole
       application site, and `Step.lean`'s measured correction is intact.
-- [ ] Advocacy sweep: `grep -rn 'proposed fourth constraint\|proposed replacement\|recommended as'
+- [x] Advocacy sweep: `grep -rn 'proposed fourth constraint\|proposed replacement\|recommended as'
       FormalSystem/ docs/ --include=*.lean --include=*.md` returns nothing referring to
       *Completion* as a `def:frame` constraint.
-- [ ] Strength sweep: no in-tree region asserts `S₁ᵈ` is *strictly* stronger than `S₁`, and the
+- [x] Strength sweep: no in-tree region asserts `S₁ᵈ` is *strictly* stronger than `S₁`, and the
       `TaskFrame.lean` "do not restore *strictly stronger*" instruction is byte-identical to its
       pre-task form.
 
