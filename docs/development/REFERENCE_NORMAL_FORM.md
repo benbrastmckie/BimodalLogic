@@ -185,7 +185,9 @@ attribute lines. C34 has two assertions and a census:
 - an **ungated census** of the binder population, printed at every run, which is the re-runnable
   classification record rather than a one-time human read.
 
-See [MODULE_INVARIANTS.md](MODULE_INVARIANTS.md) for the row. Retrofitting the line onto an
+See [MODULE_INVARIANTS.md](MODULE_INVARIANTS.md)'s `C34a (enforced) / C34b (soft)` row for the
+full rationale: why the marker lives at the site rather than in a central manifest, why it is a
+docstring line rather than a Lean attribute, and why the trigger half ships soft. Retrofitting the line onto an
 ordinary ambient theorem is permitted by this form and required by nothing: `[F.IsRegular]` is
 the correct hypothesis for a soundness, validity or transfer result, and the defect the form
 exists to catch is the *conjunction* of an independence claim with the bundling class, never the

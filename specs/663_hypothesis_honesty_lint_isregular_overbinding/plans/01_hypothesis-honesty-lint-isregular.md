@@ -2,14 +2,15 @@
 
 - **Task**: 663 - Add a repo-wide hypothesis-honesty gate so no constraint-independence claim
   silently carries the bundling `IsRegular` class
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 11 hours
 - **Dependencies**: Task "settle S1 vs directedness and restore Saturation" (landed; its Phase 3
   established the explicit-hypothesis-plus-corollary pattern this plan generalizes)
 - **Research Inputs**:
   `specs/663_hypothesis_honesty_lint_isregular_overbinding/reports/01_hypothesis-honesty-lint-isregular.md`
 - **Reports Integrated**: `reports/01_hypothesis-honesty-lint-isregular.md`
-- **Artifacts**: plans/01_hypothesis-honesty-lint-isregular.md (this file)
+- **Artifacts**: plans/01_hypothesis-honesty-lint-isregular.md (this file),
+  summaries/01_hypothesis-honesty-lint-isregular-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: true
@@ -592,31 +593,31 @@ than expanding the Lean surface, since Phases 3-5 pinned the fix set deliberatel
 
 ---
 
-### Phase 7: Document the invariant and close on the full gate set [NOT STARTED]
+### Phase 7: Document the invariant and close on the full gate set [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Record C34 where every other invariant is recorded, and close the task on a green full
 gate set.
 
 **Tasks**:
-- [ ] Add the C34 row to `docs/development/MODULE_INVARIANTS.md`'s table in the established
+- [x] Add the C34 row to `docs/development/MODULE_INVARIANTS.md`'s table in the established
       "what it checks / why it exists" shape, covering both assertions, the census, the anti-silence
       guard and the `ENFORCE_C34` flag.
-- [ ] State the rationale that belongs in the record: why an at-site marker rather than a central
+- [x] State the rationale that belongs in the record: why an at-site marker rather than a central
       per-binder manifest (C29's recorded evidence about central reason files going stale), and why
       a docstring line rather than a Lean attribute (build-free, so the check runs under the
       harness's `--no-build` CI invocation instead of joining the recorded not-in-CI gaps).
-- [ ] Confirm the C34 entry in `scripts/check-module-invariants.sh`'s own header comment list is
+- [x] Confirm the C34 entry in `scripts/check-module-invariants.sh`'s own header comment list is
       present and matches the documented row.
-- [ ] Cross-link `REFERENCE_NORMAL_FORM.md`'s fourth normal form and the `MODULE_INVARIANTS.md` row
+- [x] Cross-link `REFERENCE_NORMAL_FORM.md`'s fourth normal form and the `MODULE_INVARIANTS.md` row
       to each other, as the three existing forms and their gates are cross-linked.
-- [ ] Run the full gate set: `lake build`, `bash scripts/check-module-invariants.sh`, and every
+- [x] Run the full gate set: `lake build`, `bash scripts/check-module-invariants.sh`, and every
       other lint the repository runs at task close. All green, sorry-free, warning-free.
-- [ ] Re-run the binder census one final time and report the measured numbers as the task's outcome
+- [x] Re-run the binder census one final time and report the measured numbers as the task's outcome
       figures — measured at close, not quoted from this plan or the research report.
-- [ ] Confirm the whole task's Lean diff is confined to `FormalSystem/Semantics/Extension/` plus
+- [x] Confirm the whole task's Lean diff is confined to `FormalSystem/Semantics/Extension/` plus
       `Correspondence/RigidityReal.lean`'s marker line, with the non-Lean diff confined to
       `scripts/check-module-invariants.sh` and the two `docs/development/` files.
-- [ ] Write the execution summary to
+- [x] Write the execution summary to
       `specs/663_hypothesis_honesty_lint_isregular_overbinding/summaries/01_hypothesis-honesty-lint-isregular-summary.md`.
 
 **Timing**: 1.5 hours
@@ -626,6 +627,23 @@ gate set.
 **Verification Tier**: full
 
 **Commit Mode**: per-substep
+
+**Result**: full `lake build` (detached, guarded) exit 0, 2726 jobs, 0 `error:`, 0 `warning:`,
+sorry-free. `bash scripts/check-module-invariants.sh --no-build` exit 0, ALL CHECKS PASSED, zero
+FAIL lines, C34a enforced. `check-copyright-headers`, `check-evidence-probes`,
+`check-metalogic-cycles`, `readme-lint` and `.claude/scripts/check-task-references.sh` all green.
+Census re-measured at close: 261 raw occurrences / 47 files; 212 binder-carrying declarations in
+46 files; 29 markers, 22 omitting *Saturation*, 18 of those binder-carrying and discharged by
+delegation; 194 unmarked binder sites; 630 live `.lean` files, 11,988 declaration spans.
+Vacuous count 1 and axiom count 14, both identical to the task base `e85341f8d`.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `scripts/check-paper-definitions.sh` green at close | Exits 1 on a `def:id` drift in the paper's LaTeX sources, which this task does not touch. Verified pre-existing rather than assumed: run in a detached worktree at the task base `e85341f8d`, it exits 1 identically. | `exit=1` at `e85341f8d` and at HEAD, same `\begin{Ddef} \label{def:id}` diff |
+| `scripts/typst-sync-check.sh` green at close | Exits 1 on Check 2, `generated/status.typ` counts stale by 23 files and ~13,150 lines against the live tree. Same worktree test: identical failure at the task base. This task adds 0 files and ~275 net lines, so it neither caused nor could clear it. | `committed=537 live=560` at base and at HEAD; Check 1, 2b and 3 clean in both |
+| The task-level file list in `## Testing & Validation` | Two files fall outside it. `FormalSystem/Semantics/Validity.lean` takes one marker line on `not_validOn_bot`, demanded by the C34b soft run and covered by Phase 6's own `FormalSystem/Semantics/**/*.lean` entry. `README.md` takes the regenerated inventory block, which the INV invariant requires once line counts move. | `git diff --stat e85341f8d..HEAD`: `Validity.lean` +2, `README.md` +2/-2 |
 
 **Scope Hypothesis**: This phase asserts the final diff is confined to the file set named above.
 Confirm with `git diff --stat` against the task's base commit; a file outside that set is a
@@ -736,22 +754,24 @@ end FormalSystem.Semantics
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0, with zero `sorry`, zero new axiom, and zero new warning, at every phase
+- [x] `lake build` exits 0, with zero `sorry`, zero new axiom, and zero new warning, at every phase
       boundary from Phase 3 onward
-- [ ] `bash scripts/check-module-invariants.sh` exits 0 with C34 enforced, and every pre-existing
+- [x] `bash scripts/check-module-invariants.sh` exits 0 with C34 enforced, and every pre-existing
       invariant (B0-B3, C1-C33) retains its pre-task status
-- [ ] C34's fixture self-test passes, with each must-not-match case (an `IsRegular`-CONCLUDING
+- [x] C34's fixture self-test passes, with each must-not-match case (an `IsRegular`-CONCLUDING
       declaration, a `variable` block binder) and each must-fail case (marked-and-binder-carrying for
       C34a, unmarked-tripping-docstring for C34b) behaving as specified
-- [ ] The anti-silence guard exits 2 on an empty walk and on a zero-marker result, and is not
+- [x] The anti-silence guard exits 2 on an empty walk and on a zero-marker result, and is not
       suppressed by `ENFORCE_C34=0`
-- [ ] Every one of the eight original declarations keeps a byte-identical signature line; verified by
+- [x] Every one of the eight original declarations keeps a byte-identical signature line; verified by
       `git diff` on the two Extension files
-- [ ] `git diff --stat` against the task base names only: `FormalSystem/Semantics/Extension/*.lean`
+- [x] `git diff --stat` against the task base names only: `FormalSystem/Semantics/Extension/*.lean`
       (five files), `FormalSystem/Semantics/Correspondence/RigidityReal.lean`,
       `scripts/check-module-invariants.sh`, `docs/development/MODULE_INVARIANTS.md`,
-      `docs/development/REFERENCE_NORMAL_FORM.md`, and this task's `specs/` artifacts
-- [ ] The final census is re-measured from the tree at close and reported as such — no figure from
+      `docs/development/REFERENCE_NORMAL_FORM.md`, and this task's `specs/` artifacts *(plus
+      `FormalSystem/Semantics/Validity.lean` and `README.md` — both reported, never absorbed; see
+      Phase 7's Reasoned Exclusions)*
+- [x] The final census is re-measured from the tree at close and reported as such — no figure from
       this plan or the research report is carried forward as an acceptance value
 
 ## Artifacts & Outputs
