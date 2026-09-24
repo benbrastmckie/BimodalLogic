@@ -1,5 +1,5 @@
 ---
-next_project_number: 668
+next_project_number: 669
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 668
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,665,667 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,665,667,668 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,623,650,666 | 298,464,502,563,649,665 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -99,7 +99,37 @@ next_project_number: 668
 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
   └─ 650 [NOT STARTED] — Define-before-use audit of...
 
+### Semantics
+
+668 [NOT STARTED] — Clear the 8-row C34b residual in the hypothesis-honesty gate,...
+
 ## Tasks
+
+### 668. Clear c34b residual enforce c34b
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: None
+
+**Description**: Clear the 8-row C34b residual in the hypothesis-honesty gate, then flip ENFORCE_C34B=1 so the trigger half of invariant C34 is enforced alongside C34a.
+
+Direct follow-up to the completed hypothesis-honesty-lint work, which landed invariant C34 in scripts/check-module-invariants.sh with its structural half (C34a) ENFORCED and its trigger half (C34b) shipped SOFT at ENFORCE_C34B=0. C34b is soft only because of a residual hit list that the prior work reported rather than absorbed, per its plan's Scope Hypothesis. Until C34b is enforced, the gate's anti-silence property is incomplete: an opt-in marker convention with only a structural half is bypassable by simply not marking a declaration.
+
+MEASURED STARTING POINT -- re-measure rather than trust. These figures drift under the work itself and have done so three times already: an original baseline of 225 binder sites across 43 files was stale by the time research ran, which re-measured 258/47, which read 259 during planning and 261/47 at close. Census at the prior task's close: 261 raw bracketed IsRegular occurrences across 47 files; 212 declarations carrying a bracketed bundling binder in 46 files; 29 declarations carrying a `Constraints consumed:` marker, 22 of those omitting Saturation, 18 of those binder-carrying and discharged by delegation; 194 binder-carrying declarations with no marker; C34b residual 8. The C34 census reporter is ungated and re-runnable -- start from its output, not from this paragraph, and do not bake any figure here into a pinned statement or acceptance value.
+
+THE EIGHT ROWS. FormalSystem/Semantics/Correspondence/Rigidity.lean: static_iff_uniformDwell. FormalSystem/Semantics/Correspondence/RigidityReal.lean: levels_closed, constant_of_countable_range. FormalSystem/Semantics/TaskFrame.lean: FrameOver.saturation, nullity, nullity_identity, FrameOver.reflection, TaskFrame.saturation.
+
+WHY A MARKER LINE ALONE WILL NOT DO. Each row carries a binder; each would need a marker omitting a constraint that its own binder supplies; and none has a binder-free declaration to delegate to. So the honest remedy is a binder-free twin, not a marker line -- the established pattern: restate at the explicit hypotheses the proof actually consumes, keep the original as a one-line corollary whose signature line is byte-identical so no call site moves.
+
+TWO ROUTES, AND DECIDING BETWEEN THEM IS THE FIRST QUESTION. (a) Eight binder-free restatements on the established pattern. (b) A second, projection-shaped C34a discharge rule: a declaration passes when it names exactly the class fields its marker lists. Route (b) would discharge four of the eight (levels_closed, both saturation projections, FrameOver.reflection) and may be cheaper than eight restatements, leaving four for route (a). Assess cost and naturalness rather than assuming; a projection-shaped rule is a genuine widening of the gate's discharge vocabulary and must not silently admit cases it was not meant to.
+
+HARD CONSTRAINTS. This is NOT a blanket unbundling: [F.IsRegular] remains the correct ambient hypothesis for ordinary soundness, validity and transfer theorems, and 194 binder-carrying declarations were deliberately left alone by the prior work -- do not touch them. Do not change IsRegular's fields (comp, serial, limit, saturation). Every original signature line stays byte-identical, checked mechanically against base blobs, so no call site moves. The six genuine Saturation consumers already marked (each consuming all four fields) must be marked, never changed. Full lake build must stay green: zero errors, zero warnings, sorry-free, axiom_count unchanged at 14. check-module-invariants.sh --no-build must pass with BOTH C34a and C34b enforced at close.
+
+OUT OF SCOPE, EXPLICITLY. check-paper-definitions.sh (a def:id drift in the paper's LaTeX sources) and typst-sync-check.sh Check 2 (generated/status.typ counts stale by roughly 23 files and 13,150 lines) both exit 1 on the prior task's base commit and were verified in a detached worktree to be pre-existing. They belong to separate work; do not absorb them here, and do not let them be read as regressions from this task.
+
+DONE MEANS: the C34b hit list is zero as measured by the gate's own census, ENFORCE_C34B=1 is committed, both halves of C34 are enforced, and the MODULE_INVARIANTS.md C34 row plus REFERENCE_NORMAL_FORM.md section 3 reflect the final discharge vocabulary.
+
+---
 
 ### 667. Tableau bridge branch gates and frame class
 - **Effort**: 2-4 hours
