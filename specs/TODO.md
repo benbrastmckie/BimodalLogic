@@ -11,7 +11,7 @@ next_project_number: 668
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,663,664,665,667 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,665,667 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,623,650,666 | 298,464,502,563,649,665 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -98,10 +98,6 @@ next_project_number: 668
 
 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
   └─ 650 [NOT STARTED] — Define-before-use audit of...
-
-### Semantics
-
-663 [PLANNED] — Add a repo-wide hypothesis-honesty gate so no...
 
 ## Tasks
 
@@ -195,12 +191,13 @@ Out of scope: any Lean change, and any edit to the manuscript.
 ---
 
 ### 663. Hypothesis honesty lint isregular overbinding
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 662
 - **Research**: [663_hypothesis_honesty_lint_isregular_overbinding/reports/01_hypothesis-honesty-lint-isregular.md]
 - **Plan**: [663_hypothesis_honesty_lint_isregular_overbinding/plans/01_hypothesis-honesty-lint-isregular.md]
+- **Summary**: [663_hypothesis_honesty_lint_isregular_overbinding/summaries/01_hypothesis-honesty-lint-isregular-summary.md]
 
 **Description**: Add a repo-wide hypothesis-honesty gate so no constraint-independence claim silently carries the bundling IsRegular class.
 

@@ -1,30 +1,50 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-24T00:00:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "axiom_count": 14,
+    "build_passed": true,
+    "build_note": "Full `lake build` (detached via Bash run_in_background through lake-build-guard.sh, --timeout 1800): exit 0, 'Build completed successfully (2726 jobs)', 0 error:, 0 warning:, .olean newer than source for every touched module. vacuous_count 1 and axiom_count 14 are BASELINE values, identical at the task base commit e85341f8d (the single vacuous hit is FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal := trivial, a genuine Int-domain triviality this task never touched). Neither was introduced here; neither increased."
+  },
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/663_hypothesis_honesty_lint_isregular_overbinding/summaries/01_hypothesis-honesty-lint-isregular-summary.md",
+      "summary": "Eight IsRegular-over-binding independence claims restated at their real hypotheses, six genuine Saturation consumers marked, and invariant C34 landed with a Constraints consumed: normal form."
+    },
     {
       "type": "plan",
       "path": "specs/663_hypothesis_honesty_lint_isregular_overbinding/plans/01_hypothesis-honesty-lint-isregular.md",
-      "summary": "Seven-phase plan: re-measure the IsRegular binder population and land a re-runnable C34 census, document the `Constraints consumed:` docstring normal form, restate the eight independence-claiming declarations at explicit hypotheses with unchanged-signature corollaries, then gate C34 soft-then-enforced and document it."
+      "summary": "Seven-phase plan, all phases closed (Phases 6 and 7 as COMPLETED WITH EXCLUSIONS with full Reasoned Exclusions tables)."
     }
   ],
-  "next_steps": "Run /implement 663 to execute the plan",
-  "phase_count": 7,
-  "estimated_hours": 11,
-  "dependency_waves": [[1, 2], [3, 5], [4], [6], [7]],
-  "memory_candidates": [
-    {
-      "content": "An opt-in at-site marker convention (a docstring/annotation line a declaration carries voluntarily) is silently bypassable: new code that should carry the marker simply omits it and the gate sees nothing. The fix is to pair the structural assertion with a TRIGGER assertion over the same population: a deliberately loose prose/shape heuristic that fires on candidates and demands only that a marker be present, never rendering a verdict on the marker's content. False positives then cost one marker line each instead of a redesign, and the marker stops being opt-in. Land the trigger half reporting-only first (soft-then-enforced), read the hit list, add the demanded markers, then flip enforcement. Pair with an anti-silence guard treating a zero-marker or empty-walk result as a broken matcher rather than a clean tree, and prefer at-site markers over a central manifest since central reason files go stale silently when the code they cover moves.",
-      "category": "PATTERN",
-      "source_artifact": "specs/663_hypothesis_honesty_lint_isregular_overbinding/plans/01_hypothesis-honesty-lint-isregular.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["lint-design", "opt-in-marker", "trigger-assertion", "soft-then-enforced", "anti-silence-guard", "at-site-convention"]
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1790269483_76154e_663",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  "completion_data": {
+    "completion_summary": "Restated the eight declarations that asserted independence from a frame constraint while carrying the bundling [F.IsRegular] binder, each keeping a byte-identical-signature one-line corollary so no call site moved, and marked rather than changed the six declarations that genuinely consume Saturation. Documented a Constraints consumed: docstring line as the repository's fourth normal form and landed invariant C34 in scripts/check-module-invariants.sh: a structural assertion (enforced, discharged by delegation to a binder-free twin), a trigger assertion (soft, 8 residual rows), an ungated per-run census, a four-condition anti-silence guard and a twelve-case fixture self-test. Full lake build green at 2726 jobs, sorry-free and warning-free; the invariants harness passes with C34a enforced.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 12
+  "metadata": {
+    "session_id": "sess_1790269483_76154e",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "dispatch_seq": 13,
+    "compliance_check": "passed",
+    "census_at_close": {
+      "raw_bracketed_occurrences": 261,
+      "raw_files": 47,
+      "binder_carrying_declarations": 212,
+      "binder_carrying_files": 46,
+      "markers": 29,
+      "markers_omitting_saturation": 22,
+      "markers_discharged_by_delegation": 18,
+      "unmarked_binder_declarations": 194,
+      "live_lean_files": 630,
+      "declaration_spans": 11988,
+      "c34b_residual": 8
+    },
+    "preexisting_red_lints": "check-paper-definitions.sh and typst-sync-check.sh both exit 1, verified identical at the task base e85341f8d in a detached worktree; neither is touched by this task."
+  }
 }
