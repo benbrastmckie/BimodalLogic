@@ -72,7 +72,7 @@ next_project_number: 669
 665 [RESEARCHED] — Prove soundness of witness-family certificates: a labelled...
   └─ 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
   └─ 666 [NOT STARTED] — Add a certificate re-verification executable, lake exe...
-667 [RESEARCHING] — Run the four branch gates on the tableau bridge's invalid...
+667 [RESEARCHED] — Run the four branch gates on the tableau bridge's invalid...
   └─ 666 [NOT STARTED] — Add a certificate re-verification executable, lake exe... (see above)
 
 ### Formula Refactor
@@ -104,10 +104,11 @@ next_project_number: 669
 
 ### 667. Tableau bridge branch gates and frame class
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
+- **Research**: [667_tableau_bridge_branch_gates_and_frame_class/reports/01_branch-gates-frame-class.md]
 
 **Description**: Run the four branch gates on the tableau bridge's invalid path and reject unknown frame-class tags. Currently lake exe tableau_bridge (BimodalTools/TableauBridgeMain.lean) returns {"status": "invalid", "countermodel": ...} from an open saturated branch without evaluating timeOrderTotal, boxAnchoredCheck, regionLabelCheck and temporalWitnessCheck, yet these are exactly the hypotheses of not_validZTime_of_hasOpen_int and not_valid_of_hasOpen_int (Metalogic/Decidability/Verified/Bridge/IntTruth.lean:1045, :1073), so an invalid verdict is theorem-backed only when they pass. Separately, parseFrameClass (TableauBridgeMain.lean:297-302) maps any unrecognized string, including "RTime", to Base silently.
 

@@ -1,0 +1,26 @@
+{
+  "status": "researched",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/667_tableau_bridge_branch_gates_and_frame_class/reports/01_branch-gates-frame-class.md",
+      "summary": "Branch-gate and frame-class research for the tableau bridge: the theorem takes eight hypotheses not four, the branch is recovered by re-running buildTableau, RTime is engine-supported, a module split is forced by the root-main collision, and measured rows show no ZTime invalid verdict is gated today."
+    }
+  ],
+  "user_decision": {
+    "question": "Deliverable 1 defines \"gated\" as true iff the four named gates pass, but not_valid_of_hasOpen_int / not_validZTime_of_hasOpen_int take eight hypotheses (adding branchOrderValid, findUnexpanded = none, findClosure = none, and root-denial), and branchOrderValid is strictly stronger than timeOrderTotal. Should \"gated\" mean the four named gates, or every hypothesis the theorem actually consumes?",
+    "options": [
+      "Report all eight booleans; \"gated\" is the conjunction of all eight (the four named gates keep their own keys, so the deliverable is met literally)",
+      "Report only the four named gates; \"gated\" is their conjunction, exactly as the deliverable words it"
+    ],
+    "recommended": "Report all eight booleans; \"gated\" is the conjunction of all eight (the four named gates keep their own keys, so the deliverable is met literally)",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1790290549_f9337e06_667",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
