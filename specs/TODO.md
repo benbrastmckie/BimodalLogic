@@ -101,16 +101,17 @@ next_project_number: 669
 
 ### Semantics
 
-668 [RESEARCHED] — Clear the 8-row C34b residual in the hypothesis-honesty gate,...
+668 [PLANNED] — Clear the 8-row C34b residual in the hypothesis-honesty gate,...
 
 ## Tasks
 
 ### 668. Clear c34b residual enforce c34b
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
 - **Research**: [668_clear_c34b_residual_enforce_c34b/reports/01_clear-c34b-residual-enforce.md]
+- **Plan**: [668_clear_c34b_residual_enforce_c34b/plans/01_clear-c34b-residual-enforce.md]
 
 **Description**: Clear the 8-row C34b residual in the hypothesis-honesty gate, then flip ENFORCE_C34B=1 so the trigger half of invariant C34 is enforced alongside C34a.
 

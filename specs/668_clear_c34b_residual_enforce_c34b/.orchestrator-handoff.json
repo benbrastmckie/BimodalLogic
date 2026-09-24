@@ -1,0 +1,20 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 2,
+  "summary": "Eight-phase plan clearing the 8-row C34b residual and flipping ENFORCE_C34B=1. Route question settled by necessity, not cost: two rows are IsRegular field re-exports that route (a) cannot reach in principle, so a narrow field-re-export discharge rule is required alongside six explicit-hypothesis restatements (three new binder-free twins, two that already exist, one reused). Phase 1 re-measures and closes the example/omit span-bleed precondition; Phase 8 flips the flag last and corrects both docs.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/668_clear_c34b_residual_enforce_c34b/plans/01_clear-c34b-residual-enforce.md",
+      "summary": "Eight-phase implementation plan: 9 hours, six dependency waves, three pinned Lean challenge statements."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 8,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "skeleton": false,
+  "sorry_inventory": [],
+  "next_action_hint": "Run /implement 668 to execute the plan; Phase 1 must re-measure the census before any Lean edit."
+}

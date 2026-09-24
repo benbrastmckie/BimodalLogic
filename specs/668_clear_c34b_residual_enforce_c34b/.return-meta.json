@@ -1,17 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/668_clear_c34b_residual_enforce_c34b/reports/01_clear-c34b-residual-enforce.md",
-      "summary": "Per-row remedy map for the 8-row C34b residual: route (a) clears six rows with only three new binder-free twins (two twins already exist), while the two Saturation field re-exports are unreachable by route (a) in principle and require a narrow re-export discharge rule; census re-measured and widening quantified."
+      "type": "plan",
+      "path": "specs/668_clear_c34b_residual_enforce_c34b/plans/01_clear-c34b-residual-enforce.md",
+      "summary": "Eight-phase plan clearing the C34b residual via a narrow field-re-export discharge rule plus six explicit-hypothesis restatements, then flipping ENFORCE_C34B=1."
     }
   ],
+  "next_steps": "Run /implement 668 to execute the plan",
+  "phase_count": 8,
+  "estimated_hours": 9,
+  "dependency_waves": [[1], [2, 6, 7], [3], [4], [5], [8]],
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1790283758_0df08b_668",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 2
 }
