@@ -151,12 +151,14 @@ See `docs/ARCHITECTURE.md`'s "The state topology is a leaf, on purpose".
 -- class type, which `warn.classDefReducibility` reports at every mention.
 set_option warn.classDefReducibility false
 
--- Raised from the 1500 default for `SeparatingFrame.nest` and `not_srel_nestSaturation`, which
--- correct a standing assumption about the witnesses already hosted here and so belong beside
--- them. `docs/ARCHITECTURE.md` records that nothing under `FormalSystem/` imports this module, so
+-- Raised from the 1500 default for `SeparatingFrame.nest`, `not_srel_nestSaturation` and their
+-- `RationalTwoOrigins` companions, which correct a standing assumption about the witnesses
+-- already hosted here, and for `srel_fiberSaturation`, which closes the fibers-only candidate
+-- against the same witness -- all of them belong beside the witnesses they are about.
+-- `docs/ARCHITECTURE.md` records that nothing under `FormalSystem/` imports this module, so
 -- a sibling module importing it would falsify that record; the baseline is the sanctioned
 -- response instead. Not for parking unrelated material.
-set_option linter.style.longFile 1700
+set_option linter.style.longFile 1800
 
 open Topology TopologicalSpace Set
 
@@ -1433,6 +1435,113 @@ theorem not_srel_nestSaturation : ¬ TaskFrame.NestSaturation srel := by
     have h1 := RationalTwoOrigins.one_le_phi_add_two n
     nlinarith [ha, hsq, hstart, hepos, hsmall, hn, hphi, h1]
   exact RationalTwoOrigins.sq_ne_two q (le_antisymm hle hge)
+
+/-! ### Segments are load bearing: a fibers-only axiom is inadequate -/
+
+/--
+*Saturation*'s statement with the fiber/segment disjunction narrowed to **fibers alone**: every
+`⊇`-directed family of nonempty fibers has nonempty intersection.
+
+This is the `⊇`-directed form `S₁ᵈ`, not the nest form, so it is deliberately **not** an
+instantiation of `Order.SphericallyComplete` — the general layer in
+`ForMathlib/Order/BallSpace.lean` carries the nest condition, and a directed sibling there would
+be an addition that nothing else needs.
+
+Paper: — (formalization-native; the fibers-only weakening of `def:frame`'s *Saturation*, stated
+here only to be refuted as a candidate)
+-/
+def FiberSaturation {W : Type} {D : Type} [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] [Nontrivial D] (R : W → D → W → Prop) : Prop :=
+  ∀ S : Set (Set W), DirectedFamily S →
+    (∀ s ∈ S, IsFiber R s ∧ s.Nonempty) → (⋂₀ S).Nonempty
+
+/-- A fiber of `srel` is the rational interval of radius `|x|` about `w`. -/
+theorem mem_fib_srel {w v : ℚ} {x : ℤ} :
+    v ∈ Fib srel w x ↔ |v - w| ≤ |(x : ℚ)| := Iff.rfl
+
+/-- The fiber radii are **integers**, so they are compared through `Int.natAbs`. -/
+theorem natAbs_cast_rat (x : ℤ) : ((x.natAbs : ℕ) : ℚ) = |(x : ℚ)| := by
+  rw [← Int.cast_abs, Int.abs_eq_natAbs, Int.cast_natCast]
+
+/--
+**The separating frame satisfies the fibers-only condition.**
+
+The radii of `srel`'s fibers are **integers**, so among the members of any directed family there
+is one, `s₀`, of least radius. Directedness refines `s₀` and an arbitrary member `J` by some
+member `K ⊆ s₀ ∩ J`; minimality gives `K` radius at least `s₀`'s, while `K ⊆ s₀` gives it radius
+at most `s₀`'s, so the two radii agree — and a closed interval contained in another of the same
+radius is that interval. Hence `s₀ = K ⊆ J` for every `J`, and `s₀` is nonempty, so the whole
+family meets.
+
+The discreteness of `ℤ` is doing the work, exactly as it does for `srel_completion`: it is what
+supplies a least radius. Over a dense duration type the radii could shrink without a minimum and
+this argument would say nothing.
+
+Paper: — (formalization-native; the positive half of the fibers-only sharpness fact)
+-/
+theorem srel_fiberSaturation : FiberSaturation srel := by
+  classical
+  intro S hdir hmem
+  obtain ⟨hSne, hdirS⟩ := hdir
+  have hex : ∃ n : ℕ, ∃ s ∈ S, ∃ (w : ℚ) (x : ℤ), s = Fib srel w x ∧ x.natAbs = n := by
+    obtain ⟨s, hs⟩ := hSne
+    obtain ⟨w, x, hwx⟩ := (hmem s hs).1
+    exact ⟨x.natAbs, s, hs, w, x, hwx, rfl⟩
+  obtain ⟨s₀, hs₀, w₀, x₀, hs₀eq, hx₀⟩ := Nat.find_spec hex
+  have hmin : ∀ (s : Set ℚ), s ∈ S → ∀ (w : ℚ) (x : ℤ), s = Fib srel w x →
+      Nat.find hex ≤ x.natAbs := by
+    intro s hs w x hsx
+    by_contra hlt
+    exact Nat.find_min hex (Nat.lt_of_not_ge hlt) ⟨s, hs, w, x, hsx, rfl⟩
+  have hsub : ∀ J ∈ S, s₀ ⊆ J := by
+    intro J hJ
+    obtain ⟨K, hK, hKsub⟩ := hdirS s₀ hs₀ J hJ
+    obtain ⟨w', x', hK'⟩ := (hmem K hK).1
+    have hKle : Nat.find hex ≤ x'.natAbs := hmin K hK w' x' hK'
+    have hx₀le : (|(x₀ : ℚ)|) ≤ |(x' : ℚ)| := by
+      rw [← natAbs_cast_rat, ← natAbs_cast_rat]
+      exact_mod_cast hx₀ ▸ hKle
+    have hKs₀ : K ⊆ s₀ := fun v hv => (hKsub hv).1
+    have hup : |(w' + |(x' : ℚ)|) - w₀| ≤ |(x₀ : ℚ)| := by
+      have hmemK : (w' + |(x' : ℚ)|) ∈ K := by
+        rw [hK', mem_fib_srel]; simp [abs_of_nonneg (abs_nonneg ((x' : ℚ)))]
+      have hmem₀ := hKs₀ hmemK
+      rwa [hs₀eq, mem_fib_srel] at hmem₀
+    have hdown : |(w' - |(x' : ℚ)|) - w₀| ≤ |(x₀ : ℚ)| := by
+      have hmemK : (w' - |(x' : ℚ)|) ∈ K := by
+        rw [hK', mem_fib_srel]; simp [abs_of_nonpos (neg_nonpos.mpr (abs_nonneg ((x' : ℚ))))]
+      have hmem₀ := hKs₀ hmemK
+      rwa [hs₀eq, mem_fib_srel] at hmem₀
+    rw [abs_le] at hup hdown
+    have hxeq : |(x' : ℚ)| = |(x₀ : ℚ)| := le_antisymm (by linarith [hup.2, hdown.1]) hx₀le
+    have hweq : w' = w₀ := by
+      have h1 : w' ≤ w₀ := by linarith [hup.2, hxeq]
+      have h2 : w₀ ≤ w' := by linarith [hdown.1, hxeq]
+      linarith
+    refine fun v hv => hKsub ?_ |>.2
+    rw [hK', mem_fib_srel, hweq, hxeq]
+    rw [hs₀eq, mem_fib_srel] at hv
+    exact hv
+  obtain ⟨u, hu⟩ := (hmem s₀ hs₀).2
+  exact ⟨u, Set.mem_sInter.2 fun J hJ => hsub J hJ hu⟩
+
+/--
+**Segments are load bearing: a fibers-only fourth constraint is inadequate.**
+
+`srel` satisfies the fibers-only condition (`srel_fiberSaturation`) and fails *Saturation*
+(`not_srel_saturation`), so narrowing `def:frame`'s fourth constraint to fibers alone would
+**strictly** weaken it — and weaken it past what `lem:step` needs, since the straddling regime of
+`Constraints τ z` consists of segments and contains no fiber at all.
+
+This closes the fibers-only candidate row: the segment clause of *Saturation* is not redundant
+decoration inherited from `def:task-relation`, it is the half of the ball space that the
+two-sided constraint families actually live in.
+
+Paper: — (formalization-native; the sharpness fact that closes the fibers-only candidate)
+-/
+theorem not_fiberSaturation_imp_saturation :
+    FiberSaturation srel ∧ ¬ TaskFrame.Saturation srel :=
+  ⟨srel_fiberSaturation, not_srel_saturation⟩
 
 /-! ### Consistency with `saturation_of_completion`: mixed-sign composition fails here -/
 

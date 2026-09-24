@@ -1040,7 +1040,7 @@ recorded.
 
 ---
 
-### Phase 8: Segments are load-bearing — the fibers-only sharpness fact [NOT STARTED]
+### Phase 8: Segments are load-bearing — the fibers-only sharpness fact [COMPLETED]
 
 **Goal**: Land the one genuinely new Question 2 finding if it verifies: a fibers-only `S₁ᵈ` cannot
 replace *Saturation*, because the straddling regime of `Constraints τ z` contains no fibers at
@@ -1049,14 +1049,14 @@ full one.
 
 **Tasks**:
 
-- [ ] In `ConstraintWitnesses.lean` (or `TaskFrame.lean` if the predicate is wanted beside the
+- [x] In `ConstraintWitnesses.lean` (or `TaskFrame.lean` if the predicate is wanted beside the
       others — prefer the witnesses file, to avoid a second whole-library rebuild), state the
       fiber-only condition: `Saturation`'s statement with `IsFiber R s` in place of the
       disjunction. Note that the `⊇`-directed form is what is wanted here, so this is **not** an
       instantiation of `Order.SphericallyComplete` (which is the nest form); if the general layer
       turns out to want a directed sibling too, that is a Phase 1 addition, not a Phase 8 one, and
       it is out of scope unless Phase 8 genuinely needs it.
-- [ ] Prove `srel` satisfies it. The argument, worked through during planning and recorded here so
+- [x] Prove `srel` satisfies it. The argument, worked through during planning and recorded here so
       the phase does not restart it: fibers of `srel` are `Fib srel w x = [w - |x|, w + |x|]` with
       `x : ℤ`. **Degenerate case** — if any member is a singleton `{w}` (`x = 0`), directedness
       forces a member inside `{w} ∩ F` for every other member `F`, and that member is nonempty,
@@ -1065,12 +1065,22 @@ full one.
       giving `right(I) ≥ left(K) + 2 ≥ left(J) + 2`; taking `L = sSup` of left endpoints and
       `R = sInf` of right endpoints over `ℝ` yields `R ≥ L + 2`, and a real interval of length
       `≥ 2` contains a rational, which lies in every member.
-- [ ] Conclude the sharpness statement: `srel` satisfies fiber-only `S₁ᵈ` and fails full `S₁ᵈ`
+      *(deviation: altered — the two-regime `sSup`/`sInf`-over-`ℝ` route was **not** used. The
+      radii of `srel`'s fibers are integers, so the radii realised by a directed family have a
+      **least** element; take `s₀` of least radius, refine `s₀` and an arbitrary `J` by some
+      member `K ⊆ s₀ ∩ J`, and minimality (radius `K` ≥ radius `s₀`) together with `K ⊆ s₀`
+      (radius `K` ≤ radius `s₀`) forces equal radii, hence `K = s₀`, hence `s₀ ⊆ J`. This
+      subsumes the plan's degenerate `x = 0` case rather than splitting on it, needs no `ℝ` and
+      no extrema over an arbitrary family, and so did not approach the phase's pre-authorised
+      `[COMPLETED WITH EXCLUSIONS]` exit. Only the internal tactic route changed; the statement
+      and the phase's conclusion are the plan's.)*
+- [x] Conclude the sharpness statement: `srel` satisfies fiber-only `S₁ᵈ` and fails full `S₁ᵈ`
       (`not_srel_saturation`, already proved), so **segments are load-bearing** and a fibers-only
       constraint is inadequate. Docstring records that this is Question 2's one new finding and
       closes the fibers-only candidate row.
-- [ ] Confirm the `longFile` hypothesis again after Phase 2's additions.
-- [ ] **Pre-authorised exit**: if the `sSup`/`sInf`-over-an-arbitrary-family machinery costs more
+- [x] Confirm the `longFile` hypothesis again after Phase 2's additions. *(crossed again:
+      1727 lines; the in-source baseline added in Phase 2 was raised from 1700 to 1800.)*
+- [x] **Pre-authorised exit** *(not taken — the theorem landed)*: if the `sSup`/`sInf`-over-an-arbitrary-family machinery costs more
       than the budget, close this phase `[COMPLETED WITH EXCLUSIONS]` with a
       `#### Reasoned Exclusions` table recording the item, the reason (the argument is sound but
       the `ℝ`-valued extrema over a `Set (Set ℚ)` need choice-extraction of centres and radii from
@@ -1078,7 +1088,7 @@ full one.
       elaboration error). In that case, record the argument as prose in the module docstring so the
       claim survives as a recorded, checkable sketch rather than as nothing. **No other phase
       depends on this one**, and no `sorry` may be left behind either way.
-- [ ] `lake build` green, sorry-free, warning-free. Commit.
+- [x] `lake build` green, sorry-free, warning-free. Commit.
 
 **Timing**: 1.5 hours
 
