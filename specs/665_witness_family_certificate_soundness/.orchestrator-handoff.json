@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 3,
+  "summary": "Wrote a 10-phase, 15-hour implementation plan for task 665's witness-family certificate soundness half, built on the research report's compiled sorry-free T1/T1' spike; T3's infeasible enumeration guard is replaced per the recorded decision by a proved impossibility theorem plus a hand-built negative witness.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/665_witness_family_certificate_soundness/plans/01_witness-family-certificate-soundness.md",
+      "summary": "10-phase, 15-hour plan for the witness-family certificate soundness half (T1, T1', T2, T3) in a new presentation-free WitnessFamily/ subdirectory."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 10,
+  "blockers": []
+}

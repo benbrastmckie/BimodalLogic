@@ -1,33 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/665_witness_family_certificate_soundness/reports/01_witness-family-certificate-soundness.md",
-      "summary": "T1/T1' machine-verified sorry-free in a compiled spike; T2 is a ~650-line label-only transposition of BiLasso/Decide.lean; T3's negative #guard is infeasible by ~12 orders of magnitude and needs a scope decision."
-    },
-    {
-      "type": "evidence",
-      "path": "specs/665_witness_family_certificate_soundness/evidence/t1-agreement-spike.lean",
-      "summary": "262-line compiled spike: WitnessFamily.std ShiftSet, the agreement induction through ShiftSet.forward_repr, and the three consequence corollaries; zero sorry, axioms [propext, Classical.choice, Quot.sound]."
+      "type": "plan",
+      "path": "specs/665_witness_family_certificate_soundness/plans/01_witness-family-certificate-soundness.md",
+      "summary": "10-phase, 15-hour plan for the witness-family certificate soundness half (T1 agreement, T1' consequence corollaries, T2 decidability, T3 non-vacuity + impossibility) in a new presentation-free WitnessFamily/ subdirectory."
     }
   ],
-  "user_decision": {
-    "question": "T3's second deliverable -- a #guard that no witness family with all segment lengths <= 2 exists for the negation of MF -- is computationally infeasible: subformulaClosure(MF.neg) has card 10, so up to 1024^6 (~1.2e18) label assignments must be enumerated for a single lasso. Which substitute should the plan carry?",
-    "options": [
-      "Prove a theorem no_witnessFamily_of_MF_neg directly (BoxFaithful makes bx a global constant, so MF.neg's two box clauses are contradictory at any single family) -- recommended",
-      "Hand-build a rejected family and #guard !decide (...), mirroring BiLasso/Examples.lean's negAnnot -- recommended alongside option 1",
-      "Keep the enumeration but shrink to segment lengths exactly (1,0,1) over a hand-picked 2-formula sub-closure (smoke test only)",
-      "Keep the acceptance criterion as written and accept that the #guard will not terminate"
-    ],
-    "blocking": false,
-    "recommendation": "Options 1 and 2 together. They deliver the content T3 was reaching for -- a real impossibility result plus genuine predicate separation -- at no enumeration cost."
-  },
+  "next_steps": "Run /implement 665 to execute the plan",
   "metadata": {
     "session_id": "sess_1790290549_f9337e06_665",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 10,
+    "estimated_hours": 15,
+    "dependency_waves": [[1], [2], [3, 4], [5, 6], [7], [8], [9], [10]]
+  },
+  "memory_candidates": [
+    {
+      "content": "Lean4 plan artifacts in this repo carry a `## Lean Challenge Statements` section whose declared identifier set must EXACTLY equal the backtick identifiers under `**Goals**:`. The cross-validator is scripts/lean-challenge-snapshot.sh: it extracts Goals names with `grep -oP '`[a-zA-Z_][a-zA-Z0-9_']*`'` (so DOTTED names like `Ns.thm` match nothing and are invisible) and extracts declared names with a regex matching only `theorem|lemma|def|instance` followed by an undotted identifier (so `structure` declarations do NOT enter the set, and `def Ns.foo` captures `Ns`, not `foo`). Practical consequences when authoring a lean4 plan: declare everything inside `namespace` blocks with simple undotted names; list defs and named instances in Goals alongside theorems, since they are captured too; give Decidable instances explicit names rather than leaving them anonymous. Verify before returning with `bash .claude/scripts/lean-challenge-snapshot.sh <task> <project_root> --dry-run`, which exits 71 with the offending identifiers on mismatch. Note also that the snapshot tool's module assembly slices from the first declaration match onward, so interleaved `structure` declarations are dropped from the assembled Challenge module.",
+      "category": "PATTERN",
+      "source_artifact": "specs/665_witness_family_certificate_soundness/plans/01_witness-family-certificate-soundness.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lean-challenge-statements", "plan-format", "lean4-plan", "identifier-cross-validation", "lean-challenge-snapshot", "goals-section"]
+    }
+  ],
+  "dispatch_seq": 3
 }
