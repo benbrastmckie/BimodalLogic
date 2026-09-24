@@ -180,17 +180,28 @@ open TaskFrame
 variable {D : TemporalOrder}
 
 /--
-**Uniform dwell implies static**, over a dense Archimedean duration group.
+**Uniform dwell implies static, at the hypotheses the proof consumes.**
+
+The explicit-hypothesis form of `static_of_uniformDwell` below. Interpolation enters through
+`TaskFrame.interpolates_of_comp` (*Compositionality*), the reflection law through
+`FrameOver.reflection_of_limit` (*Limit*), and the positive half of `Static` through *Seriality*.
+*Saturation* is reached by none of the three: this result is well before the extension chain.
 
 The collapse `w ⇒_x u → w = u` for `x ≥ 0` is `TaskFrame.eq_of_rel_of_uniform_radius` at the
-frame's own interpolation; the reflection law extends it to negative `x`. The positive half of
+interpolation hypothesis; the reflection law extends it to negative `x`. The positive half of
 `Static` — that `w ⇒_x w` for every `x` — comes from *Seriality* (`def:frame#Seriality`): some
 `u` with `w ⇒_x u` exists, and the collapse identifies it with `w`.
+
+`static_of_uniformDwell` below is this theorem at `[F.IsRegular]`, with its original statement.
+
+Constraints consumed: Compositionality, Seriality, Limit
 -/
-theorem static_of_uniformDwell [DenselyOrdered ↑D] [Archimedean ↑D] (F : FrameOver D)
-    [F.IsRegular] (h : UniformDwell F.TaskRel) : Static F.TaskRel := by
+theorem static_of_uniformDwell_of_compositional_serial_limit [DenselyOrdered ↑D] [Archimedean ↑D]
+    (F : FrameOver D) (hcomp : TaskFrame.Compositional F.TaskRel)
+    (hser : TaskFrame.Serial F.TaskRel) (hlim : TaskFrame.Limit F.TaskRel)
+    (h : UniformDwell F.TaskRel) : Static F.TaskRel := by
   obtain ⟨x₀, hx₀, hcone⟩ := h
-  have key := eq_of_rel_of_uniform_radius F.interpolates hx₀
+  have key := eq_of_rel_of_uniform_radius (TaskFrame.interpolates_of_comp hcomp) hx₀
     (fun w u y hy hR => by
       have : u ∈ cone F.TaskRel w x₀ := ⟨y, hy, hR⟩
       rw [hcone w] at this
@@ -199,19 +210,36 @@ theorem static_of_uniformDwell [DenselyOrdered ↑D] [Archimedean ↑D] (F : Fra
     intro w x u hR
     rcases le_total 0 x with hx | hx
     · exact (key w u x hx hR).symm
-    · exact key u w (-x) (neg_nonneg.mpr hx) ((F.reflection w x u).mp hR)
+    · exact key u w (-x) (neg_nonneg.mpr hx) ((F.reflection_of_limit hlim w x u).mp hR)
   intro w x u
   refine ⟨fwd w x u, ?_⟩
   rintro rfl
   rcases le_total 0 x with hx | hx
-  · obtain ⟨⟨u, hu⟩, _⟩ := F.serial w x hx
+  · obtain ⟨⟨u, hu⟩, _⟩ := hser w x hx
     have := fwd w x u hu
     subst this
     exact hu
-  · obtain ⟨⟨u, hu⟩, _⟩ := F.serial w (-x) (neg_nonneg.mpr hx)
+  · obtain ⟨⟨u, hu⟩, _⟩ := hser w (-x) (neg_nonneg.mpr hx)
     have := fwd w (-x) u hu
     subst this
-    exact (F.reflection w x w).mpr hu
+    exact (F.reflection_of_limit hlim w x w).mpr hu
+
+/--
+**Uniform dwell implies static**, over a dense Archimedean duration group.
+
+The collapse `w ⇒_x u → w = u` for `x ≥ 0` is `TaskFrame.eq_of_rel_of_uniform_radius` at the
+frame's own interpolation; the reflection law extends it to negative `x`. The positive half of
+`Static` — that `w ⇒_x w` for every `x` — comes from *Seriality* (`def:frame#Seriality`): some
+`u` with `w ⇒_x u` exists, and the collapse identifies it with `w`.
+
+`static_of_uniformDwell_of_compositional_serial_limit` above is the explicit-hypothesis form,
+which is the general one; this is that form at a regular frame.
+
+Constraints consumed: Compositionality, Seriality, Limit
+-/
+theorem static_of_uniformDwell [DenselyOrdered ↑D] [Archimedean ↑D] (F : FrameOver D)
+    [F.IsRegular] (h : UniformDwell F.TaskRel) : Static F.TaskRel := by
+  exact F.static_of_uniformDwell_of_compositional_serial_limit F.comp F.serial F.limit h
 
 /--
 **Static implies uniform dwell**, over any duration group. Any positive duration is a uniform
@@ -238,11 +266,18 @@ collapse uses only interpolation and the dwell bound (`TaskFrame.eq_of_rel_of_st
 spent once to close the radius), and the biconditional additionally uses *Seriality* and the
 reflection law. Both hypotheses are sharp — see `RigiditySharpness.lean`.
 
+The backward direction is routed through
+`static_of_uniformDwell_of_compositional_serial_limit`, the binder-free form, rather than through
+the corollary beside it, so the marker below is proved where its hypotheses are explicit.
+
+Constraints consumed: Compositionality, Seriality, Limit
+
 Paper: — (the manuscript states no rigidity theorem; stated at the hypothesis the proof uses)
 -/
 theorem static_iff_uniformDwell [DenselyOrdered ↑D] [Archimedean ↑D] (F : FrameOver D)
     [F.IsRegular] : Static F.TaskRel ↔ UniformDwell F.TaskRel :=
-  ⟨F.uniformDwell_of_static, F.static_of_uniformDwell⟩
+  ⟨F.uniformDwell_of_static,
+    F.static_of_uniformDwell_of_compositional_serial_limit F.comp F.serial F.limit⟩
 
 /--
 **A finite carrier has a uniform dwell time**, over any duration group. *Limit*

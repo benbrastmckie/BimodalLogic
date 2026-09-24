@@ -454,7 +454,7 @@ gate's hit list.
 
 ---
 
-### Phase 6: Restate `static_of_uniformDwell` and clear `static_iff_uniformDwell` [NOT STARTED]
+### Phase 6: Restate `static_of_uniformDwell` and clear `static_iff_uniformDwell` [COMPLETED]
 
 **Goal**: Add the binder-free rigidity twin and route `static_iff_uniformDwell` through it, so the
 row that carries the task's only real proof work discharges by delegation.
