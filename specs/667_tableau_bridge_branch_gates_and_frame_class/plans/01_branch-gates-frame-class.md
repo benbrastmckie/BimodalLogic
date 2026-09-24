@@ -1,7 +1,7 @@
 # Implementation Plan: Tableau bridge branch gates and frame class
 
 - **Task**: 667 - Tableau bridge branch gates and frame class
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/667_tableau_bridge_branch_gates_and_frame_class/reports/01_branch-gates-frame-class.md`
@@ -134,7 +134,7 @@ is a conflict, not a parallelism opportunity.
 
 ---
 
-### Phase 1: Split the bridge into library plus executable root [NOT STARTED]
+### Phase 1: Split the bridge into library plus executable root [COMPLETED]
 
 **Goal**: `BimodalTools.TableauBridge` is importable by a test module; `lake exe tableau_bridge`
 still runs.
@@ -184,7 +184,7 @@ the new file returning exactly one pair, and by `lake exe tableau_bridge` starti
 
 ---
 
-### Phase 2: BranchGates record and evaluator [NOT STARTED]
+### Phase 2: BranchGates record and evaluator [IN PROGRESS]
 
 **Goal**: `evalBranchGates φ fc` returns the eight theorem hypotheses as booleans plus their
 conjunction, with a JSON serializer.
