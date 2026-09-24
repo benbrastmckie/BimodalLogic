@@ -308,35 +308,49 @@ worked example and the document's opening both cross-link to it instead.)* Verif
 
 ---
 
-### Phase 3: Restate the four base declarations in `Constraint.lean` [NOT STARTED]
+### Phase 3: Restate the four base declarations in `Constraint.lean` [COMPLETED]
+
+> **Contradiction found at implementation time, resolved in Phase 6.** This phase is told to give
+> each demoted corollary its own `Constraints consumed:` line, and those corollaries carry
+> `[F.IsRegular]` while their lists omit *Saturation*. C34a as Phase 6 words it — "a marker whose
+> list OMITS *Saturation* ⇒ the declaration's code contains no `IsRegular`" — would therefore fail
+> on precisely the declarations this phase is instructed to create. The marker lines are written
+> here as the plan directs; Phase 6 resolves the contradiction by giving C34a a DELEGATION
+> discharge: a marked, binder-carrying declaration passes iff its code names another marked
+> declaration carrying the identical list and NO bundling binder. That is exactly the
+> corollary-with-a-binder-free-twin arrangement, so the assertion still bites (a bare independence
+> claim over a binder, delegating to nothing, still fails) while the honest pattern passes.
 
 **Goal**: Give the four foundational independence-claiming declarations explicit-hypothesis twins,
 each with its original kept as a one-line corollary at an unchanged signature.
 
 **Tasks**:
-- [ ] Read the three matched pairs the prerequisite task already landed in `Constraint.lean`
+- [x] Read the three matched pairs the prerequisite task already landed in `Constraint.lean`
       (`fib_subset_fib_of_compositional` / `fib_subset_fib_of_le_of_le`, and the two others) and
       follow their exact shape: explicit-hypothesis statement first, docstring naming what it
       consumes and why the split exists, corollary immediately below.
-- [ ] `fib_zero_subset_of_compositional_limit` at `(hcomp, hlim)`, proved by the two already-honest
+- [x] `fib_zero_subset_of_compositional_limit` at `(hcomp, hlim)`, proved by the two already-honest
       monotonicity lemmas `fib_subset_fib_of_compositional` and `fib_subset_fib_of_compositional'`;
       demote `fib_zero_subset` to `fib_zero_subset_of_compositional_limit F.comp F.limit`.
-- [ ] `fib_zero_subset_mem_of_compositional_limit` at `(hcomp, hlim)`, proved by the above plus
+- [x] `fib_zero_subset_mem_of_compositional_limit` at `(hcomp, hlim)`, proved by the above plus
       `seg_eq_inter_fib`; demote `fib_zero_subset_of_mem_Constraints` to the one-line corollary.
-- [ ] `nonempty_fib_of_serial_limit` at `(hser, hlim)`, replacing `F.serial` with `hser` and the
+- [x] `nonempty_fib_of_serial_limit` at `(hser, hlim)`, replacing `F.serial` with `hser` and the
       `F.reflection` step with `F.toFibre.reflection_of_limit hlim`; demote `nonempty_fib_of_serial`
       to `nonempty_fib_of_serial_limit F.serial F.limit`. (Name follows
       `TaskFrame.nullity_of_serial_limit`'s established shape.)
-- [ ] `nonempty_seg_of_compositional_limit` at `(hcomp, hlim)`, replacing `F.interpolates` with
+- [x] `nonempty_seg_of_compositional_limit` at `(hcomp, hlim)`, replacing `F.interpolates` with
       `TaskFrame.interpolates_of_comp hcomp` and `F.reflection` with
       `F.toFibre.reflection_of_limit hlim`; demote `nonempty_seg_of_interpolates` to the corollary.
       Its name and docstring keep the interpolation-half wording, which is accurate.
-- [ ] Give each of the four new declarations a `Constraints consumed:` line per Phase 2's
+- [x] Give each of the four new declarations a `Constraints consumed:` line per Phase 2's
       convention, and each of the four corollaries its own line (the corollary consumes the same
       constraints through `F.comp`/`F.serial`/`F.limit`).
-- [ ] Normalize the two pre-existing ad-hoc "**Axioms consumed…**" docstring lines in this file
-      into the convention's shape, keeping their prose content.
-- [ ] Confirm every corollary's binder list, implicit-argument order and name are byte-identical to
+- [x] Normalize the two pre-existing ad-hoc "**Axioms consumed…**" docstring lines in this file
+      into the convention's shape, keeping their prose content. *(deviation: altered — only the
+      first, on `nonempty_fib_of_serial`, is normalized here; the second belongs to `constraint`,
+      which is Phase 4's declaration and whose docstring Phase 4 rewrites in full. Its prose is
+      kept verbatim and a `Constraints consumed:` line added beside it, not in place of it.)*
+- [x] Confirm every corollary's binder list, implicit-argument order and name are byte-identical to
       the pre-phase version; only the body changes.
 
 **Timing**: 1.5 hours
@@ -346,6 +360,12 @@ each with its original kept as a one-line corollary at an unchanged signature.
 **Verification Tier**: local
 
 **Commit Mode**: per-substep
+
+**Result**: `lake build FormalSystem.Semantics.Extension.Constraint` (detached, guarded) exit 0,
+`Build completed successfully (1178 jobs)`, 0 `error:`, 0 `warning:`, `.olean` newer than source.
+`git diff --stat` over `FormalSystem/`, `Tests/`, `docs/`, `scripts/` names `Constraint.lean`
+alone. All four corollary signatures byte-identical to HEAD (checked mechanically, keyword line
+through `:=`). Zero `sorry`, zero `axiom` in the file.
 
 **Scope Hypothesis**: This phase asserts it touches exactly one file and exactly four
 declaration pairs. Confirm with `git diff --stat` showing `Constraint.lean` alone, and
