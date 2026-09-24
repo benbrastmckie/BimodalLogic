@@ -5484,6 +5484,30 @@ BUNDLERS = {
 }
 VOCAB = {v for vocab in BUNDLERS.values() for v in vocab}
 
+# The same table read the other way round: which FIELD of each bundling class stands for which
+# constraint name. The field re-export discharge below needs the mapping field -> constraint, and
+# it takes it from here BY NAME rather than by positional index into the vocabulary tuple above,
+# so that reordering that tuple cannot silently remap a field to the wrong constraint.
+BUNDLER_FIELDS = {
+    "IsRegular": {
+        "comp": "Compositionality",
+        "serial": "Seriality",
+        "limit": "Limit",
+        "saturation": "Saturation",
+    },
+}
+# Anti-silence over the two tables: a class whose field table does not spell its vocabulary
+# exactly -- a field added to the class, a constraint renamed, a row forgotten -- would make the
+# re-export discharge quietly unable to recognize that field. That is a broken matcher, not a
+# clean tree, so it is exit 2 in every mode.
+for _cls, _vocab in BUNDLERS.items():
+    if sorted(BUNDLER_FIELDS.get(_cls, {}).values()) != sorted(_vocab):
+        print(f"FAIL  C34  the field-to-constraint table for `{_cls}` spells "
+              f"{sorted(BUNDLER_FIELDS.get(_cls, {}).values())}, not its vocabulary "
+              f"{sorted(_vocab)}")
+        print("            (exit 2: an untrustworthy scan is an error in every mode)")
+        sys.exit(2)
+
 MARKER = re.compile(r"Constraints consumed:\s*([^\n]*)")
 # A declaration's span runs to the line before the NEXT declaration's span, so a `variable`
 # block, a section marker or a module docstring sitting between two declarations falls inside
@@ -5523,6 +5547,46 @@ def binder_re(cls):
 
 BINDER_RES = {cls: binder_re(cls) for cls in BUNDLERS}
 MENTION_RES = {cls: re.compile(r"\b" + re.escape(cls) + r"\b") for cls in BUNDLERS}
+# The binder's SUBJECT (and the instance name, when the binder is named): `[h : F.IsRegular]`
+# yields `h` and `F`, `[F.IsRegular]` yields `F` alone. Both are legitimate heads of a field
+# projection, and nothing else is.
+SUBJECT_RES = {cls: re.compile(r"\[\s*(?:(\w+)\s*:\s*)?(\w+)\." + re.escape(cls) + r"\s*\]")
+               for cls in BUNDLERS}
+PROJECTION = re.compile(r"(\w+)((?:\.\w+)*)\.(\w+)")
+
+
+def reexport_field(body, binders):
+    """The single constraint `body` RE-EXPORTS under its own name, or None.
+
+    A FIELD RE-EXPORT is a declaration whose whole proof term is one field projection off its own
+    bound instance, or off the subject the binder names: `h.saturation`, `F.toFibre.saturation`.
+    Re-exporting a field is not a claim about consumption -- the declaration IS that field, under
+    the name it had before the class existed -- so marking it at exactly that one field's
+    constraint is honest even though its binder supplies the other three. `reexports` below is
+    the discharge; this is only the recognizer.
+
+    Narrow by construction, and fail-closed at every step: exactly one bundling class in the
+    binders, a recoverable binder subject, exactly one `:=` in the whole span, a tail matching the
+    projection shape IN FULL (so a body that applies a further lemma to the projection is not a
+    re-export), and no other field of the class anywhere in the projection chain."""
+    if len(binders) != 1:
+        return None
+    cls = next(iter(binders))
+    m = SUBJECT_RES[cls].search(body)
+    if m is None:
+        return None
+    heads = {h for h in (m.group(1), m.group(2)) if h}
+    parts = body.split(":=")
+    if len(parts) != 2:
+        return None
+    tail = " ".join(parts[1].split())
+    fields = BUNDLER_FIELDS[cls]
+    tm = PROJECTION.fullmatch(tail)
+    if tm is None or tm.group(1) not in heads or tm.group(3) not in fields:
+        return None
+    if any(c in fields for c in tm.group(2).split(".") if c):
+        return None
+    return fields[tm.group(3)]
 
 
 def classify(text):
@@ -5533,7 +5597,9 @@ def classify(text):
     the latter catching an in-proof `haveI : F.IsRegular`. `marker` is None when the declaration
     carries no `Constraints consumed:` line, the string "MALFORMED" when its list leaves the
     closed vocabulary, and otherwise the frozenset of constraints it enumerates (empty for
-    `None`). `idents` is every identifier the code names, bare last components included."""
+    `None`). `idents` is every identifier the code names, bare last components included.
+    `reexport` is the single constraint the declaration re-exports as a bare field projection off
+    its own binder (see `reexport_field`), or None."""
     lines = text.split("\n")
     code_lines = mask(text).split("\n")
     doc_lines = comments_only(text).split("\n")
@@ -5567,7 +5633,7 @@ def classify(text):
                 marker = ("MALFORMED" if not toks or any(t not in VOCAB for t in toks)
                           else frozenset(toks))
         out.append((d.name, frozenset(binders), frozenset(mentions), marker, frozenset(idents),
-                    doc))
+                    doc, reexport_field(body, binders)))
     return out
 
 
@@ -5579,7 +5645,7 @@ def delegates(row, index):
     and the binder-carrying declaration is a one-line corollary of it -- and it is what keeps
     C34a from failing on exactly the arrangement that makes such a claim honest. A bare
     independence claim over a binder, delegating to nothing, still fails."""
-    _name, _binders, _mentions, marker, idents, _doc = row
+    _name, _binders, _mentions, marker, idents, _doc, _reexport = row
     for ident in idents:
         for cand_marker, cand_mentions in index.get(ident, ()):
             if cand_marker == marker and not cand_mentions:
@@ -5590,7 +5656,7 @@ def delegates(row, index):
 def build_index(rows):
     """name -> [(marker, mentions)] over every marked declaration in the walk."""
     index = {}
-    for name, _b, mentions, marker, _i, _d in rows:
+    for name, _b, mentions, marker, _i, _d, _r in rows:
         if marker is None or marker == "MALFORMED":
             continue
         index.setdefault(name, []).append((marker, mentions))
@@ -5598,24 +5664,57 @@ def build_index(rows):
     return index
 
 
-def c34a_violation(row, index):
-    """A marker that OMITS a constraint, over a binder that supplies it, with no delegation."""
-    _name, binders, _mentions, marker, _idents, _doc = row
+def reexports(row):
+    """C34a's SECOND discharge: the declaration is a bare field re-export (`reexport_field`) and
+    its marker names EXACTLY that one field's constraint.
+
+    Route (a) -- restate at explicit hypotheses and demote the original to a corollary -- cannot
+    reach a field re-export even in principle: `delegates` requires a twin mentioning no bundling
+    class anywhere, and any restatement of "the class supplies this field" must name the class.
+    The marker identity is what keeps this narrow: a re-export marked at a DIFFERENT field, or at
+    more than the one field it projects, is not discharged."""
+    marker, reexport = row[3], row[6]
+    if reexport is None or marker is None or marker == "MALFORMED":
+        return False
+    return marker == frozenset({reexport})
+
+
+def omitted(row):
+    """The constraints `row`'s marker claims unconsumed while its own binder supplies them."""
+    _name, binders, _mentions, marker, _idents, _doc, _reexport = row
     if marker is None or marker == "MALFORMED" or not binders:
-        return None
-    omitted = set()
+        return set()
+    out = set()
     for cls in binders:
-        omitted |= set(BUNDLERS[cls]) - marker
-    if not omitted:
-        return None
+        out |= set(BUNDLERS[cls]) - marker
+    return out
+
+
+def discharge(row, index):
+    """Which of C34a's two discharges applies to `row`: "delegation", "re-export", or None when
+    neither does. The order is fixed so the PASS line's attribution is deterministic."""
     if delegates(row, index):
+        return "delegation"
+    if reexports(row):
+        return "re-export"
+    return None
+
+
+def c34a_violation(row, index):
+    """A marker that OMITS a constraint its own binder supplies, discharged by NEITHER of C34a's
+    two escapes: delegation to a binder-free twin carrying the identical list (`delegates`), or a
+    bare field re-export marked at exactly that field's constraint (`reexports`)."""
+    o = omitted(row)
+    if not o:
         return None
-    return sorted(omitted)
+    if discharge(row, index) is not None:
+        return None
+    return sorted(o)
 
 
 def c34b_trigger(row):
     """An UNMARKED bracketed-binder declaration whose doc block reads as an independence claim."""
-    _name, binders, _mentions, marker, _idents, doc = row
+    _name, binders, _mentions, marker, _idents, doc, _reexport = row
     if marker is not None or not binders:
         return None
     for line in doc.split("\n"):
@@ -5683,6 +5782,46 @@ _FIXTURES = [
     ("/-- Constraints consumed: Limit -/\ntheorem tw2 (hlim : L) : True := trivial\n\n"
      "omit [F.IsRegular] in\ntheorem below (hlim : L) : True := trivial\n",
      [], []),
+    # the field re-export discharge ---------------------------------------------
+    # must-pass: the whole proof term is one field projection off the declaration's own bound
+    # instance, and the marker names exactly that field's constraint
+    ("/-- Constraints consumed: Saturation -/\n"
+     "theorem re (F : X) [h : F.IsRegular] : P F := h.saturation\n",
+     [], []),
+    # must-pass: the same through a projection CHAIN, off the binder's subject rather than a
+    # named instance -- `F.toFibre.saturation` is still one field, reached through no other
+    ("/-- Constraints consumed: Saturation -/\n"
+     "theorem rechain (F : X) [F.IsRegular] : P F := F.toFibre.saturation\n",
+     [], []),
+    # must-fail: the marker names a DIFFERENT field than the one projected
+    ("/-- Constraints consumed: Limit -/\n"
+     "theorem wrongfield (F : X) [h : F.IsRegular] : P F := h.saturation\n",
+     ["wrongfield"], []),
+    # must-fail: the body reaches TWO fields while the marker names one -- not a re-export of
+    # anything, and the tail is not a single projection term
+    ("/-- Constraints consumed: Limit -/\n"
+     "theorem twofields (F : X) [h : F.IsRegular] : P F := \u27e8h.limit, h.comp\u27e9\n",
+     ["twofields"], []),
+    # must-fail: a bare projection under the constraint-free marker `None`, which claims all four
+    # unconsumed while the binder supplies them
+    ("/-- Constraints consumed: None -/\n"
+     "theorem nonemarked (F : X) [h : F.IsRegular] : P F := h.saturation\n",
+     ["nonemarked"], []),
+    # must-fail, and this is the fixture that keeps the rule NARROW: the body applies a further
+    # lemma to the projection instead of being the bare projection, so it is a consumption
+    ("/-- Constraints consumed: Saturation -/\n"
+     "theorem applied (F : X) [h : F.IsRegular] : P F := of_sat h.saturation\n",
+     ["applied"], []),
+    # must-fail: the projection chain passes THROUGH another field of the same class, so the
+    # term reaches two constraints and marking only the last one would understate it
+    ("/-- Constraints consumed: Compositionality -/\n"
+     "theorem viafield (F : X) [h : F.IsRegular] : P F := h.limit.comp\n",
+     ["viafield"], []),
+    # must-fail: the re-export shape carries no marker at all, so the new rule exempts it from
+    # nothing -- its claim-shaped docstring is still a C34b hit
+    ("/-- *Saturation* by citation: this is the field the Step Lemma consumes. -/\n"
+     "theorem nomarker (F : X) [h : F.IsRegular] : P F := h.saturation\n",
+     [], ["nomarker"]),
 ]
 
 
@@ -5785,10 +5924,15 @@ if viol:
     print("            one to a corollary of it, or correct the marker to list what is consumed")
     failed = failed or ENFORCE_A
 else:
+    binder_marked = [r for _p, r in marked if r[1]]
+    kinds = [discharge(r, index) for r in binder_marked if omitted(r)]
     print(f"PASS  C34a all {len(marked)} marker(s) are honest: none omits a constraint its own "
           f"binder supplies")
-    print(f"            ({len([r for _p, r in marked if r[1]])} of them carry a binder and "
-          f"discharge it by delegating to a binder-free declaration)")
+    print(f"            ({len(binder_marked)} of them carry a binder: "
+          f"{kinds.count('delegation')} discharge it by delegating to a binder-free "
+          f"declaration,")
+    print(f"            {kinds.count('re-export')} by field re-export, and "
+          f"{len(binder_marked) - len(kinds)} omit nothing and so claim nothing)")
 
 # C34b -- the trigger assertion. Its only remedy is a marker line; it renders no verdict.
 hits = [(p, r, c34b_trigger(r)) for p, r in binder_sites]

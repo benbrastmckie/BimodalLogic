@@ -238,7 +238,7 @@ list before writing any Lean.
 
 ---
 
-### Phase 2: Land the field re-export discharge rule, with must-fail fixtures [NOT STARTED]
+### Phase 2: Land the field re-export discharge rule, with must-fail fixtures [COMPLETED]
 
 **Goal**: Give C34a a second, narrow discharge — a declaration whose whole proof term is one field
 projection off its own bound frame, marked with exactly that field's constraint — and pin its
@@ -264,7 +264,7 @@ narrowness in the gate's own regression suite before any declaration relies on i
       visible in the gate's own output rather than only in a document.
 - [ ] Add must-pass fixtures: a re-export whose marker names exactly the projected field; the same
       through a projection chain (`F.toFibre.saturation`).
-- [ ] Add must-fail fixtures — these are acceptance criteria, not hardening: a re-export whose
+- [x] Add must-fail fixtures — these are acceptance criteria, not hardening: a re-export whose
       marker names a *different* field; a body projecting two fields with a marker naming one; a
       body projecting one field with marker `None`; a re-export whose body applies a further lemma
       to the projection rather than being the bare projection (this is the fixture that keeps the
@@ -295,7 +295,8 @@ record the measured pair; Phase 8 writes the measured numbers into
 **Files to modify**:
 - `scripts/check-module-invariants.sh` - field-to-constraint table, `classify()`'s `reexport`
   computation, `reexports()`, `c34a_violation`'s second discharge, the `PASS C34a` reporting line,
-  seven new `_FIXTURES` entries
+  seven new `_FIXTURES` entries *(deviation: altered — eight new entries, not seven; a sixth
+  must-fail case pins the projection-chain field check that no other fixture reached)*
 
 **Verification**:
 - The C34 fixture self-test passes, and each must-fail fixture genuinely fails when the rule is
