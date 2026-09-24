@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/668_clear_c34b_residual_enforce_c34b/reports/01_clear-c34b-residual-enforce.md",
+      "summary": "Per-row remedy map for the 8-row C34b residual: route (a) clears six rows with only three new binder-free twins (two twins already exist), while the two Saturation field re-exports are unreachable by route (a) in principle and require a narrow re-export discharge rule; census re-measured and widening quantified."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790283758_0df08b_668",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
