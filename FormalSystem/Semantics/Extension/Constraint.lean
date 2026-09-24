@@ -135,23 +135,48 @@ theorem seg_eq_inter_fib (τ : PartialHistory F) {z t s : F.Duration}
 -/
 
 /--
+Below `z`, a later domain time imposes a tighter constraint, with the hypothesis the proof
+actually consumes made explicit: *Compositionality* alone, never the `IsRegular` instance.
+
+For `a ≤ b ≤ z` in the domain, `Fib(τ(b), z - b) ⊆ Fib(τ(a), z - a)`. This is
+*Compositionality*'s composition half applied to the history's own task-respect step
+`τ(a) ⇒_{b-a} τ(b)`, with both durations `b - a` and `z - b` nonnegative so that the axiom's
+positive-cone proviso is met — and `TaskFrame.forward_of_comp` projects that half straight out of
+`hcomp`, so nothing here reaches for a frame field.
+
+The split exists so that results about the nest condition `S₁` can be stated without
+`[F.IsRegular]`: an instance binder would drag *Saturation* back in and make an
+`S₁`-sufficiency statement vacuous. `fib_subset_fib_of_le_of_le` below is the one-line corollary
+at a regular frame, with its statement and implicit-argument order unchanged, so no call site
+moves.
+-/
+theorem fib_subset_fib_of_compositional {τ : PartialHistory F} {z a b : F.Duration}
+    (hcomp : TaskFrame.Compositional F.TaskRel)
+    (ha : τ.domain a) (hb : τ.domain b) (hab : a ≤ b) (hbz : b ≤ z) :
+    Fib F.TaskRel (τ.states b hb) (z - b) ⊆ Fib F.TaskRel (τ.states a ha) (z - a) := by
+  intro u hu
+  have hfwd := TaskFrame.forward_of_comp hcomp (τ.states a ha) (τ.states b hb) u (b - a) (z - b)
+    (sub_nonneg.mpr hab) (sub_nonneg.mpr hbz) (τ.respects_task a b ha hb)
+    (TaskFrame.mem_Fib.mp hu)
+  have heq : b - a + (z - b) = z - a := by abel
+  rw [heq] at hfwd
+  exact TaskFrame.mem_Fib.mpr hfwd
+
+/--
 Below `z`, a later domain time imposes a tighter constraint: for `a ≤ b ≤ z` in the domain,
 `Fib(τ(b), z - b) ⊆ Fib(τ(a), z - a)`.
 
 This is *Compositionality*'s composition half (`TaskFrame.forward_comp`) applied to the history's
 own task-respect step `τ(a) ⇒_{b-a} τ(b)`, with both durations `b - a` and `z - b` nonnegative so
 that the axiom's positive-cone proviso is met.
+
+A one-line corollary of `fib_subset_fib_of_compositional`, which records that *Compositionality*
+is the whole of what the argument consumes.
 -/
 theorem fib_subset_fib_of_le_of_le [F.IsRegular] {τ : PartialHistory F} {z a b : F.Duration}
     (ha : τ.domain a) (hb : τ.domain b) (hab : a ≤ b) (hbz : b ≤ z) :
-    Fib F.TaskRel (τ.states b hb) (z - b) ⊆ Fib F.TaskRel (τ.states a ha) (z - a) := by
-  intro u hu
-  have hcomp := F.forward_comp (τ.states a ha) (τ.states b hb) u (b - a) (z - b)
-    (sub_nonneg.mpr hab) (sub_nonneg.mpr hbz) (τ.respects_task a b ha hb)
-    (TaskFrame.mem_Fib.mp hu)
-  have heq : b - a + (z - b) = z - a := by abel
-  rw [heq] at hcomp
-  exact TaskFrame.mem_Fib.mpr hcomp
+    Fib F.TaskRel (τ.states b hb) (z - b) ⊆ Fib F.TaskRel (τ.states a ha) (z - a) :=
+  fib_subset_fib_of_compositional F.comp ha hb hab hbz
 
 /--
 Above `z`, an earlier domain time imposes a tighter constraint: for `z ≤ b ≤ a` in the domain,

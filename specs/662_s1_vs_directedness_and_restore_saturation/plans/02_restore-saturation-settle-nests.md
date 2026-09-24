@@ -584,7 +584,7 @@ Both are hypotheses, not facts.
 
 ---
 
-### Phase 3: Weaken the three monotonicity lemmas off `[F.IsRegular]` [NOT STARTED]
+### Phase 3: Weaken the three monotonicity lemmas off `[F.IsRegular]` [BLOCKED]
 
 **Goal**: Close the central honesty hazard before it can contaminate Phases 4 and 5. The fiber and
 segment monotonicity lemmas consume *Compositionality* and the `FrameOver` reflection field and
@@ -592,20 +592,77 @@ nothing else, but they are stated at `[F.IsRegular]`, which carries `saturation`
 `S₁`-sufficiency result proved through them would be vacuous. Restate each with an explicit
 hypothesis and keep the existing names as corollaries, so no call site changes.
 
+**BLOCKER** (Phase 3):
+
+- **What failed**: the pinned `## Lean Challenge Statements` signature for
+  `PartialHistory.fib_subset_fib_of_compositional'` — *Compositionality* as its only frame
+  hypothesis — states a **false** proposition, so no implementation can satisfy it. The same
+  defect propagates to `seg_subset_seg_of_compositional` (which is proved over it) and, through
+  Phase 5, to `hasCofinalNest_of_countable` and `sInter_constraints_nonempty_of_countable`.
+- **What was tried**:
+  1. Transcribed the existing `fib_subset_fib_of_le_of_le'` proof with `F.forward_comp` projected
+     out of `hcomp`. The transcription still needs `F.reflection` at the two durations `z - b` and
+     `a - z`, and it does not elaborate without an `[F.IsRegular]` instance.
+  2. Checked the plan's stated ground for expecting it to. The plan's task text says *"its extra
+     ingredient, `F.reflection`, is a `FrameOver` field and needs no instance"*. That is
+     **factually wrong as measured**: `FrameOver.reflection` (`Semantics/TaskFrame.lean:1332`) and
+     `TaskFrame.reflection` (`:2602`) are both **derived theorems carrying `[F.IsRegular]`**, each
+     proved as `F.reflection_of_limit F.limit`. The reflection law is *definitional* only off zero
+     (`TaskFrame.reflect_reflection_of_ne`); at duration `0` it is a theorem of frames, consuming
+     *Limit*.
+  3. Located the exact obstruction. With `z ≤ b ≤ a`, the case `b = z < a` reduces the goal to
+     deriving `u = τ(z)` from `τ(z) ⇒₀ u`, i.e. injectivity at zero, which is *Limit*
+     (`nullity_identity`) and is not available from *Compositionality*.
+  4. Built an explicit countermodel confirming the statement is false, not merely unproved.
+     `W = {p, q}`, `D = ℤ`, primitive `P w ⟨x, _⟩ u := R₀ w u` at every `x ≥ 0`, where
+     `R₀ = {(p,p), (p,q), (q,q)}`; `R = TaskFrame.reflect P`. *Compositionality* holds
+     (`R w (x+y) v ↔ R₀ w v ↔ ∃u, R₀ w u ∧ R₀ u v`, by reflexivity and transitivity of `R₀`).
+     Take `X = {0, 1}`, `τ(0) = τ(1) = p`, `z = 0`, `b = 0`, `a = 1`. Then
+     `Fib(τ(b), z − b) = Fib(p, 0) = {p, q}` while `Fib(τ(a), z − a) = Fib(p, −1) = {u | R₀ u p} =
+     {p}`, so the inclusion fails. (*Limit* fails in this model, as it must: `q` lies in every
+     positive cone of `p`.)
+  5. Verified the repair discharges it. Adding `hlim : TaskFrame.Limit F.TaskRel` and routing
+     through `FrameOver.reflection_of_limit` makes the transcription elaborate with no instance
+     binder and no `sorry` (probe at
+     `/tmp/.../scratchpad/try5.lean`, clean elaboration).
+- **Why it is stuck**: `.claude/rules/plan-compliance.md`'s **Statement Fidelity** section makes
+  the `## Lean Challenge Statements` signatures part of the contract and names *adding a
+  hypothesis* as a prohibited weakening; it directs that a genuinely wrong recorded statement be
+  raised as a blocker rather than quietly repaired in either direction. The repair is determinate
+  and evidence-backed, but it is a signature change to four pinned declarations, so it is the
+  user's call, not the implementer's.
+- **What is needed**: authorization for exactly one edit, applied to four pinned signatures —
+  add `(hlim : TaskFrame.Limit F.TaskRel)` beside the existing `hcomp` on
+  `fib_subset_fib_of_compositional'`, `seg_subset_seg_of_compositional`,
+  `hasCofinalNest_of_countable` and `sInter_constraints_nonempty_of_countable`. Nothing else in
+  Phases 3–5 changes. **The phase's own Goal is fully preserved**: *Limit* is one of
+  `def:frame`'s four constraints and is **not** *Saturation*, so no theorem downstream of Phase 3
+  carries `[F.IsRegular]` and the `S₁`-sufficiency result remains non-vacuous — the correction
+  makes the consumed hypotheses *more* explicit, which is what the phase exists to do.
+- **What landed anyway** (green, committed, and unaffected by the decision):
+  `fib_subset_fib_of_compositional` — the **unprimed** lemma, whose pinned signature is correct
+  as recorded and which elaborates on `hcomp` alone — together with
+  `fib_subset_fib_of_le_of_le` demoted to a one-line corollary with its statement and
+  implicit-argument order unchanged.
+- **Prohibited workarounds**: do NOT use `sorry`, `def X := True`, or any vacuous placeholder,
+  and do NOT quietly edit the recorded Challenge signatures to match an implementation.
+
 **Tasks**:
 
-- [ ] In `FormalSystem/Semantics/Extension/Constraint.lean`, add
+- [x] In `FormalSystem/Semantics/Extension/Constraint.lean`, add
       `theorem fib_subset_fib_of_compositional {τ : PartialHistory F} {z a b : F.Duration}
       (hcomp : TaskFrame.Compositional F.TaskRel) (ha : τ.domain a) (hb : τ.domain b)
       (hab : a ≤ b) (hbz : b ≤ z) : Fib F.TaskRel (τ.states b hb) (z - b) ⊆
       Fib F.TaskRel (τ.states a ha) (z - a)`, transcribing the existing proof with
-      `F.forward_comp` replaced by the composition half projected out of `hcomp`.
+      `F.forward_comp` replaced by the composition half projected out of `hcomp`. *(completed)*
 - [ ] Add the mirror `fib_subset_fib_of_compositional'` the same way (its extra ingredient,
-      `F.reflection`, is a `FrameOver` field and needs no instance).
+      `F.reflection`, is a `FrameOver` field and needs no instance). *(BLOCKED — the parenthetical
+      is false as measured and the pinned signature states a false proposition; see BLOCKER above)*
 - [ ] Add `seg_subset_seg_of_compositional`, transcribing `seg_subset_seg` over the two new fiber
-      lemmas.
+      lemmas. *(BLOCKED — proved over the primed fiber lemma; see BLOCKER above)*
 - [ ] Rewrite `fib_subset_fib_of_le_of_le`, `fib_subset_fib_of_le_of_le'` and `seg_subset_seg` as
-      **one-line corollaries** applying the new lemmas to `F.comp`. Their names, statements and
+      **one-line corollaries** *(partial: `fib_subset_fib_of_le_of_le` done; the other two await
+      the BLOCKER decision)* applying the new lemmas to `F.comp`. Their names, statements and
       implicit-argument order must be unchanged — that is what makes this phase a hypothesis
       weakening rather than an interface change, and it is verified by every downstream call site
       still compiling untouched.
