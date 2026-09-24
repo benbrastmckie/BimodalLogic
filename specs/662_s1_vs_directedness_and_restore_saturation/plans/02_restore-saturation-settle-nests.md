@@ -729,7 +729,7 @@ full `lake build` must pass with no edit to any consuming module.
 
 ---
 
-### Phase 4: `HasCofinalNest` and the reduction of `lem:step` to `S₁` [NOT STARTED]
+### Phase 4: `HasCofinalNest` and the reduction of `lem:step` to `S₁` [COMPLETED]
 
 **Goal**: State the `S₁`-sufficiency result the only way it is true — as a property of
 `Constraints τ z`, never as a frame-level `S₁ → Saturation`, which is false — and prove the
@@ -738,19 +738,19 @@ exactly what `step` consumes.
 
 **Tasks**:
 
-- [ ] In `FormalSystem/Semantics/Extension/Completion.lean`, open a new section
+- [x] In `FormalSystem/Semantics/Extension/Completion.lean`, open a new section
       `## The nest condition and `lem:step`` after the existing *Completion* material, and add
       `def HasCofinalNest (τ : PartialHistory F) (z : F.Duration) : Prop :=
       Order.HasCofinalNest (Constraints τ z)` — a **one-line instantiation** of the general notion
       landed in `ForMathlib/Order/BallSpace.lean` in Phase 1, not a re-statement of it. Unfolded,
       it says: there is `C ⊆ Constraints τ z` with `C.Nonempty`, `IsChain (· ⊆ ·) C`, and
       `∀ c ∈ Constraints τ z, ∃ c' ∈ C, c' ⊆ c`.
-- [ ] Docstring records: this is the exact indexing property that makes the nest form as strong as
+- [x] Docstring records: this is the exact indexing property that makes the nest form as strong as
       the directed form **at one history and one target**; it is a property of the constraint
       family, not of the frame — which is precisely why the general form is upstreamable and this
       one is not; and `nonempty_Constraints` (which needs no frame constraint at all,
       only `τ.nonempty_domain`) is why demanding `C.Nonempty` costs nothing.
-- [ ] Add `theorem sInter_constraints_nonempty_of_nestSaturation
+- [x] Add `theorem sInter_constraints_nonempty_of_nestSaturation
       (hS1 : TaskFrame.NestSaturation F.TaskRel) (τ : PartialHistory F) (z : F.Duration)
       (hne : ∀ c ∈ Constraints τ z, c.Nonempty) (hcof : HasCofinalNest τ z) :
       (⋂₀ Constraints τ z).Nonempty`. Proof: **apply the general reduction**
@@ -759,17 +759,27 @@ exactly what `step` consumes.
       obligation with `isFiber_or_isSegment_of_mem_Constraints`. The project-side theorem should
       be a handful of lines; if it turns into a transcription of the general argument, the general
       lemma's shape is wrong and Phase 1's statement is corrected rather than duplicated here.
-- [ ] **No `[F.IsRegular]` binder on this theorem or anything below it in this section.** The
+- [x] **No `[F.IsRegular]` binder on this theorem or anything below it in this section.** The
       nonemptiness hypothesis is explicit precisely so that the caller supplies it from
       *Seriality* + *Compositionality* + *Limit* (what `constraint` actually uses) rather than
       from the instance.
-- [ ] Docstring on the reduction records the shape rule as a standing instruction: **never state a
+- [x] Docstring on the reduction records the shape rule as a standing instruction: **never state a
       frame-level `S₁ → Saturation`** — the general implication is false, because an uncountable
       directed family of balls need not reduce to a nest — and cite the correct statement shape
       for any future extension.
-- [ ] Add the `Paper:` line on both declarations (`—` plus a one-clause reason: the manuscript has
+- [x] Add the `Paper:` line on both declarations (`—` plus a one-clause reason: the manuscript has
       no anchor for the nest reduction, exactly as `NearestAt` in the same file is handled).
-- [ ] `lake build` green, sorry-free, warning-free. Commit.
+- [x] `lake build` green, sorry-free, warning-free. Commit.
+
+**Verification result**: `lake build` exit 0, zero warnings; `#print axioms
+FormalSystem.Semantics.PartialHistory.sInter_constraints_nonempty_of_nestSaturation` reports
+exactly `propext`, `Classical.choice`, `Quot.sound`, and the printed statement contains no
+`IsRegular`. The theorem is a single `Order.sInter_nonempty_of_sphericallyComplete` application —
+no transcription of the general argument — so Phase 1's statement shape is confirmed correct.
+
+**Deviation**: the new section was appended at the **end** of `Extension/Completion.lean` rather
+than immediately after the *Completion* material, so that the module's `Completion → extension →
+discrete time` narrative is not interrupted. Siting only; nothing else changed.
 
 **Timing**: 1 hour
 

@@ -538,6 +538,59 @@ theorem extension_of_isZTime (hZ : F.IsZTime)
   exact extension_of_hasNearest
     (@hasNearest_of_succPred F.Duration _ hsucc hpred harch₁ harch₂) hcomp hser hlim τ
 
+/-! ## The nest condition and `lem:step` -/
+
+/--
+`Constraints τ z` contains a nonempty `⊆`-chain that refines every member — the one-line
+instantiation of `Order.HasCofinalNest` at this one constraint family.
+
+This is the exact indexing property that makes the nest form `S₁` as strong as the directed form
+`S₁ᵈ` **at one history and one target**. It is a property of the constraint family, never of the
+frame — which is precisely why the general form (`Order.HasCofinalNest`, in
+`ForMathlib/Order/BallSpace.lean`) is upstreamable and this instantiation is not, and why a
+condition of this shape belongs on a theorem rather than in `def:frame`.
+
+Demanding that the chain itself be nonempty costs nothing here: `nonempty_Constraints` needs no
+frame constraint at all, only the history's own `τ.nonempty_domain` field, so a nonempty chain is
+always available inside a nonempty family.
+
+Paper: — (the manuscript has no anchor for the nest reduction; recorded here as `NearestAt` in
+this same module is, as the pointwise property the argument actually consumes)
+-/
+def HasCofinalNest (τ : PartialHistory F) (z : F.Duration) : Prop :=
+  Order.HasCofinalNest (Constraints τ z)
+
+/--
+**The reduction, instantiated.** `S₁`, a cofinal nest, and nonempty members give exactly what
+`lem:step` consumes: a state common to every constraint on `z`.
+
+The proof is an application of `Order.sInter_nonempty_of_sphericallyComplete`, routed through
+`TaskFrame.nestSaturation_iff_sphericallyComplete` (which is `Iff.rfl`) and discharging that
+lemma's ball obligation with `isFiber_or_isSegment_of_mem_Constraints`. The argument itself is
+order theory and lives upstream; nothing of it is transcribed here.
+
+**Shape rule, standing.** This is stated as a property of `Constraints τ z`, and any future
+extension of it must be too: **never state a frame-level `S₁ → Saturation`.** That implication is
+not available — a `⊇`-directed family of balls need not reduce to a nest, since a maximal chain
+in a directed poset need not be cofinal — so the nest condition buys the directed condition's
+conclusion only at a family that is *indexed* well enough, which is what `HasCofinalNest`
+records and what `hasCofinalNest_of_countable` below discharges.
+
+**No `[F.IsRegular]` binder here or anywhere below it in this section.** The member-nonemptiness
+hypothesis is explicit precisely so that the caller supplies it from *Seriality*,
+*Compositionality* and *Limit* — what `constraint` actually uses — rather than from an instance
+that would drag *Saturation* back in and make the result vacuous.
+
+Paper: — (the manuscript has no anchor for the nest reduction)
+-/
+theorem sInter_constraints_nonempty_of_nestSaturation
+    (hS1 : TaskFrame.NestSaturation F.TaskRel) (τ : PartialHistory F) (z : F.Duration)
+    (hne : ∀ c ∈ Constraints τ z, c.Nonempty) (hcof : HasCofinalNest τ z) :
+    (⋂₀ Constraints τ z).Nonempty :=
+  Order.sInter_nonempty_of_sphericallyComplete
+    (TaskFrame.nestSaturation_iff_sphericallyComplete.mp hS1)
+    (fun _ hc => isFiber_or_isSegment_of_mem_Constraints hc) hne hcof
+
 end PartialHistory
 
 end FormalSystem.Semantics
