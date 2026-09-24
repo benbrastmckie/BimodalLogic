@@ -11,7 +11,7 @@ next_project_number: 665
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,624,649,662,664 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,662,664 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650,663 | 298,464,502,563,649,662 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -98,7 +98,6 @@ next_project_number: 665
 
 ### Semantics
 
-624 [IMPLEMENTING] — RESEARCH TASK, verdict-first: what the translation product...
 662 [IMPLEMENTING] — Settle whether plain S1 suffices or directedness is forced,...
   └─ 663 [NOT STARTED] — Add a repo-wide hypothesis-honesty gate so no...
 
@@ -625,12 +624,13 @@ POST-RELOCATION NOTE (2026-09-21), written after this task's research. (A) LAYOU
 ---
 
 ### 624. Translation product task semantics visibility
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
 - **Research**: [624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md]
 - **Plan**: [624_translation_product_task_semantics_visibility/plans/01_translation-product-closeout.md]
+- **Summary**: [624_translation_product_task_semantics_visibility/summaries/01_translation-product-closeout-summary.md]
 
 **Description**: RESEARCH TASK, verdict-first: what the translation product shows about the task semantics. Reports and sorry-free probe files under this task's directory only; no changes to FormalSystem/ or Tests/; do not begin implementation here.
 

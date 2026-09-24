@@ -1,18 +1,21 @@
 {
-  "status": "planned",
-  "task_number": 624,
-  "phase": "plan",
-  "session_id": "sess_1790269483_76154e_624",
-  "dispatch_seq": 4,
-  "phases_completed": 0,
-  "phases_total": 3,
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 7,
+  "summary": "Task 624 closed as research: a live-tree sweep confirmed three of the four report recommendations delivered, absorbed or out-of-repository, the fourth (report section 2.4's three categorical pullback questions) was forwarded to task 618 as a dated appendix-item note, and a closeout summary records the reconciliation ledger and assigns every one of the nine Appendix B UNVERIFIED items an owner or an explicit unassigned-candidate disposition.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/624_translation_product_task_semantics_visibility/plans/01_translation-product-closeout.md",
-      "summary": "Three-phase closeout plan: verify the reconciliation ledger against the live tree, forward report section 2.4's three categorical questions to task 618, and write the closeout summary."
+      "type": "summary",
+      "path": "specs/624_translation_product_task_semantics_visibility/summaries/01_translation-product-closeout-summary.md",
+      "summary": "Closeout record: reconciliation ledger for all four recommendations, ownership table for all nine Appendix B UNVERIFIED items, and the terminal disposition."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/624_translation_product_task_semantics_visibility/handoffs/phase-3-handoff-20260924T111048.md",
+      "summary": "Phase-end handoff recording the closed state of all three phases."
     }
   ],
-  "next_steps": "Run /implement 624 to execute the plan",
-  "notes": "Task 624 is complete as research: recommendation 1 (the port) was delivered by task 645 (completed, three sorry-free modules in FormalSystem/), recommendation 3 is absorbed into task 559's description, and the Q5 residue plus the manuscript-remark question are carried by task 653 (completed). The only outstanding recommendation is number 4, the categorical pullback questions of report section 2.4, which task 618's description does not yet mention; phase 2 forwards it. No FormalSystem/ or Tests/ change is planned, per the task's own scope constraint."
+  "phases_completed": 3,
+  "phases_total": 3,
+  "blockers": []
 }
