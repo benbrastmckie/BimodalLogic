@@ -3,7 +3,7 @@
 - **Task**: 662 - Settle whether plain S1 suffices or directedness is forced, search for a better
   fourth frame constraint, and otherwise restore Saturation as the def:frame constraint in place
   of Completion
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 16.5 hours
 - **Dependencies**: 661 (completed — supplies both witnesses and the *Completion* results this
   plan re-sites); 659, 657 (completed, upstream of 661)
@@ -343,7 +343,7 @@ Phases 2 and 7 both touch `ConstraintWitnesses.lean` but sit in different waves,
 
 ---
 
-### Phase 1: The general ball-space layer in `ForMathlib/Order/`, and `S₁` in the library [NOT STARTED]
+### Phase 1: The general ball-space layer in `ForMathlib/Order/`, and `S₁` in the library [COMPLETED]
 
 **Goal**: Make the ball-space hierarchy the footnote cites present in the tree rather than only
 in prose, **sited by what each piece is about**: the general order-theoretic layer (nests,
@@ -355,43 +355,43 @@ close it.
 
 **Part A — the general layer (`ForMathlib/Order/BallSpace.lean`, new module)**
 
-- [ ] Create `FormalSystem/ForMathlib/Order/BallSpace.lean` with the Apache-2.0 copyright header
+- [x] Create `FormalSystem/ForMathlib/Order/BallSpace.lean` with the Apache-2.0 copyright header
       in the tree's exact shape (copy `ForMathlib/Order/PFilter.lean`'s header, year `2026`), and
       **Mathlib imports only** — `import Mathlib.Order.Preorder.Chain` and
       `import Mathlib.Data.Set.Lattice` are expected to suffice. No `import FormalSystem.*` line
       may appear in this file, ever.
-- [ ] Module docstring records: this is the Ćmiel–Kuhlmann–Kuhlmann **ball space** notion, which
+- [x] Module docstring records: this is the Ćmiel–Kuhlmann–Kuhlmann **ball space** notion, which
       Mathlib does not carry (a local search for `spherically` returns nothing relevant); it is
       stated over an arbitrary ball predicate `P : Set W → Prop` so that it is upstreamable; and
       the directory's dependency rule (`Mathlib → ForMathlib → FormalSystem.* → downstream`) is
       why the fibers-and-segments instantiation lives elsewhere.
-- [ ] `def Order.IsNest {W : Type*} (S : Set (Set W)) : Prop := S.Nonempty ∧ IsChain (· ⊆ ·) S`
+- [x] `def Order.IsNest {W : Type*} (S : Set (Set W)) : Prop := S.Nonempty ∧ IsChain (· ⊆ ·) S`
       — a **nest**: a nonempty `⊆`-chain of sets. Docstring records that the nonemptiness is part
       of the notion, matching the way `DirectedFamily` carries it downstream.
-- [ ] `theorem Order.IsNest.exists_subset_inter {W : Type*} {S : Set (Set W)} (h : IsNest S) :
+- [x] `theorem Order.IsNest.exists_subset_inter {W : Type*} {S : Set (Set W)} (h : IsNest S) :
       ∀ s₁ ∈ S, ∀ s₂ ∈ S, ∃ s' ∈ S, s' ⊆ s₁ ∩ s₂` — **the whole content of `S₁ᵈ → S₁`**, in the
       members-witness shape, so that the project-side instantiation is a three-line application
       with no duplicated `DirectedFamily`. Proof: `eq_or_ne` on the two members, then the chain
       gives `s₁ ⊆ s₂` or `s₂ ⊆ s₁` and the smaller one refines both.
-- [ ] `def Order.SphericallyComplete {W : Type*} (P : Set W → Prop) : Prop :=
+- [x] `def Order.SphericallyComplete {W : Type*} (P : Set W → Prop) : Prop :=
       ∀ S : Set (Set W), IsNest S → (∀ s ∈ S, P s ∧ s.Nonempty) → (⋂₀ S).Nonempty` — the standard
       condition `S₁`, over the ball space `{s | P s}`. The member clause must be
       **character-for-character** the one `TaskFrame.Saturation` uses, so the two predicates
       differ in exactly one clause once instantiated.
-- [ ] `def Order.HasCofinalNest {W : Type*} (F : Set (Set W)) : Prop` — there is `C ⊆ F` with
+- [x] `def Order.HasCofinalNest {W : Type*} (F : Set (Set W)) : Prop` — there is `C ⊆ F` with
       `IsNest C` and `∀ c ∈ F, ∃ c' ∈ C, c' ⊆ c`. Docstring records that this is the exact
       indexing property that makes the nest form as strong as the directed form **at one family**,
       and that it is a property of the family, never of the ambient structure.
-- [ ] `theorem Order.sInter_nonempty_of_sphericallyComplete {W : Type*} {P : Set W → Prop}
+- [x] `theorem Order.sInter_nonempty_of_sphericallyComplete {W : Type*} {P : Set W → Prop}
       (hS1 : SphericallyComplete P) {F : Set (Set W)} (hP : ∀ c ∈ F, P c)
       (hne : ∀ c ∈ F, c.Nonempty) (hcof : HasCofinalNest F) : (⋂₀ F).Nonempty` — **the
       reduction**, with no frame, no relation and no duration type in sight. Proof: apply `hS1` to
       the cofinal nest `C`, obtain `u ∈ ⋂₀ C`, then for arbitrary `c ∈ F` take the cofinal
       `c' ∈ C` with `c' ⊆ c` and conclude `u ∈ c`.
-- [ ] Each declaration carries a `Paper:` line: `—` plus a one-clause reason (general
+- [x] Each declaration carries a `Paper:` line: `—` plus a one-clause reason (general
       order-theoretic material staged for upstreaming; the manuscript has no anchor for it), the
       C15-sanctioned form. No `ForMathlib/` declaration may cite a paper anchor as its own.
-- [ ] **Register the module — four obligations, all in this phase** (see the risk row):
+- [x] **Register the module — four obligations, all in this phase** (see the risk row):
       (C8) add `import FormalSystem.ForMathlib.Order.BallSpace` to `FormalSystem/ForMathlib.lean`
       in sorted position, plus a `## Contents` bullet naming the declarations;
       (C24) add `` `FormalSystem.ForMathlib.Order.BallSpace `` to `exceptions` in
@@ -401,16 +401,16 @@ close it.
       (INV) run `bash scripts/check-module-invariants.sh --emit-inventory` and confirm the
       generated inventory blocks in `FormalSystem/ForMathlib/README.md` and
       `FormalSystem/ForMathlib/Order/README.md` picked up the new file.
-- [ ] `grep -rn '^import FormalSystem' FormalSystem/ForMathlib/` returns nothing. This is the
+- [x] `grep -rn '^import FormalSystem' FormalSystem/ForMathlib/` returns nothing. This is the
       directory's hard rule and the phase does not close without it.
 
 **Part B — the project-side instantiation (`Semantics/TaskFrame.lean`)**
 
-- [ ] Add `import FormalSystem.ForMathlib.Order.BallSpace` to
+- [x] Add `import FormalSystem.ForMathlib.Order.BallSpace` to
       `FormalSystem/Semantics/TaskFrame.lean`. This is the sanctioned import direction; the
       precedents are `Metalogic/Algebraic/UltrafilterMCS.lean` → `ForMathlib.Order.PFilter` and
       `Semantics/Correspondence/RigidityReal.lean` → `ForMathlib.Topology.Sierpinski`.
-- [ ] Inside the `## The frame axioms in bare-relation form` section and immediately after
+- [x] Inside the `## The frame axioms in bare-relation form` section and immediately after
       `Saturation`, add
       `def NestSaturation {W : Type} (R : W → D → W → Prop) : Prop` quantifying over
       `S : Set (Set W)` with `Order.IsNest S` and the same member condition
@@ -418,7 +418,7 @@ close it.
       `(⋂₀ S).Nonempty`. The member condition must be **character-for-character** the one in
       `Saturation`, so the two differ in exactly one clause — `Order.IsNest S` in place of
       `DirectedFamily S` — and that clause is the only difference a reader has to check.
-- [ ] Give `NestSaturation` a docstring recording: (a) that this is `S₁`, the standard *spherical
+- [x] Give `NestSaturation` a docstring recording: (a) that this is `S₁`, the standard *spherical
       completeness* condition of the Ćmiel–Kuhlmann–Kuhlmann ball-space hierarchy, over the ball
       space of nonempty fibers and segments; (b) that it differs from `Saturation` in exactly one
       clause — a nest in place of a `⊇`-directed family — and that the nest restriction is a
@@ -426,20 +426,20 @@ close it.
       lives in `FormalSystem/ForMathlib/Order/BallSpace.lean` because it is order theory Mathlib
       happens not to carry, and this definition is its instantiation at the frame's own ball
       space; (d) a `Paper:` line citing `def:frame#Saturation`'s ball-space footnote (C15).
-- [ ] Add `theorem nestSaturation_iff_sphericallyComplete {W : Type} {R : W → D → W → Prop} :
+- [x] Add `theorem nestSaturation_iff_sphericallyComplete {W : Type} {R : W → D → W → Prop} :
       NestSaturation R ↔ Order.SphericallyComplete (fun s : Set W => IsFiber R s ∨ IsSegment R s)`,
       proved by `Iff.rfl`. This is the **genus membership, machine-checked**: it is what makes the
       transferable ball-space theory apply to this development rather than merely resemble it, and
       it is the acceptance test that the two spellings never drift apart (if either side is edited
       incompatibly, `Iff.rfl` stops elaborating — and that failure *is* the test).
-- [ ] Add `theorem nestSaturation_of_saturation {W : Type} {R : W → D → W → Prop}
+- [x] Add `theorem nestSaturation_of_saturation {W : Type} {R : W → D → W → Prop}
       (h : Saturation R) : NestSaturation R`, proved in three lines: given a nest `S`, feed
       `h` the `DirectedFamily S` built from `S.Nonempty` (the nest's own first conjunct) and
       `Order.IsNest.exists_subset_inter` (the general lemma, Part A). Docstring records that this
       is the footnote's asserted implication, now machine-checked, and that its mathematical
       content sits in `ForMathlib` because it is a fact about chains and directed families, not
       about frames.
-- [ ] Extend the `Saturation` docstring's ball-space paragraph — **without altering the existing
+- [x] Extend the `Saturation` docstring's ball-space paragraph — **without altering the existing
       "do not restore *strictly stronger*" instruction, which is copied forward verbatim** — to
       record: (i) that `S₁` is now present as `NestSaturation` and `S₁ᵈ → S₁` is machine-checked;
       (ii) that the converse `S₁ → S₁ᵈ` is **open**, and that neither existing witness bears on
@@ -454,7 +454,7 @@ close it.
       `A = {z - eₙ : n < ω}` and `B = {z + e_α : α < ω₁}` giving an index `≅ ω × ω₁`, which has no
       cofinal chain), and that this is an explicit **non-goal** recorded so the recipe is
       recoverable, not a deferral.
-- [ ] `lake build` green, sorry-free, warning-free; `#print axioms` reports exactly `propext`,
+- [x] `lake build` green, sorry-free, warning-free; `#print axioms` reports exactly `propext`,
       `Classical.choice`, `Quot.sound` for
       `FormalSystem.Semantics.TaskFrame.nestSaturation_of_saturation` and for
       `Order.sInter_nonempty_of_sphericallyComplete`. Commit.
