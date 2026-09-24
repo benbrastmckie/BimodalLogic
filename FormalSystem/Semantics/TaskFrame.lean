@@ -14,6 +14,7 @@ import Mathlib.Order.Minimal
 import Mathlib.Data.Fintype.Powerset
 import Mathlib.Data.Set.Card
 import Mathlib.Topology.Order.Compact
+import FormalSystem.ForMathlib.Order.BallSpace
 import FormalSystem.Semantics.TemporalOrder
 
 /-!
@@ -616,6 +617,42 @@ the footnote used to read "strictly stronger", and now reads "at least as strong
 implication $\mathbf{S}_1^d \Rightarrow \mathbf{S}_1$ is still asserted; the converse is no
 longer denied. Do not restore "strictly stronger" here.)
 
+**The hierarchy is now in the tree, not only in the prose.** `NestSaturation` below is
+$\mathbf{S}_1$ itself — this predicate with a *nest* (a nonempty `⊆`-chain) in place of the
+`⊇`-directed family — and `nestSaturation_of_saturation` is the footnote's asserted implication
+$\mathbf{S}_1^d \Rightarrow \mathbf{S}_1$, machine-checked. The general order-theoretic layer it
+is an instantiation of lives in `FormalSystem/ForMathlib/Order/BallSpace.lean`;
+`nestSaturation_iff_sphericallyComplete` records the genus membership by `Iff.rfl`.
+
+**The converse is open.** No witness in this development bears on
+$\mathbf{S}_1 \Rightarrow \mathbf{S}_1^d$: both `¬ Saturation` witnesses fail the *nest*
+condition too (`StateTopology.SeparatingFrame.not_srel_nestSaturation`), so they separate
+*Saturation* from *Completion* and say nothing about directedness.
+
+**Why the directedness is kept although it is not forced over any carrier this development
+instantiates.** Two reasons, neither of them a strictness claim:
+
+* `lem:constraint` *produces* a `⊇`-directed family, not a nest. The segments straddling `z` are
+  indexed by a **pair** `(t, s)` — one domain time below `z` and one above — directed by
+  `(max t, min s)`, which is a genuinely two-dimensional index; this is machine-checked at
+  `Extension/Constraint.lean`'s `exists_mem_subset_inter`. So $\mathbf{S}_1^d$ is the exact
+  algebraic shadow of a history constraining a moment from both sides at once, and it is the shape
+  of what the development actually hands the axiom.
+* $\mathbf{S}_1$ is provably enough only under a hypothesis on the *index*: over a countable
+  domain the constraint family has a cofinal nest
+  (`PartialHistory.hasCofinalNest_of_countable`), which is automatic for `ℤ`-time and `ℚ`-time.
+  Adopting $\mathbf{S}_1$ in `def:frame` would therefore push an order-character hypothesis on
+  `D` into the definition's adequacy — a property of the index, not of `⟨W, D, ⇒⟩`.
+
+**The separating frame that would close the converse is an explicit non-goal, and its recipe is
+recorded here so it is recoverable.** It needs a duration type with *mismatched one-sided cofinal
+characters*, hence a non-archimedean `D` of uncountable coinitiality: a Hahn group
+$\bigoplus_{\alpha < \omega_1} \mathbb{R}$, with `A = {z - eₙ : n < ω}` below `z` and
+`B = {z + e_α : α < ω₁}` above it, giving a constraint index order-isomorphic to `ω × ω₁`, which
+has no cofinal chain. Mathlib supplies neither the ordered-group machinery nor any ball-space API,
+so this is a research-scale construction and is deliberately not attempted; nothing stands in for
+it, and no `sorry` records it.
+
 Three points of the transcription, each load bearing:
 
 1. *Directed* is `def:frame`'s own opening clause, transcribed as `DirectedFamily`: "$S \subseteq
@@ -639,6 +676,64 @@ overlap is terminological only.
 def Saturation {W : Type} (R : W → D → W → Prop) : Prop :=
   ∀ S : Set (Set W), DirectedFamily S →
     (∀ s ∈ S, (IsFiber R s ∨ IsSegment R s) ∧ s.Nonempty) → (⋂₀ S).Nonempty
+
+/--
+The **nest condition** $\mathbf{S}_1$ — *spherical completeness* — of the Ćmiel–Kuhlmann–Kuhlmann
+ball-space hierarchy, over a bare task relation: `Saturation` with a **nest** (`Order.IsNest`: a
+nonempty `⊆`-chain) in place of the `⊇`-directed family.
+
+The member condition is character-for-character `Saturation`'s, so the two predicates differ in
+exactly one clause — `Order.IsNest S` for `DirectedFamily S` — and that clause is the only
+difference a reader has to check. The nest restriction is a condition on **how the family is
+indexed**, not on the geometry of the balls: a nest and a `⊇`-directed family of the same balls
+are the same sets, differently quantified over.
+
+The general notion lives in `FormalSystem/ForMathlib/Order/BallSpace.lean`, because it is order
+theory Mathlib happens not to carry and mentions no project notion at all; this definition is its
+instantiation at the frame's own ball space of nonempty fibers and segments, and
+`nestSaturation_iff_sphericallyComplete` records that identification by `Iff.rfl`.
+
+Paper: def:frame#Saturation (the ball-space footnote's $\mathbf{S}_1$, the condition the axiom is
+there said to be at least as strong as)
+-/
+def NestSaturation {W : Type} (R : W → D → W → Prop) : Prop :=
+  ∀ S : Set (Set W), Order.IsNest S →
+    (∀ s ∈ S, (IsFiber R s ∨ IsSegment R s) ∧ s.Nonempty) → (⋂₀ S).Nonempty
+
+omit [IsOrderedAddMonoid D] [Nontrivial D] in
+/--
+**Genus membership, machine-checked**: `NestSaturation` *is* spherical completeness of the ball
+space of fibers and segments, by `Iff.rfl`.
+
+This is what makes the transferable ball-space theory apply to this development rather than merely
+resemble it. It is also the acceptance test that the two spellings never drift apart: edit either
+side incompatibly and `Iff.rfl` stops elaborating, and that failure *is* the test.
+
+Paper: def:frame#Saturation (the ball-space footnote's identification of the fibers and segments
+as a ball space)
+-/
+theorem nestSaturation_iff_sphericallyComplete {W : Type} {R : W → D → W → Prop} :
+    NestSaturation R ↔ Order.SphericallyComplete (fun s : Set W => IsFiber R s ∨ IsSegment R s) :=
+  Iff.rfl
+
+omit [IsOrderedAddMonoid D] [Nontrivial D] in
+/--
+**The ball-space footnote's asserted implication, machine-checked**:
+$\mathbf{S}_1^d \Rightarrow \mathbf{S}_1$.
+
+Its mathematical content is `Order.IsNest.exists_subset_inter` — a fact about chains and directed
+families, with no frame in it — which is why that lemma sits in `ForMathlib/` and this is a
+three-line application: a nest's own nonemptiness plus that lemma is exactly a `DirectedFamily`.
+
+The converse is **open**. Neither `¬ Saturation` witness in the development bears on it: both fail
+the nest condition too (`StateTopology.SeparatingFrame.not_srel_nestSaturation`).
+
+Paper: def:frame#Saturation (the ball-space footnote's "at least as strong as")
+-/
+theorem nestSaturation_of_saturation {W : Type} {R : W → D → W → Prop}
+    (h : Saturation R) : NestSaturation R := by
+  intro S hnest hmem
+  exact h S ⟨hnest.1, hnest.exists_subset_inter⟩ hmem
 
 /--
 The *Seriality* axiom, over a bare task relation.
