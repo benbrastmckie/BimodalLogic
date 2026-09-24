@@ -484,7 +484,7 @@ required must be reported before being added.
 
 ---
 
-### Phase 9: T3 non-vacuity and impossibility [IN PROGRESS]
+### Phase 9: T3 non-vacuity and impossibility [COMPLETED]
 
 **Goal**: `WitnessFamily/Examples.lean` — the positive witness, the separation witness, and the
 impossibility theorem that replaces the infeasible `#guard`.
@@ -536,7 +536,7 @@ labels, and by timing the `#guard`; if `decide` does not return promptly, fall b
 
 ---
 
-### Phase 10: Aggregators, READMEs and the full gate set [NOT STARTED]
+### Phase 10: Aggregators, READMEs and the full gate set [IN PROGRESS]
 
 **Goal**: Wire the new directory into the build graph and bring every module invariant green.
 
