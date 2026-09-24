@@ -107,10 +107,11 @@
 #       `lake exe mk_all --lib FormalSystem` would generate: one sorted `import` line per
 #       .lean file under FormalSystem/, nothing else; scanned build-free, so it runs under
 #       --no-build and therefore in CI
-#   C34 No constraint-independence claim over a bundling class: every declaration
-#       carrying a `Constraints consumed:` marker whose list omits a constraint has no
-#       binder supplying it, and every bracketed-binder declaration whose docstring
-#       trips the independence-prose heuristic carries such a marker. Bracketed-binder
+#   C34 No constraint-independence claim over a bundling class. C34a (enforced): a
+#       `Constraints consumed:` marker omitting a constraint sits over no binder that
+#       supplies it, unless it DELEGATES to a declaration carrying the identical list
+#       and no such binder. C34b (soft): every bracketed-binder declaration whose
+#       docstring reads as a constraint claim carries a marker line. Bracketed-binder
 #       only, so an `IsRegular`-CONCLUDING declaration is out of scope; comment-masked,
 #       so the marker's own explanatory prose is not a self-failure. An ungated census
 #       of the binder population prints at every run
@@ -722,15 +723,27 @@ ENFORCE_C32=${ENFORCE_C32:-1} # every relative markdown link in a .lean comment 
 # FormalSystem.lean, or an empty walk of FormalSystem/, exits 2, and exit 2 is NOT suppressed by
 # ENFORCE_C33=0.
 ENFORCE_C33=${ENFORCE_C33:-1} # the generated library root FormalSystem.lean is byte-current (enforced)
-# C34 asserts hypothesis honesty over a bundling constraint class: a `Constraints consumed:`
-# marker omitting a constraint must not sit over a binder that supplies it (C34a), and a
-# bracketed-binder declaration whose docstring reads as an independence claim must carry such a
-# marker (C34b). C34b is a TRIGGER, never a verdict: its only remedy is a marker line, so a false
-# positive costs one line of docstring and never a redesign. Ships at 0 while the trigger half's
-# hit list is read, then flipped to 1 -- the soft-then-enforced ladder C24 and C9D already use.
-# NOTE: an empty walk, zero declaration spans, or zero bracketed binder sites exits 2, and exit 2
-# is NOT suppressed by ENFORCE_C34=0.
-ENFORCE_C34=${ENFORCE_C34:-0} # no independence claim over a bundling class (not yet enforced)
+# C34 asserts hypothesis honesty over a bundling constraint class, in two halves with two flags.
+#
+# C34a (STRUCTURAL, enforced) -- a `Constraints consumed:` marker omitting a constraint must not
+# sit over a binder that supplies it. Its discharge is DELEGATION: a binder-carrying declaration
+# passes when its code names a declaration carrying the identical marker list and mentioning no
+# bundling class, which is the corollary-with-a-binder-free-twin arrangement that makes such a
+# claim honest in the first place. A bare claim over a binder, delegating to nothing, fails. The
+# tree satisfies this the day the check lands, so it ships ENFORCED on the C31/C32/C33 precedent.
+#
+# C34b (TRIGGER, not yet enforced) -- a bracketed-binder declaration whose docstring reads as a
+# constraint claim must carry a marker line. This half is a trigger, never a verdict: its only
+# remedy is a marker line, so a false positive costs one line of docstring and never a redesign.
+# It ships at 0 with its hit list printed because the residual's honest remedy is a binder-free
+# restatement rather than a marker -- the soft-then-enforced ladder C24 and C9D already occupy.
+# Flip it to 1 once the printed list is clear; do not narrow the heuristic to quiet a row.
+#
+# NOTE: a fixture-self-test failure, an empty walk, zero declaration spans, zero bracketed binder
+# sites, or zero markers exits 2, and exit 2 is NOT suppressed by either flag.
+ENFORCE_C34A=${ENFORCE_C34A:-1} # no independence claim propped up by a bundling binder (enforced)
+ENFORCE_C34B=${ENFORCE_C34B:-0} # every binder-carrying claim carries a marker (not yet enforced)
+export ENFORCE_C34A ENFORCE_C34B
 # C16's second half widens the env_linter batch beyond the single `FormalSystem` library root to
 # every root declared in lakefile.toml -- the other library root and all thirteen `lean_exe`
 # roots -- because `runLinter FormalSystem` observes only the FormalSystem closure and a module
@@ -5461,6 +5474,8 @@ from lean_citations import decl_spans  # noqa: E402
 from lean_debug_artifacts import mask, comments_only  # noqa: E402
 
 ROOTS = ("FormalSystem", "Tests")
+ENFORCE_A = os.environ.get("ENFORCE_C34A", "1") == "1"
+ENFORCE_B = os.environ.get("ENFORCE_C34B", "0") == "1"
 
 # (class, field-vocabulary): the closed, case-sensitive marker vocabulary each bundling class
 # stands for. One row today; a second bundling class is a second row.
@@ -5477,6 +5492,18 @@ MARKER = re.compile(r"Constraints consumed:\s*([^\n]*)")
 # pin. The scan therefore truncates at the first top-level command after the keyword line.
 TOPLEVEL = re.compile(
     r"^\s*(?:variable|universe|namespace|end|section|open|attribute|set_option|deriving)\b|^\s*/-!")
+IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_.'!?]*")
+
+# C34b's TRIGGER heuristic, read over the declaration's own doc block. It fires when a sentence
+# names one of the constraints and either negates something or talks about consumption. It is a
+# trigger, never a verdict: its only remedy is a marker line.
+TRIG_VOCAB = re.compile(
+    r"\b(Compositionality|Compositional|Seriality|Serial|Limit|Saturation|Saturated)\b")
+TRIG_NEG = re.compile(
+    r"\b(not|never|no|without|free of|independent|independently|neither|nor|avoids?|"
+    r"drops? out|unused|needless)\b", re.I)
+TRIG_CONS = re.compile(
+    r"\b(consumed|consumes|consuming|consumption|spent|spends|eliminat\w*|reach\w*)\b", re.I)
 
 
 def binder_re(cls):
@@ -5491,14 +5518,14 @@ MENTION_RES = {cls: re.compile(r"\b" + re.escape(cls) + r"\b") for cls in BUNDLE
 
 
 def classify(text):
-    """[(name, binders, mentions, marker)] for every declaration of `text`.
+    """[(name, binders, mentions, marker, idents, doc)] for every declaration of `text`.
 
     `binders` and `mentions` are the sets of bundling classes the declaration's CODE (comments
     masked, keyword line to end of span) carries as a bracketed binder, and mentions at all --
     the latter catching an in-proof `haveI : F.IsRegular`. `marker` is None when the declaration
     carries no `Constraints consumed:` line, the string "MALFORMED" when its list leaves the
     closed vocabulary, and otherwise the frozenset of constraints it enumerates (empty for
-    `None`)."""
+    `None`). `idents` is every identifier the code names, bare last components included."""
     lines = text.split("\n")
     code_lines = mask(text).split("\n")
     doc_lines = comments_only(text).split("\n")
@@ -5512,6 +5539,10 @@ def classify(text):
         body = "\n".join(body)
         binders = {c for c, r in BINDER_RES.items() if r.search(body)}
         mentions = {c for c, r in MENTION_RES.items() if r.search(body)}
+        idents = set()
+        for tok in IDENT.findall(body):
+            idents.add(tok)
+            idents.add(tok.split(".")[-1])
         doc = "\n".join(doc_lines[d.start - 1:d.line - 1])
         m = MARKER.search(doc)
         if m is None:
@@ -5527,65 +5558,139 @@ def classify(text):
                 toks = [t.strip() for t in raw.split(",") if t.strip()]
                 marker = ("MALFORMED" if not toks or any(t not in VOCAB for t in toks)
                           else frozenset(toks))
-        out.append((d.name, frozenset(binders), frozenset(mentions), marker))
+        out.append((d.name, frozenset(binders), frozenset(mentions), marker, frozenset(idents),
+                    doc))
     return out
 
 
-# Each fixture is (source, expected classify() output).
+def delegates(row, index):
+    """C34a's discharge: `row`'s code names a declaration carrying the IDENTICAL marker list and
+    mentioning no bundling class at all.
+
+    This is the fix pattern of record -- the independence claim is proved at a binder-free twin
+    and the binder-carrying declaration is a one-line corollary of it -- and it is what keeps
+    C34a from failing on exactly the arrangement that makes such a claim honest. A bare
+    independence claim over a binder, delegating to nothing, still fails."""
+    _name, _binders, _mentions, marker, idents, _doc = row
+    for ident in idents:
+        for cand_marker, cand_mentions in index.get(ident, ()):
+            if cand_marker == marker and not cand_mentions:
+                return True
+    return False
+
+
+def build_index(rows):
+    """name -> [(marker, mentions)] over every marked declaration in the walk."""
+    index = {}
+    for name, _b, mentions, marker, _i, _d in rows:
+        if marker is None or marker == "MALFORMED":
+            continue
+        index.setdefault(name, []).append((marker, mentions))
+        index.setdefault(name.split(".")[-1], []).append((marker, mentions))
+    return index
+
+
+def c34a_violation(row, index):
+    """A marker that OMITS a constraint, over a binder that supplies it, with no delegation."""
+    _name, binders, _mentions, marker, _idents, _doc = row
+    if marker is None or marker == "MALFORMED" or not binders:
+        return None
+    omitted = set()
+    for cls in binders:
+        omitted |= set(BUNDLERS[cls]) - marker
+    if not omitted:
+        return None
+    if delegates(row, index):
+        return None
+    return sorted(omitted)
+
+
+def c34b_trigger(row):
+    """An UNMARKED bracketed-binder declaration whose doc block reads as an independence claim."""
+    _name, binders, _mentions, marker, _idents, doc = row
+    if marker is not None or not binders:
+        return None
+    for line in doc.split("\n"):
+        if TRIG_VOCAB.search(line) and (TRIG_NEG.search(line) or TRIG_CONS.search(line)):
+            return line.strip()
+    return None
+
+
+# Each fixture is a whole source file plus the expected (c34a violation names, c34b hit names).
 _FIXTURES = [
-    # the bracketed binder this check counts
-    ("theorem foo [F.IsRegular] : True := trivial\n",
-     [("foo", frozenset({"IsRegular"}), frozenset({"IsRegular"}), None)]),
-    # a declaration whose CONCLUSION is the class assumes nothing: must not match
-    ("instance bar : F.IsRegular := inst\n",
-     [("bar", frozenset(), frozenset({"IsRegular"}), None)]),
-    # a `variable` block binder belongs to no declaration: must not be attributed to the
-    # theorem that happens to precede it
-    ("theorem baz : True := trivial\n\nvariable [F.IsRegular]\n\ntheorem qux : True := trivial\n",
-     [("baz", frozenset(), frozenset(), None),
-      ("qux", frozenset(), frozenset(), None)]),
-    # the marker, read out of the declaration's own doc block
-    ("/-- doc.\nConstraints consumed: Seriality, Limit -/\ntheorem m [F.IsRegular] : True := trivial\n",
-     [("m", frozenset({"IsRegular"}), frozenset({"IsRegular"}),
-       frozenset({"Seriality", "Limit"}))]),
-    # a binder QUOTED in a docstring is not a binder
-    ("/-- Never write `[F.IsRegular]` here. -/\ntheorem n : True := trivial\n",
-     [("n", frozenset(), frozenset(), None)]),
-    # `None` is the constraint-free marker, and is not malformed
-    ("/-- Constraints consumed: None -/\ntheorem p : True := trivial\n",
-     [("p", frozenset(), frozenset(), frozenset())]),
-    # a list leaving the closed vocabulary is malformed, never silently accepted
-    ("/-- Constraints consumed: Saturation, Bogus -/\ntheorem q [F.IsRegular] : True := trivial\n",
-     [("q", frozenset({"IsRegular"}), frozenset({"IsRegular"}), "MALFORMED")]),
-    # an in-proof `haveI` is a MENTION without a binder: scanning to end-of-span is what sees it
-    ("theorem r : True := by\n  haveI : F.IsRegular := inst\n  trivial\n",
-     [("r", frozenset(), frozenset({"IsRegular"}), None)]),
-    # an attribute line above the declaration does not detach it from its doc block
-    ("/-- Constraints consumed: Limit -/\n@[simp]\ntheorem s [F.IsRegular] : True := trivial\n",
-     [("s", frozenset({"IsRegular"}), frozenset({"IsRegular"}), frozenset({"Limit"}))]),
+    # classify() basics ------------------------------------------------------
+    # the bracketed binder this check counts; a CONCLUDING class is out of scope; a `variable`
+    # block binder belongs to no declaration; a binder QUOTED in a docstring is not a binder.
+    ("theorem foo [F.IsRegular] : True := trivial\n"
+     "instance bar : F.IsRegular := inst\n"
+     "theorem baz : True := trivial\n\nvariable [F.IsRegular]\n\n"
+     "theorem qux : True := trivial\n"
+     "/-- Never write `[F.IsRegular]` here. -/\ntheorem quux : True := trivial\n",
+     [], []),
+    # C34a must-fail: marked, binder-carrying, omitting Saturation, delegating to nothing
+    ("/-- Constraints consumed: Limit -/\ntheorem bare [F.IsRegular] : True := trivial\n",
+     ["bare"], []),
+    # C34a must-pass: the corollary pattern -- a binder-free twin with the identical list
+    ("/-- Constraints consumed: Limit -/\ntheorem twin (hlim : L) : True := trivial\n"
+     "/-- Constraints consumed: Limit -/\ntheorem cor [F.IsRegular] : True := twin F.limit\n",
+     [], []),
+    # C34a must-fail: the named twin carries a DIFFERENT list, so it proves a different claim
+    ("/-- Constraints consumed: Seriality -/\ntheorem other (hser : S) : True := trivial\n"
+     "/-- Constraints consumed: Limit -/\ntheorem cor [F.IsRegular] : True := other F.serial\n",
+     ["cor"], []),
+    # C34a must-fail: the named twin carries the right list but a binder of its own
+    ("/-- Constraints consumed: Limit -/\ntheorem alsobound [F.IsRegular] : True := trivial\n"
+     "/-- Constraints consumed: Limit -/\ntheorem cor [F.IsRegular] : True := alsobound\n",
+     ["alsobound", "cor"], []),
+    # C34a exempt: a marker that omits nothing claims nothing
+    ("/-- Constraints consumed: Compositionality, Seriality, Limit, Saturation -/\n"
+     "theorem full [F.IsRegular] : True := trivial\n",
+     [], []),
+    # C34a scanning to END OF SPAN: an in-proof `haveI` is a mention, not a bracketed binder,
+    # so it is out of C34a's binder-scoped reach but still visible to the census
+    ("theorem hv : True := by\n  haveI : F.IsRegular := inst\n  trivial\n", [], []),
+    # C34b must-fail: an unmarked binder-carrying declaration whose docstring negates a constraint
+    ("/-- *Saturation* is not consumed here. -/\ntheorem claim [F.IsRegular] : True := trivial\n",
+     [], ["claim"]),
+    # C34b must-pass: the same docstring, once a marker line is added
+    ("/-- *Saturation* is not consumed here.\nConstraints consumed: Limit -/\n"
+     "theorem claim (hlim : L) : True := trivial\n", [], []),
+    # C34b must-pass: an ordinary ambient theorem makes no claim and needs no marker
+    ("/-- Soundness over a regular frame. -/\ntheorem amb [F.IsRegular] : True := trivial\n",
+     [], []),
+    # `None` is the constraint-free marker and is not malformed; with no binder it claims
+    # nothing C34a can object to
+    ("/-- Constraints consumed: None -/\ntheorem p : True := trivial\n", [], []),
+    # an `@[simp]` attribute line does not detach a declaration from its doc block
+    ("/-- Constraints consumed: Limit -/\n@[simp]\ntheorem s (hlim : L) : True := trivial\n",
+     [], []),
 ]
 
 
-def c34_self_test():
+def self_test():
     bad = []
-    for k, (src, want) in enumerate(_FIXTURES):
-        got = classify(src)
-        if got != want:
-            bad.append((k, want, got))
+    for k, (src, want_a, want_b) in enumerate(_FIXTURES):
+        rows = classify(src)
+        if any(r[3] == "MALFORMED" for r in rows):
+            bad.append((k, "no MALFORMED marker", "a marker left the vocabulary"))
+            continue
+        index = build_index(rows)
+        got_a = sorted(r[0] for r in rows if c34a_violation(r, index) is not None)
+        got_b = sorted(r[0] for r in rows if c34b_trigger(r) is not None)
+        if got_a != sorted(want_a) or got_b != sorted(want_b):
+            bad.append((k, (sorted(want_a), sorted(want_b)), (got_a, got_b)))
     return bad
 
 
-bad = c34_self_test()
+bad = self_test()
 if bad:
     print(f"FAIL  C34  fixture self-test: {len(bad)} fixture(s) misjudged")
     for k, want, got in bad:
         print(f"            fixture {k}: expected {want}, got {got}")
-    sys.exit(1)
+    sys.exit(2)
 
 scanned = decls = 0
-binder_sites = []          # (path, name, marker)
-marked = []                # (path, name, marker)
-malformed = []             # (path, name)
+all_rows = []          # (path, row)
 for root in ROOTS:
     for path in live_files(root, ".lean"):
         try:
@@ -5593,19 +5698,17 @@ for root in ROOTS:
         except OSError:
             continue
         scanned += 1
-        interesting = "Constraints consumed:" in text or any(c in text for c in BUNDLERS)
-        if not interesting:
+        if "Constraints consumed:" not in text and not any(c in text for c in BUNDLERS):
             decls += len(decl_spans(text.split("\n")))
             continue
         rows = classify(text)
         decls += len(rows)
-        for name, binders, _mentions, marker in rows:
-            if marker == "MALFORMED":
-                malformed.append((path, name))
-            elif marker is not None:
-                marked.append((path, name, marker))
-            if binders:
-                binder_sites.append((path, name, marker))
+        all_rows += [(path, r) for r in rows]
+
+index = build_index([r for _p, r in all_rows])
+binder_sites = [(p, r) for p, r in all_rows if r[1]]
+marked = [(p, r) for p, r in all_rows if r[3] is not None and r[3] != "MALFORMED"]
+malformed = [(p, r) for p, r in all_rows if r[3] == "MALFORMED"]
 
 if scanned == 0:
     print("FAIL  C34  the walk produced ZERO .lean files across "
@@ -5623,11 +5726,17 @@ if not binder_sites:
     print("            binder matcher or the comment masker stopped seeing them")
     print("            (exit 2: an untrustworthy scan is an error in every mode)")
     sys.exit(2)
+if not marked:
+    print(f"FAIL  C34  ZERO `Constraints consumed:` marker(s) found in {scanned} live .lean")
+    print("            file(s) -- silence, not a pass: the tree carries them, so the marker")
+    print("            matcher or the doc-block reader stopped seeing them")
+    print("            (exit 2: an untrustworthy scan is an error in every mode)")
+    sys.exit(2)
 
 # THE CENSUS -- ungated, printed at every run. This is the re-runnable classification record.
-sat_free = [r for r in marked if "Saturation" not in r[2]]
-unmarked_binders = [r for r in binder_sites if r[2] is None]
-binder_files = len({p for p, _n, _m in binder_sites})
+sat_free = [r for r in marked if "Saturation" not in r[1][3]]
+unmarked_binders = [r for r in binder_sites if r[1][3] is None]
+binder_files = len({p for p, _r in binder_sites})
 print(f"INFO  C34  census: {len(binder_sites)} declaration(s) in {binder_files} file(s) carry a "
       f"bracketed bundling binder")
 print(f"            {len(marked)} declaration(s) carry a `Constraints consumed:` marker, "
@@ -5636,19 +5745,61 @@ print(f"            {len(unmarked_binders)} binder-carrying declaration(s) carry
 print(f"            ({scanned} live .lean file(s), {decls} declaration span(s), "
       f"{len(_FIXTURES)} fixture(s) green)")
 
+failed = False
+
 if malformed:
     print(f"FAIL  C34  {len(malformed)} `Constraints consumed:` line(s) leave the closed "
           f"vocabulary {sorted(VOCAB)} (or `None`)")
-    for p, n in malformed[:15]:
-        print(f"            {p}: {n}")
-    sys.exit(1)
-sys.exit(0)
+    for p, r in malformed[:15]:
+        print(f"            {p}: {r[0]}")
+    failed = True
+
+# C34a -- the structural assertion.
+viol = [(p, r, c34a_violation(r, index)) for p, r in marked]
+viol = [(p, r, o) for p, r, o in viol if o is not None]
+if viol:
+    print(f"FAIL  C34a {len(viol)} marker(s) omit a constraint their own binder supplies, with "
+          f"no binder-free declaration carrying the same claim")
+    for p, r, o in viol[:15]:
+        print(f"            {p}: {r[0]} -- claims {', '.join(o)} unconsumed over [.. IsRegular ..]")
+    print("            fix: restate at the explicit hypotheses the proof consumes and demote this")
+    print("            one to a corollary of it, or correct the marker to list what is consumed")
+    failed = failed or ENFORCE_A
+else:
+    print(f"PASS  C34a all {len(marked)} marker(s) are honest: none omits a constraint its own "
+          f"binder supplies")
+    print(f"            ({len([r for _p, r in marked if r[1]])} of them carry a binder and "
+          f"discharge it by delegating to a binder-free declaration)")
+
+# C34b -- the trigger assertion. Its only remedy is a marker line; it renders no verdict.
+hits = [(p, r, c34b_trigger(r)) for p, r in binder_sites]
+hits = [(p, r, t) for p, r, t in hits if t is not None]
+if hits:
+    lab = "FAIL  C34b" if ENFORCE_B else "TODO  C34b"
+    print(f"{lab} {len(hits)} unmarked binder-carrying declaration(s) whose docstring reads as a "
+          f"constraint claim")
+    for p, r, t in hits[:15]:
+        print(f"            {p}: {r[0]}")
+        print(f"                | {t[:96]}")
+    print("            fix: add a `Constraints consumed:` line (the remedy is always the marker,")
+    print("            never an exemption); where the honest list would omit a constraint the")
+    print("            binder supplies, the declaration needs a binder-free twin first -- see")
+    print("            docs/development/REFERENCE_NORMAL_FORM.md's constraint-consumption form")
+    if not ENFORCE_B:
+        print("            set ENFORCE_C34B=1 to make this exit-code-affecting once the list is clear")
+    failed = failed or ENFORCE_B
+else:
+    print(f"PASS  C34b no unmarked binder-carrying declaration reads as a constraint claim")
+
+sys.exit(1 if failed else 0)
 PYEOF
 C34_STATUS=$?
 if [ "$C34_STATUS" -eq 2 ]; then
   # An untrustworthy scan is an error in EVERY mode.
-  fail C34 "binder/marker scan could not be trusted (exit 2; not suppressed by ENFORCE_C34=0)"
-elif [ "$C34_STATUS" -ne 0 ] && [ "$ENFORCE_C34" -eq 1 ]; then
+  fail C34 "binder/marker scan could not be trusted (exit 2; not suppressed by the ENFORCE flags)"
+elif [ "$C34_STATUS" -ne 0 ]; then
+  # The python above reads ENFORCE_C34A / ENFORCE_C34B itself and exits non-zero only on a
+  # GATED failure, so there is no flag test to repeat here.
   FAILURES=$((FAILURES + 1))
 fi
 echo

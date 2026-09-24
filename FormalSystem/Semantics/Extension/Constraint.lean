@@ -157,6 +157,8 @@ The split exists so that results about the nest condition `S₁` can be stated w
 `S₁`-sufficiency statement vacuous. `fib_subset_fib_of_le_of_le` below is the one-line corollary
 at a regular frame, with its statement and implicit-argument order unchanged, so no call site
 moves.
+
+Constraints consumed: Compositionality
 -/
 theorem fib_subset_fib_of_compositional {τ : PartialHistory F} {z a b : F.Duration}
     (hcomp : TaskFrame.Compositional F.TaskRel)
@@ -180,6 +182,8 @@ that the axiom's positive-cone proviso is met.
 
 A one-line corollary of `fib_subset_fib_of_compositional`, which records that *Compositionality*
 is the whole of what the argument consumes.
+
+Constraints consumed: Compositionality
 -/
 theorem fib_subset_fib_of_le_of_le [F.IsRegular] {τ : PartialHistory F} {z a b : F.Duration}
     (ha : τ.domain a) (hb : τ.domain b) (hab : a ≤ b) (hbz : b ≤ z) :
@@ -206,6 +210,8 @@ reduces to it, and without *Limit* the statement is **false**: take `W = {p, q}`
 binder, which is what lets the nest-condition results downstream be stated without
 `[F.IsRegular]`. `fib_subset_fib_of_le_of_le'` below is the one-line corollary at a regular
 frame, with its statement and implicit-argument order unchanged, so no call site moves.
+
+Constraints consumed: Compositionality, Limit
 
 Paper: `def:task-relation`
 -/
@@ -236,6 +242,8 @@ and the reflection convention (`FrameOver.reflection`) carries the result back.
 
 A one-line corollary of `fib_subset_fib_of_compositional'`, which records that *Compositionality*
 and *Limit* are the whole of what the argument consumes.
+
+Constraints consumed: Compositionality, Limit
 -/
 theorem fib_subset_fib_of_le_of_le' [F.IsRegular] {τ : PartialHistory F} {z a b : F.Duration}
     (ha : τ.domain a) (hb : τ.domain b) (hba : b ≤ a) (hzb : z ≤ b) :
@@ -297,6 +305,8 @@ The split exists so that results about the nest condition `S₁` can be stated w
 `[F.IsRegular]`: an instance binder would drag *Saturation* back in and make an
 `S₁`-sufficiency statement vacuous. `seg_subset_seg` below is the one-line corollary at a regular
 frame, with its statement and implicit-argument order unchanged, so no call site moves.
+
+Constraints consumed: Compositionality, Limit
 -/
 theorem seg_subset_seg_of_compositional {τ : PartialHistory F} {z t s t' s' : F.Duration}
     (hcomp : TaskFrame.Compositional F.TaskRel) (hlim : TaskFrame.Limit F.TaskRel)
@@ -314,6 +324,8 @@ below `z`, and from `s` down to `s'` above `z`) tightens the constraint.
 
 A one-line corollary of `seg_subset_seg_of_compositional`, which records that *Compositionality*
 and *Limit* are the whole of what the argument consumes.
+
+Constraints consumed: Compositionality, Limit
 -/
 theorem seg_subset_seg [F.IsRegular] {τ : PartialHistory F} {z t s t' s' : F.Duration}
     (ht : τ.domain t) (hs : τ.domain s) (ht' : τ.domain t') (hs' : τ.domain s')

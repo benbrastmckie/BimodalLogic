@@ -517,34 +517,34 @@ comment-region hunks alone.
 
 ---
 
-### Phase 6: Gate C34 — structural assertion, trigger assertion, soft-then-enforced [NOT STARTED]
+### Phase 6: Gate C34 — structural assertion, trigger assertion, soft-then-enforced [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Turn Phase 1's census into an enforced invariant, in the soft-then-enforced order that
 lets the trigger half's false positives be read before they can block.
 
 **Tasks**:
-- [ ] **C34a (structural, gated)**: for every declaration carrying a `Constraints consumed:` line
+- [x] **C34a (structural, gated)**: for every declaration carrying a `Constraints consumed:` line
       whose list OMITS *Saturation*, assert that the declaration's text from its KEYWORD LINE to the
       end of its span, comment-masked, contains no `IsRegular`. Masking excludes the docstring, so
       explanatory prose such as "never the `IsRegular` instance" is not a self-failure; scanning to
       end-of-span rather than to `:=` also catches an in-proof `haveI : F.IsRegular`.
-- [ ] **C34b (trigger, gated)**: for every declaration carrying an `IsRegular` **binder**
+- [x] **C34b (trigger, gated)**: for every declaration carrying an `IsRegular` **binder**
       (bracketed match only, so `IsRegular`-concluding declarations are out of scope) whose
       docstring trips the independence-prose heuristic — mentions *Saturation* inside a negation or
       a consumption enumeration — and carries NO `Constraints consumed:` line, fail with the remedy
       "add a `Constraints consumed:` line". This is the half that stops a new unmarked claim
       slipping past an opt-in marker; it forces marking and never renders a verdict on honesty.
-- [ ] Extend the anti-silence guard: now that markers exist in the tree, zero markers found anywhere
+- [x] Extend the anti-silence guard: now that markers exist in the tree, zero markers found anywhere
       joins the empty-walk condition as an exit-2 broken-matcher signal, not suppressed by
       `ENFORCE_C34=0`.
-- [ ] Extend the fixture self-test to cover both assertions, including a marked-and-binder-carrying
+- [x] Extend the fixture self-test to cover both assertions, including a marked-and-binder-carrying
       must-fail case for C34a and an unmarked-tripping-docstring must-fail case for C34b.
-- [ ] Land with `ENFORCE_C34=0` first. Run the harness, READ the full C34b hit list, and classify
+- [x] Land with `ENFORCE_C34=0` first. Run the harness, READ the full C34b hit list, and classify
       each hit: a genuine unmarked claim gets a marker line; a passing mention gets a marker line
       too (the marker is always the remedy, never a heuristic exemption).
-- [ ] Add whatever marker lines the C34b list demands, then flip the default to `ENFORCE_C34=1` and
+- [x] Add whatever marker lines the C34b list demands, then flip the default to `ENFORCE_C34=1` and
       re-run until both assertions pass.
-- [ ] Re-run the census and record the final classification counts from the tree.
+- [x] Re-run the census and record the final classification counts from the tree.
 
 **Timing**: 2 hours
 
@@ -553,6 +553,25 @@ lets the trigger half's false positives be read before they can block.
 **Verification Tier**: local
 
 **Commit Mode**: per-substep
+
+**Result**: `bash scripts/check-module-invariants.sh --no-build` exits 0, ALL CHECKS PASSED, zero
+FAIL lines. `PASS C34a all 29 marker(s) are honest` with 18 of them binder-carrying and
+discharged by delegation; `TODO C34b 8 unmarked binder-carrying declaration(s)`. Full
+`lake build` (detached, guarded) exit 0, 2726 jobs, 0 `error:`, 0 `warning:`. Every exit-2
+anti-silence path exercised: empty walk, zero markers, and a sabotaged marker matcher (caught by
+the fixture self-test before the guard, which is the stronger outcome). `ENFORCE_C34B=1` on the
+current tree exits 1, so the soft flag is the only thing holding that half back.
+
+**Two deviations, both recorded below.** The one flag became two, and the C34b hit list did not
+go to zero.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Flip a single `ENFORCE_C34` default to 1 | Split into `ENFORCE_C34A` (=1, enforced) and `ENFORCE_C34B` (=0, soft). The two halves reached different readiness: the structural assertion is clean on the tree today, the trigger assertion has a residual whose remedy this task is told not to open. A single flag would have forced either shipping the real assertion unenforced or turning the gate red on work this task deliberately excluded. | `PASS C34a` with the flag defaulted to 1; `ENFORCE_C34B=1` exits 1 on the same tree |
+| The 8 residual C34b hits | The plan's own Scope Hypothesis says to STOP and report rather than widen the Lean surface when a hit's correct remedy is a restatement, and all 8 are that case: each carries a binder, each would need a marker omitting a constraint the binder supplies, and none has a binder-free declaration to delegate to — so a marker alone would fail C34a. Marking them honestly requires eight new binder-free twins in `TaskFrame.lean`, `Rigidity.lean` and `RigidityReal.lean`, which Phases 3-5 pinned out of scope. Landing the check reporting-only is the plan's own recorded contingency for exactly this. | `TODO C34b` list: `static_iff_uniformDwell`, `levels_closed`, `constant_of_countable_range`, `FrameOver.saturation`, `nullity`, `nullity_identity`, `FrameOver.reflection`, `TaskFrame.saturation` |
+| Retrofitting markers onto declarations that make no claim (a plan Non-Goal) | Partially relaxed: 7 marker lines were added beyond the fix set, all demanded by the C34b soft run — the three pre-existing `Constraint.lean` matched pairs from the prerequisite task (6 lines, each half delegating to its existing binder-free twin) and `Validity.lean`'s `not_validOn_bot` (1 line, listing all four, so it claims nothing). The Non-Goal's point is not to sweep the tree; these are the rows the gate itself named. | C34b hit list fell from 11 to 8; census marker count rose 22 → 29 |
 
 **Scope Hypothesis**: This phase asserts that the C34b hit list is small enough to resolve with
 marker lines alone. Confirm by reading the soft-run list before flipping the flag; if it names

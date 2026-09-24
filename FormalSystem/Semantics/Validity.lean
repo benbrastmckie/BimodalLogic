@@ -282,6 +282,8 @@ frame.
 
 The model witness is `TaskModel.allFalse`; any model would do, since `⊥`'s truth clause is
 `False` independently of the valuation.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation
 -/
 theorem not_validOn_bot (F : TaskFrame) [F.IsRegular] : ¬ F.ValidOn Formula.bot := by
   intro hvalid
