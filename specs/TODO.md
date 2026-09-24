@@ -1,5 +1,5 @@
 ---
-next_project_number: 667
+next_project_number: 668
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 667
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,662,664,665 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,662,664,665,667 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650,663,666 | 298,464,502,563,649,662,665 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -72,6 +72,7 @@ next_project_number: 667
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
 665 [NOT STARTED] — Prove soundness of witness-family certificates: a labelled...
   └─ 666 [NOT STARTED] — Add a certificate re-verification executable, lake exe...
+667 [NOT STARTED] — Run the four branch gates on the tableau bridge's invalid...
 
 ### Formula Refactor
 
@@ -104,6 +105,26 @@ next_project_number: 667
   └─ 663 [NOT STARTED] — Add a repo-wide hypothesis-honesty gate so no...
 
 ## Tasks
+
+### 667. Tableau bridge branch gates and frame class
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Run the four branch gates on the tableau bridge's invalid path and reject unknown frame-class tags. Currently lake exe tableau_bridge (BimodalTools/TableauBridgeMain.lean) returns {"status": "invalid", "countermodel": ...} from an open saturated branch without evaluating timeOrderTotal, boxAnchoredCheck, regionLabelCheck and temporalWitnessCheck, yet these are exactly the hypotheses of not_validZTime_of_hasOpen_int and not_valid_of_hasOpen_int (Metalogic/Decidability/Verified/Bridge/IntTruth.lean:1045, :1073), so an invalid verdict is theorem-backed only when they pass. Separately, parseFrameClass (TableauBridgeMain.lean:297-302) maps any unrecognized string, including "RTime", to Base silently.
+
+DELIVERABLES.
+1. On the .invalid arm of handleDecide (and the countermodel command), evaluate the four gates on the returned branch and its TimeOrdering, and add a "gates" object to the response with one boolean per gate plus "gated": true iff all pass. Keep "status": "invalid" unchanged so existing consumers are not broken; the new field is additive.
+2. Reject unknown frame_class values with {"status": "error", "message": ...} instead of defaulting to Base; accept "Base", "Dense", "ZTime", "Discrete" (alias) and "RTime" (mapped to the Dedekind / RTime class if the engine supports it, otherwise rejected with a message saying so).
+3. Document both changes in the module docstring's protocol section and in BimodalTools/README.md.
+
+MOTIVATION. ModelChecker (~/Projects/ModelChecker) is adopting this bridge as its differential oracle for the bimodal theory at the ZTime class and needs to know which invalid verdicts it may cite via the Lean theorem and which are only heuristic; see ~/Projects/ModelChecker/specs/184_refactor_bimodal_theory_tests_green_and_paper_lean_aligned/reports/01_finite-certificate-redesign.md, section 5.
+
+ACCEPTANCE. Tests in Tests/BimodalToolsTest/ covering a gated invalid verdict, an ungated one, and the frame_class rejection; lake build BimodalTools green.
+
+---
 
 ### 666. Check certificate executable
 - **Effort**: 4-8 hours
