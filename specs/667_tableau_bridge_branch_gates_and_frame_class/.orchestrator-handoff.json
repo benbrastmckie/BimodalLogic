@@ -1,16 +1,21 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 4,
-  "summary": "Wrote a 7-phase implementation plan for task 667: library/Main split of the tableau bridge, an eight-boolean BranchGates object on both invalid arms with \"gated\" as the full theorem-hypothesis conjunction, fallible frame-class parsing accepting RTime, acceptance tests, and documentation.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 6,
+  "summary": "All 7 plan phases complete: the tableau bridge now emits an additive \"gates\" object (eight theorem hypotheses plus their conjunction \"gated\") on every invalid verdict, rejects unknown frame_class values while accepting Base/Dense/ZTime/Discrete/RTime, and was split into an importable library plus a 23-line executable root so five new test rows could pin all of it. lake build BimodalTools, BimodalToolsTest and tableau_bridge are green and the end-to-end REPL smoke passes.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/667_tableau_bridge_branch_gates_and_frame_class/plans/01_branch-gates-frame-class.md",
-      "summary": "7-phase plan: module split, BranchGates evaluator, handler wiring, frame-class rejection, tests, docs, full gate."
+      "type": "summary",
+      "path": "specs/667_tableau_bridge_branch_gates_and_frame_class/summaries/01_branch-gates-frame-class-summary.md",
+      "summary": "Branch gates on the tableau bridge's invalid arm, fallible frame-class parsing, and the library/executable split that made both testable."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/667_tableau_bridge_branch_gates_and_frame_class/handoffs/phase-4-handoff-20260924.md",
+      "summary": "Mid-run phase-4 checkpoint recording the measured gate values pinned by the Phase 5 test rows."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 7,
   "phases_total": 7,
   "blockers": []
 }

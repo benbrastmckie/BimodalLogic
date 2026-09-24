@@ -9,14 +9,14 @@
     {
       "project_number": 667,
       "project_name": "tableau_bridge_branch_gates_and_frame_class",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Run the four branch gates on the tableau bridge's invalid path and reject unknown frame-class tags. Currently lake exe tableau_bridge (BimodalTools/TableauBridgeMain.lean) returns {\"status\": \"invalid\", \"countermodel\": ...} from an open saturated branch without evaluating timeOrderTotal, boxAnchoredCheck, regionLabelCheck and temporalWitnessCheck, yet these are exactly the hypotheses of not_validZTime_of_hasOpen_int and not_valid_of_hasOpen_int (Metalogic/Decidability/Verified/Bridge/IntTruth.lean:1045, :1073), so an invalid verdict is theorem-backed only when they pass. Separately, parseFrameClass (TableauBridgeMain.lean:297-302) maps any unrecognized string, including \"RTime\", to Base silently.\n\nDELIVERABLES.\n1. On the .invalid arm of handleDecide (and the countermodel command), evaluate the four gates on the returned branch and its TimeOrdering, and add a \"gates\" object to the response with one boolean per gate plus \"gated\": true iff all pass. Keep \"status\": \"invalid\" unchanged so existing consumers are not broken; the new field is additive.\n2. Reject unknown frame_class values with {\"status\": \"error\", \"message\": ...} instead of defaulting to Base; accept \"Base\", \"Dense\", \"ZTime\", \"Discrete\" (alias) and \"RTime\" (mapped to the Dedekind / RTime class if the engine supports it, otherwise rejected with a message saying so).\n3. Document both changes in the module docstring's protocol section and in BimodalTools/README.md.\n\nMOTIVATION. ModelChecker (~/Projects/ModelChecker) is adopting this bridge as its differential oracle for the bimodal theory at the ZTime class and needs to know which invalid verdicts it may cite via the Lean theorem and which are only heuristic; see ~/Projects/ModelChecker/specs/184_refactor_bimodal_theory_tests_green_and_paper_lean_aligned/reports/01_finite-certificate-redesign.md, section 5.\n\nACCEPTANCE. Tests in Tests/BimodalToolsTest/ covering a gated invalid verdict, an ungated one, and the frame_class rejection; lake build BimodalTools green.",
       "topic": "decidability",
       "effort": "2-4 hours",
       "dependencies": [],
       "created": "2026-09-24T18:34:03Z",
-      "last_updated": "2026-09-24T23:21:48Z",
+      "last_updated": "2026-09-24T23:50:44Z",
       "session_id": "sess_1790290549_f9337e06",
       "artifacts": [
         {
@@ -28,9 +28,15 @@
           "path": "specs/667_tableau_bridge_branch_gates_and_frame_class/plans/01_branch-gates-frame-class.md",
           "type": "plan",
           "summary": "7-phase plan: module split, BranchGates evaluator, handler wiring, frame-class rejection, tests, docs, full gate."
+        },
+        {
+          "path": "specs/667_tableau_bridge_branch_gates_and_frame_class/summaries/01_branch-gates-frame-class-summary.md",
+          "type": "summary",
+          "summary": "Branch gates on the tableau bridge's invalid arm, fallible frame-class parsing, and the library/executable split that made both testable."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "The tableau bridge now emits an additive \"gates\" object on every invalid verdict, reporting the eight hypotheses of not_valid_of_hasOpen_int / not_validZTime_of_hasOpen_int plus their conjunction \"gated\", so a consumer can tell a theorem-backed refutation from a heuristic one. parseFrameClass is now fallible: it accepts Base, Dense, ZTime, Discrete and RTime and rejects anything else through the existing error path instead of silently deciding at .Base. The bridge was split into BimodalTools/TableauBridge.lean plus a 23-line executable root so the behaviour could be pinned by five new test rows in Tests/BimodalToolsTest/TableauBridgeTest.lean."
     },
     {
       "project_number": 666,

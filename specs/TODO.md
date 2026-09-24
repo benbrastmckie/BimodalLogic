@@ -11,8 +11,8 @@ next_project_number: 669
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,667 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650,666 | 298,464,502,563,649,667 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,666 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -70,8 +70,7 @@ next_project_number: 669
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
-667 [IMPLEMENTING] — Run the four branch gates on the tableau bridge's invalid...
-  └─ 666 [NOT STARTED] — Add a certificate re-verification executable, lake exe...
+666 [NOT STARTED] — Add a certificate re-verification executable, lake exe...
 
 ### Formula Refactor
 
@@ -102,12 +101,13 @@ next_project_number: 669
 
 ### 667. Tableau bridge branch gates and frame class
 - **Effort**: 2-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [667_tableau_bridge_branch_gates_and_frame_class/reports/01_branch-gates-frame-class.md]
 - **Plan**: [667_tableau_bridge_branch_gates_and_frame_class/plans/01_branch-gates-frame-class.md]
+- **Summary**: [667_tableau_bridge_branch_gates_and_frame_class/summaries/01_branch-gates-frame-class-summary.md]
 
 **Description**: Run the four branch gates on the tableau bridge's invalid path and reject unknown frame-class tags. Currently lake exe tableau_bridge (BimodalTools/TableauBridgeMain.lean) returns {"status": "invalid", "countermodel": ...} from an open saturated branch without evaluating timeOrderTotal, boxAnchoredCheck, regionLabelCheck and temporalWitnessCheck, yet these are exactly the hypotheses of not_validZTime_of_hasOpen_int and not_valid_of_hasOpen_int (Metalogic/Decidability/Verified/Bridge/IntTruth.lean:1045, :1073), so an invalid verdict is theorem-backed only when they pass. Separately, parseFrameClass (TableauBridgeMain.lean:297-302) maps any unrecognized string, including "RTime", to Base silently.
 
