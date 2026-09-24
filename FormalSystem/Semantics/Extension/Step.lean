@@ -187,6 +187,13 @@ The frame axioms are taken from the structure's own fields — `F.saturation` he
 `F.serial` / `F.interpolates` / `F.limit` through `constraint` and `admissible` — so this
 theorem quantifies over a frame alone, with no axiom hypotheses. *Limit* reaches
 `lem:admissible` the same way, where it is needed for `lem:nullity` at `z` itself.
+
+All four are reached, re-derived from the proof term rather than from the binder: *Saturation*
+here directly, and *Compositionality* in both directions plus *Seriality* and *Limit* through
+`constraint` and `admissible`. This is the sole ELIMINATION site; the marker below enumerates
+CONSUMPTION, which is the wider relation.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation
 -/
 theorem step (F : TaskFrame) [F.IsRegular] (τ : PartialHistory F) (z : F.Duration) :
     ∃ σ : PartialHistory F, Extends σ τ ∧ σ.domain z := by

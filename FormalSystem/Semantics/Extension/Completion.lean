@@ -314,6 +314,12 @@ theorem completion_iff_onePointExtension (hser : TaskFrame.Serial F.TaskRel)
 into a conclusion that does not itself mention *Saturation*; everything downstream of this lemma
 consumes `Completion` instead.
 
+The consumption list is the full bundle, through `step`: *Completion* being weaker than
+*Saturation* is a fact about what this condition NEEDS, and the term as it stands reaches all
+four fields.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation
+
 Paper: `lem:step`
 -/
 theorem completion_of_isRegular [F.IsRegular] : Completion F :=

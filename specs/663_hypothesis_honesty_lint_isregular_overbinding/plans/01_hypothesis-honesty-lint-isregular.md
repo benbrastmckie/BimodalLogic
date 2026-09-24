@@ -442,32 +442,42 @@ the phase's stated bar, so the rewrap is part of the phase rather than follow-up
 
 ---
 
-### Phase 5: Restate `admissible` and mark the genuine *Saturation* consumers [NOT STARTED]
+### Phase 5: Restate `admissible` and mark the genuine *Saturation* consumers [COMPLETED]
 
 **Goal**: Close the one fix site outside `Constraint.lean`, and mark — never change — the six
 declarations that genuinely consume *Saturation*, so the audit record covers the whole population.
 
 **Tasks**:
-- [ ] `admissible_of_serial_limit` at `(hser, hlim)` in
+- [x] `admissible_of_serial_limit` at `(hser, hlim)` in
       `FormalSystem/Semantics/Extension/Admissible.lean`: `fibers` is already binder-free, so the
       only frame-field reaches are `TaskFrame.nullity_of_serial_limit hser hlim` for the `z`-twice
       case and `F.toFibre.reflection_of_limit hlim` for the reflection step. Demote `admissible` to
       the one-line corollary at `F.serial F.limit` with its signature unchanged, and give its
       docstring's "*Saturation* is not consumed" sentence a `Constraints consumed: Seriality, Limit`
       line.
-- [ ] Add a `Constraints consumed:` line naming *Saturation* to each of the six declarations that
+- [x] Add a `Constraints consumed:` line naming *Saturation* to each of the six declarations that
       genuinely consume it, changing nothing else about them:
       `Extension/Step.lean` `step` (the sole elimination site, reading `F.saturation` directly),
       `Extension/Extension.lean` `isTotal_of_isMax`, `extension` and `isRestriction_of_isRegular`,
       `Extension/Completion.lean` `completion_of_isRegular`, and
       `Correspondence/RigidityReal.lean` `static_of_countable`.
-- [ ] On `isTotal_of_isMax` specifically, keep the existing "not a second *Saturation* elimination
+- [x] On `isTotal_of_isMax` specifically, keep the existing "not a second *Saturation* elimination
       site" sentence intact and let the marker line carry the consumption fact beside it — this is
       the worked example of consumption-vs-elimination that Phase 2 documents, and it must survive
       as such.
-- [ ] Re-derive each of the six consumption lists from the declaration rather than copying this
+- [x] Re-derive each of the six consumption lists from the declaration rather than copying this
       plan's assertion that all six consume *Saturation*; if one turns out not to, mark it
-      accordingly and record the discrepancy.
+      accordingly and record the discrepancy. *(re-derived from the proof terms: all six consume
+      *Saturation*, and each consumes all four fields, so every one is marked
+      `Compositionality, Seriality, Limit, Saturation` rather than `Saturation` alone. `step`
+      reads `F.saturation` directly and reaches the other three through `constraint` and
+      `admissible`; `isTotal_of_isMax`, `extension`, `isRestriction_of_isRegular` and
+      `completion_of_isRegular` all route through `step`; `static_of_countable` reaches it through
+      `exists_history_of_taskRel`, which calls `PartialHistory.extension`. Two docstrings needed a
+      correction rather than just a marker: `extension`'s "*Saturation* is not threaded in
+      directly" and `isRestriction_of_isRegular`'s "*Compositionality* drops out entirely" are both
+      statements about what the results NEED, and each now says so explicitly beside a marker line
+      recording what the term as it stands actually reaches.)*
 
 **Timing**: 1.5 hours
 
@@ -476,6 +486,13 @@ declarations that genuinely consume *Saturation*, so the audit record covers the
 **Verification Tier**: interface
 
 **Commit Mode**: per-substep
+
+**Result**: full `lake build` (detached, guarded) exit 0, `Build completed successfully
+(2726 jobs)`, 0 `error:`, 0 `warning:`; every one of the six touched modules has an `.olean`
+newer than its source. `admissible`'s signature is byte-identical to HEAD. The four marker-only
+files' added lines were checked against `lean_debug_artifacts.comments_only` — the same masker
+C34 uses — and 0 of 34 fall outside a comment region. C34's census now reads 22 markers, 16 of
+them omitting *Saturation*, 0 malformed.
 
 **Scope Hypothesis**: This phase asserts one restatement plus six marker-only edits across five
 files, four of which receive comment-only changes. Confirm with `git diff --stat`: only

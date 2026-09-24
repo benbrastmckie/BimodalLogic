@@ -193,6 +193,14 @@ extending `τ` with `z` in its domain; maximality then forces `τ` to extend `σ
 The four axioms are **`FrameOver` fields that `step` projects off `F` for itself**, not hypotheses
 this theorem takes and forwards. Nothing here applies any of them; in particular this is not a
 second *Saturation* elimination site.
+
+That last sentence reads like an independence claim and is not one, which is why this declaration
+is the worked example of the distinction in
+`docs/development/REFERENCE_NORMAL_FORM.md`'s constraint-consumption normal form: *elimination* is
+spending a constraint on a conclusion that does not mention it, *consumption* is the elaborated
+term reaching the field at all. This term reaches all four, through `step`.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation
 -/
 theorem isTotal_of_isMax (F : TaskFrame) [F.IsRegular] {τ : PartialHistory F} (hmax : IsMax τ) :
     τ.IsTotal := by
@@ -223,7 +231,11 @@ is exactly its `H_F` membership. (The appendix's route through convex histories 
 here: a total domain is trivially convex, `PartialHistory.IsTotal.isConvex`.)
 
 **These two are the whole proof.** *Saturation* is not threaded in directly — `step`, which remains
-its sole **elimination** site, reads it off the frame as `F.saturation`.
+its sole **elimination** site, reads it off the frame as `F.saturation`. Not threaded in directly
+is not unconsumed: the elaborated term reaches every field through `isTotal_of_isMax`, hence
+through `step`.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation
 -/
 theorem extension (F : TaskFrame) [F.IsRegular] (τ : PartialHistory F) :
     ∃ σ : WorldHistory F, Extends σ.val τ := by
@@ -245,6 +257,12 @@ entirely. *Completion* is strictly weaker than *Saturation* — that is a sharpn
 `def:frame`'s fourth constraint, recorded in `extension_of_completion`'s hypotheses, not a
 proposal to replace it.) The converse inclusion, `PartialHistory.restrict_isPartialHistory`, costs
 nothing at all; see this module's `## The identification` section.
+
+The parenthesis above is about what the result NEEDS, not about what this term reaches. As it
+stands the proof is `extension F τ`, so *Compositionality* does not drop out here and all four
+fields are consumed; `extension_of_completion` is where the weaker hypothesis is actually taken.
+
+Constraints consumed: Compositionality, Seriality, Limit, Saturation
 -/
 theorem isRestriction_of_isRegular (F : TaskFrame) [F.IsRegular] (τ : PartialHistory F) :
     IsRestriction τ :=

@@ -161,6 +161,8 @@ The hypothesis is sharp in cardinality: `Rigidity.realClock_not_static` and
 `Rigidity.ratClock_not_static` shows that over `ℚ` — dense and Archimedean — a countable carrier
 does not suffice.
 
+Constraints consumed: Compositionality, Seriality, Limit, Saturation
+
 Paper: — (the manuscript states no rigidity theorem; stated at the hypothesis the proof uses)
 -/
 theorem static_of_countable [F.IsRegular] [Countable F.WorldState] : Static F.TaskRel := by

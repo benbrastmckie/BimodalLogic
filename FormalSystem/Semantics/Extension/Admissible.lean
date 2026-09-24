@@ -296,9 +296,17 @@ The hypothesis `hz : ¬ τ.domain z` is the paper's `z ∈ D \ X` and is genuine
 left-to-right direction; see this module's docstring for why, and contrast `lem:constraint`, which
 holds without it.
 
-*Saturation* is not consumed.
+*Saturation* is not consumed — and this statement is what proves that rather than asserting it:
+`fibers` is already binder-free, so the only frame-field reaches are
+`TaskFrame.nullity_of_serial_limit` for the `z`-twice case and the reflection law for the
+`z`-then-old-time case, both taken here from explicit hypotheses. *Compositionality* is not
+consumed either. `admissible` below is the one-line corollary at a regular frame, with its
+statement and implicit-argument order unchanged, so no call site moves.
+
+Constraints consumed: Seriality, Limit
 -/
-theorem admissible [F.IsRegular]
+theorem admissible_of_serial_limit
+    (hser : TaskFrame.Serial F.TaskRel) (hlim : TaskFrame.Limit F.TaskRel)
     (τ : PartialHistory F) {z : F.Duration} (hz : ¬ τ.domain z) (u : F.WorldState) :
     AdjoinRespects τ z u ↔ ∀ c ∈ Constraints τ z, u ∈ c := by
   rw [fibers]
@@ -318,13 +326,28 @@ theorem admissible [F.IsRegular]
     · -- the new time then an old one: the same fiber condition, via the reflection convention
       obtain rfl : z = s := (Or.resolve_left hs hsd).symm
       rw [adjoinFun_of_not_domain τ u hsd, adjoinFun_of_domain τ u htd]
-      have hconv := (F.reflection (τ.states t htd) (z - t) u).mp (h t htd)
+      have hconv := (F.toFibre.reflection_of_limit hlim (τ.states t htd) (z - t) u).mp (h t htd)
       rwa [neg_sub] at hconv
     · -- the new time twice: `lem:nullity`, the zero loop at `z` itself
       obtain rfl : z = s := (Or.resolve_left hs hsd).symm
       obtain rfl : z = t := (Or.resolve_left ht htd).symm
       rw [adjoinFun_of_not_domain τ u hsd, sub_self]
-      exact TaskFrame.nullity_of_serial_limit F.serial F.limit u
+      exact TaskFrame.nullity_of_serial_limit hser hlim u
+
+/--
+`lem:admissible`: the one-point extension is a partial history exactly when the new state belongs
+to every constraint.
+
+A one-line corollary of `admissible_of_serial_limit`, which is where the docstring's
+"*Saturation* is not consumed" claim above is checked: the `[F.IsRegular]` binder here supplies
+all four constraints and the proof term reaches only *Seriality* and *Limit*.
+
+Constraints consumed: Seriality, Limit
+-/
+theorem admissible [F.IsRegular]
+    (τ : PartialHistory F) {z : F.Duration} (hz : ¬ τ.domain z) (u : F.WorldState) :
+    AdjoinRespects τ z u ↔ ∀ c ∈ Constraints τ z, u ∈ c :=
+  admissible_of_serial_limit F.serial F.limit τ hz u
 
 end PartialHistory
 
