@@ -71,12 +71,20 @@ That is the `fib_zero_subset_of_mem_Constraints` branch below.
 
 - `PartialHistory.seg_eq_inter_fib` — a constraint segment is the intersection of its two fiber
   conditions, with `def:task-relation`'s `-y` offset normalized to `z - s`
+- `PartialHistory.fib_subset_fib_of_compositional` / `fib_subset_fib_of_compositional'` /
+  `seg_subset_seg_of_compositional` — the monotonicity lemmas with the hypotheses they actually
+  consume made explicit: *Compositionality* below `z`, *Compositionality* and *Limit* above it,
+  and **never** the `IsRegular` instance. Stating them off the instance is what lets the nest
+  condition `S₁`'s sufficiency results be non-vacuous; an `[F.IsRegular]` binder would drag
+  *Saturation* back in and make them say nothing.
 - `PartialHistory.fib_subset_fib_of_le_of_le` / `fib_subset_fib_of_le_of_le'` — fiber
   monotonicity below and above `z`: the constraint imposed by a domain time *nearer* `z` is the
-  tighter one
+  tighter one. One-line corollaries of the two above, with their statements and
+  implicit-argument order unchanged, so no call site moves.
 - `PartialHistory.fib_zero_subset` / `fib_zero_subset_of_mem_Constraints` — when `z` is itself a
   domain time, its own fiber is the tightest constraint of all
-- `PartialHistory.seg_subset_seg` — segment monotonicity in both endpoints
+- `PartialHistory.seg_subset_seg` — segment monotonicity in both endpoints, the corollary of
+  `seg_subset_seg_of_compositional`
 - `PartialHistory.nonempty_fib_of_serial` / `nonempty_seg_of_interpolates` — the two
   member-nonemptiness cases
 - `PartialHistory.nonempty_Constraints` — the family itself is nonempty (part of the
@@ -179,27 +187,60 @@ theorem fib_subset_fib_of_le_of_le [F.IsRegular] {τ : PartialHistory F} {z a b 
   fib_subset_fib_of_compositional F.comp ha hb hab hbz
 
 /--
+Above `z`, an earlier domain time imposes a tighter constraint, with the hypotheses the proof
+actually consumes made explicit: *Compositionality* and *Limit*, never the `IsRegular` instance.
+
+For `z ≤ b ≤ a` in the domain, `Fib(τ(b), z - b) ⊆ Fib(τ(a), z - a)`. Both fiber durations are
+now nonpositive, so the composition is performed on the reflected pair — `u ⇒_{b-z} τ(b)` and
+`τ(b) ⇒_{a-b} τ(a)` — and the reflection law carries the result back.
+
+The reflection law is where *Limit* enters, and it is the **only** thing that needs it. It is a
+derived theorem (`FrameOver.reflection_of_limit`), not a `FrameOver` field: off zero it is
+definitional content of `TaskFrame.reflect` (`reflect_reflection_of_ne`), and at duration zero it
+is injectivity, which is *Limit*. The zero case is not idle — at `b = z < a` the whole inclusion
+reduces to it, and without *Limit* the statement is **false**: take `W = {p, q}` with primitive
+`P w ⟨x, _⟩ u := R₀ w u` for `R₀ = {(p,p), (p,q), (q,q)}`, which is *Compositional*, and observe
+`Fib(p, 0) = {p, q} ⊄ {p} = Fib(p, -1)`.
+
+*Limit* is a `def:frame` constraint and is not *Saturation*, so this stays free of the instance
+binder, which is what lets the nest-condition results downstream be stated without
+`[F.IsRegular]`. `fib_subset_fib_of_le_of_le'` below is the one-line corollary at a regular
+frame, with its statement and implicit-argument order unchanged, so no call site moves.
+
+Paper: `def:task-relation`
+-/
+theorem fib_subset_fib_of_compositional' {τ : PartialHistory F} {z a b : F.Duration}
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hlim : TaskFrame.Limit F.TaskRel)
+    (ha : τ.domain a) (hb : τ.domain b) (hba : b ≤ a) (hzb : z ≤ b) :
+    Fib F.TaskRel (τ.states b hb) (z - b) ⊆ Fib F.TaskRel (τ.states a ha) (z - a) := by
+  intro u hu
+  have hrefl := F.toFibre.reflection_of_limit hlim
+  have hu' : F.TaskRel u (b - z) (τ.states b hb) := by
+    have h := (hrefl (τ.states b hb) (z - b) u).mp (TaskFrame.mem_Fib.mp hu)
+    rwa [neg_sub] at h
+  have hfwd := TaskFrame.forward_of_comp hcomp u (τ.states b hb) (τ.states a ha) (b - z) (a - b)
+    (sub_nonneg.mpr hzb) (sub_nonneg.mpr hba) hu' (τ.respects_task b a hb ha)
+  have heq : b - z + (a - b) = a - z := by abel
+  rw [heq] at hfwd
+  have h := (hrefl u (a - z) (τ.states a ha)).mp hfwd
+  rw [neg_sub] at h
+  exact TaskFrame.mem_Fib.mpr h
+
+/--
 Above `z`, an earlier domain time imposes a tighter constraint: for `z ≤ b ≤ a` in the domain,
 `Fib(τ(b), z - b) ⊆ Fib(τ(a), z - a)`.
 
 The mirror image of `fib_subset_fib_of_le_of_le`. Both fiber durations are now nonpositive, so
 the composition is performed on the reflected pair — `u ⇒_{b-z} τ(b)` and `τ(b) ⇒_{a-b} τ(a)` —
 and the reflection convention (`FrameOver.reflection`) carries the result back.
+
+A one-line corollary of `fib_subset_fib_of_compositional'`, which records that *Compositionality*
+and *Limit* are the whole of what the argument consumes.
 -/
 theorem fib_subset_fib_of_le_of_le' [F.IsRegular] {τ : PartialHistory F} {z a b : F.Duration}
     (ha : τ.domain a) (hb : τ.domain b) (hba : b ≤ a) (hzb : z ≤ b) :
-    Fib F.TaskRel (τ.states b hb) (z - b) ⊆ Fib F.TaskRel (τ.states a ha) (z - a) := by
-  intro u hu
-  have hu' : F.TaskRel u (b - z) (τ.states b hb) := by
-    have h := (F.reflection (τ.states b hb) (z - b) u).mp (TaskFrame.mem_Fib.mp hu)
-    rwa [neg_sub] at h
-  have hcomp := F.forward_comp u (τ.states b hb) (τ.states a ha) (b - z) (a - b)
-    (sub_nonneg.mpr hzb) (sub_nonneg.mpr hba) hu' (τ.respects_task b a hb ha)
-  have heq : b - z + (a - b) = a - z := by abel
-  rw [heq] at hcomp
-  have h := (F.reflection u (a - z) (τ.states a ha)).mp hcomp
-  rw [neg_sub] at h
-  exact TaskFrame.mem_Fib.mpr h
+    Fib F.TaskRel (τ.states b hb) (z - b) ⊆ Fib F.TaskRel (τ.states a ha) (z - a) :=
+  fib_subset_fib_of_compositional' F.comp F.limit ha hb hba hzb
 
 /--
 When `z` is itself a domain time, its own zero-duration fiber is contained in the constraint
@@ -214,17 +255,43 @@ theorem fib_zero_subset [F.IsRegular] {τ : PartialHistory F} {z t : F.Duration}
   · exact fib_subset_fib_of_le_of_le' ht hz h le_rfl
 
 /--
-Segment monotonicity: shrinking a constraint segment's endpoints towards `z` (from `t` up to `t'`
-below `z`, and from `s` down to `s'` above `z`) tightens the constraint.
+Segment monotonicity, with the hypotheses the proof actually consumes made explicit:
+*Compositionality* and *Limit*, never the `IsRegular` instance.
+
+Shrinking a constraint segment's endpoints towards `z` (from `t` up to `t'` below `z`, and from
+`s` down to `s'` above `z`) tightens the constraint. A segment is the intersection of its two
+endpoint fiber conditions (`seg_eq_inter_fib`), so this is the two fiber lemmas in parallel: the
+below-`z` half needs only *Compositionality*, and the above-`z` half inherits *Limit* from
+`fib_subset_fib_of_compositional'`.
+
+The split exists so that results about the nest condition `S₁` can be stated without
+`[F.IsRegular]`: an instance binder would drag *Saturation* back in and make an
+`S₁`-sufficiency statement vacuous. `seg_subset_seg` below is the one-line corollary at a regular
+frame, with its statement and implicit-argument order unchanged, so no call site moves.
 -/
-theorem seg_subset_seg [F.IsRegular] {τ : PartialHistory F} {z t s t' s' : F.Duration}
+theorem seg_subset_seg_of_compositional {τ : PartialHistory F} {z t s t' s' : F.Duration}
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hlim : TaskFrame.Limit F.TaskRel)
     (ht : τ.domain t) (hs : τ.domain s) (ht' : τ.domain t') (hs' : τ.domain s')
     (htt' : t ≤ t') (ht'z : t' ≤ z) (hzs' : z ≤ s') (hs's : s' ≤ s) :
     Seg F.TaskRel (τ.states t' ht') (τ.states s' hs') (z - t') (s' - z)
       ⊆ Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z) := by
   rw [seg_eq_inter_fib, seg_eq_inter_fib]
-  exact Set.inter_subset_inter (fib_subset_fib_of_le_of_le ht ht' htt' ht'z)
-    (fib_subset_fib_of_le_of_le' hs hs' hs's hzs')
+  exact Set.inter_subset_inter (fib_subset_fib_of_compositional hcomp ht ht' htt' ht'z)
+    (fib_subset_fib_of_compositional' hcomp hlim hs hs' hs's hzs')
+
+/--
+Segment monotonicity: shrinking a constraint segment's endpoints towards `z` (from `t` up to `t'`
+below `z`, and from `s` down to `s'` above `z`) tightens the constraint.
+
+A one-line corollary of `seg_subset_seg_of_compositional`, which records that *Compositionality*
+and *Limit* are the whole of what the argument consumes.
+-/
+theorem seg_subset_seg [F.IsRegular] {τ : PartialHistory F} {z t s t' s' : F.Duration}
+    (ht : τ.domain t) (hs : τ.domain s) (ht' : τ.domain t') (hs' : τ.domain s')
+    (htt' : t ≤ t') (ht'z : t' ≤ z) (hzs' : z ≤ s') (hs's : s' ≤ s) :
+    Seg F.TaskRel (τ.states t' ht') (τ.states s' hs') (z - t') (s' - z)
+      ⊆ Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z) :=
+  seg_subset_seg_of_compositional F.comp F.limit ht hs ht' hs' htt' ht'z hzs' hs's
 
 /--
 When `z` is a domain time, its zero-duration fiber is contained in *every* constraint on `z` —

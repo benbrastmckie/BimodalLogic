@@ -13,6 +13,12 @@
 - **Plan Version**: 2 — revision of `plans/01_restore-saturation-settle-nests.md`, which it
   supersedes. Two user-decided additions are folded in (siting and prose drift); see
   **Revision Note (v2)** below for the exact delta.
+- **Plan Revision (v2.1, in place)**: Phase 3's blocker is settled by the two user authorizations
+  recorded in `.decisions.json` (cycles 1 and 2) — `(hlim : TaskFrame.Limit F.TaskRel)` beside
+  `hcomp` on `fib_subset_fib_of_compositional'`, `seg_subset_seg_of_compositional`,
+  `hasCofinalNest_of_countable` and `sInter_constraints_nonempty_of_countable`, with the two
+  pinned-block docstrings and the Phase 3 checklist parenthetical corrected to match. No phase was
+  added, removed or reordered; no `[COMPLETED]` phase was touched; no mathematics changed.
 - **Artifacts**: plans/02_restore-saturation-settle-nests.md (this file);
   summaries/01_restore-saturation-settle-nests-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
@@ -308,7 +314,7 @@ strictness.
 | `phi n ^ 2 < 2` does not fall out of the existing invariants | M | L | Worked through during planning and it does: with `e = (1/2)^n` and `x = nt n`, `nt_err` gives `x² - 2 ≤ e/4` and `nt_one_le` gives `x ≥ 1`, so `(x-e)² - 2 ≤ e(1/4 - 2x + e) ≤ -3e/4 < 0`. `nlinarith` with `nt_err n`, `nt_one_le n` and `pow_le_one` bounds on `e` is the expected discharge; `nlinarith` hint list is pre-computed in Phase 2's tasks |
 | `1 ≤ phi n` is false at `n = 0, 1` (`phi 0 = 1/2`, `phi 1 = 11/12`), silently breaking `straddle` membership | M | **H** | This is exactly why the nest is indexed `phi (n + 2)`, not `phi n`. `phi 2 = 475/408 > 1` by `norm_num [phi, nt]` and `phi_mono` lifts it to all `n + 2`. The `1 ≤ a` conjunct of `straddle` is load-bearing and the file's own comment at `ConstraintWitnesses.lean:1097-1101` already warns that it is easy to lose |
 | `hasCofinalNest_of_countable` is larger than budgeted: four regimes (domain below only, above only, straddling, and the `A`-has-max / `B`-has-min degenerate cases) | M | M | The regimes are not four independent proofs. `IsPaired`'s own docstring records the global collapse — a domain straddling `z` gives segments only, a one-sided domain gives fibers only — so there are exactly **two** regimes, and the one-sided one is a chain already by monotonicity with no construction at all. Only the straddling regime needs the diagonal. If the phase overruns, split at that boundary: the one-sided regime lands first as `hasCofinalNest_of_one_sided` and the straddling regime follows |
-| The three monotonicity lemmas are `[F.IsRegular]`-bound, so any proof using them drags *Saturation* back in and makes the `S₁`-sufficiency result vacuous | **H** | **H** (certain, unless mitigated) | This is the central honesty hazard of Phases 3–5 and Phase 3 exists solely to close it. `fib_subset_fib_of_le_of_le`, `fib_subset_fib_of_le_of_le'` and `seg_subset_seg` consume `F.forward_comp` and `F.reflection` only — `Compositional F.TaskRel` plus a `FrameOver` field, never `F.saturation`. Phase 3 restates each with an explicit `hcomp` hypothesis and keeps the old name as a one-line corollary, so no call site changes. **No theorem downstream of Phase 3 may carry `[F.IsRegular]`** |
+| The three monotonicity lemmas are `[F.IsRegular]`-bound, so any proof using them drags *Saturation* back in and makes the `S₁`-sufficiency result vacuous | **H** | **H** (certain, unless mitigated) | This is the central honesty hazard of Phases 3–5 and Phase 3 exists solely to close it. `fib_subset_fib_of_le_of_le`, `fib_subset_fib_of_le_of_le'` and `seg_subset_seg` consume `F.forward_comp` and the reflection law only — `Compositional F.TaskRel` plus, on the two above-`z` ones, `Limit F.TaskRel`; the reflection law is the **derived theorem** `FrameOver.reflection_of_limit`, not a `FrameOver` field, and it is consumed at duration zero as injectivity. Neither hypothesis is `F.saturation`. Phase 3 restates each with an explicit `hcomp` hypothesis and keeps the old name as a one-line corollary, so no call site changes. **No theorem downstream of Phase 3 may carry `[F.IsRegular]`** |
 | Adding a `def` to `TaskFrame.lean` triggers a whole-library rebuild | M | **H** | Expected and accepted, not avoided: the bare-relation axiom section's docstring claims all the frame axioms live there, and siting `NestSaturation` elsewhere would falsify it. Phase 1 is budgeted for the rebuild and does nothing else, so the cost is paid once |
 | `Extension/Completion.lean` (543 lines) crosses the 1500-line `longFile` limit once Phases 4, 5 and 6 land | L | L | Measured hypothesis, confirmed in Phase 5. Headroom is ~950 lines against an expected ~250. If crossed, the pre-authorised response is an in-source `set_option linter.style.longFile N` baseline after the module docstring, exactly as `StateTopology/Counterexamples.lean` does — the sanctioned form under invariant C30. A new sibling module is the fallback only if the baseline is refused |
 | `ConstraintWitnesses.lean` (1372 lines) crosses the same limit in Phases 2 and 8 | M | **H** | Same mitigation, and the exposure is higher because the file is already close. If an in-source baseline is already present, raise it; do **not** split the module — `docs/ARCHITECTURE.md` records that nothing under `FormalSystem/` imports these modules, and a new sibling importing `ConstraintWitnesses` would falsify that |
@@ -588,15 +594,19 @@ Both are hypotheses, not facts.
 
 ---
 
-### Phase 3: Weaken the three monotonicity lemmas off `[F.IsRegular]` [BLOCKED]
+### Phase 3: Weaken the three monotonicity lemmas off `[F.IsRegular]` [COMPLETED]
 
 **Goal**: Close the central honesty hazard before it can contaminate Phases 4 and 5. The fiber and
-segment monotonicity lemmas consume *Compositionality* and the `FrameOver` reflection field and
-nothing else, but they are stated at `[F.IsRegular]`, which carries `saturation`. Any
+segment monotonicity lemmas consume *Compositionality* and *Limit* and nothing else (the
+reflection law is the derived theorem `FrameOver.reflection_of_limit`, not a `FrameOver` field),
+but they are stated at `[F.IsRegular]`, which carries `saturation`. Any
 `S₁`-sufficiency result proved through them would be vacuous. Restate each with an explicit
 hypothesis and keep the existing names as corollaries, so no call site changes.
 
-**BLOCKER** (Phase 3):
+**BLOCKER** (Phase 3) — **RESOLVED** by user authorization (`.decisions.json`, cycles 1 and 2):
+add `(hlim : TaskFrame.Limit F.TaskRel)` beside `hcomp` on the four affected pinned signatures,
+and correct the two pinned-block docstrings and this phase's checklist parenthetical that asserted
+the refuted ground. Retained below as the record of why the recorded signature changed:
 
 - **What failed**: the pinned `## Lean Challenge Statements` signature for
   `PartialHistory.fib_subset_fib_of_compositional'` — *Compositionality* as its only frame
@@ -659,22 +669,40 @@ hypothesis and keep the existing names as corollaries, so no call site changes.
       (hab : a ≤ b) (hbz : b ≤ z) : Fib F.TaskRel (τ.states b hb) (z - b) ⊆
       Fib F.TaskRel (τ.states a ha) (z - a)`, transcribing the existing proof with
       `F.forward_comp` replaced by the composition half projected out of `hcomp`. *(completed)*
-- [ ] Add the mirror `fib_subset_fib_of_compositional'` the same way (its extra ingredient,
-      `F.reflection`, is a `FrameOver` field and needs no instance). *(BLOCKED — the parenthetical
-      is false as measured and the pinned signature states a false proposition; see BLOCKER above)*
-- [ ] Add `seg_subset_seg_of_compositional`, transcribing `seg_subset_seg` over the two new fiber
-      lemmas. *(BLOCKED — proved over the primed fiber lemma; see BLOCKER above)*
-- [ ] Rewrite `fib_subset_fib_of_le_of_le`, `fib_subset_fib_of_le_of_le'` and `seg_subset_seg` as
-      **one-line corollaries** *(partial: `fib_subset_fib_of_le_of_le` done; the other two await
-      the BLOCKER decision)* applying the new lemmas to `F.comp`. Their names, statements and
+- [x] Add the mirror `fib_subset_fib_of_compositional'` the same way, taking *Compositionality*
+      **and** *Limit* explicitly: its extra ingredient, the reflection law, is the derived theorem
+      `FrameOver.reflection_of_limit` and is consumed at duration zero as injectivity, which is
+      *Limit*. Neither hypothesis is *Saturation*, so no instance binder appears.
+      *(deviation: altered — the plan's original parenthetical claimed `F.reflection` is a
+      `FrameOver` field needing no instance; that is false as measured and the pinned signature it
+      justified stated a false proposition. User-authorized repair: add
+      `(hlim : TaskFrame.Limit F.TaskRel)`. See the BLOCKER block above.)*
+- [x] Add `seg_subset_seg_of_compositional`, transcribing `seg_subset_seg` over the two new fiber
+      lemmas, and inheriting `hlim` from the primed one.
+      *(deviation: altered — same authorized `hlim` addition.)*
+- [x] Rewrite `fib_subset_fib_of_le_of_le`, `fib_subset_fib_of_le_of_le'` and `seg_subset_seg` as
+      **one-line corollaries** applying the new lemmas to `F.comp` (and, on the two above-`z`
+      ones, `F.limit`). Their names, statements and
       implicit-argument order must be unchanged — that is what makes this phase a hypothesis
       weakening rather than an interface change, and it is verified by every downstream call site
       still compiling untouched.
-- [ ] Record in each new docstring that the hypothesis actually consumed is *Compositionality*
-      alone, that the split exists so the `S₁`-sufficiency results can be stated without
-      `[F.IsRegular]` (forward reference to Phase 5), and the `Paper:` line each inherits from its
-      corollary.
-- [ ] `lake build` green, sorry-free, warning-free. Commit.
+- [x] Record in each new docstring the hypotheses actually consumed — *Compositionality* alone on
+      the unprimed fiber lemma, *Compositionality* plus *Limit* on the primed fiber lemma and on
+      the segment lemma — that the split exists so the `S₁`-sufficiency results can be stated
+      without `[F.IsRegular]` (forward reference to Phase 5), and the `Paper:` line each inherits
+      from its corollary.
+- [x] `lake build` green, sorry-free, warning-free. Commit.
+
+**Scope Hypothesis result**: **confirmed**. `grep -rn 'fib_subset_fib_of_le_of_le\|seg_subset_seg'
+FormalSystem/ --include=*.lean` restricted to files other than `Extension/Constraint.lean` returns
+**nothing**, before and after; the full `lake build` is green with no edit to any consuming module.
+
+**Verification result**: full `lake build` exit 0, 2726 jobs, zero `error:` and zero `warning:`
+lines. `grep -n 'IsRegular' Extension/Constraint.lean` shows the instance binder only on the
+corollaries and the untouched declarations, never on `fib_subset_fib_of_compositional`,
+`fib_subset_fib_of_compositional'` or `seg_subset_seg_of_compositional`; `#print axioms` on the
+latter two reports exactly `propext`, `Classical.choice`, `Quot.sound` and neither printed
+statement mentions `IsRegular`.
 
 **Timing**: 1 hour
 
@@ -773,8 +801,11 @@ hypothesis on `D` at all.
 **Tasks**:
 
 - [ ] Add `theorem hasCofinalNest_of_countable (hcomp : TaskFrame.Compositional F.TaskRel)
-      (τ : PartialHistory F) (z : F.Duration) (hcount : {t : F.Duration | τ.domain t}.Countable) :
-      HasCofinalNest τ z`, using **only** the Phase 3 `_of_compositional` monotonicity lemmas.
+      (hlim : TaskFrame.Limit F.TaskRel) (τ : PartialHistory F) (z : F.Duration)
+      (hcount : {t : F.Duration | τ.domain t}.Countable) : HasCofinalNest τ z`, using **only** the
+      Phase 3 `_of_compositional` monotonicity lemmas. *(deviation: altered — `hlim` added under
+      the same user authorization as Phase 3's; the straddling regime routes through
+      `seg_subset_seg_of_compositional`, which consumes *Limit*.)*
 - [ ] Split on `IsPaired`'s recorded global collapse rather than on four ad hoc cases. There are
       exactly two regimes, and the docstring must say so:
       - **One-sided domain** (no `t ∈ X` is paired): `Constraints τ z` is fibers only, and
@@ -796,10 +827,14 @@ hypothesis on `D` at all.
       cannot discharge without a Hölder embedding it does not have.
 - [ ] Add `theorem sInter_constraints_nonempty_of_countable
       (hS1 : TaskFrame.NestSaturation F.TaskRel) (hcomp : TaskFrame.Compositional F.TaskRel)
-      (τ : PartialHistory F) (z : F.Duration) (hne : ∀ c ∈ Constraints τ z, c.Nonempty)
+      (hlim : TaskFrame.Limit F.TaskRel) (τ : PartialHistory F) (z : F.Duration)
+      (hne : ∀ c ∈ Constraints τ z, c.Nonempty)
       (hcount : {t : F.Duration | τ.domain t}.Countable) : (⋂₀ Constraints τ z).Nonempty`, the
       composition of Phase 4's reduction with the discharge. This is the headline: **over any
       history with countably many times, `S₁` buys exactly what `S₁ᵈ` buys at `lem:step`.**
+      *(deviation: altered — `hlim` added under the same user authorization, inherited from
+      `hasCofinalNest_of_countable`. Neither `hcomp` nor `hlim` is *Saturation*, so the printed
+      statement still contains no `IsRegular`, and the non-vacuity check below is unweakened.)*
 - [ ] Add two `example`s as acceptance tests — not pinned theorems — recording that a subset of
       `ℤ` and a subset of `ℚ` are automatically countable, so the hypothesis is free at both
       instantiated carriers. Keep them in the tree's existing `example` idiom (`TaskFrame.lean`'s
@@ -1347,17 +1382,22 @@ theorem fib_subset_fib_of_compositional {τ : PartialHistory F} {z a b : F.Durat
     TaskFrame.Fib F.TaskRel (τ.states b hb) (z - b)
       ⊆ TaskFrame.Fib F.TaskRel (τ.states a ha) (z - a) := sorry
 
-/-- Fiber monotonicity above `z`, the mirror image, on *Compositionality* plus the `FrameOver`
-reflection field alone. -/
+/-- Fiber monotonicity above `z`, the mirror image, on *Compositionality* plus *Limit* alone.
+The reflection law is a **derived theorem** (`FrameOver.reflection_of_limit`), not a `FrameOver`
+field: off zero it is definitional content of `TaskFrame.reflect`, and at duration zero it is
+injectivity, which is *Limit*. Both are `def:frame` constraints and neither is *Saturation*, so
+this stays free of the `IsRegular` instance. -/
 theorem fib_subset_fib_of_compositional' {τ : PartialHistory F} {z a b : F.Duration}
-    (hcomp : TaskFrame.Compositional F.TaskRel) (ha : τ.domain a) (hb : τ.domain b)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hlim : TaskFrame.Limit F.TaskRel)
+    (ha : τ.domain a) (hb : τ.domain b)
     (hba : b ≤ a) (hzb : z ≤ b) :
     TaskFrame.Fib F.TaskRel (τ.states b hb) (z - b)
       ⊆ TaskFrame.Fib F.TaskRel (τ.states a ha) (z - a) := sorry
 
-/-- Segment monotonicity on *Compositionality* alone. -/
+/-- Segment monotonicity on *Compositionality* plus *Limit* — the below-`z` half needs only
+*Compositionality*, and the above-`z` half inherits *Limit* from the primed fiber lemma. -/
 theorem seg_subset_seg_of_compositional {τ : PartialHistory F} {z t s t' s' : F.Duration}
-    (hcomp : TaskFrame.Compositional F.TaskRel)
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hlim : TaskFrame.Limit F.TaskRel)
     (ht : τ.domain t) (hs : τ.domain s) (ht' : τ.domain t') (hs' : τ.domain s')
     (htt' : t ≤ t') (ht'z : t' ≤ z) (hzs' : z ≤ s') (hs's : s' ≤ s) :
     TaskFrame.Seg F.TaskRel (τ.states t' ht') (τ.states s' hs') (z - t') (s' - z)
@@ -1385,6 +1425,7 @@ theorem sInter_constraints_nonempty_of_nestSaturation
 domain gives segments indexed by `A × Bᵒᵖ`, diagonalised through the running extrema of
 enumerations of `A` and `B`. No hypothesis on `D`, and no `Archimedean`/Hölder route. -/
 theorem hasCofinalNest_of_countable (hcomp : TaskFrame.Compositional F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel)
     (τ : PartialHistory F) (z : F.Duration)
     (hcount : {t : F.Duration | τ.domain t}.Countable) : HasCofinalNest τ z := sorry
 
@@ -1395,6 +1436,7 @@ development instantiates; it is kept on the naturalness criterion, and this theo
 sharpness result that records the fact rather than a case for weakening `def:frame`. -/
 theorem sInter_constraints_nonempty_of_countable
     (hS1 : TaskFrame.NestSaturation F.TaskRel) (hcomp : TaskFrame.Compositional F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel)
     (τ : PartialHistory F) (z : F.Duration)
     (hne : ∀ c ∈ Constraints τ z, c.Nonempty)
     (hcount : {t : F.Duration | τ.domain t}.Countable) :
