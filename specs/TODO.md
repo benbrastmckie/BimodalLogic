@@ -1,5 +1,5 @@
 ---
-next_project_number: 665
+next_project_number: 666
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 665
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,662,664 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,662,664,665 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650,663 | 298,464,502,563,649,662 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -70,6 +70,7 @@ next_project_number: 665
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
+665 [NOT STARTED] — Prove soundness of witness-family certificates: a labelled...
 
 ### Formula Refactor
 
@@ -102,6 +103,38 @@ next_project_number: 665
   └─ 663 [NOT STARTED] — Add a repo-wide hypothesis-honesty gate so no...
 
 ## Tasks
+
+### 665. Witness family certificate soundness
+- **Effort**: 1-2 weeks
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Prove soundness of witness-family certificates: a labelled bi-lasso family satisfying local coherence, fulfilment and box faithfulness presents a ShiftSet model over intOrder whose truth agrees with the labels on the subformula closure, so any such family refutes a Z-time consequence. This is the soundness half of the quasimodel / ShiftSet route, split out from task 623 so that it lands first and independently; 623 keeps the completeness (compression) half and the Decidable (ValidZTime) assembly.
+
+MOTIVATION. The ModelChecker repository (~/Projects/ModelChecker, task 184 there) is being redesigned so that its Z3 search returns exactly this finite object for premises Γ and conclusions Σ over discrete time. The theorem here is what makes such an output a machine-checkable countermodel. Probe476.fmp_false (specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean) rules out finite IntPresentations as the searched object, and BiLasso/Agreement.lean's three limits rule out bare windows, so the labelled family is the right definition. Full design rationale: ~/Projects/ModelChecker/specs/184_refactor_bimodal_theory_tests_green_and_paper_lean_aligned/reports/02_partial-model-formal-results.md (sections 1-3).
+
+DEFINITIONS TO ADD (presentation-free; do not index by IntPresentation).
+- LabelledLasso: back, mid, fwd : List (Finset Formula), back ≠ [], fwd ≠ [], every label ⊆ subformulaClosure of the target set; decoded label function L : ℤ → Finset Formula by the three-segment scheme of BiLasso.unrollOf (Basic.lean:127; Periodic.lean already states the decoding at an arbitrary inhabited type). Origin pinned as in BiLasso.
+- WitnessFamily: a box guess bx : Formula → Bool (read only at χ with box χ in the closure) and a nonempty list of LabelledLasso, with lasso 0 the main one.
+- LocalCoherentLab: the LocalCoherent clauses of BiLasso/Annotation.lean:301 minus the atom and presentation clauses (bot absent; imp iff; box χ ∈ L t ↔ bx χ; untl/snce one-step unfolding with t+1 / t-1). Atoms are unconstrained: the valuation is the atom part of the label.
+- FulfillingLab: Fulfilling (Annotation.lean:336) verbatim on the decoded label function.
+- BoxFaithful: for each box χ in the closure, bx χ = true ↔ ∀ i t, χ ∈ L_i t.
+- Target Γ Σ: some t with Γ ⊆ L_0 t and Σ ∩ L_0 t = ∅.
+- WitnessFamily.std : ShiftSet intOrder with Carrier := Fin (k+1) × ℤ, sh (i,t) d := (i, t+d), A p (i,t) := atom p ∈ L_i t. sh_zero and sh_add are arithmetic; sep is trivial over ℤ. Its frame, model and histories are ShiftSet.frame / ShiftSet.model / ShiftSet.hist (Semantics/ShiftSet.lean), all landed; total_eq_orbit gives that the model's world histories are exactly the lassos and their shifts; membership in the Z-time class is TaskFrame.isZTime_of_instances.
+
+THEOREMS.
+(T1) Agreement: for a family satisfying LocalCoherentLab, FulfillingLab and BoxFaithful, ∀ i t (χ ∈ closure), TruthAt std.model (std.hist (i,0)) t χ ↔ χ ∈ L_i t. Proof by induction on χ through ShiftSet.forward_repr; untl/snce via Unfold.lean's truth_untl_succ / truth_snce_pred plus fulfilment, as in BiLasso/TruthLemma.lean's truth_along_annot (the single-lasso, oracle-relative version). The one new step is that BoxFaithful makes bx a sound oracle for std, which is immediate because std's histories are exactly the lassos.
+(T1') Consequence corollaries: Target Γ Σ implies, for every σ ∈ Σ, ¬ SemanticConsequenceIn FrameClass.ZTime Γ σ (Semantics/Validity.lean), and via FrameClass.Sat.anti also ¬ SemanticConsequenceIn FrameClass.Base Γ σ; plus the joint form ∃ F in ZTime, M, τ, t with every γ ∈ Γ true and every σ ∈ Σ false at (τ, t), which is the statement ModelChecker reports. Mirror not_validZTime_of_satAtState (BiLasso/Assembly.lean:58).
+(T2) Decidable instances for LocalCoherentLab, FulfillingLab, BoxFaithful and Target that compute by bounded window scans (adapt BiLasso/Decide.lean's window collapses from Annot to LabelledLasso). Computable, not necessarily choice-free; do not promise choice-freedom (see Check.lean's note on wlem_of_saturation).
+(T3) Non-vacuity: a family for □(p ∨ Fp ∨ Pp) ∧ □(p → ¬Pp) (one lasso, p only at 0) accepted by the T2 instances, and a #guard that no family with all segment lengths ≤ 2 exists for the negation of the bimodal axiom MF. BiLasso/Examples.lean is the precedent.
+
+CONSTRAINTS. Sorry-free; axiom set within [propext, Classical.choice, Quot.sound]; Basic.lean is held stable (BiLasso README) so add modules beside it, e.g. Metalogic/Decidability/BiLasso/Family/*.lean or Metalogic/Decidability/WitnessFamily/*.lean; update the BiLasso README module table and Decidability README. Field names should be stable because the ModelChecker JSON export mirrors them field for field. Do not attempt the completeness (compression) direction here; that stays in task 623.
+
+ACCEPTANCE. T1, T1', T2, T3 landed sorry-free; lake build green; check-module-invariants.sh green; README tables updated.
+
+---
 
 ### 664. Ingest cmiel kuhlmann ball space source
 - **Status**: [NOT STARTED]
