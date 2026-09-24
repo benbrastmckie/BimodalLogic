@@ -1,7 +1,7 @@
 # Implementation Plan: Task #624
 
 - **Task**: 624 - translation_product_task_semantics_visibility
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md
@@ -113,39 +113,39 @@ acts only on what Phase 1 confirms is still outstanding, and Phase 3 records the
 
 ---
 
-### Phase 1: Verify the reconciliation ledger [NOT STARTED]
+### Phase 1: Verify the reconciliation ledger [COMPLETED]
 
 **Goal**: Establish, by direct observation of the live tree, whether each of the research
 report's four recommendations is delivered, forwarded, or out of repository scope — so that the
 closeout rests on evidence rather than on the description's 2026-09-22 note.
 
 **Tasks**:
-- [ ] Read `reports/01_translation-product-visibility.md` §Recommendations (lines 371-410) and
+- [x] Read `reports/01_translation-product-visibility.md` §Recommendations (lines 371-410) and
       §Appendix B (UNVERIFIED items, lines 485-496) in full.
-- [ ] Rec 1: confirm `FormalSystem/Semantics/Frames/TranslationProduct.lean`,
+- [x] Rec 1: confirm `FormalSystem/Semantics/Frames/TranslationProduct.lean`,
       `FormalSystem/Metalogic/Independence/TranslationProductCoarse.lean` and
       `FormalSystem/Semantics/HistoryMorphism.lean` all exist and contain zero `sorry`
       (`grep -c sorry` on each; expect `0`).
-- [ ] Rec 1: confirm all three of `validIn_iff_recurrenceFree`,
+- [x] Rec 1: confirm all three of `validIn_iff_recurrenceFree`,
       `plusValidIn_iff_recurrenceFree`, `starValidIn_iff_recurrenceFree` are `theorem`
       declarations in `TranslationProduct.lean`.
-- [ ] Rec 1: confirm `specs/evidence/translation-product/limit-idle-mirror.lean` exists (probe
+- [x] Rec 1: confirm `specs/evidence/translation-product/limit-idle-mirror.lean` exists (probe
       02's `zeroFix` mirror).
-- [ ] Rec 1: confirm the module docstring of `TranslationProduct.lean` carries the standing
+- [x] Rec 1: confirm the module docstring of `TranslationProduct.lean` carries the standing
       caveat (proof device / time-unfolding, never an intended model) and the frame-level
       non-reflection record. If it does not, that is a finding for the summary — do NOT edit the
       module (out of scope; it belongs to task 645's territory).
-- [ ] Rec 1: confirm task 645 is `completed` in `specs/state.json` and that
+- [x] Rec 1: confirm task 645 is `completed` in `specs/state.json` and that
       `specs/645_port_translation_product_into_library/summaries/01_port-translation-product-summary.md`
       records a green build. Do NOT run a full `lake build` — the port is already committed and
       verified by 645, and this task must not touch `FormalSystem/`.
-- [ ] Rec 3: confirm task 559's description in `specs/state.json` carries the translation-product
+- [x] Rec 3: confirm task 559's description in `specs/state.json` carries the translation-product
       findings (established item (h), plus the dense-countermodel scoping in item (b)).
-- [ ] Rec 2 / Q5 residue: confirm task 653 is `completed` and that its description carries both
+- [x] Rec 2 / Q5 residue: confirm task 653 is `completed` and that its description carries both
       the stability-modal residue and the manuscript-remark question as its recommendation (ii).
-- [ ] Rec 4: confirm task 618's description contains **no** reference to task 624, the
+- [x] Rec 4: confirm task 618's description contains **no** reference to task 624, the
       translation product, or the pullback questions — i.e. that Phase 2 is genuinely needed.
-- [ ] Record each check's outcome (claim, command run, observed result, verdict) in a scratch
+- [x] Record each check's outcome (claim, command run, observed result, verdict) in a scratch
       ledger for Phase 3 to transcribe. Use the session scratchpad, not a file in the repository.
 
 **Timing**: 0.5 hours
