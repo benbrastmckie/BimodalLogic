@@ -98,8 +98,8 @@ next_project_number: 665
 
 ### Semantics
 
-624 [PLANNED] — RESEARCH TASK, verdict-first: what the translation product...
-662 [PARTIAL] — Settle whether plain S1 suffices or directedness is forced,...
+624 [IMPLEMENTING] — RESEARCH TASK, verdict-first: what the translation product...
+662 [IMPLEMENTING] — Settle whether plain S1 suffices or directedness is forced,...
   └─ 663 [NOT STARTED] — Add a repo-wide hypothesis-honesty gate so no...
 
 ## Tasks
@@ -143,7 +143,7 @@ Out of scope: changing IsRegular's fields, and unbundling binders that are legit
 ---
 
 ### 662. S1 vs directedness and restore saturation
-- **Status**: [PARTIAL]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 661
@@ -625,7 +625,7 @@ POST-RELOCATION NOTE (2026-09-21), written after this task's research. (A) LAYOU
 ---
 
 ### 624. Translation product task semantics visibility
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
@@ -686,6 +686,8 @@ CONSTRAINTS. `lake build FormalSystem` green with no new sorry at the end of eve
 Reconciliation note (task 629): unrelated mathematics with no dependency on the publication refactor programme's schedule (no edge added). Adopt task 636's citation form (`* [Author, *Title*][key]` against the root references.bib) once it lands, or migrate to it if this task is drafted first.
 
 CONVENTION NOTE (2026-09-21). Task 636 has landed: write ## References in the normal form of docs/development/REFERENCE_NORMAL_FORM.md, each key resolving in the root references.bib (typst/bibliography.bib no longer exists). The language-extension files are now under FormalSystem/{Plus,Minus,Star}Language/ with flat FormalSystem.{X}Language namespaces (task 634).
+
+FORWARDED APPENDIX ITEM (2026-09-24), from specs/624_translation_product_task_semantics_visibility/reports/01_translation-product-visibility.md section 2.4 ("Categorical reading -- posed, not settled"), which names this task as the recipient. The translation product of a task frame F -- states W x D, same duration group D, (w,s) =>_x (v,t) iff w =>_x v and t = s + x -- now lives in FormalSystem/Semantics/Frames/TranslationProduct.lean (definitions prodRel, FrameOver.translationProduct, liftH, projH; see also FormalSystem/Semantics/HistoryMorphism.lean for the morphism notion). The report observes that the morphisms of Path(prodFrame F) from (w,d) to (v,e) of length l are exactly the sections tau in Beh(F)(l) from w to v with e = d + l -- the description of the pullback of len : Path(F) -> BD+ along the functor (D, <=) -> BD+ sending the poset arrow d <= e to the duration e - d. Three questions to POSE, none of them settled and none needed by that report: (a) is Path(prodFrame F) the pullback of len along (D, <=) -> BD+ on the nose, with objects W x D, arrows as above, and the projection Path(prodFrame F) -> Path(F) as the pullback leg? (b) is len restricted to the pullback the "height" functor to (D, <=), and does cor:path-fibration's discrete Conduche property transfer to it? (c) do liftH / projH -- unique lifts of total histories -- express that the pullback along a POSET is a discrete fibration over D? SCOPE: this is an APPENDIX ITEM, NOT A SCOPE EXPANSION. It is to be taken up only once Path(F) itself exists, consistent with this task's existing HARD SCOPE LIMIT; the product's path category is then the natural test case for the pullback reading. Nothing in this task's current phases depends on it.
 
 ---
 
