@@ -1,16 +1,16 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 3,
-  "summary": "Wrote a 10-phase, 15-hour implementation plan for task 665's witness-family certificate soundness half, built on the research report's compiled sorry-free T1/T1' spike; T3's infeasible enumeration guard is replaced per the recorded decision by a proved impossibility theorem plus a hand-built negative witness.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 5,
+  "summary": "Landed the soundness half of the quasimodel / ShiftSet route as the new presentation-free FormalSystem/Metalogic/Decidability/WitnessFamily/ directory: T1 agreement, T1' consequence corollaries, T2 decidability for all four certificate predicates, and T3 non-vacuity plus impossibility, all sorry-free. All 10 plan phases completed; lake build green with zero warnings and check-module-invariants.sh ALL CHECKS PASSED.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/665_witness_family_certificate_soundness/plans/01_witness-family-certificate-soundness.md",
-      "summary": "10-phase, 15-hour plan for the witness-family certificate soundness half (T1, T1', T2, T3) in a new presentation-free WitnessFamily/ subdirectory."
+      "type": "summary",
+      "path": "specs/665_witness_family_certificate_soundness/summaries/01_witness-family-certificate-soundness-summary.md",
+      "summary": "Witness-family certificates: T1, T1', T2 and T3 landed sorry-free in a new presentation-free WitnessFamily/ directory."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 10,
   "phases_total": 10,
   "blockers": []
 }
