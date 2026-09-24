@@ -4,7 +4,9 @@
 
 The single shape every `## References` block in the live Lean trees (`FormalSystem/`,
 `BimodalTools/`, `Tests/`) is written in, and the recorded gate baselines a sweep of those
-blocks must hold constant. It is a convention document, like
+blocks must hold constant. Section 3 adds the one normal form here that is not a `## References`
+entry — the per-declaration constraint-consumption line — because it is a docstring convention
+with a gate, which is what this document records. It is a convention document, like
 [LEAN_STYLE_GUIDE.md](LEAN_STYLE_GUIDE.md); the programme it serves is
 [PUBLICATION_REFACTOR.md](PUBLICATION_REFACTOR.md).
 
@@ -111,7 +113,85 @@ resolves it relative to the citing file.
 `FormalSystem/PlusLanguage/PlusLimitClosure.lean` carries all three forms in one block and is
 the reference implementation.
 
-## 3. What does not belong under `## References`
+The fourth normal form this document records, the constraint-consumption line of section 3, is
+not one of these: it is a claim about a declaration's proof rather than a pointer to a source,
+and it lives in that declaration's own doc block rather than under `## References`.
+
+## 3. The constraint-consumption line
+
+A fourth normal form, and the only one of the four that is not a `## References` entry: it is a
+line in a *declaration's own* `/-- … -/` doc block, and it belongs there rather than under
+`## References` because it makes a claim about the declaration's proof rather than pointing a
+reader somewhere.
+
+```
+Constraints consumed: Compositionality, Seriality, Limit
+```
+
+The literal prefix `Constraints consumed:` then a comma-separated list, on one line, from the
+closed case-sensitive vocabulary
+
+```
+Compositionality   Seriality   Limit   Saturation
+```
+
+— the four fields of `FrameOver.IsRegular` (`FormalSystem/Semantics/TaskFrame.lean`), which is
+the constraint bundle `def:frame` names. `None` is the whole list for a result that consumes no
+constraint at all. Nothing else is admissible: a token outside the vocabulary fails the gate
+rather than being read as prose.
+
+### What the line claims
+
+**The listed constraints are the whole of what the elaborated proof term reaches, and every
+unlisted constraint is thereby CLAIMED unconsumed.** That is what makes the line a checkable
+claim rather than a comment, and it is why the form is a *consumption enumeration* rather than
+a bare "independent of *Saturation*" assertion:
+
+- an independence assertion says nothing about the sites that legitimately *do* consume the
+  constraint, so the audit record would cover only the defects; the enumeration covers the whole
+  population, and marking an honest `Saturation` consumer is as much a use of the form as
+  marking a result that does without it;
+- "independence" is already spoken for. `FormalSystem/Metalogic/Independence/` means *logical*
+  independence of proof-system axioms — an unrelated notion that a second, colliding sense of
+  the word in docstrings would make unsearchable.
+
+### Consumption is not elimination
+
+The two are different relations and this tree uses both words precisely:
+
+- **elimination** is spending a constraint on a conclusion that does not mention it;
+- **consumption** is the elaborated proof term reaching the field *at all*.
+
+The line enumerates consumption. `PartialHistory.isTotal_of_isMax`
+(`FormalSystem/Semantics/Extension/Extension.lean`) is the worked example: its docstring says it
+is "not a second *Saturation* elimination site", which reads like an independence claim and is
+not one — it consumes *Saturation* and says so, while denying only that it *eliminates* it. Its
+marker line therefore lists `Saturation`, and sits beside that sentence rather than replacing it.
+
+### Where it goes, and what gates it
+
+Inside the declaration's own `/--` block, not a `/-!` module block and not a `--` comment beside
+the statement: **check C34 of `scripts/check-module-invariants.sh` gates this**, and it reads the
+block through the same declaration-span machinery C20 uses, walking back past any `@[…]`
+attribute lines. C34 has two assertions and a census:
+
+- **C34a** — a marker whose list omits a constraint must sit over a declaration whose code does
+  not carry the bundling class at all. The scan runs from the declaration's keyword line to the
+  end of its span with comments masked, so the docstring's own prose is excluded by construction
+  and an in-proof `haveI : F.IsRegular` is caught.
+- **C34b** — a declaration carrying a bracketed `[F.IsRegular]` binder whose docstring reads as
+  an independence claim must carry a marker line. This half is a *trigger*, never a verdict: its
+  only remedy is a marker line, so a false positive costs one line and nothing else.
+- an **ungated census** of the binder population, printed at every run, which is the re-runnable
+  classification record rather than a one-time human read.
+
+See [MODULE_INVARIANTS.md](MODULE_INVARIANTS.md) for the row. Retrofitting the line onto an
+ordinary ambient theorem is permitted by this form and required by nothing: `[F.IsRegular]` is
+the correct hypothesis for a soundness, validity or transfer result, and the defect the form
+exists to catch is the *conjunction* of an independence claim with the bundling class, never the
+class alone.
+
+## 4. What does not belong under `## References`
 
 - Tooling notes: measured benchmark ratios, "the companion markdown transcription is corrupt",
   phase-history lines. A statement that tells a reader how to *use* the module stays, in the
@@ -128,7 +208,7 @@ A block that records history — what an earlier revision cited, what gap was cl
 deleted, what never existed — is a historical record and is preserved verbatim. Mechanical
 rewriting that falsifies one of those is the most expensive mistake available here.
 
-## 4. Re-anchoring after a docstring edit
+## 5. Re-anchoring after a docstring edit
 
 Editing a module's leading `/-! … -/` docstring moves every line below it, so every
 `file.lean:NNN` citation pointing into that file goes stale at once.
@@ -174,7 +254,7 @@ by `--recompute` and a **second `--recompute` rewrites nothing**; the content-ed
 spot behaves as stated; and the same doubled pass is detected and repaired by `--by-name`, whose
 second run likewise rewrites nothing.
 
-## 5. Recorded baselines
+## 6. Recorded baselines
 
 Measured on a clean tree before the normalisation sweep began, with
 `bash scripts/check-module-invariants.sh --no-build`, `bash scripts/readme-lint.sh` and

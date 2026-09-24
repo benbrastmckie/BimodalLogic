@@ -253,32 +253,32 @@ Lean phases.
 
 ---
 
-### Phase 2: Document the `Constraints consumed:` normal form [NOT STARTED]
+### Phase 2: Document the `Constraints consumed:` normal form [COMPLETED]
 
 **Goal**: Fix the marker convention in the one place the repository already documents docstring
 normal forms, so Phases 3-5 write markers to a written spec rather than to a plan.
 
 **Tasks**:
-- [ ] Read `docs/development/REFERENCE_NORMAL_FORM.md` and the three normal forms it already
+- [x] Read `docs/development/REFERENCE_NORMAL_FORM.md` and the three normal forms it already
       defines (bibliographic, paper anchor, module cross-reference), noting how each records its
       gating invariant.
-- [ ] Add a fourth normal form: **constraint-consumption line**. Specify the literal line shape
+- [x] Add a fourth normal form: **constraint-consumption line**. Specify the literal line shape
       (`Constraints consumed: Seriality, Limit`), that it lives in the declaration's own `/--`
       block, the closed case-sensitive comma-separated vocabulary
       `{Compositionality, Seriality, Limit, Saturation}`, and `None` for a constraint-free result.
-- [ ] State the semantics explicitly: **the listed constraints are the whole of what the elaborated
+- [x] State the semantics explicitly: **the listed constraints are the whole of what the elaborated
       proof term reaches, and every unlisted constraint is thereby CLAIMED unconsumed.** This is
       what makes the line a checkable claim rather than a comment.
-- [ ] Record the consumption-vs-elimination distinction as part of the convention: *elimination* is
+- [x] Record the consumption-vs-elimination distinction as part of the convention: *elimination* is
       spending a constraint on a conclusion that does not mention it; *consumption* is the
       elaborated proof term reaching the field at all. The marker enumerates consumption. Cite
       `isTotal_of_isMax`'s "not a second *Saturation* elimination site" as the worked example of a
       docstring that reads like an independence claim and is not one.
-- [ ] Record why the marker is positive (a consumption enumeration) rather than a bare independence
+- [x] Record why the marker is positive (a consumption enumeration) rather than a bare independence
       assertion: it covers the honest *Saturation*-consuming sites too, and it avoids colliding with
       `FormalSystem/Metalogic/Independence/`, which means logical independence of proof-system
       axioms and is unrelated.
-- [ ] Note that enforcement is C34 in `scripts/check-module-invariants.sh`, matching how the other
+- [x] Note that enforcement is C34 in `scripts/check-module-invariants.sh`, matching how the other
       three forms name their gates.
 
 **Timing**: 1.5 hours
@@ -286,6 +286,15 @@ normal forms, so Phases 3-5 write markers to a written spec rather than to a pla
 **Depends on**: none
 
 **Verification Tier**: prose
+
+**Result**: landed as `## 3. The constraint-consumption line` in
+`docs/development/REFERENCE_NORMAL_FORM.md`, with sections 3-5 renumbered to 4-6 (no anchor link
+into this document exists anywhere in the tree, so the renumber breaks nothing). *(deviation:
+altered — the form is a sibling top-level section rather than a fourth `### ` subsection of
+`## 2. The three forms`. Those three are `## References` citation forms; filing a per-declaration
+docstring claim among them would tell a reader to write it in a References block. Section 2's
+worked example and the document's opening both cross-link to it instead.)* Verified:
+`--no-build` harness green, C12 and C13 pass, no Lean file touched.
 
 **Files to modify**:
 - `docs/development/REFERENCE_NORMAL_FORM.md` - add the fourth normal form section
