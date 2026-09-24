@@ -44,6 +44,8 @@ here, in `TraceCertificate.lean`.
 | `BiLasso.lean` | Re-export for BiLasso subdirectory | Sorry-free; not itself imported by the main library build graph (one test file, `Tests/BimodalTest/Metalogic/PeriodicExtensionAxiomTest.lean`, does import it) |
 | `FMP/` | Finite model property proofs (6 files) | Sorry-free |
 | `BiLasso/` | Finitely presented bi-infinite ultimately-periodic step paths over an `IntPresentation` — the decision layer for *presented* ℤ-frames. Entry point `check` decides satisfiability at a state of one presented frame; it does **not** decide the logic (18 files) | Sorry-free; outside the build graph (the re-export is unimported), compile-checked by the C6 rot guard |
+| `WitnessFamily.lean` | Re-export for the WitnessFamily subdirectory | Sorry-free |
+| `WitnessFamily/` | Presentation-free certificates for ℤ-time refutation: `LabelledLasso`/`WitnessFamily`, the four conditions `LocalCoherentLab`/`FulfillingLab`/`BoxFaithful`/`Target`, the presented `ShiftSet` model `std`, the agreement theorems `truth_iff_mem` and `joint_countermodel`, the four decision instances `decidableLocalCoherentLab`/`decidableFulfillingLab`/`decidableBoxFaithful`/`decidableTarget`, and the impossibility theorems `no_witnessFamily_of_validZTime`/`no_witnessFamily_of_MF` (7 files) | Sorry-free; inside the build graph — the generated library root `FormalSystem.lean` imports every module under `FormalSystem/` directly, so `lake build` compiles all seven |
 | `Verified/` | Correctness theory for the tableau engine — termination bounds and the model-construction bridge; all files imported by the aggregator. See [Verified README](Verified/README.md) (21 files) | Sorry-free |
 | `Propositional/` | Self-contained Kalmár-style propositional decision procedure, independent of the modal/temporal/completeness machinery; all files imported by the aggregator. See [Propositional README](Propositional/README.md) (3 files) | Sorry-free |
 
@@ -152,6 +154,7 @@ same node, not drawn above to avoid a crossing line).
 - [Core README](../Core/README.md) - MCS foundations
 - [FMP README](FMP/README.md) - Finite model property
 - [BiLasso README](BiLasso/README.md) - Bi-lasso decision layer for presented ℤ-frames
+- [WitnessFamily README](WitnessFamily/README.md) - Presentation-free ℤ-time refutation certificates
 - [Verified README](Verified/README.md) - Correctness theory for the tableau engine
 - [Propositional README](Propositional/README.md) - Kalmár-style propositional decision procedure
 
@@ -162,4 +165,4 @@ same node, not drawn above to avoid a crossing line).
 
 ---
 
-*Last verified: 2026-09-21*
+*Last verified: 2026-09-24*

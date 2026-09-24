@@ -192,7 +192,7 @@ def L (W : WitnessFamily Γ Del) (i : Fin W.lassos.length) (t : ℤ) : Finset Fo
 def main (W : WitnessFamily Γ Del) : ℤ → Finset Formula := W.L W.mainIdx
 
 /-- Every decoded label of every lasso lies inside the target closure. -/
-theorem L_subset (W : WitnessFamily Γ Del) (i : Fin W.lassos.length) (t : ℤ) :
+theorem subset_closureOf (W : WitnessFamily Γ Del) (i : Fin W.lassos.length) (t : ℤ) :
     W.L i t ⊆ closureOf (Γ ++ Del) :=
   (W.lassos.get i).lab_subset t
 

@@ -26,7 +26,7 @@ segment lengths — never the presentation — so each transposes to `LabelledLa
 | `lab_congr_fwd`, `lab_congr_back` | `label_congr_fwd`, `label_congr_back` |
 | `scan_forward`, `scan_backward` | `scan_forward`, `scan_backward` |
 | `mem_all_neg_of_period`, `mem_all_fwd_of_period` | same names |
-| `clauseAt`, `CoherentAt`, `Coherent` | `clauseAt`, `LocalCoherentAt`, `LocalCoherent` |
+| `labClauseAt`, `CoherentAt`, `Coherent` | `clauseAt`, `LocalCoherentAt`, `LocalCoherent` |
 | `coherentAt_congr`, `coherent_iff_window` | `localCoherentAt_congr`, `localCoherent_iff_window` |
 | `UntlObl`, `SnceObl`, `UntlOblB`, `SnceOblB` | same names |
 | `untlObl_descend`, `snceObl_descend` | same names |
@@ -35,6 +35,11 @@ segment lengths — never the presentation — so each transposes to `LabelledLa
 | `eventClauseAt`, `FulfilAt`, `Fulfil` | `eventClauseAt`, `FulfilAt`, `Fulfilling` |
 | `fulfilAt_shift_back`, `fulfilAt_shift_fwd` | same names |
 | `fulfil_iff_window` | `fulfilling_iff_window` |
+
+The six names carrying a `lab`/`Lab` prefix here (`labClauseAt`, `instDecidableLabClauseAt`,
+`labCohWindowLo`, `labCohWindowHi`, `labFulWindowLo`, `labFulWindowHi`) differ from their
+ancestors only to keep the two files' base identifiers distinct: `C17`'s dead-declaration census
+keys on the last dot-segment, so two declarations sharing a base name would mask each other.
 
 Two of the ancestors are **dropped** rather than transposed: `unroll_congr_back` and
 `unroll_congr_fwd` are statements about *states*, and a `LabelledLasso` has none. Their absence
@@ -264,7 +269,7 @@ theorem mem_all_fwd_of_period (Λ : LabelledLasso C) {g : Formula} {b : ℤ} (hb
 
 /-! ## Local coherence, position by position
 
-`clauseAt` re-presents a single clause as a function of the data it actually reads: the three
+`labClauseAt` re-presents a single clause as a function of the data it actually reads: the three
 labels at `t - 1`, `t`, `t + 1`. The `atom` case is `True` — there is no presentation to compare
 an atom against, which is exactly the point of the family datatype.
 -/
@@ -274,7 +279,7 @@ The local clause a single closure member imposes, at explicit label data.
 
 `Lm`, `Lt`, `Lp` are the labels at `t - 1`, `t` and `t + 1`.
 -/
-def clauseAt (bx : Formula → Bool) (Lm Lt Lp : Finset Formula) : Formula → Prop
+def labClauseAt (bx : Formula → Bool) (Lm Lt Lp : Finset Formula) : Formula → Prop
   | Formula.atom _ => True
   | Formula.bot => True
   | Formula.imp a b => (Formula.imp a b ∈ Lt ↔ (a ∈ Lt → b ∈ Lt))
@@ -282,17 +287,17 @@ def clauseAt (bx : Formula → Bool) (Lm Lt Lp : Finset Formula) : Formula → P
   | Formula.untl g e => (Formula.untl g e ∈ Lt ↔ (e ∈ Lp ∨ (g ∈ Lp ∧ Formula.untl g e ∈ Lp)))
   | Formula.snce g e => (Formula.snce g e ∈ Lt ↔ (e ∈ Lm ∨ (g ∈ Lm ∧ Formula.snce g e ∈ Lm)))
 
-/-- `clauseAt` is decidable at every formula: each constructor's clause is a Boolean combination
+/-- `labClauseAt` is decidable at every formula: each constructor's clause is a Boolean combination
 of `Finset` memberships and `Bool` equalities. -/
-instance instDecidableClauseAt (bx : Formula → Bool) (Lm Lt Lp : Finset Formula) :
-    DecidablePred (clauseAt bx Lm Lt Lp) := by
+instance instDecidableLabClauseAt (bx : Formula → Bool) (Lm Lt Lp : Finset Formula) :
+    DecidablePred (labClauseAt bx Lm Lt Lp) := by
   intro ψ
-  cases ψ <;> (dsimp only [clauseAt]; infer_instance)
+  cases ψ <;> (dsimp only [labClauseAt]; infer_instance)
 
 /-- Local coherence's content at a single position of a single lasso. -/
 def CoherentAt (bx : Formula → Bool) (Λ : LabelledLasso C) (t : ℤ) : Prop :=
   Formula.bot ∉ Λ.lab t ∧
-    ∀ ψ ∈ C, clauseAt bx (Λ.lab (t - 1)) (Λ.lab t) (Λ.lab (t + 1)) ψ
+    ∀ ψ ∈ C, labClauseAt bx (Λ.lab (t - 1)) (Λ.lab t) (Λ.lab (t + 1)) ψ
 
 /-- `CoherentAt` is decidable at every position: its closure quantifier ranges over a `Finset`. -/
 instance instDecidableCoherentAt (bx : Formula → Bool) (Λ : LabelledLasso C) :
@@ -316,10 +321,10 @@ theorem coherentAt_congr (bx : Formula → Bool) (Λ : LabelledLasso C) {t t' : 
   rw [h0, hp, hm]
 
 /-- Lower end of the local-coherence window. -/
-def cohWindowLo (Λ : LabelledLasso C) : ℤ := -2 * Λ.nb
+def labCohWindowLo (Λ : LabelledLasso C) : ℤ := -2 * Λ.nb
 
 /-- Upper end (exclusive) of the local-coherence window. -/
-def cohWindowHi (Λ : LabelledLasso C) : ℤ := Λ.nm + 2 * Λ.nf
+def labCohWindowHi (Λ : LabelledLasso C) : ℤ := Λ.nm + 2 * Λ.nf
 
 /--
 **Local coherence collapses to one finite window.**
@@ -329,7 +334,7 @@ as well as `t`: a representative must have its whole neighbourhood in the period
 -/
 theorem coherent_iff_window (bx : Formula → Bool) (Λ : LabelledLasso C) :
     Coherent bx Λ ↔
-      ∀ t : ℤ, cohWindowLo Λ ≤ t → t < cohWindowHi Λ → CoherentAt bx Λ t := by
+      ∀ t : ℤ, labCohWindowLo Λ ≤ t → t < labCohWindowHi Λ → CoherentAt bx Λ t := by
   constructor
   · intro h t _ _; exact h t
   · intro h t
@@ -345,13 +350,13 @@ theorem coherent_iff_window (bx : Formula → Bool) (Λ : LabelledLasso C) :
         have hrw : t' = t % Λ.nb + (-2) * Λ.nb := by omega
         rw [hrw, Periodic.emod_add_mul, Int.emod_emod_of_dvd _ (dvd_refl _)]
       refine (coherentAt_congr bx Λ ?_ ?_ ?_).mpr
-        (h t' (by simp only [cohWindowLo]; omega) (by simp only [cohWindowHi]; omega))
+        (h t' (by simp only [labCohWindowLo]; omega) (by simp only [labCohWindowHi]; omega))
       · exact Λ.lab_congr_back (by omega) (by omega) hres.symm
       · exact Λ.lab_congr_back (by omega) (by omega) (emod_shift hres.symm)
       · exact Λ.lab_congr_back (by omega) (by omega) (emod_shift hres.symm)
     rcases le_or_gt t Λ.nm with hin | hfar
     · -- middle: already inside the window
-      exact h t (by simp only [cohWindowLo]; omega) (by simp only [cohWindowHi]; omega)
+      exact h t (by simp only [labCohWindowLo]; omega) (by simp only [labCohWindowHi]; omega)
     · -- far right: represent `t` in `[|mid| + |fwd|, |mid| + 2|fwd|)`
       set t' : ℤ := Λ.nm + (t - Λ.nm) % Λ.nf + Λ.nf with ht'
       have h0 : 0 ≤ (t - Λ.nm) % Λ.nf := Int.emod_nonneg _ (by omega)
@@ -360,7 +365,7 @@ theorem coherent_iff_window (bx : Formula → Bool) (Λ : LabelledLasso C) :
         have hrw : t' - Λ.nm = (t - Λ.nm) % Λ.nf + 1 * Λ.nf := by omega
         rw [hrw, Periodic.emod_add_mul, Int.emod_emod_of_dvd _ (dvd_refl _)]
       refine (coherentAt_congr bx Λ ?_ ?_ ?_).mpr
-        (h t' (by simp only [cohWindowLo]; omega) (by simp only [cohWindowHi]; omega))
+        (h t' (by simp only [labCohWindowLo]; omega) (by simp only [labCohWindowHi]; omega))
       · exact Λ.lab_congr_fwd (by omega) (by omega) hres.symm
       · refine Λ.lab_congr_fwd (by omega) (by omega) ?_
         have e1 : t + 1 - Λ.nm = (t - Λ.nm) + 1 := by omega
@@ -378,7 +383,7 @@ decidable. -/
 instance instDecidableCoherent (bx : Formula → Bool) (Λ : LabelledLasso C) :
     Decidable (Coherent bx Λ) :=
   decidable_of_iff
-    (∀ t ∈ Finset.Ico (cohWindowLo Λ) (cohWindowHi Λ), CoherentAt bx Λ t)
+    (∀ t ∈ Finset.Ico (labCohWindowLo Λ) (labCohWindowHi Λ), CoherentAt bx Λ t)
     (by
       rw [coherent_iff_window]
       constructor
@@ -729,14 +734,14 @@ theorem fulfilAt_shift_fwd (Λ : LabelledLasso C) {t : ℤ} (ht : Λ.nm + 2 * Λ
         ((Λ.snceObl_iff_bounded (t - Λ.nf) g e).mpr (h (Formula.snce g e) hψ hmem))
 
 /-- Lower end of the fulfilment window. -/
-def fulWindowLo (Λ : LabelledLasso C) : ℤ := -2 * Λ.nb
+def labFulWindowLo (Λ : LabelledLasso C) : ℤ := -2 * Λ.nb
 
 /-- Upper end (exclusive) of the fulfilment window. -/
-def fulWindowHi (Λ : LabelledLasso C) : ℤ := Λ.nm + 2 * Λ.nf
+def labFulWindowHi (Λ : LabelledLasso C) : ℤ := Λ.nm + 2 * Λ.nf
 
 /-- **Fulfilment collapses to one finite window.** -/
 theorem fulfil_iff_window (Λ : LabelledLasso C) :
-    Fulfil Λ ↔ ∀ t : ℤ, fulWindowLo Λ ≤ t → t < fulWindowHi Λ → FulfilAt Λ t := by
+    Fulfil Λ ↔ ∀ t : ℤ, labFulWindowLo Λ ≤ t → t < labFulWindowHi Λ → FulfilAt Λ t := by
   rw [fulfil_iff_forall]
   have hnb := Λ.nb_pos
   have hnf := Λ.nf_pos
@@ -744,38 +749,38 @@ theorem fulfil_iff_window (Λ : LabelledLasso C) :
   constructor
   · intro h t _ _; exact h t
   · intro h
-    have left : ∀ (d : ℕ) (t : ℤ), (-t).toNat = d → t < fulWindowLo Λ → FulfilAt Λ t := by
+    have left : ∀ (d : ℕ) (t : ℤ), (-t).toNat = d → t < labFulWindowLo Λ → FulfilAt Λ t := by
       intro d
       induction d using Nat.strong_induction_on with
       | _ d ih =>
         intro t hd hlt
-        simp only [fulWindowLo] at hlt
+        simp only [labFulWindowLo] at hlt
         refine (Λ.fulfilAt_shift_back (by omega)).mpr ?_
-        by_cases hin : t + Λ.nb < fulWindowLo Λ
-        · exact ih ((-(t + Λ.nb)).toNat) (by simp only [fulWindowLo] at hin; omega)
+        by_cases hin : t + Λ.nb < labFulWindowLo Λ
+        · exact ih ((-(t + Λ.nb)).toNat) (by simp only [labFulWindowLo] at hin; omega)
             (t + Λ.nb) rfl hin
         · push Not at hin
           refine h (t + Λ.nb) hin ?_
-          simp only [fulWindowHi]
+          simp only [labFulWindowHi]
           omega
-    have right : ∀ (d : ℕ) (t : ℤ), t.toNat = d → fulWindowHi Λ ≤ t → FulfilAt Λ t := by
+    have right : ∀ (d : ℕ) (t : ℤ), t.toNat = d → labFulWindowHi Λ ≤ t → FulfilAt Λ t := by
       intro d
       induction d using Nat.strong_induction_on with
       | _ d ih =>
         intro t hd hge
-        simp only [fulWindowHi] at hge
+        simp only [labFulWindowHi] at hge
         refine (Λ.fulfilAt_shift_fwd (by omega)).mpr ?_
-        by_cases hin : fulWindowHi Λ ≤ t - Λ.nf
-        · exact ih ((t - Λ.nf).toNat) (by simp only [fulWindowHi] at hin; omega)
+        by_cases hin : labFulWindowHi Λ ≤ t - Λ.nf
+        · exact ih ((t - Λ.nf).toNat) (by simp only [labFulWindowHi] at hin; omega)
             (t - Λ.nf) rfl hin
         · push Not at hin
           refine h (t - Λ.nf) ?_ hin
-          simp only [fulWindowLo]
+          simp only [labFulWindowLo]
           omega
     intro t
-    rcases lt_or_ge t (fulWindowLo Λ) with hl | hl
+    rcases lt_or_ge t (labFulWindowLo Λ) with hl | hl
     · exact left ((-t).toNat) t rfl hl
-    rcases lt_or_ge t (fulWindowHi Λ) with hr | hr
+    rcases lt_or_ge t (labFulWindowHi Λ) with hr | hr
     · exact h t hl hr
     · exact right t.toNat t rfl hr
 
@@ -783,7 +788,7 @@ theorem fulfil_iff_window (Λ : LabelledLasso C) :
 data. -/
 instance instDecidableFulfil (Λ : LabelledLasso C) : Decidable (Fulfil Λ) :=
   decidable_of_iff
-    (∀ t ∈ Finset.Ico (fulWindowLo Λ) (fulWindowHi Λ), FulfilAt Λ t)
+    (∀ t ∈ Finset.Ico (labFulWindowLo Λ) (labFulWindowHi Λ), FulfilAt Λ t)
     (by
       rw [fulfil_iff_window]
       constructor

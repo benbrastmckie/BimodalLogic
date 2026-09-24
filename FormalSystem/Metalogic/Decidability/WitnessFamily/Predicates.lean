@@ -34,9 +34,9 @@ agreement theorem's `atom` case `Iff.rfl` rather than an appeal to a valuation c
 
 `FulfillingLab` is `BiLasso.Fulfilling` verbatim on the decoded label function, per lasso. As
 there, it is stated over **all** `g` and `e` rather than over closure members only: labels are
-subsets of the closure anyway (`WitnessFamily.L_subset`), so the extra generality costs nothing
-and saves a closure side condition at every use site. It is also the clause that selects the
-*least* fixpoint: `LocalCoherentLab`'s temporal clauses alone are satisfied by an eventuality
+subsets of the closure anyway (`WitnessFamily.subset_closureOf`), so the extra generality costs
+nothing and saves a closure side condition at every use site. It is also the clause that selects
+the *least* fixpoint: `LocalCoherentLab`'s temporal clauses alone are satisfied by an eventuality
 passed forward forever with the event never delivered.
 
 `BoxFaithful` is the new one, and it is what replaces `BiLasso.BoxOracleSound`. There, soundness

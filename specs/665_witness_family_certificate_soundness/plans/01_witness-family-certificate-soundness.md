@@ -1,7 +1,7 @@
 # Implementation Plan: Witness-family certificate soundness
 
 - **Task**: 665 - Witness-family certificate soundness (the quasimodel / ShiftSet route, soundness half)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 15 hours
 - **Dependencies**: None blocking. Held-stable neighbour: `FormalSystem/Metalogic/Decidability/BiLasso/Basic.lean`. Concurrent sibling this cycle: task 667 (no declared file scope).
 - **Research Inputs**: `specs/665_witness_family_certificate_soundness/reports/01_witness-family-certificate-soundness.md`; compiled spike `specs/665_witness_family_certificate_soundness/evidence/t1-agreement-spike.lean`
@@ -536,7 +536,7 @@ labels, and by timing the `#guard`; if `decide` does not return promptly, fall b
 
 ---
 
-### Phase 10: Aggregators, READMEs and the full gate set [IN PROGRESS]
+### Phase 10: Aggregators, READMEs and the full gate set [COMPLETED]
 
 **Goal**: Wire the new directory into the build graph and bring every module invariant green.
 

@@ -80,10 +80,10 @@ def pA : Atom := Atom.mkBase "p"
 def qA : Atom := Atom.mkBase "q"
 
 /-- `p`, as a formula. -/
-def pF : Formula := Formula.atom pA
+def pForm : Formula := Formula.atom pA
 
 /-- `q`, as a formula. -/
-def qF : Formula := Formula.atom qA
+def qForm : Formula := Formula.atom qA
 
 /-! ## The positive witness
 
@@ -92,16 +92,16 @@ operator with guard `⊤` — which is why `Formula.top` is in every label below
 -/
 
 /-- `Fp`, the future occurrence of `p`. -/
-def fP : Formula := pF.someFuture
+def fP : Formula := pForm.someFuture
 
 /-- `Pp`, the past occurrence of `p`. -/
-def pP : Formula := pF.somePast
+def pP : Formula := pForm.somePast
 
 /-- `p ∨ Fp ∨ Pp`: `p` occurs somewhere on the history. -/
-def occurs : Formula := Formula.or pF (Formula.or fP pP)
+def occurs : Formula := Formula.or pForm (Formula.or fP pP)
 
 /-- `p → ¬Pp`: `p` does not recur. -/
-def once : Formula := pF.imp pP.neg
+def once : Formula := pForm.imp pP.neg
 
 /-- `□(p ∨ Fp ∨ Pp) ∧ □(p → ¬Pp)`: `p` occurs exactly once along every history. -/
 def phiPos : Formula := Formula.and occurs.box once.box
@@ -116,15 +116,15 @@ def delPos : Context := []
 
 /-- The label strictly left of the origin: `p` is still to come. -/
 def labBack : Finset Formula :=
-  {Formula.top, pF.neg, fP, Formula.or fP pP, pP.neg, occurs, occurs.box, once, once.box, phiPos}
+  {Formula.top, pForm.neg, fP, Formula.or fP pP, pP.neg, occurs, occurs.box, once, once.box, phiPos}
 
 /-- The label at the origin: `p` holds, and has neither happened before nor will again. -/
 def labMid : Finset Formula :=
-  {pF, Formula.top, fP.neg, pP.neg, occurs, occurs.box, once, once.box, phiPos}
+  {pForm, Formula.top, fP.neg, pP.neg, occurs, occurs.box, once, once.box, phiPos}
 
 /-- The label strictly right of the origin: `p` has happened. -/
 def labFwd : Finset Formula :=
-  {Formula.top, pF.neg, pP, fP.neg, Formula.or fP pP, occurs, occurs.box, once, once.box, phiPos}
+  {Formula.top, pForm.neg, pP, fP.neg, Formula.or fP pP, occurs, occurs.box, once, once.box, phiPos}
 
 /-- The positive witness's single lasso: one label leftward, one at the origin, one rightward. -/
 def posLasso : LabelledLasso (closureOf (gammaPos ++ delPos)) where
@@ -150,7 +150,7 @@ constant in time and the argument is checkable by inspection.
 -/
 
 /-- `p U q`: guard `p`, event `q`. -/
-def phiSep : Formula := Formula.untl pF qF
+def phiSep : Formula := Formula.untl pForm qForm
 
 /-- The premise context of the separation witness. -/
 def gammaSep : Context := [phiSep]
@@ -159,7 +159,7 @@ def gammaSep : Context := [phiSep]
 def delSep : Context := []
 
 /-- The constant label of the separation witness. Note it does **not** contain `q`. -/
-def labSep : Finset Formula := {pF, phiSep}
+def labSep : Finset Formula := {pForm, phiSep}
 
 /-- The separation witness's single lasso, constant in time. -/
 def sepLasso : LabelledLasso (closureOf (gammaSep ++ delSep)) where

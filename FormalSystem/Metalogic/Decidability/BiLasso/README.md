@@ -88,6 +88,14 @@ The entry point is `check` (`Check.lean`). `BiLasso.lean`, beside this directory
 subdirectory re-export; it deliberately omits `Extend`, `Successor`, `Orbit` and `Agreement`,
 which belong to the effective-periodic-extension work rather than to this layer.
 
+A sibling directory, [`../WitnessFamily/`](../WitnessFamily/README.md), carries the
+**presentation-free** certificate layer: `LabelledLasso` / `WitnessFamily`, the four conditions
+`LocalCoherentLab` / `FulfillingLab` / `BoxFaithful` / `Target`, the agreement theorems
+`truth_iff_mem` and `joint_countermodel`, the four decision instances
+`decidableLocalCoherentLab` / `decidableFulfillingLab` / `decidableBoxFaithful` /
+`decidableTarget`, and the impossibility theorems `no_witnessFamily_of_validZTime` /
+`no_witnessFamily_of_MF`. It imports `Periodic.lean` from here and nothing else.
+
 ## How the procedure got its shape
 
 Three decisions below are recorded because each cost a design cycle, and each is the kind a later
@@ -143,6 +151,13 @@ histories, and the shift of an annotation's history is not the decoding of any e
 consumes its datatype and its lemmas directly, so a change there is a change under that work's
 feet. Extensions to the layer go in the modules above it. The same holds in the other direction:
 `Extend.lean` belongs to that work and is neither edited nor imported from here.
+
+The witness-family certificate layer (`../WitnessFamily/`) observes the same boundary from the
+outside: it stands *beside* `Basic.lean` rather than changing it, and its only import from this
+directory is `Periodic.lean`. The cost is that `Annot`'s label periodicities and window collapses
+are duplicated there at the other carrier of the same decoding; that duplication is recorded in
+both places with one shared retirement trigger — see
+[WitnessFamily README](../WitnessFamily/README.md), "Deliberate duplication".
 
 ## Evidence probes
 
@@ -239,4 +254,4 @@ prefix rendering `U(e, g)` is event-first and is a *display* convention only.
 
 ---
 
-*Last verified: 2026-09-21*
+*Last verified: 2026-09-24*

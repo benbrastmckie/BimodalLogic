@@ -40,7 +40,7 @@ unnatural field on the exporting side for no proof-side benefit.
   `closureOf_untl_left`, `closureOf_untl_right`, `closureOf_snce_left`, `closureOf_snce_right`
 -/
 
-namespace FormalSystem.Metalogic.Decidability.WitnessFamily
+namespace FormalSystem.Metalogic.Decidability
 
 open FormalSystem.Syntax
 
@@ -128,4 +128,4 @@ theorem closureOf_snce_right {S : Context} {g e : Formula}
 instance decidableMemClosureOf (S : Context) : DecidablePred (· ∈ closureOf S) :=
   fun ψ => Finset.decidableMem ψ (closureOf S)
 
-end FormalSystem.Metalogic.Decidability.WitnessFamily
+end FormalSystem.Metalogic.Decidability
