@@ -960,7 +960,7 @@ an undercount — fix them and record the correction in the phase notes.
 
 ---
 
-### Phase 7: Prose reversal in `TaskFrame.lean` and `ConstraintWitnesses.lean` [NOT STARTED]
+### Phase 7: Prose reversal in `TaskFrame.lean` and `ConstraintWitnesses.lean` [COMPLETED]
 
 **Goal**: Finish the reversal at the two remaining `.lean` files: the constraint's own home and
 the witnesses' home. After this phase no in-tree `.lean` region presents *Completion* as
@@ -968,37 +968,45 @@ the witnesses' home. After this phase no in-tree `.lean` region presents *Comple
 
 **Tasks**:
 
-- [ ] `FormalSystem/Semantics/TaskFrame.lean`, four regions: the linter comment naming
+- [x] `FormalSystem/Semantics/TaskFrame.lean`, four regions: the linter comment naming
       "`TaskFrame.Completion`, the proposed fourth constraint"; the bare-relation section docstring
       ("`Completion`, the **proposed replacement** for the fourth of them"); `def Completion`'s
       opening ("`def:frame`'s **proposed** fourth constraint"); and the strongest advocacy in the
       tree ("the weakest of the two that `thm:extension` can be run from … the clause
       **recommended** as `def:frame`'s fourth constraint in place of *Saturation*") plus its
       `Paper:` line ("a proposed replacement for `def:frame`'s fourth constraint").
-- [ ] The replacement register for all four: `Completion` is stated here **beside** the four
+- [x] The replacement register for all four: `Completion` is stated here **beside** the four
       axioms because it is the exact condition the extension chain consumes and the comparison is
       only meaningful at a shared level — a *derived* condition of record, not a candidate
       constraint. Its `Paper:` line becomes `—` with the one-clause reason that the manuscript has
       no anchor for it (C15's sanctioned form), unless an existing anchor already fits.
-- [ ] Record, in the `def Completion` docstring, the two reasons it is not `def:frame`'s
+- [x] Record, in the `def Completion` docstring, the two reasons it is not `def:frame`'s
       constraint — the `def:world-history` aboutness and the `completion_iff_onePointExtension`
       circularity — so a future reader meets the verdict where the definition is, not only in
       `Extension/Completion.lean`.
-- [ ] `FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean`, four regions calling
+- [x] `FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean`, four regions calling
       *Completion* "the audit's **proposed replacement** for `def:frame`'s fourth constraint":
       rewrite each to name what the witnesses actually establish — the independence and strictness
       matrix — with a pointer to the `not_srel_nestSaturation` correction landed in Phase 2.
-- [ ] Verify the `Saturation` docstring's "do not restore *strictly stronger*" sentence is still
+- [x] Verify the `Saturation` docstring's "do not restore *strictly stronger*" sentence is still
       byte-identical to its pre-task form, and that the Phase 1 additions did not paraphrase it.
-- [ ] **Elimination-site sweep over this phase's own files** (Revision Note (v2), item 2). The
+- [x] **Elimination-site sweep over this phase's own files** (Revision Note (v2), item 2). The
       four known occurrences here — `TaskFrame.lean:594`, `:631`, `:1066` and, in the neighbouring
       modules this phase may reach, `Semantics/FrameAxioms.lean:42` and
       `Semantics/Extension/Admissible.lean:103` — are all of the **attributed** form ("the sole
       application site **the paper names**") and are therefore **kept**. The task is to confirm
       that, hit by hit, not to rewrite them: run `grep -n 'application site'` over the files and
       classify each. Correct only a hit that asserts the claim in the tree's own voice, and record
-      any such find in the phase notes, since this plan's count predicts none.
-- [ ] `lake build` green. Commit.
+      any such find in the phase notes, since this plan's count predicts none. *(classified: 5
+      hits, all attributed, all kept — `TaskFrame.lean:600`, `:673`, `:1183` (line numbers after
+      Phase 1's additions; the plan's `:594`/`:631`/`:1066` are the same three sentences),
+      `FrameAxioms.lean:42`, `Admissible.lean:103`. Every one reads "the … application site **the
+      paper names**". Zero unattributed hits, as predicted — no correction was made in these
+      files.)*
+- [x] `lake build` green. Commit. *(deviation: altered — the full build flagged two >100-char
+      lines introduced by the rewrites; both were rewrapped and the rebuild is warning-free. The
+      advocacy count was 4 regions in `TaskFrame.lean` and 4 in `ConstraintWitnesses.lean`,
+      matching the scope hypothesis.)*
 
 **Timing**: 1.5 hours
 

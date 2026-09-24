@@ -65,9 +65,10 @@ completeness reason, and it is what licenses the claim that the real-carrier wit
 which has no rational point: `straddleFamily`.
 
 **It fails *Completion* too, and that is why it is not the separator** (`not_rel_completion`).
-*Completion* (`TaskFrame.Completion`, `Semantics/TaskFrame.lean`) is the proposed replacement for
-`def:frame`'s fourth constraint, and the obvious probe of whether it is a *strict* weakening of
-*Saturation* is to ask whether this relation — already *Serial*, *Compositional*, *Limit* and
+*Completion* (`TaskFrame.Completion`, `Semantics/TaskFrame.lean`) is the derived condition the
+extension chain actually consumes — `def:frame`'s fourth constraint is *Saturation* — and the
+obvious probe of whether it is a *strict* weakening of *Saturation* is to ask whether this
+relation — already *Serial*, *Compositional*, *Limit* and
 non-*Saturated* — satisfies it. It does not: the coherent family at the times `tm n = -(1/2)^n`
 carrying the ray positions `phi n = nt n - (1/2)^n` has empty fibre intersection at `z = 0`,
 because the two bounds pinch onto `√2`. The rational carrier is therefore not the separator; the
@@ -105,9 +106,11 @@ constraints now has a compiled witness satisfying the other three and failing it
   `.rel_compositional`, `.rel_limit`, `.not_rel_saturation` (above).
 
 **And a fifth row, which is a *separation* rather than an independence.** *Completion*
-(`TaskFrame.Completion`) is the audit's proposed replacement for `def:frame`'s fourth constraint.
-*Saturation* implies it, and the converse is **false**: the separating frame — unit-speed drift on
-`ℚ` over `ℤ`-time — satisfies *Seriality*, *Compositionality*, *Limit* **and** *Completion*
+(`TaskFrame.Completion`) is the derived condition `lem:step` consumes, stated at the
+bare-relation level so that the comparison with `def:frame`'s own clauses is a comparison of like
+with like. *Saturation* implies it, and the converse is **false**: the separating frame —
+unit-speed drift on `ℚ` over `ℤ`-time — satisfies *Seriality*, *Compositionality*, *Limit*
+**and** *Completion*
 (`SeparatingFrame.srel_serial`, `.srel_compositional`, `.srel_limit`, `.srel_completion`) while
 failing *Saturation* (`SeparatingFrame.not_srel_saturation`). So **`Completion → Saturation` is
 false unconditionally, and *Completion* is a strict weakening of *Saturation***. The mechanism is
@@ -842,8 +845,8 @@ Note on scope, as for `not_rel_saturation`: `TaskFrame.Completion` is a **bare-r
 predicate, needing only `[AddCommGroup] [LinearOrder] [IsOrderedAddMonoid] [Nontrivial]` on the
 duration type, all of which `ℚ` has, so no `TemporalOrder.of ℚ` is required.
 
-Paper: — (*Completion* is the audit's proposed replacement for `def:frame`'s fourth constraint
-and has no anchor in the manuscript)
+Paper: — (*Completion* is the derived condition the extension chain consumes and has no anchor in
+the manuscript; `def:frame`'s fourth constraint is *Saturation*)
 -/
 theorem not_rel_completion : ¬ TaskFrame.Completion rel := by
   intro hcc
@@ -1136,8 +1139,8 @@ domain time on each side of `z` is the `⊆`-least one and the witness is read o
 completeness of the carrier `ℚ` is demanded anywhere. Two-sided, the witness is the larger of the
 two one-sided endpoints; one-sided, it is the nearest time's own state.
 
-Paper: — (*Completion* is the audit's proposed replacement for `def:frame`'s fourth constraint
-and has no anchor in the manuscript)
+Paper: — (*Completion* is the derived condition the extension chain consumes and has no anchor in
+the manuscript; `def:frame`'s fourth constraint is *Saturation*)
 -/
 theorem srel_completion : TaskFrame.Completion srel := by
   intro X hXne w hw z

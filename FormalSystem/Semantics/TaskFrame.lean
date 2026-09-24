@@ -272,7 +272,9 @@ assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.Deriva
 
 -- Raised from 2600 for `exists_mem_image_of_directedFamily` and its `Set.Icc` specialisation,
 -- which belong beside `DirectedFamily`; raised again from 2700 for `TaskFrame.Completion`, the
--- proposed fourth constraint, which belongs beside the other bare-relation axiom predicates.
+-- derived condition the extension chain consumes, which belongs beside the bare-relation axiom
+-- predicates it is compared against, and again for `NestSaturation`, the nest condition `S₁` the
+-- ball-space footnote cites, which belongs beside `Saturation`.
 -- Not for parking unrelated material.
 set_option linter.style.longFile 2900
 
@@ -574,10 +576,15 @@ def IsSegment {W : Type} (R : W → D → W → Prop) (s : Set W) : Prop :=
 
 `def:frame`'s four axioms, stated as `Prop`-valued predicates over a bare task relation
 `R : W → D → W → Prop`. All four live here — *Saturation*, *Seriality*, the interpolation half
-of *Compositionality* and the biconditional itself, and *Limit* — together with `Completion`, the
-proposed replacement for the fourth of them, stated at the same level and in the same vocabulary
-so that the comparison is a comparison of two `def:frame` clauses rather than of a clause and a
-lemma. `Limit` is *definitionally* the literal transcribed shape the development used before
+of *Compositionality* and the biconditional itself, and *Limit* — together with `NestSaturation`,
+the ball-space hierarchy's nest condition `S₁` that *Saturation* strengthens, and `Completion`,
+the **derived** condition the extension chain actually consumes. The last two are stated here, at
+the same level and in the same vocabulary as the axioms, because a comparison between a
+`def:frame` clause and a condition stated downstream in a richer vocabulary is not a comparison
+of like with like; stating them here is what makes the comparison meaningful. Neither is a
+candidate constraint: *Saturation* is `def:frame`'s fourth axiom and stays so.
+
+`Limit` is *definitionally* the literal transcribed shape the development used before
 the axiom had a name, so the discharge helpers `limit_of_succOrder` and `limit_of_shift`
 below conclude it without restatement.
 
@@ -815,8 +822,8 @@ def Limit {W : Type} (R : W → D → W → Prop) : Prop :=
   ∀ w u, (∀ x, 0 < x → ∃ y, |y| < x ∧ R w y u) → u = w
 
 /--
-The *Completion* condition, over a bare task relation: `def:frame`'s **proposed** fourth
-constraint, in the primitives `W`, `D` and `⇒` alone.
+The *Completion* condition, over a bare task relation: the **derived** condition `lem:step`
+actually consumes, stated in the primitives `W`, `D` and `⇒` alone.
 
 Unfolded, it reads: for every nonempty index set `X ⊆ D`, every family `{w_t}_{t ∈ X} ⊆ W`
 coherent under the task relation (`w_s ⇒_{t - s} w_t` for all `s, t ∈ X`), and every `z ∈ D`,
@@ -841,11 +848,28 @@ definitional dependency. `PartialHistory.CoherentCompletion` is definitionally t
 `StateTopology.SeparatingFrame.srel` satisfies *Seriality*, *Compositionality*, *Limit* and this
 condition (`StateTopology.SeparatingFrame.srel_completion`) while failing *Saturation*
 (`StateTopology.SeparatingFrame.not_srel_saturation`). It is therefore the weakest of the two that
-`thm:extension` can be run from — `PartialHistory.extension_of_completion` — and it is the clause
-recommended as `def:frame`'s fourth constraint in place of *Saturation*.
+`thm:extension` can be run from — `PartialHistory.extension_of_completion`, which elaborates with
+**no `[F.IsRegular]` instance binder** — and that is exactly where the minimality is recorded: in
+`thm:extension`'s hypothesis, not in `def:frame`'s axiom list.
 
-Paper: — (a proposed replacement for `def:frame`'s fourth constraint, not yet in the pinned
-`def:frame`; the manuscript still carries *Saturation* there)
+**Why it is not `def:frame`'s fourth constraint**, although it is strictly weaker and would
+suffice. Two reasons, both about what the condition is *about* rather than what vocabulary it is
+written in:
+
+1. **Aboutness.** Its hypothesis clause — "a family `{w_t}` on a nonempty `X ⊆ D` with
+   `w_s ⇒_{t-s} w_t`" — **is** `def:world-history`'s clause verbatim. Stating it `Fib`-free
+   removes the *word* "history", not the aboutness, so the bare form is a disguise rather than a
+   cure, and `def:frame` would forward-reference a notion defined after it.
+2. **Circularity.** `PartialHistory.completion_iff_onePointExtension` makes it provably
+   equivalent, under *Seriality* and *Limit*, to "the construction `thm:extension` performs
+   succeeds" — an axiom in the shape of its own theorem.
+
+*Saturation* looks backward instead, to `def:task-relation`: `Fib` and `Seg` are the relation
+repackaged as subsets of `W`, not new constructions over it, and *Saturation* says the geometry
+they induce on `W` has no gaps.
+
+Paper: — (a derived condition of record, with no anchor in the manuscript; `def:frame`'s fourth
+constraint is *Saturation*, which the manuscript carries)
 -/
 def Completion {W : Type} (R : W → D → W → Prop) : Prop :=
   ∀ (X : D → Prop), (∃ t, X t) →
