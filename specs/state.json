@@ -1108,12 +1108,12 @@
     "total": 48
   },
   "repository_health": {
-    "last_assessed": "2026-09-21T14:18:37Z",
+    "last_assessed": "2026-09-24T22:42:17Z",
     "todo_count": 0,
     "fixme_count": 0,
     "build_errors": 0,
     "status": "healthy",
-    "phantom_paths": 1
+    "phantom_paths": 0
   },
   "last_updated": "2026-09-08T17:35:13Z",
   "vault_count": 1,
