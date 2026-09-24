@@ -478,14 +478,42 @@ theorem nonempty_seg_of_interpolates [F.IsRegular] {τ : PartialHistory F} {z t 
     (Seg F.TaskRel (τ.states t ht) (τ.states s hs) (z - t) (s - z)).Nonempty :=
   nonempty_seg_of_compositional_limit F.comp F.limit ht hs htz hzs
 
-/-- Every constraint on `z` is nonempty: the two cases of `def:constraints`, discharged by
-*Seriality* and by the interpolation half of *Compositionality* respectively. -/
-theorem nonempty_of_mem_Constraints [F.IsRegular] {τ : PartialHistory F} {z : F.Duration}
+/--
+Every constraint on `z` is nonempty: the two cases of `def:constraints`, discharged by
+*Seriality* and by the interpolation half of *Compositionality* respectively — with the
+hypotheses the proof actually consumes made explicit, never the `IsRegular` instance.
+
+Both branches route through Phase-honest twins: the segment case through
+`nonempty_seg_of_compositional_limit`, the fiber case through `nonempty_fib_of_serial_limit`.
+*Limit* is the reflection cost each of them pays; *Saturation* is reached by neither.
+
+`nonempty_of_mem_Constraints` below is the one-line corollary at a regular frame, with its
+statement and implicit-argument order unchanged, so no call site moves.
+
+Constraints consumed: Compositionality, Seriality, Limit
+-/
+theorem nonempty_of_mem_Constraints_of_compositional_serial_limit
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel)
+    {τ : PartialHistory F} {z : F.Duration}
     {c : Set F.WorldState}
     (hc : c ∈ Constraints τ z) : c.Nonempty := by
   rcases hc with ⟨t, s, ht, hs, htz, hzs, rfl⟩ | ⟨t, ht, _, rfl⟩
-  · exact nonempty_seg_of_interpolates ht hs htz hzs
-  · exact nonempty_fib_of_serial ht
+  · exact nonempty_seg_of_compositional_limit hcomp hlim ht hs htz hzs
+  · exact nonempty_fib_of_serial_limit hser hlim ht
+
+/-- Every constraint on `z` is nonempty: the two cases of `def:constraints`, discharged by
+*Seriality* and by the interpolation half of *Compositionality* respectively.
+
+A one-line corollary of `nonempty_of_mem_Constraints_of_compositional_serial_limit`, which
+records that *Compositionality*, *Seriality* and *Limit* are the whole of what the argument
+consumes; the instance binder supplies *Saturation* and the proof term never reaches it.
+
+Constraints consumed: Compositionality, Seriality, Limit -/
+theorem nonempty_of_mem_Constraints [F.IsRegular] {τ : PartialHistory F} {z : F.Duration}
+    {c : Set F.WorldState}
+    (hc : c ∈ Constraints τ z) : c.Nonempty :=
+  nonempty_of_mem_Constraints_of_compositional_serial_limit F.comp F.serial F.limit hc
 
 /-!
 ### Directedness
@@ -523,8 +551,19 @@ side condition on fiber members is what makes two of the four cases collapse:
 - **fiber, fiber**: if either time is `z` that fiber refines the other; otherwise both lie
   strictly on the same side of `z` (a strict straddle would pair them), and the refining member is
   the fiber at the time nearer `z` — `max` below, `min` above.
+
+Every containment the analysis produces is routed through a binder-free monotonicity lemma
+(`seg_subset_seg_of_compositional`, `fib_subset_fib_of_compositional`,
+`fib_subset_fib_of_compositional'`) rather than through its regular-frame corollary, which is
+what keeps the hypotheses honest here: *Compositionality* and *Limit*, never the `IsRegular`
+instance. `exists_mem_subset_inter` below is the one-line corollary at a regular frame, with its
+statement and implicit-argument order unchanged, so no call site moves.
+
+Constraints consumed: Compositionality, Limit
 -/
-theorem exists_mem_subset_inter [F.IsRegular] {τ : PartialHistory F} {z : F.Duration}
+theorem exists_mem_subset_inter_of_compositional_limit
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hlim : TaskFrame.Limit F.TaskRel)
+    {τ : PartialHistory F} {z : F.Duration}
     {c₁ c₂ : Set F.WorldState}
     (hc₁ : c₁ ∈ Constraints τ z) (hc₂ : c₂ ∈ Constraints τ z) :
     ∃ c ∈ Constraints τ z, c ⊆ c₁ ∩ c₂ := by
@@ -540,16 +579,16 @@ theorem exists_mem_subset_inter [F.IsRegular] {τ : PartialHistory F} {z : F.Dur
       refine ⟨_, mem_Constraints.mpr
         (Or.inl ⟨max t₁ t₂, min s₁ s₂, hmt, hms, hmtz, hzms, rfl⟩), ?_⟩
       exact Set.subset_inter
-        (seg_subset_seg ht₁ hs₁ hmt hms (le_max_left _ _) (le_of_lt hmtz) (le_of_lt hzms)
-          (min_le_left _ _))
-        (seg_subset_seg ht₂ hs₂ hmt hms (le_max_right _ _) (le_of_lt hmtz) (le_of_lt hzms)
-          (min_le_right _ _))
+        (seg_subset_seg_of_compositional hcomp hlim ht₁ hs₁ hmt hms (le_max_left _ _)
+          (le_of_lt hmtz) (le_of_lt hzms) (min_le_left _ _))
+        (seg_subset_seg_of_compositional hcomp hlim ht₂ hs₂ hmt hms (le_max_right _ _)
+          (le_of_lt hmtz) (le_of_lt hzms) (min_le_right _ _))
     · -- segment, fiber: the segment's endpoints force the fiber's time to be `z` itself
       rcases lt_trichotomy t₂ z with h | rfl | h
       · exact absurd (Or.inl ⟨h, s₁, hs₁, hzs₁⟩) hnp₂
       · refine ⟨_, mem_Constraints.mpr (Or.inr ⟨t₂, ht₂, hnp₂, rfl⟩), ?_⟩
         refine Set.subset_inter ?_ (subset_refl _)
-        exact fib_zero_subset_of_mem_Constraints ht₂
+        exact fib_zero_subset_mem_of_compositional_limit hcomp hlim ht₂
           (mem_Constraints.mpr (Or.inl ⟨t₁, s₁, ht₁, hs₁, ht₁z, hzs₁, rfl⟩))
       · exact absurd (Or.inr ⟨h, t₁, ht₁, ht₁z⟩) hnp₂
   · rcases hc₂ with ⟨t₂, s₂, ht₂, hs₂, ht₂z, hzs₂, rfl⟩ | ⟨t₂, ht₂, hnp₂, rfl⟩
@@ -558,7 +597,7 @@ theorem exists_mem_subset_inter [F.IsRegular] {τ : PartialHistory F} {z : F.Dur
       · exact absurd (Or.inl ⟨h, s₂, hs₂, hzs₂⟩) hnp₁
       · refine ⟨_, mem_Constraints.mpr (Or.inr ⟨t₁, ht₁, hnp₁, rfl⟩), ?_⟩
         refine Set.subset_inter (subset_refl _) ?_
-        exact fib_zero_subset_of_mem_Constraints ht₁
+        exact fib_zero_subset_mem_of_compositional_limit hcomp hlim ht₁
           (mem_Constraints.mpr (Or.inl ⟨t₂, s₂, ht₂, hs₂, ht₂z, hzs₂, rfl⟩))
       · exact absurd (Or.inr ⟨h, t₂, ht₂, ht₂z⟩) hnp₁
     · -- fiber, fiber
@@ -566,13 +605,13 @@ theorem exists_mem_subset_inter [F.IsRegular] {τ : PartialHistory F} {z : F.Dur
       · subst hz₁
         refine ⟨_, mem_Constraints.mpr (Or.inr ⟨t₁, ht₁, hnp₁, rfl⟩), ?_⟩
         refine Set.subset_inter (subset_refl _) ?_
-        exact fib_zero_subset_of_mem_Constraints ht₁
+        exact fib_zero_subset_mem_of_compositional_limit hcomp hlim ht₁
           (mem_Constraints.mpr (Or.inr ⟨t₂, ht₂, hnp₂, rfl⟩))
       · by_cases hz₂ : t₂ = z
         · subst hz₂
           refine ⟨_, mem_Constraints.mpr (Or.inr ⟨t₂, ht₂, hnp₂, rfl⟩), ?_⟩
           refine Set.subset_inter ?_ (subset_refl _)
-          exact fib_zero_subset_of_mem_Constraints ht₂
+          exact fib_zero_subset_mem_of_compositional_limit hcomp hlim ht₂
             (mem_Constraints.mpr (Or.inr ⟨t₁, ht₁, hnp₁, rfl⟩))
         · rcases lt_or_gt_of_ne hz₁ with h₁ | h₁ <;> rcases lt_or_gt_of_ne hz₂ with h₂ | h₂
           · -- both strictly below `z`: refine at `max t₁ t₂`
@@ -583,8 +622,8 @@ theorem exists_mem_subset_inter [F.IsRegular] {τ : PartialHistory F} {z : F.Dur
             have hmtz : max t₁ t₂ ≤ z := le_of_lt (max_lt h₁ h₂)
             refine ⟨_, mem_Constraints.mpr (Or.inr ⟨max t₁ t₂, hmt, hnp, rfl⟩), ?_⟩
             exact Set.subset_inter
-              (fib_subset_fib_of_le_of_le ht₁ hmt (le_max_left _ _) hmtz)
-              (fib_subset_fib_of_le_of_le ht₂ hmt (le_max_right _ _) hmtz)
+              (fib_subset_fib_of_compositional hcomp ht₁ hmt (le_max_left _ _) hmtz)
+              (fib_subset_fib_of_compositional hcomp ht₂ hmt (le_max_right _ _) hmtz)
           · -- `t₁ < z < t₂`: the two times straddle `z`, so `t₁` is paired
             exact absurd (Or.inl ⟨h₁, t₂, ht₂, h₂⟩) hnp₁
           · -- `t₂ < z < t₁`: the two times straddle `z`, so `t₁` is paired
@@ -597,8 +636,50 @@ theorem exists_mem_subset_inter [F.IsRegular] {τ : PartialHistory F} {z : F.Dur
             have hzmt : z ≤ min t₁ t₂ := le_of_lt (lt_min h₁ h₂)
             refine ⟨_, mem_Constraints.mpr (Or.inr ⟨min t₁ t₂, hmt, hnp, rfl⟩), ?_⟩
             exact Set.subset_inter
-              (fib_subset_fib_of_le_of_le' ht₁ hmt (min_le_left _ _) hzmt)
-              (fib_subset_fib_of_le_of_le' ht₂ hmt (min_le_right _ _) hzmt)
+              (fib_subset_fib_of_compositional' hcomp hlim ht₁ hmt (min_le_left _ _) hzmt)
+              (fib_subset_fib_of_compositional' hcomp hlim ht₂ hmt (min_le_right _ _) hzmt)
+
+/--
+The directedness step of the `⊇`-directed condition: any two constraints on `z` are jointly
+refined by a third constraint on `z`.
+
+A one-line corollary of `exists_mem_subset_inter_of_compositional_limit`, which records that
+*Compositionality* and *Limit* are the whole of what the four-way case analysis consumes; the
+instance binder supplies *Seriality* and *Saturation* and the proof term reaches neither.
+
+Constraints consumed: Compositionality, Limit
+-/
+theorem exists_mem_subset_inter [F.IsRegular] {τ : PartialHistory F} {z : F.Duration}
+    {c₁ c₂ : Set F.WorldState}
+    (hc₁ : c₁ ∈ Constraints τ z) (hc₂ : c₂ ∈ Constraints τ z) :
+    ∃ c ∈ Constraints τ z, c ⊆ c₁ ∩ c₂ :=
+  exists_mem_subset_inter_of_compositional_limit F.comp F.limit hc₁ hc₂
+
+/--
+`lem:constraint` at the hypotheses its proof actually consumes: *Compositionality* in both of its
+directions, *Seriality*, and *Limit* — never the `IsRegular` instance.
+
+**This is the statement that makes the corollary's bold "*Saturation* is **not** consumed" claim
+machine-checked rather than prose over a binder that supplies it anyway.** The three inputs are
+`nonempty_Constraints` (already binder-free), `exists_mem_subset_inter_of_compositional_limit` for
+directedness and `nonempty_of_mem_Constraints_of_compositional_serial_limit` for
+member-nonemptiness; each of those is in turn built from binder-free monotonicity and
+nonemptiness lemmas, so no path from here reaches `F.saturation`.
+
+That matters beyond tidiness: `lem:step` is the sole *Saturation* elimination site the paper
+names, and this lemma is precisely what supplies that application its
+directed-family-of-nonempty-sets hypothesis. A version of it that quietly consumed *Saturation*
+would make the Step Lemma's appeal circular in substance while remaining green.
+
+Constraints consumed: Compositionality, Seriality, Limit
+-/
+theorem constraint_of_compositional_serial_limit
+    (hcomp : TaskFrame.Compositional F.TaskRel) (hser : TaskFrame.Serial F.TaskRel)
+    (hlim : TaskFrame.Limit F.TaskRel) (τ : PartialHistory F) (z : F.Duration) :
+    DirectedFamily (Constraints τ z) ∧ ∀ c ∈ Constraints τ z, c.Nonempty :=
+  ⟨⟨nonempty_Constraints τ z,
+      fun _ h₁ _ h₂ => exists_mem_subset_inter_of_compositional_limit hcomp hlim h₁ h₂⟩,
+    fun _ hc => nonempty_of_mem_Constraints_of_compositional_serial_limit hcomp hser hlim hc⟩
 
 /--
 `lem:constraint`: the constraints imposed on a new duration form a directed family of nonempty
@@ -642,11 +723,17 @@ one declaration that does take exactly that route is
 
 The paper's `z ∈ D \ X` proviso is not assumed: see this module's docstring for why the lemma
 holds a fortiori when `z` is itself a domain time.
+
+**The *Saturation* claim above is now checked, not asserted.** This declaration is a one-line
+corollary of `constraint_of_compositional_serial_limit`, which carries no instance binder at all;
+the `[F.IsRegular]` binder here supplies *Saturation* and the proof term demonstrably never
+reaches it. Before that split, the claim sat over a binder that contradicted it.
+
+Constraints consumed: Compositionality, Seriality, Limit
 -/
 theorem constraint [F.IsRegular] (τ : PartialHistory F) (z : F.Duration) :
     DirectedFamily (Constraints τ z) ∧ ∀ c ∈ Constraints τ z, c.Nonempty :=
-  ⟨⟨nonempty_Constraints τ z, fun _ h₁ _ h₂ => exists_mem_subset_inter h₁ h₂⟩,
-    fun _ hc => nonempty_of_mem_Constraints hc⟩
+  constraint_of_compositional_serial_limit F.comp F.serial F.limit τ z
 
 end PartialHistory
 

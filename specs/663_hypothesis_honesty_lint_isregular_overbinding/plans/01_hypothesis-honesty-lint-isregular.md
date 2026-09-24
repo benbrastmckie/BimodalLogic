@@ -383,31 +383,31 @@ declaration pairs. Confirm with `git diff --stat` showing `Constraint.lean` alon
 
 ---
 
-### Phase 4: Restate the three downstream declarations in `Constraint.lean` [NOT STARTED]
+### Phase 4: Restate the three downstream declarations in `Constraint.lean` [COMPLETED]
 
 **Goal**: Carry the pattern through to the three compositions that sit on top of Phase 3's
 results, including the flagship `constraint`.
 
 **Tasks**:
-- [ ] `nonempty_of_mem_Constraints_of_compositional_serial_limit` at `(hcomp, hser, hlim)`, its two
+- [x] `nonempty_of_mem_Constraints_of_compositional_serial_limit` at `(hcomp, hser, hlim)`, its two
       branches now discharged by Phase 3's `nonempty_seg_of_compositional_limit` and
       `nonempty_fib_of_serial_limit`; demote `nonempty_of_mem_Constraints` to the one-line
       corollary at `F.comp F.serial F.limit`.
-- [ ] `exists_mem_subset_inter_of_compositional_limit` at `(hcomp, hlim)`, its four-way case
+- [x] `exists_mem_subset_inter_of_compositional_limit` at `(hcomp, hlim)`, its four-way case
       analysis routed through `seg_subset_seg_of_compositional` and the two
       `fib_subset_fib_of_compositional` lemmas instead of their binder-carrying corollaries; demote
       `exists_mem_subset_inter` to the corollary.
-- [ ] `constraint_of_compositional_serial_limit` at `(hcomp, hser, hlim)`, assembled from
+- [x] `constraint_of_compositional_serial_limit` at `(hcomp, hser, hlim)`, assembled from
       `nonempty_Constraints` (already binder-free),
       `exists_mem_subset_inter_of_compositional_limit` and
       `nonempty_of_mem_Constraints_of_compositional_serial_limit`; demote `constraint` to the
       one-line corollary at `F.comp F.serial F.limit`.
-- [ ] Rewrite `constraint`'s docstring so the bold "*Saturation* is **not** consumed" claim now sits
+- [x] Rewrite `constraint`'s docstring so the bold "*Saturation* is **not** consumed" claim now sits
       over a statement that proves it, and carry its already-accurate consumption list
       (`C→`, `C←`, `S`, `L` — and not `Sat`) into a `Constraints consumed: Compositionality,
       Seriality, Limit` line.
-- [ ] Give each new declaration and each demoted corollary its `Constraints consumed:` line.
-- [ ] Re-confirm no corollary signature moved.
+- [x] Give each new declaration and each demoted corollary its `Constraints consumed:` line.
+- [x] Re-confirm no corollary signature moved.
 
 **Timing**: 1.5 hours
 
@@ -416,6 +416,15 @@ results, including the flagship `constraint`.
 **Verification Tier**: local
 
 **Commit Mode**: per-substep
+
+**Result**: `lake build FormalSystem.Semantics.Extension.Constraint` (detached, guarded) exit 0,
+`Build completed successfully (1178 jobs)`, 0 `error:`, 0 `warning:`, `.olean` newer than source.
+`git diff --stat` over `FormalSystem/`, `Tests/`, `docs/`, `scripts/` names `Constraint.lean`
+alone. All three corollary signatures byte-identical to HEAD. Zero `sorry`, zero `axiom`.
+*(deviation: altered — the first build of this phase introduced two `linter.style.longLine`
+warnings where the substituted binder-free lemma names lengthened two `seg_subset_seg` call
+lines past 100 characters. Both were rewrapped and the module rebuilt clean; "no new warning" is
+the phase's stated bar, so the rewrap is part of the phase rather than follow-up.)*
 
 **Scope Hypothesis**: This phase asserts three declaration pairs in one file. Confirm with
 `git diff --stat` and a signature-line diff as in Phase 3.
