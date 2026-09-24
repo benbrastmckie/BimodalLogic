@@ -27,10 +27,11 @@
       "topic": "decidability",
       "effort": "4-8 hours",
       "dependencies": [
-        665
+        665,
+        667
       ],
       "created": "2026-09-24T18:33:55Z",
-      "last_updated": "2026-09-24T18:33:55Z"
+      "last_updated": "2026-09-24T22:55:26Z"
     },
     {
       "project_number": 665,
