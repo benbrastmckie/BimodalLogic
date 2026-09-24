@@ -1058,10 +1058,10 @@
       "project_name": "decidable_validztime_quasimodel_shiftset_route",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet witness-family route. Replaces abandoned task 476, whose IntPresentation small-model hypothesis is refuted (fmp_false; see specs/archive/476_box_faithful_small_model_theorem/reports/01_box-faithful-literature-gate.md and evidence/fmp-hypothesis-is-false.lean). Certificate = a guess of which boxed subformulas are true plus finitely many annotated bi-lassos (eventually periodic paths), checked with the existing LocalCoherent and Fulfilling predicates with box values taken from the guess; model = a ShiftSet containing only those witness paths, so box-faithfulness is automatic. Reuse GoodCycle/Enumerate/Decide over subformula-set space rather than presentation states. Main new proofs: truth lemma for the ShiftSet model; compression of a history's subformula-set sequence into a bi-lasso. Also correct the Assembly.lean docstring and BiLasso README.md, which still call the refuted hypothesis open. Literature: Gabbay-Kurucz-Wolter-Zakharyaschev 2003 Thm 3.29, 5.30, 5.32, 11.7, 11.21. Estimated 3-6 weeks Reconciliation notes (2026-09-22): two tools have landed since this task was written. (1) FormalSystem/Metalogic/Conservativity/FragmentAxiomatization.lean establishes that the tense-only fragment over ℤ-time is finitely axiomatized by TM⁻_z + Z1 (sigmaZTime; soundness sigmaZTime_le_tmFrag machine-checked, completeness via ChainComplete), so a decision procedure for ValidZTime may target that finite axiom set on the L⁻ side when the guess-and-check certificate is restricted to H/G subformulas, and the corresponding conditional-completeness scaffold (minusExt_iff_tmFrag_of_chainComplete) is the interface any syntactic side of the procedure should meet. (2) FormalSystem/Semantics/Frames/TranslationProduct.lean proves validIn_iff_recurrenceFree, plusValidIn_iff_recurrenceFree and starValidIn_iff_recurrenceFree: validity over all ℤ-time task frames equals validity over the recurrence-free ones, so the bi-lasso certificate may assume without loss that the witness ShiftSet paths never revisit a world state, which simplifies the compression-into-bi-lasso lemma (only the subformula-set sequence, not the state sequence, needs to be eventually periodic). Read both modules before planning.",
+      "description": "Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet witness-family route: the completeness (compression) half. The soundness half, which defines LabelledLasso / WitnessFamily, the ShiftSet construction WitnessFamily.std, the agreement theorem (truth in std equals label membership on the closure), the consequence corollaries at ZTime and Base, and the Decidable instances for the four certificate conditions, has been split out into its own task, on which this task now depends; do not re-prove or re-define any of it here, consume it.\n\nWHAT REMAINS HERE.\n1. Compression: if ¬ ValidZTime ψ (equivalently, for the consequence form, ¬ SemanticConsequenceIn FrameClass.ZTime Γ σ) then some WitnessFamily satisfying the four conditions exists with every segment length bounded by a computable function of the closure size, whose main lasso carries the refuting point. Route: take a refuting model, history and time; for each boxed subformula guessed false pick one witnessing history; compress each history's subformula-set (type) sequence into a bi-lasso using BiLasso/GoodCycle.lean's eventuality-propagation and good-cycle lemmas and BiLasso/Extraction.lean's exists_annot_of_truth as the template (that lemma is the within-one-presentation version and must be re-run over subformula-set space rather than presentation states). By Semantics/Frames/TranslationProduct.lean's validIn_iff_recurrenceFree the witness paths may be taken recurrence-free without loss, so only the type sequence, not the state sequence, needs to be eventually periodic.\n2. Assembly: the formula-indexed candidate list cands : Formula → List WitnessFamily over the bounds of item 1, and Decidable (ValidZTime φ) by decidable_of_iff from \"no candidate is accepted\", following BiLasso/Assembly.lean's validZTime_iff_checkFamily shape.\n3. Correct the Assembly.lean docstring and the BiLasso README.md, which still call the refuted IntPresentation small-model hypothesis open (it is refuted: Probe476.fmp_false), and add one sentence of scope in durable terms: the procedure decides validity for the language without the stability modal; its witness models are deterministic, on which that modal is trivial.\n\nCARRIED-FORWARD NOTES. Literature: Gabbay-Kurucz-Wolter-Zakharyaschev 2003 Thm 3.29, 5.30, 5.32, 11.7, 11.21. Two tools landed since the task was first written: FormalSystem/Metalogic/Conservativity/FragmentAxiomatization.lean (tense-only fragment over ℤ-time finitely axiomatized by TM⁻_z + Z1; sigmaZTime, sigmaZTime_le_tmFrag, minusExt_iff_tmFrag_of_chainComplete) and TranslationProduct.lean's recurrence-free reductions; read both before planning. Estimated 2-4 weeks with the soundness half removed. Research report from the original scoping: specs/623_decidable_validztime_quasimodel_shiftset_route/reports/01_stability-scope-decidability-findings.md.",
       "topic": "decidability",
       "created": "2026-09-18T19:46:46Z",
-      "last_updated": "2026-09-22T16:13:39Z",
+      "last_updated": "2026-09-24T18:34:13Z",
       "artifacts": [
         {
           "path": "specs/623_decidable_validztime_quasimodel_shiftset_route/reports/01_stability-scope-decidability-findings.md",
@@ -1072,7 +1072,8 @@
       "next_artifact_number": 2,
       "dependencies": [
         534,
-        645
+        645,
+        665
       ],
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean",
@@ -1083,7 +1084,8 @@
         "FormalSystem.lean",
         "docs/theorem-index.md",
         "scripts/check-module-invariants.sh"
-      ]
+      ],
+      "effort": "2-4 weeks"
     },
     {
       "project_number": 618,
