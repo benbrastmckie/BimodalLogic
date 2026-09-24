@@ -101,7 +101,7 @@ next_project_number: 668
 
 ### Semantics
 
-663 [RESEARCHED] — Add a repo-wide hypothesis-honesty gate so no...
+663 [PLANNED] — Add a repo-wide hypothesis-honesty gate so no...
 
 ## Tasks
 
@@ -195,11 +195,12 @@ Out of scope: any Lean change, and any edit to the manuscript.
 ---
 
 ### 663. Hypothesis honesty lint isregular overbinding
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 662
 - **Research**: [663_hypothesis_honesty_lint_isregular_overbinding/reports/01_hypothesis-honesty-lint-isregular.md]
+- **Plan**: [663_hypothesis_honesty_lint_isregular_overbinding/plans/01_hypothesis-honesty-lint-isregular.md]
 
 **Description**: Add a repo-wide hypothesis-honesty gate so no constraint-independence claim silently carries the bundling IsRegular class.
 

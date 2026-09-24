@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 7,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/663_hypothesis_honesty_lint_isregular_overbinding/plans/01_hypothesis-honesty-lint-isregular.md",
+      "summary": "Seven-phase implementation plan for the IsRegular hypothesis-honesty gate (C34), covering re-measurement, the marker convention, eight Lean restatements, and the gated check."
+    }
+  ],
+  "session_id": "sess_1790269483_76154e_663",
+  "dispatch_seq": 12,
+  "next_steps": "Run /implement 663 to execute the plan"
+}

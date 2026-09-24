@@ -1,17 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 11,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/663_hypothesis_honesty_lint_isregular_overbinding/reports/01_hypothesis-honesty-lint-isregular.md",
-      "summary": "Audit of the 258 IsRegular instance-binder sites, the eight independence-claiming ones that must be fixed, and a C34 build-free gate design keyed on a `Constraints consumed:` docstring marker."
+      "type": "plan",
+      "path": "specs/663_hypothesis_honesty_lint_isregular_overbinding/plans/01_hypothesis-honesty-lint-isregular.md",
+      "summary": "Seven-phase plan: re-measure the IsRegular binder population and land a re-runnable C34 census, document the `Constraints consumed:` docstring normal form, restate the eight independence-claiming declarations at explicit hypotheses with unchanged-signature corollaries, then gate C34 soft-then-enforced and document it."
+    }
+  ],
+  "next_steps": "Run /implement 663 to execute the plan",
+  "phase_count": 7,
+  "estimated_hours": 11,
+  "dependency_waves": [[1, 2], [3, 5], [4], [6], [7]],
+  "memory_candidates": [
+    {
+      "content": "An opt-in at-site marker convention (a docstring/annotation line a declaration carries voluntarily) is silently bypassable: new code that should carry the marker simply omits it and the gate sees nothing. The fix is to pair the structural assertion with a TRIGGER assertion over the same population: a deliberately loose prose/shape heuristic that fires on candidates and demands only that a marker be present, never rendering a verdict on the marker's content. False positives then cost one marker line each instead of a redesign, and the marker stops being opt-in. Land the trigger half reporting-only first (soft-then-enforced), read the hit list, add the demanded markers, then flip enforcement. Pair with an anti-silence guard treating a zero-marker or empty-walk result as a broken matcher rather than a clean tree, and prefer at-site markers over a central manifest since central reason files go stale silently when the code they cover moves.",
+      "category": "PATTERN",
+      "source_artifact": "specs/663_hypothesis_honesty_lint_isregular_overbinding/plans/01_hypothesis-honesty-lint-isregular.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["lint-design", "opt-in-marker", "trigger-assertion", "soft-then-enforced", "anti-silence-guard", "at-site-convention"]
     }
   ],
   "metadata": {
     "session_id": "sess_1790269483_76154e_663",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 12
 }
