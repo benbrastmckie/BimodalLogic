@@ -515,7 +515,7 @@ declaration the gate names before editing.
 
 ---
 
-### Phase 7: Restate `levels_closed` at *Limit* and route `constant_of_countable_range` [NOT STARTED]
+### Phase 7: Restate `levels_closed` at *Limit* and route `constant_of_countable_range` [COMPLETED]
 
 **Goal**: Clear the two `RigidityReal.lean` rows with a single new twin, the second of them reusing
 the first's.

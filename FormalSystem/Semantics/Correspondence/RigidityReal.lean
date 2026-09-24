@@ -85,19 +85,25 @@ namespace FrameOver
 variable (F : FrameOver realOrder)
 
 /--
-**Level sets of a world history are closed — from *Limit* alone.**
+**Level sets of a world history are closed, at the hypothesis the proof consumes: *Limit*.**
 
 `def:frame#Limit` gives, for each pair `a ≠ b`, a radius `r > 0` with no task of duration
 `|y| < r` from `b` to `a`. `def:world-history`'s `respects_task` then keeps every time within
-`r` of a `b`-time out of the `a`-level set.
+`r` of a `b`-time out of the `a`-level set. Nothing else is reached: no *Compositionality*, no
+*Seriality*, no *Saturation*.
+
+`levels_closed` below is this theorem at `[F.IsRegular]`, with its original statement.
+
+Constraints consumed: Limit
 -/
-theorem levels_closed [F.IsRegular] (τ : WorldHistory F.toTaskFrame) (a : F.WorldState) :
+theorem levels_closed_of_limit (hlim : TaskFrame.Limit F.TaskRel)
+    (τ : WorldHistory F.toTaskFrame) (a : F.WorldState) :
     IsClosed {t : ℝ | τ.state t = a} := by
   rw [← isOpen_compl_iff, Metric.isOpen_iff]
   intro t ht
   have hne : a ≠ τ.state t := fun hh => ht hh.symm
   have hnot : ¬ (∀ x : ℝ, 0 < x → ∃ y, |y| < x ∧ F.TaskRel (τ.state t) y a) :=
-    fun hh => hne (F.limit _ _ hh)
+    fun hh => hne (hlim _ _ hh)
   push Not at hnot
   obtain ⟨r, hr, hrad⟩ := hnot
   refine ⟨r, hr, ?_⟩
@@ -107,6 +113,22 @@ theorem levels_closed [F.IsRegular] (τ : WorldHistory F.toTaskFrame) (a : F.Wor
   have hrel : F.TaskRel (τ.state t) (s - t) (τ.state s) := τ.respects_task t s
   rw [(hsa : τ.state s = a)] at hrel
   exact (hrad (s - t) hs) hrel
+
+/--
+**Level sets of a world history are closed — from *Limit* alone.**
+
+`def:frame#Limit` gives, for each pair `a ≠ b`, a radius `r > 0` with no task of duration
+`|y| < r` from `b` to `a`. `def:world-history`'s `respects_task` then keeps every time within
+`r` of a `b`-time out of the `a`-level set.
+
+`levels_closed_of_limit` above is the explicit-hypothesis form, which is the general one; this is
+that form at a regular frame.
+
+Constraints consumed: Limit
+-/
+theorem levels_closed [F.IsRegular] (τ : WorldHistory F.toTaskFrame) (a : F.WorldState) :
+    IsClosed {t : ℝ | τ.state t = a} := by
+  exact levels_closed_of_limit F F.limit τ a
 
 /--
 **`thm:extension` at the two-point partial history `{⟨0, w⟩, ⟨x, u⟩}`** (`x ≠ 0`): every task is
@@ -140,10 +162,15 @@ theorem exists_history_of_taskRel [F.IsRegular] (w u : F.WorldState) (x : ℝ) (
 
 /-- **Every world history over `ℝ` whose range is countable is constant.** The sharp form of
 the rigidity below: it is the range, not the carrier, that has to be countable. *Limit* makes
-the level sets closed, and Sierpiński collapses them. -/
+the level sets closed, and Sierpiński collapses them.
+
+Routed through `levels_closed_of_limit`, the binder-free form, so that the marker is proved where
+its one hypothesis is explicit.
+
+Constraints consumed: Limit -/
 theorem constant_of_countable_range [F.IsRegular] (τ : WorldHistory F.toTaskFrame)
     (hcount : (Set.range τ.state).Countable) : ∀ s t : ℝ, τ.state s = τ.state t :=
-  Sierpinski.const_of_countable_range τ.state hcount (levels_closed F τ)
+  Sierpinski.const_of_countable_range τ.state hcount (levels_closed_of_limit F F.limit τ)
 
 /--
 **Over `ℝ`, a countable carrier forces a static frame.**
