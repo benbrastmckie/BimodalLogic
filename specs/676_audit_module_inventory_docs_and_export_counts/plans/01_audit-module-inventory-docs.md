@@ -1,7 +1,7 @@
 # Implementation Plan: Task #676
 
 - **Task**: 676 - Audit module inventory docs and export counts
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None (the `MinusLanguageSoundness.lean` repoint it follows is already landed)
 - **Research Inputs**: `specs/676_audit_module_inventory_docs_and_export_counts/reports/01_audit-module-inventory-docs.md`
@@ -95,7 +95,7 @@ files (`docs/user-guide/architecture.md`, `FormalSystem/Metalogic/Conservativity
 
 ---
 
-### Phase 1: Re-derive the live layout baseline [NOT STARTED]
+### Phase 1: Re-derive the live layout baseline [COMPLETED]
 
 **Goal**: Produce a single scratch file holding the actual, current directory layout of every
 tree the documentation claims to describe, so that Phases 2-4 diff against observed reality
@@ -103,22 +103,22 @@ rather than against the research report's prose. Also confirm the already-landed
 Defect 2 ground-truth numbers, by observation rather than assumption.
 
 **Tasks**:
-- [ ] Write the live layout to the scratchpad: for each of `FormalSystem/` (top level),
+- [x] Write the live layout to the scratchpad: for each of `FormalSystem/` (top level),
       `Syntax/`, `ProofSystem/`, `MinusLanguage/`, `Semantics/`, `Metalogic/`, `Theorems/`,
       `Automation/`, `Examples/`, and `Tests/BimodalTest/`, capture a `find -maxdepth 1 | sort`
       listing distinguishing directories, non-shim `.lean` files, re-export shims (an `X.lean`
-      sitting beside a directory `X/`), and `README.md`.
-- [ ] Confirm `Boneyard/` is a repo-root sibling of `FormalSystem/`, not nested inside it
-      (`ls -d Boneyard FormalSystem/Boneyard`).
-- [ ] Recount Defect 2's three ground-truth numbers directly: import lines in
+      sitting beside a directory `X/`), and `README.md`. *(completed)*
+- [x] Confirm `Boneyard/` is a repo-root sibling of `FormalSystem/`, not nested inside it
+      (`ls -d Boneyard FormalSystem/Boneyard`). *(completed: confirmed repo-root only; `FormalSystem/Boneyard` does not exist)*
+- [x] Recount Defect 2's three ground-truth numbers directly: import lines in
       `FormalSystem/Metalogic/Conservativity.lean`; `.lean` files in
       `FormalSystem/Metalogic/Conservativity/`; bullets matching `^\* \`` in the docstring. Record
-      which imported modules have no bullet.
-- [ ] Confirm the already-landed repoint: no live `Metalogic/Conservativity/MinusLanguageSoundness.lean`
+      which imported modules have no bullet. *(completed: 20 imports, 19 dir files, 18 bullets; missing ChainBundleTruth.lean and DenseObstructionTransfer.lean)*
+- [x] Confirm the already-landed repoint: no live `Metalogic/Conservativity/MinusLanguageSoundness.lean`
       citation remains anywhere outside `docs/development/PUBLICATION_REFACTOR.md` and
-      `architecture.md`'s one stale tree line. Verify; do not re-derive the repoint itself.
-- [ ] Record in the baseline file the settled answer for Defect 2 ("every import" = the import-line
-      count observed above) and the settled answer for Defect 3 (leave the row, annotate).
+      `architecture.md`'s one stale tree line. Verify; do not re-derive the repoint itself. *(completed: confirmed via repo-wide grep)*
+- [x] Record in the baseline file the settled answer for Defect 2 ("every import" = the import-line
+      count observed above) and the settled answer for Defect 3 (leave the row, annotate). *(completed)*
 
 **Timing**: 0.5 hours
 

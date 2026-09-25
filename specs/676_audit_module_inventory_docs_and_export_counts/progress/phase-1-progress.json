@@ -1,0 +1,16 @@
+{
+  "phase": 1,
+  "phase_name": "Re-derive the live layout baseline",
+  "started_at": "2026-09-25T19:52:47Z",
+  "last_updated": "2026-09-25T19:53:28Z",
+  "objectives": [
+    {"id": 1, "description": "Write live layout listings for all ten trees to scratchpad", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Confirm Boneyard is repo-root sibling not nested in FormalSystem", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Recount Defect 2 ground-truth numbers directly", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Confirm already-landed repoint (no stale MinusLanguageSoundness citations outside exclusions)", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Record settled answers for Defect 2 and Defect 3 in baseline file", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0
+}
