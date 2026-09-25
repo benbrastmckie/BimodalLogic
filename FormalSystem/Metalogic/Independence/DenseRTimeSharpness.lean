@@ -341,4 +341,63 @@ theorem not_derivable_dense_prior_U_gap (a : Atom) :
     ¬ Derivable FrameClass.Dense [] (priorUGapFormula (Formula.atom a)) :=
   fun ⟨d⟩ => not_validIn_dense_prior_U_gap a (soundness_validIn d)
 
+/-! ## Row 4: sep — the obstruction, not the refutation
+
+`Axiom.sep`'s `.RTime` tag is **not** shown minimal here. What is shown is a boundary that fixes
+where a refutation could possibly live.
+
+`not_kPlus_of_isLeastPos` and `sep_validOn_of_isLeastPos` together establish that `Axiom.sep` is
+*vacuously* valid on every frame whose duration group has a least positive element: on such a
+frame `K⁺ψ` is false everywhere, because the immediate successor `t + p` leaves the open interval
+`(t, t + p)` empty, so `sep`'s antecedent's first conjunct `K⁺φ` never holds. Combined with
+`Semantics.duration_dense_or_least_pos` — every duration group is either densely ordered or has a
+least positive element — this says **no discrete witness for `sep` can exist**. Any `.Base`
+refutation must therefore run over a densely ordered duration group; and since `Sat .Dense F`
+implies `Sat .Base F`, one dense witness would close both classes strictly below `.RTime` at
+once, exactly the pattern `not_validIn_dense_prior_U_gap` follows for the `prior_U_gap` row.
+
+Three candidate routes were surveyed, none attempted here:
+
+1. The lexicographic configuration already written down in
+   `Metalogic/SoundnessLemmas/Separability.lean` (`t = (0,1)` on the lex square, φ-region
+   `{(a, 0) : 0 < a < 1}`) does **not** transfer as-is. A *group* has no fibre tops, so the
+   antecedent collapses the problem back to the separable one-level case; the value group must
+   itself be densely ordered.
+2. The witness that does appear to work is `D = Lex (ℚ →₀ ℚ)` with φ-region
+   `{toLex (Finsupp.single γ 1) : γ > 0}`. Its carrier instances were probed and are available
+   except for `IsOrderedAddMonoid`, which is a short instance off Mathlib's
+   `Finsupp.Lex.addLeftMono` / `Finsupp.Lex.addRightMono`.
+3. An independent plain-`ℚ` route via a bespoke Cantor set, exploiting completeness rather than
+   separability.
+-/
+
+/-- On a frame whose durations have a least positive element `p`, `K⁺φ` is false everywhere: the
+immediate successor `t + p` makes the open interval `(t, t + p)` empty, so no witness to `K⁺` can
+be found. -/
+theorem not_kPlus_of_isLeastPos {F : TaskFrame} {p : F.Duration}
+    (hp : IsLeast {x : F.Duration | 0 < x} p) (M : TaskModel F) (τ : WorldHistory F)
+    (t : F.Duration) (φ : Formula) : ¬ TruthAt M τ t (Formula.kPlus φ) := by
+  intro h
+  refine h ⟨t + p, lt_add_of_pos_right t hp.1, fun hb => hb, ?_⟩
+  intro r htr hrp
+  exfalso
+  have h1 : 0 < r - t := sub_pos.mpr htr
+  have h2 : p ≤ r - t := hp.2 h1
+  have : t + p ≤ r := by
+    have := le_sub_iff_add_le.mp h2
+    rwa [add_comm] at this
+  exact absurd hrp (not_lt.mpr this)
+
+/-- `Axiom.sep` is valid — vacuously — on every frame whose durations have a least positive
+element: its antecedent's first conjunct `K⁺φ` fails everywhere there by
+`not_kPlus_of_isLeastPos`. This is the proved obstruction to a discrete refutation of the `sep`
+row. -/
+theorem sep_validOn_of_isLeastPos {F : TaskFrame} {p : F.Duration}
+    (hp : IsLeast {x : F.Duration | 0 < x} p) (φ : Formula) :
+    F.ValidOn ((Formula.and (Formula.kPlus φ)
+        (Formula.kPlus (Formula.and φ (Formula.untl φ.neg φ))).neg).imp
+        (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))) := by
+  intro M τ t hant
+  exact absurd ((Truth.and_iff _ _).mp hant).1 (not_kPlus_of_isLeastPos hp M τ t φ)
+
 end FormalSystem.Metalogic.Independence

@@ -292,7 +292,7 @@ above, stop and reassess rather than widening the module.
 
 ---
 
-### Phase 2: The sep row — ship the proved obstruction, exclude the proof [NOT STARTED]
+### Phase 2: The sep row — ship the proved obstruction, exclude the proof [COMPLETED]
 
 **Goal**: The `sep` row leaves this task with a *proved boundary* rather than silence: it is
 established that no discrete witness can exist, and the two candidate dense routes are recorded
@@ -300,17 +300,20 @@ where the next reader will find them.
 
 **Tasks**:
 
-- [ ] Add `not_kPlus_of_isLeastPos` and `sep_validOn_of_isLeastPos` to
+- [x] Add `not_kPlus_of_isLeastPos` and `sep_validOn_of_isLeastPos` to
       `DenseRTimeSharpness.lean`, transcribed from report Appendix B. These show `K⁺φ` is false
       everywhere on a frame with a least positive duration — the immediate successor `t + p`
       empties the interval `(t, t+p)` — so `sep`'s antecedent's first conjunct fails and `sep` is
       *vacuously* valid on every such frame.
-- [ ] Add a `/-! ## The sep row -/` section docstring recording the consequence: combined with
+- [x] Add a `/-! ## The sep row -/` section docstring recording the consequence:
+      *(deviation: altered — the section heading reads `## Row 4: sep — the obstruction, not the
+      refutation`, matching the module's existing `## Row N:` section naming; content as
+      specified.)* combined with
       `Semantics.duration_dense_or_least_pos`, **no discrete witness for `sep` can exist**, so any
       `.Base` refutation must run over a densely ordered duration group — and since
       `Sat .Dense F → Sat .Base F`, one dense witness would close both classes at once, exactly
       the `prior_U_gap` pattern.
-- [ ] Record both candidate routes in that same section docstring, without attempting either:
+- [x] Record both candidate routes in that same section docstring, without attempting either:
       (a) the lexicographic configuration already written down in
       `SoundnessLemmas/Separability.lean` (`t = (0,1)` on the lex square with φ-region
       `{(a,0) : 0 < a < 1}`) does **not** transfer as-is, because a group has no fibre tops and
@@ -320,8 +323,8 @@ where the next reader will find them.
       were probed and work except for `IsOrderedAddMonoid`, a three-line instance off Mathlib's
       `Finsupp.Lex.addLeftMono` / `addRightMono`; and (c) an independent plain-`ℚ` route via a
       bespoke Cantor set exploiting completeness rather than separability.
-- [ ] Re-run `lake env lean` on the single file.
-- [ ] Do **not** attempt the `Lex (ℚ →₀ ℚ)` construction. It is estimated at 350-450 new lines
+- [x] Re-run `lake env lean` on the single file.
+- [x] Do **not** attempt the `Lex (ℚ →₀ ℚ)` construction. It is estimated at 350-450 new lines
       with real risk in the least-support arithmetic; it is spawned as a separate task in
       Observations below.
 
