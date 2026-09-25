@@ -319,7 +319,7 @@ condition, lasso index and position named.
 
 ---
 
-### Phase 5: Tests/BimodalToolsTest/CertificateImportTest.lean [NOT STARTED]
+### Phase 5: Tests/BimodalToolsTest/CertificateImportTest.lean [COMPLETED]
 
 **Goal**: The acceptance criteria are executable `#guard` rows against the library module, not a
 manual smoke run.
