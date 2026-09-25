@@ -1,7 +1,7 @@
 # Implementation Plan: Task #676
 
 - **Task**: 676 - Audit module inventory docs and export counts
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None (the `MinusLanguageSoundness.lean` repoint it follows is already landed)
 - **Research Inputs**: `specs/676_audit_module_inventory_docs_and_export_counts/reports/01_audit-module-inventory-docs.md`

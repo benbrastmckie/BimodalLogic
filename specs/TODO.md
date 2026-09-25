@@ -11,7 +11,7 @@ next_project_number: 677
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,676 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -71,10 +71,6 @@ next_project_number: 677
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
 
-### Documentation
-
-676 [IMPLEMENTING] — Audit the FormalSystem module-inventory documentation against...
-
 ### Formula Refactor
 
 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of...
@@ -103,12 +99,13 @@ next_project_number: 677
 ## Tasks
 
 ### 676. Audit module inventory docs and export counts
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: markdown
 - **Topic**: documentation
 - **Dependencies**: None
 - **Research**: [676_audit_module_inventory_docs_and_export_counts/reports/01_audit-module-inventory-docs.md]
 - **Plan**: [676_audit_module_inventory_docs_and_export_counts/plans/01_audit-module-inventory-docs.md]
+- **Summary**: [676_audit_module_inventory_docs_and_export_counts/summaries/01_audit-module-inventory-docs-summary.md]
 
 **Description**: Audit the FormalSystem module-inventory documentation against the real source layout and reconcile three mutually inconsistent counts of the Conservativity aggregator's re-exports. Both defects were found while repointing the stale MinusLanguageSoundness.lean citations; that repoint is already landed and is NOT part of this task.
 
