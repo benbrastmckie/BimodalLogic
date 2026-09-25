@@ -1,30 +1,47 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "dispatch_seq": 3,
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/672_ztime_full_characterization_and_axiom_pin/plans/01_ztime-characterization-axiom-pin.md",
-      "summary": "Five-phase plan for the .ZTime ValidIn-iff characterization theorems and the coupled four-edit-site MainResults axiom pin."
+      "type": "summary",
+      "path": "specs/672_ztime_full_characterization_and_axiom_pin/summaries/01_ztime-characterization-axiom-pin-summary.md",
+      "summary": "Six new sorry-free declarations give a full ValidIn fc phi <-> fc = .ZTime characterization for Axiom.prior_UZ and Axiom.z1, and the coupled four-edit-site MainResults axiom pin is complete and gate-green."
     }
   ],
-  "dispatch_seq": 2,
-  "next_steps": "Run /implement 672 to execute the plan",
+  "completion_data": {
+    "completion_summary": "Added four Dense/RTime non-validity corollaries and two ValidIn-iff-ZTime biconditionals to FormalSystem/Metalogic/Independence/ZTimeSharpness.lean, upgrading the .ZTime sharpness result from minimality to a full frame-class characterization. Completed the coupled four-edit-site build-time axiom pin (MainResults.lean page, both C14 heredocs in check-module-invariants.sh, and the C27 allow-list count) so all ten headline names are machine-pinned. Full lake build exits 0 and scripts/check-module-invariants.sh exits 0 with zero FAIL lines.",
+    "roadmap_items": []
+  },
+  "metadata": {
+    "session_id": "sess_1790353604_4fe6d5",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "phases_completed": 5,
+    "phases_total": 5
+  },
   "memory_candidates": [
     {
-      "content": "In BimodalLogic, a build-time axiom pin on FormalSystem/MainResults.lean is a FOUR-edit-site change across three files, not three: the page itself, BOTH coupled heredocs in scripts/check-module-invariants.sh (C14_BASELINE and the generated C14LEAN Lean file, compared by exact string equality and required to list the same declarations in the same order -- the script says so in its own comment above them), and the per-file count in scripts/debug-artifact-allowlist.txt (C27), which must be read off the gate's own reported 'tree' value rather than computed by arithmetic. Editing C14_BASELINE alone fails C14 with a baseline divergence; omitting any site fails C21, which requires every name on the audit page be pinned by C2 or C14. Plan such a pin as one atomic-batch commit and revert all four sites together on failure. Separately: reverse-dependency footprint should be measured with grep -rln '^import <Module>$' up the aggregator chain before budgeting a rebuild -- MainResults.lean is a leaf (2 modules), not a full-tree trigger.",
+      "content": "In BimodalLogic, a build-time axiom pin on FormalSystem/MainResults.lean is a FOUR-edit-site change across three files: the page itself, BOTH coupled heredocs in scripts/check-module-invariants.sh (C14_BASELINE and the generated C14LEAN Lean file, compared by exact string equality and required to list the same declarations in the same order), and the per-file count in scripts/debug-artifact-allowlist.txt (C27). Read the C27 value off the gate's own reported 'tree' number, never compute it by arithmetic: the gate reported 'allow-list 54, tree 66' where naive arithmetic (54 + 12 directives) happened to agree but the gate's masker is the authority. Verify heredoc parity mechanically by diffing the two extracted name lists, not by counting. Confirmed working end to end.",
       "category": "PATTERN",
-      "source_artifact": "specs/672_ztime_full_characterization_and_axiom_pin/plans/01_ztime-characterization-axiom-pin.md",
+      "source_artifact": "specs/672_ztime_full_characterization_and_axiom_pin/summaries/01_ztime-characterization-axiom-pin-summary.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["axiom-pin", "check-module-invariants", "C14-baseline", "C21", "C27-allowlist", "heredoc-parity"]
+    },
+    {
+      "content": "In BimodalLogic, FrameClass minimality (fc < .ZTime) and FrameClass characterization (ValidIn fc phi <-> fc = .ZTime) are genuinely different claims, because the frame-class order is NOT linear: .Dense and .RTime are incomparable with .ZTime rather than below it. eq_base_of_lt_ztime reaches only .Base, so a characterization needs separate refutations at .Dense and .RTime plus a four-way `cases fc`, never a route through the order fact. Also: `by decide` FAILS on FrameClass `<` (only `<=` has a DecidableRel instance). Discharging Sat: .Dense is an anonymous-constructor instance pair; .RTime adds a third component, TaskFrame.IsComplete, from Real.exists_isLUB.",
+      "category": "PATTERN",
+      "source_artifact": "specs/672_ztime_full_characterization_and_axiom_pin/summaries/01_ztime-characterization-axiom-pin-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["axiom-pin", "check-module-invariants", "C14-baseline", "C21", "C27-allowlist", "rebuild-footprint"]
+      "suggested_keywords": ["FrameClass", "minFrameClass", "ZTime", "characterization", "incomparable", "Sat-discharge"]
     }
-  ],
-  "metadata": {
-    "session_id": "sess_1790353604_4fe6d5_672",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 4.5,
-    "dependency_waves": [[1], [2], [3], [4], [5]]
-  }
+  ]
 }

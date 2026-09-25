@@ -1,17 +1,22 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Wrote a five-phase implementation plan for the .ZTime full-characterization theorems (four Dense/RTime non-validity corollaries plus two ValidIn-iff biconditionals in ZTimeSharpness.lean) and the coupled four-edit-site MainResults axiom pin, integrating the research report's corrections to the dispatch (realOrder ambiguity, two C14 heredocs, rebuild footprint).",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "summary": "Landed both halves of task 672. Six new sorry-free, documented declarations in FormalSystem/Metalogic/Independence/ZTimeSharpness.lean (not_validIn_dense_prior_UZ, not_validIn_dense_z1, not_validIn_rtime_prior_UZ, not_validIn_rtime_z1, prior_UZ_validIn_iff_ztime, z1_validIn_iff_ztime) upgrade the .ZTime sharpness result from minimality of the tag to a full ValidIn fc phi <-> fc = .ZTime characterization. The coupled four-edit-site axiom pin is complete: the MainResults.lean audit page, both C14 heredocs, and the C27 allow-list count. Full lake build exits 0 (2735 jobs) and scripts/check-module-invariants.sh exits 0 with zero FAIL lines; all ten pinned names measure [propext, Classical.choice, Quot.sound].",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/672_ztime_full_characterization_and_axiom_pin/summaries/01_ztime-characterization-axiom-pin-summary.md",
+      "summary": "Implementation summary for the .ZTime characterization theorems and the completed four-edit-site axiom pin."
+    },
     {
       "type": "plan",
       "path": "specs/672_ztime_full_characterization_and_axiom_pin/plans/01_ztime-characterization-axiom-pin.md",
-      "summary": "Five-phase plan for the .ZTime ValidIn-iff characterization theorems and the coupled four-edit-site MainResults axiom pin."
+      "summary": "Five-phase plan, all phases [COMPLETED], plan-level Status [COMPLETED]."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 5,
   "phases_total": 5,
   "blockers": [],
-  "next_action_hint": "Run /implement 672 to execute the plan"
+  "next_action_hint": "Task 672 is complete. Optional follow-ups recorded in the summary: the stale '105' counts at README.md:11 and README.md:463, and the stale 54/25/29 breakdown at docs/development/CI_CD_PROCESS.md:95, both outside this task's scope."
 }

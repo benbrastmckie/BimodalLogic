@@ -3,14 +3,15 @@
 - **Task**: 672 - Strengthen the `.ZTime` sharpness results to a full `ValidIn fc φ ↔ fc = .ZTime`
   characterization for `Axiom.prior_UZ` and `Axiom.z1`, and pin the resulting headline theorems on
   `FormalSystem/MainResults.lean`'s build-time axiom audit
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.5 hours
 - **Dependencies**: None open. Builds on task 670's landed
   `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean` (292 lines, sorry-free,
   axiom-declaration-free), which is present in the tree.
 - **Research Inputs**:
   `specs/672_ztime_full_characterization_and_axiom_pin/reports/01_ztime-characterization-axiom-pin.md`
-- **Artifacts**: plans/01_ztime-characterization-axiom-pin.md (this file)
+- **Artifacts**: plans/01_ztime-characterization-axiom-pin.md (this file),
+  summaries/01_ztime-characterization-axiom-pin-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -375,26 +376,26 @@ baselines after Phase 3 rather than trusting this arithmetic — write what the 
 
 ---
 
-### Phase 5: Confirming full build and gate [NOT STARTED]
+### Phase 5: Confirming full build and gate [COMPLETED]
 
 **Goal**: The whole change is green end to end, sorry-free, axiom-declaration-free, with the
 measured axiom set unchanged.
 
 **Tasks**:
 
-- [ ] Run one detached guarded full build:
+- [x] Run one detached guarded full build:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` under
       `Bash(run_in_background: true)`, waiting with the bounded `kill -0`-on-captured-PID idiom.
-- [ ] Run `bash scripts/check-module-invariants.sh` in full (not `--no-build`) and assert C1, C2,
+- [x] Run `bash scripts/check-module-invariants.sh` in full (not `--no-build`) and assert C1, C2,
       C3, C14, C16, C17, C19, C20, C21, C27 and INV are all green.
-- [ ] Confirm C3's inventory still reports no `sorryAx` and no new `axiom` declaration anywhere in
+- [x] Confirm C3's inventory still reports no `sorryAx` and no new `axiom` declaration anywhere in
       `FormalSystem/`.
-- [ ] Re-measure the axiom set of all ten pinned names on the new MainResults section and confirm
+- [x] Re-measure the axiom set of all ten pinned names on the new MainResults section and confirm
       each is exactly `[propext, Classical.choice, Quot.sound]`.
-- [ ] Confirm C17 finds no dead declaration among the six new names (each of the four corollaries
+- [x] Confirm C17 finds no dead declaration among the six new names (each of the four corollaries
       is consumed by a biconditional; each biconditional is named on the audit page and in the
       prose ledgers — report F11).
-- [ ] Commit the work per `rules/git-workflow.md`, with Phase 3's four edit sites in one
+- [x] Commit the work per `rules/git-workflow.md`, with Phase 3's four edit sites in one
       atomic-batch commit.
 
 **Timing**: 0.5 hours (mostly build and gate wall-time)
@@ -461,19 +462,19 @@ end FormalSystem.Metalogic.Independence
 
 ## Testing & Validation
 
-- [ ] `lake env lean FormalSystem/Metalogic/Independence/ZTimeSharpness.lean` — 0 errors,
+- [x] `lake env lean FormalSystem/Metalogic/Independence/ZTimeSharpness.lean` — 0 errors,
       0 warnings (Phase 1).
-- [ ] Scoped build over the reverse-dependency set — exits 0, no `Ambiguous term` in the log
+- [x] Scoped build over the reverse-dependency set — exits 0, no `Ambiguous term` in the log
       (Phase 2).
-- [ ] `bash scripts/check-module-invariants.sh` — C14, C21, C27 green together after the pin
+- [x] `bash scripts/check-module-invariants.sh` — C14, C21, C27 green together after the pin
       (Phase 3).
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` — exits 0 after the last
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` — exits 0 after the last
       docstring edit (Phase 4).
-- [ ] Full `lake build` — exits 0 (Phase 5).
-- [ ] Full `bash scripts/check-module-invariants.sh` — every check group green (Phase 5).
-- [ ] Axiom-set assertion: all ten names on the new MainResults section measure
+- [x] Full `lake build` — exits 0 (Phase 5).
+- [x] Full `bash scripts/check-module-invariants.sh` — every check group green (Phase 5).
+- [x] Axiom-set assertion: all ten names on the new MainResults section measure
       `[propext, Classical.choice, Quot.sound]`.
-- [ ] No `sorry`, no `sorryAx`, no new `axiom` declaration anywhere in the diff.
+- [x] No `sorry`, no `sorryAx`, no new `axiom` declaration anywhere in the diff.
 
 ## Artifacts & Outputs
 
