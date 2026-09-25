@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 4,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/671_minframeclass_sharpness_remaining_rows_and_docs/reports/01_dense-rtime-sharpness-ledger-fixes.md",
+      "summary": "Three of the four minFrameClass rows (density, dense_indicator, prior_U_gap) are closed with fully elaborated, sorry-free Lean in Appendix A; sep is excluded with a proved obstruction (sep_validOn_of_isLeastPos) in Appendix B; documentation defect 1 is re-diagnosed (the prefix U(e,g) renderings are correct; three infix/English prose items are the real defects) and defect 2 is measured (two ledgers enumerate different result sets, union is ten, plus two dangling identifiers)."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790353604_4fe6d5_671",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
