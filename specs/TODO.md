@@ -11,8 +11,8 @@ next_project_number: 675
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,671,672,673,674 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,672,674 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,671 | 298,464,502,563,649,672 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -75,10 +75,6 @@ next_project_number: 675
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
 
-### Documentation
-
-673 [NOT STARTED] — Correct two pre-existing documentation defects in...
-
 ### Formula Refactor
 
 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of...
@@ -97,8 +93,8 @@ next_project_number: 675
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-671 [NOT STARTED] — Prove the MINIMALITY half of Axiom.minFrameClass for the four...
 672 [NOT STARTED] — Strengthen the .ZTime sharpness results from...
+  └─ 671 [NOT STARTED] — Prove the MINIMALITY half of Axiom.minFrameClass for the four...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -139,44 +135,6 @@ DELIVERABLE. The two pieces of content written into the correct source store, in
 SCOPE. Agent context only. No change to FormalSystem/ belongs here -- the theorems this knowledge came from are already landed. Do not restate the theorems themselves; record the reusable technique and the criterion.
 
 STARTING POINTS. specs/670_minframeclass_sharpness_prior_uz_z1/reports/01_ztime-sharpness-countermodels.md (the two context-extension recommendations, with the frames that validate rather than refute); that task's plan Observations Recorded for Follow-Up section and its summary Follow-ups section; FormalSystem/Metalogic/Independence/ZTimeSharpness.lean (the landed pattern, including the shape pins); FormalSystem/Semantics/Correspondence/DurationFrames.lean; FormalSystem/Semantics/Frames/Standard.lean; FormalSystem/Metalogic/Independence/CoNotPriorU.lean:13-45; FormalSystem/Metalogic/Conservativity.lean:139-143; .claude/rules/source-store-deploy-boundary.md and context/standards/source-store-deploy-boundary-narrative.md.
-
----
-
-### 673. Fix prior uz docstring and independence ledgers
-- **Status**: [NOT STARTED]
-- **Task Type**: lean4
-- **Topic**: documentation
-- **Dependencies**: None
-
-**Description**: Correct two pre-existing documentation defects in FormalSystem/ that were found and deliberately left unreconciled while the .ZTime minimality theorems were landed. Neither affects any proof; both mislead a reader of the source.
-
-DEFECT 1: the prior_UZ docstring contradicts its own constructor.
-
-FormalSystem/ProofSystem/Axioms.lean renders the prior_UZ axiom in prose as F(phi) -> U(phi, not phi), while the constructor itself is phi.someFuture.imp (Formula.untl phi.neg phi) -- the two untl arguments read in the OPPOSITE order. One of the two is wrong. Resolve it in favour of the constructor, which is what the elaborator actually checks, and correct the prose.
-
-This is not speculative: FormalSystem/Metalogic/Independence/ZTimeSharpness.lean's shape-pin section already records the conflict and notes that its anonymous shape-pin example resolves it in favour of the constructor. The sharpness theorems are therefore protected from the discrepancy; what remains is the prose fix itself. While fixing it, check the neighbouring axiom docstrings for the same class of error rather than assuming prior_UZ is the only one.
-
-DEFECT 2: the Independence ledgers disagree with each other and use superseded class names.
-
-FormalSystem/Metalogic/Independence.lean's module docstring and FormalSystem/Metalogic/Independence/README.md disagree about how many results the directory carries -- the docstring says one count, the README another. The ZTime sharpness work added one entry to each ledger in that ledger's own numbering convention and deliberately did NOT reconcile the pre-existing disagreement, so the discrepancy is inherited, not introduced.
-
-Separately, Independence/README.md still uses the superseded FrameClass names .Dedekind and .Discrete where the code now says .RTime and .ZTime. Note that the entries added by the sharpness work correctly use the current .ZTime spelling, since writing .Discrete for a result about FrameClass.ZTime would be wrong rather than merely old-fashioned -- so the README is now internally inconsistent in its naming too.
-
-Reconcile both: establish the true result count from the directory itself, make the docstring and README agree, and replace every superseded class name with its current spelling. Check whether .Dedekind/.Discrete survive anywhere else under FormalSystem/ before declaring the rename complete.
-
-BUILD-COST WARNING, LEARNED THE HARD WAY.
-
-Editing FormalSystem/ProofSystem/Axioms.lean forces a FULL-TREE rebuild, because Lean invalidates on whole-file hash -- Axioms.lean is imported almost everywhere. Batch both defects into one budgeted rebuild rather than landing two separate documentation passes. Use the detached scripts/lake-build-guard.sh --timeout 1800 shape.
-
-GATE COUPLING, WHICH ALREADY BIT ONCE.
-
-The INV check in scripts/check-module-invariants.sh compares generated inventory blocks against actual file line counts. A docstring edit that changes a module's line count AFTER inventory regeneration has run will fail INV -- this is exactly how it failed during the sharpness work, when an Independence.lean docstring edit grew that file from 123 to 133 lines after regeneration. Regenerate inventories AFTER the last docstring edit, using scripts/check-module-invariants.sh --emit-inventory, which is the real command and propagates counts into several READMEs. scripts/readme-inventory.sh is only a pointer script.
-
-DELIVERABLE. Corrected prose in the named files, scripts/check-module-invariants.sh green, scripts/readme-lint.sh PASS, and a full build with zero errors and zero sorries. No proof, theorem statement, or definition may change -- if a prose correction appears to require a change to a constructor or statement, stop and report rather than editing the mathematics.
-
-SCOPE. Documentation prose and generated inventory blocks only. Do not add, remove, or restate any theorem. Do not reconcile the ledgers by deleting entries.
-
-STARTING POINTS. FormalSystem/ProofSystem/Axioms.lean (the prior_UZ statement and docstring, near the two .ZTime axiom constructors); FormalSystem/Metalogic/Independence.lean (module docstring, the result-count claim); FormalSystem/Metalogic/Independence/README.md; FormalSystem/Metalogic/Independence/ZTimeSharpness.lean (its shape-pin section, which records both the conflict and its resolution); specs/670_minframeclass_sharpness_prior_uz_z1/plans/01_ztime-sharpness-theorems.md Observations Recorded for Follow-Up section and that task's summary Follow-ups section, where both defects are described as found.
 
 ---
 
@@ -229,19 +187,25 @@ STARTING POINTS. FormalSystem/Metalogic/Independence/ZTimeSharpness.lean; specs/
 
 ---
 
-### 671. Minframeclass sharpness dense rtime rows
+### 671. Minframeclass sharpness remaining rows and docs
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: None
+- **Dependencies**: Task 672
 
-**Description**: Prove the MINIMALITY half of Axiom.minFrameClass for the four remaining non-Base rows: density and dense_indicator (tagged .Dense), prior_U_gap and sep (tagged .RTime). Establish for each that it is NOT valid at any class strictly below its assigned tag, so the hand-assigned tag is sharp rather than merely an upper bound.
+**Description**: Prove the MINIMALITY half of Axiom.minFrameClass for the four remaining non-Base rows -- density and dense_indicator (tagged .Dense), prior_U_gap and sep (tagged .RTime) -- and, in the same pass, correct the two pre-existing documentation defects in the files this work must already edit. Establish for each axiom that it is NOT valid at any class strictly below its assigned tag, so the hand-assigned tag is sharp rather than merely an upper bound.
+
+WHY THE PROOF WORK AND THE DOCUMENTATION FIXES ARE ONE TASK. They are not merely adjacent; they edit the same files. The .ZTime sharpness work's own docstring-and-ledger phase touched exactly FormalSystem/ProofSystem/Axioms.lean, FormalSystem/Metalogic/Independence.lean, FormalSystem/Metalogic/Independence/README.md and three generated inventory READMEs -- which is a superset of everything the documentation fixes below need. Editing Axioms.lean forces a FULL-TREE rebuild because Lean invalidates on whole-file hash, so splitting these would pay that rebuild and an inventory regeneration twice. More importantly, one of the defects is a wrong RESULT COUNT in the Independence ledgers, and this task adds new entries to those same ledgers: reconciling the count first and then adding entries would simply invalidate the reconciliation. Hence the ordering constraint below.
+
+ORDERING CONSTRAINT, LOAD-BEARING. Do the proof work FIRST and the ledger reconciliation LAST, after every new entry exists, so the counts settle once and correctly. Do not reconcile counts mid-task.
 
 WHAT IS ALREADY PROVED, AND IS NOT TO BE RE-DERIVED.
 
 Axiom.minFrameClass (FormalSystem/ProofSystem/Axioms.lean:610-617) is a DEFINITION -- a hand-assigned tag per axiom constructor. What is proved about it is the UPPER bound only: axiom_validIn_min (FormalSystem/Metalogic/Soundness.lean:1228) gives ValidIn ax.minFrameClass phi for every axiom, lifted to arbitrary larger classes by ValidIn.mono in axiom_validIn (Soundness.lean:1278).
 
 The .ZTime row is now sharp in BOTH directions and must not be redone: FormalSystem/Metalogic/Independence/ZTimeSharpness.lean carries nine named theorems proving Axiom.prior_UZ and Axiom.z1 are not valid at FrameClass.Base -- hence not at any class strictly below .ZTime -- together with eq_base_of_lt_ztime, which identifies .Base as the unique class strictly below .ZTime. That module also establishes the reusable pattern this task should follow: frame-level refutations (not (F.ValidOn phi)), built on translationFrame / translationHist / translationModel and the translation_realizes layer (FormalSystem/Semantics/Frames/Standard.lean, FormalSystem/Semantics/Correspondence/DurationFrames.lean), over any DENSELY ORDERED duration group. No L-minus translation is involved, so the MinusLanguage tr_ne_untl mismatch never arises.
+
+DEPENDENCY. This task depends on the .ZTime full-characterization work, which adds the class-membership discharge machinery this task reuses: Sat .Dense as an anonymous pair of instances, and Sat .RTime at D = realOrder discharging TaskFrame.IsComplete (FormalSystem/Semantics/FrameProperty.lean) via Real.exists_isLUB. Do not rebuild that machinery from scratch -- read what landed and reuse it. If it did not land, build the minimum needed here and say so.
 
 The four rows named here remain upper-bound-only. Nothing anywhere proves their tags minimal.
 
@@ -259,17 +223,29 @@ METHODOLOGICAL CAVEAT, ALREADY SETTLED ONCE. CoNotPriorU.lean's module docstring
 
 DO NOT SILENTLY UPGRADE CLAIMS. State exactly the class each refutation establishes. The ZTime module deliberately claims .Base only, and its docstring says in as many words that no claim is made about Q specifically; hold the same line here.
 
-THE ATOMIC-INSTANCE POINT IS LOAD-BEARING. A schematic forall-phi non-validity form can be outright false: Axiom.prior_UZ bot has an unsatisfiable antecedent and IS .Base-valid. State each result at an explicit atomic instance, and follow ZTimeSharpness.lean's practice of adding anonymous shape-pin examples of the form `example : Axiom (...) := Axiom.density phi`, which make formula-transcription fidelity a compiler obligation. The entire result is vacuous if the transcribed formula drifts from the axiom constructor's.
+THE ATOMIC-INSTANCE POINT IS LOAD-BEARING. A schematic forall-phi non-validity form can be outright false: Axiom.prior_UZ bot has an unsatisfiable antecedent and IS .Base-valid. State each result at an explicit atomic instance, and follow ZTimeSharpness.lean's practice of adding anonymous shape-pin examples of the form `example : Axiom (...) := Axiom.density phi`, which make formula-transcription fidelity a compiler obligation. The entire result is vacuous if the transcribed formula drifts from the axiom constructor's. Note also that `by decide` FAILS on FrameClass `<` -- only `<=` has a DecidableRel instance.
 
-DELIVERABLE. Named theorems in FormalSystem/ establishing non-validity at every class strictly below the assigned tag, for as many of the four rows as the routes support, sorry-free and introducing no axiom declaration. The tree currently has zero structural sorries and zero axiom declarations outside Boneyard/; FormalSystem/MainResults.lean pins the measured axiom set to [propext, Classical.choice, Quot.sound] via a build-time #print axioms audit, so a regression there is a build-visible failure. Update Axiom.minFrameClass's docstring to cite the new sharpness theorems for the rows closed.
+DOCUMENTATION DEFECT 1: the prior_UZ docstring contradicts its own constructor.
 
-BUILD-COST WARNING, LEARNED THE HARD WAY. Editing FormalSystem/ProofSystem/Axioms.lean forces a full-tree rebuild, because Lean invalidates on whole-file hash. Do all cheap verification first (lean_run_code, then a scoped build of FormalSystem.Metalogic.Independence) and batch the Axioms.lean docstring edit into a single budgeted full rebuild, rather than landing it as a separate documentation pass. Use the detached scripts/lake-build-guard.sh --timeout 1800 shape.
+FormalSystem/ProofSystem/Axioms.lean renders the prior_UZ axiom in prose as F(phi) -> U(phi, not phi), while the constructor itself is phi.someFuture.imp (Formula.untl phi.neg phi) -- the two untl arguments read in the OPPOSITE order. One of the two is wrong. Resolve it in favour of the constructor, which is what the elaborator actually checks, and correct the prose. This is not speculative: ZTimeSharpness.lean's shape-pin section already records the conflict and notes that its shape pin resolves it in favour of the constructor. While fixing it, check the neighbouring axiom docstrings -- including the four this task proves sharp -- for the same class of error rather than assuming prior_UZ is the only one.
 
-GATE COUPLING. scripts/check-module-invariants.sh --emit-inventory is the real inventory regeneration command and it propagates counts into several READMEs; scripts/readme-inventory.sh is only a pointer script. Any docstring edit that changes a module's line count after inventory regeneration will fail the INV check, so regenerate inventories AFTER the last docstring edit.
+DOCUMENTATION DEFECT 2: the Independence ledgers disagree with each other and use superseded class names.
 
-SCOPE. FormalSystem/ only. Do not restate or re-prove the .ZTime row. Proving the compression/adequacy direction is a separate line of work and is not this task. No change to the ModelChecker repository belongs here.
+FormalSystem/Metalogic/Independence.lean's module docstring and FormalSystem/Metalogic/Independence/README.md disagree about how many results the directory carries -- the docstring says one count, the README another. The ZTime sharpness work added one entry to each ledger in that ledger's own numbering convention and deliberately did NOT reconcile the pre-existing disagreement, so the discrepancy is inherited, not introduced. Separately, Independence/README.md still uses the superseded FrameClass names .Dedekind and .Discrete where the code now says .RTime and .ZTime; the entries added by the sharpness work correctly use the current .ZTime spelling, so the README is now internally inconsistent in its naming too.
 
-STARTING POINTS. FormalSystem/ProofSystem/Axioms.lean:610-617 (minFrameClass) and the four axiom statements with their literature citations; FormalSystem/Metalogic/Independence/ZTimeSharpness.lean (the pattern to follow, including eq_base_of_lt_ztime and the shape pins); FormalSystem/Semantics/Correspondence/DurationFrames.lean (validOn_dn_iff_denselyOrdered, the translation frame kit); FormalSystem/Semantics/Correspondence/Indicator.lean; FormalSystem/Metalogic/Independence/CoNotPriorU.lean (priorUGapFormula_false and the frame-versus-model caveat at :13-45); FormalSystem/Metalogic/Soundness.lean:1223-1290; FormalSystem/Semantics/FrameClassValidity.lean:151-156; FormalSystem/Semantics/Validity.lean:80-92; specs/670_minframeclass_sharpness_prior_uz_z1/reports/01_ztime-sharpness-countermodels.md and that task's summary Follow-ups section.
+Reconcile both AFTER this task's own new entries are added: establish the true result count from the directory itself, make the docstring and README agree, and replace every superseded class name with its current spelling. Check whether .Dedekind or .Discrete survive anywhere else under FormalSystem/ before declaring the rename complete.
+
+No proof, theorem statement, or definition may change for the sake of a documentation fix. If a prose correction appears to require changing a constructor or a statement, stop and report rather than editing the mathematics.
+
+DELIVERABLE. Named theorems in FormalSystem/ establishing non-validity at every class strictly below the assigned tag, for as many of the four rows as the routes support; both documentation defects corrected; Axiom.minFrameClass's docstring citing the new sharpness theorems for the rows closed. All sorry-free and introducing no axiom declaration. The tree currently has zero structural sorries and zero axiom declarations outside Boneyard/; FormalSystem/MainResults.lean pins the measured axiom set to [propext, Classical.choice, Quot.sound] via a build-time #print axioms audit, so a regression there is a build-visible failure. scripts/check-module-invariants.sh must be green across all check groups and scripts/readme-lint.sh must PASS.
+
+BUILD-COST DISCIPLINE, LEARNED THE HARD WAY. Editing FormalSystem/ProofSystem/Axioms.lean forces a full-tree rebuild. Do ALL cheap verification first (lean_run_code, then a scoped build of FormalSystem.Metalogic.Independence), then batch every Axioms.lean and ledger edit into a SINGLE budgeted full rebuild. Use the detached scripts/lake-build-guard.sh --timeout 1800 shape. This task is budgeted for exactly one full rebuild; a second means the phase ordering went wrong.
+
+GATE COUPLING, WHICH ALREADY BIT ONCE. The INV check compares generated inventory blocks against actual file line counts, and it WILL fail if a docstring edit grows a file after inventory regeneration ran -- this is exactly how it failed during the ZTime work, when an Independence.lean docstring edit grew that file from 123 to 133 lines after regeneration. Regenerate inventories AFTER the last docstring edit, via scripts/check-module-invariants.sh --emit-inventory, which is the real command and propagates counts into several READMEs. scripts/readme-inventory.sh is only a pointer script.
+
+SCOPE. FormalSystem/ only. Do not restate or re-prove the .ZTime row, and do not do the .ZTime full-characterization or MainResults.lean pinning work -- that is this task's dependency, not part of it. Do not reconcile the ledgers by deleting entries. Proving the compression/adequacy direction is a separate line of work. No change to the ModelChecker repository belongs here.
+
+STARTING POINTS. FormalSystem/ProofSystem/Axioms.lean:610-617 (minFrameClass), the four axiom statements with their literature citations, and the prior_UZ docstring defect; FormalSystem/Metalogic/Independence/ZTimeSharpness.lean (the pattern to follow, including eq_base_of_lt_ztime and the shape-pin section that records the docstring conflict); FormalSystem/Semantics/Correspondence/DurationFrames.lean (validOn_dn_iff_denselyOrdered, the translation frame kit); FormalSystem/Semantics/Correspondence/Indicator.lean; FormalSystem/Metalogic/Independence/CoNotPriorU.lean (priorUGapFormula_false and the frame-versus-model caveat at :13-45); FormalSystem/Metalogic/Independence.lean and FormalSystem/Metalogic/Independence/README.md (both ledgers); FormalSystem/Semantics/FrameProperty.lean; FormalSystem/Metalogic/Soundness.lean:1223-1290; FormalSystem/Semantics/FrameClassValidity.lean:151-156; FormalSystem/Semantics/Validity.lean:80-92; specs/670_minframeclass_sharpness_prior_uz_z1/reports/01_ztime-sharpness-countermodels.md and that task's plan Observations and summary Follow-ups sections, where all four routes and both documentation defects are described as found.
 
 ---
 
