@@ -3,62 +3,85 @@
 Underivability results, established by exhibiting a model of the assumptions in which the
 target formula fails.
 
-Nine results are carried here:
+Eleven results are carried here. This list and the one in `Independence.lean`'s module docstring
+enumerate the same eleven results in the same order; earlier revisions of the two drifted apart
+(this README carried nine, the docstring six, overlapping in five) and were reconciled to their
+union.
 
 1. The paper's `CO` principle does **not** derive Reynolds' `Axiom.prior_U_gap` over the dense
    base. The converse direction — Reynolds' triple *does* derive `CO` — is
    `FormalSystem.Theorems.DedekindDerived.coDerived`, so the two settle the relationship in both
    directions.
-2. `Sat .Dedekind ⊊ Mod (AxiomSet .Dedekind)`, witnessed by the static frame over `ℚ`.
-3. `Sat .Discrete ⊊ Mod (AxiomSet .Discrete)`, witnessed by the static frame over `ℤ ×ₗ ℤ`.
-
+2. `Sat .RTime ⊊ Mod (AxiomSet .RTime)`, witnessed by the static frame over `ℚ`
+   (`sat_rtime_ssubset_mod_axiomSet`, `RationalWitness.lean`).
+3. `Sat .ZTime ⊊ Mod (AxiomSet .ZTime)`, witnessed by the static frame over `ℤ ×ₗ ℤ`
+   (`sat_ztime_ssubset_mod_axiomSet`, `LexIntWitness.lean`).
 4. The stability modal `⊡` is **not L-definable**: no `Formula` is equivalent to `⊡Fp` across
-   all task models (`StabUndefinable.lean`). This is what makes L⁺ a genuinely larger language
-   rather than notation for something L can already say.
-5. The two **pasting schemata are not derivable** from the naive `⊡`-set {SK, ST, S4, S5, MS, AS}
+   all task models (`stabNotDefinable`, `StabUndefinable.lean`). This is what makes L⁺ a
+   genuinely larger language rather than notation for something L can already say.
+5. **`TaskFrame.Deterministic` is not L⁺-definable** (`cor:no-characterization`,
+   `deterministic_not_plusDefinable`, `DeterminismUndefinable.lean`), witnessed by the
+   indistinguishable pair `F°`/`F¹` over `ℝ`: the two agree on every `PlusFormula`
+   (`fzero_plusValidOn_iff_f1`). The same pair refutes the converse of the deterministic collapse
+   (`PlusLanguage/PlusDeterminism.lean`): `F°` validates *Determined* without being deterministic
+   (`determined_valid_on_non_deterministic`).
+6. The two **pasting schemata are not derivable** from the naive `⊡`-set {SK, ST, S4, S5, MS, AS}
    together with TM (`PastingIndependence.lean`), so TM⁺'s axiom set is non-redundant.
-6. **Store and recall discriminate where nothing without them can** (`StarDiscrimination.lean`).
+7. **Store and recall discriminate where nothing without them can** (`StarDiscrimination.lean`).
    `sent:det` — the manuscript's `↑¹\Future↑²↓¹(⊡↓²¬φ ∨ ⊡↓²φ)` — is valid over the deterministic
-   translation frame `F¹` and refuted over the drift frame `F°`, while result 4's companion
+   translation frame `F¹` and refuted over the drift frame `F°`, while result 5's
    `deterministic_not_plusDefinable` shows that no set of `PlusFormula`s separates them at all.
    This is the live-text footnote following `app:deterministic-future`.
-7. **`sent:det` defines only *forward* determinism** (`ForwardDeterministicFrame.lean`). The
+8. **`sent:det` defines only *forward* determinism** (`ForwardDeterministicFrame.lean`). The
    frame `F^N` (`W = ℕ`, `D = ℤ`, the absorbing predecessor map) is forward-deterministic and
    **not** `Deterministic`, and `sent:det` is valid over it at every sentence letter. Replacing
    `\Future` by `always` closes the gap: `Det-pm` does define the deterministic frames
    (`StarLanguage/StarDeterminism.lean`'s `deterministic_starDefinable`).
-8. **The current TM⁺ axiom set is incomplete at Base** (`PlusIncompleteness.lean`). The
+9. **The current TM⁺ axiom set is incomplete at Base** (`PlusIncompleteness.lean`). The
    limit-closure formula `(⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp))` — the Burgess/Thomason
    branch-extension pattern transposed to the stability modal — is valid over every task frame
    (`PlusLanguage/PlusLimitClosure.lean`, by Zorn plus the Extension Theorem) and is
    not a Base theorem of TM⁺. Completeness of any *extension* of the axiom set is open at every
    class, and nothing is claimed at Dense, ZTime or RTime.
-9. **The `.ZTime` row of `Axiom.minFrameClass` is characterized, not merely upper-bounded**
-   (`ZTimeSharpness.lean`). `Metalogic.axiom_validIn_min` already proves every axiom valid at its
-   own tag; `prior_UZ_minFrameClass_sharp` and `z1_minFrameClass_sharp` supply the other
-   direction, so no frame class strictly below `.ZTime` validates `Axiom.prior_UZ` or `Axiom.z1`.
-   `.Dense` and `.RTime` are incomparable with `.ZTime` rather than below it and so are refuted
-   separately, by `not_validIn_dense_prior_UZ` / `not_validIn_dense_z1` over the rationals and
-   `not_validIn_rtime_prior_UZ` / `not_validIn_rtime_z1` over the reals; with all four classes
-   settled, `prior_UZ_validIn_iff_ztime` and `z1_validIn_iff_ztime` state the exhaustive form
-   `ValidIn fc φ ↔ fc = .ZTime`. The underivability corollaries are
-   `not_derivable_base_prior_UZ` and `not_derivable_base_z1`. What the countermodel refutes is
-   *discreteness*, not the Archimedean property: both axioms fail on the translation frame over
-   any densely ordered duration group, the reals included. The Base, Dense and RTime rows of
-   `Axiom.minFrameClass` itself remain upper-bound-only.
+10. **The `.ZTime` row of `Axiom.minFrameClass` is characterized, not merely upper-bounded**
+    (`ZTimeSharpness.lean`). `Metalogic.axiom_validIn_min` already proves every axiom valid at its
+    own tag; `prior_UZ_minFrameClass_sharp` and `z1_minFrameClass_sharp` supply the other
+    direction, so no frame class strictly below `.ZTime` validates `Axiom.prior_UZ` or `Axiom.z1`.
+    `.Dense` and `.RTime` are incomparable with `.ZTime` rather than below it and so are refuted
+    separately, by `not_validIn_dense_prior_UZ` / `not_validIn_dense_z1` over the rationals and
+    `not_validIn_rtime_prior_UZ` / `not_validIn_rtime_z1` over the reals; with all four classes
+    settled, `prior_UZ_validIn_iff_ztime` and `z1_validIn_iff_ztime` state the exhaustive form
+    `ValidIn fc φ ↔ fc = .ZTime`. The underivability corollaries are
+    `not_derivable_base_prior_UZ` and `not_derivable_base_z1`. What the countermodel refutes is
+    *discreteness*, not the Archimedean property: both axioms fail on the translation frame over
+    any densely ordered duration group, the reals included.
+11. **The `.Dense` rows of `Axiom.minFrameClass` are characterized and its `prior_U_gap` row is
+    minimal** (`DenseRTimeSharpness.lean`). One refutation on the translation frame over `ℤ` —
+    whose durations have a least positive element, so the group is not densely ordered — gives
+    `not_validIn_base_density` / `not_validIn_ztime_density` and
+    `not_validIn_base_dense_indicator` / `not_validIn_ztime_dense_indicator`, hence
+    `density_minFrameClass_sharp` and `dense_indicator_minFrameClass_sharp` through
+    `eq_base_of_lt_dense`, and hence the exhaustive `density_validIn_iff` and
+    `dense_indicator_validIn_iff`, both of the form `ValidIn fc φ ↔ .Dense ≤ fc`. A second
+    refutation, on the periodic clock frame, gives `not_validIn_base_prior_U_gap` and
+    `not_validIn_dense_prior_U_gap` at once, hence `prior_U_gap_minFrameClass_sharp` through
+    `base_or_dense_of_lt_rtime`; nothing is claimed about `.ZTime`, which is incomparable with
+    `.RTime`. `Axiom.sep` is the one row of `Axiom.minFrameClass` still upper-bound-only, and
+    `sep_validOn_of_isLeastPos` is the proved boundary on it: `sep` is vacuously valid on every
+    frame with a least positive duration, so no discrete witness for it can exist.
 
 Results 2 and 3 are the two halves of the finding that the frame-class *narrowings* are not
 Galois-closed, in contrast with the paper's bare classes — which are closed, by
 `Semantics/Correspondence/Indicator.lean`'s `galoisClosed_sat_dense` and `galoisClosed_isDiscrete`.
 
-Result 5 is the one that leaves the standard semantics. PS and US are valid on **every** task
+Result 6 is the one that leaves the standard semantics. PS and US are valid on **every** task
 frame (`PlusLanguage/PlusPasting.lean`), because the splice of two world histories through a common
 state is again a world history; so no ordinary task model can witness their underivability. The
 witness is a *coarsened-state* model (`CoarsenedModels.lean`), which interprets `⊡` over a
 quotient of the world states and thereby removes the common state a splice would need. Everything
 else about the argument is the usual four steps.
 
-Result 8 uses the same non-standard semantics with one hypothesis restored. A coarsened model is
+Result 9 uses the same non-standard semantics with one hypothesis restored. A coarsened model is
 *paste-closed* (`PastedCoarseModels.lean`) when the splice exists at the level of `π`-images;
 then PS and US are coarsely valid too, and **all** of TM⁺ at Base is sound for it. The witness
 (`LimitClosureFrame.lean`, `LimitClosureCountermodel.lean`) has as `π`-images exactly the
@@ -72,7 +95,7 @@ frame (`TranslationProductCoarse.lean`: `c_refuted_lift`, `pasteClosed_liftK`,
 frame class — the route by which a coarse countermodel found over a frame without Limit would
 become one over a frame with it.
 
-Results 6 and 7 leave the language rather than the semantics: they are stated over **L⋆**
+Results 7 and 8 leave the language rather than the semantics: they are stated over **L⋆**
 (`FormalSystem/StarLanguage/`), L⁺ plus the manuscript's time store/recall operators. The
 paper-label correspondence table for that appendix — every `\label` mapped to a Lean name or to
 an explicit exclusion — lives in `FormalSystem/StarLanguage/README.md`.
@@ -102,12 +125,12 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 | `NaiveSystem.lean` | 143 | TM⁺ with the two pasting axioms withheld, as a predicate on the *existing* derivation trees (`NaiveOnly`, `NaiveDerivable`) rather than a second axiom inductive, plus its derived rules. |
 | `OrderTransfer.lean` | 197 | The frame-independent layer: `OrderFlow` (H1), `StateOccurs` (H2), and the order-transfer lemmas — `future_image`, `past_image`, `between`, `between_past`, `state_image`. |
 | `PastedCoarseModels.lean` | 275 | `CoarseModel.PasteClosed` — the splice of two world histories exists at the level of `π`-images — the purity congruences `c_truth_congr_from` / `c_truth_congr_upTo`, PS and US with their reflected forms (`c_paste`, `c_paste'`, `c_untl_paste`, `c_snce_paste`), and soundness of all of TM⁺ at `.Base` for paste-closed coarse models (`plus_pcValid_and_reflect_time`, `not_plusDerivable_of_pcRefuted`). |
-| `PastingIndependence.lean` | 279 | ` — refuting both pasting schemata: `pasteNotNaiveDerivable`, `untlPasteNotNaiveDerivable`, `plusAxiomSetNonRedundant`. |
+| `PastingIndependence.lean` | 279 | One coarsened-state model over the deterministic clock on `ℤ`, with the coarsening `π ((), x) = |x|`, refuting both pasting schemata: `pasteNotNaiveDerivable`, `untlPasteNotNaiveDerivable`, and hence `plusAxiomSetNonRedundant` — PS and US are not theorems of TM together with the naive `⊡`-set {SK, ST, S4, S5, MS, AS}. |
 | `PlusIncompleteness.lean` | 88 | The assembly. `plus_incomplete_base`: the limit-closure formula is valid (`blc_plusValid`) and is not a `.Base` theorem of TM⁺ (`blc_not_plusDerivable_base`), so the current TM⁺ axiom set is incomplete at `.Base`; `not_plus_complete_base`: the hypothesis of `starConservative_of_plusComplete` at `.Base`, refuted. No claim about extensions of the axiom set, other frame classes, or conservativity of TM⋆ over TM⁺. |
 | `RationalWitness.lean` | 206 | `rat_not_complete` — `ℚ` is not Dedekind-complete, written out because Mathlib carries no statement in this shape — and the static frame over `ℚ` as a member of `Mod (AxiomSet .Dedekind)` outside `Sat .Dedekind`, with the Dedekind sandwich. |
 | `RealTranslationFrame.lean` | 196 | `realOrder`; `F¹`, the deterministic translation flow over `ℝ`, built through `ShiftSet` (the only route on which the world-set characterization elaborates); `f1_deterministic`, `f1_total_eq_orbit`, `f1_eq_of_states_eq`. |
 | `StabUndefinable.lean` | 241 | `stabNotDefinable`: no `Formula` is equivalent to `⊡Fp` over all task models, by a `TruthCorr` between the permissive frame over `ℤ` and the deterministic clock at family index `ℤ → ℕ`. |
-| `StarDiscrimination.lean` | 189 | = [3/2, ∞)`), `fzero_refutes_sentDet`, `f1_sentDet`, and `star_discriminates_where_plus_cannot` — one `StarFormula` separates `F°` from `F¹` where `cor:no-characterization` shows no `PlusFormula` set can. |
+| `StarDiscrimination.lean` | 189 | The positive half of the discrimination footnote: the affine drift histories `driftLinear` and the manuscript's own valuation `driftModel` (`|p| = [3/2, ∞)`), `fzero_refutes_sentDet`, `f1_sentDet`, `sentDet_discriminates`, and `star_discriminates_where_plus_cannot` — one `StarFormula` separates `F°` from `F¹` where `cor:no-characterization` shows no `PlusFormula` set can. |
 | `StateSetTruth.lean` | 236 | `satSet` and `plusTruthAt_iff_mem_satSet`: over an (H1)+(H2) frame, L⁺ truth depends only on the world state of evaluation. Plus `plusValidOn_iff_satSet_univ` and `determined_of_orderFlow`. |
 | `StaticFrame.lean` | 323 | The static frame at an arbitrary duration group: every nonzero duration loops, so truth is time-invariant, and the `untl`/`snce` clauses collapse into a small constant-truth calculus (general, dense and discrete forms, plus `K⁺`/`K⁻` and `Axiom.z1`). Turns every later axiom check into a rewrite. |
 | `TranslationProductCoarse.lean` | 136 | Coarse models on the translation product (`Semantics/Frames/TranslationProduct.lean`, a proof device, never an intended model): `liftK` lifts a coarse model with the coarsening forgetting the clock; `c_invariance` — coarse truth is preserved by the projection; `pasteClosed_liftK` / `pasteClosed_of_liftK` — paste-closure transfers in both directions; `c_refuted_lift` — a coarse refutation on `F` is a coarse refutation on the recurrence-free, Limit-for-free product in the same frame class. |
@@ -116,16 +139,17 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 
 ## Key Results
 
-- `co_not_derives_prior_U` and its companion (`CoNotPriorU.lean`) — the independence
-  statements.
+- `co_not_derives_prior_U_gap` and its companion `co_not_derives_prior_U_gap_schema`
+  (`CoNotPriorU.lean`) — the two independence statements, the second closing the context gap the
+  first leaves open.
 - `states_add_of_looping` and `truthAt_add_period` (`LoopingDuration.lean`) — history
   periodicity and truth periodicity from a looping duration alone.
 - `clockFrame` (`ClockFrame.lean`) — the witness frame, with every structural axiom discharged.
 - `static_time_invariant` and the `static_untl_iff*` family (`StaticFrame.lean`) — the
   constant-truth calculus both non-closure witnesses run on.
-- `sat_dedekind_ssubset_mod_axiomSet` (`RationalWitness.lean`) and
-  `sat_discrete_ssubset_mod_axiomSet` (`LexIntWitness.lean`) — `Sat .Dedekind` and
-  `Sat .Discrete` are strictly smaller than the model classes of their axiom sets, hence not
+- `sat_rtime_ssubset_mod_axiomSet` (`RationalWitness.lean`) and
+  `sat_ztime_ssubset_mod_axiomSet` (`LexIntWitness.lean`) — `Sat .RTime` and
+  `Sat .ZTime` are strictly smaller than the model classes of their axiom sets, hence not
   Galois-closed.
 - `deterministic_not_plusDefinable` (`DeterminismUndefinable.lean`) — no set of `PlusFormula`s
   defines the deterministic frames (`cor:no-characterization`), via the `F°`/`F¹`

@@ -482,43 +482,50 @@ record it, rather than deferring.
 
 ---
 
-### Phase 5: Reconcile the two Independence ledgers [NOT STARTED]
+### Phase 5: Reconcile the two Independence ledgers [COMPLETED]
 
 **Goal**: The module docstring and the directory README agree on one renumbered result list, the
 Contents list is complete, and no dangling identifier survives in either ledger.
 
 **Tasks**:
 
-- [ ] Establish the true result set **from the directory itself**, not from either ledger. The
+- [x] Establish the true result set **from the directory itself**, not from either ledger. The
       two lists enumerate different sets (6 in `Independence.lean:38`, 9 in
       `Independence/README.md:6`); their union is ten. Verify that union by reading the directory
       rather than adopting the report's figure.
-- [ ] Adopt the union and renumber **both** lists identically: the shared five (CO ⊬ Prior-U; the
+- [x] Adopt the union and renumber **both** lists identically: the shared five (CO ⊬ Prior-U; the
       two `Sat ⊊ Mod` non-closure witnesses; TM⁺ incomplete at `.Base`; the `.ZTime`
       characterization), plus the one only `Independence.lean` carries (`Deterministic` is not
       L⁺-definable), plus the four only the README carries (`⊡` not L-definable; the two pasting
       schemata not derivable; store/recall discriminate; `sent:det` defines only forward
       determinism).
-- [ ] Add this task's new entry as the eleventh result, in both ledgers, naming the headline
+- [x] Add this task's new entry as the eleventh result, in both ledgers, naming the headline
       declarations from Phase 1 with exactly matching spellings — this is also what keeps C17
       from flagging them.
-- [ ] Complete `Independence.lean`'s `## Contents` list: it imports 24 modules but bullets only
+- [x] Complete `Independence.lean`'s `## Contents` list: it imports 24 modules but bullets only
       18. Add the six missing (`CoarsenedModels`, `PastingIndependence`, `StarDiscrimination`,
       `ForwardDeterministicFrame`, `StabUndefinable`, `NaiveSystem`) plus the new
       `DenseRTimeSharpness`.
-- [ ] Repair the two dangling identifiers at `Independence/README.md:126-128`:
+- [x] Repair the two dangling identifiers at `Independence/README.md:126-128`:
+      *(deviation: altered — a **third** dangling identifier was found by the same
+      resolve-every-cited-name sweep: the Key Results entry cited `co_not_derives_prior_U`, which
+      does not exist; the real declarations in `CoNotPriorU.lean` are `co_not_derives_prior_U_gap`
+      and `co_not_derives_prior_U_gap_schema`. Fixed here rather than deferred, as the same defect
+      class.)*
       `sat_dedekind_ssubset_mod_axiomSet` and `sat_discrete_ssubset_mod_axiomSet` do not exist;
       the real declarations are `sat_rtime_ssubset_mod_axiomSet` (`RationalWitness.lean`) and
       `sat_ztime_ssubset_mod_axiomSet` (`LexIntWitness.lean`). Confirm both by grep before
       writing.
-- [ ] Rewrite the two mangled generated descriptions in `Independence/README.md` — `:105`
+- [x] Rewrite the two mangled generated descriptions in `Independence/README.md` — `:105`
       (`PastingIndependence.lean`, currently beginning with a stray backtick and a dash) and
       `:110` (`StarDiscrimination.lean`, currently beginning mid-expression). They are
       hand-maintained cells carried across verbatim by the generator, so they can simply be
       rewritten in place.
-- [ ] Do **not** reconcile by deleting entries, and do **not** touch the generated line-count
+- [x] Do **not** reconcile by deleting entries, and do **not** touch the generated line-count
       columns by hand — those are Phase 7's `--emit-inventory` job.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and iterate until green.
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and iterate until green.
+      *(deviation: altered — green on every group except `INV`'s four stale inventory blocks,
+      which are Phase 7's regeneration job by design.)*
 
 **Timing**: 1.25 hours
 

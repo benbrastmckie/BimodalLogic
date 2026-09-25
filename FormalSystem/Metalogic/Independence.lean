@@ -36,35 +36,61 @@ import FormalSystem.Metalogic.Independence.TranslationProductCoarse
 Underivability results, established by exhibiting a model of the assumptions in which the target
 formula fails.
 
-Six results are carried here — the opening sentence of this docstring used
-to say "the one result carried here", which stopped being true three witnesses ago:
+Eleven results are carried here. This list and the one in `Independence/README.md` enumerate the
+same eleven results in the same order; earlier revisions of the two drifted apart (this docstring
+carried six, the README nine, overlapping in five) and were reconciled to their union.
 
 1. The paper's `CO` principle does not derive Reynolds' `Axiom.prior_U_gap` over the dense base.
    The converse direction — Reynolds' triple *does* derive `CO` — is
    `FormalSystem.Theorems.DedekindDerived.coDerived`, so the two settle the relationship in both
    directions.
-2. `Sat .RTime ⊊ Mod (AxiomSet .RTime)`, witnessed by the static frame over `ℚ`.
-3. `Sat .ZTime ⊊ Mod (AxiomSet .ZTime)`, witnessed by the static frame over `ℤ ×ₗ ℤ`.
-4. `TaskFrame.Deterministic` is **not L⁺-definable** (`cor:no-characterization`), witnessed by
-   the indistinguishable pair `F°`/`F¹` over `ℝ`. The same pair refutes the converse of the
-   deterministic collapse (`PlusLanguage/PlusDeterminism.lean`): `F°` validates
-   *Determined* without being deterministic.
-5. The current axiom set of TM⁺ is **incomplete at `.Base`** (`plus_incomplete_base`): the
+2. `Sat .RTime ⊊ Mod (AxiomSet .RTime)`, witnessed by the static frame over `ℚ`
+   (`sat_rtime_ssubset_mod_axiomSet`).
+3. `Sat .ZTime ⊊ Mod (AxiomSet .ZTime)`, witnessed by the static frame over `ℤ ×ₗ ℤ`
+   (`sat_ztime_ssubset_mod_axiomSet`).
+4. The stability modal `⊡` is **not L-definable** (`stabNotDefinable`): no `Formula` is
+   equivalent to `⊡Fp` across all task models. This is what makes L⁺ a genuinely larger language
+   rather than notation for something L can already say.
+5. `TaskFrame.Deterministic` is **not L⁺-definable** (`cor:no-characterization`,
+   `deterministic_not_plusDefinable`), witnessed by the indistinguishable pair `F°`/`F¹` over
+   `ℝ`. The same pair refutes the converse of the deterministic collapse
+   (`PlusLanguage/PlusDeterminism.lean`): `F°` validates *Determined* without being
+   deterministic.
+6. The two **pasting schemata are not derivable** from the naive `⊡`-set {SK, ST, S4, S5, MS, AS}
+   together with TM (`pasteNotNaiveDerivable`, `untlPasteNotNaiveDerivable`), so TM⁺'s axiom set
+   is non-redundant (`plusAxiomSetNonRedundant`).
+7. **Store and recall discriminate where nothing without them can**
+   (`star_discriminates_where_plus_cannot`). `sent:det` is valid over the deterministic
+   translation frame `F¹` and refuted over the drift frame `F°`, while result 5 shows that no set
+   of `PlusFormula`s separates them at all.
+8. **`sent:det` defines only *forward* determinism**. The frame `F^N` (`W = ℕ`, `D = ℤ`, the
+   absorbing predecessor map) is forward-deterministic and **not** `Deterministic`, and `sent:det`
+   is valid over it at every state-local instance. Replacing `\Future` by `always` closes the gap
+   (`StarLanguage/StarDeterminism.lean`'s `deterministic_starDefinable`).
+9. The current axiom set of TM⁺ is **incomplete at `.Base`** (`plus_incomplete_base`): the
    limit-closure formula `(⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp))` is valid over every task
    frame and is refuted in a paste-closed coarsened-state model, for which TM⁺ is sound. Nothing
    is claimed about extensions of the axiom set, or about the other frame classes.
-6. The `.ZTime` row of `Axiom.minFrameClass` is **characterized**, not merely upper-bounded
-   (`prior_UZ_validIn_iff_ztime`, `z1_validIn_iff_ztime`): each axiom's atomic instance is valid
-   at `fc` exactly when `fc = .ZTime`. Minimality is the weaker half
-   (`prior_UZ_minFrameClass_sharp`, `z1_minFrameClass_sharp`): no frame class strictly below
-   `.ZTime` validates `Axiom.prior_UZ` or `Axiom.z1`. `.Dense` and `.RTime` are incomparable with
-   `.ZTime` rather than below it, so they are refuted separately
-   (`not_validIn_dense_*`, `not_validIn_rtime_*`), and `Metalogic.axiom_validIn_min` supplies the
-   one positive case. The Base, Dense and RTime rows of `Axiom.minFrameClass` itself remain
-   upper-bound-only.
+10. The `.ZTime` row of `Axiom.minFrameClass` is **characterized**, not merely upper-bounded
+    (`prior_UZ_validIn_iff_ztime`, `z1_validIn_iff_ztime`): each axiom's atomic instance is valid
+    at `fc` exactly when `fc = .ZTime`. Minimality is the weaker half
+    (`prior_UZ_minFrameClass_sharp`, `z1_minFrameClass_sharp`): no frame class strictly below
+    `.ZTime` validates `Axiom.prior_UZ` or `Axiom.z1`. `.Dense` and `.RTime` are incomparable with
+    `.ZTime` rather than below it, so they are refuted separately
+    (`not_validIn_dense_*`, `not_validIn_rtime_*`), and `Metalogic.axiom_validIn_min` supplies the
+    one positive case.
+11. The `.Dense` rows of `Axiom.minFrameClass` are **characterized** and its `prior_U_gap` row is
+    **minimal**. `density_validIn_iff` and `dense_indicator_validIn_iff` give
+    `ValidIn fc φ ↔ .Dense ≤ fc`, off a single refutation on the translation frame over `ℤ`
+    (`density_minFrameClass_sharp`, `dense_indicator_minFrameClass_sharp`);
+    `prior_U_gap_minFrameClass_sharp` refutes `Axiom.prior_U_gap` at both `.Base` and `.Dense`,
+    the two classes strictly below `.RTime`, over the periodic clock frame. `Axiom.sep` is the one
+    row still upper-bound-only, and `sep_validOn_of_isLeastPos` is the proved boundary on it: no
+    discrete witness for `sep` can exist.
 
 Results 2 and 3 are the two halves of the finding that the frame-class *narrowings* are not
-Galois-closed, in contrast with the paper's bare classes.
+Galois-closed, in contrast with the paper's bare classes. Results 10 and 11 together leave
+`Axiom.sep` as the only row of `Axiom.minFrameClass` whose tag is not known to be minimal.
 
 ## Contents
 
@@ -75,6 +101,24 @@ Galois-closed, in contrast with the paper's bare classes.
   instance of `CO`.
 * `Independence/CoNotPriorU.lean` — the symmetric irrational arc valuation, the refutation of
   `Axiom.prior_U_gap` in that model, and the two independence statements.
+* `Independence/CoarsenedModels.lean` — the non-standard semantics the pasting-independence
+  argument runs on: `CoarseModel`, `SameUnder`, `CTruthAt`, the structural ports, the atomization
+  transfer, the six naive `⊡` validities, and naive soundness `naive_cValid`.
+* `Independence/NaiveSystem.lean` — TM⁺ with the two pasting axioms withheld, as a predicate on
+  the existing derivation trees (`NaiveOnly`, `NaiveDerivable`) rather than a second axiom
+  inductive, plus its derived rules.
+* `Independence/PastingIndependence.lean` — the refutation of both pasting schemata in one
+  coarsened model: `pasteNotNaiveDerivable`, `untlPasteNotNaiveDerivable`,
+  `plusAxiomSetNonRedundant`.
+* `Independence/StabUndefinable.lean` — `stabNotDefinable`: no `Formula` is equivalent to `⊡Fp`
+  over all task models, by a `TruthCorr` between the permissive frame over `ℤ` and the
+  deterministic clock.
+* `Independence/StarDiscrimination.lean` — the positive half of the discrimination footnote: the
+  drift model with `|p| = [3/2, ∞)`, `fzero_refutes_sentDet`, `f1_sentDet`, and
+  `star_discriminates_where_plus_cannot`.
+* `Independence/ForwardDeterministicFrame.lean` — `F^N` (`W = ℕ`, `D = ℤ`, the absorbing
+  predecessor map): forward-deterministic and not `Deterministic`, with `fn_sentDet_stateLocal`,
+  `fn_separates`, and the two-sided bound `fn_sentDet_bounds`.
 * `Independence/StaticFrame.lean` — the static frame at an arbitrary duration group: full
   time-invariance from `LoopingDuration`, and the constant-truth `untl`/`snce` calculus that
   turns every later axiom check into a rewrite.
@@ -121,6 +165,12 @@ Galois-closed, in contrast with the paper's bare classes.
   `axiom_validIn_min` for the positive case, `prior_UZ_validIn_iff_ztime` and
   `z1_validIn_iff_ztime` give `ValidIn fc φ ↔ fc = .ZTime`. What is refuted is discreteness,
   not the Archimedean property.
+* `Independence/DenseRTimeSharpness.lean` — the same treatment for the `.Dense` and `.RTime` rows
+  of `Axiom.minFrameClass`: `density_validIn_iff` and `dense_indicator_validIn_iff` characterize
+  the two `.Dense`-tagged axioms off one refutation on the translation frame over `ℤ`;
+  `prior_U_gap_minFrameClass_sharp` closes both classes strictly below `.RTime` off one refutation
+  on the clock frame; and `sep_validOn_of_isLeastPos` proves the obstruction that leaves
+  `Axiom.sep` the last open row.
 
 ## The method
 
