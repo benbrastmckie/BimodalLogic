@@ -93,7 +93,7 @@ next_project_number: 675
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-671 [RESEARCHED] — Prove the MINIMALITY half of Axiom.minFrameClass for the four...
+671 [PLANNED] — Prove the MINIMALITY half of Axiom.minFrameClass for the four...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -200,11 +200,12 @@ STARTING POINTS. FormalSystem/Metalogic/Independence/ZTimeSharpness.lean; specs/
 ---
 
 ### 671. Minframeclass sharpness remaining rows and docs
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 672
 - **Research**: [671_minframeclass_sharpness_remaining_rows_and_docs/reports/01_dense-rtime-sharpness-ledger-fixes.md]
+- **Plan**: [671_minframeclass_sharpness_remaining_rows_and_docs/plans/01_dense-rtime-sharpness-ledger-fixes.md]
 
 **Description**: Prove the MINIMALITY half of Axiom.minFrameClass for the four remaining non-Base rows -- density and dense_indicator (tagged .Dense), prior_U_gap and sep (tagged .RTime) -- and, in the same pass, correct the two pre-existing documentation defects in the files this work must already edit. Establish for each axiom that it is NOT valid at any class strictly below its assigned tag, so the hand-assigned tag is sharp rather than merely an upper bound.
 

@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 5,
+  "summary": "Seven-phase implementation plan written for task 671: one new module closing three of the four remaining Axiom.minFrameClass rows (two as full validIn_iff characterizations), a proved obstruction excluding the sep row, and both documentation defects corrected inside a single budgeted full rebuild.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/671_minframeclass_sharpness_remaining_rows_and_docs/plans/01_dense-rtime-sharpness-ledger-fixes.md",
+      "summary": "7 phases, 7.25 hours: DenseRTimeSharpness.lean (three closed rows plus the sep obstruction), scoped Independence build, batched Axioms.lean prose pass, ledger reconciliation to the ten-result union, an eight-file frame-class name sweep, and one full rebuild with the complete gate set."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 7,
+  "blockers": []
+}

@@ -1,17 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 4,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/671_minframeclass_sharpness_remaining_rows_and_docs/reports/01_dense-rtime-sharpness-ledger-fixes.md",
-      "summary": "Three of the four minFrameClass rows (density, dense_indicator, prior_U_gap) are closed with fully elaborated, sorry-free Lean in Appendix A; sep is excluded with a proved obstruction (sep_validOn_of_isLeastPos) in Appendix B; documentation defect 1 is re-diagnosed (the prefix U(e,g) renderings are correct; three infix/English prose items are the real defects) and defect 2 is measured (two ledgers enumerate different result sets, union is ten, plus two dangling identifiers)."
+      "type": "plan",
+      "path": "specs/671_minframeclass_sharpness_remaining_rows_and_docs/plans/01_dense-rtime-sharpness-ledger-fixes.md",
+      "summary": "7-phase, 7.25-hour plan closing three of the four remaining Axiom.minFrameClass rows in one new module, excluding the sep row with a proved obstruction, and correcting both documentation defects inside a single budgeted full rebuild."
     }
   ],
+  "next_steps": "Run /implement 671 to execute the plan",
   "metadata": {
     "session_id": "sess_1790353604_4fe6d5_671",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 7,
+    "estimated_hours": 7.25,
+    "dependency_waves": [[1], [2], [3], [4, 5], [6], [7]]
+  },
+  "memory_candidates": [
+    {
+      "content": "A phase's Verification Tier is a function of a MEASURED file list, not an asserted one. In the BimodalLogic tree a superseded-name sweep that both the task dispatch and the research report scoped to a single markdown file measured, at plan time, eight markdown files and zero .lean files -- the zero .lean result is what licensed the cheap 'prose' tier and kept the change off the one-full-rebuild budget. The reusable pattern: when a plan assigns a tier below 'full' on the strength of an edit class (comments-only, markdown-only), the phase's Scope Hypothesis must state the tier-ESCALATION TRIGGER explicitly -- 'if any .lean file turns up in the re-measurement, the tier rises to at least local and the rebuild budget must be re-examined' -- so the implementer cannot silently inherit a cheap tier under a widened file set. Re-run the sweep grep before editing; the file list is usually the least trustworthy number in a plan.",
+      "category": "PATTERN",
+      "source_artifact": "specs/671_minframeclass_sharpness_remaining_rows_and_docs/plans/01_dense-rtime-sharpness-ledger-fixes.md",
+      "confidence": 0.65,
+      "suggested_keywords": ["verification-tier", "scope-hypothesis", "rebuild-budget", "sweep-measurement", "plan-phase-sizing", "tier-escalation"]
+    }
+  ],
+  "dispatch_seq": 5
 }
