@@ -1,5 +1,5 @@
 ---
-next_project_number: 675
+next_project_number: 676
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 675
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,675 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -89,6 +89,7 @@ next_project_number: 675
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
+675 [NOT STARTED] — Close the sep row of Axiom.minFrameClass by constructing a...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -97,6 +98,34 @@ next_project_number: 675
   └─ 650 [NOT STARTED] — Define-before-use audit of...
 
 ## Tasks
+
+### 675. Close sep row minframeclass dense countermodel
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: None
+
+**Description**: Close the sep row of Axiom.minFrameClass by constructing a densely ordered countermodel, completing the last remaining minimality obligation. The sep row is the sole row of Axiom.minFrameClass still upper-bound-only. Its tag is .RTime, so minimality requires refutations at BOTH .Base AND .Dense, the two classes strictly below .RTime (base_or_dense_of_lt_rtime, in FormalSystem/Metalogic/Independence/DenseRTimeSharpness.lean, already proves those are the only two).
+
+WHAT IS ALREADY PROVED AND MUST NOT BE RE-DERIVED. DenseRTimeSharpness.lean carries the proved obstruction that bounds the search space: not_kPlus_of_isLeastPos shows K+phi is false everywhere on any frame whose durations have a least positive element (the immediate successor t+p leaves the open interval (t, t+p) empty), and sep_validOn_of_isLeastPos concludes Axiom.sep is therefore VACUOUSLY valid on every such frame. Combined with Semantics.duration_dense_or_least_pos -- every duration group is either densely ordered or has a least positive element -- this proves NO DISCRETE WITNESS FOR sep CAN EXIST. Any refutation must run over a densely ordered duration group. Since Sat .Dense F implies Sat .Base F, ONE dense witness closes both classes at once, exactly the pattern not_validIn_dense_prior_U_gap follows for the prior_U_gap row. Do not attempt a discrete carrier; that is a proved dead end, not an untried option.
+
+THREE CANDIDATE ROUTES, recorded in DenseRTimeSharpness.lean's own section docstring at the sep obstruction pair (read it rather than trusting this summary). Route 1 is recorded as NOT transferring as-is: the lexicographic configuration already written down in FormalSystem/Metalogic/SoundnessLemmas/Separability.lean (t = (0,1) on the lex square, phi-region {(a, 0) : 0 < a < 1}) fails because a GROUP has no fibre tops, so the antecedent collapses the problem back to the separable one-level case; the value group must itself be densely ordered. Route 2 is the recommended one: D = Lex (Q ->f Q) with phi-region {toLex (Finsupp.single gamma 1) : gamma > 0}. Its carrier instances were probed and are available EXCEPT IsOrderedAddMonoid, which is recorded as a short instance off Mathlib's Finsupp.Lex.addLeftMono / Finsupp.Lex.addRightMono. Estimated 350-450 lines. Route 3 is an independent plain-Q route via a bespoke Cantor set, exploiting completeness rather than separability. Verify the chosen route rather than assuming it; if route 2 resists at the instance layer, say so explicitly before switching.
+
+PATTERN TO FOLLOW. DenseRTimeSharpness.lean and ZTimeSharpness.lean are the two landed exemplars. Follow their practice: frame-level refutations (not (F.ValidOn phi)) built on translationFrame / translationHist / translationModel and the translation_realizes layer (FormalSystem/Semantics/Frames/Standard.lean, FormalSystem/Semantics/Correspondence/DurationFrames.lean); explicit atomic instances, never a schematic forall-phi non-validity claim, which can be outright FALSE; and anonymous shape-pin examples of the form example : Axiom (...) := Axiom.sep phi, which make formula-transcription fidelity a compiler obligation -- the entire result is vacuous if the transcribed formula drifts from the constructor. Note by decide FAILS on FrameClass <; only <= has a DecidableRel instance. FormalSystem/Metalogic/Independence/README.md now carries a countermodel-construction kit section and a frame-versus-model criterion section written for exactly this next refutation; read both first.
+
+STATE THE CLAIM EXACTLY. Say which class each refutation establishes and do not silently upgrade. If the dense witness also supports a full characterization (ValidIn fc phi <-> FrameClass.RTime <= fc, the shape density_validIn_iff and dense_indicator_validIn_iff take), state it only once the supporting negative results actually exist. Consider whether .ZTime is reachable: it is incomparable to .Dense rather than below .RTime, so it is NOT required for minimality -- prior_U_gap deliberately claims nothing about it.
+
+DELIVERABLE. Named sorry-free theorems establishing non-validity of Axiom.sep at .Base and .Dense, landed in FormalSystem/Metalogic/Independence/ (extending DenseRTimeSharpness.lean or a new sibling module, whichever the route's size warrants), with Axiom.minFrameClass's docstring updated to cite them and the Independence ledgers (FormalSystem/Metalogic/Independence.lean and FormalSystem/Metalogic/Independence/README.md) gaining the new entry in each ledger's own numbering convention. No axiom declaration introduced; the measured axiom set must remain [propext, Classical.choice, Quot.sound], which FormalSystem/MainResults.lean pins via a build-time print axioms audit. scripts/check-module-invariants.sh green across all check groups and scripts/readme-lint.sh PASS. If the route genuinely resists, close it as a reasoned exclusion with the obstruction recorded rather than leaving the module half-landed.
+
+BUILD-COST DISCIPLINE. Editing FormalSystem/ProofSystem/Axioms.lean forces a FULL-TREE rebuild (Lean invalidates on whole-file hash); a new Independence module does not. Do all cheap verification first (lean_run_code, then a scoped build of FormalSystem.Metalogic.Independence), then batch every Axioms.lean and ledger edit into a SINGLE budgeted full rebuild via the detached scripts/lake-build-guard.sh build --timeout 1800 -- build shape (note the lake subcommand after the bare --; omitting it is a usage error, exit 77). Budgeted for exactly one full rebuild.
+
+GATE COUPLING. The INV check compares generated inventory blocks against actual file line counts and WILL fail if a docstring edit grows a file after inventory regeneration ran. Regenerate AFTER the last docstring edit via scripts/check-module-invariants.sh --emit-inventory, the real command, which propagates counts into several READMEs; scripts/readme-inventory.sh is only a pointer script. Two further gates bite on publication-facing surfaces: C20 tier 2 is enabled by default and its publication_scope covers every README.md under FormalSystem/, with the tree currently at zero file.lean line-number citations -- cite declaration names and bare file names, never line numbers, in any README prose; and growing Axioms.lean shifts live ProofSystem/Axioms.lean line-number citations elsewhere, whose remedy is scripts/reanchor-lean-citations.py --by-name. Also note the inventory generator silently truncates any description containing a literal pipe character, so keep new ledger descriptions pipe-free -- an absolute-value bar will be swallowed.
+
+SCOPE. FormalSystem/ only, and only the sep row. Do not restate or re-prove the density, dense_indicator, prior_U_gap or .ZTime rows, all of which are landed. Do not reconcile the ledgers by deleting entries. Proving the compression/adequacy direction is separate work. No change to the ModelChecker repository belongs here.
+
+STARTING POINTS. FormalSystem/Metalogic/Independence/DenseRTimeSharpness.lean (the obstruction pair not_kPlus_of_isLeastPos and sep_validOn_of_isLeastPos, the three-route section docstring, base_or_dense_of_lt_rtime, and the landed row patterns); FormalSystem/Metalogic/Independence/ZTimeSharpness.lean; FormalSystem/Metalogic/Independence/README.md (the countermodel kit and frame-versus-model criterion sections); FormalSystem/Metalogic/SoundnessLemmas/Separability.lean (route 1's configuration and why it does not transfer); FormalSystem/ProofSystem/Axioms.lean (the sep statement, its literature citation, and the minFrameClass definition); FormalSystem/Semantics/FrameProperty.lean; FormalSystem/Semantics/Correspondence/DurationFrames.lean; FormalSystem/Metalogic/Soundness.lean (axiom_validIn_min, the free upper bound).
+
+---
 
 ### 674. Document countermodel kit and refutation criterion
 - **Status**: [COMPLETED]
