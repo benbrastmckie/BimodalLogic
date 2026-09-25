@@ -1092,34 +1092,124 @@ The project structure reflects the layered operator architecture following LEAN 
 ```
 FormalSystem.lean                          # Library root (re-exports public API)
 FormalSystem/                              # Main source directory
+├── Init.lean                              # Shared library initialization
+├── MainResults.lean                       # Top-level curated results index
+├── Version.lean                           # Library version marker
+├── README.md
+├── ForMathlib/                            # Mathlib-shaped extensions intended for upstreaming
+│   ├── Order/                             # Order-theoretic extensions (ball spaces, prime filters)
+│   ├── Topology/                          # Topological extensions (Sierpiński space)
+│   └── README.md
 ├── Syntax/
 │   ├── Formula.lean                       # Core formula inductive type (untl/snce primitive)
 │   ├── Atom.lean                          # Atomic propositions
 │   ├── Context.lean                       # Proof context management (List Formula)
 │   ├── Subformulas.lean                   # Subformula extraction
-│   └── SubformulaClosure/                 # Closure construction
+│   ├── BigConj.lean                       # Finite conjunction helper
+│   ├── SubformulaClosure/                 # Closure construction
+│   └── README.md
 ├── ProofSystem/
 │   ├── Axioms.lean                        # TM axiom schemata (29 constructors, 4 frame-class layers)
 │   ├── Derivable.lean                     # Derivability relation
-│   └── Derivation.lean                    # DerivationTree (7 inference rules)
+│   ├── Derivation.lean                    # DerivationTree (7 inference rules)
+│   ├── DerivedAxioms.lean                 # Derived axiom-schema lemmas
+│   ├── LinearityDerivedFacts.lean         # Linearity-derived facts
+│   └── README.md
 ├── MinusLanguage/                          # Second object language (tense-primitive)
 │   ├── Formula.lean
 │   ├── Axioms.lean
 │   ├── Derivation.lean
 │   ├── Translation.lean                   # Translation into the primary language
-│   └── AxiomDischarge.lean
+│   ├── AxiomDischarge.lean
+│   ├── MinusFrame.lean                    # Native frame semantics for the base language
+│   ├── MinusSchemaValidity.lean           # Schema validity for the base language
+│   ├── MinusTruth.lean                    # Native truth evaluation for the base language
+│   ├── MinusValidity.lean                 # Base-language validity predicates
+│   ├── Soundness.lean                     # Base-language soundness by composition; the truth-transfer bridge
+│   └── README.md
+├── HybridLanguage/                         # Hybrid-primitive object language
+│   ├── Formula.lean
+│   ├── HybridInvariance.lean
+│   ├── HybridRecurrence.lean
+│   ├── HybridTransposition.lean
+│   ├── HybridTruth.lean
+│   ├── HybridValidity.lean
+│   └── README.md
+├── OpenLanguage/                           # Open/Ockhamist object language
+│   ├── Formula.lean
+│   ├── OpenClasses.lean
+│   ├── OpenOckhamist.lean
+│   ├── OpenReversal.lean
+│   ├── OpenTruth.lean
+│   ├── OpenValidity.lean
+│   └── README.md
+├── PlusLanguage/                           # TM+ object language
+│   ├── Formula.lean
+│   ├── Axioms.lean
+│   ├── Derivation.lean
+│   ├── Substitution.lean
+│   ├── PlusDeterminism.lean
+│   ├── PlusLimitClosure.lean
+│   ├── PlusNonValidities.lean
+│   ├── PlusPasting.lean
+│   ├── PlusStateLocal.lean
+│   ├── PlusTruth.lean
+│   ├── PlusValidity.lean
+│   └── README.md
+├── QuantLanguage/                          # Quantified object language
+│   ├── Formula.lean
+│   ├── QuantInvariance.lean
+│   ├── QuantRecurrence.lean
+│   ├── QuantTruth.lean
+│   └── README.md
+├── StarLanguage/                           # TM* object language
+│   ├── Formula.lean
+│   ├── Axioms.lean
+│   ├── Derivation.lean
+│   ├── Embedding.lean
+│   ├── StarDeterminism.lean
+│   ├── StarNonValidities.lean
+│   ├── StarStateLocal.lean
+│   ├── StarTruth.lean
+│   ├── StarValidity.lean
+│   └── README.md
 ├── Semantics/
 │   ├── TaskFrame.lean                     # Task frame structure
-│   ├── PartialHistory.lean                 # Partial histories and WorldHistory
+│   ├── PartialHistory.lean                # Partial histories and WorldHistory
+│   ├── PartialHistoryOrder.lean           # Ordering on partial histories
 │   ├── TaskModel.lean                     # Task model with valuation
 │   ├── Truth.lean                         # Truth evaluation
-│   ├── MinusTruth.lean                       # Native truth evaluation for the base language
+│   ├── TruthClauses.lean                  # Truth-clause lemmas
+│   ├── TruthTransport.lean                # Truth transport along morphisms
 │   ├── Validity.lean                      # Validity and consequence
-│   ├── MinusValidity.lean                    # Base-language validity predicates
-│   └── Extension/                         # Semantic extension layer
+│   ├── ValidityLayer.lean                 # Validity-layer infrastructure
+│   ├── ConvexTruth.lean                   # Convex-frame truth evaluation
+│   ├── ConvexTruthCut.lean                # Convex truth-cut lemmas
+│   ├── DeterministicBridge.lean           # Deterministic-frame bridge
+│   ├── DurationClassification.lean        # Duration classification
+│   ├── FrameAxioms.lean                   # Frame-class axiom characterizations
+│   ├── FrameClassValidity.lean            # Frame-class validity predicates
+│   ├── FrameProperty.lean                 # Frame-property definitions
+│   ├── HistoryMorphism.lean               # History morphisms
+│   ├── IntNormalForm.lean                 # Integer normal-form lemmas
+│   ├── IntTransfer.lean                   # Integer-carrier transfer lemmas
+│   ├── LexCarrier.lean                    # Lexicographic-order carrier
+│   ├── Periodicity.lean                   # Periodicity lemmas
+│   ├── ShiftSet.lean                      # Shift-set constructions
+│   ├── StateLocalTransfer.lean            # State-local transfer lemmas
+│   ├── TemporalOrder.lean                 # Temporal-order lemmas
+│   ├── TimeIndexed.lean                   # Time-indexed structures
+│   ├── TimeIndexedSharpness.lean          # Sharpness results for time-indexed structures
+│   ├── README.md
+│   ├── Correspondence/                    # Frame-correspondence results
+│   ├── Extension/                         # Semantic extension layer
+│   ├── Frames/                            # Standard frame constructions
+│   ├── StateTopology/                     # State-topology layer
+│   └── Ultraproduct/                      # Ultraproduct constructions
 ├── Metalogic/
 │   ├── Soundness.lean                     # Soundness theorem
 │   ├── SoundnessLemmas.lean               # Bridge lemmas
+│   ├── SoundnessLemmas/                   # Bridge-lemma supporting modules
 │   ├── Core/                              # MCS layer, deduction theorem, Lindenbaum
 │   ├── Bundle/                            # FMCS / BFMCS bundle construction
 │   ├── BXCanonical/                       # Canonical model; the three completeness theorems
@@ -1129,32 +1219,67 @@ FormalSystem/                              # Main source directory
 │   ├── SetConsequence.lean                # Set-based consequence; CompactBase/CompactDense
 │   ├── Compactness.lean                   # Their ultraproduct discharge; Base/Dense strong completeness
 │   ├── DiscreteNonCompactness.lean        # Refutation of ZTime strong completeness
-│   ├── Conservativity.lean                # TM/TM+ backward bridge
-│   ├── MinusLanguageSoundness.lean         # BL soundness by composition; the truth-transfer bridge
+│   ├── DedekindNonCompactness.lean        # Refutation of RTime strong completeness
+│   ├── QTime.lean                         # ℚ-time validity equals dense validity
+│   ├── Conservativity.lean                # TM/TM+ backward bridge; re-exports the Conservativity/ story
+│   ├── Conservativity/                    # L⁻-vs-TM⁻ and TM-vs-TM⁺ backing modules (19 files)
+│   ├── ConvexConsequence/                 # Convex-consequence results
+│   ├── Deterministic/                     # Deterministic-frame metalogic
+│   ├── Expressiveness/                    # Expressiveness results
 │   ├── Independence/                      # Independence results
-│   └── Decidability/                      # Tableau decision procedure
+│   ├── Decidability/                      # Tableau decision procedure
+│   └── README.md
 ├── Theorems/
 │   ├── Perpetuity/                        # P1-P6 perpetuity principles
 │   ├── ModalS4.lean, ModalS5.lean         # Modal theorem libraries
+│   ├── ModalDerived.lean                  # Derived modal theorems
 │   ├── Propositional/                     # Propositional theorem library
+│   ├── Combinators.lean                   # Combinator-style derived rules
+│   ├── ContextualProofs.lean              # Contextual proof helpers
+│   ├── DeductionTheorem.lean              # Deduction theorem
+│   ├── DiscreteUnfolding.lean             # Discrete unfolding lemmas
+│   ├── GeneralizedNecessitation.lean      # Generalized necessitation rule
 │   ├── TemporalDerived.lean               # Derived temporal theorems
-│   └── DedekindDerived.lean
+│   ├── DedekindDerived.lean
+│   └── README.md
 ├── Automation/
 │   ├── Tactics/                           # Custom tactics
-│   └── ProofSearch/                       # Automated proof search
-├── Examples/                              # Pedagogical examples
-└── Boneyard/                              # Archived material (excluded from all invariants)
+│   ├── ProofSearch/                       # Automated proof search
+│   ├── Normalization.lean                 # Formula normalization helpers
+│   ├── SuccessPatterns.lean               # Proof-search success-pattern data
+│   └── README.md
+├── Tactic/                                 # Attribute and meta-programming support
+│   ├── Attr.lean
+│   ├── Meta.lean
+│   └── README.md
+└── Examples/                              # Pedagogical examples
 
+Boneyard/                                  # Archived material (excluded from all invariants)
 Tests/BimodalTest/                         # Test suite
 ├── Syntax/, ProofSystem/, Semantics/      # Layer-aligned tests
 ├── Metalogic/, Theorems/, Automation/
 ├── Integration/                           # Integration tests
-└── Property/                              # Property-based tests
+├── Property/                              # Property-based tests
+├── Property.lean                          # Property-test helpers
+├── WalkthroughAxioms.lean                 # Walkthrough axiom-usage tests
+└── README.md
 
 docs/                                      # User documentation
 lakefile.toml                              # Lake build configuration
 lean-toolchain                             # Lean version pinning
 ```
+
+*Audit provenance*: every entry above was checked directly against a live `find <dir> -maxdepth 1`
+listing (2026-09-25) for all ten trees under `FormalSystem/` and `Tests/BimodalTest/`, plus a
+root-level check placing `Boneyard/` correctly as a repository-root sibling rather than a
+`FormalSystem/` child. Convention: each top-level subsystem directory is expanded to its
+non-shim `.lean` files and `README.md`; a re-export shim (an `X.lean` file sitting beside an
+identically-named directory `X/`) is omitted uniformly, except where the file carries its own
+substantive content distinct from the directory it sits beside (`Conservativity.lean`,
+`SoundnessLemmas.lean`), in which case both the file and its sibling directory are listed.
+Second-level subdirectories (e.g. `Metalogic/Core/`, `Semantics/Correspondence/`) are shown as
+bare pointers, not expanded further, matching the tree's established style.
+
 
 
 ### 6.2 Integration Points

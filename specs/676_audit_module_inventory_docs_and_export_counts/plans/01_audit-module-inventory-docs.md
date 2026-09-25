@@ -145,7 +145,7 @@ value wins and the difference is noted in the baseline file.
 
 ---
 
-### Phase 2: Rewrite the architecture.md source tree [NOT STARTED]
+### Phase 2: Rewrite the architecture.md source tree [COMPLETED]
 
 **Goal**: Replace the drifted source-tree diagram in `docs/user-guide/architecture.md` (section
 6.1 Project Structure) with one that matches the Phase 1 baseline exhaustively, and leave behind
@@ -153,34 +153,42 @@ an audit-provenance line so a later reader knows the whole tree was walked rathe
 lines patched.
 
 **Tasks**:
-- [ ] Re-read the current diagram immediately before editing (sibling-task discipline).
-- [ ] Pin the style decision once, before editing: either (a) full expansion of every directory
+- [x] Re-read the current diagram immediately before editing (sibling-task discipline). *(completed)*
+- [x] Pin the style decision once, before editing: either (a) full expansion of every directory
       to file level, or (b) representative files plus subdirectory pointers, mirroring the style
       the tree already uses for `Metalogic/Core/`, `Bundle/`, `BXCanonical/` etc. Record the
       chosen convention in a one-line comment or note adjacent to the diagram so the next editor
       does not mix styles. Re-export shims (`X.lean` beside `X/`) stay omitted under either
-      style — that omission is an established convention, applied uniformly.
-- [ ] Add the missing top-level `FormalSystem/` subsystems observed in Phase 1
+      style — that omission is an established convention, applied uniformly. *(completed: chose
+      (a) full expansion of every top-level subsystem directory to non-shim file level, with
+      second-level subdirectories left as bare pointers per the existing `Metalogic/Core/` etc.
+      convention; recorded in the provenance paragraph beneath the diagram)*
+- [x] Add the missing top-level `FormalSystem/` subsystems observed in Phase 1
       (`ForMathlib/`, `HybridLanguage/`, `OpenLanguage/`, `PlusLanguage/`, `QuantLanguage/`,
       `StarLanguage/`, `Tactic/`) and the loose top-level files that are not shims
-      (`Init.lean`, `MainResults.lean`, `Version.lean`, `README.md`).
-- [ ] Move `Boneyard/` out from under `FormalSystem/` to the repo-root level, alongside
-      `Tests/BimodalTest/` and `docs/`.
-- [ ] Correct `MinusLanguage/`: add `MinusFrame.lean`, `MinusSchemaValidity.lean`,
-      `MinusTruth.lean`, `MinusValidity.lean`, `Soundness.lean`, `README.md`.
-- [ ] Correct `Semantics/`: remove `MinusTruth.lean` and `MinusValidity.lean` (they live under
+      (`Init.lean`, `MainResults.lean`, `Version.lean`, `README.md`). *(completed)*
+- [x] Move `Boneyard/` out from under `FormalSystem/` to the repo-root level, alongside
+      `Tests/BimodalTest/` and `docs/`. *(completed)*
+- [x] Correct `MinusLanguage/`: add `MinusFrame.lean`, `MinusSchemaValidity.lean`,
+      `MinusTruth.lean`, `MinusValidity.lean`, `Soundness.lean`, `README.md`. *(completed)*
+- [x] Correct `Semantics/`: remove `MinusTruth.lean` and `MinusValidity.lean` (they live under
       `MinusLanguage/`), and reconcile the rest against the baseline, including the four
       undocumented subdirectory pointers (`Correspondence/`, `Frames/`, `StateTopology/`,
-      `Ultraproduct/`).
-- [ ] Correct `Metalogic/`: remove the nonexistent `MinusLanguageSoundness.lean` entry; add the
+      `Ultraproduct/`). *(completed: full expansion now lists all 26 top-level files plus 5
+      subdirectory pointers)*
+- [x] Correct `Metalogic/`: remove the nonexistent `MinusLanguageSoundness.lean` entry; add the
       missing subdirectory pointers (`Conservativity/`, `ConvexConsequence/`, `Deterministic/`,
       `Expressiveness/`) and the missing top-level files (`DedekindNonCompactness.lean`,
       `QTime.lean`, `README.md`). Note that `SoundnessLemmas` exists as both a directory and a
-      shim — represent it consistently with the pinned style.
-- [ ] Reconcile `Syntax/`, `ProofSystem/`, `Theorems/`, `Automation/`, `Examples/` and
-      `Tests/BimodalTest/` against the baseline.
-- [ ] Add a short provenance line under the diagram naming what was audited (the ten trees from
-      Phase 1) and the shim-omission convention, so the audit reads as exhaustive.
+      shim — represent it consistently with the pinned style. *(completed: `SoundnessLemmas.lean`
+      kept as its own entry (substantive content, like `Conservativity.lean`) with a
+      `SoundnessLemmas/` pointer added alongside it, mirroring how `Conservativity.lean` and the
+      new `Conservativity/` pointer coexist)*
+- [x] Reconcile `Syntax/`, `ProofSystem/`, `Theorems/`, `Automation/`, `Examples/` and
+      `Tests/BimodalTest/` against the baseline. *(completed: `Examples/` left as the existing
+      bare pointer — verified not drifted, no defect)*
+- [x] Add a short provenance line under the diagram naming what was audited (the ten trees from
+      Phase 1) and the shim-omission convention, so the audit reads as exhaustive. *(completed)*
 
 **Timing**: 1 hour
 
