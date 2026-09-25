@@ -194,29 +194,29 @@ text has drifted from the verified original rather than as a reason to trim docs
 
 ---
 
-### Phase 2: The three order facts and the frame-level refutation [IN PROGRESS]
+### Phase 2: The three order facts and the frame-level refutation [COMPLETED]
 
 **Goal**: the three accumulation facts about the φ-region and the frame-level non-validity
 theorem `not_validOn_sep_lexHahn` land sorry-free, with the `Axiom.sep` shape pin compiling.
 
 **Tasks**:
 
-- [ ] Transcribe the three order facts (the report's `L1`/`L2`/`L3`), giving each a
+- [x] Transcribe the three order facts (the report's `L1`/`L2`/`L3`), giving each a
       project-styled name and a docstring stating what it says in order language:
       (a) the φ-region accumulates at `0` from the right — this is `K⁺φ` at `0`;
       (b) no φ-point has an immediate φ-successor across a gap, so `φ ∧ U(φ,¬φ)` is false
       everywhere and the second antecedent conjunct holds at `0`;
       (c) no `r > 0` is a right-accumulation point of the φ-region — the two-way split on
       `sg i ≤ r` versus `r < sg i`, never the three-way split on the leading coefficient.
-- [ ] Add a `/-! ## Shape pins` section mirroring `DenseRTimeSharpness.lean`'s, carrying
+- [x] Add a `/-! ## Shape pins` section mirroring `DenseRTimeSharpness.lean`'s, carrying
       `example (φ : Formula) : Axiom (…) := Axiom.sep φ` with the formula written out in full.
-- [ ] Transcribe `not_validOn_sep_lexHahn`: the frame-level `¬ (translationFrame …).toTaskFrame.ValidOn …`
+- [x] Transcribe `not_validOn_sep_lexHahn`: the frame-level `¬ (translationFrame …).toTaskFrame.ValidOn …`
       statement at `Formula.atom a`, evaluated at `translationModel` / `translationHist` / `0`,
       driven by the named clause lemmas `Truth.imp_iff`, `Truth.and_iff`, `Truth.kPlus_iff`,
       `Truth.neg_iff`, `Truth.untl_iff` — never `simp [TruthAt]`.
-- [ ] Write the formula out in full at every occurrence; do not factor it behind a local
+- [x] Write the formula out in full at every occurrence; do not factor it behind a local
       abbreviation that the shape pin does not also pin.
-- [ ] Beware the constructor argument-order trap the Independence README flags: the prose reads
+- [x] Beware the constructor argument-order trap the Independence README flags: the prose reads
       `U(φ,¬φ)` event-first, the constructor is `Formula.untl φ.neg φ`, guard-first. The shape pin
       is what makes this a compiler obligation rather than a reviewer obligation.
 
@@ -241,7 +241,7 @@ theorem `not_validOn_sep_lexHahn` land sorry-free, with the `Axiom.sep` shape pi
 
 ---
 
-### Phase 3: Class-level results and the exhaustive characterization [NOT STARTED]
+### Phase 3: Class-level results and the exhaustive characterization [IN PROGRESS]
 
 **Goal**: the named deliverable theorems land sorry-free with the pinned axiom set, including the
 `.ZTime` positive result and the **correct** characterization.

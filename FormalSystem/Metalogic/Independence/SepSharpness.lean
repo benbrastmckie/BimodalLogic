@@ -154,4 +154,120 @@ theorem sepGen_lt_sepGen {γ δ : ℚ} : sepGen δ < sepGen γ ↔ γ < δ := by
         if_neg (by intro hh; exact absurd (hh ▸ hj) (by linarith))]
     · simp [ne_of_gt h]
 
+/-! ## Shape pin
+
+The `example` below type-checks only if the formula refuted in this module is *exactly* the one
+`Axiom.sep` produces. Without it, a mis-transcribed formula would yield a true but entirely
+vacuous non-validity result about some other formula. The pin also guards the argument-order trap
+the Independence README flags: the prose reads `U(φ, ¬φ)` event-first, while the constructor is
+`Formula.untl φ.neg φ`, guard-first.
+-/
+
+/-- Shape pin: the formula refuted below is exactly `Axiom.sep`'s. -/
+example (φ : Formula) : Axiom ((Formula.and (Formula.kPlus φ)
+    (Formula.kPlus (Formula.and φ (Formula.untl φ.neg φ))).neg).imp
+    (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))) := Axiom.sep φ
+
+/-! ## The three order facts
+
+Reading `Truth.kPlus_iff` in order language, `K⁺φ` at `t` says the φ-region *right-accumulates* at
+`t`. The three facts below say the φ-region right-accumulates at `0`, has no gapped successors
+anywhere, and right-accumulates at no positive duration — which is exactly `sep`'s two antecedent
+conjuncts holding at `0` while its consequent fails there.
+-/
+
+/-- The φ-region right-accumulates at `0`: below any positive duration sits a generator. Given `s`
+with leading index `i`, the generator at `max i 0 + 1` lies on a strictly finer archimedean scale
+and so falls strictly between. This is `K⁺φ` at `0`, `sep`'s first antecedent conjunct. -/
+theorem exists_mem_sepRegion_lt (s : LexHahn) (hs : 0 < s) :
+    ∃ r, 0 < r ∧ r < s ∧ r ∈ sepRegion := by
+  obtain ⟨i, h0, hi⟩ := pos_index hs
+  refine ⟨sepGen (max i 0 + 1), sepGen_pos _, ?_, ⟨max i 0 + 1, by positivity, rfl⟩⟩
+  exact sepGen_lt_of_index_lt h0 hi (by have := le_max_left i 0; linarith)
+
+/-- No point of the φ-region has an immediate φ-successor across a gap: the region is
+order-anti-isomorphic to the positive rationals, hence dense in itself. So `φ ∧ U(φ, ¬φ)` is false
+*everywhere*, which is why `sep`'s second antecedent conjunct `¬K⁺(φ ∧ U(φ, ¬φ))` holds at `0`. -/
+theorem not_gapped_successor_sepRegion (r : LexHahn) (hr : r ∈ sepRegion) :
+    ¬ ∃ s, r < s ∧ s ∈ sepRegion ∧ ∀ u, r < u → u < s → u ∉ sepRegion := by
+  rintro ⟨s, hrs, ⟨ε, hε, rfl⟩, hgap⟩
+  obtain ⟨γ, hγ, rfl⟩ := hr
+  have hεγ : ε < γ := sepGen_lt_sepGen.mp hrs
+  obtain ⟨ε', h1, h2⟩ := exists_between hεγ
+  exact hgap (sepGen ε') (sepGen_lt_sepGen.mpr h2) (sepGen_lt_sepGen.mpr h1) ⟨ε', hε.trans h1, rfl⟩
+
+/-- No positive duration is a right-accumulation point of the φ-region: the generators are
+mutually infinitely separated, so above any `r > 0` there is a φ-free interval. The split is
+two-way, on `sepGen i ≤ r` versus `r < sepGen i` for `r`'s own leading index `i`; refuting `K⁺φ`
+(rather than `K⁻φ` or the conjunction `K⁺φ ∧ K⁻φ`) is what keeps it two-way, since the `K⁻` route
+would force a three-way split on `r`'s leading coefficient. -/
+theorem exists_sepRegion_free_interval (r : LexHahn) (hr : 0 < r) :
+    ∃ s, r < s ∧ ∀ u, r < u → u < s → u ∉ sepRegion := by
+  obtain ⟨i, h0, hi⟩ := pos_index hr
+  rcases le_or_gt (sepGen i) r with hc | hc
+  · refine ⟨r + r, lt_add_of_pos_left r hr, ?_⟩
+    rintro u hru hus ⟨γ, hγ, rfl⟩
+    rcases lt_trichotomy γ i with hh | hh | hh
+    · exact absurd (lt_sepGen_of_lt_index h0 hh) (not_lt.mpr hus.le)
+    · exact absurd (hh ▸ hru) (not_lt.mpr hc)
+    · exact absurd (sepGen_lt_of_index_lt h0 hi hh) (not_lt.mpr hru.le)
+  · refine ⟨sepGen i, hc, ?_⟩
+    rintro u hru hus ⟨γ, hγ, rfl⟩
+    exact absurd (sepGen_lt_of_index_lt h0 hi (sepGen_lt_sepGen.mp hus)) (not_lt.mpr hru.le)
+
+/-! ## The frame-level refutation -/
+
+/-- `Axiom.sep`'s atomic instance fails on the translation frame over the Hahn group: at time `0`,
+under the valuation making the atom true exactly on `sepRegion`, both antecedent conjuncts hold
+and the consequent fails.
+
+This is a frame-level statement (`¬ F.ValidOn φ`), per the Independence README's criterion — a
+bare non-validity claim validates nothing, so the frame-versus-model obstruction recorded in
+`Independence/CoNotPriorU.lean` does not bite. The proof drives the truth clauses through the
+named lemmas `Truth.imp_iff`, `Truth.and_iff`, `Truth.kPlus_iff`, `Truth.neg_iff` and
+`Truth.untl_iff`, never `simp [TruthAt]`. -/
+theorem not_validOn_sep_lexHahn (a : Atom) :
+    ¬ (translationFrame sepSharpOrder).toTaskFrame.ValidOn
+      ((Formula.and (Formula.kPlus (Formula.atom a))
+        (Formula.kPlus (Formula.and (Formula.atom a)
+          (Formula.untl (Formula.atom a).neg (Formula.atom a)))).neg).imp
+        (Formula.kPlus (Formula.and (Formula.kPlus (Formula.atom a))
+          (Formula.kMinus (Formula.atom a))))) := by
+  intro h
+  have hval := h (translationModel sepSharpOrder sepRegion) (translationHist sepSharpOrder) 0
+  rw [Truth.imp_iff] at hval
+  have hant : TruthAt (translationModel sepSharpOrder sepRegion)
+      (translationHist sepSharpOrder) 0
+      (Formula.and (Formula.kPlus (Formula.atom a))
+        (Formula.kPlus (Formula.and (Formula.atom a)
+          (Formula.untl (Formula.atom a).neg (Formula.atom a)))).neg) := by
+    rw [Truth.and_iff]
+    constructor
+    · rw [Truth.kPlus_iff]
+      intro s hs
+      obtain ⟨r, hr0, hrs, hrA⟩ := exists_mem_sepRegion_lt s hs
+      exact ⟨r, hr0, hrs, (translation_realizes sepSharpOrder sepRegion a r).mpr hrA⟩
+    · rw [Truth.neg_iff, Truth.kPlus_iff]
+      intro hk
+      obtain ⟨r, hr0, _, hr⟩ := hk (sepGen 1) (sepGen_pos 1)
+      rw [Truth.and_iff] at hr
+      obtain ⟨hrA, hru⟩ := hr
+      rw [Truth.untl_iff] at hru
+      obtain ⟨s, hrs, hsA, hgap⟩ := hru
+      refine not_gapped_successor_sepRegion r
+        ((translation_realizes sepSharpOrder sepRegion a r).mp hrA)
+        ⟨s, hrs, (translation_realizes sepSharpOrder sepRegion a s).mp hsA, ?_⟩
+      intro u hru' hus huA
+      exact (Truth.neg_iff _).mp (hgap u hru' hus)
+        ((translation_realizes sepSharpOrder sepRegion a u).mpr huA)
+  have hcon := hval hant
+  rw [Truth.kPlus_iff] at hcon
+  obtain ⟨r, hr0, _, hr⟩ := hcon (sepGen 1) (sepGen_pos 1)
+  rw [Truth.and_iff] at hr
+  obtain ⟨hkp, _⟩ := hr
+  rw [Truth.kPlus_iff] at hkp
+  obtain ⟨s', hrs', hgap'⟩ := exists_sepRegion_free_interval r hr0
+  obtain ⟨u, hru, hus, hu⟩ := hkp s' hrs'
+  exact hgap' u hru hus ((translation_realizes sepSharpOrder sepRegion a u).mp hu)
+
 end FormalSystem.Metalogic.Independence
