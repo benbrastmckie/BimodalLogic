@@ -19,7 +19,9 @@ valid at its own tag. Nothing in that theorem rules out the tag having been set 
 `.ZTime` row is closed in both directions by `Independence/ZTimeSharpness.lean`; this module
 closes three of the four remaining non-`.Base` rows — `Axiom.density` and
 `Axiom.dense_indicator`, both tagged `.Dense`, and `Axiom.prior_U_gap`, tagged `.RTime` — and
-records a *proved* obstruction for the fourth, `Axiom.sep`.
+proves the obstruction that confines any refutation of the fourth, `Axiom.sep`, to a densely
+ordered duration group. `Independence/SepSharpness.lean` supplies such a refutation and closes
+that row.
 
 ## What each result claims, exactly
 
@@ -68,11 +70,14 @@ is true but vacuous.
 
 ## The `sep` row
 
-`Axiom.sep` is **not** closed here. What is proved instead is a boundary:
+`Axiom.sep` is **not** closed here, and is not open either. What is proved here is the boundary:
 `not_kPlus_of_isLeastPos` and `sep_validOn_of_isLeastPos` show `Axiom.sep` is vacuously valid on
 every frame with a least positive duration, so by `Semantics.duration_dense_or_least_pos` no
 discrete witness for it can exist and any refutation must run over a densely ordered duration
-group. The section docstring for that pair records the two candidate routes.
+group. `Independence/SepSharpness.lean` supplies one, over the Hahn group `Lex (ℚ →₀ ℚ)`, and
+closes the row. `sep_validOn_of_isLeastPos` is not merely a boundary any more: it is *consumed*
+there, by `sep_validIn_ztime`, which is why neither it nor `not_kPlus_of_isLeastPos` is
+retired.
 
 ## Main results
 
@@ -91,8 +96,8 @@ group. The section docstring for that pair records the two candidate routes.
 * `not_validOn_prior_U_gap_clock`, `not_validIn_base_prior_U_gap`,
   `not_validIn_dense_prior_U_gap`, `prior_U_gap_minFrameClass_sharp`,
   `not_derivable_dense_prior_U_gap` — the `prior_U_gap` row
-* `not_kPlus_of_isLeastPos`, `sep_validOn_of_isLeastPos` — the proved obstruction for the open
-  `sep` row
+* `not_kPlus_of_isLeastPos`, `sep_validOn_of_isLeastPos` — the discreteness obstruction for the
+  `sep` row, which `Independence/SepSharpness.lean` both routes around and reuses
 
 ## Tags
 
@@ -338,10 +343,10 @@ theorem not_derivable_dense_prior_U_gap (a : Atom) :
     ¬ Derivable FrameClass.Dense [] (priorUGapFormula (Formula.atom a)) :=
   fun ⟨d⟩ => not_validIn_dense_prior_U_gap a (soundness_validIn d)
 
-/-! ## Row 4: sep — the obstruction, not the refutation
+/-! ## Row 4: sep — the obstruction, which `SepSharpness.lean` then routes around
 
-`Axiom.sep`'s `.RTime` tag is **not** shown minimal here. What is shown is a boundary that fixes
-where a refutation could possibly live.
+`Axiom.sep`'s `.RTime` tag is not shown minimal here. What is shown is the boundary that fixed
+where a refutation could possibly live, and which `Independence/SepSharpness.lean` then used.
 
 `not_kPlus_of_isLeastPos` and `sep_validOn_of_isLeastPos` together establish that `Axiom.sep` is
 *vacuously* valid on every frame whose duration group has a least positive element: on such a
@@ -350,22 +355,26 @@ frame `K⁺ψ` is false everywhere, because the immediate successor `t + p` leav
 `Semantics.duration_dense_or_least_pos` — every duration group is either densely ordered or has a
 least positive element — this says **no discrete witness for `sep` can exist**. Any `.Base`
 refutation must therefore run over a densely ordered duration group; and since `Sat .Dense F`
-implies `Sat .Base F`, one dense witness would close both classes strictly below `.RTime` at
-once, exactly the pattern `not_validIn_dense_prior_U_gap` follows for the `prior_U_gap` row.
+implies `Sat .Base F`, one dense witness closes both classes strictly below `.RTime` at once,
+exactly the pattern `not_validIn_dense_prior_U_gap` follows for the `prior_U_gap` row.
 
-Three candidate routes were surveyed, none attempted here:
+Both directions of that dichotomy are now cashed in, and neither declaration below may be
+retired.
 
-1. The lexicographic configuration already written down in
-   `Metalogic/SoundnessLemmas/Separability.lean` (`t = (0,1)` on the lex square, φ-region
-   `{(a, 0) : 0 < a < 1}`) does **not** transfer as-is. A *group* has no fibre tops, so the
-   antecedent collapses the problem back to the separable one-level case; the value group must
-   itself be densely ordered.
-2. The witness that does appear to work is `D = Lex (ℚ →₀ ℚ)` with φ-region
-   `{toLex (Finsupp.single γ 1) : γ > 0}`. Its carrier instances were probed and are available
-   except for `IsOrderedAddMonoid`, which is a short instance off Mathlib's
-   `Finsupp.Lex.addLeftMono` / `Finsupp.Lex.addRightMono`.
-3. An independent plain-`ℚ` route via a bespoke Cantor set, exploiting completeness rather than
-   separability.
+* The *dense* side is `Independence/SepSharpness.lean`'s `not_validOn_sep_lexHahn`, over the Hahn
+  group `Lex (ℚ →₀ ℚ)`, giving `sep_minFrameClass_sharp`. Of the three routes surveyed when this
+  section was written, that is the one that worked; the two-level lexicographic configuration of
+  `Metalogic/SoundnessLemmas/Separability.lean` is refuted (one infinitesimal scale leaves the
+  region dense in the ambient order, so the consequent holds and there is nothing to refute, and
+  no finite number of scales repairs that), and the plain-`ℚ` Cantor-set route is excluded on
+  cost rather than refuted. The recorded expectation that `IsOrderedAddMonoid` would need a
+  hand-written instance was stale: Mathlib's `Finsupp.Lex.isOrderedCancelAddMonoid` supplies it,
+  and the one genuinely missing instance was `DenselyOrdered`.
+* The *discrete* side is **consumed** rather than superseded: `sep_validOn_of_isLeastPos` is what
+  `Independence/SepSharpness.lean`'s `sep_validIn_ztime` applies, since `IsZTime` supplies a
+  successor order and hence a least positive duration. That positive `.ZTime` result is why the
+  `sep` row's characterization reads `ValidIn fc φ ↔ fc = .ZTime ∨ .RTime ≤ fc` rather than
+  `↔ .RTime ≤ fc`.
 -/
 
 /-- On a frame whose durations have a least positive element `p`, `K⁺φ` is false everywhere: the

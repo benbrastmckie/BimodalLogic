@@ -3,8 +3,8 @@
 Underivability results, established by exhibiting a model of the assumptions in which the
 target formula fails.
 
-Eleven results are carried here. This list and the one in `Independence.lean`'s module docstring
-enumerate the same eleven results in the same order; earlier revisions of the two drifted apart
+Twelve results are carried here. This list and the one in `Independence.lean`'s module docstring
+enumerate the same twelve results in the same order; earlier revisions of the two drifted apart
 (this README carried nine, the docstring six, overlapping in five) and were reconciled to their
 union.
 
@@ -66,9 +66,23 @@ union.
     refutation, on the periodic clock frame, gives `not_validIn_base_prior_U_gap` and
     `not_validIn_dense_prior_U_gap` at once, hence `prior_U_gap_minFrameClass_sharp` through
     `base_or_dense_of_lt_rtime`; nothing is claimed about `.ZTime`, which is incomparable with
-    `.RTime`. `Axiom.sep` is the one row of `Axiom.minFrameClass` still upper-bound-only, and
-    `sep_validOn_of_isLeastPos` is the proved boundary on it: `sep` is vacuously valid on every
-    frame with a least positive duration, so no discrete witness for it can exist.
+    `.RTime`. The module also proves the boundary that fixes where a `sep` refutation could live:
+    `sep_validOn_of_isLeastPos` shows `sep` is vacuously valid on every frame with a least
+    positive duration, so no discrete witness for it can exist. Result 12 supplies the dense one.
+12. **The `sep` row of `Axiom.minFrameClass` is characterized** (`SepSharpness.lean`). The dense
+    witness result 11 showed to be necessary is the translation frame over the Hahn group
+    `Lex (ℚ →₀ ℚ)`, with the atom true exactly on the positive-index single-support generators.
+    That region is order-anti-isomorphic to the positive rationals, so it is dense in itself and
+    accumulates at `0`; but distinct generators sit on distinct archimedean scales, so no positive
+    duration is an accumulation point of it. Both of `sep`'s antecedent conjuncts therefore hold
+    at `0` while its consequent fails, giving `not_validOn_sep_lexHahn`, hence
+    `not_validIn_base_sep` and `not_validIn_dense_sep` at once, hence `sep_minFrameClass_sharp`
+    through `base_or_dense_of_lt_rtime`. Unlike `prior_U_gap`, the `.ZTime` case is *positive* and
+    schematic in `φ`: `sep_validIn_ztime` derives it from result 11's
+    `sep_validOn_of_isLeastPos`, since `IsZTime` supplies a successor order and hence a least
+    positive duration. So `sep_validIn_iff` reads
+    `ValidIn fc φ ↔ fc = .ZTime ∨ .RTime ≤ fc`, not `↔ .RTime ≤ fc`, which would be false. The
+    underivability corollary is `not_derivable_dense_sep`.
 
 Results 2 and 3 are the two halves of the finding that the frame-class *narrowings* are not
 Galois-closed, in contrast with the paper's bare classes — which are closed, by
@@ -114,7 +128,7 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 | `ClockFrame.lean` | 229 | The periodic clock frame: temporal order `D = ℚ`, world-state carrier the rational circle `W = ℚ ⧸ ℤ`, task relation the deterministic translation flow. All `TaskFrame` obligations discharged, with a reference world history. |
 | `CoNotPriorU.lean` | 527 | The symmetric irrational arc valuation on the clock frame, the refutation of `Axiom.prior_U_gap` in that model, and the two independence statements. |
 | `CoarsenedModels.lean` | 756 | The non-standard semantics the pasting-independence argument runs on: `CoarseModel`, `SameUnder`, `CTruthAt`; the three structural ports (`c_truth_congr_ext`, `cTruthAt_timeShift`, `c_stab_state_only`); the atomization transfer; the six naive `⊡` validities; and naive soundness `naive_cValid`. |
-| `DenseRTimeSharpness.lean` | 400 | The `.Dense` rows of `Axiom.minFrameClass` characterized and its `prior_U_gap` row shown minimal: `not_validOn_density_of_isLeastPos` and `not_validOn_dense_indicator_of_isLeastPos` refute both `.Dense`-tagged axioms at frame level over any duration group with a least positive element, instantiated at `ℤ` to reach `.Base` and `.ZTime`, so `eq_base_of_lt_dense` gives `density_minFrameClass_sharp` / `dense_indicator_minFrameClass_sharp` and a four-way `cases fc` gives the exhaustive `density_validIn_iff` / `dense_indicator_validIn_iff`; `not_validOn_prior_U_gap_clock` reaches `.Base` and `.Dense` at once, so `base_or_dense_of_lt_rtime` gives `prior_U_gap_minFrameClass_sharp`. `sep_validOn_of_isLeastPos` proves the obstruction that leaves `Axiom.sep` the last open row. Three `example` shape pins make formula-transcription fidelity a compiler obligation. |
+| `DenseRTimeSharpness.lean` | 409 | The `.Dense` rows of `Axiom.minFrameClass` characterized and its `prior_U_gap` row shown minimal: `not_validOn_density_of_isLeastPos` and `not_validOn_dense_indicator_of_isLeastPos` refute both `.Dense`-tagged axioms at frame level over any duration group with a least positive element, instantiated at `ℤ` to reach `.Base` and `.ZTime`, so `eq_base_of_lt_dense` gives `density_minFrameClass_sharp` / `dense_indicator_minFrameClass_sharp` and a four-way `cases fc` gives the exhaustive `density_validIn_iff` / `dense_indicator_validIn_iff`; `not_validOn_prior_U_gap_clock` reaches `.Base` and `.Dense` at once, so `base_or_dense_of_lt_rtime` gives `prior_U_gap_minFrameClass_sharp`. `sep_validOn_of_isLeastPos` proves the obstruction that leaves `Axiom.sep` the last open row. Three `example` shape pins make formula-transcription fidelity a compiler obligation. |
 | `DeterminismUndefinable.lean` | 189 | The instantiation at `F°`/`F¹`: (T3) `determined_valid_on_non_deterministic`, (T4) `fzero_plusValidOn_iff_f1`, and `deterministic_not_plusDefinable`. |
 | `DriftFrame.lean` | 261 | `F°`, the drift band `x ≤ u - w ≤ 2x` over `ℝ`, with all six `FrameOver` axioms (`limit` and `saturation` included) and `fzero_not_deterministic`. |
 | `DriftHistories.lean` | 176 | `F°`'s world histories are strictly increasing bi-Lipschitz bijections of `ℝ` (`fzero_hits_future` is the crux, by IVT); (H1) `fzero_orderFlow` and (H2) `fzero_stateOccurs`, the latter by an explicit affine witness. |
@@ -130,12 +144,13 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 | `PlusIncompleteness.lean` | 88 | The assembly. `plus_incomplete_base`: the limit-closure formula is valid (`blc_plusValid`) and is not a `.Base` theorem of TM⁺ (`blc_not_plusDerivable_base`), so the current TM⁺ axiom set is incomplete at `.Base`; `not_plus_complete_base`: the hypothesis of `starConservative_of_plusComplete` at `.Base`, refuted. No claim about extensions of the axiom set, other frame classes, or conservativity of TM⋆ over TM⁺. |
 | `RationalWitness.lean` | 206 | `rat_not_complete` — `ℚ` is not Dedekind-complete, written out because Mathlib carries no statement in this shape — and the static frame over `ℚ` as a member of `Mod (AxiomSet .RTime)` outside `Sat .RTime`, with the Dedekind sandwich. |
 | `RealTranslationFrame.lean` | 196 | `realOrder`; `F¹`, the deterministic translation flow over `ℝ`, built through `ShiftSet` (the only route on which the world-set characterization elaborates); `f1_deterministic`, `f1_total_eq_orbit`, `f1_eq_of_states_eq`. |
+| `SepSharpness.lean` | 439 | <!-- TODO: add description --> |
 | `StabUndefinable.lean` | 241 | `stabNotDefinable`: no `Formula` is equivalent to `⊡Fp` over all task models, by a `TruthCorr` between the permissive frame over `ℤ` and the deterministic clock at family index `ℤ → ℕ`. |
 | `StarDiscrimination.lean` | 189 | The positive half of the discrimination footnote: the affine drift histories `driftLinear` and the manuscript's own valuation `driftModel`, which makes `p` true exactly on `[3/2, ∞)`; `fzero_refutes_sentDet`, `f1_sentDet`, `sentDet_discriminates`, and `star_discriminates_where_plus_cannot` — one `StarFormula` separates `F°` from `F¹` where `cor:no-characterization` shows no `PlusFormula` set can. |
 | `StateSetTruth.lean` | 236 | `satSet` and `plusTruthAt_iff_mem_satSet`: over an (H1)+(H2) frame, L⁺ truth depends only on the world state of evaluation. Plus `plusValidOn_iff_satSet_univ` and `determined_of_orderFlow`. |
 | `StaticFrame.lean` | 323 | The static frame at an arbitrary duration group: every nonzero duration loops, so truth is time-invariant, and the `untl`/`snce` clauses collapse into a small constant-truth calculus (general, dense and discrete forms, plus `K⁺`/`K⁻` and `Axiom.z1`). Turns every later axiom check into a rewrite. |
 | `TranslationProductCoarse.lean` | 136 | Coarse models on the translation product (`Semantics/Frames/TranslationProduct.lean`, a proof device, never an intended model): `liftK` lifts a coarse model with the coarsening forgetting the clock; `c_invariance` — coarse truth is preserved by the projection; `pasteClosed_liftK` / `pasteClosed_of_liftK` — paste-closure transfers in both directions; `c_refuted_lift` — a coarse refutation on `F` is a coarse refutation on the recurrence-free, Limit-for-free product in the same frame class. |
-| `ZTimeSharpness.lean` | 430 | The `.ZTime` row of `Axiom.minFrameClass`, characterized rather than upper-bounded: `not_validOn_prior_UZ_dense` / `not_validOn_z1_dense` refute both `.ZTime`-tagged axioms at frame level over any densely ordered duration group; instantiating at ℚ and ℝ gives non-validity at `.Base`, `.Dense` and `.RTime`, and `eq_base_of_lt_ztime` covers everything strictly below `.ZTime`; `prior_UZ_validIn_iff_ztime` / `z1_validIn_iff_ztime` assemble `ValidIn fc φ ↔ fc = .ZTime`, with `not_derivable_base_*` the underivability corollaries. Two `example` shape pins make formula-transcription fidelity a compiler obligation. |
+| `ZTimeSharpness.lean` | 431 | The `.ZTime` row of `Axiom.minFrameClass`, characterized rather than upper-bounded: `not_validOn_prior_UZ_dense` / `not_validOn_z1_dense` refute both `.ZTime`-tagged axioms at frame level over any densely ordered duration group; instantiating at ℚ and ℝ gives non-validity at `.Base`, `.Dense` and `.RTime`, and `eq_base_of_lt_ztime` covers everything strictly below `.ZTime`; `prior_UZ_validIn_iff_ztime` / `z1_validIn_iff_ztime` assemble `ValidIn fc φ ↔ fc = .ZTime`, with `not_derivable_base_*` the underivability corollaries. Two `example` shape pins make formula-transcription fidelity a compiler obligation. |
 <!-- END GENERATED -->
 
 ## Key Results
@@ -186,6 +201,18 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 - `not_validIn_dense_*`, `not_validIn_rtime_*` (`ZTimeSharpness.lean`) — the two classes the
   order fact cannot reach, refuted over `ztimeSharpOrder` and `realOrder`. Dedekind completeness
   buys the axioms nothing: what they need is discreteness.
+- `sep_validIn_iff` (`SepSharpness.lean`) — `ValidIn fc φ ↔ fc = .ZTime ∨ .RTime ≤ fc` for
+  `Axiom.sep`'s atomic instance. The disjunctive right-hand side is not a stylistic choice: the
+  `.Dense`-row form `↔ .RTime ≤ fc` would be false here, because `.RTime` is incomparable with
+  `.ZTime` and `sep` is nonetheless `.ZTime`-valid.
+- `sep_minFrameClass_sharp` (`SepSharpness.lean`) — the minimality half: `Axiom.sep`'s atomic
+  instance is valid at no frame class strictly below `.RTime`, off the single frame-level
+  refutation `not_validOn_sep_lexHahn` over the Hahn group `Lex (ℚ →₀ ℚ)` and the order fact
+  `base_or_dense_of_lt_rtime`.
+- `sep_validIn_ztime` (`SepSharpness.lean`) — the positive half, and the only *schematic* claim in
+  either sharpness family: `Axiom.sep` is vacuously valid at `.ZTime` for every `φ`, because
+  `IsZTime` supplies a successor order and hence a least positive duration, feeding
+  `sep_validOn_of_isLeastPos`.
 - `plus_incomplete_base`, `not_plus_complete_base` (`PlusIncompleteness.lean`) — the limit-closure
   formula is valid and not a Base theorem of TM⁺; the hypothesis of
   `starConservative_of_plusComplete` at Base, refuted. Halves: `blc_plusValid`
@@ -283,6 +310,24 @@ will prove a true theorem about a different question.
    from `PartialOrder`'s default definition and is not reached by instance search. The idiom in
    the tree is `absurd h.le (by decide)`, and `DenseRTimeSharpness.lean`'s *Order facts* section
    is where this is written down.
+
+**When one infinitesimal level is not enough.** `SepSharpness.lean` is the one countermodel here
+whose carrier is not a familiar duration group, and the reason is worth keeping. `Axiom.sep` needs
+a region that accumulates at one point and is dense in itself, yet has no ambient accumulation
+point above that one — impossible in a separable flow, which is exactly the hypothesis Reynolds'
+positive argument for `sep` runs on. A two-level lexicographic carrier such as `ℚ ×ₗ ℚ` does not
+deliver it: with one infinitesimal scale the natural region is already dense in the ambient order,
+every one of its points is a two-sided accumulation point, and there is nothing left to refute.
+Neither does any finite number of levels. What works is a direct sum over a *dense, unbounded*
+index order — the Hahn group `Lex (ℚ →₀ ℚ)`, where the region of single-support generators spans
+infinitely many mutually infinitely-separated archimedean scales. Two elaboration traps come with
+it, both costly to rediscover. Helper lemmas must be stated at the bare carrier abbreviation
+(`LexHahn`) and never at `(sepSharpOrder : Type)`: at `TemporalOrder.carrier` the application
+`ofLex r j` fails to elaborate, and reducibility bridges the two only at the frame-level theorem,
+where no such application appears. And Mathlib's `Finsupp.Lex.single_lt_iff` and
+`Finsupp.Lex.single_strictAnti` look directly applicable but are specialised away from a general
+value type in the pinned snapshot, so they do not apply at value type `ℚ`; `sepGen_lt_sepGen` is
+the three-line replacement, proved from `Finsupp.Lex.lt_iff`.
 
 ## When frame-level refutation is obstructed, and when it is not
 

@@ -301,52 +301,58 @@ Confirm by grepping `^theorem\|^lemma` in the finished module and reconciling ag
 
 ---
 
-### Phase 4: Docstring and ledger edits, batched [IN PROGRESS]
+### Phase 4: Docstring and ledger edits, batched [COMPLETED]
 
 **Goal**: every prose surface that must change is changed, in one batch, with no build run — so
 that Phase 5 spends exactly one full rebuild.
 
 **Tasks**:
 
-- [ ] Re-read each file immediately before editing (concurrent sibling task 676 shares this tree
+- [x] Re-read each file immediately before editing (concurrent sibling task 676 shares this tree
       and declares no `file_scope`).
-- [ ] `FormalSystem/Metalogic/Independence.lean`: add
+- [x] `FormalSystem/Metalogic/Independence.lean`: add
       `import FormalSystem.Metalogic.Independence.SepSharpness` to the import block.
-- [ ] `FormalSystem/Metalogic/Independence.lean` ledger: change "Eleven results are carried here."
+- [x] `FormalSystem/Metalogic/Independence.lean` ledger: change "Eleven results are carried here."
       to "Twelve"; rewrite item 11's closing sentence (its claim that `Axiom.sep` is the one row
       still upper-bound-only becomes false); append item 12 for the closed `sep` row, naming
       `sep_minFrameClass_sharp`, `sep_validIn_ztime` and `sep_validIn_iff` and stating the
       characterization in its correct `fc = .ZTime ∨ .RTime ≤ fc` form. Also fix the trailing
       sentence "Results 10 and 11 together leave `Axiom.sep` as the only row … not known to be
       minimal", which likewise becomes false.
-- [ ] `FormalSystem/Metalogic/Independence.lean` `## Contents`: add a `SepSharpness.lean` bullet,
+- [x] `FormalSystem/Metalogic/Independence.lean` `## Contents`: add a `SepSharpness.lean` bullet,
       and amend the `DenseRTimeSharpness.lean` bullet's closing clause ("leaves `Axiom.sep` the
       last open row") to point at the new module.
-- [ ] `FormalSystem/Metalogic/Independence/README.md` ledger: the same three edits in the README's
+- [x] `FormalSystem/Metalogic/Independence/README.md` ledger: the same three edits in the README's
       own numbering convention — "Eleven" → "Twelve", item 11's closing sentence, new item 12.
-- [ ] `FormalSystem/Metalogic/Independence/README.md` `## Key Results`: add the new headline
+- [x] `FormalSystem/Metalogic/Independence/README.md` `## Key Results`: add the new headline
       entries alongside the existing `*_validIn_iff` / `*_minFrameClass_sharp` entries.
-- [ ] `FormalSystem/Metalogic/Independence/README.md` countermodel kit: add the short subsection
+- [x] `FormalSystem/Metalogic/Independence/README.md` countermodel kit: add the short subsection
       "When one infinitesimal level is not enough", pointing at `SepSharpness.lean` and recording
       the two elaboration traps (helpers must be stated at the bare carrier abbreviation;
       `Finsupp.Lex.single_lt_iff` is value-type-specialised upstream and unusable at `ℚ`).
-- [ ] `FormalSystem/Metalogic/Independence/DenseRTimeSharpness.lean`: rewrite the module
+- [x] `FormalSystem/Metalogic/Independence/DenseRTimeSharpness.lean`: rewrite the module
       docstring's "The `sep` row" section and the `## Row 4: sep — the obstruction, not the
       refutation` section docstring — replace the three-route survey with "closed; see
       `SepSharpness.lean`", noting that `sep_validOn_of_isLeastPos` is now *consumed* by
       `sep_validIn_ztime`. **Do not delete** `not_kPlus_of_isLeastPos` or
       `sep_validOn_of_isLeastPos`. Amend the `## Main results` bullet that calls `sep` "the open
       `sep` row".
-- [ ] `FormalSystem/ProofSystem/Axioms.lean`: replace the "**`sep` is the one row still carrying
+- [x] `FormalSystem/ProofSystem/Axioms.lean`: replace the "**`sep` is the one row still carrying
       the upper bound only.**" paragraph in `Axiom.minFrameClass`'s docstring with the closed row —
       an "RTime row, `sep`" bullet alongside the existing "RTime row, `prior_U_gap` only" bullet,
       citing `Metalogic.Independence.sep_minFrameClass_sharp` and
       `Metalogic.Independence.sep_validIn_iff`, and stating the `.ZTime` divergence explicitly
       (this is where `sep`'s row shape genuinely differs from `prior_U_gap`'s). Amend the
       "every row but one is also known *minimal*" lead sentence, which becomes false.
-- [ ] Keep all new README prose free of `file.lean` line-number citations (C20 tier 2 covers every
+- [x] Keep all new README prose free of `file.lean` line-number citations (C20 tier 2 covers every
       `README.md` under `FormalSystem/`; the tree is currently at zero such citations).
-- [ ] Do **not** run `--emit-inventory` yet, and do **not** hand-edit the generated `## Modules`
+- [x] `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean`: its `## Scope` section claimed the
+      two `.RTime` rows "remain upper-bound-only" *(deviation: altered — a sixth file, found by the
+      phase's own mandated `grep -rn "upper bound only|last open row|only row"` scope-hypothesis
+      check, which anticipated exactly this. The claim was already stale for `prior_U_gap` before
+      this task and becomes fully false with `sep` closed; corrected to point at the two closing
+      modules. Docstring-only, no declaration touched.)*
+- [x] Do **not** run `--emit-inventory` yet, and do **not** hand-edit the generated `## Modules`
       inventory block — the generator owns it, and it runs in Phase 5 after the last docstring edit.
 
 **Timing**: 1.5 hours
@@ -390,7 +396,7 @@ complete — a missed occurrence of the now-false claim is the most likely defec
 
 ---
 
-### Phase 5: Single full rebuild, inventory regeneration, and the gate set [NOT STARTED]
+### Phase 5: Single full rebuild, inventory regeneration, and the gate set [IN PROGRESS]
 
 **Goal**: one budgeted full rebuild, all gates green, the task's claim verified end to end.
 

@@ -12,6 +12,7 @@ import FormalSystem.Metalogic.Independence.RationalWitness
 import FormalSystem.Metalogic.Independence.LexIntWitness
 import FormalSystem.Metalogic.Independence.ZTimeSharpness
 import FormalSystem.Metalogic.Independence.DenseRTimeSharpness
+import FormalSystem.Metalogic.Independence.SepSharpness
 import FormalSystem.Metalogic.Independence.RealTranslationFrame
 import FormalSystem.Metalogic.Independence.DriftFrame
 import FormalSystem.Metalogic.Independence.DriftHistories
@@ -36,8 +37,8 @@ import FormalSystem.Metalogic.Independence.TranslationProductCoarse
 Underivability results, established by exhibiting a model of the assumptions in which the target
 formula fails.
 
-Eleven results are carried here. This list and the one in `Independence/README.md` enumerate the
-same eleven results in the same order; earlier revisions of the two drifted apart (this docstring
+Twelve results are carried here. This list and the one in `Independence/README.md` enumerate the
+same twelve results in the same order; earlier revisions of the two drifted apart (this docstring
 carried six, the README nine, overlapping in five) and were reconciled to their union.
 
 1. The paper's `CO` principle does not derive Reynolds' `Axiom.prior_U_gap` over the dense base.
@@ -84,13 +85,25 @@ carried six, the README nine, overlapping in five) and were reconciled to their 
     `ValidIn fc φ ↔ .Dense ≤ fc`, off a single refutation on the translation frame over `ℤ`
     (`density_minFrameClass_sharp`, `dense_indicator_minFrameClass_sharp`);
     `prior_U_gap_minFrameClass_sharp` refutes `Axiom.prior_U_gap` at both `.Base` and `.Dense`,
-    the two classes strictly below `.RTime`, over the periodic clock frame. `Axiom.sep` is the one
-    row still upper-bound-only, and `sep_validOn_of_isLeastPos` is the proved boundary on it: no
-    discrete witness for `sep` can exist.
+    the two classes strictly below `.RTime`, over the periodic clock frame. The module also
+    proves the boundary that fixes where a `sep` refutation could live:
+    `sep_validOn_of_isLeastPos` shows `sep` is vacuously valid on every frame with a least
+    positive duration, so no discrete witness for it can exist. Result 12 supplies the dense one.
+12. The `sep` row of `Axiom.minFrameClass` is **characterized** (`SepSharpness.lean`). One
+    refutation on the translation frame over the Hahn group `Lex (ℚ →₀ ℚ)`, with the atom true
+    exactly on the positive-index single-support generators, gives `not_validIn_base_sep` and
+    `not_validIn_dense_sep` at once, hence `sep_minFrameClass_sharp` through
+    `base_or_dense_of_lt_rtime`. Unlike `prior_U_gap`, the `.ZTime` case is *positive* and
+    schematic in `φ`: `sep_validIn_ztime` derives it from result 11's
+    `sep_validOn_of_isLeastPos`, since `IsZTime` supplies a successor order and hence a least
+    positive duration. So the characterization `sep_validIn_iff` reads
+    `ValidIn fc φ ↔ fc = .ZTime ∨ .RTime ≤ fc`, not `↔ .RTime ≤ fc`, which would be false. The
+    underivability corollary is `not_derivable_dense_sep`.
 
 Results 2 and 3 are the two halves of the finding that the frame-class *narrowings* are not
-Galois-closed, in contrast with the paper's bare classes. Results 10 and 11 together leave
-`Axiom.sep` as the only row of `Axiom.minFrameClass` whose tag is not known to be minimal.
+Galois-closed, in contrast with the paper's bare classes. Results 10, 11 and 12 together settle
+every row of `Axiom.minFrameClass`: each tag is now known minimal, and every non-`.Base` row is
+characterized outright.
 
 ## Contents
 
@@ -169,8 +182,15 @@ Galois-closed, in contrast with the paper's bare classes. Results 10 and 11 toge
   of `Axiom.minFrameClass`: `density_validIn_iff` and `dense_indicator_validIn_iff` characterize
   the two `.Dense`-tagged axioms off one refutation on the translation frame over `ℤ`;
   `prior_U_gap_minFrameClass_sharp` closes both classes strictly below `.RTime` off one refutation
-  on the clock frame; and `sep_validOn_of_isLeastPos` proves the obstruction that leaves
-  `Axiom.sep` the last open row.
+  on the clock frame; and `sep_validOn_of_isLeastPos` proves the obstruction that confines any
+  `sep` refutation to a densely ordered duration group.
+* `Independence/SepSharpness.lean` — the `sep` row, over the Hahn group `Lex (ℚ →₀ ℚ)`: the
+  missing `DenselyOrdered` instance, the single-support generators and the region they span, the
+  three accumulation facts about it, and `not_validOn_sep_lexHahn`, from which
+  `sep_minFrameClass_sharp` closes both classes strictly below `.RTime` at once. With the
+  positive `sep_validIn_ztime`, `sep_validIn_iff` characterizes the row as
+  `ValidIn fc φ ↔ fc = .ZTime ∨ .RTime ≤ fc` — the one row whose shape differs from the others,
+  because `.ZTime` is incomparable with `.RTime` and `sep` is valid there.
 
 ## The method
 
