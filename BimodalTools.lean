@@ -14,6 +14,7 @@ import BimodalTools.EnrichedCountermodel
 import BimodalTools.FormulaEnumerator
 import BimodalTools.ForwardProofGenerator
 import BimodalTools.InterestingnessMetrics
+import BimodalTools.JsonParse
 import BimodalTools.PrefilterSoundness
 import BimodalTools.ProofFirstBenchmark
 import BimodalTools.ProofFirstGenerator

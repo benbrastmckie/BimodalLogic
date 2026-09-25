@@ -1,7 +1,7 @@
 # Implementation Plan: Check Certificate Executable
 
 - **Task**: 666 - Check certificate executable
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8.5 hours
 - **Dependencies**: Task 665 (witness-family certificate soundness, COMPLETED); Task 667 (tableau bridge branch gates, COMPLETED)
 - **Research Inputs**: specs/666_check_certificate_executable/reports/01_check-certificate-executable.md
@@ -127,7 +127,7 @@ theorem mem_closureList {S : Context} {ψ : Formula} :
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Extract the tag-format JSON parser into BimodalTools/JsonParse.lean [NOT STARTED]
+### Phase 1: Extract the tag-format JSON parser into BimodalTools/JsonParse.lean [COMPLETED]
 
 **Goal**: One copy of the recursive-descent parser, in a module whose import closure is light
 enough for the certificate checker to depend on without pulling in the tableau engine.
