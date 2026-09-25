@@ -1,0 +1,42 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/676_audit_module_inventory_docs_and_export_counts/reports/01_audit-module-inventory-docs.md",
+      "summary": "Exhaustive audit of architecture.md's source tree vs. real FormalSystem/ layout, a verified ground-truth count (20) for the Conservativity aggregator's re-exports with a recommendation, and a resolution for the MinusLanguage/Soundness.lean row-placement question."
+    }
+  ],
+  "dispatch_seq": 2,
+  "next_steps": "Run /plan 676 to create implementation plan",
+  "findings_count": 3,
+  "metadata": {
+    "session_id": "sess_1790364435_80e870_676",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+  },
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, docs/user-guide/architecture.md's source-tree diagram and docs/project-info/implementation-status.md's module table both use a mixed 'representative + directory pointer' style, not exhaustive file enumeration -- some directories (Syntax/, ProofSystem/, MinusLanguage/, Semantics/ top-level, Metalogic/ top-level) list every direct file while their own subdirectories (e.g. Metalogic/Core/, Bundle/) are shown as bare pointers. When auditing these docs for drift, check both files-present-but-undocumented AND wrong-parent placement (e.g. a real repo-root directory drawn as nested under FormalSystem/), not just nonexistent-file citations.",
+      "category": "PATTERN",
+      "source_artifact": "specs/676_audit_module_inventory_docs_and_export_counts/reports/01_audit-module-inventory-docs.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["architecture.md", "implementation-status.md", "module-inventory", "documentation-drift", "BimodalLogic"]
+    },
+    {
+      "content": "BimodalLogic's scripts/check-module-invariants.sh --emit-inventory only regenerates <!-- BEGIN GENERATED: inventory dir=... --> blocks inside FormalSystem/**/README.md (and similar per-directory README files); it does not touch docs/user-guide/architecture.md or docs/project-info/implementation-status.md, which carry no such markers. Editing those two files' prose does not trigger or interact with the INV gate.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/676_audit_module_inventory_docs_and_export_counts/reports/01_audit-module-inventory-docs.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["check-module-invariants.sh", "emit-inventory", "INV-gate", "BimodalLogic", "generated-blocks"]
+    },
+    {
+      "content": "BimodalLogic's lake-build-guard.sh lives at .claude/scripts/lake-build-guard.sh, not scripts/lake-build-guard.sh -- unlike check-module-invariants.sh and readme-lint.sh, which genuinely are at top-level scripts/. A dispatch or doc that writes the bare scripts/ path for the build guard is wrong; verify with find before trusting it.",
+      "category": "CONFIG",
+      "source_artifact": "specs/676_audit_module_inventory_docs_and_export_counts/reports/01_audit-module-inventory-docs.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lake-build-guard.sh", "script-paths", "BimodalLogic", "build-guard"]
+    }
+  ]
+}
