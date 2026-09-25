@@ -241,35 +241,35 @@ theorem `not_validOn_sep_lexHahn` land sorry-free, with the `Axiom.sep` shape pi
 
 ---
 
-### Phase 3: Class-level results and the exhaustive characterization [IN PROGRESS]
+### Phase 3: Class-level results and the exhaustive characterization [COMPLETED]
 
 **Goal**: the named deliverable theorems land sorry-free with the pinned axiom set, including the
 `.ZTime` positive result and the **correct** characterization.
 
 **Tasks**:
 
-- [ ] `not_validIn_base_sep` and `not_validIn_dense_sep`, each discharging its class membership by
+- [x] `not_validIn_base_sep` and `not_validIn_dense_sep`, each discharging its class membership by
       `inferInstance` / `⟨inferInstance, inferInstance⟩` (`translationFrame_isRegular` is a global
       instance).
-- [ ] `sep_minFrameClass_sharp`: `rcases base_or_dense_of_lt_rtime hfc` into the two refutations.
+- [x] `sep_minFrameClass_sharp`: `rcases base_or_dense_of_lt_rtime hfc` into the two refutations.
       Do not attempt `by decide` on `FrameClass` `<` — only `≤` has a `DecidableRel` instance, and
       `base_or_dense_of_lt_rtime` already packages what is needed.
-- [ ] `isLeastPos_of_succOrder` and `sep_validIn_ztime`, the latter schematic in `φ` (sound here
+- [x] `isLeastPos_of_succOrder` and `sep_validIn_ztime`, the latter schematic in `φ` (sound here
       precisely because it is a *validity* claim, not a non-validity claim). Destructure `IsZTime`
       with `obtain ⟨-, so, -, -⟩ := hF`; do not `haveI`. These **consume**
       `sep_validOn_of_isLeastPos`, so that lemma must not be deleted from `DenseRTimeSharpness.lean`.
-- [ ] `sep_validIn_iff (a : Atom) (fc : FrameClass) : ValidIn fc (…) ↔ (fc = FrameClass.ZTime ∨ FrameClass.RTime ≤ fc)`
+- [x] `sep_validIn_iff (a : Atom) (fc : FrameClass) : ValidIn fc (…) ↔ (fc = FrameClass.ZTime ∨ FrameClass.RTime ≤ fc)`
       by `cases fc`: `.Base`/`.Dense` from the two refutations, `.ZTime` from `sep_validIn_ztime`,
       `.RTime` from `sep_valid` (`Metalogic/Soundness.lean`, definitionally `ValidIn FrameClass.RTime`).
       **Do not** state `↔ .RTime ≤ fc` — it is false.
-- [ ] `not_derivable_dense_sep` through `soundness_validIn`, in the
+- [x] `not_derivable_dense_sep` through `soundness_validIn`, in the
       `fun ⟨d⟩ => not_validIn_dense_sep a (soundness_validIn d)` shape that
       `not_derivable_dense_prior_U_gap` uses.
-- [ ] Write the module docstring's `## Main results` bullet list and a `## The `sep` row` section
+- [x] Write the module docstring's `## Main results` bullet list and a `## The `sep` row` section
       explaining why the carrier is what it is (the φ-region is anti-isomorphic to `ℚ_{>0}`, its
       elements are mutually infinitely separated, so it accumulates at `0` yet nowhere above it),
       and recording route 1 as refuted and route 3 as excluded-by-cost.
-- [ ] `#print axioms` on `sep_minFrameClass_sharp`, `sep_validIn_iff` and `sep_validIn_ztime`;
+- [x] `#print axioms` on `sep_minFrameClass_sharp`, `sep_validIn_iff` and `sep_validIn_ztime`;
       confirm `[propext, Classical.choice, Quot.sound]` on each.
 
 **Timing**: 1 hour
@@ -301,7 +301,7 @@ Confirm by grepping `^theorem\|^lemma` in the finished module and reconciling ag
 
 ---
 
-### Phase 4: Docstring and ledger edits, batched [NOT STARTED]
+### Phase 4: Docstring and ledger edits, batched [IN PROGRESS]
 
 **Goal**: every prose surface that must change is changed, in one batch, with no build run — so
 that Phase 5 spends exactly one full rebuild.

@@ -17,6 +17,73 @@ vacuously valid on every frame whose durations have a least positive element, so
 `Semantics.duration_dense_or_least_pos` no discrete witness for it can exist. This module closes
 that row, over a densely ordered duration group.
 
+## What is claimed, exactly
+
+`sep_minFrameClass_sharp` is **minimality**: `Axiom.sep`'s atomic instance is not valid at any
+frame class strictly below `.RTime`, i.e. at neither `.Base` nor `.Dense`, which
+`base_or_dense_of_lt_rtime` shows are the only two. That claim comes off a single frame-level
+refutation, because `Sat .Dense F` implies `Sat .Base F`.
+
+`sep_validIn_iff` is more than minimality, and its shape is **not** the one the `.Dense` rows
+take. `Axiom.sep` is valid at `.ZTime` (`sep_validIn_ztime`) — schematically in `φ`, since
+`IsZTime` supplies a `SuccOrder` and hence a least positive duration, feeding the landed
+`sep_validOn_of_isLeastPos`. So the characterization is
+
+  `ValidIn fc φ ↔ fc = .ZTime ∨ .RTime ≤ fc`,
+
+**not** `↔ .RTime ≤ fc`, which is false: `.RTime ≰ .ZTime`, yet `sep` is `.ZTime`-valid. Copying
+`density_validIn_iff`'s shape mechanically would state something false here. This is the one place
+where `sep`'s row genuinely diverges from `prior_U_gap`'s, which deliberately claims nothing at
+`.ZTime`.
+
+Every non-validity statement is at an atomic instance (`Formula.atom a`) and that is forced: a
+schematic `∀ φ` non-validity claim can be outright false. `sep_validIn_ztime` is schematic
+because it is a *validity* claim, where the `∀ φ` form is sound.
+
+## The `sep` row in order language
+
+Reading `Truth.kPlus_iff`, `K⁺φ` at `t` says the φ-region right-accumulates at `t`. So `sep` says:
+if the φ-region right-accumulates at `t`, and the φ-points carrying a gapped φ-successor do *not*
+right-accumulate at `t`, then the two-sided accumulation points of the φ-region right-accumulate
+at `t`. Refuting it therefore needs a region that accumulates at one point and is dense in itself,
+yet has no ambient accumulation point anywhere above that one. In a *separable* flow that is
+impossible — which is exactly the hypothesis Reynolds' positive argument for `sep` over `ℝ` runs
+on — so the carrier must be non-separable.
+
+`Lex (ℚ →₀ ℚ)` supplies it. The φ-region `sepRegion` is the positive-index single-support
+generators; `γ ↦ sepGen γ` is order-reversing, every generator is positive, and the generators run
+off to `0` as the index grows. The region is order-anti-isomorphic to the positive rationals, so
+it is dense in itself (no gapped successors, hence `sep`'s second antecedent conjunct at `0`) and
+unbounded in index (hence accumulation at `0`, `sep`'s first antecedent conjunct); but distinct
+generators live on distinct archimedean scales, infinitely separated in the ambient order, so no
+positive duration is a right-accumulation point and the consequent fails at `0`.
+
+## Two routes not taken
+
+* A two-level carrier such as `ℚ ×ₗ ℚ` is **refuted**, and for a sharper reason than "a group has
+  no fibre tops": with only one infinitesimal scale, the natural φ-region is already dense in the
+  ambient order, so every one of its points is a two-sided accumulation point, the consequent
+  holds and there is nothing to refute. One level is never enough, and neither is any finite
+  number — which is what motivates a direct sum over a *dense, unbounded* index order.
+* A bespoke Cantor set inside plain `ℚ`, exploiting completeness rather than separability, is
+  **excluded on cost, not refuted**. It needs a Cantor–Bendixson regress built by recursion, with
+  three separate order properties then proved about it; the Hahn carrier replaces that recursion
+  with one algebraic construction.
+
+## Main results
+
+* `LexHahn`, `sepSharpOrder`, `sepGen`, `sepRegion` — the Hahn carrier, its duration order, the
+  single-support generators and the φ-region
+* `sepGen_apply`, `sepGen_pos`, `sepGen_lt_of_index_lt`, `lt_sepGen_of_lt_index`, `pos_index`,
+  `sepGen_lt_sepGen` — the order machinery for the generators
+* `exists_mem_sepRegion_lt`, `not_gapped_successor_sepRegion`, `exists_sepRegion_free_interval` —
+  the three accumulation facts about the φ-region
+* `not_validOn_sep_lexHahn` — the frame-level refutation
+* `not_validIn_base_sep`, `not_validIn_dense_sep`, `sep_minFrameClass_sharp` — the closed row
+* `isLeastPos_of_succOrder`, `sep_validIn_ztime` — the positive `.ZTime` result
+* `sep_validIn_iff` — the exhaustive characterization
+* `not_derivable_dense_sep` — the underivability corollary through soundness
+
 ## Tags
 
 independence · sharpness · minimality · sep · dense · hahn group · finsupp lex
@@ -269,5 +336,104 @@ theorem not_validOn_sep_lexHahn (a : Atom) :
   obtain ⟨s', hrs', hgap'⟩ := exists_sepRegion_free_interval r hr0
   obtain ⟨u, hru, hus, hu⟩ := hkp s' hrs'
   exact hgap' u hru hus ((translation_realizes sepSharpOrder sepRegion a u).mp hu)
+
+/-! ## The closed `sep` row
+
+One dense witness closes both classes strictly below `.RTime` at once, since `Sat .Dense F`
+implies `Sat .Base F` — exactly the pattern `not_validIn_dense_prior_U_gap` follows for the
+`prior_U_gap` row. `translationFrame_isRegular` is a global instance, so `.Base` membership is
+`inferInstance` and `.Dense` membership is `⟨inferInstance, inferInstance⟩` once the
+`DenselyOrdered` instance above is in scope.
+-/
+
+/-- `Axiom.sep`'s atomic instance is not valid at `FrameClass.Dense`. -/
+theorem not_validIn_dense_sep (a : Atom) :
+    ¬ ValidIn FrameClass.Dense
+      ((Formula.and (Formula.kPlus (Formula.atom a))
+        (Formula.kPlus (Formula.and (Formula.atom a)
+          (Formula.untl (Formula.atom a).neg (Formula.atom a)))).neg).imp
+        (Formula.kPlus (Formula.and (Formula.kPlus (Formula.atom a))
+          (Formula.kMinus (Formula.atom a))))) :=
+  fun h => not_validOn_sep_lexHahn a (h _ ⟨inferInstance, inferInstance⟩)
+
+/-- `Axiom.sep`'s atomic instance is not valid at `FrameClass.Base`. -/
+theorem not_validIn_base_sep (a : Atom) :
+    ¬ ValidIn FrameClass.Base
+      ((Formula.and (Formula.kPlus (Formula.atom a))
+        (Formula.kPlus (Formula.and (Formula.atom a)
+          (Formula.untl (Formula.atom a).neg (Formula.atom a)))).neg).imp
+        (Formula.kPlus (Formula.and (Formula.kPlus (Formula.atom a))
+          (Formula.kMinus (Formula.atom a))))) :=
+  fun h => not_validOn_sep_lexHahn a (h _ inferInstance)
+
+/-- Minimality of `Axiom.sep`'s `.RTime` tag: its atomic instance is not valid at any frame class
+strictly below `FrameClass.RTime`. `base_or_dense_of_lt_rtime` supplies the two-class split;
+`by decide` is not available, since only `≤` on `FrameClass` carries a `DecidableRel` instance. -/
+theorem sep_minFrameClass_sharp (a : Atom) {fc : FrameClass} (hfc : fc < FrameClass.RTime) :
+    ¬ ValidIn fc
+      ((Formula.and (Formula.kPlus (Formula.atom a))
+        (Formula.kPlus (Formula.and (Formula.atom a)
+          (Formula.untl (Formula.atom a).neg (Formula.atom a)))).neg).imp
+        (Formula.kPlus (Formula.and (Formula.kPlus (Formula.atom a))
+          (Formula.kMinus (Formula.atom a))))) := by
+  rcases base_or_dense_of_lt_rtime hfc with rfl | rfl
+  · exact not_validIn_base_sep a
+  · exact not_validIn_dense_sep a
+
+/-! ## The positive `.ZTime` result, and the characterization -/
+
+/-- A duration group with a successor order has a least positive element, namely `Order.succ 0`.
+`NoMaxOrder` is found by instance search, so `Order.lt_succ` needs no side condition. -/
+theorem isLeastPos_of_succOrder (F : TaskFrame) (so : SuccOrder F.Duration) :
+    IsLeast {x : F.Duration | 0 < x} (Order.succ 0) :=
+  ⟨Order.lt_succ (0 : F.Duration), fun _ hx => Order.succ_le_of_lt hx⟩
+
+/-- `Axiom.sep` is valid at `FrameClass.ZTime` — vacuously, and *schematically in `φ`*. `IsZTime`
+supplies a `SuccOrder`, hence a least positive duration, hence `sep_validOn_of_isLeastPos`
+applies. The `∀ φ` form is sound here precisely because this is a validity claim rather than a
+non-validity claim. `IsZTime` is a nested existential, so it is destructured rather than
+`haveI`-ed. -/
+theorem sep_validIn_ztime (φ : Formula) :
+    ValidIn FrameClass.ZTime ((Formula.and (Formula.kPlus φ)
+        (Formula.kPlus (Formula.and φ (Formula.untl φ.neg φ))).neg).imp
+        (Formula.kPlus (Formula.and (Formula.kPlus φ) (Formula.kMinus φ)))) := by
+  intro F hF
+  obtain ⟨-, so, -, -⟩ := hF
+  exact sep_validOn_of_isLeastPos (isLeastPos_of_succOrder F so) φ
+
+/-- The exhaustive characterization of the `sep` row: its atomic instance is valid at `fc` exactly
+when `fc` is `.ZTime` or is at least `.RTime`.
+
+Note the shape. This is **not** `↔ FrameClass.RTime ≤ fc`, which would be false — `.RTime ≰
+.ZTime`, yet `sep` is `.ZTime`-valid by `sep_validIn_ztime`. The `.RTime` case is
+`Metalogic.sep_valid`, whose `ValidRTime` is `ValidIn FrameClass.RTime` definitionally. -/
+theorem sep_validIn_iff (a : Atom) (fc : FrameClass) :
+    ValidIn fc ((Formula.and (Formula.kPlus (Formula.atom a))
+        (Formula.kPlus (Formula.and (Formula.atom a)
+          (Formula.untl (Formula.atom a).neg (Formula.atom a)))).neg).imp
+        (Formula.kPlus (Formula.and (Formula.kPlus (Formula.atom a))
+          (Formula.kMinus (Formula.atom a)))))
+      ↔ (fc = FrameClass.ZTime ∨ FrameClass.RTime ≤ fc) := by
+  constructor
+  · intro h
+    cases fc with
+    | Base => exact absurd h (not_validIn_base_sep a)
+    | Dense => exact absurd h (not_validIn_dense_sep a)
+    | ZTime => exact Or.inl rfl
+    | RTime => exact Or.inr (le_refl _)
+  · rintro (rfl | h)
+    · exact sep_validIn_ztime (Formula.atom a)
+    · exact ValidIn.mono h (sep_valid (Formula.atom a))
+
+/-- Underivability corollary through soundness: `Axiom.sep`'s atomic instance is not derivable in
+the `.Dense` system. -/
+theorem not_derivable_dense_sep (a : Atom) :
+    ¬ Derivable FrameClass.Dense []
+      ((Formula.and (Formula.kPlus (Formula.atom a))
+        (Formula.kPlus (Formula.and (Formula.atom a)
+          (Formula.untl (Formula.atom a).neg (Formula.atom a)))).neg).imp
+        (Formula.kPlus (Formula.and (Formula.kPlus (Formula.atom a))
+          (Formula.kMinus (Formula.atom a))))) :=
+  fun ⟨d⟩ => not_validIn_dense_sep a (soundness_validIn d)
 
 end FormalSystem.Metalogic.Independence
