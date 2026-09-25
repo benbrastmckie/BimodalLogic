@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "task_number": 675,
+  "phase": "plan",
+  "session_id": "sess_1790364435_80e870_675",
+  "dispatch_seq": 3,
+  "phases_completed": 0,
+  "phases_total": 5,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/675_close_sep_row_minframeclass_dense_countermodel/plans/01_close-sep-row-dense-countermodel.md",
+      "summary": "Five-phase implementation plan for the sep-row dense countermodel (SepSharpness.lean), with batched docstring/ledger edits and a single budgeted full rebuild."
+    }
+  ],
+  "next_steps": "Run /implement 675 to execute the plan"
+}

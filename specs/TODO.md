@@ -73,7 +73,7 @@ next_project_number: 677
 
 ### Documentation
 
-676 [RESEARCHED] — Audit the FormalSystem module-inventory documentation against...
+676 [PLANNING] — Audit the FormalSystem module-inventory documentation against...
 
 ### Formula Refactor
 
@@ -93,7 +93,7 @@ next_project_number: 677
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-675 [RESEARCHED] — Close the sep row of Axiom.minFrameClass by constructing a...
+675 [PLANNED] — Close the sep row of Axiom.minFrameClass by constructing a...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -104,7 +104,7 @@ next_project_number: 677
 ## Tasks
 
 ### 676. Audit module inventory docs and export counts
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: markdown
 - **Topic**: documentation
 - **Dependencies**: None
@@ -151,11 +151,12 @@ STARTING POINTS. docs/user-guide/architecture.md (the source-tree block, roughly
 ---
 
 ### 675. Close sep row minframeclass dense countermodel
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [675_close_sep_row_minframeclass_dense_countermodel/reports/01_close-sep-row-dense-countermodel.md]
+- **Plan**: [675_close_sep_row_minframeclass_dense_countermodel/plans/01_close-sep-row-dense-countermodel.md]
 
 **Description**: Close the sep row of Axiom.minFrameClass by constructing a densely ordered countermodel, completing the last remaining minimality obligation. The sep row is the sole row of Axiom.minFrameClass still upper-bound-only. Its tag is .RTime, so minimality requires refutations at BOTH .Base AND .Dense, the two classes strictly below .RTime (base_or_dense_of_lt_rtime, in FormalSystem/Metalogic/Independence/DenseRTimeSharpness.lean, already proves those are the only two).
 
