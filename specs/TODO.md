@@ -70,7 +70,7 @@ next_project_number: 669
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
-666 [RESEARCHED] — Add a certificate re-verification executable, lake exe...
+666 [PLANNED] — Add a certificate re-verification executable, lake exe...
 
 ### Formula Refactor
 
@@ -124,11 +124,12 @@ ACCEPTANCE. Tests in Tests/BimodalToolsTest/ covering a gated invalid verdict, a
 
 ### 666. Check certificate executable
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 665, Task 667
 - **Research**: [666_check_certificate_executable/reports/01_check-certificate-executable.md]
+- **Plan**: [666_check_certificate_executable/plans/01_check-certificate-executable.md]
 
 **Description**: Add a certificate re-verification executable, lake exe check_certificate, that reads a JSON witness-family certificate emitted by ModelChecker and reports whether it is a valid Z-time countermodel. Depends on the witness-family soundness task, whose LabelledLasso / WitnessFamily structures and Decidable instances (LocalCoherentLab, FulfillingLab, BoxFaithful, Target) it consumes.
 

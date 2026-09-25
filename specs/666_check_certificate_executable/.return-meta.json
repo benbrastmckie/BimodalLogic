@@ -1,18 +1,22 @@
 {
-  "status": "researched",
-  "started_at": "2026-09-24T23:51:08Z",
-  "dispatch_seq": 7,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/666_check_certificate_executable/reports/01_check-certificate-executable.md",
-      "summary": "Runtime feasibility, failure-localization design, JSON-infrastructure reuse and gate surface for lake exe check_certificate, with five live Lean spikes confirming the four Decidable instances compute and clear the performance bar."
+      "type": "plan",
+      "path": "specs/666_check_certificate_executable/plans/01_check-certificate-executable.md",
+      "summary": "Seven-phase plan for lake exe check_certificate: parser extraction, runtime WitnessFamily decoding, verdict plus failure localization, exe root and lakefile target, acceptance tests, schema docs and count updates, full gate set."
     }
   ],
+  "dispatch_seq": 8,
+  "next_steps": "Run /implement 666 to execute the plan",
+  "phase_count": 7,
+  "estimated_hours": 8.5,
+  "dependency_waves": [[1], [2], [3], [4, 5], [6], [7]],
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1790290549_f9337e06_666",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   }
 }
