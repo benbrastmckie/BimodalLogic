@@ -315,28 +315,28 @@ and by taking the new allow-list value from the gate's own C27 report, never fro
 
 ---
 
-### Phase 4: Prose ledgers and inventory regeneration [NOT STARTED]
+### Phase 4: Prose ledgers and inventory regeneration [COMPLETED]
 
 **Goal**: Every in-scope prose ledger states the stronger claim, and the generated inventory blocks
 match the post-edit line counts.
 
 **Tasks**:
 
-- [ ] Extend `ZTimeSharpness.lean`'s module docstring: add the six new names to the `## Main
+- [x] Extend `ZTimeSharpness.lean`'s module docstring: add the six new names to the `## Main
       results` list (currently lines ~78-88), and upgrade the `## Why the lower bound is wanted`
       paragraph from the `.Base` claim to the full characterization. The module as it stands
       deliberately states the `.Base` claim only and declines to upgrade it, so this edit is valid
       only now that the stronger theorems exist.
-- [ ] Update `FormalSystem/Metalogic/Independence.lean` item 6 (line 55) and its `## Contents`
+- [x] Update `FormalSystem/Metalogic/Independence.lean` item 6 (line 55) and its `## Contents`
       entry for `Independence/ZTimeSharpness.lean` (line 111).
-- [ ] Update `FormalSystem/Metalogic/Independence/README.md` item 9 (line 36) and its
+- [x] Update `FormalSystem/Metalogic/Independence/README.md` item 9 (line 36) and its
       `## Key Results` bullet (line 146).
-- [ ] Fill the pre-existing `<!-- TODO: add description -->` in that README's generated inventory
+- [x] Fill the pre-existing `<!-- TODO: add description -->` in that README's generated inventory
       row for `ZTimeSharpness.lean` (line 109) while the file is already being edited.
-- [ ] Correct `FormalSystem/MainResults.lean`'s "105 in all" prose (line ~49) to the figure
+- [x] Correct `FormalSystem/MainResults.lean`'s "105 in all" prose (line ~49) to the figure
       actually pinned. This site IS in scope; the repository-root `README.md` copies of the same
       stale number are NOT, and are left as follow-ups.
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory` as the **last** step of this
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory` as the **last** step of this
       phase, after every docstring edit. This is the real command that propagates counts into
       several READMEs; `scripts/readme-inventory.sh` is only a pointer script and must not be used
       here.

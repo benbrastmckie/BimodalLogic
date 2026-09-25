@@ -33,14 +33,19 @@ Nine results are carried here:
    (`PlusLanguage/PlusLimitClosure.lean`, by Zorn plus the Extension Theorem) and is
    not a Base theorem of TM⁺. Completeness of any *extension* of the axiom set is open at every
    class, and nothing is claimed at Dense, ZTime or RTime.
-9. **The `.ZTime` row of `Axiom.minFrameClass` is minimal, not merely an upper bound**
+9. **The `.ZTime` row of `Axiom.minFrameClass` is characterized, not merely upper-bounded**
    (`ZTimeSharpness.lean`). `Metalogic.axiom_validIn_min` already proves every axiom valid at its
    own tag; `prior_UZ_minFrameClass_sharp` and `z1_minFrameClass_sharp` supply the other
    direction, so no frame class strictly below `.ZTime` validates `Axiom.prior_UZ` or `Axiom.z1`.
-   The underivability corollaries are `not_derivable_base_prior_UZ` and `not_derivable_base_z1`.
-   What the countermodel refutes is *discreteness*, not the Archimedean property: both axioms fail
-   on the translation frame over any densely ordered duration group. The Base, Dense and RTime
-   rows of `Axiom.minFrameClass` remain upper-bound-only.
+   `.Dense` and `.RTime` are incomparable with `.ZTime` rather than below it and so are refuted
+   separately, by `not_validIn_dense_prior_UZ` / `not_validIn_dense_z1` over the rationals and
+   `not_validIn_rtime_prior_UZ` / `not_validIn_rtime_z1` over the reals; with all four classes
+   settled, `prior_UZ_validIn_iff_ztime` and `z1_validIn_iff_ztime` state the exhaustive form
+   `ValidIn fc φ ↔ fc = .ZTime`. The underivability corollaries are
+   `not_derivable_base_prior_UZ` and `not_derivable_base_z1`. What the countermodel refutes is
+   *discreteness*, not the Archimedean property: both axioms fail on the translation frame over
+   any densely ordered duration group, the reals included. The Base, Dense and RTime rows of
+   `Axiom.minFrameClass` itself remain upper-bound-only.
 
 Results 2 and 3 are the two halves of the finding that the frame-class *narrowings* are not
 Galois-closed, in contrast with the paper's bare classes — which are closed, by
@@ -106,7 +111,7 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 | `StateSetTruth.lean` | 236 | `satSet` and `plusTruthAt_iff_mem_satSet`: over an (H1)+(H2) frame, L⁺ truth depends only on the world state of evaluation. Plus `plusValidOn_iff_satSet_univ` and `determined_of_orderFlow`. |
 | `StaticFrame.lean` | 323 | The static frame at an arbitrary duration group: every nonzero duration loops, so truth is time-invariant, and the `untl`/`snce` clauses collapse into a small constant-truth calculus (general, dense and discrete forms, plus `K⁺`/`K⁻` and `Axiom.z1`). Turns every later axiom check into a rewrite. |
 | `TranslationProductCoarse.lean` | 136 | Coarse models on the translation product (`Semantics/Frames/TranslationProduct.lean`, a proof device, never an intended model): `liftK` lifts a coarse model with the coarsening forgetting the clock; `c_invariance` — coarse truth is preserved by the projection; `pasteClosed_liftK` / `pasteClosed_of_liftK` — paste-closure transfers in both directions; `c_refuted_lift` — a coarse refutation on `F` is a coarse refutation on the recurrence-free, Limit-for-free product in the same frame class. |
-| `ZTimeSharpness.lean` | 292 | <!-- TODO: add description --> |
+| `ZTimeSharpness.lean` | 423 | The `.ZTime` row of `Axiom.minFrameClass`, characterized rather than upper-bounded: `not_validOn_prior_UZ_dense` / `not_validOn_z1_dense` refute both `.ZTime`-tagged axioms at frame level over any densely ordered duration group; instantiating at ℚ and ℝ gives non-validity at `.Base`, `.Dense` and `.RTime`, and `eq_base_of_lt_ztime` covers everything strictly below `.ZTime`; `prior_UZ_validIn_iff_ztime` / `z1_validIn_iff_ztime` assemble `ValidIn fc φ ↔ fc = .ZTime`, with `not_derivable_base_*` the underivability corollaries. Two `example` shape pins make formula-transcription fidelity a compiler obligation. |
 <!-- END GENERATED -->
 
 ## Key Results
@@ -143,11 +148,19 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
   identifies the offsets `w₀` and `-w₀`.
 - `not_plusDerivable_of_pcRefuted` (`PastedCoarseModels.lean`) — soundness of TM⁺ at Base for
   paste-closed coarsened-state models, in the shape a refutation consumes.
-- `prior_UZ_minFrameClass_sharp`, `z1_minFrameClass_sharp` (`ZTimeSharpness.lean`) — the `.ZTime`
-  tag of `Axiom.minFrameClass` is minimal for both its axioms, via the frame-level refutations
-  `not_validOn_prior_UZ_dense` / `not_validOn_z1_dense` at an arbitrary densely ordered duration
-  group and the order fact `eq_base_of_lt_ztime`. The `CoNotPriorU.lean` frame-versus-model
-  obstruction does not apply, because a bare non-validity claim validates nothing.
+- `prior_UZ_validIn_iff_ztime`, `z1_validIn_iff_ztime` (`ZTimeSharpness.lean`) — `ValidIn fc φ
+  ↔ fc = .ZTime` for each `.ZTime`-tagged axiom's atomic instance: valid at `.ZTime` and at no
+  other frame class. Assembled by a four-way `cases fc` from `axiom_validIn_min` and the four
+  non-validity results below.
+- `prior_UZ_minFrameClass_sharp`, `z1_minFrameClass_sharp` (`ZTimeSharpness.lean`) — the weaker
+  minimality half: the `.ZTime` tag of `Axiom.minFrameClass` is minimal for both its axioms, via
+  the frame-level refutations `not_validOn_prior_UZ_dense` / `not_validOn_z1_dense` at an
+  arbitrary densely ordered duration group and the order fact `eq_base_of_lt_ztime`. The
+  `CoNotPriorU.lean` frame-versus-model obstruction does not apply, because a bare non-validity
+  claim validates nothing.
+- `not_validIn_dense_*`, `not_validIn_rtime_*` (`ZTimeSharpness.lean`) — the two classes the
+  order fact cannot reach, refuted over `ztimeSharpOrder` and `realOrder`. Dedekind completeness
+  buys the axioms nothing: what they need is discreteness.
 - `plus_incomplete_base`, `not_plus_complete_base` (`PlusIncompleteness.lean`) — the limit-closure
   formula is valid and not a Base theorem of TM⁺; the hypothesis of
   `starConservative_of_plusComplete` at Base, refuted. Halves: `blc_plusValid`

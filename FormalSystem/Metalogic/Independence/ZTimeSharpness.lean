@@ -20,10 +20,13 @@ import FormalSystem.Semantics.Correspondence.RigidityReal
 (`FormalSystem/Metalogic/Soundness.lean`) proves the **upper** bound: every axiom really is valid
 at its own tag. Nothing in that theorem says the tag could not have been *lower*. For the two
 axioms tagged `.ZTime` — `Axiom.prior_UZ` and `Axiom.z1`, `def:BX-z`'s ℤ-time narrowing — this
-module supplies the missing **lower** bound: neither is valid at `FrameClass.Base`, hence (by
-`eq_base_of_lt_ztime`, `.Base` being the unique class strictly below `.ZTime`) neither is valid at
-any class strictly below `.ZTime`. Taken together with `axiom_validIn_min`, the `.ZTime` row of
-`Axiom.minFrameClass` is now *proved* minimal rather than merely upper-bounded and cited.
+module supplies the missing **lower** bound, and then some: neither is valid at
+`FrameClass.Base`, hence (by `eq_base_of_lt_ztime`, `.Base` being the unique class strictly below
+`.ZTime`) neither is valid at any class strictly below `.ZTime`; and neither is valid at `.Dense`
+or at `.RTime`, the two classes incomparable with `.ZTime`. Taken together with
+`axiom_validIn_min`, that is not merely minimality of the tag but a full *characterization*:
+`prior_UZ_validIn_iff_ztime` and `z1_validIn_iff_ztime` state that each axiom's atomic instance is
+valid at `fc` exactly when `fc = .ZTime`.
 
 ## What is refuted is discreteness, not the Archimedean property
 
@@ -74,11 +77,26 @@ non-discrete temporal order, so the silence is a genuine frame-class gap rather 
 permanent limit. `not_validIn_base_prior_UZ` and `not_validIn_base_z1` are that half, and the
 gap is now proved rather than cited.
 
+## The claim is a characterization, not only a lower bound
+
+`prior_UZ_validIn_iff_ztime` and `z1_validIn_iff_ztime` say more than minimality of the tag:
+each axiom's atomic instance is valid at `FrameClass.ZTime` and at **no other frame class at
+all**. Minimality alone would leave `.Dense` and `.RTime` open, since neither is below `.ZTime`
+in the frame-class order — that order is not linear, and `eq_base_of_lt_ztime` reaches only
+`.Base`. `not_validIn_dense_prior_UZ` / `not_validIn_dense_z1` and `not_validIn_rtime_prior_UZ` /
+`not_validIn_rtime_z1` close those two classes directly, over `ztimeSharpOrder` and `realOrder`
+respectively, and a four-way `cases fc` then assembles the biconditional with `axiom_validIn_min`
+supplying the one positive case. `.RTime` is worth stating separately because Dedekind
+completeness is the strongest structure any of the four classes imposes, and it still buys the
+axioms nothing: what they need is discreteness, which ℝ lacks exactly as ℚ does.
+
 ## Scope
 
 Only the two `.ZTime` axioms. The `.Dense` rows (`density`, `dense_indicator`) and the `.RTime`
 rows (`prior_U_gap`, `sep`) of `Axiom.minFrameClass` remain upper-bound-only; nothing here speaks
-to them.
+to them. Every statement below is at `Formula.atom p` rather than schematic in `φ`, and that is
+forced: `Axiom.prior_UZ ⊥` has an unsatisfiable antecedent and so is valid at every class, which
+would falsify the `∀ φ` form of both the `.Base` results and the biconditionals.
 
 ## Main results
 
@@ -90,6 +108,11 @@ to them.
   below `.ZTime`, i.e. minimality of the tag
 * `not_derivable_base_prior_UZ`, `not_derivable_base_z1` — the underivability corollaries through
   soundness
+* `not_validIn_dense_prior_UZ`, `not_validIn_dense_z1` — non-validity at `.Dense`, which is
+  incomparable with `.ZTime` rather than below it
+* `not_validIn_rtime_prior_UZ`, `not_validIn_rtime_z1` — the same at `.RTime`, over `realOrder`
+* `prior_UZ_validIn_iff_ztime`, `z1_validIn_iff_ztime` — the full characterization,
+  `ValidIn fc φ ↔ fc = .ZTime`, exhausting all four frame classes
 
 ## Tags
 

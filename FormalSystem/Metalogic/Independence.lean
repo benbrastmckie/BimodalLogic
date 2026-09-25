@@ -52,11 +52,15 @@ to say "the one result carried here", which stopped being true three witnesses a
    limit-closure formula `(⟐Fp ∧ ⊡G(p → ⟐Fp)) → ⟐(Fp ∧ G(p → Fp))` is valid over every task
    frame and is refuted in a paste-closed coarsened-state model, for which TM⁺ is sound. Nothing
    is claimed about extensions of the axiom set, or about the other frame classes.
-6. The `.ZTime` row of `Axiom.minFrameClass` is **minimal**, not merely an upper bound
+6. The `.ZTime` row of `Axiom.minFrameClass` is **characterized**, not merely upper-bounded
+   (`prior_UZ_validIn_iff_ztime`, `z1_validIn_iff_ztime`): each axiom's atomic instance is valid
+   at `fc` exactly when `fc = .ZTime`. Minimality is the weaker half
    (`prior_UZ_minFrameClass_sharp`, `z1_minFrameClass_sharp`): no frame class strictly below
-   `.ZTime` validates `Axiom.prior_UZ` or `Axiom.z1`. Together with
-   `Metalogic.axiom_validIn_min`, which supplies the upper bound for every row, this settles the
-   `.ZTime` row in both directions. The Base, Dense and RTime rows remain upper-bound-only.
+   `.ZTime` validates `Axiom.prior_UZ` or `Axiom.z1`. `.Dense` and `.RTime` are incomparable with
+   `.ZTime` rather than below it, so they are refuted separately
+   (`not_validIn_dense_*`, `not_validIn_rtime_*`), and `Metalogic.axiom_validIn_min` supplies the
+   one positive case. The Base, Dense and RTime rows of `Axiom.minFrameClass` itself remain
+   upper-bound-only.
 
 Results 2 and 3 are the two halves of the finding that the frame-class *narrowings* are not
 Galois-closed, in contrast with the paper's bare classes.
@@ -108,11 +112,14 @@ Galois-closed, in contrast with the paper's bare classes.
   and the transfer of coarse refutations to a recurrence-free frame with *Limit* for free
   (`c_refuted_lift`). Not an underivability result in its own right; the route a future one
   over a non-Limit frame would take.
-* `Independence/ZTimeSharpness.lean` — the lower bound for the `.ZTime` row of
+* `Independence/ZTimeSharpness.lean` — the full characterization of the `.ZTime` row of
   `Axiom.minFrameClass`: both `.ZTime`-tagged axioms are refuted on the translation frame over any
   densely ordered duration group, hence are not valid at `.Base`, hence — `.Base` being the unique
-  class strictly below `.ZTime` (`eq_base_of_lt_ztime`) — not valid at any class below `.ZTime`.
-  What is refuted is discreteness, not the Archimedean property.
+  class strictly below `.ZTime` (`eq_base_of_lt_ztime`) — not valid at any class below `.ZTime`;
+  and separately not valid at `.Dense` or `.RTime`, which are incomparable with `.ZTime`. With
+  `axiom_validIn_min` for the positive case, `prior_UZ_validIn_iff_ztime` and
+  `z1_validIn_iff_ztime` give `ValidIn fc φ ↔ fc = .ZTime`. What is refuted is discreteness,
+  not the Archimedean property.
 
 ## The method
 

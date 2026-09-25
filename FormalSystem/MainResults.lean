@@ -46,7 +46,7 @@ to carry hand-transcribed `#print axioms` output beside their theorems, and that
 drifted out of step with the declarations it claimed to report. The axiom sets are instead
 pinned by exact string equality against a frozen baseline in
 `scripts/check-module-invariants.sh` — C2 pins four flagship declarations, C14 pins the rest,
-105 in all — and every name on this page is in that pinned set. The C21 check asserts exactly
+202 in all — and every name on this page is in that pinned set. The C21 check asserts exactly
 that closure property: no name may appear on this page unless one of the two baselines pins
 its axiom set. So the guarantee this page offers is machine-checked in three independent
 places (the `#check`, the baseline, and C21), and in none of them by prose.
