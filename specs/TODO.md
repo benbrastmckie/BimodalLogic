@@ -89,7 +89,7 @@ next_project_number: 671
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-670 [RESEARCHED] — Machine-check the MINIMALITY half of Axiom.minFrameClass for...
+670 [PLANNED] — Machine-check the MINIMALITY half of Axiom.minFrameClass for...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -101,11 +101,12 @@ next_project_number: 671
 
 ### 670. Minframeclass sharpness prior uz z1
 - **Effort**: medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [670_minframeclass_sharpness_prior_uz_z1/reports/01_ztime-sharpness-countermodels.md]
+- **Plan**: [670_minframeclass_sharpness_prior_uz_z1/plans/01_ztime-sharpness-theorems.md]
 
 **Description**: Machine-check the MINIMALITY half of Axiom.minFrameClass for the two .ZTime axioms, prior_UZ and z1: prove that neither is valid at FrameClass.Base. The tag currently asserts minimality; only the upper bound is proved.
 

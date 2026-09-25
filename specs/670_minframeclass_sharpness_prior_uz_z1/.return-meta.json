@@ -1,17 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/670_minframeclass_sharpness_prior_uz_z1/reports/01_ztime-sharpness-countermodels.md",
-      "summary": "Machine-verified sorry-free countermodels refuting prior_UZ and z1 at FrameClass.Base on the translation frame over a dense duration group, with the full 10-declaration module source, axiom footprint, gate checklist, and follow-up observations on the .Dense/.RTime tags."
+      "type": "plan",
+      "path": "specs/670_minframeclass_sharpness_prior_uz_z1/plans/01_ztime-sharpness-theorems.md",
+      "summary": "Six-phase plan (4 mandatory, 2 optional) landing FormalSystem/Metalogic/Independence/ZTimeSharpness.lean with nine theorems proving prior_UZ and z1 are not Base-valid, plus Axioms.lean docstring sharpness citations and one budgeted full rebuild."
+    }
+  ],
+  "next_steps": "Run /implement 670 to execute the plan",
+  "phase_count": 6,
+  "estimated_hours": 5.75,
+  "dependency_waves": [[1], [2], [3], [4], [5], [6]],
+  "memory_candidates": [
+    {
+      "content": "Lean phase-ordering rule for plans that must edit a widely-imported module: Lean invalidates its build cache on whole-file hash, so even a docstring-only edit to a root module (e.g. ProofSystem/Axioms.lean, transitively imported by the whole tree) forces a full rebuild. Sequence such plans so that (1) new leaf modules are authored and verified first via lean_run_code with no lake build at all, (2) aggregator/import wiring is verified by a SCOPED guarded build while the root module is still untouched and therefore cheap, (3) every prose/docstring edit to the root module is batched into a single phase, and (4) exactly one full detached guarded rebuild plus the gate set follows. Splitting docstring edits across phases, or placing the scoped wiring build after the root-module edit, multiplies full rebuilds with no verification gain. The same ordering applies to any language whose build cache keys on whole-file content rather than on exported interfaces.",
+      "category": "PATTERN",
+      "source_artifact": "specs/670_minframeclass_sharpness_prior_uz_z1/plans/01_ztime-sharpness-theorems.md",
+      "confidence": 0.78,
+      "suggested_keywords": ["lean", "build-cache-invalidation", "phase-ordering", "docstring-edit", "full-rebuild", "plan-decomposition"]
     }
   ],
   "metadata": {
     "session_id": "sess_1790316685_21f213_670",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 2
 }

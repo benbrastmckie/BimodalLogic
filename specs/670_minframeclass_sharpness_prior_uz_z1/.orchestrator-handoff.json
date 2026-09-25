@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 6,
+  "session_id": "sess_1790316685_21f213_670",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/670_minframeclass_sharpness_prior_uz_z1/plans/01_ztime-sharpness-theorems.md",
+      "summary": "Six-phase implementation plan for the .ZTime sharpness theorems (4 mandatory phases, 2 clearly-marked optional)."
+    }
+  ],
+  "next_steps": "Run /implement 670 to execute the plan",
+  "notes": "Research supplied a fully elaborated, sorry-free candidate module; the plan spends its phases on transcription fidelity, import wiring, docstrings, and one budgeted full rebuild. Plan validates clean under validate-artifact.sh --strict."
+}
