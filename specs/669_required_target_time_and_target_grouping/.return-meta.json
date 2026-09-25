@@ -1,22 +1,40 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-24T17:55:00Z",
+  "completed_at": "2026-09-24T18:12:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "vacuous_note": "Repo-wide grep returns 1 hit (FormalSystem/Examples/TemporalStructures.lean:495), identical to the pre-task baseline and untouched by this task; 0 introduced here.",
+    "axiom_count": 14,
+    "axiom_note": "Identical to the pre-task baseline (HEAD~3); 0 axiom or sorry lines added in the three edited Lean files.",
+    "build_passed": true,
+    "build_detail": "lake build (full project, guarded + detached) exit 0, 2734 jobs, 0 error lines; lake build BimodalTools --wfail and lake build BimodalToolsTest --wfail both exit 0 at zero warnings; check-module-invariants.sh ALL CHECKS PASSED; check-copyright-headers.sh --strict clean (568/0)."
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/669_required_target_time_and_target_grouping/plans/01_required-target-time-grouping.md",
-      "summary": "Three-phase plan for the required-target-time and nested-target certificate schema revision: record/parser/serializer reshape plus test rows (atomic-batch), documentation and rationale, then inventory regeneration and the full gate set."
+      "type": "summary",
+      "path": "specs/669_required_target_time_and_target_grouping/summaries/01_required-target-time-grouping-summary.md",
+      "summary": "Made the certificate's target time a required field and grouped premises/conclusions/time under one nested \"target\" object mirroring WitnessFamily.Target."
     }
   ],
-  "next_steps": "Run /implement 669 to execute the plan",
-  "memory_candidates": [],
-  "metadata": {
-    "session_id": "sess_1790297499_6f48f3_669",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 3.5,
-    "dependency_waves": [[1], [2], [3]]
+  "completion_data": {
+    "completion_summary": "The witness-family certificate wire format now requires \"time\" and nests premises/conclusions/time under one \"target\" object mirroring WitnessFamily.Target. An absent \"target\" or \"target\".\"time\" is answered {\"status\":\"error\"} with a distinct message for each, never {\"status\":\"rejected\"}, routed through parseCertificate's existing Except String via new PartialTarget/PartialCertificate complete functions. Both example families keep their exact verdicts; every repository gate is green.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 2
+  "partial_progress": {
+    "stage": "complete",
+    "details": "All 3 plan phases completed and committed.",
+    "phases_completed": 3,
+    "phases_total": 3
+  },
+  "metadata": {
+    "session_id": "sess_1790297499_6f48f3",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "skipped",
+    "compliance_note": "The plan's Goals bullets name no theorem identifiers (every new declaration is a structure, parser, serializer or Except-valued conversion), and the plan carries no ## Lean Challenge Statements section by explicit design, so the goal-name grep has an empty identifier set."
+  }
 }

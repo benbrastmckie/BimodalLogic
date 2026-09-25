@@ -11,7 +11,7 @@ next_project_number: 670
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,669 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -70,7 +70,6 @@ next_project_number: 670
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
-669 [PLANNED] — Make the witness-family certificate's target time a required...
 
 ### Formula Refactor
 
@@ -101,12 +100,13 @@ next_project_number: 670
 
 ### 669. Required target time and target grouping
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [669_required_target_time_and_target_grouping/reports/01_required-target-time-grouping.md]
 - **Plan**: [669_required_target_time_and_target_grouping/plans/01_required-target-time-grouping.md]
+- **Summary**: [669_required_target_time_and_target_grouping/summaries/01_required-target-time-grouping-summary.md]
 
 **Description**: Make the witness-family certificate's target time a required field and group the target condition to mirror the Lean structure.
 

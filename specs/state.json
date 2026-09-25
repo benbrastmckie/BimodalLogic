@@ -9,14 +9,14 @@
     {
       "project_number": 669,
       "project_name": "required_target_time_and_target_grouping",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "Make the witness-family certificate's target time a required field and group the target condition to mirror the Lean structure.\n\nCONTEXT. `lake exe check_certificate` (BimodalTools/CheckCertificateMain.lean, parsing in BimodalTools/CertificateImport.lean) currently reads the target time as an OPTIONAL \"time\" field defaulting to 0 (`RawCertificate.time : Int := 0`, CertificateImport.lean:125-126; parser at :254-256; serializer at :299). That default was chosen for backward compatibility, but there are no producers yet -- the ModelChecker certificate exporter (~/Projects/ModelChecker) is not written -- so the compatibility it buys is worth nothing today, while it forecloses a tightening that is breaking later. Relaxing a required field to optional afterwards is backward compatible; tightening an optional field to required is not. Required now preserves both futures.\n\nDELIVERABLE 1 -- REQUIRED TIME. Make \"time\" mandatory. An absent \"time\" is a protocol failure, so it yields {\"status\":\"error\",\"message\":...} on the existing malformed-input path, NOT {\"status\":\"rejected\"} -- rejection is reserved for certificate content that fails a condition, per the protocol's own settled distinction in BimodalTools/README.md's \"Certificate re-verification protocol\" section. Drop the `:= 0` default from RawCertificate.\n\nRATIONALE TO RECORD IN THE MODULE DOCSTRING. `Target Γ Σ` is an existential (\"some t with Γ ⊆ L₀ t and Σ ∩ L₀ t = ∅\"); its witness is t. Every other existential in the certificate is explicitly witnessed -- the box guess witnesses which boxes are false, the witness lassos witness the falsifying histories, the labels witness the types. A defaulted t made the outermost existential the only unwitnessed one, and the point of a certificate is that checking requires no search. Additionally, 0 denotes the origin only by LabelledLasso's three-segment decoding convention; if that convention is ever re-indexed (branching families with shared states are contemplated as future work, and the compression half of the quasimodel route may re-index), a defaulted 0 silently changes meaning in every stored certificate.\n\nDELIVERABLE 2 -- GROUP THE TARGET. premises, conclusions and time are the three components of ONE predicate, `Target`. BimodalTools/README.md and FormalSystem/Metalogic/Decidability/WitnessFamily/Basic.lean both state that field names mirroring the Lean structures is an EXPORT CONTRACT rather than a local naming choice, so the faithful mirror nests them: {\"target\": {\"premises\": [...], \"conclusions\": [...], \"time\": 0}, \"bx\": [...], \"lassos\": [...]}. Do this in the SAME revision as deliverable 1 -- splitting one schema change across two revisions is the expensive version, and the cost now is zero because nothing consumes the format.\n\nSCOPE. BimodalTools/CertificateImport.lean (RawCertificate, the envelope parser at :239-260, the inverse serializer certificateToJson at :295-299, and closure assembly at :320 which reads premises/conclusions); Tests/BimodalToolsTest/CertificateImportTest.lean (21 #guard rows, including the round-trip test); BimodalTools/README.md's \"Certificate re-verification protocol\" section (the input JSON block, the field table's premises/conclusions/time rows, and the optionality note). The output shape is unchanged: {\"status\":\"countermodel\",\"time\":t} already echoes the time and should keep doing so.\n\nACCEPTANCE. A certificate omitting \"time\" returns status error, not rejected; a certificate with the nested \"target\" object round-trips through certificateToJson and back; the non-vacuity family still returns {\"status\":\"countermodel\",\"time\":0} and the separation family still returns rejected with condition fulfilling, lasso 0, position -2, formula `p U q`; `lake build BimodalTools --wfail` and `lake build BimodalToolsTest --wfail` exit 0 at zero warnings; check-module-invariants.sh ALL CHECKS PASSED; check-copyright-headers.sh --strict clean; sorry count 0 and no new axioms.\n\nCROSS-REPO NOTE. The resulting schema is the interface ModelChecker's certificate exporter must mirror field for field. Record the final shape in the README section clearly enough that the exporter can be written against it without reading the Lean.",
       "effort": "2-4 hours",
       "dependencies": [],
       "created": "2026-09-25T00:38:33Z",
-      "last_updated": "2026-09-25T01:02:18Z",
+      "last_updated": "2026-09-25T01:11:21Z",
       "session_id": "sess_1790297499_6f48f3",
       "artifacts": [
         {
@@ -28,9 +28,15 @@
           "path": "specs/669_required_target_time_and_target_grouping/plans/01_required-target-time-grouping.md",
           "type": "plan",
           "summary": "Three-phase implementation plan for the required-target-time and nested-target certificate schema revision."
+        },
+        {
+          "path": "specs/669_required_target_time_and_target_grouping/summaries/01_required-target-time-grouping-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary with the captured acceptance output from lake exe check_certificate."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "The witness-family certificate wire format now requires \"time\" and nests premises/conclusions/time under one \"target\" object mirroring WitnessFamily.Target. An absent \"target\" or \"target\".\"time\" is answered {\"status\":\"error\"} with a distinct message for each, never {\"status\":\"rejected\"}, routed through parseCertificate's existing Except String via new PartialTarget/PartialCertificate complete functions. Both example families keep their exact verdicts; every repository gate is green."
     },
     {
       "project_number": 667,

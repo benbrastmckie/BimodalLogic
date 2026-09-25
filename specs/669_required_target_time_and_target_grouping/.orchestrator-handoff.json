@@ -1,16 +1,30 @@
 {
-  "status": "planned",
   "task_number": 669,
-  "session_id": "sess_1790297499_6f48f3_669",
-  "dispatch_seq": 2,
-  "phases_completed": 0,
+  "dispatch_seq": 3,
+  "phase": "implement",
+  "status": "implemented",
+  "phases_completed": 3,
   "phases_total": 3,
+  "session_id": "sess_1790297499_6f48f3",
+  "summary": "Certificate wire format revised in one pass: \"time\" is now required and premises/conclusions/time are grouped under a nested \"target\" object mirroring WitnessFamily.Target. Missing \"target\" or \"target\".\"time\" yields {\"status\":\"error\"} with distinct messages, never rejected. Both example families keep their exact verdicts; full build, both --wfail builds, module invariants and copyright headers all green; 0 sorries, no new axioms.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/669_required_target_time_and_target_grouping/summaries/01_required-target-time-grouping-summary.md",
+      "summary": "Implementation summary with the captured acceptance output from lake exe check_certificate."
+    },
     {
       "type": "plan",
       "path": "specs/669_required_target_time_and_target_grouping/plans/01_required-target-time-grouping.md",
-      "summary": "Three-phase implementation plan for the required-target-time and nested-target certificate schema revision."
+      "summary": "All three phases marked [COMPLETED]; all 39 checklist items checked off."
     }
   ],
-  "next_steps": "Run /implement 669 to execute the plan"
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
+  "next_action": "none",
+  "blockers": []
 }
