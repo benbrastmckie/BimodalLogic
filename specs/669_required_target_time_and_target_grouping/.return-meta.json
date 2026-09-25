@@ -1,17 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/669_required_target_time_and_target_grouping/reports/01_required-target-time-grouping.md",
-      "summary": "Verified design for making the certificate target time required and grouping premises/conclusions/time under a nested \"target\" object: partial-record parser seam routes the missing field to the existing protocol-error path, and a compiled lake env lean spike (12 passing #guard rows, exit 0, zero warnings) closes the dependent-type risk in mkFamily."
+      "type": "plan",
+      "path": "specs/669_required_target_time_and_target_grouping/plans/01_required-target-time-grouping.md",
+      "summary": "Three-phase plan for the required-target-time and nested-target certificate schema revision: record/parser/serializer reshape plus test rows (atomic-batch), documentation and rationale, then inventory regeneration and the full gate set."
     }
   ],
+  "next_steps": "Run /implement 669 to execute the plan",
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1790297499_6f48f3_669",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 3.5,
+    "dependency_waves": [[1], [2], [3]]
+  },
+  "dispatch_seq": 2
 }
