@@ -11,7 +11,7 @@ next_project_number: 669
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,666 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -70,7 +70,6 @@ next_project_number: 669
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
-666 [PLANNED] — Add a certificate re-verification executable, lake exe...
 
 ### Formula Refactor
 
@@ -124,12 +123,13 @@ ACCEPTANCE. Tests in Tests/BimodalToolsTest/ covering a gated invalid verdict, a
 
 ### 666. Check certificate executable
 - **Effort**: 4-8 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 665, Task 667
 - **Research**: [666_check_certificate_executable/reports/01_check-certificate-executable.md]
 - **Plan**: [666_check_certificate_executable/plans/01_check-certificate-executable.md]
+- **Summary**: [666_check_certificate_executable/summaries/01_check-certificate-executable-summary.md]
 
 **Description**: Add a certificate re-verification executable, lake exe check_certificate, that reads a JSON witness-family certificate emitted by ModelChecker and reports whether it is a valid Z-time countermodel. Depends on the witness-family soundness task, whose LabelledLasso / WitnessFamily structures and Decidable instances (LocalCoherentLab, FulfillingLab, BoxFaithful, Target) it consumes.
 
