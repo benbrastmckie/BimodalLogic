@@ -159,6 +159,13 @@ name = "machine_appendix"
 root = "BimodalTools.MachineAppendixMain"
 supportInterpreter = true
 
+# Witness-family certificate re-verification: reads one certificate on stdin, prints one JSON line.
+# Run with: echo '{"premises":[...],"conclusions":[...],"bx":[...],"lassos":[...]}' | lake exe check_certificate
+[[lean_exe]]
+name = "check_certificate"
+root = "BimodalTools.CheckCertificateMain"
+supportInterpreter = true
+
 # Reports FormalSystem modules that do not (transitively) import FormalSystem.Init.
 # Run with: lake exe checkInitImports
 [[lean_exe]]

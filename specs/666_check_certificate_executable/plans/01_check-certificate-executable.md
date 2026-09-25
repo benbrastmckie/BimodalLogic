@@ -279,7 +279,7 @@ condition, lasso index and position named.
 
 ---
 
-### Phase 4: CheckCertificateMain.lean and the lake exe target [NOT STARTED]
+### Phase 4: CheckCertificateMain.lean and the lake exe target [COMPLETED]
 
 **Goal**: `lake exe check_certificate` runs end to end from stdin.
 
