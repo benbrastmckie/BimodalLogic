@@ -378,6 +378,7 @@ import FormalSystem.Metalogic.Independence.StarDiscrimination
 import FormalSystem.Metalogic.Independence.StateSetTruth
 import FormalSystem.Metalogic.Independence.StaticFrame
 import FormalSystem.Metalogic.Independence.TranslationProductCoarse
+import FormalSystem.Metalogic.Independence.ZTimeSharpness
 import FormalSystem.Metalogic.QTime
 import FormalSystem.Metalogic.SetConsequence
 import FormalSystem.Metalogic.Soundness
