@@ -11,8 +11,8 @@ next_project_number: 675
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,671 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650,674 | 298,464,502,563,649,671 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,674 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -93,7 +93,6 @@ next_project_number: 675
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-671 [PLANNED] — Prove the MINIMALITY half of Axiom.minFrameClass for the four...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -200,12 +199,13 @@ STARTING POINTS. FormalSystem/Metalogic/Independence/ZTimeSharpness.lean; specs/
 ---
 
 ### 671. Minframeclass sharpness remaining rows and docs
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 672
 - **Research**: [671_minframeclass_sharpness_remaining_rows_and_docs/reports/01_dense-rtime-sharpness-ledger-fixes.md]
 - **Plan**: [671_minframeclass_sharpness_remaining_rows_and_docs/plans/01_dense-rtime-sharpness-ledger-fixes.md]
+- **Summary**: [671_minframeclass_sharpness_remaining_rows_and_docs/summaries/01_dense-rtime-sharpness-ledger-fixes-summary.md]
 
 **Description**: Prove the MINIMALITY half of Axiom.minFrameClass for the four remaining non-Base rows -- density and dense_indicator (tagged .Dense), prior_U_gap and sep (tagged .RTime) -- and, in the same pass, correct the two pre-existing documentation defects in the files this work must already edit. Establish for each axiom that it is NOT valid at any class strictly below its assigned tag, so the hand-assigned tag is sharp rather than merely an upper bound.
 

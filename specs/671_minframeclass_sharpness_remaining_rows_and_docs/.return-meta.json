@@ -1,30 +1,28 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/671_minframeclass_sharpness_remaining_rows_and_docs/plans/01_dense-rtime-sharpness-ledger-fixes.md",
-      "summary": "7-phase, 7.25-hour plan closing three of the four remaining Axiom.minFrameClass rows in one new module, excluding the sep row with a proved obstruction, and correcting both documentation defects inside a single budgeted full rebuild."
+      "type": "summary",
+      "path": "specs/671_minframeclass_sharpness_remaining_rows_and_docs/summaries/01_dense-rtime-sharpness-ledger-fixes-summary.md",
+      "summary": "Three of the four remaining Axiom.minFrameClass rows proved sharp (two fully characterized), a proved obstruction shipped for the fourth, and both documentation defects corrected."
     }
   ],
-  "next_steps": "Run /implement 671 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1790353604_4fe6d5_671",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 7,
-    "estimated_hours": 7.25,
-    "dependency_waves": [[1], [2], [3], [4, 5], [6], [7]]
+  "completion_data": {
+    "completion_summary": "Added FormalSystem/Metalogic/Independence/DenseRTimeSharpness.lean (400 lines, 29 declarations, sorry-free), closing the density and dense_indicator rows of Axiom.minFrameClass with full ValidIn fc phi <-> Dense <= fc characterizations and the prior_U_gap row with minimality at both classes strictly below .RTime; the sep row ships sep_validOn_of_isLeastPos as a proved obstruction showing no discrete witness can exist. The same pass corrected three reversed infix/English prose items, rewrote the minFrameClass lower-bound paragraph as a per-row ledger, reconciled the two Independence ledgers to their eleven-result union, completed the Contents list, repaired ten dangling identifiers, and swept every superseded .Dedekind/.Discrete frame-class spelling under FormalSystem/.",
+    "roadmap_items": []
   },
-  "memory_candidates": [
-    {
-      "content": "A phase's Verification Tier is a function of a MEASURED file list, not an asserted one. In the BimodalLogic tree a superseded-name sweep that both the task dispatch and the research report scoped to a single markdown file measured, at plan time, eight markdown files and zero .lean files -- the zero .lean result is what licensed the cheap 'prose' tier and kept the change off the one-full-rebuild budget. The reusable pattern: when a plan assigns a tier below 'full' on the strength of an edit class (comments-only, markdown-only), the phase's Scope Hypothesis must state the tier-ESCALATION TRIGGER explicitly -- 'if any .lean file turns up in the re-measurement, the tier rises to at least local and the rebuild budget must be re-examined' -- so the implementer cannot silently inherit a cheap tier under a widened file set. Re-run the sweep grep before editing; the file list is usually the least trustworthy number in a plan.",
-      "category": "PATTERN",
-      "source_artifact": "specs/671_minframeclass_sharpness_remaining_rows_and_docs/plans/01_dense-rtime-sharpness-ledger-fixes.md",
-      "confidence": 0.65,
-      "suggested_keywords": ["verification-tier", "scope-hypothesis", "rebuild-budget", "sweep-measurement", "plan-phase-sizing", "tier-escalation"]
-    }
-  ],
-  "dispatch_seq": 5
+  "metadata": {
+    "session_id": "sess_1790353604_4fe6d5",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed"
+  }
 }
