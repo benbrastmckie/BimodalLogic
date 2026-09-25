@@ -217,29 +217,32 @@ its boundary.
 
 ---
 
-### Phase 3: Settle the Conservativity re-export count in the docstring [NOT STARTED]
+### Phase 3: Settle the Conservativity re-export count in the docstring [COMPLETED]
 
 **Goal**: Make `FormalSystem/Metalogic/Conservativity.lean`'s module docstring state one count,
 say which set that count describes, and carry a bullet list complete relative to the import
 block. Docstring only — no declaration, statement, or proof is touched.
 
 **Tasks**:
-- [ ] Re-read the docstring's "What this module is" section immediately before editing.
-- [ ] Replace "re-exports the nine modules that make up the L⁻-vs-TM⁻ and TM-vs-TM⁺ story" with
+- [x] Re-read the docstring's "What this module is" section immediately before editing. *(completed)*
+- [x] Replace "re-exports the nine modules that make up the L⁻-vs-TM⁻ and TM-vs-TM⁺ story" with
       wording that states the observed import count from Phase 1 AND names the set being counted
       explicitly — i.e. that the number is every module this file imports, comprising the modules
       in `Metalogic/Conservativity/` plus the cross-directory `MinusLanguage/Soundness.lean`. The
       set must be named, not merely the number changed, so the ambiguity cannot be
-      re-introduced.
-- [ ] Add the two missing bullets identified in Phase 1 — `Conservativity/ChainBundleTruth.lean`
+      re-introduced. *(completed)*
+- [x] Add the two missing bullets identified in Phase 1 — `Conservativity/ChainBundleTruth.lean`
       and `Conservativity/DenseObstructionTransfer.lean` — each in the established
       *Module* — *Contents* form, describing what the module contains. Derive each description
       from the module's own docstring or declarations; do not restate or paraphrase any theorem
-      statement.
-- [ ] Place the new bullets in positions consistent with the list's existing ordering.
-- [ ] Confirm the bullet count now equals the import count, and that the bullet set and the
-      import set match name-for-name.
-- [ ] Do NOT build in this phase. The rebuild is batched in Phase 5.
+      statement. *(completed)*
+- [x] Place the new bullets in positions consistent with the list's existing ordering. *(completed:
+      inserted after `Z1Countermodel.lean` and before `SpCountermodel.lean`, matching their
+      import-block position)*
+- [x] Confirm the bullet count now equals the import count, and that the bullet set and the
+      import set match name-for-name. *(completed: 20 = 20, set equality confirmed both
+      directions by script)*
+- [x] Do NOT build in this phase. The rebuild is batched in Phase 5. *(completed: no build run)*
 
 **Timing**: 0.75 hours
 

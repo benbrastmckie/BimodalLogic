@@ -370,7 +370,10 @@ four theorems across the truth-transfer bridge `truthAt_tr`. This module and eve
 
 **This file is the aggregator, and it holds no declarations.** It carries the narrative above —
 the forward-conservativity prohibition, the paper-anchor record, and the per-row status of CEB
-and CEF — and re-exports the nine modules that make up the L⁻-vs-TM⁻ and TM-vs-TM⁺ story:
+and CEF — and re-exports 20 modules that make up the L⁻-vs-TM⁻ and TM-vs-TM⁺ story: every module
+this file imports, comprising the 19 modules physically in `Metalogic/Conservativity/` plus the
+cross-directory `MinusLanguage/Soundness.lean`. The count below is exhaustive relative to the
+import block above, not a sample.
 
 Each entry reads *Module* — *Contents*:
 
@@ -382,6 +385,12 @@ Each entry reads *Module* — *Contents*:
   equivalence
 * `Conservativity/SpWitness.lean` — the reconstructed `(Sp)` witness for the CEB row
 * `Conservativity/Z1Countermodel.lean` — `not_minus_derivable_z1` and `tmMinusCompleteZTime_refuted`
+* `Conservativity/DenseObstructionTransfer.lean` — neither closed-row obstruction survives the move
+  to `.Dense`/`.RTime`: `spDerivableDense`/`spDerivableRTime` make `Sp` a theorem there, and
+  `not_minusValidDense_z1` shows `Z1` stops being valid
+* `Conservativity/ChainBundleTruth.lean` — the valuation-only `chainSat` truth lemma
+  (`chainBundle_truth_lemma`) and its refutation-transfer interface
+  (`not_minusValidIn_of_not_chainSat` and its `.Dense`/`.RTime` specializations)
 * `Conservativity/SpCountermodel.lean` — `not_derivable_sp` and `tmMinusCompleteBase_refuted`, over
   the native `MinusFrame` semantics
 * `Conservativity/Fragment.lean` — `TMFrag`, the H/G-fragment of TM: soundness, completeness at all
