@@ -173,7 +173,7 @@ load-bearing one, since re-anchoring `check` at position `0` looks like a tidy-u
 regression.
 
 `spike-untl-unfolding-and-fwd-obstruction` is **deliberately not wired**, although it compiles.
-Its subject is the frame-class mismatch between `FrameClass.Base` and `FrameClass.Discrete`, and
+Its subject is the frame-class mismatch between `FrameClass.Base` and `FrameClass.ZTime`, and
 it asserts results about a `filteredStep_fwd` that the frame-class uniformity work is expected to
 change; wiring it now would freeze a question that is still open. Wire it in when that work lands.
 

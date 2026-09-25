@@ -562,14 +562,14 @@ plan.
 
 ---
 
-### Phase 6: Sweep the superseded frame-class spellings [NOT STARTED]
+### Phase 6: Sweep the superseded frame-class spellings [COMPLETED]
 
 **Goal**: No superseded frame-class tag spelling survives under `FormalSystem/`, and the
 dangling identifiers that share the same root cause are repaired with it.
 
 **Tasks**:
 
-- [ ] Run the sweep grep and work from its output, not from this plan's file list:
+- [x] Run the sweep grep and work from its output, not from this plan's file list:
       `grep -rnE 'FrameClass\.(Dedekind|Discrete)|(^|[^A-Za-z.])\.(Dedekind|Discrete)([^A-Za-z]|$)' FormalSystem/`.
       Planning measured **eight** `README.md` files
       (`Metalogic/Independence/README.md`, `Metalogic/README.md`,
@@ -577,25 +577,34 @@ dangling identifiers that share the same root cause are repaired with it.
       `Semantics/README.md`, `Semantics/Correspondence/README.md`, `Theorems/README.md`,
       `ProofSystem/README.md`) and **zero** `.lean` files — so the whole sweep is free of rebuild
       cost. Re-measure before editing.
-- [ ] Replace `.Dedekind` with `.RTime` and `.Discrete` with `.ZTime` **only in frame-class tag
+- [x] Replace `.Dedekind` with `.RTime` and `.Discrete` with `.ZTime` **only in frame-class tag
       position**. Do not touch the English adjective "Dedekind-complete", the module names
       `DedekindNonCompactness.lean` / `DedekindDerived.lean` / `CompletenessDedekind.lean` /
       `DiscreteNonCompactness.lean` / `DiscreteUnfolding.lean`, or the declaration names that
       genuinely contain those words.
-- [ ] Do **not** rename `TaskFrame.IsDiscrete`. It is live and correct.
+- [x] Do **not** rename `TaskFrame.IsDiscrete`. It is live and correct.
       `Semantics/Correspondence/README.md:20` deliberately contrasts it with the frame-class tag;
       that contrast must survive the rename, which changes only the tag half of the sentence.
-- [ ] Repair the four dangling identifiers at `Metalogic/README.md:115` —
+- [x] Repair the four dangling identifiers at `Metalogic/README.md:115` —
       `CompactDedekind`, `StrongCompletenessDedekind`, `SatisfiableDedekindSet`,
       `ModelExistenceDedekind` do not exist; the real declarations in
       `Metalogic/SetConsequence.lean` are `CompactRTime`, `StrongCompletenessRTime`,
       `SatisfiableRTimeSet` and `ModelExistenceRTime`. Confirm each by grep before writing. This
       is the same defect class as Phase 5's, found by the same sweep, and belongs with it.
-- [ ] Note that two of `Independence/README.md`'s occurrences (`:98`, `:107`) sit **inside** a
+      *(deviation: altered — the same sweep surfaced three MORE dangling identifiers of the same
+      class at `ProofSystem/README.md:55-60`: `soundness_dedekind`, `completeness_dedekind` and
+      `ValidDedekind` do not exist; the real names are `soundness_rtime`
+      (`Metalogic/Soundness.lean`), `completeness_rtime` (`Metalogic/StrongCompleteness.lean`) and
+      `ValidRTime` (`Semantics/Validity.lean`). Repaired here, so seven identifiers were fixed in
+      this phase rather than four. The eight-file / zero-`.lean` measurement itself was confirmed
+      exactly as the plan predicted, so the Verification Tier stays `prose`.)*
+- [x] Note that two of `Independence/README.md`'s occurrences (`:98`, `:107`) sit **inside** a
       generated inventory block. The generator carries existing descriptions across verbatim, so
       editing them in place is correct and they survive Phase 7's regeneration.
-- [ ] Re-run the sweep grep and confirm it returns only legitimate mathematical prose.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and iterate until green.
+- [x] Re-run the sweep grep and confirm it returns only legitimate mathematical prose.
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and iterate until green.
+      *(deviation: altered — green on every group except `INV`'s four stale inventory blocks,
+      which are Phase 7's regeneration job by design.)*
 
 **Timing**: 1 hour
 

@@ -15,7 +15,7 @@ derivations), organized by topic. These are distinguished from metalogical resul
 | `ContextualProofs.lean` | 490 | Derivations carried out under a nonempty context |
 | `DedekindDerived.lean` | 416 | Dedekind-class derived theorems: `△`-eliminators, the `F(Hψ) → ψ` / `F(Hψ) → U(⊤,ψ)` / `S(Hψ∧ψ,ψ) → Hψ` point-shifting lemmas, and `coDerived` (the paper's CO principle derived from the Reynolds gap basis) |
 | `DeductionTheorem.lean` | 487 | The deduction theorem (`A :: Γ ⊢ B` gives `Γ ⊢ A → B`) and its converse. Keeps `namespace FormalSystem.Metalogic.Core`, a recorded exception its module docstring explains |
-| `DiscreteUnfolding.lean` | 498 | The ℤ-exact one-step unfolding of `untl` at `FrameClass.Discrete` |
+| `DiscreteUnfolding.lean` | 498 | The ℤ-exact one-step unfolding of `untl` at `FrameClass.ZTime` |
 | `GeneralizedNecessitation.lean` | 242 | Generalized necessitation rules for modal and temporal operators |
 | `ModalDerived.lean` | 219 | Closed object-logic derivation helpers (`dneTheorem`, `boxDneTheorem`, the `G`/`H` analogues) collected out of `Metalogic/Bundle/` so canonical-model modules can reach them without the bundle machinery |
 | `ModalS4.lean` | 422 | S4 modal theorems: consequences of T, 4, K axioms |

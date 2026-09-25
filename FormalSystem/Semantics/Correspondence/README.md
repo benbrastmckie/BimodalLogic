@@ -17,7 +17,7 @@ relation, and the connection theorems are projections of Mathlib's.
 
 Two distinctions are load-bearing throughout and are documented at their statement sites:
 
-- **`TaskFrame.IsDiscrete` versus `FrameClass.Sat FrameClass.Discrete`.** The first is
+- **`TaskFrame.IsDiscrete` versus `FrameClass.Sat FrameClass.ZTime`.** The first is
   `def:frame-properties`' bare Discrete clause and *is* Galois-closed; the second is
   `def:BX-z`'s narrowing to ℤ-time (`prop:archimedean`) and is *not*, as
   `Metalogic/Independence/LexIntWitness.lean` witnesses.
@@ -29,7 +29,7 @@ Two distinctions are load-bearing throughout and are documented at their stateme
 
 | File | Lines | Description |
 |------|-------|-------------|
-| `Galois.lean` | 290 | `Th`/`Mod`/`GaloisClosed` as the polars of `validOnRel` over `Mathlib.Order.Concept` (`upperPolar`/`lowerPolar`/`Order.IsExtent`), so antitonicity, both inflationary round trips and both triple-composite collapses are one-line projections. Adds `mod_th_gc` (the adjunction as an explicit Mathlib `GaloisConnection`), `galoisClosed_iff` (the bridge back to the fixed-point equation), `galoisClosed_of_indicator_iff` (the iff-shaped entry point call sites use), and the free `galoisClosed_iInter`/`_inter`/`_univ` and `mod_union`/`mod_iUnion`/`mod_empty`/`th_empty`. Carries the reified formula sets `AxiomSet` and `densitySchema`, and records the layer's non-goals: closed-form characterizations of `Mod (AxiomSet .Discrete)` and `Mod (AxiomSet .Dedekind)` are open and not promised. |
+| `Galois.lean` | 290 | `Th`/`Mod`/`GaloisClosed` as the polars of `validOnRel` over `Mathlib.Order.Concept` (`upperPolar`/`lowerPolar`/`Order.IsExtent`), so antitonicity, both inflationary round trips and both triple-composite collapses are one-line projections. Adds `mod_th_gc` (the adjunction as an explicit Mathlib `GaloisConnection`), `galoisClosed_iff` (the bridge back to the fixed-point equation), `galoisClosed_of_indicator_iff` (the iff-shaped entry point call sites use), and the free `galoisClosed_iInter`/`_inter`/`_univ` and `mod_union`/`mod_iUnion`/`mod_empty`/`th_empty`. Carries the reified formula sets `AxiomSet` and `densitySchema`, and records the layer's non-goals: closed-form characterizations of `Mod (AxiomSet .ZTime)` and `Mod (AxiomSet .RTime)` are open and not promised. |
 | `Indicator.lean` | 176 | Indicator exactness: `F ⊨ ¬X⊤ ↔ DenselyOrdered F.Duration`, its `X⊤`/discrete dual, and the guarded form against `TaskFrame.IsDiscrete`; plus `galoisClosed_sat_dense` and `galoisClosed_isDiscrete` as single-line applications of `galoisClosed_of_indicator_iff`. The header tabulates the full four-part closed/not-closed picture, naming the two non-closure witnesses in `Metalogic/Independence/`. |
 | `DurationFrames.lean` | 459 | The reference histories and models of the translation and permissive frames (the frames themselves now live in `Semantics/Frames/Standard.lean`), the atom-realisation layer `translationHist`/`permissiveHist` and `translation_realizes`/`permissive_realizes` with the `H`/`G` forms, the `NoMaxOrder`/`SuccOrder` glue a non-dense carrier supplies, and the three (T1) biconditionals for DF/DN/CO — whose (⇒) branches all run the same five-step realisation argument — with the (T0) refutation recorded beside them. |
 | `FwdRec.lean` | 119 | `TaskFrame.FwdRec` — forward recurrence at covering pairs, over bundled frames — the `validOn_iff_total` bridge, and the *atomic* density correspondence at an arbitrary duration group. |
@@ -89,7 +89,7 @@ Two distinctions are load-bearing throughout and are documented at their stateme
   not previously carry are the extension theorem and `ForMathlib/Topology/`)
 - **Imported by**: `FormalSystem.Semantics` (the aggregator), and
   `FormalSystem.Metalogic.Independence.{RationalWitness, LexIntWitness}`, which supply the two
-  frames showing `Sat .Dedekind` and `Sat .Discrete` are *not* closed
+  frames showing `Sat .RTime` and `Sat .ZTime` are *not* closed
 
 ## Related Documentation
 

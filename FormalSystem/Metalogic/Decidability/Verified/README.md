@@ -102,7 +102,7 @@ finite product of 36 rules and 4 frame classes:
 
 Each gate is independently load-bearing. Deliberately mis-gating a rule was measured against all
 three: moving `densityRule` from `.Dense` to `.Base` breaks GATE 1 and GATE 2; moving `priorUGap`
-from `.Dedekind` to `.Discrete` breaks all three; grounding a `.Base` rule in `Axiom.prior_U_gap`
+from `.RTime` to `.ZTime` breaks all three; grounding a `.Base` rule in `Axiom.prior_U_gap`
 breaks GATE 1 alone; emptying `ruleAxioms .sepRule` breaks GATE 3 alone; and deleting the
 `serialityRule` exclusion clause breaks GATE 2 alone.
 

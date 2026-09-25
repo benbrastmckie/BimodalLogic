@@ -52,12 +52,12 @@ namespace, with a context-lifted `…At Γ` form.
 
 ### Frame Class Coverage
 
-All four `FrameClass` values are axiomatized here. `FrameClass.Dedekind` — Reynolds'
-definable-gap axioms on top of the two density axioms — carries `soundness_dedekind`
-(`../Metalogic/Soundness.lean`) and `completeness_dedekind`
-(`../Metalogic/StrongCompleteness.lean`), both stated against `ValidDedekind` rather than
+All four `FrameClass` values are axiomatized here. `FrameClass.RTime` — Reynolds'
+definable-gap axioms on top of the two density axioms — carries `soundness_rtime`
+(`../Metalogic/Soundness.lean`) and `completeness_rtime`
+(`../Metalogic/StrongCompleteness.lean`), both stated against `ValidRTime` rather than
 the density-free `ValidComplete`, because `density` and `dense_indicator` are admissible at
-`.Dedekind` and both are false on ℤ.
+`.RTime` and both are false on ℤ.
 
 ### Inference Rules (`DerivationTree`)
 
