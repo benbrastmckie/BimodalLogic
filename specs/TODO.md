@@ -11,9 +11,9 @@ next_project_number: 675
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,672,674 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,672 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650,671 | 298,464,502,563,649,672 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,618,674 | 231,465,497,564,565,616,671 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -23,10 +23,6 @@ next_project_number: 675
 | 10 | 177 | 178,282,296,481,482,543 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Agent System
-
-674 [NOT STARTED] — Record two durable pieces of countermodel-construction...
 
 ### Algebraic Representation
 
@@ -75,6 +71,10 @@ next_project_number: 675
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
 
+### Documentation
+
+674 [NOT STARTED] — Document two durable countermodel-construction techniques as...
+
 ### Formula Refactor
 
 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of...
@@ -104,37 +104,47 @@ next_project_number: 675
 
 ## Tasks
 
-### 674. Context countermodel kit and refutation criterion
+### 674. Document countermodel kit and refutation criterion
 - **Status**: [NOT STARTED]
-- **Task Type**: meta
-- **Topic**: agent-system
-- **Dependencies**: None
+- **Task Type**: lean4
+- **Topic**: documentation
+- **Dependencies**: Task 671
 
-**Description**: Record two durable pieces of countermodel-construction knowledge in the agent context, both surfaced while proving the .ZTime row of Axiom.minFrameClass minimal. Each was recommended as a context extension by that work's research and neither is written down anywhere an agent will find it; both were re-derived from scratch during that task at real cost, and the next refutation task will re-derive them again.
+**Description**: Document two durable countermodel-construction techniques as new sections in FormalSystem/Metalogic/Independence/README.md, the ledger and reference page for exactly this directory's results. Both techniques were worked out while proving the .ZTime row of Axiom.minFrameClass minimal, both cost real effort to establish, and neither is written down anywhere a future reader or agent will find it. Each will otherwise be re-derived from scratch by the next refutation task.
 
-SOURCE STORE, NOT THE DEPLOYED TREE. This repository's .claude/ directory is a gitignored, disposable deploy artifact regenerated from a source store, so a file hand-authored under .claude/** is silently wiped by the next regeneration. The lean extension's source is /home/benjamin/.config/nvim/agent-system/extensions/lean and the formal extension's (which owns the logic domain context) is /home/benjamin/.config/nvim/agent-system/extensions/formal. Edit under the correct source store at the path mirroring the deployed one, then deploy. Note that .claude-extensions.json in this repository records source_dir per extension but has no top-level source_dir key, so resolve it from the relevant extension's entry.
+WHY THIS FILE AND NOT AGENT CONTEXT. Both techniques are anchored entirely to THIS repository's declarations -- translationFrame, translation_realizes, clockFrame, FormalSystem/Semantics/Frames/Standard.lean, FormalSystem/Metalogic/Independence/CoNotPriorU.lean. They say nothing about Lean or Mathlib as such, so they are not language-extension material and would be noise deployed into other Lean repositories. They belong next to the code they describe. Independence/README.md is the right home specifically because it already catalogues this directory's independence and non-validity results, and because it is already cited as a starting point by the remaining minFrameClass sharpness work -- so the next agent doing a refutation lands on it without needing any discovery mechanism to work. Do NOT create a root .context/ directory for this: that layer is documented in the architecture notes but has no reader anywhere in the agent system, so content placed there would be found by nobody.
 
-CONTENT 1: the translation-frame countermodel kit.
+SECTION 1: the countermodel construction kit.
 
-FormalSystem/Metalogic/Independence/ZTimeSharpness.lean refutes both .ZTime axioms without touching any of the machinery that was expected to be needed -- not Metalogic/Conservativity/Z1Countermodel.lean, not MinusLanguageSoundness.lean, not Semantics/LexCarrier.lean. The route is translationFrame / translationHist / translationModel together with the translation_realizes layer, defined across FormalSystem/Semantics/Frames/Standard.lean and FormalSystem/Semantics/Correspondence/DurationFrames.lean. Because nothing is transferred out of the L-minus language, the MinusLanguage tr_ne_untl obstruction -- which is real, and which Metalogic/Conservativity.lean:139-143 documents -- never arises at all. Write this up as the DEFAULT first thing to reach for when a native Formula/TruthAt countermodel is wanted, with the L-minus route named as the fallback it actually is.
+FormalSystem/Metalogic/Independence/ZTimeSharpness.lean refutes both .ZTime axioms without touching any of the machinery that was expected to be needed -- not Metalogic/Conservativity/Z1Countermodel.lean, not MinusLanguageSoundness.lean, not Semantics/LexCarrier.lean. The route is translationFrame / translationHist / translationModel together with the translation_realizes layer, defined across FormalSystem/Semantics/Frames/Standard.lean and FormalSystem/Semantics/Correspondence/DurationFrames.lean. Because nothing is transferred out of the L-minus language, the MinusLanguage tr_ne_untl obstruction -- which is real, and which FormalSystem/Metalogic/Conservativity.lean:139-143 documents -- never arises at all. Write this up as the DEFAULT first thing to reach for when a native Formula/TruthAt countermodel is wanted, with the L-minus route named as the fallback it actually is.
 
-The note must include the two frames that silently VALIDATE the targets rather than refuting them, because both are attractive-looking dead ends: clockFrame (periodic) and the static frame (time-invariant), both under FormalSystem/Metalogic/Independence/. An agent that picks either will produce a true theorem that fails to be the theorem it wanted.
+The section must include the two frames that silently VALIDATE the targets rather than refuting them, because both are attractive-looking dead ends: clockFrame (periodic) and the static frame (time-invariant), both under FormalSystem/Metalogic/Independence/. An agent that reaches for either will produce a true theorem that is not the theorem it wanted.
 
-Two further hard-won specifics belong here. First, what actually refutes the .ZTime axioms is NON-DISCRETENESS, not non-Archimedean-ness: each fails over ANY densely ordered duration group, which is why one generic lemma per axiom yields several frame classes from a single construction. Second, a schematic forall-phi non-validity claim can be outright FALSE -- Axiom.prior_UZ bot has an unsatisfiable antecedent and IS .Base-valid -- so refutations must be stated at explicit atomic instances, and anonymous shape-pin examples of the form `example : Axiom (...) := Axiom.prior_UZ phi` should be standard practice, since the whole result is vacuous if the transcribed formula drifts from the constructor. Also worth one line: `by decide` fails on FrameClass `<`; only `<=` has a DecidableRel instance.
+Three further hard-won specifics belong here:
 
-CONTENT 2: when frame-level refutation is obstructed, stated as a criterion.
+- What actually refutes the .ZTime axioms is NON-DISCRETENESS, not non-Archimedean-ness. Each fails over ANY densely ordered duration group, which is why a single generic lemma per axiom yields several frame classes from one construction.
+- A schematic forall-phi non-validity claim can be outright FALSE: Axiom.prior_UZ bot has an unsatisfiable antecedent and IS .Base-valid. Refutations must therefore be stated at explicit atomic instances, and anonymous shape-pin examples of the form `example : Axiom (...) := Axiom.prior_UZ phi` should be standard practice, since the whole result is vacuous if the transcribed formula drifts from the constructor. ZTimeSharpness.lean carries two such pins to copy.
+- `by decide` FAILS on FrameClass `<`; only `<=` has a DecidableRel instance.
 
-FormalSystem/Metalogic/Independence/CoNotPriorU.lean:13-45 records that for CO and prior_U_gap no frame-level countermodel can exist for any frame whatever, because frame-validity quantifies over all valuations: on a densely ordered flow rich enough to realize an arbitrary set of times, frame-validity of CO already forces gap-freeness and hence forces Prior-U valid too. That theorem had to be restated over a fixed TaskModel, matching Reynolds' own printed caveat (1992 p.169). Read narrowly, this reads as a general warning against frame-level refutation, and it cost real effort during the sharpness work to establish that it does not apply there.
+SECTION 2: when frame-level refutation is obstructed, stated as a criterion.
 
-The general criterion is: the obstruction bites ONLY when a statement must simultaneously VALIDATE something on a valuation-rich flow. A bare non-validity claim validates nothing and is therefore unobstructed -- which is why the .ZTime results could be, and were, stated at frame level (not (F.ValidOn phi)), a form strictly stronger than the model-fixed one. Record the criterion so the next agent can decide the statement form BEFORE starting a proof rather than discovering the distinction mid-proof, and so it does not over-generalize the CoNotPriorU caveat into a prohibition.
+FormalSystem/Metalogic/Independence/CoNotPriorU.lean:13-45 records that for CO and prior_U_gap no frame-level countermodel can exist for any frame whatever, because frame-validity quantifies over all valuations: on a densely ordered flow rich enough to realize an arbitrary set of times, frame-validity of CO already forces gap-freeness and hence forces Prior-U valid too. That theorem had to be restated over a fixed TaskModel, matching Reynolds' own printed caveat (1992 p.169).
 
-PLACEMENT. Decide between extending existing files and adding new ones, and say why. Candidate homes: context/project/logic/domain/frame-constraint-landscape.md and context/project/logic/domain/task-semantics.md for the semantic and methodological content; context/project/lean4/patterns/ for the Lean-API-shaped kit note. Whatever is chosen must be reachable by the discovery model in context/patterns/context-discovery.md and indexed wherever sibling files in that directory are indexed -- an unindexed file is a file no agent loads.
+Read narrowly, that docstring reads as a general warning against frame-level refutation, and establishing that it does NOT apply to the .ZTime axioms cost real effort during the sharpness work. State the general criterion so nobody pays that cost again: the obstruction bites ONLY when a statement must simultaneously VALIDATE something on a valuation-rich flow. A bare non-validity claim validates nothing and is therefore unobstructed -- which is why the .ZTime results could be, and were, stated at frame level (not (F.ValidOn phi)), a form strictly stronger than the model-fixed one. The point of recording this is that the next agent can choose its statement form BEFORE starting a proof rather than discovering the distinction mid-proof, and will not over-generalize the CoNotPriorU caveat into a prohibition.
 
-DELIVERABLE. The two pieces of content written into the correct source store, indexed, and deployed into this repository so the deployed tree matches the source. Content must be specific enough to act on: name the actual declarations and file paths, not just the ideas.
+WRITE FOR USE, NOT FOR RECORD. Name the actual declarations, file paths and line numbers, not just the ideas. A reader must be able to act on each section without opening the originating task's artifacts. Verify every declaration name and path still resolves before writing it -- use lean_local_search or lean_declaration_file rather than trusting the names quoted here.
 
-SCOPE. Agent context only. No change to FormalSystem/ belongs here -- the theorems this knowledge came from are already landed. Do not restate the theorems themselves; record the reusable technique and the criterion.
+GATE COUPLING. Independence/README.md carries GENERATED inventory blocks, and the INV check in scripts/check-module-invariants.sh compares them against actual line counts. Adding sections WILL change those counts and fail INV unless inventories are regenerated afterwards. Regenerate via scripts/check-module-invariants.sh --emit-inventory, which is the real command and propagates counts into several READMEs; scripts/readme-inventory.sh is only a pointer script. scripts/readme-lint.sh must also PASS.
 
-STARTING POINTS. specs/670_minframeclass_sharpness_prior_uz_z1/reports/01_ztime-sharpness-countermodels.md (the two context-extension recommendations, with the frames that validate rather than refute); that task's plan Observations Recorded for Follow-Up section and its summary Follow-ups section; FormalSystem/Metalogic/Independence/ZTimeSharpness.lean (the landed pattern, including the shape pins); FormalSystem/Semantics/Correspondence/DurationFrames.lean; FormalSystem/Semantics/Frames/Standard.lean; FormalSystem/Metalogic/Independence/CoNotPriorU.lean:13-45; FormalSystem/Metalogic/Conservativity.lean:139-143; .claude/rules/source-store-deploy-boundary.md and context/standards/source-store-deploy-boundary-narrative.md.
+BUILD COST. None. This task touches only a Markdown file plus generated inventory blocks; no Lean module is edited, so no rebuild is required. If a full rebuild appears necessary, something has gone outside this task's scope.
+
+DEPENDENCY. This task depends on the remaining-rows sharpness work, which edits the same README -- it reconciles that file's result count against Independence.lean's and replaces the superseded .Dedekind and .Discrete class names. Running after it means this task is purely additive and does not have to anticipate those corrections, and the result count settles once. Read the reconciled file as it stands rather than assuming its structure.
+
+DELIVERABLE. Two new sections in FormalSystem/Metalogic/Independence/README.md, specific enough to act on, with inventory blocks regenerated, scripts/check-module-invariants.sh green and scripts/readme-lint.sh PASS.
+
+SCOPE. Documentation only, in the one named README. Do not add, remove or restate any theorem, and do not edit any .lean file -- the results this knowledge came from are already landed. Do not create a root .context/ directory. Do not write into the agent-system source store at ~/.config/nvim/agent-system: the content is repo-specific and does not belong in a shared extension. If, later, the Section 2 criterion proves useful to a second modal-logic repository, it can be promoted to the formal extension's logic domain via /meta then -- that is explicitly NOT part of this task.
+
+STARTING POINTS. FormalSystem/Metalogic/Independence/README.md (the target, and its generated inventory blocks); FormalSystem/Metalogic/Independence/ZTimeSharpness.lean (the landed pattern, including the shape-pin section); FormalSystem/Semantics/Correspondence/DurationFrames.lean; FormalSystem/Semantics/Frames/Standard.lean; FormalSystem/Metalogic/Independence/CoNotPriorU.lean:13-45; FormalSystem/Metalogic/Conservativity.lean:139-143; specs/670_minframeclass_sharpness_prior_uz_z1/reports/01_ztime-sharpness-countermodels.md, whose context-extension recommendations are the origin of both sections, plus that task's plan Observations and summary Follow-ups sections.
 
 ---
 
