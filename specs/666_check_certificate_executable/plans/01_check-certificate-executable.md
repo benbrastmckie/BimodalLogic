@@ -178,7 +178,7 @@ the hypothesis.
 
 ---
 
-### Phase 2: CertificateImport.lean - computable helpers, raw records, and the runtime family builder [NOT STARTED]
+### Phase 2: CertificateImport.lean - computable helpers, raw records, and the runtime family builder [COMPLETED]
 
 **Goal**: Decode a certificate JSON object into a real `WitnessFamily Γ Del`, or a named
 structural rejection, with every computability blocker already closed.
