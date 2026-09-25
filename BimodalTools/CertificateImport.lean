@@ -45,11 +45,41 @@ back as `Atom.mkBase`. A certificate therefore round-trips exactly on base atoms
 `hasFreshAtom` detects the exception; `checkRaw` rejects on it rather than letting a
 `Finset Formula` membership silently change identity.
 
+## Why the target time is witnessed, not defaulted
+
+`Target Γ Δ` is an existential — *some* `t` with `Γ ⊆ L₀ t` and `Δ ∩ L₀ t = ∅` — and `t` is its
+witness, so the wire format demands it. Every other existential a certificate settles is
+explicitly witnessed: the box guess witnesses which boxes are false, the lassos witness the
+falsifying histories, the labels witness the types. A `time` defaulting to `0` would have left
+the outermost existential the only unwitnessed one, against the whole point of a certificate,
+which is that checking requires no search.
+
+Separately, `0` denotes the origin only by `LabelledLasso`'s three-segment decoding convention.
+Were that convention ever re-indexed — branching families with shared states are contemplated,
+and the compression half of the quasimodel route may re-index — a defaulted `0` would silently
+change the meaning of every stored certificate that relied on it, with no diagnostic anywhere.
+
+`premises` and `conclusions` keep their `[]` defaults while `time` does not, and the asymmetry
+is deliberate rather than an oversight to be tidied in either direction: `[]` is the identity of
+a context, so an absent premise list has one unambiguous correct reading, whereas `0` is not the
+identity of a time and an absent `time` has none.
+
+## Why the target is one object
+
+`premises`, `conclusions` and `time` are the three data of the single predicate `Target`, so the
+wire format groups them under one `"target"` key rather than flattening them into the envelope.
+`WitnessFamily/Basic.lean` states that field names mirroring the Lean structures is an export
+contract rather than a local naming choice; a faithful mirror is structural as well as nominal.
+
 ## Main Definitions
 
 - `closureList`, `intRange` — computable enumerations the scans need
-- `RawLasso`, `RawCertificate` — the parsed JSON records, field for field
-- `parseCertificate`, `RawCertificate.toJson` — the two directions of the wire format
+- `RawLasso`, `RawTarget`, `RawCertificate` — the parsed JSON records, field for field
+- `PartialTarget`, `PartialCertificate`, and the two `complete` functions — the parse-time
+  mirrors where every field is optional, and the required-field check that turns one into a real
+  record through `Except String`
+- `parseCertificate`, `RawTarget.toJson`, `RawCertificate.toJson` — the two directions of the
+  wire format
 - `mkLasso`, `mkFamily` — the runtime builders, `dite` on every proof field
 - `CheckResult`, `checkRaw` — the verdict and its JSON line
 

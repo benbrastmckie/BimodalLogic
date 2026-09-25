@@ -81,27 +81,40 @@ architecture: the model checker emits a certificate, this binary decides whether
 
 The field names mirror the Lean structures exactly, which
 `FormalSystem/Metalogic/Decidability/WitnessFamily/Basic.lean` states is an export contract
-rather than a local naming choice — renaming `back`, `mid`, `fwd`, `bx` or `lassos` is a
-breaking change on the producing side.
+rather than a local naming choice — renaming `back`, `mid`, `fwd`, `bx`, `lassos` or `target` is
+a breaking change on the producing side. The mirror is structural as well as nominal: `premises`,
+`conclusions` and `time` are the three data of the one predicate `Target`, so they are grouped
+under one `"target"` object rather than flattened into the envelope.
 
 **Input.**
 
 ```json
-{"premises":    [<formula>, ...],
- "conclusions": [<formula>, ...],
+{"target":      {"premises":    [<formula>, ...],
+                 "conclusions": [<formula>, ...],
+                 "time":        0},
  "bx":          [[<formula>, true], [<formula>, false], ...],
- "lassos":      [{"back": [<label>, ...], "mid": [<label>, ...], "fwd": [<label>, ...]}, ...],
- "time":        0}
+ "lassos":      [{"back": [<label>, ...], "mid": [<label>, ...], "fwd": [<label>, ...]}, ...]}
 ```
 
 | Field | Meaning |
 |-------|---------|
-| `premises` | the premise context `Γ` |
-| `conclusions` | the conclusion context `Δ` |
+| `target` | **required**: the target condition, the three data of `WitnessFamily.Target` |
+| &nbsp;&nbsp;`target.premises` | optional, default `[]`: the premise context `Γ` |
+| &nbsp;&nbsp;`target.conclusions` | optional, default `[]`: the conclusion context `Δ` |
+| &nbsp;&nbsp;`target.time` | **required**: the target time `t` at which the consequence fails |
 | `bx` | the box guess, as `[formula, bool]` pairs; any formula not listed reads as `false` |
 | `lassos` | the labelled bi-lassos; lasso `0` is the main one, where the target is read |
 | `back` / `mid` / `fwd` | a lasso's three segments, each a list of **labels** |
-| `time` | **optional**, default `0`: the target time at which the consequence fails |
+
+**`target.time` is required, and deliberately so.** `Target Γ Δ` is an existential — *some* `t`
+with `Γ ⊆ L₀ t` and `Δ ∩ L₀ t = ∅` — and `t` is its witness. Every other existential in a
+certificate is explicitly witnessed: the box guess witnesses which boxes are false, the lassos
+witness the falsifying histories, the labels witness the types. A defaulted `t` would leave the
+outermost existential the only unwitnessed one, against the whole point of a certificate, which
+is that checking requires no search. And `0` denotes the origin only by the three-segment
+decoding convention of `LabelledLasso`; were that convention ever re-indexed, a defaulted `0`
+would silently change the meaning of every stored certificate. `premises` and `conclusions` keep
+their `[]` defaults because `[]` is the identity of a context; `0` is not the identity of a time.
 
 A `<label>` is a list of `<formula>`, read as a set. A `<formula>` is the tag format
 `Formula.toJson` emits and `BimodalTools/JsonParse.lean`'s `pFormula` parses: `atom` (with
@@ -134,7 +147,12 @@ fresh-indexed atom would silently change identity — and `Finset Formula` membe
 `unlocalized`. `lasso`, `position` and `formula` are `null` when the failure is not tied to one.
 A structural violation — an empty `back` or `fwd`, an empty `lassos` list, a label outside
 `closureOf (Γ ++ Δ)`, a fresh-indexed atom — is certificate *content* that fails a precondition,
-so it is `rejected`; only unparseable input is `error`.
+so it is `rejected`. `error` covers the two ways input fails the *protocol* rather than a
+condition: input that does not parse, and input that parses but omits a required field. In
+particular, a certificate lacking `"target"`, or lacking `"target"."time"`, is answered
+`{"status":"error", "message": ...}` — never `{"status":"rejected"}` — with a distinct message
+for each of the two omissions. A producing exporter can be written against this section alone:
+emit the object above with both required fields present, and `rejected` then means what it says.
 
 **What acceptance means.** `countermodel` says the four compiled `Decidable` instances that
 `WitnessFamily.joint_countermodel` consumes — `decidableLocalCoherentLab`,

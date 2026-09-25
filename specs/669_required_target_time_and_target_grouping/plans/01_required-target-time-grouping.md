@@ -202,7 +202,7 @@ the flat fields, widen the batch **before** starting, never retroactively.
 
 ---
 
-### Phase 2: Record the rationale and the interface in prose [IN PROGRESS]
+### Phase 2: Record the rationale and the interface in prose [COMPLETED]
 
 **Goal**: Every place that describes or demonstrates the wire format shows the new shape, states
 plainly that `"target"` and `"target"."time"` are required and that their absence is `error`, and
@@ -275,7 +275,7 @@ any additional hit showing the flat wire shape joins this phase rather than bein
 
 ---
 
-### Phase 3: Regenerate inventories and run the full gate set [NOT STARTED]
+### Phase 3: Regenerate inventories and run the full gate set [IN PROGRESS]
 
 **Goal**: The generated README inventories match the edited files, and every acceptance criterion in
 the dispatch is demonstrated by a command that was actually run.

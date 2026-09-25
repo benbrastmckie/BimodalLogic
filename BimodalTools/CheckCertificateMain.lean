@@ -35,7 +35,7 @@ consequence holds.
 ## Usage
 
 ```bash
-echo '{"premises":[...],"conclusions":[...],"bx":[...],"lassos":[...],"time":0}' \
+echo '{"target":{"premises":[...],"conclusions":[...],"time":0},"bx":[...],"lassos":[...]}' \
   | lake exe check_certificate
 ```
 -/

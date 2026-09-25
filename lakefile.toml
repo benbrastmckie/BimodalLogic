@@ -160,7 +160,7 @@ root = "BimodalTools.MachineAppendixMain"
 supportInterpreter = true
 
 # Witness-family certificate re-verification: reads one certificate on stdin, prints one JSON line.
-# Run with: echo '{"premises":[...],"conclusions":[...],"bx":[...],"lassos":[...]}' | lake exe check_certificate
+# Run with: echo '{"target":{"premises":[...],"conclusions":[...],"time":0},"bx":[...],"lassos":[...]}' | lake exe check_certificate
 [[lean_exe]]
 name = "check_certificate"
 root = "BimodalTools.CheckCertificateMain"
