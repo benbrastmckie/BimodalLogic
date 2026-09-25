@@ -284,6 +284,41 @@ will prove a true theorem about a different question.
    the tree is `absurd h.le (by decide)`, and `DenseRTimeSharpness.lean`'s *Order facts* section
    is where this is written down.
 
+## When frame-level refutation is obstructed, and when it is not
+
+`CoNotPriorU.lean`'s *Why this is a statement about a model, not a frame* section records a real
+obstruction, and it is narrow. Frame-validity quantifies over **all** valuations, so on a densely
+ordered flow rich enough to realize an arbitrary set of times, frame-validity of `CO` already
+forces gap-freeness — and gap-freeness forces Prior-U valid too. No frame-level countermodel can
+therefore exist for `CO` against `Axiom.prior_U_gap`, on any frame whatever, and that result has
+to be stated over a **fixed** `TaskModel`. This matches Reynolds' own printed caveat (1992,
+p.169), quoted in that same docstring: the gap axioms enforce only a *definably* Dedekind-complete
+flow.
+
+**The criterion.** The obstruction bites only when a statement must *simultaneously* **validate**
+something on a valuation-rich flow while refuting something else. It is the validation half that
+the all-valuations quantifier defeats. A bare non-validity claim validates nothing, and is
+therefore unobstructed. `ZTimeSharpness.lean`'s *The frame-versus-model obstruction does not bite
+here* section — and `DenseRTimeSharpness.lean`'s section of the same name — are where this was
+first written down; the criterion stated here is what those two instances have in common.
+
+**The operational consequence: choose the statement form before starting the proof.** When the
+criterion says "unobstructed", the available form is the frame-level `¬ F.ValidOn φ`, and the
+frame-class form `¬ ValidIn fc φ` built on it. That is **strictly stronger** than the
+model-relativized form the obstruction forces, in which the *validated* side is asserted only of
+the chosen `TaskModel` and never of the frame. It is the form every `.ZTime`, `.Dense` and
+`.RTime` non-validity result in this directory actually takes: `not_validOn_prior_UZ_dense`,
+`not_validOn_z1_dense`, `not_validOn_density_of_isLeastPos`,
+`not_validOn_dense_indicator_of_isLeastPos`, `not_validOn_prior_U_gap_clock`. Deciding this up
+front is cheap; discovering it mid-proof, after a model has been fixed and the surrounding lemmas
+shaped around it, is not.
+
+**The failure mode this prevents.** Read narrowly, the `CoNotPriorU.lean` docstring looks like a
+general warning against frame-level refutation in this semantics, and over-generalizing it into a
+prohibition costs real effort to undo. It is not a prohibition. It is a statement about one shape
+of claim — refute-while-validating — and establishing that a new refutation is not of that shape
+is a one-line check against the criterion above, not a research question.
+
 ## Dependencies
 
 - **Imports from**: `FormalSystem.Semantics` (including
@@ -299,8 +334,8 @@ will prove a true theorem about a different question.
 
 ---
 
-**Last verified**: 2026-09-24
+**Last verified**: 2026-09-25
 
 ---
 
-*Last verified: 2026-09-24*
+*Last verified: 2026-09-25*

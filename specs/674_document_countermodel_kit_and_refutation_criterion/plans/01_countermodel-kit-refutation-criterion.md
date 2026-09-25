@@ -1,7 +1,7 @@
 # Implementation Plan: Task #674
 
 - **Task**: 674 - Document the countermodel-construction kit and the frame-level refutation criterion in `FormalSystem/Metalogic/Independence/README.md`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.0 hours
 - **Dependencies**: Task 671 (remaining-rows sharpness work, already landed; README read as reconciled)
 - **Research Inputs**: specs/674_document_countermodel_kit_and_refutation_criterion/reports/01_countermodel-kit-refutation-criterion.md
@@ -234,7 +234,7 @@ three hard-won specifics.
 
 ---
 
-### Phase 3: Write Section 2 — the frame-level refutation criterion [NOT STARTED]
+### Phase 3: Write Section 2 — the frame-level refutation criterion [COMPLETED]
 
 **Goal**: Insert `## When frame-level refutation is obstructed, and when it is not` immediately
 after Section 1, promoting the per-module aside into a stated criterion with an operational
@@ -285,7 +285,7 @@ consequence.
 
 ---
 
-### Phase 4: Regenerate inventories and run the gate suite [NOT STARTED]
+### Phase 4: Regenerate inventories and run the gate suite [COMPLETED]
 
 **Goal**: Leave the repository with inventory blocks regenerated and both gates green, without a
 rebuild.
