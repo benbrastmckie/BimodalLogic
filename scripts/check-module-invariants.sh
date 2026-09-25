@@ -752,7 +752,7 @@ ENFORCE_C34A=${ENFORCE_C34A:-1} # no independence claim propped up by a bundling
 ENFORCE_C34B=${ENFORCE_C34B:-1} # every binder-carrying claim carries a marker (enforced)
 export ENFORCE_C34A ENFORCE_C34B
 # C16's second half widens the env_linter batch beyond the single `FormalSystem` library root to
-# every root declared in lakefile.toml -- the other library root and all thirteen `lean_exe`
+# every root declared in lakefile.toml -- the other library root and all fourteen `lean_exe`
 # roots -- because `runLinter FormalSystem` observes only the FormalSystem closure and a module
 # reachable only from an exe root is invisible to it. That is the same blind spot C26's textual
 # scan closes for declared names; this half is what closes it for shapes only ELABORATION can
@@ -3952,9 +3952,9 @@ echo
 #
 # Module targets, never exe targets. `lake build <root>` elaborates and emits C
 # without linking; `lake exe <name>` would link a 240-310 MB binary per root, and
-# there are thirteen of them. Elaboration coverage is what this invariant is about.
+# there are fourteen of them. Elaboration coverage is what this invariant is about.
 # Measured cost with the tree already built by C1, which is the position this check
-# runs in: 10s wall-clock for all thirteen roots.
+# runs in: 10s wall-clock, measured at thirteen roots.
 #
 # Ships ENFORCED with no soft period, on the C24 precedent: the ProofExtractorMain
 # repair landed in the same change, so every root is green from the first run and a
@@ -4531,7 +4531,7 @@ echo
 # `--wfail`, so the tooling has the same two-gate arrangement as the library: `--wfail` is the
 # hard stop, and C28 is the diagnostic half that says which file and which linter, and can
 # absorb a justified exception without turning CI red. The `lean_exe` root step remains without
-# `--wfail`; its thirteen roots are thin mains over modules the two library steps already gate.
+# `--wfail`; its fourteen roots are thin mains over modules the two library steps already gate.
 # ---------------------------------------------------------------------------
 WARNING_BUDGET_OUT=$(python3 scripts/warning-budget.py 2>&1)
 C28_STATUS=$?

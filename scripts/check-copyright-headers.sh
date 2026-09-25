@@ -17,7 +17,7 @@
 # imported exactly one module.)
 #
 # What the linter structurally CANNOT reach, and this script therefore still gates:
-#   - the 12 `BimodalTools/*Main.lean` executable roots. `./BimodalTools.lean` exists, but it
+#   - the 13 `BimodalTools/*Main.lean` executable roots. `./BimodalTools.lean` exists, but it
 #     cannot import them: each declares a root-namespace `main`, and two cannot share one
 #     environment. No root file will ever directly import them.
 #   - everything under Tests/ (65 files). `BimodalTest` and `BimodalToolsTest` declare

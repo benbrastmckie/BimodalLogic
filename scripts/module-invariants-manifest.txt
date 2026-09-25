@@ -25,7 +25,7 @@
 
 # --- Tooling (BimodalTools) ------------------------------------------------
 # `BimodalTools.ProofFirstBenchmark` used to stand here. It no longer does: the
-# `BimodalTools.lean` aggregator imports all 15 non-`Main` tooling modules, so the
+# `BimodalTools.lean` aggregator imports all 18 non-`Main` tooling modules, so the
 # benchmark harness is reachable from a Lake target root and `lake build BimodalTools`
 # compiles it. C6 fails if an entry names a reachable module, so the line was deleted in
 # the same commit as the split rather than renamed to the new module path.

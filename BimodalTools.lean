@@ -22,7 +22,7 @@ import BimodalTools.ProofFirstGenerator
 import BimodalTools.ProofStepExtractor
 import BimodalTools.TableauBridge
 import BimodalTools.TraceExport
--- The 12 `*Main` modules are deliberately absent: each declares a root-namespace `main`, so two
+-- The 13 `*Main` modules are deliberately absent: each declares a root-namespace `main`, so two
 -- of them cannot share one environment. They are reached through their `lean_exe` targets.
 
 /-!

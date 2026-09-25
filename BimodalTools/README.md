@@ -7,7 +7,7 @@ library carries only the logic.
 
 `BimodalTools` is a `lean_lib` deliberately **outside `defaultTargets`**. A plain `lake build`
 compiles `FormalSystem` and nothing here. The tooling is built by `lake build BimodalTools`,
-by `lake build BimodalToolsTest`, or by any of the 12 `lake exe` targets whose roots live here.
+by `lake build BimodalToolsTest`, or by any of the 13 `lake exe` targets whose roots live here.
 
 ## Direction of dependence
 
@@ -73,6 +73,80 @@ saturated branch the verdict came from; `"gated"` is their conjunction.
 so a consumer that ignores the key is unaffected. The rows pinning all of this are
 `Tests/BimodalToolsTest/TableauBridgeTest.lean`.
 
+## Certificate re-verification protocol
+
+`lake exe check_certificate` reads **one** witness-family certificate as a JSON object on stdin
+and prints **one** JSON line on stdout. It is the re-verification half of the dual-verification
+architecture: the model checker emits a certificate, this binary decides whether it is one.
+
+The field names mirror the Lean structures exactly, which
+`FormalSystem/Metalogic/Decidability/WitnessFamily/Basic.lean` states is an export contract
+rather than a local naming choice — renaming `back`, `mid`, `fwd`, `bx` or `lassos` is a
+breaking change on the producing side.
+
+**Input.**
+
+```json
+{"premises":    [<formula>, ...],
+ "conclusions": [<formula>, ...],
+ "bx":          [[<formula>, true], [<formula>, false], ...],
+ "lassos":      [{"back": [<label>, ...], "mid": [<label>, ...], "fwd": [<label>, ...]}, ...],
+ "time":        0}
+```
+
+| Field | Meaning |
+|-------|---------|
+| `premises` | the premise context `Γ` |
+| `conclusions` | the conclusion context `Δ` |
+| `bx` | the box guess, as `[formula, bool]` pairs; any formula not listed reads as `false` |
+| `lassos` | the labelled bi-lassos; lasso `0` is the main one, where the target is read |
+| `back` / `mid` / `fwd` | a lasso's three segments, each a list of **labels** |
+| `time` | **optional**, default `0`: the target time at which the consequence fails |
+
+A `<label>` is a list of `<formula>`, read as a set. A `<formula>` is the tag format
+`Formula.toJson` emits and `BimodalTools/JsonParse.lean`'s `pFormula` parses: `atom` (with
+`name`), `bot`, `imp` (`left`, `right`), `box` (`child`), `untl` and `snce` (each with `event`
+and `guard`). Unknown object fields are skipped, so a producer may attach metadata this checker
+does not read.
+
+**Atom names round-trip on `Atom.base` only.** `Formula.toJson` drops `Atom.freshIndex`, so a
+fresh-indexed atom would silently change identity — and `Finset Formula` membership is by
+`DecidableEq`. A certificate carrying one is therefore rejected outright rather than decoded.
+
+**Output.** Exactly one JSON line, and **never a validity claim**:
+
+```json
+{"status": "countermodel", "time": 0}
+```
+
+```json
+{"status": "rejected",
+ "failed": [{"condition": "fulfilling", "lasso": 0, "position": -2,
+             "formula": {"tag": "untl", "event": {...}, "guard": {...}},
+             "detail": "this eventuality is never discharged"}]}
+```
+
+```json
+{"status": "error", "message": "expected '\"' got 'n' at pos 2"}
+```
+
+`condition` is one of `structural`, `local_coherent`, `fulfilling`, `box_faithful`, `target`, or
+`unlocalized`. `lasso`, `position` and `formula` are `null` when the failure is not tied to one.
+A structural violation — an empty `back` or `fwd`, an empty `lassos` list, a label outside
+`closureOf (Γ ++ Δ)`, a fresh-indexed atom — is certificate *content* that fails a precondition,
+so it is `rejected`; only unparseable input is `error`.
+
+**What acceptance means.** `countermodel` says the four compiled `Decidable` instances that
+`WitnessFamily.joint_countermodel` consumes — `decidableLocalCoherentLab`,
+`decidableFulfillingLab`, `decidableBoxFaithful` and `decidableTarget` — all returned `true` on
+the family rebuilt from this input. It is not a kernel-checked proof for that particular
+certificate. The same honesty the `"gates"` field above carries for the tableau bridge.
+
+`rejected` says only that the object handed over is not a certificate. It never says the
+consequence holds: the checker is one-sided by construction.
+
+The rows pinning all of this are `Tests/BimodalToolsTest/CertificateImportTest.lean`.
+
 ## Contents
 
 <!-- BEGIN GENERATED: inventory dir=BimodalTools -->
@@ -82,6 +156,8 @@ so a consumer that ignores the key is unaffected. The rows pinning all of this a
 | `AxiomNames.lean` | 59 | <!-- TODO: add description --> |
 | `BenchmarkAnchorsMain.lean` | 598 | <!-- TODO: add description --> |
 | `BenchmarkOracleMain.lean` | 359 | <!-- TODO: add description --> |
+| `CertificateImport.lean` | 563 | The certificate library: `closureList`/`intRange`, the `RawCertificate` records, the envelope parser and serializer, the `dite`-based `WitnessFamily` builders, `checkRaw` and the localization scans |
+| `CheckCertificateMain.lean` | 48 | Executable root of `lake exe check_certificate`: `main` only; reads one certificate on stdin, prints one JSON line |
 | `ContrastiveGenerator.lean` | 1,025 | The formula-mutation engine: `MutationType`, `ContrastivePair`, the single-occurrence mutators, `generateContrastivePairs`, and the contrastive JSONL export |
 | `ContrastiveGeneratorMain.lean` | 122 | Executable root of `lake exe contrastive_generator`: argument parsing and `main` only; imports `ContrastiveGenerator` |
 | `DataExport.lean` | 396 | <!-- TODO: add description --> |
@@ -94,6 +170,7 @@ so a consumer that ignores the key is unaffected. The rows pinning all of this a
 | `FormulaEnumerator.lean` | 2,041 | <!-- TODO: add description --> |
 | `ForwardProofGenerator.lean` | 354 | <!-- TODO: add description --> |
 | `InterestingnessMetrics.lean` | 576 | <!-- TODO: add description --> |
+| `JsonParse.lean` | 258 | The tag-format JSON parser: `PState`, the scalar and skip primitives, and `pFormula`; shared by the tableau bridge and the certificate checker |
 | `MachineAppendixMain.lean` | 474 | <!-- TODO: add description --> |
 | `PrefilterSoundness.lean` | 172 | <!-- TODO: add description --> |
 | `ProofExtractorMain.lean` | 1,542 | <!-- TODO: add description --> |
@@ -101,7 +178,7 @@ so a consumer that ignores the key is unaffected. The rows pinning all of this a
 | `ProofFirstGenerator.lean` | 160 | The proof-first export pipeline: `exportToJsonl`, `writeJsonl`, the argument parsers, and `runProofFirstGenerator`, the whole command-line body |
 | `ProofFirstGeneratorMain.lean` | 21 | Executable root of `lake exe proof_first_generator`: `main` only; calls `runProofFirstGenerator` |
 | `ProofStepExtractor.lean` | 344 | <!-- TODO: add description --> |
-| `TableauBridge.lean` | 840 | The tableau bridge library: the JSONL protocol, the request parsers, `BranchGates` and the theorem-hypothesis evaluator, the command handlers, and `replLoop` |
+| `TableauBridge.lean` | 627 | The tableau bridge library: the JSONL protocol, the request parsers, `BranchGates` and the theorem-hypothesis evaluator, the command handlers, and `replLoop` |
 | `TableauBridgeMain.lean` | 23 | Executable root of `lake exe tableau_bridge`: `main` only; calls `TableauBridge.replLoop` |
 | `TableauProofStepsMain.lean` | 688 | <!-- TODO: add description --> |
 | `TraceExport.lean` | 229 | <!-- TODO: add description --> |

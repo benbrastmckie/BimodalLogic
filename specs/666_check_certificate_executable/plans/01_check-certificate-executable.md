@@ -356,7 +356,7 @@ manual smoke run.
 
 ---
 
-### Phase 6: Schema documentation, inventory regeneration, and stale counts [NOT STARTED]
+### Phase 6: Schema documentation, inventory regeneration, and stale counts [COMPLETED]
 
 **Goal**: The two JSON interfaces sit together in `BimodalTools/README.md`, and no prose count
 goes stale from this task.

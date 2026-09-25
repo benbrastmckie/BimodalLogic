@@ -2,7 +2,7 @@
 #
 # The package is named after the repository; the main library is `FormalSystem` and the test
 # library `BimodalTest`. Two further libraries carry the tooling half: `BimodalTools` (the
-# dataset / ML / benchmark modules and the 12 executable roots) and `BimodalToolsTest` (their
+# dataset / ML / benchmark modules and the 13 executable roots) and `BimodalToolsTest` (their
 # tests). `BimodalTools` is DELIBERATELY absent from `defaultTargets`: a plain `lake build`
 # must compile the published library and nothing else, so the tooling is built only by an
 # explicit `lake build BimodalTools` / `lake build BimodalToolsTest` or by a `lake exe` target.
@@ -60,7 +60,7 @@ name = "BimodalTest"
 srcDir = "Tests"
 leanOptions = {pp.unicode.fun = true, autoImplicit = false, weak.linter.hashCommand = false}
 
-# The tooling library: dataset generation, ML export, benchmarks, and the roots of the 12
+# The tooling library: dataset generation, ML export, benchmarks, and the roots of the 13
 # `lean_exe` targets below. Absent from `defaultTargets` on purpose -- see the header comment.
 [[lean_lib]]
 name = "BimodalTools"
