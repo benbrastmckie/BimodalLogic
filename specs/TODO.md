@@ -11,7 +11,7 @@ next_project_number: 675
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,674 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -71,10 +71,6 @@ next_project_number: 675
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
 
-### Documentation
-
-674 [PLANNED] — Document two durable countermodel-construction techniques as...
-
 ### Formula Refactor
 
 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of...
@@ -103,12 +99,13 @@ next_project_number: 675
 ## Tasks
 
 ### 674. Document countermodel kit and refutation criterion
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: documentation
 - **Dependencies**: Task 671
 - **Research**: [674_document_countermodel_kit_and_refutation_criterion/reports/01_countermodel-kit-refutation-criterion.md]
 - **Plan**: [674_document_countermodel_kit_and_refutation_criterion/plans/01_countermodel-kit-refutation-criterion.md]
+- **Summary**: [674_document_countermodel_kit_and_refutation_criterion/summaries/01_countermodel-kit-refutation-criterion-summary.md]
 
 **Description**: Document two durable countermodel-construction techniques as new sections in FormalSystem/Metalogic/Independence/README.md, the ledger and reference page for exactly this directory's results. Both techniques were worked out while proving the .ZTime row of Axiom.minFrameClass minimal, both cost real effort to establish, and neither is written down anywhere a future reader or agent will find it. Each will otherwise be re-derived from scratch by the next refutation task.
 
