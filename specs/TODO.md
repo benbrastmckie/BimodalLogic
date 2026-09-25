@@ -73,7 +73,7 @@ next_project_number: 675
 
 ### Documentation
 
-674 [NOT STARTED] — Document two durable countermodel-construction techniques as...
+674 [RESEARCHED] — Document two durable countermodel-construction techniques as...
 
 ### Formula Refactor
 
@@ -103,10 +103,11 @@ next_project_number: 675
 ## Tasks
 
 ### 674. Document countermodel kit and refutation criterion
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: documentation
 - **Dependencies**: Task 671
+- **Research**: [674_document_countermodel_kit_and_refutation_criterion/reports/01_countermodel-kit-refutation-criterion.md]
 
 **Description**: Document two durable countermodel-construction techniques as new sections in FormalSystem/Metalogic/Independence/README.md, the ledger and reference page for exactly this directory's results. Both techniques were worked out while proving the .ZTime row of Axiom.minFrameClass minimal, both cost real effort to establish, and neither is written down anywhere a future reader or agent will find it. Each will otherwise be re-derived from scratch by the next refutation task.
 

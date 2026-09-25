@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 7,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/674_document_countermodel_kit_and_refutation_criterion/reports/01_countermodel-kit-refutation-criterion.md",
+      "summary": "Verified declaration/path inventory for the countermodel kit and the frame-level refutation criterion, plus the gate analysis that shows C20 tier 2 forbids line-number citations in this README and INV is unaffected; corrects three dispatch claims against machine-checked probes."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790353604_4fe6d5_674",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
