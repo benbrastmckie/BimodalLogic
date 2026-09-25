@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/672_ztime_full_characterization_and_axiom_pin/reports/01_ztime-characterization-axiom-pin.md",
+      "summary": "Verifies by direct elaboration that all six new ZTimeSharpness declarations (four .Dense/.RTime refutations plus two ValidIn fc phi <-> fc = .ZTime characterizations) compile sorry-free at [propext, Classical.choice, Quot.sound]; corrects three defects in the dispatch (realOrder is ambiguous, C14 needs TWO heredocs edited, MainResults.lean is a leaf not a full-tree rebuild) and gives verbatim proof text plus a four-phase decomposition."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790353604_4fe6d5_672",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
