@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/669_required_target_time_and_target_grouping/reports/01_required-target-time-grouping.md",
+      "summary": "Verified design for making the certificate target time required and grouping premises/conclusions/time under a nested \"target\" object: partial-record parser seam routes the missing field to the existing protocol-error path, and a compiled lake env lean spike (12 passing #guard rows, exit 0, zero warnings) closes the dependent-type risk in mkFamily."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790297499_6f48f3_669",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

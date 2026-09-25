@@ -70,7 +70,7 @@ next_project_number: 670
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
-669 [NOT STARTED] — Make the witness-family certificate's target time a required...
+669 [RESEARCHED] — Make the witness-family certificate's target time a required...
 
 ### Formula Refactor
 
@@ -101,10 +101,11 @@ next_project_number: 670
 
 ### 669. Required target time and target grouping
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
+- **Research**: [669_required_target_time_and_target_grouping/reports/01_required-target-time-grouping.md]
 
 **Description**: Make the witness-family certificate's target time a required field and group the target condition to mirror the Lean structure.
 
