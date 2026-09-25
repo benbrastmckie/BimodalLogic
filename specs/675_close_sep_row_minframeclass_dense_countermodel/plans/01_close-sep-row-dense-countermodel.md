@@ -1,7 +1,7 @@
 # Implementation Plan: Task #675
 
 - **Task**: 675 - Close the sep row of Axiom.minFrameClass by constructing a densely ordered countermodel
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6.5 hours
 - **Dependencies**: None (`DenseRTimeSharpness.lean`, `ZTimeSharpness.lean` and `Soundness.lean` are landed)
 - **Research Inputs**: specs/675_close_sep_row_minframeclass_dense_countermodel/reports/01_close-sep-row-dense-countermodel.md
@@ -136,7 +136,7 @@ full rebuild must come after the last edit.
 
 ---
 
-### Phase 1: Carrier, instance, and order machinery [NOT STARTED]
+### Phase 1: Carrier, instance, and order machinery [COMPLETED]
 
 **Goal**: `FormalSystem/Metalogic/Independence/SepSharpness.lean` exists, with the Hahn carrier,
 the missing `DenselyOrdered` instance, the `TemporalOrder`, the generator, the φ-region, and the
@@ -144,28 +144,28 @@ six order helper lemmas — all elaborating sorry-free under a scoped build.
 
 **Tasks**:
 
-- [ ] Re-read `FormalSystem/Metalogic/Independence/DenseRTimeSharpness.lean`'s header (copyright
+- [x] Re-read `FormalSystem/Metalogic/Independence/DenseRTimeSharpness.lean`'s header (copyright
       block, module docstring shape, `Tags` line, `open`/`namespace` ritual) and mirror it.
-- [ ] Create `FormalSystem/Metalogic/Independence/SepSharpness.lean` with imports
+- [x] Create `FormalSystem/Metalogic/Independence/SepSharpness.lean` with imports
       `FormalSystem.Metalogic.Independence.DenseRTimeSharpness` and `Mathlib.Data.Finsupp.Lex`,
       namespace `FormalSystem.Metalogic.Independence`.
-- [ ] Transcribe the carrier abbreviation for `Lex (ℚ →₀ ℚ)` (the Hahn group `⊕_{γ∈ℚ} ℚ`).
-- [ ] Transcribe the `DenselyOrdered` instance verbatim from the report (the explicit
+- [x] Transcribe the carrier abbreviation for `Lex (ℚ →₀ ℚ)` (the Hahn group `⊕_{γ∈ℚ} ℚ`).
+- [x] Transcribe the `DenselyOrdered` instance verbatim from the report (the explicit
       `rw [ofLex_toLex, Finsupp.add_apply, Finsupp.single_apply, …]` chain plus `linarith`; a bare
       `simp` over-simplifies the `<` goal to `False`).
-- [ ] Declare `noncomputable abbrev sepSharpOrder : TemporalOrder := TemporalOrder.of …`, the
+- [x] Declare `noncomputable abbrev sepSharpOrder : TemporalOrder := TemporalOrder.of …`, the
       `noncomputable def` generator, and the φ-region set. Follow `denseSharpOrder` /
       `ztimeSharpOrder` for naming and the `noncomputable` ritual.
-- [ ] Transcribe the six helpers: the `@[simp]` generator-application lemma, positivity of the
+- [x] Transcribe the six helpers: the `@[simp]` generator-application lemma, positivity of the
       generator, the two index-comparison lemmas (generator below a term from its leading index,
       and a doubled term below a generator), leading-index extraction from positivity, and the
       order-reversal equivalence replacing Mathlib's unusable `Finsupp.Lex.single_lt_iff`.
-- [ ] State **every** helper at the bare carrier abbreviation, never at `(sepSharpOrder : Type)`.
-- [ ] Record in the module docstring that a generalised
+- [x] State **every** helper at the bare carrier abbreviation, never at `(sepSharpOrder : Type)`.
+- [x] Record in the module docstring that a generalised
       `[LinearOrder α] [AddCommGroup N] [LinearOrder N] [DenselyOrdered N] → DenselyOrdered (Lex (α →₀ N))`
       holds (replace the midpoint by `exists_between` in `N`) and is an upstreaming candidate for
       `FormalSystem/ForMathlib/Order/`, kept local here to avoid the C24 `ForMathlib/` exception.
-- [ ] Do **not** add the import to `FormalSystem/Metalogic/Independence.lean` yet — that edit is
+- [x] Do **not** add the import to `FormalSystem/Metalogic/Independence.lean` yet — that edit is
       batched into Phase 4 so the aggregator (and its dependents) rebuild exactly once.
 
 **Timing**: 1.5 hours
@@ -194,7 +194,7 @@ text has drifted from the verified original rather than as a reason to trim docs
 
 ---
 
-### Phase 2: The three order facts and the frame-level refutation [NOT STARTED]
+### Phase 2: The three order facts and the frame-level refutation [IN PROGRESS]
 
 **Goal**: the three accumulation facts about the φ-region and the frame-level non-validity
 theorem `not_validOn_sep_lexHahn` land sorry-free, with the `Axiom.sep` shape pin compiling.
