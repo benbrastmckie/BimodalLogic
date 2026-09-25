@@ -271,33 +271,42 @@ states.
 
 ---
 
-### Phase 4: Reconcile implementation-status.md [NOT STARTED]
+### Phase 4: Reconcile implementation-status.md [COMPLETED]
 
 **Goal**: Bring `docs/project-info/implementation-status.md`'s aggregator row into agreement with
 Phase 3's settled count, and resolve Defect 3's row-placement question with the reasoning
 recorded in the document.
 
 **Tasks**:
-- [ ] Re-read the Layer 2: Metalogic table immediately before editing.
-- [ ] Replace the `Metalogic/Conservativity.lean` row's "re-exports the five modules below" with
+- [x] Re-read the Layer 2: Metalogic table immediately before editing. *(completed)*
+- [x] Replace the `Metalogic/Conservativity.lean` row's "re-exports the five modules below" with
       wording carrying the same number and the same named set as Phase 3's docstring, and
       pointing to the docstring for the full enumeration. The wording must NOT imply the two
       rows physically below it are that enumeration — they are an illustrative sample, and "the
-      N modules below" is exactly the phrasing that created this defect.
-- [ ] Resolve Defect 3: leave the `MinusLanguage/Soundness.lean` row where it is and add a short
+      N modules below" is exactly the phrasing that created this defect. *(completed: now reads
+      "re-exports 20 modules -- every module this file imports -- ... (full list in the module's
+      own docstring); the two rows below are an illustrative sample, not the full enumeration")*
+- [x] Resolve Defect 3: leave the `MinusLanguage/Soundness.lean` row where it is and add a short
       parenthetical to its Notes cell recording why — it lives under `MinusLanguage/` and is
       grouped here with its Conservativity dependency, consistent with the table's
       narrative-Layer convention (the same convention that places `Correspondence/Galois.lean`
       and `Expressiveness/Kamp/` under Layers 1 and 2 respectively rather than under a literal
       directory grouping). If the implementer's reading of the table contradicts this, moving the
-      row instead is acceptable — but the choice must be recorded either way.
-- [ ] Watch for literal `|` characters: this file is a Markdown table, so any pipe inside a cell
+      row instead is acceptable — but the choice must be recorded either way. *(completed: row
+      left in place, parenthetical added to its Notes cell)*
+- [x] Watch for literal `|` characters: this file is a Markdown table, so any pipe inside a cell
       must stay escaped, and a stray pipe would also be the truncation hazard flagged for the
-      inventory generator.
-- [ ] Optionally add a one-line note at `docs/development/PUBLICATION_REFACTOR.md`'s relevant
+      inventory generator. *(completed: both edited rows confirmed at exactly 4 structural pipes,
+      no stray literal pipe introduced)*
+- [x] Optionally add a one-line note at `docs/development/PUBLICATION_REFACTOR.md`'s relevant
       table stating that its `Metalogic/Conservativity/MinusLanguageSoundness.lean` references
       are the pre-move historical path and are correct in context. The paths themselves MUST NOT
-      change. If this note is skipped, record that decision in the phase notes.
+      change. If this note is skipped, record that decision in the phase notes. *(deviation:
+      skipped — the file is explicitly out of this task's scope as the historical record of the
+      move, and the dispatch's own DELIBERATE EXCLUSION framing already documents why its old
+      paths are correct in context; adding a note there risks an unnecessary touch to an
+      out-of-scope file for marginal benefit. `grep -c MinusLanguageSoundness
+      docs/development/PUBLICATION_REFACTOR.md` confirmed unchanged at 4)*
 
 **Timing**: 0.5 hours
 

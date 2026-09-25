@@ -68,9 +68,9 @@ Module-by-module implementation status for the Bimodal TM logic library.
 | `Metalogic/DiscreteNonCompactness.lean` | ✅ | Machine-refutes ZTime strong completeness |
 | `Metalogic/SetConsequence.lean` | ✅ | Set-based consequence layer; states `CompactBase`/`CompactDense` and their strong-completeness and model-existence siblings |
 | `Metalogic/Compactness.lean` | ✅ | Discharges all six: `modelExistenceBase`/`modelExistenceDense` by ultraproduct, `compactBase`/`compactDense`, `strongCompletenessBase`/`strongCompletenessDense` -- all sorryAx-free |
-| `Metalogic/Conservativity.lean` | ✅ | Aggregator: the forward-conservativity prohibition and the CEB/CEF status record; re-exports the five modules below |
+| `Metalogic/Conservativity.lean` | ✅ | Aggregator: the forward-conservativity prohibition and the CEB/CEF status record; re-exports 20 modules -- every module this file imports -- across the L⁻-vs-TM⁻ and TM-vs-TM⁺ story (full list in the module's own docstring); the two rows below are an illustrative sample, not the full enumeration |
 | `Metalogic/Conservativity/Backward.lean` | ✅ | TM/TM+ backward bridge |
-| `MinusLanguage/Soundness.lean` | ✅ | BL soundness at Base/Dense/ZTime/RTime by composition; `truthAt_tr`, the validity forms, and `minus_not_derivable_nil_bot{,_ztime}` |
+| `MinusLanguage/Soundness.lean` | ✅ | BL soundness at Base/Dense/ZTime/RTime by composition; `truthAt_tr`, the validity forms, and `minus_not_derivable_nil_bot{,_ztime}` (lives under `MinusLanguage/`; grouped here with its Conservativity dependency, consistent with this table's narrative-Layer convention) |
 | `Metalogic/Independence/` | ✅ | Three independence results, including `sat_rtime_ssubset_mod_axiomSet` (`Sat .RTime` not Galois-closed -- definability of the model class, distinct from the open RTime strong-completeness question above) and `sat_ztime_ssubset_mod_axiomSet` (`Sat .ZTime` not Galois-closed) |
 | `Metalogic/Expressiveness/Kamp/` | ✅ | `kampPriorExpressiveCompleteness` -- `{U, S}` expressively complete relative to monadic first-order logic **for Prior structures**, sorry-free (`propext`, `Classical.choice`, `Quot.sound`); load-bearing via `uSExpressivelyCompleteOverPrior` |
 
