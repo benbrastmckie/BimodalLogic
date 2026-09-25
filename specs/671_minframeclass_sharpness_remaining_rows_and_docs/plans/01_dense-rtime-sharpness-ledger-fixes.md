@@ -355,25 +355,28 @@ above; implementation-time findings confirm or supersede it.
 
 ---
 
-### Phase 3: Scoped build over the Independence closure [NOT STARTED]
+### Phase 3: Scoped build over the Independence closure [COMPLETED]
 
 **Goal**: The new module and its import are proved not to break anything downstream, before any
 edit that would cost a full-tree rebuild.
 
 **Tasks**:
 
-- [ ] Re-derive the reverse-dependency set rather than trusting a figure:
+- [x] Re-derive the reverse-dependency set rather than trusting a figure:
       `grep -rln '^import FormalSystem.Metalogic.Independence.DenseRTimeSharpness$' FormalSystem Tests`,
       then iterate the same grep up the aggregator chain
       (`…Independence` → `…Metalogic` → consumers).
-- [ ] Run one detached scoped build:
+- [x] Run one detached scoped build:
       `bash .claude/scripts/lake-build-guard.sh --timeout 1800 -- build FormalSystem.Metalogic.Independence`
       under `Bash(run_in_background: true)`.
-- [ ] Wait with the bounded-waiter idiom from `context/patterns/bounded-build-waiter.md`: a hard
+- [x] Wait with the bounded-waiter idiom from `context/patterns/bounded-build-waiter.md`: a hard
       timeout, writer liveness via `kill -0` on the captured PID, never `pgrep -f` or
       `ps | grep`, one waiter per log.
-- [ ] Grep the build log for `error:`, for namespace/ambiguity complaints, and for any
-      `declaration uses 'sorry'` warning.
+- [x] Grep the build log for `error:`, for namespace/ambiguity complaints, and for any
+      `declaration uses 'sorry'` warning. *(deviation: altered — the first scoped build surfaced a
+      `linter.style.show` warning that `lake env lean` had not shown, because the linter set is a
+      package-level `leanOptions` entry; `isLeast_one_denseSharpOrder` was restated in term mode
+      and the scoped build re-run, now zero errors and zero warnings.)*
 
 **Timing**: 0.75 hours, mostly build wall-time
 

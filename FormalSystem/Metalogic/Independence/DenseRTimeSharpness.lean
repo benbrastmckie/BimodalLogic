@@ -199,11 +199,8 @@ above `.Dense`.
 noncomputable abbrev denseSharpOrder : TemporalOrder := TemporalOrder.of ℤ
 
 /-- `1` is the least positive integer duration. -/
-theorem isLeast_one_denseSharpOrder : IsLeast {x : (denseSharpOrder : Type) | 0 < x} 1 := by
-  refine ⟨show (0 : ℤ) < 1 by omega, fun x hx => ?_⟩
-  show (1 : ℤ) ≤ x
-  have : (0 : ℤ) < x := hx
-  omega
+theorem isLeast_one_denseSharpOrder : IsLeast {x : (denseSharpOrder : Type) | 0 < x} 1 :=
+  ⟨show (0 : ℤ) < 1 by omega, fun _ (hx : (0 : ℤ) < _) => show (1 : ℤ) ≤ _ by omega⟩
 
 /-- The integer translation frame is a `.Base` frame. -/
 theorem sat_base_denseSharpFrame :
