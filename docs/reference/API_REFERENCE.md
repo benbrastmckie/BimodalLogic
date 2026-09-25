@@ -907,7 +907,7 @@ directional; the converse edge is permitted and is what these three modules use:
 |------|-----------------|
 | `MinusLanguage/MinusTruth.lean` | `MinusTruthAt`, a native six-clause recursion on `MinusFormula` per `def:BL-semantics` -- **not** `TruthAt ∘ tr` -- plus the `MinusTruth.*` characterization lemmas |
 | `MinusLanguage/MinusValidity.lean` | `MinusValid`, `MinusSemanticConsequence`, `MinusValidDense`, `MinusValidZTime`, `MinusValidRTime`; no density-free `MinusValidComplete`, which would be refutable |
-| `Metalogic/Conservativity/MinusLanguageSoundness.lean` | `truthAt_tr` (the bridge, proved by induction), `minus_soundness{,_dense,_discrete,_dedekind}` and their validity forms, and `minus_not_derivable_nil_bot{,_discrete}` |
+| `MinusLanguage/Soundness.lean` | `truthAt_tr` (the bridge, proved by induction), `minus_soundness{,_dense,_ztime,_rtime}` and their validity forms, and `minus_not_derivable_nil_bot{,_ztime}` |
 
 | Result | What it says |
 |--------|--------------|

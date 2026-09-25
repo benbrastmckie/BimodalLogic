@@ -647,10 +647,10 @@ op("Log")("Dense")$, which is a target rather than a result.
   If $tack.r phi.alt$ then $#satisfies phi.alt$, for TM⁻ and for each of its four frame-class
   extensions $op("TM")^-_f$, $op("TM")^-_d$, $op("TM")^-_c$, $op("TM")^-_(d c)$ over its own class.#footnote[The characteristic case is M5, $#satisfies diamond.stroked square.stroked phi.alt arrow.r square.stroked phi.alt$, which holds because $square.stroked$ quantifies over $H_(#taskframe)$ entire and so is insensitive to the possible world at which it is evaluated.]
 ]
-#leansrc("Metalogic.Conservativity.MinusLanguageSoundness", "minus_soundness")
-#leansrc("Metalogic.Conservativity.MinusLanguageSoundness", "minus_soundness_dense")
-#leansrc("Metalogic.Conservativity.MinusLanguageSoundness", "minus_soundness_ztime")
-#leansrc("Metalogic.Conservativity.MinusLanguageSoundness", "minus_soundness_rtime")
+#leansrc("MinusLanguage.Soundness", "minus_soundness")
+#leansrc("MinusLanguage.Soundness", "minus_soundness_dense")
+#leansrc("MinusLanguage.Soundness", "minus_soundness_ztime")
+#leansrc("MinusLanguage.Soundness", "minus_soundness_rtime")
 
 The three frame properties that separate the extensions are each characterized by a single axiom.
 These correspondences are what make the extensions extensions *of a frame class* and not merely of
