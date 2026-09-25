@@ -11,9 +11,9 @@ next_project_number: 675
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,672 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650,671 | 298,464,502,563,649,672 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,618,674 | 231,465,497,564,565,616,671 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,671 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,674 | 298,464,502,563,649,671 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -93,8 +93,7 @@ next_project_number: 675
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-672 [PLANNED] — Strengthen the .ZTime sharpness results from...
-  └─ 671 [NOT STARTED] — Prove the MINIMALITY half of Axiom.minFrameClass for the four...
+671 [NOT STARTED] — Prove the MINIMALITY half of Axiom.minFrameClass for the four...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -149,12 +148,13 @@ STARTING POINTS. FormalSystem/Metalogic/Independence/README.md (the target, and 
 ---
 
 ### 672. Ztime full characterization and axiom pin
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [672_ztime_full_characterization_and_axiom_pin/reports/01_ztime-characterization-axiom-pin.md]
 - **Plan**: [672_ztime_full_characterization_and_axiom_pin/plans/01_ztime-characterization-axiom-pin.md]
+- **Summary**: [672_ztime_full_characterization_and_axiom_pin/summaries/01_ztime-characterization-axiom-pin-summary.md]
 
 **Description**: Strengthen the .ZTime sharpness results from non-Base-validity to a full ValidIn fc phi <-> fc = .ZTime characterization for Axiom.prior_UZ and Axiom.z1, and pin the resulting headline theorems on FormalSystem/MainResults.lean's build-time axiom audit. Both halves were isolated as explicitly optional phases while the mandated .ZTime minimality deliverable was landed, and each was closed with a Reasoned Exclusions record rather than attempted.
 
