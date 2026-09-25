@@ -11,7 +11,7 @@ next_project_number: 671
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,670 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -89,7 +89,6 @@ next_project_number: 671
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-670 [PLANNED] — Machine-check the MINIMALITY half of Axiom.minFrameClass for...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -101,12 +100,13 @@ next_project_number: 671
 
 ### 670. Minframeclass sharpness prior uz z1
 - **Effort**: medium
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [670_minframeclass_sharpness_prior_uz_z1/reports/01_ztime-sharpness-countermodels.md]
 - **Plan**: [670_minframeclass_sharpness_prior_uz_z1/plans/01_ztime-sharpness-theorems.md]
+- **Summary**: [670_minframeclass_sharpness_prior_uz_z1/summaries/01_ztime-sharpness-theorems-summary.md]
 
 **Description**: Machine-check the MINIMALITY half of Axiom.minFrameClass for the two .ZTime axioms, prior_UZ and z1: prove that neither is valid at FrameClass.Base. The tag currently asserts minimality; only the upper bound is proved.
 
