@@ -58,7 +58,7 @@ jobs:
       # BimodalTools/ProofExtractorMain.lean (then ProofStepExport.lean) failed to elaborate for an extended period
       # with `lake exe proof_extractor` simply broken and CI green throughout, because no step
       # here could observe it. Marking the exe targets `@[default_target]` was rejected on
-      # measured cost -- 240-310 MB of linked binary per root, fourteen of them. These are
+      # measured cost -- 240-310 MB of linked binary per root, across every one. These are
       # MODULE targets: elaboration and C emission, no linking, reusing the cache the
       # lean-action step above already populated. C25 in scripts/check-module-invariants.sh is
       # the full-mode counterpart of this same root list, and both read it through
@@ -80,7 +80,7 @@ jobs:
       # `lean_lib BimodalTools` is outside `defaultTargets`, so the `build: true` step above
       # compiles none of it -- that exclusion is the whole point of the library split, and it
       # means CI would otherwise never elaborate 14,750 lines of tooling. The step above covers
-      # the 13 executable roots; this one covers the 18 non-`Main` modules the `BimodalTools.lean`
+      # the executable roots; this one covers the non-`Main` modules the `BimodalTools.lean`
       # aggregator carries, two of which (`DatasetAssembly`, `PrefilterSoundness`) are reached by
       # nothing else at all. Placed after the exe-root step so it reuses that warm cache, per
       # docs/development/CI_CD_PROCESS.md's step-placement convention.

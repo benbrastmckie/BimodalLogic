@@ -4531,7 +4531,7 @@ echo
 # `--wfail`, so the tooling has the same two-gate arrangement as the library: `--wfail` is the
 # hard stop, and C28 is the diagnostic half that says which file and which linter, and can
 # absorb a justified exception without turning CI red. The `lean_exe` root step remains without
-# `--wfail`; its fourteen roots are thin mains over modules the two library steps already gate.
+# `--wfail`; its roots are thin mains over modules the two library steps already gate.
 # ---------------------------------------------------------------------------
 WARNING_BUDGET_OUT=$(python3 scripts/warning-budget.py 2>&1)
 C28_STATUS=$?
@@ -5356,7 +5356,7 @@ echo
 # `--lib FormalSystem` is not a preference. A bare `lake exe mk_all` errors on this package:
 # `BimodalTest` and `BimodalToolsTest` declare `srcDir = "Tests"` while the generator resolves a
 # library name as a directory relative to the working directory, and a generated
-# `BimodalTools.lean` would import the 12 `*Main` modules, whose `main` declarations cannot
+# `BimodalTools.lean` would import the `*Main` modules, whose `main` declarations cannot
 # share one environment. Those three aggregators stay hand-maintained under C8.
 #
 # DO NOT "fix" a failure by editing FormalSystem.lean by hand, and do not add a header or a

@@ -2,7 +2,7 @@
 #
 # The package is named after the repository; the main library is `FormalSystem` and the test
 # library `BimodalTest`. Two further libraries carry the tooling half: `BimodalTools` (the
-# dataset / ML / benchmark modules and the 13 executable roots) and `BimodalToolsTest` (their
+# dataset / ML / benchmark modules and its executable roots) and `BimodalToolsTest` (their
 # tests). `BimodalTools` is DELIBERATELY absent from `defaultTargets`: a plain `lake build`
 # must compile the published library and nothing else, so the tooling is built only by an
 # explicit `lake build BimodalTools` / `lake build BimodalToolsTest` or by a `lake exe` target.

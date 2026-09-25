@@ -7,7 +7,7 @@ library carries only the logic.
 
 `BimodalTools` is a `lean_lib` deliberately **outside `defaultTargets`**. A plain `lake build`
 compiles `FormalSystem` and nothing here. The tooling is built by `lake build BimodalTools`,
-by `lake build BimodalToolsTest`, or by any of the 13 `lake exe` targets whose roots live here.
+by `lake build BimodalToolsTest`, or by any of the `lake exe` targets whose roots live here.
 
 ## Direction of dependence
 
