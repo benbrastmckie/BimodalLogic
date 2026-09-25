@@ -337,7 +337,12 @@ inductive Axiom : Formula → Type where
   If φ holds at some future time, then there is a nearest future time where φ holds,
   with ¬φ holding at all intermediate points. This is the integer version of the
   Prior axiom, valid on all discrete well-founded-upward orders.
-  Equivalent to Venema's axiom (W): every definable future set has a least element. -/
+  Equivalent to Venema's axiom (W): every definable future set has a least element.
+
+  The discreteness requirement is not merely cited: an atomic instance of this axiom is refuted
+  over a densely ordered duration group by `Metalogic.Independence.not_validIn_base_prior_UZ`
+  (`FormalSystem/Metalogic/Independence/ZTimeSharpness.lean`), so `.ZTime` is the minimal frame
+  class for it. -/
   | prior_UZ (φ : Formula) :
       Axiom (φ.someFuture.imp (Formula.untl φ.neg φ))
   -- Layer 7: Z1 Axiom (IsSuccArchimedean characteristic axiom)
@@ -349,7 +354,12 @@ inductive Axiom : Formula → Type where
   If Gφ→φ holds at all future times (induction step), and Gφ holds at some future
   time (base case), then Gφ holds at the current time (conclusion). This is the
   characteristic axiom of IsSuccArchimedean frames: backward induction from any
-  reachable Gφ-witness yields Gφ everywhere. -/
+  reachable Gφ-witness yields Gφ everywhere.
+
+  As with `prior_UZ`, the discreteness requirement is proved rather than merely cited: an atomic
+  instance is refuted over a densely ordered duration group by
+  `Metalogic.Independence.not_validIn_base_z1`
+  (`FormalSystem/Metalogic/Independence/ZTimeSharpness.lean`), so `.ZTime` is minimal here too. -/
   | z1 (φ : Formula) :
       Axiom ((φ.allFuture.imp φ).allFuture.imp (φ.allFuture.someFuture.imp φ.allFuture))
   -- Layer 8: Density Axiom (1)
@@ -594,6 +604,19 @@ This is the single source of truth for axiom-frame-class compatibility:
 - Dense (2 axioms: density, dense_indicator): valid on densely ordered frames
 - ZTime (2 axioms: prior_UZ, z1): valid on discrete frames
 - RTime (2 axioms: prior_U_gap, sep): valid on dense Dedekind-complete frames
+
+**Upper bound, for every row**: `Metalogic.axiom_validIn_min` proves `ValidIn ax.minFrameClass φ`
+for every axiom, so each tag really is a class at which that axiom is valid.
+
+**Lower bound, for the ZTime row only**: that tag is also *minimal* — no class strictly below
+`.ZTime` validates either axiom. This is proved, not cited:
+`Metalogic.Independence.prior_UZ_minFrameClass_sharp` and
+`Metalogic.Independence.z1_minFrameClass_sharp`
+(`FormalSystem/Metalogic/Independence/ZTimeSharpness.lean`), which refute the two axioms on the
+translation frame over a densely ordered duration group and reach every class below `.ZTime`
+through the order fact that `.Base` is the only one. The Base, Dense and RTime rows carry the
+upper bound **only**: their tags are not known to be minimal here, and the corresponding
+sharpness results do not exist yet.
 
 Total: 29 axiom constructors. (The TR mirrors `prior_SZ` and `prior_S_gap` are derived at the
 frame class of their primaries, `DerivedAxioms.priorSZ` / `DerivedAxioms.priorSGap`.)

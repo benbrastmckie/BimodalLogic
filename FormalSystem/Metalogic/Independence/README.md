@@ -3,7 +3,7 @@
 Underivability results, established by exhibiting a model of the assumptions in which the
 target formula fails.
 
-Eight results are carried here:
+Nine results are carried here:
 
 1. The paper's `CO` principle does **not** derive Reynolds' `Axiom.prior_U_gap` over the dense
    base. The converse direction — Reynolds' triple *does* derive `CO` — is
@@ -33,6 +33,14 @@ Eight results are carried here:
    (`PlusLanguage/PlusLimitClosure.lean`, by Zorn plus the Extension Theorem) and is
    not a Base theorem of TM⁺. Completeness of any *extension* of the axiom set is open at every
    class, and nothing is claimed at Dense, ZTime or RTime.
+9. **The `.ZTime` row of `Axiom.minFrameClass` is minimal, not merely an upper bound**
+   (`ZTimeSharpness.lean`). `Metalogic.axiom_validIn_min` already proves every axiom valid at its
+   own tag; `prior_UZ_minFrameClass_sharp` and `z1_minFrameClass_sharp` supply the other
+   direction, so no frame class strictly below `.ZTime` validates `Axiom.prior_UZ` or `Axiom.z1`.
+   The underivability corollaries are `not_derivable_base_prior_UZ` and `not_derivable_base_z1`.
+   What the countermodel refutes is *discreteness*, not the Archimedean property: both axioms fail
+   on the translation frame over any densely ordered duration group. The Base, Dense and RTime
+   rows of `Axiom.minFrameClass` remain upper-bound-only.
 
 Results 2 and 3 are the two halves of the finding that the frame-class *narrowings* are not
 Galois-closed, in contrast with the paper's bare classes — which are closed, by
@@ -98,6 +106,7 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 | `StateSetTruth.lean` | 236 | `satSet` and `plusTruthAt_iff_mem_satSet`: over an (H1)+(H2) frame, L⁺ truth depends only on the world state of evaluation. Plus `plusValidOn_iff_satSet_univ` and `determined_of_orderFlow`. |
 | `StaticFrame.lean` | 323 | The static frame at an arbitrary duration group: every nonzero duration loops, so truth is time-invariant, and the `untl`/`snce` clauses collapse into a small constant-truth calculus (general, dense and discrete forms, plus `K⁺`/`K⁻` and `Axiom.z1`). Turns every later axiom check into a rewrite. |
 | `TranslationProductCoarse.lean` | 136 | Coarse models on the translation product (`Semantics/Frames/TranslationProduct.lean`, a proof device, never an intended model): `liftK` lifts a coarse model with the coarsening forgetting the clock; `c_invariance` — coarse truth is preserved by the projection; `pasteClosed_liftK` / `pasteClosed_of_liftK` — paste-closure transfers in both directions; `c_refuted_lift` — a coarse refutation on `F` is a coarse refutation on the recurrence-free, Limit-for-free product in the same frame class. |
+| `ZTimeSharpness.lean` | 292 | <!-- TODO: add description --> |
 <!-- END GENERATED -->
 
 ## Key Results
@@ -134,6 +143,11 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
   identifies the offsets `w₀` and `-w₀`.
 - `not_plusDerivable_of_pcRefuted` (`PastedCoarseModels.lean`) — soundness of TM⁺ at Base for
   paste-closed coarsened-state models, in the shape a refutation consumes.
+- `prior_UZ_minFrameClass_sharp`, `z1_minFrameClass_sharp` (`ZTimeSharpness.lean`) — the `.ZTime`
+  tag of `Axiom.minFrameClass` is minimal for both its axioms, via the frame-level refutations
+  `not_validOn_prior_UZ_dense` / `not_validOn_z1_dense` at an arbitrary densely ordered duration
+  group and the order fact `eq_base_of_lt_ztime`. The `CoNotPriorU.lean` frame-versus-model
+  obstruction does not apply, because a bare non-validity claim validates nothing.
 - `plus_incomplete_base`, `not_plus_complete_base` (`PlusIncompleteness.lean`) — the limit-closure
   formula is valid and not a Base theorem of TM⁺; the hypothesis of
   `starConservative_of_plusComplete` at Base, refuted. Halves: `blc_plusValid`
