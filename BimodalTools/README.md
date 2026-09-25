@@ -174,7 +174,7 @@ The rows pinning all of this are `Tests/BimodalToolsTest/CertificateImportTest.l
 | `AxiomNames.lean` | 59 | <!-- TODO: add description --> |
 | `BenchmarkAnchorsMain.lean` | 598 | <!-- TODO: add description --> |
 | `BenchmarkOracleMain.lean` | 359 | <!-- TODO: add description --> |
-| `CertificateImport.lean` | 563 | The certificate library: `closureList`/`intRange`, the `RawCertificate` records, the envelope parser and serializer, the `dite`-based `WitnessFamily` builders, `checkRaw` and the localization scans |
+| `CertificateImport.lean` | 658 | The certificate library: `closureList`/`intRange`, the `RawCertificate` records, the envelope parser and serializer, the `dite`-based `WitnessFamily` builders, `checkRaw` and the localization scans |
 | `CheckCertificateMain.lean` | 48 | Executable root of `lake exe check_certificate`: `main` only; reads one certificate on stdin, prints one JSON line |
 | `ContrastiveGenerator.lean` | 1,025 | The formula-mutation engine: `MutationType`, `ContrastivePair`, the single-occurrence mutators, `generateContrastivePairs`, and the contrastive JSONL export |
 | `ContrastiveGeneratorMain.lean` | 122 | Executable root of `lake exe contrastive_generator`: argument parsing and `main` only; imports `ContrastiveGenerator` |

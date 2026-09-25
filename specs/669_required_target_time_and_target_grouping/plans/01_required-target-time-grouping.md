@@ -1,7 +1,7 @@
 # Implementation Plan: Required Target Time and Target Grouping
 
 - **Task**: 669 - Make the witness-family certificate's target time a required field and group the target condition to mirror the Lean structure.
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/669_required_target_time_and_target_grouping/reports/01_required-target-time-grouping.md
@@ -120,47 +120,47 @@ the test rows are reshaped and the optionality row is inverted. Both lake target
 
 **Tasks**:
 
-- [ ] In `BimodalTools/CertificateImport.lean`, replace the flat `RawCertificate` (currently
+- [x] In `BimodalTools/CertificateImport.lean`, replace the flat `RawCertificate` (currently
       `premises`, `conclusions`, `bx`, `lassos`, `time : Int := 0`) with two records:
       `RawTarget` (`premises : List Formula := []`, `conclusions : List Formula := []`,
       `time : Int` — **no default**) and `RawCertificate` (`target : RawTarget` — no default —
       plus `bx`, `lassos` unchanged). Keep `deriving Repr, Inhabited, DecidableEq` on both;
       `deriving` uses field types, not field defaults, so `Inhabited` still synthesizes.
-- [ ] Add the parse-time seam: `PartialTarget` (same fields, `time : Option Int := none`) and
+- [x] Add the parse-time seam: `PartialTarget` (same fields, `time : Option Int := none`) and
       `PartialCertificate` (`target : Option PartialTarget := none`, `bx`, `lassos`), each with
       `deriving Repr, Inhabited, DecidableEq`.
-- [ ] Add `PartialTarget.complete : PartialTarget → Except String RawTarget` and
+- [x] Add `PartialTarget.complete : PartialTarget → Except String RawTarget` and
       `PartialCertificate.complete : PartialCertificate → Except String RawCertificate`, with two
       **distinct** messages — a producer that omitted the whole `"target"` object and one that
       omitted only its `"time"` have made different mistakes, and the distinction costs nothing.
-- [ ] Split the envelope parser: a new `pRawTarget` (a `pObjectFields` fold over `PartialTarget`,
+- [x] Split the envelope parser: a new `pRawTarget` (a `pObjectFields` fold over `PartialTarget`,
       `"time"` writing `some v`) and a rewritten `pRawCertificate` producing `PartialCertificate`
       with a `"target"` key dispatching to `pRawTarget`. `pExpect` already skips leading whitespace,
       so the nested call needs no extra whitespace handling at the `:` boundary; `pSkipValue` keeps
       unknown-field tolerance at **both** nesting levels for free.
-- [ ] Keep `parseCertificate`'s name and type `Except String RawCertificate`, now ending in a
+- [x] Keep `parseCertificate`'s name and type `Except String RawCertificate`, now ending in a
       `complete` call. `checkLine` is untouched, so the `{"status":"error"}` routing is inherited
       rather than rebuilt — do not add a `CheckResult` constructor.
-- [ ] Split the serializer into `RawTarget.toJson` and `RawCertificate.toJson`, emitting
+- [x] Split the serializer into `RawTarget.toJson` and `RawCertificate.toJson`, emitting
       `{"target":{"premises":...,"conclusions":...,"time":...},"bx":...,"lassos":...}`.
-- [ ] Re-project the three downstream readers, with no logic change: `RawCertificate.formulas`
+- [x] Re-project the three downstream readers, with no logic change: `RawCertificate.formulas`
       (`c.target.premises ++ c.target.conclusions ++ ...`); `mkFamily`'s return type **and** its
       `closureOf (raw.target.premises ++ raw.target.conclusions)` argument; `checkRaw`'s three
       `raw.time` uses (the `decidableTarget` call, the `targetFailure` scan, and
       `.countermodel raw.time`) to `raw.target.time`.
-- [ ] Update the two stale field docstrings carried over from the flat record: the
+- [x] Update the two stale field docstrings carried over from the flat record: the
       `/-- The target time. Optional on the wire, defaulting to `0`. -/` field comment and
       `pRawCertificate`'s `/-- ... `"time"` may be absent, in which case it reads as `0`. -/`.
-- [ ] In `Tests/BimodalToolsTest/CertificateImportTest.lean`, reshape the certificate literals:
+- [x] In `Tests/BimodalToolsTest/CertificateImportTest.lean`, reshape the certificate literals:
       `posRaw` and `sepRaw` gain `target := { premises := ..., conclusions := ..., time := 0 }`;
       the `{ sepRaw with premises := [Formula.atom ⟨"p", some 3⟩] }` row becomes
       `{ sepRaw with target := { sepRaw.target with premises := ... } }`.
-- [ ] Reshape every wire-literal row to the nested envelope, and **extend** the unknown-field row to
+- [x] Reshape every wire-literal row to the nested envelope, and **extend** the unknown-field row to
       also carry an unknown field *inside* the `"target"` object — new surface the nesting creates.
-- [ ] **Invert**, do not merely edit, the row commented `` -- `"time"` is optional on the wire and
+- [x] **Invert**, do not merely edit, the row commented `` -- `"time"` is optional on the wire and
       defaults to `0`. ``: that comment now states the contract falsely. Replace it with a row
       asserting the same input is an error.
-- [ ] Add the two acceptance rows, asserting on the rendered JSON prefix so they speak the
+- [x] Add the two acceptance rows, asserting on the rendered JSON prefix so they speak the
       acceptance criterion's own vocabulary:
       `#guard (checkLineToJson "{\"target\":{\"premises\":[],\"conclusions\":[]},\"lassos\":[]}").startsWith "{\"status\":\"error\""`
       and `#guard (checkLineToJson "{\"bx\":[],\"lassos\":[]}").startsWith "{\"status\":\"error\""`.
@@ -210,7 +210,7 @@ records **why** the time is witnessed rather than defaulted.
 
 **Tasks**:
 
-- [ ] Extend `CertificateImport.lean`'s module docstring with the rationale, in two strands:
+- [x] Extend `CertificateImport.lean`'s module docstring with the rationale, in two strands:
       (a) `Target Γ Δ` is an existential ("some `t` with `Γ ⊆ L₀ t` and `Δ ∩ L₀ t = ∅`") whose
       witness is `t`; every other existential in the certificate is explicitly witnessed — the box
       guess witnesses which boxes are false, the lassos witness the falsifying histories, the labels
@@ -219,25 +219,25 @@ records **why** the time is witnessed rather than defaulted.
       (b) `0` denotes the origin only by `LabelledLasso`'s three-segment decoding convention; a
       re-indexing (branching families with shared states; the compression half of the quasimodel
       route) would silently change the meaning of every stored certificate relying on the default.
-- [ ] In the same docstring, state the `premises`/`conclusions` vs. `time` asymmetry and its reason
+- [x] In the same docstring, state the `premises`/`conclusions` vs. `time` asymmetry and its reason
       (`[]` is the identity of a context; `0` is not the identity of a time), so a later reader does
       not "tidy" it in either direction.
-- [ ] Add `RawTarget`, `PartialTarget`, `PartialCertificate` and the `complete` pair to the
+- [x] Add `RawTarget`, `PartialTarget`, `PartialCertificate` and the `complete` pair to the
       docstring's `## Main Definitions` list.
-- [ ] In `BimodalTools/README.md`'s "Certificate re-verification protocol" section, rewrite the
+- [x] In `BimodalTools/README.md`'s "Certificate re-verification protocol" section, rewrite the
       **input JSON block** to the nested shape.
-- [ ] In the same section's field table, replace the flat `premises`/`conclusions`/`time` rows with a
+- [x] In the same section's field table, replace the flat `premises`/`conclusions`/`time` rows with a
       `target` row plus indented `target.premises` / `target.conclusions` / `target.time` rows.
       **Delete** the `` | `time` | **optional**, default `0` ... | `` note and state required-ness in
       its place.
-- [ ] Fix the now-false boundary sentence "A structural violation ... is `rejected`; only
+- [x] Fix the now-false boundary sentence "A structural violation ... is `rejected`; only
       unparseable input is `error`": a *missing required field* is also `error`. State both classes
       explicitly, and add the cross-repo sentence — a certificate lacking `"target"` or
       `"target"."time"` is answered `{"status":"error"}` — so ModelChecker's exporter can be written
       against the section without reading the Lean.
-- [ ] Update `BimodalTools/CheckCertificateMain.lean`'s `## Usage` example (currently the flat shape
+- [x] Update `BimodalTools/CheckCertificateMain.lean`'s `## Usage` example (currently the flat shape
       *with* `"time"`) to the nested shape.
-- [ ] Update `lakefile.toml`'s `# Run with:` comment above the `check_certificate` `[[lean_exe]]`
+- [x] Update `lakefile.toml`'s `# Run with:` comment above the `check_certificate` `[[lean_exe]]`
       block (currently the flat shape *without* `"time"`, which this change turns from stale into an
       example that would be rejected).
 
@@ -275,32 +275,32 @@ any additional hit showing the flat wire shape joins this phase rather than bein
 
 ---
 
-### Phase 3: Regenerate inventories and run the full gate set [IN PROGRESS]
+### Phase 3: Regenerate inventories and run the full gate set [COMPLETED]
 
 **Goal**: The generated README inventories match the edited files, and every acceptance criterion in
 the dispatch is demonstrated by a command that was actually run.
 
 **Tasks**:
 
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory` (regenerates the per-file line-count
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory` (regenerates the per-file line-count
       rows in `BimodalTools/README.md` and `Tests/BimodalToolsTest/README.md`, both of which are
       certain to be stale after Phases 1-2). Do **not** use the deprecated `scripts/readme-inventory.sh`
       shim.
-- [ ] `bash scripts/check-module-invariants.sh` — must print ALL CHECKS PASSED. C25 (every
+- [x] `bash scripts/check-module-invariants.sh` — must print ALL CHECKS PASSED. C25 (every
       `lean_exe` root compiles) covers `check_certificate`; C19 (docstring coverage) covers the new
       declarations; C28's warning budget for both edited files is zero (neither has an entry in
       `scripts/warning-budget.txt`).
-- [ ] `bash scripts/check-copyright-headers.sh --strict` — clean.
-- [ ] `lake build BimodalTools --wfail` and `lake build BimodalToolsTest --wfail` — both exit 0 at
+- [x] `bash scripts/check-copyright-headers.sh --strict` — clean.
+- [x] `lake build BimodalTools --wfail` and `lake build BimodalToolsTest --wfail` — both exit 0 at
       zero warnings.
-- [ ] Sorry count 0 and no new axioms: this change introduces no proof obligation by construction
+- [x] Sorry count 0 and no new axioms: this change introduces no proof obligation by construction
       (every new declaration is data or `Except`-valued plumbing, and `mem_closureList` is untouched),
       so confirm rather than investigate.
-- [ ] Run the three acceptance certificates end to end through `lake exe check_certificate` and
+- [x] Run the three acceptance certificates end to end through `lake exe check_certificate` and
       record the exact output lines: the non-vacuity family → `{"status":"countermodel","time":0}`;
       the separation family → rejected with condition `fulfilling`, lasso `0`, position `-2`,
       formula `p U q`; a certificate omitting `"time"` → `{"status":"error",...}`.
-- [ ] Confirm the round trip on the nested shape is pinned by a green `#guard`
+- [x] Confirm the round trip on the nested shape is pinned by a green `#guard`
       (`parseCertificate posRaw.toJson = .ok posRaw` and the `sepRaw` equivalent), not merely asserted.
 
 **Timing**: 0.75 hours
@@ -332,20 +332,20 @@ investigate rather than committing the wider diff.
 
 ## Testing & Validation
 
-- [ ] `lake build BimodalTools --wfail` exits 0, zero warnings
-- [ ] `lake build BimodalToolsTest --wfail` exits 0, zero warnings (green build = every `#guard` true)
-- [ ] A certificate omitting `"time"` inside a present `"target"` returns `{"status":"error",...}`
-- [ ] A certificate omitting `"target"` entirely returns `{"status":"error",...}` with a *distinct*
+- [x] `lake build BimodalTools --wfail` exits 0, zero warnings
+- [x] `lake build BimodalToolsTest --wfail` exits 0, zero warnings (green build = every `#guard` true)
+- [x] A certificate omitting `"time"` inside a present `"target"` returns `{"status":"error",...}`
+- [x] A certificate omitting `"target"` entirely returns `{"status":"error",...}` with a *distinct*
       message
-- [ ] `parseCertificate posRaw.toJson = .ok posRaw` and the `sepRaw` equivalent — the nested shape
+- [x] `parseCertificate posRaw.toJson = .ok posRaw` and the `sepRaw` equivalent — the nested shape
       round-trips field for field
-- [ ] Non-vacuity family → `{"status":"countermodel","time":0}`
-- [ ] Separation family → rejected, condition `fulfilling`, lasso `0`, position `-2`, formula `p U q`
-- [ ] Negative `"time"` still survives `pInt`'s sign handling
-- [ ] Unknown fields are skipped at **both** nesting levels
-- [ ] `bash scripts/check-module-invariants.sh` prints ALL CHECKS PASSED
-- [ ] `bash scripts/check-copyright-headers.sh --strict` is clean
-- [ ] Sorry count 0; no new axioms
+- [x] Non-vacuity family → `{"status":"countermodel","time":0}`
+- [x] Separation family → rejected, condition `fulfilling`, lasso `0`, position `-2`, formula `p U q`
+- [x] Negative `"time"` still survives `pInt`'s sign handling
+- [x] Unknown fields are skipped at **both** nesting levels
+- [x] `bash scripts/check-module-invariants.sh` prints ALL CHECKS PASSED
+- [x] `bash scripts/check-copyright-headers.sh --strict` is clean
+- [x] Sorry count 0; no new axioms
 
 ## Artifacts & Outputs
 
