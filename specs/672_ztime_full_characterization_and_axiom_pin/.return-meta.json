@@ -1,17 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/672_ztime_full_characterization_and_axiom_pin/reports/01_ztime-characterization-axiom-pin.md",
-      "summary": "Verifies by direct elaboration that all six new ZTimeSharpness declarations (four .Dense/.RTime refutations plus two ValidIn fc phi <-> fc = .ZTime characterizations) compile sorry-free at [propext, Classical.choice, Quot.sound]; corrects three defects in the dispatch (realOrder is ambiguous, C14 needs TWO heredocs edited, MainResults.lean is a leaf not a full-tree rebuild) and gives verbatim proof text plus a four-phase decomposition."
+      "type": "plan",
+      "path": "specs/672_ztime_full_characterization_and_axiom_pin/plans/01_ztime-characterization-axiom-pin.md",
+      "summary": "Five-phase plan for the .ZTime ValidIn-iff characterization theorems and the coupled four-edit-site MainResults axiom pin."
+    }
+  ],
+  "dispatch_seq": 2,
+  "next_steps": "Run /implement 672 to execute the plan",
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, a build-time axiom pin on FormalSystem/MainResults.lean is a FOUR-edit-site change across three files, not three: the page itself, BOTH coupled heredocs in scripts/check-module-invariants.sh (C14_BASELINE and the generated C14LEAN Lean file, compared by exact string equality and required to list the same declarations in the same order -- the script says so in its own comment above them), and the per-file count in scripts/debug-artifact-allowlist.txt (C27), which must be read off the gate's own reported 'tree' value rather than computed by arithmetic. Editing C14_BASELINE alone fails C14 with a baseline divergence; omitting any site fails C21, which requires every name on the audit page be pinned by C2 or C14. Plan such a pin as one atomic-batch commit and revert all four sites together on failure. Separately: reverse-dependency footprint should be measured with grep -rln '^import <Module>$' up the aggregator chain before budgeting a rebuild -- MainResults.lean is a leaf (2 modules), not a full-tree trigger.",
+      "category": "PATTERN",
+      "source_artifact": "specs/672_ztime_full_characterization_and_axiom_pin/plans/01_ztime-characterization-axiom-pin.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["axiom-pin", "check-module-invariants", "C14-baseline", "C21", "C27-allowlist", "rebuild-footprint"]
     }
   ],
   "metadata": {
     "session_id": "sess_1790353604_4fe6d5_672",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 4.5,
+    "dependency_waves": [[1], [2], [3], [4], [5]]
   }
 }

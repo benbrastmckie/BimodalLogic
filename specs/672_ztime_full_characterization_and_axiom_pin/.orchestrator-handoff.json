@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 2,
+  "summary": "Wrote a five-phase implementation plan for the .ZTime full-characterization theorems (four Dense/RTime non-validity corollaries plus two ValidIn-iff biconditionals in ZTimeSharpness.lean) and the coupled four-edit-site MainResults axiom pin, integrating the research report's corrections to the dispatch (realOrder ambiguity, two C14 heredocs, rebuild footprint).",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/672_ztime_full_characterization_and_axiom_pin/plans/01_ztime-characterization-axiom-pin.md",
+      "summary": "Five-phase plan for the .ZTime ValidIn-iff characterization theorems and the coupled four-edit-site MainResults axiom pin."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": [],
+  "next_action_hint": "Run /implement 672 to execute the plan"
+}

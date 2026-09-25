@@ -93,7 +93,7 @@ next_project_number: 675
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-672 [RESEARCHED] — Strengthen the .ZTime sharpness results from...
+672 [PLANNED] — Strengthen the .ZTime sharpness results from...
   └─ 671 [NOT STARTED] — Prove the MINIMALITY half of Axiom.minFrameClass for the four...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
@@ -149,11 +149,12 @@ STARTING POINTS. FormalSystem/Metalogic/Independence/README.md (the target, and 
 ---
 
 ### 672. Ztime full characterization and axiom pin
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [672_ztime_full_characterization_and_axiom_pin/reports/01_ztime-characterization-axiom-pin.md]
+- **Plan**: [672_ztime_full_characterization_and_axiom_pin/plans/01_ztime-characterization-axiom-pin.md]
 
 **Description**: Strengthen the .ZTime sharpness results from non-Base-validity to a full ValidIn fc phi <-> fc = .ZTime characterization for Axiom.prior_UZ and Axiom.z1, and pin the resulting headline theorems on FormalSystem/MainResults.lean's build-time axiom audit. Both halves were isolated as explicitly optional phases while the mandated .ZTime minimality deliverable was landed, and each was closed with a Reasoned Exclusions record rather than attempted.
 
