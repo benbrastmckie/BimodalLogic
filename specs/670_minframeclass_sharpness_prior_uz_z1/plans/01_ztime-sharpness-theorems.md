@@ -1,11 +1,11 @@
 # Implementation Plan: Task #670
 
 - **Task**: 670 - Machine-check the MINIMALITY half of `Axiom.minFrameClass` for the two `.ZTime` axioms, `prior_UZ` and `z1`
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 5.75 hours (3.75 hours for the mandated deliverable; 2 hours of clearly-marked optional strengthening)
 - **Dependencies**: None
 - **Research Inputs**: specs/670_minframeclass_sharpness_prior_uz_z1/reports/01_ztime-sharpness-countermodels.md
-- **Artifacts**: plans/01_ztime-sharpness-theorems.md (this file)
+- **Artifacts**: plans/01_ztime-sharpness-theorems.md (this file), summaries/01_ztime-sharpness-theorems-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -122,7 +122,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 the module Phase 1 writes, Phase 3's docstrings cite the theorems Phase 1 names, and Phase 4 spends
 the one full rebuild every prior edit accumulates into.
 
-### Phase 1: Author `ZTimeSharpness.lean` [NOT STARTED]
+### Phase 1: Author `ZTimeSharpness.lean` [COMPLETED]
 
 **Goal**: The new module exists at `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean`,
 elaborates with zero errors and zero `sorry`, declares no `axiom`, and measures
@@ -130,9 +130,9 @@ elaborates with zero errors and zero `sorry`, declares no `axiom`, and measures
 a full-tree rebuild.
 
 **Tasks**:
-- [ ] Create the file with the repository's four-line copyright block (copy the header shape from a
+- [x] Create the file with the repository's four-line copyright block (copy the header shape from a
       sibling such as `Independence/LexIntWitness.lean` verbatim).
-- [ ] Write the `/-! … -/` module docstring. It must state: the result (the `.ZTime` tag of
+- [x] Write the `/-! … -/` module docstring. It must state: the result (the `.ZTime` tag of
       `Axiom.minFrameClass` is proved minimal, not merely upper-bounded, for `prior_UZ` and `z1`);
       that the countermodel is the translation frame over a densely ordered duration group, so what
       is refuted is *discreteness* and not the Archimedean property; that
@@ -142,19 +142,19 @@ a full-tree rebuild.
       claim validates nothing; and, in prose, the consumer relationship to the ModelChecker
       adequacy argument about a permanent frame-class gap. Cite `def:BX-z` as the only paper anchor.
       Cite no task numbers (`.claude/rules/no-task-references-in-deliverables.md`).
-- [ ] Transcribe the imports and `open`/`namespace` preamble from the research report's Appendix A:
+- [x] Transcribe the imports and `open`/`namespace` preamble from the research report's Appendix A:
       `import FormalSystem.Semantics.Correspondence.DurationFrames`,
       `import FormalSystem.Metalogic.Soundness`; namespace `FormalSystem.Metalogic.Independence`.
-- [ ] Transcribe the two anonymous shape-pin `example`s, each with its own docstring explaining that
+- [x] Transcribe the two anonymous shape-pin `example`s, each with its own docstring explaining that
       it type-checks only if the transcribed formula is exactly the axiom constructor's.
-- [ ] Transcribe the nine theorems and the `noncomputable abbrev ztimeSharpOrder : TemporalOrder :=
+- [x] Transcribe the nine theorems and the `noncomputable abbrev ztimeSharpOrder : TemporalOrder :=
       TemporalOrder.of ℚ`, giving every named declaration a docstring. Keep `push Not` (not
       `push_neg`) and keep the name `ztimeSharpOrder` (not `qD`).
-- [ ] Verify by `lean_run_code` on the exact file body: zero errors, zero `sorry`, plus
+- [x] Verify by `lean_run_code` on the exact file body: zero errors, zero `sorry`, plus
       `#print axioms` on `prior_UZ_minFrameClass_sharp`, `z1_minFrameClass_sharp`,
       `not_derivable_base_prior_UZ`, `not_derivable_base_z1`. Record the four measured lines for the
       Phase 4 audit note. Do not call `lean_diagnostic_messages` or `lean_file_outline` (blocked).
-- [ ] Commit (`task 670 phase 1: …` per `.claude/rules/git-workflow.md`), staging only this new file.
+- [x] Commit (`task 670 phase 1: …` per `.claude/rules/git-workflow.md`), staging only this new file.
 
 **Timing**: 1 hour
 
@@ -182,23 +182,23 @@ research round), repair the proof rather than weakening the statement, and recor
 
 ---
 
-### Phase 2: Wire the module into both aggregators [NOT STARTED]
+### Phase 2: Wire the module into both aggregators [COMPLETED]
 
 **Goal**: The new module is reachable from the library root and from the `Independence` aggregator,
 verified by a *scoped* build that is still cheap because `Axioms.lean` has not yet been touched.
 
 **Tasks**:
-- [ ] Add `import FormalSystem.Metalogic.Independence.ZTimeSharpness` to
+- [x] Add `import FormalSystem.Metalogic.Independence.ZTimeSharpness` to
       `FormalSystem/Metalogic/Independence.lean` (that file lists its children explicitly; append
       in the file's existing thematic order rather than re-sorting it).
-- [ ] Regenerate the root aggregator: `lake exe mk_all --lib FormalSystem`. Confirm the resulting
+- [x] Regenerate the root aggregator: `lake exe mk_all --lib FormalSystem`. Confirm the resulting
       diff to `FormalSystem.lean` is exactly the one added import line — if `mk_all` rewrites more
       than that, stop and report rather than committing an unrelated regeneration.
-- [ ] Run a detached, guarded scoped build of the aggregator:
+- [x] Run a detached, guarded scoped build of the aggregator:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Independence`
       under `Bash(run_in_background: true)`; wait per `context/patterns/bounded-build-waiter.md`.
       This is the cheap window — only the new module needs elaborating.
-- [ ] Commit, staging the new module's two aggregator changes only.
+- [x] Commit, staging the new module's two aggregator changes only.
 
 **Timing**: 0.5 hours
 
@@ -224,37 +224,37 @@ outside the module itself must be one of those two aggregators.
 
 ---
 
-### Phase 3: Docstring and ledger updates (all prose, batched) [NOT STARTED]
+### Phase 3: Docstring and ledger updates (all prose, batched) [COMPLETED]
 
 **Goal**: Every place in the tree that presents `.ZTime` minimality as a literature citation now
 cites the sharpness theorems, and the `Independence/` result ledgers count the new result. All prose
 edits land together so that the rebuild they force is spent exactly once, in Phase 4.
 
 **Tasks**:
-- [ ] `FormalSystem/ProofSystem/Axioms.lean`, the `Axiom.minFrameClass` docstring: on the
+- [x] `FormalSystem/ProofSystem/Axioms.lean`, the `Axiom.minFrameClass` docstring: on the
       `ZTime (2 axioms: prior_UZ, z1)` line, state that this row is now *proved* minimal, not merely
       upper-bounded, and name `FormalSystem.Metalogic.Independence.prior_UZ_minFrameClass_sharp` and
       `…z1_minFrameClass_sharp`. Keep the existing upper-bound reference to `axiom_validIn_min`
       legible, and say explicitly that the other three rows remain upper-bound-only.
-- [ ] `Axioms.lean`, the `prior_UZ` constructor docstring: add the citation of
+- [x] `Axioms.lean`, the `prior_UZ` constructor docstring: add the citation of
       `not_validIn_base_prior_UZ` alongside the existing Reynolds 1992 §10 / Venema (W) references.
       Keep the literature; add to it rather than replacing it.
-- [ ] `Axioms.lean`, the `z1` constructor docstring: same, citing `not_validIn_base_z1` alongside
+- [x] `Axioms.lean`, the `z1` constructor docstring: same, citing `not_validIn_base_z1` alongside
       Doets 1987 Claim 10 / Reynolds 1994 §10.
-- [ ] `FormalSystem/Metalogic/Independence/README.md`: bump the hand-written result count by one,
+- [x] `FormalSystem/Metalogic/Independence/README.md`: bump the hand-written result count by one,
       add the numbered result entry (the `.ZTime` row of `Axiom.minFrameClass` is proved minimal,
       naming the two `*_minFrameClass_sharp` theorems and the two `not_derivable_base_*`
       corollaries), and add the matching `## Key Results` bullet. Do not edit inside
       `<!-- BEGIN GENERATED: inventory … -->` / `<!-- END GENERATED -->`.
-- [ ] Regenerate the inventory block: `bash scripts/readme-inventory.sh`. Re-run it once more and
-      confirm the second run produces no further diff (idempotence).
-- [ ] `FormalSystem/Metalogic/Independence.lean`, module docstring: add the new result to its own
+- [x] Regenerate the inventory block: `bash scripts/readme-inventory.sh`. Re-run it once more and
+      confirm the second run produces no further diff (idempotence). *(deviation: altered — `scripts/readme-inventory.sh` is a pointer script that only prints the real invocation; the regeneration was run as `bash scripts/check-module-invariants.sh --emit-inventory`, which is what that script names. It rewrote four READMEs, not one: the new module's line count propagates into `FormalSystem/Metalogic/README.md`, `FormalSystem/README.md` and the root `README.md` generated blocks, so those three are committed with this phase as well. Second run reported "no generated inventory block needed a rewrite" — idempotent.)*
+- [x] `FormalSystem/Metalogic/Independence.lean`, module docstring: add the new result to its own
       numbered list and bump its own count, preserving that file's existing numbering convention.
       Note that this file's count and the README's count already disagree with each other; do NOT
       attempt to reconcile the pre-existing discrepancy here (recorded as an observation below).
-- [ ] Re-read every edited hunk and confirm each lies wholly inside a docstring, comment, or
+- [x] Re-read every edited hunk and confirm each lies wholly inside a docstring, comment, or
       markdown region — no edit may cross out of a comment boundary (the `prose` tier's blind spot).
-- [ ] Commit, staging exactly the five files above.
+- [x] Commit, staging exactly the five files above. *(deviation: altered — eight files, not five: the three extra are the propagated generated inventory blocks named in the deviation above.)*
 
 **Timing**: 0.75 hours
 
@@ -287,33 +287,33 @@ divergence.
 
 ---
 
-### Phase 4: One full rebuild and the full gate set [NOT STARTED]
+### Phase 4: One full rebuild and the full gate set [COMPLETED]
 
 **Goal**: The whole tree rebuilds green after the `Axioms.lean` invalidation, the module-invariants
 gate passes, and the axiom-footprint audit is unchanged — spending exactly one full rebuild.
 
 **Tasks**:
-- [ ] Detached, guarded full build:
+- [x] Detached, guarded full build:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` under
       `Bash(run_in_background: true)`, waited on per `context/patterns/bounded-build-waiter.md`
       (hard timeout, `kill -0` on the captured holder PID from the guard's own result record; never
       `pgrep -f` on the waiter's own pattern, and never a self-matching process scan). Use the
       passive progress checks in `context/project/lean4/operations/long-builds.md` if the wait
       approaches its bound.
-- [ ] Confirm the build log carries no `error`, no `declaration uses 'sorry'` warning, and that the
+- [x] Confirm the build log carries no `error`, no `declaration uses 'sorry'` warning, and that the
       existing `MainResults.lean` `#print axioms` audit lines still report
       `[propext, Classical.choice, Quot.sound]`.
-- [ ] Run `bash scripts/check-module-invariants.sh` in full. Read every finding; fix the tree, not
+- [x] Run `bash scripts/check-module-invariants.sh` in full. Read every finding; fix the tree, not
       the gate, unless the finding is specifically an allowlist/baseline coupling this plan
-      introduced (Phase 6's territory).
-- [ ] Run the copyright-header check and any repo-level lints the gate script does not subsume.
-- [ ] Record in the implementation summary: the four measured `#print axioms` lines, the gate
+      introduced (Phase 6's territory). *(deviation: altered — the first run failed one check group, `INV` (2 stale generated inventory blocks), which is NOT among the eight gates this phase's Scope Hypothesis enumerated; the gate in fact reports 43 check groups. Cause: the Phase 3 `Independence.lean` docstring edit grew that file 123 → 133 lines after the inventory regeneration had run. Fixed the tree, not the gate, by re-running `--emit-inventory`; the re-run reports ALL CHECKS PASSED with GATE_EXIT=0.)*
+- [x] Run the copyright-header check and any repo-level lints the gate script does not subsume.
+- [x] Record in the implementation summary: the four measured `#print axioms` lines, the gate
       outcome, and the confirmation that the tree still has zero structural `sorry` and zero `axiom`
       declarations outside `Boneyard/`.
-- [ ] Carry the "Observations Recorded for Follow-Up" section of this plan into the implementation
+- [x] Carry the "Observations Recorded for Follow-Up" section of this plan into the implementation
       summary verbatim in substance, so the `.Dense`/`.RTime` sharpness gap is visible to whoever
       files the follow-up task.
-- [ ] Commit any gate-driven fixes; then commit the implementation summary.
+- [x] Commit any gate-driven fixes; then commit the implementation summary.
 
 **Timing**: 1.5 hours (mostly machine time)
 
@@ -332,6 +332,7 @@ than trusting this enumeration; if a gate not listed here fires, fix it and reco
 
 **Files to modify**:
 - None expected. Any file touched here is a gate-driven repair, and must be reported as one.
+  *(actual: three gate-driven repairs — `FormalSystem/Metalogic/README.md` and root `README.md` (stale generated inventory blocks, the `INV` failure above) and `FormalSystem/Metalogic/Independence/README.md` (its two `Last verified` stamps, which `scripts/readme-lint.sh` flagged STALE DATE as a direct consequence of this work's own edit). Committed as `task 670 phase 4: refresh generated inventory blocks and Independence README date`.)*
 - `specs/670_minframeclass_sharpness_prior_uz_z1/summaries/01_*-summary.md` - the implementation summary.
 
 **Verification**:
@@ -341,7 +342,7 @@ than trusting this enumeration; if a gate not listed here fires, fix it and reco
 
 ---
 
-### Phase 5: Optional — strengthen from "minimal" to "`.ZTime` alone" [NOT STARTED]
+### Phase 5: Optional — strengthen from "minimal" to "`.ZTime` alone" [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Upgrade the result from *minimality* to the strictly sharper statement that `ValidIn fc φ`
 holds at `.ZTime` and at no other class, for both axioms.
@@ -363,7 +364,23 @@ the green Phase 4 gate). Skipping it is fully compliant.
       negative results plus `axiom_validIn_min`.
 - [ ] Extend the module docstring and the `Independence/README.md` entry to describe the stronger
       claim; re-run `scripts/readme-inventory.sh`.
-- [ ] Detached, guarded full build plus `scripts/check-module-invariants.sh`; commit.
+- [ ] Add `¬ ValidIn FrameClass.Dense (…)` corollaries for both axioms. *(deviation: skipped — phase closed with exclusions)*
+- [ ] Add `¬ ValidIn FrameClass.RTime (…)` corollaries for both axioms. *(deviation: skipped — phase closed with exclusions)*
+- [ ] Assemble the `ValidIn fc φ ↔ fc = .ZTime` statements. *(deviation: skipped — phase closed with exclusions)*
+- [ ] Extend the module docstring and README entry to the stronger claim. *(deviation: skipped — phase closed with exclusions)*
+- [ ] Detached, guarded full build plus `scripts/check-module-invariants.sh`; commit. *(deviation: skipped — phase closed with exclusions)*
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `¬ ValidIn FrameClass.Dense` corollaries for `prior_UZ` and `z1` | Beyond the dispatch's stated deliverable, which asks only for non-Base-validity; the plan itself declares this phase optional and skipping it "fully compliant" | This phase's own opening paragraph; Phase 4 green (full build exit 0, gate run recorded in the summary) |
+| `¬ ValidIn FrameClass.RTime` corollaries at `D = realOrder` | Same; additionally requires discharging `TaskFrame.IsComplete` via `Real.exists_isLUB`, unbudgeted work outside the deliverable | This phase's own opening paragraph; the dispatch's DELIVERABLE clause names only non-Base-validity |
+| The `ValidIn fc φ ↔ fc = .ZTime` biconditional per axiom | Depends on the two excluded corollary families above; cannot be assembled without them | The phase's own task list marks it "Optionally" |
+| Extension of the module docstring and `Independence/README.md` to the stronger claim | Would describe results that were not added; writing it would make the docstring false | The module docstring as landed states the `.Base` claim only, and explicitly declines to upgrade it |
+
+The `.ZTime` minimality result the dispatch mandated is complete and machine-checked without this
+phase. Recorded as a follow-up opportunity in the implementation summary.
 
 **Timing**: 1 hour
 
@@ -383,7 +400,7 @@ the green Phase 4 gate). Skipping it is fully compliant.
 
 ---
 
-### Phase 6: Optional — pin the new results in `MainResults.lean` [NOT STARTED]
+### Phase 6: Optional — pin the new results in `MainResults.lean` [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: The four headline results appear on the build-time axiom-audit page, so a future
 regression in their axiom footprint is build-visible rather than merely discoverable.
@@ -407,7 +424,20 @@ must move together, and a partial edit fails gate C21. If it is not executed, cl
 - [ ] Detached, guarded full build; then `scripts/check-module-invariants.sh` in full, confirming
       C14, C21 and C27 all pass together. If any one of the three fails, revert all three edits
       rather than leaving a partial pin.
-- [ ] Commit the three files as one change.
+- [ ] Commit the three files as one change. *(deviation: skipped — phase closed with exclusions)*
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `#print axioms` lines in `FormalSystem/MainResults.lean` for the four headline results | Optional by the plan's own declaration; the dispatch requires only that the existing audit not regress, which Phase 4 confirmed | This phase's own opening paragraph; the Phase 4 build log carries 27 `depends on axioms` lines, every measured set within `{[propext], [propext, Classical.choice, Quot.sound]}` |
+| Bumping the `FormalSystem/MainResults.lean` count in `scripts/debug-artifact-allowlist.txt` | Meaningless without the audit lines above; a partial pin fails gate C21 | The phase's own instruction to "revert all three edits rather than leaving a partial pin" |
+| Adding the matching expected lines to `C14_BASELINE` in `scripts/check-module-invariants.sh` | Same coupling; all three files must move together or not at all | Same |
+| Depends on Phase 5 | Phase 5 was itself closed with exclusions, so its headline results do not exist to pin | The Phase 5 `#### Reasoned Exclusions` record above |
+
+The four results' axiom footprint is measured and recorded in the implementation summary via
+`lean_verify`, so a regression remains discoverable; it is simply not build-visible on the
+`MainResults.lean` page. Recorded as a follow-up opportunity in the summary.
 
 **Timing**: 1 hour
 
@@ -496,21 +526,21 @@ here: this section pins *named theorem statements*, and neither an `abbrev` nor 
 
 ## Testing & Validation
 
-- [ ] `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean` elaborates with zero errors and
+- [x] `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean` elaborates with zero errors and
       zero `sorry`; `grep -c sorry` on it is 0.
-- [ ] The module declares no `axiom`; the tree still has zero `axiom` declarations outside
+- [x] The module declares no `axiom`; the tree still has zero `axiom` declarations outside
       `Boneyard/`.
-- [ ] Both shape-pin `example`s type-check, certifying that the refuted formulas are exactly
+- [x] Both shape-pin `example`s type-check, certifying that the refuted formulas are exactly
       `Axiom.prior_UZ φ`'s and `Axiom.z1 φ`'s.
-- [ ] `#print axioms` on `prior_UZ_minFrameClass_sharp`, `z1_minFrameClass_sharp`,
+- [x] `#print axioms` on `prior_UZ_minFrameClass_sharp`, `z1_minFrameClass_sharp`,
       `not_derivable_base_prior_UZ` and `not_derivable_base_z1` each reports
       `[propext, Classical.choice, Quot.sound]`.
-- [ ] Full `lake build` (detached, guarded) exits 0 after the `Axioms.lean` invalidation.
-- [ ] `bash scripts/check-module-invariants.sh` exits 0.
-- [ ] `bash scripts/readme-inventory.sh` is idempotent on `Independence/README.md`.
-- [ ] `grep -rn 'minFrameClass_sharp' FormalSystem/ProofSystem/Axioms.lean` returns the two new
+- [x] Full `lake build` (detached, guarded) exits 0 after the `Axioms.lean` invalidation.
+- [x] `bash scripts/check-module-invariants.sh` exits 0.
+- [x] `bash scripts/readme-inventory.sh` is idempotent on `Independence/README.md`.
+- [x] `grep -rn 'minFrameClass_sharp' FormalSystem/ProofSystem/Axioms.lean` returns the two new
       citations (also discharging C17 for those names).
-- [ ] No file added or edited under `FormalSystem/` contains a task-number reference.
+- [x] No file added or edited under `FormalSystem/` contains a task-number reference.
 
 ## Artifacts & Outputs
 

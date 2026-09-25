@@ -1,30 +1,37 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-24T23:31:39Z",
+  "completed_at": "2026-09-25T00:20:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/670_minframeclass_sharpness_prior_uz_z1/plans/01_ztime-sharpness-theorems.md",
-      "summary": "Six-phase plan (4 mandatory, 2 optional) landing FormalSystem/Metalogic/Independence/ZTimeSharpness.lean with nine theorems proving prior_UZ and z1 are not Base-valid, plus Axioms.lean docstring sharpness citations and one budgeted full rebuild."
+      "type": "summary",
+      "path": "specs/670_minframeclass_sharpness_prior_uz_z1/summaries/01_ztime-sharpness-theorems-summary.md",
+      "summary": "Nine named theorems in FormalSystem/Metalogic/Independence/ZTimeSharpness.lean proving Axiom.prior_UZ and Axiom.z1 are not valid at FrameClass.Base, hence not at any class strictly below .ZTime, making the .ZTime row of Axiom.minFrameClass proved-minimal rather than cited."
     }
   ],
-  "next_steps": "Run /implement 670 to execute the plan",
-  "phase_count": 6,
-  "estimated_hours": 5.75,
-  "dependency_waves": [[1], [2], [3], [4], [5], [6]],
-  "memory_candidates": [
-    {
-      "content": "Lean phase-ordering rule for plans that must edit a widely-imported module: Lean invalidates its build cache on whole-file hash, so even a docstring-only edit to a root module (e.g. ProofSystem/Axioms.lean, transitively imported by the whole tree) forces a full rebuild. Sequence such plans so that (1) new leaf modules are authored and verified first via lean_run_code with no lake build at all, (2) aggregator/import wiring is verified by a SCOPED guarded build while the root module is still untouched and therefore cheap, (3) every prose/docstring edit to the root module is batched into a single phase, and (4) exactly one full detached guarded rebuild plus the gate set follows. Splitting docstring edits across phases, or placing the scoped wiring build after the root-module edit, multiplies full rebuilds with no verification gain. The same ordering applies to any language whose build cache keys on whole-file content rather than on exported interfaces.",
-      "category": "PATTERN",
-      "source_artifact": "specs/670_minframeclass_sharpness_prior_uz_z1/plans/01_ztime-sharpness-theorems.md",
-      "confidence": 0.78,
-      "suggested_keywords": ["lean", "build-cache-invalidation", "phase-ordering", "docstring-edit", "full-rebuild", "plan-decomposition"]
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1790316685_21f213_670",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  "completion_data": {
+    "completion_summary": "Proved the minimality half of Axiom.minFrameClass's .ZTime tag: the new module FormalSystem/Metalogic/Independence/ZTimeSharpness.lean carries nine sorry-free theorems refuting Axiom.prior_UZ and Axiom.z1 at the frame level on the translation frame over any densely ordered duration group, yielding non-validity at FrameClass.Base and, via eq_base_of_lt_ztime, at every class strictly below .ZTime, with underivability corollaries through soundness. The Axiom.minFrameClass docstring and both axiom constructor docstrings now cite these theorems alongside the literature, and both Independence/ ledgers count the result. Full lake build and the 43-group module-invariants gate are green, the tree remains sorry-free and axiom-declaration-free, and the four headline results measure [propext, Classical.choice, Quot.sound], unchanged from the set MainResults.lean pins.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 2
+  "partial_progress": {
+    "stage": "complete",
+    "details": "Phases 1-4 [COMPLETED]; Phases 5-6 [COMPLETED WITH EXCLUSIONS] (both declared optional by the plan, each with a #### Reasoned Exclusions record).",
+    "phases_completed": 6,
+    "phases_total": 6
+  },
+  "metadata": {
+    "session_id": "sess_1790316685_21f213",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "dispatch_seq": 3
+  }
 }
