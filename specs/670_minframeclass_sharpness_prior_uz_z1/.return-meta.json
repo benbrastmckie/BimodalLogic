@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/670_minframeclass_sharpness_prior_uz_z1/reports/01_ztime-sharpness-countermodels.md",
+      "summary": "Machine-verified sorry-free countermodels refuting prior_UZ and z1 at FrameClass.Base on the translation frame over a dense duration group, with the full 10-declaration module source, axiom footprint, gate checklist, and follow-up observations on the .Dense/.RTime tags."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790316685_21f213_670",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
