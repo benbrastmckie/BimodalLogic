@@ -336,39 +336,67 @@ before moving to an unrelated topic, and that `MinusLanguage/Soundness.lean` is 
 
 ---
 
-### Phase 5: Regenerate inventory and run all gates [NOT STARTED]
+### Phase 5: Regenerate inventory and run all gates [COMPLETED]
 
 **Goal**: Regenerate the inventory blocks after the last edit, then take the whole gate set green
 — including the single batched full-tree Lean rebuild the docstring edit forces.
 
 **Tasks**:
-- [ ] Confirm no further edits are pending. Inventory regeneration must follow the last edit,
+- [x] Confirm no further edits are pending. Inventory regeneration must follow the last edit,
       because INV compares generated blocks against actual file line counts and the Phase 3
-      docstring edit changed `Conservativity.lean`'s length.
-- [ ] Run the cheap structural loop first: `bash scripts/check-module-invariants.sh --no-build`.
-      Iterate on any structural finding here before spending a build.
-- [ ] Regenerate: `bash scripts/check-module-invariants.sh --emit-inventory` (this is the real
+      docstring edit changed `Conservativity.lean`'s length. *(completed)*
+- [x] Run the cheap structural loop first: `bash scripts/check-module-invariants.sh --no-build`.
+      Iterate on any structural finding here before spending a build. *(completed: initial run
+      surfaced INV staleness (expected, this task's own docstring edit) plus C33/C28 findings
+      attributable to concurrently-dispatched sibling task 675's in-flight uncommitted work on
+      this same shared working tree — not this task's regression; see Decisions below)*
+- [x] Regenerate: `bash scripts/check-module-invariants.sh --emit-inventory` (this is the real
       command; `scripts/readme-inventory.sh` is only a pointer script). It propagates counts into
-      several READMEs.
-- [ ] Inspect the regenerated README diffs: confirm no description was silently truncated at a
+      several READMEs. *(completed)*
+- [x] Inspect the regenerated README diffs: confirm no description was silently truncated at a
       literal `|`, and confirm no line-number citation was introduced into any
       `FormalSystem/**/README.md` prose (C20 tier 2, publication_scope covers every README.md
       under `FormalSystem/`; the tree is currently at zero line-number citations). Cite
-      declaration names and bare file names instead.
-- [ ] Run `bash scripts/readme-lint.sh` and confirm PASS.
-- [ ] Launch the single batched rebuild detached:
+      declaration names and bare file names instead. *(completed: no truncation, no line-number
+      citations introduced)*
+- [x] Run `bash scripts/readme-lint.sh` and confirm PASS. *(completed: RESULT: PASS)*
+- [x] Launch the single batched rebuild detached:
       `.claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`. Note the `build`
       subcommand after the bare `--`; omitting it is a usage error, exit 77, and runs no build.
-      Note also the path is `.claude/scripts/`, not bare `scripts/`.
-- [ ] Wait on that build with a bounded waiter per `context/patterns/bounded-build-waiter.md`:
+      Note also the path is `.claude/scripts/`, not bare `scripts/`. *(completed: 2737 jobs,
+      exit 0, confirmed via `lake-build-guard.sh result`: state=complete exit_status=0)*
+- [x] Wait on that build with a bounded waiter per `context/patterns/bounded-build-waiter.md`:
       a hard timeout, writer liveness via `kill -0` on the captured PID (never `ps | grep` or
-      `pgrep -f`), one waiter per log.
-- [ ] Run `bash scripts/check-module-invariants.sh` in full (with build) and confirm green across
-      all check groups.
-- [ ] Commit with this task's own files staged by explicit file list — never `git add -A`, never
+      `pgrep -f`), one waiter per log. *(completed)*
+- [x] Run `bash scripts/check-module-invariants.sh` in full (with build) and confirm green across
+      all check groups. *(completed: ALL CHECKS PASSED, re-confirmed with a final --no-build pass
+      after sibling task 675 committed its own phase 5 — see Decisions)*
+- [x] Commit with this task's own files staged by explicit file list — never `git add -A`, never
       a directory or glob pathspec. Review `git status --short` and `git diff --staged` first. If
       a foreign commit or foreign uncommitted modification is present, STOP and report it after
-      checking `git log` to confirm it is not this task's own work.
+      checking `git log` to confirm it is not this task's own work. *(completed; see Decisions —
+      the shared generated-inventory files this phase would have committed were captured instead
+      by sibling task 675's own "task 675 phase 5: full rebuild, inventory, and gate set" commit,
+      since both tasks dispatch on the same unisolated working tree; verified via `git diff
+      --stat` that no diff remains against HEAD for those files, so nothing was left to commit
+      here beyond this plan and its progress file)*
+
+**Decisions (concurrency)**: task 675 was dispatched this same `/orchestrate` cycle on the same
+shared working tree (no git-worktree isolation between concurrent task dispatches). Mid-phase,
+`--no-build` surfaced two failures (C28 a long-line warning in
+`Independence/ZTimeSharpness.lean`, C33 a missing `FormalSystem.lean` import for
+`Independence/SepSharpness.lean`) that were confirmed via `git log` to be task 675's own
+in-flight, uncommitted files, not a regression from this task's docstring or documentation edits.
+Per the plan's own Rollback/Contingency section and `context/contracts/territory.md`, these were
+treated as a sibling's in-flight edit rather than fixed directly. `--emit-inventory` is a global,
+mechanically-generated regeneration (not hand-authored content) that necessarily reflects
+whatever is currently in the shared working tree; the full gate run was re-attempted after
+observing task 675 progress toward its own commits, and reached `ALL CHECKS PASSED` cleanly.
+Task 675 then committed its own phase 5 (full rebuild, inventory, and gate set), which — because
+of the shared, unisolated working tree — captured the same already-regenerated inventory files
+this task's Phase 5 would otherwise have committed. `git diff --stat` against HEAD confirms zero
+remaining diff on those files, so this task's own Phase 5 commit is scoped to the plan and
+progress files only.
 
 **Timing**: 0.75 hours
 
