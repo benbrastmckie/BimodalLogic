@@ -3,7 +3,7 @@
 - **Task**: 671 - Prove the MINIMALITY half of `Axiom.minFrameClass` for the four remaining
   non-Base rows (`density`, `dense_indicator`, `prior_U_gap`, `sep`) and correct the two
   pre-existing documentation defects in the files that work already edits
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7.25 hours
 - **Dependencies**: None open. The `.ZTime` full-characterization work (task 672) has **landed** —
   `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean` is present at 423 lines and carries
@@ -192,7 +192,7 @@ territory contract. Phase 6 follows Phase 5 because both touch
 dispatch's load-bearing ordering constraint is that ledger reconciliation happens **after** every
 new entry exists, which Phases 1-2 supply.
 
-### Phase 1: Author DenseRTimeSharpness.lean — the three closed rows [NOT STARTED]
+### Phase 1: Author DenseRTimeSharpness.lean — the three closed rows [COMPLETED]
 
 **Goal**: A new sorry-free module exists carrying the order facts, the generic refutation
 machinery, the integer carrier, and the three closed rows; it elaborates clean under
@@ -200,13 +200,13 @@ machinery, the integer carrier, and the three closed rows; it elaborates clean u
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Metalogic/Independence/DenseRTimeSharpness.lean` with exactly the four
+- [x] Create `FormalSystem/Metalogic/Independence/DenseRTimeSharpness.lean` with exactly the four
       imports the report tested: `FormalSystem.Semantics.Correspondence.DurationFrames`,
       `FormalSystem.Semantics.Correspondence.Indicator`, `FormalSystem.Metalogic.Soundness`,
       `FormalSystem.Metalogic.Independence.CoNotPriorU`; the `open` line
       `open FormalSystem FormalSystem.Syntax FormalSystem.Semantics FormalSystem.ProofSystem`; and
       `namespace FormalSystem.Metalogic.Independence`.
-- [ ] Write the module docstring. It MUST state, in as many words: (a) that every result is a
+- [x] Write the module docstring. It MUST state, in as many words: (a) that every result is a
       frame-level `¬ ValidOn` lifted to `¬ ValidIn`; (b) why the `CoNotPriorU` frame-versus-model
       obstruction does not apply — that obstruction bites only when a statement must
       *simultaneously validate* something on a valuation-rich flow, and a bare non-validity claim
@@ -216,46 +216,46 @@ machinery, the integer carrier, and the three closed rows; it elaborates clean u
       `prior_U_gap` row; (d) the names of the auxiliary lemmas, so C17 sees them outside their
       declaring lines. Cite declaration names and file paths **without** `:NNN` (C20 tier 2 is
       enforced), following `ZTimeSharpness.lean`'s practice.
-- [ ] Add the three anonymous shape-pin `example`s from report Appendix A, for `Axiom.density`,
+- [x] Add the three anonymous shape-pin `example`s from report Appendix A, for `Axiom.density`,
       `Axiom.dense_indicator` and `Axiom.prior_U_gap`, so formula-transcription fidelity is a
       compiler obligation rather than a reading. The entire result is vacuous if a transcribed
       formula drifts from its constructor's.
-- [ ] Add `eq_base_of_lt_dense` and `base_or_dense_of_lt_rtime`, both four-arm `cases fc` proofs
+- [x] Add `eq_base_of_lt_dense` and `base_or_dense_of_lt_rtime`, both four-arm `cases fc` proofs
       in `eq_base_of_lt_ztime`'s idiom. Route every strict-order arm through
       `absurd h.le (by decide)` — `by decide` **fails** on `FrameClass` `<`; only `≤` has a
       `DecidableRel` instance.
-- [ ] Add the generic machinery: `not_denselyOrdered_of_isLeastPos`,
+- [x] Add the generic machinery: `not_denselyOrdered_of_isLeastPos`,
       `not_validOn_density_of_isLeastPos` (the nine-line direct `translationFrame` refutation with
       `A = {x | x ≠ p}`, fully generic in `D`, using `ne_of_gt` rather than `omega` — `omega` does
       not see through the `TemporalOrder.carrier` coercion), and
       `not_validOn_dense_indicator_of_isLeastPos` (two lines through
       `validOn_neg_nextTop_iff`, which applies because `Axiom.dense_indicator`'s formula is
       *definitionally* `(Formula.next Formula.top).neg`).
-- [ ] Add the integer carrier: `noncomputable abbrev denseSharpOrder := TemporalOrder.of ℤ`,
+- [x] Add the integer carrier: `noncomputable abbrev denseSharpOrder := TemporalOrder.of ℤ`,
       `isLeast_one_denseSharpOrder`, `sat_base_denseSharpFrame` (`inferInstance`) and
       `sat_ztime_denseSharpFrame` (`⟨inferInstance, TaskFrame.isZTime_of_instances _⟩` — a bare
       `constructor`/`refine ⟨…⟩` fails, `IsZTime` is a nested four-component existential).
-- [ ] Add Row 1 (`density`): `not_validIn_base_density`, `not_validIn_ztime_density`,
+- [x] Add Row 1 (`density`): `not_validIn_base_density`, `not_validIn_ztime_density`,
       `density_minFrameClass_sharp`, `density_validIn_iff` and `not_derivable_base_density`,
       transcribed from Appendix A.
-- [ ] Add Row 2 (`dense_indicator`): `not_validIn_base_dense_indicator`,
+- [x] Add Row 2 (`dense_indicator`): `not_validIn_base_dense_indicator`,
       `not_validIn_ztime_dense_indicator`, `dense_indicator_minFrameClass_sharp`,
       `dense_indicator_validIn_iff` and `not_derivable_base_dense_indicator`.
-- [ ] Add Row 3 (`prior_U_gap`): `not_validOn_prior_U_gap_clock`, `not_validIn_base_prior_U_gap`,
+- [x] Add Row 3 (`prior_U_gap`): `not_validOn_prior_U_gap_clock`, `not_validIn_base_prior_U_gap`,
       `not_validIn_dense_prior_U_gap`, `prior_U_gap_minFrameClass_sharp` and
       `not_derivable_dense_prior_U_gap`. The `.Dense` discharge is `⟨inferInstance, inferInstance⟩`
       over the clock frame; the same single refutation covers both classes strictly below
       `.RTime`.
-- [ ] Give every declaration a `/-- … -/` docstring (C16 `docBlame` and C19 both read them; the
+- [x] Give every declaration a `/-- … -/` docstring (C16 `docBlame` and C19 both read them; the
       report's appendix deliberately elided them, so they are the implementer's to write).
-- [ ] Add `import FormalSystem.Metalogic.Independence.DenseRTimeSharpness` to
+- [x] Add `import FormalSystem.Metalogic.Independence.DenseRTimeSharpness` to
       `FormalSystem/Metalogic/Independence.lean` in its existing alphabetical import position.
       (The Contents-list bullet for it is Phase 5's work, not this phase's.)
-- [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem`. C33 compares it
+- [x] Regenerate the library root: `lake exe mk_all --lib FormalSystem`. C33 compares it
       byte-for-byte and `scripts/module-invariants-manifest.txt` must stay empty.
-- [ ] Verify with `lake env lean FormalSystem/Metalogic/Independence/DenseRTimeSharpness.lean` —
+- [x] Verify with `lake env lean FormalSystem/Metalogic/Independence/DenseRTimeSharpness.lean` —
       **not** `lake build`. This was sufficient for every result in the research report.
-- [ ] Confirm each headline name's axiom set with `lean_verify` or a scratch `#print axioms` run
+- [x] Confirm each headline name's axiom set with `lean_verify` or a scratch `#print axioms` run
       that is **not** left in the file — C27 fails on any new in-file directive outside
       `MainResults.lean`.
 

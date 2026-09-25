@@ -11,6 +11,7 @@ import FormalSystem.Metalogic.Independence.StaticFrame
 import FormalSystem.Metalogic.Independence.RationalWitness
 import FormalSystem.Metalogic.Independence.LexIntWitness
 import FormalSystem.Metalogic.Independence.ZTimeSharpness
+import FormalSystem.Metalogic.Independence.DenseRTimeSharpness
 import FormalSystem.Metalogic.Independence.RealTranslationFrame
 import FormalSystem.Metalogic.Independence.DriftFrame
 import FormalSystem.Metalogic.Independence.DriftHistories

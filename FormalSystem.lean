@@ -358,6 +358,7 @@ import FormalSystem.Metalogic.Independence
 import FormalSystem.Metalogic.Independence.ClockFrame
 import FormalSystem.Metalogic.Independence.CoNotPriorU
 import FormalSystem.Metalogic.Independence.CoarsenedModels
+import FormalSystem.Metalogic.Independence.DenseRTimeSharpness
 import FormalSystem.Metalogic.Independence.DeterminismUndefinable
 import FormalSystem.Metalogic.Independence.DriftFrame
 import FormalSystem.Metalogic.Independence.DriftHistories
