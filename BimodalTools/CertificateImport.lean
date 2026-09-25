@@ -112,19 +112,70 @@ structure RawLasso where
   fwd : List (List Formula) := []
   deriving Repr, Inhabited, DecidableEq
 
-/-- A whole certificate, as it arrives. -/
-structure RawCertificate where
+/-- The target condition, as it arrives: the three data of `WitnessFamily.Target` in one
+object, grouped as they are grouped in Lean. -/
+structure RawTarget where
   /-- The premise context `Γ`. -/
   premises : List Formula := []
   /-- The conclusion context `Δ`. -/
   conclusions : List Formula := []
+  /-- The target time: the witness of `Target`'s existential. Required on the wire. -/
+  time : Int
+  deriving Repr, Inhabited, DecidableEq
+
+/-- A whole certificate, as it arrives. -/
+structure RawCertificate where
+  /-- The target condition. Required on the wire, because its `time` is. -/
+  target : RawTarget
   /-- The box guess, as `(formula, bool)` pairs; anything absent reads as `false`. -/
   bx : List (Formula × Bool) := []
   /-- The lassos; lasso `0` is the main one, where the target is read. -/
   lassos : List RawLasso := []
-  /-- The target time. Optional on the wire, defaulting to `0`. -/
-  time : Int := 0
   deriving Repr, Inhabited, DecidableEq
+
+/-!
+## The parse-time partial records
+
+`pObjectFields` folds a handler over an accumulator seeded with `{}`, which is ill-formed once a
+field loses its default. Parsing therefore lands in these partial mirrors, where every field is
+optional, and `complete` turns a partial record into a real one through `Except String` — so a
+missing required field reaches `checkLine`'s existing `.error` path and renders
+`{"status":"error",...}` rather than a verdict.
+-/
+
+/-- `RawTarget` before the required-field check. -/
+structure PartialTarget where
+  /-- The premise context `Γ`. -/
+  premises : List Formula := []
+  /-- The conclusion context `Δ`. -/
+  conclusions : List Formula := []
+  /-- The target time, absent until the `"time"` key is seen. -/
+  time : Option Int := none
+  deriving Repr, Inhabited, DecidableEq
+
+/-- `RawCertificate` before the required-field check. -/
+structure PartialCertificate where
+  /-- The target condition, absent until the `"target"` key is seen. -/
+  target : Option PartialTarget := none
+  /-- The box guess, as `(formula, bool)` pairs. -/
+  bx : List (Formula × Bool) := []
+  /-- The lassos. -/
+  lassos : List RawLasso := []
+  deriving Repr, Inhabited, DecidableEq
+
+/-- Check the target's one required field. -/
+def PartialTarget.complete (p : PartialTarget) : Except String RawTarget :=
+  match p.time with
+  | none => .error "certificate field \"target\" is missing its required field \"time\""
+  | some t => .ok { premises := p.premises, conclusions := p.conclusions, time := t }
+
+/-- Check the certificate's one required field, then its target's. The two messages are
+deliberately distinct: a producer that omitted the whole `"target"` object and one that omitted
+only its `"time"` have made different mistakes. -/
+def PartialCertificate.complete (p : PartialCertificate) : Except String RawCertificate :=
+  match p.target with
+  | none => .error "certificate is missing its required field \"target\""
+  | some pt => pt.complete.map fun tgt => { target := tgt, bx := p.bx, lassos := p.lassos }
 
 /-!
 ## The envelope parser
@@ -236,8 +287,8 @@ def pRawLasso : PState → Except String (RawLasso × PState) :=
       let st ← pSkipValue st
       return (acc, st)) {}
 
-/-- Parse the certificate envelope. `"time"` may be absent, in which case it reads as `0`. -/
-def pRawCertificate : PState → Except String (RawCertificate × PState) :=
+/-- Parse the `"target"` object. An absent `"time"` leaves `none`, which `complete` reports. -/
+def pRawTarget : PState → Except String (PartialTarget × PState) :=
   pObjectFields (fun key acc st => do
     if key == "premises" then
       let (v, st) ← pArrayOf pFormula st
@@ -245,23 +296,33 @@ def pRawCertificate : PState → Except String (RawCertificate × PState) :=
     else if key == "conclusions" then
       let (v, st) ← pArrayOf pFormula st
       return ({ acc with conclusions := v }, st)
+    else if key == "time" then
+      let (v, st) ← pInt st
+      return ({ acc with time := some v }, st)
+    else
+      let st ← pSkipValue st
+      return (acc, st)) {}
+
+/-- Parse the certificate envelope. Unknown fields are skipped at both nesting levels. -/
+def pRawCertificate : PState → Except String (PartialCertificate × PState) :=
+  pObjectFields (fun key acc st => do
+    if key == "target" then
+      let (v, st) ← pRawTarget st
+      return ({ acc with target := some v }, st)
     else if key == "bx" then
       let (v, st) ← pArrayOf pBxPair st
       return ({ acc with bx := v }, st)
     else if key == "lassos" then
       let (v, st) ← pArrayOf pRawLasso st
       return ({ acc with lassos := v }, st)
-    else if key == "time" then
-      let (v, st) ← pInt st
-      return ({ acc with time := v }, st)
     else
       let st ← pSkipValue st
       return (acc, st)) {}
 
-/-- Parse a whole certificate from one JSON line. -/
+/-- Parse a whole certificate from one JSON line, checking its required fields. -/
 def parseCertificate (s : String) : Except String RawCertificate := do
   let (c, _) ← pRawCertificate (mkPState s)
-  return c
+  c.complete
 
 /-!
 ## Serialization, the inverse direction
@@ -290,13 +351,17 @@ def RawLasso.toJson (Λ : RawLasso) : String :=
 def bxPairToJson (p : Formula × Bool) : String :=
   "[" ++ p.1.toJson ++ "," ++ (if p.2 then "true" else "false") ++ "]"
 
+/-- Serialize the target condition. -/
+def RawTarget.toJson (tgt : RawTarget) : String :=
+  "{\"premises\":" ++ jsonArray (tgt.premises.map Formula.toJson) ++
+  ",\"conclusions\":" ++ jsonArray (tgt.conclusions.map Formula.toJson) ++
+  ",\"time\":" ++ toString tgt.time ++ "}"
+
 /-- Serialize a whole certificate. -/
 def RawCertificate.toJson (c : RawCertificate) : String :=
-  "{\"premises\":" ++ jsonArray (c.premises.map Formula.toJson) ++
-  ",\"conclusions\":" ++ jsonArray (c.conclusions.map Formula.toJson) ++
+  "{\"target\":" ++ RawTarget.toJson c.target ++
   ",\"bx\":" ++ jsonArray (c.bx.map bxPairToJson) ++
-  ",\"lassos\":" ++ jsonArray (c.lassos.map RawLasso.toJson) ++
-  ",\"time\":" ++ toString c.time ++ "}"
+  ",\"lassos\":" ++ jsonArray (c.lassos.map RawLasso.toJson) ++ "}"
 
 /-!
 ## Atom shape
@@ -317,7 +382,7 @@ def hasFreshAtom : Formula → Bool
 
 /-- Every formula a certificate mentions, in one list. -/
 def RawCertificate.formulas (c : RawCertificate) : List Formula :=
-  c.premises ++ c.conclusions ++ c.bx.map Prod.fst ++
+  c.target.premises ++ c.target.conclusions ++ c.bx.map Prod.fst ++
     c.lassos.flatMap (fun Λ => (Λ.back ++ Λ.mid ++ Λ.fwd).flatten)
 
 /-!
@@ -364,11 +429,11 @@ def mkLasso (C : Finset Formula) (raw : RawLasso) : Except LassoFault (LabelledL
 
 /-- Rebuild the whole family, or name the structural precondition it violates. -/
 def mkFamily (raw : RawCertificate) :
-    Except StructuralFault (WitnessFamily raw.premises raw.conclusions) := do
+    Except StructuralFault (WitnessFamily raw.target.premises raw.target.conclusions) := do
   if raw.formulas.any hasFreshAtom then .error .atomNotBase
   else
     let lassos ← raw.lassos.zipIdx.mapM fun p =>
-      match mkLasso (closureOf (raw.premises ++ raw.conclusions)) p.1 with
+      match mkLasso (closureOf (raw.target.premises ++ raw.target.conclusions)) p.1 with
       | .ok Λ => .ok Λ
       | .error f => .error (.lasso p.2 f)
     if hl : lassos = [] then .error .lassosEmpty
@@ -512,10 +577,10 @@ def checkRaw (raw : RawCertificate) : CheckResult :=
       .rejected [(fulFailure W).getD (unlocalized "fulfilling")]
     else if ! @Decidable.decide _ (WitnessFamily.decidableBoxFaithful W) then
       .rejected [(boxFailure W).getD (unlocalized "box_faithful")]
-    else if ! @Decidable.decide _ (WitnessFamily.decidableTarget W raw.time) then
-      .rejected [(targetFailure W raw.time).getD (unlocalized "target")]
+    else if ! @Decidable.decide _ (WitnessFamily.decidableTarget W raw.target.time) then
+      .rejected [(targetFailure W raw.target.time).getD (unlocalized "target")]
     else
-      .countermodel raw.time
+      .countermodel raw.target.time
 
 /-- Parse and re-verify one JSON line. Malformed input is an `error`, never a verdict. -/
 def checkLine (line : String) : CheckResult :=

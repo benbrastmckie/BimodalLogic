@@ -1,7 +1,7 @@
 # Implementation Plan: Required Target Time and Target Grouping
 
 - **Task**: 669 - Make the witness-family certificate's target time a required field and group the target condition to mirror the Lean structure.
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/669_required_target_time_and_target_grouping/reports/01_required-target-time-grouping.md
@@ -112,7 +112,7 @@ correct once every line-count-changing edit is final.
 
 ---
 
-### Phase 1: Reshape the wire records and the parse/serialize seam [NOT STARTED]
+### Phase 1: Reshape the wire records and the parse/serialize seam [COMPLETED]
 
 **Goal**: `RawCertificate` nests a `RawTarget` whose `time` has no default; parsing goes through
 partial records that `complete` into it via `Except String`; every downstream reader is re-projected;
@@ -202,7 +202,7 @@ the flat fields, widen the batch **before** starting, never retroactively.
 
 ---
 
-### Phase 2: Record the rationale and the interface in prose [NOT STARTED]
+### Phase 2: Record the rationale and the interface in prose [IN PROGRESS]
 
 **Goal**: Every place that describes or demonstrates the wire format shows the new shape, states
 plainly that `"target"` and `"target"."time"` are required and that their absence is `error`, and

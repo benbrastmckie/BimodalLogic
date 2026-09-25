@@ -61,15 +61,13 @@ def rawFwd : List Formula :=
 /-- The non-vacuity family as a certificate. The box guess is the two boxed closure members
 `posFamily.bx` reports `true` at; everything unlisted reads `false`. -/
 def posRaw : RawCertificate where
-  premises := gammaPos
-  conclusions := delPos
+  target := { premises := gammaPos, conclusions := delPos, time := 0 }
   bx := [(occurs, true), (once, true)]
   lassos := [{ back := [rawBack], mid := [rawMid], fwd := [rawFwd] }]
 
 /-- The separation family as a certificate: one constant label, no `mid`, `q` labelled nowhere. -/
 def sepRaw : RawCertificate where
-  premises := gammaSep
-  conclusions := delSep
+  target := { premises := gammaSep, conclusions := delSep, time := 0 }
   lassos := [{ back := [[pForm, phiSep]], mid := [], fwd := [[pForm, phiSep]] }]
 
 /-- The separation family with `⊥` — outside `closureOf (gammaSep ++ delSep)` — in its back
@@ -146,22 +144,41 @@ def outsideExpected : Failure :=
 
 #guard parseCertificate sepRaw.toJson = .ok sepRaw
 
--- `"time"` is optional on the wire and defaults to `0`.
-#guard (parseCertificate "{\"premises\":[],\"conclusions\":[],\"bx\":[],\"lassos\":[]}").map
-  RawCertificate.time = .ok 0
+/-- A wire line whose `"target"` object omits the required `"time"`. -/
+def noTimeLine : String :=
+  "{\"target\":{\"premises\":[],\"conclusions\":[]},\"lassos\":[]}"
+
+/-- A wire line that omits the required `"target"` object entirely. -/
+def noTargetLine : String := "{\"bx\":[],\"lassos\":[]}"
+
+-- `"time"` is REQUIRED on the wire: a `"target"` without it is a protocol error, and the
+-- rendered line says `error`, not `rejected`. (This row is the inverse of an earlier one that
+-- asserted the same input read as `time = 0`; that contract no longer holds.)
+#guard (checkLineToJson noTimeLine).startsWith "{\"status\":\"error\""
+
+-- An absent `"target"` is likewise an error, not a rejection.
+#guard (checkLineToJson noTargetLine).startsWith "{\"status\":\"error\""
+
+-- The two messages differ: omitting the whole object and omitting only its time are different
+-- producer mistakes.
+#guard checkLineToJson noTimeLine != checkLineToJson noTargetLine
 
 -- A negative `"time"` survives the wire: `pNat` reads unsigned digits, `pInt` the sign.
-#guard (parseCertificate "{\"premises\":[],\"conclusions\":[],\"lassos\":[],\"time\":-7}").map
-  RawCertificate.time = .ok (-7)
+#guard (parseCertificate
+    "{\"target\":{\"premises\":[],\"conclusions\":[],\"time\":-7},\"lassos\":[]}").map
+  (fun c => c.target.time) = .ok (-7)
 
--- An unknown field is skipped rather than rejected, so a producer may attach metadata.
-#guard (parseCertificate "{\"note\":{\"a\":[1,2]},\"premises\":[],\"lassos\":[]}").map
-  RawCertificate.lassos = .ok []
+-- An unknown field is skipped rather than rejected, so a producer may attach metadata — at
+-- both nesting levels, which is new surface the `"target"` object creates.
+#guard (parseCertificate
+    "{\"note\":{\"a\":[1,2]},\"target\":{\"origin\":\"mc\",\"time\":3},\"lassos\":[]}").map
+  (fun c => (c.lassos, c.target.time)) = .ok ([], 3)
 
 -- A fresh-indexed atom is rejected by name, because `Formula.toJson` would drop the index.
 -- `Except _ (WitnessFamily ..)` carries no `DecidableEq` (the box guess is a function), so the
 -- row matches on the constructor rather than comparing the two `Except` values.
-#guard match mkFamily { sepRaw with premises := [Formula.atom ⟨"p", some 3⟩] } with
+#guard match mkFamily
+    { sepRaw with target := { sepRaw.target with premises := [Formula.atom ⟨"p", some 3⟩] } } with
   | .error StructuralFault.atomNotBase => true
   | _ => false
 
