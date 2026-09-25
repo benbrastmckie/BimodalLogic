@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/675_close_sep_row_minframeclass_dense_countermodel/reports/01_close-sep-row-dense-countermodel.md",
+      "summary": "Route 2 (D = Lex (Q ->f Q), phi-region the single-support generators) verified end-to-end sorry-free: sep_minFrameClass_sharp elaborates with axioms [propext, Classical.choice, Quot.sound]; sep is additionally valid at .ZTime, so the characterization is ValidIn fc phi <-> fc = .ZTime or .RTime <= fc, not <-> .RTime <= fc."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790364435_80e870_675",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
