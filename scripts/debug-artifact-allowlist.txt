@@ -21,5 +21,5 @@
 # or has no live directives left -- so this file cannot quietly rot into a dumping ground.
 
 # intentional axiom-audit page; C21 asserts every name is pinned by C2/C14
-FormalSystem/MainResults.lean 54
+FormalSystem/MainResults.lean 66
 

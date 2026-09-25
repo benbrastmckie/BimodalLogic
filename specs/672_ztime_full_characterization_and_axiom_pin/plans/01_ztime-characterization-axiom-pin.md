@@ -249,36 +249,36 @@ than discovering the cost mid-wait.
 
 ---
 
-### Phase 3: The coupled four-site axiom pin [NOT STARTED]
+### Phase 3: The coupled four-site axiom pin [COMPLETED]
 
 **Goal**: The six new names plus the four existing headline names are pinned on
 `FormalSystem/MainResults.lean` and admitted by C21, with C14 and C27 both green.
 
 **Tasks**:
 
-- [ ] Append a new `/-! ## … -/` section to `FormalSystem/MainResults.lean` (currently 254 lines,
+- [x] Append a new `/-! ## … -/` section to `FormalSystem/MainResults.lean` (currently 254 lines,
       last section `Decidability`), in the same prose shape the existing sections use: a short
       paragraph stating what the group claims, a `*` bullet per name, and the module that proves
       them.
-- [ ] Add six `#check @…` lines and six `#print axioms …` lines for
+- [x] Add six `#check @…` lines and six `#print axioms …` lines for
       `FormalSystem.Metalogic.Independence.prior_UZ_minFrameClass_sharp`,
       `…z1_minFrameClass_sharp`, `…not_derivable_base_prior_UZ`, `…not_derivable_base_z1`,
       `…prior_UZ_validIn_iff_ztime`, `…z1_validIn_iff_ztime`.
-- [ ] Append the six matching `'<name>' depends on axioms: [propext, Classical.choice, Quot.sound]`
+- [x] Append the six matching `'<name>' depends on axioms: [propext, Classical.choice, Quot.sound]`
       lines to `C14_BASELINE` in `scripts/check-module-invariants.sh` (heredoc opens line 1772,
       closes at the `C14BASE` terminator).
-- [ ] Append the six matching `#print axioms <name>` lines to the `C14LEAN` heredoc in the same
+- [x] Append the six matching `#print axioms <name>` lines to the `C14LEAN` heredoc in the same
       script (opens line 1969, closes at the `C14LEAN` terminator), **in the identical order**.
       The two heredocs are compared by exact string equality; editing one alone fails C14 with a
       baseline divergence (report F6, and the script's own line-1737 comment).
-- [ ] Write each baseline line on a SINGLE line. C14 rejoins `#print axioms` continuation lines
+- [x] Write each baseline line on a SINGLE line. C14 rejoins `#print axioms` continuation lines
       with `sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta'` before comparing (report F8).
-- [ ] Run `bash scripts/check-module-invariants.sh` and read C27's reported count for
+- [x] Run `bash scripts/check-module-invariants.sh` and read C27's reported count for
       `FormalSystem/MainResults.lean` off the failure line
       (`FAIL  C27  … allow-list count(s) disagree with the tree` → `<path>: allow-list W, tree G`).
       Set `scripts/debug-artifact-allowlist.txt:24` to the reported `tree` value. Do **not**
       compute it by arithmetic.
-- [ ] Re-run the gate and confirm C14, C21 and C27 are all green together.
+- [x] Re-run the gate and confirm C14, C21 and C27 are all green together.
 
 **Timing**: 1.25 hours
 

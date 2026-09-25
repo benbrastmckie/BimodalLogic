@@ -1962,6 +1962,12 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Semantics.StateTopology.bumpFrame_limit' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.StateTopology.bumpFrame_saturation' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.StateTopology.bumpFrame_not_compositional' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Independence.prior_UZ_minFrameClass_sharp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Independence.z1_minFrameClass_sharp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Independence.not_derivable_base_prior_UZ' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Independence.not_derivable_base_z1' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Independence.prior_UZ_validIn_iff_ztime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Independence.z1_validIn_iff_ztime' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2160,6 +2166,12 @@ import FormalSystem
 #print axioms FormalSystem.Semantics.StateTopology.bumpFrame_limit
 #print axioms FormalSystem.Semantics.StateTopology.bumpFrame_saturation
 #print axioms FormalSystem.Semantics.StateTopology.bumpFrame_not_compositional
+#print axioms FormalSystem.Metalogic.Independence.prior_UZ_minFrameClass_sharp
+#print axioms FormalSystem.Metalogic.Independence.z1_minFrameClass_sharp
+#print axioms FormalSystem.Metalogic.Independence.not_derivable_base_prior_UZ
+#print axioms FormalSystem.Metalogic.Independence.not_derivable_base_z1
+#print axioms FormalSystem.Metalogic.Independence.prior_UZ_validIn_iff_ztime
+#print axioms FormalSystem.Metalogic.Independence.z1_validIn_iff_ztime
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \

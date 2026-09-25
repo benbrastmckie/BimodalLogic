@@ -252,3 +252,44 @@ Proved in `FormalSystem.Metalogic.Decidability.Correctness`.
 #check @FormalSystem.Metalogic.Decidability.sound_of_isValid
 
 #print axioms FormalSystem.Metalogic.Decidability.sound_of_isValid
+
+/-! ## Frame-class sharpness of the `.ZTime` axioms
+
+`Axiom.minFrameClass` tags each axiom with the smallest frame class at which it is meant to be
+valid, and `axiom_validIn_min` proves only the upper half of that claim: the axiom really is valid
+at its own tag. For the two axioms tagged `.ZTime` — `Axiom.prior_UZ` and `Axiom.z1` — the lower
+half is proved here too, and in fact strengthened to an exhaustive characterization: their atomic
+instances are valid at `.ZTime` and at no other frame class. The refutations are frame-level, on
+the translation frame over a densely ordered duration group, so what is refuted is discreteness
+rather than the Archimedean property.
+
+The statements are atomic rather than schematic by necessity: `Axiom.prior_UZ ⊥` has an
+unsatisfiable antecedent and so is valid everywhere, which would make the `∀ φ` form false.
+
+* `FormalSystem.Metalogic.Independence.prior_UZ_minFrameClass_sharp` — `prior_UZ` is valid at no
+  frame class strictly below `.ZTime`.
+* `FormalSystem.Metalogic.Independence.z1_minFrameClass_sharp` — the `z1` counterpart.
+* `FormalSystem.Metalogic.Independence.not_derivable_base_prior_UZ` — `prior_UZ`'s atomic instance
+  is not derivable from the `.Base` axioms, through soundness.
+* `FormalSystem.Metalogic.Independence.not_derivable_base_z1` — the `z1` counterpart.
+* `FormalSystem.Metalogic.Independence.prior_UZ_validIn_iff_ztime` — `ValidIn fc φ ↔ fc = .ZTime`,
+  the full characterization, covering `.Dense` and `.RTime` as well, which are incomparable with
+  `.ZTime` rather than below it.
+* `FormalSystem.Metalogic.Independence.z1_validIn_iff_ztime` — the `z1` counterpart.
+
+Proved in `FormalSystem.Metalogic.Independence.ZTimeSharpness`.
+-/
+
+#check @FormalSystem.Metalogic.Independence.prior_UZ_minFrameClass_sharp
+#check @FormalSystem.Metalogic.Independence.z1_minFrameClass_sharp
+#check @FormalSystem.Metalogic.Independence.not_derivable_base_prior_UZ
+#check @FormalSystem.Metalogic.Independence.not_derivable_base_z1
+#check @FormalSystem.Metalogic.Independence.prior_UZ_validIn_iff_ztime
+#check @FormalSystem.Metalogic.Independence.z1_validIn_iff_ztime
+
+#print axioms FormalSystem.Metalogic.Independence.prior_UZ_minFrameClass_sharp
+#print axioms FormalSystem.Metalogic.Independence.z1_minFrameClass_sharp
+#print axioms FormalSystem.Metalogic.Independence.not_derivable_base_prior_UZ
+#print axioms FormalSystem.Metalogic.Independence.not_derivable_base_z1
+#print axioms FormalSystem.Metalogic.Independence.prior_UZ_validIn_iff_ztime
+#print axioms FormalSystem.Metalogic.Independence.z1_validIn_iff_ztime
