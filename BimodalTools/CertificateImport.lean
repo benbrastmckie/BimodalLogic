@@ -374,4 +374,190 @@ def mkFamily (raw : RawCertificate) :
     if hl : lassos = [] then .error .lassosEmpty
     else return { bx := bxOf raw.bx, lassos := lassos, lassos_ne := hl }
 
+/-!
+## The verdict, and where a rejection happened
+
+The verdict is the four top-level `Decidable` instances and nothing else, evaluated in order and
+short-circuiting on the first `false`. The scans below run only to localize a rejection: each one
+ranges over exactly the units its instance decides — `CoherentAt` over
+`[labCohWindowLo, labCohWindowHi)`, `eventClauseAt` over `[labFulWindowLo, labFulWindowHi)`,
+`boxClause` over the closure, `Target` at the single target time — so a scan cannot disagree with
+the verdict it is explaining. When an instance says `false` and its scan finds nothing, the
+`"unlocalized"` record is emitted rather than an empty `failed` list.
+-/
+
+/-- One failed condition, localized as far as the scan could take it. -/
+structure Failure where
+  /-- Which condition failed: `structural`, `local_coherent`, `fulfilling`, `box_faithful`,
+  `target`, or `unlocalized`. -/
+  condition : String
+  /-- The lasso index, when the failure is tied to one. -/
+  lasso : Option Nat := none
+  /-- The position, when the failure is tied to one. -/
+  position : Option Int := none
+  /-- The closure member whose clause failed, when the scan found one. -/
+  formula : Option Formula := none
+  /-- A short human-readable note. -/
+  detail : String := ""
+  deriving Repr, Inhabited, DecidableEq
+
+/-- The checker's answer. Note the absence of any "valid" constructor: this checker is one-sided
+by construction and never makes a validity claim. -/
+inductive CheckResult where
+  /-- Every condition decided `true` at the given target time. -/
+  | countermodel (time : Int)
+  /-- Some condition decided `false`, or a structural precondition was violated. -/
+  | rejected (failed : List Failure)
+  /-- The input was not a well-formed certificate object. A protocol failure, not a verdict. -/
+  | error (message : String)
+  deriving Repr, Inhabited, DecidableEq
+
+section Scans
+
+variable {Γ Del : Context}
+
+/-- The first position at which local coherence fails, with the offending closure member. -/
+def cohFailure (W : WitnessFamily Γ Del) : Option Failure :=
+  (List.finRange W.lassos.length).findSome? fun i =>
+    let Λ := W.lassos.get i
+    (intRange (LabelledLasso.labCohWindowLo Λ) (LabelledLasso.labCohWindowHi Λ)).findSome? fun t =>
+      if LabelledLasso.CoherentAt W.bx Λ t then none
+      else if Formula.bot ∈ Λ.lab t then
+        some { condition := "local_coherent", lasso := some i.val, position := some t,
+               formula := some Formula.bot, detail := "⊥ is labelled at this position" }
+      else
+        let bad := (closureList (Γ ++ Del)).find? fun ψ =>
+          ! decide (LabelledLasso.labClauseAt W.bx (Λ.lab (t - 1)) (Λ.lab t) (Λ.lab (t + 1)) ψ)
+        some { condition := "local_coherent", lasso := some i.val, position := some t,
+               formula := bad, detail := "the local clause of this closure member fails here" }
+
+/-- The first position at which an eventuality is left undischarged. -/
+def fulFailure (W : WitnessFamily Γ Del) : Option Failure :=
+  (List.finRange W.lassos.length).findSome? fun i =>
+    let Λ := W.lassos.get i
+    (intRange (LabelledLasso.labFulWindowLo Λ) (LabelledLasso.labFulWindowHi Λ)).findSome? fun t =>
+      match (closureList (Γ ++ Del)).find? fun ψ =>
+          ! decide (LabelledLasso.eventClauseAt Λ t ψ) with
+      | some ψ =>
+        some { condition := "fulfilling", lasso := some i.val, position := some t,
+               formula := some ψ, detail := "this eventuality is never discharged" }
+      | none => none
+
+/-- The first closure member whose box clause fails, with a counter-position when one exists. -/
+def boxFailure (W : WitnessFamily Γ Del) : Option Failure :=
+  (closureList (Γ ++ Del)).findSome? fun ψ =>
+    if W.boxClause ψ then none
+    else
+      match ψ with
+      | .box χ =>
+        let counter := (List.finRange W.lassos.length).findSome? fun i =>
+          let Λ := W.lassos.get i
+          (intRange (-Λ.nb) (Λ.nm + Λ.nf)).findSome? fun t =>
+            if χ ∈ W.L i t then none else some (i.val, t)
+        some { condition := "box_faithful", lasso := counter.map Prod.fst,
+               position := counter.map Prod.snd, formula := some ψ,
+               detail := "the box guess disagrees with global label membership" }
+      | _ => none
+
+/-- The first premise missing from, or conclusion present in, the main label at the target. -/
+def targetFailure (W : WitnessFamily Γ Del) (t : Int) : Option Failure :=
+  match Γ.find? (fun γ => ! decide (γ ∈ W.main t)) with
+  | some γ =>
+    some { condition := "target", lasso := some 0, position := some t, formula := some γ,
+           detail := "this premise is not labelled at the target position" }
+  | none =>
+    match Del.find? (fun σ => decide (σ ∈ W.main t)) with
+    | some σ =>
+      some { condition := "target", lasso := some 0, position := some t, formula := some σ,
+             detail := "this conclusion is labelled at the target position" }
+    | none => none
+
+end Scans
+
+/-- The `failed` entry for an instance that returned `false` whose scan found nothing. -/
+def unlocalized (condition : String) : Failure :=
+  { condition := "unlocalized",
+    detail := s!"the {condition} instance decided false, but the scan localized no failure" }
+
+/-- Render a structural fault as a `failed` entry. -/
+def StructuralFault.toFailure : StructuralFault → Failure
+  | .lasso idx .backEmpty =>
+    { condition := "structural", lasso := some idx, detail := "back segment is empty" }
+  | .lasso idx .fwdEmpty =>
+    { condition := "structural", lasso := some idx, detail := "fwd segment is empty" }
+  | .lasso idx .labelOutsideClosure =>
+    { condition := "structural", lasso := some idx,
+      detail := "a label is not a subset of the closure of the premises and conclusions" }
+  | .lassosEmpty =>
+    { condition := "structural", detail := "the family has no lassos" }
+  | .atomNotBase =>
+    { condition := "structural",
+      detail := "an atom carries a fresh index, which the wire format does not preserve" }
+
+/--
+Re-verify a decoded certificate.
+
+The verdict is `decidableLocalCoherentLab`, `decidableFulfillingLab`, `decidableBoxFaithful` and
+`decidableTarget`, in that order, short-circuiting on the first `false`. Acceptance means those
+four compiled instances returned `true` — it is not a kernel-checked proof for this certificate,
+and a rejection is never a claim that the consequence holds.
+-/
+def checkRaw (raw : RawCertificate) : CheckResult :=
+  match mkFamily raw with
+  | .error f => .rejected [f.toFailure]
+  | .ok W =>
+    if ! @Decidable.decide _ (WitnessFamily.decidableLocalCoherentLab W) then
+      .rejected [(cohFailure W).getD (unlocalized "local_coherent")]
+    else if ! @Decidable.decide _ (WitnessFamily.decidableFulfillingLab W) then
+      .rejected [(fulFailure W).getD (unlocalized "fulfilling")]
+    else if ! @Decidable.decide _ (WitnessFamily.decidableBoxFaithful W) then
+      .rejected [(boxFailure W).getD (unlocalized "box_faithful")]
+    else if ! @Decidable.decide _ (WitnessFamily.decidableTarget W raw.time) then
+      .rejected [(targetFailure W raw.time).getD (unlocalized "target")]
+    else
+      .countermodel raw.time
+
+/-- Parse and re-verify one JSON line. Malformed input is an `error`, never a verdict. -/
+def checkLine (line : String) : CheckResult :=
+  match parseCertificate line with
+  | .error msg => .error msg
+  | .ok raw => checkRaw raw
+
+/-!
+## The output line
+-/
+
+/-- Serialize an optional natural number as a JSON value. -/
+def optNatToJson : Option Nat → String
+  | none => "null"
+  | some n => toString n
+
+/-- Serialize an optional integer as a JSON value. -/
+def optIntToJson : Option Int → String
+  | none => "null"
+  | some n => toString n
+
+/-- Serialize an optional formula as a JSON value. -/
+def optFormulaToJson : Option Formula → String
+  | none => "null"
+  | some φ => φ.toJson
+
+/-- Serialize one failure record. -/
+def Failure.toJson (f : Failure) : String :=
+  "{\"condition\":\"" ++ escapeJsonString f.condition ++
+  "\",\"lasso\":" ++ optNatToJson f.lasso ++
+  ",\"position\":" ++ optIntToJson f.position ++
+  ",\"formula\":" ++ optFormulaToJson f.formula ++
+  ",\"detail\":\"" ++ escapeJsonString f.detail ++ "\"}"
+
+/-- Serialize the verdict as the single JSON line the executable prints. -/
+def CheckResult.toJson : CheckResult → String
+  | .countermodel t => "{\"status\":\"countermodel\",\"time\":" ++ toString t ++ "}"
+  | .rejected fs =>
+    "{\"status\":\"rejected\",\"failed\":" ++ jsonArray (fs.map Failure.toJson) ++ "}"
+  | .error m => "{\"status\":\"error\",\"message\":\"" ++ escapeJsonString m ++ "\"}"
+
+/-- Parse, re-verify and serialize: the whole executable, minus the IO. -/
+def checkLineToJson (line : String) : String := (checkLine line).toJson
+
 end BimodalTools.CertificateImport

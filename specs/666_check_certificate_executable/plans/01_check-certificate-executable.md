@@ -229,7 +229,7 @@ structural rejection, with every computability blocker already closed.
 
 ---
 
-### Phase 3: Verdict, failure localization, and result serialization [NOT STARTED]
+### Phase 3: Verdict, failure localization, and result serialization [COMPLETED]
 
 **Goal**: Turn a built family into the output contract — `countermodel`, or `rejected` with the
 condition, lasso index and position named.
