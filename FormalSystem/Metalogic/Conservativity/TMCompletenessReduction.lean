@@ -243,7 +243,7 @@ given a weak-completeness engine at `fc`.
 
 Forward (`TMMinusComplete fc → Forward fc`): given `⊢[fc] tr φ`, `soundness_validIn`
 (`Metalogic/Soundness.lean`) gives `ValidIn fc (tr φ)`, and `minusValidIn_iff_validIn_tr`
-(`Metalogic/Conservativity/MinusLanguageSoundness.lean`) crosses to `MinusValidIn fc φ`; apply the
+(`MinusLanguage/Soundness.lean`) crosses to `MinusValidIn fc φ`; apply the
 hypothesis. This direction does not use the engine.
 
 Backward (`Forward fc → TMMinusComplete fc`): given `MinusValidIn fc φ`,

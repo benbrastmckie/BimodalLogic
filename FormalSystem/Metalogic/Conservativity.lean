@@ -124,7 +124,7 @@ the TM_z half.
 The other half — `TM⁻_z ⊢ Z1 φ` fails, because `TM⁻_z = TM⁻ + DF` is sound over *every* discrete
 frame while `Z1` is unsound over non-Archimedean discrete orders — is now **also** a theorem:
 `Metalogic/Conservativity/Z1Countermodel.lean`'s `not_minus_derivable_z1`, via
-`minus_soundness_ztime_succ` (`Metalogic/Conservativity/MinusLanguageSoundness.lean`, the
+`minus_soundness_ztime_succ` (`MinusLanguage/Soundness.lean`, the
 binder-weakened discrete L⁻ soundness theorem dropping the Archimedean instances) applied to a
 countermodel over `ℚ ×_lex ℤ` (`Semantics/LexCarrier.lean`), **not** `ℤ ×_lex ℤ` as an earlier draft
 of this section and the research report both suggested — `ℚ ×_lex ℤ` is the carrier
@@ -288,7 +288,7 @@ gap is no longer accurate for either row:
 
 - **CEF (`FrameClass.ZTime`) — done, both halves machine-checked.** The missing prerequisite
   was a *binder-weakened* L⁻ soundness theorem — `minus_soundness_ztime_succ`
-  (`Metalogic/Conservativity/MinusLanguageSoundness.lean`), dropping
+  (`MinusLanguage/Soundness.lean`), dropping
   `IsSuccArchimedean`/`IsPredArchimedean` so it applies to a non-Archimedean carrier — plus the
   countermodel itself, assembled over `multiFamTaskFrameGen` at the non-Archimedean discrete carrier
   `ℚ ×_lex ℤ` (`Semantics/LexCarrier.lean`, `Metalogic/Conservativity/Z1Countermodel.lean`). **Both
@@ -376,7 +376,7 @@ Each entry reads *Module* — *Contents*:
 
 * `Conservativity/Backward.lean` — `translate`, `derivable_translate`, the four `*_backward` rows,
   `Z1`, `z1_translate`
-* `Conservativity/MinusLanguageSoundness.lean` — the `minus_soundness` family and the `truthAt_tr`
+* `MinusLanguage/Soundness.lean` — the `minus_soundness` family and the `truthAt_tr`
   transfer bridge
 * `Conservativity/TMCompletenessReduction.lean` — `TMMinusComplete` / `Forward` and their
   equivalence
@@ -418,8 +418,8 @@ Each entry reads *Module* — *Contents*:
 **The children must never import this file.** Each imports
 `FormalSystem.Metalogic.Conservativity.Backward` directly; importing the aggregator from a child
 is an import cycle, because the aggregator imports every child. The chain the children preserve
-is `Backward ← MinusLanguageSoundness ← TMCompletenessReduction ← Z1Countermodel ← Fragment ←
-FragmentCompactness ← Plus/Forward`, with `SpWitness` hanging off `MinusLanguageSoundness`,
+is `Backward ← MinusLanguage/Soundness ← TMCompletenessReduction ← Z1Countermodel ← Fragment ←
+FragmentCompactness ← Plus/Forward`, with `SpWitness` hanging off `MinusLanguage/Soundness`,
 `SpCountermodel` hanging off `SpWitness` and `TMCompletenessReduction` jointly (it also imports
 `MinusLanguage/MinusFrame.lean`, which is outside this directory and reaches nothing in
 `ProofSystem/`), and the `Plus/` chain `Atomization ← AxiomValidity ← PlusSoundness ← Forward`

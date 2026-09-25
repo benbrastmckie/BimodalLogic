@@ -11,7 +11,7 @@ import FormalSystem.Semantics.DurationClassification
 # DF and DN semantic lemmas, and their past-duals
 
 The four semantic facts consumed by both `Metalogic/Conservativity/SpWitness.lean` (the (Sp)
-validity witness) and `Metalogic/Conservativity/MinusLanguageSoundness.lean`'s
+validity witness) and `MinusLanguage/Soundness.lean`'s
 `minus_soundness_ztime_succ` — the shared mathematical core of the TM⁻-completeness task (report
 §4.1 Lemmas B and C, plus §6.1's past-dual obligation).
 
@@ -89,7 +89,7 @@ an L theorem across `tr`.** `tr` is exact only on `□, G, H, →, ⊥`; on `som
 `tr φ.someFuture` is `(Formula.allFuture (tr φ).neg).neg`, a different constructor tree from
 `Formula.someFuture (tr φ)` — recorded by proof as `tr_someFuture_ne`
 (`MinusLanguage/Translation.lean`). Both DF statements have `F⊤` and `F(Hφ)` in them, so the
-transfer theorems in `Metalogic/Conservativity/MinusLanguageSoundness.lean` do not reach them, and
+transfer theorems in `MinusLanguage/Soundness.lean` do not reach them, and
 both proofs stay native. Do not delete either as a duplicate of an L result.
 -/
 theorem df_valid_of_succOrder [SuccOrder F.Duration] [Nontrivial F.Duration]

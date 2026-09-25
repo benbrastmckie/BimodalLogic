@@ -216,7 +216,7 @@ this is stated directly in the pre-abbreviation shape rather than as an abbrevia
 (`TaskFrame.IsZTime` bundles all four), so no `.of_forall`/`.apply` pair is needed —
 a value of this type already **is** the binder-shape statement.
 
-**Why this exists.** `Metalogic/Conservativity/MinusLanguageSoundness.lean`'s
+**Why this exists.** `MinusLanguage/Soundness.lean`'s
 `minus_soundness_ztime_succ` is the single prerequisite CEF was missing (report §6.1): a discrete L⁻
 soundness theorem that does not assume Archimedean structure, so it applies to the non-Archimedean
 carrier `ℚ ×ₗ ℤ` (`Semantics/LexCarrier.lean`) that `Metalogic/Conservativity/Z1Countermodel.lean`'s
@@ -231,7 +231,7 @@ def MinusValidZTimeSucc (φ : MinusFormula) : Prop :=
 
 **Documented exception to the transfer-theorem collapse.** Its three siblings are corollaries of
 `MinusValidIn.mono`, and every L⁻/L equivalence in
-`Metalogic/Conservativity/MinusLanguageSoundness.lean` is a corollary of
+`MinusLanguage/Soundness.lean` is a corollary of
 `minusValidIn_iff_validIn_tr`. This one is neither, and cannot be made either: `MinusValidZTimeSucc`
 is **not** any `MinusValidIn fc` — no `FrameClass.Sat` variant bundles just `SuccOrder` +
 `PredOrder` without the two Archimedean conditions, which is exactly the weakening
@@ -299,7 +299,7 @@ theorem minusValid_implies_minusValidRTime {φ : MinusFormula} (h : MinusValid �
 **Documented exception to the transfer-theorem collapse.** `MinusSemanticConsequence` is an
 orthogonal `Prop` shape, not a `MinusValidIn` at any tag: it carries no `FrameClass` index, and
 mentions no `tr`. So neither `minusValidOnFrames_iff_validOnFrames_tr` nor
-`minusValidIn_iff_validIn_tr` (`Metalogic/Conservativity/MinusLanguageSoundness.lean`) can prove it,
+`minusValidIn_iff_validIn_tr` (`MinusLanguage/Soundness.lean`) can prove it,
 and this two-branch script stays. -/
 theorem minusValid_iff_empty_consequence (φ : MinusFormula) :
     MinusValid φ ↔ MinusSemanticConsequence [] φ := by

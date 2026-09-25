@@ -97,7 +97,7 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
   recursion on `MinusFormula`, not `TruthAt ∘ tr` — and obtained by composing
   `Conservativity.translate` with the four theorems above across the truth-transfer bridge
   `Semantics.truthAt_tr`, which is proved by induction in
-  `Metalogic/Conservativity/MinusLanguageSoundness.lean`. `minus_soundness_rtime` carries
+  `MinusLanguage/Soundness.lean`. `minus_soundness_rtime` carries
   `ValidRTime`'s binder set and its validity form concludes at `MinusValidRTime`, inheriting
   `soundness_rtime`'s target; a density-free `MinusValidComplete` is deliberately not defined
   because it would be refutable

@@ -99,7 +99,7 @@ without shifting a history.
 
 One further declaration in a soundness module touches the lemma without being a schema-validity
 proof: `minusTruthAt_timeShift`
-(`Metalogic/Conservativity/MinusLanguageSoundness.lean`) restates time-shift homogeneity at
+(`MinusLanguage/Soundness.lean`) restates time-shift homogeneity at
 `MinusTruthAt` by rewriting through `truthAt_tr`. It proves no axiom valid and currently has no
 consumer. The remaining uses of the lemma in the tree are outside the soundness layer entirely —
 `Semantics/TruthTransport.lean`'s own derived forms

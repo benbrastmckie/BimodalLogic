@@ -33,7 +33,7 @@ sibling module.
 Nothing here — nor anything under `FormalSystem/MinusLanguage/`, transitively — imports
 `FormalSystem.Semantics`. `translate` is a function between two `DerivationTree` types and
 touches no truth definition, frame, or validity predicate. The semantics-facing half of the
-story lives in the sibling `Conservativity/MinusLanguageSoundness.lean`, which is where the
+story lives in `MinusLanguage/Soundness.lean`, which is where the
 `FormalSystem.Semantics` import enters.
 
 ## Tags
@@ -168,7 +168,7 @@ theorem cec_backward {φ : MinusFormula}
 Not part of the bridge: this is the TM_z half of the CEF refutation. The other half — that
 `TM⁻_z ⊬ Z1` — is **also machine-checked**, in the sibling module
 `Conservativity/Z1Countermodel.lean`, as `not_minus_derivable_z1`; the L⁻-side soundness theorem it
-needed, `minus_soundness_ztime_succ`, is in `Conservativity/MinusLanguageSoundness.lean`.
+needed, `minus_soundness_ztime_succ`, is in `MinusLanguage/Soundness.lean`.
 `tmMinusCompleteZTime_refuted`, in that same countermodel module, reads the pair off as an outright
 refutation of TM⁻_z-completeness over the discrete class. Neither half is outstanding. -/
 

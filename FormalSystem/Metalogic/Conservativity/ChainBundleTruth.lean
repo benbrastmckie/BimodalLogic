@@ -22,7 +22,7 @@ history agrees with it pointwise.
 
 `chainSat`'s `box` clause is `∀ q', chainSat v q' φ`, quantifying **both** coordinates and taking
 no time argument at all. That is not a simplification: it is what
-`Conservativity/MinusLanguageSoundness.lean`'s `minus_box_universal` establishes. `MinusTruthAt`'s
+`MinusLanguage/Soundness.lean`'s `minus_box_universal` establishes. `MinusTruthAt`'s
 box clause is history-blind by definition (it does not mention `τ`) and time-blind by
 `Semantics.Truth.box_const`, so `□φ` holds at one history-and-time exactly when `φ` holds at every
 history and every time. On a flow frame the world histories are *exactly* the translates

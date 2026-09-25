@@ -24,7 +24,7 @@ TMFrag fc φ  :=  TM ⊢[fc] tr φ
 
 the set of base-language formulas whose translation is a TM theorem. Its metatheory transfers
 mechanically through the landed truth-transfer bridge `minusValidIn_iff_validIn_tr`
-(`Conservativity/MinusLanguageSoundness.lean`):
+(`MinusLanguage/Soundness.lean`):
 
 - **soundness** (`tmFrag_sound`) from `soundness_validIn`;
 - **completeness** (`tmFrag_complete`) from any `WeakCompleteness fc` engine — instantiated at
