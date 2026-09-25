@@ -1,5 +1,5 @@
 ---
-next_project_number: 670
+next_project_number: 671
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 670
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,670 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -89,6 +89,7 @@ next_project_number: 670
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
+670 [NOT STARTED] — Machine-check the MINIMALITY half of Axiom.minFrameClass for...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -1120,3 +1121,25 @@ SEE ALSO the reconciliation task on whether this embedding can be factored throu
 
 === DEPENDENCY ADDED 2026-09-01 ===
 Task 528 (Algebraic/ modernisation: propDecide in BooleanStructure.lean, SetMaximalConsistent.ultrafilterEquiv as a named Equiv, the bespoke `Ultrafilter` structure reconciled with Mathlib Order.PFilter/Ideal.IsPrime, Multiset.inf; from specs/reviews/review-2026-09-01-lean-engineering.md findings D-08, F-11, F-12, F-13) must land first so this task builds on the modernised algebra rather than inheriting a shadowed Ultrafilter name and ~430 lines of hand-built Boolean algebra.
+
+---
+
+### 670. Minframeclass sharpness prior uz z1
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: --
+
+**Description**: Machine-check the MINIMALITY half of `Axiom.minFrameClass` for the two `.ZTime` axioms, `prior_UZ` and `z1`: prove that neither is valid at `FrameClass.Base`. The tag currently asserts minimality; only the upper bound is proved.
+
+ALREADY PROVED, NOT TO BE RE-DERIVED: `Axiom.minFrameClass` (`ProofSystem/Axioms.lean:610-617`) is a DEFINITION, a hand-assigned tag per constructor. What is proved is the UPPER bound only -- `axiom_validIn_min` (`Metalogic/Soundness.lean:1228`) gives `ValidIn ax.minFrameClass phi`, lifted by `ValidIn.mono` in `axiom_validIn` (`:1278`). So "prior_UZ and z1 ARE Z-time valid" is machine-checked. Nothing proves the tag SHARP: non-Base-validity rests only on docstring citations (Reynolds 1992 Sec. 10 / Venema 1993 axiom (W) at `Axioms.lean:335-341`; Doets 1987 Claim 10 / Reynolds 1994 Sec. 10 at `:347-356`).
+
+WHY IT MATTERS: the ModelChecker adequacy report (`~/Projects/ModelChecker/specs/187_.../reports/01_adequacy-theorem-bimodal-countermodels.md` Sec. 8.2, "A0 -- the frame-class gap, a permanent limit A1 cannot close") shows the certificate search is permanently silent on a nonempty class of paper-invalid inferences. Half of that argument -- no certificate can exist for these, since one would contradict their Z-time validity -- is machine-checked via `axiom_validIn_min`. The other half, that they are nonetheless paper-invalid at a non-discrete order, is exactly this unproved minimality claim. A0 currently rests on a literature citation at the point where it asserts a permanent limit.
+
+EXISTING MACHINERY AND THE TRAP: for `z1`, `Metalogic/Conservativity/Z1Countermodel.lean`'s `not_minus_derivable_z1` uses a countermodel over the non-Archimedean DISCRETE order `Q x_lex Z` (`Semantics/LexCarrier.lean`) via `minus_soundness_ztime_succ`. CAUTION: that is about TM-minus-DERIVABILITY of the L-minus schema `Z1`, not `ValidIn` of `Axiom.z1`, and `z1 phi` is NOT `tr (Z1 phi')` -- `Conservativity.lean:139-143` records why (`Formula.someFuture` is a top-level `untl`; `MinusLanguage.tr_ne_untl`), with `notGNotImpF` bridging derivably. The carrier is likely reusable; the transfer must be explicit. For `prior_UZ` nothing directly reusable was found -- `Independence/CoNotPriorU.lean` concerns `prior_U_gap` (`.RTime`), NOT `prior_UZ`; do not conflate.
+
+METHODOLOGICAL CAVEAT: `CoNotPriorU.lean:13-45` records that for CO/`prior_U_gap` no FRAME-level countermodel can exist, since frame-validity quantifies over all valuations and forces gap-freeness, so the theorem was restated over a fixed `TaskModel` (Reynolds 1992 p.169). Decide whether that bites here BEFORE choosing the statement form; a plain `not (ValidIn FrameClass.Base ...)` should not be obstructed, since refuting validity needs only one model, history and time.
+
+DELIVERABLE: named theorems establishing non-Base-validity for both axioms at explicit atomic instances, sorry-free and adding no `axiom` declaration (the tree has zero of each outside `Boneyard/`; `MainResults.lean` pins `#print axioms` to `[propext, Classical.choice, Quot.sound]` at build time). Update `minFrameClass`'s docstring to cite the sharpness theorems.
+
+SCOPE: `FormalSystem/` only, only the two `.ZTime` axioms. The `.Dense`/`.RTime` tags are likely unproved-sharp on the same grounds -- RECORD as an observation for a follow-up, do not do that work here. The compression direction is task 623 item 1, not this task. No ModelChecker change belongs here.
