@@ -169,8 +169,8 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 
 ---
 
-**Last verified**: 2026-09-21
+**Last verified**: 2026-09-24
 
 ---
 
-*Last verified: 2026-09-21*
+*Last verified: 2026-09-24*
