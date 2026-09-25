@@ -1,7 +1,7 @@
 # Implementation Plan: Task #674
 
 - **Task**: 674 - Document the countermodel-construction kit and the frame-level refutation criterion in `FormalSystem/Metalogic/Independence/README.md`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.0 hours
 - **Dependencies**: Task 671 (remaining-rows sharpness work, already landed; README read as reconciled)
 - **Research Inputs**: specs/674_document_countermodel_kit_and_refutation_criterion/reports/01_countermodel-kit-refutation-criterion.md
@@ -110,7 +110,7 @@ but are serialized because they edit the same file at adjacent insertion points.
 
 ---
 
-### Phase 1: Re-verify anchors and capture the gate baseline [NOT STARTED]
+### Phase 1: Re-verify anchors and capture the gate baseline [COMPLETED]
 
 **Goal**: Confirm every declaration name, file path and docstring-section heading the two
 sections will cite still resolves, and record a green pre-edit baseline so any later gate failure
@@ -165,7 +165,7 @@ faith, and a nonzero baseline violation count is recorded as pre-existing before
 
 ---
 
-### Phase 2: Write Section 1 — the countermodel construction kit [NOT STARTED]
+### Phase 2: Write Section 1 — the countermodel construction kit [COMPLETED]
 
 **Goal**: Insert `## Building a countermodel: what to reach for first` after `## Key Results`,
 covering the default route, the labelled fallback, the two dead ends stated accurately, and the

@@ -192,6 +192,98 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
   (`PlusLanguage/PlusLimitClosure.lean`) and `blc_not_plusDerivable_base`
   (`LimitClosureCountermodel.lean`).
 
+## Building a countermodel: what to reach for first
+
+The default route to a native `Formula`/`TruthAt` countermodel is the translation frame together
+with its ready-made realisation layer — not the L⁻ transfer, and not any of the bespoke frames
+already in this directory. It is what both sharpness modules run on, and `ZTimeSharpness.lean`'s
+entire import surface is `Semantics/Correspondence/DurationFrames.lean`,
+`Metalogic/Soundness.lean` and `Semantics/Correspondence/RigidityReal.lean`: none of
+`Metalogic/Conservativity/Z1Countermodel.lean`, `Semantics/LexCarrier.lean` or the L⁻ soundness
+family is needed.
+
+**The default route — three definitions and three bridges.**
+
+- `translationFrame D` (`Semantics/Frames/Standard.lean`) — world states are the durations
+  themselves, with `w ⇒_x u ↔ u = w + x` (`translationFrame_taskRel`, `@[simp]`).
+  `translationFrame_isRegular` is a **global instance**, so the `FrameClass.Sat` side condition is
+  `inferInstance` at `.Base`, `⟨inferInstance, inferInstance⟩` at `.Dense`, and a triple at
+  `.RTime`.
+- `translationHist D` (`Semantics/Correspondence/DurationFrames.lean`) — the identity reference
+  history `t ↦ t`, total. This is *why* the route is the default: atoms are valued on world
+  states, so a time-varying atom needs a history whose state varies with time, and the identity
+  history is exactly that.
+- `translationModel D A` — values **every** atom by membership in an arbitrary `A ⊆ ↑D`
+  (`translationModel_atom`, `@[simp]`, by `Iff.rfl`).
+- `translation_realizes`, `translation_realizes_allPast`, `translation_realizes_allFuture` — the
+  atom-realisation bridges. Atom truth at `t` is `t ∈ A`; `Hp` at `u` is `∀ r < u, r ∈ A`; `Gp` at
+  `u` is `∀ r, u < r → r ∈ A`. Each turns a temporal claim into an order claim about `A` in one
+  rewrite.
+
+The recipe is four steps: choose the set `A`; apply the validity hypothesis at
+`h (translationModel D A) (translationHist D) 0`; rewrite with the realisation lemma for the
+operator in play; derive the contradiction from order facts about `A`. Two mechanical notes that
+cost time if unknown. Both refutations open with `haveI := noMaxOrder_of_duration D`, which is a
+plain lemma and deliberately **not** an instance. And pulling
+`Metalogic/DedekindNonCompactness.lean` into the import closure alongside
+`Semantics/Correspondence/RigidityReal.lean` reintroduces an `Ambiguous term realOrder` error,
+because the two declare `realOrder` in a namespace these modules both open;
+`ZTimeSharpness.lean`'s import block records the constraint.
+
+**The fallback route, and why it is the fallback.** Transferring a refutation out of the
+neighbouring L⁻ language is landed and real — `not_minus_derivable_z1`
+(`Metalogic/Conservativity/Z1Countermodel.lean`) over the `ℚ ×ₗ ℤ` carrier from
+`Semantics/LexCarrier.lean`, with `minus_soundness_ztime_succ` from
+`FormalSystem/MinusLanguage/Soundness.lean`. But anything crossing `MinusLanguage.tr` meets the
+`tr_ne_untl` obstruction (`FormalSystem/MinusLanguage/Translation.lean`): `Formula.someFuture` is
+a top-level `untl` and nothing in the range of `tr` is, so a `U`-shaped target cannot be reached
+that way. The paragraph in `Metalogic/Conservativity.lean` documenting that obstruction is
+accurate; it simply never arises on the default route, because nothing leaves the native
+language.
+
+**Two frames that look right and are not.** Both are attractive starting points on which an agent
+will prove a true theorem about a different question.
+
+- The **static frame** (`FrameOver.staticFrame`, `StaticFrame.lean`) has time-invariant truth, and
+  time-invariant truth **validates** `Axiom.z1` outright — the landed `static_validates_z1`, which
+  `LexIntWitness.lean` depends on. The trap is live precisely because `LexIntWitness.lean` makes
+  its discrete non-Archimedean carrier look like the obvious place to start.
+- The **clock frame** (`clockFrame`, `ClockFrame.lean`) is a dead end for **`z1` only**, and the
+  asymmetry matters. Its period-1 truth (`clockFrame_looping`, `truthAt_add_period`,
+  `truthAt_add_nsmul`, `clock_allPast_imp_allFuture`) makes `Gφ` time-independent over the
+  Archimedean `ℚ`, so `FGφ → Gφ` holds there and `z1` cannot be refuted on it. It is **not** a
+  dead end for `Axiom.prior_UZ`: the arc valuation `clockModel`, with `clock_atom_truth`, already
+  in `CoNotPriorU.lean` refutes that axiom's atomic instance. What rules the clock frame out for
+  `prior_UZ` is cost, not validity — it is pinned to `ℚ` and a quotient carrier, where the
+  translation frame delivers both axioms from one generic lemma each at an arbitrary dense `D`.
+
+**Three specifics worth not re-deriving.**
+
+1. *What refutes the `.ZTime` axioms is non-discreteness, not failure of the Archimedean
+   property.* `not_validOn_prior_UZ_dense` and `not_validOn_z1_dense` are stated at
+   `(D : TemporalOrder) [DenselyOrdered (D : Type)]`, so each is a single lemma covering **every**
+   densely ordered duration group. That genericity is what converts one construction into several
+   frame classes: instantiating at `ztimeSharpOrder` and at `realOrder` reaches `.Base`, `.Dense`
+   and `.RTime` from the same proof, and `eq_base_of_lt_ztime` covers everything strictly below
+   `.ZTime`. Dedekind completeness buys these axioms nothing. Discrete *non-Archimedean* carriers
+   are a different story, told by `LexIntWitness.lean`.
+2. *Pin the shape, because a schematic `∀ φ` non-validity claim can be outright false.*
+   `Axiom.prior_UZ ⊥` has an unsatisfiable antecedent and **is** `.Base`-valid, which falsifies
+   the `∀ φ` reading of the `.Base` results and of both biconditionals. Every statement is
+   therefore made at `Formula.atom p`, and anonymous shape pins of the form
+   `example (φ : Formula) : Axiom (...) := Axiom.<ctor> φ` are standard practice: the whole result
+   is vacuous if the transcribed formula drifts from the constructor, and a pin makes
+   transcription fidelity a compiler obligation. Two are ready to copy in `ZTimeSharpness.lean`'s
+   *Shape pins* section and three in `DenseRTimeSharpness.lean`'s. The `prior_UZ` pin also settles
+   a genuine reading trap: `ProofSystem/Axioms.lean`'s prose renders the axiom `F(φ) → U(φ, ¬φ)`,
+   argument-reversed relative to the constructor's `Formula.untl φ.neg φ`, because the prefix
+   `U(e, g)` rendering is deliberately event-first while the constructor and the infix `φ U ψ` are
+   guard-first.
+3. *`by decide` fails on `FrameClass` `<`.* Only `≤` carries a `DecidableRel` instance; `<` comes
+   from `PartialOrder`'s default definition and is not reached by instance search. The idiom in
+   the tree is `absurd h.le (by decide)`, and `DenseRTimeSharpness.lean`'s *Order facts* section
+   is where this is written down.
+
 ## Dependencies
 
 - **Imports from**: `FormalSystem.Semantics` (including
