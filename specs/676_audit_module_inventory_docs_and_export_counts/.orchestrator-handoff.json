@@ -1,5 +1,11 @@
 {
   "status": "planned",
+  "task_number": 676,
+  "phase": "plan",
+  "dispatch_seq": 4,
+  "session_id": "sess_1790364435_80e870_676",
+  "phases_completed": 0,
+  "phases_total": 5,
   "artifacts": [
     {
       "type": "plan",
@@ -7,16 +13,6 @@
       "summary": "5-phase documentation-only plan reconciling the architecture.md source tree, the Conservativity re-export count, and the implementation-status.md row placement, with a single batched full-tree rebuild and gate pass."
     }
   ],
-  "dispatch_seq": 4,
   "next_steps": "Run /implement 676 to execute the plan",
-  "memory_candidates": [],
-  "metadata": {
-    "session_id": "sess_1790364435_80e870_676",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 3.5,
-    "dependency_waves": 3
-  }
+  "notes": "No user_decision required: research settled the Conservativity count on 'every import' (20) and the Defect 3 row placement on leave-and-annotate. The architecture.md expansion-style choice is pinned as an in-phase implementation call (Phase 2 step 1), not a user question."
 }

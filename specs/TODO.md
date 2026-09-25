@@ -73,7 +73,7 @@ next_project_number: 677
 
 ### Documentation
 
-676 [PLANNING] — Audit the FormalSystem module-inventory documentation against...
+676 [PLANNED] — Audit the FormalSystem module-inventory documentation against...
 
 ### Formula Refactor
 
@@ -104,11 +104,12 @@ next_project_number: 677
 ## Tasks
 
 ### 676. Audit module inventory docs and export counts
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: markdown
 - **Topic**: documentation
 - **Dependencies**: None
 - **Research**: [676_audit_module_inventory_docs_and_export_counts/reports/01_audit-module-inventory-docs.md]
+- **Plan**: [676_audit_module_inventory_docs_and_export_counts/plans/01_audit-module-inventory-docs.md]
 
 **Description**: Audit the FormalSystem module-inventory documentation against the real source layout and reconcile three mutually inconsistent counts of the Conservativity aggregator's re-exports. Both defects were found while repointing the stale MinusLanguageSoundness.lean citations; that repoint is already landed and is NOT part of this task.
 
