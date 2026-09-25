@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 4,
+  "dispatch_seq": 8,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/674_document_countermodel_kit_and_refutation_criterion/plans/01_countermodel-kit-refutation-criterion.md",
+      "summary": "4-phase documentation-only plan for two new sections in FormalSystem/Metalogic/Independence/README.md."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790353604_4fe6d5_674",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  }
+}
