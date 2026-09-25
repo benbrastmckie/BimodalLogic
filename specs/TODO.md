@@ -1,5 +1,5 @@
 ---
-next_project_number: 669
+next_project_number: 670
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 669
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,669 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -70,6 +70,7 @@ next_project_number: 669
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
+669 [NOT STARTED] — Make the witness-family certificate's target time a required...
 
 ### Formula Refactor
 
@@ -97,6 +98,31 @@ next_project_number: 669
   └─ 650 [NOT STARTED] — Define-before-use audit of...
 
 ## Tasks
+
+### 669. Required target time and target grouping
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Make the witness-family certificate's target time a required field and group the target condition to mirror the Lean structure.
+
+CONTEXT. `lake exe check_certificate` (BimodalTools/CheckCertificateMain.lean, parsing in BimodalTools/CertificateImport.lean) currently reads the target time as an OPTIONAL "time" field defaulting to 0 (`RawCertificate.time : Int := 0`, CertificateImport.lean:125-126; parser at :254-256; serializer at :299). That default was chosen for backward compatibility, but there are no producers yet -- the ModelChecker certificate exporter (~/Projects/ModelChecker) is not written -- so the compatibility it buys is worth nothing today, while it forecloses a tightening that is breaking later. Relaxing a required field to optional afterwards is backward compatible; tightening an optional field to required is not. Required now preserves both futures.
+
+DELIVERABLE 1 -- REQUIRED TIME. Make "time" mandatory. An absent "time" is a protocol failure, so it yields {"status":"error","message":...} on the existing malformed-input path, NOT {"status":"rejected"} -- rejection is reserved for certificate content that fails a condition, per the protocol's own settled distinction in BimodalTools/README.md's "Certificate re-verification protocol" section. Drop the `:= 0` default from RawCertificate.
+
+RATIONALE TO RECORD IN THE MODULE DOCSTRING. `Target Γ Σ` is an existential ("some t with Γ ⊆ L₀ t and Σ ∩ L₀ t = ∅"); its witness is t. Every other existential in the certificate is explicitly witnessed -- the box guess witnesses which boxes are false, the witness lassos witness the falsifying histories, the labels witness the types. A defaulted t made the outermost existential the only unwitnessed one, and the point of a certificate is that checking requires no search. Additionally, 0 denotes the origin only by LabelledLasso's three-segment decoding convention; if that convention is ever re-indexed (branching families with shared states are contemplated as future work, and the compression half of the quasimodel route may re-index), a defaulted 0 silently changes meaning in every stored certificate.
+
+DELIVERABLE 2 -- GROUP THE TARGET. premises, conclusions and time are the three components of ONE predicate, `Target`. BimodalTools/README.md and FormalSystem/Metalogic/Decidability/WitnessFamily/Basic.lean both state that field names mirroring the Lean structures is an EXPORT CONTRACT rather than a local naming choice, so the faithful mirror nests them: {"target": {"premises": [...], "conclusions": [...], "time": 0}, "bx": [...], "lassos": [...]}. Do this in the SAME revision as deliverable 1 -- splitting one schema change across two revisions is the expensive version, and the cost now is zero because nothing consumes the format.
+
+SCOPE. BimodalTools/CertificateImport.lean (RawCertificate, the envelope parser at :239-260, the inverse serializer certificateToJson at :295-299, and closure assembly at :320 which reads premises/conclusions); Tests/BimodalToolsTest/CertificateImportTest.lean (21 #guard rows, including the round-trip test); BimodalTools/README.md's "Certificate re-verification protocol" section (the input JSON block, the field table's premises/conclusions/time rows, and the optionality note). The output shape is unchanged: {"status":"countermodel","time":t} already echoes the time and should keep doing so.
+
+ACCEPTANCE. A certificate omitting "time" returns status error, not rejected; a certificate with the nested "target" object round-trips through certificateToJson and back; the non-vacuity family still returns {"status":"countermodel","time":0} and the separation family still returns rejected with condition fulfilling, lasso 0, position -2, formula `p U q`; `lake build BimodalTools --wfail` and `lake build BimodalToolsTest --wfail` exit 0 at zero warnings; check-module-invariants.sh ALL CHECKS PASSED; check-copyright-headers.sh --strict clean; sorry count 0 and no new axioms.
+
+CROSS-REPO NOTE. The resulting schema is the interface ModelChecker's certificate exporter must mirror field for field. Record the final shape in the README section clearly enough that the exporter can be written against it without reading the Lean.
+
+---
 
 ### 667. Tableau bridge branch gates and frame class
 - **Effort**: 2-4 hours
