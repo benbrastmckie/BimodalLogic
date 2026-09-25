@@ -1,19 +1,22 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 9,
+  "task_number": 674,
+  "session_id": "sess_1790353604_4fe6d5",
+  "phases_completed": 4,
   "phases_total": 4,
-  "dispatch_seq": 8,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/674_document_countermodel_kit_and_refutation_criterion/plans/01_countermodel-kit-refutation-criterion.md",
-      "summary": "4-phase documentation-only plan for two new sections in FormalSystem/Metalogic/Independence/README.md."
+      "type": "summary",
+      "path": "specs/674_document_countermodel_kit_and_refutation_criterion/summaries/01_countermodel-kit-refutation-criterion-summary.md",
+      "summary": "Implementation summary for the two new Independence/README.md sections."
+    },
+    {
+      "type": "deliverable",
+      "path": "FormalSystem/Metalogic/Independence/README.md",
+      "summary": "Two new sections: the countermodel-construction kit and the frame-level refutation criterion."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1790353604_4fe6d5_674",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  }
+  "summary": "Both deliverable sections written into FormalSystem/Metalogic/Independence/README.md between ## Key Results and ## Dependencies, with both Last verified stamps bumped. Documentation only: no .lean file edited, no lake build run. Inventory regeneration was a confirmed no-op. scripts/check-module-invariants.sh ALL CHECKS PASSED (C20 tier 2, C9, C5 all green) and scripts/readme-lint.sh RESULT: PASS, both matching the pre-edit baseline.",
+  "next_steps": []
 }
