@@ -89,13 +89,13 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Algebraic.lean` | 40 | `Algebraic/` |
 | `BXCanonical.lean` | 43 | `BXCanonical/` |
 | `Bundle.lean` | 47 | `Bundle/` |
-| `Conservativity.lean` | 440 | `Conservativity/` |
+| `Conservativity.lean` | 449 | `Conservativity/` |
 | `ConvexConsequence.lean` | 44 | Aggregator for the metatheory of the convex-index consequence relations C3 and C4; holds no declarations |
 | `Core.lean` | 40 | `Core/` |
 | `Decidability.lean` | 167 | `Decidability/` |
 | `Deterministic.lean` | 30 | <!-- TODO: add description --> |
 | `Expressiveness.lean` | 77 | `Expressiveness/` |
-| `Independence.lean` | 191 | `Independence/` |
+| `Independence.lean` | 211 | `Independence/` |
 | `SoundnessLemmas.lean` | 35 | `SoundnessLemmas/` |
 | `WeakCanonical.lean` | 131 | `WeakCanonical/` |
 <!-- END GENERATED -->
@@ -107,7 +107,7 @@ sibling directory. The list is generated, so a file that moves out (four of them
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic rows=loose filter=non-aggregators -->
 | Loose non-aggregator | Lines | Role |
 |----------------------|------:|------|
-| `Conservativity.lean` | 440 | Conservativity of the extension |
+| `Conservativity.lean` | 449 | Conservativity of the extension |
 | `Compactness.lean` | 237 | Compactness and strong completeness for Base and Dense, by ultraproduct model existence |
 | `DedekindNonCompactness.lean` | 539 | Non-compactness of the Dedekind frame class — the `{G(⊤ S ¬q), F(G ¬q)} ∪ {Xqⁿ⊤}` witness, finitely satisfiable over `ℝ` and unsatisfiable over every Dedekind-complete carrier, refuting `CompactDedekind` and `StrongCompletenessDedekind` |
 | `DiscreteNonCompactness.lean` | 322 | Non-compactness of the discrete frame class |
@@ -155,7 +155,7 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`Decidability/`](Decidability/README.md) | 87 | 54,088 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 8 | 1,769 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Expressiveness/`](Expressiveness/README.md) | 143 | 104,211 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
-| [`Independence/`](Independence/README.md) | 25 | 6,992 | Axiom-independence models |
+| [`Independence/`](Independence/README.md) | 26 | 7,443 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,434 | Per-axiom validity lemmas feeding `Soundness.lean` |
 | [`WeakCanonical/`](WeakCanonical/README.md) | 38 | 28,546 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->

@@ -95,9 +95,11 @@ axioms nothing: what they need is discreteness, which ℝ lacks exactly as ℚ d
 Only the two `.ZTime` axioms. Nothing here speaks to the `.Dense` rows (`density`,
 `dense_indicator`) or the `.RTime` rows (`prior_U_gap`, `sep`) of `Axiom.minFrameClass`; those are
 closed separately, by `Independence/DenseRTimeSharpness.lean` and
-`Independence/SepSharpness.lean`. Every statement below is at `Formula.atom p` rather than schematic in `φ`, and that is
-forced: `Axiom.prior_UZ ⊥` has an unsatisfiable antecedent and so is valid at every class, which
-would falsify the `∀ φ` form of both the `.Base` results and the biconditionals.
+`Independence/SepSharpness.lean`.
+
+Every statement below is at `Formula.atom p` rather than schematic in `φ`, and that is forced:
+`Axiom.prior_UZ ⊥` has an unsatisfiable antecedent and so is valid at every class, which would
+falsify the `∀ φ` form of both the `.Base` results and the biconditionals.
 
 ## Main results
 

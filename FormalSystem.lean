@@ -374,6 +374,7 @@ import FormalSystem.Metalogic.Independence.PastingIndependence
 import FormalSystem.Metalogic.Independence.PlusIncompleteness
 import FormalSystem.Metalogic.Independence.RationalWitness
 import FormalSystem.Metalogic.Independence.RealTranslationFrame
+import FormalSystem.Metalogic.Independence.SepSharpness
 import FormalSystem.Metalogic.Independence.StabUndefinable
 import FormalSystem.Metalogic.Independence.StarDiscrimination
 import FormalSystem.Metalogic.Independence.StateSetTruth

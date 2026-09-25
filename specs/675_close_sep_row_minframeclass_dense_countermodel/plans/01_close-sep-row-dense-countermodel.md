@@ -1,7 +1,7 @@
 # Implementation Plan: Task #675
 
 - **Task**: 675 - Close the sep row of Axiom.minFrameClass by constructing a densely ordered countermodel
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6.5 hours
 - **Dependencies**: None (`DenseRTimeSharpness.lean`, `ZTimeSharpness.lean` and `Soundness.lean` are landed)
 - **Research Inputs**: specs/675_close_sep_row_minframeclass_dense_countermodel/reports/01_close-sep-row-dense-countermodel.md
@@ -396,34 +396,34 @@ complete — a missed occurrence of the now-false claim is the most likely defec
 
 ---
 
-### Phase 5: Single full rebuild, inventory regeneration, and the gate set [IN PROGRESS]
+### Phase 5: Single full rebuild, inventory regeneration, and the gate set [COMPLETED]
 
 **Goal**: one budgeted full rebuild, all gates green, the task's claim verified end to end.
 
 **Tasks**:
 
-- [ ] Confirm no further docstring edit is pending — the INV check compares generated inventory
+- [x] Confirm no further docstring edit is pending — the INV check compares generated inventory
       blocks against actual file line counts and will fail if a file grows after regeneration.
-- [ ] Run the single budgeted full rebuild, detached:
+- [x] Run the single budgeted full rebuild, detached:
       `bash scripts/lake-build-guard.sh build --timeout 1800 -- build`. Note the `lake` subcommand
       after the bare `--`; omitting it is a usage error (exit 77). Wait on it per
       `context/patterns/bounded-build-waiter.md`: a hard timeout, writer liveness via `kill -0` on
       the captured PID, one waiter per log — never `ps | grep` or `pgrep -f`.
-- [ ] Regenerate the inventory AFTER the last docstring edit:
+- [x] Regenerate the inventory AFTER the last docstring edit:
       `bash scripts/check-module-invariants.sh --emit-inventory`. This is the real command and it
       propagates counts into several READMEs; `scripts/readme-inventory.sh` is only a pointer script.
-- [ ] Hand-write the `SepSharpness.lean` inventory description (it regenerates as
+- [x] Hand-write the `SepSharpness.lean` inventory description (it regenerates as
       `<!-- TODO: add description -->`), **pipe-free** — describe the φ-region as "the region of
       single-support generators", never with set-builder or absolute-value bars, which the
       generator swallows.
-- [ ] If the gate flags shifted line-number citations caused by the grown `Axioms.lean`, run
+- [x] If the gate flags shifted line-number citations caused by the grown `Axioms.lean`, run
       `python3 scripts/reanchor-lean-citations.py --by-name`.
-- [ ] `bash scripts/check-module-invariants.sh` — green across all check groups, C2's flagship
+- [x] `bash scripts/check-module-invariants.sh` — green across all check groups, C2's flagship
       axiom sets unchanged and C3's structural sorry inventory still ZERO.
-- [ ] `bash scripts/readme-lint.sh` — PASS.
-- [ ] Confirm the measured axiom set of `FormalSystem/MainResults.lean`'s build-time
+- [x] `bash scripts/readme-lint.sh` — PASS.
+- [x] Confirm the measured axiom set of `FormalSystem/MainResults.lean`'s build-time
       `print axioms` audit is unchanged at `[propext, Classical.choice, Quot.sound]`.
-- [ ] Commit with an explicit file list only — never `git add -A`, never a directory or glob
+- [x] Commit with an explicit file list only — never `git add -A`, never a directory or glob
       pathspec (sibling task 676 is live on this tree).
 
 **Timing**: 1 hour
