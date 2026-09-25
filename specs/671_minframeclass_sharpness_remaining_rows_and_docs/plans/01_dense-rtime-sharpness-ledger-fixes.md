@@ -3,7 +3,7 @@
 - **Task**: 671 - Prove the MINIMALITY half of `Axiom.minFrameClass` for the four remaining
   non-Base rows (`density`, `dense_indicator`, `prior_U_gap`, `sep`) and correct the two
   pre-existing documentation defects in the files that work already edits
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 7.25 hours
 - **Dependencies**: None open. The `.ZTime` full-characterization work (task 672) has **landed** —
   `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean` is present at 423 lines and carries
@@ -292,7 +292,7 @@ above, stop and reassess rather than widening the module.
 
 ---
 
-### Phase 2: The sep row — ship the proved obstruction, exclude the proof [COMPLETED]
+### Phase 2: The sep row — ship the proved obstruction, exclude the proof [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: The `sep` row leaves this task with a *proved boundary* rather than silence: it is
 established that no discrete witness can exist, and the two candidate dense routes are recorded
@@ -345,7 +345,12 @@ report rather than widen.
 #### Reasoned Exclusions
 
 This record is written at plan time, as a pre-emptive declaration alongside the Scope Hypothesis
-above; implementation-time findings confirm or supersede it.
+above; implementation-time findings confirm or supersede it. **Implementation-time verdict: all
+three rows CONFIRMED as written.** `not_kPlus_of_isLeastPos` and `sep_validOn_of_isLeastPos`
+elaborate clean and measure `[propext, Classical.choice, Quot.sound]`, so the discrete-witness
+obstruction is now proved rather than conjectured; no dense witness was attempted, and the
+`Lex (ℚ →₀ ℚ)` route is recorded in the module's own section docstring and in this task's
+summary as a follow-up.
 
 | Item | Reason | Evidence |
 |------|--------|----------|
@@ -641,42 +646,53 @@ proceeding.
 
 ---
 
-### Phase 7: C20 re-anchor, inventory regeneration, one full rebuild, full gate set [NOT STARTED]
+### Phase 7: C20 re-anchor, inventory regeneration, one full rebuild, full gate set [COMPLETED]
 
 **Goal**: The single budgeted full rebuild is spent, every gate is green, and the measured axiom
 set is unchanged.
 
 **Tasks**:
 
-- [ ] Confirm Phases 4, 5 and 6 have made their **last** content edit. Inventory regeneration
+- [x] Confirm Phases 4, 5 and 6 have made their **last** content edit. Inventory regeneration
       after this point is what the `.ZTime` incident (an `Independence.lean` docstring edit
       growing the file from 123 to 133 lines *after* regeneration) teaches.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` one more time. It is free and
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` one more time. It is free and
       catches everything structural before any build cost is paid.
-- [ ] If C20 flags shifted citations, run
+- [x] If C20 flags shifted citations, run
       `python3 scripts/reanchor-lean-citations.py --by-name --files FormalSystem/ProofSystem/Axioms.lean`
       and **read the resulting diff** before accepting it. Never add a key to
-      `scripts/c20-declaration-baseline.txt` — that file only ever shrinks.
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory`. This is the real command;
+      `scripts/c20-declaration-baseline.txt` — that file only ever shrinks. *(deviation: skipped —
+      C20 never flagged. It passed at both tiers and at the declaration-span check on every
+      `--no-build` run after the `Axioms.lean` growth, so no re-anchoring was needed and the
+      script was not run.)*
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory`. This is the real command;
       `scripts/readme-inventory.sh` is only a pointer script. It propagates counts into four
       blocks: `Metalogic/Independence/README.md`'s per-file table (which gains a row for the new
       module), `Metalogic/README.md`'s aggregators table line for `Independence.lean`,
       `Metalogic/README.md`'s subdirs rollup for `Independence/`, and the repository-root
       `README.md` totals block (which moves for the `Axioms.lean` docstring edits alone).
-- [ ] Fill in the new module's inventory description immediately — it lands as
+- [x] Fill in the new module's inventory description immediately — it lands as
       `<!-- TODO: add description -->` — then re-run
+      *(deviation: altered — the first `--emit-inventory` run ALSO re-mangled the two descriptions
+      Phase 5 had rewritten. The plan's premise that those cells are hand-maintained and carried
+      across verbatim is wrong: the generator re-derives them, and a description containing a
+      literal `|` breaks its markdown table cell so that only the tail after the last `|` survives.
+      Both were rewritten without literal pipes — `π ((), x) = |x|` became "coarsened by absolute
+      value of the clock offset", `|p| = [3/2, ∞)` became "makes `p` true exactly on `[3/2, ∞)`" —
+      after which a second `--emit-inventory` reported "no generated inventory block needed a
+      rewrite".)*
       `bash scripts/check-module-invariants.sh --emit-inventory --check` and confirm it exits 0.
-- [ ] Spend the single full rebuild:
+- [x] Spend the single full rebuild:
       `bash .claude/scripts/lake-build-guard.sh --timeout 1800 -- build` detached, waited on with
       the bounded-waiter idiom (hard timeout, `kill -0` on the captured PID, one waiter per log).
       A second full rebuild means the phase ordering went wrong.
-- [ ] Run the full `bash scripts/check-module-invariants.sh` — every check group green, including
+- [x] Run the full `bash scripts/check-module-invariants.sh` — every check group green, including
       the build-dependent C1/C2/C6/C16/C24/C25 that `--no-build` skips.
-- [ ] Run `bash scripts/readme-lint.sh` and confirm PASS. Its `STALE DATE` findings are warnings
+- [x] Run `bash scripts/readme-lint.sh` and confirm PASS. Its `STALE DATE` findings are warnings
       only and do not affect the exit code.
-- [ ] Confirm the axiom audit: `FormalSystem/MainResults.lean`'s build-time `#print axioms` pass
+- [x] Confirm the axiom audit: `FormalSystem/MainResults.lean`'s build-time `#print axioms` pass
       still measures exactly `[propext, Classical.choice, Quot.sound]`.
-- [ ] Confirm the tree still carries zero structural sorries and zero `axiom` declarations outside
+- [x] Confirm the tree still carries zero structural sorries and zero `axiom` declarations outside
       `Boneyard/`.
 
 **Timing**: 1.25 hours, mostly build wall-time
@@ -687,7 +703,14 @@ set is unchanged.
 
 **Commit Mode**: per-substep
 
-**Scope Hypothesis**: exactly one full rebuild, and exactly four inventory blocks move. Both are
+**Scope Hypothesis** *(confirmed, with one correction)*: exactly one full rebuild was run
+(2736 jobs, guard exit 0, zero `error:`, zero warnings, zero sorry warnings), and exactly four
+inventory blocks moved — but `FormalSystem/README.md`'s `rows=loose` block WAS one of them,
+contrary to the hypothesis below, because that block carries a row for `../FormalSystem.lean`,
+which `mk_all` grew by one import line. `FormalSystem/ProofSystem/README.md` carries no inventory
+block, as predicted.
+
+**Original Scope Hypothesis**: exactly one full rebuild, and exactly four inventory blocks move. Both are
 hypotheses: confirm the rebuild count by the absence of any earlier `lake build` in the task's
 command history, and the block count by reading `git diff --stat` after `--emit-inventory` rather
 than assuming. `FormalSystem/README.md`'s `rows=loose` block is expected **not** to move (it lists
@@ -788,26 +811,26 @@ and are the implementer's to transcribe.
 
 ## Testing & Validation
 
-- [ ] `lake env lean FormalSystem/Metalogic/Independence/DenseRTimeSharpness.lean` — 0 errors,
+- [x] `lake env lean FormalSystem/Metalogic/Independence/DenseRTimeSharpness.lean` — 0 errors,
       0 warnings (Phases 1 and 2).
-- [ ] No `sorry`, no `sorryAx`, and no new `axiom` declaration anywhere in the diff.
-- [ ] Every headline name measures `[propext, Classical.choice, Quot.sound]`.
-- [ ] The three shape-pin `example`s elaborate, making formula transcription a compiler
+- [x] No `sorry`, no `sorryAx`, and no new `axiom` declaration anywhere in the diff.
+- [x] Every headline name measures `[propext, Classical.choice, Quot.sound]`.
+- [x] The three shape-pin `example`s elaborate, making formula transcription a compiler
       obligation.
-- [ ] Scoped build over the Independence closure exits 0 (Phase 3).
-- [ ] `bash scripts/check-module-invariants.sh --no-build` exits 0 after each of Phases 4, 5, 6.
-- [ ] No prefix `U(…, …)` rendering had its argument order changed (Phase 4).
-- [ ] The two Independence ledgers carry identical, identically numbered result lists (Phase 5).
-- [ ] No frame-class-tag occurrence of `.Dedekind` or `.Discrete` survives under `FormalSystem/`,
+- [x] Scoped build over the Independence closure exits 0 (Phase 3).
+- [x] `bash scripts/check-module-invariants.sh --no-build` exits 0 after each of Phases 4, 5, 6.
+- [x] No prefix `U(…, …)` rendering had its argument order changed (Phase 4).
+- [x] The two Independence ledgers carry identical, identically numbered result lists (Phase 5).
+- [x] No frame-class-tag occurrence of `.Dedekind` or `.Discrete` survives under `FormalSystem/`,
       and `TaskFrame.IsDiscrete` is untouched (Phase 6).
-- [ ] Every identifier cited in any edited ledger or README resolves under
+- [x] Every identifier cited in any edited ledger or README resolves under
       `FormalSystem/**/*.lean`.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0, with the new
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0, with the new
       module's description filled in (Phase 7).
-- [ ] Full `lake build` exits 0 — run exactly once across the whole task (Phase 7).
-- [ ] Full `bash scripts/check-module-invariants.sh` green across every check group (Phase 7).
-- [ ] `bash scripts/readme-lint.sh` reports PASS (Phase 7).
-- [ ] `FormalSystem/MainResults.lean`'s build-time audit still measures exactly
+- [x] Full `lake build` exits 0 — run exactly once across the whole task (Phase 7).
+- [x] Full `bash scripts/check-module-invariants.sh` green across every check group (Phase 7).
+- [x] `bash scripts/readme-lint.sh` reports PASS (Phase 7).
+- [x] `FormalSystem/MainResults.lean`'s build-time audit still measures exactly
       `[propext, Classical.choice, Quot.sound]` (Phase 7).
 
 ## Artifacts & Outputs
