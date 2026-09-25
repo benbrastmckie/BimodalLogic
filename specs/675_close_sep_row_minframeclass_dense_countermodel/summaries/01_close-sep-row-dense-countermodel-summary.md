@@ -87,8 +87,24 @@ the research phase had already machine-checked end to end, so no proof search wa
 
 ## Verification
 
-- Build: see the Final Verification section of `.return-meta.json`; full `lake build` through
-  `.claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`.
+- Build: **Success**. Full `lake build` through
+  `.claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`, detached. All three verdict
+  tiers pass: guard `exit_status=0`; "Build completed successfully (2737 jobs)" with zero `error:`
+  lines across both captured streams; and `.olean` newer than source for every module this task
+  touched (`SepSharpness`, `Independence`, `DenseRTimeSharpness`, `ZTimeSharpness`,
+  `ProofSystem.Axioms`, `MainResults`).
+- **Two full builds were spent, not the one the plan budgeted.** The first build is what made two
+  gate findings visible, neither of which can be raised earlier: C28 flagged a new
+  `linter.style.longLine` warning produced by the Phase 4 `ZTimeSharpness.lean` docstring
+  sentence, and C33 flagged that the generated root `FormalSystem.lean` did not yet import the new
+  module (remedy: `lake exe mk_all --lib FormalSystem`, never a hand edit). Both fixes change
+  `.lean` files, so a rebuild was unavoidable; it ran incrementally off the first build's cache.
+  Re-checked per the plan's instruction: the cause was not an `--emit-inventory` side effect and
+  not a Phase 4 edit leaking outside a docstring — every `Axioms.lean` and
+  `DenseRTimeSharpness.lean` hunk is still strictly inside a docstring region.
+- `scripts/check-module-invariants.sh`: exit 0, green across all check groups, including C2 (all
+  four flagship axiom sets match baseline) and C3 (structural sorry inventory ZERO across
+  `FormalSystem/` and `BimodalTools/`).
 - Sorry count: 0 (`lean-sorry-census.sh` over all resolved source roots).
 - Vacuous count: 0 introduced by this task. The tree-wide single-line grep reports 1 hit,
   `FormalSystem/Examples/TemporalStructures.lean`'s `int_domain_universal`, byte-identical at the
@@ -97,7 +113,8 @@ the research phase had already machine-checked end to end, so no proof search wa
 - `#print axioms` on `sep_minFrameClass_sharp`, `sep_validIn_iff`, `sep_validIn_ztime`,
   `not_validOn_sep_lexHahn`, `not_derivable_dense_sep`, `not_validIn_base_sep` and
   `not_validIn_dense_sep`: `[propext, Classical.choice, Quot.sound]` on every one.
-- `scripts/readme-lint.sh`: PASS (0 missing READMEs, 0 broken file references).
+- `scripts/readme-lint.sh`: PASS (0 missing READMEs, 0 broken file references). No
+  `file.lean:NNN` line-number citation was introduced into any `README.md` under `FormalSystem/`.
 - `scripts/check-module-invariants.sh --emit-inventory`: run after the last docstring edit;
   reports "no generated inventory block needed a rewrite".
 - Tests: N/A (no test-suite change; the countermodel is itself the verification).
