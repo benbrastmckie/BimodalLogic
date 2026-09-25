@@ -202,24 +202,24 @@ before widening.
 
 ---
 
-### Phase 2: Scoped reverse-dependency build [NOT STARTED]
+### Phase 2: Scoped reverse-dependency build [COMPLETED]
 
 **Goal**: The new import in `ZTimeSharpness.lean` is proved not to break any module downstream of
 it — specifically, no downstream module now sees `realOrder` ambiguously.
 
 **Tasks**:
 
-- [ ] Re-derive the reverse-dependency set rather than trusting the report's figure:
+- [x] Re-derive the reverse-dependency set rather than trusting the report's figure:
       `grep -rln '^import FormalSystem.Metalogic.Independence.ZTimeSharpness$' FormalSystem Tests BimodalTools`,
       then iterate the same grep up the aggregator chain
       (`…Independence` → `…Metalogic` → consumers).
-- [ ] Run one detached scoped build over that set, via
+- [x] Run one detached scoped build over that set, via
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Independence`
       (and the aggregator target the grep chain identifies) under `Bash(run_in_background: true)`.
-- [ ] Wait with the bounded waiter idiom from `context/patterns/bounded-build-waiter.md`: a hard
+- [x] Wait with the bounded waiter idiom from `context/patterns/bounded-build-waiter.md`: a hard
       timeout, writer liveness via `kill -0` on the captured PID. Never `pgrep -f`, never
       `ps | grep`, one waiter per log.
-- [ ] Grep the build log specifically for `Ambiguous term` and for `realOrder`; a hit here is the
+- [x] Grep the build log specifically for `Ambiguous term` and for `realOrder`; a hit here is the
       Option-B failure mode and is the signal to switch to Option A (report R3) rather than to
       patch call sites.
 
