@@ -1,7 +1,7 @@
 # Implementation Plan: Check Certificate Executable
 
 - **Task**: 666 - Check certificate executable
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8.5 hours
 - **Dependencies**: Task 665 (witness-family certificate soundness, COMPLETED); Task 667 (tableau bridge branch gates, COMPLETED)
 - **Research Inputs**: specs/666_check_certificate_executable/reports/01_check-certificate-executable.md
@@ -416,7 +416,7 @@ before editing; if the derived count or the site list differs, follow the eviden
 
 ---
 
-### Phase 7: Full gate set and the performance bar [NOT STARTED]
+### Phase 7: Full gate set and the performance bar [COMPLETED]
 
 **Goal**: Everything the repository gates on is green, and the acceptance timing claim is
 measured rather than asserted.
@@ -453,21 +453,21 @@ measured rather than asserted.
 
 ## Testing & Validation
 
-- [ ] `lake build BimodalTools --wfail` green at zero warnings
-- [ ] `lake build BimodalToolsTest --wfail` green at zero warnings, all `#guard` rows passing
-- [ ] `lake build` (default `FormalSystem` target) unaffected
-- [ ] Round-trip acceptance: the non-vacuity family serialized to JSON is accepted
+- [x] `lake build BimodalTools --wfail` green at zero warnings
+- [x] `lake build BimodalToolsTest --wfail` green at zero warnings, all `#guard` rows passing
+- [x] `lake build` (default `FormalSystem` target) unaffected
+- [x] Round-trip acceptance: the non-vacuity family serialized to JSON is accepted
       (`{"status":"countermodel"}`)
-- [ ] Rejection acceptance: a family with one broken fulfilment obligation is rejected naming
+- [x] Rejection acceptance: a family with one broken fulfilment obligation is rejected naming
       that obligation (lasso 0, position -2, `p U q`)
-- [ ] Structural rejection: a label outside the closure yields `rejected` under a named structural
+- [x] Structural rejection: a label outside the closure yields `rejected` under a named structural
       condition, not a parse error
-- [ ] Parser round-trip: `pFormula ∘ Formula.toJson = id` on the closure members
-- [ ] `bash scripts/check-module-invariants.sh` passes, including C25N root naming
-- [ ] `bash scripts/check-copyright-headers.sh --strict FormalSystem BimodalTools` passes
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` passes
-- [ ] Measured runtime well under one second at total segment length under 100
-- [ ] No `noncomputable` marker on any new definition; no `sorry`; no new axiom
+- [x] Parser round-trip: `pFormula ∘ Formula.toJson = id` on the closure members
+- [x] `bash scripts/check-module-invariants.sh` passes, including C25N root naming
+- [x] `bash scripts/check-copyright-headers.sh --strict FormalSystem BimodalTools` passes
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` passes
+- [x] Measured runtime well under one second at total segment length under 100
+- [x] No `noncomputable` marker on any new definition; no `sorry`; no new axiom
 
 ## Artifacts & Outputs
 
