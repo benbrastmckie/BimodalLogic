@@ -6,6 +6,11 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.Correspondence.DurationFrames
 import FormalSystem.Metalogic.Soundness
+-- The bare `realOrder` used in the `.RTime` results below resolves uniquely to
+-- `FormalSystem.Semantics.realOrder` only while `FormalSystem.Metalogic.DedekindNonCompactness`
+-- (which declares a second `realOrder` in a namespace this file also opens) stays out of this
+-- module's import closure; importing it here reintroduces an `Ambiguous term realOrder` error.
+import FormalSystem.Semantics.Correspondence.RigidityReal
 
 /-!
 # Sharpness of the `.ZTime` tag of `Axiom.minFrameClass`
@@ -288,5 +293,108 @@ theorem not_derivable_base_z1 (p : Atom) :
       (((Formula.atom p).allFuture.imp (Formula.atom p)).allFuture.imp
         ((Formula.atom p).allFuture.someFuture.imp (Formula.atom p).allFuture)) :=
   fun ⟨d⟩ => not_validIn_base_z1 p (soundness_validIn d)
+
+/-! ## Non-validity at the two incomparable classes -/
+
+/--
+**`Axiom.prior_UZ` is not valid at `FrameClass.Dense`.**
+
+`.Dense` is not below `.ZTime` in the frame-class order, so this is not implied by
+`prior_UZ_minFrameClass_sharp`; it is a separate refutation, and it is what makes the
+characterization below exhaustive. The witness is the same `ztimeSharpOrder` frame as at `.Base`:
+a densely ordered duration group satisfies `Sat .Dense` outright, both conjuncts by instance
+search.
+-/
+theorem not_validIn_dense_prior_UZ (p : Atom) :
+    ¬ ValidIn FrameClass.Dense
+      ((Formula.atom p).someFuture.imp
+        (Formula.untl (Formula.atom p).neg (Formula.atom p))) :=
+  fun h => not_validOn_prior_UZ_dense ztimeSharpOrder p (h _ ⟨inferInstance, inferInstance⟩)
+
+/--
+**`Axiom.z1` is not valid at `FrameClass.Dense`.**
+
+The `z1` counterpart of `not_validIn_dense_prior_UZ`, over the same rational-duration witness.
+-/
+theorem not_validIn_dense_z1 (p : Atom) :
+    ¬ ValidIn FrameClass.Dense
+      (((Formula.atom p).allFuture.imp (Formula.atom p)).allFuture.imp
+        ((Formula.atom p).allFuture.someFuture.imp (Formula.atom p).allFuture)) :=
+  fun h => not_validOn_z1_dense ztimeSharpOrder p (h _ ⟨inferInstance, inferInstance⟩)
+
+/--
+**`Axiom.prior_UZ` is not valid at `FrameClass.RTime`.**
+
+`.RTime` adds Dedekind completeness on top of density, and is likewise incomparable with `.ZTime`,
+so it too needs its own refutation. Completeness rules the rationals out as a witness, so the
+duration group here is `realOrder`; the third `Sat .RTime` component is `TaskFrame.IsComplete`,
+discharged from `Real.exists_isLUB` exactly as `Metalogic/DedekindNonCompactness.lean` does.
+Density is what the generic lemma consumes, and ℝ has it, so completeness buys the axiom nothing.
+-/
+theorem not_validIn_rtime_prior_UZ (p : Atom) :
+    ¬ ValidIn FrameClass.RTime
+      ((Formula.atom p).someFuture.imp
+        (Formula.untl (Formula.atom p).neg (Formula.atom p))) :=
+  fun h => not_validOn_prior_UZ_dense realOrder p
+    (h _ ⟨inferInstance, inferInstance, fun _ hne hbd => Real.exists_isLUB hne hbd⟩)
+
+/--
+**`Axiom.z1` is not valid at `FrameClass.RTime`.**
+
+The `z1` counterpart of `not_validIn_rtime_prior_UZ`, over the same real-duration witness.
+-/
+theorem not_validIn_rtime_z1 (p : Atom) :
+    ¬ ValidIn FrameClass.RTime
+      (((Formula.atom p).allFuture.imp (Formula.atom p)).allFuture.imp
+        ((Formula.atom p).allFuture.someFuture.imp (Formula.atom p).allFuture)) :=
+  fun h => not_validOn_z1_dense realOrder p
+    (h _ ⟨inferInstance, inferInstance, fun _ hne hbd => Real.exists_isLUB hne hbd⟩)
+
+/-! ## The full characterization -/
+
+/--
+**`Axiom.prior_UZ`'s atomic instance is valid at exactly one frame class: `.ZTime`.**
+
+This is the strongest form of the `prior_UZ` sharpness claim. The reverse direction is
+`prior_UZ_valid` (through `axiom_validIn_min`'s upper bound); the forward direction runs a case
+split over all four constructors of `FrameClass`, discharging `.Base`, `.Dense` and `.RTime`
+against the three non-validity results. It deliberately does **not** route through
+`eq_base_of_lt_ztime`: `.Dense` and `.RTime` are incomparable with `.ZTime`, not below it, so the
+order fact covers only one of the three refuted classes.
+
+The instance is atomic by necessity, not convenience: the schematic `∀ φ` form is false, since
+`Axiom.prior_UZ ⊥` has an unsatisfiable antecedent and so is valid everywhere.
+-/
+theorem prior_UZ_validIn_iff_ztime (p : Atom) (fc : FrameClass) :
+    ValidIn fc ((Formula.atom p).someFuture.imp
+      (Formula.untl (Formula.atom p).neg (Formula.atom p)))
+      ↔ fc = FrameClass.ZTime := by
+  refine ⟨fun h => ?_, ?_⟩
+  · cases fc with
+    | Base => exact absurd h (not_validIn_base_prior_UZ p)
+    | Dense => exact absurd h (not_validIn_dense_prior_UZ p)
+    | ZTime => rfl
+    | RTime => exact absurd h (not_validIn_rtime_prior_UZ p)
+  · rintro rfl
+    exact prior_UZ_valid (Formula.atom p)
+
+/--
+**`Axiom.z1`'s atomic instance is valid at exactly one frame class: `.ZTime`.**
+
+The `z1` counterpart of `prior_UZ_validIn_iff_ztime`, and with it the `.ZTime` row of
+`Axiom.minFrameClass` is characterized rather than merely bounded on both sides.
+-/
+theorem z1_validIn_iff_ztime (p : Atom) (fc : FrameClass) :
+    ValidIn fc (((Formula.atom p).allFuture.imp (Formula.atom p)).allFuture.imp
+      ((Formula.atom p).allFuture.someFuture.imp (Formula.atom p).allFuture))
+      ↔ fc = FrameClass.ZTime := by
+  refine ⟨fun h => ?_, ?_⟩
+  · cases fc with
+    | Base => exact absurd h (not_validIn_base_z1 p)
+    | Dense => exact absurd h (not_validIn_dense_z1 p)
+    | ZTime => rfl
+    | RTime => exact absurd h (not_validIn_rtime_z1 p)
+  · rintro rfl
+    exact z1_valid (Formula.atom p)
 
 end FormalSystem.Metalogic.Independence

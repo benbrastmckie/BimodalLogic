@@ -3,7 +3,7 @@
 - **Task**: 672 - Strengthen the `.ZTime` sharpness results to a full `ValidIn fc φ ↔ fc = .ZTime`
   characterization for `Axiom.prior_UZ` and `Axiom.z1`, and pin the resulting headline theorems on
   `FormalSystem/MainResults.lean`'s build-time axiom audit
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.5 hours
 - **Dependencies**: None open. Builds on task 670's landed
   `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean` (292 lines, sorry-free,
@@ -132,7 +132,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 consumes an artifact the previous one produces, and the ordering of Phases 3 and 4 is itself a
 gate constraint (INV regeneration must follow the last content edit).
 
-### Phase 1: Characterization theorems in ZTimeSharpness.lean [NOT STARTED]
+### Phase 1: Characterization theorems in ZTimeSharpness.lean [COMPLETED]
 
 **Goal**: Six new sorry-free declarations exist in
 `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean` and the file elaborates clean under
@@ -140,33 +140,33 @@ gate constraint (INV regeneration must follow the last content edit).
 
 **Tasks**:
 
-- [ ] Add `import FormalSystem.Semantics.Correspondence.RigidityReal` beside the two existing
+- [x] Add `import FormalSystem.Semantics.Correspondence.RigidityReal` beside the two existing
       imports (`DurationFrames`, `Soundness`) at the top of the file.
-- [ ] Add a one-line comment at the import recording that the bare `realOrder` below resolves
+- [x] Add a one-line comment at the import recording that the bare `realOrder` below resolves
       uniquely to `FormalSystem.Semantics.realOrder` only while
       `FormalSystem.Metalogic.DedekindNonCompactness` stays out of this module's import closure;
       a future import of it reintroduces the `Ambiguous term realOrder` error (report F4).
-- [ ] Add `not_validIn_dense_prior_UZ` and `not_validIn_dense_z1`, each discharging
+- [x] Add `not_validIn_dense_prior_UZ` and `not_validIn_dense_z1`, each discharging
       `Sat FrameClass.Dense` as `⟨inferInstance, inferInstance⟩` over the existing
       `ztimeSharpOrder` (line 217) and delegating to the existing generic lemmas
       `not_validOn_prior_UZ_dense` / `not_validOn_z1_dense`.
-- [ ] Add `not_validIn_rtime_prior_UZ` and `not_validIn_rtime_z1`, each discharging
+- [x] Add `not_validIn_rtime_prior_UZ` and `not_validIn_rtime_z1`, each discharging
       `Sat FrameClass.RTime` as
       `⟨inferInstance, inferInstance, fun _ hne hbd => Real.exists_isLUB hne hbd⟩` over
       `realOrder`, the same three-component idiom `DedekindNonCompactness.lean:437` already uses.
-- [ ] Add `prior_UZ_validIn_iff_ztime` and `z1_validIn_iff_ztime`, each at an **explicit**
+- [x] Add `prior_UZ_validIn_iff_ztime` and `z1_validIn_iff_ztime`, each at an **explicit**
       `(fc : FrameClass)` binder (report D1), proving the forward direction by `cases fc` over all
       four constructors with `absurd` arms against the four non-validity results plus `rfl` at
       `ZTime`, and the reverse by `rintro rfl; exact prior_UZ_valid (Formula.atom p)` /
       `exact z1_valid (Formula.atom p)`. Do **not** route through `eq_base_of_lt_ztime`: `.Dense`
       and `.RTime` are incomparable to `.ZTime`, not below it (report D3).
-- [ ] Write a `/-- … -/` docstring for each of the six declarations. C16's `docBlame` and C19 both
+- [x] Write a `/-- … -/` docstring for each of the six declarations. C16's `docBlame` and C19 both
       read them; the research Appendix deliberately elided them, so they must be authored here.
-- [ ] Place all six before `end FormalSystem.Metalogic.Independence` (currently line 292), in the
+- [x] Place all six before `end FormalSystem.Metalogic.Independence` (currently line 292), in the
       existing section structure.
-- [ ] Verify with `lake env lean FormalSystem/Metalogic/Independence/ZTimeSharpness.lean` — no
+- [x] Verify with `lake env lean FormalSystem/Metalogic/Independence/ZTimeSharpness.lean` — no
       rebuild needed; this was sufficient for every result in the research report.
-- [ ] Confirm each new name's axiom set with `lean_verify` (or a scratch `#print axioms` run that
+- [x] Confirm each new name's axiom set with `lean_verify` (or a scratch `#print axioms` run that
       is **not** left in the file — C27 fails on any new in-file directive outside
       `MainResults.lean`).
 
