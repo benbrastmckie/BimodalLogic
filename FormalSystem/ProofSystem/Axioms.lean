@@ -330,7 +330,7 @@ inductive Axiom : Formula → Type where
   -- Layer 6: Prior Axiom for Integers (1: UZ; its past mirror is TR-derived)
   -- These axioms encode the well-ordering property for definable sets.
   -- Prior-UZ: Fp -> U(p, neg p). If p holds somewhere in the future,
-  -- then p holds until not-p (i.e., the first future p-point is reachable).
+  -- then not-p holds until p (i.e., the first future p-point is reachable).
   -- Valid on all discrete linear orders (IsSuccArchimedean).
   -- Reference: Reynolds 1992 Section 10, Venema 1993 axiom (W).
   /-- Prior-UZ: `F(φ) → U(φ, ¬φ)`.
@@ -443,8 +443,8 @@ inductive Axiom : Formula → Type where
   -- finding.
   /-- Prior-U (gap form): `U(⊤,φ) ∧ F(¬φ) → U(¬φ ∨ K⁺(¬φ), φ)`.
   If φ holds throughout some initial future segment and ¬φ holds somewhere in the future,
-  then the φ-region has a definable upper endpoint: reading forward, `¬φ ∨ K⁺(¬φ)` holds
-  until φ. On a Dedekind-complete flow the supremum of the φ-region exists and witnesses
+  then the φ-region has a definable upper endpoint: reading forward, φ holds until
+  `¬φ ∨ K⁺(¬φ)`. On a Dedekind-complete flow the supremum of the φ-region exists and witnesses
   this; on a gappy flow it can fail.
 
   **Source**: Reynolds 1992, printed p.168, axiom "Prior-U" of the system US/R.
@@ -608,15 +608,37 @@ This is the single source of truth for axiom-frame-class compatibility:
 **Upper bound, for every row**: `Metalogic.axiom_validIn_min` proves `ValidIn ax.minFrameClass φ`
 for every axiom, so each tag really is a class at which that axiom is valid.
 
-**Lower bound, for the ZTime row only**: that tag is also *minimal* — no class strictly below
-`.ZTime` validates either axiom. This is proved, not cited:
-`Metalogic.Independence.prior_UZ_minFrameClass_sharp` and
-`Metalogic.Independence.z1_minFrameClass_sharp`
-(`FormalSystem/Metalogic/Independence/ZTimeSharpness.lean`), which refute the two axioms on the
-translation frame over a densely ordered duration group and reach every class below `.ZTime`
-through the order fact that `.Base` is the only one. The Base, Dense and RTime rows carry the
-upper bound **only**: their tags are not known to be minimal here, and the corresponding
-sharpness results do not exist yet.
+**Lower bound**: every row but one is also known *minimal* — no class strictly below the tag
+validates the axiom. This is proved, not cited, and always at an atomic instance (a schematic
+`∀ φ` form would be false: `prior_UZ ⊥` has an unsatisfiable antecedent and is `.Base`-valid).
+
+- **Base row**: vacuously sharp. Nothing is strictly below `FrameClass.Base`
+  (`FrameClass.base_le`), so there is no class at which minimality could fail.
+- **ZTime row**: `Metalogic.Independence.prior_UZ_minFrameClass_sharp` and
+  `Metalogic.Independence.z1_minFrameClass_sharp`
+  (`FormalSystem/Metalogic/Independence/ZTimeSharpness.lean`) refute the two axioms on the
+  translation frame over a densely ordered duration group and reach every class below `.ZTime`
+  through the order fact that `.Base` is the only one. That module goes further:
+  `Metalogic.Independence.prior_UZ_validIn_iff_ztime` and
+  `Metalogic.Independence.z1_validIn_iff_ztime` characterize the row outright — each axiom's
+  atomic instance is valid at `fc` exactly when `fc = .ZTime`.
+- **Dense row**: `Metalogic.Independence.density_minFrameClass_sharp` and
+  `Metalogic.Independence.dense_indicator_minFrameClass_sharp`
+  (`FormalSystem/Metalogic/Independence/DenseRTimeSharpness.lean`) refute both axioms on the
+  translation frame over `ℤ`, whose durations have a least positive element. That module too
+  characterizes the row: `Metalogic.Independence.density_validIn_iff` and
+  `Metalogic.Independence.dense_indicator_validIn_iff` give validity at `fc` exactly when
+  `.Dense ≤ fc`.
+- **RTime row, `prior_U_gap` only**: `Metalogic.Independence.prior_U_gap_minFrameClass_sharp`
+  (same module) refutes it at both `.Base` and `.Dense`, the two classes strictly below `.RTime`,
+  by a single refutation over the periodic clock frame. No claim is made about `.ZTime`, which is
+  incomparable with `.RTime` rather than below it.
+
+**`sep` is the one row still carrying the upper bound only.** Its tag is not known to be
+minimal. What is known is a boundary: `Metalogic.Independence.sep_validOn_of_isLeastPos` proves
+`sep` *vacuously* valid on every frame whose durations have a least positive element, so with
+`Semantics.duration_dense_or_least_pos` no discrete witness for it can exist and any refutation
+must run over a densely ordered duration group.
 
 Total: 29 axiom constructors. (The TR mirrors `prior_SZ` and `prior_S_gap` are derived at the
 frame class of their primaries, `DerivedAxioms.priorSZ` / `DerivedAxioms.priorSGap`.)

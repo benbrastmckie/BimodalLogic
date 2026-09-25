@@ -400,7 +400,7 @@ module outside that chain turns up, add it to the scoped build target list befor
 
 ---
 
-### Phase 4: Batched prose pass over Axioms.lean and ZTimeSharpness.lean [NOT STARTED]
+### Phase 4: Batched prose pass over Axioms.lean and ZTimeSharpness.lean [COMPLETED]
 
 **Goal**: The three genuinely-defective infix/English prose items are corrected, every prefix
 rendering is left alone, and the minimal-frame-class docstring tells the truth about what is now
@@ -408,27 +408,27 @@ proved.
 
 **Tasks**:
 
-- [ ] Read `Axioms.lean:16-29` (the notation block) and `Automation/Normalization.lean:672`
+- [x] Read `Axioms.lean:16-29` (the notation block) and `Automation/Normalization.lean:672`
       **first**, and confirm from them that the prefix form `U(e, g)` is event-first by design.
       This is the authority for everything below. Do **not** rewrite `U(φ, ¬φ)` to `U(¬φ, φ)`
       anywhere: the prose renderings of `prior_UZ`, `dense_indicator`, `density`, `prior_U_gap`
       and `sep` are all correct under that convention, and changing them would desynchronise the
       docstrings from the printer and from the machine appendix's `schema_string`.
-- [ ] Fix `Axioms.lean:333` (a `--` comment above `prior_UZ`): "then p holds until not-p" is
+- [x] Fix `Axioms.lean:333` (a `--` comment above `prior_UZ`): "then p holds until not-p" is
       backwards under the guard-first infix convention — the constructor is `untl φ.neg φ`, so it
       is `¬p` that holds until `p`. The parenthetical that follows it is already correct, and the
       `prior_UZ` docstring body immediately below is already correct, which is why this reads as a
       leftover.
-- [ ] Fix `Axioms.lean:447` (inside the `prior_U_gap` docstring): "reading forward,
+- [x] Fix `Axioms.lean:447` (inside the `prior_U_gap` docstring): "reading forward,
       `¬φ ∨ K⁺(¬φ)` holds until φ" is exactly reversed — the constructor is
       `untl φ (φ.neg ∨ K⁺ φ.neg)`, guard `φ`, so it is `φ` that holds until `¬φ ∨ K⁺(¬φ)`. The
       prefix rendering on the docstring's first line (`:444`) is correct and must not be touched.
-- [ ] Rewrite `ZTimeSharpness.lean:130-133`'s shape-pin note, which currently frames the
+- [x] Rewrite `ZTimeSharpness.lean:130-133`'s shape-pin note, which currently frames the
       constructor/prose argument order as a *conflict*. It is the declared prefix convention: say
       that the prefix rendering is event-first by design, tracking `Formula.prettyPrint`, and that
       the pin confirms it. This note is the source of the dispatch's own misdiagnosis; leaving it
       leaves the trap armed.
-- [ ] Rewrite the `Axiom.minFrameClass` docstring's lower-bound paragraph
+- [x] Rewrite the `Axiom.minFrameClass` docstring's lower-bound paragraph
       (`Axioms.lean:610-620`): cite the new sharpness results for the three rows this task closes;
       upgrade the `.ZTime` sentence to name the stronger `prior_UZ_validIn_iff_ztime` and
       `z1_validIn_iff_ztime` alongside the two `*_minFrameClass_sharp` results; record that the
@@ -437,12 +437,18 @@ proved.
       corresponding sharpness results do not exist yet", which becomes false the moment this task
       lands — with a statement naming `sep` as the single remaining open row. Cite declaration
       names and file paths **without** `:NNN` (C20 tier 2).
-- [ ] Change **no** proof, theorem statement or definition. If a prose correction appears to
+- [x] Change **no** proof, theorem statement or definition. If a prose correction appears to
       require changing a constructor or a statement, stop and report rather than editing the
       mathematics.
-- [ ] Read the full diff and confirm every changed hunk lies inside a comment or docstring region.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` (free, no `lake build`) and iterate
-      until green.
+- [x] Read the full diff and confirm every changed hunk lies inside a comment or docstring region.
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` (free, no `lake build`) and iterate
+      until green. *(deviation: altered — every check group is green EXCEPT `INV`, which reports
+      four stale generated inventory blocks. That is the expected, plan-anticipated consequence of
+      growing `Axioms.lean`, and regeneration is explicitly Phase 7's job, not this phase's;
+      notably `C20` passes at both tiers with no re-anchoring needed. No fourth reversed prose
+      reading was found: the `density`, `dense_indicator`, `prior_U_gap` and `sep` prefix
+      renderings all check out against their constructors under the declared event-first
+      convention.)*
 
 **Timing**: 1 hour
 

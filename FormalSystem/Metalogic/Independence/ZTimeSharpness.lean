@@ -128,9 +128,16 @@ namespace FormalSystem.Metalogic.Independence
 Each `example` below type-checks only if the formula this module refutes is *exactly* the one the
 matching `Axiom` constructor produces. They make transcription fidelity a compiler obligation
 rather than a reading: without them a mis-transcribed formula would yield a true but vacuous
-non-validity result about some other formula. Note in particular that `Axioms.lean`'s prose
-rendering of `prior_UZ` writes the `untl` arguments in the opposite order to the constructor; the
-pin resolves the question in favour of the constructor.
+non-validity result about some other formula.
+
+Note in particular that `Axioms.lean`'s prose rendering of `prior_UZ`, `F(φ) → U(φ, ¬φ)`, writes
+its two arguments in the opposite order to the constructor's `Formula.untl φ.neg φ`. That is not
+a defect: `Axioms.lean`'s own notation block declares three renderings, of which the constructor
+and the infix `φ U ψ` are guard-first while the *prefix* `U(e, g)` is deliberately event-first,
+keyed to what `Formula.prettyPrint` emits (`Automation/Normalization.lean`) so that the
+docstrings stay comparable line-for-line with `typst/generated/machine-appendix.jsonl`'s
+`schema_string`. The prose is correct under that convention, and the pin below confirms it
+against the constructor.
 -/
 
 /-- Shape pin: the formula below is exactly `Axiom.prior_UZ`'s. -/
