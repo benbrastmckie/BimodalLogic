@@ -1,5 +1,5 @@
 ---
-next_project_number: 682
+next_project_number: 686
 ---
 
 # TODO
@@ -11,10 +11,10 @@ next_project_number: 682
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,677,679,680,681 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650,678 | 298,464,502,563,649,677 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,677,679,680,681,682 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,678,683 | 298,464,502,563,649,677,682 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,618,684 | 231,465,497,564,565,616,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543,685 | 428,498,499,500,684 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
@@ -71,6 +71,8 @@ next_project_number: 682
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
 677 [NOT STARTED] — Make checkcertificate proof-producing rather than...
+682 [NOT STARTED] — RESEARCH TASK, verdict-first: establish whether validity of...
+685 [NOT STARTED] — Prove the compression result for the branching witness...
 
 ### Documentation
 
@@ -96,6 +98,7 @@ next_project_number: 682
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 681 [NOT STARTED] — Narrow the transcription audit obligation by converting as...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
+684 [NOT STARTED] — Prove the agreement (truth) lemma over all walks of the...
 
 ### Reference Book
 
@@ -105,12 +108,53 @@ next_project_number: 682
 ### Semantics
 
 679 [NOT STARTED] — Define the Sentence-to-Formula translation in Lean and prove...
+683 [NOT STARTED] — Replace the deterministic witness device with a state-sharing...
 
 ### Toolchain
 
 678 [NOT STARTED] — Give the certificate wire format a canonical printer and a...
 
 ## Tasks
+
+### 685. Stability compression and assembly
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 684
+
+**Description**: Prove the compression result for the branching witness structure: if a formula of the language with the stability modal is not valid at integer time, a witness structure satisfying the redesigned conditions exists whose size is bounded by a computable function of the closure size. This is the stability-modal analogue of the compression theorem the deterministic route needs, and it is what turns a truth lemma into a decision procedure, since without a bound there is no finite candidate space to enumerate. Two routes are already known closed and must not be retried. The finite model property is NOT established by the monadic-second-order route ("a regular tree does not obviously fold to a finite digraph"), so no bound is inherited from the decidability argument even if that argument is sound. And the finite-presentation small-model hypothesis is machine-refuted (Probe476.fmp_false), so compressing over presentation states is dead exactly as it is for the deterministic route. The viable shape is the one the deterministic route uses: compress over subformula-set (type) space, where the pigeonhole is two-to-the-closure-size and closed, rather than over presentation states, where it is unbounded -- generalized from a family of lassos to a branching structure, which is the part with no precedent. Deliver, alongside the bound, the assembly step the deterministic route also needs: a formula-indexed candidate list over those bounds, and decidability of validity by reduction to "no candidate is accepted". Depends on the agreement lemma over all walks, since a bound on structures whose truth lemma has not been proved certifies nothing.
+
+---
+
+### 684. Agreement lemma over all walks
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: Task 683
+
+**Description**: Prove the agreement (truth) lemma over all walks of the branching witness structure, including the box case that the deterministic design's version cannot cover. This is the mathematical core of a stability-modal decision procedure and the step the carried-over research names as the open problem: a procedure for the larger language at integer time would need witness families that branch at a shared state AND a truth lemma over all walks of the resulting digraph. Consume the predecessor task's structure and its replacement for the histories characterization; do not redesign either here. Two facts should shape the attempt. First, stability-modal truth is a function of the present world state alone (stab_state_only, landed), so the modal itself needs no history information beyond the state -- the difficulty is entirely that the box modality must now range over recombined histories. Second, the failure mode is already identified in the completeness research: a trace that postpones an inevitability forever, with the recorded cure being limit-closure schemata in the logic together with progress measures carried in the state. COORDINATION, NOT DUPLICATION: this is the same mathematics as the stability-completeness research task's second priority question, which targets it for a proof system rather than for a certificate format. Read that task's established findings and its priority questions before starting, and record which of its results transfer; where the two tasks would prove the same lemma, prove it once and cite it across. In particular its finding that frame axioms are not the obstacle at any class -- the truth lemma over all histories is -- applies here verbatim.
+
+---
+
+### 683. State sharing witness structure and c3
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: Task 682
+
+**Description**: Replace the deterministic witness device with a state-sharing one: re-prove the histories characterization and redesign the box-faithfulness condition, which the consuming repository's adequacy document identifies as the actual load-bearing obstruction to a stability modal. The received account of why the current design is deterministic is precise about where the weight sits, and it is NOT where one might expect: Limit and Saturation are not the obstacle (Saturation is free from subsingleton fibres, and Limit is discharged trivially over the integers). The obstruction is the histories characterization and the box case of the truth lemma. Determinism is exactly what makes ShiftSet.total_eq_orbit (Semantics/ShiftSet.lean:252) true -- every world history is one of the lasso orbits. If two lassos share a state, a history can cross from one lasso to another at that state, total_eq_orbit fails, the corollary that the frame's history set is exactly the certified histories fails with it, and the box case of the truth lemma fails: box faithfulness is calibrated against "every position of every lasso", which stops enumerating the history set once histories can recombine. This is the same obstruction Probe476.fmp_false records for finite digraphs -- admitting recombined paths adds histories that box must range over, beyond what the four conditions were designed to certify. Deliverables: a witness structure whose task relation is not functional, so witnesses branch at a shared state; a replacement for total_eq_orbit characterizing the frame's total histories as the walks of that structure; and a redesigned box condition that quantifies over those walks rather than over lasso positions, while remaining decidable -- decidability being the hard constraint, since the walks of a branching structure are infinitely many. Record explicitly that the stability modal collapses to the identity on deterministic frames (states_eq_of_deterministic, PlusLanguage/PlusDeterminism.lean), which is why the current device is blind to it by construction and cannot be extended by adding a truth clause.
+
+---
+
+### 682. Stability decidability provenance gate
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: RESEARCH TASK, verdict-first: establish whether validity of the language with the stability modal is KNOWN decidable at integer time from held sources, before any certificate or witness-structure design work begins. This gates the whole stability-modal decision-procedure line, and the answer may be that the target is not known decidable at all, in which case the downstream design tasks should not be started. Three questions, each needing a verdict and a cited source rather than a recollection. (1) The existing decidability argument for the larger language at integer time proceeds by translation into monadic second-order logic over the omega-branching tree and appeals to Rabin's theorem; that theorem is recalled, not held. Tie it to a held source or record that it cannot be. The compression task's own carried-over research note already flags this as a precondition for citing the argument anywhere in library documentation. (2) That argument assumes the integer-time frame class is exactly D equal to the integers, as in the report's mirror -- all bi-infinite walks of a digraph -- rather than a wider class of discrete orders. Check the repository's actual FrameClass definition against that assumption and record whether it holds. (3) Determine whether any route in the held literature yields a FINITE CERTIFICATE, as opposed to a decision procedure only: the MSO route is recorded as giving no finite certificate, no complexity bound, and nothing a Lean Decidable instance could be built from, and the finite model property is recorded as not obtained by its method, consistent with the refuted small-model hypothesis (Probe476.fmp_false). A negative verdict here does not close the line, but it means the certificate design must supply its own finiteness argument rather than inherit one. Deliver a report with the three verdicts; no changes to FormalSystem/ or Tests/.
+
+---
 
 ### 681. Narrow transcription audit surface
 - **Status**: [NOT STARTED]
@@ -534,6 +578,7 @@ USER DECISION (2026-09-19): the Henkin-style (bundled) presentation is REJECTED 
 LITERATURE -- run with --lit. In the sub-index (specs/literature-index.json): reynolds_2001 (CTL*: LC, AA rule, automaton completeness proof); reynolds_2003_priors-ockhamist-logic-historical-necessity (infinite LC schema, IRR, hues and colours; extended abstract whose completeness proof is a SKETCH; OCR FORMULAS UNRELIABLE -- re-derive from prose, cross-check reynolds_2002); reynolds_2002_axioms_for_branching_time; emerson_and_halpern_-_1986_-_sometimes_and_not_never_revisited_on_branching_versus_linear_time_temporal_logic (fusion/suffix/limit closure); rumberg-zanardo-2019-transition-structures; thomason_1984 (§4: T×W, Kamp frames); thomason-1970-indeterminist-time; burgess_1982_i, burgess_1984_*, gabbay_1994_* (chronicles, S/U, IRR). Held in the global corpus and used by 628: blackburn_2002 ch. 7 (NAME/PASTE), Gabbay-Kurucz-Wolter-Zakharyaschev 2003. NOT YET ACQUIRED (specs/literature/SOURCES.md, newest rows): Reynolds 2005 PCTL*, Zanardo 1991 (bundled S/U completeness), Di Maio-Zanardo 1998 (rule-free T×W) -- high priority -- and Zanardo 1985, Zanardo 1996, von Kutschera 1997, Gurevich-Shelah 1985, Burgess 1980, Zanardo-Barcellan-Reynolds 1999, Kupferman-Pnueli-Vardi 2012. Use these only through what held sources say about them, state plainly where an argument depends on an unread paper, and never reconstruct their theorems from memory as if cited.
 
 HARD CONSTRAINTS: never state a completeness theorem and discharge it with sorry; every proposed axiom or rule carries a sorry-free validity/soundness probe or the label UNVERIFIED; every literature claim is tied to a held source or labelled recalled; a precisely located obstruction (which frame axiom, which formula class, which step of which published proof fails to transfer) is a complete outcome for a round; do not begin implementation here; add no constructor to PlusAxiom or PlusDerivationTree. OUTPUT per round: a numbered report plus probes under this task's directory, a per-class table (candidate system, soundness status, completeness status, engine), and any follow-on task proposals. 560's scope stands as rescoped by report 02 (plus_incomplete_base : PlusValid blc ∧ ¬ PlusDerivable FrameClass.Base [] blc, ZTime as corollary); report only if a finding changes it.
+COORDINATION NOTE (added later): a separate, certificate-side line now exists for the stability modal, aimed at a DECISION PROCEDURE with finite certificates rather than at a proof system: a gating decidability-provenance research task, a state-sharing witness-structure redesign (re-proving the histories characterization and redesigning box faithfulness), an agreement lemma over all walks of that structure, and a compression bound over subformula-set space. Priority question P2 of this task and that line's agreement-lemma task target THE SAME MATHEMATICS from two directions. Neither should prove it twice: whichever reaches it first states the lemma in reusable form and the other cites it. This task's own aim is unchanged -- a sound and complete proof system over the standard all-histories semantics -- and the certificate line does not substitute for it, nor does the USER DECISION rejecting bundled semantics apply to it, since a certificate format is not a semantics.
 
 ---
 
