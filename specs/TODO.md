@@ -1,18 +1,18 @@
 ---
-next_project_number: 677
+next_project_number: 682
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-09-25. Generated from state.json dependency graph.*
+*Updated 2026-09-26. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,677,679,680,681 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,678 | 298,464,502,563,649,677 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -70,6 +70,11 @@ next_project_number: 677
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
+677 [NOT STARTED] — Make checkcertificate proof-producing rather than...
+
+### Documentation
+
+680 [NOT STARTED] — Record that the compression task's remaining reduction...
 
 ### Formula Refactor
 
@@ -89,6 +94,7 @@ next_project_number: 677
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
+681 [NOT STARTED] — Narrow the transcription audit obligation by converting as...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -96,7 +102,65 @@ next_project_number: 677
 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
   └─ 650 [NOT STARTED] — Define-before-use audit of...
 
+### Semantics
+
+679 [NOT STARTED] — Define the Sentence-to-Formula translation in Lean and prove...
+
+### Toolchain
+
+678 [NOT STARTED] — Give the certificate wire format a canonical printer and a...
+
 ## Tasks
+
+### 681. Narrow transcription audit surface
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: None
+
+**Description**: Narrow the transcription audit obligation by converting as much of it as possible from definition to theorem. The consuming repository's adequacy argument lists, among the obligations its soundness claim rests on, that the Lean definitions transcribe the paper's -- and records it as discharged by inspection, an audit rather than a theorem. That is irreducible in principle, since it spans the boundary between an informal paper and a formalism, and nothing inside the formalism can discharge it. It can however be narrowed. Where a paper frame condition is currently carried as a Lean definition, derive it as a theorem from more primitive definitions instead, so that the surface requiring human inspection shrinks to those primitives. Candidates are the task relation's conditions (compositionality, seriality, limit, saturation) and the requirement that the time structure be a nontrivial totally ordered abelian group. Refresh the line-level citation table that maps each paper step to its landed Lean counterpart, verifying every cited file and line still resolves, and state plainly in the result which residue remains inspection-only, so a reader can see the exact size of the informal surface rather than being told it is small. Low priority and ongoing: this reduces an audit's scope, it does not eliminate an obligation.
+
+---
+
+### 680. Record compression prerequisite satisfiable
+- **Status**: [NOT STARTED]
+- **Task Type**: markdown
+- **Topic**: documentation
+- **Dependencies**: None
+
+**Description**: Record that the compression task's remaining reduction condition is now satisfiable, and correct the places that still describe its prerequisites as absent. The consuming repository's adequacy document, setting out what a genuine reduction of the compression result would require, lists as its third condition a demonstration that that repository's search enumerates the same witness-family space at a segment length at least the compression bound -- and notes the condition was unbuildable until a certificate export and an independent re-checker existed there at all. Both now exist: that repository has a certificate export on the documented wire contract and a pure-Python re-checker that independently decides the four conditions over the proved windows on every reported countermodel, cross-checked against lake exe check_certificate where this development is present. Update the compression task's own notes accordingly so its planning does not re-derive the prerequisite as missing. While there, finish the related correction already scoped as that task's item 3: Assembly.lean's docstring and the BiLasso README still call the IntPresentation small-model hypothesis open when it is refuted (Probe476.fmp_false), and the scope sentence recording that the procedure decides validity for the language without the stability modal -- its witness models being deterministic, on which that modal is trivial -- should be stated in durable terms. Documentation and task-metadata only: no new mathematics.
+
+---
+
+### 679. Lean sentence formula translation truth
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: None
+
+**Description**: Define the Sentence-to-Formula translation in Lean and prove it truth-preserving, supplying the verified half of the consuming repository's S4 obligation. That obligation is recorded there as covered by no Lean theorem, and it is the weakest joint in the soundness direction that repository already asserts: the certificate's target condition is decided against the translated premises and conclusions, so a translation defect means every downstream check rigorously certifies a countermodel to a different argument than the user asked. Crucially, a round-trip between that repository's re-checker and check_certificate cannot detect it, because both sides consume the same already-translated formula. The translation must eliminate the defined operators (negation, conjunction, disjunction, the derived tense operators, next, prev) into the six primitives, and it must handle an argument-order mismatch: the consumer's until operator is event-first while untl here is guard-first (Truth.lean:236), a hazard internal to translation code and invisible on the wire, whose named event and guard fields are order-free. Deliver the elimination in Lean with a theorem that truth of a sentence under the source evaluation agrees with truth of its translation, so the consuming repository can either verify its own translation against this one or delegate to it outright and delete the obligation rather than test it. Note that the consumer's existing brute-force adjudicator covers only the tense half (five primitive tags, no box case), so the box half is the part with no existing coverage at all.
+
+---
+
+### 678. Canonical wire parser round trip
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: toolchain
+- **Dependencies**: Task 677
+
+**Description**: Give the certificate wire format a canonical printer and a total parser, with a parse-after-print round-trip theorem, so that deserialization leaves the trust base. The verified side currently parses exported JSON to rebuild the witness family it then decides conditions on; a defect in that parser means the verified side certifies a different certificate than the one the producing repository exported, and no amount of rigor downstream of the parse detects it. Deliver: a canonical serializer, a parser total on its input (malformed input yielding a protocol error rather than a partial or misinterpreted structure), and a theorem that parsing a printed family returns that same family. Preserve the export contract exactly -- back, mid, fwd, bx, lassos and target are the contract's field names, target is required with target.time required and undefaulted because it is the target condition's existential witness, bx is sparse with unlisted formulas reading false, lassos index 0 is the main lasso, and atom identity is base-only so a certificate carrying a fresh or Skolem atom must be rejected outright. Pair with the consuming repository's parse-echo verification task, which compares an echo of what was parsed against the bytes it sent, so that the two halves together close the deserialization gap from both ends.
+
+---
+
+### 677. Proof producing check certificate
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Make check_certificate proof-producing rather than verdict-producing, so that acceptance of a certificate is a kernel-checked entailment instead of a report that four decision procedures returned true. Today the executable decides the four certificate conditions and prints a status line, while WitnessFamily.joint_countermodel (Metalogic/Decidability/WitnessFamily/Agreement.lean:232) sits beside it as a separate theorem; the composition of the two -- decided conditions plus the agreement theorem yields the existence of a paper countermodel -- happens only in the reader's head. The consuming repository's adequacy document says so explicitly: a "countermodel" verdict is not a kernel-checked proof for that particular certificate, only that the four Decidable instances all returned true on the family rebuilt from the wire input. Change this by making the success path be the composition: state the entailment as a theorem taking a satisfies-the-four-conditions hypothesis to the existence of a model, a world history and a time witnessing the premises true and the conclusions false, then have the executable's accepting branch apply that theorem to a hypothesis obtained from the existing Decidable instances, so that accepting a certificate means Lean has constructed a term of the existence type. Extend the output contract to carry the distinction between a decided verdict and a constructed entailment, coordinating the change with the consuming side, since the wire is an export contract and its field names are a breaking change surface rather than a local refactor. The downstream payoff, which should be recorded: the consumer's pure-Python re-checker becomes a fast pre-filter rather than part of the trust base.
+
+---
 
 ### 664. Ingest cmiel kuhlmann ball space source
 - **Status**: [NOT STARTED]
