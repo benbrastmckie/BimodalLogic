@@ -11,10 +11,10 @@ next_project_number: 686
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,677,679,680,681,682 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650,678,683 | 298,464,502,563,649,677,682 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,677,679,680,681,682 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,623,650,678,683 | 298,464,502,563,649,677,680,682 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,684 | 231,465,497,564,565,616,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543,685 | 428,498,499,500,684 | algebraic-representation, decidability, metalogic |
+| 4 | 125,429,543,685 | 428,498,499,500,623,684 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
@@ -69,10 +69,10 @@ next_project_number: 686
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
 677 [NOT STARTED] — Make checkcertificate proof-producing rather than...
 682 [NOT STARTED] — RESEARCH TASK, verdict-first: establish whether validity of...
-685 [NOT STARTED] — Prove the compression result for the branching witness...
+623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
+  └─ 685 [NOT STARTED] — Prove the compression result for the branching witness...
 
 ### Documentation
 
@@ -120,7 +120,7 @@ next_project_number: 686
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 684
+- **Dependencies**: Task 684, Task 623
 
 **Description**: Prove the compression result for the branching witness structure: if a formula of the language with the stability modal is not valid at integer time, a witness structure satisfying the redesigned conditions exists whose size is bounded by a computable function of the closure size. This is the stability-modal analogue of the compression theorem the deterministic route needs, and it is what turns a truth lemma into a decision procedure, since without a bound there is no finite candidate space to enumerate. Two routes are already known closed and must not be retried. The finite model property is NOT established by the monadic-second-order route ("a regular tree does not obviously fold to a finite digraph"), so no bound is inherited from the decidability argument even if that argument is sound. And the finite-presentation small-model hypothesis is machine-refuted (Probe476.fmp_false), so compressing over presentation states is dead exactly as it is for the deterministic route. The viable shape is the one the deterministic route uses: compress over subformula-set (type) space, where the pigeonhole is two-to-the-closure-size and closed, rather than over presentation states, where it is unbounded -- generalized from a family of lassos to a branching structure, which is the part with no precedent. Deliver, alongside the bound, the assembly step the deterministic route also needs: a formula-indexed candidate list over those bounds, and decidability of validity by reduction to "no candidate is accepted". Depends on the agreement lemma over all walks, since a bound on structures whose truth lemma has not been proved certifies nothing.
 
@@ -143,6 +143,7 @@ next_project_number: 686
 - **Dependencies**: Task 682
 
 **Description**: Replace the deterministic witness device with a state-sharing one: re-prove the histories characterization and redesign the box-faithfulness condition, which the consuming repository's adequacy document identifies as the actual load-bearing obstruction to a stability modal. The received account of why the current design is deterministic is precise about where the weight sits, and it is NOT where one might expect: Limit and Saturation are not the obstacle (Saturation is free from subsingleton fibres, and Limit is discharged trivially over the integers). The obstruction is the histories characterization and the box case of the truth lemma. Determinism is exactly what makes ShiftSet.total_eq_orbit (Semantics/ShiftSet.lean:252) true -- every world history is one of the lasso orbits. If two lassos share a state, a history can cross from one lasso to another at that state, total_eq_orbit fails, the corollary that the frame's history set is exactly the certified histories fails with it, and the box case of the truth lemma fails: box faithfulness is calibrated against "every position of every lasso", which stops enumerating the history set once histories can recombine. This is the same obstruction Probe476.fmp_false records for finite digraphs -- admitting recombined paths adds histories that box must range over, beyond what the four conditions were designed to certify. Deliverables: a witness structure whose task relation is not functional, so witnesses branch at a shared state; a replacement for total_eq_orbit characterizing the frame's total histories as the walks of that structure; and a redesigned box condition that quantifies over those walks rather than over lasso positions, while remaining decidable -- decidability being the hard constraint, since the walks of a branching structure are infinitely many. Record explicitly that the stability modal collapses to the identity on deterministic frames (states_eq_of_deterministic, PlusLanguage/PlusDeterminism.lean), which is why the current device is blind to it by construction and cannot be extended by adding a truth clause.
+SCOPE CLARIFICATION: ADD ALONGSIDE, DO NOT REPLACE. The opening sentence above says "replace the deterministic witness device", which overstates the change and must not be read as licence to remove or weaken it. The deterministic bi-lasso device is the L-fragment decision procedure, it is what the consuming model checker ships against today, and its histories characterization and box condition must keep working exactly as they do. The branching structure is an ADDITION covering the larger language; the deterministic one remains the specialization. Both should coexist, ideally with the deterministic case recovered as an instance of the branching one under a functional task relation, so the existing agreement theorem and Decidable instances are not re-proved but specialized. Any change that breaks the deterministic path is out of scope and would regress a shipped consumer.
 
 ---
 
@@ -280,7 +281,7 @@ ACCEPTANCE. typst compile --root .. succeeds with zero errors for BOTH BimodalRe
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 534, Task 645, Task 665
+- **Dependencies**: Task 534, Task 645, Task 665, Task 680
 - **Research**: [623_decidable_validztime_quasimodel_shiftset_route/reports/01_stability-scope-decidability-findings.md]
 
 **Description**: Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet witness-family route: the completeness (compression) half. The soundness half, which defines LabelledLasso / WitnessFamily, the ShiftSet construction WitnessFamily.std, the agreement theorem (truth in std equals label membership on the closure), the consequence corollaries at ZTime and Base, and the Decidable instances for the four certificate conditions, has been split out into its own task, on which this task now depends; do not re-prove or re-define any of it here, consume it.
