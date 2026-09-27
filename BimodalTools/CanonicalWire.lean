@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import BimodalTools.CanonicalWire.Json
 import BimodalTools.CanonicalWire.Parse
+import BimodalTools.CanonicalWire.RoundTrip
 
 /-!
 # CanonicalWire - the verified certificate wire codec

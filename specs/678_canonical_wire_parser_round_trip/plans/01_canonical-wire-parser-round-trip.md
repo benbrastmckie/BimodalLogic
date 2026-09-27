@@ -204,7 +204,7 @@ the 1500-line package limit once its proofs arrive.
 
 ---
 
-### Phase 2: Extract the certificate records into their own module [NOT STARTED]
+### Phase 2: Extract the certificate records into their own module [COMPLETED]
 
 **Goal**: the `Raw*` and `Partial*` records, their `complete` functions, `hasFreshAtom` and
 `RawCertificate.formulas` live in `BimodalTools/CertificateRecords.lean` under the unchanged
@@ -300,7 +300,7 @@ estimate, check that no combinator was quietly written monadically.
 
 ---
 
-### Phase 4: Lexical round-trip lemmas and the measure bound [NOT STARTED]
+### Phase 4: Lexical round-trip lemmas and the measure bound [COMPLETED]
 
 **Goal**: `BimodalTools/CanonicalWire/RoundTrip.lean` exists and proves the three lemmas the
 generic theorem rests on: the escape round trip, the digit round trip, and the measure bound.

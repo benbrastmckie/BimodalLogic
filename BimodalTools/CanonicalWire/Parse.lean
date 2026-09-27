@@ -110,41 +110,64 @@ Structural recursion throughout: every recursive call is on a pattern-matched ta
 so this is a `def` with equation lemmas rather than a `partial def`.
 -/
 
+/-- Prepend a decoded character to a successful string-literal result.
+
+A named function rather than an inline `match` because `RoundTrip.lean` has to *state* this shape
+in a lemma, and two `match` expressions that print identically are still two distinct anonymous
+auxiliary functions, which no amount of `simp` will identify. Naming it makes the lemma's
+right-hand side and the definition's body the same term. -/
+def consResult (c : Char) :
+    Except String (List Char × List Char) → Except String (List Char × List Char)
+  | .error m => .error m
+  | .ok (s, rr) => .ok (c :: s, rr)
+
+mutual
+
 /-- Read the body of a string literal, consuming the closing quote. Returns the decoded
-characters and the remainder after the quote. -/
+characters and the remainder after the quote.
+
+Split across three mutually recursive functions rather than written with nested `match`es inside
+one. The split is load-bearing for `RoundTrip.lean`, not cosmetic: the equation compiler splits
+*every* `match` in a function's body when it generates that function's equation lemmas, including
+matches in branches a concrete input never reaches. A nested `match` on the four hex positions
+therefore made `rw [unescapeBody]` emit an unprovable side goal about the *unrelated* simple-escape
+branch. With the three functions below, `unescapeBody` and `unescapeAfterBackslash` each have one
+unconditional equation per constructor, and only `unescapeUEscape` splits — on input that is
+concrete wherever it matters. -/
 def unescapeBody : List Char → Except String (List Char × List Char)
   | [] => .error "unterminated string literal"
   | c :: cs =>
     if c = '"' then .ok ([], cs)
-    else if c = '\\' then
-      match cs with
-      | [] => .error "unterminated escape at end of input"
-      | e :: r =>
-        if e = 'u' then
-          match r with
-          | a :: b :: d :: g :: r' =>
-            match hexVal d, hexVal g with
-            | some hd, some hg =>
-              if a = '0' && b = '0' && 16 * hd + hg < 32 then
-                match unescapeBody r' with
-                | .error m => .error m
-                | .ok (s, rr) => .ok (Char.ofNat (16 * hd + hg) :: s, rr)
-              else .error "\\u is supported only as \\u00XX with XX below 20"
-            | _, _ => .error "malformed \\u escape"
-          | _ => .error "truncated \\u escape"
-        else
-          match simpleEscape e with
-          | none => .error "unsupported escape sequence"
-          | some d =>
-            match unescapeBody r with
-            | .error m => .error m
-            | .ok (s, rr) => .ok (d :: s, rr)
-    else if c.toNat < 32 then
-      .error "raw control character in string literal"
+    else if c = '\\' then unescapeAfterBackslash cs
+    else if c.toNat < 32 then .error "raw control character in string literal"
+    else consResult c (unescapeBody cs)
+
+/-- Read an escape sequence and the rest of the string literal, given the characters after the
+backslash. -/
+def unescapeAfterBackslash : List Char → Except String (List Char × List Char)
+  | [] => .error "unterminated escape at end of input"
+  | e :: r =>
+    if e = 'u' then unescapeUEscape r
     else
-      match unescapeBody cs with
-      | .error m => .error m
-      | .ok (s, rr) => .ok (c :: s, rr)
+      match simpleEscape e with
+      | none => .error "unsupported escape sequence"
+      | some d => consResult d (unescapeBody r)
+
+/-- Read a `\u00XX` escape and the rest of the string literal, given the characters after the
+`u`. Only the canonical control-character form is accepted: two `0`s, two lowercase hex digits,
+and a value below `0x20`. Every other `\uXXXX` is a protocol error — the settled joint-contract
+decision, which the producing side honours by pinning `ensure_ascii=False`. -/
+def unescapeUEscape : List Char → Except String (List Char × List Char)
+  | a :: b :: d :: g :: r' =>
+    match hexVal d, hexVal g with
+    | some hd, some hg =>
+      if a = '0' && b = '0' && 16 * hd + hg < 32 then
+        consResult (Char.ofNat (16 * hd + hg)) (unescapeBody r')
+      else .error "\\u is supported only as \\u00XX with XX below 20"
+    | _, _ => .error "malformed \\u escape"
+  | _ => .error "truncated \\u escape"
+
+end
 
 /-!
 ## The decimal codec, reading half
@@ -194,9 +217,13 @@ def parseInt : List Char → Except String (Int × List Char)
 ## The total parser
 
 One fuel unit per recursive descent. Each of the three functions has exactly **one** equation
-per fuel successor — the dispatch is an `if` chain on the head character rather than a family of
-overlapping patterns — so `simp only [parseCJson]` reduces a goal without leaving arm-overlap
-side conditions behind. That shape is what makes the round-trip proof tractable.
+per fuel successor, and every look-ahead past the first character goes through `List.head?`,
+`List.tail`, `List.take` and `List.drop` rather than through a nested pattern match. Both are
+load-bearing for `RoundTrip.lean`: a nested `match` on a *pattern variable* makes the equation
+compiler split the enclosing function's equations by input shape, and `rw` then emits side goals
+about branches the input never reaches — for a printed string value, four unprovable ones about
+the array, object and keyword branches. With the shape below, `rw [parseCJson]` produces exactly
+one goal.
 -/
 
 mutual
@@ -213,27 +240,23 @@ def parseCJson : Nat → List Char → Except String (CJson × List Char)
         | .error m => .error m
         | .ok (s, r) => .ok (.str s, r)
       else if c = '[' then
-        match cs' with
-        | ']' :: r => .ok (.arr .nil, r)
-        | _ =>
+        if cs'.head? = some ']' then .ok (.arr .nil, cs'.tail)
+        else
           match parseElems f cs' with
           | .error m => .error m
           | .ok (xs, r) => .ok (.arr xs, r)
       else if c = '{' then
-        match cs' with
-        | '}' :: r => .ok (.obj .nil, r)
-        | _ =>
+        if cs'.head? = some '}' then .ok (.obj .nil, cs'.tail)
+        else
           match parseFields f cs' with
           | .error m => .error m
           | .ok (fs, r) => .ok (.obj fs, r)
       else if c = 't' then
-        match cs' with
-        | 'r' :: 'u' :: 'e' :: r => .ok (.bool true, r)
-        | _ => .error "expected the literal true"
+        if cs'.take 3 = ['r', 'u', 'e'] then .ok (.bool true, cs'.drop 3)
+        else .error "expected the literal true"
       else if c = 'f' then
-        match cs' with
-        | 'a' :: 'l' :: 's' :: 'e' :: r => .ok (.bool false, r)
-        | _ => .error "expected the literal false"
+        if cs'.take 4 = ['a', 'l', 's', 'e'] then .ok (.bool false, cs'.drop 4)
+        else .error "expected the literal false"
       else
         match parseInt (c :: cs') with
         | .error m => .error m
@@ -246,13 +269,12 @@ def parseElems : Nat → List Char → Except String (CJsonList × List Char)
     match parseCJson f cs with
     | .error m => .error m
     | .ok (x, r) =>
-      match r with
-      | ',' :: r' =>
-        match parseElems f r' with
+      if r.head? = some ',' then
+        match parseElems f r.tail with
         | .error m => .error m
-        | .ok (xs, r'') => .ok (.cons x xs, r'')
-      | ']' :: r' => .ok (.cons x .nil, r')
-      | _ => .error "expected , or ] in array"
+        | .ok (xs, r') => .ok (.cons x xs, r')
+      else if r.head? = some ']' then .ok (.cons x .nil, r.tail)
+      else .error "expected , or ] in array"
 
 /-- Parse a non-empty object's fields, consuming the closing `}`. A key that already occurs in
 the *rest* of the object is a duplicate, which is rejected — the recursion reads right to left,
@@ -260,26 +282,23 @@ so checking against the tail catches every repetition. -/
 def parseFields : Nat → List Char → Except String (CJsonObj × List Char)
   | 0, _ => .error outOfFuelMsg
   | f + 1, cs =>
-    match cs with
-    | '"' :: cs' =>
-      match unescapeBody cs' with
+    if cs.head? = some '"' then
+      match unescapeBody cs.tail with
       | .error m => .error m
       | .ok (k, r0) =>
-        match r0 with
-        | ':' :: r1 =>
-          match parseCJson f r1 with
+        if r0.head? = some ':' then
+          match parseCJson f r0.tail with
           | .error m => .error m
           | .ok (v, r2) =>
-            match r2 with
-            | ',' :: r3 =>
-              match parseFields f r3 with
+            if r2.head? = some ',' then
+              match parseFields f r2.tail with
               | .error m => .error m
               | .ok (fs, r4) =>
                 if hasKey k fs then .error "duplicate key in object" else .ok (.cons k v fs, r4)
-            | '}' :: r3 => .ok (.cons k v .nil, r3)
-            | _ => .error "expected , or } in object"
-        | _ => .error "expected : after an object key"
-    | _ => .error "expected a quoted object key"
+            else if r2.head? = some '}' then .ok (.cons k v .nil, r2.tail)
+            else .error "expected , or } in object"
+        else .error "expected : after an object key"
+    else .error "expected a quoted object key"
 
 end
 
