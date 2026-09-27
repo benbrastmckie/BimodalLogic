@@ -1,7 +1,7 @@
 # Implementation Plan: Sentence-to-Formula Translation, Proved Truth-Preserving
 
 - **Task**: 679 - Lean Sentence-to-Formula translation, proved truth-preserving
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/679_lean_sentence_formula_translation_truth/reports/01_sentence-formula-translation-truth.md`
@@ -217,7 +217,7 @@ the only one of the three that edits any of those.
 
 ---
 
-### Phase 1: The source language and its elimination [NOT STARTED]
+### Phase 1: The source language and its elimination [COMPLETED]
 
 **Goal**: `FormalSystem/SourceLanguage/Sentence.lean` exists, compiles, and is registered in every
 mechanism that gates a new top-level library directory. This is the syntax half only — it imports
@@ -225,42 +225,49 @@ nothing from `FormalSystem/Semantics/`.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/SourceLanguage/Sentence.lean` with the standard 5-line copyright
+- [x] Create `FormalSystem/SourceLanguage/Sentence.lean` with the standard 5-line copyright
       header (2026), importing `FormalSystem.Syntax.Formula` and nothing from
       `FormalSystem/Semantics/` (this is what makes it layer 0; `Syntax.Atom` already imports
       `FormalSystem.Init`, so C24 is satisfied transitively).
-- [ ] Declare `Sentence` exactly as the Challenge block gives it, with a per-constructor docstring
+- [x] Declare `Sentence` exactly as the Challenge block gives it, with a per-constructor docstring
       naming the consumer's surface form (`\wedge`, `\Until`, `\rightarrow`, `\future`, ...) and
       stating for `untl`/`snce` that argument 1 is the guard and argument 2 the event.
-- [ ] Define `tr : Sentence → Formula` implementing the report's verified elimination table,
+- [x] Define `tr : Sentence → Formula` implementing the report's verified elimination table,
       including the four rows that are not the obvious operator: `cond A B ↦ ((tr A).neg).or (tr B)`,
       `bicond A B ↦ (((tr A).neg).or (tr B)).and (((tr B).neg).or (tr A))`,
       `someFut A ↦ ((tr A).neg.allFuture).neg`, `somePast A ↦ ((tr A).neg.allPast).neg`.
-- [ ] Add `@[simp]` `rfl` push-through equations for the operators that do commute with `tr`
+- [x] Add `@[simp]` `rfl` push-through equations for the operators that do commute with `tr`
       (`neg`, `wedge`, `vee`, `box`, `allFut`, `allPast`, `untl`, `snce`, `top`, `dia`, `next`,
       `prev`).
-- [ ] Prove `tr_cond_ne`, `tr_someFut_ne`, `tr_somePast_ne` in the
+- [x] Prove `tr_cond_ne`, `tr_someFut_ne`, `tr_somePast_ne` in the
       `MinusLanguage/Translation.lean` `tr_someFuture_ne` idiom, each with a docstring saying the
       inequality is deliberate and naming the consequence of "simplifying" it (a different
       subformula closure, hence a different certificate label domain).
-- [ ] Prove `tr_injective` (`Function.Injective tr`), following `MinusLanguage/Translation.lean`'s
-      `tr_injective`.
-- [ ] Record the range invariant in the module docstring: no `Formula.imp` in the range of `tr` is
+- [x] Prove `tr_injective` (`Function.Injective tr`), following `MinusLanguage/Translation.lean`'s
+      `tr_injective`. *(deviation: altered — the statement is FALSE and was replaced by
+      `tr_not_injective`, its disproof. `tr (cond A B) = tr (vee (neg A) B)` by `rfl`, because the
+      elimination sends each defined operator onto the very abbreviation it stands for; `top`/`neg bot`,
+      `dia`/`neg (box (neg ·))` and the existential tenses collide the same way. The
+      `MinusLanguage` precedent does not transfer: that translation is primitive-to-primitive and
+      same-name, this one collapses 17 operators onto 6. The consequence — no inverse pass is
+      checkable, so the conformance channel compares forward only — is recorded in the module
+      docstring and the directory README.)*
+- [x] Record the range invariant in the module docstring: no `Formula.imp` in the range of `tr` is
       the image of a source-level implication — `imp` appears only inside the encodings of
       `neg`/`and`/`or`/`top` and of the two universal tenses.
-- [ ] Create `FormalSystem/SourceLanguage.lean` sibling aggregator (C8: sibling `X.lean` beside
+- [x] Create `FormalSystem/SourceLanguage.lean` sibling aggregator (C8: sibling `X.lean` beside
       `X/`, never `X/X.lean`) importing `FormalSystem.SourceLanguage.Sentence`, with a module
       docstring in the `FormalSystem/MinusLanguage.lean` shape including a Module Invariant
       paragraph stating syntax-before-semantics within the directory and the
       `grep -rln 'import FormalSystem.Semantics' FormalSystem/SourceLanguage/` check.
-- [ ] Create `FormalSystem/SourceLanguage/README.md` (readme-lint check 1 is gated: every
+- [x] Create `FormalSystem/SourceLanguage/README.md` (readme-lint check 1 is gated: every
       directory containing `.lean` files needs one) with a "Last verified" date and a per-file row.
-- [ ] Add `"SourceLanguage": {"Sentence": 0}` to `LANGUAGE_FILE_LAYERS` in
+- [x] Add `"SourceLanguage": {"Sentence": 0}` to `LANGUAGE_FILE_LAYERS` in
       `scripts/measure-refactor-partitions.py`, and the matching row to `ORGANISATION.md`'s layer
       table plus its prose list of language directories.
-- [ ] Regenerate the root aggregator with `lake exe mk_all --lib FormalSystem` (C33 byte-compares
+- [x] Regenerate the root aggregator with `lake exe mk_all --lib FormalSystem` (C33 byte-compares
       `FormalSystem.lean` against the generator's output — never hand-edit it).
-- [ ] Add the component's rows to `README.md` (the directory tree and the language table) and
+- [x] Add the component's rows to `README.md` (the directory tree and the language table) and
       `FormalSystem/README.md` (the `SourceLanguage.lean` aggregator row and the directory row).
 
 **Timing**: 2 hours

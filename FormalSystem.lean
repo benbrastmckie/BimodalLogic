@@ -494,6 +494,7 @@ import FormalSystem.Semantics.Extension.PeriodicExtension
 import FormalSystem.Semantics.Extension.Step
 import FormalSystem.Semantics.FrameAxioms
 import FormalSystem.Semantics.FrameClassValidity
+import FormalSystem.Semantics.FrameConstraintIndependence
 import FormalSystem.Semantics.FrameProperty
 import FormalSystem.Semantics.Frames
 import FormalSystem.Semantics.Frames.Standard

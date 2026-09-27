@@ -19,9 +19,9 @@ Whereas dynamical systems theory provides mathematical resources for modeling th
 <!-- BEGIN GENERATED: inventory dir=FormalSystem rows=totals desc=no -->
 | Metric | Count |
 |--------|-------|
-| Live `.lean` files | 571 |
-| Live lines of code | 166,466 |
-| Live comment lines | 102,966 |
+| Live `.lean` files | 573 |
+| Live lines of code | 166,545 |
+| Live comment lines | 103,212 |
 <!-- END GENERATED -->
 
 The table above is generated: `bash scripts/check-module-invariants.sh --emit-inventory`
@@ -115,6 +115,7 @@ The task semantics is developed in ["The Construction of Possible Worlds"](https
 │   ├── OpenLanguage/             # L^▷ = L⁺ plus the open-future modal ▷ and the open-past modal ◁ (semantic only)
 │   ├── HybridLanguage/           # L⁺ plus the same-state modality [≡], state registers and the state binder ↓ (semantic only)
 │   ├── QuantLanguage/            # L plus propositional quantifiers ∀p over an admissible family (semantic only)
+│   ├── SourceLanguage/           # the source sentence language (17 operators) and its verified elimination into L
 │   ├── ProofSystem/              # Axioms (29 constructors, nine layers), derivation trees
 │   ├── Semantics/                # TemporalOrder, FrameOver, TaskFrame, PartialHistory, TaskModel, validity
 │   ├── Metalogic/                # Soundness, completeness, decidability
@@ -241,6 +242,7 @@ logic; the other six are this repository's, and the superscripts are Lean-only v
 | **L^▷** | L⁺ plus the open-future modal ▷ and the open-past modal ◁ | — (semantic only; no proof system) | `FormalSystem/OpenLanguage/`, `OpenFormula`, the embedding `ofPlus` |
 | **hybrid state language** | L⁺ plus the same-state modality [≡], state registers `i` and the state binder ↓ᵢ | — (semantic only; no proof system) | `FormalSystem/HybridLanguage/`, `HybridFormula`, the embedding `HybridFormula.ofPlus` |
 | **propositional-quantifier language** | L plus the propositional quantifier ∀p, relative to a family of admissible propositions | — (semantic only; no proof system) | `FormalSystem/QuantLanguage/`, `QuantFormula`, the embedding `QuantFormula.ofFormula` |
+| **source sentence language** | L's five operators with ¬, ∧, ∨, G, H primitive, plus the eight defined operators →, ↔, ⊤, ◇, F, P, ○, ● | — (semantic only; no proof system) | `FormalSystem/SourceLanguage/`, `Sentence`, the elimination `tr` and the agreement theorem `sat_iff` |
 
 The manuscript has exactly **two** languages: 𝓛 and 𝓛⋆, where 𝓛⋆ bundles ⊡ with both the
 time-store/recall and the world-store/recall families (the sentence defining `\BL^\star` in

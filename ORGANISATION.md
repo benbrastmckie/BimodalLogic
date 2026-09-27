@@ -16,7 +16,7 @@ graph itself, with its exceptions drawn rather than described, is in
 | 2 | `Theorems/` | Derived object-logic theorems |
 | 1 | `Semantics/` | `TaskFrame`, `ConvexHistory`, `TaskModel`, `TruthAt`, validity |
 | 0 | `Syntax/`, `ProofSystem/`, `ForMathlib/`, `Init.lean`, `Tactic/`, `Version.lean` | Formulas, axioms, derivations; the shared preamble and the library's attribute declarations |
-| 0, 1, 3 — **per file** | `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/`, `OpenLanguage/`, `HybridLanguage/`, `QuantLanguage/` | One object language each, syntax through semantics (`OpenLanguage/`, `HybridLanguage/` and `QuantLanguage/` are semantic only: they have no proof system); [layered file by file](#the-extension-language-directories-are-layered-per-file) |
+| 0, 1, 3 — **per file** | `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/`, `OpenLanguage/`, `HybridLanguage/`, `QuantLanguage/`, `SourceLanguage/` | One object language each, syntax through semantics (`OpenLanguage/`, `HybridLanguage/`, `QuantLanguage/` and `SourceLanguage/` are semantic only: they have no proof system); [layered file by file](#the-extension-language-directories-are-layered-per-file) |
 
 Every module under `FormalSystem/` has a layer. `layer_of` in
 `scripts/measure-refactor-partitions.py` **raises** for one that matches no row, so a new
@@ -84,16 +84,16 @@ judgement about its content:
 
 | Layer | Came from | Files |
 |---|---|---|
-| 0 | `Syntax/<Lang>/` | Minus: `Formula`, `Axioms`, `Derivation`, `Translation`, `AxiomDischarge`. Plus: `Formula`, `Axioms`, `Derivation`, `Substitution`. Star: `Formula`, `Axioms`, `Derivation`, `Embedding`. Open: `Formula` |
+| 0 | `Syntax/<Lang>/` | Minus: `Formula`, `Axioms`, `Derivation`, `Translation`, `AxiomDischarge`. Plus: `Formula`, `Axioms`, `Derivation`, `Substitution`. Star: `Formula`, `Axioms`, `Derivation`, `Embedding`. Open: `Formula`. Source: `Sentence` |
 | 1 | `Semantics/<Lang>/` | Minus: `MinusTruth`, `MinusFrame`, `MinusValidity`, `MinusSchemaValidity`. Plus: `PlusTruth`, `PlusValidity`, `PlusPasting`, `PlusNonValidities`, `PlusDeterminism`, `PlusStateLocal`, `PlusLimitClosure`. Star: `StarTruth`, `StarValidity`, `StarDeterminism`, `StarNonValidities`, `StarStateLocal`. Open: `OpenClasses`, `OpenTruth`, `OpenValidity`, `OpenReversal`, `OpenOckhamist` |
 | 3 | `Metalogic/Conservativity/` | `MinusLanguage/Soundness.lean`, which imports two `Metalogic/` modules |
 
-16 files at layer 0, 29 at layer 1, 1 at layer 3. The six sibling aggregators
-(`MinusLanguage.lean` and its five siblings) import layer-0 and layer-1 files and take a declared
+17 files at layer 0, 29 at layer 1, 1 at layer 3. The seven sibling aggregators
+(`MinusLanguage.lean` and its six siblings) import layer-0 and layer-1 files and take a declared
 layer of 1.
 
-The `OpenLanguage/`, `HybridLanguage/` and `QuantLanguage/` files were created after the merge and
-so have no origin directory. Each
+The `OpenLanguage/`, `HybridLanguage/`, `QuantLanguage/` and `SourceLanguage/` files were created
+after the merge and so have no origin directory. Each
 takes the layer of the directory it would have occupied before it: the syntax file 0, the
 semantic modules 1 — which is exactly what the syntax-before-semantics assertion enforces.
 
