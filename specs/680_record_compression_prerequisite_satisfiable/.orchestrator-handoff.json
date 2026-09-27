@@ -1,17 +1,26 @@
 {
-  "status": "planned",
+  "status": "implemented",
   "task_number": 680,
-  "phase": "plan",
-  "session_id": "sess_1790528746_3f1c95_680",
-  "dispatch_seq": 7,
-  "phases_completed": 0,
+  "phase": "implement",
+  "session_id": "sess_1790528746_3f1c95",
+  "dispatch_seq": 11,
+  "summary": "All five plan phases completed: recorded the cross-repository reduction condition as satisfiable-in-principle with its non-monotonicity correction, corrected the refuted fmp hypothesis and added the without-stability-modal scope sentence in Assembly.lean and BiLasso/README.md, fixed the ValidDiscrete rename drift, and ran the doc gate set.",
+  "phases_completed": 5,
   "phases_total": 5,
   "artifacts": [
     {
+      "type": "summary",
+      "path": "specs/680_record_compression_prerequisite_satisfiable/summaries/01_record-compression-prerequisite-satisfiable-summary.md",
+      "summary": "Implementation summary for all five phases."
+    },
+    {
       "type": "plan",
       "path": "specs/680_record_compression_prerequisite_satisfiable/plans/01_record-compression-prerequisite-satisfiable.md",
-      "summary": "5-phase documentation-only plan for recording the compression prerequisite status and the delegated fmp/scope corrections."
+      "summary": "5-phase documentation-only plan, all phases marked [COMPLETED]."
     }
   ],
-  "next_steps": "Run /implement 680 to execute the plan"
+  "blockers": [],
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Task complete; no further dispatch needed. One deliberate out-of-scope item remains for a separate task: FormalSystem/Metalogic/SoundnessLemmas/README.md still names ValidDiscrete in a different context."
 }

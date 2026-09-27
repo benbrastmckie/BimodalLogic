@@ -1,22 +1,44 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "dispatch_seq": 11,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/680_record_compression_prerequisite_satisfiable/plans/01_record-compression-prerequisite-satisfiable.md",
-      "summary": "5-phase documentation-only plan: record the cross-repository reduction condition as satisfiable-in-principle with its non-monotonicity correction, correct the refuted fmp hypothesis in Assembly.lean and BiLasso/README.md, add the without-stability-modal scope sentence, fix the ValidDiscrete rename drift, and run the doc gate set."
+      "type": "summary",
+      "path": "specs/680_record_compression_prerequisite_satisfiable/summaries/01_record-compression-prerequisite-satisfiable-summary.md",
+      "summary": "All five plan phases completed: recorded the cross-repository reduction condition as satisfiable-in-principle with its non-monotonicity correction, corrected the refuted fmp hypothesis and added the without-stability-modal scope sentence in Assembly.lean and BiLasso/README.md, fixed the ValidDiscrete rename drift, and ran the doc gate set (readme-lint PASS; check-module-invariants C5/C9/C9D/C13/C20/C32 PASS)."
     }
   ],
-  "memory_candidates": [],
-  "next_steps": "Run /implement 680 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1790528746_3f1c95_680",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 2.75,
-    "dependency_waves": [[1, 2, 3], [4], [5]]
+  "completion_data": {
+    "completion_summary": "Recorded, on the BimodalLogic side, that the consuming repository's reduction condition (iii) is satisfiable in principle together with its non-monotonicity correction; corrected the refuted (not open) fmp hypothesis and added the durable without-stability-modal scope sentence in Assembly.lean and BiLasso/README.md; fixed the ValidDiscrete -> ValidZTime rename drift in BiLasso/README.md."
   },
-  "dispatch_seq": 7
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/WitnessFamily/README.md",
+    "FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean",
+    "FormalSystem/Metalogic/Decidability/BiLasso/README.md",
+    "BimodalTools/README.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When a concurrently-dispatched sibling task has an unstaged, in-flight edit to a file you also need to touch (e.g. refreshing a 'Last verified' date at the end of a README both tasks are editing), `git add -- <path>` and `git commit -- <path>` BOTH read from the working tree, not the index, so neither can commit only your own hunk while leaving the sibling's hunk unstaged. The safe technique: (1) `git diff -- <path> > sibling.patch` to capture the sibling's unstaged hunk, (2) `git apply -R sibling.patch` to make the working tree match what you want staged, (3) `git add`/commit normally (or `git apply --cached` your own hunk directly if it's not yet in the working tree at all), (4) `git apply sibling.patch` to restore the sibling's hunk in the working tree afterward, verified unchanged via `git diff` before/after.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/680_record_compression_prerequisite_satisfiable/summaries/01_record-compression-prerequisite-satisfiable-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["git", "concurrent-tasks", "shared-tree", "partial-staging", "sibling-edit", "hunk"]
+    },
+    {
+      "content": "In this repo's Lean docstrings/READMEs, citing a refutation or probe result from specs/archive/ uses the form: declaration name in backticks, followed by a parenthesised relative path, with NO line number (e.g. `Probe476.fmp_false` (`specs/archive/476_.../evidence/fmp-hypothesis-is-false.lean`)). A line number here would fail C20's file.lean:NNN citation check on a path outside the live tree structure that check expects; the no-line-number, declaration-name-plus-path form is the established convention (mirrored from WitnessFamily/README.md:24-25) and passes the gate.",
+      "category": "PATTERN",
+      "source_artifact": "specs/680_record_compression_prerequisite_satisfiable/summaries/01_record-compression-prerequisite-satisfiable-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["citation-form", "C20", "readme-lint", "archive-probe", "declaration-name"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790528746_3f1c95",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 5,
+    "phases_total": 5
+  }
 }
