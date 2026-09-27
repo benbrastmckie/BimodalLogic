@@ -71,10 +71,10 @@ so that entire alignment layer is absent rather than reproved — and `LocalCohe
 |--------|-------|------|
 | `Closure.lean` | 131 | `closureOf`, the set-level subformula closure of a `Context`, with `mem_closureOf`, `self_mem_closureOf` and the seven projections the agreement induction consumes |
 | `Basic.lean` | 201 | `LabelledLasso` and `WitnessFamily`, the decoded label functions `lab` and `L`, the two periodicities `lab_sub_back_length` / `lab_add_fwd_length`, and `lab_subset` |
-| `Predicates.lean` | 127 | `LocalCoherentLab`, `FulfillingLab`, `BoxFaithful`, `Target`, with the clause-by-clause correspondence to `../BiLasso/Annotation.lean` |
+| `Predicates.lean` | 145 | `LocalCoherentLab`, `FulfillingLab`, `BoxFaithful`, `Target`, the bundle `Certifies`, with the clause-by-clause correspondence to `../BiLasso/Annotation.lean` |
 | `Std.lean` | 120 | `WitnessFamily.std`, the presented `ShiftSet intOrder`, with `std_isZTime`, `std_sat_ztime`, `std_sat_base` and `sh_surj` |
-| `Agreement.lean` | 247 | **T1** `shiftTruth_iff_mem` and `truth_iff_mem`; **T1'** `not_consequence_ztime`, `not_consequence_base`, `joint_countermodel` |
-| `Decide.lean` | 928 | **T2** the window collapses and the four named instances `decidableLocalCoherentLab`, `decidableFulfillingLab`, `decidableBoxFaithful`, `decidableTarget` |
+| `Agreement.lean` | 288 | **T1** `shiftTruth_iff_mem` and `truth_iff_mem`; **T1'** `not_consequence_ztime`, `not_consequence_base`, `joint_countermodel`; the named joint statement `Refutes` and the composition `refutes_of_certifies` an accepting checker branch applies |
+| `Decide.lean` | 942 | **T2** the window collapses, the four named instances `decidableLocalCoherentLab`, `decidableFulfillingLab`, `decidableBoxFaithful`, `decidableTarget`, and their composition `decidableCertifies` |
 | `Examples.lean` | 283 | **T3** the non-vacuity witness `posFamily`, the separation witness `sepFamily`, and `no_witnessFamily_of_validZTime` / `no_witnessFamily_of_MF` |
 
 `WitnessFamily.lean`, beside this directory, is the subdirectory re-export and carries all seven.

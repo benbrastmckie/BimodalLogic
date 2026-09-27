@@ -1,7 +1,7 @@
 # Implementation Plan: Proof-Producing check_certificate
 
 - **Task**: 677 - Proof producing check certificate
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/677_proof_producing_check_certificate/reports/01_proof-producing-check-certificate.md
@@ -122,45 +122,45 @@ identifiers.
 
 Phases within the same wave can execute in parallel. This plan is fully sequential.
 
-### Phase 1: Library Additions — Certifies, Refutes, refutes_of_certifies [NOT STARTED]
+### Phase 1: Library Additions — Certifies, Refutes, refutes_of_certifies [COMPLETED]
 
 **Goal**: Name the bundled four-condition predicate, its `Decidable` instance, and the joint
 existence statement, and prove the implication between them — all additive, with
 `joint_countermodel` untouched.
 
 **Tasks**:
-- [ ] In `FormalSystem/Metalogic/Decidability/WitnessFamily/Predicates.lean`, add
+- [x] In `FormalSystem/Metalogic/Decidability/WitnessFamily/Predicates.lean`, add
       `Certifies (W : WitnessFamily Γ Del) (t : ℤ) : Prop :=
       W.LocalCoherentLab ∧ W.FulfillingLab ∧ W.BoxFaithful ∧ W.Target t`, with a doc comment
       saying why the bundle exists (it is the hypothesis an accepting branch must hold) and why
       the conjunction order matches the four instances' evaluation order.
-- [ ] In `FormalSystem/Metalogic/Decidability/WitnessFamily/Decide.lean`, add
+- [x] In `FormalSystem/Metalogic/Decidability/WitnessFamily/Decide.lean`, add
       `instance decidableCertifies (W : WitnessFamily Γ Del) (t : ℤ) : Decidable (W.Certifies t) :=
       by dsimp only [Certifies]; infer_instance`. The four landed instances compose through
       `instDecidableAnd`; `decidableTarget` takes `t` explicitly and is still found.
-- [ ] In `FormalSystem/Metalogic/Decidability/WitnessFamily/Agreement.lean`, add
+- [x] In `FormalSystem/Metalogic/Decidability/WitnessFamily/Agreement.lean`, add
       `Refutes (Γ Del : Context) : Prop` — the joint existence statement, named once, matching
       `joint_countermodel`'s conclusion verbatim (frame, `FrameClass.ZTime.Sat`, model, history,
       duration, premises true, conclusions false). Explicit `Γ Del` binders, not the section
       `variable`s, because the consumer applies it at `raw.target.premises` /
       `raw.target.conclusions`.
-- [ ] In the same file, add
+- [x] In the same file, add
       `refutes_of_certifies (W : WitnessFamily Γ Del) {t : ℤ} (h : W.Certifies t) : Refutes Γ Del`
       in term mode as
       `joint_countermodel W h.1 h.2.1 h.2.2.1 h.2.2.2`. Do not restate `joint_countermodel`'s
       type through `Refutes`, and do not touch its signature.
-- [ ] Add module-header prose to `Agreement.lean` explaining that `Refutes` names the statement
+- [x] Add module-header prose to `Agreement.lean` explaining that `Refutes` names the statement
       the checker's accepting branch inhabits, and that `refutes_of_certifies` is the composition
       the executable applies. Cite declaration **names**, never `file.lean:NNN` (C20).
-- [ ] Update the inventory row for `Predicates.lean`, `Decide.lean` and `Agreement.lean` in
+- [x] Update the inventory row for `Predicates.lean`, `Decide.lean` and `Agreement.lean` in
       `FormalSystem/Metalogic/Decidability/WitnessFamily/README.md` (the `| Module | Lines | Role |`
       table, hand-maintained — no GENERATED markers) to name the new declarations and carry the
       new line counts.
-- [ ] Update the `WitnessFamily/` row in `FormalSystem/Metalogic/Decidability/README.md` to name
+- [x] Update the `WitnessFamily/` row in `FormalSystem/Metalogic/Decidability/README.md` to name
       `Certifies`, `Refutes`, `refutes_of_certifies` and `decidableCertifies` alongside the four
       condition and four instance names it already lists.
-- [ ] Confirm `#print axioms` on `refutes_of_certifies` is `[propext, Classical.choice, Quot.sound]`
-      — no `sorryAx`, no `Lean.ofReduceBool`.
+- [x] Confirm `#print axioms` on `refutes_of_certifies` is `[propext, Classical.choice, Quot.sound]`
+      — no `sorryAx`, no `Lean.ofReduceBool`. *(confirmed via `lean_verify`)*
 
 **Timing**: 1.5 hours
 

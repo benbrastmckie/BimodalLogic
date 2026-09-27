@@ -48,6 +48,22 @@ inequality that reaches `omega` is therefore re-ascribed at `ℤ` first. The idi
 - `WitnessFamily.truth_iff_mem` — **T1**, in `TruthAt` form
 - `WitnessFamily.not_consequence_ztime` / `not_consequence_base` — **T1'**
 - `WitnessFamily.joint_countermodel` — **T1'**, the joint form a model checker reports
+- `WitnessFamily.Refutes` — the joint existence statement, named once
+- `WitnessFamily.refutes_of_certifies` — the composition an accepting checker branch applies
+
+## Why `Refutes` is named, and what the checker does with it
+
+`joint_countermodel`'s conclusion is an eight-fold existential. A certificate checker whose
+accepting branch is to *inhabit* that statement rather than report a verdict about it needs the
+statement as a single name it can write in a return type, and needs it with explicit `Γ Del`
+binders, because it applies it at a decoded certificate's own premise and conclusion lists rather
+than at section variables. `Refutes` is that name; it restates `joint_countermodel`'s conclusion
+verbatim and adds nothing.
+
+`refutes_of_certifies` is the composition the executable applies: it takes the bundled
+four-condition hypothesis `Certifies` — the thing a `Decidable` instance can discharge — to a
+term of `Refutes`. It is `joint_countermodel` with the four hypotheses projected out of the
+bundle, and `joint_countermodel`'s own statement is untouched by its arrival.
 -/
 
 namespace FormalSystem.Metalogic.Decidability
@@ -241,6 +257,31 @@ theorem joint_countermodel (W : WitnessFamily Γ Del) {t : ℤ}
       (truth_iff_mem W hloc hful hbox _ t γ (premise_mem_closure hγ)).mpr (htgt.1 γ hγ),
     fun σ hσ h =>
       htgt.2 σ hσ ((truth_iff_mem W hloc hful hbox _ t σ (conclusion_mem_closure hσ)).mp h)⟩
+
+/--
+**The joint existence statement a refuting certificate witnesses.**
+
+`joint_countermodel`'s conclusion, named once so that a checker's accepting branch can carry it
+as a return type. The binders `Γ` and `Del` are explicit rather than the section `variable`s
+because the consumer applies this at a decoded certificate's own `target.premises` and
+`target.conclusions`, which are not section variables there.
+-/
+def Refutes (Γ Del : Context) : Prop :=
+  ∃ (F : TaskFrame) (_ : FrameClass.ZTime.Sat F) (M : TaskModel F)
+    (τ : WorldHistory F) (u : F.Duration),
+    (∀ γ ∈ Γ, TruthAt M τ u γ) ∧ (∀ σ ∈ Del, ¬ TruthAt M τ u σ)
+
+/--
+**The composition an accepting checker branch applies**: the bundled four conditions at a target
+time yield the joint existence statement.
+
+`joint_countermodel` with `Certifies`' four projections in place of its four hypotheses. This is
+what makes acceptance a constructed term rather than a reported verdict: a branch that returns
+this has a `Refutes Γ Del` in hand, and cannot be written without a `Certifies` to feed it.
+-/
+theorem refutes_of_certifies (W : WitnessFamily Γ Del) {t : ℤ}
+    (h : W.Certifies t) : Refutes Γ Del :=
+  joint_countermodel W h.1 h.2.1 h.2.2.1 h.2.2.2
 
 end WitnessFamily
 

@@ -51,6 +51,7 @@ why the box case of agreement is three lines rather than a separate development.
 - `WitnessFamily.FulfillingLab` — every eventuality is discharged
 - `WitnessFamily.BoxFaithful` — the box guess is exactly global label membership
 - `WitnessFamily.Target` — the time at which the consequence fails
+- `WitnessFamily.Certifies` — all four, bundled at a target time
 -/
 
 namespace FormalSystem.Metalogic.Decidability
@@ -113,6 +114,23 @@ Read on lasso `0` only. The other lassos exist to witness the box clause, not th
 -/
 def Target (W : WitnessFamily Γ Del) (t : ℤ) : Prop :=
   (∀ γ ∈ Γ, γ ∈ W.main t) ∧ (∀ σ ∈ Del, σ ∉ W.main t)
+
+/--
+**The four certificate conditions, bundled at a target time.**
+
+The bundle exists because it is the hypothesis an *accepting* branch of a certificate checker
+must hold: a checker that decides the four conditions separately and then reports a verdict has
+nothing of this type in scope, whereas one that returns `refutes_of_certifies` applied to a term
+of this type cannot accept without it. `decidableCertifies` decides it, and
+`refutes_of_certifies` consumes it.
+
+The conjunction order is the order the four `Decidable` instances are evaluated in by the
+checker — local coherence, fulfilment, box faithfulness, target — so that `instDecidableAnd`'s
+left-to-right short-circuit through `decidableCertifies` agrees with the order in which a
+checker localizes a rejection. It is a cost property of the bundle, not a mathematical one.
+-/
+def Certifies (W : WitnessFamily Γ Del) (t : ℤ) : Prop :=
+  W.LocalCoherentLab ∧ W.FulfillingLab ∧ W.BoxFaithful ∧ W.Target t
 
 /-- Every premise lies in the target closure, so agreement applies to it. -/
 theorem premise_mem_closure {γ : Formula} (hγ : γ ∈ Γ) : γ ∈ closureOf (Γ ++ Del) :=

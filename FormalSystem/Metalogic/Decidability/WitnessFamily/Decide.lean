@@ -72,6 +72,7 @@ weaker claim than choice-freedom, and choice-freedom is **not** claimed: see
 - `WitnessFamily.decidableFulfillingLab` — **T2** for fulfilment
 - `WitnessFamily.decidableBoxFaithful` — **T2** for box faithfulness
 - `WitnessFamily.decidableTarget` — **T2** for the target
+- `WitnessFamily.decidableCertifies` — the four, composed at a target time
 -/
 
 namespace FormalSystem.Metalogic.Decidability
@@ -926,6 +927,14 @@ instance decidableBoxFaithful (W : WitnessFamily Γ Del) : Decidable W.BoxFaithf
 /-- **T2** — the target decides outright, by two list scans. -/
 instance decidableTarget (W : WitnessFamily Γ Del) (t : ℤ) : Decidable (W.Target t) := by
   dsimp only [Target]
+  infer_instance
+
+/-- **T2** for the bundle: `Certifies` decides by composing the four instances above through
+`instDecidableAnd`, which short-circuits left to right in `Certifies`' conjunction order. This
+is the instance an accepting checker branch discharges its `refutes_of_certifies` hypothesis
+with. -/
+instance decidableCertifies (W : WitnessFamily Γ Del) (t : ℤ) : Decidable (W.Certifies t) := by
+  dsimp only [Certifies]
   infer_instance
 
 end WitnessFamily
