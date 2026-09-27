@@ -1,30 +1,30 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-27T11:15:00Z",
+  "completed_at": "2026-09-27T13:40:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/679_lean_sentence_formula_translation_truth/plans/01_sentence-formula-translation-truth.md",
-      "summary": "6-phase, 8.5-hour plan for the Lean Sentence-to-Formula elimination, its truth-preservation theorem sat_iff, and a committed JSON fixture channel plus translate_sentence lean_exe for mechanical consumer cross-check."
+      "type": "summary",
+      "path": "specs/679_lean_sentence_formula_translation_truth/summaries/01_sentence-formula-translation-truth-summary.md",
+      "summary": "The source sentence language, its verified elimination into Formula, the agreement theorem sat_iff, and the mechanical conformance channel."
     }
   ],
-  "next_steps": "Run /implement 679 to execute the plan",
-  "phase_count": 6,
-  "estimated_hours": 8.5,
-  "dependency_waves": [[1], [2, 3, 4], [5], [6]],
-  "memory_candidates": [
-    {
-      "content": "In the BimodalLogic (ProofChecker) repository, adding a new top-level directory under FormalSystem/ is not just a matter of writing .lean files: four independent mechanical gates must be updated in the same change or the build fails in ways whose error messages do not name each other. (1) scripts/measure-refactor-partitions.py's LANGUAGE_FILE_LAYERS needs a per-file row for a language directory (layer 0 = syntax, must import nothing from FormalSystem/Semantics/; layer 1 = semantics); without a row layer_of raises UnlayeredModuleError and check-metalogic-cycles.sh fails, and a stale row for a deleted file fails its assertion B. (2) ORGANISATION.md's layer table needs the matching row. (3) The root FormalSystem.lean must be regenerated with 'lake exe mk_all --lib FormalSystem' because check-module-invariants.sh C33 byte-compares it against the generator's output -- hand-editing it fails. (4) readme-lint.sh gates a README.md in every directory containing .lean files. Two further constraints shape file placement rather than registration: the # -command linter is disabled only for the BimodalTest/BimodalToolsTest libraries, so #guard fixture rows cannot live under FormalSystem/; and C25N forces a new lean_exe named 'foo_bar' to have root module PascalCase = FooBarMain.",
-      "category": "PATTERN",
-      "source_artifact": "specs/679_lean_sentence_formula_translation_truth/plans/01_sentence-formula-translation-truth.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["lean4", "module-registration", "measure-refactor-partitions", "mk_all", "check-module-invariants", "bimodallogic-gates"]
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1790528746_3f1c95_679",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  "completion_data": {
+    "completion_summary": "A new FormalSystem/SourceLanguage/ component defines the consuming repository's 18-constructor source sentence AST, its elimination tr into this repository's six Formula primitives, and a native source-side evaluation Sat; sat_iff proves the two agree against Semantics.TruthAt itself at every frame, model, world history and time, with no sorry and no new axiom. A JSON codec, a translate_sentence executable and a committed 26-line fixture list expose the elimination so the consuming repository can diff its own translation against this verified one mechanically. The plan's tr_injective is false and was replaced by tr_not_injective, its disproof.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 6
+  "metadata": {
+    "session_id": "sess_1790528746_3f1c95",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed"
+  }
 }

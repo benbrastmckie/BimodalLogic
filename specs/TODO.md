@@ -11,7 +11,7 @@ next_project_number: 686
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,678,679,680,681,682 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,678,680,681,682 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,623,650,683 | 298,464,502,563,649,680,682 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,684 | 231,465,497,564,565,616,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,685 | 428,498,499,500,623,684 | algebraic-representation, decidability, metalogic |
@@ -106,7 +106,6 @@ next_project_number: 686
 
 ### Semantics
 
-679 [IMPLEMENTING] — Define the Sentence-to-Formula translation in Lean and prove...
 683 [NOT STARTED] — Replace the deterministic witness device with a state-sharing...
 
 ### Toolchain
@@ -187,12 +186,13 @@ THE SECOND HALF, TAKEN OVER FROM THE COMPRESSION TASK'S ITEM 3. That item is del
 ---
 
 ### 679. Lean sentence formula translation truth
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
 - **Research**: [679_lean_sentence_formula_translation_truth/reports/01_sentence-formula-translation-truth.md]
 - **Plan**: [679_lean_sentence_formula_translation_truth/plans/01_sentence-formula-translation-truth.md]
+- **Summary**: [679_lean_sentence_formula_translation_truth/summaries/01_sentence-formula-translation-truth-summary.md]
 
 **Description**: Define the Sentence-to-Formula translation in Lean and prove it truth-preserving, supplying the verified half of the consuming repository's S4 obligation. Read the REVISED PREMISES below before planning: two claims in this task's original description have since been falsified by work landed in the consuming repository, and one stated payoff has been assessed there and rejected as infeasible. Planning against the original framing would chase a hazard that no longer exists and promise an outcome that cannot be delivered.
 
