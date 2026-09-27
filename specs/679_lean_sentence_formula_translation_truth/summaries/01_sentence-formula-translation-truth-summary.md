@@ -204,13 +204,25 @@ and the target rebuilt: `Build completed successfully (3712 jobs)`, `exit_status
 
 ### `check-module-invariants.sh`
 
-**Green, on the run made once the tree was quiet.** `PASS` on B0, B1, B2, B3, C1 (`lake build`
-exits 0), C1 (`lake build BimodalTest` exits 0), C2, **C3 (structural `sorry` inventory is ZERO
-across `FormalSystem/` and `BimodalTools/`)**, C4, C5, C6 (both rows), **C8 (every subdirectory has
-its aggregator — the `FormalSystem/SourceLanguage.lean`-beside-`FormalSystem/SourceLanguage/`
-convention)**, C9 (**zero task-number citations** under `FormalSystem/`, `lakefile.toml`,
-`README.md`, `scripts/`), C10, C11, C12, C13, C14 (both rows), C15 (both rows), C16, C20 (all three
-rows), and INV.
+**51 PASS, 1 FAIL**, on the run made once the tree was quiet — and the single FAIL is the INV block
+this task itself had hand-set, fixed while that run was still in progress (below). The checks that
+bear directly on this work:
+
+| Check | Result |
+|---|---|
+| C1 | PASS — `lake build` exits 0; `lake build BimodalTest` exits 0 |
+| **C3** | PASS — **structural `sorry` inventory is ZERO** across `FormalSystem/` and `BimodalTools/` |
+| C4 | PASS — all 2604 import lines across the four library roots resolve |
+| C6 | PASS — 0 unreachable live modules; every manifested module still compiles in isolation |
+| **C8** | PASS — every subdirectory has its aggregator: `FormalSystem/SourceLanguage.lean` beside `FormalSystem/SourceLanguage/`, never `X/X.lean` |
+| **C9** | PASS — **zero task-number citations** under `FormalSystem/`, `lakefile.toml`, `README.md`, `scripts/` |
+| **C24** | PASS — every `FormalSystem` module transitively imports `FormalSystem.Init` |
+| **C25** | PASS — all **15** `lean_exe` root modules from `lakefile.toml` compile (14 before; `TranslateSentenceMain` is the new one, and `python3 scripts/lake_targets.py exes` lists `translate_sentence` with that root, the `PascalCase(target)Main` spelling C25N requires) |
+| **C28** | PASS — **0 warnings across 0 files**, at or below baseline |
+| **C33** | PASS — `FormalSystem.lean` is byte-for-byte the generated root: **575** import lines, one per `.lean` file under `FormalSystem/` |
+| C19 | PASS — docstring coverage 11652/12398 = **93.98%** (floor 90%) |
+
+B0–B3, C2, C5, C10–C18, C20–C23 also PASS.
 
 One finding had to be resolved rather than merely reported. The first run failed
 `INV  2 file(s) carry a stale generated inventory block` on `README.md` and `FormalSystem/README.md`
