@@ -129,7 +129,7 @@ fresh-indexed atom would silently change identity — and `Finset Formula` membe
 **Output.** Exactly one JSON line, and **never a validity claim**:
 
 ```json
-{"status": "countermodel", "time": 0}
+{"status": "countermodel", "time": 0, "acceptance": "entailment"}
 ```
 
 ```json
@@ -142,6 +142,23 @@ fresh-indexed atom would silently change identity — and `Finset Formula` membe
 ```json
 {"status": "error", "message": "expected '\"' got 'n' at pos 2"}
 ```
+
+**The `acceptance` key.** It appears on `countermodel` only. `rejected` and `error` are
+byte-identical to what they were before the key existed, and **the input schema above is not
+touched at all** — this is an output-side addition, exactly as `"gates"` was for the tableau
+bridge.
+
+| Value | Meaning |
+|-------|---------|
+| `"entailment"` | Lean constructed a term of `WitnessFamily.Refutes Γ Δ` for this target, by applying a build-time kernel-checked implication to the four decisions |
+| `"decided"` | four decision procedures returned `true`, and that is the whole of the claim |
+
+**An absent `acceptance` field must be read as `"decided"`.** This is the rule that makes the key
+non-breaking: every verdict emitted by a binary predating the key, and every verdict already
+stored on disk, remains valid under it, and a re-implementation that decides the four conditions
+without constructing anything — the producing side's pure-Python re-checker, for instance — is
+correct to emit `"decided"` or to omit the key entirely. A consumer must therefore default rather
+than reject on absence, and the two repositories can land this change in either order.
 
 `condition` is one of `structural`, `local_coherent`, `fulfilling`, `box_faithful`, `target`, or
 `unlocalized`. `lasso`, `position` and `formula` are `null` when the failure is not tied to one.
@@ -260,7 +277,7 @@ implementation obligation and stays where it is.
 | `AxiomNames.lean` | 59 | <!-- TODO: add description --> |
 | `BenchmarkAnchorsMain.lean` | 598 | <!-- TODO: add description --> |
 | `BenchmarkOracleMain.lean` | 359 | <!-- TODO: add description --> |
-| `CertificateImport.lean` | 658 | The certificate library: `closureList`/`intRange`, the `RawCertificate` records, the envelope parser and serializer, the `dite`-based `WitnessFamily` builders, `checkRaw` and the localization scans |
+| `CertificateImport.lean` | 766 | The certificate library: `closureList`/`intRange`, the `RawCertificate` records, the envelope parser and serializer, the `dite`-based `WitnessFamily` builders, `checkRaw` and the localization scans |
 | `CheckCertificateMain.lean` | 48 | Executable root of `lake exe check_certificate`: `main` only; reads one certificate on stdin, prints one JSON line |
 | `ContrastiveGenerator.lean` | 1,025 | The formula-mutation engine: `MutationType`, `ContrastivePair`, the single-occurrence mutators, `generateContrastivePairs`, and the contrastive JSONL export |
 | `ContrastiveGeneratorMain.lean` | 122 | Executable root of `lake exe contrastive_generator`: argument parsing and `main` only; imports `ContrastiveGenerator` |
@@ -282,13 +299,13 @@ implementation obligation and stays where it is.
 | `ProofFirstGenerator.lean` | 160 | The proof-first export pipeline: `exportToJsonl`, `writeJsonl`, the argument parsers, and `runProofFirstGenerator`, the whole command-line body |
 | `ProofFirstGeneratorMain.lean` | 21 | Executable root of `lake exe proof_first_generator`: `main` only; calls `runProofFirstGenerator` |
 | `ProofStepExtractor.lean` | 344 | <!-- TODO: add description --> |
-| `SentenceExport.lean` | 0 | The source-sentence codec: `Sentence.toJson`, `pSentence`, and `translateSentenceLineToJson` — parse, eliminate the defined operators with `tr`, serialize; the conformance channel behind `lake exe translate_sentence` |
+| `SentenceExport.lean` | 244 | The source-sentence codec: `Sentence.toJson`, `pSentence`, and `translateSentenceLineToJson` — parse, eliminate the defined operators with `tr`, serialize; the conformance channel behind `lake exe translate_sentence` |
 | `TableauBridge.lean` | 627 | The tableau bridge library: the JSONL protocol, the request parsers, `BranchGates` and the theorem-hypothesis evaluator, the command handlers, and `replLoop` |
 | `TableauBridgeMain.lean` | 23 | Executable root of `lake exe tableau_bridge`: `main` only; calls `TableauBridge.replLoop` |
 | `TableauProofStepsMain.lean` | 688 | <!-- TODO: add description --> |
 | `TraceExport.lean` | 229 | <!-- TODO: add description --> |
 | `TraceExporterMain.lean` | 265 | <!-- TODO: add description --> |
-| `TranslateSentenceMain.lean` | 0 | Executable root of `lake exe translate_sentence`: `main` only; reads one source-sentence JSON object on stdin, prints the translated formula as one JSON line |
+| `TranslateSentenceMain.lean` | 51 | Executable root of `lake exe translate_sentence`: `main` only; reads one source-sentence JSON object on stdin, prints the translated formula as one JSON line |
 <!-- END GENERATED -->
 
 *Last verified: 2026-09-27*

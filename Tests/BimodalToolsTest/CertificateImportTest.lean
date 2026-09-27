@@ -20,7 +20,8 @@ root-namespace `main`, and two of those cannot share one environment.
    and its two siblings, so nothing downstream is checking a different object than
    `WitnessFamilyExamples` proved things about. The imported family's lassos are then literally
    `[posLasso]` and `[sepLasso]`.
-2. The non-vacuity family, serialized to JSON and read back, is accepted.
+2. The non-vacuity family, serialized to JSON and read back, is accepted — as
+   `CheckResult.countermodel 0 .entailment`, with the exact accepting JSON line pinned beside it.
 3. The separation family is rejected, naming fulfilment at lasso `0`, position `-2`, formula
    `p U q` — the same tuple the research spike's scan produced.
 4. A label outside `closureOf (Γ ++ Δ)` is a **structural rejection**, not a parse error.
@@ -92,9 +93,20 @@ Not "a family with the same verdict": the same object, field for field. `Labelle
 Through the wire format, not around it: serialize, parse, rebuild, decide.
 -/
 
-#guard checkLine posRaw.toJson = CheckResult.countermodel 0
+#guard checkLine posRaw.toJson = CheckResult.countermodel 0 .entailment
 
-#guard checkRaw posRaw = CheckResult.countermodel 0
+#guard checkRaw posRaw = CheckResult.countermodel 0 .entailment
+
+-- The exact accepting line, byte for byte. `"acceptance"` is additive and appears on
+-- `countermodel` only; an absent field reads as `"decided"`, which is what keeps stored verdicts
+-- and older binaries valid. See `BimodalTools/README.md`'s protocol section.
+/-- The exact accepting JSON line, split across two literals only to stay inside the 100-column
+limit. -/
+def posAcceptedLine : String :=
+  "{\"status\":\"countermodel\",\"time\":0," ++
+    "\"acceptance\":\"entailment\"}"
+
+#guard (checkRaw posRaw).toJson = posAcceptedLine
 
 /-! ## Row (b): the separation family is rejected, naming the obligation
 

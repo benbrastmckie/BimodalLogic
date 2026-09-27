@@ -310,33 +310,38 @@ the four hypotheses in scope, with `checkRaw`'s type, behavior and cost unchange
 
 ---
 
-### Phase 4: Output Contract — the Additive acceptance Key [NOT STARTED]
+### Phase 4: Output Contract — the Additive acceptance Key [COMPLETED]
 
 **Goal**: Carry the decided-verdict / constructed-entailment distinction on the wire, additively,
 with the absent-field default rule written into the protocol.
 
 **Tasks**:
-- [ ] Add `inductive Acceptance` with `| decided` and `| entailment`, `deriving Repr, Inhabited,
+- [x] Add `inductive Acceptance` with `| decided` and `| entailment`, `deriving Repr, Inhabited,
       DecidableEq`, doc-commented with what each value means and the reserved-for-future note that
       per-certificate kernel checking would warrant a third value (not added here).
-- [ ] Change `CheckResult.countermodel (time : Int)` to
+- [x] Change `CheckResult.countermodel (time : Int)` to
       `CheckResult.countermodel (time : Int) (acceptance : Acceptance)`; `rejected` and `error`
       unchanged. `CheckResult` keeps all three `deriving` classes.
-- [ ] Update `CheckOutcome.erase` to emit `.countermodel t .entailment`.
-- [ ] Extend `CheckResult.toJson`'s `countermodel` case to
+- [x] Update `CheckOutcome.erase` to emit `.countermodel t .entailment`.
+- [x] Extend `CheckResult.toJson`'s `countermodel` case to
       `{"status":"countermodel","time":<t>,"acceptance":"entailment"}`; leave the `rejected` and
-      `error` cases byte-identical.
-- [ ] Update the two `#guard` rows in `Tests/BimodalToolsTest/CertificateImportTest.lean` that
+      `error` cases byte-identical. *(deviation: altered — the case renders the constructor's
+      carried `Acceptance` through a new `Acceptance.toJson` rather than hard-coding the string.
+      It produces the specified line byte for byte on every value `erase` can emit (always
+      `.entailment`), and hard-coding would have made the enum's second value unrenderable.)*
+- [x] Update the two `#guard` rows in `Tests/BimodalToolsTest/CertificateImportTest.lean` that
       mention `CheckResult.countermodel 0` to `CheckResult.countermodel 0 .entailment`, and add a
       row pinning the exact accepting JSON line.
-- [ ] Rewrite `BimodalTools/README.md`'s "Certificate re-verification protocol" output section:
+- [x] Rewrite `BimodalTools/README.md`'s "Certificate re-verification protocol" output section:
       the new key, that it appears on `countermodel` only, that `rejected`/`error` and **the input
       schema** are unchanged, and — the single most important line for the consuming side — that
       **an absent `acceptance` field must be read as `"decided"`**, so old binaries and stored
       verdicts remain valid. Follow the `"gates"` precedent the same file already records for the
       tableau bridge.
-- [ ] Re-read `BimodalTools/CheckCertificateMain.lean` and update it if it pattern-matches the
-      `countermodel` constructor.
+- [x] Re-read `BimodalTools/CheckCertificateMain.lean` and update it if it pattern-matches the
+      `countermodel` constructor. *(re-read: it contains no `CheckResult` or `countermodel`
+      occurrence at all — it calls `checkLineToJson` only — so no change was needed here. Its
+      trust-model prose is Phase 5's.)*
 
 **Timing**: 1.25 hours
 

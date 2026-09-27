@@ -81,7 +81,8 @@ contract rather than a local naming choice; a faithful mirror is structural as w
 - `parseCertificate`, `RawTarget.toJson`, `RawCertificate.toJson` — the two directions of the
   wire format
 - `mkLasso`, `mkFamily` — the runtime builders, `dite` on every proof field
-- `CheckResult`, `checkRaw` — the serializable verdict and its JSON line
+- `Acceptance`, `CheckResult`, `checkRaw` — the acceptance strength, the serializable verdict
+  and its JSON line
 - `CheckOutcome`, `checkCertified`, `CheckOutcome.erase` — the dependent layer beneath them: an
   accepting outcome carries the entailment as a field, and `erase` forgets it
 
@@ -499,11 +500,30 @@ structure Failure where
   detail : String := ""
   deriving Repr, Inhabited, DecidableEq
 
+/--
+**How strongly an acceptance was established.**
+
+The distinction the `"acceptance"` key carries on the wire. It exists because the two are
+genuinely different guarantees and a consumer may reasonably treat them differently — a
+pure-Python re-checker can produce `decided`, and cannot produce `entailment`.
+
+A third value, for per-certificate kernel checking by re-elaboration of a generated file, is
+deliberately **reserved and not introduced here**: nothing in this module produces it, and adding
+an inhabited-but-unreachable constructor would misrepresent what the binary can do.
+-/
+inductive Acceptance where
+  /-- Four decision procedures returned `true`, and that is the whole of the claim. -/
+  | decided
+  /-- Lean constructed a term of `WitnessFamily.Refutes …` for this certificate's target, by
+  applying a build-time kernel-checked implication to those four decisions. -/
+  | entailment
+  deriving Repr, Inhabited, DecidableEq
+
 /-- The checker's answer. Note the absence of any "valid" constructor: this checker is one-sided
 by construction and never makes a validity claim. -/
 inductive CheckResult where
-  /-- Every condition decided `true` at the given target time. -/
-  | countermodel (time : Int)
+  /-- Every condition decided `true` at the given target time, at the given acceptance strength. -/
+  | countermodel (time : Int) (acceptance : Acceptance)
   /-- Some condition decided `false`, or a structural precondition was violated. -/
   | rejected (failed : List Failure)
   /-- The input was not a well-formed certificate object. A protocol failure, not a verdict. -/
@@ -652,7 +672,7 @@ def checkCertified (raw : RawCertificate) : CheckOutcome raw :=
 
 /-- Forget the entailment: the map from the dependent outcome down to the serializable verdict. -/
 def CheckOutcome.erase {raw : RawCertificate} : CheckOutcome raw → CheckResult
-  | .countermodel t _ => .countermodel t
+  | .countermodel t _ => .countermodel t .entailment
   | .rejected fs => .rejected fs
   | .error m => .error m
 
@@ -682,8 +702,8 @@ from *this* input, is supplied at run time by the four compiled `Decidable` inst
 not per-certificate kernel checking: what it removes is the reader's obligation to compose the
 decided conditions with the agreement theorem by hand, not the compiler from the trust base.
 -/
-theorem refutes_of_countermodel {raw : RawCertificate} {t : Int}
-    (h : checkRaw raw = .countermodel t) :
+theorem refutes_of_countermodel {raw : RawCertificate} {t : Int} {a : Acceptance}
+    (h : checkRaw raw = .countermodel t a) :
     WitnessFamily.Refutes raw.target.premises raw.target.conclusions := by
   rw [checkRaw] at h
   cases hco : checkCertified raw with
@@ -724,9 +744,18 @@ def Failure.toJson (f : Failure) : String :=
   ",\"formula\":" ++ optFormulaToJson f.formula ++
   ",\"detail\":\"" ++ escapeJsonString f.detail ++ "\"}"
 
-/-- Serialize the verdict as the single JSON line the executable prints. -/
+/-- Serialize the acceptance strength as the `"acceptance"` field's value. -/
+def Acceptance.toJson : Acceptance → String
+  | .decided => "\"decided\""
+  | .entailment => "\"entailment\""
+
+/-- Serialize the verdict as the single JSON line the executable prints. The `"acceptance"` key
+appears on `countermodel` only; `rejected` and `error` are byte-identical to what they were
+before the key existed. -/
 def CheckResult.toJson : CheckResult → String
-  | .countermodel t => "{\"status\":\"countermodel\",\"time\":" ++ toString t ++ "}"
+  | .countermodel t a =>
+    "{\"status\":\"countermodel\",\"time\":" ++ toString t ++
+    ",\"acceptance\":" ++ a.toJson ++ "}"
   | .rejected fs =>
     "{\"status\":\"rejected\",\"failed\":" ++ jsonArray (fs.map Failure.toJson) ++ "}"
   | .error m => "{\"status\":\"error\",\"message\":\"" ++ escapeJsonString m ++ "\"}"
