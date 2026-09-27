@@ -1,0 +1,13 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 6,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/679_lean_sentence_formula_translation_truth/plans/01_sentence-formula-translation-truth.md",
+      "summary": "6-phase, 8.5-hour plan for the Lean Sentence-to-Formula elimination, sat_iff truth-preservation theorem, and the JSON fixture/lean_exe conformance channel."
+    }
+  ],
+  "dispatch_seq": 6
+}
