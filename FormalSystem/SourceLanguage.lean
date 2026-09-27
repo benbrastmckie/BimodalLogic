@@ -69,7 +69,7 @@ needs a row there.**
 * `FormalSystem/PlusLanguage/PlusValidity.lean` `plusTruthAt_ofFormula`,
   `FormalSystem/QuantLanguage/QuantTruth.lean` `quantTruthAt_ofFormula` — the truth-transfer
   bridge template `sat_iff` follows
-* `BimodalTools/SentenceExport.lean` and `data/sentence-translation-fixtures.jsonl` — the
+* `BimodalTools/SentenceExport.lean` and `Tests/fixtures/sentence-translation-fixtures.jsonl` — the
   mechanical conformance channel
 * `FormalSystem/SourceLanguage/README.md` — the elimination table and the per-file inventory
 

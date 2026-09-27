@@ -218,7 +218,7 @@ record the inequalities by proof, and
 
 ### The fixture file, and the hand-off
 
-`data/sentence-translation-fixtures.jsonl` is the shared artifact. One object per line:
+`Tests/fixtures/sentence-translation-fixtures.jsonl` is the shared artifact. One object per line:
 
 | Field | Meaning |
 |-------|---------|

@@ -25,7 +25,7 @@ The output is `Formula.toJson` of `FormalSystem.SourceLanguage.tr` applied to th
 and `FormalSystem/SourceLanguage/SentenceTruth.lean`'s `sat_iff` proves that translation preserves
 truth at every frame, model, history and time. So this binary is a **verified reference
 implementation of the elimination**, and a consumer that reproduces its output on
-`data/sentence-translation-fixtures.jsonl` has agreement with a theorem rather than agreement with
+`Tests/fixtures/sentence-translation-fixtures.jsonl` has agreement with a theorem rather than agreement with
 itself.
 
 It is not a certificate about the consumer's own code: nothing here inspects that code. And it does

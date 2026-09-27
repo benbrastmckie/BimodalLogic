@@ -459,7 +459,7 @@ fixture file.
       entries carry.
 - [x] Import `BimodalTools.SentenceExport` from `BimodalTools.lean` (the aggregator imports every
       non-`Main` tooling module; C6 depends on this).
-- [x] Commit `data/sentence-translation-fixtures.jsonl`: one line per fixture, each an object
+- [x] Commit `data/sentence-translation-fixtures.jsonl`: one line per fixture, each an object *(deviation: altered — relocated to `Tests/fixtures/sentence-translation-fixtures.jsonl`. `/data` is gitignored in its entirety (line 107 of `.gitignore`, with `data/*.jsonl` at line 68), and no file under `data/` is tracked — `data/README.md` included. A shared cross-repository artifact that cannot be obtained from git is not one, so the file was moved to a tracked path beside its reader rather than punching a hole in `.gitignore`. Every reference was updated, including in the already-committed Phase 1/2 files, and `Tests/fixtures/README.md` records why the directory exists.)*
       carrying the consumer's surface form, the source-sentence JSON, and the expected translated
       `Formula` JSON. Include at minimum one atomic instance of each of the 17 operators, the
       `\top` case, one asymmetric `\Until`/`\Since` instance, and one nested `\future`/`\Future`
@@ -487,7 +487,7 @@ round-trip is a scope deviation to report.
 - `BimodalTools/TranslateSentenceMain.lean` — new: the executable root
 - `BimodalTools.lean` — add the `SentenceExport` import
 - `lakefile.toml` — the `translate_sentence` `lean_exe` block
-- `data/sentence-translation-fixtures.jsonl` — new: the committed fixture list
+- `Tests/fixtures/sentence-translation-fixtures.jsonl` — new: the committed fixture list (relocated from `data/`, which is gitignored; see the Phase 4 deviation)
 - `BimodalTools/README.md` — wire schema and fixture contract
 
 **Verification**:
@@ -502,7 +502,7 @@ round-trip is a scope deviation to report.
 
 ---
 
-### Phase 5: Round-trip test and the hand-off note [IN PROGRESS]
+### Phase 5: Round-trip test and the hand-off note [COMPLETED]
 
 **Goal**: the conformance channel is regression-protected inside this repository, and the
 consumer-side work has a written contract to consume.
@@ -617,7 +617,7 @@ them — they currently live only in the consumer's Python docstrings and this t
   `prev_iff_covBy`, `next_iff_succ`, `prev_iff_pred`
 - `FormalSystem/SourceLanguage.lean`, `FormalSystem/SourceLanguage/README.md`
 - `BimodalTools/SentenceExport.lean`, `BimodalTools/TranslateSentenceMain.lean`
-- `data/sentence-translation-fixtures.jsonl` — the shared cross-repository fixture list
+- `Tests/fixtures/sentence-translation-fixtures.jsonl` — the shared cross-repository fixture list
 - `Tests/BimodalTest/Syntax/SentenceTranslationTest.lean`,
   `Tests/BimodalToolsTest/SentenceCodecTest.lean`
 - Edits: `lakefile.toml`, `BimodalTools.lean`, `BimodalTools/README.md`, `FormalSystem.lean`

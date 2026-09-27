@@ -116,7 +116,7 @@ What connects the two is a mechanical channel, documented in `../../BimodalTools
   the wire stays order-free even though the constructor is not.
 - `lake exe translate_sentence` — one source-sentence JSON object on stdin, one translated-formula
   JSON object on stdout.
-- `../../data/sentence-translation-fixtures.jsonl` — the shared fixture list. The source repository
+- `../../Tests/fixtures/sentence-translation-fixtures.jsonl` — the shared fixture list. The source repository
   asserts its own translation reproduces the expected field of every line; this repository asserts
   the same in `../../Tests/BimodalToolsTest/SentenceCodecTest.lean`.
 

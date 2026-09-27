@@ -75,7 +75,7 @@ one-directional by construction. What *does* round-trip is the source side alone
 * `BimodalTools/DataExport.lean` — `Formula.toJson`, the target vocabulary
 * `BimodalTools/JsonParse.lean` — `pFormula` and the scalar primitives reused here
 * `BimodalTools/TranslateSentenceMain.lean` — the `lake exe translate_sentence` root
-* `data/sentence-translation-fixtures.jsonl` — the shared fixture list
+* `Tests/fixtures/sentence-translation-fixtures.jsonl` — the shared fixture list
 * `BimodalTools/README.md` — the wire schema and the hand-off contract
 -/
 
@@ -235,7 +235,7 @@ def translateSentenceLineToJson (line : String) : String :=
   | .error e => "{\"error\": \"" ++ escapeJsonString e ++ "\"}"
 
 /-- Round-trip the source side: read a source-sentence JSON object and write it back out. The
-canonical form this produces is what `data/sentence-translation-fixtures.jsonl` stores. -/
+canonical form this produces is what `Tests/fixtures/sentence-translation-fixtures.jsonl` stores. -/
 def normalizeSentenceLineToJson (line : String) : String :=
   match parseSentence line with
   | .ok s => s.toJson
