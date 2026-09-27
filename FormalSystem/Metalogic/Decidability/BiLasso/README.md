@@ -25,7 +25,7 @@ finite-model property is reading `exists_annot_of_truth`'s hypothesis wrong.
 The finite-model step this layer would need, stated precisely so it is neither overestimated nor
 mistaken for engineering:
 
-> `fmp` : `∀ ψ, ¬ ValidDiscrete ψ → ∃ P ∈ cands ψ, ∃ w : Fin P.card, SatAtState P w ψ.neg`,
+> `fmp` : `∀ ψ, ¬ ValidZTime ψ → ∃ P ∈ cands ψ, ∃ w : Fin P.card, SatAtState P w ψ.neg`,
 > for a computable `cands : Formula → List IntPresentation`.
 
 `fmp` in this literal form — a candidate *list* `cands` of finite `IntPresentation`s — is
@@ -36,19 +36,19 @@ witness `□(p ∨ Fp ∨ Pp) ∧ □(p → ¬Pp)` is satisfiable over the ℤ-c
 at no state of any finite presentation. So the remaining route to decidability is the
 presentation-free witness family (`../WitnessFamily/README.md`), not a finite presentation.
 
-Given `fmp`, the rest would assemble: `(∀ P ∈ cands φ, ∀ w, check P w φ.neg = false) ↔ ValidDiscrete φ`,
-with `Decidable (ValidDiscrete φ)` read off by `decidable_of_iff`. Both that assembly and the
+Given `fmp`, the rest would assemble: `(∀ P ∈ cands φ, ∀ w, check P w φ.neg = false) ↔ ValidZTime φ`,
+with `Decidable (ValidZTime φ)` read off by `decidable_of_iff`. Both that assembly and the
 converse (soundness) direction are live and sorry-free in `Assembly.lean` today — as
-`validDiscrete_iff_checkFamily` and `decidableValidDiscreteFamily` (the candidate-list form),
-`validDiscrete_iff_check` and `decidableValidDiscrete` (the single-presentation form), and
-`not_validDiscrete_of_satAtState` (soundness, which needs no hypothesis) — they simply assemble
+`validZTime_iff_checkFamily` and `decidableValidZTimeFamily` (the candidate-list form),
+`validZTime_iff_check` and `decidableValidZTime` (the single-presentation form), and
+`not_validZTime_of_satAtState` (soundness, which needs no hypothesis) — they simply assemble
 *conditionally* on a finite-model step that no candidate list of finite presentations supplies.
 Three things this still establishes, each measured rather than assumed:
 
 - `check_correct` is the **final** step of the argument, not the far side of a transfer. The
   assembly needs no bridge theorem, no transfer lemma, no enumeration over `Atom`, and no
   `Fin n`-from-`Finite` extraction.
-- The soundness direction is **free**: ℤ instantiates `ValidDiscrete`'s entire binder bundle with
+- The soundness direction is **free**: ℤ instantiates `ValidZTime`'s entire binder bundle with
   no instance work, so a countermodel presented over ℤ refutes it in five lines.
 - `cands` cannot be "the presentations of card at most `presentationBound φ`" —
   `IntPresentation.val` is a function on the `Infinite` type `Atom`, so there is no such finite
@@ -71,7 +71,7 @@ Computability and choice-freedom are different properties, and only the first is
 
 ## Scope: the base language, without the stability modal
 
-This procedure decides `ValidZTime`/`ValidDiscrete` for `FormalSystem.Syntax.Formula`, the base
+This procedure decides `ValidZTime` for `FormalSystem.Syntax.Formula`, the base
 language **without** the stability modal `⊡` — `⊡` lives only in
 `FormalSystem.PlusLanguage.Formula`'s `PlusFormula`, so `ValidZTime` cannot even state a claim
 about it. The certified witness models here are built from `ShiftSet` and are therefore
@@ -99,7 +99,7 @@ required.
 | `Extraction.lean` | 564 | `bound`, and `exists_annot_of_truth` — the small-model theorem in its windowed shape, delivering a position inside the coherence window |
 | `BoxOracle.lean` | 269 | `boxOracle`, a concrete `Formula → Bool` by strong recursion on `modalDepth`, and `boxOracle_sound` — what breaks the annotation ↔ oracle circularity |
 | `Check.lean` | 249 | `SatAtState`, `checkAt`, `check`, `check_correct`, the `Decidable` instance, and the discrimination theorems |
-| `Assembly.lean` | 113 | The route from `check` to `Decidable (ValidDiscrete φ)` **given** `fmp` as a hypothesis: `not_validDiscrete_of_satAtState`, `validDiscrete_iff_check`/`decidableValidDiscrete`, `validDiscrete_iff_checkFamily`/`decidableValidDiscreteFamily`. Proves no part of `fmp` |
+| `Assembly.lean` | 113 | The route from `check` to `Decidable (ValidZTime φ)` **given** `fmp` as a hypothesis: `not_validZTime_of_satAtState`, `validZTime_iff_check`/`decidableValidZTime`, `validZTime_iff_checkFamily`/`decidableValidZTimeFamily`. Proves no part of `fmp` |
 | `Extend.lean` | 120 | `PlacedBiLasso` — a bi-lasso plus an `origin : ℤ`, so a window at arbitrary absolute times is representable — with shift-invariance of step paths |
 | `Successor.lean` | 157 | Choice-free, `#eval`-able `succOf` / `predOf` on a presentation, via `List.find?` over `List.finRange`, and their orbits |
 | `Orbit.lean` | 916 | A choice-free pigeonhole on `Fin`, the forward and backward rho decompositions, the window assembly, and `IntPresentation.extend_periodic` |
