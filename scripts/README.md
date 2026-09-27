@@ -11,7 +11,7 @@ the deliverable-hygiene bar this task holds green.
 
 | Script | Purpose |
 |--------|---------|
-| `check-module-invariants.sh` | Phase-gate harness for the Lean source tree: runs the full C1-C30 invariant suite that keeps the reorganization from silently drifting. |
+| `check-module-invariants.sh` | Phase-gate harness for the Lean source tree: runs the full C1-C35 invariant suite that keeps the reorganization from silently drifting. |
 | `readme-lint.sh` | Checks README health across `FormalSystem/`: missing per-directory READMEs, stale dates, and broken relative file references. |
 | `check-copyright-headers.sh` | Copyright-header checker for this project's Lean sources (Mathlib's `linter.style.header` cannot see this project). |
 | `check-evidence-probes.sh` | Compile-checks the bi-lasso decision layer's "evidence probes" — sorry-free Lean files that refute a design the decision layer once proposed. |

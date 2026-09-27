@@ -590,32 +590,63 @@ the manifest but move it out of any scanned root rather than weakening C20.
 
 ---
 
-### Phase 7: Gate the manifest's freshness [NOT STARTED]
+### Phase 7: Gate the manifest's freshness [COMPLETED]
 
 **Goal**: Make a rename or a docstring sweep in this repository fail loudly *here* rather than
 silently rotting a table in another repository.
 
 **Tasks**:
 
-- [ ] Determine the next free invariant number by reading
+- [x] Determine the next free invariant number by reading
       `docs/development/MODULE_INVARIANTS.md` and `scripts/check-module-invariants.sh` (C34a/C34b
       are the highest recorded; the next is expected to be C35 but must be confirmed, not
-      assumed).
-- [ ] Add the check to `scripts/check-module-invariants.sh` in the established idiom: re-run the
+      assumed). *(confirmed against both files: C34a/C34b are the highest, C9D and INV are
+      non-numeric, so **C35** is free.)*
+- [x] Add the check to `scripts/check-module-invariants.sh` in the established idiom: re-run the
       exporter's resolution in-process and compare against the committed manifest, failing with a
       per-entry diagnostic naming the declaration, the recorded location and the current one.
       Anti-silence in the same shape the neighbouring checks use: an empty name list, zero
       declaration spans, or zero entries compared is a broken matcher and exits non-zero in every
       mode.
-- [ ] Make it build-free (a pure `python3` scan over source text) so it runs under `--no-build`
-      and therefore in CI, matching the reason C33 and C34 are build-free.
-- [ ] Add the invariant's row to `docs/development/MODULE_INVARIANTS.md`: what it asserts and the
+- [x] Make it build-free (a pure `python3` scan over source text) so it runs under `--no-build`
+      and therefore in CI, matching the reason C33 and C34 are build-free. *(confirmed: every run
+      recorded below was `--no-build`.)*
+- [x] Add the invariant's row to `docs/development/MODULE_INVARIANTS.md`: what it asserts and the
       evidence for why it exists — four rows drifted by exactly +38 lines and landed inside a
       different theorem, invisible to every gate in either repository, because C20's live scope is
       this repository's own files.
-- [ ] Run the deliberate negative test this repository requires of a new gate: move a cited
+- [x] Run the deliberate negative test this repository requires of a new gate: move a cited
       declaration (or edit a docstring above one), confirm the check fails and names the entry,
       restore, confirm it passes again. Record both outputs.
+
+      Perturbation: two comment lines inserted immediately above
+      `ShiftSet.sep_of_succOrder`. Output (`--no-build`):
+
+      ```
+      FAIL  C35  9 citation-manifest problem(s)
+                  FormalSystem.Semantics.ShiftSet.SepNotDerivable.sep_not_derivable: keyword line recorded 610, now 612 (in FormalSystem/Semantics/ShiftSet.lean)
+                  FormalSystem.Semantics.ShiftSet.SepNotDerivable.sep_not_derivable: span start recorded 602, now 604 (in FormalSystem/Semantics/ShiftSet.lean)
+                  FormalSystem.Semantics.ShiftSet.SepNotDerivable.sep_not_derivable: span end recorded 634, now 636 (in FormalSystem/Semantics/ShiftSet.lean)
+                  FormalSystem.Semantics.ShiftSet.ofIntAction: keyword line recorded 494, now 496 (in FormalSystem/Semantics/ShiftSet.lean)
+                  FormalSystem.Semantics.ShiftSet.ofIntAction: span start recorded 477, now 479 (in FormalSystem/Semantics/ShiftSet.lean)
+                  FormalSystem.Semantics.ShiftSet.ofIntAction: span end recorded 506, now 508 (in FormalSystem/Semantics/ShiftSet.lean)
+                  FormalSystem.Semantics.ShiftSet.sep_of_succOrder: keyword line recorded 472, now 474 (in FormalSystem/Semantics/ShiftSet.lean)
+                  FormalSystem.Semantics.ShiftSet.sep_of_succOrder: span start recorded 455, now 474 (in FormalSystem/Semantics/ShiftSet.lean)
+                  FormalSystem.Semantics.ShiftSet.sep_of_succOrder: span end recorded 476, now 478 (in FormalSystem/Semantics/ShiftSet.lean)
+                  fix: python3 scripts/export-lean-citations.py   (never edit the manifest by hand)
+      ```
+
+      Restored (`git diff --stat` on the file reports no change), output:
+
+      ```
+      PASS  C35  scripts/lean-citation-manifest.json is byte-current: all 53 seeded declaration(s) resolve at the recorded file, keyword line and span
+      ```
+
+      *(deviation: altered — the first version of the check crashed with
+      `TypeError: '<' not supported between instances of 'NoneType' and 'str'`, because a field row's
+      `field` is `None` while a plain row's is a string and the comparison key sorted the two
+      together. Fixed by normalising to `""` in the key; the crash's exit status 1 did make the gate
+      fail loudly rather than silently pass, which is the behaviour the anti-silence design wants.)*
 
 **Timing**: 1.5 hours
 
