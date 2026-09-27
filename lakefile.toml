@@ -166,6 +166,15 @@ name = "check_certificate"
 root = "BimodalTools.CheckCertificateMain"
 supportInterpreter = true
 
+# Source-sentence translation: reads one source-sentence JSON object on stdin, prints the
+# translated formula as one JSON line. The verified reference for the companion repository's own
+# elimination of its defined operators; see BimodalTools/README.md for the wire schema.
+# Run with: echo '{"tag": "atom", "name": "p"}' | lake exe translate_sentence
+[[lean_exe]]
+name = "translate_sentence"
+root = "BimodalTools.TranslateSentenceMain"
+supportInterpreter = true
+
 # Reports FormalSystem modules that do not (transitively) import FormalSystem.Init.
 # Run with: lake exe checkInitImports
 [[lean_exe]]

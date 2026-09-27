@@ -15,6 +15,7 @@ Tests are organized by module under test:
   - `FormulaPropertyTest.lean` - Property-based formula tests
   - `ContextTest.lean` - Proof context tests
   - `LanguageDerivationTest.lean` - Worked derivations in TM⁻, TM⁺ and TM⋆
+  - `SentenceTranslationTest.lean` - `#guard` rows pinning the source-language elimination table
 
 - **ProofSystem/**: Axiom schema and inference rule validation
   - `AxiomsTest.lean` - TM axiom schemata tests

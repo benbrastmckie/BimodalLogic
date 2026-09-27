@@ -10,6 +10,7 @@ Tests for formula syntax and context operations.
 | FormulaPropertyTest.lean | Property-based formula tests |
 | ContextTest.lean | Context (list of formulas) tests |
 | LanguageDerivationTest.lean | Worked derivations in TM⁻, TM⁺ and TM⋆ |
+| SentenceTranslationTest.lean | `#guard` rows pinning every row of the source-language elimination table, including the three that do not push through and the argument-order probes |
 
 ## Coverage
 
@@ -24,4 +25,4 @@ Tests for formula syntax and context operations.
 
 ---
 
-*Last Updated: 2026-03-16*
+*Last Updated: 2026-09-27*

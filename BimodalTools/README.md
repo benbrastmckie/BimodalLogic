@@ -170,6 +170,87 @@ check a reported countermodel receives.
 
 The rows pinning all of this are `Tests/BimodalToolsTest/CertificateImportTest.lean`.
 
+## Source-sentence translation protocol
+
+`lake exe translate_sentence` reads **one** source-sentence JSON object on stdin and prints **one**
+JSON line on stdout: the translated formula, in the same tag vocabulary the certificate protocol
+above already uses.
+
+It exists because `FormalSystem/SourceLanguage/` proves a theorem about an *encoding*
+(`sat_iff`: the source language's seventeen operators, evaluated natively, agree with
+`Semantics.TruthAt` of their six-primitive image, at every frame, model, history and time) while the
+thing that could be wrong is an *implementation* of that encoding in another repository. This binary
+is the only link between the two that does not rely on someone reading Lean.
+
+**Input** — one tag per `Sentence` constructor, spelled as the constructor is:
+
+| Tag | Fields |
+|-------|--------|
+| `atom` | `name` (base name only; a fresh-indexed atom is rejected at the wire, both sides) |
+| `bot`, `top` | — |
+| `neg`, `box`, `allFut`, `allPast`, `dia`, `someFut`, `somePast`, `next`, `prev` | `child` |
+| `wedge`, `vee`, `cond`, `bicond` | `left`, `right` |
+| `untl`, `snce` | `guard`, `event` |
+
+`untl`/`snce` carry **named** `guard`/`event` fields, as on the `Formula` side, so the wire is
+order-free even though the constructor is not. Unknown object fields are skipped, so a producer may
+attach metadata a consumer does not read.
+
+**Output.** On success, the translated formula's own JSON object — not a wrapper — so a fixture's
+expected field is directly comparable. On failure, `{"error": "..."}`. The two are distinguishable
+without a schema: a formula object carries `tag` and no `error`.
+
+```bash
+echo '{"tag": "cond", "left": {"tag": "atom", "name": "p"}, "right": {"tag": "atom", "name": "q"}}' \
+  | lake exe translate_sentence
+# {"tag": "imp", "left": {"tag": "imp", "left": {"tag": "imp", ...
+```
+
+**Three rows are not the obvious operator, and that is the point.** The source repository routes
+`\rightarrow` through `¬A ∨ B`, so a conditional's image is `Formula.or (neg A) B` — a doubly
+negated antecedent — and **not** `Formula.imp A B`; and its existential tenses are `¬G¬`/`¬H¬`, so
+their images are the negated universal tenses and **not** `Formula.someFuture`/`Formula.somePast`.
+The alternatives are semantically equivalent and are different formulas, hence different subformula
+closures, hence different certificate label domains.
+`FormalSystem/SourceLanguage/Sentence.lean`'s `tr_cond_ne`, `tr_someFut_ne` and `tr_somePast_ne`
+record the inequalities by proof, and
+`Tests/BimodalTest/Syntax/SentenceTranslationTest.lean` pins every row of the table by `#guard`.
+
+### The fixture file, and the hand-off
+
+`data/sentence-translation-fixtures.jsonl` is the shared artifact. One object per line:
+
+| Field | Meaning |
+|-------|---------|
+| `surface` | the source repository's surface form of the sentence |
+| `kind` | `primitive`, `defined`, `asymmetry` or `nesting` — which group the row belongs to |
+| `sentence` | the source-sentence JSON, in the vocabulary above |
+| `formula` | the expected translated-formula JSON |
+
+**What this repository asserts**: `Tests/BimodalToolsTest/SentenceCodecTest.lean` checks, per line,
+that `pSentence` parses `sentence`, that `Sentence.toJson` of the result reproduces `sentence`
+exactly, and that `tr` of it serializes to `formula`.
+
+**What the consuming repository must assert**: that its own translation of `surface` serializes to
+`formula` for every line — equivalently, that it reproduces `lake exe translate_sentence`'s output
+on `sentence`. That assertion belongs in that repository and is deliberately not written from here;
+the fixture file plus this section is what that work consumes.
+
+**Comparison is on parsed JSON, never on bytes.** `Formula.toJson` emits `", "` and `": "`
+separators, which Python's `json.dumps` defaults happen to match. Nothing guarantees that, and
+neither side promises byte stability — a consumer comparing serialized text is testing the separator
+convention, not the translation.
+
+**The channel is one-directional.** `tr_not_injective` proves the elimination is not injective: each
+defined operator is sent onto the abbreviation it stands for, so a translated formula does not
+determine the sentence it came from. There is no inverse pass to check. What round-trips is the
+source side alone.
+
+**Scope.** A reproduced fixture set means the two implementations agree with each other *and* with a
+theorem about the encoding. It does not certify the consuming repository's code, and it does not
+discharge that repository's own verification obligation for its translation, which is an
+implementation obligation and stays where it is.
+
 ## Contents
 
 <!-- BEGIN GENERATED: inventory dir=BimodalTools -->
@@ -201,11 +282,13 @@ The rows pinning all of this are `Tests/BimodalToolsTest/CertificateImportTest.l
 | `ProofFirstGenerator.lean` | 160 | The proof-first export pipeline: `exportToJsonl`, `writeJsonl`, the argument parsers, and `runProofFirstGenerator`, the whole command-line body |
 | `ProofFirstGeneratorMain.lean` | 21 | Executable root of `lake exe proof_first_generator`: `main` only; calls `runProofFirstGenerator` |
 | `ProofStepExtractor.lean` | 344 | <!-- TODO: add description --> |
+| `SentenceExport.lean` | 0 | The source-sentence codec: `Sentence.toJson`, `pSentence`, and `translateSentenceLineToJson` — parse, eliminate the defined operators with `tr`, serialize; the conformance channel behind `lake exe translate_sentence` |
 | `TableauBridge.lean` | 627 | The tableau bridge library: the JSONL protocol, the request parsers, `BranchGates` and the theorem-hypothesis evaluator, the command handlers, and `replLoop` |
 | `TableauBridgeMain.lean` | 23 | Executable root of `lake exe tableau_bridge`: `main` only; calls `TableauBridge.replLoop` |
 | `TableauProofStepsMain.lean` | 688 | <!-- TODO: add description --> |
 | `TraceExport.lean` | 229 | <!-- TODO: add description --> |
 | `TraceExporterMain.lean` | 265 | <!-- TODO: add description --> |
+| `TranslateSentenceMain.lean` | 0 | Executable root of `lake exe translate_sentence`: `main` only; reads one source-sentence JSON object on stdin, prints the translated formula as one JSON line |
 <!-- END GENERATED -->
 
 *Last verified: 2026-09-27*

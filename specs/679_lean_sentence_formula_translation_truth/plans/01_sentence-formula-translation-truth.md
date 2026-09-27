@@ -388,7 +388,7 @@ already in `Semantics/Truth.lean`, that is a scope deviation to report, not to a
 
 ---
 
-### Phase 3: Fixture `#guard` rows pinning the elimination table [IN PROGRESS]
+### Phase 3: Fixture `#guard` rows pinning the elimination table [COMPLETED]
 
 **Goal**: every row of the report's verified elimination table is pinned by an executable
 `#guard`, so a later "simplification" of `tr` fails a test instead of passing silently.
@@ -435,7 +435,7 @@ constructor name of `Sentence` appears at least once in the file.
 
 ---
 
-### Phase 4: The conformance channel — codec, executable, committed fixtures [IN PROGRESS]
+### Phase 4: The conformance channel — codec, executable, committed fixtures [COMPLETED]
 
 **Goal**: the consumer can diff its own `translate` against this one mechanically: a `Sentence`
 JSON codec in the existing tag vocabulary, a `translate_sentence` executable, and a committed
