@@ -1,7 +1,7 @@
 # Implementation Plan: Narrow the transcription audit surface
 
 - **Task**: 681 - Narrow transcription audit surface
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 15 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/681_narrow_transcription_audit_surface/reports/01_narrow-transcription-audit-surface.md`
@@ -761,31 +761,75 @@ so; it must not restate a number this task did not re-derive.
 
 ---
 
-### Phase 9: Full gate set and final verification [NOT STARTED]
+### Phase 9: Full gate set and final verification [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Close the task on the complete gate set, with the residue claim re-verified end to end
 rather than inherited from the research report.
 
 **Tasks**:
 
-- [ ] `lake build` and `lake build BimodalTest`, both exiting 0 with zero `error:` and zero
-      `warning:` lines.
-- [ ] Every modified `FormalSystem/**` module silent under
-      `lake env lean -D weak.linter.mathlibStandardSet=true -D autoImplicit=false`.
-- [ ] `grep -rn sorry` over every modified Lean file returns nothing, and `#print axioms` on the
-      new public results reports no `sorryAx`.
-- [ ] `bash scripts/check-module-invariants.sh` passes in full, the new manifest-freshness
-      assertion included, and again under `--no-build`.
+- [x] `lake build` and `lake build BimodalTest`, both exiting 0 with zero `error:` and zero
+      `warning:` lines. *(`lake build`: 2741 jobs, exit 0, 0 `error:`, 0 `warning:`.
+      `lake build BimodalTest`: 2802 jobs, exit 0, 0 `error:`, 0 `warning:`.)*
+- [x] Every modified `FormalSystem/**` module silent under
+      `lake env lean -D weak.linter.mathlibStandardSet=true -D autoImplicit=false` — all four
+      (`Semantics/ShiftSet.lean`, `Semantics/FrameConstraintIndependence.lean`, `Semantics.lean`,
+      `Metalogic/Decidability/WitnessFamily/Std.lean`) produced no output at all.
+- [x] `grep -rn sorry` over every modified Lean file returns nothing (0 hits across all four), the
+      repository-wide sorry census reports `sorry_count: 0`, and `#print axioms` on
+      `constraints_pairwise_independent`, `sep_of_succOrder` and `std_sat_ztime` reports
+      `[propext, Classical.choice, Quot.sound]` with **no** `sorryAx`. *(Two census notes, both
+      checked rather than assumed: the vacuous-definition grep returns one hit,
+      `FormalSystem/Examples/TemporalStructures.lean`'s `int_domain_universal ... := trivial`, which
+      this task never touched — last modified by an earlier task — and which is a correct proof of a
+      genuinely-`True` goal, not a placeholder. The `^axiom ` grep briefly returned 15 against a
+      baseline of 14; the extra hit was a **docstring line** of the new module that happened to wrap
+      onto the word `axiom`, not a declaration. A stricter grep requiring an identifier and a colon
+      finds **zero** real `axiom` declarations in the source roots. The docstring was reflowed so the
+      mechanical census reads 14 again, with a note at the site recording why.)*
+- [x] `bash scripts/check-module-invariants.sh` passes in full, the new manifest-freshness
+      assertion included, and again under `--no-build`. *(Both modes: `ALL CHECKS PASSED`, exit 0,
+      with `PASS C35 ... all 53 seeded declaration(s) resolve at the recorded file, keyword line and
+      span`. An earlier run of the build mode did fail C1 (`lake build BimodalTest failed`) and INV;
+      that run was concurrent with two sibling tasks committing their own completions into this
+      shared tree, and C1 shells out to an **unguarded** `lake build`. Re-running the same build
+      through the build guard gave exit 0 with zero errors and zero warnings, and the re-run of the
+      whole harness after the siblings finished passed everything.)*
 - [ ] `bash scripts/check-paper-definitions.sh` reports no pinned anchor moved and
-      `docs/reference/paper-definitions-of-record.md` is unmodified.
-- [ ] `bash scripts/check-metalogic-cycles.sh`, `bash scripts/check-copyright-headers.sh`,
-      `bash scripts/readme-lint.sh` and `bash scripts/check-evidence-probes.sh` all exit 0.
-- [ ] Re-run the exporter and confirm the committed manifest is byte-current.
-- [ ] Confirm the diff touches only the files this plan names, plus
+      `docs/reference/paper-definitions-of-record.md` is unmodified. *(deviation: altered — the
+      second half holds: the record file is unmodified by this task (`git diff HEAD` empty; last
+      touched by an earlier task). The first half does **not**, for a reason wholly outside this
+      repository: the gate reports `1 recorded definition(s) drifted`, at anchor `def:id`, because
+      the author edited a footnote of that definition in the live paper working tree
+      (`possible_worlds.tex`). `def:id` is propositional identity — nothing this task cites; it
+      appears zero times in the new module, in the residue document and in the seed list, and this
+      task's 61 paper-anchor citations all resolve (`PASS C15`). Re-pinning it would silently accept
+      a paper edit this task did not review, which is a separate content decision and not this
+      task's to make.)*
+- [x] `bash scripts/check-metalogic-cycles.sh`, `bash scripts/check-copyright-headers.sh`,
+      `bash scripts/readme-lint.sh` and `bash scripts/check-evidence-probes.sh` all exit 0 — plus
+      `bash scripts/readme-lint.sh docs`, also 0.
+- [x] Re-run the exporter and confirm the committed manifest is byte-current. *(The docstring
+      reflow above shifted `constraints_pairwise_independent` by three lines, so
+      `--check` correctly reported the manifest stale; regenerated, and `--check` now exits 0 with
+      all 53 names resolved. That the gate caught a three-line docstring shift is the behaviour it
+      exists for.)*
+- [x] Confirm the diff touches only the files this plan names, plus
       `specs/681_narrow_transcription_audit_surface/**` — and nothing belonging to a sibling task
-      sharing this tree.
-- [ ] Write the summary, stating: the residue count and that it did not change, the axiom burden
-      that did, which independence witnesses landed, and any exclusion recorded in Phase 4.
+      sharing this tree. *(Confirmed by unioning `git show --name-only` over this task's own eight
+      phase commits: every path is one the plan names, plus this task's own `specs/` directory, and
+      nothing else. One file the plan did not anticipate:
+      `scripts/module-invariants-allowlist.txt`, which C5 required once the residue document began
+      naming declarations in fully qualified `FormalSystem.*` form — see Phase 8.)*
+- [x] Write the summary, stating: the residue count and that it did not change, the axiom burden
+      that did, which independence witnesses landed, and any exclusion recorded in Phase 4 (none —
+      the *Compositionality* witness did not resist).
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| `bash scripts/check-paper-definitions.sh` exiting 0 | The gate compares the pinned record against the **live paper working tree**, which is outside this repository. It reports `1 recorded definition(s) drifted` at anchor `def:id`, where the author edited a footnote. Clearing it means re-pinning that definition, which silently accepts a paper edit this task did not review — a separate content decision, and not one an implementation of this plan should make. | Gate output names exactly one drifted anchor, `def:id`, with the OLD and NEW LaTeX side by side and the differing footnote visible. `def:id` occurs zero times in `FormalSystem/Semantics/FrameConstraintIndependence.lean`, in `docs/reference/transcription-audit-surface.md` and in `scripts/lean-citation-seeds.txt`. `docs/reference/paper-definitions-of-record.md` is unmodified by this task (`git diff HEAD` empty; last commit touching it belongs to an earlier task). `PASS C15  all 61 paper-anchor citation(s) resolve`. |
 
 **Timing**: 1 hour
 
@@ -799,7 +843,9 @@ rather than inherited from the research report.
 
 **Verification**:
 
-- Every gate above exits 0, with its output recorded in the summary rather than asserted
+- Every gate above exits 0, with its output recorded in the summary rather than asserted — with
+  **one exception, recorded rather than hidden**: `check-paper-definitions.sh` exits 1 on
+  paper-side drift at `def:id`, outside this repository and outside this task's citations
 - The summary states the inspection-only residue as a number and names the three rows the
   consuming document's audit does not reach
 

@@ -91,9 +91,13 @@ count and names every row.
 
 ## Not in `Metalogic/Independence/`
 
-That directory means **proof-system axiom** independence: a formula not derivable from a given
-axiom set. This module is about *semantic frame constraints* being mutually irredundant, an
-unrelated notion, and siting it there would collide with an established meaning.
+That directory means **proof-system axiom** independence: a formula not derivable from a
+given axiom set. This module is about *semantic frame constraints* being mutually irredundant,
+an unrelated notion, and siting it there would collide with an established meaning.
+
+(The line above is wrapped so that no line of this file begins with the word `axiom` followed by a
+space: the mechanical axiom census greps `^axiom ` over the source roots, and a docstring line that
+happens to wrap there reads as a new `axiom` declaration and inflates the count.)
 
 ## Tags
 

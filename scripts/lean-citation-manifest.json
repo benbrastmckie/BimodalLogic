@@ -494,10 +494,10 @@
       "field": null,
       "file": "FormalSystem/Semantics/FrameConstraintIndependence.lean",
       "group": "Derived rather than assumed",
-      "keyword_line": 393,
+      "keyword_line": 397,
       "name": "FormalSystem.Semantics.FrameConstraintIndependence.constraints_pairwise_independent",
-      "span_end": 417,
-      "span_start": 367,
+      "span_end": 421,
+      "span_start": 371,
       "status": "resolved"
     },
     {
