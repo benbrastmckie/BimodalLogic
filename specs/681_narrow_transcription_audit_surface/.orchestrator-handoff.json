@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 8,
+  "summary": "Planned task 681 in nine phases (15h): R1 derives the paper's Limit over discrete duration orders as ShiftSet.sep_of_succOrder plus an ofIntAction smart constructor and consumes both in WitnessFamily.std, dropping the certificate path's axiom burden from four to three; R2 lands FormalSystem/Semantics/FrameConstraintIndependence.lean with four witness relations, sixteen theorems and one aggregate constraints_pairwise_independent, making the four-condition audit row provably irreducible over the certificate's own time structure; R4 replaces the hand-maintained cross-repository line-numbered table with scripts/export-lean-citations.py plus a manifest and a new build-free freshness invariant; R3/R5 record the exact inspection-only residue (24 definitions, name-keyed, three of them unrecorded by the consuming document's audit) in docs/reference/transcription-audit-surface.md. The consuming repository is not edited. A plan-level improvement on the research probe shape: every witness is stated at D := Int rather than the TemporalOrder coercion, which dissolves the report's dominant tactical risk at the statement level.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/681_narrow_transcription_audit_surface/plans/01_narrow-transcription-audit-surface.md",
+      "summary": "Nine-phase implementation plan, strict-mode validated, with a Lean Challenge Statements section pinning 24 declaration signatures."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 9,
+  "blockers": [],
+  "next_action_hint": "Dispatch implementation; Phases 1 and 2 are independent and can run in the same wave."
+}

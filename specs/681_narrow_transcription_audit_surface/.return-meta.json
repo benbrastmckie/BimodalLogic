@@ -1,51 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 4,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/681_narrow_transcription_audit_surface/reports/01_narrow-transcription-audit-surface.md",
-      "summary": "Audit-surface research: one verified definition-to-theorem conversion (ShiftSet.sep over discrete duration orders), a four-constraint independence programme with three of four witnesses verified, four stale citations corrected, and the inspection-only residue enumerated at 24 Lean definitions (three of them currently unrecorded)."
+      "type": "plan",
+      "path": "specs/681_narrow_transcription_audit_surface/plans/01_narrow-transcription-audit-surface.md",
+      "summary": "Nine-phase plan: one definition-to-theorem conversion (Limit over discrete duration orders), a sixteen-theorem frame-constraint independence matrix, a generated cross-repository citation manifest with a new freshness invariant, and a name-keyed record of the 24-definition inspection-only residue."
     }
   ],
-  "next_steps": "Run /orchestrate 681 --plan to sequence R1 (sep_of_succOrder + ofIntAction), R2 (frame-constraint independence module), R4 (generated cross-repo citation manifest); R3 needs coordination with the consuming repository.",
-  "modified_files": [
-    "specs/681_narrow_transcription_audit_surface/reports/01_narrow-transcription-audit-surface.md"
-  ],
-  "proposed_file_scope": [
-    "FormalSystem/Semantics/ShiftSet.lean",
-    "FormalSystem/Semantics/FrameConstraintIndependence.lean",
-    "FormalSystem/Metalogic/Decidability/WitnessFamily/Std.lean",
-    "scripts/check-module-invariants.sh",
-    "scripts/lib/lean_citations.py"
-  ],
+  "next_steps": "Run /implement 681 to execute the plan",
+  "phase_count": 9,
+  "estimated_hours": 15,
+  "dependency_waves": [[1, 2], [3], [4], [5], [6], [7, 8], [9]],
   "memory_candidates": [
     {
-      "content": "A file:line citation that crosses a repository boundary is outside every gate: check C20's declaration-span cross-check only reads this repository's live scope, so a table maintained in a consuming repository rots silently. Four citations drifted by a uniform +38 and landed inside a different theorem while every in-repo citation stayed green. The fix is the one paper-definitions-of-record.md already applies to the paper side: cite declaration names, generate any line-numbered export.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/681_narrow_transcription_audit_surface/reports/01_narrow-transcription-audit-surface.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["citation-drift", "C20", "cross-repository", "declaration-span"]
-    },
-    {
-      "content": "Narrowing a transcription audit has two distinct surfaces that are easy to conflate: the definitional surface (Lean definitions a human reads against paper text) shrinks only when a paper notion stops being transcribed because Lean derives it; the construction's axiom burden (facts a particular certified object supplies by hand) shrinks whenever a supplied field becomes a derived theorem. Converting a structure field to a theorem moves the second number, not the first.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/681_narrow_transcription_audit_surface/reports/01_narrow-transcription-audit-surface.md",
+      "content": "A file:line citation that crosses a repository boundary is outside every gate in both repositories, and drifts silently. Observed in BimodalLogic/ProofChecker: four rows of the consuming repository's adequacy citation table drifted by exactly +38 lines and landed inside a different theorem, undetected, because the declaration-span cross-check that would have caught it (invariant C20's third assertion) has live scope over its own repository's files only. The durable remedy, which this codebase independently arrived at twice already (paper-definitions-of-record.md resolves paper anchors by \\label name and re-derives hashes; theorem-index.md states 'no line numbers: cite declaration names'), is: a citation leaving a repository carries a declaration NAME and no line number, and any line-numbered view is a GENERATED manifest re-derived by the same span reader the gate uses, with a freshness assertion wired into the producing repository's own gate set so a rename or docstring sweep fails loudly at the source rather than rotting a table downstream. Generalizes to any cross-artifact citation where the citing and cited files are gated separately.",
+      "category": "PATTERN",
+      "source_artifact": "specs/681_narrow_transcription_audit_surface/plans/01_narrow-transcription-audit-surface.md",
       "confidence": 0.85,
-      "suggested_keywords": ["audit-surface", "transcription", "definition-to-theorem"]
-    },
-    {
-      "content": "omega is blind to goals typed at TemporalOrder carriers: a hypothesis at intOrder.carrier is not syntactically Int, so omega reports 'no usable constraints'. State the arithmetic over Int and cross into the carrier with show, or replace omega with explicit lt_irrefl/le_trans steps. The same coercion opacity defeats instance synthesis for SuccOrder over a TemporalOrder carrier, which is why Std.lean uses the explicit @ plus inferInstanceAs form.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/681_narrow_transcription_audit_surface/reports/01_narrow-transcription-audit-surface.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["omega", "intOrder", "TemporalOrder", "instance-synthesis", "coercion"]
+      "suggested_keywords": ["cross-repository", "citation-drift", "generated-manifest", "declaration-name", "gate-scope", "line-number-rot"]
     }
   ],
   "metadata": {
     "session_id": "sess_1790528746_3f1c95_681",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 8
 }
