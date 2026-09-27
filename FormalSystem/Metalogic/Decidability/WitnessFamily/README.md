@@ -17,6 +17,32 @@ not here, and neither is the `Decidable (ValidZTime φ)` assembly that would fol
 belong to the compression work. Nothing in this directory presupposes either, and every theorem
 below is unconditional.
 
+### Cross-repository reduction condition: satisfiable in principle, not nearly done
+
+The compression work's completeness direction ultimately reduces, on the consuming (model-checker)
+side, to a condition over the searched witness-family space. That condition is now satisfiable
+**in principle**: both of its former prerequisites are landed there — a certificate export on the
+wire contract this tree documents (see `BimodalTools/README.md`, "Certificate re-verification
+protocol"), and an independent pure-Python re-checker that decides the four conditions above
+(`LocalCoherentLab`, `FulfillingLab`, `BoxFaithful`, `Target`) over the proved windows on every
+reported countermodel, cross-checked against `lake exe check_certificate` where present.
+
+"Satisfiable" is **not** "nearly done". The searched witness-family space is **not monotone** in
+the `back`/`mid`/`fwd` bounds: the consuming registry folds those bounds by exact modulus, so a
+search at bound `n` represents exactly the periods dividing `n`. The measured instance: one
+formula is SAT at `(3, 1, 3)` and `(6, 1, 6)` and genuinely UNSAT (not a timeout) at `(4, 1, 4)`
+and `(5, 1, 5)`, exactly as `6 ∤ 4` and `6 ∤ 5` predict. Consequently the condition **as originally
+worded is false** — which is why it was rewritten into ordered sub-conditions on the consuming
+side rather than simply marked satisfiable. The sole blocking sub-condition is fixing the length
+space: either sweeping the bounds over the grid up to the compression bound, or restricting the
+claim to bounds the folding actually covers. Without it, the condition is **unprovable, not
+merely unproved**.
+
+The corollary for the compression bound's *shape*: a bound of the form "segment lengths at least
+`f` of the closure size" is insufficient on its own, because representability is a divisibility
+(period) question, not a magnitude question — a family whose period does not divide the
+configured length is unrepresentable however large that length is.
+
 ## Why a labelled family, and not something smaller
 
 Two smaller candidates are ruled out by machine-checked results already in the tree.

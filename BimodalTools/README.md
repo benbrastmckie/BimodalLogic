@@ -163,6 +163,11 @@ certificate. The same honesty the `"gates"` field above carries for the tableau 
 `rejected` says only that the object handed over is not a certificate. It never says the
 consequence holds: the checker is one-sided by construction.
 
+Acceptance is now dual-decided per run rather than single-sided: the producing side also
+re-decides each reported countermodel independently in Python and cross-checks that result
+against this executable where present, so a single-sided `accepted` here is no longer the only
+check a reported countermodel receives.
+
 The rows pinning all of this are `Tests/BimodalToolsTest/CertificateImportTest.lean`.
 
 ## Contents
