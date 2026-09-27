@@ -236,31 +236,34 @@ without-stability-modal scope sentence.
 
 ---
 
-### Phase 3: Correct `fmp`'s status and state the scope in `BiLasso/README.md` [NOT STARTED]
+### Phase 3: Correct `fmp`'s status and state the scope in `BiLasso/README.md` [COMPLETED]
 
 **Goal**: `BiLasso/README.md`'s "what decidability still needs" section no longer frames `fmp` as
 the one open theorem, and carries the same durable scope sentence.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/BiLasso/README.md` immediately before editing.
-- [ ] Rewrite the framing of the section currently headed `## What decidability of `ValidDiscrete`
+- [x] Re-read `FormalSystem/Metalogic/Decidability/BiLasso/README.md` immediately before editing.
+      *(completed)*
+- [x] Rewrite the framing of the section currently headed `## What decidability of `ValidDiscrete`
       still needs` (lines 23-28 and the "Given `fmp`, the rest assembles" paragraph that follows)
       so that it states the refutation rather than an open theorem: `fmp` in the literal
       candidate-list form is closed negatively by `Probe476.fmp_false` for every candidate list,
       same citation form as Phase 2 (declaration name plus parenthesised path, no line number).
       What the section should now say is what the layer *does* buy given a finite-model step, and
       that the step in this form is refuted — so the remaining route is the presentation-free
-      witness family, not a finite presentation.
-- [ ] Leave the box-faithfulness discussion, the three measured consequences, the
+      witness family, not a finite presentation. *(completed: heading renamed to "What this layer
+      buys given a finite-model step, and why that step is refuted in this form")*
+- [x] Leave the box-faithfulness discussion, the three measured consequences, the
       `cands`-cannot-be-a-finite-list point, and the "do not promise a choice-free result"
-      paragraph substantively intact — the research found them accurate.
-- [ ] Add the durable scope sentence (same content as Phase 2, worded for a README reader): the
+      paragraph substantively intact — the research found them accurate. *(completed)*
+- [x] Add the durable scope sentence (same content as Phase 2, worded for a README reader): the
       procedure decides `ValidZTime` for the base language without `⊡`; witness models are
       deterministic; `⊡` is trivial there; silent **by construction**; not extensible by a truth
-      clause.
-- [ ] Verify no task number appears in the added text.
-- [ ] `git status --short`; `git add -- FormalSystem/Metalogic/Decidability/BiLasso/README.md`;
+      clause. *(completed: added as new "## Scope" section)*
+- [x] Verify no task number appears in the added text. *(completed: grep confirmed)*
+- [x] `git status --short`; `git add -- FormalSystem/Metalogic/Decidability/BiLasso/README.md`;
       commit (message scoped to the `fmp`-status correction only — the rename drift is Phase 4).
+      *(completed: commit 29af3ccef)*
 
 **Timing**: 0.75 hours
 
