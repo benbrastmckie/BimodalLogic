@@ -527,6 +527,9 @@ import FormalSystem.Semantics.Ultraproduct.Los
 import FormalSystem.Semantics.Ultraproduct.ShiftSetProduct
 import FormalSystem.Semantics.Validity
 import FormalSystem.Semantics.ValidityLayer
+import FormalSystem.SourceLanguage
+import FormalSystem.SourceLanguage.Sentence
+import FormalSystem.SourceLanguage.SentenceTruth
 import FormalSystem.StarLanguage
 import FormalSystem.StarLanguage.Axioms
 import FormalSystem.StarLanguage.Derivation

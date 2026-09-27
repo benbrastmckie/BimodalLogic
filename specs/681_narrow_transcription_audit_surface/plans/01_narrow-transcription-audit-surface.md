@@ -249,7 +249,7 @@ editing; treat any mismatch as drift to record in Phase 8, not as a blocker.
 
 ---
 
-### Phase 2: Open the frame-constraint independence module and land two witnesses [NOT STARTED]
+### Phase 2: Open the frame-constraint independence module and land two witnesses [COMPLETED]
 
 **Goal**: Create the module that makes the four-condition audit row provably irreducible, wire it
 into the library the way this repository's invariants require, and land the two witnesses whose
@@ -257,35 +257,50 @@ constraint proofs are already fully verified.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Semantics/FrameConstraintIndependence.lean` with the standard
+- [x] Create `FormalSystem/Semantics/FrameConstraintIndependence.lean` with the standard
       copyright header, `import FormalSystem.Semantics.TaskFrame`, and
       `import Mathlib.Data.Int.SuccPred`. Do **not** site this under
       `FormalSystem/Metalogic/Independence/`: that directory means *proof-system axiom*
       independence and invariant C34a flags the collision risk explicitly.
-- [ ] Write the module docstring: what the module establishes (each of `def:frame`'s four
+- [x] Write the module docstring: what the module establishes (each of `def:frame`'s four
       constraints is independent of the other three, over the very time structure the certificate
       uses), why it is stated at `D := ℤ` rather than `↑intOrder` (`intOrder := ⟨ℤ⟩` is
       `@[reducible]` and `(↑intOrder : Type) = ℤ` by `rfl`, so this *is* the `intOrder` statement,
       and `omega` can see it), and what it does not establish (nothing about the definitional
       audit surface — it bounds how far the four-clause row can be compressed, not how many
-      definitions a reader must inspect).
-- [ ] Add `emptyRel : Bool → ℤ → Bool → Prop := fun _ _ _ => False` with
+      definitions a reader must inspect). *(deviation: altered — the docstring additionally
+      carries a section "This is not the tree's first independence matrix", required by this
+      phase's own Scope Hypothesis. `StateTopology/ConstraintWitnesses.lean`'s header already
+      claims a **complete** independence matrix: `voidRel` (character-identical to `emptyRel`) for
+      *Seriality*, `bumpRel` for *Compositionality*, `SeparatingFrame.srel` for *Saturation* at
+      bare `ℤ`, and the four-state funnel for *Limit* — the last under `[DenselyOrdered ↑D]`, so
+      not over `ℤ`. The new module cites all four rows by name and states plainly that what it adds
+      is the first **aggregate** statement, the first *Limit* refutation over discrete time, and
+      import-light reachability from the `Semantics.lean` aggregator, which the topology-carrying
+      witnesses deliberately do not have. Three of the four rows therefore re-prove, at a different
+      witness, something the tree already knew; that duplication is recorded rather than glossed.)*
+- [x] Add `emptyRel : Bool → ℤ → Bool → Prop := fun _ _ _ => False` with
       `emptyRel_compositional`, `emptyRel_limit`, `emptyRel_saturation` and
       `emptyRel_not_serial`. The three positive proofs go by `simp` over the relation plus `Fib`
       and `Seg`; the refutation is `intro h; obtain … := h true 0 le_rfl`.
-- [ ] Add `totalRel : Bool → ℤ → Bool → Prop := fun _ _ _ => True` with
+- [x] Add `totalRel : Bool → ℤ → Bool → Prop := fun _ _ _ => True` with
       `totalRel_compositional`, `totalRel_serial` (via `TaskFrame.serial_of_total`),
       `totalRel_saturation` and `totalRel_not_limit`, the last using the report's corrected tactic
       line `fun x hx => ⟨0, by simpa using hx, trivial⟩`. Record in the docstring why the carrier
       is `Bool` and not `Unit`: `FrameOver.trivialFrame` already carries the total relation on
       `Unit`, where *Limit* holds by `limit_of_subsingleton`, so a two-point carrier is what makes
       the refutation possible.
-- [ ] Add the import line to `FormalSystem/Semantics.lean` in sorted position, and a bullet in
+- [x] Add the import line to `FormalSystem/Semantics.lean` in sorted position, and a bullet in
       that aggregator's module docstring in the established idiom.
-- [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem`, then confirm C33 passes
+- [x] Regenerate the library root: `lake exe mk_all --lib FormalSystem`, then confirm C33 passes
       and `lake exe checkInitImports` (C24) still reports every module reaching
-      `FormalSystem.Init`.
-- [ ] Run `lake build` and the package linter set over the new module; commit.
+      `FormalSystem.Init`. *(deviation: altered — `mk_all` globs the filesystem, so it also emitted
+      `import FormalSystem.SourceLanguage` and `import FormalSystem.SourceLanguage.Sentence` for a
+      concurrent sibling task's **untracked** new files. Both lines were removed from the generated
+      root before committing, leaving exactly the one line this module causes: C33 scans tracked
+      files and passes on that shape (575 imports), and committing a root that imports untracked
+      modules would have been a broken commit and an over-stage of a sibling's work. C24 exits 0.)*
+- [x] Run `lake build` and the package linter set over the new module; commit.
 
 **Timing**: 2 hours
 

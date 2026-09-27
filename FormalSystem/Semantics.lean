@@ -9,6 +9,7 @@ import FormalSystem.Semantics.TaskFrame
 import FormalSystem.Semantics.Frames
 import FormalSystem.Semantics.FrameProperty
 import FormalSystem.Semantics.FrameClassValidity
+import FormalSystem.Semantics.FrameConstraintIndependence
 import FormalSystem.Semantics.IntNormalForm
 import FormalSystem.Semantics.Periodicity
 import FormalSystem.Semantics.PartialHistory
@@ -95,6 +96,18 @@ imported through their sibling aggregators
   `FormalSystem/HybridLanguage/` and `FormalSystem/QuantLanguage/`: such a morphism preserves
   pulled-back valuations, the history and time structure and the same-state relation, but not
   state identity
+- `FrameConstraintIndependence`: `def:frame`'s four constraints are **pairwise independent**, over
+  `ℤ` — the duration type `intOrder` reducibly is, so this is independence over the certificate's
+  own time structure. Four witness relations (`emptyRel`, `totalRel`, `rayRel`, `driftRel`), the
+  sixteen theorems placing each constraint against the other three, and the aggregate
+  `constraints_pairwise_independent`, which is what makes "the four-clause frame-condition row
+  cannot be compressed to three" a theorem rather than a claim. The tree's *first aggregate*
+  statement of that fact, and its first *Limit* refutation over discrete time, but **not** its
+  first independence witnesses: `StateTopology/ConstraintWitnesses.lean` already carries a
+  complete matrix, which this module's header cites row by row rather than restating. It stays
+  import-light — `TaskFrame` and `Mathlib.Data.Int.SuccPred` only — precisely so that the
+  aggregate result is reachable from this aggregator, which the topology-carrying witnesses
+  deliberately are not
 - `FrameAxioms`: *Saturation*, *Seriality*, and the interpolation half of *Compositionality* as
   hypothesis-form `Prop`s over a bare task relation (`def:frame`), the derived `lem:nullity`,
   and `def:constraints` — the constraints a partial history imposes on a new duration
