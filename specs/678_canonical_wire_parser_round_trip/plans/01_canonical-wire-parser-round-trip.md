@@ -343,7 +343,7 @@ re-read R-1's mitigation rather than to keep pushing.
 
 ---
 
-### Phase 5: The generic prefix round-trip theorem [NOT STARTED]
+### Phase 5: The generic prefix round-trip theorem [COMPLETED]
 
 **Goal**: `parseCJson_printCJson` is proved: parsing a printed canonical value, followed by any
 remainder, returns that value and that remainder.

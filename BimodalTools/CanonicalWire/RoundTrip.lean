@@ -343,4 +343,194 @@ theorem printCJsonObj_cons_head (k : List Char) (v : CJson) (fs : CJsonObj) (res
     (printCJsonObj (.cons k v fs) ++ rest).head? = some '"' := by
   cases fs <;> simp [printCJsonObj, printKey]
 
+/-!
+## The generic round-trip theorem
+
+The single theorem the whole lexical layer exists to produce. `Cert.lean` applies it once and
+proves the certificate contract by structural induction over `RawCertificate`, mentioning no
+parser state at all.
+-/
+
+/-- A remainder that cannot extend a numeral: it is empty, or its first character is not a
+decimal digit. The side condition the integer leaf of the round trip genuinely needs — see this
+module's docstring. -/
+def NoDigitHead (rest : List Char) : Prop := ∀ c ∈ rest.head?, ¬ (c.isDigit = true)
+
+/-- A remainder beginning with a non-digit cannot extend a numeral. Every structural use of the
+round trip discharges its side condition through this, at `,`, `]` or `}`. -/
+theorem noDigitHead_cons {c : Char} (h : c.isDigit = false) (t : List Char) :
+    NoDigitHead (c :: t) := by
+  intro d hd
+  simp only [List.head?_cons, Option.mem_def, Option.some.injEq] at hd
+  subst hd; simp [h]
+
+/-- The three-way mutual statement the round trip is proved by, at every fuel level.
+
+Induction on **fuel**, not on the value: the parser's recursion is fuel-guarded, so the fuel
+parameter is the one that decreases at every descent, and the mutual recursors are never needed.
+Each conjunct is stated only where it is used — the array and object conjuncts only for a
+*non-empty* element or field list, because the empty ones are recognised by the value parser
+without descending, and only the value conjunct carries `NoDigitHead`, because an element or a
+field value is always followed by a separator or a closing bracket. -/
+theorem parseCJson_print_aux : ∀ f : Nat,
+    (∀ (j : CJson) (rest : List Char), Canonical j → NoDigitHead rest → size j ≤ f →
+        parseCJson f (printCJson j ++ rest) = .ok (j, rest)) ∧
+    (∀ (x : CJson) (xs : CJsonList) (rest : List Char), CanonicalList (.cons x xs) →
+        sizeList (.cons x xs) ≤ f →
+        parseElems f (printCJsonList (.cons x xs) ++ rest) = .ok (.cons x xs, rest)) ∧
+    (∀ (k : List Char) (v : CJson) (fs : CJsonObj) (rest : List Char),
+        CanonicalObj (.cons k v fs) → sizeObj (.cons k v fs) ≤ f →
+        parseFields f (printCJsonObj (.cons k v fs) ++ rest) = .ok (.cons k v fs, rest)) := by
+  intro f
+  induction f with
+  | zero =>
+    refine ⟨?_, ?_, ?_⟩
+    · intro j _ _ _ hf; cases j <;> simp [size] at hf
+    · intro x xs _ _ hf; simp [sizeList] at hf
+    · intro k v fs _ _ hf; simp [sizeObj] at hf
+  | succ f ih =>
+    obtain ⟨ihJ, ihL, ihO⟩ := ih
+    refine ⟨?_, ?_, ?_⟩
+    · intro j rest hok hrest hf
+      cases j with
+      | str s =>
+        change parseCJson (f + 1) (('"' :: (escapeBody s ++ ['"'])) ++ rest) = _
+        simp only [List.cons_append, List.append_assoc]
+        rw [parseCJson, unescapeBody_escapeBody]
+        simp
+      | int i =>
+        obtain ⟨c, r, hcr, hd⟩ := printInt_head i
+        have hgoal : printCJson (CJson.int i) ++ rest = c :: (r ++ rest) := by
+          simp only [printCJson, hcr, List.cons_append]
+        have hkey : ∀ d : Char, d.isDigit = false → ¬ (d = '-') → ¬ (c = d) := by
+          intro d hdig hdash
+          rcases hd with h | h
+          · rw [h]; intro hc; exact hdash hc.symm
+          · intro hc; rw [hc] at h; rw [hdig] at h; simp at h
+        rw [hgoal, parseCJson, if_neg (hkey '"' (by decide) (by decide)),
+          if_neg (hkey '[' (by decide) (by decide)), if_neg (hkey '{' (by decide) (by decide)),
+          if_neg (hkey 't' (by decide) (by decide)), if_neg (hkey 'f' (by decide) (by decide)),
+          show c :: (r ++ rest) = printInt i ++ rest from by rw [hcr]; simp,
+          parseInt_printInt i rest hrest]
+      | bool b =>
+        cases b
+        · change parseCJson (f + 1) (['f', 'a', 'l', 's', 'e'] ++ rest) = _
+          simp only [List.cons_append, List.nil_append]
+          rw [parseCJson]
+          simp
+        · change parseCJson (f + 1) (['t', 'r', 'u', 'e'] ++ rest) = _
+          simp only [List.cons_append, List.nil_append]
+          rw [parseCJson]
+          simp
+      | arr xs =>
+        cases xs with
+        | nil =>
+          change parseCJson (f + 1) (('[' :: [']']) ++ rest) = _
+          simp only [List.cons_append, List.nil_append]
+          rw [parseCJson]
+          simp
+        | cons y ys =>
+          have hsz : sizeList (CJsonList.cons y ys) ≤ f := by
+            simp only [size] at hf; omega
+          change parseCJson (f + 1) ('[' :: (printCJsonList (.cons y ys) ++ rest)) = _
+          rw [parseCJson]
+          simp only [reduceIte]
+          rw [if_neg (printCJsonList_cons_head_ne y ys rest), ihL y ys rest hok hsz]
+          simp
+      | obj fs =>
+        cases fs with
+        | nil =>
+          change parseCJson (f + 1) (('{' :: ['}']) ++ rest) = _
+          simp only [List.cons_append, List.nil_append]
+          rw [parseCJson]
+          simp
+        | cons k v fs2 =>
+          have hsz : sizeObj (CJsonObj.cons k v fs2) ≤ f := by
+            simp only [size] at hf; omega
+          have hh : ¬ ((printCJsonObj (CJsonObj.cons k v fs2) ++ rest).head? = some '}') := by
+            rw [printCJsonObj_cons_head]; decide
+          change parseCJson (f + 1) ('{' :: (printCJsonObj (.cons k v fs2) ++ rest)) = _
+          rw [parseCJson]
+          simp only [reduceIte]
+          rw [if_neg hh, ihO k v fs2 rest hok hsz]
+          simp
+    · intro x xs rest hok hf
+      have hx : size x ≤ f := by simp only [sizeList] at hf; omega
+      cases xs with
+      | nil =>
+        change parseElems (f + 1) ((printCJson x ++ [']']) ++ rest) = _
+        simp only [List.append_assoc, List.singleton_append]
+        rw [parseElems, ihJ x (']' :: rest) hok.1 (noDigitHead_cons (by decide) rest) hx]
+        simp
+      | cons y ys =>
+        have hys : sizeList (CJsonList.cons y ys) ≤ f := by
+          simp only [sizeList] at hf ⊢; omega
+        change parseElems (f + 1) ((printCJson x ++ ',' :: printCJsonList (.cons y ys)) ++ rest) = _
+        simp only [List.append_assoc, List.cons_append]
+        rw [parseElems, ihJ x _ hok.1 (noDigitHead_cons (by decide) _) hx]
+        simp only [List.head?_cons, Option.some.injEq, reduceIte, List.tail_cons]
+        rw [ihL y ys rest hok.2 hys]
+    · intro k v fs rest hok hf
+      have hv : size v ≤ f := by simp only [sizeObj] at hf; omega
+      cases fs with
+      | nil =>
+        change parseFields (f + 1) ((printKey k ++ printCJson v ++ ['}']) ++ rest) = _
+        simp only [printKey, List.cons_append, List.append_assoc,
+          List.nil_append]
+        rw [parseFields]
+        simp only [List.head?_cons, reduceIte, List.tail_cons]
+        rw [unescapeBody_escapeBody]
+        simp only [List.head?_cons, reduceIte, List.tail_cons]
+        rw [ihJ v ('}' :: rest) hok.2.1 (noDigitHead_cons (by decide) rest) hv]
+        simp
+      | cons k2 v2 fs2 =>
+        have hfs : sizeObj (CJsonObj.cons k2 v2 fs2) ≤ f := by
+          simp only [sizeObj] at hf ⊢; omega
+        change parseFields (f + 1)
+          ((printKey k ++ printCJson v ++ ',' :: printCJsonObj (.cons k2 v2 fs2)) ++ rest) = _
+        simp only [printKey, List.cons_append, List.append_assoc, List.nil_append]
+        rw [parseFields]
+        simp only [List.head?_cons, reduceIte, List.tail_cons]
+        rw [unescapeBody_escapeBody]
+        simp only [List.head?_cons, reduceIte, List.tail_cons]
+        rw [ihJ v _ hok.2.1 (noDigitHead_cons (by decide) _) hv]
+        simp only [List.head?_cons, Option.some.injEq, reduceIte, List.tail_cons]
+        rw [ihO k2 v2 fs2 rest hok.2.2 hfs]
+        simp [hok.1]
+
+/-- **The generic layer-1 theorem: parsing a printed canonical value returns it, and returns the
+remainder untouched.**
+
+The `Canonical` hypothesis is used at exactly one place — the duplicate-key rejection inside
+`parseFields` — and `NoDigitHead rest` at exactly one other, the integer leaf. Nothing else about
+the input is assumed. -/
+theorem parseCJson_printCJson (j : CJson) (rest : List Char) (hok : Canonical j)
+    (hrest : NoDigitHead rest) (f : Nat) (hf : size j ≤ f) :
+    parseCJson f (printCJson j ++ rest) = .ok (j, rest) :=
+  (parseCJson_print_aux f).1 j rest hok hrest hf
+
+/-- The array-level instance of the round trip, for a non-empty element list. -/
+theorem parseElems_printCJsonList (x : CJson) (xs : CJsonList) (rest : List Char)
+    (hok : CanonicalList (.cons x xs)) (f : Nat) (hf : sizeList (.cons x xs) ≤ f) :
+    parseElems f (printCJsonList (.cons x xs) ++ rest) = .ok (.cons x xs, rest) :=
+  (parseCJson_print_aux f).2.1 x xs rest hok hf
+
+/-- The object-level instance of the round trip, for a non-empty field list. -/
+theorem parseFields_printCJsonObj (k : List Char) (v : CJson) (fs : CJsonObj) (rest : List Char)
+    (hok : CanonicalObj (.cons k v fs)) (f : Nat) (hf : sizeObj (.cons k v fs) ≤ f) :
+    parseFields f (printCJsonObj (.cons k v fs) ++ rest) = .ok (.cons k v fs, rest) :=
+  (parseCJson_print_aux f).2.2 k v fs rest hok hf
+
+/-- Nothing can extend a numeral at the end of the input. -/
+theorem noDigitHead_nil : NoDigitHead [] := by
+  intro c hc
+  simp at hc
+
+/-- The `String`-level corollary, for a whole document. `String.toList_ofList` is what bridges
+`printCanonical`'s `String.ofList` back to the character list the theorem above is stated over. -/
+theorem parseCJson_printCanonical (j : CJson) (hok : Canonical j) (f : Nat) (hf : size j ≤ f) :
+    parseCJson f (printCanonical j).toList = .ok (j, []) := by
+  rw [printCanonical, String.toList_ofList]
+  simpa using parseCJson_printCJson j [] hok noDigitHead_nil f hf
+
 end BimodalTools.CanonicalWire

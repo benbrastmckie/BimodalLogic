@@ -28,7 +28,7 @@ the schema layer only applies it.
 |------|-------|-------------|
 | `Json.lean` | 265 | The canonical value `CJson`/`CJsonList`/`CJsonObj`, the `Canonical` well-formedness predicate, the escape and decimal codecs' printing halves, the canonical printer, and the fuel measure |
 | `Parse.lean` | 316 | The total fuel-indexed parser: `consResult`, `unescapeBody`/`unescapeAfterBackslash`/`unescapeUEscape`, `takeDigits`/`parseDigits`/`parseInt`, `parseCJson`/`parseElems`/`parseFields`, and the strict entry point `parseCanonical` |
-| `RoundTrip.lean` | 346 | The lexical round-trip lemmas (`unescape_escape`, `parseDigits_printDigits`, `parseInt_printInt`), the measure bound `size_le_print_length`, and the arm-overlap witnesses |
+| `RoundTrip.lean` | 536 | The lexical round-trip lemmas (`unescape_escape`, `parseDigits_printDigits`, `parseInt_printInt`), the measure bound `size_le_print_length`, the arm-overlap witnesses, and the generic theorem `parseCJson_printCJson` |
 
 ## The canonical form
 
