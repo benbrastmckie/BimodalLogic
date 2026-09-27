@@ -249,34 +249,40 @@ becomes a regression guard for Phase 3.
 
 ---
 
-### Phase 3: Restructure the Accepting Branch [NOT STARTED]
+### Phase 3: Restructure the Accepting Branch [COMPLETED]
 
 **Goal**: Make the accepting branch a term of the existence type that cannot be written without
 the four hypotheses in scope, with `checkRaw`'s type, behavior and cost unchanged.
 
 **Tasks**:
-- [ ] Re-read the current `checkRaw` and `CheckResult` immediately before editing.
-- [ ] Add `inductive CheckOutcome (raw : RawCertificate)` whose accepting constructor is
+- [x] Re-read the current `checkRaw` and `CheckResult` immediately before editing.
+- [x] Add `inductive CheckOutcome (raw : RawCertificate)` whose accepting constructor is
       `| countermodel (time : Int)
       (entails : WitnessFamily.Refutes raw.target.premises raw.target.conclusions)`, with
       `rejected` and `error` mirroring `CheckResult`. It derives nothing (it carries a `Prop`
       field).
-- [ ] Add `def checkCertified (raw : RawCertificate) : CheckOutcome raw` as **nested `dite`** on
+- [x] Add `def checkCertified (raw : RawCertificate) : CheckOutcome raw` as **nested `dite`** on
       the four conditions individually — the same order and short-circuit behavior as today, each
       localization scan left in its own branch — with the accepting branch applying
       `refutes_of_certifies` to the four hypotheses the `dite`s bind.
-- [ ] Add `def CheckOutcome.erase : CheckOutcome raw → CheckResult`, the forgetful map to the
+- [x] Add `def CheckOutcome.erase : CheckOutcome raw → CheckResult`, the forgetful map to the
       serializable type.
-- [ ] Redefine `checkRaw raw := (checkCertified raw).erase`. `CheckResult` itself is unchanged in
+- [x] Redefine `checkRaw raw := (checkCertified raw).erase`. `CheckResult` itself is unchanged in
       this phase, and keeps `Repr, Inhabited, DecidableEq`.
-- [ ] Re-prove `refutes_of_countermodel` in its now one-line form (`cases hco : checkCertified raw`,
+- [x] Re-prove `refutes_of_countermodel` in its now one-line form (`cases hco : checkCertified raw`,
       `rw [hco] at h; simp [CheckOutcome.erase] at h`), keeping the statement identical so the
       Phase 2 guarantee is preserved rather than restated.
-- [ ] Add a temporary `#guard` asserting the restructured `checkRaw` agrees with the pre-change
+- [x] Add a temporary `#guard` asserting the restructured `checkRaw` agrees with the pre-change
       behavior on the example families (research probe 2 held `checkRaw' posRaw = checkRaw posRaw`);
       remove it, or keep it as a pinned row in the test file, before closing the phase — decide
-      and record which.
-- [ ] Update the `checkRaw` doc comment to describe the dependent layer and the erasure.
+      and record which. *(decision: KEPT as the pre-existing pinned rows in
+      `Tests/BimodalToolsTest/CertificateImportTest.lean`; no new temporary guard was added. Those
+      rows pin the exact `CheckResult` value for the accepting fixture, for every rejection
+      fixture with its localization tuple, for the error rows and for the round-trips — strictly
+      stronger than `checkRaw' = checkRaw`, which only asserts agreement with a second copy of
+      the same code. `BimodalToolsTest.CertificateImportTest` built green after the restructure,
+      and `#eval (checkRaw sepRaw).toJson` still reports `(lasso 0, position -2, p U q)`.)*
+- [x] Update the `checkRaw` doc comment to describe the dependent layer and the erasure.
 
 **Timing**: 1.5 hours
 

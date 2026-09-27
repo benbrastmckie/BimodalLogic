@@ -81,7 +81,9 @@ contract rather than a local naming choice; a faithful mirror is structural as w
 - `parseCertificate`, `RawTarget.toJson`, `RawCertificate.toJson` — the two directions of the
   wire format
 - `mkLasso`, `mkFamily` — the runtime builders, `dite` on every proof field
-- `CheckResult`, `checkRaw` — the verdict and its JSON line
+- `CheckResult`, `checkRaw` — the serializable verdict and its JSON line
+- `CheckOutcome`, `checkCertified`, `CheckOutcome.erase` — the dependent layer beneath them: an
+  accepting outcome carries the entailment as a field, and `erase` forgets it
 
 ## Main Results
 
@@ -590,28 +592,80 @@ def StructuralFault.toFailure : StructuralFault → Failure
     { condition := "structural",
       detail := "an atom carries a fresh index, which the wire format does not preserve" }
 
-/--
-Re-verify a decoded certificate.
+/-!
+## The dependent layer
 
-The verdict is `decidableLocalCoherentLab`, `decidableFulfillingLab`, `decidableBoxFaithful` and
-`decidableTarget`, in that order, short-circuiting on the first `false`. Acceptance means those
-four compiled instances returned `true` — it is not a kernel-checked proof for this certificate,
-and a rejection is never a claim that the consequence holds.
+`CheckResult` is what goes on the wire, and it is deliberately non-dependent: a `List Failure`
+and an `Int` serialize, a proof does not. `CheckOutcome` sits beneath it and carries, on its
+accepting constructor only, the very statement `WitnessFamily.refutes_of_certifies` produces. The
+point is structural rather than informational: `checkCertified`'s accepting branch **cannot be
+written** without a term of that type in hand, so acceptance is a constructed entailment rather
+than a report about four decisions. `erase` is the forgetful map down to the serializable layer,
+and `checkRaw` is its composition — so the wire behaviour is unchanged while the branch that
+produces it is not.
 -/
-def checkRaw (raw : RawCertificate) : CheckResult :=
+
+/--
+The checker's answer, with the accepting case carrying its entailment.
+
+Mirrors `CheckResult` constructor for constructor, and derives nothing: the `entails` field is a
+`Prop`, so `Repr`, `Inhabited` and `DecidableEq` have nothing to say about it. The indexing by
+`raw` is what lets the field mention `raw.target.premises` and `raw.target.conclusions`.
+-/
+inductive CheckOutcome (raw : RawCertificate) where
+  /-- Every condition held at the given target time, and here is the countermodel it yields. -/
+  | countermodel (time : Int)
+      (entails : WitnessFamily.Refutes raw.target.premises raw.target.conclusions)
+  /-- Some condition failed, or a structural precondition was violated. -/
+  | rejected (failed : List Failure)
+  /-- The input was not a well-formed certificate object. A protocol failure, not a verdict. -/
+  | error (message : String)
+
+/--
+Re-verify a decoded certificate, **constructing** the entailment on the accepting path.
+
+The four conditions are decided individually, in the order `decidableLocalCoherentLab`,
+`decidableFulfillingLab`, `decidableBoxFaithful`, `decidableTarget`, each by a `dite` that
+short-circuits on the first failure — the same order, the same short-circuit and the same cost as
+the four-way `if` chain this replaced, with each localization scan left in the branch it already
+occupied. A bundled `dite` on `WitnessFamily.Certifies` would instead force the rejecting path to
+re-decide the failing prefix before it could localize.
+
+What the `dite`s buy over an `if ! decide …` chain is that each binds its condition as a
+hypothesis, so the innermost branch has all four in scope and discharges
+`WitnessFamily.refutes_of_certifies` directly.
+-/
+def checkCertified (raw : RawCertificate) : CheckOutcome raw :=
   match mkFamily raw with
   | .error f => .rejected [f.toFailure]
   | .ok W =>
-    if ! @Decidable.decide _ (WitnessFamily.decidableLocalCoherentLab W) then
-      .rejected [(cohFailure W).getD (unlocalized "local_coherent")]
-    else if ! @Decidable.decide _ (WitnessFamily.decidableFulfillingLab W) then
-      .rejected [(fulFailure W).getD (unlocalized "fulfilling")]
-    else if ! @Decidable.decide _ (WitnessFamily.decidableBoxFaithful W) then
-      .rejected [(boxFailure W).getD (unlocalized "box_faithful")]
-    else if ! @Decidable.decide _ (WitnessFamily.decidableTarget W raw.target.time) then
-      .rejected [(targetFailure W raw.target.time).getD (unlocalized "target")]
-    else
-      .countermodel raw.target.time
+    if hloc : W.LocalCoherentLab then
+      if hful : W.FulfillingLab then
+        if hbox : W.BoxFaithful then
+          if htgt : W.Target raw.target.time then
+            .countermodel raw.target.time
+              (WitnessFamily.refutes_of_certifies W ⟨hloc, hful, hbox, htgt⟩)
+          else .rejected [(targetFailure W raw.target.time).getD (unlocalized "target")]
+        else .rejected [(boxFailure W).getD (unlocalized "box_faithful")]
+      else .rejected [(fulFailure W).getD (unlocalized "fulfilling")]
+    else .rejected [(cohFailure W).getD (unlocalized "local_coherent")]
+
+/-- Forget the entailment: the map from the dependent outcome down to the serializable verdict. -/
+def CheckOutcome.erase {raw : RawCertificate} : CheckOutcome raw → CheckResult
+  | .countermodel t _ => .countermodel t
+  | .rejected fs => .rejected fs
+  | .error m => .error m
+
+/--
+Re-verify a decoded certificate, as the serializable verdict.
+
+`checkCertified` composed with `CheckOutcome.erase`: the decision work and the accepting branch's
+construction happen in the dependent layer above, and this only forgets the entailment so the
+answer can be printed. The verdict is `decidableLocalCoherentLab`, `decidableFulfillingLab`,
+`decidableBoxFaithful` and `decidableTarget`, in that order, short-circuiting on the first
+failure, exactly as before. A rejection is never a claim that the consequence holds.
+-/
+def checkRaw (raw : RawCertificate) : CheckResult := (checkCertified raw).erase
 
 /--
 **A `countermodel` verdict entails the joint existence statement.**
@@ -632,15 +686,10 @@ theorem refutes_of_countermodel {raw : RawCertificate} {t : Int}
     (h : checkRaw raw = .countermodel t) :
     WitnessFamily.Refutes raw.target.premises raw.target.conclusions := by
   rw [checkRaw] at h
-  split at h
-  case _ f => simp at h
-  case _ W hW =>
-    split_ifs at h with h1 h2 h3 h4
-    refine WitnessFamily.refutes_of_certifies W (t := raw.target.time) ⟨?_, ?_, ?_, ?_⟩
-    · exact of_decide_eq_true (by simpa using h1)
-    · exact of_decide_eq_true (by simpa using h2)
-    · exact of_decide_eq_true (by simpa using h3)
-    · exact of_decide_eq_true (by simpa using h4)
+  cases hco : checkCertified raw with
+  | countermodel t' hent => exact hent
+  | rejected fs => rw [hco] at h; simp [CheckOutcome.erase] at h
+  | error m => rw [hco] at h; simp [CheckOutcome.erase] at h
 
 /-- Parse and re-verify one JSON line. Malformed input is an `error`, never a verdict. -/
 def checkLine (line : String) : CheckResult :=
