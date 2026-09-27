@@ -30,6 +30,7 @@ here versus in `docs/architecture/`.
 | Document | Description |
 |----------|-------------|
 | [paper-definitions-of-record.md](paper-definitions-of-record.md) | Pinned paper-anchor manifest for the source paper's `\label`led definitions and theorems; the resolution source `check-paper-definitions.sh` and check **C15** both resolve citations against |
+| [transcription-audit-surface.md](transcription-audit-surface.md) | The name-keyed record of what remains **inspection-only** in this repository's relationship to the source paper: 24 rows naming 27 Lean declarations or fields a human must read against paper text, the definitional-surface / axiom-burden distinction the count depends on, the corrections a consuming repository's citation table owes (resolved against the generated `scripts/lean-citation-manifest.json`, gated by **C35**), and the two questions closed against re-opening |
 
 ## Authoring Standards
 

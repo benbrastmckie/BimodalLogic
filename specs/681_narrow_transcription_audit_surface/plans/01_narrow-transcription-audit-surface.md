@@ -674,7 +674,7 @@ are about the same failure.
 
 ---
 
-### Phase 8: State the residue, exactly and by name [NOT STARTED]
+### Phase 8: State the residue, exactly and by name [COMPLETED]
 
 **Goal**: Write the durable, name-keyed record of what remains inspection-only, so a reader can
 see the exact size of the informal surface instead of being told it is small — and record the
@@ -682,38 +682,53 @@ corrections the consuming side owes its own table, without editing that reposito
 
 **Tasks**:
 
-- [ ] Create `docs/reference/transcription-audit-surface.md` in the idiom of
+- [x] Create `docs/reference/transcription-audit-surface.md` in the idiom of
       `docs/reference/state-topology-appendix-support.md`: a "What this is" opening, an audience
       line, an explicit "How rows are keyed" statement (by declaration name and paper anchor,
       never by line number — the line-numbered view is `scripts/lean-citation-manifest.json`, and
       it is generated), and a pointer to `docs/theorem-index.md` as the per-declaration authority.
-- [ ] Write the two-surface distinction first, because every number below depends on it: the
+- [x] Write the two-surface distinction first, because every number below depends on it: the
       definitional surface (Lean definitions a human reads against paper text) versus a particular
       construction's axiom burden. State plainly that this task's one conversion shrank the second
       from four axiom fields to three over a discrete duration order and left the first unchanged.
-- [ ] Write the residue table: the report's 24 rows, each keyed by declaration name and paper
+- [x] Write the residue table: the report's 24 rows, each keyed by declaration name and paper
       anchor, with no line numbers. State the count in the surrounding prose as a count.
-- [ ] Mark the three rows the consuming document's audit does not currently reach —
+      *(re-confirmed before stating: all 24 rows, naming 27 distinct declarations or structure
+      fields, resolve in the tree today — verified by name through the Phase 6 manifest, where every
+      one of them is a seeded entry with `"status": "resolved"`. Zero `file.lean:NNN` citations in
+      the document; C20 tier 2 passes over it. Adding the fully qualified names to `docs/` tripped
+      C5, which cannot distinguish a dotted declaration name from a module path; the 16 new names
+      were added to `scripts/module-invariants-allowlist.txt` with the sanctioned per-entry comment,
+      noting that C35 already resolves every one of them by the same fully qualified name and is a
+      strictly stronger assertion than C5's path-shape resolution.)*
+- [x] Mark the three rows the consuming document's audit does not currently reach —
       `FrameOver.worldNonempty` (a nonempty world set, whose own docstring records that an empty
       carrier satisfies all four axioms vacuously while validating falsehood),
       `PartialHistory.WorldHistory` and its totality predicate (quantified over by the box clause),
       and `TruthCorr` (reachable only if the general time-shift lemma is cited rather than the
       instantiated one) — and say explicitly that recording them makes the stated residue
       *larger*, which is the honest direction.
-- [ ] Record the corrections the consuming table needs, as a table of declaration names with the
+- [x] Record the corrections the consuming table needs, as a table of declaration names with the
       manifest as the resolution source: the four drifted citations, the range invalidated by
       Phase 1's deletion, the two ranges worth tightening, and the softened *Limit* verdict (only
       the `⊆` half is transcribed; the `⊇` half is `TaskFrame.nullity_of_serial_limit`, derived).
       Do not write line numbers into this document — name the declaration and point at the
       manifest.
-- [ ] Record the two closed questions so a later pass does not re-open them as opportunities: the
+- [x] Record the two closed questions so a later pass does not re-open them as opportunities: the
       time-structure row is already one-to-one against the paper's four adjectives and the pinned
       Mathlib offers no bundled class to collapse it into; and the four-clause constraint row is
       provably incompressible, citing `constraints_pairwise_independent`.
-- [ ] Record what the independence matrix does *not* do: the ten definitions standing behind the
+- [x] Record what the independence matrix does *not* do: the ten definitions standing behind the
       four constraint clauses (the supporting fibre and segment vocabulary) are named rather than
-      inlined on purpose, and should be counted at ten rather than at four.
-- [ ] Add the row to `docs/reference/README.md` under "Records of Record".
+      inlined on purpose, and should be counted at ten rather than at four. *(deviation: altered —
+      a second limit is recorded alongside it, from Phase 2's Scope Hypothesis finding: three of the
+      matrix's four rows were **already** established at other witnesses in
+      `StateTopology/ConstraintWitnesses.lean`, whose own header claims a complete matrix. The
+      document names those witnesses and states exactly what the new module adds — the first
+      aggregate statement, the first *Limit* refutation over discrete time, and import-light
+      reachability from the `Semantics.lean` aggregator — rather than letting a reader take it for
+      the tree's first independence record.)*
+- [x] Add the row to `docs/reference/README.md` under "Records of Record".
 
 **Timing**: 1.5 hours
 
@@ -736,11 +751,13 @@ so; it must not restate a number this task did not re-derive.
 **Verification**:
 
 - Every declaration named in the residue table resolves in the tree (check by name, via the
-  manifest)
+  manifest) — **confirmed**: all 27, every one a `"status": "resolved"` manifest entry
 - Zero `file.lean:NNN` citations anywhere in the new document — C20 tier 2 is enforced by default
-  over `docs/`, and this document's whole design is name-keyed
+  over `docs/`, and this document's whole design is name-keyed — **confirmed**
 - `bash scripts/check-module-invariants.sh` passes C12, C13, C15 and C20 over the new document
-- `bash scripts/readme-lint.sh docs` exits 0
+  — **confirmed**, and C5 and C35 too (C5 needed the 16 allowlist entries recorded above)
+- `bash scripts/readme-lint.sh docs` exits 0 — **confirmed** (`RESULT: PASS`, 0 broken references,
+  0 missing dates)
 
 ---
 

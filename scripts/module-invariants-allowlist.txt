@@ -102,3 +102,47 @@ FormalSystem.Semantics.TaskFrame.Interpolates
 FormalSystem.Semantics.PartialHistory.NearestAt
 FormalSystem.Semantics.PartialHistory.CoherentCompletion
 FormalSystem.Semantics.PartialHistory.Completion
+
+# The definitional residue named in docs/reference/transcription-audit-surface.md, which keys every
+# row by fully qualified declaration name on purpose -- a line-keyed cross-repository table is what
+# drifted. Exempting these from C5 loses nothing: check C35 resolves every one of them, by the same
+# fully qualified name, through scripts/lean-citation-seeds.txt and the generated
+# scripts/lean-citation-manifest.json, and fails if any stops resolving to exactly one declaration.
+# That is a strictly stronger assertion than C5's path-shape resolution.
+
+# `def TaskRel` in namespace FormalSystem.Semantics.FrameOver -- Semantics/TaskFrame.lean
+FormalSystem.Semantics.FrameOver.TaskRel
+
+# `class IsRegular` in namespace FormalSystem.Semantics.FrameOver, and its frame-level counterpart
+# in namespace FormalSystem.Semantics.TaskFrame -- Semantics/TaskFrame.lean
+FormalSystem.Semantics.FrameOver.IsRegular
+FormalSystem.Semantics.TaskFrame.IsRegular
+
+# `def DirectedFamily` / `def Fib` / `def Seg` / `def IsFiber` / `def IsSegment` in namespace
+# FormalSystem.Semantics.TaskFrame -- Semantics/TaskFrame.lean
+FormalSystem.Semantics.TaskFrame.DirectedFamily
+FormalSystem.Semantics.TaskFrame.Fib
+FormalSystem.Semantics.TaskFrame.Seg
+FormalSystem.Semantics.TaskFrame.IsFiber
+FormalSystem.Semantics.TaskFrame.IsSegment
+
+# `def Sat` in namespace FormalSystem.ProofSystem.FrameClass -- Semantics/FrameClassValidity.lean
+FormalSystem.ProofSystem.FrameClass.Sat
+
+# `def IsTotal` in namespace FormalSystem.Semantics.PartialHistory, and `def WorldHistory` in
+# namespace FormalSystem.Semantics -- Semantics/PartialHistory.lean
+FormalSystem.Semantics.PartialHistory.IsTotal
+FormalSystem.Semantics.WorldHistory
+
+# `def TruthAt` in namespace FormalSystem.Semantics -- Semantics/Truth.lean
+FormalSystem.Semantics.TruthAt
+
+# `def ConsequenceOnFrames` / `def SemanticConsequenceIn` in namespace FormalSystem.Semantics
+# -- Semantics/Validity.lean
+FormalSystem.Semantics.ConsequenceOnFrames
+FormalSystem.Semantics.SemanticConsequenceIn
+
+# `structure TruthCorr` in namespace FormalSystem.Semantics, and `namespace TimeShift` inside it
+# -- Semantics/TruthTransport.lean
+FormalSystem.Semantics.TruthCorr
+FormalSystem.Semantics.TimeShift
