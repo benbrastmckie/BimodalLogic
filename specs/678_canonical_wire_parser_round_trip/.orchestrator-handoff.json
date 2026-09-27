@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 14,
+  "summary": "Wrote a nine-phase implementation plan for the verified two-layer certificate wire codec (canonical printer, total fuel parser, round-trip theorems, schema codec, envelope migration, echo field), pinning nine theorem statements in a Lean Challenge Statements block. Passes validate-artifact.sh --strict with zero warnings.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/678_canonical_wire_parser_round_trip/plans/01_canonical-wire-parser-round-trip.md",
+      "summary": "Nine phases in seven waves, ~16 hours, nine pinned theorems; adopts research recommendations R1-R8 without exception."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 9,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implement for task 678 starting at Wave 1 (Phases 1 and 2, which are independent and may run in parallel)."
+}

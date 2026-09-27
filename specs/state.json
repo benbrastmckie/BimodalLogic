@@ -91,7 +91,7 @@
     {
       "project_number": 678,
       "project_name": "canonical_wire_parser_round_trip",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "toolchain",
       "description": "Give the certificate wire format a canonical printer and a total parser, with a parse-after-print round-trip theorem, so that deserialization leaves the trust base. The verified side currently parses exported JSON to rebuild the witness family it then decides conditions on; a defect in that parser means the verified side certifies a different certificate than the one the producing repository exported, and no amount of rigor downstream of the parse detects it. Deliver: a canonical serializer, a parser total on its input (malformed input yielding a protocol error rather than a partial or misinterpreted structure), and a theorem that parsing a printed family returns that same family. Preserve the export contract exactly -- back, mid, fwd, bx, lassos and target are the contract's field names, target is required with target.time required and undefaulted because it is the target condition's existential witness, bx is sparse with unlisted formulas reading false, lassos index 0 is the main lasso, and atom identity is base-only so a certificate carrying a fresh or Skolem atom must be rejected outright. Pair with the consuming repository's parse-echo verification task, which compares an echo of what was parsed against the bytes it sent, so that the two halves together close the deserialization gap from both ends.",
@@ -99,13 +99,18 @@
         677
       ],
       "created": "2026-09-26T11:55:52Z",
-      "last_updated": "2026-09-27T21:10:31Z",
+      "last_updated": "2026-09-27T21:35:29Z",
       "session_id": "sess_1790528746_3f1c95",
       "artifacts": [
         {
           "path": "specs/678_canonical_wire_parser_round_trip/reports/01_canonical-wire-parser-round-trip.md",
           "type": "report",
           "summary": "Research for the canonical certificate-wire printer, total parser and round-trip theorem: twelve probe-confirmed defects in the current parser (including silent misdecoding of \\t, \\r and \\uXXXX), the reason no theorem is provable against the existing partial defs, a recommended two-layer codec design, and a green sorry-free 147-line proof spike validating the technique."
+        },
+        {
+          "path": "specs/678_canonical_wire_parser_round_trip/plans/01_canonical-wire-parser-round-trip.md",
+          "type": "plan",
+          "summary": "Nine phases in seven waves, ~16 hours, nine pinned theorems; adopts research recommendations R1-R8 without exception."
         }
       ],
       "next_artifact_number": 2

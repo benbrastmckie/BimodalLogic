@@ -1,36 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 13,
+  "status": "planned",
+  "dispatch_seq": 14,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/678_canonical_wire_parser_round_trip/reports/01_canonical-wire-parser-round-trip.md",
-      "summary": "Research for the canonical certificate-wire printer, total parser and round-trip theorem: twelve probe-confirmed defects in the current parser (including silent misdecoding of \\t, \\r and \\uXXXX), the reason no theorem is provable against the existing partial defs, a recommended two-layer codec design, and a green sorry-free 147-line proof spike validating the technique."
-    },
-    {
-      "type": "other",
-      "path": "specs/678_canonical_wire_parser_round_trip/spike-json-roundtrip.lean",
-      "summary": "147-line sorry-free spike: mutual-inductive canonical JSON value, canonical printer, fuel-indexed total parser, and the prefix round-trip theorem; compiles green, #print axioms reports only [propext, Quot.sound]. The skeleton the implementation should follow."
-    },
-    {
-      "type": "other",
-      "path": "specs/678_canonical_wire_parser_round_trip/probe-parser-defects.lean",
-      "summary": "Twelve executable probes recording the current parser's observed behaviour on adversarial and ordinary-but-unusual input; the source of the D1-D12 table in the report."
+      "type": "plan",
+      "path": "specs/678_canonical_wire_parser_round_trip/plans/01_canonical-wire-parser-round-trip.md",
+      "summary": "Nine-phase plan for the verified two-layer certificate wire codec: canonical JSON value and printer, total fuel parser, lexical and generic round-trip theorems, fuel sufficiency, schema codec with five contract theorems, envelope migration, and the echo plus joint-contract documentation. Nine theorems pinned in a Lean Challenge Statements block."
     }
   ],
-  "user_decision": {
-    "question": "How should the canonical wire codec handle JSON \\uXXXX escapes, which Python's json.dumps emits by default (ensure_ascii=True) and which the current Lean parser silently misdecodes into a different atom name?",
-    "options": [
-      "Reject \\uXXXX with a protocol error, and pin ensure_ascii=False in the joint canonical contract — requires a one-line change in the producing repository",
-      "Implement \\uXXXX decoding correctly, including surrogate pairs, so the producing side may keep Python's default — no change needed there, but a larger and harder-to-prove escape layer here"
-    ],
-    "recommended": "Reject \\uXXXX with a protocol error, and pin ensure_ascii=False in the joint canonical contract — requires a one-line change in the producing repository",
-    "blocking": false
-  },
+  "next_steps": "Run /implement 678 to execute the plan",
+  "phase_count": 9,
+  "estimated_hours": 16,
+  "dependency_waves": [[1, 2], [3], [4], [5], [6, 7], [8], [9]],
+  "memory_candidates": [
+    {
+      "content": "Verified printer/parser round trips in Lean 4 factor cleanly into two layers, and the split is what makes the proof tractable. Layer 1: a generic canonical value type as MUTUAL inductives (never a nested `List T` field -- the induction hypothesis goes awkward), a `List Char`-valued canonical printer, and a fuel-indexed TOTAL `def` parser (never `partial def`, which yields no equation lemmas and so admits no theorem at all; never `partial_fixpoint`, which gives partial correctness only and leaves totality unestablished). Layer 2: a schema encode/decode pair over that value. The lexical work (escapes, digits, whitespace, arm overlap) is then proved once, generically, in the lemma shape `parse (print x ++ rest) = .ok (x, rest)`, and the schema theorem becomes pure structural induction with no parser state in it. Three load-bearing constraints: (a) no `do`-notation in any function the proof unfolds, because `do` desugars to `<$>`/`bind` which `simp` will not reduce; (b) print/parse integers through `Nat.digits`/`Nat.ofDigits` (`Nat.ofDigits_digits`), never `toString`/`String.toNat?`, for which no bridging lemma exists; (c) set the measure's empty cases to 0, or the fuel-sufficiency bound `size j <= (print j).length` fails at the empty-container leaf. Bridge `String` to `List Char` with `String.toList_append`, `String.toList_ofList`, `String.toList_injective`.",
+      "category": "PATTERN",
+      "source_artifact": "specs/678_canonical_wire_parser_round_trip/plans/01_canonical-wire-parser-round-trip.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["round-trip-theorem", "verified-parser", "mutual-inductive", "fuel-totality", "lean4-codec", "list-char-state"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1790528746_3f1c95_678",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   }
 }
