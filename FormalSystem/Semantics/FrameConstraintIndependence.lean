@@ -110,7 +110,8 @@ namespace FrameConstraintIndependence
 The **empty relation** on a two-point carrier: nothing is related to anything.
 
 *Seriality* fails outright — no state has any successor — while *Compositionality*, *Limit* and
-*Saturation* hold vacuously. Paper: `def:frame#Seriality`.
+*Saturation* hold vacuously.
+Paper: `def:frame#Seriality`
 
 This is `StateTopology.voidRel` restated at a bare `ℤ` duration, so that the aggregate theorem
 below needs no topology import; see this module's header for why a second statement exists.
@@ -118,25 +119,33 @@ below needs no topology import; see this module's header for why a second statem
 def emptyRel : Bool → ℤ → Bool → Prop := fun _ _ _ => False
 
 /-- *Compositionality* holds vacuously for `emptyRel`: both sides of the biconditional are
-`False`. Paper: `def:frame#Compositionality`. -/
+`False`.
+Paper: `def:frame#Compositionality`
+-/
 theorem emptyRel_compositional : TaskFrame.Compositional emptyRel := by
   intro w v x y _ _
   simp [emptyRel]
 
 /-- *Limit* holds vacuously for `emptyRel`: the hypothesis at a positive duration already
-supplies a related pair, and there are none. Paper: `def:frame#Limit`. -/
+supplies a related pair, and there are none.
+Paper: `def:frame#Limit`
+-/
 theorem emptyRel_limit : TaskFrame.Limit emptyRel := by
   intro w u h
   obtain ⟨y, _, hy⟩ := h 1 (by norm_num)
   exact absurd hy (by simp [emptyRel])
 
 /-- *Saturation* holds for `emptyRel`: every fibre is empty, hence a subsingleton, so
-`TaskFrame.saturation_of_fib_subsingleton` applies. Paper: `def:frame#Saturation`. -/
+`TaskFrame.saturation_of_fib_subsingleton` applies.
+Paper: `def:frame#Saturation`
+-/
 theorem emptyRel_saturation : TaskFrame.Saturation emptyRel :=
   TaskFrame.saturation_of_fib_subsingleton fun _ _ u hu =>
     absurd hu (by simp [emptyRel, TaskFrame.Fib])
 
-/-- **`emptyRel` refutes *Seriality*.** Paper: `def:frame#Seriality`. -/
+/-- **`emptyRel` refutes *Seriality*.**
+Paper: `def:frame#Seriality`
+-/
 theorem emptyRel_not_serial : ¬ TaskFrame.Serial emptyRel := by
   intro h
   obtain ⟨⟨_, hu⟩, -⟩ := h true 0 le_rfl
@@ -149,7 +158,7 @@ The **total relation** on a two-point carrier: everything is related to everythi
 duration.
 
 *Limit* fails — `false` lies in every positive cone of `true` — while the other three hold.
-Paper: `def:frame#Limit`.
+Paper: `def:frame#Limit`
 
 **This row is the one the tree did not already have.** The existing *Limit* refutation, the
 four-state funnel's `StateTopology.funnel_not_limit`, carries a `[DenselyOrdered ↑D]` binder, so
@@ -164,19 +173,22 @@ frame is not this witness and cannot be made into one.
 def totalRel : Bool → ℤ → Bool → Prop := fun _ _ _ => True
 
 /-- *Compositionality* holds for `totalRel`: both sides of the biconditional are `True`.
-Paper: `def:frame#Compositionality`. -/
+Paper: `def:frame#Compositionality`
+-/
 theorem totalRel_compositional : TaskFrame.Compositional totalRel := by
   intro w v x y _ _
   simp [totalRel]
 
 /-- *Seriality* holds for `totalRel`, by `TaskFrame.serial_of_total`.
-Paper: `def:frame#Seriality`. -/
+Paper: `def:frame#Seriality`
+-/
 theorem totalRel_serial : TaskFrame.Serial totalRel :=
   TaskFrame.serial_of_total fun _ _ _ => trivial
 
 /-- *Saturation* holds for `totalRel`: every fibre and every segment is the whole carrier, so any
 directed family of them has the whole carrier as its intersection.
-Paper: `def:frame#Saturation`. -/
+Paper: `def:frame#Saturation`
+-/
 theorem totalRel_saturation : TaskFrame.Saturation totalRel := by
   intro S _ hmem
   refine ⟨true, Set.mem_sInter.mpr ?_⟩
@@ -187,7 +199,8 @@ theorem totalRel_saturation : TaskFrame.Saturation totalRel := by
 
 /-- **`totalRel` refutes *Limit*.** `false` lies in every positive cone of `true` — the witness
 duration `0` serves at every radius — so *Limit* would force `false = true`.
-Paper: `def:frame#Limit`. -/
+Paper: `def:frame#Limit`
+-/
 theorem totalRel_not_limit : ¬ TaskFrame.Limit totalRel := by
   intro h
   have hbad := h false true fun x hx => ⟨0, by simpa using hx, trivial⟩
@@ -201,7 +214,8 @@ duration it reaches every later state, and at a negative duration every earlier 
 
 *Saturation* fails — the fibres of a positive duration form a `⊇`-directed family of nonempty
 upward rays whose intersection recedes to infinity and is empty — while *Compositionality*,
-*Seriality* and *Limit* hold. Paper: `def:frame#Saturation`.
+*Seriality* and *Limit* hold.
+Paper: `def:frame#Saturation`
 
 **The failure is a recession failure, not a completeness failure.** Contrast
 `StateTopology.RationalTwoOrigins.not_rel_saturation`, where *Saturation* fails because the
@@ -223,7 +237,9 @@ theorem rayRel_def (w x u : ℤ) :
 
 /-- *Compositionality* holds for `rayRel`. Interpolation splits on whether the second duration is
 zero: at `y = 0` the intermediate state must be the endpoint, and at `0 < y` the source state
-itself serves. Paper: `def:frame#Compositionality`. -/
+itself serves.
+Paper: `def:frame#Compositionality`
+-/
 theorem rayRel_compositional : TaskFrame.Compositional rayRel := by
   intro w v x y hx hy
   rw [rayRel_def]
@@ -242,7 +258,8 @@ theorem rayRel_compositional : TaskFrame.Compositional rayRel := by
 
 /-- *Seriality* holds for `rayRel`: every state is its own successor and predecessor at every
 `x ≥ 0`, through the zero clause at `x = 0` and the positive clause at `0 < x`.
-Paper: `def:frame#Seriality`. -/
+Paper: `def:frame#Seriality`
+-/
 theorem rayRel_serial : TaskFrame.Serial rayRel := by
   intro w x hx
   rcases hx.lt_or_eq with hpos | hzero
@@ -250,7 +267,9 @@ theorem rayRel_serial : TaskFrame.Serial rayRel := by
   · exact ⟨⟨w, Or.inl ⟨hzero.symm, rfl⟩⟩, ⟨w, Or.inl ⟨hzero.symm, rfl⟩⟩⟩
 
 /-- *Limit* holds for `rayRel`, by `TaskFrame.limit_of_succOrder`: the duration order is discrete
-and the only duration-`0` pairs are the identity. Paper: `def:frame#Limit`. -/
+and the only duration-`0` pairs are the identity.
+Paper: `def:frame#Limit`
+-/
 theorem rayRel_limit : TaskFrame.Limit rayRel :=
   TaskFrame.limit_of_succOrder fun w u h => by rw [rayRel_def] at h; omega
 
@@ -259,7 +278,9 @@ theorem rayRel_limit : TaskFrame.Limit rayRel :=
 The family `{Fib rayRel w 1 | w : ℤ}` of duration-`1` fibres is `⊇`-directed (the fibre at
 `max w₁ w₂` is contained in the intersection of the fibres at `w₁` and `w₂`) and every member is a
 nonempty upward ray, yet `⋂₀` of it is empty: for any candidate `a`, the fibre at `a + 1` misses
-it. Paper: `def:frame#Saturation`. -/
+it.
+Paper: `def:frame#Saturation`
+-/
 theorem rayRel_not_saturation : ¬ TaskFrame.Saturation rayRel := by
   intro hsat
   have hdir : TaskFrame.DirectedFamily {s : Set ℤ | ∃ w : ℤ, s = TaskFrame.Fib rayRel w 1} := by
@@ -299,37 +320,96 @@ functionality is what makes three of the four constraints free — `Saturation` 
 fibres, *Limit* from discreteness plus `drift 0 = 0`, *Seriality* from surjectivity of each shift
 — so the only thing left for the witness to break is *Compositionality*.
 
-Paper: `def:frame#Compositionality`. A different witness for the same row already exists in the
+A different witness for the same row already exists in the
 tree, `StateTopology.bumpRel`, which breaks *Compositionality* by a clause boundary at `|d| ≥ 2`
 rather than by non-additivity; see this module's header.
+
+Paper: `def:frame#Compositionality`
 -/
 def driftRel : ℤ → ℤ → ℤ → Prop := fun w x u => u = w + drift x
 
 /-- *Seriality* holds for `driftRel`: each shift is a bijection of `ℤ`, so `w + drift x` is a
-successor and `w - drift x` a predecessor. Paper: `def:frame#Seriality`. -/
+successor and `w - drift x` a predecessor.
+Paper: `def:frame#Seriality`
+-/
 theorem driftRel_serial : TaskFrame.Serial driftRel := fun w x _ =>
   ⟨⟨w + drift x, rfl⟩, ⟨w - drift x, by simp [driftRel]⟩⟩
 
 /-- *Limit* holds for `driftRel`, by `TaskFrame.limit_of_succOrder` with the zero-duration
-hypothesis discharged by `drift 0 = 0`. Paper: `def:frame#Limit`. -/
+hypothesis discharged by `drift 0 = 0`.
+Paper: `def:frame#Limit`
+-/
 theorem driftRel_limit : TaskFrame.Limit driftRel :=
   TaskFrame.limit_of_succOrder fun w u h => by simpa [driftRel, drift] using h
 
 /-- *Saturation* holds for `driftRel`: the relation is presented by the function
 `fun w x => w + drift x`, so every fibre is a subsingleton and
-`TaskFrame.saturation_of_fib_subsingleton` applies. Paper: `def:frame#Saturation`. -/
+`TaskFrame.saturation_of_fib_subsingleton` applies.
+Paper: `def:frame#Saturation`
+-/
 theorem driftRel_saturation : TaskFrame.Saturation driftRel :=
   TaskFrame.saturation_of_fib_subsingleton
     (TaskFrame.fib_subsingleton_of_functional (f := fun w x => w + drift x) fun _ _ _ => Iff.rfl)
 
 /-- **`driftRel` refutes *Compositionality*.** At `x = y = 1` two steps compose to `w + 10`, while
 the single step of duration `2` gives `w + 2`; `10 ≠ 2`, so the biconditional fails from right to
-left. Paper: `def:frame#Compositionality`. -/
+left.
+Paper: `def:frame#Compositionality`
+-/
 theorem driftRel_not_compositional : ¬ TaskFrame.Compositional driftRel := by
   intro h
   have hbad := (h 0 10 1 1 (by norm_num) (by norm_num)).mpr
     ⟨5, by simp [driftRel, drift], by simp [driftRel, drift]⟩
   simp [driftRel, drift] at hbad
+
+/-! ### The independence matrix -/
+
+/--
+**Each of `def:frame`'s four constraints is independent of the other three**, over `ℤ`.
+
+The duration type `intOrder` *is* `ℤ` — reducibly, and by `rfl` — so this is independence over the
+very time structure the certificate uses, not over a convenient stand-in. Each conjunct supplies a
+carrier and a relation satisfying three of `TaskFrame.Compositional`, `TaskFrame.Serial`,
+`TaskFrame.Limit`, `TaskFrame.Saturation` and refuting the fourth, in that order: *Seriality*,
+*Limit*, *Saturation*, *Compositionality*.
+
+**What this licenses.** Exactly one claim: *the four-clause frame-condition row cannot be
+compressed to three, over the certificate's own time structure.* An audit that tabulates
+`def:frame`'s constraints against their Lean transcriptions has four rows there, and this theorem
+says no reading of the other three yields the fourth, so those four rows are irreducible.
+
+**What this does not license.** Any claim whatever about the *definitional* audit surface. The
+number of Lean **definitions** a human must read against the paper's text is a different quantity
+from the number of **clauses** in one axiom list, and this theorem bounds only the second. Ten
+supporting definitions stand behind the four clauses — the fibre and segment vocabulary
+(`TaskFrame.Fib`, `Seg`, `cone`, `IsFiber`, `IsSegment`, `DirectedFamily`, and the constraint
+predicates themselves) — and they are named rather than inlined on purpose, so they are read
+individually and counted individually. Conflating the clause count with the definition count is the
+specific error `docs/reference/transcription-audit-surface.md` exists to prevent; that document
+states the definitional residue as a count and keeps the two surfaces apart throughout.
+
+Paper: `def:frame`
+-/
+theorem constraints_pairwise_independent :
+    (∃ (W : Type) (R : W → ℤ → W → Prop),
+        TaskFrame.Compositional R ∧ TaskFrame.Limit R ∧ TaskFrame.Saturation R ∧
+          ¬ TaskFrame.Serial R) ∧
+    (∃ (W : Type) (R : W → ℤ → W → Prop),
+        TaskFrame.Compositional R ∧ TaskFrame.Serial R ∧ TaskFrame.Saturation R ∧
+          ¬ TaskFrame.Limit R) ∧
+    (∃ (W : Type) (R : W → ℤ → W → Prop),
+        TaskFrame.Compositional R ∧ TaskFrame.Serial R ∧ TaskFrame.Limit R ∧
+          ¬ TaskFrame.Saturation R) ∧
+    (∃ (W : Type) (R : W → ℤ → W → Prop),
+        TaskFrame.Serial R ∧ TaskFrame.Limit R ∧ TaskFrame.Saturation R ∧
+          ¬ TaskFrame.Compositional R) :=
+  ⟨⟨Bool, emptyRel, emptyRel_compositional, emptyRel_limit, emptyRel_saturation,
+      emptyRel_not_serial⟩,
+   ⟨Bool, totalRel, totalRel_compositional, totalRel_serial, totalRel_saturation,
+      totalRel_not_limit⟩,
+   ⟨ℤ, rayRel, rayRel_compositional, rayRel_serial, rayRel_limit, rayRel_not_saturation⟩,
+   ⟨ℤ, driftRel, driftRel_serial, driftRel_limit, driftRel_saturation,
+      driftRel_not_compositional⟩⟩
 
 end FrameConstraintIndependence
 

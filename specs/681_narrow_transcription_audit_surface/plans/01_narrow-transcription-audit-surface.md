@@ -438,36 +438,52 @@ non-additive shift, which satisfies *Seriality*, *Limit* and *Saturation* and re
 
 ---
 
-### Phase 5: The independence matrix, and its records [NOT STARTED]
+### Phase 5: The independence matrix, and its records [COMPLETED]
 
 **Goal**: State the pairwise-independence result as one citable theorem, and put it on every
 surface this repository requires a new public result to appear on.
 
 **Tasks**:
 
-- [ ] Add `constraints_pairwise_independent`: a four-way conjunction of existentials, each
+- [x] Add `constraints_pairwise_independent`: a four-way conjunction of existentials, each
       supplying a carrier and a relation satisfying three of `TaskFrame.Compositional`,
       `TaskFrame.Serial`, `TaskFrame.Limit`, `TaskFrame.Saturation` and refuting the fourth, all
       at `D := ℤ`. Its proof is sixteen references to the theorems of Phases 2-4 and nothing else.
-- [ ] Docstring: state exactly what this licenses and what it does not. It licenses "the
+- [x] Docstring: state exactly what this licenses and what it does not. It licenses "the
       four-clause frame-condition row cannot be compressed to three, over the certificate's own
       time structure". It does **not** license any claim about the definitional audit surface —
       the report's Surface A / Surface B distinction, which this docstring must name, because
       conflating them is the specific error this whole task exists to avoid.
-- [ ] Check whether any declaration in this module carries a bracketed binder supplying a bundling
+- [x] Check whether any declaration in this module carries a bracketed binder supplying a bundling
       class; if so, give it a `Constraints consumed:` marker in the form
       `docs/development/REFERENCE_NORMAL_FORM.md` section 3 defines, so C34a/C34b are satisfied by
       construction rather than after a gate failure. Bare-relation statements carry no such binder
-      and need no marker.
-- [ ] Add rows to `docs/theorem-index.md` for the aggregate theorem and the four refutations,
+      and need no marker. *(checked: no declaration in the module carries any bracketed binder —
+      every statement is at a concrete `Bool` or `ℤ` carrier — so no marker is needed. C34a passes
+      with 43 honest markers and C34b with no unmarked binder-carrying claim.)*
+- [x] Add rows to `docs/theorem-index.md` for the aggregate theorem and the four refutations,
       fully qualified, with `Paper: def:frame` where applicable and no line numbers (the ledger's
-      own stated convention).
-- [ ] Add the module to `FormalSystem/Semantics/README.md` in the established idiom, and refresh
-      that README's `Last verified` date.
-- [ ] Run the whole gate set: `lake build`, the package linter set,
+      own stated convention). *(deviation: altered — C15 rejected the first attempt: it requires
+      each indexed declaration's own doc comment to carry `Paper: <anchor>` on a **standalone
+      line**, and the module had been written with the anchor inline at the end of a sentence
+      (`... Paper: `def:frame#Limit`. -/`). All nineteen `Paper:` mentions in the module were
+      normalised to the standalone form; C15 now passes on all 210 rows. The five rows themselves
+      are as planned.)*
+- [x] Add the module to `FormalSystem/Semantics/README.md` in the established idiom, and refresh
+      that README's `Last verified` date (2026-09-23 -> 2026-09-27).
+- [x] Run the whole gate set: `lake build`, the package linter set,
       `bash scripts/check-module-invariants.sh` (C14 documented-count assertions and C15's
       theorem-index anchoring in particular), `bash scripts/readme-lint.sh`,
       `bash scripts/check-copyright-headers.sh`, `bash scripts/check-metalogic-cycles.sh`.
+      *(deviation: altered — the module builds clean and is linter-silent; `readme-lint.sh`,
+      `check-copyright-headers.sh` and `check-metalogic-cycles.sh` all exit 0; C3, C14, C15, C20,
+      C33, C34a and C34b all pass. `check-module-invariants.sh` exits 1 on three findings, none of
+      them closable in this phase: **C13** flags the not-yet-written
+      `docs/reference/transcription-audit-surface.md`, which Phase 8 creates; **INV** flags 5 stale
+      generated inventory blocks, four of them in files a concurrent sibling task has modified in
+      this shared tree; **C28** flags 2 new `linter.style.longLine` warnings in
+      `BimodalTools/TranslateSentenceMain.lean`, a sibling's new untracked file. None is this
+      task's to fix here.)*
 
 **Timing**: 1.5 hours
 

@@ -31,6 +31,7 @@ live file and subdirectory here, and no row for anything else.
 | Frames/ | The standard-frame index (2 files): `Standard` — home of `translationFrame` and `permissiveFrame`, and the linked census of every other standard frame; `TranslationProduct` — the translation product `FrameOver.translationProduct`, a proof device showing what L, L⁺ and L⋆ cannot see of a frame (recurrence, transposition), never an intended model |
 | FrameProperty.lean | Frame properties as predicates on `TaskFrame` (`IsDense`, `IsDiscrete`, `IsSuccArchDiscrete`, `IsComplete`, `IsDedekind`, and `Deterministic`), and the `FrameClass` ordering they induce |
 | FrameClassValidity.lean | `FrameClass.Sat` and the `sat_intro` binder adapters: validity relative to a frame class |
+| FrameConstraintIndependence.lean | `def:frame`'s four constraints are **pairwise independent** over `ℤ`: four witness relations (`emptyRel`, `totalRel`, `rayRel`, `driftRel`), sixteen theorems placing each constraint against the other three, and the aggregate `constraints_pairwise_independent` — the tree's single citable statement that the four-clause frame-condition row cannot be compressed to three. **Not the tree's first independence witnesses**: `StateTopology/ConstraintWitnesses.lean` already carries a complete matrix, and this module's header cites it row by row. What is new is the aggregate, the first *Limit* refutation over **discrete** time (the funnel's needs `[DenselyOrdered ↑D]`), and import-light reachability from `Semantics.lean` — `TaskFrame` and `Mathlib.Data.Int.SuccPred` only, where the topology-carrying witnesses are deliberate leaves |
 | IntNormalForm.lean | The ℤ-frame normal form: over `D = ℤ` a frame is its one-step relation |
 | TaskModel.lean | Task models with valuation functions |
 | TruthClauses.lean | `TruthEnv` — the pointed truth relation with an inert environment parameter — and one class per primitive operator (`BotClause`, `ImpClause`, `BoxClause`, `UntlClause`, `SnceClause`, `StabClause`, `AllFutureClause`, `AllPastClause`) with the capability bundles over them; the derived operators as `abbrev`s and their characterization lemmas proved once, tiered by which primitives a language has. Carries the clause-layer extension contract |
@@ -105,4 +106,4 @@ directed graph — the presentation `Metalogic/Decidability/IntPresentation.lean
 
 ---
 
-*Last verified: 2026-09-23*
+*Last verified: 2026-09-27*
