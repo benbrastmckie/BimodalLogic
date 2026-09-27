@@ -344,28 +344,35 @@ occurrences were found in any live `.lean` file)*
 
 ---
 
-### Phase 5: Refresh verification dates and run the gate set [NOT STARTED]
+### Phase 5: Refresh verification dates and run the gate set [COMPLETED]
 
 **Goal**: The three changed READMEs carry current "Last verified" dates and the repository's
 documentation invariants pass on the changed files.
 
 **Tasks**:
-- [ ] Update the `*Last verified: YYYY-MM-DD*` trailer to today's date in each README changed by
+- [x] Update the `*Last verified: YYYY-MM-DD*` trailer to today's date in each README changed by
       Phases 1, 3 and 4: `FormalSystem/Metalogic/Decidability/WitnessFamily/README.md`,
       `FormalSystem/Metalogic/Decidability/BiLasso/README.md`, `BimodalTools/README.md` (all three
-      currently read 2026-09-24).
-- [ ] Run `bash scripts/readme-lint.sh FormalSystem` and confirm no gated failure attributable to
-      these changes.
-- [ ] Run `bash scripts/check-module-invariants.sh` (or its `--no-build` mode plus a targeted
+      currently read 2026-09-24). *(completed: all three now read 2026-09-27)*
+- [x] Run `bash scripts/readme-lint.sh FormalSystem` and confirm no gated failure attributable to
+      these changes. *(completed: overall RESULT: PASS)*
+- [x] Run `bash scripts/check-module-invariants.sh` (or its `--no-build` mode plus a targeted
       `lake build` if a full build is impractical on this shared tree) and confirm the
       documentation-facing invariants are clean for the changed files: C5 (`FormalSystem.*` module
       paths resolve), C9/C9D (zero task-number citations), C13 (relative markdown links), C20
       (`file.lean:NNN` citations), C32 (relative links inside `.lean` comments). These scripts are
       **invoked read-only**; they are in a sibling task's declared file scope and must not be
-      edited here.
-- [ ] If a gate fails inside a file outside this task's own changed set, check `git log` and report
+      edited here. *(completed: ran `--no-build`; C5/C9/C9D/C13/C20/C32 all PASS)*
+- [x] If a gate fails inside a file outside this task's own changed set, check `git log` and report
       it as a possible sibling in-flight edit rather than treating it as this task's regression.
-- [ ] `git status --short`; `git add -- ` the three README paths explicitly; commit.
+      *(completed: two unrelated failures -- stale-inventory-block INV and C33's missing
+      `FormalSystem.SourceLanguage.SentenceTruth` import -- traced via `git status`/`git log` to
+      sibling task 679's uncommitted, untracked `FormalSystem/SourceLanguage.lean` and
+      `FormalSystem/SourceLanguage/`; reported here, not treated as this task's regression)*
+- [x] `git status --short`; `git add -- ` the three README paths explicitly; commit.
+      *(completed: commit 167973b94, staged via a partial hunk for
+      `WitnessFamily/README.md` to avoid sweeping in sibling task 681's concurrent, unstaged
+      edit to the same file's Modules table)*
 
 **Timing**: 0.5 hours
 
@@ -395,18 +402,22 @@ fourth file was touched by an earlier phase, refresh its trailer too and say so 
 
 ## Testing & Validation
 
-- [ ] `lake build FormalSystem.Metalogic.Decidability.BiLasso.Assembly` exits 0 (Phase 2).
-- [ ] `scripts/readme-lint.sh FormalSystem` shows no gated failure on the changed files.
-- [ ] `scripts/check-module-invariants.sh` clean for C5, C9, C9D, C13, C20, C32.
-- [ ] Zero occurrences of "open theorem" / "Exactly one theorem" framing for `fmp` in
-      `Assembly.lean` and `BiLasso/README.md`.
-- [ ] Zero occurrences of `ValidDiscrete` in `BiLasso/README.md`.
-- [ ] Zero task-number citations in any file changed under `FormalSystem/**` or `BimodalTools/**`.
-- [ ] The satisfiable-in-principle record, the non-monotonicity correction, and the
+- [x] `lake build FormalSystem.Metalogic.Decidability.BiLasso.Assembly` exits 0 (Phase 2).
+      *(verified)*
+- [x] `scripts/readme-lint.sh FormalSystem` shows no gated failure on the changed files.
+      *(verified: overall RESULT: PASS)*
+- [x] `scripts/check-module-invariants.sh` clean for C5, C9, C9D, C13, C20, C32. *(verified via
+      `--no-build`; all six PASS)*
+- [x] Zero occurrences of "open theorem" / "Exactly one theorem" framing for `fmp` in
+      `Assembly.lean` and `BiLasso/README.md`. *(verified: grep returns nothing)*
+- [x] Zero occurrences of `ValidDiscrete` in `BiLasso/README.md`. *(verified: 0)*
+- [x] Zero task-number citations in any file changed under `FormalSystem/**` or `BimodalTools/**`.
+      *(verified: grep returns nothing)*
+- [x] The satisfiable-in-principle record, the non-monotonicity correction, and the
       divisibility-not-magnitude corollary are all three present in
-      `WitnessFamily/README.md`.
-- [ ] The scope sentence appears in both `Assembly.lean` and `BiLasso/README.md`, in each case
-      stating "by construction" and ruling out a truth-clause extension.
+      `WitnessFamily/README.md`. *(verified)*
+- [x] The scope sentence appears in both `Assembly.lean` and `BiLasso/README.md`, in each case
+      stating "by construction" and ruling out a truth-clause extension. *(verified)*
 
 ## Artifacts & Outputs
 
