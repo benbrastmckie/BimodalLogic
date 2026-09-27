@@ -1,7 +1,7 @@
 # Implementation Plan: Canonical Wire Parser Round Trip
 
 - **Task**: 678 - canonical_wire_parser_round_trip
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 16 hours
 - **Dependencies**: 677 (completed)
 - **Research Inputs**: specs/678_canonical_wire_parser_round_trip/reports/01_canonical-wire-parser-round-trip.md
@@ -147,7 +147,7 @@ Goals identifiers.
 Phases within the same wave can execute in parallel. Phase 7 additionally requires Phase 2,
 which completed in Wave 1.
 
-### Phase 1: Canonical JSON value, measure and printer [NOT STARTED]
+### Phase 1: Canonical JSON value, measure and printer [COMPLETED]
 
 **Goal**: `BimodalTools/CanonicalWire/Json.lean` exists and compiles: the mutual-inductive
 canonical JSON value, its fuel measure, the escape and digit printers, and the canonical printer

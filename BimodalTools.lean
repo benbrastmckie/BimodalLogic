@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import BimodalTools.AtomCanonicalization
 import BimodalTools.AxiomNames
+import BimodalTools.CanonicalWire
 import BimodalTools.CertificateImport
 import BimodalTools.ContrastiveGenerator
 import BimodalTools.DataExport
