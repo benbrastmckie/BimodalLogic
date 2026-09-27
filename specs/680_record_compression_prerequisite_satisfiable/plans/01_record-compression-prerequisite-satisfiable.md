@@ -179,15 +179,15 @@ missing.
 
 ---
 
-### Phase 2: Correct `fmp`'s status and state the scope in `Assembly.lean` [NOT STARTED]
+### Phase 2: Correct `fmp`'s status and state the scope in `Assembly.lean` [COMPLETED]
 
 **Goal**: `Assembly.lean`'s module docstring no longer calls `fmp` open, and carries the durable
 without-stability-modal scope sentence.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean` immediately before
-      editing.
-- [ ] Replace the sentence "`fmp` is the one open theorem between this layer and decidability of
+- [x] Re-read `FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean` immediately before
+      editing. *(completed)*
+- [x] Replace the sentence "`fmp` is the one open theorem between this layer and decidability of
       `ValidZTime`." (currently at line 23, inside the `/-! ... -/` module comment) with a
       statement that `fmp` in this literal candidate-list-of-finite-presentations form is
       **refuted — closed negatively, not open** — for *every* candidate list, by
@@ -195,11 +195,11 @@ without-stability-modal scope sentence.
       (`specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean`),
       with the witness `□(p ∨ Fp ∨ Pp) ∧ □(p → ¬Pp)`: satisfiable over the ℤ-carrier `ShiftSet`,
       satisfiable at no state of any finite presentation. Cite by declaration name and
-      parenthesised path, with **no** line number.
-- [ ] Keep the surrounding accurate material (the box-faithfulness crux, the
+      parenthesised path, with **no** line number. *(completed)*
+- [x] Keep the surrounding accurate material (the box-faithfulness crux, the
       `exists_annot_of_truth`-compresses-within-a-presentation point) intact; adjust only the
-      sentences that assert openness or that read as "one theorem still needed".
-- [ ] Add the durable scope sentence to the same module comment: this module decides `ValidZTime`
+      sentences that assert openness or that read as "one theorem still needed". *(completed)*
+- [x] Add the durable scope sentence to the same module comment: this module decides `ValidZTime`
       for `FormalSystem.Syntax.Formula`, the base language **without** the stability modal `⊡`
       (which lives only in `FormalSystem.PlusLanguage.Formula`'s `PlusFormula`, so `ValidZTime`
       cannot even state a claim about it); the certified witness models are `ShiftSet`-built and
@@ -207,11 +207,12 @@ without-stability-modal scope sentence.
       collapses to the identity (`PlusDeterminism.stab_iff_of_deterministic`). State explicitly
       that the device is therefore silent on `⊡` **by construction** rather than merely incomplete
       for it, and that it cannot be extended to cover `⊡` by adding a truth clause — a genuinely
-      different, branching witness structure is required.
-- [ ] Verify no task number appears in the added text.
-- [ ] `lake build FormalSystem.Metalogic.Decidability.BiLasso.Assembly`.
-- [ ] `git status --short`; `git add -- FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean`;
-      commit.
+      different, branching witness structure is required. *(completed: added under new "## Scope"
+      heading in the same module comment)*
+- [x] Verify no task number appears in the added text. *(completed: grep confirmed)*
+- [x] `lake build FormalSystem.Metalogic.Decidability.BiLasso.Assembly`. *(completed: exit 0)*
+- [x] `git status --short`; `git add -- FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean`;
+      commit. *(completed: commit 220ac36b5)*
 
 **Timing**: 0.5 hours
 
