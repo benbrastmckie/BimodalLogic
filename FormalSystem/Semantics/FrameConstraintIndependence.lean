@@ -280,6 +280,57 @@ theorem rayRel_not_saturation : ¬ TaskFrame.Saturation rayRel := by
   rw [TaskFrame.mem_Fib, rayRel_def] at hbad
   omega
 
+/-! ### The *Compositionality* witness -/
+
+/--
+A **non-additive reindexing of durations**: the identity except at `1`, where it takes the value
+`5`.
+
+Non-additivity at a single point is the whole content of the *Compositionality* refutation below:
+`drift 1 + drift 1 = 10` while `drift (1 + 1) = 2`.
+-/
+def drift : ℤ → ℤ := fun x => if x = 1 then 5 else x
+
+/--
+A **functional but non-additive shift**: `w ⇒_x u` iff `u = w + drift x`.
+
+*Compositionality* fails, and the other three hold. The witness is **functional on purpose**:
+functionality is what makes three of the four constraints free — `Saturation` from subsingleton
+fibres, *Limit* from discreteness plus `drift 0 = 0`, *Seriality* from surjectivity of each shift
+— so the only thing left for the witness to break is *Compositionality*.
+
+Paper: `def:frame#Compositionality`. A different witness for the same row already exists in the
+tree, `StateTopology.bumpRel`, which breaks *Compositionality* by a clause boundary at `|d| ≥ 2`
+rather than by non-additivity; see this module's header.
+-/
+def driftRel : ℤ → ℤ → ℤ → Prop := fun w x u => u = w + drift x
+
+/-- *Seriality* holds for `driftRel`: each shift is a bijection of `ℤ`, so `w + drift x` is a
+successor and `w - drift x` a predecessor. Paper: `def:frame#Seriality`. -/
+theorem driftRel_serial : TaskFrame.Serial driftRel := fun w x _ =>
+  ⟨⟨w + drift x, rfl⟩, ⟨w - drift x, by simp [driftRel]⟩⟩
+
+/-- *Limit* holds for `driftRel`, by `TaskFrame.limit_of_succOrder` with the zero-duration
+hypothesis discharged by `drift 0 = 0`. Paper: `def:frame#Limit`. -/
+theorem driftRel_limit : TaskFrame.Limit driftRel :=
+  TaskFrame.limit_of_succOrder fun w u h => by simpa [driftRel, drift] using h
+
+/-- *Saturation* holds for `driftRel`: the relation is presented by the function
+`fun w x => w + drift x`, so every fibre is a subsingleton and
+`TaskFrame.saturation_of_fib_subsingleton` applies. Paper: `def:frame#Saturation`. -/
+theorem driftRel_saturation : TaskFrame.Saturation driftRel :=
+  TaskFrame.saturation_of_fib_subsingleton
+    (TaskFrame.fib_subsingleton_of_functional (f := fun w x => w + drift x) fun _ _ _ => Iff.rfl)
+
+/-- **`driftRel` refutes *Compositionality*.** At `x = y = 1` two steps compose to `w + 10`, while
+the single step of duration `2` gives `w + 2`; `10 ≠ 2`, so the biconditional fails from right to
+left. Paper: `def:frame#Compositionality`. -/
+theorem driftRel_not_compositional : ¬ TaskFrame.Compositional driftRel := by
+  intro h
+  have hbad := (h 0 10 1 1 (by norm_num) (by norm_num)).mpr
+    ⟨5, by simp [driftRel, drift], by simp [driftRel, drift]⟩
+  simp [driftRel, drift] at hbad
+
 end FrameConstraintIndependence
 
 end FormalSystem.Semantics

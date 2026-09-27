@@ -389,7 +389,7 @@ into the other three.
 
 ---
 
-### Phase 4: The *Compositionality* witness [NOT STARTED]
+### Phase 4: The *Compositionality* witness [COMPLETED]
 
 **Goal**: Land the one witness the report designed but did not write: a functional but
 non-additive shift, which satisfies *Seriality*, *Limit* and *Saturation* and refutes
@@ -397,21 +397,24 @@ non-additive shift, which satisfies *Seriality*, *Limit* and *Saturation* and re
 
 **Tasks**:
 
-- [ ] Add `drift : ℤ → ℤ`, the identity except at `1`, where it takes the value `5`, with a
+- [x] Add `drift : ℤ → ℤ`, the identity except at `1`, where it takes the value `5`, with a
       docstring stating that non-additivity at a single point is the whole content of the
       refutation.
-- [ ] Add `driftRel : ℤ → ℤ → ℤ → Prop := fun w x u => u = w + drift x`.
-- [ ] Prove `driftRel_saturation` from `TaskFrame.saturation_of_fib_subsingleton` composed with
+- [x] Add `driftRel : ℤ → ℤ → ℤ → Prop := fun w x u => u = w + drift x`.
+- [x] Prove `driftRel_saturation` from `TaskFrame.saturation_of_fib_subsingleton` composed with
       `TaskFrame.fib_subsingleton_of_functional` (the relation is functional, so every fibre is a
       subsingleton), `driftRel_limit` from `TaskFrame.limit_of_succOrder` with the zero-duration
       hypothesis discharged by `drift 0 = 0`, and `driftRel_serial` from surjectivity (successor
       `w + drift x`, predecessor `w - drift x`).
-- [ ] Prove `driftRel_not_compositional`: at `x = y = 1`, composition gives `w + 10` while the
+- [x] Prove `driftRel_not_compositional`: at `x = y = 1`, composition gives `w + 10` while the
       single step of duration `2` gives `w + 2`, and `10 ≠ 2`.
-- [ ] Docstring: record that this witness is functional *on purpose* — functionality is what makes
+- [x] Docstring: record that this witness is functional *on purpose* — functionality is what makes
       three of the four constraints free, isolating *Compositionality* as the only thing the
-      witness has to break.
-- [ ] `lake build`, linter set, commit.
+      witness has to break. *(deviation: altered — the docstring additionally names
+      `StateTopology.bumpRel`, the already-landed witness for this same row, and says how the two
+      differ (clause boundary at `|d| ≥ 2` versus non-additivity), per Phase 2's Scope Hypothesis
+      finding.)*
+- [x] `lake build`, linter set, commit.
 
 **Timing**: 2 hours
 
