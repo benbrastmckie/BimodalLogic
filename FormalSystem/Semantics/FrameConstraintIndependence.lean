@@ -193,6 +193,93 @@ theorem totalRel_not_limit : ¬ TaskFrame.Limit totalRel := by
   have hbad := h false true fun x hx => ⟨0, by simpa using hx, trivial⟩
   simp at hbad
 
+/-! ### The *Saturation* witness -/
+
+/--
+**Upward rays on the integers**: at duration `0` the relation is the identity, at a positive
+duration it reaches every later state, and at a negative duration every earlier one.
+
+*Saturation* fails — the fibres of a positive duration form a `⊇`-directed family of nonempty
+upward rays whose intersection recedes to infinity and is empty — while *Compositionality*,
+*Seriality* and *Limit* hold. Paper: `def:frame#Saturation`.
+
+**The failure is a recession failure, not a completeness failure.** Contrast
+`StateTopology.RationalTwoOrigins.not_rel_saturation`, where *Saturation* fails because the
+rational carrier is missing the point `√2` that a straddling family's intersection would have to
+be: there the family is bounded and the carrier is incomplete. Here the carrier `ℤ` is as complete
+as a discrete order can be, and the family is unbounded above. The two mechanisms are independent,
+and reading this witness as a second instance of that one gets the geometry backwards.
+-/
+def rayRel : ℤ → ℤ → ℤ → Prop := fun w x u => (x = 0 ∧ u = w) ∨ (0 < x ∧ w ≤ u) ∨ (x < 0 ∧ u ≤ w)
+
+/-- `rayRel` unfolded, as a rewriting lemma.
+
+Deliberately **not** `@[simp]`, and used with `rw` rather than `simp only` throughout: `simp`
+collapses a reflexive conjunct such as `w = w` to `True`, and `omega` cannot parse `True`, so
+simping the definition open destroys exactly the arithmetic front end that stating this witness at
+`ℤ` was meant to provide. -/
+theorem rayRel_def (w x u : ℤ) :
+    rayRel w x u ↔ (x = 0 ∧ u = w) ∨ (0 < x ∧ w ≤ u) ∨ (x < 0 ∧ u ≤ w) := Iff.rfl
+
+/-- *Compositionality* holds for `rayRel`. Interpolation splits on whether the second duration is
+zero: at `y = 0` the intermediate state must be the endpoint, and at `0 < y` the source state
+itself serves. Paper: `def:frame#Compositionality`. -/
+theorem rayRel_compositional : TaskFrame.Compositional rayRel := by
+  intro w v x y hx hy
+  rw [rayRel_def]
+  constructor
+  · intro h
+    rcases hy.lt_or_eq with hy0 | hy0
+    · refine ⟨w, ?_, ?_⟩
+      · rw [rayRel_def]; omega
+      · rw [rayRel_def]; omega
+    · refine ⟨v, ?_, ?_⟩
+      · rw [rayRel_def]; omega
+      · rw [rayRel_def]; omega
+  · rintro ⟨u, h1, h2⟩
+    rw [rayRel_def] at h1 h2
+    omega
+
+/-- *Seriality* holds for `rayRel`: every state is its own successor and predecessor at every
+`x ≥ 0`, through the zero clause at `x = 0` and the positive clause at `0 < x`.
+Paper: `def:frame#Seriality`. -/
+theorem rayRel_serial : TaskFrame.Serial rayRel := by
+  intro w x hx
+  rcases hx.lt_or_eq with hpos | hzero
+  · exact ⟨⟨w, Or.inr (Or.inl ⟨hpos, le_rfl⟩)⟩, ⟨w, Or.inr (Or.inl ⟨hpos, le_rfl⟩)⟩⟩
+  · exact ⟨⟨w, Or.inl ⟨hzero.symm, rfl⟩⟩, ⟨w, Or.inl ⟨hzero.symm, rfl⟩⟩⟩
+
+/-- *Limit* holds for `rayRel`, by `TaskFrame.limit_of_succOrder`: the duration order is discrete
+and the only duration-`0` pairs are the identity. Paper: `def:frame#Limit`. -/
+theorem rayRel_limit : TaskFrame.Limit rayRel :=
+  TaskFrame.limit_of_succOrder fun w u h => by rw [rayRel_def] at h; omega
+
+/-- **`rayRel` refutes *Saturation*.**
+
+The family `{Fib rayRel w 1 | w : ℤ}` of duration-`1` fibres is `⊇`-directed (the fibre at
+`max w₁ w₂` is contained in the intersection of the fibres at `w₁` and `w₂`) and every member is a
+nonempty upward ray, yet `⋂₀` of it is empty: for any candidate `a`, the fibre at `a + 1` misses
+it. Paper: `def:frame#Saturation`. -/
+theorem rayRel_not_saturation : ¬ TaskFrame.Saturation rayRel := by
+  intro hsat
+  have hdir : TaskFrame.DirectedFamily {s : Set ℤ | ∃ w : ℤ, s = TaskFrame.Fib rayRel w 1} := by
+    refine ⟨⟨TaskFrame.Fib rayRel 0 1, 0, rfl⟩, ?_⟩
+    rintro s₁ ⟨w₁, rfl⟩ s₂ ⟨w₂, rfl⟩
+    refine ⟨TaskFrame.Fib rayRel (max w₁ w₂) 1, ⟨max w₁ w₂, rfl⟩, ?_⟩
+    intro u hu
+    simp only [Set.mem_inter_iff, TaskFrame.mem_Fib, rayRel_def] at hu ⊢
+    omega
+  have hmem : ∀ s ∈ {s : Set ℤ | ∃ w : ℤ, s = TaskFrame.Fib rayRel w 1},
+      (TaskFrame.IsFiber rayRel s ∨ TaskFrame.IsSegment rayRel s) ∧ s.Nonempty := by
+    rintro s ⟨w, rfl⟩
+    refine ⟨Or.inl ⟨w, 1, rfl⟩, ⟨w, ?_⟩⟩
+    rw [TaskFrame.mem_Fib, rayRel_def]
+    omega
+  obtain ⟨a, ha⟩ := hsat _ hdir hmem
+  have hbad := Set.mem_sInter.mp ha (TaskFrame.Fib rayRel (a + 1) 1) ⟨a + 1, rfl⟩
+  rw [TaskFrame.mem_Fib, rayRel_def] at hbad
+  omega
+
 end FrameConstraintIndependence
 
 end FormalSystem.Semantics

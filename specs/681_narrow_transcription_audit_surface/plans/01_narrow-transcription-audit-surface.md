@@ -331,7 +331,7 @@ with them must be cited rather than duplicated.
 
 ---
 
-### Phase 3: The *Saturation* witness [NOT STARTED]
+### Phase 3: The *Saturation* witness [COMPLETED]
 
 **Goal**: Land the upward-ray relation, which satisfies *Compositionality*, *Seriality* and
 *Limit* and refutes *Saturation* — the witness that stops the fourth constraint being absorbed
@@ -339,21 +339,35 @@ into the other three.
 
 **Tasks**:
 
-- [ ] Re-read the module, then add
+- [x] Re-read the module, then add
       `rayRel : ℤ → ℤ → ℤ → Prop := fun w x u => (x = 0 ∧ u = w) ∨ (0 < x ∧ w ≤ u) ∨ (x < 0 ∧ u ≤ w)`,
       stated at `D := ℤ` throughout.
-- [ ] Prove `rayRel_compositional`, `rayRel_serial` and `rayRel_limit` by `rcases` plus `omega`,
+- [x] Prove `rayRel_compositional`, `rayRel_serial` and `rayRel_limit` by `rcases` plus `omega`,
       which works at `ℤ` — this is where the statement-level mitigation pays off. Where a vacuous
       branch still resists, use explicit `lt_irrefl` / `le_trans` steps rather than reaching for a
-      coercion lemma.
-- [ ] Prove `rayRel_not_saturation` with the report's verified construction: the family
+      coercion lemma. *(deviation: altered — one auxiliary lemma `rayRel_def` (a plain `Iff.rfl`,
+      deliberately **not** `@[simp]`) was added, and the definition is opened with `rw [rayRel_def]`
+      rather than `simp only [rayRel]`. Measured reason: `simp only [rayRel]` collapses the
+      reflexive conjunct `w = w` to `True`, and `omega` then reports "No usable constraints found"
+      — simping the definition open destroys the very arithmetic front end that stating the witness
+      at `ℤ` was meant to provide. `rayRel_serial` is an explicit term proof rather than
+      `rcases` + `omega`, for the same reason. The docstring on `rayRel_def` records this so a
+      later editor does not convert it to a simp lemma.)*
+- [x] Prove `rayRel_not_saturation` with the report's verified construction: the family
       `{TaskFrame.Fib rayRel w 1}`, shown `⊇`-directed with `Set.subset_inter_iff`, every member a
       nonempty fibre, and `⋂₀` empty. `simp only [Set.mem_setOf_eq]` is needed before `omega`.
-- [ ] Docstring: name which constraint fails and why (fibres of a positive duration are upward
+      *(deviation: altered — the directedness step uses `simp only [Set.mem_inter_iff,
+      TaskFrame.mem_Fib, rayRel_def]` on a pointwise membership goal rather than
+      `Set.subset_inter_iff` on the set inclusion, and the two membership steps use
+      `rw [TaskFrame.mem_Fib, rayRel_def]` in place of `simp only [Set.mem_setOf_eq]`, for the
+      omega-and-`True` reason recorded on the previous item. The construction — family, directing
+      witness at `max w₁ w₂`, nonempty fibres, empty `⋂₀` refuted at `a + 1` — is the report's
+      unchanged.)*
+- [x] Docstring: name which constraint fails and why (fibres of a positive duration are upward
       rays, whose directed intersection recedes to infinity), and state that the failure is *not*
       a completeness failure — contrast `RationalTwoOrigins.not_rel_saturation`, which is, so a
       reader does not conflate the two mechanisms.
-- [ ] `lake build`, linter set, commit.
+- [x] `lake build`, linter set, commit.
 
 **Timing**: 2 hours
 
