@@ -510,7 +510,7 @@ output, not by assuming the list is complete; add whatever else they name.
 
 ---
 
-### Phase 6: Generate the cross-repository citation manifest [NOT STARTED]
+### Phase 6: Generate the cross-repository citation manifest [COMPLETED]
 
 **Goal**: Make the line-numbered view of this repository's declarations a *generated* artifact, so
 a table living in another repository can cite names and include a manifest instead of trusting
@@ -518,23 +518,34 @@ line numbers no gate reads.
 
 **Tasks**:
 
-- [ ] Write `scripts/export-lean-citations.py`: read a list of fully qualified declaration names,
+- [x] Write `scripts/export-lean-citations.py`: read a list of fully qualified declaration names,
       resolve each to its file and line by importing `scripts/lib/lean_citations.py`'s
       `decl_spans` and `candidates` — never a fresh parser, so the exporter and C20's third
       assertion cannot disagree about where a declaration lives — and emit JSON.
-- [ ] Emit to `scripts/lean-citation-manifest.json`, carrying for each entry: the fully qualified
+- [x] Emit to `scripts/lean-citation-manifest.json`, carrying for each entry: the fully qualified
       name, the file path, the keyword line, the span, and a resolution status. A name resolving to
       zero or to several declarations is an explicit error entry and a non-zero exit, never a
-      silently omitted row.
-- [ ] Seed the name list with every declaration the consuming document's citation table cites,
+      silently omitted row. *(deviation: altered — `decl_spans` reports a declaration's name as
+      *written*, i.e. local to its enclosing `namespace`, so the exporter additionally tracks each
+      file's `namespace`/`section`/`end` stack to recover the fully qualified name and matches on
+      that; `candidates` is consulted only as a fallback, to report an ambiguity precisely rather
+      than to guess. Spans still come from `decl_spans` alone, so the exporter and C20 cannot
+      disagree about where a declaration lives. Separately, three residue rows name a **structure
+      field** (`FrameOver.worldNonempty`, `TaskModel.valuation`, and `TruthCorr`'s fields), which
+      opens no declaration span — C20's own output counts such citations as "not checkable, not
+      failed" rather than failing them. A seed line therefore writes `Parent.Name#field`: the parent
+      resolves as a declaration and the field is carried as metadata, so every seeded name resolves
+      to exactly one declaration and no row is silently dropped.)*
+- [x] Seed the name list with every declaration the consuming document's citation table cites,
       taken from the research report's enumeration: the `WitnessFamily` standard-shift-set group,
       the frame-class membership group, the four `Metalogic/Independence/ZTimeSharpness.lean`
       declarations whose citations drifted by +38, and the 24 residue declarations of Phase 8's
       record. Keep the list in a plain, reviewable input file rather than inside the script.
-- [ ] Run the exporter and confirm every seeded name resolves. Any name that does not is either a
+- [x] Run the exporter and confirm every seeded name resolves. Any name that does not is either a
       rename this repository made and never propagated — record it for Phase 8 — or a typo in the
-      seed list.
-- [ ] Document the exporter in `scripts/README.md`.
+      seed list. *(result: 53 seeded names, all 53 resolved; nothing to record for Phase 8 as a
+      rename. Second run byte-identical to the first.)*
+- [x] Document the exporter in `scripts/README.md` (one row under "Other utilities" and two under "Allowlists, manifests, and other data files").
 
 **Timing**: 1.5 hours
 
@@ -559,10 +570,23 @@ the manifest but move it out of any scanned root rather than weakening C20.
 **Verification**:
 
 - The exporter runs from a clean checkout and exits 0 with every seeded name resolved
+  — **confirmed**: `export-lean-citations: 53 seeded name(s) resolved`, exit 0
 - Re-running it twice produces a byte-identical manifest (it must be deterministic, or the
-  freshness gate of Phase 7 is unusable)
+  freshness gate of Phase 7 is unusable) — **confirmed** by `diff -q` on two consecutive runs
 - A deliberately misspelled name in the seed list produces a named error entry and a non-zero
-  exit — test this and record the output
+  exit — **confirmed**. Seeding `FormalSystem.Semantics.TaskFrame.Saturatoin` in place of
+  `...Saturation` gives exit 1 and, on stderr:
+
+  ```
+  export-lean-citations: UNRESOLVED: FormalSystem.Semantics.TaskFrame.Saturatoin -- no declaration with this fully qualified name
+  export-lean-citations: 1 of 53 seeded name(s) did not resolve
+  ```
+
+  with the manifest carrying `"status": "unresolved"` and a `detail` for that entry and
+  `"resolved": 52, "total": 53`.
+- C20's scope hypothesis **confirmed after the fact, not assumed**: with the `.json` manifest in
+  place, C20's three assertions report the same counts as before it (tier 1: 1028; tier 2: zero;
+  declaration span: 886) and all pass
 
 ---
 

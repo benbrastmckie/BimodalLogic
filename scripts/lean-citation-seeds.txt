@@ -1,0 +1,94 @@
+# Seed list for scripts/export-lean-citations.py
+#
+# One fully qualified declaration name per line. `## text` opens a group; `#` opens a comment.
+# A row about a *structure field* writes `Parent.Name#field`: a field opens no declaration span,
+# so the parent is resolved and the field is carried through as metadata. See the exporter's own
+# header for the full contract.
+#
+# This list is the reviewable input; `scripts/lean-citation-manifest.json` is generated from it and
+# must not be hand-edited. Every name here must resolve to exactly one declaration or the exporter
+# exits non-zero: a name that stops resolving is either a rename this repository made and never
+# propagated to a consuming document, or a typo here.
+#
+# WHAT BELONGS HERE. Every declaration a consuming repository's adequacy argument cites, plus the
+# inspection-only definitional residue that argument's transcription audit must read against paper
+# text. Adding a name is cheap; the cost of a missing one is a citation nothing checks.
+
+## WitnessFamily standard shift set
+# The certificate's own model. `std` is now built through `ShiftSet.ofIntAction`, so its separation
+# field is derived rather than hand-proved; a consuming table citing the deleted hand proof's line
+# range has nothing to point at any more.
+FormalSystem.Metalogic.Decidability.WitnessFamily.std
+FormalSystem.Metalogic.Decidability.WitnessFamily.std_isZTime
+FormalSystem.Metalogic.Decidability.WitnessFamily.std_sat_ztime
+FormalSystem.Metalogic.Decidability.WitnessFamily.std_sat_base
+FormalSystem.Metalogic.Decidability.WitnessFamily.sh_surj
+
+## Frame-class membership
+# The single point at which a proof-side frame-class tag acquires a semantic meaning.
+FormalSystem.ProofSystem.FrameClass
+FormalSystem.ProofSystem.FrameClass.Sat
+
+## ZTimeSharpness: the four citations that drifted
+# All four consuming-side citations of these declarations were stale by exactly +38 lines and
+# landed inside `not_validOn_z1_dense`. This group is why the manifest exists.
+FormalSystem.Metalogic.Independence.not_validIn_base_prior_UZ
+FormalSystem.Metalogic.Independence.not_validIn_base_z1
+FormalSystem.Metalogic.Independence.prior_UZ_minFrameClass_sharp
+FormalSystem.Metalogic.Independence.z1_minFrameClass_sharp
+
+## Inspection-only residue
+# The definitional surface a human must read against paper text. Keyed by name here and in
+# docs/reference/transcription-audit-surface.md; never by line number.
+FormalSystem.Semantics.TemporalOrder
+FormalSystem.Semantics.FrameOver
+FormalSystem.Semantics.FrameOver#worldNonempty
+FormalSystem.Semantics.TaskFrame.worldNonempty
+FormalSystem.Semantics.TaskFrame.reflect
+FormalSystem.Semantics.FrameOver.TaskRel
+FormalSystem.Semantics.TaskFrame.Compositional
+FormalSystem.Semantics.TaskFrame.Interpolates
+FormalSystem.Semantics.TaskFrame.Serial
+FormalSystem.Semantics.TaskFrame.Limit
+FormalSystem.Semantics.TaskFrame.Saturation
+FormalSystem.Semantics.TaskFrame.DirectedFamily
+FormalSystem.Semantics.TaskFrame.Fib
+FormalSystem.Semantics.TaskFrame.Seg
+FormalSystem.Semantics.TaskFrame.IsFiber
+FormalSystem.Semantics.TaskFrame.IsSegment
+FormalSystem.Semantics.FrameOver.IsRegular
+FormalSystem.Semantics.TaskFrame
+FormalSystem.Semantics.TaskFrame.IsRegular
+FormalSystem.Semantics.TaskModel
+FormalSystem.Semantics.TaskModel#valuation
+FormalSystem.Semantics.PartialHistory
+FormalSystem.Semantics.PartialHistory.IsTotal
+FormalSystem.Semantics.WorldHistory
+FormalSystem.Semantics.TruthAt
+FormalSystem.Semantics.ConsequenceOnFrames
+FormalSystem.Semantics.SemanticConsequenceIn
+FormalSystem.Semantics.TruthCorr
+
+## Derived rather than assumed
+# The conversions that let a consuming table cite a theorem where it used to cite an axiom field,
+# plus the refutation that bounds the newest one. A consuming document's *Limit* row in particular
+# should cite `nullity_of_serial_limit` for the half `TaskFrame.Limit` does not transcribe.
+FormalSystem.Semantics.TaskFrame.nullity_of_serial_limit
+FormalSystem.Semantics.TaskFrame.limit_of_succOrder
+FormalSystem.Semantics.TaskFrame.comp_of
+FormalSystem.Semantics.TaskFrame.interpolates_of_comp
+FormalSystem.Semantics.TaskFrame.saturation_of_fib_subsingleton
+FormalSystem.Semantics.ShiftSet.shRel_serial
+FormalSystem.Semantics.ShiftSet.shRel_comp
+FormalSystem.Semantics.ShiftSet.sep_of_succOrder
+FormalSystem.Semantics.ShiftSet.ofIntAction
+FormalSystem.Semantics.ShiftSet.SepNotDerivable.sep_not_derivable
+FormalSystem.Semantics.FrameConstraintIndependence.constraints_pairwise_independent
+
+## The time-shift row, both readings
+# A consuming table citing `timeShift_preserves_truth` is citing the paper's lemma at one
+# instantiated pair. The general form is `truthAt_of_truthCorr` at `shiftCorr`, and citing it
+# brings `TruthCorr`'s fields into the audit.
+FormalSystem.Semantics.TimeShift.timeShift_preserves_truth
+FormalSystem.Semantics.Truth.truthAt_of_truthCorr
+FormalSystem.Semantics.TimeShift.shiftCorr

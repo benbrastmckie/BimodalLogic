@@ -1,0 +1,540 @@
+{
+  "entries": [
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Std.lean",
+      "group": "WitnessFamily standard shift set",
+      "keyword_line": 72,
+      "name": "FormalSystem.Metalogic.Decidability.WitnessFamily.std",
+      "span_end": 78,
+      "span_start": 59,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Std.lean",
+      "group": "WitnessFamily standard shift set",
+      "keyword_line": 81,
+      "name": "FormalSystem.Metalogic.Decidability.WitnessFamily.std_isZTime",
+      "span_end": 85,
+      "span_start": 79,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Std.lean",
+      "group": "WitnessFamily standard shift set",
+      "keyword_line": 87,
+      "name": "FormalSystem.Metalogic.Decidability.WitnessFamily.std_sat_ztime",
+      "span_end": 90,
+      "span_start": 86,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Std.lean",
+      "group": "WitnessFamily standard shift set",
+      "keyword_line": 92,
+      "name": "FormalSystem.Metalogic.Decidability.WitnessFamily.std_sat_base",
+      "span_end": 95,
+      "span_start": 91,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Std.lean",
+      "group": "WitnessFamily standard shift set",
+      "keyword_line": 98,
+      "name": "FormalSystem.Metalogic.Decidability.WitnessFamily.sh_surj",
+      "span_end": 101,
+      "span_start": 96,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/ProofSystem/Axioms.lean",
+      "group": "Frame-class membership",
+      "keyword_line": 550,
+      "name": "FormalSystem.ProofSystem.FrameClass",
+      "span_end": 598,
+      "span_start": 472,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/FrameClassValidity.lean",
+      "group": "Frame-class membership",
+      "keyword_line": 151,
+      "name": "FormalSystem.ProofSystem.FrameClass.Sat",
+      "span_end": 217,
+      "span_start": 100,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Independence/ZTimeSharpness.lean",
+      "group": "ZTimeSharpness: the four citations that drifted",
+      "keyword_line": 263,
+      "name": "FormalSystem.Metalogic.Independence.not_validIn_base_prior_UZ",
+      "span_end": 268,
+      "span_start": 257,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Independence/ZTimeSharpness.lean",
+      "group": "ZTimeSharpness: the four citations that drifted",
+      "keyword_line": 274,
+      "name": "FormalSystem.Metalogic.Independence.not_validIn_base_z1",
+      "span_end": 281,
+      "span_start": 269,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Independence/ZTimeSharpness.lean",
+      "group": "ZTimeSharpness: the four citations that drifted",
+      "keyword_line": 289,
+      "name": "FormalSystem.Metalogic.Independence.prior_UZ_minFrameClass_sharp",
+      "span_end": 293,
+      "span_start": 282,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Independence/ZTimeSharpness.lean",
+      "group": "ZTimeSharpness: the four citations that drifted",
+      "keyword_line": 300,
+      "name": "FormalSystem.Metalogic.Independence.z1_minFrameClass_sharp",
+      "span_end": 306,
+      "span_start": 294,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TemporalOrder.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 83,
+      "name": "FormalSystem.Semantics.TemporalOrder",
+      "span_end": 102,
+      "span_start": 76,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 1055,
+      "name": "FormalSystem.Semantics.FrameOver",
+      "span_end": 1086,
+      "span_start": 1003,
+      "status": "resolved"
+    },
+    {
+      "field": "worldNonempty",
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 1055,
+      "name": "FormalSystem.Semantics.FrameOver",
+      "span_end": 1086,
+      "span_start": 1003,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 2642,
+      "name": "FormalSystem.Semantics.TaskFrame.worldNonempty",
+      "span_end": 2643,
+      "span_start": 2641,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 329,
+      "name": "FormalSystem.Semantics.TaskFrame.reflect",
+      "span_end": 332,
+      "span_start": 321,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 1115,
+      "name": "FormalSystem.Semantics.FrameOver.TaskRel",
+      "span_end": 1117,
+      "span_start": 1104,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 805,
+      "name": "FormalSystem.Semantics.TaskFrame.Compositional",
+      "span_end": 807,
+      "span_start": 784,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 781,
+      "name": "FormalSystem.Semantics.TaskFrame.Interpolates",
+      "span_end": 783,
+      "span_start": 766,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 763,
+      "name": "FormalSystem.Semantics.TaskFrame.Serial",
+      "span_end": 765,
+      "span_start": 752,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 828,
+      "name": "FormalSystem.Semantics.TaskFrame.Limit",
+      "span_end": 830,
+      "span_start": 808,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 683,
+      "name": "FormalSystem.Semantics.TaskFrame.Saturation",
+      "span_end": 686,
+      "span_start": 609,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 499,
+      "name": "FormalSystem.Semantics.TaskFrame.DirectedFamily",
+      "span_end": 501,
+      "span_start": 478,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 419,
+      "name": "FormalSystem.Semantics.TaskFrame.Fib",
+      "span_end": 422,
+      "span_start": 409,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 469,
+      "name": "FormalSystem.Semantics.TaskFrame.Seg",
+      "span_end": 473,
+      "span_start": 458,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 561,
+      "name": "FormalSystem.Semantics.TaskFrame.IsFiber",
+      "span_end": 563,
+      "span_start": 556,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 571,
+      "name": "FormalSystem.Semantics.TaskFrame.IsSegment",
+      "span_end": 608,
+      "span_start": 564,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 1172,
+      "name": "FormalSystem.Semantics.FrameOver.IsRegular",
+      "span_end": 1207,
+      "span_start": 1153,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 2571,
+      "name": "FormalSystem.Semantics.TaskFrame",
+      "span_end": 2576,
+      "span_start": 2556,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 2657,
+      "name": "FormalSystem.Semantics.TaskFrame.IsRegular",
+      "span_end": 2658,
+      "span_start": 2648,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskModel.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 53,
+      "name": "FormalSystem.Semantics.TaskModel",
+      "span_end": 65,
+      "span_start": 42,
+      "status": "resolved"
+    },
+    {
+      "field": "valuation",
+      "file": "FormalSystem/Semantics/TaskModel.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 53,
+      "name": "FormalSystem.Semantics.TaskModel",
+      "span_end": 65,
+      "span_start": 42,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/PartialHistory.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 136,
+      "name": "FormalSystem.Semantics.PartialHistory",
+      "span_end": 168,
+      "span_start": 125,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/PartialHistory.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 225,
+      "name": "FormalSystem.Semantics.PartialHistory.IsTotal",
+      "span_end": 226,
+      "span_start": 211,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/PartialHistory.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 423,
+      "name": "FormalSystem.Semantics.WorldHistory",
+      "span_end": 429,
+      "span_start": 409,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/Truth.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 232,
+      "name": "FormalSystem.Semantics.TruthAt",
+      "span_end": 273,
+      "span_start": 165,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/Validity.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 80,
+      "name": "FormalSystem.Semantics.ConsequenceOnFrames",
+      "span_end": 83,
+      "span_start": 77,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/Validity.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 89,
+      "name": "FormalSystem.Semantics.SemanticConsequenceIn",
+      "span_end": 91,
+      "span_start": 84,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TruthTransport.lean",
+      "group": "Inspection-only residue",
+      "keyword_line": 92,
+      "name": "FormalSystem.Semantics.TruthCorr",
+      "span_end": 106,
+      "span_start": 77,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Derived rather than assumed",
+      "keyword_line": 941,
+      "name": "FormalSystem.Semantics.TaskFrame.nullity_of_serial_limit",
+      "span_end": 964,
+      "span_start": 916,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Derived rather than assumed",
+      "keyword_line": 1591,
+      "name": "FormalSystem.Semantics.TaskFrame.limit_of_succOrder",
+      "span_end": 1600,
+      "span_start": 1574,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Derived rather than assumed",
+      "keyword_line": 897,
+      "name": "FormalSystem.Semantics.TaskFrame.comp_of",
+      "span_end": 903,
+      "span_start": 888,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Derived rather than assumed",
+      "keyword_line": 911,
+      "name": "FormalSystem.Semantics.TaskFrame.interpolates_of_comp",
+      "span_end": 915,
+      "span_start": 910,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TaskFrame.lean",
+      "group": "Derived rather than assumed",
+      "keyword_line": 2181,
+      "name": "FormalSystem.Semantics.TaskFrame.saturation_of_fib_subsingleton",
+      "span_end": 2190,
+      "span_start": 2175,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/ShiftSet.lean",
+      "group": "Derived rather than assumed",
+      "keyword_line": 172,
+      "name": "FormalSystem.Semantics.ShiftSet.shRel_serial",
+      "span_end": 177,
+      "span_start": 171,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/ShiftSet.lean",
+      "group": "Derived rather than assumed",
+      "keyword_line": 157,
+      "name": "FormalSystem.Semantics.ShiftSet.shRel_comp",
+      "span_end": 170,
+      "span_start": 156,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/ShiftSet.lean",
+      "group": "Derived rather than assumed",
+      "keyword_line": 472,
+      "name": "FormalSystem.Semantics.ShiftSet.sep_of_succOrder",
+      "span_end": 476,
+      "span_start": 455,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/ShiftSet.lean",
+      "group": "Derived rather than assumed",
+      "keyword_line": 494,
+      "name": "FormalSystem.Semantics.ShiftSet.ofIntAction",
+      "span_end": 506,
+      "span_start": 477,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/ShiftSet.lean",
+      "group": "Derived rather than assumed",
+      "keyword_line": 610,
+      "name": "FormalSystem.Semantics.ShiftSet.SepNotDerivable.sep_not_derivable",
+      "span_end": 634,
+      "span_start": 602,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/FrameConstraintIndependence.lean",
+      "group": "Derived rather than assumed",
+      "keyword_line": 393,
+      "name": "FormalSystem.Semantics.FrameConstraintIndependence.constraints_pairwise_independent",
+      "span_end": 417,
+      "span_start": 367,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TruthTransport.lean",
+      "group": "The time-shift row, both readings",
+      "keyword_line": 254,
+      "name": "FormalSystem.Semantics.TimeShift.timeShift_preserves_truth",
+      "span_end": 263,
+      "span_start": 238,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TruthTransport.lean",
+      "group": "The time-shift row, both readings",
+      "keyword_line": 122,
+      "name": "FormalSystem.Semantics.Truth.truthAt_of_truthCorr",
+      "span_end": 187,
+      "span_start": 107,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TruthTransport.lean",
+      "group": "The time-shift row, both readings",
+      "keyword_line": 228,
+      "name": "FormalSystem.Semantics.TimeShift.shiftCorr",
+      "span_end": 237,
+      "span_start": 218,
+      "status": "resolved"
+    }
+  ],
+  "generated_by": "scripts/export-lean-citations.py",
+  "note": "Generated. Do not hand-edit: C35 in scripts/check-module-invariants.sh compares this file against a fresh resolution and fails when they differ. Cite the `name` field; the line numbers here are a derived view and are expected to move.",
+  "resolved": 53,
+  "schema": 1,
+  "seed_list": "scripts/lean-citation-seeds.txt",
+  "total": 53
+}
