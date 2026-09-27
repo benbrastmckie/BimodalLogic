@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/677_proof_producing_check_certificate/reports/01_proof-producing-check-certificate.md",
+      "summary": "Verified Lean skeleton for a proof-producing check_certificate: Certifies/Refutes/refutes_of_certifies plus a dependent CheckOutcome and a refutes_of_countermodel soundness theorem provable against the current unmodified checkRaw; an additive \"acceptance\" output field shown non-breaking against the consuming repository; and the honest level-1/2/3 trust framing correcting the task's kernel-checked claim."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790528746_3f1c95_677",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
