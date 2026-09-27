@@ -20,21 +20,30 @@ particular not under `Metalogic/Decidability/FMP/`, whose results are about MCS 
 contain zero occurrences of `TruthAt`. An audit that reads this directory as covering the semantic
 finite-model property is reading `exists_annot_of_truth`'s hypothesis wrong.
 
-## What decidability of `ValidDiscrete` still needs
+## What this layer buys given a finite-model step, and why that step is refuted in this form
 
-Exactly one theorem, and it is worth naming precisely so it is neither overestimated nor mistaken
-for engineering:
+The finite-model step this layer would need, stated precisely so it is neither overestimated nor
+mistaken for engineering:
 
 > `fmp` : `∀ ψ, ¬ ValidDiscrete ψ → ∃ P ∈ cands ψ, ∃ w : Fin P.card, SatAtState P w ψ.neg`,
 > for a computable `cands : Formula → List IntPresentation`.
 
-Given `fmp`, the rest assembles: `(∀ P ∈ cands φ, ∀ w, check P w φ.neg = false) ↔ ValidDiscrete φ`,
+`fmp` in this literal form — a candidate *list* `cands` of finite `IntPresentation`s — is
+**refuted, closed negatively, not open**, for **every** such candidate list, by
+`Probe476.fmp_false`
+(`specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean`): the
+witness `□(p ∨ Fp ∨ Pp) ∧ □(p → ¬Pp)` is satisfiable over the ℤ-carrier `ShiftSet`, and satisfiable
+at no state of any finite presentation. So the remaining route to decidability is the
+presentation-free witness family (`../WitnessFamily/README.md`), not a finite presentation.
+
+Given `fmp`, the rest would assemble: `(∀ P ∈ cands φ, ∀ w, check P w φ.neg = false) ↔ ValidDiscrete φ`,
 with `Decidable (ValidDiscrete φ)` read off by `decidable_of_iff`. Both that assembly and the
-converse (soundness) direction are live and sorry-free in `Assembly.lean`, as
+converse (soundness) direction are live and sorry-free in `Assembly.lean` today — as
 `validDiscrete_iff_checkFamily` and `decidableValidDiscreteFamily` (the candidate-list form),
 `validDiscrete_iff_check` and `decidableValidDiscrete` (the single-presentation form), and
-`not_validDiscrete_of_satAtState` (soundness, which needs no hypothesis). Three things this
-establishes, each measured rather than assumed:
+`not_validDiscrete_of_satAtState` (soundness, which needs no hypothesis) — they simply assemble
+*conditionally* on a finite-model step that no candidate list of finite presentations supplies.
+Three things this still establishes, each measured rather than assumed:
 
 - `check_correct` is the **final** step of the argument, not the far side of a transfer. The
   assembly needs no bridge theorem, no transfer lemma, no enumeration over `Atom`, and no
@@ -59,6 +68,18 @@ finite-carrier frame with an arbitrarily shaped relation can be choice-free on a
 related distinction, which is easy to lose: `instDecidableSatAtState` **computes** and carries no
 `Classical.dec` in its data, yet its measured axiom set is `[propext, Classical.choice, Quot.sound]`.
 Computability and choice-freedom are different properties, and only the first is claimed here.
+
+## Scope: the base language, without the stability modal
+
+This procedure decides `ValidZTime`/`ValidDiscrete` for `FormalSystem.Syntax.Formula`, the base
+language **without** the stability modal `⊡` — `⊡` lives only in
+`FormalSystem.PlusLanguage.Formula`'s `PlusFormula`, so `ValidZTime` cannot even state a claim
+about it. The certified witness models here are built from `ShiftSet` and are therefore
+deterministic (`ShiftSet.total_eq_orbit`), and on a deterministic frame `⊡` collapses to the
+identity (`PlusLanguage/PlusDeterminism.lean`, `stab_iff_of_deterministic`). The procedure is
+silent on `⊡` **by construction**, not merely incomplete for it, and it cannot be extended to
+cover `⊡` by adding a truth clause: a genuinely different, branching witness structure is
+required.
 
 ## Modules
 
