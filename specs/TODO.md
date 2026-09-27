@@ -11,8 +11,8 @@ next_project_number: 686
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,677,679,680,681,682 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,623,650,678,683 | 298,464,502,563,649,677,680,682 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,678,679,680,681,682 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,623,650,683 | 298,464,502,563,649,680,682 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,684 | 231,465,497,564,565,616,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,685 | 428,498,499,500,623,684 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -69,14 +69,13 @@ next_project_number: 686
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-677 [PLANNED] — Make checkcertificate proof-producing rather than...
 682 [NOT STARTED] — RESEARCH TASK, verdict-first: establish whether validity of...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
   └─ 685 [NOT STARTED] — Prove the compression result for the branching witness...
 
 ### Documentation
 
-680 [PLANNED] — Record, on this side only, that the compression task's...
+680 [IMPLEMENTING] — Record, on this side only, that the compression task's...
 
 ### Formula Refactor
 
@@ -96,7 +95,7 @@ next_project_number: 686
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-681 [PLANNED] — Narrow the transcription audit obligation by converting as...
+681 [IMPLEMENTING] — Narrow the transcription audit obligation by converting as...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 684 [NOT STARTED] — Prove the agreement (truth) lemma over all walks of the...
 
@@ -107,7 +106,7 @@ next_project_number: 686
 
 ### Semantics
 
-679 [PLANNED] — Define the Sentence-to-Formula translation in Lean and prove...
+679 [IMPLEMENTING] — Define the Sentence-to-Formula translation in Lean and prove...
 683 [NOT STARTED] — Replace the deterministic witness device with a state-sharing...
 
 ### Toolchain
@@ -158,7 +157,7 @@ SCOPE CLARIFICATION: ADD ALONGSIDE, DO NOT REPLACE. The opening sentence above s
 ---
 
 ### 681. Narrow transcription audit surface
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
@@ -170,7 +169,7 @@ SCOPE CLARIFICATION: ADD ALONGSIDE, DO NOT REPLACE. The opening sentence above s
 ---
 
 ### 680. Record compression prerequisite satisfiable
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: markdown
 - **Topic**: documentation
 - **Dependencies**: None
@@ -188,7 +187,7 @@ THE SECOND HALF, TAKEN OVER FROM THE COMPRESSION TASK'S ITEM 3. That item is del
 ---
 
 ### 679. Lean sentence formula translation truth
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
@@ -220,12 +219,13 @@ DELIVERABLE, UNCHANGED IN SUBSTANCE. The elimination of the defined operators (n
 ---
 
 ### 677. Proof producing check certificate
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [677_proof_producing_check_certificate/reports/01_proof-producing-check-certificate.md]
 - **Plan**: [677_proof_producing_check_certificate/plans/01_proof-producing-check-certificate.md]
+- **Summary**: [677_proof_producing_check_certificate/summaries/01_proof-producing-check-certificate-summary.md]
 
 **Description**: Make check_certificate proof-producing rather than verdict-producing, so that acceptance of a certificate is a kernel-checked entailment instead of a report that four decision procedures returned true. Today the executable decides the four certificate conditions and prints a status line, while WitnessFamily.joint_countermodel (Metalogic/Decidability/WitnessFamily/Agreement.lean:232) sits beside it as a separate theorem; the composition of the two -- decided conditions plus the agreement theorem yields the existence of a paper countermodel -- happens only in the reader's head. The consuming repository's adequacy document says so explicitly: a "countermodel" verdict is not a kernel-checked proof for that particular certificate, only that the four Decidable instances all returned true on the family rebuilt from the wire input. Change this by making the success path be the composition: state the entailment as a theorem taking a satisfies-the-four-conditions hypothesis to the existence of a model, a world history and a time witnessing the premises true and the conclusions false, then have the executable's accepting branch apply that theorem to a hypothesis obtained from the existing Decidable instances, so that accepting a certificate means Lean has constructed a term of the existence type. Extend the output contract to carry the distinction between a decided verdict and a constructed entailment, coordinating the change with the consuming side, since the wire is an export contract and its field names are a breaking change surface rather than a local refactor. The downstream payoff, which should be recorded: the consumer's pure-Python re-checker becomes a fast pre-filter rather than part of the trust base.
 

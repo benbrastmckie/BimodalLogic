@@ -1,30 +1,37 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-27T18:16:53Z",
+  "completed_at": "2026-09-27T20:25:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/677_proof_producing_check_certificate/plans/01_proof-producing-check-certificate.md",
-      "summary": "Six-phase plan making check_certificate's accepting branch the kernel-checked composition of the four decided conditions with joint_countermodel, plus the additive acceptance wire field and the disclaimer correction."
+      "type": "summary",
+      "path": "specs/677_proof_producing_check_certificate/summaries/01_proof-producing-check-certificate-summary.md",
+      "summary": "check_certificate's accepting branch now constructs a term of WitnessFamily.Refutes rather than reporting four decisions, with the distinction carried additively on the wire as \"acceptance\":\"entailment\"."
     }
   ],
-  "next_steps": "Run /implement 677 to execute the plan",
-  "phase_count": 6,
-  "estimated_hours": 6,
-  "dependency_waves": [[1], [2], [3], [4], [5], [6]],
-  "memory_candidates": [
-    {
-      "content": "When making a verdict-producing procedure proof-producing, state and prove the soundness theorem against the UNMODIFIED implementation first, before restructuring it. The theorem (e.g. 'checkRaw raw = .countermodel t -> Refutes ...') is provable against an existing `if ! decide ...` chain by splitting the branches and applying of_decide_eq_true, so it costs one phase and machine-checks the composition at the earliest possible commit. It then acts as a build-breaking regression guard for the subsequent restructure: if the new accepting branch ever loosens (accepts on three conditions instead of four), the theorem fails to elaborate. Sequencing it after the restructure instead forfeits both the early guarantee and the guard. The companion shape is the proof-carrying result type: an inductive indexed by its input whose accepting constructor carries the witness (Prop field, derives nothing), plus a forgetful `erase` to a non-dependent serializable verdict that keeps Repr/Inhabited/DecidableEq. Nested `dite` on the individual conditions -- not one `dite` on a bundled conjunction -- is what hands the accepting branch its hypotheses while preserving short-circuit order and keeping each failure-localization scan in its own branch.",
-      "category": "PATTERN",
-      "source_artifact": "specs/677_proof_producing_check_certificate/plans/01_proof-producing-check-certificate.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["proof-producing", "decidable-instance", "soundness-theorem-first", "dependent-result-type", "regression-guard", "dite"]
-    }
-  ],
-  "metadata": {
-    "session_id": "sess_1790528746_3f1c95_677",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  "completion_data": {
+    "completion_summary": "Made check_certificate's accepting branch proof-producing: added WitnessFamily.Certifies, decidableCertifies, Refutes and refutes_of_certifies to the library, and refutes_of_countermodel plus a dependent CheckOutcome/checkCertified/erase layer to BimodalTools.CertificateImport, so acceptance is a constructed entailment rather than a verdict about four Decidable instances. Extended the output contract with an additive \"acceptance\" key (absent reads as \"decided\") and corrected every in-repo trust-model disclaimer to the accurate build-time-implication claim. Full lake build green, zero sorries, no new axioms, and the real binary's rejected/error lines are byte-identical.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 5
+  "partial_progress": {
+    "stage": "complete",
+    "details": "All six phases closed. Phase 6 is [COMPLETED WITH EXCLUSIONS]: five gate scripts are red for pre-existing or concurrent-sibling causes, each enumerated with evidence in the plan's Reasoned Exclusions table and the summary's 'Gates red for reasons outside this task' section.",
+    "phases_completed": 6,
+    "phases_total": 6
+  },
+  "metadata": {
+    "session_id": "sess_1790528746_3f1c95",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "dispatch_seq": 9
+  }
 }
