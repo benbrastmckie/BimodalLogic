@@ -105,7 +105,7 @@ next_project_number: 686
 
 ### Toolchain
 
-678 [NOT STARTED] — Give the certificate wire format a canonical printer and a...
+678 [RESEARCHED] — Give the certificate wire format a canonical printer and a...
 
 ## Tasks
 
@@ -206,10 +206,11 @@ DELIVERABLE, UNCHANGED IN SUBSTANCE. The elimination of the defined operators (n
 ---
 
 ### 678. Canonical wire parser round trip
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: toolchain
 - **Dependencies**: Task 677
+- **Research**: [678_canonical_wire_parser_round_trip/reports/01_canonical-wire-parser-round-trip.md]
 
 **Description**: Give the certificate wire format a canonical printer and a total parser, with a parse-after-print round-trip theorem, so that deserialization leaves the trust base. The verified side currently parses exported JSON to rebuild the witness family it then decides conditions on; a defect in that parser means the verified side certifies a different certificate than the one the producing repository exported, and no amount of rigor downstream of the parse detects it. Deliver: a canonical serializer, a parser total on its input (malformed input yielding a protocol error rather than a partial or misinterpreted structure), and a theorem that parsing a printed family returns that same family. Preserve the export contract exactly -- back, mid, fwd, bx, lassos and target are the contract's field names, target is required with target.time required and undefaulted because it is the target condition's existential witness, bx is sparse with unlisted formulas reading false, lassos index 0 is the main lasso, and atom identity is base-only so a certificate carrying a fresh or Skolem atom must be rejected outright. Pair with the consuming repository's parse-echo verification task, which compares an echo of what was parsed against the bytes it sent, so that the two halves together close the deserialization gap from both ends.
 
