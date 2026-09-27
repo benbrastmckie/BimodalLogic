@@ -171,19 +171,45 @@ particular, a certificate lacking `"target"`, or lacking `"target"."time"`, is a
 for each of the two omissions. A producing exporter can be written against this section alone:
 emit the object above with both required fields present, and `rejected` then means what it says.
 
-**What acceptance means.** `countermodel` says the four compiled `Decidable` instances that
-`WitnessFamily.joint_countermodel` consumes — `decidableLocalCoherentLab`,
-`decidableFulfillingLab`, `decidableBoxFaithful` and `decidableTarget` — all returned `true` on
-the family rebuilt from this input. It is not a kernel-checked proof for that particular
-certificate. The same honesty the `"gates"` field above carries for the tableau bridge.
+**What acceptance means.** `countermodel` is the erasure of a **constructed term** of
+`WitnessFamily.Refutes Γ Δ` — the joint existence statement: an explicit ℤ-time frame, model,
+world history and time at which every premise is true and every conclusion false. The accepting
+branch of `BimodalTools.CertificateImport.checkCertified` carries that statement as a field of its
+constructor, so it cannot be taken without one, and
+`BimodalTools.CertificateImport.refutes_of_countermodel` recovers the statement from the printed
+verdict alone. That is what `"acceptance": "entailment"` reports.
+
+Precisely what is and is not checked:
+
+- **Kernel-checked, once, at build time**: the *implication*
+  `WitnessFamily.refutes_of_certifies`, from the four conditions holding of a family to the
+  existence of a countermodel. Lean elaborates it when the library compiles.
+- **Decided at run time, per certificate**: the *hypothesis* — by the four compiled `Decidable`
+  instances `decidableLocalCoherentLab`, `decidableFulfillingLab`, `decidableBoxFaithful` and
+  `decidableTarget`, composed by `decidableCertifies`, on the family rebuilt from this input.
+- **Residual trust base**: Lean's compiler, and this executable's decoding of the wire object into
+  the family the sender meant.
+- **Not** per-certificate kernel checking. That would mean re-elaborating a generated statement
+  for each certificate, which this binary does not do. The gain over the previous contract is that
+  composing the decided conditions with the agreement theorem is no longer left to the reader —
+  it is a checked term — not that the compiler has left the trust base.
 
 `rejected` says only that the object handed over is not a certificate. It never says the
 consequence holds: the checker is one-sided by construction.
 
-Acceptance is now dual-decided per run rather than single-sided: the producing side also
-re-decides each reported countermodel independently in Python and cross-checks that result
-against this executable where present, so a single-sided `accepted` here is no longer the only
-check a reported countermodel receives.
+Acceptance is also dual-decided per run rather than single-sided: the producing side re-decides
+each reported countermodel independently in Python and cross-checks that result against this
+executable where present, so a single-sided `accepted` here is no longer the only check a reported
+countermodel receives.
+
+**The downstream payoff is jointly gated, and has not landed yet.** The producing side's
+pure-Python re-checker becoming a fast *pre-filter* rather than part of the trust base needs two
+things, and this change is only one of them: (1) the accepting branch constructing the entailment,
+which is what `"acceptance": "entailment"` now reports; and (2) a Lean-side echo of the parsed
+certificate compared against the bytes actually sent, so that the residual decoding step above is
+itself pinned rather than trusted. Until (2) lands, a consumer that drops its own re-check is
+trusting this executable's decoding, which is exactly the gap (2) closes. That work is separate
+from this protocol change.
 
 The rows pinning all of this are `Tests/BimodalToolsTest/CertificateImportTest.lean`.
 

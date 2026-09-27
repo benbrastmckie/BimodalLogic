@@ -375,29 +375,29 @@ treat any additional site found as part of this phase rather than a surprise.
 
 ---
 
-### Phase 5: Honesty Pass on the Five Disclaimer Sites [NOT STARTED]
+### Phase 5: Honesty Pass on the Five Disclaimer Sites [COMPLETED]
 
 **Goal**: Replace "not a kernel-checked proof" with the correct, stronger-but-bounded statement at
 every site that carries it, without deleting the one-sidedness disclaimer.
 
 **Tasks**:
-- [ ] `BimodalTools/CertificateImport.lean`'s module-header trust-model section: state that the
+- [x] `BimodalTools/CertificateImport.lean`'s module-header trust-model section: state that the
       accepting branch constructs a term of `WitnessFamily.Refutes …`; that the implication from
       the four conditions is kernel-checked at build time (`refutes_of_certifies`,
       `refutes_of_countermodel`); that the per-certificate hypothesis comes from the four compiled
       `Decidable` instances; and that the residual trust base is Lean's compiler plus this module's
       decoding. Keep "`rejected` is never a validity claim" verbatim.
-- [ ] `BimodalTools/CertificateImport.lean`'s `checkRaw` doc comment: the same correction in one
+- [x] `BimodalTools/CertificateImport.lean`'s `checkRaw` doc comment: the same correction in one
       or two sentences.
-- [ ] `BimodalTools/CheckCertificateMain.lean`'s "The trust model" section: same correction; keep
+- [x] `BimodalTools/CheckCertificateMain.lean`'s "The trust model" section: same correction; keep
       the one-sidedness paragraph unchanged.
-- [ ] `BimodalTools/README.md`'s "What acceptance means": same correction, and say plainly that
+- [x] `BimodalTools/README.md`'s "What acceptance means": same correction, and say plainly that
       this is **not** per-certificate kernel checking.
-- [ ] Record, in `BimodalTools/README.md`, that the downstream payoff (the consuming repository's
+- [x] Record, in `BimodalTools/README.md`, that the downstream payoff (the consuming repository's
       pure-Python re-checker becoming a pre-filter rather than part of the trust base) is
       **jointly gated** on this change *and* a Lean-side parse echo compared against the bytes
       sent, which is separate work.
-- [ ] Do not introduce any `file.lean:NNN` citation in the new prose (C20); cite names.
+- [x] Do not introduce any `file.lean:NNN` citation in the new prose (C20); cite names.
 
 **Timing**: 0.5 hours
 

@@ -18,12 +18,32 @@ it can be tested from `Tests/BimodalToolsTest/`.
 
 ## The trust model
 
-Acceptance means the four compiled `Decidable` instances that
-`WitnessFamily.joint_countermodel` consumes — `decidableLocalCoherentLab`,
-`decidableFulfillingLab`, `decidableBoxFaithful` and `decidableTarget` — all returned `true` on
-the family this module rebuilt from the JSON. It is **not** a kernel-checked proof for that
-particular certificate, and `rejected` is **never** a validity claim: it says only that the
-object handed over is not a certificate.
+The accepting branch **constructs a term** of `WitnessFamily.Refutes Γ Δ` — the joint existence
+statement: an explicit ℤ-time frame, model, world history and time at which every premise of the
+target is true and every conclusion false. `checkCertified`'s accepting branch cannot be written
+without one, because that is the type of its `CheckOutcome.countermodel` field, and
+`refutes_of_countermodel` states the same guarantee at the level of the serialized verdict a
+consumer reads.
+
+Three things this does buy, and one it does not.
+
+- **The implication is kernel-checked, once, at build time.** Lean elaborates
+  `WitnessFamily.refutes_of_certifies` and `refutes_of_countermodel` when these modules compile.
+  The step from "the four conditions hold of this family" to "a countermodel exists" is therefore
+  no longer a composition the reader performs in their head; it is a checked term.
+- **The per-certificate hypothesis comes from the four compiled `Decidable` instances** —
+  `decidableLocalCoherentLab`, `decidableFulfillingLab`, `decidableBoxFaithful`,
+  `decidableTarget`, composed by `decidableCertifies`. They are evaluated at run time, on the
+  family this module rebuilt from the JSON.
+- **The residual trust base is Lean's compiler plus this module's decoding.** The compiled
+  instances must agree with the propositions they decide, and `parseCertificate`/`mkFamily` must
+  have rebuilt the family the sender meant.
+- **This is therefore not per-certificate kernel checking.** That would require re-elaborating a
+  generated statement for each certificate, which no part of this module does. `Acceptance`
+  reserves room for such a value without claiming it.
+
+`rejected` is **never** a validity claim: it says only that the object handed over is not a
+certificate.
 
 ## Runtime construction
 
@@ -683,7 +703,13 @@ Re-verify a decoded certificate, as the serializable verdict.
 construction happen in the dependent layer above, and this only forgets the entailment so the
 answer can be printed. The verdict is `decidableLocalCoherentLab`, `decidableFulfillingLab`,
 `decidableBoxFaithful` and `decidableTarget`, in that order, short-circuiting on the first
-failure, exactly as before. A rejection is never a claim that the consequence holds.
+failure, exactly as before.
+
+So a `countermodel` answer here is the *erasure* of a constructed `WitnessFamily.Refutes …`, not a
+report that four procedures returned `true`: `refutes_of_countermodel` recovers the statement from
+the verdict alone. What is kernel-checked is the implication, once at build time; the hypothesis
+it is applied to is decided at run time by the four compiled instances. A rejection is never a
+claim that the consequence holds.
 -/
 def checkRaw (raw : RawCertificate) : CheckResult := (checkCertified raw).erase
 

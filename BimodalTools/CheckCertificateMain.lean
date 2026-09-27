@@ -21,12 +21,21 @@ here. This mirrors the `TableauBridgeMain` / `TableauBridge` pair.
 
 ## The trust model
 
-The binary evaluates the same compiled `Decidable` instances that
-`WitnessFamily.joint_countermodel` consumes: `decidableLocalCoherentLab`,
-`decidableFulfillingLab`, `decidableBoxFaithful` and `decidableTarget`. A `countermodel` verdict
-therefore means **those four instances returned `true` on the family rebuilt from this input** —
-it is not a kernel-checked proof for this particular certificate, and it inherits whatever trust
-is placed in Lean's compiler and in this module's decoding.
+A `countermodel` verdict is the erasure of a **constructed term** of
+`WitnessFamily.Refutes Γ Δ`: the accepting branch of
+`BimodalTools.CertificateImport.checkCertified` carries that statement as a field, so it cannot be
+taken without one, and `BimodalTools.CertificateImport.refutes_of_countermodel` recovers the
+statement from the printed verdict alone. The line the binary prints says so, additively, with
+`"acceptance": "entailment"`.
+
+What is kernel-checked is the **implication**, elaborated once when these modules compile:
+`WitnessFamily.refutes_of_certifies` takes the four conditions to the existence of a countermodel.
+What is decided at run time, per certificate, is the **hypothesis** — by the same four compiled
+`Decidable` instances as before, `decidableLocalCoherentLab`, `decidableFulfillingLab`,
+`decidableBoxFaithful` and `decidableTarget`, composed by `decidableCertifies`. So this is **not**
+per-certificate kernel checking: the verdict still inherits whatever trust is placed in Lean's
+compiler and in this module's decoding. What it no longer requires is that a reader compose the
+decided conditions with the agreement theorem themselves.
 
 The checker is one-sided by construction and **never reports validity**. `rejected` says only
 that the object handed over is not a certificate; it says nothing whatever about whether the
