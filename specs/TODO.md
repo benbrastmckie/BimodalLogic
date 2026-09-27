@@ -76,7 +76,7 @@ next_project_number: 686
 
 ### Documentation
 
-680 [PLANNING] — Record, on this side only, that the compression task's...
+680 [PLANNED] — Record, on this side only, that the compression task's...
 
 ### Formula Refactor
 
@@ -169,11 +169,12 @@ SCOPE CLARIFICATION: ADD ALONGSIDE, DO NOT REPLACE. The opening sentence above s
 ---
 
 ### 680. Record compression prerequisite satisfiable
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: markdown
 - **Topic**: documentation
 - **Dependencies**: None
 - **Research**: [680_record_compression_prerequisite_satisfiable/reports/01_compression-prerequisite-satisfiable.md]
+- **Plan**: [680_record_compression_prerequisite_satisfiable/plans/01_record-compression-prerequisite-satisfiable.md]
 
 **Description**: Record, on this side only, that the compression task's remaining reduction condition is now satisfiable, and carry the correction that came with it. Documentation and task-metadata only: no new mathematics. This task is the sole remaining blocker on the quasimodel/ShiftSet decidability task (its other three dependencies are all complete), and that task is the long pole of the whole adequacy chain, so this is small work standing in front of large work.
 

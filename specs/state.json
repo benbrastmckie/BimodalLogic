@@ -123,19 +123,24 @@
     {
       "project_number": 680,
       "project_name": "record_compression_prerequisite_satisfiable",
-      "status": "planning",
+      "status": "planned",
       "task_type": "markdown",
       "topic": "documentation",
       "description": "Record, on this side only, that the compression task's remaining reduction condition is now satisfiable, and carry the correction that came with it. Documentation and task-metadata only: no new mathematics. This task is the sole remaining blocker on the quasimodel/ShiftSet decidability task (its other three dependencies are all complete), and that task is the long pole of the whole adequacy chain, so this is small work standing in front of large work.\n\nWHAT CHANGED ON THE CONSUMING SIDE, AND WHAT IS THEREFORE ALREADY DONE. Do not re-do it. The consuming repository has landed its own half: its adequacy document's section 7.1 now states that the third reduction condition is satisfiable in principle today, and replaces the former single sentence with an ordered prerequisite list (iii-a) through (iii-e) of which exactly one is blocking. It also now carries a dedicated search-coverage document comparing the routes, and a trust-pipeline document with a cross-repository work ledger. Both prerequisites the condition once waited on do exist there: a certificate export on the documented wire contract, and a pure-Python re-checker that independently decides the four conditions over the proved windows on every reported countermodel, cross-checked against this development's check_certificate executable where present. So this task no longer needs to correct anything in that repository; it needs to update this development's own notes so its planning does not re-derive the prerequisite as missing.\n\nTHE CORRECTION THAT MUST TRAVEL WITH THE GOOD NEWS. \"Satisfiable\" is not \"nearly done\", and recording only the former would mislead the compression task's planning. The consuming repository measured that its searched witness-family space is NOT monotone in the back/mid/fwd bounds: because its witness registry folds those bounds by exact modulus, a search at bound n represents exactly the periods dividing n, so a formula can be satisfiable at (3,1,3) and (6,1,6) while genuinely unsatisfiable at (4,1,4) and (5,1,5). This falsifies the third condition as it was originally worded, and it is why the condition was rewritten into sub-bullets rather than simply marked satisfiable. The blocking prerequisite is the first sub-bullet, fixing the length space -- either sweeping the bounds over the grid up to the compression bound, or restricting the claim to bounds the folding actually covers -- and the consuming document states that without it the condition is unprovable rather than merely unproved. It also follows that a bound of the shape \"segment lengths at least f of the closure size\" is insufficient on its own: representability, not magnitude, is what the folding decides. Record both facts here in durable terms.\n\nTHE SECOND HALF, TAKEN OVER FROM THE COMPRESSION TASK'S ITEM 3. That item is delegated to this task and is being struck from the compression task's own description, so it lives here and only here: Assembly.lean's docstring and the BiLasso README still call the IntPresentation small-model hypothesis open when it is in fact refuted (Probe476.fmp_false), and the scope sentence recording that the procedure decides validity for the language without the stability modal -- its witness models being deterministic, on which that modal is trivial -- should be stated in durable terms rather than left implicit.",
       "dependencies": [],
       "created": "2026-09-26T11:55:52Z",
-      "last_updated": "2026-09-27T17:29:14Z",
-      "session_id": "sess_1790528746_3f1c95_680",
+      "last_updated": "2026-09-27T18:14:14Z",
+      "session_id": "sess_1790528746_3f1c95",
       "artifacts": [
         {
           "path": "specs/680_record_compression_prerequisite_satisfiable/reports/01_compression-prerequisite-satisfiable.md",
           "type": "report",
           "summary": "Confirms condition (iii) of the consuming repository's ADEQUACY.md 7.1 is now satisfiable in principle but non-monotone in the search bounds, and identifies the two stale-fmp-open passages in Assembly.lean and BiLasso/README.md plus the durable without-stability-modal scope sentence that this task must record."
+        },
+        {
+          "path": "specs/680_record_compression_prerequisite_satisfiable/plans/01_record-compression-prerequisite-satisfiable.md",
+          "type": "plan",
+          "summary": "5-phase documentation-only plan for recording the compression prerequisite status and the delegated fmp/scope corrections."
         }
       ],
       "next_artifact_number": 2
