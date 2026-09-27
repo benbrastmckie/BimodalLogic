@@ -1,7 +1,7 @@
 # Implementation Plan: Task #680
 
 - **Task**: 680 - Record compression prerequisite satisfiable
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.75 hours
 - **Dependencies**: None (task 623 depends on this task; this task depends on nothing)
 - **Research Inputs**: specs/680_record_compression_prerequisite_satisfiable/reports/01_compression-prerequisite-satisfiable.md
@@ -110,16 +110,16 @@ chain. No roadmap phases are added (no `roadmap_flag` in this dispatch).
 Phases within the same wave can execute in parallel. Phases 1, 2 and 3 touch disjoint files.
 Phase 4 touches the same file as Phase 3 and is therefore sequenced after it.
 
-### Phase 1: Record the cross-repository reduction-condition status [NOT STARTED]
+### Phase 1: Record the cross-repository reduction-condition status [COMPLETED]
 
 **Goal**: The satisfiable-in-principle news and the non-monotonicity correction are durably
 recorded on this side, in the section whose reader would otherwise re-derive the prerequisite as
 missing.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/WitnessFamily/README.md` immediately before
-      editing (sibling tasks share this tree).
-- [ ] Extend its `## This is the soundness half only` section (which already names "the
+- [x] Re-read `FormalSystem/Metalogic/Decidability/WitnessFamily/README.md` immediately before
+      editing (sibling tasks share this tree). *(completed)*
+- [x] Extend its `## This is the soundness half only` section (which already names "the
       compression work" as the owner of the completeness direction) with a short subsection
       recording, in durable terms and without any task number:
       - the consuming side's reduction condition is now satisfiable **in principle**: both of its
@@ -142,16 +142,18 @@ missing.
       - the corollary for the compression bound's *shape*: a bound of the form "segment lengths at
         least `f` of the closure size" is insufficient on its own, because representability is a
         divisibility (period) question, not a magnitude question — a family whose period does not
-        divide the configured length is unrepresentable however large that length is.
-- [ ] Add one sentence to `BimodalTools/README.md`'s `## Certificate re-verification protocol`,
+        divide the configured length is unrepresentable however large that length is. *(completed:
+        added subsection "Cross-repository reduction condition: satisfiable in principle, not
+        nearly done")*
+- [x] Add one sentence to `BimodalTools/README.md`'s `## Certificate re-verification protocol`,
       inside or immediately after its **What acceptance means** paragraph, recording that the
       producing side now also re-decides each reported countermodel independently in Python and
       cross-checks against this executable where present — so acceptance is dual-decided per run
       rather than single-sided. Keep it to one sentence; this file's honesty note about
-      `countermodel` not being a kernel-checked proof must stand unchanged.
-- [ ] Verify no task number appears in either added passage.
-- [ ] `git status --short`; `git add -- FormalSystem/Metalogic/Decidability/WitnessFamily/README.md
-      BimodalTools/README.md`; commit.
+      `countermodel` not being a kernel-checked proof must stand unchanged. *(completed)*
+- [x] Verify no task number appears in either added passage. *(completed: grep confirmed)*
+- [x] `git status --short`; `git add -- FormalSystem/Metalogic/Decidability/WitnessFamily/README.md
+      BimodalTools/README.md`; commit. *(completed: commit 71732e22e)*
 
 **Timing**: 0.5 hours
 
