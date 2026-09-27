@@ -20,11 +20,27 @@ brings that theorem closer.
 > `fmp` : `∀ ψ, ¬ ValidZTime ψ → ∃ P ∈ cands ψ, ∃ w : Fin P.card, SatAtState P w ψ.neg`,
 > for a computable `cands : Formula → List IntPresentation`.
 
-`fmp` is the one open theorem between this layer and decidability of `ValidZTime`. Its crux is
-box-faithfulness and it is genuinely hard — see `README.md` in this directory. Nothing in the
-bi-lasso layer performs any part of it: `exists_annot_of_truth` (`Extraction.lean`) takes a
-`WorldHistory P.toTaskFrame` as *input*, so it compresses histories **within** a given
-presentation; it does not produce a presentation from an arbitrary countermodel.
+`fmp` in this literal form — a candidate *list* `cands` of finite `IntPresentation`s — is
+**refuted, closed negatively, not open**, for **every** such candidate list, by
+`Probe476.fmp_false`
+(`specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean`): the
+witness `□(p ∨ Fp ∨ Pp) ∧ □(p → ¬Pp)` is satisfiable over the ℤ-carrier `ShiftSet`, and
+satisfiable at no state of any finite presentation. Its crux is box-faithfulness — see `README.md`
+in this directory. Nothing in the bi-lasso layer performs any part of it: `exists_annot_of_truth`
+(`Extraction.lean`) takes a `WorldHistory P.toTaskFrame` as *input*, so it compresses histories
+**within** a given presentation; it does not produce a presentation from an arbitrary
+countermodel.
+
+## Scope: the base language, without the stability modal
+
+This module decides `ValidZTime` for `FormalSystem.Syntax.Formula`, the base language **without**
+the stability modal `⊡` — `⊡` lives only in `FormalSystem.PlusLanguage.Formula`'s `PlusFormula`,
+so `ValidZTime` cannot even state a claim about it. The certified witness models here are built
+from `ShiftSet` and are therefore deterministic (`ShiftSet.total_eq_orbit`), and on a
+deterministic frame `⊡` collapses to the identity
+(`PlusLanguage/PlusDeterminism.lean`, `stab_iff_of_deterministic`). The device is silent on `⊡`
+**by construction**, not merely incomplete for it, and it cannot be extended to cover `⊡` by
+adding a truth clause: a genuinely different, branching witness structure is required.
 
 ## Declarations
 

@@ -1,0 +1,13 @@
+{
+  "phase": 2,
+  "phase_name": "Correct fmp's status and state the scope in Assembly.lean",
+  "started_at": "2026-09-27T00:10:00Z",
+  "last_updated": "2026-09-27T00:15:00Z",
+  "objectives": [
+    {"id": 1, "description": "Replace fmp-open sentence with refuted statement citing Probe476.fmp_false", "status": "done", "files_touched": ["FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean"]},
+    {"id": 2, "description": "Add durable without-stability-modal scope sentence", "status": "done", "files_touched": ["FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean"]}
+  ],
+  "current_objective": 2,
+  "approaches_tried": [],
+  "handoff_count": 0
+}
