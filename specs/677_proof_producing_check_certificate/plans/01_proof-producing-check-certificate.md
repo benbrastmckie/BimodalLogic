@@ -200,16 +200,16 @@ task touched it.
 
 ---
 
-### Phase 2: refutes_of_countermodel Against the Unmodified checkRaw [NOT STARTED]
+### Phase 2: refutes_of_countermodel Against the Unmodified checkRaw [COMPLETED]
 
 **Goal**: Machine-check the composition at the level of the serialized verdict the consumer
 actually reads, *before* any restructure, so the guarantee is committed at the earliest point and
 becomes a regression guard for Phase 3.
 
 **Tasks**:
-- [ ] Re-read `BimodalTools/CertificateImport.lean`'s `checkRaw` (currently the four-way
+- [x] Re-read `BimodalTools/CertificateImport.lean`'s `checkRaw` (currently the four-way
       `if ! @Decidable.decide …` chain) immediately before editing.
-- [ ] Add
+- [x] Add
       `theorem refutes_of_countermodel {raw : RawCertificate} {t : Int}
       (h : checkRaw raw = .countermodel t) :
       WitnessFamily.Refutes raw.target.premises raw.target.conclusions`
@@ -217,10 +217,15 @@ becomes a regression guard for Phase 3.
       the `if` chain (five splits, including the `mkFamily` match),
       `simp only [Bool.not_eq_true', decide_eq_false_iff_not, not_not]`, then `of_decide_eq_true`
       on each of the four conditions and `refutes_of_certifies`.
-- [ ] Doc-comment the theorem with what it does and does not say: the implication is
+      *(deviation: altered — the probe's five separate `split`s are one `split at h` on the
+      `mkFamily` match plus `split_ifs at h with h1 h2 h3 h4` on the chain, and the
+      `simp only [...]` premise list is discharged by `simpa` inside each
+      `of_decide_eq_true`. Same tactic family, same premise content, fewer lines; the statement
+      is unchanged.)*
+- [x] Doc-comment the theorem with what it does and does not say: the implication is
       kernel-checked once at build time; the per-certificate hypothesis comes from compiled
       decision procedures.
-- [ ] Confirm `#print axioms` on the new theorem is `[propext, Classical.choice, Quot.sound]`.
+- [x] Confirm `#print axioms` on the new theorem is `[propext, Classical.choice, Quot.sound]`.
 
 **Timing**: 0.75 hours
 

@@ -86,6 +86,7 @@ contract rather than a local naming choice; a faithful mirror is structural as w
 ## Main Results
 
 - `mem_closureList` — `closureList` enumerates exactly `closureOf`
+- `refutes_of_countermodel` — a `countermodel` verdict entails `WitnessFamily.Refutes`
 
 ## References
 
@@ -611,6 +612,35 @@ def checkRaw (raw : RawCertificate) : CheckResult :=
       .rejected [(targetFailure W raw.target.time).getD (unlocalized "target")]
     else
       .countermodel raw.target.time
+
+/--
+**A `countermodel` verdict entails the joint existence statement.**
+
+The composition the checker's accepting branch stands for, stated at the level of the serialized
+verdict a consumer actually reads: if `checkRaw` answers `countermodel`, then there really is a
+ℤ-time frame, model, world history and time at which every premise of the target is true and
+every conclusion false.
+
+What this does and does not say. The implication is kernel-checked **once, at build time** — Lean
+elaborates this proof, and `WitnessFamily.refutes_of_certifies` inside it, when the module is
+compiled. The per-certificate hypothesis, that the four conditions hold of the family rebuilt
+from *this* input, is supplied at run time by the four compiled `Decidable` instances. So this is
+not per-certificate kernel checking: what it removes is the reader's obligation to compose the
+decided conditions with the agreement theorem by hand, not the compiler from the trust base.
+-/
+theorem refutes_of_countermodel {raw : RawCertificate} {t : Int}
+    (h : checkRaw raw = .countermodel t) :
+    WitnessFamily.Refutes raw.target.premises raw.target.conclusions := by
+  rw [checkRaw] at h
+  split at h
+  case _ f => simp at h
+  case _ W hW =>
+    split_ifs at h with h1 h2 h3 h4
+    refine WitnessFamily.refutes_of_certifies W (t := raw.target.time) ⟨?_, ?_, ?_, ?_⟩
+    · exact of_decide_eq_true (by simpa using h1)
+    · exact of_decide_eq_true (by simpa using h2)
+    · exact of_decide_eq_true (by simpa using h3)
+    · exact of_decide_eq_true (by simpa using h4)
 
 /-- Parse and re-verify one JSON line. Malformed input is an `error`, never a verdict. -/
 def checkLine (line : String) : CheckResult :=
