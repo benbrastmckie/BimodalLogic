@@ -252,7 +252,7 @@ against the reduction in `CertificateImport.lean`; the two must agree up to the 
 
 ---
 
-### Phase 3: The total fuel parser [NOT STARTED]
+### Phase 3: The total fuel parser [COMPLETED]
 
 **Goal**: `BimodalTools/CanonicalWire/Parse.lean` exists and compiles: a fuel-indexed, **total**
 (`def`, never `partial`) parser for the layer-1 value, strict in every way R4 requires.

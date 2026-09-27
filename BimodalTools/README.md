@@ -303,7 +303,7 @@ implementation obligation and stays where it is.
 | `AxiomNames.lean` | 59 | <!-- TODO: add description --> |
 | `BenchmarkAnchorsMain.lean` | 598 | <!-- TODO: add description --> |
 | `BenchmarkOracleMain.lean` | 359 | <!-- TODO: add description --> |
-| `CanonicalWire.lean` | 31 | Aggregator for `CanonicalWire/`: the verified certificate wire codec — canonical printer, total parser, round-trip theorems |
+| `CanonicalWire.lean` | 32 | Aggregator for `CanonicalWire/`: the verified certificate wire codec — canonical printer, total parser, round-trip theorems |
 | `CertificateImport.lean` | 792 | The certificate library: `closureList`/`intRange`, the `RawCertificate` records, the envelope parser and serializer, the `dite`-based `WitnessFamily` builders, `checkRaw` and the localization scans |
 | `CheckCertificateMain.lean` | 57 | Executable root of `lake exe check_certificate`: `main` only; reads one certificate on stdin, prints one JSON line |
 | `ContrastiveGenerator.lean` | 1,025 | The formula-mutation engine: `MutationType`, `ContrastivePair`, the single-occurrence mutators, `generateContrastivePairs`, and the contrastive JSONL export |
@@ -333,7 +333,7 @@ implementation obligation and stays where it is.
 | `TraceExport.lean` | 229 | <!-- TODO: add description --> |
 | `TraceExporterMain.lean` | 265 | <!-- TODO: add description --> |
 | `TranslateSentenceMain.lean` | 51 | Executable root of `lake exe translate_sentence`: `main` only; reads one source-sentence JSON object on stdin, prints the translated formula as one JSON line |
-| `CanonicalWire/` | — | The verified wire codec: `Json.lean` (canonical value, printer, fuel measure) (1 file) |
+| `CanonicalWire/` | — | The verified wire codec: `Json.lean` (canonical value, printer, fuel measure), `Parse.lean` (the total parser) (2 files) |
 <!-- END GENERATED -->
 
 *Last verified: 2026-09-27*

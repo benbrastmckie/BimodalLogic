@@ -27,6 +27,7 @@ the schema layer only applies it.
 | File | Lines | Description |
 |------|-------|-------------|
 | `Json.lean` | 265 | The canonical value `CJson`/`CJsonList`/`CJsonObj`, the `Canonical` well-formedness predicate, the escape and decimal codecs' printing halves, the canonical printer, and the fuel measure |
+| `Parse.lean` | 297 | The total fuel-indexed parser: `unescapeBody`, `takeDigits`/`parseDigits`/`parseInt`, `parseCJson`/`parseElems`/`parseFields`, and the strict entry point `parseCanonical` |
 
 ## The canonical form
 
