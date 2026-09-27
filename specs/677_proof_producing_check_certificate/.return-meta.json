@@ -1,17 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/677_proof_producing_check_certificate/reports/01_proof-producing-check-certificate.md",
-      "summary": "Verified Lean skeleton for a proof-producing check_certificate: Certifies/Refutes/refutes_of_certifies plus a dependent CheckOutcome and a refutes_of_countermodel soundness theorem provable against the current unmodified checkRaw; an additive \"acceptance\" output field shown non-breaking against the consuming repository; and the honest level-1/2/3 trust framing correcting the task's kernel-checked claim."
+      "type": "plan",
+      "path": "specs/677_proof_producing_check_certificate/plans/01_proof-producing-check-certificate.md",
+      "summary": "Six-phase plan making check_certificate's accepting branch the kernel-checked composition of the four decided conditions with joint_countermodel, plus the additive acceptance wire field and the disclaimer correction."
+    }
+  ],
+  "next_steps": "Run /implement 677 to execute the plan",
+  "phase_count": 6,
+  "estimated_hours": 6,
+  "dependency_waves": [[1], [2], [3], [4], [5], [6]],
+  "memory_candidates": [
+    {
+      "content": "When making a verdict-producing procedure proof-producing, state and prove the soundness theorem against the UNMODIFIED implementation first, before restructuring it. The theorem (e.g. 'checkRaw raw = .countermodel t -> Refutes ...') is provable against an existing `if ! decide ...` chain by splitting the branches and applying of_decide_eq_true, so it costs one phase and machine-checks the composition at the earliest possible commit. It then acts as a build-breaking regression guard for the subsequent restructure: if the new accepting branch ever loosens (accepts on three conditions instead of four), the theorem fails to elaborate. Sequencing it after the restructure instead forfeits both the early guarantee and the guard. The companion shape is the proof-carrying result type: an inductive indexed by its input whose accepting constructor carries the witness (Prop field, derives nothing), plus a forgetful `erase` to a non-dependent serializable verdict that keeps Repr/Inhabited/DecidableEq. Nested `dite` on the individual conditions -- not one `dite` on a bundled conjunction -- is what hands the accepting branch its hypotheses while preserving short-circuit order and keeping each failure-localization scan in its own branch.",
+      "category": "PATTERN",
+      "source_artifact": "specs/677_proof_producing_check_certificate/plans/01_proof-producing-check-certificate.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["proof-producing", "decidable-instance", "soundness-theorem-first", "dependent-result-type", "regression-guard", "dite"]
     }
   ],
   "metadata": {
     "session_id": "sess_1790528746_3f1c95_677",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 5
 }

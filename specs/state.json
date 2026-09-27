@@ -60,19 +60,24 @@
     {
       "project_number": 677,
       "project_name": "proof_producing_check_certificate",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "Make check_certificate proof-producing rather than verdict-producing, so that acceptance of a certificate is a kernel-checked entailment instead of a report that four decision procedures returned true. Today the executable decides the four certificate conditions and prints a status line, while WitnessFamily.joint_countermodel (Metalogic/Decidability/WitnessFamily/Agreement.lean:232) sits beside it as a separate theorem; the composition of the two -- decided conditions plus the agreement theorem yields the existence of a paper countermodel -- happens only in the reader's head. The consuming repository's adequacy document says so explicitly: a \"countermodel\" verdict is not a kernel-checked proof for that particular certificate, only that the four Decidable instances all returned true on the family rebuilt from the wire input. Change this by making the success path be the composition: state the entailment as a theorem taking a satisfies-the-four-conditions hypothesis to the existence of a model, a world history and a time witnessing the premises true and the conclusions false, then have the executable's accepting branch apply that theorem to a hypothesis obtained from the existing Decidable instances, so that accepting a certificate means Lean has constructed a term of the existence type. Extend the output contract to carry the distinction between a decided verdict and a constructed entailment, coordinating the change with the consuming side, since the wire is an export contract and its field names are a breaking change surface rather than a local refactor. The downstream payoff, which should be recorded: the consumer's pure-Python re-checker becomes a fast pre-filter rather than part of the trust base.",
       "dependencies": [],
       "created": "2026-09-26T11:55:52Z",
-      "last_updated": "2026-09-27T17:27:35Z",
+      "last_updated": "2026-09-27T18:13:18Z",
       "session_id": "sess_1790528746_3f1c95",
       "artifacts": [
         {
           "path": "specs/677_proof_producing_check_certificate/reports/01_proof-producing-check-certificate.md",
           "type": "report",
           "summary": "Verified Lean skeleton for a proof-producing check_certificate: Certifies/Refutes/refutes_of_certifies plus a dependent CheckOutcome and a refutes_of_countermodel soundness theorem provable against the current unmodified checkRaw; an additive \"acceptance\" output field shown non-breaking against the consuming repository; and the honest level-1/2/3 trust framing correcting the task's kernel-checked claim."
+        },
+        {
+          "path": "specs/677_proof_producing_check_certificate/plans/01_proof-producing-check-certificate.md",
+          "type": "plan",
+          "summary": "Six-phase plan: library additions, refutes_of_countermodel against the unmodified checkRaw, the dependent CheckOutcome restructure, the additive acceptance output field, the honesty pass, and the full gate plus consuming-side hand-off."
         }
       ],
       "next_artifact_number": 2
@@ -93,14 +98,14 @@
     {
       "project_number": 679,
       "project_name": "lean_sentence_formula_translation_truth",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "topic": "semantics",
       "description": "Define the Sentence-to-Formula translation in Lean and prove it truth-preserving, supplying the verified half of the consuming repository's S4 obligation. Read the REVISED PREMISES below before planning: two claims in this task's original description have since been falsified by work landed in the consuming repository, and one stated payoff has been assessed there and rejected as infeasible. Planning against the original framing would chase a hazard that no longer exists and promise an outcome that cannot be delivered.\n\nWHY THE TASK IS STILL WORTH DOING. The translation sits INSIDE the consuming repository's trust base -- its own trust-pipeline document lists it there alongside Lean's kernel, the transcription audit and the re-checker, while deliberately excluding Z3, the encoder and the decoder -- and that document names the translation, not the encoder, as the weakest link, calling this counter-intuitive since the encoder is where the intricate window arithmetic lives. The obligation remains covered by no Lean theorem. A defect in it means every downstream check rigorously certifies a countermodel to a different argument than the user asked, and a round-trip between that repository's re-checker and check_certificate cannot detect it, because both sides consume the same already-translated formula. That reasoning is unchanged and is the whole case for this task.\n\nREVISED PREMISE 1: THE ARGUMENT-ORDER MISMATCH NO LONGER EXISTS. The original description said the consumer's until operator is event-first while untl here is guard-first, and asked this task to handle the mismatch. The consuming repository has since normalized to guard-first throughout, in its operator and formula modules, so its translate is positional identity rather than a swap, and there is no swap left for either half of S4 to catch. Do not design around a mismatch. The residual hazard it records is general truth preservation across the guard/event distinction -- a wrong translation could still misassign which operand is which with no swap-shaped bug to name -- so asymmetric until/since coverage is still worth having, for that reason rather than the original one.\n\nREVISED PREMISE 2: BOTH HALVES NOW HAVE COVERAGE, SO THIS IS NOT FIRST COVERAGE. The original description said the box half had no existing coverage at all. That is now false. Both the tense and the box halves are discharged on the consuming side by differential property tests against independent reference evaluators that never call translate, with machine-checked negative controls confirming a deliberately wrong translation is detected rather than passing vacuously. The original claim about that repository's brute-force adjudicator covering only five primitive tense tags with no box case remains true, but it is no longer load-bearing for the box half, which is covered directly instead. Plan this task as supplying a proof where a test now stands, and say plainly in the report what a theorem buys over a passing property test with teeth, rather than asserting a coverage gap that has been closed.\n\nREVISED PREMISE 3: DELEGATION IS INFEASIBLE, SO DO NOT PROMISE OBLIGATION DELETION. The original description offered the consuming repository a choice to verify its own translation against this one OR delegate to it outright and delete the obligation. The second option has been assessed there and rejected as infeasible, for a structural reason: translate runs at Python evaluation time inside every primitive operator's own truth predicate, not only at export, and Lean exposes no callable verified elimination pass to relocate into, since its own defined connectives are already six-primitive definition-level abbreviations. The deliverable is therefore an independent verified reference the consumer can validate its implementation against -- which is real and worth having, since it replaces agreement-with-itself by agreement-with-a-theorem -- not a route to deleting the obligation. Scope and cost the task on that basis.\n\nDELIVERABLE, UNCHANGED IN SUBSTANCE. The elimination of the defined operators (negation, conjunction, disjunction, the derived tense operators, next, prev) into the six primitives, defined in Lean, with a theorem that truth of a sentence under the source evaluation agrees with truth of its translation. Coordinate the interface so the consuming repository can check its own elimination against this one mechanically rather than by reading.",
       "dependencies": [],
       "created": "2026-09-26T11:55:52Z",
-      "last_updated": "2026-09-27T17:27:53Z",
-      "session_id": "sess_1790528746_3f1c95",
+      "last_updated": "2026-09-27T17:29:05Z",
+      "session_id": "sess_1790528746_3f1c95_679",
       "artifacts": [
         {
           "path": "specs/679_lean_sentence_formula_translation_truth/reports/01_sentence-formula-translation-truth.md",
@@ -113,14 +118,14 @@
     {
       "project_number": 680,
       "project_name": "record_compression_prerequisite_satisfiable",
-      "status": "researched",
+      "status": "planning",
       "task_type": "markdown",
       "topic": "documentation",
       "description": "Record, on this side only, that the compression task's remaining reduction condition is now satisfiable, and carry the correction that came with it. Documentation and task-metadata only: no new mathematics. This task is the sole remaining blocker on the quasimodel/ShiftSet decidability task (its other three dependencies are all complete), and that task is the long pole of the whole adequacy chain, so this is small work standing in front of large work.\n\nWHAT CHANGED ON THE CONSUMING SIDE, AND WHAT IS THEREFORE ALREADY DONE. Do not re-do it. The consuming repository has landed its own half: its adequacy document's section 7.1 now states that the third reduction condition is satisfiable in principle today, and replaces the former single sentence with an ordered prerequisite list (iii-a) through (iii-e) of which exactly one is blocking. It also now carries a dedicated search-coverage document comparing the routes, and a trust-pipeline document with a cross-repository work ledger. Both prerequisites the condition once waited on do exist there: a certificate export on the documented wire contract, and a pure-Python re-checker that independently decides the four conditions over the proved windows on every reported countermodel, cross-checked against this development's check_certificate executable where present. So this task no longer needs to correct anything in that repository; it needs to update this development's own notes so its planning does not re-derive the prerequisite as missing.\n\nTHE CORRECTION THAT MUST TRAVEL WITH THE GOOD NEWS. \"Satisfiable\" is not \"nearly done\", and recording only the former would mislead the compression task's planning. The consuming repository measured that its searched witness-family space is NOT monotone in the back/mid/fwd bounds: because its witness registry folds those bounds by exact modulus, a search at bound n represents exactly the periods dividing n, so a formula can be satisfiable at (3,1,3) and (6,1,6) while genuinely unsatisfiable at (4,1,4) and (5,1,5). This falsifies the third condition as it was originally worded, and it is why the condition was rewritten into sub-bullets rather than simply marked satisfiable. The blocking prerequisite is the first sub-bullet, fixing the length space -- either sweeping the bounds over the grid up to the compression bound, or restricting the claim to bounds the folding actually covers -- and the consuming document states that without it the condition is unprovable rather than merely unproved. It also follows that a bound of the shape \"segment lengths at least f of the closure size\" is insufficient on its own: representability, not magnitude, is what the folding decides. Record both facts here in durable terms.\n\nTHE SECOND HALF, TAKEN OVER FROM THE COMPRESSION TASK'S ITEM 3. That item is delegated to this task and is being struck from the compression task's own description, so it lives here and only here: Assembly.lean's docstring and the BiLasso README still call the IntPresentation small-model hypothesis open when it is in fact refuted (Probe476.fmp_false), and the scope sentence recording that the procedure decides validity for the language without the stability modal -- its witness models being deterministic, on which that modal is trivial -- should be stated in durable terms rather than left implicit.",
       "dependencies": [],
       "created": "2026-09-26T11:55:52Z",
-      "last_updated": "2026-09-27T17:28:11Z",
-      "session_id": "sess_1790528746_3f1c95",
+      "last_updated": "2026-09-27T17:29:14Z",
+      "session_id": "sess_1790528746_3f1c95_680",
       "artifacts": [
         {
           "path": "specs/680_record_compression_prerequisite_satisfiable/reports/01_compression-prerequisite-satisfiable.md",
@@ -133,14 +138,14 @@
     {
       "project_number": 681,
       "project_name": "narrow_transcription_audit_surface",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "topic": "metalogic",
       "description": "Narrow the transcription audit obligation by converting as much of it as possible from definition to theorem. The consuming repository's adequacy argument lists, among the obligations its soundness claim rests on, that the Lean definitions transcribe the paper's -- and records it as discharged by inspection, an audit rather than a theorem. That is irreducible in principle, since it spans the boundary between an informal paper and a formalism, and nothing inside the formalism can discharge it. It can however be narrowed. Where a paper frame condition is currently carried as a Lean definition, derive it as a theorem from more primitive definitions instead, so that the surface requiring human inspection shrinks to those primitives. Candidates are the task relation's conditions (compositionality, seriality, limit, saturation) and the requirement that the time structure be a nontrivial totally ordered abelian group. Refresh the line-level citation table that maps each paper step to its landed Lean counterpart, verifying every cited file and line still resolves, and state plainly in the result which residue remains inspection-only, so a reader can see the exact size of the informal surface rather than being told it is small. Low priority and ongoing: this reduces an audit's scope, it does not eliminate an obligation.",
       "dependencies": [],
       "created": "2026-09-26T11:55:52Z",
-      "last_updated": "2026-09-27T17:28:29Z",
-      "session_id": "sess_1790528746_3f1c95",
+      "last_updated": "2026-09-27T17:29:24Z",
+      "session_id": "sess_1790528746_3f1c95_681",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Std.lean",
         "FormalSystem/Semantics/FrameConstraintIndependence.lean",
