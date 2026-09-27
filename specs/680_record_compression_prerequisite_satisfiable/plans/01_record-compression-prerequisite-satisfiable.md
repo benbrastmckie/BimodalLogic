@@ -290,25 +290,28 @@ line numbers, and report a divergence instead of editing by line offset.
 
 ---
 
-### Phase 4: Fix the `ValidDiscrete` -> `ValidZTime` rename drift in `BiLasso/README.md` [NOT STARTED]
+### Phase 4: Fix the `ValidDiscrete` -> `ValidZTime` rename drift in `BiLasso/README.md` [COMPLETED]
 
 **Goal**: `BiLasso/README.md` names the declarations `Assembly.lean` actually defines, recorded as
 its own change so it is not conflated with the `fmp`-status correction.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/BiLasso/README.md` (Phase 3 has just changed
-      it).
-- [ ] Confirm the live names against `Assembly.lean` itself rather than against this plan:
+- [x] Re-read `FormalSystem/Metalogic/Decidability/BiLasso/README.md` (Phase 3 has just changed
+      it). *(completed)*
+- [x] Confirm the live names against `Assembly.lean` itself rather than against this plan:
       `ValidZTime`, `validZTime_iff_check`, `validZTime_iff_checkFamily`, `decidableValidZTime`,
-      `decidableValidZTimeFamily`, `not_validZTime_of_satAtState`.
-- [ ] Replace every stale occurrence in this file, including the section heading and the
-      `Assembly.lean` row of the `## Modules` table.
-- [ ] Confirm `ValidDiscrete`/`validDiscrete` has zero remaining occurrences in this file.
-- [ ] Do **not** touch `FormalSystem/Metalogic/SoundnessLemmas/README.md` (explicitly out of
+      `decidableValidZTimeFamily`, `not_validZTime_of_satAtState`. *(completed: all six confirmed
+      via `grep -n '^theorem\|^def\|^instance'` on `Assembly.lean`)*
+- [x] Replace every stale occurrence in this file, including the section heading and the
+      `Assembly.lean` row of the `## Modules` table. *(completed)*
+- [x] Confirm `ValidDiscrete`/`validDiscrete` has zero remaining occurrences in this file.
+      *(completed: 0)*
+- [x] Do **not** touch `FormalSystem/Metalogic/SoundnessLemmas/README.md` (explicitly out of
       scope, see Overview); record in the summary that it still carries one occurrence, in a
-      different context, for a separate task.
-- [ ] `git status --short`; `git add -- FormalSystem/Metalogic/Decidability/BiLasso/README.md`;
-      commit with a message naming the rename drift specifically.
+      different context, for a separate task. *(completed: untouched, confirmed by repo-wide
+      grep)*
+- [x] `git status --short`; `git add -- FormalSystem/Metalogic/Decidability/BiLasso/README.md`;
+      commit with a message naming the rename drift specifically. *(completed: commit 52414dcd5)*
 
 **Timing**: 0.5 hours
 
@@ -323,7 +326,11 @@ and in zero live `.lean` files. Confirm at implementation time with
 `grep -on 'ValidDiscrete\|validDiscrete' FormalSystem/Metalogic/Decidability/BiLasso/README.md`
 and a repo-wide `grep -rn 'ValidDiscrete' --include='*.lean' --include='*.md'`; if the counts or
 the file set differ, report the difference rather than silently widening this phase's scope.
-Phase 3's own edits may have changed these counts — re-measure, do not assume.
+Phase 3's own edits may have changed these counts — re-measure, do not assume. *(deviation:
+altered — re-measured at implementation time: 9 tokens across lines 28, 39, 40, 42, 43, 44, 51,
+74, 102 (line numbers shifted by Phase 3's edits); the file set matched exactly —
+`SoundnessLemmas/README.md` remained the sole other markdown occurrence, out of scope, and zero
+occurrences were found in any live `.lean` file)*
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/BiLasso/README.md` - stale declaration names only.
