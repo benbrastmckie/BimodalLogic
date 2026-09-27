@@ -133,14 +133,29 @@
     {
       "project_number": 681,
       "project_name": "narrow_transcription_audit_surface",
-      "status": "researching",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "metalogic",
       "description": "Narrow the transcription audit obligation by converting as much of it as possible from definition to theorem. The consuming repository's adequacy argument lists, among the obligations its soundness claim rests on, that the Lean definitions transcribe the paper's -- and records it as discharged by inspection, an audit rather than a theorem. That is irreducible in principle, since it spans the boundary between an informal paper and a formalism, and nothing inside the formalism can discharge it. It can however be narrowed. Where a paper frame condition is currently carried as a Lean definition, derive it as a theorem from more primitive definitions instead, so that the surface requiring human inspection shrinks to those primitives. Candidates are the task relation's conditions (compositionality, seriality, limit, saturation) and the requirement that the time structure be a nontrivial totally ordered abelian group. Refresh the line-level citation table that maps each paper step to its landed Lean counterpart, verifying every cited file and line still resolves, and state plainly in the result which residue remains inspection-only, so a reader can see the exact size of the informal surface rather than being told it is small. Low priority and ongoing: this reduces an audit's scope, it does not eliminate an obligation.",
       "dependencies": [],
       "created": "2026-09-26T11:55:52Z",
-      "last_updated": "2026-09-27T17:06:32Z",
-      "session_id": "sess_1790528746_3f1c95_681"
+      "last_updated": "2026-09-27T17:28:29Z",
+      "session_id": "sess_1790528746_3f1c95",
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Std.lean",
+        "FormalSystem/Semantics/FrameConstraintIndependence.lean",
+        "FormalSystem/Semantics/ShiftSet.lean",
+        "scripts/check-module-invariants.sh",
+        "scripts/lib/lean_citations.py"
+      ],
+      "artifacts": [
+        {
+          "path": "specs/681_narrow_transcription_audit_surface/reports/01_narrow-transcription-audit-surface.md",
+          "type": "report",
+          "summary": "Audit-surface research: one verified definition-to-theorem conversion (ShiftSet.sep over discrete duration orders), a four-constraint independence programme with three of four witnesses verified, four stale citations corrected, and the inspection-only residue enumerated at 24 Lean definitions (three of them currently unrecorded)."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 664,
