@@ -88,7 +88,7 @@ judgement about its content:
 | 1 | `Semantics/<Lang>/` | Minus: `MinusTruth`, `MinusFrame`, `MinusValidity`, `MinusSchemaValidity`. Plus: `PlusTruth`, `PlusValidity`, `PlusPasting`, `PlusNonValidities`, `PlusDeterminism`, `PlusStateLocal`, `PlusLimitClosure`. Star: `StarTruth`, `StarValidity`, `StarDeterminism`, `StarNonValidities`, `StarStateLocal`. Open: `OpenClasses`, `OpenTruth`, `OpenValidity`, `OpenReversal`, `OpenOckhamist` |
 | 3 | `Metalogic/Conservativity/` | `MinusLanguage/Soundness.lean`, which imports two `Metalogic/` modules |
 
-17 files at layer 0, 29 at layer 1, 1 at layer 3. The seven sibling aggregators
+17 files at layer 0, 30 at layer 1, 1 at layer 3. The seven sibling aggregators
 (`MinusLanguage.lean` and its six siblings) import layer-0 and layer-1 files and take a declared
 layer of 1.
 

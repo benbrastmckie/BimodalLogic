@@ -99,6 +99,7 @@ Python evaluator that is only extensionally equivalent under a frame property.
 | File | Lines | Description |
 |------|------:|-------------|
 | `Sentence.lean` | 321 | `Sentence` — the source AST, 18 constructors (nine primitive operators, eight defined, plus atoms), `untl`/`snce` guard-first; `tr : Sentence → Formula`, the elimination into L's six primitives; the twelve `rfl` push-through equations; `tr_cond_ne`, `tr_someFut_ne`, `tr_somePast_ne` — the three rows that deliberately do not push through; `tr_not_injective` — the elimination is lossy by construction |
+| `SentenceTruth.lean` | 253 | `Sat` — the native source-side truth evaluation, 18 clauses, mirroring the source repository's own reference evaluator with two recorded departures (`TruthAt`'s same-time box clause; `⋖` rather than `t ± 1`); `sat_iff` — the agreement theorem against `TruthAt` itself, over every frame, model, history and time; `next_iff_covBy`/`prev_iff_covBy` — unconditional; `next_iff_succ`/`prev_iff_pred` — the discrete corollaries |
 <!-- END GENERATED -->
 
 The sibling aggregator is `../SourceLanguage.lean`. The library root, the repository-root

@@ -310,31 +310,31 @@ under Verification rather than by inspection, and add whatever a failure names.
 
 ---
 
-### Phase 2: The truth evaluation and the agreement theorem [NOT STARTED]
+### Phase 2: The truth evaluation and the agreement theorem [COMPLETED]
 
 **Goal**: `FormalSystem/SourceLanguage/SentenceTruth.lean` proves `sat_iff` against `TruthAt`
 itself, plus the four `next`/`prev` characterizations, with no `sorry` and no new axiom.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/SourceLanguage/SentenceTruth.lean` importing
+- [x] Create `FormalSystem/SourceLanguage/SentenceTruth.lean` importing
       `FormalSystem.SourceLanguage.Sentence` and `FormalSystem.Semantics.Truth` (this is what makes
       it layer 1).
-- [ ] Define `Sat` mirroring the consumer's reference evaluator (`_eval_mc_ast`) clause for
+- [x] Define `Sat` mirroring the consumer's reference evaluator (`_eval_mc_ast`) clause for
       clause, with the two deliberate departures recorded inline: `box` uses `TruthAt`'s own
       same-time all-histories quantifier, and `next`/`prev` use `CovBy` rather than `t ± 1`.
-- [ ] Prove `sat_iff` by `induction φ` with `∀ τ t` after the colon and `intro τ t` per case —
+- [x] Prove `sat_iff` by `induction φ` with `∀ τ t` after the colon and `intro τ t` per case —
       generalizing over both is required, not optional: `box`/`dia` need the hypothesis at a
       different history, the four tense cases plus `untl`/`snce`/`next`/`prev` at a different
       time. Each case closes with `simp [Sat, tr, ih]`; `atom`/`bot` are `Iff.rfl`; `cond` and
       `bicond` need a trailing `tauto`.
-- [ ] Prove `next_iff_covBy` and `prev_iff_covBy` by
+- [x] Prove `next_iff_covBy` and `prev_iff_covBy` by
       `simp only [Formula.next, Truth.untl_iff, Truth.bot_false]` then `constructor` with
       `rintro`/`exact` (`CovBy` is an `And` here, so no `CovBy.*` API is needed).
-- [ ] Prove `next_iff_succ` from `next_iff_covBy` via `Order.covBy_succ` plus the two `not_lt`
+- [x] Prove `next_iff_succ` from `next_iff_covBy` via `Order.covBy_succ` plus the two `not_lt`
       projections and `le_antisymm` — **not** `(Order.covBy_succ t).unique`, which does not exist
       for this `And`-shaped `CovBy`. Prove `prev_iff_pred` dually.
-- [ ] Write the module docstring recording, each as a named paragraph: (a) that `CovBy` is the
+- [x] Write the module docstring recording, each as a named paragraph: (a) that `CovBy` is the
       theorem and `succ`/`pred` the corollaries, because `next φ` is unsatisfiable on a dense
       carrier (cite `Metalogic/DedekindNonCompactness.lean`), while the consumer's ℤ-time
       instantiation is what makes the corollary operative; (b) that `TruthAt`'s box clause is
@@ -350,7 +350,7 @@ itself, plus the four `next`/`prev` characterizations, with no `sorry` and no ne
       (nothing about `translate`'s memoization, `WeakKeyDictionary` identity keying, or
       `update_types` expansion is in scope) — and it does **not** discharge the consumer's S4
       obligation or license deleting it.
-- [ ] Add `"SentenceTruth": 1` to the `LANGUAGE_FILE_LAYERS["SourceLanguage"]` row, import the
+- [x] Add `"SentenceTruth": 1` to the `LANGUAGE_FILE_LAYERS["SourceLanguage"]` row, import the
       module from `FormalSystem/SourceLanguage.lean`, add its README row, and regenerate
       `FormalSystem.lean` with `lake exe mk_all --lib FormalSystem`.
 
@@ -388,26 +388,26 @@ already in `Semantics/Truth.lean`, that is a scope deviation to report, not to a
 
 ---
 
-### Phase 3: Fixture `#guard` rows pinning the elimination table [NOT STARTED]
+### Phase 3: Fixture `#guard` rows pinning the elimination table [IN PROGRESS]
 
 **Goal**: every row of the report's verified elimination table is pinned by an executable
 `#guard`, so a later "simplification" of `tr` fails a test instead of passing silently.
 
 **Tasks**:
 
-- [ ] Create `Tests/BimodalTest/Syntax/SentenceTranslationTest.lean` (the `#`-command linter is
+- [x] Create `Tests/BimodalTest/Syntax/SentenceTranslationTest.lean` (the `#`-command linter is
       disabled for the `BimodalTest` library, which is why these probes cannot live under
       `FormalSystem/`).
-- [ ] Add one `#guard` per elimination-table row, comparing `tr` of an atomic instance of each of
+- [x] Add one `#guard` per elimination-table row, comparing `tr` of an atomic instance of each of
       the 18 constructors against the Lean image written out explicitly, using `Formula`'s `BEq`.
-- [ ] Add a `#guard` for `\top` specifically, with a comment noting that the consumer's corpus
+- [x] Add a `#guard` for `\top` specifically, with a comment noting that the consumer's corpus
       excludes this tag because of a known `TopOperator` defect in its own `update_types`, and
       that the Lean side covers it unconditionally.
-- [ ] Add an asymmetric `Until`/`Since` row whose operand swap changes the image, so a future
+- [x] Add an asymmetric `Until`/`Since` row whose operand swap changes the image, so a future
       regression to event-first fails here rather than passing silently.
-- [ ] Add a nested `someFut`/`allFut` row and a nested `cond` row, the two families that do not
+- [x] Add a nested `someFut`/`allFut` row and a nested `cond` row, the two families that do not
       push through.
-- [ ] Register the module in `Tests/BimodalTest.lean` and add its row to
+- [x] Register the module in `Tests/BimodalTest.lean` and add its row to
       `Tests/BimodalTest/README.md` if that file carries a per-file inventory.
 
 **Timing**: 1 hour
@@ -435,7 +435,7 @@ constructor name of `Sentence` appears at least once in the file.
 
 ---
 
-### Phase 4: The conformance channel — codec, executable, committed fixtures [NOT STARTED]
+### Phase 4: The conformance channel — codec, executable, committed fixtures [IN PROGRESS]
 
 **Goal**: the consumer can diff its own `translate` against this one mechanically: a `Sentence`
 JSON codec in the existing tag vocabulary, a `translate_sentence` executable, and a committed
@@ -443,28 +443,28 @@ fixture file.
 
 **Tasks**:
 
-- [ ] Create `BimodalTools/SentenceExport.lean` with `Sentence.toJson` in the established
+- [x] Create `BimodalTools/SentenceExport.lean` with `Sentence.toJson` in the established
       `Formula.toJson` style (`BimodalTools/DataExport.lean`), using a `sentence`-side tag
       vocabulary that mirrors the constructor names and keeps `untl`/`snce` on **named**
       `event`/`guard` fields so the wire stays order-free even though the constructor is not.
-- [ ] Add `pSentence`, the reader, in the `BimodalTools/JsonParse.lean` `pFormula` style, and a
+- [x] Add `pSentence`, the reader, in the `BimodalTools/JsonParse.lean` `pFormula` style, and a
       `translateSentenceLineToJson : String → String` performing parse → `tr` → `Formula.toJson`
       and returning a structured error string on a parse failure.
-- [ ] Create `BimodalTools/TranslateSentenceMain.lean`: the root-namespace `main` and nothing else,
+- [x] Create `BimodalTools/TranslateSentenceMain.lean`: the root-namespace `main` and nothing else,
       reading one line on stdin and printing one JSON line on stdout, mirroring
       `BimodalTools/CheckCertificateMain.lean`. The name is forced by C25N
       (`PascalCase(target)Main`).
-- [ ] Add the `[[lean_exe]] name = "translate_sentence"`, `root = "BimodalTools.TranslateSentenceMain"`,
+- [x] Add the `[[lean_exe]] name = "translate_sentence"`, `root = "BimodalTools.TranslateSentenceMain"`,
       `supportInterpreter = true` block to `lakefile.toml` with the usage comment the sibling
       entries carry.
-- [ ] Import `BimodalTools.SentenceExport` from `BimodalTools.lean` (the aggregator imports every
+- [x] Import `BimodalTools.SentenceExport` from `BimodalTools.lean` (the aggregator imports every
       non-`Main` tooling module; C6 depends on this).
-- [ ] Commit `data/sentence-translation-fixtures.jsonl`: one line per fixture, each an object
+- [x] Commit `data/sentence-translation-fixtures.jsonl`: one line per fixture, each an object
       carrying the consumer's surface form, the source-sentence JSON, and the expected translated
       `Formula` JSON. Include at minimum one atomic instance of each of the 17 operators, the
       `\top` case, one asymmetric `\Until`/`\Since` instance, and one nested `\future`/`\Future`
       pair.
-- [ ] Document the wire schema and the fixture-file contract in `BimodalTools/README.md`, beside
+- [x] Document the wire schema and the fixture-file contract in `BimodalTools/README.md`, beside
       the `Formula` wire format and the tableau bridge protocol, stating explicitly that the
       consumer must compare **parsed JSON, not bytes** (`Formula.toJson` emits `", "`/`": "`
       separators which `json.dumps`'s defaults happen to match but nothing guarantees).
@@ -502,25 +502,25 @@ round-trip is a scope deviation to report.
 
 ---
 
-### Phase 5: Round-trip test and the hand-off note [NOT STARTED]
+### Phase 5: Round-trip test and the hand-off note [IN PROGRESS]
 
 **Goal**: the conformance channel is regression-protected inside this repository, and the
 consumer-side work has a written contract to consume.
 
 **Tasks**:
 
-- [ ] Create `Tests/BimodalToolsTest/SentenceCodecTest.lean` asserting, per fixture, that
+- [x] Create `Tests/BimodalToolsTest/SentenceCodecTest.lean` asserting, per fixture, that
       `pSentence` parses the source JSON, `tr` produces the expected `Formula`, `Formula.toJson`
       of it re-parses through `pFormula` to the same term, and `Sentence.toJson ∘ pSentence` is
       the identity on the source JSON modulo whitespace.
-- [ ] Import the module from `Tests/BimodalToolsTest.lean`, checking first that it imports no
+- [x] Import the module from `Tests/BimodalToolsTest.lean`, checking first that it imports no
       executable root that would collide with the root-namespace `main` already in that
       environment (the file's own comment records this hazard).
-- [ ] Add the hand-off note to `BimodalTools/README.md`: what the consumer must assert
+- [x] Add the hand-off note to `BimodalTools/README.md`: what the consumer must assert
       (`to_json(translate(s))` equals `lake exe translate_sentence`'s output for every fixture
       line), that the assertion belongs in the ModelChecker repository and is not written from
       here, and that the fixture file is the shared artifact.
-- [ ] Add a `Tests/BimodalToolsTest/README.md` inventory row.
+- [x] Add a `Tests/BimodalToolsTest/README.md` inventory row.
 
 **Timing**: 1 hour
 
@@ -547,7 +547,7 @@ time.
 
 ---
 
-### Phase 6: Record the cross-repository contract as durable context [NOT STARTED]
+### Phase 6: Record the cross-repository contract as durable context [IN PROGRESS]
 
 **Goal**: the elimination table, the two non-push-through facts, the `next`/`prev` order caveat
 and the box-clause note exist somewhere a future dispatch on either side of the boundary can find
@@ -555,20 +555,20 @@ them — they currently live only in the consumer's Python docstrings and this t
 
 **Tasks**:
 
-- [ ] Read `source_dir` from `/home/benjamin/Projects/BimodalLogic/.claude-extensions.json` and
+- [x] Read `source_dir` from `/home/benjamin/Projects/BimodalLogic/.claude-extensions.json` and
       author the file under that source store at the path mirroring
       `.claude/context/project/lean4/domain/sentence-translation-contract.md` — never hand-author
       under `.claude/**`, which is a regenerated deploy artifact
       (`.claude/rules/source-store-deploy-boundary.md`).
-- [ ] Content: the 18-row elimination table; that `\rightarrow` is `or (neg A) B` and
+- [x] Content: the 18-row elimination table; that `\rightarrow` is `or (neg A) B` and
       `\future`/`\past` are the double-negated universal tense, with the closure consequence of
       getting either wrong; the `CovBy`-vs-`succ` caveat; the box same-time-vs-all-times note; the
       fixture-file and `lean_exe` channel; and the scope limit (this certifies the encoding, not
       the consumer's Python, and does not discharge the consumer's obligation).
-- [ ] Reference durable anchors only — filenames, declaration names, section headings. No task
+- [x] Reference durable anchors only — filenames, declaration names, section headings. No task
       numbers: this file is outside `specs/**`
       (`.claude/rules/no-task-references-in-deliverables.md`).
-- [ ] Add the file to the lean extension's context index if that extension's manifest carries one.
+- [x] Add the file to the lean extension's context index if that extension's manifest carries one.
 
 **Timing**: 0.5 hours
 

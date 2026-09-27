@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.SourceLanguage.Sentence
+import FormalSystem.SourceLanguage.SentenceTruth
 
 /-!
 # `FormalSystem.SourceLanguage` — the source sentence language and its verified elimination

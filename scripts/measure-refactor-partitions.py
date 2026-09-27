@@ -66,7 +66,7 @@ Measured on the tree as it stands after the language directories were layered:
                             HybridLanguage/, QuantLanguage/ and
                             SourceLanguage/, created after it, on the
                             directory each file would have occupied): 17 files
-                            at layer 0, 29 at layer 1, 1
+                            at layer 0, 30 at layer 1, 1
                             at layer 3.  One layer L for the first three
                             directories, before OpenLanguage/ existed, was
                             measured and
@@ -217,6 +217,7 @@ LANGUAGE_FILE_LAYERS = {
     },
     "SourceLanguage": {
         "Sentence": 0,
+        "SentenceTruth": 1,
     },
 }
 
