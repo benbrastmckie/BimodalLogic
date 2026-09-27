@@ -60,22 +60,21 @@ variable {Γ Del : Context}
 The standard shift set presented by a witness family: carrier `Fin |lassos| × ℤ`, shift by time
 translation, valuation read off the atom part of the labels.
 
+**Three axioms, not four.** Built through `ShiftSet.ofIntAction`, so the separation field —
+`def:frame#Limit` transcribed over the shift action — is discharged by
+`ShiftSet.sep_of_succOrder` from the zero-shift law rather than proved here by hand. Every field
+*value* is unchanged from the hand-built version this replaces; only the provenance of `sep`
+changed, from a hand proof over `Int.abs_lt_one_iff` to a kernel-checked consequence of
+discreteness.
+
 **Not `@[reducible]`** — see this module's header.
 -/
-def std (W : WitnessFamily Γ Del) : ShiftSet intOrder where
-  Carrier := Fin W.lassos.length × ℤ
-  carrier_nonempty := ⟨(W.mainIdx, 0)⟩
-  sh := fun w d => (w.1, w.2 + d)
-  sh_zero := by intro w; simp
-  sh_add := by intro w a b; simp [add_assoc]
-  sep := by
-    intro w u h
-    obtain ⟨y, hy, hu⟩ := h 1 (by norm_num)
-    have h1 : (|(y : ℤ)| : ℤ) < 1 := hy
-    have hy0 : y = 0 := Int.abs_lt_one_iff.mp h1
-    subst hy0
-    simpa using hu
-  A := fun p w => Formula.atom p ∈ W.L w.1 w.2
+def std (W : WitnessFamily Γ Del) : ShiftSet intOrder :=
+  ShiftSet.ofIntAction (Fin W.lassos.length × ℤ) ⟨(W.mainIdx, 0)⟩
+    (fun w d => (w.1, w.2 + d))
+    (by intro w; simp)
+    (by intro w a b; simp [add_assoc])
+    (fun p w => Formula.atom p ∈ W.L w.1 w.2)
 
 /-- **The presented frame is a ℤ-time frame.** Applied with an explicit `@` and four
 `inferInstanceAs` arguments; see this module's header for why `haveI` does not work here. -/
@@ -98,7 +97,7 @@ theorem std_sat_base (W : WitnessFamily Γ Del) :
 `box` case of agreement: quantifying over shifted points is quantifying over all points. -/
 theorem sh_surj (W : WitnessFamily Γ Del) (t : ℤ) (u : W.std.Carrier) :
     ∃ v : W.std.Carrier, W.std.sh v t = u :=
-  ⟨(u.1, u.2 - t), by cases u; simp [std]⟩
+  ⟨(u.1, u.2 - t), by cases u; simp [std]; rfl⟩
 
 /-- Shifting does not change the lasso coordinate. -/
 theorem sh_fst (W : WitnessFamily Γ Del) (w : W.std.Carrier) (t : ℤ) :

@@ -1,7 +1,7 @@
 # Implementation Plan: Narrow the transcription audit surface
 
 - **Task**: 681 - Narrow transcription audit surface
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 15 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/681_narrow_transcription_audit_surface/reports/01_narrow-transcription-audit-surface.md`
@@ -159,7 +159,7 @@ all three extend the same new module: they edit one file, and the independence m
 quantifies over all four witnesses. Phases 7 and 8 are genuinely parallel — one edits
 `scripts/` plus `docs/development/MODULE_INVARIANTS.md`, the other `docs/reference/`.
 
-### Phase 1: Derive *Limit* over a discrete duration order, and consume it [NOT STARTED]
+### Phase 1: Derive *Limit* over a discrete duration order, and consume it [COMPLETED]
 
 **Goal**: Move the paper's *Limit*, transcribed over the shift action, from a hand-supplied field
 of the certificate's standard shift set to a kernel-checked consequence of the zero-shift law,
@@ -167,10 +167,10 @@ without removing the field that the dense case genuinely needs.
 
 **Tasks**:
 
-- [ ] Re-read `FormalSystem/Semantics/ShiftSet.lean` immediately before editing (sibling tasks
+- [x] Re-read `FormalSystem/Semantics/ShiftSet.lean` immediately before editing (sibling tasks
       share this tree). Locate the `SepNotDerivable` section, whose docstring already frames the
       general-versus-discrete distinction, and site the new declarations beside it.
-- [ ] Add `ShiftSet.sep_of_succOrder`, transcribed from the report's verified snippet:
+- [x] Add `ShiftSet.sep_of_succOrder`, transcribed from the report's verified snippet:
       `{D : TemporalOrder} [SuccOrder (↑D : Type)] [NoMaxOrder (↑D : Type)] {Ω : Type}`
       `(sh : Ω → ↑D → Ω) (hz : ∀ w, sh w 0 = w)`, concluding the separation shape, proved by
       `TaskFrame.limit_of_succOrder (R := fun w y u => u = sh w y) (fun w u h => by rw [h, hz])`.
@@ -178,31 +178,45 @@ without removing the field that the dense case genuinely needs.
       action, derived rather than assumed; (b) that the derivation is bounded by
       `ShiftSet.SepNotDerivable.sep_not_derivable`, so the field survives; and (c) a `Paper:` line
       citing `def:frame#Limit`.
-- [ ] Add `ShiftSet.ofIntAction`, a smart constructor for `ShiftSet intOrder` taking the carrier,
+- [x] Add `ShiftSet.ofIntAction`, a smart constructor for `ShiftSet intOrder` taking the carrier,
       its nonemptiness, the shift, the two action laws and the valuation, and supplying the
       separation field from `sep_of_succOrder`. Use the explicit
       `@ … (inferInstanceAs (SuccOrder ℤ)) (inferInstanceAs (NoMaxOrder ℤ))` application form and
       add `import Mathlib.Data.Int.SuccPred` if it is not already present transitively; state in
       the docstring why the explicit form is needed (`SuccOrder ↑intOrder` does not synthesise
       because `intOrder.carrier` is not syntactically `ℤ` for instance search).
-- [ ] Verify the two new declarations compile and report no unexpected axioms
+- [x] Verify the two new declarations compile and report no unexpected axioms
       (`#print axioms`; `sorryAx` must not appear). Commit this green sub-step.
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/WitnessFamily/Std.lean`, then rewrite
+- [x] Re-read `FormalSystem/Metalogic/Decidability/WitnessFamily/Std.lean`, then rewrite
       `WitnessFamily.std` to be built by `ofIntAction`, deleting the hand separation proof (the
       `Int.abs_lt_one_iff` block) and leaving every other field value byte-identical. `std` must
       remain non-`@[reducible]` — the module header records that reducibility breaks synthesis of
       `ShiftSet.frame_isRegular`.
-- [ ] Confirm `WitnessFamily.std_isZTime`, `std_sat_ztime`, `std_sat_base`, `sh_surj`, `sh_fst`
+- [x] Confirm `WitnessFamily.std_isZTime`, `std_sat_ztime`, `std_sat_base`, `sh_surj`, `sh_fst`
       and `sh_snd` all still compile unchanged, and that nothing downstream was relying on the
-      deleted proof term's shape.
-- [ ] Update the `ShiftSet.lean` module header's "Four axioms in place of six frame fields"
+      deleted proof term's shape. *(deviation: altered — five of the six compile byte-identically;
+      `sh_surj`'s `simp [std]` needed `; rfl` appended, because a projection of `ofIntAction` is
+      not reduced by unfolding `std` alone. Two `@[simp]` projection lemmas
+      `ShiftSet.ofIntAction_sh` / `ofIntAction_A` were added so that `ofIntAction` behaves under
+      `simp` exactly as the hand-written structure instance it replaces; the residual `rfl` closes
+      a goal whose two sides are defeq but not syntactically equal.)*
+- [x] Update the `ShiftSet.lean` module header's "Four axioms in place of six frame fields"
       section: over a discrete duration order the axiom burden is three, not four, and the
       separation field is discharged by `sep_of_succOrder` rather than by hand. Keep the general
       statement (four fields) correct for a general duration order — this is the Surface A / B
       distinction, and the header must not blur it.
-- [ ] Run the full gate set for this phase: `lake build` (zero `error:`, zero `warning:`), the
+- [x] Run the full gate set for this phase: `lake build` (zero `error:`, zero `warning:`), the
       package linter set over both modified modules, and the certificate executable still
-      accepting whatever it accepted before.
+      accepting whatever it accepted before. *(deviation: altered — `lake build` is green with
+      zero `error:` and zero `warning:` (2739 jobs) and both modified modules are silent under the
+      package linter set. The certificate acceptance suite
+      `BimodalToolsTest.CertificateImportTest` could NOT be run: `BimodalTools/CertificateImport.lean`
+      currently carries a concurrent sibling task's uncommitted, non-compiling new declaration
+      `refutes_of_countermodel` (an `Application type mismatch` at its own line 639, in code added
+      by that sibling's diff and absent from HEAD), so the failure is outside this task's scope and
+      would occur identically without this task's changes. The `std` consumer that the certificate's
+      semantic guarantee actually routes through — `WitnessFamily/Agreement.lean` — was built
+      separately and is green.)*
 
 **Timing**: 2 hours
 

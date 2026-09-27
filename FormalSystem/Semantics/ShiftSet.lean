@@ -13,6 +13,7 @@ import Mathlib.Algebra.Order.Archimedean.Basic
 import Mathlib.Algebra.Order.Floor.Ring
 import Mathlib.Data.Rat.Cast.Order
 import Mathlib.Data.Nat.GCD.Basic
+import Mathlib.Data.Int.SuccPred
 
 /-!
 # ShiftSet - The shift-set representation of task models
@@ -48,10 +49,18 @@ all six. Three of them are free consequences of the task relation being *functio
   empty, so a directed family of nonempty ones is a family of copies of one singleton and its
   intersection is that singleton. No frame-theoretic machinery, and no Zorn.
 
-Only `limit` is *not* free: it fails for an arbitrary `D`-action, and this module *proves* that
-it fails, in `ShiftSet.SepNotDerivable.sep_not_derivable`: `D = ℚ` acting on `ℚ ⧸ (dyadics)`
-satisfies both action laws and refutes the separation condition. The failure mode is a dense
-proper stabiliser. That is what the `sep` field is for — see its own docstring.
+Only `limit` is *not* free **over a general duration order**: it fails for an arbitrary
+`D`-action, and this module *proves* that it fails, in
+`ShiftSet.SepNotDerivable.sep_not_derivable`: `D = ℚ` acting on `ℚ ⧸ (dyadics)` satisfies both
+action laws and refutes the separation condition. The failure mode is a dense proper stabiliser.
+That is what the `sep` field is for — see its own docstring.
+
+Over a **discrete** duration order the axiom burden is **three**, not four. `ShiftSet.sh_zero`
+alone forces separation there (`ShiftSet.sep_of_succOrder`), and `ShiftSet.ofIntAction` supplies
+the `sep` field from it, so a construction over `intOrder` hands over `carrier_nonempty`,
+`sh_zero` and `sh_add` and nothing else. The general statement above — four fields — stays
+correct for a general duration order, and the two counts must not be conflated: four is the
+*structure's* axiom count, three is what a *discrete* construction has to supply.
 
 ## On `Classical.choice` in the reverse direction
 
@@ -428,6 +437,87 @@ theorem reverse_repr (F : TaskFrame) [F.IsRegular] (M : TaskModel F) (τ : World
       exact ⟨s, hs, (ihχ τ s).mp he, fun r h1 h2 => (ihψ τ r).mp (hg r h1 h2)⟩
     · rintro ⟨s, hs, he, hg⟩
       exact ⟨s, hs, (ihχ τ s).mpr he, fun r h1 h2 => (ihψ τ r).mpr (hg r h1 h2)⟩
+
+/-!
+## `sep` *is* derivable over a discrete duration order
+
+The `sep` field is a genuine axiom in general — the next section refutes it outright over a dense
+duration order — but over a **discrete** one it is a theorem of the zero-shift law alone. That is
+the narrowing this section lands: a certified construction over discrete time supplies three
+axioms rather than four, and the fourth becomes kernel-checked.
+
+Nothing here weakens the structure. `sep` remains a field, because
+`ShiftSet.SepNotDerivable.sep_not_derivable` shows it must, and because the reverse direction
+(`ShiftSet.ofModel`) discharges it from `F.limit` over an arbitrary duration order where no
+successor operation is available.
+-/
+
+/--
+***Limit*, transcribed over a shift action, is a theorem over a discrete duration order.**
+
+Paper: `def:frame#Limit`. Over a `SuccOrder` duration carrier the hypothesis at
+`x = Order.succ 0` already forces the witness duration to be `0`, and the zero-shift law
+`sh w 0 = w` closes the goal. So the separation shape — a point lying in every arbitrarily small
+shift-neighbourhood of `w` *is* `w` — is **derived** here rather than assumed.
+
+The derivation is **bounded**, which is why the `sep` field survives:
+`ShiftSet.SepNotDerivable.sep_not_derivable` refutes the same shape for `ℚ` acting on
+`ℚ ⧸ DyadicGroup`, a dense duration order with a dense proper stabiliser. Discreteness is
+therefore not a convenience hypothesis that a later pass could drop — it is exactly the boundary
+of the derivation.
+
+This is `TaskFrame.limit_of_succOrder` at the functional relation `fun w y u => u = sh w y`; the
+two statements are definitionally the same shape, so no adaptation is needed at either end.
+-/
+theorem sep_of_succOrder {D : TemporalOrder} [SuccOrder (↑D : Type)] [NoMaxOrder (↑D : Type)]
+    {Ω : Type} (sh : Ω → ↑D → Ω) (hz : ∀ w, sh w 0 = w) :
+    ∀ w u, (∀ x : D, 0 < x → ∃ y, |y| < x ∧ u = sh w y) → u = w :=
+  TaskFrame.limit_of_succOrder (R := fun w y u => u = sh w y) (fun w u h => by rw [h, hz])
+
+/--
+**A shift set over `intOrder` from the action data alone.**
+
+The separation field is supplied by `ShiftSet.sep_of_succOrder` rather than by hand, so a
+certified construction over discrete time carries **three** axioms — `carrier_nonempty`,
+`sh_zero`, `sh_add` — in place of four. Every other field value is the caller's own; this
+constructor adds no content beyond discharging `sep`.
+
+**Why the explicit `@` application.** `SuccOrder ↑intOrder` does not synthesise: instance search
+runs at reducible transparency and `intOrder.carrier` is not *syntactically* `ℤ` for the
+discrimination tree, even though `(↑intOrder : Type) = ℤ` holds by `rfl`. The two instances are
+therefore passed positionally as `inferInstanceAs (SuccOrder ℤ)` and
+`inferInstanceAs (NoMaxOrder ℤ)`, the same form and for the same reason as
+`WitnessFamily.std_isZTime` in `FormalSystem/Metalogic/Decidability/WitnessFamily/Std.lean`,
+whose module header records why `haveI` fails there. `import Mathlib.Data.Int.SuccPred` is
+load-bearing for both.
+-/
+def ofIntAction (Carrier : Type) (carrier_nonempty : Nonempty Carrier)
+    (sh : Carrier → ↑intOrder → Carrier) (sh_zero : ∀ w, sh w 0 = w)
+    (sh_add : ∀ w a b, sh (sh w a) b = sh w (a + b))
+    (A : Atom → Carrier → Prop) : ShiftSet intOrder where
+  Carrier := Carrier
+  carrier_nonempty := carrier_nonempty
+  sh := sh
+  sh_zero := sh_zero
+  sh_add := sh_add
+  sep := @sep_of_succOrder intOrder (inferInstanceAs (SuccOrder ℤ))
+    (inferInstanceAs (NoMaxOrder ℤ)) Carrier sh sh_zero
+  A := A
+
+/-- The shift of `ofIntAction` is the shift it was given. Marked `@[simp]` so that a downstream
+proof unfolding a construction built through `ofIntAction` sees the action it supplied, exactly as
+it would have with a hand-written structure instance. -/
+@[simp] theorem ofIntAction_sh (Carrier : Type) (hne : Nonempty Carrier)
+    (sh : Carrier → ↑intOrder → Carrier) (hz : ∀ w, sh w 0 = w)
+    (ha : ∀ w a b, sh (sh w a) b = sh w (a + b)) (A : Atom → Carrier → Prop) :
+    (ofIntAction Carrier hne sh hz ha A).sh = sh := rfl
+
+/-- The valuation of `ofIntAction` is the valuation it was given. `@[simp]` for the same reason as
+`ofIntAction_sh`. -/
+@[simp] theorem ofIntAction_A (Carrier : Type) (hne : Nonempty Carrier)
+    (sh : Carrier → ↑intOrder → Carrier) (hz : ∀ w, sh w 0 = w)
+    (ha : ∀ w a b, sh (sh w a) b = sh w (a + b)) (A : Atom → Carrier → Prop) :
+    (ofIntAction Carrier hne sh hz ha A).A = A := rfl
 
 /-!
 ## `sep` is not derivable from the action laws
