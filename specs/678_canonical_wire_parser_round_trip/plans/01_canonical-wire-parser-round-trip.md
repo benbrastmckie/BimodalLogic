@@ -383,7 +383,7 @@ spike's exact shape transplanted case by case.
 
 ---
 
-### Phase 6: Fuel sufficiency [NOT STARTED]
+### Phase 6: Fuel sufficiency [COMPLETED]
 
 **Goal**: `BimodalTools/CanonicalWire/Fuel.lean` proves that the fuel the public entry point
 seeds is always enough, so "out of fuel" is provably unreachable on canonical input rather than

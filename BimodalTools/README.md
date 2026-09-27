@@ -334,7 +334,7 @@ implementation obligation and stays where it is.
 | `TraceExport.lean` | 229 | <!-- TODO: add description --> |
 | `TraceExporterMain.lean` | 265 | <!-- TODO: add description --> |
 | `TranslateSentenceMain.lean` | 51 | Executable root of `lake exe translate_sentence`: `main` only; reads one source-sentence JSON object on stdin, prints the translated formula as one JSON line |
-| `CanonicalWire/` | — | The verified wire codec: `Json.lean` (canonical value, printer, fuel measure), `Parse.lean` (the total parser), `RoundTrip.lean` (the lexical lemmas, the measure bound and the generic round-trip theorem) (3 files) |
+| `CanonicalWire/` | — | The verified wire codec: `Json.lean` (canonical value, printer, fuel measure), `Parse.lean` (the total parser), `RoundTrip.lean` (the lexical lemmas, the measure bound and the generic round-trip theorem), `Fuel.lean` (fuel sufficiency) (4 files) |
 <!-- END GENERATED -->
 
 *Last verified: 2026-09-27*
