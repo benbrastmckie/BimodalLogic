@@ -1,7 +1,7 @@
 # Implementation Plan: Sentence-to-Formula Translation, Proved Truth-Preserving
 
 - **Task**: 679 - Lean Sentence-to-Formula translation, proved truth-preserving
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/679_lean_sentence_formula_translation_truth/reports/01_sentence-formula-translation-truth.md`
@@ -547,7 +547,7 @@ time.
 
 ---
 
-### Phase 6: Record the cross-repository contract as durable context [IN PROGRESS]
+### Phase 6: Record the cross-repository contract as durable context [COMPLETED]
 
 **Goal**: the elimination table, the two non-push-through facts, the `next`/`prev` order caveat
 and the box-clause note exist somewhere a future dispatch on either side of the boundary can find
@@ -592,21 +592,21 @@ them — they currently live only in the consumer's Python docstrings and this t
 
 ## Testing & Validation
 
-- [ ] `lake build` green with zero warnings on every new file.
-- [ ] `lake build BimodalTools` and `lake build BimodalToolsTest` green.
-- [ ] `lake test` green.
-- [ ] `bash scripts/check-module-invariants.sh` green — in particular C3 (zero structural
+- [x] `lake build` green with zero warnings on every new file.
+- [x] `lake build BimodalTools` and `lake build BimodalToolsTest` green.
+- [ ] `lake test` green. *(deviation: altered — `lake build BimodalTest` (the test driver's library) was run instead and is green, and `check-module-invariants.sh` reports `PASS C1 lake build BimodalTest exits 0`. The `lake test` wrapper was not invoked separately.)*
+- [x] `bash scripts/check-module-invariants.sh` green — in particular C3 (zero structural
       `sorry`), C6 (no new unreachable module), C8 (aggregator convention), C19 (docstring
       coverage floor), C24 (`Init` reachability), C25/C25N (the new `lean_exe` root compiles and is
       correctly named), C28 (warning budget), C33 (root aggregator byte-for-byte from `mk_all`).
-- [ ] `bash scripts/check-metalogic-cycles.sh` PASSes, with the new directory contributing a
+- [x] `bash scripts/check-metalogic-cycles.sh` PASSes, with the new directory contributing a
       layer-0 and a layer-1 module and no upward edge.
-- [ ] `lake exe checkInitImports` clean.
-- [ ] `bash scripts/readme-lint.sh` reports no missing README and no broken relative link.
-- [ ] `#print axioms sat_iff` shows only `propext`, `Classical.choice`, `Quot.sound`.
-- [ ] `lake exe translate_sentence` reproduces every fixture line's expected output, compared as
+- [x] `lake exe checkInitImports` clean.
+- [x] `bash scripts/readme-lint.sh` reports no missing README and no broken relative link.
+- [x] `#print axioms sat_iff` shows only `propext`, `Classical.choice`, `Quot.sound`.
+- [x] `lake exe translate_sentence` reproduces every fixture line's expected output, compared as
       parsed JSON.
-- [ ] Non-vacuity control (Phase 3): a deliberately wrong `tr` row fails the `#guard` build.
+- [x] Non-vacuity control (Phase 3): a deliberately wrong `tr` row fails the `#guard` build.
       Recorded as run, then reverted.
 
 ## Artifacts & Outputs
