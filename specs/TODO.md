@@ -11,8 +11,8 @@ next_project_number: 686
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,678,680,681,682 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,623,650,683 | 298,464,502,563,649,680,682 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,678,681,682 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,683 | 298,464,502,563,649,682 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,684 | 231,465,497,564,565,616,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,685 | 428,498,499,500,623,684 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -69,13 +69,9 @@ next_project_number: 686
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-682 [NOT STARTED] — RESEARCH TASK, verdict-first: establish whether validity of...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
   └─ 685 [NOT STARTED] — Prove the compression result for the branching witness...
-
-### Documentation
-
-680 [IMPLEMENTING] — Record, on this side only, that the compression task's...
+682 [NOT STARTED] — RESEARCH TASK, verdict-first: establish whether validity of...
 
 ### Formula Refactor
 
@@ -168,12 +164,13 @@ SCOPE CLARIFICATION: ADD ALONGSIDE, DO NOT REPLACE. The opening sentence above s
 ---
 
 ### 680. Record compression prerequisite satisfiable
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: markdown
 - **Topic**: documentation
 - **Dependencies**: None
 - **Research**: [680_record_compression_prerequisite_satisfiable/reports/01_compression-prerequisite-satisfiable.md]
 - **Plan**: [680_record_compression_prerequisite_satisfiable/plans/01_record-compression-prerequisite-satisfiable.md]
+- **Summary**: [680_record_compression_prerequisite_satisfiable/summaries/01_record-compression-prerequisite-satisfiable-summary.md]
 
 **Description**: Record, on this side only, that the compression task's remaining reduction condition is now satisfiable, and carry the correction that came with it. Documentation and task-metadata only: no new mathematics. This task is the sole remaining blocker on the quasimodel/ShiftSet decidability task (its other three dependencies are all complete), and that task is the long pole of the whole adequacy chain, so this is small work standing in front of large work.
 
