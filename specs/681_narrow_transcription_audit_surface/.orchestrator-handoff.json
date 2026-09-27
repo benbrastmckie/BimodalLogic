@@ -1,17 +1,21 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 8,
-  "summary": "Planned task 681 in nine phases (15h): R1 derives the paper's Limit over discrete duration orders as ShiftSet.sep_of_succOrder plus an ofIntAction smart constructor and consumes both in WitnessFamily.std, dropping the certificate path's axiom burden from four to three; R2 lands FormalSystem/Semantics/FrameConstraintIndependence.lean with four witness relations, sixteen theorems and one aggregate constraints_pairwise_independent, making the four-condition audit row provably irreducible over the certificate's own time structure; R4 replaces the hand-maintained cross-repository line-numbered table with scripts/export-lean-citations.py plus a manifest and a new build-free freshness invariant; R3/R5 record the exact inspection-only residue (24 definitions, name-keyed, three of them unrecorded by the consuming document's audit) in docs/reference/transcription-audit-surface.md. The consuming repository is not edited. A plan-level improvement on the research probe shape: every witness is stated at D := Int rather than the TemporalOrder coercion, which dissolves the report's dominant tactical risk at the statement level.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 12,
+  "summary": "All nine plan phases landed: the one available definition-to-theorem conversion (ShiftSet.sep_of_succOrder plus ofIntAction, consumed by the certificate's WitnessFamily.std, which now supplies three axiom fields instead of four), the pairwise-independence matrix with its aggregate theorem constraints_pairwise_independent, a generated cross-repository citation manifest with the new build-free invariant C35, and docs/reference/transcription-audit-surface.md stating the inspection-only residue exactly at 24 rows and 27 declarations. lake build and lake build BimodalTest both green with zero errors and zero warnings; check-module-invariants.sh ALL CHECKS PASSED in both modes; sorry 0, no sorryAx, axiom census unchanged. One gate is red and recorded rather than hidden: check-paper-definitions.sh reports drift at anchor def:id in the live paper working tree, a file outside this repository and outside this task's citations, so Phase 9 closed [COMPLETED WITH EXCLUSIONS] with a reasoned-exclusions record.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/681_narrow_transcription_audit_surface/plans/01_narrow-transcription-audit-surface.md",
-      "summary": "Nine-phase implementation plan, strict-mode validated, with a Lean Challenge Statements section pinning 24 declaration signatures."
+      "type": "summary",
+      "path": "specs/681_narrow_transcription_audit_surface/summaries/01_narrow-transcription-audit-surface-summary.md",
+      "summary": "Implementation summary for all nine phases, with every gate's measured output, nine recorded plan deviations, and the shared-working-tree attribution note."
+    },
+    {
+      "type": "implementation",
+      "path": "docs/reference/transcription-audit-surface.md",
+      "summary": "The durable name-keyed record of the inspection-only residue: 24 rows, 27 declarations, the two-surface distinction, the corrections the consuming table owes, and two closed questions."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 9,
   "phases_total": 9,
-  "blockers": [],
-  "next_action_hint": "Dispatch implementation; Phases 1 and 2 are independent and can run in the same wave."
+  "blockers": []
 }

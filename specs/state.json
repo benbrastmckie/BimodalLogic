@@ -166,13 +166,13 @@
     {
       "project_number": 681,
       "project_name": "narrow_transcription_audit_surface",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "metalogic",
       "description": "Narrow the transcription audit obligation by converting as much of it as possible from definition to theorem. The consuming repository's adequacy argument lists, among the obligations its soundness claim rests on, that the Lean definitions transcribe the paper's -- and records it as discharged by inspection, an audit rather than a theorem. That is irreducible in principle, since it spans the boundary between an informal paper and a formalism, and nothing inside the formalism can discharge it. It can however be narrowed. Where a paper frame condition is currently carried as a Lean definition, derive it as a theorem from more primitive definitions instead, so that the surface requiring human inspection shrinks to those primitives. Candidates are the task relation's conditions (compositionality, seriality, limit, saturation) and the requirement that the time structure be a nontrivial totally ordered abelian group. Refresh the line-level citation table that maps each paper step to its landed Lean counterpart, verifying every cited file and line still resolves, and state plainly in the result which residue remains inspection-only, so a reader can see the exact size of the informal surface rather than being told it is small. Low priority and ongoing: this reduces an audit's scope, it does not eliminate an obligation.",
       "dependencies": [],
       "created": "2026-09-26T11:55:52Z",
-      "last_updated": "2026-09-27T18:16:05Z",
+      "last_updated": "2026-09-27T20:51:20Z",
       "session_id": "sess_1790528746_3f1c95",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Std.lean",
@@ -191,9 +191,15 @@
           "path": "specs/681_narrow_transcription_audit_surface/plans/01_narrow-transcription-audit-surface.md",
           "type": "plan",
           "summary": "Nine-phase implementation plan, strict-mode validated, with a Lean Challenge Statements section pinning 24 declaration signatures."
+        },
+        {
+          "path": "specs/681_narrow_transcription_audit_surface/summaries/01_narrow-transcription-audit-surface-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for all nine phases, with every gate's measured output, nine recorded plan deviations, and the shared-working-tree attribution note."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Narrowed the transcription audit obligation as far as it currently goes: ShiftSet.sep_of_succOrder derives the paper's Limit over a shift action from the zero-shift law whenever the duration order is discrete, and ShiftSet.ofIntAction consumes it so the certificate's WitnessFamily.std supplies three axiom fields instead of four. FrameConstraintIndependence.constraints_pairwise_independent makes the four-condition frame row provably irreducible as one citable theorem. A generated citation manifest plus the new build-free invariant C35 replace a hand-maintained cross-repository line-numbered table that had silently drifted by +38 lines, and docs/reference/transcription-audit-surface.md states the inspection-only residue exactly: 24 rows naming 27 declarations, unchanged by this task, three of them rows the consuming audit does not currently reach."
     },
     {
       "project_number": 664,

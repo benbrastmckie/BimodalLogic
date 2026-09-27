@@ -1,30 +1,134 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-09-27T11:43:00Z",
+  "completed_at": "2026-09-27T13:48:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true,
+    "build_jobs": 2741,
+    "test_build_passed": true,
+    "test_build_jobs": 2802,
+    "build_errors": 0,
+    "build_warnings": 0,
+    "module_invariants": "ALL CHECKS PASSED (exit 0) in both modes, with build and --no-build",
+    "linter_set": "all four modified FormalSystem modules silent",
+    "print_axioms": "constraints_pairwise_independent, ShiftSet.sep_of_succOrder and WitnessFamily.std_sat_ztime each report [propext, Classical.choice, Quot.sound]; no sorryAx",
+    "notes": [
+      "vacuous_count is 0 for this task: the vacuous grep's single hit, FormalSystem/Examples/TemporalStructures.lean's `int_domain_universal ... := trivial`, is pre-existing (last modified by an earlier task, untouched here) and is a correct proof of a genuinely-True goal, not a placeholder.",
+      "axiom_count is unchanged at the pre-task baseline of 14, and a stricter grep requiring an identifier and a colon finds ZERO real `axiom` declarations in the source roots. The census briefly read 15 because a docstring line of the new module wrapped onto the word `axiom`; the docstring was reflowed and the site records why.",
+      "One gate is red and is recorded rather than hidden: scripts/check-paper-definitions.sh exits 1 on drift at anchor def:id in the LIVE PAPER working tree, a file outside this repository. docs/reference/paper-definitions-of-record.md is unmodified by this task, def:id appears zero times in anything this task wrote, and all 61 paper-anchor citations resolve (PASS C15). Phase 9 is [COMPLETED WITH EXCLUSIONS] with a #### Reasoned Exclusions record for exactly this."
+    ]
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/681_narrow_transcription_audit_surface/plans/01_narrow-transcription-audit-surface.md",
-      "summary": "Nine-phase plan: one definition-to-theorem conversion (Limit over discrete duration orders), a sixteen-theorem frame-constraint independence matrix, a generated cross-repository citation manifest with a new freshness invariant, and a name-keyed record of the 24-definition inspection-only residue."
+      "type": "summary",
+      "path": "specs/681_narrow_transcription_audit_surface/summaries/01_narrow-transcription-audit-surface-summary.md",
+      "summary": "All nine phases: the Limit-over-discrete-time conversion consumed by the certificate path, the pairwise-independence matrix with its aggregate theorem, the generated citation manifest plus invariant C35, and the 24-row name-keyed residue record."
+    },
+    {
+      "type": "implementation",
+      "path": "docs/reference/transcription-audit-surface.md",
+      "summary": "The durable, name-keyed record of the inspection-only residue: 24 rows, 27 declarations, the two-surface distinction, the corrections the consuming table owes, and two closed questions."
     }
   ],
-  "next_steps": "Run /implement 681 to execute the plan",
-  "phase_count": 9,
-  "estimated_hours": 15,
-  "dependency_waves": [[1, 2], [3], [4], [5], [6], [7, 8], [9]],
+  "completion_data": {
+    "completion_summary": "Narrowed the transcription audit obligation as far as it currently goes: ShiftSet.sep_of_succOrder derives the paper's Limit over a shift action from the zero-shift law whenever the duration order is discrete, and ShiftSet.ofIntAction consumes it so the certificate's WitnessFamily.std supplies three axiom fields instead of four. FrameConstraintIndependence.constraints_pairwise_independent makes the four-condition frame row provably irreducible as one citable theorem. A generated citation manifest plus the new build-free invariant C35 replace a hand-maintained cross-repository line-numbered table that had silently drifted by +38 lines, and docs/reference/transcription-audit-surface.md states the inspection-only residue exactly: 24 rows naming 27 declarations, unchanged by this task, three of them rows the consuming audit does not currently reach.",
+    "roadmap_items": []
+  },
+  "modified_files": [
+    "FormalSystem/Semantics/ShiftSet.lean",
+    "FormalSystem/Semantics/FrameConstraintIndependence.lean",
+    "FormalSystem/Semantics.lean",
+    "FormalSystem.lean",
+    "FormalSystem/Semantics/README.md",
+    "FormalSystem/Metalogic/Decidability/WitnessFamily/Std.lean",
+    "docs/theorem-index.md",
+    "docs/reference/transcription-audit-surface.md",
+    "docs/reference/README.md",
+    "docs/development/MODULE_INVARIANTS.md",
+    "scripts/check-module-invariants.sh",
+    "scripts/export-lean-citations.py",
+    "scripts/lean-citation-seeds.txt",
+    "scripts/lean-citation-manifest.json",
+    "scripts/module-invariants-allowlist.txt",
+    "scripts/README.md",
+    "specs/681_narrow_transcription_audit_surface/plans/01_narrow-transcription-audit-surface.md",
+    "specs/681_narrow_transcription_audit_surface/summaries/01_narrow-transcription-audit-surface-summary.md"
+  ],
   "memory_candidates": [
     {
-      "content": "A file:line citation that crosses a repository boundary is outside every gate in both repositories, and drifts silently. Observed in BimodalLogic/ProofChecker: four rows of the consuming repository's adequacy citation table drifted by exactly +38 lines and landed inside a different theorem, undetected, because the declaration-span cross-check that would have caught it (invariant C20's third assertion) has live scope over its own repository's files only. The durable remedy, which this codebase independently arrived at twice already (paper-definitions-of-record.md resolves paper anchors by \\label name and re-derives hashes; theorem-index.md states 'no line numbers: cite declaration names'), is: a citation leaving a repository carries a declaration NAME and no line number, and any line-numbered view is a GENERATED manifest re-derived by the same span reader the gate uses, with a freshness assertion wired into the producing repository's own gate set so a rename or docstring sweep fails loudly at the source rather than rotting a table downstream. Generalizes to any cross-artifact citation where the citing and cited files are gated separately.",
-      "category": "PATTERN",
-      "source_artifact": "specs/681_narrow_transcription_audit_surface/plans/01_narrow-transcription-audit-surface.md",
+      "content": "`simp only [myDef]` collapses a reflexive conjunct such as `w = w` to `True`, and `omega` cannot parse `True` -- it reports \"No usable constraints found\". When a definition must be opened for `omega`, rewrite with a plain non-@[simp] `Iff.rfl` lemma and `rw`, never `simp only`.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/681_narrow_transcription_audit_surface/summaries/01_narrow-transcription-audit-surface-summary.md",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "lean4",
+        "omega",
+        "simp only",
+        "True",
+        "Iff.rfl",
+        "tactic"
+      ]
+    },
+    {
+      "content": "A research report's claim that \"no such record exists in the tree\" must be re-checked with the vocabulary the tree actually uses before a plan built on it is executed. Here a grep for `pairwise_independent|constraint.*independen` found nothing while a complete independence matrix existed under the phrase \"independence matrix\" in a module header and a README.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/681_narrow_transcription_audit_surface/summaries/01_narrow-transcription-audit-surface-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["cross-repository", "citation-drift", "generated-manifest", "declaration-name", "gate-scope", "line-number-rot"]
+      "suggested_keywords": [
+        "scope-hypothesis",
+        "duplication",
+        "research-verification",
+        "grep-vocabulary"
+      ]
+    },
+    {
+      "content": "Cross-repository `file.lean:NNN` citations rot invisibly: a gate whose live scope is one repository cannot see a table in another. The durable fix is to cite declaration NAMES and generate the line-numbered view from a reviewable seed list, with a build-free freshness gate in the repository that CAUSES the drift.",
+      "category": "PATTERN",
+      "source_artifact": "docs/reference/transcription-audit-surface.md",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "citation-drift",
+        "generated-manifest",
+        "cross-repository",
+        "gate",
+        "C20",
+        "C35"
+      ]
+    },
+    {
+      "content": "On a shared working tree with concurrent sibling agents, a gate harness that shells out to an UNGUARDED `lake build` can fail transiently while a sibling commits. Re-run the same build through the build guard before treating such a failure as a regression, and check `git log`/`git status` to attribute it.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/681_narrow_transcription_audit_surface/summaries/01_narrow-transcription-audit-surface-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "concurrency",
+        "shared-tree",
+        "lake-build-guard",
+        "territory",
+        "transient-failure"
+      ]
     }
   ],
-  "metadata": {
-    "session_id": "sess_1790528746_3f1c95_681",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  "partial_progress": {
+    "stage": "complete",
+    "details": "All nine phases closed. Phase 9 is [COMPLETED WITH EXCLUSIONS] with a reasoned-exclusions record for the one red gate, which is paper-side drift outside this repository.",
+    "phases_completed": 9,
+    "phases_total": 9
   },
-  "dispatch_seq": 8
+  "metadata": {
+    "session_id": "sess_1790528746_3f1c95",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "dispatch_seq": 12
+  }
 }

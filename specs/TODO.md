@@ -11,7 +11,7 @@ next_project_number: 686
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,678,681,682 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,678,682 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650,683 | 298,464,502,563,649,682 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,684 | 231,465,497,564,565,616,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,685 | 428,498,499,500,623,684 | algebraic-representation, decidability, metalogic |
@@ -91,7 +91,6 @@ next_project_number: 686
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-681 [IMPLEMENTING] — Narrow the transcription audit obligation by converting as...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 684 [NOT STARTED] — Prove the agreement (truth) lemma over all walks of the...
 
@@ -152,12 +151,13 @@ SCOPE CLARIFICATION: ADD ALONGSIDE, DO NOT REPLACE. The opening sentence above s
 ---
 
 ### 681. Narrow transcription audit surface
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: None
 - **Research**: [681_narrow_transcription_audit_surface/reports/01_narrow-transcription-audit-surface.md]
 - **Plan**: [681_narrow_transcription_audit_surface/plans/01_narrow-transcription-audit-surface.md]
+- **Summary**: [681_narrow_transcription_audit_surface/summaries/01_narrow-transcription-audit-surface-summary.md]
 
 **Description**: Narrow the transcription audit obligation by converting as much of it as possible from definition to theorem. The consuming repository's adequacy argument lists, among the obligations its soundness claim rests on, that the Lean definitions transcribe the paper's -- and records it as discharged by inspection, an audit rather than a theorem. That is irreducible in principle, since it spans the boundary between an informal paper and a formalism, and nothing inside the formalism can discharge it. It can however be narrowed. Where a paper frame condition is currently carried as a Lean definition, derive it as a theorem from more primitive definitions instead, so that the surface requiring human inspection shrinks to those primitives. Candidates are the task relation's conditions (compositionality, seriality, limit, saturation) and the requirement that the time structure be a nontrivial totally ordered abelian group. Refresh the line-level citation table that maps each paper step to its landed Lean counterpart, verifying every cited file and line still resolves, and state plainly in the result which residue remains inspection-only, so a reader can see the exact size of the informal surface rather than being told it is small. Low priority and ongoing: this reduces an audit's scope, it does not eliminate an obligation.
 
