@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/679_lean_sentence_formula_translation_truth/reports/01_sentence-formula-translation-truth.md",
+      "summary": "Research on the Sentence-to-Formula elimination and its truth-preservation theorem: a compiling proof-of-concept establishes the whole result needs no new mathematics, the 17-operator elimination table is verified byte-for-byte against the consuming repository's own translate, and two non-push-through operators plus the next/prev order caveat are identified as the real hazards."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790528746_3f1c95_679",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

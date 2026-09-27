@@ -107,7 +107,7 @@ next_project_number: 686
 
 ### Semantics
 
-679 [RESEARCHING] — Define the Sentence-to-Formula translation in Lean and prove...
+679 [RESEARCHED] — Define the Sentence-to-Formula translation in Lean and prove...
 683 [NOT STARTED] — Replace the deterministic witness device with a state-sharing...
 
 ### Toolchain
@@ -184,10 +184,11 @@ THE SECOND HALF, TAKEN OVER FROM THE COMPRESSION TASK'S ITEM 3. That item is del
 ---
 
 ### 679. Lean sentence formula translation truth
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: None
+- **Research**: [679_lean_sentence_formula_translation_truth/reports/01_sentence-formula-translation-truth.md]
 
 **Description**: Define the Sentence-to-Formula translation in Lean and prove it truth-preserving, supplying the verified half of the consuming repository's S4 obligation. Read the REVISED PREMISES below before planning: two claims in this task's original description have since been falsified by work landed in the consuming repository, and one stated payoff has been assessed there and rejected as infeasible. Planning against the original framing would chase a hazard that no longer exists and promise an outcome that cannot be delivered.
 
