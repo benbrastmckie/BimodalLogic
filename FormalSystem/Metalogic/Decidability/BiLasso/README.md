@@ -275,4 +275,4 @@ prefix rendering `U(e, g)` is event-first and is a *display* convention only.
 
 ---
 
-*Last verified: 2026-09-24*
+*Last verified: 2026-09-27*

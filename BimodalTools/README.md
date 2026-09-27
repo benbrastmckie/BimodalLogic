@@ -208,4 +208,4 @@ The rows pinning all of this are `Tests/BimodalToolsTest/CertificateImportTest.l
 | `TraceExporterMain.lean` | 265 | <!-- TODO: add description --> |
 <!-- END GENERATED -->
 
-*Last verified: 2026-09-24*
+*Last verified: 2026-09-27*

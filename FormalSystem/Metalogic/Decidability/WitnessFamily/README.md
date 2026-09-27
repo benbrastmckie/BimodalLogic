@@ -139,4 +139,4 @@ the guard `g` holds throughout the open interval and the event `e` is witnessed 
 
 ---
 
-*Last verified: 2026-09-24*
+*Last verified: 2026-09-27*
