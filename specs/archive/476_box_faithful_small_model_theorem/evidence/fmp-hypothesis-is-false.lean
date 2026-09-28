@@ -14,7 +14,32 @@ from the left").
 
 Checked with `lean_run_code` (no `lake build`) on 2026-09-18 against the live tree; `fmp_false`
 measures [propext, Classical.choice, Quot.sound] -- no sorryAx.
-Compile-check with: lake env lean specs/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean
+Compile-check with:
+  lake env lean specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean
+
+### Drift note (repaired 2026-09-27)
+
+As stored, this probe had stopped elaborating: `not_validZTime_neg_psi` passed a bare
+`TaskFrame.isZTime_of_instances _` where `ValidZTime`'s frame-constraint slot is now
+`FrameClass.Sat .ZTime`, which `Semantics/FrameClassValidity.lean` defines as the *conjunction*
+`F.IsRegular /\ F.IsZTime`. The probe predates that split, so the argument no longer had the
+expected type and elaboration failed with
+`synthInstanceFailed: SuccOrder (TaskFrame.Duration ?m).carrier` at that line. The failure was
+silent where it mattered: `#print axioms fmp_false` still produced a line, but it read
+`[propext, sorryAx, Classical.choice, Quot.sound]` -- the `sorryAx` standing in for the
+unelaborated subterm -- while several sites under `FormalSystem/Metalogic/Decidability/` cite
+this file as a machine-checked refutation.
+
+Repair: supply the pair `⟨S.frame_isRegular, TaskFrame.isZTime_of_instances _⟩`, matching the
+`⟨inferInstance, TaskFrame.isZTime_of_instances _⟩` idiom already used in-tree (for instance at
+`Metalogic/Decidability/BiLasso/Assembly.lean`). Nothing else in the proof changed, and the
+statement of `fmp_false` is byte-identical before and after, so what is refuted is unchanged.
+
+Re-verified 2026-09-27: the compile-check above exits 0 with no error output and prints
+`'Probe476.fmp_false' depends on axioms: [propext, Classical.choice, Quot.sound]`.
+
+This probe is compile-checked by `scripts/check-evidence-probes.sh` so the same drift cannot
+recur unannounced.
 -/
 import FormalSystem.Semantics.ShiftSet
 import FormalSystem.Metalogic.Decidability.BiLasso.Assembly
@@ -67,7 +92,8 @@ theorem shiftTruth_psi (w t : ℤ) : S.ShiftTruth w t ψ := by
 
 theorem not_validZTime_neg_psi : ¬ ValidZTime ψ.neg := by
   intro hv
-  have := hv S.frame (TaskFrame.isZTime_of_instances _) S.model (S.hist (0:ℤ)) (0:ℤ)
+  have := hv S.frame ⟨S.frame_isRegular, TaskFrame.isZTime_of_instances _⟩ S.model
+    (S.hist (0:ℤ)) (0:ℤ)
   exact this ((S.forward_repr (0:ℤ) (0:ℤ) ψ).mpr (shiftTruth_psi 0 0))
 
 /-! ### Negative half: no `IntPresentation` satisfies `ψ` anywhere. -/
