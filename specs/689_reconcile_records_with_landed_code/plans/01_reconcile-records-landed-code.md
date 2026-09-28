@@ -1,7 +1,7 @@
 # Implementation Plan: Task #689
 
 - **Task**: 689 - Reconcile records with landed code
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.25 hours
 - **Dependencies**: None (all four source tasks are complete and committed)
 - **Research Inputs**: `specs/689_reconcile_records_with_landed_code/reports/01_reconcile-records-landed-code.md`
@@ -285,20 +285,20 @@ and report the raise).
 
 ---
 
-### Phase 4: Record the shared-fixture convention where a plan author reads it [NOT STARTED]
+### Phase 4: Record the shared-fixture convention where a plan author reads it [COMPLETED]
 
 **Goal**: The convention that a cross-repository shared artifact lives under `Tests/fixtures/` and
 never under the gitignored `data/` is stated, with its rejected alternative, in the places a plan
 author actually consults when deciding where a data file goes.
 
 **Tasks**:
-- [ ] Re-read each target file immediately before editing.
-- [ ] In `Tests/fixtures/README.md`, extend the paragraph that already contrasts this directory with `data/` to record the **rejected alternative**: punching a hole in the shared `.gitignore` rule was considered and rejected, because the ignore rule is shared configuration, an exemption would be invisible at the point a later file is added under `data/`, and a tracked path beside the reader costs nothing.
-- [ ] Quote the `.gitignore` **rule text** (`data/*.jsonl` and `/data`) and never its line numbers — the repository's standing anti-line-number convention, and the same defect class this whole task is about.
-- [ ] In `Tests/README.md`'s `## Structure` table, add a `fixtures/` row (committed data files a test reads with `include_str`, or that a consumer outside this repository compares against) **and** a `BimodalToolsTest/` row — the latter exists on disk and is missing from the table too.
-- [ ] In `docs/development/MODULE_ORGANIZATION.md` §1's directory tree, add `Tests/fixtures/` under the `Tests/` node and a `data/` node at the repository root, each with a one-line gloss making the distinction explicit: `Tests/fixtures/` is committed and shareable; `data/` is gitignored in its entirety and cannot hold a shared artifact.
-- [ ] Bump the `*Last verified:*` line in `Tests/fixtures/README.md` to the implementation date.
-- [ ] No task numbers in any of these three files.
+- [x] Re-read each target file immediately before editing.
+- [x] In `Tests/fixtures/README.md`, extend the paragraph that already contrasts this directory with `data/` to record the **rejected alternative**: punching a hole in the shared `.gitignore` rule was considered and rejected, because the ignore rule is shared configuration, an exemption would be invisible at the point a later file is added under `data/`, and a tracked path beside the reader costs nothing.
+- [x] Quote the `.gitignore` **rule text** (`data/*.jsonl` and `/data`) and never its line numbers — the repository's standing anti-line-number convention, and the same defect class this whole task is about.
+- [x] In `Tests/README.md`'s `## Structure` table, add a `fixtures/` row (committed data files a test reads with `include_str`, or that a consumer outside this repository compares against) **and** a `BimodalToolsTest/` row — the latter exists on disk and is missing from the table too.
+- [x] In `docs/development/MODULE_ORGANIZATION.md` §1's directory tree, add `Tests/fixtures/` under the `Tests/` node and a `data/` node at the repository root, each with a one-line gloss making the distinction explicit: `Tests/fixtures/` is committed and shareable; `data/` is gitignored in its entirety and cannot hold a shared artifact.
+- [x] Bump the `*Last verified:*` line in `Tests/fixtures/README.md` to the implementation date. *(deviation: altered — the line already read `2026-09-27`, the implementation date, so no bump was needed)*
+- [x] No task numbers in any of these three files.
 
 **Timing**: 0.5 hours
 

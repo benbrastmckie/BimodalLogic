@@ -8,6 +8,18 @@ are large and are distributed through Hugging Face Hub instead), so nothing in i
 shared artifact. A conformance fixture has to be obtainable from git by whoever is conforming to it,
 so it lives here.
 
+**A shared artifact that cannot be obtained from git is not a shared artifact.** The ignore rules
+are `data/*.jsonl` and `/data`; between them nothing under `data/` is trackable, so a fixture
+placed there could never have been committed, however the plan that placed it was worded. The
+alternative of punching a hole in the ignore rule — adding a negation so that one named file under
+`data/` becomes trackable — was considered and **rejected**. The ignore rule is shared
+configuration read by everyone who adds a file under `data/`, and an exemption buried in it is
+invisible at exactly that moment: the next person to drop a dataset beside the exempted path gets
+no signal that the directory is no longer uniformly ignored. A tracked path beside its reader
+costs nothing by comparison, and it makes the fixture's audience — a consumer outside this
+repository — legible from the location alone. A cross-repository fixture therefore lives here,
+beside the test that reads it, and never under `data/`.
+
 ## Contents
 
 | File | Lines | Read by | Purpose |

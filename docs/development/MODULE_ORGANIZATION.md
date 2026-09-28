@@ -32,15 +32,18 @@ BimodalLogic/
 │   ├── Examples/               # Pedagogical examples
 │   └── Boneyard/               # Archived work (excluded from every invariant check)
 ├── Tests/
-│   └── BimodalTest/            # Test suite mirroring FormalSystem/ structure
-│       ├── Syntax/             # Syntax tests
-│       ├── ProofSystem/        # Proof system tests
-│       ├── Semantics/          # Semantic tests
-│       ├── Metalogic/          # Metalogic tests
-│       ├── Theorems/           # Theorem tests
-│       ├── Automation/         # Automation tests
-│       ├── Integration/        # Integration tests
-│       └── Property/           # Property-based tests
+│   ├── BimodalTest/            # Test suite mirroring FormalSystem/ structure
+│   │   ├── Syntax/             # Syntax tests
+│   │   ├── ProofSystem/        # Proof system tests
+│   │   ├── Semantics/          # Semantic tests
+│   │   ├── Metalogic/          # Metalogic tests
+│   │   ├── Theorems/           # Theorem tests
+│   │   ├── Automation/         # Automation tests
+│   │   ├── Integration/        # Integration tests
+│   │   └── Property/           # Property-based tests
+│   ├── BimodalToolsTest/       # Test suite for lean_lib BimodalTools
+│   └── fixtures/               # Committed, shareable data files: tracked in git, so a consumer outside this repository can obtain them
+├── data/                       # Gitignored in its entirety (`data/*.jsonl`, `/data`) — large datasets from Hugging Face Hub; cannot hold a shared artifact
 ├── scripts/                    # Invariant checks and lints
 └── docs/                       # Project-level documentation
 ```
