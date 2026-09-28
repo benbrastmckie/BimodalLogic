@@ -227,10 +227,10 @@ jobs:
       # completeness a gate, which has not been measured against this tree. Both are choices,
       # not accidents.
       #
-      # scripts/nolints-style.txt, the per-project exception file, deliberately does not exist:
-      # the tool warns once ("nolints file could not be read; treating as empty") and proceeds
-      # with no exceptions, which is the intended state. `lake exe lint-style --fix` repairs
-      # trailing whitespace locally.
+      # scripts/nolints-style.txt, the per-project exception file, exists and is deliberately
+      # empty (a `--`-commented header, zero exceptions): the enforced style linter passes at 0
+      # findings without needing any waiver. `lake exe lint-style --fix` repairs trailing
+      # whitespace locally.
       - name: Text-based style linters (lake exe lint-style)
         run: |
           set -euo pipefail

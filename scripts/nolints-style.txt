@@ -1,0 +1,12 @@
+-- nolints-style.txt -- per-project exception list for Mathlib's text-based style linter
+-- (`lake exe lint-style`, driven by .lake/packages/mathlib/Mathlib/Tactic/Linter/TextBased.lean
+-- and scripts/lint-style.lean).
+--
+-- Every line starting with "--" is a comment and is ignored (parseStyleExceptions filters them
+-- out before parsing); every other non-empty line is parsed as ONE style exception, and each
+-- exception goes on its own line.
+--
+-- This file is deliberately empty of exceptions: the enforced style linter passes at 0 findings
+-- without needing any waiver, and it should stay that way -- do not add a blanket suppression
+-- here to silence a real finding. If a finding needs a genuine, reasoned exception, add exactly
+-- one line for it and record why in a commit message, not in this file's own comments.

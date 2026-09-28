@@ -215,27 +215,27 @@ pass.
 
 ---
 
-### Phase 3: Create nolints-style.txt and reconcile the ci.yml comment [NOT STARTED]
+### Phase 3: Create nolints-style.txt and reconcile the ci.yml comment [COMPLETED]
 
 **Goal**: The style linter stops printing its missing-nolints warning, and no stale statement that
 the file's absence is intended remains in the tree.
 
 **Tasks**:
-- [ ] Re-read `.github/workflows/ci.yml` and `scripts/README.md` immediately before editing.
-- [ ] Create `scripts/nolints-style.txt` containing only `--`-prefixed comment lines explaining
+- [x] Re-read `.github/workflows/ci.yml` and `scripts/README.md` immediately before editing. *(completed)*
+- [x] Create `scripts/nolints-style.txt` containing only `--`-prefixed comment lines explaining
       that the file is a deliberately empty Mathlib text-linter exception list, that one exception
       goes on one line, and that `--`-prefixed lines are ignored. No task-number citations (C9
-      scopes `scripts/`).
-- [ ] Correct the `.github/workflows/ci.yml` comment (the "Text-based style linters" step preamble,
+      scopes `scripts/`). *(completed)*
+- [x] Correct the `.github/workflows/ci.yml` comment (the "Text-based style linters" step preamble,
       around lines 230-233) that currently states the file "deliberately does not exist" and that
       the warning "is the intended state" — replace with a short note that the file now exists as a
-      deliberately empty exception list, and keep the `lake exe lint-style --fix` sentence.
-- [ ] Add a `nolints-style.txt` row to `scripts/README.md`'s data-file table, in the register the
-      neighboring rows use.
-- [ ] Verify: run the style linter (`lake exe lint-style`) and confirm the
+      deliberately empty exception list, and keep the `lake exe lint-style --fix` sentence. *(completed)*
+- [x] Add a `nolints-style.txt` row to `scripts/README.md`'s data-file table, in the register the
+      neighboring rows use. *(completed)*
+- [x] Verify: run the style linter (`lake exe lint-style`) and confirm the
       `nolints file could not be read; treating as empty` warning no longer appears and the
-      linter's own findings are otherwise unchanged from a pre-change run.
-- [ ] Commit; stage only these three paths explicitly (never a directory or glob pathspec).
+      linter's own findings are otherwise unchanged from a pre-change run. *(completed)*
+- [x] Commit; stage only these three paths explicitly (never a directory or glob pathspec). *(completed)*
 
 **Timing**: 0.5 hours
 
