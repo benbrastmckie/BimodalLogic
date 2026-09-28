@@ -11,6 +11,7 @@ import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Decide
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Fulfil
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Agreement
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Examples
+import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Incompleteness
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusWitnessFamily` — the L⁺ certificate
@@ -62,6 +63,8 @@ interface is affected by this one's existence.
   the six-component `PlusCertifies` bundle and `plusRefutes_of_certifies`
 - `PlusWitnessFamily.Examples`: the two-lasso non-vacuity witness, `stabFamily_separates` and
   `stabFaithful_diagonal`
+- `PlusWitnessFamily.Incompleteness`: `snce_share_congr` and the three declarations showing the
+  certificate class is empty for targets carrying a `snce` under a `⊡`
 
 ## Why (C5) is a pinned obligation rather than a signature
 
@@ -71,4 +74,15 @@ checker never evaluates. `Examples.lean` then exhibits a family on which the con
 content: two lassos sharing a state at one time and separate everywhere else, so the condition is
 not degenerate. On a deterministic frame it would be — `PlusLanguage.stab_iff_of_deterministic`
 collapses `⊡φ` to `φ` — which is exactly why the branching substrate is the one this lives on.
+
+## The certificate class is empty for a `snce` under a `⊡`
+
+Soundness is only half the story, and `Incompleteness.lean` records the other half: no family
+meeting the six conditions certifies any instance of `(g S e) → ⊡(g S e)`, while `Pp → ⊡Pp` is a
+genuine ℤ-time non-validity. (C1')'s `snce` clause quantifies its predecessor over the
+`share`-class at the label's *own* time, which forces the class to agree on every past-tense
+label, and (C5) then has no room to put `⊡(g S e)` outside a label that carries `g S e`. So the
+L⁺ analogue of the deterministic route's `exists_witnessFamily_of_not_validZTime` is **false**
+against this condition set, and the repair is at the substrate level rather than in a re-wording
+of (C1').
 -/

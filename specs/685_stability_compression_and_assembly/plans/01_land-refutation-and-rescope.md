@@ -1,7 +1,7 @@
 # Implementation Plan: Task #685
 
 - **Task**: 685 - stability_compression_and_assembly
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours
 - **Dependencies**: 684 (completed), 623 (completed)
 - **Research Inputs**: `specs/685_stability_compression_and_assembly/reports/01_stability-compression-and-assembly.md`
@@ -117,7 +117,7 @@ sub-route to tick.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Promote the Refutation to a Compiled Library Module [NOT STARTED]
+### Phase 1: Promote the Refutation to a Compiled Library Module [COMPLETED]
 
 **Goal**: The four refutation declarations live in
 `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean`, are reachable from
@@ -162,7 +162,13 @@ the build graph, and `lake build` is green. No proof is re-derived — the probe
 - [ ] Add the matching `PlusWitnessFamily.Incompleteness` bullet to that file's `## Submodules`
       list, and one clause in its docstring recording that the certificate class is empty for
       targets carrying a `snce` under a `stab`.
-- [ ] Run `lake build` and confirm green with no new warning. The probe's own recorded tactic
+- [x] Run `lake build` and confirm green with no new warning. *(deviation: altered — two
+      identifiers needed requalification after the namespace move, which the Scope Hypothesis
+      did not anticipate: `open FormalSystem.ProofSystem` added for `FrameClass.ZTime.Sat`, and
+      `NF` written as `FormalSystem.PlusLanguage.NF` because inside `namespace
+      PlusSharingWitnessFamily` the bare `NF` resolves to `Decide.lean`'s
+      `PlusSharingWitnessFamily.NF : ... → ℤ`. No statement changed and no proof step changed.)*
+      The probe's own recorded tactic
       hazards carry over: do **not** reach for `tauto` on the `imp`-clause split (it times out at
       200000 heartbeats), and do **not** use `push_neg` (deprecated in favour of `push Not`, and
       the repo warning budget treats the deprecation as blocking) — the ported proofs already
