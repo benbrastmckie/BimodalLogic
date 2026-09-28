@@ -1,0 +1,375 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
+import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Predicates
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Decide
+
+/-!
+# The Combined Window at L⁺
+
+Every one of the L⁺ certificate's conditions quantifies over all of `ℤ`. Each is nonetheless
+decidable, because the family's whole per-time datum — the representative map together with
+every lasso's label — is *eventually periodic in both directions*, so checking a bounded window
+of times decides the condition at every time.
+
+This module is that window arithmetic, re-indexed once at `PlusFormula` so that the per-condition
+collapses downstream are transcriptions rather than arithmetic.
+
+## What delegated to the skeleton and what did not
+
+The plan for this module was to delegate every label-free lemma to `SharingSkeleton` and
+re-index only what reads the label row. The actual split is narrower than that, for one concrete
+reason, and it is worth recording:
+
+* **The combined periods do not factor through the skeleton.** `perBack` is
+  `|repBack| * ∏ᵢ |lassoᵢ.back|` — a join of the skeleton's representative-segment lengths with
+  the *lassos'* label-segment lengths. `NB`, `NF`, `NM`, `cohWindowLo` and `cohWindowHi` are all
+  built from it, so none of them is a function of `SharingSkeleton` alone, and neither is
+  anything defined over the window. They are re-indexed here.
+* **`rep_congr_back` and `rep_congr_fwd` are label-free in substance** — they instantiate
+  `Periodic.unrollOf_congr_back`/`_fwd` at the representative segments — but they cannot be
+  sited on `SharingSkeleton` either, because those two `Periodic` lemmas are declared in
+  `WitnessFamily/Sharing/Decide.lean`, which is downstream of `Skeleton.lean` in the import
+  order. They are stated here as three-line instantiations, exactly as on the `Formula` side.
+* **What *is* inherited** is everything the window is *about*: `share`, the threads, the frame
+  and its histories, all of `SharingSkeleton`. The window is arithmetic over the certificate's
+  own data; the branching structure is the skeleton's.
+
+`emod_of_dvd`, `LabelledLasso.emod_shift` and `LabelledLasso.reduce_emod` are pure `ℤ` facts and
+are reused from the `Formula` side rather than restated.
+
+## Two periods wide, not one
+
+`cohWindowLo`/`cohWindowHi` are two combined periods wide on each side rather than one, because
+(C1') reads `t - 1` and `t + 1` as well as `t`: a representative must have its whole one-step
+neighbourhood inside the periodic region, not merely itself.
+
+## Main Definitions
+
+- `PlusSharingWitnessFamily.perBack` / `perFwd` / `perMid` — the combined periods
+- `PlusSharingWitnessFamily.cohWindowLo` / `cohWindowHi` — the combined window
+
+## Main Results
+
+- `PlusSharingWitnessFamily.data_congr_back` / `data_congr_fwd` — the whole per-time datum reads
+  only its residue
+- `PlusSharingWitnessFamily.exists_window_repr` — every time has a window representative carrying
+  the same data at its whole one-step neighbourhood
+-/
+
+namespace FormalSystem.Metalogic.Decidability
+
+open FormalSystem.PlusLanguage
+
+namespace PlusLabelledLasso
+
+variable {C : Finset PlusFormula}
+
+/-! ## One-step periodicity, in the four convenient directions -/
+
+/-- One step of rightward label periodicity, in the subtractive direction. -/
+theorem lab_sub_nf (Λ : PlusLabelledLasso C) {t : ℤ} (ht : Λ.nm ≤ t - Λ.nf) :
+    Λ.lab (t - Λ.nf) = Λ.lab t := by
+  simpa using (Λ.lab_add_fwd_length (t := t - Λ.nf) ht).symm
+
+/-- One step of leftward label periodicity, in the additive direction. -/
+theorem lab_add_nb (Λ : PlusLabelledLasso C) {t : ℤ} (ht : t + Λ.nb < 0) :
+    Λ.lab (t + Λ.nb) = Λ.lab t := by
+  simpa using (Λ.lab_sub_back_length (t := t + Λ.nb) ht).symm
+
+/-! ## Canonical representatives -/
+
+/--
+**Rightward canonical representative.** Every position at or beyond the window has the label of
+its representative `nm + (w - nm) % nf`, which lies in `[nm, nm + nf)`.
+-/
+theorem lab_reduce_fwd (Λ : PlusLabelledLasso C) :
+    ∀ (d : ℕ) (w : ℤ), (w - Λ.nm).toNat = d → Λ.nm ≤ w →
+      Λ.lab w = Λ.lab (Λ.nm + (w - Λ.nm) % Λ.nf) := by
+  intro d
+  induction d using Nat.strong_induction_on with
+  | _ d ih =>
+    intro w hd hw
+    have hnf := Λ.nf_pos
+    by_cases hlt : w < Λ.nm + Λ.nf
+    · rw [Int.emod_eq_of_lt (by omega) (by omega)]
+      congr 1
+      omega
+    · push Not at hlt
+      have hstep : Λ.lab (w - Λ.nf) = Λ.lab w := Λ.lab_sub_nf (by omega)
+      have hres : (w - Λ.nf - Λ.nm) % Λ.nf = (w - Λ.nm) % Λ.nf := by
+        rw [show w - Λ.nf - Λ.nm = (w - Λ.nm) + (-1) * Λ.nf by omega]
+        exact Periodic.emod_add_mul _ _ _
+      rw [← hstep, ih ((w - Λ.nf - Λ.nm).toNat) (by omega) (w - Λ.nf) rfl (by omega), hres]
+
+/--
+**Leftward canonical representative.** Every negative position has the label of its
+representative `w % nb - nb`, which lies in `[-nb, 0)`.
+-/
+theorem lab_reduce_back (Λ : PlusLabelledLasso C) :
+    ∀ (d : ℕ) (w : ℤ), (-w).toNat = d → w < 0 →
+      Λ.lab w = Λ.lab (w % Λ.nb - Λ.nb) := by
+  intro d
+  induction d using Nat.strong_induction_on with
+  | _ d ih =>
+    intro w hd hw
+    have hnb := Λ.nb_pos
+    by_cases hge : -Λ.nb ≤ w
+    · have hres : (w + Λ.nb) % Λ.nb = w % Λ.nb := by simp
+      have hval : w % Λ.nb = w + Λ.nb := by
+        rw [← hres]
+        exact Int.emod_eq_of_lt (by omega) (by omega)
+      rw [hval]
+      congr 1
+      omega
+    · push Not at hge
+      have hstep : Λ.lab (w + Λ.nb) = Λ.lab w := Λ.lab_add_nb (by omega)
+      have hres : (w + Λ.nb) % Λ.nb = w % Λ.nb := by simp
+      rw [← hstep, ih ((-(w + Λ.nb)).toNat) (by omega) (w + Λ.nb) rfl (by omega), hres]
+
+/-- Positions at or beyond the window with equal residues modulo the forward period carry equal
+labels. -/
+theorem lab_congr_fwd (Λ : PlusLabelledLasso C) {u v : ℤ} (hu : Λ.nm ≤ u) (hv : Λ.nm ≤ v)
+    (h : (u - Λ.nm) % Λ.nf = (v - Λ.nm) % Λ.nf) : Λ.lab u = Λ.lab v := by
+  rw [Λ.lab_reduce_fwd _ u rfl hu, Λ.lab_reduce_fwd _ v rfl hv, h]
+
+/-- Negative positions with equal residues modulo the backward period carry equal labels. -/
+theorem lab_congr_back (Λ : PlusLabelledLasso C) {u v : ℤ} (hu : u < 0) (hv : v < 0)
+    (h : u % Λ.nb = v % Λ.nb) : Λ.lab u = Λ.lab v := by
+  rw [Λ.lab_reduce_back _ u rfl hu, Λ.lab_reduce_back _ v rfl hv, h]
+
+end PlusLabelledLasso
+
+namespace PlusSharingWitnessFamily
+
+variable {Γ Del : PlusContext}
+
+/-! ## The combined periods -/
+
+/-- A product of positive naturals is positive. -/
+private theorem plus_list_prod_pos {l : List ℕ} (h : ∀ a ∈ l, 0 < a) : 0 < l.prod := by
+  induction l with
+  | nil => simp
+  | cons a t ih =>
+      rw [List.prod_cons]
+      exact Nat.mul_pos (h a (by simp)) (ih fun b hb => h b (by simp [hb]))
+
+/-- A member of a list of naturals is at most the list's sum. -/
+private theorem plus_le_sum_of_mem {l : List ℕ} {a : ℕ} (h : a ∈ l) : a ≤ l.sum := by
+  induction l with
+  | nil => cases h
+  | cons b t ih =>
+      rw [List.sum_cons]
+      rcases List.mem_cons.mp h with rfl | h'
+      · exact Nat.le_add_right _ _
+      · exact le_trans (ih h') (Nat.le_add_left _ _)
+
+/-- A lasso's index is a member of the family's lasso list. -/
+theorem get_mem (S : PlusSharingWitnessFamily Γ Del) (i : Fin S.lassos.length) :
+    S.lassos.get i ∈ S.lassos := by
+  rw [List.get_eq_getElem]
+  exact List.getElem_mem i.isLt
+
+/--
+**The combined backward period**: a positive common multiple of `|repBack|` and of every
+lasso's `|back|`.
+-/
+def perBack (S : PlusSharingWitnessFamily Γ Del) : ℕ :=
+  S.repBack.length * (S.lassos.map (fun Λ => Λ.back.length)).prod
+
+/-- **The combined forward period**, the rightward mirror of `perBack`. -/
+def perFwd (S : PlusSharingWitnessFamily Γ Del) : ℕ :=
+  S.repFwd.length * (S.lassos.map (fun Λ => Λ.fwd.length)).prod
+
+/--
+**The combined window offset**: at or past it, every rightward decoding of the family — labels
+and representative maps alike — is in its periodic region. A sum rather than a maximum, so that
+`plus_le_sum_of_mem` discharges the comparisons.
+-/
+def perMid (S : PlusSharingWitnessFamily Γ Del) : ℕ :=
+  S.repMid.length + (S.lassos.map (fun Λ => Λ.mid.length)).sum
+
+/-- The combined backward period, as an integer. -/
+abbrev NB (S : PlusSharingWitnessFamily Γ Del) : ℤ := (S.perBack : ℤ)
+
+/-- The combined forward period, as an integer. -/
+abbrev NF (S : PlusSharingWitnessFamily Γ Del) : ℤ := (S.perFwd : ℤ)
+
+/-- The combined window offset, as an integer. -/
+abbrev NM (S : PlusSharingWitnessFamily Γ Del) : ℤ := (S.perMid : ℤ)
+
+/-- The backward representative-cycle length, as an integer. -/
+abbrev nbr (S : PlusSharingWitnessFamily Γ Del) : ℤ := (S.repBack.length : ℤ)
+
+/-- The representative-window length, as an integer. -/
+abbrev nmr (S : PlusSharingWitnessFamily Γ Del) : ℤ := (S.repMid.length : ℤ)
+
+/-- The forward representative-cycle length, as an integer. -/
+abbrev nfr (S : PlusSharingWitnessFamily Γ Del) : ℤ := (S.repFwd.length : ℤ)
+
+theorem NB_pos (S : PlusSharingWitnessFamily Γ Del) : 0 < S.NB := by
+  refine Int.natCast_pos.mpr (Nat.mul_pos ?_ (plus_list_prod_pos ?_))
+  · exact List.length_pos_of_ne_nil S.repBack_ne
+  · intro a ha
+    obtain ⟨Λ, _, rfl⟩ := List.mem_map.mp ha
+    exact List.length_pos_of_ne_nil Λ.back_ne
+
+theorem NF_pos (S : PlusSharingWitnessFamily Γ Del) : 0 < S.NF := by
+  refine Int.natCast_pos.mpr (Nat.mul_pos ?_ (plus_list_prod_pos ?_))
+  · exact List.length_pos_of_ne_nil S.repFwd_ne
+  · intro a ha
+    obtain ⟨Λ, _, rfl⟩ := List.mem_map.mp ha
+    exact List.length_pos_of_ne_nil Λ.fwd_ne
+
+theorem NM_nonneg (S : PlusSharingWitnessFamily Γ Del) : 0 ≤ S.NM := Int.natCast_nonneg _
+
+theorem nbr_dvd_NB (S : PlusSharingWitnessFamily Γ Del) : S.nbr ∣ S.NB :=
+  Int.natCast_dvd_natCast.mpr ⟨_, rfl⟩
+
+theorem nfr_dvd_NF (S : PlusSharingWitnessFamily Γ Del) : S.nfr ∣ S.NF :=
+  Int.natCast_dvd_natCast.mpr ⟨_, rfl⟩
+
+theorem nmr_le_NM (S : PlusSharingWitnessFamily Γ Del) : S.nmr ≤ S.NM := by
+  exact_mod_cast Nat.le_add_right S.repMid.length _
+
+theorem lasso_nb_dvd_NB (S : PlusSharingWitnessFamily Γ Del) (i : Fin S.lassos.length) :
+    (S.lassos.get i).nb ∣ S.NB := by
+  refine Int.natCast_dvd_natCast.mpr (Dvd.dvd.mul_left ?_ _)
+  exact List.dvd_prod (List.mem_map.mpr ⟨_, S.get_mem i, rfl⟩)
+
+theorem lasso_nf_dvd_NF (S : PlusSharingWitnessFamily Γ Del) (i : Fin S.lassos.length) :
+    (S.lassos.get i).nf ∣ S.NF := by
+  refine Int.natCast_dvd_natCast.mpr (Dvd.dvd.mul_left ?_ _)
+  exact List.dvd_prod (List.mem_map.mpr ⟨_, S.get_mem i, rfl⟩)
+
+theorem lasso_nm_le_NM (S : PlusSharingWitnessFamily Γ Del) (i : Fin S.lassos.length) :
+    (S.lassos.get i).nm ≤ S.NM := by
+  have h : (S.lassos.get i).mid.length ≤ S.perMid := by
+    refine le_trans ?_ (Nat.le_add_left _ _)
+    exact plus_le_sum_of_mem (List.mem_map.mpr ⟨_, S.get_mem i, rfl⟩)
+  exact_mod_cast h
+
+/-! ## The representative maps read only their residue -/
+
+theorem rep_congr_back (S : PlusSharingWitnessFamily Γ Del) {u v : ℤ} (hu : u < 0) (hv : v < 0)
+    (h : u % S.nbr = v % S.nbr) : S.rep u = S.rep v :=
+  Periodic.unrollOf_congr_back (repIdInhabited _) S.repBack S.repMid S.repFwd hu hv h
+
+theorem rep_congr_fwd (S : PlusSharingWitnessFamily Γ Del) {u v : ℤ} (hu : S.nmr ≤ u)
+    (hv : S.nmr ≤ v) (h : (u - S.nmr) % S.nfr = (v - S.nmr) % S.nfr) : S.rep u = S.rep v :=
+  Periodic.unrollOf_congr_fwd (repIdInhabited _) S.repBack S.repMid S.repFwd hu hv h
+
+/-! ## The family's whole per-time datum reads only its residue -/
+
+/--
+**Leftward data congruence.** At two negative times congruent modulo the combined backward
+period, the representative map and every lasso's label agree.
+-/
+theorem data_congr_back (S : PlusSharingWitnessFamily Γ Del) {u v : ℤ} (hu : u < 0) (hv : v < 0)
+    (h : u % S.NB = v % S.NB) : S.rep u = S.rep v ∧ ∀ i, S.L i u = S.L i v := by
+  refine ⟨S.rep_congr_back hu hv (emod_of_dvd S.nbr_dvd_NB h), fun i => ?_⟩
+  exact (S.lassos.get i).lab_congr_back hu hv (emod_of_dvd (S.lasso_nb_dvd_NB i) h)
+
+/--
+**Rightward data congruence.** At or past the combined window offset, at two times congruent
+modulo the combined forward period, the representative map and every lasso's label agree.
+-/
+theorem data_congr_fwd (S : PlusSharingWitnessFamily Γ Del) {u v : ℤ} (hu : S.NM ≤ u)
+    (hv : S.NM ≤ v) (h : (u - S.NM) % S.NF = (v - S.NM) % S.NF) :
+    S.rep u = S.rep v ∧ ∀ i, S.L i u = S.L i v := by
+  have shift : ∀ (m n : ℤ), n ∣ S.NF → (u - m) % n = (v - m) % n := by
+    intro m n hdvd
+    have h1 : (u - S.NM) % n = (v - S.NM) % n := emod_of_dvd hdvd h
+    have h2 : ((u - S.NM) + (S.NM - m)) % n = ((v - S.NM) + (S.NM - m)) % n :=
+      LabelledLasso.emod_shift h1
+    rwa [show (u - S.NM) + (S.NM - m) = u - m by omega,
+      show (v - S.NM) + (S.NM - m) = v - m by omega] at h2
+  refine ⟨S.rep_congr_fwd (le_trans S.nmr_le_NM hu) (le_trans S.nmr_le_NM hv)
+    (shift S.nmr S.nfr S.nfr_dvd_NF), fun i => ?_⟩
+  exact (S.lassos.get i).lab_congr_fwd (le_trans (S.lasso_nm_le_NM i) hu)
+    (le_trans (S.lasso_nm_le_NM i) hv)
+    (shift (S.lassos.get i).nm (S.lassos.get i).nf (S.lasso_nf_dvd_NF i))
+
+/-! ## The combined window -/
+
+/-- Lower end of the combined window. -/
+def cohWindowLo (S : PlusSharingWitnessFamily Γ Del) : ℤ := -2 * S.NB
+
+/-- Upper end (exclusive) of the combined window. -/
+def cohWindowHi (S : PlusSharingWitnessFamily Γ Del) : ℤ := S.NM + 2 * S.NF
+
+/--
+**Every time has a representative in the combined window carrying the same data**, at the
+representative's whole one-step neighbourhood.
+
+Two periods wide on each side rather than one: (C1') reads `t - 1` and `t + 1` as well as `t`,
+so a representative must have its whole neighbourhood inside the periodic region.
+-/
+theorem exists_window_repr (S : PlusSharingWitnessFamily Γ Del) (t : ℤ) :
+    ∃ t' : ℤ, S.cohWindowLo ≤ t' ∧ t' < S.cohWindowHi ∧
+      S.rep t = S.rep t' ∧ S.rep (t + 1) = S.rep (t' + 1) ∧
+      (∀ i, S.L i (t - 1) = S.L i (t' - 1)) ∧ (∀ i, S.L i t = S.L i t') ∧
+      (∀ i, S.L i (t + 1) = S.L i (t' + 1)) := by
+  have hNB := S.NB_pos
+  have hNF := S.NF_pos
+  have hNM := S.NM_nonneg
+  rcases lt_or_ge t (-1) with hfar | hmid
+  · -- far left: represent `t` in `[-2·NB, -NB)`, whose whole neighbourhood is negative
+    refine ⟨t % S.NB - 2 * S.NB, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
+      set t' : ℤ := t % S.NB - 2 * S.NB with ht'
+    all_goals {
+      have h0 : 0 ≤ t % S.NB := Int.emod_nonneg _ (by omega)
+      have h1 : t % S.NB < S.NB := Int.emod_lt_of_pos _ hNB
+      have hres : t % S.NB = t' % S.NB := by
+        have hrw : t' = t % S.NB + (-2) * S.NB := by omega
+        rw [hrw, Periodic.emod_add_mul, Int.emod_emod_of_dvd _ (dvd_refl _)]
+      have hresp : (t + 1) % S.NB = (t' + 1) % S.NB := LabelledLasso.emod_shift hres
+      have hresm : (t - 1) % S.NB = (t' - 1) % S.NB := by
+        have := LabelledLasso.emod_shift (k := -1) hres
+        rwa [show t + -1 = t - 1 by omega, show t' + -1 = t' - 1 by omega] at this
+      first
+        | (simp only [cohWindowLo]; omega)
+        | (simp only [cohWindowHi]; omega)
+        | exact (S.data_congr_back (by omega) (by omega) hres).1
+        | exact (S.data_congr_back (by omega) (by omega) hresp).1
+        | exact (S.data_congr_back (by omega) (by omega) hresm).2
+        | exact (S.data_congr_back (by omega) (by omega) hres).2
+        | exact (S.data_congr_back (by omega) (by omega) hresp).2
+    }
+  rcases le_or_gt t S.NM with hin | hfar
+  · -- middle: already inside the window
+    exact ⟨t, by simp only [cohWindowLo]; omega, by simp only [cohWindowHi]; omega,
+      rfl, rfl, fun _ => rfl, fun _ => rfl, fun _ => rfl⟩
+  · -- far right: represent `t` in `[NM + NF, NM + 2·NF)`
+    refine ⟨S.NM + (t - S.NM) % S.NF + S.NF, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
+      set t' : ℤ := S.NM + (t - S.NM) % S.NF + S.NF with ht'
+    all_goals {
+      have h0 : 0 ≤ (t - S.NM) % S.NF := Int.emod_nonneg _ (by omega)
+      have h1 : (t - S.NM) % S.NF < S.NF := Int.emod_lt_of_pos _ hNF
+      have hres : (t - S.NM) % S.NF = (t' - S.NM) % S.NF := by
+        have hrw : t' - S.NM = (t - S.NM) % S.NF + 1 * S.NF := by omega
+        rw [hrw, Periodic.emod_add_mul, Int.emod_emod_of_dvd _ (dvd_refl _)]
+      have hresp : (t + 1 - S.NM) % S.NF = (t' + 1 - S.NM) % S.NF := by
+        have := LabelledLasso.emod_shift (k := 1) hres
+        rwa [show t - S.NM + 1 = t + 1 - S.NM by omega,
+          show t' - S.NM + 1 = t' + 1 - S.NM by omega] at this
+      have hresm : (t - 1 - S.NM) % S.NF = (t' - 1 - S.NM) % S.NF := by
+        have := LabelledLasso.emod_shift (k := -1) hres
+        rwa [show t - S.NM + -1 = t - 1 - S.NM by omega,
+          show t' - S.NM + -1 = t' - 1 - S.NM by omega] at this
+      first
+        | (simp only [cohWindowLo]; omega)
+        | (simp only [cohWindowHi]; omega)
+        | exact (S.data_congr_fwd (by omega) (by omega) hres).1
+        | exact (S.data_congr_fwd (by omega) (by omega) hresp).1
+        | exact (S.data_congr_fwd (by omega) (by omega) hresm).2
+        | exact (S.data_congr_fwd (by omega) (by omega) hres).2
+        | exact (S.data_congr_fwd (by omega) (by omega) hresp).2
+    }
+
+end PlusSharingWitnessFamily
+
+end FormalSystem.Metalogic.Decidability

@@ -680,19 +680,19 @@ declaration and by Phase 15's decidability instance elaborating without `open Cl
 
 ---
 
-### Phase 13: Decide — window arithmetic re-index [NOT STARTED]
+### Phase 13: Decide — window arithmetic re-index [COMPLETED]
 
 **Goal**: The shared window machinery every L⁺ condition's decision procedure stands on, re-indexed
 once so Phases 14–15 are transcriptions rather than arithmetic.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Decide.lean`
-- [ ] Re-index `perBack`/`perFwd`/`perMid`, `NB`/`NF`/`NM`, `NB_pos`, `NF_pos`, `NM_nonneg`,
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Decide.lean`
+- [x] Re-index `perBack`/`perFwd`/`perMid`, `NB`/`NF`/`NM`, `NB_pos`, `NF_pos`, `NM_nonneg`,
       `nbr_dvd_NB`, `nfr_dvd_NF`, `nmr_le_NM`, `lasso_nb_dvd_NB`, `lasso_nf_dvd_NF`,
       `lasso_nm_le_NM`
-- [ ] Re-index `rep_congr_back`, `rep_congr_fwd`, `data_congr_back`, `data_congr_fwd`,
+- [x] Re-index `rep_congr_back`, `rep_congr_fwd`, `data_congr_back`, `data_congr_fwd`,
       `cohWindowLo`, `cohWindowHi`, `exists_window_repr`
-- [ ] Where a lemma is label-free, delegate to the Phase 2–5 skeleton rather than re-proving; record
+- [x] Where a lemma is label-free, delegate to the Phase 2–5 skeleton rather than re-proving; record *(deviation: altered — `rep_congr_back`/`rep_congr_fwd` are label-free but could NOT be sited on `SharingSkeleton`: the `Periodic.unrollOf_congr_back`/`_fwd` lemmas they instantiate are declared in `Sharing/Decide.lean`, downstream of `Skeleton.lean` in the import order. They are stated here as three-line instantiations instead, and the module header records both this and Phase 1 finding F-M3, that the combined periods do not factor through the skeleton at all.)*
       in the header which lemmas delegated and which needed the label row
 
 **Timing**: 2 hours
