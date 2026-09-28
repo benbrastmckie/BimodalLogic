@@ -722,26 +722,26 @@ is the one downstream adjustment, and it is recorded in Phase 11's task list.
 
 ---
 
-### Phase 10: `forward_repr` and the truth lemma for the sharing family [NOT STARTED]
+### Phase 10: `forward_repr` and the truth lemma for the sharing family [COMPLETED]
 
 **Goal**: Labels are truth in the branching presented model — the branching twin of
 `ShiftSet.forward_repr` and `WitnessFamily.truth_iff_mem`, with the `box` case grounded in
 `total_eq_thread` rather than `total_eq_orbit`.
 
 **Tasks**:
-- [ ] Create `Sharing/Agreement.lean`.
-- [ ] Define the branching `TaskModel` on `S.frame`, with the valuation lifted to the quotient —
+- [x] Create `Sharing/Agreement.lean`.
+- [x] Define the branching `TaskModel` on `S.frame`, with the valuation lifted to the quotient —
       well-defined precisely by (C0) `AtomCoherent`. This is where the deterministic device's
       `Iff.rfl` atom case is replaced by a `Quotient.lift` argument.
-- [ ] Prove the branching `forward_repr`: the `box` case quantifies over all world histories,
+- [x] Prove the branching `forward_repr` *(deviation: altered — there is no `ShiftSet` layer under the branching frame and hence no `forward_repr` to prove; the induction is stated at `TruthAt` directly and the `box` case is grounded in `total_eq_thread` plus the constant thread, which is the content this item names)*: the `box` case quantifies over all world histories,
       which `total_eq_thread` turns into a quantification over threads and, by the class-level
       surjectivity analogue of `sh_surj`, over all `(i,u)` positions.
-- [ ] Prove `truth_iff_mem` for the sharing family by induction on the formula, using
+- [x] Prove `truth_iff_mem` for the sharing family by induction on the formula, using
       `LocalCoherentShare` for the one-step temporal cases, `ThreadFulfilling` for the
       eventualities, and **`BoxFaithful` unchanged** for `□`. The induction is over
       `FormalSystem.Syntax.Formula`'s six constructors and is therefore complete as stated;
       there is no `⊡` case to prove, because `Formula` has no `⊡`.
-- [ ] Record in the module docstring what the branching frame delivers for the stability modal
+- [x] Record in the module docstring what the branching frame delivers for the stability modal
       even though (C5) is out of scope here: the frame's task relation is not functional, so
       `PlusDeterminism.states_eq_of_deterministic` does not apply to it and
       `stab_iff_of_deterministic`'s `⊡φ ↔ φ` collapse does not hold. That is the sense in which

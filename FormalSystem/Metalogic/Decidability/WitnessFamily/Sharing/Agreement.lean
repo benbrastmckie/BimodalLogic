@@ -1,0 +1,292 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Agreement
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Histories
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Fulfil
+
+/-!
+# Agreement for the Branching Device: Labels Are Truth Along Every Thread
+
+The branching twin of `WitnessFamily/Agreement.lean`'s **T1**. A state-sharing family satisfying
+(C0) `AtomCoherent`, (C1') `LocalCoherentShare`, (C2') `ThreadFulfilling` and (C3) `BoxFaithful`
+has truth in the model it presents agreeing with label membership — at every thread, every time
+offset and every formula of the target closure.
+
+## No `ShiftSet`, and therefore no `forward_repr`
+
+The deterministic development states its induction at `ShiftSet.ShiftTruth` and then composes
+with `ShiftSet.forward_repr` to reach `TruthAt`. That route is closed here by construction: a
+branching task relation is not a shift action, `Sharing/Frame.lean` builds a `FrameOver intOrder`
+directly, and there is no shift-set layer to pass through. The induction below is therefore
+stated at `TruthAt` from the start, and the role `forward_repr` plays on the deterministic side
+— turning the auxiliary truth predicate into the consumer's one — is played here by nothing at
+all, because there is no auxiliary predicate.
+
+What *does* survive from that design is the reason the deterministic induction is generalised
+over its carrier point: `box` quantifies over all world histories, so the induction has to be
+stated at a quantified history or the `box` case has no induction hypothesis to apply. Here the
+histories are parametrised by a thread and a time offset (`SharingWitnessFamily.hist`), and the
+induction is generalised over both.
+
+## The `box` case, and why (C3) is reused verbatim
+
+`WitnessFamily.BoxFaithful` reads `bx χ = true ↔ ∀ i t, χ ∈ W.L i t`. Its right-hand side
+quantifies over the **label pool** — every position of every lasso — and mentions no history, no
+orbit and no task relation. A recombined history visits the positions `(θ.idx t, t)`, each of
+which is one of those same positions, so recombination adds no label for `□` to range over.
+
+The two halves of the case are exactly where `total_eq_thread` and `thread_is_history` are
+consumed, one each:
+
+* **`←`** (labels to truth) needs *every* world history to be a thread's trace, so that the
+  induction hypothesis applies to an arbitrary `σ`. That is `total_eq_thread`, composed with
+  `WorldHistory.ext_state` to turn the pointwise state agreement into an equality of histories.
+* **`→`** (truth to labels) needs *every* position to carry a history through it, so that a
+  universally quantified truth can be read at an arbitrary `(j, v)`. That is the constant thread
+  at `j` from the offset `v - t`, which is `Thread.const` plus `hist`.
+
+Neither half survives the deterministic argument's shape: `ShiftSet.total_eq_orbit` is false for
+a branching frame, and it is `total_eq_thread` that replaces it.
+
+## The valuation is a `Quotient.lift`, and that is what (C0) is for
+
+The deterministic device's `atom` case is `Iff.rfl`: its carrier is `Fin |lassos| × ℤ` and the
+valuation reads the label at that very pair. Here the carrier is a quotient by `share`, so the
+valuation reads a *class*, and the lift needs the labels of any two shared indices to agree on
+atoms. That is (C0), and it is the sole reason the branching device needs a condition the
+deterministic one could do without. `SharingWitnessFamily.model` therefore takes an
+`AtomCoherent` proof as an argument — the model is not defined without it.
+
+Nothing else about the labels has to agree across a shared state. Two lassos may carry different
+`untl` labels at a shared position and the certificate is still sound; that is the branching.
+
+## What this frame delivers for the stability modal, and what it does not
+
+(C5) `StabFaithful` and the `⊡` case of the truth lemma are **not** in scope here, and their
+absence is not an oversight: `WitnessFamily` is indexed by `FormalSystem.Syntax.Context`, whose
+formulas are `FormalSystem.Syntax.Formula` — six constructors, `atom`, `bot`, `imp`, `box`,
+`untl`, `snce`, and no `⊡`. The stability modal is `FormalSystem.PlusLanguage.PlusFormula.stab`,
+a constructor of a separate inductive, so there is no `⊡φ` to write at this datatype and the
+induction below is complete as stated.
+
+What the branching frame nonetheless delivers is the thing a stability clause was wanted for.
+`FormalSystem.PlusLanguage.states_eq_of_deterministic` shows that on a **deterministic** frame
+any two histories through a common state agree at every time, and
+`FormalSystem.PlusLanguage.stab_iff_of_deterministic` turns that into the collapse `⊡φ ↔ φ` at
+every point. The deterministic witness device presents a frame whose task relation *is*
+functional, so both apply to it and `⊡` is the identity there — the device is blind to the
+stability modal **by construction**, not merely incomplete for it, and cannot be repaired by
+adding a truth clause. `SharingWitnessFamily.frame`'s task relation is not functional (a state
+shared by two lassos has one successor per lasso through it), so neither lemma applies and the
+collapse does not hold.
+
+The condition itself is future work on an L⁺-indexed certificate: `LabelledLasso`, `closureOf`,
+`WitnessFamily`, its conditions and this theorem would all have to be re-indexed over
+`PlusFormula`, which also re-opens the model checker's JSON export contract.
+
+## Main Definitions
+
+- `SharingWitnessFamily.model` — the branching `TaskModel`, valuation lifted to the quotient
+
+## Main Results
+
+- `SharingWitnessFamily.untl_mem_along_thread` / `snce_mem_along_thread` — the two inner
+  inductions, run along a thread rather than along a lasso
+- `SharingWitnessFamily.truth_iff_mem` — **T1** for the branching device
+-/
+
+namespace FormalSystem.Metalogic.Decidability
+
+open FormalSystem.Syntax FormalSystem.Semantics FormalSystem.ProofSystem
+
+namespace SharingWitnessFamily
+
+variable {Γ Del : Context}
+
+/-!
+## The presented model
+
+The frame is `Sharing/Frame.lean`'s; only the valuation is new, and it is a `Quotient.lift`.
+-/
+
+/--
+**The branching model presented by a state-sharing family.**
+
+The valuation reads the atom part of the labels through the quotient, which is well defined
+exactly by (C0) `AtomCoherent`. The hypothesis is an explicit argument rather than a structure
+field because every other condition is a hypothesis too, and bundling one of the five into the
+datatype would make the datatype's `Decidable`-checked conditions four rather than five.
+-/
+def model (S : SharingWitnessFamily Γ Del) (hat : S.AtomCoherent) :
+    TaskModel S.frame.toTaskFrame where
+  valuation := fun C a =>
+    Quotient.liftOn C (fun q => Formula.atom a ∈ S.L q.1 q.2)
+      (by
+        rintro ⟨i, u⟩ ⟨j, v⟩ ⟨ht, hs⟩
+        have ht' : u = v := ht
+        subst ht'
+        exact propext (hat u i j hs a))
+
+/-- The valuation at a class is label membership at any of its representatives. -/
+@[simp]
+theorem valuation_cls (S : SharingWitnessFamily Γ Del) (hat : S.AtomCoherent)
+    (i : Fin S.lassos.length) (u : ℤ) (a : Atom) :
+    (S.model hat).valuation (S.cls i u) a ↔ Formula.atom a ∈ S.L i u := Iff.rfl
+
+/-!
+## The two inner inductions, along a thread
+
+`WitnessFamily/Agreement.lean`'s `untl_mem_of_witness` and `snce_mem_of_witness` walk the
+one-step unfolding clause along a *lasso*. The branching clauses of (C1') are quantified over
+shared successors and predecessors, so the same two inductions walk along a **thread**, with
+`θ.step` and `thread_share_pred` supplying the sharing side condition at each step.
+-/
+
+/--
+**Forward inner induction, along a thread.** A semantic `untl` witness at ℤ-distance `d` down a
+thread yields label membership at the thread's own index, by `d` applications of the branching
+one-step unfolding clause.
+-/
+theorem untl_mem_along_thread (S : SharingWitnessFamily Γ Del)
+    (hloc : S.LocalCoherentShare) {g e : Formula}
+    (hge : Formula.untl g e ∈ closureOf (Γ ++ Del)) (θ : S.Thread) :
+    ∀ (d : ℕ) (t s : ℤ), s - t = (d : ℤ) → t < s →
+      e ∈ S.L (θ.idx s) s → (∀ r : ℤ, t < r → r < s → g ∈ S.L (θ.idx r) r) →
+      Formula.untl g e ∈ S.L (θ.idx t) t := by
+  intro d
+  induction d with
+  | zero => intro t s hd hts _ _; omega
+  | succ n ih =>
+    intro t s hd hts hse hguard
+    have hclause := (hloc (θ.idx t) t).2.2.2.1 (θ.idx (t + 1)) (θ.step t) g e hge
+    rcases eq_or_lt_of_le (show t + 1 ≤ s by omega) with heq | hlt
+    · subst heq
+      exact hclause.mpr (Or.inl hse)
+    · exact hclause.mpr (Or.inr ⟨hguard (t + 1) (by omega) hlt,
+        ih (t + 1) s (by omega) hlt hse (fun r hr1 hr2 => hguard r (by omega) hr2)⟩)
+
+/--
+**Backward inner induction, along a thread** — the leftward mirror of `untl_mem_along_thread`.
+-/
+theorem snce_mem_along_thread (S : SharingWitnessFamily Γ Del)
+    (hloc : S.LocalCoherentShare) {g e : Formula}
+    (hge : Formula.snce g e ∈ closureOf (Γ ++ Del)) (θ : S.Thread) :
+    ∀ (d : ℕ) (t s : ℤ), t - s = (d : ℤ) → s < t →
+      e ∈ S.L (θ.idx s) s → (∀ r : ℤ, s < r → r < t → g ∈ S.L (θ.idx r) r) →
+      Formula.snce g e ∈ S.L (θ.idx t) t := by
+  intro d
+  induction d with
+  | zero => intro t s hd hst _ _; omega
+  | succ n ih =>
+    intro t s hd hst hse hguard
+    have hclause :=
+      (hloc (θ.idx t) t).2.2.2.2 (θ.idx (t - 1)) (thread_share_pred θ t) g e hge
+    rcases eq_or_lt_of_le (show s ≤ t - 1 by omega) with heq | hlt
+    · subst heq
+      exact hclause.mpr (Or.inl hse)
+    · exact hclause.mpr (Or.inr ⟨hguard (t - 1) hlt (by omega),
+        ih (t - 1) s (by omega) hlt hse (fun r hr1 hr2 => hguard r hr1 (by omega))⟩)
+
+/-!
+## T1 for the branching device
+-/
+
+/--
+**T1 for the branching device.**
+
+Truth in the presented model agrees with label membership, along every thread, at every time
+offset and every formula of the target closure. The `box` case is grounded in `total_eq_thread`
+— every world history is a thread's trace — where the deterministic proof appeals to
+`ShiftSet.total_eq_orbit`, which is false here.
+-/
+theorem truth_iff_mem (S : SharingWitnessFamily Γ Del)
+    (hat : S.AtomCoherent) (hloc : S.LocalCoherentShare) (hful : S.ThreadFulfilling)
+    (hbox : S.toWitnessFamily.BoxFaithful) :
+    ∀ ψ : Formula, ψ ∈ closureOf (Γ ++ Del) →
+      ∀ (θ : S.Thread) (s t : ℤ),
+        TruthAt (S.model hat) (S.hist θ s) t ψ ↔ ψ ∈ S.L (θ.idx (s + t)) (s + t) := by
+  intro ψ
+  induction ψ with
+  | atom a => intro _ θ s t; exact Iff.rfl
+  | bot =>
+    intro _ θ s t
+    exact ⟨fun h => absurd h (by exact id), fun h => absurd h (hloc (θ.idx (s + t)) (s + t)).1⟩
+  | imp a b iha ihb =>
+    intro hmem θ s t
+    have ha := iha (closureOf_imp_left hmem) θ s t
+    have hb := ihb (closureOf_imp_right hmem) θ s t
+    rw [show TruthAt (S.model hat) (S.hist θ s) t (Formula.imp a b)
+        = (TruthAt (S.model hat) (S.hist θ s) t a →
+            TruthAt (S.model hat) (S.hist θ s) t b) from rfl,
+      (hloc (θ.idx (s + t)) (s + t)).2.1 a b hmem]
+    exact ⟨fun h hl => hb.mp (h (ha.mpr hl)), fun h hs => hb.mpr (h (ha.mp hs))⟩
+  | box χ ih =>
+    intro hmem θ s t
+    rw [(hloc (θ.idx (s + t)) (s + t)).2.2.1 χ hmem, hbox χ hmem]
+    constructor
+    · intro h j v
+      have hc := (ih (closureOf_box hmem) (Thread.const S j) (v - t) t).mp
+        (h (S.hist (Thread.const S j) (v - t)))
+      rw [Thread.const_idx, show v - t + t = v from by omega] at hc
+      exact hc
+    · intro h σ
+      obtain ⟨θ', s', hσ⟩ := S.total_eq_thread σ
+      have heq : σ = S.hist θ' s' := WorldHistory.ext_state (fun r => by rw [hσ r]; rfl)
+      rw [heq]
+      exact (ih (closureOf_box hmem) θ' s' t).mpr (h _ _)
+  | untl g e ihg ihe =>
+    intro hmem θ s t
+    have hgc : g ∈ closureOf (Γ ++ Del) := closureOf_untl_right hmem
+    have hec : e ∈ closureOf (Γ ++ Del) := closureOf_untl_left hmem
+    constructor
+    · rintro ⟨s₀, hts, hse, hguard⟩
+      have hts' : @LT.lt ℤ _ t s₀ := hts
+      replace hguard : ∀ r : ℤ, @LT.lt ℤ _ t r → @LT.lt ℤ _ r s₀ →
+          TruthAt (S.model hat) (S.hist θ s) r g := hguard
+      refine untl_mem_along_thread S hloc hmem θ (s₀ - t).toNat (s + t) (s + s₀)
+        (by omega) (by omega) ((ihe hec θ s s₀).mp hse) ?_
+      intro r hr1 hr2
+      have hr := (ihg hgc θ s (r - s)).mp (hguard (r - s) (by omega) (by omega))
+      rw [show s + (r - s) = r from by omega] at hr
+      exact hr
+    · intro hlab
+      obtain ⟨s₀, hs0, hes, hgs⟩ := hful.1 (θ.idx (s + t)) (s + t) g e hlab θ rfl
+      refine ⟨s₀ - s, show @LT.lt ℤ _ t (s₀ - s) by omega, ?_, ?_⟩
+      · exact (ihe hec θ s (s₀ - s)).mpr
+          (by rw [show s + (s₀ - s) = s₀ from by omega]; exact hes)
+      · intro r hr1 hr2
+        have hr1' : @LT.lt ℤ _ t r := hr1
+        have hr2' : @LT.lt ℤ _ r (s₀ - s) := hr2
+        exact (ihg hgc θ s r).mpr (hgs (s + r) (by omega) (by omega))
+  | snce g e ihg ihe =>
+    intro hmem θ s t
+    have hgc : g ∈ closureOf (Γ ++ Del) := closureOf_snce_right hmem
+    have hec : e ∈ closureOf (Γ ++ Del) := closureOf_snce_left hmem
+    constructor
+    · rintro ⟨s₀, hst, hse, hguard⟩
+      have hst' : @LT.lt ℤ _ s₀ t := hst
+      replace hguard : ∀ r : ℤ, @LT.lt ℤ _ s₀ r → @LT.lt ℤ _ r t →
+          TruthAt (S.model hat) (S.hist θ s) r g := hguard
+      refine snce_mem_along_thread S hloc hmem θ (t - s₀).toNat (s + t) (s + s₀)
+        (by omega) (by omega) ((ihe hec θ s s₀).mp hse) ?_
+      intro r hr1 hr2
+      have hr := (ihg hgc θ s (r - s)).mp (hguard (r - s) (by omega) (by omega))
+      rw [show s + (r - s) = r from by omega] at hr
+      exact hr
+    · intro hlab
+      obtain ⟨s₀, hs0, hes, hgs⟩ := hful.2 (θ.idx (s + t)) (s + t) g e hlab θ rfl
+      refine ⟨s₀ - s, show @LT.lt ℤ _ (s₀ - s) t by omega, ?_, ?_⟩
+      · exact (ihe hec θ s (s₀ - s)).mpr
+          (by rw [show s + (s₀ - s) = s₀ from by omega]; exact hes)
+      · intro r hr1 hr2
+        have hr1' : @LT.lt ℤ _ (s₀ - s) r := hr1
+        have hr2' : @LT.lt ℤ _ r t := hr2
+        exact (ihg hgc θ s r).mpr (hgs (s + r) (by omega) (by omega))
+
+end SharingWitnessFamily
+
+end FormalSystem.Metalogic.Decidability
