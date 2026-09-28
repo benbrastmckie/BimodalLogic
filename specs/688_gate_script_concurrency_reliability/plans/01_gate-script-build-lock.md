@@ -161,35 +161,35 @@ outside C1, state it and decide explicitly whether it belongs inside the same he
 
 ---
 
-### Phase 2: Demonstrate the race is closed under real concurrency [NOT STARTED]
+### Phase 2: Demonstrate the race is closed under real concurrency [COMPLETED]
 
 **Goal**: Produce evidence that a concurrent guarded build no longer yields a failure attributable
 to `.lake` artifact contention — the only verification the dispatch accepts.
 
 **Tasks**:
-- [ ] Cheap deterministic lock test first: in one shell hold the lock externally
+- [x] Cheap deterministic lock test first: in one shell hold the lock externally
       (`flock -x /path/to/repo/.lake/build-guard.lock -c 'sleep 90'`), then start
       `bash scripts/check-module-invariants.sh` and confirm it prints the wait notice and does
       not start building until the holder exits. This proves the lock is actually taken, which a
-      clean build alone does not.
-- [ ] Trial 1-3 (bounded at 3): start a guarded full build in the background with
+      clean build alone does not. *(completed: confirmed: 20s external holder via `flock -x ... -c 'sleep 20'`; the invariants script printed the wait notice and its `lake build` did not start until the holder exited)*
+- [x] Trial 1-3 (bounded at 3): start a guarded full build in the background with
       `bash .claude/scripts/lake-build-guard.sh build --no-share -- build BimodalTest`, redirecting
       to a log and capturing its PID; immediately start a full
-      `bash scripts/check-module-invariants.sh` run, also logged.
-- [ ] Wait on the background build by PID liveness only (`kill -0 "$pid"`), with a hard timeout —
+      `bash scripts/check-module-invariants.sh` run, also logged. *(completed: Trial 1 was an organic overlap with sibling task 689's own guarded phase-6 gate-run build (recorded instead of discarded, per the Scope Hypothesis's overlap requirement); Trials 2-3 were the deliberate `--no-share` invocation, with Trial 3 exercising the reverse direction (guard waited on the invariants script's held lock))*
+- [x] Wait on the background build by PID liveness only (`kill -0 "$pid"`), with a hard timeout —
       never `ps | grep` or `pgrep -f`. Read `context/patterns/bounded-build-waiter.md` before
-      writing the waiter; one waiter per log.
-- [ ] Assert in each trial's guard stderr that the `lake-build-guard: REPLAY:` marker is ABSENT
-      (a replayed result means no real build ran and the trial is vacuous — re-run it).
-- [ ] For each trial, record the invariants script's C1 verdict and the verdicts of the other
+      writing the waiter; one waiter per log. *(completed)*
+- [x] Assert in each trial's guard stderr that the `lake-build-guard: REPLAY:` marker is ABSENT
+      (a replayed result means no real build ran and the trial is vacuous — re-run it). *(completed: confirmed absent in all 3 trials' guard logs)*
+- [x] For each trial, record the invariants script's C1 verdict and the verdicts of the other
       `.lake`-reading checks (C2, C6, C16, C24, C25). For any failure, inspect the build log and
       classify it: a genuine compile error, or a truncated/partially-written `.olean`/trace
-      artifact. Only the second class counts as a contention failure.
-- [ ] Record the outcome table (trial, guard exit, invariants exit, failing checks, classification)
+      artifact. Only the second class counts as a contention failure. *(completed: all green in all 3 trials -- see summary's outcome table)*
+- [x] Record the outcome table (trial, guard exit, invariants exit, failing checks, classification)
       in the implementation summary. Zero contention-attributable failures across three trials is
-      the pass bar; one or more is a red result that sends the work back to Phase 1.
-- [ ] Do not commit anything from this phase except the recorded evidence in the summary; no
-      source changes are expected here.
+      the pass bar; one or more is a red result that sends the work back to Phase 1. *(completed)*
+- [x] Do not commit anything from this phase except the recorded evidence in the summary; no
+      source changes are expected here. *(completed)*
 
 **Timing**: 1.5 hours (dominated by real `lake build` wall clock)
 
