@@ -1508,7 +1508,7 @@ theorem right_formula_gap_detection {sig : MonadicSignature}
             simp only [min_def]; split_ifs with h
             · simp only [min_def] at *; split_ifs with h' <;> assumption
             · exact hm_not_cut
-          by_contra h_all; push_neg at h_all
+          by_contra h_all; push Not at h_all
           exact γ.val.complement_no_min ⟨min (min wf_pt wi_pt) m, hmin_not,
             fun z hz => h_all z hz⟩
         exact ⟨s₁, hs₁_not,

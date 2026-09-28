@@ -205,7 +205,7 @@ theorem exists_recurring_typeState (d : ℤ → TypeState C) :
     ∃ x : TypeState C, ∀ N : ℤ, ∃ u : ℤ, N ≤ u ∧ d u = x := by
   classical
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   choose f hf using hcon
   have hne : (Finset.univ : Finset (TypeState C)).Nonempty := Finset.univ_nonempty
   have hle : f (d (Finset.univ.sup' hne f)) ≤ Finset.univ.sup' hne f :=
