@@ -467,24 +467,30 @@ deliverables from those phases — they are not deferred within this plan, they 
 
 ---
 
-### Phase 7: Decidability of (C0) and (C1') by the window reduction [NOT STARTED]
+### Phase 7: Decidability of (C0) and (C1') by the window reduction [COMPLETED]
 
 **Goal**: The two one-position/one-step conditions are decidable, reusing
 `Decide.lean`'s existing window machinery rather than a new reduction.
 
 **Tasks**:
-- [ ] Create `Sharing/Decide.lean`.
-- [ ] Define the combined window for a sharing family: the label window
+- [x] Create `Sharing/Decide.lean`.
+- [x] Define the combined window for a sharing family: the label window
       `[-2·nb, nm + 2·nf)` intersected with the `share` segments' own period, so both decodings
       are periodic across it. Prove the combined-window analogue of `coherent_iff_window`.
-- [ ] Prove `atomCoherent_iff_window` and `localCoherentShare_iff_window` off that lemma. (A
+      *(landed as `perBack`/`perFwd`/`perMid`, `cohWindowLo`/`cohWindowHi` and
+      `exists_window_repr`; see the Scope Hypothesis confirmation below for the one correction
+      to the window's shape)*
+- [x] Prove `atomCoherent_iff_window` and `localCoherentShare_iff_window` off that lemma. (A
       third sibling, `stabFaithful_iff_window`, was planned; (C5) is out of scope — see Phase 6's
       Reasoned Exclusions — so it is not part of this phase.)
-- [ ] Derive `Decidable` instances for the two conditions by `decidable_of_iff` through the
+- [x] Derive `Decidable` instances for the two conditions by `decidable_of_iff` through the
       window statements, with the inner `∀ j : Fin lassos.length` discharged by `Fintype`.
-- [ ] Confirm by `#check` that `decidableBoxFaithful`, `instDecidableMemAll`,
+      *(landed as `decidableAtomCoherent` and `decidableLocalCoherentShare`)*
+- [x] Confirm by `#check` that `decidableBoxFaithful`, `instDecidableMemAll`,
       `instDecidableBoxClause` and `decidableTarget` apply to a sharing family's underlying
-      `toWitnessFamily` unchanged.
+      `toWitnessFamily` unchanged. *(confirmed by `example … := inferInstance` rather than
+      `#check`, which is a strictly stronger check — `#check` on an instance name would
+      elaborate the constant, not the synthesis at a sharing family)*
 
 **Timing**: 1.5 hours
 
@@ -499,6 +505,45 @@ only by the `share` period, and that four of the fifteen existing `Decidable` in
 reusable as-is. Confirm at implementation time by (a) closing the combined-window lemma without
 a new periodicity argument and (b) `#check`ing those four instances at a sharing family; record
 the actual reusable count in the phase notes if it differs from four.
+
+#### Scope Hypothesis: confirmed with two corrections
+
+(a) **Confirmed.** `exists_window_repr` closes with no new periodicity argument. The two
+representative-map congruences (`rep_congr_back`, `rep_congr_fwd`) are instantiations of two
+new but purely generic `Periodic.unrollOf` lemmas (`unrollOf_congr_back`, `unrollOf_congr_fwd`),
+each a two-line composition of the existing `unrollOf_neg`/`unrollOf_fwd` with the existing
+`cyc_congr`; the label congruences are `LabelledLasso.lab_congr_back`/`lab_congr_fwd` reused
+verbatim.
+
+**Correction 1 — the window's shape.** "The label window widened only by the `share` period" is
+right in direction and wrong in detail. Because both sharing conditions compare *two different
+lassos* at the same time (`AtomCoherent` reads `L i u` against `L j u`; (C1')'s temporal clauses
+read `L i t` against `L j (t ± 1)`), `Decide.lean`'s per-lasso decomposition
+(`localCoherentLab_iff_lassos`) is unavailable and the different lassos' windows must be
+reconciled with *each other*, not only with the `share` period. The window is therefore built
+from a family-wide common multiple: `perBack = |repBack| · ∏ᵢ |backᵢ|`,
+`perFwd = |repFwd| · ∏ᵢ |fwdᵢ|`, `perMid = |repMid| + Σᵢ |midᵢ|`, and the window is
+`[-2·perBack, perMid + 2·perFwd)`. A common multiple rather than a least common multiple:
+nothing needs minimality, and `List.dvd_prod` gives the divisibility facts off the shelf.
+
+**Correction 2 — a closure gate the plan did not anticipate.** (C0) as stated in Phase 6
+quantifies over `∀ p : Atom`, and `FormalSystem.Syntax.Atom` is `Infinite`
+(`Syntax/Atom.lean`'s `instance : Infinite Atom`), so the condition is not decidable in the
+shape it is written. It *is* decidable, because every label is a subset of
+`closureOf (Γ ++ Del)`: an atom outside the closure is absent from both sides. `atomClauseAt`
+is the closure-member form and `atomCoherent_iff_at` the equivalence. This is the same device
+`labClauseAt`/`boxClause` already use in `Decide.lean` for the deterministic conditions, so it
+is a reuse rather than a new technique — but it is an extra lemma the phase did not budget.
+(C0) itself is unchanged in `Sharing/Predicates.lean`; the gate lives only in the reduction.
+
+(b) **Confirmed, and the count is seven, not four.** `decidableBoxFaithful`,
+`instDecidableMemAll`, `instDecidableBoxClause` and `decidableTarget` all synthesize at
+`S.toWitnessFamily`, and so do `decidableLocalCoherentLab`, `decidableFulfillingLab` and
+`decidableCertifies` — nothing in `Decide.lean` reads the sharing datum, so every instance it
+exports is inherited. The confirmation is nine `example … := inferInstance` lines in the
+`Inherited` section at the foot of `Sharing/Decide.lean` (the seven inherited ones plus this
+phase's two new ones), which is stronger than `#check` on the instance names: it exercises
+instance *synthesis* at a `SharingWitnessFamily`, not merely the constants' existence.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Decide.lean` - new
