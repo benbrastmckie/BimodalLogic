@@ -11,8 +11,8 @@ next_project_number: 690
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,682,686,687,688,689 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650,683 | 298,464,502,563,649,682 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,682,686,688,689 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,623,650,683,687 | 298,464,502,563,649,682,688 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,684 | 231,465,497,564,565,616,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,685 | 428,498,499,500,623,684 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -20,7 +20,7 @@ next_project_number: 690
 | 7 | 430 | 411 | decidability |
 | 8 | 412 | 430 | decidability |
 | 9 | 482 | 412 | decidability |
-| 10 | 177 | 178,282,296,481,482,543 | formula-refactor |
+| 10 | 177 | 178,282,296,481,482,543,623 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -69,15 +69,15 @@ next_project_number: 690
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
-  └─ 685 [NOT STARTED] — Prove the compression result for the branching witness...
 682 [NOT STARTED] — RESEARCH TASK, verdict-first: establish whether validity of...
 686 [NOT STARTED] — Discharge the consuming repository's half of the certificate...
+623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
+  └─ 685 [NOT STARTED] — Prove the compression result for the branching witness...
 
 ### Documentation
 
-687 [NOT STARTED] — Close the cross-repository citation and audit-surface gap...
 689 [NOT STARTED] — Reconcile four records with what the code actually says, each...
+687 [NOT STARTED] — Close the cross-repository citation and audit-surface gap...
 
 ### Formula Refactor
 
@@ -155,7 +155,7 @@ VERIFICATION THAT WOULD ACTUALLY SETTLE THE FIRST ITEM. Run the invariants scrip
 - **Status**: [NOT STARTED]
 - **Task Type**: general
 - **Topic**: documentation
-- **Dependencies**: None
+- **Dependencies**: Task 688
 
 **Description**: Close the cross-repository citation and audit-surface gap from both ends, so that a line-numbered claim about this development cannot rot silently in the consuming repository's adequacy argument.
 
@@ -387,7 +387,7 @@ ACCEPTANCE. typst compile --root .. succeeds with zero errors for BOTH BimodalRe
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 534, Task 645, Task 665, Task 680
+- **Dependencies**: Task 534, Task 645, Task 665, Task 680, Task 688
 - **Research**: [623_decidable_validztime_quasimodel_shiftset_route/reports/01_stability-scope-decidability-findings.md]
 
 **Description**: Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet witness-family route: the completeness (compression) half. The soundness half, which defines LabelledLasso / WitnessFamily, the ShiftSet construction WitnessFamily.std, the agreement theorem (truth in std equals label membership on the closure), the consequence corollaries at ZTime and Base, and the Decidable instances for the four certificate conditions, has been split out into its own task, on which this task now depends; do not re-prove or re-define any of it here, consume it.
@@ -1275,7 +1275,7 @@ POST-RELOCATION NOTE (2026-09-21). Dependency 635 is complete. It moved 141 modu
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: Task 178, Task 282, Task 296, Task 298, Task 428, Task 429, Task 430, Task 464, Task 465, Task 481, Task 482, Task 534, Task 543, Task 568, Task 628, Task 635, Task 636, Task 645, Task 646
+- **Dependencies**: Task 178, Task 282, Task 296, Task 298, Task 428, Task 429, Task 430, Task 464, Task 465, Task 481, Task 482, Task 534, Task 543, Task 568, Task 623, Task 628, Task 635, Task 636, Task 645, Task 646
 
 **Description**: Update README.md, docs/, and FormalSystem/ module-level docstrings to their final post-refactor state, once the decidability chain (426, 428, 429, 430, 432, 433, 434) lands. This is the final polish pass, distinct from and run after task 472's already-completed immediate correction pass. Explicitly excludes: every item task 472 already corrected (the Decidability.lean Status block, Verified/README.md, FMP/README.md, DecisionProcedure.lean's decideAuto docstring, Verified/Decidable.lean's Status docstring, WeakCanonical.lean, RealModel/ShuffleReal.lean, Soundness.lean, PriorExpressivenessDense.lean) and the two Kamp files task 473 already swept (Kamp/EANegationClosure.lean, NfMultiAnchorBridge/NavigatedSpine.lean). This task's residual content is: re-auditing all touched documentation for drift accumulated during the decidability chain's landing (472/473 audited a snapshot; the chain's remaining tasks will touch further files after 472/473 ran), and the Axiom Reference update the charter names as part of 177's original scope.
 
