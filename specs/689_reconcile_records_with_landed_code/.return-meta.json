@@ -1,17 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 4,
+  "status": "planned",
+  "dispatch_seq": 8,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/689_reconcile_records_with_landed_code/reports/01_reconcile-records-landed-code.md",
-      "summary": "All four records confirmed against the landed tree; names the exact documentation gap in each, recommends keeping the two independence matrices unconsolidated, and flags C35 manifest regeneration as a mandatory gate."
+      "type": "plan",
+      "path": "specs/689_reconcile_records_with_landed_code/plans/01_reconcile-records-landed-code.md",
+      "summary": "Six-phase documentation-only plan reconciling four durable records with the landed tree: amends the canonical-wire plan's three false pinned statements non-destructively, corrects the injectivity precedent's framing, records the no-consolidation decision in both independence modules, records the shared-fixture convention, then regenerates C35 and INV and runs the full gate."
     }
   ],
+  "memory_candidates": [],
+  "next_steps": "Run /implement 689 to execute the plan",
+  "phase_count": 6,
+  "estimated_hours": 4.25,
+  "dependency_waves": [[1, 2, 3, 4], [5], [6]],
   "metadata": {
     "session_id": "sess_1790559036_a260f5_689",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   }
 }

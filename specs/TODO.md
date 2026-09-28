@@ -76,7 +76,7 @@ next_project_number: 690
 
 ### Documentation
 
-689 [PLANNING] — Reconcile four records with what the code actually says, each...
+689 [PLANNED] — Reconcile four records with what the code actually says, each...
 687 [NOT STARTED] — Close the cross-repository citation and audit-surface gap...
 
 ### Formula Refactor
@@ -116,11 +116,12 @@ next_project_number: 690
 ## Tasks
 
 ### 689. Reconcile records with landed code
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: documentation
 - **Dependencies**: None
 - **Research**: [689_reconcile_records_with_landed_code/reports/01_reconcile-records-landed-code.md]
+- **Plan**: [689_reconcile_records_with_landed_code/plans/01_reconcile-records-landed-code.md]
 
 **Description**: Reconcile four records with what the code actually says, each discovered by an implementation that found its own plan or a sibling's report to be wrong. None is a code defect; all four are places where a durable record would mislead the next reader.
 
