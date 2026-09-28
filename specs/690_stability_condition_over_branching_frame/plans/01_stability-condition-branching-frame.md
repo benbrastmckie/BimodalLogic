@@ -1,7 +1,7 @@
 # Implementation Plan: Stability Condition (C5) on the Branching Witness Frame
 
 - **Task**: 690 - Build the stability condition (C5) `StabFaithful` on the branching witness frame
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 41 hours
 - **Dependencies**: None blocking. Territory overlap with concurrent tasks 623 and 684 on the
   registration/aggregator files — see Risks & Mitigations R1 and Phase 22.

@@ -11,7 +11,7 @@ next_project_number: 691
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,685,690 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,685 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -96,21 +96,17 @@ next_project_number: 691
 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
   └─ 650 [NOT STARTED] — Define-before-use audit of...
 
-### Semantics
-
-690 [IMPLEMENTING] — Build the stability condition (C5) StabFaithful on the...
-
 ## Tasks
 
 ### 690. Stability condition over branching frame
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 683
 - **Research**: [690_stability_condition_over_branching_frame/reports/01_stability-condition-branching-frame.md]
 - **Plan**: [690_stability_condition_over_branching_frame/plans/01_stability-condition-branching-frame.md]
-- **Summary**: [690_stability_condition_over_branching_frame/summaries/01_stability-condition-branching-frame-summary.md]
 - **Code**: [FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Examples.lean]
+- **Summary**: [690_stability_condition_over_branching_frame/summaries/01_stability-condition-branching-frame-summary.md]
 
 **Description**: Build the stability condition (C5) StabFaithful on the branching witness frame, which is the substrate that makes it stateable. Research, plan and implement all three phases properly -- this is the deliverable that was excluded from the state-sharing witness work on a recorded user decision, not a defect in it.
 
