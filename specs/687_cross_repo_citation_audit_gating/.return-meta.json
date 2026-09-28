@@ -1,10 +1,44 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 15,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/687_cross_repo_citation_audit_gating/summaries/01_cross-repo-citation-gating-summary.md",
+      "summary": "Closed the cited side of the cross-repository citation gap: re-verified every research figure against today's tree, extended the C35 seed list by 10 names to cover the consuming adequacy argument's §4.1 ShiftSet.lean proof-mapping cluster (53 -> 63), recorded that cluster's drift (7 wrong-declaration, 1 wrong-file, 2 loose) and a hand-off framing for the three unreached residue rows in docs/reference/transcription-audit-surface.md, recorded a deferred cross-repository manifest-consumer proposal, and confirmed the full build-inclusive invariants gate is green."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Extended scripts/lean-citation-seeds.txt (53 -> 63 names) to cover the consuming repository's §4.1 ShiftSet.lean citations, regenerated the manifest, recorded the second drift cluster and a hand-off block for the three unreached residue rows in docs/reference/transcription-audit-surface.md, and confirmed the full check-module-invariants.sh gate (including lake build) passes green with no file touched under ~/Projects/ModelChecker."
+  },
+  "modified_files": [
+    "scripts/lean-citation-seeds.txt",
+    "scripts/lean-citation-manifest.json",
+    "docs/reference/transcription-audit-surface.md",
+    "scripts/check-module-invariants.sh"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When a generated citation/freshness manifest exists for one repository's own declarations but a *consuming* repository's document cites those same declarations by line number, the manifest's seed list can be extended to cover the consuming document's citations too -- this closes the cross-repository half of the gate cheaply (no new script, no cross-repo write) as long as the consuming document's corrections are recorded name-keyed, resolved-against-the-manifest, and never as a fresh file:line, on this side for the consuming maintainers to apply by mechanical lookup.",
+      "category": "PATTERN",
+      "source_artifact": "specs/687_cross_repo_citation_audit_gating/summaries/01_cross-repo-citation-gating-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["citation-manifest", "cross-repository", "seed-list", "freshness-gate", "C35"]
+    },
+    {
+      "content": "To classify whether an old line-numbered citation is wrong-declaration versus correct-but-loose against a live tree, resolve the citation's target name through the generated manifest/exporter (never by eyeballing), then check whether the OLD cited line falls inside the CURRENT declaration's span (loose) or inside a neighbouring declaration's span (wrong). A uniform per-file line offset across an entire citation cluster is a strong signal of a single docstring-insertion commit -- confirm it with `git show <commit>` rather than asserting the cause.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/687_cross_repo_citation_audit_gating/summaries/01_cross-repo-citation-gating-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["citation-drift", "declaration-span", "classification", "line-number-audit"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1790559036_a260f5",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 5,
+    "phases_total": 5
   }
 }

@@ -11,7 +11,7 @@ next_project_number: 690
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,683,686,687 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,683,686 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650,684 | 298,464,502,563,649,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,685 | 231,465,497,564,565,616,623,684 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -72,10 +72,6 @@ next_project_number: 690
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
   └─ 685 [NOT STARTED] — Prove the compression result for the branching witness...
 686 [PLANNED] — Discharge the consuming repository's half of the certificate...
-
-### Documentation
-
-687 [IMPLEMENTING] — Close the cross-repository citation and audit-surface gap...
 
 ### Formula Refactor
 
@@ -152,7 +148,7 @@ VERIFICATION THAT WOULD ACTUALLY SETTLE THE FIRST ITEM. Run the invariants scrip
 ---
 
 ### 687. Cross repo citation audit gating
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: documentation
 - **Dependencies**: Task 688
