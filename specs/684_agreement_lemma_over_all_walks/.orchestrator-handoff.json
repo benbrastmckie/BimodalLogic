@@ -1,18 +1,37 @@
 {
-  "status": "planned",
-  "dispatch_seq": 5,
   "task_number": 684,
-  "phase": "plan",
-  "phases_completed": 0,
+  "dispatch_seq": 8,
+  "phase": "implement",
+  "status": "partial",
+  "phases_completed": 3,
   "phases_total": 4,
+  "session_id": "sess_1790617342_e2d44f",
+  "summary": "Landed the stability-quantifier collapse as a new Sharing/Stability.lean (four declarations, sorry-free, axiom-clean, warning-free) and wired it into the WitnessFamily aggregator. The root-aggregator half of the wiring is BLOCKED: FormalSystem.lean is under a concurrent sibling's uncommitted modification and the plan's territory contract directs stop-and-report. Gate C33 was already failing before this dispatch, missing all nine predecessor Sharing.* modules; a corrective mk_all is an 11-line repair of pre-existing drift, not this task's one line. The tree is currently red at Sharing/Basic.lean:203 under a different sibling's in-flight refactor, outside this task's file scope.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/684_agreement_lemma_over_all_walks/plans/01_stability-quantifier-collapse.md",
-      "summary": "Four-phase plan landing the stability-quantifier collapse and recurrence-freedom theorems as a new Sharing/Stability.lean, wiring both aggregators, running the full gate set, and handing the (C5) statement to the sibling stability-condition task."
+      "type": "summary",
+      "path": "specs/684_agreement_lemma_over_all_walks/summaries/01_stability-quantifier-collapse-summary.md",
+      "summary": "Execution summary: what landed, the gate attribution table, and the follow-ups."
+    },
+    {
+      "type": "note",
+      "path": "specs/684_agreement_lemma_over_all_walks/handoff-c5-statement.md",
+      "summary": "The (C5) StabFaithful statement, its soundness argument, its decidability route and the deterministic cross-check, for the downstream stability-condition work to cite."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Stability.lean",
+      "summary": "New module: StabQuant, stabQuant_iff_share_class, stabQuant_iff_self_of_share_eq, frame_recurrenceFree."
     }
   ],
-  "session_id": "sess_1790617342_e2d44f_684",
-  "next_steps": "Run /implement 684 to execute the plan",
-  "notes": "Cross-territory dependency: Phase 2 must add one mk_all-generated import line to FormalSystem.lean, which sibling 623 declares in its file_scope; gate C33 makes this unavoidable for any new module under FormalSystem/. Phase 4 corrects this task's recorded file_scope, which currently names deterministic WitnessFamily modules that must not be edited."
+  "blockers": [
+    "FormalSystem.lean carries a concurrent sibling's uncommitted modification; the mk_all regeneration this task needs for gate C33 was not performed. Retry once that sibling's edit is committed.",
+    "Gate C33 additionally requires a separate 11-line mk_all repair covering nine predecessor Sharing.* modules never added to the root aggregator. Pre-existing, larger than this task.",
+    "A concurrent sibling's Sharing/Basic.lean + Sharing/Skeleton.lean refactor was mid-flight during this dispatch's gate run, which is what made check-module-invariants.sh C24/C25 fail. It has since landed at 7eb4897a3 and this module was re-verified green against it; a fresh gate run should no longer show C24/C25."
+  ],
+  "next_steps": [
+    "Once FormalSystem.lean is clean: lake exe mk_all --lib FormalSystem, confirm the diff, commit only this task's hunk, re-run check-module-invariants.sh for C33.",
+    "Hand specs/684_agreement_lemma_over_all_walks/handoff-c5-statement.md to the stability-condition work.",
+    "Add a Stability entry to Sharing/README.md's submodule list when that file leaves sibling territory."
+  ]
 }
