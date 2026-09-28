@@ -11,7 +11,7 @@ next_project_number: 690
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,683,686 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,683 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650,684 | 298,464,502,563,649,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,685 | 231,465,497,564,565,616,623,684 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -71,7 +71,6 @@ next_project_number: 690
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
   └─ 685 [NOT STARTED] — Prove the compression result for the branching witness...
-686 [PLANNED] — Discharge the consuming repository's half of the certificate...
 
 ### Formula Refactor
 
@@ -169,7 +168,7 @@ THE RESIDUE IS LARGER THAN RECORDED, AND THAT IS THE HONEST FINDING. Three notio
 ---
 
 ### 686. Modelchecker contract handoffs
-- **Status**: [PLANNED]
+- **Status**: [EXPANDED]
 - **Task Type**: general
 - **Topic**: decidability
 - **Dependencies**: None
@@ -189,6 +188,15 @@ THE ADDITIVE KEY'S DEFAULT. The verdict line now carries "acceptance", distingui
 THE TRANSLATION CONFORMANCE CHANNEL. FormalSystem/SourceLanguage/ now defines the source sentence AST, its elimination into the six primitives, and a theorem that truth of a sentence agrees with truth of its translation under Semantics.TruthAt itself. A lake exe translate_sentence and a committed fixture list at Tests/fixtures/sentence-translation-fixtures.jsonl let the consuming side assert agreement mechanically instead of by reading. Wire that assertion in. Note two operators that are wrong written the obvious way: the consumer's implication is a disjunction of a negation, not Formula.imp, and its unqualified future is a negated universal, not Formula.someFuture. Note also that the elimination is NOT injective, so the channel is forward-only: no inverse pass is checkable.
 
 ONE DEFECT FOUND IN THE CONSUMER WHILE VERIFYING. Its update_types mishandles the top operator, which is why the box test corpus deliberately excludes it. Pre-existing and separately documented there, but it belongs in this pass because the new theorem does cover top.
+
+--- RELOCATED ---
+This task was relocated and is not implemented in this repository. Work continues as ModelChecker task 209 (bimodal_sentence_translation_contract) in ~/Projects/ModelChecker.
+
+Reason: every source edit for this task lands in ModelChecker, which runs its own instance of this agent system. As a task there it carries real dependency edges on that repository's in-flight tasks 205 and 206, both of which edit files this task targets (tests/README.md, _lean_check.py, the bimodal tests tree) and neither of which declares a file_scope. From here that ordering was inexpressible.
+
+The research report and implementation plan authored here remain the durable inputs and are cited by path in the successor task's description:
+- specs/686_modelchecker_contract_handoffs/reports/01_modelchecker-contract-handoffs.md
+- specs/686_modelchecker_contract_handoffs/plans/01_modelchecker-contract-handoffs.md
 
 ---
 
