@@ -523,24 +523,24 @@ it derives before proceeding, and if it does not, hand-write the instance rather
 
 ---
 
-### Phase 9: `PlusSharingWitnessFamily` over the skeleton [NOT STARTED]
+### Phase 9: `PlusSharingWitnessFamily` over the skeleton [COMPLETED]
 
 **Goal**: The branching L⁺ certificate: `PlusWitnessFamily` plus the periodic representative maps,
 projecting onto the Stage A `SharingSkeleton` so the whole substrate is inherited, not duplicated.
 
 **Tasks**:
-- [ ] Extend `PlusWitnessFamily/Basic.lean` (or a new `PlusWitnessFamily/Sharing.lean`, per
+- [x] Extend `PlusWitnessFamily/Basic.lean` (or a new `PlusWitnessFamily/Sharing.lean`, per
       Phase 1's siting record) with
       `structure PlusSharingWitnessFamily (Γ Δ : PlusContext) extends PlusWitnessFamily Γ Δ`
       carrying `repBack`, `repMid`, `repFwd`, `repBack_ne`, `repFwd_ne`, `rep_idem`
-- [ ] `def PlusSharingWitnessFamily.skeleton : SharingSkeleton`
-- [ ] Thin re-exports so the L⁺ side reads naturally: `S.rep u`, `S.share u i j`, `S.Thread`,
+- [x] `def PlusSharingWitnessFamily.skeleton : SharingSkeleton`
+- [x] Thin re-exports so the L⁺ side reads naturally: `S.rep u`, `S.share u i j`, `S.Thread`,
       `S.cls`, `S.frame`, `S.hist`, `S.total_eq_thread` as `abbrev`/one-line delegations to
       `S.skeleton.*`
-- [ ] Confirm `S.skeleton.n = S.lassos.length` definitionally (a `rfl` lemma
+- [x] Confirm `S.skeleton.n = S.lassos.length` definitionally (a `rfl` lemma
       `skeleton_n`), so `Fin S.lassos.length` and `Fin S.skeleton.n` interchange without
       coercion friction downstream
-- [ ] If Phase 5's Stage A closeout failed and the R2 fallback is in force, duplicate the
+- [ ] If Phase 5's Stage A closeout failed and the R2 fallback is in force, duplicate the *(deviation: not applicable — Phase 5 closed green, so no substrate was duplicated on the L-plus side)*
       substrate onto the L⁺ side here instead and record the deviation
 
 **Timing**: 1.5 hours

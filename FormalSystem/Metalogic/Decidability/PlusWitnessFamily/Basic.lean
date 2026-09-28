@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Closure
 import FormalSystem.Metalogic.Decidability.BiLasso.Periodic
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Skeleton
 
 /-!
 # The L⁺ Witness Family
@@ -190,5 +191,160 @@ theorem subset_plusClosureOf (W : PlusWitnessFamily Γ Del) (i : Fin W.lassos.le
   (W.lassos.get i).lab_subset t
 
 end PlusWitnessFamily
+
+/-!
+## The branching L⁺ certificate
+
+`PlusSharingWitnessFamily` is `PlusWitnessFamily` extended by the three periodic segments of
+representative maps that make the presented frame branch — the same extension
+`SharingWitnessFamily` makes on the `Formula` side, and carrying the same field names.
+
+What it does **not** do is re-prove the branching theory. The representative structure is exactly
+a `SharingSkeleton`, and `SharingSkeleton` already carries `share`, the threads, the quotient
+frame over `intOrder`, all four frame constraints, the world histories and `total_eq_thread` —
+944 lines, none of which mentions a formula. `PlusSharingWitnessFamily.skeleton` is the
+projection, and everything below it is a one-line delegation. Zero lines of substrate are
+duplicated on this side.
+
+This is what makes the stability condition (C5) affordable. `⊡` depends on the world state alone,
+the frame's world states *are* the `share`-classes, and those classes are supplied by the
+skeleton the `Formula`-side certificate already established as green.
+-/
+
+/--
+An L⁺ witness family extended by the periodic representative maps that make its frame branch.
+
+The parent's three fields are the L⁺ export contract and are inherited, not re-declared;
+`repBack`, `repMid` and `repFwd` extend it additively, exactly as on the `Formula` side.
+-/
+structure PlusSharingWitnessFamily (Γ Del : PlusContext) extends PlusWitnessFamily Γ Del where
+  /-- Representative maps for the leftward cycle, indexed left-to-right in time. -/
+  repBack : List (Fin lassos.length → Fin lassos.length)
+  /-- Representative maps for the finite window `[0, |repMid|)`. -/
+  repMid : List (Fin lassos.length → Fin lassos.length)
+  /-- Representative maps for the rightward cycle, indexed left-to-right in time. -/
+  repFwd : List (Fin lassos.length → Fin lassos.length)
+  /-- The leftward cycle is non-empty, so leftward decoding is periodic. -/
+  repBack_ne : repBack ≠ []
+  /-- The rightward cycle is non-empty, so rightward decoding is periodic. -/
+  repFwd_ne : repFwd ≠ []
+  /-- Every listed map is idempotent, so it is a choice of class representatives. -/
+  rep_idem : ∀ f ∈ repBack ++ repMid ++ repFwd, ∀ i, f (f i) = f i
+
+namespace PlusSharingWitnessFamily
+
+variable {Γ Del : PlusContext}
+
+/--
+**The L⁺ family's label-free substrate.**
+
+The whole branching theory is inherited through this projection rather than duplicated. Marked
+`@[reducible]` for the same reason the `Formula`-side projection is: without it,
+`Fin S.skeleton.n` and `Fin S.lassos.length` fail to unify at the transparency `rw`'s keyed
+matching uses, and rewrites whose pattern mentions `share` fail against terms whose indices came
+from a thread.
+-/
+@[reducible]
+def skeleton (S : PlusSharingWitnessFamily Γ Del) : SharingSkeleton where
+  n := S.lassos.length
+  n_pos := S.lassos_length_pos
+  repBack := S.repBack
+  repMid := S.repMid
+  repFwd := S.repFwd
+  repBack_ne := S.repBack_ne
+  repFwd_ne := S.repFwd_ne
+  rep_idem := S.rep_idem
+
+/-- The skeleton's index count is the family's lasso count, definitionally, so
+`Fin S.lassos.length` and `Fin S.skeleton.n` interchange with no coercion. -/
+@[simp]
+theorem skeleton_n (S : PlusSharingWitnessFamily Γ Del) : S.skeleton.n = S.lassos.length := rfl
+
+/-- The decoded bi-infinite representative map. -/
+def rep (S : PlusSharingWitnessFamily Γ Del) (u : ℤ) :
+    Fin S.lassos.length → Fin S.lassos.length :=
+  S.skeleton.rep u
+
+/-- **Two lasso indices name the same world state at time `u`.** The kernel of `rep u`, so an
+equivalence relation with nothing to prove. -/
+def share (S : PlusSharingWitnessFamily Γ Del) (u : ℤ) (i j : Fin S.lassos.length) : Prop :=
+  S.skeleton.share u i j
+
+theorem share_def (S : PlusSharingWitnessFamily Γ Del) (u : ℤ) (i j : Fin S.lassos.length) :
+    S.share u i j ↔ S.rep u i = S.rep u j := Iff.rfl
+
+@[refl]
+theorem share_refl (S : PlusSharingWitnessFamily Γ Del) (u : ℤ) (i : Fin S.lassos.length) :
+    S.share u i i := rfl
+
+theorem share_symm {S : PlusSharingWitnessFamily Γ Del} {u : ℤ} {i j : Fin S.lassos.length}
+    (h : S.share u i j) : S.share u j i := SharingSkeleton.share_symm h
+
+theorem share_trans {S : PlusSharingWitnessFamily Γ Del} {u : ℤ} {i j k : Fin S.lassos.length}
+    (hij : S.share u i j) (hjk : S.share u j k) : S.share u i k :=
+  SharingSkeleton.share_trans hij hjk
+
+/-- Every index shares its own representative. -/
+theorem share_rep (S : PlusSharingWitnessFamily Γ Del) (u : ℤ) (i : Fin S.lassos.length) :
+    S.share u i (S.rep u i) := S.skeleton.share_rep u i
+
+instance decidableShare (S : PlusSharingWitnessFamily Γ Del) (u : ℤ)
+    (i j : Fin S.lassos.length) : Decidable (S.share u i j) :=
+  inferInstanceAs (Decidable (S.rep u i = S.rep u j))
+
+/-- A bi-infinite choice of lasso index, stepping only across shared states. -/
+abbrev Thread (S : PlusSharingWitnessFamily Γ Del) : Type := S.skeleton.Thread
+
+/-- The constant thread at index `i`. -/
+abbrev Thread.const (S : PlusSharingWitnessFamily Γ Del) (i : Fin S.lassos.length) : S.Thread :=
+  SharingSkeleton.Thread.const S.skeleton i
+
+instance instNonemptyThread (S : PlusSharingWitnessFamily Γ Del) : Nonempty S.Thread :=
+  ⟨Thread.const S S.mainIdx⟩
+
+/-- A thread's step, phrased at the family's own `share`. Declared here so that dot notation on a
+family thread resolves to this rather than to the skeleton's field, which is stated at
+`S.skeleton.share`. -/
+theorem Thread.step {S : PlusSharingWitnessFamily Γ Del} (θ : S.Thread) (u : ℤ) :
+    S.share (u + 1) (θ.idx u) (θ.idx (u + 1)) := SharingSkeleton.Thread.step θ u
+
+/-- The frame's carrier: `share`-classes of index/time pairs. -/
+abbrev WorldState (S : PlusSharingWitnessFamily Γ Del) : Type := S.skeleton.WorldState
+
+/-- The class of a lasso index at a time. -/
+abbrev cls (S : PlusSharingWitnessFamily Γ Del) (i : Fin S.lassos.length) (u : ℤ) :
+    S.WorldState := S.skeleton.cls i u
+
+theorem cls_eq {S : PlusSharingWitnessFamily Γ Del} {i j : Fin S.lassos.length} {u v : ℤ}
+    (hu : u = v) (hs : S.share u i j) : S.cls i u = S.cls j v :=
+  SharingSkeleton.cls_eq hu hs
+
+theorem share_of_cls_eq {S : PlusSharingWitnessFamily Γ Del} {i j : Fin S.lassos.length}
+    {u v : ℤ} (h : S.cls i u = S.cls j v) : u = v ∧ S.share u i j :=
+  SharingSkeleton.share_of_cls_eq h
+
+open FormalSystem.Semantics in
+/-- **The branching frame**, inherited from the skeleton. -/
+abbrev frame (S : PlusSharingWitnessFamily Γ Del) : FrameOver intOrder := S.skeleton.frame
+
+open FormalSystem.Semantics in
+/-- The world history traced by a thread from a time offset. -/
+abbrev hist (S : PlusSharingWitnessFamily Γ Del) (θ : S.Thread) (s : ℤ) :
+    WorldHistory S.frame.toTaskFrame := S.skeleton.hist θ s
+
+open FormalSystem.Semantics in
+/--
+**The histories characterization**, inherited from the skeleton.
+
+Every world history of the branching frame is the trace of a thread. This is the
+determinism-free replacement for `ShiftSet.total_eq_orbit`, and the reason the L⁺ agreement
+theorem's `box` and `stab` cases can quantify over histories at all.
+-/
+theorem total_eq_thread (S : PlusSharingWitnessFamily Γ Del)
+    (σ : WorldHistory S.frame.toTaskFrame) :
+    ∃ θ : S.Thread, ∃ s : ℤ, ∀ t : ℤ, σ.state t = S.cls (θ.idx (s + t)) (s + t) :=
+  SharingSkeleton.total_eq_thread S.skeleton σ
+
+end PlusSharingWitnessFamily
 
 end FormalSystem.Metalogic.Decidability
