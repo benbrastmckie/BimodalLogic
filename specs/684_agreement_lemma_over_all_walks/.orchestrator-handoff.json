@@ -1,0 +1,18 @@
+{
+  "status": "planned",
+  "dispatch_seq": 5,
+  "task_number": 684,
+  "phase": "plan",
+  "phases_completed": 0,
+  "phases_total": 4,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/684_agreement_lemma_over_all_walks/plans/01_stability-quantifier-collapse.md",
+      "summary": "Four-phase plan landing the stability-quantifier collapse and recurrence-freedom theorems as a new Sharing/Stability.lean, wiring both aggregators, running the full gate set, and handing the (C5) statement to the sibling stability-condition task."
+    }
+  ],
+  "session_id": "sess_1790617342_e2d44f_684",
+  "next_steps": "Run /implement 684 to execute the plan",
+  "notes": "Cross-territory dependency: Phase 2 must add one mk_all-generated import line to FormalSystem.lean, which sibling 623 declares in its file_scope; gate C33 makes this unavoidable for any new module under FormalSystem/. Phase 4 corrects this task's recorded file_scope, which currently names deterministic WitnessFamily modules that must not be edited."
+}

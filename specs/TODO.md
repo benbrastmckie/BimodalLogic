@@ -90,7 +90,7 @@ next_project_number: 691
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-684 [PLANNING] — Prove the agreement (truth) lemma over all walks of the...
+684 [PLANNED] — Prove the agreement (truth) lemma over all walks of the...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -232,11 +232,12 @@ The research report and implementation plan authored here remain the durable inp
 ---
 
 ### 684. Agreement lemma over all walks
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 683
 - **Research**: [684_agreement_lemma_over_all_walks/reports/01_agreement-lemma-over-all-walks.md]
+- **Plan**: [684_agreement_lemma_over_all_walks/plans/01_stability-quantifier-collapse.md]
 
 **Description**: Prove the agreement (truth) lemma over all walks of the branching witness structure, including the box case that the deterministic design's version cannot cover. This is the mathematical core of a stability-modal decision procedure and the step the carried-over research names as the open problem: a procedure for the larger language at integer time would need witness families that branch at a shared state AND a truth lemma over all walks of the resulting digraph. Consume the predecessor task's structure and its replacement for the histories characterization; do not redesign either here. Two facts should shape the attempt. First, stability-modal truth is a function of the present world state alone (stab_state_only, landed), so the modal itself needs no history information beyond the state -- the difficulty is entirely that the box modality must now range over recombined histories. Second, the failure mode is already identified in the completeness research: a trace that postpones an inevitability forever, with the recorded cure being limit-closure schemata in the logic together with progress measures carried in the state. COORDINATION, NOT DUPLICATION: this is the same mathematics as the stability-completeness research task's second priority question, which targets it for a proof system rather than for a certificate format. Read that task's established findings and its priority questions before starting, and record which of its results transfer; where the two tasks would prove the same lemma, prove it once and cite it across. In particular its finding that frame axioms are not the obstacle at any class -- the truth lemma over all histories is -- applies here verbatim.
 

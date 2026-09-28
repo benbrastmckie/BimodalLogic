@@ -1,32 +1,23 @@
 {
-  "status": "researched",
-  "dispatch_seq": 2,
+  "status": "planned",
+  "dispatch_seq": 5,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/684_agreement_lemma_over_all_walks/reports/01_agreement-lemma-over-all-walks.md",
-      "summary": "The agreement lemma over all walks (box case included) is already landed and axiom-clean as SharingWitnessFamily.truth_iff_mem; the remaining content is the stability case, whose history quantifier is proved (compiled-live) to collapse to a finite share-class quantifier, fixing a decidable (C5) and separating this task from task 559's completeness-side failure mode."
+      "type": "plan",
+      "path": "specs/684_agreement_lemma_over_all_walks/plans/01_stability-quantifier-collapse.md",
+      "summary": "Four-phase plan landing the stability-quantifier collapse and recurrence-freedom theorems as a new Sharing/Stability.lean, wiring both aggregators, running the full gate set, and handing the (C5) statement to the sibling stability-condition task."
     }
   ],
-  "user_decision": {
-    "question": "This task's literal deliverable (the agreement lemma over all walks, box case included) is already landed and green as SharingWitnessFamily.truth_iff_mem, delivered by dependency 683; its only remaining content is the stability case, which overlaps sibling task 690. How should task 684 proceed?",
-    "options": [
-      "Re-scope 684 to land the two new compiled-live results (stabQuant_iff_share_class, frame_recurrenceFree) as a new FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Stability.lean, colliding with no sibling's declared scope, and hand the resulting (C5) statement to task 690",
-      "Merge 684 into task 690 and mark 684 [ABANDONED], keeping this round's probes as the handover artifact",
-      "Mark 684 [COMPLETED] on dependency 683's delivery, leaving the stability case entirely to task 690"
-    ],
-    "recommended": "Re-scope 684 to land the two new compiled-live results (stabQuant_iff_share_class, frame_recurrenceFree) as a new FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Stability.lean, colliding with no sibling's declared scope, and hand the resulting (C5) statement to task 690",
-    "blocking": false
-  },
-  "partial_progress": {
-    "stage": "complete",
-    "details": "Report written and validated; two sorry-free probes compiled-live under the task directory."
-  },
+  "phase_count": 4,
+  "estimated_hours": 3,
+  "dependency_waves": [[1], [2], [3], [4]],
+  "next_steps": "Run /implement 684 to execute the plan",
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1790617342_e2d44f_684",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "note": "Task 684's declared file_scope names the deterministic WitnessFamily modules, which 683's ADD ALONGSIDE, DO NOT REPLACE constraint forbids editing; it must be corrected before any implementation dispatch."
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "note": "Phase 2 necessarily touches FormalSystem.lean, which is inside concurrent sibling 623's declared file_scope: gate C33 requires the root aggregator to be byte-for-byte `lake exe mk_all --lib FormalSystem` output, so no new module under FormalSystem/ can be landed without it. The plan confines the touch to one generated import line, requires a re-read and git-log territory check immediately beforehand, and requires a STOP-and-report on any foreign change. Phase 4 also corrects this task's recorded file_scope, which currently names the deterministic modules the predecessor's ADD ALONGSIDE constraint forbids editing."
   }
 }

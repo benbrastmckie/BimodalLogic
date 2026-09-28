@@ -228,7 +228,7 @@
     {
       "project_number": 684,
       "project_name": "agreement_lemma_over_all_walks",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "metalogic",
       "description": "Prove the agreement (truth) lemma over all walks of the branching witness structure, including the box case that the deterministic design's version cannot cover. This is the mathematical core of a stability-modal decision procedure and the step the carried-over research names as the open problem: a procedure for the larger language at integer time would need witness families that branch at a shared state AND a truth lemma over all walks of the resulting digraph. Consume the predecessor task's structure and its replacement for the histories characterization; do not redesign either here. Two facts should shape the attempt. First, stability-modal truth is a function of the present world state alone (stab_state_only, landed), so the modal itself needs no history information beyond the state -- the difficulty is entirely that the box modality must now range over recombined histories. Second, the failure mode is already identified in the completeness research: a trace that postpones an inevitability forever, with the recorded cure being limit-closure schemata in the logic together with progress measures carried in the state. COORDINATION, NOT DUPLICATION: this is the same mathematics as the stability-completeness research task's second priority question, which targets it for a proof system rather than for a certificate format. Read that task's established findings and its priority questions before starting, and record which of its results transfer; where the two tasks would prove the same lemma, prove it once and cite it across. In particular its finding that frame axioms are not the obstacle at any class -- the truth lemma over all histories is -- applies here verbatim.",
@@ -236,19 +236,24 @@
         683
       ],
       "created": "2026-09-26T12:07:18Z",
-      "last_updated": "2026-09-28T18:03:54Z",
+      "last_updated": "2026-09-28T18:19:11Z",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Agreement.lean",
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Basic.lean",
         "FormalSystem/Metalogic/Decidability/WitnessFamily/README.md",
         "FormalSystem/Metalogic/Decidability/WitnessFamily.lean"
       ],
-      "session_id": "sess_1790617342_e2d44f_684",
+      "session_id": "sess_1790617342_e2d44f",
       "artifacts": [
         {
           "path": "specs/684_agreement_lemma_over_all_walks/reports/01_agreement-lemma-over-all-walks.md",
           "type": "report",
           "summary": "The agreement lemma over all walks (box case included) is already landed and axiom-clean as SharingWitnessFamily.truth_iff_mem; the remaining content is the stability case, whose history quantifier is proved (compiled-live) to collapse to a finite share-class quantifier, fixing a decidable (C5) and separating this task from task 559's completeness-side failure mode."
+        },
+        {
+          "path": "specs/684_agreement_lemma_over_all_walks/plans/01_stability-quantifier-collapse.md",
+          "type": "plan",
+          "summary": "Four-phase plan landing the stability-quantifier collapse and recurrence-freedom theorems as a new Sharing/Stability.lean, wiring both aggregators, running the full gate set, and handing the (C5) statement to the sibling stability-condition task."
         }
       ],
       "next_artifact_number": 2
