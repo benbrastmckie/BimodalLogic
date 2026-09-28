@@ -75,7 +75,7 @@ next_project_number: 690
 
 ### Documentation
 
-687 [PLANNED] — Close the cross-repository citation and audit-surface gap...
+687 [IMPLEMENTING] — Close the cross-repository citation and audit-surface gap...
 
 ### Formula Refactor
 
@@ -152,7 +152,7 @@ VERIFICATION THAT WOULD ACTUALLY SETTLE THE FIRST ITEM. Run the invariants scrip
 ---
 
 ### 687. Cross repo citation audit gating
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: documentation
 - **Dependencies**: Task 688

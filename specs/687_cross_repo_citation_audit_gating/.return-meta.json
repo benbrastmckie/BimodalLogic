@@ -1,22 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/687_cross_repo_citation_audit_gating/plans/01_cross-repo-citation-gating.md",
-      "summary": "Five-phase plan closing the cited side of the cross-repo citation gap: re-verify the measured drift, extend the C35 seed list to cover the newly found ShiftSet.lean cluster and regenerate the manifest, record both the second drift cluster and the three unreached residue rows as name-keyed corrections the consuming table owes, defer the consuming-side manifest consumer as a named proposal, then gate and close out."
-    }
-  ],
-  "phase_count": 5,
-  "estimated_hours": 4,
-  "dependency_waves": [[1], [2], [3], [4], [5]],
-  "next_steps": "Run /implement 687 to execute the plan",
-  "memory_candidates": [],
+  "status": "in_progress",
+  "dispatch_seq": 15,
   "metadata": {
-    "session_id": "sess_1790559036_a260f5_687",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 14
+    "session_id": "sess_1790559036_a260f5",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

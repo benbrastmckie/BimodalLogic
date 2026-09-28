@@ -1,7 +1,7 @@
 # Implementation Plan: Task #687
 
 - **Task**: 687 - Cross repo citation audit gating
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: 688 (completed)
 - **Research Inputs**: specs/687_cross_repo_citation_audit_gating/reports/01_cross-repo-citation-audit-gating.md
@@ -113,28 +113,34 @@ Phase 1's re-derived name set, Phase 3 must resolve its rows against Phase 2's r
 manifest, and Phases 3 and 4 both edit `docs/reference/transcription-audit-surface.md`, so they
 are ordered rather than parallelised.
 
-### Phase 1: Re-verify the measured facts against today's tree [NOT STARTED]
+### Phase 1: Re-verify the measured facts against today's tree [COMPLETED]
 
 **Goal**: Replace every number and name inherited from the research report with one derived from
 the live tree, so no later phase writes a figure it did not itself measure.
 
 **Tasks**:
-- [ ] Run `python3 scripts/export-lean-citations.py --check`; record the exit status and whether
-      the committed manifest is byte-current before any edit.
-- [ ] From the manifest (not from the report), read the current keyword lines for
+- [x] Run `python3 scripts/export-lean-citations.py --check`; record the exit status and whether
+      the committed manifest is byte-current before any edit. *(completed: exit 0, "53 seeded
+      name(s) resolved", byte-current)*
+- [x] From the manifest (not from the report), read the current keyword lines for
       `not_validIn_base_prior_UZ`, `not_validIn_base_z1`, `prior_UZ_minFrameClass_sharp`,
-      `z1_minFrameClass_sharp`, and note whether they still equal 263/274/289/300.
-- [ ] Re-measure `grep -c sorry` for `FormalSystem/Semantics/ShiftSet.lean`,
+      `z1_minFrameClass_sharp`, and note whether they still equal 263/274/289/300. *(completed:
+      confirmed unchanged — 263/274/289/300)*
+- [x] Re-measure `grep -c sorry` for `FormalSystem/Semantics/ShiftSet.lean`,
       `FormalSystem/Metalogic/Decidability/WitnessFamily/Agreement.lean`,
       `.../WitnessFamily/Decide.lean`, `FormalSystem/Metalogic/Independence/ZTimeSharpness.lean`.
-- [ ] Re-read `~/Projects/ModelChecker/code/src/model_checker/theory_lib/bimodal/docs/ADEQUACY.md`
+      *(completed: all four still 0)*
+- [x] Re-read `~/Projects/ModelChecker/code/src/model_checker/theory_lib/bimodal/docs/ADEQUACY.md`
       §4.1 and §4.2 **read-only** and enumerate every `ShiftSet.lean:NNN` citation it currently
-      carries, with the declaration each row names.
-- [ ] For each such declaration, resolve its current span from the live tree (a scratch seed probe
+      carries, with the declaration each row names. *(completed: 9 ShiftSet.lean citations plus
+      one WitnessFamily/Std.lean citation in the same row, enumerated)*
+- [x] For each such declaration, resolve its current span from the live tree (a scratch seed probe
       under the session scratchpad, never under `scripts/`) and classify each citation as
       lands-in-named-declaration / wrong-declaration / field-citation / correct-but-loose.
-- [ ] Write the resulting name list and classification to the session scratchpad as the input
-      Phase 2 and Phase 3 consume.
+      *(completed: 8 wrong-declaration-class, 3 correct-but-loose — diverges from the research
+      report's "six of nine"; see scratchpad classification)*
+- [x] Write the resulting name list and classification to the session scratchpad as the input
+      Phase 2 and Phase 3 consume. *(completed: phase1-classification.md in session scratchpad)*
 
 **Timing**: 0.5 hours
 
