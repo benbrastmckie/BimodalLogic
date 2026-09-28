@@ -1,7 +1,7 @@
 # Implementation Plan: Stability Quantifier Collapse for the Branching Witness Frame
 
 - **Task**: 684 - agreement_lemma_over_all_walks
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: 683 (state-sharing witness structure, completed — supplies `total_eq_thread`, `share_of_cls_eq`, `truth_iff_mem`)
 - **Research Inputs**: `specs/684_agreement_lemma_over_all_walks/reports/01_agreement-lemma-over-all-walks.md`
@@ -135,7 +135,7 @@ meaningful, and the records must reflect a green tree.
 
 ---
 
-### Phase 1: Author `Sharing/Stability.lean` [NOT STARTED]
+### Phase 1: Author `Sharing/Stability.lean` [COMPLETED]
 
 **Goal**: A single new module carrying the stability-quantifier collapse, its deterministic
 cross-check, and the recurrence-freedom theorem — all sorry-free and elaborating — together with
@@ -144,16 +144,16 @@ established.
 
 **Tasks**:
 
-- [ ] Read both probes in full before writing anything:
+- [x] Read both probes in full before writing anything:
       `specs/684_agreement_lemma_over_all_walks/probes/01_stab_quantifier_collapse.lean` and
       `.../probes/02_recurrence_free_frame.lean`. Both are `lake env lean` exit-0 and sorry-free;
       the proof scripts are to be transcribed, not re-derived.
-- [ ] Create `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Stability.lean` with the
+- [x] Create `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Stability.lean` with the
       repository's copyright block (copy the four-line form from `Sharing/Histories.lean`), the
       imports `FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Agreement` and
       `FormalSystem.Semantics.HistoryMorphism`, and a `/-! ... -/` module docstring as the first
       command after the imports (Mathlib's header linter enforces that ordering).
-- [ ] Write the module docstring to record, in this order: (a) that the agreement lemma over all
+- [x] Write the module docstring to record, in this order: (a) that the agreement lemma over all
       walks including the box case is `SharingWitnessFamily.truth_iff_mem` in
       `Sharing/Agreement.lean` and is not re-proved here; (b) the collapse and why it holds —
       the stability clause never inspects the formula, so its quantifier shape is expressible at
@@ -167,25 +167,25 @@ established.
       limit-closure cure do **not** transfer to the certificate side, because fulfilment here is
       an assumed and checked hypothesis decided by `Sharing/Fulfil.lean`'s least fixpoint, not a
       derived one.
-- [ ] Transcribe `StabQuant` (a `def`, PascalCase — gate C26 rejects snake_case `def` names) with
+- [x] Transcribe `StabQuant` (a `def`, PascalCase — gate C26 rejects snake_case `def` names) with
       its docstring.
-- [ ] Transcribe `stabQuant_iff_share_class` with its proof script verbatim from probe 01,
+- [x] Transcribe `stabQuant_iff_share_class` with its proof script verbatim from probe 01,
       including the `rwa [show s + t = s' + t from by omega] at hmem` step. The research round
       recorded that the naive `subst` on `s' = s` fails here (it eliminates the wrong variable);
       do not "simplify" it back.
-- [ ] Transcribe `stabQuant_iff_self_of_share_eq` (the deterministic cross-check) with its
+- [x] Transcribe `stabQuant_iff_self_of_share_eq` (the deterministic cross-check) with its
       docstring noting the correspondence to `PlusLanguage.stab_iff_of_deterministic`.
-- [ ] Transcribe `frame_recurrenceFree` from probe 02, keeping the explicit
+- [x] Transcribe `frame_recurrenceFree` from probe 02, keeping the explicit
       `have h : (s + a : ℤ) = (s + b : ℤ) := htime` ascription: the research round recorded that
       `omega` fails at that goal without it, because `Duration` is not syntactically `ℤ` there.
-- [ ] Scan the finished file for task-number citations and remove any. Cite durable anchors only
+- [x] Scan the finished file for task-number citations and remove any. Cite durable anchors only
       (declaration names, module paths). Gate C9 asserts zero task-number citations under
       `FormalSystem/`.
-- [ ] Confirm the file elaborates sorry-free: `lake env lean` on the file, or
+- [x] Confirm the file elaborates sorry-free: `lake env lean` on the file, or
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Stability`
       once Phase 2 has wired it (before wiring, `lake env lean` on the path is the available
       route). Never a plain foreground `lake build`.
-- [ ] Commit this green sub-step.
+- [x] Commit this green sub-step.
 
 **Timing**: 1.5 hours
 
@@ -201,6 +201,12 @@ probe 02 ~50, plus an expanded module docstring), and the new declarations are e
 Confirm at implementation time with `wc -l` on the finished file and by reading back the
 declaration list; if the count or the declaration set differs, say so in the phase record rather
 than silently adopting the new number.
+
+**Scope Hypothesis Outcome**: Declaration set held exactly — `StabQuant`,
+`stabQuant_iff_share_class`, `stabQuant_iff_self_of_share_eq`, `frame_recurrenceFree`, four and no
+more. Line count came in at **174**, below the 200-280 estimate: the two probes' own preamble
+comments (which the estimate counted) were replaced by a single module docstring rather than added
+to it. Nothing was omitted — every proof script was transcribed verbatim.
 
 **Files to modify**:
 
