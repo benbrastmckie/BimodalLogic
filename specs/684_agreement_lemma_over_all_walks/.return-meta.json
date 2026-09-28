@@ -1,44 +1,44 @@
 {
-  "status": "partial",
-  "started_at": "2026-09-28T18:20:00Z",
-  "completed_at": "2026-09-28T18:52:00Z",
-  "requires_user_review": true,
-  "review_reason": "Phase 2 blocked: the root aggregator FormalSystem.lean is under a concurrent sibling's uncommitted modification, so the plan-mandated territory check stopped rather than regenerating over it. Gate C33 is therefore outstanding -- and was already failing before this dispatch, missing all nine predecessor Sharing.* modules. The tree is currently red at Sharing/Basic.lean:203 under a different sibling's in-flight refactor, outside this task's file scope.",
-  "blocked_phase": 2,
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true,
-    "build_output": "Full lake build through lake-build-guard.sh --timeout 1800 at commit b3955b837: guard exit 0, 'Build completed successfully (2753 jobs)', 0 error: lines, 0 warning: lines. Re-verified after the concurrent sibling's Sharing/Skeleton.lean + Sharing/Basic.lean refactor landed at 7eb4897a3: scoped lake build of FormalSystem.Metalogic.Decidability.WitnessFamily through the guard, exit 0, 1489 jobs, 0 errors, 0 warnings, Sharing.Stability rebuilt green against the refactored substrate. check-module-invariants.sh exited 1 with 8 failing groups when run mid-refactor; none is caused by this module's content (C1/C3/C4/C9/C26/C9D all pass) and C24/C25 were the sibling's then-uncompiling Sharing/Basic.lean. Attribution table in the plan's Phase 3 record."
-  },
-  "partial_progress": {
-    "stage": "phase_2_blocked",
-    "details": "Phases 1, 3 and 4 closed (3 as [PARTIAL] on gate attribution). Phase 2's WitnessFamily.lean half landed and is green; its FormalSystem.lean half is blocked by a concurrent sibling's uncommitted modification. See the plan's Phase 2 **BLOCKER** record.",
-    "phases_completed": 3,
-    "phases_total": 4
-  },
+  "status": "planned",
+  "started_at": "2026-09-28T19:35:00Z",
+  "completed_at": "2026-09-28T19:52:00Z",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/684_agreement_lemma_over_all_walks/summaries/01_stability-quantifier-collapse-summary.md",
-      "summary": "Landed Sharing/Stability.lean with the stability-quantifier collapse, its deterministic cross-check and the recurrence-freedom theorem, all sorry-free and axiom-clean; root-aggregator wiring blocked by concurrent sibling territory."
+      "type": "plan",
+      "path": "specs/684_agreement_lemma_over_all_walks/plans/02_registration-transfer-closeout.md",
+      "summary": "Revised plan: Phase 2's root-aggregator half resolved by transfer to task 690 Phase 22 (COMPLETED WITH EXCLUSIONS); Phase 3 closed on live-remeasured gate attribution; Phases 1 and 4 preserved verbatim."
     }
   ],
-  "completion_data": {
-    "completion_summary": "Proved that the stability modal's history quantifier does not range over walks on the branching witness frame: it collapses to a finite quantifier over the share-class of the present index (stabQuant_iff_share_class), with a deterministic cross-check (stabQuant_iff_self_of_share_eq) and the frame's recurrence-freedom (frame_recurrenceFree), landed as FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Stability.lean. The resulting decidable (C5) StabFaithful statement is handed to the downstream stability-condition work in handoff-c5-statement.md.",
-    "roadmap_items": []
-  },
+  "next_steps": "No executable work remains in this plan. Task 684 closes complete-modulo-registration; C33 clears when task 690 Phase 22 runs its declared repository-wide `lake exe mk_all --lib FormalSystem`, which already names WitnessFamily/Sharing/Stability among the modules it covers.",
   "metadata": {
     "session_id": "sess_1790617342_e2d44f",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
+    "agent_type": "reviser-agent",
     "delegation_path": [
       "orchestrator",
-      "implement",
-      "skill-lean-implementation"
+      "revise",
+      "reviser-agent"
     ],
+    "revision_mode": "plan_revision",
+    "phase_count": 4,
+    "phases_preserved": [
+      1,
+      4
+    ],
+    "phases_revised": [
+      2,
+      3
+    ],
+    "phases_added": [],
+    "phases_removed": [],
+    "estimated_hours": 3,
+    "reports_integrated": [],
+    "revision_input": "specs/684_agreement_lemma_over_all_walks/.decisions.json (cycle 5)",
+    "superseded_plan": "specs/684_agreement_lemma_over_all_walks/plans/01_stability-quantifier-collapse.md",
+    "state_json_writes": [
+      "artifact link for plans/02 via .claude/scripts/reconcile-artifacts.sh --task 684",
+      "next_artifact_number 2 -> 3 via .claude/scripts/state-write.sh"
+    ],
+    "open_verification_caveat": "RESOLVED during this revision: task 690's Phase 22 now declares the mk_all regeneration REPOSITORY-WIDE and explicitly enumerates WitnessFamily/Sharing/Stability as transferred in. The transfer is accepted on both sides.",
     "compliance_check": "passed"
   }
 }
