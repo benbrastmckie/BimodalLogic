@@ -63,8 +63,35 @@ So what this module adds is narrower than a first matrix, and should be cited as
    reachable from the aggregator.
 
 The cost of (3) is that three of the four rows below re-prove, at a different witness, something
-the tree already knew. That is a real duplication and is recorded as such in
+the tree already knew — and in one case at the *same* witness: `emptyRel` below and
+`StateTopology.voidRel` are character-identical, both `Bool → ℤ → Bool → Prop` defined as
+`fun _ _ _ => False`. That is a real duplication, recorded as such in
 `docs/reference/transcription-audit-surface.md` rather than glossed over here.
+
+### The decision: the duplication is kept, deliberately
+
+This was weighed and settled rather than left open, so that a later reader does not re-open it.
+**The two matrices are not consolidated.** The reason is (3) above and nothing else: the aggregate
+statement has to be reachable from `FormalSystem/Semantics.lean` at no import weight, and only a
+topology-free module can be.
+
+Both consolidation directions were checked, and both were rejected:
+
+- **Moving these four rows into `ConstraintWitnesses.lean` is blocked, not merely unattractive.**
+  That module imports `FormalSystem.Semantics.StateTopology`, and the aggregator's standing
+  prohibition on `Mathlib.Topology.*` instances reaching it is precisely why the aggregate
+  statement cannot live there. Consolidating in that direction would make
+  `constraints_pairwise_independent` unreachable from the aggregator, which is the one thing this
+  module exists to provide.
+- **Moving the topology-free `voidFrame`/`bumpFrame` block out of `ConstraintWitnesses.lean` and
+  into this module is feasible but disproportionate.** It would migrate eight
+  `docs/theorem-index.md` rows (six of them `pinned:C14`), a citation in
+  `docs/reference/state-topology-appendix-support.md`, and four
+  `scripts/module-invariants-allowlist.txt` namespace entries — and it would falsify that module's
+  own claim that its matrix for `def:frame` is complete. A relocation of that size is a
+  restructuring, not a record reconciliation, and it is not undertaken here.
+
+`FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean` carries the reciprocal pointer.
 
 ## Why `D := ℤ` and not `↑intOrder`
 

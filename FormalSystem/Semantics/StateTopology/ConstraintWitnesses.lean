@@ -105,6 +105,18 @@ constraints now has a compiled witness satisfying the other three and failing it
 * *Saturation* fails at the **rational two-origin frame**: `RationalTwoOrigins.rel_serial`,
   `.rel_compositional`, `.rel_limit`, `.not_rel_saturation` (above).
 
+**There is a second independence matrix, and the two are deliberately not merged.**
+`FormalSystem/Semantics/FrameConstraintIndependence.lean` carries the tree's citable *aggregate*
+statement, `constraints_pairwise_independent`, which this module does not have; it also carries
+`totalRel_not_limit`, the tree's only *Limit* refutation over **discrete** time — `funnel_not_limit`
+above takes a `[DenselyOrdered ↑D]` binder and so does not apply over `ℤ`. Three of its four rows
+restate facts established here, one of them at the identical witness: its `emptyRel` and this
+module's `voidRel` are character-identical, both `Bool → ℤ → Bool → Prop` defined as
+`fun _ _ _ => False`. The duplication is kept on purpose, because that module imports no topology
+and is therefore reachable from `FormalSystem/Semantics.lean`, which this one — importing
+`FormalSystem.Semantics.StateTopology` — can never be. Its header states the full decision and
+both rejected consolidation directions.
+
 **And a fifth row, which is a *separation* rather than an independence.** *Completion*
 (`TaskFrame.Completion`) is the derived condition `lem:step` consumes, stated at the
 bare-relation level so that the comparison with `def:frame`'s own clauses is a comparison of like

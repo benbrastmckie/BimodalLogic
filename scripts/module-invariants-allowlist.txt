@@ -84,7 +84,7 @@ FormalSystem.Semantics.TaskFrame.NestSaturation
 # `def HasCofinalNest` in namespace FormalSystem.Semantics.PartialHistory -- Semantics/Extension/Completion.lean
 FormalSystem.Semantics.PartialHistory.HasCofinalNest
 
-# `def FiberSaturation` in namespace FormalSystem.Semantics.StateTopology.SeparatingFrame -- StateTopology/ConstraintWitnesses.lean:1453
+# `def FiberSaturation` in namespace FormalSystem.Semantics.StateTopology.SeparatingFrame -- StateTopology/ConstraintWitnesses.lean
 FormalSystem.Semantics.StateTopology.SeparatingFrame.FiberSaturation
 
 # The four `def:frame` constraints as bare-relation predicates, cited by name in

@@ -210,7 +210,7 @@ that the reason does not transfer to an elimination — so the next reader does 
 - [x] Keep the existing "cheap, and it certifies that the L⁻-side and L-side statements of a theorem determine one another" claim; it is true here. The edit adds the missing *why*, it does not retract the claim.
 - [x] Use backticked repository-relative paths (``` `FormalSystem/SourceLanguage/Sentence.lean` ```), the style this file already uses — relative markdown links in Lean comments are C32-checked and this style is out of that check's scope entirely.
 - [x] Do **not** write a task number anywhere in this file (`.claude/rules/no-task-references-in-deliverables.md`).
-- [x] Verify and leave alone: confirm `FormalSystem/SourceLanguage/Sentence.lean`'s header section "`tr` is lossy, and that is the point" already names all four collisions and the forward-only conformance consequence, and that `BimodalTools/README.md`'s "The channel is one-directional" paragraph already says the same. Make no edit to either. Record the verification in the phase's commit message body.
+- [x] Verify and leave alone: confirm `FormalSystem/SourceLanguage/Sentence.lean`'s header section "`tr` is lossy, and that is the point" already names all four collisions and the forward-only conformance consequence, and that `BimodalTools/README.md`'s "The channel is one-directional" paragraph already says the same. Make no edit to either. Record the verification in the phase's commit message body. *(deviation: altered — both were verified as already correct and left unmodified, but the verification is recorded here and in the execution summary rather than in the commit body, because `git-commit-scoped.sh` generates a fixed body and does not accept free-form body text)*
 - [x] Confirm `FormalSystem/MinusLanguage/README.md` still has no `injectiv` occurrence and needs none — the correction belongs in the module docstring, not that README.
 
 **Timing**: 0.5 hours
@@ -230,29 +230,29 @@ that the reason does not transfer to an elimination — so the next reader does 
 
 ---
 
-### Phase 3: Record the no-consolidation decision in both independence modules [NOT STARTED]
+### Phase 3: Record the no-consolidation decision in both independence modules [COMPLETED]
 
 **Goal**: A reader arriving at *either* independence module learns that there are two, that the
 duplication is deliberate, why it is kept, and what each module uniquely contributes.
 
 **Tasks**:
-- [ ] Re-read both Lean modules immediately before editing.
-- [ ] In `FormalSystem/Semantics/FrameConstraintIndependence.lean`, convert the closing paragraph of the "This is not the tree's first independence matrix" section from an honest *observation* ("That is a real duplication and is recorded as such in `docs/reference/transcription-audit-surface.md` rather than glossed over here") into a stated **decision**:
+- [x] Re-read both Lean modules immediately before editing.
+- [x] In `FormalSystem/Semantics/FrameConstraintIndependence.lean`, convert the closing paragraph of the "This is not the tree's first independence matrix" section from an honest *observation* ("That is a real duplication and is recorded as such in `docs/reference/transcription-audit-surface.md` rather than glossed over here") into a stated **decision**:
   - The duplication is kept. The reason is reachability from the `FormalSystem/Semantics.lean` aggregator at no import weight.
   - Direction A — moving these four rows into `ConstraintWitnesses.lean` — is blocked: that module imports `FormalSystem.Semantics.StateTopology`, and the aggregator's standing prohibition on `Mathlib.Topology.*` is precisely why the aggregate statement cannot live there.
   - Direction B — moving the topology-free `voidFrame`/`bumpFrame` block out to here — is feasible but rejected: it would migrate eight `docs/theorem-index.md` rows (six `pinned:C14`), a `docs/reference/state-topology-appendix-support.md` citation, and four `scripts/module-invariants-allowlist.txt` namespace entries, and would falsify the older module's own matrix-completeness claim. That is a restructuring, not a record reconciliation.
-- [ ] In `FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean`, add a **short** reciprocal paragraph to the "**With these two, the independence matrix for `def:frame` is complete.**" section stating:
+- [x] In `FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean`, add a **short** reciprocal paragraph to the "**With these two, the independence matrix for `def:frame` is complete.**" section stating:
   - The tree's citable *aggregate* statement is `FormalSystem.Semantics.FrameConstraintIndependence.constraints_pairwise_independent`, which this module does not carry.
-  - `voidRel` here and `emptyRel` there are the same relation (`fun _ _ _ => False`) at different duration types.
+  - `voidRel` here and `emptyRel` there are the same relation (`fun _ _ _ => False`) at different duration types. *(deviation: altered — the two are at the SAME duration type: both are literally `Bool → ℤ → Bool → Prop`, so the recorded text says they are character-identical rather than "at different duration types", which the plan stated inaccurately)*
   - That module additionally carries the tree's only *Limit* refutation over **discrete** time (`totalRel_not_limit`) — the four-state funnel's `funnel_not_limit` carries a `[DenselyOrdered ↑D]` binder and so does not apply over `ℤ`.
   - The two modules are deliberately **not** merged, with the one-line reason and a pointer to the other module's header for the full decision.
-- [ ] Keep this paragraph short: the module is at 1,727 lines against a `set_option linter.style.longFile 1800` baseline, 73 lines of headroom.
-- [ ] In `docs/reference/transcription-audit-surface.md`, amend the closing sentence of the "Three of its four rows were already established, at other witnesses" section — currently "That is recorded here rather than glossed over, because a reader who took the new module for the tree's first independence record would be misled about both the module and the earlier work" — to add that the **decision not to consolidate** is recorded in both module headers.
-- [ ] In `scripts/module-invariants-allowlist.txt`, drop the `:1453` from the comment
+- [x] Keep this paragraph short: the module is at 1,727 lines against a `set_option linter.style.longFile 1800` baseline, 73 lines of headroom.
+- [x] In `docs/reference/transcription-audit-surface.md`, amend the closing sentence of the "Three of its four rows were already established, at other witnesses" section — currently "That is recorded here rather than glossed over, because a reader who took the new module for the tree's first independence record would be misled about both the module and the earlier work" — to add that the **decision not to consolidate** is recorded in both module headers.
+- [x] In `scripts/module-invariants-allowlist.txt`, drop the `:1453` from the comment
       `# \`def FiberSaturation\` in namespace ... -- StateTopology/ConstraintWitnesses.lean:1453`,
       leaving the filename. It is a `#` comment and ungated, but this phase shifts it and
       re-pinning a line number reproduces the defect class this task exists to close.
-- [ ] Use backticked repository-relative paths throughout (C32 out-of-scope style). No task numbers in any of these four files.
+- [x] Use backticked repository-relative paths throughout (C32 out-of-scope style). No task numbers in any of these four files.
 
 **Timing**: 1 hour
 

@@ -176,8 +176,14 @@ narrower than a first matrix, and should be cited as exactly that:
    deliberate leaves and must stay out of it.
 
 The cost is that three of the four rows re-prove, at a different witness, something the tree already
-knew. That is recorded here rather than glossed over, because a reader who took the new module for
-the tree's first independence record would be misled about both the module and the earlier work.
+knew — one of them at the identical witness, since the new module's `emptyRel` and
+`FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean`'s `voidRel` are character-identical.
+That is recorded here rather than glossed over, because a reader who took the new module for the
+tree's first independence record would be misled about both the module and the earlier work. The
+**decision not to consolidate the two matrices** — kept deliberately, because only a topology-free
+module is reachable from the `FormalSystem/Semantics.lean` aggregator — is now stated in both module
+headers, with both rejected consolidation directions, so neither module reads as an unreviewed
+duplicate of the other.
 
 ## What this page does not claim
 
