@@ -117,14 +117,21 @@ would silently change the meaning of every stored certificate. `premises` and `c
 their `[]` defaults because `[]` is the identity of a context; `0` is not the identity of a time.
 
 A `<label>` is a list of `<formula>`, read as a set. A `<formula>` is the tag format
-`Formula.toJson` emits and `BimodalTools/JsonParse.lean`'s `pFormula` parses: `atom` (with
-`name`), `bot`, `imp` (`left`, `right`), `box` (`child`), `untl` and `snce` (each with `event`
-and `guard`). Unknown object fields are skipped, so a producer may attach metadata this checker
-does not read.
+`BimodalTools/CanonicalWire/Cert.lean`'s `encodeFormula` emits and its `decodeFormula` parses:
+`atom` (with `name`), `bot`, `imp` (`left`, `right`), `box` (`child`), `untl` and `snce` (each with
+`event` and `guard`). Unknown keys are skipped at the **envelope, target and lasso** levels, so a
+producer may attach metadata this checker does not read — but only after the parser has fully read
+their values, so malformed JSON cannot hide inside a field the checker does not use. Inside a
+`<formula>` unknown keys are **not** skipped: a formula object must carry precisely its tag's own
+fields, in canonical order. A formula is data in the trust base, not a place to hang metadata, and
+that one rule is what rejects an `atom` with no `"name"`, an extra sub-formula field on a tag that
+does not take one, and an atom carrying a `"freshIndex"`.
 
-**Atom names round-trip on `Atom.base` only.** `Formula.toJson` drops `Atom.freshIndex`, so a
+**Atom names round-trip on `Atom.base` only.** The canonical printer drops `Atom.freshIndex`, so a
 fresh-indexed atom would silently change identity — and `Finset Formula` membership is by
-`DecidableEq`. A certificate carrying one is therefore rejected outright rather than decoded.
+`DecidableEq`. A certificate carrying one is therefore rejected outright rather than decoded. This
+is no longer only a convention: `BimodalTools.CanonicalWire.parse_base_only` is the theorem that
+anything the parser returns carries base-only atoms.
 
 **Output.** Exactly one JSON line, and **never a validity claim**:
 
@@ -140,8 +147,14 @@ fresh-indexed atom would silently change identity — and `Finset Formula` membe
 ```
 
 ```json
-{"status": "error", "message": "expected '\"' got 'n' at pos 2"}
+{"status": "error", "message": "expected a quoted object key"}
 ```
+
+The canonical parser's messages are positional no longer: it carries a character list rather than
+an index, so a message names what was expected rather than where. The two required-field messages
+are the exception and are unchanged, byte for byte:
+`certificate is missing its required field "target"` and
+`certificate field "target" is missing its required field "time"`.
 
 **The `acceptance` key.** It appears on `countermodel` only. `rejected` and `error` are
 byte-identical to what they were before the key existed, and **the input schema above is not
@@ -159,6 +172,62 @@ stored on disk, remains valid under it, and a re-implementation that decides the
 without constructing anything — the producing side's pure-Python re-checker, for instance — is
 correct to emit `"decided"` or to omit the key entirely. A consumer must therefore default rather
 than reject on absence, and the two repositories can land this change in either order.
+
+**The `echo` key.** It appears on `countermodel` and `rejected` — the two verdicts that are *about*
+a certificate — and never on `error`, which reports a protocol failure that happened before a
+certificate existed. Its value is the canonical reprint of the certificate this binary actually
+decoded:
+
+```json
+{"status": "countermodel", "time": 0, "acceptance": "entailment",
+ "echo": "{\"target\":{\"premises\":[],\"conclusions\":[],\"time\":0}, ...}"}
+```
+
+**An absent `echo` field must be read as "this binary predates the key".** Like `acceptance`, the
+key is additive: `CheckResult.toJson` is unchanged, so every stored verdict remains valid, and a
+consumer must default rather than reject on absence.
+
+**What the echo is for.** The residual trust base of a `countermodel` verdict includes this
+binary's *decoding* of the wire object into the family it checked. The echo makes that step
+comparable rather than trusted: a consumer compares the echo against the bytes it sent, and
+`BimodalTools.CanonicalWire.print_parse_canonical` is the theorem that on canonical bytes the two
+agree. A mismatch therefore means the two sides disagree about *which certificate was checked* —
+the one failure mode no amount of rigor downstream of the parse could ever detect.
+
+**The comparison is modulo surrounding whitespace.** `main` forwards `stdin.readToEnd` verbatim, so
+the bytes a producer sends usually carry a trailing newline, which the echo does not. A consumer
+should strip surrounding whitespace on both sides before comparing, and nothing else: the canonical
+form contains no interior whitespace at all, so any other difference is a real difference.
+
+## The joint canonical contract
+
+The wire format is **canonical**: one certificate has exactly one byte string. Both repositories
+are pinned to it, and the Lean side's printer and parser are proved to be inverse on it
+(`BimodalTools.CanonicalWire.parse_print`).
+
+| Rule | What it means |
+|------|---------------|
+| Compact separators | No whitespace anywhere inside a document: nothing after `:` or `,`, no newlines. Python: `json.dumps(..., separators=(",", ":"))` |
+| Fixed key order | `target` (`premises`, `conclusions`, `time`), then `bx`, then `lassos`; each lasso `back`, `mid`, `fwd`; each formula `tag` first, then its own fields in the order listed above |
+| `ensure_ascii=False` | Non-ASCII characters are sent as UTF-8, **not** as `\uXXXX`. Python's `json.dumps` defaults to `ensure_ascii=True` and must be overridden |
+| Escapes | Exactly `\"`, `\\`, and `\b \f \n \r \t` where JSON names them; `\u00XX` with lowercase hex for any other character below `0x20`. `\/` is accepted on input although never emitted |
+| `\uXXXX` outside the control range | **Rejected** with a protocol error, not decoded. This is why `ensure_ascii=False` is pinned: rather than have this side guess at surrogate pairs, the producing side sends the bytes |
+| Any other escape | **Rejected**. An unrecognised escape is a protocol error, never passed through as its own letter — which is exactly how the old parser turned the name `a<tab>b` into `atb` |
+| Raw control characters | **Rejected** inside a string literal. The printer escapes them, so canonical bytes contain none |
+| Integers only | No fraction, no exponent, no leading zero, no `+`, no `-0`. A numeral is accepted exactly when it is the one the canonical printer would emit |
+| No duplicate keys | **Rejected** at every nesting level, rather than last-wins |
+| Strict end of input | Trailing bytes after the top-level value are a protocol error; only trailing whitespace is tolerated |
+
+**Hand-off to the producing side.** Pinning `ensure_ascii=False` is a one-line change in the
+producing repository's exporter (`json.dumps(obj, separators=(",", ":"), ensure_ascii=False)`), and
+it is **not** performed here. Until it lands there, a certificate whose atom names are all ASCII is
+unaffected; one carrying a non-ASCII name will be rejected with a `\u` protocol error rather than
+silently misdecoded, which is the safe direction and is the behaviour this contract intends. No
+field name, requiredness or default moves: this is a sharpening of what the same schema accepts,
+not a schema change.
+
+The rows pinning every line of this table are
+`Tests/BimodalToolsTest/CanonicalWireTest.lean`.
 
 `condition` is one of `structural`, `local_coherent`, `fulfilling`, `box_faithful`, `target`, or
 `unlocalized`. `lasso`, `position` and `formula` are `null` when the failure is not tied to one.
@@ -202,16 +271,24 @@ each reported countermodel independently in Python and cross-checks that result 
 executable where present, so a single-sided `accepted` here is no longer the only check a reported
 countermodel receives.
 
-**The downstream payoff is jointly gated, and has not landed yet.** The producing side's
-pure-Python re-checker becoming a fast *pre-filter* rather than part of the trust base needs two
-things, and this change is only one of them: (1) the accepting branch constructing the entailment,
-which is what `"acceptance": "entailment"` now reports; and (2) a Lean-side echo of the parsed
-certificate compared against the bytes actually sent, so that the residual decoding step above is
-itself pinned rather than trusted. Until (2) lands, a consumer that drops its own re-check is
-trusting this executable's decoding, which is exactly the gap (2) closes. That work is separate
-from this protocol change.
+**The downstream payoff was jointly gated, and both halves have now landed on this side.** The
+producing side's pure-Python re-checker becoming a fast *pre-filter* rather than part of the trust
+base needed two things: (1) the accepting branch constructing the entailment, which is what
+`"acceptance": "entailment"` reports; and (2) a Lean-side echo of the parsed certificate compared
+against the bytes actually sent, so that the residual decoding step above is pinned rather than
+trusted. Item (2) is now the `"echo"` key above, and what it rests on is
+`BimodalTools.CanonicalWire.print_parse_canonical`: on bytes in the image of the canonical printer,
+the echo is byte-identical to what was sent. The parser producing that echo is a total `def` with a
+proved fuel bound and a proved round trip (`parse_print`), not the `partial def` it replaced — so
+the decoding step has left the trust base rather than merely been made visible.
 
-The rows pinning all of this are `Tests/BimodalToolsTest/CertificateImportTest.lean`.
+What remains is on the consuming side: it must actually *perform* the comparison, and pin
+`ensure_ascii=False` in its exporter. Until it does, a consumer that drops its own re-check is
+still trusting this executable's decoding — the theorem exists, but nobody is checking its
+hypothesis about the bytes.
+
+The rows pinning all of this are `Tests/BimodalToolsTest/CertificateImportTest.lean` and
+`Tests/BimodalToolsTest/CanonicalWireTest.lean`.
 
 ## Source-sentence translation protocol
 
@@ -304,7 +381,7 @@ implementation obligation and stays where it is.
 | `BenchmarkAnchorsMain.lean` | 598 | <!-- TODO: add description --> |
 | `BenchmarkOracleMain.lean` | 359 | <!-- TODO: add description --> |
 | `CanonicalWire.lean` | 35 | Aggregator for `CanonicalWire/`: the verified certificate wire codec — canonical printer, total parser, round-trip theorems |
-| `CertificateImport.lean` | 561 | The certificate library: `closureList`/`intRange`, the envelope's two thin wrappers over the verified codec, the `dite`-based `WitnessFamily` builders, `checkRaw` and the localization scans |
+| `CertificateImport.lean` | 599 | The certificate library: `closureList`/`intRange`, the envelope's two thin wrappers over the verified codec, the `dite`-based `WitnessFamily` builders, `checkRaw` and the localization scans |
 | `CertificateRecords.lean` | 156 | The parsed certificate records: `RawLasso`, `RawTarget`, `RawCertificate`, the `Partial*` mirrors and their `complete` functions, `hasFreshAtom` and `RawCertificate.formulas`; split out of `CertificateImport.lean` so the verified codec can import them |
 | `CheckCertificateMain.lean` | 57 | Executable root of `lake exe check_certificate`: `main` only; reads one certificate on stdin, prints one JSON line |
 | `ContrastiveGenerator.lean` | 1,025 | The formula-mutation engine: `MutationType`, `ContrastivePair`, the single-occurrence mutators, `generateContrastivePairs`, and the contrastive JSONL export |

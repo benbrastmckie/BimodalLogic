@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import BimodalToolsTest.C5SmokeTest
+import BimodalToolsTest.CanonicalWireTest
 import BimodalToolsTest.CertificateImportTest
 import BimodalToolsTest.DatasetGeneratorTest
 import BimodalToolsTest.InterestingnessTest

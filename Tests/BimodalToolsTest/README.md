@@ -31,6 +31,7 @@ is listed in `scripts/module-invariants-manifest.txt`. A new test that needs the
 | File | Lines | Description |
 |------|------:|-------------|
 | `C5SmokeTest.lean` | 250 | <!-- TODO: add description --> |
+| `CanonicalWireTest.lean` | 222 | Defect guards and round-trip rows for the verified wire codec: one negative row per recorded parser defect, the canonical form's strictness rules, and the output line's `echo` key |
 | `CertificateImportTest.lean` | 205 | Acceptance rows for `check_certificate`: the non-vacuity family accepted, the separation family rejected naming its obligation, structural rejection, and the wire-format round trips |
 | `DatasetGeneratorTest.lean` | 552 | <!-- TODO: add description --> |
 | `EnumeratorCountsTest.lean` | 91 | <!-- TODO: add description --> |

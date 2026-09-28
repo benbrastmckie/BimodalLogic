@@ -108,6 +108,8 @@ contract rather than a local naming choice; a faithful mirror is structural as w
 - `mkLasso`, `mkFamily` — the runtime builders, `dite` on every proof field
 - `Acceptance`, `CheckResult`, `checkRaw` — the acceptance strength, the serializable verdict
   and its JSON line
+- `canonicalString`, `CheckResult.toJsonWithEcho` — the output line's `"echo"` key: the canonical
+  reprint of the certificate that was parsed, which is what pins the residual decoding step
 - `CheckOutcome`, `checkCertified`, `CheckOutcome.erase` — the dependent layer beneath them: an
   accepting outcome carries the entailment as a field, and `erase` forgets it
 
@@ -555,7 +557,43 @@ def CheckResult.toJson : CheckResult → String
     "{\"status\":\"rejected\",\"failed\":" ++ jsonArray (fs.map Failure.toJson) ++ "}"
   | .error m => "{\"status\":\"error\",\"message\":\"" ++ escapeJsonString m ++ "\"}"
 
-/-- Parse, re-verify and serialize: the whole executable, minus the IO. -/
-def checkLineToJson (line : String) : String := (checkLine line).toJson
+/-- Serialize one string as a canonical JSON string value, quotes and escapes included. Routed
+through the verified canonical printer rather than `escapeJsonString`, so the echo below carries
+exactly one representation per byte string. -/
+def canonicalString (s : String) : String :=
+  BimodalTools.CanonicalWire.printCanonical (.str s.toList)
+
+/--
+Serialize the verdict, with an **echo** of the certificate that was parsed.
+
+The echo is the canonical reprint of what this binary actually decoded. Its point is that the
+residual decoding step in the trust model is no longer trusted but *pinned*: a consumer compares
+the echo against the bytes it sent, and `BimodalTools.CanonicalWire.print_parse_canonical` says
+that on canonical bytes those two agree. So a mismatch means the two sides disagree about what was
+checked, which is exactly the failure no amount of rigor downstream of the parse could detect.
+
+The comparison is modulo surrounding whitespace: `main` forwards `stdin.readToEnd` verbatim, so
+the bytes sent typically carry the producer's trailing newline, which the echo does not.
+
+`error` carries no echo, because there is no parsed certificate to echo — a protocol failure
+happened before one existed. `CheckResult.toJson` is left byte-identical, so every verdict pinned
+by an existing row keeps its bytes.
+-/
+def CheckResult.toJsonWithEcho (echo : String) : CheckResult → String
+  | .countermodel t a =>
+    "{\"status\":\"countermodel\",\"time\":" ++ toString t ++
+    ",\"acceptance\":" ++ a.toJson ++ ",\"echo\":" ++ canonicalString echo ++ "}"
+  | .rejected fs =>
+    "{\"status\":\"rejected\",\"failed\":" ++ jsonArray (fs.map Failure.toJson) ++
+    ",\"echo\":" ++ canonicalString echo ++ "}"
+  | .error m => (CheckResult.error m).toJson
+
+/-- Parse, re-verify and serialize: the whole executable, minus the IO.
+
+A verdict about a certificate carries the echo; a protocol error does not. -/
+def checkLineToJson (line : String) : String :=
+  match parseCertificate line with
+  | .error msg => (CheckResult.error msg).toJson
+  | .ok raw => (checkRaw raw).toJsonWithEcho raw.toJson
 
 end BimodalTools.CertificateImport

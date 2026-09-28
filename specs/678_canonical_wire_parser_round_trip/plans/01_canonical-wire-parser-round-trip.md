@@ -534,7 +534,7 @@ widened afterwards.
 
 ---
 
-### Phase 9: The echo field, the defect guards, and the joint contract [NOT STARTED]
+### Phase 9: The echo field, the defect guards, and the joint contract [COMPLETED]
 
 **Goal**: the output line carries an echo of what was parsed; D1-D12 are each closed by a
 negative test row; and the joint canonical contract — including `ensure_ascii=False` and the
