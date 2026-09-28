@@ -52,12 +52,12 @@
     {
       "project_number": 691,
       "project_name": "resolve_c23_naming_exemptions",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "general",
       "description": "Resolve gate C23's two remaining red sub-assertions: the 2 Uppercase_x NM_nonneg names (PlusWitnessFamily/Decide.lean:228, WitnessFamily/Sharing/Decide.lean:192) and the 11 outer-shadows-inner bare-declaration pairs (decidableValidZTime, cohWindowLo x3, cohWindowHi x3, mem_verts x3+). Every one is a deliberate mirrored-API or sub-namespacing decision, so the linter's suggested renames are not applicable: NM_nonneg is also a SharingWindow structure field (Window.lean:105) and structure fields cannot contain dots, while S.NM.nonneg would resolve nonneg against the type of S.NM (Int), where no Int.nonneg exists; and decidableValidZTime's shadowing IS the sub-namespacing deliberately chosen to avoid a genuine environment clash with BiLasso/Assembly.lean:100. The correct fix is a recorded exemption class in scripts/check-module-invariants.sh (extending UPPER_ALLOW and/or the shadowing scan) with the reasoning recorded inline, not a rename. C23 is the sole remaining red gate group; all others pass.",
       "topic": "repo-hygiene",
       "created": "2026-09-28T21:10:17Z",
-      "last_updated": "2026-09-28T22:51:23Z",
+      "last_updated": "2026-09-28T23:05:01Z",
       "session_id": "sess_1790635249_697f29",
       "artifacts": [
         {
@@ -69,9 +69,15 @@
           "path": "specs/691_resolve_c23_naming_exemptions/plans/01_c23-naming-exemptions.md",
           "type": "plan",
           "summary": "4-phase plan resolving C23's two red sub-assertions via a triple-keyed exact-pair shadow exemption plus an NM_nonneg UPPER_ALLOW entry."
+        },
+        {
+          "path": "specs/691_resolve_c23_naming_exemptions/summaries/01_c23-naming-exemptions-summary.md",
+          "type": "summary",
+          "summary": "C23 fully green: 11-triple SHADOW_PAIR_ALLOW exemption plus NM_nonneg UPPER_ALLOW entry, all inside scripts/check-module-invariants.sh; full gate run exits 0 with ALL CHECKS PASSED."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Resolved gate C23's two remaining red sub-assertions (2 Uppercase_x NM_nonneg names, 11 outer-shadows-inner shadow pairs) by adding a new (base, outer_ns, inner_ns)-triple-keyed SHADOW_PAIR_ALLOW exemption set and an NM_nonneg UPPER_ALLOW entry with restructured inline reasoning, entirely inside scripts/check-module-invariants.sh. Full gate run now exits 0 with ALL CHECKS PASSED; narrowness of the new exemption was verified via a throwaway scratch-scanner injection test (reverted)."
     },
     {
       "project_number": 689,
