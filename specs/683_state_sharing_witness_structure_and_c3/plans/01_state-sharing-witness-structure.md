@@ -1,7 +1,7 @@
 # Implementation Plan: Task #683
 
 - **Task**: 683 - State-sharing witness structure and C3
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 23.5 hours
 - **Dependencies**: 682
 - **Research Inputs**: specs/683_state_sharing_witness_structure_and_c3/reports/01_state-sharing-witness-structure.md; specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-6-handoff-20260927.md; specs/683_state_sharing_witness_structure_and_c3/.decisions.json (the (C5) scope decision)
@@ -906,25 +906,25 @@ across, so the deterministic case is a genuine specialization rather than a para
 
 ---
 
-### Phase 14: Documentation, corrections, and the final gate [NOT STARTED]
+### Phase 14: Documentation, corrections, and the final gate [COMPLETED]
 
 **Goal**: The design decisions and the two corrections to the received account are recorded in
 durable, in-repo documentation, and the whole change is verified against the full gate set.
 
 **Tasks**:
-- [ ] Update `WitnessFamily/README.md`: add the `Sharing/` submodule map, and state that (C3)
+- [x] Update `WitnessFamily/README.md`: add the `Sharing/` submodule map, and state that (C3)
       `BoxFaithful` is recombination-stable because its right-hand side mentions only the label
       set — an explicit correction to the consuming adequacy document's "redesigning condition
       (C3)".
-- [ ] Add `Sharing/README.md` covering the `share` encoding decision (representative maps, so
+- [x] Add `Sharing/README.md` covering the `share` encoding decision (representative maps, so
       the equivalence laws are free), the thread characterization, and the (C2') fixpoint.
-- [ ] Update `BiLasso/README.md` only where it asserts that all histories are lasso orbits, to
+- [x] Update `BiLasso/README.md` only where it asserts that all histories are lasso orbits, to
       scope that claim to the deterministic device.
-- [ ] Record `Probe476.fmp_false` accurately in `Sharing/README.md`: it refutes a finite
+- [x] Record `Probe476.fmp_false` accurately in `Sharing/README.md`: it refutes a finite
       small-model property for *time-free* finite digraphs; its pigeonhole step has no analogue
       here because the time coordinate stays in the carrier. Do not cite it as an obstruction to
       this design.
-- [ ] Record the (C5) status in `Sharing/README.md` in its own section, in three parts: (a) the
+- [x] Record the (C5) status in `Sharing/README.md` in its own section, in three parts: (a) the
       stability clause is **not** part of this device, and why — `WitnessFamily` is indexed by
       `Formula`, which has six constructors and no `⊡`, while the modal is `PlusFormula.stab` on
       a separate inductive; (b) what this device nonetheless delivers for it — a non-functional
@@ -933,9 +933,9 @@ durable, in-repo documentation, and the whole change is verified against the ful
       L⁺-indexed certificate datatype (`LabelledLasso`, `closureOf`, `WitnessFamily`, its
       conditions and its agreement theorem re-indexed over `PlusFormula`), which also re-opens
       the JSON export contract. Cite durable anchors only; no task numbers.
-- [ ] Record the consuming-repository hand-off (what the model checker would need to emit to use
+- [x] Record the consuming-repository hand-off (what the model checker would need to emit to use
       a sharing certificate) as prose in `Sharing/README.md`. Do not edit that repository.
-- [ ] Run the full gate set and confirm the deterministic path is untouched.
+- [x] Run the full gate set and confirm the deterministic path is untouched.
 
 **Timing**: 1 hour
 
@@ -949,6 +949,9 @@ durable, in-repo documentation, and the whole change is verified against the ful
 - `FormalSystem/Metalogic/Decidability/WitnessFamily/README.md` - submodule map, (C3) correction
 - `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md` - new
 - `FormalSystem/Metalogic/Decidability/BiLasso/README.md` - scope the all-histories claim
+- `FormalSystem/Metalogic/Decidability/WitnessFamily.lean` - `Sharing/` added to the submodule
+  list *(deviation: altered — one file beyond the three listed; the aggregator's own `##
+  Submodules` block would otherwise have been left silently incomplete)*
 
 **Verification**:
 - `lake build` succeeds from clean

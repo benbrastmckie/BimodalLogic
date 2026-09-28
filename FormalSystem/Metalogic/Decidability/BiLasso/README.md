@@ -75,11 +75,21 @@ This procedure decides `ValidZTime` for `FormalSystem.Syntax.Formula`, the base
 language **without** the stability modal `⊡` — `⊡` lives only in
 `FormalSystem.PlusLanguage.Formula`'s `PlusFormula`, so `ValidZTime` cannot even state a claim
 about it. The certified witness models here are built from `ShiftSet` and are therefore
-deterministic (`ShiftSet.total_eq_orbit`), and on a deterministic frame `⊡` collapses to the
+deterministic, and on a deterministic frame `⊡` collapses to the
 identity (`PlusLanguage/PlusDeterminism.lean`, `stab_iff_of_deterministic`). The procedure is
 silent on `⊡` **by construction**, not merely incomplete for it, and it cannot be extended to
 cover `⊡` by adding a truth clause: a genuinely different, branching witness structure is
 required.
+
+`ShiftSet.total_eq_orbit` — every world history of the presented frame is a lasso orbit — is
+what makes that determinism true, and its scope is exactly the shift-set device: it holds
+*because* the shift relation is functional, and it is false for a frame whose task relation
+branches. The branching witness structure the paragraph above calls for now exists, in
+`../WitnessFamily/Sharing/`; there the histories characterization is
+`SharingWitnessFamily.total_eq_thread` (every world history is the trace of a **thread**), the
+task relation is not functional, and `stab_iff_of_deterministic` does not apply. The stability
+clause itself is still absent there, for an unrelated reason recorded in that directory's
+README: `Formula` has no `⊡` constructor to write it against.
 
 ## Modules
 

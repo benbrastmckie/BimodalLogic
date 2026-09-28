@@ -77,7 +77,48 @@ so that entire alignment layer is absent rather than reproved — and `LocalCohe
 | `Decide.lean` | 942 | **T2** the window collapses, the four named instances `decidableLocalCoherentLab`, `decidableFulfillingLab`, `decidableBoxFaithful`, `decidableTarget`, and their composition `decidableCertifies` |
 | `Examples.lean` | 283 | **T3** the non-vacuity witness `posFamily`, the separation witness `sepFamily`, and `no_witnessFamily_of_validZTime` / `no_witnessFamily_of_MF` |
 
-`WitnessFamily.lean`, beside this directory, is the subdirectory re-export and carries all seven.
+`WitnessFamily.lean`, beside this directory, is the subdirectory re-export and carries all seven,
+plus the nine modules of `Sharing/` below.
+
+### `Sharing/` — the branching device
+
+`Sharing/` adds a **second** certificate device on top of the same five exported fields: a
+`SharingWitnessFamily` carries a per-time equivalence on lasso indices, so two lassos may name
+one world state and the presented task relation branches. It is an *addition* — none of the
+seven modules above is modified by it, and `Sharing/Specialize.lean` recovers the deterministic
+device as the instance where the equivalence is equality.
+
+| Module | Lines | Role |
+|--------|-------|------|
+| `Sharing/Basic.lean` | 254 | `SharingWitnessFamily`, the decoded representative map `rep`, and the sharing relation `share` |
+| `Sharing/Thread.lean` | 273 | `Thread`, the class-level `Step`, and `ReachN` with its four congruences |
+| `Sharing/Frame.lean` | 397 | The quotient carrier, the two-sided `RelZ`, the `FrameOver intOrder` `frame`, and all four `def:frame` constraints |
+| `Sharing/Histories.lean` | 141 | `total_eq_thread` — every world history is a thread's trace, replacing `ShiftSet.total_eq_orbit` |
+| `Sharing/Predicates.lean` | 226 | (C0) `AtomCoherent`, (C1') `LocalCoherentShare`, (C2') `ThreadFulfilling` |
+| `Sharing/Decide.lean` | 567 | The combined window and the instances for (C0) and (C1') |
+| `Sharing/Fulfil.lean` | 1669 | The finite position graph, the `A[g U e]` fixpoint, and (C2')'s (C1')-relative decision procedure |
+| `Sharing/Agreement.lean` | 411 | **T1** for the branching device, the bundle `Certifies`, `decidableCertifies`, and a second producer for `Refutes` |
+| `Sharing/Specialize.lean` | 455 | `WitnessFamily.toSharing`, the condition reductions, and the frame isomorphism with truth transport |
+
+See `Sharing/README.md` for the `share` encoding decision, the thread characterization, the
+(C2') fixpoint and its recorded decidability limitation, the (C5) status, and the hand-off a
+consuming model checker would need.
+
+## (C3) `BoxFaithful` is recombination-stable — a correction
+
+`Predicates.lean`'s `BoxFaithful` reads `bx χ = true ↔ ∀ i t, χ ∈ W.L i t`. Its right-hand side
+quantifies over the **label pool** — every position of every lasso — and mentions no history, no
+orbit and no task relation. A recombined history, one that crosses from lasso to lasso at shared
+states, visits the positions `(θ.idx t, t)`, each of which is one of those same positions. So
+recombination adds no new label for `□` to range over, and the condition's content is unchanged:
+`Sharing/Agreement.lean` applies it **verbatim**.
+
+This corrects the consuming repository's adequacy document, which names (C3) as the load-bearing
+obstruction to a branching device and calls for it to be redesigned. The two conditions that
+genuinely break under recombination are (C1) `LocalCoherentLab` and (C2) `FulfillingLab`, both
+of which are stated *per lasso* and so silently assume a history never leaves the lasso it
+started on. What (C3) needs is not a new statement but a new histories characterization
+underneath it, which is `SharingWitnessFamily.total_eq_thread`.
 
 ## Field names are an export contract
 

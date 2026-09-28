@@ -67,6 +67,11 @@ directory-independent.
   `decidableFulfillingLab`, `decidableBoxFaithful` and `decidableTarget` (**T2**)
 - `Examples`: the non-vacuity witness `posFamily`, the separation witness `sepFamily`, and the
   impossibility theorems `no_witnessFamily_of_validZTime` and `no_witnessFamily_of_MF` (**T3**)
+- `Sharing/`: the **branching** device — `SharingWitnessFamily`, its threads, its quotient
+  frame, the histories characterization `total_eq_thread` that replaces
+  `ShiftSet.total_eq_orbit`, the revised conditions (C0)/(C1')/(C2') with (C3) and (C4) reused
+  verbatim, a second producer for the same `Refutes`, and `WitnessFamily.toSharing` exhibiting
+  the deterministic device as the diagonal instance. See `WitnessFamily/Sharing/README.md`
 
 ## `BiLasso/Basic.lean` is untouched
 
