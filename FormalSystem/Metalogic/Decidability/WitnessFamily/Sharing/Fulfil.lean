@@ -858,6 +858,302 @@ theorem toThread_idx (w : S.BwdWalk) (t : ℤ) : w.toThread.idx t = w.walkIdx t 
 
 end BwdWalk
 
+/-! ## (C1') propagation along a thread
+
+The far-left (and far-right) case of the window reduction below turns on a fact that has no
+counterpart in the deterministic device's `untlObl_shift_back`: an unfulfilled eventuality is
+**carried along every thread together with its guard**. That is a consequence of (C1')
+`LocalCoherentShare` alone, and it is what lets a position outside the combined window discharge
+its obligation by walking into the window rather than by folding into it.
+
+Recorded plainly, because it is the reason the window equivalence below is stated relative to
+`LocalCoherentShare` rather than as a standalone `Decidable (ThreadFulfilling S)` instance.
+-/
+
+/-- **One step of the `untl` unfolding along a thread.** -/
+theorem untl_thread_step {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentShare)
+    (θ : S.Thread) {g e : Formula} (hc : Formula.untl g e ∈ closureOf (Γ ++ Del)) {t : ℤ}
+    (ht : Formula.untl g e ∈ S.L (θ.idx t) t) :
+    e ∈ S.L (θ.idx (t + 1)) (t + 1) ∨
+      (g ∈ S.L (θ.idx (t + 1)) (t + 1) ∧
+        Formula.untl g e ∈ S.L (θ.idx (t + 1)) (t + 1)) :=
+  ((h (θ.idx t) t).2.2.2.1 (θ.idx (t + 1)) (θ.step t) g e hc).mp ht
+
+/-- A thread's index at `t` shares the state at `t` with its index at `t - 1`. -/
+theorem thread_share_pred {S : SharingWitnessFamily Γ Del} (θ : S.Thread) (t : ℤ) :
+    S.share t (θ.idx t) (θ.idx (t - 1)) := by
+  have hstep := θ.step (t - 1)
+  rw [show t - 1 + 1 = t by omega] at hstep
+  exact S.share_symm hstep
+
+/-- **One step of the `snce` unfolding along a thread.** -/
+theorem snce_thread_step {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentShare)
+    (θ : S.Thread) {g e : Formula} (hc : Formula.snce g e ∈ closureOf (Γ ++ Del)) {t : ℤ}
+    (ht : Formula.snce g e ∈ S.L (θ.idx t) t) :
+    e ∈ S.L (θ.idx (t - 1)) (t - 1) ∨
+      (g ∈ S.L (θ.idx (t - 1)) (t - 1) ∧
+        Formula.snce g e ∈ S.L (θ.idx (t - 1)) (t - 1)) :=
+  ((h (θ.idx t) t).2.2.2.2 (θ.idx (t - 1)) (thread_share_pred θ t) g e hc).mp ht
+
+/-- **(C1') propagation, forward, by step count.** -/
+theorem untl_propagate {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentShare)
+    (θ : S.Thread) {g e : Formula} (hc : Formula.untl g e ∈ closureOf (Γ ++ Del)) {t : ℤ}
+    (ht : Formula.untl g e ∈ S.L (θ.idx t) t) :
+    ∀ n : ℕ, (∀ r : ℤ, t < r → r ≤ t + 1 + (n : ℤ) → e ∉ S.L (θ.idx r) r) →
+      (∀ r : ℤ, t < r → r ≤ t + 1 + (n : ℤ) → g ∈ S.L (θ.idx r) r) ∧
+        Formula.untl g e ∈ S.L (θ.idx (t + 1 + (n : ℤ))) (t + 1 + (n : ℤ)) := by
+  intro n
+  induction n with
+  | zero =>
+      intro hno
+      simp only [Nat.cast_zero, add_zero] at hno ⊢
+      have hne : e ∉ S.L (θ.idx (t + 1)) (t + 1) := hno (t + 1) (by omega) (le_refl _)
+      rcases untl_thread_step h θ hc ht with he | ⟨hg, hu⟩
+      · exact absurd he hne
+      · refine ⟨fun r hr1 hr2 => ?_, hu⟩
+        have hre : r = t + 1 := by omega
+        subst hre
+        exact hg
+  | succ n ih =>
+      intro hno
+      have hno' : ∀ r : ℤ, t < r → r ≤ t + 1 + (n : ℤ) → e ∉ S.L (θ.idx r) r := by
+        intro r hr1 hr2
+        exact hno r hr1 (by push_cast; omega)
+      obtain ⟨hg, hu⟩ := ih hno'
+      have hne : e ∉ S.L (θ.idx (t + 1 + (n : ℤ) + 1)) (t + 1 + (n : ℤ) + 1) := by
+        refine hno _ (by omega) ?_
+        push_cast
+        omega
+      have hcast : t + 1 + ((n + 1 : ℕ) : ℤ) = t + 1 + (n : ℤ) + 1 := by push_cast; omega
+      rcases untl_thread_step h θ hc hu with he | ⟨hg2, hu2⟩
+      · exact absurd he hne
+      · refine ⟨fun r hr1 hr2 => ?_, ?_⟩
+        · rcases lt_or_ge (t + 1 + (n : ℤ)) r with hgt | hle
+          · have hre : r = t + 1 + (n : ℤ) + 1 := by rw [hcast] at hr2; omega
+            subst hre
+            exact hg2
+          · exact hg r hr1 hle
+        · rw [hcast]
+          exact hu2
+
+/-- **(C1') propagation, forward, at an arbitrary later time.** -/
+theorem untl_propagate_le {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentShare)
+    (θ : S.Thread) {g e : Formula} (hc : Formula.untl g e ∈ closureOf (Γ ++ Del)) {t s : ℤ}
+    (hts : t < s) (ht : Formula.untl g e ∈ S.L (θ.idx t) t)
+    (hno : ∀ r : ℤ, t < r → r ≤ s → e ∉ S.L (θ.idx r) r) :
+    (∀ r : ℤ, t < r → r ≤ s → g ∈ S.L (θ.idx r) r) ∧
+      Formula.untl g e ∈ S.L (θ.idx s) s := by
+  have hs : t + 1 + (((s - t - 1).toNat : ℕ) : ℤ) = s := by omega
+  have hmain := untl_propagate h θ hc ht (s - t - 1).toNat (by rw [hs]; exact hno)
+  rw [hs] at hmain
+  exact hmain
+
+/-- **(C1') propagation, backward, by step count.** -/
+theorem snce_propagate {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentShare)
+    (θ : S.Thread) {g e : Formula} (hc : Formula.snce g e ∈ closureOf (Γ ++ Del)) {t : ℤ}
+    (ht : Formula.snce g e ∈ S.L (θ.idx t) t) :
+    ∀ n : ℕ, (∀ r : ℤ, t - 1 - (n : ℤ) ≤ r → r < t → e ∉ S.L (θ.idx r) r) →
+      (∀ r : ℤ, t - 1 - (n : ℤ) ≤ r → r < t → g ∈ S.L (θ.idx r) r) ∧
+        Formula.snce g e ∈ S.L (θ.idx (t - 1 - (n : ℤ))) (t - 1 - (n : ℤ)) := by
+  intro n
+  induction n with
+  | zero =>
+      intro hno
+      simp only [Nat.cast_zero, sub_zero] at hno ⊢
+      have hne : e ∉ S.L (θ.idx (t - 1)) (t - 1) := hno (t - 1) (le_refl _) (by omega)
+      rcases snce_thread_step h θ hc ht with he | ⟨hg, hu⟩
+      · exact absurd he hne
+      · refine ⟨fun r hr1 hr2 => ?_, hu⟩
+        have hre : r = t - 1 := by omega
+        subst hre
+        exact hg
+  | succ n ih =>
+      intro hno
+      have hno' : ∀ r : ℤ, t - 1 - (n : ℤ) ≤ r → r < t → e ∉ S.L (θ.idx r) r := by
+        intro r hr1 hr2
+        exact hno r (by push_cast; omega) hr2
+      obtain ⟨hg, hu⟩ := ih hno'
+      have hne : e ∉ S.L (θ.idx (t - 1 - (n : ℤ) - 1)) (t - 1 - (n : ℤ) - 1) := by
+        refine hno _ ?_ (by omega)
+        push_cast
+        omega
+      have hcast : t - 1 - ((n + 1 : ℕ) : ℤ) = t - 1 - (n : ℤ) - 1 := by push_cast; omega
+      rcases snce_thread_step h θ hc hu with he | ⟨hg2, hu2⟩
+      · exact absurd he hne
+      · refine ⟨fun r hr1 hr2 => ?_, ?_⟩
+        · rcases lt_or_ge r (t - 1 - (n : ℤ)) with hgt | hle
+          · have hre : r = t - 1 - (n : ℤ) - 1 := by rw [hcast] at hr1; omega
+            subst hre
+            exact hg2
+          · exact hg r hle hr2
+        · rw [hcast]
+          exact hu2
+
+/-- **(C1') propagation, backward, at an arbitrary earlier time.** -/
+theorem snce_propagate_ge {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentShare)
+    (θ : S.Thread) {g e : Formula} (hc : Formula.snce g e ∈ closureOf (Γ ++ Del)) {t s : ℤ}
+    (hts : s < t) (ht : Formula.snce g e ∈ S.L (θ.idx t) t)
+    (hno : ∀ r : ℤ, s ≤ r → r < t → e ∉ S.L (θ.idx r) r) :
+    (∀ r : ℤ, s ≤ r → r < t → g ∈ S.L (θ.idx r) r) ∧
+      Formula.snce g e ∈ S.L (θ.idx s) s := by
+  have hs : t - 1 - (((t - s - 1).toNat : ℕ) : ℤ) = s := by omega
+  have hmain := snce_propagate h θ hc ht (t - s - 1).toNat (by rw [hs]; exact hno)
+  rw [hs] at hmain
+  exact hmain
+
+/-- **From an event to a fulfilment.** Under (C1'), an `untl` obligation that meets its event at
+*some* later time meets it at the *first* such time, and propagation supplies the guard over the
+strictly intermediate positions. -/
+theorem untl_fulfil_of_exists {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentShare)
+    (θ : S.Thread) {g e : Formula} (hc : Formula.untl g e ∈ closureOf (Γ ++ Del)) {t : ℤ}
+    (ht : Formula.untl g e ∈ S.L (θ.idx t) t)
+    (hex : ∃ s : ℤ, t < s ∧ e ∈ S.L (θ.idx s) s) :
+    ∃ s : ℤ, t < s ∧ e ∈ S.L (θ.idx s) s ∧
+      ∀ r : ℤ, t < r → r < s → g ∈ S.L (θ.idx r) r := by
+  classical
+  have hex' : ∃ n : ℕ, e ∈ S.L (θ.idx (t + 1 + (n : ℤ))) (t + 1 + (n : ℤ)) := by
+    obtain ⟨s, hs1, hs2⟩ := hex
+    refine ⟨(s - t - 1).toNat, ?_⟩
+    rwa [show t + 1 + (((s - t - 1).toNat : ℕ) : ℤ) = s by omega]
+  obtain ⟨n, hspec, hmin⟩ :
+      ∃ n : ℕ, e ∈ S.L (θ.idx (t + 1 + (n : ℤ))) (t + 1 + (n : ℤ)) ∧
+        ∀ m : ℕ, m < n → e ∉ S.L (θ.idx (t + 1 + (m : ℤ))) (t + 1 + (m : ℤ)) :=
+    ⟨Nat.find hex', Nat.find_spec hex', fun m hm => Nat.find_min hex' hm⟩
+  refine ⟨t + 1 + (n : ℤ), by omega, hspec, ?_⟩
+  intro r hr1 hr2
+  rcases Nat.eq_zero_or_pos n with hn0 | hnpos
+  · exfalso
+    rw [hn0] at hr2
+    simp only [Nat.cast_zero, add_zero] at hr2
+    omega
+  · have hno : ∀ r' : ℤ, t < r' → r' ≤ t + (n : ℤ) → e ∉ S.L (θ.idx r') r' := by
+      intro r' hr1' hr2'
+      have hre : r' = t + 1 + (((r' - t - 1).toNat : ℕ) : ℤ) := by omega
+      rw [hre]
+      exact hmin _ (by omega)
+    have hprop := untl_propagate_le h θ hc (show t < t + (n : ℤ) by omega) ht hno
+    exact hprop.1 r hr1 (by omega)
+
+/-- **From an event to a fulfilment**, the backward mirror. -/
+theorem snce_fulfil_of_exists {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentShare)
+    (θ : S.Thread) {g e : Formula} (hc : Formula.snce g e ∈ closureOf (Γ ++ Del)) {t : ℤ}
+    (ht : Formula.snce g e ∈ S.L (θ.idx t) t)
+    (hex : ∃ s : ℤ, s < t ∧ e ∈ S.L (θ.idx s) s) :
+    ∃ s : ℤ, s < t ∧ e ∈ S.L (θ.idx s) s ∧
+      ∀ r : ℤ, s < r → r < t → g ∈ S.L (θ.idx r) r := by
+  classical
+  have hex' : ∃ n : ℕ, e ∈ S.L (θ.idx (t - 1 - (n : ℤ))) (t - 1 - (n : ℤ)) := by
+    obtain ⟨s, hs1, hs2⟩ := hex
+    refine ⟨(t - s - 1).toNat, ?_⟩
+    rwa [show t - 1 - (((t - s - 1).toNat : ℕ) : ℤ) = s by omega]
+  obtain ⟨n, hspec, hmin⟩ :
+      ∃ n : ℕ, e ∈ S.L (θ.idx (t - 1 - (n : ℤ))) (t - 1 - (n : ℤ)) ∧
+        ∀ m : ℕ, m < n → e ∉ S.L (θ.idx (t - 1 - (m : ℤ))) (t - 1 - (m : ℤ)) :=
+    ⟨Nat.find hex', Nat.find_spec hex', fun m hm => Nat.find_min hex' hm⟩
+  refine ⟨t - 1 - (n : ℤ), by omega, hspec, ?_⟩
+  intro r hr1 hr2
+  rcases Nat.eq_zero_or_pos n with hn0 | hnpos
+  · exfalso
+    rw [hn0] at hr1
+    simp only [Nat.cast_zero, sub_zero] at hr1
+    omega
+  · have hno : ∀ r' : ℤ, t - (n : ℤ) ≤ r' → r' < t → e ∉ S.L (θ.idx r') r' := by
+      intro r' hr1' hr2'
+      have hre : r' = t - 1 - (((t - r' - 1).toNat : ℕ) : ℤ) := by omega
+      rw [hre]
+      exact hmin _ (by omega)
+    have hprop := snce_propagate_ge h θ hc (show t - (n : ℤ) < t by omega) ht hno
+    exact hprop.1 r (by omega) hr2
+
+/-! ## Soundness: the fixpoint implies the semantic condition
+
+Both directions are proved by the induction principles of `Sharing/Fulfil.lean`'s fixpoint,
+transported along the fold relations. Nothing here needs `LocalCoherentShare`: the fold carries
+a thread's real position to a graph vertex step by step, and the fixpoint's own unfolding does
+the rest.
+-/
+
+/-- **Soundness of `untlFix`.** A vertex in the forward fixpoint discharges the eventuality
+along every thread through every time it folds. -/
+theorem thread_untl_of_mem_untlFix (S : SharingWitnessFamily Γ Del) (g e : Formula) :
+    ∀ v ∈ S.untlFix g e, ∀ t : ℤ, S.FoldRel v.2 t → ∀ θ : S.Thread, θ.idx t = v.1 →
+      ∃ s : ℤ, t < s ∧ e ∈ S.L (θ.idx s) s ∧
+        ∀ r : ℤ, t < r → r < s → g ∈ S.L (θ.idx r) r := by
+  refine S.untlFix_induction g e
+    (P := fun v => ∀ t : ℤ, S.FoldRel v.2 t → ∀ θ : S.Thread, θ.idx t = v.1 →
+      ∃ s : ℤ, t < s ∧ e ∈ S.L (θ.idx s) s ∧
+        ∀ r : ℤ, t < r → r < s → g ∈ S.L (θ.idx r) r)
+    (fun v hv H t hft θ hθ => ?_)
+  have hvw : v.2 ∈ S.winTimes := (S.mem_verts v).mp hv
+  have hfs : S.FoldRel (S.nextTime v.2) (t + 1) :=
+    S.foldRel_trans (S.foldRel_nextTime hvw) (S.foldRel_succ hft)
+  have hwv : ((θ.idx (t + 1), S.nextTime v.2) : S.Pos) ∈ S.verts :=
+    (S.mem_verts _).mpr (S.nextTime_mem hvw)
+  have hws : ((θ.idx (t + 1), S.nextTime v.2) : S.Pos) ∈ S.succF v := by
+    rw [S.mem_succF]
+    refine ⟨hwv, rfl, ?_⟩
+    have hrep : S.rep (v.2 + 1) = S.rep (t + 1) := S.foldRel_rep (S.foldRel_succ hft)
+    have hs := θ.step t
+    rw [S.share_def] at hs
+    rw [← hθ, S.share_def, hrep]
+    exact hs
+  have hLeq : ∀ χ : Formula,
+      χ ∈ S.L (θ.idx (t + 1)) (S.nextTime v.2) ↔ χ ∈ S.L (θ.idx (t + 1)) (t + 1) := by
+    intro χ
+    rw [S.foldRel_L hfs (θ.idx (t + 1))]
+  rcases H _ hws with he | ⟨hg, hP⟩
+  · refine ⟨t + 1, by omega, (hLeq e).mp he, ?_⟩
+    intro r hr1 hr2
+    exfalso
+    omega
+  · obtain ⟨s, hs1, hs2, hs3⟩ := hP (t + 1) hfs θ rfl
+    refine ⟨s, by omega, hs2, ?_⟩
+    intro r hr1 hr2
+    rcases eq_or_lt_of_le (show t + 1 ≤ r by omega) with heq | hlt
+    · rw [← heq]
+      exact (hLeq g).mp hg
+    · exact hs3 r hlt hr2
+
+/-- **Soundness of `snceFix`**, the backward mirror. -/
+theorem thread_snce_of_mem_snceFix (S : SharingWitnessFamily Γ Del) (g e : Formula) :
+    ∀ v ∈ S.snceFix g e, ∀ t : ℤ, S.FoldRelB v.2 t → ∀ θ : S.Thread, θ.idx t = v.1 →
+      ∃ s : ℤ, s < t ∧ e ∈ S.L (θ.idx s) s ∧
+        ∀ r : ℤ, s < r → r < t → g ∈ S.L (θ.idx r) r := by
+  refine S.snceFix_induction g e
+    (P := fun v => ∀ t : ℤ, S.FoldRelB v.2 t → ∀ θ : S.Thread, θ.idx t = v.1 →
+      ∃ s : ℤ, s < t ∧ e ∈ S.L (θ.idx s) s ∧
+        ∀ r : ℤ, s < r → r < t → g ∈ S.L (θ.idx r) r)
+    (fun v hv H t hft θ hθ => ?_)
+  have hvw : v.2 ∈ S.winTimes := (S.mem_verts v).mp hv
+  have hfs : S.FoldRelB (S.prevTime v.2) (t - 1) :=
+    S.foldRelB_trans (S.foldRelB_prevTime hvw) (S.foldRelB_pred hft)
+  have hwv : ((θ.idx (t - 1), S.prevTime v.2) : S.Pos) ∈ S.verts :=
+    (S.mem_verts _).mpr (S.prevTime_mem hvw)
+  have hws : ((θ.idx (t - 1), S.prevTime v.2) : S.Pos) ∈ S.predF v := by
+    rw [S.mem_predF]
+    refine ⟨hwv, rfl, ?_⟩
+    have hrep : S.rep v.2 = S.rep t := S.foldRelB_rep hft
+    have hs := thread_share_pred θ t
+    rw [S.share_def] at hs
+    rw [← hθ, S.share_def, hrep]
+    exact hs
+  have hLeq : ∀ χ : Formula,
+      χ ∈ S.L (θ.idx (t - 1)) (S.prevTime v.2) ↔ χ ∈ S.L (θ.idx (t - 1)) (t - 1) := by
+    intro χ
+    rw [S.foldRelB_L hfs (θ.idx (t - 1))]
+  rcases H _ hws with he | ⟨hg, hP⟩
+  · refine ⟨t - 1, by omega, (hLeq e).mp he, ?_⟩
+    intro r hr1 hr2
+    exfalso
+    omega
+  · obtain ⟨s, hs1, hs2, hs3⟩ := hP (t - 1) hfs θ rfl
+    refine ⟨s, by omega, hs2, ?_⟩
+    intro r hr1 hr2
+    rcases eq_or_lt_of_le (show r ≤ t - 1 by omega) with heq | hlt
+    · rw [heq]
+      exact (hLeq g).mp hg
+    · exact hs3 r hr1 hlt
+
 /-! ## A computed smoke test
 
 The fixpoint is a *computation*, so it can be wrong in a way no lemma above would catch: an
