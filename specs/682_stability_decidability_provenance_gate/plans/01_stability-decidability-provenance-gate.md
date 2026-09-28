@@ -1,7 +1,7 @@
 # Implementation Plan: Task #682
 
 - **Task**: 682 - Stability decidability provenance gate
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/682_stability_decidability_provenance_gate/reports/01_stability-decidability-provenance-gate.md`
@@ -124,28 +124,28 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Repair the archived `fmp_false` evidence probe [NOT STARTED]
+### Phase 1: Repair the archived `fmp_false` evidence probe [COMPLETED]
 
 **Goal**: `specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean`
 elaborates cleanly and `#print axioms fmp_false` reports `[propext, Classical.choice, Quot.sound]`
 with no `sorryAx`, with the cause of the drift recorded in the file itself.
 
 **Tasks**:
-- [ ] Re-read the probe file in full (a sibling may have touched the tree since this plan was
+- [x] Re-read the probe file in full (a sibling may have touched the tree since this plan was
       written) and record the current `lake env lean` output verbatim, so the before-state is on
       the record rather than taken from this plan.
-- [ ] Capture the exact source text of the `fmp_false` statement (from `theorem fmp_false` through
+- [x] Capture the exact source text of the `fmp_false` statement (from `theorem fmp_false` through
       the end of its type) so it can be compared byte-for-byte after the repair.
-- [ ] Apply the one-term repair inside `not_validZTime_neg_psi`: replace the bare
+- [x] Apply the one-term repair inside `not_validZTime_neg_psi`: replace the bare
       `TaskFrame.isZTime_of_instances _` witness with the pair
       `⟨S.frame_isRegular, TaskFrame.isZTime_of_instances _⟩`, which is what
       `FrameClass.Sat .ZTime = IsRegular ∧ IsZTime` now requires. Change nothing else in the proof
       body.
-- [ ] Update the file's header docstring: correct the stale compile-check path (it still names
+- [x] Update the file's header docstring: correct the stale compile-check path (it still names
       `specs/476_box_faithful_small_model_theorem/…`, but the file now lives under
       `specs/archive/…`), and add a short drift note giving the cause (the probe predates the
       `Sat .ZTime` conjunction split), the repair, and the re-verified axiom list with its date.
-- [ ] Confirm the captured `fmp_false` statement text is unchanged by the repair.
+- [x] Confirm the captured `fmp_false` statement text is unchanged by the repair.
 
 **Timing**: 0.75 hours
 
