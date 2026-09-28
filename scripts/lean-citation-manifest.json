@@ -529,12 +529,112 @@
       "span_end": 237,
       "span_start": 218,
       "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/ShiftSet.lean",
+      "group": "The consuming document's §4.1 proof-mapping table, ShiftSet.lean cluster",
+      "keyword_line": 180,
+      "name": "FormalSystem.Semantics.ShiftSet.shRel_saturation",
+      "span_end": 183,
+      "span_start": 178,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/ShiftSet.lean",
+      "group": "The consuming document's §4.1 proof-mapping table, ShiftSet.lean cluster",
+      "keyword_line": 209,
+      "name": "FormalSystem.Semantics.ShiftSet.fibre_isRegular",
+      "span_end": 214,
+      "span_start": 206,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/ShiftSet.lean",
+      "group": "The consuming document's §4.1 proof-mapping table, ShiftSet.lean cluster",
+      "keyword_line": 234,
+      "name": "FormalSystem.Semantics.ShiftSet.frame_isRegular",
+      "span_end": 235,
+      "span_start": 231,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/ShiftSet.lean",
+      "group": "The consuming document's §4.1 proof-mapping table, ShiftSet.lean cluster",
+      "keyword_line": 293,
+      "name": "FormalSystem.Semantics.ShiftSet.forward_repr",
+      "span_end": 322,
+      "span_start": 286,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/ShiftSet.lean",
+      "group": "The consuming document's §4.1 proof-mapping table, ShiftSet.lean cluster",
+      "keyword_line": 261,
+      "name": "FormalSystem.Semantics.ShiftSet.total_eq_orbit",
+      "span_end": 267,
+      "span_start": 248,
+      "status": "resolved"
+    },
+    {
+      "field": "sep",
+      "file": "FormalSystem/Semantics/ShiftSet.lean",
+      "group": "The consuming document's §4.1 proof-mapping table, ShiftSet.lean cluster",
+      "keyword_line": 97,
+      "name": "FormalSystem.Semantics.ShiftSet",
+      "span_end": 131,
+      "span_start": 82,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/ShiftSet.lean",
+      "group": "The consuming document's §4.1 proof-mapping table, ShiftSet.lean cluster",
+      "keyword_line": 201,
+      "name": "FormalSystem.Semantics.ShiftSet.fibre",
+      "span_end": 205,
+      "span_start": 184,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/ShiftSet.lean",
+      "group": "The consuming document's §4.1 proof-mapping table, ShiftSet.lean cluster",
+      "keyword_line": 229,
+      "name": "FormalSystem.Semantics.ShiftSet.frame",
+      "span_end": 230,
+      "span_start": 221,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/ShiftSet.lean",
+      "group": "The consuming document's §4.1 proof-mapping table, ShiftSet.lean cluster",
+      "keyword_line": 276,
+      "name": "FormalSystem.Semantics.ShiftSet.ShiftTruth",
+      "span_end": 285,
+      "span_start": 268,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Semantics/TruthTransport.lean",
+      "group": "The consuming document's §4.1 proof-mapping table, ShiftSet.lean cluster",
+      "keyword_line": 310,
+      "name": "FormalSystem.Semantics.Truth.box_const",
+      "span_end": 319,
+      "span_start": 292,
+      "status": "resolved"
     }
   ],
   "generated_by": "scripts/export-lean-citations.py",
   "note": "Generated. Do not hand-edit: C35 in scripts/check-module-invariants.sh compares this file against a fresh resolution and fails when they differ. Cite the `name` field; the line numbers here are a derived view and are expected to move.",
-  "resolved": 53,
+  "resolved": 63,
   "schema": 1,
   "seed_list": "scripts/lean-citation-seeds.txt",
-  "total": 53
+  "total": 63
 }

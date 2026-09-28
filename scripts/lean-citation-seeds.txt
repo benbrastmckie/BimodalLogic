@@ -92,3 +92,20 @@ FormalSystem.Semantics.FrameConstraintIndependence.constraints_pairwise_independ
 FormalSystem.Semantics.TimeShift.timeShift_preserves_truth
 FormalSystem.Semantics.Truth.truthAt_of_truthCorr
 FormalSystem.Semantics.TimeShift.shiftCorr
+
+## The consuming document's §4.1 proof-mapping table, ShiftSet.lean cluster
+# `shRel_comp` and `shRel_serial` above already cover two of this table's rows; every name below
+# was already wrong when seeded — a consuming citation drifted onto a neighbouring declaration
+# some time after commit ef4707035, and nothing in either repository read these particular
+# citations until now. Seeding does not repair what the consuming document currently cites; it
+# only stops the *next* drift at these names from rotting silently the same way.
+FormalSystem.Semantics.ShiftSet.shRel_saturation
+FormalSystem.Semantics.ShiftSet.fibre_isRegular
+FormalSystem.Semantics.ShiftSet.frame_isRegular
+FormalSystem.Semantics.ShiftSet.forward_repr
+FormalSystem.Semantics.ShiftSet.total_eq_orbit
+FormalSystem.Semantics.ShiftSet#sep
+FormalSystem.Semantics.ShiftSet.fibre
+FormalSystem.Semantics.ShiftSet.frame
+FormalSystem.Semantics.ShiftSet.ShiftTruth
+FormalSystem.Semantics.Truth.box_const

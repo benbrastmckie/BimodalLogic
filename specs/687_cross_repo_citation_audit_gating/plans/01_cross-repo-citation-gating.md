@@ -167,17 +167,17 @@ the divergence in the phase's commit message — do not silently reconcile to th
 
 ---
 
-### Phase 2: Extend the seed list and regenerate the manifest [NOT STARTED]
+### Phase 2: Extend the seed list and regenerate the manifest [COMPLETED]
 
 **Goal**: Bring the declarations the consuming §4.1 table cites under C35's protection, so a
 future drift at those names fails here rather than rotting silently over there.
 
 **Tasks**:
-- [ ] Add the Phase-1-confirmed `ShiftSet.lean` declaration names to
+- [x] Add the Phase-1-confirmed `ShiftSet.lean` declaration names to
       `scripts/lean-citation-seeds.txt` under a new `##` group whose comment states, in the file's
       existing voice, that these are the §4.1 proof-mapping citations and that they were already
-      wrong when seeded (so a reader does not mistake seeding for repair).
-- [ ] Expected candidate set from research, to be confirmed not assumed:
+      wrong when seeded (so a reader does not mistake seeding for repair). *(completed)*
+- [x] Expected candidate set from research, to be confirmed not assumed:
       `FormalSystem.Semantics.ShiftSet.shRel_saturation`,
       `FormalSystem.Semantics.ShiftSet.fibre_isRegular`,
       `FormalSystem.Semantics.ShiftSet.frame_isRegular`,
@@ -185,14 +185,24 @@ future drift at those names fails here rather than rotting silently over there.
       `FormalSystem.Semantics.ShiftSet.total_eq_orbit`, plus the parent declarations behind the
       `fibre`/`frame`/`ShiftTruth` citations and the `ShiftSet#sep` field row (field rows use the
       `Parent.Name#field` form). `shRel_comp` and `shRel_serial` are **already** seeded — do not
-      duplicate them.
-- [ ] Run `python3 scripts/export-lean-citations.py` to regenerate
-      `scripts/lean-citation-manifest.json`.
-- [ ] If any name exits non-zero as UNRESOLVED or AMBIGUOUS, fix the seed line (it is a rename or
-      a typo) rather than removing the name; re-run until exit 0.
-- [ ] Re-run `python3 scripts/export-lean-citations.py --check` and confirm exit 0 (byte-current).
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C35 reports PASS.
-- [ ] Commit seed list and manifest together as one objective.
+      duplicate them. *(completed: all 9 confirmed and added, exactly as expected)*
+- [x] Run `python3 scripts/export-lean-citations.py` to regenerate
+      `scripts/lean-citation-manifest.json`. *(completed: 63 seeded name(s) resolved)*
+- [x] If any name exits non-zero as UNRESOLVED or AMBIGUOUS, fix the seed line (it is a rename or
+      a typo) rather than removing the name; re-run until exit 0. *(completed: no name required a
+      fix — all 10 additions resolved on the first run)*
+- [x] Re-run `python3 scripts/export-lean-citations.py --check` and confirm exit 0 (byte-current).
+      *(completed: exit 0)*
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C35 reports PASS.
+      *(completed: PASS C35, and the full gate run is ALL CHECKS PASSED)*
+- [x] Commit seed list and manifest together as one objective. *(completed)*
+- [x] *(deviation: altered — added a tenth name, `FormalSystem.Semantics.Truth.box_const`, beyond
+      the plan's nine-name expected set. Phase 1's re-verification found the §4.1 Lemma-3 row's
+      second file:line citation (`WitnessFamily/Std.lean:101`) does not merely land on the wrong
+      line but names the wrong file entirely for `box_const` — its real location is
+      `TruthTransport.lean:310`. Seeding it is required for Phase 3's own verification clause
+      ("every declaration named in the new row(s) appears in the manifest"), since the
+      corrections table must name `box_const` to describe this citation's failure.)*
 
 **Timing**: 1 hour
 
