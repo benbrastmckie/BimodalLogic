@@ -1,7 +1,7 @@
 # Implementation Plan: Task #688
 
 - **Task**: 688 - gate_script_concurrency_reliability
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/688_gate_script_concurrency_reliability/reports/01_gate-script-concurrency-reliability.md
@@ -105,35 +105,35 @@ No `roadmap_path` was provided in the delegation context; no roadmap consultatio
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Serialize C1's builds on the shared lock [NOT STARTED]
+### Phase 1: Serialize C1's builds on the shared lock [COMPLETED]
 
 **Goal**: Both `lake build` invocations in `check-module-invariants.sh`'s C1 section run under an
 `flock` on `<repo-root>/.lake/build-guard.lock`, with an audible fallback and an attributable wait.
 
 **Tasks**:
-- [ ] Re-read `scripts/check-module-invariants.sh`'s C1 section immediately before editing (a
-      sibling task may have touched the file; see the dispatch's Territory note).
-- [ ] Add a comment block immediately above the C1 section, in the file's existing register,
+- [x] Re-read `scripts/check-module-invariants.sh`'s C1 section immediately before editing (a
+      sibling task may have touched the file; see the dispatch's Territory note). *(completed)*
+- [x] Add a comment block immediately above the C1 section, in the file's existing register,
       recording: why the builds are locked, that the path is the guard's own published convention,
       and the two rejected alternatives (probe-for-guard, refuse-on-concurrency) with the one-line
-      reason each was rejected. No task-number citations (C9).
-- [ ] Inside the `RUN_BUILD` branch, before the builds: set
-      `LOCK_FILE="$REPO_ROOT/.lake/build-guard.lock"` and `mkdir -p "$REPO_ROOT/.lake"`.
-- [ ] If `command -v flock >/dev/null 2>&1`: open an fd (`exec {fd}<>"$LOCK_FILE"`), try
+      reason each was rejected. No task-number citations (C9). *(completed)*
+- [x] Inside the `RUN_BUILD` branch, before the builds: set
+      `LOCK_FILE="$REPO_ROOT/.lake/build-guard.lock"` and `mkdir -p "$REPO_ROOT/.lake"`. *(completed)*
+- [x] If `command -v flock >/dev/null 2>&1`: open an fd (`exec {fd}<>"$LOCK_FILE"`), try
       `flock -n "$fd"`; on failure print a one-line `note` naming the wait and the timeout, then
-      `flock -w 600 "$fd"`. Mirror the guard's own idiom and its 600s default.
-- [ ] If the blocking wait itself times out, `fail C1` with a message naming lock-wait timeout
-      (never fall through into an unserialized build after having detected contention).
-- [ ] If `flock` is absent, print one stderr notice in the guard's wording register
+      `flock -w 600 "$fd"`. Mirror the guard's own idiom and its 600s default. *(completed)*
+- [x] If the blocking wait itself times out, `fail C1` with a message naming lock-wait timeout
+      (never fall through into an unserialized build after having detected contention). *(completed)*
+- [x] If `flock` is absent, print one stderr notice in the guard's wording register
       (`check-module-invariants: flock not found on PATH; running lake build unserialized`) and
-      run the builds unchanged.
-- [ ] Leave both builds' existing pass/fail/`tail -40` reporting byte-identical; the only change is
-      what surrounds them. Release is implicit on fd close at script exit — do not add `flock -u`.
-- [ ] Run `bash -n scripts/check-module-invariants.sh` and `shellcheck scripts/check-module-invariants.sh`
-      (if available) on the edited file.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C1 still reports
-      `skipped (--no-build)` and the overall result is unchanged from before the edit.
-- [ ] Commit this phase's single file.
+      run the builds unchanged. *(completed)*
+- [x] Leave both builds' existing pass/fail/`tail -40` reporting byte-identical; the only change is
+      what surrounds them. Release is implicit on fd close at script exit — do not add `flock -u`. *(completed)*
+- [x] Run `bash -n scripts/check-module-invariants.sh` and `shellcheck scripts/check-module-invariants.sh`
+      (if available) on the edited file. *(completed)*
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C1 still reports
+      `skipped (--no-build)` and the overall result is unchanged from before the edit. *(completed)*
+- [x] Commit this phase's single file. *(completed)*
 
 **Timing**: 0.75 hours
 

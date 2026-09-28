@@ -925,20 +925,60 @@ echo
 
 # ---------------------------------------------------------------------------
 # C1: build
+#
+# LOCKED AGAINST CONCURRENT `.lake` WRITERS. The two `lake build` invocations below (and, by
+# construction, every later `.lake`-reading check in this script -- C16's second half, C25 --
+# since RUN_BUILD gates them identically and this script never releases the lock it takes here)
+# race any other guarded build running against this same tree for `.lake` artifacts unless
+# serialized. Take an `flock` on `$REPO_ROOT/.lake/build-guard.lock` -- the path
+# `.claude/scripts/lake-build-guard.sh` already publishes in its own header as a stable
+# convention. An advisory lock is keyed on the path, not on the binary that opened it, so this
+# script and the guard exclude each other with no coupling between them: no probe for the
+# guard's presence, no hardcoded call into the disposable, regenerated `.claude/` deploy tree,
+# and unchanged behavior in a clone with no agent system deployed at all (the lock is simply
+# uncontended there). The fd opened below is never closed with `flock -u`; it is held until the
+# script's own process exits, which is what lets the later checks inherit the protection for
+# free.
+#
+# REJECTED -- probe for the guard and call it when present: would hardcode a repository
+# deliverable's reference into a disposable deploy tree, and would still leave a guard-less
+# clone racing exactly as today.
+# REJECTED -- refuse to run when concurrency is detected: converts transient, self-resolving
+# contention into a hard red a reader must re-attribute against the commit log, which is the
+# exact cost this change exists to remove. Bounded waiting turns contention into a slower green
+# instead.
 # ---------------------------------------------------------------------------
 if [ "$RUN_BUILD" -eq 1 ]; then
   BUILD_LOG=$(mktemp)
-  if lake build >"$BUILD_LOG" 2>&1; then
-    pass C1 "lake build exits 0"
+  LOCK_FILE="$REPO_ROOT/.lake/build-guard.lock"
+  mkdir -p "$REPO_ROOT/.lake"
+  C1_LOCK_OK=1
+  if command -v flock >/dev/null 2>&1; then
+    exec {C1_LOCK_FD}<>"$LOCK_FILE"
+    if ! flock -n "$C1_LOCK_FD"; then
+      note "waiting on the shared build lock ($LOCK_FILE, up to 600s)"
+      if ! flock -w 600 "$C1_LOCK_FD"; then
+        C1_LOCK_OK=0
+      fi
+    fi
   else
-    fail C1 "lake build failed"
-    tail -40 "$BUILD_LOG" | while IFS= read -r l; do note "$l"; done
+    echo "check-module-invariants: flock not found on PATH; running lake build unserialized" >&2
   fi
-  if lake build BimodalTest >>"$BUILD_LOG" 2>&1; then
-    pass C1 "lake build BimodalTest exits 0"
+  if [ "$C1_LOCK_OK" -eq 1 ]; then
+    if lake build >"$BUILD_LOG" 2>&1; then
+      pass C1 "lake build exits 0"
+    else
+      fail C1 "lake build failed"
+      tail -40 "$BUILD_LOG" | while IFS= read -r l; do note "$l"; done
+    fi
+    if lake build BimodalTest >>"$BUILD_LOG" 2>&1; then
+      pass C1 "lake build BimodalTest exits 0"
+    else
+      fail C1 "lake build BimodalTest failed"
+      tail -40 "$BUILD_LOG" | while IFS= read -r l; do note "$l"; done
+    fi
   else
-    fail C1 "lake build BimodalTest failed"
-    tail -40 "$BUILD_LOG" | while IFS= read -r l; do note "$l"; done
+    fail C1 "timed out after 600s waiting for the shared build lock ($LOCK_FILE)"
   fi
   rm -f "$BUILD_LOG"
 else

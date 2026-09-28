@@ -1,30 +1,11 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/688_gate_script_concurrency_reliability/plans/01_gate-script-build-lock.md",
-      "summary": "3-phase plan: flock C1's two lake builds on the guard's published lock path, prove the race closed under repeated real concurrency, create nolints-style.txt and reconcile the contradicted ci.yml comment."
-    }
-  ],
-  "next_steps": "Run /implement 688 to execute the plan",
-  "phase_count": 3,
-  "estimated_hours": 3,
-  "dependency_waves": [[1, 3], [2]],
-  "memory_candidates": [
-    {
-      "content": "When a repository-owned script must serialize against a build guard that lives in a disposable, regenerated deploy tree (.claude/), do not probe for or call the guard. Take an flock() on the same lock path the guard publishes in its own header as a stable convention (<repo-root>/.lake/build-guard.lock). Advisory locks are keyed on the path, not on the binary that opened it, so mutual exclusion becomes an emergent property with zero coupling: no detection logic, no hardcoded reference into the deploy tree, and unchanged behavior in a clone with no agent system deployed. The two tempting alternatives are worse: probing for the guard couples a deliverable to a disposable artifact and leaves guard-less clones racing; refusing to run on detected concurrency converts transient, self-resolving contention into a hard red a reader must re-attribute against the commit log, which is exactly the gate property being repaired. Bounded waiting converts contention into a slower green instead.",
-      "category": "PATTERN",
-      "source_artifact": "specs/688_gate_script_concurrency_reliability/plans/01_gate-script-build-lock.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["flock", "build-lock", "deploy-tree-boundary", "gate-reliability", "advisory-lock", "concurrency"]
-    }
-  ],
+  "status": "in_progress",
+  "artifacts": [],
   "metadata": {
-    "session_id": "sess_1790559036_a260f5_688",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "session_id": "sess_1790559036_a260f5",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   },
-  "dispatch_seq": 7
+  "dispatch_seq": 10
 }
