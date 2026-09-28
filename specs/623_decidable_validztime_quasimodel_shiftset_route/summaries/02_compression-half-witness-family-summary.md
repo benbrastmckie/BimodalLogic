@@ -123,10 +123,15 @@ Existing files modified:
 - `cands` computes: it elaborated as a plain `def` returning data, which Lean rejects for a
   non-computable body
 - Tests: N/A (no new test module; the invariant harness is the gate)
-- `bash scripts/check-module-invariants.sh`: **does not exit 0** — see Follow-ups. C15 was failing
-  on the three new theorem-index rows and is fixed (`Paper: —` lines added at each declaration).
-  The remaining failure, **C16**, is entirely in sibling task 690's files and is not this task's
-  regression.
+- `bash scripts/check-module-invariants.sh`: **does not exit 0.** Every gate this task can move
+  passes — **C1** (`lake build` exits 0, and `lake build BimodalTest` exits 0), **C3** (structural
+  `sorry` inventory is zero across `FormalSystem/` and `BimodalTools/`), **C4** (all 2,680 import
+  lines resolve), **C15** (all 213 theorem-index rows carry their anchor). Two findings this task
+  caused were found and fixed: C15 on the three new rows (`Paper: —` lines added at each
+  declaration) and C5 on `FormalSystem.Metalogic.Decidability.Compression`
+  (added to `scripts/module-invariants-allowlist.txt`, the sanctioned namespace-is-not-a-module
+  exemption, with a documented reason). The four remaining failures are **not** this task's — see
+  Follow-ups.
 - Files verified: Yes
 
 ## Impacts
@@ -145,11 +150,25 @@ Existing files modified:
 
 ## Follow-ups
 
-- **`check-module-invariants.sh` C16 fails on sibling task 690's files**, not on anything this
-  task wrote: three `env_linter` `simpNF` findings at
-  `WitnessFamily/Sharing/Frame.lean:177` and `WitnessFamily/Sharing/Histories.lean:80`, all naming
-  `SharingSkeleton`, which entered the tree in commit `2328f2c0e` ("task 690 phases 4-5"). Task
-  690 should resolve them; this task did not touch `Sharing/`.
+- **`check-module-invariants.sh` has four remaining failures, none of them this task's.** All are
+  either sibling tasks' in-flight work on this shared working tree or pre-existing staleness:
+  - **C16** (`env_linter` `simpNF`): three findings at `WitnessFamily/Sharing/Frame.lean:177` and
+    `WitnessFamily/Sharing/Histories.lean:80`, all naming `SharingSkeleton`, which entered the
+    tree in commit `2328f2c0e` ("task 690 phases 4-5"). `Compression/` contributes zero linter
+    findings.
+  - **C5**: one unresolved path, `FormalSystem.PlusLanguage.PlusFormula` at
+    `WitnessFamily/Sharing/README.md:188` — task 690's file.
+  - **C6**: two unreachable live modules, `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Closure.lean`
+    and `FormalSystem/PlusLanguage/Subformulas.lean` — both task 690's, one of them still
+    untracked.
+  - **INV** (stale generated inventory in `README.md`, `FormalSystem/README.md`,
+    `FormalSystem/Metalogic/README.md`, `FormalSystem/PlusLanguage/README.md`): **already stale
+    before this task started.** At `d139659eb`, the commit immediately preceding this task's first,
+    `FormalSystem/Metalogic/README.md` recorded 87 `Decidability/` modules against an actual 96.
+    Regeneration is a whole-tree operation whose output currently mixes this task's 7 modules with
+    three siblings' concurrent ones (and emits a `<!-- TODO: add description -->` placeholder for
+    a sibling's untracked file), so it was deliberately **not** run here: `--emit-inventory` should
+    be run once, by whoever closes out the tree, after 623/684/690 have all landed.
 - **The plan's own Testing checklist is self-inconsistent** on the `BiLasso/` dependency: it asks
   that `WitnessFamily/` import nothing from `BiLasso/` except `Periodic.lean`, while Phase 1
   transcribes a spike that uses `truth_untl_succ`/`truth_snce_pred` and Phase 4 prescribes

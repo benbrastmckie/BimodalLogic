@@ -146,3 +146,11 @@ FormalSystem.Semantics.SemanticConsequenceIn
 # -- Semantics/TruthTransport.lean
 FormalSystem.Semantics.TruthCorr
 FormalSystem.Semantics.TimeShift
+
+# `namespace Compression` inside `namespace FormalSystem.Metalogic.Decidability`
+# -- Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean. A NAMESPACE, not a module:
+# `BiLasso/Assembly.lean` already owns the bare name `decidableValidZTime` for the
+# `fmp`-conditional procedure, so the unconditional one declared in the Compression subdirectory
+# takes a sub-namespace. The theorem-index row cites it fully qualified, and the prefix is not a
+# module -- the declaration lives in `WitnessFamily/Compression/Assembly.lean`.
+FormalSystem.Metalogic.Decidability.Compression
