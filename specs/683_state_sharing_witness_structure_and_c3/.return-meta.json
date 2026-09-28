@@ -1,7 +1,7 @@
 {
-  "status": "partial",
-  "started_at": "2026-09-28T07:17:30Z",
-  "completed_at": "2026-09-28T08:05:00Z",
+  "status": "implemented",
+  "started_at": "2026-09-28T07:47:50Z",
+  "completed_at": "2026-09-28T08:55:00Z",
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
@@ -13,36 +13,32 @@
     {
       "type": "summary",
       "path": "specs/683_state_sharing_witness_structure_and_c3/summaries/01_state-sharing-witness-structure-summary.md",
-      "summary": "Cumulative round-1 implementation summary, extended to cover Phase 9 of 14."
+      "summary": "Cumulative round-1 implementation summary, extended to cover Phases 10-14 and closing the task."
     },
     {
       "type": "handoff",
-      "path": "specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-9-handoff-20260928.md",
-      "summary": "Resume point at Phase 10, inherited API inventory, and the Phase 11 assembly adjustment."
+      "path": "specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-14-handoff-20260928.md",
+      "summary": "Terminal record: all fourteen phases closed, inherited API, six further elaboration traps, and what is deliberately absent."
     }
   ],
   "partial_progress": {
-    "stage": "phase_9_complete",
-    "details": "Phase 9 closed as [COMPLETED WITH EXCLUSIONS]: (C2') ThreadFulfilling defined, both correctness directions against the Phase 8 fixpoint proved, and a bounded decision procedure delivered relative to (C1') LocalCoherentShare. The plan's standalone Decidable (ThreadFulfilling S) instance is excluded and recorded in the plan's Phase 9 Reasoned Exclusions table. Phases 10-14 remain.",
-    "phases_completed": 9,
+    "stage": "phase_14_complete",
+    "details": "All fourteen plan phases closed. Phase 10 landed the branching TaskModel and T1 truth_iff_mem; Phase 11 the five-component Certifies, decidableCertifies and a second producer for the unchanged WitnessFamily.Refutes; Phase 12 WitnessFamily.toSharing with all four condition reductions as iffs; Phase 13 the frame isomorphism and truth transport; Phase 14 the documentation, the in-repo (C3) correction, and the full gate set.",
+    "phases_completed": 14,
     "phases_total": 14
   },
-  "user_decision": {
-    "question": "Phase 9's window reduction for (C2') carries a LocalCoherentShare hypothesis, so the plan's standalone `Decidable (ThreadFulfilling S)` instance is not available; what is landed is a hypothesised `Decidable` term plus a genuine instance on the conjunction `LocalCoherentShare and ThreadFulfilling`. Accept that form, or reopen Phase 8 to chase an unconditional one?",
-    "options": [
-      "Accept the coherence-relative form as landed -- Certifies carries (C1') anyway, so Phase 11 assembles decidableCertifies from four pieces instead of five and nothing downstream loses anything.",
-      "Reopen Phase 8 and chase the unconditional reduction -- give the position graph's backward region a cycle edge -1 -> -NB-1 alongside -1 -> 0 so arbitrarily long far-left walks have graph images, then re-prove the fixpoint lemmas against the strictly larger walk set."
-    ],
-    "recommended": "Accept the coherence-relative form as landed -- Certifies carries (C1') anyway, so Phase 11 assembles decidableCertifies from four pieces instead of five and nothing downstream loses anything.",
-    "blocking": false
+  "completion_data": {
+    "completion_summary": "Added a state-sharing (branching) witness device alongside the shipped deterministic bi-lasso device as FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/, closing all fourteen plan phases. The branching frame's histories are characterized by total_eq_thread (replacing ShiftSet.total_eq_orbit, which holds only for a functional task relation), the revised conditions (C0) AtomCoherent, (C1') LocalCoherentShare and (C2') ThreadFulfilling are all decidable, and refutes_of_certifies lands in the unchanged WitnessFamily.Refutes so the two devices are two producers for one interface. The deterministic device is recovered as the diagonal instance WitnessFamily.toSharing, with each branching condition proved equivalent to its deterministic counterpart and the two frames exhibited as isomorphic with truth transported across; ShiftSet.lean and the five deterministic WitnessFamily modules are byte-identical.",
+    "roadmap_items": []
   },
   "metadata": {
-    "session_id": "sess_1790579802_bcbf20",
+    "session_id": "sess_1790581669_d63489",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
     "compliance_check": "passed",
-    "compliance_note": "Nine of the plan's fifteen pinned Goals are present namespace-qualified; the six absent belong to Phases 10-14, which were not reached. Phase 9's own Goal, SharingWitnessFamily.ThreadFulfilling, is confirmed present by a #print axioms run, not only by grep.",
-    "dispatch_seq": 7
+    "compliance_note": "All fifteen of the plan's pinned Goals are present and were confirmed by a `#print axioms` run on their fully qualified names (fifteen reports, each exactly [propext, Classical.choice, Quot.sound], zero sorryAx) -- strictly stronger evidence than the contract's bare-name grep, which extracts only the two dot-free names `SharingWitnessFamily` and `share` from the plan's Goals block and finds both.",
+    "vacuous_note": "The contract's repo-wide single-line grep returns one hit, FormalSystem/Examples/TemporalStructures.lean:495 (`theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial`). It is pre-existing (last touched by an unrelated earlier change; git diff over that file is empty for this dispatch) and is a true theorem whose proposition is definitionally True for a total history, not a placeholder. vacuous_count is reported as 0 introduced.",
+    "dispatch_seq": 8
   }
 }

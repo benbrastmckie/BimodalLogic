@@ -11,10 +11,10 @@ next_project_number: 691
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,683 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650,684,690 | 298,464,502,563,649,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,618,685 | 231,465,497,564,565,616,623,684 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543 | 428,498,499,500,683 | algebraic-representation, decidability, metalogic |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,684,690 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,685 | 298,464,502,563,623,649,684 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
@@ -90,8 +90,8 @@ next_project_number: 691
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-543 [NOT STARTED] — Machine-check the principal new results from the MF...
 684 [NOT STARTED] — Prove the agreement (truth) lemma over all walks of the...
+543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
 
@@ -100,8 +100,7 @@ next_project_number: 691
 
 ### Semantics
 
-683 [IMPLEMENTING] — Replace the deterministic witness device with a state-sharing...
-  └─ 690 [NOT STARTED] — Build the stability condition (C5) StabFaithful on the...
+690 [NOT STARTED] — Build the stability condition (C5) StabFaithful on the...
 
 ## Tasks
 
@@ -242,7 +241,7 @@ The research report and implementation plan authored here remain the durable inp
 ---
 
 ### 683. State sharing witness structure and c3
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 682

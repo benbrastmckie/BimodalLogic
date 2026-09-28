@@ -176,7 +176,7 @@
     {
       "project_number": 683,
       "project_name": "state_sharing_witness_structure_and_c3",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "semantics",
       "description": "Replace the deterministic witness device with a state-sharing one: re-prove the histories characterization and redesign the box-faithfulness condition, which the consuming repository's adequacy document identifies as the actual load-bearing obstruction to a stability modal. The received account of why the current design is deterministic is precise about where the weight sits, and it is NOT where one might expect: Limit and Saturation are not the obstacle (Saturation is free from subsingleton fibres, and Limit is discharged trivially over the integers). The obstruction is the histories characterization and the box case of the truth lemma. Determinism is exactly what makes ShiftSet.total_eq_orbit (Semantics/ShiftSet.lean:252) true -- every world history is one of the lasso orbits. If two lassos share a state, a history can cross from one lasso to another at that state, total_eq_orbit fails, the corollary that the frame's history set is exactly the certified histories fails with it, and the box case of the truth lemma fails: box faithfulness is calibrated against \"every position of every lasso\", which stops enumerating the history set once histories can recombine. This is the same obstruction Probe476.fmp_false records for finite digraphs -- admitting recombined paths adds histories that box must range over, beyond what the four conditions were designed to certify. Deliverables: a witness structure whose task relation is not functional, so witnesses branch at a shared state; a replacement for total_eq_orbit characterizing the frame's total histories as the walks of that structure; and a redesigned box condition that quantifies over those walks rather than over lasso positions, while remaining decidable -- decidability being the hard constraint, since the walks of a branching structure are infinitely many. Record explicitly that the stability modal collapses to the identity on deterministic frames (states_eq_of_deterministic, PlusLanguage/PlusDeterminism.lean), which is why the current device is blind to it by construction and cannot be extended by adding a truth clause.\nSCOPE CLARIFICATION: ADD ALONGSIDE, DO NOT REPLACE. The opening sentence above says \"replace the deterministic witness device\", which overstates the change and must not be read as licence to remove or weaken it. The deterministic bi-lasso device is the L-fragment decision procedure, it is what the consuming model checker ships against today, and its histories characterization and box condition must keep working exactly as they do. The branching structure is an ADDITION covering the larger language; the deterministic one remains the specialization. Both should coexist, ideally with the deterministic case recovered as an instance of the branching one under a functional task relation, so the existing agreement theorem and Decidable instances are not re-proved but specialized. Any change that breaks the deterministic path is out of scope and would regress a shipped consumer.",
@@ -184,7 +184,7 @@
         682
       ],
       "created": "2026-09-26T12:07:18Z",
-      "last_updated": "2026-09-28T06:47:50Z",
+      "last_updated": "2026-09-28T08:13:52Z",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Basic.lean",
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Predicates.lean",
@@ -204,7 +204,7 @@
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md",
         "FormalSystem/Metalogic/Decidability/BiLasso/README.md"
       ],
-      "session_id": "sess_1790578055_e17d42",
+      "session_id": "sess_1790581669_d63489",
       "artifacts": [
         {
           "path": "specs/683_state_sharing_witness_structure_and_c3/reports/01_state-sharing-witness-structure.md",
@@ -219,10 +219,11 @@
         {
           "path": "specs/683_state_sharing_witness_structure_and_c3/summaries/01_state-sharing-witness-structure-summary.md",
           "type": "summary",
-          "summary": "Cumulative round-1 implementation summary, extended to cover Phase 9."
+          "summary": "Cumulative round-1 implementation summary, extended to cover Phases 10-14 and closing the task."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Added a state-sharing (branching) witness device alongside the shipped deterministic bi-lasso device as FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/, closing all fourteen plan phases. The branching frame's histories are characterized by total_eq_thread (replacing ShiftSet.total_eq_orbit, which holds only for a functional task relation), the revised conditions (C0) AtomCoherent, (C1') LocalCoherentShare and (C2') ThreadFulfilling are all decidable, and refutes_of_certifies lands in the unchanged WitnessFamily.Refutes so the two devices are two producers for one interface. The deterministic device is recovered as the diagonal instance WitnessFamily.toSharing, with each branching condition proved equivalent to its deterministic counterpart and the two frames exhibited as isomorphic with truth transported across; ShiftSet.lean and the five deterministic WitnessFamily modules are byte-identical."
     },
     {
       "project_number": 684,
