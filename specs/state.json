@@ -112,10 +112,11 @@
         {
           "path": "specs/687_cross_repo_citation_audit_gating/summaries/01_cross-repo-citation-gating-summary.md",
           "type": "summary",
-          "summary": "cross repo citation gating summary (backfilled by --sync)"
+          "summary": "Execution summary: seed-list extension (53 -> 63), manifest regeneration, corrections-table rows for the second drift cluster, hand-off framing for the three unreached residue rows, deferred cross-repository proposal, and the full green gate."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Extended scripts/lean-citation-seeds.txt (53 -> 63 names) to cover the consuming repository's §4.1 ShiftSet.lean citations, regenerated the manifest, recorded the second drift cluster and a hand-off block for the three unreached residue rows in docs/reference/transcription-audit-surface.md, and confirmed the full check-module-invariants.sh gate (including lake build) passes green with no file touched under ~/Projects/ModelChecker."
     },
     {
       "project_number": 686,

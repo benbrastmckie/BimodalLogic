@@ -154,6 +154,7 @@ VERIFICATION THAT WOULD ACTUALLY SETTLE THE FIRST ITEM. Run the invariants scrip
 - **Dependencies**: Task 688
 - **Research**: [687_cross_repo_citation_audit_gating/reports/01_cross-repo-citation-audit-gating.md]
 - **Plan**: [687_cross_repo_citation_audit_gating/plans/01_cross-repo-citation-gating.md]
+- **Summary**: [687_cross_repo_citation_audit_gating/summaries/01_cross-repo-citation-gating-summary.md]
 
 **Description**: Close the cross-repository citation and audit-surface gap from both ends, so that a line-numbered claim about this development cannot rot silently in the consuming repository's adequacy argument.
 
