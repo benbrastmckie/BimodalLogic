@@ -2,16 +2,20 @@
 
 **Task**: 691 - Resolve c23 naming exemptions
 **Started**: 2026-09-28T21:30:00Z
-**Completed**: 2026-09-28T22:07:00Z
+**Completed**: 2026-09-28T22:44:00Z
 **Effort**: small (measurement only; no Lean source read for proof content)
-**Dependencies**: None blocking. Territory overlap with in-flight task 685 on
-`FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean`, which holds one of
-the eleven pairs — see Risks & Mitigations.
+**Dependencies**: None blocking. Tasks 685 and 693 — the in-flight workstreams this report's
+first pass flagged as territory overlap and inventory volatility — have both since completed
+(`task 685: complete implementation`, `task 693: complete implementation`); see Round 2 Update
+below. No dependency remains open.
 **Sources/Inputs**:
 - `scripts/check-module-invariants.sh` — the C23 block (declaration scan, `UPPER_ALLOW`,
   `SHADOW_ALLOW`, `FROZEN_PREFIX`, the `ENFORCE_C23` guard comment)
 - `scripts/check-module-invariants.sh --no-build`, run against committed `HEAD` (8f8ecb906), and
   re-run from a scratch copy with the `shadow[:10]` print cap lifted
+- Round 2: `scripts/check-module-invariants.sh --no-build` and `scripts/typst-sync-check.sh`,
+  re-run against current `HEAD` (02c2e4a68, post-685/693) to confirm the inventory and gate state
+  are unchanged in substance
 - `FormalSystem/Metalogic/Decidability/` — `BiLasso/`, `WitnessFamily/Sharing/`,
   `WitnessFamily/Compression/`, `PlusWitnessFamily/`
 - `.github/workflows/ci.yml` — step order
@@ -23,6 +27,38 @@ the eleven pairs — see Risks & Mitigations.
 **Standards**: report-format.md, artifact-formats.md
 
 ---
+
+## Round 2 Update (re-verified against current HEAD, post-685/693)
+
+This task's status was still `[RESEARCHING]` with no report linked in `specs/state.json` when
+this round began — the Round 1 findings below existed on disk but had never been committed or
+returned. Rather than re-deriving them, this round re-ran the measurements against current `HEAD`
+(`02c2e4a68`, after tasks 685 and 693 both completed) and confirms every Round 1 finding still
+holds, unchanged in substance:
+
+- The eleven-row inventory (Finding 1) is byte-identical except for the one line-number drift
+  Finding 7 already flagged and priced in: `decidableValidZTime`'s inner site is now at
+  `Compression/Assembly.lean:147` (Round 1 had recorded the pre-685 line `:132`, and separately
+  noted the post-move `:147` as the expected drift — both the table and the text already carried
+  the current value, so no correction was needed here). All ten other rows, and the two
+  `NM_nonneg` sites, are at the exact lines the task description and Round 1 table give.
+- **Finding 7's blocking risk has cleared.** C33 (generated-root freshness) and INV (inventory
+  staleness) both now `PASS` — they were the two gates task 685's in-flight module addition had
+  turned red. `check-module-invariants.sh --no-build` now reports **exactly one** failing check
+  group, C23, with its two `Uppercase_x` names and eleven shadow pairs unchanged.
+- **Territory collision with task 685 has resolved by task completion**, not by scheduling
+  around it: 685 and 693 are both `complete implementation` in git log, so row 1's inner site
+  (`Compression/Assembly.lean`) is no longer being concurrently edited. The Recommendations'
+  "sequence after 685/693" condition (Recommendation 5) is now satisfied.
+- One unrelated, out-of-scope observation: `scripts/typst-sync-check.sh` is red again right now
+  (`formalsystem-file-count: committed=603 live=604`, a line-count mismatch of the same shape
+  Finding 8 already described as a separate, previously-repaired issue). This is `typst/generated/
+  status.typ` trailing the current uncommitted tree, not a C23 finding, and needs no action from
+  this task — flagged only so the plan/implement phase does not mistake it for new C23 fallout.
+
+**Net effect on the plan phase**: the "sequence after 685/693" gate is now open, all measurements
+are current, and the exemption-key decision in Finding 3 is the only substantive choice a plan
+needs to make before editing `scripts/check-module-invariants.sh`.
 
 ## Executive Summary
 
@@ -192,7 +228,8 @@ unpushed commits, which is why no CI run has ever reported it.
 
 - No C23 change was made under this report. The user's standing decision is that the fix belongs
   to this task, taken after tasks 685 and 693 land, on the ground that row 1's inner site sits in
-  685's territory and the inventory is still moving.
+  685's territory and the inventory is still moving. **That condition is now satisfied** — both
+  tasks show `complete implementation` in git log as of this round.
 - The `mem_verts` count is settled at 4, and the eleven-row table above supersedes `x3+`.
 
 ## Recommendations
@@ -209,18 +246,24 @@ unpushed commits, which is why no CI run has ever reported it.
    live and `nonneg` is not, so all three recorded classes miss. `UPPER_ALLOW`'s existing comment
    describes prefixes naming nothing live, which is not this case; extending the set without also
    extending that comment would leave the file self-contradicting.
-5. **Sequence after 685/693**, then clear C33 and INV, then re-run the full gate.
+5. ~~Sequence after 685/693~~ — **satisfied**: both are complete, and C33/INV are already
+   confirmed `PASS` in Round 2. The plan may proceed straight to the exemption-key choice
+   (Recommendation 1) and re-run the full gate after the edit.
 
 ## Risks & Mitigations
 
-- **Territory collision with task 685** on `Compression/Assembly.lean` (row 1). Mitigation:
-  implement after 685 lands; the fix touches only `scripts/check-module-invariants.sh` if the
-  bare-name or triple-key route is chosen, so no Lean file need be edited at all.
+- ~~Territory collision with task 685 on `Compression/Assembly.lean` (row 1)~~ — **resolved**:
+  685 and 693 have both completed (see Round 2 Update). The fix touches only
+  `scripts/check-module-invariants.sh` if the bare-name or triple-key route is chosen, so no Lean
+  file need be edited at all.
 - **A bare-name exemption silently absorbing a future regression** (Finding 3). Mitigation: prefer
   the triple key, or record explicitly in the inline reason that the whole base-name bucket is
   being disabled and why that is acceptable.
 - **Stale line numbers in this report** (Finding 7). Mitigation: treat the table as a census of
-  pairs and namespaces, not of line numbers.
+  pairs and namespaces, not of line numbers. Re-verified in Round 2: only the one line already
+  flagged as moving has moved, and to the value this report already recorded.
+- **`typst-sync-check.sh` red in the working tree** (Round 2 Update). Not a C23 finding and out of
+  this task's scope; do not attempt to fix it under this task's edits.
 
 ## Appendix
 
