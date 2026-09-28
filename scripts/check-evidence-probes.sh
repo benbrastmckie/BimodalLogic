@@ -23,7 +23,14 @@
 # not a unit of work.  It therefore lives in `specs/evidence/`, which is task-independent and
 # tracked, exactly as `specs/reviews/` is.  Do not move a probe back under a task directory.
 #
-# WHAT EACH PROBE HOLDS IN PLACE.  See the table in the WIRED list below.
+# WHAT EACH PROBE HOLDS IN PLACE.  See the tables in the WIRED and WIRED_REPO lists below.
+#
+# TWO ENTRY FORMS.  `WIRED` entries are paths under `specs/evidence/`, which is where a probe
+# belongs.  `WIRED_REPO` entries are full repository-relative paths, for the case where a probe
+# cannot yet be moved into the collection because other files cite its current path verbatim.
+# Both forms are checked identically by `check_probe` below; the second exists only so that a
+# probe stranded outside the collection is still guarded rather than left to rot unwatched.
+# Prefer `WIRED`: reach for `WIRED_REPO` only with a named blocker recorded beside the entry.
 #
 # Usage:
 #   bash scripts/check-evidence-probes.sh
@@ -81,6 +88,38 @@ WIRED=(
   "frame-constraints-audit/mixed-sign-composition-obstruction"
 )
 
+# --- WIRED_REPO ---------------------------------------------------------------------------
+# Repository-relative probe paths, for probes that cannot (yet) live under `specs/evidence/`.
+#
+# probe (repository-relative path)                          | the decision it holds in place
+# ----------------------------------------------------------|-----------------------------------
+# specs/archive/476_box_faithful_small_model_theorem/       | the finite model property FAILS at
+#   evidence/fmp-hypothesis-is-false.lean                   | ZTime for EVERY candidate list --
+#                                                           | `fmp_false` exhibits one formula no
+#                                                           | finite `IntPresentation` satisfies
+#                                                           | but which is ZTime-satisfiable.  This
+#                                                           | is why the decision layer presents
+#                                                           | finite GENERATORS of infinite regular
+#                                                           | models rather than searching for a
+#                                                           | finite model, and why no finite-model
+#                                                           | certificate may be assumed available
+#
+# WHY THIS ONE IS NOT UNDER `specs/evidence/`.  It should be, by the convention in this file's
+# header, and this is a DEFERRED MOVE with a named blocker -- not an exemption.  Three files
+# outside the current writable scope cite the probe by its archive path verbatim
+# (`FormalSystem/Metalogic/Decidability/WitnessFamily/README.md`,
+# `FormalSystem/Metalogic/Decidability/BiLasso/README.md`, and
+# `FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean`), so moving the file would break
+# those citations in the same edit.  Move it when those three sites can be updated together.
+#
+# NOTE ON VERSION CONTROL.  `.gitignore` excludes `specs/archive/`, so this file survives in
+# version control only because it was tracked before it was archived; a *new* file at that path
+# would not be.  `git add` on it needs `git add -u`, since plain `git add` refuses an
+# ignore-matching pathspec.  That fragility is a further reason to complete the move.
+WIRED_REPO=(
+  "specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean"
+)
+
 # --- DEFERRED -----------------------------------------------------------------------------
 # `spike-untl-unfolding-and-fwd-obstruction` is deliberately NOT wired.  It no longer compiles:
 # it cites `FrameClass.Discrete` and `TaskFrame.trivialFrame`, both gone from the current
@@ -95,14 +134,16 @@ failures=0
 echo "Evidence probes (compile-checked outside the build graph)"
 echo "========================================================="
 
-for probe in "${WIRED[@]}"; do
-  file="$EVIDENCE/$probe.lean"
-  printf '  %-62s ' "$probe"
+# One check, both entry forms: $1 is the label printed, $2 the file to compile.
+check_probe() {
+  local label="$1" file="$2"
+  printf '  %-62s ' "$label"
   if [ ! -f "$file" ]; then
     echo "FAIL (missing: $file)"
     failures=$((failures + 1))
-    continue
+    return
   fi
+  local out
   if out=$(lake env lean "$file" 2>&1); then
     echo "PASS"
   else
@@ -110,6 +151,14 @@ for probe in "${WIRED[@]}"; do
     printf '%s\n' "$out" | sed 's/^/        /'
     failures=$((failures + 1))
   fi
+}
+
+for probe in "${WIRED[@]}"; do
+  check_probe "$probe" "$EVIDENCE/$probe.lean"
+done
+
+for probe in "${WIRED_REPO[@]}"; do
+  check_probe "$probe" "$probe"
 done
 
 for probe in "${DEFERRED[@]}"; do
@@ -121,12 +170,14 @@ for probe in "${DEFERRED[@]}"; do
   fi
 done
 
+wired_total=$(( ${#WIRED[@]} + ${#WIRED_REPO[@]} ))
+
 echo
 if [ "$failures" -eq 0 ]; then
-  echo "PASS  all ${#WIRED[@]} wired probe(s) compile"
+  echo "PASS  all $wired_total wired probe(s) compile"
   exit 0
 fi
-echo "FAIL  $failures of ${#WIRED[@]} wired probe(s) failed"
+echo "FAIL  $failures of $wired_total wired probe(s) failed"
 echo
 echo "A probe failing means a recorded design obstruction no longer compiles."
 echo "Do NOT delete the probe or weaken its statements to make this pass: repair the"

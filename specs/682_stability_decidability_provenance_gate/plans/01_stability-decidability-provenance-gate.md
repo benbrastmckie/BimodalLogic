@@ -169,28 +169,28 @@ with no `sorryAx`, with the cause of the drift recorded in the file itself.
 
 ---
 
-### Phase 2: Wire the probe into the evidence-probe rot guard [NOT STARTED]
+### Phase 2: Wire the probe into the evidence-probe rot guard [COMPLETED]
 
 **Goal**: `scripts/check-evidence-probes.sh` compile-checks the repaired probe alongside the five
 it already guards, so a future API drift fails loudly instead of leaving a `sorryAx` behind five
 citations.
 
 **Tasks**:
-- [ ] Re-read `scripts/check-evidence-probes.sh` in full, and record its current output
+- [x] Re-read `scripts/check-evidence-probes.sh` in full, and record its current output
       (`bash scripts/check-evidence-probes.sh`) as the before-state, including which entries PASS.
-- [ ] Extend the probe loop to accept an explicit repository-relative path entry in addition to
+- [x] Extend the probe loop to accept an explicit repository-relative path entry in addition to
       the existing entries relative to `specs/evidence/`. Keep the existing collection-relative
       entries working unchanged — this is an additive path form, not a rewrite.
-- [ ] Add the probe as a guarded entry, with its row in the WIRED table comment naming the
+- [x] Add the probe as a guarded entry, with its row in the WIRED table comment naming the
       decision it holds in place: the finite model property fails at ZTime for every candidate
       list, which is why the decision layer presents finite *generators* of infinite regular
       models rather than searching finite models.
-- [ ] Add a short comment beside the new entry recording why this one probe does not live under
+- [x] Add a short comment beside the new entry recording why this one probe does not live under
       `specs/evidence/` as the script's header prescribes: three files under
       `FormalSystem/Metalogic/Decidability/` cite its archive path verbatim, and those files are
       outside this task's writable scope. Frame it as a deferred move with a named blocker, not as
       an exemption from the convention.
-- [ ] Re-run the script and confirm the five pre-existing entries still PASS.
+- [x] Re-run the script and confirm the five pre-existing entries still PASS.
 
 **Timing**: 1 hour
 
