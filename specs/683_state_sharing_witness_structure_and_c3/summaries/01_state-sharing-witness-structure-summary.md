@@ -1,10 +1,10 @@
 # Implementation Summary: Task #683
 
 - **Task**: 683 - State-sharing witness structure and C3
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Started**: 2026-09-27
-- **Completed**: (not complete — Phases 10-14 remain)
-- **Effort**: ~3 agent dispatches (plan budget: 23.5 hours across 14 phases)
+- **Completed**: 2026-09-28
+- **Effort**: ~4 agent dispatches (plan budget: 23.5 hours across 14 phases)
 - **Dependencies**: 682
 - **Artifacts**: plans/01_state-sharing-witness-structure.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
@@ -104,11 +104,46 @@ Phase 9 Reasoned Exclusions table. Phases 10-14 remain.
     **`decidableCoherentShareAndFulfilling`**. The module now carries
     `set_option linter.style.longFile 1700`, as `lakefile.toml` prescribes for a file over the
     1500-line limit.
-- `FormalSystem/Metalogic/Decidability/WitnessFamily.lean` — seven import lines only.
+- `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Agreement.lean` — new, 411 lines
+    (Phases 10-11). **`model`** (the branching `TaskModel`, valuation a `Quotient.lift` over
+    `share`-classes, taking the (C0) proof as an explicit argument), `valuation_cls`, the two
+    inner inductions along a thread **`untl_mem_along_thread`** / **`snce_mem_along_thread`**,
+    and **`truth_iff_mem`** — T1 for the branching device, by induction on `Formula`'s six
+    constructors, generalised over the thread and the time offset. Then the bundle
+    **`Certifies`** (five components, with (C1') and (C2') nested as one conjunct),
+    **`decidableCertifies`**, `truth_main_iff_mem`, `not_consequence_ztime`,
+    **`joint_countermodel`** and **`refutes_of_certifies`**, the last landing in the unchanged
+    `WitnessFamily.Refutes Γ Del`.
+- `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Specialize.lean` — new, 455 lines
+    (Phases 12-13). **`WitnessFamily.toSharing`** (three singleton `id` segments), `rep_toSharing`,
+    **`share_toSharing`** (`share u i j ↔ i = j`), **`atomCoherent_toSharing`**,
+    **`localCoherentShare_toSharing`** ((C1') ↔ (C1)), `thread_toSharing_eq_zero` /
+    `thread_toSharing_idx` (every thread at the diagonal is constant, by `Int.induction_on` on
+    the step field), **`threadFulfilling_toSharing`** ((C2') ↔ (C2)) and
+    **`certifies_toSharing`**. Then the isomorphism: `step_toSharing`, `reachN_toSharing`,
+    `conn_toSharing` (connectivity at the diagonal is index equality), **`stateEquiv`**,
+    `stateEquiv_cls_pair` / `cls_stateEquiv`, `taskRel_toSharing` and its pair-level twin
+    `taskRel_toSharing'`, **`histEquiv`**, `valuation_toSharing`, **`truthIso`**,
+    **`truth_iff_mem_toSharing`** and `refutes_of_certifies_toSharing`.
+- `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md` — new, 237 lines
+    (Phase 14). The module map, the `share` encoding decision, the thread characterization, the
+    condition-by-condition break/reuse table with the **(C3) correction**, the (C2') fixpoint and
+    its recorded decidability limitation, the accurate `Probe476.fmp_false` scoping, the
+    three-part (C5) status, the consuming-model-checker hand-off, and the diagonal instance.
+- `FormalSystem/Metalogic/Decidability/WitnessFamily/README.md` — Phase 14. A `Sharing/`
+    submodule table and a new `## (C3) BoxFaithful is recombination-stable — a correction`
+    section naming the consuming repository's adequacy document as the thing being corrected.
+- `FormalSystem/Metalogic/Decidability/BiLasso/README.md` — Phase 14. The stability-modal scope
+    note now says plainly that `ShiftSet.total_eq_orbit` holds *because* the shift relation is
+    functional and is false for a branching frame, and points at `../WitnessFamily/Sharing/`
+    where the branching structure it called for now lives.
+- `FormalSystem/Metalogic/Decidability/WitnessFamily.lean` — nine import lines, plus a
+    `Sharing/` entry in the `## Submodules` block.
 - `specs/state.json` — `file_scope` extended (append-only) to cover the new modules.
 
-The deterministic path is byte-identical: `git diff HEAD` over `Semantics/ShiftSet.lean` and
-`WitnessFamily/{Basic,Predicates,Std,Agreement,Decide}.lean` is empty.
+The deterministic path is byte-identical: `git diff` against the dispatch's own starting commit
+over `Semantics/ShiftSet.lean` and `WitnessFamily/{Basic,Predicates,Std,Agreement,Decide}.lean`
+is empty, and so is `git diff HEAD` over the same six files.
 
 ## Decisions
 
@@ -169,6 +204,44 @@ The deterministic path is byte-identical: `git diff HEAD` over `Semantics/ShiftS
 - **The plan's Limit/Saturation reading is confirmed.** `TaskFrame.limit_of_succOrder` needs only
   the zero-duration law, and `TaskFrame.saturation_of_fib_finite` is the infinite-carrier /
   finite-fibres case this construction is. Determinism is used nowhere in the frame discharges.
+- **No `ShiftTruth` analogue, and therefore no `forward_repr`.** The deterministic development
+  states its induction at `ShiftSet.ShiftTruth` and composes with `ShiftSet.forward_repr` to
+  reach `TruthAt`. There is no shift-set layer under the branching frame, so `Sharing/Agreement`
+  states the induction at `TruthAt` from the start, generalised over the thread and the time
+  offset instead of over a carrier point. The role `forward_repr` plays on the deterministic
+  side is played here by nothing, because there is no auxiliary predicate to convert from.
+- **`total_eq_thread` and `thread_is_history` are consumed one per half of the `box` case.**
+  The labels-to-truth half needs every world history to be a thread's trace, so that the
+  induction hypothesis applies to an arbitrary `σ`; that is `total_eq_thread` composed with
+  `WorldHistory.ext_state`. The truth-to-labels half needs every position to carry a history
+  through it, so that a universally quantified truth can be read at an arbitrary `(j, v)`; that
+  is the constant thread at `j` from offset `v - t`. Neither half survives the deterministic
+  argument's shape.
+- **The (C1')/(C2') pair is nested inside `Certifies`, not left flat.** `Fulfil.lean` exports no
+  standalone `Decidable (ThreadFulfilling S)`, so `decidableCertifies` is assembled from four
+  instances and the nesting is what makes that assembly a bare `inferInstanceAs` rather than a
+  `decidable_of_iff` through a reassociation. The bundle still has five *components*; the
+  docstring records both counts.
+- **The two devices coexist because `Refutes` existentially quantifies the frame.** Nothing
+  about the deterministic producer changes, and a consumer written against `Refutes` accepts
+  certificates of either shape with no change; the branching producer simply supplies
+  `S.frame.toTaskFrame` where the deterministic one supplies `W.std.frame`.
+- **The specialization reductions are `iff`s, and only at the diagonal.** `Predicates.lean`
+  already proves (C1') → (C1) and (C2') → (C2) unconditionally. The converses hold exactly
+  because `share u i j ↔ i = j` collapses the shared-successor quantifier to one index and makes
+  every thread constant; `thread_toSharing_idx` is the whole content of the second.
+- **The frames are isomorphic, not equal, and the round trip cannot be collapsed.**
+  `W.std.frame`'s carrier is `Fin |lassos| × ℤ`; `(W.toSharing).frame`'s is a quotient of that
+  type *by equality*, and a quotient by equality is equivalent to what it quotients but never
+  equal to it. A second, quieter obstacle: `W.std.Carrier` is a structure field of a plain `def`
+  (`ShiftSet.ofIntAction`), so it unfolds only at default transparency and a `rw` whose pattern
+  is typed at `Fin |lassos| × ℤ` will not fire against a term typed at `W.std.frame.WorldState`.
+  `stateEquiv_cls_pair`, `cls_stateEquiv` and `taskRel_toSharing'` exist to route around that by
+  `exact` instead of by `rw`.
+- **`Semantics/HistoryMorphism.lean` was not needed.** Its `HistMap`/`HistMorphism` are for
+  non-invertible maps; the diagonal instance gives a genuine `Equiv` of world histories, which
+  is exactly what `TruthIso`'s `hist` field wants, so the transport goes through
+  `TruthTransport.lean`'s `TruthIso` and `Truth.truthAt_of_truthIso` alone.
 
 ## Plan Deviations
 
@@ -215,50 +288,78 @@ The deterministic path is byte-identical: `git diff HEAD` over `Semantics/ShiftS
   deliverable is met on the coercion of `verts` rather than on `Pos`, for the reason in
   Decisions; the phase records that as a representation note. The `#eval` verification bullet
   is discharged by `#guard`, which checks the computed answer instead of only printing it.
+- **Phase 10** `forward_repr` altered: there is no `ShiftSet` layer under the branching frame
+  and hence no `forward_repr` to prove. The induction is stated at `TruthAt` directly and the
+  `box` case is grounded in `total_eq_thread` plus the constant thread, which is the content the
+  plan item names. Annotated inline on the plan's checklist item.
+- **Phase 11** `decidableCertifies` altered: landed in `Sharing/Agreement.lean` beside
+  `Certifies`, not in `Sharing/Decide.lean` as the plan's file list says. `Sharing/Fulfil.lean`
+  imports `Sharing/Decide.lean`, so the joint `decidableCoherentShareAndFulfilling` instance is
+  not in scope in `Decide.lean` and the instance cannot be stated there without inverting the
+  import edge. `Sharing/Decide.lean` is therefore unmodified by this phase.
+- **Phase 11** `Scope Hypothesis` confirmed with the Phase 9 adjustment: five components, four
+  instances. Recorded in the plan.
+- **Phase 12** no deviation.
+- **Phase 13** transport machinery altered: `Semantics/HistoryMorphism.lean` was not used (see
+  Decisions). The specialization corollary is also altered — `WitnessFamily.Refutes` is a `Prop`,
+  so an equality of the two producers' outputs is proof irrelevance and carries no mathematical
+  content. What is landed is that equality, `refutes_of_certifies_toSharing`, together with an
+  explicit docstring saying the substantive specialization is `truthIso` (the two countermodels
+  are built over isomorphic frames) and that the equality's value is what its *statement*
+  requires in order to typecheck: one and the same `Refutes Γ Del`, from one and the same
+  `W.Certifies t`, with no coercion and no re-proof.
+- **Phase 14** one file beyond the plan's three: `WitnessFamily.lean`'s own `## Submodules`
+  block gained a `Sharing/` entry, which would otherwise have been left silently incomplete.
+  Annotated inline on the plan's file list.
 
 ## Verification
 
-- Build: Success. Full `lake build` through the guard, detached: 2748 jobs, exit 0, zero
-  `error:` lines, zero warnings on the new modules, `.olean`s regenerated for every touched
-  module.
-- Sorry count: 0 (over the resolved source roots; `Sharing/` reports 0 on its own).
-- Vacuous count: 0 introduced. The single repo-wide grep hit
-  (`FormalSystem/Examples/TemporalStructures.lean:495`) is pre-existing, unrelated and unchanged.
-- Axiom count: 14, unchanged from the pre-task baseline and from this dispatch's own baseline.
-- `#print axioms` on `share`, `rep_idem'`, `reachN_add`, `frame`, `instIsRegular`,
-  `frame_sat_ztime`, `total_eq_thread`, `thread_is_history`, `localCoherentLab_of_share`,
-  `exists_window_repr`, `atomCoherent_iff_window`, `localCoherentShare_iff_window`,
-  `decidableAtomCoherent`, `decidableLocalCoherentShare`, `AUFix.exists_stab`,
-  `AUFix.lfp_fixed`, `AUFix.lfp_least`, `AUFix.lfp_induction`, `untlFix`, `snceFix`,
-  `rep_nextTime`, `L_prevTime`: each reports exactly
-  `[propext, Classical.choice, Quot.sound]`. No `sorryAx`.
-- `#print axioms` on all twenty-one Phase 9 declarations — `ThreadFulfilling`,
-  `fulfillingLab_of_thread`, `FoldRel`, `FoldRelB`, `exists_fold_fwd`, `exists_fold_back`,
-  `FwdWalk.toThread`, `BwdWalk.toThread`, `untl_propagate_le`, `snce_propagate_ge`,
-  `untl_fulfil_of_exists`, `snce_fulfil_of_exists`, `thread_untl_of_mem_untlFix`,
-  `thread_snce_of_mem_snceFix`, `FulfilWindow`, `decidableFulfilWindow`,
-  `threadFulfilling_of_window`, `window_of_threadFulfilling`, `threadFulfilling_iff_window`,
-  `decidableThreadFulfilling`, `decidableCoherentShareAndFulfilling` — reports exactly
-  `[propext, Classical.choice, Quot.sound]` in every case; twenty-one reports, zero `sorryAx`.
-- `example (S : SharingWitnessFamily Γ Del) : Decidable (S.LocalCoherentShare ∧ S.ThreadFulfilling) := inferInstance`
-  elaborates, in the module, by synthesis. This is the replacement for the plan's
-  `Decidable (ThreadFulfilling S)` verification bullet, which is excluded with the instance.
-- The three `SmokeTest` `#guard`s pass, which is a real check and not a print: on the one-lasso
-  family the window is `[-2, 4)`, `untlFix p p` is the single position at time `-1`, and
-  `snceFix p p` its mirror at time `1`.
-- `example (W : WitnessFamily Γ Del) (t : ℤ) : Decidable (W.Certifies t) := inferInstance` still
-  elaborates: the deterministic decision procedure is intact.
-- `bash .claude/scripts/check-task-references.sh`: PASS, 0 unexempted occurrences.
-- Plan-compliance spot-check against the plan's fifteen pinned Goals (sixteen minus the
-  excluded (C5)): 9 present (`SharingWitnessFamily`, `share`, `Thread`, `frame`,
-  `instIsRegular`, `total_eq_thread`, `AtomCoherent`, `LocalCoherentShare`,
-  `ThreadFulfilling`), 6 absent (`Certifies`, `decidableCertifies`, `truth_iff_mem`,
-  `refutes_of_certifies`, `toSharing`, `certifies_toSharing`) — they belong to Phases 10-14,
-  which were not reached. Read the raw bare-name grep with care: `Certifies`,
-  `decidableCertifies`, `truth_iff_mem` and `refutes_of_certifies` all match the *deterministic*
-  namesakes in `WitnessFamily/`, so the counts above are the namespace-qualified ones.
-  Phases 7, 8 and 9 additionally deliver supporting plumbing, which the plan states carries no
-  pinned statement.
+All figures below are this dispatch's own, re-measured after Phase 14.
+
+- Build: **Success.** Full `lake build` through `lake-build-guard.sh`, detached: guard
+  `exit_status=0`, `Build completed successfully (2750 jobs)`, zero `error:` lines over both
+  captured streams, and `.olean` newer than source for every module this task touched
+  (`Sharing/Agreement`, `Sharing/Specialize`, `WitnessFamily`).
+- Sorry count: **0** (`lean-sorry-census.sh` over the eight resolved source roots).
+- Vacuous count: **0 introduced.** The repo-wide single-line grep returns one hit,
+  `FormalSystem/Examples/TemporalStructures.lean:495`
+  (`theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial`). It is
+  pre-existing — last touched by an unrelated earlier change, and `git diff` over that file is
+  empty for this dispatch — and it is a true theorem whose proposition is definitionally `True`
+  for a total history, not a placeholder standing in for an unproved obligation. It is a false
+  positive of the heuristic, not a vacuous definition.
+- Axiom count: **14**, unchanged from the pre-task baseline and from this dispatch's baseline.
+- `#print axioms` on **all fifteen** of the plan's pinned Goals, fully qualified —
+  `SharingWitnessFamily`, `.share`, `.Thread`, `.frame`, `.instIsRegular`, `.total_eq_thread`,
+  `.AtomCoherent`, `.LocalCoherentShare`, `.ThreadFulfilling`, `.Certifies`,
+  `.decidableCertifies`, `.truth_iff_mem`, `.refutes_of_certifies`, `WitnessFamily.toSharing`,
+  `WitnessFamily.certifies_toSharing` — fifteen reports, every one exactly
+  `[propext, Classical.choice, Quot.sound]`, zero `sorryAx`. Elaborating those `#print axioms`
+  lines is itself the existence check: a missing declaration is an elaboration error, which is
+  strictly stronger evidence than the bare-name grep the compliance spot-check runs.
+- `#print axioms` likewise clean on the new supporting declarations: `model`,
+  `untl_mem_along_thread`, `snce_mem_along_thread`, `joint_countermodel`,
+  `not_consequence_ztime`, `localCoherentShare_toSharing`, `threadFulfilling_toSharing`,
+  `atomCoherent_toSharing`, `stateEquiv`, `histEquiv`, `truthIso`, `truth_iff_mem_toSharing`,
+  `refutes_of_certifies_toSharing`.
+- `example (S : SharingWitnessFamily Γ Del) (t : ℤ) : Decidable (S.Certifies t) := inferInstance`
+  elaborates, in the module, by synthesis — the Phase 11 verification bullet.
+- `#check @SharingWitnessFamily.refutes_of_certifies` shows the codomain
+  `WitnessFamily.Refutes Γ Del`, the **same** statement the deterministic producer lands in.
+- `grep -n "BoxFaithful" Sharing/Agreement.lean`: the existing (C3) is *applied* (as the
+  hypothesis `hbox : S.toWitnessFamily.BoxFaithful`), never restated.
+  `grep -n "StabFaithful" Sharing/Agreement.lean`: one hit, in the module docstring only.
+- Deterministic path untouched: `git diff --stat` against this dispatch's starting commit over
+  `Semantics/ShiftSet.lean` and `WitnessFamily/{Basic,Predicates,Std,Agreement,Decide}.lean` is
+  empty. `example (W : WitnessFamily Γ Del) (t : ℤ) : Decidable (W.Certifies t) := inferInstance`
+  still elaborates.
+- `bash .claude/scripts/check-task-references.sh`: **PASS**, 0 unexempted occurrences across 4
+  trees.
+- Plan-compliance spot-check: **passed**. The contract's grep extracts only dot-free backticked
+  names from the plan's Goals block, which is `SharingWitnessFamily` and `share`; both are
+  present. The namespace-qualified evidence for all fifteen is the `#print axioms` run above.
+- Earlier phases' verification evidence (the Phase 1-9 `#print axioms` runs and the three
+  `SmokeTest` `#guard`s) stands unchanged; the `#guard`s re-ran green in the full build.
 - Tests: N/A (no test-suite change; the branching device has no `Examples.lean` entry yet).
 - Files verified: Yes.
 
@@ -282,19 +383,34 @@ The deterministic path is byte-identical: `git diff HEAD` over `Semantics/ShiftS
 - `FwdWalk`/`BwdWalk` and their `toThread` are reusable: any later development that needs to
   exhibit a thread realizing a graph walk should go through them rather than building the index
   function by hand.
+- **The certificate format is now two-shaped, at one interface.** `WitnessFamily.Refutes Γ Del`
+  has two producers, and a consumer written against it accepts either with no change. A model
+  checker that wants to emit a sharing certificate adds exactly three fields — `repBack`,
+  `repMid`, `repFwd`, three periodic segments of idempotent index maps in the same shape as the
+  existing label segments — and changes the accepting branch's name; the five exported fields
+  keep their names, meanings and shapes. `Sharing/README.md` carries that hand-off as prose.
+- **The received account's (C3) claim is corrected in-repo, twice.** Both
+  `WitnessFamily/README.md` and `Sharing/README.md` now record that `BoxFaithful`'s right-hand
+  side quantifies over the label pool and mentions no history, so recombination adds nothing for
+  `□` to range over; what breaks is (C1) and (C2), both stated per lasso. A future reader coming
+  from the consuming repository's adequacy document meets the correction before the code.
+- **`Probe476.fmp_false` is now scoped accurately in-repo.** It refutes a finite model property
+  for time-free finite digraphs, by a pigeonhole step that has no analogue here because the time
+  coordinate stays in the carrier. It is a reason to prefer a labelled family over a finite
+  presentation as the searched object, not an obstruction to admitting recombined histories.
 
 ## Follow-ups
 
-- **The Phase 9 difficulty resolved as the Phase 8 handoff predicted, and the resolution needs
-  a user decision.** The far-left case is closed by (C1') propagation, so the window reduction
-  is coherence-relative and the standalone `Decidable (ThreadFulfilling S)` is not available.
-  Two options, of which the second is what is implemented: (1) keep the plan's standalone
-  instance and find a genuinely unconditional far-left argument — which would mean giving the
-  graph's backward region a cycle edge `-1 → -NB-1` alongside `-1 → 0`, i.e. reopening Phase 8's
-  committed `succF`, and re-proving its fixpoint lemmas against a strictly larger walk set; or
-  (2) accept the coherence-relative form, which costs nothing downstream because `Certifies`
-  carries (C1') anyway. Option 1 is not refuted, only out of scope for this dispatch. The
-  decision is relayed as `user_decision` on `.return-meta.json`.
+- **The standalone `Decidable (ThreadFulfilling S)` remains open, and is now settled as
+  accepted rather than pending.** The far-left case of the (C2') window reduction is closed by
+  (C1') propagation, so the reduction is coherence-relative. The user decision (recorded in
+  `.return-meta.json` from the previous cycle and carried into this dispatch's Prior Decisions)
+  accepted the coherence-relative form: `Certifies` carries (C1') anyway, so
+  `decidableCertifies` assembles from four pieces and nothing downstream loses anything. The
+  unconditional form is not refuted — it would need the position graph's backward region to
+  carry a cycle edge `-1 → -NB-1` alongside `-1 → 0`, and the fixpoint lemmas re-proved against
+  the strictly larger walk set — and is recorded in `Sharing/README.md` as a possible
+  refinement, not a defect.
 - **(C5) is settled, not open.** `StabFaithful` as pinned is not stateable at this
   datatype: `WitnessFamily` is indexed by `Context = List Formula`, and
   `FormalSystem.Syntax.Formula` has six constructors with no `⊡`; the stability modal is
@@ -307,17 +423,22 @@ The deterministic path is byte-identical: `git diff HEAD` over `Semantics/ShiftS
   `.decisions.json`, cycle 3): (C5) moves to a follow-up task that introduces an L⁺-indexed
   certificate datatype. Phase 6 carries the full `Reasoned Exclusions` record, and Phases 10,
   11 and 12 each lost exactly one deliverable.
-- Phases 10-14 remain. See `handoffs/phase-9-handoff-20260928.md` for the resume point, the
-  inherited API inventory, and five further elaboration traps (thirteen through seventeen);
-  `handoffs/phase-8-handoff-20260928.md` and `handoffs/phase-6-handoff-20260927.md` carry the
-  first twelve.
-- **Phase 11 has a concrete adjustment waiting.** Assemble `decidableCertifies` from four
-  pieces — `decidableAtomCoherent`, `decidableCoherentShareAndFulfilling`,
-  `decidableBoxFaithful`, `decidableTarget` — and either order `Certifies`' projections so the
-  (C1')/(C2') pair is adjacent or prove the instance by `decidable_of_iff` through the
-  reassociated conjunction. The plan's Phase 11 task list records this.
-- `Sharing/README.md`, the `WitnessFamily/README.md` submodule map and the `BiLasso/README.md`
-  scoping of the all-histories claim are Phase 14 items and are not yet written.
+- **All fourteen phases are complete.** The three phase handoffs
+  (`phase-6`, `phase-8`, `phase-9`) remain useful as an elaboration-trap catalogue (seventeen
+  traps, numbered), and `phase-14-handoff-20260928.md` records the final state.
+- **The branching device has no `Examples.lean`.** The deterministic device has a non-vacuity
+  witness (`posFamily`), a separation witness (`sepFamily`) and two impossibility theorems.
+  `Sharing/` has the three `SmokeTest` `#guard`s on the fixpoint computation and nothing else:
+  there is no worked example of a family whose branching genuinely does something the
+  deterministic one cannot — specifically, no exhibited family satisfying (C1') and (C2') whose
+  `share` is non-trivial, and no exhibited family satisfying the deterministic (C2) but failing
+  (C2'). The second would be the direct non-vacuity witness for the whole design, since it is
+  exactly the gap the branching fulfilment check exists to catch. Worth a follow-up.
+- **The complexity bound is recorded but not measured.** The fulfilment fixpoint runs over a
+  graph of size `|lassos| · (2·NB + NM + 2·NF)` with `NB`/`NF` products over cycle lengths, so
+  it is exponential in the number of lassos in the worst case. No benchmark exists.
+- **The consuming model checker is not updated.** `Sharing/README.md` records what it would need
+  to emit; that repository is deliberately untouched by this work.
 
 ## References
 
@@ -326,4 +447,6 @@ The deterministic path is byte-identical: `git diff HEAD` over `Semantics/ShiftS
 - `specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-6-handoff-20260927.md`
 - `specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-8-handoff-20260928.md`
 - `specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-9-handoff-20260928.md`
+- `specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-14-handoff-20260928.md`
+- `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md` (the durable in-repo map)
 - `specs/683_state_sharing_witness_structure_and_c3/.decisions.json` (the (C5) scope decision)
