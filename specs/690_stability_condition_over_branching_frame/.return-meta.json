@@ -1,26 +1,35 @@
 {
-  "status": "researched",
-  "dispatch_seq": 3,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/690_stability_condition_over_branching_frame/reports/01_stability-condition-branching-frame.md",
-      "summary": "Establishes that (C5) StabFaithful is finitary and decidable on the branching frame via total_eq_thread + truth_iff_mem, corrects the L-plus closure cost estimate from ~2,257 to ~250 lines, identifies a label-free SharingSkeleton factoring that reuses 1,065 landed lines, and sets out two viable architectures (full L-plus re-index vs. atomization) with a blocking user decision between them."
+      "type": "plan",
+      "path": "specs/690_stability_condition_over_branching_frame/plans/01_stability-condition-branching-frame.md",
+      "summary": "Route 1 (L-plus-indexed certificate over a label-free SharingSkeleton) in 22 phases across the research report's seven stages A-G, pinning 34 Lean declarations including (C5) StabFaithful, its decidability instance, and the agreement/non-vacuity/diagonal theorems that make it a real obligation."
     }
   ],
-  "user_decision": {
-    "question": "Which datatype should (C5) StabFaithful be stated over: a new L-plus-indexed certificate that leaves the shipping JSON export contract untouched, or the existing Formula certificate run on an atomized target, which is ~4x cheaper but adds a field to the shipping certificate and states (C5) at Formula?",
-    "options": [
-      "Route 1 - L-plus-indexed certificate over a label-free SharingSkeleton: ~2,400-3,900 new Lean lines in seven phases; shipping deterministic export contract unchanged in name, meaning and shape; (C5) stated natively over PlusFormula.stab.",
-      "Route 2 - atomization: run the existing Formula certificate on an expanded atomized target and constrain stab-atoms via a finite pairing; ~600-900 lines, zero re-indexing, all five existing conditions and decision procedures reused; but adds a pairing field to the shipping certificate (re-opens the JSON export contract additively) and states StabFaithful at Formula."
-    ],
-    "recommended": "Route 1 - L-plus-indexed certificate over a label-free SharingSkeleton: ~2,400-3,900 new Lean lines in seven phases; shipping deterministic export contract unchanged in name, meaning and shape; (C5) stated natively over PlusFormula.stab.",
-    "blocking": true
-  },
+  "next_steps": "Run /implement 690 to execute the plan",
   "metadata": {
     "session_id": "sess_1790617342_e2d44f_690",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 22,
+    "estimated_hours": 41,
+    "dependency_waves": [[1,6],[2,7],[3,8],[4],[5],[9],[10,11,12],[13,16],[14,15,17],[18],[19],[20],[21],[22]]
+  },
+  "memory_candidates": [
+    {
+      "content": "In this repo, .claude/scripts/lean-challenge-snapshot.sh cross-validates a lean plan's '## Lean Challenge Statements' block against its '**Goals**:' list, but both extractors are coarser than they look: the Goals regex only matches UNDOTTED backticked tokens (`foo`), so any dotted entry like `Ns.thm` is silently dropped from the goals set; and the declaration regex matches only theorem/lemma/def/instance (never `structure`) and captures only the FIRST dotted segment, so `def Ns.thm` registers as `Ns`. Consequence for plan authors: the Goals list must be written at namespace-head granularity matching what the tool extracts, every namespace head must appear as the head of at least one def/theorem/instance (a bare `structure` alone will not register it), and the precise per-declaration list belongs in a dotted-only sentence (invisible to the regex) or in the phase bodies. Verify with `bash .claude/scripts/lean-challenge-snapshot.sh <task> <root> --dry-run` before returning a plan; exit 71 is the identifier-set mismatch.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/690_stability_condition_over_branching_frame/plans/01_stability-condition-branching-frame.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lean-challenge-snapshot", "plan-format", "lean4", "goals-identifiers", "challenge-statements", "validation"]
+    }
+  ],
+  "modified_files": [
+    "specs/690_stability_condition_over_branching_frame/plans/01_stability-condition-branching-frame.md",
+    "specs/690_stability_condition_over_branching_frame/.return-meta.json",
+    "specs/690_stability_condition_over_branching_frame/.orchestrator-handoff.json"
+  ],
+  "dispatch_seq": 6
 }

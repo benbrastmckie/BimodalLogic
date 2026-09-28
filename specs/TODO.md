@@ -100,16 +100,17 @@ next_project_number: 691
 
 ### Semantics
 
-690 [PLANNING] — Build the stability condition (C5) StabFaithful on the...
+690 [PLANNED] — Build the stability condition (C5) StabFaithful on the...
 
 ## Tasks
 
 ### 690. Stability condition over branching frame
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 683
 - **Research**: [690_stability_condition_over_branching_frame/reports/01_stability-condition-branching-frame.md]
+- **Plan**: [690_stability_condition_over_branching_frame/plans/01_stability-condition-branching-frame.md]
 
 **Description**: Build the stability condition (C5) StabFaithful on the branching witness frame, which is the substrate that makes it stateable. Research, plan and implement all three phases properly -- this is the deliverable that was excluded from the state-sharing witness work on a recorded user decision, not a defect in it.
 
