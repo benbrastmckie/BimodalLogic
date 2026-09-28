@@ -629,12 +629,242 @@
       "span_end": 319,
       "span_start": 292,
       "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Predicates.lean",
+      "group": "Certificate conditions (C1)-(C4)",
+      "keyword_line": 72,
+      "name": "FormalSystem.Metalogic.Decidability.WitnessFamily.LocalCoherentLab",
+      "span_end": 85,
+      "span_start": 65,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Predicates.lean",
+      "group": "Certificate conditions (C1)-(C4)",
+      "keyword_line": 93,
+      "name": "FormalSystem.Metalogic.Decidability.WitnessFamily.FulfillingLab",
+      "span_end": 98,
+      "span_start": 86,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Predicates.lean",
+      "group": "Certificate conditions (C1)-(C4)",
+      "keyword_line": 106,
+      "name": "FormalSystem.Metalogic.Decidability.WitnessFamily.BoxFaithful",
+      "span_end": 109,
+      "span_start": 99,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Predicates.lean",
+      "group": "Certificate conditions (C1)-(C4)",
+      "keyword_line": 115,
+      "name": "FormalSystem.Metalogic.Decidability.WitnessFamily.Target",
+      "span_end": 117,
+      "span_start": 110,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Predicates.lean",
+      "group": "Certificate conditions (C1)-(C4)",
+      "keyword_line": 132,
+      "name": "FormalSystem.Metalogic.Decidability.WitnessFamily.Certifies",
+      "span_end": 134,
+      "span_start": 118,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Basic.lean",
+      "group": "Certificate conditions (C1)-(C4)",
+      "keyword_line": 75,
+      "name": "FormalSystem.Metalogic.Decidability.LabelledLasso",
+      "span_end": 93,
+      "span_start": 68,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Basic.lean",
+      "group": "Certificate conditions (C1)-(C4)",
+      "keyword_line": 96,
+      "name": "FormalSystem.Metalogic.Decidability.LabelledLasso.lab",
+      "span_end": 98,
+      "span_start": 94,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Agreement.lean",
+      "group": "Certificate conditions (C1)-(C4)",
+      "keyword_line": 248,
+      "name": "FormalSystem.Metalogic.Decidability.WitnessFamily.joint_countermodel",
+      "span_end": 260,
+      "span_start": 244,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Agreement.lean",
+      "group": "Certificate conditions (C1)-(C4)",
+      "keyword_line": 282,
+      "name": "FormalSystem.Metalogic.Decidability.WitnessFamily.refutes_of_certifies",
+      "span_end": 289,
+      "span_start": 274,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Agreement.lean",
+      "group": "Certificate conditions (C1)-(C4)",
+      "keyword_line": 269,
+      "name": "FormalSystem.Metalogic.Decidability.WitnessFamily.Refutes",
+      "span_end": 273,
+      "span_start": 261,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Cycle.lean",
+      "group": "Compression: the A1 candidate",
+      "keyword_line": 250,
+      "name": "FormalSystem.Metalogic.Decidability.cycleBoundC",
+      "span_end": 251,
+      "span_start": 238,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Extract.lean",
+      "group": "Compression: the A1 candidate",
+      "keyword_line": 298,
+      "name": "FormalSystem.Metalogic.Decidability.midBoundC",
+      "span_end": 299,
+      "span_start": 292,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Extract.lean",
+      "group": "Compression: the A1 candidate",
+      "keyword_line": 311,
+      "name": "FormalSystem.Metalogic.Decidability.compressionBound",
+      "span_end": 313,
+      "span_start": 304,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Extract.lean",
+      "group": "Compression: the A1 candidate",
+      "keyword_line": 342,
+      "name": "FormalSystem.Metalogic.Decidability.exists_labelledLasso_of_history_realized",
+      "span_end": 569,
+      "span_start": 322,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Extract.lean",
+      "group": "Compression: the A1 candidate",
+      "keyword_line": 579,
+      "name": "FormalSystem.Metalogic.Decidability.exists_labelledLasso_of_history",
+      "span_end": 594,
+      "span_start": 570,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Family.lean",
+      "group": "Compression: the A1 candidate",
+      "keyword_line": 91,
+      "name": "FormalSystem.Metalogic.Decidability.boxedPart",
+      "span_end": 93,
+      "span_start": 90,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Family.lean",
+      "group": "Compression: the A1 candidate",
+      "keyword_line": 153,
+      "name": "FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime",
+      "span_end": 333,
+      "span_start": 128,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Enumerate.lean",
+      "group": "Compression: the A1 candidate",
+      "keyword_line": 245,
+      "name": "FormalSystem.Metalogic.Decidability.cands",
+      "span_end": 250,
+      "span_start": 238,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Enumerate.lean",
+      "group": "Compression: the A1 candidate",
+      "keyword_line": 258,
+      "name": "FormalSystem.Metalogic.Decidability.mem_cands_of_bounded",
+      "span_end": 279,
+      "span_start": 251,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean",
+      "group": "Compression: the A1 candidate",
+      "keyword_line": 113,
+      "name": "FormalSystem.Metalogic.Decidability.validZTime_iff_noCertifiedCandidate",
+      "span_end": 129,
+      "span_start": 99,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean",
+      "group": "Compression: the A1 candidate",
+      "keyword_line": 147,
+      "name": "FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime",
+      "span_end": 151,
+      "span_start": 130,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Family.lean",
+      "group": "Compression: the A1 candidate",
+      "keyword_line": 118,
+      "name": "FormalSystem.Metalogic.Decidability.semanticConsequenceIn_nil_iff",
+      "span_end": 127,
+      "span_start": 117,
+      "status": "resolved"
+    },
+    {
+      "field": null,
+      "file": "FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean",
+      "group": "Compression: the A1 candidate",
+      "keyword_line": 161,
+      "name": "FormalSystem.Metalogic.Decidability.decidableSemanticConsequenceNil",
+      "span_end": 167,
+      "span_start": 152,
+      "status": "resolved"
     }
   ],
   "generated_by": "scripts/export-lean-citations.py",
   "note": "Generated. Do not hand-edit: C35 in scripts/check-module-invariants.sh compares this file against a fresh resolution and fails when they differ. Cite the `name` field; the line numbers here are a derived view and are expected to move.",
-  "resolved": 63,
+  "resolved": 86,
   "schema": 1,
   "seed_list": "scripts/lean-citation-seeds.txt",
-  "total": 63
+  "total": 86
 }

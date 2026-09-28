@@ -109,3 +109,30 @@ FormalSystem.Semantics.ShiftSet.fibre
 FormalSystem.Semantics.ShiftSet.frame
 FormalSystem.Semantics.ShiftSet.ShiftTruth
 FormalSystem.Semantics.Truth.box_const
+
+## Certificate conditions (C1)-(C4)
+FormalSystem.Metalogic.Decidability.WitnessFamily.LocalCoherentLab
+FormalSystem.Metalogic.Decidability.WitnessFamily.FulfillingLab
+FormalSystem.Metalogic.Decidability.WitnessFamily.BoxFaithful
+FormalSystem.Metalogic.Decidability.WitnessFamily.Target
+FormalSystem.Metalogic.Decidability.WitnessFamily.Certifies
+FormalSystem.Metalogic.Decidability.LabelledLasso
+FormalSystem.Metalogic.Decidability.LabelledLasso.lab
+FormalSystem.Metalogic.Decidability.WitnessFamily.joint_countermodel
+FormalSystem.Metalogic.Decidability.WitnessFamily.refutes_of_certifies
+FormalSystem.Metalogic.Decidability.WitnessFamily.Refutes
+
+## Compression: the A1 candidate
+FormalSystem.Metalogic.Decidability.cycleBoundC
+FormalSystem.Metalogic.Decidability.midBoundC
+FormalSystem.Metalogic.Decidability.compressionBound
+FormalSystem.Metalogic.Decidability.exists_labelledLasso_of_history_realized
+FormalSystem.Metalogic.Decidability.exists_labelledLasso_of_history
+FormalSystem.Metalogic.Decidability.boxedPart
+FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime
+FormalSystem.Metalogic.Decidability.cands
+FormalSystem.Metalogic.Decidability.mem_cands_of_bounded
+FormalSystem.Metalogic.Decidability.validZTime_iff_noCertifiedCandidate
+FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime
+FormalSystem.Metalogic.Decidability.semanticConsequenceIn_nil_iff
+FormalSystem.Metalogic.Decidability.decidableSemanticConsequenceNil

@@ -248,24 +248,24 @@ replacements) with no site left carrying the over-stated form, and no fourth sit
 
 ---
 
-### Phase 3: Add the validated seed block and regenerate the citation manifest [NOT STARTED]
+### Phase 3: Add the validated seed block and regenerate the citation manifest [COMPLETED]
 
 **Goal**: Put the twenty-three declarations this conformance argument turns on under C35, so a
 future rename or move fails a gate in this repository instead of rotting silently in a consuming
 document.
 
 **Tasks**:
-- [ ] Re-read `scripts/lean-citation-seeds.txt` and confirm it still carries 63 resolvable names
+- [x] Re-read `scripts/lean-citation-seeds.txt` and confirm it still carries 63 resolvable names
       and no `Compression` entry.
-- [ ] Append the report's validated block verbatim, preserving its two `##` group comments
+- [x] Append the report's validated block verbatim, preserving its two `##` group comments
       ("Certificate conditions (C1)-(C4)" and "Compression: the A1 candidate") so the generated
       manifest's `group` field stays meaningful, and keeping `LabelledLasso` and `LabelledLasso.lab`
       at `FormalSystem.Metalogic.Decidability.*` (they are **not** nested under `WitnessFamily`).
-- [ ] Add no name that resolves into sibling-owned `WitnessFamily/Decide.lean` or `Closure.lean`.
-- [ ] Run `python3 scripts/export-lean-citations.py` (regenerate; never hand-edit the manifest).
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C35 reports the manifest
+- [x] Add no name that resolves into sibling-owned `WitnessFamily/Decide.lean` or `Closure.lean`.
+- [x] Run `python3 scripts/export-lean-citations.py` (regenerate; never hand-edit the manifest).
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and confirm C35 reports the manifest
       byte-current.
-- [ ] Confirm the regenerated manifest's diff is confined to the new entries plus the
+- [x] Confirm the regenerated manifest's diff is confined to the new entries plus the
       `total`/`resolved`/`seed_list` bookkeeping, and that no pre-existing entry's line numbers
       moved for a reason this task cannot explain (an unexplained move is the sibling-edit signal;
       STOP and report rather than committing over it).
@@ -290,8 +290,18 @@ means a name moved since the research dry run — resolve it by name, never by d
 
 **Verification**:
 - `python3 scripts/export-lean-citations.py` exits 0 and reports 86 resolved, 0 unresolved.
-- `bash scripts/check-module-invariants.sh --no-build` passes with C35 green.
-- `git diff --stat -- scripts/` shows exactly the two files.
+- `bash scripts/check-module-invariants.sh --no-build` passes with C35 green. *(deviation:
+  altered — C35 is green, reporting the manifest byte-current with all 86 seeded declarations
+  resolving at the recorded file, keyword line and span. The gate as a whole exits 1, on the single
+  pre-existing `C23` group proven already failing at the `29522e6b8` baseline; the `INV` and `C33`
+  failures observed during Phase 2 have since been cleared by the sibling, confirming they were
+  never this task's.)*
+- `git diff --stat -- scripts/` shows exactly the two files. *(deviation: altered — it shows four:
+  this task's `lean-citation-seeds.txt` and `lean-citation-manifest.json`, plus
+  `check-module-invariants.sh` and `measure-refactor-partitions.py`, neither of which this task
+  touched. The first is sibling task 685's in-flight edit — outside 685's declared file_scope — and
+  the second was already modified before this task's implementation phase began. Staging is by
+  explicit two-file list, so neither enters this task's commit.)*
 - Spot-check that the new entries' `file` fields land where expected (`Compression/{Extract,Family,
   Enumerate,Assembly,Cycle}.lean`, `WitnessFamily/{Predicates,Agreement,Basic}.lean`) and that none
   lands in `WitnessFamily/{Decide,Closure}.lean`.
