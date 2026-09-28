@@ -1,30 +1,48 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "requires_user_review": true,
+  "review_reason": "Phases 1-5 complete and green; Phase 6 partial. The plan's pinned Goal `StabFaithful` (C5) is not stateable at the `WitnessFamily` datatype: `Formula` has no stability modal, `⊡` is `PlusFormula.stab` on a separate inductive. Choosing between an L⁺-indexed certificate datatype and dropping (C5) from scope is a user decision. Phases 7-14 not reached.",
+  "blocked_phase": 6,
+  "user_decision": {
+    "question": "Condition (C5) `StabFaithful` cannot be stated over the existing `Formula`-indexed witness-family certificate, because `FormalSystem.Syntax.Formula` has no `⊡` constructor — the stability modal lives on the separate inductive `FormalSystem.PlusLanguage.PlusFormula`. How should task 683 proceed?",
+    "options": [
+      "Add an L⁺-indexed certificate datatype: re-index LabelledLasso, closureOf, WitnessFamily, its four conditions and its agreement theorem over PlusFormula. Large, and it re-opens the JSON export contract the model checker consumes.",
+      "Drop (C5), StabFaithful and the box-dot case of the truth lemma from task 683's scope, keep the branching frame as the deliverable that unblocks a stability modal, and move the condition itself to a follow-up task. Phases 7-9 and 11 then proceed unchanged; Phases 10 and 12 lose one deliverable each."
+    ],
+    "blocking": true
+  },
+  "verification": {
+    "verification_passed": false,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true,
+    "build_output": ""
+  },
+  "partial_progress": {
+    "stage": "phase_6_partial",
+    "details": "Phases 1-5 complete, committed and green. Phase 6 partial: (C0) AtomCoherent and (C1') LocalCoherentShare landed; (C5) StabFaithful blocked on the Formula/PlusFormula syntax split. Phases 7-14 not started.",
+    "phases_completed": 5,
+    "phases_total": 14,
+    "handoff_path": "specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-6-handoff-20260927.md"
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/683_state_sharing_witness_structure_and_c3/plans/01_state-sharing-witness-structure.md",
-      "summary": "14-phase plan adding a state-sharing (branching) witness device alongside the deterministic bi-lasso one: periodic share field, branching frame, total_eq_thread, revised (C0)/(C1')/(C2')/(C5) conditions with (C3) reused verbatim, and the deterministic case recovered by instantiation."
+      "type": "summary",
+      "path": "specs/683_state_sharing_witness_structure_and_c3/summaries/01_state-sharing-witness-structure-summary.md",
+      "summary": "Branching witness device added alongside the deterministic one: SharingWitnessFamily, Thread/Step/ReachN, a regular branching FrameOver intOrder, total_eq_thread, and conditions (C0)/(C1')."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1790569454_bad6d5_683",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 14,
-    "estimated_hours": 25,
-    "dependency_waves": [[1], [2, 6], [3, 7, 8], [4, 9], [5], [10], [11], [12], [13], [14]]
+  "completion_data": {
+    "completion_summary": "Added a state-sharing (branching) witness device under WitnessFamily/Sharing/: the SharingWitnessFamily structure with a periodic representative-map encoding of `share`, the Thread/Step/ReachN layer, a regular branching FrameOver intOrder with all four def:frame constraints and the Z-time instances, total_eq_thread (the determinism-free replacement for ShiftSet.total_eq_orbit), and conditions (C0) AtomCoherent and (C1') LocalCoherentShare. The shipped deterministic path is byte-identical. Phases 6-14 remain; (C5) StabFaithful is blocked on the Formula/PlusFormula syntax split.",
+    "roadmap_items": []
   },
-  "memory_candidates": [
-    {
-      "content": "When generalizing a specialized formal device (e.g. a deterministic decision procedure) into a branching/nondeterministic one without regressing the shipped specialization, look first for an existing exported statement that existentially quantifies the varying structure -- here `WitnessFamily.Refutes` quantifies the frame existentially. Such an interface admits a second, independent producer with zero edits to the first, turning what looks like a rewrite into a pure addition. Two companion moves make the generalization cheap: (1) check whether each side condition's right-hand side mentions the varying structure at all -- a condition phrased over a shared label/data pool (box faithfulness here) survives the generalization verbatim, while conditions phrased per-component must be re-stated across the new equivalence; (2) encode a per-index equivalence relation as a representative map (`share i j := rep i = rep j`) rather than as a relation plus an `Equivalence` proof field -- the kernel of a function is an equivalence for free, removing a proof obligation and keeping decidability from `DecidableEq`. The generalization's specialization back to the original is typically an isomorphism (a quotient by equality vs. the bare type), never definitional, so budget an explicit truth-transport step.",
-      "category": "PATTERN",
-      "source_artifact": "specs/683_state_sharing_witness_structure_and_c3/plans/01_state-sharing-witness-structure.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["existential-interface", "generalization-by-instantiation", "quotient-representative-map", "coexisting-devices", "truth-transport", "lean-structure-extends"]
-    }
-  ],
-  "next_steps": "Run /implement 683 to execute the plan",
-  "dispatch_seq": 2
+  "metadata": {
+    "session_id": "sess_1790569454_bad6d5",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "failed",
+    "compliance_detail": "8 of the plan's 16 pinned Goals are present (SharingWitnessFamily, share, Thread, frame, instIsRegular, total_eq_thread, AtomCoherent, LocalCoherentShare); the other 8 belong to Phases 7-14, which were not reached."
+  }
 }

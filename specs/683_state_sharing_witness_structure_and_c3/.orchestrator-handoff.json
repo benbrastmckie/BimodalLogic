@@ -1,17 +1,33 @@
 {
-  "status": "planned",
-  "summary": "Wrote a 14-phase implementation plan adding a state-sharing (branching) witness device alongside the deterministic bi-lasso one. Key research-driven correction to the task description: (C3) BoxFaithful needs no redesign and is reused verbatim; the conditions that break under state-sharing are (C1) LocalCoherentLab and (C2) FulfillingLab, plus a new mandatory atom-coherence condition. ShiftSet.lean is treated as read-only and the deterministic path stays byte-identical, recovered at the end by instantiation plus an explicit frame isomorphism.",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "phases_completed": 0,
+  "task_number": 683,
+  "dispatch_seq": 3,
+  "status": "partial",
+  "phases_completed": 5,
   "phases_total": 14,
-  "blockers": [],
+  "session_id": "sess_1790569454_bad6d5",
+  "summary": "Phases 1-5 of 14 complete, committed and green: SharingWitnessFamily with a periodic representative-map `share`, the Thread/Step/ReachN layer, a regular branching FrameOver intOrder, and total_eq_thread. Phase 6 partial - (C0) and (C1') landed, (C5) StabFaithful blocked because `Formula` has no stability modal. Full lake build green, zero sorries, axiom count unchanged, deterministic path byte-identical.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/683_state_sharing_witness_structure_and_c3/plans/01_state-sharing-witness-structure.md",
-      "summary": "14-phase plan adding a state-sharing (branching) witness device alongside the deterministic bi-lasso one, with the deterministic case recovered by instantiation."
+      "type": "summary",
+      "path": "specs/683_state_sharing_witness_structure_and_c3/summaries/01_state-sharing-witness-structure-summary.md",
+      "summary": "Implementation summary for Phases 1-5 plus the partial Phase 6."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-6-handoff-20260927.md",
+      "summary": "Resume point, inherited API inventory, and the six elaboration traps this dispatch hit."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/",
+      "summary": "Five new Lean modules: Basic, Thread, Frame, Histories, Predicates."
     }
   ],
-  "next_action_hint": "Run /implement 683 to execute the plan"
+  "blockers": [
+    "Phase 6 (C5) StabFaithful is not stateable at the Formula-indexed WitnessFamily datatype: the stability modal is PlusFormula.stab on a separate inductive. Requires a user decision between an L-plus-indexed certificate datatype and dropping (C5) from this task's scope."
+  ],
+  "next_steps": [
+    "Resolve the (C5) decision recorded as `user_decision` in .return-meta.json and as the Phase 6 BLOCKER entry in the plan.",
+    "Resume at Phase 7 (Sharing/Decide.lean); it does not depend on (C5)."
+  ]
 }
