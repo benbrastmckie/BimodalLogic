@@ -195,6 +195,7 @@ import FormalSystem.Metalogic.Decidability.WitnessFamily
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Agreement
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Basic
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Closure
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Assembly
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Cycle
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Enumerate
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Extract

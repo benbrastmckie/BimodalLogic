@@ -649,7 +649,7 @@ load-bearing consequence and a single-triple enumeration would be silently incom
 
 ---
 
-### Phase 11: `Compression/Assembly.lean` — `Decidable (ValidZTime φ)` [IN PROGRESS]
+### Phase 11: `Compression/Assembly.lean` — `Decidable (ValidZTime φ)` [COMPLETED]
 
 **Goal**: Compose compression, enumeration and the landed `decidableCertifies` into the decision
 procedure.
@@ -694,7 +694,7 @@ procedure.
 
 ---
 
-### Phase 12: Documentation, aggregator wiring and the full gate [NOT STARTED]
+### Phase 12: Documentation, aggregator wiring and the full gate [IN PROGRESS]
 
 **Goal**: Wire the new subdirectory into the layer's documentation and aggregators, and pass the
 repository's full invariant harness.
