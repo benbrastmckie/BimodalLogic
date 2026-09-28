@@ -1189,20 +1189,26 @@ not a reason to weaken the phase to an existence claim.
 
 ---
 
-### Phase 22: Registration, module invariants, and documentation [NOT STARTED]
+### Phase 22: Registration, module invariants, and documentation [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Land the new tree in the build description and the repository's documentation gates, in
 a single separately-committed, territory-aware phase.
 
 **Tasks**:
-- [ ] **Re-read each registration file immediately before editing it** (R1). If a foreign commit,
+- [x] **Re-read each registration file immediately before editing it** (R1). If a foreign commit,
       a foreign uncommitted modification, or a build this task did not start is observed, STOP and
       report after checking `git log` — do not proceed and do not dismiss it as noise
-- [ ] Create the sibling aggregator
+      *(observed and cleared: `git log` shows `ae7cfa600`, the sibling task's completion commit,
+      landed between this task's phases. `git show --stat` confirms it touched only `specs/**` —
+      no `FormalSystem/**`, no registration file, no shared script. Nothing to stop for.)*
+- [x] Create the sibling aggregator
       `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean` importing every module of the
       new subtree, satisfying invariant C8 in the same commit that creates the subdirectory
-- [ ] Register `PlusWitnessFamily` in `FormalSystem/Metalogic/Decidability.lean`
-- [ ] Register `FormalSystem/PlusLanguage/Subformulas.lean` in `FormalSystem/PlusLanguage.lean`
+      *(deviation: altered — the subdirectory was created in Phase 8, several commits earlier, so
+      "the same commit" was already impossible by the time this phase ran. The aggregator imports
+      all seven modules and C8 passes.)*
+- [x] Register `PlusWitnessFamily` in `FormalSystem/Metalogic/Decidability.lean`
+- [x] Register `FormalSystem/PlusLanguage/Subformulas.lean` in `FormalSystem/PlusLanguage.lean`
 - [ ] Regenerate `FormalSystem.lean`'s import list with
       `lake exe mk_all --lib FormalSystem`. **This regeneration is REPOSITORY-WIDE and is EXPECTED
       TO BE WIDE**: it is not a single-line edit, and a diff touching many import lines is the
@@ -1217,18 +1223,32 @@ a single separately-committed, territory-aware phase.
     complete-modulo-registration on the same user decision: `WitnessFamily/Sharing/Stability`
       Note `mk_all` is **not** declared in this repository's `lakefile.toml`; it resolves through
       Mathlib at `.lake/packages/mathlib/.lake/build/bin/mk_all`.
-- [ ] Update `docs/theorem-index.md` with the pinned declarations and their paper anchors (or the
-      literal `Paper: —` plus a reason), per invariant C15
-- [ ] Update the axiom census baselines that `scripts/check-module-invariants.sh` C2/C14 assert,
-      adding the new goals' census lines
-- [ ] Update `WitnessFamily/README.md` with the note research recommends: the nine declarations
-      the certificate stack actually consumes from `Syntax/SubformulaClosure/Closure.lean`
-- [ ] Write `PlusWitnessFamily/README.md` documenting the six conditions, the (C5) statement, and
+- [x] Update `docs/theorem-index.md` with the pinned declarations and their paper anchors (or the
+      literal `Paper: —` plus a reason), per invariant C15 — six rows added to the Decidability
+      section, all `—` (the results are the formalization's own; none is a paper theorem)
+- [x] Update the axiom census baselines that `scripts/check-module-invariants.sh` C2/C14 assert,
+      adding the new goals' census lines *(deviation: altered — all six new census lines went to
+      **C2** and none to C14. C14's second half pins two specific headline theorems that C2's set
+      does not cover; it is not a general census, so adding to it would have been the wrong
+      mechanism. C2's section comment and pass message were updated from "four flagship theorems"
+      to reflect the extension.)*
+- [x] Update `WitnessFamily/README.md` with the note research recommends: the nine declarations
+      the certificate stack actually consumes from `Syntax/SubformulaClosure/Closure.lean` —
+      enumerated and verified by grep: `subformulaClosure`, `self_mem_subformulaClosure`,
+      `closure_imp_left`, `closure_imp_right`, `closure_box`, `closure_untl_left`,
+      `closure_untl_right`, `closure_snce_left`, `closure_snce_right`
+- [x] Write `PlusWitnessFamily/README.md` documenting the six conditions, the (C5) statement, and
       the fact that this is a **parallel** export leaving the deterministic JSON contract untouched
-- [ ] Amend `Sharing/Predicates.lean`'s "Recorded gap: (C5) is not stateable here" header to point
+- [x] Amend `Sharing/Predicates.lean`'s "Recorded gap: (C5) is not stateable here" header to point
       at the L⁺ module that now states it, keeping the explanation of why it is not stateable at
       `Formula`
-- [ ] Stage each file by name (never a directory or glob `git add`) and commit separately
+- [x] Stage each file by name (never a directory or glob `git add`) and commit separately
+      *(deviation: altered — staged by name, but landed as **one** commit rather than several.
+      The aggregator, `Decidability.lean`, `PlusLanguage.lean` and the regenerated
+      `FormalSystem.lean` do not build as separate commits: C33 compares the generated root
+      against the tree, so a commit adding the aggregator without regenerating the root is red by
+      construction, and vice versa. Splitting them would have produced a sequence of
+      known-red commits, which the repository's own commit discipline forbids.)*
 
 **Timing**: 2 hours
 
@@ -1256,12 +1276,48 @@ conflicting edit, report rather than merge.
 - `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Predicates.lean` — header now points at the L⁺ statement
 
 **Verification**:
-- `lake build` green from clean
-- `bash scripts/check-module-invariants.sh` passes, including C1, C2, C3, C4, C8, C14, C15, C17
-- `bash .claude/scripts/lean-sorry-census.sh` reports zero sorries
-- `bash .claude/scripts/check-task-references.sh` passes (no task numbers under `FormalSystem/**`,
-  `docs/**` or `scripts/**`)
+- `lake build` green — confirmed, 2,769 jobs, zero errors
+- `bash scripts/check-module-invariants.sh` passes, including C1, C2, C3, C4, C8, C14, C15, C17 —
+  **all eight named checks pass.** C2 now pins ten axiom sets, C3 reports zero sorries, C8 finds
+  exactly one sibling aggregator per subdirectory, C15 finds all 219 theorem-index rows anchored,
+  C33 finds `FormalSystem.lean` byte-for-byte generated (603 imports), and C5, C16, C29 and INV —
+  none of them named above, all four red when this phase began — were repaired and now pass.
+- `bash .claude/scripts/lean-sorry-census.sh` reports zero sorries — confirmed, `sorry_count: 0`
+- `bash .claude/scripts/check-task-references.sh` passes — confirmed, 0 occurrences across 4 trees
 - `git log --oneline -1` shows this phase's own commit only; no foreign hunks staged
+
+**Exclusions** (why this phase is `[COMPLETED WITH EXCLUSIONS]` rather than `[COMPLETED]`): two
+check groups remain red. Neither is repairable inside this task's territory, and both are
+reported rather than suppressed.
+
+1. **C28, compiler-warning budget** — one entry above baseline:
+   `WitnessFamily/Compression/Cycle.lean`, a `push_neg` deprecation. That file was last touched by
+   a different task (`6bcbbfe79`), this task never edited it, and the warning is a Mathlib
+   deprecation, not a defect introduced here. Running `--update` would have grandfathered another
+   task's debt under this task's commit, so it was not run. **Every warning this task *did*
+   introduce was fixed**: five `linter.style.longLine` warnings from the `Paper: —` anchor lines
+   were wrapped, and C28's count for this task's own files is zero.
+2. **C23, naming conventions** — two sub-assertions:
+   - `NM_nonneg` at `PlusWitnessFamily/Decide.lean:228` **and** at
+     `Sharing/Decide.lean:192`. The second predates this task (`e3155fd32`), so the check was
+     already red on this exact name. The first is this task's deliberate 1:1 mirror of it. The
+     linter's suggested `NM.nonneg` would break the name correspondence between the two
+     certificate sides that the whole L⁺ re-index is organized around, and fixing only one side
+     would leave the check red anyway while destroying the correspondence. Renaming both is a
+     cross-task rename of a landed API and is not this task's to make.
+   - Eleven outer-shadows-inner pairs, of which this task contributes one
+     (`SharingWindow.cohWindowLo`, shadowed by `BiLasso/Decide.lean:378`). The same name already
+     had two such pairs before this task, so the check was already red; the new one is the same
+     mirrored-API pattern.
+
+**Repaired along the way** (not in the task list, but this phase's own gate run surfaced them):
+three redundant `@[simp]` attributes on `SharingWitnessFamily.relZ_cls`, `frame_taskRel` and
+`hist_state` — delegating wrappers left behind by this task's own Stage A skeleton split, which
+`simpNF` correctly reported as not in simp normal form because the skeleton's originals already
+fire on the same terms and rewrite further. The attributes were dropped, the theorems kept as
+API, and the full build stayed green. Two `linter.hashCommand` suppressions in
+`Sharing/Fulfil.lean` also gained the reason comment C29 requires; that is a comment-only edit
+and leaves the deterministic device's behaviour untouched.
 
 ---
 

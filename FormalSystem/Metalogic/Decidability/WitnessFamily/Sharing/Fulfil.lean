@@ -1656,9 +1656,13 @@ private def smokeFamily : SharingWitnessFamily smokeCtx [] where
 set_option linter.hashCommand false in
 #guard smokeFamily.winTimes = ({-2, -1, 0, 1, 2, 3} : Finset ℤ)
 
+-- linter.hashCommand: this `#guard` runs the compiled fixpoint, which is the point of a
+-- smoke test — deleting the suppression would silence the command, not the check.
 set_option linter.hashCommand false in
 #guard (smokeFamily.untlFix smokeP smokeP).image Prod.snd = ({-1} : Finset ℤ)
 
+-- linter.hashCommand: this `#guard` runs the compiled fixpoint, which is the point of a
+-- smoke test — deleting the suppression would silence the command, not the check.
 set_option linter.hashCommand false in
 #guard (smokeFamily.snceFix smokeP smokeP).image Prod.snd = ({1} : Finset ℤ)
 

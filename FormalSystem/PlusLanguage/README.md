@@ -43,6 +43,7 @@ atomization transfer rely on.
 | `PlusStateLocal.lean` | 410 | The **state-locality** fragment of L⁺: `PlusFormula.StateLocal` (syntactic) and `IsPlusStateLocal` (semantic); the soundness induction `isPlusStateLocal_of_stateLocal`, the two non-preservation witnesses on `NF`, the headline `φ ↔ ⊡φ`, and `stab_of_stateLocal` — the AS witness, strictly generalizing the atom-level `p → ⊡p` |
 | `PlusTruth.lean` | 340 | `PlusTruthAt` (the stab clause renders the paper's `⟨τ⟩_x` as `τ.state x = σ.state x`) — the truth recursion for L⁺, the `PlusTruth.*` clause lemmas, the S5 validities of `⊡`, and `stab_state_only` |
 | `PlusValidity.lean` | 220 | `PlusValidOnFrames`, `PlusValidIn`, `PlusValid` and per-class abbreviations — L⁺ mirrors of Validity.lean; `plusTruthAt_ofFormula` and `plusValidIn_ofFormula_iff`, semantic conservativity of L⁺ over L at every frame class |
+| `Subformulas.lean` | 255 | <!-- TODO: add description --> |
 | `Substitution.lean` | 242 | `substPlus`, the interpretation of L in L⁺ at an arbitrary atom assignment, and the substitution transfer `plusDerivable_substPlus`, which makes every TM *schema* available at L⁺ arguments containing `⊡` |
 <!-- END GENERATED -->
 

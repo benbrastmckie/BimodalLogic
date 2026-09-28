@@ -77,7 +77,11 @@ segments indexed by absolute time, so a thread cannot be time-shifted (see `Thre
 abbrev hist (S : SharingWitnessFamily Γ Del) (θ : S.Thread) (s : ℤ) :
     WorldHistory S.frame.toTaskFrame := S.skeleton.hist θ s
 
-@[simp]
+/-- The state a thread's trace occupies at a time offset.
+
+Deliberately **not** `@[simp]`, though its skeleton original is, and for the same reason
+`frame_taskRel` is not: `hist` is an `abbrev` for `skeleton.hist`, so
+`SharingSkeleton.hist_state` already fires here and rewrites to `S.skeleton.cls`. -/
 theorem hist_state (S : SharingWitnessFamily Γ Del) (θ : S.Thread) (s t : ℤ) :
     (S.hist θ s).state t = S.cls (θ.idx (s + t)) (s + t) := rfl
 

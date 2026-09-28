@@ -154,3 +154,14 @@ FormalSystem.Semantics.TimeShift
 # takes a sub-namespace. The theorem-index row cites it fully qualified, and the prefix is not a
 # module -- the declaration lives in `WitnessFamily/Compression/Assembly.lean`.
 FormalSystem.Metalogic.Decidability.Compression
+
+# `namespace SharingSkeleton` -- WitnessFamily/Sharing/Skeleton.lean:117. The module is
+# `...WitnessFamily.Sharing.Skeleton`; the namespace deliberately does not mirror the path.
+FormalSystem.Metalogic.Decidability.SharingSkeleton
+
+# `namespace PlusSharingWitnessFamily` -- PlusWitnessFamily/Basic.lean:234. Same shape: the
+# module is `...PlusWitnessFamily.Basic`, the namespace is flat under `Decidability`.
+FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily
+
+# `inductive PlusFormula` in namespace FormalSystem.PlusLanguage -- PlusLanguage/Formula.lean:91
+FormalSystem.PlusLanguage.PlusFormula

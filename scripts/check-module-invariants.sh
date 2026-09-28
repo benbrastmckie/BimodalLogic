@@ -991,7 +991,15 @@ fi
 echo
 
 # ---------------------------------------------------------------------------
-# C2: axiom sets for the four flagship theorems
+# C2: axiom sets for the flagship theorems, and for the certificate stack's pinned goals
+#
+# The first four rows are the completeness/countermodel flagships. The six that follow
+# pin the branching witness-family stack: the histories characterization the whole
+# branching device rests on, and the five L-plus declarations that carry the stability
+# condition (C5) -- the condition itself, its decision procedure's correctness, the
+# agreement case that makes it load-bearing, the certificate producer, and the two
+# non-vacuity witnesses. They are pinned here for the same reason the flagships are: a
+# silent `Classical`-free-to-not claim, or a new axiom, is a HARD STOP.
 #
 # Do NOT scrape `lake build` stdout for these -- an incremental build may not
 # re-emit them. A dedicated scratch file is compiled against the built library.
@@ -1001,6 +1009,12 @@ read -r -d '' AXIOM_BASELINE <<'BASELINE'
 'FormalSystem.Metalogic.BXCanonical.derivable_of_validDense' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.BXCanonical.derivable_of_validZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.BXCanonical.Chronicle.countermodel_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.SharingSkeleton.total_eq_thread' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabFaithful_share_congr' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusTruth_iff_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusRefutes_of_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabFamily_separates' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabFaithful_diagonal' depends on axioms: [propext, Classical.choice, Quot.sound]
 BASELINE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -1011,6 +1025,12 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.BXCanonical.derivable_of_validDense
 #print axioms FormalSystem.Metalogic.BXCanonical.derivable_of_validZTime
 #print axioms FormalSystem.Metalogic.BXCanonical.Chronicle.countermodel_dense
+#print axioms FormalSystem.Metalogic.Decidability.SharingSkeleton.total_eq_thread
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabFaithful_share_congr
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusTruth_iff_mem
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusRefutes_of_certifies
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabFamily_separates
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabFaithful_diagonal
 LEAN
   # The pretty-printer wraps at a fixed width, and `FormalSystem.` is longer than the
   # namespace it replaced, so a long axiom record now spills onto continuation lines that
@@ -1021,7 +1041,7 @@ LEAN
     | grep 'depends on axioms')
   rm -f "$AX_SRC"
   if [ "$AX_OUT" = "$AXIOM_BASELINE" ]; then
-    pass C2 "all four flagship axiom sets match baseline"
+    pass C2 "all ten pinned axiom sets match baseline"
     while IFS= read -r l; do note "$l"; done <<<"$AX_OUT"
   else
     fail C2 "axiom sets diverged from baseline -- this is a HARD STOP, not a new baseline"

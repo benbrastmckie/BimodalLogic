@@ -287,6 +287,9 @@ fact read on labels: indices naming the same state agree on every stability-moda
 It follows because `share u` is an equivalence — the kernel of `rep u` — so the two right-hand
 sides of (C5) at `i` and at `j` quantify over the same class. No side condition is introduced and
 none is needed.
+
+Paper: — (the paper's `def:BLstar-semantics` fixes the meaning of `⊡`; this is a
+certificate-side condition about it, not a paper result)
 -/
 theorem stabFaithful_share_congr (S : PlusSharingWitnessFamily Γ Del)
     (h : S.StabFaithful) (u : ℤ) (i j : Fin S.lassos.length)

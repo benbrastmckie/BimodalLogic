@@ -145,7 +145,12 @@ differ by `d` and the two raw positions are connected.
 abbrev RelZ (S : SharingWitnessFamily Γ Del) (C : S.WorldState) (d : ℤ) (C' : S.WorldState) :
     Prop := S.skeleton.RelZ C d C'
 
-@[simp]
+/-- The two-sided relation between two classes, unfolded.
+
+Deliberately **not** `@[simp]`, though its skeleton original is, and for the reason
+`frame_taskRel` below is not: `RelZ`, `cls` and `Conn` are all `abbrev`s for the skeleton's, so
+`SharingSkeleton.relZ_cls` already fires on exactly these terms and rewrites to the skeleton's
+own `Conn`; a second simp lemma stopping short of that is not in simp normal form. -/
 theorem relZ_cls (S : SharingWitnessFamily Γ Del) (i j : Fin S.lassos.length) (u v d : ℤ) :
     S.RelZ (S.cls i u) d (S.cls j v) ↔ (v = u + d ∧ S.Conn (i, u) (j, v)) := Iff.rfl
 
@@ -176,8 +181,12 @@ abbrev frame (S : SharingWitnessFamily Γ Del) : FrameOver intOrder := S.skeleto
 
 /-- **The frame's task relation is the two-sided relation.** The frame's primitive is `RelZ`
 restricted to the positive cone, and `RelZ` satisfies the reflection law, so the reflection
-convention recovers it on the nose. -/
-@[simp]
+convention recovers it on the nose.
+
+Deliberately **not** `@[simp]`, though its skeleton original is. `frame` is an `abbrev` for
+`skeleton.frame`, so `SharingSkeleton.frame_taskRel` already fires on exactly these terms and
+rewrites further, to `S.skeleton.RelZ`; a second simp lemma stopping one step short of that is
+not in simp normal form and `simpNF` reports it. The theorem is kept as API. -/
 theorem frame_taskRel (S : SharingWitnessFamily Γ Del) (C : S.WorldState) (d : ℤ)
     (C' : S.WorldState) : S.frame.TaskRel C d C' ↔ S.RelZ C d C' :=
   S.skeleton.frame_taskRel C d C'

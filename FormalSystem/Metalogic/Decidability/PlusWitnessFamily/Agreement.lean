@@ -176,6 +176,9 @@ The `box` case is grounded in `total_eq_thread` — every world history is a thr
 **Delete `hstab` and the `stab` case does not elaborate**: the label-side statement
 `stab φ ∈ S.L i u` has, without it, no connection whatsoever to the labels at the other indices
 of the class, which is exactly what the semantic clause quantifies over.
+
+Paper: — (the certificate layer is the formalization's own; the paper states no
+agreement theorem for it)
 -/
 theorem plusTruth_iff_mem (S : PlusSharingWitnessFamily Γ Del)
     (hat : S.PlusAtomCoherent) (hloc : S.PlusLocalCoherentShare)
@@ -403,6 +406,9 @@ This is what makes acceptance a constructed term rather than a reported verdict:
 returns this has a `PlusRefutes Γ Del` in hand, and cannot be written without a `PlusCertifies`
 to feed it — (C5) included, which is the sense in which the condition is checked rather than
 merely stated.
+
+Paper: — (the certificate layer is the formalization's own; the paper states no
+refutation interface)
 -/
 theorem plusRefutes_of_certifies (S : PlusSharingWitnessFamily Γ Del) {t : ℤ}
     (h : S.PlusCertifies t) : PlusWitnessFamily.PlusRefutes Γ Del :=

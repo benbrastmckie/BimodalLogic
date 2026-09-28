@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.PlusLanguage.Formula
+import FormalSystem.PlusLanguage.Subformulas
 import FormalSystem.PlusLanguage.Axioms
 import FormalSystem.PlusLanguage.Derivation
 import FormalSystem.PlusLanguage.Substitution
@@ -31,6 +32,8 @@ proof system mirroring `ProofSystem.DerivationTree` constructor for constructor.
 - `PlusLanguage.Formula` — `PlusFormula`, the derived operators (with `Formula`'s right-hand
   sides), `reflectTime`, the purity predicates `IsPureFuture`/`IsPurePast`, and the embedding
   `ofFormula`
+- `PlusLanguage.Subformulas` — `PlusFormula.subformulas`, the seven-constructor subformula
+  list and its membership lemmas, which the L⁺ certificate's closure is built from
 - `PlusLanguage.Axioms` — `PlusAxiom`, the closed inductive of TM⁺ schemata: the 45 TM-shaped
   schemata re-declared over `PlusFormula`, plus the eight `⊡` schemata (S5 for `⊡`, `□φ → ⊡φ`,
   `p → ⊡p` for atoms, and the two pasting schemata with purity side conditions); `minFrameClass`

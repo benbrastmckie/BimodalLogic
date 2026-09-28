@@ -71,6 +71,9 @@ the device.
 This is one half of non-vacuity: the branching substrate is what makes the condition bite. The
 hypothesis is stated at `S.skeleton.share` rather than at `S.share` because the skeleton is
 where the sharing structure actually lives; the two are definitionally the same relation.
+
+Paper: — (a degeneracy observation about a formalization-native condition; the paper
+states no such result)
 -/
 theorem stabFaithful_diagonal {Γ Del : PlusContext} (S : PlusSharingWitnessFamily Γ Del)
     (hdet : ∀ (u : ℤ) (i j : Fin S.lassos.length), S.skeleton.share u i j ↔ i = j)
@@ -366,6 +369,9 @@ theorem stabFamily_stabFaithful : (stabFamily p).StabFaithful := by
 On `stabFamily` the eventuality `Fp` is labelled at the main lasso's origin where `⊡Fp` is not,
 so the condition is strictly stronger than the `box` clause — which reads one global Boolean and
 therefore cannot distinguish `u = 0` from `u = 1` — and is not satisfied trivially.
+
+Paper: — (a non-vacuity witness for a formalization-native condition; the paper states
+no such family)
 -/
 theorem stabFamily_separates :
     (stabFamily p).StabFaithful ∧

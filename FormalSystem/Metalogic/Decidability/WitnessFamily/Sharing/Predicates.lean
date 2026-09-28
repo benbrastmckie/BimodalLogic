@@ -76,11 +76,17 @@ fails, and that failure is the whole content of the branching device's fulfilmen
 Its decision procedure is not here: it is `Sharing/Fulfil.lean`'s finite position graph and
 `A[g U e]` least fixpoint, together with the window reduction that connects the two.
 
-## Recorded gap: (C5), the stability clause, is not stateable here
+## Recorded gap, now closed elsewhere: (C5), the stability clause, is not stateable here
 
-The plan for this work pins a fifth condition `StabFaithful`, quantifying `⊡φ` over the shared
-states at one time. It is **not stated in this module**, and the omission is deliberate and
-documented rather than an oversight:
+A fifth condition `StabFaithful`, quantifying `⊡φ` over the shared states at one time, is **not
+stated in this module** and cannot be. It is now stated, decided and consumed at
+`Metalogic/Decidability/PlusWitnessFamily/`: the condition itself in `Predicates.lean`, its
+decision procedure in `Decide.lean`, and the agreement case that makes it load-bearing in
+`Agreement.lean`'s `plusTruth_iff_mem`.
+
+The explanation of why it is not stateable *here* is retained below, unchanged, because it is
+the reason that subtree exists at all — and because the reason is type-level, so it does not
+stop being true once the condition has a home:
 
 `WitnessFamily` is indexed by `FormalSystem.Syntax.Context = List Formula`, and
 `FormalSystem.Syntax.Formula` has exactly six constructors — `atom`, `bot`, `imp`, `box`,
@@ -91,11 +97,14 @@ separate-inductive decision and the constructor-to-constructor embedding). There
 re-indexing the whole certificate — `LabelledLasso`, `closureOf`, `WitnessFamily`, its four
 conditions and its agreement theorem — over `PlusFormula`.
 
-That re-indexing is a separate, substantial addition, not a clause. What this directory *does*
-deliver for the stability modal is the thing (C5) was wanted for: a frame whose task relation
+That re-indexing is a separate, substantial addition, not a clause, and it has since been made
+under `PlusWitnessFamily/`. What this directory *does* deliver for the stability modal is the
+thing (C5) was wanted for, and it is what the L⁺ subtree is built on: a frame whose task relation
 branches, on which `⊡` is not collapsed to the identity by
-`PlusLanguage/PlusDeterminism.lean`'s `states_eq_of_deterministic`. The condition itself awaits
-an L⁺-indexed certificate datatype.
+`PlusLanguage/PlusDeterminism.lean`'s `states_eq_of_deterministic`. The label-free part of that
+substrate — `Sharing/Skeleton.lean` and `Sharing/Window.lean` — is shared between the two
+certificates verbatim rather than duplicated; nothing in this directory was edited to accommodate
+the L⁺ one, and the deterministic device's export contract is untouched.
 
 ## Main Definitions
 

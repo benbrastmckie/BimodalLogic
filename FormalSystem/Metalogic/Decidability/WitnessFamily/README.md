@@ -181,6 +181,22 @@ reaching for.
 Guard-first throughout, matching `Syntax/Formula.lean` and `../BiLasso/`: in `Formula.untl g e`
 the guard `g` holds throughout the open interval and the event `e` is witnessed strictly later.
 
+## What this stack actually consumes from `Syntax/SubformulaClosure/Closure.lean`
+
+`Closure.lean` imports that module wholesale, but the certificate stack uses **nine** of its
+declarations and no others:
+
+`subformulaClosure`, `self_mem_subformulaClosure`, `closure_imp_left`, `closure_imp_right`,
+`closure_box`, `closure_untl_left`, `closure_untl_right`, `closure_snce_left`,
+`closure_snce_right`.
+
+That is the whole interface. It is recorded because the L⁺ certificate under
+`../PlusWitnessFamily/` had to reproduce exactly this surface over `PlusFormula` — one closure
+constructor, one self-membership lemma, and one projection per compound constructor — and
+knowing the list is nine rather than "whatever `Closure.lean` exports" is what made that a
+bounded job. A tenth consumer appearing here is a signal that the L⁺ side owes a tenth
+declaration too.
+
 ## Dependencies
 
 - **Imports from**: `FormalSystem.Syntax.Context`, `FormalSystem.Syntax.SubformulaClosure.Closure`,
@@ -202,4 +218,4 @@ the guard `g` holds throughout the open interval and the event `e` is witnessed 
 
 ---
 
-*Last verified: 2026-09-27*
+*Last verified: 2026-09-28*

@@ -39,6 +39,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.IntTruth
 import FormalSystem.Metalogic.Decidability.Verified.Bridge.DenseTruth
 import FormalSystem.Metalogic.Decidability.Verified.Decidable
 import FormalSystem.Metalogic.Decidability.BiLasso
+import FormalSystem.Metalogic.Decidability.PlusWitnessFamily
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
@@ -109,6 +110,10 @@ Tableau-based decision procedure returning proof terms or countermodels.
   abstract `TimeOrdering`); `SatResult` is satisfiability preservation read off `applyRule`'s
   own `RuleResult × TimeOrdering`; `RuleSound` is the per-rule obligation, indexed by a carrier
   property so that a frame-class-gated rule can assume what its class supplies
+- `PlusWitnessFamily`: the same certificate re-indexed over `PlusLanguage.PlusFormula`, which is
+  what makes the stability condition (C5) `StabFaithful` stateable at all. The deterministic
+  device's JSON export contract is untouched: `PlusRefutes` is declared beside
+  `WitnessFamily.Refutes`, not in place of it
 - `BiLasso`: the bi-lasso decision layer — decides truth of a formula at a state of a *given*
   `IntPresentation` (a finite graph on `Fin card` with a `Bool` valuation), by bi-lasso unfolding
   and periodicity. Entry point `check` and its correctness theorem `check_correct`

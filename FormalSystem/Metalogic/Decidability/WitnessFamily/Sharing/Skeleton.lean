@@ -899,6 +899,8 @@ theorem thread_is_history (K : SharingSkeleton) (θ : K.Thread) (s : ℤ) :
 Every world history of the branching frame is the trace of a thread, from some time offset.
 This replaces `ShiftSet.total_eq_orbit`, which holds only because the deterministic device's
 task relation is functional.
+
+Paper: — (the branching frame is the formalization's own construction, with no paper counterpart)
 -/
 theorem total_eq_thread (K : SharingSkeleton) (σ : WorldHistory K.frame.toTaskFrame) :
     ∃ θ : K.Thread, ∃ s : ℤ, ∀ t : ℤ, σ.state t = K.cls (θ.idx (s + t)) (s + t) := by
