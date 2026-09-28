@@ -669,6 +669,78 @@ Three notes on this block, all deliberate:
   remainder; the exact spelling of this side condition is the one degree of freedom the
   implementer may adjust, provided the conclusion is unchanged.
 
+### Amendment
+
+Three of the nine signatures in the block above were **false as recorded**, and were corrected in
+place after the implementation landed the minimally-corrected forms it could actually prove. This
+subsection exists precisely because the recorded statements were the mistaken ones: the originals
+are preserved verbatim below, each beside the counterexample that refutes it and the module the
+corrected form landed in, and the correction travelled the reviewed follow-up route rather than
+being folded quietly into an in-flight edit. `plan-compliance.md`'s statement-fidelity convention
+forbids *quiet* editing of a recorded statement to match an implementation; it does not forbid
+recording, under review, that a pinned statement was wrong. This subsection is that record and is
+not a licence to edit the other six.
+
+**1. `unescape_escape`.** Recorded as:
+
+```lean
+theorem unescape_escape (s : List Char) :
+    unescapeBody (escapeBody s) = .ok (s, []) := sorry
+```
+
+False. `unescapeBody` reads a string literal's body *up to and including* the closing delimiter,
+which it consumes. Handed `escapeBody s` alone it runs off the end of its input and reports an
+unterminated literal, so the equation holds for no `s` at all. Naming the delimiter weakens
+nothing, because the delimiter is part of the printed form — `printCJson (.str s)` emits it — so
+the corrected statement is the one the round trip actually needs. Landed in
+`BimodalTools/CanonicalWire/RoundTrip.lean` as
+`unescapeBody (escapeBody s ++ ['"']) = .ok (s, [])`.
+
+**2. `parseCJson_printCJson`.** Recorded as:
+
+```lean
+theorem parseCJson_printCJson (j : CJson) (rest : List Char) (hok : Canonical j)
+    (f : Nat) (hf : size j ≤ f) :
+    parseCJson f (printCJson j ++ rest) = .ok (j, rest) := sorry
+```
+
+**3. `parseCJson_fuel_sufficient`.** Recorded as:
+
+```lean
+theorem parseCJson_fuel_sufficient (j : CJson) (rest : List Char) (hok : Canonical j) :
+    parseCJson (printCJson j ++ rest).length (printCJson j ++ rest) = .ok (j, rest) := sorry
+```
+
+Both are false at the integer leaf, and for the same reason. A printed integer followed by a digit
+is a longer integer: take `j = .int 1` and `rest = ['2']`, and `printCJson j ++ rest` is the byte
+string `12`, which any correct parser reads as twelve — so the recorded conclusion
+`= .ok (.int 1, ['2'])` fails. Each therefore gains one hypothesis, `NoDigitHead rest`, defined as
+`∀ c ∈ rest.head?, ¬ (c.isDigit = true)`: the remainder does not begin with a decimal digit. The
+hypothesis is used at exactly one place, the integer leaf, and every structural use of the theorem
+discharges it for free — via `noDigitHead_cons` at `,`, `]` or `}`, or via `noDigitHead_nil` at
+end of input — so it costs nothing downstream. The binder is placed after `(hok : Canonical j)`,
+matching the landed order in both modules. Landed in `BimodalTools/CanonicalWire/RoundTrip.lean`
+and `BimodalTools/CanonicalWire/Fuel.lean` respectively.
+
+**Not a correction: `parseDigits_printDigits`.** The landed form spells its side condition
+`¬ (c.isDigit = true)` where the block above writes `¬ c.isDigit`. These are the same proposition
+modulo the `Bool`-to-`Prop` coercion, and the block's own third note already granted the
+implementer exactly that degree of freedom over this side condition's spelling. It is recorded
+here only so that a later reader counting divergences against the tree does not mistake it for a
+fourth false statement.
+
+**Scope.** Exactly three of the nine are corrected; the block still declares nine theorems and is
+not renumbered. The other five were already correct as recorded. No import line changes:
+`NoDigitHead` is declared in `BimodalTools.CanonicalWire.RoundTrip`, which the block's existing
+`import BimodalTools.CanonicalWire.Cert` already pulls in transitively through
+`BimodalTools.CanonicalWire.Fuel`.
+
+**Where this was first recorded.** The implementation reported all three as statement-level
+deviations flagged for review — see
+`specs/678_canonical_wire_parser_round_trip/summaries/01_canonical-wire-parser-round-trip-summary.md`,
+its "Plan Deviations" and "Follow-ups" sections. This amendment is the follow-up those sections
+called for.
+
 ## Testing & Validation
 
 - [ ] `lake build` green: the published `FormalSystem` library is untouched by this task.

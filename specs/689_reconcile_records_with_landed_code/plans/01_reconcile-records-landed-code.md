@@ -157,19 +157,19 @@ parallel execution carries no write conflict between them.
 actually proved, and records beside each why the form originally recorded was false.
 
 **Tasks**:
-- [ ] Re-read `specs/678_canonical_wire_parser_round_trip/plans/01_canonical-wire-parser-round-trip.md` immediately before editing (sibling-concurrency discipline).
-- [ ] In the `## Lean Challenge Statements` fenced block, replace the three false signatures with the landed forms, verified against the tree:
+- [x] Re-read `specs/678_canonical_wire_parser_round_trip/plans/01_canonical-wire-parser-round-trip.md` immediately before editing (sibling-concurrency discipline).
+- [x] In the `## Lean Challenge Statements` fenced block, replace the three false signatures with the landed forms, verified against the tree:
   - `unescape_escape` — conclusion becomes `unescapeBody (escapeBody s ++ ['"']) = .ok (s, [])` (landed at `BimodalTools/CanonicalWire/RoundTrip.lean`).
   - `parseCJson_printCJson` — binder list gains `(hrest : NoDigitHead rest)`, placed after `(hok : Canonical j)` and before `(f : Nat)`, matching the landed order.
   - `parseCJson_fuel_sufficient` — binder list gains `(hrest : NoDigitHead rest)` after `(hok : Canonical j)` (landed at `BimodalTools/CanonicalWire/Fuel.lean`).
-- [ ] Leave `parseDigits_printDigits` untouched, and leave the other five statements untouched. The block stays nine theorems; do not renumber.
-- [ ] Confirm no new `import` line is needed: `BimodalTools.CanonicalWire.Cert` already imports `BimodalTools.CanonicalWire.Fuel`, so `NoDigitHead` and `parseCJson_fuel_sufficient` are both in scope through the block's existing import list.
-- [ ] Immediately below the fenced block (and below, or merged into, its "Three notes on this block" prose), add an `### Amendment` subsection containing, for each of the three: the original recorded statement quoted **verbatim**, the counterexample that refutes it, and the landed module.
+- [x] Leave `parseDigits_printDigits` untouched, and leave the other five statements untouched. The block stays nine theorems; do not renumber.
+- [x] Confirm no new `import` line is needed: `BimodalTools.CanonicalWire.Cert` already imports `BimodalTools.CanonicalWire.Fuel`, so `NoDigitHead` and `parseCJson_fuel_sufficient` are both in scope through the block's existing import list.
+- [x] Immediately below the fenced block (and below, or merged into, its "Three notes on this block" prose), add an `### Amendment` subsection containing, for each of the three: the original recorded statement quoted **verbatim**, the counterexample that refutes it, and the landed module.
   - `unescape_escape`: `unescapeBody` consumes the closing quote — it reads a string literal's body up to and including the delimiter — so without `++ ['"']` the reader runs off the end and reports an unterminated literal. The delimiter is part of the printed form (`printCJson (.str s)` emits it), so naming it weakens nothing.
   - `parseCJson_printCJson` and `parseCJson_fuel_sufficient`: `NoDigitHead rest` is `∀ c ∈ rest.head?, ¬ (c.isDigit = true)`. Without it, `printCJson (.int 1) ++ ['2']` is the byte string `12`, which any correct parser reads as twelve, so the conclusion `= .ok (.int 1, ['2'])` is false. The hypothesis is used at exactly one place, the integer leaf; every structural use discharges it for free via `noDigitHead_cons` at `,`, `]` or `}`, or via `noDigitHead_nil` at end of input.
-- [ ] Add one sentence to the `### Amendment` subsection stating that it exists because the recorded statements were false, that the originals are preserved above, and that this was a reviewed follow-up rather than an in-flight edit — so the amendment is not read as license to edit recorded statements to match implementations.
-- [ ] Add one sentence noting explicitly that `parseDigits_printDigits`'s `¬ c.isDigit` versus the landed `¬ (c.isDigit = true)` is **not** one of the corrections: the two are the same proposition modulo the `Bool`/`Prop` coercion, and the block's own third note already granted the implementer that degree of freedom.
-- [ ] Cross-reference the summary that already records this (`specs/678_canonical_wire_parser_round_trip/summaries/01_canonical-wire-parser-round-trip-summary.md`, "Plan Deviations" and "Follow-ups").
+- [x] Add one sentence to the `### Amendment` subsection stating that it exists because the recorded statements were false, that the originals are preserved above, and that this was a reviewed follow-up rather than an in-flight edit — so the amendment is not read as license to edit recorded statements to match implementations.
+- [x] Add one sentence noting explicitly that `parseDigits_printDigits`'s `¬ c.isDigit` versus the landed `¬ (c.isDigit = true)` is **not** one of the corrections: the two are the same proposition modulo the `Bool`/`Prop` coercion, and the block's own third note already granted the implementer that degree of freedom.
+- [x] Cross-reference the summary that already records this (`specs/678_canonical_wire_parser_round_trip/summaries/01_canonical-wire-parser-round-trip-summary.md`, "Plan Deviations" and "Follow-ups").
 
 **Timing**: 0.75 hours
 
