@@ -1,16 +1,26 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 3,
-  "summary": "Wrote a five-phase re-scoped plan implementing the settled decision: land the machine-checked L-plus incompleteness refutation as a compiled library module, pin it in the C2 axiom baseline and the theorem ledger, correct the two READMEs that present (C1') as an unqualified repair for recombination, and spawn the substrate redesign plus the L-plus carrier normalization as dependent tasks. No compression or assembly proof is attempted, because the stated theorem is false.",
+  "task_number": 685,
+  "dispatch_seq": 5,
+  "status": "implemented",
+  "phases_completed": 5,
+  "phases_total": 5,
+  "summary": "Landed the machine-checked refutation of the L-plus compression theorem rather than attempting a proof of a false statement: a new compiled module with four theorems (sorry-free, no new axiom), four C2 axiom-baseline rows and four docs/theorem-index.md rows, corrections to the two READMEs that had presented (C1') as an unqualified repair, and two spawned dependent tasks (694 substrate redesign, 695 L-plus carrier normalization). Full lake build green (2770 jobs, 0 errors, 0 warnings); copyright, metalogic-cycles, readme-lint and evidence-probes gates all exit 0. Phase 5 closed COMPLETED WITH EXCLUSIONS for two gate failures that predate this task and are evidenced as such: check-module-invariants.sh's C23 (already owned by task 691) and validate-state.sh's ten schema-drift failures.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/685_stability_compression_and_assembly/summaries/01_land-refutation-and-rescope-summary.md",
+      "summary": "Five-phase execution record with the zero-debt census, four plan deviations, and the two reasoned gate exclusions."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean",
+      "summary": "snce_share_congr, not_plusCertifies_stabSnce, not_plusCertifies_stabSnce_premise, not_plusValidZTime_stabSnce, plus the stabSnceTarget/notStabSnceTarget helpers."
+    },
     {
       "type": "plan",
       "path": "specs/685_stability_compression_and_assembly/plans/01_land-refutation-and-rescope.md",
-      "summary": "Five phases, three dependency waves, 5.5 hours: promote the refutation to PlusWitnessFamily/Incompleteness.lean, pin four declarations in C2 plus docs/theorem-index.md, correct two READMEs, spawn two dependent tasks, full gate sweep."
+      "summary": "All five phases closed; Phase 5 carries the Reasoned Exclusions table."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 5,
-  "blockers": []
+  "session_id": "sess_1790630813_a17992"
 }

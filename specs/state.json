@@ -307,7 +307,7 @@
     {
       "project_number": 685,
       "project_name": "stability_compression_and_assembly",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "Prove the compression result for the branching witness structure: if a formula of the language with the stability modal is not valid at integer time, a witness structure satisfying the redesigned conditions exists whose size is bounded by a computable function of the closure size. This is the stability-modal analogue of the compression theorem the deterministic route needs, and it is what turns a truth lemma into a decision procedure, since without a bound there is no finite candidate space to enumerate. Two routes are already known closed and must not be retried. The finite model property is NOT established by the monadic-second-order route (\"a regular tree does not obviously fold to a finite digraph\"), so no bound is inherited from the decidability argument even if that argument is sound. And the finite-presentation small-model hypothesis is machine-refuted (Probe476.fmp_false), so compressing over presentation states is dead exactly as it is for the deterministic route. The viable shape is the one the deterministic route uses: compress over subformula-set (type) space, where the pigeonhole is two-to-the-closure-size and closed, rather than over presentation states, where it is unbounded -- generalized from a family of lassos to a branching structure, which is the part with no precedent. Deliver, alongside the bound, the assembly step the deterministic route also needs: a formula-indexed candidate list over those bounds, and decidability of validity by reduction to \"no candidate is accepted\". Depends on the agreement lemma over all walks, since a bound on structures whose truth lemma has not been proved certifies nothing.",
@@ -316,7 +316,7 @@
         623
       ],
       "created": "2026-09-26T12:07:18Z",
-      "last_updated": "2026-09-28T21:57:27Z",
+      "last_updated": "2026-09-28T22:21:15Z",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Decide.lean",
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Closure.lean",
@@ -335,9 +335,15 @@
           "path": "specs/685_stability_compression_and_assembly/plans/01_land-refutation-and-rescope.md",
           "type": "plan",
           "summary": "Five phases, three dependency waves, 5.5 hours: promote the refutation to PlusWitnessFamily/Incompleteness.lean, pin four declarations in C2 plus docs/theorem-index.md, correct two READMEs, spawn two dependent tasks, full gate sweep."
+        },
+        {
+          "path": "specs/685_stability_compression_and_assembly/summaries/01_land-refutation-and-rescope-summary.md",
+          "type": "summary",
+          "summary": "Five-phase execution record with the zero-debt census, four plan deviations, and the two reasoned gate exclusions."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Task 685's stated deliverable was machine-refuted in research, so per the settled decision no compression proof was attempted. Instead the refutation was landed as FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean (four theorems, two helper defs, sorry-free, no new axiom), pinned in C2's axiom baseline and given four docs/theorem-index.md rows, and written into PlusWitnessFamily/README.md and WitnessFamily/Sharing/README.md so no future dispatch plans against the false statement again. The substrate redesign and the L-plus carrier normalization were spawned as tasks 694 and 695."
     },
     {
       "project_number": 677,

@@ -1,30 +1,38 @@
 {
-  "status": "planned",
-  "dispatch_seq": 3,
+  "status": "implemented",
+  "started_at": "2026-09-28T21:58:10Z",
+  "completed_at": "2026-09-28T22:20:40Z",
+  "dispatch_seq": 5,
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/685_stability_compression_and_assembly/plans/01_land-refutation-and-rescope.md",
-      "summary": "Five-phase re-scoped plan: promote the machine-checked L-plus incompleteness refutation to a compiled library module, pin it in the C2 axiom baseline and docs/theorem-index.md, correct the two READMEs that present (C1') as an unqualified repair, and spawn the substrate redesign plus the L-plus carrier normalization as dependent tasks. No compression proof is attempted."
+      "type": "summary",
+      "path": "specs/685_stability_compression_and_assembly/summaries/01_land-refutation-and-rescope-summary.md",
+      "summary": "Landed the machine-checked refutation of the L-plus compression theorem as a compiled library module, pinned it in C2 and docs/theorem-index.md, corrected the two READMEs that presented (C1') as an unqualified repair, and spawned the substrate redesign and the L-plus carrier normalization as tasks 694 and 695."
     }
   ],
-  "next_steps": "Run /implement 685 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1790630813_a17992_685",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 5.5,
-    "dependency_waves": 3
+  "completion_data": {
+    "completion_summary": "Task 685's stated deliverable was machine-refuted in research, so per the settled decision no compression proof was attempted. Instead the refutation was landed as FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean (four theorems, two helper defs, sorry-free, no new axiom), pinned in C2's axiom baseline and given four docs/theorem-index.md rows, and written into PlusWitnessFamily/README.md and WitnessFamily/Sharing/README.md so no future dispatch plans against the false statement again. The substrate redesign and the L-plus carrier normalization were spawned as tasks 694 and 695.",
+    "roadmap_items": []
   },
-  "memory_candidates": [
-    {
-      "content": "Design rule for branching/state-sharing certificate condition sets in modal-temporal decidability devices: a local-coherence clause that quantifies its witness over the sharing equivalence class at the LABEL'S OWN time forces every member of that class to agree on the labelled formula (read the clause twice -- once at i with k := j, once at j with k := j by reflexivity -- and the two biconditionals share a right-hand side). That silently makes the corresponding truth-value a function of the world state, which makes the device INCOMPLETE for any validity the state does not determine. Quantifying over the class at t+1 or t-1 instead does not have this consequence, which is why an `until` clause can be defect-free while a `since` clause is not. Diagnostic: for each condition, ask which time's class it quantifies over relative to the label it constrains. Repair is at the substrate level (an explicit transition relation on indices, separate from the sharing relation), never a re-wording of the condition. Corollary for planning: a condition set with no landed example satisfying ALL conditions simultaneously at non-trivial sharing is unvalidated -- per-condition non-vacuity witnesses do not catch this class of defect, and a compression/completeness proof planned against such a set can be planned against a false statement.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/685_stability_compression_and_assembly/plans/01_land-refutation-and-rescope.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["branching-certificate", "condition-set-completeness", "state-sharing", "share-class-agreement", "non-vacuity-gate", "decidability-device"]
-    }
-  ]
+  "metadata": {
+    "session_id": "sess_1790630813_a17992",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "phases_completed": 5,
+    "phases_total": 5,
+    "spawned_tasks": [694, 695],
+    "excluded_gates": [
+      "check-module-invariants.sh exit (pre-existing C23; owned by task 691)",
+      "validate-state.sh exit (ten pre-existing schema-drift failures)"
+    ]
+  }
 }

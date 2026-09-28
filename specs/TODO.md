@@ -11,8 +11,8 @@ next_project_number: 696
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,685,691,693,695 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650,694 | 298,464,502,563,649,685 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,691,693,694,695 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -20,7 +20,7 @@ next_project_number: 696
 | 7 | 430 | 411 | decidability |
 | 8 | 412 | 430 | decidability |
 | 9 | 482 | 412 | decidability |
-| 10 | 177 | 178,282,296,481,482,543,685 | formula-refactor |
+| 10 | 177 | 178,282,296,481,482,543 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -69,9 +69,8 @@ next_project_number: 696
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-685 [IMPLEMENTING] — Prove the compression result for the branching witness...
-  └─ 694 [NOT STARTED] — Separate the branching substrate's two roles so that backward...
 693 [IMPLEMENTING] — VERDICT-FIRST CONFORMANCE TASK. Determine whether the landed...
+694 [NOT STARTED] — Separate the branching substrate's two roles so that backward...
 695 [NOT STARTED] — Prove plusValidZTimeiffplusValidInt, the L-plus twin of...
 
 ### Formula Refactor
@@ -280,12 +279,13 @@ The research report and implementation plan authored here remain the durable inp
 ---
 
 ### 685. Stability compression and assembly
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 684, Task 623
 - **Research**: [685_stability_compression_and_assembly/reports/01_stability-compression-and-assembly.md]
 - **Plan**: [685_stability_compression_and_assembly/plans/01_land-refutation-and-rescope.md]
+- **Summary**: [685_stability_compression_and_assembly/summaries/01_land-refutation-and-rescope-summary.md]
 
 **Description**: Prove the compression result for the branching witness structure: if a formula of the language with the stability modal is not valid at integer time, a witness structure satisfying the redesigned conditions exists whose size is bounded by a computable function of the closure size. This is the stability-modal analogue of the compression theorem the deterministic route needs, and it is what turns a truth lemma into a decision procedure, since without a bound there is no finite candidate space to enumerate. Two routes are already known closed and must not be retried. The finite model property is NOT established by the monadic-second-order route ("a regular tree does not obviously fold to a finite digraph"), so no bound is inherited from the decidability argument even if that argument is sound. And the finite-presentation small-model hypothesis is machine-refuted (Probe476.fmp_false), so compressing over presentation states is dead exactly as it is for the deterministic route. The viable shape is the one the deterministic route uses: compress over subformula-set (type) space, where the pigeonhole is two-to-the-closure-size and closed, rather than over presentation states, where it is unbounded -- generalized from a family of lassos to a branching structure, which is the part with no precedent. Deliver, alongside the bound, the assembly step the deterministic route also needs: a formula-indexed candidate list over those bounds, and decidability of validity by reduction to "no candidate is accepted". Depends on the agreement lemma over all walks, since a bound on structures whose truth lemma has not been proved certifies nothing.
 
