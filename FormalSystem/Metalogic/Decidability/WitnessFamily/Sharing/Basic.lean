@@ -97,6 +97,7 @@ and its histories — is a function of this projection alone. The index count is
 `lassos.length` definitionally, so `Fin S.lassos.length` and `Fin S.skeleton.n` interchange with
 no coercion.
 -/
+@[reducible]
 def skeleton (S : SharingWitnessFamily Γ Del) : SharingSkeleton where
   n := S.lassos.length
   n_pos := S.lassos_length_pos

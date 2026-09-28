@@ -246,6 +246,237 @@ instance decidableShare (K : SharingSkeleton) (u : ℤ) (i j : Fin K.n) :
     Decidable (K.share u i j) :=
   inferInstanceAs (Decidable (K.rep u i = K.rep u j))
 
+/-! ## Threads: the branching analogue of a lasso orbit
+
+On the deterministic device a world history *is* a lasso, shifted. Once two indices may name the
+same state at a time, a history can cross from one to the other there, and the object that
+replaces "a lasso" is a **thread**: a bi-infinite choice of index that only ever changes across a
+shared state.
+
+Three relations, and why all three are needed:
+
+* `Thread` — the bi-infinite object. Its step field is the *tight* one,
+  `share (u+1) (idx u) (idx (u+1))`: the thread stays on index `idx u` from `u` to `u + 1` and
+  then re-names the state it lands in. This is not a loss of generality, because a history's
+  index at `u` may be chosen *knowing* the step it is about to take.
+* `Step` — the *class-level* one-step relation, `∃ i', share u i i' ∧ share (u+1) i' j`. This is
+  the relation the frame's task relation is built from, and the existential is exactly the
+  branching: the state `⟦(i,u)⟧` has one successor for each index passing through it, not one
+  successor full stop.
+* `ReachN` — `n` iterated `Step`s, with `ReachN 0` the sharing relation itself. This is the
+  finite-duration reachability the frame's `PosRel` quantifies over.
+
+`Step` is invariant under `share u` on the left and `share (u+1)` on the right, and `ReachN n`
+under `share u` and `share (u + n)`; those four congruences are what let the whole development
+descend to the quotient carrier, with no compatibility field added to the structure.
+
+**What is deliberately absent: a thread time-shift.** A thread cannot be time-shifted. `share` is
+decoded from three *periodic segments* indexed by absolute time, so `share u` and `share (u + d)`
+are different relations for a general `d`, and `fun u => θ.idx (u + d)` fails the step field.
+Time offsets therefore live in the *history's* parametrization — `total_eq_thread` carries an
+explicit `s : ℤ` and reads `θ.idx (s + t)` at time `s + t` — never in the thread.
+-/
+
+/-- Regrouping a successor time offset, used wherever an induction on the step count meets the
+integer time coordinate. -/
+private theorem int_succ_shift (u : ℤ) (m : ℕ) :
+    u + ((m + 1 : ℕ) : ℤ) = u + 1 + (m : ℤ) := by
+  omega
+
+/-- Erasing a zero step count from a time offset. -/
+private theorem int_zero_shift (u : ℤ) : u + ((0 : ℕ) : ℤ) = u := by
+  omega
+
+/--
+**A bi-infinite choice of index, stepping only across shared states.**
+
+The step field is the tight form: the thread rides index `idx u` from `u` to `u + 1`, and the
+state it arrives at, `⟦(idx u, u+1)⟧`, is the state `⟦(idx (u+1), u+1)⟧` it is recorded as
+holding. Threads replace lasso orbits as the objects the frame's histories are traces of.
+-/
+structure Thread (K : SharingSkeleton) where
+  /-- The index held at each time. -/
+  idx : ℤ → Fin K.n
+  /-- Consecutive indices name the same world state at the later time. -/
+  step : ∀ u : ℤ, K.share (u + 1) (idx u) (idx (u + 1))
+
+namespace Thread
+
+variable {K : SharingSkeleton}
+
+/-- Threads are determined by their index function. -/
+@[ext]
+theorem ext {θ η : K.Thread} (h : ∀ u, θ.idx u = η.idx u) : θ = η := by
+  cases θ with
+  | mk i₁ s₁ =>
+    cases η with
+    | mk i₂ s₂ =>
+      have hi : i₁ = i₂ := funext h
+      subst hi
+      rfl
+
+end Thread
+
+/-- The constant thread at index `i`: staying on one index forever is always legitimate. -/
+def Thread.const (K : SharingSkeleton) (i : Fin K.n) : K.Thread where
+  idx := fun _ => i
+  step := fun u => K.share_refl (u + 1) i
+
+instance instNonemptyThread (K : SharingSkeleton) : Nonempty K.Thread :=
+  ⟨Thread.const K ⟨0, K.n_pos⟩⟩
+
+@[simp]
+theorem Thread.const_idx (K : SharingSkeleton) (i : Fin K.n) (u : ℤ) :
+    (Thread.const K i).idx u = i := rfl
+
+/--
+**The class-level one-step relation.**
+
+From index `i` at time `u`, a history may continue along *any* index `i'` naming the same state
+at `u`, and then re-name the state it lands in at `u + 1`. The existential over `i'` is the
+branching: on the deterministic device it collapses to `i' = i` and `Step u i j ↔ j = i`.
+-/
+def Step (K : SharingSkeleton) (u : ℤ) (i j : Fin K.n) : Prop :=
+  ∃ i', K.share u i i' ∧ K.share (u + 1) i' j
+
+theorem step_of_share_succ {K : SharingSkeleton} {u : ℤ} {i j : Fin K.n}
+    (h : K.share (u + 1) i j) : K.Step u i j :=
+  ⟨i, K.share_refl u i, h⟩
+
+theorem step_refl (K : SharingSkeleton) (u : ℤ) (i : Fin K.n) : K.Step u i i :=
+  step_of_share_succ (K.share_refl (u + 1) i)
+
+/-- `Step` only sees the `share u`-class of its source. -/
+theorem step_congr_left {K : SharingSkeleton} {u : ℤ} {i i' j : Fin K.n}
+    (h : K.share u i' i) (hs : K.Step u i j) : K.Step u i' j := by
+  obtain ⟨k, hk, hkj⟩ := hs
+  exact ⟨k, SharingSkeleton.share_trans h hk, hkj⟩
+
+/-- `Step` only sees the `share (u+1)`-class of its target. -/
+theorem step_congr_right {K : SharingSkeleton} {u : ℤ} {i j j' : Fin K.n}
+    (hs : K.Step u i j) (h : K.share (u + 1) j j') : K.Step u i j' := by
+  obtain ⟨k, hk, hkj⟩ := hs
+  exact ⟨k, hk, SharingSkeleton.share_trans hkj h⟩
+
+instance decidableStep (K : SharingSkeleton) (u : ℤ) (i j : Fin K.n) :
+    Decidable (K.Step u i j) :=
+  inferInstanceAs (Decidable (∃ i', K.share u i i' ∧ K.share (u + 1) i' j))
+
+/--
+**`n`-step reachability.** At `n = 0` it is the sharing relation — same time, same state — and
+each successor step is one `Step`.
+-/
+def ReachN (K : SharingSkeleton) : ℕ → ℤ → Fin K.n → Fin K.n → Prop
+  | 0, u, i, j => K.share u i j
+  | (n + 1), u, i, j => ∃ k, K.Step u i k ∧ ReachN K n (u + 1) k j
+
+@[simp]
+theorem reachN_zero (K : SharingSkeleton) (u : ℤ) (i j : Fin K.n) :
+    K.ReachN 0 u i j ↔ K.share u i j := Iff.rfl
+
+theorem reachN_succ (K : SharingSkeleton) (n : ℕ) (u : ℤ) (i j : Fin K.n) :
+    K.ReachN (n + 1) u i j ↔ ∃ k, K.Step u i k ∧ K.ReachN n (u + 1) k j := Iff.rfl
+
+/-- Reachability only sees the `share u`-class of its source. -/
+theorem reachN_congr_left {K : SharingSkeleton} {n : ℕ} {u : ℤ} {i i' j : Fin K.n}
+    (h : K.share u i' i) (hr : K.ReachN n u i j) : K.ReachN n u i' j := by
+  cases n with
+  | zero => exact SharingSkeleton.share_trans h hr
+  | succ m =>
+    obtain ⟨k, hk, hrest⟩ := hr
+    exact ⟨k, step_congr_left h hk, hrest⟩
+
+/-- Reachability only sees the `share (u + n)`-class of its target. -/
+theorem reachN_congr_right {K : SharingSkeleton} {n : ℕ} {u : ℤ} {i j j' : Fin K.n}
+    (hr : K.ReachN n u i j) (h : K.share (u + (n : ℤ)) j j') : K.ReachN n u i j' := by
+  induction n generalizing u i with
+  | zero =>
+    rw [int_zero_shift] at h
+    exact SharingSkeleton.share_trans hr h
+  | succ m ih =>
+    obtain ⟨k, hk, hrest⟩ := hr
+    refine ⟨k, hk, ih hrest ?_⟩
+    rw [← int_succ_shift]
+    exact h
+
+/-- Staying on one index is reachability of every length. -/
+theorem reachN_const (K : SharingSkeleton) (n : ℕ) (u : ℤ) (i : Fin K.n) : K.ReachN n u i i := by
+  induction n generalizing u with
+  | zero => exact K.share_refl u i
+  | succ m ih => exact ⟨i, step_refl K u i, ih (u + 1)⟩
+
+/-- One step of reachability is one `Step`. -/
+theorem reachN_one (K : SharingSkeleton) (u : ℤ) (i j : Fin K.n) :
+    K.ReachN 1 u i j ↔ K.Step u i j := by
+  constructor
+  · rintro ⟨k, hk, hr⟩
+    exact step_congr_right hk hr
+  · intro h
+    exact ⟨j, h, K.share_refl (u + 1) j⟩
+
+/--
+**Concatenation and splitting.** Reachability of length `m + n` factors through an intermediate
+state at time `u + m`, in both directions. This is the whole content of the *Compositionality*
+discharge for the branching frame.
+-/
+theorem reachN_add (K : SharingSkeleton) (m n : ℕ) (u : ℤ) (i j : Fin K.n) :
+    K.ReachN (m + n) u i j ↔ ∃ k, K.ReachN m u i k ∧ K.ReachN n (u + (m : ℤ)) k j := by
+  induction m generalizing u i with
+  | zero =>
+    rw [Nat.zero_add]
+    constructor
+    · intro h
+      refine ⟨i, K.share_refl u i, ?_⟩
+      rw [int_zero_shift]
+      exact h
+    · rintro ⟨k, hik, hr⟩
+      rw [int_zero_shift] at hr
+      exact reachN_congr_left hik hr
+  | succ m ih =>
+    have hidx : m + 1 + n = (m + n) + 1 := by omega
+    rw [hidx, reachN_succ]
+    constructor
+    · rintro ⟨k, hk, hr⟩
+      obtain ⟨k', hk', hr'⟩ := (ih (u + 1) k).mp hr
+      refine ⟨k', ?_, ?_⟩
+      · exact ⟨k, hk, hk'⟩
+      · rw [int_succ_shift]
+        exact hr'
+    · rintro ⟨k', hseg, hr'⟩
+      rw [reachN_succ] at hseg
+      obtain ⟨k, hk, hk'⟩ := hseg
+      refine ⟨k, hk, (ih (u + 1) k).mpr ⟨k', hk', ?_⟩⟩
+      rw [← int_succ_shift]
+      exact hr'
+
+instance decidableReachN (K : SharingSkeleton) :
+    ∀ (n : ℕ) (u : ℤ) (i j : Fin K.n), Decidable (K.ReachN n u i j)
+  | 0, u, i, j => inferInstanceAs (Decidable (K.share u i j))
+  | (n + 1), u, i, j =>
+      letI : ∀ (v : ℤ) (a b : Fin K.n), Decidable (K.ReachN n v a b) :=
+        fun v a b => decidableReachN K n v a b
+      inferInstanceAs (Decidable (∃ k, K.Step u i k ∧ K.ReachN n (u + 1) k j))
+
+namespace Thread
+
+variable {K : SharingSkeleton}
+
+/-- A thread's one-step move is a `Step` of the class-level relation. -/
+theorem step' (θ : K.Thread) (u : ℤ) : K.Step u (θ.idx u) (θ.idx (u + 1)) :=
+  step_of_share_succ (θ.step u)
+
+/-- **A thread realizes reachability between its own positions.** -/
+theorem reachN (θ : K.Thread) (n : ℕ) (u : ℤ) :
+    K.ReachN n u (θ.idx u) (θ.idx (u + (n : ℤ))) := by
+  induction n generalizing u with
+  | zero => simpa using K.share_refl u (θ.idx u)
+  | succ m ih =>
+    refine ⟨θ.idx (u + 1), θ.step' u, ?_⟩
+    rw [int_succ_shift]
+    exact ih (u + 1)
+
+end Thread
+
 end SharingSkeleton
 
 end FormalSystem.Metalogic.Decidability

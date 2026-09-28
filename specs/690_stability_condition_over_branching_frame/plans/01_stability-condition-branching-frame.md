@@ -283,20 +283,20 @@ post-move line split between `Skeleton.lean` and the re-export shell.
 
 ---
 
-### Phase 3: Skeleton — `Thread`, `Step`, `ReachN` [NOT STARTED]
+### Phase 3: Skeleton — `Thread`, `Step`, `ReachN` [COMPLETED]
 
 **Goal**: Restate the thread layer on `SharingSkeleton`, leaving `Sharing/Thread.lean` as a
 re-export shell.
 
 **Tasks**:
-- [ ] Move `Thread` (the structure), `Thread.ext`, `Thread.const`, `instNonemptyThread`,
+- [x] Move `Thread` (the structure), `Thread.ext`, `Thread.const`, `instNonemptyThread`,
       `Thread.const_idx` onto the skeleton
-- [ ] Move `Step`, `step_of_share_succ`, `step_refl`, `step_congr_left`, `step_congr_right`,
+- [x] Move `Step`, `step_of_share_succ`, `step_refl`, `step_congr_left`, `step_congr_right`,
       `decidableStep`
-- [ ] Move `ReachN`, `reachN_zero`, `reachN_succ`, `reachN_congr_left`, `reachN_congr_right`,
+- [x] Move `ReachN`, `reachN_zero`, `reachN_succ`, `reachN_congr_left`, `reachN_congr_right`,
       `reachN_const`, `reachN_one`, `reachN_add`, `decidableReachN`, `Thread.step'`,
       `Thread.reachN`
-- [ ] Leave `SharingWitnessFamily.Thread` as an `abbrev` for `S.skeleton.Thread` so downstream
+- [x] Leave `SharingWitnessFamily.Thread` as an `abbrev` for `S.skeleton.Thread` so downstream *(deviation: altered — the `abbrev` alone left `θ.step u` stated at `S.skeleton.share`, which broke two `rw [S.share_def]` sites in `Fulfil.lean`; the `abbrev` is kept and a family-level `Thread.step` restatement was added beside it, which dot notation resolves first, so `Fulfil.lean` is unmodified as this phase requires)*
       statements (`ThreadFulfilling`, `Fulfil.lean`, `Agreement.lean`) are unchanged
 
 **Timing**: 2 hours

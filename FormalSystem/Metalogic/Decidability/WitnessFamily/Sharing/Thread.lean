@@ -40,6 +40,13 @@ absolute time, so `share u` and `share (u + d)` are different relations for a ge
 parametrization — `total_eq_thread` carries an explicit `s : ℤ` and reads `θ.idx (s + t)` at
 time `s + t` — never in the thread.
 
+## The layer itself lives on `SharingSkeleton`
+
+Not one declaration below inspects a formula, a label or the box guess: threads and the two
+reachability relations are functions of the representative structure alone. They are therefore
+declared on `SharingSkeleton` in `Sharing/Skeleton.lean`, and this module re-exports them at
+`SharingWitnessFamily` through `SharingWitnessFamily.skeleton`, at their original statements.
+
 ## Main Definitions
 
 - `SharingWitnessFamily.Thread` — a bi-infinite index choice stepping only across shared states
@@ -61,53 +68,35 @@ namespace SharingWitnessFamily
 
 variable {Γ Del : Context}
 
-/-- Regrouping a successor time offset, used wherever an induction on the step count meets the
-integer time coordinate. -/
-private theorem int_succ_shift (u : ℤ) (m : ℕ) :
-    u + ((m + 1 : ℕ) : ℤ) = u + 1 + (m : ℤ) := by
-  omega
-
-/-- Erasing a zero step count from a time offset. -/
-private theorem int_zero_shift (u : ℤ) : u + ((0 : ℕ) : ℤ) = u := by
-  omega
-
 /--
 **A bi-infinite choice of lasso index, stepping only across shared states.**
 
-The step field is the tight form: the thread rides lasso `idx u` from `u` to `u + 1`, and the
-state it arrives at, `⟦(idx u, u+1)⟧`, is the state `⟦(idx (u+1), u+1)⟧` it is recorded as
-holding. Threads replace lasso orbits as the objects the frame's histories are traces of.
+The family's threads are its skeleton's threads: the step field mentions only `share`, so there
+is nothing here for the label row to contribute.
 -/
-structure Thread (S : SharingWitnessFamily Γ Del) where
-  /-- The index held at each time. -/
-  idx : ℤ → Fin S.lassos.length
-  /-- Consecutive indices name the same world state at the later time. -/
-  step : ∀ u : ℤ, S.share (u + 1) (idx u) (idx (u + 1))
-
-namespace Thread
-
-variable {S : SharingWitnessFamily Γ Del}
-
-/-- Threads are determined by their index function. -/
-@[ext]
-theorem ext {θ η : S.Thread} (h : ∀ u, θ.idx u = η.idx u) : θ = η := by
-  cases θ with
-  | mk i₁ s₁ =>
-    cases η with
-    | mk i₂ s₂ =>
-      have hi : i₁ = i₂ := funext h
-      subst hi
-      rfl
-
-end Thread
+abbrev Thread (S : SharingWitnessFamily Γ Del) : Type := S.skeleton.Thread
 
 /-- The constant thread at index `i`: staying on one lasso forever is always legitimate. -/
-def Thread.const (S : SharingWitnessFamily Γ Del) (i : Fin S.lassos.length) : S.Thread where
-  idx := fun _ => i
-  step := fun u => S.share_refl (u + 1) i
+abbrev Thread.const (S : SharingWitnessFamily Γ Del) (i : Fin S.lassos.length) : S.Thread :=
+  SharingSkeleton.Thread.const S.skeleton i
 
 instance instNonemptyThread (S : SharingWitnessFamily Γ Del) : Nonempty S.Thread :=
   ⟨Thread.const S S.mainIdx⟩
+
+/--
+**A thread's step, phrased at the family's own `share`.**
+
+Declared at `SharingWitnessFamily.Thread` so that dot notation on a family thread resolves here
+rather than to the skeleton's field, which is stated at `S.skeleton.share`. The two are the same
+proposition by definition; this restatement is what keeps every downstream `rw [S.share_def]`
+matching, and is why `Sharing/Fulfil.lean` needs no edit.
+-/
+theorem Thread.step {S : SharingWitnessFamily Γ Del} (θ : S.Thread) (u : ℤ) :
+    S.share (u + 1) (θ.idx u) (θ.idx (u + 1)) := SharingSkeleton.Thread.step θ u
+
+/-- Threads are determined by their index function. -/
+theorem Thread.ext {S : SharingWitnessFamily Γ Del} {θ η : S.Thread}
+    (h : ∀ u, θ.idx u = η.idx u) : θ = η := SharingSkeleton.Thread.ext h
 
 @[simp]
 theorem Thread.const_idx (S : SharingWitnessFamily Γ Del) (i : Fin S.lassos.length) (u : ℤ) :
@@ -120,43 +109,34 @@ From index `i` at time `u`, a history may continue along *any* lasso `i'` naming
 at `u`, and then re-name the state it lands in at `u + 1`. The existential over `i'` is the
 branching: on the deterministic device it collapses to `i' = i` and `Step u i j ↔ j = i`.
 -/
-def Step (S : SharingWitnessFamily Γ Del) (u : ℤ) (i j : Fin S.lassos.length) : Prop :=
-  ∃ i', S.share u i i' ∧ S.share (u + 1) i' j
+abbrev Step (S : SharingWitnessFamily Γ Del) (u : ℤ) (i j : Fin S.lassos.length) : Prop :=
+  S.skeleton.Step u i j
 
 theorem step_of_share_succ {S : SharingWitnessFamily Γ Del} {u : ℤ}
     {i j : Fin S.lassos.length} (h : S.share (u + 1) i j) : S.Step u i j :=
-  ⟨i, S.share_refl u i, h⟩
+  SharingSkeleton.step_of_share_succ h
 
 theorem step_refl (S : SharingWitnessFamily Γ Del) (u : ℤ) (i : Fin S.lassos.length) :
-    S.Step u i i :=
-  step_of_share_succ (S.share_refl (u + 1) i)
+    S.Step u i i := SharingSkeleton.step_refl S.skeleton u i
 
 /-- `Step` only sees the `share u`-class of its source. -/
 theorem step_congr_left {S : SharingWitnessFamily Γ Del} {u : ℤ} {i i' j : Fin S.lassos.length}
-    (h : S.share u i' i) (hs : S.Step u i j) : S.Step u i' j := by
-  obtain ⟨k, hk, hkj⟩ := hs
-  exact ⟨k, S.share_trans h hk, hkj⟩
+    (h : S.share u i' i) (hs : S.Step u i j) : S.Step u i' j :=
+  SharingSkeleton.step_congr_left h hs
 
 /-- `Step` only sees the `share (u+1)`-class of its target. -/
 theorem step_congr_right {S : SharingWitnessFamily Γ Del} {u : ℤ} {i j j' : Fin S.lassos.length}
-    (hs : S.Step u i j) (h : S.share (u + 1) j j') : S.Step u i j' := by
-  obtain ⟨k, hk, hkj⟩ := hs
-  exact ⟨k, hk, S.share_trans hkj h⟩
-
-instance decidableStep (S : SharingWitnessFamily Γ Del) (u : ℤ) (i j : Fin S.lassos.length) :
-    Decidable (S.Step u i j) :=
-  inferInstanceAs (Decidable (∃ i', S.share u i i' ∧ S.share (u + 1) i' j))
+    (hs : S.Step u i j) (h : S.share (u + 1) j j') : S.Step u i j' :=
+  SharingSkeleton.step_congr_right hs h
 
 /--
 **`n`-step reachability.** At `n = 0` it is the sharing relation — same time, same state — and
 each successor step is one `Step`.
 -/
-def ReachN (S : SharingWitnessFamily Γ Del) :
-    ℕ → ℤ → Fin S.lassos.length → Fin S.lassos.length → Prop
-  | 0, u, i, j => S.share u i j
-  | (n + 1), u, i, j => ∃ k, S.Step u i k ∧ ReachN S n (u + 1) k j
+abbrev ReachN (S : SharingWitnessFamily Γ Del) (n : ℕ) (u : ℤ)
+    (i j : Fin S.lassos.length) : Prop :=
+  S.skeleton.ReachN n u i j
 
-@[simp]
 theorem reachN_zero (S : SharingWitnessFamily Γ Del) (u : ℤ) (i j : Fin S.lassos.length) :
     S.ReachN 0 u i j ↔ S.share u i j := Iff.rfl
 
@@ -167,42 +147,22 @@ theorem reachN_succ (S : SharingWitnessFamily Γ Del) (n : ℕ) (u : ℤ)
 /-- Reachability only sees the `share u`-class of its source. -/
 theorem reachN_congr_left {S : SharingWitnessFamily Γ Del} {n : ℕ} {u : ℤ}
     {i i' j : Fin S.lassos.length} (h : S.share u i' i) (hr : S.ReachN n u i j) :
-    S.ReachN n u i' j := by
-  cases n with
-  | zero => exact S.share_trans h hr
-  | succ m =>
-    obtain ⟨k, hk, hrest⟩ := hr
-    exact ⟨k, step_congr_left h hk, hrest⟩
+    S.ReachN n u i' j := SharingSkeleton.reachN_congr_left h hr
 
 /-- Reachability only sees the `share (u + n)`-class of its target. -/
 theorem reachN_congr_right {S : SharingWitnessFamily Γ Del} {n : ℕ} {u : ℤ}
     {i j j' : Fin S.lassos.length} (hr : S.ReachN n u i j)
-    (h : S.share (u + (n : ℤ)) j j') : S.ReachN n u i j' := by
-  induction n generalizing u i with
-  | zero =>
-    rw [int_zero_shift] at h
-    exact S.share_trans hr h
-  | succ m ih =>
-    obtain ⟨k, hk, hrest⟩ := hr
-    refine ⟨k, hk, ih hrest ?_⟩
-    rw [← int_succ_shift]
-    exact h
+    (h : S.share (u + (n : ℤ)) j j') : S.ReachN n u i j' :=
+  SharingSkeleton.reachN_congr_right hr h
 
 /-- Staying on one lasso is reachability of every length. -/
 theorem reachN_const (S : SharingWitnessFamily Γ Del) (n : ℕ) (u : ℤ)
-    (i : Fin S.lassos.length) : S.ReachN n u i i := by
-  induction n generalizing u with
-  | zero => exact S.share_refl u i
-  | succ m ih => exact ⟨i, step_refl S u i, ih (u + 1)⟩
+    (i : Fin S.lassos.length) : S.ReachN n u i i :=
+  SharingSkeleton.reachN_const S.skeleton n u i
 
 /-- One step of reachability is one `Step`. -/
 theorem reachN_one (S : SharingWitnessFamily Γ Del) (u : ℤ) (i j : Fin S.lassos.length) :
-    S.ReachN 1 u i j ↔ S.Step u i j := by
-  constructor
-  · rintro ⟨k, hk, hr⟩
-    exact step_congr_right hk hr
-  · intro h
-    exact ⟨j, h, S.share_refl (u + 1) j⟩
+    S.ReachN 1 u i j ↔ S.Step u i j := SharingSkeleton.reachN_one S.skeleton u i j
 
 /--
 **Concatenation and splitting.** Reachability of length `m + n` factors through an intermediate
@@ -211,62 +171,8 @@ discharge for the branching frame.
 -/
 theorem reachN_add (S : SharingWitnessFamily Γ Del) (m n : ℕ) (u : ℤ)
     (i j : Fin S.lassos.length) :
-    S.ReachN (m + n) u i j ↔ ∃ k, S.ReachN m u i k ∧ S.ReachN n (u + (m : ℤ)) k j := by
-  induction m generalizing u i with
-  | zero =>
-    rw [Nat.zero_add]
-    constructor
-    · intro h
-      refine ⟨i, S.share_refl u i, ?_⟩
-      rw [int_zero_shift]
-      exact h
-    · rintro ⟨k, hik, hr⟩
-      rw [int_zero_shift] at hr
-      exact reachN_congr_left hik hr
-  | succ m ih =>
-    have hidx : m + 1 + n = (m + n) + 1 := by omega
-    rw [hidx, reachN_succ]
-    constructor
-    · rintro ⟨k, hk, hr⟩
-      obtain ⟨k', hk', hr'⟩ := (ih (u + 1) k).mp hr
-      refine ⟨k', ?_, ?_⟩
-      · exact ⟨k, hk, hk'⟩
-      · rw [int_succ_shift]
-        exact hr'
-    · rintro ⟨k', hseg, hr'⟩
-      rw [reachN_succ] at hseg
-      obtain ⟨k, hk, hk'⟩ := hseg
-      refine ⟨k, hk, (ih (u + 1) k).mpr ⟨k', hk', ?_⟩⟩
-      rw [← int_succ_shift]
-      exact hr'
-
-instance decidableReachN (S : SharingWitnessFamily Γ Del) :
-    ∀ (n : ℕ) (u : ℤ) (i j : Fin S.lassos.length), Decidable (S.ReachN n u i j)
-  | 0, u, i, j => inferInstanceAs (Decidable (S.share u i j))
-  | (n + 1), u, i, j =>
-      letI : ∀ (v : ℤ) (a b : Fin S.lassos.length), Decidable (S.ReachN n v a b) :=
-        fun v a b => decidableReachN S n v a b
-      inferInstanceAs (Decidable (∃ k, S.Step u i k ∧ S.ReachN n (u + 1) k j))
-
-namespace Thread
-
-variable {S : SharingWitnessFamily Γ Del}
-
-/-- A thread's one-step move is a `Step` of the class-level relation. -/
-theorem step' (θ : S.Thread) (u : ℤ) : S.Step u (θ.idx u) (θ.idx (u + 1)) :=
-  step_of_share_succ (θ.step u)
-
-/-- **A thread realizes reachability between its own positions.** -/
-theorem reachN (θ : S.Thread) (n : ℕ) (u : ℤ) :
-    S.ReachN n u (θ.idx u) (θ.idx (u + (n : ℤ))) := by
-  induction n generalizing u with
-  | zero => simpa using S.share_refl u (θ.idx u)
-  | succ m ih =>
-    refine ⟨θ.idx (u + 1), θ.step' u, ?_⟩
-    rw [int_succ_shift]
-    exact ih (u + 1)
-
-end Thread
+    S.ReachN (m + n) u i j ↔ ∃ k, S.ReachN m u i k ∧ S.ReachN n (u + (m : ℤ)) k j :=
+  SharingSkeleton.reachN_add S.skeleton m n u i j
 
 end SharingWitnessFamily
 
