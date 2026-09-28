@@ -1,48 +1,27 @@
 {
-  "status": "partial",
-  "requires_user_review": true,
-  "review_reason": "Phases 1-5 complete and green; Phase 6 partial. The plan's pinned Goal `StabFaithful` (C5) is not stateable at the `WitnessFamily` datatype: `Formula` has no stability modal, `⊡` is `PlusFormula.stab` on a separate inductive. Choosing between an L⁺-indexed certificate datatype and dropping (C5) from scope is a user decision. Phases 7-14 not reached.",
-  "blocked_phase": 6,
-  "user_decision": {
-    "question": "Condition (C5) `StabFaithful` cannot be stated over the existing `Formula`-indexed witness-family certificate, because `FormalSystem.Syntax.Formula` has no `⊡` constructor — the stability modal lives on the separate inductive `FormalSystem.PlusLanguage.PlusFormula`. How should task 683 proceed?",
-    "options": [
-      "Add an L⁺-indexed certificate datatype: re-index LabelledLasso, closureOf, WitnessFamily, its four conditions and its agreement theorem over PlusFormula. Large, and it re-opens the JSON export contract the model checker consumes.",
-      "Drop (C5), StabFaithful and the box-dot case of the truth lemma from task 683's scope, keep the branching frame as the deliverable that unblocks a stability modal, and move the condition itself to a follow-up task. Phases 7-9 and 11 then proceed unchanged; Phases 10 and 12 lose one deliverable each."
-    ],
-    "blocking": true
-  },
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count": 14,
-    "build_passed": true,
-    "build_output": ""
-  },
-  "partial_progress": {
-    "stage": "phase_6_partial",
-    "details": "Phases 1-5 complete, committed and green. Phase 6 partial: (C0) AtomCoherent and (C1') LocalCoherentShare landed; (C5) StabFaithful blocked on the Formula/PlusFormula syntax split. Phases 7-14 not started.",
-    "phases_completed": 5,
-    "phases_total": 14,
-    "handoff_path": "specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-6-handoff-20260927.md"
-  },
+  "status": "planned",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/683_state_sharing_witness_structure_and_c3/summaries/01_state-sharing-witness-structure-summary.md",
-      "summary": "Branching witness device added alongside the deterministic one: SharingWitnessFamily, Thread/Step/ReachN, a regular branching FrameOver intOrder, total_eq_thread, and conditions (C0)/(C1')."
+      "type": "plan",
+      "path": "specs/683_state_sharing_witness_structure_and_c3/plans/01_state-sharing-witness-structure.md",
+      "summary": "Revised plan: (C5) StabFaithful dropped from scope per the recorded user decision; Phase 6 closed as [COMPLETED WITH EXCLUSIONS] with a Reasoned Exclusions record; Phases 7, 10, 11 and 12 re-scoped; Phases 1-5, 8, 9, 13 untouched."
     }
   ],
-  "completion_data": {
-    "completion_summary": "Added a state-sharing (branching) witness device under WitnessFamily/Sharing/: the SharingWitnessFamily structure with a periodic representative-map encoding of `share`, the Thread/Step/ReachN layer, a regular branching FrameOver intOrder with all four def:frame constraints and the Z-time instances, total_eq_thread (the determinism-free replacement for ShiftSet.total_eq_orbit), and conditions (C0) AtomCoherent and (C1') LocalCoherentShare. The shipped deterministic path is byte-identical. Phases 6-14 remain; (C5) StabFaithful is blocked on the Formula/PlusFormula syntax split.",
-    "roadmap_items": []
-  },
+  "next_steps": "Resume implementation at Phase 7 (Sharing/Decide.lean) against the revised plan; Phases 1-6 are closed.",
   "metadata": {
     "session_id": "sess_1790569454_bad6d5",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "failed",
-    "compliance_detail": "8 of the plan's 16 pinned Goals are present (SharingWitnessFamily, share, Thread, frame, instIsRegular, total_eq_thread, AtomCoherent, LocalCoherentShare); the other 8 belong to Phases 7-14, which were not reached."
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "revision_mode": "plan_revision",
+    "phase_count": 14,
+    "phases_preserved": 5,
+    "phases_closed_with_exclusions": 1,
+    "phases_revised": 4,
+    "phases_added": 0,
+    "phases_removed": 0,
+    "estimated_hours": 23.5,
+    "goals_pinned": 15,
+    "reports_integrated": ["01_state-sharing-witness-structure.md"],
+    "decision_applied": "Drop (C5) StabFaithful, the stab_state_only corollary, the box-dot truth case and the StabFaithful reduction; move the condition to a follow-up task requiring an L-plus-indexed certificate datatype."
   }
 }

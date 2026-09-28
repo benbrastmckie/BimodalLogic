@@ -2,13 +2,15 @@
 
 - **Task**: 683 - State-sharing witness structure and C3
 - **Status**: [IMPLEMENTING]
-- **Effort**: 25 hours
+- **Effort**: 23.5 hours
 - **Dependencies**: 682
-- **Research Inputs**: specs/683_state_sharing_witness_structure_and_c3/reports/01_state-sharing-witness-structure.md
+- **Research Inputs**: specs/683_state_sharing_witness_structure_and_c3/reports/01_state-sharing-witness-structure.md; specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-6-handoff-20260927.md; specs/683_state_sharing_witness_structure_and_c3/.decisions.json (the (C5) scope decision)
 - **Artifacts**: plans/01_state-sharing-witness-structure.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
+- **Revision**: round 1, revision 1 — (C5) `StabFaithful` dropped from scope per the recorded user decision; see "Revision 1" under Research Integration
+- **Reports Integrated**: 01_state-sharing-witness-structure.md
 
 ## Overview
 
@@ -23,6 +25,12 @@ recovered at the end as the `share u i j := i = j` instance, up to an explicit f
 isomorphism. Done when the sharing family's `Certifies` bundle is decidable, its
 `refutes_of_certifies` twin type-checks, the deterministic specialization is proved, and the
 repository builds sorry-free with the existing deterministic path byte-identical.
+
+The stability clause (C5) is **not** part of this task. It cannot be stated over a
+`Formula`-indexed certificate, and the user has decided to defer it (see Revision 1 below). What
+this task delivers for it is the enabling artifact: a frame whose task relation genuinely
+branches, so `PlusDeterminism.states_eq_of_deterministic` no longer collapses `⊡` to the
+identity on it.
 
 ### Research Integration
 
@@ -50,6 +58,39 @@ Two further report findings are carried as hard constraints: `ShiftSet.lean` mus
 (D2), and `share` must decode through `Periodic.unrollOf` with the same three-segment scheme as
 the labels (D4), so `Decide.lean`'s window lemmas generalize by instantiation.
 
+#### Revision 1 — (C5) `StabFaithful` dropped from scope
+
+This revision integrates one finding that is not in the research report, because it only
+surfaced when Phase 6 tried to elaborate the condition, plus the user decision that resolved it.
+
+- **The finding.** (C5) is not stateable at the `WitnessFamily` datatype. That datatype is
+  monomorphic in `FormalSystem.Syntax.Formula`, which has exactly six constructors (`atom`,
+  `bot`, `imp`, `box`, `untl`, `snce`) and no `⊡`. The stability modal is `PlusFormula.stab`, a
+  constructor of the **separate inductive** `FormalSystem.PlusLanguage.PlusFormula`
+  (`PlusLanguage/Formula.lean` records the separate-inductive decision and the
+  constructor-to-constructor embedding `ofFormula`). The two inductives share no supertype, so
+  no instantiation, coercion or type-class route states (C5) over the existing certificate.
+  This is a **type-level obstruction, not a proof difficulty**: the blocked `def` never
+  elaborated. The research report's line 425 and the original plan's Lean Challenge block both
+  missed it because (C5) was written as prose inside a `sorry`-bodied `def` whose statement was
+  never checked. Treat that as a correction to the report, not as a disagreement with it: the
+  report's *semantic* analysis of (C5) (its consistency with `stab_state_only`, its
+  one-finite-`∀ j` decidability) is sound and remains the specification for the follow-up.
+- **The decision.** The user chose to drop (C5), `StabFaithful` and the `⊡` case of the truth
+  lemma from this task, keeping the branching frame as the deliverable that *unblocks* a
+  stability modal, and to move the condition itself to a follow-up task. The alternative —
+  re-indexing `LabelledLasso`, `closureOf`, `WitnessFamily`, its four conditions and its
+  agreement theorem over `PlusFormula` — was rejected as too large here and because it re-opens
+  the JSON export contract the model checker consumes.
+- **What this revision changes.** Goals drop from sixteen pinned declarations to fifteen. Phase 6
+  closes as `[COMPLETED WITH EXCLUSIONS]` with the record below rather than as `[PARTIAL]`.
+  Phase 7 decides two conditions rather than three, Phase 10 loses the `⊡` truth case, Phase 11's
+  `Certifies` bundle has five components rather than six, and Phase 12 loses one reduction
+  lemma. Phases 1-5, 8, 9 and 13 are untouched. Effort drops from 25 to 23.5 hours.
+- **What this revision does not change.** No completed phase is reopened. Phases 1-5 are
+  committed and green; `Sharing/Predicates.lean`'s (C0) and (C1') are landed and stay. The
+  deterministic path remains byte-identical, and `ShiftSet.lean` remains untouched.
+
 ### Prior Plan Reference
 
 No prior plan. This is round 1 for this task.
@@ -74,7 +115,6 @@ directly. Treat roadmap alignment as unassessed rather than as none.
 - `SharingWitnessFamily.AtomCoherent`
 - `SharingWitnessFamily.LocalCoherentShare`
 - `SharingWitnessFamily.ThreadFulfilling`
-- `SharingWitnessFamily.StabFaithful`
 - `SharingWitnessFamily.Certifies`
 - `SharingWitnessFamily.decidableCertifies`
 - `SharingWitnessFamily.truth_iff_mem`
@@ -82,7 +122,7 @@ directly. Treat roadmap alignment as unassessed rather than as none.
 - `WitnessFamily.toSharing`
 - `WitnessFamily.certifies_toSharing`
 
-Beyond those sixteen pinned declarations the phases below also deliver supporting plumbing (the
+Beyond those fifteen pinned declarations the phases below also deliver supporting plumbing (the
 periodic `share` decoding lemmas, the thread-graph fixpoint and its termination measure, the
 frame isomorphism used by the specialization, and README updates). Those carry no pinned
 statement and are therefore not listed as Goals identifiers.
@@ -96,6 +136,15 @@ statement and are therefore not listed as Goals identifiers.
   must remain byte-identical.
 - Any change to the JSON export contract. `back`, `mid`, `fwd`, `bx`, `lassos` keep their names
   and positions; the sharing structure *extends* rather than edits.
+- **(C5) `StabFaithful`, the stability clause, and the `⊡` case of the truth lemma.** Dropped by
+  user decision after Phase 6 established that they are not stateable over a `Formula`-indexed
+  certificate (see Revision 1). Two specific prohibitions follow, and they are the point of this
+  entry: do **not** state `StabFaithful` at `Formula` with a vacuous or `True`-valued body, and
+  do **not** weaken it to a `box`-shaped clause. Both would type-check and certify nothing. The
+  condition belongs to a follow-up task that introduces an L⁺-indexed certificate datatype.
+- Any L⁺-indexed (`PlusFormula`-indexed) certificate datatype. Re-indexing `LabelledLasso`,
+  `closureOf`, `WitnessFamily`, its four conditions and its agreement theorem over `PlusFormula`
+  is the follow-up task's subject, not this one's; it also re-opens the JSON export contract.
 - The A1 compression theorem. The consuming repository records it as open with a named route;
   it is a separate line of work.
 - Re-litigating `Probe476.fmp_false`. It is cited, accurately, as the refutation of the
@@ -120,6 +169,8 @@ statement and are therefore not listed as Goals identifiers.
 | The `SuccOrder`/`IsSuccArchimedean` instance for the new frame fails to elaborate under `haveI` | M | H | `WitnessFamily/Std.lean`'s header records the `@`-with-four-`inferInstanceAs` idiom; Phase 4 copies it verbatim rather than re-deriving |
 | Task-number citations leak into `FormalSystem/**` | M | M | Cite durable anchors only (`total_eq_orbit`, `saturation_of_fib_finite`, `stab_iff_of_deterministic`, `Probe476.fmp_false`); the repo-wide lint covers this |
 | The declared `file_scope` does not list the new `Sharing/` modules, so a snapshot or gate refuses | M | M | Phase 1's first task extends `file_scope` in `specs/state.json` (append-only, via the sanctioned helper) before any new file is created |
+| A later implementer reinstates (C5) as a `Formula`-shaped clause with a vacuous or `box`-shaped body, producing a certificate that type-checks and certifies nothing about `⊡` | H | M | Named twice as a Non-Goal with both prohibited shapes spelled out; Phase 6's Reasoned Exclusions record carries the type-level reason; Phase 11's bundle pins the component count at five |
+| The (C5) deferral is read as "the branching device does not help the stability modal", and the follow-up is never opened | M | M | Phase 14 adds a `Sharing/README.md` section stating what the branching frame does deliver for `⊡` (its task relation is not functional, so `states_eq_of_deterministic` does not apply) and what the follow-up needs |
 | Estimates here are agent-run budgets, not the research report's 3-6 week human wall-clock figure | L | H | Stated openly; each phase is sized to one agent run producing roughly 100-500 lines, and phase count absorbs the total rather than phase length |
 
 ## Implementation Phases
@@ -360,42 +411,11 @@ world history of `S.frame` is the trace of a thread.
 
 ---
 
-### Phase 6: The new and revised conditions, as definitions [PARTIAL]
+### Phase 6: The new and revised conditions, as definitions [COMPLETED WITH EXCLUSIONS]
 
-**BLOCKER** (Phase 6):
-- **What failed**: `SharingWitnessFamily.StabFaithful` — the pinned (C5) stability clause — is
-  not stateable at this datatype. It is the only Phase 6 deliverable not landed; (C0)
-  `AtomCoherent`, (C1') `LocalCoherentShare` and the (C3)-reuse record are all in
-  `Sharing/Predicates.lean` and build sorry-free.
-- **What was tried**: writing (C5) as `∀ φ i u, ⊡φ ∈ S.L i u ↔ ∀ j, S.share u i j → φ ∈ S.L j u`
-  against `FormalSystem.Syntax.Formula`. There is no `⊡` to write. `Formula` has exactly six
-  constructors (`atom`, `bot`, `imp`, `box`, `untl`, `snce`); the stability modal is
-  `PlusFormula.stab`, a constructor of the **separate inductive**
-  `FormalSystem.PlusLanguage.PlusFormula` (`PlusLanguage/Formula.lean` records the
-  separate-inductive decision and the constructor-to-constructor embedding `ofFormula`).
-- **Why it's stuck**: `WitnessFamily` is indexed by `Context = List Formula`, its labels are
-  `Finset Formula`, and its closure is `closureOf : List Formula → Finset Formula`. Stating
-  (C5) requires re-indexing `LabelledLasso`, `closureOf`, `WitnessFamily`, its four conditions
-  and its agreement theorem over `PlusFormula` — a parallel L⁺ certificate datatype, not a
-  clause. The plan's Lean Challenge block did not surface this because it wrote `⊡φ` in prose
-  inside a `sorry`-bodied `def` whose statement was never elaborated.
-- **What is needed**: a user decision between (a) adding an L⁺-indexed certificate datatype
-  (large; it also re-opens the JSON export contract, which currently carries `Formula`), and
-  (b) dropping (C5), `StabFaithful` and the `⊡` case of the truth lemma from this task's scope,
-  keeping the branching frame as the deliverable that *unblocks* a stability modal — the frame's
-  task relation branches, so `PlusDeterminism.states_eq_of_deterministic` no longer collapses
-  `⊡` to the identity on it — and moving the condition itself to a follow-up task.
-- **Prohibited workarounds**: do NOT state `StabFaithful` at `Formula` with a vacuous or
-  `True`-valued body, and do NOT weaken it to a `box`-shaped clause; both would type-check and
-  certify nothing.
-
-Phases 7-14 are untouched (`[NOT STARTED]`). Phases 7, 8 and 9 do not depend on (C5) and can
-proceed against (C0)/(C1')/(C2') as written; Phases 10, 11 and 12 each carry a `StabFaithful`
-deliverable that this blocker gates.
-
-
-**Goal**: (C0) atom coherence, (C1') cross-step local coherence, and (C5) the stability clause
-exist as `Prop`s; (C3) and (C4) are reused by name, unchanged.
+**Goal**: (C0) atom coherence and (C1') cross-step local coherence exist as `Prop`s; (C3) and
+(C4) are reused by name, unchanged. (C5), the stability clause, was the third deliverable when
+this phase was written and is excluded — see the record below.
 
 **Tasks**:
 - [x] Create `Sharing/Predicates.lean`.
@@ -407,13 +427,24 @@ exist as `Prop`s; (C3) and (C4) are reused by name, unchanged.
 - [x] Define `LocalCoherentShare S : Prop` as (C1) with the `untl` clause taken **across**
       `share (t+1)`-linked pairs and the `snce` clause dually across `share t`. The `bot`, `imp`
       and `box` clauses are carried over unchanged.
-- [ ] Define `StabFaithful S : Prop := ∀ φ ..., ⊡φ ∈ S.L i u ↔ ∀ j, S.share u i j → φ ∈ S.L j u`,
-      and prove the immediate corollary `share u i j → (⊡φ ∈ L i u ↔ ⊡φ ∈ L j u)`, which is what
-      makes (C5) consistent with `stab_state_only` by construction. *(deviation: blocked — `⊡` is `PlusFormula.stab`, a constructor of a separate inductive; `WitnessFamily` is indexed by `List Formula`, which has no `⊡`. See this phase's BLOCKER entry.)*
+- ~~Define `StabFaithful S : Prop := ∀ φ ..., ⊡φ ∈ S.L i u ↔ ∀ j, S.share u i j → φ ∈ S.L j u`,
+      and prove the immediate corollary `share u i j → (⊡φ ∈ L i u ↔ ⊡φ ∈ L j u)`.~~ **Excluded**
+      — see Reasoned Exclusions below.
 - [x] Add a docstring section stating plainly that `BoxFaithful` (C3) is **reused verbatim** and
       why: its right-hand side mentions only the label pool, which recombination does not
       enlarge. Name this as a correction to the consuming adequacy document's claim, per the
       research report's decision D1.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| (C5) `SharingWitnessFamily.StabFaithful`, the stability clause | Not stateable at this datatype, and the obstruction is type-level rather than a proof difficulty. `WitnessFamily` is indexed by `Context = List Formula`, its labels are `Finset Formula`, and its closure is `closureOf : List Formula → Finset Formula`. `Formula` has exactly six constructors (`atom`, `bot`, `imp`, `box`, `untl`, `snce`) — there is no `⊡` to write. The stability modal is `PlusFormula.stab` on the separate inductive `FormalSystem.PlusLanguage.PlusFormula`, and the two inductives share no supertype, so no instantiation, coercion or type-class route states (C5) over the existing certificate. Stating it requires an L⁺-indexed certificate datatype, which also re-opens the JSON export contract. The user decided to drop it here and move it to a follow-up task. | `FormalSystem/Syntax/Formula.lean` — `Formula`, six constructors, no `stab`. `FormalSystem/PlusLanguage/Formula.lean` — `PlusFormula.stab`, the separate-inductive decision, and the `ofFormula` embedding. The attempted `def` never elaborated; by contrast `Sharing/Predicates.lean` builds sorry-free with (C0) and (C1') landed, full `lake build` green (2746 jobs, exit 0), sorry census zero, `#print axioms` on every landed Goal exactly `[propext, Classical.choice, Quot.sound]`. User decision recorded in `.decisions.json` (`dispatch_seq` 3, `blocking: true`, answered by user). |
+| The `stab_state_only` consistency corollary | Consumes `StabFaithful`; falls with the row above. Its content is preserved as the follow-up's specification: the research report establishes that `share u` being an equivalence makes (C5) consistent with `stab_state_only` by construction, with `Metalogic/Conservativity/Plus/Atomization.lean` as the transfer route. | `reports/01_state-sharing-witness-structure.md`, the `stab_state_only` discussion; `FormalSystem/PlusLanguage/PlusTruth.lean`'s `stab` clause of `PlusTruthAt`. |
+
+The exclusions are confined to (C5). Phases 7, 8 and 9 never depended on it. Phases 10, 11 and 12
+each carried one `StabFaithful` deliverable, and this revision removes exactly those three
+deliverables from those phases — they are not deferred within this plan, they are out of scope.
 
 **Timing**: 1.5 hours
 
@@ -428,16 +459,17 @@ exist as `Prop`s; (C3) and (C4) are reused by name, unchanged.
 - `FormalSystem/Metalogic/Decidability/WitnessFamily.lean` - add the new import
 
 **Verification**:
-- The three new `Prop`s elaborate; `#check` each
-- The `stab_state_only` corollary type-checks
+- The two new `Prop`s elaborate; `#check` each
 - `grep -n "BoxFaithful" Sharing/Predicates.lean` shows it referenced, never redefined
+- `grep -n "StabFaithful" Sharing/Predicates.lean` finds nothing (the exclusion is real, not a
+  stub)
 - sorry census reports zero
 
 ---
 
-### Phase 7: Decidability of (C0), (C1') and (C5) by the window reduction [NOT STARTED]
+### Phase 7: Decidability of (C0) and (C1') by the window reduction [NOT STARTED]
 
-**Goal**: The three one-position/one-step conditions are decidable, reusing
+**Goal**: The two one-position/one-step conditions are decidable, reusing
 `Decide.lean`'s existing window machinery rather than a new reduction.
 
 **Tasks**:
@@ -445,15 +477,16 @@ exist as `Prop`s; (C3) and (C4) are reused by name, unchanged.
 - [ ] Define the combined window for a sharing family: the label window
       `[-2·nb, nm + 2·nf)` intersected with the `share` segments' own period, so both decodings
       are periodic across it. Prove the combined-window analogue of `coherent_iff_window`.
-- [ ] Prove `atomCoherent_iff_window`, `localCoherentShare_iff_window`, `stabFaithful_iff_window`
-      off that lemma.
-- [ ] Derive `Decidable` instances for the three conditions by `decidable_of_iff` through the
+- [ ] Prove `atomCoherent_iff_window` and `localCoherentShare_iff_window` off that lemma. (A
+      third sibling, `stabFaithful_iff_window`, was planned; (C5) is out of scope — see Phase 6's
+      Reasoned Exclusions — so it is not part of this phase.)
+- [ ] Derive `Decidable` instances for the two conditions by `decidable_of_iff` through the
       window statements, with the inner `∀ j : Fin lassos.length` discharged by `Fintype`.
 - [ ] Confirm by `#check` that `decidableBoxFaithful`, `instDecidableMemAll`,
       `instDecidableBoxClause` and `decidableTarget` apply to a sharing family's underlying
       `toWitnessFamily` unchanged.
 
-**Timing**: 2 hours
+**Timing**: 1.5 hours
 
 **Depends on**: 6
 
@@ -473,7 +506,7 @@ the actual reusable count in the phase notes if it differs from four.
 
 **Verification**:
 - `example (S : SharingWitnessFamily Γ Del) : Decidable (AtomCoherent S) := inferInstance` and
-  the two siblings elaborate
+  its `LocalCoherentShare` sibling elaborate
 - `lake build` of the module succeeds
 - sorry census reports zero
 
@@ -579,12 +612,19 @@ proved equivalent to Phase 8's fixpoint, and thereby decidable.
       surjectivity analogue of `sh_surj`, over all `(i,u)` positions.
 - [ ] Prove `truth_iff_mem` for the sharing family by induction on the formula, using
       `LocalCoherentShare` for the one-step temporal cases, `ThreadFulfilling` for the
-      eventualities, and **`BoxFaithful` unchanged** for `□`.
-- [ ] Prove the `⊡` case against `StabFaithful`, and cite `stab_iff_of_deterministic` in the
-      docstring as the reason the deterministic device is blind to `⊡` by construction — not
-      merely incomplete for it, so it cannot be extended by adding a truth clause.
+      eventualities, and **`BoxFaithful` unchanged** for `□`. The induction is over
+      `FormalSystem.Syntax.Formula`'s six constructors and is therefore complete as stated;
+      there is no `⊡` case to prove, because `Formula` has no `⊡`.
+- [ ] Record in the module docstring what the branching frame delivers for the stability modal
+      even though (C5) is out of scope here: the frame's task relation is not functional, so
+      `PlusDeterminism.states_eq_of_deterministic` does not apply to it and
+      `stab_iff_of_deterministic`'s `⊡φ ↔ φ` collapse does not hold. That is the sense in which
+      the deterministic device is blind to `⊡` **by construction** — not merely incomplete for
+      it, so it cannot be extended by adding a truth clause — and the sense in which this frame
+      unblocks the follow-up. Cite both lemmas by name; state plainly that the corresponding
+      truth clause is future work on an L⁺-indexed certificate.
 
-**Timing**: 2 hours
+**Timing**: 1.5 hours
 
 **Depends on**: 5, 6
 
@@ -600,6 +640,7 @@ proved equivalent to Phase 8's fixpoint, and thereby decidable.
 - `truth_iff_mem` type-checks at its pinned statement
 - `grep -n "BoxFaithful" Sharing/Agreement.lean` confirms the existing (C3) is applied, not
   restated
+- `grep -n "StabFaithful" Sharing/Agreement.lean` finds nothing outside the docstring
 - `#print axioms SharingWitnessFamily.truth_iff_mem` shows no `sorryAx`
 - sorry census reports zero
 
@@ -611,10 +652,11 @@ proved equivalent to Phase 8's fixpoint, and thereby decidable.
 end-to-end.
 
 **Tasks**:
-- [ ] Bundle `SharingWitnessFamily.Certifies S t` as the conjunction of `AtomCoherent`,
-      `LocalCoherentShare`, `ThreadFulfilling`, `BoxFaithful` (reused), `StabFaithful`, and
-      `Target` (reused), in a fixed projection order matching the instance evaluation order.
-- [ ] Derive `decidableCertifies` from the five/six component instances.
+- [ ] Bundle `SharingWitnessFamily.Certifies S t` as the conjunction of exactly five components —
+      `AtomCoherent`, `LocalCoherentShare`, `ThreadFulfilling`, `BoxFaithful` (reused) and
+      `Target` (reused) — in a fixed projection order matching the instance evaluation order. A
+      sixth, `StabFaithful`, was planned and is out of scope; see Phase 6's Reasoned Exclusions.
+- [ ] Derive `decidableCertifies` from the five component instances.
 - [ ] Prove `joint_countermodel`'s branching twin and then
       `refutes_of_certifies : S.Certifies t → WitnessFamily.Refutes Γ Del`, landing in the
       **same** `Refutes` (`Agreement.lean`'s existential over frames is what makes this possible
@@ -631,10 +673,10 @@ end-to-end.
 
 **Commit Mode**: per-substep
 
-**Scope Hypothesis**: this phase asserts the bundle has exactly six components (four carried
+**Scope Hypothesis**: this phase asserts the bundle has exactly five components (three carried
 over or adapted, two new). Confirm by the `decidableCertifies` derivation closing with exactly
 that many component instances; adjust the count in the docstring if the definition settles
-differently.
+differently. Five, not six: the planned `StabFaithful` component is out of scope.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Agreement.lean` - the bundle and
@@ -664,11 +706,13 @@ new condition proved to reduce to its existing counterpart.
 - [ ] Prove `LocalCoherentShare (W.toSharing) ↔ LocalCoherentLab W`.
 - [ ] Prove `ThreadFulfilling (W.toSharing) ↔ FulfillingLab W`, using the fact that a thread in
       `W.toSharing` is a constant function.
-- [ ] Prove `StabFaithful (W.toSharing)` is the `⊡φ ↔ φ` collapse, and cite
-      `states_eq_of_deterministic` / `stab_iff_of_deterministic` as the semantic counterpart.
-- [ ] Assemble `certifies_toSharing : W.Certifies t → (W.toSharing).Certifies t`.
+- [ ] Assemble `certifies_toSharing : W.Certifies t → (W.toSharing).Certifies t` from the four
+      reductions above. (A fifth, `StabFaithful (W.toSharing)` as the `⊡φ ↔ φ` collapse, was
+      planned; (C5) is out of scope — see Phase 6's Reasoned Exclusions. Record
+      `states_eq_of_deterministic` / `stab_iff_of_deterministic` in the module docstring instead,
+      as the semantic statement of why the diagonal instance would collapse `⊡`.)
 
-**Timing**: 2 hours
+**Timing**: 1.5 hours
 
 **Depends on**: 11
 
@@ -681,7 +725,7 @@ new condition proved to reduce to its existing counterpart.
 - `FormalSystem/Metalogic/Decidability/WitnessFamily.lean` - add the new import
 
 **Verification**:
-- All five reduction lemmas and `certifies_toSharing` type-check
+- All four reduction lemmas and `certifies_toSharing` type-check
 - `#print axioms WitnessFamily.certifies_toSharing` shows no `sorryAx`
 - sorry census reports zero
 
@@ -744,6 +788,15 @@ durable, in-repo documentation, and the whole change is verified against the ful
       small-model property for *time-free* finite digraphs; its pigeonhole step has no analogue
       here because the time coordinate stays in the carrier. Do not cite it as an obstruction to
       this design.
+- [ ] Record the (C5) status in `Sharing/README.md` in its own section, in three parts: (a) the
+      stability clause is **not** part of this device, and why — `WitnessFamily` is indexed by
+      `Formula`, which has six constructors and no `⊡`, while the modal is `PlusFormula.stab` on
+      a separate inductive; (b) what this device nonetheless delivers for it — a non-functional
+      task relation, so `states_eq_of_deterministic` does not apply and
+      `stab_iff_of_deterministic`'s collapse does not hold; (c) what a follow-up needs — an
+      L⁺-indexed certificate datatype (`LabelledLasso`, `closureOf`, `WitnessFamily`, its
+      conditions and its agreement theorem re-indexed over `PlusFormula`), which also re-opens
+      the JSON export contract. Cite durable anchors only; no task numbers.
 - [ ] Record the consuming-repository hand-off (what the model checker would need to emit to use
       a sharing certificate) as prose in `Sharing/README.md`. Do not edit that repository.
 - [ ] Run the full gate set and confirm the deterministic path is untouched.
@@ -767,7 +820,7 @@ durable, in-repo documentation, and the whole change is verified against the ful
 - `bash .claude/scripts/check-task-references.sh` passes (no task numbers under `FormalSystem/**`)
 - `git diff --stat FormalSystem/Semantics/ShiftSet.lean FormalSystem/Metalogic/Decidability/WitnessFamily/{Basic,Predicates,Std,Agreement,Decide}.lean`
   shows no content change to the deterministic path beyond added imports
-- `#print axioms` on each pinned Goal identifier shows no `sorryAx`
+- `#print axioms` on each of the fifteen pinned Goal identifiers shows no `sorryAx`
 
 ## Lean Challenge Statements
 
@@ -840,9 +893,6 @@ def SharingWitnessFamily.LocalCoherentShare (S : SharingWitnessFamily Gam Del) :
 /-- (C2') Every thread through a position fulfils that position's eventualities. -/
 def SharingWitnessFamily.ThreadFulfilling (S : SharingWitnessFamily Gam Del) : Prop := sorry
 
-/-- (C5) The stability clause, quantifying over the shared states at one time. -/
-def SharingWitnessFamily.StabFaithful (S : SharingWitnessFamily Gam Del) : Prop := sorry
-
 /-- The bundled conditions at a target time. (C3) `BoxFaithful` and (C4) `Target` are reused
 from the deterministic device verbatim. -/
 def SharingWitnessFamily.Certifies (S : SharingWitnessFamily Gam Del) (t : ℤ) : Prop := sorry
@@ -869,7 +919,7 @@ theorem WitnessFamily.certifies_toSharing (W : WitnessFamily Gam Del) {t : ℤ}
 end FormalSystem.Metalogic.Decidability
 ```
 
-Four notes on this block, all deliberate:
+Five notes on this block, all deliberate:
 
 - `SharingWitnessFamily` and `Thread` are declared as full `structure`s rather than with `sorry`
   bodies, because a structure has no body to elide and because every later declaration projects
@@ -885,14 +935,22 @@ Four notes on this block, all deliberate:
 - `refutes_of_certifies` deliberately lands in the **existing** `WitnessFamily.Refutes`, not in a
   new one. That is the whole coexistence mechanism, and pinning it here makes a drift into a
   parallel interface a type error rather than a review finding.
+- `StabFaithful` is **absent by design**, and its absence is itself pinned. An earlier version of
+  this block carried it with a `sorry` body, which is exactly how the type-level obstruction went
+  unnoticed: a `sorry`-bodied `def` whose statement is written in prose is never elaborated, so
+  the missing `⊡` constructor never produced an error. The lesson generalizes — a pinned Goal
+  whose real content lives in a comment is not pinned. Nothing in this plan may reintroduce a
+  `StabFaithful` at `Formula`.
 
 ## Testing & Validation
 
 - [ ] `lake build` succeeds from a clean state after every phase and at the end.
 - [ ] `bash .claude/scripts/lean-sorry-census.sh` over the resolved Lean source roots reports
       zero sorries in `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/`.
-- [ ] `#print axioms` on each of the sixteen Goal identifiers shows no `sorryAx` and no axiom
+- [ ] `#print axioms` on each of the fifteen Goal identifiers shows no `sorryAx` and no axiom
       beyond `propext`, `Classical.choice`, `Quot.sound`.
+- [ ] `grep -rn "StabFaithful" FormalSystem/` finds nothing outside README/docstring prose: the
+      (C5) exclusion is real, not a vacuous stub.
 - [ ] `git diff` shows no content change to `FormalSystem/Semantics/ShiftSet.lean`.
 - [ ] `git diff` shows no change to `WitnessFamily/{Basic,Predicates,Std,Agreement,Decide}.lean`
       other than, where unavoidable, added imports — and specifically no change to
