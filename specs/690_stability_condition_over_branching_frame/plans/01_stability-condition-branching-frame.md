@@ -637,26 +637,26 @@ transparent and that is the defect to fix, not the proof.
 
 ---
 
-### Phase 12: (C5) `StabFaithful` — the deliverable [NOT STARTED]
+### Phase 12: (C5) `StabFaithful` — the deliverable [COMPLETED]
 
 **Goal**: State the stability condition natively over `PlusFormula.stab`, and prove the
 label-level form of `stab_state_only` from it.
 
 **Tasks**:
-- [ ] Add to `PlusWitnessFamily/Predicates.lean`:
+- [x] Add to `PlusWitnessFamily/Predicates.lean`:
       ```lean
       def StabFaithful (S : PlusSharingWitnessFamily Γ Δ) : Prop :=
         ∀ (i : Fin S.lassos.length) (u : ℤ) (φ : PlusFormula),
           PlusFormula.stab φ ∈ plusClosureOf (Γ ++ Δ) →
             (PlusFormula.stab φ ∈ S.L i u ↔ ∀ j, S.share u i j → φ ∈ S.L j u)
       ```
-- [ ] Prove `stabFaithful_share_congr`: from `StabFaithful` and `share u i j`,
+- [x] Prove `stabFaithful_share_congr`: from `StabFaithful` and `share u i j`,
       `PlusFormula.stab φ ∈ S.L i u ↔ PlusFormula.stab φ ∈ S.L j u`. This is the label-level
       reading of `PlusTruth.stab_state_only` and follows because `share u` is an equivalence
       (the kernel of `rep u`) — no side condition is introduced and none is needed
-- [ ] Prove the reflexive consequence `stabFaithful_self`: `stab φ ∈ S.L i u → φ ∈ S.L i u`, via
+- [x] Prove the reflexive consequence `stabFaithful_self`: `stab φ ∈ S.L i u → φ ∈ S.L i u`, via
       `share_refl`, which is the T-axiom direction a consumer will reach for first
-- [ ] Write the module header recording *why* this is not a clause of (C1'): it is same-time and
+- [x] Write the module header recording *why* this is not a clause of (C1'): it is same-time and
       cross-index, whereas (C1')'s temporal clauses are one-step and (C3)'s box clause is global
 
 **Timing**: 1.5 hours

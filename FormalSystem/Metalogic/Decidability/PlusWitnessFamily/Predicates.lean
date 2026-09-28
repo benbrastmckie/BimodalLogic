@@ -41,6 +41,7 @@ because its states are index/time pairs with no quotient; this one cannot.
 - `PlusSharingWitnessFamily.PlusThreadFulfilling` — (C2') every thread discharges its eventualities
 - `PlusWitnessFamily.PlusBoxFaithful` — (C3) the box guess is exactly global label membership
 - `PlusWitnessFamily.PlusTarget` — (C4) a time on the main lasso witnessing the consequence
+- `PlusSharingWitnessFamily.StabFaithful` — **(C5) stability faithfulness**
 
 ## Main Results
 
@@ -48,6 +49,9 @@ because its states are index/time pairs with no quotient; this one cannot.
 - `PlusSharingWitnessFamily.plusSnce_self_of_share` — the reflexive instance of the `snce` clause
 - `PlusSharingWitnessFamily.plusLocalCoherentLab_of_share` — (C1') implies its one-position form
 - `PlusSharingWitnessFamily.plusFulfillingLab_of_thread` — (C2') implies its per-lasso form
+- `PlusSharingWitnessFamily.stabFaithful_share_congr` — (C5) implies the label-level
+  `stab_state_only`
+- `PlusSharingWitnessFamily.stabFaithful_self` — the T-axiom direction
 -/
 
 namespace FormalSystem.Metalogic.Decidability
@@ -231,6 +235,80 @@ theorem plusFulfillingLab_of_thread {S : PlusSharingWitnessFamily Γ Del}
     exact ⟨s, hs, hes, hgs⟩
   · obtain ⟨s, hs, hes, hgs⟩ := h.2 i t g e hmem (Thread.const S i) rfl
     exact ⟨s, hs, hes, hgs⟩
+
+/-!
+## (C5) Stability faithfulness
+
+This is the condition the `Formula`-indexed certificate cannot state, and the reason the L⁺
+certificate exists.
+
+**Why it is not a clause of (C1').** (C1')'s temporal clauses are *one-step*: they relate a label
+at `t` to labels at `t ± 1`. (C3)'s box clause is *global*: one Boolean, read at every position
+of every lasso. (C5) is neither. It is **same-time and cross-index**: `⊡φ` is labelled at
+`(i, u)` exactly when `φ` is labelled at every `j` naming the same world state at `u`. There is
+no time step to unfold and no single Boolean to guess, so neither existing shape fits, and giving
+it one would state something strictly weaker under the right name.
+
+**Why it keeps the certificate decidable.** The quantifier is over `Fin S.lassos.length` at one
+fixed time — finitely many indices, one label row. The branching frame has infinitely many walks
+and (C5) quantifies over none of them. `PlusWitnessFamily/Decide.lean` discharges this
+mechanically, by the same window collapse (C0) uses.
+
+**Why it is not vacuous on this substrate.** On a deterministic frame `share u i j ↔ i = j`, the
+class is a singleton and (C5) degenerates to `⊡φ ↔ φ` — which is exactly
+`PlusLanguage/PlusDeterminism.lean`'s `stab_iff_of_deterministic`, and is why the deterministic
+device is blind to the modal. The branching frame's task relation is not functional, so the
+classes are not singletons and the condition has content.
+-/
+
+/--
+**(C5) Stability faithfulness.**
+
+`⊡φ` is labelled at `(i, u)` exactly when `φ` is labelled at every index naming the same world
+state at `u`:
+
+    stab φ ∈ S.L i u ↔ ∀ j, S.share u i j → φ ∈ S.L j u
+
+closure-gated on `stab φ`. The quantifier ranges over `Fin S.lassos.length` at one time, never
+over the frame's infinitely many walks, so decidability is preserved by construction. It mentions
+no `Encoding` and no `Classical`, so every instance computes.
+-/
+def StabFaithful (S : PlusSharingWitnessFamily Γ Del) : Prop :=
+  ∀ (i : Fin S.lassos.length) (u : ℤ) (φ : PlusFormula),
+    PlusFormula.stab φ ∈ plusClosureOf (Γ ++ Del) →
+      (PlusFormula.stab φ ∈ S.L i u ↔ ∀ j, S.share u i j → φ ∈ S.L j u)
+
+/--
+**(C5) implies the label-level `stab_state_only`.**
+
+`PlusTruth.lean` records that the stability modal depends on the world state alone. This is that
+fact read on labels: indices naming the same state agree on every stability-modal label.
+
+It follows because `share u` is an equivalence — the kernel of `rep u` — so the two right-hand
+sides of (C5) at `i` and at `j` quantify over the same class. No side condition is introduced and
+none is needed.
+-/
+theorem stabFaithful_share_congr (S : PlusSharingWitnessFamily Γ Del)
+    (h : S.StabFaithful) (u : ℤ) (i j : Fin S.lassos.length)
+    (hs : S.share u i j) (φ : PlusFormula)
+    (hc : PlusFormula.stab φ ∈ plusClosureOf (Γ ++ Del)) :
+    (PlusFormula.stab φ ∈ S.L i u ↔ PlusFormula.stab φ ∈ S.L j u) := by
+  rw [h i u φ hc, h j u φ hc]
+  constructor
+  · intro hi k hjk
+    exact hi k (share_trans hs hjk)
+  · intro hj k hik
+    exact hj k (share_trans (share_symm hs) hik)
+
+/--
+**The T-axiom direction.** `⊡φ` labelled at an index puts `φ` there too, because `share u` is
+reflexive. This is what a consumer reaches for first.
+-/
+theorem stabFaithful_self (S : PlusSharingWitnessFamily Γ Del) (h : S.StabFaithful)
+    (i : Fin S.lassos.length) (u : ℤ) (φ : PlusFormula)
+    (hc : PlusFormula.stab φ ∈ plusClosureOf (Γ ++ Del))
+    (hm : PlusFormula.stab φ ∈ S.L i u) : φ ∈ S.L i u :=
+  (h i u φ hc).mp hm i (S.share_refl u i)
 
 end PlusSharingWitnessFamily
 
