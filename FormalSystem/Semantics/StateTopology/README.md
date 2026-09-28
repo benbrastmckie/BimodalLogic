@@ -15,7 +15,7 @@ module — twice.
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Semantics/StateTopology -->
 | File | Lines | Description |
 |------|------:|-------------|
-| `ConstraintWitnesses.lean` | 1,727 | Witnesses whose content is a `def:frame` constraint or a separation property **failing**: the ghost ray (*Serial*, *Compositional*, no *Limit*, `𝒩_F` not R0 — `GhostRay.frame_not_r0Space`) the ℚ-carrier two-origin frame (first three constraints, ***Saturation* fails* — `RationalTwoOrigins.not_rel_saturation`, and *Completion* fails too — `RationalTwoOrigins.not_rel_completion`), and the separating frame (*Serial*, *Compositional*, *Limit* and ***Completion***, ***Saturation* fails* — `SeparatingFrame.srel_completion`, `SeparatingFrame.not_srel_saturation`). |
+| `ConstraintWitnesses.lean` | 1,739 | Witnesses whose content is a `def:frame` constraint or a separation property **failing**: the ghost ray (*Serial*, *Compositional*, no *Limit*, `𝒩_F` not R0 — `GhostRay.frame_not_r0Space`) the ℚ-carrier two-origin frame (first three constraints, ***Saturation* fails* — `RationalTwoOrigins.not_rel_saturation`, and *Completion* fails too — `RationalTwoOrigins.not_rel_completion`), and the separating frame (*Serial*, *Compositional*, *Limit* and ***Completion***, ***Saturation* fails* — `SeparatingFrame.srel_completion`, `SeparatingFrame.not_srel_saturation`). |
 | `Counterexamples.lean` | 2,056 | Frames satisfying some `def:frame` constraints and not others: the four-state funnel (no *Limit*, `𝒯_F` T1 anyway), and the two **regular task frames** the appendix cites — the two-origin half-line (T1, not Hausdorff) and the hedgehog (`𝒩_F` strictly below the final topology of all histories), both with *Saturation* proved by the shadow argument. |
 | `MetricFrame.lean` | 290 | The metric frame (a task of duration `y` moves distance at most `c` times the size of `y` on the carrier `ℝ`), previously only prose: regular at every positive speed, and the frame on which `𝒩_F` **is** the final topology of all histories (`MetricFrame.finalTopology_eq_nbhdTopology`). |
 <!-- END GENERATED -->
@@ -103,4 +103,4 @@ no existing witness distinguishes the nest condition from the directed one.
 
 ---
 
-*Last verified: 2026-09-24*
+*Last verified: 2026-09-27*

@@ -326,19 +326,19 @@ and the extra row should be added and reported.
 
 ---
 
-### Phase 5: Regenerate the machine-owned records [NOT STARTED]
+### Phase 5: Regenerate the machine-owned records [COMPLETED]
 
 **Goal**: The two generated records that Phases 2 and 3 invalidate — the Lean citation manifest
 (C35) and the generated README inventory blocks (`INV`) — are regenerated and verified in the same
 change that invalidated them.
 
 **Tasks**:
-- [ ] Confirm Phases 2 and 3 are committed before starting (this phase regenerates *from* their content).
-- [ ] Run `python3 scripts/export-lean-citations.py` to rewrite `scripts/lean-citation-manifest.json`, then `python3 scripts/export-lean-citations.py --check` to confirm it is current. `FormalSystem.Semantics.FrameConstraintIndependence.constraints_pairwise_independent` is seed line 86 of `scripts/lean-citation-seeds.txt`; every header line Phase 3 added above it shifted the recorded span.
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory` to rewrite the generated inventory blocks, then `bash scripts/check-module-invariants.sh --emit-inventory --check` to confirm none would change a byte.
-- [ ] Inspect the resulting diff and confirm the changed rows are the expected ones and only those: `FormalSystem/Semantics/StateTopology/README.md` (the `ConstraintWitnesses.lean` line count, currently `1,727`), `FormalSystem/MinusLanguage/README.md` (the `Translation.lean` row, currently 266 lines), and the root `README.md`'s `dir=FormalSystem rows=totals` block.
-- [ ] Bump the `*Last verified:*` line on any README whose inventory row this phase changed.
-- [ ] Stage the regenerated files with an explicit multi-file `git add --` list, never a directory or glob pathspec.
+- [x] Confirm Phases 2 and 3 are committed before starting (this phase regenerates *from* their content).
+- [x] Run `python3 scripts/export-lean-citations.py` to rewrite `scripts/lean-citation-manifest.json`, then `python3 scripts/export-lean-citations.py --check` to confirm it is current. `FormalSystem.Semantics.FrameConstraintIndependence.constraints_pairwise_independent` is seed line 86 of `scripts/lean-citation-seeds.txt`; every header line Phase 3 added above it shifted the recorded span.
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory` to rewrite the generated inventory blocks, then `bash scripts/check-module-invariants.sh --emit-inventory --check` to confirm none would change a byte.
+- [x] Inspect the resulting diff and confirm the changed rows are the expected ones and only those: `FormalSystem/Semantics/StateTopology/README.md` (the `ConstraintWitnesses.lean` line count, currently `1,727`), `FormalSystem/MinusLanguage/README.md` (the `Translation.lean` row, currently 266 lines), and the root `README.md`'s `dir=FormalSystem rows=totals` block.
+- [x] Bump the `*Last verified:*` line on any README whose inventory row this phase changed.
+- [x] Stage the regenerated files with an explicit multi-file `git add --` list, never a directory or glob pathspec.
 
 **Timing**: 0.5 hours
 

@@ -33,7 +33,7 @@ repository's metalogic is proved in.
 | `MinusTruth.lean` | 224 | `MinusTruthAt` — the same truth relation for the tense-primitive base language, by native six-clause recursion on `MinusFormula` per `def:BL-semantics` (not `TruthAt ∘ tr`) |
 | `MinusValidity.lean` | 316 | `MinusValid`, `MinusSemanticConsequence`, `MinusValidDense`, `MinusValidZTime`, `MinusValidZTimeSucc`, `MinusValidRTime` — binder-for-binder base-language mirrors of Validity.lean |
 | `Soundness.lean` | 615 | The truth-transfer bridge `truthAt_tr`, and L⁻ soundness at `FrameClass.Base` and its three extensions, by composition through `Conservativity.translate` |
-| `Translation.lean` | 266 | `tr : MinusFormula → Formula` and `trCtx` — the translation into the primary language, sending each L⁻ primitive to the primary operator of the same name |
+| `Translation.lean` | 285 | `tr : MinusFormula → Formula` and `trCtx` — the translation into the primary language, sending each L⁻ primitive to the primary operator of the same name |
 <!-- END GENERATED -->
 
 The sibling aggregator is `FormalSystem/MinusLanguage.lean`. The library root, the repository-root
@@ -97,4 +97,4 @@ that table**; without one the check fails, naming the file.
 
 ---
 
-*Last verified: 2026-09-21*
+*Last verified: 2026-09-27*
