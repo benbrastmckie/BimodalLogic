@@ -564,21 +564,21 @@ this side; confirm by grepping the new file for those proof bodies and finding o
 
 ---
 
-### Phase 10: Conditions (C0) and (C1') at L⁺ [NOT STARTED]
+### Phase 10: Conditions (C0) and (C1') at L⁺ [COMPLETED]
 
 **Goal**: `PlusAtomCoherent` and `PlusLocalCoherentShare`, re-indexed with the `stab` position
 present-but-unconstrained in the clause enumeration (it is (C5)'s job, and stating it twice would
 be a second, weaker copy).
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Predicates.lean`
-- [ ] `PlusAtomCoherent` — `share`-gated atom agreement, transcribed from
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Predicates.lean`
+- [x] `PlusAtomCoherent` — `share`-gated atom agreement, transcribed from
       `SharingWitnessFamily.AtomCoherent` with `Formula.atom` → `PlusFormula.atom`
-- [ ] `PlusLocalCoherentShare` — the five clauses (`bot`, `imp`, `box`, `untl` across shared
+- [x] `PlusLocalCoherentShare` — the five clauses (`bot`, `imp`, `box`, `untl` across shared
       successors, `snce` across shared predecessors) with `Formula` → `PlusFormula` and
       `closureOf` → `plusClosureOf`
-- [ ] `plusUntl_self_of_share` and `plusSnce_self_of_share`, the reflexive instances
-- [ ] A header note recording that the `stab` clause is deliberately absent from (C1') and lives
+- [x] `plusUntl_self_of_share` and `plusSnce_self_of_share`, the reflexive instances
+- [x] A header note recording that the `stab` clause is deliberately absent from (C1') and lives
       in (C5), with the reason (it is a same-time, cross-index condition, not a one-step
       unfolding)
 
