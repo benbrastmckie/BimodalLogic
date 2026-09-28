@@ -1,35 +1,41 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "started_at": "2026-09-28T18:21:12Z",
+  "completed_at": "2026-09-28T19:08:19Z",
+  "requires_user_review": true,
+  "blocked_phase": 16,
+  "review_reason": "Phase 16 is BLOCKED before starting by this plan's own Phase 1 gate: the measured label-dependent span of Sharing/Fulfil.lean is 723 lines against the plan's ~700 revision trigger, and finding F-M3 shows the position graph does not factor onto the bare SharingSkeleton. Phases 1-15 are complete and green; the deliverable (C5) StabFaithful is stated over PlusFormula.stab and is decidable. A decision between three recorded options is needed before Phases 16-22 can proceed.",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true,
+    "notes": "vacuous grep returns 1 hit, FormalSystem/Examples/TemporalStructures.lean:495, pre-existing and last touched by task 656; zero attributable to this task. axiom_count is unchanged from the pre-change baseline at commit 71cc381d7."
+  },
+  "partial_progress": {
+    "stage": "phase_16_blocked",
+    "details": "Phases 1-15 of 22 complete, green and committed. Phase 16 marked BLOCKED in the plan with a structured blocker entry and three resolution options. Phases 17-22 not started.",
+    "phases_completed": 15,
+    "phases_total": 22
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/690_stability_condition_over_branching_frame/plans/01_stability-condition-branching-frame.md",
-      "summary": "Route 1 (L-plus-indexed certificate over a label-free SharingSkeleton) in 22 phases across the research report's seven stages A-G, pinning 34 Lean declarations including (C5) StabFaithful, its decidability instance, and the agreement/non-vacuity/diagonal theorems that make it a real obligation."
+      "type": "summary",
+      "path": "specs/690_stability_condition_over_branching_frame/summaries/01_stability-condition-branching-frame-summary.md",
+      "summary": "(C5) StabFaithful stated natively over PlusFormula.stab on an L-plus branching certificate and decided by a bounded window scan; Stage A extracted the branching substrate into a label-free SharingSkeleton with the shipping certificate unchanged."
     }
   ],
-  "next_steps": "Run /implement 690 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1790617342_e2d44f_690",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 22,
-    "estimated_hours": 41,
-    "dependency_waves": [[1,6],[2,7],[3,8],[4],[5],[9],[10,11,12],[13,16],[14,15,17],[18],[19],[20],[21],[22]]
+  "completion_data": {
+    "completion_summary": "Phases 1-15 of 22 delivered the stability condition (C5) StabFaithful, stated natively over PlusFormula.stab on a new L-plus-indexed branching certificate and decidable by a bounded window scan that quantifies over no walk of the frame. Stage A extracted the 1,065-line branching substrate into a label-free SharingSkeleton that both certificates project onto, leaving the shipping deterministic certificate and its JSON export contract unchanged. Phase 16 is blocked before starting by the plan's own measurement gate, which Phase 1 tripped at 723 measured label-dependent lines against a ~700 trigger.",
+    "roadmap_items": []
   },
-  "memory_candidates": [
-    {
-      "content": "In this repo, .claude/scripts/lean-challenge-snapshot.sh cross-validates a lean plan's '## Lean Challenge Statements' block against its '**Goals**:' list, but both extractors are coarser than they look: the Goals regex only matches UNDOTTED backticked tokens (`foo`), so any dotted entry like `Ns.thm` is silently dropped from the goals set; and the declaration regex matches only theorem/lemma/def/instance (never `structure`) and captures only the FIRST dotted segment, so `def Ns.thm` registers as `Ns`. Consequence for plan authors: the Goals list must be written at namespace-head granularity matching what the tool extracts, every namespace head must appear as the head of at least one def/theorem/instance (a bare `structure` alone will not register it), and the precise per-declaration list belongs in a dotted-only sentence (invisible to the regex) or in the phase bodies. Verify with `bash .claude/scripts/lean-challenge-snapshot.sh <task> <root> --dry-run` before returning a plan; exit 71 is the identifier-set mismatch.",
-      "category": "WORKFLOW",
-      "source_artifact": "specs/690_stability_condition_over_branching_frame/plans/01_stability-condition-branching-frame.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["lean-challenge-snapshot", "plan-format", "lean4", "goals-identifiers", "challenge-statements", "validation"]
-    }
-  ],
-  "modified_files": [
-    "specs/690_stability_condition_over_branching_frame/plans/01_stability-condition-branching-frame.md",
-    "specs/690_stability_condition_over_branching_frame/.return-meta.json",
-    "specs/690_stability_condition_over_branching_frame/.orchestrator-handoff.json"
-  ],
-  "dispatch_seq": 6
+  "metadata": {
+    "session_id": "sess_1790617342_e2d44f",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "compliance_detail": "20 of 28 fully-qualified pinned declarations elaborate, checked by #check on each fully-qualified name. The 8 absent are exactly Phases 18-21's deliverables, all downstream of the blocked Phase 16; none belongs to a completed phase."
+  }
 }

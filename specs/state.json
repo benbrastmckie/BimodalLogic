@@ -1542,6 +1542,11 @@
           "path": "specs/690_stability_condition_over_branching_frame/plans/01_stability-condition-branching-frame.md",
           "type": "plan",
           "summary": "22 phases across the research report's seven stages A-G; strict-mode validate-artifact.sh and lean-challenge-snapshot.sh --dry-run both pass."
+        },
+        {
+          "path": "specs/690_stability_condition_over_branching_frame/summaries/01_stability-condition-branching-frame-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for phases 1-15, with the Phase 16 blocker and its three resolution options."
         }
       ],
       "next_artifact_number": 2

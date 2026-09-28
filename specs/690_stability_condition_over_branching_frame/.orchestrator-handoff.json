@@ -1,19 +1,29 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 6,
-  "summary": "Wrote a 22-phase, 41-hour implementation plan for Route 1: an L-plus-indexed certificate stated over a label-free SharingSkeleton, pinning 34 Lean declarations including (C5) StabFaithful, decidableStabFaithful, plusTruth_iff_mem's stab case, a concrete non-vacuity witness and the deterministic-diagonal collapse. The shipping deterministic JSON export contract is untouched.",
+  "task_number": 690,
+  "dispatch_seq": 9,
+  "phase": "implement",
+  "status": "partial",
+  "session_id": "sess_1790617342_e2d44f",
+  "phases_completed": 15,
+  "phases_total": 22,
+  "blocked_phase": 16,
+  "requires_user_review": true,
+  "summary": "Phases 1-15 of 22 complete, green and committed in 14 commits. (C5) StabFaithful is stated natively over PlusFormula.stab on a new L-plus branching certificate, has two proved consequences, and is decidable by a bounded window scan demonstrated computationally by #guard. Stage A extracted the branching substrate into a label-free SharingSkeleton (944 lines) that both certificates project onto; the shipping deterministic certificate and its JSON export contract are unchanged, with axiom sets byte-identical to the pre-change baseline. Phase 16 is BLOCKED before starting by the plan's own Phase 1 gate: the measured label-dependent span of Sharing/Fulfil.lean is 723 lines against a ~700 revision trigger, and the position graph does not factor onto the bare skeleton. A decision between three recorded options is needed.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/690_stability_condition_over_branching_frame/summaries/01_stability-condition-branching-frame-summary.md",
+      "summary": "Implementation summary for phases 1-15, with the Phase 16 blocker and its three resolution options."
+    },
     {
       "type": "plan",
       "path": "specs/690_stability_condition_over_branching_frame/plans/01_stability-condition-branching-frame.md",
-      "summary": "22 phases across the research report's seven stages A-G; strict-mode validate-artifact.sh and lean-challenge-snapshot.sh --dry-run both pass."
+      "summary": "Plan updated to [PARTIAL]; 15 phases [COMPLETED], Phase 16 [BLOCKED] with a structured blocker entry, 6 [NOT STARTED]."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/690_stability_condition_over_branching_frame/handoffs/phase-6-handoff-20260928.md",
+      "summary": "Progressive handoff written after Stage A and Phase 6; the shell mechanisms and territory notes it records are still current."
     }
-  ],
-  "phases_completed": 0,
-  "phases_total": 22,
-  "blockers": [],
-  "plan_markers_verified": true,
-  "continuation_path": null,
-  "next_action_hint": "Dispatch implement for task 690 starting at Phase 1 (substrate measurement), whose output gates the Phase 16-17 budget."
+  ]
 }
