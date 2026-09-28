@@ -602,19 +602,19 @@ duplicate the dispatch forbids.
 
 ---
 
-### Phase 11: Conditions (C2'), (C3), (C4) at L⁺ [NOT STARTED]
+### Phase 11: Conditions (C2'), (C3), (C4) at L⁺ [COMPLETED]
 
 **Goal**: `PlusThreadFulfilling`, `PlusBoxFaithful`, `PlusTarget`, and the two unconditional
 reductions to the deterministic-shaped conditions.
 
 **Tasks**:
-- [ ] `PlusThreadFulfilling` — the `A[g U e]` universal-thread form for `untl` and its past
+- [x] `PlusThreadFulfilling` — the `A[g U e]` universal-thread form for `untl` and its past
       mirror for `snce`, quantified over `S.Thread` (which is `S.skeleton.Thread`)
-- [ ] `PlusBoxFaithful` — `bx χ = true ↔ ∀ i t, χ ∈ W.L i t`, gated on
+- [x] `PlusBoxFaithful` — `bx χ = true ↔ ∀ i t, χ ∈ W.L i t`, gated on
       `PlusFormula.box χ ∈ plusClosureOf (Γ ++ Δ)`; reused verbatim in shape, as research and
       `Sharing/Predicates.lean`'s header establish for the `Formula` side
-- [ ] `PlusTarget` — `(∀ γ ∈ Γ, γ ∈ W.main t) ∧ (∀ σ ∈ Δ, σ ∉ W.main t)`
-- [ ] `plusLocalCoherentLab_of_share` and `plusFulfillingLab_of_thread`, the two reductions, via
+- [x] `PlusTarget` — `(∀ γ ∈ Γ, γ ∈ W.main t) ∧ (∀ σ ∈ Δ, σ ∉ W.main t)`
+- [x] `plusLocalCoherentLab_of_share` and `plusFulfillingLab_of_thread`, the two reductions, via *(deviation: altered — there is no deterministic L-plus certificate to reduce to, so the reduction targets `PlusWitnessFamily.PlusLocalCoherentLab` and `PlusFulfillingLab`, the one-position and per-lasso *shapes* of (C1') and (C2'), stated in this phase alongside them)*
       `share_refl` and `Thread.const` respectively
 
 **Timing**: 2 hours
