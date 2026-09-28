@@ -104,6 +104,25 @@ next_project_number: 690
 
 ## Tasks
 
+### 690. Stability condition over branching frame
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: semantics
+- **Dependencies**: 683
+
+**Description**: Build the stability condition (C5) StabFaithful on the branching witness frame, which is the substrate that makes it stateable. Research, plan and implement all three phases properly -- this is the deliverable that was excluded from the state-sharing witness work on a recorded user decision, not a defect in it.
+
+WHY IT WAS EXCLUDED, AND WHY THAT IS NOT THE END OF IT. The obstruction is type-level, not a proof difficulty. `FormalSystem.Syntax.Formula` (`Syntax/Formula.lean`) has exactly six constructors -- atom, bot, imp, box, untl, snce -- and no stability modal. The modal is `PlusFormula.stab`, a constructor of the separate inductive `FormalSystem.PlusLanguage.PlusFormula` (`PlusLanguage/Formula.lean`). The two share no supertype, so no instantiation or coercion states (C5) over the existing certificate. The certificate stack is monomorphic in `Formula` at every level: `Context := List Formula` (`Syntax/Context.lean`), `closureOf : Context -> Finset Formula` (`WitnessFamily/Closure.lean`), and `WitnessFamily` carrying `bx : Formula -> Bool` (`WitnessFamily/Basic.lean`).
+
+THE SUBSTRATE ALREADY EXISTS AND IS GREEN. The branching device landed under `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/`: `SharingWitnessFamily` with a periodic representative-map `share` field, the `Thread`/`Step`/`ReachN` layer, a branching `FrameOver intOrder` built without `ShiftSet`, and `total_eq_thread` as the determinism-free replacement for `ShiftSet.total_eq_orbit`. Full `lake build` green, zero sorries, axiom count unchanged, deterministic path byte-identical.
+
+WHY THIS FRAME IS THE RIGHT SUBSTRATE, NOT AN OBSTACLE. `PlusTruth.lean` documents `stab_state_only`: the stability modal depends on the world state alone. The branching frame quotients (lasso, time) pairs into `share`-classes, and those classes ARE the world states, so the frame supplies exactly the structure the condition needs to range over. The deterministic device is blind to stability by construction -- `states_eq_of_deterministic` and `stab_iff_of_deterministic` (`PlusLanguage/PlusDeterminism.lean`) collapse the modal to the identity on deterministic frames -- and the branching frame's task relation is non-functional, so neither lemma applies to it. That is the whole point of the substrate.
+
+WHAT THE COST ANALYSIS FOUND. Four of the five landed Sharing modules -- Basic, Thread, Frame, Histories -- mention `Formula` zero times: 1,065 of 1,233 lines, 86 percent, entirely language-agnostic. Only `Predicates.lean` (168 lines) is language-dependent. So this work reuses four modules verbatim and re-indexes one. The known cost on the L-plus side is that `FormalSystem/PlusLanguage/` contains NO closure or decidability module at all, so an L-plus-indexed certificate needs a subformula-closure theory constructed from scratch, against roughly 2,257 lines of analogue on the `Formula` side. Research must cost that honestly before a plan commits to it, and must consider whether a shared polymorphic closure layer serving both inductives is cheaper than a second monomorphic one.
+
+HARD CONSTRAINTS. Decidability must be preserved -- the branching structure has infinitely many walks, and no condition may quantify over them. The deterministic bi-lasso device is what the consuming model checker ships against: it must keep working byte-identically, and its JSON export contract must not be re-opened without an explicit decision. Do not state a vacuous or box-shaped `StabFaithful` at `Formula` to make a signature typecheck; a sorry-bodied `def` carrying a prose statement is not a pinned obligation, which is precisely how the original plan missed this obstruction.
+---
+
 ### 689. Reconcile records with landed code
 - **Status**: [COMPLETED]
 - **Task Type**: lean4
