@@ -1,0 +1,37 @@
+{
+  "status": "researched",
+  "started_at": "2026-09-28T02:31:00Z",
+  "completed_at": "2026-09-28T02:39:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/687_cross_repo_citation_audit_gating/reports/01_cross-repo-citation-audit-gating.md",
+      "summary": "Reconfirms the +38 four-citation drift exactly as described (now at lines 263/274/289/300), finds a second, previously unrecorded drift cluster of 6-8 wrong-declaration citations in ADEQUACY.md section 4.1's ShiftSet.lean proof-mapping table, confirms the 24-row residue is already fully recorded in docs/reference/transcription-audit-surface.md, and recommends extending scripts/lean-citation-seeds.txt to cover the newly found cluster plus deferring a consuming-side manifest-consumer script as a separate cross-repo proposal."
+    }
+  ],
+  "findings_count": 4,
+  "memory_candidates": [
+    {
+      "content": "Cross-repository line-numbered citation drift is not limited to the incident a task names: when re-verifying a consuming repository's Lean citations against this repo's declaration-span reader, check every table that cites file.lean:NNN, not just the one already flagged -- a second, unrelated drift cluster of 6+ wrong-declaration citations was found in a different section of the same document (ADEQUACY.md section 4.1) purely by re-running the same span check across every citation rather than trusting the task description's 'everything else resolved' premise.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/687_cross_repo_citation_audit_gating/reports/01_cross-repo-citation-audit-gating.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["citation-drift", "cross-repository", "declaration-span", "ADEQUACY.md", "C20", "C35", "re-verification"]
+    },
+    {
+      "content": "For a cross-repository citation gate (this repo cited by line number from a consuming repo's docs), the low-risk extension is broadening the existing seed-list -> generated-manifest -> build-free-gate mechanism (add names, regenerate) rather than building a new cross-repo-reading script; the latter can only be built and run from the consuming side (it needs write access to nothing here, but does need to read this repo's checkout), and should be recorded as a deferred proposal rather than attempted from the cited side.",
+      "category": "PATTERN",
+      "source_artifact": "specs/687_cross_repo_citation_audit_gating/reports/01_cross-repo-citation-audit-gating.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["citation-manifest", "cross-repository-gating", "seed-list", "coordination", "adequacy-argument"]
+    }
+  ],
+  "next_steps": "Run /plan 687 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1790559036_a260f5_687",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+  },
+  "dispatch_seq": 13
+}

@@ -75,7 +75,7 @@ next_project_number: 690
 
 ### Documentation
 
-687 [RESEARCHING] — Close the cross-repository citation and audit-surface gap...
+687 [RESEARCHED] — Close the cross-repository citation and audit-surface gap...
 
 ### Formula Refactor
 
@@ -152,10 +152,11 @@ VERIFICATION THAT WOULD ACTUALLY SETTLE THE FIRST ITEM. Run the invariants scrip
 ---
 
 ### 687. Cross repo citation audit gating
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: documentation
 - **Dependencies**: Task 688
+- **Research**: [687_cross_repo_citation_audit_gating/reports/01_cross-repo-citation-audit-gating.md]
 
 **Description**: Close the cross-repository citation and audit-surface gap from both ends, so that a line-numbered claim about this development cannot rot silently in the consuming repository's adequacy argument.
 
