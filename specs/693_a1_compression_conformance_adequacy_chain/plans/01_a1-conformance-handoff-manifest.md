@@ -1,7 +1,7 @@
 # Implementation Plan: Task #693
 
 - **Task**: 693 - A1 compression conformance adequacy chain
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None blocking. Concurrent sibling task 685 owns
   `FormalSystem/Metalogic/Decidability/WitnessFamily/{Decide,Closure}.lean`,
@@ -308,28 +308,28 @@ means a name moved since the research dry run — resolve it by name, never by d
 
 ---
 
-### Phase 4: Full gate, scoped commit, and task wrap-up [NOT STARTED]
+### Phase 4: Full gate, scoped commit, and task wrap-up [COMPLETED]
 
 **Goal**: Leave the repository green on the complete gate set and commit this task's own hunks
 only, on a shared working tree with a concurrent sibling.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-module-invariants.sh` (full pass, including the build-dependent
+- [x] Run `bash scripts/check-module-invariants.sh` (full pass, including the build-dependent
       C1/C2/C6/C16/C24/C25 and C14's `#print axioms` half).
-- [ ] Re-run the C35 half immediately before staging, so a sibling commit landing mid-phase cannot
+- [x] Re-run the C35 half immediately before staging, so a sibling commit landing mid-phase cannot
       leave a stale manifest committed.
-- [ ] `git status --short` and `git diff --staged` review; stage by explicit file list only — never
+- [x] `git status --short` and `git diff --staged` review; stage by explicit file list only — never
       `git add -A`, `git add .`, a directory pathspec, or `git commit -am`.
-- [ ] Commit the five paths of this task's work: `scripts/lean-citation-seeds.txt`,
+- [x] Commit the five paths of this task's work: `scripts/lean-citation-seeds.txt`,
       `scripts/lean-citation-manifest.json`,
       `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean`,
       `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/README.md`, and the
       `specs/693_a1_compression_conformance_adequacy_chain/` artifacts (report, plan, hand-off note,
       summary), with the `task 693: ...` message convention and the session ID in the body.
-- [ ] If a foreign commit, a foreign uncommitted modification, or a build not started by this task
+- [x] If a foreign commit, a foreign uncommitted modification, or a build not started by this task
       is observed — after `git log` confirms the work is not this task's own — STOP and report
       rather than proceeding.
-- [ ] Record in the execution summary the four follow-ons this plan deliberately excludes, so they
+- [x] Record in the execution summary the four follow-ons this plan deliberately excludes, so they
       can be spawned as their own tasks: A1-Γ (the general `Γ ⊨ Δ` re-parameterization), the named
       `f`-factorization declaration, the lasso-count strengthening plus padding lemma, and the
       `cross-repo-obligation-conformance.md` context file under the source store.
@@ -351,8 +351,20 @@ before staging; any sixth modified path outside this list is either a sibling's 
 - None beyond the phases above; this phase gates and commits.
 
 **Verification**:
-- `bash scripts/check-module-invariants.sh` exits 0.
-- `git diff --staged --stat` lists exactly this task's paths and nothing else.
+- `bash scripts/check-module-invariants.sh` exits 0. *(deviation: altered — it exits 1 on one group,
+  `C23` (2 Uppercase_x names, 11 outer-shadows-inner pairs), proven already failing in a throwaway
+  `git worktree` at `29522e6b8`, before either concurrent task's implementation work. Everything
+  else passes, including `C1` (`lake build exits 0` and `lake build BimodalTest exits 0`), `C2`,
+  `C9`, `C20` tier 1 and tier 2, `C31`, `C32` and `C35`. Neither `C23` finding is reachable by a
+  comment-only edit or by a seed-list append; no fix was attempted, because repairing a pre-existing
+  naming-exemption failure is outside this plan's scope.)*
+- `git diff --staged --stat` lists exactly this task's paths and nothing else. *(deviation:
+  altered — the work landed in four scoped commits rather than one, per this phase's
+  `Commit Mode: per-substep`, so the five paths of the Scope Hypothesis are spread across them:
+  `Compression/{Assembly.lean,README.md}` in `4e88b1e09`, `scripts/{lean-citation-seeds.txt,
+  lean-citation-manifest.json}` in `75cdddfbf`, and the `specs/693_.../` artifacts across
+  `182943b9d` and this phase's commit. No commit contains a path outside this task's own work;
+  staging was an explicit file list every time, never a directory or glob pathspec.)*
 - `git log -1 --stat` after the commit confirms the same, with the `task 693:` message and session
   ID present.
 
