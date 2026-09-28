@@ -993,13 +993,18 @@ echo
 # ---------------------------------------------------------------------------
 # C2: axiom sets for the flagship theorems, and for the certificate stack's pinned goals
 #
-# The first four rows are the completeness/countermodel flagships. The six that follow
+# The first four rows are the completeness/countermodel flagships. The ten that follow
 # pin the branching witness-family stack: the histories characterization the whole
-# branching device rests on, and the five L-plus declarations that carry the stability
+# branching device rests on, and the nine L-plus declarations that carry the stability
 # condition (C5) -- the condition itself, its decision procedure's correctness, the
-# agreement case that makes it load-bearing, the certificate producer, and the two
-# non-vacuity witnesses. They are pinned here for the same reason the flagships are: a
-# silent `Classical`-free-to-not claim, or a new axiom, is a HARD STOP.
+# agreement case that makes it load-bearing, the certificate producer, the two
+# non-vacuity witnesses, and the four that record the certificate class is EMPTY for a
+# `snce` under a `stab` (the incompleteness result: its root cause, the two placement
+# variants of the empty-class claim, and the non-validity that makes the emptiness a
+# completeness failure rather than a vacuity). They are pinned here for the same reason
+# the flagships are: a silent `Classical`-free-to-not claim, or a new axiom, is a HARD
+# STOP. The four incompleteness rows carry a second reason: a future substrate redesign
+# that repairs (C1') must make them FAIL, which is exactly the signal wanted.
 #
 # Do NOT scrape `lake build` stdout for these -- an incremental build may not
 # re-emit them. A dedicated scratch file is compiled against the built library.
@@ -1015,6 +1020,10 @@ read -r -d '' AXIOM_BASELINE <<'BASELINE'
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusRefutes_of_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabFamily_separates' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabFaithful_diagonal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.snce_share_congr' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabSnce' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabSnce_premise' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabSnce' depends on axioms: [propext, Classical.choice, Quot.sound]
 BASELINE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -1031,6 +1040,10 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusRefutes_of_certifies
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabFamily_separates
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabFaithful_diagonal
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.snce_share_congr
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabSnce
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabSnce_premise
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabSnce
 LEAN
   # The pretty-printer wraps at a fixed width, and `FormalSystem.` is longer than the
   # namespace it replaced, so a long axiom record now spills onto continuation lines that
@@ -1041,7 +1054,7 @@ LEAN
     | grep 'depends on axioms')
   rm -f "$AX_SRC"
   if [ "$AX_OUT" = "$AXIOM_BASELINE" ]; then
-    pass C2 "all ten pinned axiom sets match baseline"
+    pass C2 "all fourteen pinned axiom sets match baseline"
     while IFS= read -r l; do note "$l"; done <<<"$AX_OUT"
   else
     fail C2 "axiom sets diverged from baseline -- this is a HARD STOP, not a new baseline"

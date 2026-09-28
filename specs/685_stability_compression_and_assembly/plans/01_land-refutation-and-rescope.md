@@ -207,7 +207,7 @@ exactly this case). It also asserts **one** new file plus **one** edited file
 
 ---
 
-### Phase 2: Pin the New Declarations in the Gates and the Ledger [NOT STARTED]
+### Phase 2: Pin the New Declarations in the Gates and the Ledger [COMPLETED]
 
 **Goal**: The refutation is machine-asserted on every gate run — axiom sets pinned by C2, and one
 `docs/theorem-index.md` row per declaration — so it cannot become prose-only or silently change
@@ -215,24 +215,32 @@ axiom footprint.
 
 **Tasks**:
 
-- [ ] Append four lines to `scripts/check-module-invariants.sh`'s `AXIOM_BASELINE` heredoc, in the
+- [x] Append four lines to `scripts/check-module-invariants.sh`'s `AXIOM_BASELINE` heredoc, in the
       form the existing `PlusSharingWitnessFamily.*` rows use, and the four matching
       `#print axioms` lines to the `LEAN` heredoc **in the same order**. The two heredocs are
       compared by exact string equality; edit them together, appending to both.
-- [ ] Take the four axiom-set values from an actual run, not from assumption: the existing five
+- [x] Take the four axiom-set values from an actual run, not from assumption: the existing five
       `PlusSharingWitnessFamily` rows all read `[propext, Classical.choice, Quot.sound]`, but a
       strict subset is possible and is recorded literally rather than rounded up (the C14 header
       documents eight such entries). Run the gate, read the `--- actual ---` block, and write what
       it says.
-- [ ] Update C2's pass message from `"all ten pinned axiom sets match baseline"` to the new count,
+- [x] Update C2's pass message from `"all ten pinned axiom sets match baseline"` to the new count,
       and update the block's header comment, which currently reads "The first four rows … The six
       that follow" and enumerates the five L⁺ declarations.
-- [ ] Add one `docs/theorem-index.md` row per new declaration, in the same table and adjacent to
+- [x] Add one `docs/theorem-index.md` row per new declaration, in the same table and adjacent to
       the existing `PlusSharingWitnessFamily` rows. Columns: paper label `—`, a one-line
       statement, the **fully qualified** Lean name, the file path with **no line number**, frame
       class (`ZTime` for `not_plusValidZTime_stabSnce`, `—` for the three that are class-generic),
       and axioms `pcq pinned:C2`.
-- [ ] Re-run the gate and confirm C2, C14, C15, C17 and C20 all pass.
+- [x] Re-run the gate and confirm C2, C14, C15, C17 and C20 all pass.
+- [x] *(deviation: altered — two gate surfaces the plan did not name also had to be
+      regenerated, both mechanical consequences of adding one live module that the plan's
+      "reachable from the build graph via the re-export is enough" reasoning missed. C33 requires
+      the generated library root `FormalSystem.lean` to import every live module, fixed by
+      `lake exe mk_all --lib FormalSystem`; the INV check requires the generated inventory blocks
+      in `README.md`, `FormalSystem/README.md` and `FormalSystem/Metalogic/README.md` to carry
+      current file/line counts, fixed by `bash scripts/check-module-invariants.sh
+      --emit-inventory`. Neither file was hand-edited.)*
 
 **Timing**: 1.5 hours
 
@@ -255,6 +263,14 @@ variants merged), adjust both counts together and say so in the summary.
 
 - `bash scripts/check-module-invariants.sh` exits 0, with C2 passing at the new count and its
   `note` lines listing the four new declarations.
+
+  **Result**: C2 passes at `all fourteen pinned axiom sets match baseline`, with the four new
+  declarations in its `note` lines. C9, C14, C15, C17, C20, C33 and INV all pass. The gate's
+  overall exit is 1 on a **pre-existing** C23 failure — 2 `NM_nonneg` Uppercase_x names and 11
+  outer-shadows-inner pairs, every one of them in a file this task neither created nor modified,
+  and every one verified present at commit `182943b9d`, the commit preceding this task's first.
+  No finding names any declaration this task introduced. See Phase 5 for how this bears on the
+  plan's "leave the gate set green" goal.
 - C15's second assertion passes, i.e. every new row's anchor resolves at the declaration (this is
   what Phase 1's `Paper: —` lines are for).
 - C17 reports no new dead declaration.

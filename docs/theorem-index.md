@@ -153,6 +153,10 @@ class — see `deterministic_not_plusDefinable` above.
 | — | A six-condition L⁺ certificate produces an explicit ℤ-time joint countermodel | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusRefutes_of_certifies` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Agreement.lean` | ZTime | pcq pinned:C2 |
 | — | (C5) is not vacuous: a two-lasso family whose shared class separates `⊡Fp` from `Fp` | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabFamily_separates` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Examples.lean` | — | pcq pinned:C2 |
 | — | The deterministic diagonal: on identity representatives (C5) degenerates to `⊡φ ↔ φ` | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabFaithful_diagonal` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Examples.lean` | — | pcq pinned:C2 |
+| — | (C1') forces `share`-class agreement on every `snce` formula of the closure, at the class's own time | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.snce_share_congr` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean` | — | pcq pinned:C2 |
+| — | No six-condition L⁺ certificate refutes any instance of `(g S e) → ⊡(g S e)`, at any time and any size | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabSnce` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean` | — | pcq pinned:C2 |
+| — | The same for the negated-premise placement: restating the target is not an escape | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabSnce_premise` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean` | — | pcq pinned:C2 |
+| — | `Pp → ⊡Pp` is a genuine ℤ-time non-validity, so the empty certificate class is a completeness failure | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabSnce` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean` | ZTime | pcq pinned:C2 |
 
 ### Characterization and definability
 
