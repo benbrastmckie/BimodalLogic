@@ -1,18 +1,16 @@
 {
   "status": "planned",
   "dispatch_seq": 9,
+  "phases_completed": 0,
+  "phases_total": 5,
   "artifacts": [
     {
       "type": "plan",
       "path": "specs/682_stability_decidability_provenance_gate/plans/01_stability-decidability-provenance-gate.md",
-      "summary": "Five-phase plan executing the research report's in-scope recommendations: repair and guard the archived Probe476.fmp_false evidence probe, disambiguate the two Thomas 1997 corpus entries, and record the citation licence plus the finite-model/finite-presentation distinction in the extension source store."
+      "summary": "Five-phase plan: repair and guard the archived fmp_false evidence probe, disambiguate the two Thomas 1997 corpus entries, and record the citation licence and finite-model/finite-presentation vocabulary in the extension source store."
     }
   ],
   "next_steps": "Run /implement 682 to execute the plan",
-  "phase_count": 5,
-  "estimated_hours": 4,
-  "dependency_waves": [[1, 3], [2, 4], [5]],
-  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1790559036_a260f5_682",
     "agent_type": "planner-agent",
