@@ -557,24 +557,43 @@ instance *synthesis* at a `SharingWitnessFamily`, not merely the constants' exis
 
 ---
 
-### Phase 8: The finite position graph and the `A[g U e]` fixpoint [NOT STARTED]
+### Phase 8: The finite position graph and the `A[g U e]` fixpoint [COMPLETED]
 
 **Goal**: The computational core of (C2'): a finite graph over periodic positions, and a
 terminating least-fixpoint computation of "every thread from here delivers `e` with `g`
 throughout".
 
 **Tasks**:
-- [ ] Create `Sharing/Fulfil.lean`.
-- [ ] Define the position graph: vertices `(i, u)` for `i : Fin lassos.length` and `u` in the
+- [x] Create `Sharing/Fulfil.lean`.
+- [x] Define the position graph: vertices `(i, u)` for `i : Fin lassos.length` and `u` in the
       combined window from Phase 7; edges `(i,u) → (j,u+1)` when `share (u+1) i j`, with window
       wraparound handled by the periodicity lemmas. Establish `Fintype` on the vertex set.
-- [ ] Define the `A[g U e]` operator as a monotone map on `Finset Vertex` and iterate it with a
-      fuel bound equal to the vertex count.
-- [ ] Prove termination/stabilization: the "not yet known to fulfil" `Finset` strictly shrinks
+      *(landed as `Pos`, `winTimes`, `verts`, `nextTime`/`prevTime` and `succF`/`predF`; the
+      wraps are discharged by `rep_nextTime`, `L_nextTime`, `rep_prevTime`, `L_prevTime`, all
+      instantiations of Phase 7's `data_congr_fwd`/`data_congr_back`. `Fintype` is on the
+      coercion of `verts`, not on `Pos` — see the representation note below)*
+- [x] Define the `A[g U e]` operator as a monotone map on `Finset Vertex` and iterate it with a
+      fuel bound equal to the vertex count. *(landed as `AUFix.step`, `AUFix.step_mono`,
+      `AUFix.iter` and `AUFix.lfp`; the fuel is `|V| + 1`, not `|V|` — see below)*
+- [x] Prove termination/stabilization: the "not yet known to fulfil" `Finset` strictly shrinks
       at each non-fixed iteration, so well-founded recursion on its cardinality closes. Use
       `BiLasso/GoodCycle.lean`'s single-cycle measure as the template; do not invent a new one.
-- [ ] Define the dual computation for `snce` on the reversed graph, as an instance of the same
-      operator rather than a copied proof.
+      *(landed as `AUFix.exists_stab`, `AUFix.iter_stab`, `AUFix.lfp_fixed`, `AUFix.lfp_least`,
+      with `AUFix.lfp_induction` added as the soundness tool Phase 9 consumes)*
+- [x] Define the dual computation for `snce` on the reversed graph, as an instance of the same
+      operator rather than a copied proof. *(landed as `snceFix := AUFix.lfp verts predF …`,
+      differing from `untlFix` in the successor function alone)*
+
+#### Representation note: `Fintype` lives on `verts`, not on `Pos`
+
+`Pos S := Fin |lassos| × ℤ` is not a `Fintype` and cannot be made one: its time coordinate is
+`ℤ`, and keeping the time coordinate in the carrier is exactly the feature that makes
+`Probe476.fmp_false`'s pigeonhole step inapplicable to this design (the research report's
+reading, and the plan's own Non-Goal on re-litigating it). Finiteness therefore lives on the
+`Finset` `verts`, the graph is carried as a `Finset`-valued successor function, and the
+`Fintype` the task asks for is `Fintype {v : S.Pos // v ∈ S.verts}`, confirmed by an
+`example … := inferInstance` beside `mem_verts`. This is a representation choice, not a
+weakening: every lemma the fixpoint needs is stated relative to `verts`.
 
 **Timing**: 2 hours
 
@@ -590,14 +609,44 @@ Confirm by closing termination with the cardinality measure and by the dual bein
 through the same operator; if the dual needs its own proof, say so explicitly and re-budget
 Phase 9 rather than absorbing it silently.
 
+#### Scope Hypothesis: confirmed, with the fuel bound off by one
+
+**Termination: confirmed, by the cardinality measure.** `AUFix.exists_stab` is the pigeonhole:
+the iteration is increasing (`iter_succ_mono`, from `step_mono`) and confined to `V`
+(`iter_subset`), so an index at which it is not yet fixed strictly increases its cardinality;
+`|V| + 1` such indices would force `(iter (|V| + 1)).card ≥ |V| + 1 > |V|`. This is
+`BiLasso/GoodCycle.lean`'s measure read in the growing rather than the shrinking direction —
+`V \ iter n` strictly shrinks exactly when `iter n` strictly grows — and no well-founded
+recursion was needed, because the bound is a plain `∃ n ≤ V.card` and `lfp` is the iteration
+evaluated at a constant index. No new measure was invented.
+
+**Correction — the fuel is `|V| + 1`, not `|V|`.** The chain starts at index `0` with `∅`, so
+`|V|` distinct growth steps land at index `|V|`, and index `|V| + 1` is the first index
+guaranteed to repeat its predecessor. `AUFix.lfp` is therefore `iter (V.card + 1)`, and
+`lfp_fixed` is proved by pushing the stabilization out to indices `|V| + 1` and `|V| + 2`. The
+off-by-one is recorded rather than silently absorbed.
+
+**The `snce` dual: confirmed as an instantiation.** `snceFix S g e = AUFix.lfp S.verts S.predF
+(S.atPos e) (S.atPos g)` — the same `lfp` with `predF` for `succF`. Every fixpoint lemma
+(`lfp_subset`, `lfp_fixed`, `lfp_least`, `mem_lfp_iff`, `lfp_induction`) is stated at an
+arbitrary successor function and specialises to both directions; `mem_snceFix_iff` and
+`snceFix_induction` are two-line specialisations, not second proofs. Phase 9 does **not** need
+re-budgeting on this account.
+
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Fulfil.lean` - new
 - `FormalSystem/Metalogic/Decidability/WitnessFamily.lean` - add the new import
 
 **Verification**:
-- The operator, its monotonicity, and the stabilization lemma type-check
+- The operator, its monotonicity, and the stabilization lemma type-check *(done:
+  `AUFix.step`, `AUFix.step_mono`, `AUFix.exists_stab`, `AUFix.lfp_fixed`)*
 - `#eval` of the fixpoint on a small hand-built example terminates and gives the expected set
-- sorry census reports zero
+  *(done as three `#guard`s in `Sharing/Fulfil.lean`'s `SmokeTest` section, which check the
+  computed answer rather than only printing it: on the one-lasso family with
+  `back = [∅]`, `mid = [{p}]`, `fwd = [∅]` and identity representatives the window is `[-2, 4)`,
+  `untlFix p p` is the single position at time `-1`, and `snceFix p p` its mirror at time `1`.
+  The answers being singletons rather than `∅` or the whole window is the non-vacuity content)*
+- sorry census reports zero *(0 across the resolved source roots)*
 
 ---
 

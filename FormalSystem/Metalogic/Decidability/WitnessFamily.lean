@@ -17,6 +17,7 @@ import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Frame
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Histories
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Predicates
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Decide
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Fulfil
 
 /-!
 # FormalSystem.Metalogic.Decidability.WitnessFamily — Certificates for ℤ-Time Refutation
