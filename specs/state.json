@@ -52,12 +52,12 @@
     {
       "project_number": 691,
       "project_name": "resolve_c23_naming_exemptions",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "general",
       "description": "Resolve gate C23's two remaining red sub-assertions: the 2 Uppercase_x NM_nonneg names (PlusWitnessFamily/Decide.lean:228, WitnessFamily/Sharing/Decide.lean:192) and the 11 outer-shadows-inner bare-declaration pairs (decidableValidZTime, cohWindowLo x3, cohWindowHi x3, mem_verts x3+). Every one is a deliberate mirrored-API or sub-namespacing decision, so the linter's suggested renames are not applicable: NM_nonneg is also a SharingWindow structure field (Window.lean:105) and structure fields cannot contain dots, while S.NM.nonneg would resolve nonneg against the type of S.NM (Int), where no Int.nonneg exists; and decidableValidZTime's shadowing IS the sub-namespacing deliberately chosen to avoid a genuine environment clash with BiLasso/Assembly.lean:100. The correct fix is a recorded exemption class in scripts/check-module-invariants.sh (extending UPPER_ALLOW and/or the shadowing scan) with the reasoning recorded inline, not a rename. C23 is the sole remaining red gate group; all others pass.",
       "topic": "repo-hygiene",
       "created": "2026-09-28T21:10:17Z",
-      "last_updated": "2026-09-28T22:51:03Z",
+      "last_updated": "2026-09-28T22:51:23Z",
       "session_id": "sess_1790635249_697f29",
       "artifacts": [
         {

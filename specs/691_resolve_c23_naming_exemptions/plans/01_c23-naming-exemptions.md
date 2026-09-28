@@ -1,7 +1,7 @@
 # Implementation Plan: Task #691
 
 - **Task**: 691 - Resolve c23 naming exemptions
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.25 hours
 - **Dependencies**: None (tasks 685 and 693 have both landed; the research report's
   "sequence after 685/693" condition is satisfied)
@@ -133,26 +133,32 @@ declaration names, namespace paths, file paths, and the existing `isValid` / `in
 Phases within the same wave can execute in parallel. Phases 2 and 3 edit adjacent regions of the
 same file and are deliberately serialized rather than parallelized.
 
-### Phase 1: Lift the output cap and re-measure the C23 inventory [NOT STARTED]
+### Phase 1: Lift the output cap and re-measure the C23 inventory [COMPLETED]
 
 **Goal**: Make the scanner print every shadow pair it counts, then capture a complete, current
 baseline of the C23 red state (and of every other gate group's status) before any exemption is
 written.
 
 **Tasks**:
-- [ ] Read the C23 block of `scripts/check-module-invariants.sh` (the `# --- C23 additions:`
+- [x] Read the C23 block of `scripts/check-module-invariants.sh` (the `# --- C23 additions:`
       section through `C23_STATUS=$?`), locating `UPPER`, `TENSE_PREFIX`, `UPPER_ALLOW`,
       `SHADOW_ALLOW`, `FROZEN_PREFIX`, the `shadow` pair loop, and the `shadow[:10]` print cap.
-- [ ] Replace the `for base, a, b in shadow[:10]:` truncation with the idiom the dupNamespace
+      *(completed)*
+- [x] Replace the `for base, a, b in shadow[:10]:` truncation with the idiom the dupNamespace
       findings block a few lines above already uses: keep a printed cap, then emit
       `... and {len(shadow) - N} more` when the list is longer. Do not simply print all rows
-      uncapped — match the surrounding convention.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and save the full output to the
-      scratchpad as the pre-fix baseline.
-- [ ] From that output, record the complete pair inventory as `(base, outer_ns, inner_ns)`
+      uncapped — match the surrounding convention. *(completed: reused the C26-style
+      `if len(shadow) > 10: print(...)` tail rather than dupNamespace's own variant — same idiom,
+      matches the block's existing `[:10]` cap)*
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and save the full output to the
+      scratchpad as the pre-fix baseline. *(completed: saved to scratchpad/baseline-phase1.txt)*
+- [x] From that output, record the complete pair inventory as `(base, outer_ns, inner_ns)`
       triples — no line numbers — and confirm the printed row count now equals the reported count.
-- [ ] Record every other check group's PASS/FAIL status from the same run, so Phase 4 can prove no
-      unrelated gate regressed.
+      *(completed: 10 printed + "... and 1 more"; 11th pair (mem_verts, SharingWindow,
+      SharingWindow.BwdWalk) confirmed by direct grep of Window.lean)*
+- [x] Record every other check group's PASS/FAIL status from the same run, so Phase 4 can prove no
+      unrelated gate regressed. *(completed: only 2 FAIL lines in the whole run, both C23
+      (Uppercase_x, shadowing); saved to scratchpad/baseline-statuses.txt)*
 
 **Timing**: 0.5 hours
 

@@ -100,7 +100,7 @@ next_project_number: 697
 
 ### Repo Hygiene
 
-691 [PLANNED] — Resolve gate C23's two remaining red sub-assertions: the 2...
+691 [IMPLEMENTING] — Resolve gate C23's two remaining red sub-assertions: the 2...
 
 ## Tasks
 
@@ -160,7 +160,7 @@ DELIVERABLES: a report recording the verdict per question with declaration-level
 ---
 
 ### 691. Resolve c23 naming exemptions
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None

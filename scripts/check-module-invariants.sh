@@ -3265,6 +3265,8 @@ if shadow:
     for base, a, b in shadow[:10]:
         print(f"            {base}: outer {a[0]} ({a[1]}:{a[2]})")
         print(f"            {' ' * len(base)}  inner {b[0]} ({b[1]}:{b[2]})")
+    if len(shadow) > 10:
+        print(f"            ... and {len(shadow) - 10} more")
     c23_fail.append("shadowing")
 else:
     print("PASS  C23  no outer-shadows-inner bare-declaration pair outside the recorded set")
