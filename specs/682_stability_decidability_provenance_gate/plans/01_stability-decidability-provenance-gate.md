@@ -222,28 +222,28 @@ rather than forcing the plan's number.
 
 ---
 
-### Phase 3: Disambiguate the two Thomas 1997 entries in the repository sub-index [NOT STARTED]
+### Phase 3: Disambiguate the two Thomas 1997 entries in the repository sub-index [COMPLETED]
 
 **Goal**: `specs/literature-index.json` carries a distinct entry for
 `thomas_1997_languages_automata`, and the existing `thomas_1997` hazard names the file it actually
 describes, so a reader matching on "Thomas 1997" cannot pull the wrong fidelity verdict.
 
 **Tasks**:
-- [ ] Re-read the current `thomas_1997` entry and confirm the sub-index schema in use
+- [x] Re-read the current `thomas_1997` entry and confirm the sub-index schema in use
       (`doc_id`, `reason`, optional `citation_rule`, `hazard`, `known_corrections`, `audits`).
-- [ ] Add an entry for `thomas_1997_languages_automata` recording: it is the held source for the
+- [x] Add an entry for `thomas_1997_languages_automata` recording: it is the held source for the
       Rabin Tree Theorem (Thm 6.20), the countable-branching extension stated immediately after
       it, and the Rabin Basis Theorem (Thm 6.18); `provenance_fidelity: verified_conversion`, with
       a source PDF present.
-- [ ] Give that entry a `citation_rule` mandating citation by theorem number and section, never by
+- [x] Give that entry a `citation_rule` mandating citation by theorem number and section, never by
       markdown line number, and recording the conversion's cosmetic ligature drop (`fi`/`fl`
       dropped, so "finite" reads "nite" and "definable" reads "denable"; citation keys render with
       a trailing bracket only). State that the cited passages were re-extracted from the PDF
       independently.
-- [ ] Amend the existing `thomas_1997` hazard so its opening clause names its own file
+- [x] Amend the existing `thomas_1997` hazard so its opening clause names its own file
       (`sources/thomas_1997/Thomas_1997_EF_Games_Composition_Monadic.md`) and states explicitly
       that the hazard does not attach to `thomas_1997_languages_automata`.
-- [ ] Update the sub-index `updated` field.
+- [x] Update the sub-index `updated` field.
 
 **Timing**: 0.75 hours
 
@@ -262,6 +262,10 @@ describes, so a reader matching on "Thomas 1997" cannot pull the wrong fidelity 
 - `bash .claude/scripts/…` literature validation (the `--validate` path documented for
   `/literature`) reports no unresolved sub-index ids; if that entry point is unavailable in this
   deploy, substitute a direct id-resolution check against the global index and say which was run.
+  *(deviation: altered — no standalone sub-index validator exists in this deploy; the dangling-ref
+  lint is reachable only as Job 1 of the interactive `/literature --rebuild` mode. Substituted the
+  sanctioned fallback: a direct id-resolution check of all 77 sub-index `doc_id`s against
+  `~/Projects/Literature/index.json`, which reported 0 unresolved.)*
 - Reading the amended `thomas_1997` hazard in isolation, without the new entry beside it, still
   makes clear which document it is about.
 

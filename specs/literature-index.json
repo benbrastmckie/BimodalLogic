@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-09-18",
+  "updated": "2026-09-27",
   "entries": [
     {
       "doc_id": "rabinovich_2014",
@@ -89,8 +89,16 @@
     },
     {
       "doc_id": "thomas_1997",
-      "reason": "EF games / composition method: WHY homogeneous structures (no definable points) force the automorphism-transport obstruction. Tests whether Route A (w-indexing) is model-theoretically coherent.",
-      "hazard": "provenance_fidelity: no_source_pdf — no PDF exists to verify against. Treat as PROVISIONAL/orienting only; do not use for load-bearing claims."
+      "reason": "EF games / composition method: WHY homogeneous structures (no definable points) force the automorphism-transport obstruction. Tests whether Route A (w-indexing) is model-theoretically coherent. NOTE: this is the EF-games document, not the handbook chapter Languages, Automata, and Logic — see thomas_1997_languages_automata.",
+      "hazard": "Attaches to THIS entry's file only — sources/thomas_1997/Thomas_1997_EF_Games_Composition_Monadic.md (Ehrenfeucht-Fraisse games / composition method, Thomas 1997). provenance_fidelity: no_source_pdf — no PDF exists to verify against; the markdown was reconstructed from secondary sources. Treat as PROVISIONAL/orienting only; do not use for load-bearing claims. This hazard does NOT attach to thomas_1997_languages_automata, a DIFFERENT Thomas 1997 document (Languages, Automata, and Logic; sources/thomas_1997_languages/Thomas_1997_Languages_Automata_Logic.md) which has a source PDF and provenance_fidelity: verified_conversion. Match corpus ids whole; never by the author-year stem \"thomas_1997\"."
+    },
+    {
+      "doc_id": "thomas_1997_languages_automata",
+      "reason": "Held source for the Rabin-theorem provenance behind the MSO decidability route: Wolfgang Thomas, \"Languages, Automata, and Logic\" (Handbook of Formal Languages Vol. 3, 1997), ch. 6 \"Automata on Infinite Trees\". Supplies the Rabin Tree Theorem (Thm 6.20, \"The theory S2S is decidable\"), the countable-branching extension stated in the sentence immediately following it, and the Rabin Basis Theorem (Thm 6.18, a nonempty Rabin-chain tree-automaton language contains a REGULAR tree whose generating automaton is obtained effectively). The chapter carries a self-contained proof of the Rabin Tree Theorem in sections 6.1-6.2, so citing it does not bottom out in a recollection.",
+      "added": "2026-09-27",
+      "source": "decidability provenance gate for the stability modal (Rabin-theorem citation licence)",
+      "citation_rule": "Cite by theorem number and section — e.g. \"Thomas 1997, sec. 6.3, Thm. 6.20\" — never by md:NN line number (re-conversion invalidates line numbers). The stored conversion drops fi/fl ligatures systematically (\"finite\" reads \"nite\", \"definable\" reads \"denable\") and renders citation keys with a trailing bracket only (\"Rab69]\"); this is cosmetic and uniform, and the passages cited above were re-extracted from the source PDF independently with pdftotext rather than read off the markdown alone. Distinct from doc_id thomas_1997, which is a different Thomas 1997 document — match ids whole, never by the author-year stem.",
+      "hazard": "None on fidelity: provenance_fidelity is verified_conversion with a source PDF present (word_ratio 1.0, combining marks checked, none dropped). The one live hazard is IDENTITY, not fidelity: the sub-index also carries doc_id thomas_1997, a different document (sources/thomas_1997/Thomas_1997_EF_Games_Composition_Monadic.md) whose own no_source_pdf hazard must not be transferred here, and whose hazard this entry does not inherit."
     },
     {
       "doc_id": "hodkinson_2006",
