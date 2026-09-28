@@ -1,7 +1,7 @@
 # Implementation Plan: Decidable `ValidZTime` — the compression half
 
 - **Task**: 623 - Decidable `ValidZTime` via the quasimodel / ShiftSet witness-family route (the completeness/compression half)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 63 hours
 - **Dependencies**: 534, 645, 665, 680, 688 — all complete (the soundness half, `WitnessFamily/`, and the prerequisite-recording documentation task have all landed)
 - **Research Inputs**: `specs/623_decidable_validztime_quasimodel_shiftset_route/reports/02_compression-half-witness-family-route.md`; `specs/623_decidable_validztime_quasimodel_shiftset_route/reports/01_stability-scope-decidability-findings.md`; `specs/623_decidable_validztime_quasimodel_shiftset_route/evidence/02_semantic-side-spike.lean` (compiled green)
@@ -181,7 +181,7 @@ module is named `Types.lean` here for that reason and no other.
 
 ---
 
-### Phase 1: `Compression/Types.lean` — the presentation-free type of a model position [NOT STARTED]
+### Phase 1: `Compression/Types.lean` — the presentation-free type of a model position [COMPLETED]
 
 **Goal**: Land the semantic half of compression: the type map `typeAtM` at an arbitrary
 `FrameOver intOrder` model, the two sequence-level predicates the rest of the plan is stated
@@ -231,7 +231,7 @@ explicitness differs from the spike's), record the delta rather than silently ab
 
 ---
 
-### Phase 2: `Compression/Cycle.lean` (part A) — generic walk machinery [NOT STARTED]
+### Phase 2: `Compression/Cycle.lean` (part A) — generic walk machinery [IN PROGRESS]
 
 **Goal**: Transcribe, presentation-free, the walk and pigeonhole plumbing the good-cycle
 construction stands on, over the type space `{S : Finset Formula // S ∈ C.powerset}`.
