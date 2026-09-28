@@ -27,7 +27,11 @@ name. For `allPast`/`allFuture` the target is L's *derived* `Formula.allPast`/
   left and `Formula.reflectTime` on the right — **the load-bearing lemma**, without which the TR
   case of `FormalSystem.Metalogic.Conservativity.translate` does not typecheck
 - `tr_ne_untl`, `tr_ne_snce` : `tr` never produces a top-level `untl`/`snce`
-- `tr_injective` : `tr` is injective
+- `tr_injective` : `tr` is injective — because `tr` is primitive-to-primitive and same-name
+  (each L⁻ primitive goes to the L operator of the same name; the one substitution is
+  `allPast`/`allFuture` onto L's derived forms). That shape is what makes injectivity
+  available here, and it is not a general feature of a translation module — see
+  `### Injectivity` below
 - push-through equations for the derived Boolean and modal operators
 
 ## The existential operators do NOT push through — a measured fact, not an oversight
@@ -158,7 +162,22 @@ theorem tr_reflectTime (φ : MinusFormula) : tr φ.reflectTime = (tr φ).reflect
 
 Not required by the backward direction — it would be needed only if faithfulness were stated
 as a biconditional — but cheap, and it certifies that the L⁻-side and L-side statements of a
-theorem determine one another. -/
+theorem determine one another.
+
+**Why it is available here, and why it does not generalise.** `tr` is injective *because* it is
+primitive-to-primitive and same-name: every L⁻ primitive goes to the L operator of the same name,
+and the one substitution — `allPast`/`allFuture` onto L's derived forms — is still injective,
+which is what the shape-clash argument in `tr_injective`'s own docstring below turns on. The
+property is a consequence of that shape, not of being a translation module, and it **fails
+outright** for a translation that sends a defined operator onto the abbreviation it stands for.
+The worked case is `FormalSystem/SourceLanguage/Sentence.lean`'s `tr_not_injective`: that
+elimination collapses seventeen source operators onto six, and its collisions hold by
+*reflexivity* after unfolding rather than by any subtle counterexample — a conditional and its
+disjunctive expansion, truth and the negation of falsity, the possibility operator and its
+negated-box form, and both existential tenses are each literally the same `Formula`. So an
+injectivity lemma is not something to expect from an elimination, and asking for one there is
+asking for a false statement; the consequence recorded on that side is that its conformance
+channel runs forward only. -/
 
 /-- `tr` is injective.
 

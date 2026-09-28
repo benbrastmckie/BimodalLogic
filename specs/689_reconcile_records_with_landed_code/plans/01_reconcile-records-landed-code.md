@@ -197,21 +197,21 @@ must be reported rather than silently folded in.
 
 ---
 
-### Phase 2: Correct the injectivity precedent's framing [NOT STARTED]
+### Phase 2: Correct the injectivity precedent's framing [COMPLETED]
 
 **Goal**: `FormalSystem/MinusLanguage/Translation.lean` says *why* `tr` is injective, and says
 that the reason does not transfer to an elimination — so the next reader does not ask for a false
 `tr_injective` a third time.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/MinusLanguage/Translation.lean` immediately before editing.
-- [ ] Extend the `## Main Results` bullet ``- `tr_injective` : `tr` is injective`` to name the reason: `tr` is primitive-to-primitive and same-name (each L⁻ primitive goes to the L operator of the same name; the one substitution is `allPast`/`allFuture` onto L's derived forms), which is what makes injectivity available.
-- [ ] Extend the `/-! ### Injectivity -/` section comment with a paragraph stating that the property is a consequence of that shape and **does not generalise** to a translation that sends a defined operator onto the abbreviation it stands for. Name the worked case: `FormalSystem/SourceLanguage/Sentence.lean`'s `tr_not_injective`, where the source-language elimination collapses seventeen operators onto six and the collisions (`cond` with `vee ∘ neg`, `top` with `neg bot`, `dia` with `neg (box (neg ·))`, and both existential tenses) hold by *reflexivity* after unfolding — not by a subtle counterexample.
-- [ ] Keep the existing "cheap, and it certifies that the L⁻-side and L-side statements of a theorem determine one another" claim; it is true here. The edit adds the missing *why*, it does not retract the claim.
-- [ ] Use backticked repository-relative paths (``` `FormalSystem/SourceLanguage/Sentence.lean` ```), the style this file already uses — relative markdown links in Lean comments are C32-checked and this style is out of that check's scope entirely.
-- [ ] Do **not** write a task number anywhere in this file (`.claude/rules/no-task-references-in-deliverables.md`).
-- [ ] Verify and leave alone: confirm `FormalSystem/SourceLanguage/Sentence.lean`'s header section "`tr` is lossy, and that is the point" already names all four collisions and the forward-only conformance consequence, and that `BimodalTools/README.md`'s "The channel is one-directional" paragraph already says the same. Make no edit to either. Record the verification in the phase's commit message body.
-- [ ] Confirm `FormalSystem/MinusLanguage/README.md` still has no `injectiv` occurrence and needs none — the correction belongs in the module docstring, not that README.
+- [x] Re-read `FormalSystem/MinusLanguage/Translation.lean` immediately before editing.
+- [x] Extend the `## Main Results` bullet ``- `tr_injective` : `tr` is injective`` to name the reason: `tr` is primitive-to-primitive and same-name (each L⁻ primitive goes to the L operator of the same name; the one substitution is `allPast`/`allFuture` onto L's derived forms), which is what makes injectivity available.
+- [x] Extend the `/-! ### Injectivity -/` section comment with a paragraph stating that the property is a consequence of that shape and **does not generalise** to a translation that sends a defined operator onto the abbreviation it stands for. Name the worked case: `FormalSystem/SourceLanguage/Sentence.lean`'s `tr_not_injective`, where the source-language elimination collapses seventeen operators onto six and the collisions (`cond` with `vee ∘ neg`, `top` with `neg bot`, `dia` with `neg (box (neg ·))`, and both existential tenses) hold by *reflexivity* after unfolding — not by a subtle counterexample.
+- [x] Keep the existing "cheap, and it certifies that the L⁻-side and L-side statements of a theorem determine one another" claim; it is true here. The edit adds the missing *why*, it does not retract the claim.
+- [x] Use backticked repository-relative paths (``` `FormalSystem/SourceLanguage/Sentence.lean` ```), the style this file already uses — relative markdown links in Lean comments are C32-checked and this style is out of that check's scope entirely.
+- [x] Do **not** write a task number anywhere in this file (`.claude/rules/no-task-references-in-deliverables.md`).
+- [x] Verify and leave alone: confirm `FormalSystem/SourceLanguage/Sentence.lean`'s header section "`tr` is lossy, and that is the point" already names all four collisions and the forward-only conformance consequence, and that `BimodalTools/README.md`'s "The channel is one-directional" paragraph already says the same. Make no edit to either. Record the verification in the phase's commit message body.
+- [x] Confirm `FormalSystem/MinusLanguage/README.md` still has no `injectiv` occurrence and needs none — the correction belongs in the module docstring, not that README.
 
 **Timing**: 0.5 hours
 
