@@ -1,38 +1,33 @@
 {
-  "status": "researched",
-  "dispatch_seq": 2,
+  "status": "planned",
+  "dispatch_seq": 6,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/686_modelchecker_contract_handoffs/reports/01_modelchecker-contract-handoffs.md",
-      "summary": "Audits all six ModelChecker-side contract items: items 1/2/4 (echo comparison, ensure_ascii=False, acceptance default) are already landed and wired; item 3 (out-of-repo Lean pattern-match audit) has no target on this machine; item 6 (Sentence.update_types top-operator bug) is real, located, and must be fixed; item 5 (translation conformance channel) is genuinely unstarted and depends on item 6."
+      "type": "plan",
+      "path": "specs/686_modelchecker_contract_handoffs/plans/01_modelchecker-contract-handoffs.md",
+      "summary": "Six-phase, 6-hour plan discharging the ModelChecker-side contract handoffs: verify the three already-landed items, fix the shape-dispatch defect in Sentence.update_types, remove the corpus workaround it caused, and wire the fixture-based translation conformance channel plus an optional live differential leg."
     }
   ],
-  "next_steps": "Run /plan 686 to create an implementation plan scoped to: (a) fix the top-operator bug in code/src/model_checker/syntactic/sentence.py's Sentence.update_types (item 6), (b) wire the translation conformance channel against Tests/fixtures/sentence-translation-fixtures.jsonl (item 5, depends on (a)), and (c) a lightweight verification pass confirming items 1/2/4 still pass against the live lake exe check_certificate binary. Item 3 requires no further action (negative-result audit).",
-  "findings_count": 6,
+  "next_steps": "Run /implement 686 to execute the plan",
+  "phase_count": 6,
+  "estimated_hours": 6,
+  "dependency_waves": [[1], [2], [3, 4], [5], [6]],
   "metadata": {
     "session_id": "sess_1790559036_a260f5_686",
-    "agent_type": "general-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   },
   "memory_candidates": [
     {
-      "content": "When a task describes cross-repository hand-off work as if none of it has started, check the OTHER repository's own task-management system (specs/TODO.md, git log) before planning implementation -- it may run an independent task lifecycle that already landed adjacent work targeting the same upstream commit. In this case ModelChecker's own tasks 197/207 had already implemented 3 of 6 described hand-off items (echo comparison, ensure_ascii=False producer pin, acceptance-field default) on the same day this task was dispatched, referencing the exact BimodalLogic commit (d55e2760e) the new work built on.",
+      "content": "When a defined nullary operator (e.g. \\top defined as \\neg \\bot) is mishandled by an operator-elimination pass, check whether the branch dispatches on the ORIGINAL surface name rather than on the SHAPE of the already-derived type. Name-keyed dispatch after a derivation step is a recurring defect class: it silently mixes pre-derivation and post-derivation vocabularies in one branch. The shape-keyed rewrite is usually behavior-identical for genuinely primitive operators (their derived type really is one element) and only changes the defined ones -- which makes the blast radius checkable in advance by surveying which consumers declare the operator primitive.",
       "category": "PATTERN",
-      "source_artifact": "specs/686_modelchecker_contract_handoffs/reports/01_modelchecker-contract-handoffs.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["cross-repository", "hand-off", "dual-verification", "ModelChecker", "task-lifecycle-audit"]
-    },
-    {
-      "content": "A negative-result audit (searching for a target that turns out not to exist -- e.g. 'audit out-of-repo Lean consumers of a changed constructor') is a valid, complete research finding. Confirm via filesystem-wide search (all sibling checkouts, not just the one named in the task) before concluding, then document the negative result explicitly so later phases don't re-search for a nonexistent target.",
-      "category": "PATTERN",
-      "source_artifact": "specs/686_modelchecker_contract_handoffs/reports/01_modelchecker-contract-handoffs.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["negative-result-audit", "research-methodology", "cross-repository"]
+      "source_artifact": "specs/686_modelchecker_contract_handoffs/plans/01_modelchecker-contract-handoffs.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["operator-elimination", "defined-operator", "shape-dispatch", "name-keyed-branch", "derived-type"]
     }
   ],
   "modified_files": [
-    "specs/686_modelchecker_contract_handoffs/reports/01_modelchecker-contract-handoffs.md"
+    "specs/686_modelchecker_contract_handoffs/plans/01_modelchecker-contract-handoffs.md"
   ]
 }

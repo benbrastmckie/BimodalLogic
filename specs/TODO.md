@@ -69,14 +69,14 @@ next_project_number: 690
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-682 [RESEARCHED] — RESEARCH TASK, verdict-first: establish whether validity of...
-686 [RESEARCHED] — Discharge the consuming repository's half of the certificate...
+682 [PLANNING] — RESEARCH TASK, verdict-first: establish whether validity of...
+686 [PLANNED] — Discharge the consuming repository's half of the certificate...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
   └─ 685 [NOT STARTED] — Prove the compression result for the branching witness...
 
 ### Documentation
 
-689 [RESEARCHED] — Reconcile four records with what the code actually says, each...
+689 [PLANNING] — Reconcile four records with what the code actually says, each...
 687 [NOT STARTED] — Close the cross-repository citation and audit-surface gap...
 
 ### Formula Refactor
@@ -107,7 +107,7 @@ next_project_number: 690
 
 ### Repo Hygiene
 
-688 [RESEARCHED] — Make the repository's own gate scripts reliable under...
+688 [PLANNING] — Make the repository's own gate scripts reliable under...
 
 ### Semantics
 
@@ -116,7 +116,7 @@ next_project_number: 690
 ## Tasks
 
 ### 689. Reconcile records with landed code
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: documentation
 - **Dependencies**: None
@@ -135,7 +135,7 @@ THE SHARED-FIXTURE CONVENTION. A plan placed a cross-repository fixture file und
 ---
 
 ### 688. Gate script concurrency reliability
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
@@ -172,11 +172,12 @@ THE RESIDUE IS LARGER THAN RECORDED, AND THAT IS THE HONEST FINDING. Three notio
 ---
 
 ### 686. Modelchecker contract handoffs
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [686_modelchecker_contract_handoffs/reports/01_modelchecker-contract-handoffs.md]
+- **Plan**: [686_modelchecker_contract_handoffs/plans/01_modelchecker-contract-handoffs.md]
 
 **Description**: Discharge the consuming repository's half of the certificate and translation contracts that this development has now landed, in one coordinated pass. Every item below is an edit to ~/Projects/ModelChecker gated on artifacts that already exist here; none is new mathematics on this side.
 
@@ -226,7 +227,7 @@ SCOPE CLARIFICATION: ADD ALONGSIDE, DO NOT REPLACE. The opening sentence above s
 ---
 
 ### 682. Stability decidability provenance gate
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
