@@ -9,16 +9,16 @@
     {
       "project_number": 693,
       "project_name": "a1_compression_conformance_adequacy_chain",
-      "status": "researched",
+      "status": "planning",
       "task_type": "lean4",
       "description": "VERDICT-FIRST CONFORMANCE TASK. Determine whether the landed compression theorem discharges obligation A1 of the companion ModelChecker repository's bimodal adequacy chain, and if so update the cross-repository record; if not, state precisely what is missing.\n\nUPSTREAM OBLIGATION (verbatim, ~/Projects/ModelChecker/code/src/model_checker/theory_lib/bimodal/docs/ADEQUACY.md:628): 'A1 | Compression: a Z-time countermodel yields a certificate with lengths bounded by f(|C|) | Open. Route named, not built. Section 7.1.' That document also records A1 as 'the only genuinely open mathematics in the (ADEQ) chain', and records A3 (bound realization) as 'Vacuous until A1 supplies f'.\n\nLANDED CANDIDATE: FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Family.lean:153 exists_witnessFamily_of_not_validZTime, with compressionBound at Compression/Extract.lean:311, the candidate list cands and mem_cands_of_bounded in Compression/Enumerate.lean, and validZTime_iff_noCertifiedCandidate plus Compression.decidableValidZTime in Compression/Assembly.lean. All are sorry-free with axiom closure exactly {propext, Classical.choice, Quot.sound}.\n\nQUESTIONS TO SETTLE, in order:\n1. Does exists_witnessFamily_of_not_validZTime instantiate A1 as stated, with compressionBound serving as A1 f? Compare the certificate notion: the landed W.Certifies is the conjunction of the conditions the upstream document calls (C1)-(C4), so confirm the condition sets agree name for name and clause for clause, not merely in count.\n2. SCOPE CAVEAT that must be resolved, not glossed: the landed theorem is stated at WitnessFamily [] [φ] -- empty premise set, single conclusion. The compression work explicitly declared non-empty-premise SemanticConsequenceIn decidability a non-goal because the tree has no context-conjunction deduction theorem. Determine whether A1 as the upstream chain consumes it needs the general Gamma |= Delta form or only the empty-premise form. If the general form is needed, A1 is NOT closed and the residue must be stated as its own obligation.\n3. Does compressionBound satisfy A3 realization: are the configured back/fwd required to be common multiples of the compressed family periods, and is mid at least its mid length? A3 also carries a max_witnesses precondition (None, or at least the boxed-subformula count). Report whether A3 is now discharged, still vacuous, or newly live-and-open.\n4. Check whether the upstream claim that absence can be decided by verified code rather than by trusting Z3 UNSAT is now supported, given cands finiteness and enumeration completeness.\n\nDELIVERABLES: a report recording the verdict per question with declaration-level citations; if A1 is discharged, the updated row text for the upstream table plus any scripts/lean-citation-manifest.json entries the new declarations require (C35 is enforced and currently green, so any manifest change must keep it byte-current). DO NOT EDIT THE MODELCHECKER REPOSITORY -- it is a separate repo with its own task system; produce the row text and hand it off. Cite declarations by fully qualified name, never by line number alone: the upstream provenance note records that line numbers went stale underneath unchanged names while every gate in both repositories stayed green.",
       "topic": "decidability",
       "created": "2026-09-28T21:23:00Z",
-      "last_updated": "2026-09-28T21:47:25Z",
+      "last_updated": "2026-09-28T21:48:14Z",
       "file_scope": [
         "specs/"
       ],
-      "session_id": "sess_1790630813_a17992",
+      "session_id": "sess_1790630813_a17992_693",
       "artifacts": [
         {
           "path": "specs/693_a1_compression_conformance_adequacy_chain/reports/01_a1-compression-conformance.md",
@@ -302,7 +302,7 @@
     {
       "project_number": 685,
       "project_name": "stability_compression_and_assembly",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "Prove the compression result for the branching witness structure: if a formula of the language with the stability modal is not valid at integer time, a witness structure satisfying the redesigned conditions exists whose size is bounded by a computable function of the closure size. This is the stability-modal analogue of the compression theorem the deterministic route needs, and it is what turns a truth lemma into a decision procedure, since without a bound there is no finite candidate space to enumerate. Two routes are already known closed and must not be retried. The finite model property is NOT established by the monadic-second-order route (\"a regular tree does not obviously fold to a finite digraph\"), so no bound is inherited from the decidability argument even if that argument is sound. And the finite-presentation small-model hypothesis is machine-refuted (Probe476.fmp_false), so compressing over presentation states is dead exactly as it is for the deterministic route. The viable shape is the one the deterministic route uses: compress over subformula-set (type) space, where the pigeonhole is two-to-the-closure-size and closed, rather than over presentation states, where it is unbounded -- generalized from a family of lassos to a branching structure, which is the part with no precedent. Deliver, alongside the bound, the assembly step the deterministic route also needs: a formula-indexed candidate list over those bounds, and decidability of validity by reduction to \"no candidate is accepted\". Depends on the agreement lemma over all walks, since a bound on structures whose truth lemma has not been proved certifies nothing.",
@@ -311,7 +311,7 @@
         623
       ],
       "created": "2026-09-26T12:07:18Z",
-      "last_updated": "2026-09-28T21:47:09Z",
+      "last_updated": "2026-09-28T21:56:50Z",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Decide.lean",
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Closure.lean",
@@ -325,6 +325,11 @@
           "path": "specs/685_stability_compression_and_assembly/reports/01_stability-compression-and-assembly.md",
           "type": "report",
           "summary": "Machine-checked refutation of the stated L-plus compression theorem: no branching witness family certifies any instance of (g S e) -> stab (g S e), root-caused to (C1')'s snce clause, with the substrate redesign specification, the two absent prerequisites, and the bound shape for whenever the conditions are fixed."
+        },
+        {
+          "path": "specs/685_stability_compression_and_assembly/plans/01_land-refutation-and-rescope.md",
+          "type": "plan",
+          "summary": "Five phases, three dependency waves, 5.5 hours: promote the refutation to PlusWitnessFamily/Incompleteness.lean, pin four declarations in C2 plus docs/theorem-index.md, correct two READMEs, spawn two dependent tasks, full gate sweep."
         }
       ],
       "next_artifact_number": 2

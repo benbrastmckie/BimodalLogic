@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 3,
+  "summary": "Wrote a five-phase re-scoped plan implementing the settled decision: land the machine-checked L-plus incompleteness refutation as a compiled library module, pin it in the C2 axiom baseline and the theorem ledger, correct the two READMEs that present (C1') as an unqualified repair for recombination, and spawn the substrate redesign plus the L-plus carrier normalization as dependent tasks. No compression or assembly proof is attempted, because the stated theorem is false.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/685_stability_compression_and_assembly/plans/01_land-refutation-and-rescope.md",
+      "summary": "Five phases, three dependency waves, 5.5 hours: promote the refutation to PlusWitnessFamily/Incompleteness.lean, pin four declarations in C2 plus docs/theorem-index.md, correct two READMEs, spawn two dependent tasks, full gate sweep."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": []
+}

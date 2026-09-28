@@ -1,32 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
+  "dispatch_seq": 3,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/685_stability_compression_and_assembly/reports/01_stability-compression-and-assembly.md",
-      "summary": "Machine-checked refutation of the stated L-plus compression theorem: no branching witness family certifies any instance of (g S e) -> stab (g S e), root-caused to (C1')'s snce clause, with the substrate redesign specification, the two absent prerequisites, and the bound shape for whenever the conditions are fixed."
-    },
-    {
-      "type": "probe",
-      "path": "specs/685_stability_compression_and_assembly/probes/01_snce_stab_incompleteness.lean",
-      "summary": "Four green declarations: snce_state_determined (root cause), no_certificate and no_certificate_premise_form (empty certificate class, both target placements), not_plusValidZTime_instance (the schema is a genuine ZTime non-validity)."
+      "type": "plan",
+      "path": "specs/685_stability_compression_and_assembly/plans/01_land-refutation-and-rescope.md",
+      "summary": "Five-phase re-scoped plan: promote the machine-checked L-plus incompleteness refutation to a compiled library module, pin it in the C2 axiom baseline and docs/theorem-index.md, correct the two READMEs that present (C1') as an unqualified repair, and spawn the substrate redesign plus the L-plus carrier normalization as dependent tasks. No compression proof is attempted."
     }
   ],
-  "user_decision": {
-    "question": "Research machine-refuted this task's stated deliverable: no branching L-plus witness family can certify any instance of (g S e) -> stab (g S e), while one such instance (Pp -> stab Pp) is a genuine ZTime non-validity, so the compression theorem is false against the landed six conditions rather than merely unproved. How should the task be re-scoped?",
-    "options": [
-      "Land the refutation and re-scope - promote the probe to a library module beside PlusWitnessFamily, correct the two READMEs, and spawn the substrate redesign and the L-plus carrier normalization as separate dependent tasks; attempt no compression proof now",
-      "Attempt the substrate redesign inside this task - add the explicit periodic transition relation to SharingSkeleton and re-prove the ~3500 affected lines (Skeleton, Predicates, Decide, Fulfil, Agreement, Specialize on both the Formula and PlusFormula sides) before compressing",
-      "Restrict the claim - prove compression and decidability only for the snce-free fragment of L-plus, where the defect provably cannot bite, and record the general case as open"
-    ],
-    "recommended": "Land the refutation and re-scope - promote the probe to a library module beside PlusWitnessFamily, correct the two READMEs, and spawn the substrate redesign and the L-plus carrier normalization as separate dependent tasks; attempt no compression proof now",
-    "blocking": false
-  },
+  "next_steps": "Run /implement 685 to execute the plan",
   "metadata": {
     "session_id": "sess_1790630813_a17992_685",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 5.5,
+    "dependency_waves": 3
+  },
+  "memory_candidates": [
+    {
+      "content": "Design rule for branching/state-sharing certificate condition sets in modal-temporal decidability devices: a local-coherence clause that quantifies its witness over the sharing equivalence class at the LABEL'S OWN time forces every member of that class to agree on the labelled formula (read the clause twice -- once at i with k := j, once at j with k := j by reflexivity -- and the two biconditionals share a right-hand side). That silently makes the corresponding truth-value a function of the world state, which makes the device INCOMPLETE for any validity the state does not determine. Quantifying over the class at t+1 or t-1 instead does not have this consequence, which is why an `until` clause can be defect-free while a `since` clause is not. Diagnostic: for each condition, ask which time's class it quantifies over relative to the label it constrains. Repair is at the substrate level (an explicit transition relation on indices, separate from the sharing relation), never a re-wording of the condition. Corollary for planning: a condition set with no landed example satisfying ALL conditions simultaneously at non-trivial sharing is unvalidated -- per-condition non-vacuity witnesses do not catch this class of defect, and a compression/completeness proof planned against such a set can be planned against a false statement.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/685_stability_compression_and_assembly/plans/01_land-refutation-and-rescope.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["branching-certificate", "condition-set-completeness", "state-sharing", "share-class-agreement", "non-vacuity-gate", "decidability-device"]
+    }
+  ]
 }

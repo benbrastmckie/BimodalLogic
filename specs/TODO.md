@@ -69,8 +69,8 @@ next_project_number: 694
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-685 [RESEARCHED] — Prove the compression result for the branching witness...
-693 [RESEARCHED] — VERDICT-FIRST CONFORMANCE TASK. Determine whether the landed...
+685 [PLANNED] — Prove the compression result for the branching witness...
+693 [PLANNING] — VERDICT-FIRST CONFORMANCE TASK. Determine whether the landed...
 
 ### Formula Refactor
 
@@ -104,7 +104,7 @@ next_project_number: 694
 ## Tasks
 
 ### 693. A1 compression conformance adequacy chain
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -257,11 +257,12 @@ The research report and implementation plan authored here remain the durable inp
 ---
 
 ### 685. Stability compression and assembly
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 684, Task 623
 - **Research**: [685_stability_compression_and_assembly/reports/01_stability-compression-and-assembly.md]
+- **Plan**: [685_stability_compression_and_assembly/plans/01_land-refutation-and-rescope.md]
 
 **Description**: Prove the compression result for the branching witness structure: if a formula of the language with the stability modal is not valid at integer time, a witness structure satisfying the redesigned conditions exists whose size is bounded by a computable function of the closure size. This is the stability-modal analogue of the compression theorem the deterministic route needs, and it is what turns a truth lemma into a decision procedure, since without a bound there is no finite candidate space to enumerate. Two routes are already known closed and must not be retried. The finite model property is NOT established by the monadic-second-order route ("a regular tree does not obviously fold to a finite digraph"), so no bound is inherited from the decidability argument even if that argument is sound. And the finite-presentation small-model hypothesis is machine-refuted (Probe476.fmp_false), so compressing over presentation states is dead exactly as it is for the deterministic route. The viable shape is the one the deterministic route uses: compress over subformula-set (type) space, where the pigeonhole is two-to-the-closure-size and closed, rather than over presentation states, where it is unbounded -- generalized from a family of lassos to a branching structure, which is the part with no precedent. Deliver, alongside the bound, the assembly step the deterministic route also needs: a formula-indexed candidate list over those bounds, and decidability of validity by reduction to "no candidate is accepted". Depends on the agreement lemma over all walks, since a bound on structures whose truth lemma has not been proved certifies nothing.
 
