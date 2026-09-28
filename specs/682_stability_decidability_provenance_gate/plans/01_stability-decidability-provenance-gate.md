@@ -1,7 +1,7 @@
 # Implementation Plan: Task #682
 
 - **Task**: 682 - Stability decidability provenance gate
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/682_stability_decidability_provenance_gate/reports/01_stability-decidability-provenance-gate.md`
@@ -352,17 +352,17 @@ actual file count touched rather than this plan's estimate.
 
 ---
 
-### Phase 5: Close out and record the carried-forward items [NOT STARTED]
+### Phase 5: Close out and record the carried-forward items [COMPLETED]
 
 **Goal**: the full gate set is green over everything this plan changed, and the items this task's
 scope could not absorb are recorded explicitly rather than left implicit.
 
 **Tasks**:
-- [ ] Run the repository's full gate set and record the result verbatim, including
+- [x] Run the repository's full gate set and record the result verbatim, including
       `bash scripts/check-evidence-probes.sh`.
-- [ ] Confirm no file under `FormalSystem/` or `Tests/` was modified by this task, as the task
+- [x] Confirm no file under `FormalSystem/` or `Tests/` was modified by this task, as the task
       description requires: `git status --short` and `git diff --stat` over the task's own commits.
-- [ ] Record the carried-forward items in the execution summary, each with the reason it is not
+- [x] Record the carried-forward items in the execution summary, each with the reason it is not
       done here: (i) the stability-modal carrier normalization — generalize the generic truth
       transport from the modal-only formula type to the stability-modal one, then the
       integer-carrier normalization follows the existing proof line — blocked here by the
@@ -371,7 +371,7 @@ scope could not absorb are recorded explicitly rather than left implicit.
       whether and how the downstream design line should be started, already surfaced by the
       research dispatch with a recommendation and not re-asked here; (iv) the deferred move of the
       probe into `specs/evidence/`, blocked by the three citation sites outside this task's scope.
-- [ ] Confirm the plan's phase markers and the task's records agree with what actually landed.
+- [x] Confirm the plan's phase markers and the task's records agree with what actually landed.
 
 **Timing**: 0.5 hours
 
@@ -393,18 +393,18 @@ scope could not absorb are recorded explicitly rather than left implicit.
 
 ## Testing & Validation
 
-- [ ] `lake env lean` on the repaired probe exits 0 and prints the three-axiom list with no
+- [x] `lake env lean` on the repaired probe exits 0 and prints the three-axiom list with no
       `sorryAx`.
-- [ ] The `fmp_false` statement text is byte-identical before and after the repair.
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0, lists the new probe as PASS, and still
+- [x] The `fmp_false` statement text is byte-identical before and after the repair.
+- [x] `bash scripts/check-evidence-probes.sh` exits 0, lists the new probe as PASS, and still
       passes every entry it passed beforehand.
-- [ ] The guard demonstrably fails on a deliberately broken copy of the probe, then the tree is
+- [x] The guard demonstrably fails on a deliberately broken copy of the probe, then the tree is
       restored clean.
-- [ ] `specs/literature-index.json` parses, gains exactly one entry, and both Thomas ids resolve
+- [x] `specs/literature-index.json` parses, gains exactly one entry, and both Thomas ids resolve
       against the global corpus index.
-- [ ] The source-store notes contain no task-number reference and assert no decidability result.
-- [ ] No file under `FormalSystem/`, `Tests/`, or `.claude/` is modified by this task.
-- [ ] The repository's full gate set is green at close-out.
+- [x] The source-store notes contain no task-number reference and assert no decidability result.
+- [x] No file under `FormalSystem/`, `Tests/`, or `.claude/` is modified by this task.
+- [x] The repository's full gate set is green at close-out.
 
 ## Artifacts & Outputs
 
