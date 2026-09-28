@@ -271,7 +271,7 @@ describes, so a reader matching on "Thomas 1997" cannot pull the wrong fidelity 
 
 ---
 
-### Phase 4: Record the citation licence and the certificate vocabulary in the source store [NOT STARTED]
+### Phase 4: Record the citation licence and the certificate vocabulary in the source store [IN PROGRESS]
 
 **Goal**: the discharged citation licence and the finite-model / finite-presentation distinction
 are written where a future dispatch will meet them, in the extension source store rather than in
