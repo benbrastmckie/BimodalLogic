@@ -1,16 +1,17 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 7,
-  "summary": "Wrote a 3-phase plan for task 688: serialize check-module-invariants.sh's two C1 lake builds under an flock on the build guard's published lock path, verify the race is closed with bounded concurrent trials, and create scripts/nolints-style.txt while correcting the ci.yml comment that records its absence as intended.",
+  "status": "implemented",
+  "dispatch_seq": 10,
+  "phase": "implement",
+  "summary": "Serialized check-module-invariants.sh's C1 lake builds on the build guard's published .lake/build-guard.lock path, closing a measured concurrent-dispatch race; verified with a deterministic external-holder test plus three overlapping real-concurrency trials, zero contention-attributable failures. Also created scripts/nolints-style.txt and corrected the ci.yml comment recording its absence as deliberate.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/688_gate_script_concurrency_reliability/plans/01_gate-script-build-lock.md",
-      "summary": "3-phase plan, 3 hours, waves [1,3] then [2]."
+      "type": "summary",
+      "path": "specs/688_gate_script_concurrency_reliability/summaries/01_gate-script-build-lock-summary.md",
+      "summary": "flock C1's two lake builds on the guard's published lock path; four overlapping-concurrency trials, zero contention-attributable failures; created scripts/nolints-style.txt and reconciled the ci.yml comment."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 3,
   "phases_total": 3,
-  "blockers": []
+  "blockers": [],
+  "plan_markers_verified": true
 }
