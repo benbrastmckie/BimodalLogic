@@ -271,18 +271,18 @@ describes, so a reader matching on "Thomas 1997" cannot pull the wrong fidelity 
 
 ---
 
-### Phase 4: Record the citation licence and the certificate vocabulary in the source store [IN PROGRESS]
+### Phase 4: Record the citation licence and the certificate vocabulary in the source store [COMPLETED]
 
 **Goal**: the discharged citation licence and the finite-model / finite-presentation distinction
 are written where a future dispatch will meet them, in the extension source store rather than in
 the disposable deployed tree.
 
 **Tasks**:
-- [ ] Resolve the source store from `.claude-extensions.json` and confirm the two target
+- [x] Resolve the source store from `.claude-extensions.json` and confirm the two target
       directories exist before writing:
       `…/agent-system/extensions/lean/context/project/lean4/domain/` and
       `…/agent-system/extensions/literature/context/project/literature/domain/`.
-- [ ] Add a decidability-provenance note under the lean extension's `domain/` directory covering
+- [x] Add a decidability-provenance note under the lean extension's `domain/` directory covering
       two things. First, the citation licence: the MSO route's appeal to Rabin's theorem may be
       cited as Thomas, *Languages, Automata, and Logic* (1997), §6.3 Theorem 6.20, with the
       countable-branching sentence immediately following and a self-contained proof in §6.1-6.2 —
@@ -291,23 +291,27 @@ the disposable deployed tree.
       assumption (`D` exactly the integers, histories exactly the bi-infinite walks) is
       machine-checked for the modal-only language and is not yet landed for the language with the
       stability modal.
-- [ ] In the same note, fix the two terms the report identifies as conflated: a finite *model*
+- [x] In the same note, fix the two terms the report identifies as conflated: a finite *model*
       certificate is refuted outright by `Probe476.fmp_false`; a finite *presentation* — a finite
       generating automaton for an infinite regular model, Thomas Theorem 6.18 — is the shape that
       remains available and the shape the existing decision-layer device already respects. Record
       that Thomas's own text calls the latter "the finite model property", which is how the
       conflation propagates.
-- [ ] Record that no complexity bound is inherited in either direction: the MSO-to-automaton
+- [x] Record that no complexity bound is inherited in either direction: the MSO-to-automaton
       conversion is not elementarily bounded (Meyer-Stockmeyer, via the same chapter), the held
       corroborating source calls the tree route's complexity unclear, and no lower bound for this
       language is held.
-- [ ] Register the new file wherever the lean extension's `manifest.json` enumerates its provided
+- [x] Register the new file wherever the lean extension's `manifest.json` enumerates its provided
       context files, so a deploy copies it. Re-read the manifest's existing `provides` shape first
-      and match it exactly.
-- [ ] Add a short subsection to the literature extension's `literature-index.md`: corpus ids are
+      and match it exactly. *(deviation: altered — the manifest's `provides.context`
+      enumerates DIRECTORIES (`project/lean4`, `contracts`), not individual files, so a deploy
+      already copies the new note and no manifest edit was needed. Registered it instead in the
+      two places that do enumerate files: `lean/index-entries.json` (the context-discovery
+      index) and `context/project/lean4/README.md` (the Key Files list).)*
+- [x] Add a short subsection to the literature extension's `literature-index.md`: corpus ids are
       matched whole and never by author-year stem, and a hazard attaches to an id rather than to
       an author-year. Use the two Thomas 1997 entries as the worked example, naming both paths.
-- [ ] Re-read every file written in this phase and confirm no task number, report number, or
+- [x] Re-read every file written in this phase and confirm no task number, report number, or
       `specs/{NNN}_…` task-directory path appears: these paths are outside `specs/**`, so
       `no-task-references-in-deliverables.md` applies. Cite declaration names, corpus ids,
       theorem numbers, and `specs/archive/…` evidence paths instead.
