@@ -84,18 +84,19 @@ judgement about its content:
 
 | Layer | Came from | Files |
 |---|---|---|
-| 0 | `Syntax/<Lang>/` | Minus: `Formula`, `Axioms`, `Derivation`, `Translation`, `AxiomDischarge`. Plus: `Formula`, `Axioms`, `Derivation`, `Substitution`. Star: `Formula`, `Axioms`, `Derivation`, `Embedding`. Open: `Formula`. Source: `Sentence` |
+| 0 | `Syntax/<Lang>/` | Minus: `Formula`, `Axioms`, `Derivation`, `Translation`, `AxiomDischarge`. Plus: `Formula`, `Axioms`, `Derivation`, `Substitution`, `Subformulas`. Star: `Formula`, `Axioms`, `Derivation`, `Embedding`. Open: `Formula`. Source: `Sentence` |
 | 1 | `Semantics/<Lang>/` | Minus: `MinusTruth`, `MinusFrame`, `MinusValidity`, `MinusSchemaValidity`. Plus: `PlusTruth`, `PlusValidity`, `PlusPasting`, `PlusNonValidities`, `PlusDeterminism`, `PlusStateLocal`, `PlusLimitClosure`. Star: `StarTruth`, `StarValidity`, `StarDeterminism`, `StarNonValidities`, `StarStateLocal`. Open: `OpenClasses`, `OpenTruth`, `OpenValidity`, `OpenReversal`, `OpenOckhamist` |
 | 3 | `Metalogic/Conservativity/` | `MinusLanguage/Soundness.lean`, which imports two `Metalogic/` modules |
 
-17 files at layer 0, 30 at layer 1, 1 at layer 3. The seven sibling aggregators
+18 files at layer 0, 30 at layer 1, 1 at layer 3. The seven sibling aggregators
 (`MinusLanguage.lean` and its six siblings) import layer-0 and layer-1 files and take a declared
 layer of 1.
 
 The `OpenLanguage/`, `HybridLanguage/`, `QuantLanguage/` and `SourceLanguage/` files were created
-after the merge and so have no origin directory. Each
+after the merge and so have no origin directory, as was `PlusLanguage/Subformulas.lean`. Each
 takes the layer of the directory it would have occupied before it: the syntax file 0, the
 semantic modules 1 — which is exactly what the syntax-before-semantics assertion enforces.
+`Subformulas.lean` imports `PlusLanguage.Formula` and nothing semantic, so it takes layer 0.
 
 Origin is the rule because a content judgement could file `AxiomDischarge.lean` at layer 2 and
 empty the allowlist by assertion. That allowlist read empty once already, after the merge moved
