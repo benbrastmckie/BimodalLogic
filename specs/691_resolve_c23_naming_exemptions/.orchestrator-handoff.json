@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 2,
+  "summary": "Wrote a 4-phase implementation plan for task 691: lift the scanner's shadow[:10] print cap and re-measure, add a new (base, outer_ns, inner_ns) triple-keyed SHADOW_PAIR_ALLOW set holding the 11 measured pairs with inline reasons, add NM_nonneg to UPPER_ALLOW with a restructured two-class comment, then run the full gate and commit. All changes confined to scripts/check-module-invariants.sh; no Lean source touched.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/691_resolve_c23_naming_exemptions/plans/01_c23-naming-exemptions.md",
+      "summary": "4-phase plan resolving C23's two red sub-assertions via a triple-keyed exact-pair shadow exemption plus an NM_nonneg UPPER_ALLOW entry."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 4,
+  "blockers": []
+}

@@ -1,37 +1,22 @@
 {
-  "status": "researched",
-  "started_at": "2026-09-28T22:40:00Z",
-  "completed_at": "2026-09-28T22:44:00Z",
-  "findings_count": 8,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/691_resolve_c23_naming_exemptions/reports/01_c23-naming-exemptions.md",
-      "summary": "Full eleven-row inventory of C23's outer-shadows-inner pairs (the truncated x3+ resolves to exactly 4 mem_verts rows), the four-base-name/three-shape collapse, the three differently-keyed exemption mechanisms (UPPER_ALLOW/SHADOW_ALLOW bare-name-wide vs. FROZEN_PREFIX path-scoped) and the fidelity trade-off between them, two citable SHADOW_ALLOW precedents (isValid, insertEnv), and confirmation that the Uppercase_x auto-exemption classes all miss NM_nonneg. Re-verified against current HEAD after tasks 685/693 completed: all findings hold unchanged, the prior territory/inventory-volatility risk has cleared (C33 and INV both PASS), and C23 remains the sole failing check group."
+      "type": "plan",
+      "path": "specs/691_resolve_c23_naming_exemptions/plans/01_c23-naming-exemptions.md",
+      "summary": "4-phase plan resolving C23's two red sub-assertions via a new triple-keyed exact-pair shadow exemption plus an NM_nonneg UPPER_ALLOW entry, all inside scripts/check-module-invariants.sh."
     }
   ],
-  "memory_candidates": [
-    {
-      "content": "In scripts/check-module-invariants.sh's C23 naming-exemption block, the three exemption mechanisms are keyed at different granularities: UPPER_ALLOW and SHADOW_ALLOW key on the bare declaration/base name and apply tree-wide to all current and future occurrences of that name, while FROZEN_PREFIX keys on a path prefix and only exempts pairs with a member under it. A SHADOW_ALLOW entry for a base name disables detection for that entire name bucket permanently, not just the measured pairs -- so it silently absorbs any future accidental collision on the same name. Worth checking this distinction before adding any exemption entry to a similarly-shaped naming/shadowing linter.",
-      "category": "PATTERN",
-      "source_artifact": "specs/691_resolve_c23_naming_exemptions/reports/01_c23-naming-exemptions.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["check-module-invariants", "C23", "SHADOW_ALLOW", "UPPER_ALLOW", "naming-exemption", "linter-scope"]
-    },
-    {
-      "content": "check-module-invariants.sh's C23 outer-shadows-inner shadow-pair report truncates its printed list to shadow[:10] while the FAIL count reflects the true total, so a count of 11 or more can hide rows entirely absent from the printed output. Re-run from a scratch copy with the print cap lifted (or cross-check the printed count against the FAIL header) before treating the printed list as exhaustive.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/691_resolve_c23_naming_exemptions/reports/01_c23-naming-exemptions.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["check-module-invariants", "C23", "print-truncation", "shadow-pairs", "gate-output"]
-    }
-  ],
-  "next_steps": "Run /plan 691 to create implementation plan",
+  "next_steps": "Run /implement 691 to execute the plan",
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1790635249_697f29_691",
-    "agent_type": "general-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2.25,
+    "dependency_waves": 4
   },
-  "dispatch_seq": 1
+  "dispatch_seq": 2
 }
