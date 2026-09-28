@@ -504,7 +504,7 @@ simplifies rather than merely renames, and record the result.
 
 ---
 
-### Phase 8: `Compression/Family.lean` (part A) — canonical `bx` and the box witnesses [IN PROGRESS]
+### Phase 8: `Compression/Family.lean` (part A) — canonical `bx` and the box witnesses [COMPLETED]
 
 **Goal**: The box-faithfulness half of the family: a canonical, enumerable box guess and one extra
 lasso per boxed closure member the guess sets false.
@@ -555,7 +555,7 @@ forward rather than quietly assumed.
 
 ---
 
-### Phase 9: `Compression/Family.lean` (part B) — the compression theorem [NOT STARTED]
+### Phase 9: `Compression/Family.lean` (part B) — the compression theorem [COMPLETED]
 
 **Goal**: `exists_witnessFamily_of_not_validZTime` — the completeness half, end to end.
 
@@ -601,7 +601,7 @@ no consumer reads is a sign the statement was over-specified.
 
 ---
 
-### Phase 10: `Compression/Enumerate.lean` — the candidate list [NOT STARTED]
+### Phase 10: `Compression/Enumerate.lean` — the candidate list [COMPLETED]
 
 **Goal**: A computable `cands : Formula → List (WitnessFamily [] [φ])` covering every family the
 compression theorem can produce, with the completeness lemma `mem_cands_of_bounded`.
@@ -649,7 +649,7 @@ load-bearing consequence and a single-triple enumeration would be silently incom
 
 ---
 
-### Phase 11: `Compression/Assembly.lean` — `Decidable (ValidZTime φ)` [NOT STARTED]
+### Phase 11: `Compression/Assembly.lean` — `Decidable (ValidZTime φ)` [IN PROGRESS]
 
 **Goal**: Compose compression, enumeration and the landed `decidableCertifies` into the decision
 procedure.
