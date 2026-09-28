@@ -80,12 +80,12 @@
     {
       "project_number": 687,
       "project_name": "cross_repo_citation_audit_gating",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "general",
       "description": "Close the cross-repository citation and audit-surface gap from both ends, so that a line-numbered claim about this development cannot rot silently in the consuming repository's adequacy argument.\n\nTHE MEASURED DRIFT. Four of the twenty-four citations in the consuming repository's audit table are stale by a uniform +38 and now land inside a different theorem than the one they name, which is worse than landing nowhere: a reader checking the citation sees a real theorem and concludes the claim is supported. The corrected lines were determined to be 263, 274, 289 and 300 for the four affected entries. Every other cited line resolved at the time of measurement, and the sorry-count and axiom-census claims still held. Re-verify before editing rather than trusting those numbers, since this development has landed further work since.\n\nWHY IT ROTTED, WHICH IS THE PART WORTH FIXING. The declaration-span cross-check that guards line-numbered citations reads only this repository's own live scope. A table living in the consuming repository is therefore ungated in both repositories at once: nothing here knows those citations exist, and nothing there can resolve them. A generated citation manifest and a build-free freshness invariant now exist on this side, covering 53 fully qualified names resolved from a reviewable seed list. Extend that mechanism to cover the consuming document's citations too, or have the consuming side consume the manifest, so the gate that catches drift is not the one repository that cannot see it.\n\nCOORDINATE RATHER THAN EDIT UNILATERALLY. The table correction itself belongs to the consuming repository. Propose it there rather than reaching across.\n\nTHE RESIDUE IS LARGER THAN RECORDED, AND THAT IS THE HONEST FINDING. Three notions the soundness chain depends on have no row in the consuming document's audit at all: the world-nonemptiness field of the frame structure, the totality predicate on partial histories underlying the world-history notion, and the truth-correspondence structure carrying the time-shift and auto-existence obligations, which is unrecorded because the cited time-shift theorem instantiates the paper's lemma rather than stating it. This development now records the full inspection-only residue as 24 rows and 27 declarations, name-keyed and free of line numbers. Get those three rows into the consuming audit, so its stated surface matches the real one rather than understating it.",
       "topic": "documentation",
       "created": "2026-09-28T01:11:33Z",
-      "last_updated": "2026-09-28T01:11:33Z",
+      "last_updated": "2026-09-28T02:30:44Z",
       "file_scope": [
         "scripts/export-lean-citations.py",
         "scripts/lean-citation-seeds.txt",
@@ -96,7 +96,8 @@
       ],
       "dependencies": [
         688
-      ]
+      ],
+      "session_id": "sess_1790559036_a260f5_687"
     },
     {
       "project_number": 686,
@@ -125,13 +126,13 @@
     {
       "project_number": 682,
       "project_name": "stability_decidability_provenance_gate",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "RESEARCH TASK, verdict-first: establish whether validity of the language with the stability modal is KNOWN decidable at integer time from held sources, before any certificate or witness-structure design work begins. This gates the whole stability-modal decision-procedure line, and the answer may be that the target is not known decidable at all, in which case the downstream design tasks should not be started. Three questions, each needing a verdict and a cited source rather than a recollection. (1) The existing decidability argument for the larger language at integer time proceeds by translation into monadic second-order logic over the omega-branching tree and appeals to Rabin's theorem; that theorem is recalled, not held. Tie it to a held source or record that it cannot be. The compression task's own carried-over research note already flags this as a precondition for citing the argument anywhere in library documentation. (2) That argument assumes the integer-time frame class is exactly D equal to the integers, as in the report's mirror -- all bi-infinite walks of a digraph -- rather than a wider class of discrete orders. Check the repository's actual FrameClass definition against that assumption and record whether it holds. (3) Determine whether any route in the held literature yields a FINITE CERTIFICATE, as opposed to a decision procedure only: the MSO route is recorded as giving no finite certificate, no complexity bound, and nothing a Lean Decidable instance could be built from, and the finite model property is recorded as not obtained by its method, consistent with the refuted small-model hypothesis (Probe476.fmp_false). A negative verdict here does not close the line, but it means the certificate design must supply its own finiteness argument rather than inherit one. Deliver a report with the three verdicts; no changes to FormalSystem/ or Tests/.",
       "dependencies": [],
       "created": "2026-09-26T12:07:18Z",
-      "last_updated": "2026-09-28T02:29:28Z",
+      "last_updated": "2026-09-28T02:43:29Z",
       "session_id": "sess_1790559036_a260f5",
       "artifacts": [
         {
@@ -143,9 +144,15 @@
           "path": "specs/682_stability_decidability_provenance_gate/plans/01_stability-decidability-provenance-gate.md",
           "type": "plan",
           "summary": "Five-phase plan: repair and guard the archived fmp_false evidence probe, disambiguate the two Thomas 1997 corpus entries, and record the citation licence and finite-model/finite-presentation vocabulary in the extension source store."
+        },
+        {
+          "path": "specs/682_stability_decidability_provenance_gate/summaries/01_stability-decidability-provenance-gate-summary.md",
+          "type": "summary",
+          "summary": "Execution summary: probe repair, rot-guard extension with negative test, corpus-entry disambiguation, two source-store provenance notes, and seven carried-forward items."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Executed the provenance report's four in-scope recommendations. Repaired the archived Probe476.fmp_false evidence probe (it had stopped elaborating and was measuring sorryAx behind five FormalSystem/Metalogic/Decidability/ citations) and wired it into scripts/check-evidence-probes.sh via a new repository-relative entry form, verified by a negative test. Disambiguated the two Thomas 1997 corpus entries in specs/literature-index.json so the no_source_pdf hazard no longer reads onto the verified handbook chapter. Recorded the Rabin-theorem citation licence, its limits, the frame-class assumption, the finite-MODEL (refuted) vs finite-PRESENTATION (available) distinction, and the absence of any inherited complexity bound in the lean and literature extension source stores. No file under FormalSystem/ or Tests/ was modified."
     },
     {
       "project_number": 683,

@@ -1,22 +1,48 @@
 {
-  "status": "planned",
-  "dispatch_seq": 9,
+  "status": "implemented",
+  "started_at": "2026-09-27T00:00:00Z",
+  "completed_at": "2026-09-27T00:00:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/682_stability_decidability_provenance_gate/plans/01_stability-decidability-provenance-gate.md",
-      "summary": "Five-phase plan executing the research report's in-scope recommendations: repair and guard the archived Probe476.fmp_false evidence probe, disambiguate the two Thomas 1997 corpus entries, and record the citation licence plus the finite-model/finite-presentation distinction in the extension source store."
+      "type": "summary",
+      "path": "specs/682_stability_decidability_provenance_gate/summaries/01_stability-decidability-provenance-gate-summary.md",
+      "summary": "Repaired and guarded the archived fmp_false evidence probe, disambiguated the two Thomas 1997 corpus entries, and recorded the Rabin citation licence plus the finite-model/finite-presentation distinction in the extension source store."
     }
   ],
-  "next_steps": "Run /implement 682 to execute the plan",
-  "phase_count": 5,
-  "estimated_hours": 4,
-  "dependency_waves": [[1, 3], [2, 4], [5]],
-  "memory_candidates": [],
+  "completion_data": {
+    "completion_summary": "Executed the provenance report's four in-scope recommendations. Repaired the archived Probe476.fmp_false evidence probe (it had stopped elaborating and was measuring sorryAx behind five FormalSystem/Metalogic/Decidability/ citations) and wired it into scripts/check-evidence-probes.sh via a new repository-relative entry form, verified by a negative test. Disambiguated the two Thomas 1997 corpus entries in specs/literature-index.json so the no_source_pdf hazard no longer reads onto the verified handbook chapter. Recorded the Rabin-theorem citation licence, its limits, the frame-class assumption, the finite-MODEL (refuted) vs finite-PRESENTATION (available) distinction, and the absence of any inherited complexity bound in the lean and literature extension source stores. No file under FormalSystem/ or Tests/ was modified.",
+    "roadmap_items": []
+  },
   "metadata": {
-    "session_id": "sess_1790559036_a260f5_682",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1790559036_a260f5",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "skipped",
+    "compliance_check_reason": "The plan declares no Lean Goals (Lean Intent: false); its goals are a probe repair, a shell-script guard extension, a JSON corpus entry, and two source-store markdown notes. There are no backticked declaration names in a **Goals**: block to spot-check, so the plan-compliance grep has no input.",
+    "gate_set": {
+      "green": [
+        "check-evidence-probes.sh",
+        "check-module-invariants.sh --no-build",
+        "check-copyright-headers.sh --strict",
+        "readme-lint.sh",
+        "check-metalogic-cycles.sh",
+        "check-paper-definitions.sh",
+        "lake exe mk_all --lib FormalSystem --check",
+        "lake exe lint-style"
+      ],
+      "red_preexisting": [
+        "typst-sync-check.sh -- Check 2 count freshness: typst/generated/status.typ is 409 commits stale (formalsystem-file-count committed 537 vs live 575, and five analogous counters). scripts/typst-status-counts.sh scans only FormalSystem/, Tests/, and BimodalTools/, none of which this task modified. Checks 1, 2b and 3 of the same gate pass. Not attributable to this task; recorded as a carried-forward item."
+      ]
+    },
+    "vacuous_note": "The raw single-line grep heuristic returns 1 hit, FormalSystem/Examples/TemporalStructures.lean:495 `theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial`. It is pre-existing (last touched by an unrelated effort), not introduced here (this task modified no file under FormalSystem/), and is a false positive: the universal history's domain genuinely reduces to True, so `trivial` is the honest proof. Counted as 0 introduced.",
+    "source_store_uncommitted": "The four source-store edits under /home/benjamin/.config/nvim/agent-system/extensions/ are on disk but deliberately NOT committed: that repository already carried foreign uncommitted work, including a sibling effort's registration of sentence-translation-contract.md inside the same lean/index-entries.json file this dispatch edited. Committing would have swept that in."
   }
 }

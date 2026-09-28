@@ -11,10 +11,10 @@ next_project_number: 690
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,682,686,687 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650,683 | 298,464,502,563,649,682 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,618,684 | 231,465,497,564,565,616,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543,685 | 428,498,499,500,623,684 | algebraic-representation, decidability, metalogic |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,683,686,687 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,684 | 298,464,502,563,649,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,618,685 | 231,465,497,564,565,616,623,684 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
@@ -71,12 +71,11 @@ next_project_number: 690
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
   └─ 685 [NOT STARTED] — Prove the compression result for the branching witness...
-682 [PLANNED] — RESEARCH TASK, verdict-first: establish whether validity of...
 686 [PLANNED] — Discharge the consuming repository's half of the certificate...
 
 ### Documentation
 
-687 [NOT STARTED] — Close the cross-repository citation and audit-surface gap...
+687 [RESEARCHING] — Close the cross-repository citation and audit-surface gap...
 
 ### Formula Refactor
 
@@ -153,7 +152,7 @@ VERIFICATION THAT WOULD ACTUALLY SETTLE THE FIRST ITEM. Run the invariants scrip
 ---
 
 ### 687. Cross repo citation audit gating
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: general
 - **Topic**: documentation
 - **Dependencies**: Task 688
@@ -226,12 +225,13 @@ SCOPE CLARIFICATION: ADD ALONGSIDE, DO NOT REPLACE. The opening sentence above s
 ---
 
 ### 682. Stability decidability provenance gate
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [682_stability_decidability_provenance_gate/reports/01_stability-decidability-provenance-gate.md]
 - **Plan**: [682_stability_decidability_provenance_gate/plans/01_stability-decidability-provenance-gate.md]
+- **Summary**: [682_stability_decidability_provenance_gate/summaries/01_stability-decidability-provenance-gate-summary.md]
 
 **Description**: RESEARCH TASK, verdict-first: establish whether validity of the language with the stability modal is KNOWN decidable at integer time from held sources, before any certificate or witness-structure design work begins. This gates the whole stability-modal decision-procedure line, and the answer may be that the target is not known decidable at all, in which case the downstream design tasks should not be started. Three questions, each needing a verdict and a cited source rather than a recollection. (1) The existing decidability argument for the larger language at integer time proceeds by translation into monadic second-order logic over the omega-branching tree and appeals to Rabin's theorem; that theorem is recalled, not held. Tie it to a held source or record that it cannot be. The compression task's own carried-over research note already flags this as a precondition for citing the argument anywhere in library documentation. (2) That argument assumes the integer-time frame class is exactly D equal to the integers, as in the report's mirror -- all bi-infinite walks of a digraph -- rather than a wider class of discrete orders. Check the repository's actual FrameClass definition against that assumption and record whether it holds. (3) Determine whether any route in the held literature yields a FINITE CERTIFICATE, as opposed to a decision procedure only: the MSO route is recorded as giving no finite certificate, no complexity bound, and nothing a Lean Decidable instance could be built from, and the finite model property is recorded as not obtained by its method, consistent with the refuted small-model hypothesis (Probe476.fmp_false). A negative verdict here does not close the line, but it means the certificate design must supply its own finiteness argument rather than inherit one. Deliver a report with the three verdicts; no changes to FormalSystem/ or Tests/.
 

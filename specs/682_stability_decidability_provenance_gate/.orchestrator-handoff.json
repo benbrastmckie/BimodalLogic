@@ -1,20 +1,16 @@
 {
-  "status": "planned",
-  "dispatch_seq": 9,
-  "phases_completed": 0,
-  "phases_total": 5,
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 12,
+  "summary": "All five plan phases completed. Repaired and guarded the archived Probe476.fmp_false evidence probe (it had stopped elaborating and was measuring sorryAx behind five FormalSystem/Metalogic/Decidability/ citations), disambiguated the two Thomas 1997 corpus entries, and recorded the Rabin citation licence plus the finite-model/finite-presentation distinction in the extension source store. No file under FormalSystem/ or Tests/ was modified.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/682_stability_decidability_provenance_gate/plans/01_stability-decidability-provenance-gate.md",
-      "summary": "Five-phase plan: repair and guard the archived fmp_false evidence probe, disambiguate the two Thomas 1997 corpus entries, and record the citation licence and finite-model/finite-presentation vocabulary in the extension source store."
+      "type": "summary",
+      "path": "specs/682_stability_decidability_provenance_gate/summaries/01_stability-decidability-provenance-gate-summary.md",
+      "summary": "Execution summary: probe repair, rot-guard extension with negative test, corpus-entry disambiguation, two source-store provenance notes, and seven carried-forward items."
     }
   ],
-  "next_steps": "Run /implement 682 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1790559036_a260f5_682",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  }
+  "phases_completed": 5,
+  "phases_total": 5,
+  "blockers": []
 }
