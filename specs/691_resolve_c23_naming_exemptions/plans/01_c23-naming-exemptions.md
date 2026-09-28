@@ -1,7 +1,7 @@
 # Implementation Plan: Task #691
 
 - **Task**: 691 - Resolve c23 naming exemptions
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.25 hours
 - **Dependencies**: None (tasks 685 and 693 have both landed; the research report's
   "sequence after 685/693" condition is satisfied)
@@ -311,29 +311,36 @@ if it differs, write the measured number, not this one.
 
 ---
 
-### Phase 4: Full gate run, baseline comparison, and final commit [NOT STARTED]
+### Phase 4: Full gate run, baseline comparison, and final commit [COMPLETED]
 
 **Goal**: Prove C23 is green, that no other gate group regressed relative to the Phase 1 baseline,
 and that the change is committed with a correctly scoped staging set.
 
 **Tasks**:
-- [ ] Run the complete `bash scripts/check-module-invariants.sh` (not just `--no-build`) and
-      confirm zero failures and all three C23 sub-assertions `PASS`.
-- [ ] Diff this run's per-group PASS/FAIL statuses against the Phase 1 baseline; confirm the only
+- [x] Run the complete `bash scripts/check-module-invariants.sh` (not just `--no-build`) and
+      confirm zero failures and all three C23 sub-assertions `PASS`. *(completed: exits 0,
+      "ALL CHECKS PASSED")*
+- [x] Diff this run's per-group PASS/FAIL statuses against the Phase 1 baseline; confirm the only
       changes are the two C23 sub-assertions flipping red to green. Any other delta is
-      investigated before the commit, not after.
-- [ ] Confirm `ENFORCE_C23=${ENFORCE_C23:-1}` is unchanged and still `1`.
-- [ ] Run `bash .claude/scripts/check-task-references.sh` (or grep the diff for `task [0-9]`) to
-      confirm no task-number reference entered `scripts/check-module-invariants.sh`.
-- [ ] Review `git status --short` and `git diff --staged`. Stage `scripts/check-module-invariants.sh`
+      investigated before the commit, not after. *(completed: the only red-to-green flips are
+      the two C23 sub-assertions; every other delta is a group reading
+      `INFO ... skipped (--no-build)` in the baseline and `PASS` in the full-build run — the
+      expected effect of running the real build, not a regression)*
+- [x] Confirm `ENFORCE_C23=${ENFORCE_C23:-1}` is unchanged and still `1`. *(completed)*
+- [x] Run `bash .claude/scripts/check-task-references.sh` (or grep the diff for `task [0-9]`) to
+      confirm no task-number reference entered `scripts/check-module-invariants.sh`. *(completed:
+      `check-task-references.sh` is scoped to the `.claude` source-store repo layout and refused
+      this path; used the plan's stated fallback — `git diff scripts/check-module-invariants.sh
+      | grep -niE 'task[[:space:]]+[0-9]'` — which found no match)*
+- [x] Review `git status --short` and `git diff --staged`. Stage `scripts/check-module-invariants.sh`
       by explicit filename plus this task's `specs/691_.../` artifacts only. Do **not** stage
       `typst/generated/status.typ`, `ORGANISATION.md`, `scripts/measure-refactor-partitions.py`,
       or any other pre-existing working-tree modification, and do not use `git add -A`, `git add .`,
-      or a directory/glob pathspec.
-- [ ] Commit as `task 691: complete implementation`.
-- [ ] Write the execution summary to
+      or a directory/glob pathspec. *(completed)*
+- [x] Commit as `task 691: complete implementation`. *(completed)*
+- [x] Write the execution summary to
       `specs/691_resolve_c23_naming_exemptions/summaries/01_c23-naming-exemptions-summary.md`,
-      recording the final triple inventory and the exemption-key decision.
+      recording the final triple inventory and the exemption-key decision. *(completed)*
 
 **Timing**: 0.5 hours
 
