@@ -1,7 +1,7 @@
 # Implementation Plan: Stability Condition (C5) on the Branching Witness Frame
 
 - **Task**: 690 - Build the stability condition (C5) `StabFaithful` on the branching witness frame
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 41 hours
 - **Dependencies**: None blocking. Territory overlap with concurrent tasks 623 and 684 on the
   registration/aggregator files — see Risks & Mitigations R1 and Phase 22.
@@ -190,28 +190,28 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Substrate measurement and siting decision [NOT STARTED]
+### Phase 1: Substrate measurement and siting decision [COMPLETED]
 
 **Goal**: Replace the two open cost questions with measured numbers before any line is written,
 and fix where the new modules live.
 
 **Tasks**:
-- [ ] Measure label dependence of `Sharing/Fulfil.lean` (1,669 lines) the way research F4
+- [x] Measure label dependence of `Sharing/Fulfil.lean` (1,669 lines) the way research F4
       measured the substrate: per-declaration counts of `Formula`, `.L `, `.lab`, `.bx`, and the
       line span of each maximal label-free region. The preparatory counts to confirm or refute
       are: `Formula` 52, `.L ` 98, `.lab` 0, `.bx` 0.
-- [ ] Classify each `Fulfil.lean` section as (a) position-graph/fixpoint machinery reachable by
+- [x] Classify each `Fulfil.lean` section as (a) position-graph/fixpoint machinery reachable by
       the skeleton, or (b) label-dependent. Record the line counts of each class.
-- [ ] Do the same for `Sharing/Decide.lean` (567 lines; preparatory counts `Formula` 32, `.L ` 14,
+- [x] Do the same for `Sharing/Decide.lean` (567 lines; preparatory counts `Formula` 32, `.L ` 14,
       `.lab` 2, `.bx` 1) and `Sharing/Agreement.lean` (411 lines; `Formula` 16, `.L ` 8).
-- [ ] Decide and record module siting: `Sharing/Skeleton.lean` for Stage A; a new
+- [x] Decide and record module siting: `Sharing/Skeleton.lean` for Stage A; a new
       `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/` subtree with sibling aggregator
       `PlusWitnessFamily.lean` for Stages C–G; `FormalSystem/PlusLanguage/Subformulas.lean` for
       Stage B (pure syntax, respecting the invariant that nothing under `PlusLanguage/` imports
       `Semantics/`).
-- [ ] Record the pre-change baseline: `#print axioms` output for every currently-pinned goal, and
+- [x] Record the pre-change baseline: `#print axioms` output for every currently-pinned goal, and
       the current `WitnessFamily/Examples.lean` `#guard` set, as the Stage A comparison target.
-- [ ] Write the measurement record to
+- [x] Write the measurement record to
       `specs/690_stability_condition_over_branching_frame/.measurements/01_substrate-measurement.md`.
 
 **Timing**: 1 hour
