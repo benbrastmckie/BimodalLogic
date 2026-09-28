@@ -521,6 +521,343 @@ theorem snceFix_induction (S : SharingWitnessFamily Γ Del) (g e : Formula) {P :
   · exact Or.inl ((S.atPos_iff e w).mp he)
   · exact Or.inr ⟨(S.atPos_iff g w).mp hg, hp⟩
 
+/-! ## Folding a ℤ-time into the window
+
+A walk in the position graph is not literally a walk in the bi-infinite position space: at the
+two window edges `nextTime` and `prevTime` wrap. `FoldRel` is the equivalence the forward wrap
+generates and `FoldRelB` the one the backward wrap generates, and the `rep`/`L` lemmas below say
+that neither can change the family's datum. That is what lets a graph walk be read as a ℤ-walk
+and back.
+
+Agreement of the *data* is not itself preserved by `+1` at the boundaries — two times may carry
+the same labels by accident and diverge one step later — which is why the relation carries the
+residue condition rather than the data agreement it implies.
+-/
+
+/-- **The forward folding relation**: equal, or both at or past the combined window offset and
+congruent modulo the combined forward period. -/
+def FoldRel (S : SharingWitnessFamily Γ Del) (a b : ℤ) : Prop :=
+  a = b ∨ (S.NM ≤ a ∧ S.NM ≤ b ∧ (a - S.NM) % S.NF = (b - S.NM) % S.NF)
+
+/-- **The backward folding relation**, the leftward mirror of `FoldRel`. -/
+def FoldRelB (S : SharingWitnessFamily Γ Del) (a b : ℤ) : Prop :=
+  a = b ∨ (a < 0 ∧ b < 0 ∧ a % S.NB = b % S.NB)
+
+theorem foldRel_refl (S : SharingWitnessFamily Γ Del) (a : ℤ) : S.FoldRel a a := Or.inl rfl
+
+theorem foldRelB_refl (S : SharingWitnessFamily Γ Del) (a : ℤ) : S.FoldRelB a a := Or.inl rfl
+
+theorem foldRel_symm {S : SharingWitnessFamily Γ Del} {a b : ℤ} (h : S.FoldRel a b) :
+    S.FoldRel b a := by
+  rcases h with rfl | ⟨h1, h2, h3⟩
+  · exact Or.inl rfl
+  · exact Or.inr ⟨h2, h1, h3.symm⟩
+
+theorem foldRelB_symm {S : SharingWitnessFamily Γ Del} {a b : ℤ} (h : S.FoldRelB a b) :
+    S.FoldRelB b a := by
+  rcases h with rfl | ⟨h1, h2, h3⟩
+  · exact Or.inl rfl
+  · exact Or.inr ⟨h2, h1, h3.symm⟩
+
+theorem foldRel_trans {S : SharingWitnessFamily Γ Del} {a b c : ℤ} (h1 : S.FoldRel a b)
+    (h2 : S.FoldRel b c) : S.FoldRel a c := by
+  rcases h1 with rfl | ⟨p1, p2, p3⟩
+  · exact h2
+  · rcases h2 with rfl | ⟨_, q2, q3⟩
+    · exact Or.inr ⟨p1, p2, p3⟩
+    · exact Or.inr ⟨p1, q2, p3.trans q3⟩
+
+theorem foldRelB_trans {S : SharingWitnessFamily Γ Del} {a b c : ℤ} (h1 : S.FoldRelB a b)
+    (h2 : S.FoldRelB b c) : S.FoldRelB a c := by
+  rcases h1 with rfl | ⟨p1, p2, p3⟩
+  · exact h2
+  · rcases h2 with rfl | ⟨_, q2, q3⟩
+    · exact Or.inr ⟨p1, p2, p3⟩
+    · exact Or.inr ⟨p1, q2, p3.trans q3⟩
+
+/-- Folded times carry the same representative map. -/
+theorem foldRel_rep {S : SharingWitnessFamily Γ Del} {a b : ℤ} (h : S.FoldRel a b) :
+    S.rep a = S.rep b := by
+  rcases h with rfl | ⟨h1, h2, h3⟩
+  · rfl
+  · exact (S.data_congr_fwd h1 h2 h3).1
+
+/-- Folded times carry the same labels. -/
+theorem foldRel_L {S : SharingWitnessFamily Γ Del} {a b : ℤ} (h : S.FoldRel a b)
+    (i : Fin S.lassos.length) : S.L i a = S.L i b := by
+  rcases h with rfl | ⟨h1, h2, h3⟩
+  · rfl
+  · exact (S.data_congr_fwd h1 h2 h3).2 i
+
+theorem foldRelB_rep {S : SharingWitnessFamily Γ Del} {a b : ℤ} (h : S.FoldRelB a b) :
+    S.rep a = S.rep b := by
+  rcases h with rfl | ⟨h1, h2, h3⟩
+  · rfl
+  · exact (S.data_congr_back h1 h2 h3).1
+
+theorem foldRelB_L {S : SharingWitnessFamily Γ Del} {a b : ℤ} (h : S.FoldRelB a b)
+    (i : Fin S.lassos.length) : S.L i a = S.L i b := by
+  rcases h with rfl | ⟨h1, h2, h3⟩
+  · rfl
+  · exact (S.data_congr_back h1 h2 h3).2 i
+
+/-- The forward relation is closed under a common successor. -/
+theorem foldRel_succ {S : SharingWitnessFamily Γ Del} {a b : ℤ} (h : S.FoldRel a b) :
+    S.FoldRel (a + 1) (b + 1) := by
+  rcases h with rfl | ⟨h1, h2, h3⟩
+  · exact Or.inl rfl
+  · refine Or.inr ⟨by omega, by omega, ?_⟩
+    have h4 := LabelledLasso.emod_shift (k := 1) h3
+    rwa [show a - S.NM + 1 = a + 1 - S.NM by omega,
+      show b - S.NM + 1 = b + 1 - S.NM by omega] at h4
+
+/-- The backward relation is closed under a common predecessor. -/
+theorem foldRelB_pred {S : SharingWitnessFamily Γ Del} {a b : ℤ} (h : S.FoldRelB a b) :
+    S.FoldRelB (a - 1) (b - 1) := by
+  rcases h with rfl | ⟨h1, h2, h3⟩
+  · exact Or.inl rfl
+  · refine Or.inr ⟨by omega, by omega, ?_⟩
+    have h4 := LabelledLasso.emod_shift (k := -1) h3
+    rwa [show a + (-1 : ℤ) = a - 1 by omega, show b + (-1 : ℤ) = b - 1 by omega] at h4
+
+/-- **The forward wrap is a fold**: the graph's successor time is folding-equivalent to the
+genuine successor time. -/
+theorem foldRel_nextTime (S : SharingWitnessFamily Γ Del) {u : ℤ} (hu : u ∈ S.winTimes) :
+    S.FoldRel (S.nextTime u) (u + 1) := by
+  have hNF := S.NF_pos
+  have hNM := S.NM_nonneg
+  by_cases hw : u + 1 < S.cohWindowHi
+  · exact Or.inl (by simp only [nextTime, if_pos hw])
+  · obtain ⟨hue, he⟩ := S.nextTime_edge hu hw
+    refine Or.inr ?_
+    rw [he, hue]
+    refine ⟨by omega, by omega, ?_⟩
+    rw [show S.NM + S.NF - S.NM = 0 + 1 * S.NF by omega,
+      show S.NM + 2 * S.NF - S.NM = 0 + 2 * S.NF by omega,
+      Periodic.emod_add_mul, Periodic.emod_add_mul]
+
+/-- **The backward wrap is a fold**, the mirror of `foldRel_nextTime`. -/
+theorem foldRelB_prevTime (S : SharingWitnessFamily Γ Del) {u : ℤ} (hu : u ∈ S.winTimes) :
+    S.FoldRelB (S.prevTime u) (u - 1) := by
+  have hNB := S.NB_pos
+  by_cases hw : S.cohWindowLo ≤ u - 1
+  · exact Or.inl (by simp only [prevTime, if_pos hw])
+  · obtain ⟨hue, he⟩ := S.prevTime_edge hu hw
+    refine Or.inr ?_
+    rw [he, hue]
+    refine ⟨by omega, by omega, ?_⟩
+    rw [show -S.NB - 1 = (-1 - S.NB) + 0 * S.NB by omega,
+      show -2 * S.NB - 1 = (-1 - S.NB) + (-1) * S.NB by omega,
+      Periodic.emod_add_mul, Periodic.emod_add_mul]
+
+/-- **Every time at or after the window's left edge folds forward into the window.** -/
+theorem exists_fold_fwd (S : SharingWitnessFamily Γ Del) {t : ℤ} (ht : S.cohWindowLo ≤ t) :
+    ∃ t' : ℤ, t' ∈ S.winTimes ∧ S.FoldRel t' t := by
+  have hNB := S.NB_pos
+  have hNF := S.NF_pos
+  have hNM := S.NM_nonneg
+  have hHi : S.cohWindowHi = S.NM + 2 * S.NF := rfl
+  have hLo : S.cohWindowLo = -2 * S.NB := rfl
+  by_cases hin : t < S.cohWindowHi
+  · exact ⟨t, (S.mem_winTimes t).mpr ⟨ht, hin⟩, S.foldRel_refl t⟩
+  · have h0 : 0 ≤ (t - S.NM) % S.NF := Int.emod_nonneg _ (by omega)
+    have h1 : (t - S.NM) % S.NF < S.NF := Int.emod_lt_of_pos _ hNF
+    refine ⟨S.NM + (t - S.NM) % S.NF + S.NF, (S.mem_winTimes _).mpr (by omega), ?_⟩
+    refine Or.inr ⟨by omega, by omega, ?_⟩
+    rw [show S.NM + (t - S.NM) % S.NF + S.NF - S.NM = (t - S.NM) % S.NF + 1 * S.NF by omega,
+      Periodic.emod_add_mul, Int.emod_emod_of_dvd _ (dvd_refl _)]
+
+/-- **Every time before the window's right edge folds backward into the window.** -/
+theorem exists_fold_back (S : SharingWitnessFamily Γ Del) {t : ℤ} (ht : t < S.cohWindowHi) :
+    ∃ t' : ℤ, t' ∈ S.winTimes ∧ S.FoldRelB t' t := by
+  have hNB := S.NB_pos
+  have hNF := S.NF_pos
+  have hNM := S.NM_nonneg
+  have hHi : S.cohWindowHi = S.NM + 2 * S.NF := rfl
+  have hLo : S.cohWindowLo = -2 * S.NB := rfl
+  by_cases hin : S.cohWindowLo ≤ t
+  · exact ⟨t, (S.mem_winTimes t).mpr ⟨hin, ht⟩, S.foldRelB_refl t⟩
+  · have h0 : 0 ≤ t % S.NB := Int.emod_nonneg _ (by omega)
+    have h1 : t % S.NB < S.NB := Int.emod_lt_of_pos _ hNB
+    refine ⟨t % S.NB - 2 * S.NB, (S.mem_winTimes _).mpr (by omega), ?_⟩
+    refine Or.inr ⟨by omega, by omega, ?_⟩
+    rw [show t % S.NB - 2 * S.NB = t % S.NB + (-2) * S.NB by omega,
+      Periodic.emod_add_mul, Int.emod_emod_of_dvd _ (dvd_refl _)]
+
+/-! ## Reading a graph walk as a thread
+
+A thread is a bi-infinite object and a graph walk is a one-sided infinite one, so the
+translation pads: before the walk's start time the thread stands still on the start index,
+which is legitimate because `share` is reflexive. Forward of the start time it follows the
+walk, and the fold invariant `FwdWalk.foldRel` is what makes the walk's `share` obligations at
+*graph* times discharge the thread's obligations at *real* times.
+-/
+
+/-- An infinite forward walk in the position graph. -/
+structure FwdWalk (S : SharingWitnessFamily Γ Del) where
+  /-- The positions visited, in order. -/
+  pos : ℕ → S.Pos
+  /-- The walk starts at a vertex. -/
+  start_mem : pos 0 ∈ S.verts
+  /-- Each position is a graph successor of its predecessor. -/
+  step : ∀ k, pos (k + 1) ∈ S.succF (pos k)
+
+/-- An infinite backward walk in the position graph. -/
+structure BwdWalk (S : SharingWitnessFamily Γ Del) where
+  /-- The positions visited, in order of increasing distance into the past. -/
+  pos : ℕ → S.Pos
+  /-- The walk starts at a vertex. -/
+  start_mem : pos 0 ∈ S.verts
+  /-- Each position is a graph predecessor of its predecessor in the enumeration. -/
+  step : ∀ k, pos (k + 1) ∈ S.predF (pos k)
+
+namespace FwdWalk
+
+variable {S : SharingWitnessFamily Γ Del}
+
+theorem mem_verts (w : S.FwdWalk) : ∀ k, w.pos k ∈ S.verts
+  | 0 => w.start_mem
+  | k + 1 => S.succF_subset _ (w.step k)
+
+theorem time_succ (w : S.FwdWalk) (k : ℕ) : (w.pos (k + 1)).2 = S.nextTime (w.pos k).2 :=
+  ((S.mem_succF _ _).mp (w.step k)).2.1
+
+theorem share_succ (w : S.FwdWalk) (k : ℕ) :
+    S.share ((w.pos k).2 + 1) (w.pos k).1 (w.pos (k + 1)).1 :=
+  ((S.mem_succF _ _).mp (w.step k)).2.2
+
+/-- **The fold invariant.** The walk's `k`-th graph time folds the genuine time `u + k`. -/
+theorem foldRel (w : S.FwdWalk) (k : ℕ) :
+    S.FoldRel (w.pos k).2 ((w.pos 0).2 + (k : ℤ)) := by
+  induction k with
+  | zero => simp only [Nat.cast_zero, add_zero]; exact S.foldRel_refl _
+  | succ k ih =>
+      have hw : (w.pos k).2 ∈ S.winTimes := (S.mem_verts _).mp (w.mem_verts k)
+      have hnext := S.foldRel_trans (S.foldRel_nextTime hw) (S.foldRel_succ ih)
+      rw [w.time_succ k,
+        show (w.pos 0).2 + ((k + 1 : ℕ) : ℤ) = (w.pos 0).2 + (k : ℤ) + 1 by omega]
+      exact hnext
+
+/-- The index function of the thread that follows the walk. -/
+def walkIdx (w : S.FwdWalk) (t : ℤ) : Fin S.lassos.length :=
+  if (w.pos 0).2 ≤ t then (w.pos (t - (w.pos 0).2).toNat).1 else (w.pos 0).1
+
+theorem walkIdx_add (w : S.FwdWalk) (k : ℕ) :
+    w.walkIdx ((w.pos 0).2 + (k : ℤ)) = (w.pos k).1 := by
+  have h : ((w.pos 0).2 + (k : ℤ) - (w.pos 0).2).toNat = k := by omega
+  simp only [walkIdx, if_pos (show (w.pos 0).2 ≤ (w.pos 0).2 + (k : ℤ) by omega), h]
+
+theorem walkIdx_le (w : S.FwdWalk) {t : ℤ} (h : t ≤ (w.pos 0).2) :
+    w.walkIdx t = (w.pos 0).1 := by
+  rcases eq_or_lt_of_le h with rfl | hlt
+  · have h0 := w.walkIdx_add 0
+    simpa using h0
+  · simp only [walkIdx, if_neg (by omega : ¬ (w.pos 0).2 ≤ t)]
+
+theorem walkIdx_step (w : S.FwdWalk) (t : ℤ) :
+    S.share (t + 1) (w.walkIdx t) (w.walkIdx (t + 1)) := by
+  by_cases h1 : (w.pos 0).2 ≤ t
+  · have hkt : (w.pos 0).2 + (((t - (w.pos 0).2).toNat : ℕ) : ℤ) = t := by omega
+    have e1 : w.walkIdx t = (w.pos (t - (w.pos 0).2).toNat).1 := by
+      simp only [walkIdx, if_pos h1]
+    have e2 : w.walkIdx (t + 1) = (w.pos ((t - (w.pos 0).2).toNat + 1)).1 := by
+      have hx : (t + 1 - (w.pos 0).2).toNat = (t - (w.pos 0).2).toNat + 1 := by omega
+      simp only [walkIdx, if_pos (show (w.pos 0).2 ≤ t + 1 by omega), hx]
+    have hf : S.FoldRel ((w.pos (t - (w.pos 0).2).toNat).2 + 1) (t + 1) := by
+      have hff := S.foldRel_succ (w.foldRel (t - (w.pos 0).2).toNat)
+      rwa [hkt] at hff
+    have hrep : S.rep ((w.pos (t - (w.pos 0).2).toNat).2 + 1) = S.rep (t + 1) :=
+      S.foldRel_rep hf
+    have hs := w.share_succ (t - (w.pos 0).2).toNat
+    rw [S.share_def] at hs
+    rw [e1, e2, S.share_def, ← hrep]
+    exact hs
+  · rw [w.walkIdx_le (by omega), w.walkIdx_le (by omega)]
+
+/-- **The thread following a forward walk.** -/
+def toThread (w : S.FwdWalk) : S.Thread where
+  idx := w.walkIdx
+  step := w.walkIdx_step
+
+@[simp]
+theorem toThread_idx (w : S.FwdWalk) (t : ℤ) : w.toThread.idx t = w.walkIdx t := rfl
+
+end FwdWalk
+
+namespace BwdWalk
+
+variable {S : SharingWitnessFamily Γ Del}
+
+theorem mem_verts (w : S.BwdWalk) : ∀ k, w.pos k ∈ S.verts
+  | 0 => w.start_mem
+  | k + 1 => S.predF_subset _ (w.step k)
+
+theorem time_succ (w : S.BwdWalk) (k : ℕ) : (w.pos (k + 1)).2 = S.prevTime (w.pos k).2 :=
+  ((S.mem_predF _ _).mp (w.step k)).2.1
+
+theorem share_succ (w : S.BwdWalk) (k : ℕ) :
+    S.share (w.pos k).2 (w.pos k).1 (w.pos (k + 1)).1 :=
+  ((S.mem_predF _ _).mp (w.step k)).2.2
+
+/-- **The fold invariant**, the backward mirror. -/
+theorem foldRelB (w : S.BwdWalk) (k : ℕ) :
+    S.FoldRelB (w.pos k).2 ((w.pos 0).2 - (k : ℤ)) := by
+  induction k with
+  | zero => simp only [Nat.cast_zero, sub_zero]; exact S.foldRelB_refl _
+  | succ k ih =>
+      have hw : (w.pos k).2 ∈ S.winTimes := (S.mem_verts _).mp (w.mem_verts k)
+      have hnext := S.foldRelB_trans (S.foldRelB_prevTime hw) (S.foldRelB_pred ih)
+      rw [w.time_succ k,
+        show (w.pos 0).2 - ((k + 1 : ℕ) : ℤ) = (w.pos 0).2 - (k : ℤ) - 1 by omega]
+      exact hnext
+
+/-- The index function of the thread that follows the backward walk. -/
+def walkIdx (w : S.BwdWalk) (t : ℤ) : Fin S.lassos.length :=
+  if t ≤ (w.pos 0).2 then (w.pos ((w.pos 0).2 - t).toNat).1 else (w.pos 0).1
+
+theorem walkIdx_sub (w : S.BwdWalk) (k : ℕ) :
+    w.walkIdx ((w.pos 0).2 - (k : ℤ)) = (w.pos k).1 := by
+  have h : ((w.pos 0).2 - ((w.pos 0).2 - (k : ℤ))).toNat = k := by omega
+  simp only [walkIdx, if_pos (show (w.pos 0).2 - (k : ℤ) ≤ (w.pos 0).2 by omega), h]
+
+theorem walkIdx_ge (w : S.BwdWalk) {t : ℤ} (h : (w.pos 0).2 ≤ t) :
+    w.walkIdx t = (w.pos 0).1 := by
+  rcases eq_or_lt_of_le h with rfl | hlt
+  · have h0 := w.walkIdx_sub 0
+    simpa using h0
+  · simp only [walkIdx, if_neg (by omega : ¬ t ≤ (w.pos 0).2)]
+
+theorem walkIdx_step (w : S.BwdWalk) (t : ℤ) :
+    S.share (t + 1) (w.walkIdx t) (w.walkIdx (t + 1)) := by
+  by_cases h1 : t + 1 ≤ (w.pos 0).2
+  · have hkt : (w.pos 0).2 - (((w.pos 0).2 - t - 1).toNat : ℤ) = t + 1 := by omega
+    have e1 : w.walkIdx t = (w.pos (((w.pos 0).2 - t - 1).toNat + 1)).1 := by
+      have hx : ((w.pos 0).2 - t).toNat = ((w.pos 0).2 - t - 1).toNat + 1 := by omega
+      simp only [walkIdx, if_pos (show t ≤ (w.pos 0).2 by omega), hx]
+    have e2 : w.walkIdx (t + 1) = (w.pos ((w.pos 0).2 - t - 1).toNat).1 := by
+      have hx : ((w.pos 0).2 - (t + 1)).toNat = ((w.pos 0).2 - t - 1).toNat := by omega
+      simp only [walkIdx, if_pos h1, hx]
+    have hf : S.FoldRelB (w.pos ((w.pos 0).2 - t - 1).toNat).2 (t + 1) := by
+      have hff := w.foldRelB ((w.pos 0).2 - t - 1).toNat
+      rwa [hkt] at hff
+    have hrep : S.rep (w.pos ((w.pos 0).2 - t - 1).toNat).2 = S.rep (t + 1) :=
+      S.foldRelB_rep hf
+    have hs := w.share_succ ((w.pos 0).2 - t - 1).toNat
+    rw [S.share_def] at hs
+    rw [e1, e2, S.share_def, ← hrep]
+    exact hs.symm
+  · rw [w.walkIdx_ge (by omega), w.walkIdx_ge (by omega)]
+
+/-- **The thread following a backward walk.** -/
+def toThread (w : S.BwdWalk) : S.Thread where
+  idx := w.walkIdx
+  step := w.walkIdx_step
+
+@[simp]
+theorem toThread_idx (w : S.BwdWalk) (t : ℤ) : w.toThread.idx t = w.walkIdx t := rfl
+
+end BwdWalk
+
 /-! ## A computed smoke test
 
 The fixpoint is a *computation*, so it can be wrong in a way no lemma above would catch: an

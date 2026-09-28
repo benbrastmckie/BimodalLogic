@@ -60,6 +60,22 @@ dually, the unfolding of `snce g e` must hold against every predecessor, which i
 `share t k i`. Taking `j := i` (resp. `k := i`) recovers the deterministic clause, which is why
 `localCoherentLab_of_share` below is unconditional.
 
+## (C2') `ThreadFulfilling`
+
+`WitnessFamily.FulfillingLab` reads an eventuality's discharge off the *one lasso* the label
+sits on: `untl g e ∈ L i t` obliges lasso `i` itself to deliver `e` later. That is sound only
+because the deterministic device's histories are the lasso orbits. Once a history may cross to
+another lasso at a shared state, the obligation is a **universal path quantifier** — `A[g U e]`
+in branching-time notation — over every thread through the position, and a family can satisfy
+the per-lasso condition while some recombined thread never delivers.
+
+`ThreadFulfilling` below is that universal form. Taking the constant thread recovers the
+deterministic condition, which is why `fulfillingLab_of_thread` is unconditional; the converse
+fails, and that failure is the whole content of the branching device's fulfilment check.
+
+Its decision procedure is not here: it is `Sharing/Fulfil.lean`'s finite position graph and
+`A[g U e]` least fixpoint, together with the window reduction that connects the two.
+
 ## Recorded gap: (C5), the stability clause, is not stateable here
 
 The plan for this work pins a fifth condition `StabFaithful`, quantifying `⊡φ` over the shared
@@ -85,10 +101,12 @@ an L⁺-indexed certificate datatype.
 
 - `SharingWitnessFamily.AtomCoherent` — (C0) atoms agree across a shared state
 - `SharingWitnessFamily.LocalCoherentShare` — (C1') local coherence across the branching
+- `SharingWitnessFamily.ThreadFulfilling` — (C2') every thread discharges its eventualities
 
 ## Main Results
 
 - `SharingWitnessFamily.localCoherentLab_of_share` — (C1') implies the deterministic (C1)
+- `SharingWitnessFamily.fulfillingLab_of_thread` — (C2') implies the deterministic (C2)
 -/
 
 namespace FormalSystem.Metalogic.Decidability
@@ -162,6 +180,46 @@ theorem snce_self_of_share {S : SharingWitnessFamily Γ Del} (h : S.LocalCoheren
     Formula.snce g e ∈ S.L i t ↔
       (e ∈ S.L i (t - 1) ∨ (g ∈ S.L i (t - 1) ∧ Formula.snce g e ∈ S.L i (t - 1))) :=
   (h i t).2.2.2.2 i (S.share_refl t i) g e hc
+
+/--
+**(C2') Thread fulfilment.**
+
+`WitnessFamily.FulfillingLab` with the per-lasso quantifier replaced by a quantifier over
+**every thread** through the position: an eventuality labelled at `(i, u)` must be discharged
+along every history that passes through that state, not merely along the lasso it is written
+on. This is `A[g U e]` (resp. its past mirror) at the position, and it is one of the two
+conditions that genuinely break under recombination.
+
+Stated over all `g` and `e` rather than over closure members only, exactly as `FulfillingLab`
+is: labels are subsets of the closure anyway (`WitnessFamily.subset_closureOf`), so the extra
+generality costs nothing and saves a side condition at every use site.
+-/
+def ThreadFulfilling (S : SharingWitnessFamily Γ Del) : Prop :=
+  (∀ (i : Fin S.lassos.length) (u : ℤ) (g e : Formula), Formula.untl g e ∈ S.L i u →
+      ∀ θ : S.Thread, θ.idx u = i →
+        ∃ s : ℤ, u < s ∧ e ∈ S.L (θ.idx s) s ∧
+          ∀ r : ℤ, u < r → r < s → g ∈ S.L (θ.idx r) r) ∧
+  (∀ (i : Fin S.lassos.length) (u : ℤ) (g e : Formula), Formula.snce g e ∈ S.L i u →
+      ∀ θ : S.Thread, θ.idx u = i →
+        ∃ s : ℤ, s < u ∧ e ∈ S.L (θ.idx s) s ∧
+          ∀ r : ℤ, s < r → r < u → g ∈ S.L (θ.idx r) r)
+
+/--
+**(C2') implies (C2).** Instantiating the thread quantifier at the constant thread — legitimate
+because staying on one lasso is always a thread — recovers the deterministic condition on the
+underlying family verbatim.
+
+As with `localCoherentLab_of_share`, this is what makes the branching condition a strengthening
+rather than a replacement, and it is the direction the specialization consumes. The converse is
+false, and that is the point of the branching device.
+-/
+theorem fulfillingLab_of_thread {S : SharingWitnessFamily Γ Del}
+    (h : S.ThreadFulfilling) : S.toWitnessFamily.FulfillingLab := by
+  refine ⟨fun i t g e hmem => ?_, fun i t g e hmem => ?_⟩
+  · obtain ⟨s, hs, hes, hgs⟩ := h.1 i t g e hmem (Thread.const S i) rfl
+    exact ⟨s, hs, hes, hgs⟩
+  · obtain ⟨s, hs, hes, hgs⟩ := h.2 i t g e hmem (Thread.const S i) rfl
+    exact ⟨s, hs, hes, hgs⟩
 
 end SharingWitnessFamily
 

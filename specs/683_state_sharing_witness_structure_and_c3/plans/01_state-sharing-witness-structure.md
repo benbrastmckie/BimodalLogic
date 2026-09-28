@@ -650,7 +650,7 @@ re-budgeting on this account.
 
 ---
 
-### Phase 9: (C2') `ThreadFulfilling` and its correctness [NOT STARTED]
+### Phase 9: (C2') `ThreadFulfilling` and its correctness [IN PROGRESS]
 
 **Goal**: The semantic condition "every thread through `(i,u)` fulfils `untl g e`" is defined,
 proved equivalent to Phase 8's fixpoint, and thereby decidable.
