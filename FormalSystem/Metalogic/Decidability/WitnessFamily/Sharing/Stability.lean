@@ -117,7 +117,7 @@ theorem stabQuant_iff_share_class (S : SharingWitnessFamily Γ Del)
   constructor
   · intro h j hj
     have hst : (S.hist θ s).state t = (S.hist (Thread.const S j) s).state t := by
-      show S.cls (θ.idx (s + t)) (s + t) = S.cls ((Thread.const S j).idx (s + t)) (s + t)
+      change S.cls (θ.idx (s + t)) (s + t) = S.cls ((Thread.const S j).idx (s + t)) (s + t)
       rw [Thread.const_idx]
       exact cls_eq rfl hj
     have := h _ hst

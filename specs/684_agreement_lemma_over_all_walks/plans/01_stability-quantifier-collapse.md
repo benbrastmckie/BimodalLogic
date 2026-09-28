@@ -224,28 +224,56 @@ to it. Nothing was omitted — every proof script was transcribed verbatim.
 
 ---
 
-### Phase 2: Wire the module into the build graph [NOT STARTED]
+### Phase 2: Wire the module into the build graph [BLOCKED]
 
 **Goal**: The new module is reachable from both aggregators the repository's gates assert against,
 with the cross-territory touch to the root aggregator made minimally and reported.
 
 **Tasks**:
 
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/WitnessFamily.lean` immediately before editing
+- [x] Re-read `FormalSystem/Metalogic/Decidability/WitnessFamily.lean` immediately before editing
       (a sibling may have changed it). It currently imports the nine `Sharing.*` modules on
       lines 14-22; add `import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Stability`
       in the position the existing ordering implies.
-- [ ] **Territory check before touching the root aggregator.** `FormalSystem.lean` is inside a
+- [x] **Territory check before touching the root aggregator.** *(deviation: check RAN and FAILED OPEN — a foreign uncommitted modification to `FormalSystem.lean` was found; stopped as the plan directs)* `FormalSystem.lean` is inside a
       concurrent sibling's declared file scope. Re-read it immediately beforehand and run
       `git log --oneline -3 -- FormalSystem.lean`; if a foreign commit or a foreign uncommitted
       modification is present, STOP and report it rather than proceeding.
-- [ ] Regenerate the root aggregator with `lake exe mk_all --lib FormalSystem` and confirm the
+- [ ] *(deviation: skipped — blocked by the territory check above)* Regenerate the root aggregator with `lake exe mk_all --lib FormalSystem` and confirm the
       diff is exactly one added sorted `import` line. Gate C33 compares this file byte-for-byte
       against `mk_all` output, so a new module under `FormalSystem/` cannot be landed without
       this step — it is not optional and not deferrable to the sibling.
-- [ ] Stage and commit **only** the two hunks this phase produced — never a directory or glob
+- [x] *(deviation: altered — one hunk, not two; the root-aggregator hunk was never produced)* Stage and commit **only** the hunks this phase produced — never a directory or glob
       pathspec, never `git add -A`, never `git commit -am`. Review with `git status --short` and
       `git diff --staged` first.
+
+**BLOCKER** (Phase 2):
+- **What failed**: The second half of the wiring — the one added sorted `import` line in the root
+  aggregator `FormalSystem.lean`, which gate C33 requires to be byte-for-byte `mk_all` output.
+- **What was tried**: The plan's mandated territory check, run immediately before editing:
+  `git status --short FormalSystem.lean` and `git log --oneline -3 -- FormalSystem.lean`. The file
+  was clean at the start of this dispatch and carried a **foreign uncommitted modification**
+  minutes later, adding `import FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Types`
+  alongside a new untracked `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Types.lean`.
+  `git log` confirms the work is not this task's: this task's only commit is
+  `task 684 phase 1: author Sharing/Stability.lean`, and the last commit touching `FormalSystem.lean`
+  predates this dispatch entirely.
+- **Why it is stuck**: `FormalSystem.lean` is a concurrent sibling's declared territory and is
+  mid-edit by that sibling. Running `mk_all` now would regenerate the file over their in-flight
+  state, and the plan's Risks table, Phase 2 task list and Rollback/Contingency section all direct
+  STOP-and-report on exactly this observation rather than merging or overwriting.
+- **What is needed**: The sibling's `FormalSystem.lean` edit lands (committed). Then a later
+  dispatch re-reads the file, runs `lake exe mk_all --lib FormalSystem`, confirms the diff is
+  exactly one added sorted line
+  (`import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Stability`), and commits only
+  that hunk. Nothing in the mathematics is blocked — only this one generated line.
+- **What is NOT blocked**: The in-territory half landed. The new module is reachable from
+  `FormalSystem.Metalogic.Decidability.WitnessFamily`, which `FormalSystem.lean` already imports,
+  so the module is in the build graph and compiles under a full build today. Only gate C33's
+  byte-for-byte assertion is outstanding.
+- **Prohibited workarounds**: Do NOT hand-write the import line into `FormalSystem.lean`, do NOT
+  run `mk_all` over the sibling's uncommitted state, and do NOT use `sorry` or a vacuous
+  placeholder anywhere.
 
 **Timing**: 0.5 hours
 
