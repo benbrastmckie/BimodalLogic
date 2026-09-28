@@ -1,7 +1,7 @@
 # Implementation Plan: Task #683
 
 - **Task**: 683 - State-sharing witness structure and C3
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 25 hours
 - **Dependencies**: 682
 - **Research Inputs**: specs/683_state_sharing_witness_structure_and_c3/reports/01_state-sharing-witness-structure.md
@@ -140,32 +140,32 @@ statement and are therefore not listed as Goals identifiers.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: The `share` field and its periodic decoding [NOT STARTED]
+### Phase 1: The `share` field and its periodic decoding [COMPLETED]
 
 **Goal**: `SharingWitnessFamily` exists, extends `WitnessFamily` without touching the export
 contract, and its `share` relation decodes through `Periodic.unrollOf` so the existing window
 lemmas apply by instantiation.
 
 **Tasks**:
-- [ ] Extend this task's `file_scope` in `specs/state.json` to cover the new
+- [x] Extend this task's `file_scope` in `specs/state.json` to cover the new
       `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/` modules. Append via `+=` or
       the sanctioned helper; never assign `.file_scope` or `.artifacts` wholesale.
-- [ ] Create `Sharing/Basic.lean` with `structure SharingWitnessFamily Γ Del extends
+- [x] Create `Sharing/Basic.lean` with `structure SharingWitnessFamily Γ Del extends
       WitnessFamily Γ Del`, adding exactly three periodic segments plus their two non-emptiness
       fields and one idempotence field.
-- [ ] Encode each segment as a **representative map** `Fin lassos.length → Fin lassos.length`
+- [x] Encode each segment as a **representative map** `Fin lassos.length → Fin lassos.length`
       rather than as a relation. `share u i j := rep u i = rep u j` is then an equivalence for
       free (it is the kernel of a function), which removes the `share_equiv` proof obligation
       the research report carried as a structure field. Record this choice and its rationale in
       the module docstring.
-- [ ] Define `SharingWitnessFamily.rep u := Periodic.unrollOf repBack repMid repFwd u` and
+- [x] Define `SharingWitnessFamily.rep u := Periodic.unrollOf repBack repMid repFwd u` and
       `SharingWitnessFamily.share`, with `share_refl`, `share_symm`, `share_trans` proved
       directly from the kernel characterization.
-- [ ] Instantiate the two periodicity lemmas (`rep_sub_back_length`, `rep_add_fwd_length`) at
+- [x] Instantiate the two periodicity lemmas (`rep_sub_back_length`, `rep_add_fwd_length`) at
       this decoding, mirroring `LabelledLasso.lab_sub_back_length` / `lab_add_fwd_length`
       exactly. Do not re-prove `Periodic.unrollOf`'s arithmetic.
-- [ ] Add `Decidable (S.share u i j)` from `DecidableEq (Fin _)`.
-- [ ] Register `Sharing/Basic.lean` in `WitnessFamily.lean`'s import aggregator.
+- [x] Add `Decidable (S.share u i j)` from `DecidableEq (Fin _)`.
+- [x] Register `Sharing/Basic.lean` in `WitnessFamily.lean`'s import aggregator.
 
 **Timing**: 2 hours
 
