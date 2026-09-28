@@ -70,7 +70,7 @@ next_project_number: 694
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 685 [RESEARCHED] — Prove the compression result for the branching witness...
-693 [RESEARCHING] — VERDICT-FIRST CONFORMANCE TASK. Determine whether the landed...
+693 [RESEARCHED] — VERDICT-FIRST CONFORMANCE TASK. Determine whether the landed...
 
 ### Formula Refactor
 
@@ -104,10 +104,11 @@ next_project_number: 694
 ## Tasks
 
 ### 693. A1 compression conformance adequacy chain
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
+- **Research**: [693_a1_compression_conformance_adequacy_chain/reports/01_a1-compression-conformance.md]
 
 **Description**: VERDICT-FIRST CONFORMANCE TASK. Determine whether the landed compression theorem discharges obligation A1 of the companion ModelChecker repository's bimodal adequacy chain, and if so update the cross-repository record; if not, state precisely what is missing.
 
