@@ -1,5 +1,5 @@
 ---
-next_project_number: 694
+next_project_number: 696
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 694
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,685,691,693 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,685,691,693,695 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,694 | 298,464,502,563,649,685 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -69,8 +69,10 @@ next_project_number: 694
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-685 [PLANNED] — Prove the compression result for the branching witness...
-693 [PLANNED] — VERDICT-FIRST CONFORMANCE TASK. Determine whether the landed...
+685 [IMPLEMENTING] — Prove the compression result for the branching witness...
+  └─ 694 [NOT STARTED] — Separate the branching substrate's two roles so that backward...
+693 [IMPLEMENTING] — VERDICT-FIRST CONFORMANCE TASK. Determine whether the landed...
+695 [NOT STARTED] — Prove plusValidZTimeiffplusValidInt, the L-plus twin of...
 
 ### Formula Refactor
 
@@ -103,8 +105,28 @@ next_project_number: 694
 
 ## Tasks
 
+### 695. Plus carrier normalization int transfer
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Prove `plusValidZTime_iff_plusValidInt`, the L-plus twin of Semantics/IntTransfer.lean's `validZTime_iff_validInt`. This is an absent prerequisite for any L-plus decidability route: without a carrier normalization there is no reduction from arbitrary integer-like duration carriers to the integers, so a candidate enumeration over integer-indexed structures certifies nothing about `PlusValidZTime`. It is useful regardless of how the branching substrate redesign turns out, which is why it is blocked on nothing. Route: a seven-case induction on the `plus_invariance` template in Semantics/Frames/TranslationProduct.lean. The six inherited cases follow the Formula-side proof. The `stab` case goes through on `Aligned` because `(FrameOver.map F e).WorldState` is DEFINITIONALLY `F.WorldState`, so `WorldHistory.comap` together with `aligned_comap` transport the state-agreement side condition that `stab`'s truth clause quantifies over. Either shape will do: a `PlusTruthCorr` carrying a state-agreement field, or a direct seven-case `plusTruthAt_map`. Pick one and say why in the plan rather than discovering it mid-proof. Deliverable: the iff, pinned in scripts/check-module-invariants.sh's C2 axiom baseline and given a docs/theorem-index.md row, with zero sorries and no new axiom.
+
+---
+
+### 694. Sharing substrate trans redesign
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 685
+
+**Description**: Separate the branching substrate's two roles so that backward branching survives local coherence. Today SharingSkeleton carries one per-time equivalence `share u i j := rep u i = rep u j`, and Thread.step is defined as `share (u+1) (idx u) (idx (u+1))`, so the single relation carries both the stability modal's quantifier class and the thread's one-step succession. That conflation is what makes (C1') `LocalCoherentShare`'s `snce` clause quantify its predecessor over the share-class at the label's OWN time, which forces any two indices naming the same world state at that time to agree on every `snce` formula of the closure. The consequence is machine-checked and landed: PlusWitnessFamily/Incompleteness.lean's `snce_share_congr`, `not_plusCertifies_stabSnce` and `not_plusCertifies_stabSnce_premise` show no six-condition L-plus family certifies any instance of `(g S e) -> stab (g S e)`, while `not_plusValidZTime_stabSnce` shows `Pp -> stab Pp` is a genuine integer-time non-validity. So the certificate class is EMPTY for those targets and the compression analogue of `exists_witnessFamily_of_not_validZTime` is false against the landed conditions. The redesign: add a FOURTH periodic datum beside repBack/repMid/repFwd -- three lists transBack/transMid/transFwd, decoded by the same `Periodic.unrollOf` scheme, giving `trans u : Fin n -> Fin n -> Prop`. Change Thread's step to `trans u (idx u) (idx (u+1))`. Division of labour: `share` keeps the stability-modal quantifier, the quotient carrier, (C0) and (C5) -- everything asking which indices name this state now; `trans` carries one-step branching -- everything asking which index may follow this one. The model checker's export contract gains three fields additively, exactly as repBack/repMid/repFwd did, and is not otherwise re-opened. Re-proof surface is roughly 3500 lines across nine modules on both the Formula and PlusFormula sides, with WitnessFamily/Sharing/Fulfil.lean (1669 lines) and PlusWitnessFamily/Fulfil.lean (1093 lines) dominating. GATE THIS BEFORE THE FIXPOINT LAYER IS RE-PROVED: exhibit one concrete family satisfying all six redesigned conditions at non-trivial sharing, AND check that the redesigned (C1') no longer entails `snce_share_congr`. Without that second check the redesign can reproduce the present defect while type-checking. Note also that (C2')'s window reduction already carries a recorded (C1')-relative limitation -- there is no standalone `Decidable (ThreadFulfilling S)`, only a hypothesised term plus an instance on the conjunction -- which the redesign must re-examine rather than inherit. The full specification is in WitnessFamily/Sharing/README.md's `### Correction: (C1') is only half a repair` and `### (c) What a follow-up needs` sections, and in PlusWitnessFamily/README.md's `## What this certificate cannot refute`. Soundness is NOT at issue: plusTruth_iff_mem and plusRefutes_of_certifies are untouched and must stay so.
+
+---
+
 ### 693. A1 compression conformance adequacy chain
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -258,7 +280,7 @@ The research report and implementation plan authored here remain the durable inp
 ---
 
 ### 685. Stability compression and assembly
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 684, Task 623

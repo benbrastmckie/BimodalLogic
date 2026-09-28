@@ -4,17 +4,17 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 694,
+  "next_project_number": 696,
   "active_projects": [
     {
       "project_number": 693,
       "project_name": "a1_compression_conformance_adequacy_chain",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "VERDICT-FIRST CONFORMANCE TASK. Determine whether the landed compression theorem discharges obligation A1 of the companion ModelChecker repository's bimodal adequacy chain, and if so update the cross-repository record; if not, state precisely what is missing.\n\nUPSTREAM OBLIGATION (verbatim, ~/Projects/ModelChecker/code/src/model_checker/theory_lib/bimodal/docs/ADEQUACY.md:628): 'A1 | Compression: a Z-time countermodel yields a certificate with lengths bounded by f(|C|) | Open. Route named, not built. Section 7.1.' That document also records A1 as 'the only genuinely open mathematics in the (ADEQ) chain', and records A3 (bound realization) as 'Vacuous until A1 supplies f'.\n\nLANDED CANDIDATE: FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Family.lean:153 exists_witnessFamily_of_not_validZTime, with compressionBound at Compression/Extract.lean:311, the candidate list cands and mem_cands_of_bounded in Compression/Enumerate.lean, and validZTime_iff_noCertifiedCandidate plus Compression.decidableValidZTime in Compression/Assembly.lean. All are sorry-free with axiom closure exactly {propext, Classical.choice, Quot.sound}.\n\nQUESTIONS TO SETTLE, in order:\n1. Does exists_witnessFamily_of_not_validZTime instantiate A1 as stated, with compressionBound serving as A1 f? Compare the certificate notion: the landed W.Certifies is the conjunction of the conditions the upstream document calls (C1)-(C4), so confirm the condition sets agree name for name and clause for clause, not merely in count.\n2. SCOPE CAVEAT that must be resolved, not glossed: the landed theorem is stated at WitnessFamily [] [φ] -- empty premise set, single conclusion. The compression work explicitly declared non-empty-premise SemanticConsequenceIn decidability a non-goal because the tree has no context-conjunction deduction theorem. Determine whether A1 as the upstream chain consumes it needs the general Gamma |= Delta form or only the empty-premise form. If the general form is needed, A1 is NOT closed and the residue must be stated as its own obligation.\n3. Does compressionBound satisfy A3 realization: are the configured back/fwd required to be common multiples of the compressed family periods, and is mid at least its mid length? A3 also carries a max_witnesses precondition (None, or at least the boxed-subformula count). Report whether A3 is now discharged, still vacuous, or newly live-and-open.\n4. Check whether the upstream claim that absence can be decided by verified code rather than by trusting Z3 UNSAT is now supported, given cands finiteness and enumeration completeness.\n\nDELIVERABLES: a report recording the verdict per question with declaration-level citations; if A1 is discharged, the updated row text for the upstream table plus any scripts/lean-citation-manifest.json entries the new declarations require (C35 is enforced and currently green, so any manifest change must keep it byte-current). DO NOT EDIT THE MODELCHECKER REPOSITORY -- it is a separate repo with its own task system; produce the row text and hand it off. Cite declarations by fully qualified name, never by line number alone: the upstream provenance note records that line numbers went stale underneath unchanged names while every gate in both repositories stayed green.",
       "topic": "decidability",
       "created": "2026-09-28T21:23:00Z",
-      "last_updated": "2026-09-28T21:57:05Z",
+      "last_updated": "2026-09-28T21:57:36Z",
       "file_scope": [
         "specs/"
       ],
@@ -307,7 +307,7 @@
     {
       "project_number": 685,
       "project_name": "stability_compression_and_assembly",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "Prove the compression result for the branching witness structure: if a formula of the language with the stability modal is not valid at integer time, a witness structure satisfying the redesigned conditions exists whose size is bounded by a computable function of the closure size. This is the stability-modal analogue of the compression theorem the deterministic route needs, and it is what turns a truth lemma into a decision procedure, since without a bound there is no finite candidate space to enumerate. Two routes are already known closed and must not be retried. The finite model property is NOT established by the monadic-second-order route (\"a regular tree does not obviously fold to a finite digraph\"), so no bound is inherited from the decidability argument even if that argument is sound. And the finite-presentation small-model hypothesis is machine-refuted (Probe476.fmp_false), so compressing over presentation states is dead exactly as it is for the deterministic route. The viable shape is the one the deterministic route uses: compress over subformula-set (type) space, where the pigeonhole is two-to-the-closure-size and closed, rather than over presentation states, where it is unbounded -- generalized from a family of lassos to a branching structure, which is the part with no precedent. Deliver, alongside the bound, the assembly step the deterministic route also needs: a formula-indexed candidate list over those bounds, and decidability of validity by reduction to \"no candidate is accepted\". Depends on the agreement lemma over all walks, since a bound on structures whose truth lemma has not been proved certifies nothing.",
@@ -316,7 +316,7 @@
         623
       ],
       "created": "2026-09-26T12:07:18Z",
-      "last_updated": "2026-09-28T21:56:50Z",
+      "last_updated": "2026-09-28T21:57:27Z",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Decide.lean",
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Closure.lean",
@@ -1612,6 +1612,51 @@
       ],
       "next_artifact_number": 2,
       "completion_summary": "The stability condition (C5) StabFaithful is now stated natively over PlusFormula.stab on the branching witness frame, decided by a bounded window scan, consumed by the seventh case of the L-plus agreement theorem, and carried as one of six checked components of PlusCertifies. Full lake build green (2,769 jobs), zero sorries, axiom count unchanged at 14, and the shipping deterministic JSON export contract untouched. Gate C33 is green: FormalSystem.lean is byte-for-byte the generated root at 603 imports, covering the 16 modules three tasks had left unregistered."
+    },
+    {
+      "project_name": "sharing_substrate_trans_redesign",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "decidability",
+      "description": "Separate the branching substrate's two roles so that backward branching survives local coherence. Today SharingSkeleton carries one per-time equivalence `share u i j := rep u i = rep u j`, and Thread.step is defined as `share (u+1) (idx u) (idx (u+1))`, so the single relation carries both the stability modal's quantifier class and the thread's one-step succession. That conflation is what makes (C1') `LocalCoherentShare`'s `snce` clause quantify its predecessor over the share-class at the label's OWN time, which forces any two indices naming the same world state at that time to agree on every `snce` formula of the closure. The consequence is machine-checked and landed: PlusWitnessFamily/Incompleteness.lean's `snce_share_congr`, `not_plusCertifies_stabSnce` and `not_plusCertifies_stabSnce_premise` show no six-condition L-plus family certifies any instance of `(g S e) -> stab (g S e)`, while `not_plusValidZTime_stabSnce` shows `Pp -> stab Pp` is a genuine integer-time non-validity. So the certificate class is EMPTY for those targets and the compression analogue of `exists_witnessFamily_of_not_validZTime` is false against the landed conditions. The redesign: add a FOURTH periodic datum beside repBack/repMid/repFwd -- three lists transBack/transMid/transFwd, decoded by the same `Periodic.unrollOf` scheme, giving `trans u : Fin n -> Fin n -> Prop`. Change Thread's step to `trans u (idx u) (idx (u+1))`. Division of labour: `share` keeps the stability-modal quantifier, the quotient carrier, (C0) and (C5) -- everything asking which indices name this state now; `trans` carries one-step branching -- everything asking which index may follow this one. The model checker's export contract gains three fields additively, exactly as repBack/repMid/repFwd did, and is not otherwise re-opened. Re-proof surface is roughly 3500 lines across nine modules on both the Formula and PlusFormula sides, with WitnessFamily/Sharing/Fulfil.lean (1669 lines) and PlusWitnessFamily/Fulfil.lean (1093 lines) dominating. GATE THIS BEFORE THE FIXPOINT LAYER IS RE-PROVED: exhibit one concrete family satisfying all six redesigned conditions at non-trivial sharing, AND check that the redesigned (C1') no longer entails `snce_share_congr`. Without that second check the redesign can reproduce the present defect while type-checking. Note also that (C2')'s window reduction already carries a recorded (C1')-relative limitation -- there is no standalone `Decidable (ThreadFulfilling S)`, only a hypothesised term plus an instance on the conjunction -- which the redesign must re-examine rather than inherit. The full specification is in WitnessFamily/Sharing/README.md's `### Correction: (C1') is only half a repair` and `### (c) What a follow-up needs` sections, and in PlusWitnessFamily/README.md's `## What this certificate cannot refute`. Soundness is NOT at issue: plusTruth_iff_mem and plusRefutes_of_certifies are untouched and must stay so.",
+      "dependencies": [
+        685
+      ],
+      "created": "2026-09-28T22:13:08Z",
+      "last_updated": "2026-09-28T22:13:08Z",
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Skeleton.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Predicates.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Decide.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Fulfil.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Agreement.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Specialize.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md",
+        "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Predicates.lean",
+        "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Decide.lean",
+        "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Fulfil.lean",
+        "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Agreement.lean",
+        "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/README.md"
+      ],
+      "project_number": 694
+    },
+    {
+      "project_name": "plus_carrier_normalization_int_transfer",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "decidability",
+      "description": "Prove `plusValidZTime_iff_plusValidInt`, the L-plus twin of Semantics/IntTransfer.lean's `validZTime_iff_validInt`. This is an absent prerequisite for any L-plus decidability route: without a carrier normalization there is no reduction from arbitrary integer-like duration carriers to the integers, so a candidate enumeration over integer-indexed structures certifies nothing about `PlusValidZTime`. It is useful regardless of how the branching substrate redesign turns out, which is why it is blocked on nothing. Route: a seven-case induction on the `plus_invariance` template in Semantics/Frames/TranslationProduct.lean. The six inherited cases follow the Formula-side proof. The `stab` case goes through on `Aligned` because `(FrameOver.map F e).WorldState` is DEFINITIONALLY `F.WorldState`, so `WorldHistory.comap` together with `aligned_comap` transport the state-agreement side condition that `stab`'s truth clause quantifies over. Either shape will do: a `PlusTruthCorr` carrying a state-agreement field, or a direct seven-case `plusTruthAt_map`. Pick one and say why in the plan rather than discovering it mid-proof. Deliverable: the iff, pinned in scripts/check-module-invariants.sh's C2 axiom baseline and given a docs/theorem-index.md row, with zero sorries and no new axiom.",
+      "dependencies": null,
+      "created": "2026-09-28T22:13:08Z",
+      "last_updated": "2026-09-28T22:13:08Z",
+      "file_scope": [
+        "FormalSystem/Semantics/IntTransfer.lean",
+        "FormalSystem/Semantics/TruthTransport.lean",
+        "FormalSystem/Semantics/Frames/TranslationProduct.lean",
+        "docs/theorem-index.md",
+        "scripts/check-module-invariants.sh"
+      ],
+      "project_number": 695
     }
   ],
   "artifacts": [
