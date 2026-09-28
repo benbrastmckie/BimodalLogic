@@ -1,22 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
+  "dispatch_seq": 4,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/623_decidable_validztime_quasimodel_shiftset_route/reports/02_compression-half-witness-family-route.md",
-      "summary": "Compression (completeness) half of the quasimodel/ShiftSet route: GKWZ 2003 step map (Thm 3.29, 5.30/5.32, 11.7/11.21, 11.26, 11.45), reuse inventory across BiLasso/ and WitnessFamily/, the canonical-bx enumerability constraint, a five-module phase decomposition, and a green semantic-side spike."
-    },
+      "type": "plan",
+      "path": "specs/623_decidable_validztime_quasimodel_shiftset_route/plans/02_compression-half-witness-family.md",
+      "summary": "12-phase plan for the compression (completeness) half: seven new presentation-free modules under WitnessFamily/Compression/, culminating in decidableValidZTime; 63 estimated hours."
+    }
+  ],
+  "next_steps": "Run /implement 623 to execute the plan",
+  "phase_count": 12,
+  "estimated_hours": 63,
+  "dependency_waves": [[1, 2], [3, 4], [5, 6], [7], [8], [9], [10], [11], [12]],
+  "memory_candidates": [
     {
-      "type": "evidence",
-      "path": "specs/623_decidable_validztime_quasimodel_shiftset_route/evidence/02_semantic-side-spike.lean",
-      "summary": "Compiled spike: typeAtM at an arbitrary FrameOver intOrder model, all five LocalCoherentLab clauses and the untl half of FulfillingLab, proved from the semantics alone."
+      "content": "Lean 4 enumerability trap: a structure field of function type over an infinite domain (e.g. `bx : Formula -> Bool`, `IntPresentation.val : Atom -> ...`) makes the whole structure non-enumerable, so no `List` of candidates can be complete. The escape, when the function is only ever READ at a finite index set S0 (here: the boxed members of a subformula closure), is to enumerate `fun x => decide (x in S)` over `S in S0.powerset` and to write that canonical form into the STATEMENT of the completeness theorem that produces the structure -- not to add a normalization lemma afterwards. The canonical S may be obtained noncomputably (`Finset.filter` with `Classical.dec`) and the resulting closure term still computes, because only membership in a concrete `Finset` is evaluated. Recurs verbatim across BiLasso/Assembly.lean and WitnessFamily/, i.e. at least twice in one codebase.",
+      "category": "PATTERN",
+      "source_artifact": "specs/623_decidable_validztime_quasimodel_shiftset_route/plans/02_compression-half-witness-family.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["lean4", "enumerability", "decidable", "infinite-domain-function", "candidate-list", "powerset-enumeration"]
     }
   ],
   "metadata": {
     "session_id": "sess_1790617342_e2d44f_623",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   }
 }

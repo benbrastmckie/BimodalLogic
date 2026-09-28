@@ -69,7 +69,7 @@ next_project_number: 691
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-623 [RESEARCHED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
+623 [PLANNED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
   └─ 685 [NOT STARTED] — Prove the compression result for the branching witness...
 
 ### Formula Refactor
@@ -90,7 +90,7 @@ next_project_number: 691
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-684 [RESEARCHED] — Prove the agreement (truth) lemma over all walks of the...
+684 [PLANNING] — Prove the agreement (truth) lemma over all walks of the...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -100,12 +100,12 @@ next_project_number: 691
 
 ### Semantics
 
-690 [RESEARCHED] — Build the stability condition (C5) StabFaithful on the...
+690 [PLANNING] — Build the stability condition (C5) StabFaithful on the...
 
 ## Tasks
 
 ### 690. Stability condition over branching frame
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 683
@@ -232,7 +232,7 @@ The research report and implementation plan authored here remain the durable inp
 ---
 
 ### 684. Agreement lemma over all walks
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 683
@@ -421,11 +421,12 @@ ACCEPTANCE. typst compile --root .. succeeds with zero errors for BOTH BimodalRe
 
 ### 623. Decidable validztime quasimodel shiftset route
 - **Effort**: 2-4 weeks
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 534, Task 645, Task 665, Task 680, Task 688
 - **Research**: [623_decidable_validztime_quasimodel_shiftset_route/reports/02_compression-half-witness-family-route.md]
+- **Plan**: [623_decidable_validztime_quasimodel_shiftset_route/plans/02_compression-half-witness-family.md]
 
 **Description**: Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet witness-family route: the completeness (compression) half. The soundness half, which defines LabelledLasso / WitnessFamily, the ShiftSet construction WitnessFamily.std, the agreement theorem (truth in std equals label membership on the closure), the consequence corollaries at ZTime and Base, and the Decidable instances for the four certificate conditions, has been split out into its own task, on which this task now depends; do not re-prove or re-define any of it here, consume it.
 
