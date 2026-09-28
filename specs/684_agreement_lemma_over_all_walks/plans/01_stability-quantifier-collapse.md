@@ -1,7 +1,7 @@
 # Implementation Plan: Stability Quantifier Collapse for the Branching Witness Frame
 
 - **Task**: 684 - agreement_lemma_over_all_walks
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 3 hours
 - **Dependencies**: 683 (state-sharing witness structure, completed — supplies `total_eq_thread`, `share_of_cls_eq`, `truth_iff_mem`)
 - **Research Inputs**: `specs/684_agreement_lemma_over_all_walks/reports/01_agreement-lemma-over-all-walks.md`
@@ -303,33 +303,33 @@ one line of the root, stop and report rather than committing the wider diff.
 
 ---
 
-### Phase 3: Full gate run and axiom audit [NOT STARTED]
+### Phase 3: Full gate run and axiom audit [PARTIAL]
 
 **Goal**: The repository is green under its complete gate set with the new module in the build
 graph, and the new theorems are confirmed to rest on the three standard axioms only.
 
 **Tasks**:
 
-- [ ] Run the full build through the guard:
+- [x] Run the full build through the guard:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build`, capturing to a log
       and following the bounded-build-waiter discipline (hard timeout, writer liveness via
       `kill -0` on the captured PID, one waiter per log).
-- [ ] Run `bash scripts/check-module-invariants.sh` and read the result against these specific
+- [x] Run `bash scripts/check-module-invariants.sh` and read the result against these specific
       expectations: C1 (build), C3 (zero structural sorry), C4 (imports resolve), C9 (zero
       task-number citations under `FormalSystem/`), C24 (the new module transitively imports
       `FormalSystem.Init`), C26 (no snake_case `def`), C33 (root aggregator is byte-current) must
       all pass. C17's dead-declaration scan will likely report the new declarations as having no
       other occurrence — it is reporting-only and must not be "fixed" by adding a fake consumer.
-- [ ] Run `bash scripts/check-copyright-headers.sh --strict FormalSystem` and confirm the new
+- [x] Run `bash scripts/check-copyright-headers.sh --strict FormalSystem` and confirm the new
       file passes.
-- [ ] Audit the axioms of the three new theorems with `lean_verify` on the fully qualified names
+- [x] Audit the axioms of the three new theorems with `lean_verify` on the fully qualified names
       (`...SharingWitnessFamily.stabQuant_iff_share_class`, `...stabQuant_iff_self_of_share_eq`,
       `...frame_recurrenceFree`). Expect `{propext, Classical.choice, Quot.sound}` and no
       warnings, matching the landed `truth_iff_mem`.
-- [ ] Re-audit `...SharingWitnessFamily.truth_iff_mem` as a regression check — it must still
+- [x] Re-audit `...SharingWitnessFamily.truth_iff_mem` as a regression check — it must still
       report the same three axioms and no warnings.
-- [ ] If any gate fails, fix the cause; never flip an `ENFORCE_*` flag to quiet a failure.
-- [ ] Commit the green gate run.
+- [x] *(deviation: altered — one gate failure was this task's to fix and was fixed (`linter.style.show`, C28); the remaining eight failing groups are pre-existing or concurrent-sibling, itemized below, and fixing a sibling's in-flight file is exactly what the territory contract forbids)* If any gate fails, fix the cause; never flip an `ENFORCE_*` flag to quiet a failure.
+- [x] *(deviation: altered — the gate run is not green; the evidence and the attribution are committed instead)* Commit the green gate run.
 
 **Timing**: 0.75 hours
 
@@ -346,6 +346,43 @@ class can break, and that no new baseline file (`scripts/nolints.json`, the C14 
 compile warning-free. Confirm by reading the actual gate output; if a baseline file does demand an
 entry, record that as a finding rather than assuming the hypothesis held.
 
+**Scope Hypothesis Outcome — the hypothesis FAILED, in this task's favour**: the phase assumed
+C33 could break and that a corrective `mk_all` would add one line. In fact **C33 was already
+failing before this dispatch**: `git show d139659eb:FormalSystem.lean | grep -c Sharing` returns
+**0** — the root aggregator listed none of the nine predecessor `Sharing.*` modules. The gate now
+reports 11 missing modules: the nine predecessors, this task's `Sharing.Stability`, and a
+concurrent sibling's brand-new `Sharing.Skeleton`. A corrective `mk_all` is therefore an
+11-line repair of pre-existing drift, not the one-line addition this plan budgeted, and it is not
+a repair this task can make while the file is under a sibling's uncommitted modification.
+
+No baseline file needed an entry for this module, as hypothesized — with one exception the
+hypothesis got wrong in the other direction: `scripts/warning-budget.txt` has a **zero** baseline
+and disposition `linter.style.show blocking`, and the probe's `show` tactic tripped it. Fixed by
+`change`, in-phase, and C28 no longer names this module.
+
+**Gate attribution** (full run captured; 8 groups failing, exit 1):
+
+| Gate | Cited location | Whose |
+|------|----------------|-------|
+| C5 | `Sharing/README.md:153` | concurrent sibling, in-flight |
+| C6 | `Sharing/Skeleton.lean` unmanifested | concurrent sibling, in-flight |
+| INV | three README inventory blocks | stale from all three concurrent tasks' new modules |
+| C23 | `Sharing/Decide.lean:192`, `Sharing/Fulfil.lean` | predecessor, pre-existing |
+| C24 | `Sharing/Basic.lean:203` failed to synthesize | concurrent sibling, in-flight |
+| C25 | `BimodalTools.CheckCertificateMain` broken by the above | concurrent sibling, in-flight |
+| C28 | `WitnessFamily/Compression/Cycle.lean` deprecated | concurrent sibling, in-flight |
+| C29 | `Sharing/Fulfil.lean:1659,1662` | predecessor, pre-existing |
+| C33 | 11 modules absent from the root | 9 predecessor + 1 this task + 1 sibling |
+
+Not one failing group is caused by `Sharing/Stability.lean`'s content. C1 (`lake build` exits 0),
+C3, C4, C9, C26 and C9D all pass, and C9 confirms zero task-number citations under `FormalSystem/`.
+
+**Evidence of this task's own green state**, captured at commit `b3955b837` before the sibling
+edits landed: full `lake build` through `lake-build-guard.sh --timeout 1800`, guard exit 0,
+"Build completed successfully (2753 jobs)", zero `error:` and zero `warning:` lines;
+`check-copyright-headers.sh --strict FormalSystem` exit 0; all four axiom audits
+`{propext, Classical.choice, Quot.sound}` with no warnings.
+
 **Files to modify**:
 
 - None expected. Any file this phase must change is a gate failure being fixed, and should be
@@ -360,14 +397,14 @@ entry, record that as a finding rather than assuming the hypothesis held.
 
 ---
 
-### Phase 4: Correct the task record and hand off the (C5) statement [NOT STARTED]
+### Phase 4: Correct the task record and hand off the (C5) statement [COMPLETED]
 
 **Goal**: The task's recorded scope matches what it actually touched, and the downstream
 stability-condition work has a precise, citable statement rather than a description to re-derive.
 
 **Tasks**:
 
-- [ ] Correct `file_scope` for this task in `specs/state.json`. The recorded value names the
+- [x] Correct `file_scope` for this task in `specs/state.json`. The recorded value names the
       deterministic modules (`WitnessFamily/Agreement.lean`, `WitnessFamily/Basic.lean`,
       `WitnessFamily/README.md`, `WitnessFamily.lean`) — three of which this task must not touch
       at all. Replace it with the files actually in scope:
@@ -375,7 +412,7 @@ stability-condition work has a precise, citable statement rather than a descript
       `FormalSystem/Metalogic/Decidability/WitnessFamily.lean`, `FormalSystem.lean`. Update the
       `file_scope` key only; do not replace the `artifacts` array (it is append-only with
       same-type supersession) and do not edit `TODO.md` directly.
-- [ ] Write `specs/684_agreement_lemma_over_all_walks/handoff-c5-statement.md`: a short note
+- [x] Write `specs/684_agreement_lemma_over_all_walks/handoff-c5-statement.md`: a short note
       naming (a) the exact (C5) `StabFaithful` statement,
       `stab φ ∈ L i u ↔ ∀ j, share u i j → φ ∈ L j u`; (b) `stabQuant_iff_share_class` as its
       soundness argument, with the module path; (c) `Sharing/Decide.lean`'s window congruence at
@@ -384,10 +421,10 @@ stability-condition work has a precise, citable statement rather than a descript
       cross-check; (e) the deferred `Sharing/README.md` announcement, which this task did not make
       because that file is the sibling's territory. Task numbers are permitted in this file — it
       is under `specs/**`.
-- [ ] Record in the same note that the completeness-side failure mode does not transfer, and that
+- [x] Record in the same note that the completeness-side failure mode does not transfer, and that
       the shared content with the completeness line is the histories characterization
       (`total_eq_thread`) only — so neither line should wait on the other.
-- [ ] Commit the records.
+- [x] Commit the records.
 
 **Timing**: 0.25 hours
 
