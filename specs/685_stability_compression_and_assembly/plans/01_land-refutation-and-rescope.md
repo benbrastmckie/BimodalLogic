@@ -1,7 +1,7 @@
 # Implementation Plan: Task #685
 
 - **Task**: 685 - stability_compression_and_assembly
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: 684 (completed), 623 (completed)
 - **Research Inputs**: `specs/685_stability_compression_and_assembly/reports/01_stability-compression-and-assembly.md`
@@ -445,29 +445,29 @@ since the sibling dispatch may have taken a number first). Confirm by reading
 
 ---
 
-### Phase 5: Full Gate Sweep and Close-Out [NOT STARTED]
+### Phase 5: Full Gate Sweep and Close-Out [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Every gate green on the combined change set, and the work committed in scoped commits
 that name only this task's own files.
 
 **Tasks**:
 
-- [ ] Run the full gate set in order: `lake build`; `bash scripts/check-module-invariants.sh`;
+- [x] Run the full gate set in order: `lake build`; `bash scripts/check-module-invariants.sh`;
       `bash scripts/check-copyright-headers.sh`; `bash scripts/check-metalogic-cycles.sh`;
       `bash scripts/readme-lint.sh FormalSystem docs`; `bash .claude/scripts/validate-state.sh`.
-- [ ] Run `bash scripts/check-evidence-probes.sh` and confirm it still passes **unchanged**: the
+- [x] Run `bash scripts/check-evidence-probes.sh` and confirm it still passes **unchanged**: the
       new library module is compiled by `lake build`, which is strictly stronger rot protection
       than that guard provides, so **no `WIRED`/`WIRED_REPO` entry is added** and the specs-side
       probe file is left where it is. Record this reasoning in the summary so a later reader does
       not mistake the absence of a wiring entry for an oversight.
-- [ ] Re-read every file immediately before staging it (the sibling dispatch shares this working
+- [x] Re-read every file immediately before staging it (the sibling dispatch shares this working
       tree), then commit with explicit per-file pathspecs. No `git add -A`, no `git add .`, no
       directory or glob pathspec, no `git commit -am`. Never run `git-snapshot.sh` in its reverting
       default mode.
-- [ ] Commit messages per the repository convention, one per completed phase:
+- [x] Commit messages per the repository convention, one per completed phase:
       `task 685 phase {P}: {phase name}`, with `Session: sess_1790630813_a17992_685` in the body
       and the session's attribution lines.
-- [ ] If any gate fails on something outside this task's own files, check `git log` before assuming
+- [x] If any gate fails on something outside this task's own files, check `git log` before assuming
       it is this work: an unexpected failure in a file outside the declared scope may be the
       sibling's in-flight edit. Stop and report a foreign commit or foreign uncommitted
       modification rather than fixing it.
@@ -484,24 +484,54 @@ that name only this task's own files.
 
 **Verification**:
 
-- All six gate commands above exit 0.
-- `bash scripts/check-evidence-probes.sh` exits 0 with its wired list unchanged.
+- All six gate commands above exit 0. **Not achieved, and not achievable** — two of the six were
+  already red before this task's first commit, for reasons wholly outside its files. See the
+  Reasoned Exclusions below. The other four exit 0:
+  - `lake build` (full project, guarded + detached): **exit 0**, `Build completed successfully
+    (2770 jobs)`, zero `error:` and zero `warning:` lines over both captured streams, and the
+    `.olean` for every module this task touched newer than its source.
+  - `bash scripts/check-copyright-headers.sh`: **exit 0** (0 missing of 604).
+  - `bash scripts/check-metalogic-cycles.sh`: **exit 0** (all three assertions).
+  - `bash scripts/readme-lint.sh FormalSystem docs`: **exit 0**, `RESULT: PASS`, 0 missing
+    READMEs, 0 broken file references.
+  - Within `check-module-invariants.sh`, every check this task bears on passes: C2 at `all
+    fourteen pinned axiom sets match baseline`, plus C1, C9, C13, C14, C15, C17, C20 (both
+    blocking tiers), C33 and INV.
+- `bash scripts/check-evidence-probes.sh` exits 0 with its wired list unchanged. **Achieved**: 6
+  wired probes PASS, 1 pre-existing SKIP, and **no `WIRED`/`WIRED_REPO` entry was added**. The
+  reasoning, recorded here so a later reader does not read the absence as an oversight: the
+  refutation now lives in a module `lake build` compiles on every run, which is strictly stronger
+  rot protection than that guard provides. The specs-side probe file is left where it is.
 - `git status --short` shows a clean tree for this task's files after the final commit, and shows
-  no file this task did not touch.
-- `git log --oneline -5` shows the phase commits with the session ID in each body.
+  no file this task did not touch. **Achieved for this task's files.** The tree additionally
+  carries sibling task 693's in-flight edits (`scripts/lean-citation-seeds.txt`,
+  `scripts/lean-citation-manifest.json`) and four modifications that predate this dispatch
+  (`ORGANISATION.md`, `scripts/measure-refactor-partitions.py`, `typst/generated/status.typ`,
+  `specs/events.jsonl`). None was staged in any commit here.
+- `git log --oneline -5` shows the phase commits with the session ID in each body. **Achieved.**
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `bash scripts/check-module-invariants.sh` exits 0 | Blocked by a **pre-existing** C23 failure with no connection to this task: 2 `NM_nonneg` Uppercase_x names and 11 outer-shadows-inner bare-declaration pairs. Every reported declaration lives in a file this task neither created nor modified, and no finding names any declaration this task introduced. The repository already owns this work as task 691 `resolve_c23_naming_exemptions` (`not_started`), so absorbing it here would be scope theft from an existing task as well as ~13 renames across `BiLasso/`, `Sharing/` and `PlusWitnessFamily/Decide.lean` — none of which this task's `file_scope` covers. | Each reported declaration verified present at commit `182943b9d`, the commit immediately preceding this task's first: `NM_nonneg` in both `Decide.lean` files, `decidableValidZTime` in `BiLasso/Assembly.lean`, `cohWindowLo`/`cohWindowHi` in `BiLasso/Decide.lean`, `mem_verts` ×3 in each of `Sharing/Fulfil.lean` and `Sharing/Window.lean`. Grep for this task's six new base names across the gate log returns nothing. Every other check in the script passes, C2 included. |
+| `bash .claude/scripts/validate-state.sh` exits 0 | Blocked by **ten pre-existing** schema-drift failures: five unknown top-level fields (`active_goal`, `artifacts`, `last_updated`, `metadata`, `task_counts`) and five unknown entry fields on tasks 257, 298, 410-412, 428-430 and 481. Repairing them means either editing the schema or deleting live fields other tasks' tooling writes — a state-schema decision, not a Lean refutation-landing decision. | The same script run against `git show 182943b9d:specs/state.json` reports the identical ten failures, with identical wording and identical project-number lists. Neither spawned entry (694, 695) appears in any failure or in any warning of its own; the only warning naming 694 is attached to pre-existing task 177's coarse `file_scope` declaration. |
 
 ## Testing & Validation
 
-- [ ] `lake build` green, no new warning, no `sorry`, no new `axiom` in the new module.
-- [ ] `bash scripts/check-module-invariants.sh` exits 0, with C2 pinning the four new declarations
-      at the axiom sets an actual run reports.
-- [ ] C9 at zero task-number citations: no `specs/685_...` path and no `task 685` string under
+- [x] `lake build` green, no new warning, no `sorry`, no new `axiom` in the new module.
+- [x] `bash scripts/check-module-invariants.sh` exits 0, with C2 pinning the four new declarations
+      at the axiom sets an actual run reports. *(C2 achieved; script exit excluded — see Phase 5's
+      Reasoned Exclusions.)*
+- [x] C9 at zero task-number citations: no `specs/685_...` path and no `task 685` string under
       `FormalSystem/`, `scripts/`, `README.md` or `lakefile.toml`.
-- [ ] C15's second assertion passes for each new `docs/theorem-index.md` row.
-- [ ] C17 reports no new dead declaration.
-- [ ] `bash scripts/readme-lint.sh FormalSystem docs` passes its gated checks.
-- [ ] `bash .claude/scripts/validate-state.sh` exits 0 and both spawned tasks read back correctly.
-- [ ] `bash scripts/check-evidence-probes.sh` unchanged and green.
+- [x] C15's second assertion passes for each new `docs/theorem-index.md` row.
+- [x] C17 reports no new dead declaration.
+- [x] `bash scripts/readme-lint.sh FormalSystem docs` passes its gated checks.
+- [x] `bash .claude/scripts/validate-state.sh` exits 0 and both spawned tasks read back correctly.
+      *(Both spawned tasks read back correctly; script exit excluded — see Phase 5's Reasoned
+      Exclusions.)*
+- [x] `bash scripts/check-evidence-probes.sh` unchanged and green.
 
 ## Artifacts & Outputs
 
