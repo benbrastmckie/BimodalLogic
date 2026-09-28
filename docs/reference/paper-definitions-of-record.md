@@ -49,9 +49,13 @@ re-derives every hash below directly from the live paper file on every run.
 | Line count at that re-pin | 4452 |
 | z/d/r rename-absorption re-pin (UTC) | 2026-09-08T01:30Z (15 entries re-hashed, 9 anchors retired, 3 renamed anchors newly pinned; see "Drift correction and rename absorption (2026-09-07)" below) |
 | Base commit at the time-reflection wave re-pin (paper repo `git HEAD`; file dirty against it) | `a166fcbf2951482ecdccc643c7458ac92d67126c` |
-| **File checksum, re-pinned at the time-reflection wave (sha256, current authoritative pin)** | `b4e45e2c5f771ee0d86be6c6e3a302cceb454771cd53475ed3628258083ddfa0` |
+| **File checksum, re-pinned at the time-reflection wave (sha256, superseded 2026-09-28)** | `b4e45e2c5f771ee0d86be6c6e3a302cceb454771cd53475ed3628258083ddfa0` |
 | Line count at that re-pin | 4529 |
 | Time-reflection wave re-pin (UTC) | 2026-09-17T09:19Z (14 entries re-hashed, `thm:M5-valid` retired, TD → TR absorbed with carve-outs; see "Drift correction and rename absorption (2026-09-17)" below) |
+| Base commit at the `def:id` footnote re-pin (paper repo `git HEAD`; file dirty against it) | `96ffaf43c6cccd10322366615b24513604f57a04` |
+| **File checksum, re-pinned at the `def:id` footnote re-pin (sha256, current authoritative pin)** | `88d9a9a64de7b7192899d284885c0ee807de4b9fcabe12d4c6b5c4570ac1f499` |
+| Line count at that re-pin | 4573 |
+| `def:id` footnote re-pin (UTC) | 2026-09-28 (one anchor re-hashed: the `Brast-McKie2021` footnote in `def:id` gained a trailing clause on transparency being maintained for the entirety of the language. Expository only -- no axiom, no substitution convention and no operator-scope proviso changed, and `def:id` has no Lean counterpart, so no citation or soundness-chain consequence. Absorbed rather than left red because the gate had been failing on this single clause since the paper edit. Re-run after the re-pin reported case (b), all 43 recorded definitions unchanged.) |
 
 <!-- PAPER_PATH: ~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex -->
 <!-- PAPER_REPO_ROOT: ~/Philosophy/Papers/PossibleWorlds -->
@@ -1839,13 +1843,13 @@ sha256: `ac35ffaa47da467febc431669f604d02622301f369bf795075dbe46ed3ee1bcf`
 		\end{multicols}
 	\end{enumerate}
 	\vspace{-.175in}
-  The theory of propositional identity need not be Boolean, accommodating theories in which the absorption laws or other Boolean identities do not hold.\footnote{I defend a bilateral theory of propositional identity in Brast-McKie \cite{Brast-McKie2021}.}
+  The theory of propositional identity need not be Boolean, accommodating theories in which the absorption laws or other Boolean identities do not hold.\footnote{I defend a bilateral theory of propositional identity in Brast-McKie \cite{Brast-McKie2021} where transparency is maintained for the entirety of the language rather than posited for just a single operator as above.}
   Symmetry and transitivity of $\equiv$ are nevertheless derivable, and since each replaces an occurrence lying outside any operator term, both survive the proviso on \textbf{\aref{LL}}.
   % Given $\varphi \equiv \psi$, instantiating \textbf{\aref{Ref}} at $\varphi$ gives $\vdash \varphi \equiv \varphi$, and applying \textbf{\aref{LL}} with $\chi \coloneq (\varphi \equiv \varphi)$, replacing the first occurrence of $\varphi$, gives $\vdash (\varphi \equiv \psi) \rightarrow [(\varphi \equiv \varphi) \rightarrow (\psi \equiv \varphi)]$, which detaches by permuting antecedents and applying modus ponens to give $\psi \equiv \varphi$, i.e., symmetry.
   % Given also $\psi \equiv \theta$, a further application of \textbf{\aref{LL}}, with $\chi \coloneq (\varphi \equiv \psi)$, replacing the occurrence of $\psi$, gives $\vdash (\psi \equiv \theta) \rightarrow [(\varphi \equiv \psi) \rightarrow (\varphi \equiv \theta)]$, which detaches with both hypotheses to give $\varphi \equiv \theta$, i.e., transitivity.
 \end{Ddef}
 ```
-sha256: `78b20a9942c9beaac45336954aee21d57b8c67a755692e17259c5e5a2bd00c3f`
+sha256: `5b54c118792433e8ea89bb447c844347422e063732be8720c91c7854aa22b062`
 
 ### `def:strongest` — strongest objective normal modal operator, Str^O_L(Q)
 
@@ -2043,7 +2047,7 @@ def:deterministic|env|-|-|edd71fb4ce625d2573b21975602f642f7de8fcf46c3c5e5996ab72
 def:BLstar-semantics|env|-|-|b4d3239cc96ddd1e90965901aca8c378f6ec5ca52f568ea6b2ef59d9c3ba6c95
 cor:saturation-finite|env|-|-|ebf7547b10df6b764b1ccc5d965e0cf5c75cd8b09977ed1572b3d0fba48101c3
 cor:tm-completeness|env|-|-|da75cac2b1c97db4458549c405a279762ea3a68977bd2ea1c3954e3dc4c97664
-def:id|env|-|-|78b20a9942c9beaac45336954aee21d57b8c67a755692e17259c5e5a2bd00c3f
+def:id|env|-|-|5b54c118792433e8ea89bb447c844347422e063732be8720c91c7854aa22b062
 def:strongest|env|-|-|57786b2c8758c3c7ea80ac7a80464b331ea77ff9b8c804a032504394bc800369
 thm:exist|env|-|-|fb6d83115f2effb62bc56a233e84212da50c0b692a60ebcdf2a0ea30fcfa9db9
 lem:uniq|env|-|-|ff8ac0629d00554c5d54c580e68c4886297c63e24fd214338614560eedb862cf
