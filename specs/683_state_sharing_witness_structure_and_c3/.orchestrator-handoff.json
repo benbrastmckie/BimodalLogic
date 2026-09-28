@@ -1,37 +1,47 @@
 {
   "task_number": 683,
-  "dispatch_seq": 6,
+  "dispatch_seq": 7,
   "status": "partial",
-  "phases_completed": 8,
+  "phase": "implement",
+  "phases_completed": 9,
   "phases_total": 14,
-  "session_id": "sess_1790578113_61d56a",
-  "summary": "Phases 7 and 8 of 14 landed, green and committed. Phase 7 (Sharing/Decide.lean) builds a family-wide combined window -- products over every lasso's cycle lengths and the share period, because both sharing conditions couple two lassos at once and Decide.lean's per-lasso decomposition is therefore unavailable -- and derives Decidable instances for (C0) AtomCoherent and (C1') LocalCoherentShare through it. Phase 8 (Sharing/Fulfil.lean) adds a generic A[g U e] least-fixpoint layer with a cardinality-measure stabilization bound, the finite position graph over the window with data-preserving wraparound, and the untl/snce fixpoints, the snce one an instantiation rather than a second proof. Full lake build green (2748 jobs, exit 0), zero sorries, axiom count unchanged at 14, deterministic path and ShiftSet.lean byte-identical.",
+  "session_id": "sess_1790579802_bcbf20",
+  "summary": "Phase 9 of 14 landed, green and committed, closing as [COMPLETED WITH EXCLUSIONS]. (C2') ThreadFulfilling is defined in Sharing/Predicates.lean (with fulfillingLab_of_thread, its constant-thread specialization to the deterministic (C2)), and Sharing/Fulfil.lean gains four layers: the fold relations FoldRel/FoldRelB that let a graph time and a real time be identified, FwdWalk/BwdWalk and their toThread that turn an infinite graph walk into a genuine bi-infinite Thread, (C1') propagation along a thread, and both correctness directions of the Phase 8 fixpoint against (C2') -- soundness and completeness, each unconditional. The one exclusion: the window reduction threadFulfilling_iff_window carries a LocalCoherentShare hypothesis, because the far-left case cannot be folded (the graph's backward region is a finite path, not a cycle) and is closed by (C1') propagation instead, so the plan's standalone Decidable (ThreadFulfilling S) instance is replaced by the hypothesised term decidableThreadFulfilling plus the genuine instance decidableCoherentShareAndFulfilling on the conjunction. Full lake build green (2748 jobs, exit 0), zero sorries, axiom count unchanged at 14, deterministic path and ShiftSet.lean byte-identical.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/683_state_sharing_witness_structure_and_c3/summaries/01_state-sharing-witness-structure-summary.md",
-      "summary": "Cumulative round-1 implementation summary, extended to cover Phases 7 and 8."
+      "summary": "Cumulative round-1 implementation summary, extended to cover Phase 9."
     },
     {
       "type": "handoff",
-      "path": "specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-8-handoff-20260928.md",
-      "summary": "Resume point, inherited API inventory, the worked-out Phase 9 design, and six further elaboration traps."
+      "path": "specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-9-handoff-20260928.md",
+      "summary": "Resume point at Phase 10, inherited API inventory, the Phase 11 assembly adjustment, and five further elaboration traps."
     },
     {
       "type": "source",
-      "path": "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Decide.lean",
-      "summary": "Phase 7: the combined window and the Decidable instances for (C0) and (C1')."
+      "path": "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Predicates.lean",
+      "summary": "Phase 9: (C2') ThreadFulfilling and fulfillingLab_of_thread."
     },
     {
       "type": "source",
       "path": "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Fulfil.lean",
-      "summary": "Phase 8: the AUFix least-fixpoint layer, the finite position graph, and the untl/snce fixpoints."
+      "summary": "Phase 9: fold relations, walks as threads, (C1') propagation, both correctness directions, and the (C1')-relative decision procedure."
     }
   ],
   "blockers": [],
+  "user_decision": {
+    "question": "Phase 9's window reduction for (C2') carries a LocalCoherentShare hypothesis, so the plan's standalone `Decidable (ThreadFulfilling S)` instance is not available; what is landed is a hypothesised `Decidable` term plus a genuine instance on the conjunction `LocalCoherentShare and ThreadFulfilling`. Accept that form, or reopen Phase 8 to chase an unconditional one?",
+    "options": [
+      "Accept the coherence-relative form as landed -- Certifies carries (C1') anyway, so Phase 11 assembles decidableCertifies from four pieces instead of five and nothing downstream loses anything.",
+      "Reopen Phase 8 and chase the unconditional reduction -- give the position graph's backward region a cycle edge -1 -> -NB-1 alongside -1 -> 0 so arbitrarily long far-left walks have graph images, then re-prove the fixpoint lemmas against the strictly larger walk set."
+    ],
+    "recommended": "Accept the coherence-relative form as landed -- Certifies carries (C1') anyway, so Phase 11 assembles decidableCertifies from four pieces instead of five and nothing downstream loses anything.",
+    "blocking": false
+  },
   "next_steps": [
-    "Resume at Phase 9: define ThreadFulfilling in Sharing/Predicates.lean and prove the Phase 8 fixpoint correct against it.",
-    "Read handoffs/phase-8-handoff-20260928.md first: it carries the FoldRel invariant that lets a graph walk be read as a Z-walk, the counterexample-extraction argument, and the identification of the one hard sub-problem.",
-    "The hard sub-problem: folding a far-left position into the window is not obviously obligation-preserving for a UNIVERSAL path quantifier (the branching analogue of Decide.lean's untlObl_shift_back, whose own proof relies on the obligation being existential). The candidate route is (C1') propagation, which may make the reduction coherence-relative and so turn Phase 9's standalone `Decidable (ThreadFulfilling S)` deliverable into a plan deviation on a .lean file -- to be raised under plan-compliance, not silently restated."
+    "Resume at Phase 10: create Sharing/Agreement.lean, build the branching TaskModel with the Quotient.lift valuation (well-defined by (C0)), prove the branching forward_repr through total_eq_thread, and prove truth_iff_mem with BoxFaithful reused unchanged and no box-dot case.",
+    "Read handoffs/phase-9-handoff-20260928.md first: FwdWalk/BwdWalk.toThread is the construction to reuse wherever Phase 10 needs to exhibit a thread, and thread_share_pred is the small snce-direction lemma that is easy to re-derive by accident.",
+    "Phase 11 has a recorded adjustment: assemble decidableCertifies from decidableAtomCoherent, decidableCoherentShareAndFulfilling, decidableBoxFaithful and decidableTarget -- four pieces, with the (C1')/(C2') pair decided jointly."
   ]
 }

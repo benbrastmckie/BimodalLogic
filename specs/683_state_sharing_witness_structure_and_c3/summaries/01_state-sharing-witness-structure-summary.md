@@ -3,8 +3,8 @@
 - **Task**: 683 - State-sharing witness structure and C3
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-09-27
-- **Completed**: (not complete — Phases 9-14 remain)
-- **Effort**: ~2 agent dispatches (plan budget: 23.5 hours across 14 phases)
+- **Completed**: (not complete — Phases 10-14 remain)
+- **Effort**: ~3 agent dispatches (plan budget: 23.5 hours across 14 phases)
 - **Dependencies**: 682
 - **Artifacts**: plans/01_state-sharing-witness-structure.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
@@ -23,7 +23,16 @@ Phase 6 closed with exclusions: (C0) `AtomCoherent` and (C1') `LocalCoherentShar
 over a `Formula`-indexed certificate, since the stability modal lives on the separate inductive
 `PlusFormula`. Phases 7 and 8 then landed the decision machinery: a family-wide combined window
 that makes (C0) and (C1') decidable, and the finite position graph with the `A[g U e]` least
-fixpoint that is the computational core of (C2'). Phases 9-14 remain.
+fixpoint that is the computational core of (C2').
+
+Phase 9 closed with one exclusion. (C2') `ThreadFulfilling` is defined, and both correctness
+directions against the Phase 8 fixpoint are proved: soundness (a vertex in the fixpoint
+discharges the eventuality along every thread through every time it folds) and completeness (a
+vertex outside it admits a counterexample thread, pumped from a graph escape walk). The
+reduction to a bounded window check, and hence the decision procedure, is delivered **relative
+to (C1') `LocalCoherentShare`** rather than standalone; the plan's `Decidable
+(ThreadFulfilling S)` instance is excluded and the reason is recorded below and in the plan's
+Phase 9 Reasoned Exclusions table. Phases 10-14 remain.
 
 ## What Changed
 
@@ -69,6 +78,32 @@ fixpoint that is the computational core of (C2'). Phases 9-14 remain.
   **`snceFix`** with `mem_untlFix_iff`/`mem_snceFix_iff` and
   `untlFix_induction`/`snceFix_induction`, and a `SmokeTest` section whose three `#guard`s
   check the computed answers on a one-lasso family.
+- `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Predicates.lean` — extended
+  (Phase 9). (C2') **`ThreadFulfilling`**, the universal-path form of `FulfillingLab`, and
+  **`fulfillingLab_of_thread`**, its constant-thread specialization to the deterministic (C2)
+  (the mirror of `localCoherentLab_of_share`). A new header section records why (C3)
+  `BoxFaithful` survives recombination while (C2) does not.
+- `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Fulfil.lean` — extended (Phase 9),
+  in four layers.
+  - *Fold relations*: **`FoldRel`** / **`FoldRelB`** with `refl`/`symm`/`trans`, the data
+    lemmas `foldRel_rep`/`foldRel_L` and duals, `foldRel_succ`/`foldRelB_pred`, the wrap
+    lemmas **`foldRel_nextTime`**/**`foldRelB_prevTime`**, and the window folds
+    **`exists_fold_fwd`**/**`exists_fold_back`**.
+  - *Walks as threads*: **`FwdWalk`**/**`BwdWalk`**, `mem_verts`, `time_succ`, `share_succ`,
+    the fold invariants **`FwdWalk.foldRel`**/**`BwdWalk.foldRelB`**, `walkIdx` with
+    `walkIdx_add`/`walkIdx_sub`/`walkIdx_le`/`walkIdx_ge`, and **`toThread`**.
+  - *(C1') propagation*: `untl_thread_step`, `snce_thread_step`, `thread_share_pred`,
+    `untl_propagate`/**`untl_propagate_le`**, `snce_propagate`/**`snce_propagate_ge`**, and
+    **`untl_fulfil_of_exists`**/**`snce_fulfil_of_exists`**.
+  - *Correctness and decision*: **`thread_untl_of_mem_untlFix`**/
+    **`thread_snce_of_mem_snceFix`** (soundness), `fulfilClauseAt`, **`FulfilWindow`**,
+    `decidableFulfilWindow`, `untlFix_of_window`/`snceFix_of_window`, `cohWindow_lo_mem`/
+    `cohWindow_hi_pred_mem`, **`threadFulfilling_of_window`**,
+    **`window_of_threadFulfilling`**, **`threadFulfilling_iff_window`**,
+    `decidableThreadFulfilling` (a term taking the (C1') hypothesis) and the genuine instance
+    **`decidableCoherentShareAndFulfilling`**. The module now carries
+    `set_option linter.style.longFile 1700`, as `lakefile.toml` prescribes for a file over the
+    1500-line limit.
 - `FormalSystem/Metalogic/Decidability/WitnessFamily.lean` — seven import lines only.
 - `specs/state.json` — `file_scope` extended (append-only) to cover the new modules.
 
@@ -115,6 +150,22 @@ The deterministic path is byte-identical: `git diff HEAD` over `Semantics/ShiftS
 - **The `snce` computation is an instantiation, not a second development.** Every fixpoint
   lemma is stated at an arbitrary successor function, so `snceFix := AUFix.lfp verts predF …`
   inherits all of them; `mem_snceFix_iff` and `snceFix_induction` are two-line specialisations.
+- **The window reduction for (C2') is relative to (C1'), and that is structural.** A position
+  at or after `cohWindowLo` folds into the window and its obligation transports. A position
+  strictly left of it does not: the forward ray from far left lingers in the backward periodic
+  region for arbitrarily many steps, while the graph's backward region is a finite *path* into
+  the origin rather than a cycle, so a walk that lingers longer than `2·NB` steps has no image
+  in the graph at all. `Decide.lean`'s `untlObl_shift_back` closes the same gap for the
+  deterministic device only because its obligation is **existential**; a universal path
+  quantifier does not transpose that argument. (C1') propagation closes it instead, by carrying
+  an unfulfilled eventuality forward along every thread together with its guard, so the
+  far-left obligation *walks* into the window. The consequence for the deliverable is recorded
+  under Plan Deviations.
+- **The escape walk is built by `choose` on a total function, not by dependent choice.** The
+  completeness direction needs an infinite counterexample walk. Stating the escape as
+  `∀ z, ∃ y, (z ∈ verts → y ∈ succF z) ∧ …` — total in `z`, with the interesting content behind
+  hypotheses — makes `choose` yield a plain `f : Pos → Pos`, and the walk is `f^[k] v`. No
+  recursion-with-proof-obligations and no `Nat.rec` on a dependent motive.
 - **The plan's Limit/Saturation reading is confirmed.** `TaskFrame.limit_of_succOrder` needs only
   the zero-duration law, and `TaskFrame.saturation_of_fib_finite` is the infinite-carrier /
   finite-fibres case this construction is. Determinism is used nowhere in the frame discharges.
@@ -146,6 +197,19 @@ The deterministic path is byte-identical: `git diff HEAD` over `Semantics/ShiftS
   closure gate (C0) needs was an unbudgeted extra lemma, also recorded there. The `#check`
   confirmation was strengthened to `example … := inferInstance`, which exercises synthesis
   rather than only the constants' existence.
+- **Phase 9** `Decidable (ThreadFulfilling S)` altered, and the phase re-marked
+  `[COMPLETED WITH EXCLUSIONS]` with a full `Reasoned Exclusions` record. The plan's fourth
+  task asks for a standalone instance; what is landed is the hypothesised term
+  `decidableThreadFulfilling (hlc : S.LocalCoherentShare) : Decidable S.ThreadFulfilling`
+  together with the unhypothesised instance `decidableCoherentShareAndFulfilling` on the
+  conjunction `LocalCoherentShare ∧ ThreadFulfilling`. The reason is in Decisions above; the
+  Phase 8 handoff predicted this exact outcome and asked that it be raised rather than silently
+  restated, which is why it is a `user_decision` on this dispatch's return metadata and not a
+  quiet substitution. Nothing downstream is lost — `Certifies` carries (C1') as one of its five
+  components — but Phase 11's `decidableCertifies` must now be assembled from four pieces
+  rather than five, and Phase 11's task list has been annotated accordingly. The other three
+  Phase 9 tasks landed as written; the mathematical content the phase asked for (the semantic
+  condition, both correctness directions, a bounded decision procedure) is complete.
 - **Phase 8** no deviation. One in-plan `Scope Hypothesis` correction: the fuel bound is
   `|V| + 1`, not `|V|`, because the chain starts at index `0` with `∅`. The `Fintype`
   deliverable is met on the coercion of `verts` rather than on `Pos`, for the reason in
@@ -168,6 +232,17 @@ The deterministic path is byte-identical: `git diff HEAD` over `Semantics/ShiftS
   `AUFix.lfp_fixed`, `AUFix.lfp_least`, `AUFix.lfp_induction`, `untlFix`, `snceFix`,
   `rep_nextTime`, `L_prevTime`: each reports exactly
   `[propext, Classical.choice, Quot.sound]`. No `sorryAx`.
+- `#print axioms` on all twenty-one Phase 9 declarations — `ThreadFulfilling`,
+  `fulfillingLab_of_thread`, `FoldRel`, `FoldRelB`, `exists_fold_fwd`, `exists_fold_back`,
+  `FwdWalk.toThread`, `BwdWalk.toThread`, `untl_propagate_le`, `snce_propagate_ge`,
+  `untl_fulfil_of_exists`, `snce_fulfil_of_exists`, `thread_untl_of_mem_untlFix`,
+  `thread_snce_of_mem_snceFix`, `FulfilWindow`, `decidableFulfilWindow`,
+  `threadFulfilling_of_window`, `window_of_threadFulfilling`, `threadFulfilling_iff_window`,
+  `decidableThreadFulfilling`, `decidableCoherentShareAndFulfilling` — reports exactly
+  `[propext, Classical.choice, Quot.sound]` in every case; twenty-one reports, zero `sorryAx`.
+- `example (S : SharingWitnessFamily Γ Del) : Decidable (S.LocalCoherentShare ∧ S.ThreadFulfilling) := inferInstance`
+  elaborates, in the module, by synthesis. This is the replacement for the plan's
+  `Decidable (ThreadFulfilling S)` verification bullet, which is excluded with the instance.
 - The three `SmokeTest` `#guard`s pass, which is a real check and not a print: on the one-lasso
   family the window is `[-2, 4)`, `untlFix p p` is the single position at time `-1`, and
   `snceFix p p` its mirror at time `1`.
@@ -175,12 +250,15 @@ The deterministic path is byte-identical: `git diff HEAD` over `Semantics/ShiftS
   elaborates: the deterministic decision procedure is intact.
 - `bash .claude/scripts/check-task-references.sh`: PASS, 0 unexempted occurrences.
 - Plan-compliance spot-check against the plan's fifteen pinned Goals (sixteen minus the
-  excluded (C5)): 8 present (`SharingWitnessFamily`, `share`, `Thread`, `frame`,
-  `instIsRegular`, `total_eq_thread`, `AtomCoherent`, `LocalCoherentShare`), 7 absent
-  (`ThreadFulfilling`, `Certifies`, `decidableCertifies`, `truth_iff_mem`,
-  `refutes_of_certifies`, `toSharing`, `certifies_toSharing`) — they belong to Phases 9-14,
-  which were not reached. Phases 7 and 8 deliver supporting plumbing, which the plan states
-  carries no pinned statement.
+  excluded (C5)): 9 present (`SharingWitnessFamily`, `share`, `Thread`, `frame`,
+  `instIsRegular`, `total_eq_thread`, `AtomCoherent`, `LocalCoherentShare`,
+  `ThreadFulfilling`), 6 absent (`Certifies`, `decidableCertifies`, `truth_iff_mem`,
+  `refutes_of_certifies`, `toSharing`, `certifies_toSharing`) — they belong to Phases 10-14,
+  which were not reached. Read the raw bare-name grep with care: `Certifies`,
+  `decidableCertifies`, `truth_iff_mem` and `refutes_of_certifies` all match the *deterministic*
+  namesakes in `WitnessFamily/`, so the counts above are the namespace-qualified ones.
+  Phases 7, 8 and 9 additionally deliver supporting plumbing, which the plan states carries no
+  pinned statement.
 - Tests: N/A (no test-suite change; the branching device has no `Examples.lean` entry yet).
 - Files verified: Yes.
 
@@ -195,20 +273,28 @@ The deterministic path is byte-identical: `git diff HEAD` over `Semantics/ShiftS
   development that needs a histories characterization without determinism.
 - Nothing downstream changed: the shipped deterministic path, its `Decidable` instances, its
   agreement theorem and the JSON export contract are all untouched.
+- (C2') is now a decidable condition of the branching certificate, which is what makes the whole
+  device a decision procedure rather than a definition. The fulfilment check runs a least
+  fixpoint over a finite position graph whose size is `|lassos| · (2·NB + NM + 2·NF)`, with
+  `NB`/`NF` products over the family's backward/forward cycle lengths and `NM` a sum of window
+  lengths — so it is exponential in the number of lassos in the worst case, and that bound is
+  recorded here rather than discovered later.
+- `FwdWalk`/`BwdWalk` and their `toThread` are reusable: any later development that needs to
+  exhibit a thread realizing a graph walk should go through them rather than building the index
+  function by hand.
 
 ## Follow-ups
 
-- **Phase 9 is where the remaining difficulty is, and it is identified.** Folding a far-left
-  position into the window is not obviously obligation-preserving for a **universal** path
-  quantifier: the real forward ray from `u ≪ -2·NB` winds around the backward cycle extra times.
-  This is the branching analogue of `Decide.lean`'s `untlObl_shift_back`, whose proof works only
-  because that obligation is existential. The route through it is (C1') propagation — under
-  `LocalCoherentShare` the only possible counterexample walk is "guard forever, event never", so
-  the extra prefix's guard obligations are automatic. If that makes the reduction
-  coherence-relative, Phase 9's standalone `Decidable (ThreadFulfilling S)` deliverable becomes
-  a plan deviation on a `.lean` file and must be raised, not restated. Full design, including
-  the `FoldRel` invariant that lets a graph walk be read as a ℤ-walk, is in
-  `handoffs/phase-8-handoff-20260928.md`.
+- **The Phase 9 difficulty resolved as the Phase 8 handoff predicted, and the resolution needs
+  a user decision.** The far-left case is closed by (C1') propagation, so the window reduction
+  is coherence-relative and the standalone `Decidable (ThreadFulfilling S)` is not available.
+  Two options, of which the second is what is implemented: (1) keep the plan's standalone
+  instance and find a genuinely unconditional far-left argument — which would mean giving the
+  graph's backward region a cycle edge `-1 → -NB-1` alongside `-1 → 0`, i.e. reopening Phase 8's
+  committed `succF`, and re-proving its fixpoint lemmas against a strictly larger walk set; or
+  (2) accept the coherence-relative form, which costs nothing downstream because `Certifies`
+  carries (C1') anyway. Option 1 is not refuted, only out of scope for this dispatch. The
+  decision is relayed as `user_decision` on `.return-meta.json`.
 - **(C5) is settled, not open.** `StabFaithful` as pinned is not stateable at this
   datatype: `WitnessFamily` is indexed by `Context = List Formula`, and
   `FormalSystem.Syntax.Formula` has six constructors with no `⊡`; the stability modal is
@@ -221,8 +307,15 @@ The deterministic path is byte-identical: `git diff HEAD` over `Semantics/ShiftS
   `.decisions.json`, cycle 3): (C5) moves to a follow-up task that introduces an L⁺-indexed
   certificate datatype. Phase 6 carries the full `Reasoned Exclusions` record, and Phases 10,
   11 and 12 each lost exactly one deliverable.
-- Phases 9-14 remain. See `handoffs/phase-8-handoff-20260928.md` for the resume point, the
-  inherited API inventory, and six further elaboration traps.
+- Phases 10-14 remain. See `handoffs/phase-9-handoff-20260928.md` for the resume point, the
+  inherited API inventory, and five further elaboration traps (thirteen through seventeen);
+  `handoffs/phase-8-handoff-20260928.md` and `handoffs/phase-6-handoff-20260927.md` carry the
+  first twelve.
+- **Phase 11 has a concrete adjustment waiting.** Assemble `decidableCertifies` from four
+  pieces — `decidableAtomCoherent`, `decidableCoherentShareAndFulfilling`,
+  `decidableBoxFaithful`, `decidableTarget` — and either order `Certifies`' projections so the
+  (C1')/(C2') pair is adjacent or prove the instance by `decidable_of_iff` through the
+  reassociated conjunction. The plan's Phase 11 task list records this.
 - `Sharing/README.md`, the `WitnessFamily/README.md` submodule map and the `BiLasso/README.md`
   scoping of the all-histories claim are Phase 14 items and are not yet written.
 
@@ -232,4 +325,5 @@ The deterministic path is byte-identical: `git diff HEAD` over `Semantics/ShiftS
 - `specs/683_state_sharing_witness_structure_and_c3/reports/01_state-sharing-witness-structure.md`
 - `specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-6-handoff-20260927.md`
 - `specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-8-handoff-20260928.md`
+- `specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-9-handoff-20260928.md`
 - `specs/683_state_sharing_witness_structure_and_c3/.decisions.json` (the (C5) scope decision)

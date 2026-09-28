@@ -1,8 +1,7 @@
 {
   "status": "partial",
-  "started_at": "2026-09-27T23:50:00Z",
-  "completed_at": "2026-09-28T00:55:00Z",
-  "requires_user_review": false,
+  "started_at": "2026-09-28T07:17:30Z",
+  "completed_at": "2026-09-28T08:05:00Z",
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
@@ -10,40 +9,40 @@
     "axiom_count": 14,
     "build_passed": true
   },
-  "partial_progress": {
-    "stage": "phase_8_complete",
-    "details": "Phases 7 and 8 of 14 landed, green and committed. Phase 7: Sharing/Decide.lean, the family-wide combined window and the two Decidable instances for (C0) and (C1'). Phase 8: Sharing/Fulfil.lean, the generic AUFix least-fixpoint layer, the finite position graph with data-preserving window wraparound, and the untl/snce fixpoints. Phases 9-14 remain; the Phase 9 design is worked out in handoffs/phase-8-handoff-20260928.md, including the one hard sub-problem it contains.",
-    "phases_completed": 8,
-    "phases_total": 14
-  },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/683_state_sharing_witness_structure_and_c3/summaries/01_state-sharing-witness-structure-summary.md",
-      "summary": "Cumulative round-1 implementation summary, extended to cover Phases 7 and 8."
+      "summary": "Cumulative round-1 implementation summary, extended to cover Phase 9 of 14."
     },
     {
       "type": "handoff",
-      "path": "specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-8-handoff-20260928.md",
-      "summary": "Resume point, inherited API inventory, the worked-out Phase 9 design, and six further elaboration traps."
-    },
-    {
-      "type": "source",
-      "path": "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Decide.lean",
-      "summary": "Phase 7: the combined window and the Decidable instances for (C0) AtomCoherent and (C1') LocalCoherentShare."
-    },
-    {
-      "type": "source",
-      "path": "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Fulfil.lean",
-      "summary": "Phase 8: the AUFix least-fixpoint layer, the finite position graph, and the untl/snce fixpoints."
+      "path": "specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-9-handoff-20260928.md",
+      "summary": "Resume point at Phase 10, inherited API inventory, and the Phase 11 assembly adjustment."
     }
   ],
+  "partial_progress": {
+    "stage": "phase_9_complete",
+    "details": "Phase 9 closed as [COMPLETED WITH EXCLUSIONS]: (C2') ThreadFulfilling defined, both correctness directions against the Phase 8 fixpoint proved, and a bounded decision procedure delivered relative to (C1') LocalCoherentShare. The plan's standalone Decidable (ThreadFulfilling S) instance is excluded and recorded in the plan's Phase 9 Reasoned Exclusions table. Phases 10-14 remain.",
+    "phases_completed": 9,
+    "phases_total": 14
+  },
+  "user_decision": {
+    "question": "Phase 9's window reduction for (C2') carries a LocalCoherentShare hypothesis, so the plan's standalone `Decidable (ThreadFulfilling S)` instance is not available; what is landed is a hypothesised `Decidable` term plus a genuine instance on the conjunction `LocalCoherentShare and ThreadFulfilling`. Accept that form, or reopen Phase 8 to chase an unconditional one?",
+    "options": [
+      "Accept the coherence-relative form as landed -- Certifies carries (C1') anyway, so Phase 11 assembles decidableCertifies from four pieces instead of five and nothing downstream loses anything.",
+      "Reopen Phase 8 and chase the unconditional reduction -- give the position graph's backward region a cycle edge -1 -> -NB-1 alongside -1 -> 0 so arbitrarily long far-left walks have graph images, then re-prove the fixpoint lemmas against the strictly larger walk set."
+    ],
+    "recommended": "Accept the coherence-relative form as landed -- Certifies carries (C1') anyway, so Phase 11 assembles decidableCertifies from four pieces instead of five and nothing downstream loses anything.",
+    "blocking": false
+  },
   "metadata": {
-    "session_id": "sess_1790578113_61d56a",
+    "session_id": "sess_1790579802_bcbf20",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
     "compliance_check": "passed",
-    "notes": "Plan-compliance spot-check: of the plan's fifteen pinned Goals (sixteen minus the user-excluded (C5) StabFaithful), 8 are present; the 7 absent belong to Phases 9-14, which were not reached. Phases 7 and 8 deliver supporting plumbing, which the plan states carries no pinned statement, so no Goal was expected from them. vacuous_count is 0 introduced: the single repo-wide grep hit, FormalSystem/Examples/TemporalStructures.lean:495, is pre-existing, unrelated, and byte-identical at the dispatch's base commit. axiom_count 14 equals the baseline measured at the same base commit."
+    "compliance_note": "Nine of the plan's fifteen pinned Goals are present namespace-qualified; the six absent belong to Phases 10-14, which were not reached. Phase 9's own Goal, SharingWitnessFamily.ThreadFulfilling, is confirmed present by a #print axioms run, not only by grep.",
+    "dispatch_seq": 7
   }
 }
