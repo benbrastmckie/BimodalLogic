@@ -1,5 +1,5 @@
 ---
-next_project_number: 692
+next_project_number: 693
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 692
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,685,691 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,685,691,692 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -23,6 +23,10 @@ next_project_number: 692
 | 10 | 177 | 178,282,296,481,482,543,685 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
+
+### Agent System
+
+692 [NOT STARTED] — Investigate a reported lake-build-guard.sh false-green: an...
 
 ### Algebraic Representation
 
@@ -101,6 +105,16 @@ next_project_number: 692
 691 [NOT STARTED] — Resolve gate C23's two remaining red sub-assertions: the 2...
 
 ## Tasks
+
+### 692. Investigate lake build guard false green
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Investigate a reported lake-build-guard.sh false-green: an implementation agent observed the guard replay a stale result across a differently-scoped build, reporting 'Build completed successfully (1200 jobs)' while writing no .olean for the module actually requested; it worked around this by passing --no-share on every subsequent build. NOTE THE COMPLICATION: the scope_key result-sharing condition that would prevent exactly this is ALREADY implemented in the deployed guard (decide_sharing() condition 3, labelled 'Defect B', with a fail-closed branch for a missing or empty recorded scope_key), and the deployed copy predates the observation. So this is not simply the known defect recurring. Determine whether (a) compute_scope_key's argument-vector hashing has a residual normalization gap that lets a scoped and a full build collide, (b) the observed replay came from a record written before scope_key existed and the fail-closed branch did not fire as documented, or (c) the report was a misdiagnosis of some other cause. Reproduce before fixing; do not assume the defect is real. IMPORTANT: the guard is a DEPLOYED artifact under .claude/scripts/ and must never be hand-patched there; per .claude/rules/source-store-deploy-boundary.md the edit target is the lean extension's source store at /home/benjamin/.config/nvim/agent-system/extensions/lean, followed by a redeploy via deploy-headless.sh.
+
+---
 
 ### 691. Resolve c23 naming exemptions
 - **Status**: [NOT STARTED]
