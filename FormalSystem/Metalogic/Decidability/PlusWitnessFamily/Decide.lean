@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Predicates
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Decide
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Window
 
 /-!
 # The Combined Window at L⁺
@@ -300,6 +301,63 @@ def cohWindowLo (S : PlusSharingWitnessFamily Γ Del) : ℤ := -2 * S.NB
 
 /-- Upper end (exclusive) of the combined window. -/
 def cohWindowHi (S : PlusSharingWitnessFamily Γ Del) : ℤ := S.NM + 2 * S.NF
+
+/-!
+### The window as a `SharingWindow`
+
+The header above records that the combined periods do not factor through `SharingSkeleton`.
+They do factor through `SharingWindow` (`Sharing/Window.lean`) — the skeleton together with the
+triple `(NB, NF, NM)` carried as *data* — and the projection below is what supplies it.
+
+That is not a bookkeeping nicety. Everything the position graph of (C2') is built from — the
+window's times, the vertices, the two wrapped time-steps, the two edge relations, the folding
+relations and the walk layer — is a function of this projection alone, so the whole of that
+layer is **inherited** rather than re-indexed at `PlusFormula`. What is re-indexed downstream is
+exactly what reads a label.
+-/
+
+/--
+**The family's combined window**, as the label-free structure the position graph runs on.
+
+Marked `@[reducible]` for the same reason `skeleton` is: without it, `Fin S.window.n` and
+`Fin S.lassos.length` fail to unify at the transparency keyed matching uses, and rewrites whose
+pattern mentions `share` fail against terms whose indices came from a thread.
+-/
+@[reducible]
+def window (S : PlusSharingWitnessFamily Γ Del) : SharingWindow where
+  toSharingSkeleton := S.skeleton
+  NB := S.NB
+  NF := S.NF
+  NM := S.NM
+  NB_pos := S.NB_pos
+  NF_pos := S.NF_pos
+  NM_nonneg := S.NM_nonneg
+  nbr_dvd_NB := S.nbr_dvd_NB
+  nfr_dvd_NF := S.nfr_dvd_NF
+  nmr_le_NM := S.nmr_le_NM
+
+/-- The window's substrate is the family's skeleton, definitionally. -/
+theorem window_toSharingSkeleton (S : PlusSharingWitnessFamily Γ Del) :
+    S.window.toSharingSkeleton = S.skeleton := rfl
+
+/-- The window's representative map is the family's, definitionally. -/
+theorem window_rep (S : PlusSharingWitnessFamily Γ Del) (u : ℤ) : S.window.rep u = S.rep u := rfl
+
+/-- The window's sharing relation is the family's, definitionally. -/
+theorem window_share (S : PlusSharingWitnessFamily Γ Del) (u : ℤ)
+    (i j : Fin S.lassos.length) : S.window.share u i j ↔ S.share u i j := Iff.rfl
+
+theorem window_NB (S : PlusSharingWitnessFamily Γ Del) : S.window.NB = S.NB := rfl
+
+theorem window_NF (S : PlusSharingWitnessFamily Γ Del) : S.window.NF = S.NF := rfl
+
+theorem window_NM (S : PlusSharingWitnessFamily Γ Del) : S.window.NM = S.NM := rfl
+
+theorem window_cohWindowLo (S : PlusSharingWitnessFamily Γ Del) :
+    S.window.cohWindowLo = S.cohWindowLo := rfl
+
+theorem window_cohWindowHi (S : PlusSharingWitnessFamily Γ Del) :
+    S.window.cohWindowHi = S.cohWindowHi := rfl
 
 /--
 **Every time has a representative in the combined window carrying the same data**, at the

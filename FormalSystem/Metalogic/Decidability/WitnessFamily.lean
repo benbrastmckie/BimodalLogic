@@ -11,12 +11,14 @@ import FormalSystem.Metalogic.Decidability.WitnessFamily.Std
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Agreement
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Decide
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Examples
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Skeleton
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Basic
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Thread
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Frame
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Histories
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Predicates
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Decide
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Window
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Fulfil
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Agreement
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Specialize

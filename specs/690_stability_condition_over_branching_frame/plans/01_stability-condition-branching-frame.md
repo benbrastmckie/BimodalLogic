@@ -1,7 +1,7 @@
 # Implementation Plan: Stability Condition (C5) on the Branching Witness Frame
 
 - **Task**: 690 - Build the stability condition (C5) `StabFaithful` on the branching witness frame
-- **Status**: [PARTIAL]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 41 hours
 - **Dependencies**: None blocking. Territory overlap with concurrent tasks 623 and 684 on the
   registration/aggregator files — see Risks & Mitigations R1 and Phase 22.
@@ -682,6 +682,24 @@ declaration and by Phase 15's decidability instance elaborating without `open Cl
 
 ### Phase 13: Decide — window arithmetic re-index [COMPLETED]
 
+**AMENDED** (cycle 5 user decision, Option 1 on the Phase 16 gate — see
+`specs/690_stability_condition_over_branching_frame/.decisions.json`): this phase gains one
+additive item, executed after its original tasks had already landed.
+
+- [x] Add `SharingWindow`, a structure extending `SharingSkeleton` with the combined-period
+      triple `(NB, NF, NM)` together with `NB_pos`, `NF_pos`, `NM_nonneg` and the three
+      compatibility facts the representative congruences need (`nbr_dvd_NB`, `nfr_dvd_NF`,
+      `nmr_le_NM`), plus `PlusSharingWitnessFamily.window` supplying it from the combined periods
+      this phase already defines *(deviation: altered — sited in the new label-free module
+      `WitnessFamily/Sharing/Window.lean` rather than in `PlusWitnessFamily/Decide.lean`, because
+      the structure and everything built on it mention no formula, no label and no language; the
+      `window` projection itself is in `PlusWitnessFamily/Decide.lean` as this phase's file list
+      says)*
+
+This amendment is what discharges Phase 1's finding **F-M3**, that the combined periods do not
+factor through `SharingSkeleton`: they do not, and `SharingWindow` is the structure they factor
+through instead.
+
 **Goal**: The shared window machinery every L⁺ condition's decision procedure stands on, re-indexed
 once so Phases 14–15 are transcriptions rather than arithmetic.
 
@@ -790,68 +808,73 @@ does and that discrepancy must be explained.
 
 ---
 
-### Phase 16: Fulfil re-index — position graph and the `A[g U e]` fixpoint [BLOCKED]
+### Phase 16: Fulfil re-index — position graph and the `A[g U e]` fixpoint [COMPLETED]
 
-**BLOCKER** (Phase 16):
+**GATE RESOLVED** (Phase 16): the measurement gate this phase stopped at has been decided by the
+user, recorded in `specs/690_stability_condition_over_branching_frame/.decisions.json` (cycle 5).
 
-- **What failed**: nothing was attempted. This phase is blocked *before* it starts, by this
-  plan's own Phase 1 gate and its own Rollback/Contingency clause, both of which name a
-  measured number that Phase 1 has now produced.
-- **What was tried**: Phase 1's measurement was executed in full and recorded at
-  `specs/690_stability_condition_over_branching_frame/.measurements/01_substrate-measurement.md`.
-  Two findings bear on this phase:
-  - **F-M1**: `Sharing/Fulfil.lean`'s label-dependent span, measured **per declaration** (the
-    granularity this plan's Phase 1 task list specifies), is **723 lines** — 806 label-free, 723
-    label-dependent, 141 preamble. Research estimated ≈400. This phase's own Scope Hypothesis
-    says: *"a measured label-dependent span above ≈700 lines is grounds to revise the plan rather
-    than proceed"*, and the Rollback/Contingency section says: *"do not proceed on this plan's
-    budget: stop, report, and revise the plan."* **723 > 700.**
-  - **F-M3**: the position graph does **not** factor onto `SharingSkeleton` as declared. `perBack`
-    is `|repBack| * ∏ᵢ |lassoᵢ.back|` — a join of the skeleton's representative-segment lengths
-    with the *lassos' label-segment lengths* — so `NB`/`NF`/`NM`, `cohWindowLo`/`cohWindowHi`, and
-    therefore `verts`, `nextTime`, `prevTime`, `succF` and `predF`, are not functions of the
-    skeleton alone. This phase's task list instructs delegation "to `SharingSkeleton` for every
-    declaration Phase 1 classified as label-free"; for the position graph that instruction cannot
-    be followed as written.
-- **Why it's stuck**: this is a budget-and-siting decision, not a proof difficulty. Proceeding
-  without resolving it would mean either silently overrunning a 41-hour plan or silently
-  transcribing ≈300 lines the plan expected to delegate.
-- **What is needed**: a decision between three recorded options, then a plan revision or an
-  explicit instruction to proceed:
-  1. **Adopt `SharingWindow` and proceed** (recommended). A structure extending `SharingSkeleton`
-     with the combined-period triple `(NB, NF, NM)` and its three positivity facts, ~60 lines in
-     an amended Phase 13. The position graph then genuinely delegates and this phase's own new-line
-     count falls back toward the research estimate. Additive to Stage A, not a revision of it.
-  2. **Split this phase into 16.1 (graph) and 16.2 (fixpoint)**, as this phase's task list already
-     permits, and accept roughly two extra hours.
-  3. **Revise the plan** with a re-budgeted Stage E.
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+- **Decision**: Option 1 — **adopt `SharingWindow` and proceed**. A structure extending
+  `SharingSkeleton` with the combined-period triple `(NB, NF, NM)` and its positivity facts is
+  added in an **amended Phase 13**; the position graph is then a function of that window alone and
+  genuinely delegates. This is **additive** to Stage A, not a revision of it.
+- **Explicitly excluded by the decision**: do NOT split this phase into 16.1/16.2 (Option 2), and
+  do NOT re-budget Stage E (Option 3).
+- **Consequence for F-M1** (`Sharing/Fulfil.lean`'s measured 723-line label-dependent span, above
+  the ≈700 revise threshold this phase's own Scope Hypothesis names): the threshold is discharged
+  by the decision rather than by the measurement. The re-budget it would otherwise have triggered
+  is replaced by the `SharingWindow` siting, which moves the position graph, the two fold
+  relations and the walk layer out of the label-dependent span entirely.
+- **Consequence for F-M3** (the position graph does not factor onto `SharingSkeleton`, because
+  `perBack` joins skeleton data with label data): resolved by construction. `SharingWindow`
+  carries the combined periods as fields, so the graph factors through it even though it does not
+  factor through the bare skeleton.
+- **Prior blocker entry**: superseded and removed. Nothing was papered over while this phase was
+  blocked; no `sorry`, no vacuous definition and no placeholder was introduced at any point.
 
-**Also recorded for the revision decision**: Phases 21's two non-vacuity theorems,
-`stabFamily_separates` and `stabFaithful_diagonal`, depend on Phase 12 alone — not on Phases
-16–20. They are two of the three things this plan names as what makes (C5) a pinned obligation
-rather than a signature, and they are reachable now, ahead of the `Fulfil` re-index.
-
-**Resolved by a later dispatch**: Phase 21 has since been executed out of plan order, ahead of
-Phases 16–20, and is [COMPLETED]. Its declared `**Depends on**: 20` was wrong — the phase touches
-no part of the certificate bundle. Its real dependencies are Phase 12 (`StabFaithful`) and Phase
-15 (`decidableStabFaithful`), both [COMPLETED]. Phase 16 remains BLOCKED on the decision above;
-nothing in Phase 21 bears on it.
+**Also recorded**: Phase 21's two non-vacuity theorems, `stabFamily_separates` and
+`stabFaithful_diagonal`, were executed out of plan order ahead of Phases 16–20 and are
+[COMPLETED]. Their declared `**Depends on**: 20` was wrong — the phase touches no part of the
+certificate bundle; its real dependencies are Phases 12 and 15, both [COMPLETED]. Nothing in
+Phase 21 bears on this phase.
 
 
 **Goal**: The (C2') decision machinery's graph-and-fixpoint half, taken from the skeleton where
 Phase 1's measurement says it factors and transcribed where it does not.
 
 **Tasks**:
-- [ ] Re-read Phase 1's measurement record and fix this phase's budget from it **before** writing
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Fulfil.lean`
-- [ ] Port the position-graph layer: positions, the step relation on positions, reachability, and
+- [x] Re-read Phase 1's measurement record and fix this phase's budget from it **before** writing
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Fulfil.lean`
+- [x] Port the position-graph layer: positions, the step relation on positions, reachability, and
       the finite-index argument — delegating to `SharingSkeleton` for every declaration Phase 1
-      classified as label-free
-- [ ] Port the `A[g U e]` least fixpoint and its termination measure, with the label row at
-      `PlusFormula`
-- [ ] If the measurement says the position graph does **not** factor, split this phase into
+      classified as label-free *(deviation: altered — delegated to `SharingWindow`, not to
+      `SharingSkeleton`, per the cycle-5 decision; the layer is sited once and label-free in the
+      new `WitnessFamily/Sharing/Window.lean` (639 lines) rather than transcribed into the L⁺
+      module, so this phase's own L⁺ file carries only what reads a label)*
+- [x] Port the `A[g U e]` least fixpoint and its termination measure, with the label row at
+      `PlusFormula` *(deviation: altered — the termination measure was **not** ported. `AUFix` is
+      already stated at an arbitrary vertex type, an arbitrary `Finset`-valued successor function
+      and two arbitrary `Bool` predicates, so `step`, `iter`, `exists_stab`, `lfp`, `lfp_fixed`,
+      `lfp_least`, `mem_lfp_iff` and `lfp_induction` are imported from `Sharing/Fulfil.lean` and
+      instantiated verbatim. Only the two instantiations `untlFix`/`snceFix` and their four
+      consequences are new.)*
+- [x] If the measurement says the position graph does **not** factor, split this phase into
       16.1 (graph) and 16.2 (fixpoint) and record the split; do not overrun silently
+      *(deviation: skipped — the cycle-5 user decision explicitly rejects this split (Option 2)
+      in favour of `SharingWindow` (Option 1). The graph now factors, so the condition this task
+      is guarded by no longer holds.)*
+
+**Measured outcome** (recorded as this phase's Scope Hypothesis requires):
+
+| File | Lines | Label-free? |
+|------|-------|-------------|
+| `WitnessFamily/Sharing/Window.lean` (new) | 639 | yes — mentions no formula, label or language |
+| `PlusWitnessFamily/Fulfil.lean` (new, this phase's share) | 225 | no — this is the whole re-index |
+| `PlusWitnessFamily/Decide.lean` (the `window` projection) | +66 | no |
+| `AUFix` (reused from `Sharing/Fulfil.lean`) | 0 new | reused verbatim |
+
+Against the ≈1,270-line position-graph estimate the Scope Hypothesis carried, the genuinely
+label-dependent cost of this phase is **225 lines**. The 639-line window module is new but
+language-agnostic and is consumed by any future certificate over any language.
 
 **Timing**: 2 hours
 
@@ -868,13 +891,21 @@ than proceed.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Fulfil.lean` — new
+- `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Window.lean` — new *(deviation:
+  altered — added by the cycle-5 decision; the label-free half of this phase is sited here)*
+- `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Decide.lean` — the `window` projection
+  *(deviation: altered — the amended Phase 13 item, landed with this phase)*
+- `FormalSystem/Metalogic/Decidability/WitnessFamily.lean` — register `Sharing.Window` and the
+  previously-unregistered `Sharing.Skeleton` in the subtree aggregator
 
 **Verification**:
-- `lake build` green
+- `lake build` green — confirmed for `...Sharing.Window`, `...PlusWitnessFamily.Decide` and
+  `...PlusWitnessFamily.Fulfil`
 - The fixpoint's termination is accepted without `decreasing_by` gymnastics beyond what the
-  landed analogue uses
-- Delegation count matches Phase 1's label-free classification (grep the new file for re-proved
-  bodies of declarations the measurement marked label-free; expect none)
+  landed analogue uses — vacuously: the measure is not re-proved at all, `AUFix` is reused
+- Delegation count matches Phase 1's label-free classification: every declaration the measurement
+  marked label-free is delegated, and none is re-proved. The L⁺ module contains no re-proved body
+  of any window, graph, fold or walk declaration.
 
 ---
 
@@ -1097,8 +1128,20 @@ a single separately-committed, territory-aware phase.
       new subtree, satisfying invariant C8 in the same commit that creates the subdirectory
 - [ ] Register `PlusWitnessFamily` in `FormalSystem/Metalogic/Decidability.lean`
 - [ ] Register `FormalSystem/PlusLanguage/Subformulas.lean` in `FormalSystem/PlusLanguage.lean`
-- [ ] Add the new modules to `FormalSystem.lean`'s import list, in its existing alphabetical
-      position convention
+- [ ] Regenerate `FormalSystem.lean`'s import list with
+      `lake exe mk_all --lib FormalSystem`. **This regeneration is REPOSITORY-WIDE and is EXPECTED
+      TO BE WIDE**: it is not a single-line edit, and a diff touching many import lines is the
+      correct outcome, not a Scope-Hypothesis violation — do not stop on its breadth. Gate C33
+      currently reports **16** modules missing from the root aggregator, and this phase covers all
+      of them plus whatever the remaining phases of this task add:
+  - 9 inherited from the state-sharing witness work:
+    `WitnessFamily/Sharing/{Agreement,Basic,Decide,Frame,Fulfil,Histories,Predicates,Specialize,Thread}`
+  - 6 from this task: `WitnessFamily/Sharing/Skeleton`,
+    `PlusWitnessFamily/{Basic,Closure,Decide,Predicates}`, `PlusLanguage/Subformulas`
+  - 1 transferred here from the stability-condition-at-`Formula` task, which closes as
+    complete-modulo-registration on the same user decision: `WitnessFamily/Sharing/Stability`
+      Note `mk_all` is **not** declared in this repository's `lakefile.toml`; it resolves through
+      Mathlib at `.lake/packages/mathlib/.lake/build/bin/mk_all`.
 - [ ] Update `docs/theorem-index.md` with the pinned declarations and their paper anchors (or the
       literal `Paper: —` plus a reason), per invariant C15
 - [ ] Update the axiom census baselines that `scripts/check-module-invariants.sh` C2/C14 assert,
