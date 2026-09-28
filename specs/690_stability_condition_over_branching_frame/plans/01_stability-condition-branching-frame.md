@@ -451,21 +451,21 @@ exceeds 300 lines, the hypothesis failed and the excess must be explained before
 
 ---
 
-### Phase 7: `plusClosureOf` — the set-level closure over `PlusContext` [NOT STARTED]
+### Phase 7: `plusClosureOf` — the set-level closure over `PlusContext` [COMPLETED]
 
 **Goal**: The context-level closure the certificate is indexed by, with the projections the
 agreement induction consumes.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Closure.lean`
-- [ ] `plusClosureOf (S : PlusContext) : Finset PlusFormula`, by the same `foldr` over the mapped
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Closure.lean`
+- [x] `plusClosureOf (S : PlusContext) : Finset PlusFormula`, by the same `foldr` over the mapped
       list that `closureOf` uses (stays on `List` primitives so it computes)
-- [ ] `mem_plusClosureOf`, `self_mem_plusClosureOf`
-- [ ] The eight set-level projections `plusClosureOf_imp_left`, `plusClosureOf_imp_right`,
+- [x] `mem_plusClosureOf`, `self_mem_plusClosureOf`
+- [x] The eight set-level projections `plusClosureOf_imp_left`, `plusClosureOf_imp_right`,
       `plusClosureOf_box`, `plusClosureOf_untl_left`, `plusClosureOf_untl_right`,
       `plusClosureOf_snce_left`, `plusClosureOf_snce_right`, **`plusClosureOf_stab`**
-- [ ] `decidableMemPlusClosureOf`
-- [ ] `plusPremise_mem_closure` / `plusConclusion_mem_closure`, the two `Γ`/`Δ` membership lemmas
+- [x] `decidableMemPlusClosureOf`
+- [x] `plusPremise_mem_closure` / `plusConclusion_mem_closure`, the two `Γ`/`Δ` membership lemmas
       `Target`-style consumers need
 
 **Timing**: 1.5 hours
