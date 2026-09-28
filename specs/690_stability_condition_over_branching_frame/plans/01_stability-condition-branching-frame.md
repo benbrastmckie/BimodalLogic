@@ -974,21 +974,25 @@ now shown to be optimistic.
 
 ---
 
-### Phase 18: Agreement — the model, and the six L cases of `plusTruth_iff_mem` [NOT STARTED]
+### Phase 18: Agreement — the model, and the six L cases of `plusTruth_iff_mem` [COMPLETED]
 
 **Goal**: The presented model and the six non-`stab` constructor cases of the L⁺ agreement
 theorem, each a transcription of its landed `Formula`-side analogue.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Agreement.lean`
-- [ ] `PlusSharingWitnessFamily.model (hat : S.PlusAtomCoherent) : TaskModel S.frame.toTaskFrame`
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Agreement.lean`
+- [x] `PlusSharingWitnessFamily.model (hat : S.PlusAtomCoherent) : TaskModel S.frame.toTaskFrame`
       — the `Quotient.lift` valuation, well defined exactly by (C0)
-- [ ] `valuation_cls`
-- [ ] `plusUntl_mem_along_thread` and `plusSnce_mem_along_thread`, the two inner inductions along
+- [x] `valuation_cls`
+- [x] `plusUntl_mem_along_thread` and `plusSnce_mem_along_thread`, the two inner inductions along
       a thread
-- [ ] `plusTruth_iff_mem`, with the `atom`, `bot`, `imp`, `box`, `untl`, `snce` cases proved. The
+- [x] `plusTruth_iff_mem`, with the `atom`, `bot`, `imp`, `box`, `untl`, `snce` cases proved. The
       `stab` case is Phase 19; carry it as an explicitly-named open case in this phase's working
       state, **not** as a `sorry` — the theorem is not committed until Phase 19 closes it
+      *(deviation: altered — the seventh case was written in the same working pass rather than
+      carried as an open case across two passes. The **constraint the task exists to enforce was
+      met exactly**: no `sorry` and no placeholder was written at any point, and the theorem
+      first appears on disk complete. Only the intermediate two-pass working state was skipped.)*
 
 **Timing**: 2 hours
 
@@ -1007,28 +1011,38 @@ that exactly one commit carries the complete theorem.
 - `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Agreement.lean` — new
 
 **Verification**:
-- Every case except `stab` elaborates with a complete proof
-- `model` and `valuation_cls` elaborate and build green independently
-- No `sorry` is written at any point (the `stab` case is left unwritten, not stubbed)
+- Every case except `stab` elaborates with a complete proof — and so does `stab`; see Phase 19
+- `model` and `valuation_cls` elaborate and build green independently — confirmed
+- No `sorry` is written at any point (the `stab` case is left unwritten, not stubbed) —
+  confirmed: `grep -c sorry` on the new module is `0`
+
+**Measured outcome**: `PlusWitnessFamily/Agreement.lean` is **417** lines carrying Phases 18, 19
+and 20 together, against the ≈300 + ≈20 + ≈150 the three Scope Hypotheses budgeted (≈470). Under
+budget, and the reason is the one Phase 16 established: the frame, the threads, the histories and
+`total_eq_thread` are all inherited from `SharingSkeleton`, so only the valuation is new.
 
 ---
 
-### Phase 19: Agreement — the `stab` case, which pins (C5) [NOT STARTED]
+### Phase 19: Agreement — the `stab` case, which pins (C5) [COMPLETED]
 
 **Goal**: Discharge the seventh case of `plusTruth_iff_mem` using `StabFaithful`, which is what
 makes (C5) a pinned obligation rather than a signature.
 
 **Tasks**:
-- [ ] Add `(hstab : S.StabFaithful)` to `plusTruth_iff_mem`'s hypotheses
-- [ ] Forward direction: given `∀ σ` with matching state, `φ` true — for each `j` with
+- [x] Add `(hstab : S.StabFaithful)` to `plusTruth_iff_mem`'s hypotheses
+- [x] Forward direction: given `∀ σ` with matching state, `φ` true — for each `j` with
       `share u i j`, take `Thread.const S j` at offset `s`; `hist_state` + `cls_eq` give the state
       match; the induction hypothesis gives `φ ∈ S.L j u`; `hstab` gives `stab φ ∈ S.L i u`
-- [ ] Backward direction: given `stab φ ∈ S.L i u` and `σ` with matching state — `total_eq_thread`
+- [x] Backward direction: given `stab φ ∈ S.L i u` and `σ` with matching state — `total_eq_thread`
       gives `σ = S.hist θ' s'` via `WorldHistory.ext_state`; `share_of_cls_eq` turns the state
       match into `share u i (θ'.idx (s'+t))`; `hstab` gives membership; the induction hypothesis
       concludes
-- [ ] Commit Phases 18+19 as the single atomic unit declared in Phase 18
-- [ ] Record in the module header that the `stab` case is the `box` case with `share`-gating, and
+- [x] Commit Phases 18+19 as the single atomic unit declared in Phase 18 *(deviation: altered —
+      the single commit also carries Phase 20, because Phase 20's `plusTruth_main_iff_mem`,
+      `PlusCertifies` and `plusRefutes_of_certifies` live in the same file and the file must build
+      as a unit. The declared requirement — that exactly one commit carries the complete
+      `plusTruth_iff_mem` — is met.)*
+- [x] Record in the module header that the `stab` case is the `box` case with `share`-gating, and
       that it is unprovable without (C5)
 
 **Timing**: 1.5 hours
@@ -1048,30 +1062,51 @@ to grind through.
 - `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Agreement.lean` — the `stab` case
 
 **Verification**:
-- `plusTruth_iff_mem` elaborates complete, all seven cases, no `sorry`
-- `lake build` green
-- Removing `hstab` from the hypotheses makes the `stab` case fail to elaborate — record this as
-  the positive evidence that (C5) is load-bearing and not decorative
+- `plusTruth_iff_mem` elaborates complete, all seven cases, no `sorry` — confirmed
+- `lake build` green — confirmed
+- Removing `hstab` from the hypotheses makes the `stab` case fail to elaborate — **confirmed
+  mechanically.** A per-binder drop-and-re-elaborate check over all six explicit hypotheses
+  reports every one of them `load-bearing`, and the break `hstab` produces is located at the
+  `rw [hstab ...]` inside the `stab` case and nowhere else. Stated precisely, so the evidence is
+  not overclaimed: this establishes that the proof term genuinely consumes (C5) in the `stab`
+  case — it is not a proof that no other proof of the case exists without it. The semantic reason
+  it cannot is the one recorded in the module header: without (C5) the label `stab φ ∈ S.L i u`
+  has no connection at all to the labels at the other indices of the `share`-class, which is
+  exactly what `PlusTruthAt`'s `stab` clause quantifies over.
 - `#print axioms PlusSharingWitnessFamily.plusTruth_iff_mem` within
-  `[propext, Classical.choice, Quot.sound]`
+  `[propext, Classical.choice, Quot.sound]` — confirmed, exactly that set
+
+**Measured outcome**: the `stab` case is **24** lines, against research F3's 15–20 estimate and
+well inside the ~60-line tripwire that would have signalled a mis-stated (C5). The Phase 12
+statement of (C5) is the form the semantics needs.
 
 ---
 
-### Phase 20: The certificate bundle and the refutation interface [NOT STARTED]
+### Phase 20: The certificate bundle and the refutation interface [COMPLETED]
 
 **Goal**: `PlusCertifies` (six conditions including (C5)), its decision instance, and the
 joint-countermodel producer.
 
 **Tasks**:
-- [ ] `PlusCertifies (S) (t) : Prop` bundling `PlusAtomCoherent`, `(PlusLocalCoherentShare ∧
+- [x] `PlusCertifies (S) (t) : Prop` bundling `PlusAtomCoherent`, `(PlusLocalCoherentShare ∧
       PlusThreadFulfilling)`, `PlusBoxFaithful`, `PlusTarget t`, and **`StabFaithful`**, in the
       cheapest-first projection order a checker evaluates in
-- [ ] `decidablePlusCertifies`, by `inferInstanceAs` over the five component instances
-- [ ] `PlusWitnessFamily.PlusRefutes (Γ Δ : PlusContext) : Prop` — the joint-countermodel
+- [x] `decidablePlusCertifies`, by `inferInstanceAs` over the five component instances
+      *(deviation: altered — **two of the five component instances did not exist.** Neither
+      `Decidable PlusBoxFaithful` (C3) nor `Decidable (PlusTarget t)` (C4) had been written by any
+      earlier phase; the `Formula` side has both in `WitnessFamily/Decide.lean:924,928` and no
+      phase of this plan was ever assigned their L⁺ analogues. This is a **plan gap**, not a
+      proof difficulty: the first `inferInstanceAs` simply failed to synthesize. The missing layer
+      — `PlusLabelledLasso.mem_all_neg_of_period`/`mem_all_fwd_of_period`/`mem_all_iff_window`,
+      `PlusWitnessFamily.mem_all_iff_window`, `instDecidablePlusMemAll`, `plusBoxClause` and its
+      instance, `plusBoxFaithful_iff_forall`, `decidablePlusBoxFaithful`, `decidablePlusTarget`,
+      ≈130 lines — was written into `PlusWitnessFamily/Decide.lean`, the module that owns the rest
+      of the L⁺ decision procedures, and is recorded in this phase's file list below.)*
+- [x] `PlusWitnessFamily.PlusRefutes (Γ Δ : PlusContext) : Prop` — the joint-countermodel
       existential over `PlusTruthAt`, mirroring `WitnessFamily.Refutes`
-- [ ] `plusTruth_main_iff_mem`, then `plusJoint_countermodel`, then
+- [x] `plusTruth_main_iff_mem`, then `plusJoint_countermodel`, then
       `plusRefutes_of_certifies`
-- [ ] `example (S) (t) : Decidable (S.PlusCertifies t) := inferInstance`, confirming synthesis
+- [x] `example (S) (t) : Decidable (S.PlusCertifies t) := inferInstance`, confirming synthesis
       rather than asserting it
 
 **Timing**: 2 hours
@@ -1087,12 +1122,17 @@ task exists to prevent.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Agreement.lean` — bundle and refutation interface
+- `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Decide.lean` — the (C3) and (C4)
+  decision layer *(deviation: altered — added by this phase to close the plan gap described on
+  the second task above)*
 
 **Verification**:
-- `lake build` green
-- The `inferInstance` example elaborates
-- `PlusCertifies` mentions `StabFaithful` (grep confirms)
-- `#print axioms plusRefutes_of_certifies` within the permitted set
+- `lake build` green — confirmed, zero warnings
+- The `inferInstance` example elaborates — confirmed
+- `PlusCertifies` mentions `StabFaithful` (grep confirms) — confirmed; the bundle has **six**
+  components, not five
+- `#print axioms plusRefutes_of_certifies` within the permitted set — confirmed,
+  `{propext, Classical.choice, Quot.sound}`
 
 ---
 

@@ -827,4 +827,143 @@ end SmokeTest
 
 end PlusSharingWitnessFamily
 
+/-! ## The global-membership window, and the (C3)/(C4) instances
+
+(C3) `PlusBoxFaithful` reads `bx χ = true ↔ ∀ i t, χ ∈ W.L i t` — an unbounded quantifier over
+ℤ on the right — and (C4) `PlusTarget` reads two list scans at a single time. Both are decided
+here rather than in the earlier condition-by-condition sections, because (C3)'s collapse is the
+one window argument in this module that reads **no neighbours**: one period on each side
+suffices, where the local checks need two.
+-/
+
+namespace PlusLabelledLasso
+
+variable {C : Finset PlusFormula}
+
+/-- A formula present throughout one full backward period is present at **every** negative
+position. -/
+theorem mem_all_neg_of_period (Λ : PlusLabelledLasso C) {g : PlusFormula} {a : ℤ}
+    (ha : a + Λ.nb < 0) (h : ∀ r : ℤ, a < r → r ≤ a + Λ.nb → g ∈ Λ.lab r) :
+    ∀ r : ℤ, r < 0 → g ∈ Λ.lab r := by
+  intro r hr
+  have hnb := Λ.nb_pos
+  set r' : ℤ := (a + 1) + (r - (a + 1)) % Λ.nb with hr'
+  have hlo : a + 1 ≤ r' := by
+    have : 0 ≤ (r - (a + 1)) % Λ.nb := Int.emod_nonneg _ (by omega)
+    omega
+  have hhi : r' < (a + 1) + Λ.nb := by
+    have : (r - (a + 1)) % Λ.nb < Λ.nb := Int.emod_lt_of_pos _ hnb
+    omega
+  have hres : r' % Λ.nb = r % Λ.nb := LabelledLasso.reduce_emod Λ.nb (a + 1) r
+  have hlab : Λ.lab r = Λ.lab r' := Λ.lab_congr_back hr (by omega) hres.symm
+  rw [hlab]
+  exact h r' (by omega) (by omega)
+
+/-- A formula present throughout one full forward period is present at **every** position at or
+beyond the window. -/
+theorem mem_all_fwd_of_period (Λ : PlusLabelledLasso C) {g : PlusFormula} {b : ℤ}
+    (hb : Λ.nm ≤ b) (h : ∀ r : ℤ, b ≤ r → r < b + Λ.nf → g ∈ Λ.lab r) :
+    ∀ r : ℤ, Λ.nm ≤ r → g ∈ Λ.lab r := by
+  intro r hr
+  have hnf := Λ.nf_pos
+  set r' : ℤ := b + (r - b) % Λ.nf with hr'
+  have hlo : b ≤ r' := by
+    have : 0 ≤ (r - b) % Λ.nf := Int.emod_nonneg _ (by omega)
+    omega
+  have hhi : r' < b + Λ.nf := by
+    have : (r - b) % Λ.nf < Λ.nf := Int.emod_lt_of_pos _ hnf
+    omega
+  have hres : r' % Λ.nf = r % Λ.nf := LabelledLasso.reduce_emod Λ.nf b r
+  have hres' : (r' - Λ.nm) % Λ.nf = (r - Λ.nm) % Λ.nf := by
+    rw [Int.sub_emod, Int.sub_emod r, hres]
+  have hlab : Λ.lab r = Λ.lab r' := Λ.lab_congr_fwd hr (by omega) hres'.symm
+  rw [hlab]
+  exact h r' (by omega) (by omega)
+
+/-- **Global label membership collapses to one finite window** of width
+`|back| + |mid| + |fwd|`. -/
+theorem mem_all_iff_window (Λ : PlusLabelledLasso C) (χ : PlusFormula) :
+    (∀ t : ℤ, χ ∈ Λ.lab t) ↔ ∀ t ∈ Finset.Ico (-Λ.nb) (Λ.nm + Λ.nf), χ ∈ Λ.lab t := by
+  have hnb := Λ.nb_pos
+  have hnf := Λ.nf_pos
+  have hnm := Λ.nm_nonneg
+  constructor
+  · intro h t _; exact h t
+  · intro h
+    have hwin : ∀ r : ℤ, -Λ.nb ≤ r → r < Λ.nm + Λ.nf → χ ∈ Λ.lab r :=
+      fun r h1 h2 => h r (Finset.mem_Ico.mpr ⟨h1, h2⟩)
+    intro t
+    rcases lt_or_ge t 0 with hneg | hnn
+    · refine Λ.mem_all_neg_of_period (a := -Λ.nb - 1) (by omega) ?_ t hneg
+      intro r hr1 hr2
+      exact hwin r (by omega) (by omega)
+    rcases lt_or_ge t Λ.nm with hmid | hfar
+    · exact hwin t (by omega) (by omega)
+    · refine Λ.mem_all_fwd_of_period (b := Λ.nm) le_rfl ?_ t hfar
+      intro r hr1 hr2
+      exact hwin r (by omega) (by omega)
+
+end PlusLabelledLasso
+
+namespace PlusWitnessFamily
+
+variable {Γ Del : PlusContext}
+
+/-- Global membership along one lasso collapses to that lasso's own window. Stated at `W.L` so
+that instance search matches the form `PlusBoxFaithful` actually uses. -/
+theorem mem_all_iff_window (W : PlusWitnessFamily Γ Del) (i : Fin W.lassos.length)
+    (χ : PlusFormula) :
+    (∀ t : ℤ, χ ∈ W.L i t) ↔
+      ∀ t ∈ Finset.Ico (-(W.lassos.get i).nb) ((W.lassos.get i).nm + (W.lassos.get i).nf),
+        χ ∈ W.L i t :=
+  PlusLabelledLasso.mem_all_iff_window (W.lassos.get i) χ
+
+/-- Global membership along one lasso is decidable. -/
+instance instDecidablePlusMemAll (W : PlusWitnessFamily Γ Del) (i : Fin W.lassos.length)
+    (χ : PlusFormula) : Decidable (∀ t : ℤ, χ ∈ W.L i t) :=
+  decidable_of_iff _ (W.mem_all_iff_window i χ).symm
+
+/-- The box-faithfulness clause a single closure member imposes. Only boxed formulas impose
+anything; this is what turns `PlusBoxFaithful`'s unbounded `∀ χ : PlusFormula` into a `Finset`
+quantifier. The `stab` case is `True` here — `⊡` is not history- and time-independent, and (C5)
+is what pins it. -/
+def plusBoxClause (W : PlusWitnessFamily Γ Del) : PlusFormula → Prop
+  | PlusFormula.box χ => (W.bx χ = true ↔ ∀ (i : Fin W.lassos.length) (t : ℤ), χ ∈ W.L i t)
+  | _ => True
+
+/-- `plusBoxClause` is decidable at every L⁺ formula, by `instDecidablePlusMemAll` and
+finiteness of the lasso index. -/
+instance instDecidablePlusBoxClause (W : PlusWitnessFamily Γ Del) :
+    DecidablePred W.plusBoxClause := by
+  intro ψ
+  cases ψ <;> (dsimp only [plusBoxClause]; infer_instance)
+
+/-- Box faithfulness is exactly `plusBoxClause` at every closure member. -/
+theorem plusBoxFaithful_iff_forall (W : PlusWitnessFamily Γ Del) :
+    W.PlusBoxFaithful ↔ ∀ ψ ∈ plusClosureOf (Γ ++ Del), W.plusBoxClause ψ := by
+  constructor
+  · intro h ψ hψ
+    cases ψ with
+    | atom p => trivial
+    | bot => trivial
+    | imp a b => trivial
+    | box χ => exact h χ hψ
+    | untl g e => trivial
+    | snce g e => trivial
+    | stab χ => trivial
+  · intro h χ hχ
+    exact h (PlusFormula.box χ) hχ
+
+/-- **(C3) decides** by the `mid` window plus the two periodicities. -/
+instance decidablePlusBoxFaithful (W : PlusWitnessFamily Γ Del) : Decidable W.PlusBoxFaithful :=
+  decidable_of_iff _ (W.plusBoxFaithful_iff_forall).symm
+
+/-- **(C4) decides** outright, by two list scans. -/
+instance decidablePlusTarget (W : PlusWitnessFamily Γ Del) (t : ℤ) :
+    Decidable (W.PlusTarget t) := by
+  dsimp only [PlusTarget]
+  infer_instance
+
+end PlusWitnessFamily
+
 end FormalSystem.Metalogic.Decidability
