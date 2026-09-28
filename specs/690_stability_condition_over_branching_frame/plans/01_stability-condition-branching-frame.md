@@ -488,20 +488,20 @@ extra projection. Confirm by line count at phase end.
 
 ---
 
-### Phase 8: `PlusLabelledLasso` and `PlusWitnessFamily` [NOT STARTED]
+### Phase 8: `PlusLabelledLasso` and `PlusWitnessFamily` [COMPLETED]
 
 **Goal**: The L⁺ certificate's two base datatypes, transcribed from `WitnessFamily/Basic.lean`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Basic.lean`
-- [ ] `structure PlusLabelledLasso (C : Finset PlusFormula)` with `back`, `mid`, `fwd`,
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Basic.lean`
+- [x] `structure PlusLabelledLasso (C : Finset PlusFormula)` with `back`, `mid`, `fwd`,
       `back_ne`, `fwd_ne`, `label_sub`, `deriving DecidableEq`
-- [ ] `lab`, `lab_def`, `nb`/`nm`/`nf`, `nb_pos`, `nf_pos`, `nm_nonneg`, `lab_sub_back_length`,
+- [x] `lab`, `lab_def`, `nb`/`nm`/`nf`, `nb_pos`, `nf_pos`, `nm_nonneg`, `lab_sub_back_length`,
       `lab_add_fwd_length`, `lab_subset` — all through `Periodic.unrollOf`, no constructor match
       (research F5: these are already language-agnostic in substance)
-- [ ] `structure PlusWitnessFamily (Γ Δ : PlusContext)` with `bx : PlusFormula → Bool`,
+- [x] `structure PlusWitnessFamily (Γ Δ : PlusContext)` with `bx : PlusFormula → Bool`,
       `lassos : List (PlusLabelledLasso (plusClosureOf (Γ ++ Δ)))`, `lassos_ne`
-- [ ] `lassos_length_pos`, `mainIdx`, `PlusWitnessFamily.L`, `main`, `subset_plusClosureOf`
+- [x] `lassos_length_pos`, `mainIdx`, `PlusWitnessFamily.L`, `main`, `subset_plusClosureOf`
 
 **Timing**: 2 hours
 
