@@ -11,7 +11,7 @@ next_project_number: 690
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,682,686,687,689 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,682,686,687 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650,683 | 298,464,502,563,649,682 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,684 | 231,465,497,564,565,616,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,685 | 428,498,499,500,623,684 | algebraic-representation, decidability, metalogic |
@@ -77,7 +77,6 @@ next_project_number: 690
 ### Documentation
 
 687 [NOT STARTED] — Close the cross-repository citation and audit-surface gap...
-689 [PLANNED] — Reconcile four records with what the code actually says, each...
 
 ### Formula Refactor
 
@@ -112,12 +111,13 @@ next_project_number: 690
 ## Tasks
 
 ### 689. Reconcile records with landed code
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: documentation
 - **Dependencies**: None
 - **Research**: [689_reconcile_records_with_landed_code/reports/01_reconcile-records-landed-code.md]
 - **Plan**: [689_reconcile_records_with_landed_code/plans/01_reconcile-records-landed-code.md]
+- **Summary**: [689_reconcile_records_with_landed_code/summaries/01_reconcile-records-landed-code-summary.md]
 
 **Description**: Reconcile four records with what the code actually says, each discovered by an implementation that found its own plan or a sibling's report to be wrong. None is a code defect; all four are places where a durable record would mislead the next reader.
 
