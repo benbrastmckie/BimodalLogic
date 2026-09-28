@@ -4,8 +4,21 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 693,
+  "next_project_number": 694,
   "active_projects": [
+    {
+      "project_number": 693,
+      "project_name": "a1_compression_conformance_adequacy_chain",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "VERDICT-FIRST CONFORMANCE TASK. Determine whether the landed compression theorem discharges obligation A1 of the companion ModelChecker repository's bimodal adequacy chain, and if so update the cross-repository record; if not, state precisely what is missing.\n\nUPSTREAM OBLIGATION (verbatim, ~/Projects/ModelChecker/code/src/model_checker/theory_lib/bimodal/docs/ADEQUACY.md:628): 'A1 | Compression: a Z-time countermodel yields a certificate with lengths bounded by f(|C|) | Open. Route named, not built. Section 7.1.' That document also records A1 as 'the only genuinely open mathematics in the (ADEQ) chain', and records A3 (bound realization) as 'Vacuous until A1 supplies f'.\n\nLANDED CANDIDATE: FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Family.lean:153 exists_witnessFamily_of_not_validZTime, with compressionBound at Compression/Extract.lean:311, the candidate list cands and mem_cands_of_bounded in Compression/Enumerate.lean, and validZTime_iff_noCertifiedCandidate plus Compression.decidableValidZTime in Compression/Assembly.lean. All are sorry-free with axiom closure exactly {propext, Classical.choice, Quot.sound}.\n\nQUESTIONS TO SETTLE, in order:\n1. Does exists_witnessFamily_of_not_validZTime instantiate A1 as stated, with compressionBound serving as A1 f? Compare the certificate notion: the landed W.Certifies is the conjunction of the conditions the upstream document calls (C1)-(C4), so confirm the condition sets agree name for name and clause for clause, not merely in count.\n2. SCOPE CAVEAT that must be resolved, not glossed: the landed theorem is stated at WitnessFamily [] [φ] -- empty premise set, single conclusion. The compression work explicitly declared non-empty-premise SemanticConsequenceIn decidability a non-goal because the tree has no context-conjunction deduction theorem. Determine whether A1 as the upstream chain consumes it needs the general Gamma |= Delta form or only the empty-premise form. If the general form is needed, A1 is NOT closed and the residue must be stated as its own obligation.\n3. Does compressionBound satisfy A3 realization: are the configured back/fwd required to be common multiples of the compressed family periods, and is mid at least its mid length? A3 also carries a max_witnesses precondition (None, or at least the boxed-subformula count). Report whether A3 is now discharged, still vacuous, or newly live-and-open.\n4. Check whether the upstream claim that absence can be decided by verified code rather than by trusting Z3 UNSAT is now supported, given cands finiteness and enumeration completeness.\n\nDELIVERABLES: a report recording the verdict per question with declaration-level citations; if A1 is discharged, the updated row text for the upstream table plus any scripts/lean-citation-manifest.json entries the new declarations require (C35 is enforced and currently green, so any manifest change must keep it byte-current). DO NOT EDIT THE MODELCHECKER REPOSITORY -- it is a separate repo with its own task system; produce the row text and hand it off. Cite declarations by fully qualified name, never by line number alone: the upstream provenance note records that line numbers went stale underneath unchanged names while every gate in both repositories stayed green.",
+      "topic": "decidability",
+      "created": "2026-09-28T21:23:00Z",
+      "last_updated": "2026-09-28T21:23:00Z",
+      "file_scope": [
+        "specs/"
+      ]
+    },
     {
       "project_number": 692,
       "project_name": "investigate_lake_build_guard_false_green",
