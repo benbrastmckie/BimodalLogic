@@ -231,7 +231,7 @@ explicitness differs from the spike's), record the delta rather than silently ab
 
 ---
 
-### Phase 2: `Compression/Cycle.lean` (part A) — generic walk machinery [IN PROGRESS]
+### Phase 2: `Compression/Cycle.lean` (part A) — generic walk machinery [COMPLETED]
 
 **Goal**: Transcribe, presentation-free, the walk and pigeonhole plumbing the good-cycle
 construction stands on, over the type space `{S : Finset Formula // S ∈ C.powerset}`.
@@ -282,7 +282,7 @@ any statement that needed more than a mechanical substitution.
 
 ---
 
-### Phase 3: `Compression/Cycle.lean` (part B) — good cycles [NOT STARTED]
+### Phase 3: `Compression/Cycle.lean` (part B) — good cycles [COMPLETED]
 
 **Goal**: The root-saturated cycle of [GKWZ] Thm 11.45, presentation-free: a cycle through a
 recurring type that realises the event of every eventuality that type carries.
@@ -324,7 +324,7 @@ own lemma rather than growing the phase.
 
 ---
 
-### Phase 4: `Compression/Fulfil.lean` (part A) — eventuality propagation [NOT STARTED]
+### Phase 4: `Compression/Fulfil.lean` (part A) — eventuality propagation [COMPLETED]
 
 **Goal**: The two propagation lemmas and the two iterated-periodicity lemmas that turn "the cycles
 are good" into "every eventuality is discharged".
@@ -366,7 +366,7 @@ Phase 1 is wrong and must be corrected there, not patched here.
 
 ---
 
-### Phase 5: `Compression/Fulfil.lean` (part B) — fulfilment from two good cycles [NOT STARTED]
+### Phase 5: `Compression/Fulfil.lean` (part B) — fulfilment from two good cycles [COMPLETED]
 
 **Goal**: `fulfillingSeqLab_of_good_cycles` — the bridge from a bi-periodic locally coherent label
 sequence with two good cycles to full `FulfillingSeqLab`.
@@ -405,7 +405,7 @@ signals a transcription error rather than a genuine difference.
 
 ---
 
-### Phase 6: `Compression/Extract.lean` (part A) — the three walks [NOT STARTED]
+### Phase 6: `Compression/Extract.lean` (part A) — the three walks [IN PROGRESS]
 
 **Goal**: The ℤ geometry. From a history's `typeAtM` sequence, produce the backward good cycle, the
 forward good cycle, and the two-leg mid walk with the point of interest surviving as a marked
