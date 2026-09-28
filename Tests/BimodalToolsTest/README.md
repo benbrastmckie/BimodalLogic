@@ -31,7 +31,7 @@ is listed in `scripts/module-invariants-manifest.txt`. A new test that needs the
 | File | Lines | Description |
 |------|------:|-------------|
 | `C5SmokeTest.lean` | 250 | <!-- TODO: add description --> |
-| `CertificateImportTest.lean` | 201 | Acceptance rows for `check_certificate`: the non-vacuity family accepted, the separation family rejected naming its obligation, structural rejection, and the wire-format round trips |
+| `CertificateImportTest.lean` | 205 | Acceptance rows for `check_certificate`: the non-vacuity family accepted, the separation family rejected naming its obligation, structural rejection, and the wire-format round trips |
 | `DatasetGeneratorTest.lean` | 552 | <!-- TODO: add description --> |
 | `EnumeratorCountsTest.lean` | 91 | <!-- TODO: add description --> |
 | `FormulaMutatorTest.lean` | 194 | <!-- TODO: add description --> |

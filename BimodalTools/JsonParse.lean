@@ -13,14 +13,24 @@ A hand-rolled recursive-descent JSON parser for the tag-format formula AST that
 `BimodalTools.DataExport`'s `Formula.toJson` emits, plus the small envelope primitives its
 consumers need (string, natural-number and skip-a-value readers).
 
-This module exists so the parser has exactly one home. It was previously replicated verbatim
-inside `BimodalTools/TableauBridge.lean`; that copy has been deleted and the bridge now opens
-this namespace instead.
+This module now serves **the tableau bridge only**. It was previously replicated verbatim inside
+`BimodalTools/TableauBridge.lean`; that copy has been deleted and the bridge opens this namespace
+instead.
 
 ## Consumers
 
 * `BimodalTools/TableauBridge.lean` — the `tableau_bridge` REPL's request envelope
-* `BimodalTools/CertificateImport.lean` — the `check_certificate` certificate envelope
+
+`BimodalTools/CertificateImport.lean` is **no longer a consumer**. The certificate envelope moved
+to the verified codec in `BimodalTools/CanonicalWire/`, because the certificate wire format is the
+trust base: every parser here is a `partial def` with `while true do`, which yields no equation
+lemmas, so no theorem about this code is possible in principle.
+
+**Recorded follow-up, for a human to file**: migrate the tableau bridge's request envelope onto
+the canonical codec as well, and retire this module. It is out of scope here because the bridge's
+request envelope is not the certificate trust base — a malformed bridge request produces a wrong
+*answer to a query*, not a wrong certification — and widening the migration to it would have
+widened this change's blast radius for no gain in the guarantee that mattered.
 
 `BimodalTools/BenchmarkOracleMain.lean` still carries its own replication. It is an executable
 root, so nothing imports it and the duplication is inert; retiring it the same way is a

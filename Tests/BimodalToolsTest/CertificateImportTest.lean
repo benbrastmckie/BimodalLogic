@@ -25,7 +25,7 @@ root-namespace `main`, and two of those cannot share one environment.
 3. The separation family is rejected, naming fulfilment at lasso `0`, position `-2`, formula
    `p U q` — the same tuple the research spike's scan produced.
 4. A label outside `closureOf (Γ ++ Δ)` is a **structural rejection**, not a parse error.
-5. `pFormula ∘ Formula.toJson` is the identity on the closure members, and
+5. `decodeFormula ∘ encodeFormula` is the identity on the closure members, and
    `parseCertificate ∘ RawCertificate.toJson` is the identity on a whole certificate. Base atoms
    only: `Formula.toJson` drops `Atom.freshIndex`, which is why `mkFamily` rejects a
    fresh-indexed atom outright rather than letting it change identity silently.
@@ -36,7 +36,7 @@ namespace BimodalToolsTest.CertificateImport
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.Decidability
 open FormalSystem.Metalogic.Decidability.WitnessFamilyExamples
-open BimodalTools.JsonParse
+open BimodalTools.CanonicalWire
 open BimodalTools.CertificateImport
 
 /-! ## The example families, as wire data -/
@@ -139,16 +139,19 @@ def outsideExpected : Failure :=
 
 /-! ## Row (d): the wire format round-trips -/
 
--- `pFormula ∘ Formula.toJson = id` on every member of the positive family's closure.
+-- `decodeFormula ∘ encodeFormula = id` on every member of the positive family's closure. These two
+-- rows were retargeted from `pFormula ∘ Formula.toJson` when the envelope moved to the verified
+-- codec: `Formula.toJson` is no longer on the certificate's path, and the closure of `pFormula`
+-- with it is no longer what any certificate round trip runs through.
 #guard (closureList gammaPos).all fun φ =>
-  match pFormula (mkPState φ.toJson) with
-  | .ok (ψ, _) => ψ == φ
+  match decodeFormula (encodeFormula φ) with
+  | .ok ψ => ψ == φ
   | .error _ => false
 
 -- The same, on the separation family's closure.
 #guard (closureList gammaSep).all fun φ =>
-  match pFormula (mkPState φ.toJson) with
-  | .ok (ψ, _) => ψ == φ
+  match decodeFormula (encodeFormula φ) with
+  | .ok ψ => ψ == φ
   | .error _ => false
 
 -- A whole certificate round-trips, field for field.
@@ -175,7 +178,8 @@ def noTargetLine : String := "{\"bx\":[],\"lassos\":[]}"
 -- producer mistakes.
 #guard checkLineToJson noTimeLine != checkLineToJson noTargetLine
 
--- A negative `"time"` survives the wire: `pNat` reads unsigned digits, `pInt` the sign.
+-- A negative `"time"` survives the wire: the canonical integer codec carries the sign, and
+-- `parseInt_printInt` proves the round trip.
 #guard (parseCertificate
     "{\"target\":{\"premises\":[],\"conclusions\":[],\"time\":-7},\"lassos\":[]}").map
   (fun c => c.target.time) = .ok (-7)

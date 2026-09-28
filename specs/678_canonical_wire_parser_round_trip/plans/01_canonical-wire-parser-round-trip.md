@@ -478,7 +478,7 @@ here rather than applied.
 
 ---
 
-### Phase 8: Migrate the certificate envelope onto the verified codec [NOT STARTED]
+### Phase 8: Migrate the certificate envelope onto the verified codec [COMPLETED]
 
 **Goal**: `parseCertificate` and `RawCertificate.toJson` are thin wrappers over the new codec, so
 the trust base loses the old `partial def` parser without `checkLine`, `checkRaw`,

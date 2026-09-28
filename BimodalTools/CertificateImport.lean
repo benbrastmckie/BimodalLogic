@@ -5,8 +5,8 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.WitnessFamily
+import BimodalTools.CanonicalWire.Cert
 import BimodalTools.CertificateRecords
-import BimodalTools.JsonParse
 import BimodalTools.DataExport
 
 /-!
@@ -61,8 +61,11 @@ one-line membership lemma that ties the two together.
 
 ## Atom identity
 
-`Formula.toJson` emits an atom's base name and drops `Atom.freshIndex`, and `pFormula` reads it
-back as `Atom.mkBase`. A certificate therefore round-trips exactly on base atoms only.
+The canonical printer emits an atom's base name and drops `Atom.freshIndex`, and the canonical
+parser reads it back as `Atom.mkBase`. A certificate therefore round-trips exactly on base atoms
+only, which is why `BimodalTools.CanonicalWire.parse_print` carries a base-atom hypothesis — and
+`BimodalTools.CanonicalWire.parse_base_only` then discharges that hypothesis on anything the parser
+returns, so the clause holds as a theorem on the real pipeline rather than as a convention.
 `hasFreshAtom` detects the exception; `checkRaw` rejects on it rather than letting a
 `Finset Formula` membership silently change identity.
 
@@ -100,8 +103,8 @@ contract rather than a local naming choice; a faithful mirror is structural as w
   — live in `BimodalTools/CertificateRecords.lean`, under this same namespace, so that the
   verified codec can sit below this module in the import graph. They are reached through the
   import above and are not redeclared here
-- `parseCertificate`, `RawTarget.toJson`, `RawCertificate.toJson` — the two directions of the
-  wire format
+- `parseCertificate`, `RawCertificate.toJson` — the two directions of the wire format, as thin
+  wrappers over the verified codec in `BimodalTools/CanonicalWire/Cert.lean`
 - `mkLasso`, `mkFamily` — the runtime builders, `dite` on every proof field
 - `Acceptance`, `CheckResult`, `checkRaw` — the acceptance strength, the serializable verdict
   and its JSON line
@@ -121,7 +124,8 @@ contract rather than a local naming choice; a faithful mirror is structural as w
   per-unit predicates the localization scans reuse
 * `BimodalTools/CertificateRecords.lean` — the parsed records, split out so the verified codec
   can import them
-* `BimodalTools/JsonParse.lean` — the tag-format formula parser
+* `BimodalTools/CanonicalWire/Cert.lean` — the verified wire codec this module's two edges wrap
+* `BimodalTools/JsonParse.lean` — the tag-format formula parser, no longer on this module's path
 * `BimodalTools/README.md` — the wire schema, beside the tableau bridge protocol
 -/
 
@@ -131,7 +135,6 @@ namespace BimodalTools.CertificateImport
 
 open FormalSystem.Syntax
 open FormalSystem.Metalogic.Decidability
-open BimodalTools.JsonParse
 open BimodalTools.DataExport
 
 /-!
@@ -153,190 +156,57 @@ theorem mem_closureList {S : Context} {ψ : Formula} :
 def intRange (a b : Int) : List Int := (List.range (b - a).toNat).map (fun k => a + (k : Int))
 
 /-!
-## The envelope parser
+## The envelope, on the verified codec
 
-`JsonParse` supplies the formula reader and the scalar primitives; these are the certificate's
-own array, object and signed-integer readers on top of them.
+`parseCertificate` and `RawCertificate.toJson` are thin wrappers over
+`BimodalTools/CanonicalWire/Cert.lean`, which is where the wire format now lives. The
+hand-rolled recursive-descent parser this replaced was `partial def` with `while true do`
+throughout, so it had no equation lemmas and no theorem about it was possible **in principle** —
+and it was also silently wrong, in twelve recorded ways, four of which decoded a producing-side
+atom name into a *different* atom. What replaced it is a total `def` with a proved fuel bound and
+a proved round trip, so deserialization has left the trust base.
+
+`checkLine`, `checkRaw`, `checkCertified` and `refutes_of_countermodel` are untouched: only the
+decode and print edges moved.
+
+The guarantees now available at this edge, all from `CanonicalWire/Cert.lean`:
+
+- `parse_print` — parsing a printed certificate returns that same certificate
+- `print_parse_canonical` — on canonical bytes the echo is byte-identical to what was sent
+- `printCertificate_injective` — the bytes determine the certificate that was checked
+- `parse_base_only` — atom identity is base-only on anything the parser returns
 -/
 
-/-- Match a bare keyword at the current position, consuming it on success. -/
-def pKeyword (kw : String) (st : PState) : Option PState :=
-  let n := kw.length
-  let seen := String.ofList ((List.range n).filterMap (fun i => st.chars[st.pos + i]?))
-  if seen == kw then some { st with pos := st.pos + n } else none
+/-- Parse a whole certificate from one JSON line, checking its required fields.
 
-/-- Parse a JSON boolean. -/
-def pBool (st : PState) : Except String (Bool × PState) :=
-  let st := pSkipWS st
-  match pKeyword "true" st with
-  | some st => .ok (true, st)
-  | none =>
-    match pKeyword "false" st with
-    | some st => .ok (false, st)
-    | none => .error s!"expected boolean at pos {st.pos}"
-
-/-- Parse a signed JSON integer. `pNat` reads unsigned digits only, and positions go negative. -/
-def pInt (st : PState) : Except String (Int × PState) := do
-  let st := pSkipWS st
-  match pPeek st with
-  | some '-' =>
-    let (n, st) ← pNat (pAdvance st)
-    return (-(n : Int), st)
-  | _ =>
-    let (n, st) ← pNat st
-    return ((n : Int), st)
-
-/-- Parse a JSON array whose elements are read by `p`. -/
-partial def pArrayOf {α : Type} (p : PState → Except String (α × PState))
-    (st : PState) : Except String (List α × PState) := do
-  let st ← pExpect '[' st
-  let stw := pSkipWS st
-  match pPeek stw with
-  | some ']' => return ([], pAdvance stw)
-  | _ =>
-    let mut acc : List α := []
-    let mut st := st
-    while true do
-      let (x, st') ← p st
-      acc := x :: acc
-      let st' := pSkipWS st'
-      match pPeek st' with
-      | some ',' => st := pAdvance st'
-      | some ']' => return (acc.reverse, pAdvance st')
-      | _ => throw s!"expected , or ] in array at pos {st'.pos}"
-    throw "unreachable"
-
-/-- Parse a JSON object, folding each recognised field into `acc` through `handler`. Unknown
-fields are skipped, so a producer may attach metadata this checker does not read. -/
-partial def pObjectFields {α : Type}
-    (handler : String → α → PState → Except String (α × PState))
-    (init : α) (st : PState) : Except String (α × PState) := do
-  let st ← pExpect '{' st
-  let stw := pSkipWS st
-  match pPeek stw with
-  | some '}' => return (init, pAdvance stw)
-  | _ =>
-    let mut acc := init
-    let mut st := st
-    while true do
-      let (key, st') ← pString st
-      let st' := pSkipWS st'
-      let st' ← pExpect ':' st'
-      let (acc', st') ← handler key acc st'
-      acc := acc'
-      let st' := pSkipWS st'
-      match pPeek st' with
-      | some ',' => st := pAdvance st'
-      | some '}' => return (acc, pAdvance st')
-      | _ => throw s!"expected , or }} at pos {st'.pos}"
-    throw "unreachable"
-
-/-- Parse one label set: an array of formula ASTs. -/
-def pLabel : PState → Except String (List Formula × PState) := pArrayOf pFormula
-
-/-- Parse one segment: an array of label sets. -/
-def pSegment : PState → Except String (List (List Formula) × PState) := pArrayOf pLabel
-
-/-- Parse one box-guess entry: the two-element array `[formula, bool]`. -/
-def pBxPair (st : PState) : Except String ((Formula × Bool) × PState) := do
-  let st ← pExpect '[' st
-  let (φ, st) ← pFormula st
-  let st ← pExpect ',' st
-  let (b, st) ← pBool st
-  let st ← pExpect ']' st
-  return ((φ, b), st)
-
-/-- Parse one lasso object. -/
-def pRawLasso : PState → Except String (RawLasso × PState) :=
-  pObjectFields (fun key acc st => do
-    if key == "back" then
-      let (v, st) ← pSegment st
-      return ({ acc with back := v }, st)
-    else if key == "mid" then
-      let (v, st) ← pSegment st
-      return ({ acc with mid := v }, st)
-    else if key == "fwd" then
-      let (v, st) ← pSegment st
-      return ({ acc with fwd := v }, st)
-    else
-      let st ← pSkipValue st
-      return (acc, st)) {}
-
-/-- Parse the `"target"` object. An absent `"time"` leaves `none`, which `complete` reports. -/
-def pRawTarget : PState → Except String (PartialTarget × PState) :=
-  pObjectFields (fun key acc st => do
-    if key == "premises" then
-      let (v, st) ← pArrayOf pFormula st
-      return ({ acc with premises := v }, st)
-    else if key == "conclusions" then
-      let (v, st) ← pArrayOf pFormula st
-      return ({ acc with conclusions := v }, st)
-    else if key == "time" then
-      let (v, st) ← pInt st
-      return ({ acc with time := some v }, st)
-    else
-      let st ← pSkipValue st
-      return (acc, st)) {}
-
-/-- Parse the certificate envelope. Unknown fields are skipped at both nesting levels. -/
-def pRawCertificate : PState → Except String (PartialCertificate × PState) :=
-  pObjectFields (fun key acc st => do
-    if key == "target" then
-      let (v, st) ← pRawTarget st
-      return ({ acc with target := some v }, st)
-    else if key == "bx" then
-      let (v, st) ← pArrayOf pBxPair st
-      return ({ acc with bx := v }, st)
-    else if key == "lassos" then
-      let (v, st) ← pArrayOf pRawLasso st
-      return ({ acc with lassos := v }, st)
-    else
-      let st ← pSkipValue st
-      return (acc, st)) {}
-
-/-- Parse a whole certificate from one JSON line, checking its required fields. -/
-def parseCertificate (s : String) : Except String RawCertificate := do
-  let (c, _) ← pRawCertificate (mkPState s)
-  c.complete
+A thin wrapper over the verified codec. The two required-field messages are still the ones
+`PartialTarget.complete` and `PartialCertificate.complete` produce, because the decoder still lands
+in those mirrors. -/
+def parseCertificate (s : String) : Except String RawCertificate :=
+  BimodalTools.CanonicalWire.parseCertificateCanonical s
 
 /-!
 ## Serialization, the inverse direction
 
-The wire format is pinned executably rather than only in prose: `parseCertificate` composed with
-`RawCertificate.toJson` is the identity on base-atom certificates, and
-`Tests/BimodalToolsTest/CertificateImportTest.lean` checks that as a `#guard`.
+The wire format is pinned as mathematics rather than only executably: `parseCertificate` composed
+with `RawCertificate.toJson` is the identity on base-atom certificates, and that is the theorem
+`BimodalTools.CanonicalWire.parse_print`, not merely a `#guard`. The `#guard` rows in
+`Tests/BimodalToolsTest/CertificateImportTest.lean` remain as instances of it.
 -/
 
-/-- Wrap a list of already-serialized items as a JSON array. -/
+/-- Wrap a list of already-serialized items as a JSON array. Still used by `CheckResult.toJson`,
+which is the *output* line and keeps its own hand-written serializer. -/
 def jsonArray (items : List String) : String := "[" ++ String.intercalate "," items ++ "]"
 
-/-- Serialize a label set. -/
-def labelToJson (X : List Formula) : String := jsonArray (X.map Formula.toJson)
+/-- Serialize a whole certificate, in canonical form.
 
-/-- Serialize a segment. -/
-def segmentToJson (seg : List (List Formula)) : String := jsonArray (seg.map labelToJson)
-
-/-- Serialize one lasso. -/
-def RawLasso.toJson (Λ : RawLasso) : String :=
-  "{\"back\":" ++ segmentToJson Λ.back ++
-  ",\"mid\":" ++ segmentToJson Λ.mid ++
-  ",\"fwd\":" ++ segmentToJson Λ.fwd ++ "}"
-
-/-- Serialize one box-guess entry. -/
-def bxPairToJson (p : Formula × Bool) : String :=
-  "[" ++ p.1.toJson ++ "," ++ (if p.2 then "true" else "false") ++ "]"
-
-/-- Serialize the target condition. -/
-def RawTarget.toJson (tgt : RawTarget) : String :=
-  "{\"premises\":" ++ jsonArray (tgt.premises.map Formula.toJson) ++
-  ",\"conclusions\":" ++ jsonArray (tgt.conclusions.map Formula.toJson) ++
-  ",\"time\":" ++ toString tgt.time ++ "}"
-
-/-- Serialize a whole certificate. -/
+A thin wrapper over the verified printer. The bytes are compact — no space after `:` or `,` —
+where the old serializer inherited `Formula.toJson`'s spaces. `Formula.toJson` itself is untouched:
+its exact bytes are pinned by other tests across many call sites, so the canonical codec carries
+its own printer rather than changing that one. -/
 def RawCertificate.toJson (c : RawCertificate) : String :=
-  "{\"target\":" ++ RawTarget.toJson c.target ++
-  ",\"bx\":" ++ jsonArray (c.bx.map bxPairToJson) ++
-  ",\"lassos\":" ++ jsonArray (c.lassos.map RawLasso.toJson) ++ "}"
+  BimodalTools.CanonicalWire.printCertificate c
+
 
 /-!
 ## The runtime builders
