@@ -323,19 +323,25 @@ edit.
 
 ---
 
-### Phase 4: Skeleton — the quotient frame [NOT STARTED]
+### Phase 4: Skeleton — the quotient frame [COMPLETED]
+
+**Deviation (altered)**: Phases 4 and 5 were closed as a single atomic batch. `Histories.lean`
+reads `Conn` definitionally (`unfold Conn` at `total_eq_thread`), so between Phase 4's move of
+`Conn` to the skeleton and Phase 5's move of the histories layer the tree does not compile; there
+is no green intermediate state to commit. Both phases' own tasks and verification criteria were
+executed in full.
 
 **Goal**: Restate the branching frame on `SharingSkeleton`: the setoid, the world states, the
 connectivity relation, `RelZ`, `frame`, and the four frame constraints.
 
 **Tasks**:
-- [ ] Move `shareSetoid`, `WorldState`, `cls`, `cls_eq`, `share_of_cls_eq`, `time`, `time_cls`
-- [ ] Move `Conn`, `conn_of_reachN`, `conn_symm`, `conn_congr_left`, `conn_congr_right`
-- [ ] Move `RelZ`, `relZ_cls`, `relZ_reflection`, `exists_cls`, `relZ_comp`, `relZ_serial`
-- [ ] Move `frame`, `frame_taskRel`, `frame_comp`, `frame_serial`, `relZ_zero`, `time_of_relZ`,
+- [x] Move `shareSetoid`, `WorldState`, `cls`, `cls_eq`, `share_of_cls_eq`, `time`, `time_cls`
+- [x] Move `Conn`, `conn_of_reachN`, `conn_symm`, `conn_congr_left`, `conn_congr_right`
+- [x] Move `RelZ`, `relZ_cls`, `relZ_reflection`, `exists_cls`, `relZ_comp`, `relZ_serial`
+- [x] Move `frame`, `frame_taskRel`, `frame_comp`, `frame_serial`, `relZ_zero`, `time_of_relZ`,
       `relZ_limit`, `relZ_fib_finite`, `relZ_saturation`, `frame_limit`, `frame_saturation`,
       `instIsRegular`, `instIsRegularTask`, `frame_isZTime`, `frame_sat_ztime`, `frame_sat_base`
-- [ ] Leave `SharingWitnessFamily.frame`, `.WorldState`, `.cls` and the two instances as
+- [x] Leave `SharingWitnessFamily.frame`, `.WorldState`, `.cls` and the two instances as
       re-exports at their exact existing statements
 
 **Timing**: 2 hours
@@ -362,22 +368,22 @@ silently failing over to a different instance, by an `example ... := inferInstan
 
 ---
 
-### Phase 5: Skeleton — histories, `total_eq_thread`, and Stage A closeout [NOT STARTED]
+### Phase 5: Skeleton — histories, `total_eq_thread`, and Stage A closeout [COMPLETED]
 
 **Goal**: Complete the skeleton with the histories layer, then prove Stage A behaviour-preserving
 against Phase 1's recorded baseline.
 
 **Tasks**:
-- [ ] Move `conn_thread`, `hist`, `hist_state`, `thread_is_history`, `total_eq_thread` onto the
+- [x] Move `conn_thread`, `hist`, `hist_state`, `thread_is_history`, `total_eq_thread` onto the
       skeleton
-- [ ] Leave `Sharing/Histories.lean` as a re-export shell at the exact existing statements
-- [ ] Stage A closeout: `lake build` from clean; diff `#print axioms` for every goal in Phase 1's
+- [x] Leave `Sharing/Histories.lean` as a re-export shell at the exact existing statements
+- [x] Stage A closeout: `lake build` from clean; diff `#print axioms` for every goal in Phase 1's
       baseline; confirm `WitnessFamily/Examples.lean`'s `#guard`s still fire; confirm
       `git diff --stat` touches only the five `Sharing/` files this stage owns
-- [ ] Add the short `Sharing/README.md` section research recommends: name `SharingSkeleton`, state
+- [x] Add the short `Sharing/README.md` section research recommends: name `SharingSkeleton`, state
       the measurement (four modules, 1,065 lines, zero uses of `Formula`/`.L`/`.lab`/`.bx`) that
       licenses it, so a future reader does not re-derive it
-- [ ] If any closeout check fails: revert Stage A entirely and record the R2 fallback (duplicate
+- [ ] If any closeout check fails: revert Stage A entirely and record the R2 fallback (duplicate *(deviation: not applicable — no closeout check attributable to Stage A failed, so the R2 fallback was not taken)*
       the 1,065 lines onto the L⁺ side) as the path Phases 9+ will take
 
 **Timing**: 2 hours

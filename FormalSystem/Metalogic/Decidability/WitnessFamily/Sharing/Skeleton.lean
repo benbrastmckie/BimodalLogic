@@ -5,7 +5,11 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.BiLasso.Periodic
+import FormalSystem.Semantics.Validity
+import FormalSystem.Semantics.FrameClassValidity
 import Mathlib.Data.Fintype.Pi
+import Mathlib.Data.Int.SuccPred
+import Mathlib.Order.SuccPred.LinearLocallyFinite
 
 /-!
 # The Label-Free Branching Substrate
@@ -476,6 +480,464 @@ theorem reachN (θ : K.Thread) (n : ℕ) (u : ℤ) :
     exact ih (u + 1)
 
 end Thread
+
+/-! ## The quotient frame
+
+The deterministic device presents its model through `ShiftSet`, whose task relation is the
+functional shift relation. That route is closed here by construction: a branching task relation
+is not a function, so this section builds a `FrameOver intOrder` **directly**, and
+`Semantics/ShiftSet.lean` is neither used nor modified.
+
+**The carrier is a quotient, and only within a single time.** World states are `share`-classes of
+index/time pairs: `(i, u)` and `(j, u)` name the same state exactly when `share u i j`. Pairs at
+*different* times are never identified, so time is a well-defined function on states (`time`) and
+the frame is still a "flow" whose duration is recoverable from its endpoints. That per-time
+restriction is what makes the quotient lift of the task relation go through with no extra
+compatibility field: the four congruences `reachN_congr_left`, `reachN_congr_right`,
+`step_congr_left` and `step_congr_right` are all the compatibility the lift needs, and each is a
+consequence of `share` being an equivalence.
+
+**One two-sided relation, not two.** `FrameOver` takes its primitive on the positive cone and
+extends it by the reflection convention. Rather than discharging each constraint against that
+extension, this section defines the two-sided relation `RelZ` once, proves the reflection law for
+it, and then cites `TaskFrame.compositional_reflect_of_reflective` and its three siblings — the
+same route `ShiftSet.fibre_isRegular` takes. `RelZ` factors through `Conn`, a *duration-free*
+connectivity predicate on raw pairs: forward reachability when the source is earlier, backward
+when it is later. Because `Conn` mentions no duration, the reflection law is `conn_symm` plus an
+`omega` on the time coordinate, rather than a case split on the sign of the duration inside every
+proof.
+-/
+section Frame
+
+open FormalSystem.Semantics
+
+/--
+**The per-time sharing equivalence** on index/time pairs: `(i, u)` and `(j, v)` name the same
+world state exactly when `u = v` and `share u i j`.
+
+Pairs at different times are never identified, which is what keeps `time` well defined on the
+quotient and the frame a flow.
+-/
+def shareSetoid (K : SharingSkeleton) : Setoid (Fin K.n × ℤ) where
+  r p q := p.2 = q.2 ∧ K.share p.2 p.1 q.1
+  iseqv :=
+    { refl := fun p => ⟨rfl, K.share_refl p.2 p.1⟩
+      symm := by
+        rintro p q ⟨ht, hs⟩
+        exact ⟨ht.symm, by rw [← ht]; exact K.share_symm hs⟩
+      trans := by
+        rintro p q r ⟨ht₁, hs₁⟩ ⟨ht₂, hs₂⟩
+        refine ⟨ht₁.trans ht₂, SharingSkeleton.share_trans hs₁ ?_⟩
+        rw [ht₁]
+        exact hs₂ }
+
+/-- The frame's carrier: `share`-classes of index/time pairs. -/
+abbrev WorldState (K : SharingSkeleton) : Type := Quotient K.shareSetoid
+
+/-- The class of an index at a time. -/
+def cls (K : SharingSkeleton) (i : Fin K.n) (u : ℤ) : K.WorldState :=
+  Quotient.mk K.shareSetoid (i, u)
+
+theorem cls_eq {K : SharingSkeleton} {i j : Fin K.n} {u v : ℤ}
+    (hu : u = v) (hs : K.share u i j) : K.cls i u = K.cls j v :=
+  Quotient.sound (⟨hu, hs⟩ : K.shareSetoid.r (i, u) (j, v))
+
+theorem share_of_cls_eq {K : SharingSkeleton} {i j : Fin K.n} {u v : ℤ}
+    (h : K.cls i u = K.cls j v) : u = v ∧ K.share u i j :=
+  Quotient.exact h
+
+/-- Time is well defined on states, because the setoid never crosses a time. -/
+def time (K : SharingSkeleton) (C : K.WorldState) : ℤ :=
+  Quotient.liftOn C (fun p => p.2) (fun _ _ h => h.1)
+
+@[simp]
+theorem time_cls (K : SharingSkeleton) (i : Fin K.n) (u : ℤ) : K.time (K.cls i u) = u := rfl
+
+/--
+**Duration-free connectivity between raw positions.** Forward reachability when the source is
+no later than the target, backward reachability otherwise. Symmetric by `conn_symm`, which is
+what makes the reflection law cheap.
+-/
+def Conn (K : SharingSkeleton) (p q : Fin K.n × ℤ) : Prop :=
+  if p.2 ≤ q.2 then K.ReachN (q.2 - p.2).toNat p.2 p.1 q.1
+  else K.ReachN (p.2 - q.2).toNat q.2 q.1 p.1
+
+theorem conn_of_reachN {K : SharingSkeleton} {n : ℕ} {u : ℤ} {i j : Fin K.n}
+    (h : K.ReachN n u i j) : K.Conn (i, u) (j, u + (n : ℤ)) := by
+  change (if u ≤ u + (n : ℤ) then K.ReachN ((u + (n : ℤ)) - u).toNat u i j
+        else K.ReachN (u - (u + (n : ℤ))).toNat (u + (n : ℤ)) j i)
+  rw [if_pos (by omega : u ≤ u + (n : ℤ)),
+    show ((u + (n : ℤ)) - u).toNat = n from by omega]
+  exact h
+
+theorem conn_symm {K : SharingSkeleton} {p q : Fin K.n × ℤ} (h : K.Conn p q) : K.Conn q p := by
+  unfold Conn at h ⊢
+  rcases lt_trichotomy p.2 q.2 with hlt | heq | hgt
+  · rw [if_pos hlt.le] at h
+    rw [if_neg (by omega)]
+    exact h
+  · rw [if_pos heq.le] at h
+    rw [if_pos heq.ge]
+    have h0 : (q.2 - p.2).toNat = 0 := by omega
+    have h0' : (p.2 - q.2).toNat = 0 := by omega
+    rw [h0] at h
+    rw [h0', reachN_zero]
+    rw [reachN_zero] at h
+    rw [← heq]
+    exact K.share_symm h
+  · rw [if_neg (by omega)] at h
+    rw [if_pos hgt.le]
+    exact h
+
+theorem conn_congr_left {K : SharingSkeleton} {p p' q : Fin K.n × ℤ}
+    (hp : p.2 = p'.2) (hs : K.share p.2 p.1 p'.1) (h : K.Conn p q) : K.Conn p' q := by
+  unfold Conn at h ⊢
+  rw [← hp]
+  split at h
+  · rename_i hle
+    rw [if_pos hle]
+    exact reachN_congr_left (K.share_symm hs) h
+  · rename_i hle
+    rw [if_neg hle]
+    refine reachN_congr_right h ?_
+    have hn : q.2 + (((p.2 - q.2).toNat : ℕ) : ℤ) = p.2 := by omega
+    rw [hn]
+    exact hs
+
+theorem conn_congr_right {K : SharingSkeleton} {p q q' : Fin K.n × ℤ}
+    (hq : q.2 = q'.2) (hs : K.share q.2 q.1 q'.1) (h : K.Conn p q) : K.Conn p q' :=
+  conn_symm (conn_congr_left hq hs (conn_symm h))
+
+/--
+**The two-sided task relation on states.** A duration `d` takes `C` to `C'` when the times
+differ by `d` and the two raw positions are connected.
+-/
+def RelZ (K : SharingSkeleton) (C : K.WorldState) (d : ℤ) (C' : K.WorldState) : Prop :=
+  Quotient.liftOn₂ C C' (fun p q => q.2 = p.2 + d ∧ K.Conn p q)
+    (by
+      intro p₁ q₁ p₂ q₂ hp hq
+      apply propext
+      obtain ⟨hpt, hps⟩ := hp
+      obtain ⟨hqt, hqs⟩ := hq
+      constructor
+      · rintro ⟨ht, hc⟩
+        exact ⟨by omega, conn_congr_right hqt hqs (conn_congr_left hpt hps hc)⟩
+      · rintro ⟨ht, hc⟩
+        refine ⟨by omega, ?_⟩
+        refine conn_congr_right hqt.symm ?_ (conn_congr_left hpt.symm ?_ hc)
+        · rw [← hqt]; exact K.share_symm hqs
+        · rw [← hpt]; exact K.share_symm hps)
+
+@[simp]
+theorem relZ_cls (K : SharingSkeleton) (i j : Fin K.n) (u v d : ℤ) :
+    K.RelZ (K.cls i u) d (K.cls j v) ↔ (v = u + d ∧ K.Conn (i, u) (j, v)) := Iff.rfl
+
+/-- **The reflection law.** Reversing a duration reverses the relation; `Conn` is duration-free
+and symmetric, so only the time coordinate has to move. -/
+theorem relZ_reflection (K : SharingSkeleton) :
+    ∀ (C : K.WorldState) (d : ℤ) (C' : K.WorldState), K.RelZ C d C' ↔ K.RelZ C' (-d) C := by
+  intro C d C'
+  induction C using Quotient.inductionOn with
+  | _ p =>
+    induction C' using Quotient.inductionOn with
+    | _ q =>
+      constructor
+      · rintro ⟨ht, hc⟩
+        exact ⟨by omega, conn_symm hc⟩
+      · rintro ⟨ht, hc⟩
+        exact ⟨by omega, conn_symm hc⟩
+
+/-- Every state is the class of some index at its own time. -/
+theorem exists_cls (K : SharingSkeleton) (C : K.WorldState) :
+    ∃ i : Fin K.n, C = K.cls i (K.time C) := by
+  induction C using Quotient.inductionOn with
+  | _ p => exact ⟨p.1, by cases p; rfl⟩
+
+/-- **Compositionality** for the branching relation, from `reachN_add`. -/
+theorem relZ_comp (K : SharingSkeleton) : TaskFrame.Compositional K.RelZ := by
+  intro C C'' x y hx hy
+  induction C using Quotient.inductionOn with
+  | _ p =>
+    induction C'' using Quotient.inductionOn with
+    | _ r =>
+      constructor
+      · rintro ⟨ht, hc⟩
+        have hle : p.2 ≤ r.2 := by omega
+        unfold Conn at hc
+        rw [if_pos hle] at hc
+        have hsplit : (r.2 - p.2).toNat = x.toNat + y.toNat := by omega
+        rw [hsplit] at hc
+        obtain ⟨k, h₁, h₂⟩ := (K.reachN_add x.toNat y.toNat p.2 p.1 r.1).mp hc
+        refine ⟨K.cls k (p.2 + x), ⟨by omega, ?_⟩, ⟨by omega, ?_⟩⟩
+        · have := conn_of_reachN h₁
+          have hx' : p.2 + ((x.toNat : ℕ) : ℤ) = p.2 + x := by omega
+          rwa [hx'] at this
+        · have := conn_of_reachN (u := p.2 + ((x.toNat : ℕ) : ℤ)) h₂
+          have hx' : p.2 + ((x.toNat : ℕ) : ℤ) = p.2 + x := by omega
+          rw [hx'] at this
+          have hy' : p.2 + x + ((y.toNat : ℕ) : ℤ) = r.2 := by omega
+          rwa [hy'] at this
+      · rintro ⟨C', h₁, h₂⟩
+        revert h₁ h₂
+        induction C' using Quotient.inductionOn with
+        | _ q =>
+          rintro ⟨ht₁, hc₁⟩ ⟨ht₂, hc₂⟩
+          refine ⟨by omega, ?_⟩
+          unfold Conn at hc₁ hc₂ ⊢
+          rw [if_pos (by omega : p.2 ≤ q.2)] at hc₁
+          rw [if_pos (by omega : q.2 ≤ r.2)] at hc₂
+          rw [if_pos (by omega : p.2 ≤ r.2)]
+          have hsplit : (r.2 - p.2).toNat = (q.2 - p.2).toNat + (r.2 - q.2).toNat := by omega
+          rw [hsplit]
+          refine (K.reachN_add _ _ p.2 p.1 r.1).mpr ⟨q.1, hc₁, ?_⟩
+          have hq' : p.2 + (((q.2 - p.2).toNat : ℕ) : ℤ) = q.2 := by omega
+          rw [hq']
+          exact hc₂
+
+/-- **Seriality** for the branching relation: staying on one index is always available in both
+directions. -/
+theorem relZ_serial (K : SharingSkeleton) : TaskFrame.Serial K.RelZ := by
+  intro C x hx
+  induction C using Quotient.inductionOn with
+  | _ p =>
+    obtain ⟨i, u⟩ := p
+    refine ⟨⟨K.cls i (u + x), ?_⟩, ⟨K.cls i (u - x), ?_⟩⟩
+    · refine ⟨rfl, ?_⟩
+      have h := conn_of_reachN (K.reachN_const x.toNat u i)
+      rwa [show u + ((x.toNat : ℕ) : ℤ) = u + x from by omega] at h
+    · refine ⟨show (u : ℤ) = u - x + x from by omega, ?_⟩
+      have h := conn_of_reachN (K.reachN_const x.toNat (u - x) i)
+      rwa [show u - x + ((x.toNat : ℕ) : ℤ) = u from by omega] at h
+
+/--
+**The branching frame.** Built as a literal `FrameOver intOrder`; nothing here routes through
+`ShiftSet`, whose task relation is functional by construction.
+-/
+def frame (K : SharingSkeleton) : FrameOver intOrder where
+  WorldState := K.WorldState
+  worldNonempty := ⟨K.cls ⟨0, K.n_pos⟩ 0⟩
+  PosRel := fun C x C' => K.RelZ C (x : ↑intOrder) C'
+
+/-- **The frame's task relation is the two-sided relation.** The frame's primitive is `RelZ`
+restricted to the positive cone, and `RelZ` satisfies the reflection law, so the reflection
+convention recovers it on the nose. -/
+@[simp]
+theorem frame_taskRel (K : SharingSkeleton) (C : K.WorldState) (d : ℤ) (C' : K.WorldState) :
+    K.frame.TaskRel C d C' ↔ K.RelZ C d C' :=
+  TaskFrame.reflect_restrict_iff (R := K.RelZ) K.relZ_reflection
+
+/-- *Compositionality* at the frame's own task relation. -/
+theorem frame_comp (K : SharingSkeleton) : TaskFrame.Compositional K.frame.TaskRel :=
+  TaskFrame.compositional_reflect_of_reflective K.relZ_reflection K.relZ_comp
+
+/-- *Seriality* at the frame's own task relation. -/
+theorem frame_serial (K : SharingSkeleton) : TaskFrame.Serial K.frame.TaskRel :=
+  TaskFrame.serial_reflect_of_reflective K.relZ_reflection K.relZ_serial
+
+/-! ### The four `def:frame` constraints, and the ℤ-time instances
+
+Limit and Saturation need **no new frame-axiom argument**: the first is
+`TaskFrame.limit_of_succOrder` at the zero-duration law, which asks only that a zero-duration
+transition is the identity — never that the relation is functional; the second is
+`TaskFrame.saturation_of_fib_finite`, whose docstring names exactly this case, an infinite
+carrier with finite fibres. Determinism is nowhere used.
+-/
+
+/-- **The zero-duration law.** A zero-duration transition is the identity of states — the whole
+hypothesis `TaskFrame.limit_of_succOrder` needs. -/
+theorem relZ_zero (K : SharingSkeleton) : ∀ C C' : K.WorldState, K.RelZ C 0 C' → C' = C := by
+  intro C C'
+  induction C using Quotient.inductionOn with
+  | _ p =>
+    induction C' using Quotient.inductionOn with
+    | _ q =>
+      rintro ⟨ht, hc⟩
+      have heq : p.2 = q.2 := by omega
+      unfold Conn at hc
+      rw [if_pos (le_of_eq heq)] at hc
+      rw [show (q.2 - p.2).toNat = 0 from by omega, reachN_zero] at hc
+      refine Quotient.sound (⟨heq.symm, ?_⟩ : K.shareSetoid.r q p)
+      rw [← heq]
+      exact K.share_symm hc
+
+/-- The time coordinate advances by the duration. -/
+theorem time_of_relZ (K : SharingSkeleton) (d : ℤ) :
+    ∀ C C' : K.WorldState, K.RelZ C d C' → K.time C' = K.time C + d := by
+  intro C C'
+  induction C using Quotient.inductionOn with
+  | _ p =>
+    induction C' using Quotient.inductionOn with
+    | _ q => exact fun h => h.1
+
+/-- **Limit**, by `TaskFrame.limit_of_succOrder`: over the discrete integer duration the only
+arbitrarily-small transition is the zero one. -/
+theorem relZ_limit (K : SharingSkeleton) :
+    ∀ C C' : K.WorldState, (∀ x : ℤ, 0 < x → ∃ y, |y| < x ∧ K.RelZ C y C') → C' = C :=
+  TaskFrame.limit_of_succOrder K.relZ_zero
+
+/-- **Fibres are finite.** At a fixed source and duration, every target lies at one fixed time,
+where there are at most `n` classes. The carrier itself is infinite, which is exactly the case
+`TaskFrame.saturation_of_fib_finite` is for. -/
+theorem relZ_fib_finite (K : SharingSkeleton) (C : K.WorldState) (d : ℤ) :
+    (TaskFrame.Fib K.RelZ C d).Finite := by
+  refine Set.Finite.subset (Set.finite_range
+    (fun i : Fin K.n => K.cls i (K.time C + d))) ?_
+  intro C' hC'
+  have ht := K.time_of_relZ d C C' hC'
+  obtain ⟨j, hj⟩ := K.exists_cls C'
+  exact ⟨j, by rw [← ht]; exact hj.symm⟩
+
+/-- **Saturation**, by `TaskFrame.saturation_of_fib_finite`. -/
+theorem relZ_saturation (K : SharingSkeleton) : TaskFrame.Saturation K.RelZ :=
+  TaskFrame.saturation_of_fib_finite K.relZ_fib_finite
+
+/-- *Limit* at the frame's own task relation. -/
+theorem frame_limit (K : SharingSkeleton) : TaskFrame.Limit K.frame.TaskRel :=
+  TaskFrame.limit_reflect_of_reflective K.relZ_reflection K.relZ_limit
+
+/-- *Saturation* at the frame's own task relation. -/
+theorem frame_saturation (K : SharingSkeleton) : TaskFrame.Saturation K.frame.TaskRel :=
+  TaskFrame.saturation_reflect_of_reflective K.relZ_reflection K.relZ_saturation
+
+/-- **The branching frame is regular.** All four constraints, none of them using determinism. -/
+instance instIsRegular (K : SharingSkeleton) : K.frame.IsRegular where
+  comp := K.frame_comp
+  serial := K.frame_serial
+  limit := K.frame_limit
+  saturation := K.frame_saturation
+
+/-- Regularity at the total space as well as at the fibre: instance synthesis does not project
+through `FrameOver.toTaskFrame` on its own. -/
+instance instIsRegularTask (K : SharingSkeleton) : K.frame.toTaskFrame.IsRegular :=
+  K.instIsRegular
+
+/-- **The branching frame is a ℤ-time frame.** Applied with an explicit `@` and four
+`inferInstanceAs` arguments: a `haveI` shadows the `SuccOrder` instance that `IsSuccArchimedean`
+is indexed by, and the application then fails to elaborate. -/
+theorem frame_isZTime (K : SharingSkeleton) : K.frame.toTaskFrame.IsZTime :=
+  @TaskFrame.isZTime_of_instances K.frame.toTaskFrame
+    (inferInstanceAs (SuccOrder ℤ)) (inferInstanceAs (PredOrder ℤ))
+    (inferInstanceAs (IsSuccArchimedean ℤ)) (inferInstanceAs (IsPredArchimedean ℤ))
+
+/-- The branching frame satisfies the ℤ-time frame class. -/
+theorem frame_sat_ztime (K : SharingSkeleton) :
+    FormalSystem.ProofSystem.FrameClass.ZTime.Sat K.frame.toTaskFrame :=
+  ⟨inferInstance, K.frame_isZTime⟩
+
+/-- The branching frame satisfies the unconstrained frame class, by antitonicity. -/
+theorem frame_sat_base (K : SharingSkeleton) :
+    FormalSystem.ProofSystem.FrameClass.Base.Sat K.frame.toTaskFrame :=
+  FormalSystem.ProofSystem.FrameClass.Sat.anti (by decide) K.frame_sat_ztime
+
+end Frame
+
+/-! ## The histories characterization
+
+`ShiftSet.total_eq_orbit` says that every world history of the deterministic device's frame is a
+lasso orbit. It is true **because the task relation is functional**: `respects_task 0` alone pins
+every state. Once two indices may share a state a history can cross between them, that argument
+fails, and with it the box case of the truth lemma, which is calibrated against "every position
+of every lasso". This section supplies the replacement: every world history of `frame` is the
+trace of a **thread**, and conversely every thread traces a world history.
+
+**Why the tight `Thread.step` suffices.** `Thread`'s step field is
+`share (u+1) (idx u) (idx (u+1))`, which is *narrower* than the frame's one-step relation
+`Step u i j = ∃ i', share u i i' ∧ share (u+1) i' j`. That costs nothing here, because a
+history's index at `u` may be chosen **knowing the step it is about to take**: the witness `i'`
+supplied by `Step` at `u` is itself a legitimate name for the state at `u`, and is exactly the
+index the thread records. The construction below does precisely that — it reads the
+representatives off the steps, not off the states. There is therefore no two-directional
+recursion and no gluing: the choice at each time is independent, and the step law follows from
+transitivity of `share` at `u + 1`.
+
+**The deterministic case degenerates to `total_eq_orbit`'s content.** Under
+`share u i j := (i = j)` a thread's step field forces `idx (u+1) = idx u`, so `idx` is constant
+and `Thread ≃ Fin n`. The statement below then says that every history is the trace of a single
+index from some offset — which is `ShiftSet.total_eq_orbit`'s content, read through the frame
+isomorphism of `Sharing/Specialize.lean`.
+-/
+section Histories
+
+open FormalSystem.Semantics
+
+/-- **Any two positions of a thread are connected**, in either time order. -/
+theorem conn_thread (K : SharingSkeleton) (θ : K.Thread) (u v : ℤ) :
+    K.Conn (θ.idx u, u) (θ.idx v, v) := by
+  rcases le_total u v with h | h
+  · have hc := conn_of_reachN (θ.reachN (v - u).toNat u)
+    rwa [show u + (((v - u).toNat : ℕ) : ℤ) = v from by omega] at hc
+  · have hc := conn_of_reachN (θ.reachN (u - v).toNat v)
+    rw [show v + (((u - v).toNat : ℕ) : ℤ) = u from by omega] at hc
+    exact conn_symm hc
+
+/--
+**The world history traced by a thread from a time offset.**
+
+The offset is carried here rather than inside the thread: `share` is decoded from periodic
+segments indexed by absolute time, so a thread cannot be time-shifted.
+-/
+def hist (K : SharingSkeleton) (θ : K.Thread) (s : ℤ) : WorldHistory K.frame.toTaskFrame :=
+  WorldHistory.ofTotal K.frame.toTaskFrame (fun t => K.cls (θ.idx (s + t)) (s + t)) <| by
+    intro a b
+    refine (K.frame_taskRel _ _ _).mpr ?_
+    exact (K.relZ_cls _ _ _ _ _).mpr ⟨by omega, conn_thread K θ (s + a) (s + b)⟩
+
+@[simp]
+theorem hist_state (K : SharingSkeleton) (θ : K.Thread) (s t : ℤ) :
+    (K.hist θ s).state t = K.cls (θ.idx (s + t)) (s + t) := rfl
+
+/-- **A thread's trace is a world history.** This is what the `box` case of the truth lemma
+consumes in the other direction from `total_eq_thread`. -/
+theorem thread_is_history (K : SharingSkeleton) (θ : K.Thread) (s : ℤ) :
+    ∃ σ : WorldHistory K.frame.toTaskFrame,
+      ∀ t : ℤ, σ.state t = K.cls (θ.idx (s + t)) (s + t) :=
+  ⟨K.hist θ s, fun _ => rfl⟩
+
+/--
+**The histories characterization.**
+
+Every world history of the branching frame is the trace of a thread, from some time offset.
+This replaces `ShiftSet.total_eq_orbit`, which holds only because the deterministic device's
+task relation is functional.
+-/
+theorem total_eq_thread (K : SharingSkeleton) (σ : WorldHistory K.frame.toTaskFrame) :
+    ∃ θ : K.Thread, ∃ s : ℤ, ∀ t : ℤ, σ.state t = K.cls (θ.idx (s + t)) (s + t) := by
+  classical
+  set s := K.time (σ.state 0) with hs
+  have htime : ∀ t : ℤ, K.time (σ.state t) = s + t := by
+    intro t
+    have h := (K.frame_taskRel _ _ _).mp (σ.respects_task 0 t)
+    have h2 := K.time_of_relZ (t - 0) _ _ h
+    omega
+  have hrep : ∀ t : ℤ, ∃ i : Fin K.n, σ.state t = K.cls i (s + t) := by
+    intro t
+    obtain ⟨i, hi⟩ := K.exists_cls (σ.state t)
+    exact ⟨i, by rw [hi, htime t]⟩
+  choose a ha using hrep
+  have hstep : ∀ t : ℤ, K.Step (s + t) (a t) (a (t + 1)) := by
+    intro t
+    have h := (K.frame_taskRel _ _ _).mp (σ.respects_task t (t + 1))
+    rw [ha t, ha (t + 1)] at h
+    obtain ⟨_, hc⟩ := (K.relZ_cls _ _ _ _ _).mp h
+    unfold Conn at hc
+    rw [if_pos (by omega : (a t, s + t).2 ≤ (a (t + 1), s + (t + 1)).2)] at hc
+    rw [show ((a (t + 1), s + (t + 1)).2 - (a t, s + t).2).toNat = 1 from by omega] at hc
+    exact (K.reachN_one _ _ _).mp hc
+  choose b hb₁ hb₂ using hstep
+  refine ⟨⟨fun v => b (v - s), ?_⟩, s, ?_⟩
+  · intro v
+    have h₁ := hb₂ (v - s)
+    have h₂ := hb₁ (v - s + 1)
+    rw [show s + (v - s) + 1 = v + 1 from by omega] at h₁
+    rw [show s + (v - s + 1) = v + 1 from by omega] at h₂
+    have h₃ := SharingSkeleton.share_trans h₁ h₂
+    rwa [show v - s + 1 = v + 1 - s from by omega] at h₃
+  · intro t
+    change σ.state t = K.cls (b (s + t - s)) (s + t)
+    rw [show s + t - s = t from by omega, ha t]
+    exact cls_eq rfl (hb₁ t)
+
+end Histories
 
 end SharingSkeleton
 

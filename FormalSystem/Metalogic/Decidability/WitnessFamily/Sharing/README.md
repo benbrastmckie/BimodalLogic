@@ -16,15 +16,50 @@ producers for the one `WitnessFamily.Refutes` interface rather than as rival dev
 
 | Module | Lines | Role |
 |--------|-------|------|
-| `Basic.lean` | 254 | `SharingWitnessFamily`, the decoded representative map `rep`, the sharing relation `share`, its equivalence laws and two periodicities |
-| `Thread.lean` | 273 | `Thread` (the branching analogue of a lasso orbit), the class-level `Step`, `ReachN` and its four congruences |
-| `Frame.lean` | 397 | `shareSetoid`, `WorldState`, the duration-free `Conn`, the two-sided `RelZ`, the `FrameOver intOrder` `frame`, and all four `def:frame` constraints |
-| `Histories.lean` | 141 | `hist`, `thread_is_history` and **`total_eq_thread`** — the replacement for `ShiftSet.total_eq_orbit` |
+| `Skeleton.lean` | 944 | **`SharingSkeleton`**, the label-free branching substrate: `rep`, `share`, `Thread`/`Step`/`ReachN`, the quotient frame and all four `def:frame` constraints, `hist` and `total_eq_thread` |
+| `Basic.lean` | 208 | `SharingWitnessFamily`, its `skeleton` projection, and the re-exports of `rep`, `share`, the equivalence laws and the two periodicities |
+| `Thread.lean` | 179 | Re-exports of `Thread` (the branching analogue of a lasso orbit), the class-level `Step`, `ReachN` and its four congruences |
+| `Frame.lean` | 258 | Re-exports of `shareSetoid`, `WorldState`, the duration-free `Conn`, the two-sided `RelZ`, the `FrameOver intOrder` `frame`, and all four `def:frame` constraints |
+| `Histories.lean` | 105 | Re-exports of `hist`, `thread_is_history` and **`total_eq_thread`** — the replacement for `ShiftSet.total_eq_orbit` |
 | `Predicates.lean` | 226 | (C0) `AtomCoherent`, (C1') `LocalCoherentShare`, (C2') `ThreadFulfilling`, and the two unconditional reductions to the deterministic conditions |
 | `Decide.lean` | 567 | The combined window, the two window collapses, and the instances for (C0) and (C1') |
 | `Fulfil.lean` | 1669 | The finite position graph, the `A[g U e]` least fixpoint, (C2')'s correctness in both directions, and the (C1')-relative decision procedure |
 | `Agreement.lean` | 411 | The branching `model`, the two inner inductions along a thread, **T1** `truth_iff_mem`, the bundle `Certifies`, `decidableCertifies`, and `refutes_of_certifies` |
 | `Specialize.lean` | 455 | `WitnessFamily.toSharing`, the four condition reductions, `certifies_toSharing`, the frame isomorphism `stateEquiv`/`histEquiv`/`truthIso` and the transported agreement |
+
+## The substrate is label-free, and lives on `SharingSkeleton`
+
+`Basic.lean`, `Thread.lean`, `Frame.lean` and `Histories.lean` were together 1,065 lines, and
+across all four the tokens `Formula`, `.L `, `.lab` and `.bx` occurred **zero** times. The
+substrate is not *approximately* language-agnostic; it is exactly language-agnostic, and the
+`Formula` indexing it carried was incidental.
+
+`SharingSkeleton` (`Skeleton.lean`) is that datum on its own: an index count `n` and three
+periodic segments of representative maps `Fin n → Fin n`. Every construction the branching device
+is built from — `share`, the threads, the quotient frame over `intOrder`, and the world histories
+that frame admits — is a function of it, and `SharingWitnessFamily.skeleton` is the projection
+through which the family inherits the whole theory rather than re-proving it.
+
+The four modules above are therefore re-export shells. Every name they have always exported still
+resolves at its original statement and with its original implicit/explicit argument structure;
+nothing downstream — `Predicates.lean`, `Decide.lean`, `Fulfil.lean`, `Agreement.lean`,
+`Specialize.lean` — was edited for the split.
+
+Two mechanisms in the shells are worth knowing about before editing them:
+
+* `SharingWitnessFamily.skeleton` is `@[reducible]`, so `Fin S.skeleton.n` and
+  `Fin S.lassos.length` unify at the transparency `rw`'s keyed matching uses. Without it,
+  rewrites whose pattern mentions `share` fail against terms whose indices came from a thread.
+* `SharingWitnessFamily.Thread.step` and `SharingWitnessFamily.Conn` are restated rather than
+  delegated: the first so that dot notation on a family thread yields a proposition phrased at
+  the family's own `share`, the second so that `unfold SharingWitnessFamily.Conn` still exposes
+  the `if` that `Specialize.lean` splits on. Both are the same proposition as the skeleton's, and
+  each is proved once, on the skeleton.
+
+Why this matters beyond tidiness: a certificate indexed by a *different* formula type — the
+L⁺ certificate that states the stability condition (C5) natively over `PlusFormula.stab` —
+projects onto the same `SharingSkeleton` and inherits these 944 lines rather than duplicating
+them.
 
 ## `share` is the kernel of a map, not a relation field
 
