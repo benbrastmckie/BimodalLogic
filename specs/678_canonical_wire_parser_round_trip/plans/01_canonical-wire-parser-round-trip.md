@@ -421,7 +421,7 @@ removed rather than discharged) should be re-costed before continuing.
 
 ---
 
-### Phase 7: Schema codec and the five contract theorems [NOT STARTED]
+### Phase 7: Schema codec and the five contract theorems [COMPLETED]
 
 **Goal**: `BimodalTools/CanonicalWire/Cert.lean` carries `encodeCert` / `decodeCert`, the
 canonical certificate printer and parser, and the five theorems that state the export contract as

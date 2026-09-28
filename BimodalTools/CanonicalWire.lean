@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import BimodalTools.CanonicalWire.Json
 import BimodalTools.CanonicalWire.Parse
+import BimodalTools.CanonicalWire.Cert
 import BimodalTools.CanonicalWire.Fuel
 import BimodalTools.CanonicalWire.RoundTrip
 

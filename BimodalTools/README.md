@@ -303,7 +303,7 @@ implementation obligation and stays where it is.
 | `AxiomNames.lean` | 59 | <!-- TODO: add description --> |
 | `BenchmarkAnchorsMain.lean` | 598 | <!-- TODO: add description --> |
 | `BenchmarkOracleMain.lean` | 359 | <!-- TODO: add description --> |
-| `CanonicalWire.lean` | 33 | Aggregator for `CanonicalWire/`: the verified certificate wire codec — canonical printer, total parser, round-trip theorems |
+| `CanonicalWire.lean` | 35 | Aggregator for `CanonicalWire/`: the verified certificate wire codec — canonical printer, total parser, round-trip theorems |
 | `CertificateImport.lean` | 691 | The certificate library: `closureList`/`intRange`, the envelope parser and serializer, the `dite`-based `WitnessFamily` builders, `checkRaw` and the localization scans |
 | `CertificateRecords.lean` | 156 | The parsed certificate records: `RawLasso`, `RawTarget`, `RawCertificate`, the `Partial*` mirrors and their `complete` functions, `hasFreshAtom` and `RawCertificate.formulas`; split out of `CertificateImport.lean` so the verified codec can import them |
 | `CheckCertificateMain.lean` | 57 | Executable root of `lake exe check_certificate`: `main` only; reads one certificate on stdin, prints one JSON line |
@@ -334,7 +334,7 @@ implementation obligation and stays where it is.
 | `TraceExport.lean` | 229 | <!-- TODO: add description --> |
 | `TraceExporterMain.lean` | 265 | <!-- TODO: add description --> |
 | `TranslateSentenceMain.lean` | 51 | Executable root of `lake exe translate_sentence`: `main` only; reads one source-sentence JSON object on stdin, prints the translated formula as one JSON line |
-| `CanonicalWire/` | — | The verified wire codec: `Json.lean` (canonical value, printer, fuel measure), `Parse.lean` (the total parser), `RoundTrip.lean` (the lexical lemmas, the measure bound and the generic round-trip theorem), `Fuel.lean` (fuel sufficiency) (4 files) |
+| `CanonicalWire/` | — | The verified wire codec: `Json.lean` (canonical value, printer, fuel measure), `Parse.lean` (the total parser), `RoundTrip.lean` (the lexical lemmas, the measure bound and the generic round-trip theorem), `Fuel.lean` (fuel sufficiency), `Cert.lean` (the certificate schema codec and the five contract theorems) (5 files) |
 <!-- END GENERATED -->
 
 *Last verified: 2026-09-27*
