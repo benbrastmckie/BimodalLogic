@@ -1,10 +1,43 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/691_resolve_c23_naming_exemptions/summaries/01_c23-naming-exemptions-summary.md",
+      "summary": "C23 fully green: 11-triple SHADOW_PAIR_ALLOW exemption plus NM_nonneg UPPER_ALLOW entry, all inside scripts/check-module-invariants.sh; full gate run exits 0 with ALL CHECKS PASSED."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Resolved gate C23's two remaining red sub-assertions (2 Uppercase_x NM_nonneg names, 11 outer-shadows-inner shadow pairs) by adding a new (base, outer_ns, inner_ns)-triple-keyed SHADOW_PAIR_ALLOW exemption set and an NM_nonneg UPPER_ALLOW entry with restructured inline reasoning, entirely inside scripts/check-module-invariants.sh. Full gate run now exits 0 with ALL CHECKS PASSED; narrowness of the new exemption was verified via a throwaway scratch-scanner injection test (reverted)."
+  },
+  "modified_files": [
+    "scripts/check-module-invariants.sh",
+    "specs/691_resolve_c23_naming_exemptions/plans/01_c23-naming-exemptions.md",
+    "specs/691_resolve_c23_naming_exemptions/summaries/01_c23-naming-exemptions-summary.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "scripts/check-module-invariants.sh derives REPO_ROOT from its own BASH_SOURCE path (`REPO_ROOT=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")/..\" && pwd)\"; cd \"$REPO_ROOT\"`) and cd's there unconditionally. A modified scratch copy of this script placed outside scripts/ (e.g. in a /tmp scratchpad) silently cd's to the WRONG directory and walks a near-empty or unrelated tree instead of erroring -- producing misleading PASS/FAIL results rather than a crash. Any scratch-testing of a change to this script (e.g. a narrowness/regression check via a throwaway synthetic decls2 row) must place the copy inside scripts/ itself (a dot-prefixed throwaway filename works, e.g. scripts/.narrowness-test.sh) so REPO_ROOT still resolves correctly, then delete it afterward.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/691_resolve_c23_naming_exemptions/summaries/01_c23-naming-exemptions-summary.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["check-module-invariants", "REPO_ROOT", "BASH_SOURCE", "scratch-test", "narrowness-check"]
+    },
+    {
+      "content": "When a lint/gate scanner needs to exempt a measured set of findings without silently absorbing future unmeasured ones, prefer a tuple-keyed exemption set over a bare-name/single-key exemption set. A bare-name exemption (e.g. a set of strings) permanently disables that whole name's bucket, so a genuinely new future collision on the same name is never reported again. A composite-key exemption (e.g. (base, outer_namespace, inner_namespace)) records exactly what was measured; a new, unmeasured occurrence sharing only the base name is still caught. This trade-off (more entries and slightly more scanner logic, in exchange for narrowness) is worth it whenever the exemption is meant to be a permanent, reviewed record rather than a temporary suppression.",
+      "category": "PATTERN",
+      "source_artifact": "specs/691_resolve_c23_naming_exemptions/summaries/01_c23-naming-exemptions-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lint-exemption", "scanner-design", "narrow-exemption", "gate-script", "false-positive-suppression"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1790635249_697f29",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4
   }
 }
