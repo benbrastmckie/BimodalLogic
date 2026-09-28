@@ -11,8 +11,8 @@ next_project_number: 691
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,684,690 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650,685 | 298,464,502,563,623,649,684 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,684,690 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,685 | 298,464,502,563,649,684 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -69,8 +69,7 @@ next_project_number: 691
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-623 [PLANNED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
-  └─ 685 [NOT STARTED] — Prove the compression result for the branching witness...
+685 [NOT STARTED] — Prove the compression result for the branching witness...
 
 ### Formula Refactor
 
@@ -90,7 +89,7 @@ next_project_number: 691
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-684 [PLANNED] — Prove the agreement (truth) lemma over all walks of the...
+684 [IMPLEMENTING] — Prove the agreement (truth) lemma over all walks of the...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Reference Book
@@ -100,12 +99,12 @@ next_project_number: 691
 
 ### Semantics
 
-690 [PLANNED] — Build the stability condition (C5) StabFaithful on the...
+690 [IMPLEMENTING] — Build the stability condition (C5) StabFaithful on the...
 
 ## Tasks
 
 ### 690. Stability condition over branching frame
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 683
@@ -233,7 +232,7 @@ The research report and implementation plan authored here remain the durable inp
 ---
 
 ### 684. Agreement lemma over all walks
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 683
@@ -423,12 +422,13 @@ ACCEPTANCE. typst compile --root .. succeeds with zero errors for BOTH BimodalRe
 
 ### 623. Decidable validztime quasimodel shiftset route
 - **Effort**: 2-4 weeks
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 534, Task 645, Task 665, Task 680, Task 688
 - **Research**: [623_decidable_validztime_quasimodel_shiftset_route/reports/02_compression-half-witness-family-route.md]
 - **Plan**: [623_decidable_validztime_quasimodel_shiftset_route/plans/02_compression-half-witness-family.md]
+- **Summary**: [623_decidable_validztime_quasimodel_shiftset_route/summaries/02_compression-half-witness-family-summary.md]
 
 **Description**: Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet witness-family route: the completeness (compression) half. The soundness half, which defines LabelledLasso / WitnessFamily, the ShiftSet construction WitnessFamily.std, the agreement theorem (truth in std equals label membership on the closure), the consequence corollaries at ZTime and Base, and the Decidable instances for the four certificate conditions, has been split out into its own task, on which this task now depends; do not re-prove or re-define any of it here, consume it.
 
