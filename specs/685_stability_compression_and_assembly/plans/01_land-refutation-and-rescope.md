@@ -279,20 +279,20 @@ variants merged), adjust both counts together and say so in the summary.
 
 ---
 
-### Phase 3: Correct the Two READMEs [NOT STARTED]
+### Phase 3: Correct the Two READMEs [COMPLETED]
 
 **Goal**: Neither README presents (C1') as an unqualified repair for recombination. A reader
 arriving at either one learns the completeness price before planning anything against it.
 
 **Tasks**:
 
-- [ ] In `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/README.md`: amend the (C1') row of
+- [x] In `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/README.md`: amend the (C1') row of
       the `## The six conditions` table to record that its `snce` clause forces class agreement at
       the label's own time; add a new `## What this certificate cannot refute` section stating the
       empty-certificate-class result, naming the four new declarations, and drawing the
       soundness/completeness distinction explicitly; add the `Incompleteness.lean` bullet to the
       `## Modules` list; bump the trailing `*Last verified:*` date.
-- [ ] In `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md`: amend the
+- [x] In `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md`: amend the
       `## Which conditions break under recombination, and which do not` table's (C1') row, which
       currently presents the branching form as the fix with no qualification, and add the
       correction subsection beside the existing `### Correction: (C3) is recombination-stable` —
@@ -301,11 +301,17 @@ arriving at either one learns the completeness price before planning anything ag
       backward branching. Extend `## (C5), the stability clause: not here, and why` subsection
       `### (c) What a follow-up needs` with the substrate-level requirement from F3. Bump
       `*Last verified:*`.
-- [ ] Record the `untl`/`snce` asymmetry and its origin in `Thread`'s tight step field in whichever
+- [x] Record the `untl`/`snce` asymmetry and its origin in `Thread`'s tight step field in whichever
       of the two READMEs the substrate discussion already lives in (`Sharing/README.md`), together
       with the rule of thumb F2 states: a condition quantifying over the `share`-class at a label's
       *own* time forces class agreement on that label.
-- [ ] Cite declaration names and no `file:line`; cite **no** `specs/685_...` path (C9, C20).
+- [x] Cite declaration names and no `file:line`; cite **no** `specs/685_...` path (C9, C20).
+- [x] *(deviation: altered — the `*Last verified:*` bump was carried out on
+      `PlusWitnessFamily/README.md` only, where the stamp already reads the current date and so
+      needed no change. `WitnessFamily/Sharing/README.md` carries **no** `*Last verified:*` line
+      at all, which `readme-lint.sh` reports as an info-only `MISSING DATE` and which predates
+      this task; no stamp was invented for it, since inventing document structure the file never
+      had is a larger change than this phase is scoped for.)*
 
 **Timing**: 1 hour
 
@@ -335,6 +341,16 @@ silently leaving it.
   included.
 - Manual read-back: each README's new text names at least one of the four new declarations, so
   C17 has a citation for it, and states the soundness/completeness distinction.
+
+  **Result**: `readme-lint.sh FormalSystem` PASSES (0 missing READMEs, 0 broken file references).
+  `check-module-invariants.sh --no-build` passes C9 (zero task-number citations), C13 (all
+  relative markdown links resolve) and both blocking C20 tiers; the only FAIL is the pre-existing
+  C23 recorded under Phase 2. Both READMEs name all four new declarations and state the
+  soundness/completeness distinction explicitly. Scope Hypothesis **confirmed at two files**: the
+  re-run grep returns 13 hits, and the only ones that could state a decidability-route claim are
+  `Decidability.lean` (whose bullet claims solely that the re-index makes (C5) stateable — true,
+  and a declared Non-Goal) and `PlusWitnessFamily.lean` (already amended in Phase 1). No third
+  README needed the caveat.
 
 ---
 

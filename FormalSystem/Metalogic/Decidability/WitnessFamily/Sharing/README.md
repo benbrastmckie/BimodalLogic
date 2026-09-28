@@ -121,7 +121,7 @@ Two details worth not rediscovering:
 | Condition | Status | Why |
 |---|---|---|
 | (C0) `AtomCoherent` | **new, mandatory** | The branching carrier is a quotient, so the valuation reads a `share`-class; a `Quotient.lift` needs shared indices to agree on atoms. Without it the valuation is not even well defined |
-| (C1) `LocalCoherentLab` | **replaced** by (C1') `LocalCoherentShare` | Its two temporal clauses are stated per lasso, silently assuming a history never leaves the lasso it starts on. The branching form quantifies the `untl` unfolding over every shared successor and the `snce` unfolding over every shared predecessor |
+| (C1) `LocalCoherentLab` | **replaced** by (C1') `LocalCoherentShare`, and only half repaired | Its two temporal clauses are stated per lasso, silently assuming a history never leaves the lasso it starts on. The branching form quantifies the `untl` unfolding over every shared successor and the `snce` unfolding over every shared predecessor. The `untl` half is a genuine repair; the `snce` half collapses backward branching, at a completeness price the received account did not record. See the correction below |
 | (C2) `FulfillingLab` | **replaced** by (C2') `ThreadFulfilling` | It reads an eventuality's discharge off the one lasso the label sits on. The branching form is a universal path quantifier — `A[g U e]` — over every thread through the position |
 | (C3) `BoxFaithful` | **reused verbatim** | See the correction below |
 | (C4) `Target` | **reused verbatim** | It names a time on the main lasso and mentions neither the frame nor its histories |
@@ -145,6 +145,46 @@ The received account of this design named (C3) as the load-bearing obstruction r
 redesign. The Lean reading refutes that: the two conditions that genuinely break are (C1) and
 (C2), both of which are stated *per lasso*. What (C3) needs is not a new statement but a new
 histories characterization underneath it, which is what `total_eq_thread` supplies.
+
+### Correction: (C1') is only half a repair
+
+The received account of this design named (C1') as *the* fix for recombination, with no
+qualification. The Lean reading shows it is only half a fix, and the other half fails.
+
+The two temporal clauses are not symmetric, although they read as though they were. The `untl`
+clause quantifies its successor **forward along a thread**, so it says nothing about two indices
+at a single time. The `snce` clause quantifies its predecessor over the `share`-class at the
+label's **own** time `t`. Read that clause twice — once at `i` with the shared index `j`, once at
+`j` with itself, using reflexivity of `share` — and it forces any two indices naming the same
+world state at `t` to agree on every `snce` formula of the closure. Past-tense truth in a
+presented model is a function of the world state, which is exactly the backward branching (C1')
+was supposed to admit.
+
+The price is a completeness failure, machine-checked on the L⁺ side where the stability modal
+exists to observe it. `PlusWitnessFamily/Incompleteness.lean` proves that no six-condition L⁺
+family certifies any instance of `(g S e) → ⊡(g S e)` — `not_plusCertifies_stabSnce`, and
+`not_plusCertifies_stabSnce_premise` for the negated-premise placement — while
+`not_plusValidZTime_stabSnce` shows `Pp → ⊡Pp` is a genuine ℤ-time non-validity. The certificate
+class is *empty* for those targets, not merely large. `snce_share_congr` is the one-line root
+cause, and it uses (C1') and nothing else.
+
+**The rule of thumb**, stated once because it will recur: a condition that quantifies over the
+`share`-class at a label's **own** time forces the class to agree on that label. Conditions that
+quantify forward or backward along a thread do not. So a condition is recombination-stable exactly
+when its quantifier leaves the class, which is why (C3) survives verbatim — its right-hand side
+quantifies the label pool and mentions no class at all.
+
+**Where the asymmetry comes from.** Not from the clause's wording, and so not fixable by
+re-wording it. `Thread.step` reads `share (u+1) (idx u) (idx (u+1))`: one-step succession is
+*defined* as membership of the same `share`-class at the arriving time. The single relation
+therefore carries two jobs — the `⊡` quantifier's class, and the thread's step — and a backward
+clause written in terms of the only relation available cannot help but quantify over the class.
+Separating those two jobs is a substrate change, not a clause change; `### (c) What a follow-up
+needs` below states what it takes.
+
+Nothing here touches soundness. `Agreement.lean`'s truth lemma and `refutes_of_certifies` are
+unaffected, and a family meeting the conditions still presents a genuine countermodel. What is
+refuted is the claim that (C1') restores completeness under recombination.
 
 ## Deciding (C2'): the finite position graph and the `A[g U e]` fixpoint
 
@@ -213,6 +253,33 @@ conditions and its agreement theorem all re-indexed over `PlusFormula`. That re-
 re-opens the model checker's JSON export contract, since the exported label sets would carry
 `PlusFormula` rather than `Formula`. It is a separate, substantial addition, not a clause.
 
+That re-index has since landed, as `../../PlusWitnessFamily/`. What it revealed is that the
+re-index alone is not enough, and the remaining obligation is at the substrate level rather than
+at the label level — see the (C1') correction above for the obstruction.
+
+A follow-up needs a **fourth periodic datum** beside `repBack`/`repMid`/`repFwd`: three lists
+`transBack`/`transMid`/`transFwd`, decoded by the same `Periodic.unrollOf` scheme, giving a
+one-step relation `trans u : Fin n → Fin n → Prop`. `Thread.step` then reads
+`trans u (idx u) (idx (u+1))` rather than `share (u+1) (idx u) (idx (u+1))`, which splits the two
+jobs the single relation currently carries:
+
+* `share` keeps the `⊡` quantifier, the quotient carrier, (C0) and (C5) — everything that asks
+  "which indices name this state now";
+* `trans` carries one-step branching — everything that asks "which index may follow this one".
+
+Two consequences to plan for. The export contract gains three fields, additively, exactly as
+`repBack`/`repMid`/`repFwd` did, so the model checker is not re-opened beyond that. And the
+re-proof surface is large: `Predicates.lean`, `Decide.lean`, `Fulfil.lean`, `Agreement.lean` and
+`Specialize.lean` here, their four counterparts on the L⁺ side, and both READMEs, with the two
+`Fulfil.lean` modules dominating.
+
+The **non-vacuity gate comes first**, before the fixpoint layer is re-proved: one concrete family
+satisfying all six redesigned conditions at non-trivial sharing, plus a check that the redesigned
+(C1') no longer entails `snce_share_congr`. Without that second check the redesign can reproduce
+the present defect while type-checking. Note also that (C2')'s window reduction already carries a
+recorded (C1')-relative limitation (below), which the redesign has to re-examine rather than
+inherit.
+
 ## Hand-off to the consuming model checker
 
 Nothing in the consuming repository is edited by this work, and no existing certificate becomes
@@ -270,3 +337,5 @@ Within the repository: `../Basic.lean`, `../Predicates.lean`, `../Closure.lean`,
 - `../../BiLasso/README.md` — the single-lasso development and its stability-modal scope note
 - `FormalSystem/PlusLanguage/PlusDeterminism.lean` — `states_eq_of_deterministic` and
   `stab_iff_of_deterministic`, the two lemmas the stability discussion above turns on
+- [PlusWitnessFamily README](../../PlusWitnessFamily/README.md) — the landed L⁺ re-index, and
+  the empty certificate class that bounds what it can refute
