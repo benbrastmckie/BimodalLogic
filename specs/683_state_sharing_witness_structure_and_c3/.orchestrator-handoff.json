@@ -1,33 +1,37 @@
 {
   "task_number": 683,
-  "dispatch_seq": 3,
+  "dispatch_seq": 6,
   "status": "partial",
-  "phases_completed": 5,
+  "phases_completed": 8,
   "phases_total": 14,
-  "session_id": "sess_1790569454_bad6d5",
-  "summary": "Phases 1-5 of 14 complete, committed and green: SharingWitnessFamily with a periodic representative-map `share`, the Thread/Step/ReachN layer, a regular branching FrameOver intOrder, and total_eq_thread. Phase 6 partial - (C0) and (C1') landed, (C5) StabFaithful blocked because `Formula` has no stability modal. Full lake build green, zero sorries, axiom count unchanged, deterministic path byte-identical.",
+  "session_id": "sess_1790578113_61d56a",
+  "summary": "Phases 7 and 8 of 14 landed, green and committed. Phase 7 (Sharing/Decide.lean) builds a family-wide combined window -- products over every lasso's cycle lengths and the share period, because both sharing conditions couple two lassos at once and Decide.lean's per-lasso decomposition is therefore unavailable -- and derives Decidable instances for (C0) AtomCoherent and (C1') LocalCoherentShare through it. Phase 8 (Sharing/Fulfil.lean) adds a generic A[g U e] least-fixpoint layer with a cardinality-measure stabilization bound, the finite position graph over the window with data-preserving wraparound, and the untl/snce fixpoints, the snce one an instantiation rather than a second proof. Full lake build green (2748 jobs, exit 0), zero sorries, axiom count unchanged at 14, deterministic path and ShiftSet.lean byte-identical.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/683_state_sharing_witness_structure_and_c3/summaries/01_state-sharing-witness-structure-summary.md",
-      "summary": "Implementation summary for Phases 1-5 plus the partial Phase 6."
+      "summary": "Cumulative round-1 implementation summary, extended to cover Phases 7 and 8."
     },
     {
       "type": "handoff",
-      "path": "specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-6-handoff-20260927.md",
-      "summary": "Resume point, inherited API inventory, and the six elaboration traps this dispatch hit."
+      "path": "specs/683_state_sharing_witness_structure_and_c3/handoffs/phase-8-handoff-20260928.md",
+      "summary": "Resume point, inherited API inventory, the worked-out Phase 9 design, and six further elaboration traps."
     },
     {
       "type": "source",
-      "path": "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/",
-      "summary": "Five new Lean modules: Basic, Thread, Frame, Histories, Predicates."
+      "path": "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Decide.lean",
+      "summary": "Phase 7: the combined window and the Decidable instances for (C0) and (C1')."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Fulfil.lean",
+      "summary": "Phase 8: the AUFix least-fixpoint layer, the finite position graph, and the untl/snce fixpoints."
     }
   ],
-  "blockers": [
-    "Phase 6 (C5) StabFaithful is not stateable at the Formula-indexed WitnessFamily datatype: the stability modal is PlusFormula.stab on a separate inductive. Requires a user decision between an L-plus-indexed certificate datatype and dropping (C5) from this task's scope."
-  ],
+  "blockers": [],
   "next_steps": [
-    "Resolve the (C5) decision recorded as `user_decision` in .return-meta.json and as the Phase 6 BLOCKER entry in the plan.",
-    "Resume at Phase 7 (Sharing/Decide.lean); it does not depend on (C5)."
+    "Resume at Phase 9: define ThreadFulfilling in Sharing/Predicates.lean and prove the Phase 8 fixpoint correct against it.",
+    "Read handoffs/phase-8-handoff-20260928.md first: it carries the FoldRel invariant that lets a graph walk be read as a Z-walk, the counterexample-extraction argument, and the identification of the one hard sub-problem.",
+    "The hard sub-problem: folding a far-left position into the window is not obviously obligation-preserving for a UNIVERSAL path quantifier (the branching analogue of Decide.lean's untlObl_shift_back, whose own proof relies on the obligation being existential). The candidate route is (C1') propagation, which may make the reduction coherence-relative and so turn Phase 9's standalone `Decidable (ThreadFulfilling S)` deliverable into a plan deviation on a .lean file -- to be raised under plan-compliance, not silently restated."
   ]
 }

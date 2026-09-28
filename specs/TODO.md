@@ -1,5 +1,5 @@
 ---
-next_project_number: 690
+next_project_number: 691
 ---
 
 # TODO
@@ -12,7 +12,7 @@ next_project_number: 690
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,683 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650,684 | 298,464,502,563,649,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,684,690 | 298,464,502,563,649,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,685 | 231,465,497,564,565,616,623,684 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500,683 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -100,7 +100,8 @@ next_project_number: 690
 
 ### Semantics
 
-683 [PARTIAL] — Replace the deterministic witness device with a state-sharing...
+683 [IMPLEMENTING] — Replace the deterministic witness device with a state-sharing...
+  └─ 690 [NOT STARTED] — Build the stability condition (C5) StabFaithful on the...
 
 ## Tasks
 
@@ -108,7 +109,7 @@ next_project_number: 690
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: semantics
-- **Dependencies**: 683
+- **Dependencies**: Task 683
 
 **Description**: Build the stability condition (C5) StabFaithful on the branching witness frame, which is the substrate that makes it stateable. Research, plan and implement all three phases properly -- this is the deliverable that was excluded from the state-sharing witness work on a recorded user decision, not a defect in it.
 
@@ -121,6 +122,7 @@ WHY THIS FRAME IS THE RIGHT SUBSTRATE, NOT AN OBSTACLE. `PlusTruth.lean` documen
 WHAT THE COST ANALYSIS FOUND. Four of the five landed Sharing modules -- Basic, Thread, Frame, Histories -- mention `Formula` zero times: 1,065 of 1,233 lines, 86 percent, entirely language-agnostic. Only `Predicates.lean` (168 lines) is language-dependent. So this work reuses four modules verbatim and re-indexes one. The known cost on the L-plus side is that `FormalSystem/PlusLanguage/` contains NO closure or decidability module at all, so an L-plus-indexed certificate needs a subformula-closure theory constructed from scratch, against roughly 2,257 lines of analogue on the `Formula` side. Research must cost that honestly before a plan commits to it, and must consider whether a shared polymorphic closure layer serving both inductives is cheaper than a second monomorphic one.
 
 HARD CONSTRAINTS. Decidability must be preserved -- the branching structure has infinitely many walks, and no condition may quantify over them. The deterministic bi-lasso device is what the consuming model checker ships against: it must keep working byte-identically, and its JSON export contract must not be re-opened without an explicit decision. Do not state a vacuous or box-shaped `StabFaithful` at `Formula` to make a signature typecheck; a sorry-bodied `def` carrying a prose statement is not a pinned obligation, which is precisely how the original plan missed this obstruction.
+
 ---
 
 ### 689. Reconcile records with landed code
@@ -240,7 +242,7 @@ The research report and implementation plan authored here remain the durable inp
 ---
 
 ### 683. State sharing witness structure and c3
-- **Status**: [PARTIAL]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: semantics
 - **Dependencies**: Task 682
