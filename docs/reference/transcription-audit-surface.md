@@ -117,7 +117,11 @@ Nothing here edits the consuming repository. Its adequacy argument is read-only 
 corrections are recorded on this side so the consuming side can apply them by mechanical lookup
 rather than by re-deriving them. Resolve every row against
 [`../../scripts/lean-citation-manifest.json`](../../scripts/lean-citation-manifest.json); that file
-is generated, and check C35 keeps it current.
+is generated, and check C35 keeps it current. The seed list now also carries the §4.1 proof-mapping
+table's full `ShiftSet.lean` cluster — the rows below, plus the neighbouring declarations those
+citations currently land on — so the *next* drift at any of these names fails C35 here rather than
+rotting silently over there; seeding does not retroactively repair what the consuming document
+currently cites.
 
 | What is wrong | Declarations involved | What to do |
 |---|---|---|
@@ -126,6 +130,9 @@ is generated, and check C35 keeps it current.
 | Two cited ranges are **loose** — correct under the span convention (a citation may anchor a declaration's own docstring or body), but wider than the declaration | `FormalSystem.Metalogic.Decidability.WitnessFamily.std_isZTime`, `std_sat_ztime`, `std_sat_base`, `sh_surj`, and `FormalSystem.ProofSystem.FrameClass.Sat` | Cite names; the manifest carries both the keyword line and the full span, so either reading is available without guessing |
 | The *Limit* verdict is **too strong**. `TaskFrame.Limit` transcribes only the `⊆` half of the paper's set equation | `FormalSystem.Semantics.TaskFrame.Limit`, with `FormalSystem.Semantics.TaskFrame.nullity_of_serial_limit` for the other half | Soften the row: the `⊇` half — `w` lies in each of its own positive cones — is `lem:nullity`, **derived** choice-free from *Seriality* together with the `⊆` half, not postulated. Carrying it as an axiom would duplicate a theorem |
 | The time-shift row cites an **instance** of the paper's lemma, not the lemma | `FormalSystem.Semantics.TimeShift.timeShift_preserves_truth` (the instance) versus `FormalSystem.Semantics.Truth.truthAt_of_truthCorr` at `FormalSystem.Semantics.TimeShift.shiftCorr` (the general form) | Pick one and say which. The instance fixes one pair of histories, which is all the construction needs; the general form quantifies over the paper's relation, and citing it brings `TruthCorr`'s five fields into the audit as row 24 |
+| Seven more §4.1 citations, all in the `ShiftSet.lean` proof-mapping table, are **stale the same way as the four above** — each landed inside a *different*, neighbouring declaration, after one uniform shift a single commit caused by inserting a docstring block above them. Older than the +38 drift and invisible until now, because nothing in either repository read these particular citations | `FormalSystem.Semantics.ShiftSet.shRel_comp`, `shRel_serial`, `shRel_saturation`, `fibre_isRegular`, `frame_isRegular`, `forward_repr`, and the *Limit* row's second citation (the `TaskFrame.limit_reflect_of_reflective` usage inside `fibre_isRegular`) — all seven now land inside one of `shRel_reflection`, `shRel_comp`, `shRel_serial`, `fibre` or `ShiftTruth` | Cite the names; take the locations from the manifest. The seed list now also carries `ShiftSet.fibre`, `ShiftSet.frame` and `ShiftSet.ShiftTruth` — the neighbouring declarations these particular citations land on today — so the manifest can name exactly what the old citation actually reaches |
+| One further citation in the same Lemma 3/Corollary 3.1 row names the wrong **file**, not merely the wrong declaration: the location currently cited for `Truth.box_const` is where `WitnessFamily.sh_surj` is declared, and `box_const` is not in that file at all | `FormalSystem.Semantics.Truth.box_const`; `FormalSystem.Metalogic.Decidability.WitnessFamily.sh_surj` | Split the row's second citation in two — `box_const` and `sh_surj` each get their own location from the manifest, resolved against their own (different) files |
+| Two more cited locations in this cluster are **loose**, same convention as the row above — correct under the span convention, but not on the declaration's keyword line | `FormalSystem.Semantics.ShiftSet#sep` (the field); `FormalSystem.Semantics.ShiftSet.total_eq_orbit` | No correction needed; recorded so the consuming side does not spend effort repairing rows that are already sound |
 
 ## Two closed questions
 

@@ -232,29 +232,33 @@ no hard-coded count and must not gain one.
 
 ---
 
-### Phase 3: Record the second drift cluster in the corrections table [NOT STARTED]
+### Phase 3: Record the second drift cluster in the corrections table [COMPLETED]
 
 **Goal**: Give the consuming repository a mechanical, name-keyed correction for the §4.1
 `ShiftSet.lean` citations, in the same shape it already has for the original four.
 
 **Tasks**:
-- [ ] Add one or more rows to the "Corrections the consuming table owes" table in
+- [x] Add one or more rows to the "Corrections the consuming table owes" table in
       `docs/reference/transcription-audit-surface.md`, matching the existing
-      "What is wrong | Declarations involved | What to do" column shape and voice.
-- [ ] State the failure plainly: these citations land in the *previous* declaration (a docstring
+      "What is wrong | Declarations involved | What to do" column shape and voice. *(completed:
+      three new rows added)*
+- [x] State the failure plainly: these citations land in the *previous* declaration (a docstring
       or body above the target), which is the same defect class as the +38 drift but older —
       traced to commit `ef4707035` — and was invisible because nothing in either repository read
-      these particular citations.
-- [ ] Distinguish the genuinely wrong-declaration rows from the correct-but-loose ones
+      these particular citations. *(completed: confirmed via `git show ef4707035` that a docstring
+      block was inserted above the cluster, causing a uniform +9-line shift — all nine ShiftSet.lean
+      citations in §4.1 drifted by the same amount, not a mix of unrelated shifts)*
+- [x] Distinguish the genuinely wrong-declaration rows from the correct-but-loose ones
       (`total_eq_orbit`, the `sep` field citation) so the consuming side is not sent to repair
-      rows that are already sound.
-- [ ] Write no `file.lean:NNN` anywhere: every row cites names and says "take the locations from
-      the manifest", consistent with the table's existing opening paragraph.
-- [ ] Add a short sentence to that section's preamble noting the seed list now covers these names,
+      rows that are already sound. *(completed; `sh_surj`'s loose citation was already recorded in
+      the pre-existing table and is not duplicated)*
+- [x] Write no `file.lean:NNN` anywhere: every row cites names and says "take the locations from
+      the manifest", consistent with the table's existing opening paragraph. *(completed)*
+- [x] Add a short sentence to that section's preamble noting the seed list now covers these names,
       so the *next* drift at them fails C35 here — and that seeding does not retroactively repair
-      what the consuming document currently cites.
-- [ ] Targeted lint before commit: `grep -nE '\.lean:[0-9]+' docs/reference/transcription-audit-surface.md`
-      returns nothing new.
+      what the consuming document currently cites. *(completed)*
+- [x] Targeted lint before commit: `grep -nE '\.lean:[0-9]+' docs/reference/transcription-audit-surface.md`
+      returns nothing new. *(completed: zero matches)*
 
 **Timing**: 1 hour
 

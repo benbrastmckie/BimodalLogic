@@ -1,0 +1,18 @@
+{
+  "phase": 3,
+  "phase_name": "Record the second drift cluster in the corrections table",
+  "started_at": "2026-09-27T01:00:00Z",
+  "last_updated": "2026-09-27T01:15:00Z",
+  "objectives": [
+    {"id": 1, "description": "Add row(s) to Corrections table matching existing shape/voice", "status": "done", "files_touched": ["docs/reference/transcription-audit-surface.md"]},
+    {"id": 2, "description": "State failure plainly: lands in previous declaration, traced to commit ef4707035, older than +38 drift", "status": "done", "files_touched": ["docs/reference/transcription-audit-surface.md"]},
+    {"id": 3, "description": "Distinguish wrong-declaration rows from correct-but-loose ones", "status": "done", "files_touched": ["docs/reference/transcription-audit-surface.md"]},
+    {"id": 4, "description": "Write no file.lean:NNN anywhere", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Add preamble sentence noting seed list now covers these names", "status": "done", "files_touched": ["docs/reference/transcription-audit-surface.md"]},
+    {"id": 6, "description": "Targeted lint before commit: grep for .lean:NNN returns nothing new", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "notes": "Confirmed via git show ef4707035 that the drift is a single-commit, uniform-shift cause (a docstring block inserted above the cluster), mirroring the existing table's phrasing for the +38 drift. sh_surj's loose citation was already recorded in the pre-existing table (row 3 of the original 5); only sep-field and total_eq_orbit needed a new loose row. All 12 declarations named in the new rows verified to resolve in the regenerated manifest, including the ShiftSet#sep field row. git diff confirmed additive-only outside the one preamble-sentence extension; zero lines of the residue table (rows 1-24) touched; grep for \\.lean:[0-9]+ returns no match."
+}
