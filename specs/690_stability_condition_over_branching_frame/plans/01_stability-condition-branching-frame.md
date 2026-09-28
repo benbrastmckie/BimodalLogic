@@ -1,7 +1,7 @@
 # Implementation Plan: Stability Condition (C5) on the Branching Witness Frame
 
 - **Task**: 690 - Build the stability condition (C5) `StabFaithful` on the branching witness frame
-- **Status**: [PARTIAL]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 41 hours
 - **Dependencies**: None blocking. Territory overlap with concurrent tasks 623 and 684 on the
   registration/aggregator files — see Risks & Mitigations R1 and Phase 22.
@@ -830,8 +830,13 @@ does and that discrepancy must be explained.
 **Also recorded for the revision decision**: Phases 21's two non-vacuity theorems,
 `stabFamily_separates` and `stabFaithful_diagonal`, depend on Phase 12 alone — not on Phases
 16–20. They are two of the three things this plan names as what makes (C5) a pinned obligation
-rather than a signature, and they are reachable now, ahead of the `Fulfil` re-index. This
-dispatch did not resequence the plan to reach them; a revision may wish to.
+rather than a signature, and they are reachable now, ahead of the `Fulfil` re-index.
+
+**Resolved by a later dispatch**: Phase 21 has since been executed out of plan order, ahead of
+Phases 16–20, and is [COMPLETED]. Its declared `**Depends on**: 20` was wrong — the phase touches
+no part of the certificate bundle. Its real dependencies are Phase 12 (`StabFaithful`) and Phase
+15 (`decidableStabFaithful`), both [COMPLETED]. Phase 16 remains BLOCKED on the decision above;
+nothing in Phase 21 bears on it.
 
 
 **Goal**: The (C2') decision machinery's graph-and-fixpoint half, taken from the skeleton where
@@ -1025,29 +1030,40 @@ task exists to prevent.
 
 ---
 
-### Phase 21: Non-vacuity and the deterministic diagonal [NOT STARTED]
+### Phase 21: Non-vacuity and the deterministic diagonal [COMPLETED]
 
 **Goal**: The two halves of non-vacuity — a branching family where (C5) bites, and the diagonal
 where it degenerates — so that the condition is demonstrably neither vacuous nor box-shaped.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Examples.lean`
-- [ ] `stabFamily (p : Atom)` — the two-lasso family of research F7, at target context
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Examples.lean`
+- [x] `stabFamily (p : Atom)` — the two-lasso family of research F7, at target context
       `[stab (Fp)]` with `Fp := untl ⊤ (atom p)`, transcribed from
       `Metalogic/Independence/StabUndefinable.lean`'s `⊡Fp` / `Fp` separation: lassos `0` and `1`
       sharing a state at `u = 0`, `p` labelled on lasso `0` at `t = 1` and nowhere on lasso `1`
-- [ ] `stabFamily_separates` — `Fp ∈ L mainIdx 0` while `stab Fp ∉ L mainIdx 0`, with the
+      *(deviation: altered — the two lassos share a state at `u = 0` as specified, but `p` is
+      labelled on lasso `0` at every time **except** `u = 0` rather than only at `t = 1`. A
+      lasso's labels are periodic, so "only at `t = 1`" is not expressible on a singleton cycle,
+      and the origin had to be the position where `p` is absent so that (C0) atom coherence also
+      holds across the one shared class. The separation the phase asks for is unaffected: `Fp` is
+      labelled at the main lasso's origin and `⊡Fp` is not.)*
+- [x] `stabFamily_separates` — `Fp ∈ L mainIdx 0` while `stab Fp ∉ L mainIdx 0`, with the
       family satisfying (C5). This is the non-vacuity witness: (C5) is strictly stronger than the
       `box` clause and is not satisfied trivially
-- [ ] `stabFaithful_diagonal` — on the deterministic specialization (the L⁺ analogue of
+- [x] `stabFaithful_diagonal` — on the deterministic specialization (the L⁺ analogue of
       `WitnessFamily.toSharing`, where every `rep u` is `id` and `share u i j ↔ i = j`), (C5)
       collapses to `stab φ ∈ S.L i u ↔ φ ∈ S.L i u`, recovering
       `PlusDeterminism.stab_iff_of_deterministic` inside the device
-- [ ] A `#guard` or `#eval` confirming `decidableStabFaithful` accepts `stabFamily` by computation
+      *(deviation: altered — stated at the pinned signature's `hdet` hypothesis rather than
+      against a constructed L⁺ `toSharing`. Building `toSharing` would have been Phase 20's
+      bundle work; the hypothesis form covers every deterministic specialization, including the
+      one Phase 20 will build.)*
+- [x] A `#guard` or `#eval` confirming `decidableStabFaithful` accepts `stabFamily` by computation
 
 **Timing**: 2 hours
 
-**Depends on**: 20
+**Depends on**: 20 *(deviation: altered — corrected to 12 and 15. Phase 21 touches no part of the
+Phase 20 bundle; it was executed ahead of Phases 16–20 while Phase 16 is BLOCKED.)*
 
 **Verification Tier**: local
 
