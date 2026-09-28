@@ -1,29 +1,34 @@
 {
   "task_number": 690,
-  "dispatch_seq": 9,
+  "dispatch_seq": 12,
   "phase": "implement",
   "status": "partial",
   "session_id": "sess_1790617342_e2d44f",
-  "phases_completed": 15,
+  "phases_completed": 16,
   "phases_total": 22,
   "blocked_phase": 16,
   "requires_user_review": true,
-  "summary": "Phases 1-15 of 22 complete, green and committed in 14 commits. (C5) StabFaithful is stated natively over PlusFormula.stab on a new L-plus branching certificate, has two proved consequences, and is decidable by a bounded window scan demonstrated computationally by #guard. Stage A extracted the branching substrate into a label-free SharingSkeleton (944 lines) that both certificates project onto; the shipping deterministic certificate and its JSON export contract are unchanged, with axiom sets byte-identical to the pre-change baseline. Phase 16 is BLOCKED before starting by the plan's own Phase 1 gate: the measured label-dependent span of Sharing/Fulfil.lean is 723 lines against a ~700 revision trigger, and the position graph does not factor onto the bare skeleton. A decision between three recorded options is needed.",
+  "summary": "Phase 21 landed, green and committed, honoring the instruction not to enter Phases 16-17 on the old budget. FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Examples.lean (400 lines) gives (C5) its non-vacuity half: `stabFamily`, a concrete two-lasso family over the closure of the stability modal whose two indices name one world state at u = 0 and distinct states elsewhere; `stabFamily_separates`, proving (C5) holds on it while the eventuality is labelled at the main lasso's origin and its stabilization is not; and `stabFaithful_diagonal`, proving (C5) degenerates to the identity on any deterministic specialization. A #guard runs the (C5) decision procedure on the witness. Both theorems are within [propext, Classical.choice, Quot.sound]. Phase 21's declared `Depends on: 20` was wrong and is corrected in the plan to 12 and 15. Phase 16 is still BLOCKED on the same three-option measurement-gate decision; Phases 17-20 and 22 are untouched.",
   "artifacts": [
+    {
+      "type": "code",
+      "path": "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Examples.lean",
+      "summary": "New, 400 lines: the (C5) non-vacuity witness, its separation theorem, and the deterministic diagonal collapse."
+    },
     {
       "type": "summary",
       "path": "specs/690_stability_condition_over_branching_frame/summaries/01_stability-condition-branching-frame-summary.md",
-      "summary": "Implementation summary for phases 1-15, with the Phase 16 blocker and its three resolution options."
+      "summary": "Implementation summary updated for Phase 21, with the witness design, its deviations, and the build-guard replay hazard."
     },
     {
       "type": "plan",
       "path": "specs/690_stability_condition_over_branching_frame/plans/01_stability-condition-branching-frame.md",
-      "summary": "Plan updated to [PARTIAL]; 15 phases [COMPLETED], Phase 16 [BLOCKED] with a structured blocker entry, 6 [NOT STARTED]."
+      "summary": "Phase 21 marked [COMPLETED] with inline deviation annotations; Phase 16's blocker entry records that Phase 21 has been executed out of order."
     },
     {
       "type": "handoff",
-      "path": "specs/690_stability_condition_over_branching_frame/handoffs/phase-6-handoff-20260928.md",
-      "summary": "Progressive handoff written after Stage A and Phase 6; the shell mechanisms and territory notes it records are still current."
+      "path": "specs/690_stability_condition_over_branching_frame/handoffs/phase-21-handoff-20260928.md",
+      "summary": "Phase 21 progressive handoff."
     }
   ]
 }

@@ -1547,6 +1547,11 @@
           "path": "specs/690_stability_condition_over_branching_frame/summaries/01_stability-condition-branching-frame-summary.md",
           "type": "summary",
           "summary": "Implementation summary for phases 1-15, with the Phase 16 blocker and its three resolution options."
+        },
+        {
+          "path": "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Examples.lean",
+          "type": "code",
+          "summary": "New, 400 lines: the (C5) non-vacuity witness, its separation theorem, and the deterministic diagonal collapse."
         }
       ],
       "next_artifact_number": 2

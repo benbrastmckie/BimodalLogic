@@ -1,33 +1,38 @@
 {
   "status": "partial",
-  "started_at": "2026-09-28T18:21:12Z",
-  "completed_at": "2026-09-28T19:08:19Z",
+  "started_at": "2026-09-28T19:15:00Z",
+  "completed_at": "2026-09-28T19:33:00Z",
   "requires_user_review": true,
   "blocked_phase": 16,
-  "review_reason": "Phase 16 is BLOCKED before starting by this plan's own Phase 1 gate: the measured label-dependent span of Sharing/Fulfil.lean is 723 lines against the plan's ~700 revision trigger, and finding F-M3 shows the position graph does not factor onto the bare SharingSkeleton. Phases 1-15 are complete and green; the deliverable (C5) StabFaithful is stated over PlusFormula.stab and is decidable. A decision between three recorded options is needed before Phases 16-22 can proceed.",
+  "review_reason": "Phase 16 remains BLOCKED on this plan's own Phase 1 measurement gate (723 measured label-dependent lines in Sharing/Fulfil.lean against a ~700 revision trigger, plus finding F-M3 that the position graph does not factor onto the bare SharingSkeleton). This dispatch honored that gate and instead closed Phase 21, whose declared dependency on Phase 20 was wrong: its real dependencies (Phases 12 and 15) were already met. 16 of 22 phases are now complete. The same three-option decision is still needed before Phases 16-20 and 22 can proceed.",
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
     "vacuous_count": 0,
     "axiom_count": 14,
     "build_passed": true,
-    "notes": "vacuous grep returns 1 hit, FormalSystem/Examples/TemporalStructures.lean:495, pre-existing and last touched by task 656; zero attributable to this task. axiom_count is unchanged from the pre-change baseline at commit 71cc381d7."
+    "notes": "Full `lake build` green (guard exit 0, 2759 jobs, zero `error:` lines). The PlusWitnessFamily subtree is not reachable from FormalSystem.lean until Phase 22 registers it, so the new module was verified by the explicit target `lake build FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Examples` (guard exit 0, 1219 jobs, .olean written). The vacuous grep returns 1 hit, FormalSystem/Examples/TemporalStructures.lean:495, pre-existing and last touched by task 656; zero attributable to this task. axiom_count is unchanged from the pre-change baseline at commit 71cc381d7."
   },
   "partial_progress": {
-    "stage": "phase_16_blocked",
-    "details": "Phases 1-15 of 22 complete, green and committed. Phase 16 marked BLOCKED in the plan with a structured blocker entry and three resolution options. Phases 17-22 not started.",
-    "phases_completed": 15,
+    "stage": "phase_21_complete_phase_16_blocked",
+    "details": "Phases 1-15 and 21 complete, green and committed. Phase 16 remains BLOCKED with its structured blocker entry and three resolution options. Phases 17-20 and 22 not started.",
+    "phases_completed": 16,
     "phases_total": 22
   },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/690_stability_condition_over_branching_frame/summaries/01_stability-condition-branching-frame-summary.md",
-      "summary": "(C5) StabFaithful stated natively over PlusFormula.stab on an L-plus branching certificate and decided by a bounded window scan; Stage A extracted the branching substrate into a label-free SharingSkeleton with the shipping certificate unchanged."
+      "summary": "(C5) StabFaithful stated natively over PlusFormula.stab, decided by a bounded window scan, and now exhibited as non-vacuous by a concrete two-lasso witness and as degenerate on the deterministic diagonal."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/690_stability_condition_over_branching_frame/handoffs/phase-21-handoff-20260928.md",
+      "summary": "Phase 21 handoff: what landed, the witness's design decisions, and the build-guard replay hazard."
     }
   ],
   "completion_data": {
-    "completion_summary": "Phases 1-15 of 22 delivered the stability condition (C5) StabFaithful, stated natively over PlusFormula.stab on a new L-plus-indexed branching certificate and decidable by a bounded window scan that quantifies over no walk of the frame. Stage A extracted the 1,065-line branching substrate into a label-free SharingSkeleton that both certificates project onto, leaving the shipping deterministic certificate and its JSON export contract unchanged. Phase 16 is blocked before starting by the plan's own measurement gate, which Phase 1 tripped at 723 measured label-dependent lines against a ~700 trigger.",
+    "completion_summary": "Phase 21 closed the non-vacuity half of the (C5) deliverable: a concrete two-lasso witness family over the closure of the stability modal on which (C5) holds while separating the eventuality from its stabilization, plus a proof that (C5) degenerates to the identity on any deterministic specialization. Both theorems are within the standard three axioms and the witness is accepted by the decision procedure computationally. Phase 16 remains blocked on the plan's own measurement gate.",
     "roadmap_items": []
   },
   "metadata": {
@@ -36,6 +41,6 @@
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
     "compliance_check": "passed",
-    "compliance_detail": "20 of 28 fully-qualified pinned declarations elaborate, checked by #check on each fully-qualified name. The 8 absent are exactly Phases 18-21's deliverables, all downstream of the blocked Phase 16; none belongs to a completed phase."
+    "compliance_detail": "28 of 34 fully-qualified pinned declarations elaborate, checked by #check on each name. The 6 absent are exactly Phases 18-20's deliverables (model, plusTruth_iff_mem, PlusCertifies, decidablePlusCertifies, PlusRefutes, plusRefutes_of_certifies), all downstream of the blocked Phase 16; none belongs to a completed phase. Phase 21's three now elaborate at the pinned shapes."
   }
 }
