@@ -1,0 +1,26 @@
+{
+  "status": "researched",
+  "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/690_stability_condition_over_branching_frame/reports/01_stability-condition-branching-frame.md",
+      "summary": "Establishes that (C5) StabFaithful is finitary and decidable on the branching frame via total_eq_thread + truth_iff_mem, corrects the L-plus closure cost estimate from ~2,257 to ~250 lines, identifies a label-free SharingSkeleton factoring that reuses 1,065 landed lines, and sets out two viable architectures (full L-plus re-index vs. atomization) with a blocking user decision between them."
+    }
+  ],
+  "user_decision": {
+    "question": "Which datatype should (C5) StabFaithful be stated over: a new L-plus-indexed certificate that leaves the shipping JSON export contract untouched, or the existing Formula certificate run on an atomized target, which is ~4x cheaper but adds a field to the shipping certificate and states (C5) at Formula?",
+    "options": [
+      "Route 1 - L-plus-indexed certificate over a label-free SharingSkeleton: ~2,400-3,900 new Lean lines in seven phases; shipping deterministic export contract unchanged in name, meaning and shape; (C5) stated natively over PlusFormula.stab.",
+      "Route 2 - atomization: run the existing Formula certificate on an expanded atomized target and constrain stab-atoms via a finite pairing; ~600-900 lines, zero re-indexing, all five existing conditions and decision procedures reused; but adds a pairing field to the shipping certificate (re-opens the JSON export contract additively) and states StabFaithful at Formula."
+    ],
+    "recommended": "Route 1 - L-plus-indexed certificate over a label-free SharingSkeleton: ~2,400-3,900 new Lean lines in seven phases; shipping deterministic export contract unchanged in name, meaning and shape; (C5) stated natively over PlusFormula.stab.",
+    "blocking": true
+  },
+  "metadata": {
+    "session_id": "sess_1790617342_e2d44f_690",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
