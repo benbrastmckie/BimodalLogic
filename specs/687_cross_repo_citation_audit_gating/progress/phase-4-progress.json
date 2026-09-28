@@ -1,0 +1,17 @@
+{
+  "phase": 4,
+  "phase_name": "Hand-off block for the three unreached rows, and the deferred cross-repo proposal",
+  "started_at": "2026-09-27T01:30:00Z",
+  "last_updated": "2026-09-27T01:50:00Z",
+  "objectives": [
+    {"id": 1, "description": "Extend the three-rows section with explicit hand-off framing per row", "status": "done", "files_touched": ["docs/reference/transcription-audit-surface.md"]},
+    {"id": 2, "description": "Preserve row 24's conditional framing exactly", "status": "done", "files_touched": ["docs/reference/transcription-audit-surface.md"]},
+    {"id": 3, "description": "Add deferred cross-repo manifest-consumer proposal subsection", "status": "done", "files_touched": ["docs/reference/transcription-audit-surface.md"]},
+    {"id": 4, "description": "Add comment-only sentence to C35 header in check-module-invariants.sh", "status": "done", "files_touched": ["scripts/check-module-invariants.sh"]},
+    {"id": 5, "description": "Refresh *Last verified:* date", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "notes": "*Last verified:* was already 2026-09-27 (today), so no textual change was needed there -- verified rather than assumed. Read scripts/check-module-invariants.sh's current committed state before editing per the orchestrator's note about task 688's flock change; the C35 header region (near ENFORCE_C35) is untouched by that change. bash -n passes; git diff shows comment-only lines; ENFORCE_C35 default unchanged. Consulted the consuming repo's tests/_lean_check.py (read-only) for the BIMODAL_LOGIC_PATH resolution and skip-discipline detail cited in the deferred proposal text."
+}

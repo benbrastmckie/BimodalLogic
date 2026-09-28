@@ -111,6 +111,40 @@ is not a narrower audit, it is a less accurate one.
   `def:world-history` verbatim — so only the row is missing.
 - **Row 24** is conditional on which time-shift statement is cited; see the corrections table.
 
+**Hand-off: what the consuming document's §4.2 should add, keyed by name.** Each of the three rows
+already carries the paper anchor its own row above states; nothing further needs deriving, only
+transcribing into that document's own table shape.
+
+- For **row 3**, add a row naming `FormalSystem.Semantics.FrameOver`'s `worldNonempty` field (and
+  its frame-level accessor `FormalSystem.Semantics.TaskFrame.worldNonempty`), with no paper anchor
+  of its own — the row records that the paper's reading of `W` as nonempty is exactly this field,
+  transcribed rather than derived.
+- For **row 20**, add a row naming `FormalSystem.Semantics.PartialHistory`, its
+  `PartialHistory.IsTotal` predicate, and `FormalSystem.Semantics.WorldHistory`, against
+  `def:world-history` — the same anchor this page's row 20 already cites.
+- For **row 24**, add a row naming `FormalSystem.Semantics.TruthCorr` against
+  `def:time-shift-histories` and `app:auto_existence`. **Preserve the conditional framing exactly**:
+  this row is reachable only if the consuming document's §4.2 cites the *general* time-shift lemma
+  (`FormalSystem.Semantics.Truth.truthAt_of_truthCorr` at `TimeShift.shiftCorr`) rather than the
+  *instantiated* one it currently cites (`TimeShift.timeShift_preserves_truth`) — see the
+  corrections table's time-shift row. The consuming document's existing `app:auto_existence` row
+  already states a **reasoned position**, "not needed: Corollary 2.1 derives it", not an omission;
+  row 24 does not contradict that position, it names the structure (`TruthCorr`) that position's
+  own derivation is stated in terms of, and applies only under the general-lemma reading.
+
+**A deferred cross-repository proposal: a manifest consumer on the other side.** The mechanism
+above only ever reads this repository's own live scope; nothing on the consuming side reads the
+generated manifest at all, so a future drift at these same names would still rot silently there
+even after this hand-off is applied once. The natural fix is a consuming-side check — analogous to
+this repository's own C35 — that resolves a `BIMODAL_LOGIC_PATH` checkout (or
+`~/Projects/BimodalLogic` when unset, the same fallback that repository's `_lean_check.py` already
+uses), reads that checkout's `scripts/lean-citation-manifest.json`, and cross-checks its own
+`file.lean:NNN` citations against it, skipping cleanly — the same skip discipline
+`_lean_check.py` already applies for an absent checkout or an unbuilt binary — when no checkout is
+present. This is **not implemented here**: it is that repository's own test or documentation
+tooling, outside this task's `file_scope`, and is recorded as a named proposal rather than left as
+a silently dropped half of the mechanism.
+
 ## Corrections the consuming table owes
 
 Nothing here edits the consuming repository. Its adequacy argument is read-only input, and these

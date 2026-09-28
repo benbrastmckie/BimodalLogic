@@ -770,6 +770,10 @@ ENFORCE_C34B=${ENFORCE_C34B:-1} # every binder-carrying claim carries a marker (
 # `python3 scripts/export-lean-citations.py` and commit the regenerated manifest. NOTE: a missing
 # seed list or manifest, an empty seed list, zero declarations found, or zero entries compared
 # exits 2, and exit 2 is NOT suppressed by ENFORCE_C35=0.
+# The gate's coverage is now the original seeded set plus the consuming document's §4.1
+# `ShiftSet.lean` proof-mapping cluster, seven of whose nine citations turned out to already be
+# wrong-declaration when seeded; see docs/reference/transcription-audit-surface.md's "Corrections
+# the consuming table owes" for what the consuming side still owes for both drift clusters.
 ENFORCE_C35=${ENFORCE_C35:-1} # the generated citation manifest is byte-current (enforced)
 export ENFORCE_C34A ENFORCE_C34B
 # C16's second half widens the env_linter batch beyond the single `FormalSystem` library root to

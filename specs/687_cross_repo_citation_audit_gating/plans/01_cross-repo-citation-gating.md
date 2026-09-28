@@ -286,32 +286,36 @@ changed inside the residue table.
 
 ---
 
-### Phase 4: Hand-off block for the three unreached rows, and the deferred cross-repo proposal [NOT STARTED]
+### Phase 4: Hand-off block for the three unreached rows, and the deferred cross-repo proposal [COMPLETED]
 
 **Goal**: Make rows 3, 20 and 24 copy-ready for the consuming audit without restating them, and
 record the "consuming side consumes the manifest" option as a named proposal instead of an
 unfinished half of the task.
 
 **Tasks**:
-- [ ] Extend the existing "The three rows the consuming audit does not reach" section with an
+- [x] Extend the existing "The three rows the consuming audit does not reach" section with an
       explicit hand-off framing: what the consuming §4.2 should add for each of rows 3, 20 and 24,
-      keyed by name, with the paper anchor each already carries.
-- [ ] Preserve row 24's conditional framing exactly. The consuming document's §4.2 already records
+      keyed by name, with the paper anchor each already carries. *(completed)*
+- [x] Preserve row 24's conditional framing exactly. The consuming document's §4.2 already records
       `app:auto_existence` as "not needed: Corollary 2.1 derives it" — a reasoned position, not an
       omission. Say so, and frame row 24 as "reachable only if the general time-shift lemma is
-      cited rather than the instantiated one", never as a flat gap.
-- [ ] Add a short, clearly delineated subsection recording the deferred proposal: a consuming-side
+      cited rather than the instantiated one", never as a flat gap. *(completed: read the
+      consuming §4.2 row read-only to confirm its exact wording before framing row 24 against it)*
+- [x] Add a short, clearly delineated subsection recording the deferred proposal: a consuming-side
       check that reads `scripts/lean-citation-manifest.json` from a local checkout (reusing that
       repository's existing `BIMODAL_LOGIC_PATH` resolution convention, skipping cleanly when no
       checkout is present, mirroring its `_lean_check.py` skip discipline) and cross-checks its own
       `file.lean:NNN` citations against it. State plainly that it is not implemented here and why:
-      it is that repository's work, outside this task's `file_scope`.
-- [ ] Add a sentence to the C35 header comment in `scripts/check-module-invariants.sh` recording
+      it is that repository's work, outside this task's `file_scope`. *(completed; consulted
+      tests/_lean_check.py read-only for the resolution/skip detail)*
+- [x] Add a sentence to the C35 header comment in `scripts/check-module-invariants.sh` recording
       that the gate's coverage is now the seeded set *plus* the §4.1 cluster, and pointing at
       `docs/reference/transcription-audit-surface.md` for the corrections the consuming side owes.
-      Comment text only — no behavioural change, no `ENFORCE_C35` default change.
-- [ ] Update the `*Last verified:*` line at the foot of
-      `docs/reference/transcription-audit-surface.md` to the implementation date.
+      Comment text only — no behavioural change, no `ENFORCE_C35` default change. *(completed:
+      `git diff` shows comment lines only; `bash -n` passes; `ENFORCE_C35` default untouched)*
+- [x] Update the `*Last verified:*` line at the foot of
+      `docs/reference/transcription-audit-surface.md` to the implementation date. *(completed:
+      verified it already read today's date, 2026-09-27 — no textual change needed)*
 
 **Timing**: 0.75 hours
 
