@@ -297,7 +297,7 @@ theorem onePointExtension_of_completion (hser : TaskFrame.Serial F.TaskRel)
   exact ⟨adjoin τ z u hadm, adjoin_extends τ z u hadm, adjoin_domain_self τ z u hadm⟩
 
 /-- The equivalence, at any frame satisfying *Seriality* and *Limit*: *Completion* **is** the
-one-point extension property. 
+one-point extension property.
 Paper: — (the equivalence is the audit's own; the manuscript has no anchor for it)
 -/
 theorem completion_iff_onePointExtension (hser : TaskFrame.Serial F.TaskRel)

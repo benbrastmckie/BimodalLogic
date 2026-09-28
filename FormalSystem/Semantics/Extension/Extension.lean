@@ -269,7 +269,7 @@ theorem isRestriction_of_isRegular (F : TaskFrame) [F.IsRegular] (τ : PartialHi
   extension F τ
 
 /-- The surjection, spelled out: every partial history is literally `restrict h` for some possible
-world `h`, on the nose, not merely up to pointwise agreement. 
+world `h`, on the nose, not merely up to pointwise agreement.
 Paper: `thm:extension`
 -/
 theorem exists_restrict_eq (F : TaskFrame) [F.IsRegular] (τ : PartialHistory F) :
