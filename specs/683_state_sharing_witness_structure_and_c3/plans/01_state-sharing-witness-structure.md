@@ -825,7 +825,7 @@ planned `StabFaithful` component is out of scope.
 
 ---
 
-### Phase 12: `toSharing` and the condition reductions [NOT STARTED]
+### Phase 12: `toSharing` and the condition reductions [IN PROGRESS]
 
 **Goal**: The deterministic device is exhibited as the `share u i j := i = j` instance, with each
 new condition proved to reduce to its existing counterpart.
