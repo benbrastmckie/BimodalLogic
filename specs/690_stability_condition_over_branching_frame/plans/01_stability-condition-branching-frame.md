@@ -1209,7 +1209,7 @@ a single separately-committed, territory-aware phase.
       all seven modules and C8 passes.)*
 - [x] Register `PlusWitnessFamily` in `FormalSystem/Metalogic/Decidability.lean`
 - [x] Register `FormalSystem/PlusLanguage/Subformulas.lean` in `FormalSystem/PlusLanguage.lean`
-- [ ] Regenerate `FormalSystem.lean`'s import list with
+- [x] Regenerate `FormalSystem.lean`'s import list with
       `lake exe mk_all --lib FormalSystem`. **This regeneration is REPOSITORY-WIDE and is EXPECTED
       TO BE WIDE**: it is not a single-line edit, and a diff touching many import lines is the
       correct outcome, not a Scope-Hypothesis violation — do not stop on its breadth. Gate C33
@@ -1223,6 +1223,9 @@ a single separately-committed, territory-aware phase.
     complete-modulo-registration on the same user decision: `WitnessFamily/Sharing/Stability`
       Note `mk_all` is **not** declared in this repository's `lakefile.toml`; it resolves through
       Mathlib at `.lake/packages/mathlib/.lake/build/bin/mk_all`.
+      *(completed: the regeneration added 21 import lines; C33 now PASSES with 603 import
+      lines, one per `.lean` file under `FormalSystem/`, covering all 16 transferred modules
+      plus what this task's own later phases added.)*
 - [x] Update `docs/theorem-index.md` with the pinned declarations and their paper anchors (or the
       literal `Paper: —` plus a reason), per invariant C15 — six rows added to the Decidability
       section, all `—` (the results are the formalization's own; none is a paper theorem)
@@ -1287,7 +1290,8 @@ conflicting edit, report rather than merge.
 - `git log --oneline -1` shows this phase's own commit only; no foreign hunks staged
 
 **Exclusions** (why this phase is `[COMPLETED WITH EXCLUSIONS]` rather than `[COMPLETED]`): two
-check groups remain red. Neither is repairable inside this task's territory, and both are
+check groups were red at phase close. **C28 has since been repaired** (see the resolution note
+under item 1); **C23 remains red** and is carried to a follow-up task. Neither is repairable inside this task's territory, and both are
 reported rather than suppressed.
 
 1. **C28, compiler-warning budget** — one entry above baseline:
@@ -1297,6 +1301,13 @@ reported rather than suppressed.
    task's debt under this task's commit, so it was not run. **Every warning this task *did*
    introduce was fixed**: five `linter.style.longLine` warnings from the `Paper: —` anchor lines
    were wrapped, and C28's count for this task's own files is zero.
+
+   **RESOLVED after phase close.** The deprecation was fixed at source rather than
+   grandfathered: `push_neg at hcon` -> `push Not at hcon` (`Compression/Cycle.lean:208`), plus
+   the one other live site in the tree (`EFGames/GapDetectionRight.lean:1511`). Both match the
+   convention `MinusLanguage/MinusFrame.lean:255` already records. Verified: full `lake build`
+   exit 0 with zero errors and zero warnings, and C28 now PASSES against its zero baseline.
+   `scripts/warning-budget.txt` was NOT regenerated, so no other task's debt was blessed.
 2. **C23, naming conventions** — two sub-assertions:
    - `NM_nonneg` at `PlusWitnessFamily/Decide.lean:228` **and** at
      `Sharing/Decide.lean:192`. The second predates this task (`e3155fd32`), so the check was

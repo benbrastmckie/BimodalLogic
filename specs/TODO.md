@@ -1,5 +1,5 @@
 ---
-next_project_number: 691
+next_project_number: 692
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 691
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,685 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,685,691 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -96,7 +96,21 @@ next_project_number: 691
 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
   └─ 650 [NOT STARTED] — Define-before-use audit of...
 
+### Repo Hygiene
+
+691 [NOT STARTED] — Resolve gate C23's two remaining red sub-assertions: the 2...
+
 ## Tasks
+
+### 691. Resolve c23 naming exemptions
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Resolve gate C23's two remaining red sub-assertions: the 2 Uppercase_x NM_nonneg names (PlusWitnessFamily/Decide.lean:228, WitnessFamily/Sharing/Decide.lean:192) and the 11 outer-shadows-inner bare-declaration pairs (decidableValidZTime, cohWindowLo x3, cohWindowHi x3, mem_verts x3+). Every one is a deliberate mirrored-API or sub-namespacing decision, so the linter's suggested renames are not applicable: NM_nonneg is also a SharingWindow structure field (Window.lean:105) and structure fields cannot contain dots, while S.NM.nonneg would resolve nonneg against the type of S.NM (Int), where no Int.nonneg exists; and decidableValidZTime's shadowing IS the sub-namespacing deliberately chosen to avoid a genuine environment clash with BiLasso/Assembly.lean:100. The correct fix is a recorded exemption class in scripts/check-module-invariants.sh (extending UPPER_ALLOW and/or the shadowing scan) with the reasoning recorded inline, not a rename. C23 is the sole remaining red gate group; all others pass.
+
+---
 
 ### 690. Stability condition over branching frame
 - **Status**: [COMPLETED]
