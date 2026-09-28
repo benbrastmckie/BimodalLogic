@@ -173,35 +173,35 @@ repository's task system can consume it, without editing that repository.
 
 ---
 
-### Phase 2: Correct the over-stated obstruction passages in `Compression/` [NOT STARTED]
+### Phase 2: Correct the over-stated obstruction passages in `Compression/` [COMPLETED]
 
 **Goal**: Make the documented obstruction to the general finite-premise case match Finding 2c —
 the deduction theorem is needed for the reduction route only, and the direct route's residue is
 three enumerated items — without changing any Lean statement.
 
 **Tasks**:
-- [ ] Re-read each target passage immediately before editing (sibling-concurrency discipline):
+- [x] Re-read each target passage immediately before editing (sibling-concurrency discipline):
       `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean`'s module-header
       "Scope: no premises, and no stability modal" section, the same file's
       `decidableSemanticConsequenceNil` docstring, and
       `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/README.md`'s "What is out of
       scope" first bullet.
-- [ ] Rewrite each to say: the context-conjunction deduction theorem is what the *reduction* route
+- [x] Rewrite each to say: the context-conjunction deduction theorem is what the *reduction* route
       (`Γ ⊨ σ` via `⊨ ⋀Γ → σ`) needs and the tree has none; the *direct* route needs no such
       theorem, because `SemanticConsequenceIn` unfolds to local consequence at a point and
       `Refutes`, `WitnessFamily.refutes_of_certifies`, `WitnessFamily.joint_countermodel`,
       `exists_labelledLasso_of_history_realized`, `compressionBound` and the four `Decidable`
       instances are already stated at arbitrary `Γ Del`.
-- [ ] Enumerate the three genuinely `Γ = []`-specific residue items in the rewritten prose: the
+- [x] Enumerate the three genuinely `Γ = []`-specific residue items in the rewritten prose: the
       entry point's carrier normalization (`validZTime_iff_validInt`'s consequence analogue, built
       on `truthAt_map` at a fixed aligned triple), `Target`'s premise clause, and
       `Enumerate.lean`'s φ-specialization of `closureSubsetsOf` / `rawLabelledLassos` /
       `IsLabelledLasso` / `boundedLassos` / `cands`.
-- [ ] State the residue as bounded-and-unproved, not as done: the consequence-form normalization
+- [x] State the residue as bounded-and-unproved, not as done: the consequence-form normalization
       was never written, so the prose must not claim the general form compiles.
-- [ ] Keep the unchanged neighbours intact: the stability-modal `⊡` scope sentence, the
+- [x] Keep the unchanged neighbours intact: the stability-modal `⊡` scope sentence, the
       "bound is a grid" section, the [GKWZ] EXPSPACE note, and the axiom paragraph.
-- [ ] Cite by fully qualified or unambiguous declaration name only — no `file.lean:NNN` anchors, no
+- [x] Cite by fully qualified or unambiguous declaration name only — no `file.lean:NNN` anchors, no
       task numbers (C9 forbids them under `FormalSystem/`), no new relative markdown links.
 
 **Timing**: 0.75 hours
@@ -236,7 +236,15 @@ replacements) with no site left carrying the over-stated form, and no fourth sit
 - `grep -rn "deduction theorem" FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/`
   shows the Scope-Hypothesis count with every remaining occurrence scoped to the reduction route.
 - `bash scripts/check-module-invariants.sh --no-build` passes (fast structural pass: C9, C20, C31,
-  C32 all read this prose).
+  C32 all read this prose). *(deviation: altered — the gate does not exit 0 on this working tree,
+  but introduces no failure attributable to this phase. Evidenced by running the same `--no-build`
+  gate in two throwaway `git worktree` checkouts: at `29522e6b8` (before either task's
+  implementation work) C23's two Uppercase_x hits and eleven outer-shadows-inner pairs already
+  FAIL, so both are pre-existing; at `90949ec03` (sibling task 685's phase-1 commit, none of this
+  phase's edits present) `INV` stale-inventory and `C33` not-the-generated-root already FAIL too,
+  so both are the sibling's. C9, C20, C31 and C32 — the four checks that read this phase's prose —
+  all PASS. Comment-only edits cannot create a shadowing pair, an Uppercase_x name, or a
+  declaration census change.)*
 
 ---
 

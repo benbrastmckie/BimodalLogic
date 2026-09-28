@@ -53,9 +53,24 @@ pick a single triple.
 ## Scope: no premises, and no stability modal
 
 `decidableSemanticConsequenceNil` covers `SemanticConsequenceIn FrameClass.ZTime [] σ` only. The
-general finite-premise case needs a context-conjunction deduction theorem and the tree has none —
-there is no `Context.conj`, `bigConj` or equivalent — so it is out of scope here rather than
-merely unproved.
+general finite-premise case is unproved, and the obstruction is narrower than a missing deduction
+theorem. It is the **reduction** route — deriving `Γ ⊨ σ` from `⊨ ⋀Γ → σ` — that needs a
+context-conjunction deduction theorem, and the tree has none: there is no `Context.conj`, `bigConj`
+or equivalent. The **direct** route needs no such theorem. `SemanticConsequenceIn` unfolds to local
+consequence at a point, so its negation is already the shape `WitnessFamily.Refutes` describes, and
+`WitnessFamily.Refutes`, `WitnessFamily.refutes_of_certifies`, `WitnessFamily.joint_countermodel`,
+`exists_labelledLasso_of_history_realized`, `compressionBound` and the four `Decidable` instances
+composed as `WitnessFamily.decidableCertifies` are all already stated at arbitrary `Γ Del`.
+
+What is genuinely `Γ = []`-specific is three things: this module's entry point normalizes the
+carrier with `validZTime_iff_validInt`, and the general case needs that lemma's consequence
+analogue — available from `truthAt_map`, which is stated at a fixed aligned triple and so applies
+simultaneously to every `γ ∈ Γ` and to `σ`; `WitnessFamily.Target`'s premise clause, discharged
+here from `List.not_mem_nil`, becomes the mirror of the conclusion clause beside it; and
+`Enumerate.lean`'s `closureSubsetsOf`, `rawLabelledLassos`, `IsLabelledLasso`, `boundedLassos` and
+`cands` are specialized to a single `φ` over `closureOf ([] ++ [φ])`. That residue is bounded and
+enumerated rather than open-ended — and it is **not** discharged: the consequence-form carrier
+normalization has never been written, so nothing here claims the general form compiles.
 
 `ValidZTime` is stated for `FormalSystem.Syntax.Formula`, which has no stability modal `⊡`; `⊡`
 lives only in `FormalSystem.PlusLanguage.Formula`. The durable scope sentence for that is
@@ -138,8 +153,10 @@ end Compression
 **The empty-premise consequence corollary.**
 
 Via `semanticConsequenceIn_nil_iff`, the bridge `SemanticConsequenceIn fc [] φ ↔ ValidIn fc φ`.
-The non-empty-premise case is out of scope: it needs a context-conjunction deduction theorem and
-the tree has none.
+The non-empty-premise case is unproved here. A deduction theorem is what the *reduction* route
+(`Γ ⊨ σ` from `⊨ ⋀Γ → σ`) would need, and the tree has none; the *direct* route needs none, since
+everything downstream of the entry point is already stated at arbitrary `Γ Del`. See this module's
+header for the three `Γ = []`-specific items that remain, none of them yet written.
 -/
 def decidableSemanticConsequenceNil (σ : Formula) :
     Decidable (SemanticConsequenceIn ProofSystem.FrameClass.ZTime [] σ) :=

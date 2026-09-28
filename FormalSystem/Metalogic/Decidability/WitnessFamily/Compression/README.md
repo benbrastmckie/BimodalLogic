@@ -114,8 +114,19 @@ takes the sub-namespace.
 ## What is out of scope
 
 - **General finite-premise consequence.** `decidableSemanticConsequenceNil` covers the
-  empty-premise case only; the general one needs a context-conjunction deduction theorem and the
-  tree has none.
+  empty-premise case only. The obstruction is narrower than it may look: a context-conjunction
+  deduction theorem — which the tree does not have — is what the *reduction* route (`Γ ⊨ σ` from
+  `⊨ ⋀Γ → σ`) needs, while the *direct* route needs none, because `SemanticConsequenceIn` unfolds
+  to local consequence at a point and `WitnessFamily.Refutes`,
+  `WitnessFamily.refutes_of_certifies`, `WitnessFamily.joint_countermodel`,
+  `exists_labelledLasso_of_history_realized`, `compressionBound` and
+  `WitnessFamily.decidableCertifies` with its four component instances are already stated at
+  arbitrary `Γ Del`. Three items are genuinely `Γ = []`-specific: the consequence analogue of
+  `validZTime_iff_validInt` for the entry point's carrier normalization, `WitnessFamily.Target`'s
+  premise clause, and `Enumerate.lean`'s φ-specialization of `closureSubsetsOf`,
+  `rawLabelledLassos`, `IsLabelledLasso`, `boundedLassos` and `cands`. That residue is bounded and
+  enumerated, and it is unproved — the consequence-form normalization has never been written, so
+  the general form is not known to compile.
 - **A usable executable.** `cands` is astronomically large. [GKWZ] §6.5 gives an EXPSPACE-hardness
   lower bound for `PTL × S5`, so the cost is the literature's own; see `Assembly.lean`'s docstring.
 - **The stability modal `⊡`.** `ValidZTime` is stated for `FormalSystem.Syntax.Formula`, which has
