@@ -11,8 +11,8 @@ next_project_number: 690
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,682,686,688,689 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,623,650,683,687 | 298,464,502,563,649,682,688 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,682,686,687,689 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,683 | 298,464,502,563,649,682 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,684 | 231,465,497,564,565,616,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,685 | 428,498,499,500,623,684 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -69,15 +69,15 @@ next_project_number: 690
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-682 [PLANNED] — RESEARCH TASK, verdict-first: establish whether validity of...
-686 [PLANNED] — Discharge the consuming repository's half of the certificate...
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
   └─ 685 [NOT STARTED] — Prove the compression result for the branching witness...
+682 [PLANNED] — RESEARCH TASK, verdict-first: establish whether validity of...
+686 [PLANNED] — Discharge the consuming repository's half of the certificate...
 
 ### Documentation
 
-689 [PLANNED] — Reconcile four records with what the code actually says, each...
 687 [NOT STARTED] — Close the cross-repository citation and audit-surface gap...
+689 [PLANNED] — Reconcile four records with what the code actually says, each...
 
 ### Formula Refactor
 
@@ -104,10 +104,6 @@ next_project_number: 690
 
 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
   └─ 650 [NOT STARTED] — Define-before-use audit of...
-
-### Repo Hygiene
-
-688 [PLANNED] — Make the repository's own gate scripts reliable under...
 
 ### Semantics
 
@@ -136,12 +132,13 @@ THE SHARED-FIXTURE CONVENTION. A plan placed a cross-repository fixture file und
 ---
 
 ### 688. Gate script concurrency reliability
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
 - **Research**: [688_gate_script_concurrency_reliability/reports/01_gate-script-concurrency-reliability.md]
 - **Plan**: [688_gate_script_concurrency_reliability/plans/01_gate-script-build-lock.md]
+- **Summary**: [688_gate_script_concurrency_reliability/summaries/01_gate-script-build-lock-summary.md]
 
 **Description**: Make the repository's own gate scripts reliable under concurrent dispatch, so that a red gate means a real defect rather than a race.
 
