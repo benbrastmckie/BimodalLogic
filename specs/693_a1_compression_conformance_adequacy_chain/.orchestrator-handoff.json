@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 4,
+  "summary": "Four-phase plan (2.5h) for the decided scope: cross-repository hand-off note carrying the A1 / A1-Gamma / A3 row text, correction of the over-stated 'needs a deduction theorem' passages in Compression/{Assembly.lean,README.md}, the validated 23-name citation seed block with manifest regeneration under C35, then full gate and scoped commit. No Lean statement changes; the ModelChecker repository is not edited.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/693_a1_compression_conformance_adequacy_chain/plans/01_a1-conformance-handoff-manifest.md",
+      "summary": "4 phases, 3 dependency waves, 2.5 hours: hand-off note, docstring corrections, seed block plus manifest regeneration, full gate and commit."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 4,
+  "blockers": [],
+  "next_action_hint": "Run /orchestrate 693 to dispatch implementation; Phase 2 must complete before Phase 3 because the new seed names resolve into Compression/Assembly.lean, whose line numbers the docstring edits shift.",
+  "sorry_inventory": [],
+  "continuation_path": null
+}

@@ -1,27 +1,29 @@
 {
-  "status": "researched",
-  "dispatch_seq": 2,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/693_a1_compression_conformance_adequacy_chain/reports/01_a1-compression-conformance.md",
-      "summary": "Verdict-first conformance audit: the landed compression theorem proves upstream obligation A1 in full (including the f(|C|) bound) but only at WitnessFamily [] [phi]; all 13 countermodel examples in the consumer's suite have non-empty premises, so A1 is NOT closed and the residue is stated as a new obligation A1-Gamma. Certificate conditions match (C1)-(C4) clause for clause; A3 is newly live-and-open; verified-absence is a theorem but non-executable."
+      "type": "plan",
+      "path": "specs/693_a1_compression_conformance_adequacy_chain/plans/01_a1-conformance-handoff-manifest.md",
+      "summary": "4-phase, 2.5-hour plan for the decided scope: cross-repository A1/A1-Gamma/A3 hand-off note, correction of the over-stated deduction-theorem passages in Compression/{Assembly.lean,README.md}, the validated 23-name citation seed block with manifest regeneration under C35, then full gate and scoped commit; no Lean statement changes."
     }
   ],
-  "user_decision": {
-    "question": "A1 is not discharged as the chain consumes it, so this task's conditional deliverable (update the cross-repository record) does not fire and the report alone satisfies the dispatch. The report additionally surfaces four in-repository follow-ons. How far should this task's implementation phase go?",
-    "options": [
-      "Report only - close the task on the report; spawn the follow-ons as separate tasks",
-      "Report plus documentation and manifest work - also apply the validated seed block and correct the two over-stated 'needs a deduction theorem' docstrings; no Lean statement changes",
-      "Report plus all six recommendations - also name the bound's factorization through |C| and strengthen the lasso-count conjunct, i.e. change landed Lean statements"
-    ],
-    "recommended": "Report plus documentation and manifest work - also apply the validated seed block and correct the two over-stated 'needs a deduction theorem' docstrings; no Lean statement changes",
-    "blocking": false
-  },
   "metadata": {
     "session_id": "sess_1790630813_a17992_693",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2.5,
+    "dependency_waves": [[1, 2], [3], [4]]
+  },
+  "memory_candidates": [
+    {
+      "content": "When a repository gates a GENERATED line-number artifact for byte-currency (e.g. scripts/lean-citation-manifest.json under check-module-invariants.sh's C35), plan ordering must put every edit that shifts lines in a file holding a gated declaration BEFORE the regeneration step, never after. Regenerating first and then editing a docstring in the same file leaves the gate red with no code defect, and the only sanctioned repair is re-running the generator -- hand-editing the artifact is exactly what the gate exists to catch. The dependency is invisible in a naive phase order (docs work and manifest work look independent) and only surfaces once you check which files the new gated names resolve into.",
+      "category": "PATTERN",
+      "source_artifact": "specs/693_a1_compression_conformance_adequacy_chain/plans/01_a1-conformance-handoff-manifest.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["generated-artifact", "byte-current-gate", "phase-ordering", "citation-manifest", "line-drift", "C35"]
+    }
+  ],
+  "dispatch_seq": 4
 }
