@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "summary": "Authored a five-phase implementation plan closing the cited side of the cross-repository citation gap: re-verify the measured +38 drift against today's tree, extend scripts/lean-citation-seeds.txt to cover the newly found ShiftSet.lean §4.1 cluster and regenerate the manifest (atomic-batch), record the second drift cluster plus a hand-off framing for the three unreached residue rows in docs/reference/transcription-audit-surface.md, defer the consuming-side manifest consumer as a named proposal, then run the full build-free invariants gate and close out. Nothing under ~/Projects/ModelChecker is written.",
+  "phase": "plan",
+  "dispatch_seq": 14,
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/687_cross_repo_citation_audit_gating/plans/01_cross-repo-citation-gating.md",
+      "summary": "Five-phase implementation plan for cross-repository citation audit gating (seed-list extension, manifest regeneration, name-keyed corrections recorded on this side)."
+    }
+  ],
+  "next_action_hint": "Run /implement 687 to execute the plan"
+}
