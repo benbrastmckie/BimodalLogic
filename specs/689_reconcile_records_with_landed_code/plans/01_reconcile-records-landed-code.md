@@ -1,7 +1,7 @@
 # Implementation Plan: Task #689
 
 - **Task**: 689 - Reconcile records with landed code
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.25 hours
 - **Dependencies**: None (all four source tasks are complete and committed)
 - **Research Inputs**: `specs/689_reconcile_records_with_landed_code/reports/01_reconcile-records-landed-code.md`
@@ -151,7 +151,7 @@ parallel execution carries no write conflict between them.
 
 ---
 
-### Phase 1: Amend the pinned Challenge block, non-destructively [NOT STARTED]
+### Phase 1: Amend the pinned Challenge block, non-destructively [COMPLETED]
 
 **Goal**: The canonical wire codec's recorded Challenge block states the three theorems that were
 actually proved, and records beside each why the form originally recorded was false.
@@ -367,21 +367,21 @@ case STOP and report rather than absorbing a sibling's hunk into this task's com
 
 ---
 
-### Phase 6: Full gate run and task close-out [NOT STARTED]
+### Phase 6: Full gate run and task close-out [COMPLETED]
 
 **Goal**: Every mechanical gate in the repository is green over the full change set, with the
 build run detached and bounded.
 
 **Tasks**:
-- [ ] Run the full build detached and guarded — `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` via `Bash(run_in_background: true)`, never a plain foreground `lake build`. Lean hashes whole files, so the `MinusLanguage/Translation.lean` docstring edit invalidates every downstream `.olean`; this is a long build.
-- [ ] Wait on it with a bounded waiter per `context/patterns/bounded-build-waiter.md`: a hard timeout, writer liveness via `kill -0` on the captured PID, never `ps | grep` or `pgrep -f`, one waiter per log.
-- [ ] Run `bash scripts/check-module-invariants.sh` (full default run: C13, C15, C20, C27, C31, C32, C35 and `INV`).
-- [ ] Run `bash scripts/readme-lint.sh` over `FormalSystem` and the other doc roots touched.
-- [ ] Re-run `python3 scripts/export-lean-citations.py --check`.
-- [ ] Repo-wide task-reference lint over the non-`specs/` deliverables this task touched (`bash .claude/scripts/check-task-references.sh`, or the equivalent grep) — confirm zero new occurrences.
-- [ ] Confirm the final diff touches no theorem statement and no proof term: `git diff` over the two `.lean` files in Phase 3 and the one in Phase 2 shows comment-region hunks only.
-- [ ] If a gate fails in a file outside this task's own set, check `git log` and `git status` before concluding it is a regression — a sibling task dispatched this same cycle may have an in-flight edit. STOP and report a foreign commit or modification rather than fixing or dismissing it.
-- [ ] Write the execution summary to `specs/689_reconcile_records_with_landed_code/summaries/01_reconcile-records-landed-code-summary.md`.
+- [x] Run the full build detached and guarded — `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build` via `Bash(run_in_background: true)`, never a plain foreground `lake build`. Lean hashes whole files, so the `MinusLanguage/Translation.lean` docstring edit invalidates every downstream `.olean`; this is a long build.
+- [x] Wait on it with a bounded waiter per `context/patterns/bounded-build-waiter.md`: a hard timeout, writer liveness via `kill -0` on the captured PID, never `ps | grep` or `pgrep -f`, one waiter per log.
+- [x] Run `bash scripts/check-module-invariants.sh` (full default run: C13, C15, C20, C27, C31, C32, C35 and `INV`).
+- [x] Run `bash scripts/readme-lint.sh` over `FormalSystem` and the other doc roots touched.
+- [x] Re-run `python3 scripts/export-lean-citations.py --check`.
+- [x] Repo-wide task-reference lint over the non-`specs/` deliverables this task touched (`bash .claude/scripts/check-task-references.sh`, or the equivalent grep) — confirm zero new occurrences.
+- [x] Confirm the final diff touches no theorem statement and no proof term: `git diff` over the two `.lean` files in Phase 3 and the one in Phase 2 shows comment-region hunks only.
+- [x] If a gate fails in a file outside this task's own set, check `git log` and `git status` before concluding it is a regression — a sibling task dispatched this same cycle may have an in-flight edit. STOP and report a foreign commit or modification rather than fixing or dismissing it.
+- [x] Write the execution summary to `specs/689_reconcile_records_with_landed_code/summaries/01_reconcile-records-landed-code-summary.md`.
 
 **Timing**: 1 hour (build-dominated; mostly waiting)
 
@@ -419,16 +419,16 @@ exact failure mode this task exists to repair.
 
 ## Testing & Validation
 
-- [ ] `lake build` clean, run detached and bounded (Phase 6).
-- [ ] `bash scripts/check-module-invariants.sh` PASS on every check, `INV` included (Phase 6).
-- [ ] `python3 scripts/export-lean-citations.py --check` clean (Phases 5 and 6).
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` clean (Phase 5).
-- [ ] `bash scripts/readme-lint.sh` clean on every touched doc root (Phases 4 and 6).
-- [ ] `lake build` of each individually edited Lean module succeeds before its phase closes (Phases 2 and 3).
-- [ ] `ConstraintWitnesses.lean` stays under its recorded `set_option linter.style.longFile 1800` baseline, or the baseline is raised deliberately with a reason comment (Phase 3).
-- [ ] Zero task-number occurrences outside `specs/**` across the whole change set (Phase 6).
-- [ ] Every `.lean` hunk in the final diff lies inside a comment region — no statement, binder or proof term changed (Phase 6).
-- [ ] Each of the three originally-recorded false statements appears verbatim in the amended plan's `### Amendment` subsection (Phase 1).
+- [x] `lake build` clean, run detached and bounded (Phase 6).
+- [x] `bash scripts/check-module-invariants.sh` PASS on every check, `INV` included (Phase 6).
+- [x] `python3 scripts/export-lean-citations.py --check` clean (Phases 5 and 6).
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` clean (Phase 5).
+- [x] `bash scripts/readme-lint.sh` clean on every touched doc root (Phases 4 and 6).
+- [x] `lake build` of each individually edited Lean module succeeds before its phase closes (Phases 2 and 3).
+- [x] `ConstraintWitnesses.lean` stays under its recorded `set_option linter.style.longFile 1800` baseline, or the baseline is raised deliberately with a reason comment (Phase 3).
+- [x] Zero task-number occurrences outside `specs/**` across the whole change set (Phase 6).
+- [x] Every `.lean` hunk in the final diff lies inside a comment region — no statement, binder or proof term changed (Phase 6).
+- [x] Each of the three originally-recorded false statements appears verbatim in the amended plan's `### Amendment` subsection (Phase 1).
 
 ## Artifacts & Outputs
 
