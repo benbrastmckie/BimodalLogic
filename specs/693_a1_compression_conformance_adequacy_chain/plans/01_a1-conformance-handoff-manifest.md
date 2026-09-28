@@ -1,7 +1,7 @@
 # Implementation Plan: Task #693
 
 - **Task**: 693 - A1 compression conformance adequacy chain
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: None blocking. Concurrent sibling task 685 owns
   `FormalSystem/Metalogic/Decidability/WitnessFamily/{Decide,Closure}.lean`,
@@ -120,31 +120,31 @@ No `roadmap_path` was provided in the delegation context and no `specs/ROADMAP.m
 Phases within the same wave can execute in parallel. Phase 1 writes only under `specs/`; Phase 2
 writes only under `FormalSystem/.../Compression/`, so the two waves-1 phases share no file.
 
-### Phase 1: Write the upstream adequacy-row hand-off note [NOT STARTED]
+### Phase 1: Write the upstream adequacy-row hand-off note [COMPLETED]
 
 **Goal**: Put the A1 / A1-Γ / A3 row text and its accompanying-edit list where the upstream
 repository's task system can consume it, without editing that repository.
 
 **Tasks**:
-- [ ] Create `specs/693_a1_compression_conformance_adequacy_chain/handoff-a1-adequacy-rows.md`,
+- [x] Create `specs/693_a1_compression_conformance_adequacy_chain/handoff-a1-adequacy-rows.md`,
       following the shape of `specs/684_agreement_lemma_over_all_walks/handoff-c5-statement.md`
       (title, **From** / **To** block, then sections).
-- [ ] Transcribe the three replacement rows from the report's Recommendation 1 verbatim: the
+- [x] Transcribe the three replacement rows from the report's Recommendation 1 verbatim: the
       revised **A1** row (partially discharged, empty-premise single-conclusion instance), the new
       **A1-Γ** row (open, and the form (ADEQ) consumes), and the revised **A3** row (no longer
       vacuous — live and open).
-- [ ] Record the four accompanying upstream edits the same pass should make: `ADEQUACY.md`
+- [x] Record the four accompanying upstream edits the same pass should make: `ADEQUACY.md`
       section 7.1's "A1 is recorded as open" paragraph and its `exists_annot_of_truth` rejection
       subsection; section 7.1's condition (i)/(ii) status; `TRUST_PIPELINE.md`'s A-component table
       A1 and A3 rows, including that its A3 row states the wrong (magnitude) form and must become
       the representability form (Finding 3f); and `TRUST_PIPELINE.md`'s "In the Lean development"
       verified-absence row, paired with the measured candidate counts and the absent `lean_exe`.
-- [ ] Record the citation-convention hand-off (Recommendation 2): the fourteen `WitnessFamily/`
+- [x] Record the citation-convention hand-off (Recommendation 2): the fourteen `WitnessFamily/`
       and `Compression/` citations should move to `name` + manifest once Phase 3 lands, and
       `joint_countermodel` has already drifted from the cited anchor.
-- [ ] State explicitly at the top that the ModelChecker repository was not and must not be edited
+- [x] State explicitly at the top that the ModelChecker repository was not and must not be edited
       from here, and that the note is copy for that repository's own task system.
-- [ ] Carry the two honesty caveats with the claims they qualify: verified absence is a theorem at
+- [x] Carry the two honesty caveats with the claims they qualify: verified absence is a theorem at
       restricted scope but not a practical replacement for trusting Z3 UNSAT (different
       quantifiers, no executable), and the A1-Γ residue is "bounded, not open-ended" with no effort
       estimate promised.
