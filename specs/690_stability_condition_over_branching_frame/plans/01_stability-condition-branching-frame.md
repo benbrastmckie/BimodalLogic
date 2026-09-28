@@ -235,26 +235,26 @@ be recorded before proceeding.
 
 ---
 
-### Phase 2: `Sharing/Skeleton.lean` — the label-free structure, `rep` and `share` [NOT STARTED]
+### Phase 2: `Sharing/Skeleton.lean` — the label-free structure, `rep` and `share` [COMPLETED]
 
 **Goal**: Extract the periodic representative structure from `SharingWitnessFamily` into a
 standalone `SharingSkeleton`, with `rep`, `share` and their periodicity/idempotence lemmas, and
 make `Sharing/Basic.lean` a thin re-export over it.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Skeleton.lean` with
+- [x] Create `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Skeleton.lean` with
       `structure SharingSkeleton` carrying `n`, `n_pos`, `repBack`, `repMid`, `repFwd`,
       `repBack_ne`, `repFwd_ne`, `rep_idem`
-- [ ] Move `rep`, `rep_def`, `nbr`/`nmr`/`nfr`, `nbr_pos`, `nfr_pos`, `nmr_nonneg`,
+- [x] Move `rep`, `rep_def`, `nbr`/`nmr`/`nfr`, `nbr_pos`, `nfr_pos`, `nmr_nonneg`,
       `rep_sub_back_length`, `rep_add_fwd_length` onto the skeleton
-- [ ] Move `share`, `share_def`, `share_refl`, `share_symm`, `share_trans`,
+- [x] Move `share`, `share_def`, `share_refl`, `share_symm`, `share_trans`,
       `share_sub_back_length`, `share_add_fwd_length`, `rep_mem_or_id`, `rep_idem'`, `share_rep`,
       `share_iff_rep_eq`, `decidableShare` onto the skeleton
-- [ ] Add `def SharingWitnessFamily.skeleton` in `Sharing/Basic.lean`
-- [ ] Replace each moved declaration in `Sharing/Basic.lean` by a thin re-export (`abbrev` or a
+- [x] Add `def SharingWitnessFamily.skeleton` in `Sharing/Basic.lean`
+- [x] Replace each moved declaration in `Sharing/Basic.lean` by a thin re-export (`abbrev` or a
       one-line `theorem ... := K.lemma`) preserving the existing name, statement and implicit /
       explicit argument structure exactly
-- [ ] Register `Skeleton.lean` in `Sharing`'s import chain by importing it from `Sharing/Basic.lean`
+- [x] Register `Skeleton.lean` in `Sharing`'s import chain by importing it from `Sharing/Basic.lean`
       only (the aggregator `WitnessFamily.lean` is Phase 22's, per R1)
 
 **Timing**: 2 hours
