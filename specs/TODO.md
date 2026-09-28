@@ -1,5 +1,5 @@
 ---
-next_project_number: 686
+next_project_number: 690
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 686
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,682 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,682,686,687,688,689 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650,683 | 298,464,502,563,649,682 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,684 | 231,465,497,564,565,616,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,685 | 428,498,499,500,623,684 | algebraic-representation, decidability, metalogic |
@@ -72,6 +72,12 @@ next_project_number: 686
 623 [NOT STARTED] — Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet...
   └─ 685 [NOT STARTED] — Prove the compression result for the branching witness...
 682 [NOT STARTED] — RESEARCH TASK, verdict-first: establish whether validity of...
+686 [NOT STARTED] — Discharge the consuming repository's half of the certificate...
+
+### Documentation
+
+687 [NOT STARTED] — Close the cross-repository citation and audit-surface gap...
+689 [NOT STARTED] — Reconcile four records with what the code actually says, each...
 
 ### Formula Refactor
 
@@ -99,11 +105,91 @@ next_project_number: 686
 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
   └─ 650 [NOT STARTED] — Define-before-use audit of...
 
+### Repo Hygiene
+
+688 [NOT STARTED] — Make the repository's own gate scripts reliable under...
+
 ### Semantics
 
 683 [NOT STARTED] — Replace the deterministic witness device with a state-sharing...
 
 ## Tasks
+
+### 689. Reconcile records with landed code
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: documentation
+- **Dependencies**: None
+
+**Description**: Reconcile four records with what the code actually says, each discovered by an implementation that found its own plan or a sibling's report to be wrong. None is a code defect; all four are places where a durable record would mislead the next reader.
+
+THE THREE FALSE PINNED STATEMENTS. The canonical wire codec's plan pinned nine theorem signatures, of which three are false as written, and the implementation proved minimally corrected versions instead. The unescape round-trip statement omits the closing quote that the body-unescaping function consumes, so the recorded form runs off the end of its input. The parse-after-print statement and the fuel-sufficiency statement are both false at the integer leaf, because a printed integer followed by a digit is a longer integer: printing one and appending the character two yields the byte string twelve, which any correct parser reads as twelve. Both need a no-digit-follows hypothesis. Amend the plan's pinned block to the statements that were actually proved and record, for each, why the recorded form was false. The statement-fidelity convention treats this as reviewable even when the recorded statement was the mistaken one, which is the right default and the reason this is written down rather than silently absorbed.
+
+THE FALSE INJECTIVITY REQUEST. Both the report and the plan for the source-language translation asked for injectivity of the elimination, following the precedent of the existing minus-language translation. It is false, and false by definitional unfolding rather than by a subtle counterexample: an elimination sends each defined operator onto the very abbreviation it stands for, so implication and its disjunctive expansion are equal by reflexivity, as are truth and the negation of falsity, the possibility operator and its negated-box form, and both existential tenses. The disproof was delivered instead. The consequence already recorded is that the conformance channel is forward-only, since no inverse pass is checkable. Correct the precedent's framing so the next task reading it does not ask for the same false lemma a third time.
+
+THE DUPLICATED INDEPENDENCE MATRIX. A new module now carries four frame-constraint independence witnesses, sixteen theorems and an aggregate theorem. An existing module under the state-topology directory already carried a complete independence matrix, and its void relation is character-identical to the new empty relation, so three of the four new rows re-prove known facts at a different witness. What is genuinely new is the aggregate theorem, the first refutation of the limit condition over discrete time, and import-light reachability from the semantics aggregator. That was recorded honestly rather than glossed. Decide now whether the two should be consolidated, or whether the duplication is worth keeping for the import-weight reason, and write the decision where a future reader of either module will find it.
+
+THE SHARED-FIXTURE CONVENTION. A plan placed a cross-repository fixture file under the data directory, which is gitignored in its entirety, so the file could never have been committed there and the fixture was relocated beside its reader. A shared artifact that cannot be obtained from git is not a shared artifact. Record the convention so no later plan repeats the placement, and note that punching a hole in the shared ignore rule was considered and rejected.
+
+---
+
+### 688. Gate script concurrency reliability
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Make the repository's own gate scripts reliable under concurrent dispatch, so that a red gate means a real defect rather than a race.
+
+THE MEASURED DEFECT. scripts/check-module-invariants.sh runs its own lake build, twice, outside the shared build lock (the two invocations near the top of its check sequence: the default target and the test library). Any other guarded build running at the same time therefore races it for .lake artifacts. This is not hypothetical: during a single multi-task orchestration run it produced three separate spurious failures, including one reported as a genuine test-library build failure, each of which had to be attributed against the commit log before it could be set aside. The cost is not the wasted build; it is that every future red result from this script is now suspect, which is exactly the property a gate must not have.
+
+THE DESIGN QUESTION THIS OPENS, WHICH IS WHY IT IS A TASK AND NOT A ONE-LINE EDIT. The build lock lives in the agent-system deploy tree, which is a disposable artifact regenerated from a source store, while this script is a repository deliverable that must keep working for someone who has no agent system deployed at all. So the fix cannot simply hardcode a call into the deploy tree. Options worth weighing: probe for the guard and use it when present, falling back to an unguarded build with a printed notice; take a repository-local lock of its own that the guard also honors; or have the script refuse to run its builds when it detects a concurrent build rather than racing it. Pick one deliberately and record why.
+
+THE SECOND, SMALLER ITEM IN THE SAME TERRITORY. scripts/nolints-style.txt does not exist, so every single invocation of the style linter prints "nolints file could not be read; treating as empty". The warning is harmless and therefore trains readers to skim past linter output, which is the actual damage. Either create the file, empty and commented, or stop referring to it.
+
+VERIFICATION THAT WOULD ACTUALLY SETTLE THE FIRST ITEM. Run the invariants script concurrently with a guarded full build, repeatedly, and show that it no longer produces a failure attributable to the race. A single clean serial run does not demonstrate anything here, since the serial case was never broken.
+
+---
+
+### 687. Cross repo citation audit gating
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: documentation
+- **Dependencies**: None
+
+**Description**: Close the cross-repository citation and audit-surface gap from both ends, so that a line-numbered claim about this development cannot rot silently in the consuming repository's adequacy argument.
+
+THE MEASURED DRIFT. Four of the twenty-four citations in the consuming repository's audit table are stale by a uniform +38 and now land inside a different theorem than the one they name, which is worse than landing nowhere: a reader checking the citation sees a real theorem and concludes the claim is supported. The corrected lines were determined to be 263, 274, 289 and 300 for the four affected entries. Every other cited line resolved at the time of measurement, and the sorry-count and axiom-census claims still held. Re-verify before editing rather than trusting those numbers, since this development has landed further work since.
+
+WHY IT ROTTED, WHICH IS THE PART WORTH FIXING. The declaration-span cross-check that guards line-numbered citations reads only this repository's own live scope. A table living in the consuming repository is therefore ungated in both repositories at once: nothing here knows those citations exist, and nothing there can resolve them. A generated citation manifest and a build-free freshness invariant now exist on this side, covering 53 fully qualified names resolved from a reviewable seed list. Extend that mechanism to cover the consuming document's citations too, or have the consuming side consume the manifest, so the gate that catches drift is not the one repository that cannot see it.
+
+COORDINATE RATHER THAN EDIT UNILATERALLY. The table correction itself belongs to the consuming repository. Propose it there rather than reaching across.
+
+THE RESIDUE IS LARGER THAN RECORDED, AND THAT IS THE HONEST FINDING. Three notions the soundness chain depends on have no row in the consuming document's audit at all: the world-nonemptiness field of the frame structure, the totality predicate on partial histories underlying the world-history notion, and the truth-correspondence structure carrying the time-shift and auto-existence obligations, which is unrecorded because the cited time-shift theorem instantiates the paper's lemma rather than stating it. This development now records the full inspection-only residue as 24 rows and 27 declarations, name-keyed and free of line numbers. Get those three rows into the consuming audit, so its stated surface matches the real one rather than understating it.
+
+---
+
+### 686. Modelchecker contract handoffs
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Discharge the consuming repository's half of the certificate and translation contracts that this development has now landed, in one coordinated pass. Every item below is an edit to ~/Projects/ModelChecker gated on artifacts that already exist here; none is new mathematics on this side.
+
+THE ONE THAT MATTERS MOST. The canonical wire codec proves that parsing a printed certificate family returns that same family, and the checker now emits an "echo" of exactly what it parsed. Nobody on the consuming side compares that echo against the bytes it sent. Until that comparison is actually performed, the round-trip theorem exists but its hypothesis about the bytes is unchecked, and the deserialization gap is closed from one end only. Perform the echo comparison, on parsed JSON rather than bytes, on every exported certificate.
+
+PIN THE PRODUCER'S ENCODING. The joint canonical contract rejects every \uXXXX escape except \u00XX for XX < 0x20, which the printer must use for control characters because JSON has no other spelling for them. Python's json.dumps emits \uXXXX by default, so the producing exporter must pass ensure_ascii=False. This is the one-line producer-side change the settled decision assumed; without it a non-ASCII atom name is rejected outright rather than silently misread, which is the correct failure but still a failure.
+
+THE SOURCE-BREAKING CHANGE. CheckResult.countermodel gained a second field, carrying the constructed entailment. The wire format is additive only, but any out-of-repo Lean consumer that pattern-matches that constructor will no longer compile. Audit for such matches and update them.
+
+THE ADDITIVE KEY'S DEFAULT. The verdict line now carries "acceptance", distinguishing a decided verdict from a constructed entailment. An absent field must read as "decided" so the two repositories can land in either order. Implement that default explicitly rather than relying on the field always being present.
+
+THE TRANSLATION CONFORMANCE CHANNEL. FormalSystem/SourceLanguage/ now defines the source sentence AST, its elimination into the six primitives, and a theorem that truth of a sentence agrees with truth of its translation under Semantics.TruthAt itself. A lake exe translate_sentence and a committed fixture list at Tests/fixtures/sentence-translation-fixtures.jsonl let the consuming side assert agreement mechanically instead of by reading. Wire that assertion in. Note two operators that are wrong written the obvious way: the consumer's implication is a disjunction of a negation, not Formula.imp, and its unqualified future is a negated universal, not Formula.someFuture. Note also that the elimination is NOT injective, so the channel is forward-only: no inverse pass is checkable.
+
+ONE DEFECT FOUND IN THE CONSUMER WHILE VERIFYING. Its update_types mishandles the top operator, which is why the box test corpus deliberately excludes it. Pre-existing and separately documented there, but it belongs in this pass because the new theorem does cover top.
+
+---
 
 ### 685. Stability compression and assembly
 - **Status**: [NOT STARTED]
