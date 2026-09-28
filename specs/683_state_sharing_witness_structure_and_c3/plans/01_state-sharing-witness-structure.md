@@ -320,23 +320,23 @@ framing — a signal that the design has drifted.
 
 ---
 
-### Phase 5: `total_eq_thread` — the histories characterization [NOT STARTED]
+### Phase 5: `total_eq_thread` — the histories characterization [COMPLETED]
 
 **Goal**: Replace the determinism-only `ShiftSet.total_eq_orbit` for the branching frame: every
 world history of `S.frame` is the trace of a thread.
 
 **Tasks**:
-- [ ] Create `Sharing/Histories.lean`.
-- [ ] State `total_eq_thread : ∀ σ : WorldHistory S.frame.toTaskFrame, ∃ θ : S.Thread, ∃ s : ℤ,
+- [x] Create `Sharing/Histories.lean`.
+- [x] State `total_eq_thread : ∀ σ : WorldHistory S.frame.toTaskFrame, ∃ θ : S.Thread, ∃ s : ℤ,
       ∀ t, σ.state t = ⟦(θ.idx (s + t), s + t)⟧`.
-- [ ] Extract, from `σ.respects_task`, a one-step `share` link at each `u`; note that unlike
+- [x] Extract, from `σ.respects_task`, a one-step `share` link at each `u`; note that unlike
       `total_eq_orbit` this is **not** a consequence of `respects_task 0` alone.
-- [ ] Build the thread by two-directional recursion over `ℤ` (forward from the base point by
+- [x] Build the thread by two-directional recursion over `ℤ` (forward from the base point by
       `Int.rec`-style induction on `Nat`, backward dually), then glue. Isolate the forward and
-      backward halves as separate lemmas so neither proof grows past a screen.
-- [ ] Prove the converse direction (`thread_is_history`): every thread's trace is a world
+      backward halves as separate lemmas so neither proof grows past a screen. *(deviation: altered — no recursion or gluing was needed. The index at each time is read off the **step witness** supplied by the frame's one-step relation at that time, which is an independent choice per time (`choose`), and the thread's step law then follows from transitivity of `share` at the later time. The plan's recursion budget assumed the index had to be chosen before the step was known.)*
+- [x] Prove the converse direction (`thread_is_history`): every thread's trace is a world
       history, which is what the truth lemma in Phase 10 consumes for `□`.
-- [ ] Record in the module docstring that `share u i j := (i = j)` collapses `Thread` to a
+- [x] Record in the module docstring that `share u i j := (i = j)` collapses `Thread` to a
       constant function, so `Thread ≃ Fin L` and this statement degenerates to `total_eq_orbit`'s
       content — the durable anchor for the specialization in Phase 12.
 
