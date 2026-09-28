@@ -412,22 +412,22 @@ record the actual split in the commit message.
 
 ---
 
-### Phase 6: L⁺ subformulas and `plusSubformulaClosure` [NOT STARTED]
+### Phase 6: L⁺ subformulas and `plusSubformulaClosure` [COMPLETED]
 
 **Goal**: The seven-arm structural recursion and its `Finset` closure, with the eight projections
 the L⁺ agreement induction will consume.
 
 **Tasks**:
-- [ ] Create `FormalSystem/PlusLanguage/Subformulas.lean` (pure syntax; imports
+- [x] Create `FormalSystem/PlusLanguage/Subformulas.lean` (pure syntax; imports
       `FormalSystem.PlusLanguage.Formula` only, respecting the invariant that nothing under
       `PlusLanguage/` imports `Semantics/`)
-- [ ] `PlusFormula.subformulas : PlusFormula → List PlusFormula`, seven arms mirroring
+- [x] `PlusFormula.subformulas : PlusFormula → List PlusFormula`, seven arms mirroring
       `Formula.subformulas` plus `| φ@(.stab ψ) => φ :: subformulas ψ`
-- [ ] `self_mem_subformulas` and the eight membership lemmas: `imp_left`, `imp_right`, `box`,
+- [x] `self_mem_subformulas` and the eight membership lemmas: `imp_left`, `imp_right`, `box`,
       `untl_left`, `untl_right`, `snce_left`, `snce_right`, `stab`
-- [ ] `plusSubformulaClosure : PlusFormula → Finset PlusFormula` as `(subformulas φ).toFinset`,
+- [x] `plusSubformulaClosure : PlusFormula → Finset PlusFormula` as `(subformulas φ).toFinset`,
       with `self_mem_plusSubformulaClosure` and the decidable-membership instance
-- [ ] The eight closure projections `plusClosure_imp_left`, …, `plusClosure_stab`
+- [x] The eight closure projections `plusClosure_imp_left`, …, `plusClosure_stab`
 
 **Timing**: 2 hours
 
