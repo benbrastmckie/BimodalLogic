@@ -1,7 +1,7 @@
 # Implementation Plan: Canonical Wire Parser Round Trip
 
 - **Task**: 678 - canonical_wire_parser_round_trip
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 16 hours
 - **Dependencies**: 677 (completed)
 - **Research Inputs**: specs/678_canonical_wire_parser_round_trip/reports/01_canonical-wire-parser-round-trip.md

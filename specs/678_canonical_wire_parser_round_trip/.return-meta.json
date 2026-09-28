@@ -1,30 +1,45 @@
 {
-  "status": "planned",
-  "dispatch_seq": 14,
+  "status": "implemented",
+  "started_at": "2026-09-27T21:37:41Z",
+  "completed_at": "2026-09-28T00:39:28Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/678_canonical_wire_parser_round_trip/plans/01_canonical-wire-parser-round-trip.md",
-      "summary": "Nine-phase plan for the verified two-layer certificate wire codec: canonical JSON value and printer, total fuel parser, lexical and generic round-trip theorems, fuel sufficiency, schema codec with five contract theorems, envelope migration, and the echo plus joint-contract documentation. Nine theorems pinned in a Lean Challenge Statements block."
+      "type": "summary",
+      "path": "specs/678_canonical_wire_parser_round_trip/summaries/01_canonical-wire-parser-round-trip-summary.md",
+      "summary": "The certificate wire format now has a canonical printer and a total parser proved inverse to it, so deserialization has left the trust base."
     }
   ],
-  "next_steps": "Run /implement 678 to execute the plan",
-  "phase_count": 9,
-  "estimated_hours": 16,
-  "dependency_waves": [[1, 2], [3], [4], [5], [6, 7], [8], [9]],
-  "memory_candidates": [
-    {
-      "content": "Verified printer/parser round trips in Lean 4 factor cleanly into two layers, and the split is what makes the proof tractable. Layer 1: a generic canonical value type as MUTUAL inductives (never a nested `List T` field -- the induction hypothesis goes awkward), a `List Char`-valued canonical printer, and a fuel-indexed TOTAL `def` parser (never `partial def`, which yields no equation lemmas and so admits no theorem at all; never `partial_fixpoint`, which gives partial correctness only and leaves totality unestablished). Layer 2: a schema encode/decode pair over that value. The lexical work (escapes, digits, whitespace, arm overlap) is then proved once, generically, in the lemma shape `parse (print x ++ rest) = .ok (x, rest)`, and the schema theorem becomes pure structural induction with no parser state in it. Three load-bearing constraints: (a) no `do`-notation in any function the proof unfolds, because `do` desugars to `<$>`/`bind` which `simp` will not reduce; (b) print/parse integers through `Nat.digits`/`Nat.ofDigits` (`Nat.ofDigits_digits`), never `toString`/`String.toNat?`, for which no bridging lemma exists; (c) set the measure's empty cases to 0, or the fuel-sufficiency bound `size j <= (print j).length` fails at the empty-container leaf. Bridge `String` to `List Char` with `String.toList_append`, `String.toList_ofList`, `String.toList_injective`.",
-      "category": "PATTERN",
-      "source_artifact": "specs/678_canonical_wire_parser_round_trip/plans/01_canonical-wire-parser-round-trip.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["round-trip-theorem", "verified-parser", "mutual-inductive", "fuel-totality", "lean4-codec", "list-char-state"]
-    }
-  ],
+  "completion_data": {
+    "completion_summary": "Replaced the certificate wire codec with a two-layer verified one: a canonical JSON printer plus a total (non-partial) fuel-indexed parser in BimodalTools/CanonicalWire/, and a schema encode/decode pair over it. All nine pinned theorems are proved -- including parse_print (parsing a printed certificate returns that same certificate) and print_parse_canonical (on canonical bytes the echo is byte-identical to what was sent) -- with zero sorry and no new axiom. All twelve recorded parser defects are closed by negative #guards, the envelope is migrated, and the output line carries an echo of what was parsed.",
+    "roadmap_items": []
+  },
+  "requires_user_review": true,
+  "review_reason": "Three pinned Lean Challenge statements were corrected rather than proved as recorded, because each is false as written: unescape_escape now names the closing quote that unescapeBody consumes, and parseCJson_printCJson and parseCJson_fuel_sufficient each carry one added hypothesis (NoDigitHead rest -- printCJson (.int 1) ++ ['2'] is the byte string 12). Per .claude/rules/plan-compliance.md's Statement Fidelity section an added hypothesis is a reviewable event even when the recorded statement was the wrong one. Every other check passes: zero sorry, no new axiom, full gate set green.",
+  "user_decision": {
+    "question": "Three recorded Lean Challenge statements are false as written (unescape_escape omits the closing quote that unescapeBody consumes; parseCJson_printCJson and parseCJson_fuel_sufficient are false at the integer leaf, since printCJson (.int 1) ++ ['2'] is the byte string 12). The implementation proves the minimally corrected versions. How should the record be reconciled?",
+    "options": [
+      "Accept the corrected statements as landed and amend the plan's Lean Challenge block to match, recording why each recorded form was false",
+      "Keep the plan's block as the historical record and rely on the summary's Plan Deviations section for the correction",
+      "Revise the plan (/revise 678) so the corrected statements are the pinned ones before any further work builds on them"
+    ],
+    "recommended": "Accept the corrected statements as landed and amend the plan's Lean Challenge block to match, recording why each recorded form was false",
+    "blocking": false
+  },
   "metadata": {
-    "session_id": "sess_1790528746_3f1c95_678",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1790528746_3f1c95",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "dispatch_seq": 15,
+    "compliance_check": "passed",
+    "phases_completed": 9,
+    "phases_total": 9
   }
 }

@@ -6,12 +6,12 @@ next_project_number: 686
 
 ## Task Order
 
-*Updated 2026-09-27. Generated from state.json dependency graph.*
+*Updated 2026-09-28. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,678,682 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,623,649,664,682 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650,683 | 298,464,502,563,649,682 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,684 | 231,465,497,564,565,616,683 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543,685 | 428,498,499,500,623,684 | algebraic-representation, decidability, metalogic |
@@ -102,10 +102,6 @@ next_project_number: 686
 ### Semantics
 
 683 [NOT STARTED] — Replace the deterministic witness device with a state-sharing...
-
-### Toolchain
-
-678 [PLANNED] — Give the certificate wire format a canonical printer and a...
 
 ## Tasks
 
@@ -206,12 +202,13 @@ DELIVERABLE, UNCHANGED IN SUBSTANCE. The elimination of the defined operators (n
 ---
 
 ### 678. Canonical wire parser round trip
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: toolchain
 - **Dependencies**: Task 677
 - **Research**: [678_canonical_wire_parser_round_trip/reports/01_canonical-wire-parser-round-trip.md]
 - **Plan**: [678_canonical_wire_parser_round_trip/plans/01_canonical-wire-parser-round-trip.md]
+- **Summary**: [678_canonical_wire_parser_round_trip/summaries/01_canonical-wire-parser-round-trip-summary.md]
 
 **Description**: Give the certificate wire format a canonical printer and a total parser, with a parse-after-print round-trip theorem, so that deserialization leaves the trust base. The verified side currently parses exported JSON to rebuild the witness family it then decides conditions on; a defect in that parser means the verified side certifies a different certificate than the one the producing repository exported, and no amount of rigor downstream of the parse detects it. Deliver: a canonical serializer, a parser total on its input (malformed input yielding a protocol error rather than a partial or misinterpreted structure), and a theorem that parsing a printed family returns that same family. Preserve the export contract exactly -- back, mid, fwd, bx, lassos and target are the contract's field names, target is required with target.time required and undefaulted because it is the target condition's existential witness, bx is sparse with unlisted formulas reading false, lassos index 0 is the main lasso, and atom identity is base-only so a certificate carrying a fresh or Skolem atom must be rejected outright. Pair with the consuming repository's parse-echo verification task, which compares an echo of what was parsed against the bytes it sent, so that the two halves together close the deserialization gap from both ends.
 
