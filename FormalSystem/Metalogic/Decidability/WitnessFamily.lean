@@ -21,6 +21,13 @@ import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Fulfil
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Agreement
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Specialize
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Stability
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Types
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Cycle
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Fulfil
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Extract
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Family
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Enumerate
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Assembly
 
 /-!
 # FormalSystem.Metalogic.Decidability.WitnessFamily — Certificates for ℤ-Time Refutation
@@ -38,9 +45,9 @@ at some time, `Agreement.lean` produces an explicit ℤ-time frame, model, world
 at which every premise of `Γ` is true and every conclusion of `Δ` is false. That is the
 **soundness** half of the certificate format, and it is unconditional.
 
-The **completeness** half — that every ℤ-time countermodel compresses to such a family — is not
-here, and neither is the `Decidable (ValidZTime φ)` assembly that would follow from it. Those
-belong to the compression work, and nothing in this directory presupposes them.
+The **completeness** half — that every ℤ-time countermodel compresses to such a family — lives in
+`Compression/`, together with the `Decidable (ValidZTime φ)` assembly that follows from it.
+Nothing in the soundness modules presupposes it: `Compression/` imports them, not the reverse.
 
 ## Presentation-free, unlike `BiLasso/`
 
@@ -73,6 +80,11 @@ directory-independent.
   `ShiftSet.total_eq_orbit`, the revised conditions (C0)/(C1')/(C2') with (C3) and (C4) reused
   verbatim, a second producer for the same `Refutes`, and `WitnessFamily.toSharing` exhibiting
   the deterministic device as the diagonal instance. See `WitnessFamily/Sharing/README.md`
+- `Compression/`: the **completeness half** — `typeAtM` and the two sequence-level predicates,
+  the presentation-free good-cycle core, the ℤ geometry compressing one history into one
+  `LabelledLasso`, the compression theorem `exists_witnessFamily_of_not_validZTime`, the
+  computable candidate list `cands`, and `Compression.decidableValidZTime`. See
+  `WitnessFamily/Compression/README.md`
 
 ## `BiLasso/Basic.lean` is untouched
 

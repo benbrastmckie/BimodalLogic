@@ -71,7 +71,8 @@ choice-free.
 ## Main Results
 
 - `validZTime_iff_noCertifiedCandidate` — the decision criterion
-- `decidableValidZTime` — **the decision procedure**
+- `Compression.decidableValidZTime` — **the decision procedure** (sub-namespaced: see its
+  docstring — `BiLasso/Assembly.lean` already owns the bare name for the *conditional* procedure)
 - `decidableSemanticConsequenceNil` — the empty-premise consequence corollary
 -/
 
@@ -90,6 +91,9 @@ Forward, by contraposition through `exists_witnessFamily_of_not_validZTime` and
 `mem_cands_of_bounded`: a failure of validity produces a certified candidate inside the window.
 Backward through `WitnessFamily.refutes_of_certifies`: a certified candidate produces a genuine
 ℤ-time countermodel, which refutes validity outright.
+
+Paper: — (formalization-native; the paper's `cor:tm-decidability` is commented out and
+carries no live label, and states nothing about the witness-family route)
 -/
 theorem validZTime_iff_noCertifiedCandidate (φ : Formula) :
     ValidZTime φ ↔
@@ -106,14 +110,29 @@ theorem validZTime_iff_noCertifiedCandidate (φ : Formula) :
     exact hall W (mem_cands_of_bounded φ W hlen hcount hbx) t
       (Finset.mem_Icc.mpr ⟨ht0, ht1⟩) hcert
 
+namespace Compression
+
 /--
 **The decision procedure for `ValidZTime`.**
 
 A `def` and not an `instance`: a global `Decidable (ValidZTime φ)` instance would change instance
 resolution repository-wide. See this module's header for the complexity statement.
+
+**Why the extra `Compression` namespace.** `BiLasso/Assembly.lean` already declares
+`FormalSystem.Metalogic.Decidability.decidableValidZTime` — the *conditional* procedure that
+takes a finite-model-property witness `fmp` as a hypothesis, the hypothesis `Probe476.fmp_false`
+refutes. This one is unconditional, and the two are genuinely different results that happen to
+deserve the same simple name, so this one takes the sub-namespace rather than either being
+renamed or `BiLasso/` being edited. It is the only declaration in this subdirectory whose
+namespace differs from the rest.
+
+Paper: — (formalization-native; the paper's `cor:tm-decidability` is commented out and
+carries no live label, and states nothing about the witness-family route)
 -/
 def decidableValidZTime (φ : Formula) : Decidable (ValidZTime φ) :=
   decidable_of_iff _ (validZTime_iff_noCertifiedCandidate φ).symm
+
+end Compression
 
 /--
 **The empty-premise consequence corollary.**
@@ -124,7 +143,7 @@ the tree has none.
 -/
 def decidableSemanticConsequenceNil (σ : Formula) :
     Decidable (SemanticConsequenceIn ProofSystem.FrameClass.ZTime [] σ) :=
-  letI := decidableValidZTime σ
+  letI := Compression.decidableValidZTime σ
   decidable_of_iff (ValidZTime σ) (semanticConsequenceIn_nil_iff _ σ).symm
 
 end FormalSystem.Metalogic.Decidability

@@ -144,6 +144,9 @@ class — see `deterministic_not_plusDefinable` above.
 |-------------|-----------|-----------|------|-------------|--------|
 | — | The tableau decision procedure | `FormalSystem.Metalogic.Decidability.decide` | `FormalSystem/Metalogic/Decidability/DecisionProcedure.lean` | Base | pcq pinned:C14 |
 | — | Soundness of the decision procedure: a valid verdict yields validity | `FormalSystem.Metalogic.Decidability.sound_of_isValid` | `FormalSystem/Metalogic/Decidability/Correctness.lean` | Base | pcq pinned:C14 |
+| — | Every ℤ-time countermodel compresses to a bounded, canonically guessed witness family that certifies the refutation | `FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime` | `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Family.lean` | ZTime | pcq pinned:C14 |
+| — | `φ` is ℤ-valid iff no enumerated candidate family certifies a refutation in the bounded window | `FormalSystem.Metalogic.Decidability.validZTime_iff_noCertifiedCandidate` | `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean` | ZTime | pcq pinned:C14 |
+| — | Decidability of ℤ-time validity, via the witness-family certificate route | `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime` | `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean` | ZTime | pcq pinned:C14 |
 
 ### Characterization and definability
 

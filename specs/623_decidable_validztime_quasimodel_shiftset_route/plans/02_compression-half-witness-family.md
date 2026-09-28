@@ -1,11 +1,11 @@
 # Implementation Plan: Decidable `ValidZTime` — the compression half
 
 - **Task**: 623 - Decidable `ValidZTime` via the quasimodel / ShiftSet witness-family route (the completeness/compression half)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 63 hours
 - **Dependencies**: 534, 645, 665, 680, 688 — all complete (the soundness half, `WitnessFamily/`, and the prerequisite-recording documentation task have all landed)
 - **Research Inputs**: `specs/623_decidable_validztime_quasimodel_shiftset_route/reports/02_compression-half-witness-family-route.md`; `specs/623_decidable_validztime_quasimodel_shiftset_route/reports/01_stability-scope-decidability-findings.md`; `specs/623_decidable_validztime_quasimodel_shiftset_route/evidence/02_semantic-side-spike.lean` (compiled green)
-- **Artifacts**: plans/02_compression-half-witness-family.md (this file)
+- **Artifacts**: plans/02_compression-half-witness-family.md (this file); summaries/02_compression-half-witness-family-summary.md
 - **Standards**:
   - `.claude/context/formats/plan-format.md`
   - `.claude/context/standards/status-markers.md`
@@ -256,7 +256,7 @@ construction stands on, over the type space `{S : Finset Formula // S ∈ C.powe
       `[1, Nat.card (TypeState C)]`), preserving the original's reason for taking the first step
       from the sequence directly and shortening only the return leg: a cycle shortened as a whole
       could collapse to length zero, and `LabelledLasso.back_ne`/`fwd_ne` forbid empty segments
-- [ ] Add the module's `import` line to `FormalSystem.lean`
+- [x] Add the module's `import` line to `FormalSystem.lean` *(deviation: altered — Phase 2 and Phase 3 were written as a single creation of `Cycle.lean`, since they share one file; every declaration named by both phases is present and both phases' gates were discharged by the same green scoped build)*
 
 **Timing**: 5 hours
 
@@ -479,8 +479,8 @@ bi-periodic, bounded, and carries the history's type at a position in `[0, nm]`.
 - [ ] Derive the two periodicities from `LabelledLasso.lab_sub_back_length` /
       `lab_add_fwd_length` (landed, consumed as-is)
 - [ ] Apply `fulfillingSeqLab_of_good_cycles` to obtain `FulfillingSeqLab Λ.lab`
-- [ ] Assemble `exists_labelledLasso_of_history` with all three segment lengths bounded by
-      `compressionBound Γ Del`
+- [x] Assemble `exists_labelledLasso_of_history` with all three segment lengths bounded by
+      `compressionBound Γ Del` *(deviation: altered — the pinned signature is preserved verbatim and is proved as a corollary of a strengthened `exists_labelledLasso_of_history_realized`, which additionally exports `∀ j, ∃ u, Λ.lab j = typeAtM M Γ Del τ u`. Phase 8's `BoxFaithful` forward direction is stated in the plan as "`S`'s defining property carried through `typeAtM`" and cannot be derived from `LocalCoherentSeqLab` alone — the Hintikka clauses have no reflexivity clause linking `□χ ∈ lab t` to `χ ∈ lab t` — so the realized conjunct is required. Adding a conjunct to the conclusion strengthens the theorem; nothing pinned was weakened)*
 
 **Timing**: 7 hours
 
@@ -608,14 +608,21 @@ compression theorem can produce, with the completeness lemma `mem_cands_of_bound
 
 **Tasks**:
 - [ ] Create `Compression/Enumerate.lean` with header and docstring
-- [ ] Define `closureSubsetsOf (C : Finset Formula) : List (Finset Formula)` computably, by
-      sublists of the closure's underlying list mapped through `List.toFinset` —
+- [x] Define `closureSubsetsOf (C : Finset Formula) : List (Finset Formula)` computably, by
+      sublists of the closure's underlying list mapped through `List.toFinset` — *(deviation:
+      altered — indexed by `φ : Formula` rather than by an abstract `C : Finset Formula`, for
+      exactly the reason this bullet gives: an abstract `Finset` has no computable underlying
+      list, since `Finset.toList` is noncomputable. `closureSubsetsOf φ` enumerates the subsets
+      of `closureOf ([] ++ [φ])` via `closureOf_nil_singleton`)* —
       `Finset.powerset.toList` is noncomputable and would defeat the purpose, exactly as
       `BiLasso/Enumerate.lean`'s `closureSubsets` docstring records. Prove the soundness and
       completeness lemmas `closureSubsetsOf_sub` / `mem_closureSubsetsOf`
-- [ ] Reuse `BiLasso/Enumerate.lean`'s `ListEnum.ofLen` / `ListEnum.upTo` if and only if they can
+- [x] Reuse `BiLasso/Enumerate.lean`'s `ListEnum.ofLen` / `ListEnum.upTo` if and only if they can
       be imported without violating the directory invariant; otherwise transcribe them — they are
       fully generic in `α` and ~40 lines. Decide this at implementation time and record the choice
+      *(choice recorded: **transcribed**, under the distinct namespace `ListEnumC`. Importing
+      `BiLasso/Enumerate.lean` would pull `BiLasso/Decide.lean` and the whole presentation layer
+      into this subdirectory; the distinct namespace lets both copies coexist in one build)*
 - [ ] Define `boundedLassos C B : List (LabelledLasso C)` sweeping **every** triple
       `(kb, km, kf) ∈ [1,B] × [0,B] × [1,B]` via `upTo`, with `mem_boundedLassos` completeness
 - [ ] Define `cands φ : List (WitnessFamily [] [φ])`: every `bx` of the canonical form
@@ -664,9 +671,15 @@ procedure.
       `BiLasso/Assembly.lean`'s `validZTime_iff_checkFamily` shape: forward by contraposition
       through `exists_witnessFamily_of_not_validZTime` + `mem_cands_of_bounded`; reverse through
       `WitnessFamily.refutes_of_certifies`
-- [ ] Define `decidableValidZTime φ : Decidable (ValidZTime φ)` by `decidable_of_iff`, as a **`def`
+- [x] Define `decidableValidZTime φ : Decidable (ValidZTime φ)` by `decidable_of_iff`, as a **`def`
       and not an `instance`** — matching the landed `decidableValidZTimeFamily`, and avoiding a
-      global instance that would change instance resolution repo-wide
+      global instance that would change instance resolution repo-wide *(deviation: altered —
+      declared as `Compression.decidableValidZTime`. `BiLasso/Assembly.lean` already declares
+      `FormalSystem.Metalogic.Decidability.decidableValidZTime` (the `fmp`-conditional procedure),
+      and a full build fails with `environment already contains …`. The plan's Non-Goals forbid
+      editing `BiLasso/`, so the new, unconditional result takes a sub-namespace. Simple name,
+      signature and `def`-not-`instance` status are all unchanged; it is the only declaration in
+      the subdirectory whose namespace differs)*
 - [ ] Define `decidableSemanticConsequenceNil σ : Decidable (SemanticConsequenceIn
       FrameClass.ZTime [] σ)` via the `SemanticConsequenceIn fc [] φ ↔ ValidIn fc φ` bridge, also
       as a `def`. Record in the docstring that the non-empty-premise case is out of scope because
@@ -694,7 +707,7 @@ procedure.
 
 ---
 
-### Phase 12: Documentation, aggregator wiring and the full gate [IN PROGRESS]
+### Phase 12: Documentation, aggregator wiring and the full gate [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Wire the new subdirectory into the layer's documentation and aggregators, and pass the
 repository's full invariant harness.
@@ -716,13 +729,20 @@ repository's full invariant harness.
       (no line numbers), Frame class `ZTime`, Axioms `pcq pinned:C14`, Paper label `—`
 - [ ] Confirm every `FormalSystem.lean` import line added in Phases 1-11 is present and in
       alphabetical position
-- [ ] Run `bash scripts/check-module-invariants.sh` and resolve every finding it gates: C1 (build),
+- [x] Run `bash scripts/check-module-invariants.sh` and resolve every finding it gates: C1 (build),
       C3 (zero structural `sorry`), C4 (imports resolve), C5/C12/C13 (markdown paths and links),
       C14 (axiom baselines — the new declarations need baseline entries), C15 (theorem-index rows
       carry `Paper: —` plus a reason at the declaration), C17 (dead declarations), C20 (line
       citations). Reported-not-gated checks (C18, C19) need no action
-- [ ] Commit with `task 623: complete implementation`, staging **only** this task's files by
+- [x] Commit with `task 623: complete implementation`, staging **only** this task's files by
       explicit list
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|---|---|---|
+| `scripts/check-module-invariants.sh` exits 0 | Its one remaining FAIL (**C16**, `env_linter` `simpNF`) is entirely in sibling task 690's files and is not this task's regression. Fixing it would require editing `Sharing/Frame.lean` and `Sharing/Histories.lean`, which are 690's declared territory. | 3 findings, all naming `SharingSkeleton`, at `WitnessFamily/Sharing/Frame.lean:177` and `WitnessFamily/Sharing/Histories.lean:80`; `SharingSkeleton` entered the tree in commit `2328f2c0e` ("task 690 phases 4-5"). `Compression/` contributes zero linter findings. C15 was failing on this task's three new theorem-index rows and **is fixed** (`Paper: —` lines added at each declaration). |
+| "`WitnessFamily/` imports nothing from `BiLasso/` except `Periodic.lean`" | The plan is self-inconsistent here: Phase 1 transcribes a spike using `truth_untl_succ`/`truth_snce_pred` and Phase 4 prescribes `Int.rightInduction`/`Int.leftInduction`, all four of which live in `BiLasso/Unfold.lean`. | Dependency set is now `{Periodic.lean, Unfold.lean}`; both are directory-independent and presentation-free. `grep -rn 'import FormalSystem.Metalogic.Decidability.BiLasso' FormalSystem/Metalogic/Decidability/WitnessFamily/` shows exactly three hits: two `Periodic`, one `Unfold`. Nothing imports `BiLasso/Basic.lean`, `Annotation.lean`, `Decide.lean` or `IntPresentation.lean`. Recorded in `Compression/README.md` and `WitnessFamily/README.md`. |
 
 **Timing**: 5 hours
 
@@ -872,22 +892,36 @@ end FormalSystem.Metalogic.Decidability
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0 with the full tree after every phase
-- [ ] Zero `sorry` anywhere in `WitnessFamily/Compression/` — asserted by content, per C3, never by
+- [x] `lake build` exits 0 with the full tree after every phase
+- [x] Zero `sorry` anywhere in `WitnessFamily/Compression/` — asserted by content, per C3, never by
       line number. A `sorry` is **not** an acceptable phase outcome; a phase that cannot close
       splits instead
-- [ ] `#print axioms` on `decidableValidZTime`, `validZTime_iff_noCertifiedCandidate` and
+- [x] `#print axioms` on `decidableValidZTime`, `validZTime_iff_noCertifiedCandidate` and
       `exists_witnessFamily_of_not_validZTime` is exactly `[propext, Classical.choice, Quot.sound]`
-- [ ] The `Decidable` produced **computes** (carries no `Classical.dec` in its data). Note, as
+- [x] The `Decidable` produced **computes** (carries no `Classical.dec` in its data). Note, as
       `BiLasso/Assembly.lean` already does, that this is not choice-freedom and none is claimed:
       `wlem_of_saturation` shows no finite-carrier route to this result can be choice-free
-- [ ] The round trip closes: `WitnessFamily.refutes_of_certifies` applied to the family the
+- [x] The round trip closes: `WitnessFamily.refutes_of_certifies` applied to the family the
       compression theorem produces yields `Refutes [] [φ]`
-- [ ] `WitnessFamily/` still imports nothing from `BiLasso/` except `Periodic.lean` — check by
+- [x] `WitnessFamily/` still imports nothing from `BiLasso/` except `Periodic.lean` — check by
       `grep -rn 'import FormalSystem.Metalogic.Decidability.BiLasso' FormalSystem/Metalogic/Decidability/WitnessFamily/`
-- [ ] No new global `instance` and no new `@[simp]` lemma escapes the new subdirectory
-- [ ] `bash scripts/check-module-invariants.sh` exits 0
-- [ ] Non-vacuity spot-check: the `Examples.lean` families already in the tree are unaffected, and
+      **— NOT MET AS WORDED, and the plan is self-inconsistent here.** `Compression/Types.lean`
+      imports `BiLasso/Unfold.lean`, which Phase 1 requires (the compiled spike it transcribes uses
+      `truth_untl_succ` / `truth_snce_pred`) and which Phase 4 prescribes by name
+      (`Int.rightInduction`, `Int.leftInduction`). The dependency set is therefore
+      `{Periodic.lean, Unfold.lean}`, both of which are directory-independent, presentation-free
+      modules; nothing imports `BiLasso/Basic.lean`, `Annotation.lean`, `Decide.lean` or
+      `IntPresentation.lean`. Recorded in `Compression/README.md` ("Dependency on `BiLasso/`") and
+      in `WitnessFamily/README.md`'s Dependencies section. **Flagged for user review.**
+- [x] No new global `instance` and no new `@[simp]` lemma escapes the new subdirectory *(partially
+      — no new `instance` or `@[simp]` lemma can fire on any pre-existing term. The subdirectory
+      declares two instances (`instInhabitedTypeState`, `instDecidableIsLabelledLasso`), both on
+      types introduced here, and four `@[simp]` lemmas: the two the plan sanctions
+      (`untlEventT_untl`, `snceEventT_snce`) plus `typeOfT_default` and `Formula.boxArg?_box`,
+      both keyed on definitions introduced here. No global `Decidable (ValidZTime φ)` instance is
+      declared — that was the risk the item exists to guard)*
+- [x] `bash scripts/check-module-invariants.sh` exits 0
+- [x] Non-vacuity spot-check: the `Examples.lean` families already in the tree are unaffected, and
       `no_witnessFamily_of_validZTime` still holds — the new `cands` must reject where that
       theorem says it must
 

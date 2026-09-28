@@ -10,12 +10,16 @@ machine-checkable countermodel: it presents a `ShiftSet intOrder` whose truth ag
 labels on the target closure, so `Γ ⊨ σ` fails over ℤ-time and, a fortiori, over the
 unconstrained class.
 
-## This is the soundness half only
+## The soundness half here, the completeness half in `Compression/`
 
-The **completeness** direction — that every ℤ-time countermodel compresses to such a family — is
-not here, and neither is the `Decidable (ValidZTime φ)` assembly that would follow from it. Those
-belong to the compression work. Nothing in this directory presupposes either, and every theorem
-below is unconditional.
+The seven modules listed under **Modules** below are the **soundness** half: a certified family
+produces a genuine ℤ-time countermodel, unconditionally.
+
+The **completeness** direction — that every ℤ-time countermodel compresses to such a family — now
+lives in `Compression/`, together with the `Decidable (ValidZTime φ)` assembly that follows from
+it. The direction of dependence is one-way: `Compression/` imports the seven modules below, and
+none of them presupposes anything from it, so every theorem in the soundness half remains
+unconditional.
 
 ### Cross-repository reduction condition: satisfiable in principle, not nearly done
 
@@ -78,7 +82,23 @@ so that entire alignment layer is absent rather than reproved — and `LocalCohe
 | `Examples.lean` | 283 | **T3** the non-vacuity witness `posFamily`, the separation witness `sepFamily`, and `no_witnessFamily_of_validZTime` / `no_witnessFamily_of_MF` |
 
 `WitnessFamily.lean`, beside this directory, is the subdirectory re-export and carries all seven,
-plus the nine modules of `Sharing/` below.
+plus the nine modules of `Sharing/` and the seven of `Compression/` below.
+
+### `Compression/` — the completeness half
+
+| Module | Role |
+|--------|------|
+| `Compression/Types.lean` | `typeAtM`, the presentation-free type of a model position, and the sequence-level `LocalCoherentSeqLab` / `FulfillingSeqLab` |
+| `Compression/Cycle.lean` | `TypeState`, the pigeonhole plumbing, `cycleBoundC`, `exists_good_cycle_of_typeSeq` |
+| `Compression/Fulfil.lean` | The two propagation lemmas, the two iterated periodicities, `fulfillingSeqLab_of_good_cycles` |
+| `Compression/Extract.lean` | `compressionBound`, the three readouts, `exists_labelledLasso_of_history` |
+| `Compression/Family.lean` | `boxedPart`, the canonical enumerable box guess, `exists_witnessFamily_of_not_validZTime` |
+| `Compression/Enumerate.lean` | `closureSubsetsOf`, `boundedLassos`, `cands`, `mem_cands_of_bounded` |
+| `Compression/Assembly.lean` | `validZTime_iff_noCertifiedCandidate`, `Compression.decidableValidZTime`, `decidableSemanticConsequenceNil` |
+
+See `Compression/README.md` for the route, the [GKWZ] terminology map, the recorded duplication
+against `../BiLasso/` with its retirement trigger, and the grid-sweep consequence of the
+non-monotonicity recorded above.
 
 ### `Sharing/` — the branching device
 
@@ -164,7 +184,9 @@ the guard `g` holds throughout the open interval and the event `e` is witnessed 
 ## Dependencies
 
 - **Imports from**: `FormalSystem.Syntax.Context`, `FormalSystem.Syntax.SubformulaClosure.Closure`,
-  `FormalSystem.Metalogic.Decidability.BiLasso.Periodic`, `FormalSystem.Semantics.ShiftSet`,
+  `FormalSystem.Metalogic.Decidability.BiLasso.Periodic`,
+  `FormalSystem.Metalogic.Decidability.BiLasso.Unfold` (`Compression/` only — see
+  `Compression/README.md`, "Dependency on `BiLasso/`"), `FormalSystem.Semantics.ShiftSet`,
   `FormalSystem.Semantics.Validity`, `FormalSystem.Semantics.FrameClassValidity`,
   `FormalSystem.Metalogic.Soundness`, and both `Mathlib.Data.Int.SuccPred` and
   `Mathlib.Order.SuccPred.LinearLocallyFinite`

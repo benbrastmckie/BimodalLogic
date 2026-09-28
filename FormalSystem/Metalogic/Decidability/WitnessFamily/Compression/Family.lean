@@ -32,8 +32,9 @@ S := (boxedPart C).filter (fun χ => ∀ σ v, TruthAt M σ v χ)      -- with `
 bx := fun χ => decide (χ ∈ S)
 ```
 
-and the point of the construction is that **`S` is a genuine `Finset`**, so `fun χ => decide (χ ∈ S)`
-computes and is enumerated, even though the filter predicate does not compute. The compression
+and the point of the construction is that **`S` is a genuine `Finset`**, so the guess
+`fun χ => decide (χ ∈ S)` computes and is enumerated, even though the filter predicate does not
+compute. The compression
 builds its lassos against the unguarded truth oracle `fun χ => decide (∀ σ v, TruthAt M σ v χ)` —
 which is what `exists_labelledLasso_of_history` demands and which is *not* of the canonical form,
 since it is `true` at globally true formulas outside the closure — and then transports local
@@ -145,6 +146,9 @@ The proof is the composition of everything below it:
 4. `BoxFaithful`'s forward direction is `S`'s defining property carried through `typeAtM` — this
    is what the `realized` conjunct is for — and its reverse is the witness lasso, which fails its
    own `χ` at the position the compression marked.
+
+Paper: — (formalization-native; the paper's `cor:tm-decidability` is commented out and
+carries no live label, and states nothing about the witness-family route)
 -/
 theorem exists_witnessFamily_of_not_validZTime (φ : Formula) (h : ¬ ValidZTime φ) :
     ∃ (W : WitnessFamily [] [φ]) (t : ℤ),
