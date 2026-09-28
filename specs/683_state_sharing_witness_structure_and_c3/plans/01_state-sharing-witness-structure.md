@@ -196,19 +196,19 @@ argument, record that as a scope correction in the phase notes before proceeding
 
 ---
 
-### Phase 2: `Thread` and its basic constructions [NOT STARTED]
+### Phase 2: `Thread` and its basic constructions [COMPLETED]
 
 **Goal**: The branching analogue of "a lasso orbit" exists as a type, with the constructions the
 frame's regularity discharges will need.
 
 **Tasks**:
-- [ ] Create `Sharing/Thread.lean` with `structure SharingWitnessFamily.Thread` carrying
+- [x] Create `Sharing/Thread.lean` with `structure SharingWitnessFamily.Thread` carrying
       `idx : ℤ → Fin S.lassos.length` and `step : ∀ u, S.share (u+1) (idx u) (idx (u+1))`.
-- [ ] Prove `Thread` is inhabited: every constant `fun _ => i` is a thread, by `share_refl`.
-- [ ] Define thread time-shift (`Thread.shift θ d`) and prove it is a thread.
-- [ ] Define finite thread segments (`ThreadSeg S a b`) and prove concatenation and splitting —
-      these are precisely what the `Compositional` discharge in Phase 4 consumes.
-- [ ] Prove `Thread.ext` (extensionality on `idx`) so downstream `refine ... ext` steps work.
+- [x] Prove `Thread` is inhabited: every constant `fun _ => i` is a thread, by `share_refl`.
+- [ ] Define thread time-shift (`Thread.shift θ d`) and prove it is a thread. *(deviation: skipped — `share` is decoded from periodic segments indexed by absolute time, so `share u` and `share (u+d)` are different relations and `fun u => θ.idx (u + d)` fails the step field; the time offset lives in the history's parametrization instead, as `total_eq_thread`'s explicit `s : ℤ`)*
+- [x] Define finite thread segments (`ThreadSeg S a b`) and prove concatenation and splitting —
+      these are precisely what the `Compositional` discharge in Phase 4 consumes. *(deviation: altered — delivered as the inductive `Step` / `ReachN` relations with `reachN_add` for concatenation and splitting, rather than as a function-on-an-interval structure; the relational form also gives the four share-congruences the quotient carrier needs and a `Decidable` instance the Phase 7/8 window work consumes)*
+- [x] Prove `Thread.ext` (extensionality on `idx`) so downstream `refine ... ext` steps work.
 
 **Timing**: 1.5 hours
 
