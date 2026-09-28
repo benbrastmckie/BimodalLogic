@@ -9,33 +9,35 @@
     {
       "project_number": 689,
       "project_name": "reconcile_records_with_landed_code",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "description": "Reconcile four records with what the code actually says, each discovered by an implementation that found its own plan or a sibling's report to be wrong. None is a code defect; all four are places where a durable record would mislead the next reader.\n\nTHE THREE FALSE PINNED STATEMENTS. The canonical wire codec's plan pinned nine theorem signatures, of which three are false as written, and the implementation proved minimally corrected versions instead. The unescape round-trip statement omits the closing quote that the body-unescaping function consumes, so the recorded form runs off the end of its input. The parse-after-print statement and the fuel-sufficiency statement are both false at the integer leaf, because a printed integer followed by a digit is a longer integer: printing one and appending the character two yields the byte string twelve, which any correct parser reads as twelve. Both need a no-digit-follows hypothesis. Amend the plan's pinned block to the statements that were actually proved and record, for each, why the recorded form was false. The statement-fidelity convention treats this as reviewable even when the recorded statement was the mistaken one, which is the right default and the reason this is written down rather than silently absorbed.\n\nTHE FALSE INJECTIVITY REQUEST. Both the report and the plan for the source-language translation asked for injectivity of the elimination, following the precedent of the existing minus-language translation. It is false, and false by definitional unfolding rather than by a subtle counterexample: an elimination sends each defined operator onto the very abbreviation it stands for, so implication and its disjunctive expansion are equal by reflexivity, as are truth and the negation of falsity, the possibility operator and its negated-box form, and both existential tenses. The disproof was delivered instead. The consequence already recorded is that the conformance channel is forward-only, since no inverse pass is checkable. Correct the precedent's framing so the next task reading it does not ask for the same false lemma a third time.\n\nTHE DUPLICATED INDEPENDENCE MATRIX. A new module now carries four frame-constraint independence witnesses, sixteen theorems and an aggregate theorem. An existing module under the state-topology directory already carried a complete independence matrix, and its void relation is character-identical to the new empty relation, so three of the four new rows re-prove known facts at a different witness. What is genuinely new is the aggregate theorem, the first refutation of the limit condition over discrete time, and import-light reachability from the semantics aggregator. That was recorded honestly rather than glossed. Decide now whether the two should be consolidated, or whether the duplication is worth keeping for the import-weight reason, and write the decision where a future reader of either module will find it.\n\nTHE SHARED-FIXTURE CONVENTION. A plan placed a cross-repository fixture file under the data directory, which is gitignored in its entirety, so the file could never have been committed there and the fixture was relocated beside its reader. A shared artifact that cannot be obtained from git is not a shared artifact. Record the convention so no later plan repeats the placement, and note that punching a hole in the shared ignore rule was considered and rejected.",
       "topic": "documentation",
       "created": "2026-09-28T01:12:40Z",
-      "last_updated": "2026-09-28T01:12:40Z",
+      "last_updated": "2026-09-28T01:31:18Z",
       "file_scope": [
         "FormalSystem/Semantics/FrameConstraintIndependence.lean",
         "FormalSystem/Semantics/StateTopology/ConstraintWitnesses.lean",
         "FormalSystem/MinusLanguage/Translation.lean",
         "FormalSystem/SourceLanguage/Sentence.lean",
         "BimodalTools/README.md"
-      ]
+      ],
+      "session_id": "sess_1790559036_a260f5_689"
     },
     {
       "project_number": 688,
       "project_name": "gate_script_concurrency_reliability",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "general",
       "description": "Make the repository's own gate scripts reliable under concurrent dispatch, so that a red gate means a real defect rather than a race.\n\nTHE MEASURED DEFECT. scripts/check-module-invariants.sh runs its own lake build, twice, outside the shared build lock (the two invocations near the top of its check sequence: the default target and the test library). Any other guarded build running at the same time therefore races it for .lake artifacts. This is not hypothetical: during a single multi-task orchestration run it produced three separate spurious failures, including one reported as a genuine test-library build failure, each of which had to be attributed against the commit log before it could be set aside. The cost is not the wasted build; it is that every future red result from this script is now suspect, which is exactly the property a gate must not have.\n\nTHE DESIGN QUESTION THIS OPENS, WHICH IS WHY IT IS A TASK AND NOT A ONE-LINE EDIT. The build lock lives in the agent-system deploy tree, which is a disposable artifact regenerated from a source store, while this script is a repository deliverable that must keep working for someone who has no agent system deployed at all. So the fix cannot simply hardcode a call into the deploy tree. Options worth weighing: probe for the guard and use it when present, falling back to an unguarded build with a printed notice; take a repository-local lock of its own that the guard also honors; or have the script refuse to run its builds when it detects a concurrent build rather than racing it. Pick one deliberately and record why.\n\nTHE SECOND, SMALLER ITEM IN THE SAME TERRITORY. scripts/nolints-style.txt does not exist, so every single invocation of the style linter prints \"nolints file could not be read; treating as empty\". The warning is harmless and therefore trains readers to skim past linter output, which is the actual damage. Either create the file, empty and commented, or stop referring to it.\n\nVERIFICATION THAT WOULD ACTUALLY SETTLE THE FIRST ITEM. Run the invariants script concurrently with a guarded full build, repeatedly, and show that it no longer produces a failure attributable to the race. A single clean serial run does not demonstrate anything here, since the serial case was never broken.",
       "topic": "repo-hygiene",
       "created": "2026-09-28T01:12:11Z",
-      "last_updated": "2026-09-28T01:12:11Z",
+      "last_updated": "2026-09-28T01:31:10Z",
       "file_scope": [
         "scripts/check-module-invariants.sh",
         "scripts/nolints-style.txt"
-      ]
+      ],
+      "session_id": "sess_1790559036_a260f5_688"
     },
     {
       "project_number": 687,
@@ -61,23 +63,33 @@
     {
       "project_number": 686,
       "project_name": "modelchecker_contract_handoffs",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "general",
       "description": "Discharge the consuming repository's half of the certificate and translation contracts that this development has now landed, in one coordinated pass. Every item below is an edit to ~/Projects/ModelChecker gated on artifacts that already exist here; none is new mathematics on this side.\n\nTHE ONE THAT MATTERS MOST. The canonical wire codec proves that parsing a printed certificate family returns that same family, and the checker now emits an \"echo\" of exactly what it parsed. Nobody on the consuming side compares that echo against the bytes it sent. Until that comparison is actually performed, the round-trip theorem exists but its hypothesis about the bytes is unchecked, and the deserialization gap is closed from one end only. Perform the echo comparison, on parsed JSON rather than bytes, on every exported certificate.\n\nPIN THE PRODUCER'S ENCODING. The joint canonical contract rejects every \\uXXXX escape except \\u00XX for XX < 0x20, which the printer must use for control characters because JSON has no other spelling for them. Python's json.dumps emits \\uXXXX by default, so the producing exporter must pass ensure_ascii=False. This is the one-line producer-side change the settled decision assumed; without it a non-ASCII atom name is rejected outright rather than silently misread, which is the correct failure but still a failure.\n\nTHE SOURCE-BREAKING CHANGE. CheckResult.countermodel gained a second field, carrying the constructed entailment. The wire format is additive only, but any out-of-repo Lean consumer that pattern-matches that constructor will no longer compile. Audit for such matches and update them.\n\nTHE ADDITIVE KEY'S DEFAULT. The verdict line now carries \"acceptance\", distinguishing a decided verdict from a constructed entailment. An absent field must read as \"decided\" so the two repositories can land in either order. Implement that default explicitly rather than relying on the field always being present.\n\nTHE TRANSLATION CONFORMANCE CHANNEL. FormalSystem/SourceLanguage/ now defines the source sentence AST, its elimination into the six primitives, and a theorem that truth of a sentence agrees with truth of its translation under Semantics.TruthAt itself. A lake exe translate_sentence and a committed fixture list at Tests/fixtures/sentence-translation-fixtures.jsonl let the consuming side assert agreement mechanically instead of by reading. Wire that assertion in. Note two operators that are wrong written the obvious way: the consumer's implication is a disjunction of a negation, not Formula.imp, and its unqualified future is a negated universal, not Formula.someFuture. Note also that the elimination is NOT injective, so the channel is forward-only: no inverse pass is checkable.\n\nONE DEFECT FOUND IN THE CONSUMER WHILE VERIFYING. Its update_types mishandles the top operator, which is why the box test corpus deliberately excludes it. Pre-existing and separately documented there, but it belongs in this pass because the new theorem does cover top.",
       "topic": "decidability",
       "created": "2026-09-28T01:11:04Z",
-      "last_updated": "2026-09-28T01:11:04Z"
+      "last_updated": "2026-09-28T01:31:01Z",
+      "session_id": "sess_1790559036_a260f5_686"
     },
     {
       "project_number": 682,
       "project_name": "stability_decidability_provenance_gate",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "RESEARCH TASK, verdict-first: establish whether validity of the language with the stability modal is KNOWN decidable at integer time from held sources, before any certificate or witness-structure design work begins. This gates the whole stability-modal decision-procedure line, and the answer may be that the target is not known decidable at all, in which case the downstream design tasks should not be started. Three questions, each needing a verdict and a cited source rather than a recollection. (1) The existing decidability argument for the larger language at integer time proceeds by translation into monadic second-order logic over the omega-branching tree and appeals to Rabin's theorem; that theorem is recalled, not held. Tie it to a held source or record that it cannot be. The compression task's own carried-over research note already flags this as a precondition for citing the argument anywhere in library documentation. (2) That argument assumes the integer-time frame class is exactly D equal to the integers, as in the report's mirror -- all bi-infinite walks of a digraph -- rather than a wider class of discrete orders. Check the repository's actual FrameClass definition against that assumption and record whether it holds. (3) Determine whether any route in the held literature yields a FINITE CERTIFICATE, as opposed to a decision procedure only: the MSO route is recorded as giving no finite certificate, no complexity bound, and nothing a Lean Decidable instance could be built from, and the finite model property is recorded as not obtained by its method, consistent with the refuted small-model hypothesis (Probe476.fmp_false). A negative verdict here does not close the line, but it means the certificate design must supply its own finiteness argument rather than inherit one. Deliver a report with the three verdicts; no changes to FormalSystem/ or Tests/.",
       "dependencies": [],
       "created": "2026-09-26T12:07:18Z",
-      "last_updated": "2026-09-26T12:07:18Z"
+      "last_updated": "2026-09-28T01:42:21Z",
+      "session_id": "sess_1790559036_a260f5",
+      "artifacts": [
+        {
+          "path": "specs/682_stability_decidability_provenance_gate/reports/01_stability-decidability-provenance-gate.md",
+          "type": "report",
+          "summary": "Three verdicts: Rabin's theorem IS tied to a held source (Thomas 1997 Thm 6.20, with the countable-branching extension and a self-contained proof); FrameClass.ZTime is exactly D=Z with all bi-infinite walks, machine-checked, with two named residues (no L-plus carrier normalization, Saturation paper-level on infinite carriers); and NO usable finite certificate is inheritable -- the finite model property is refuted outright, with Thomas's Basis Theorem naming finite presentation as the shape to aim at instead. Also records that the archived Probe476.fmp_false no longer elaborates (reports sorryAx) and the one-term repair that restores it."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 683,

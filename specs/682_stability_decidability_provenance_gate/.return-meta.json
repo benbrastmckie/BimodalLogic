@@ -1,0 +1,27 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/682_stability_decidability_provenance_gate/reports/01_stability-decidability-provenance-gate.md",
+      "summary": "Three verdicts: Rabin's theorem IS tied to a held source (Thomas 1997 Thm 6.20, with the countable-branching extension and a self-contained proof); FrameClass.ZTime is exactly D=Z with all bi-infinite walks, machine-checked, with two named residues (no L-plus carrier normalization, Saturation paper-level on infinite carriers); and NO usable finite certificate is inheritable -- the finite model property is refuted outright, with Thomas's Basis Theorem naming finite presentation as the shape to aim at instead. Also records that the archived Probe476.fmp_false no longer elaborates (reports sorryAx) and the one-term repair that restores it."
+    }
+  ],
+  "user_decision": {
+    "question": "Decidability of the stability-modal language at integer time is NOT known -- it is a five-step paper argument whose one recalled ingredient is now held and whose other four steps are unverified. Should the downstream stability-modal design tasks be started anyway?",
+    "options": [
+      "Start them, reframed as 'construct a decision procedure' rather than 'formalize a known-decidable target' -- the certificate design must supply its own finiteness argument either way",
+      "Hold them until the MSO argument's four unverified steps are discharged, or at least until the L-plus carrier normalization is landed",
+      "Abandon the line on the grounds that the target is not known decidable"
+    ],
+    "recommended": "Start them, reframed as 'construct a decision procedure' rather than 'formalize a known-decidable target' -- the certificate design must supply its own finiteness argument either way",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1790559036_a260f5_682",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
