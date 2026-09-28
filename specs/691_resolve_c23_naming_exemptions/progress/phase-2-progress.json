@@ -1,0 +1,19 @@
+{
+  "phase": 2,
+  "phase_name": "Add the exact-pair shadow exemption",
+  "started_at": "2026-09-28T00:15:00Z",
+  "last_updated": "2026-09-28T00:40:00Z",
+  "objectives": [
+    {"id": 1, "description": "Add SHADOW_PAIR_ALLOW triple-keyed exemption set with block comment", "status": "done", "files_touched": ["scripts/check-module-invariants.sh"]},
+    {"id": 2, "description": "Populate with 11 triples in 3 reasoned groups", "status": "done", "files_touched": ["scripts/check-module-invariants.sh"]},
+    {"id": 3, "description": "Apply set in pair loop at FROZEN_PREFIX test point", "status": "done", "files_touched": ["scripts/check-module-invariants.sh"]},
+    {"id": 4, "description": "Re-run scanner, confirm shadow sub-assertion PASS", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Narrowness check via throwaway scratch scanner copy", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Commit green sub-step", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [
+    {"approach": "Run modified scanner from a /tmp scratchpad copy", "result": "failed", "reason": "check-module-invariants.sh derives REPO_ROOT from its own BASH_SOURCE path and cd's there, so a /tmp-located copy silently walked the wrong tree (near-empty decls2) instead of erroring"}
+  ],
+  "handoff_count": 0
+}

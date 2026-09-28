@@ -185,19 +185,19 @@ writing it.
 
 ---
 
-### Phase 2: Add the exact-pair shadow exemption [NOT STARTED]
+### Phase 2: Add the exact-pair shadow exemption [COMPLETED]
 
 **Goal**: Introduce a `(base, outer_ns, inner_ns)`-keyed exemption set holding exactly the pairs
 measured in Phase 1, with the reasoning inline and grouped by structural shape, so the shadow
 sub-assertion passes without disabling any base-name bucket.
 
 **Tasks**:
-- [ ] Add a new exemption set beside `SHADOW_ALLOW` — e.g. `SHADOW_PAIR_ALLOW`, a set of
+- [x] Add a new exemption set beside `SHADOW_ALLOW` — e.g. `SHADOW_PAIR_ALLOW`, a set of
       `(base, outer_ns, inner_ns)` tuples — with a block comment stating what it is for and,
       explicitly, how it differs from `SHADOW_ALLOW`: this set records *measured pairs*, so an
       unmeasured future collision on the same base name is still reported, whereas a
-      `SHADOW_ALLOW` entry disables the bucket permanently.
-- [ ] Populate it with the triples from Phase 1, grouped into the three structural shapes with one
+      `SHADOW_ALLOW` entry disables the bucket permanently. *(completed)*
+- [x] Populate it with the triples from Phase 1, grouped into the three structural shapes with one
       inline reason per group:
       - `decidableValidZTime` (outer `..Decidability`, inner `..Decidability.Compression`) — the
         shadowing *is* the sub-namespacing deliberately chosen to avoid a genuine environment
@@ -211,18 +211,22 @@ sub-assertion passes without disabling any base-name bucket.
       - `mem_verts` (two outers, `SharingWitnessFamily` and `SharingWindow`, each mirrored in its
         own `FwdWalk` and `BwdWalk` sub-namespaces) — a fully regular 2x2 grid; the regularity is
         itself the evidence that this is a mirrored API rather than a collision. Same `isValid`
-        precedent.
-- [ ] Apply the set inside the existing pair loop, at the same point `FROZEN_PREFIX` is tested:
+        precedent. *(completed: 11 entries in 3 groups, matching the Phase 1 measured inventory)*
+- [x] Apply the set inside the existing pair loop, at the same point `FROZEN_PREFIX` is tested:
       `continue` when `(base, a_ns, b_ns)` is in the set. Leave the `SHADOW_ALLOW` bare-name check
-      and the `FROZEN_PREFIX` path check untouched.
-- [ ] Re-run `bash scripts/check-module-invariants.sh --no-build`; confirm the shadow
-      sub-assertion now prints `PASS`.
-- [ ] **Narrowness check**: temporarily add a throwaway declaration (in a scratch copy of a Lean
+      and the `FROZEN_PREFIX` path check untouched. *(completed)*
+- [x] Re-run `bash scripts/check-module-invariants.sh --no-build`; confirm the shadow
+      sub-assertion now prints `PASS`. *(completed)*
+- [x] **Narrowness check**: temporarily add a throwaway declaration (in a scratch copy of a Lean
       file, or by temporarily injecting a synthetic row into `decls2` in a scratch copy of the
       scanner — do not commit either) that creates a *new* pair on one of the four exempted base
       names from an unlisted namespace, and confirm the scanner still reports it. Revert the
-      throwaway before proceeding.
-- [ ] Commit this green sub-step.
+      throwaway before proceeding. *(completed: injected two synthetic `decls2` rows on
+      `mem_verts` from an unlisted namespace into a throwaway `scripts/.narrowness-test-691.sh`
+      copy — placed inside `scripts/` so `REPO_ROOT` resolution stayed correct — confirmed the
+      scanner still reported exactly that 1 synthetic pair as FAIL, then deleted the throwaway
+      file; `git status --short scripts/` shows no trace of it afterward)*
+- [x] Commit this green sub-step. *(completed)*
 
 **Timing**: 0.75 hours
 

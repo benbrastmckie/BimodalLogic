@@ -3248,6 +3248,51 @@ SHADOW_ALLOW = {
 FROZEN_PREFIX = os.path.join("FormalSystem", "Metalogic", "Decidability", "Verified",
                              "Termination") + os.sep
 
+# Pairs accepted and recorded by the EXACT (base, outer namespace, inner namespace) triple that
+# was measured, rather than by bare name like SHADOW_ALLOW above. The difference matters: a
+# SHADOW_ALLOW entry disables its base name's whole shadow bucket tree-wide and forever, so an
+# unrelated future collision on that same name would never be reported again. This set instead
+# records exactly the pairs below -- a new, unmeasured pair on one of these same base names from
+# an unlisted namespace is still reported as FAIL, because its triple is not in this set.
+SHADOW_PAIR_ALLOW = {
+    # decidableValidZTime: the shadowing IS the sub-namespacing deliberately chosen to avoid a
+    # genuine environment clash with the outer declaration in BiLasso/Assembly.lean. Collapsing
+    # it (renaming the inner one out from under Decidability.Compression) would recreate the
+    # clash it exists to avoid, not resolve one.
+    ("decidableValidZTime", "FormalSystem.Metalogic.Decidability",
+     "FormalSystem.Metalogic.Decidability.Compression"),
+
+    # cohWindowLo / cohWindowHi: one mirrored window API (declared once, outer, in
+    # BiLasso/Decide.lean) realized per witness family. The fan-out below is the three families
+    # -- PlusSharingWitnessFamily, SharingWitnessFamily, SharingWindow -- not three independent
+    # naming decisions. Same precedent as the existing isValid SHADOW_ALLOW entry:
+    # structure-member namesakes on distinct types, reached only by dot-notation.
+    ("cohWindowLo", "FormalSystem.Metalogic.Decidability",
+     "FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily"),
+    ("cohWindowLo", "FormalSystem.Metalogic.Decidability",
+     "FormalSystem.Metalogic.Decidability.SharingWitnessFamily"),
+    ("cohWindowLo", "FormalSystem.Metalogic.Decidability",
+     "FormalSystem.Metalogic.Decidability.SharingWindow"),
+    ("cohWindowHi", "FormalSystem.Metalogic.Decidability",
+     "FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily"),
+    ("cohWindowHi", "FormalSystem.Metalogic.Decidability",
+     "FormalSystem.Metalogic.Decidability.SharingWitnessFamily"),
+    ("cohWindowHi", "FormalSystem.Metalogic.Decidability",
+     "FormalSystem.Metalogic.Decidability.SharingWindow"),
+
+    # mem_verts: two outers (SharingWitnessFamily, SharingWindow), each mirrored in its own
+    # FwdWalk and BwdWalk sub-namespace -- a fully regular 2x2 grid. The regularity is itself the
+    # evidence that this is a mirrored API rather than a collision. Same isValid precedent.
+    ("mem_verts", "FormalSystem.Metalogic.Decidability.SharingWitnessFamily",
+     "FormalSystem.Metalogic.Decidability.SharingWitnessFamily.FwdWalk"),
+    ("mem_verts", "FormalSystem.Metalogic.Decidability.SharingWitnessFamily",
+     "FormalSystem.Metalogic.Decidability.SharingWitnessFamily.BwdWalk"),
+    ("mem_verts", "FormalSystem.Metalogic.Decidability.SharingWindow",
+     "FormalSystem.Metalogic.Decidability.SharingWindow.FwdWalk"),
+    ("mem_verts", "FormalSystem.Metalogic.Decidability.SharingWindow",
+     "FormalSystem.Metalogic.Decidability.SharingWindow.BwdWalk"),
+}
+
 shadow = []
 for base, rows in by_base.items():
     if base in SHADOW_ALLOW:
@@ -3258,6 +3303,8 @@ for base, rows in by_base.items():
                 continue
             if b[0].startswith(a[0] + "."):
                 if a[1].startswith(FROZEN_PREFIX) or b[1].startswith(FROZEN_PREFIX):
+                    continue
+                if (base, a[0], b[0]) in SHADOW_PAIR_ALLOW:
                     continue
                 shadow.append((base, a, b))
 if shadow:
