@@ -76,11 +76,13 @@ territory contract directs stop-and-report rather than regenerating over it.
 
 ## Verification
 
-- Build: **Success** at commit `b3955b837`, before the sibling edits landed — full `lake build`
-  through `lake-build-guard.sh build --timeout 1800`, guard exit 0, "Build completed successfully
-  (2753 jobs)", zero `error:` lines, zero `warning:` lines. The new module's `.olean` is newer than
-  its source. The tree is red **now**, at `Sharing/Basic.lean:203` under a concurrent sibling's
-  uncommitted refactor, in a file outside this task's scope.
+- Build: **Success**, twice. (1) Full `lake build` through `lake-build-guard.sh build
+  --timeout 1800` at commit `b3955b837`: guard exit 0, "Build completed successfully (2753 jobs)",
+  zero `error:` lines, zero `warning:` lines. (2) Re-verified after the concurrent sibling's
+  `Sharing/Skeleton.lean` + `Sharing/Basic.lean` refactor landed at `7eb4897a3`: scoped
+  `lake build FormalSystem.Metalogic.Decidability.WitnessFamily` through the guard, exit 0, 1489
+  jobs, zero errors, zero warnings, with `Sharing.Stability` rebuilt green against the refactored
+  substrate. The new module's `.olean` is newer than its source.
 - Sorry count: 0 (in the new module and in every file this task touched)
 - Vacuous count: 0
 - Axiom count: 0 new axioms
@@ -116,9 +118,10 @@ territory contract directs stop-and-report rather than regenerating over it.
   drift, not this round's regression.
 - **Deferred by territory**: the `Stability` entry in
   `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md`'s submodule list.
-- **Observed, not resolved**: a concurrent sibling is mid-refactor of `Sharing/Basic.lean`
-  (extracting a `SharingSkeleton` into a new `Sharing/Skeleton.lean`) and that file does not
-  currently compile. Reported rather than touched.
+- **Observed, then cleared**: a concurrent sibling was mid-refactor of `Sharing/Basic.lean`
+  (extracting a `SharingSkeleton` into a new `Sharing/Skeleton.lean`) and that file did not compile
+  during this dispatch's gate run, which is what made C24/C25 fail. It landed at `7eb4897a3`, and
+  this module was re-verified green against it. A later gate run should no longer show C24/C25.
 
 ## References
 
