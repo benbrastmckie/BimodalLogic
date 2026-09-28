@@ -91,12 +91,17 @@ The condition itself is future work on an L⁺-indexed certificate: `LabelledLas
 ## Main Definitions
 
 - `SharingWitnessFamily.model` — the branching `TaskModel`, valuation lifted to the quotient
+- `SharingWitnessFamily.Certifies` — the branching certificate bundle
 
 ## Main Results
 
 - `SharingWitnessFamily.untl_mem_along_thread` / `snce_mem_along_thread` — the two inner
   inductions, run along a thread rather than along a lasso
 - `SharingWitnessFamily.truth_iff_mem` — **T1** for the branching device
+- `SharingWitnessFamily.Certifies` — the five conditions, bundled at a target time
+- `SharingWitnessFamily.decidableCertifies` — the bundle decides
+- `SharingWitnessFamily.not_consequence_ztime` / `joint_countermodel` — **T1'**
+- `SharingWitnessFamily.refutes_of_certifies` — the second producer for `WitnessFamily.Refutes`
 -/
 
 namespace FormalSystem.Metalogic.Decidability
@@ -286,6 +291,120 @@ theorem truth_iff_mem (S : SharingWitnessFamily Γ Del)
         have hr1' : @LT.lt ℤ _ (s₀ - s) r := hr1
         have hr2' : @LT.lt ℤ _ r t := hr2
         exact (ihg hgc θ s r).mpr (hgs (s + r) (by omega) (by omega))
+
+/-!
+## The bundle, its decision procedure, and the `Refutes` producer
+
+`WitnessFamily.Refutes` existentially quantifies the frame, the model, the history and the time.
+That is what lets the two devices coexist as **two producers for one interface**: the
+deterministic `WitnessFamily.refutes_of_certifies` lands in it with `W.std.frame`, and
+`SharingWitnessFamily.refutes_of_certifies` lands in the same `Refutes Γ Del` with
+`S.frame.toTaskFrame`. Neither producer's statement mentions the other's frame, so adding this
+one does not touch `WitnessFamily/Agreement.lean`, and a consumer written against `Refutes`
+accepts certificates of either shape with no change.
+
+### Five components, in the checker's evaluation order
+
+`Certifies` bundles exactly five conditions — (C0) `AtomCoherent`, (C1') `LocalCoherentShare`,
+(C2') `ThreadFulfilling`, (C3) `BoxFaithful` (reused verbatim) and (C4) `Target` (reused
+verbatim). A sixth, `StabFaithful`, was planned and is out of scope; see this module's header
+and `Sharing/Predicates.lean` for why it is not stateable at a `Formula`-indexed certificate.
+
+The (C1')/(C2') pair is **nested as a single conjunct** rather than left flat, because
+`Sharing/Fulfil.lean` exports no standalone `Decidable (ThreadFulfilling S)`: the window
+reduction for (C2') is relative to (C1'), so the two decide jointly through
+`decidableCoherentShareAndFulfilling`. `decidableCertifies` is therefore assembled from four
+instances, not five, and the nesting is what makes that assembly a bare `inferInstanceAs`
+rather than a `decidable_of_iff` through a reassociation. Nothing is lost: the bundle carries
+(C1') either way.
+-/
+
+/--
+**The five certificate conditions, bundled at a target time.**
+
+The projection order is the order a checker evaluates them in — cheapest and most local first —
+so `instDecidableAnd`'s left-to-right short-circuit agrees with the order in which a rejection
+is localized. It is a cost property of the bundle, not a mathematical one.
+-/
+def Certifies (S : SharingWitnessFamily Γ Del) (t : ℤ) : Prop :=
+  S.AtomCoherent ∧ (S.LocalCoherentShare ∧ S.ThreadFulfilling) ∧
+    S.toWitnessFamily.BoxFaithful ∧ S.toWitnessFamily.Target t
+
+/--
+**The bundle decides**, from four component instances: (C0), the joint (C1')∧(C2'), (C3) and
+(C4). See the section header for why the middle two are joint rather than separate.
+-/
+instance decidableCertifies (S : SharingWitnessFamily Γ Del) (t : ℤ) :
+    Decidable (S.Certifies t) :=
+  inferInstanceAs (Decidable (S.AtomCoherent ∧ (S.LocalCoherentShare ∧ S.ThreadFulfilling) ∧
+    S.toWitnessFamily.BoxFaithful ∧ S.toWitnessFamily.Target t))
+
+/--
+**T1 read on the main lasso**, which is where `Target` reads the consequence.
+
+The constant thread at `mainIdx` from offset `0`; `Thread.const` makes it a thread and
+`total_eq_thread` is not needed in this direction.
+-/
+theorem truth_main_iff_mem (S : SharingWitnessFamily Γ Del)
+    (hat : S.AtomCoherent) (hloc : S.LocalCoherentShare) (hful : S.ThreadFulfilling)
+    (hbox : S.toWitnessFamily.BoxFaithful) (t : ℤ) (ψ : Formula)
+    (hψ : ψ ∈ closureOf (Γ ++ Del)) :
+    TruthAt (S.model hat) (S.hist (Thread.const S S.mainIdx) 0) t ψ ↔
+      ψ ∈ S.toWitnessFamily.main t := by
+  have h := truth_iff_mem S hat hloc hful hbox ψ hψ (Thread.const S S.mainIdx) 0 t
+  rw [Thread.const_idx, show (0 : ℤ) + t = t from by omega] at h
+  exact h
+
+/--
+**T1'** — a state-sharing family with a target refutes ℤ-time consequence.
+-/
+theorem not_consequence_ztime (S : SharingWitnessFamily Γ Del) {t : ℤ}
+    (hat : S.AtomCoherent) (hloc : S.LocalCoherentShare) (hful : S.ThreadFulfilling)
+    (hbox : S.toWitnessFamily.BoxFaithful) (htgt : S.toWitnessFamily.Target t)
+    {σ : Formula} (hσ : σ ∈ Del) :
+    ¬ SemanticConsequenceIn FrameClass.ZTime Γ σ := by
+  intro hcons
+  have hpre : ∀ ψ ∈ Γ, TruthAt (S.model hat) (S.hist (Thread.const S S.mainIdx) 0) t ψ := by
+    intro ψ hψ
+    exact (truth_main_iff_mem S hat hloc hful hbox t ψ
+      (WitnessFamily.premise_mem_closure hψ)).mpr (htgt.1 ψ hψ)
+  have htruth := hcons S.frame.toTaskFrame S.frame_sat_ztime (S.model hat) _ t hpre
+  exact htgt.2 σ hσ ((truth_main_iff_mem S hat hloc hful hbox t σ
+    (WitnessFamily.conclusion_mem_closure hσ)).mp htruth)
+
+/--
+**T1', the joint form** a model checker reports, for the branching device: an explicit ℤ-time
+frame, model, history and time at which every premise is true and every conclusion false.
+
+The frame is `S.frame.toTaskFrame`, not a shift set; the history is the main lasso's constant
+thread from offset `0`.
+-/
+theorem joint_countermodel (S : SharingWitnessFamily Γ Del) {t : ℤ}
+    (hat : S.AtomCoherent) (hloc : S.LocalCoherentShare) (hful : S.ThreadFulfilling)
+    (hbox : S.toWitnessFamily.BoxFaithful) (htgt : S.toWitnessFamily.Target t) :
+    ∃ (F : TaskFrame) (_ : FrameClass.ZTime.Sat F) (M : TaskModel F)
+      (τ : WorldHistory F) (u : F.Duration),
+      (∀ γ ∈ Γ, TruthAt M τ u γ) ∧ (∀ σ ∈ Del, ¬ TruthAt M τ u σ) :=
+  ⟨S.frame.toTaskFrame, S.frame_sat_ztime, S.model hat,
+    S.hist (Thread.const S S.mainIdx) 0, t,
+    fun γ hγ => (truth_main_iff_mem S hat hloc hful hbox t γ
+      (WitnessFamily.premise_mem_closure hγ)).mpr (htgt.1 γ hγ),
+    fun σ hσ h => htgt.2 σ hσ ((truth_main_iff_mem S hat hloc hful hbox t σ
+      (WitnessFamily.conclusion_mem_closure hσ)).mp h)⟩
+
+/--
+**The second producer for the unchanged `Refutes` interface.**
+
+`joint_countermodel` with `Certifies`' five projections in place of its five hypotheses, landing
+in exactly `WitnessFamily.Refutes Γ Del` — the same statement `WitnessFamily.refutes_of_certifies`
+lands in, which is untouched by this arrival.
+-/
+theorem refutes_of_certifies (S : SharingWitnessFamily Γ Del) {t : ℤ}
+    (h : S.Certifies t) : WitnessFamily.Refutes Γ Del :=
+  joint_countermodel S h.1 h.2.1.1 h.2.1.2 h.2.2.1 h.2.2.2
+
+/-- The bundle's instance, confirmed by synthesis rather than asserted. -/
+example (S : SharingWitnessFamily Γ Del) (t : ℤ) : Decidable (S.Certifies t) := inferInstance
 
 end SharingWitnessFamily
 

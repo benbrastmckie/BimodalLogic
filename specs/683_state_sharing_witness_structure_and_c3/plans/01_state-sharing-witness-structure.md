@@ -772,26 +772,26 @@ is the one downstream adjustment, and it is recorded in Phase 11's task list.
 
 ---
 
-### Phase 11: `Certifies`, its `Decidable` instance, and the `Refutes` producer [NOT STARTED]
+### Phase 11: `Certifies`, its `Decidable` instance, and the `Refutes` producer [COMPLETED]
 
 **Goal**: A second producer for the unchanged `WitnessFamily.Refutes` interface, decidable
 end-to-end.
 
 **Tasks**:
-- [ ] Bundle `SharingWitnessFamily.Certifies S t` as the conjunction of exactly five components —
+- [x] Bundle `SharingWitnessFamily.Certifies S t` as the conjunction of exactly five components —
       `AtomCoherent`, `LocalCoherentShare`, `ThreadFulfilling`, `BoxFaithful` (reused) and
       `Target` (reused) — in a fixed projection order matching the instance evaluation order. A
       sixth, `StabFaithful`, was planned and is out of scope; see Phase 6's Reasoned Exclusions.
-- [ ] Derive `decidableCertifies` from the component instances. **Adjusted by Phase 9's
+- [x] Derive `decidableCertifies` from the component instances *(deviation: altered — landed in `Sharing/Agreement.lean` beside `Certifies`, not in `Sharing/Decide.lean`; `Sharing/Fulfil.lean` imports `Sharing/Decide.lean`, so the joint `decidableCoherentShareAndFulfilling` instance is not in scope there and the instance cannot be stated in that file without inverting the import edge)*. **Adjusted by Phase 9's
       Reasoned Exclusion**: there is no standalone `Decidable (ThreadFulfilling S)`, so the
       `LocalCoherentShare` and `ThreadFulfilling` components are decided jointly by
       `decidableCoherentShareAndFulfilling`, with the remaining three
       (`AtomCoherent`, `BoxFaithful`, `Target`) as independent instances.
-- [ ] Prove `joint_countermodel`'s branching twin and then
+- [x] Prove `joint_countermodel`'s branching twin and then
       `refutes_of_certifies : S.Certifies t → WitnessFamily.Refutes Γ Del`, landing in the
       **same** `Refutes` (`Agreement.lean`'s existential over frames is what makes this possible
       with no change to the deterministic producer).
-- [ ] Add a module docstring stating the coexistence mechanism explicitly: `Refutes`
+- [x] Add a module docstring stating the coexistence mechanism explicitly: `Refutes`
       existentially quantifies the frame, so the two devices are two producers for one
       interface, and `WitnessFamily.refutes_of_certifies` is untouched.
 
@@ -803,15 +803,18 @@ end-to-end.
 
 **Commit Mode**: per-substep
 
-**Scope Hypothesis**: this phase asserts the bundle has exactly five components (three carried
-over or adapted, two new). Confirm by the `decidableCertifies` derivation closing with exactly
-that many component instances; adjust the count in the docstring if the definition settles
-differently. Five, not six: the planned `StabFaithful` component is out of scope.
+**Scope Hypothesis** — *confirmed, with the Phase 9 adjustment*: the bundle has exactly five
+components ((C0), (C1'), (C2'), (C3), (C4)). The `decidableCertifies` derivation closes with
+**four** instances, not five, because (C1') and (C2') are decided jointly by
+`decidableCoherentShareAndFulfilling`; the bundle nests them as one conjunct so the derivation
+is a bare `inferInstanceAs`. The module docstring records both counts. Five, not six: the
+planned `StabFaithful` component is out of scope.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Agreement.lean` - the bundle and
   the producer
-- `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Decide.lean` - `decidableCertifies`
+- `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Decide.lean` - *(not modified; see
+  the deviation on the `decidableCertifies` task above)*
 
 **Verification**:
 - `example (S : SharingWitnessFamily Γ Del) (t : ℤ) : Decidable (S.Certifies t) := inferInstance`
