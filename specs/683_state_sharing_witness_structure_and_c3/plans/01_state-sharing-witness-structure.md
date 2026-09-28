@@ -864,23 +864,26 @@ new condition proved to reduce to its existing counterpart.
 
 ---
 
-### Phase 13: The frame isomorphism and truth transport [NOT STARTED]
+### Phase 13: The frame isomorphism and truth transport [COMPLETED]
 
 **Goal**: `(W.toSharing).frame` and `W.std.frame` are shown isomorphic and truth is transported
 across, so the deterministic case is a genuine specialization rather than a parallel development.
 
 **Tasks**:
-- [ ] Construct the frame isomorphism `(W.toSharing).frame ≅ W.std.frame`. The carriers are
+- [x] Construct the frame isomorphism `(W.toSharing).frame ≅ W.std.frame`. The carriers are
       `Quotient (shareSetoid (W.toSharing))` and `Fin L × ℤ`; the quotient is by equality, so the
       map is `Quotient.lift id` with `Quotient.mk` as inverse. **These are isomorphic, not
       definitionally equal — do not plan on `rfl`.**
-- [ ] Transport truth across it using `Semantics/HistoryMorphism.lean` and
-      `Semantics/TruthTransport.lean`; state the transported agreement as
+- [x] Transport truth across it using `Semantics/TruthTransport.lean`'s `TruthIso` and
+      `Truth.truthAt_of_truthIso` *(deviation: altered — `Semantics/HistoryMorphism.lean` was not
+      needed; its `HistMap`/`HistMorphism` are for non-invertible maps, whereas the diagonal
+      instance gives a genuine `Equiv` of world histories, which is exactly `TruthIso`'s `hist`
+      field)*; state the transported agreement as
       `truth_iff_mem_toSharing`.
-- [ ] Prove the specialization corollary: the branching `refutes_of_certifies` applied at
+- [x] Prove the specialization corollary *(deviation: altered — `WitnessFamily.Refutes` is a `Prop`, so an equality of the two producers' outputs is proof irrelevance and carries no content; what is landed is that equality (`refutes_of_certifies_toSharing`) together with an explicit docstring saying the substantive specialization is `truthIso`, not the equality)*: the branching `refutes_of_certifies` applied at
       `W.toSharing` yields the same `Refutes Γ Del` as `WitnessFamily.refutes_of_certifies`
       applied at `W`, so nothing about the deterministic acceptance branch changes.
-- [ ] Record the transport cost in the module docstring so a future reader does not try to
+- [x] Record the transport cost in the module docstring so a future reader does not try to
       collapse it.
 
 **Timing**: 2 hours

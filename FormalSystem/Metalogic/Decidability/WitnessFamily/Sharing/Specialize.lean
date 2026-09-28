@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Agreement
+import FormalSystem.Semantics.TruthTransport
 
 /-!
 # The Deterministic Device as the Diagonal Instance
@@ -68,6 +69,9 @@ itself is out of scope here; see `Sharing/Agreement.lean`'s header.
 - `WitnessFamily.localCoherentShare_toSharing` — (C1') ↔ (C1)
 - `WitnessFamily.threadFulfilling_toSharing` — (C2') ↔ (C2)
 - `WitnessFamily.certifies_toSharing` — the deterministic bundle yields the branching bundle
+- `WitnessFamily.stateEquiv` / `histEquiv` / `truthIso` — the frame isomorphism and its transport
+- `WitnessFamily.truth_iff_mem_toSharing` — branching agreement, read in the deterministic model
+- `WitnessFamily.refutes_of_certifies_toSharing` — the two producers inhabit one statement
 -/
 
 namespace FormalSystem.Metalogic.Decidability
@@ -215,6 +219,236 @@ theorem certifies_toSharing (W : WitnessFamily Γ Del) {t : ℤ} (h : W.Certifie
   ⟨atomCoherent_toSharing W,
     ⟨(localCoherentShare_toSharing W).mpr h.1, (threadFulfilling_toSharing W).mpr h.2.1⟩,
     h.2.2.1, h.2.2.2⟩
+
+/-!
+## The frame isomorphism, and truth transport across it
+
+The reductions above are statements about *conditions*. They leave open the question a reader
+of two parallel developments actually asks: are the two **models** the same model? They are —
+up to isomorphism, not on the nose — and this section exhibits the isomorphism and transports
+truth across it, so the deterministic device is a specialization of the branching one rather
+than a second, unrelated construction that happens to satisfy analogous lemmas.
+
+### Isomorphic, not definitionally equal
+
+`W.std.frame`'s carrier is `Fin |lassos| × ℤ`. `W.toSharing.frame`'s carrier is
+`Quotient W.toSharing.shareSetoid` — a quotient of that same type, by equality. A quotient by
+equality is *equivalent* to what it quotients, never equal to it: `Quotient.mk` and
+`Quotient.lift id` are mutually inverse but `Quotient s α` and `α` are distinct types. Every
+lemma below therefore goes through `stateEquiv` explicitly, and none of them is `rfl` at the
+level of types. The cost is the `histEquiv` round trip; a future reader who tries to collapse
+it will rediscover that `Quotient.lift id` has no definitional inverse.
+
+### Why the relation transport is the only real work
+
+`stateEquiv` itself is three lines. What has to be proved is that the two task relations agree
+under it, and that reduces to one fact about the diagonal instance: connectivity is index
+equality. `reachN_toSharing` proves it by induction on the step count, `conn_toSharing` lifts it
+past the duration-free `Conn` case split, and `taskRel_toSharing` is then a matter of
+reassociating a conjunction against `Prod.ext_iff`.
+-/
+
+/-- **One step at the diagonal instance is identity of indices.** -/
+@[simp]
+theorem step_toSharing (W : WitnessFamily Γ Del) (u : ℤ)
+    (i j : Fin W.toSharing.lassos.length) : W.toSharing.Step u i j ↔ i = j := by
+  constructor
+  · rintro ⟨k, hik, hkj⟩
+    exact ((share_toSharing W u i k).mp hik).trans ((share_toSharing W (u + 1) k j).mp hkj)
+  · intro h
+    subst h
+    exact SharingWitnessFamily.step_refl _ u i
+
+/-- **Reachability of any length at the diagonal instance is identity of indices.** -/
+theorem reachN_toSharing (W : WitnessFamily Γ Del) :
+    ∀ (n : ℕ) (u : ℤ) (i j : Fin W.toSharing.lassos.length),
+      W.toSharing.ReachN n u i j ↔ i = j := by
+  intro n
+  induction n with
+  | zero => intro u i j; exact share_toSharing W u i j
+  | succ m ih =>
+    intro u i j
+    constructor
+    · rintro ⟨k, hik, hkj⟩
+      exact ((step_toSharing W u i k).mp hik).trans ((ih (u + 1) k j).mp hkj)
+    · intro h
+      subst h
+      exact SharingWitnessFamily.reachN_const _ (m + 1) u i
+
+/-- **Connectivity at the diagonal instance is identity of indices**, in either time order. -/
+theorem conn_toSharing (W : WitnessFamily Γ Del)
+    (p q : Fin W.toSharing.lassos.length × ℤ) : W.toSharing.Conn p q ↔ p.1 = q.1 := by
+  unfold SharingWitnessFamily.Conn
+  split
+  · exact reachN_toSharing W _ _ _ _
+  · exact (reachN_toSharing W _ _ _ _).trans eq_comm
+
+/--
+**The carrier isomorphism.** `Quotient.lift id` one way, `Quotient.mk` the other; the quotient
+is by equality, so the lift's compatibility obligation is discharged by `share_toSharing`.
+-/
+def stateEquiv (W : WitnessFamily Γ Del) :
+    W.toSharing.WorldState ≃ (Fin W.lassos.length × ℤ) where
+  toFun := fun C => Quotient.liftOn C id (by
+    rintro ⟨i, u⟩ ⟨j, v⟩ ⟨ht, hs⟩
+    have hij : i = j := (share_toSharing W u i j).mp hs
+    have ht' : u = v := ht
+    subst hij
+    subst ht'
+    rfl)
+  invFun := fun p => W.toSharing.cls p.1 p.2
+  left_inv := by
+    intro C
+    induction C using Quotient.inductionOn with
+    | _ p => cases p; rfl
+  right_inv := by
+    intro p
+    cases p
+    rfl
+
+@[simp]
+theorem stateEquiv_cls (W : WitnessFamily Γ Del) (i : Fin W.lassos.length) (u : ℤ) :
+    stateEquiv W (W.toSharing.cls i u) = (i, u) := rfl
+
+theorem stateEquiv_symm_apply (W : WitnessFamily Γ Del) (p : Fin W.lassos.length × ℤ) :
+    (stateEquiv W).symm p = W.toSharing.cls p.1 p.2 := rfl
+
+/-- The carrier isomorphism at a pair, stated with the pair itself rather than its components.
+
+Both this and `cls_stateEquiv` below exist because `W.std.Carrier` is a structure field of a
+plain `def` (`ShiftSet.ofIntAction`), so it unfolds only at default transparency: a `rw` whose
+pattern is at `Fin |lassos| × ℤ` does not fire against a term typed at `W.std.frame.WorldState`.
+Stating the round trips as their own lemmas and discharging them by `exact` sidesteps that. -/
+theorem stateEquiv_cls_pair (W : WitnessFamily Γ Del) (p : Fin W.lassos.length × ℤ) :
+    stateEquiv W (W.toSharing.cls p.1 p.2) = p := by
+  cases p
+  rfl
+
+/-- The other round trip: rebuilding a class from the components of its image. -/
+theorem cls_stateEquiv (W : WitnessFamily Γ Del) (C : W.toSharing.WorldState) :
+    W.toSharing.cls (stateEquiv W C).1 (stateEquiv W C).2 = C := by
+  induction C using Quotient.inductionOn with
+  | _ p => cases p; rfl
+
+/-- **The two task relations agree under the carrier isomorphism.** -/
+theorem taskRel_toSharing (W : WitnessFamily Γ Del) (C C' : W.toSharing.WorldState) (d : ℤ) :
+    W.toSharing.frame.toTaskFrame.TaskRel C d C' ↔
+      W.std.frame.TaskRel (stateEquiv W C) d (stateEquiv W C') := by
+  induction C using Quotient.inductionOn with
+  | _ p =>
+    induction C' using Quotient.inductionOn with
+    | _ q =>
+      obtain ⟨i, u⟩ := p
+      obtain ⟨j, v⟩ := q
+      refine Iff.trans (W.toSharing.frame_taskRel _ _ _) ?_
+      refine Iff.trans ?_ (W.std.fibre_taskRel (i, u) d (j, v)).symm
+      constructor
+      · rintro ⟨ht, hc⟩
+        have hij : i = j := (conn_toSharing W (i, u) (j, v)).mp hc
+        subst hij
+        have hv : v = u + d := ht
+        subst hv
+        rfl
+      · intro h
+        have h' : ((j, v) : Fin W.lassos.length × ℤ) = (i, u + d) := h
+        refine ⟨(congrArg Prod.snd h' : v = u + d), ?_⟩
+        exact (conn_toSharing W (i, u) (j, v)).mpr (congrArg Prod.fst h').symm
+
+/-- **The relation transport at raw pairs.** `taskRel_toSharing` with both arguments presented
+as pairs rather than as quotient elements, which is the form `histEquiv` can apply by `exact`
+against a state typed at `W.std.frame.WorldState`. -/
+theorem taskRel_toSharing' (W : WitnessFamily Γ Del) (w w' : Fin W.lassos.length × ℤ) (d : ℤ) :
+    W.toSharing.frame.toTaskFrame.TaskRel
+        (W.toSharing.cls w.1 w.2) d (W.toSharing.cls w'.1 w'.2) ↔
+      W.std.frame.TaskRel w d w' := by
+  obtain ⟨i, u⟩ := w
+  obtain ⟨j, v⟩ := w'
+  exact taskRel_toSharing W (W.toSharing.cls i u) (W.toSharing.cls j v) d
+
+/--
+**The world-history isomorphism**, transported pointwise from `stateEquiv`.
+
+A world history is determined by its states (`WorldHistory.ext_state`) and is built from a bare
+state function by `WorldHistory.ofTotal`, so the equivalence is `stateEquiv` composed pointwise
+in each direction, with `taskRel_toSharing` discharging the `respects_task` obligation.
+-/
+def histEquiv (W : WitnessFamily Γ Del) :
+    WorldHistory W.toSharing.frame.toTaskFrame ≃ WorldHistory W.std.frame where
+  toFun := fun τ => WorldHistory.ofTotal _ (fun t => stateEquiv W (τ.state t)) (by
+    intro s t
+    exact (taskRel_toSharing W _ _ _).mp (τ.respects_task s t))
+  invFun := fun σ => WorldHistory.ofTotal _
+    (fun t => W.toSharing.cls (σ.state t).1 (σ.state t).2) (by
+      intro s t
+      exact (taskRel_toSharing' W (σ.state s) (σ.state t) (t - s)).mpr (σ.respects_task s t))
+  left_inv := by
+    intro τ
+    exact WorldHistory.ext_state (fun t => cls_stateEquiv W (τ.state t))
+  right_inv := by
+    intro σ
+    exact WorldHistory.ext_state (fun t => stateEquiv_cls_pair W (σ.state t))
+
+@[simp]
+theorem histEquiv_state (W : WitnessFamily Γ Del)
+    (τ : WorldHistory W.toSharing.frame.toTaskFrame) (t : ℤ) :
+    (histEquiv W τ).state t = stateEquiv W (τ.state t) := rfl
+
+/-- The two valuations agree under the carrier isomorphism. -/
+theorem valuation_toSharing (W : WitnessFamily Γ Del)
+    (hat : W.toSharing.AtomCoherent) (C : W.toSharing.WorldState) (a : Atom) :
+    (W.toSharing.model hat).valuation C a ↔ W.std.model.valuation (stateEquiv W C) a := by
+  induction C using Quotient.inductionOn with
+  | _ q => cases q; exact Iff.rfl
+
+/--
+**The truth isomorphism** between the branching model at the diagonal instance and the
+deterministic shift-set model. Time is reindexed by the identity — both frames are over
+`intOrder` — so the transported formula is `φ` itself, not `φ.reflectTime`.
+-/
+def truthIso (W : WitnessFamily Γ Del) (hat : W.toSharing.AtomCoherent) :
+    TruthIso (W.toSharing.model hat) W.std.model where
+  dur := OrderIso.refl _
+  hist := histEquiv W
+  atom := by
+    intro τ t a
+    rw [histEquiv_state]
+    exact valuation_toSharing W hat (τ.state t) a
+
+/--
+**The branching agreement theorem, transported to the deterministic model.**
+
+`SharingWitnessFamily.truth_iff_mem` at `W.toSharing`, carried across `truthIso`. The
+hypotheses are the *deterministic* conditions — (C0) is free at the diagonal instance and the
+other two are the reductions above — so this is the branching theorem stated entirely in the
+deterministic device's own terms.
+-/
+theorem truth_iff_mem_toSharing (W : WitnessFamily Γ Del)
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbox : W.BoxFaithful)
+    (θ : W.toSharing.Thread) (s t : ℤ) (ψ : Formula) (hψ : ψ ∈ closureOf (Γ ++ Del)) :
+    TruthAt W.std.model (histEquiv W (W.toSharing.hist θ s)) t ψ ↔
+      ψ ∈ W.L (θ.idx (s + t)) (s + t) := by
+  have h := SharingWitnessFamily.truth_iff_mem W.toSharing (atomCoherent_toSharing W)
+    ((localCoherentShare_toSharing W).mpr hloc)
+    ((threadFulfilling_toSharing W).mpr hful) hbox ψ hψ θ s t
+  rw [Truth.truthAt_of_truthIso (truthIso W (atomCoherent_toSharing W)) ψ
+    (W.toSharing.hist θ s) t] at h
+  exact h
+
+/--
+**The specialization corollary**: the branching producer at the diagonal instance and the
+deterministic producer inhabit the *same* statement, and the deterministic acceptance branch is
+untouched.
+
+`WitnessFamily.Refutes` is a `Prop`, so the equality itself is proof irrelevance and carries no
+mathematical content. What carries the content is what the equality's *statement* requires in
+order to typecheck: both sides are terms of one and the same `Refutes Γ Del`, produced from one
+and the same `W.Certifies t`, with no coercion, no re-proof and no change to
+`WitnessFamily.refutes_of_certifies`. The substantive specialization is `truthIso` above — the
+two countermodels are built over isomorphic frames — not this line.
+-/
+theorem refutes_of_certifies_toSharing (W : WitnessFamily Γ Del) {t : ℤ} (h : W.Certifies t) :
+    SharingWitnessFamily.refutes_of_certifies W.toSharing (certifies_toSharing W h)
+      = WitnessFamily.refutes_of_certifies W h := rfl
 
 end WitnessFamily
 
