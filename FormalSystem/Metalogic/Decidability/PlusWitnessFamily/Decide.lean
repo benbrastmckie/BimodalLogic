@@ -370,6 +370,226 @@ theorem exists_window_repr (S : PlusSharingWitnessFamily Γ Del) (t : ℤ) :
         | exact (S.data_congr_fwd (by omega) (by omega) hresp).2
     }
 
+/-! ## (C0) at a single time
+
+`PlusAtomCoherent` quantifies over `∀ p : Atom`, and `Atom` is `Infinite`. The closure-gated form
+below is equivalent — an atom outside `plusClosureOf (Γ ++ Del)` is absent from both labels, since
+every label is a subset of the closure — and it is the form that decides.
+-/
+
+/-- The atom clause a single closure member imposes at a pair of labels. -/
+def plusAtomClauseAt (Li Lj : Finset PlusFormula) : PlusFormula → Prop
+  | PlusFormula.atom p => (PlusFormula.atom p ∈ Li ↔ PlusFormula.atom p ∈ Lj)
+  | PlusFormula.bot => True
+  | PlusFormula.imp _ _ => True
+  | PlusFormula.box _ => True
+  | PlusFormula.untl _ _ => True
+  | PlusFormula.snce _ _ => True
+  | PlusFormula.stab _ => True
+
+/-- `plusAtomClauseAt` is decidable at every formula. -/
+instance instDecidablePlusAtomClauseAt (Li Lj : Finset PlusFormula) :
+    DecidablePred (plusAtomClauseAt Li Lj) := by
+  intro ψ
+  cases ψ <;> (dsimp only [plusAtomClauseAt]; infer_instance)
+
+/--
+(C0)'s content at explicit data: one representative map and one label per lasso.
+
+Stated at the data rather than at `S` and `t`, so that the window congruence is a `rw` of the
+two arguments rather than a hand-transport through the quantifiers.
+-/
+def plusAtomCoherentData {n : ℕ} (C : Finset PlusFormula) (rt : Fin n → Fin n)
+    (Lt : Fin n → Finset PlusFormula) : Prop :=
+  ∀ i j : Fin n, rt i = rt j → ∀ ψ ∈ C, plusAtomClauseAt (Lt i) (Lt j) ψ
+
+instance instDecidablePlusAtomCoherentData {n : ℕ} (C : Finset PlusFormula)
+    (rt : Fin n → Fin n) (Lt : Fin n → Finset PlusFormula) :
+    Decidable (plusAtomCoherentData C rt Lt) := by
+  dsimp only [plusAtomCoherentData]
+  infer_instance
+
+/-- **(C0) at a single time.** -/
+def PlusAtomCoherentAt (S : PlusSharingWitnessFamily Γ Del) (t : ℤ) : Prop :=
+  plusAtomCoherentData (plusClosureOf (Γ ++ Del)) (S.rep t) (fun i => S.L i t)
+
+instance decidablePlusAtomCoherentAt (S : PlusSharingWitnessFamily Γ Del) (t : ℤ) :
+    Decidable (S.PlusAtomCoherentAt t) := by
+  dsimp only [PlusAtomCoherentAt]
+  infer_instance
+
+/-- **(C0) is exactly its closure-gated form at every time.** -/
+theorem plusAtomCoherent_iff_at (S : PlusSharingWitnessFamily Γ Del) :
+    S.PlusAtomCoherent ↔ ∀ t : ℤ, S.PlusAtomCoherentAt t := by
+  constructor
+  · intro h t i j hij ψ _
+    cases ψ with
+    | atom p => exact h t i j hij p
+    | bot => trivial
+    | imp _ _ => trivial
+    | box _ => trivial
+    | untl _ _ => trivial
+    | snce _ _ => trivial
+    | stab _ => trivial
+  · intro h t i j hij p
+    by_cases hc : PlusFormula.atom p ∈ plusClosureOf (Γ ++ Del)
+    · exact h t i j hij _ hc
+    · constructor
+      · intro hm; exact absurd (S.subset_plusClosureOf i t hm) hc
+      · intro hm; exact absurd (S.subset_plusClosureOf j t hm) hc
+
+/-- The per-time check reads only the representative map and the labels at that time. -/
+theorem plusAtomCoherentAt_congr (S : PlusSharingWitnessFamily Γ Del) {t t' : ℤ}
+    (hr : S.rep t = S.rep t') (hL : ∀ i, S.L i t = S.L i t') :
+    S.PlusAtomCoherentAt t ↔ S.PlusAtomCoherentAt t' := by
+  have hLf : (fun i => S.L i t) = (fun i => S.L i t') := funext hL
+  simp only [PlusAtomCoherentAt, hr, hLf]
+
+/-! ## (C1') at a single time -/
+
+/--
+The local clause a single closure member imposes on a sharing family, at explicit data.
+
+`rt`, `rp` are the representative maps at `t` and `t + 1`; `Lm`, `Lt`, `Lp` the per-lasso labels
+at `t - 1`, `t` and `t + 1`. The `untl` and `snce` clauses quantify over the shared successors
+and predecessors respectively.
+
+The `stab` arm is `True`: the stability modal is (C5)'s, and a non-trivial arm here would be the
+weaker, wrongly-shaped duplicate `Predicates.lean`'s header warns against.
+-/
+def plusShareClauseAt {n : ℕ} (bx : PlusFormula → Bool) (rt rp : Fin n → Fin n)
+    (Lm Lt Lp : Fin n → Finset PlusFormula) (i : Fin n) : PlusFormula → Prop
+  | PlusFormula.atom _ => True
+  | PlusFormula.bot => True
+  | PlusFormula.imp a b => (PlusFormula.imp a b ∈ Lt i ↔ (a ∈ Lt i → b ∈ Lt i))
+  | PlusFormula.box χ => (PlusFormula.box χ ∈ Lt i ↔ bx χ = true)
+  | PlusFormula.untl g e => ∀ j : Fin n, rp i = rp j →
+      (PlusFormula.untl g e ∈ Lt i ↔ (e ∈ Lp j ∨ (g ∈ Lp j ∧ PlusFormula.untl g e ∈ Lp j)))
+  | PlusFormula.snce g e => ∀ k : Fin n, rt i = rt k →
+      (PlusFormula.snce g e ∈ Lt i ↔ (e ∈ Lm k ∨ (g ∈ Lm k ∧ PlusFormula.snce g e ∈ Lm k)))
+  | PlusFormula.stab _ => True
+
+/-- `plusShareClauseAt` is decidable at every formula: the two quantifiers range over a
+`Fintype`. -/
+instance instDecidablePlusShareClauseAt {n : ℕ} (bx : PlusFormula → Bool)
+    (rt rp : Fin n → Fin n) (Lm Lt Lp : Fin n → Finset PlusFormula) (i : Fin n) :
+    DecidablePred (plusShareClauseAt bx rt rp Lm Lt Lp i) := by
+  intro ψ
+  cases ψ <;> (dsimp only [plusShareClauseAt]; infer_instance)
+
+/-- (C1')'s content at explicit data. -/
+def plusCoherentShareData {n : ℕ} (bx : PlusFormula → Bool) (C : Finset PlusFormula)
+    (rt rp : Fin n → Fin n) (Lm Lt Lp : Fin n → Finset PlusFormula) : Prop :=
+  ∀ i : Fin n, PlusFormula.bot ∉ Lt i ∧ ∀ ψ ∈ C, plusShareClauseAt bx rt rp Lm Lt Lp i ψ
+
+instance instDecidablePlusCoherentShareData {n : ℕ} (bx : PlusFormula → Bool)
+    (C : Finset PlusFormula) (rt rp : Fin n → Fin n)
+    (Lm Lt Lp : Fin n → Finset PlusFormula) :
+    Decidable (plusCoherentShareData bx C rt rp Lm Lt Lp) := by
+  dsimp only [plusCoherentShareData]
+  infer_instance
+
+/-- **(C1') at a single time.** -/
+def PlusCoherentShareAt (S : PlusSharingWitnessFamily Γ Del) (t : ℤ) : Prop :=
+  plusCoherentShareData S.bx (plusClosureOf (Γ ++ Del)) (S.rep t) (S.rep (t + 1))
+    (fun i => S.L i (t - 1)) (fun i => S.L i t) (fun i => S.L i (t + 1))
+
+instance decidablePlusCoherentShareAt (S : PlusSharingWitnessFamily Γ Del) (t : ℤ) :
+    Decidable (S.PlusCoherentShareAt t) := by
+  dsimp only [PlusCoherentShareAt]
+  infer_instance
+
+/-- **(C1') is exactly its closure-gated form at every time.** -/
+theorem plusLocalCoherentShare_iff_at (S : PlusSharingWitnessFamily Γ Del) :
+    S.PlusLocalCoherentShare ↔ ∀ t : ℤ, S.PlusCoherentShareAt t := by
+  constructor
+  · intro h t i
+    obtain ⟨hbot, himp, hbox, huntl, hsnce⟩ := h i t
+    refine ⟨hbot, fun ψ hψ => ?_⟩
+    cases ψ with
+    | atom _ => trivial
+    | bot => trivial
+    | imp a b => exact himp a b hψ
+    | box χ => exact hbox χ hψ
+    | untl g e => exact fun j hj => huntl j hj g e hψ
+    | snce g e => exact fun k hk => hsnce k hk g e hψ
+    | stab _ => trivial
+  · intro h i t
+    obtain ⟨hbot, hcl⟩ := h t i
+    exact ⟨hbot, fun a b hab => hcl _ hab, fun χ hχ => hcl _ hχ,
+      fun j hj g e hge => hcl _ hge j hj, fun k hk g e hge => hcl _ hge k hk⟩
+
+/-- The per-position check reads only the representative maps at `t` and `t + 1` and the labels
+at `t - 1`, `t` and `t + 1`. -/
+theorem plusCoherentShareAt_congr (S : PlusSharingWitnessFamily Γ Del) {t t' : ℤ}
+    (hr0 : S.rep t = S.rep t') (hr1 : S.rep (t + 1) = S.rep (t' + 1))
+    (hm : ∀ i, S.L i (t - 1) = S.L i (t' - 1)) (h0 : ∀ i, S.L i t = S.L i t')
+    (hp : ∀ i, S.L i (t + 1) = S.L i (t' + 1)) :
+    S.PlusCoherentShareAt t ↔ S.PlusCoherentShareAt t' := by
+  have em : (fun i => S.L i (t - 1)) = (fun i => S.L i (t' - 1)) := funext hm
+  have e0 : (fun i => S.L i t) = (fun i => S.L i t') := funext h0
+  have ep : (fun i => S.L i (t + 1)) = (fun i => S.L i (t' + 1)) := funext hp
+  simp only [PlusCoherentShareAt, hr0, hr1, em, e0, ep]
+
+/-! ## The two window collapses, and the two instances -/
+
+/-- **(C0) collapses to the combined window.** -/
+theorem plusAtomCoherent_iff_window (S : PlusSharingWitnessFamily Γ Del) :
+    S.PlusAtomCoherent ↔
+      ∀ t : ℤ, S.cohWindowLo ≤ t → t < S.cohWindowHi → S.PlusAtomCoherentAt t := by
+  rw [S.plusAtomCoherent_iff_at]
+  constructor
+  · intro h t _ _; exact h t
+  · intro h t
+    obtain ⟨t', hlo, hhi, hr0, _, _, hL0, _⟩ := S.exists_window_repr t
+    exact (S.plusAtomCoherentAt_congr hr0 hL0).mpr (h t' hlo hhi)
+
+/-- **(C1') collapses to the combined window.** -/
+theorem plusLocalCoherentShare_iff_window (S : PlusSharingWitnessFamily Γ Del) :
+    S.PlusLocalCoherentShare ↔
+      ∀ t : ℤ, S.cohWindowLo ≤ t → t < S.cohWindowHi → S.PlusCoherentShareAt t := by
+  rw [S.plusLocalCoherentShare_iff_at]
+  constructor
+  · intro h t _ _; exact h t
+  · intro h t
+    obtain ⟨t', hlo, hhi, hr0, hr1, hm, h0, hp⟩ := S.exists_window_repr t
+    exact (S.plusCoherentShareAt_congr hr0 hr1 hm h0 hp).mpr (h t' hlo hhi)
+
+/-- **(C0) decides** by a bounded scan of the combined window. -/
+instance decidablePlusAtomCoherent (S : PlusSharingWitnessFamily Γ Del) :
+    Decidable S.PlusAtomCoherent :=
+  decidable_of_iff
+    (∀ t ∈ Finset.Ico S.cohWindowLo S.cohWindowHi, S.PlusAtomCoherentAt t)
+    (by
+      rw [S.plusAtomCoherent_iff_window]
+      constructor
+      · intro h t hlo hhi; exact h t (Finset.mem_Ico.mpr ⟨hlo, hhi⟩)
+      · intro h t ht
+        obtain ⟨hlo, hhi⟩ := Finset.mem_Ico.mp ht
+        exact h t hlo hhi)
+
+/-- **(C1') decides** by a bounded scan of the combined window. -/
+instance decidablePlusLocalCoherentShare (S : PlusSharingWitnessFamily Γ Del) :
+    Decidable S.PlusLocalCoherentShare :=
+  decidable_of_iff
+    (∀ t ∈ Finset.Ico S.cohWindowLo S.cohWindowHi, S.PlusCoherentShareAt t)
+    (by
+      rw [S.plusLocalCoherentShare_iff_window]
+      constructor
+      · intro h t hlo hhi; exact h t (Finset.mem_Ico.mpr ⟨hlo, hhi⟩)
+      · intro h t ht
+        obtain ⟨hlo, hhi⟩ := Finset.mem_Ico.mp ht
+        exact h t hlo hhi)
+
+section Instances
+
+variable (S : PlusSharingWitnessFamily Γ Del)
+
+example : Decidable S.PlusAtomCoherent := inferInstance
+example : Decidable S.PlusLocalCoherentShare := inferInstance
+
+end Instances
+
 end PlusSharingWitnessFamily
 
 end FormalSystem.Metalogic.Decidability

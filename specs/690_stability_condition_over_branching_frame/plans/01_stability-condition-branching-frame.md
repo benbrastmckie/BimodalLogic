@@ -716,19 +716,19 @@ record before writing, and record the actual split at phase end.
 
 ---
 
-### Phase 14: Decide — (C0) and (C1') collapses and instances [NOT STARTED]
+### Phase 14: Decide — (C0) and (C1') collapses and instances [COMPLETED]
 
 **Goal**: `decidablePlusAtomCoherent` and `decidablePlusLocalCoherentShare`, by the landed
 seven-step pattern.
 
 **Tasks**:
-- [ ] `plusAtomClauseAt`, `instDecidablePlusAtomClauseAt`, `plusAtomCoherentData`,
+- [x] `plusAtomClauseAt`, `instDecidablePlusAtomClauseAt`, `plusAtomCoherentData`,
       `PlusAtomCoherentAt`, `decidablePlusAtomCoherentAt`, `plusAtomCoherent_iff_at`,
       `plusAtomCoherentAt_congr`, `plusAtomCoherent_iff_window`, `decidablePlusAtomCoherent`
-- [ ] The (C1') analogues: `plusShareClauseAt`, `plusCoherentShareData`, `PlusCoherentShareAt`,
+- [x] The (C1') analogues: `plusShareClauseAt`, `plusCoherentShareData`, `PlusCoherentShareAt`,
       `plusLocalCoherentShare_iff_at`, `plusCoherentShareAt_congr`,
       `plusLocalCoherentShare_iff_window`, `decidablePlusLocalCoherentShare`
-- [ ] Confirm every instance computes: an `example ... := inferInstance` at each
+- [x] Confirm every instance computes: an `example ... := inferInstance` at each
 
 **Timing**: 2 hours
 
