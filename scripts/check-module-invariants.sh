@@ -3140,8 +3140,34 @@ UPPER = re.compile(r"^[A-Z][A-Za-z0-9']*_")
 # operators, not a namespace: `F_until_equiv_valid` is a fact about `F`, and
 # `F.until_equiv_valid` would invent a namespace `F` that does not and should not exist.
 TENSE_PREFIX = re.compile(r"^(F|P|G|H|A|FF|HF)_")
-# Prefixes that name no live declaration, so dot-namespacing them would invent one.
-UPPER_ALLOW = {"CAggOdSwap_clause_iff", "CAggOdSwap_clause_iff_faithful", "O_zero_correct"}
+# Two documented classes populate UPPER_ALLOW; every entry below falls into exactly one.
+#
+# Class (a) -- no-such-prefix: the prefix names no live declaration, so dot-namespacing it
+# would invent a namespace with nothing in it.
+#   "CAggOdSwap_clause_iff", "CAggOdSwap_clause_iff_faithful", "O_zero_correct"
+#
+# Class (b) -- live-prefix, unwritable dot-form: the prefix IS live, but the dot-form still
+# cannot be written, for two independent obstacles.
+#   "NM_nonneg" -- `NM` is a live `abbrev` in both PlusWitnessFamily/Decide.lean and
+#   WitnessFamily/Sharing/Decide.lean, so class (a) does not apply here. `NM_nonneg` is ALSO a
+#   field of the `SharingWindow` structure (WitnessFamily/Sharing/Window.lean:105), and
+#   structure fields cannot contain dots, so `S.NM.nonneg` is not a legal rename target for the
+#   field. And even for the *theorem* of the same name, `S.NM.nonneg` would resolve `nonneg`
+#   against the type of `S.NM`, which is `Int`, where no `Int.nonneg` exists. The sharpest site
+#   is PlusWitnessFamily/Decide.lean's `NM_nonneg := S.NM_nonneg`, where the structure field and
+#   the theorem of the same name occur in one expression -- any rename must split the two in
+#   place, not just relabel a call site. Recorded rather than done blind, same as the
+#   `insertEnv` SHADOW_ALLOW entry above: the blast radius is 26 occurrences across 5 files.
+#
+# The three recorded auto-exemption classes were each checked against NM_nonneg and miss:
+#   - `NM_` does not match TENSE_PREFIX (F/P/G/H/A/FF/HF only).
+#   - `NM` IS live, so class (a) above does not apply.
+#   - `nonneg` is not itself a live base name, so the name-capture auto-exemption
+#     (`n.split("_", 1)[1] not in LIVE_BASES` below) does not fire.
+# Introducing a live `nonneg` declaration to make that auto-exemption fire would be a non-fix,
+# not a resolution: it manufactures a name rather than resolving the actual collision.
+UPPER_ALLOW = {"CAggOdSwap_clause_iff", "CAggOdSwap_clause_iff_faithful", "O_zero_correct",
+               "NM_nonneg"}
 
 decls2 = []      # (ns, base, private, path, line)
 lemmas = []
@@ -3218,7 +3244,7 @@ if upper_bad:
         print(f"            {p}:{l}: {n} (use `{n.split('_',1)[0]}.{n.split('_',1)[1]}`)")
     c23_fail.append("Uppercase_x")
 else:
-    print("PASS  C23  no Uppercase_x name outside the tense-operator, no-such-prefix and\n            name-capture classes")
+    print("PASS  C23  no Uppercase_x name outside the tense-operator, no-such-prefix,\n            live-prefix and name-capture classes")
 
 # (3) no new outer-shadows-inner bare-declaration pair
 by_base = {}

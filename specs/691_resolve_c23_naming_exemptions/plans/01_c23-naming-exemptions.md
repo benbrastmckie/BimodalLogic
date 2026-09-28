@@ -251,20 +251,20 @@ the measurement, not this plan.
 
 ---
 
-### Phase 3: Add the `NM_nonneg` UPPER_ALLOW entry and correct the class comment [NOT STARTED]
+### Phase 3: Add the `NM_nonneg` UPPER_ALLOW entry and correct the class comment [COMPLETED]
 
 **Goal**: Exempt the two `NM_nonneg` sites and restructure the `UPPER_ALLOW` comment so the set's
 documented purpose actually covers the entries it holds.
 
 **Tasks**:
-- [ ] Add `NM_nonneg` to `UPPER_ALLOW`.
-- [ ] Restructure the comment above `UPPER_ALLOW`. Today it reads "Prefixes that name no live
+- [x] Add `NM_nonneg` to `UPPER_ALLOW`. *(completed)*
+- [x] Restructure the comment above `UPPER_ALLOW`. Today it reads "Prefixes that name no live
       declaration, so dot-namespacing them would invent one" — which describes the three existing
       entries but **not** `NM_nonneg`, where `NM` *is* live (`abbrev NM` in both
       `WitnessFamily/Sharing/Decide.lean` and `PlusWitnessFamily/Decide.lean`). Split it into two
       named classes: (a) the existing no-such-prefix class, and (b) a new class for a live prefix
-      whose dot-form still cannot be written.
-- [ ] Write the class (b) reason inline against the measurement, with both obstacles:
+      whose dot-form still cannot be written. *(completed)*
+- [x] Write the class (b) reason inline against the measurement, with both obstacles:
       `NM_nonneg` is also a field of the `SharingWindow` structure (`WitnessFamily/Sharing/
       Window.lean`) and **structure fields cannot contain dots**; and `S.NM.nonneg` would resolve
       `nonneg` against the type of `S.NM`, which is `Int`, where no `Int.nonneg` exists. Note the
@@ -272,13 +272,17 @@ documented purpose actually covers the entries it holds.
       where the field and the theorem of the same name occur in one expression — so any rename
       must split the two in place. Record the blast radius (26 occurrences across 5 files) as the
       reason this is recorded rather than done blind, citing the `insertEnv` precedent.
-- [ ] Add a short note that the three recorded auto-exemption classes were each checked and miss
+      *(completed: re-measured with `grep -rn 'NM_nonneg' FormalSystem/ BimodalTools/` — 26
+      occurrences across exactly 5 files, matching the plan's figure)*
+- [x] Add a short note that the three recorded auto-exemption classes were each checked and miss
       here: `NM_` is not a `TENSE_PREFIX`; `NM` is live, so the no-such-prefix class does not
       apply; and `nonneg` is not a live base, so the name-capture auto-exemption does not fire —
       and that introducing a live `nonneg` to silence the check is a non-fix, not a resolution.
-- [ ] Re-run `bash scripts/check-module-invariants.sh --no-build`; confirm the `Uppercase_x`
-      sub-assertion prints `PASS`.
-- [ ] Commit this green sub-step.
+      *(completed)*
+- [x] Re-run `bash scripts/check-module-invariants.sh --no-build`; confirm the `Uppercase_x`
+      sub-assertion prints `PASS`. *(completed: also updated the PASS message's class list to
+      name the new "live-prefix" class, per this phase's own Verification bullet)*
+- [x] Commit this green sub-step. *(completed)*
 
 **Timing**: 0.5 hours
 
