@@ -1,12 +1,12 @@
 # Implementation Plan: Stability Condition (C5) on the Branching Witness Frame
 
 - **Task**: 690 - Build the stability condition (C5) `StabFaithful` on the branching witness frame
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 41 hours
 - **Dependencies**: None blocking. Territory overlap with concurrent tasks 623 and 684 on the
   registration/aggregator files — see Risks & Mitigations R1 and Phase 22.
 - **Research Inputs**: `specs/690_stability_condition_over_branching_frame/reports/01_stability-condition-branching-frame.md`
-- **Artifacts**: plans/01_stability-condition-branching-frame.md (this file)
+- **Artifacts**: plans/01_stability-condition-branching-frame.md (this file), summaries/01_stability-condition-branching-frame-summary.md
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -790,7 +790,49 @@ does and that discrepancy must be explained.
 
 ---
 
-### Phase 16: Fulfil re-index — position graph and the `A[g U e]` fixpoint [NOT STARTED]
+### Phase 16: Fulfil re-index — position graph and the `A[g U e]` fixpoint [BLOCKED]
+
+**BLOCKER** (Phase 16):
+
+- **What failed**: nothing was attempted. This phase is blocked *before* it starts, by this
+  plan's own Phase 1 gate and its own Rollback/Contingency clause, both of which name a
+  measured number that Phase 1 has now produced.
+- **What was tried**: Phase 1's measurement was executed in full and recorded at
+  `specs/690_stability_condition_over_branching_frame/.measurements/01_substrate-measurement.md`.
+  Two findings bear on this phase:
+  - **F-M1**: `Sharing/Fulfil.lean`'s label-dependent span, measured **per declaration** (the
+    granularity this plan's Phase 1 task list specifies), is **723 lines** — 806 label-free, 723
+    label-dependent, 141 preamble. Research estimated ≈400. This phase's own Scope Hypothesis
+    says: *"a measured label-dependent span above ≈700 lines is grounds to revise the plan rather
+    than proceed"*, and the Rollback/Contingency section says: *"do not proceed on this plan's
+    budget: stop, report, and revise the plan."* **723 > 700.**
+  - **F-M3**: the position graph does **not** factor onto `SharingSkeleton` as declared. `perBack`
+    is `|repBack| * ∏ᵢ |lassoᵢ.back|` — a join of the skeleton's representative-segment lengths
+    with the *lassos' label-segment lengths* — so `NB`/`NF`/`NM`, `cohWindowLo`/`cohWindowHi`, and
+    therefore `verts`, `nextTime`, `prevTime`, `succF` and `predF`, are not functions of the
+    skeleton alone. This phase's task list instructs delegation "to `SharingSkeleton` for every
+    declaration Phase 1 classified as label-free"; for the position graph that instruction cannot
+    be followed as written.
+- **Why it's stuck**: this is a budget-and-siting decision, not a proof difficulty. Proceeding
+  without resolving it would mean either silently overrunning a 41-hour plan or silently
+  transcribing ≈300 lines the plan expected to delegate.
+- **What is needed**: a decision between three recorded options, then a plan revision or an
+  explicit instruction to proceed:
+  1. **Adopt `SharingWindow` and proceed** (recommended). A structure extending `SharingSkeleton`
+     with the combined-period triple `(NB, NF, NM)` and its three positivity facts, ~60 lines in
+     an amended Phase 13. The position graph then genuinely delegates and this phase's own new-line
+     count falls back toward the research estimate. Additive to Stage A, not a revision of it.
+  2. **Split this phase into 16.1 (graph) and 16.2 (fixpoint)**, as this phase's task list already
+     permits, and accept roughly two extra hours.
+  3. **Revise the plan** with a re-budgeted Stage E.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
+**Also recorded for the revision decision**: Phases 21's two non-vacuity theorems,
+`stabFamily_separates` and `stabFaithful_diagonal`, depend on Phase 12 alone — not on Phases
+16–20. They are two of the three things this plan names as what makes (C5) a pinned obligation
+rather than a signature, and they are reachable now, ahead of the `Fulfil` re-index. This
+dispatch did not resequence the plan to reach them; a revision may wish to.
+
 
 **Goal**: The (C2') decision machinery's graph-and-fixpoint half, taken from the skeleton where
 Phase 1's measurement says it factors and transcribed where it does not.
