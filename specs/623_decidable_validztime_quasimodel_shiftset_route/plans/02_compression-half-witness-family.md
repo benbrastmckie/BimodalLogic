@@ -405,7 +405,7 @@ signals a transcription error rather than a genuine difference.
 
 ---
 
-### Phase 6: `Compression/Extract.lean` (part A) — the three walks [IN PROGRESS]
+### Phase 6: `Compression/Extract.lean` (part A) — the three walks [COMPLETED]
 
 **Goal**: The ℤ geometry. From a history's `typeAtM` sequence, produce the backward good cycle, the
 forward good cycle, and the two-leg mid walk with the point of interest surviving as a marked
@@ -458,7 +458,7 @@ three units (backward cycle / forward cycle / mid walk) each with its own green 
 
 ---
 
-### Phase 7: `Compression/Extract.lean` (part B) — one history to one labelled lasso [NOT STARTED]
+### Phase 7: `Compression/Extract.lean` (part B) — one history to one labelled lasso [COMPLETED]
 
 **Goal**: `exists_labelledLasso_of_history` — package the three walks into a genuine
 `LabelledLasso (closureOf (Γ ++ Del))` whose decoded label function is locally coherent, fulfilling,
@@ -504,7 +504,7 @@ simplifies rather than merely renames, and record the result.
 
 ---
 
-### Phase 8: `Compression/Family.lean` (part A) — canonical `bx` and the box witnesses [NOT STARTED]
+### Phase 8: `Compression/Family.lean` (part A) — canonical `bx` and the box witnesses [IN PROGRESS]
 
 **Goal**: The box-faithfulness half of the family: a canonical, enumerable box guess and one extra
 lasso per boxed closure member the guess sets false.
