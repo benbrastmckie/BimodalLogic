@@ -230,23 +230,23 @@ frame's regularity discharges will need.
 
 ---
 
-### Phase 3: The branching frame [NOT STARTED]
+### Phase 3: The branching frame [COMPLETED]
 
 **Goal**: A `FrameOver intOrder` whose `WorldState` is the `share`-quotient of `Fin L × ℤ` and
 whose `TaskRel` is "there is a thread segment of that length", with the two easy regularity
 fields discharged.
 
 **Tasks**:
-- [ ] Create `Sharing/Frame.lean`. Define the `Setoid` on `Fin L × ℤ` that identifies `(i,u)`
+- [x] Create `Sharing/Frame.lean`. Define the `Setoid` on `Fin L × ℤ` that identifies `(i,u)`
       with `(j,u)` exactly when `share u i j`, and **only within a single time** — `(i,u)` and
       `(i,u')` are never identified. Prove it is a `Setoid` from Phase 1's equivalence laws.
-- [ ] Define `SharingWitnessFamily.WorldState := Quotient (shareSetoid S)` and its `Nonempty`
+- [x] Define `SharingWitnessFamily.WorldState := Quotient (shareSetoid S)` and its `Nonempty`
       instance from `mainIdx`.
-- [ ] Define `SharingWitnessFamily.PosRel ⟦(i,u)⟧ d ⟦(j,v)⟧` as `v = u + d` together with the
+- [x] Define `SharingWitnessFamily.PosRel ⟦(i,u)⟧ d ⟦(j,v)⟧` as `v = u + d` together with the
       existence of a thread segment from `(i,u)` to `(j,v)`, and prove it well-defined on the
-      quotient (this is the lift obligation the quotient carrier buys).
-- [ ] Assemble `SharingWitnessFamily.frame : FrameOver intOrder`.
-- [ ] Discharge `comp` (thread concatenation and splitting, from Phase 2) and `serial` (every
+      quotient (this is the lift obligation the quotient carrier buys). *(deviation: altered — factored through a duration-free connectivity predicate `Conn` and one two-sided relation `RelZ`, with `PosRel` the restriction of `RelZ` to the positive cone; this makes the reflection law `conn_symm` plus `omega` rather than a sign case-split inside every constraint proof, and lets the four `TaskFrame.*_reflect_of_reflective` helpers be cited exactly as `ShiftSet.fibre_isRegular` does)*
+- [x] Assemble `SharingWitnessFamily.frame : FrameOver intOrder`.
+- [x] Discharge `comp` (thread concatenation and splitting, from Phase 2) and `serial` (every
       class continues, because each lasso continues) as standalone lemmas
       `frame_comp` / `frame_serial`.
 
@@ -276,23 +276,23 @@ than adding it silently downstream.
 
 ---
 
-### Phase 4: `IsRegular` and the ℤ-time instances [NOT STARTED]
+### Phase 4: `IsRegular` and the ℤ-time instances [COMPLETED]
 
 **Goal**: The branching frame is a regular ℤ-time frame, with Limit and Saturation discharged by
 the two existing lemmas the research report identified — no new frame-axiom argument.
 
 **Tasks**:
-- [ ] Discharge `limit` via `TaskFrame.limit_of_succOrder`, which needs only `R w 0 u → u = w`.
+- [x] Discharge `limit` via `TaskFrame.limit_of_succOrder`, which needs only `R w 0 u → u = w`.
       Prove that zero-shift law for `PosRel` (a length-zero thread segment is trivial) and apply.
-- [ ] Discharge `saturation` via `TaskFrame.saturation_of_fib_finite`. The obligation is finite
+- [x] Discharge `saturation` via `TaskFrame.saturation_of_fib_finite`. The obligation is finite
       *fibres* on an infinite carrier: at each time there are at most `lassos.length` classes.
-      Prove the fibre-finiteness as a named lemma `frame_fib_finite` rather than inline.
-- [ ] Assemble `instance SharingWitnessFamily.instIsRegular : S.frame.IsRegular` from
+      Prove the fibre-finiteness as a named lemma `frame_fib_finite` rather than inline. *(deviation: altered — named `relZ_fib_finite`, since it is stated at the two-sided relation `RelZ` rather than at the frame's reflected task relation)*
+- [x] Assemble `instance SharingWitnessFamily.instIsRegular : S.frame.IsRegular` from
       `frame_comp`, `frame_serial`, `frame_limit`, `frame_saturation`.
-- [ ] Prove `frame_isZTime` using the `@TaskFrame.isZTime_of_instances` idiom with four explicit
+- [x] Prove `frame_isZTime` using the `@TaskFrame.isZTime_of_instances` idiom with four explicit
       `inferInstanceAs` arguments, copied verbatim from `WitnessFamily/Std.lean` — `haveI`
       shadows the `SuccOrder` instance `IsSuccArchimedean` is indexed by and fails to elaborate.
-- [ ] Prove `frame_sat_ztime : FrameClass.ZTime.Sat S.frame.toTaskFrame`.
+- [x] Prove `frame_sat_ztime : FrameClass.ZTime.Sat S.frame.toTaskFrame`.
 
 **Timing**: 1.5 hours
 
