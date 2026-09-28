@@ -1,7 +1,7 @@
 # Implementation Plan: Task #687
 
 - **Task**: 687 - Cross repo citation audit gating
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: 688 (completed)
 - **Research Inputs**: specs/687_cross_repo_citation_audit_gating/reports/01_cross-repo-citation-audit-gating.md
@@ -345,29 +345,34 @@ untouched.
 
 ---
 
-### Phase 5: Full gate and close-out [NOT STARTED]
+### Phase 5: Full gate and close-out [COMPLETED]
 
 **Goal**: Prove the change is green under the repository's own gates and that nothing outside
 `file_scope` was touched or left contradicted.
 
 **Tasks**:
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and confirm a non-zero-free pass,
-      with C5, C12, C13, C20 and C35 all PASS.
-- [ ] If time and tree state permit, run the full `bash scripts/check-module-invariants.sh` (with
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and confirm a non-zero-free pass,
+      with C5, C12, C13, C20 and C35 all PASS. *(completed: ALL CHECKS PASSED)*
+- [x] If time and tree state permit, run the full `bash scripts/check-module-invariants.sh` (with
       build) once; if the build half is impractical in this session, record that explicitly rather
-      than claiming a pass that was not taken.
-- [ ] Confirm `git status --porcelain` shows changes only under the task's declared `file_scope`
+      than claiming a pass that was not taken. *(completed: the full build-inclusive gate ran in
+      under 5 minutes on the already-built tree — `lake build` reported "Build completed
+      successfully (2741 jobs)" and the full `check-module-invariants.sh` run is ALL CHECKS PASSED)*
+- [x] Confirm `git status --porcelain` shows changes only under the task's declared `file_scope`
       (`scripts/lean-citation-seeds.txt`, `scripts/lean-citation-manifest.json`,
       `scripts/check-module-invariants.sh`, `docs/reference/transcription-audit-surface.md`) plus
-      `specs/**`.
-- [ ] Confirm `git -C ~/Projects/ModelChecker status --porcelain` is unchanged — the
-      coordinate-rather-than-edit boundary held.
-- [ ] Read-only cross-check that `docs/reference/README.md` and
+      `specs/**`. *(completed: confirmed)*
+- [x] Confirm `git -C ~/Projects/ModelChecker status --porcelain` is unchanged — the
+      coordinate-rather-than-edit boundary held. *(completed: unchanged by this task throughout;
+      its dirty entries are from other concurrently-running tasks in this session)*
+- [x] Read-only cross-check that `docs/reference/README.md` and
       `docs/development/MODULE_INVARIANTS.md` (both **outside** `file_scope`) are not left
       contradicting the edited page. The 24/27 residue counts do not move, so no edit is expected;
       if one is genuinely needed, record it as an out-of-scope finding in the summary rather than
-      editing it.
-- [ ] Write the execution summary at `specs/687_cross_repo_citation_audit_gating/summaries/01_*-summary.md`.
+      editing it. *(completed: both files still state "24 rows naming 27 declarations", unchanged
+      and consistent; no edit needed)*
+- [x] Write the execution summary at `specs/687_cross_repo_citation_audit_gating/summaries/01_*-summary.md`.
+      *(completed)*
 
 **Timing**: 0.75 hours
 
