@@ -650,23 +650,51 @@ re-budgeting on this account.
 
 ---
 
-### Phase 9: (C2') `ThreadFulfilling` and its correctness [IN PROGRESS]
+### Phase 9: (C2') `ThreadFulfilling` and its correctness [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: The semantic condition "every thread through `(i,u)` fulfils `untl g e`" is defined,
-proved equivalent to Phase 8's fixpoint, and thereby decidable.
+proved equivalent to Phase 8's fixpoint, and thereby decidable. The equivalence is delivered
+**relative to (C1') `LocalCoherentShare`**; the standalone `Decidable (ThreadFulfilling S)`
+instance the fourth task asks for is excluded — see the record below.
 
 **Tasks**:
-- [ ] Define `ThreadFulfilling S : Prop` in `Sharing/Predicates.lean`: for every `i`, `u`, `g`,
+- [x] Define `ThreadFulfilling S : Prop` in `Sharing/Predicates.lean`: for every `i`, `u`, `g`,
       `e` with `untl g e ∈ S.L i u`, **every** thread `θ` with `θ.idx u = i` has some `s > u`
       with `e ∈ S.L (θ.idx s) s` and `g ∈ S.L (θ.idx r) r` for all `u < r < s`; dually for `snce`.
-- [ ] Prove soundness: a vertex in the fixpoint implies the semantic property (induction on the
-      iteration index, transporting along threads).
-- [ ] Prove completeness: a vertex outside the fixpoint admits a counterexample thread. This is
+      *(landed as stated, plus `fulfillingLab_of_thread`, the constant-thread specialization to
+      the deterministic (C2), which mirrors `localCoherentLab_of_share`)*
+- [x] Prove soundness: a vertex in the fixpoint implies the semantic property (induction on the
+      iteration index, transporting along threads). *(landed as
+      `thread_untl_of_mem_untlFix` / `thread_snce_of_mem_snceFix`, by `untlFix_induction` /
+      `snceFix_induction` transported along the fold relations `FoldRel` / `FoldRelB`; this half
+      is unconditional. The window-level statement it feeds,
+      `threadFulfilling_of_window`, is the half that carries the (C1') hypothesis)*
+- [x] Prove completeness: a vertex outside the fixpoint admits a counterexample thread. This is
       the direction that needs the periodicity lemmas — the finite escape path is pumped into a
       bi-infinite thread, which is legitimate here because the *time* coordinate is carried, so
       no position is skipped. Note in the docstring that this is exactly where
-      `Probe476.fmp_false`'s pigeonhole step has no analogue.
-- [ ] Derive `Decidable (ThreadFulfilling S)` by `decidable_of_iff` through the fixpoint.
+      `Probe476.fmp_false`'s pigeonhole step has no analogue. *(landed as
+      `window_of_threadFulfilling`, unconditional, via `FwdWalk`/`BwdWalk` and their `toThread`;
+      the `Probe476.fmp_false` note is in the module header under "From the graph back to
+      threads")*
+- [x] Derive `Decidable (ThreadFulfilling S)` by `decidable_of_iff` through the fixpoint.
+      *(deviation: altered — delivered as the hypothesised term
+      `decidableThreadFulfilling (hlc : S.LocalCoherentShare) : Decidable S.ThreadFulfilling`
+      and the unhypothesised instance `decidableCoherentShareAndFulfilling` on the conjunction
+      `LocalCoherentShare ∧ ThreadFulfilling`. The standalone instance is excluded; see Reasoned
+      Exclusions below)*
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `instance decidableThreadFulfilling : Decidable (ThreadFulfilling S)`, standalone | The window reduction is not available without (C1'). `ThreadFulfilling` quantifies over every `u : ℤ`. A position at or after `cohWindowLo` folds into the window (`exists_fold_fwd`, `FoldRel`) and its obligation transports. A position strictly left of `cohWindowLo` does **not** fold: the forward ray from far left lingers in the backward periodic region for arbitrarily many steps, the graph's backward region is a finite *path* into the origin rather than a cycle, and so a walk that lingers longer than `2·NB` steps has no image in the graph at all. `Decide.lean`'s deterministic analogue `untlObl_shift_back` closes the same gap only because its obligation is **existential** — the witness is known across a complete residue system and `mem_all_neg_of_period` spreads the guard over the whole negative region. A *universal* path quantifier does not transpose that argument: `untlFix` membership at graph time `-1` says nothing about the continuation of a real walk that is still at a negative real time. What closes the gap instead is (C1') propagation (`untl_propagate_le`), which carries an unfulfilled eventuality forward along every thread together with its guard, so the far-left obligation *walks* into the window rather than folding into it. | `Sharing/Fulfil.lean`, header section "The window reduction is relative to (C1'), and that is not an artefact"; `threadFulfilling_of_window`, whose far-left branch is the only consumer of `hlc`. The unconditional half `window_of_threadFulfilling` is landed and carries no hypothesis. `handoffs/phase-8-handoff-20260928.md`, "The hard sub-problem, and the route through it", predicted exactly this and asked that it be raised rather than silently restated. Nothing is lost downstream: `Certifies` carries `LocalCoherentShare` as one of its five components, so `decidableCoherentShareAndFulfilling` is the form Phase 11 consumes. |
+
+The exclusion is confined to the *shape* of the `Decidable` deliverable. The mathematical content
+the phase asked for — the semantic condition, both correctness directions, and a bounded decision
+procedure — is landed in full. Phase 11's `decidableCertifies` must be assembled from
+`decidableCoherentShareAndFulfilling` rather than from five independent component instances; that
+is the one downstream adjustment, and it is recorded in Phase 11's task list.
 
 **Timing**: 2 hours
 
@@ -682,11 +710,15 @@ proved equivalent to Phase 8's fixpoint, and thereby decidable.
   and the `Decidable` instance
 
 **Verification**:
-- `example (S : SharingWitnessFamily Γ Del) : Decidable (ThreadFulfilling S) := inferInstance`
-  elaborates
-- Both directions type-check at their stated forms
-- `#print axioms` on the correctness lemma shows no `sorryAx`
-- sorry census reports zero
+- ~~`example (S : SharingWitnessFamily Γ Del) : Decidable (ThreadFulfilling S) := inferInstance`
+  elaborates~~ **Excluded** with the standalone instance; replaced by
+  `example (S : SharingWitnessFamily Γ Del) : Decidable (S.LocalCoherentShare ∧ S.ThreadFulfilling) := inferInstance`
+  *(done: `decidableCoherentShareAndFulfilling` is a genuine `instance`)*
+- Both directions type-check at their stated forms *(done: `thread_untl_of_mem_untlFix`,
+  `thread_snce_of_mem_snceFix`, `threadFulfilling_of_window`, `window_of_threadFulfilling`)*
+- `#print axioms` on the correctness lemma shows no `sorryAx` *(done: exactly
+  `[propext, Classical.choice, Quot.sound]` on every new declaration)*
+- sorry census reports zero *(0 across the resolved source roots)*
 
 ---
 
@@ -750,7 +782,11 @@ end-to-end.
       `AtomCoherent`, `LocalCoherentShare`, `ThreadFulfilling`, `BoxFaithful` (reused) and
       `Target` (reused) — in a fixed projection order matching the instance evaluation order. A
       sixth, `StabFaithful`, was planned and is out of scope; see Phase 6's Reasoned Exclusions.
-- [ ] Derive `decidableCertifies` from the five component instances.
+- [ ] Derive `decidableCertifies` from the component instances. **Adjusted by Phase 9's
+      Reasoned Exclusion**: there is no standalone `Decidable (ThreadFulfilling S)`, so the
+      `LocalCoherentShare` and `ThreadFulfilling` components are decided jointly by
+      `decidableCoherentShareAndFulfilling`, with the remaining three
+      (`AtomCoherent`, `BoxFaithful`, `Target`) as independent instances.
 - [ ] Prove `joint_countermodel`'s branching twin and then
       `refutes_of_certifies : S.Certifies t → WitnessFamily.Refutes Γ Del`, landing in the
       **same** `Refutes` (`Agreement.lean`'s existential over frames is what makes this possible

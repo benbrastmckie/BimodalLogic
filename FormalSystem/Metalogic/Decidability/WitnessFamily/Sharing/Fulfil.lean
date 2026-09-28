@@ -55,22 +55,55 @@ The graph's vertices are the positions `(i, u)` with `u` in the combined window 
 `Sharing/Decide.lean`. Its edges must not leave the window, so `nextTime` steps to `u + 1`
 except at the right edge, where it wraps back by one forward period, and `prevTime` mirrors
 this at the left edge. Both wraps are data-preserving — `rep_nextTime`, `L_nextTime` and their
-duals discharge that from `data_congr_fwd` and `data_congr_back` — which is what will let the
-next phase read a walk in this graph as a walk in the bi-infinite position space.
+duals discharge that from `data_congr_fwd` and `data_congr_back` — which is what lets a walk in
+this graph be read as a walk in the bi-infinite position space, via the two fold relations
+`FoldRel` and `FoldRelB` below.
 
-## What this module does *not* claim
+## From the graph back to threads
 
-Nothing here relates `untlFix` to threads. The positions of the graph are a folded image of the
-bi-infinite position space, and whether folding preserves the *universal* obligation is exactly
-the content of the next phase — including the far-left case, where `Decide.lean`'s
-`untlObl_shift_back` needed an extra period of headroom for the deterministic analogue. The
-combined window carries two periods on each side for that reason.
+`FwdWalk` and `BwdWalk` are infinite walks in the graph, and `FwdWalk.toThread` /
+`BwdWalk.toThread` turn one into a genuine bi-infinite `Thread`: forward of the walk's start
+time the thread follows the walk, before it the thread stands still, which `share_refl` makes
+legitimate. The fold invariants `FwdWalk.foldRel` and `BwdWalk.foldRelB` are what discharge the
+thread's `share` obligations at *real* times from the walk's obligations at *graph* times.
+
+That pumping is legitimate here — no position is skipped and no two distinct times are
+identified — precisely because the *time* coordinate is carried in the vertex. This is the
+place where `Probe476.fmp_false`'s pigeonhole step, which collapses a finite digraph's
+positions, has no analogue.
+
+## The window reduction is relative to (C1'), and that is not an artefact
+
+`threadFulfilling_iff_window` carries a `LocalCoherentShare` hypothesis. One half of it,
+`window_of_threadFulfilling`, is unconditional; the other, `threadFulfilling_of_window`, uses
+(C1') in exactly one place, and the place is worth naming.
+
+`ThreadFulfilling` quantifies over every `u : ℤ`, including `u < cohWindowLo`. A position at or
+after the window's left edge is handled by folding it into the window. A position strictly left
+of it is **not**: the forward ray from far left winds around the backward cycle more times than
+any window representative's ray does, and the graph's backward region is a finite *path* into
+the origin rather than a cycle, so a walk that lingers arbitrarily long in the negative region
+has no image in the graph. This is the branching analogue of `Decide.lean`'s
+`untlObl_shift_back`, whose own proof works only because the obligation there is
+**existential**; a universal path quantifier does not transpose that argument.
+
+What closes the gap is that (C1') carries an unfulfilled eventuality *forward along every
+thread together with its guard* (`untl_propagate_le`), so a far-left obligation walks into the
+window instead of folding into it, and the guard over the extra prefix comes free. The
+consequence is that the standalone `Decidable (ThreadFulfilling S)` instance the plan for this
+work asked for is not available; what is available is the hypothesised term
+`decidableThreadFulfilling` and the genuine instance
+`decidableCoherentShareAndFulfilling` on the conjunction, which is the form a certificate
+consumes, since `Certifies` already carries (C1').
 
 ## Main Definitions
 
 - `AUFix.step` / `AUFix.iter` / `AUFix.lfp` — the operator, its iteration, and the fixpoint
 - `SharingWitnessFamily.verts` / `succF` / `predF` — the position graph and its two directions
 - `SharingWitnessFamily.untlFix` / `snceFix` — the two fixpoints
+- `SharingWitnessFamily.FoldRel` / `FoldRelB` — the two folding relations
+- `SharingWitnessFamily.FwdWalk` / `BwdWalk` and their `toThread` — walks as threads
+- `SharingWitnessFamily.FulfilWindow` — the window form of (C2')
 
 ## Main Results
 
@@ -78,7 +111,14 @@ combined window carries two periods on each side for that reason.
 - `AUFix.exists_stab` — the iteration stabilizes within `|V|` steps
 - `AUFix.lfp_fixed` / `AUFix.lfp_least` / `AUFix.lfp_induction`
 - `SharingWitnessFamily.rep_nextTime` / `L_nextTime` and duals — the wraps preserve data
+- `SharingWitnessFamily.untl_propagate_le` / `snce_propagate_ge` — (C1') propagation
+- `SharingWitnessFamily.thread_untl_of_mem_untlFix` / `thread_snce_of_mem_snceFix` — soundness
+- `SharingWitnessFamily.window_of_threadFulfilling` — completeness
+- `SharingWitnessFamily.threadFulfilling_iff_window` — the reduction, given (C1')
+- `SharingWitnessFamily.decidableCoherentShareAndFulfilling` — (C1') and (C2') decide jointly
 -/
+
+set_option linter.style.longFile 1700
 
 namespace FormalSystem.Metalogic.Decidability
 
@@ -1153,6 +1193,408 @@ theorem thread_snce_of_mem_snceFix (S : SharingWitnessFamily Γ Del) (g e : Form
     · rw [heq]
       exact (hLeq g).mp hg
     · exact hs3 r hr1 hlt
+
+/-! ## The window form of (C2'), and its decision procedure
+
+`ThreadFulfilling` quantifies over all of `ℤ` and over all threads; the check below quantifies
+over the finite vertex set and the finite closure and reads the two fixpoints. The two are
+equivalent **relative to (C1')** — see `threadFulfilling_iff_window` and the scope note in this
+module's header.
+-/
+
+/-- The fulfilment clause a single closure member imposes at a position. -/
+def fulfilClauseAt (S : SharingWitnessFamily Γ Del) (v : S.Pos) : Formula → Prop
+  | Formula.atom _ => True
+  | Formula.bot => True
+  | Formula.imp _ _ => True
+  | Formula.box _ => True
+  | Formula.untl g e => Formula.untl g e ∈ S.L v.1 v.2 → v ∈ S.untlFix g e
+  | Formula.snce g e => Formula.snce g e ∈ S.L v.1 v.2 → v ∈ S.snceFix g e
+
+/-- `fulfilClauseAt` is decidable at every formula. -/
+instance instDecidableFulfilClauseAt (S : SharingWitnessFamily Γ Del) (v : S.Pos) :
+    DecidablePred (S.fulfilClauseAt v) := by
+  intro ψ
+  cases ψ <;> (dsimp only [fulfilClauseAt]; infer_instance)
+
+/--
+**The window form of (C2').** Every vertex of the position graph whose label carries an
+eventuality lies in the corresponding fixpoint.
+
+Finite in both quantifiers — the vertex set and the closure are `Finset`s — so it decides by a
+bounded scan.
+-/
+def FulfilWindow (S : SharingWitnessFamily Γ Del) : Prop :=
+  ∀ v ∈ S.verts, ∀ ψ ∈ closureOf (Γ ++ Del), S.fulfilClauseAt v ψ
+
+instance decidableFulfilWindow (S : SharingWitnessFamily Γ Del) : Decidable S.FulfilWindow := by
+  dsimp only [FulfilWindow]
+  infer_instance
+
+theorem untlFix_of_window {S : SharingWitnessFamily Γ Del} (h : S.FulfilWindow) {v : S.Pos}
+    (hv : v ∈ S.verts) {g e : Formula} (hm : Formula.untl g e ∈ S.L v.1 v.2) :
+    v ∈ S.untlFix g e :=
+  h v hv _ (S.subset_closureOf v.1 v.2 hm) hm
+
+theorem snceFix_of_window {S : SharingWitnessFamily Γ Del} (h : S.FulfilWindow) {v : S.Pos}
+    (hv : v ∈ S.verts) {g e : Formula} (hm : Formula.snce g e ∈ S.L v.1 v.2) :
+    v ∈ S.snceFix g e :=
+  h v hv _ (S.subset_closureOf v.1 v.2 hm) hm
+
+/-- The window's left edge is a vertex time, and so is the position one short of its right
+edge. -/
+theorem cohWindow_lo_mem (S : SharingWitnessFamily Γ Del) : S.cohWindowLo ∈ S.winTimes := by
+  have hNB := S.NB_pos
+  have hNF := S.NF_pos
+  have hNM := S.NM_nonneg
+  have hLo : S.cohWindowLo = -2 * S.NB := rfl
+  have hHi : S.cohWindowHi = S.NM + 2 * S.NF := rfl
+  rw [S.mem_winTimes]
+  omega
+
+theorem cohWindow_hi_pred_mem (S : SharingWitnessFamily Γ Del) :
+    S.cohWindowHi - 1 ∈ S.winTimes := by
+  have hNB := S.NB_pos
+  have hNF := S.NF_pos
+  have hNM := S.NM_nonneg
+  have hLo : S.cohWindowLo = -2 * S.NB := rfl
+  have hHi : S.cohWindowHi = S.NM + 2 * S.NF := rfl
+  rw [S.mem_winTimes]
+  omega
+
+/-! ### The window check implies (C2'), given (C1')
+
+The fold handles every position at or after the window's left edge directly. A position strictly
+left of it is **not** folded: the forward ray from far left winds around the backward cycle more
+times than any window representative's does, and a *universal* path quantifier is not obviously
+preserved by that. Instead the obligation is *walked* into the window by (C1') propagation,
+which is exactly where `untl_propagate_le` is consumed, and which is why this direction — and
+only this direction — carries `LocalCoherentShare` as a hypothesis.
+-/
+
+/-- **The window check implies (C2')**, given (C1'). -/
+theorem threadFulfilling_of_window {S : SharingWitnessFamily Γ Del}
+    (hlc : S.LocalCoherentShare) (hw : S.FulfilWindow) : S.ThreadFulfilling := by
+  have hNB := S.NB_pos
+  have hNF := S.NF_pos
+  have hNM := S.NM_nonneg
+  constructor
+  · intro i u g e hm θ hθ
+    have hc : Formula.untl g e ∈ closureOf (Γ ++ Del) := S.subset_closureOf i u hm
+    have hmθ : Formula.untl g e ∈ S.L (θ.idx u) u := by rw [hθ]; exact hm
+    have hev : ∃ s : ℤ, u < s ∧ e ∈ S.L (θ.idx s) s := by
+      by_cases hlo : S.cohWindowLo ≤ u
+      · obtain ⟨u', hu'w, hfold⟩ := S.exists_fold_fwd hlo
+        have hmem : Formula.untl g e ∈ S.L (θ.idx u) u' := by
+          rw [S.foldRel_L hfold (θ.idx u)]
+          exact hmθ
+        have hvv : ((θ.idx u, u') : S.Pos) ∈ S.verts := (S.mem_verts _).mpr hu'w
+        obtain ⟨s, hs1, hs2, _⟩ := S.thread_untl_of_mem_untlFix g e _
+          (untlFix_of_window hw hvv hmem) u hfold θ rfl
+        exact ⟨s, hs1, hs2⟩
+      · push Not at hlo
+        by_cases hno : ∀ r : ℤ, u < r → r ≤ S.cohWindowLo → e ∉ S.L (θ.idx r) r
+        · have hprop := untl_propagate_le hlc θ hc (by omega) hmθ hno
+          have hvv : ((θ.idx S.cohWindowLo, S.cohWindowLo) : S.Pos) ∈ S.verts :=
+            (S.mem_verts _).mpr S.cohWindow_lo_mem
+          obtain ⟨s, hs1, hs2, _⟩ := S.thread_untl_of_mem_untlFix g e _
+            (untlFix_of_window hw hvv hprop.2) S.cohWindowLo
+            (S.foldRel_refl S.cohWindowLo) θ rfl
+          exact ⟨s, by omega, hs2⟩
+        · push Not at hno
+          obtain ⟨r, hr1, hr2, hr3⟩ := hno
+          exact ⟨r, hr1, hr3⟩
+    exact untl_fulfil_of_exists hlc θ hc hmθ hev
+  · intro i u g e hm θ hθ
+    have hc : Formula.snce g e ∈ closureOf (Γ ++ Del) := S.subset_closureOf i u hm
+    have hmθ : Formula.snce g e ∈ S.L (θ.idx u) u := by rw [hθ]; exact hm
+    have hev : ∃ s : ℤ, s < u ∧ e ∈ S.L (θ.idx s) s := by
+      by_cases hhi : u < S.cohWindowHi
+      · obtain ⟨u', hu'w, hfold⟩ := S.exists_fold_back hhi
+        have hmem : Formula.snce g e ∈ S.L (θ.idx u) u' := by
+          rw [S.foldRelB_L hfold (θ.idx u)]
+          exact hmθ
+        have hvv : ((θ.idx u, u') : S.Pos) ∈ S.verts := (S.mem_verts _).mpr hu'w
+        obtain ⟨s, hs1, hs2, _⟩ := S.thread_snce_of_mem_snceFix g e _
+          (snceFix_of_window hw hvv hmem) u hfold θ rfl
+        exact ⟨s, hs1, hs2⟩
+      · push Not at hhi
+        by_cases hno : ∀ r : ℤ, S.cohWindowHi - 1 ≤ r → r < u → e ∉ S.L (θ.idx r) r
+        · have hprop := snce_propagate_ge hlc θ hc (by omega) hmθ hno
+          have hvv : ((θ.idx (S.cohWindowHi - 1), S.cohWindowHi - 1) : S.Pos) ∈ S.verts :=
+            (S.mem_verts _).mpr S.cohWindow_hi_pred_mem
+          obtain ⟨s, hs1, hs2, _⟩ := S.thread_snce_of_mem_snceFix g e _
+            (snceFix_of_window hw hvv hprop.2) (S.cohWindowHi - 1)
+            (S.foldRelB_refl (S.cohWindowHi - 1)) θ rfl
+          exact ⟨s, by omega, hs2⟩
+        · push Not at hno
+          obtain ⟨r, hr1, hr2, hr3⟩ := hno
+          exact ⟨r, hr2, hr3⟩
+    exact snce_fulfil_of_exists hlc θ hc hmθ hev
+
+/-! ### (C2') implies the window check
+
+Unconditional, and the direction that needs a counterexample thread. A vertex outside the
+fixpoint admits an escape edge; iterating the escape gives an infinite walk which
+`FwdWalk.toThread` turns into a genuine bi-infinite thread. That the pumping is legitimate here
+— no position is skipped, and no two distinct times are identified — is because the *time*
+coordinate is carried in the vertex, which is exactly the feature that makes
+`Probe476.fmp_false`'s pigeonhole step inapplicable to this design.
+-/
+
+/-- **(C2') implies the window check.** -/
+theorem window_of_threadFulfilling {S : SharingWitnessFamily Γ Del}
+    (h : S.ThreadFulfilling) : S.FulfilWindow := by
+  classical
+  intro v hv ψ _
+  cases ψ with
+  | atom _ => exact trivial
+  | bot => exact trivial
+  | imp _ _ => exact trivial
+  | box _ => exact trivial
+  | untl g e =>
+      dsimp only [fulfilClauseAt]
+      intro hm
+      by_contra hcon
+      have hesc : ∀ z : S.Pos, ∃ y : S.Pos,
+          (z ∈ S.verts → y ∈ S.succF z) ∧
+          (z ∈ S.verts → z ∉ S.untlFix g e →
+            (e ∉ S.L y.1 y.2 ∧ (g ∈ S.L y.1 y.2 → y ∉ S.untlFix g e))) := by
+        intro z
+        by_cases hz : z ∈ S.verts
+        · have hdef : ((z.1, S.nextTime z.2) : S.Pos) ∈ S.succF z := by
+            rw [S.mem_succF]
+            exact ⟨(S.mem_verts _).mpr (S.nextTime_mem ((S.mem_verts z).mp hz)), rfl,
+              S.share_refl (z.2 + 1) z.1⟩
+          by_cases hnf : z ∈ S.untlFix g e
+          · exact ⟨(z.1, S.nextTime z.2), fun _ => hdef, fun _ hb => absurd hnf hb⟩
+          · have hnot : ¬ ∀ y ∈ S.succF z,
+                e ∈ S.L y.1 y.2 ∨ (g ∈ S.L y.1 y.2 ∧ y ∈ S.untlFix g e) := by
+              intro hall
+              exact hnf ((S.mem_untlFix_iff g e z).mpr ⟨hz, hall⟩)
+            obtain ⟨y, hy1, hy2⟩ : ∃ y, y ∈ S.succF z ∧
+                ¬ (e ∈ S.L y.1 y.2 ∨ (g ∈ S.L y.1 y.2 ∧ y ∈ S.untlFix g e)) := by
+              by_contra hcc
+              push Not at hcc
+              exact hnot (fun y hy => hcc y hy)
+            exact ⟨y, fun _ => hy1,
+              fun _ _ => ⟨fun hE => hy2 (Or.inl hE), fun hG hF => hy2 (Or.inr ⟨hG, hF⟩)⟩⟩
+        · exact ⟨z, fun hz' => absurd hz' hz, fun hz' => absurd hz' hz⟩
+      choose f hf1 hf2 using hesc
+      set p : ℕ → S.Pos := fun k => f^[k] v with hpdef
+      have hp0 : p 0 = v := rfl
+      have hpsucc : ∀ k, p (k + 1) = f (p k) := fun k => Function.iterate_succ_apply' f k v
+      have hpv : ∀ k, p k ∈ S.verts := by
+        intro k
+        induction k with
+        | zero => rw [hp0]; exact hv
+        | succ k ih => rw [hpsucc k]; exact S.succF_subset _ (hf1 (p k) ih)
+      obtain ⟨w, hwp⟩ : ∃ w : S.FwdWalk, w.pos = p :=
+        ⟨{ pos := p, start_mem := by rw [hp0]; exact hv,
+           step := fun k => by rw [hpsucc k]; exact hf1 (p k) (hpv k) }, rfl⟩
+      have hw0 : w.pos 0 = v := by rw [hwp, hp0]
+      have hidxp : ∀ k : ℕ, w.toThread.idx (v.2 + (k : ℤ)) = (p k).1 := by
+        intro k
+        have hk := w.walkIdx_add k
+        rw [hw0, hwp] at hk
+        exact hk
+      have hLp : ∀ k : ℕ, S.L (p k).1 (p k).2 = S.L (p k).1 (v.2 + (k : ℤ)) := by
+        intro k
+        have hk := S.foldRel_L (w.foldRel k) (w.pos k).1
+        rw [hw0, hwp] at hk
+        exact hk
+      have hstepbad : ∀ n : ℕ, p n ∉ S.untlFix g e →
+          (e ∉ S.L (p (n + 1)).1 (p (n + 1)).2 ∧
+            (g ∈ S.L (p (n + 1)).1 (p (n + 1)).2 → p (n + 1) ∉ S.untlFix g e)) := by
+        intro n hn
+        have hb := hf2 (p n) (hpv n) hn
+        rw [hpsucc n]
+        exact hb
+      have hthr : w.toThread.idx v.2 = v.1 := by
+        have h0 := hidxp 0
+        rw [hp0] at h0
+        simpa using h0
+      obtain ⟨s, hs1, hs2, hs3⟩ := h.1 v.1 v.2 g e hm w.toThread hthr
+      have hks : v.2 + (((s - v.2).toNat : ℕ) : ℤ) = s := by omega
+      have hk1 : 1 ≤ (s - v.2).toNat := by omega
+      have hek : e ∈ S.L (p (s - v.2).toNat).1 (p (s - v.2).toNat).2 := by
+        rw [hLp, hks, ← hidxp, hks]
+        exact hs2
+      by_cases hall : ∀ n : ℕ, p n ∉ S.untlFix g e
+      · have hb := (hstepbad ((s - v.2).toNat - 1) (hall ((s - v.2).toNat - 1))).1
+        rw [show (s - v.2).toNat - 1 + 1 = (s - v.2).toNat from by omega] at hb
+        exact hb hek
+      · push Not at hall
+        obtain ⟨n0, hn0⟩ := hall
+        have hex : ∃ n : ℕ, p n ∈ S.untlFix g e := ⟨n0, hn0⟩
+        obtain ⟨N, hN, hNmin⟩ : ∃ N : ℕ, p N ∈ S.untlFix g e ∧
+            ∀ m, m < N → p m ∉ S.untlFix g e :=
+          ⟨Nat.find hex, Nat.find_spec hex, fun m hm => Nat.find_min hex hm⟩
+        have hN1 : 1 ≤ N := by
+          rcases Nat.eq_zero_or_pos N with h0 | h1
+          · exfalso
+            rw [h0, hp0] at hN
+            exact hcon hN
+          · exact h1
+        have hgN : g ∉ S.L (p N).1 (p N).2 := by
+          have hb := hstepbad (N - 1) (hNmin (N - 1) (by omega))
+          rw [show N - 1 + 1 = N from by omega] at hb
+          exact fun hg => hb.2 hg hN
+        have hnoE : ∀ m : ℕ, 1 ≤ m → m ≤ N → e ∉ S.L (p m).1 (p m).2 := by
+          intro m hm1 hm2
+          have hb := hstepbad (m - 1) (hNmin (m - 1) (by omega))
+          rw [show m - 1 + 1 = m from by omega] at hb
+          exact hb.1
+        have hkN : N < (s - v.2).toNat := by
+          by_contra hcc
+          exact hnoE (s - v.2).toNat hk1 (by omega) hek
+        have hgv : g ∈ S.L (w.toThread.idx (v.2 + (N : ℤ))) (v.2 + (N : ℤ)) :=
+          hs3 (v.2 + (N : ℤ)) (by omega) (by omega)
+        rw [hidxp N, ← hLp N] at hgv
+        exact hgN hgv
+  | snce g e =>
+      dsimp only [fulfilClauseAt]
+      intro hm
+      by_contra hcon
+      have hesc : ∀ z : S.Pos, ∃ y : S.Pos,
+          (z ∈ S.verts → y ∈ S.predF z) ∧
+          (z ∈ S.verts → z ∉ S.snceFix g e →
+            (e ∉ S.L y.1 y.2 ∧ (g ∈ S.L y.1 y.2 → y ∉ S.snceFix g e))) := by
+        intro z
+        by_cases hz : z ∈ S.verts
+        · have hdef : ((z.1, S.prevTime z.2) : S.Pos) ∈ S.predF z := by
+            rw [S.mem_predF]
+            exact ⟨(S.mem_verts _).mpr (S.prevTime_mem ((S.mem_verts z).mp hz)), rfl,
+              S.share_refl z.2 z.1⟩
+          by_cases hnf : z ∈ S.snceFix g e
+          · exact ⟨(z.1, S.prevTime z.2), fun _ => hdef, fun _ hb => absurd hnf hb⟩
+          · have hnot : ¬ ∀ y ∈ S.predF z,
+                e ∈ S.L y.1 y.2 ∨ (g ∈ S.L y.1 y.2 ∧ y ∈ S.snceFix g e) := by
+              intro hall
+              exact hnf ((S.mem_snceFix_iff g e z).mpr ⟨hz, hall⟩)
+            obtain ⟨y, hy1, hy2⟩ : ∃ y, y ∈ S.predF z ∧
+                ¬ (e ∈ S.L y.1 y.2 ∨ (g ∈ S.L y.1 y.2 ∧ y ∈ S.snceFix g e)) := by
+              by_contra hcc
+              push Not at hcc
+              exact hnot (fun y hy => hcc y hy)
+            exact ⟨y, fun _ => hy1,
+              fun _ _ => ⟨fun hE => hy2 (Or.inl hE), fun hG hF => hy2 (Or.inr ⟨hG, hF⟩)⟩⟩
+        · exact ⟨z, fun hz' => absurd hz' hz, fun hz' => absurd hz' hz⟩
+      choose f hf1 hf2 using hesc
+      set p : ℕ → S.Pos := fun k => f^[k] v with hpdef
+      have hp0 : p 0 = v := rfl
+      have hpsucc : ∀ k, p (k + 1) = f (p k) := fun k => Function.iterate_succ_apply' f k v
+      have hpv : ∀ k, p k ∈ S.verts := by
+        intro k
+        induction k with
+        | zero => rw [hp0]; exact hv
+        | succ k ih => rw [hpsucc k]; exact S.predF_subset _ (hf1 (p k) ih)
+      obtain ⟨w, hwp⟩ : ∃ w : S.BwdWalk, w.pos = p :=
+        ⟨{ pos := p, start_mem := by rw [hp0]; exact hv,
+           step := fun k => by rw [hpsucc k]; exact hf1 (p k) (hpv k) }, rfl⟩
+      have hw0 : w.pos 0 = v := by rw [hwp, hp0]
+      have hidxp : ∀ k : ℕ, w.toThread.idx (v.2 - (k : ℤ)) = (p k).1 := by
+        intro k
+        have hk := w.walkIdx_sub k
+        rw [hw0, hwp] at hk
+        exact hk
+      have hLp : ∀ k : ℕ, S.L (p k).1 (p k).2 = S.L (p k).1 (v.2 - (k : ℤ)) := by
+        intro k
+        have hk := S.foldRelB_L (w.foldRelB k) (w.pos k).1
+        rw [hw0, hwp] at hk
+        exact hk
+      have hstepbad : ∀ n : ℕ, p n ∉ S.snceFix g e →
+          (e ∉ S.L (p (n + 1)).1 (p (n + 1)).2 ∧
+            (g ∈ S.L (p (n + 1)).1 (p (n + 1)).2 → p (n + 1) ∉ S.snceFix g e)) := by
+        intro n hn
+        have hb := hf2 (p n) (hpv n) hn
+        rw [hpsucc n]
+        exact hb
+      have hthr : w.toThread.idx v.2 = v.1 := by
+        have h0 := hidxp 0
+        rw [hp0] at h0
+        simpa using h0
+      obtain ⟨s, hs1, hs2, hs3⟩ := h.2 v.1 v.2 g e hm w.toThread hthr
+      have hks : v.2 - (((v.2 - s).toNat : ℕ) : ℤ) = s := by omega
+      have hk1 : 1 ≤ (v.2 - s).toNat := by omega
+      have hek : e ∈ S.L (p (v.2 - s).toNat).1 (p (v.2 - s).toNat).2 := by
+        rw [hLp, hks, ← hidxp, hks]
+        exact hs2
+      by_cases hall : ∀ n : ℕ, p n ∉ S.snceFix g e
+      · have hb := (hstepbad ((v.2 - s).toNat - 1) (hall ((v.2 - s).toNat - 1))).1
+        rw [show (v.2 - s).toNat - 1 + 1 = (v.2 - s).toNat from by omega] at hb
+        exact hb hek
+      · push Not at hall
+        obtain ⟨n0, hn0⟩ := hall
+        have hex : ∃ n : ℕ, p n ∈ S.snceFix g e := ⟨n0, hn0⟩
+        obtain ⟨N, hN, hNmin⟩ : ∃ N : ℕ, p N ∈ S.snceFix g e ∧
+            ∀ m, m < N → p m ∉ S.snceFix g e :=
+          ⟨Nat.find hex, Nat.find_spec hex, fun m hm => Nat.find_min hex hm⟩
+        have hN1 : 1 ≤ N := by
+          rcases Nat.eq_zero_or_pos N with h0 | h1
+          · exfalso
+            rw [h0, hp0] at hN
+            exact hcon hN
+          · exact h1
+        have hgN : g ∉ S.L (p N).1 (p N).2 := by
+          have hb := hstepbad (N - 1) (hNmin (N - 1) (by omega))
+          rw [show N - 1 + 1 = N from by omega] at hb
+          exact fun hg => hb.2 hg hN
+        have hnoE : ∀ m : ℕ, 1 ≤ m → m ≤ N → e ∉ S.L (p m).1 (p m).2 := by
+          intro m hm1 hm2
+          have hb := hstepbad (m - 1) (hNmin (m - 1) (by omega))
+          rw [show m - 1 + 1 = m from by omega] at hb
+          exact hb.1
+        have hkN : N < (v.2 - s).toNat := by
+          by_contra hcc
+          exact hnoE (v.2 - s).toNat hk1 (by omega) hek
+        have hgv : g ∈ S.L (w.toThread.idx (v.2 - (N : ℤ))) (v.2 - (N : ℤ)) :=
+          hs3 (v.2 - (N : ℤ)) (by omega) (by omega)
+        rw [hidxp N, ← hLp N] at hgv
+        exact hgN hgv
+
+/-! ## The decision procedure for (C2') -/
+
+/--
+**(C2') is exactly the window check, given (C1').**
+
+The hypothesis is not an artefact of the proof. See this module's header, and the Reasoned
+Exclusion recorded against this phase in the plan, for why the far-left case of the forward
+direction cannot be closed without it.
+-/
+theorem threadFulfilling_iff_window {S : SharingWitnessFamily Γ Del}
+    (hlc : S.LocalCoherentShare) : S.ThreadFulfilling ↔ S.FulfilWindow :=
+  ⟨window_of_threadFulfilling, threadFulfilling_of_window hlc⟩
+
+/--
+**(C2') decides, given (C1').**
+
+A `Decidable` *term* rather than an `instance`, because it takes a proof argument. The bundled
+form below is the one a certificate consumes, and it is a genuine `instance`.
+-/
+def decidableThreadFulfilling {S : SharingWitnessFamily Γ Del} (hlc : S.LocalCoherentShare) :
+    Decidable S.ThreadFulfilling :=
+  decidable_of_iff S.FulfilWindow (threadFulfilling_iff_window hlc).symm
+
+/--
+**(C1') and (C2') decide jointly**, with no hypothesis, because the conjunction supplies its own.
+
+This is the form `Certifies` consumes: the bundle already carries `LocalCoherentShare`, so
+nothing downstream needs the standalone instance.
+-/
+instance decidableCoherentShareAndFulfilling (S : SharingWitnessFamily Γ Del) :
+    Decidable (S.LocalCoherentShare ∧ S.ThreadFulfilling) :=
+  decidable_of_iff (S.LocalCoherentShare ∧ S.FulfilWindow)
+    (by
+      constructor
+      · rintro ⟨h1, h2⟩
+        exact ⟨h1, threadFulfilling_of_window h1 h2⟩
+      · rintro ⟨h1, h2⟩
+        exact ⟨h1, window_of_threadFulfilling h2⟩)
+
+/-- The bundled instance a certificate consumes, confirmed by synthesis rather than asserted. -/
+example (S : SharingWitnessFamily Γ Del) :
+    Decidable (S.LocalCoherentShare ∧ S.ThreadFulfilling) := inferInstance
 
 /-! ## A computed smoke test
 
