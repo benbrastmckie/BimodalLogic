@@ -228,7 +228,7 @@
     {
       "project_number": 684,
       "project_name": "agreement_lemma_over_all_walks",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "topic": "metalogic",
       "description": "Prove the agreement (truth) lemma over all walks of the branching witness structure, including the box case that the deterministic design's version cannot cover. This is the mathematical core of a stability-modal decision procedure and the step the carried-over research names as the open problem: a procedure for the larger language at integer time would need witness families that branch at a shared state AND a truth lemma over all walks of the resulting digraph. Consume the predecessor task's structure and its replacement for the histories characterization; do not redesign either here. Two facts should shape the attempt. First, stability-modal truth is a function of the present world state alone (stab_state_only, landed), so the modal itself needs no history information beyond the state -- the difficulty is entirely that the box modality must now range over recombined histories. Second, the failure mode is already identified in the completeness research: a trace that postpones an inevitability forever, with the recorded cure being limit-closure schemata in the logic together with progress measures carried in the state. COORDINATION, NOT DUPLICATION: this is the same mathematics as the stability-completeness research task's second priority question, which targets it for a proof system rather than for a certificate format. Read that task's established findings and its priority questions before starting, and record which of its results transfer; where the two tasks would prove the same lemma, prove it once and cite it across. In particular its finding that frame axioms are not the obstacle at any class -- the truth lemma over all histories is -- applies here verbatim.",
@@ -236,13 +236,14 @@
         683
       ],
       "created": "2026-09-26T12:07:18Z",
-      "last_updated": "2026-09-28T04:21:05Z",
+      "last_updated": "2026-09-28T17:42:47Z",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Agreement.lean",
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Basic.lean",
         "FormalSystem/Metalogic/Decidability/WitnessFamily/README.md",
         "FormalSystem/Metalogic/Decidability/WitnessFamily.lean"
-      ]
+      ],
+      "session_id": "sess_1790617342_e2d44f_684"
     },
     {
       "project_number": 685,
@@ -472,20 +473,20 @@
     {
       "project_number": 623,
       "project_name": "decidable_validztime_quasimodel_shiftset_route",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Prove Decidable (ValidZTime φ) via the quasimodel / ShiftSet witness-family route: the completeness (compression) half. The soundness half, which defines LabelledLasso / WitnessFamily, the ShiftSet construction WitnessFamily.std, the agreement theorem (truth in std equals label membership on the closure), the consequence corollaries at ZTime and Base, and the Decidable instances for the four certificate conditions, has been split out into its own task, on which this task now depends; do not re-prove or re-define any of it here, consume it.\n\nWHAT REMAINS HERE.\n1. Compression: if ¬ ValidZTime ψ (equivalently, for the consequence form, ¬ SemanticConsequenceIn FrameClass.ZTime Γ σ) then some WitnessFamily satisfying the four conditions exists with every segment length bounded by a computable function of the closure size, whose main lasso carries the refuting point. Route: take a refuting model, history and time; for each boxed subformula guessed false pick one witnessing history; compress each history's subformula-set (type) sequence into a bi-lasso using BiLasso/GoodCycle.lean's eventuality-propagation and good-cycle lemmas and BiLasso/Extraction.lean's exists_annot_of_truth as the template (that lemma is the within-one-presentation version and must be re-run over subformula-set space rather than presentation states). By Semantics/Frames/TranslationProduct.lean's validIn_iff_recurrenceFree the witness paths may be taken recurrence-free without loss, so only the type sequence, not the state sequence, needs to be eventually periodic.\n2. Assembly: the formula-indexed candidate list cands : Formula → List WitnessFamily over the bounds of item 1, and Decidable (ValidZTime φ) by decidable_of_iff from \"no candidate is accepted\", following BiLasso/Assembly.lean's validZTime_iff_checkFamily shape.\n3. STRUCK -- DELEGATED, DO NOT DO IT HERE. The correction to Assembly.lean's docstring and the BiLasso README.md (the refuted IntPresentation small-model hypothesis, Probe476.fmp_false, plus the durable scope sentence about the stability modal) has been moved wholesale into the prerequisite-recording documentation task this task already depends on, and lives there and only there. Nothing in item 3 is this task's work. Note also that that task is now this task's ONLY unmet dependency -- its other three are complete -- and that it carries a correction this task's planning must absorb: the consuming repository's searched witness-family space is not monotone in its back/mid/fwd bounds, because those bounds fold by exact modulus, so a bound of the shape \"segment lengths at least f of the closure size\" is insufficient on its own; representability, not magnitude, is what the folding decides. Read that task's description before planning item 1.\n\nCARRIED-FORWARD NOTES. Literature: Gabbay-Kurucz-Wolter-Zakharyaschev 2003 Thm 3.29, 5.30, 5.32, 11.7, 11.21. Two tools landed since the task was first written: FormalSystem/Metalogic/Conservativity/FragmentAxiomatization.lean (tense-only fragment over ℤ-time finitely axiomatized by TM⁻_z + Z1; sigmaZTime, sigmaZTime_le_tmFrag, minusExt_iff_tmFrag_of_chainComplete) and TranslationProduct.lean's recurrence-free reductions; read both before planning. Estimated 2-4 weeks with the soundness half removed. Research report from the original scoping: specs/623_decidable_validztime_quasimodel_shiftset_route/reports/01_stability-scope-decidability-findings.md.",
       "topic": "decidability",
       "created": "2026-09-18T19:46:46Z",
-      "last_updated": "2026-09-27T16:57:19Z",
+      "last_updated": "2026-09-28T17:56:29Z",
       "artifacts": [
         {
-          "path": "specs/623_decidable_validztime_quasimodel_shiftset_route/reports/01_stability-scope-decidability-findings.md",
+          "path": "specs/623_decidable_validztime_quasimodel_shiftset_route/reports/02_compression-half-witness-family-route.md",
           "type": "report",
-          "summary": "Advisory findings, limited relevance: Saturation-idle result is moot for ShiftSet frames; paper-level MSO decidability as a sanity check; the route is confined to the language without the stability modal."
+          "summary": "Compression (completeness) half of the quasimodel/ShiftSet route: GKWZ 2003 step map (Thm 3.29, 5.30/5.32, 11.7/11.21, 11.26, 11.45), reuse inventory across BiLasso/ and WitnessFamily/, the canonical-bx enumerability constraint, a five-module phase decomposition, and a green semantic-side spike."
         }
       ],
-      "next_artifact_number": 2,
+      "next_artifact_number": 3,
       "dependencies": [
         534,
         645,
@@ -503,7 +504,8 @@
         "docs/theorem-index.md",
         "scripts/check-module-invariants.sh"
       ],
-      "effort": "2-4 weeks"
+      "effort": "2-4 weeks",
+      "session_id": "sess_1790617342_e2d44f"
     },
     {
       "project_number": 618,
@@ -1485,7 +1487,7 @@
     {
       "project_number": 690,
       "project_name": "stability_condition_over_branching_frame",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "lean4",
       "topic": "semantics",
       "description": "Build the stability condition (C5) StabFaithful on the branching witness frame, which is the substrate that makes it stateable. Research, plan and implement all three phases properly -- this is the deliverable that was excluded from the state-sharing witness work on a recorded user decision, not a defect in it.\n\nWHY IT WAS EXCLUDED, AND WHY THAT IS NOT THE END OF IT. The obstruction is type-level, not a proof difficulty. `FormalSystem.Syntax.Formula` (`Syntax/Formula.lean`) has exactly six constructors -- atom, bot, imp, box, untl, snce -- and no stability modal. The modal is `PlusFormula.stab`, a constructor of the separate inductive `FormalSystem.PlusLanguage.PlusFormula` (`PlusLanguage/Formula.lean`). The two share no supertype, so no instantiation or coercion states (C5) over the existing certificate. The certificate stack is monomorphic in `Formula` at every level: `Context := List Formula` (`Syntax/Context.lean`), `closureOf : Context -> Finset Formula` (`WitnessFamily/Closure.lean`), and `WitnessFamily` carrying `bx : Formula -> Bool` (`WitnessFamily/Basic.lean`).\n\nTHE SUBSTRATE ALREADY EXISTS AND IS GREEN. The branching device landed under `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/`: `SharingWitnessFamily` with a periodic representative-map `share` field, the `Thread`/`Step`/`ReachN` layer, a branching `FrameOver intOrder` built without `ShiftSet`, and `total_eq_thread` as the determinism-free replacement for `ShiftSet.total_eq_orbit`. Full `lake build` green, zero sorries, axiom count unchanged, deterministic path byte-identical.\n\nWHY THIS FRAME IS THE RIGHT SUBSTRATE, NOT AN OBSTACLE. `PlusTruth.lean` documents `stab_state_only`: the stability modal depends on the world state alone. The branching frame quotients (lasso, time) pairs into `share`-classes, and those classes ARE the world states, so the frame supplies exactly the structure the condition needs to range over. The deterministic device is blind to stability by construction -- `states_eq_of_deterministic` and `stab_iff_of_deterministic` (`PlusLanguage/PlusDeterminism.lean`) collapse the modal to the identity on deterministic frames -- and the branching frame's task relation is non-functional, so neither lemma applies to it. That is the whole point of the substrate.\n\nWHAT THE COST ANALYSIS FOUND. Four of the five landed Sharing modules -- Basic, Thread, Frame, Histories -- mention `Formula` zero times: 1,065 of 1,233 lines, 86 percent, entirely language-agnostic. Only `Predicates.lean` (168 lines) is language-dependent. So this work reuses four modules verbatim and re-indexes one. The known cost on the L-plus side is that `FormalSystem/PlusLanguage/` contains NO closure or decidability module at all, so an L-plus-indexed certificate needs a subformula-closure theory constructed from scratch, against roughly 2,257 lines of analogue on the `Formula` side. Research must cost that honestly before a plan commits to it, and must consider whether a shared polymorphic closure layer serving both inductives is cheaper than a second monomorphic one.\n\nHARD CONSTRAINTS. Decidability must be preserved -- the branching structure has infinitely many walks, and no condition may quantify over them. The deterministic bi-lasso device is what the consuming model checker ships against: it must keep working byte-identically, and its JSON export contract must not be re-opened without an explicit decision. Do not state a vacuous or box-shaped `StabFaithful` at `Formula` to make a signature typecheck; a sorry-bodied `def` carrying a prose statement is not a pinned obligation, which is precisely how the original plan missed this obstruction.",
@@ -1493,14 +1495,15 @@
         683
       ],
       "created": "2026-09-28T05:58:25Z",
-      "last_updated": "2026-09-28T05:58:25Z",
+      "last_updated": "2026-09-28T17:42:55Z",
       "priority": "medium",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Predicates.lean",
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md",
         "FormalSystem/PlusLanguage/Formula.lean",
         "FormalSystem/PlusLanguage/PlusTruth.lean"
-      ]
+      ],
+      "session_id": "sess_1790617342_e2d44f_690"
     }
   ],
   "artifacts": [

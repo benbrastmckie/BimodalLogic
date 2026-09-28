@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/623_decidable_validztime_quasimodel_shiftset_route/reports/02_compression-half-witness-family-route.md",
+      "summary": "Compression (completeness) half of the quasimodel/ShiftSet route: GKWZ 2003 step map (Thm 3.29, 5.30/5.32, 11.7/11.21, 11.26, 11.45), reuse inventory across BiLasso/ and WitnessFamily/, the canonical-bx enumerability constraint, a five-module phase decomposition, and a green semantic-side spike."
+    },
+    {
+      "type": "evidence",
+      "path": "specs/623_decidable_validztime_quasimodel_shiftset_route/evidence/02_semantic-side-spike.lean",
+      "summary": "Compiled spike: typeAtM at an arbitrary FrameOver intOrder model, all five LocalCoherentLab clauses and the untl half of FulfillingLab, proved from the semantics alone."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790617342_e2d44f_623",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
