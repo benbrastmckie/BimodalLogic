@@ -909,15 +909,31 @@ than proceed.
 
 ---
 
-### Phase 17: Fulfil re-index — window reduction and `decidablePlusThreadFulfilling` [NOT STARTED]
+### Phase 17: Fulfil re-index — window reduction and `decidablePlusThreadFulfilling` [COMPLETED]
 
 **Goal**: Close (C2') at L⁺ by connecting the fixpoint to the window, producing the instance.
 
 **Tasks**:
-- [ ] Port the window reduction connecting `PlusThreadFulfilling` to the finite fixpoint
-- [ ] `decidablePlusThreadFulfilling`
-- [ ] `example ... := inferInstance` confirming synthesis, and a small `#eval`/`#guard`
-      demonstrating the instance computes
+- [x] Port the window reduction connecting `PlusThreadFulfilling` to the finite fixpoint
+      — the (C1') propagation layer (`plusUntl_propagate`/`plusSnce_propagate` and their `_le`
+      /`_ge` forms, `plusUntl_fulfil_of_exists`/`plusSnce_fulfil_of_exists`), the two soundness
+      theorems (`thread_untl_of_mem_untlFix`/`thread_snce_of_mem_snceFix`), `PlusFulfilWindow`
+      with its decidability, both directions (`plusThreadFulfilling_of_window`,
+      `window_of_plusThreadFulfilling`) and `plusThreadFulfilling_iff_window`
+- [x] `decidablePlusThreadFulfilling`
+- [x] `example ... := inferInstance` confirming synthesis, and a small `#eval`/`#guard`
+      demonstrating the instance computes *(deviation: altered — the standalone
+      `example (S) : Decidable S.PlusThreadFulfilling := inferInstance` does **not** hold and was
+      not written. `decidablePlusThreadFulfilling` takes `PlusLocalCoherentShare` as a proof
+      argument and is therefore a `Decidable` **term**, not an instance — exactly as on the
+      `Formula` side, and for the same reason: the far-left case of `plusThreadFulfilling_of_window`
+      walks its obligation into the window by (C1') propagation, which a standalone instance has
+      no access to. The synthesis check is on the conjunction instead,
+      `Decidable (S.PlusLocalCoherentShare ∧ S.PlusThreadFulfilling) := inferInstance`, which is
+      the form a certificate consumes. Three `#guard`s were added on a concrete single-lasso L⁺
+      family: `winTimes = {-2,-1,0,1,2,3}`, `untlFix p p` projects to `{-1}`, `snceFix p p`
+      projects to `{1}` — singletons rather than `∅` or the whole window, so the fixpoint
+      demonstrably fires and demonstrably does not fire everywhere.)*
 
 **Timing**: 2 hours
 
@@ -929,13 +945,32 @@ than proceed.
 Confirm against Phase 1's measured label-dependent span minus what Phase 16 consumed; report the
 residual explicitly at phase end.
 
+**Measured residual, reported explicitly as this hypothesis requires**: the phase added **864**
+lines to `PlusWitnessFamily/Fulfil.lean` (225 → 1,089), of which ≈88 are the computed smoke test.
+The ≈250-line hypothesis was wrong by roughly 3x, and it was wrong for a reason worth recording
+rather than smoothing over: Phase 16's `SharingWindow` siting removed the *position graph* from
+the label-dependent span, but the (C1') propagation layer, the two soundness theorems and the
+counterexample-thread construction in `window_of_plusThreadFulfilling` are **all** label-dependent
+and none of them was counted in the ≈250. Against the `Formula`-side source span
+(`Sharing/Fulfil.lean:901-1598`, 698 lines) the re-index is close to 1:1, which is the honest
+shape of this work: the graph factored, the reduction did not.
+
+This overrun does **not** trip this phase's own budget gate — Phase 16's ≈700-line revise
+threshold was specific to Phase 16 and was itself discharged by the cycle-5 decision. It is
+recorded here so the remaining Stage E and F phases are not budgeted off a number this phase has
+now shown to be optimistic.
+
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Fulfil.lean` — window reduction and instance
 
 **Verification**:
-- `lake build` green
+- `lake build` green — confirmed
 - `example (S : PlusSharingWitnessFamily Γ Δ) : Decidable S.PlusThreadFulfilling := inferInstance`
-- No `open Classical`
+  — **not available**, see the deviation on the third task. The available synthesis check,
+  `Decidable (S.PlusLocalCoherentShare ∧ S.PlusThreadFulfilling) := inferInstance`, elaborates.
+- No `open Classical` — confirmed, `grep -c 'open Classical'` is `0`
+- `#print axioms` on `plusThreadFulfilling_iff_window` and
+  `decidablePlusCoherentShareAndFulfilling`: both `{propext, Classical.choice, Quot.sound}`
 
 ---
 
