@@ -581,14 +581,191 @@ instance decidablePlusLocalCoherentShare (S : PlusSharingWitnessFamily Γ Del) :
         obtain ⟨hlo, hhi⟩ := Finset.mem_Ico.mp ht
         exact h t hlo hhi)
 
+/-! ## (C5) at a single time, and its window collapse
+
+The hard constraint on this task was that decidability must be preserved: the branching frame
+has infinitely many walks, and no condition may quantify over them. (C5) does not — it quantifies
+over `Fin S.lassos.length` at one fixed time — and this section discharges that mechanically
+rather than arguing it.
+
+(C5) has (C0)'s quantifier signature exactly: **one** representative map and **one** label row,
+against (C1')'s two and three. So the per-time datum is the same `(C, rt, L)` triple `(C0)` uses,
+no new datum type is introduced, and the collapse runs against the **same** `cohWindowLo` /
+`cohWindowHi` and the same `exists_window_repr`. (C5) is therefore cheaper to decide than (C1'),
+not more expensive.
+-/
+
+/--
+The stability clause a single closure member imposes at a position, at explicit data.
+
+`rt` is the representative map at the time and `Lt` the per-lasso labels there. Only the `stab`
+arm is non-trivial; every other constructor is the business of (C0), (C1') or (C3).
+-/
+def stabClauseAt {n : ℕ} (rt : Fin n → Fin n) (Lt : Fin n → Finset PlusFormula) (i : Fin n) :
+    PlusFormula → Prop
+  | PlusFormula.atom _ => True
+  | PlusFormula.bot => True
+  | PlusFormula.imp _ _ => True
+  | PlusFormula.box _ => True
+  | PlusFormula.untl _ _ => True
+  | PlusFormula.snce _ _ => True
+  | PlusFormula.stab φ => (PlusFormula.stab φ ∈ Lt i ↔ ∀ j : Fin n, rt i = rt j → φ ∈ Lt j)
+
+/-- `stabClauseAt` is decidable at every formula: its one quantifier ranges over a `Fintype`. -/
+instance instDecidableStabClauseAt {n : ℕ} (rt : Fin n → Fin n)
+    (Lt : Fin n → Finset PlusFormula) (i : Fin n) : DecidablePred (stabClauseAt rt Lt i) := by
+  intro ψ
+  cases ψ <;> (dsimp only [stabClauseAt]; infer_instance)
+
+/-- (C5)'s content at explicit data — the same `(C, rt, Lt)` triple `plusAtomCoherentData`
+takes. -/
+def stabFaithfulData {n : ℕ} (C : Finset PlusFormula) (rt : Fin n → Fin n)
+    (Lt : Fin n → Finset PlusFormula) : Prop :=
+  ∀ i : Fin n, ∀ ψ ∈ C, stabClauseAt rt Lt i ψ
+
+instance instDecidableStabFaithfulData {n : ℕ} (C : Finset PlusFormula) (rt : Fin n → Fin n)
+    (Lt : Fin n → Finset PlusFormula) : Decidable (stabFaithfulData C rt Lt) := by
+  dsimp only [stabFaithfulData]
+  infer_instance
+
+/-- **(C5) at a single time.** -/
+def StabFaithfulAt (S : PlusSharingWitnessFamily Γ Del) (t : ℤ) : Prop :=
+  stabFaithfulData (plusClosureOf (Γ ++ Del)) (S.rep t) (fun i => S.L i t)
+
+instance decidableStabFaithfulAt (S : PlusSharingWitnessFamily Γ Del) (t : ℤ) :
+    Decidable (S.StabFaithfulAt t) := by
+  dsimp only [StabFaithfulAt]
+  infer_instance
+
+/-- **(C5) is exactly its closure-gated form at every time.** -/
+theorem stabFaithful_iff_at (S : PlusSharingWitnessFamily Γ Del) :
+    S.StabFaithful ↔ ∀ t : ℤ, S.StabFaithfulAt t := by
+  constructor
+  · intro h t i ψ hψ
+    cases ψ with
+    | atom _ => trivial
+    | bot => trivial
+    | imp _ _ => trivial
+    | box _ => trivial
+    | untl _ _ => trivial
+    | snce _ _ => trivial
+    | stab φ => exact h i t φ hψ
+  · intro h i u φ hc
+    exact h u i _ hc
+
+/-- The per-time check reads only the representative map and the labels at that time — the same
+two arguments `plusAtomCoherentAt_congr` reads. -/
+theorem stabFaithfulAt_congr (S : PlusSharingWitnessFamily Γ Del) {t t' : ℤ}
+    (hr : S.rep t = S.rep t') (hL : ∀ i, S.L i t = S.L i t') :
+    S.StabFaithfulAt t ↔ S.StabFaithfulAt t' := by
+  have hLf : (fun i => S.L i t) = (fun i => S.L i t') := funext hL
+  simp only [StabFaithfulAt, hr, hLf]
+
+/-- **(C5) collapses to the combined window**, against the same window and the same
+`exists_window_repr` as (C0). -/
+theorem stabFaithful_iff_window (S : PlusSharingWitnessFamily Γ Del) :
+    S.StabFaithful ↔
+      ∀ t : ℤ, S.cohWindowLo ≤ t → t < S.cohWindowHi → S.StabFaithfulAt t := by
+  rw [S.stabFaithful_iff_at]
+  constructor
+  · intro h t _ _; exact h t
+  · intro h t
+    obtain ⟨t', hlo, hhi, hr0, _, _, hL0, _⟩ := S.exists_window_repr t
+    exact (S.stabFaithfulAt_congr hr0 hL0).mpr (h t' hlo hhi)
+
+/--
+**(C5) decides**, by a bounded scan of the combined window.
+
+This is the hard constraint discharged: the condition is decided by finitely many checks, each
+over `Fin S.lassos.length × Fin S.lassos.length` at one time, and the branching frame's
+infinitely many walks are nowhere in the computation.
+-/
+instance decidableStabFaithful (S : PlusSharingWitnessFamily Γ Del) : Decidable S.StabFaithful :=
+  decidable_of_iff
+    (∀ t ∈ Finset.Ico S.cohWindowLo S.cohWindowHi, S.StabFaithfulAt t)
+    (by
+      rw [S.stabFaithful_iff_window]
+      constructor
+      · intro h t hlo hhi; exact h t (Finset.mem_Ico.mpr ⟨hlo, hhi⟩)
+      · intro h t ht
+        obtain ⟨hlo, hhi⟩ := Finset.mem_Ico.mp ht
+        exact h t hlo hhi)
+
 section Instances
 
 variable (S : PlusSharingWitnessFamily Γ Del)
 
 example : Decidable S.PlusAtomCoherent := inferInstance
 example : Decidable S.PlusLocalCoherentShare := inferInstance
+example : Decidable S.StabFaithful := inferInstance
 
 end Instances
+
+/-! ## A computed smoke test
+
+The `#guard`s below are not a proof of anything about the device; they are a check that the three
+`Decidable` instances **compute** rather than merely elaborate. Each names its instance explicitly
+rather than letting synthesis pick one, so what runs is the instance this module exports.
+
+The family is the one-lasso family at the closure of `⊡p`, whose target closure is `{⊡p, p}`.
+The (C5) check is therefore not vacuous: it has a `stab` closure member to test, and on this
+family it passes because `⊡p` and `p` are both labelled everywhere.
+-/
+
+section SmokeTest
+
+open FormalSystem.Syntax
+
+/-- The atom the smoke test runs at. -/
+private def smokeAtom : Atom := Atom.mkBase "p"
+
+/-- The context the smoke-test family certifies against: `⊡p` alone. -/
+private def smokeCtx : PlusContext := [PlusFormula.stab (PlusFormula.atom smokeAtom)]
+
+/-- The one lasso of the smoke-test family: every position labelled with the whole closure. -/
+private def smokeLasso :
+    PlusLabelledLasso (plusClosureOf (smokeCtx ++ ([] : PlusContext))) where
+  back := [plusClosureOf (smokeCtx ++ ([] : PlusContext))]
+  mid := []
+  fwd := [plusClosureOf (smokeCtx ++ ([] : PlusContext))]
+  back_ne := by simp
+  fwd_ne := by simp
+  label_sub := by
+    intro X hX
+    have hE : X = plusClosureOf (smokeCtx ++ ([] : PlusContext)) := by simpa using hX
+    subst hE
+    exact Finset.Subset.refl _
+
+/-- The smoke-test family: one lasso, identity representatives. -/
+private def smokeFamily : PlusSharingWitnessFamily smokeCtx ([] : PlusContext) where
+  bx := fun _ => false
+  lassos := [smokeLasso]
+  lassos_ne := by simp
+  repBack := [id]
+  repMid := []
+  repFwd := [id]
+  repBack_ne := by simp
+  repFwd_ne := by simp
+  rep_idem := by
+    intro f hf
+    have hI : f = id := by simpa using hf
+    subst hI
+    intro i
+    rfl
+
+-- linter.hashCommand: this `#guard` runs the compiled `Decidable` instance, which is the point
+set_option linter.hashCommand false in
+#guard @Decidable.decide _ (PlusSharingWitnessFamily.decidableStabFaithful smokeFamily)
+
+-- linter.hashCommand: this `#guard` runs the compiled `Decidable` instance, which is the point
+set_option linter.hashCommand false in
+#guard @Decidable.decide _ (PlusSharingWitnessFamily.decidablePlusAtomCoherent smokeFamily)
+
+-- linter.hashCommand: this `#guard` runs the compiled `Decidable` instance, which is the point
+set_option linter.hashCommand false in
+#guard @Decidable.decide _ (PlusSharingWitnessFamily.decidablePlusLocalCoherentShare smokeFamily)
+
+end SmokeTest
 
 end PlusSharingWitnessFamily
 

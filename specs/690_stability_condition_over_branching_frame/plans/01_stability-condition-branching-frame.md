@@ -750,22 +750,22 @@ incomplete and that is the defect to fix.
 
 ---
 
-### Phase 15: Decide — (C5) collapse and `decidableStabFaithful` [NOT STARTED]
+### Phase 15: Decide — (C5) collapse and `decidableStabFaithful` [COMPLETED]
 
 **Goal**: The decision procedure for the stability condition, which is the hard constraint
 "decidability must be preserved" discharged mechanically rather than argued.
 
 **Tasks**:
-- [ ] `stabClauseAt (Li Lj : Finset PlusFormula) : PlusFormula → Prop` — the per-constructor
+- [x] `stabClauseAt (Li Lj : Finset PlusFormula) : PlusFormula → Prop` — the per-constructor
       clause, `stab`-armed, everything else trivially true; plus its `Decidable` instance
-- [ ] `stabFaithfulData` at explicit data `(C, rt, L)` — the per-time datum is `(S.rep u, fun i =>
+- [x] `stabFaithfulData` at explicit data `(C, rt, L)` — the per-time datum is `(S.rep u, fun i =>
       S.L i u)`, identical in shape to (C0)'s, so no new datum type is introduced
-- [ ] `StabFaithfulAt` at one time, with `decidableStabFaithfulAt`
-- [ ] `stabFaithful_iff_at` (closure-gating), `stabFaithfulAt_congr` (per-time congruence)
-- [ ] `stabFaithful_iff_window` — the window collapse, against the **same**
+- [x] `StabFaithfulAt` at one time, with `decidableStabFaithfulAt`
+- [x] `stabFaithful_iff_at` (closure-gating), `stabFaithfulAt_congr` (per-time congruence)
+- [x] `stabFaithful_iff_window` — the window collapse, against the **same**
       `cohWindowLo`/`cohWindowHi` and the same `exists_window_repr` as (C0)
-- [ ] `decidableStabFaithful`
-- [ ] An `#eval` or `#guard` on a small concrete family, demonstrating the instance reduces to a
+- [x] `decidableStabFaithful`
+- [x] An `#eval` or `#guard` on a small concrete family, demonstrating the instance reduces to a
       Boolean rather than merely elaborating
 
 **Timing**: 2 hours
