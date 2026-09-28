@@ -825,21 +825,21 @@ planned `StabFaithful` component is out of scope.
 
 ---
 
-### Phase 12: `toSharing` and the condition reductions [IN PROGRESS]
+### Phase 12: `toSharing` and the condition reductions [COMPLETED]
 
 **Goal**: The deterministic device is exhibited as the `share u i j := i = j` instance, with each
 new condition proved to reduce to its existing counterpart.
 
 **Tasks**:
-- [ ] Create `Sharing/Specialize.lean`. Define `WitnessFamily.toSharing W` with the three `share`
+- [x] Create `Sharing/Specialize.lean`. Define `WitnessFamily.toSharing W` with the three `share`
       segments set to singleton lists of `id`, so `share u i j ↔ i = j`.
-- [ ] Prove `share_toSharing : (W.toSharing).share u i j ↔ i = j`.
-- [ ] Prove `AtomCoherent (W.toSharing)` unconditionally (it degenerates to `i = j → ...`),
+- [x] Prove `share_toSharing : (W.toSharing).share u i j ↔ i = j`.
+- [x] Prove `AtomCoherent (W.toSharing)` unconditionally (it degenerates to `i = j → ...`),
       recording that this is why the existing device could leave atoms unconstrained.
-- [ ] Prove `LocalCoherentShare (W.toSharing) ↔ LocalCoherentLab W`.
-- [ ] Prove `ThreadFulfilling (W.toSharing) ↔ FulfillingLab W`, using the fact that a thread in
+- [x] Prove `LocalCoherentShare (W.toSharing) ↔ LocalCoherentLab W`.
+- [x] Prove `ThreadFulfilling (W.toSharing) ↔ FulfillingLab W`, using the fact that a thread in
       `W.toSharing` is a constant function.
-- [ ] Assemble `certifies_toSharing : W.Certifies t → (W.toSharing).Certifies t` from the four
+- [x] Assemble `certifies_toSharing : W.Certifies t → (W.toSharing).Certifies t` from the four
       reductions above. (A fifth, `StabFaithful (W.toSharing)` as the `⊡φ ↔ φ` collapse, was
       planned; (C5) is out of scope — see Phase 6's Reasoned Exclusions. Record
       `states_eq_of_deterministic` / `stab_iff_of_deterministic` in the module docstring instead,
