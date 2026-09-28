@@ -360,25 +360,57 @@ world history of `S.frame` is the trace of a thread.
 
 ---
 
-### Phase 6: The new and revised conditions, as definitions [NOT STARTED]
+### Phase 6: The new and revised conditions, as definitions [PARTIAL]
+
+**BLOCKER** (Phase 6):
+- **What failed**: `SharingWitnessFamily.StabFaithful` — the pinned (C5) stability clause — is
+  not stateable at this datatype. It is the only Phase 6 deliverable not landed; (C0)
+  `AtomCoherent`, (C1') `LocalCoherentShare` and the (C3)-reuse record are all in
+  `Sharing/Predicates.lean` and build sorry-free.
+- **What was tried**: writing (C5) as `∀ φ i u, ⊡φ ∈ S.L i u ↔ ∀ j, S.share u i j → φ ∈ S.L j u`
+  against `FormalSystem.Syntax.Formula`. There is no `⊡` to write. `Formula` has exactly six
+  constructors (`atom`, `bot`, `imp`, `box`, `untl`, `snce`); the stability modal is
+  `PlusFormula.stab`, a constructor of the **separate inductive**
+  `FormalSystem.PlusLanguage.PlusFormula` (`PlusLanguage/Formula.lean` records the
+  separate-inductive decision and the constructor-to-constructor embedding `ofFormula`).
+- **Why it's stuck**: `WitnessFamily` is indexed by `Context = List Formula`, its labels are
+  `Finset Formula`, and its closure is `closureOf : List Formula → Finset Formula`. Stating
+  (C5) requires re-indexing `LabelledLasso`, `closureOf`, `WitnessFamily`, its four conditions
+  and its agreement theorem over `PlusFormula` — a parallel L⁺ certificate datatype, not a
+  clause. The plan's Lean Challenge block did not surface this because it wrote `⊡φ` in prose
+  inside a `sorry`-bodied `def` whose statement was never elaborated.
+- **What is needed**: a user decision between (a) adding an L⁺-indexed certificate datatype
+  (large; it also re-opens the JSON export contract, which currently carries `Formula`), and
+  (b) dropping (C5), `StabFaithful` and the `⊡` case of the truth lemma from this task's scope,
+  keeping the branching frame as the deliverable that *unblocks* a stability modal — the frame's
+  task relation branches, so `PlusDeterminism.states_eq_of_deterministic` no longer collapses
+  `⊡` to the identity on it — and moving the condition itself to a follow-up task.
+- **Prohibited workarounds**: do NOT state `StabFaithful` at `Formula` with a vacuous or
+  `True`-valued body, and do NOT weaken it to a `box`-shaped clause; both would type-check and
+  certify nothing.
+
+Phases 7-14 are untouched (`[NOT STARTED]`). Phases 7, 8 and 9 do not depend on (C5) and can
+proceed against (C0)/(C1')/(C2') as written; Phases 10, 11 and 12 each carry a `StabFaithful`
+deliverable that this blocker gates.
+
 
 **Goal**: (C0) atom coherence, (C1') cross-step local coherence, and (C5) the stability clause
 exist as `Prop`s; (C3) and (C4) are reused by name, unchanged.
 
 **Tasks**:
-- [ ] Create `Sharing/Predicates.lean`.
-- [ ] Define `AtomCoherent S : Prop := ∀ u i j, S.share u i j → ∀ p,
+- [x] Create `Sharing/Predicates.lean`.
+- [x] Define `AtomCoherent S : Prop := ∀ u i j, S.share u i j → ∀ p,
       (Formula.atom p ∈ S.L i u ↔ Formula.atom p ∈ S.L j u)`. Document why this is mandatory and
       new: the class-level valuation reads a `share`-class, not a pair, so the agreement
       theorem's `atom` case stops being `Iff.rfl`. `Predicates.lean`'s "atoms are deliberately
       unconstrained" header remains true of the deterministic device and false here.
-- [ ] Define `LocalCoherentShare S : Prop` as (C1) with the `untl` clause taken **across**
+- [x] Define `LocalCoherentShare S : Prop` as (C1) with the `untl` clause taken **across**
       `share (t+1)`-linked pairs and the `snce` clause dually across `share t`. The `bot`, `imp`
       and `box` clauses are carried over unchanged.
 - [ ] Define `StabFaithful S : Prop := ∀ φ ..., ⊡φ ∈ S.L i u ↔ ∀ j, S.share u i j → φ ∈ S.L j u`,
       and prove the immediate corollary `share u i j → (⊡φ ∈ L i u ↔ ⊡φ ∈ L j u)`, which is what
-      makes (C5) consistent with `stab_state_only` by construction.
-- [ ] Add a docstring section stating plainly that `BoxFaithful` (C3) is **reused verbatim** and
+      makes (C5) consistent with `stab_state_only` by construction. *(deviation: blocked — `⊡` is `PlusFormula.stab`, a constructor of a separate inductive; `WitnessFamily` is indexed by `List Formula`, which has no `⊡`. See this phase's BLOCKER entry.)*
+- [x] Add a docstring section stating plainly that `BoxFaithful` (C3) is **reused verbatim** and
       why: its right-hand side mentions only the label pool, which recombination does not
       enlarge. Name this as a correction to the consuming adequacy document's claim, per the
       research report's decision D1.

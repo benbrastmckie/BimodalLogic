@@ -1,0 +1,168 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Predicates
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Thread
+
+/-!
+# The Certificate Predicates for a State-Sharing Family
+
+Which of the deterministic device's four conditions survive recombination, and which do not, is
+where the received account of this design is wrong in both directions. This module states the
+ones that change and records, by name, the ones that do not.
+
+## (C3) `BoxFaithful` is reused **verbatim**, and that is a correction
+
+`WitnessFamily.BoxFaithful` reads
+
+```
+bx χ = true ↔ ∀ i t, χ ∈ W.L i t
+```
+
+Its right-hand side quantifies over the **label pool** — every position of every lasso — and
+mentions no history, no orbit and no task relation. A recombined history visits a sequence of
+positions `(θ.idx t, t)`, each of which is one of those same positions, so recombination adds
+**no new label** for `□` to range over and the condition's content is unchanged.
+
+The claim that (C3) is the load-bearing obstruction, and needs redesigning, is therefore refuted
+by the Lean reading. `Sharing/Agreement.lean` applies `BoxFaithful` unchanged. What *does* break
+is (C1) `LocalCoherentLab` and (C2) `FulfillingLab`, both of which are stated **per lasso** and
+so silently assume a history never leaves the lasso it started on. Those are the two conditions
+this module and `Sharing/Fulfil.lean` replace.
+
+## (C4) `Target` is reused verbatim
+
+`WitnessFamily.Target` names a time on the main lasso; it mentions neither the frame nor its
+histories, so it is inherited with no change.
+
+## (C0) `AtomCoherent` is new, and mandatory
+
+`WitnessFamily/Predicates.lean`'s header records that atoms are "deliberately unconstrained",
+and explains that this is what makes the agreement theorem's `atom` case `Iff.rfl`. That
+explanation is exactly why the condition has to be added here: the branching model's carrier is
+a quotient, so its valuation reads a `share`-**class** rather than an index/time pair, and a
+`Quotient.lift` needs the labels of any two shared indices to agree on atoms. Without (C0) the
+valuation is not even well defined, let alone sound.
+
+Nothing else about the labels needs to agree across a shared state. Two lassos may carry
+different `untl` labels at a shared position and the certificate is still sound — that is the
+branching, and it is what makes the device see more than the deterministic one.
+
+## (C1') `LocalCoherentShare`
+
+The `bot`, `imp` and `box` clauses are one-position conditions and are carried over unchanged.
+The two temporal clauses are not: the one-step unfolding of `untl g e` at `(i, t)` must hold
+against **every** state the history can move to, which is every `j` with `share (t+1) i j`;
+dually, the unfolding of `snce g e` must hold against every predecessor, which is every `k` with
+`share t k i`. Taking `j := i` (resp. `k := i`) recovers the deterministic clause, which is why
+`localCoherentLab_of_share` below is unconditional.
+
+## Recorded gap: (C5), the stability clause, is not stateable here
+
+The plan for this work pins a fifth condition `StabFaithful`, quantifying `⊡φ` over the shared
+states at one time. It is **not stated in this module**, and the omission is deliberate and
+documented rather than an oversight:
+
+`WitnessFamily` is indexed by `FormalSystem.Syntax.Context = List Formula`, and
+`FormalSystem.Syntax.Formula` has exactly six constructors — `atom`, `bot`, `imp`, `box`,
+`untl`, `snce`. The stability modal `⊡` is `PlusFormula.stab`, a constructor of the **separate
+inductive** `FormalSystem.PlusLanguage.PlusFormula` (`PlusLanguage/Formula.lean` records the
+separate-inductive decision and the constructor-to-constructor embedding). There is therefore no
+`⊡φ` to write on the left of (C5) at this datatype, and stating the condition would require
+re-indexing the whole certificate — `LabelledLasso`, `closureOf`, `WitnessFamily`, its four
+conditions and its agreement theorem — over `PlusFormula`.
+
+That re-indexing is a separate, substantial addition, not a clause. What this directory *does*
+deliver for the stability modal is the thing (C5) was wanted for: a frame whose task relation
+branches, on which `⊡` is not collapsed to the identity by
+`PlusLanguage/PlusDeterminism.lean`'s `states_eq_of_deterministic`. The condition itself awaits
+an L⁺-indexed certificate datatype.
+
+## Main Definitions
+
+- `SharingWitnessFamily.AtomCoherent` — (C0) atoms agree across a shared state
+- `SharingWitnessFamily.LocalCoherentShare` — (C1') local coherence across the branching
+
+## Main Results
+
+- `SharingWitnessFamily.localCoherentLab_of_share` — (C1') implies the deterministic (C1)
+-/
+
+namespace FormalSystem.Metalogic.Decidability
+
+open FormalSystem.Syntax
+
+namespace SharingWitnessFamily
+
+variable {Γ Del : Context}
+
+/--
+**(C0) Atom coherence.** Indices naming the same state at a time carry the same atoms.
+
+Mandatory, and new: the branching model's valuation is a `Quotient.lift` over `share`-classes,
+so without this it is not well defined. See this module's header for why the deterministic
+device could leave atoms unconstrained.
+-/
+def AtomCoherent (S : SharingWitnessFamily Γ Del) : Prop :=
+  ∀ (u : ℤ) (i j : Fin S.lassos.length), S.share u i j →
+    ∀ p : Atom, (Formula.atom p ∈ S.L i u ↔ Formula.atom p ∈ S.L j u)
+
+/--
+**(C1') Local coherence across the branching.**
+
+`WitnessFamily.LocalCoherentLab` with the two temporal clauses taken across shared states: the
+`untl` unfolding against every successor index, the `snce` unfolding against every predecessor
+index. The `bot`, `imp` and `box` clauses are one-position conditions and are unchanged.
+-/
+def LocalCoherentShare (S : SharingWitnessFamily Γ Del) : Prop :=
+  ∀ (i : Fin S.lassos.length) (t : ℤ),
+    (Formula.bot ∉ S.L i t) ∧
+    (∀ a b : Formula, Formula.imp a b ∈ closureOf (Γ ++ Del) →
+        (Formula.imp a b ∈ S.L i t ↔ (a ∈ S.L i t → b ∈ S.L i t))) ∧
+    (∀ χ : Formula, Formula.box χ ∈ closureOf (Γ ++ Del) →
+        (Formula.box χ ∈ S.L i t ↔ S.bx χ = true)) ∧
+    (∀ j : Fin S.lassos.length, S.share (t + 1) i j →
+      ∀ g e : Formula, Formula.untl g e ∈ closureOf (Γ ++ Del) →
+        (Formula.untl g e ∈ S.L i t ↔
+          (e ∈ S.L j (t + 1) ∨ (g ∈ S.L j (t + 1) ∧ Formula.untl g e ∈ S.L j (t + 1))))) ∧
+    (∀ k : Fin S.lassos.length, S.share t i k →
+      ∀ g e : Formula, Formula.snce g e ∈ closureOf (Γ ++ Del) →
+        (Formula.snce g e ∈ S.L i t ↔
+          (e ∈ S.L k (t - 1) ∨ (g ∈ S.L k (t - 1) ∧ Formula.snce g e ∈ S.L k (t - 1)))))
+
+/--
+**(C1') implies (C1).** Instantiating the successor and predecessor quantifiers at the index
+itself — legitimate because `share` is reflexive — recovers the deterministic condition on the
+underlying family verbatim.
+
+This is the sense in which the branching condition is a strengthening rather than a replacement,
+and it is what lets the specialization in `Sharing/Specialize.lean` run in both directions.
+-/
+theorem localCoherentLab_of_share {S : SharingWitnessFamily Γ Del}
+    (h : S.LocalCoherentShare) : S.toWitnessFamily.LocalCoherentLab := by
+  intro i t
+  obtain ⟨hbot, himp, hbox, huntl, hsnce⟩ := h i t
+  exact ⟨hbot, himp, hbox, huntl i (S.share_refl (t + 1) i), hsnce i (S.share_refl t i)⟩
+
+/-- The deterministic `untl` clause, as the reflexive instance of the branching one. -/
+theorem untl_self_of_share {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentShare)
+    (i : Fin S.lassos.length) (t : ℤ) (g e : Formula)
+    (hc : Formula.untl g e ∈ closureOf (Γ ++ Del)) :
+    Formula.untl g e ∈ S.L i t ↔
+      (e ∈ S.L i (t + 1) ∨ (g ∈ S.L i (t + 1) ∧ Formula.untl g e ∈ S.L i (t + 1))) :=
+  (h i t).2.2.2.1 i (S.share_refl (t + 1) i) g e hc
+
+/-- The deterministic `snce` clause, as the reflexive instance of the branching one. -/
+theorem snce_self_of_share {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentShare)
+    (i : Fin S.lassos.length) (t : ℤ) (g e : Formula)
+    (hc : Formula.snce g e ∈ closureOf (Γ ++ Del)) :
+    Formula.snce g e ∈ S.L i t ↔
+      (e ∈ S.L i (t - 1) ∨ (g ∈ S.L i (t - 1) ∧ Formula.snce g e ∈ S.L i (t - 1))) :=
+  (h i t).2.2.2.2 i (S.share_refl t i) g e hc
+
+end SharingWitnessFamily
+
+end FormalSystem.Metalogic.Decidability
