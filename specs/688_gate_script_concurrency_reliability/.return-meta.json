@@ -1,0 +1,34 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/688_gate_script_concurrency_reliability/reports/01_gate-script-concurrency-reliability.md",
+      "summary": "Recommends flock on the existing guard's own documented .lake/build-guard.lock path (no coupling to .claude/) to fix the C1 build race, and creating scripts/nolints-style.txt while reconciling a now-contradicted ci.yml comment for the second item."
+    }
+  ],
+  "next_steps": "Run /plan 688 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1790559036_a260f5_688",
+    "agent_type": "general-research-agent",
+    "findings_count": 6,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+  },
+  "memory_candidates": [
+    {
+      "content": "lake-build-guard.sh's serialization lock lives at a documented, stable convention path: <project-root>/.lake/build-guard.lock (resolved by walking up to the nearest lakefile.toml/lakefile.lean). Any other script needing to serialize its own `lake build` calls against the guard can simply flock that same path directly -- no need to invoke the guard binary, probe for .claude/, or modify the guard at all, since flock() mutual exclusion is cooperative per-path, not per-binary. This also means the fix works identically in a checkout with no agent system deployed (the lock still serializes the script's own builds against itself, harmlessly).",
+      "category": "PATTERN",
+      "source_artifact": "specs/688_gate_script_concurrency_reliability/reports/01_gate-script-concurrency-reliability.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["flock", "lake-build-guard", "build lock", "concurrency", "lake build"]
+    },
+    {
+      "content": "Mathlib's vendored lint-style.lean (.lake/packages/mathlib/scripts/lint-style.lean) unconditionally tries to read scripts/nolints-style.txt relative to cwd and prints a warning when absent, unrelated to this repo's own scripts/nolints.json (a different file, used by check-module-invariants.sh's C16/env_linter baseline). A repo cannot silence the vendored tool's warning by any means other than creating the file; lines starting with '--' in that file are treated as comments and ignored, so a file containing only a header comment is a valid, zero-exception nolints-style.txt.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/688_gate_script_concurrency_reliability/reports/01_gate-script-concurrency-reliability.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["nolints-style.txt", "lint-style", "mathlib", "lake exe lint-style", "vendored tool"]
+    }
+  ]
+}

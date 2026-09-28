@@ -27,17 +27,25 @@
     {
       "project_number": 688,
       "project_name": "gate_script_concurrency_reliability",
-      "status": "researching",
+      "status": "researched",
       "task_type": "general",
       "description": "Make the repository's own gate scripts reliable under concurrent dispatch, so that a red gate means a real defect rather than a race.\n\nTHE MEASURED DEFECT. scripts/check-module-invariants.sh runs its own lake build, twice, outside the shared build lock (the two invocations near the top of its check sequence: the default target and the test library). Any other guarded build running at the same time therefore races it for .lake artifacts. This is not hypothetical: during a single multi-task orchestration run it produced three separate spurious failures, including one reported as a genuine test-library build failure, each of which had to be attributed against the commit log before it could be set aside. The cost is not the wasted build; it is that every future red result from this script is now suspect, which is exactly the property a gate must not have.\n\nTHE DESIGN QUESTION THIS OPENS, WHICH IS WHY IT IS A TASK AND NOT A ONE-LINE EDIT. The build lock lives in the agent-system deploy tree, which is a disposable artifact regenerated from a source store, while this script is a repository deliverable that must keep working for someone who has no agent system deployed at all. So the fix cannot simply hardcode a call into the deploy tree. Options worth weighing: probe for the guard and use it when present, falling back to an unguarded build with a printed notice; take a repository-local lock of its own that the guard also honors; or have the script refuse to run its builds when it detects a concurrent build rather than racing it. Pick one deliberately and record why.\n\nTHE SECOND, SMALLER ITEM IN THE SAME TERRITORY. scripts/nolints-style.txt does not exist, so every single invocation of the style linter prints \"nolints file could not be read; treating as empty\". The warning is harmless and therefore trains readers to skim past linter output, which is the actual damage. Either create the file, empty and commented, or stop referring to it.\n\nVERIFICATION THAT WOULD ACTUALLY SETTLE THE FIRST ITEM. Run the invariants script concurrently with a guarded full build, repeatedly, and show that it no longer produces a failure attributable to the race. A single clean serial run does not demonstrate anything here, since the serial case was never broken.",
       "topic": "repo-hygiene",
       "created": "2026-09-28T01:12:11Z",
-      "last_updated": "2026-09-28T01:31:10Z",
+      "last_updated": "2026-09-28T01:42:56Z",
       "file_scope": [
         "scripts/check-module-invariants.sh",
         "scripts/nolints-style.txt"
       ],
-      "session_id": "sess_1790559036_a260f5_688"
+      "session_id": "sess_1790559036_a260f5",
+      "artifacts": [
+        {
+          "path": "specs/688_gate_script_concurrency_reliability/reports/01_gate-script-concurrency-reliability.md",
+          "type": "report",
+          "summary": "Recommends flock on the existing guard's own documented .lake/build-guard.lock path (no coupling to .claude/) to fix the C1 build race, and creating scripts/nolints-style.txt while reconciling a now-contradicted ci.yml comment for the second item."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 687,

@@ -107,7 +107,7 @@ next_project_number: 690
 
 ### Repo Hygiene
 
-688 [RESEARCHING] — Make the repository's own gate scripts reliable under...
+688 [RESEARCHED] — Make the repository's own gate scripts reliable under...
 
 ### Semantics
 
@@ -134,10 +134,11 @@ THE SHARED-FIXTURE CONVENTION. A plan placed a cross-repository fixture file und
 ---
 
 ### 688. Gate script concurrency reliability
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: repo-hygiene
 - **Dependencies**: None
+- **Research**: [688_gate_script_concurrency_reliability/reports/01_gate-script-concurrency-reliability.md]
 
 **Description**: Make the repository's own gate scripts reliable under concurrent dispatch, so that a red gate means a real defect rather than a race.
 
