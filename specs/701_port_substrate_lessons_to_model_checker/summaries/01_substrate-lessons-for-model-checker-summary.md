@@ -257,3 +257,209 @@ Every Lean identifier named above (`SharingSkeleton`, `LiftableRaw`, `plusCertif
 `plusCertifies_stabUntl_example`, `total_eq_thread`, `share`) was confirmed present in this
 implementation phase's own Verification Snapshot above or by direct grep during this phase. The
 text nowhere claims the blocker lifts.
+
+## ModelChecker Task 219 — Reopen-and-Amend Text
+
+ModelChecker task 219 (`bimodal_theory_limits_example_group`) is currently `completed`
+(`last_updated: 2026-09-29T15:03:54Z`). Its deliverable, the THEORY-LIMITS group in
+`examples.py` (lines 1335-1469, re-confirmed in this phase's own Verification Snapshot), has
+three defects against the now-landed tree, not the two the research report counted: an omission
+(no Until-side schema anywhere in the group), a framing error (the FACT 2 / STANDING CONSEQUENCE
+language asserts a permanently empty certificate class that landed certifying proofs now refute),
+and — found during this implementation phase, not fully enumerated by the research report — three
+dangling Lean citations (`not_plusCertifies_stabSnce`, `not_plusCertifies_stabSnce_premise`,
+`snce_share_congr`), all confirmed deleted from the tree in this phase's own snapshot above. The
+recommendation is to **reopen** task 219 (a permitted `completed` -> non-terminal transition,
+recommended for ModelChecker's own task system to execute, not performed by this task) for a
+scoped amendment, not a full rewrite. What is correct and must be kept verbatim: the inclusion
+criterion paragraph, FACT 1's `Pp -> [stab]Pp` non-validity claim and its
+`not_plusValidZTime_stabSnce` citation, the "NOT AN AXIOM PROBLEM" paragraph, the
+"THE STABILITY-MODAL SCHEMA ITSELF: PENDING, NOT ENCODED" paragraph, and both `TL_CM_1`/`TL_CM_2`
+entries with their measurements exactly as they stand.
+
+### Replacement header comment block (replaces `examples.py` lines 1335-1427)
+
+```
+############################# THEORY-LIMITS #################################
+##############################################################################
+# INCLUSION CRITERION: an entry belongs here iff it records an outcome that is a genuine,
+# permanent limit of this theory or of its verified (BimodalLogic Lean) counterpart -- never
+# a bug, never something a future encoding change should remove, and never evidence that any
+# axiom, operator, or truth clause in this file is wrong. Two independent kinds of limit
+# qualify: (a) a genuine ZZ-time non-validity this checker correctly reports as a countermodel,
+# whose significance deserves recording alongside the passing test; (b) a completeness gap in
+# the VERIFIED side's own certificate system -- a schema for which no certificate meeting that
+# system's conditions has yet been constructed for every instance, even though the schema is a
+# genuine non-validity, so an incomplete enumeration is a fact about the certificate SEARCH's
+# current state, not about whether the schema is valid, and NOT the same claim as "no such
+# certificate can exist." Never encode a retracted upstream claim as a passing assertion here --
+# this header was itself rewritten once already for exactly that reason (see the amendment note
+# below); re-verify every upstream citation against the live BimodalLogic tree before trusting
+# this comment block's own citations again.
+#
+# --- FACT 1: two genuine ZZ-time non-validities (correct and desirable, not limits of anything) ---
+# Since-side: `(g S e) -> [stab](g S e)` (`g`/`e` = Since's guard/event) is genuinely INVALID over
+# ZZ-time. Its atomic instance at g:=top, e:=p is `Pp -> [stab]Pp` (P = "at some past time"),
+# proved non-valid by
+# `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabSnce`
+# (BimodalLogic).
+# Until-side: `(⊤ U p) -> (¬p -> [stab](⊤ U p))` is likewise genuinely INVALID over ZZ-time,
+# proved non-valid by
+# `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabUntl`
+# (BimodalLogic; `stabUntlTarget` in the Lean source -- equivalent to `Fp -> (p \/ [stab]Fp)`
+# by material-conditional rewriting of the middle conjunct).
+# Both say the same thing in their own direction: neither the past nor the future is determined
+# by the present world state alone -- two histories can agree now and disagree in how they got
+# here, or in how they will unfold. Nothing here should change to make either schema valid.
+#
+# --- FACT 2: the certificate-search state, corrected against the landed redesign ---
+# As of BimodalLogic's landed `trans`/`Liftable` substrate redesign (completed
+# 2026-09-29T16:18:36Z), concrete certifying families exist for BOTH atomic instances above:
+# `plusCertifies_stabSnce_example : (famA p).PlusCertifies 0` and
+# `plusCertifies_stabUntl_example : (famB p).PlusCertifies 0`
+# (`FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Examples`). The certificate class is
+# THEREFORE NOT EMPTY for these two specific atomic instances -- this group previously said
+# otherwise, citing two theorem names (`not_plusCertifies_stabSnce`,
+# `not_plusCertifies_stabSnce_premise`) that no longer exist in the BimodalLogic tree, having
+# been retired as part of the same redesign that produced the certifying families above. What
+# remains genuinely OPEN, and is NOT what "FACT 2" used to claim: whether a certifying family
+# exists for EVERY instance of either schema (arbitrary guard/event formulas, not just the
+# g:=top/e:=p atomic case) -- a general enumeration/compression question, upstream of this
+# checker, not yet settled by any BimodalLogic result as of this writing.
+#
+# --- NOT AN AXIOM PROBLEM ---
+# The stability modal is not in the language BimodalLogic's axioms are stated over:
+# `FormalSystem.ProofSystem.Axiom` is `Formula -> Type`, and `FormalSystem.Syntax.Formula`'s
+# constructors are atom, bot, imp, box, untl, snce -- no `stab`. `stab` exists only in the
+# extended `FormalSystem.PlusLanguage.PlusFormula`. Neither schema was ever a candidate axiom,
+# and no soundness proof could have ruled either in or out: soundness constrains derivability
+# against validity, while what is at issue here is the converse obligation that every
+# non-validity admit a finite certificate.
+#
+# --- A LIMIT OF THE VERIFIED SIDE'S SEARCH STATE, NOT OF THIS CHECKER ---
+# `[stab]` is also absent from THIS theory's operators today (adding it is the blocked
+# stability-modal-extension task's scope, not this group's). This checker finds countermodels to
+# the nearest EXPRESSIBLE relatives of both schemas, substituting `\Box` for the missing `[stab]`,
+# perfectly well and fast (TL_CM_1-TL_CM_4 below). Nothing in this section is a fact about this
+# Python checker's own search, which has no completeness gap of any kind here.
+#
+# --- THE SHAPE MECHANISM, AND WHY IT NO LONGER FORCES A COLLAPSE ---
+# Before the `trans` substrate landed, both stability local-coherence clauses quantified their
+# neighbour universally over the `share`-class AT THE LABEL'S OWN TIME (the `snce` side) or one
+# step displaced (the `untl` side). Reading such a clause twice -- once at an arbitrary
+# class member, once more at that member against itself via reflexivity of `share` -- forced any
+# two indices naming one world state to agree on every formula of the relevant kind, which is
+# exactly what emptied the certificate class: past- or future-tense truth became a function of
+# the world state alone, contradicting what a stability-modal countermodel needs to exhibit. That
+# argument no longer goes through: the redesigned clauses quantify over `trans`, the
+# arrival-pruned succession relation, which is strictly finer than same-time state-identity, so
+# the doubled reading no longer type-checks. This is proved, not merely observed to type-check
+# differently: `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_snce_share_congr`
+# and `...not_untl_shift_share_congr` show the redesigned local-coherence clauses do NOT entail
+# the old collapse, each refuted concretely by a landed example family (Family A / Family B)
+# rather than merely left unproved. This is exactly why `famA`/`famB` can certify at all.
+#
+# --- STANDING CONSEQUENCE, NARROWED TO THE GENERAL CASE ---
+# On the GENERAL form of either schema (arbitrary guard/event formulas), the verified side's
+# search state today is a semi-decision procedure, not a decision procedure: the absence of a
+# general enumeration proof licenses no conclusion about validity for instances beyond the two
+# concrete ones above (see docs/ADEQUACY.md section 7.4's never-report-validity rule, which this
+# reinforces rather than contradicts). This is narrower than the group previously claimed: it is
+# NOT a standing property of every instance of either schema, only of the ones not yet covered by
+# a concrete certifying family.
+#
+# --- THE STABILITY-MODAL SCHEMA ITSELF: PENDING, NOT ENCODED ---
+# Neither `(g S e) -> [stab](g S e)` nor its Until-side counterpart can be written as an
+# examples.py entry today: `[stab]` has no ModelChecker operator, and adding one pre-empts the
+# blocked stability-modal-extension task, which remains blocked for its own, still-current
+# soundness/design reasons (the histories characterization and the box case of the truth lemma).
+# This is intentional; it should stay this way until that task lands. No Python object of any
+# kind -- active, inactive, or a standing test elsewhere -- is created for either schema.
+#
+# --- NEAREST EXPRESSIBLE PROBES, AND THE BOX-VERSUS-STABILITY QUESTION ---
+# `\Box` (necessity over ALL accessible world-histories) and `[stab]` (quantification restricted
+# to histories sharing the CURRENT world state) are different modals with different reach; this
+# file does not assume they agree on either schema. All four nearest-expressible relatives below
+# -- substituting `\Box` for `[stab]` -- ARE invalid here too, but for a DIFFERENT, more basic
+# reason than FACT 2's discussion above: `\Box`'s countermodels use histories that do not even
+# agree at the evaluation time itself, because `\Box`'s accessibility carries no same-state
+# restriction at all. Any contingent formula can falsify `phi -> \Box phi` this way -- the same
+# elementary pattern already exercised by MD_CM_3 and BM_CM_1/BM_CM_2 above. ANSWER: same verdict
+# (all four invalid here), UNRELATED mechanism -- none of the four entries below is evidence
+# about the `[stab]`-form's own certificate-search state discussed above.
+##############################################################################
+```
+
+### New Until-side probe entries (append after `TL_CM_2`, before the blank lines preceding `DEFINE EXAMPLES AND THEORIES TO COMPUTE`)
+
+Mirrors the existing `TL_CM_1`/`TL_CM_2` pattern exactly: `TL_CM_3` is the general Until form
+(paired with `TL_CM_1`'s general Since form), `TL_CM_4` is the Future-specialized instantiation
+(paired with `TL_CM_2`'s Past-specialized instantiation). Settings are carried over unchanged
+from `TL_CM_1`/`TL_CM_2` as a starting point; **this implementation phase did not run
+ModelChecker's own solver** (doing so is outside this task's read-only repository boundary), so
+the timing/stability comment lines below are left as placeholders for whoever files and executes
+this amendment to measure and fill in, exactly as `TL_CM_1`/`TL_CM_2`'s own "Measured
+(2026-09-29)" lines were filled in when those entries were first authored.
+
+```
+# TL_CM_3: UNTIL-STABILITY LIMIT, BOX-ANALOGUE (general guard/event form)
+# Nearest expressible translation of BimodalLogic's Until-side target
+# (`FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabUntlTarget`), substituting
+# `\Box` for the not-yet-implemented `[stab]`. Genuinely invalid here -- see the header's
+# "Box-versus-stability question" discussion above for why. Measured: [TO BE FILLED IN BY
+# WHOEVER RUNS THIS -- not measured by this documentation-only amendment].
+TL_CM_3_premises = ['(A \\Until B)']
+TL_CM_3_conclusions = ['\\Box (A \\Until B)']
+TL_CM_3_settings = {
+    'back' : 2,
+    'mid' : 1,
+    'fwd' : 2,
+    'max_time' : 10,
+    'expectation' : True,
+}
+TL_CM_3_example = [
+    TL_CM_3_premises,
+    TL_CM_3_conclusions,
+    TL_CM_3_settings,
+]
+
+# TL_CM_4: FUTURE-STABILITY LIMIT, BOX-ANALOGUE (the \Future probe)
+# A second nearest-expressible probe, using the "always in the future" operator rather than the
+# fully general Until-schema. Also genuinely invalid, same reason as TL_CM_3 (see header).
+# Measured: [TO BE FILLED IN BY WHOEVER RUNS THIS].
+TL_CM_4_premises = ['\\Future A']
+TL_CM_4_conclusions = ['\\Box \\Future A']
+TL_CM_4_settings = {
+    'back' : 2,
+    'mid' : 1,
+    'fwd' : 2,
+    'max_time' : 10,
+    'expectation' : True,
+}
+TL_CM_4_example = [
+    TL_CM_4_premises,
+    TL_CM_4_conclusions,
+    TL_CM_4_settings,
+]
+```
+
+Registry wiring (append to both `countermodel_examples` and `unit_tests` dicts, alongside the
+existing `"TL_CM_1"`/`"TL_CM_2"` entries at lines 1503-1504 and 1613-1614):
+
+```
+    "TL_CM_3" : TL_CM_3_example,
+    "TL_CM_4" : TL_CM_4_example,
+```
+
+### Amendment note for whoever files this
+
+- **Status transition recommended, not performed**: `completed` -> reopened, so the amendment
+  above can be applied. This is a recommendation for ModelChecker's own task system to execute;
+  this implementation phase performs no ModelChecker status change.
+- **Before landing**: run the full example suite so `TL_CM_3`/`TL_CM_4` join the executed
+  `example_range` only if the solver actually finds the expected countermodel at these settings;
+  if it does not, adjust `back`/`mid`/`fwd`/`max_time` the same way `TL_CM_1`/`TL_CM_2`'s own
+  measurement pass presumably did, and record the real measured timing in the comment, replacing
+  the placeholder above.
+- **Do not weaken or reinterpret** `TL_CM_1`/`TL_CM_2` or any other existing example; this
+  amendment is additive.

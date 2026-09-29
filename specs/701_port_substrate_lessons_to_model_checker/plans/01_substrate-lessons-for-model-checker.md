@@ -230,31 +230,34 @@ corrects the stale upstream framing and carries the file-level porting map.
 
 ---
 
-### Phase 3: Write the task 219 reopen-and-amend text [NOT STARTED]
+### Phase 3: Write the task 219 reopen-and-amend text [COMPLETED]
 
 **Goal**: Produce ready-to-file text covering all three defects in the THEORY-LIMITS group, with
 the corrected header wording drafted concretely enough to apply.
 
 **Tasks**:
 
-- [ ] Draft the framing correction. The group's FACT 2 and STANDING CONSEQUENCE blocks assert an
+- [x] Draft the framing correction. The group's FACT 2 and STANDING CONSEQUENCE blocks assert an
       empty certificate class as a permanent property of the verified side's design; both gate
       families are landed counterexamples to that claim for the two atomic schemas. Rewrite so the
       text distinguishes a limit of the theory from a limit of a since-repaired certificate
       system, records the repair, and narrows what is still open to the general
-      guard/event-parametric question.
-- [ ] Draft the correction for the three dangling citations. Remove or replace the two deleted
+      guard/event-parametric question. *(completed)*
+- [x] Draft the correction for the three dangling citations. Remove or replace the two deleted
       non-certification theorems and the retired congruence, naming what the tree carries instead
       and what each surviving theorem actually states. Keep the two genuine ZZ-time non-validity
-      citations, which were confirmed present.
-- [ ] Draft the Until-side addition: the second schema, its own fact pair in the header comment,
+      citations, which were confirmed present. *(completed: replaced with not_snce_share_congr /
+      not_untl_shift_share_congr, both cited for what they actually prove -- refutation of the
+      old congruence, not certification)*
+- [x] Draft the Until-side addition: the second schema, its own fact pair in the header comment,
       and a matching pair of nearest-expressible Box-analogue entries following the existing
-      naming and shape of the two current entries.
-- [ ] State explicitly which parts of the existing group are correct and must be kept verbatim:
+      naming and shape of the two current entries. *(completed: TL_CM_3/TL_CM_4, settings carried
+      over from TL_CM_1/TL_CM_2 as a starting point since this phase does not run the solver)*
+- [x] State explicitly which parts of the existing group are correct and must be kept verbatim:
       the two existing entries with their measurements, and the corrected shape-mechanism
-      explanation, minus its dangling citation.
-- [ ] State the recommended status transition as a recommendation for ModelChecker's task system,
-      not an action taken here.
+      explanation, minus its dangling citation. *(completed)*
+- [x] State the recommended status transition as a recommendation for ModelChecker's task system,
+      not an action taken here. *(completed)*
 
 **Timing**: 1.25 hours
 
