@@ -245,6 +245,7 @@ tableauFuel := 1000
 {w | P w}
 case h => ...
 match ... with
+Option α
 
 # --- Lean appendix: editorial review TODO comments (`//`-prefixed Typst
 # line comments, not rendered prose), marking exposition gaps for a future

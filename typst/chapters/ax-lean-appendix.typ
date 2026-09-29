@@ -335,13 +335,23 @@ structure Atom where
 ```
 ]
 
-// TODO: Elaborate this example. The excerpt is clear and helpful, but nothing after it says what
-// the Lean syntax means. Walk through it line by line: the `structure ... where` header; each
-// `name : Type` field line (what `String`, `Nat`, and `Option Nat` are, and why `freshIndex` is
-// optional); how an `Atom` value is built (anonymous-constructor brackets, `{ base := ..., .. }`,
-// and the generated `Atom.mk`) and how its fields are read back (`a.base`, `a.freshIndex`); and
-// what the `deriving` clause generates, one handler at a time (`Repr`, `DecidableEq`, `BEq`,
-// `Hashable`), since this is the first structure the reader meets and the later ones build on it.
+Read that declaration line by line, since every later structure repeats its shape.
+
+- *The header.* `structure Atom where` names the type being declared and announces that its fields follow, one per line, indented beneath it. There is no separate constructor list: a structure has exactly one way of being built, from all of its fields at once.
+- *The field lines.* Each has the form `name : Type`. `base : String` gives every atom a name, `String` being Lean's type of text. `freshIndex : Option Nat` gives it an optional numeric tag: `Nat` is the type of natural numbers, and `Option α` is the type of "an `α`, or nothing", with the two forms written `some a` and `none`. The index is optional because an atom either is an ordinary propositional letter, with `freshIndex` equal to `none`, or is one of the freshly generated variants of that letter, with `freshIndex` equal to `some n`. Making it optional is what supplies infinitely many atoms per name, which the completeness argument needs when it has to pick an atom nothing else mentions.
+
+A value of a structure can be written in three interchangeable ways.
+The anonymous constructor of @lean-appendix-props-as-types lists the fields positionally, as `⟨"p", none⟩`.
+The *structure instance* form names them instead, as `{ base := "p", freshIndex := none }`, which is longer but survives a later reordering of the fields.
+And the constructor Lean generates for every structure, here `Atom.mk`, can be applied like any other function.
+Fields are read back by the dot notation of @lean-appendix-types-props: `a.base` and `a.freshIndex` for `a : Atom`.
+
+The `deriving` clause is the one introduced in @lean-appendix-inductive, and here each handler earns its place.
+`Repr` gives atoms a printed form, so a counterexample can be displayed.
+`DecidableEq` gives a procedure deciding whether two atoms are equal, which is what lets `Finset Atom` and the freshness argument work at all.
+`BEq` is the Boolean-valued equality test that goes with it, for code that wants a `Bool` rather than a proof.
+`Hashable` gives atoms a hash, which is what hash-keyed collections need.
+All four are generated mechanically from the field types, because `String`, `Nat` and `Option Nat` already have them.
 
 === Three Kinds of Binder
 

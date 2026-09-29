@@ -354,7 +354,7 @@ commit message rather than silently dropped.
 
 ---
 
-### Phase 6: Resolve the `Atom` Structure TODO [NOT STARTED]
+### Phase 6: Resolve the `Atom` Structure TODO [COMPLETED]
 
 **Goal**: Convert the author `TODO` at the `Atom` excerpt into rendered prose, following its own
 specification, and remove the tag.
