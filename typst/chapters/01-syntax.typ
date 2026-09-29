@@ -6,17 +6,21 @@
 
 #import "../template.typ": *
 
-= Syntax
+= Syntax <sec:syntax>
 
+#chapter-header(
+  description: [The formula language of *TM*: six primitive constructors, the derived tense and modal operators built from them, and the reflection map relating a formula's Since/Until content to its Until/Since dual.],
+  dependencies: [@sec:introduction for the informal picture of what *TM* is.],
+)
 
 == Formulas <sec:formulas>
 
-Formulas are defined inductively with six primitive constructors, with *Since* and *Until* as the primitive temporal operators.
+Formulas are defined inductively with six primitive constructors, with *Since* and *Until* as the primitive temporal operators. This section fixes that inductive definition and the notation used for it throughout the rest of the book.
 
 #definition("Formula")[
   The type `Formula` is defined by:
   $ phi.alt, psi ::= p | bot | phi.alt arrow.r psi | square.stroked phi.alt | phi.alt #snce psi | phi.alt #untl psi $
-  where $p$ ranges over sentence letters (type `Atom`).#footnote[`Atom` (`Syntax/Atom.lean`) pairs a base string with an optional freshness index, so that a fresh atom exists outside any finite set of atoms; `Formula.atomS` builds an atom formula directly from a string.]
+  where $p$ ranges over sentence letters (type `Atom`).#footnote[`Atom` (`FormalSystem/Syntax/Atom.lean`) pairs a base string with an optional freshness index, so that a fresh atom exists outside any finite set of atoms; `Formula.atomS` builds an atom formula directly from a string.]
 ]
 
 The two temporal primitives are written infix and are *guard-first*: in $#snceOp($phi.alt$, $psi$)$ the *guard* is $phi.alt$, holding at all times strictly between a past witness and now, and the *event* is $psi$, witnessed at that strictly past time.
@@ -47,7 +51,7 @@ This Since/Until basis is the book's language throughout: the one-place tense op
 
 == Derived Operators
 
-The following operators are defined in terms of the primitives; each equation is the Lean `def` from `Syntax/Formula.lean`.
+The following operators are defined in terms of the primitives; each equation is the Lean `def` from `FormalSystem/Syntax/Formula.lean`.
 
 #definition("Propositional")[
   $
@@ -140,14 +144,14 @@ The following operators are defined in terms of the primitives; each equation is
   caption: none,
 )
 
-Because $P$, $F$, $H$, and $G$ are `def` abbreviations rather than constructors, they unfold definitionally; the semantics chapter gives their truth conditions as derived characterizations.
+Because $P$, $F$, $H$, and $G$ are `def` abbreviations rather than constructors, they unfold definitionally; @sec:semantics gives their truth conditions as derived characterizations.
 
 == Time Reflection
 
 The `reflectTime` function exchanges past and future operators.
 
 #definition("Time Reflection")[
-  The function $chevron.l S chevron.r : "Formula" arrow.r "Formula"$ is defined by recursion on the primitive constructors (`Syntax/Formula.lean`):
+  The function $chevron.l S chevron.r : "Formula" arrow.r "Formula"$ is defined by recursion on the primitive constructors (`FormalSystem/Syntax/Formula.lean`):
   $
     chevron.l S chevron.r p &= p \
     chevron.l S chevron.r bot &= bot \
@@ -160,5 +164,5 @@ The `reflectTime` function exchanges past and future operators.
 ]
 
 #theorem("Involution")[
-  $chevron.l S chevron.r chevron.l S chevron.r phi.alt = phi.alt$#footnote[Proven as `reflect_time_involution` in `Syntax/Formula.lean`.]
+  $chevron.l S chevron.r chevron.l S chevron.r phi.alt = phi.alt$#footnote[Proven as `reflect_time_involution` in `FormalSystem/Syntax/Formula.lean`.]
 ]

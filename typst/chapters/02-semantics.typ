@@ -6,8 +6,12 @@
 #import "../template.typ": *
 #import "@preview/cetz:0.3.4"
 
-= Task Semantics
+= Task Semantics <sec:semantics>
 
+#chapter-header(
+  description: [Task frames as the semantic structures for *TM*: how possible worlds are built as convex histories over a task frame, the strict truth conditions for the primitive and derived operators, and time-shift as the notion of translation between histories.],
+  dependencies: [@sec:syntax for the formula language these truth conditions interpret.],
+)
 
 == Task Frames
 
@@ -40,7 +44,7 @@ The following primitives are required to define a task frame:
 ]
 
 This algebraic choice is not incidental to the rest of the book: the discrete-or-dense dichotomy driving the completeness architecture of @sec:metalogic depends on $D$ being an ordered abelian group and *fails* for a bare linear order (translation invariance is what globalizes a local gap or density witness).
-The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) requires exactly this: `D` carries `AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid`, and `Nontrivial` instances, matching the definition field for field.
+The Lean structure `TaskFrame` (`FormalSystem/Semantics/TaskFrame.lean`) requires exactly this: `D` carries `AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid`, and `Nontrivial` instances, matching the definition field for field.
 
 #definition("Task Relation")[
   A *task relation* on a nonempty set of world states $W$ over a temporal order $D$ is any parameterized relation $w arrow.r.double.long_x u$ for $w, u in W$ and $x in D^+$, extended to negative durations by the *reflection convention*
@@ -146,7 +150,7 @@ The proof is choice-free and short: instantiate *Seriality* at $x = 0$ to get so
   Stating it as a fifth axiom would therefore not strengthen the theory, only lengthen the definition.
 ]
 
-The Lean structure `TaskFrame` (`Semantics/TaskFrame.lean`) packages this presentation field-for-field, and the correspondence is one of *agreement*, not divergence: the primitive relation #leanPosRel is typed on the positive cone $D^+$, and the two-sided #leanTaskRel is *defined* from it by the *reflection convention*, so the reflection law is the derived theorem #leanReflection rather than a field (definitional off zero, and at zero a consequence of *Seriality* and *Limit*); the four axiom fields are stated over that extended relation. #leanComp is the biconditional *Compositionality* in full (of which the composition, i.e. $arrow.l$, direction is projected out separately as #leanForwardComp, restricted to $x, y gt.eq 0$ exactly as the frame definition states it); #leanSerial is *Seriality* verbatim, stated by citation as `TaskFrame.Serial TaskRel`; #leanLimit is *Limit* verbatim, in the literal transcribed shape; and #leanSaturation is *Saturation* verbatim, stated by citation as `TaskFrame.Saturation TaskRel` so that fibers and segments remain two separate classes, exactly as the directed-family and frame definitions require --- this field is what the Step Lemma of @sec:convex-histories consumes.
+The Lean structure `TaskFrame` (`FormalSystem/Semantics/TaskFrame.lean`) packages this presentation field-for-field, and the correspondence is one of *agreement*, not divergence: the primitive relation #leanPosRel is typed on the positive cone $D^+$, and the two-sided #leanTaskRel is *defined* from it by the *reflection convention*, so the reflection law is the derived theorem #leanReflection rather than a field (definitional off zero, and at zero a consequence of *Seriality* and *Limit*); the four axiom fields are stated over that extended relation. #leanComp is the biconditional *Compositionality* in full (of which the composition, i.e. $arrow.l$, direction is projected out separately as #leanForwardComp, restricted to $x, y gt.eq 0$ exactly as the frame definition states it); #leanSerial is *Seriality* verbatim, stated by citation as `TaskFrame.Serial TaskRel`; #leanLimit is *Limit* verbatim, in the literal transcribed shape; and #leanSaturation is *Saturation* verbatim, stated by citation as `TaskFrame.Saturation TaskRel` so that fibers and segments remain two separate classes, exactly as the directed-family and frame definitions require --- this field is what the Step Lemma of @sec:convex-histories consumes.
 There is no zero-duration field: #leanNullityDerived (`TaskRel w 0 w`) is a *theorem*, derived from #leanSerial and #leanLimit exactly as in the proof above, matching Nullity's derived status.
 The biconditional #leanNullityIdentity ($w arrow.r.double.long_0 u arrow.l.r.double w = u$) is derived too: its injectivity half follows from #leanLimit alone, since $w arrow.r.double.long_0 u$ puts $u$ in every cone around $w$, so it adds nothing beyond the four frame axioms.
 
@@ -256,8 +260,8 @@ Not every partial history is total, and it is not obvious that a frame has *any*
   It does *not* discharge *Saturation* for infinite-$W$ frames: those still need the axiom in full.
 ]
 
-The Lean formalization runs this exact chain. `PartialHistory` (`Semantics/PartialHistory.lean`) is the one history structure: convexity is the predicate `PartialHistory.IsConvex`, and `PartialHistory.IsTotal` is the totality predicate identifying membership in $H_(cal(F))$ --- the possible worlds have no separate structure of their own and are exactly the subtype `WorldHistory F`, at which truth is evaluated. Since a total domain is trivially convex, a partial history with total domain is the same thing as a convex history with total domain.
-`Semantics/Extension/Constraint.lean`, `Admissible.lean`, `Step.lean`, and `Extension.lean` carry the whole existence chain --- constraints, the Constraint Lemma, admissibility, the Step Lemma, the Extension Theorem, and Occurrence --- as a machine-checked sequence of lemmas rather than restating it inline.
+The Lean formalization runs this exact chain. `PartialHistory` (`FormalSystem/Semantics/PartialHistory.lean`) is the one history structure: convexity is the predicate `PartialHistory.IsConvex`, and `PartialHistory.IsTotal` is the totality predicate identifying membership in $H_(cal(F))$ --- the possible worlds have no separate structure of their own and are exactly the subtype `WorldHistory F`, at which truth is evaluated. Since a total domain is trivially convex, a partial history with total domain is the same thing as a convex history with total domain.
+`FormalSystem/Semantics/Extension/Constraint.lean`, `FormalSystem/Semantics/Extension/Admissible.lean`, `FormalSystem/Semantics/Extension/Step.lean`, and `FormalSystem/Semantics/Extension/Extension.lean` carry the whole existence chain --- constraints, the Constraint Lemma, admissibility, the Step Lemma, the Extension Theorem, and Occurrence --- as a machine-checked sequence of lemmas rather than restating it inline.
 
 == Task Models
 
@@ -279,7 +283,7 @@ Whereas the model fixes the interpretation of the language, the contextual param
 // CONFIRM(paper): def:BL-semantics's box clause ranges over all sigma in H_F with no admissible-history or
 //   shift-closure parameter, and def:BL-semantics states the guard-first since/until clauses transcribed below.
 #definition("Truth")[
-  For model $cal(M)$, possible world $tau in H_(cal(F))$, and time $x : D$, truth is defined by recursion on the six primitive constructors:#footnote[`TruthAt` in `Semantics/Truth.lean`. It is evaluated at `τ : WorldHistory F`, reads atoms at `τ.state x`, and the box clause quantifies over all possible worlds (`∀ σ : WorldHistory F`), with no admissible-history or shift-closure parameter.]
+  For model $cal(M)$, possible world $tau in H_(cal(F))$, and time $x : D$, truth is defined by recursion on the six primitive constructors:#footnote[`TruthAt` in `FormalSystem/Semantics/Truth.lean`. It is evaluated at `τ : WorldHistory F`, reads atoms at `τ.state x`, and the box clause quantifies over all possible worlds (`∀ σ : WorldHistory F`), with no admissible-history or shift-closure parameter.]
   $
     cal(M), tau, x tack.r.double p &#Iff x in "dom"(tau) "and" I(tau(x), p) \
     cal(M), tau, x tack.r.double.not bot \
@@ -300,7 +304,7 @@ The atom clause carries a domain conjunct, $x in "dom"(tau)$. At a total evaluat
 It is kept deliberately: `TruthAt` stays meaningful when applied to the *partial* histories the extension machinery of @sec:convex-histories traffics in internally, and the two readings provably agree once restricted to $H_(cal(F))$.
 
 Since and Until use a *strict witness* with an *open guard*: the witness time $y$ is strictly past (respectively strictly future), and the guard $phi.alt$ is required only on the open interval strictly between $y$ and $x$.
-The derived tense operators then receive their expected *strict* truth conditions as characterization theorems:#footnote[`future_iff`, `past_iff`, and companions in `Semantics/Truth.lean`; the semantics is irreflexive: G and H exclude the present moment, so the temporal T-axioms $G phi.alt arrow.r phi.alt$ and $H phi.alt arrow.r phi.alt$ are not valid.]
+The derived tense operators then receive their expected *strict* truth conditions as characterization theorems:#footnote[`future_iff`, `past_iff`, and companions in `FormalSystem/Semantics/Truth.lean`; the semantics is irreflexive: G and H exclude the present moment, so the temporal T-axioms $G phi.alt arrow.r phi.alt$ and $H phi.alt arrow.r phi.alt$ are not valid.]
 
 #theorem("Derived Truth Conditions")[
   $
@@ -335,7 +339,7 @@ It is natural to assume that whatever is necessary is always the case, or equiva
 Time-shift enables the validity proof of the bimodal interaction axiom MF ($square.stroked phi.alt arrow.r square.stroked G phi.alt$); together with the derived theorem TF ($square.stroked phi.alt arrow.r G square.stroked phi.alt$) it yields the perpetuity principles.
 
 #definition("Time-Shift")[
-  For $tau, sigma in H_(cal(F))$ and $x, y : D$, the possible worlds $tau$ and $sigma$ are *time-shifted from $x$ to $y$*, written $tau #timeshift($x$, $y$) sigma$, if and only if there exists a *translation* $overline(a) : D arrow.r D$, $overline(a)(z) = z + d$ for some $d in D$, where $y = overline(a)(x)$ and $tau(z) = sigma(overline(a)(z))$ for all $z in D$.#footnote[The Lean formalization (`timeShift` in `Semantics/PartialHistory.lean`) is stated in a deliberately more general form as a design fact of the mechanization: the shift map is an arbitrary order automorphism $overline(a) : D arrow.r D$ rather than a translation, and the definition applies to *partial* histories via the domain clause $"dom"_sigma = overline(a)^(-1)("dom"_tau)$, with $sigma(z) = tau(overline(a)(z))$ on that domain. Restricted to total histories and translations, the two definitions coincide.]
+  For $tau, sigma in H_(cal(F))$ and $x, y : D$, the possible worlds $tau$ and $sigma$ are *time-shifted from $x$ to $y$*, written $tau #timeshift($x$, $y$) sigma$, if and only if there exists a *translation* $overline(a) : D arrow.r D$, $overline(a)(z) = z + d$ for some $d in D$, where $y = overline(a)(x)$ and $tau(z) = sigma(overline(a)(z))$ for all $z in D$.#footnote[The Lean formalization (`timeShift` in `FormalSystem/Semantics/PartialHistory.lean`) is stated in a deliberately more general form as a design fact of the mechanization: the shift map is an arbitrary order automorphism $overline(a) : D arrow.r D$ rather than a translation, and the definition applies to *partial* histories via the domain clause $"dom"_sigma = overline(a)^(-1)("dom"_tau)$, with $sigma(z) = tau(overline(a)(z))$ on that domain. Restricted to total histories and translations, the two definitions coincide.]
 ]
 
 Time-shifting preserves the essential structure of histories:

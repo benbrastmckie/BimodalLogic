@@ -379,23 +379,36 @@ before and after; the `SCORE` line must end at `BLOCKING 0`.
 
 ---
 
-### Phase 4: 01-syntax.typ and 02-semantics.typ [NOT STARTED]
+### Phase 4: 01-syntax.typ and 02-semantics.typ [COMPLETED]
 
 **Goal**: The two foundational chapters gain chapter headers, the style sheet's citation
 convention, and the motivating prose their statement-first openings currently lack.
 
 **Tasks**:
-- [ ] Add `#chapter-header` to both files.
-- [ ] `01-syntax.typ`: expand the single sentence before `#definition("Formula")` to meet rule
+- [x] Add `#chapter-header` to both files, plus `<sec:syntax>`/`<sec:semantics>` labels on their
+      `=` headings (matching the majority sibling-chapter labeling convention) since neither
+      carried one and the new cross-reference below needs a target.
+- [x] `01-syntax.typ`: expanded the single sentence before `#definition("Formula")` to meet rule
       1's two-sentence motivation minimum.
-- [ ] `01-syntax.typ`: resolve 4 Rule 1.2 findings; convert the 4 footnote-based Lean citations
-      to the style sheet's `#leansrc`/`#leanref` forms.
-- [ ] `01-syntax.typ`: convert the 1 un-linked chapter reference to an `@`-reference. This file
-      has zero `@`-refs today, so confirm the target label exists before linking.
-- [ ] `02-semantics.typ`: resolve 10 Rule 1.2 findings and convert its 10 footnote citations.
-- [ ] `02-semantics.typ`: check each `==`/`===` opening against rule 2. The element lint passes
-      this file, so any gap here is a judgment call, not a lint failure; fix only where the
-      opening genuinely states no reader need.
+- [x] **Deviation**: `01-syntax.typ`'s 4 Rule 1.2 findings were declaration-in-footnote citations
+      mixing an inline declaration name with a parenthetical file path (e.g.
+      ``` `Atom` (`Syntax/Atom.lean`) ```), not standalone block-level attributions. Converting
+      them to `#leansrc`/`#leanref` per rule 4's letter would mean dropping the file-path
+      information the footnote deliberately carries (rule 4's inline-declaration form is
+      identifier-only, no path) or inserting a block-level `#leansrc` mid-footnote, which rule 4
+      itself forbids ("never mid-sentence"). Resolved all 4 by prefixing the bare path with
+      `FormalSystem/` instead (Rule 1.2's actual requirement), preserving the footnote wording
+      unchanged; recorded here rather than silently deviating from the plan's stated approach.
+- [x] `01-syntax.typ`: converted the 1 un-linked chapter reference (the semantics chapter) to
+      `@sec:semantics`, confirming the label exists (added in this same phase).
+- [x] `02-semantics.typ`: resolved all 10 Rule 1.2 findings, all by `FormalSystem/`-prefixing an
+      already-correct module-relative path (same reasoning as the `01-syntax.typ` deviation
+      above for the 2 footnote occurrences among them: `TruthAt`/`future_iff`/`past_iff`/
+      `timeShift` citations kept their existing inline-declaration-plus-file-path shape with the
+      path corrected, rather than being restructured into `#leansrc` blocks).
+- [x] `02-semantics.typ`: checked each `==`/`===` opening against rule 2. The element lint passes
+      this file and every section already opens with reader-need prose; no gap found requiring a
+      fix.
 
 **Timing**: 1 hour
 
