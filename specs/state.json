@@ -46,12 +46,12 @@
       "session_id": "sess_1790637489_031208",
       "artifacts": [
         {
-          "path": "specs/696_stability_modal_substrate_design/reports/01_stability-modal-substrate-design.md",
+          "path": "specs/696_stability_modal_substrate_design/reports/02_trans-redesign-gate-verification.md",
           "type": "report",
-          "summary": "Adequacy criteria, scored substrate candidates, recommendation of an arrival-pruned trans datum with a thread-lifting skeleton field, two concrete non-vacuity families with congruence checks, (C2') limitation verdict, and a green-per-phase plan; includes the new machine-checked finding that (C1')'s untl clause also collapses (probes archived under probes/)."
+          "summary": "Round-2 verification of the trans-redesign: machine-checked probe shows Families A and B satisfy all six redesigned conditions with trans = eq and refute both congruences, stabFamily is not liftable (closure field necessary), Liftable suffices for the histories characterization; candidates B and C closed; re-proof surface corrected to 36 sites in 9 files."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 3
     },
     {
       "project_number": 693,
