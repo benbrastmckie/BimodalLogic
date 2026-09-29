@@ -1,7 +1,7 @@
 # Implementation Plan: Task #699
 
 - **Task**: 699 - invariance_clause_audit_and_ockhamist_grounding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: None. Task 696 is cited, never touched; its fourteen declared paths and its
   design are out of scope here.
@@ -148,7 +148,7 @@ files (`probes/02_*.lean`, `proposals/01_*.md`, `audit/*`) and none of them edit
 they carry no mutual territory constraint. Phase 4 is the only phase that touches the report and
 is the only consumer of the other three.
 
-### Phase 1: Machine-check the audit's remaining asserted verdicts [NOT STARTED]
+### Phase 1: Machine-check the audit's remaining asserted verdicts [COMPLETED]
 
 **Goal**: bring Part A's one asserted COLLAPSE verdict (row 6) and row 12's globality premise to
 the same machine-checked bar as the nine verdicts probe 01 already covers, so that no verdict in
@@ -156,24 +156,30 @@ the table rests on "the same derivation as" another.
 
 **Tasks**:
 
-- [ ] Create `specs/699_invariance_clause_audit_and_ockhamist_grounding/probes/02_remaining_verdicts_probe.lean`
+- [x] Create `specs/699_invariance_clause_audit_and_ockhamist_grounding/probes/02_remaining_verdicts_probe.lean`
       as a standalone file. Import only library modules — `FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Incompleteness`,
       `...PlusWitnessFamily.Decide` and `...WitnessFamily.Sharing.Decide` — and re-declare
       `clause_shape_collapse` locally (its three lines, as probe 01 states it). Do **not** import
-      probe 01: it is not in the build graph.
-- [ ] Row 6, `snce` arm: prove `shareClauseAt_snce_collapse` — from
+      probe 01: it is not in the build graph. *(completed)*
+- [x] Row 6, `snce` arm: prove `shareClauseAt_snce_collapse` — from
       `∀ i, shareClauseAt bx rt rp Lm Lt Lp i (Formula.snce g e)` derive
       `∀ i j, rt i = rt j → (Formula.snce g e ∈ Lt i ↔ Formula.snce g e ∈ Lt j)`, by
       `clause_shape_collapse (R := fun i j => rt i = rt j) (fun _ => rfl)`.
-- [ ] Row 6, `untl` arm: the same at `rp` and `Formula.untl`.
-- [ ] Row 12: write out A3's composition as a theorem — from (C1')'s `box` conjunct
+      *(completed: `SharingWitnessFamily.shareClauseAt_snce_collapse`)*
+- [x] Row 6, `untl` arm: the same at `rp` and `Formula.untl`.
+      *(completed: `SharingWitnessFamily.shareClauseAt_untl_collapse`)*
+- [x] Row 12: write out A3's composition as a theorem — from (C1')'s `box` conjunct
       (`box χ ∈ L i t ↔ S.bx χ = true`, `PlusWitnessFamily/Predicates.lean` 89-90) together with
       `PlusBoxFaithful` (`Predicates.lean` 195-197), derive
       `box χ ∈ S.L i t ↔ box χ ∈ S.L j v` for arbitrary `(i, t)` and `(j, v)`. Name it so the
       report can cite it as row 12's derivation. If a hypothesis A3 did not name turns out to be
       needed, record it and carry it as an explicit argument rather than weakening the statement.
-- [ ] Add one `#print axioms` line per new declaration.
-- [ ] Elaborate and capture the output.
+      *(completed: `PlusSharingWitnessFamily.plusBox_globality` states the full three-way (C1')/(C3)
+      chain, `PlusSharingWitnessFamily.plusBox_share_congr` is the named row-12 congruence; both
+      hypotheses A3 named (the box conjunct and `PlusBoxFaithful`) were needed and used)*
+- [x] Add one `#print axioms` line per new declaration. *(completed)*
+- [x] Elaborate and capture the output. *(completed: exit 0, no errors, no warnings, no `sorryAx`;
+      all four new declarations show `[propext, Classical.choice, Quot.sound]`)*
 
 **Timing**: 0.75 hours
 
