@@ -640,17 +640,88 @@ warnings and the subtree is sorry-free.
 
 ---
 
-### Phase 8: The (C5) saturation — the lasso list and its bound [NOT STARTED]
+### Phase 8: The (C5) saturation — the lasso list and its bound [BLOCKED]
+
+**BLOCKER** (Phase 8) — a statement-level obstruction, escalated rather than worked around:
+
+- **What was completed first**: this phase's task 1 ("Define the (C5) demand … Prove this from
+  `PlusTruthAt`'s `stab` clause") is **done and landed**, in
+  `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Saturate.lean`:
+  `plusSameState`, `plusTruthAt_stab_of_sameState`, `plusTypeAtM_mem_of_stab_of_state_eq`,
+  `plusTypeAtM_stab_congr_state`, `plusTypeAtM_atom_congr_state`,
+  `exists_history_state_eq_of_not_stab`, `plusTypeAtM_stab_demand` and
+  `plusTypeAtM_stab_iff_forall_sameState`. The module builds with zero errors and zero warnings
+  and is sorry-free and axiom-clean. It is design-independent: every version of the saturation,
+  and Phase 11's `←` direction, reads exactly these lemmas.
+
+- **What failed**: this phase's task 2, the saturation operator. It is blocked on an *alignment
+  budget*, not on a tactic and not on a missing lemma.
+
+- **The argument**.
+  1. `StabFaithful` quantifies over **every** `u : ℤ`, not over a window. The window collapse
+     (`stabFaithful_iff_window`) is a decidability device; the compression theorem has to
+     establish the condition at every time directly.
+  2. A demand instance is a triple `(i, u, φ)` with `stab φ ∈ plusClosureOf (Γ ++ Del)` and
+     `stab φ ∉ S.L i u`. Discharging it requires an index `j` in `i`'s `share`-class at `u` with
+     `φ ∉ S.L j u`. The countermodel always supplies the *history* — that is what
+     `plusTypeAtM_stab_demand` proves — so the difficulty is placing that history's witnessing
+     type at the **specific lasso-time `u`**.
+  3. The only device for placing a chosen type at a chosen lasso-time is Phase 7's Invariant B
+     shift. `exists_plusLabelledLasso_of_history_aligned` marks at the constant
+     `plusAlignOffset Γ Del`, and `PlusLabelledLasso.shiftBy k` moves the mark to
+     `plusAlignOffset Γ Del + k` at a cost of exactly `k` extra `mid` entries. So the reachable
+     marks are confined to
+     `[plusAlignOffset Γ Del, plusAlignOffset Γ Del + (plusCompressionBound Γ Del - |mid|)]` —
+     an interval of width at most `plusCompressionBound Γ Del`, forced by the theorem's own
+     `Λ.mid.length ≤ plusCompressionBound Γ Del` conjunct.
+  4. With Invariant A dropped the extracted lassos have **incommensurable** cycle lengths, so the
+     configuration of all `n` label rows only repeats after the least common multiple of the
+     individual `back` lengths (each in `1 … 2^κ`, so the lcm divides `lcm(1 … 2^κ)`). Demand
+     instances therefore occur at times spread over an interval of that lcm width, which exceeds
+     the reachable-mark interval of step 3 by an astronomical factor.
+  5. Consequently there are demand instances at times no constructible witness lasso can be
+     aligned to. Rotating a `back` cycle without touching `mid` would reach them but breaks local
+     coherence at the `-1 → 0` seam, so it is not available.
+
+- **Why this is a user decision and not a plan decomposition**: the binding constraint in step 3
+  is the compression theorem's own stated `mid` bound, which is part of the **Lean Challenge
+  Statement**. Every resolution below changes either that statement or a landed Phase 4 theorem.
+  The dispatch's standing instruction is explicit that a finding of this shape stops and reports
+  rather than editing the statement, so nothing was edited.
+
+- **Resolutions, for the decision**:
+  1. **Widen the `mid` bound only.** Keep `plusCompressionBound` for `back` and `fwd` and give
+     `mid` its own, larger bound (`plusMidAlignBound`), large enough to cover the alignment
+     interval. Changes the Lean Challenge Statement's `mid` conjunct. Smallest edit; does not
+     touch any landed theorem.
+  2. **Reinstate a common cycle length by strengthening Phase 4.** Make
+     `exists_good_cycle_of_plusTypeSeq` return a cycle whose length divides a declared modulus, so
+     the configuration's period drops to that modulus and the demand times collapse into the
+     reachable interval. This is Invariant A recovered honestly rather than by padding, and it is
+     resolution 3 of the Phase 7 blocker. Needs its own design round over Phase 4.
+  3. **Find a seam-preserving rotation.** Reach far-past demand times by rotating `back` together
+     with a compensating `mid` adjustment that preserves the `-1 → 0` edge. Not known to exist;
+     would need research before it is planned.
+
+- **Recommendation**: resolution 1. It is the only one that neither reopens a landed proof nor
+  depends on an unproved device, and the widened bound is stated honestly in the theorem rather
+  than concealed. It does change the Lean Challenge Statement, which is why it is being asked
+  rather than taken.
+
+- **Prohibited workarounds**: no `sorry`, no `def X := True`, no vacuous placeholder. None was
+  written; the subtree is sorry-free and axiom-clean, and the full `lake build` is green.
+
 
 **Goal**: Build the lasso list by saturating the (C5) witness demand, and prove the resulting
 count is bounded by `plusFamilyBound`. This is the novel core and the phase that fixes `n`, so it
 precedes every representative-structure phase.
 
 **Tasks**:
-- [ ] Define the (C5) demand: for an index `i`, a window time `u`, and `stab φ` in the closure
+- [x] Define the (C5) demand: for an index `i`, a window time `u`, and `stab φ` in the closure
       with `stab φ ∉ L i u`, the countermodel supplies a history `τ` with the same world state as
       `i`'s history at `u` and `¬ PlusTruthAt M τ u φ`. Prove this from `PlusTruthAt`'s `stab`
-      clause.
+      clause. *(landed as `Compression/Saturate.lean`; the `→` direction and the two state
+      congruences were added beyond the plan's list and are recorded here rather than absorbed)*
 - [ ] Define the saturation operator: one round adds, for every outstanding demand, the lasso
       extracted from that witness history at that time by Phase 7's extraction, under Invariants A
       and B.
