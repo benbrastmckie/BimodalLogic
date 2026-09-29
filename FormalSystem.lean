@@ -150,6 +150,7 @@ import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Closure
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Compression.Cycle
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Compression.Extract
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Compression.Fulfil
+import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Compression.Saturate
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Compression.Types
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Decide
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Examples
