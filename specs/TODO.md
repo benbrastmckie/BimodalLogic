@@ -70,7 +70,7 @@ next_project_number: 706
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 701 [RESEARCHED] — Port the branching-substrate lessons from the ProofChecker's...
-703 [RESEARCHING] — Prove the L-plus twin of...
+703 [RESEARCHED] — Prove the L-plus twin of...
 
 ### Formula Refactor
 
@@ -131,10 +131,11 @@ Soundness is not in question anywhere in this task; both preventions are gates a
 ---
 
 ### 703. Lplus compression and completeness
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 695, Task 696
+- **Research**: [703_lplus_compression_and_completeness/reports/01_lplus-compression-completeness-research.md]
 
 **Description**: Prove the L-plus twin of FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime: every ZTime non-validity of a PlusFormula admits a bounded, canonically guessed PlusSharingWitnessFamily certifying the refutation, against task 696's redesigned condition set. Soundness is not in question anywhere in this task: FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusTruth_iff_mem and ...plusRefutes_of_certifies are untouched by this task's proof and must survive with their statements unchanged. Acceptance: zero sorries, no new axioms, a docs/theorem-index.md row, and a C2 AXIOM_BASELINE pin for the new theorem.
 
