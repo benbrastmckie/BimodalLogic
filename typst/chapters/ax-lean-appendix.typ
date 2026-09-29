@@ -104,6 +104,15 @@ Two universes matter for reading this codebase: `Type`, the universe of data, an
 - *`Type`.* `Formula` lives here: a formula is a piece of data one can pattern-match on, print, and compute with.
 - *`Prop`.* A statement such as `1 + 1 = 2` or `Valid φ` lives here. Propositions are also types, whose inhabitants are their proofs, but Lean treats `Prop` specially: any two proofs of the same proposition are equal (*proof irrelevance*), because a proof's only job is to witness that its proposition holds.
 
+A handful of glyphs recur in every excerpt below, and reading them off once here saves doing it piecemeal later.
+
+- *`:=` defines.* What stands to its left is given the meaning written to its right, whether in a `def`, an `abbrev`, or a structure field. A `:=` inside a *binder* means something else entirely, a default argument, which @lean-appendix-reading-source reaches.
+- *`→` is Lean's function arrow.* `A → B` is the type of functions from `A` to `B`, and by the reading of @lean-appendix-props-as-types it is Lean-level implication as well. It is not the implication of *TM*: that one is a `Formula` constructor, spelled `imp`, and the two live at different levels even when a line of prose shows them side by side.
+- *`∀` and `∃` quantify at the Lean level*, over any type whatever, and `¬` is Lean-level negation. `∧`, `∨` and `↔` are its conjunction, disjunction and biconditional. All are `Prop`-valued.
+- *`True` and `False` are propositions.* `True` is the one with a trivial proof, `False` the one with no proof at all. They are not the Boolean values `true` and `false`, which are data.
+- *`↑` is a coercion arrow.* It marks a value silently moved into another type by a registered coercion, and @lean-appendix-structures is where the one this book needs is set up.
+- *`|` opens a case, of one of two kinds.* In an `inductive` declaration each `|` opens a constructor (@lean-appendix-inductive); in a definition by pattern matching each `|` opens a clause, with `=>` separating the pattern from its result (@lean-appendix-recursion). The glyph is the same and the two roles are not.
+
 `FormalSystem/` puts both universes to work on the same underlying idea, derivability, and the contrast is instructive.
 `DerivationTree fc Γ φ` (@lean-appendix-inductive) is declared in `Type`, not `Prop`, because its inhabitants carry information the codebase computes with: a derivation has a height (`DerivationTree.height`), a case structure the metalogic inducts on, and a concrete shape the decision procedure returns as its certificate of validity.
 `Derivable fc Γ φ` is the `Prop`-valued twin.
@@ -161,7 +170,7 @@ Six further points are worth fixing before any of these forms is read in anger.
 - *The brackets are literal tokens.* All eight turnstile forms are project-defined `notation` declarations, four in `FormalSystem/ProofSystem/Derivation.lean` and four in `FormalSystem/ProofSystem/Derivable.lean`. Neither the turnstile nor the square brackets are built-in Lean syntax, and the brackets are not Lean's instance binders of @lean-appendix-structures. They are punctuation this project chose, and they mean nothing outside it.
 - *What goes between them is a `FrameClass`.* Any term of that type may sit there. A concrete tag, as in `⊢[.Dense] φ`, gives a derivation in that one system. The leading dot there is shorthand: `.Dense` abbreviates `FrameClass.Dense`, because Lean resolves a dotted name against the type it expects at that position, which the notation fixes as `FrameClass`. The shorthand recurs constantly in `FormalSystem/` and is treated in full in @lean-appendix-recursion. A bound variable, as in the `{fc : FrameClass}` binder of `perpetuity2` (@lean-appendix-derived-theorem), gives a statement holding in all four systems at once.
 - *This is the book's subscripted turnstile.* `⊢[.Dense] φ`, `⊢[.ZTime] φ` and `⊢[.RTime] φ` are the Lean spellings of derivability in *TM*#sub[d], *TM*#sub[f] and *TM*#sub[c] respectively (@sec:frame-classes).
-- *The bracket-free forms are the `FrameClass.Base` instances.* `Γ ⊢ φ` is not an abbreviation that unfolds to `Γ ⊢[.Base] φ` by some separate rule; the two notations produce the same term, so they are the same type and `rfl` proves it.
+- *The bracket-free forms are the `FrameClass.Base` instances.* `Γ ⊢ φ` is not an abbreviation that unfolds to `Γ ⊢[.Base] φ` by some separate rule; the two notations produce the same term, so they are the same type, and `rfl` proves it. `rfl` is the proof that a thing equals itself, which suffices exactly when the two sides are the same term after Lean unfolds definitions.
 - *The exclamation mark marks the `Prop`-valued twin.* `|-!` is `Derivable` where `⊢` is `DerivationTree`, which is the `Type`-versus-`Prop` contrast drawn above, and `⊨ φ` is neither: it is `Valid φ`, a semantic claim about models rather than a syntactic one about derivations. `Valid φ` is itself `ValidIn FrameClass.Base φ` by definition, so validity outright and validity on the base class are one notion. The source also declares a two-place `Γ ⊨ φ` for `SemanticConsequence`, which this appendix never uses.
 - *The two spellings of the variables are one convention.* The `DerivationTree` rows above write `Γ` and `φ`, the `Derivable` rows write `G` and `p`. Each notation quotes the variable names of its own source file, and nothing turns on the difference: `Γ` and `G` both range over contexts, `φ` and `p` both over formulas. The difference is spelling, not meaning.
 
@@ -190,6 +199,7 @@ That side condition names two things the source declares beside the frame classe
 `Axiom.minFrameClass` is then a function from such a witness to the *weakest* frame class licensing that schema, defined by a case analysis sending the density axioms to `FrameClass.Dense`, the discrete ones to `FrameClass.ZTime`, the gap-and-separation ones to `FrameClass.RTime`, and everything else to `FrameClass.Base`.
 The `≤` comparing it to `fc` is not numeric order: it is a partial order on the four tags, registered as an instance and displayed in full in @lean-appendix-derivations-as-data.
 So `h.minFrameClass ≤ fc` says that the frame class this derivation is being built at is at least as strong as the weakest one the axiom needs.
+The dot in `h.minFrameClass` is *generalized field notation*: for a term `h` whose type is `Axiom φ`, the dotted name resolves in that type's namespace and takes `h` as its first argument, so `h.minFrameClass` is `Axiom.minFrameClass` applied to `h`. A function in a type's namespace can thus be applied as though it were a field of that type. The same convention is what lets `d.height` and `τ.state t` be written for derivations and histories below, and @lean-appendix-inductive puts it to work on formulas.
 
 == Propositions as Types and Proof Terms <lean-appendix-props-as-types>
 
@@ -201,7 +211,8 @@ Proving `A → B` means writing a function from proofs of `A` to proofs of `B`, 
 - *The object level.* `DerivationTree fc Γ φ` reifies the same correspondence for *TM* itself. A term of this type is not a Lean proof of a Lean proposition. It is data encoding a derivation of `φ` from `Γ` in the object system, built from constructors that mirror the rules of the Hilbert-style calculus (@lean-appendix-inductive lists all #rule-count).
 
 A *term-mode* proof writes such a value down directly, with no tactic block.
-For an arbitrary formula `p`, the instance `⊢ □p → p` of the modal T axiom is:
+For an arbitrary formula `p`, the instance `⊢ □p → p` of the modal T axiom is written out below.
+That display line mixes two notations on purpose: `⊢` is Lean's, while `□` and the arrow are the book's, standing in for the `Formula` operators `box` and `imp` that the Lean actually names. The Lean spelling of the same formula is `p.box.imp p`.
 
 #lean-code[
 ```
@@ -211,9 +222,10 @@ def boxPImpP (p : Formula) : ⊢ p.box.imp p :=
 ]
 
 `DerivationTree.axiom` takes four arguments: the context (here empty), the formula (here `_`, left for Lean to infer), an `Axiom` witness, and a proof of the frame-class side condition of @lean-appendix-types-props.
-For `Axiom.modal_t` the minimum frame class is `FrameClass.Base`, so at the base system the side condition is discharged by `trivial`.
+For `Axiom.modal_t` the minimum frame class is `FrameClass.Base`, so at the base system the side condition is discharged by `trivial`, the term proving any goal that has already reduced to `True`.
 
 Derivations compose the way proof terms always do, by applying one term to another.
+The next block opens with `example` rather than `def`: `example` is the declaration keyword for a declaration that is elaborated and checked but given no name, so it cannot be referred to afterwards. Every didactic block in this appendix that states a fact rather than naming one uses it.
 Given a hypothetical derivation `dBoxP : ⊢ □p`, the `modus_ponens` constructor combines it with `boxPImpP` to build a derivation of `p`:
 
 #lean-code[
@@ -307,6 +319,7 @@ Reading a constructor is reading an inference rule.
 Each one is laid out above as name and parameters, then premises, then conclusion: `modus_ponens` takes two sub-derivations, of `φ.imp ψ` and of `φ` from the same `Γ` and `fc`, and returns a derivation of `ψ`.
 The rule's premises-then-conclusion shape is made literal as a function's arguments-then-return-type shape.
 The two necessitation constructors and `time_reflection` require their premise to have the *empty* context `[]`, which is the constructor-level encoding of the proof-theory chapter's restriction of these rules to theorems.
+`φ.reflectTime` in that constructor's conclusion is a function on formulas, not a rule: it is the syntactic time-reflection operator of @sec:proof-theory, applied to `φ` by the dot notation of @lean-appendix-types-props. The rule and the operator share a name only in the sense that the rule concludes at the operator's value.
 
 == Structures and Classes <lean-appendix-structures>
 
@@ -406,6 +419,8 @@ attribute [instance] TemporalOrder.addCommGroup
   TemporalOrder.nontrivial
 ```
 ]
+
+The block also shows `instance` used as a *declaration keyword*. An `instance` declaration is a `def` whose result is registered for instance synthesis, so it need never be named at a call site; writing `instance` rather than `def` is what performs the registration.
 
 Only `carrier` is data.
 The other four fields are Mathlib classes, bracketed so that constructing a `TemporalOrder` finds them by synthesis instead of demanding them positionally.
@@ -563,6 +578,7 @@ def WorldHistory (F : TaskFrame) : Type _ :=
 ```
 ]
 
+The `Type _` in the header is a *universe placeholder*: rather than commit to a particular universe level, the underscore asks Lean to work one out, which it can because the subtype's level is fixed by `PartialHistory F`.
 This is the type that truth and validity quantify over, and it is a `def` rather than an `abbrev` so that the generic `Subtype` lemmas do not leak onto it.
 Its payoff is the accessor below.
 
@@ -577,7 +593,7 @@ def state (τ : WorldHistory F) (t : F.Duration) :
 `state` takes a time and returns a state, with no domain proof anywhere in its signature, because `τ.property` supplies that proof for every time at once.
 The dependent field of `PartialHistory` is still doing its work underneath.
 It has simply been discharged once, in this definition, instead of at every call site.
-The `@[simp]` lemma `states_eq_state` rewrites any surviving dependent projection toward `state`, so `τ.state t` is the form a reader meets in `TruthAt` and everywhere downstream.
+An *attribute*, written in front of a declaration between `@[` and `]`, tags it for some piece of machinery to pick up later; `@[simp]` is the tag that enrolls a lemma in the default rewrite set the `simp` tactic uses (@lean-appendix-tactics). The `@[simp]` lemma `states_eq_state` rewrites any surviving dependent projection toward `state`, so `τ.state t` is the form a reader meets in `TruthAt` and everywhere downstream.
 
 === Models over a Frame
 
@@ -591,7 +607,9 @@ structure TaskModel (F : TaskFrame) where
 ]
 
 The field is `Prop`-valued rather than `Bool`-valued, so a valuation is read as a *family of sets of world states*, one per atom, rather than as a computation.
-Fixing an atom and collecting the states where it holds gives that set directly:
+`Bool` is the two-element type of data introduced in @lean-appendix-types-props, the thing a program computes; a `Prop` is a claim a proof establishes, and only the second is appropriate to a valuation that need not be computable.
+Fixing an atom and collecting the states where it holds gives that set directly.
+In the example below, `Set α` is Mathlib's type of sets of elements of `α`, and the braces are *set-builder notation*: `{w | P w}` is the set of those `w` satisfying `P`, and the bar is read "such that".
 
 #lean-code[
 ```
@@ -710,10 +728,11 @@ example (p : Formula) : ⊢ p.box.imp p := by
 The project's tactics relevant to a first reading are these.
 
 - *`modal_search`* performs bounded proof search over the derivation rules and axiom schemata, up to a configurable depth and node-visit limit (@sec:proof-automation). It is the entry point for goals of the form "show this is derivable", not infrastructure the metalogic is built on.
-- *`apply_axiom`* is narrower and more literal. It is a zero-argument macro expanding to `apply DerivationTree.axiom; refine ?_`: it applies exactly the `axiom` constructor and leaves the two side goals, `h : Axiom _` and `h_fc`, for the caller to close.
+- *`apply_axiom`* is narrower and more literal. It is a zero-argument macro expanding to `apply DerivationTree.axiom; refine ?_`, where `refine` supplies a term with holes and `?_` is an unnamed hole left over as a new goal. So the macro applies exactly the `axiom` constructor and leaves the two side goals, `h : Axiom _` and `h_fc`, for the caller to close.
 - *`propDecide`* decides propositional tautologies, and is used where a propositional pattern would otherwise be typed out by hand.
 
-The second of these, spelled out:
+The second of these, spelled out below.
+The `case` lines there are the tactic that selects a named goal: after `apply_axiom` two goals are open, `h` and `h_fc`, and `case h => ...` runs what follows the arrow against that goal alone. The `exact` and `trivial` steps it closes them with are among the ordinary tactics listed immediately below.
 
 #lean-code[
 ```
@@ -775,6 +794,7 @@ They work through the argument in the book's notation before the Lean lines do i
 
 One name in that body needs care.
 Two live declarations are called `contraposition` with identical statements, one in `Theorems.Perpetuity` and one in `Theorems.Propositional`, and the body above resolves to the first because that is its own namespace.
+A `namespace` block prefixes every name declared inside it, so a declaration written as `contraposition` inside `namespace FormalSystem.Theorems.Perpetuity` has that longer name in full, and short names inside the block resolve against it first (@lean-appendix-conventions).
 Cited from outside, it has to be qualified by its namespace, exactly as `Axiom.modal_t` has to be (@lean-appendix-conventions).
 A short name that reads unambiguously inside one file is not therefore unambiguous in the library.
 
@@ -877,6 +897,7 @@ def lift {fc₁ fc₂ : FrameClass} (h_le : fc₁ ≤ fc₂)
 ```
 ]
 
+The subscripts in `fc₁` and `fc₂` are part of the identifiers, not operators: Lean admits unicode subscripts in names, and the source uses them where two variables of one type need telling apart.
 This is structural recursion again, now over derivations rather than over formulas, and with one clause per inference rule instead of one per connective.
 Six of the seven clauses are pure bookkeeping.
 They rebuild the same constructor around lifted sub-derivations and change nothing else.
@@ -900,6 +921,7 @@ instance : LE FrameClass where
 ```
 ]
 
+The body is a `match ... with` *expression*, which is pattern matching used in the middle of a term rather than as the shape of a whole declaration: it inspects the pair `a, b` and returns whichever right-hand side its first matching pattern names, with the final `_, _` catching everything not listed.
 `FrameClass.Base` is below everything, `FrameClass.Dense` is below `FrameClass.RTime`, and `FrameClass.ZTime` is comparable only with itself.
 The order is a branch and not a chain, which is the proof-theoretic shadow of the dense-versus-discrete dichotomy of @sec:dichotomy.
 A `PartialOrder FrameClass` instance is registered, so `le_trans` above is Mathlib's, and a `DecidableRel` instance makes every closed order goal a `decide`:

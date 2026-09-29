@@ -306,7 +306,7 @@ after the edit and checking the treatment is there.
 
 ---
 
-### Phase 5: Syntax-Glyph Paragraph and Single-Site Glosses [NOT STARTED]
+### Phase 5: Syntax-Glyph Paragraph and Single-Site Glosses [COMPLETED]
 
 **Goal**: Close the remaining `NONE` rows in class (c) with one economical paragraph for the
 recurring glyphs, and an in-place gloss for each item tied to a single site.

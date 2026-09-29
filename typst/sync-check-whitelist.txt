@@ -242,6 +242,9 @@ tableauFuel := 1000
 # constructor's bracket pair, and similar), not citations of a specific
 # FormalSystem/ declaration, so they have no literal match in Lean source ---
 ⟨ ⟩
+{w | P w}
+case h => ...
+match ... with
 
 # --- Lean appendix: editorial review TODO comments (`//`-prefixed Typst
 # line comments, not rendered prose), marking exposition gaps for a future
