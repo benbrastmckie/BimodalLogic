@@ -30,7 +30,11 @@
     "session_id": "sess_1790680388_3d4c26",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
     "compliance_check": "passed"
   }
 }
