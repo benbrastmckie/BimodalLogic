@@ -89,6 +89,250 @@ Declared as a plain `abbrev` rather than an `instance`, so it never competes wit
 abbrev repIdInhabited (n : ℕ) : Inhabited (Fin n → Fin n) := ⟨id⟩
 
 /--
+The `Inhabited` instance the succession-matrix decoding runs at: out of range, the identity
+relation. The twin of `repIdInhabited`, and declared as an `abbrev` for the same reason — it
+must never compete with `Pi.instInhabited` during synthesis, so every use site passes it
+explicitly with `@`.
+-/
+abbrev transEqInhabited (n : ℕ) : Inhabited (Fin n → Fin n → Bool) :=
+  ⟨fun i j => decide (i = j)⟩
+
+/-! ## The raw substrate layer
+
+Everything in this section is stated over *explicitly passed* periodic data rather than over a
+`SharingSkeleton`. That is what lets `SharingSkeleton` carry `LiftableRaw` as one of its own
+well-formedness fields: a field may mention only the fields declared before it, never the
+structure being defined. It is the same reason `Periodic.unrollOf` is a function of three lists
+rather than of a structure.
+
+Once the structure exists, each of these is definitionally the corresponding projection
+(`K.rep`, `K.share`, `K.Step`, `K.trans`), so nothing downstream has to reason through the two
+layers separately.
+-/
+
+/-- The decoded representative map, over raw data. `SharingSkeleton.rep` is this at the
+structure's own fields. -/
+def repOf (n : ℕ) (repBack repMid repFwd : List (Fin n → Fin n)) (u : ℤ) : Fin n → Fin n :=
+  @Periodic.unrollOf _ (repIdInhabited n) repBack repMid repFwd u
+
+/-- Naming the same world state at time `u`, over raw data. -/
+def shareOf (n : ℕ) (repBack repMid repFwd : List (Fin n → Fin n)) (u : ℤ) (i j : Fin n) : Prop :=
+  repOf n repBack repMid repFwd u i = repOf n repBack repMid repFwd u j
+
+theorem shareOf_refl (n : ℕ) (repBack repMid repFwd : List (Fin n → Fin n)) (u : ℤ) (i : Fin n) :
+    shareOf n repBack repMid repFwd u i i := rfl
+
+theorem shareOf_symm {n : ℕ} {repBack repMid repFwd : List (Fin n → Fin n)} {u : ℤ} {i j : Fin n}
+    (h : shareOf n repBack repMid repFwd u i j) : shareOf n repBack repMid repFwd u j i := h.symm
+
+theorem shareOf_trans {n : ℕ} {repBack repMid repFwd : List (Fin n → Fin n)} {u : ℤ}
+    {i j k : Fin n} (hij : shareOf n repBack repMid repFwd u i j)
+    (hjk : shareOf n repBack repMid repFwd u j k) : shareOf n repBack repMid repFwd u i k :=
+  hij.trans hjk
+
+/-- The class-level one-step relation, over raw data. `SharingSkeleton.Step` is this at the
+structure's own fields. -/
+def stepOf (n : ℕ) (repBack repMid repFwd : List (Fin n → Fin n)) (u : ℤ) (i j : Fin n) : Prop :=
+  ∃ i', shareOf n repBack repMid repFwd u i i' ∧ shareOf n repBack repMid repFwd (u + 1) i' j
+
+/-- The decoded succession matrix, over raw data. -/
+def transMatOf (n : ℕ) (transBack transMid transFwd : List (Fin n → Fin n → Bool)) (u : ℤ) :
+    Fin n → Fin n → Bool :=
+  @Periodic.unrollOf _ (transEqInhabited n) transBack transMid transFwd u
+
+/--
+**Succession, over raw data, pruned by arrival renaming.**
+
+Two conjuncts, and the second is what keeps the frame untouched by the redesign: a `trans`-step
+from `i` at `u` may go only to an index `j` that names the state the step actually arrives in.
+Without that conjunct `Step` and `trans` would be independent relations and every frame lemma
+would need re-proving; with it, `trans` refines `share (u+1)` and the frame section is a
+consequence rather than a rewrite.
+-/
+def transOf (n : ℕ) (repBack repMid repFwd : List (Fin n → Fin n))
+    (transBack transMid transFwd : List (Fin n → Fin n → Bool)) (u : ℤ) (i j : Fin n) : Prop :=
+  transMatOf n transBack transMid transFwd u i j = true ∧
+    shareOf n repBack repMid repFwd (u + 1) i j
+
+/--
+**Thread lifting: every state path of the frame is tracked by a succession path.**
+
+The well-formedness obligation the fourth datum creates. While succession *was* `share (u+1)`,
+"every world history is a thread's trace" came free: a `Step`-path's own intermediates already
+formed a thread. Once succession is a separate, possibly sparser relation, that is no longer
+automatic — a `Step`-path may cross between indices that no `trans`-step connects — and the
+histories characterization has to be *demanded* rather than derived.
+
+Demanding it label-free, as a skeleton field, is what keeps `total_eq_thread`,
+`plusTruth_iff_mem` and `plusRefutes_of_certifies` stated exactly as they were.
+
+The tracking is up to `share`, not on the nose: a lifted path need only name the same state as
+the original at every time, which is all the histories characterization ever consumes.
+-/
+def LiftableRaw (n : ℕ) (repBack repMid repFwd : List (Fin n → Fin n))
+    (transBack transMid transFwd : List (Fin n → Fin n → Bool)) : Prop :=
+  ∀ σ : ℤ → Fin n, (∀ u : ℤ, stepOf n repBack repMid repFwd u (σ u) (σ (u + 1))) →
+    ∃ τ : ℤ → Fin n,
+      (∀ u : ℤ, transOf n repBack repMid repFwd transBack transMid transFwd u (τ u) (τ (u + 1))) ∧
+      (∀ u : ℤ, shareOf n repBack repMid repFwd u (σ u) (τ u))
+
+/--
+**For the free-succession producer: a full `trans` is liftable.**
+
+This is the gluing half of the pre-redesign `total_eq_thread`, lifted out to stand on raw paths.
+A `Step`-path's own intermediates `b u` — the index it rides from `u` to `u + 1` — are
+consecutive in `share (u+1)`, hence arrival-consistent, and a full succession matrix relates
+everything, so they form the wanted path. Every producer that does not mean to constrain
+succession discharges `lift` this way, and the tree it presents is exactly the pre-redesign one.
+-/
+theorem liftable_of_full (n : ℕ) (repBack repMid repFwd : List (Fin n → Fin n))
+    (transBack transMid transFwd : List (Fin n → Fin n → Bool))
+    (hfull : ∀ (u : ℤ) (i j : Fin n), transMatOf n transBack transMid transFwd u i j = true) :
+    LiftableRaw n repBack repMid repFwd transBack transMid transFwd := by
+  intro σ hstep
+  choose b hb₁ hb₂ using hstep
+  exact ⟨b, fun u => ⟨hfull _ _ _, shareOf_trans (hb₂ u) (hb₁ (u + 1))⟩, hb₁⟩
+
+/--
+**Splice closure**: any two indices naming the same state at `u` have a common index that copies
+the first strictly before `u` and the second from `u` on.
+
+The hop-free design's condition, kept here as the general sufficient condition for `lift`. It
+says the presented index set is closed under cutting two histories at a shared state and
+exchanging their halves, which is exactly what a state path does when it crosses between
+indices.
+-/
+def SpliceClosedRaw (n : ℕ) (repBack repMid repFwd : List (Fin n → Fin n)) : Prop :=
+  ∀ (u : ℤ) (i j : Fin n), shareOf n repBack repMid repFwd u i j →
+    ∃ k : Fin n, (∀ v : ℤ, v < u → shareOf n repBack repMid repFwd v k i) ∧
+      (∀ v : ℤ, u ≤ v → shareOf n repBack repMid repFwd v k j)
+
+/-- Pigeonhole on a finite codomain: some value is taken arbitrarily late. -/
+private theorem exists_cofinal_value {n : ℕ} (F : ℕ → Fin n) :
+    ∃ k : Fin n, ∀ N : ℕ, ∃ M : ℕ, N ≤ M ∧ F M = k := by
+  classical
+  by_contra h
+  push_neg at h
+  choose B hB using h
+  set C : ℕ := (Finset.univ : Finset (Fin n)).sup B with hC
+  have hle : B (F C) ≤ C := by
+    rw [hC]; exact Finset.le_sup (Finset.mem_univ (F C))
+  exact (hB (F C) C hle rfl).elim
+
+/--
+**For the hop-free producer: a splice-closed index set is liftable.**
+
+Every state path is class-equal to a *constant* path. Splicing extends an index that tracks the
+path on `[-N, N]` to one that tracks it on `[-(N+1), N+1]`, one end at a time and each extension
+two splices: one to reach the new time, one to graft that onto the index already tracking the
+interior. Pigeonhole on the finitely many indices then picks a single index that works for
+arbitrarily large `N`, and hence for every time.
+
+The succession relation only has to be reflexive, because the lifted path never moves.
+-/
+theorem liftable_of_spliceClosed (n : ℕ) (repBack repMid repFwd : List (Fin n → Fin n))
+    (transBack transMid transFwd : List (Fin n → Fin n → Bool))
+    (hsp : SpliceClosedRaw n repBack repMid repFwd)
+    (hrefl : ∀ (u : ℤ) (i : Fin n), transMatOf n transBack transMid transFwd u i i = true) :
+    LiftableRaw n repBack repMid repFwd transBack transMid transFwd := by
+  classical
+  intro σ hstep
+  -- Replace the state path by its own intermediates, which are `share (u+1)`-consecutive.
+  choose ρ hρ₀ hρ₁ using hstep
+  have hρstep : ∀ u : ℤ, shareOf n repBack repMid repFwd (u + 1) (ρ u) (ρ (u + 1)) :=
+    fun u => shareOf_trans (hρ₁ u) (hρ₀ (u + 1))
+  -- One index tracks `ρ` on every bounded window.
+  have hwin : ∀ N : ℕ, ∃ k : Fin n, ∀ v : ℤ, -(N : ℤ) ≤ v → v ≤ (N : ℤ) →
+      shareOf n repBack repMid repFwd v k (ρ v) := by
+    intro N
+    induction N with
+    | zero =>
+      refine ⟨ρ 0, fun v h₁ h₂ => ?_⟩
+      have : v = 0 := by omega
+      subst this
+      exact shareOf_refl _ _ _ _ _ _
+    | succ N ih =>
+      obtain ⟨k, hk⟩ := ih
+      -- Extend one step to the right.
+      obtain ⟨k₀, hk₀l, hk₀r⟩ := hsp ((N : ℤ) + 1) (ρ (N : ℤ)) (ρ ((N : ℤ) + 1)) (hρstep (N : ℤ))
+      have hkN : shareOf n repBack repMid repFwd (N : ℤ) k (ρ (N : ℤ)) := hk _ (by omega) le_rfl
+      have hk₀N : shareOf n repBack repMid repFwd (N : ℤ) k₀ (ρ (N : ℤ)) :=
+        hk₀l _ (by omega)
+      obtain ⟨k₁, hk₁l, hk₁r⟩ :=
+        hsp (N : ℤ) k k₀ (shareOf_trans hkN (shareOf_symm hk₀N))
+      have hk₁ : ∀ v : ℤ, -(N : ℤ) ≤ v → v ≤ (N : ℤ) + 1 →
+          shareOf n repBack repMid repFwd v k₁ (ρ v) := by
+        intro v h₁ h₂
+        rcases lt_or_ge v (N : ℤ) with hv | hv
+        · exact shareOf_trans (hk₁l _ hv) (hk _ h₁ (by omega))
+        · rcases lt_or_ge v ((N : ℤ) + 1) with hv' | hv'
+          · have : v = (N : ℤ) := by omega
+            subst this
+            exact shareOf_trans (hk₁r _ le_rfl) hk₀N
+          · have : v = (N : ℤ) + 1 := by omega
+            subst this
+            exact shareOf_trans (hk₁r _ (by omega)) (hk₀r _ le_rfl)
+      -- Extend one step to the left.
+      have hleft : shareOf n repBack repMid repFwd (-(N : ℤ)) (ρ (-(N : ℤ) - 1)) (ρ (-(N : ℤ))) := by
+        have := hρstep (-(N : ℤ) - 1)
+        rwa [show -(N : ℤ) - 1 + 1 = -(N : ℤ) by omega] at this
+      have hk₁N : shareOf n repBack repMid repFwd (-(N : ℤ)) k₁ (ρ (-(N : ℤ))) :=
+        hk₁ _ le_rfl (by omega)
+      obtain ⟨k₂, hk₂l, hk₂r⟩ :=
+        hsp (-(N : ℤ)) (ρ (-(N : ℤ) - 1)) k₁ (shareOf_trans hleft (shareOf_symm hk₁N))
+      refine ⟨k₂, fun v h₁ h₂ => ?_⟩
+      rw [Nat.cast_succ] at h₁ h₂
+      rcases lt_or_ge v (-(N : ℤ)) with hv | hv
+      · have : v = -(N : ℤ) - 1 := by omega
+        subst this
+        exact hk₂l _ (by omega)
+      · exact shareOf_trans (hk₂r _ hv) (hk₁ _ hv (by omega))
+  choose F hF using hwin
+  obtain ⟨k, hk⟩ := exists_cofinal_value F
+  refine ⟨fun _ => k, fun u => ⟨hrefl _ _, shareOf_refl _ _ _ _ _ _⟩, fun u => ?_⟩
+  obtain ⟨M, hM₁, hM₂⟩ := hk u.natAbs
+  have hbound : -(M : ℤ) ≤ u ∧ u ≤ (M : ℤ) := by
+    have : (u.natAbs : ℤ) ≤ (M : ℤ) := by exact_mod_cast hM₁
+    omega
+  have := hF M u hbound.1 hbound.2
+  rw [hM₂] at this
+  exact shareOf_trans (hρ₀ u) (shareOf_symm this)
+
+/--
+**For the gate families: constant below a cut, one class above it, is liftable.**
+
+The shape both gate families have, and the reason neither needs splice closure. Below the cut
+every `share`-class is a singleton, so a `Step`-path cannot move; at or above it every two
+indices share, so a constant path tracks anything. The constant path at the path's own value
+just below the cut therefore tracks it everywhere, and again succession only has to be
+reflexive.
+-/
+theorem liftable_of_constant_below (n : ℕ) (repBack repMid repFwd : List (Fin n → Fin n))
+    (transBack transMid transFwd : List (Fin n → Fin n → Bool)) (c : ℤ)
+    (hdisc : ∀ u : ℤ, u < c → ∀ i j : Fin n, shareOf n repBack repMid repFwd u i j → i = j)
+    (htot : ∀ u : ℤ, c ≤ u → ∀ i j : Fin n, shareOf n repBack repMid repFwd u i j)
+    (hrefl : ∀ (u : ℤ) (i : Fin n), transMatOf n transBack transMid transFwd u i i = true) :
+    LiftableRaw n repBack repMid repFwd transBack transMid transFwd := by
+  intro σ hstep
+  have hconst : ∀ m : ℕ, σ (c - 1 - (m : ℤ)) = σ (c - 1) := by
+    intro m
+    induction m with
+    | zero => simp
+    | succ m ih =>
+      obtain ⟨w, h₁, h₂⟩ := hstep (c - 1 - ((m + 1 : ℕ) : ℤ))
+      rw [show c - 1 - ((m + 1 : ℕ) : ℤ) + 1 = c - 1 - (m : ℤ) by omega] at h₂
+      have e₁ := hdisc _ (by omega) _ _ h₁
+      have e₂ := hdisc _ (by omega) _ _ h₂
+      rw [e₁, e₂, ih]
+  refine ⟨fun _ => σ (c - 1), fun u => ⟨hrefl _ _, shareOf_refl _ _ _ _ _ _⟩, fun u => ?_⟩
+  rcases lt_or_ge u c with hu | hu
+  · have := hconst (c - 1 - u).toNat
+    rw [show c - 1 - (((c - 1 - u).toNat : ℕ) : ℤ) = u by omega] at this
+    rw [this]
+    exact shareOf_refl _ _ _ _ _ _
+  · exact htot u hu _ _
+
+/--
 **The label-free branching substrate.**
 
 A count of indices together with three periodic segments of representative maps on them. This is

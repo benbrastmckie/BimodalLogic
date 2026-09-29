@@ -186,7 +186,7 @@ the current API rather than weakening its statement.
 
 ---
 
-### Phase 2: Free-standing `LiftableRaw` and its two sufficient lemmas [NOT STARTED]
+### Phase 2: Free-standing `LiftableRaw` and its two sufficient lemmas [COMPLETED]
 
 **Goal**: Land the thread-lifting closure predicate and both sufficiency lemmas as ordinary
 definitions over explicitly-passed raw data, before any structure changes. This is what keeps
@@ -194,19 +194,21 @@ Phase 3 small enough to be a single atomic batch.
 
 **Tasks**:
 
-- [ ] Define `LiftableRaw n repBack repMid repFwd transBack transMid transFwd` in
+- [x] Define `LiftableRaw n repBack repMid repFwd transBack transMid transFwd` in
       `Sharing/Skeleton.lean`, as a `Prop` over the decoded functions, taking the probe's
       `Liftable` as the reference shape: every `StepRaw`-path is `share`-tracked by some
       index path whose consecutive pairs are `transRaw`-related and arrival-consistent.
-- [ ] Prove `liftable_of_full`: `LiftableRaw` holds whenever every `trans` matrix is the full
+- [x] Prove `liftable_of_full`: `LiftableRaw` holds whenever every `trans` matrix is the full
       relation. The proof is the gluing half of today's `total_eq_thread`
-      (`Skeleton.lean` roughly 930-946), lifted out verbatim.
-- [ ] Prove `liftable_of_spliceClosed`: `LiftableRaw` holds for a splice-closed lasso set, by
+      (`Skeleton.lean` roughly 930-946), lifted out verbatim. *(Scope Hypothesis confirmed: the
+      gluing step depends only on the raw `Step`-path's own intermediates, not on `Thread`, so
+      it restated over raw paths in three lines with no new mathematics.)*
+- [x] Prove `liftable_of_spliceClosed`: `LiftableRaw` holds for a splice-closed lasso set, by
       pigeonhole on the finite index type.
-- [ ] Add a constant-path corollary covering the two gate families' situation (a family whose
+- [x] Add a constant-path corollary covering the two gate families' situation (a family whose
       `Step`-paths are constant outside one shared half-line), so Phases 9 and 10 can discharge
       `lift` without reaching for splice-closure.
-- [ ] Docstring each of the three, naming which producer class it is for.
+- [x] Docstring each of the three, naming which producer class it is for.
 
 **Timing**: 2 hours
 
