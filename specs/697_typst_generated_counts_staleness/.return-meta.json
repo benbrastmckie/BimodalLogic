@@ -1,0 +1,33 @@
+{
+  "status": "researched",
+  "agent_type": "general-research-agent",
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "session_id": "sess_1790656266_d2dc32_697",
+  "dispatch_seq": 2,
+  "task_number": 697,
+  "findings_count": 8,
+  "next_steps": "Run /plan 697 to create implementation plan",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/697_typst_generated_counts_staleness/reports/01_generated_counts_staleness.md",
+      "summary": "Compares the four candidate mechanisms for the typst/generated/status.typ staleness gap; recommends a versioned pre-commit hook (build-free --json gate that blocks the commit and prints the fix command, avoiding both the built-library requirement and the spurious-stamp-diff hazard) plus a --fix mode on typst-sync-check.sh as a complementary manual remedy; rejects compile-time computation as infeasible under Typst's sandboxing; notes the .claude/ agent-orchestrator reading of option (c) is out of this repo's boundary but is subsumed by the recommended hook since git-commit-scoped.sh never bypasses hooks."
+    }
+  ],
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, a generated-artifact freshness gate (typst-sync-check.sh Check 2) that only detects drift in CI, with no local hook ever calling the generator, recurs as a failure class even though the fix is a single documented command -- because nothing ever prompts anyone to run it. The general pattern: when a checker and generator already agree and the only defect is 'nothing calls the generator', prefer a build-free (--json-mode) blocking pre-commit gate that only pays the expensive/build-dependent regeneration cost when a real mismatch is found, and never auto-regenerates+restages silently (which would create spurious diffs from unrelated stamp/timestamp fields).",
+      "category": "PATTERN",
+      "source_artifact": "specs/697_typst_generated_counts_staleness/reports/01_generated_counts_staleness.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["pre-commit hook", "generated file staleness", "CI gate", "build-free check", "typst sync check"]
+    },
+    {
+      "content": "In BimodalLogic, .claude/scripts/git-commit-scoped.sh (the orchestrator's sanctioned committer) invokes a plain `git commit` with no --no-verify anywhere. This means any versioned repo-local git hook (once core.hooksPath points at it) fires transparently for both human and orchestrator-driven commits alike -- a useful lever for closing gaps that would otherwise require editing the .claude/ agent-system source store (which is a separate repository and off-limits per source-store-deploy-boundary.md).",
+      "category": "INSIGHT",
+      "source_artifact": "specs/697_typst_generated_counts_staleness/reports/01_generated_counts_staleness.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["git-commit-scoped.sh", "git hooks", "orchestrator commits", "source-store-deploy-boundary", "no-verify"]
+    }
+  ]
+}
