@@ -993,18 +993,25 @@ echo
 # ---------------------------------------------------------------------------
 # C2: axiom sets for the flagship theorems, and for the certificate stack's pinned goals
 #
-# The first four rows are the completeness/countermodel flagships. The ten that follow
-# pin the branching witness-family stack: the histories characterization the whole
-# branching device rests on, and the nine L-plus declarations that carry the stability
+# The first four rows are the completeness/countermodel flagships. The thirteen that
+# follow pin the branching witness-family stack: the histories characterization the whole
+# branching device rests on, and the twelve L-plus declarations that carry the stability
 # condition (C5) -- the condition itself, its decision procedure's correctness, the
 # agreement case that makes it load-bearing, the certificate producer, the two
-# non-vacuity witnesses, and the four that record the certificate class is EMPTY for a
-# `snce` under a `stab` (the incompleteness result: its root cause, the two placement
-# variants of the empty-class claim, and the non-validity that makes the emptiness a
-# completeness failure rather than a vacuity). They are pinned here for the same reason
-# the flagships are: a silent `Classical`-free-to-not claim, or a new axiom, is a HARD
-# STOP. The four incompleteness rows carry a second reason: a future substrate redesign
-# that repairs (C1') must make them FAIL, which is exactly the signal wanted.
+# non-vacuity witnesses, and the SEVEN that record the certificate class is EMPTY for a
+# stability modal over a tense operator (the incompleteness result, now closed on both
+# temporal sides: the `snce`-side root cause, its two placement variants, and its
+# non-validity; then the `untl`-side root cause, its empty-class claim, and its
+# non-validity). They are pinned here for the same reason the flagships are: a silent
+# `Classical`-free-to-not claim, or a new axiom, is a HARD STOP. The seven incompleteness
+# rows carry a second reason: a future substrate redesign that repairs (C1') must make
+# them FAIL, which is exactly the signal wanted.
+#
+# The `untl`-side rows exist because the `untl` clause is NOT the defect-free half it was
+# once recorded as. It quantifies its successor over the `share`-class at `t+1` rather
+# than at `t`, which displaces the collapse by one step instead of avoiding it. Both
+# directions being closed is what rules out re-timing one clause to match the other as a
+# repair, and leaves the substrate itself as the only place the fix can go.
 # The last two are the carrier normalizations, for L and for L-plus: the reduction from an
 # arbitrary discrete duration carrier to `ℤ`. They are pinned because that reduction is what
 # licenses reading a `ℤ`-indexed candidate enumeration as a claim about validity over EVERY
@@ -1029,6 +1036,9 @@ read -r -d '' AXIOM_BASELINE <<'BASELINE'
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabSnce' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabSnce_premise' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabSnce' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.untl_shift_share_congr' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabUntl' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabUntl' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.validZTime_iff_validInt' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt' depends on axioms: [propext, Classical.choice, Quot.sound]
 BASELINE
@@ -1051,6 +1061,9 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabSnce
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabSnce_premise
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabSnce
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.untl_shift_share_congr
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabUntl
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabUntl
 #print axioms FormalSystem.Semantics.validZTime_iff_validInt
 #print axioms FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt
 LEAN
@@ -1063,7 +1076,7 @@ LEAN
     | grep 'depends on axioms')
   rm -f "$AX_SRC"
   if [ "$AX_OUT" = "$AXIOM_BASELINE" ]; then
-    pass C2 "all sixteen pinned axiom sets match baseline"
+    pass C2 "all nineteen pinned axiom sets match baseline"
     while IFS= read -r l; do note "$l"; done <<<"$AX_OUT"
   else
     fail C2 "axiom sets diverged from baseline -- this is a HARD STOP, not a new baseline"

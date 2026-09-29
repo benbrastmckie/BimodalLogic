@@ -124,7 +124,7 @@ parallel pair in the code phases: they touch disjoint directories. Phases 1 and 
 independent of each other but both touch the repository root's scripts or the skeleton, so
 running them sequentially is also fine.
 
-### Phase 1: Land the `untl`-side incompleteness [IN PROGRESS]
+### Phase 1: Land the `untl`-side incompleteness [COMPLETED]
 
 **Goal**: Put the `untl`-side of the present defect on the record, from the two archived
 round-1 probes, before the redesign removes the ability to state it. This also corrects the two
@@ -132,24 +132,24 @@ READMEs' rule of thumb, which currently says the wrong thing about why the defec
 
 **Tasks**:
 
-- [ ] Port `untl_shift_share_congr` from `probes/01_untl_shift_congr_probe.lean` into
+- [x] Port `untl_shift_share_congr` from `probes/01_untl_shift_congr_probe.lean` into
       `PlusWitnessFamily/Incompleteness.lean`, beside `snce_share_congr`, with a docstring
       naming it the `untl`-side twin.
-- [ ] Port `stabUntlTarget`, `not_plusCertifies_stabUntl` (probe 01) and
+- [x] Port `stabUntlTarget`, `not_plusCertifies_stabUntl` (probe 01) and
       `not_plusValidZTime_stabUntl` (probe 02) into the same module.
-- [ ] Add the three new theorems to the C2 axiom baseline in `scripts/check-module-invariants.sh`:
+- [x] Add the three new theorems to the C2 axiom baseline in `scripts/check-module-invariants.sh`:
       a `BASELINE` line and a `#print axioms` line each, and update the `pass C2` message's
       spelled-out count.
-- [ ] Add three matching rows to `docs/theorem-index.md`'s certificate-stack block, each tagged
+- [x] Add three matching rows to `docs/theorem-index.md`'s certificate-stack block, each tagged
       `pcq pinned:C2`.
-- [ ] Extend the C2 block's explanatory comment so it names the `untl` side too, and keep its
+- [x] Extend the C2 block's explanatory comment so it names the `untl` side too, and keep its
       existing note that a successful substrate redesign must make these rows FAIL.
-- [ ] Replace the "a condition quantifying over the class at the label's *own* time collapses"
+- [x] Replace the "a condition quantifying over the class at the label's *own* time collapses"
       rule of thumb in both READMEs with the correct rule: a condition quantifying over the
       one-step reach of a position collapses whenever that reach is a whole `share`-class, at
       either time. Correct the claims that the `untl` half is a genuine repair and is
       defect-free by inspection.
-- [ ] Add the "position = history type" paragraph under `Sharing/README.md`'s
+- [x] Add the "position = history type" paragraph under `Sharing/README.md`'s
       `### Correction: (C1') is only half a repair`, so the residual neighbour-agreement
       constraints read as semantically forced rather than as a relapse.
 

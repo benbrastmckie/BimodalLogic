@@ -69,7 +69,7 @@ state at `u`. Three properties of that statement are the whole design:
 
 The certificate is **sound** and **incomplete**, and the incompleteness is not a matter of the
 bound being too small: for one family of targets the certificate class is *empty*.
-`Incompleteness.lean` proves it, in four declarations.
+`Incompleteness.lean` proves it, in seven declarations, on both temporal sides.
 
 `snce_share_congr` is the root cause, and it is a consequence of (C1') alone. Reading the `snce`
 clause twice — once at `i` with the shared index `j`, once at `j` with itself by reflexivity of
@@ -97,15 +97,23 @@ and nothing here weakens that. What fails is completeness of the certificate *cl
 a refutation of stability-modal decidability — it says only that this certificate cannot be the
 route, because a procedure enumerating certified families would answer "valid" for `Pp → ⊡Pp`.
 
-**The `untl` side is defect-free by inspection, not by machine check.** (C1')'s `untl` clause
-quantifies forward along a thread rather than over the `share`-class at the label's own time, so
-the same collapse does not arise. No theorem asserts that; the positive obligation — a full
-six-condition family separating `Fp` from `⊡Fp` — belongs to the substrate redesign.
+**The `untl` side fails too, and this is machine-checked rather than inspected.** An earlier
+version of this section called the future-tense half defect-free by inspection, on the ground
+that its clause quantifies over the class at `t+1` rather than at the label's own time. That
+reading was wrong. `untl_shift_share_congr` reads the one clause at `t - 1`, where `share t i j`
+*is* `share ((t-1)+1) i j`, and recovers the same forced class agreement on the one-step
+unfolding at `t`. `not_plusCertifies_stabUntl` turns that into an empty certificate class for
+`Fp → (¬p → ⊡Fp)`, and `not_plusValidZTime_stabUntl` makes that emptiness a completeness failure
+rather than a vacuity. The extra `¬p` antecedent is exactly what the shifted congruence needs:
+the congruence controls the unfolding `p ∨ (⊤ ∧ Fp)`, so the `p` disjunct has to be ruled out at
+the witnessing index.
 
-**Where the fix belongs.** Not in a re-wording of (C1'). The rule of thumb the proof exposes is
-general: any condition quantifying over the `share`-class at a label's own time forces class
-agreement on that label, so narrowing the `snce` clause's quantifier while leaving the substrate
-alone relocates the problem rather than removing it. The repair is at the substrate level, and
+**Where the fix belongs.** Not in a re-wording of (C1'), and not in re-timing one clause's
+quantifier to match the other's. The rule of thumb the proofs expose is general: any condition
+quantifying over the one-step *reach* of a position collapses whenever that reach is a whole
+`share`-class, at either time and in either temporal direction. Since both clauses' reaches are
+`share`-classes, narrowing or re-timing either one while leaving the substrate alone relocates
+the problem rather than removing it. The repair is at the substrate level, and
 [the Sharing README](../WitnessFamily/Sharing/README.md) records what it requires.
 
 ## A parallel export, not a widened one
@@ -167,4 +175,4 @@ What is new is everything that reads a label.
 
 ---
 
-*Last verified: 2026-09-28*
+*Last verified: 2026-09-29*

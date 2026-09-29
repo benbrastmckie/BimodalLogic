@@ -159,6 +159,9 @@ class — see `deterministic_not_plusDefinable` above.
 | — | No six-condition L⁺ certificate refutes any instance of `(g S e) → ⊡(g S e)`, at any time and any size | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabSnce` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean` | — | pcq pinned:C2 |
 | — | The same for the negated-premise placement: restating the target is not an escape | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabSnce_premise` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean` | — | pcq pinned:C2 |
 | — | `Pp → ⊡Pp` is a genuine ℤ-time non-validity, so the empty certificate class is a completeness failure | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabSnce` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean` | ZTime | pcq pinned:C2 |
+| — | The same forced agreement on the `untl` side, one step shifted: the future-tense clause displaces the collapse rather than avoiding it | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.untl_shift_share_congr` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean` | — | pcq pinned:C2 |
+| — | No six-condition L⁺ certificate refutes `Fp → (¬p → ⊡Fp)` either, so neither temporal direction escapes | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabUntl` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean` | — | pcq pinned:C2 |
+| — | `Fp → (¬p → ⊡Fp)` is a genuine ℤ-time non-validity, making the `untl`-side emptiness a completeness failure too | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabUntl` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean` | ZTime | pcq pinned:C2 |
 
 ### Characterization and definability
 

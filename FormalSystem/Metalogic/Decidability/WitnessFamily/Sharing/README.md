@@ -121,7 +121,7 @@ Two details worth not rediscovering:
 | Condition | Status | Why |
 |---|---|---|
 | (C0) `AtomCoherent` | **new, mandatory** | The branching carrier is a quotient, so the valuation reads a `share`-class; a `Quotient.lift` needs shared indices to agree on atoms. Without it the valuation is not even well defined |
-| (C1) `LocalCoherentLab` | **replaced** by (C1') `LocalCoherentShare`, and only half repaired | Its two temporal clauses are stated per lasso, silently assuming a history never leaves the lasso it starts on. The branching form quantifies the `untl` unfolding over every shared successor and the `snce` unfolding over every shared predecessor. The `untl` half is a genuine repair; the `snce` half collapses backward branching, at a completeness price the received account did not record. See the correction below |
+| (C1) `LocalCoherentLab` | **replaced** by (C1') `LocalCoherentShare`, and not repaired on either temporal side | Its two temporal clauses are stated per lasso, silently assuming a history never leaves the lasso it starts on. The branching form quantifies the `untl` unfolding over every shared successor and the `snce` unfolding over every shared predecessor. Both clauses collapse branching, at a completeness price the received account did not record — the `snce` half immediately, the `untl` half displaced by one step. See the correction below |
 | (C2) `FulfillingLab` | **replaced** by (C2') `ThreadFulfilling` | It reads an eventuality's discharge off the one lasso the label sits on. The branching form is a universal path quantifier — `A[g U e]` — over every thread through the position |
 | (C3) `BoxFaithful` | **reused verbatim** | See the correction below |
 | (C4) `Target` | **reused verbatim** | It names a time on the main lasso and mentions neither the frame nor its histories |
@@ -146,33 +146,46 @@ redesign. The Lean reading refutes that: the two conditions that genuinely break
 (C2), both of which are stated *per lasso*. What (C3) needs is not a new statement but a new
 histories characterization underneath it, which is what `total_eq_thread` supplies.
 
-### Correction: (C1') is only half a repair
+### Correction: (C1') is not a repair on either temporal side
 
 The received account of this design named (C1') as *the* fix for recombination, with no
-qualification. The Lean reading shows it is only half a fix, and the other half fails.
+qualification. The Lean reading shows it is not a fix at all: both temporal clauses fail, and
+they fail for one reason.
 
-The two temporal clauses are not symmetric, although they read as though they were. The `untl`
-clause quantifies its successor **forward along a thread**, so it says nothing about two indices
-at a single time. The `snce` clause quantifies its predecessor over the `share`-class at the
-label's **own** time `t`. Read that clause twice — once at `i` with the shared index `j`, once at
-`j` with itself, using reflexivity of `share` — and it forces any two indices naming the same
-world state at `t` to agree on every `snce` formula of the closure. Past-tense truth in a
-presented model is a function of the world state, which is exactly the backward branching (C1')
-was supposed to admit.
+The two clauses look asymmetric, and an earlier version of this section read that asymmetry as a
+half-repair. The `snce` clause quantifies its predecessor over the `share`-class at the label's
+**own** time `t`; the `untl` clause quantifies its successor over the class at `t+1`. Read the
+`snce` clause twice — once at `i` with the shared index `j`, once at `j` with itself, using
+reflexivity of `share` — and it forces any two indices naming the same world state at `t` to
+agree on every `snce` formula of the closure. Past-tense truth in a presented model is a function
+of the world state, which is exactly the backward branching (C1') was supposed to admit.
 
-The price is a completeness failure, machine-checked on the L⁺ side where the stability modal
-exists to observe it. `PlusWitnessFamily/Incompleteness.lean` proves that no six-condition L⁺
-family certifies any instance of `(g S e) → ⊡(g S e)` — `not_plusCertifies_stabSnce`, and
-`not_plusCertifies_stabSnce_premise` for the negated-premise placement — while
-`not_plusValidZTime_stabSnce` shows `Pp → ⊡Pp` is a genuine ℤ-time non-validity. The certificate
-class is *empty* for those targets, not merely large. `snce_share_congr` is the one-line root
-cause, and it uses (C1') and nothing else.
+The `untl` clause's extra step buys nothing. Reading it at `t - 1` instead of at `t` turns
+`share t i j` into `share ((t-1)+1) i j`, so the one clause at `(i, t-1)` applies to both `i` and
+`j`, and the two readings force class agreement on the one-step unfolding at `t`. The collapse is
+displaced by one step, not avoided.
 
-**The rule of thumb**, stated once because it will recur: a condition that quantifies over the
-`share`-class at a label's **own** time forces the class to agree on that label. Conditions that
-quantify forward or backward along a thread do not. So a condition is recombination-stable exactly
-when its quantifier leaves the class, which is why (C3) survives verbatim — its right-hand side
-quantifies the label pool and mentions no class at all.
+The price is a completeness failure on both sides, machine-checked on the L⁺ side where the
+stability modal exists to observe it. `PlusWitnessFamily/Incompleteness.lean` proves that no
+six-condition L⁺ family certifies any instance of `(g S e) → ⊡(g S e)` —
+`not_plusCertifies_stabSnce`, and `not_plusCertifies_stabSnce_premise` for the negated-premise
+placement — nor `Fp → (¬p → ⊡Fp)` (`not_plusCertifies_stabUntl`), while
+`not_plusValidZTime_stabSnce` and `not_plusValidZTime_stabUntl` show both targets are genuine
+ℤ-time non-validities. The certificate class is *empty* for them, not merely large.
+`snce_share_congr` and `untl_shift_share_congr` are the one-line root causes, and each uses (C1')
+and nothing else.
+
+**The rule of thumb**, stated once because it will recur, and stated correctly: a condition that
+quantifies over the one-step **reach** of a position collapses whenever that reach is a whole
+`share`-class — at either time, and whichever temporal direction it points. Naming `t+1` rather
+than `t` is not what matters; being a `share`-class is. A condition is recombination-stable
+exactly when its quantifier ranges over something *other* than a class, which is why (C3)
+survives verbatim: its right-hand side quantifies the label pool and mentions no class at all.
+
+This also disposes of the obvious cheap repair. Re-timing the `snce` quantifier to `t - 1` by
+analogy with `untl` does not help, because the `untl` side is not the healthy one to imitate —
+both reaches are `share`-classes, and trading one timing for the other trades one side's defect
+for the other's.
 
 **Where the asymmetry comes from.** Not from the clause's wording, and so not fixable by
 re-wording it. `Thread.step` reads `share (u+1) (idx u) (idx (u+1))`: one-step succession is
@@ -181,6 +194,17 @@ therefore carries two jobs — the `⊡` quantifier's class, and the thread's st
 clause written in terms of the only relation available cannot help but quantify over the class.
 Separating those two jobs is a substrate change, not a clause change; `### (c) What a follow-up
 needs` below states what it takes.
+
+**A position is a history type, and some neighbour agreement is therefore forced.** A repair
+that replaces the class-valued reach by a genuine succession relation does not, and should not,
+drive the residual agreement to nothing. An index at a time names a *history type* — a full
+bi-infinite labelling, not a world state — so two indices standing in the succession relation
+still constrain one another's labels at the one step they share. What the repair removes is the
+collapse of that constraint onto the whole `share`-class, which is what made past-tense truth a
+function of the world state. Constraints that survive between an index and its actual successors
+are semantically forced by what a position *is*, and reading them as a relapse into the defect
+misreads the defect: the defect was never neighbour agreement, it was neighbour agreement over a
+class that the `⊡` quantifier also ranges over.
 
 Nothing here touches soundness. `Agreement.lean`'s truth lemma and `refutes_of_certifies` are
 unaffected, and a family meeting the conditions still presents a genuine countermodel. What is

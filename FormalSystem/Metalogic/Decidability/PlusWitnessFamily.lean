@@ -75,14 +75,16 @@ content: two lassos sharing a state at one time and separate everywhere else, so
 not degenerate. On a deterministic frame it would be — `PlusLanguage.stab_iff_of_deterministic`
 collapses `⊡φ` to `φ` — which is exactly why the branching substrate is the one this lives on.
 
-## The certificate class is empty for a `snce` under a `⊡`
+## The certificate class is empty for a tense operator under a `⊡`, on both sides
 
 Soundness is only half the story, and `Incompleteness.lean` records the other half: no family
-meeting the six conditions certifies any instance of `(g S e) → ⊡(g S e)`, while `Pp → ⊡Pp` is a
-genuine ℤ-time non-validity. (C1')'s `snce` clause quantifies its predecessor over the
-`share`-class at the label's *own* time, which forces the class to agree on every past-tense
-label, and (C5) then has no room to put `⊡(g S e)` outside a label that carries `g S e`. So the
-L⁺ analogue of the deterministic route's `exists_witnessFamily_of_not_validZTime` is **false**
-against this condition set, and the repair is at the substrate level rather than in a re-wording
-of (C1').
+meeting the six conditions certifies any instance of `(g S e) → ⊡(g S e)`, nor `Fp → (¬p → ⊡Fp)`,
+while both targets are genuine ℤ-time non-validities. (C1')'s `snce` clause quantifies its
+predecessor over the `share`-class at the label's *own* time, which forces the class to agree on
+every past-tense label; its `untl` clause quantifies its successor over the class at `t+1`, which
+displaces the same collapse by one step rather than avoiding it, as reading that clause at `t-1`
+shows. (C5) then has no room to put the stability modal outside a label that carries the tense
+formula. So the L⁺ analogue of the deterministic route's
+`exists_witnessFamily_of_not_validZTime` is **false** against this condition set, and the repair
+is at the substrate level rather than in a re-wording — or a re-timing — of (C1').
 -/
