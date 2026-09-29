@@ -205,38 +205,44 @@ repair list — do not assume the count.
 
 ---
 
-### Phase 2: Narrow the three inherited `BimodalTools/` declarations (282, 296, 298) [NOT STARTED]
+### Phase 2: Narrow the three inherited `BimodalTools/` declarations (282, 296, 298) [COMPLETED]
 
 **Goal**: Replace each of 282's, 296's and 298's `BimodalTools/` + `FormalSystem/Automation/` +
 `Tests/BimodalToolsTest/` triad with the specific paths that task will touch, re-derived from its
 own description, and record the derivation inline.
 
 **Tasks**:
-- [ ] For each of 282, 296 and 298, read the current description fresh
+- [x] For each of 282, 296 and 298, read the current description fresh
       (`jq -r '.active_projects[] | select(.project_number==N) | .description' specs/state.json`)
       and confirm the report's derived file list still follows from it. If a description implies a
       path the report did not name, add that path — do not drop it, and do not add a path the
-      description does not imply.
-- [ ] Project 296: replace the three directory entries with
+      description does not imply. *(completed: all three descriptions unchanged since research;
+      derived lists confirmed to follow)*
+- [x] Project 296: replace the three directory entries with
       `BimodalTools/FormulaEnumerator.lean`, `BimodalTools/AtomCanonicalization.lean`,
       `Tests/BimodalToolsTest/EnumeratorCountsTest.lean`. Leave `data/bmlogic-c4.json` untouched.
-- [ ] Project 298: replace the three directory entries with
+      *(completed)*
+- [x] Project 298: replace the three directory entries with
       `BimodalTools/DatasetGenerator.lean`, `Tests/BimodalToolsTest/DatasetGeneratorTest.lean`.
-      Leave `data/bmlogic-c7.jsonl` untouched.
-- [ ] Project 282: drop all three directory entries and add
+      Leave `data/bmlogic-c7.jsonl` untouched. *(completed)*
+- [x] Project 282: drop all three directory entries and add
       `scripts/run_dataset_generation.sh` (the mode flip its description's next action names, never
-      previously declared). Leave the four `data/*` entries untouched.
-- [ ] Apply each edit through the mutex-guarded writer, one project per call, e.g.:
+      previously declared). Leave the four `data/*` entries untouched. *(completed)*
+- [x] Apply each edit through the mutex-guarded writer, one project per call, e.g.:
       `bash .claude/scripts/state-write.sh '.active_projects |= map(if .project_number==296 then .file_scope = $fs else . end)' --session-id "$SESSION_ID" --argjson fs '["BimodalTools/FormulaEnumerator.lean", ...]'`
       Never `Edit`/`Write` on `specs/state.json`, and never a hand-rolled `jq > tmp && mv`.
-- [ ] Append a dated note to each of the three descriptions, in the same
+      *(completed: applied all three edits in a single `state-write.sh` call using a
+      project-number-branched `map(if ... elif ... elif ... else . end)` filter, still exactly one
+      mutex-guarded write)*
+- [x] Append a dated note to each of the three descriptions, in the same
       `SCOPE NARROWED (2026-09-28): ...` shape 177's description already uses, stating: what was
       removed, what replaced it, the evidence it was derived from (the description's own named work
       plus the corresponding Lean source), that the triad was an inherited blanket widening from
       task 632's relocation note rather than a derived surface, and that this task's own research
-      phase should re-widen if its chosen approach implicates more files.
-- [ ] Verify Check 8 no longer reports 282, 296 or 298, and that no new coarse or duplicate finding
+      phase should re-widen if its chosen approach implicates more files. *(completed)*
+- [x] Verify Check 8 no longer reports 282, 296 or 298, and that no new coarse or duplicate finding
       appeared (the edit only replaces directory-ending entries with file-ending ones).
+      *(completed: only 177's finding remains; duplicate count unchanged at 0)*
 - [ ] Commit:
       `bash .claude/scripts/git-commit-scoped.sh --message "task 698 phase 2: narrow inherited BimodalTools/ declarations on projects 282, 296, 298" --session "$SESSION_ID" --honest-index-rows 698 -- specs/state.json`
 
