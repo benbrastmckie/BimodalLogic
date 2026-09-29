@@ -11,7 +11,7 @@ next_project_number: 703
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,700,702 | -- | algebraic-representation, categorical-structure, completeness, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,700 | -- | algebraic-representation, categorical-structure, completeness, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650,696 | 298,464,502,563,649,700 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,701 | 231,465,497,564,565,616,696 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -49,7 +49,7 @@ next_project_number: 703
 
 ### Completeness
 
-700 [PLANNED] — SURVEY-AND-SEQUENCE TASK, DELIBERATELY NOT A WORK TASK....
+700 [IMPLEMENTING] — SURVEY-AND-SEQUENCE TASK, DELIBERATELY NOT A WORK TASK....
 
 ### Dataset Enhancement
 
@@ -100,17 +100,17 @@ next_project_number: 703
 
 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
   └─ 650 [NOT STARTED] — Define-before-use audit of...
-702 [IMPLEMENTING] — Improve the formatting and content of the Typst reference...
 
 ## Tasks
 
 ### 702. Uniform style reference manual
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: None
 - **Research**: [702_uniform_style_reference_manual/reports/01_style-audit-house-style.md]
 - **Plan**: [702_uniform_style_reference_manual/plans/01_uniform-style-reference-manual.md]
+- **Summary**: [702_uniform_style_reference_manual/summaries/01_uniform-style-reference-manual-summary.md]
 
 **Description**: Improve the formatting and content of the Typst reference manual (typst/BimodalReference.typ, compiled to typst/BimodalReference.pdf, 128 pages) so that every chapter follows ONE uniform approach in style and in the shape of its discussion. The manual grew chapter by chapter (typst/chapters/: 00-introduction through 06-notes, the p2/p3/p4 part chapters, and the two appendices) and the parts read differently: section openings, the definition/theorem/remark rhythm, how Lean names are introduced and cited, how much motivation precedes a formal statement, notation, cross-reference phrasing, and the density of prose between environments all vary by chapter. RESEARCH must first produce a per-chapter audit against the typst extension's standards -- .claude/context/project/typst/standards/typst-style-guide.md, document-structure.md, semantic-element-usage.md, chapter-quality.md, textbook-standards.md, notation-conventions.md -- and against the mechanical backstops (bash .claude/scripts/typst-element-lint.sh --verbose and bash .claude/scripts/chapter-quality-check.sh --verbose over typst/chapters/*.typ), recording for each chapter: the current opening pattern, environment usage and placement, Lean-citation convention, notation deviations from notation/bimodal-notation.typ, lint findings, and the discussion style (motivation-first, statement-first, or mixed). From that audit, choose and WRITE DOWN the single house style the whole manual will follow -- chapter opening template, the order motivation/definition/example/theorem/proof-sketch/Lean-pointer, how a Lean declaration is named on first mention and thereafter, cross-reference phrasing, remark and note usage, table and figure conventions -- as a short style sheet in the plan, grounded in the existing standards rather than inventing a new one. PLAN phases must be per chapter or per part, each ending with a clean typst compile of BimodalReference.typ and with both lints run, so no phase leaves the manual uncompilable. Content improvements are in scope ONLY as editorial uniformity: rewriting openings and transitions, adding a missing motivation paragraph where the style sheet requires one, tightening or expanding discussion to the agreed density, fixing inconsistent terminology, and correcting stale or inconsistent cross-references; no new theorems, proofs, or chapters. Every Lean name cited must resolve in the current tree (grep the FormalSystem/ source), and every claim about repository status must agree with typst/generated/ and SYNC-MAP.md rather than restating numbers by hand. OUT OF SCOPE, owned by sibling tasks: the Lean appendix's define-before-use audit (task 650), the systematic Lean code-environment convention for the appendix (task 649), and the generated status counts' staleness (task 697) -- coordinate with their conventions, do not redo them. Also out of scope: FormalFoundations.typ, which is a separate document. ACCEPTANCE: the compiled manual has every chapter conforming to the written style sheet; typst-element-lint.sh reports zero blocking placement findings; chapter-quality-check.sh reports zero BLOCKING findings; the PDF compiles from a clean typst compile with no warnings introduced by this task; and the style sheet is committed alongside the chapters (in typst/README.md or a new typst/STYLE.md) so future chapters have a single reference.
 
@@ -127,7 +127,7 @@ next_project_number: 703
 ---
 
 ### 700. Lplus completeness programme survey
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: formal:logic
 - **Topic**: completeness
 - **Dependencies**: None

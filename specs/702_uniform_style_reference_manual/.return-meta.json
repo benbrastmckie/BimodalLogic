@@ -13,7 +13,11 @@
     "session_id": "sess_1790657893_d0612b",
     "agent_type": "typst-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "typst-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "typst-implementation-agent"
+    ],
     "phase_count": 13,
     "phases_completed": 13
   },
@@ -47,14 +51,27 @@
       "category": "TECHNIQUE",
       "source_artifact": "specs/702_uniform_style_reference_manual/plans/01_uniform-style-reference-manual.md",
       "confidence": 0.8,
-      "suggested_keywords": ["typst", "chapter-quality-check", "rule-1.2", "citation-paths", "mechanical-lint", "re-check-after-fix"]
+      "suggested_keywords": [
+        "typst",
+        "chapter-quality-check",
+        "rule-1.2",
+        "citation-paths",
+        "mechanical-lint",
+        "re-check-after-fix"
+      ]
     },
     {
       "content": "A Typst manual's own drift detector (typst-sync-check.sh Check 1, backtick-name resolution) scans literal backtick spans in ALL .typ source including // comments, not just rendered prose. Adding illustrative code examples inside a shared template.typ's comments (documenting a newly-promoted helper) can silently regress this separate checker even when the two primary acceptance gates (element-lint, chapter-quality-check) stay green, because those two are scoped to typst/chapters/*.typ only. Always re-run every mechanical checker in the extension's toolkit before declaring a whole-document sweep complete, not just the ones named in the task's acceptance criteria.",
       "category": "PATTERN",
       "source_artifact": "typst/sync-check-whitelist.txt",
       "confidence": 0.75,
-      "suggested_keywords": ["typst", "sync-check", "regression", "whole-document-sweep", "acceptance-criteria-blind-spot"]
+      "suggested_keywords": [
+        "typst",
+        "sync-check",
+        "regression",
+        "whole-document-sweep",
+        "acceptance-criteria-blind-spot"
+      ]
     }
   ]
 }
