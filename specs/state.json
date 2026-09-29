@@ -9,21 +9,46 @@
     {
       "project_number": 702,
       "project_name": "uniform_style_reference_manual",
-      "status": "researching",
+      "status": "researched",
       "task_type": "typst",
       "description": "Improve the formatting and content of the Typst reference manual (typst/BimodalReference.typ, compiled to typst/BimodalReference.pdf, 128 pages) so that every chapter follows ONE uniform approach in style and in the shape of its discussion. The manual grew chapter by chapter (typst/chapters/: 00-introduction through 06-notes, the p2/p3/p4 part chapters, and the two appendices) and the parts read differently: section openings, the definition/theorem/remark rhythm, how Lean names are introduced and cited, how much motivation precedes a formal statement, notation, cross-reference phrasing, and the density of prose between environments all vary by chapter. RESEARCH must first produce a per-chapter audit against the typst extension's standards -- .claude/context/project/typst/standards/typst-style-guide.md, document-structure.md, semantic-element-usage.md, chapter-quality.md, textbook-standards.md, notation-conventions.md -- and against the mechanical backstops (bash .claude/scripts/typst-element-lint.sh --verbose and bash .claude/scripts/chapter-quality-check.sh --verbose over typst/chapters/*.typ), recording for each chapter: the current opening pattern, environment usage and placement, Lean-citation convention, notation deviations from notation/bimodal-notation.typ, lint findings, and the discussion style (motivation-first, statement-first, or mixed). From that audit, choose and WRITE DOWN the single house style the whole manual will follow -- chapter opening template, the order motivation/definition/example/theorem/proof-sketch/Lean-pointer, how a Lean declaration is named on first mention and thereafter, cross-reference phrasing, remark and note usage, table and figure conventions -- as a short style sheet in the plan, grounded in the existing standards rather than inventing a new one. PLAN phases must be per chapter or per part, each ending with a clean typst compile of BimodalReference.typ and with both lints run, so no phase leaves the manual uncompilable. Content improvements are in scope ONLY as editorial uniformity: rewriting openings and transitions, adding a missing motivation paragraph where the style sheet requires one, tightening or expanding discussion to the agreed density, fixing inconsistent terminology, and correcting stale or inconsistent cross-references; no new theorems, proofs, or chapters. Every Lean name cited must resolve in the current tree (grep the FormalSystem/ source), and every claim about repository status must agree with typst/generated/ and SYNC-MAP.md rather than restating numbers by hand. OUT OF SCOPE, owned by sibling tasks: the Lean appendix's define-before-use audit (task 650), the systematic Lean code-environment convention for the appendix (task 649), and the generated status counts' staleness (task 697) -- coordinate with their conventions, do not redo them. Also out of scope: FormalFoundations.typ, which is a separate document. ACCEPTANCE: the compiled manual has every chapter conforming to the written style sheet; typst-element-lint.sh reports zero blocking placement findings; chapter-quality-check.sh reports zero BLOCKING findings; the PDF compiles from a clean typst compile with no warnings introduced by this task; and the style sheet is committed alongside the chapters (in typst/README.md or a new typst/STYLE.md) so future chapters have a single reference.",
       "topic": "reference-book",
       "dependencies": [],
       "file_scope": [
+        ".claude/context/project/typst/standards/notation-conventions.md",
         "typst/BimodalReference.typ",
+        "typst/README.md",
+        "typst/STYLE.md",
         "typst/chapters/",
-        "typst/template.typ",
+        "typst/chapters/00-introduction.typ",
+        "typst/chapters/01-syntax.typ",
+        "typst/chapters/02-semantics.typ",
+        "typst/chapters/03-proof-theory.typ",
+        "typst/chapters/04-metalogic.typ",
+        "typst/chapters/05-theorems.typ",
+        "typst/chapters/06-notes.typ",
+        "typst/chapters/p2-decidability-practice.typ",
+        "typst/chapters/p2-frame-classes.typ",
+        "typst/chapters/p3-decidability-frontier.typ",
+        "typst/chapters/p3-ltl-to-tm.typ",
+        "typst/chapters/p3-vlach-blstar.typ",
+        "typst/chapters/p4-dataset-pipeline.typ",
+        "typst/chapters/p4-dual-verification.typ",
+        "typst/chapters/p4-proof-automation.typ",
         "typst/notation/",
-        "typst/README.md"
+        "typst/template.typ"
       ],
       "created": "2026-09-29T04:56:15Z",
-      "last_updated": "2026-09-29T04:58:31Z",
-      "session_id": "sess_1790657893_d0612b_702"
+      "last_updated": "2026-09-29T05:05:02Z",
+      "session_id": "sess_1790657893_d0612b",
+      "artifacts": [
+        {
+          "path": "specs/702_uniform_style_reference_manual/reports/01_style-audit-house-style.md",
+          "type": "report",
+          "summary": "Per-chapter audit of all 17 typst/chapters/*.typ files against the six typst style standards and both mechanical lints, root-causing 288/296 BLOCKING chapter-quality-check.sh findings to a single Lean-path-citation convention gap, and proposing a grounded house style sheet (chapter-header opening, section rhythm, Lean-citation convention, cross-reference phrasing, #let centralization) for the PLAN phase to encode in typst/STYLE.md."
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 701,
@@ -73,7 +98,7 @@
     {
       "project_number": 699,
       "project_name": "invariance_clause_audit_and_ockhamist_grounding",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "formal:logic",
       "description": "Generalize the lesson of the L-plus certificate incompleteness into (A) a mechanical audit that finds the same latent defect wherever else it occurs, and (B) a literature grounding that says whether the defect and its repair instantiate a known result about tense in branching time. This task deliberately does NOT re-do the substrate repair: task 696 owns the design and implementation of that. What is unowned is whether the same clause shape is silently collapsing OTHER conditions, and whether the repair being adopted is the move philosophical logic already knows is forced.\n\nPART A -- THE CLAUSE-SHAPE AUDIT (mechanical, the core deliverable). The refutation reduces to a shape fact, not a fact about time. FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean's `snce_share_congr` is proved in two lines from two instances of one clause: (C1')'s `snce` conjunct has the form `forall k, share t i k -> (phi in L i t <-> Psi(k))`, and instantiating it once at an arbitrary class member k and once at k with `share_refl` chains the two biconditionals into `share t i k -> (phi in L i t <-> phi in L k t)`. That derivation uses ONLY reflexivity of the quantified relation and the fact that the clause is a biconditional universally quantified over the class. It follows that ANY truth clause of the form \"for all j accessible from i, phi holds at i iff <condition mentioning only j>\" is an invariance axiom for phi across the accessibility class, whether or not that was intended -- and when the relation is an equivalence (here `share u i j := rep u i = rep u j`, an equality, with `share_refl`/`share_symm`/`share_trans` all landed at Sharing/Skeleton.lean 204-221), the invariance is across the entire class. A branching reading requires the clause to be existential on the witness side, or the relation not to be reflexive. AUDIT TASK: enumerate every predicate in FormalSystem/Metalogic/ whose definition universally quantifies a biconditional over a reflexive relation, and for each, decide and record whether the resulting invariance is intended or is a latent collapse. Start from but do not stop at the obvious siblings: (C1')'s `untl` conjunct (quantified over `share (t+1)`, which the same argument collapses -- task 696's Family B `famB_untl_shift_congr` already machine-checks the untl-side analogue, so this one is confirmed live, not hypothetical); `PlusBoxFaithful` at Predicates.lean 195-197, whose right side is a global `forall i t`, making `bx` index- and time-independent -- check whether that globality is the intended reading of the stability modal or a second, independent over-strength; the (C5) StabFaithful label-level congruence `stabFaithful_share_congr`; and the Formula-side mirrors of all of these under WitnessFamily/Sharing/. Report each finding as intended-invariance or latent-collapse WITH the two-instance derivation written out where it collapses, so the verdict is checkable rather than asserted. Where a collapse is found that task 696's redesign does not already repair, say so explicitly -- that is the highest-value output of this task.\n\nPART B -- THE LITERATURE GROUNDING. The substantive claim to test is that this defect is the past-directed instance of a known inadequacy: that in branching time the tense operators cannot be evaluated at a moment (equivalently, at a state of a quotient by modal accessibility) but only at a moment-history pair, because distinct histories through one moment disagree about the future -- and, symmetrically here, distinct histories INTO one state disagree about the past, which is exactly what `Pp -> stab Pp` being invalid expresses and what `snce_share_congr` forbids. This is the Ockhamist-versus-Peircean distinction in indeterminist tense logic. Determine, against the actual sources rather than from memory: whether the collapse here is a recognized consequence of taking the Peircean/moment-only option; whether `Liftable` (task 696's proposed skeleton field) is playing the role of a history-closure or bundled-branch condition that the literature already characterizes; and whether any known impossibility or expressiveness result bounds what a finite periodic certificate over moment-history pairs can decide -- because such a result would constrain task 696's design before it is built, not after. Prior 1967 and rumberg2019firstorder are already in scripts/lean-citation-manifest.json; Burgess 1982's S/U truth clauses were consulted by task 696 round 2. Thomason on indeterminist time and truth-value gaps is the expected primary source and should be located rather than cited from memory -- use the literature tooling and record what was actually read. If a source cannot be obtained, say so and mark the corresponding claim unverified rather than asserting it.\n\nCONSTRAINTS AND NON-GOALS. Do not modify any Lean statement: this task's Part A output is a report plus, at most, probe files under this task's own probes/ directory demonstrating a collapse derivation. Do not redesign the substrate or touch task 696's twelve declared paths. Do not restate task 696's reports -- cite them. Soundness is not in question anywhere in this task: `plusTruth_iff_mem` and `plusRefutes_of_certifies` are untouched and the incompleteness is a completeness-side gap only, which the report must state plainly so no reader mistakes the finding for unsoundness. Deliverable: one report with Part A's audit table (predicate, relation quantified over, reflexive yes/no, verdict, derivation if collapsing) and Part B's verdict with sources actually consulted; plus a named follow-on task proposal for any latent collapse Part A finds that 696 does not repair.",
       "topic": "incompleteness",
@@ -87,7 +112,7 @@
       ],
       "dependencies": [],
       "created": "2026-09-29T03:51:12Z",
-      "last_updated": "2026-09-29T05:03:47Z",
+      "last_updated": "2026-09-29T05:04:58Z",
       "session_id": "sess_1790656266_d2dc32",
       "artifacts": [
         {
@@ -106,7 +131,7 @@
     {
       "project_number": 698,
       "project_name": "file_scope_declaration_hygiene",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "meta",
       "description": "Make this repository's file_scope declarations describe what tasks actually touch, so the cross-task collision gate stops being advisory in name and permissive in fact. Evidence that the declarations are not load-bearing today, observed on one concurrent batch: one task declared file_scope over nine Decidability modules and then modified scripts/check-module-invariants.sh, a shared gate script named in no declaration; its sibling declared file_scope as exactly [\"specs/\"] and then committed into FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/. Neither overstep was caught, because the admission gate reads the declarations and the declarations were wrong. There was a real consequence, not merely a bookkeeping one: a gate run against the shared script crashed mid-parse with a bash syntax error as a Python f-string was reached as bash, the signature of a file being rewritten while another process reads it. Nothing cross-contaminated only because both agents happened to stage explicit per-file pathspecs. IN SCOPE, all repository-local data and all verifiable here: (1) Narrow or justify the four coarse whole-directory declarations that scripts/validate-state.sh Check 8 currently reports -- project 177's 'FormalSystem/Metalogic/Decidability/' which alone overlaps 8 distinct non-terminal tasks, and 'BimodalTools/' declared identically by 282, 296 and 298, each overlapping the other two. For each, either replace the directory root with the specific paths that task will touch, or record inline why a whole-directory claim is genuinely correct for it; do not narrow a declaration by guessing -- read the task description and say what it implies. (2) Repair the duplicate exact entry Check 9 reports on project 178 ('FormalSystem/Examples/' twice); confirm whether validate-state.sh --fix handles it and prefer that over a hand edit if so. (3) Add the shared gate and tooling scripts that tasks demonstrably edit -- scripts/check-module-invariants.sh above all, which is a serialization point for every task that pins an axiom baseline or a theorem-index row -- to the declarations of every non-terminal task whose plan will touch them. (4) Re-check that no remaining pair of non-terminal tasks has an undeclared shared write target, and report the residue rather than silently leaving it. EXPLICITLY OUT OF SCOPE, with the reason: the systemic enforcement half of this problem -- having postflight compare a dispatch's reported modified_files against the task's declared file_scope and surface an overstep -- lives in the agent-system source store at extensions/core/scripts/orchestrate-cycle-postflight.sh, which is a DIFFERENT repository (/home/benjamin/.config/nvim/agent-system, its own git repo with its own specs/ tree). Per .claude/rules/source-store-deploy-boundary.md, .claude/** here is a disposable deploy artifact and hand edits to it are wiped by the next regeneration, so that half must be raised as a task in that repository and must not be attempted from here. Record it as a named follow-on in the report so the hand-off is durable. Deliverable: validate-state.sh's Check 8 and Check 9 report zero file_scope findings for non-terminal tasks, or every surviving finding carries a recorded justification; no task's declaration was widened to silence a finding.",
       "topic": "agent-system",
@@ -115,7 +140,7 @@
         "specs/state.json"
       ],
       "created": "2026-09-29T00:38:20Z",
-      "last_updated": "2026-09-29T05:03:32Z",
+      "last_updated": "2026-09-29T05:04:49Z",
       "dependencies": [],
       "session_id": "sess_1790656266_d2dc32",
       "artifacts": [
@@ -135,7 +160,7 @@
     {
       "project_number": 697,
       "project_name": "typst_generated_counts_staleness",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "general",
       "description": "Close the recurring staleness gap between typst/generated/status.typ and the live Lean tree, so that a task adding or removing a .lean file cannot silently turn CI red. Observed failure, twice: scripts/typst-sync-check.sh's Check 2 (count freshness) compares the committed formalsystem-file-count / formalsystem-line-count / tests-* / tools-* scalars in typst/generated/status.typ against a live regeneration, and nothing in the repository regenerates them. The gate went red on 2026-09-25 with six stale counts (committed 537 files / 285608 lines vs live 568 / 301253) and was the SOLE failing step of that CI run, with build, test and lint all green; it then went red again as soon as FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean landed, moving the file count 603 -> 604 and the line count by 281. Both times the remedy was the same one command, `bash scripts/typst-status-counts.sh`, which regenerates the file from live source. So the defect is not in either script: the generator and the checker agree, and there is simply no moment in any workflow at which the generator runs. INVESTIGATE AND CHOOSE, recording the comparison in the report rather than adopting the first option: (a) a version-controlled hooks directory plus an installer script and `git config core.hooksPath`, running the generator pre-commit when the staged set touches any .lean file -- note the repository currently has NO versioned hooks directory and core.hooksPath is the default .git/hooks, so this introduces new contributor-facing infrastructure and must be documented wherever contributor setup is documented; (b) a `--fix` mode on scripts/typst-sync-check.sh that invokes the generator, making the check self-healing when run locally but still requiring someone to run it; (c) regeneration as a step in whatever workflow lands Lean files, so the counts move in the same commit as the source; (d) any option the investigation surfaces, including making the counts computed at Typst compile time rather than stamped, which would delete the class of defect outright instead of automating around it. Score each on whether it prevents the failure or merely detects it sooner, on what it costs a fresh clone, and on whether CI would still catch a bypass. CONSTRAINTS: scripts/typst-status-counts.sh --json is consumed by scripts/typst-sync-check.sh, so the two must stay compatible; the generator NEEDS A BUILT LIBRARY in its default mode because it reads a per-declaration axiom report out of the build, which rules out any hook shape that must run without oleans; the stamp-commit and stamp-date fields mean a regeneration always dirties the file even when counts are unchanged, so a naive always-run hook would create spurious diffs and the chosen design must address that. Deliverable: the chosen mechanism implemented, the stale-count class demonstrably prevented (show the mechanism firing on a synthetic .lean addition), and the full CI-equivalent gate sweep still green.",
       "topic": "code-quality",
@@ -151,7 +176,7 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-09-29T00:37:40Z",
-      "last_updated": "2026-09-29T05:03:17Z",
+      "last_updated": "2026-09-29T05:04:40Z",
       "dependencies": [],
       "session_id": "sess_1790656266_d2dc32",
       "artifacts": [
@@ -1955,13 +1980,13 @@
     },
     {
       "project_name": "plus_carrier_normalization_int_transfer",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "Prove `plusValidZTime_iff_plusValidInt`, the L-plus twin of Semantics/IntTransfer.lean's `validZTime_iff_validInt`. This is an absent prerequisite for any L-plus decidability route: without a carrier normalization there is no reduction from arbitrary integer-like duration carriers to the integers, so a candidate enumeration over integer-indexed structures certifies nothing about `PlusValidZTime`. It is useful regardless of how the branching substrate redesign turns out, which is why it is blocked on nothing. Route: a seven-case induction on the `plus_invariance` template in Semantics/Frames/TranslationProduct.lean. The six inherited cases follow the Formula-side proof. The `stab` case goes through on `Aligned` because `(FrameOver.map F e).WorldState` is DEFINITIONALLY `F.WorldState`, so `WorldHistory.comap` together with `aligned_comap` transport the state-agreement side condition that `stab`'s truth clause quantifies over. Either shape will do: a `PlusTruthCorr` carrying a state-agreement field, or a direct seven-case `plusTruthAt_map`. Pick one and say why in the plan rather than discovering it mid-proof. Deliverable: the iff, pinned in scripts/check-module-invariants.sh's C2 axiom baseline and given a docs/theorem-index.md row, with zero sorries and no new axiom.",
       "dependencies": [],
       "created": "2026-09-28T22:13:08Z",
-      "last_updated": "2026-09-29T05:03:01Z",
+      "last_updated": "2026-09-29T05:04:30Z",
       "file_scope": [
         "FormalSystem.lean",
         "FormalSystem/PlusLanguage.lean",
