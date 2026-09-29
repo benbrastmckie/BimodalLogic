@@ -178,4 +178,234 @@ theorem exists_recurring_plusTypeState (d : ℤ → PlusTypeState C) :
     Finset.le_sup' f (Finset.mem_univ _)
   exact hf _ _ hle rfl
 
+
+/-! ## Good cycles -/
+
+/--
+The event of an L⁺ `untl`-formula, as a partial function.
+
+**There is deliberately no `stab` decoder beside this one and `plusSnceEventT`.** `⊡` is not an
+eventuality: it has no unfolding clause in (C1') by design, so it generates no excursion demand
+and contributes nothing to a good cycle. Its obligation is (C5), which is same-time and
+cross-index and is discharged by the Phase 8 saturation, not by a cycle. The two decoders
+therefore stay at `untl` and `snce` exactly as on the `Formula` side, and the cycle bound keeps
+its `Formula`-side shape.
+-/
+def plusUntlEventT : PlusFormula → Option PlusFormula
+  | PlusFormula.untl _ e => some e
+  | _ => none
+
+/-- The event of an L⁺ `snce`-formula, as a partial function. -/
+def plusSnceEventT : PlusFormula → Option PlusFormula
+  | PlusFormula.snce _ e => some e
+  | _ => none
+
+@[simp] theorem plusUntlEventT_untl (g e : PlusFormula) :
+    plusUntlEventT (PlusFormula.untl g e) = some e := rfl
+
+@[simp] theorem plusSnceEventT_snce (g e : PlusFormula) :
+    plusSnceEventT (PlusFormula.snce g e) = some e := rfl
+
+/-- `⊡` carries no event, so it never demands an excursion. -/
+@[simp] theorem plusUntlEventT_stab (φ : PlusFormula) :
+    plusUntlEventT (PlusFormula.stab φ) = none := rfl
+
+/-- The past-tense mirror of `plusUntlEventT_stab`. -/
+@[simp] theorem plusSnceEventT_stab (φ : PlusFormula) :
+    plusSnceEventT (PlusFormula.stab φ) = none := rfl
+
+/-- A `plusUntlEventT` witness identifies its formula as an `untl` with that event. -/
+theorem plusUntlEventT_eq_some :
+    ∀ {f e : PlusFormula}, plusUntlEventT f = some e → ∃ g, f = PlusFormula.untl g e
+  | PlusFormula.untl g _, _, rfl => ⟨g, rfl⟩
+
+/-- A `plusSnceEventT` witness identifies its formula as a `snce` with that event. -/
+theorem plusSnceEventT_eq_some :
+    ∀ {f e : PlusFormula}, plusSnceEventT f = some e → ∃ g, f = PlusFormula.snce g e
+  | PlusFormula.snce g _, _, rfl => ⟨g, rfl⟩
+
+/--
+**The explicit L⁺ cycle bound**: `(2k + 1) · 2^k` with `k = C.card`.
+
+A closed arithmetic expression in the closure's size — not an existentially quantified `n`, which
+the enumeration could not consume. `Extract.lean`'s `plusCompressionBound` is defined from this,
+so the derived quantity and its consumer cannot drift apart.
+
+The form is the `Formula` side's verbatim, and that is a result rather than a coincidence: the
+L⁺ closure is strictly larger, since it carries a `stab` tier, but `⊡` contributes no event and
+so no excursion, so the per-mark accounting is unchanged and only `k` grows.
+
+Stated as an **upper** bound at every use site, for the same reason the `Formula`-side bound is:
+a consuming search at bound `n` represents exactly the periods dividing `n`, so representability
+rather than magnitude is what the folding decides.
+-/
+def plusCycleBoundC (C : Finset PlusFormula) : ℕ := (2 * C.card + 1) * 2 ^ C.card
+
+theorem plusCycleBoundC_eq (C : Finset PlusFormula) :
+    plusCycleBoundC C = (2 * C.card + 1) * Nat.card (PlusTypeState C) := by
+  rw [plusCycleBoundC, natCard_plusTypeState]
+
+/--
+A cycle through a recurring L⁺ datum, with no marks: length at least one and at most one full
+residue system.
+
+The first step is taken from the sequence directly and only the *return* leg is shortened, which
+is what keeps the length positive. A cycle shortened as a whole could collapse to length zero —
+the excision of the entire loop — and a zero-length cycle discharges nothing and cannot serve as
+a bi-lasso segment, since `PlusLabelledLasso.back_ne` and `fwd_ne` forbid empty cycles.
+-/
+theorem exists_base_plusCycleT (d : ℤ → PlusTypeState C) (x : PlusTypeState C)
+    (hrec : ∀ N : ℤ, ∃ u : ℤ, N ≤ u ∧ d u = x) :
+    ∃ (L : ℕ) (p : ℕ → PlusTypeState C),
+      1 ≤ L ∧ L ≤ Nat.card (PlusTypeState C) ∧ p 0 = x ∧ p L = x ∧
+      ∀ j, j < L → PlusSeqStepT d (p j) (p (j + 1)) := by
+  obtain ⟨u₀, -, hu₀⟩ := hrec 0
+  obtain ⟨u₁, hu₁le, hu₁⟩ := hrec (u₀ + 1)
+  have hit : iter (PlusSeqStepT d) (u₁ - (u₀ + 1)).toNat (d (u₀ + 1)) x := by
+    have h := iter_plusSeqStepT d (u₀ + 1) (u₁ - (u₀ + 1)).toNat
+    rwa [show u₀ + 1 + (((u₁ - (u₀ + 1)).toNat : ℕ) : ℤ) = u₁ by omega, hu₁] at h
+  obtain ⟨b, hb, hbiter⟩ := exists_iterT_lt_card (PlusSeqStepT d) hit
+  obtain ⟨pb, hpb0, hpbb, hpbst⟩ := exists_path_of_iter (PlusSeqStepT d) b _ _ hbiter
+  refine ⟨b + 1, fun j => if j = 0 then x else pb (j - 1), by omega, by omega, by simp, ?_, ?_⟩
+  · simpa using hpbb
+  · intro j hj
+    rcases Nat.eq_zero_or_pos j with rfl | hjpos
+    · simp only [hpb0]
+      exact ⟨u₀, hu₀, rfl⟩
+    · have h1 : ¬ j = 0 := by omega
+      have h2 : ¬ j + 1 = 0 := by omega
+      simp only [if_neg h1, if_neg h2]
+      have hstep := hpbst (j - 1) (by omega)
+      rwa [show j - 1 + 1 = j + 1 - 1 by omega] at hstep
+
+/--
+**The good-cycle construction, at an arbitrary L⁺ type sequence.**
+
+Given a datum `x` that recurs at arbitrarily large indices, and a sequence that discharges its
+own eventualities, this produces a cycle through `x` of length between `1` and
+`plusCycleBoundC C` whose positions realise the event of every eventuality carried by `x`.
+
+The construction is an induction over the *type* of `x` as a `Finset`, starting from
+`exists_base_plusCycleT` and appending, for each formula with an event, an out-and-back excursion
+`x ⟶ mark ⟶ x` whose two legs are separately shortened. Two facts make it work:
+
+- **The excursion is available**: the sequence's own fulfilment supplies a later index carrying
+  the event, and recurrence supplies a still later index carrying `x` again.
+- **Shortening cannot destroy a mark**: the mark sits at the junction of the two legs, and
+  `exists_iterT_lt_card` preserves endpoints.
+
+Formulas with no event contribute nothing and reuse the cycle built so far, which is exactly the
+branch every `stab` member of the L⁺ closure takes; the bound is stated per-formula, so unused
+budget is simply not spent.
+
+The statement is generic in the sequence and in the event decoder, so that the backward cycle can
+instantiate it at `fun u => d (-u)` rather than duplicating the construction with the temporal
+direction flipped.
+
+**Statement diff against `exists_good_cycle_of_typeSeq`.** The two signatures agree
+component-for-component: same hypothesis list, same conclusion shape, same bound
+`(2 * C.card + 1) * 2 ^ C.card`. The only substitution is `Formula` by `PlusFormula` in the
+closure, the datum subtype and the event decoder's domain and codomain. There is **no**
+structural divergence to explain, and in particular no extra hypothesis and no weakened bound —
+which is the substantive finding, because it is what records that the `stab` tier of the L⁺
+closure costs the cycle construction nothing beyond enlarging `C.card`.
+-/
+theorem exists_good_cycle_of_plusTypeSeq (C : Finset PlusFormula)
+    (d : ℤ → {S : Finset PlusFormula // S ∈ C.powerset}) (ev : PlusFormula → Option PlusFormula)
+    (x : {S : Finset PlusFormula // S ∈ C.powerset})
+    (hrec : ∀ N : ℤ, ∃ u : ℤ, N ≤ u ∧ d u = x)
+    (hful : ∀ (u : ℤ) (f e : PlusFormula), f ∈ (d u).1 → ev f = some e →
+      ∃ s : ℤ, u < s ∧ e ∈ (d s).1) :
+    ∃ (L : ℕ) (p : ℕ → {S : Finset PlusFormula // S ∈ C.powerset}),
+      1 ≤ L ∧ L ≤ (2 * C.card + 1) * 2 ^ C.card ∧ p 0 = x ∧ p L = x ∧
+      (∀ j, j < L → ∃ u : ℤ, d u = p j ∧ d (u + 1) = p (j + 1)) ∧
+      (∀ f e : PlusFormula, f ∈ x.1 → ev f = some e →
+        ∃ j, j < L ∧ e ∈ (p (j + 1)).1) := by
+  classical
+  have hkey : ∀ S : Finset PlusFormula, S ⊆ x.1 →
+      ∃ (L : ℕ) (p : ℕ → PlusTypeState C),
+        1 ≤ L ∧ L ≤ (2 * S.card + 1) * Nat.card (PlusTypeState C) ∧ p 0 = x ∧ p L = x ∧
+        (∀ j, j < L → PlusSeqStepT d (p j) (p (j + 1))) ∧
+        (∀ f e : PlusFormula, f ∈ S → ev f = some e →
+          ∃ j, j < L ∧ e ∈ (p (j + 1)).1) := by
+    intro S
+    induction S using Finset.induction_on with
+    | empty =>
+      intro _
+      obtain ⟨L, p, h1, h2, h3, h4, h5⟩ := exists_base_plusCycleT d x hrec
+      refine ⟨L, p, h1, ?_, h3, h4, h5, ?_⟩
+      · simpa using h2
+      · intro f e hf _
+        exact absurd hf (Finset.notMem_empty f)
+    | @insert f S hf ih =>
+      intro hsub
+      obtain ⟨L', p', h1, h2, h3, h4, h5, h6⟩ :=
+        ih (fun y hy => hsub (Finset.mem_insert_of_mem hy))
+      rw [Finset.card_insert_of_notMem hf]
+      cases hev : ev f with
+      | none =>
+        refine ⟨L', p', h1, le_trans h2 (Nat.mul_le_mul (by omega) (le_refl _)), h3, h4, h5, ?_⟩
+        intro f' e hf' hev'
+        rcases Finset.mem_insert.mp hf' with rfl | hf'S
+        · rw [hev] at hev'
+          exact absurd hev' (by simp)
+        · exact h6 f' e hf'S hev'
+      | some e =>
+        obtain ⟨u₀, -, hu₀⟩ := hrec 0
+        have hfx : f ∈ (d u₀).1 := by
+          rw [hu₀]; exact hsub (Finset.mem_insert_self f S)
+        obtain ⟨s, hs, hes⟩ := hful u₀ f e hfx hev
+        obtain ⟨u₁, hu₁le, hu₁⟩ := hrec (s + 1)
+        have hitA : iter (PlusSeqStepT d) (s - u₀).toNat x (d s) := by
+          have h := iter_plusSeqStepT d u₀ (s - u₀).toNat
+          rw [hu₀] at h
+          rwa [show u₀ + (((s - u₀).toNat : ℕ) : ℤ) = s by omega] at h
+        obtain ⟨a, ha, haiter⟩ := exists_iterT_lt_card (PlusSeqStepT d) hitA
+        have hitB : iter (PlusSeqStepT d) (u₁ - s).toNat (d s) x := by
+          have h := iter_plusSeqStepT d s (u₁ - s).toNat
+          rwa [show s + (((u₁ - s).toNat : ℕ) : ℤ) = u₁ by omega, hu₁] at h
+        obtain ⟨b, hb, hbiter⟩ := exists_iterT_lt_card (PlusSeqStepT d) hitB
+        obtain ⟨pa, hpa0, hpaa, hpast⟩ := exists_path_of_iter (PlusSeqStepT d) a _ _ haiter
+        obtain ⟨pb, hpb0, hpbb, hpbst⟩ := exists_path_of_iter (PlusSeqStepT d) b _ _ hbiter
+        have hseam : pa a = pb 0 := by rw [hpaa, hpb0]
+        -- the excursion `x ⟶ d s ⟶ x`, as one walk of length `a + b`
+        have hq0 : plusJoinPathT pa pb a 0 = x := by
+          rw [plusJoinPathT_left pa pb (Nat.zero_le a), hpa0]
+        have hqa : plusJoinPathT pa pb a a = d s := by
+          rw [plusJoinPathT_left pa pb (le_refl a), hpaa]
+        have hqab : plusJoinPathT pa pb a (a + b) = x := by
+          rw [plusJoinPathT_right pa pb a hseam b, hpbb]
+        have hqst := plusJoinPathT_steps pa pb a b hseam hpast hpbst
+        have hp'q : p' L' = plusJoinPathT pa pb a 0 := by rw [h4, hq0]
+        refine ⟨L' + (a + b), plusJoinPathT p' (plusJoinPathT pa pb a) L', by omega,
+          ?_, ?_, ?_, ?_, ?_⟩
+        · obtain ⟨A, hA⟩ : ∃ A, (2 * S.card + 1) * Nat.card (PlusTypeState C) = A := ⟨_, rfl⟩
+          have harith : (2 * (S.card + 1) + 1) * Nat.card (PlusTypeState C)
+              = A + 2 * Nat.card (PlusTypeState C) := by
+            rw [← hA, show 2 * (S.card + 1) + 1 = (2 * S.card + 1) + 2 by omega, Nat.add_mul]
+          rw [hA] at h2
+          rw [harith]
+          omega
+        · rw [plusJoinPathT_left p' _ (Nat.zero_le L'), h3]
+        · rw [plusJoinPathT_right p' _ L' hp'q (a + b), hqab]
+        · exact plusJoinPathT_steps p' _ L' (a + b) hp'q h5 hqst
+        · intro f' e' hf' hev'
+          rcases Finset.mem_insert.mp hf' with rfl | hf'S
+          · -- the newly marked formula: its event sits at the junction of the two legs
+            have hee : e' = e := by rw [hev] at hev'; exact (Option.some.injEq _ _ ▸ hev').symm
+            subst hee
+            refine ⟨L' + a - 1, by omega, ?_⟩
+            rw [show L' + a - 1 + 1 = L' + a by omega, plusJoinPathT_right p' _ L' hp'q a, hqa]
+            exact hes
+          · -- an older mark: it lives in the prefix, which the join leaves untouched
+            obtain ⟨j, hj, hjmem⟩ := h6 f' e' hf'S hev'
+            exact ⟨j, by omega, by rwa [plusJoinPathT_left p' _ (by omega : j + 1 ≤ L')]⟩
+  obtain ⟨L, p, h1, h2, h3, h4, h5, h6⟩ := hkey x.1 (Finset.Subset.refl _)
+  refine ⟨L, p, h1, ?_, h3, h4, h5, h6⟩
+  have hb : L ≤ (2 * C.card + 1) * Nat.card (PlusTypeState C) := by
+    refine le_trans h2 (Nat.mul_le_mul ?_ (le_refl _))
+    have hc : x.1.card ≤ C.card := Finset.card_le_card (Finset.mem_powerset.mp x.2)
+    omega
+  rwa [natCard_plusTypeState] at hb
+
 end FormalSystem.Metalogic.Decidability

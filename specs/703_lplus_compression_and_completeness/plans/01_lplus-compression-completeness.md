@@ -374,18 +374,18 @@ signatures in `WitnessFamily/Compression/Cycle.lean`; if either mentions `Formul
 
 ---
 
-### Phase 4: Eventuality events, the cycle bound, and good cycles [NOT STARTED]
+### Phase 4: Eventuality events, the cycle bound, and good cycles [COMPLETED]
 
 **Goal**: Complete the cycle machinery: the eventuality-event decoders, the cycle-length bound,
 and the extraction of a good cycle from an arbitrary type sequence.
 
 **Tasks**:
-- [ ] Define `plusUntlEventT` and `plusSnceEventT` and prove their `eq_some` inversion lemmas.
-- [ ] Define `plusCycleBoundC` and prove `plusCycleBoundC_eq`.
-- [ ] Prove `exists_base_plusCycleT`.
-- [ ] Prove `exists_good_cycle_of_plusTypeSeq`, the phase's deliverable: from any type sequence,
+- [x] Define `plusUntlEventT` and `plusSnceEventT` and prove their `eq_some` inversion lemmas.
+- [x] Define `plusCycleBoundC` and prove `plusCycleBoundC_eq`.
+- [x] Prove `exists_base_plusCycleT`.
+- [x] Prove `exists_good_cycle_of_plusTypeSeq`, the phase's deliverable: from any type sequence,
       a cycle bounded by `plusCycleBoundC` on which every eventuality present is discharged.
-- [ ] Confirm the L⁺ closure's `stab` members need no event decoder. `⊡` is not an eventuality —
+- [x] Confirm the L⁺ closure's `stab` members need no event decoder. `⊡` is not an eventuality —
       it has no unfolding clause in (C1') by design — so the two decoders stay at `untl` and
       `snce` exactly as on the `Formula` side.
 
