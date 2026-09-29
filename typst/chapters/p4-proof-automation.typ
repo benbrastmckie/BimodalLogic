@@ -82,7 +82,7 @@ All weights are configurable through a `HeuristicWeights` record, so the default
 
 Consider the M4 pattern $square.stroked p arrow.r square.stroked square.stroked p$ under `modal_search`.
 The goal is not an assumption; `tryAxiomMatch` recognizes it against the axiom table (M4 is primitive in BX), and the search closes at depth 1.
-A goal requiring genuine search, such as a chained implication whose antecedents must themselves be derived, exercises `tryModusPonens`'s cascade in the tactic engine: each candidate antecedent is tried in order via the fixed strategy sequence above, and `modal_search`'s depth/visitLimit parameters bound the recursion (worked instances in the `FormalSystem/Examples/` library are collected in the dual-verification chapter).
+A goal requiring genuine search, such as a chained implication whose antecedents must themselves be derived, exercises `tryModusPonens`'s cascade in the tactic engine: each candidate antecedent is tried in order via the fixed strategy sequence above, and `modal_search`'s depth/visitLimit parameters bound the recursion (worked instances in the `FormalSystem/Examples/` library are collected in @sec:dual-verification).
 
 == Learning and Game-Theoretic Tactics
 

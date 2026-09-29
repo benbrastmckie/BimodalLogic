@@ -749,24 +749,46 @@ findings with the checker; the `SCORE` line must end at `BLOCKING 0`.
 
 ---
 
-### Phase 11: p4-dataset-pipeline.typ and p4-dual-verification.typ [NOT STARTED]
+### Phase 11: p4-dataset-pipeline.typ and p4-dual-verification.typ [COMPLETED]
 
 **Goal**: Clear 43 BLOCKING findings across the two applications chapters and convert their
 `#items[]` blocks, completing the `p4` group.
 
+**Also completed here**: added a `<sec:dual-verification>` label to `p4-dual-verification.typ`'s
+`=` heading (it carried none before this phase) and used it to finish the one un-linked
+cross-reference Phase 10 deferred (`p4-proof-automation.typ`'s "the dual-verification chapter"
+mention, now `@sec:dual-verification`) -- see Phase 10's own notes for why it could not be closed
+there.
+
 **Tasks**:
-- [ ] `p4-dataset-pipeline.typ`: resolve 22 Rule 1.2 findings and convert its 4 footnote
-      citations.
-- [ ] `p4-dual-verification.typ`: resolve 21 Rule 1.2 findings. Its worst pattern is
-      `Examples/TemporalStructures.lean` repeated 11 times and `Examples/BimodalProofs.lean` 7
-      times; resolve each per occurrence and prefer a single `#leansrc` attribution over a
-      repeated inline path.
-- [ ] `p4-dual-verification.typ`: convert its 7 footnote citations and keep the external block
-      quote in its opening intact.
-- [ ] Convert the `#items[]` block in each file to native list syntax per rule 6.
-- [ ] Verify both files' `#chapter-header` fields are present and substantive.
-- [ ] Verify every dataset and verification-status number against `typst/generated/` or
-      `SYNC-MAP.md`.
+- [x] `p4-dataset-pipeline.typ`: resolved all 22 Rule 1.2 findings. **Deviation**: found the
+      seven `BimodalTools/*.lean` file paths were bare with no `FormalSystem/` (or any) prefix at
+      all, and traced them to a different root directory than the Scope Hypothesis assumed --
+      `BimodalTools/` at the repo root, not `FormalSystem/`, confirmed by `find . -iname`. The 4
+      `training/PIPELINE.md:NNN`-shaped footnote citations were fixed by moving the line-number
+      suffix outside the backtick span (`` `training/PIPELINE.md` ``, line NNN) rather than
+      restructuring to `#leansrc`, since these cite a markdown document section, not a Lean
+      declaration -- rule 4's three-form table does not cover markdown citations, so the closest
+      conforming shape (file-cited-as-a-file, backtick path resolving cleanly) was used.
+- [x] `p4-dual-verification.typ`: resolved all 21 Rule 1.2 findings. Consolidated the repeated
+      `Examples/TemporalStructures.lean`/`Examples/BimodalProofs.lean` mentions within a sentence
+      to cite the file once (`FormalSystem/Examples/...`) and say "same file"/"same code" for
+      later mentions in the same sentence, rather than repeating the now-longer full path.
+- [x] `p4-dual-verification.typ`: **Deviation**, same reasoning as Phases 4/6/9 -- every citation
+      here is an inline declaration-plus-path mention, not a standalone block attribution, so
+      resolved via `FormalSystem/`-prefixing rather than restructuring to `#leansrc`. The external
+      block quote in the chapter's opening (the ModelChecker/ProofChecker framing, footnoted to
+      `README.md:183` and the Logos manual) was left untouched in structure; its Logos citation
+      was de-backticked (it names an external, non-local file the checker cannot and should not
+      resolve against this tree) with the existing "not a local Lean name" disclaimer kept.
+- [x] Converted the `#items[]` block in each file to native list syntax per rule 6.
+- [x] Verified both files' `#chapter-header` fields (`description`/`dependencies`) are present
+      and substantive.
+- [x] Reviewed dataset/verification-status numbers: the Tier-1 gate table's figures (distinct
+      formula count, provability ratio, etc.) are each already attributed in-caption to a specific
+      `training/PIPELINE.md` line range, which is this pipeline's own traceability mechanism (the
+      manual's `typst/generated/` covers Lean-source counts, not external experiment logs); no
+      untraceable hand-typed number was found in either file.
 
 **Timing**: 1.5 hours
 
