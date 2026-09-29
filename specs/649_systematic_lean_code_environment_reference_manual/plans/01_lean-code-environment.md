@@ -566,7 +566,7 @@ valid Python line-continuation with no token altered. A whole-chapters bare-fenc
 
 ---
 
-### Phase 7: Add the mechanical check [NOT STARTED]
+### Phase 7: Add the mechanical check [COMPLETED]
 
 **Goal**: Extend `scripts/typst-sync-check.sh` with a Check 4 that fails on each of the three
 violation kinds the dispatch names, and demonstrate each failure on a planted violation.
@@ -615,6 +615,28 @@ the script's Check 1 body and its flag-handling block before writing new code.
 - Each of the three planted violations produces a non-zero exit and a report naming the file
   and line.
 - The existing checks' behavior is unchanged on a clean tree.
+
+**Measured results**: Check 4 added to `scripts/typst-sync-check.sh` as `run_check4_codeblocks`,
+wired into full-mode after Check 3 and into the summary line (now "all 4 checks green"), reusing
+Check 1's `grep_lean`/whitelist machinery for declaration resolution. All three violation kinds
+were planted, one at a time, in `typst/chapters/p2-frame-classes.typ` and reverted immediately
+after each (`git diff` confirmed empty between plants): a bare fenced block, a 80-column line,
+and an unresolvable `PlantedViolationNoSuchDeclarationXyzzy` name -- each produced exactly one
+`CHECK4_VIOLATIONS=1` failure naming the file, line, and reason; after each revert Check 4 (and
+the whole script, modulo the pre-existing Check 2 drift below) returned to its clean state. On
+the real, unmodified tree, Check 4 reports `CHECK4_VIOLATIONS=0` across every file under
+`typst/chapters/`. The check is build-free (grep and Python file reads only, no `lake` or `typst
+compile` invocation) and the element lint under `.claude/` was not touched, per the Non-Goals.
+
+**Unrelated, pre-existing Check 2 drift observed (not fixed, out of scope)**: while running the
+full script, `formalsystem-line-count` (Check 2, comparing committed `generated/status.typ`
+against a live regeneration from `FormalSystem/`) failed and its live value changed across two
+consecutive runs. `git log` confirms this tracks a concurrent sibling task's ongoing commits to
+`FormalSystem/Metalogic/Decidability/` in this shared working tree, not any edit made by this
+task -- `FormalSystem/` is outside this plan's file scope and untouched by it (`git status`
+clean there throughout). Reported to the orchestrating session per the territory/concurrency
+protocol; left unfixed here since regenerating `generated/status.typ` is a Lean-source-count
+concern orthogonal to code-block presentation and outside this task's Non-Goals-bounded scope.
 
 ---
 

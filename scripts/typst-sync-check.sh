@@ -2,7 +2,7 @@
 # ============================================================================
 # typst-sync-check.sh
 #
-# Mechanical drift detector for typst/. Three checks:
+# Mechanical drift detector for typst/. Four checks:
 #   1. Name resolution   -- every backticked span in typst/**/*.typ resolves
 #                           against live Lean source (excl. Boneyard/) or
 #                           the whitelist.
@@ -18,6 +18,14 @@
 #                           constructor blocks, and machine-appendix.typ is
 #                           exactly the renderer's output for that JSONL
 #                           (jq/python/awk only; no lake invocation).
+#   4. Code environment  -- every fenced code block under typst/chapters/
+#                           is wrapped in template.typ's lean-code()
+#                           environment (no bare fence survives), every code
+#                           line stays within the environment's documented
+#                           column budget, and every source-excerpt call's
+#                           module-qualified declaration name resolves in
+#                           live, non-Boneyard Lean source (reusing Check
+#                           1's grep-based resolution and whitelist).
 #
 # (The former banner-presence and legend-discipline checks were retired with
 # the sync-class banner system; the compiled book carries no sync-class
@@ -29,9 +37,9 @@
 #
 # Usage:
 #   scripts/typst-sync-check.sh
-#       Run all three checks above (unchanged full run). This is the form
-#       CI calls; its behaviour is byte-identical to before --counts-only,
-#       --fix and --help existed.
+#       Run all four checks above. This is the form CI calls; Checks 1-3's
+#       behaviour is unchanged from before --counts-only, --fix and --help
+#       existed, and Check 4 was added alongside this comment.
 #
 #   scripts/typst-sync-check.sh --counts-only
 #       Run ONLY Check 2's generated/status.typ comparison (the scalar,
@@ -75,6 +83,12 @@ BIMODAL_DIR="${REPO_ROOT}/FormalSystem"
 # and used by Check 1 ONLY: Checks 2-3 below still take BIMODAL_DIR as one directory path.
 LEAN_SRC_ROOTS="${REPO_ROOT}/FormalSystem:${REPO_ROOT}/BimodalTools"
 TYPST_DIR="${REPO_ROOT}/typst"
+CHAPTERS_DIR="${TYPST_DIR}/chapters"
+# Column budget for typst/template.typ's lean-code() environment. Kept in
+# sync with that file's lean-code-column-budget constant by hand -- the two
+# cannot share a value across the shell/Typst boundary without a build step,
+# and this check is deliberately build-free.
+LEAN_CODE_COLUMN_BUDGET=63
 WHITELIST="${TYPST_DIR}/sync-check-whitelist.txt"
 MAIN_FILE="${TYPST_DIR}/BimodalReference.typ"
 STATUS_TYP="${TYPST_DIR}/generated/status.typ"
@@ -118,9 +132,10 @@ if [[ "${MODE}" == "help" ]]; then
   cat << USAGE
 ${USAGE_LINE}
 
-  (no arguments)   Run all three sync checks (name resolution, count
-                   freshness incl. module-map, machine appendix). This is
-                   the form CI calls. Exit 0 if all pass, 1 otherwise.
+  (no arguments)   Run all four sync checks (name resolution, count
+                   freshness incl. module-map, machine appendix, code
+                   environment discipline). This is the form CI calls.
+                   Exit 0 if all pass, 1 otherwise.
 
   --counts-only    Run ONLY Check 2's generated/status.typ comparison
                    (the scalar/string/sorry-table fields), build-free (no
@@ -373,6 +388,107 @@ run_check3_render() {
   [[ -z "${CHECK3_RENDER_DIFF}" ]]
 }
 
+# ---------------------------------------------------------------------------
+# Check 4: code environment (lean-code()) discipline over typst/chapters/.
+# Three violation kinds in one pass over every *.typ file directly under
+# CHAPTERS_DIR (not recursive -- matches Check 1's scope for that
+# directory and the plan's "typst/chapters/" acceptance wording):
+#   a. a bare fenced block (```) not immediately preceded by
+#      #lean-code(source: ...)[ or #lean-code[
+#   b. a code line, once dedented the way Typst dedents a fenced block
+#      (strip each content line's leading whitespace up to the opening
+#      fence line's own indent), exceeding LEAN_CODE_COLUMN_BUDGET
+#   c. a #lean-code(source: (module, name)) call whose name does not
+#      resolve in live, non-Boneyard Lean source under LEAN_SRC_ROOTS or
+#      the sync-check whitelist -- same grep-based resolution Check 1
+#      uses for a bare identifier candidate.
+# Wrapped for reuse the same way Checks 2/2b/3 are. Sets CHECK4_REPORT;
+# returns 0 if no violation of any kind, 1 otherwise.
+# ---------------------------------------------------------------------------
+run_check4_codeblocks() {
+  CHECK4_REPORT=$(python3 - "${CHAPTERS_DIR}" "${REPO_ROOT}" "${LEAN_SRC_ROOTS}" "${WHITELIST}" "${LEAN_CODE_COLUMN_BUDGET}" << 'PYEOF'
+import re, glob, os, subprocess, sys
+
+chapters_dir, repo_root, lean_src_roots_raw, whitelist_path, budget = sys.argv[1:6]
+budget = int(budget)
+lean_src_roots = [d for d in lean_src_roots_raw.split(":") if d and os.path.isdir(d)]
+
+whitelist = set()
+if os.path.exists(whitelist_path):
+    with open(whitelist_path, encoding="utf-8") as fh:
+        for line in fh:
+            line = line.rstrip("\n")
+            if not line or line.startswith("#"):
+                continue
+            whitelist.add(line)
+
+def grep_lean(name):
+    try:
+        out = subprocess.run(
+            ["grep", "-rl", "--include=*.lean", "-F", name] + lean_src_roots
+            + ["--exclude-dir=Boneyard"],
+            capture_output=True, text=True, timeout=30,
+        )
+        return out.returncode == 0 and bool(out.stdout.strip())
+    except Exception:
+        return False
+
+fence_re = re.compile(r'^(\s*)```')
+source_call_re = re.compile(r'#lean-code\(source:\s*\("([^"]+)",\s*"([^"]+)"\)\)\[\s*$')
+bare_call_re = re.compile(r'^\s*#lean-code\[\s*$')
+
+violations = []
+for path in sorted(glob.glob(os.path.join(chapters_dir, "*.typ"))):
+    rel = os.path.relpath(path, repo_root)
+    with open(path, encoding="utf-8") as fh:
+        lines = fh.read().split("\n")
+    i = 0
+    while i < len(lines):
+        m = fence_re.match(lines[i])
+        if m:
+            fence_indent = len(m.group(1))
+            open_line = i + 1
+            prev = lines[i - 1].strip() if i > 0 else ""
+            is_source = bool(source_call_re.match(lines[i - 1])) if i > 0 else False
+            is_bare = bool(bare_call_re.match(lines[i - 1])) if i > 0 else False
+            if not (is_source or is_bare):
+                violations.append(
+                    f"{rel}:{open_line}: bare fenced code block not wrapped in "
+                    f"lean-code() (preceding line: {prev!r})"
+                )
+            j = i + 1
+            while j < len(lines) and not fence_re.match(lines[j]):
+                content = lines[j]
+                dedented = content[fence_indent:] if content[:fence_indent].strip() == "" else content
+                if len(dedented) > budget:
+                    violations.append(
+                        f"{rel}:{j + 1}: code line is {len(dedented)} columns, "
+                        f"over the {budget}-column budget"
+                    )
+                j += 1
+            if is_source:
+                sm = source_call_re.match(lines[i - 1])
+                module, name = sm.group(1), sm.group(2)
+                if name not in whitelist and not grep_lean(name):
+                    violations.append(
+                        f"{rel}:{i}: lean-code(source: (\"{module}\", \"{name}\")) -- "
+                        f"'{name}' not found in any *.lean file under the Lean source "
+                        f"roots (excl. Boneyard/), and not in the whitelist"
+                    )
+            i = j + 1
+        else:
+            i += 1
+
+for v in violations:
+    print("VIOLATION: " + v)
+print(f"CHECK4_VIOLATIONS={len(violations)}")
+PYEOF
+)
+  local violation_count
+  violation_count=$(echo "${CHECK4_REPORT}" | grep -o '^CHECK4_VIOLATIONS=[0-9]*$' | cut -d= -f2)
+  [[ "${violation_count:-1}" == "0" ]]
+}
+
 # ===========================================================================
 # --counts-only mode: Check 2's status.typ comparison alone, build-free.
 # ===========================================================================
@@ -466,9 +582,9 @@ if [[ "${MODE}" == "fix" ]]; then
 fi
 
 # ===========================================================================
-# Full mode (no arguments): unchanged three-check run. This is the form CI
-# calls, and its behaviour below is byte-identical to before --counts-only,
-# --fix and --help existed.
+# Full mode (no arguments): four-check run. This is the form CI calls.
+# Checks 1-3's behaviour below is byte-identical to before --counts-only,
+# --fix and --help existed; Check 4 was added alongside them.
 # ===========================================================================
 
 # ---------------------------------------------------------------------------
@@ -671,12 +787,25 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+# Check 4: code environment (lean-code()) discipline over typst/chapters/
+# ---------------------------------------------------------------------------
+echo "== Check 4: code environment discipline (typst/chapters/*.typ) ==" >&2
+
+if run_check4_codeblocks; then
+  echo "${CHECK4_REPORT}" >&2
+  echo "Every code block is wrapped in lean-code(), within budget, and every source-excerpt name resolves." >&2
+else
+  echo "${CHECK4_REPORT}" >&2
+  FAIL=1
+fi
+
+# ---------------------------------------------------------------------------
 # Summary
 # ---------------------------------------------------------------------------
 if [[ "${FAIL}" == "1" ]]; then
   echo "typst-sync-check.sh: FAIL" >&2
   exit 1
 else
-  echo "typst-sync-check.sh: PASS (all 3 checks green)" >&2
+  echo "typst-sync-check.sh: PASS (all 4 checks green)" >&2
   exit 0
 fi
