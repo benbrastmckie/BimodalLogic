@@ -1,7 +1,7 @@
 # Implementation Plan: One Lean-Code Environment for the Reference Manual
 
 - **Task**: 649 - Systematic Lean code environment for the Bimodal Reference Manual
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 13 hours
 - **Dependencies**: None outstanding (tasks 647 and 648 are both archived/completed; their
   output is already live in `typst/` and is the baseline this plan measures)
@@ -688,7 +688,7 @@ no `specs/` path.
 
 ---
 
-### Phase 9: Acceptance pass and after-renders [NOT STARTED]
+### Phase 9: Acceptance pass and after-renders [COMPLETED]
 
 **Goal**: Run the dispatch's full acceptance bar and produce the before-and-after render set
 the summary requires.
@@ -728,6 +728,45 @@ the summary requires.
 - Every code-bearing page has an inspected after-render, and one before-and-after pair per
   affected chapter is collected.
 - The token-fidelity diff is empty for every migrated block.
+
+**Measured results**:
+
+- Both `typst compile --root .. BimodalReference.typ` and `... FormalFoundations.typ` are zero
+  errors.
+- `scripts/typst-sync-check.sh`: Checks 1, 2b, 3, and 4 (this task's own check) are all green.
+  Check 2's `formalsystem-line-count` sub-field fails, tracking sibling task 696's ongoing
+  commits to `FormalSystem/Metalogic/Decidability/` in this shared working tree (its live value
+  moved across three separate runs of this script during Phases 7-9: 317559, 317843, 317866,
+  317948) -- confirmed by `git log` and `git status` (clean in `FormalSystem/` throughout this
+  task) to be unrelated to any edit this plan made, reported to the orchestrating session, and
+  left unfixed as out of scope (Lean-source-count freshness is orthogonal to code-block
+  presentation).
+- `bash .claude/scripts/typst-element-lint.sh --verbose` PASS (0 failures, 0 warnings) across
+  `template.typ` and all six migrated chapter files.
+- The new Check 4 passes on the real tree and was demonstrated, one violation at a time, to fail
+  and name the offense for a planted bare fence, a planted over-budget line, and a planted
+  unresolvable declaration name, each in `typst/chapters/p2-frame-classes.typ` and reverted
+  immediately after (`git diff` empty between plants).
+- A whole-`typst/chapters/` scan confirms zero bare fenced blocks outside `lean-code(...)`.
+- Token-fidelity diff (concatenated non-whitespace characters, before vs. after migration, all
+  50 blocks across six files): empty for the five Phase 6 files; the appendix carries exactly
+  one documented, reasoned insertion (a repeated `--` Lean comment-continuation marker, not a
+  code token -- see Phase 4's measured results).
+- Rendered inspection: ten distinct pages across all six affected files (`ax-lean-appendix.typ`
+  pages 94, 96, 102, 120, 122; `p2-decidability-practice.typ` page 53;
+  `p2-frame-classes.typ` page 38; `p4-dual-verification.typ` page 87 (the manual's widest block,
+  nested in `#example`); `p4-dataset-pipeline.typ` page 82; `ax-machine-appendix.typ` page 124)
+  show no wrapped code line, every label banded tightly to its code, consistent spacing to the
+  surrounding paragraph on every page, and identical black, left-indented, 8pt DejaVu Sans Mono
+  styling across every file and both kinds. This is not an exhaustive per-page render of the
+  appendix's full ~30-page span; it is backed by Check 4's exhaustive, mechanical, whole-file
+  column-budget scan (zero violations over every code line in every affected file) plus the
+  environment's single-unbreakable-block construction, which makes label/code/prose spacing a
+  structural, per-call-site-uniform guarantee rather than a page-by-page variable.
+- `typst/FormalFoundations.typ` remains byte-identical to its pre-task state throughout (`git
+  diff` empty at every phase gate).
+- Before-and-after render pairs assembled for the summary: one page per affected chapter (six
+  pairs), captured to the session scratchpad.
 
 ---
 
