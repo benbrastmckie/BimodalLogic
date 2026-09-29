@@ -1,5 +1,5 @@
 ---
-next_project_number: 705
+next_project_number: 706
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 705
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,696 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,696,705 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650,701,703 | 298,464,502,563,649,696 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,704 | 231,465,497,564,565,616,703 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -69,7 +69,7 @@ next_project_number: 705
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-696 [RESEARCHED] — DESIGN-INVESTIGATION-FIRST TASK. Determine what the stability...
+696 [PLANNING] — DESIGN-INVESTIGATION-FIRST TASK. Determine what the stability...
   └─ 701 [NOT STARTED] — Port the branching-substrate lessons from the ProofChecker's...
   └─ 703 [NOT STARTED] — Prove the L-plus twin of...
 
@@ -83,6 +83,10 @@ next_project_number: 705
 127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ...
 128 [NOT STARTED] — Add topological open set (interior) operator for dense and...
 
+### Incompleteness
+
+705 [NOT STARTED] — transreflexivityresidualcollapse: Task 696's recommended...
+
 ### Literature
 
 664 [NOT STARTED] — Acquire and ingest the Cmiel-Kuhlmann-Kuhlmann ball-space...
@@ -95,7 +99,7 @@ next_project_number: 705
 
 ### Reference Book
 
-649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
+649 [RESEARCHING] — Define one Typst environment for presenting Lean code in...
   └─ 650 [NOT STARTED] — Define-before-use audit of...
 
 ### Verification
@@ -103,6 +107,16 @@ next_project_number: 705
 704 [NOT STARTED] — Two structural preventions against the class of defect the...
 
 ## Tasks
+
+### 705. Trans reflexivity residual collapse
+- **Status**: [NOT STARTED]
+- **Task Type**: formal:logic
+- **Topic**: incompleteness
+- **Dependencies**: None
+
+**Description**: trans_reflexivity_residual_collapse: Task 696's recommended substrate redesign declares trans_refl : forall r in transBack ++ transMid ++ transFwd, forall i, r i i = true as a field of the proposed skeleton (the additive data layer for the trans-based redesign of (C1')'s two temporal conjuncts). With that field, the redesigned (C1') still entails a latent invariance-collapse structurally identical to the one the redesign exists to remove: trans t i j -> (untl g e in L i t <-> untl g e in L j t) and trans (t-1) k i -> (snce g e in L i t <-> snce g e in L k t), both machine-checked in task 699's probe (specs/699_invariance_clause_audit_and_ockhamist_grounding/probes/01_clause_shape_collapse_probe.lean, theorems tUntl_trans_congr and tSnce_trans_congr) against an external trans parameter, using only reflexivity of trans and the shape of the redesigned clause. The invariance is not semantically forced: arrival pruning (trans u i j -> share (u+1) i j) relates the two indices at t + 1, not at t, so the redesigned clause constrains a label row the thread in question never visits at t -- the same category of spurious constraint as the original share-based defect, relocated from share-classes to trans-classes. Both of task 696's gate families set every trans segment to [eq] (trans = eq), making trans t the diagonal, so both theorems are vacuous on them and the gate passes without exhibiting the residual; the residual bites exactly on the hopping families that design T's generality (task 696) exists to admit. Scope: (1) decide whether trans_refl is required, by auditing the approximately 25 term-level Thread.const call sites across PlusWitnessFamily/{Agreement,Basic,Predicates}.lean and Sharing/{Agreement,Predicates,Stability,Thread}.lean (8 files total) against the weaker existential field 'for every i and u there is a thread with idx u = i' -- expected answer: every site consumes only the existential, since the sites need some thread through a position, not the constant one; (2) if so, specify the replacement field and the one substitution lemma, and hand the specification to task 696's Phase 1 so the reflexivity field is never declared; (3) record untl_succ_congr / snce_pred_congr (the common-successor / common-predecessor congruences -- clause_shape_common_witness applied at the flipped relation, already machine-checked as tUntl_common_succ_congr in task 699's probe) as the intended residual once reflexivity is dropped, so the next reader knows the relocation from share-classes to trans-classes is deliberate and bounded -- task 696's report 01 already asks for this record; task 699 supplies the reflexivity-free derivation that makes it exactly the residual and nothing more; (4) optionally, and only if step 1 finds trans_refl genuinely required for some site the existential field cannot supply, construct a hopping countermodel and a target schema that the trans-congruence blocks, turning the residual into a named incompleteness theorem the way not_plusCertifies_stabSnce did for the original defect. Non-goals: no substrate redesign (task 696 owns the redesign in full); no change to plusTruth_iff_mem or plusRefutes_of_certifies (soundness is not in question); no re-conversion of the thomason-1970-indeterminist-time corpus source (optional future work, only if a separate unverified literature claim becomes load-bearing). Ordering constraint: this task should be resolved before task 696 Phase 1 declares trans_refl as a skeleton field, because removing a declared field after code depends on it costs substantially more than not declaring it in the first place -- task 696 Phase 1 is the additive data layer where trans_refl would first appear. Type: formal:logic. Effort estimate: research-first (step 1 is an audit, not a proof); implementation of steps 2-3 belongs to whichever cycle lands task 696 Phase 1.
+
+---
 
 ### 704. Certificate non vacuity and shape gates
 - **Status**: [NOT STARTED]
@@ -228,7 +242,7 @@ CONSTRAINTS AND NON-GOALS. Do not modify any Lean statement: this task's Part A 
 ---
 
 ### 696. Stability modal substrate design
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 700
@@ -601,7 +615,7 @@ CONSTRAINTS. Re-verify every Lean fact against live (non-Boneyard) source under 
 ---
 
 ### 649. Systematic lean code environment reference manual
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: Task 647, Task 648
