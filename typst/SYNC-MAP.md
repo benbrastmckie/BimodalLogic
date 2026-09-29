@@ -780,3 +780,92 @@ above already models.
 defects found: no such bare reference exists anywhere in `typst/`; the Lean appendix's own link
 to the machine appendix names no title text at all, so nothing there needed fixing. The
 underlying `#show ref` rule bug this sub-claim pointed at is real regardless and is fixed above.
+
+## 2026-09-29 Audit — Define-Before-Use Pass over `chapters/ax-lean-appendix.typ`
+
+A first-use ledger was built over the whole appendix, in reading order, recording for every item
+a newcomer to Lean would need explained both the line of its first use and the line of its
+introduction. Items were taken in four classes: the project's turnstile and formula notation; the
+project identifiers a snippet or sentence relies on; Lean surface syntax (binders, declaration
+keywords, glyphs, attributes, commands and tactics); and the appendix's own presentation
+conventions. Every row classified as a forward reference, as never introduced, or as named but
+unexplained was then repaired, with one canonical introduction per item placed at or before first
+use and later mentions pointing back by section reference rather than re-explaining.
+
+**Class (d) needed no repair.** Every reader-facing presentation convention — the `>` source-label
+line, excerpt against didactic example, docstring omission, line re-breaking, and the single
+`lean-code()` code environment — is already introduced in the appendix's opening prose, before the
+first block that uses any of them. It was left untouched.
+
+**The turnstile table and the bracket.** The table gained a row for `⊨ φ`, which was used seven
+times without appearing there. The prose after it now states five things it did not: that all eight
+turnstile forms are project-defined `notation` declared in `ProofSystem/Derivation.lean` and
+`ProofSystem/Derivable.lean`, so the brackets are literal tokens rather than Lean syntax and are
+not instance binders; that what sits between them is any term of type `FrameClass`, a concrete tag
+giving one system and a bound variable giving all four at once; that the bracketed forms are the
+Lean spelling of the book's *TM*#sub[d], *TM*#sub[f] and *TM*#sub[c]; that the bracket-free forms
+*are* the `FrameClass.Base` instances rather than abbreviations unfolding to them; and that the
+exclamation mark marks the `Prop`-valued `Derivable` twin, against `⊨` for validity. The
+`Γ`/`φ` versus `G`/`p` spelling switch between the two halves of the table is now stated as the
+per-source convention it is. A didactic block proves the `.Base` identity by `rfl`.
+
+**The `FrameClass` apparatus.** The clarification that `fc` is a purely syntactic tag, with no
+reference to frames or truth until `FrameClass.Sat` interprets it, was already present and correct
+and was kept as written. What was missing around it is now supplied: `Axiom` as a type indexed by
+formulas, `Axiom.minFrameClass` as the function to the weakest licensing class, and the `≤` in the
+side condition as the four-element partial order, with a pointer to the section that displays it.
+
+**Syntactic prerequisites.** `Context` is now revealed as an `abbrev` for `List Formula` at its
+first appearance, which is what makes `[]`, `φ ∈ Γ` and `Γ ⊆ Δ` readable in the constructor list
+that follows. `Nonempty` is introduced where `Derivable`'s body first uses it. A short glyph
+paragraph covers `:=`, the function arrow against object-level implication, the quantifiers,
+negation, `True`/`False`, the coercion arrow, and the two distinct roles of `|`. Single-site
+glosses were added for `Type _`, `match … with`, `Set` and set-builder notation, `rfl`, `trivial`,
+the `case` tactic, `refine ?_`, `@[simp]`, `instance` as a declaration keyword, `Bool`, the
+subscripted variable names, and `φ.reflectTime` as an operator distinct from the rule.
+
+**One terminology defect corrected.** The leading dot was called *anonymous constructor notation*,
+which collided with the correct use of that name for `⟨ ⟩` five hundred lines later. The leading
+dot is dot notation resolved against the expected type; it is now named that, back-references the
+gloss at its own first use, and states the contrast with the anonymous constructor explicitly. The
+`⟨"p", none⟩` site now points back to the introduction rather than re-explaining it. Separately,
+the project's `decide`, a `def` returning a `DecisionResult`, is now flagged as unrelated to the
+`decide` tactic used on the frame-class order goals.
+
+**The three editorial `TODO` comments are resolved and removed.** The `Atom` excerpt is walked line
+by line: the `structure … where` header, the field lines with `String`, `Nat` and `Option Nat`, why
+the fresh index is optional, the three interchangeable ways of building a value, field access by
+dot notation, and the `deriving` clause handler by handler. The binder subsection now treats all
+three brackets in the same five-part shape — declaration site, use site, how Lean fills the
+argument in and what error appears when it cannot, how to override, and a worked example — around
+one live signature, `Semantics.PartialHistory.NearestAt`, which uses all three and is shown once as
+declared and once as called; the variants (several names under one binder, strict-implicit,
+named instance binders, `variable` declarations, auto-bound implicits) follow. The `worldNonempty`
+field is explained in full: the field's value as a proof rather than data, proof irrelevance, the
+contrast with `Inhabited`, `F.worldNonempty.some` and its reliance on choice, and what the brackets
+and the `attribute [instance]` line each add. Its four sibling proof fields, `comp`, `serial`,
+`limit` and `saturation`, are glossed, including how to read the `limit` statement.
+
+**Whitelist** (`typst/sync-check-whitelist.txt`, Check 1). The category that described its spans as
+living in `//`-prefixed Typst line comments is gone, because those comments are gone. Seven of its
+nine spans became unnecessary once the comments were rendered as prose: the prose cites real source
+where a citation is what is meant, and renders a pure syntax shape with `#raw` where it is not. The
+two that survived, the generic field shape and the strict-implicit binder, were merged into a
+category for rendered generic Lean-syntax illustrations, which also now carries the anonymous
+constructor's bracket pair, the set-builder shape, the `case`-tactic and `match` shapes, and the
+`Option` type constructor. Four tag-instantiated turnstile forms were added to the existing
+turnstile-illustration category.
+
+**Gates.** `typst compile --root .. BimodalReference.typ` completes with zero errors and zero
+warnings. `.claude/scripts/typst-element-lint.sh` reports no findings on the appendix. Checks 1, 2b,
+3 and 4 of `scripts/typst-sync-check.sh` pass. Check 2, the `generated/status.typ` count freshness
+check, reports `FormalSystem/` file and line counts behind a live regeneration; that drift is
+concurrent Lean work landing under `FormalSystem/Metalogic/Decidability/` during this pass, not a
+product of it, and `generated/status.typ` was deliberately not regenerated here, since a
+regeneration taken mid-flight would record a moving state. It should be regenerated once that work
+settles. Every Lean fact asserted in the new prose was re-verified against live, non-Boneyard source
+before being written, and every didactic block added was compiled with `lake env lean` against the
+pinned toolchain from a scratch path outside `FormalSystem/` and `Tests/`.
+
+**Two seeded items closed without change.** `noncomputable` and `fun` do not occur anywhere in the
+appendix as Lean syntax, so there was nothing to introduce and nothing was added for either.

@@ -491,7 +491,7 @@ intact.
 
 ---
 
-### Phase 9: Final Gates, Ledger Reconciliation and SYNC-MAP Entry [NOT STARTED]
+### Phase 9: Final Gates, Ledger Reconciliation and SYNC-MAP Entry [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Run the complete gate set, reconcile the finished file against the research ledger row by
 row, and record the pass in `typst/SYNC-MAP.md`.
@@ -502,8 +502,8 @@ row, and record the pass in `typst/SYNC-MAP.md`.
 - [ ] Record the four `N/A` seeded rows as closed with a one-line note, confirming that
       `noncomputable` and `fun` still do not occur anywhere in the appendix and so were correctly
       not introduced.
-- [ ] Run `bash scripts/typst-status-counts.sh` if any count-bearing prose changed, then
-      `bash scripts/typst-sync-check.sh` and confirm all four checks pass.
+- [x] Run `bash scripts/typst-status-counts.sh` if any count-bearing prose changed, then
+      `bash scripts/typst-sync-check.sh` and confirm all four checks pass. *(deviation: altered — no count-bearing prose changed, so no regeneration was owed by this work. Check 2 nonetheless fails on `formalsystem-file-count` and `formalsystem-line-count`, which drifted during this pass as concurrent Lean work landed under `FormalSystem/Metalogic/Decidability/`. See the Reasoned Exclusions record below.)*
 - [ ] Run `bash .claude/scripts/typst-element-lint.sh --verbose typst/chapters/ax-lean-appendix.typ`
       and confirm no blocking findings.
 - [ ] Build the manual with the invocation documented in `typst/README.md`:
@@ -537,6 +537,13 @@ and by capturing each gate's exit status in the phase record.
 - `typst/SYNC-MAP.md` carries the dated entry.
 - `bash .claude/scripts/check-task-references.sh` clean for `typst/`, or an equivalent grep
   confirming no task-number reference outside `specs/`.
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Check 2 of `scripts/typst-sync-check.sh` (count freshness) | The two failing fields, `formalsystem-file-count` and `formalsystem-line-count`, track live `FormalSystem/` source. They were in sync at this pass's baseline and drifted during it as concurrent work landed new Lean modules under `FormalSystem/Metalogic/Decidability/`. This task writes no Lean and changed no count-bearing prose, so the drift is not its product and regenerating `typst/generated/status.typ` mid-flight would commit a moving state that goes stale again on the next concurrent commit. | Baseline `typst-sync-check.sh` exit 0 before any edit; final run reports `MISMATCH_COUNT=2` on those two fields only, with Checks 1, 2b, 3 and 4 all at zero violations. `git log -- FormalSystem/` attributes every change in the window to the concurrent work, and no commit of this task touches any path under `FormalSystem/`. |
+| `bash .claude/scripts/check-task-references.sh` repo-wide clean | The repo carries 198 pre-existing unexempted task-reference occurrences, all in Lean tests, scripts and docs untouched here. Clearing them is a different piece of work. | The three files this task writes (`typst/chapters/ax-lean-appendix.typ`, `typst/sync-check-whitelist.txt`, `typst/SYNC-MAP.md`) produce zero hits, confirmed both by the script's own report and by a direct grep for the task-reference patterns. |
 
 ---
 

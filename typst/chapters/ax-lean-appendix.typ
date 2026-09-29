@@ -212,7 +212,7 @@ Proving `A → B` means writing a function from proofs of `A` to proofs of `B`, 
 
 A *term-mode* proof writes such a value down directly, with no tactic block.
 For an arbitrary formula `p`, the instance `⊢ □p → p` of the modal T axiom is written out below.
-That display line mixes two notations on purpose: `⊢` is Lean's, while `□` and the arrow are the book's, standing in for the `Formula` operators `box` and `imp` that the Lean actually names. The Lean spelling of the same formula is `p.box.imp p`.
+That display line mixes two notations on purpose: `⊢` is Lean's, while `□` and the arrow are the book's, standing in for the `Formula` constructors `box` and `imp` that the Lean actually names, which @lean-appendix-inductive lists in full. The Lean spelling of the same formula is `p.box.imp p`.
 
 #lean-code[
 ```
@@ -397,9 +397,9 @@ In the call above, `τ.domain` and `z` are the two explicit arguments and they a
 
 *The implicit binder* `{D : Type}` is written in braces.
 The caller writes nothing for it.
-Lean recovers it by *unification*: it elaborates the arguments that are given and reads the missing one off their types, so supplying `τ.domain` of type `F.Duration → Prop` forces `D` to be `F.Duration`.
+Lean recovers it by *unification*: it elaborates the arguments that are given and reads the missing one off their types, so supplying `τ.domain` of type `F.Duration → Prop` forces `D` to be `F.Duration`. (`F.Duration` is the type of durations of a task frame `F`; the frame vocabulary is assembled two subsections below, and only the shape of the call matters here.)
 When the given arguments do not determine it, the error names the binder, reading #raw("don't know how to synthesize implicit argument"), and the usual repairs are to annotate a nearby type or to pass the argument explicitly.
-Prefixing the function with `@` makes every implicit argument explicit again, so #raw("@NearestAt F.Duration _ τ.domain z") is the same call written out in full, and #raw("#check @NearestAt") is how a signature is printed with nothing hidden.
+Prefixing the function with `@` makes every implicit argument explicit again, so #raw("@NearestAt F.Duration _ τ.domain z") is the same call written out in full, and #raw("#check @NearestAt") is how a signature is printed with nothing hidden. `#check` is a command rather than a tactic: applied to a name it prints that name's type and evaluates nothing, and @lean-appendix-reading-source is where it is put to work as an audit tool.
 
 *The instance binder* `[LinearOrder D]` is written in square brackets, and usually with no name at all.
 The caller writes nothing for it either.
@@ -416,7 +416,6 @@ Four variants of this vocabulary appear in `FormalSystem/` and are worth recogni
 
 An implicit argument, then, is one Lean can read off the rest of the call, so writing it out would be noise.
 `perpetuity2` (@lean-appendix-derived-theorem) takes its frame class implicitly, which is what lets a single proof term serve all four frame classes.
-`#check` is a command, not a tactic: applied to a name it prints that name's type and evaluates nothing, and @lean-appendix-reading-source is where it is put to work as an audit tool.
 
 A `class` is a structure that is additionally registered for *instance inference*.
 Writing `[DecidableEq α]` in a signature asks Lean's elaborator to find an instance on its own, rather than requiring the caller to supply one.
@@ -432,6 +431,11 @@ This is why decidable equality and hashing simply work on formula-keyed collecti
 Square-bracketed instance arguments recur in the metalogic, where they state frame conditions: the dense soundness theorem of @lean-appendix-reading-source assumes `[DenselyOrdered F.Duration]`.
 
 === Instance-Bracket Fields and the Duration Coercion
+
+The rest of this section assembles the semantic vocabulary, and it does so from the bottom up, so a name sometimes appears in an excerpt a paragraph or two before it gets its own treatment.
+The order is worth having in advance.
+`TemporalOrder` is the type of durations, `FrameOver D` is a frame over a fixed such order, and `TaskFrame` packages the two; `F.Duration`, `F.WorldState` and `F.TaskRel` are then the three accessors of a frame, `D.PositiveCone` is the nonnegative durations of an order, `TaskModel F` adds a valuation to a frame, and `WorldHistory F` is a history through it.
+Each is defined below in that order, and @lean-appendix-dependent-fields takes the last two further.
 
 A structure's *fields* can carry instance brackets too, and the semantic layer opens with the clearest case.
 `TemporalOrder` (@sec:truth) bundles a type of durations together with the four algebraic properties the mathematics demands of it:
