@@ -395,7 +395,7 @@ checking each named item is covered.
 
 ---
 
-### Phase 7: Resolve the Three-Binders TODO [NOT STARTED]
+### Phase 7: Resolve the Three-Binders TODO [COMPLETED]
 
 **Goal**: Make the binder discussion clear, systematic and complete, in the same order and shape for
 all three binders, as the author TODO specifies.

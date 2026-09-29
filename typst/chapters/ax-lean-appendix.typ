@@ -376,22 +376,46 @@ The brackets record *who supplies the argument*, not what kind of thing it is.
   caption: none,
 )
 
-// TODO: Make the discussion of the three binders clear, systematic, and complete. The table names
-// them, but the prose that follows treats them unevenly: implicit gets three sentences, instance
-// is folded into the account of `class`, and explicit gets none. Explain each binder in full and
-// in the same order and shape: (1) what is written at the declaration site; (2) what the caller
-// writes, or omits, at the use site; (3) how Lean fills the argument in when it is omitted
-// (unification for implicit, instance synthesis for instance) and what error the reader sees when
-// it cannot; (4) how to override the default (`@f`, named arguments `(fc := .Dense)`); and (5) one
-// worked example from `FormalSystem/` per binder, ideally a single signature that uses all three,
-// shown once as declared and once as called. Also cover the variants a reader will meet in the
-// source: several names under one binder `(φ ψ : Formula)`, strict-implicit `⦃x : T⦄`,
-// anonymous instance binders `[DecidableEq α]` versus named ones `[inst : DecidableEq α]`,
-// `variable` declarations that add binders invisibly, and auto-bound implicits.
+One live signature uses all three at once, and it is short enough to keep in view:
 
-An implicit argument is one Lean can read off the rest of the call, so writing it out would be noise.
+#lean-code(source: ("FormalSystem.Semantics", "NearestAt"))[
+```
+def NearestAt {D : Type} [LinearOrder D] (X : D → Prop)
+    (z : D) : Prop
+```
+]
+
+At every call site in the library this is written `NearestAt τ.domain z`.
+Two of the four arguments have vanished, and the three binders are exactly the account of why.
+
+*The explicit binder* `(z : D)` is the ordinary one.
+At the declaration site it names the argument and gives its type.
+At the use site the caller writes the argument, in position, in the order declared.
+Lean fills nothing in, and an omitted explicit argument is not an error but a partial application, producing a function still waiting for it.
+To pass it out of order, or to skip an earlier one, the caller may name it instead, writing #raw("(z := t)"); the same named-argument form works for any binder.
+In the call above, `τ.domain` and `z` are the two explicit arguments and they are all the caller writes.
+
+*The implicit binder* `{D : Type}` is written in braces.
+The caller writes nothing for it.
+Lean recovers it by *unification*: it elaborates the arguments that are given and reads the missing one off their types, so supplying `τ.domain` of type `F.Duration → Prop` forces `D` to be `F.Duration`.
+When the given arguments do not determine it, the error names the binder, reading #raw("don't know how to synthesize implicit argument"), and the usual repairs are to annotate a nearby type or to pass the argument explicitly.
+Prefixing the function with `@` makes every implicit argument explicit again, so #raw("@NearestAt F.Duration _ τ.domain z") is the same call written out in full, and #raw("#check @NearestAt") is how a signature is printed with nothing hidden.
+
+*The instance binder* `[LinearOrder D]` is written in square brackets, and usually with no name at all.
+The caller writes nothing for it either.
+Lean fills it by *instance synthesis*, searching the registered instances for one of the required type, which here succeeds because a `TemporalOrder` re-exports its `linearOrder` field as an instance in the way the previous subsection describes.
+When no instance is found the error reads #raw("failed to synthesize instance of type class"), followed by the type it was looking for; the repair is to register the missing instance, or to bring one into scope.
+Such an argument can also be named, as #raw("[inst : LinearOrder D]"), which is worth doing only when the body needs to refer to it by name.
+
+Four variants of this vocabulary appear in `FormalSystem/` and are worth recognizing on sight.
+
+- *Several names under one binder.* The `modus_ponens` constructor of @lean-appendix-inductive writes `(φ ψ : Formula)`, declaring two explicit arguments of the same type at once; it is shorthand for #raw("(φ : Formula) (ψ : Formula)"). Every bracket admits this.
+- *Strict-implicit binders,* written `⦃x : T⦄`. These behave like implicit binders except that Lean will not fill them in until a later explicit argument is actually supplied, which stops a partially applied lemma from over-eagerly fixing them.
+- *`variable` declarations.* A `variable {F : TaskFrame}` line adds that binder to every declaration in the section that mentions `F`, invisibly, so a signature read in isolation may have binders its own line does not show. The `NearestAt` section does exactly this for its frame.
+- *Auto-bound implicits.* A capitalized single-letter name used in a signature without being declared, such as the `α` in `[DecidableEq α]`, is added by Lean as an implicit binder automatically. This is why many signatures name a type variable they never bind.
+
+An implicit argument, then, is one Lean can read off the rest of the call, so writing it out would be noise.
 `perpetuity2` (@lean-appendix-derived-theorem) takes its frame class implicitly, which is what lets a single proof term serve all four frame classes.
-Prefixing a name with `@` turns every implicit argument back into an explicit one, which is how `#check` is made to print a signature with nothing hidden.
 `#check` is a command, not a tactic: applied to a name it prints that name's type and evaluates nothing, and @lean-appendix-reading-source is where it is put to work as an audit tool.
 
 A `class` is a structure that is additionally registered for *instance inference*.
