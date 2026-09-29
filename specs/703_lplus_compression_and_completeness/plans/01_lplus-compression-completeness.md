@@ -479,7 +479,7 @@ empty list.
 
 ---
 
-### Phase 7: Single-history lasso extraction, with the two construction invariants [NOT STARTED]
+### Phase 7: Single-history lasso extraction, with the two construction invariants [IN PROGRESS]
 
 **Goal**: Prove the L⁺ twin of `exists_labelledLasso_of_history_realized`: every history of a
 ℤ-frame countermodel compresses, at a given time, to a bounded `PlusLabelledLasso` that is locally
@@ -487,7 +487,7 @@ coherent, fulfilling, and realized by the model. Establish the two construction 
 later phases depend on.
 
 **Tasks**:
-- [ ] Prove `exists_plusLabelledLasso_of_history_realized`. It must return, alongside the lasso,
+- [x] Prove `exists_plusLabelledLasso_of_history_realized`. It must return, alongside the lasso,
       the landing position of the original time and the realization fact
       `∀ j, ∃ u, Λ.lab j = plusTypeAtM M Γ Del σ u`.
 - [ ] **Invariant A — common cycle length.** Pad `back` and `fwd` by repetition so every extracted
@@ -499,10 +499,13 @@ later phases depend on.
       to a single canonical offset across all extracted lassos, by rotating the padded segments.
       (C5) pins its witness to the same time `u` as the demand, so without this the witness lassos
       are re-timed and certify nothing.
-- [ ] Prove `plusLocalCoherentSeqLab_congr_bx`, transport of local coherence along a change of box
+- [x] Prove `plusLocalCoherentSeqLab_congr_bx`, transport of local coherence along a change of box
       guess that agrees on the boxed part of the closure.
-- [ ] Prove `exists_plusLabelledLasso_of_history`, the realization-free corollary.
-- [ ] Add the import line to `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`.
+- [x] Prove `exists_plusLabelledLasso_of_history`, the realization-free corollary.
+- [x] *(addition, recorded)* Prove `plusLocalCoherentSeqLab_of_edges`, the presentation-free
+      splice lemma the extraction consumes. It is monomorphic in `PlusFormula` and was held back
+      from Phase 6 so that Phase 6 matched its own task list exactly.
+- [x] Add the import line to `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`.
 
 **Timing**: 2 hours
 
