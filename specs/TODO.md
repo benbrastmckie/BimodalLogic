@@ -1,5 +1,5 @@
 ---
-next_project_number: 701
+next_project_number: 702
 ---
 
 # TODO
@@ -12,7 +12,7 @@ next_project_number: 701
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,695,696,697,698,699,700 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,701 | 298,464,502,563,649,696 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -83,6 +83,7 @@ next_project_number: 701
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 695 [NOT STARTED] — Prove plusValidZTimeiffplusValidInt, the L-plus twin of...
 696 [RESEARCHED] — DESIGN-INVESTIGATION-FIRST TASK. Determine what the stability...
+  └─ 701 [NOT STARTED] — Port the branching-substrate lessons from the ProofChecker's...
 
 ### Formula Refactor
 
@@ -114,6 +115,16 @@ next_project_number: 701
   └─ 650 [NOT STARTED] — Define-before-use audit of...
 
 ## Tasks
+
+### 701. Port substrate lessons to model checker
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: decidability
+- **Dependencies**: Task 696
+
+**Description**: Port the branching-substrate lessons from the ProofChecker's stability-modal redesign into the bimodal theory (/home/benjamin/Projects/ModelChecker/code/src/model_checker/theory_lib/bimodal/). RESEARCH-FIRST: the deliverable of the research phase is a report that says which lessons apply, where, and what should change; no certificate-search code changes until a plan exists. WHAT THE VERIFIED SIDE FOUND (BimodalLogic task 696, two machine-checked research rounds): (1) under state-sharing between lassos with arrival renaming (a single per-time `share` relation carrying both state identity and one-step succession), BOTH stability coherence clauses are defective, not just `snce` -- `snce_share_congr` and the new `untl_shift_share_congr` force any two indices naming the same state to agree on every `snce` formula and on the shifted `untl` unfolding, so the certificate class is empty for `Pp -> [stab]Pp` AND for `Fp -> (p \/ [stab]Fp)`, both genuine integer-time non-validities. (2) The root cause is that one-step succession is encoded as a class, not a relation; re-timing the `snce` clause is unsound. (3) The recommended repair is a fourth periodic datum `trans` (three lists `transBack`/`transMid`/`transFwd` of n x n Boolean matrices, same lengths as the `rep*` lists), pruned by arrival renaming: `trans u i j -> share (u+1) i j`. `Thread.step` becomes `trans u (idx u) (idx (u+1))`. (4) The one new obligation is closure: every frame history must be a thread (`Liftable`, a skeleton field), with sufficient lemmas for the full relation (today's semantics), splice-closed lasso families (pigeonhole), and later an exact window form. (5) The export contract is ADDITIVE: absent `trans*` fields default to the full relation, which is exactly today's semantics, so no existing deterministic certificate changes and nothing in this repository is required to change for correctness. Sources to read in full: /home/benjamin/Projects/BimodalLogic/specs/696_stability_modal_substrate_design/reports/01_stability-modal-substrate-design.md, .../reports/02_trans-redesign-gate-verification.md, the three probes under .../probes/ (03_trans_redesign_gate_probe.lean states the redesigned conditions and the two gate families), and the `## Hand-off to the consuming model checker` section of /home/benjamin/Projects/BimodalLogic/FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md. RESEARCH QUESTIONS, in order: (Q1) What does this theory's certificate search assume about world histories today -- semantic/certificate.py, semantic/witness_registry.py, semantic/witness_constraints.py, docs/ADEQUACY.md, docs/ARCHITECTURE.md -- and which of those assumptions (histories are lasso orbits, determinism makes the box case enumerable) does the thread/`trans`/`Liftable` account replace? (Q2) Which lessons port, and to which files: separating state identity from succession in any sharing extension; shaping the search space so closure is cheap (splice-closed lasso families rather than arrival renaming); emitting `trans*` beside `rep*` when sharing lands; whether the pure-Python re-checker (`recheck`) needs a thread-based history characterization to stay independent of the verified side. (Q3) Re-scope task 200 (extend_bimodal_to_stability_modal, blocked) against this: its description waits on "a state-sharing witness structure, its histories characterization, its redesigned box condition" -- the verified side now specifies all three; say what 200 should become. Check task 219's THEORY-LIMITS text: the recorded limit is broader than stated, since the `untl` side fails too, and the limit is expected to be REMOVED by the verified redesign, so the group's wording must distinguish a limit of the theory from a limit of a since-repaired certificate system. (Q4) Confirm the additive contract at the wire level: semantic/formula.py JSON codec, certificate.py writer, tests/fixtures/certificates/*.json, and test_certificate_lean_agreement.py -- name the exact fields and default to add when sharing lands, and confirm nothing must change now. (Q5) Whether docs/ADEQUACY.md's box case can be restated over threads ahead of sharing, so the later extension is a refinement rather than a rewrite. CONSTRAINTS: this repository must keep producing valid deterministic certificates throughout; do not adopt arrival renaming as the sharing design; any new fields must be additive to the wire format. OUTPUT: a report answering Q1-Q5 with file-level pointers, a proposed re-scoping of task 200 and an amendment to task 219, and a phased proposal for what (if anything) to change now versus when the verified redesign lands. REPOSITORY BOUNDARY: this task lives in BimodalLogic and DEPENDS ON TASK 696 so that the lessons are drawn from the landed redesign, not from the research alone. All ModelChecker paths above are under /home/benjamin/Projects/ModelChecker (its own task system holds tasks 200 and 219). The research and plan phases read that repository but write only under this repository's specs/; the implementation phase produces the concrete proposals (re-scoped 200, amended 219, any new ModelChecker tasks) as ready-to-file task descriptions in this task's summary, and edits no ModelChecker source directly -- filing and executing them is done in the ModelChecker repository.
+
+---
 
 ### 700. Lplus completeness programme survey
 - **Status**: [NOT STARTED]
