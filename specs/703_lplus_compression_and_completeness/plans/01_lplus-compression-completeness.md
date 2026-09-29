@@ -1,7 +1,7 @@
 # Implementation Plan: L⁺ Compression and Completeness
 
 - **Task**: 703 - lplus_compression_and_completeness
-- **Status**: [PARTIAL]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 25 hours
 - **Dependencies**: `FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt` (landed,
   `FormalSystem/PlusLanguage/PlusIntTransfer.lean`); the redesigned sharing substrate as finally
@@ -479,9 +479,28 @@ empty list.
 
 ---
 
-### Phase 7: Single-history lasso extraction, with the two construction invariants [BLOCKED]
+### Phase 7: Single-history lasso extraction, with the two construction invariants [COMPLETED WITH EXCLUSIONS]
 
-**BLOCKER** (Phase 7):
+**PLAN DEVIATION — Invariant A dropped (orchestrator decision, cycle 6, 2026-09-29)**:
+resolution 1 of the "What is needed" list below was taken. Invariant A ("pad every segment to a
+common length `plusCompressionBound`") is **dropped**: it is unprovable as written, and nothing
+downstream needs it for correctness. The segment bounds Phase 12 states come free from the
+unpadded extraction. Invariant B survives via the shift mechanism recorded in the BLOCKER's
+"Invariant B is not blocked by the same argument" bullet. The compression theorem's stated
+segment bound and the Lean Challenge Statement are **unchanged**. Recorded in
+`specs/703_lplus_compression_and_completeness/.decisions.json`. The decision was taken by the
+orchestrator on the previous agent's recommendation because the user was unavailable, and the
+user may overturn it.
+
+*Refinement found at implementation time*: the BLOCKER's Invariant B sketch normalizes to the
+**maximum landing offset over the extracted lassos**, which makes the common offset depend on the
+list and pushes `|mid'|` to below `3 · 2^κ`. The implementation instead normalizes to the
+**constant** `plusAlignOffset Γ Del = 2 ^ κ`, which is independent of the history, the time and
+the list, and which keeps `|mid'| < 2 · 2^κ = plusMidBoundC ≤ plusCompressionBound` — the original
+mid bound rather than a widened one. This is strictly stronger than the sketched mechanism and
+needs no `κ ≥ 1` side condition.
+
+**BLOCKER** (Phase 7) *(retained for the record; resolved by the deviation above)*:
 
 - **What failed**: Invariant A, "pad `back` and `fwd` by repetition so every extracted lasso has
   `back.length = fwd.length = plusCompressionBound Γ Del`". It is not provable as written, and
@@ -560,14 +579,17 @@ later phases depend on.
 - [x] Prove `exists_plusLabelledLasso_of_history_realized`. It must return, alongside the lasso,
       the landing position of the original time and the realization fact
       `∀ j, ∃ u, Λ.lab j = plusTypeAtM M Γ Del σ u`.
-- [ ] **Invariant A — common cycle length.** *(BLOCKED: not provable as written; see the
-      BLOCKER record above)* Pad `back` and `fwd` by repetition so every extracted
+- [ ] **Invariant A — common cycle length.** *(deviation: skipped — dropped by the orchestrator
+      decision recorded above; not provable as written, and not needed for correctness)* Pad
+      `back` and `fwd` by repetition so every extracted
       lasso has `back.length = fwd.length = plusCompressionBound Γ Del`, and `mid.length` likewise
       padded to that bound. Prove padding preserves `lab`, hence preserves local coherence,
       fulfilment and realization. This is what keeps `NB`/`NF` from becoming a least common
       multiple over `n` differing lengths.
-- [ ] **Invariant B — common time alignment.** *(not attempted: its stated mechanism
-      presupposes Invariant A's padded segments; see the BLOCKER record above)* Prove that the landing position can be normalized
+- [x] **Invariant B — common time alignment.** *(deviation: altered — normalized to the constant
+      `plusAlignOffset Γ Del = 2 ^ κ` rather than to the maximum landing offset over a list, and
+      by the `plusShift` prepend-and-rotate mechanism rather than by rotating Invariant A's padded
+      segments, which no longer exist)* Prove that the landing position can be normalized
       to a single canonical offset across all extracted lassos, by rotating the padded segments.
       (C5) pins its witness to the same time `u` as the demand, so without this the witness lassos
       are re-timed and certify nothing.
@@ -604,6 +626,17 @@ type in passing.
 - `lake build` exits 0; no `sorry`; axioms unchanged.
 - The two invariants are stated as named lemmas, not as side conditions buried in the extraction
   proof, so Phases 8 and 9 can cite them.
+
+**Closure record** *(exclusion: Invariant A, per the deviation at this phase's heading)*:
+Invariant B is stated as the named lemmas `PlusLabelledLasso.shiftBy`,
+`PlusLabelledLasso.lab_shiftBy`, `plusLocalCoherentSeqLab_comp_sub`,
+`plusFulfillingSeqLab_comp_sub` and the consumer form
+`exists_plusLabelledLasso_of_history_aligned`, all in `Compression/Extract.lean`, so Phases 8 and
+9 cite a lemma rather than re-deriving a side condition. `exists_plusLabelledLasso_of_history_realized`
+was strengthened, not weakened: it now additionally returns `i < plusAlignOffset Γ Del` and
+`Λ.nm - i < plusAlignOffset Γ Del`, which is what makes the shifted mid bound come out at the
+original `plusMidBoundC` rather than a widened one. The module builds with zero errors and zero
+warnings and the subtree is sorry-free.
 
 ---
 

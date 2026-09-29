@@ -129,6 +129,37 @@ theorem plusCompressionBound_pos (Γ Del : PlusContext) : 0 < plusCompressionBou
   rw [plusMidBoundC]
   positivity
 
+/--
+**The canonical alignment offset**: one full residue system of L⁺ type states.
+
+Every lasso the extraction returns marks the original time at an offset strictly below
+`Nat.card (PlusTypeState C) = 2 ^ C.card`, because that offset is the length of the first
+shortened leg of the mid walk. So this constant dominates every landing offset, uniformly over
+the history, the time and the model — which is what makes it usable as the *common* offset
+Invariant B asks for. Normalizing to a maximum taken over a list would work too, but would make
+the offset depend on the list and would widen the mid bound; this constant does neither.
+
+The arithmetic that makes the normalization free is `two_mul_plusAlignOffset_le` below: shifting a
+lasso whose mid length is `a + b` from landing offset `a` to landing offset `plusAlignOffset`
+leaves mid length `b + plusAlignOffset`, and both `b` and the offset are strictly below
+`plusAlignOffset`, so the shifted mid stays under `2 * plusAlignOffset = plusMidBoundC`.
+-/
+def plusAlignOffset (Γ Del : PlusContext) : ℕ := 2 ^ (plusClosureOf (Γ ++ Del)).card
+
+theorem plusAlignOffset_pos (Γ Del : PlusContext) : 0 < plusAlignOffset Γ Del := by
+  rw [plusAlignOffset]; positivity
+
+theorem plusAlignOffset_eq_natCard (Γ Del : PlusContext) :
+    plusAlignOffset Γ Del = Nat.card (PlusTypeState (plusClosureOf (Γ ++ Del))) :=
+  (natCard_plusTypeState _).symm
+
+/-- Twice the alignment offset is exactly the mid bound, hence at most the segment bound. -/
+theorem two_mul_plusAlignOffset_le (Γ Del : PlusContext) :
+    2 * plusAlignOffset Γ Del ≤ plusCompressionBound Γ Del := by
+  have h : 2 * plusAlignOffset Γ Del = plusMidBoundC (plusClosureOf (Γ ++ Del)) := rfl
+  rw [h]
+  exact plusMidBoundC_le_plusCompressionBound Γ Del
+
 /-! ## The splice lemma, presentation-free -/
 
 /--
@@ -212,6 +243,7 @@ theorem exists_plusLabelledLasso_of_history_realized {F : FrameOver intOrder}
       Λ.mid.length ≤ plusCompressionBound Γ Del ∧
       Λ.fwd.length ≤ plusCompressionBound Γ Del ∧
       0 ≤ i ∧ i ≤ Λ.nm ∧
+      i < (plusAlignOffset Γ Del : ℤ) ∧ Λ.nm - i < (plusAlignOffset Γ Del : ℤ) ∧
       Λ.lab i = plusTypeAtM M Γ Del τ t ∧
       PlusLocalCoherentSeqLab Γ Del bx Λ.lab ∧ PlusFulfillingSeqLab Λ.lab ∧
       (∀ j : ℤ, ∃ u : ℤ, Λ.lab j = plusTypeAtM M Γ Del τ u) := by
@@ -423,11 +455,15 @@ theorem exists_plusLabelledLasso_of_history_realized {F : FrameOver intOrder}
     intro j
     obtain ⟨u, hu1, -⟩ := hEstep j
     exact ⟨u, by rw [hΛlab, ← hu1, hdtype]⟩
-  refine ⟨Λ, (a : ℤ), ?_, ?_, ?_, by omega, ?_, ?_, hloc, hfulΛ, hreal⟩
+  have hoff : plusAlignOffset Γ Del = 2 ^ C.card := by simp only [plusAlignOffset, ← hC]
+  refine ⟨Λ, (a : ℤ), ?_, ?_, ?_, by omega, ?_, ?_, ?_, ?_, hloc, hfulΛ, hreal⟩
   · rw [hΛnb]; exact le_trans hLbB hcbU
   · rw [hΛnm]; omega
   · rw [hΛnf]; exact le_trans hLfB hcbU
   · rw [hnmZ]; omega
+  · rw [hoff]; exact_mod_cast ha'
+  · rw [hnmZ, hoff, hnm, show ((a + b : ℕ) : ℤ) - (a : ℤ) = (b : ℤ) by push_cast; omega]
+    exact_mod_cast hb'
   · rw [hΛlab, hmidall (a : ℤ) (by omega) (by rw [hnm]; omega),
       show ((a : ℤ) + 1).toNat = a + 1 by omega, hwmark, hdtype]
 
@@ -453,7 +489,7 @@ theorem exists_plusLabelledLasso_of_history {F : FrameOver intOrder}
       0 ≤ i ∧ i ≤ Λ.nm ∧
       Λ.lab i = plusTypeAtM M Γ Del τ t ∧
       PlusLocalCoherentSeqLab Γ Del bx Λ.lab ∧ PlusFulfillingSeqLab Λ.lab := by
-  obtain ⟨Λ, i, h1, h2, h3, h4, h5, h6, h7, h8, -⟩ :=
+  obtain ⟨Λ, i, h1, h2, h3, h4, h5, -, -, h6, h7, h8, -⟩ :=
     exists_plusLabelledLasso_of_history_realized M Γ Del bx hbx τ t
   exact ⟨Λ, i, h1, h2, h3, h4, h5, h6, h7, h8⟩
 
@@ -475,5 +511,303 @@ theorem plusLocalCoherentSeqLab_congr_bx {Γ Del : PlusContext} {bx₁ bx₂ : P
   obtain ⟨hbot, himp, hbox, huntl, hsnce⟩ := hco t
   refine ⟨hbot, himp, fun χ hχ => ?_, huntl, hsnce⟩
   rw [hbox χ hχ, hagree χ hχ]
+
+
+/-! ## Invariant B: a common time alignment, by shifting
+
+Invariant A — padding every segment to one common length — was **dropped**: it is not provable at
+the extraction site (a cycle's decoded period is exactly its own length, so length-changing
+operations that preserve `lab` reach only the multiples of that length, and the extracted lengths
+have no common multiple below the segment bound), and nothing downstream needs it. See the task's
+plan for the recorded decision.
+
+Invariant B survives on its own, by a mechanism that does not presuppose padded segments: shift a
+lasso rightward by `k` by prepending its own labels at `-k … -1` to `mid` and re-reading `back`
+from `-k` onwards. The decoded function of the shifted lasso is the original composed with
+`· - k`, on all three decoding regions at once.
+-/
+
+/-- `List.getD` on an append, left of the seam. -/
+private theorem getD_append_leftC {α : Type*} [Inhabited α] (l₁ l₂ : List α) {i : ℕ}
+    (hi : i < l₁.length) : (l₁ ++ l₂).getD i default = l₁.getD i default := by
+  rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD, List.getElem?_append_left hi]
+
+/-- `List.getD` on an append, at or right of the seam. -/
+private theorem getD_append_rightC {α : Type*} [Inhabited α] (l₁ l₂ : List α) {i : ℕ}
+    (hi : l₁.length ≤ i) :
+    (l₁ ++ l₂).getD i default = l₂.getD (i - l₁.length) default := by
+  rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD, List.getElem?_append_right hi]
+
+namespace PlusLabelledLasso
+
+variable {C : Finset PlusFormula}
+
+/-- On the negatives the decoding is the leftward cycle. -/
+theorem lab_neg (Λ : PlusLabelledLasso C) {t : ℤ} (ht : t < 0) :
+    Λ.lab t = Periodic.cyc Λ.back t := by
+  rw [lab_def, Periodic.unrollOf_neg _ _ _ ht]
+
+/-- On the window the decoding reads `mid` directly. -/
+theorem lab_mid (Λ : PlusLabelledLasso C) {t : ℤ} (h0 : 0 ≤ t) (ht : t < Λ.nm) :
+    Λ.lab t = Λ.mid.getD t.toNat default := by
+  rw [lab_def, Periodic.unrollOf_mid _ _ _ h0 ht]
+
+/-- At or past the window the decoding is the rightward cycle. -/
+theorem lab_fwd (Λ : PlusLabelledLasso C) {t : ℤ} (ht : Λ.nm ≤ t) :
+    Λ.lab t = Periodic.cyc Λ.fwd (t - Λ.nm) := by
+  rw [lab_def, Periodic.unrollOf_fwd _ _ _ ht]
+
+/-- The `k` labels the lasso carries at `-k … -1`, in time order: the block a rightward shift by
+`k` prepends to `mid`. -/
+def preBlock (Λ : PlusLabelledLasso C) (k : ℕ) : List (Finset PlusFormula) :=
+  (List.range k).map (fun j : ℕ => Λ.lab ((j : ℤ) - (k : ℤ)))
+
+/-- The leftward cycle re-read from `-k` onwards, written as a `List.range` map rather than a
+`List.rotate` so that the decoding argument is a direct `getD` computation. -/
+def shiftBack (Λ : PlusLabelledLasso C) (k : ℕ) : List (Finset PlusFormula) :=
+  (List.range Λ.back.length).map
+    (fun j : ℕ => Λ.lab ((j : ℤ) - (k : ℤ) - (Λ.back.length : ℤ)))
+
+@[simp] theorem preBlock_length (Λ : PlusLabelledLasso C) (k : ℕ) :
+    (Λ.preBlock k).length = k := by
+  rw [preBlock, List.length_map, List.length_range]
+
+@[simp] theorem shiftBack_length (Λ : PlusLabelledLasso C) (k : ℕ) :
+    (Λ.shiftBack k).length = Λ.back.length := by
+  rw [shiftBack, List.length_map, List.length_range]
+
+theorem getD_preBlock (Λ : PlusLabelledLasso C) (k : ℕ) {i : ℕ} (hi : i < k) :
+    (Λ.preBlock k).getD i default = Λ.lab ((i : ℤ) - (k : ℤ)) :=
+  getD_range_mapC _ _ hi
+
+theorem getD_shiftBack (Λ : PlusLabelledLasso C) (k : ℕ) {i : ℕ} (hi : i < Λ.back.length) :
+    (Λ.shiftBack k).getD i default = Λ.lab ((i : ℤ) - (k : ℤ) - (Λ.back.length : ℤ)) :=
+  getD_range_mapC _ _ hi
+
+theorem mem_preBlock_subset (Λ : PlusLabelledLasso C) (k : ℕ) {X : Finset PlusFormula}
+    (hX : X ∈ Λ.preBlock k) : X ⊆ C := by
+  rw [preBlock, List.mem_map] at hX
+  obtain ⟨j, -, rfl⟩ := hX
+  exact Λ.lab_subset _
+
+theorem mem_shiftBack_subset (Λ : PlusLabelledLasso C) (k : ℕ) {X : Finset PlusFormula}
+    (hX : X ∈ Λ.shiftBack k) : X ⊆ C := by
+  rw [shiftBack, List.mem_map] at hX
+  obtain ⟨j, -, rfl⟩ := hX
+  exact Λ.lab_subset _
+
+/--
+**The lasso shifted rightward by `k`.**
+
+`mid` gains the `k` labels the original carries at `-k … -1`, so the origin of the shifted lasso
+sits `k` steps to the left of the origin of the original. `back` is re-read from `-k` onwards.
+`fwd` is untouched, because the rightward cycle is read relative to `|mid|`, which moves with it.
+
+`lab_shiftBy` is the whole point: `(Λ.shiftBy k).lab = fun t => Λ.lab (t - k)`.
+-/
+def shiftBy (Λ : PlusLabelledLasso C) (k : ℕ) : PlusLabelledLasso C where
+  back := Λ.shiftBack k
+  mid := Λ.preBlock k ++ Λ.mid
+  fwd := Λ.fwd
+  back_ne := by
+    intro h
+    have hlen : (Λ.shiftBack k).length = 0 := by rw [h]; rfl
+    rw [shiftBack_length] at hlen
+    exact Λ.back_ne (List.eq_nil_of_length_eq_zero hlen)
+  fwd_ne := Λ.fwd_ne
+  label_sub := by
+    have hsub : ∀ X ∈ Λ.back ++ Λ.mid ++ Λ.fwd, X ⊆ C := Λ.label_sub
+    intro X hX
+    rw [List.mem_append, List.mem_append] at hX
+    rcases hX with (hX | hX) | hX
+    · exact Λ.mem_shiftBack_subset k hX
+    · rw [List.mem_append] at hX
+      rcases hX with hX | hX
+      · exact Λ.mem_preBlock_subset k hX
+      · exact hsub X (by simp [hX])
+    · exact hsub X (by simp [hX])
+
+@[simp] theorem shiftBy_back (Λ : PlusLabelledLasso C) (k : ℕ) :
+    (Λ.shiftBy k).back = Λ.shiftBack k := rfl
+
+@[simp] theorem shiftBy_mid (Λ : PlusLabelledLasso C) (k : ℕ) :
+    (Λ.shiftBy k).mid = Λ.preBlock k ++ Λ.mid := rfl
+
+@[simp] theorem shiftBy_fwd (Λ : PlusLabelledLasso C) (k : ℕ) :
+    (Λ.shiftBy k).fwd = Λ.fwd := rfl
+
+@[simp] theorem shiftBy_back_length (Λ : PlusLabelledLasso C) (k : ℕ) :
+    (Λ.shiftBy k).back.length = Λ.back.length := by
+  rw [shiftBy_back, shiftBack_length]
+
+@[simp] theorem shiftBy_mid_length (Λ : PlusLabelledLasso C) (k : ℕ) :
+    (Λ.shiftBy k).mid.length = k + Λ.mid.length := by
+  rw [shiftBy_mid, List.length_append, preBlock_length]
+
+@[simp] theorem shiftBy_fwd_length (Λ : PlusLabelledLasso C) (k : ℕ) :
+    (Λ.shiftBy k).fwd.length = Λ.fwd.length := rfl
+
+/--
+**The shift acts on the decoded function by translation.**
+
+Proved region by region. On the negatives both sides are a `cyc` read of `Λ.back`, and the two
+indices agree modulo `|back|` because the shifted list is `Λ.back` re-indexed by `· - k`. On the
+`k` prepended window positions the shifted `mid` returns the original's own label at a negative
+time, by construction. On the rest of the window the append offsets the index by exactly `k`. At
+or past the shifted window both sides are the same `cyc` read of the untouched `Λ.fwd`, because
+the shifted window is longer by exactly `k`.
+-/
+theorem lab_shiftBy (Λ : PlusLabelledLasso C) (k : ℕ) (t : ℤ) :
+    (Λ.shiftBy k).lab t = Λ.lab (t - (k : ℤ)) := by
+  have hLpos : (0 : ℤ) < (Λ.back.length : ℤ) := Λ.nb_pos
+  have hml : (Λ.shiftBy k).mid.length = k + Λ.mid.length := shiftBy_mid_length Λ k
+  have hnmeq : (Λ.shiftBy k).nm = (k : ℤ) + Λ.nm := by
+    change (((Λ.shiftBy k).mid.length : ℕ) : ℤ) = (k : ℤ) + ((Λ.mid.length : ℕ) : ℤ)
+    rw [hml]; push_cast; omega
+  by_cases ht : t < 0
+  · -- Leftward region on both sides.
+    rw [lab_neg _ ht, lab_neg Λ (show t - (k : ℤ) < 0 by omega)]
+    have hne : (0 : ℤ) ≤ t % (Λ.back.length : ℤ) := Int.emod_nonneg t (by omega)
+    have hlt : t % (Λ.back.length : ℤ) < (Λ.back.length : ℤ) := Int.emod_lt_of_pos t hLpos
+    have hidx : (t % (Λ.back.length : ℤ)).toNat < Λ.back.length := by omega
+    have hmod : (t % (Λ.back.length : ℤ) - (k : ℤ) - (Λ.back.length : ℤ))
+        % (Λ.back.length : ℤ) = (t - (k : ℤ)) % (Λ.back.length : ℤ) := by
+      rw [show t % (Λ.back.length : ℤ) - (k : ℤ) - (Λ.back.length : ℤ)
+          = (t % (Λ.back.length : ℤ) - (k : ℤ)) + (-1) * (Λ.back.length : ℤ) by omega,
+        Periodic.emod_add_mul, Int.sub_emod (t % (Λ.back.length : ℤ)) (k : ℤ),
+        Int.emod_emod_of_dvd _ dvd_rfl, ← Int.sub_emod]
+    rw [Periodic.cyc, shiftBy_back, shiftBack_length, getD_shiftBack Λ k hidx,
+      show (((t % (Λ.back.length : ℤ)).toNat : ℤ)) = t % (Λ.back.length : ℤ) by omega,
+      lab_neg Λ (show t % (Λ.back.length : ℤ) - (k : ℤ) - (Λ.back.length : ℤ) < 0 by omega),
+      Periodic.cyc, Periodic.cyc, hmod]
+  · rw [not_lt] at ht
+    by_cases ht2 : t < (Λ.shiftBy k).nm
+    · -- Window region on the left-hand side.
+      rw [lab_mid _ ht ht2]
+      by_cases ht3 : t < (k : ℤ)
+      · -- One of the `k` prepended positions.
+        have hidx : t.toNat < (Λ.preBlock k).length := by rw [preBlock_length]; omega
+        rw [shiftBy_mid, getD_append_leftC _ _ hidx,
+          getD_preBlock Λ k (by rw [preBlock_length] at hidx; exact hidx),
+          show ((t.toNat : ℤ) - (k : ℤ)) = t - (k : ℤ) by omega]
+      · -- Past the prepended block: the append offsets the index by exactly `k`.
+        rw [not_lt] at ht3
+        have hge : (Λ.preBlock k).length ≤ t.toNat := by rw [preBlock_length]; omega
+        rw [shiftBy_mid, getD_append_rightC _ _ hge, preBlock_length,
+          lab_mid Λ (show (0 : ℤ) ≤ t - (k : ℤ) by omega)
+            (show t - (k : ℤ) < Λ.nm by rw [hnmeq] at ht2; omega),
+          show (t - (k : ℤ)).toNat = t.toNat - k by omega]
+    · -- Rightward region on both sides, over the untouched `fwd`.
+      rw [not_lt] at ht2
+      rw [lab_fwd _ ht2,
+        lab_fwd Λ (show Λ.nm ≤ t - (k : ℤ) by rw [hnmeq] at ht2; omega),
+        shiftBy_fwd, hnmeq]
+      exact congrArg _ (by omega)
+
+/-- The shift's action on the decoded function, as a function equation. -/
+theorem lab_shiftBy_eq (Λ : PlusLabelledLasso C) (k : ℕ) :
+    (Λ.shiftBy k).lab = fun t => Λ.lab (t - (k : ℤ)) :=
+  funext (lab_shiftBy Λ k)
+
+end PlusLabelledLasso
+
+/-! ## The two sequence predicates are translation-invariant -/
+
+/-- Local coherence is preserved by translating the sequence: every clause reads only the
+position and its two neighbours, and translation preserves adjacency. -/
+theorem plusLocalCoherentSeqLab_comp_sub {Γ Del : PlusContext} {bx : PlusFormula → Bool}
+    {lab lab' : ℤ → Finset PlusFormula} (c : ℤ) (heq : ∀ t : ℤ, lab' t = lab (t - c))
+    (h : PlusLocalCoherentSeqLab Γ Del bx lab) :
+    PlusLocalCoherentSeqLab Γ Del bx lab' := by
+  intro t
+  obtain ⟨hbot, himp, hbox, huntl, hsnce⟩ := h (t - c)
+  refine ⟨?_, ?_, ?_, fun g e hge => ?_, fun g e hge => ?_⟩
+  · rw [heq]; exact hbot
+  · rw [heq]; exact himp
+  · rw [heq]; exact hbox
+  · rw [heq t, heq (t + 1), show t + 1 - c = t - c + 1 by omega]
+    exact huntl g e hge
+  · rw [heq t, heq (t - 1), show t - 1 - c = t - c - 1 by omega]
+    exact hsnce g e hge
+
+/-- Fulfilment is preserved by translating the sequence: the witness and the intervening
+positions translate with it. -/
+theorem plusFulfillingSeqLab_comp_sub {lab lab' : ℤ → Finset PlusFormula} (c : ℤ)
+    (heq : ∀ t : ℤ, lab' t = lab (t - c)) (h : PlusFulfillingSeqLab lab) :
+    PlusFulfillingSeqLab lab' := by
+  refine ⟨fun t g e hge => ?_, fun t g e hge => ?_⟩
+  · rw [heq] at hge
+    obtain ⟨s, hs, hes, hr⟩ := h.1 (t - c) g e hge
+    refine ⟨s + c, by omega, ?_, fun r hr1 hr2 => ?_⟩
+    · rw [heq, show s + c - c = s by omega]; exact hes
+    · rw [heq]; exact hr (r - c) (by omega) (by omega)
+  · rw [heq] at hge
+    obtain ⟨s, hs, hes, hr⟩ := h.2 (t - c) g e hge
+    refine ⟨s + c, by omega, ?_, fun r hr1 hr2 => ?_⟩
+    · rw [heq, show s + c - c = s by omega]; exact hes
+    · rw [heq]; exact hr (r - c) (by omega) (by omega)
+
+/--
+**One L⁺ history compresses to one bounded labelled lasso marked at the canonical offset** —
+Invariant B, in the form every later phase consumes.
+
+`exists_plusLabelledLasso_of_history_realized` marks the original time at a landing offset that
+depends on the history; this restates it with the mark driven to the constant
+`plusAlignOffset Γ Del`, the same integer for every history, every time and every model. (C5)
+pins its witness to the *same* time as its demand, so without a common mark the witness lassos
+would be re-timed relative to the demanding one and would certify nothing.
+
+The mid bound survives the shift untouched. The original mid length is `a + b` with the mark at
+`a`, and both `a` and `b` are strictly below `plusAlignOffset Γ Del`; shifting by
+`plusAlignOffset Γ Del - a` leaves `b + plusAlignOffset Γ Del`, still below
+`2 * plusAlignOffset Γ Del = plusMidBoundC`. The back and forward segments are unchanged in
+length. So no bound is widened and the Lean Challenge Statement's segment bound is untouched.
+-/
+theorem exists_plusLabelledLasso_of_history_aligned {F : FrameOver intOrder}
+    (M : TaskModel F.toTaskFrame)
+    (Γ Del : PlusContext) (bx : PlusFormula → Bool)
+    (hbx : ∀ χ : PlusFormula, bx χ = true ↔
+      ∀ (σ : WorldHistory F.toTaskFrame) (v : ℤ), PlusTruthAt M σ v χ)
+    (τ : WorldHistory F.toTaskFrame) (t : ℤ) :
+    ∃ Λ : PlusLabelledLasso (plusClosureOf (Γ ++ Del)),
+      Λ.back.length ≤ plusCompressionBound Γ Del ∧
+      Λ.mid.length ≤ plusCompressionBound Γ Del ∧
+      Λ.fwd.length ≤ plusCompressionBound Γ Del ∧
+      (plusAlignOffset Γ Del : ℤ) ≤ Λ.nm ∧
+      Λ.lab (plusAlignOffset Γ Del : ℤ) = plusTypeAtM M Γ Del τ t ∧
+      PlusLocalCoherentSeqLab Γ Del bx Λ.lab ∧ PlusFulfillingSeqLab Λ.lab ∧
+      (∀ j : ℤ, ∃ u : ℤ, Λ.lab j = plusTypeAtM M Γ Del τ u) := by
+  obtain ⟨Λ, i, hb, hm, hf, hi0, him, hiA, hnmA, hlab, hloc, hful, hreal⟩ :=
+    exists_plusLabelledLasso_of_history_realized M Γ Del bx hbx τ t
+  have hnm : Λ.nm = (Λ.mid.length : ℤ) := rfl
+  rw [hnm] at him hnmA
+  obtain ⟨k, hk⟩ : ∃ k : ℕ, (k : ℤ) = (plusAlignOffset Γ Del : ℤ) - i :=
+    ⟨plusAlignOffset Γ Del - i.toNat, by omega⟩
+  have h2A : 2 * plusAlignOffset Γ Del ≤ plusCompressionBound Γ Del :=
+    two_mul_plusAlignOffset_le Γ Del
+  have hmidlen : (Λ.shiftBy k).mid.length ≤ plusCompressionBound Γ Del := by
+    rw [PlusLabelledLasso.shiftBy_mid_length]
+    have hZ : ((k + Λ.mid.length : ℕ) : ℤ) ≤ ((plusCompressionBound Γ Del : ℕ) : ℤ) := by
+      push_cast
+      have h2Z : ((2 * plusAlignOffset Γ Del : ℕ) : ℤ)
+          ≤ ((plusCompressionBound Γ Del : ℕ) : ℤ) := by exact_mod_cast h2A
+      push_cast at h2Z
+      omega
+    exact_mod_cast hZ
+  refine ⟨Λ.shiftBy k, ?_, hmidlen, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · rw [PlusLabelledLasso.shiftBy_back_length]; exact hb
+  · rw [PlusLabelledLasso.shiftBy_fwd_length]; exact hf
+  · change (plusAlignOffset Γ Del : ℤ) ≤ (((Λ.shiftBy k).mid.length : ℕ) : ℤ)
+    rw [PlusLabelledLasso.shiftBy_mid_length]
+    push_cast
+    omega
+  · rw [PlusLabelledLasso.lab_shiftBy,
+      show (plusAlignOffset Γ Del : ℤ) - (k : ℤ) = i by omega]
+    exact hlab
+  · exact plusLocalCoherentSeqLab_comp_sub (k : ℤ) (PlusLabelledLasso.lab_shiftBy Λ k) hloc
+  · exact plusFulfillingSeqLab_comp_sub (k : ℤ) (PlusLabelledLasso.lab_shiftBy Λ k) hful
+  · intro j
+    rw [PlusLabelledLasso.lab_shiftBy]
+    exact hreal (j - (k : ℤ))
 
 end FormalSystem.Metalogic.Decidability
