@@ -1,33 +1,23 @@
 {
-  "status": "researched",
-  "agent_type": "general-research-agent",
-  "delegation_path": ["orchestrator", "research", "general-research-agent"],
-  "task_number": 701,
-  "session_id": "sess_1790680388_3d4c26_701",
-  "dispatch_seq": 9,
-  "findings_count": 9,
-  "next_steps": "Run /plan 701 to create implementation plan",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/701_port_substrate_lessons_to_model_checker/reports/01_substrate-lessons-for-model-checker.md",
-      "summary": "Answers Q1-Q5 on porting BimodalLogic task 696's landed trans/Liftable stability-modal substrate redesign to ModelChecker's bimodal theory: names the exact determinism assumption (lasso orbits = histories) that the thread/trans/Liftable account replaces, maps each lesson to a certificate.py/witness_registry.py/witness_constraints.py file target, confirms the wire-level export contract is additive with no change needed now, and finds BimodalLogic task 696 completed mid-research (famA/famB gate families landed), making ModelChecker task 200's re-scoped text and task 219's examples.py THEORY-LIMITS group both one increment stale -- includes concrete re-scoping/amendment text for both plus a phased now-vs-later proposal."
+      "type": "plan",
+      "path": "specs/701_port_substrate_lessons_to_model_checker/plans/01_substrate-lessons-for-model-checker.md",
+      "summary": "Five-phase, prose-tier plan producing one summary deliverable: ready-to-file ModelChecker task texts (re-scoped 200, reopen-and-amend 219, one new docs task) plus the phased now-vs-later proposal, with no ModelChecker or BimodalLogic source edits."
     }
   ],
-  "memory_candidates": [
-    {
-      "content": "In the BimodalLogic/ModelChecker witness-family certificate design, the load-bearing assumption behind 'histories = lasso orbits' (hence Box-faithfulness = finite conjunction over lasso positions) is determinism: every shift-relation fibre is a singleton. This is documented explicitly in ModelChecker bimodal's docs/ADEQUACY.md ('Why the design is deterministic') and mirrors BimodalLogic's own total_eq_orbit/total_eq_thread distinction. Any future state-sharing extension on either side must separate state identity (an equivalence, 'share') from one-step succession (a possibly-free relation, 'trans') from the start -- conflating them forces local coherence clauses to collapse to class invariants (the defect BimodalLogic task 696 spent two research rounds diagnosing and repairing).",
-      "category": "INSIGHT",
-      "source_artifact": "specs/701_port_substrate_lessons_to_model_checker/reports/01_substrate-lessons-for-model-checker.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["witness-family", "certificate", "determinism", "state-sharing", "bimodal", "lasso-orbit"]
-    },
-    {
-      "content": "When a research task cites another repository's task status/timestamp as grounding for a re-scoped description, that status can go stale within hours if the cited task is actively in flight. Before trusting a cross-repository re-scoped task description, re-run a live grep for the concrete artifact the cited task was supposed to produce (e.g. new field/theorem names) rather than trusting the status field or a cached report alone -- confirmed a genuine case where a ModelChecker task's re-scoped text (citing BimodalLogic task 696 as 'implementing') went stale ~5 hours later when 696 completed.",
-      "category": "PATTERN",
-      "source_artifact": "specs/701_port_substrate_lessons_to_model_checker/reports/01_substrate-lessons-for-model-checker.md",
-      "confidence": 0.6,
-      "suggested_keywords": ["cross-repository", "staleness", "task-status", "verification", "multi-repo"]
-    }
-  ]
+  "metadata": {
+    "session_id": "sess_1790680388_3d4c26_701",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "task_number": 701,
+  "phase_count": 5,
+  "estimated_hours": 4,
+  "dependency_waves": [[1], [2], [3], [4], [5]],
+  "memory_candidates": [],
+  "next_steps": "Run /implement 701 to execute the plan",
+  "dispatch_seq": 12
 }
