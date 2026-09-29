@@ -1233,7 +1233,7 @@
         {
           "path": "specs/703_lplus_compression_and_completeness/summaries/01_lplus-compression-completeness-summary.md",
           "type": "summary",
-          "summary": "Implementation summary: six phases complete, phase 7 blocked, full blocker record and recommended resolution."
+          "summary": "Implementation summary for dispatch 18: Phase 7 closed, Phase 8 task 1 landed, Phase 8 blocked."
         }
       ],
       "next_artifact_number": 2
