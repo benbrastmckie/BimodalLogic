@@ -223,7 +223,7 @@ edit and checking no later site now re-explains the same item.
 
 ---
 
-### Phase 3: Terminology Corrections and Back-References [NOT STARTED]
+### Phase 3: Terminology Corrections and Back-References [COMPLETED]
 
 **Goal**: Fix the one defect in the ledger, the `anonymous constructor` name collision, and convert
 the two affected later sites into back-references.

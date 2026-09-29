@@ -237,6 +237,12 @@ lakefile.lean
 searchDepth := 10
 tableauFuel := 1000
 
+# --- Lean appendix: rendered generic Lean-syntax illustrations. Glyphs and
+# shapes named as syntax in the appendix's own prose (the anonymous
+# constructor's bracket pair, and similar), not citations of a specific
+# FormalSystem/ declaration, so they have no literal match in Lean source ---
+⟨ ⟩
+
 # --- Lean appendix: editorial review TODO comments (`//`-prefixed Typst
 # line comments, not rendered prose), marking exposition gaps for a future
 # pass. The backtick spans inside them are generic Lean-syntax placeholders

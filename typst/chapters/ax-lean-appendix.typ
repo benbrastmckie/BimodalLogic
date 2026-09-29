@@ -220,7 +220,9 @@ example (p : Formula) (dBoxP : ⊢ p.box) : ⊢ p :=
 ```
 ]
 
-Passing from the tree to the bare fact of derivability is one step, because `Derivable` is defined by `Nonempty`: the anonymous-constructor brackets wrap the tree, and `Derivable.ofTree` is the same step by name.
+Passing from the tree to the bare fact of derivability is one step, because `Derivable` is defined by `Nonempty`: the *anonymous constructor* wraps the tree, and `Derivable.ofTree` is the same step by name.
+The anonymous constructor is the bracket pair `⟨ ⟩`.
+It builds a value of a structure, or of a single-constructor inductive such as `Nonempty`, by listing the constructor's arguments inside the brackets and leaving Lean to supply the constructor's name from the expected type.
 
 #lean-code[
 ```
@@ -680,8 +682,10 @@ Setting the two definitions side by side also shows what a language extension co
 
 The two definitions differ in one further respect, which is notation rather than content.
 `TruthAt` writes its patterns out as `Formula.atom p`, while `PlusTruthAt` writes `.atom p`.
-The leading dot is *anonymous constructor notation*: Lean already knows from the declared type which inductive is being matched, so the type's name may be dropped.
+The leading dot is *dot notation resolved against the expected type*, the shorthand first met at `⊢[.Dense] φ` in @lean-appendix-types-props.
+Lean already knows from the declared type which inductive is being matched, so the type's name may be dropped: in a pattern of `PlusFormula → Prop`, `.atom` can only be `PlusFormula.atom`.
 The same dot appears in expressions, as in the `FrameClass.Base` argument written `.Base`, and a reader who has met it once will meet it constantly in `FormalSystem/`.
+It is not the anonymous constructor of @lean-appendix-props-as-types, which is the bracket pair `⟨ ⟩` and drops a constructor's *arguments* into a known shape rather than dropping a known type's *name*.
 
 == Tactic Proofs vs. Term Proofs <lean-appendix-tactics>
 
@@ -1242,7 +1246,7 @@ theorem notCompactZTime : ¬ CompactZTime :=
 ]
 
 The two arguments are the two halves of a counterexample, namely a set of formulas every finite part of which is satisfiable while the whole is not.
-Both are applied to the atom built by the *anonymous constructor* `⟨"p", none⟩`, which is `Atom`'s two fields written without naming the structure, Lean supplying the type from the expected argument.
+Both are applied to the atom built by the anonymous constructor `⟨"p", none⟩` (@lean-appendix-props-as-types), here filling `Atom`'s two fields.
 The discrete and Dedekind refutations use different witnesses, `archWitness` at `⟨"p", none⟩` and `dedWitness` at `⟨"q", none⟩`, and the first does not port to the second.
 The discrete witness is built from `Formula.next`, which is vacuous on a densely ordered carrier, so a genuinely different set of formulas is needed on the dense side.
 @sec:dichotomy is where the mathematics of the split is argued.
@@ -1304,6 +1308,10 @@ def decide (φ : Formula) (searchDepth : Nat := 10)
     DecisionResult φ
 ```
 ]
+
+One warning about the name before reading the signature.
+This `decide` is a `def` of this project's own, returning a `DecisionResult`, and it is unrelated to Lean's `decide` tactic used on the frame-class order goals of @lean-appendix-derivations-as-data.
+The two share a spelling and nothing else.
 
 A `:=` inside a binder gives that argument a default.
 Three of the four arguments have one, so the two calls below are the same call:
