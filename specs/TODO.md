@@ -11,9 +11,9 @@ next_project_number: 702
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,695,696,697,698,699,700 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650,701 | 298,464,502,563,649,696 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,695,697,698,699,700 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,696 | 298,464,502,563,649,700 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,618,701 | 231,465,497,564,565,616,696 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -128,7 +128,7 @@ next_project_number: 702
 
 ### 700. Lplus completeness programme survey
 - **Status**: [NOT STARTED]
-- **Task Type**: logic
+- **Task Type**: formal:logic
 - **Topic**: completeness
 - **Dependencies**: None
 
@@ -148,7 +148,7 @@ CONSTRAINTS. Do not modify Lean source, the substrate design, or any other task'
 
 ### 699. Invariance clause audit and ockhamist grounding
 - **Status**: [NOT STARTED]
-- **Task Type**: logic
+- **Task Type**: formal:logic
 - **Topic**: incompleteness
 - **Dependencies**: None
 
@@ -186,7 +186,7 @@ CONSTRAINTS AND NON-GOALS. Do not modify any Lean statement: this task's Part A 
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 700
 - **Research**: [696_stability_modal_substrate_design/reports/02_trans-redesign-gate-verification.md]
 
 **Description**: DESIGN-INVESTIGATION-FIRST TASK. Determine what the stability modals ideally require of the branching witness substrate, choose the best way to provide it, then plan and implement that refactor. Do NOT begin from the assumption that any particular repair is correct: the fourth-periodic-datum `trans` proposal recorded in WitnessFamily/Sharing/README.md's `### (c) What a follow-up needs` is ONE candidate to be evaluated against alternatives, not the settled design. Ground truth to build on, already machine-checked and landed in FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean: `snce_share_congr` shows that (C1') LocalCoherentShare's `snce` clause, by quantifying its predecessor over the share-class at the label's OWN time, forces any two indices naming the same world state to agree on every `snce` formula of the closure; `not_plusCertifies_stabSnce` and `not_plusCertifies_stabSnce_premise` show no six-condition L-plus family certifies any instance of `(g S e) -> stab (g S e)` in either target placement, at any time or size; and `not_plusValidZTime_stabSnce` shows `Pp -> stab Pp` is a genuine integer-time non-validity, so the empty certificate class is a completeness failure and not a vacuity. The `untl` clause escapes the defect only because it quantifies over the class at `t+1`, and that asymmetry traces to Sharing/Skeleton.lean's deliberately tight `Thread.step`. RESEARCH PHASE must answer, in order: (1) What does each stability modal's truth clause actually quantify over, semantically, and what is the weakest substrate datum that supplies exactly that -- stated as adequacy criteria before any candidate is scored, so the comparison is not retrofitted to a favoured answer. (2) Enumerate the candidate designs and score every one against those criteria. At minimum: the fourth-datum `trans` relation separating succession from state-identity; leaving `share` single but re-timing (C1')'s `snce` quantifier to `t-1` by analogy with `untl`'s `t+1`; indexing the share relation by the formula class it serves; and any design the investigation itself surfaces. For each, say what it costs in re-proof surface, what it costs in the model checker's export contract, and whether it is additive or breaking there. (3) Confirm by construction, not by argument, that the chosen design does NOT re-derive the defect: exhibit a concrete family satisfying all six redesigned conditions at NON-TRIVIAL sharing (no landed example of this exists at present -- Examples.lean's `stabFamily_separates` checks (C5) in isolation and the only producer of a branching `Certifies` is the deterministic diagonal, where (C5) provably collapses), AND check that the redesigned (C1') no longer entails an analogue of `snce_share_congr`. Without that second check a redesign can reproduce the present defect while type-checking. (4) Re-examine rather than inherit (C2')'s recorded (C1')-relative limitation: there is no standalone `Decidable (ThreadFulfilling S)`, only a hypothesised term plus an instance on the conjunction. HARD CONSTRAINTS on the implementation: soundness is not at issue and must stay untouched -- `plusTruth_iff_mem` and `plusRefutes_of_certifies` keep their current statements; zero sorries and no new axioms; the C2 axiom baseline rows and docs/theorem-index.md rows pinned for Incompleteness.lean must be updated deliberately and visibly, since a successful repair is expected to make the `not_plusCertifies_*` rows FAIL and that transition is the evidence the refactor worked. Re-proof surface is roughly 3500 lines across nine modules on both the Formula and PlusFormula sides, with WitnessFamily/Sharing/Fulfil.lean (1669 lines) and PlusWitnessFamily/Fulfil.lean (1093 lines) dominating, so the plan must phase the work so each phase ends green rather than carrying a broken tree between phases. Relationship to sibling work: this task is the design authority for the substrate question that task 694 prescribes one solution to, and task 694 should be re-scoped or folded in once this task's research settles the design; task 695's L-plus carrier normalization is an independent prerequisite for any decidability route and is deliberately not in scope here.

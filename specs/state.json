@@ -23,7 +23,7 @@
       "project_number": 700,
       "project_name": "lplus_completeness_programme_survey",
       "status": "not_started",
-      "task_type": "logic",
+      "task_type": "formal:logic",
       "description": "SURVEY-AND-SEQUENCE TASK, DELIBERATELY NOT A WORK TASK. Produce one coordinated programme for reaching a proved completeness result for the L-plus decision procedure, spanning this repository and the paired model checker, and sequence it. This task's deliverable is a survey, a dependency graph and a recommended order -- NOT the work itself, and NOT a burst of new task entries. Spawn at most what the survey concludes is needed, in the order it concludes, and justify every entry it proposes; if the survey concludes existing tasks already cover an area, say so and propose nothing there.\n\nWHY THIS EXISTS. A completeness failure was found and machine-checked: the branching L-plus certificate system certifies NO instance of `(g S e) -> stab (g S e)`, in either target placement, at any time or size, while `Pp -> stab Pp` is a proved integer-time non-validity. The consequence is that on the affected fragment the procedure is a semi-decision procedure, not a decision procedure: an empty enumeration licenses no conclusion. Several partial responses now exist in both repositories and they are NOT currently sequenced against each other. The risk this task removes is a repair that lands without the theorem it was for, or two repositories advancing on incompatible assumptions.\n\nTHE TARGET TO SEQUENCE TOWARD, STATED AS THE IDEAL AND NOT AS THE NEAREST STEP. The end state is the L-plus twin of the landed `exists_witnessFamily_of_not_validZTime` PROVED -- every non-validity admits a finite certificate -- with soundness (`plusRefutes_of_certifies`, `plusTruth_iff_mem`) untouched, zero sorries and no new axioms, and with the completeness obligation visible in docs/theorem-index.md rather than implicit in its absence. Everything short of that theorem is intermediate and the survey must say what each intermediate step buys toward it.\n\nSURVEY SCOPE -- read each, state its status from the live tree rather than from its description, and place it in the graph. (1) The substrate design task, which is the design authority and has two research rounds landed, a recommended design (arrival-pruned transition datum plus a liftability field) and machine-checked gate families; the sharing-substrate redesign task has already been abandoned into it, with its declared paths transferred. (2) The L-plus carrier normalization task -- `plusValidZTime_iff_plusValidInt` -- which is an independent prerequisite for ANY decidability route and is blocked on nothing; determine whether it should be sequenced FIRST, since without a carrier normalization a candidate enumeration over integer-indexed structures certifies nothing about the intended validity notion. (3) The invariance-clause audit and Ockhamist-grounding task, whose Part A sweeps for other truth clauses of the collapsing shape and whose Part B tests whether the defect and its repair instantiate the known inadequacy of evaluating tense at a moment rather than a moment-history pair; assess whether Part B should GATE the substrate implementation, since a known expressiveness bound would constrain the design before it is built rather than after. (4) The general-consequence obligation: the landed compression instance holds only at empty premises and a single conclusion, while the consuming chain and every countermodel example in the paired repository use non-empty premises, so the general form is a separate open obligation -- decide whether it is in the completeness programme's critical path or parallel to it. (5) Whether a compression subtree for L-plus should be built at all before the condition set is corrected, and what the paired repository is waiting on, including its blocked stability-modal extension task, its adequacy-row application task, its consumer re-scoping task, and its new theory-limits example group. (6) The structural preventions, and whether they belong in this programme or are separable: a standing obligation that every certificate-shaped condition set carry an exhibited NON-TRIVIAL inhabitant as a checked artifact, since the defect survived because no such witness had ever been exhibited and vacuously-satisfiable conditions type-check indefinitely; and a mechanical check against the collapsing clause shape so the error class cannot be reintroduced.\n\nWHAT THE SURVEY MUST DECIDE, EXPLICITLY. A dependency graph over the above with every edge justified. A recommended execution order, naming which items can run concurrently and which must serialize, with file-territory collisions identified in advance -- the substrate task alone declares twelve paths across both the Formula and PlusFormula sides, and the sharing-as-succession idiom occurs at roughly three dozen sites in nine files, so concurrency here is a real hazard rather than a throughput question. A judgement on whether the completeness theorem is reachable against the recommended design AT ALL, or whether some further obstruction is predictable from the audit and the literature -- and if the latter, say so plainly rather than sequencing toward an unreachable target. A cross-repository coordination point: which results must land here before the paired repository's blocked work can move, expressed by fully-qualified declaration name so the hand-off survives renumbering on either side.\n\nCONSTRAINTS. Do not modify Lean source, the substrate design, or any other task's declared territory; this task writes a report, a graph and at most the task entries its own conclusions justify. Do not edit the paired repository -- /home/benjamin/Projects/ModelChecker has its own task system and its own specs tree, and cross-repository work is handed off by note, never by reaching across. Do not restate the substrate task's reports or the incompleteness module; cite them by fully-qualified declaration name. Soundness is not in question anywhere in this programme and the report must say so plainly, so that no reader mistakes a completeness gap for unsoundness. Prefer proposing FEWER, larger, well-sequenced tasks over many small ones.",
       "topic": "completeness",
       "file_scope": [
@@ -31,13 +31,13 @@
       ],
       "dependencies": [],
       "created": "2026-09-29T04:10:05Z",
-      "last_updated": "2026-09-29T04:10:05Z"
+      "last_updated": "2026-09-29T04:23:29Z"
     },
     {
       "project_number": 699,
       "project_name": "invariance_clause_audit_and_ockhamist_grounding",
       "status": "not_started",
-      "task_type": "logic",
+      "task_type": "formal:logic",
       "description": "Generalize the lesson of the L-plus certificate incompleteness into (A) a mechanical audit that finds the same latent defect wherever else it occurs, and (B) a literature grounding that says whether the defect and its repair instantiate a known result about tense in branching time. This task deliberately does NOT re-do the substrate repair: task 696 owns the design and implementation of that. What is unowned is whether the same clause shape is silently collapsing OTHER conditions, and whether the repair being adopted is the move philosophical logic already knows is forced.\n\nPART A -- THE CLAUSE-SHAPE AUDIT (mechanical, the core deliverable). The refutation reduces to a shape fact, not a fact about time. FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean's `snce_share_congr` is proved in two lines from two instances of one clause: (C1')'s `snce` conjunct has the form `forall k, share t i k -> (phi in L i t <-> Psi(k))`, and instantiating it once at an arbitrary class member k and once at k with `share_refl` chains the two biconditionals into `share t i k -> (phi in L i t <-> phi in L k t)`. That derivation uses ONLY reflexivity of the quantified relation and the fact that the clause is a biconditional universally quantified over the class. It follows that ANY truth clause of the form \"for all j accessible from i, phi holds at i iff <condition mentioning only j>\" is an invariance axiom for phi across the accessibility class, whether or not that was intended -- and when the relation is an equivalence (here `share u i j := rep u i = rep u j`, an equality, with `share_refl`/`share_symm`/`share_trans` all landed at Sharing/Skeleton.lean 204-221), the invariance is across the entire class. A branching reading requires the clause to be existential on the witness side, or the relation not to be reflexive. AUDIT TASK: enumerate every predicate in FormalSystem/Metalogic/ whose definition universally quantifies a biconditional over a reflexive relation, and for each, decide and record whether the resulting invariance is intended or is a latent collapse. Start from but do not stop at the obvious siblings: (C1')'s `untl` conjunct (quantified over `share (t+1)`, which the same argument collapses -- task 696's Family B `famB_untl_shift_congr` already machine-checks the untl-side analogue, so this one is confirmed live, not hypothetical); `PlusBoxFaithful` at Predicates.lean 195-197, whose right side is a global `forall i t`, making `bx` index- and time-independent -- check whether that globality is the intended reading of the stability modal or a second, independent over-strength; the (C5) StabFaithful label-level congruence `stabFaithful_share_congr`; and the Formula-side mirrors of all of these under WitnessFamily/Sharing/. Report each finding as intended-invariance or latent-collapse WITH the two-instance derivation written out where it collapses, so the verdict is checkable rather than asserted. Where a collapse is found that task 696's redesign does not already repair, say so explicitly -- that is the highest-value output of this task.\n\nPART B -- THE LITERATURE GROUNDING. The substantive claim to test is that this defect is the past-directed instance of a known inadequacy: that in branching time the tense operators cannot be evaluated at a moment (equivalently, at a state of a quotient by modal accessibility) but only at a moment-history pair, because distinct histories through one moment disagree about the future -- and, symmetrically here, distinct histories INTO one state disagree about the past, which is exactly what `Pp -> stab Pp` being invalid expresses and what `snce_share_congr` forbids. This is the Ockhamist-versus-Peircean distinction in indeterminist tense logic. Determine, against the actual sources rather than from memory: whether the collapse here is a recognized consequence of taking the Peircean/moment-only option; whether `Liftable` (task 696's proposed skeleton field) is playing the role of a history-closure or bundled-branch condition that the literature already characterizes; and whether any known impossibility or expressiveness result bounds what a finite periodic certificate over moment-history pairs can decide -- because such a result would constrain task 696's design before it is built, not after. Prior 1967 and rumberg2019firstorder are already in scripts/lean-citation-manifest.json; Burgess 1982's S/U truth clauses were consulted by task 696 round 2. Thomason on indeterminist time and truth-value gaps is the expected primary source and should be located rather than cited from memory -- use the literature tooling and record what was actually read. If a source cannot be obtained, say so and mark the corresponding claim unverified rather than asserting it.\n\nCONSTRAINTS AND NON-GOALS. Do not modify any Lean statement: this task's Part A output is a report plus, at most, probe files under this task's own probes/ directory demonstrating a collapse derivation. Do not redesign the substrate or touch task 696's twelve declared paths. Do not restate task 696's reports -- cite them. Soundness is not in question anywhere in this task: `plusTruth_iff_mem` and `plusRefutes_of_certifies` are untouched and the incompleteness is a completeness-side gap only, which the report must state plainly so no reader mistakes the finding for unsoundness. Deliverable: one report with Part A's audit table (predicate, relation quantified over, reflexive yes/no, verdict, derivation if collapsing) and Part B's verdict with sources actually consulted; plus a named follow-on task proposal for any latent collapse Part A finds that 696 does not repair.",
       "topic": "incompleteness",
       "file_scope": [
@@ -45,7 +45,7 @@
       ],
       "dependencies": [],
       "created": "2026-09-29T03:51:12Z",
-      "last_updated": "2026-09-29T03:51:12Z"
+      "last_updated": "2026-09-29T04:23:29Z"
     },
     {
       "project_number": 698,
@@ -58,7 +58,8 @@
         "specs/state.json"
       ],
       "created": "2026-09-29T00:38:20Z",
-      "last_updated": "2026-09-29T00:38:20Z"
+      "last_updated": "2026-09-29T04:23:00Z",
+      "dependencies": []
     },
     {
       "project_number": 697,
@@ -73,7 +74,8 @@
         "typst/generated/status.typ"
       ],
       "created": "2026-09-29T00:37:40Z",
-      "last_updated": "2026-09-29T00:37:40Z"
+      "last_updated": "2026-09-29T04:23:00Z",
+      "dependencies": []
     },
     {
       "project_number": 696,
@@ -83,7 +85,7 @@
       "description": "DESIGN-INVESTIGATION-FIRST TASK. Determine what the stability modals ideally require of the branching witness substrate, choose the best way to provide it, then plan and implement that refactor. Do NOT begin from the assumption that any particular repair is correct: the fourth-periodic-datum `trans` proposal recorded in WitnessFamily/Sharing/README.md's `### (c) What a follow-up needs` is ONE candidate to be evaluated against alternatives, not the settled design. Ground truth to build on, already machine-checked and landed in FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean: `snce_share_congr` shows that (C1') LocalCoherentShare's `snce` clause, by quantifying its predecessor over the share-class at the label's OWN time, forces any two indices naming the same world state to agree on every `snce` formula of the closure; `not_plusCertifies_stabSnce` and `not_plusCertifies_stabSnce_premise` show no six-condition L-plus family certifies any instance of `(g S e) -> stab (g S e)` in either target placement, at any time or size; and `not_plusValidZTime_stabSnce` shows `Pp -> stab Pp` is a genuine integer-time non-validity, so the empty certificate class is a completeness failure and not a vacuity. The `untl` clause escapes the defect only because it quantifies over the class at `t+1`, and that asymmetry traces to Sharing/Skeleton.lean's deliberately tight `Thread.step`. RESEARCH PHASE must answer, in order: (1) What does each stability modal's truth clause actually quantify over, semantically, and what is the weakest substrate datum that supplies exactly that -- stated as adequacy criteria before any candidate is scored, so the comparison is not retrofitted to a favoured answer. (2) Enumerate the candidate designs and score every one against those criteria. At minimum: the fourth-datum `trans` relation separating succession from state-identity; leaving `share` single but re-timing (C1')'s `snce` quantifier to `t-1` by analogy with `untl`'s `t+1`; indexing the share relation by the formula class it serves; and any design the investigation itself surfaces. For each, say what it costs in re-proof surface, what it costs in the model checker's export contract, and whether it is additive or breaking there. (3) Confirm by construction, not by argument, that the chosen design does NOT re-derive the defect: exhibit a concrete family satisfying all six redesigned conditions at NON-TRIVIAL sharing (no landed example of this exists at present -- Examples.lean's `stabFamily_separates` checks (C5) in isolation and the only producer of a branching `Certifies` is the deterministic diagonal, where (C5) provably collapses), AND check that the redesigned (C1') no longer entails an analogue of `snce_share_congr`. Without that second check a redesign can reproduce the present defect while type-checking. (4) Re-examine rather than inherit (C2')'s recorded (C1')-relative limitation: there is no standalone `Decidable (ThreadFulfilling S)`, only a hypothesised term plus an instance on the conjunction. HARD CONSTRAINTS on the implementation: soundness is not at issue and must stay untouched -- `plusTruth_iff_mem` and `plusRefutes_of_certifies` keep their current statements; zero sorries and no new axioms; the C2 axiom baseline rows and docs/theorem-index.md rows pinned for Incompleteness.lean must be updated deliberately and visibly, since a successful repair is expected to make the `not_plusCertifies_*` rows FAIL and that transition is the evidence the refactor worked. Re-proof surface is roughly 3500 lines across nine modules on both the Formula and PlusFormula sides, with WitnessFamily/Sharing/Fulfil.lean (1669 lines) and PlusWitnessFamily/Fulfil.lean (1093 lines) dominating, so the plan must phase the work so each phase ends green rather than carrying a broken tree between phases. Relationship to sibling work: this task is the design authority for the substrate question that task 694 prescribes one solution to, and task 694 should be re-scoped or folded in once this task's research settles the design; task 695's L-plus carrier normalization is an independent prerequisite for any decidability route and is deliberately not in scope here.",
       "topic": "decidability",
       "created": "2026-09-28T22:40:08Z",
-      "last_updated": "2026-09-29T03:48:55Z",
+      "last_updated": "2026-09-29T04:23:00Z",
       "session_id": "sess_1790637489_031208",
       "artifacts": [
         {
@@ -94,18 +96,23 @@
       ],
       "next_artifact_number": 3,
       "file_scope": [
-        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Skeleton.lean",
-        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Predicates.lean",
-        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Decide.lean",
-        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Fulfil.lean",
-        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Agreement.lean",
-        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Specialize.lean",
-        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md",
-        "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Predicates.lean",
+        "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Agreement.lean",
         "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Decide.lean",
         "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Fulfil.lean",
-        "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Agreement.lean",
-        "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/README.md"
+        "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Predicates.lean",
+        "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/README.md",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Agreement.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Decide.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Fulfil.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Predicates.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Skeleton.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Specialize.lean",
+        "docs/theorem-index.md",
+        "scripts/check-module-invariants.sh"
+      ],
+      "dependencies": [
+        700
       ]
     },
     {
@@ -1861,9 +1868,9 @@
       "task_type": "lean4",
       "topic": "decidability",
       "description": "Prove `plusValidZTime_iff_plusValidInt`, the L-plus twin of Semantics/IntTransfer.lean's `validZTime_iff_validInt`. This is an absent prerequisite for any L-plus decidability route: without a carrier normalization there is no reduction from arbitrary integer-like duration carriers to the integers, so a candidate enumeration over integer-indexed structures certifies nothing about `PlusValidZTime`. It is useful regardless of how the branching substrate redesign turns out, which is why it is blocked on nothing. Route: a seven-case induction on the `plus_invariance` template in Semantics/Frames/TranslationProduct.lean. The six inherited cases follow the Formula-side proof. The `stab` case goes through on `Aligned` because `(FrameOver.map F e).WorldState` is DEFINITIONALLY `F.WorldState`, so `WorldHistory.comap` together with `aligned_comap` transport the state-agreement side condition that `stab`'s truth clause quantifies over. Either shape will do: a `PlusTruthCorr` carrying a state-agreement field, or a direct seven-case `plusTruthAt_map`. Pick one and say why in the plan rather than discovering it mid-proof. Deliverable: the iff, pinned in scripts/check-module-invariants.sh's C2 axiom baseline and given a docs/theorem-index.md row, with zero sorries and no new axiom.",
-      "dependencies": null,
+      "dependencies": [],
       "created": "2026-09-28T22:13:08Z",
-      "last_updated": "2026-09-28T22:13:08Z",
+      "last_updated": "2026-09-29T04:23:00Z",
       "file_scope": [
         "FormalSystem/Semantics/IntTransfer.lean",
         "FormalSystem/Semantics/TruthTransport.lean",
