@@ -144,8 +144,16 @@ Modified:
   substituting a different mechanism while A is unresolved is the silent substitution
   `plan-compliance.md` forbids on `.lean` files.
 - **Phases 8 through 13 are untouched** and all depend on Phase 7.
-- **Regenerate `typst/generated/status.typ`** once task 650 releases it, then re-run
-  `bash scripts/typst-sync-check.sh --counts-only` to confirm the count-freshness gate is green.
+- **Regenerate `typst/generated/status.typ`.** Task 650 has since landed: `specs/state.json`
+  reports it `completed`, so the file is released and the team lead's precondition for the
+  regeneration is met. (`specs/TODO.md` still showed `[IMPLEMENTING]` and was stale;
+  `state.json` is authoritative.) The lead scoped the regeneration to this task's Phase 13
+  acceptance step, which Phase 7's blocker makes unreachable for now, so it remains outstanding.
+  The remedy is `bash scripts/typst-sync-check.sh --fix` followed by a commit of only
+  `typst/generated/status.typ` by explicit path. Verified at dispatch 16: the status-file count
+  drift is the **only** failing gate, the checker reporting exactly `formalsystem-file-count`
+  (605 committed against 610 live) and `formalsystem-line-count`, so every `--no-verify` use in
+  this dispatch stayed inside the lead's condition.
 - **One process lesson worth keeping.** Four library-root edits failed silently because they ran
   inside backgrounded commands whose Python guard asserted the new module name was absent from
   the file, and each Plus-side name is a substring match against the already-present

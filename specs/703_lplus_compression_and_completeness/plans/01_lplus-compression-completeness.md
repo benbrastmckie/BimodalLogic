@@ -851,6 +851,20 @@ the first attempt. Taking it means adding decimal sub-phases 10.1 and 10.2 rathe
       declaration itself, since it is formalization-native.
 - [ ] Run `bash scripts/check-module-invariants.sh` in full and confirm every gate passes,
       C2 and C14 included.
+- [ ] **Regenerate `typst/generated/status.typ`, under the team lead's condition.** This task's
+      new `.lean` modules move the committed counts that `.githooks/pre-commit` gates on, so the
+      hook fires on every commit staging a `.lean` file. The lead's instruction, recorded here so
+      a later dispatch does not have to re-derive it: leave the file alone during Phases 1-12;
+      at this phase, read task 650's status from `specs/state.json`; **if it is `completed`**,
+      run `bash scripts/typst-sync-check.sh --fix` and commit **only**
+      `typst/generated/status.typ`, by explicit path; if 650 is still implementing, do not
+      regenerate, and record the outstanding regeneration in the summary instead. As of dispatch
+      16, `specs/state.json` already reports 650 as `completed`, so the condition is met — note
+      that `specs/TODO.md` was stale on this point and `state.json` is the authoritative source.
+- [ ] Confirm, before any further use of the hook's `--no-verify` bypass, that the status-file
+      count drift is the **only** failing gate. At dispatch 16 it was: the checker reported
+      exactly `formalsystem-file-count` and `formalsystem-line-count` and nothing else. Anything
+      else the hook reports is to be fixed, never bypassed.
 
 **Timing**: 1 hour
 
