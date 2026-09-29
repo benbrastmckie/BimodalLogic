@@ -448,7 +448,7 @@ paragraph.
 
 ---
 
-### Phase 5: Migrate the unlabeled didactic blocks in the Lean appendix [NOT STARTED]
+### Phase 5: Migrate the unlabeled didactic blocks in the Lean appendix [COMPLETED]
 
 **Goal**: Convert the appendix's remaining unlabeled blocks, which the research inventory
 missed entirely, to the environment's didactic kind.
@@ -482,6 +482,17 @@ measurement of the current tree and will shift if Phase 4's conversions differ f
 - A scan for bare fenced blocks in this file returns nothing.
 - `typst compile --root .. BimodalReference.typ` reports zero errors.
 - Didactic blocks render in the same family as excerpt blocks, without a label.
+
+**Deviation from plan**: Phase 4's mechanical wrap (a script converting every fence pair in the
+file, not just `#leansrc`-paired ones) migrated all 44 blocks -- both the 31 labeled and the 13
+unlabeled -- in the same pass, since the same bottom-up transform handled both cases uniformly
+(labeled: wrap in `#lean-code(source: (...))[...]`; unlabeled: wrap in `#lean-code[...]`) with no
+extra risk from doing both at once. Phase 5's own verification is run here as confirmation
+rather than as new migration work: a fence-pair scan finds 13 `#lean-code[` (no `source:`)
+blocks and 0 bare fenced blocks remaining anywhere in the file; `typst compile --root ..
+BimodalReference.typ` is zero errors (shared with Phase 4's compile); page 96 (the `boxPImpP`
+term-mode block, unlabeled) rendered and inspected -- same indented, unbreakable, black family as
+the labeled blocks, no label line, no wrapped code line.
 
 ---
 
