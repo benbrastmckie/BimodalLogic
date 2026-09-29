@@ -196,18 +196,20 @@ addendum rather than creating it.
 
 ---
 
-### Phase 2: Create the two task entries [NOT STARTED]
+### Phase 2: Create the two task entries [COMPLETED]
 
 **Goal**: Add exactly the two justified task entries to `specs/state.json` under the scope
 mutex, in topological order, with narrow `file_scope` declarations and the serializing
 dependency the shared-gate overlap requires, and regenerate `specs/TODO.md`.
 
 **Tasks**:
-- [ ] Acquire the global state mutex:
+- [x] Acquire the global state mutex:
       `token=$(bash .claude/scripts/task-lock.sh scope-acquire "$session_id")`. Hold it across
       the whole write, and release it in all exit paths.
-- [ ] Inside the mutex, re-read `specs/state.json` and take `next_project_number` as the first
+      *(completed)*
+- [x] Inside the mutex, re-read `specs/state.json` and take `next_project_number` as the first
       new number; never a value cached from plan time.
+      *(completed: confirmed 703, matched plan-time value, no sibling had advanced it)*
 - [ ] Compose entry A, `lplus_compression_and_completeness`, `task_type: lean4`,
       `topic: decidability`, `dependencies: [695, 696]`. Description must state: the target as
       the L⁺ twin of `FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime`;
@@ -222,11 +224,14 @@ dependency the shared-gate overlap requires, and regenerate `specs/TODO.md`.
       carrier normalization is a hard prerequisite; that it must read 699 Part B's verdict on
       O4 before its plan is written; and that its substrate dependency is on the substrate *as
       finally corrected*, including 699's `trans_refl` follow-on once that task is filed.
-- [ ] Declare entry A's `file_scope`:
+      *(completed: entry 703 created with this exact content, adjusted per the addendum's E8
+      finding to state that 699 Part B does not answer O4 and 703's own research round must)*
+- [x] Declare entry A's `file_scope`:
       `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/` (a subtree this
       task creates wholesale, so a directory entry is warranted rather than a hedge),
       `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`, `FormalSystem.lean`,
       `docs/theorem-index.md`, `scripts/check-module-invariants.sh`.
+      *(completed)*
 - [ ] Compose entry B, `certificate_non_vacuity_and_shape_gates`, `task_type: general`,
       `topic: verification`, `dependencies: [696, <entry A's number>]`. The edge onto entry A
       is auto-derived from file-footprint overlap (both write
@@ -240,12 +245,17 @@ dependency the shared-gate overlap requires, and regenerate `specs/TODO.md`.
       — and must state why it is sequenced last (a gate landed earlier goes red on the very
       refactor it protects, and a shape check written against pre-repair clauses encodes the
       defect as its baseline). `file_scope`: `scripts/check-module-invariants.sh`.
-- [ ] Append both entries additively (`jq '.active_projects += [...]'` into a temp file, then
+      *(completed: entry 704 created, dependencies [696, 703], edge onto 703 annotated
+      "(auto: file overlap)" in notes/02_cross-repo-handoff.md)*
+- [x] Append both entries additively (`jq '.active_projects += [...]'` into a temp file, then
       atomic `mv`), set `next_project_number` past both, and set `created`/`last_updated` to
       the current UTC timestamp. Never assign `.active_projects` wholesale.
-- [ ] Run `bash .claude/scripts/generate-todo.sh`, then release the mutex.
-- [ ] Commit `specs/state.json` and `specs/TODO.md` as an explicit two-path list via
+      *(completed: next_project_number 703 -> 705)*
+- [x] Run `bash .claude/scripts/generate-todo.sh`, then release the mutex.
+      *(completed)*
+- [x] Commit `specs/state.json` and `specs/TODO.md` as an explicit two-path list via
       `.claude/scripts/git-commit-scoped.sh` (no `git add -A`, no directory pathspec).
+      *(completed)*
 
 **Timing**: 1 hour
 
