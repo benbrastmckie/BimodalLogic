@@ -489,24 +489,28 @@ attribute [instance] FrameOver.worldNonempty
 ```
 ]
 
-// TODO: Explain the `worldNonempty` field in full; "the same instance-bracket-field pattern one
-// level down" assumes too much. Say (1) that the line has the same `name : Type` shape as every
-// other field, with `worldNonempty` the field's name; (2) what `Nonempty α` is: a `Prop`
-// (`class inductive Nonempty (α : Sort u) : Prop`, one constructor `Nonempty.intro : α → Nonempty α`)
-// recording *that* an element exists while forgetting *which*, so the field's value is a proof,
-// not data, and it encodes the requirement that the set of world states be nonempty; (3) that by
-// proof irrelevance (@lean-appendix-types-props) any two such proofs are equal, so the field
-// singles out no particular world state; (4) the contrast with `Inhabited α`, which stores a
-// specific default element, and how the source obtains an element when it needs one
-// (`F.worldNonempty.some`, which is noncomputable and rests on choice); (5) what the square
-// brackets add at the construction site (the author of a frame writes nothing; Lean finds, say,
-// `Nonempty Bool` by instance synthesis) and what the `attribute [instance]` line adds at the use
-// site (given `F`, the fact `Nonempty F.WorldState` is available to synthesis, so lemmas with a
-// `[Nonempty α]` hypothesis apply to world states unprompted). Also gloss the other field lines
-// the prose below passes over: that `comp`, `serial`, `limit` and `saturation` are proof fields
-// too, and how to read the `∀ w u, (∀ x, 0 < x → ∃ y, ...) → u = w` statement of `limit`.
+Only the first two fields are about world states as such; the rest are the frame conditions, and every one of them is worth naming.
 
-`worldNonempty` is the same instance-bracket-field pattern one level down, re-exported by the same kind of `attribute` line.
+`worldNonempty` has the same `name : Type` shape as every other field, with `worldNonempty` the name and `Nonempty WorldState` the type.
+That type is the `Nonempty` of @lean-appendix-types-props: a `Prop` recording *that* the type has an element while forgetting which.
+So the field's value is a proof, not a world state, and what the field requires of a frame is exactly that its set of world states not be empty.
+By proof irrelevance (@lean-appendix-types-props) any two such proofs are equal, so the field singles out no particular state, which is the point of using `Nonempty` here rather than `Inhabited`.
+`Inhabited α` stores a specific default element as data, and a frame that carried one would be committed to a distinguished world state the mathematics never asked for.
+When the source does need an element it takes `F.worldNonempty.some`, which extracts one from the proof; that extraction is noncomputable and rests on choice, which is the price of having forgotten which element it was.
+
+The square brackets do their work at the two ends of the field's life.
+At the *construction* site they mean the author of a frame writes nothing for the field, since Lean finds the proof by instance synthesis (@lean-appendix-structures) whenever the chosen state type already has one registered.
+At the *use* site the `attribute [instance]` line below the structure re-exports the field, so that given any `F`, the fact `Nonempty F.WorldState` is itself available to synthesis, and a lemma with a `[Nonempty α]` hypothesis applies to world states unprompted.
+
+The remaining four fields are proof fields too, each holding a proof of one condition on the reflected relation.
+`comp` is compositionality, that a task of duration `x + y` decomposes into one of duration `x` followed by one of duration `y`, and conversely.
+`serial` is seriality, that from any state and any nonnegative duration a task of that duration both leaves and arrives.
+`saturation` is the completeness condition on directed families of fibres and segments, which is what guarantees the intersections the canonical construction needs are nonempty.
+`limit` is read straight off its statement: for all `w` and `u`, if for every positive `x` there is some `y` with `|y| < x` such that `u` is reachable from `w` in duration `y`, then `u` is `w`.
+That is to say, a state reachable in arbitrarily small durations is the state one started from.
+The absolute-value bars are Mathlib's, on the temporal order's durations, and `0 < x` uses that order's own numerals rather than the natural numbers'.
+
+The field is the instance-bracket-field pattern of `TemporalOrder` one level down, re-exported by the same kind of `attribute` line.
 It is a field rather than a binder on the structure for a stated reason: a binder must be discharged at every mention of the type, whereas a field is discharged once per frame, at the site where that frame is built.
 
 The primitive relation `PosRel` is indexed by `D.PositiveCone`, the nonnegative durations, and the four axiom fields are stated over `TaskFrame.reflect PosRel` rather than over `PosRel` itself.

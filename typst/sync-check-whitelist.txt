@@ -237,30 +237,21 @@ lakefile.lean
 searchDepth := 10
 tableauFuel := 1000
 
-# --- Lean appendix: rendered generic Lean-syntax illustrations. Glyphs and
-# shapes named as syntax in the appendix's own prose (the anonymous
-# constructor's bracket pair, and similar), not citations of a specific
-# FormalSystem/ declaration, so they have no literal match in Lean source ---
+# --- Lean appendix: rendered generic Lean-syntax illustrations. Glyphs,
+# binder shapes and field shapes named as syntax in the appendix's own
+# rendered prose, where the prose is teaching the shape itself rather than
+# citing a specific FormalSystem/ declaration, so they have no literal
+# match in Lean source. (This category formerly described spans living in
+# `//`-prefixed Typst line comments; those comments have since been
+# resolved into rendered prose, and the spans that survived the rewrite
+# are listed here with the rest.) ---
 ⟨ ⟩
 {w | P w}
 case h => ...
 match ... with
 Option α
-
-# --- Lean appendix: editorial review TODO comments (`//`-prefixed Typst
-# line comments, not rendered prose), marking exposition gaps for a future
-# pass. The backtick spans inside them are generic Lean-syntax placeholders
-# and illustrative signatures, not citations of a specific FormalSystem/
-# declaration ---
-structure ... where
 name : Type
-{ base := ..., .. }
-[inst : DecidableEq α]
 ⦃x : T⦄
-class inductive Nonempty (α : Sort u) : Prop
-Nonempty.intro : α → Nonempty α
-Nonempty Bool
-∀ w u, (∀ x, 0 < x → ∃ y, ...) → u = w
 
 # --- typst/template.typ: illustrative code spans inside `//` comments
 # documenting the promoted formatting helpers (derivation-tree-rule,

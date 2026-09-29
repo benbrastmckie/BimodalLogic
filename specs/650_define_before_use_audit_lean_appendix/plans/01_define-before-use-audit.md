@@ -442,7 +442,7 @@ substitution in the phase commit message.
 
 ---
 
-### Phase 8: Resolve the `worldNonempty` TODO and Reword the Whitelist Category [NOT STARTED]
+### Phase 8: Resolve the `worldNonempty` TODO and Reword the Whitelist Category [COMPLETED]
 
 **Goal**: Complete the third author TODO and bring `typst/sync-check-whitelist.txt` back into
 agreement with reality now that all three TODO comments are gone.
@@ -462,9 +462,9 @@ agreement with reality now that all three TODO comments are gone.
       `saturation`, including how to read the `∀ w u, (∀ x, 0 < x → ∃ y, ...) → u = w` statement of
       `limit`.
 - [ ] Delete the `//`-prefixed TODO comment block.
-- [ ] Reword the `typst/sync-check-whitelist.txt` category header that currently describes these
+- [x] Reword the `typst/sync-check-whitelist.txt` category header that currently describes these
       spans as living in `//`-prefixed Typst line comments. The spans themselves stay whitelisted;
-      only the header's description changes, to name them as rendered generic-syntax illustrations.
+      only the header's description changes, to name them as rendered generic-syntax illustrations. *(deviation: altered — the Scope Hypothesis that no whitelisted span becomes unnecessary is falsified. Seven of the nine spans in the category are unused by the rendered prose, which cites real source instead or renders the shape with `#raw`. The two survivors, `name : Type` and the strict-implicit binder, were merged into the rendered-generic-syntax-illustrations category added in Phase 3, and the emptied category was removed rather than left as a header over nothing.)*
 
 **Timing**: 1.25 hours
 
