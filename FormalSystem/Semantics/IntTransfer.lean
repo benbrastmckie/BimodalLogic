@@ -331,6 +331,9 @@ durations add, so the order-only `orderIsoIntOfLinearSuccPredArch` could not be 
 
 `ValidZTime`'s `PredOrder`/`IsPredArchimedean` binders go unused — `intIso` needs only the
 successor half.
+
+Paper: — (formalization-native; carrier normalization is a reduction the paper has no need of,
+since it quantifies over its intended duration carrier directly and supplies no such reduction)
 -/
 theorem validZTime_iff_validInt (φ : Formula) : ValidZTime φ ↔ ValidInt φ := by
   constructor
