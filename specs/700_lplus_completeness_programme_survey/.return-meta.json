@@ -1,47 +1,12 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/700_lplus_completeness_programme_survey/plans/01_completeness-programme-sequencing.md",
-      "summary": "4-phase plan executing only what the survey concluded remains: resolve the three provisional graph edges against the now-landed sibling reports, create exactly the two justified task entries, and record the cross-repository hand-off by fully-qualified declaration name. No Lean, no other task's territory, no paired-repository edit."
-    }
-  ],
-  "next_steps": "Run /implement 700 to execute the plan. Phase 1 is a read-only edge re-check that may adjust the two proposals before Phase 2 creates them; Phase 2 must hold specs/.scope-lock via task-lock.sh scope-acquire because task 698 declares specs/state.json and is a concurrent sibling.",
+  "status": "in_progress",
+  "artifacts": [],
   "metadata": {
-    "session_id": "sess_1790656266_d2dc32_700",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 3.5,
-    "dependency_waves": [[1], [2], [3], [4]],
-    "plan_metadata": {
-      "phases": 4,
-      "total_effort_hours": 4,
-      "complexity": "medium",
-      "research_integrated": true,
-      "plan_version": 1,
-      "dependency_waves": [[1], [2], [3], [4]],
-      "reports_integrated": [
-        {
-          "path": "reports/01_lplus-completeness-programme-survey.md",
-          "integrated_in_plan_version": 1,
-          "integrated_date": "2026-09-28"
-        }
-      ]
-    },
-    "key_plan_decisions": {
-      "edge_recheck_before_creation": "Phase 1 resolves E2/E5/E8 against 695's, 698's and 699's now-landed reports BEFORE any task entry is created, so the re-check can still change the proposals. 699 Part A's finding that 696's redesign relocates rather than repairs the collapse is the concrete reason this is not a formality.",
-      "declaration_name_correction": "The survey's hand-off item 1 named FormalSystem.Semantics.plusValidZTime_iff_plusValidInt 'confirm on landing'; 695's landed probe proves it under namespace FormalSystem.PlusLanguage. Phase 1 corrects it, since a wrong namespace defeats the point of naming the hand-off by declaration.",
-      "f7_consumer_reassigned": "698's landed report declines to widen any task's file_scope by inference, so the F7 nine-file table's consumer is 696's PLAN phase via scripts/plan-file-scope-harvest.sh, not task 698. Handed off by note; no other task's entry is edited.",
-      "two_entries_exactly": "lplus_compression_and_completeness (deps [695, 696]) and certificate_non_vacuity_and_shape_gates (deps [696, entry A]), the second edge auto-derived from shared-gate file overlap per the multi-task-creation standard's Component 4a. No third task: the general-consequence form stays parallel, and 699 owns the trans_refl follow-on.",
-      "non_interactive_creation": "Component 7's interactive confirmation cannot surface from a background dispatch; the task description pre-authorizes creation and /orchestrate has no confirmation gates, so creation is non-interactive with the confirmation summary table preserved in the hand-off note for audit.",
-      "state_json_concurrency": "Task 698 declares specs/state.json and is a concurrent sibling, so Phase 2 brackets the write with task-lock.sh scope-acquire/scope-release, re-reads next_project_number inside the mutex, appends additively with jq '+=', and commits an explicit two-path list."
-    },
-    "footprint": ["specs/state.json", "specs/TODO.md", "specs/700_lplus_completeness_programme_survey/notes/01_sequence-addendum.md", "specs/700_lplus_completeness_programme_survey/notes/02_cross-repo-handoff.md"],
-    "lean_files_touched": 0
+    "session_id": "sess_1790656266_d2dc32",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   },
   "memory_candidates": [],
-  "dispatch_seq": 10
+  "dispatch_seq": 15
 }

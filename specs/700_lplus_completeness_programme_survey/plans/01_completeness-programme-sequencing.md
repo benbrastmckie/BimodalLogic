@@ -1,7 +1,7 @@
 # Implementation Plan: Task #700
 
 - **Task**: 700 - lplus_completeness_programme_survey
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None (this task blocks 696, whose `dependencies` array is `[700]`)
 - **Research Inputs**: `specs/700_lplus_completeness_programme_survey/reports/01_lplus-completeness-programme-survey.md`
@@ -118,43 +118,51 @@ Phase 2 may be adjusted by Phase 1's findings and Phase 3 cites the numbers Phas
 
 ---
 
-### Phase 1: Resolve the provisional edges and confirm declaration names [NOT STARTED]
+### Phase 1: Resolve the provisional edges and confirm declaration names [COMPLETED]
 
 **Goal**: Turn the report's three provisional edges and its one unconfirmed declaration name
 into resolved, written facts, and confirm that exactly two task entries are still the right
 number, before anything is created.
 
 **Tasks**:
-- [ ] Read the Decisions and Findings sections of
+- [x] Read the Decisions and Findings sections of
       `specs/699_invariance_clause_audit_and_ockhamist_grounding/reports/01_invariance-clause-audit-ockhamist-grounding.md`
       and record, for E2 (699 Part A → 696): whether Part A's verdict makes the gate HARD
       rather than SOFT, and whether its own proposed follow-on task (drop `trans_refl`,
       re-base the constant thread) subsumes anything the survey assigned elsewhere.
-- [ ] From the same report, record for E8 (699 Part B → the new compression task): Part B's
+      *(completed: E2 strengthens SOFT -> HARD; follow-on proposal subsumes nothing else)*
+- [x] From the same report, record for E8 (699 Part B → the new compression task): Part B's
       verdict on obligation O4, and its `Liftable` ↔ Emerson–Halpern R-generability
       identification plus the Reynolds 2003 / Thomason 1984 finite-axiomatizability bound.
       State explicitly whether any of it predicts unreachability (the survey's judgement was
       "reachable, not provably blocked"); if it does, say so plainly rather than sequencing
       toward an unreachable target.
-- [ ] Read `specs/695_plus_carrier_normalization_int_transfer/reports/01_plus-carrier-normalization-transfer.md`
+      *(completed: 699 Part B does not address O4 as posed (no GKWZ/product-logic content);
+      O4 stays open for entry A's own research round; nothing predicts unreachability)*
+- [x] Read `specs/695_plus_carrier_normalization_int_transfer/reports/01_plus-carrier-normalization-transfer.md`
       and record for E1/E5: that `plusValidZTime_iff_plusValidInt` is proved in
       `specs/695_plus_carrier_normalization_int_transfer/probes/01_plus_int_transfer_probe.lean`
       under `namespace FormalSystem.PlusLanguage`, and that its recommended siting is a new
       module `FormalSystem/PlusLanguage/PlusIntTransfer.lean`. Correct the hand-off list's
       item 1 to `FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt`.
-- [ ] Confirm the other four hand-off declaration names against the live tree with `grep`
+      *(completed: 695 has landed; declaration confirmed live in
+      FormalSystem/PlusLanguage/PlusIntTransfer.lean; hand-off item 1 corrected)*
+- [x] Confirm the other four hand-off declaration names against the live tree with `grep`
       (`SharingSkeleton.total_eq_thread`, `PlusSharingWitnessFamily.PlusLocalCoherentShare`,
       `...StabFaithful`, `...plusTruth_iff_mem`, `...plusRefutes_of_certifies`). Record any
       that do not resolve.
-- [ ] Read `specs/698_file_scope_declaration_hygiene/reports/01_file-scope-hygiene-audit.md`
+      *(completed: all four resolve live)*
+- [x] Read `specs/698_file_scope_declaration_hygiene/reports/01_file-scope-hygiene-audit.md`
       far enough to confirm it does not widen 696's `file_scope`, and record that the F7
       nine-file table's consumer is therefore 696's plan phase via
       `scripts/plan-file-scope-harvest.sh`, not task 698.
-- [ ] Sweep `specs/state.json` for any non-terminal task already covering either proposal
+      *(completed: 698 confirmed it declines to widen 696's file_scope)*
+- [x] Sweep `specs/state.json` for any non-terminal task already covering either proposal
       (`jq` over `project_name` and `description` for `Compression`, `non_vacuity`,
       `shape_gate`, `check-module-invariants`), so the "propose nothing where covered"
       constraint is checked against the live tree and not only against the survey.
-- [ ] Write the findings to `specs/700_lplus_completeness_programme_survey/notes/01_sequence-addendum.md`:
+      *(completed: no existing task covers either proposal; 412 and 559 confirmed unrelated)*
+- [x] Write the findings to `specs/700_lplus_completeness_programme_survey/notes/01_sequence-addendum.md`:
       a dated addendum, one short section per edge, the corrected declaration name, the F7
       consumer correction, the duplicate-check result, and the "soundness is not in question"
       sentence. Cite by declaration name and report path; do not restate 696's reports or
