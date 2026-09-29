@@ -1,0 +1,26 @@
+{
+  "phase": 1,
+  "phase_name": "Baseline capture and Check 9 duplicate repair (project 178)",
+  "started_at": "2026-09-29T05:06:00Z",
+  "last_updated": "2026-09-29T05:07:00Z",
+  "objectives": [
+    {"id": 1, "description": "Capture baseline validate-state.sh output", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Confirm 178 is only Class A duplicate", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Run --fix and verify repair", "status": "done", "files_touched": ["specs/state.json"], "note": "validate-state.sh --fix crashed (jq: Cannot iterate over null) because its general dedup filter operates .file_scope |= (reduce ...) on every project without a null-guard, and 28 non-terminal projects (e.g. 412, 125) have file_scope: null. This is a pre-existing defect in the deployed .claude/scripts/validate-state.sh --fix block, unrelated to this task's edits, and out of scope to patch (.claude/** is a disposable deploy artifact per source-store-deploy-boundary.md). Applied the equivalent order-preserving dedup transform directly via state-write.sh, scoped strictly to project_number==178 (the one project this task's research confirmed as the sole Class A duplicate), which is null-safe by construction since it only touches 178 whose file_scope is a plain array. This is still a sanctioned mutex-guarded write, not a hand-edit."},
+    {"id": 4, "description": "Commit phase 1", "status": "done", "files_touched": ["specs/state.json"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [
+    {"approach": "bash .claude/scripts/validate-state.sh --fix", "result": "failed", "reason": "jq: error: Cannot iterate over null (null) -- the --fix repair filter has no null-guard on .file_scope and crashes on unrelated projects whose file_scope is literal null (e.g. project 412)"}
+  ],
+  "deviations": [
+    {
+      "task_id": "1.3",
+      "description": "Run bash .claude/scripts/validate-state.sh --fix to repair project 178's duplicate file_scope entry",
+      "type": "altered",
+      "reason": "validate-state.sh --fix crashes with a jq null-iteration error caused by unrelated projects (e.g. 412) having file_scope: null -- a pre-existing defect in the deployed script's --fix filter, not something this task's changes introduced. Applying an equivalent, project-178-scoped, null-safe dedup filter directly via the same sanctioned state-write.sh writer achieves the identical, verified repair (confirmed by Check 9 PASS and jq empty) without touching the buggy general filter or any other project.",
+      "annotation": "*(deviation: altered -- validate-state.sh --fix crashed on unrelated null file_scope values; applied the equivalent project-178-scoped filter directly via state-write.sh instead)*"
+    }
+  ],
+  "handoff_count": 0
+}

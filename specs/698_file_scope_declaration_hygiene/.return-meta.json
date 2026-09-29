@@ -1,30 +1,11 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/698_file_scope_declaration_hygiene/plans/01_file-scope-declaration-hygiene.md",
-      "summary": "5-phase, 3-hour plan repairing the four Check-8 coarse file_scope declarations (narrow 282/296/298's inherited BimodalTools/ triad, justify 177's Decidability/ and add the missing 696 dependency edge), fixing 178's Check-9 duplicate via validate-state.sh --fix, re-verifying shared gate-script declarations, and reporting residue plus the out-of-repo enforcement follow-on."
-    }
-  ],
-  "next_steps": "Run /implement 698 to execute the plan",
+  "status": "in_progress",
+  "dispatch_seq": 13,
+  "artifacts": [],
   "metadata": {
-    "session_id": "sess_1790656266_d2dc32_698",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 3,
-    "dependency_waves": [[1], [2], [3], [4], [5]]
-  },
-  "memory_candidates": [
-    {
-      "content": "A task whose deliverable IS a shared, wholesale-regenerated index file (specs/state.json, specs/TODO.md) cannot stage its commits free of concurrent siblings' rows -- the contamination is structural, not a staging mistake. The sanctioned handling is a pair: every read-modify-write goes through .claude/scripts/state-write.sh (fail-closed specs/.scope-lock mutex, private mktemp staging; never a hand-rolled 'jq > tmp && mv', never Edit/Write on state.json), and every commit that stages specs/state.json or specs/TODO.md passes --honest-index-rows <task> to git-commit-scoped.sh, which appends an 'Also carries current index rows for tasks: ...' body line. Per git-staging-scope.md that flag is REQUIRED at every such site, not optional. Corollary for planning: sequence all phases of such a task rather than waving them in parallel, so each commit's diff stays attributable to one named repair.",
-      "category": "PATTERN",
-      "source_artifact": "specs/698_file_scope_declaration_hygiene/plans/01_file-scope-declaration-hygiene.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["state.json", "state-write.sh", "honest-index-rows", "git-commit-scoped", "shared index file", "concurrent siblings"]
-    }
-  ],
-  "dispatch_seq": 8
+    "session_id": "sess_1790656266_d2dc32",
+    "agent_type": "general-implementation-agent",
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_depth": 2
+  }
 }
