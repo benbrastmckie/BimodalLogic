@@ -300,7 +300,7 @@ names that this plan does not.
 
 ---
 
-### Phase 4: Insulate the Formula-side thread-step consumers [NOT STARTED]
+### Phase 4: Insulate the Formula-side thread-step consumers [COMPLETED]
 
 **Goal**: Introduce `thread_share_succ` and rewrite every Formula-side site that reads
 `θ.step u` as a `share (u+1)` fact to go through it instead. While `Thread.step` still means
@@ -309,18 +309,26 @@ green throughout.
 
 **Tasks**:
 
-- [ ] Add `thread_share_succ (θ : S.Thread) (u) : S.share (u+1) (θ.idx u) (θ.idx (u+1))` to
+- [x] Add `thread_share_succ (θ : S.Thread) (u) : S.share (u+1) (θ.idx u) (θ.idx (u+1))` to
       `Sharing/Skeleton.lean`, currently `θ.step u`.
-- [ ] Rewrite the `Sharing/Thread.lean` delegations (`Thread.step`, `step_of_share_succ`,
+- [x] Rewrite the `Sharing/Thread.lean` delegations (`Thread.step`, `step_of_share_succ`,
       `step_congr_right`) to state and consume `thread_share_succ`.
-- [ ] Rewrite `Sharing/Window.lean`'s `FwdWalk.share_succ`, `BwdWalk.share_succ` and the four
-      `walkIdx_step` sites.
-- [ ] Rewrite `Sharing/Fulfil.lean`'s `untl_thread_step`, `thread_share_pred`,
+- [x] Rewrite `Sharing/Window.lean`'s `FwdWalk.share_succ`, `BwdWalk.share_succ` and the four
+      `walkIdx_step` sites. *(No edit required, and the reason is load-bearing rather than an
+      omission: the walks PRODUCE threads rather than consuming them. `walkIdx_step`'s only
+      consumer is the `step :=` field of the thread it builds, confirmed by grep across the
+      tree, so there is nothing to route through `thread_share_succ`. These four sites change
+      in Phase 6, where `succF`/`predF` start filtering on `trans` and `walkIdx_step`'s own
+      statement becomes a `trans` fact — the definition-site change Phase 6 is scoped to.)*
+- [x] Rewrite `Sharing/Fulfil.lean`'s `untl_thread_step`, `thread_share_pred`,
       `snce_thread_step` and the `share_refl (z.2 + 1)` default escape edge in
       `window_of_threadFulfilling`.
-- [ ] Rewrite the along-thread lemmas in `Sharing/Agreement.lean`.
-- [ ] Touch `Sharing/Frame.lean` and `Sharing/Histories.lean` for their one-line restatements.
-- [ ] Re-run the checklist grep and confirm no Formula-side `θ.step`-as-`share` reading remains
+- [x] Rewrite the along-thread lemmas in `Sharing/Agreement.lean`.
+- [x] Touch `Sharing/Frame.lean` and `Sharing/Histories.lean` for their one-line restatements.
+      *(`Frame.lean` needed none — it never mentions a thread's step. `Histories.lean`'s
+      `## Why the tight Thread.step suffices` heading and its opening sentence now read the
+      step through `thread_share_succ`.)*
+- [x] Re-run the checklist grep and confirm no Formula-side `θ.step`-as-`share` reading remains
       outside the lemma itself.
 
 **Timing**: 1.5 hours
@@ -329,8 +337,12 @@ green throughout.
 
 **Verification Tier**: interface
 
-**Scope Hypothesis**: Round 2's F6 catalogues 36 `share`-as-succession grep hits across 9 files
-for both sides together. Confirm the Formula-side share of that list at implementation time with
+**Scope Hypothesis**: CONFIRMED with a corrected count. The checklist grep run at implementation
+time returns 42 hits, not 36 — 34 on the Formula side and 8 on the Plus side — but the excess is
+entirely the Phase 2 and Phase 3 additions' own occurrences (`transOf`, `trans`, `trans_def`,
+`share_succ_of_trans` and the raw `stepOf`), not uncatalogued consumers. The thread-step readings
+themselves are exactly the sites F6 named. Round 2's F6 catalogues 36 `share`-as-succession grep
+hits across 9 files for both sides together. Confirm the Formula-side share of that list at implementation time with
 `grep -n "share (.*+ 1)\|share_refl (.*+ 1)"` over
 `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/`, and record the actual count in the
 phase's commit message.
@@ -353,21 +365,21 @@ phase's commit message.
 
 ---
 
-### Phase 5: Insulate the Plus-side thread-step consumers [NOT STARTED]
+### Phase 5: Insulate the Plus-side thread-step consumers [COMPLETED]
 
 **Goal**: The same insulation on the PlusFormula side. Disjoint from Phase 4's file set, so the
 two can run concurrently.
 
 **Tasks**:
 
-- [ ] Restate `Thread.step` and `Thread.const` in `PlusWitnessFamily/Basic.lean` through
+- [x] Restate `Thread.step` and `Thread.const` in `PlusWitnessFamily/Basic.lean` through
       `thread_share_succ`.
-- [ ] Rewrite `PlusWitnessFamily/Fulfil.lean`'s `plusUntl_thread_step` (328-334),
+- [x] Rewrite `PlusWitnessFamily/Fulfil.lean`'s `plusUntl_thread_step` (328-334),
       `plusThread_share_pred` (337-341), `plusSnce_thread_step` (344-350) and the default escape
       edge in its `window_of_threadFulfilling` analogue.
-- [ ] Rewrite the along-thread lemmas in `PlusWitnessFamily/Agreement.lean`, leaving
+- [x] Rewrite the along-thread lemmas in `PlusWitnessFamily/Agreement.lean`, leaving
       `plusTruth_iff_mem` and `plusRefutes_of_certifies` statements untouched.
-- [ ] Re-run the checklist grep over `PlusWitnessFamily/` and confirm nothing remains.
+- [x] Re-run the checklist grep over `PlusWitnessFamily/` and confirm nothing remains.
 
 **Timing**: 1 hour
 

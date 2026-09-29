@@ -331,7 +331,17 @@ instance instNonemptyThread (S : PlusSharingWitnessFamily Γ Del) : Nonempty S.T
 family thread resolves to this rather than to the skeleton's field, which is stated at
 `S.skeleton.share`. -/
 theorem Thread.step {S : PlusSharingWitnessFamily Γ Del} (θ : S.Thread) (u : ℤ) :
-    S.share (u + 1) (θ.idx u) (θ.idx (u + 1)) := SharingSkeleton.Thread.step θ u
+    S.share (u + 1) (θ.idx u) (θ.idx (u + 1)) := SharingSkeleton.thread_share_succ θ u
+
+/--
+**An L⁺ family thread's step, read as the arrival-time sharing fact.**
+
+The Plus-side twin of `SharingWitnessFamily.thread_share_succ`, and the single point through
+which every consumer in this directory reads a thread's step, so that `Thread.step` above is
+free to change meaning without touching any of them.
+-/
+theorem thread_share_succ {S : PlusSharingWitnessFamily Γ Del} (θ : S.Thread) (u : ℤ) :
+    S.share (u + 1) (θ.idx u) (θ.idx (u + 1)) := SharingSkeleton.thread_share_succ θ u
 
 /-- The frame's carrier: `share`-classes of index/time pairs. -/
 abbrev WorldState (S : PlusSharingWitnessFamily Γ Del) : Type := S.skeleton.WorldState

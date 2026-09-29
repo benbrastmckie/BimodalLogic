@@ -111,7 +111,7 @@ theorem valuation_cls (S : PlusSharingWitnessFamily Γ Del) (hat : S.PlusAtomCoh
 ## The two inner inductions, along a thread
 
 The branching clauses of (C1') are quantified over shared successors and predecessors, so the
-two one-step-unfolding inductions walk along a **thread**, with `Thread.step` and
+two one-step-unfolding inductions walk along a **thread**, with `thread_share_succ` and
 `plusThread_share_pred` supplying the sharing side condition at each step.
 -/
 
@@ -131,7 +131,7 @@ theorem plusUntl_mem_along_thread (S : PlusSharingWitnessFamily Γ Del)
   | zero => intro t s hd hts _ _; omega
   | succ n ih =>
     intro t s hd hts hse hguard
-    have hclause := (hloc (θ.idx t) t).2.2.2.1 (θ.idx (t + 1)) (θ.step t) g e hge
+    have hclause := (hloc (θ.idx t) t).2.2.2.1 (θ.idx (t + 1)) (thread_share_succ θ t) g e hge
     rcases eq_or_lt_of_le (show t + 1 ≤ s by omega) with heq | hlt
     · subst heq
       exact hclause.mpr (Or.inl hse)
