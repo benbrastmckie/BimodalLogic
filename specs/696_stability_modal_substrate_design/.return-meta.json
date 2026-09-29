@@ -1,0 +1,40 @@
+{
+  "status": "researched",
+  "started_at": "2026-09-28T23:20:24Z",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/696_stability_modal_substrate_design/reports/01_stability-modal-substrate-design.md",
+      "summary": "Adequacy criteria, scored substrate candidates, recommendation of an arrival-pruned trans datum with a thread-lifting skeleton field, two concrete non-vacuity families with congruence checks, (C2') limitation verdict, and a green-per-phase plan; includes the new machine-checked finding that (C1')'s untl clause also collapses (probes archived under probes/)."
+    }
+  ],
+  "next_steps": "Plan from this report: Phase 0 lands the untl-side incompleteness from the archived probes; Phases 1-4 introduce the arrival-pruned trans datum and lift field, switch Thread.step, re-quantify (C1') on both sides, add the two example families, and rewrite the C2 baseline and theorem-index rows; fold task 694 into this task.",
+  "metadata": {
+    "session_id": "sess_1790637489_031208_696",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  },
+  "modified_files": [
+    "specs/696_stability_modal_substrate_design/reports/01_stability-modal-substrate-design.md",
+    "specs/696_stability_modal_substrate_design/probes/01_untl_shift_congr_probe.lean",
+    "specs/696_stability_modal_substrate_design/probes/02_untl_target_nonvalid_probe.lean"
+  ],
+  "memory_candidates": [
+    {
+      "content": "In a position-labelled branching certificate, any coherence clause that quantifies over the one-step reach of a position forces its right-hand side constant on that reach; if the reach is a whole share-class (at either time), labels collapse. Succession must be free data (a relation), not derivable from the state equivalence, and any bounded-window encoding collapses one step beyond the window.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/696_stability_modal_substrate_design/reports/01_stability-modal-substrate-design.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["branching certificate", "share", "trans", "collapse", "stability modal"]
+    },
+    {
+      "content": "With a free succession relation, 'every frame history is a thread' needs a closure condition; index-level splice conditions are either collapses or unsatisfiable by sound presentations. The exact condition is path lifting, proved from finite-segment lifting by IsCompact.nonempty_iInter_of_sequence_nonempty_isCompact_isClosed on (ℤ → Fin n); splice-closed lassos give a cheap sufficient case via Finite.exists_infinite_fiber.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/696_stability_modal_substrate_design/reports/01_stability-modal-substrate-design.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["total_eq_thread", "compactness", "pigeonhole", "closure condition"]
+    }
+  ]
+}
