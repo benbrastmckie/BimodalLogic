@@ -270,27 +270,27 @@ on, so it is established first and as a reusable library lemma rather than as a 
 
 ---
 
-### Phase 2: L⁺ compression types and the sequence-level predicates [NOT STARTED]
+### Phase 2: L⁺ compression types and the sequence-level predicates [COMPLETED]
 
 **Goal**: Transcribe the `Formula`-side `Compression/Types.lean` layer to L⁺: the type-at-a-model
 map and the two sequence-level predicates that the cycle extraction and the readout both consume.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Types.lean`.
-- [ ] Define `plusTypeAtM`, the L⁺ twin of `typeAtM` (`Compression/Types.lean:81`): the closure
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Types.lean`.
+- [x] Define `plusTypeAtM`, the L⁺ twin of `typeAtM` (`Compression/Types.lean:81`): the closure
       members true at a history and time. Note the model side needs no new types —
       `PlusValidInt` quantifies over the same `FrameOver intOrder`, `TaskModel` and
       `WorldHistory` the `Formula` side uses; only the truth predicate differs (`PlusTruthAt`
       rather than `TruthAt`).
-- [ ] Prove `mem_plusTypeAtM` and `plusTypeAtM_subset`, the membership characterization and the
+- [x] Prove `mem_plusTypeAtM` and `plusTypeAtM_subset`, the membership characterization and the
       closure containment.
-- [ ] Define `PlusLocalCoherentSeqLab` and `PlusFulfillingSeqLab`, the sequence-level twins of
+- [x] Define `PlusLocalCoherentSeqLab` and `PlusFulfillingSeqLab`, the sequence-level twins of
       `LocalCoherentSeqLab` and `FulfillingSeqLab`. These are stated on a bare `ℤ → Finset
       PlusFormula`, with no family in sight, which is what lets the cycle extraction manipulate
       them.
-- [ ] Prove `plusTypeAtM_localCoherentSeqLab` and `plusTypeAtM_fulfillingSeqLab`: the truth oracle
+- [x] Prove `plusTypeAtM_localCoherentSeqLab` and `plusTypeAtM_fulfillingSeqLab`: the truth oracle
       realizes both predicates. Five clauses for the first, two directions for the second.
-- [ ] Add the import line to `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`.
+- [x] Add the import line to `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`.
 
 **Timing**: 2 hours
 
@@ -298,7 +298,15 @@ map and the two sequence-level predicates that the cycle extraction and the read
 
 **Verification Tier**: interface
 
-**Scope Hypothesis**: the `Formula`-side `Compression/Types.lean` is 224 lines and the L⁺
+**Scope Hypothesis** *(confirmed at implementation time)*: the declaration list was diffed
+against `WitnessFamily/Compression/Types.lean`. The L⁺ `stab` constructor forces **no** extra
+clause in either predicate — `⊚` is not an eventuality and has no one-step unfolding, and (C5) is
+a family condition that cannot be stated at a bare label sequence — so both predicates keep
+exactly five and two clauses respectively. Three supporting truth lemmas *were* added, and are
+recorded rather than absorbed: `plusBox_const`, `plusTruth_untl_succ` and `plusTruth_snce_pred`.
+The `Formula` side gets these free from `Semantics/TruthTransport.lean` and
+`BiLasso/Unfold.lean`; neither has an L⁺ counterpart anywhere in the tree, so the L⁺ module
+proves all three. Original hypothesis, for the record: the `Formula`-side `Compression/Types.lean` is 224 lines and the L⁺
 transcription is estimated at a comparable size with no structural additions. Confirm at
 implementation time by diffing the declaration list against
 `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Types.lean`; if the L⁺ `stab`

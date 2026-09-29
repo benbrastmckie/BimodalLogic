@@ -8,6 +8,7 @@ import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Closure
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Basic
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Predicates
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.TransId
+import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Compression.Types
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Decide
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Fulfil
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Agreement
