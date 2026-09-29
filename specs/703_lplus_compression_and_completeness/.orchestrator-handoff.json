@@ -1,18 +1,25 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 13,
-  "summary": "Wrote a 13-phase, 25-hour plan for the L-plus compression theorem. Phases 2-7 transcribe the Formula-side compression pipeline to L-plus; phases 8-11 build the (C5) saturation, representative structure, splice-closed lift, (C0) and (C5), none of which has any precedent on either side; phase 12 assembles the theorem and phase 13 lands the theorem-index row and C2 axiom pin.",
+  "status": "blocked",
+  "phase": "implement",
+  "dispatch_seq": 16,
+  "summary": "Landed phases 1-6 of the 13-phase L-plus compression plan plus phase 7's transcription half: the hop-free (C1')/(C2') collapse, the L-plus type map and sequence predicates, the type-state carrier and good-cycle machinery, fulfilment from good cycles, the readout layer and plusCompressionBound, and single-history lasso extraction. All sorry-free, full lake build green, axiom and vacuous counts identical to the pre-task baseline, soundness untouched. Phase 7 is BLOCKED on its Invariant A, which is not provable as written and whose stated purpose misdescribes the landed substrate; phases 8-13 all gate on it.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/703_lplus_compression_and_completeness/summaries/01_lplus-compression-completeness-summary.md",
+      "summary": "Implementation summary: six phases complete, phase 7 blocked, full blocker record and recommended resolution."
+    },
     {
       "type": "plan",
       "path": "specs/703_lplus_compression_and_completeness/plans/01_lplus-compression-completeness.md",
-      "summary": "13-phase plan for the L-plus compression theorem, sorry-free, ending in the theorem-index row and C2 axiom pin."
+      "summary": "Plan updated with per-phase status, scope-hypothesis results, inline deviation annotations, and the Phase 7 BLOCKER record."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 6,
   "phases_total": 13,
-  "blockers": [],
+  "blockers": [
+    "Phase 7 Invariant A is not provable as written. Padding by repetition preserves the decoded label function only at multiples of the cycle length, so the invariant needs L divides plusCompressionBound for every extracted cycle length L, which exists_good_cycle_of_plusTypeSeq does not supply; at a three-member closure the permitted lengths are 1 through 8 while the bound is 56, and back lengths 5, 7 and 8 have no common multiple below 280. Independently, the risk-table outcome it serves (NB = NF = plusCompressionBound) is false: PlusWitnessFamily/Decide.lean's perBack is repBack.length times the PRODUCT of the lassos' back lengths, never a least common multiple. Recommended resolution: drop Invariant A, which nothing downstream needs for correctness."
+  ],
   "continuation_path": null,
-  "next_action_hint": "Run /implement 703; phases 1 and 2 are independent and form wave 1."
+  "next_action_hint": "Decide Invariant A before any further dispatch. Do not start Phase 8; phases 8-13 all depend on Phase 7. The full blocker record, the three resolution options, and a working replacement mechanism for Invariant B are under the Phase 7 heading of the plan."
 }

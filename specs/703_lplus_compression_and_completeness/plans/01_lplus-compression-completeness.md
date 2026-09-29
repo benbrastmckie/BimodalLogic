@@ -1,7 +1,7 @@
 # Implementation Plan: L⁺ Compression and Completeness
 
 - **Task**: 703 - lplus_compression_and_completeness
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 25 hours
 - **Dependencies**: `FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt` (landed,
   `FormalSystem/PlusLanguage/PlusIntTransfer.lean`); the redesigned sharing substrate as finally
@@ -479,7 +479,77 @@ empty list.
 
 ---
 
-### Phase 7: Single-history lasso extraction, with the two construction invariants [IN PROGRESS]
+### Phase 7: Single-history lasso extraction, with the two construction invariants [BLOCKED]
+
+**BLOCKER** (Phase 7):
+
+- **What failed**: Invariant A, "pad `back` and `fwd` by repetition so every extracted lasso has
+  `back.length = fwd.length = plusCompressionBound Γ Del`". It is not provable as written, and
+  the risk-table mitigation it serves ("so `NB = NF = plusCompressionBound`") is false about the
+  landed substrate independently of it.
+
+- **What was tried**: the padding lemma was attempted first, before the main extraction, exactly
+  as this phase's Scope Hypothesis directs. Three routes were considered and each fails on the
+  arithmetic rather than on a tactic.
+
+  1. *Padding by repetition.* Repeating a cycle list `m` times preserves the decoded label
+     function, because `Periodic.cyc` reads `i % length` and `i % (m·L) % L = i % L`. So
+     repetition reaches exactly the multiples of `L` and nothing else. Hitting
+     `plusCompressionBound` therefore requires `L ∣ plusCompressionBound` for every extracted
+     cycle length `L`, which the good-cycle theorem does not provide and which is false.
+  2. *Changing a cycle's length some other way.* The decoded function's period on the `back`
+     segment is exactly `back.length`, through `Periodic.cyc`. A non-multiple length changes the
+     decoded function, so no other length-changing operation preserves `lab`.
+  3. *Choosing a common length at construction time.* Achievable cycle lengths through a
+     recurring type are the differences of its recurrence times, closed under addition but not
+     arbitrary. `exists_base_plusCycleT` returns `L = b + 1` with `b < Nat.card (PlusTypeState C)`,
+     so every `L` in `1 … 2^|C|` is permitted by its own statement.
+
+- **Concrete refutation** (κ = |plusClosureOf (Γ ++ Del)| = 3): `Nat.card (PlusTypeState C) = 8`,
+  so `exists_base_plusCycleT` permits every cycle length in `1 … 8`, and
+  `plusCompressionBound = (2·3 + 1) · 2^3 = 56`. Three lassos with back lengths 5, 7 and 8 admit
+  no common padded length below `lcm(5, 7, 8) = 280`, which exceeds 56. So no common segment
+  length satisfying the theorem's own `Λ.back.length ≤ plusCompressionBound` bound exists.
+  (At κ = 2 the invariant happens to be satisfiable — `lcm(1…4) = 12 ≤ 20` — which is why the
+  failure is not visible on a small example.)
+
+- **Why it is stuck — the second, independent defect**: the invariant's stated purpose does not
+  describe this tree. `PlusWitnessFamily/Decide.lean`'s `perBack` is
+  `repBack.length * (lassos.map (·.back.length)).prod` — a **product**, never a least common
+  multiple. So "leaving segments at differing lengths makes `NB`/`NF` a least common multiple
+  over up to `n` lengths" is not what the landed substrate does, and a common length `L` would
+  give `NB = |repBack| · L^n`, not `plusCompressionBound`. The mitigation's stated outcome
+  `NB = NF = plusCompressionBound` holds only when `n = 1` and `|repBack| = 1`.
+
+- **What is needed** (a plan decision, not a proof): one of
+
+  1. **Drop Invariant A.** Nothing downstream needs it for *correctness*. The segment bounds
+     Phase 12 states come free from the unpadded extraction, which already returns
+     `≤ plusCompressionBound`. Phase 9's `repBack_ne` / `repFwd_ne` are about the representative
+     segments, which this task constructs directly and can make non-empty without A. `NB`/`NF`
+     are `abbrev`s whose well-formedness (`NB_pos`, `nbr_dvd_NB`, …) is already proved generically
+     for an arbitrary family. This is the recommended resolution.
+  2. **Keep a common length and widen the bound.** Set the common length to a common multiple of
+     the extracted cycle lengths and enlarge `plusCompressionBound` accordingly, propagating the
+     new form into Phases 8 and 12 and into the Lean Challenge Statement's segment bounds. This
+     makes the stated bound substantially worse for no correctness gain.
+  3. **Strengthen the good-cycle theorem** so it returns a cycle whose length divides a declared
+     modulus. That is a real change to Phase 4's landed `exists_good_cycle_of_plusTypeSeq` and
+     needs its own design round.
+
+- **Invariant B is not blocked by the same argument, but its stated mechanism is.** B ("normalize
+  the landing position to a single canonical offset, by rotating the padded segments") is
+  achievable by a *different* mechanism: shift a lasso rightward by `k` by prepending the `k`
+  labels `lab (-k) … lab (-1)` to `mid` and rotating `back` by `-k`, which satisfies
+  `lab' t = lab (t - k)` on all four decoding regions. Taking `k` to the maximum landing offset
+  keeps `|mid'| = |mid| + k < 3 · 2^κ ≤ plusCompressionBound` for `κ ≥ 1`. It was **not
+  implemented**, because its stated mechanism presupposes Invariant A's padded segments and
+  substituting a different mechanism while A is unresolved is exactly the silent substitution
+  `.claude/rules/plan-compliance.md` forbids on `.lean` files.
+
+- **Prohibited workarounds**: no `sorry`, no `def X := True`, no vacuous placeholder. Nothing of
+  the kind was written; the subtree is sorry-free and axiom-clean.
+
 
 **Goal**: Prove the L⁺ twin of `exists_labelledLasso_of_history_realized`: every history of a
 ℤ-frame countermodel compresses, at a given time, to a bounded `PlusLabelledLasso` that is locally
@@ -490,12 +560,14 @@ later phases depend on.
 - [x] Prove `exists_plusLabelledLasso_of_history_realized`. It must return, alongside the lasso,
       the landing position of the original time and the realization fact
       `∀ j, ∃ u, Λ.lab j = plusTypeAtM M Γ Del σ u`.
-- [ ] **Invariant A — common cycle length.** Pad `back` and `fwd` by repetition so every extracted
+- [ ] **Invariant A — common cycle length.** *(BLOCKED: not provable as written; see the
+      BLOCKER record above)* Pad `back` and `fwd` by repetition so every extracted
       lasso has `back.length = fwd.length = plusCompressionBound Γ Del`, and `mid.length` likewise
       padded to that bound. Prove padding preserves `lab`, hence preserves local coherence,
       fulfilment and realization. This is what keeps `NB`/`NF` from becoming a least common
       multiple over `n` differing lengths.
-- [ ] **Invariant B — common time alignment.** Prove that the landing position can be normalized
+- [ ] **Invariant B — common time alignment.** *(not attempted: its stated mechanism
+      presupposes Invariant A's padded segments; see the BLOCKER record above)* Prove that the landing position can be normalized
       to a single canonical offset across all extracted lassos, by rotating the padded segments.
       (C5) pins its witness to the same time `u` as the demand, so without this the witness lassos
       are re-timed and certify nothing.
@@ -513,7 +585,11 @@ later phases depend on.
 
 **Verification Tier**: interface
 
-**Scope Hypothesis**: this phase asserts that Invariants A and B are provable at the extraction
+**Scope Hypothesis** *(result: REFUTED for Invariant A)*: the padding and rotation lemmas were
+attempted before the main extraction, as directed. Invariant A does **not** force a structural
+change to `PlusLabelledLasso` — the landed type was not edited and must not be — but it is not
+provable at the extraction site either, for arithmetic reasons recorded in the BLOCKER above.
+Original hypothesis, for the record: this phase asserts that Invariants A and B are provable at the extraction
 site rather than requiring a change to `PlusLabelledLasso`. Confirm at implementation time by
 proving the padding and rotation lemmas before the main extraction; if either forces a structural
 change to the lasso type, stop and record it as a plan deviation rather than editing the landed
