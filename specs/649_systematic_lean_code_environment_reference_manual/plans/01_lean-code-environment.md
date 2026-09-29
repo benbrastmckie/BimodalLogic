@@ -1,7 +1,7 @@
 # Implementation Plan: One Lean-Code Environment for the Reference Manual
 
 - **Task**: 649 - Systematic Lean code environment for the Bimodal Reference Manual
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13 hours
 - **Dependencies**: None outstanding (tasks 647 and 648 are both archived/completed; their
   output is already live in `typst/` and is the baseline this plan measures)
@@ -139,7 +139,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Re-measure the baseline and capture before-renders [NOT STARTED]
+### Phase 1: Re-measure the baseline and capture before-renders [COMPLETED]
 
 **Goal**: Establish the exact, current inventory and the rendered visual baseline that every
 later phase is judged against, so that the report's undercount cannot propagate.
@@ -184,6 +184,18 @@ against the stale figure.
 - The scan output names a block count, a label count, and a widest-line figure for each of the
   six code-bearing chapter files.
 - One before-render PNG exists per affected chapter.
+
+**Measured Results**: Both documents compiled at zero errors. Fence-pair scan confirms the
+plan's Scope Hypothesis exactly: 50 code blocks across six chapter files (44 in the Lean
+appendix, 1 in the machine appendix, 2 in the decidability-practice chapter, 1 in the
+frame-classes chapter, 1 in the dataset-pipeline chapter, 1 in the dual-verification chapter),
+34 `#leansrc`-paired (31 in the appendix + 2 + 1 = 34) and 16 unlabeled didactic (13 in the
+appendix + 1 machine appendix + 1 dataset-pipeline + 1 dual-verification). Widest lines: 71
+(appendix, machine appendix), 78 (decidability-practice signature, dataset-pipeline JSON), 26
+(frame-classes), 88 (dual-verification, nested inside `#example`). `#leanref` has zero call
+sites across `typst/` and two definition sites (`template.typ:130`,
+`notation/shared-notation.typ:60`); the latter is not imported by either document. Six
+before-render PNGs captured to the session scratchpad (not committed).
 
 ---
 

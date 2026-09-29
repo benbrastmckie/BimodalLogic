@@ -1,30 +1,16 @@
 {
-  "status": "planned",
+  "status": "implemented",
   "artifacts": [
     {
       "type": "plan",
       "path": "specs/649_systematic_lean_code_environment_reference_manual/plans/01_lean-code-environment.md",
-      "summary": "Nine-phase plan promoting the Lean appendix's file-local code-presentation rules to one book-wide Typst environment with two declared kinds, migrating all 50 code blocks, adding a Check 4 to the tracked drift detector, and documenting the budget and fidelity policy."
+      "summary": "Nine-phase plan promoting the Lean appendix's file-local code-presentation rules to one book-wide Typst environment."
     }
   ],
   "metadata": {
-    "session_id": "sess_1790680388_3d4c26_649",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 9,
-    "estimated_hours": 13,
-    "dependency_waves": [[1], [2], [3], [4, 6], [5], [7], [8], [9]]
-  },
-  "memory_candidates": [
-    {
-      "content": "When planning a mechanical enforcement check for this repository, the target script must be git-tracked. The typst element lint and chapter-quality check live under .claude/scripts/, which is gitignored and regenerated from an external source store, so an edit there is silently wiped by the next deploy and violates the source-store/deploy boundary rule. scripts/typst-sync-check.sh is the tracked, extensible enforcement surface for anything about typst/, and its Check 1 already carries reusable machinery for resolving an identifier against live non-Boneyard Lean source across multiple source roots with a whitelist escape hatch. Prefer extending it with a new named check over touching any deployed lint.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/649_systematic_lean_code_environment_reference_manual/plans/01_lean-code-environment.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["enforcement", "typst-sync-check", "deploy-boundary", "gitignored-scripts", "lint-placement"]
-    }
-  ],
-  "next_steps": "Run /implement 649 to execute the plan",
-  "dispatch_seq": 6
+    "session_id": "sess_1790680388_3d4c26",
+    "agent_type": "typst-implementation-agent",
+    "dispatch_seq": 8,
+    "in_progress": true
+  }
 }
