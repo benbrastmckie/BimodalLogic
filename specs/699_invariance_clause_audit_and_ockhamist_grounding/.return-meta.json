@@ -1,0 +1,29 @@
+{
+  "status": "researched",
+  "dispatch_seq": 4,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/699_invariance_clause_audit_and_ockhamist_grounding/reports/01_invariance-clause-audit-ockhamist-grounding.md",
+      "summary": "Part A clause-shape audit (19-row table, 4 live collapses in the landed tree of which 3 unrecorded, plus a residual collapse the task 696 redesign does not repair) and Part B literature grounding (verdict overturns the Ockhamist/Peircean hypothesis; Liftable identified as R-generability), with a named follow-on task proposal"
+    },
+    {
+      "type": "probe",
+      "path": "specs/699_invariance_clause_audit_and_ockhamist_grounding/probes/01_clause_shape_collapse_probe.lean",
+      "summary": "220 lines, elaborates clean (exit 0, no sorryAx): clause_shape_collapse abstract lemma plus 10 instantiations covering every collapsing row of the audit table, including the redesign's residual trans-collapse"
+    }
+  ],
+  "next_steps": "Run /plan 699 if any of Part A's unrecorded collapses are to be landed as theorems or README corrections; otherwise the actionable output is the follow-on task proposal (trans_reflexivity_residual_collapse), which should be created before task 696 Phase 1 declares trans_refl.",
+  "metadata": {
+    "session_id": "sess_1790656266_d2dc32_699",
+    "agent_type": "logic-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
+    "findings_count": 12,
+    "context_files_loaded": [],
+    "mathlib_lookups_performed": 0,
+    "probes_elaborated": 1,
+    "lean_statements_modified": 0,
+    "soundness_affected": false
+  }
+}
