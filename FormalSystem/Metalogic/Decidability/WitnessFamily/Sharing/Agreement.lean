@@ -148,7 +148,7 @@ theorem valuation_cls (S : SharingWitnessFamily Γ Del) (hat : S.AtomCoherent)
 `WitnessFamily/Agreement.lean`'s `untl_mem_of_witness` and `snce_mem_of_witness` walk the
 one-step unfolding clause along a *lasso*. The branching clauses of (C1') are quantified over
 shared successors and predecessors, so the same two inductions walk along a **thread**, with
-`θ.step` and `thread_share_pred` supplying the sharing side condition at each step.
+`thread_share_succ` and `thread_share_pred` supplying the sharing side condition at each step.
 -/
 
 /--
@@ -167,7 +167,7 @@ theorem untl_mem_along_thread (S : SharingWitnessFamily Γ Del)
   | zero => intro t s hd hts _ _; omega
   | succ n ih =>
     intro t s hd hts hse hguard
-    have hclause := (hloc (θ.idx t) t).2.2.2.1 (θ.idx (t + 1)) (θ.step t) g e hge
+    have hclause := (hloc (θ.idx t) t).2.2.2.1 (θ.idx (t + 1)) (thread_share_succ θ t) g e hge
     rcases eq_or_lt_of_le (show t + 1 ≤ s by omega) with heq | hlt
     · subst heq
       exact hclause.mpr (Or.inl hse)

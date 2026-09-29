@@ -92,7 +92,17 @@ proposition by definition; this restatement is what keeps every downstream `rw [
 matching, and is why `Sharing/Fulfil.lean` needs no edit.
 -/
 theorem Thread.step {S : SharingWitnessFamily Γ Del} (θ : S.Thread) (u : ℤ) :
-    S.share (u + 1) (θ.idx u) (θ.idx (u + 1)) := SharingSkeleton.Thread.step θ u
+    S.share (u + 1) (θ.idx u) (θ.idx (u + 1)) := SharingSkeleton.thread_share_succ θ u
+
+/--
+**A family thread's step, read as the arrival-time sharing fact.**
+
+The family-level twin of `SharingSkeleton.thread_share_succ`, and the single point through which
+every `Sharing/` consumer below reads a thread's step. `Thread.step` above is free to change
+meaning without touching any of them.
+-/
+theorem thread_share_succ {S : SharingWitnessFamily Γ Del} (θ : S.Thread) (u : ℤ) :
+    S.share (u + 1) (θ.idx u) (θ.idx (u + 1)) := SharingSkeleton.thread_share_succ θ u
 
 /-- Threads are determined by their index function. -/
 theorem Thread.ext {S : SharingWitnessFamily Γ Del} {θ η : S.Thread}

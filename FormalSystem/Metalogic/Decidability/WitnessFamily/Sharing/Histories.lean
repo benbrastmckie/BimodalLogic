@@ -18,9 +18,11 @@ position of every lasso".
 This module supplies the replacement: every world history of `SharingWitnessFamily.frame` is the
 trace of a **thread**, and conversely every thread traces a world history.
 
-## Why the tight `Thread.step` suffices
+## Why the tight thread step suffices
 
-`Thread`'s step field is `share (u+1) (idx u) (idx (u+1))`, which is *narrower* than the frame's
+`Thread`'s step field yields `share (u+1) (idx u) (idx (u+1))` — read off it by
+`thread_share_succ`, the single point every consumer of a thread's step goes through — which is
+*narrower* than the frame's
 one-step relation `Step u i j = ∃ i', share u i i' ∧ share (u+1) i' j`. That costs nothing here,
 because a history's index at `u` may be chosen **knowing the step it is about to take**: the
 witness `i'` supplied by `Step` at `u` is itself a legitimate name for the state at `u`, and is

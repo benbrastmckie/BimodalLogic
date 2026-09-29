@@ -983,13 +983,24 @@ instance decidableReachN (K : SharingSkeleton) :
         fun v a b => decidableReachN K n v a b
       inferInstanceAs (Decidable (∃ k, K.Step u i k ∧ K.ReachN n (u + 1) k j))
 
+/--
+**A thread's step, read as the arrival-time sharing fact.**
+
+The single point through which every consumer reads a thread's step. While `Thread.step` *is*
+this fact the two are interchangeable; once the step field becomes succession, this is its
+arrival-pruning projection and every consumer below keeps working unedited. Introducing it
+before the substrate switch is what makes that switch touch definition sites only.
+-/
+theorem thread_share_succ {K : SharingSkeleton} (θ : K.Thread) (u : ℤ) :
+    K.share (u + 1) (θ.idx u) (θ.idx (u + 1)) := θ.step u
+
 namespace Thread
 
 variable {K : SharingSkeleton}
 
 /-- A thread's one-step move is a `Step` of the class-level relation. -/
 theorem step' (θ : K.Thread) (u : ℤ) : K.Step u (θ.idx u) (θ.idx (u + 1)) :=
-  step_of_share_succ (θ.step u)
+  step_of_share_succ (thread_share_succ θ u)
 
 /-- **A thread realizes reachability between its own positions.** -/
 theorem reachN (θ : K.Thread) (n : ℕ) (u : ℤ) :

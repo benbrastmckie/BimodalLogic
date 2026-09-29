@@ -176,7 +176,8 @@ so the index never moves. Proved at `0` by `Int.induction_on` and then transport
 theorem thread_toSharing_eq_zero (W : WitnessFamily Γ Del) (θ : W.toSharing.Thread) :
     ∀ u : ℤ, θ.idx u = θ.idx 0 := by
   have hstep : ∀ u : ℤ, θ.idx u = θ.idx (u + 1) := fun u =>
-    (share_toSharing W (u + 1) (θ.idx u) (θ.idx (u + 1))).mp (θ.step u)
+    (share_toSharing W (u + 1) (θ.idx u) (θ.idx (u + 1))).mp
+      (SharingWitnessFamily.thread_share_succ θ u)
   intro u
   refine Int.induction_on u rfl ?_ ?_
   · intro n ih

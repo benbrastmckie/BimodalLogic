@@ -917,12 +917,12 @@ theorem untl_thread_step {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentS
     e ∈ S.L (θ.idx (t + 1)) (t + 1) ∨
       (g ∈ S.L (θ.idx (t + 1)) (t + 1) ∧
         Formula.untl g e ∈ S.L (θ.idx (t + 1)) (t + 1)) :=
-  ((h (θ.idx t) t).2.2.2.1 (θ.idx (t + 1)) (θ.step t) g e hc).mp ht
+  ((h (θ.idx t) t).2.2.2.1 (θ.idx (t + 1)) (thread_share_succ θ t) g e hc).mp ht
 
 /-- A thread's index at `t` shares the state at `t` with its index at `t - 1`. -/
 theorem thread_share_pred {S : SharingWitnessFamily Γ Del} (θ : S.Thread) (t : ℤ) :
     S.share t (θ.idx t) (θ.idx (t - 1)) := by
-  have hstep := θ.step (t - 1)
+  have hstep := thread_share_succ θ (t - 1)
   rw [show t - 1 + 1 = t by omega] at hstep
   exact S.share_symm hstep
 
@@ -1133,7 +1133,7 @@ theorem thread_untl_of_mem_untlFix (S : SharingWitnessFamily Γ Del) (g e : Form
     rw [S.mem_succF]
     refine ⟨hwv, rfl, ?_⟩
     have hrep : S.rep (v.2 + 1) = S.rep (t + 1) := S.foldRel_rep (S.foldRel_succ hft)
-    have hs := θ.step t
+    have hs := thread_share_succ θ t
     rw [S.share_def] at hs
     rw [← hθ, S.share_def, hrep]
     exact hs
