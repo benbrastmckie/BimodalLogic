@@ -435,20 +435,20 @@ good cycles.
 
 ---
 
-### Phase 6: Generic readout and the segment bound [NOT STARTED]
+### Phase 6: Generic readout and the segment bound [COMPLETED]
 
 **Goal**: Transcribe the generic readout layer — the lemmas that turn three finite segments into a
 bi-infinite function and back — and define `plusCompressionBound`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Extract.lean`.
-- [ ] Transcribe or import `getD_mapC`, `getD_range_mapC`, `reduce_emodC`, `emod_succ_congrC`,
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Extract.lean`.
+- [x] *(resolved: ALL EIGHT reused by import, zero transcribed)* Transcribe or import `getD_mapC`, `getD_range_mapC`, `reduce_emodC`, `emod_succ_congrC`,
       `periodic_rel_of_windowC`, `readout_backC`, `readout_midC`, `readout_fwdC`. These are
       generic over `α` with `[Inhabited α]` on the `Formula` side, so they are candidates for
       reuse rather than transcription — check each signature first.
-- [ ] Prove `plusTypeOfT_unrollOf`, the decoding lemma specialized to L⁺ type states.
-- [ ] Define `plusMidBoundC` and prove `plusMidBoundC_eq`.
-- [ ] Define `plusCompressionBound` and prove `plusCycleBoundC_le_plusCompressionBound` and
+- [x] Prove `plusTypeOfT_unrollOf`, the decoding lemma specialized to L⁺ type states.
+- [x] Define `plusMidBoundC` and prove `plusMidBoundC_eq`.
+- [x] Define `plusCompressionBound` and prove `plusCycleBoundC_le_plusCompressionBound` and
       `plusMidBoundC_le_plusCompressionBound`.
 
 **Timing**: 2 hours
@@ -457,10 +457,16 @@ bi-infinite function and back — and define `plusCompressionBound`.
 
 **Verification Tier**: local
 
-**Scope Hypothesis**: the eight generic readout lemmas are asserted to be formula-agnostic and
-reusable from `WitnessFamily/Compression/Extract.lean` without re-proof. Confirm at implementation
-time by reading each signature; report the count actually reused versus transcribed rather than
-assuming all eight go one way.
+**Scope Hypothesis** *(confirmed at implementation time; count: 8 reused, 0 transcribed)*: each
+signature was read. `getD_mapC`, `getD_range_mapC`, `periodic_rel_of_windowC`, `readout_backC`,
+`readout_midC` and `readout_fwdC` are declared over `{α : Type*} [Inhabited α]`; `reduce_emodC`
+and `emod_succ_congrC` are pure `Int.emod` facts over bare integers. None mentions `Formula`,
+`Context`, `closureOf` or `TypeState`, so all eight are reused by importing
+`WitnessFamily/Compression/Extract.lean`. The one readout-layer declaration that is NOT generic,
+`typeOfT_unrollOf`, is stated at `TypeState C` and was transcribed as `plusTypeOfT_unrollOf`.
+One declaration was added beyond the plan's list and is recorded here rather than absorbed:
+`plusCompressionBound_pos`, which Phase 7's Invariant A needs so a padded segment is never the
+empty list.
 
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Extract.lean` - new file,
