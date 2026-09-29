@@ -7,7 +7,12 @@
 #import "../generated/status.typ": axiom-count, rule-count
 #import "@preview/cetz:0.3.4"
 
-= Introduction
+= Introduction <sec:introduction>
+
+#chapter-header(
+  description: [What *TM* is, why task frames rather than Kripke frames, the frame-class dichotomy, the bimodal interaction axiom MF, how to read this book, and the Lean project's directory structure.],
+  dependencies: [None assumed beyond basic logic.],
+)
 
 This book presents *TM*, a bimodal logic that unifies tense and modality in a single formally verified system, as implemented in the #proofchecker Lean 4 project.
 *TM* combines an S5 modal operator for historical necessity with linear temporal operators for past and future, axiomatized by the Burgess-Xu proof system over Since/Until primitives and interpreted over task-frame semantics.
@@ -153,14 +158,14 @@ A reader who has never opened a Lean file, and wants to go from one of these cit
 == Project Structure
 
 The Lean 4 implementation is in the `FormalSystem/` directory:
-- `Syntax/` -- Defines the formula language with 6 primitive constructors (atoms, $bot$, implication, $square.stroked$, Since, Until) and derived operators.
-- `ProofSystem/` -- The Burgess-Xu (BX) axiom system: #axiom-count axiom constructors in 9 layers and #rule-count inference rules forming a Hilbert-style proof system, parameterized by frame class (Base/Dense/ZTime/RTime).
-- `Semantics/` -- Task frames model possible worlds; histories model time (partial, then convex, then total -- @sec:convex-histories); strict (irreflexive) truth conditions define meaning; `Extension/` runs the existence machinery (Constraint Lemma through the Extension Theorem) as a machine-checked chain.
-- `Metalogic/` -- Soundness for all four frame classes (Base, Dense, ZTime, RTime), the deduction theorem and Lindenbaum lemma, the canonical-model machinery carrying the completeness theorems of @sec:metalogic, and the tableau-based decision procedure.
-- `Theorems/` -- Perpetuity principles (P1--P6), modal and propositional theorem libraries, and derived temporal axioms.
-- `Automation/`, `Examples/` -- Proof tactics and worked examples, covered in Part II.
-- `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/`, `OpenLanguage/`, `HybridLanguage/` -- self-contained mirrors for the neighboring object languages surveyed in @ch:vlach-blstar, the deferred tense-primitive subsystem of @sec:conservative-extension, and the hybrid state language extending *TM*#super[+] with state registers and a same-state binder.
-- `ForMathlib/`, `Tactic/` -- library infrastructure: Mathlib-shaped extensions intended for upstreaming, and the attributes and named `simp` sets the rest of the library registers.
-- `MainResults.lean` -- a single-file index of the headline metatheory, each result beside its own `#print axioms` audit.
+- `FormalSystem/Syntax/` -- Defines the formula language with 6 primitive constructors (atoms, $bot$, implication, $square.stroked$, Since, Until) and derived operators.
+- `FormalSystem/ProofSystem/` -- The Burgess-Xu (BX) axiom system: #axiom-count axiom constructors in 9 layers and #rule-count inference rules forming a Hilbert-style proof system, parameterized by frame class (Base/Dense/ZTime/RTime).
+- `FormalSystem/Semantics/` -- Task frames model possible worlds; histories model time (partial, then convex, then total -- @sec:convex-histories); strict (irreflexive) truth conditions define meaning; `FormalSystem/Semantics/Extension/` runs the existence machinery (Constraint Lemma through the Extension Theorem) as a machine-checked chain.
+- `FormalSystem/Metalogic/` -- Soundness for all four frame classes (Base, Dense, ZTime, RTime), the deduction theorem and Lindenbaum lemma, the canonical-model machinery carrying the completeness theorems of @sec:metalogic, and the tableau-based decision procedure.
+- `FormalSystem/Theorems/` -- Perpetuity principles (P1--P6), modal and propositional theorem libraries, and derived temporal axioms.
+- `FormalSystem/Automation/`, `FormalSystem/Examples/` -- Proof tactics and worked examples, covered in Part II.
+- `FormalSystem/MinusLanguage/`, `FormalSystem/PlusLanguage/`, `FormalSystem/StarLanguage/`, `FormalSystem/OpenLanguage/`, `FormalSystem/HybridLanguage/` -- self-contained mirrors for the neighboring object languages surveyed in @ch:vlach-blstar, the deferred tense-primitive subsystem of @sec:conservative-extension, and the hybrid state language extending *TM*#super[+] with state registers and a same-state binder.
+- `FormalSystem/ForMathlib/`, `FormalSystem/Tactic/` -- library infrastructure: Mathlib-shaped extensions intended for upstreaming, and the attributes and named `simp` sets the rest of the library registers.
+- `FormalSystem/MainResults.lean` -- a single-file index of the headline metatheory, each result beside its own `#print axioms` audit.
 
 The dataset, ML and benchmark tooling of Part II's training-data pipeline (@sec:dataset-pipeline) is *not* under `FormalSystem/`: it lives in a separate library, `BimodalTools`, declared in the repository's `lakefile.toml` and built only on request.

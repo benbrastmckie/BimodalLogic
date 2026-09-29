@@ -336,21 +336,25 @@ stay local and the phase says so.
 
 ---
 
-### Phase 3: 00-introduction.typ [NOT STARTED]
+### Phase 3: 00-introduction.typ [COMPLETED]
 
 **Goal**: The manual's opening chapter conforms to the style sheet, including the project-
 structure listing whose 16 bare directory citations are the chapter's entire BLOCKING count.
 
 **Tasks**:
-- [ ] Add `#chapter-header(description:, dependencies:)` after the `= Introduction` heading.
-      Dependencies for the opening chapter are "none assumed beyond basic logic"; say so rather
-      than omitting the field.
-- [ ] Resolve all 16 Rule 1.2 findings per occurrence. Most take a `FormalSystem/` prefix;
-      `` `Extension/` `` at line 158 must become `FormalSystem/Semantics/Extension/`, verified by
-      `test -e`. Do not touch `BimodalTools` or `lakefile.toml` mentions, which already resolve.
-- [ ] Leave the 21 existing `@`-references as they are; this chapter has zero cross-reference
+- [x] Add `#chapter-header(description:, dependencies:)` after the `= Introduction` heading.
+      Dependencies for the opening chapter are "none assumed beyond basic logic"; said so rather
+      than omitting the field. Also added the `<sec:introduction>` label to the `=` heading
+      itself, matching the majority `<sec:...>` labeling convention on sibling chapters'
+      top-level headings (not itself a BLOCKING finding, but required by STYLE.md rule 1's
+      `= Chapter Title <sec:chapter-id>` shape).
+- [x] Resolved all 16 Rule 1.2 findings per occurrence. 15 took a `FormalSystem/` prefix;
+      `` `Extension/` `` at (pre-edit) line 158 became `FormalSystem/Semantics/Extension/`,
+      verified by `test -d`. Did not touch `BimodalTools` or `lakefile.toml` mentions, which
+      already resolve.
+- [x] Left the 21 existing `@`-references as they are; this chapter has zero cross-reference
       drift.
-- [ ] Leave the 6 Rule 3.3 long-paragraph and 3 Rule 2.1 density warnings alone. Both are
+- [x] Left the 6 Rule 3.3 long-paragraph and 3 Rule 2.1 density warnings alone. Both are
       ADVISORY and never block; splitting narrative paragraphs here would work against the
       chapter's deliberately essay-like register.
 
