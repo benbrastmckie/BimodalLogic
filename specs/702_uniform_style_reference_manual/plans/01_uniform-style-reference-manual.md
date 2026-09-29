@@ -652,21 +652,28 @@ count by reading each "chapter" mention in context; all four `SCORE` lines must 
 
 ---
 
-### Phase 9: p2-decidability-practice.typ [NOT STARTED]
+### Phase 9: p2-decidability-practice.typ [COMPLETED]
 
 **Goal**: Clear 31 BLOCKING findings from the chapter that best demonstrates the citation
 problem: it already imports `#leansrc` and calls it three times, yet falls back to bare paths 28
 times in the same file.
 
 **Tasks**:
-- [ ] Resolve all 31 Rule 1.2 findings per occurrence, converting declaration citations to
-      `#leansrc`/`#leanref` rather than merely prefixing paths wherever the citation is a
-      declaration and not a file.
-- [ ] Verify the existing `#chapter-header` fields are present and substantive.
-- [ ] Check each `==`/`===` opening against rule 2. The element lint passes this file, so fix
-      only genuine gaps.
-- [ ] Verify every decidability status claim against `typst/generated/status.typ` or
-      `SYNC-MAP.md` before rewording any sentence that carries one.
+- [x] Resolved all 31 Rule 1.2 findings per occurrence. **Deviation**: kept the existing
+      inline-declaration-plus-parenthetical-path prose shape and `FormalSystem/`-prefixed the
+      path, rather than restructuring to `#leansrc`/`#leanref`, for the same reason recorded in
+      Phases 4 and 6 -- the citations are already inline declaration mentions, not standalone
+      block attributions, and rule 4's block-level `#leansrc` is "never mid-sentence". Several
+      occurrences repeating the same file path across one sentence (e.g. `TraceCertificate.lean`,
+      `CountermodelExtraction.lean`) were consolidated to cite the file once and say "same file"
+      for the repeats, tightening the prose rather than repeating the now-longer full path.
+- [x] Verified the existing `#chapter-header` fields (`description`/`dependencies`) are present
+      and substantive.
+- [x] Checked each `==`/`===` opening against rule 2. The element lint passes this file and every
+      opening already states a reader need; no gap found requiring a fix.
+- [x] Spot-checked decidability status claims already present (fuel/termination semantics,
+      `RuleSound` covering "all 34 rules") against the file's own citations; no rewording was
+      needed since Rule 1.2 fixes here were path corrections only, not claim rewording.
 
 **Timing**: 1.5 hours
 
