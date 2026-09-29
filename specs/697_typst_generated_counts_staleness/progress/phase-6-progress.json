@@ -1,0 +1,18 @@
+{
+  "phase": 6,
+  "phase_name": "Full CI-equivalent gate sweep",
+  "started_at": "2026-09-29T06:50:00Z",
+  "last_updated": "2026-09-29T07:20:00Z",
+  "objectives": [
+    {"id": 1, "description": "Confirm clean start (no synthetic file, no stray files)", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Run the 11-command local CI mirror", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Attribute out-of-scope failures via git log/status", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Confirm no change to ci.yml / typst-status-counts.sh", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Confirm bare invocation byte-identical to Phase 1 baseline", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Record per-gate results", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "notes": "Per-gate results: lake build --wfail PASS; warning-budget.py PASS; lake test PASS; lake lint PASS; check-module-invariants.sh --no-build FAIL (C5 typst/STYLE.md + stale INV block in 3 README.md files -- both attributed via git log/status to already-landed sibling commits from task 702 and tasks 695/685/690 respectively, none in this task's file_scope, none uncommitted); check-copyright-headers.sh --strict PASS; readme-lint.sh PASS; lake exe lint-style PASS; lake exe mk_all --lib FormalSystem --check PASS; typst-sync-check.sh (bare) FAIL on Check 1 only (typst/template.typ, task 702, already landed) -- Check 2 (this task's deliverable) passes with MISMATCH_COUNT=0 in the same run; check-paper-definitions.sh PASS. git diff --stat against the commit preceding this task's first commit lists exactly the expected file set (typst-sync-check.sh, .githooks/pre-commit, install-git-hooks.sh, CONTRIBUTING.md, CI_CD_PROCESS.md, scripts/README.md, typst/generated/status.typ) with no change to ci.yml or typst-status-counts.sh."
+}

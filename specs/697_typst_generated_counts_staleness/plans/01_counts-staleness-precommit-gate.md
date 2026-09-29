@@ -449,30 +449,41 @@ Confirm with `git status --short` at phase close.
 
 ---
 
-### Phase 6: Full CI-equivalent gate sweep [NOT STARTED]
+### Phase 6: Full CI-equivalent gate sweep [COMPLETED]
 
 **Goal**: Confirm the change is green against the full local mirror of CI, and that CI's own
 Check 2 behaviour is untouched.
 
 **Tasks**:
-- [ ] Confirm `Tests/BimodalTest/SyntheticCountProbe.lean` is absent and `git status --short` is
-  clean of this task's stray files before starting the sweep.
-- [ ] Run the local CI mirror documented in `docs/development/CI_CD_PROCESS.md`'s "Running CI
+- [x] Confirm `Tests/BimodalTest/SyntheticCountProbe.lean` is absent and `git status --short` is
+  clean of this task's stray files before starting the sweep. *(completed)*
+- [x] Run the local CI mirror documented in `docs/development/CI_CD_PROCESS.md`'s "Running CI
   Locally" section: `lake build --wfail`, `python3 scripts/warning-budget.py`, `lake test`,
   `lake lint`, `bash scripts/check-module-invariants.sh --no-build`,
   `bash scripts/check-copyright-headers.sh --strict --exclude '*/Boneyard/*' FormalSystem`,
   `bash scripts/readme-lint.sh`, `lake exe lint-style`,
   `lake exe mk_all --lib FormalSystem --check`, plus `bash scripts/typst-sync-check.sh` and
-  `bash scripts/check-paper-definitions.sh`.
-- [ ] Treat a failure in a file outside this task's `Files to modify` set as a possible sibling
+  `bash scripts/check-paper-definitions.sh`. *(completed; 9 of 11 fully green, 2 show
+  sibling-attributed failures unrelated to this task's own concern -- see below)*
+- [x] Treat a failure in a file outside this task's `Files to modify` set as a possible sibling
   in-flight edit (task 695 is live on `FormalSystem/Semantics/**` this cycle): check `git log`
   and `git status` before attributing it to this change, and report rather than "fix" it.
-- [ ] Confirm `git diff` against the merge-base shows no change to `.github/workflows/ci.yml`
-  and no change to `scripts/typst-status-counts.sh`.
-- [ ] Confirm the bare `bash scripts/typst-sync-check.sh` invocation CI uses is byte-identical in
-  behaviour to the Phase 1 baseline capture.
-- [ ] Record the per-gate results (pass/fail, and any sibling-attributed failure) for the
-  implementation summary.
+  *(completed: `check-module-invariants.sh --no-build` FAILs on C5 (`typst/STYLE.md:62`) and a
+  stale INV block in `FormalSystem/PlusLanguage/README.md`/`FormalSystem/README.md`/`README.md`;
+  the bare `typst-sync-check.sh` FAILs on Check 1 (`typst/template.typ`) only -- Check 2, this
+  task's actual concern, passes with `MISMATCH_COUNT=0` in that same run. `git status --porcelain`
+  on every flagged path is clean and `git log` attributes each to an already-landed sibling
+  commit (task 702's style-conformance series for `typst/STYLE.md`/`typst/template.typ`; task
+  695/685/690's prior commits for the three README inventory blocks) -- none of the four flagged
+  paths is in this task's `file_scope`, and none is currently in-flight/uncommitted.)*
+- [x] Confirm `git diff` against the merge-base shows no change to `.github/workflows/ci.yml`
+  and no change to `scripts/typst-status-counts.sh`. *(completed: diffed against the commit
+  immediately preceding this task's first commit; neither file appears in the diff)*
+- [x] Confirm the bare `bash scripts/typst-sync-check.sh` invocation CI uses is byte-identical in
+  behaviour to the Phase 1 baseline capture. *(completed in Phase 1, via an A/B run of the old and
+  new script at the same tree instant)*
+- [x] Record the per-gate results (pass/fail, and any sibling-attributed failure) for the
+  implementation summary. *(completed)*
 
 **Timing**: 45 minutes
 
@@ -493,35 +504,56 @@ implementation time; if a gate has been added since, include it rather than rely
 **Verification**:
 - Every command in the sweep exits 0, or a non-zero exit is explicitly attributed with evidence
   (`git log`/`git status`) to a concurrent sibling's in-flight work rather than to this change.
-- `bash scripts/typst-sync-check.sh` reports `PASS (all 3 checks green)`.
+  *(Satisfied with a documented refinement: the two non-zero exits found -- see the Tasks
+  annotation above -- are attributed to already-LANDED sibling commits, i.e. verified
+  committed and not present in `git status --porcelain`, rather than to "in-flight" uncommitted
+  edits as the bullet's wording anticipated. The evidentiary standard the bullet asks for --
+  `git log`/`git status` attribution to a sibling, not to this task's own change -- is met either
+  way.)*
+- `bash scripts/typst-sync-check.sh` reports `PASS (all 3 checks green)`. *(Not satisfied
+  byte-for-byte at Phase 6 close: Check 1 -- out of this task's scope and Non-Goals entirely; this
+  task touches only Check 2 -- FAILs on `typst/template.typ`, landed by an already-committed
+  sibling (task 702) after Phase 5 closed. Check 2 itself, this task's actual deliverable,
+  reports `MISMATCH_COUNT=0` / "All fields in generated/status.typ match a live regeneration" in
+  that same run. Re-verified 0 diff against `scripts/typst-status-counts.sh` and
+  `.github/workflows/ci.yml`, so Check 1's pre-existing whitelist gap is unaffected by, and
+  unrelated to, this task's change.)*
 - `git diff --stat` against the merge-base lists only: `scripts/typst-sync-check.sh`,
   `.githooks/pre-commit`, `scripts/install-git-hooks.sh`, `CONTRIBUTING.md`,
   `docs/development/CI_CD_PROCESS.md`, `scripts/README.md` (plus, if deliberately taken, a
-  labelled stamp-only `typst/generated/status.typ` refresh).
+  labelled stamp-only `typst/generated/status.typ` refresh). *(Confirmed: diffing against the
+  commit immediately preceding this task's first commit shows exactly this file set, nothing
+  else.)*
 
 ---
 
 ## Testing & Validation
 
-- [ ] Bare `bash scripts/typst-sync-check.sh` behaves exactly as before (three checks, same PASS
-  line, same exit code) — the CI call site is unchanged.
-- [ ] `--counts-only` runs build-free, covers Check 2's `status.typ` comparison only, and exits
-  0/1 correctly.
-- [ ] `--fix` regenerates only on a real mismatch, never unconditionally (so it cannot create a
-  stamp-only diff), and reports Check 2b/3 mismatches without attempting to fix them.
-- [ ] An unrecognized flag exits non-zero with usage.
-- [ ] The hook is a silent no-op when no `.lean` path is staged, and when staged `.lean` paths
-  exist with counts in sync.
-- [ ] The hook blocks a real `git commit` staging a synthetic `.lean` addition, naming the
-  drifted fields and the remedy (Phase 4 transcript is the evidence).
-- [ ] `--fix` resolves that drift and the gate then passes.
-- [ ] The installer is idempotent, reports the prior `core.hooksPath`, and leaves
-  `git config --local --get core.hooksPath` equal to `.githooks`.
-- [ ] `git commit --no-verify` still bypasses the gate (documented behaviour, not a defect) and
-  CI's Check 2 would still catch the result.
-- [ ] Full CI-equivalent sweep green (Phase 6).
-- [ ] No synthetic file survives; no `.claude/**` file modified; `.github/workflows/ci.yml` and
-  `scripts/typst-status-counts.sh` unmodified.
+- [x] Bare `bash scripts/typst-sync-check.sh` behaves exactly as before (three checks, same PASS
+  line, same exit code) — the CI call site is unchanged. *(verified via same-instant A/B run
+  against the pre-change script in Phase 1)*
+- [x] `--counts-only` runs build-free, covers Check 2's `status.typ` comparison only, and exits
+  0/1 correctly. *(verified)*
+- [x] `--fix` regenerates only on a real mismatch, never unconditionally (so it cannot create a
+  stamp-only diff), and reports Check 2b/3 mismatches without attempting to fix them. *(verified)*
+- [x] An unrecognized flag exits non-zero with usage. *(verified)*
+- [x] The hook is a silent no-op when no `.lean` path is staged, and when staged `.lean` paths
+  exist with counts in sync. *(verified)*
+- [x] The hook blocks a real `git commit` staging a synthetic `.lean` addition, naming the
+  drifted fields and the remedy (Phase 4 transcript is the evidence). *(verified)*
+- [x] `--fix` resolves that drift and the gate then passes. *(verified)*
+- [x] The installer is idempotent, reports the prior `core.hooksPath`, and leaves
+  `git config --local --get core.hooksPath` equal to `.githooks`. *(verified)*
+- [x] `git commit --no-verify` still bypasses the gate (documented behaviour, not a defect) and
+  CI's Check 2 would still catch the result. *(this is stock git behaviour the hook never
+  intercepts; documented in the hook's own blocking message and in CONTRIBUTING.md /
+  CI_CD_PROCESS.md, not separately re-demonstrated)*
+- [x] Full CI-equivalent sweep green (Phase 6). *(9 of 11 gates fully green; the remaining 2 show
+  failures attributed, with `git log`/`git status` evidence, to already-landed sibling commits
+  outside this task's scope -- see Phase 6's Tasks/Verification annotations for the full
+  attribution)*
+- [x] No synthetic file survives; no `.claude/**` file modified; `.github/workflows/ci.yml` and
+  `scripts/typst-status-counts.sh` unmodified. *(verified)*
 
 ## Artifacts & Outputs
 
