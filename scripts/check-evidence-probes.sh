@@ -70,6 +70,20 @@ EVIDENCE="specs/evidence"
 #                                                           | future dispatch is most likely to
 #                                                           | try to contradict, since anchoring
 #                                                           | looks like a cleanup
+# stability-modal-substrate/closure-field-is-necessary   | `SharingSkeleton`'s `lift` field is a
+#                                                           | genuine obligation, not a defensive
+#                                                           | one.  Give the landed (C5) witness
+#                                                           | `stabFamily` the no-hopping
+#                                                           | succession bundle, changing nothing
+#                                                           | else, and `LiftableRaw` becomes
+#                                                           | FALSE: `crossPath` is a `Step`-path
+#                                                           | no index-identity path tracks.  This
+#                                                           | is why `lift` is a field every
+#                                                           | producer discharges rather than a
+#                                                           | lemma proved once, and it is the
+#                                                           | probe a future dispatch is most
+#                                                           | likely to try to eliminate, since
+#                                                           | the field looks like boilerplate
 # frame-constraints-audit/mixed-sign-composition-obstruction | mixed-sign composition (`TotalComp`)
 #                                                           | must NOT be added to `def:frame` --
 #                                                           | the drift frame `F°` satisfies all
@@ -86,6 +100,7 @@ WIRED=(
   "bi-lasso-decision-layer/phase12-check-not-compositional"
   "bi-lasso-decision-layer/phase10-origin-anchoring-obstruction"
   "frame-constraints-audit/mixed-sign-composition-obstruction"
+  "stability-modal-substrate/closure-field-is-necessary"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

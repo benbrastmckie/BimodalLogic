@@ -724,7 +724,7 @@ recorded.
 
 ---
 
-### Phase 11: Preserve the closure-necessity obstruction as a wired evidence probe [NOT STARTED]
+### Phase 11: Preserve the closure-necessity obstruction as a wired evidence probe [COMPLETED]
 
 **Goal**: Round 2's probe stops compiling the moment the skeleton gains fields, and it lives
 under a task directory that `/todo` will move into the gitignored `specs/archive/`. Its
@@ -733,14 +733,18 @@ survive that, in the place this repository has designated for design obstruction
 
 **Tasks**:
 
-- [ ] Create `specs/evidence/stability-modal-substrate/closure-field-is-necessary.lean`, holding
+- [x] Create `specs/evidence/stability-modal-substrate/closure-field-is-necessary.lean`, holding
       the `crossPath` / `crossPath_step` / `stabFamily_not_liftable` argument rewritten against
       the landed structure: the (C5) witness admits a frame `Step`-path that no thread with
       `trans = eq` traces, so the histories characterization is not automatic under any
-      free-succession design.
-- [ ] Wire it into `scripts/check-evidence-probes.sh`'s `WIRED` array, with a table entry in the
+      free-succession design. *(deviation: altered — stated as
+      `stabFamily_not_liftable_at_transId`, a refutation of `LiftableRaw` at the family's own
+      raw data with the no-hopping bundle substituted, rather than at a locally-defined
+      `Liftable` predicate. That is the statement the landed `lift` field actually has, so the
+      probe refutes a named alternative design rather than paraphrasing one)*
+- [x] Wire it into `scripts/check-evidence-probes.sh`'s `WIRED` array, with a table entry in the
       header comment naming the decision it holds in place, in the style of the existing five.
-- [ ] Confirm it is `sorry`-free and elaborates via `lake env lean`.
+- [x] Confirm it is `sorry`-free and elaborates via `lake env lean`.
 
 **Timing**: 1.5 hours
 
