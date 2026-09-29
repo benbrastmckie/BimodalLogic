@@ -1,0 +1,50 @@
+{
+  "status": "researched",
+  "started_at": "2026-09-29T23:25:16Z",
+  "completed_at": "2026-09-29T23:56:00Z",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md",
+      "summary": "Machine-checked refutation of the finite-carrier finite model property for L-plus (the finite-graph PlusGraphCertificate of task 703 plan v2 is incomplete, already on the stab-free fragment and on the CTL-like fragment); concrete time-sliced amendment to 703's certificate type; assessment that the full L-plus FMP for the amended class is open and its only known route (deterministic omega-automata) is infeasible here; answers to Q1-Q7 and a re-scope recommendation."
+    }
+  ],
+  "modified_files": [
+    "specs/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md",
+    "specs/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean"
+  ],
+  "next_steps": "Before any plan or implement round, add task 703 to this task's dependencies (per the filing's SEQUENCING note) and revise task 703's plan v2 per the report's Q1.4 amendment (/revise 703). Then plan this task at the re-scoped deliverable: land the probe's refutation theorems as library declarations, restate the finite model property for the sliced class with no bound, and (after the amended 703 Stage 2 lands) prove the L-family embedding. Record the full-L-plus finite model property as blocked on omega-automata infrastructure.",
+  "user_decision": {
+    "question": "The task's headline statement is refuted for the finite-graph certificate type of task 703 plan v2 (a stab-free Z-time non-validity has no finite-carrier countermodel, machine-checked), and the finite model property for the corrected time-sliced class is open with no feasible known proof route for full L-plus. How should the programme proceed?",
+    "options": [
+      "Option A — Amend task 703 Stage 2 to the time-sliced certificate now (before Phase 13), re-scope task 706 to landing the refutation theorems, the sliced-class restatement (no bound) and the L-family embedding, mark the full L-plus finite model property blocked on omega-automata infrastructure, and file the CTL-like fragment's finite model property as a separate research-first successor",
+      "Option B — Keep task 703's finite-graph type unchanged (relative completeness only) and pursue task 706 as the fragment finite model property for a new sliced class defined in 706 itself",
+      "Option C — Land only the refutation theorems in task 706 and block everything else, deferring any certificate-type change until the fragment proof is understood"
+    ],
+    "recommended": "Option A — Amend task 703 Stage 2 to the time-sliced certificate now (before Phase 13), re-scope task 706 to landing the refutation theorems, the sliced-class restatement (no bound) and the L-family embedding, mark the full L-plus finite model property blocked on omega-automata infrastructure, and file the CTL-like fragment's finite model property as a separate research-first successor",
+    "blocking": false
+  },
+  "memory_candidates": [
+    {
+      "content": "Over Z-time, regular frames with a finite world-state carrier cannot satisfy box(p or Fp or Pp) and box(p -> not Pp): every history meets p at most once, and a finite carrier forces a p-free cycle that is itself a history. So no certificate class presenting a finite-carrier frame (FrameOver.ofStep on Fin n) is complete for Z-time non-validity, for L or L-plus; a complete class must present an infinite, finitely presented (eventually periodic, time-stamped) carrier, as the landed L witness family does.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean",
+      "confidence": 0.95,
+      "suggested_keywords": ["finite model property", "Z-time", "L-plus", "certificate", "ofStep", "pumping"]
+    },
+    {
+      "content": "For L-plus over Z-frames the two-sided stability modal factors into one-sided universal path conditions: for all pairs (past, future), OR over origin types of (past-run and future-run) is equivalent to AND over origin types of ((no past run) or (no future run)), because forall rho forall sigma (P rho or Q sigma) is (forall rho P) or (forall sigma Q). This is why live = fwdLive ∩ bwdLive is the right shape and why past operators do not raise complexity above CTL*.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["stability modal", "pasting", "S5 factorization", "CTL*", "liveness"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790724273_c467ed_706",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

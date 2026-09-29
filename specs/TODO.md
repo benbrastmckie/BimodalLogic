@@ -70,7 +70,7 @@ next_project_number: 707
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 703 [PLANNED] — Prove the L-plus twin of...
-706 [NOT STARTED] — RESEARCH-FIRST. Establish the finite model property for...
+706 [RESEARCHED] — RESEARCH-FIRST. Establish the finite model property for...
 
 ### Formula Refactor
 
@@ -103,10 +103,11 @@ next_project_number: 707
 ## Tasks
 
 ### 706. Lplus finite model property and completeness
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 695, Task 696
+- **Research**: [706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md]
 
 **Description**: RESEARCH-FIRST. Establish the finite model property for L-plus over integer time with a computable state bound, and derive full completeness of the finite-graph certificate class from it: every Z-time non-validity of a PlusFormula admits a PlusGraphCertificate meeting PlusGraphCertificate.Certifies, with the carrier bounded by a stated, computable function of plusClosureOf (Gamma ++ Del). Together with PlusGraphCertificate.plusRefutes_of_certifies and PlusGraphCertificate.decidableCertifies (both delivered by task 703 Stage 2) this yields decidability of L-plus Z-time validity, which is the result the L-plus completeness programme exists to reach. FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt (task 695, landed in FormalSystem/PlusLanguage/PlusIntTransfer.lean) is the Step 0 this statement rests on and has no substitute.
 
