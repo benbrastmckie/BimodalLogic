@@ -20,7 +20,7 @@ next_project_number: 703
 | 7 | 430 | 411 | decidability |
 | 8 | 412 | 430 | decidability |
 | 9 | 482 | 412 | decidability |
-| 10 | 177 | 178,282,296,481,482,543 | formula-refactor |
+| 10 | 177 | 178,282,296,481,482,543,696 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -113,16 +113,17 @@ next_project_number: 703
 
 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
   └─ 650 [NOT STARTED] — Define-before-use audit of...
-702 [RESEARCHED] — Improve the formatting and content of the Typst reference...
+702 [PLANNED] — Improve the formatting and content of the Typst reference...
 
 ## Tasks
 
 ### 702. Uniform style reference manual
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: None
 - **Research**: [702_uniform_style_reference_manual/reports/01_style-audit-house-style.md]
+- **Plan**: [702_uniform_style_reference_manual/plans/01_uniform-style-reference-manual.md]
 
 **Description**: Improve the formatting and content of the Typst reference manual (typst/BimodalReference.typ, compiled to typst/BimodalReference.pdf, 128 pages) so that every chapter follows ONE uniform approach in style and in the shape of its discussion. The manual grew chapter by chapter (typst/chapters/: 00-introduction through 06-notes, the p2/p3/p4 part chapters, and the two appendices) and the parts read differently: section openings, the definition/theorem/remark rhythm, how Lean names are introduced and cited, how much motivation precedes a formal statement, notation, cross-reference phrasing, and the density of prose between environments all vary by chapter. RESEARCH must first produce a per-chapter audit against the typst extension's standards -- .claude/context/project/typst/standards/typst-style-guide.md, document-structure.md, semantic-element-usage.md, chapter-quality.md, textbook-standards.md, notation-conventions.md -- and against the mechanical backstops (bash .claude/scripts/typst-element-lint.sh --verbose and bash .claude/scripts/chapter-quality-check.sh --verbose over typst/chapters/*.typ), recording for each chapter: the current opening pattern, environment usage and placement, Lean-citation convention, notation deviations from notation/bimodal-notation.typ, lint findings, and the discussion style (motivation-first, statement-first, or mixed). From that audit, choose and WRITE DOWN the single house style the whole manual will follow -- chapter opening template, the order motivation/definition/example/theorem/proof-sketch/Lean-pointer, how a Lean declaration is named on first mention and thereafter, cross-reference phrasing, remark and note usage, table and figure conventions -- as a short style sheet in the plan, grounded in the existing standards rather than inventing a new one. PLAN phases must be per chapter or per part, each ending with a clean typst compile of BimodalReference.typ and with both lints run, so no phase leaves the manual uncompilable. Content improvements are in scope ONLY as editorial uniformity: rewriting openings and transitions, adding a missing motivation paragraph where the style sheet requires one, tightening or expanding discussion to the agreed density, fixing inconsistent terminology, and correcting stale or inconsistent cross-references; no new theorems, proofs, or chapters. Every Lean name cited must resolve in the current tree (grep the FormalSystem/ source), and every claim about repository status must agree with typst/generated/ and SYNC-MAP.md rather than restating numbers by hand. OUT OF SCOPE, owned by sibling tasks: the Lean appendix's define-before-use audit (task 650), the systematic Lean code-environment convention for the appendix (task 649), and the generated status counts' staleness (task 697) -- coordinate with their conventions, do not redo them. Also out of scope: FormalFoundations.typ, which is a separate document. ACCEPTANCE: the compiled manual has every chapter conforming to the written style sheet; typst-element-lint.sh reports zero blocking placement findings; chapter-quality-check.sh reports zero BLOCKING findings; the PDF compiles from a clean typst compile with no warnings introduced by this task; and the style sheet is committed alongside the chapters (in typst/README.md or a new typst/STYLE.md) so future chapters have a single reference.
 
@@ -1339,6 +1340,8 @@ not an addition to this task's scope.
 
 POST-RELOCATION NOTE (2026-09-21). Task 632 moved the 25 tooling modules (DatasetGenerator, DatasetAssembly, FormulaEnumerator, DataExport, ProofFirstBenchmark, the *Main exe roots and the rest) from FormalSystem/Automation/ to a root-level lean_lib BimodalTools, namespace BimodalTools, with tests under Tests/BimodalToolsTest/. This task's partial work was committed before the move (task 632 gated its move on a clean git status for FormalSystem/Automation/), so nothing was lost, but every path in this task's plan and handoff that names a tooling module is stale: re-derive before resuming. The library half (Tactics/, ProofSearch/, SuccessPatterns) stays under FormalSystem/Automation/. file_scope widened to include BimodalTools/ and Tests/BimodalToolsTest/. Build the tooling with lake build BimodalTools; a default lake build no longer compiles it, and a green lake build does not prove the exe roots compile (gate on the build-inclusive check-module-invariants.sh, C25). Tasks 231, 282 and 296 depend on this task.
 
+SCOPE NARROWED (2026-09-28): file_scope's BimodalTools/, FormalSystem/Automation/ and Tests/BimodalToolsTest/ directory-wide entries were an inherited blanket widening from task 632's relocation note, not a derived surface for this task. Replaced with the specific paths this task actually touches per its own description (fixing the c7 labeling/timeout bug in the dataset generator and regenerating c7): BimodalTools/DatasetGenerator.lean, Tests/BimodalToolsTest/DatasetGeneratorTest.lean. Re-widen at this task's own research/plan time if the chosen approach implicates more files.
+
 ---
 
 ### 296. Re add derived binary operators with dedup fix
@@ -1354,6 +1357,8 @@ POST-RELOCATION NOTE (2026-09-21). Task 632 moved the 25 tooling modules (Datase
 
 POST-RELOCATION NOTE (2026-09-21). Task 632 moved the 25 tooling modules (DatasetGenerator, DatasetAssembly, FormulaEnumerator, DataExport, ProofFirstBenchmark, the *Main exe roots and the rest) from FormalSystem/Automation/ to a root-level lean_lib BimodalTools, namespace BimodalTools, with tests under Tests/BimodalToolsTest/. This task's partial work was committed before the move (task 632 gated its move on a clean git status for FormalSystem/Automation/), so nothing was lost, but every path in this task's plan and handoff that names a tooling module is stale: re-derive before resuming. The library half (Tactics/, ProofSearch/, SuccessPatterns) stays under FormalSystem/Automation/. file_scope widened to include BimodalTools/ and Tests/BimodalToolsTest/. Build the tooling with lake build BimodalTools; a default lake build no longer compiles it, and a green lake build does not prove the exe roots compile (gate on the build-inclusive check-module-invariants.sh, C25).
 
+SCOPE NARROWED (2026-09-28): file_scope's BimodalTools/, FormalSystem/Automation/ and Tests/BimodalToolsTest/ directory-wide entries were an inherited blanket widening from task 632's relocation note, not a derived surface for this task. Replaced with the specific paths this task actually touches per its own description (re-adding the 6 derived binary temporal operators to the enumerator/canonicalizer): BimodalTools/FormulaEnumerator.lean, BimodalTools/AtomCanonicalization.lean, Tests/BimodalToolsTest/EnumeratorCountsTest.lean. Re-widen at this task's own research/plan time if the chosen approach implicates more files.
+
 ---
 
 ### 282. Exhaustive enumeration by default
@@ -1368,6 +1373,8 @@ POST-RELOCATION NOTE (2026-09-21). Task 632 moved the 25 tooling modules (Datase
 **Description**: Flip complexity-9 dataset generation from stratified to exhaustive-by-default once feasibility is confirmed. Prior work (see plans/01_exhaustive-enumeration-plan.md, handoffs/phase-1-6-handoff-20260714.md) verified the 0-sentinel/.take-guard machinery is already correct and unlimited-capable, and corrected stale infeasibility claims in data/README.md and scripts/run_dataset_generation.sh. The next action is the deferred c9 feasibility probe (Plan Phase 2), followed -- pending a GO verdict and explicit user approval for the multi-hour compute -- by c8/c9 exhaustive regeneration and HF Hub republication (Phases 3, 4(rest), 5, 6(rest), 7).
 
 POST-RELOCATION NOTE (2026-09-21). Task 632 moved the 25 tooling modules (DatasetGenerator, DatasetAssembly, FormulaEnumerator, DataExport, ProofFirstBenchmark, the *Main exe roots and the rest) from FormalSystem/Automation/ to a root-level lean_lib BimodalTools, namespace BimodalTools, with tests under Tests/BimodalToolsTest/. This task's partial work was committed before the move (task 632 gated its move on a clean git status for FormalSystem/Automation/), so nothing was lost, but every path in this task's plan and handoff that names a tooling module is stale: re-derive before resuming. The library half (Tactics/, ProofSearch/, SuccessPatterns) stays under FormalSystem/Automation/. file_scope widened to include BimodalTools/ and Tests/BimodalToolsTest/. Build the tooling with lake build BimodalTools; a default lake build no longer compiles it, and a green lake build does not prove the exe roots compile (gate on the build-inclusive check-module-invariants.sh, C25).
+
+SCOPE NARROWED (2026-09-28): file_scope's BimodalTools/, FormalSystem/Automation/ and Tests/BimodalToolsTest/ directory-wide entries were an inherited blanket widening from task 632's relocation note, not a derived surface for this task -- this task's own description names no BimodalTools/ module edit, only the deferred c9 feasibility probe and the dataset-generation mode flip. Dropped all three directory entries and added scripts/run_dataset_generation.sh, the mode-flip target this task's description names as its next action but never previously declared. Re-widen at this task's own research/plan time if the chosen approach implicates more files.
 
 ---
 
@@ -1493,7 +1500,7 @@ POST-RELOCATION NOTE (2026-09-21). Dependency 635 is complete. It moved 141 modu
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: Task 178, Task 282, Task 296, Task 298, Task 428, Task 429, Task 430, Task 464, Task 465, Task 481, Task 482, Task 534, Task 543, Task 568, Task 623, Task 628, Task 635, Task 636, Task 645, Task 646, Task 683, Task 684, Task 685
+- **Dependencies**: Task 178, Task 282, Task 296, Task 298, Task 428, Task 429, Task 430, Task 464, Task 465, Task 481, Task 482, Task 534, Task 543, Task 568, Task 623, Task 628, Task 635, Task 636, Task 645, Task 646, Task 683, Task 684, Task 685, Task 696
 
 **Description**: Update README.md, docs/, and FormalSystem/ module-level docstrings to their final post-refactor state, once the decidability chain (426, 428, 429, 430, 432, 433, 434) lands. This is the final polish pass, distinct from and run after task 472's already-completed immediate correction pass. Explicitly excludes: every item task 472 already corrected (the Decidability.lean Status block, Verified/README.md, FMP/README.md, DecisionProcedure.lean's decideAuto docstring, Verified/Decidable.lean's Status docstring, WeakCanonical.lean, RealModel/ShuffleReal.lean, Soundness.lean, PriorExpressivenessDense.lean) and the two Kamp files task 473 already swept (Kamp/EANegationClosure.lean, NfMultiAnchorBridge/NavigatedSpine.lean). This task's residual content is: re-auditing all touched documentation for drift accumulated during the decidability chain's landing (472/473 audited a snapshot; the chain's remaining tasks will touch further files after 472/473 ran), and the Axiom Reference update the charter names as part of 177's original scope.
 
@@ -1509,6 +1516,8 @@ POST-RELOCATION REVISION (2026-09-21, after tasks 626, 630 and 632-636 landed). 
 SCOPE NARROWED (2026-09-21): file_scope previously named the whole of FormalSystem/ and docs/, which made every library task flag an overlap with this one at admission. It now names only the paths this description cites (C1-C8, the Axiom Reference, the decidability directory for the gated re-audit). The re-audit is open-ended by design: re-derive and widen file_scope at research time. Dependencies on 534, 543, 568, 628, 645 and 646 added because each also edits the root README.md and this task is the final pass that runs after them.
 
 FURTHER EDGES (2026-09-21): dependencies on 178, 282, 296, 298, 464, 465, 481 and 482 added, each sharing a named path with this task (Examples/TemporalStructures.lean; BimodalTools/TraceExporterMain.lean; Metalogic/Decidability/). This task is the final pass and runs after them. Note 481 is blocked and 282, 296 and 298 are partial: if any of them is abandoned the edge is satisfied; if one stalls indefinitely, drop its edge rather than hold this task.
+
+FURTHER EDGES (2026-09-28): the whole-directory FormalSystem/Metalogic/Decidability/ entry is retained, not narrowed, because this task's own description already defers that narrowing: "The re-audit is open-ended by design: re-derive and widen file_scope at research time." Narrowing it now, before the decidability chain lands, would be exactly the guessing this task's charter prohibits. scripts/validate-state.sh Check 8 currently reports this entry overlapping 8 non-terminal tasks (428,429,430,464,465,481,482,696); 7 of the 8 (428,429,430,464,465,481,482) were already dependency-gated. 696 was not -- it declares Decidability/PlusWitnessFamily/* and Decidability/WitnessFamily/Sharing/*, both under this directory -- so 696 is added to dependencies below to close that one real exposure. The existing "if one stalls indefinitely, drop its edge rather than hold this task" clause (see the 2026-09-21 FURTHER EDGES note above) extends to this new edge.
 
 ---
 

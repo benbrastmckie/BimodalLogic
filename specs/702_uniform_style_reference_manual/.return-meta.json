@@ -1,24 +1,31 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
+  "dispatch_seq": 2,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/702_uniform_style_reference_manual/reports/01_style-audit-house-style.md",
-      "summary": "Per-chapter audit of all 17 typst/chapters/*.typ files against the six typst style standards and both mechanical lints, root-causing 288/296 BLOCKING chapter-quality-check.sh findings to a single Lean-path-citation convention gap, and proposing a grounded house style sheet (chapter-header opening, section rhythm, Lean-citation convention, cross-reference phrasing, #let centralization) for the PLAN phase to encode in typst/STYLE.md."
+      "type": "plan",
+      "path": "specs/702_uniform_style_reference_manual/plans/01_uniform-style-reference-manual.md",
+      "summary": "13-phase plan applying one written house style sheet across all 17 Typst manual chapters: style sheet first, shared template centralization second, ten parallel-safe per-chapter conformance phases ordered by BLOCKING-finding load, then a whole-manual acceptance sweep."
     }
   ],
-  "next_steps": "Run /plan 702 to turn the report's Decisions section into a per-chapter/per-pair phased plan (see Recommendations #2 for suggested phase groupings and BLOCKING-count-driven ordering), each phase ending with a clean typst compile and both lints (typst-element-lint.sh, chapter-quality-check.sh) run.",
+  "next_steps": "Run /implement 702 to execute the plan",
   "metadata": {
     "session_id": "sess_1790657893_d0612b_702",
-    "agent_type": "typst-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "typst-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 13,
+    "estimated_hours": 18,
+    "dependency_waves": 4
   },
   "modified_files": [
-    "specs/702_uniform_style_reference_manual/reports/01_style-audit-house-style.md"
+    "specs/702_uniform_style_reference_manual/plans/01_uniform-style-reference-manual.md"
   ],
   "proposed_file_scope": [
+    "typst/STYLE.md",
+    "typst/README.md",
+    "typst/template.typ",
+    "typst/BimodalReference.pdf",
     "typst/chapters/00-introduction.typ",
     "typst/chapters/01-syntax.typ",
     "typst/chapters/02-semantics.typ",
@@ -26,6 +33,8 @@
     "typst/chapters/04-metalogic.typ",
     "typst/chapters/05-theorems.typ",
     "typst/chapters/06-notes.typ",
+    "typst/chapters/ax-lean-appendix.typ",
+    "typst/chapters/ax-machine-appendix.typ",
     "typst/chapters/p2-decidability-practice.typ",
     "typst/chapters/p2-frame-classes.typ",
     "typst/chapters/p3-decidability-frontier.typ",
@@ -34,25 +43,15 @@
     "typst/chapters/p4-dataset-pipeline.typ",
     "typst/chapters/p4-dual-verification.typ",
     "typst/chapters/p4-proof-automation.typ",
-    "typst/template.typ",
-    "typst/STYLE.md",
-    "typst/README.md",
-    ".claude/context/project/typst/standards/notation-conventions.md"
+    "/home/benjamin/.config/nvim/agent-system/extensions/typst/context/project/typst/standards/notation-conventions.md"
   ],
   "memory_candidates": [
     {
-      "content": "chapter-quality-check.sh Rule 1.2 resolves backticked paths against repo root and the chapter's own directory only -- it does not know about FormalSystem/ as a Lean module root, so any chapter citing a Lean file path without the FormalSystem/ prefix (e.g. `Syntax/Formula.lean` instead of `FormalSystem/Syntax/Formula.lean`) fails Rule 1.2 even though the declaration name is correct.",
+      "content": "When a multi-file document (Typst manual, multi-module docs tree) fails a per-file quality gate with a large blocking count, decompose the plan by first root-causing the findings by rule rather than by file: a single convention gap often accounts for the overwhelming majority (here 288 of 296 findings were one citation-format rule). The resulting shape is: one phase writing the convention down as a committed style sheet, one additive phase centralizing shared helpers/macros the later phases depend on, then a wide parallel wave of per-file conformance phases ordered by that file's finding count, then one whole-document acceptance sweep. The per-file wave is genuinely parallel only if the centralization phase is additive (new definitions shadowed by still-present local ones), so no per-file phase needs to edit the shared template.",
       "category": "PATTERN",
-      "source_artifact": "specs/702_uniform_style_reference_manual/reports/01_style-audit-house-style.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["chapter-quality-check.sh", "Rule 1.2", "FormalSystem", "backticked path", "typst"]
-    },
-    {
-      "content": "template.typ's #leansrc(module, name) macro (dotted module path + declaration name) does not trigger chapter-quality-check.sh's backtick-path rule at all, since it is not a backtick-delimited path token -- using it as the default Lean-declaration citation form avoids the path-prefix pitfall entirely rather than requiring a prefix fix.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/702_uniform_style_reference_manual/reports/01_style-audit-house-style.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["leansrc", "template.typ", "chapter-quality-check.sh", "citation convention"]
+      "source_artifact": "specs/702_uniform_style_reference_manual/plans/01_uniform-style-reference-manual.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["phase-decomposition", "lint-driven-planning", "parallel-wave", "additive-centralization", "typst"]
     }
   ]
 }

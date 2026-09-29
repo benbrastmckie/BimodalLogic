@@ -9,13 +9,15 @@
     {
       "project_number": 702,
       "project_name": "uniform_style_reference_manual",
-      "status": "planning",
+      "status": "planned",
       "task_type": "typst",
       "description": "Improve the formatting and content of the Typst reference manual (typst/BimodalReference.typ, compiled to typst/BimodalReference.pdf, 128 pages) so that every chapter follows ONE uniform approach in style and in the shape of its discussion. The manual grew chapter by chapter (typst/chapters/: 00-introduction through 06-notes, the p2/p3/p4 part chapters, and the two appendices) and the parts read differently: section openings, the definition/theorem/remark rhythm, how Lean names are introduced and cited, how much motivation precedes a formal statement, notation, cross-reference phrasing, and the density of prose between environments all vary by chapter. RESEARCH must first produce a per-chapter audit against the typst extension's standards -- .claude/context/project/typst/standards/typst-style-guide.md, document-structure.md, semantic-element-usage.md, chapter-quality.md, textbook-standards.md, notation-conventions.md -- and against the mechanical backstops (bash .claude/scripts/typst-element-lint.sh --verbose and bash .claude/scripts/chapter-quality-check.sh --verbose over typst/chapters/*.typ), recording for each chapter: the current opening pattern, environment usage and placement, Lean-citation convention, notation deviations from notation/bimodal-notation.typ, lint findings, and the discussion style (motivation-first, statement-first, or mixed). From that audit, choose and WRITE DOWN the single house style the whole manual will follow -- chapter opening template, the order motivation/definition/example/theorem/proof-sketch/Lean-pointer, how a Lean declaration is named on first mention and thereafter, cross-reference phrasing, remark and note usage, table and figure conventions -- as a short style sheet in the plan, grounded in the existing standards rather than inventing a new one. PLAN phases must be per chapter or per part, each ending with a clean typst compile of BimodalReference.typ and with both lints run, so no phase leaves the manual uncompilable. Content improvements are in scope ONLY as editorial uniformity: rewriting openings and transitions, adding a missing motivation paragraph where the style sheet requires one, tightening or expanding discussion to the agreed density, fixing inconsistent terminology, and correcting stale or inconsistent cross-references; no new theorems, proofs, or chapters. Every Lean name cited must resolve in the current tree (grep the FormalSystem/ source), and every claim about repository status must agree with typst/generated/ and SYNC-MAP.md rather than restating numbers by hand. OUT OF SCOPE, owned by sibling tasks: the Lean appendix's define-before-use audit (task 650), the systematic Lean code-environment convention for the appendix (task 649), and the generated status counts' staleness (task 697) -- coordinate with their conventions, do not redo them. Also out of scope: FormalFoundations.typ, which is a separate document. ACCEPTANCE: the compiled manual has every chapter conforming to the written style sheet; typst-element-lint.sh reports zero blocking placement findings; chapter-quality-check.sh reports zero BLOCKING findings; the PDF compiles from a clean typst compile with no warnings introduced by this task; and the style sheet is committed alongside the chapters (in typst/README.md or a new typst/STYLE.md) so future chapters have a single reference.",
       "topic": "reference-book",
       "dependencies": [],
       "file_scope": [
         ".claude/context/project/typst/standards/notation-conventions.md",
+        "/home/benjamin/.config/nvim/agent-system/extensions/typst/context/project/typst/standards/notation-conventions.md",
+        "typst/BimodalReference.pdf",
         "typst/BimodalReference.typ",
         "typst/README.md",
         "typst/STYLE.md",
@@ -27,6 +29,8 @@
         "typst/chapters/04-metalogic.typ",
         "typst/chapters/05-theorems.typ",
         "typst/chapters/06-notes.typ",
+        "typst/chapters/ax-lean-appendix.typ",
+        "typst/chapters/ax-machine-appendix.typ",
         "typst/chapters/p2-decidability-practice.typ",
         "typst/chapters/p2-frame-classes.typ",
         "typst/chapters/p3-decidability-frontier.typ",
@@ -39,13 +43,18 @@
         "typst/template.typ"
       ],
       "created": "2026-09-29T04:56:15Z",
-      "last_updated": "2026-09-29T05:05:27Z",
-      "session_id": "sess_1790657893_d0612b_702",
+      "last_updated": "2026-09-29T05:14:07Z",
+      "session_id": "sess_1790657893_d0612b",
       "artifacts": [
         {
           "path": "specs/702_uniform_style_reference_manual/reports/01_style-audit-house-style.md",
           "type": "report",
           "summary": "Per-chapter audit of all 17 typst/chapters/*.typ files against the six typst style standards and both mechanical lints, root-causing 288/296 BLOCKING chapter-quality-check.sh findings to a single Lean-path-citation convention gap, and proposing a grounded house style sheet (chapter-header opening, section rhythm, Lean-citation convention, cross-reference phrasing, #let centralization) for the PLAN phase to encode in typst/STYLE.md."
+        },
+        {
+          "path": "specs/702_uniform_style_reference_manual/plans/01_uniform-style-reference-manual.md",
+          "type": "plan",
+          "summary": "13-phase per-chapter style-uniformity plan with an embedded house style sheet, each phase gated on a clean typst compile plus both lints."
         }
       ],
       "next_artifact_number": 2

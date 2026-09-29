@@ -1,0 +1,17 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 2,
+  "summary": "Wrote a 13-phase implementation plan for uniform style across the Typst reference manual. The plan carries the house style sheet itself (9 grounded rules), resolves the research report's one open axis (native lists over the #items wrapper), and structures work as: Phase 1 style sheet, Phase 2 additive template centralization, Phases 3-12 ten parallel-safe per-chapter conformance passes ordered by BLOCKING-finding load, Phase 13 whole-manual acceptance sweep. Baseline re-confirmed live: 8 element-lint placement failures and 296 chapter-quality BLOCKING findings (288 of them one Lean-path citation rule). Corrected one research assumption: blind FormalSystem/ prefixing is unsafe because `Extension/` resolves only as FormalSystem/Semantics/Extension/, so every phase requires per-occurrence path resolution.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/702_uniform_style_reference_manual/plans/01_uniform-style-reference-manual.md",
+      "summary": "13-phase per-chapter style-uniformity plan with an embedded house style sheet, each phase gated on a clean typst compile plus both lints."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 13,
+  "blockers": [],
+  "next_action_hint": "Run /implement 702. Phases 3-12 own disjoint chapter files and none may edit typst/template.typ, so they are safe to dispatch in parallel after Phase 2."
+}
