@@ -359,6 +359,24 @@ theorem window_cohWindowLo (S : PlusSharingWitnessFamily Γ Del) :
 theorem window_cohWindowHi (S : PlusSharingWitnessFamily Γ Del) :
     S.window.cohWindowHi = S.cohWindowHi := rfl
 
+/-! ### The succession matrices read only their residue
+
+The `rep_congr_*` family's twin for the fourth datum, delegated through the window projection
+above rather than re-derived: the window carries the family's own skeleton definitionally, so
+`SharingWindow`'s versions are already stated at exactly these moduli.
+-/
+
+/-- **Leftward congruence at the combined period**, for succession. -/
+theorem transRaw_congr_NB (S : PlusSharingWitnessFamily Γ Del) {u v : ℤ} (hu : u < 0)
+    (hv : v < 0) (h : u % S.NB = v % S.NB) : S.transRaw u = S.transRaw v :=
+  S.window.transRaw_congr_NB hu hv h
+
+/-- **Rightward congruence at the combined period**, for succession. -/
+theorem transRaw_congr_NF (S : PlusSharingWitnessFamily Γ Del) {u v : ℤ} (hu : S.NM ≤ u)
+    (hv : S.NM ≤ v) (h : (u - S.NM) % S.NF = (v - S.NM) % S.NF) :
+    S.transRaw u = S.transRaw v :=
+  S.window.transRaw_congr_NF hu hv h
+
 /--
 **Every time has a representative in the combined window carrying the same data**, at the
 representative's whole one-step neighbourhood.
@@ -369,6 +387,7 @@ so a representative must have its whole neighbourhood inside the periodic region
 theorem exists_window_repr (S : PlusSharingWitnessFamily Γ Del) (t : ℤ) :
     ∃ t' : ℤ, S.cohWindowLo ≤ t' ∧ t' < S.cohWindowHi ∧
       S.rep t = S.rep t' ∧ S.rep (t + 1) = S.rep (t' + 1) ∧
+      S.transRaw t = S.transRaw t' ∧ S.transRaw (t - 1) = S.transRaw (t' - 1) ∧
       (∀ i, S.L i (t - 1) = S.L i (t' - 1)) ∧ (∀ i, S.L i t = S.L i t') ∧
       (∀ i, S.L i (t + 1) = S.L i (t' + 1)) := by
   have hNB := S.NB_pos
@@ -376,7 +395,7 @@ theorem exists_window_repr (S : PlusSharingWitnessFamily Γ Del) (t : ℤ) :
   have hNM := S.NM_nonneg
   rcases lt_or_ge t (-1) with hfar | hmid
   · -- far left: represent `t` in `[-2·NB, -NB)`, whose whole neighbourhood is negative
-    refine ⟨t % S.NB - 2 * S.NB, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
+    refine ⟨t % S.NB - 2 * S.NB, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
       set t' : ℤ := t % S.NB - 2 * S.NB with ht'
     all_goals {
       have h0 : 0 ≤ t % S.NB := Int.emod_nonneg _ (by omega)
@@ -393,6 +412,8 @@ theorem exists_window_repr (S : PlusSharingWitnessFamily Γ Del) (t : ℤ) :
         | (simp only [cohWindowHi]; omega)
         | exact (S.data_congr_back (by omega) (by omega) hres).1
         | exact (S.data_congr_back (by omega) (by omega) hresp).1
+        | exact S.transRaw_congr_NB (by omega) (by omega) hres
+        | exact S.transRaw_congr_NB (by omega) (by omega) hresm
         | exact (S.data_congr_back (by omega) (by omega) hresm).2
         | exact (S.data_congr_back (by omega) (by omega) hres).2
         | exact (S.data_congr_back (by omega) (by omega) hresp).2
@@ -400,9 +421,9 @@ theorem exists_window_repr (S : PlusSharingWitnessFamily Γ Del) (t : ℤ) :
   rcases le_or_gt t S.NM with hin | hfar
   · -- middle: already inside the window
     exact ⟨t, by simp only [cohWindowLo]; omega, by simp only [cohWindowHi]; omega,
-      rfl, rfl, fun _ => rfl, fun _ => rfl, fun _ => rfl⟩
+      rfl, rfl, rfl, rfl, fun _ => rfl, fun _ => rfl, fun _ => rfl⟩
   · -- far right: represent `t` in `[NM + NF, NM + 2·NF)`
-    refine ⟨S.NM + (t - S.NM) % S.NF + S.NF, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
+    refine ⟨S.NM + (t - S.NM) % S.NF + S.NF, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
       set t' : ℤ := S.NM + (t - S.NM) % S.NF + S.NF with ht'
     all_goals {
       have h0 : 0 ≤ (t - S.NM) % S.NF := Int.emod_nonneg _ (by omega)
@@ -423,6 +444,8 @@ theorem exists_window_repr (S : PlusSharingWitnessFamily Γ Del) (t : ℤ) :
         | (simp only [cohWindowHi]; omega)
         | exact (S.data_congr_fwd (by omega) (by omega) hres).1
         | exact (S.data_congr_fwd (by omega) (by omega) hresp).1
+        | exact S.transRaw_congr_NF (by omega) (by omega) hres
+        | exact S.transRaw_congr_NF (by omega) (by omega) hresm
         | exact (S.data_congr_fwd (by omega) (by omega) hresm).2
         | exact (S.data_congr_fwd (by omega) (by omega) hres).2
         | exact (S.data_congr_fwd (by omega) (by omega) hresp).2
@@ -508,48 +531,53 @@ theorem plusAtomCoherentAt_congr (S : PlusSharingWitnessFamily Γ Del) {t t' : �
 /--
 The local clause a single closure member imposes on a sharing family, at explicit data.
 
-`rt`, `rp` are the representative maps at `t` and `t + 1`; `Lm`, `Lt`, `Lp` the per-lasso labels
-at `t - 1`, `t` and `t + 1`. The `untl` and `snce` clauses quantify over the shared successors
-and predecessors respectively.
+`rt`, `rp` are the representative maps at `t` and `t + 1`; `tt`, `tm` the succession matrices at
+`t` and `t - 1`; `Lm`, `Lt`, `Lp` the per-lasso labels at `t - 1`, `t` and `t + 1`. The `untl`
+and `snce` clauses quantify over succession out of and into `t` respectively, each side condition
+spelled out as the pair the arrival-pruned `trans` is.
 
 The `stab` arm is `True`: the stability modal is (C5)'s, and a non-trivial arm here would be the
 weaker, wrongly-shaped duplicate `Predicates.lean`'s header warns against.
 -/
 def plusShareClauseAt {n : ℕ} (bx : PlusFormula → Bool) (rt rp : Fin n → Fin n)
+    (tt tm : Fin n → Fin n → Bool)
     (Lm Lt Lp : Fin n → Finset PlusFormula) (i : Fin n) : PlusFormula → Prop
   | PlusFormula.atom _ => True
   | PlusFormula.bot => True
   | PlusFormula.imp a b => (PlusFormula.imp a b ∈ Lt i ↔ (a ∈ Lt i → b ∈ Lt i))
   | PlusFormula.box χ => (PlusFormula.box χ ∈ Lt i ↔ bx χ = true)
-  | PlusFormula.untl g e => ∀ j : Fin n, rp i = rp j →
+  | PlusFormula.untl g e => ∀ j : Fin n, (tt i j = true ∧ rp i = rp j) →
       (PlusFormula.untl g e ∈ Lt i ↔ (e ∈ Lp j ∨ (g ∈ Lp j ∧ PlusFormula.untl g e ∈ Lp j)))
-  | PlusFormula.snce g e => ∀ k : Fin n, rt i = rt k →
+  | PlusFormula.snce g e => ∀ k : Fin n, (tm k i = true ∧ rt k = rt i) →
       (PlusFormula.snce g e ∈ Lt i ↔ (e ∈ Lm k ∨ (g ∈ Lm k ∧ PlusFormula.snce g e ∈ Lm k)))
   | PlusFormula.stab _ => True
 
 /-- `plusShareClauseAt` is decidable at every formula: the two quantifiers range over a
 `Fintype`. -/
 instance instDecidablePlusShareClauseAt {n : ℕ} (bx : PlusFormula → Bool)
-    (rt rp : Fin n → Fin n) (Lm Lt Lp : Fin n → Finset PlusFormula) (i : Fin n) :
-    DecidablePred (plusShareClauseAt bx rt rp Lm Lt Lp i) := by
+    (rt rp : Fin n → Fin n) (tt tm : Fin n → Fin n → Bool)
+    (Lm Lt Lp : Fin n → Finset PlusFormula) (i : Fin n) :
+    DecidablePred (plusShareClauseAt bx rt rp tt tm Lm Lt Lp i) := by
   intro ψ
   cases ψ <;> (dsimp only [plusShareClauseAt]; infer_instance)
 
 /-- (C1')'s content at explicit data. -/
 def plusCoherentShareData {n : ℕ} (bx : PlusFormula → Bool) (C : Finset PlusFormula)
-    (rt rp : Fin n → Fin n) (Lm Lt Lp : Fin n → Finset PlusFormula) : Prop :=
-  ∀ i : Fin n, PlusFormula.bot ∉ Lt i ∧ ∀ ψ ∈ C, plusShareClauseAt bx rt rp Lm Lt Lp i ψ
+    (rt rp : Fin n → Fin n) (tt tm : Fin n → Fin n → Bool)
+    (Lm Lt Lp : Fin n → Finset PlusFormula) : Prop :=
+  ∀ i : Fin n, PlusFormula.bot ∉ Lt i ∧ ∀ ψ ∈ C, plusShareClauseAt bx rt rp tt tm Lm Lt Lp i ψ
 
 instance instDecidablePlusCoherentShareData {n : ℕ} (bx : PlusFormula → Bool)
-    (C : Finset PlusFormula) (rt rp : Fin n → Fin n)
+    (C : Finset PlusFormula) (rt rp : Fin n → Fin n) (tt tm : Fin n → Fin n → Bool)
     (Lm Lt Lp : Fin n → Finset PlusFormula) :
-    Decidable (plusCoherentShareData bx C rt rp Lm Lt Lp) := by
+    Decidable (plusCoherentShareData bx C rt rp tt tm Lm Lt Lp) := by
   dsimp only [plusCoherentShareData]
   infer_instance
 
 /-- **(C1') at a single time.** -/
 def PlusCoherentShareAt (S : PlusSharingWitnessFamily Γ Del) (t : ℤ) : Prop :=
   plusCoherentShareData S.bx (plusClosureOf (Γ ++ Del)) (S.rep t) (S.rep (t + 1))
+    (S.transRaw t) (S.transRaw (t - 1))
     (fun i => S.L i (t - 1)) (fun i => S.L i t) (fun i => S.L i (t + 1))
 
 instance decidablePlusCoherentShareAt (S : PlusSharingWitnessFamily Γ Del) (t : ℤ) :
@@ -570,24 +598,26 @@ theorem plusLocalCoherentShare_iff_at (S : PlusSharingWitnessFamily Γ Del) :
     | imp a b => exact himp a b hψ
     | box χ => exact hbox χ hψ
     | untl g e => exact fun j hj => huntl j hj g e hψ
-    | snce g e => exact fun k hk => hsnce k hk g e hψ
+    | snce g e => exact fun k hk => hsnce k ((S.trans_pred_iff t k i).mpr hk) g e hψ
     | stab _ => trivial
   · intro h i t
     obtain ⟨hbot, hcl⟩ := h t i
     exact ⟨hbot, fun a b hab => hcl _ hab, fun χ hχ => hcl _ hχ,
-      fun j hj g e hge => hcl _ hge j hj, fun k hk g e hge => hcl _ hge k hk⟩
+      fun j hj g e hge => hcl _ hge j hj,
+      fun k hk g e hge => hcl _ hge k ((S.trans_pred_iff t k i).mp hk)⟩
 
 /-- The per-position check reads only the representative maps at `t` and `t + 1` and the labels
 at `t - 1`, `t` and `t + 1`. -/
 theorem plusCoherentShareAt_congr (S : PlusSharingWitnessFamily Γ Del) {t t' : ℤ}
     (hr0 : S.rep t = S.rep t') (hr1 : S.rep (t + 1) = S.rep (t' + 1))
+    (ht0 : S.transRaw t = S.transRaw t') (htm : S.transRaw (t - 1) = S.transRaw (t' - 1))
     (hm : ∀ i, S.L i (t - 1) = S.L i (t' - 1)) (h0 : ∀ i, S.L i t = S.L i t')
     (hp : ∀ i, S.L i (t + 1) = S.L i (t' + 1)) :
     S.PlusCoherentShareAt t ↔ S.PlusCoherentShareAt t' := by
   have em : (fun i => S.L i (t - 1)) = (fun i => S.L i (t' - 1)) := funext hm
   have e0 : (fun i => S.L i t) = (fun i => S.L i t') := funext h0
   have ep : (fun i => S.L i (t + 1)) = (fun i => S.L i (t' + 1)) := funext hp
-  simp only [PlusCoherentShareAt, hr0, hr1, em, e0, ep]
+  simp only [PlusCoherentShareAt, hr0, hr1, ht0, htm, em, e0, ep]
 
 /-! ## The two window collapses, and the two instances -/
 
@@ -599,7 +629,7 @@ theorem plusAtomCoherent_iff_window (S : PlusSharingWitnessFamily Γ Del) :
   constructor
   · intro h t _ _; exact h t
   · intro h t
-    obtain ⟨t', hlo, hhi, hr0, _, _, hL0, _⟩ := S.exists_window_repr t
+    obtain ⟨t', hlo, hhi, hr0, _, _, _, _, hL0, _⟩ := S.exists_window_repr t
     exact (S.plusAtomCoherentAt_congr hr0 hL0).mpr (h t' hlo hhi)
 
 /-- **(C1') collapses to the combined window.** -/
@@ -610,8 +640,8 @@ theorem plusLocalCoherentShare_iff_window (S : PlusSharingWitnessFamily Γ Del) 
   constructor
   · intro h t _ _; exact h t
   · intro h t
-    obtain ⟨t', hlo, hhi, hr0, hr1, hm, h0, hp⟩ := S.exists_window_repr t
-    exact (S.plusCoherentShareAt_congr hr0 hr1 hm h0 hp).mpr (h t' hlo hhi)
+    obtain ⟨t', hlo, hhi, hr0, hr1, ht0, htm, hm, h0, hp⟩ := S.exists_window_repr t
+    exact (S.plusCoherentShareAt_congr hr0 hr1 ht0 htm hm h0 hp).mpr (h t' hlo hhi)
 
 /-- **(C0) decides** by a bounded scan of the combined window. -/
 instance decidablePlusAtomCoherent (S : PlusSharingWitnessFamily Γ Del) :
@@ -728,7 +758,7 @@ theorem stabFaithful_iff_window (S : PlusSharingWitnessFamily Γ Del) :
   constructor
   · intro h t _ _; exact h t
   · intro h t
-    obtain ⟨t', hlo, hhi, hr0, _, _, hL0, _⟩ := S.exists_window_repr t
+    obtain ⟨t', hlo, hhi, hr0, _, _, _, _, hL0, _⟩ := S.exists_window_repr t
     exact (S.stabFaithfulAt_congr hr0 hL0).mpr (h t' hlo hhi)
 
 /--

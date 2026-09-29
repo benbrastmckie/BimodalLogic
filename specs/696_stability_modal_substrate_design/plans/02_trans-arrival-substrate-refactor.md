@@ -532,7 +532,7 @@ hypothesis; if either does, the change belongs to this phase, not to a later one
 
 ---
 
-### Phase 8: Re-quantify (C1') over `trans`, Plus side, and empty the defect record [NOT STARTED]
+### Phase 8: Re-quantify (C1') over `trans`, Plus side, and empty the defect record [COMPLETED]
 
 **Goal**: The same re-quantification on the PlusFormula side, which by construction makes
 `snce_share_congr`, `untl_shift_share_congr` and the three `not_plusCertifies_*` theorems
@@ -541,29 +541,36 @@ never disagree. The two `not_plusValidZTime_*` non-validities survive untouched.
 
 **Tasks**:
 
-- [ ] Rewrite `PlusWitnessFamily/Predicates.lean`'s `untl` and `snce` clauses over `S.trans t`
+- [x] Rewrite `PlusWitnessFamily/Predicates.lean`'s `untl` and `snce` clauses over `S.trans t`
       and `S.trans (t-1)`; re-derive `plusUntl_self_of_share`, `plusSnce_self_of_share`,
       `plusLocalCoherentLab_of_share` from `trans_refl'`.
-- [ ] Extend `PlusWitnessFamily/Decide.lean`'s `shareClauseAt` (the `rp i = rp j` test at 524
+- [x] Extend `PlusWitnessFamily/Decide.lean`'s `shareClauseAt` (the `rp i = rp j` test at 524
       and the `rt i = rt k` test at 526) with `trans` rows, and `data_congr_back` (272) /
-      `data_congr_fwd` (281) with `trans` components.
-- [ ] Update `PlusWitnessFamily/Fulfil.lean`'s propagation lemmas and
+      `data_congr_fwd` (281) with `trans` components. *(deviation: altered — the two `data_congr_*`
+      pairs keep their statements; succession periodicity is supplied by two new
+      `transRaw_congr_NB`/`transRaw_congr_NF` lemmas delegating through the window projection,
+      mirroring the Formula-side choice in Phase 7)*
+- [x] Update `PlusWitnessFamily/Fulfil.lean`'s propagation lemmas and
       `PlusWitnessFamily/Agreement.lean`'s along-thread lemmas. Confirm
       `plusTruth_iff_mem` and `plusRefutes_of_certifies` keep their exact statements.
-- [ ] Remove `snce_share_congr`, `untl_shift_share_congr`, `not_plusCertifies_stabSnce`,
+- [x] Remove `snce_share_congr`, `untl_shift_share_congr`, `not_plusCertifies_stabSnce`,
       `not_plusCertifies_stabSnce_premise` and `not_plusCertifies_stabUntl` from
       `Incompleteness.lean`. Keep `stabSnceTarget`, `notStabSnceTarget`, `stabUntlTarget`,
       `not_plusValidZTime_stabSnce` and `not_plusValidZTime_stabUntl`.
-- [ ] Rewrite the module docstring to say what the module now records: the targets, their
+- [x] Rewrite the module docstring to say what the module now records: the targets, their
       genuine non-validity, and a forward pointer to the certificates that arrive in Phases 9
       and 10.
-- [ ] Remove the corresponding C2 baseline rows and `#print axioms` lines from
+- [x] Remove the corresponding C2 baseline rows and `#print axioms` lines from
       `scripts/check-module-invariants.sh`, update the pass-message count, and rewrite the block
       comment so it states that the redesign landed and the rows were retired as the intended
       signal rather than silently dropped.
-- [ ] Remove the corresponding rows from `docs/theorem-index.md`.
-- [ ] Confirm `PlusWitnessFamily.lean`'s aggregator docstring no longer promises the removed
-      declarations.
+- [x] Remove the corresponding rows from `docs/theorem-index.md`.
+- [x] Confirm `PlusWitnessFamily.lean`'s aggregator docstring no longer promises the removed
+      declarations. *(also updated: the stale defect narratives in
+      `PlusWitnessFamily/README.md` and `WitnessFamily/Sharing/README.md` now carry a SUPERSEDED
+      status banner; their full rewrite belongs to Phase 12)* *(also updated: the stale defect narratives in
+      `PlusWitnessFamily/README.md` and `WitnessFamily/Sharing/README.md` carry a SUPERSEDED
+      status banner; their full rewrite belongs to Phase 12)*
 
 **Timing**: 2 hours
 

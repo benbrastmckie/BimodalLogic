@@ -16,8 +16,8 @@ faithfulness, which is the one the `Formula` side cannot state.
 
 ## The `stab` clause is deliberately absent from (C1')
 
-`PlusLocalCoherentShare` has **five** clauses — `bot`, `imp`, `box`, `untl` across shared
-successors, `snce` across shared predecessors — and no sixth. That is not an oversight.
+`PlusLocalCoherentShare` has **five** clauses — `bot`, `imp`, `box`, `untl` across succession
+out of the time, `snce` across succession into it — and no sixth. That is not an oversight.
 
 (C1')'s temporal clauses are *one-step unfoldings*: they relate a label at `t` to labels at
 `t ± 1`. (C3)'s box clause is *global*: it relates a label to a single Boolean read everywhere.
@@ -76,8 +76,15 @@ def PlusAtomCoherent (S : PlusSharingWitnessFamily Γ Del) : Prop :=
 **(C1') Local coherence across the branching.**
 
 Five clauses: `bot`, `imp` and `box` are one-position conditions; the `untl` unfolding is taken
-against every successor index sharing the state at `t + 1`, and the `snce` unfolding against
-every predecessor index sharing the state at `t`.
+against every index the position **succeeds to**, and the `snce` unfolding against every index it
+is **succeeded from**.
+
+Quantifying over `trans` rather than over `share` is the repair. Under the old reading the `snce`
+clause ranged over the share-class at the label's own time `t`, which forced any two indices
+naming one world state to agree on every `snce` formula of the closure — the defect
+`Incompleteness.lean` recorded, and the reason no six-condition family could certify an instance
+of `g S e → ⊡(g S e)`. Succession is strictly finer than state-identity at a time, so the two
+clauses are now symmetric.
 
 There is no `stab` clause, by design — see this module's header.
 -/
@@ -88,11 +95,11 @@ def PlusLocalCoherentShare (S : PlusSharingWitnessFamily Γ Del) : Prop :=
         (PlusFormula.imp a b ∈ S.L i t ↔ (a ∈ S.L i t → b ∈ S.L i t))) ∧
     (∀ χ : PlusFormula, PlusFormula.box χ ∈ plusClosureOf (Γ ++ Del) →
         (PlusFormula.box χ ∈ S.L i t ↔ S.bx χ = true)) ∧
-    (∀ j : Fin S.lassos.length, S.share (t + 1) i j →
+    (∀ j : Fin S.lassos.length, S.trans t i j →
       ∀ g e : PlusFormula, PlusFormula.untl g e ∈ plusClosureOf (Γ ++ Del) →
         (PlusFormula.untl g e ∈ S.L i t ↔
           (e ∈ S.L j (t + 1) ∨ (g ∈ S.L j (t + 1) ∧ PlusFormula.untl g e ∈ S.L j (t + 1))))) ∧
-    (∀ k : Fin S.lassos.length, S.share t i k →
+    (∀ k : Fin S.lassos.length, S.trans (t - 1) k i →
       ∀ g e : PlusFormula, PlusFormula.snce g e ∈ plusClosureOf (Γ ++ Del) →
         (PlusFormula.snce g e ∈ S.L i t ↔
           (e ∈ S.L k (t - 1) ∨ (g ∈ S.L k (t - 1) ∧ PlusFormula.snce g e ∈ S.L k (t - 1)))))
@@ -103,7 +110,7 @@ theorem plusUntl_self_of_share {S : PlusSharingWitnessFamily Γ Del}
     (hc : PlusFormula.untl g e ∈ plusClosureOf (Γ ++ Del)) :
     PlusFormula.untl g e ∈ S.L i t ↔
       (e ∈ S.L i (t + 1) ∨ (g ∈ S.L i (t + 1) ∧ PlusFormula.untl g e ∈ S.L i (t + 1))) :=
-  (h i t).2.2.2.1 i (S.share_refl (t + 1) i) g e hc
+  (h i t).2.2.2.1 i (S.trans_refl' t i) g e hc
 
 /-- The one-position `snce` clause, as the reflexive instance of the branching one. -/
 theorem plusSnce_self_of_share {S : PlusSharingWitnessFamily Γ Del}
@@ -111,7 +118,7 @@ theorem plusSnce_self_of_share {S : PlusSharingWitnessFamily Γ Del}
     (hc : PlusFormula.snce g e ∈ plusClosureOf (Γ ++ Del)) :
     PlusFormula.snce g e ∈ S.L i t ↔
       (e ∈ S.L i (t - 1) ∨ (g ∈ S.L i (t - 1) ∧ PlusFormula.snce g e ∈ S.L i (t - 1))) :=
-  (h i t).2.2.2.2 i (S.share_refl t i) g e hc
+  (h i t).2.2.2.2 i (S.trans_refl' (t - 1) i) g e hc
 
 /-!
 ## (C2'), (C3), (C4), and the two reductions
@@ -124,7 +131,7 @@ The two "deterministic-shaped" conditions below — `PlusLocalCoherentLab` and `
 an L⁺ deterministic certificate exists (it does not; nothing on the L⁺ side ships a JSON export)
 but because the reductions to them are the mechanical statement of the claim that the branching
 conditions are *strengthenings* rather than replacements. Each reduction is one instantiation:
-`share_refl` for (C1'), `Thread.const` for (C2'). The converses are false, and that is the point
+`trans_refl'` for (C1'), `Thread.const` for (C2'). The converses are false, and that is the point
 of the branching device.
 -/
 
@@ -220,7 +227,7 @@ theorem plusLocalCoherentLab_of_share {S : PlusSharingWitnessFamily Γ Del}
     (h : S.PlusLocalCoherentShare) : S.toPlusWitnessFamily.PlusLocalCoherentLab := by
   intro i t
   obtain ⟨hbot, himp, hbox, huntl, hsnce⟩ := h i t
-  exact ⟨hbot, himp, hbox, huntl i (S.share_refl (t + 1) i), hsnce i (S.share_refl t i)⟩
+  exact ⟨hbot, himp, hbox, huntl i (S.trans_refl' t i), hsnce i (S.trans_refl' (t - 1) i)⟩
 
 /--
 **(C2') implies its per-lasso form.** Instantiating the thread quantifier at the constant thread

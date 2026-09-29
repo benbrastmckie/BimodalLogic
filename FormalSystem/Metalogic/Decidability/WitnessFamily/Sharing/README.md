@@ -148,6 +148,15 @@ histories characterization underneath it, which is what `total_eq_thread` suppli
 
 ### Correction: (C1') is not a repair on either temporal side
 
+> **STATUS — SUPERSEDED BY THE `trans` SUBSTRATE REDESIGN.** This subsection and the two that
+> follow it record the defect as it stood *before* (C1')'s temporal clauses were re-quantified
+> over `trans`. The repair described further down as what "a follow-up needs" has landed: the
+> `untl` clause now reads `S.trans t i j` and the `snce` clause `S.trans (t - 1) k i`, and the
+> five declarations recording the empty certificate class were retired from
+> `PlusWitnessFamily/Incompleteness.lean` together with their C2 baseline and theorem-index rows.
+> Retained as the design record, and scheduled for a full rewrite alongside the in-tree
+> certificates.
+
 The received account of this design named (C1') as *the* fix for recombination, with no
 qualification. The Lean reading shows it is not a fix at all: both temporal clauses fail, and
 they fail for one reason.

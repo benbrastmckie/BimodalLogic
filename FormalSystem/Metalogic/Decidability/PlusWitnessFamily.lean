@@ -63,8 +63,10 @@ interface is affected by this one's existence.
   the six-component `PlusCertifies` bundle and `plusRefutes_of_certifies`
 - `PlusWitnessFamily.Examples`: the two-lasso non-vacuity witness, `stabFamily_separates` and
   `stabFaithful_diagonal`
-- `PlusWitnessFamily.Incompleteness`: `snce_share_congr` and the three declarations showing the
-  certificate class is empty for targets carrying a `snce` under a `⊡`
+- `PlusWitnessFamily.Incompleteness`: the three stability targets and the two theorems making
+  them genuine ℤ-time non-validities. The five declarations that once recorded the certificate
+  class as empty for a `snce` under a `⊡` were retired when the `trans` substrate landed; see
+  that module's header.
 
 ## Why (C5) is a pinned obligation rather than a signature
 

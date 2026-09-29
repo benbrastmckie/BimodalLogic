@@ -67,6 +67,19 @@ state at `u`. Three properties of that statement are the whole design:
 
 ## What this certificate cannot refute
 
+> **STATUS — SUPERSEDED BY THE `trans` SUBSTRATE REDESIGN.** Everything in this section
+> describes the certificate as it stood *before* (C1')'s two temporal clauses were re-quantified
+> over `trans`, the arrival-pruned succession relation. All seven declarations it names are now
+> either retired (`snce_share_congr`, `untl_shift_share_congr`, `not_plusCertifies_stabSnce`,
+> `not_plusCertifies_stabSnce_premise`, `not_plusCertifies_stabUntl`) or repurposed as the
+> targets the new certificates must refute (`not_plusValidZTime_stabSnce`,
+> `not_plusValidZTime_stabUntl`). The root cause is gone: succession is strictly finer than
+> state-identity at a time, so the doubled clause reading that produced the congruences no longer
+> type-checks. `Incompleteness.lean`'s header states what the module records now, and
+> `WitnessFamily/Sharing/Agreement.lean`'s `snce_pred_congr` and `untl_succ_congr` state the
+> residual agreement the clauses still force. This section is retained as the design record of
+> the defect, and is scheduled for a full rewrite alongside the in-tree certificates.
+
 The certificate is **sound** and **incomplete**, and the incompleteness is not a matter of the
 bound being too small: for one family of targets the certificate class is *empty*.
 `Incompleteness.lean` proves it, in seven declarations, on both temporal sides.

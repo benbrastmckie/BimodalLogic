@@ -341,7 +341,21 @@ theorem plusUntl_thread_step {S : PlusSharingWitnessFamily Γ Del} (h : S.PlusLo
     e ∈ S.L (θ.idx (t + 1)) (t + 1) ∨
       (g ∈ S.L (θ.idx (t + 1)) (t + 1) ∧
         PlusFormula.untl g e ∈ S.L (θ.idx (t + 1)) (t + 1)) :=
-  ((h (θ.idx t) t).2.2.2.1 (θ.idx (t + 1)) (thread_share_succ θ t) g e hc).mp ht
+  ((h (θ.idx t) t).2.2.2.1 (θ.idx (t + 1)) (Thread.step θ t) g e hc).mp ht
+
+/--
+**A thread's step read *into* `t`.** The succession fact the `snce` clause of (C1') now consumes:
+the index at `t - 1` succeeds to the index at `t`. The Plus-side twin of
+`SharingWitnessFamily.thread_trans_pred`.
+
+Note the argument order: the predecessor is the *source* of the succession, so the index at
+`t - 1` comes first, where `plusThread_share_pred` — a symmetric relation — puts the index at `t`
+first.
+-/
+theorem plusThread_trans_pred {S : PlusSharingWitnessFamily Γ Del} (θ : S.Thread) (t : ℤ) :
+    S.trans (t - 1) (θ.idx (t - 1)) (θ.idx t) := by
+  have hstep := Thread.step θ (t - 1)
+  rwa [show t - 1 + 1 = t by omega] at hstep
 
 /-- A thread's index at `t` shares the state at `t` with its index at `t - 1`. -/
 theorem plusThread_share_pred {S : PlusSharingWitnessFamily Γ Del} (θ : S.Thread) (t : ℤ) :
@@ -357,7 +371,7 @@ theorem plusSnce_thread_step {S : PlusSharingWitnessFamily Γ Del} (h : S.PlusLo
     e ∈ S.L (θ.idx (t - 1)) (t - 1) ∨
       (g ∈ S.L (θ.idx (t - 1)) (t - 1) ∧
         PlusFormula.snce g e ∈ S.L (θ.idx (t - 1)) (t - 1)) :=
-  ((h (θ.idx t) t).2.2.2.2 (θ.idx (t - 1)) (plusThread_share_pred θ t) g e hc).mp ht
+  ((h (θ.idx t) t).2.2.2.2 (θ.idx (t - 1)) (plusThread_trans_pred θ t) g e hc).mp ht
 
 /-- **(C1') propagation, forward, by step count.** -/
 theorem plusUntl_propagate {S : PlusSharingWitnessFamily Γ Del} (h : S.PlusLocalCoherentShare)
