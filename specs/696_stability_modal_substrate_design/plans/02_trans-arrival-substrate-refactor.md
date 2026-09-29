@@ -406,7 +406,7 @@ two can run concurrently.
 
 ---
 
-### Phase 6: Flip `Thread.step` to `trans` [NOT STARTED]
+### Phase 6: Flip `Thread.step` to `trans` [COMPLETED]
 
 **Goal**: The substrate switch itself. `Thread.step` becomes `trans u (idx u) (idx (u+1))`,
 `Thread.const` is rebuilt from `trans_refl`, and `total_eq_thread` is proved from the `lift`
@@ -415,20 +415,24 @@ and the two proofs that genuinely change.
 
 **Tasks**:
 
-- [ ] Change `Thread.step` to `∀ u, K.trans u (idx u) (idx (u+1))`.
-- [ ] Rebuild `Thread.const` from `trans_refl'` (and `share_refl` via arrival pruning).
-- [ ] Redefine `thread_share_succ` as `(θ.step u).2`, so every Phase 4 and 5 consumer keeps
+- [x] Change `Thread.step` to `∀ u, K.trans u (idx u) (idx (u+1))`.
+- [x] Rebuild `Thread.const` from `trans_refl'` (and `share_refl` via arrival pruning).
+- [x] Redefine `thread_share_succ` as `(θ.step u).2`, so every Phase 4 and 5 consumer keeps
       working with no further edit.
-- [ ] Reprove `total_eq_thread`: keep today's extraction half (the `Step`-path and its `a`,
+- [x] Reprove `total_eq_thread`: keep today's extraction half (the `Step`-path and its `a`,
       `hstep`, roughly `Skeleton.lean` 905-930) and replace the gluing half with an application
       of `K.lift`. Round 2's `total_eq_tthread_of_liftable` is the six-line template. The
       statement does not change.
-- [ ] Confirm `thread_is_history` and `conn_thread` / `Thread.reachN` / `step'` still hold, now
-      routed through arrival pruning.
-- [ ] Update `Sharing/Window.lean`'s `succF` and `predF` to filter on `trans` rather than on
+- [x] Confirm `thread_is_history` and `conn_thread` / `Thread.reachN` / `step'` still hold, now
+      routed through arrival pruning. *(confirmed: unchanged; the `Step` definition and every
+      frame lemma are untouched in the diff, so the Scope Hypothesis held)*
+- [x] Update `Sharing/Window.lean`'s `succF` and `predF` to filter on `trans` rather than on
       `share`, and carry a `trans_succ` field on the walk structures; `succF_nonempty` and
-      `predF_nonempty` go through `trans_refl'`.
-- [ ] Mirror the `Thread.step`/`Thread.const` restatements on the Plus side.
+      `predF_nonempty` go through `trans_refl'`. *(deviation: altered — the filter carries the
+      `transRaw` Bool row beside the existing `share` row rather than the bundled `trans`, so
+      `Finset.filter`'s decidability instance stays syntactic; `transRaw_succ` is a walk lemma
+      rather than a structure field, since the walk's step is already a `mem_succF` fact)*
+- [x] Mirror the `Thread.step`/`Thread.const` restatements on the Plus side. *(deviation: altered — also required the Plus-side `mem_succF`/`mem_predF` delegations, two `foldRel_transRaw` delegations and four proof sites in `PlusWitnessFamily/Fulfil.lean`, a file this phase's "Files to modify" list omitted)*
 
 **Timing**: 2 hours
 

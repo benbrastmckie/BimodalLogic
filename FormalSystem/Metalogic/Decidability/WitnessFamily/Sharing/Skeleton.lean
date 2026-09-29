@@ -820,8 +820,10 @@ holding. Threads replace lasso orbits as the objects the frame's histories are t
 structure Thread (K : SharingSkeleton) where
   /-- The index held at each time. -/
   idx : ℤ → Fin K.n
-  /-- Consecutive indices name the same world state at the later time. -/
-  step : ∀ u : ℤ, K.share (u + 1) (idx u) (idx (u + 1))
+  /-- Consecutive indices stand in the succession relation. Arrival pruning makes this imply
+  that they name the same world state at the later time, which is what the field used to say
+  outright; what it no longer implies is that *every* such pair is a step. -/
+  step : ∀ u : ℤ, K.trans u (idx u) (idx (u + 1))
 
 namespace Thread
 
@@ -840,10 +842,11 @@ theorem ext {θ η : K.Thread} (h : ∀ u, θ.idx u = η.idx u) : θ = η := by
 
 end Thread
 
-/-- The constant thread at index `i`: staying on one index forever is always legitimate. -/
+/-- The constant thread at index `i`: staying on one index forever is always legitimate,
+because `trans_refl` makes every listed succession matrix reflexive. -/
 def Thread.const (K : SharingSkeleton) (i : Fin K.n) : K.Thread where
   idx := fun _ => i
-  step := fun u => K.share_refl (u + 1) i
+  step := fun u => K.trans_refl' u i
 
 instance instNonemptyThread (K : SharingSkeleton) : Nonempty K.Thread :=
   ⟨Thread.const K ⟨0, K.n_pos⟩⟩
@@ -992,7 +995,7 @@ arrival-pruning projection and every consumer below keeps working unedited. Intr
 before the substrate switch is what makes that switch touch definition sites only.
 -/
 theorem thread_share_succ {K : SharingSkeleton} (θ : K.Thread) (u : ℤ) :
-    K.share (u + 1) (θ.idx u) (θ.idx (u + 1)) := θ.step u
+    K.share (u + 1) (θ.idx u) (θ.idx (u + 1)) := (θ.step u).2
 
 namespace Thread
 
@@ -1458,19 +1461,23 @@ theorem total_eq_thread (K : SharingSkeleton) (σ : WorldHistory K.frame.toTaskF
     rw [if_pos (by omega : (a t, s + t).2 ≤ (a (t + 1), s + (t + 1)).2)] at hc
     rw [show ((a (t + 1), s + (t + 1)).2 - (a t, s + t).2).toNat = 1 from by omega] at hc
     exact (K.reachN_one _ _ _).mp hc
-  choose b hb₁ hb₂ using hstep
-  refine ⟨⟨fun v => b (v - s), ?_⟩, s, ?_⟩
-  · intro v
-    have h₁ := hb₂ (v - s)
-    have h₂ := hb₁ (v - s + 1)
-    rw [show s + (v - s) + 1 = v + 1 from by omega] at h₁
-    rw [show s + (v - s + 1) = v + 1 from by omega] at h₂
-    have h₃ := SharingSkeleton.share_trans h₁ h₂
-    rwa [show v - s + 1 = v + 1 - s from by omega] at h₃
-  · intro t
-    change σ.state t = K.cls (b (s + t - s)) (s + t)
-    rw [show s + t - s = t from by omega, ha t]
-    exact cls_eq rfl (hb₁ t)
+  -- The extraction half is unchanged: `a` is a `Step`-path, re-indexed to absolute time.
+  have hpath : ∀ u : ℤ, K.Step u (a (u - s)) (a (u + 1 - s)) := by
+    intro u
+    have h := hstep (u - s)
+    rw [show s + (u - s) = u from by omega, show u - s + 1 = u + 1 - s from by omega] at h
+    exact h
+  -- The gluing half is now the `lift` field rather than an argument: with succession a
+  -- separate relation, a `Step`-path's own intermediates need not be `trans`-consecutive, so
+  -- the tracking path has to be supplied by the skeleton's own well-formedness.
+  obtain ⟨τ, hτstep, hτshare⟩ := K.lift (fun u => a (u - s)) hpath
+  refine ⟨⟨τ, hτstep⟩, s, ?_⟩
+  intro t
+  have hsh : K.share (s + t) (a t) (τ (s + t)) := by
+    have h := hτshare (s + t)
+    rwa [show s + t - s = t from by omega] at h
+  rw [ha t]
+  exact cls_eq rfl hsh
 
 end Histories
 

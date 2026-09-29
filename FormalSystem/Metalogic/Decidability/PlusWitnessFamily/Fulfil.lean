@@ -107,11 +107,13 @@ abbrev FwdWalk (S : PlusSharingWitnessFamily Γ Del) : Type := S.window.FwdWalk
 abbrev BwdWalk (S : PlusSharingWitnessFamily Γ Del) : Type := S.window.BwdWalk
 
 theorem mem_succF (S : PlusSharingWitnessFamily Γ Del) (v w : S.Pos) :
-    w ∈ S.succF v ↔ w ∈ S.verts ∧ w.2 = S.nextTime v.2 ∧ S.share (v.2 + 1) v.1 w.1 :=
+    w ∈ S.succF v ↔ w ∈ S.verts ∧ w.2 = S.nextTime v.2 ∧
+      (S.transRaw v.2 v.1 w.1 = true ∧ S.share (v.2 + 1) v.1 w.1) :=
   S.window.mem_succF v w
 
 theorem mem_predF (S : PlusSharingWitnessFamily Γ Del) (v w : S.Pos) :
-    w ∈ S.predF v ↔ w ∈ S.verts ∧ w.2 = S.prevTime v.2 ∧ S.share v.2 v.1 w.1 :=
+    w ∈ S.predF v ↔ w ∈ S.verts ∧ w.2 = S.prevTime v.2 ∧
+      (S.transRaw (S.prevTime v.2) w.1 v.1 = true ∧ S.share v.2 v.1 w.1) :=
   S.window.mem_predF v w
 
 theorem succF_subset (S : PlusSharingWitnessFamily Γ Del) (v : S.Pos) : S.succF v ⊆ S.verts :=
@@ -149,6 +151,14 @@ theorem foldRel_rep {S : PlusSharingWitnessFamily Γ Del} {a b : ℤ} (h : S.Fol
 
 theorem foldRelB_rep {S : PlusSharingWitnessFamily Γ Del} {a b : ℤ} (h : S.FoldRelB a b) :
     S.rep a = S.rep b := SharingWindow.foldRelB_rep h
+
+/-- Folded times carry the same succession matrix. -/
+theorem foldRel_transRaw {S : PlusSharingWitnessFamily Γ Del} {a b : ℤ} (h : S.FoldRel a b) :
+    S.transRaw a = S.transRaw b := SharingWindow.foldRel_transRaw h
+
+/-- Folded times carry the same succession matrix, backward. -/
+theorem foldRelB_transRaw {S : PlusSharingWitnessFamily Γ Del} {a b : ℤ} (h : S.FoldRelB a b) :
+    S.transRaw a = S.transRaw b := SharingWindow.foldRelB_transRaw h
 
 theorem foldRel_nextTime (S : PlusSharingWitnessFamily Γ Del) {u : ℤ} (hu : u ∈ S.winTimes) :
     S.FoldRel (S.nextTime u) (u + 1) := S.window.foldRel_nextTime hu
@@ -547,12 +557,16 @@ theorem thread_untl_of_mem_untlFix (S : PlusSharingWitnessFamily Γ Del) (g e : 
     (S.mem_verts _).mpr (S.nextTime_mem hvw)
   have hws : ((θ.idx (t + 1), S.nextTime v.2) : S.Pos) ∈ S.succF v := by
     rw [S.mem_succF]
-    refine ⟨hwv, rfl, ?_⟩
-    have hrep : S.rep (v.2 + 1) = S.rep (t + 1) := foldRel_rep (foldRel_succ hft)
-    have hs := thread_share_succ θ t
-    rw [S.share_def] at hs
-    rw [← hθ, S.share_def, hrep]
-    exact hs
+    refine ⟨hwv, rfl, ?_, ?_⟩
+    · -- The succession half of the thread's step, transported along the fold.
+      have ht := ((S.trans_def t (θ.idx t) (θ.idx (t + 1))).mp (Thread.step θ t)).1
+      rw [← hθ, foldRel_transRaw hft]
+      exact ht
+    · have hrep : S.rep (v.2 + 1) = S.rep (t + 1) := foldRel_rep (foldRel_succ hft)
+      have hs := thread_share_succ θ t
+      rw [S.share_def] at hs
+      rw [← hθ, S.share_def, hrep]
+      exact hs
   have hLeq : ∀ χ : PlusFormula,
       χ ∈ S.L (θ.idx (t + 1)) (S.nextTime v.2) ↔ χ ∈ S.L (θ.idx (t + 1)) (t + 1) := by
     intro χ
@@ -587,12 +601,18 @@ theorem thread_snce_of_mem_snceFix (S : PlusSharingWitnessFamily Γ Del) (g e : 
     (S.mem_verts _).mpr (S.prevTime_mem hvw)
   have hws : ((θ.idx (t - 1), S.prevTime v.2) : S.Pos) ∈ S.predF v := by
     rw [S.mem_predF]
-    refine ⟨hwv, rfl, ?_⟩
-    have hrep : S.rep v.2 = S.rep t := foldRelB_rep hft
-    have hs := plusThread_share_pred θ t
-    rw [S.share_def] at hs
-    rw [← hθ, S.share_def, hrep]
-    exact hs
+    refine ⟨hwv, rfl, ?_, ?_⟩
+    · -- The succession half, read one step back and transported along the backward fold.
+      have ht := ((S.trans_def (t - 1) (θ.idx (t - 1)) (θ.idx (t - 1 + 1))).mp
+        (Thread.step θ (t - 1))).1
+      rw [show t - 1 + 1 = t by omega, hθ] at ht
+      rw [foldRelB_transRaw hfs]
+      exact ht
+    · have hrep : S.rep v.2 = S.rep t := foldRelB_rep hft
+      have hs := plusThread_share_pred θ t
+      rw [S.share_def] at hs
+      rw [← hθ, S.share_def, hrep]
+      exact hs
   have hLeq : ∀ χ : PlusFormula,
       χ ∈ S.L (θ.idx (t - 1)) (S.prevTime v.2) ↔ χ ∈ S.L (θ.idx (t - 1)) (t - 1) := by
     intro χ
@@ -765,7 +785,7 @@ theorem window_of_plusThreadFulfilling {S : PlusSharingWitnessFamily Γ Del}
         · have hdef : ((z.1, S.nextTime z.2) : S.Pos) ∈ S.succF z := by
             rw [S.mem_succF]
             exact ⟨(S.mem_verts _).mpr (S.nextTime_mem ((S.mem_verts z).mp hz)), rfl,
-              S.share_refl (z.2 + 1) z.1⟩
+              S.transRaw_refl z.2 z.1, S.share_refl (z.2 + 1) z.1⟩
           by_cases hnf : z ∈ S.untlFix g e
           · exact ⟨(z.1, S.nextTime z.2), fun _ => hdef, fun _ hb => absurd hnf hb⟩
           · have hnot : ¬ ∀ y ∈ S.succF z,
@@ -865,7 +885,7 @@ theorem window_of_plusThreadFulfilling {S : PlusSharingWitnessFamily Γ Del}
         · have hdef : ((z.1, S.prevTime z.2) : S.Pos) ∈ S.predF z := by
             rw [S.mem_predF]
             exact ⟨(S.mem_verts _).mpr (S.prevTime_mem ((S.mem_verts z).mp hz)), rfl,
-              S.share_refl z.2 z.1⟩
+              S.transRaw_refl (S.prevTime z.2) z.1, S.share_refl z.2 z.1⟩
           by_cases hnf : z ∈ S.snceFix g e
           · exact ⟨(z.1, S.prevTime z.2), fun _ => hdef, fun _ hb => absurd hnf hb⟩
           · have hnot : ¬ ∀ y ∈ S.predF z,

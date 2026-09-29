@@ -224,6 +224,53 @@ theorem share_rep (S : SharingWitnessFamily Γ Del) (u : ℤ) (i : Fin S.lassos.
 theorem share_iff_rep_eq (S : SharingWitnessFamily Γ Del) (u : ℤ) (i j : Fin S.lassos.length) :
     S.share u i j ↔ S.rep u i = S.rep u j := Iff.rfl
 
+/-! ## The fourth periodic datum, re-exported -/
+
+/-- The decoded bi-infinite succession matrix. Out of range it is the identity relation. -/
+def transRaw (S : SharingWitnessFamily Γ Del) (u : ℤ) :
+    Fin S.lassos.length → Fin S.lassos.length → Bool :=
+  S.skeleton.transRaw u
+
+theorem transRaw_eq_skeleton (S : SharingWitnessFamily Γ Del) (u : ℤ) :
+    S.transRaw u = S.skeleton.transRaw u := rfl
+
+theorem transRaw_def (S : SharingWitnessFamily Γ Del) (u : ℤ) :
+    S.transRaw u
+      = @Periodic.unrollOf _ (transEqInhabited _) S.transBack S.transMid S.transFwd u :=
+  rfl
+
+/-- **Succession, arrival-pruned**, at the family's own `share`. -/
+def trans (S : SharingWitnessFamily Γ Del) (u : ℤ) (i j : Fin S.lassos.length) : Prop :=
+  S.skeleton.trans u i j
+
+theorem trans_eq_skeleton (S : SharingWitnessFamily Γ Del) (u : ℤ) (i j : Fin S.lassos.length) :
+    S.trans u i j ↔ S.skeleton.trans u i j := Iff.rfl
+
+theorem trans_def (S : SharingWitnessFamily Γ Del) (u : ℤ) (i j : Fin S.lassos.length) :
+    S.trans u i j ↔ (S.transRaw u i j = true ∧ S.share (u + 1) i j) := Iff.rfl
+
+theorem transRaw_refl (S : SharingWitnessFamily Γ Del) (u : ℤ) (i : Fin S.lassos.length) :
+    S.transRaw u i i = true := S.skeleton.transRaw_refl u i
+
+@[refl]
+theorem trans_refl' (S : SharingWitnessFamily Γ Del) (u : ℤ) (i : Fin S.lassos.length) :
+    S.trans u i i :=
+  S.skeleton.trans_refl' u i
+
+theorem share_succ_of_trans {S : SharingWitnessFamily Γ Del} {u : ℤ} {i j : Fin S.lassos.length}
+    (h : S.trans u i j) : S.share (u + 1) i j := h.2
+
+instance decidableTrans (S : SharingWitnessFamily Γ Del) (u : ℤ) (i j : Fin S.lassos.length) :
+    Decidable (S.trans u i j) := inferInstanceAs (Decidable (S.skeleton.trans u i j))
+
+/-- **Leftward periodicity of succession**, at the representatives' own period. -/
+theorem transRaw_sub_back_length (S : SharingWitnessFamily Γ Del) {u : ℤ} (hu : u < 0) :
+    S.transRaw (u - S.nbr) = S.transRaw u := S.skeleton.transRaw_sub_back_length hu
+
+/-- **Rightward periodicity of succession**, at the representatives' own period. -/
+theorem transRaw_add_fwd_length (S : SharingWitnessFamily Γ Del) {u : ℤ} (hu : S.nmr ≤ u) :
+    S.transRaw (u + S.nfr) = S.transRaw u := S.skeleton.transRaw_add_fwd_length hu
+
 instance decidableShare (S : SharingWitnessFamily Γ Del) (u : ℤ) (i j : Fin S.lassos.length) :
     Decidable (S.share u i j) :=
   inferInstanceAs (Decidable (S.rep u i = S.rep u j))

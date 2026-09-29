@@ -146,6 +146,42 @@ theorem rep_congr_NF (W : SharingWindow) {u v : ℤ} (hu : W.NM ≤ u) (hv : W.N
     show (v - W.NM) + (W.NM - W.nmr) = v - W.nmr by omega] at h2
   exact W.rep_congr_fwd (le_trans W.nmr_le_NM hu) (le_trans W.nmr_le_NM hv) h2
 
+/-! ## The succession matrices read only their residue
+
+Four lemmas mirroring the `rep_congr_*` family above, line for line. They exist because the
+length fields make the succession cycles carry the representatives' own periods: `transBack_len`
+and `transFwd_len` turn a congruence stated at `nbr`/`nfr` into one the generic decoding lemmas
+accept, so no second set of moduli and no second divisibility hypothesis is needed.
+-/
+
+/-- Negative times with equal residues modulo the succession cycle decode equally. -/
+theorem transRaw_congr_back (W : SharingWindow) {u v : ℤ} (hu : u < 0) (hv : v < 0)
+    (h : u % W.nbr = v % W.nbr) : W.transRaw u = W.transRaw v :=
+  Periodic.unrollOf_congr_back (transEqInhabited _) W.transBack W.transMid W.transFwd hu hv
+    (by rw [W.transBack_len]; exact h)
+
+/-- Times at or past the window with equal residues modulo the succession cycle decode equally. -/
+theorem transRaw_congr_fwd (W : SharingWindow) {u v : ℤ} (hu : W.nmr ≤ u) (hv : W.nmr ≤ v)
+    (h : (u - W.nmr) % W.nfr = (v - W.nmr) % W.nfr) : W.transRaw u = W.transRaw v :=
+  Periodic.unrollOf_congr_fwd (transEqInhabited _) W.transBack W.transMid W.transFwd
+    (by rw [W.transMid_len]; exact hu) (by rw [W.transMid_len]; exact hv)
+    (by rw [W.transMid_len, W.transFwd_len]; exact h)
+
+/-- **Leftward congruence at the combined period**, for succession. -/
+theorem transRaw_congr_NB (W : SharingWindow) {u v : ℤ} (hu : u < 0) (hv : v < 0)
+    (h : u % W.NB = v % W.NB) : W.transRaw u = W.transRaw v :=
+  W.transRaw_congr_back hu hv (emod_of_dvd W.nbr_dvd_NB h)
+
+/-- **Rightward congruence at the combined period**, for succession. -/
+theorem transRaw_congr_NF (W : SharingWindow) {u v : ℤ} (hu : W.NM ≤ u) (hv : W.NM ≤ v)
+    (h : (u - W.NM) % W.NF = (v - W.NM) % W.NF) : W.transRaw u = W.transRaw v := by
+  have h1 : (u - W.NM) % W.nfr = (v - W.NM) % W.nfr := emod_of_dvd W.nfr_dvd_NF h
+  have h2 : ((u - W.NM) + (W.NM - W.nmr)) % W.nfr = ((v - W.NM) + (W.NM - W.nmr)) % W.nfr :=
+    LabelledLasso.emod_shift h1
+  rw [show (u - W.NM) + (W.NM - W.nmr) = u - W.nmr by omega,
+    show (v - W.NM) + (W.NM - W.nmr) = v - W.nmr by omega] at h2
+  exact W.transRaw_congr_fwd (le_trans W.nmr_le_NM hu) (le_trans W.nmr_le_NM hv) h2
+
 /-! ## The combined window -/
 
 /-- Lower end of the combined window. -/
@@ -275,18 +311,22 @@ The successors of a position: every index sharing the state one step later, at t
 successor time. `Step` at the underlying times, folded into the window.
 -/
 def succF (W : SharingWindow) (v : W.Pos) : Finset W.Pos :=
-  W.verts.filter (fun w => w.2 = W.nextTime v.2 ∧ W.share (v.2 + 1) v.1 w.1)
+  W.verts.filter (fun w => w.2 = W.nextTime v.2 ∧
+    W.transRaw v.2 v.1 w.1 = true ∧ W.share (v.2 + 1) v.1 w.1)
 
 /-- The predecessors of a position, the converse edge relation. -/
 def predF (W : SharingWindow) (v : W.Pos) : Finset W.Pos :=
-  W.verts.filter (fun w => w.2 = W.prevTime v.2 ∧ W.share v.2 v.1 w.1)
+  W.verts.filter (fun w => w.2 = W.prevTime v.2 ∧
+    W.transRaw (W.prevTime v.2) w.1 v.1 = true ∧ W.share v.2 v.1 w.1)
 
 theorem mem_succF (W : SharingWindow) (v w : W.Pos) :
-    w ∈ W.succF v ↔ w ∈ W.verts ∧ w.2 = W.nextTime v.2 ∧ W.share (v.2 + 1) v.1 w.1 :=
+    w ∈ W.succF v ↔ w ∈ W.verts ∧ w.2 = W.nextTime v.2 ∧
+      (W.transRaw v.2 v.1 w.1 = true ∧ W.share (v.2 + 1) v.1 w.1) :=
   Finset.mem_filter
 
 theorem mem_predF (W : SharingWindow) (v w : W.Pos) :
-    w ∈ W.predF v ↔ w ∈ W.verts ∧ w.2 = W.prevTime v.2 ∧ W.share v.2 v.1 w.1 :=
+    w ∈ W.predF v ↔ w ∈ W.verts ∧ w.2 = W.prevTime v.2 ∧
+      (W.transRaw (W.prevTime v.2) w.1 v.1 = true ∧ W.share v.2 v.1 w.1) :=
   Finset.mem_filter
 
 theorem succF_subset (W : SharingWindow) (v : W.Pos) : W.succF v ⊆ W.verts :=
@@ -302,7 +342,7 @@ theorem succF_nonempty (W : SharingWindow) {v : W.Pos} (hv : v ∈ W.verts) :
   refine ⟨(v.1, W.nextTime v.2), ?_⟩
   rw [W.mem_succF]
   exact ⟨(W.mem_verts _).mpr (W.nextTime_mem ((W.mem_verts v).mp hv)), rfl,
-    W.share_refl (v.2 + 1) v.1⟩
+    W.transRaw_refl v.2 v.1, W.share_refl (v.2 + 1) v.1⟩
 
 /-- **Every vertex has a predecessor**, for the same reason. -/
 theorem predF_nonempty (W : SharingWindow) {v : W.Pos} (hv : v ∈ W.verts) :
@@ -310,7 +350,7 @@ theorem predF_nonempty (W : SharingWindow) {v : W.Pos} (hv : v ∈ W.verts) :
   refine ⟨(v.1, W.prevTime v.2), ?_⟩
   rw [W.mem_predF]
   exact ⟨(W.mem_verts _).mpr (W.prevTime_mem ((W.mem_verts v).mp hv)), rfl,
-    W.share_refl v.2 v.1⟩
+    W.transRaw_refl (W.prevTime v.2) v.1, W.share_refl v.2 v.1⟩
 
 /-! ## Folding a ℤ-time into the window
 
@@ -376,6 +416,20 @@ theorem foldRelB_rep {W : SharingWindow} {a b : ℤ} (h : W.FoldRelB a b) :
   rcases h with rfl | ⟨h1, h2, h3⟩
   · rfl
   · exact W.rep_congr_NB h1 h2 h3
+
+/-- Folded times carry the same succession matrix. -/
+theorem foldRel_transRaw {W : SharingWindow} {a b : ℤ} (h : W.FoldRel a b) :
+    W.transRaw a = W.transRaw b := by
+  rcases h with rfl | ⟨h1, h2, h3⟩
+  · rfl
+  · exact W.transRaw_congr_NF h1 h2 h3
+
+/-- Folded times carry the same succession matrix, backward. -/
+theorem foldRelB_transRaw {W : SharingWindow} {a b : ℤ} (h : W.FoldRelB a b) :
+    W.transRaw a = W.transRaw b := by
+  rcases h with rfl | ⟨h1, h2, h3⟩
+  · rfl
+  · exact W.transRaw_congr_NB h1 h2 h3
 
 /-- The forward relation is closed under a common successor. -/
 theorem foldRel_succ {W : SharingWindow} {a b : ℤ} (h : W.FoldRel a b) :
@@ -498,9 +552,14 @@ theorem mem_verts (w : W.FwdWalk) : ∀ k, w.pos k ∈ W.verts
 theorem time_succ (w : W.FwdWalk) (k : ℕ) : (w.pos (k + 1)).2 = W.nextTime (w.pos k).2 :=
   ((W.mem_succF _ _).mp (w.step k)).2.1
 
+/-- The walk's edge carries a succession fact, read at the source position's own graph time. -/
+theorem transRaw_succ (w : W.FwdWalk) (k : ℕ) :
+    W.transRaw (w.pos k).2 (w.pos k).1 (w.pos (k + 1)).1 = true :=
+  ((W.mem_succF _ _).mp (w.step k)).2.2.1
+
 theorem share_succ (w : W.FwdWalk) (k : ℕ) :
     W.share ((w.pos k).2 + 1) (w.pos k).1 (w.pos (k + 1)).1 :=
-  ((W.mem_succF _ _).mp (w.step k)).2.2
+  ((W.mem_succF _ _).mp (w.step k)).2.2.2
 
 /-- **The fold invariant.** The walk's `k`-th graph time folds the genuine time `u + k`. -/
 theorem foldRel (w : W.FwdWalk) (k : ℕ) :
@@ -531,7 +590,7 @@ theorem walkIdx_le (w : W.FwdWalk) {t : ℤ} (h : t ≤ (w.pos 0).2) :
   · simp only [walkIdx, if_neg (by omega : ¬ (w.pos 0).2 ≤ t)]
 
 theorem walkIdx_step (w : W.FwdWalk) (t : ℤ) :
-    W.share (t + 1) (w.walkIdx t) (w.walkIdx (t + 1)) := by
+    W.trans t (w.walkIdx t) (w.walkIdx (t + 1)) := by
   by_cases h1 : (w.pos 0).2 ≤ t
   · have hkt : (w.pos 0).2 + (((t - (w.pos 0).2).toNat : ℕ) : ℤ) = t := by omega
     have e1 : w.walkIdx t = (w.pos (t - (w.pos 0).2).toNat).1 := by
@@ -539,16 +598,23 @@ theorem walkIdx_step (w : W.FwdWalk) (t : ℤ) :
     have e2 : w.walkIdx (t + 1) = (w.pos ((t - (w.pos 0).2).toNat + 1)).1 := by
       have hx : (t + 1 - (w.pos 0).2).toNat = (t - (w.pos 0).2).toNat + 1 := by omega
       simp only [walkIdx, if_pos (show (w.pos 0).2 ≤ t + 1 by omega), hx]
-    have hf : W.FoldRel ((w.pos (t - (w.pos 0).2).toNat).2 + 1) (t + 1) := by
-      have hff := W.foldRel_succ (w.foldRel (t - (w.pos 0).2).toNat)
+    have hf0 : W.FoldRel (w.pos (t - (w.pos 0).2).toNat).2 t := by
+      have hff := w.foldRel (t - (w.pos 0).2).toNat
       rwa [hkt] at hff
-    have hrep : W.rep ((w.pos (t - (w.pos 0).2).toNat).2 + 1) = W.rep (t + 1) :=
-      W.foldRel_rep hf
-    have hs := w.share_succ (t - (w.pos 0).2).toNat
-    rw [W.share_def] at hs
-    rw [e1, e2, W.share_def, ← hrep]
-    exact hs
-  · rw [w.walkIdx_le (by omega), w.walkIdx_le (by omega)]
+    have hf : W.FoldRel ((w.pos (t - (w.pos 0).2).toNat).2 + 1) (t + 1) := W.foldRel_succ hf0
+    refine ⟨?_, ?_⟩
+    · have ht := w.transRaw_succ (t - (w.pos 0).2).toNat
+      rw [e1, e2, ← W.foldRel_transRaw hf0]
+      exact ht
+    · have hrep : W.rep ((w.pos (t - (w.pos 0).2).toNat).2 + 1) = W.rep (t + 1) :=
+        W.foldRel_rep hf
+      have hs := w.share_succ (t - (w.pos 0).2).toNat
+      rw [W.share_def] at hs
+      rw [e1, e2, W.share_def, ← hrep]
+      exact hs
+  · -- Off the walk the index is constant, and `trans_refl'` (a `@[refl]` lemma, so `rw`'s
+    -- closing `rfl` finds it) discharges the step.
+    rw [w.walkIdx_le (by omega), w.walkIdx_le (by omega)]
 
 /-- **The thread following a forward walk.** -/
 def toThread (w : W.FwdWalk) : W.Thread where
@@ -571,9 +637,16 @@ theorem mem_verts (w : W.BwdWalk) : ∀ k, w.pos k ∈ W.verts
 theorem time_succ (w : W.BwdWalk) (k : ℕ) : (w.pos (k + 1)).2 = W.prevTime (w.pos k).2 :=
   ((W.mem_predF _ _).mp (w.step k)).2.1
 
+/-- The walk's edge carries a succession fact, read at the *later*-enumerated position's own
+graph time — which is the earlier genuine time, and the time the thread's step is read at. -/
+theorem transRaw_succ (w : W.BwdWalk) (k : ℕ) :
+    W.transRaw (w.pos (k + 1)).2 (w.pos (k + 1)).1 (w.pos k).1 = true := by
+  rw [w.time_succ k]
+  exact ((W.mem_predF _ _).mp (w.step k)).2.2.1
+
 theorem share_succ (w : W.BwdWalk) (k : ℕ) :
     W.share (w.pos k).2 (w.pos k).1 (w.pos (k + 1)).1 :=
-  ((W.mem_predF _ _).mp (w.step k)).2.2
+  ((W.mem_predF _ _).mp (w.step k)).2.2.2
 
 /-- **The fold invariant**, the backward mirror. -/
 theorem foldRelB (w : W.BwdWalk) (k : ℕ) :
@@ -604,7 +677,7 @@ theorem walkIdx_ge (w : W.BwdWalk) {t : ℤ} (h : (w.pos 0).2 ≤ t) :
   · simp only [walkIdx, if_neg (by omega : ¬ t ≤ (w.pos 0).2)]
 
 theorem walkIdx_step (w : W.BwdWalk) (t : ℤ) :
-    W.share (t + 1) (w.walkIdx t) (w.walkIdx (t + 1)) := by
+    W.trans t (w.walkIdx t) (w.walkIdx (t + 1)) := by
   by_cases h1 : t + 1 ≤ (w.pos 0).2
   · have hkt : (w.pos 0).2 - (((w.pos 0).2 - t - 1).toNat : ℤ) = t + 1 := by omega
     have e1 : w.walkIdx t = (w.pos (((w.pos 0).2 - t - 1).toNat + 1)).1 := by
@@ -616,13 +689,21 @@ theorem walkIdx_step (w : W.BwdWalk) (t : ℤ) :
     have hf : W.FoldRelB (w.pos ((w.pos 0).2 - t - 1).toNat).2 (t + 1) := by
       have hff := w.foldRelB ((w.pos 0).2 - t - 1).toNat
       rwa [hkt] at hff
-    have hrep : W.rep (w.pos ((w.pos 0).2 - t - 1).toNat).2 = W.rep (t + 1) :=
-      W.foldRelB_rep hf
-    have hs := w.share_succ ((w.pos 0).2 - t - 1).toNat
-    rw [W.share_def] at hs
-    rw [e1, e2, W.share_def, ← hrep]
-    exact hs.symm
-  · rw [w.walkIdx_ge (by omega), w.walkIdx_ge (by omega)]
+    have hfB : W.FoldRelB (w.pos (((w.pos 0).2 - t - 1).toNat + 1)).2 t := by
+      have hff := w.foldRelB (((w.pos 0).2 - t - 1).toNat + 1)
+      rwa [show (w.pos 0).2 - ((((w.pos 0).2 - t - 1).toNat + 1 : ℕ) : ℤ) = t by omega] at hff
+    refine ⟨?_, ?_⟩
+    · have ht := w.transRaw_succ ((w.pos 0).2 - t - 1).toNat
+      rw [e1, e2, ← W.foldRelB_transRaw hfB]
+      exact ht
+    · have hrep : W.rep (w.pos ((w.pos 0).2 - t - 1).toNat).2 = W.rep (t + 1) :=
+        W.foldRelB_rep hf
+      have hs := w.share_succ ((w.pos 0).2 - t - 1).toNat
+      rw [W.share_def] at hs
+      rw [e1, e2, W.share_def, ← hrep]
+      exact hs.symm
+  · -- Off the walk the index is constant; `trans_refl'` closes the step as above.
+    rw [w.walkIdx_ge (by omega), w.walkIdx_ge (by omega)]
 
 /-- **The thread following a backward walk.** -/
 def toThread (w : W.BwdWalk) : W.Thread where

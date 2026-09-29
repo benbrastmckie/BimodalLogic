@@ -227,6 +227,43 @@ theorem rep_congr_fwd (S : SharingWitnessFamily Γ Del) {u v : ℤ} (hu : S.nmr 
     (hv : S.nmr ≤ v) (h : (u - S.nmr) % S.nfr = (v - S.nmr) % S.nfr) : S.rep u = S.rep v :=
   Periodic.unrollOf_congr_fwd (repIdInhabited _) S.repBack S.repMid S.repFwd hu hv h
 
+/-! ## The succession matrices read only their residue
+
+The `rep_congr_*` family's twin for the fourth datum. The length fields make the succession
+cycles carry the representatives' own periods, so these need no divisibility hypothesis of their
+own beyond the ones `nbr_dvd_NB` and `nfr_dvd_NF` already supply.
+-/
+
+/-- Negative times with equal residues modulo the succession cycle decode equally. -/
+theorem transRaw_congr_back (S : SharingWitnessFamily Γ Del) {u v : ℤ} (hu : u < 0) (hv : v < 0)
+    (h : u % S.nbr = v % S.nbr) : S.transRaw u = S.transRaw v :=
+  Periodic.unrollOf_congr_back (transEqInhabited _) S.transBack S.transMid S.transFwd hu hv
+    (by rw [S.transBack_len]; exact h)
+
+/-- Times at or past the window with equal residues modulo the succession cycle decode equally. -/
+theorem transRaw_congr_fwd (S : SharingWitnessFamily Γ Del) {u v : ℤ} (hu : S.nmr ≤ u)
+    (hv : S.nmr ≤ v) (h : (u - S.nmr) % S.nfr = (v - S.nmr) % S.nfr) :
+    S.transRaw u = S.transRaw v :=
+  Periodic.unrollOf_congr_fwd (transEqInhabited _) S.transBack S.transMid S.transFwd
+    (by rw [S.transMid_len]; exact hu) (by rw [S.transMid_len]; exact hv)
+    (by rw [S.transMid_len, S.transFwd_len]; exact h)
+
+/-- **Leftward congruence at the combined period**, for succession. -/
+theorem transRaw_congr_NB (S : SharingWitnessFamily Γ Del) {u v : ℤ} (hu : u < 0) (hv : v < 0)
+    (h : u % S.NB = v % S.NB) : S.transRaw u = S.transRaw v :=
+  S.transRaw_congr_back hu hv (emod_of_dvd S.nbr_dvd_NB h)
+
+/-- **Rightward congruence at the combined period**, for succession. -/
+theorem transRaw_congr_NF (S : SharingWitnessFamily Γ Del) {u v : ℤ} (hu : S.NM ≤ u)
+    (hv : S.NM ≤ v) (h : (u - S.NM) % S.NF = (v - S.NM) % S.NF) :
+    S.transRaw u = S.transRaw v := by
+  have h1 : (u - S.NM) % S.nfr = (v - S.NM) % S.nfr := emod_of_dvd S.nfr_dvd_NF h
+  have h2 : ((u - S.NM) + (S.NM - S.nmr)) % S.nfr = ((v - S.NM) + (S.NM - S.nmr)) % S.nfr :=
+    LabelledLasso.emod_shift h1
+  rw [show (u - S.NM) + (S.NM - S.nmr) = u - S.nmr by omega,
+    show (v - S.NM) + (S.NM - S.nmr) = v - S.nmr by omega] at h2
+  exact S.transRaw_congr_fwd (le_trans S.nmr_le_NM hu) (le_trans S.nmr_le_NM hv) h2
+
 /-! ## The family's whole per-time datum reads only its residue -/
 
 /--

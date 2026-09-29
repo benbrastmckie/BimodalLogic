@@ -309,6 +309,41 @@ theorem share_trans {S : PlusSharingWitnessFamily Γ Del} {u : ℤ} {i j k : Fin
     (hij : S.share u i j) (hjk : S.share u j k) : S.share u i k :=
   SharingSkeleton.share_trans hij hjk
 
+/-! ### The fourth periodic datum, re-exported -/
+
+/-- The decoded bi-infinite succession matrix. Out of range it is the identity relation. -/
+def transRaw (S : PlusSharingWitnessFamily Γ Del) (u : ℤ) :
+    Fin S.lassos.length → Fin S.lassos.length → Bool :=
+  S.skeleton.transRaw u
+
+theorem transRaw_eq_skeleton (S : PlusSharingWitnessFamily Γ Del) (u : ℤ) :
+    S.transRaw u = S.skeleton.transRaw u := rfl
+
+theorem transRaw_def (S : PlusSharingWitnessFamily Γ Del) (u : ℤ) :
+    S.transRaw u
+      = @Periodic.unrollOf _ (transEqInhabited _) S.transBack S.transMid S.transFwd u := rfl
+
+/-- **Succession, arrival-pruned**, at the family's own `share`. -/
+def trans (S : PlusSharingWitnessFamily Γ Del) (u : ℤ) (i j : Fin S.lassos.length) : Prop :=
+  S.skeleton.trans u i j
+
+theorem trans_def (S : PlusSharingWitnessFamily Γ Del) (u : ℤ) (i j : Fin S.lassos.length) :
+    S.trans u i j ↔ (S.transRaw u i j = true ∧ S.share (u + 1) i j) := Iff.rfl
+
+theorem transRaw_refl (S : PlusSharingWitnessFamily Γ Del) (u : ℤ) (i : Fin S.lassos.length) :
+    S.transRaw u i i = true := S.skeleton.transRaw_refl u i
+
+@[refl]
+theorem trans_refl' (S : PlusSharingWitnessFamily Γ Del) (u : ℤ) (i : Fin S.lassos.length) :
+    S.trans u i i := S.skeleton.trans_refl' u i
+
+theorem share_succ_of_trans {S : PlusSharingWitnessFamily Γ Del} {u : ℤ}
+    {i j : Fin S.lassos.length} (h : S.trans u i j) : S.share (u + 1) i j := h.2
+
+instance decidableTrans (S : PlusSharingWitnessFamily Γ Del) (u : ℤ)
+    (i j : Fin S.lassos.length) : Decidable (S.trans u i j) :=
+  inferInstanceAs (Decidable (S.skeleton.trans u i j))
+
 /-- Every index shares its own representative. -/
 theorem share_rep (S : PlusSharingWitnessFamily Γ Del) (u : ℤ) (i : Fin S.lassos.length) :
     S.share u i (S.rep u i) := S.skeleton.share_rep u i
@@ -331,7 +366,7 @@ instance instNonemptyThread (S : PlusSharingWitnessFamily Γ Del) : Nonempty S.T
 family thread resolves to this rather than to the skeleton's field, which is stated at
 `S.skeleton.share`. -/
 theorem Thread.step {S : PlusSharingWitnessFamily Γ Del} (θ : S.Thread) (u : ℤ) :
-    S.share (u + 1) (θ.idx u) (θ.idx (u + 1)) := SharingSkeleton.thread_share_succ θ u
+    S.trans u (θ.idx u) (θ.idx (u + 1)) := SharingSkeleton.Thread.step θ u
 
 /--
 **An L⁺ family thread's step, read as the arrival-time sharing fact.**
