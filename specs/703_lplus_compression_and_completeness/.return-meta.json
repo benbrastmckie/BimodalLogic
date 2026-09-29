@@ -1,53 +1,37 @@
 {
-  "status": "partial",
-  "started_at": "2026-09-29T17:45:00Z",
-  "completed_at": "2026-09-29T18:40:00Z",
+  "status": "researched",
+  "started_at": "2026-09-29T20:42:48Z",
+  "completed_at": "2026-09-29T21:45:00Z",
+  "dispatch_seq": 19,
   "requires_user_review": true,
-  "review_reason": "Phase 8 blocked on an alignment budget forced by the compression theorem's own mid bound. Verification itself passed: full build green, zero sorries, axiom baseline unchanged. The task is incomplete because resolving the blocker changes the Lean Challenge Statement, which this dispatch was instructed not to edit.",
-  "blocked_phase": 8,
-  "verification": {
-    "verification_passed": true,
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "vacuous_note": "The repo-wide scan reports 1 hit, FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal, which is pre-existing, genuine and in a file this task did not touch. Zero were introduced.",
-    "axiom_count": 14,
-    "axiom_baseline_unchanged": true,
-    "build_passed": true,
-    "gates": "scripts/check-module-invariants.sh run in full after the fixes: ALL CHECKS PASSED, exit 0, zero FAIL lines. The three failures this dispatch introduced (INV stale inventory, C16 simpNF, C33 generated root) were fixed, not waived."
-  },
-  "user_decision": {
-    "question": "Phase 8 cannot discharge (C5) at every time under the theorem's stated mid-segment bound. How should the alignment budget be resolved?",
-    "why_user": "Every available resolution changes either the Lean Challenge Statement's mid bound or a landed Phase 4 theorem. The dispatch's standing instruction is to stop and report rather than edit the statement.",
-    "options": [
-      "Widen the mid bound only: keep plusCompressionBound for back and fwd, give mid its own larger bound. Smallest edit, touches no landed proof. RECOMMENDED.",
-      "Reinstate a common cycle length by strengthening Phase 4's exists_good_cycle_of_plusTypeSeq to return a cycle length dividing a declared modulus. Needs its own design round.",
-      "Find a seam-preserving rotation that reaches far-past demand times without growing mid. Not known to exist; needs research first."
-    ],
-    "blocking": true
-  },
-  "partial_progress": {
-    "stage": "phase_8_blocked",
-    "details": "Phases 1-7 complete (Phase 7 with one recorded exclusion, Invariant A dropped). Phase 8 task 1 complete and committed as Compression/Saturate.lean. Phase 8 tasks 2-6 and Phases 9-13 not started.",
-    "phases_completed": 7,
-    "phases_total": 13
-  },
+  "review_reason": "The L-plus compression theorem as stated in the plan's Lean Challenge Statement is refuted by a machine-checked probe. The task's target cannot be proved at any bound, so implementation cannot resume until the deliverable is re-scoped.",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/703_lplus_compression_and_completeness/summaries/01_lplus-compression-completeness-summary.md",
-      "summary": "Phase 7 closed with Invariant A excluded and Invariant B landed as a constant-offset shift; Phase 8's (C5) demand layer landed; Phase 8 blocked on the alignment budget."
+      "type": "report",
+      "path": "specs/703_lplus_compression_and_completeness/reports/02_semantics-first-compression-research.md",
+      "summary": "Semantics-first round: the compression statement is false against the landed certificate class (machine-checked), the four recorded obstructions share one root cause and sit downstream of a fifth fatal one, and the recommended target is a finite-graph certificate with computed liveness."
     }
   ],
+  "probes": [
+    "specs/703_lplus_compression_and_completeness/probes/NoFiniteCertificate.lean",
+    "specs/703_lplus_compression_and_completeness/probes/HopFreeIncomplete.lean",
+    "specs/703_lplus_compression_and_completeness/probes/TypePreservingPaste.lean",
+    "specs/703_lplus_compression_and_completeness/probes/HoppingCertificateExists.lean"
+  ],
+  "user_decision": {
+    "question": "The L-plus compression theorem is false for the landed certificate class: a genuine Z-time non-validity has no certifying PlusSharingWitnessFamily of any size (probes/NoFiniteCertificate.lean, sorry-free). How should task 703 be re-scoped?",
+    "options": [
+      "Re-scope to a finite-graph certificate: withdraw the current statement, land the refutation as theorems, then build the graph certificate with its checker and soundness, and give the finite model property its own research-first task.",
+      "Restrict the theorem to a fragment the landed certificate class covers, keeping the landed class and adding a hypothesis on the target formula.",
+      "Repair the landed class with a fairness condition on threads, as a sibling class with its own soundness theorem, keeping lassos and time stamps."
+    ],
+    "recommended": "Re-scope to a finite-graph certificate: withdraw the current statement, land the refutation as theorems, then build the graph certificate with its checker and soundness, and give the finite model property its own research-first task.",
+    "blocking": true
+  },
   "metadata": {
-    "session_id": "sess_1790680388_3d4c26",
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1790714537_5a4adc_703",
+    "agent_type": "lean-research-agent",
     "delegation_depth": 1,
-    "dispatch_seq": 18,
-    "compliance_check": "skipped",
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "skill-lean-implementation"
-    ]
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
   }
 }
