@@ -1,7 +1,7 @@
 # Implementation Plan: Task #697
 
 - **Task**: 697 - Typst generated counts staleness
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/697_typst_generated_counts_staleness/reports/01_generated_counts_staleness.md

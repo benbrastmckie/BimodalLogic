@@ -35,28 +35,50 @@
       "category": "PATTERN",
       "source_artifact": "specs/697_typst_generated_counts_staleness/summaries/01_counts-staleness-precommit-gate-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["bash", "refactor", "cli-modes", "dry", "pre-commit-hook"]
+      "suggested_keywords": [
+        "bash",
+        "refactor",
+        "cli-modes",
+        "dry",
+        "pre-commit-hook"
+      ]
     },
     {
       "content": "On a shared/concurrently-edited git working tree, verifying a script's bare-invocation behavior is byte-identical before/after a refactor cannot rely on a straight before/after diff (a sibling may land real changes in between). Instead, temporarily copy the pre-change script back into its original directory (so path-derived variables like REPO_ROOT still resolve correctly) and run old vs. new at the same instant for a true A/B comparison, then delete the temporary copy.",
       "category": "TECHNIQUE",
       "source_artifact": "specs/697_typst_generated_counts_staleness/summaries/01_counts-staleness-precommit-gate-summary.md",
       "confidence": 0.8,
-      "suggested_keywords": ["git", "concurrent-tasks", "regression-testing", "ab-comparison", "baseline"]
+      "suggested_keywords": [
+        "git",
+        "concurrent-tasks",
+        "regression-testing",
+        "ab-comparison",
+        "baseline"
+      ]
     },
     {
       "content": "When a generated file's regeneration on a shared tree leaves a diff against HEAD that is stamp-only (e.g. a recorded commit-hash/date field advanced because a sibling landed a commit in between, with no other field changed), commit that stamp-only refresh as its own clearly-labelled commit rather than attempting a git checkout/restore pathspec discard -- the latter is forbidden on a dirty shared tree by this repo's git-workflow rules, and the former is honest about what changed.",
       "category": "PATTERN",
       "source_artifact": "specs/697_typst_generated_counts_staleness/summaries/01_counts-staleness-precommit-gate-summary.md",
       "confidence": 0.75,
-      "suggested_keywords": ["git-workflow", "generated-files", "stamp-residue", "concurrent-tasks", "commit-hygiene"]
+      "suggested_keywords": [
+        "git-workflow",
+        "generated-files",
+        "stamp-residue",
+        "concurrent-tasks",
+        "commit-hygiene"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1790656266_d2dc32",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 6,
     "phases_total": 6
   }
