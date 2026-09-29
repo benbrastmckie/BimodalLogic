@@ -323,25 +323,26 @@ it silently.
 
 ---
 
-### Phase 3: Type-state carrier, pigeonhole, and path joining [NOT STARTED]
+### Phase 3: Type-state carrier, pigeonhole, and path joining [COMPLETED]
 
 **Goal**: Transcribe the first half of the cycle machinery: the finite type-state carrier, its
 cardinality bound, the step relation on it, and the path-joining lemmas that let two cycles be
 concatenated.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Cycle.lean`.
-- [ ] Define `PlusTypeState` over a `C : Finset PlusFormula` and `plusTypeOfT`; prove
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Cycle.lean`.
+- [x] Define `PlusTypeState` over a `C : Finset PlusFormula` and `plusTypeOfT`; prove
       `plusTypeOfT_subset`.
-- [ ] Prove `card_plusTypeState` and `natCard_plusTypeState`, the cardinality bounds that make the
+- [x] Prove `card_plusTypeState` and `natCard_plusTypeState`, the cardinality bounds that make the
       pigeonhole finite.
-- [ ] Define `PlusSeqStepT` and prove `iter_plusSeqStepT`.
-- [ ] Transcribe `exists_iterT_lt_card_aux` and `exists_iterT_lt_card`, the generic finite-relation
-      pigeonhole. These are stated over an abstract `[Finite W] [Nonempty W]`, so they may be
+- [x] Define `PlusSeqStepT` and prove `iter_plusSeqStepT`.
+- [x] Transcribe `exists_iterT_lt_card_aux` and `exists_iterT_lt_card`, the generic finite-relation
+      pigeonhole. *(deviation: altered — REUSED by import, not transcribed; see the Scope
+      Hypothesis result below)* These are stated over an abstract `[Finite W] [Nonempty W]`, so they may be
       reusable verbatim from the `Formula` side — check before re-proving.
-- [ ] Define `plusJoinPathT` and prove `plusJoinPathT_left`, `plusJoinPathT_right`,
+- [x] Define `plusJoinPathT` and prove `plusJoinPathT_left`, `plusJoinPathT_right`,
       `plusJoinPathT_steps`.
-- [ ] Prove `exists_recurring_plusTypeState`.
+- [x] Prove `exists_recurring_plusTypeState`.
 
 **Timing**: 2 hours
 
@@ -349,7 +350,14 @@ concatenated.
 
 **Verification Tier**: local
 
-**Scope Hypothesis**: the generic pigeonhole pair `exists_iterT_lt_card_aux` /
+**Scope Hypothesis** *(confirmed at implementation time: REUSE, not transcribe)*: both
+signatures were read. `exists_iterT_lt_card_aux {W : Type} [Finite W] [Nonempty W]
+(R : W → W → Prop)` and `exists_iterT_lt_card` mention neither `Formula` nor `TypeState C`
+anywhere, load-bearing or otherwise. Both are therefore reused by importing
+`FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Cycle`, and that import is
+recorded in the new module's header as a decision. Every other declaration of the `Formula`-side
+module IS monomorphic in `Formula` through `TypeState C = {S : Finset Formula // S ∈ C.powerset}`
+and was transcribed. Original hypothesis, for the record: the generic pigeonhole pair `exists_iterT_lt_card_aux` /
 `exists_iterT_lt_card` is asserted to be formula-agnostic and therefore reusable from the
 `Formula`-side module without re-proof. Confirm at implementation time by reading their
 signatures in `WitnessFamily/Compression/Cycle.lean`; if either mentions `Formula` or
