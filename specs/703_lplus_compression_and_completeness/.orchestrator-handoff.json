@@ -1,25 +1,36 @@
 {
   "status": "blocked",
-  "phase": "implement",
-  "dispatch_seq": 16,
-  "summary": "Landed phases 1-6 of the 13-phase L-plus compression plan plus phase 7's transcription half: the hop-free (C1')/(C2') collapse, the L-plus type map and sequence predicates, the type-state carrier and good-cycle machinery, fulfilment from good cycles, the readout layer and plusCompressionBound, and single-history lasso extraction. All sorry-free, full lake build green, axiom and vacuous counts identical to the pre-task baseline, soundness untouched. Phase 7 is BLOCKED on its Invariant A, which is not provable as written and whose stated purpose misdescribes the landed substrate; phases 8-13 all gate on it.",
+  "dispatch_seq": 18,
+  "task_number": 703,
+  "phases_completed": 7,
+  "phases_total": 13,
+  "session_id": "sess_1790680388_3d4c26",
+  "summary": "Phase 7 unblocked and closed with one recorded exclusion: Invariant A dropped per the recorded decision, Invariant B landed as a constant-offset shift that preserves every stated bound. Phase 8's (C5) demand layer landed as a new module. Phase 8 is now blocked on an alignment budget forced by the compression theorem's own mid-segment bound, which is part of the Lean Challenge Statement; the statement was not edited.",
+  "blocked_reason": "StabFaithful is demanded at every integer time, but Invariant B can move a witness lasso's mark only by the mid budget plusCompressionBound, while with Invariant A dropped the demand times spread over the least common multiple of the lassos' cycle lengths. Far-away demands have no constructible witness under the stated mid bound. Resolving it changes the Lean Challenge Statement's mid conjunct or a landed Phase 4 theorem.",
+  "requires_user_decision": true,
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/01_lplus-compression-completeness-summary.md",
-      "summary": "Implementation summary: six phases complete, phase 7 blocked, full blocker record and recommended resolution."
+      "summary": "Implementation summary for dispatch 18: Phase 7 closed, Phase 8 task 1 landed, Phase 8 blocked."
     },
     {
       "type": "plan",
       "path": "specs/703_lplus_compression_and_completeness/plans/01_lplus-compression-completeness.md",
-      "summary": "Plan updated with per-phase status, scope-hypothesis results, inline deviation annotations, and the Phase 7 BLOCKER record."
+      "summary": "Plan with the Phase 7 deviation and the Phase 8 BLOCKER record, including three enumerated resolutions."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-8-handoff-20260929T183000Z.md",
+      "summary": "Phase 8 handoff naming the blocker and the recommended resolution."
     }
   ],
-  "phases_completed": 6,
-  "phases_total": 13,
-  "blockers": [
-    "Phase 7 Invariant A is not provable as written. Padding by repetition preserves the decoded label function only at multiples of the cycle length, so the invariant needs L divides plusCompressionBound for every extracted cycle length L, which exists_good_cycle_of_plusTypeSeq does not supply; at a three-member closure the permitted lengths are 1 through 8 while the bound is 56, and back lengths 5, 7 and 8 have no common multiple below 280. Independently, the risk-table outcome it serves (NB = NF = plusCompressionBound) is false: PlusWitnessFamily/Decide.lean's perBack is repBack.length times the PRODUCT of the lassos' back lengths, never a least common multiple. Recommended resolution: drop Invariant A, which nothing downstream needs for correctness."
-  ],
-  "continuation_path": null,
-  "next_action_hint": "Decide Invariant A before any further dispatch. Do not start Phase 8; phases 8-13 all depend on Phase 7. The full blocker record, the three resolution options, and a working replacement mechanism for Invariant B are under the Phase 7 heading of the plan."
+  "verification": {
+    "build_passed": true,
+    "sorry_count": 0,
+    "axiom_count": 14,
+    "axioms_unchanged": true,
+    "gates": "scripts/check-module-invariants.sh run in full. Three failures arising from this dispatch's own additions were fixed, not waived: INV (stale generated inventory blocks), C16 (two @[simp] lemmas not in simp-normal form) and C33 (the generated root not naming the new module)."
+  },
+  "next_action": "Decide the Phase 8 alignment budget. The three resolutions are enumerated in the plan's Phase 8 BLOCKER record; resolution 1, giving mid its own larger bound in the Lean Challenge Statement while leaving back and fwd at plusCompressionBound, is recommended. Then re-plan Phase 8 against the chosen bound and redispatch. Phase 8's task 1 is already landed and does not need redoing."
 }

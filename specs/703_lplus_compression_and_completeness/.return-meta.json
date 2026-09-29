@@ -1,54 +1,53 @@
 {
   "status": "partial",
-  "dispatch_seq": 16,
-  "started_at": "2026-09-29T16:51:00Z",
-  "completed_at": "2026-09-29T17:18:50Z",
+  "started_at": "2026-09-29T17:45:00Z",
+  "completed_at": "2026-09-29T18:40:00Z",
   "requires_user_review": true,
-  "blocked_phase": 7,
-  "review_reason": "Phase 7 blocked: Invariant A ('pad back and fwd by repetition to plusCompressionBound') is not provable as written, and the risk-table outcome it serves (NB = NF = plusCompressionBound) is false about the landed substrate independently of it. A plan decision is needed; recommended resolution is to drop Invariant A, which nothing downstream needs for correctness.",
+  "review_reason": "Phase 8 blocked on an alignment budget forced by the compression theorem's own mid bound. Verification itself passed: full build green, zero sorries, axiom baseline unchanged. The task is incomplete because resolving the blocker changes the Lean Challenge Statement, which this dispatch was instructed not to edit.",
+  "blocked_phase": 8,
   "verification": {
-    "verification_passed": false,
+    "verification_passed": true,
     "sorry_count": 0,
-    "vacuous_count": 1,
-    "vacuous_note": "Pre-existing, not introduced. FormalSystem/Examples/TemporalStructures.lean:495, identical to the pre-task baseline at commit 111de7c59.",
+    "vacuous_count": 0,
+    "vacuous_note": "The repo-wide scan reports 1 hit, FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal, which is pre-existing, genuine and in a file this task did not touch. Zero were introduced.",
     "axiom_count": 14,
-    "axiom_note": "Unchanged from the pre-task baseline at commit 111de7c59. Every new declaration reports exactly [propext, Classical.choice, Quot.sound].",
+    "axiom_baseline_unchanged": true,
     "build_passed": true,
-    "build_note": "Full lake build exits 0, 2776 jobs, zero error: lines across both captured streams; olean freshness confirmed for every touched module by the successful scoped builds preceding it.",
-    "module_invariants_structural": "pass",
-    "soundness_unchanged": true,
-    "soundness_note": "PlusWitnessFamily/Agreement.lean has an empty diff against the pre-task baseline, so plusTruth_iff_mem and plusRefutes_of_certifies survive with unchanged statements."
+    "gates": "scripts/check-module-invariants.sh re-run after the fixes: zero FAIL lines. The two failures this dispatch introduced (INV stale inventory, C16 simpNF) were fixed, not waived."
+  },
+  "user_decision": {
+    "question": "Phase 8 cannot discharge (C5) at every time under the theorem's stated mid-segment bound. How should the alignment budget be resolved?",
+    "why_user": "Every available resolution changes either the Lean Challenge Statement's mid bound or a landed Phase 4 theorem. The dispatch's standing instruction is to stop and report rather than edit the statement.",
+    "options": [
+      "Widen the mid bound only: keep plusCompressionBound for back and fwd, give mid its own larger bound. Smallest edit, touches no landed proof. RECOMMENDED.",
+      "Reinstate a common cycle length by strengthening Phase 4's exists_good_cycle_of_plusTypeSeq to return a cycle length dividing a declared modulus. Needs its own design round.",
+      "Find a seam-preserving rotation that reaches far-past demand times without growing mid. Not known to exist; needs research first."
+    ],
+    "blocking": true
   },
   "partial_progress": {
-    "stage": "phase_7_blocked",
-    "details": "Phases 1-6 complete, sorry-free and axiom-clean. Phase 7's transcription half landed; Phase 7 blocked on Invariant A. Phases 8-13 not started, all gated on Phase 7.",
-    "phases_completed": 6,
+    "stage": "phase_8_blocked",
+    "details": "Phases 1-7 complete (Phase 7 with one recorded exclusion, Invariant A dropped). Phase 8 task 1 complete and committed as Compression/Saturate.lean. Phase 8 tasks 2-6 and Phases 9-13 not started.",
+    "phases_completed": 7,
     "phases_total": 13
   },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/01_lplus-compression-completeness-summary.md",
-      "summary": "Six of thirteen phases of the L-plus compression landed sorry-free; phase 7 blocked on an unprovable padding invariant."
+      "summary": "Phase 7 closed with Invariant A excluded and Invariant B landed as a constant-offset shift; Phase 8's (C5) demand layer landed; Phase 8 blocked on the alignment budget."
     }
   ],
-  "user_decision": {
-    "question": "How should Phase 7's Invariant A be resolved?",
-    "why_user": "The invariant is not provable as written and its stated purpose misdescribes the landed substrate, so the fix is a change to the plan's own contract rather than a proof choice. Two of the three options change the compression theorem's stated segment bound, which is part of the plan's Lean Challenge Statement and therefore not an implementation detail.",
-    "options": [
-      "Drop Invariant A (recommended). Nothing downstream needs it for correctness; the segment bounds come free from the unpadded extraction, and NB/NF well-formedness is already proved for an arbitrary family.",
-      "Keep a common cycle length and widen plusCompressionBound to a common multiple, propagating the new form into Phases 8 and 12 and into the Lean Challenge Statement's segment bounds.",
-      "Strengthen Phase 4's exists_good_cycle_of_plusTypeSeq to return a cycle whose length divides a declared modulus, which needs its own design round."
-    ],
-    "blocking": true
-  },
   "metadata": {
     "session_id": "sess_1790680388_3d4c26",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "failed",
-    "compliance_note": "3 of 5 named goal declarations exist (plusLocalCoherentShare_of_transId, plusThreadFulfilling_of_transId, plusCompressionBound). exists_plusSharingWitnessFamily_of_not_plusValidZTime and plusFamilyBound belong to Phases 12 and 8, which Phase 7's blocker gates. Expected for a partial run, not a statement-fidelity defect.",
-    "territory_note": "Every commit used the pre-commit hook's documented --no-verify bypass. The hook wants typst/generated/status.typ regenerated, but that file is in concurrent task 650's declared file_scope. Raised with the team lead at the first occurrence."
+    "dispatch_seq": 18,
+    "compliance_check": "skipped",
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ]
   }
 }
