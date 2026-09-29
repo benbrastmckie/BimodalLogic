@@ -53,7 +53,7 @@ next_project_number: 703
 
 ### Code Quality
 
-697 [PLANNING] — Close the recurring staleness gap between...
+697 [PLANNED] — Close the recurring staleness gap between...
 
 ### Completeness
 
@@ -187,11 +187,12 @@ CONSTRAINTS AND NON-GOALS. Do not modify any Lean statement: this task's Part A 
 ---
 
 ### 697. Typst generated counts staleness
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: code-quality
 - **Dependencies**: None
 - **Research**: [697_typst_generated_counts_staleness/reports/01_generated_counts_staleness.md]
+- **Plan**: [697_typst_generated_counts_staleness/plans/01_counts-staleness-precommit-gate.md]
 
 **Description**: Close the recurring staleness gap between typst/generated/status.typ and the live Lean tree, so that a task adding or removing a .lean file cannot silently turn CI red. Observed failure, twice: scripts/typst-sync-check.sh's Check 2 (count freshness) compares the committed formalsystem-file-count / formalsystem-line-count / tests-* / tools-* scalars in typst/generated/status.typ against a live regeneration, and nothing in the repository regenerates them. The gate went red on 2026-09-25 with six stale counts (committed 537 files / 285608 lines vs live 568 / 301253) and was the SOLE failing step of that CI run, with build, test and lint all green; it then went red again as soon as FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean landed, moving the file count 603 -> 604 and the line count by 281. Both times the remedy was the same one command, `bash scripts/typst-status-counts.sh`, which regenerates the file from live source. So the defect is not in either script: the generator and the checker agree, and there is simply no moment in any workflow at which the generator runs. INVESTIGATE AND CHOOSE, recording the comparison in the report rather than adopting the first option: (a) a version-controlled hooks directory plus an installer script and `git config core.hooksPath`, running the generator pre-commit when the staged set touches any .lean file -- note the repository currently has NO versioned hooks directory and core.hooksPath is the default .git/hooks, so this introduces new contributor-facing infrastructure and must be documented wherever contributor setup is documented; (b) a `--fix` mode on scripts/typst-sync-check.sh that invokes the generator, making the check self-healing when run locally but still requiring someone to run it; (c) regeneration as a step in whatever workflow lands Lean files, so the counts move in the same commit as the source; (d) any option the investigation surfaces, including making the counts computed at Typst compile time rather than stamped, which would delete the class of defect outright instead of automating around it. Score each on whether it prevents the failure or merely detects it sooner, on what it costs a fresh clone, and on whether CI would still catch a bypass. CONSTRAINTS: scripts/typst-status-counts.sh --json is consumed by scripts/typst-sync-check.sh, so the two must stay compatible; the generator NEEDS A BUILT LIBRARY in its default mode because it reads a per-declaration axiom report out of the build, which rules out any hook shape that must run without oleans; the stamp-commit and stamp-date fields mean a regeneration always dirties the file even when counts are unchanged, so a naive always-run hook would create spurious diffs and the chosen design must address that. Deliverable: the chosen mechanism implemented, the stale-count class demonstrably prevented (show the mechanism firing on a synthetic .lean addition), and the full CI-equivalent gate sweep still green.
 
