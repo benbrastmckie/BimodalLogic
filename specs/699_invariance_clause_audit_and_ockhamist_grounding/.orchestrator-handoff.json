@@ -1,0 +1,17 @@
+{
+  "task_number": 699,
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 4,
+  "session_id": "sess_1790656266_d2dc32_699",
+  "dispatch_seq": 9,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/699_invariance_clause_audit_and_ockhamist_grounding/plans/01_invariance-clause-audit-ockhamist-grounding.md",
+      "summary": "Four-phase closing round: machine-check remaining asserted audit verdicts, file the trans_refl follow-on payload and documentation handoffs, make the enumeration re-runnable, reconcile the report."
+    }
+  ],
+  "next_steps": "Run /implement 699. Wave 1 is phases 1, 2, 3 (disjoint new files, parallelizable); phase 4 is the only report edit and depends on all three. Phase 2 is the time-critical one.",
+  "notes": "No Lean statement, docstring or FormalSystem/ file is modified by any phase. No write to specs/state.json (sibling task 698 holds it this cycle) or specs/TODO.md; filing the proposed follow-on task is a user /task action, so the plan produces a paste-ready payload under the task's own proposals/ directory instead. Every phase writes only under specs/699_invariance_clause_audit_and_ockhamist_grounding/."
+}

@@ -97,7 +97,7 @@ next_project_number: 703
 
 ### Incompleteness
 
-699 [PLANNING] — Generalize the lesson of the L-plus certificate...
+699 [PLANNED] — Generalize the lesson of the L-plus certificate...
 
 ### Literature
 
@@ -159,11 +159,12 @@ CONSTRAINTS. Do not modify Lean source, the substrate design, or any other task'
 ---
 
 ### 699. Invariance clause audit and ockhamist grounding
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: formal:logic
 - **Topic**: incompleteness
 - **Dependencies**: None
 - **Research**: [699_invariance_clause_audit_and_ockhamist_grounding/reports/01_invariance-clause-audit-ockhamist-grounding.md]
+- **Plan**: [699_invariance_clause_audit_and_ockhamist_grounding/plans/01_invariance-clause-audit-ockhamist-grounding.md]
 
 **Description**: Generalize the lesson of the L-plus certificate incompleteness into (A) a mechanical audit that finds the same latent defect wherever else it occurs, and (B) a literature grounding that says whether the defect and its repair instantiate a known result about tense in branching time. This task deliberately does NOT re-do the substrate repair: task 696 owns the design and implementation of that. What is unowned is whether the same clause shape is silently collapsing OTHER conditions, and whether the repair being adopted is the move philosophical logic already knows is forced.
 
