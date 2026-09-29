@@ -419,47 +419,66 @@ zero-change outcome is a legitimate, reportable result, but only after that re-c
 
 ---
 
-### Phase 5: Residue re-check, close-out and follow-on record [NOT STARTED]
+### Phase 5: Residue re-check, close-out and follow-on record [COMPLETED]
 
 **Goal**: Re-check that no remaining pair of non-terminal tasks has an undeclared shared write
 target, report the residue rather than silently leaving it, and record the out-of-repo enforcement
 follow-on.
 
 **Tasks**:
-- [ ] Run the full validator and diff against Phase 1's baseline capture:
+- [x] Run the full validator and diff against Phase 1's baseline capture:
       `bash .claude/scripts/validate-state.sh > "$SCRATCH/validate-after.txt" 2>&1 || true` then
       `diff <(grep -E "Coarse file_scope|Duplicate file_scope" "$SCRATCH/validate-before.txt") <(grep -E "Coarse file_scope|Duplicate file_scope" "$SCRATCH/validate-after.txt")`.
-      Confirm every removed line is an in-scope repair and that no line was added.
-- [ ] Write a throwaway probe in the scratchpad (never committed) that sources
+      Confirm every removed line is an in-scope repair and that no line was added. *(completed: 4
+      lines removed — 178's duplicate, 282/296/298's coarse findings — zero lines added)*
+- [x] Write a throwaway probe in the scratchpad (never committed) that sources
       `.claude/scripts/lib/file-scope-overlap.sh` and, using its canonical `scopes_overlap_first`
       predicate (never a re-derived rule), enumerates every pair of non-terminal tasks whose
       declared `file_scope`s overlap AND between which no dependency edge exists in either
-      direction. Report that list as the residual undeclared-shared-write-target set.
-- [ ] Note explicitly that two tasks correctly declaring the *same specific file* (695 and 696 both
+      direction. Report that list as the residual undeclared-shared-write-target set. *(completed:
+      6 pairs found — see summary's residue table)*
+- [x] Note explicitly that two tasks correctly declaring the *same specific file* (695 and 696 both
       declaring `scripts/check-module-invariants.sh` and `docs/theorem-index.md`) is not a defect —
       the territory contract's per-hunk staging discipline is the designed mechanism for that case.
-- [ ] Record the residue for the summary: (a) the non-dependency-gated overlapping pairs from the
+      *(completed: 5 of the 6 probe pairs are this sanctioned case — (700,698) specs/TODO.md +
+      specs/state.json, (696,695) docs/theorem-index.md, (282,257) data/README.md, (177,695)
+      README.md, (543,695) FormalSystem.lean; the 6th, (464,481), is a genuine directory-vs-file
+      overlap below Check 8's default 3-task threshold, reported as residue rather than silently
+      repaired since no research grounds a dependency edge between them)*
+- [x] Record the residue for the summary: (a) the non-dependency-gated overlapping pairs from the
       probe; (b) project 412's `null` `file_scope`, with the reason it outranks any coarse
       declaration (a missing declaration is invisible to `scopes_overlap_first`, so it produces no
       signal at all, not even a WARN); (c) the 28 missing-key/null-value visibility findings as a
       separately-tracked class this task deliberately did not sweep; (d) the stale `data/*`
       filenames on 282 and 298, left uncorrected because choosing the real target would be guessing.
-- [ ] Record the named follow-on for the other repository:
+      *(completed: recorded in the implementation summary; missing/null count re-confirmed at 28,
+      unchanged from research)*
+- [x] Record the named follow-on for the other repository:
       `/home/benjamin/.config/nvim/agent-system`, file
       `extensions/core/scripts/orchestrate-cycle-postflight.sh`, block
       "WORK (h): modified_files vs file_scope excursion advisory (detection only)" — the excursion
       computation already exists and is correct; only its consequence (stderr advisory, no gate, no
       exit-code, no verdict effect) needs changing. State that it must be filed as a task in that
       repository and must not be attempted from here, per
-      `.claude/rules/source-store-deploy-boundary.md`.
-- [ ] Regenerate the rendered view: `bash .claude/scripts/generate-todo.sh`. Do not stage
+      `.claude/rules/source-store-deploy-boundary.md`. *(completed: recorded in the implementation
+      summary)*
+- [x] Regenerate the rendered view: `bash .claude/scripts/generate-todo.sh`. Do not stage
       `specs/TODO.md` from this phase — it is wholesale-regenerated and currently carries
       concurrent siblings' pending rows; 698's own postflight stages it under
-      `--honest-index-rows`.
-- [ ] Run the repo-wide task-reference lint to confirm this task introduced no task-number citation
-      outside `specs/**`: `bash .claude/scripts/check-task-references.sh`.
-- [ ] Commit any final `specs/state.json` delta:
+      `--honest-index-rows`. *(completed; not staged)*
+- [x] Run the repo-wide task-reference lint to confirm this task introduced no task-number citation
+      outside `specs/**`: `bash .claude/scripts/check-task-references.sh`. *(completed with a
+      caveat: the lint exits 1 on 198 PRE-EXISTING, unrelated occurrences across the repo — none of
+      them attributable to task 698 (zero hits for "698" in its output; 698's own commits touched
+      only `specs/state.json` and `specs/698_.../**`, both exempt by the lint's own `specs/**`
+      carve-out). This is the same ungated-scan-root gap 177's own description already names (item
+      C4: "the task-reference lint does not scan Tests/ or FormalSystem/... record the scan-root
+      gap for an upstream fix"), pre-dating this task and out of scope to fix here)*
+- [x] Commit any final `specs/state.json` delta:
       `bash .claude/scripts/git-commit-scoped.sh --message "task 698 phase 5: re-check file_scope residue and record enforcement follow-on" --session "$SESSION_ID" --honest-index-rows 698 -- specs/state.json`
+      *(deviation: skipped — the residue re-check surfaced no in-scope repair not already made
+      (464/481 reported as residue, not repaired, per the anti-guessing standard); `specs/state.json`
+      has no pending delta, so no commit was made this phase)*
 
 **Timing**: 45 minutes
 
