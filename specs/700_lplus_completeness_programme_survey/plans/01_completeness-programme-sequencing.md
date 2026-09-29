@@ -286,16 +286,17 @@ update every cross-reference in Phase 3 accordingly.
 
 ---
 
-### Phase 3: Write the cross-repository hand-off note [NOT STARTED]
+### Phase 3: Write the cross-repository hand-off note [COMPLETED]
 
 **Goal**: Leave one self-contained note that a reader in either repository can act on, naming
 every must-land result by fully-qualified declaration name, so the hand-off survives task
 renumbering on either side.
 
 **Tasks**:
-- [ ] Create `specs/700_lplus_completeness_programme_survey/notes/02_cross-repo-handoff.md`
+- [x] Create `specs/700_lplus_completeness_programme_survey/notes/02_cross-repo-handoff.md`
       opening with the soundness sentence: every gap named is a completeness-side gap, the
       certificate class is empty on a fragment and never unsound on it.
+      *(completed)*
 - [ ] Record the five must-land results by fully-qualified declaration name, with the
       Phase 1 correction applied:
       `FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt` (task 695);
@@ -308,28 +309,35 @@ renumbering on either side.
       statements unchanged);
       and the L⁺ compression theorem plus its bound (the new compression task) — mapped onto
       the paired repository's four stated needs for `extend_bimodal_to_stability_modal`.
-- [ ] State plainly that `apply_upstream_adequacy_chain_rows`,
+      *(completed)*
+- [x] State plainly that `apply_upstream_adequacy_chain_rows`,
       `rescope_blocked_adequacy_consumers` and `bimodal_theory_limits_example_group` in the
       paired repository need nothing further from here and should not wait, and that
       `a3_compute_bounds_from_closure` is orthogonal (it needs a minimal-period result the
       landed theorem does not supply).
-- [ ] Carry the O3 warning forward explicitly: the L⁺ lasso-count bound may not be
+      *(completed)*
+- [x] Carry the O3 warning forward explicitly: the L⁺ lasso-count bound may not be
       `|closure| + 1`, so the paired repository's search-bound expectations must not be set
       from the Formula side's figure.
+      *(completed)*
 - [ ] Record the two hand-offs that are notes rather than edits, each with its mechanism:
       (a) the F7 nine-file table belongs in task 696's plan's `Files to modify` lines, where
       `scripts/plan-file-scope-harvest.sh` harvests it into `file_scope` at plan postflight;
       (b) task 695's plan should name the consequence-form (`Γ ≠ []`) analogue as an extension
       point, since `WitnessFamily/Compression/Assembly.lean:66` identifies it as one of three
       `Γ = []`-specific residue items. State that neither is applied here, and why.
-- [ ] Record the serialization rule as a standing operational note: never dispatch two of
+      *(completed)*
+- [x] Record the serialization rule as a standing operational note: never dispatch two of
       {695, 696, the new compression task, the new gates task} implementing in the same cycle,
       because `scripts/check-module-invariants.sh` (C2 `AXIOM_BASELINE`) and
       `docs/theorem-index.md` are shared, block-rewritten artifacts.
-- [ ] Include the Component 7 confirmation summary table for the two created entries — number,
+      *(completed)*
+- [x] Include the Component 7 confirmation summary table for the two created entries — number,
       title, task type, dependencies, with the entry-B→entry-A edge annotated
       `(auto: file overlap)` — so the non-interactive creation remains auditable.
-- [ ] Commit the two notes files scoped to this task's directory.
+      *(completed)*
+- [x] Commit the two notes files scoped to this task's directory.
+      *(completed)*
 
 **Timing**: 1 hour
 
