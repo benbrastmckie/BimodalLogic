@@ -1,20 +1,20 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "phases_completed": 6,
   "phases_total": 6,
+  "dispatch_seq": 12,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/697_typst_generated_counts_staleness/plans/01_counts-staleness-precommit-gate.md",
-      "summary": "6-phase plan: --counts-only/--fix modes on typst-sync-check.sh, versioned .githooks/pre-commit gate, idempotent installer, synthetic-.lean demonstration, contributor docs, full CI-equivalent sweep."
+      "type": "summary",
+      "path": "specs/697_typst_generated_counts_staleness/summaries/01_counts-staleness-precommit-gate-summary.md",
+      "summary": "All 6 phases COMPLETED: --counts-only/--fix modes on typst-sync-check.sh, versioned .githooks/pre-commit gate, install-git-hooks.sh (installed live), a live block/fix/teardown demonstration on a synthetic .lean addition, contributor-facing documentation, and a full CI-equivalent gate sweep (9/11 green, 2 attributed to already-landed sibling commits outside scope)."
     }
   ],
-  "next_steps": "Run /implement 697 to execute the plan",
+  "next_steps": "Task implementation complete; ready for postflight/completion.",
   "metadata": {
-    "session_id": "sess_1790656266_d2dc32_697",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 7
+    "session_id": "sess_1790656266_d2dc32",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }
