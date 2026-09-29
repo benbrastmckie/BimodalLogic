@@ -196,6 +196,21 @@ failure signal; the script's own `RESULT: PASS`/`FAIL` line, not the presence of
 
 **Run locally**: `bash scripts/readme-lint.sh`.
 
+### Typst Sync Check — Local Pre-Commit Counterpart
+
+`scripts/typst-sync-check.sh`'s Check 2 (count freshness: `typst/generated/status.typ` vs. a
+live regeneration) now has a local pre-commit counterpart, `.githooks/pre-commit`, installed via
+`bash scripts/install-git-hooks.sh` (see `CONTRIBUTING.md`'s "Development Setup"). The hook
+fires only when a commit's staged set touches a `.lean` path, and calls
+`scripts/typst-sync-check.sh --counts-only` (build-free) to block the commit on drift before it
+ever reaches CI.
+
+This is a convenience, not a replacement: **CI's `typst-sync-check.sh` step is deliberately
+unchanged** and remains the authoritative backstop. `git commit --no-verify` bypasses the local
+hook (the legitimate case being drift caused by another writer's uncommitted `.lean` files on a
+shared tree), and CI's own Check 2 still catches an unfixed bypass. See
+`scripts/typst-sync-check.sh --help` for the full mode list (`--counts-only`, `--fix`).
+
 ## Wiring a New Check Script
 
 This is the convention every task that adds a new gating step to `.github/workflows/ci.yml`
@@ -417,6 +432,13 @@ lake exe lint-style
 # Check the generated library root; after adding, moving or deleting a module under
 # FormalSystem/, regenerate it with the same command minus --check and commit the result
 lake exe mk_all --lib FormalSystem --check
+
+# Check Typst/Lean sync (name resolution, count freshness, machine appendix)
+bash scripts/typst-sync-check.sh
+
+# If Check 2 (count freshness) is red after adding/removing a .lean file, repair it
+# (needs a built library):
+bash scripts/typst-sync-check.sh --fix
 ```
 
 ## Branch Protection (Recommended)

@@ -31,6 +31,14 @@ lake build
 
 # Run tests to verify setup
 lake test
+
+# Install the repository's git hooks (one-time per clone). This activates a
+# build-free pre-commit gate that blocks a .lean-touching commit when
+# typst/generated/status.typ (the reference manual's cited counts) has
+# drifted from a live regeneration, so a stale count cannot silently reach
+# CI. It can be bypassed with `git commit --no-verify`, with CI's own
+# typst-sync-check.sh as the backstop.
+bash scripts/install-git-hooks.sh
 ```
 
 ### Verifying Setup
@@ -44,6 +52,9 @@ lake test
 
 # Linter should have no warnings
 lake lint
+
+# Git hooks should be installed
+bash scripts/install-git-hooks.sh --check
 ```
 
 ## 2. Development Workflow

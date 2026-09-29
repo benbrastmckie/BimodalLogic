@@ -388,32 +388,37 @@ and the demonstration must be re-run on a quiet tree rather than reported as-is.
 
 ---
 
-### Phase 5: Document the contributor-facing setup step [NOT STARTED]
+### Phase 5: Document the contributor-facing setup step [COMPLETED]
 
 **Goal**: Make the one-time installer discoverable where contributor setup and CI behaviour are
 already documented, so a fresh clone gets the gate and a future reader of the CI doc understands
 why staleness should now be rare.
 
 **Tasks**:
-- [ ] Add a "Git Hooks" step to `CONTRIBUTING.md`'s "Development Setup" block, immediately after
+- [x] Add a "Git Hooks" step to `CONTRIBUTING.md`'s "Development Setup" block, immediately after
   `lake build`: one line running `bash scripts/install-git-hooks.sh`, with a sentence saying what
   the hook gates (`.lean`-touching commits vs. `typst/generated/status.typ` freshness), that it
   is build-free, and that it can be bypassed with `git commit --no-verify` with CI as the
-  backstop.
-- [ ] Mention the `--check` mode in `CONTRIBUTING.md`'s "Verifying Setup" block so a contributor
-  can confirm the hook is active.
-- [ ] Add a short subsection to `docs/development/CI_CD_PROCESS.md` noting that Check 2's
+  backstop. *(completed)*
+- [x] Mention the `--check` mode in `CONTRIBUTING.md`'s "Verifying Setup" block so a contributor
+  can confirm the hook is active. *(completed)*
+- [x] Add a short subsection to `docs/development/CI_CD_PROCESS.md` noting that Check 2's
   count-freshness gate now has a local pre-commit counterpart (`.githooks/pre-commit` via
   `scripts/install-git-hooks.sh`), that CI's step is deliberately unchanged and remains the
   authoritative backstop, and that the hook is not a substitute for it. Place it near the
-  existing Typst-sync-check material rather than inventing a new top-level section.
-- [ ] Add `install-git-hooks.sh` to `scripts/README.md`'s script table, matching the existing
-  one-line-description column style.
-- [ ] Add the `bash scripts/typst-sync-check.sh --fix` remedy to
+  existing Typst-sync-check material rather than inventing a new top-level section. *(completed:
+  added "### Typst Sync Check — Local Pre-Commit Counterpart" immediately after "Check README
+  Health Step", the last of the existing per-check `###` subsections, before "## Wiring a New
+  Check Script")*
+- [x] Add `install-git-hooks.sh` to `scripts/README.md`'s script table, matching the existing
+  one-line-description column style. *(completed, in the "Typst synchronization utilities"
+  table)*
+- [x] Add the `bash scripts/typst-sync-check.sh --fix` remedy to
   `docs/development/CI_CD_PROCESS.md`'s "Running CI Locally" block (or the nearest fitting
-  place), since that is where a contributor looks after a red Check 2.
-- [ ] Use no task-number references in any of these files (they are all outside `specs/**`; see
-  `.claude/rules/no-task-references-in-deliverables.md`).
+  place), since that is where a contributor looks after a red Check 2. *(completed, alongside the
+  bare `typst-sync-check.sh` invocation which that block was missing entirely)*
+- [x] Use no task-number references in any of these files (they are all outside `specs/**`; see
+  `.claude/rules/no-task-references-in-deliverables.md`). *(completed; verified via grep)*
 
 **Timing**: 45 minutes
 

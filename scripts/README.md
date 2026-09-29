@@ -44,7 +44,8 @@ Not gates — invoked on demand to (re)generate or validate the training/benchma
 | `typst-status-counts.sh` | Single-source-of-truth generator for the volatile counts cited in `typst/` (sorry totals, axiom-constructor count, rule count). |
 | `typst-module-map.sh` | Build-free generator for the Automation "Module Map" table cited in `typst/chapters/p4-proof-automation.typ`. |
 | `typst-machine-appendix.sh` | Single-source-of-truth generator for the shipped machine-readable axiomatization, rendered into a typst data file. |
-| `typst-sync-check.sh` | Mechanical drift detector for `typst/`: name resolution, count freshness, and declared-divergence bookkeeping. |
+| `typst-sync-check.sh` | Mechanical drift detector for `typst/`: name resolution, count freshness, and declared-divergence bookkeeping. `--counts-only` runs Check 2 alone (build-free); `--fix` regenerates `status.typ` on a Check 2 mismatch (needs a built library). |
+| `install-git-hooks.sh` | Idempotent installer that points this clone's local `core.hooksPath` at `.githooks/`, activating the build-free pre-commit gate (`.githooks/pre-commit`) that blocks a `.lean`-touching commit on count drift; `--check` reports installation status read-only. |
 
 ## Other utilities
 
