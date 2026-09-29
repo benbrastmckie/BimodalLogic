@@ -463,3 +463,89 @@ existing `"TL_CM_1"`/`"TL_CM_2"` entries at lines 1503-1504 and 1613-1614):
   the placeholder above.
 - **Do not weaken or reinterpret** `TL_CM_1`/`TL_CM_2` or any other existing example; this
   amendment is additive.
+
+## New ModelChecker Task — Ready-to-File Description
+
+One genuinely new, independent piece of work was found (research report Q5): a documentation-only
+restatement of `docs/ADEQUACY.md`'s Lemma 2/Corollary 2.2 as the specialization of the verified
+side's thread account to the trivial full-succession case. This is scoped as its own task, not
+folded into task 200 or task 219, because it has zero code dependency on either and is startable
+today.
+
+```
+Title suggestion: restate ADEQUACY.md's histories lemma as a specialization of the verified
+side's thread account
+
+Documentation-only. Zero code change, no upstream dependency, startable immediately.
+
+`docs/ADEQUACY.md`'s Lemma 2 (Histories) states `H_F = {t -> (i, t+c)}`, i.e. every frame history
+is exactly a lasso orbit (`ShiftSet.total_eq_orbit`, `Semantics/ShiftSet.lean:252`), and Corollary
+2.2 (Box's range) derives from it that `H_F` is exactly the certified histories. The "Why the
+design is deterministic" section (~line 340) already names determinism as exactly what makes
+Lemma 2 and the Box case of Lemma 4 go through, and already gestures toward a state-sharing
+extension needing "re-proving Lemma 2 and redesigning condition (C3) ... citing total_eq_orbit
+and the Box case of Lemma 4, not Limit and Saturation" -- without yet stating the specialization
+explicitly.
+
+TASK: add a short subsection (near Lemma 2 or in "Why the design is deterministic") restating
+Lemma 2 as the special case of BimodalLogic's verified thread characterization
+(`SharingWitnessFamily.total_eq_thread`, `WitnessFamily/Sharing/Histories.lean`) at trivial
+full succession (`trans := full`, i.e. every succession matrix entry true, which is exactly
+today's "no sharing" default -- BimodalLogic's own `liftable_of_full` sufficient lemma discharges
+the closure obligation for exactly this case, per
+`FormalSystem.Metalogic.Decidability.WitnessFamily.Sharing.Skeleton`'s
+`liftable_of_full`/`transMatOf_full`). State explicitly: a future sharing extension to this
+checker would then be a REFINEMENT of this argument shape (relaxing one named special case) 
+rather than a rewrite of Lemma 2 from scratch. No Lean or Python code changes; this task edits
+only docs/ADEQUACY.md prose.
+
+Do NOT restate Corollary 2.2 or the Box case of Lemma 4 as already solved under sharing --
+those still require the `Liftable` closure obligation in general, which this task does not
+discharge and does not claim to. Scope is limited to Lemma 2's own restatement.
+
+Source: "Research Report: Task #701" (BimodalLogic, dated 2026-09-29), Q5.
+```
+
+**Verification against this deliverable's own criteria**: `docs/ADEQUACY.md`'s Lemma 2 (line
+145), Corollary 2.2 (line 162), and "Why the design is deterministic" (line 340) anchors were
+confirmed present at these line numbers in this implementation phase (re-grepped, not carried
+over from the research report unchecked). `total_eq_thread`, `SharingSkeleton`, and
+`liftable_of_full` were confirmed present on the BimodalLogic side in this phase (the first two
+in this phase's Verification Snapshot / Phase 2 grep above; `liftable_of_full` confirmed by a
+direct grep of `Skeleton.lean` during this phase, alongside `transMatOf_full`, both present as
+named theorems).
+
+## Recorded Non-Task Decisions
+
+Two candidate items from the research report's phased proposal are deliberately **not** filed as
+separate ModelChecker tasks here, each for a stated reason:
+
+- **The `trans*` wire fields as a standalone task.** Not filed. The three fields
+  (`trans_back`/`trans_mid`/`trans_fwd` on `WitnessFamily` in `certificate.py`) are additive and
+  safe to add in isolation (confirmed in this phase's Verification Snapshot: no fixture carries a
+  `trans*` key today, and none would break if a `trans*`-aware decoder were added). But adding
+  them before a producer emits them or a consumer needs them is dead code. They belong inside
+  task 200's own scope, sequenced with the search-code work rather than ahead of it — task 200's
+  ready-to-file text above already names this as porting-map item 3, so a separate task would
+  duplicate rather than clarify the work.
+- **A cross-repository staleness-detection context pattern.** Not filed. The research report
+  flagged, as a `Context Extension Recommendation`, that no mechanism currently catches "a task
+  description asserts another repository's task status as of time T; that status has since
+  changed" — exactly the failure mode this very task's own Phase 1 re-verification caught twice
+  (703's status word, drifting again between planning and implementation). This plan's own
+  Non-Goals section already declined to add a `.claude/context/` pattern for this here: `.claude/`
+  in a deployed tree is a gitignored, disposable deploy artifact regenerated from a source store,
+  so a hand-authored file there would be silently wiped by the next regeneration. It is recorded
+  here as a named proposal, not filed as a task in either repository's task system, since which
+  repository's source store should own it (BimodalLogic's, ModelChecker's, or a shared one) is
+  itself an open design question this task has no authority to settle unilaterally.
+
+### Dependency status, plainly stated
+
+| Item | Filed as | Dependency status | Startable today? |
+|---|---|---|---|
+| Task 200 replacement text | Ready-to-file description above | Blocked on BimodalLogic's compression project (`implementing`, not complete) | The TEXT is filed today; the underlying implementation work is not startable until that dependency completes |
+| Task 219 reopen-and-amend | Ready-to-file text above | No upstream dependency; the redesign it corrects against is already landed | Yes — filing and applying the amendment is startable immediately |
+| New ADEQUACY.md restatement task | Ready-to-file description above | No upstream dependency, documentation-only | Yes — startable immediately |
+| `trans*` wire fields | Not filed (folded into task 200's scope) | Same as task 200 | No — not before task 200's search-code phase |
+| Cross-repository staleness pattern | Not filed (named proposal only) | Undetermined ownership | No — needs a design decision first |

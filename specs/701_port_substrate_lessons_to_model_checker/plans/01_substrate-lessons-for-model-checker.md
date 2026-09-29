@@ -287,26 +287,27 @@ in the deliverable to whatever the tree shows rather than to what this plan pred
 
 ---
 
-### Phase 4: Write the new ModelChecker task description and record the non-tasks [NOT STARTED]
+### Phase 4: Write the new ModelChecker task description and record the non-tasks [COMPLETED]
 
 **Goal**: File the one genuinely new piece of work as a ready-to-file description, and record
 explicitly which candidate items are deliberately not being filed as separate tasks.
 
 **Tasks**:
 
-- [ ] Write the new documentation task description: restate the adequacy document's histories
+- [x] Write the new documentation task description: restate the adequacy document's histories
       lemma and its Box corollary as the specialization of the verified side's thread
       characterization to the trivial full-succession case, so a later sharing extension is a
       refinement rather than a rewrite. Scope it as documentation-only, zero code change, with no
-      upstream dependency.
-- [ ] Record the decision not to file the `trans*` wire fields as a separate task, with the
+      upstream dependency. *(completed: scoped to Lemma 2 only, explicitly excluding Corollary 2.2
+      and the Box case of Lemma 4 from this task's claim)*
+- [x] Record the decision not to file the `trans*` wire fields as a separate task, with the
       reason: the fields are additive and safe, but adding them before a producer emits them or a
       consumer needs them is dead code, so they belong inside task 200's scope, sequenced with the
-      search work rather than ahead of it.
-- [ ] Record the decision not to file the cross-repository staleness context pattern here, with
-      the source-store and deploy-artifact reason, leaving it as a named proposal.
-- [ ] For each filed and non-filed item, state its dependency status plainly so a reader can tell
-      what is startable today.
+      search work rather than ahead of it. *(completed)*
+- [x] Record the decision not to file the cross-repository staleness context pattern here, with
+      the source-store and deploy-artifact reason, leaving it as a named proposal. *(completed)*
+- [x] For each filed and non-filed item, state its dependency status plainly so a reader can tell
+      what is startable today. *(completed: dependency-status table)*
 
 **Timing**: 0.75 hours
 

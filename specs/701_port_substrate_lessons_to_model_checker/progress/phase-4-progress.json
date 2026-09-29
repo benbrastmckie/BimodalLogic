@@ -1,0 +1,15 @@
+{
+  "phase": 4,
+  "phase_name": "Write the new ModelChecker task description and record the non-tasks",
+  "started_at": "2026-09-29T18:20:00Z",
+  "last_updated": "2026-09-29T18:35:00Z",
+  "objectives": [
+    {"id": 1, "description": "Write the new documentation task description", "status": "done", "files_touched": ["specs/701_port_substrate_lessons_to_model_checker/summaries/01_substrate-lessons-for-model-checker-summary.md"]},
+    {"id": 2, "description": "Record decision not to file trans* wire fields task", "status": "done", "files_touched": ["specs/701_port_substrate_lessons_to_model_checker/summaries/01_substrate-lessons-for-model-checker-summary.md"]},
+    {"id": 3, "description": "Record decision not to file cross-repository staleness pattern task", "status": "done", "files_touched": ["specs/701_port_substrate_lessons_to_model_checker/summaries/01_substrate-lessons-for-model-checker-summary.md"]},
+    {"id": 4, "description": "State dependency status plainly for each filed/non-filed item", "status": "done", "files_touched": ["specs/701_port_substrate_lessons_to_model_checker/summaries/01_substrate-lessons-for-model-checker-summary.md"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0
+}
