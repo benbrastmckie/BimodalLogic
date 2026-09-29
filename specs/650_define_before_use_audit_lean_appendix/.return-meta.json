@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 11,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/650_define_before_use_audit_lean_appendix/reports/01_define-before-use-audit.md",
+      "summary": "Complete 140-row first-use ledger for typst/chapters/ax-lean-appendix.typ across the four item classes, with 62 clean rows, 30 forward references, 44 never-introduced items, 8 partials and 4 non-reproducing seeded items; all three seeded KNOWN GAPS confirmed, one terminology defect found at line 651, and eleven underpinning Lean facts verified by lake env lean."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790680388_3d4c26_650",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
