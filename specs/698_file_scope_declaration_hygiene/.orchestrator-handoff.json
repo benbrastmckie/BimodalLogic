@@ -1,20 +1,20 @@
 {
-  "status": "planned",
-  "summary": "Authored a 5-phase plan for task 698's file_scope declaration hygiene: narrow 282/296/298's inherited BimodalTools/ triad to re-derived per-file lists, justify project 177's whole-directory Decidability/ claim inline and add the missing 696 dependency edge, repair 178's Check-9 exact duplicate via validate-state.sh --fix, re-verify shared gate-script (check-module-invariants.sh) declarations against this cycle's sibling plans, then re-check residue and record the out-of-repo postflight-enforcement follow-on. All writes go through state-write.sh; all commits use --honest-index-rows.",
-  "phase": "plan",
+  "status": "implemented",
+  "summary": "Repaired specs/state.json's file_scope declarations across all 5 planned phases: collapsed project 178's exact-duplicate entry, narrowed 282/296/298's inherited BimodalTools/ triad to evidenced per-file lists, justified project 177's whole-directory Decidability/ claim inline and closed the missing 696 dependency edge, re-verified shared gate-script (check-module-invariants.sh) declarations against this cycle's sibling plans (no change needed), and ran the residue re-check (6 overlapping pairs found, 5 sanctioned same-specific-file cases and 1 genuine below-threshold residue at 464/481). Check 8 findings dropped from 4 to 1 (177's, now justified); Check 9 findings dropped from 1 to 0. Recorded the named out-of-repo postflight-enforcement follow-on for the agent-system repository. Deviated from the literal plan once: validate-state.sh --fix crashed on a pre-existing, unrelated null-file_scope defect, so the equivalent repair was applied directly via state-write.sh instead.",
+  "phase": "implement",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/698_file_scope_declaration_hygiene/plans/01_file-scope-declaration-hygiene.md",
-      "summary": "5-phase, 3-hour sequential plan; validates clean under validate-artifact.sh --strict with 0 warnings."
+      "type": "summary",
+      "path": "specs/698_file_scope_declaration_hygiene/summaries/01_file-scope-declaration-hygiene-summary.md",
+      "summary": "Full implementation summary: what changed, decisions, deviations, Phase 4 EDIT/GATE classification table, residue table, and the named out-of-repo follow-on."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 5,
   "phases_total": 5,
   "blockers": [],
-  "next_action_hint": "Dispatch implement for task 698; Phase 1 begins with a baseline validate-state.sh capture and the --fix repair on project 178.",
+  "next_action_hint": "Task complete. File a follow-on task in /home/benjamin/.config/nvim/agent-system for extensions/core/scripts/orchestrate-cycle-postflight.sh's modified_files-vs-file_scope excursion advisory (detection-only today, needs to become an enforcement gate) -- must not be attempted from this repository.",
   "plan_markers_verified": true,
-  "dispatch_seq": 8,
+  "dispatch_seq": 13,
   "sorry_inventory": [],
   "continuation_path": null
 }
