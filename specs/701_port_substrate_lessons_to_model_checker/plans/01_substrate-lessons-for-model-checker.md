@@ -1,7 +1,7 @@
 # Implementation Plan: Task #701
 
 - **Task**: 701 - port_substrate_lessons_to_model_checker
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: 696 (BimodalLogic, `completed` — verified landed in-tree, see Phase 1)
 - **Research Inputs**: `specs/701_port_substrate_lessons_to_model_checker/reports/01_substrate-lessons-for-model-checker.md`
@@ -127,31 +127,34 @@ concurrently.
 
 ---
 
-### Phase 1: Re-verify cross-repository ground truth and open the summary [NOT STARTED]
+### Phase 1: Re-verify cross-repository ground truth and open the summary [COMPLETED]
 
 **Goal**: Establish, at write time, that every fact the deliverable will assert still holds, and
 create the summary file carrying that verification snapshot as its first substantive section.
 
 **Tasks**:
 
-- [ ] Create `summaries/` under the task directory if absent.
-- [ ] Re-run the BimodalLogic checks: task 696 status and `last_updated` from `specs/state.json`;
+- [x] Create `summaries/` under the task directory if absent. *(completed)*
+- [x] Re-run the BimodalLogic checks: task 696 status and `last_updated` from `specs/state.json`;
       presence of `transBack`/`transMid`/`transFwd`/`Liftable` in
       `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Skeleton.lean`; presence of
       `plusCertifies_stabSnce_example` and `plusCertifies_stabUntl_example` in
       `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Examples.lean`; task 703's current
-      status.
-- [ ] Re-run the absence checks for the three dangling citations: grep `FormalSystem/` for
+      status. *(completed: 696 completed/16:18:36Z confirmed; trans*/lift confirmed as LiftableRaw
+      field; both gate examples confirmed present; 703 drifted further to "implementing")*
+- [x] Re-run the absence checks for the three dangling citations: grep `FormalSystem/` for
       declarations named `not_plusCertifies_stabSnce`, `not_plusCertifies_stabSnce_premise`, and
       `snce_share_congr`, and confirm each returns no declaration site. Record what stands in
       their place (`not_snce_share_congr`, `not_untl_shift_share_congr`, and the surviving
-      `not_plusValidZTime_stabSnce`/`not_plusValidZTime_stabUntl`).
-- [ ] Re-run the ModelChecker checks: current status and `last_updated` for tasks 200 and 219;
+      `not_plusValidZTime_stabSnce`/`not_plusValidZTime_stabUntl`). *(completed: all three
+      confirmed dangling, no fourth found, replacements confirmed present)*
+- [x] Re-run the ModelChecker checks: current status and `last_updated` for tasks 200 and 219;
       current line anchors for the THEORY-LIMITS header block and the `TL_CM_1`/`TL_CM_2` entries
       in `examples.py`; confirm no `trans*` key appears in any file under
-      `tests/fixtures/certificates/`.
-- [ ] Write the summary file's header and a "Verification snapshot" section recording each command
-      and its result, with an ISO timestamp.
+      `tests/fixtures/certificates/`. *(completed: 200 blocked/11:28:06Z, 219 completed/15:03:54Z,
+      header 1335-1427, TL_CM_1 1429-1449, TL_CM_2 1451-1469, no trans* in any fixture)*
+- [x] Write the summary file's header and a "Verification snapshot" section recording each command
+      and its result, with an ISO timestamp. *(completed)*
 
 **Timing**: 0.5 hours
 

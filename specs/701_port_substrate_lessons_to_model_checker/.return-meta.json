@@ -1,23 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/701_port_substrate_lessons_to_model_checker/plans/01_substrate-lessons-for-model-checker.md",
-      "summary": "Five-phase, prose-tier plan producing one summary deliverable: ready-to-file ModelChecker task texts (re-scoped 200, reopen-and-amend 219, one new docs task) plus the phased now-vs-later proposal, with no ModelChecker or BimodalLogic source edits."
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 15,
   "metadata": {
-    "session_id": "sess_1790680388_3d4c26_701",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "task_number": 701,
-  "phase_count": 5,
-  "estimated_hours": 4,
-  "dependency_waves": [[1], [2], [3], [4], [5]],
-  "memory_candidates": [],
-  "next_steps": "Run /implement 701 to execute the plan",
-  "dispatch_seq": 12
+    "session_id": "sess_1790680388_3d4c26",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }
