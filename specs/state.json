@@ -9,7 +9,7 @@
     {
       "project_number": 702,
       "project_name": "uniform_style_reference_manual",
-      "status": "not_started",
+      "status": "researching",
       "task_type": "typst",
       "description": "Improve the formatting and content of the Typst reference manual (typst/BimodalReference.typ, compiled to typst/BimodalReference.pdf, 128 pages) so that every chapter follows ONE uniform approach in style and in the shape of its discussion. The manual grew chapter by chapter (typst/chapters/: 00-introduction through 06-notes, the p2/p3/p4 part chapters, and the two appendices) and the parts read differently: section openings, the definition/theorem/remark rhythm, how Lean names are introduced and cited, how much motivation precedes a formal statement, notation, cross-reference phrasing, and the density of prose between environments all vary by chapter. RESEARCH must first produce a per-chapter audit against the typst extension's standards -- .claude/context/project/typst/standards/typst-style-guide.md, document-structure.md, semantic-element-usage.md, chapter-quality.md, textbook-standards.md, notation-conventions.md -- and against the mechanical backstops (bash .claude/scripts/typst-element-lint.sh --verbose and bash .claude/scripts/chapter-quality-check.sh --verbose over typst/chapters/*.typ), recording for each chapter: the current opening pattern, environment usage and placement, Lean-citation convention, notation deviations from notation/bimodal-notation.typ, lint findings, and the discussion style (motivation-first, statement-first, or mixed). From that audit, choose and WRITE DOWN the single house style the whole manual will follow -- chapter opening template, the order motivation/definition/example/theorem/proof-sketch/Lean-pointer, how a Lean declaration is named on first mention and thereafter, cross-reference phrasing, remark and note usage, table and figure conventions -- as a short style sheet in the plan, grounded in the existing standards rather than inventing a new one. PLAN phases must be per chapter or per part, each ending with a clean typst compile of BimodalReference.typ and with both lints run, so no phase leaves the manual uncompilable. Content improvements are in scope ONLY as editorial uniformity: rewriting openings and transitions, adding a missing motivation paragraph where the style sheet requires one, tightening or expanding discussion to the agreed density, fixing inconsistent terminology, and correcting stale or inconsistent cross-references; no new theorems, proofs, or chapters. Every Lean name cited must resolve in the current tree (grep the FormalSystem/ source), and every claim about repository status must agree with typst/generated/ and SYNC-MAP.md rather than restating numbers by hand. OUT OF SCOPE, owned by sibling tasks: the Lean appendix's define-before-use audit (task 650), the systematic Lean code-environment convention for the appendix (task 649), and the generated status counts' staleness (task 697) -- coordinate with their conventions, do not redo them. Also out of scope: FormalFoundations.typ, which is a separate document. ACCEPTANCE: the compiled manual has every chapter conforming to the written style sheet; typst-element-lint.sh reports zero blocking placement findings; chapter-quality-check.sh reports zero BLOCKING findings; the PDF compiles from a clean typst compile with no warnings introduced by this task; and the style sheet is committed alongside the chapters (in typst/README.md or a new typst/STYLE.md) so future chapters have a single reference.",
       "topic": "reference-book",
@@ -22,7 +22,8 @@
         "typst/README.md"
       ],
       "created": "2026-09-29T04:56:15Z",
-      "last_updated": "2026-09-29T04:56:15Z"
+      "last_updated": "2026-09-29T04:58:31Z",
+      "session_id": "sess_1790657893_d0612b_702"
     },
     {
       "project_number": 701,
@@ -1918,27 +1919,39 @@
     },
     {
       "project_name": "plus_carrier_normalization_int_transfer",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "Prove `plusValidZTime_iff_plusValidInt`, the L-plus twin of Semantics/IntTransfer.lean's `validZTime_iff_validInt`. This is an absent prerequisite for any L-plus decidability route: without a carrier normalization there is no reduction from arbitrary integer-like duration carriers to the integers, so a candidate enumeration over integer-indexed structures certifies nothing about `PlusValidZTime`. It is useful regardless of how the branching substrate redesign turns out, which is why it is blocked on nothing. Route: a seven-case induction on the `plus_invariance` template in Semantics/Frames/TranslationProduct.lean. The six inherited cases follow the Formula-side proof. The `stab` case goes through on `Aligned` because `(FrameOver.map F e).WorldState` is DEFINITIONALLY `F.WorldState`, so `WorldHistory.comap` together with `aligned_comap` transport the state-agreement side condition that `stab`'s truth clause quantifies over. Either shape will do: a `PlusTruthCorr` carrying a state-agreement field, or a direct seven-case `plusTruthAt_map`. Pick one and say why in the plan rather than discovering it mid-proof. Deliverable: the iff, pinned in scripts/check-module-invariants.sh's C2 axiom baseline and given a docs/theorem-index.md row, with zero sorries and no new axiom.",
       "dependencies": [],
       "created": "2026-09-28T22:13:08Z",
-      "last_updated": "2026-09-29T04:54:26Z",
+      "last_updated": "2026-09-29T05:03:01Z",
       "file_scope": [
+        "FormalSystem.lean",
+        "FormalSystem/PlusLanguage.lean",
+        "FormalSystem/PlusLanguage/PlusIntTransfer.lean",
+        "FormalSystem/PlusLanguage/README.md",
+        "FormalSystem/README.md",
+        "FormalSystem/Semantics/Frames/TranslationProduct.lean",
         "FormalSystem/Semantics/IntTransfer.lean",
         "FormalSystem/Semantics/TruthTransport.lean",
-        "FormalSystem/Semantics/Frames/TranslationProduct.lean",
+        "README.md",
         "docs/theorem-index.md",
-        "scripts/check-module-invariants.sh"
+        "scripts/check-module-invariants.sh",
+        "scripts/measure-refactor-partitions.py"
       ],
       "project_number": 695,
-      "session_id": "sess_1790656266_d2dc32_695",
+      "session_id": "sess_1790656266_d2dc32",
       "artifacts": [
         {
           "path": "specs/695_plus_carrier_normalization_int_transfer/reports/01_plus-carrier-normalization-transfer.md",
           "type": "report",
           "summary": "Research for the L-plus carrier normalization: the route is machine-verified (a compiled probe proves plusTruthAt_map and plusValidZTime_iff_plusValidInt, pcq axioms, zero sorries), the direct seven-case shape is chosen over a PlusTruthCorr structure with reasons, siting is FormalSystem/PlusLanguage/PlusIntTransfer.lean, and the full C2/C15/C33/C34b gate-bookkeeping surface plus a pre-existing C28 red are enumerated."
+        },
+        {
+          "path": "specs/695_plus_carrier_normalization_int_transfer/plans/01_plus-carrier-normalization-transfer.md",
+          "type": "plan",
+          "summary": "Four phases, 2.5 hours, waves [[1],[2,3],[4]]; direct seven-case plusTruthAt_map shape decided, no PlusTruthCorr structure."
         }
       ],
       "next_artifact_number": 2

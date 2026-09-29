@@ -1,22 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/695_plus_carrier_normalization_int_transfer/reports/01_plus-carrier-normalization-transfer.md",
-      "summary": "Research for the L-plus carrier normalization: the route is machine-verified (a compiled probe proves plusTruthAt_map and plusValidZTime_iff_plusValidInt, pcq axioms, zero sorries), the direct seven-case shape is chosen over a PlusTruthCorr structure with reasons, siting is FormalSystem/PlusLanguage/PlusIntTransfer.lean, and the full C2/C15/C33/C34b gate-bookkeeping surface plus a pre-existing C28 red are enumerated."
-    },
+      "type": "plan",
+      "path": "specs/695_plus_carrier_normalization_int_transfer/plans/01_plus-carrier-normalization-transfer.md",
+      "summary": "Four-phase plan landing plusValidZTime_iff_plusValidInt as a new PlusLanguage/PlusIntTransfer.lean module, with C2 axiom pinning for both the L-plus twin and its L-side mirror, two docs/theorem-index.md rows, and the full registration/inventory bookkeeping a new FormalSystem module requires."
+    }
+  ],
+  "next_steps": "Run /implement 695 to execute the plan",
+  "memory_candidates": [
     {
-      "type": "probe",
-      "path": "specs/695_plus_carrier_normalization_int_transfer/probes/01_plus_int_transfer_probe.lean",
-      "summary": "Compiled probe (lake env lean, zero errors/warnings/sorries) proving plusTruthAt_map, PlusValidInt and plusValidZTime_iff_plusValidInt; the transcription source for implementation."
+      "content": "Adding a new file under FormalSystem/<Language>Language/ in BimodalLogic drags a fixed, non-obvious registration surface behind it, and missing any one of these is a hard gate red rather than a warning: (1) scripts/measure-refactor-partitions.py's LANGUAGE_FILE_LAYERS table needs a row (0 = syntax half, 1 = semantic half) or layer_of RAISES and check-metalogic-cycles.sh fails naming the file; (2) `lake exe mk_all --lib FormalSystem` must regenerate the repository-root FormalSystem.lean, which C33 asserts is byte-current and which runs build-free (so also in CI); (3) the directory aggregator <Language>Language.lean needs both the import line and a module-docstring bullet; (4) `check-module-invariants.sh --emit-inventory` refreshes the generated inventory blocks in that directory's README, FormalSystem/README.md and the root README.md, leaving the new row's description as a `<!-- TODO: add description -->` placeholder to hand-fill, and several of these READMEs also carry a SEPARATE hand-maintained table the generator never touches. Separately, pinning a new theorem in the C2 axiom baseline is four coordinated edits in check-module-invariants.sh (the AXIOM_BASELINE heredoc, the AX_SRC heredoc at the SAME position since comparison is exact whole-block string equality, the spelled-out row-count string in C2's pass message, and C2's header prose), and any new docs/theorem-index.md row obliges a `Paper: <anchor-or-em-dash plus reason>` line in the named declaration's own /-- --/ block or C15's second assertion fails hard.",
+      "category": "PATTERN",
+      "source_artifact": "specs/695_plus_carrier_normalization_int_transfer/plans/01_plus-carrier-normalization-transfer.md",
+      "confidence": 0.86,
+      "suggested_keywords": ["module-invariants", "axiom-baseline", "theorem-index", "mk_all", "language-file-layers", "new-lean-module"]
     }
   ],
   "metadata": {
     "session_id": "sess_1790656266_d2dc32_695",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2.5,
+    "dependency_waves": [[1], [2, 3], [4]]
+  },
+  "dispatch_seq": 6
 }

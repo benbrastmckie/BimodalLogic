@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 6,
+  "summary": "Wrote a four-phase implementation plan for the L-plus carrier normalization theorem: land FormalSystem/PlusLanguage/PlusIntTransfer.lean by transcribing the already-compiled research probe, then pin both the L-plus twin and its L-side mirror in the C2 axiom baseline, ledger both in docs/theorem-index.md, and close the registration/inventory bookkeeping a new FormalSystem module requires.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/695_plus_carrier_normalization_int_transfer/plans/01_plus-carrier-normalization-transfer.md",
+      "summary": "Four phases, 2.5 hours, waves [[1],[2,3],[4]]; direct seven-case plusTruthAt_map shape decided, no PlusTruthCorr structure."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 4,
+  "blockers": []
+}

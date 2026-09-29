@@ -81,7 +81,7 @@ next_project_number: 703
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-695 [PLANNING] — Prove plusValidZTimeiffplusValidInt, the L-plus twin of...
+695 [PLANNED] — Prove plusValidZTimeiffplusValidInt, the L-plus twin of...
 696 [RESEARCHED] — DESIGN-INVESTIGATION-FIRST TASK. Determine what the stability...
   └─ 701 [NOT STARTED] — Port the branching-substrate lessons from the ProofChecker's...
 
@@ -113,12 +113,12 @@ next_project_number: 703
 
 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
   └─ 650 [NOT STARTED] — Define-before-use audit of...
-702 [NOT STARTED] — Improve the formatting and content of the Typst reference...
+702 [RESEARCHING] — Improve the formatting and content of the Typst reference...
 
 ## Tasks
 
 ### 702. Uniform style reference manual
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: None
@@ -209,11 +209,12 @@ CONSTRAINTS AND NON-GOALS. Do not modify any Lean statement: this task's Part A 
 ---
 
 ### 695. Plus carrier normalization int transfer
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [695_plus_carrier_normalization_int_transfer/reports/01_plus-carrier-normalization-transfer.md]
+- **Plan**: [695_plus_carrier_normalization_int_transfer/plans/01_plus-carrier-normalization-transfer.md]
 
 **Description**: Prove `plusValidZTime_iff_plusValidInt`, the L-plus twin of Semantics/IntTransfer.lean's `validZTime_iff_validInt`. This is an absent prerequisite for any L-plus decidability route: without a carrier normalization there is no reduction from arbitrary integer-like duration carriers to the integers, so a candidate enumeration over integer-indexed structures certifies nothing about `PlusValidZTime`. It is useful regardless of how the branching substrate redesign turns out, which is why it is blocked on nothing. Route: a seven-case induction on the `plus_invariance` template in Semantics/Frames/TranslationProduct.lean. The six inherited cases follow the Formula-side proof. The `stab` case goes through on `Aligned` because `(FrameOver.map F e).WorldState` is DEFINITIONALLY `F.WorldState`, so `WorldHistory.comap` together with `aligned_comap` transport the state-agreement side condition that `stab`'s truth clause quantifies over. Either shape will do: a `PlusTruthCorr` carrying a state-agreement field, or a direct seven-case `plusTruthAt_map`. Pick one and say why in the plan rather than discovering it mid-proof. Deliverable: the iff, pinned in scripts/check-module-invariants.sh's C2 axiom baseline and given a docs/theorem-index.md row, with zero sorries and no new axiom.
 
