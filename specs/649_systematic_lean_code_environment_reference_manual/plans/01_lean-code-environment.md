@@ -640,7 +640,7 @@ concern orthogonal to code-block presentation and outside this task's Non-Goals-
 
 ---
 
-### Phase 8: Document the environment [NOT STARTED]
+### Phase 8: Document the environment [COMPLETED]
 
 **Goal**: Record the environment, its two kinds, the column budget, the fidelity policy and the
 new check where a future author will find them.
@@ -676,6 +676,15 @@ new check where a future author will find them.
 - The README names the environment, both kinds, the column budget, the font size and the
   fidelity policy.
 - A scan of both files finds no task number and no `specs/` path.
+
+**Measured results**: `typst/README.md` gained a "Code Environment" section (both kinds, the
+font/geometry/budget/fidelity policy, and the `leansrc`/`leanref` compatibility note) and its
+Scripts section now describes all four sync-check checks accurately (it previously said "2
+checks", already stale before this task against the 3 checks the script already ran -- fixed as
+part of this same edit). `typst/STYLE.md`'s existing Lean-citations table row for inline
+identifiers now records `#leanref`'s stated purpose (matching `lean-code()`'s font) inline. Both
+documents still compile at zero errors; a scan of both files finds no task-number reference and
+no `specs/` path.
 
 ---
 

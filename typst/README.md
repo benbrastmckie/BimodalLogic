@@ -81,13 +81,20 @@ Two scripts, run from the repository root, keep the book synchronized with Lean 
 bash scripts/typst-status-counts.sh            # writes typst/generated/status.typ
 bash scripts/typst-status-counts.sh --json     # JSON to stdout only
 
-# Mechanical drift detector (2 checks: backtick name resolution, count freshness)
+# Mechanical drift detector (4 checks: backtick name resolution; count
+# freshness, including the automation-module-map sub-check; machine-appendix
+# freshness; and code-environment discipline over typst/chapters/)
 bash scripts/typst-sync-check.sh
 ```
 
 `typst-sync-check.sh` exits non-zero with a per-violation report if any check fails; see
 its header comment for the check definitions and `sync-check-whitelist.txt` for
-deliberate exceptions (external-repo citations, type-signature illustrations).
+deliberate exceptions (external-repo citations, type-signature illustrations). Check 4
+(code-environment discipline) is build-free like the others: it fails on a bare fenced
+code block under `chapters/` not wrapped in `lean-code()`, on a code line over that
+environment's column budget, and on a `lean-code(source: (module, name))` call whose
+`name` does not resolve in live, non-Boneyard Lean source (reusing Check 1's
+grep-based resolution and whitelist).
 
 ## Style
 
@@ -96,6 +103,55 @@ deliberate exceptions (external-repo citations, type-signature illustrations).
 convention, list syntax, table/figure convention, and the no-local-helpers rule). New chapters
 and any editorial pass over existing chapters follow it; the two appendices are governed by their
 own conventions instead, as `STYLE.md` states at its top.
+
+## Code Environment
+
+Every Lean, JSON, and Python code block in the manual is presented through one environment,
+`lean-code()`, defined once in `template.typ` and used by every chapter -- no chapter carries
+its own file-local raw-block or spacing rules for code.
+
+**Two kinds**, selected at the call site by whether `source:` is given:
+
+- **Source excerpt** -- `#lean-code(source: ("Module.Path", "declName"))[ ...code... ]` --
+  quotes the live source verbatim up to whitespace (docstrings omitted), and renders the
+  module-qualified `> Module.Path.declName.` label and the code as one unbreakable unit, the
+  label closer to its code than the code is to the surrounding prose.
+- **Didactic example** -- `#lean-code[ ...code... ]`, no `source:` argument -- a worked example
+  written for the manual, same visible family, no label.
+
+A block's language (Lean, JSON, Python, shell, ...) is carried by the fence's own tag
+(` ```json `, ` ```python `, or a bare fence with no tag for Lean); `lean-code()` needs no
+separate language parameter, and renders every language identically in black -- there is no
+syntax highlighting, matching the template's austere, black-only, no-fills aesthetic.
+
+**Geometry**: 8pt raw text in the explicit font `"DejaVu Sans Mono"` (chosen over the raw
+element's implicit default font, whose per-glyph width was found uneven across the manual's
+Lean unicode operators, and confirmed by a rendered glyph check to cover every non-ASCII symbol
+appearing in a code block: `¬ ↑ → ↔ ∀ ∃ ∈ ∧ ≤ ⊆ ⊢ ⊨ □ △ ▽ ◇ ⟨ ⟩ ₁ ₂ Γ Δ σ τ φ ψ`). 11pt spacing
+above and below the whole block, in absolute units (not em, which inside a raw show rule
+resolves to the 8pt code size rather than the 11pt body size). A 1em left inset separates code
+from prose without a left rule, which would visually compete with `thmbox`'s own colored left
+bar already marking `#example`/`#definition`/etc. Unbreakable by default (`breakable: false`);
+pass `breakable: true` to opt out for a listing too long to fit one page.
+
+**Column budget: 63 monospace columns**, one number applied book-wide. It is derived from the
+narrowest real case -- a block nested inside `#example`/`#definition` (`thmbox`'s insets narrow
+the page's 343.28pt text width to 321.28pt there), combined with the environment's own 1em left
+inset -- where a rendered boundary sweep of real appendix content found 64 columns fit and 65
+wrapped; 63 keeps a one-column margin. Every plain, top-level block has strictly more headroom
+at the same budget.
+
+**Excerpt-fidelity policy**: a source excerpt is verbatim up to whitespace; docstrings are
+omitted; a line exceeding the column budget is re-broken at whitespace only, in one consistent
+layout for a declaration (name and parameters, then hypotheses, then conclusion), and no token
+is ever altered by a re-break.
+
+**Compatibility**: `leansrc(module, name)` stays exported with its original two-argument
+signature, as a thin wrapper over `lean-code()`'s own label rendering, so `FormalFoundations.typ`
+(whose `#leansrc` calls are attribution-only, never followed by a code block) compiles
+unchanged. `leanref(name)` renders an inline Lean identifier in the same explicit monospace font
+as `lean-code()`, for visual consistency between an inline citation and a block excerpt; it is
+not applied retroactively to the manual's existing inline backtick spans.
 
 ## Package Dependencies
 
