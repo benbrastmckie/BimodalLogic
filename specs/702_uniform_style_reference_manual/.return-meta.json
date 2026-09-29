@@ -1,31 +1,27 @@
 {
-  "status": "planned",
-  "dispatch_seq": 2,
+  "status": "implemented",
+  "dispatch_seq": 3,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/702_uniform_style_reference_manual/plans/01_uniform-style-reference-manual.md",
-      "summary": "13-phase plan applying one written house style sheet across all 17 Typst manual chapters: style sheet first, shared template centralization second, ten parallel-safe per-chapter conformance phases ordered by BLOCKING-finding load, then a whole-manual acceptance sweep."
+      "type": "summary",
+      "path": "specs/702_uniform_style_reference_manual/summaries/01_uniform-style-reference-manual-summary.md",
+      "summary": "All 13 plan phases completed in one dispatch: house style sheet written, shared template helpers centralized, all 17 manual chapters brought to zero BLOCKING findings on both mechanical gates, manual recompiled clean at 131 pages."
     }
   ],
-  "next_steps": "Run /implement 702 to execute the plan",
+  "next_steps": "Task ready for postflight to mark COMPLETED. No further /implement dispatch needed.",
   "metadata": {
-    "session_id": "sess_1790657893_d0612b_702",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1790657893_d0612b",
+    "agent_type": "typst-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "delegation_path": ["orchestrator", "implement", "typst-implementation-agent"],
     "phase_count": 13,
-    "estimated_hours": 18,
-    "dependency_waves": 4
+    "phases_completed": 13
   },
   "modified_files": [
-    "specs/702_uniform_style_reference_manual/plans/01_uniform-style-reference-manual.md"
-  ],
-  "proposed_file_scope": [
     "typst/STYLE.md",
     "typst/README.md",
     "typst/template.typ",
-    "typst/BimodalReference.pdf",
+    "typst/sync-check-whitelist.txt",
     "typst/chapters/00-introduction.typ",
     "typst/chapters/01-syntax.typ",
     "typst/chapters/02-semantics.typ",
@@ -37,21 +33,28 @@
     "typst/chapters/ax-machine-appendix.typ",
     "typst/chapters/p2-decidability-practice.typ",
     "typst/chapters/p2-frame-classes.typ",
-    "typst/chapters/p3-decidability-frontier.typ",
     "typst/chapters/p3-ltl-to-tm.typ",
     "typst/chapters/p3-vlach-blstar.typ",
     "typst/chapters/p4-dataset-pipeline.typ",
     "typst/chapters/p4-dual-verification.typ",
     "typst/chapters/p4-proof-automation.typ",
-    "/home/benjamin/.config/nvim/agent-system/extensions/typst/context/project/typst/standards/notation-conventions.md"
+    "specs/702_uniform_style_reference_manual/plans/01_uniform-style-reference-manual.md",
+    "specs/702_uniform_style_reference_manual/summaries/01_uniform-style-reference-manual-summary.md"
   ],
   "memory_candidates": [
     {
-      "content": "When a multi-file document (Typst manual, multi-module docs tree) fails a per-file quality gate with a large blocking count, decompose the plan by first root-causing the findings by rule rather than by file: a single convention gap often accounts for the overwhelming majority (here 288 of 296 findings were one citation-format rule). The resulting shape is: one phase writing the convention down as a committed style sheet, one additive phase centralizing shared helpers/macros the later phases depend on, then a wide parallel wave of per-file conformance phases ordered by that file's finding count, then one whole-document acceptance sweep. The per-file wave is genuinely parallel only if the centralization phase is additive (new definitions shadowed by still-present local ones), so no per-file phase needs to edit the shared template.",
-      "category": "PATTERN",
+      "content": "When bringing many Typst chapters into conformance with a bare-module-path Lean-citation gate (chapter-quality-check.sh Rule 1.2), the mechanical checker flags every literal backtick span independently, including bare filenames repeated inside a single table cell or parenthetical list. A first per-file pass that fixes the sentence-level citations often misses these in-cell repeats; always re-run the checker after the first pass rather than trusting a clean read-through, since the second pass routinely turns up 5-15% more findings than the first pass caught.",
+      "category": "TECHNIQUE",
       "source_artifact": "specs/702_uniform_style_reference_manual/plans/01_uniform-style-reference-manual.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["typst", "chapter-quality-check", "rule-1.2", "citation-paths", "mechanical-lint", "re-check-after-fix"]
+    },
+    {
+      "content": "A Typst manual's own drift detector (typst-sync-check.sh Check 1, backtick-name resolution) scans literal backtick spans in ALL .typ source including // comments, not just rendered prose. Adding illustrative code examples inside a shared template.typ's comments (documenting a newly-promoted helper) can silently regress this separate checker even when the two primary acceptance gates (element-lint, chapter-quality-check) stay green, because those two are scoped to typst/chapters/*.typ only. Always re-run every mechanical checker in the extension's toolkit before declaring a whole-document sweep complete, not just the ones named in the task's acceptance criteria.",
+      "category": "PATTERN",
+      "source_artifact": "typst/sync-check-whitelist.txt",
       "confidence": 0.75,
-      "suggested_keywords": ["phase-decomposition", "lint-driven-planning", "parallel-wave", "additive-centralization", "typst"]
+      "suggested_keywords": ["typst", "sync-check", "regression", "whole-document-sweep", "acceptance-criteria-blind-spot"]
     }
   ]
 }
