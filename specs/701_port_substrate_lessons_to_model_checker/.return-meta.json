@@ -26,28 +26,49 @@
       "category": "PATTERN",
       "source_artifact": "specs/701_port_substrate_lessons_to_model_checker/summaries/01_substrate-lessons-for-model-checker-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["cross-repository", "staleness", "re-verification", "task-porting", "drift"]
+      "suggested_keywords": [
+        "cross-repository",
+        "staleness",
+        "re-verification",
+        "task-porting",
+        "drift"
+      ]
     },
     {
       "content": "When drafting a fenced 'ready-to-file' block destined for another repository's task system, explicitly grep the drafted content for the authoring task's own number after drafting, before closing. Natural citation phrasing (e.g. 'Source: Research Report: Task #N') leaks the authoring task's number into text meant to be pasted verbatim elsewhere, violating no-task-references-in-deliverables-style rules even when the surrounding document is otherwise exempt as a specs/** artifact.",
       "category": "TECHNIQUE",
       "source_artifact": "specs/701_port_substrate_lessons_to_model_checker/summaries/01_substrate-lessons-for-model-checker-summary.md",
       "confidence": 0.8,
-      "suggested_keywords": ["task-references", "fenced-block", "ready-to-file", "citation-leak", "grep-check"]
+      "suggested_keywords": [
+        "task-references",
+        "fenced-block",
+        "ready-to-file",
+        "citation-leak",
+        "grep-check"
+      ]
     },
     {
       "content": "validate-artifact.sh's 'summary' type requires six standard closing sections (What Changed, Decisions, Plan Deviations, Verification, Impacts, Follow-ups, References) regardless of whether the plan directs phase-specific content sections to be appended to the same file as the primary deliverable. Run the validator early (after the first substantive write), not only at the very end, to avoid discovering missing required sections as the last step.",
       "category": "WORKFLOW",
       "source_artifact": "specs/701_port_substrate_lessons_to_model_checker/summaries/01_substrate-lessons-for-model-checker-summary.md",
       "confidence": 0.75,
-      "suggested_keywords": ["validate-artifact", "summary-format", "required-sections", "early-validation"]
+      "suggested_keywords": [
+        "validate-artifact",
+        "summary-format",
+        "required-sections",
+        "early-validation"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1790680388_3d4c26",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 5,
     "phases_total": 5
   }

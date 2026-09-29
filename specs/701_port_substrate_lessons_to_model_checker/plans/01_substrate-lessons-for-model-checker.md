@@ -1,7 +1,7 @@
 # Implementation Plan: Task #701
 
 - **Task**: 701 - port_substrate_lessons_to_model_checker
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: 696 (BimodalLogic, `completed` — verified landed in-tree, see Phase 1)
 - **Research Inputs**: `specs/701_port_substrate_lessons_to_model_checker/reports/01_substrate-lessons-for-model-checker.md`
