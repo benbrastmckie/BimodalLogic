@@ -117,6 +117,11 @@ def Derivable (fc : FrameClass) (G : Context) (p : Formula) :
 ```
 ]
 
+Two names in those three lines are used everywhere below and are worth fixing here.
+
+- *`Context`.* A context is a list of formulas: the source writes `abbrev Context := List Formula`, and an `abbrev` is a definition Lean unfolds eagerly, so a `Context` simply *is* a `List Formula` wherever one is expected. That is why the empty context is written `[]`, Lean's empty-list literal; why the `assumption` rule's hypothesis reads `φ ∈ Γ`, which is list membership; and why `weakening` reads `Γ ⊆ Δ`, which is list inclusion. All three appear in the `DerivationTree` constructors of @lean-appendix-inductive.
+- *`Nonempty`.* `Nonempty α` is a `Prop` recording *that* the type `α` has an element while forgetting *which* one. Its single constructor takes an element and returns the proposition, so an inhabitant of `Nonempty α` is a proof rather than a piece of data, and by proof irrelevance any two such inhabitants are equal. Wrapping `DerivationTree fc G p` in it is exactly how `Derivable` throws the tree away and keeps only the claim that some tree exists. The same type reappears as a structure field in @lean-appendix-structures.
+
 The wrapper exists for automation: `simp` and similar tactics target `Prop`-valued goals, so a consistency argument or a quick lemma application states its goal with `Derivable`, while the metalogic, which needs the tree itself, works with `DerivationTree`.
 
 The `fc : FrameClass` argument should not be read as semantics entering a syntactic definition.
@@ -151,7 +156,7 @@ In all four turnstile forms the context may be omitted: `⊢ φ` abbreviates a d
 Six further points are worth fixing before any of these forms is read in anger.
 
 - *The brackets are literal tokens.* All eight turnstile forms are project-defined `notation` declarations, four in `FormalSystem/ProofSystem/Derivation.lean` and four in `FormalSystem/ProofSystem/Derivable.lean`. Neither the turnstile nor the square brackets are built-in Lean syntax, and the brackets are not Lean's instance binders of @lean-appendix-structures. They are punctuation this project chose, and they mean nothing outside it.
-- *What goes between them is a `FrameClass`.* Any term of that type may sit there. A concrete tag, as in `⊢[.Dense] φ`, gives a derivation in that one system. A bound variable, as in the `{fc : FrameClass}` binder of `perpetuity2` (@lean-appendix-derived-theorem), gives a statement holding in all four systems at once.
+- *What goes between them is a `FrameClass`.* Any term of that type may sit there. A concrete tag, as in `⊢[.Dense] φ`, gives a derivation in that one system. The leading dot there is shorthand: `.Dense` abbreviates `FrameClass.Dense`, because Lean resolves a dotted name against the type it expects at that position, which the notation fixes as `FrameClass`. The shorthand recurs constantly in `FormalSystem/` and is treated in full in @lean-appendix-recursion. A bound variable, as in the `{fc : FrameClass}` binder of `perpetuity2` (@lean-appendix-derived-theorem), gives a statement holding in all four systems at once.
 - *This is the book's subscripted turnstile.* `⊢[.Dense] φ`, `⊢[.ZTime] φ` and `⊢[.RTime] φ` are the Lean spellings of derivability in *TM*#sub[d], *TM*#sub[f] and *TM*#sub[c] respectively (@sec:frame-classes).
 - *The bracket-free forms are the `FrameClass.Base` instances.* `Γ ⊢ φ` is not an abbreviation that unfolds to `Γ ⊢[.Base] φ` by some separate rule; the two notations produce the same term, so they are the same type and `rfl` proves it.
 - *The exclamation mark marks the `Prop`-valued twin.* `|-!` is `Derivable` where `⊢` is `DerivationTree`, which is the `Type`-versus-`Prop` contrast drawn above, and `⊨ φ` is neither: it is `Valid φ`, a semantic claim about models rather than a syntactic one about derivations. `Valid φ` is itself `ValidIn FrameClass.Base φ` by definition, so validity outright and validity on the base class are one notion. The source also declares a two-place `Γ ⊨ φ` for `SemanticConsequence`, which this appendix never uses.
@@ -176,6 +181,12 @@ Its type, `FrameClass → Context → Formula → Type`, takes ordinary values (
 This is how the `fc` parameter enforces frame-class discipline structurally.
 The `axiom` constructor carries the side condition `h.minFrameClass ≤ fc` as a hypothesis inside the type (@lean-appendix-inductive), so a `DerivationTree fc` value cannot have been built from an axiom its frame class does not license.
 There is no validity check to run after the fact, because an ill-formed derivation cannot be constructed at all.
+
+That side condition names two things the source declares beside the frame classes.
+`Axiom` is itself a type, indexed by formulas: `Axiom : Formula → Type`, so a term `h : Axiom φ` is a witness that `φ` instantiates one of the #axiom-count axiom schemata, and which schema it instantiates is which constructor built it (@lean-appendix-inductive).
+`Axiom.minFrameClass` is then a function from such a witness to the *weakest* frame class licensing that schema, defined by a case analysis sending the density axioms to `FrameClass.Dense`, the discrete ones to `FrameClass.ZTime`, the gap-and-separation ones to `FrameClass.RTime`, and everything else to `FrameClass.Base`.
+The `≤` comparing it to `fc` is not numeric order: it is a partial order on the four tags, registered as an instance and displayed in full in @lean-appendix-derivations-as-data.
+So `h.minFrameClass ≤ fc` says that the frame class this derivation is being built at is at least as strong as the weakest one the axiom needs.
 
 == Propositions as Types and Proof Terms <lean-appendix-props-as-types>
 

@@ -168,7 +168,7 @@ re-reading each cited first-use site after the edit and by running Check 4 of
 
 ---
 
-### Phase 2: Syntactic Prerequisites at First Use in A.2 and A.3 [NOT STARTED]
+### Phase 2: Syntactic Prerequisites at First Use in A.2 and A.3 [COMPLETED]
 
 **Goal**: Introduce `Context`, `Nonempty`, the leading-dot shorthand and the `Axiom` /
 `Axiom.minFrameClass` pair at their first use, closing the highest-cost remaining ledger rows and
