@@ -116,25 +116,43 @@
     {
       "project_number": 649,
       "project_name": "systematic_lean_code_environment_reference_manual",
-      "status": "planning",
+      "status": "planned",
       "task_type": "typst",
       "description": "Define one Typst environment for presenting Lean code in typst/template.typ and use it systematically throughout the Bimodal Reference Manual (typst/BimodalReference.typ and every file under typst/chapters/), so that every Lean code block is clear and is presented the same way. This is a formatting and structure task: it changes how code is displayed, never what the code or the prose says.\n\nCURRENT STATE, to be re-measured before designing. Lean code blocks are bare triple-backtick raw blocks, optionally preceded by a separate #leansrc(module, name) call that prints a \"> Module.name.\" source line. The two are unrelated elements, so nothing keeps the label on the same page as its code, nothing distinguishes a quoted source excerpt from an illustrative example, and the gap between label and code equals the gap between code and the next paragraph. The book-wide paragraph spacing of 0.55em is also the default block spacing, so a code block runs straight into the paragraph after it. The text width is about 343pt on A4 with 1.75in margins, which at the default raw size fits roughly 64 monospace columns, and blocks wider than that wrap mid-line: measured maxima are 78 columns in chapters/p2-decidability-practice.typ (the decide signature), 88 in chapters/p4-dual-verification.typ, 78 in chapters/p4-dataset-pipeline.typ (JSON) and 71 in chapters/ax-machine-appendix.typ (Python). Blocks live in ax-lean-appendix.typ (about fifteen), p2-decidability-practice.typ (two), p2-frame-classes.typ (one), p4-dual-verification.typ (one, inside an #example), plus one JSON block and one Python block. chapters/ax-lean-appendix.typ already carries FILE-LOCAL rules that solve these problems for that file only: 8pt block raw text (71 columns), unbreakable blocks with explicit 11pt spacing above and below, and a locally shadowed leansrc that is sticky to the block it introduces. Those local rules are the prototype, and the deliverable is to make them the book-wide standard and delete the local copies. template.typ also exports leanref(name) for inline identifiers, which no chapter uses: chapters write inline backticks instead.\n\nDESIGN REQUIREMENTS.\n(1) One environment, two declared kinds. A source excerpt carries its module and declaration name and renders the source line and the code as ONE unit that cannot be split across a page break, with the label visibly closer to its code than the code is to the surrounding text. A didactic example carries no source line and is visibly the same family of element. A call site states which kind it is, so a reader and a checker can tell a quotation of the live source from an illustration. Decide whether non-Lean listings (JSON, Python, shell) share the environment through a language parameter or get a sibling with the same geometry, and apply the decision consistently.\n(2) Geometry set once, in the template. Font size chosen so that a stated column budget fits the text width, with that budget written down beside the definition. Spacing above and below in absolute units, because em inside a raw show rule is the code size and not the body size. Unbreakable by default with an explicit opt-out for a long listing. Correct behavior inside #example, #definition, #remark, figures and list items. Decide with a rendered comparison whether a left indent or a thin left rule improves the separation of code from prose. The template's stated aesthetic is austere, black-only body text with no background fills, so do not add fills or colored syntax highlighting without making that case explicitly with before-and-after renders.\n(3) Line-length policy. Every Lean block in the manual fits the column budget with no wrapped line. Re-break long lines at whitespace only, in one consistent layout (for a declaration: name and parameters, then hypotheses, then conclusion), and never alter tokens. State the excerpt-fidelity policy once, in the template comment and in typst/README.md: verbatim up to whitespace, docstrings omitted.\n(4) Inline Lean. Decide whether leanref stays. Either adopt it for a stated purpose or remove it from the template. Do not convert the manual's inline backticks wholesale, because Check 1 of scripts/typst-sync-check.sh resolves every single-line backtick span and must keep doing so.\n(5) Compatibility. typst/FormalFoundations.typ imports leansrc and items from the same template and must still compile unchanged, so keep leansrc exported with its current signature, either as a thin wrapper over the new environment or as a deprecated alias. Every call site in the manual migrates to the new environment, and the file-local formatting rules in chapters/ax-lean-appendix.typ for raw blocks and leansrc are deleted once the template supplies them. That file's A.n section-numbering rules and its list and figure spacing rules are not part of this task unless they are promoted deliberately and applied book-wide. ORDERING. This task depends on tasks 647 and 648 and runs last of the three. Task 647 extends the Lean appendix and adds many new code blocks, so it lands first and its blocks are migrated here in the same pass as every other chapter. Task 648 edits typst/template.typ (the items environment, the thmbox font) and corrects prose around the decide block in chapters/p2-decidability-practice.typ, so it lands before this task touches the same files. Code-block presentation was removed from task 648 and belongs to this task alone.\n(6) Enforcement. Extend scripts/typst-sync-check.sh or the element lint with a mechanical check, or add a small script wired in beside them, that fails on a bare triple-backtick block outside the environment in typst/chapters/, on a Lean block line over the column budget, and on a source-excerpt call whose module-qualified declaration does not resolve in live, non-Boneyard Lean source. Document the environment, its two kinds, the column budget and the fidelity policy in typst/README.md.\n\nCONSTRAINTS. No change to the wording of prose, and no change to code tokens. No task numbers and no specs/ paths in any deliverable. All backticked spans, comments included, keep resolving under Check 1.\n\nACCEPTANCE. typst compile --root .. succeeds with zero errors for BOTH BimodalReference.typ and FormalFoundations.typ. scripts/typst-sync-check.sh PASS and the element lint PASS. The new check passes and is shown to fail on a deliberately planted violation of each kind. grep finds no bare fenced block in typst/chapters/ outside the environment. Every page containing a code block is rendered (pdftoppm to PNG) and inspected: no wrapped code line, no source label separated from its code, no code block touching the paragraph after it, consistent appearance across chapters. The summary includes before-and-after renders of one page per affected chapter.",
       "topic": "reference-book",
       "created": "2026-09-21T20:56:53Z",
-      "last_updated": "2026-09-29T11:22:42Z",
+      "last_updated": "2026-09-29T14:56:37Z",
       "dependencies": [
         647,
         648
       ],
-      "session_id": "sess_1790680388_3d4c26_649",
+      "session_id": "sess_1790680388_3d4c26",
       "artifacts": [
         {
           "path": "specs/649_systematic_lean_code_environment_reference_manual/reports/01_lean-code-environment.md",
           "type": "report",
           "summary": "Re-measured current-state inventory (exact leansrc/raw-block counts, confirmed column-wrap and spacing defects via actual typst compile + pdftoppm renders of 8 pages), the ax-lean-appendix.typ prototype mechanism, a newly-found nested-width tax inside thmbox environments, existing undocumented JSON/Python syntax-highlighting inconsistency, the leansrc/leanref cross-project convention status, and a critical enforcement-surface finding steering the new mechanical check toward scripts/typst-sync-check.sh (git-tracked) rather than .claude/scripts/typst-element-lint.sh (gitignored deploy artifact)."
+        },
+        {
+          "path": "specs/649_systematic_lean_code_environment_reference_manual/plans/01_lean-code-environment.md",
+          "type": "plan",
+          "summary": "Nine-phase plan, 13 hours estimated, eight dependency waves; strict artifact validation passes with zero warnings."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "file_scope": [
+        "scripts/typst-sync-check.sh",
+        "typst/README.md",
+        "typst/STYLE.md",
+        "typst/chapters/ax-lean-appendix.typ",
+        "typst/chapters/ax-machine-appendix.typ",
+        "typst/chapters/p2-decidability-practice.typ",
+        "typst/chapters/p2-frame-classes.typ",
+        "typst/chapters/p4-dataset-pipeline.typ",
+        "typst/chapters/p4-dual-verification.typ",
+        "typst/notation/shared-notation.typ",
+        "typst/template.typ"
+      ]
     },
     {
       "project_number": 618,
