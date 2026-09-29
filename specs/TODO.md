@@ -57,7 +57,7 @@ next_project_number: 702
 
 ### Completeness
 
-700 [RESEARCHING] — SURVEY-AND-SEQUENCE TASK, DELIBERATELY NOT A WORK TASK....
+700 [RESEARCHED] — SURVEY-AND-SEQUENCE TASK, DELIBERATELY NOT A WORK TASK....
 
 ### Dataset Enhancement
 
@@ -127,10 +127,11 @@ next_project_number: 702
 ---
 
 ### 700. Lplus completeness programme survey
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: formal:logic
 - **Topic**: completeness
 - **Dependencies**: None
+- **Research**: [700_lplus_completeness_programme_survey/reports/01_lplus-completeness-programme-survey.md]
 
 **Description**: SURVEY-AND-SEQUENCE TASK, DELIBERATELY NOT A WORK TASK. Produce one coordinated programme for reaching a proved completeness result for the L-plus decision procedure, spanning this repository and the paired model checker, and sequence it. This task's deliverable is a survey, a dependency graph and a recommended order -- NOT the work itself, and NOT a burst of new task entries. Spawn at most what the survey concludes is needed, in the order it concludes, and justify every entry it proposes; if the survey concludes existing tasks already cover an area, say so and propose nothing there.
 
