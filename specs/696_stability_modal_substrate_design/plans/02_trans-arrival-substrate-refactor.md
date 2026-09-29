@@ -236,7 +236,7 @@ rather than on raw paths, restate it over raw paths first and record the extra w
 
 ---
 
-### Phase 3: `trans` and `lift` as skeleton fields, and every producer [NOT STARTED]
+### Phase 3: `trans` and `lift` as skeleton fields, and every producer [COMPLETED]
 
 **Goal**: Add the fourth periodic datum and the closure field to `SharingSkeleton`, wire the
 derived arrival-pruned relation `S.trans`, and update every producer in the same atomic edit.
@@ -244,18 +244,18 @@ derived arrival-pruned relation `S.trans`, and update every producer in the same
 
 **Tasks**:
 
-- [ ] Add `transBack transMid transFwd : List (Fin n → Fin n → Bool)` to `SharingSkeleton`, with
+- [x] Add `transBack transMid transFwd : List (Fin n → Fin n → Bool)` to `SharingSkeleton`, with
       `transBack_len`, `transMid_len`, `transFwd_len` against the corresponding `rep` lists.
-- [ ] Add `trans_refl : ∀ r ∈ transBack ++ transMid ++ transFwd, ∀ i, r i i = true`.
-- [ ] Add `lift : LiftableRaw n repBack repMid repFwd transBack transMid transFwd`.
-- [ ] Decode with `Periodic.unrollOf` at an `Inhabited` default of `fun i j => decide (i = j)`,
+- [x] Add `trans_refl : ∀ r ∈ transBack ++ transMid ++ transFwd, ∀ i, r i i = true`.
+- [x] Add `lift : LiftableRaw n repBack repMid repFwd transBack transMid transFwd`.
+- [x] Decode with `Periodic.unrollOf` at an `Inhabited` default of `fun i j => decide (i = j)`,
       mirroring `repIdInhabited`; add the periodicity twins alongside the existing `rep` ones.
-- [ ] Define the derived relation `S.trans u i j := transRaw u i j = true ∧ share (u+1) i j` and
+- [x] Define the derived relation `S.trans u i j := transRaw u i j = true ∧ share (u+1) i j` and
       prove `trans_refl'` (reflexivity of `S.trans` from the field plus `share_refl`) and
       `share_succ_of_trans` (the arrival-pruning projection).
-- [ ] Re-export the new fields and the derived relation through `Sharing/Basic.lean` and
+- [x] Re-export the new fields and the derived relation through `Sharing/Basic.lean` and
       `PlusWitnessFamily/Basic.lean`.
-- [ ] Update every producer to supply the new fields, discharging `lift` with `liftable_of_full`
+- [x] Update every producer to supply the new fields, discharging `lift` with `liftable_of_full`
       at `transRaw := full`: `Sharing/Specialize.lean`'s `toSharing`,
       `PlusWitnessFamily/Examples.lean`'s `stabFamily`, and the three smoke families in
       `Sharing/Fulfil.lean`, `PlusWitnessFamily/Fulfil.lean` and `PlusWitnessFamily/Decide.lean`.
@@ -268,7 +268,9 @@ derived arrival-pruned relation `S.trans`, and update every producer in the same
 
 **Commit Mode**: atomic-batch
 
-**Scope Hypothesis**: This phase asserts five producer sites and two `skeleton` projections, from
+**Scope Hypothesis**: CONFIRMED at implementation time — the compiler reported missing-field
+errors at exactly the five producer sites and two `skeleton` projections round 2's F6 named, and
+at no others. This phase asserts five producer sites and two `skeleton` projections, from
 round 2's F6. Confirm at implementation time by building after the field addition and treating
 the compiler's own list of missing-field errors as authoritative; add any producer the error list
 names that this plan does not.

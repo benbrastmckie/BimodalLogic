@@ -84,6 +84,23 @@ structure SharingWitnessFamily (Γ Del : Context) extends WitnessFamily Γ Del w
   repFwd_ne : repFwd ≠ []
   /-- Every listed map is idempotent, so it is a choice of class representatives. -/
   rep_idem : ∀ f ∈ repBack ++ repMid ++ repFwd, ∀ i, f (f i) = f i
+  /-- Succession matrices for the leftward cycle, indexed left-to-right in time. -/
+  transBack : List (Fin lassos.length → Fin lassos.length → Bool)
+  /-- Succession matrices for the window `[0, |transMid|)`. -/
+  transMid : List (Fin lassos.length → Fin lassos.length → Bool)
+  /-- Succession matrices for the rightward cycle, indexed left-to-right in time. -/
+  transFwd : List (Fin lassos.length → Fin lassos.length → Bool)
+  /-- The succession cycles carry the representatives' periods. -/
+  transBack_len : transBack.length = repBack.length
+  /-- The succession window has the representative window's length. -/
+  transMid_len : transMid.length = repMid.length
+  /-- The forward succession cycle has the forward representative cycle's period. -/
+  transFwd_len : transFwd.length = repFwd.length
+  /-- Every listed matrix is reflexive: staying on one index is always a legitimate step. -/
+  trans_refl : ∀ r ∈ transBack ++ transMid ++ transFwd, ∀ i, r i i = true
+  /-- **Thread lifting**, the well-formedness obligation the fourth datum creates: every state
+  path of the frame is tracked by a succession path. -/
+  lift : LiftableRaw lassos.length repBack repMid repFwd transBack transMid transFwd
 
 namespace SharingWitnessFamily
 
@@ -107,6 +124,14 @@ def skeleton (S : SharingWitnessFamily Γ Del) : SharingSkeleton where
   repBack_ne := S.repBack_ne
   repFwd_ne := S.repFwd_ne
   rep_idem := S.rep_idem
+  transBack := S.transBack
+  transMid := S.transMid
+  transFwd := S.transFwd
+  transBack_len := S.transBack_len
+  transMid_len := S.transMid_len
+  transFwd_len := S.transFwd_len
+  trans_refl := S.trans_refl
+  lift := S.lift
 
 @[simp]
 theorem skeleton_n (S : SharingWitnessFamily Γ Del) : S.skeleton.n = S.lassos.length := rfl

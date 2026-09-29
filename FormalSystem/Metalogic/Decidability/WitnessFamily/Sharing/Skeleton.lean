@@ -154,6 +154,110 @@ def transOf (n : ℕ) (repBack repMid repFwd : List (Fin n → Fin n))
   transMatOf n transBack transMid transFwd u i j = true ∧
     shareOf n repBack repMid repFwd (u + 1) i j
 
+/-- A list lookup with a default either hits the list or returns the default. -/
+private theorem getD_mem_or_eq' {α : Type*} (l : List α) (d : α) (k : ℕ) :
+    l.getD k d ∈ l ∨ l.getD k d = d := by
+  rcases lt_or_ge k l.length with hk | hk
+  · left
+    rw [(List.getElem_eq_getD (l := l) (i := k) (h := hk) d).symm]
+    exact List.getElem_mem hk
+  · right
+    rw [List.getD_eq_getElem?_getD, List.getElem?_eq_none hk]
+    rfl
+
+/-- The three-segment decoding returns either a listed value or the out-of-range default. The
+file-scope twin of `SharingSkeleton.unrollOf_mem_or_default`, available before the structure. -/
+private theorem unrollOf_mem_or_default' {α : Type*} (inst : Inhabited α)
+    (back mid fwd : List α) (t : ℤ) :
+    @Periodic.unrollOf α inst back mid fwd t ∈ back ++ mid ++ fwd ∨
+      @Periodic.unrollOf α inst back mid fwd t = @default α inst := by
+  have hun : @Periodic.unrollOf α inst back mid fwd t
+      = if t < 0 then back.getD ((t % (back.length : ℤ)).toNat) (@default α inst)
+        else if t < (mid.length : ℤ) then mid.getD t.toNat (@default α inst)
+        else fwd.getD (((t - (mid.length : ℤ)) % (fwd.length : ℤ)).toNat) (@default α inst) :=
+    rfl
+  rw [hun]
+  split
+  · rcases getD_mem_or_eq' back (@default α inst) ((t % (back.length : ℤ)).toNat) with h | h
+    · exact Or.inl (List.mem_append.mpr (Or.inl (List.mem_append.mpr (Or.inl h))))
+    · exact Or.inr h
+  · split
+    · rcases getD_mem_or_eq' mid (@default α inst) t.toNat with h | h
+      · exact Or.inl (List.mem_append.mpr (Or.inl (List.mem_append.mpr (Or.inr h))))
+      · exact Or.inr h
+    · rcases getD_mem_or_eq' fwd (@default α inst)
+        (((t - (mid.length : ℤ)) % (fwd.length : ℤ)).toNat) with h | h
+      · exact Or.inl (List.mem_append.mpr (Or.inr h))
+      · exact Or.inr h
+
+/-- A list lookup inside the list's range hits the list. -/
+private theorem getD_mem_of_lt {α : Type*} (l : List α) (d : α) {k : ℕ} (hk : k < l.length) :
+    l.getD k d ∈ l := by
+  rw [(List.getElem_eq_getD (l := l) (i := k) (h := hk) d).symm]
+  exact List.getElem_mem hk
+
+/--
+With both cycles non-empty the three-segment decoding never falls through to the default.
+
+`unrollOf_mem_or_default` is the unconditional form and suffices wherever the default is as good
+as a listed value (`rep`'s identity is idempotent, the identity succession matrix is reflexive).
+It is not enough for a property the default lacks — being the *full* relation is one — which is
+what this strengthening is for.
+-/
+private theorem unrollOf_mem {α : Type*} (inst : Inhabited α) (back mid fwd : List α)
+    (hb : back ≠ []) (hf : fwd ≠ []) (t : ℤ) :
+    @Periodic.unrollOf α inst back mid fwd t ∈ back ++ mid ++ fwd := by
+  have hbl : 0 < back.length := List.length_pos_iff.mpr hb
+  have hfl : 0 < fwd.length := List.length_pos_iff.mpr hf
+  have hun : @Periodic.unrollOf α inst back mid fwd t
+      = if t < 0 then back.getD ((t % (back.length : ℤ)).toNat) (@default α inst)
+        else if t < (mid.length : ℤ) then mid.getD t.toNat (@default α inst)
+        else fwd.getD (((t - (mid.length : ℤ)) % (fwd.length : ℤ)).toNat) (@default α inst) :=
+    rfl
+  rw [hun]
+  split_ifs with h1 h2
+  · refine List.mem_append.mpr (Or.inl (List.mem_append.mpr (Or.inl ?_)))
+    refine getD_mem_of_lt _ _ ?_
+    have h₁ : 0 ≤ t % (back.length : ℤ) :=
+      Int.emod_nonneg _ (by exact_mod_cast hbl.ne')
+    have h₂ : t % (back.length : ℤ) < (back.length : ℤ) :=
+      Int.emod_lt_of_pos _ (by exact_mod_cast hbl)
+    omega
+  · exact List.mem_append.mpr (Or.inl (List.mem_append.mpr (Or.inr
+      (getD_mem_of_lt _ _ (by omega)))))
+  · refine List.mem_append.mpr (Or.inr ?_)
+    refine getD_mem_of_lt _ _ ?_
+    have h₁ : 0 ≤ (t - (mid.length : ℤ)) % (fwd.length : ℤ) :=
+      Int.emod_nonneg _ (by exact_mod_cast hfl.ne')
+    have h₂ : (t - (mid.length : ℤ)) % (fwd.length : ℤ) < (fwd.length : ℤ) :=
+      Int.emod_lt_of_pos _ (by exact_mod_cast hfl)
+    omega
+
+/-- The all-true succession matrix: free succession, the pre-redesign substrate. -/
+def transFull (n : ℕ) : Fin n → Fin n → Bool := fun _ _ => true
+
+/--
+**A producer whose listed matrices are all full decodes to a full relation at every time.**
+
+The hypothesis `liftable_of_full` asks for, discharged from the producer's own lists. Both
+cycles have to be non-empty, because the out-of-range default is the *identity* relation rather
+than the full one — the one place where the strengthened `unrollOf_mem` is needed.
+-/
+theorem transMatOf_full (n : ℕ) (transBack transMid transFwd : List (Fin n → Fin n → Bool))
+    (hb : transBack ≠ []) (hf : transFwd ≠ [])
+    (hall : ∀ r ∈ transBack ++ transMid ++ transFwd, ∀ i j : Fin n, r i j = true)
+    (u : ℤ) (i j : Fin n) : transMatOf n transBack transMid transFwd u i j = true :=
+  hall _ (unrollOf_mem (transEqInhabited n) transBack transMid transFwd hb hf u) i j
+
+/-- Every listed matrix being reflexive makes the decoding reflexive, default included. -/
+theorem transMatOf_refl (n : ℕ) (transBack transMid transFwd : List (Fin n → Fin n → Bool))
+    (hall : ∀ r ∈ transBack ++ transMid ++ transFwd, ∀ i : Fin n, r i i = true)
+    (u : ℤ) (i : Fin n) : transMatOf n transBack transMid transFwd u i i = true := by
+  rcases unrollOf_mem_or_default' (transEqInhabited n) transBack transMid transFwd u with h | h
+  · exact hall _ h i
+  · rw [transMatOf, h]
+    exact decide_eq_true rfl
+
 /--
 **Thread lifting: every state path of the frame is tracked by a succession path.**
 
@@ -193,6 +297,59 @@ theorem liftable_of_full (n : ℕ) (repBack repMid repFwd : List (Fin n → Fin 
   choose b hb₁ hb₂ using hstep
   exact ⟨b, fun u => ⟨hfull _ _ _, shareOf_trans (hb₂ u) (hb₁ (u + 1))⟩, hb₁⟩
 
+/-! ### The free-succession bundle
+
+What a producer supplies when it does not mean to constrain succession at all: one full matrix
+per representative map, so the decoded relation is full at every time and the presented tree is
+exactly the pre-redesign one. Every producer landed before the redesign uses this, which is why
+adding the fourth datum changes no theorem's content.
+-/
+
+/-- One full succession matrix per representative map, so the lengths agree by construction. -/
+def transFullOf (n : ℕ) (l : List (Fin n → Fin n)) : List (Fin n → Fin n → Bool) :=
+  l.map (fun _ => transFull n)
+
+@[simp]
+theorem transFullOf_length (n : ℕ) (l : List (Fin n → Fin n)) :
+    (transFullOf n l).length = l.length := List.length_map _
+
+theorem eq_transFull_of_mem_transFullOf {n : ℕ} {l : List (Fin n → Fin n)}
+    {r : Fin n → Fin n → Bool} (h : r ∈ transFullOf n l) : r = transFull n := by
+  obtain ⟨_, _, hr⟩ := List.mem_map.mp h
+  exact hr.symm
+
+theorem transFullOf_ne {n : ℕ} {l : List (Fin n → Fin n)} (hl : l ≠ []) :
+    transFullOf n l ≠ [] := by
+  intro h
+  exact hl (List.eq_nil_of_length_eq_zero (by
+    have := transFullOf_length n l
+    rw [h, List.length_nil] at this
+    omega))
+
+theorem transFullOf_all (n : ℕ) (lb lm lf : List (Fin n → Fin n)) :
+    ∀ r ∈ transFullOf n lb ++ transFullOf n lm ++ transFullOf n lf, ∀ i j : Fin n,
+      r i j = true := by
+  intro r hr i j
+  have hfull : r = transFull n := by
+    rcases List.mem_append.mp hr with h | h
+    · rcases List.mem_append.mp h with h' | h' <;> exact eq_transFull_of_mem_transFullOf h'
+    · exact eq_transFull_of_mem_transFullOf h
+  rw [hfull]; rfl
+
+theorem transFullOf_refl (n : ℕ) (lb lm lf : List (Fin n → Fin n)) :
+    ∀ r ∈ transFullOf n lb ++ transFullOf n lm ++ transFullOf n lf, ∀ i : Fin n, r i i = true :=
+  fun r hr i => transFullOf_all n lb lm lf r hr i i
+
+/-- **The free-succession bundle is liftable**, so every pre-redesign producer discharges `lift`
+with this one term. -/
+theorem liftable_of_transFullOf (n : ℕ) (repBack repMid repFwd : List (Fin n → Fin n))
+    (hb : repBack ≠ []) (hf : repFwd ≠ []) :
+    LiftableRaw n repBack repMid repFwd
+      (transFullOf n repBack) (transFullOf n repMid) (transFullOf n repFwd) :=
+  liftable_of_full n repBack repMid repFwd _ _ _
+    (transMatOf_full n _ _ _ (transFullOf_ne hb) (transFullOf_ne hf)
+      (transFullOf_all n repBack repMid repFwd))
+
 /--
 **Splice closure**: any two indices naming the same state at `u` have a common index that copies
 the first strictly before `u` and the second from `u` on.
@@ -212,7 +369,7 @@ private theorem exists_cofinal_value {n : ℕ} (F : ℕ → Fin n) :
     ∃ k : Fin n, ∀ N : ℕ, ∃ M : ℕ, N ≤ M ∧ F M = k := by
   classical
   by_contra h
-  push_neg at h
+  push Not at h
   choose B hB using h
   set C : ℕ := (Finset.univ : Finset (Fin n)).sup B with hC
   have hle : B (F C) ≤ C := by
@@ -273,7 +430,8 @@ theorem liftable_of_spliceClosed (n : ℕ) (repBack repMid repFwd : List (Fin n 
             subst this
             exact shareOf_trans (hk₁r _ (by omega)) (hk₀r _ le_rfl)
       -- Extend one step to the left.
-      have hleft : shareOf n repBack repMid repFwd (-(N : ℤ)) (ρ (-(N : ℤ) - 1)) (ρ (-(N : ℤ))) := by
+      have hleft : shareOf n repBack repMid repFwd (-(N : ℤ))
+          (ρ (-(N : ℤ) - 1)) (ρ (-(N : ℤ))) := by
         have := hρstep (-(N : ℤ) - 1)
         rwa [show -(N : ℤ) - 1 + 1 = -(N : ℤ) by omega] at this
       have hk₁N : shareOf n repBack repMid repFwd (-(N : ℤ)) k₁ (ρ (-(N : ℤ))) :=
@@ -357,6 +515,26 @@ structure SharingSkeleton where
   repFwd_ne : repFwd ≠ []
   /-- Every listed map is idempotent, so it is a choice of class representatives. -/
   rep_idem : ∀ f ∈ repBack ++ repMid ++ repFwd, ∀ i, f (f i) = f i
+  /-- Succession matrices for the leftward cycle, indexed left-to-right in time. -/
+  transBack : List (Fin n → Fin n → Bool)
+  /-- Succession matrices for the window `[0, |transMid|)`. -/
+  transMid : List (Fin n → Fin n → Bool)
+  /-- Succession matrices for the rightward cycle, indexed left-to-right in time. -/
+  transFwd : List (Fin n → Fin n → Bool)
+  /-- The succession cycles have the representatives' periods, so `share` and `trans` are
+  periodic together and one window decides both. -/
+  transBack_len : transBack.length = repBack.length
+  /-- The succession window has the representative window's length. -/
+  transMid_len : transMid.length = repMid.length
+  /-- The forward succession cycle has the forward representative cycle's period. -/
+  transFwd_len : transFwd.length = repFwd.length
+  /-- Every listed matrix is reflexive: staying on one index is always a legitimate step. -/
+  trans_refl : ∀ r ∈ transBack ++ transMid ++ transFwd, ∀ i, r i i = true
+  /-- **Thread lifting.** Every state path of the frame is tracked by a succession path. While
+  succession *was* `share (u+1)` this came free; once succession is a separate relation it has
+  to be demanded, and demanding it here — label-free, beside `rep_idem` — is what keeps
+  `total_eq_thread` stated exactly as it was. -/
+  lift : LiftableRaw n repBack repMid repFwd transBack transMid transFwd
 
 namespace SharingSkeleton
 
@@ -469,6 +647,103 @@ theorem share_sub_back_length (K : SharingSkeleton) {u : ℤ} (hu : u < 0) (i j 
 theorem share_add_fwd_length (K : SharingSkeleton) {u : ℤ} (hu : K.nmr ≤ u) (i j : Fin K.n) :
     K.share (u + K.nfr) i j ↔ K.share u i j := by
   simp only [share, K.rep_add_fwd_length hu]
+
+/-! ## The fourth periodic datum: succession, pruned by arrival renaming -/
+
+/-- The decoded bi-infinite succession matrix, by the same three-segment scheme. Out of range it
+is the identity relation. -/
+def transRaw (K : SharingSkeleton) (u : ℤ) : Fin K.n → Fin K.n → Bool :=
+  transMatOf K.n K.transBack K.transMid K.transFwd u
+
+theorem transRaw_def (K : SharingSkeleton) (u : ℤ) :
+    K.transRaw u
+      = @Periodic.unrollOf _ (transEqInhabited _) K.transBack K.transMid K.transFwd u := rfl
+
+/-- The leftward succession cycle is non-empty, because it has the leftward representative
+cycle's length. -/
+theorem transBack_ne (K : SharingSkeleton) : K.transBack ≠ [] := by
+  intro h
+  exact K.repBack_ne (List.eq_nil_of_length_eq_zero (by
+    rw [← K.transBack_len, h, List.length_nil]))
+
+/-- The rightward succession cycle is non-empty, for the same reason. -/
+theorem transFwd_ne (K : SharingSkeleton) : K.transFwd ≠ [] := by
+  intro h
+  exact K.repFwd_ne (List.eq_nil_of_length_eq_zero (by
+    rw [← K.transFwd_len, h, List.length_nil]))
+
+/-- **Leftward periodicity of succession**, at the representatives' own period. The length
+equalities are what let this be stated with `nbr` rather than a second set of moduli. -/
+theorem transRaw_sub_back_length (K : SharingSkeleton) {u : ℤ} (hu : u < 0) :
+    K.transRaw (u - K.nbr) = K.transRaw u := by
+  have h := @Periodic.unrollOf_sub_back_length _ (transEqInhabited _)
+    K.transBack K.transMid K.transFwd K.transBack_ne u hu
+  rw [transRaw_def, transRaw_def, show K.nbr = (K.transBack.length : ℤ) by
+    rw [K.transBack_len]]
+  exact h
+
+/-- **Rightward periodicity of succession**, at the representatives' own period. -/
+theorem transRaw_add_fwd_length (K : SharingSkeleton) {u : ℤ} (hu : K.nmr ≤ u) :
+    K.transRaw (u + K.nfr) = K.transRaw u := by
+  have hmid : (K.transMid.length : ℤ) = K.nmr := by rw [K.transMid_len]
+  have h := @Periodic.unrollOf_add_fwd_length _ (transEqInhabited _)
+    K.transBack K.transMid K.transFwd K.transFwd_ne u (by rw [hmid]; exact hu)
+  rw [transRaw_def, transRaw_def, show K.nfr = (K.transFwd.length : ℤ) by
+    rw [K.transFwd_len]]
+  exact h
+
+/-- **The decoded succession relation is reflexive**, listed matrices and default alike. -/
+theorem transRaw_refl (K : SharingSkeleton) (u : ℤ) (i : Fin K.n) : K.transRaw u i i = true :=
+  transMatOf_refl K.n K.transBack K.transMid K.transFwd K.trans_refl u i
+
+/--
+**Succession, arrival-pruned.**
+
+The redesign's whole content in one definition. `transRaw` is free data; the second conjunct
+prunes it so a step may go only to an index naming the state the step arrives in. That is what
+keeps `Step` and every frame lemma byte-identical: `trans u` refines `share (u+1)`, which is
+exactly what `Thread.step` used to assert outright.
+-/
+def trans (K : SharingSkeleton) (u : ℤ) (i j : Fin K.n) : Prop :=
+  K.transRaw u i j = true ∧ K.share (u + 1) i j
+
+theorem trans_def (K : SharingSkeleton) (u : ℤ) (i j : Fin K.n) :
+    K.trans u i j ↔ (K.transRaw u i j = true ∧ K.share (u + 1) i j) := Iff.rfl
+
+/-- **Succession is reflexive**, from the field and reflexivity of `share`. -/
+@[refl]
+theorem trans_refl' (K : SharingSkeleton) (u : ℤ) (i : Fin K.n) : K.trans u i i :=
+  ⟨K.transRaw_refl u i, K.share_refl (u + 1) i⟩
+
+/-- **Arrival pruning, projected.** A succession step names the state it arrives in. This is the
+half of `trans` every pre-redesign consumer of `Thread.step` actually used. -/
+theorem share_succ_of_trans {K : SharingSkeleton} {u : ℤ} {i j : Fin K.n}
+    (h : K.trans u i j) : K.share (u + 1) i j := h.2
+
+instance instDecidableTrans (K : SharingSkeleton) (u : ℤ) (i j : Fin K.n) :
+    Decidable (K.trans u i j) := by
+  unfold trans share
+  infer_instance
+
+/-! ### Bridges to the raw layer
+
+Each is `rfl`: the structure's projections *are* the raw functions at its own fields. They are
+named so that `K.lift`, whose statement is necessarily raw, applies to `K.Step`-paths without a
+rewrite at every use site.
+-/
+
+theorem rep_eq_repOf (K : SharingSkeleton) (u : ℤ) :
+    K.rep u = repOf K.n K.repBack K.repMid K.repFwd u := rfl
+
+theorem share_iff_shareOf (K : SharingSkeleton) (u : ℤ) (i j : Fin K.n) :
+    K.share u i j ↔ shareOf K.n K.repBack K.repMid K.repFwd u i j := Iff.rfl
+
+theorem transRaw_eq_transMatOf (K : SharingSkeleton) (u : ℤ) :
+    K.transRaw u = transMatOf K.n K.transBack K.transMid K.transFwd u := rfl
+
+theorem trans_iff_transOf (K : SharingSkeleton) (u : ℤ) (i j : Fin K.n) :
+    K.trans u i j ↔
+      transOf K.n K.repBack K.repMid K.repFwd K.transBack K.transMid K.transFwd u i j := Iff.rfl
 
 /-- The decoded map is either one of the listed maps or the identity. -/
 theorem rep_mem_or_id (K : SharingSkeleton) (u : ℤ) :
@@ -586,6 +861,9 @@ branching: on the deterministic device it collapses to `i' = i` and `Step u i j 
 -/
 def Step (K : SharingSkeleton) (u : ℤ) (i j : Fin K.n) : Prop :=
   ∃ i', K.share u i i' ∧ K.share (u + 1) i' j
+
+theorem step_iff_stepOf (K : SharingSkeleton) (u : ℤ) (i j : Fin K.n) :
+    K.Step u i j ↔ stepOf K.n K.repBack K.repMid K.repFwd u i j := Iff.rfl
 
 theorem step_of_share_succ {K : SharingSkeleton} {u : ℤ} {i j : Fin K.n}
     (h : K.share (u + 1) i j) : K.Step u i j :=

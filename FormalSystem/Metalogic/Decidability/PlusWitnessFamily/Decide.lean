@@ -810,6 +810,14 @@ private def smokeFamily : PlusSharingWitnessFamily smokeCtx ([] : PlusContext) w
     subst hI
     intro i
     rfl
+  transBack := transFullOf _ [id]
+  transMid := transFullOf _ []
+  transFwd := transFullOf _ [id]
+  transBack_len := transFullOf_length _ _
+  transMid_len := transFullOf_length _ _
+  transFwd_len := transFullOf_length _ _
+  trans_refl := transFullOf_refl _ _ _ _
+  lift := liftable_of_transFullOf _ _ _ _ (by simp) (by simp)
 
 -- linter.hashCommand: this `#guard` runs the compiled `Decidable` instance, which is the point
 set_option linter.hashCommand false in

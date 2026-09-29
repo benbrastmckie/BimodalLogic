@@ -245,6 +245,14 @@ def stabFamily : PlusSharingWitnessFamily [PlusFormula.stab (stabEvent p)] ([] :
     simp only [List.cons_append, List.nil_append, List.mem_cons, List.not_mem_nil,
       or_false] at hf
     rcases hf with rfl | rfl | rfl <;> rfl
+  transBack := transFullOf _ [id]
+  transMid := transFullOf _ [fun _ => ⟨0, by simp⟩]
+  transFwd := transFullOf _ [id]
+  transBack_len := transFullOf_length _ _
+  transMid_len := transFullOf_length _ _
+  transFwd_len := transFullOf_length _ _
+  trans_refl := transFullOf_refl _ _ _ _
+  lift := liftable_of_transFullOf _ _ _ _ (by simp) (by simp)
 
 @[simp]
 theorem stabFamily_lassos_length : (stabFamily p).lassos.length = 2 := rfl

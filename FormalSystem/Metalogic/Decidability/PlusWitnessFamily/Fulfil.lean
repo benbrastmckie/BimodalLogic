@@ -1069,6 +1069,14 @@ private def smokeFamily : PlusSharingWitnessFamily smokeCtx [] where
     simp only [List.cons_append, List.nil_append, List.mem_cons, List.not_mem_nil,
       or_false] at hf
     rcases hf with rfl | rfl | rfl <;> rfl
+  transBack := transFullOf _ [id]
+  transMid := transFullOf _ [id]
+  transFwd := transFullOf _ [id]
+  transBack_len := transFullOf_length _ _
+  transMid_len := transFullOf_length _ _
+  transFwd_len := transFullOf_length _ _
+  trans_refl := transFullOf_refl _ _ _ _
+  lift := liftable_of_transFullOf _ _ _ _ (by simp) (by simp)
 
 -- linter.hashCommand: these `#guard`s run the compiled definitions, which is the point of a
 -- smoke test — a `theorem … := by decide` would check the same fact without exercising the

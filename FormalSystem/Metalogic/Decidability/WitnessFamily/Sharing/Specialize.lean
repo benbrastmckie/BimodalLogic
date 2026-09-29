@@ -103,6 +103,14 @@ def toSharing (W : WitnessFamily Γ Del) : SharingWitnessFamily Γ Del where
       rcases List.mem_append.mp hf with h | h <;> simpa using h
     subst hid
     rfl
+  transBack := transFullOf _ [id]
+  transMid := transFullOf _ []
+  transFwd := transFullOf _ [id]
+  transBack_len := transFullOf_length _ _
+  transMid_len := transFullOf_length _ _
+  transFwd_len := transFullOf_length _ _
+  trans_refl := transFullOf_refl _ _ _ _
+  lift := liftable_of_transFullOf _ _ _ _ (by simp) (by simp)
 
 @[simp]
 theorem toSharing_toWitnessFamily (W : WitnessFamily Γ Del) :

@@ -1649,6 +1649,14 @@ private def smokeFamily : SharingWitnessFamily smokeCtx [] where
   repBack_ne := by simp
   repFwd_ne := by simp
   rep_idem := by decide
+  transBack := transFullOf _ [fun i => i]
+  transMid := transFullOf _ [fun i => i]
+  transFwd := transFullOf _ [fun i => i]
+  transBack_len := transFullOf_length _ _
+  transMid_len := transFullOf_length _ _
+  transFwd_len := transFullOf_length _ _
+  trans_refl := transFullOf_refl _ _ _ _
+  lift := liftable_of_transFullOf _ _ _ _ (by simp) (by simp)
 
 -- linter.hashCommand: these `#guard`s run the compiled definitions, which is the point of a
 -- smoke test — a `theorem … := by decide` would check the same fact without exercising the
