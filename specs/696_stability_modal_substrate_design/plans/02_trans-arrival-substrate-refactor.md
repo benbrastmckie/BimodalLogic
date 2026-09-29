@@ -672,20 +672,26 @@ form recorded in round 2's tactic table.
 
 ---
 
-### Phase 10: Family B in the tree — the `untl`-side certificate [NOT STARTED]
+### Phase 10: Family B in the tree — the `untl`-side certificate [COMPLETED]
 
 **Goal**: The same for the `untl` side, closing the second temporal direction and completing the
 non-vacuity demonstration the task demands.
 
 **Tasks**:
 
-- [ ] Port `famB` and its decoding lemmas (`famB_L`, `famB_rep`, `famB_share_pos`,
-      `famB_share_nonpos`) into `Examples.lean`.
-- [ ] Discharge `lift` with the constant-path corollary, as for Family A.
-- [ ] Port the six per-condition proofs and bundle them as
+- [x] Port `famB` and its decoding lemmas (`famB_L`, `famB_rep`, `famB_share_pos`,
+      `famB_share_nonpos`) into `Examples.lean`. *(deviation: altered — `famB_L` is now two lemmas.
+      `famB_L_raw` states the three-segment decoding, which is the shape `unrollOf_singletons`
+      closes directly; `famB_L` derives the two-way `0 < u` form the consumers use. Names
+      renamed as for Family A: `untlP`, `notP`, `innerB`, `targetB`, `cB`)*
+- [x] Discharge `lift` with the constant-path corollary, as for Family A. *(deviation: altered — Family B
+      is the MIRROR shape, total below the cut and discrete above it, so
+      `liftable_of_constant_below` does not apply. Added `liftable_of_constant_above` to
+      `Sharing/Skeleton.lean`; Family B discharges `lift` with the cut at `1`)*
+- [x] Port the six per-condition proofs and bundle them as
       `plusCertifies_stabUntl_example : (famB p).PlusCertifies 0`.
-- [ ] Add `not_untl_shift_share_congr` to `Incompleteness.lean`.
-- [ ] Add two C2 baseline rows and two `#print axioms` lines, update the count, and add two
+- [x] Add `not_untl_shift_share_congr` to `Incompleteness.lean`.
+- [x] Add two C2 baseline rows and two `#print axioms` lines, update the count, and add two
       `theorem-index.md` rows.
 
 **Timing**: 2 hours

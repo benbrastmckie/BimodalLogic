@@ -545,6 +545,38 @@ theorem liftable_of_constant_below (n : ℕ) (repBack repMid repFwd : List (Fin 
     exact shareOf_refl _ _ _ _ _ _
   · exact htot u hu _ _
 
+/--
+**The mirror shape: one class below a cut, discrete above it, is liftable.**
+
+`liftable_of_constant_below`'s twin, for a family that shares early and separates late. Above the
+cut every `share`-class is a singleton, so a `Step`-path cannot move; below it every two indices
+share, so a constant path tracks anything. The constant path at the path's own value at the cut
+therefore tracks it everywhere, and again succession only has to be reflexive.
+-/
+theorem liftable_of_constant_above (n : ℕ) (repBack repMid repFwd : List (Fin n → Fin n))
+    (transBack transMid transFwd : List (Fin n → Fin n → Bool)) (c : ℤ)
+    (hdisc : ∀ u : ℤ, c ≤ u → ∀ i j : Fin n, shareOf n repBack repMid repFwd u i j → i = j)
+    (htot : ∀ u : ℤ, u < c → ∀ i j : Fin n, shareOf n repBack repMid repFwd u i j)
+    (hrefl : ∀ (u : ℤ) (i : Fin n), transMatOf n transBack transMid transFwd u i i = true) :
+    LiftableRaw n repBack repMid repFwd transBack transMid transFwd := by
+  intro σ hstep
+  have hconst : ∀ m : ℕ, σ (c + (m : ℤ)) = σ c := by
+    intro m
+    induction m with
+    | zero => simp
+    | succ m ih =>
+      obtain ⟨w, h₁, h₂⟩ := hstep (c + (m : ℤ))
+      have e₁ := hdisc (c + (m : ℤ)) (by omega) _ _ h₁
+      have e₂ := hdisc (c + (m : ℤ) + 1) (by omega) _ _ h₂
+      rw [show c + ((m + 1 : ℕ) : ℤ) = c + (m : ℤ) + 1 by omega, ← e₂, ← e₁, ih]
+  refine ⟨fun _ => σ c, fun u => ⟨hrefl _ _, shareOf_refl _ _ _ _ _ _⟩, fun u => ?_⟩
+  rcases lt_or_ge u c with hu | hu
+  · exact htot u hu _ _
+  · have := hconst (u - c).toNat
+    rw [show c + (((u - c).toNat : ℕ) : ℤ) = u by omega] at this
+    rw [this]
+    exact shareOf_refl _ _ _ _ _ _
+
 /-! ### Three singleton segments, decoded
 
 The gate families' shape: one representative map before the origin, one at it, one after. Stated

@@ -831,6 +831,387 @@ theorem famA_separates_snce :
 
 end FamilyA
 
+
+/-! ## Family B: the `untl`-side certificate at non-trivial sharing
+
+Family A's mirror image, closing the second temporal direction. Two lassos that name one world
+state up to and including the origin and separate from time `1` on, with succession again
+index-identity. The retired `untl_shift_share_congr` read the `untl` clause at `t - 1`, where
+`share t i j` *is* `share ((t-1)+1) i j`, and recovered the same forced class agreement the
+`snce` side had — which is why re-timing one clause to match the other was never a repair. Under
+the redesign the clause reads succession out of `t - 1`, a singleton here, and the two indices
+are free to disagree on the unfolding.
+
+The `lift` obligation goes through `liftable_of_constant_above`, the cut at `1`: above it every
+`share`-class is a singleton so a state path cannot move, and below it every two indices share.
+-/
+
+section FamilyB
+
+variable (p : Atom)
+
+/-- `Fp := ⊤ U p`. -/
+abbrev untlP : PlusFormula := PlusFormula.untl PlusFormula.top (.atom p)
+/-- `¬p`. -/
+abbrev notP : PlusFormula := PlusFormula.imp (.atom p) .bot
+/-- `¬p → ⊡Fp`, the target's consequent. -/
+abbrev innerB : PlusFormula := PlusFormula.imp (notP p) (PlusFormula.stab (untlP p))
+/-- The target `Fp → (¬p → ⊡Fp)`; definitionally `stabUntlTarget p`. -/
+abbrev targetB : PlusFormula := PlusFormula.imp (untlP p) (innerB p)
+
+/-- The closure of Family B's target. -/
+abbrev closB : Finset PlusFormula := plusClosureOf (([] : PlusContext) ++ [targetB p])
+
+/-- The closure of the target, enumerated. -/
+theorem mem_closB (ψ : PlusFormula) :
+    ψ ∈ closB p ↔ ψ = targetB p ∨ ψ = untlP p ∨ ψ = innerB p ∨ ψ = notP p ∨
+      ψ = PlusFormula.stab (untlP p) ∨ ψ = PlusFormula.top ∨ ψ = PlusFormula.bot ∨
+      ψ = PlusFormula.atom p := by
+  rw [mem_plusClosureOf]
+  simp only [List.nil_append, List.mem_singleton, exists_eq_left]
+  rw [plusSubformulaClosure, List.mem_toFinset]
+  simp only [PlusFormula.top, PlusFormula.subformulas, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false]
+  tauto
+
+theorem imp_mem_closB {a b : PlusFormula} (h : PlusFormula.imp a b ∈ closB p) :
+    (a = untlP p ∧ b = innerB p) ∨ (a = notP p ∧ b = PlusFormula.stab (untlP p)) ∨
+    (a = PlusFormula.atom p ∧ b = PlusFormula.bot) ∨
+    (a = PlusFormula.bot ∧ b = PlusFormula.bot) := by
+  rw [mem_closB] at h
+  simp only [PlusFormula.top, PlusFormula.imp.injEq, reduceCtorEq, or_false] at h
+  tauto
+
+theorem untl_mem_closB {g e : PlusFormula} (h : PlusFormula.untl g e ∈ closB p) :
+    g = PlusFormula.top ∧ e = PlusFormula.atom p := by
+  rw [mem_closB] at h
+  simp only [PlusFormula.top, PlusFormula.untl.injEq, reduceCtorEq, or_false, false_or] at h
+  exact h
+
+theorem snce_not_mem_closB {g e : PlusFormula} (h : PlusFormula.snce g e ∈ closB p) : False := by
+  rw [mem_closB] at h
+  simp only [PlusFormula.top, reduceCtorEq, or_false] at h
+
+theorem box_not_mem_closB {χ : PlusFormula} (h : PlusFormula.box χ ∈ closB p) : False := by
+  rw [mem_closB] at h
+  simp only [PlusFormula.top, reduceCtorEq, or_false] at h
+
+theorem stab_mem_closB {φ : PlusFormula} (h : PlusFormula.stab φ ∈ closB p) : φ = untlP p := by
+  rw [mem_closB] at h
+  simp only [PlusFormula.top, PlusFormula.stab.injEq, reduceCtorEq, or_false, false_or] at h
+  exact h
+
+/-- Lasso 0 on `(-∞, 0]`: `{Fp, ¬p, ⊤}`. -/
+def b0n : Finset PlusFormula := {untlP p, notP p, PlusFormula.top}
+/-- Lasso 0 on `[1, ∞)`: `{p, Fp, ⊡Fp, ¬p → ⊡Fp, U, ⊤}`. -/
+def b0f : Finset PlusFormula :=
+  {PlusFormula.atom p, untlP p, PlusFormula.stab (untlP p), innerB p, targetB p,
+    PlusFormula.top}
+/-- Lasso 1 everywhere: `{¬p, U, ⊤}`. -/
+def b1 : Finset PlusFormula := {notP p, targetB p, PlusFormula.top}
+
+theorem b0n_sub : b0n p ⊆ closB p := by
+  intro ψ h; rw [mem_closB]; simp only [b0n, Finset.mem_insert, Finset.mem_singleton] at h; tauto
+theorem b0f_sub : b0f p ⊆ closB p := by
+  intro ψ h; rw [mem_closB]; simp only [b0f, Finset.mem_insert, Finset.mem_singleton] at h; tauto
+theorem b1_sub : b1 p ⊆ closB p := by
+  intro ψ h; rw [mem_closB]; simp only [b1, Finset.mem_insert, Finset.mem_singleton] at h; tauto
+
+/-- Lasso 0 of Family B. -/
+def lassoB0 : PlusLabelledLasso (closB p) where
+  back := [b0n p]
+  mid := [b0n p]
+  fwd := [b0f p]
+  back_ne := by simp
+  fwd_ne := by simp
+  label_sub := by
+    intro X hX
+    simp only [List.cons_append, List.nil_append, List.mem_cons, List.not_mem_nil,
+      or_false] at hX
+    rcases hX with rfl | rfl | rfl
+    · exact b0n_sub p
+    · exact b0n_sub p
+    · exact b0f_sub p
+
+/-- Lasso 1 of Family B. -/
+def lassoB1 : PlusLabelledLasso (closB p) where
+  back := [b1 p]
+  mid := [b1 p]
+  fwd := [b1 p]
+  back_ne := by simp
+  fwd_ne := by simp
+  label_sub := by
+    intro X hX
+    simp only [List.cons_append, List.nil_append, List.mem_cons, List.not_mem_nil,
+      or_false] at hX
+    rcases hX with rfl | rfl | rfl <;> exact b1_sub p
+
+/--
+**Family B.** One class on `(-∞, 0]`, separate on `[1, ∞)`, and succession is index-identity
+throughout.
+-/
+def famB : PlusSharingWitnessFamily ([] : PlusContext) [targetB p] where
+  bx := fun _ => false
+  lassos := [lassoB0 p, lassoB1 p]
+  lassos_ne := by simp
+  repBack := [fun _ => ⟨0, by simp⟩]
+  repMid := [fun _ => ⟨0, by simp⟩]
+  repFwd := [id]
+  repBack_ne := by simp
+  repFwd_ne := by simp
+  rep_idem := by
+    intro f hf i
+    simp only [List.cons_append, List.nil_append, List.mem_cons, List.not_mem_nil,
+      or_false] at hf
+    rcases hf with rfl | rfl | rfl <;> rfl
+  transBack := transIdOf _ [fun _ => ⟨0, by simp⟩]
+  transMid := transIdOf _ [fun _ => ⟨0, by simp⟩]
+  transFwd := transIdOf _ [id]
+  transBack_len := transIdOf_length _ _
+  transMid_len := transIdOf_length _ _
+  transFwd_len := transIdOf_length _ _
+  trans_refl := transIdOf_refl _ _ _ _
+  lift := by
+    refine liftable_of_constant_above _ _ _ _ _ _ _ 1 ?_ ?_ ?_
+    · intro u hu i j h
+      rw [shareOf, repOf_singletons, if_neg (by omega), if_neg (by omega)] at h
+      exact h
+    · intro u hu i j
+      rw [shareOf, repOf_singletons]
+      split_ifs with h1 h2 <;> first | rfl | (exfalso; omega)
+    · intro u i
+      rw [transMatOf_id]
+      exact transId_refl _ _
+
+@[simp] theorem famB_lassos_length : (famB p).lassos.length = 2 := rfl
+
+theorem famB_zero_lt : 0 < (famB p).lassos.length :=
+  (famB p).toPlusWitnessFamily.lassos_length_pos
+
+theorem famB_one_lt : 1 < (famB p).lassos.length := by
+  rw [famB_lassos_length]; omega
+
+theorem famB_index_cases (i : Fin (famB p).lassos.length) : i.val = 0 ∨ i.val = 1 := by
+  have h : i.val < 2 := i.isLt
+  omega
+
+/-- The labels, decoded by the three-segment scheme. -/
+theorem famB_L_raw (i : Fin (famB p).lassos.length) (u : ℤ) :
+    (famB p).L i u =
+      if i.val = 0 then (if u < 0 then b0n p else if u = 0 then b0n p else b0f p)
+      else (if u < 0 then b1 p else if u = 0 then b1 p else b1 p) := by
+  have hget : (famB p).lassos.get i = if i.val = 0 then lassoB0 p else lassoB1 p := by
+    rcases famB_index_cases p i with h | h
+    · rw [if_pos h]
+      have hi : i = ⟨0, famB_zero_lt p⟩ := Fin.ext h
+      rw [hi]; rfl
+    · rw [if_neg (by omega)]
+      have hi : i = ⟨1, famB_one_lt p⟩ := Fin.ext h
+      rw [hi]; rfl
+  rw [PlusWitnessFamily.L, hget]
+  rcases famB_index_cases p i with h | h
+  · rw [if_pos h, if_pos h, PlusLabelledLasso.lab_def]
+    exact unrollOf_singletons _ _ _ _ u
+  · rw [if_neg (by omega), if_neg (by omega), PlusLabelledLasso.lab_def]
+    exact unrollOf_singletons _ _ _ _ u
+
+/-- The labels, in the two-way form every consumer below uses. -/
+theorem famB_L (i : Fin (famB p).lassos.length) (u : ℤ) :
+    (famB p).L i u = if i.val = 0 then (if 0 < u then b0f p else b0n p) else b1 p := by
+  rw [famB_L_raw]
+  split_ifs <;> first | rfl | omega
+
+/-- The pre-origin representative. -/
+abbrev cB : Fin (famB p).lassos.length → Fin (famB p).lassos.length :=
+  fun _ => ⟨0, famB_zero_lt p⟩
+
+/-- The representative map: constant `0` up to the origin, identity after it. -/
+theorem famB_rep (u : ℤ) (i : Fin (famB p).lassos.length) :
+    (famB p).rep u i = if 0 < u then i else ⟨0, famB_zero_lt p⟩ := by
+  have hrep : (famB p).rep u = if u < 0 then cB p else if u = 0 then cB p else id :=
+    repOf_singletons (famB p).lassos.length (cB p) (cB p) id u
+  rw [hrep]
+  split_ifs <;> first | rfl | omega
+
+theorem famB_share_pos {u : ℤ} (hu : 0 < u) (i j : Fin (famB p).lassos.length) :
+    (famB p).share u i j ↔ i = j := by
+  rw [(famB p).share_def, famB_rep, famB_rep]
+  simp [hu]
+
+theorem famB_share_nonpos {u : ℤ} (hu : u ≤ 0) (i j : Fin (famB p).lassos.length) :
+    (famB p).share u i j := by
+  rw [(famB p).share_def, famB_rep, famB_rep]
+  simp [not_lt.mpr hu]
+
+/-- The succession matrix decodes to the identity at every time. -/
+theorem famB_transRaw (u : ℤ) :
+    (famB p).transRaw u = transId (famB p).lassos.length :=
+  transMatOf_id _ _ _ _ u
+
+/-- **Succession in Family B is index-identity**, at every time. -/
+theorem famB_trans (u : ℤ) (i j : Fin (famB p).lassos.length) :
+    (famB p).trans u i j ↔ i = j := by
+  rw [(famB p).trans_def]
+  constructor
+  · rintro ⟨h, -⟩
+    rw [famB_transRaw] at h
+    exact transId_eq h
+  · rintro rfl
+    exact ⟨by rw [famB_transRaw]; exact transId_refl _ _, (famB p).share_refl _ _⟩
+
+/-- Every thread of Family B is constant. -/
+theorem famB_thread_const (θ : (famB p).Thread) (u v : ℤ) : θ.idx u = θ.idx v := by
+  have hfwd : ∀ (n : ℕ) (w : ℤ), θ.idx (w + n) = θ.idx w := by
+    intro n
+    induction n with
+    | zero => intro w; simp
+    | succ n ih =>
+      intro w
+      have hs : θ.idx (w + n) = θ.idx (w + n + 1) :=
+        (famB_trans p _ _ _).mp (Thread.step θ (w + n))
+      rw [show w + ((n + 1 : ℕ) : ℤ) = w + n + 1 by omega, ← hs, ih w]
+  rcases le_total u v with huv | huv
+  · have := hfwd (v - u).toNat u
+    rw [show u + (((v - u).toNat : ℕ) : ℤ) = v by omega] at this
+    exact this.symm
+  · have := hfwd (u - v).toNat v
+    rw [show v + (((u - v).toNat : ℕ) : ℤ) = u by omega] at this
+    exact this
+
+/-- (C0) for Family B. -/
+theorem famB_atomCoherent : (famB p).PlusAtomCoherent := by
+  intro u i j hij q
+  rcases lt_or_ge 0 u with hu | hu
+  · rw [famB_share_pos p hu] at hij
+    subst hij
+    exact Iff.rfl
+  · rw [famB_L, famB_L]
+    rcases famB_index_cases p i with hi | hi <;> rcases famB_index_cases p j with hj | hj <;>
+      simp [hi, hj, not_lt.mpr hu, b0n, b1, PlusFormula.top]
+
+/-- (C1') for Family B. -/
+theorem famB_plusLocalCoherentShare : (famB p).PlusLocalCoherentShare := by
+  intro i t
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · rw [famB_L]
+    split_ifs <;> simp [b0n, b0f, b1, PlusFormula.top]
+  · intro a b hab
+    rcases imp_mem_closB p hab with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;>
+      · rw [famB_L]
+        split_ifs <;> simp [b0n, b0f, b1, PlusFormula.top]
+  · intro χ hχ
+    exact (box_not_mem_closB p hχ).elim
+  · intro j hij g e hge
+    obtain ⟨rfl, rfl⟩ := untl_mem_closB p hge
+    rw [famB_trans] at hij
+    subst hij
+    rw [famB_L, famB_L]
+    rcases famB_index_cases p i with hi | hi
+    · simp only [hi, if_true]
+      rcases lt_or_ge 0 t with ht | ht
+      · simp [ht, show 0 < t + 1 by omega, b0f, PlusFormula.top]
+      · rcases eq_or_lt_of_le ht with ht0 | ht0
+        · subst ht0
+          simp [b0n, b0f, PlusFormula.top]
+        · simp [not_lt.mpr ht, show ¬ 0 < t + 1 by omega, b0n, PlusFormula.top]
+    · simp only [hi, one_ne_zero, if_false]
+      simp [b1, PlusFormula.top]
+  · intro k _ g e hge
+    exact (snce_not_mem_closB p hge).elim
+
+/-- (C2') for Family B. -/
+theorem famB_plusThreadFulfilling : (famB p).PlusThreadFulfilling := by
+  refine ⟨fun i u g e hmem θ hθ => ?_, fun i u g e hmem θ _ => ?_⟩
+  · obtain ⟨rfl, rfl⟩ := untl_mem_closB p ((famB p).subset_plusClosureOf i u hmem)
+    have hconst : ∀ r, θ.idx r = i := fun r => (famB_thread_const p θ r u).trans hθ
+    rcases famB_index_cases p i with hi | hi
+    · refine ⟨(u.natAbs : ℤ) + 1, by omega, ?_, fun r _ _ => ?_⟩
+      · rw [hconst, famB_L]
+        simp only [hi, if_true]
+        rw [if_pos (by omega)]
+        simp [b0f]
+      · rw [hconst, famB_L]
+        simp only [hi, if_true]
+        split_ifs <;> simp [b0n, b0f, PlusFormula.top]
+    · exfalso
+      rw [famB_L] at hmem
+      simp only [hi, one_ne_zero, if_false] at hmem
+      simp [b1, PlusFormula.top] at hmem
+  · exact (snce_not_mem_closB p ((famB p).subset_plusClosureOf i u hmem)).elim
+
+/-- (C3) for Family B: vacuous, no `box` in the closure. -/
+theorem famB_boxFaithful : (famB p).toPlusWitnessFamily.PlusBoxFaithful :=
+  fun _χ hχ => (box_not_mem_closB p hχ).elim
+
+/-- (C4) for Family B at `t = 0`. -/
+theorem famB_target : (famB p).toPlusWitnessFamily.PlusTarget 0 := by
+  refine ⟨fun γ hγ => (List.not_mem_nil hγ).elim, fun σ hσ => ?_⟩
+  have hσ' : σ = targetB p := by simpa using hσ
+  subst hσ'
+  change targetB p ∉ (famB p).L (famB p).toPlusWitnessFamily.mainIdx 0
+  rw [famB_L]
+  simp [PlusWitnessFamily.mainIdx, b0n, PlusFormula.top]
+
+/-- (C5) for Family B. -/
+theorem famB_stabFaithful : (famB p).StabFaithful := by
+  intro i u φ hc
+  obtain rfl := stab_mem_closB p hc
+  rcases lt_or_ge 0 u with hu | hu
+  · have hright : (∀ j, (famB p).share u i j → untlP p ∈ (famB p).L j u) ↔
+        untlP p ∈ (famB p).L i u := by
+      constructor
+      · intro h; exact h i ((famB_share_pos p hu i i).mpr rfl)
+      · intro h j hij
+        rw [famB_share_pos p hu] at hij
+        exact hij ▸ h
+    rw [hright, famB_L]
+    rcases famB_index_cases p i with hi | hi
+    · simp [hi, hu, b0f]
+    · simp [hi, b1, PlusFormula.top]
+  · have hright : ¬ ∀ j, (famB p).share u i j → untlP p ∈ (famB p).L j u := by
+      intro h
+      have := h ⟨1, famB_one_lt p⟩ (famB_share_nonpos p hu _ _)
+      rw [famB_L] at this
+      simp [b1, PlusFormula.top] at this
+    rw [famB_L]
+    rcases famB_index_cases p i with hi | hi
+    · simp only [hi, if_true, not_lt.mpr hu, if_false]
+      exact iff_of_false (by simp [b0n, PlusFormula.top]) hright
+    · simp only [hi, one_ne_zero, if_false]
+      exact iff_of_false (by simp [b1, PlusFormula.top]) hright
+
+/--
+**Family B is a six-condition certificate for `Fp → (¬p → ⊡Fp)` at non-trivial sharing.**
+
+The `untl`-side twin of `plusCertifies_stabSnce_example`, closing the second temporal direction.
+`famB_separates_untl` shows the sharing is not degenerate: indices `0` and `1` name one state at
+the origin and disagree on the one-step unfolding of `Fp` there.
+
+Paper: — (a formalization-native construction; the paper states no such result)
+-/
+theorem plusCertifies_stabUntl_example : (famB p).PlusCertifies 0 :=
+  ⟨famB_atomCoherent p, ⟨famB_plusLocalCoherentShare p, famB_plusThreadFulfilling p⟩,
+    famB_boxFaithful p, famB_target p, famB_stabFaithful p⟩
+
+/--
+**The sharing is non-trivial, and the old shifted congruence fails on it.** Indices `0` and `1`
+name one world state at the origin; the first carries `⊤` and `Fp` there and the second carries
+neither `p` nor `Fp`, so they disagree on the unfolding `p ∨ (⊤ ∧ Fp)`.
+-/
+theorem famB_separates_untl :
+    (famB p).share 0 ⟨0, famB_zero_lt p⟩ ⟨1, famB_one_lt p⟩ ∧
+      (PlusFormula.top ∈ (famB p).L ⟨0, famB_zero_lt p⟩ 0 ∧
+        untlP p ∈ (famB p).L ⟨0, famB_zero_lt p⟩ 0) ∧
+      (PlusFormula.atom p ∉ (famB p).L ⟨1, famB_one_lt p⟩ 0 ∧
+        untlP p ∉ (famB p).L ⟨1, famB_one_lt p⟩ 0) := by
+  refine ⟨famB_share_nonpos p le_rfl _ _, ⟨?_, ?_⟩, ?_, ?_⟩
+  · rw [famB_L]; simp [b0n, PlusFormula.top]
+  · rw [famB_L]; simp [b0n]
+  · rw [famB_L]; simp [b1, PlusFormula.top]
+  · rw [famB_L]; simp [b1, PlusFormula.top]
+
+end FamilyB
+
 end PlusSharingWitnessFamily
 
 end FormalSystem.Metalogic.Decidability

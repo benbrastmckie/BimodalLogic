@@ -159,6 +159,8 @@ class — see `deterministic_not_plusDefinable` above.
 | — | A six-condition L⁺ certificate for `Pp → ⊡Pp` at non-trivial sharing, which no family could supply before succession was separated from state-identity | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusCertifies_stabSnce_example` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Examples.lean` | — | pcq pinned:C2 |
 | — | The redesigned (C1') does not entail `share`-class agreement on past-tense labels: the retired congruence is refuted, not merely unproved | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_snce_share_congr` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean` | — | pcq pinned:C2 |
 | — | `Fp → (¬p → ⊡Fp)` is a genuine ℤ-time non-validity, making the `untl`-side emptiness a completeness failure too | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabUntl` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean` | ZTime | pcq pinned:C2 |
+| — | A six-condition L⁺ certificate for `Fp → (¬p → ⊡Fp)` at non-trivial sharing, closing the `untl` side | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusCertifies_stabUntl_example` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Examples.lean` | — | pcq pinned:C2 |
+| — | The redesigned (C1') does not entail `share`-class agreement on the one-step `untl` unfolding either: the shifted congruence is refuted, not merely unproved | `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_untl_shift_share_congr` | `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean` | — | pcq pinned:C2 |
 
 ### Characterization and definability
 

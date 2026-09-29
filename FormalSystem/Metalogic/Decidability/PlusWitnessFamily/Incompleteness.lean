@@ -61,7 +61,9 @@ failed was completeness of the certificate class on these two targets.
 ## Main Results
 
 - `PlusSharingWitnessFamily.not_snce_share_congr` — the redesigned (C1') does not entail the
-  retired congruence, refuted by `Examples.lean`'s Family A rather than merely unproved
+  retired `snce` congruence, refuted by `Examples.lean`'s Family A rather than merely unproved
+- `PlusSharingWitnessFamily.not_untl_shift_share_congr` — nor the retired `untl` congruence,
+  refuted by Family B
 - `PlusSharingWitnessFamily.not_plusValidZTime_stabSnce` — `Pp → ⊡Pp` is a genuine ℤ-time
   non-validity
 - `PlusSharingWitnessFamily.not_plusValidZTime_stabUntl` — and so is `Fp → (¬p → ⊡Fp)`
@@ -121,6 +123,44 @@ theorem not_snce_share_congr (p : Atom) :
       plusClosureOf (([] : PlusContext) ++ [targetA p]) :=
     plusClosureOf_imp_left (plusConclusion_mem_closure (List.mem_singleton_self _))
   exact hout ((h _ _ (famA p) (famA_plusLocalCoherentShare p) 0 _ _ hshare _ _ hcl).mp hin)
+
+/--
+**Family A's target is the `snce`-side schema instance**, on the nose.
+-/
+theorem targetA_eq (p : Atom) : targetA p = stabSnceTarget PlusFormula.top (.atom p) := rfl
+
+/--
+**Family B's target is the `untl`-side schema instance**, on the nose.
+-/
+theorem targetB_eq (p : Atom) : targetB p = stabUntlTarget p := rfl
+
+/--
+**The redesigned (C1') does not entail `share`-class agreement on the one-step `untl`
+unfolding.**
+
+The statement the retired `untl_shift_share_congr` made, refuted. That congruence read the `untl`
+clause at `t - 1`, where `share t i j` *is* `share ((t-1)+1) i j`, and so recovered the `snce`
+side's collapse one step displaced — which is why re-timing one clause to match the other was
+never a repair. Family B satisfies (C1') everywhere, yet indices `0` and `1` name one world state
+at the origin and disagree on the unfolding `p ∨ (⊤ ∧ Fp)` there.
+
+Paper: — (a formalization-native result; the paper states no such result)
+-/
+theorem not_untl_shift_share_congr (p : Atom) :
+    ¬ ∀ (Γ Del : PlusContext) (S : PlusSharingWitnessFamily Γ Del),
+        S.PlusLocalCoherentShare → ∀ (t : ℤ) (i j : Fin S.lassos.length), S.share t i j →
+          ∀ g e : PlusFormula, PlusFormula.untl g e ∈ plusClosureOf (Γ ++ Del) →
+            ((e ∈ S.L i t ∨ (g ∈ S.L i t ∧ PlusFormula.untl g e ∈ S.L i t)) ↔
+              (e ∈ S.L j t ∨ (g ∈ S.L j t ∧ PlusFormula.untl g e ∈ S.L j t))) := by
+  intro h
+  obtain ⟨hshare, ⟨htop, hF⟩, hpj, hFj⟩ := famB_separates_untl p
+  have hcl : PlusFormula.untl PlusFormula.top (.atom p) ∈
+      plusClosureOf (([] : PlusContext) ++ [targetB p]) :=
+    plusClosureOf_imp_left (plusConclusion_mem_closure (List.mem_singleton_self _))
+  rcases (h _ _ (famB p) (famB_plusLocalCoherentShare p) 0 _ _ hshare _ _ hcl).mp
+      (Or.inr ⟨htop, hF⟩) with hp | ⟨-, hf⟩
+  · exact hpj hp
+  · exact hFj hf
 
 /-! ## The schema is a genuine ℤ-time non-validity -/
 
