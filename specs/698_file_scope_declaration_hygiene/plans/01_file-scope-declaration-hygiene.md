@@ -342,7 +342,7 @@ cycle.
 
 ---
 
-### Phase 4: Shared gate/tooling script declarations — re-verify and declare where evidenced [NOT STARTED]
+### Phase 4: Shared gate/tooling script declarations — re-verify and declare where evidenced [COMPLETED]
 
 **Goal**: Determine, against current descriptions and any sibling plans that landed this cycle,
 which non-terminal tasks actually *edit* shared gate/tooling scripts — above all
@@ -350,30 +350,44 @@ which non-terminal tasks actually *edit* shared gate/tooling scripts — above a
 the evidence is an edit, not a gate dependency.
 
 **Tasks**:
-- [ ] Enumerate candidates fresh rather than reusing the research list: with `jq`, select every
+- [x] Enumerate candidates fresh rather than reusing the research list: with `jq`, select every
       `active_projects[]` entry whose `status` is not in `{completed, abandoned, expanded}` and whose
       `description` matches `check-module-invariants|AXIOM_BASELINE|axiom baseline|theorem-index`,
       printing `project_number` and `status`. Note the `jq` safety convention in
       `.claude/CLAUDE.md`: write `select(.x == "y" | not)` rather than `select(.x != "y")`, since
-      `!=` gets escaped and produces a parse error.
-- [ ] For each candidate, classify the relationship as EDIT (the description or its landed plan
+      `!=` gets escaped and produces a parse error. *(completed: 11 candidates —
+      700,698,696,298,296,282,412,481,482,563,695; 698 is this task itself, discussing the shared
+      script generally, not a file_scope candidate)*
+- [x] For each candidate, classify the relationship as EDIT (the description or its landed plan
       commits to changing the script's content — e.g. pinning a new `AXIOM_BASELINE` row or adding
       a `docs/theorem-index.md` row) or GATE (the script is only named as a non-regression check).
       Research classified 695 and 696 as EDIT (both already declare the script) and 700, 481, 482
-      and 563 as GATE.
-- [ ] Because siblings 695, 697, 699 and 700 are being planned this same cycle, re-check whether any
+      and 563 as GATE. *(completed: re-classification below confirms the research verdict is
+      unchanged this cycle, and extends GATE to the newly-enumerated 298/296/282 (build-gate
+      mention only, "gate on the build-inclusive check-module-invariants.sh, C25") and 412
+      (verified-by reference to C2/C3, not an edit))*
+- [x] Because siblings 695, 697, 699 and 700 are being planned this same cycle, re-check whether any
       of their newly-written plans names `scripts/check-module-invariants.sh` or
       `docs/theorem-index.md` under a `Files to modify` block while the task's `file_scope` omits it:
       `bash .claude/scripts/plan-file-scope-harvest.sh <plan-path>` per landed plan, compared
-      against that task's declared `file_scope`.
-- [ ] Add the shared script to the `file_scope` of every task classified EDIT that does not already
+      against that task's declared `file_scope`. *(completed: harvested all four landed plans —
+      695's harvest is a subset of its already-declared file_scope (both files present); 697's and
+      699's harvests name neither file and their file_scopes omit both, consistently; 700's harvest
+      is confined to `specs/700_.../notes/*`, `specs/TODO.md`, `specs/state.json` — it does NOT
+      commit to writing `docs/theorem-index.md` despite its description discussing that file, so no
+      gap)*
+- [x] Add the shared script to the `file_scope` of every task classified EDIT that does not already
       declare it, via `state-write.sh`, with a dated note in that task's description naming the
       evidence. Add nothing for a GATE classification — a read/non-regression relationship is not
-      grounds for a declaration.
-- [ ] Record the classification table (candidate, EDIT/GATE, evidence, action) for the summary,
-      including the explicit negative result if no task needs a change.
+      grounds for a declaration. *(completed: no task needed a change — 695 and 696 already declare
+      it; every other candidate is GATE)*
+- [x] Record the classification table (candidate, EDIT/GATE, evidence, action) for the summary,
+      including the explicit negative result if no task needs a change. *(completed: recorded in
+      the implementation summary)*
 - [ ] Commit only if a declaration actually changed:
       `bash .claude/scripts/git-commit-scoped.sh --message "task 698 phase 4: declare shared gate scripts on tasks that edit them" --session "$SESSION_ID" --honest-index-rows 698 -- specs/state.json`
+      *(deviation: skipped — no declaration changed, so no commit was made; the zero-change outcome
+      is the phase's own hypothesized and confirmed result)*
 
 **Timing**: 30 minutes
 

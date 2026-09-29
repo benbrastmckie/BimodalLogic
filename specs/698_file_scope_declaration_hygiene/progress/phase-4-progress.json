@@ -1,0 +1,39 @@
+{
+  "phase": 4,
+  "phase_name": "Shared gate/tooling script declarations -- re-verify and declare where evidenced",
+  "started_at": "2026-09-29T05:17:30Z",
+  "last_updated": "2026-09-29T05:22:00Z",
+  "objectives": [
+    {"id": 1, "description": "Enumerate candidates fresh via jq", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Classify each candidate EDIT vs GATE", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Re-check sibling landed plans (695, 697, 699, 700) for a Files-to-modify gap via plan-file-scope-harvest.sh", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Add shared script to EDIT-classified tasks lacking it", "status": "done", "note": "no task needed a change", "files_touched": []},
+    {"id": 5, "description": "Record classification table for summary", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Commit only if a declaration changed", "status": "done", "note": "no change; no commit made (correctly skipped per plan)", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "deviations": [
+    {
+      "task_id": "4.6",
+      "description": "Commit only if a declaration actually changed",
+      "type": "skipped",
+      "reason": "Re-verification found no task needing a new shared-script declaration (695 and 696 already declare scripts/check-module-invariants.sh; every other candidate -- 700, 481, 482, 563, 298, 296, 282, 412 -- is a GATE (non-regression/build-gate/verified-by) relationship, not an EDIT). This is the phase's own hypothesized zero-change outcome, confirmed rather than assumed.",
+      "annotation": "*(deviation: skipped -- no declaration changed, so no commit was made; the zero-change outcome is the phase's own hypothesized and confirmed result)*"
+    }
+  ],
+  "handoff_count": 0,
+  "classification_table": [
+    {"candidate": 695, "verdict": "EDIT", "evidence": "description commits to pinning C2 axiom-baseline row and a docs/theorem-index.md row for the plusTruthAt iff", "action": "none needed -- already declares scripts/check-module-invariants.sh and docs/theorem-index.md"},
+    {"candidate": 696, "verdict": "EDIT", "evidence": "description commits to updating C2 axiom-baseline rows and docs/theorem-index.md rows for Incompleteness.lean, expecting not_plusCertifies_* rows to flip to FAIL", "action": "none needed -- already declares scripts/check-module-invariants.sh and docs/theorem-index.md"},
+    {"candidate": 700, "verdict": "GATE", "evidence": "description discusses making the completeness obligation visible in docs/theorem-index.md as an eventual goal, but 700 is a specs/-only survey task; plan-file-scope-harvest.sh on its landed plan returns only specs/700_.../notes/*, specs/TODO.md, specs/state.json -- no commitment to edit docs/theorem-index.md itself", "action": "none"},
+    {"candidate": 481, "verdict": "GATE", "evidence": "ACCEPTANCE clause: 'no regression to any currently-passing check-module-invariants.sh check'", "action": "none"},
+    {"candidate": 482, "verdict": "GATE", "evidence": "ACCEPTANCE clause: 'no regression to any currently-passing check-module-invariants.sh check'", "action": "none"},
+    {"candidate": 563, "verdict": "GATE", "evidence": "cites check-module-invariants.sh C24 (module root-closure convention) as a constraint to satisfy, not content it edits", "action": "none"},
+    {"candidate": 298, "verdict": "GATE", "evidence": "POST-RELOCATION NOTE: 'gate on the build-inclusive check-module-invariants.sh, C25' -- a build-gate reference", "action": "none"},
+    {"candidate": 296, "verdict": "GATE", "evidence": "same POST-RELOCATION NOTE boilerplate as 298", "action": "none"},
+    {"candidate": 282, "verdict": "GATE", "evidence": "same POST-RELOCATION NOTE boilerplate as 298/296", "action": "none"},
+    {"candidate": 412, "verdict": "GATE", "evidence": "description states a prior result was 'Verified fresh by scripts/check-module-invariants.sh C2/C3 at realignment time' -- a verified-by reference, not an edit commitment", "action": "none"},
+    {"candidate": 698, "verdict": "N/A", "evidence": "this task itself; its own description discusses the shared-script problem generally (the motivating incident) and is not a candidate for self-declaring the script", "action": "none"}
+  ]
+}
