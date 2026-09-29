@@ -6,11 +6,15 @@
 **Effort**: ~1 hour research; no implementation is proposed by this task (audit + grounding only)
 **Dependencies**: None. Cites task 696's reports as given; does not re-derive or restate them.
 **Sources/Inputs**: - Codebase: `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/{Predicates,Incompleteness,Decide,Agreement,Fulfil}.lean`, `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/{Predicates,Decide,Skeleton,Stability}.lean`, `FormalSystem/Metalogic/Decidability/WitnessFamily/{Predicates,Decide}.lean`, `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Types.lean`, `FormalSystem/Metalogic/Decidability/BiLasso/{Annotation,Decide,Realized,SmallModel}.lean`, `FormalSystem/Metalogic/Decidability/Verified/Bridge/{Interpolate,TruthLemma}.lean`, `FormalSystem/Metalogic/{BXCanonical/Frame,Core/MCSProperties,Conservativity/MinusChronicle,Decidability/FMP/Filtration,Expressiveness/*,Independence/LoopingDuration}.lean`, `FormalSystem/Semantics/{Truth,TruthTransport}.lean`, `FormalSystem/PlusLanguage/PlusTruth.lean`, both `Sharing/README.md` and `PlusWitnessFamily/README.md`
+- Closing round (implementation) additions: `probes/02_remaining_verdicts_probe.lean` (row 6 and row 12 machine-checks), `audit/enumerate-shape-s.sh` and `audit/01_enumeration-snapshot.md` (re-runnable enumeration), `proposals/01_trans-reflexivity-residual-collapse.md` (follow-on payload and documentation handoffs)
 - Task 696 reports `01_stability-modal-substrate-design.md` and `02_trans-redesign-gate-verification.md` (read in full; cited, not restated)
 - One probe elaborated with `lake env lean` against the current oleans (archived under this task's `probes/`)
 - Literature corpus `~/Projects/Literature/sources/`: `thomason_1984` (sec03, sec04, sec05), `thomason-1970-indeterminist-time`, `reynolds_2003_priors-ockhamist-logic-historical-necessity`, `reynolds_2001`, `emerson_and_halpern_-_1986_-_sometimes_and_not_never_revisited...`
 **Artifacts**: - `specs/699_invariance_clause_audit_and_ockhamist_grounding/reports/01_invariance-clause-audit-ockhamist-grounding.md` (this report)
 - `specs/699_invariance_clause_audit_and_ockhamist_grounding/probes/01_clause_shape_collapse_probe.lean` (220 lines; elaborates clean, exit 0, all ten `#print axioms` lines show `[propext, Classical.choice, Quot.sound]` or "does not depend on any axioms" — no `sorryAx`)
+- `specs/699_invariance_clause_audit_and_ockhamist_grounding/probes/02_remaining_verdicts_probe.lean` (standalone; elaborates clean, exit 0, no warnings; all four `#print axioms` lines show `[propext, Classical.choice, Quot.sound]` — no `sorryAx`; machine-checks row 6's `Formula`-side `shareClauseAt` collapse and row 12's `PlusBoxFaithful` globality composition, both previously asserted rather than probed)
+- `specs/699_invariance_clause_audit_and_ockhamist_grounding/proposals/01_trans-reflexivity-residual-collapse.md` (paste-ready `/task` payload for the `trans_reflexivity_residual_collapse` follow-on, plus the two documentation-ownership handoffs)
+- `specs/699_invariance_clause_audit_and_ockhamist_grounding/audit/enumerate-shape-s.sh` and `audit/01_enumeration-snapshot.md` (re-runnable three-pass Shape-(S) enumeration and its dated output, replacing the inline Appendix commands below)
 **Standards**: report-format.md, subagent-return.md
 **Task Type**: formal:logic
 
@@ -102,12 +106,13 @@ Read in full: `PlusWitnessFamily/{Predicates,Incompleteness}.lean`; `Sharing/Pre
 of the two `Decide.lean` files; `Skeleton.lean` 140-375 and 515-560; `Semantics/Truth.lean` 220-250;
 `Semantics/TruthTransport.lean` 275-325; `PlusLanguage/PlusTruth.lean` 70-115 and 250-340;
 `PlusWitnessFamily/Agreement.lean` 200-245; task 696's two reports and its probe 01. Sampled for the
-enumeration: every remaining `FormalSystem/Metalogic/**` definition whose body contains `↔` (67
-candidates; method below).
+enumeration: every remaining `FormalSystem/Metalogic/**` definition whose body contains `↔` (64
+candidates as re-run 2026-09-29 via `audit/enumerate-shape-s.sh`, corrected from an original count
+of 67 that predates the re-runnable script; method below).
 
 Constraints honoured. No Lean statement in the tree was modified; the only file written under
-`FormalSystem/` is none. The single probe lives under this task's own `probes/` and is a standalone
-file elaborated against the existing oleans. Task 696's twelve declared paths were read but not
+`FormalSystem/` is none. The probes live under this task's own `probes/` and are standalone files
+elaborated against the existing oleans. Task 696's fourteen declared paths were read but not
 touched, and its design is cited rather than restated or redesigned. `plusTruth_iff_mem` and
 `plusRefutes_of_certifies` were not modified and are not in question.
 
@@ -121,15 +126,24 @@ The audited shape is stated precisely as:
 Shape (S) is exactly what `clause_shape_collapse` consumes. Enumeration ran in two passes:
 
 1. **All candidates**: every `def` / `abbrev` / `structure` in `FormalSystem/Metalogic/**/*.lean`
-   whose body contains `↔` — 67 definitions across 40 files.
+   whose body contains `↔` — 64 definitions across 39 files, per the re-runnable script's
+   2026-09-29 run (`audit/enumerate-shape-s.sh`, snapshot `audit/01_enumeration-snapshot.md`;
+   originally stated as 67 across 40, corrected — no tree drift, see the snapshot's Divergence
+   analysis for the root cause).
 2. **Filter to Shape (S)**: for each candidate, does a `↔` sit under a `∀` whose binder appears in a
    relational guard but *not* on the biconditional's left side? Independently, the reflexive
    relations of `FormalSystem/Metalogic/**` were enumerated by their `_refl` lemmas and `@[refl]`
-   attributes (39 hits) and cross-checked against guard positions.
+   attributes (45 hits per the re-run, corrected from an originally stated 39 — the original
+   command was missing the `-E` flag its alternation needs) and cross-checked against guard
+   positions.
 
 Both passes agree: inside `FormalSystem/Metalogic/`, the only relation guarding a Shape-(S)
 biconditional is `share` (and its data-level presentation `rt i = rt j` / `rp i = rp j`), plus the
-implicit total relation on label positions in (C3). The exclusions are itemized in the table's
+implicit total relation on label positions in (C3). This holds up under the re-run's corrected
+scan too: the re-run additionally covers `FormalSystem/Metalogic/WeakCanonical/**` (omitted from
+the original pass despite being in scope), and each of its six new candidates was individually
+checked and is OUT OF SHAPE under one of the two reasons row 17 already gives — see
+`audit/01_enumeration-snapshot.md` for the per-candidate derivation. The exclusions are itemized in the table's
 "out of shape" rows, with the reason for each, so the enumeration can be audited rather than trusted.
 
 ## Findings
@@ -182,13 +196,13 @@ Verdicts: **COLLAPSE** = Shape (S) holds and the derived invariance is not seman
 | 3 | `LocalCoherentShare`, `snce` conjunct | `Sharing/Predicates.lean` 158-161 | `S.share t` | yes | **COLLAPSE** (unrecorded anywhere) | probe `snce_share_congr_formula`; identical derivation at `Formula` |
 | 4 | `LocalCoherentShare`, `untl` conjunct | same, 154-157 | `S.share (t+1)` | yes | **COLLAPSE** (unrecorded anywhere) | probe `untl_share_succ_congr_formula` |
 | 5 | `plusShareClauseAt`, `snce` and `untl` arms | `PlusWitnessFamily/Decide.lean` 518-530 | `rt i = rt k` / `rp i = rp j` | yes (`rfl`) | **COLLAPSE** (decision mirror; must be, being equivalent to (C1')) | probe `plusShareClauseAt_snce_collapse`, `plusShareClauseAt_untl_collapse` |
-| 6 | `shareClauseAt`, `snce` and `untl` arms | `Sharing/Decide.lean` 420-429 | same | yes | **COLLAPSE** (decision mirror) | same two derivations at `Formula`; not separately probed |
+| 6 | `shareClauseAt`, `snce` and `untl` arms | `Sharing/Decide.lean` 420-429 | same | yes | **COLLAPSE** (decision mirror) | probe `SharingWitnessFamily.shareClauseAt_snce_collapse`, `SharingWitnessFamily.shareClauseAt_untl_collapse` (probe 02) — the same two derivations at `Formula`, now separately probed rather than asserted |
 | 7 | `PlusAtomCoherent` | `PlusWitnessFamily/Predicates.lean` 71-73 | `S.share u` | yes | INTENDED | Shape (S) fails: the biconditional's *left* side mentions the bound index. It **is** the congruence, and it is mandatory — the branching model's valuation is a `Quotient.lift` over `share`-classes and is not well defined without it |
 | 8 | `AtomCoherent` | `Sharing/Predicates.lean` 136-138 | `S.share u` | yes | INTENDED | as row 7 |
 | 9 | `plusAtomClauseAt` / `atomClauseAt` / `plusAtomCoherentData` / `atomCoherentData` | `PlusWitnessFamily/Decide.lean` 438-470; `Sharing/Decide.lean` 347-360 | `rt i = rt j` | yes | INTENDED | data mirrors of rows 7-8; same reason |
 | 10 | `StabFaithful` | `PlusWitnessFamily/Predicates.lean` 276-279 | `S.share u`, on the biconditional's *right* side, not as a guard | yes, plus symm+trans | INTENDED | Shape (S) fails (`P i ↔ ∀ j, R i j → Q j` is a different shape, and its invariance needs an equivalence, not just reflexivity). The invariance is landed as `stabFaithful_share_congr` (289-304) and is semantically forced by `PlusTruth.stab_state_only`. See A4 for the one place this deserved a second look |
 | 11 | `stabClauseAt` / `stabFaithfulData` | `PlusWitnessFamily/Decide.lean` 657-690 | `rt i = rt j` | yes | INTENDED | data mirror of row 10 |
-| 12 | `PlusBoxFaithful` | `PlusWitnessFamily/Predicates.lean` 195-197 | the total relation on label positions `(i, t)` (implicit) | yes, trivially | INTENDED, **not** a second over-strength | Shape (S) *does* hold and the derivation runs (A3). The invariance it yields is semantically forced by `Semantics.Truth.box_const`; the truth lemma's box case consumes it. Full argument in A3 |
+| 12 | `PlusBoxFaithful` | `PlusWitnessFamily/Predicates.lean` 195-197 | the total relation on label positions `(i, t)` (implicit) | yes, trivially | INTENDED, **not** a second over-strength | probe `PlusSharingWitnessFamily.plusBox_globality` / `plusBox_share_congr` (probe 02) — A3's composition of (C1')'s `box` conjunct with `PlusBoxFaithful`, now written out as a theorem rather than prose; both hypotheses A3 named were needed. Shape (S) *does* hold and the derivation runs (A3). The invariance it yields is semantically forced by `Semantics.Truth.box_const`; the truth lemma's box case consumes it. Full argument in A3 |
 | 13 | `BoxFaithful` / `boxClause` / `plusBoxClause` | `WitnessFamily/Predicates.lean` 106-108; `WitnessFamily/Decide.lean` 898-900; `PlusWitnessFamily/Decide.lean` 930-932 | same | yes | INTENDED | as row 12 |
 | 14 | (C1')'s `box` conjunct | `PlusWitnessFamily/Predicates.lean` 89-90; `Sharing/Predicates.lean` 152-153 | none | — | INTENDED | the right side `S.bx χ = true` mentions no position at all, so invariance is immediate and is row 12's fact |
 | 15 | `PlusThreadFulfilling` / `ThreadFulfilling` (C2') | `PlusWitnessFamily/Predicates.lean` 143-151; `Sharing/Predicates.lean` 206-214 | `S.Thread` (quantified), no biconditional | — | OUT OF SHAPE | the condition is an implication into an existential; there is no biconditional to read twice |
@@ -261,6 +275,13 @@ independent reasons, each checkable:
    position is thereby a history-state at every time, so (C3)'s quantifier over all `(i, t)` is
    exactly the range `□` has in the presented model. Weakening (C3) would break this landed proof,
    not free a countermodel.
+
+This composition is now written out as a theorem rather than asserted in prose: probe 02's
+`PlusSharingWitnessFamily.plusBox_globality` states the full three-way chain
+`box χ ∈ L i t ↔ bx χ = true ↔ ∀ j v, χ ∈ L j v`, and `plusBox_share_congr` is the named row-12
+congruence `box χ ∈ L i t ↔ box χ ∈ L j v`. Both elaborate clean, axiom-free of `sorryAx`, and
+both hypotheses this section names — (C1')'s `box` conjunct and `PlusBoxFaithful` — were needed
+and used; no additional hypothesis A3 did not name was required.
 
 Verdict: intended invariance; not a second, independent over-strength; no action.
 
@@ -534,6 +555,14 @@ axiomatized families, and the past-directed instance is formalization-native.
 - No Lean statement was modified and no substrate design was proposed; task 696 keeps ownership of
   the redesign. The one design input this report offers (drop `trans_refl`) is filed as a task
   proposal against that design, not as an edit to it.
+- **Closing-round consistency pass (2026-09-29).** Every row of Part A's table was walked: each
+  **COLLAPSE** cell now names a probe declaration (rows 6 and 12 were the only asserted-not-probed
+  cells; both are now probe 02) and each **INTENDED** cell names its specific semantic evidence.
+  Part B was walked and every claim either names a source `doc_id` plus chunk/section or is marked
+  unverified. The Executive Summary's soundness paragraph and its "four live collapses" count both
+  survived this pass unaltered — the documentation defect this pass additionally filed
+  (`Incompleteness.lean`'s docstring, see the Follow-On Task Proposal section) is recorded as a
+  documentation defect, not counted as a fifth collapse.
 
 ## Risks & Mitigations
 
@@ -600,6 +629,24 @@ exhibits it and the gate passes.
 `plusRefutes_of_certifies`. No re-conversion of `thomason-1970-indeterminist-time` (optional, and only
 if B1's unverified claim becomes load-bearing).
 
+**Paste-ready payload.** The complete `/task "…"` invocation, with the evidence citations above
+inlined and no unresolved placeholder, is filed at
+`specs/699_invariance_clause_audit_and_ockhamist_grounding/proposals/01_trans-reflexivity-residual-collapse.md`.
+Filing the task is a user `/task` action; no phase of this task's implementation round writes
+`specs/state.json` or `specs/TODO.md`, or creates a task.
+
+**Documentation defect found alongside this proposal (not a fifth collapse).** Part A's four live
+collapses count in the Executive Summary is unchanged by this item — it is a documentation defect,
+not a new collapse. `PlusWitnessFamily/Incompleteness.lean:51-52`'s module docstring asserts "The
+`untl` side is defect-free by inspection, not by machine check", which row 2 refutes (the `untl`
+conjunct collapses in the same shape as the `snce` conjunct, not merely a shifted one).
+`Incompleteness.lean` is not among task 696's fourteen declared `file_scope` paths, so no task
+currently owns this correction, and this task cannot make it either (no Lean-adjacent modification
+permitted; the path is outside this task's own `file_scope`). The same false claim, in the two
+READMEs task 696 *does* own (`PlusWitnessFamily/README.md:100-102`, `Sharing/README.md:124`), is
+recorded as a strengthening of task 696's own scheduled Phase 0 correction — see the proposal file
+for both handoff items in full, with line references re-verified at write time.
+
 ## Appendix
 
 ### Probe
@@ -630,21 +677,60 @@ the imported library); **no `sorryAx` anywhere**. Declarations:
 | `tSnce_trans_congr` | row 19: the redesign's residual `snce` collapse |
 | `tUntl_common_succ_congr` | what row 18 becomes with `trans_refl` removed |
 
+`specs/699_invariance_clause_audit_and_ockhamist_grounding/probes/02_remaining_verdicts_probe.lean`
+(standalone; does not import probe 01). Elaborated with:
+
+```
+cd /home/benjamin/Projects/BimodalLogic && \
+  lake env lean specs/699_invariance_clause_audit_and_ockhamist_grounding/probes/02_remaining_verdicts_probe.lean
+```
+
+Exit 0, no errors, no warnings. Four `#print axioms` lines, all `[propext, Classical.choice,
+Quot.sound]`; **no `sorryAx`**. Declarations:
+
+| Declaration | What it establishes |
+|---|---|
+| `SharingWitnessFamily.shareClauseAt_snce_collapse` | row 6, `snce` arm, `Formula`-side decision-procedure mirror |
+| `SharingWitnessFamily.shareClauseAt_untl_collapse` | row 6, `untl` arm |
+| `PlusSharingWitnessFamily.plusBox_globality` | row 12, the full (C1')/(C3) composition A3 states in prose |
+| `PlusSharingWitnessFamily.plusBox_share_congr` | row 12, the named globality congruence `box χ ∈ L i t ↔ box χ ∈ L j v` |
+
 ### Enumeration commands
+
+Superseded by `specs/699_invariance_clause_audit_and_ockhamist_grounding/audit/enumerate-shape-s.sh`,
+a re-runnable version of the three passes below, and its dated output snapshot
+`audit/01_enumeration-snapshot.md`. The inline commands originally run for this report are kept
+here for the historical record, but **the figures below are corrected against the script's
+2026-09-29 run, not against a re-run of the exact text shown**:
 
 ```
 # candidate predicates: definitions in Metalogic whose body contains a biconditional
 for f in $(find FormalSystem/Metalogic -name '*.lean'); do
   awk -v F="$f" '/^def |^abbrev |^structure |^class |^  def / { indef=1; buf=$0"\n"; ln=NR; next }
     indef==1 { buf=buf $0"\n"; if ($0 ~ /^$/) { if (buf ~ /↔/) printf "%s:%d\n", F, ln; indef=0; buf="" } }' "$f"
-done | sort -u            # 67 hits, 40 files
+done | sort -u            # corrected: 64 hits, 39 files (was stated as 67/40; no tree drift —
+                           # see audit/01_enumeration-snapshot.md's Divergence analysis)
 
 # share-guarded quantifiers
 grep -rn "share" FormalSystem/Metalogic --include=*.lean | grep -E "∀.*share|share.*→"
+                           # 18 hits (not previously given as a standalone figure)
 
-# reflexive relations in Metalogic
-grep -rn "^theorem .*_refl\b|^@\[refl\]|Reflexive" FormalSystem/Metalogic --include=*.lean   # 39 hits
+# reflexive relations in Metalogic — NOTE: this command as originally written is missing `-E`
+# and returns 0 hits if run literally (GNU grep's basic-regex mode treats `|` as literal, not
+# alternation). The working, corrected form:
+grep -rnE "^theorem .*_refl\b|^@\[refl\]|Reflexive" FormalSystem/Metalogic --include=*.lean
+                           # corrected: 45 hits (was stated as 39)
 ```
+
+**Divergence, in one line**: no file under `FormalSystem/Metalogic` changed between this report's
+completion and the 2026-09-29 re-run (`git log` empty over that window). The three corrected
+figures above come from (a) the pass-3 command's missing `-E`, and (b) the original enumeration
+never having scanned `FormalSystem/Metalogic/WeakCanonical/**` (pre-existing at report time, not
+new code). All six Shape-(S) candidates the re-run finds under `WeakCanonical/` were individually
+checked and are OUT OF SHAPE under the same two reasons row 17 already names (both sides of the
+`↔` mention the bound object, or there is no relational guard at all) — **the audit table's
+nineteen rows and their verdicts are unaffected**. Full derivation-level detail:
+`audit/01_enumeration-snapshot.md`.
 
 ### Literature read
 

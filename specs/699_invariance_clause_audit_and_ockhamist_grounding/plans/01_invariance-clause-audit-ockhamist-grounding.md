@@ -1,7 +1,7 @@
 # Implementation Plan: Task #699
 
 - **Task**: 699 - invariance_clause_audit_and_ockhamist_grounding
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None. Task 696 is cited, never touched; its fourteen declared paths and its
   design are out of scope here.
@@ -324,35 +324,43 @@ rather than silently absorbing it into the snapshot.
 
 ---
 
-### Phase 4: Reconcile the report and run the no-asserted-claim pass [NOT STARTED]
+### Phase 4: Reconcile the report and run the no-asserted-claim pass [COMPLETED]
 
 **Goal**: the report is this task's deliverable; make it cite what Wave 1 produced and end the
 round with no verdict or count that is neither probe-backed, source-named, nor marked unverified.
 
 **Tasks**:
 
-- [ ] Re-read the report immediately before editing (four sibling tasks are live on this tree).
-- [ ] Part A table, row 6: replace "not separately probed" with a citation of probe 02's two
-      declarations by name.
-- [ ] Part A table, row 12: cite probe 02's globality composition in the Derivation cell, keeping
+- [x] Re-read the report immediately before editing (four sibling tasks are live on this tree).
+      *(completed; `md5sum` and `git log` confirmed unchanged since research completion)*
+- [x] Part A table, row 6: replace "not separately probed" with a citation of probe 02's two
+      declarations by name. *(completed)*
+- [x] Part A table, row 12: cite probe 02's globality composition in the Derivation cell, keeping
       the verdict INTENDED and the A3 evidence intact. If Phase 1 found a hypothesis A3 did not
-      name, record it here.
-- [ ] Appendix: add probe 02 to the probe table (declaration, what it establishes), with its
+      name, record it here. *(completed; no additional hypothesis was needed — both A3-named
+      hypotheses were used)*
+- [x] Appendix: add probe 02 to the probe table (declaration, what it establishes), with its
       elaboration command and its `#print axioms` outcome, alongside probe 01's entry.
-- [ ] Appendix "Enumeration commands": point at `audit/enumerate-shape-s.sh` and
+      *(completed)*
+- [x] Appendix "Enumeration commands": point at `audit/enumerate-shape-s.sh` and
       `audit/01_enumeration-snapshot.md` in place of the inline awk/grep, and correct any count
       Phase 3 found divergent — the script's figure, not the original prose figure.
-- [ ] "Follow-On Task Proposal" section: add a pointer to `proposals/01_trans-reflexivity-residual-collapse.md`,
+      *(completed: 64/39 files/18/45, with the `-E`-flag defect and the `WeakCanonical/**`
+      coverage gap both explained inline)*
+- [x] "Follow-On Task Proposal" section: add a pointer to `proposals/01_trans-reflexivity-residual-collapse.md`,
       and add the unowned `Incompleteness.lean:51-52` docstring item. Label it a *documentation
       defect*, not a fifth collapse — the report's "four live collapses" count must not silently
-      change.
-- [ ] Header `Artifacts` and `Sources/Inputs` lines: list probe 02, the enumeration script, the
-      snapshot and the proposal file.
-- [ ] Final consistency pass: walk every row of Part A's table and confirm each **COLLAPSE** cell
+      change. *(completed; "four live collapses" verified unchanged via `git diff`)*
+- [x] Header `Artifacts` and `Sources/Inputs` lines: list probe 02, the enumeration script, the
+      snapshot and the proposal file. *(completed)*
+- [x] Final consistency pass: walk every row of Part A's table and confirm each **COLLAPSE** cell
       names a probe declaration and each **INTENDED** cell names its specific semantic evidence;
       walk Part B and confirm every claim either names a source `doc_id` plus chunk/section or is
       marked unverified. Record the pass and its outcome as one line under Decisions.
-- [ ] Confirm the Executive Summary's soundness paragraph survived editing verbatim.
+      *(completed; addendum added under Decisions)*
+- [x] Confirm the Executive Summary's soundness paragraph survived editing verbatim.
+      *(completed; verified via `git diff` — no deletion touches the Executive Summary's
+      soundness bullet)*
 
 **Timing**: 0.5 hours
 
