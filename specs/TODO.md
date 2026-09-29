@@ -1,5 +1,5 @@
 ---
-next_project_number: 702
+next_project_number: 703
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 702
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,695,697,698,699,700 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,695,697,698,699,700,702 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650,696 | 298,464,502,563,649,700 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,701 | 231,465,497,564,565,616,696 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -26,7 +26,7 @@ next_project_number: 702
 
 ### Agent System
 
-698 [RESEARCHED] — Make this repository's filescope declarations describe what...
+698 [PLANNING] — Make this repository's filescope declarations describe what...
 
 ### Algebraic Representation
 
@@ -53,11 +53,11 @@ next_project_number: 702
 
 ### Code Quality
 
-697 [RESEARCHED] — Close the recurring staleness gap between...
+697 [PLANNING] — Close the recurring staleness gap between...
 
 ### Completeness
 
-700 [RESEARCHED] — SURVEY-AND-SEQUENCE TASK, DELIBERATELY NOT A WORK TASK....
+700 [PLANNING] — SURVEY-AND-SEQUENCE TASK, DELIBERATELY NOT A WORK TASK....
 
 ### Dataset Enhancement
 
@@ -81,7 +81,7 @@ next_project_number: 702
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-695 [RESEARCHED] — Prove plusValidZTimeiffplusValidInt, the L-plus twin of...
+695 [PLANNING] — Prove plusValidZTimeiffplusValidInt, the L-plus twin of...
 696 [RESEARCHED] — DESIGN-INVESTIGATION-FIRST TASK. Determine what the stability...
   └─ 701 [NOT STARTED] — Port the branching-substrate lessons from the ProofChecker's...
 
@@ -97,7 +97,7 @@ next_project_number: 702
 
 ### Incompleteness
 
-699 [RESEARCHED] — Generalize the lesson of the L-plus certificate...
+699 [PLANNING] — Generalize the lesson of the L-plus certificate...
 
 ### Literature
 
@@ -113,8 +113,19 @@ next_project_number: 702
 
 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
   └─ 650 [NOT STARTED] — Define-before-use audit of...
+702 [NOT STARTED] — Improve the formatting and content of the Typst reference...
 
 ## Tasks
+
+### 702. Uniform style reference manual
+- **Status**: [NOT STARTED]
+- **Task Type**: typst
+- **Topic**: reference-book
+- **Dependencies**: None
+
+**Description**: Improve the formatting and content of the Typst reference manual (typst/BimodalReference.typ, compiled to typst/BimodalReference.pdf, 128 pages) so that every chapter follows ONE uniform approach in style and in the shape of its discussion. The manual grew chapter by chapter (typst/chapters/: 00-introduction through 06-notes, the p2/p3/p4 part chapters, and the two appendices) and the parts read differently: section openings, the definition/theorem/remark rhythm, how Lean names are introduced and cited, how much motivation precedes a formal statement, notation, cross-reference phrasing, and the density of prose between environments all vary by chapter. RESEARCH must first produce a per-chapter audit against the typst extension's standards -- .claude/context/project/typst/standards/typst-style-guide.md, document-structure.md, semantic-element-usage.md, chapter-quality.md, textbook-standards.md, notation-conventions.md -- and against the mechanical backstops (bash .claude/scripts/typst-element-lint.sh --verbose and bash .claude/scripts/chapter-quality-check.sh --verbose over typst/chapters/*.typ), recording for each chapter: the current opening pattern, environment usage and placement, Lean-citation convention, notation deviations from notation/bimodal-notation.typ, lint findings, and the discussion style (motivation-first, statement-first, or mixed). From that audit, choose and WRITE DOWN the single house style the whole manual will follow -- chapter opening template, the order motivation/definition/example/theorem/proof-sketch/Lean-pointer, how a Lean declaration is named on first mention and thereafter, cross-reference phrasing, remark and note usage, table and figure conventions -- as a short style sheet in the plan, grounded in the existing standards rather than inventing a new one. PLAN phases must be per chapter or per part, each ending with a clean typst compile of BimodalReference.typ and with both lints run, so no phase leaves the manual uncompilable. Content improvements are in scope ONLY as editorial uniformity: rewriting openings and transitions, adding a missing motivation paragraph where the style sheet requires one, tightening or expanding discussion to the agreed density, fixing inconsistent terminology, and correcting stale or inconsistent cross-references; no new theorems, proofs, or chapters. Every Lean name cited must resolve in the current tree (grep the FormalSystem/ source), and every claim about repository status must agree with typst/generated/ and SYNC-MAP.md rather than restating numbers by hand. OUT OF SCOPE, owned by sibling tasks: the Lean appendix's define-before-use audit (task 650), the systematic Lean code-environment convention for the appendix (task 649), and the generated status counts' staleness (task 697) -- coordinate with their conventions, do not redo them. Also out of scope: FormalFoundations.typ, which is a separate document. ACCEPTANCE: the compiled manual has every chapter conforming to the written style sheet; typst-element-lint.sh reports zero blocking placement findings; chapter-quality-check.sh reports zero BLOCKING findings; the PDF compiles from a clean typst compile with no warnings introduced by this task; and the style sheet is committed alongside the chapters (in typst/README.md or a new typst/STYLE.md) so future chapters have a single reference.
+
+---
 
 ### 701. Port substrate lessons to model checker
 - **Status**: [NOT STARTED]
@@ -127,7 +138,7 @@ next_project_number: 702
 ---
 
 ### 700. Lplus completeness programme survey
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: formal:logic
 - **Topic**: completeness
 - **Dependencies**: None
@@ -148,7 +159,7 @@ CONSTRAINTS. Do not modify Lean source, the substrate design, or any other task'
 ---
 
 ### 699. Invariance clause audit and ockhamist grounding
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: formal:logic
 - **Topic**: incompleteness
 - **Dependencies**: None
@@ -165,7 +176,7 @@ CONSTRAINTS AND NON-GOALS. Do not modify any Lean statement: this task's Part A 
 ---
 
 ### 698. File scope declaration hygiene
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -176,7 +187,7 @@ CONSTRAINTS AND NON-GOALS. Do not modify any Lean statement: this task's Part A 
 ---
 
 ### 697. Typst generated counts staleness
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: general
 - **Topic**: code-quality
 - **Dependencies**: None
@@ -198,7 +209,7 @@ CONSTRAINTS AND NON-GOALS. Do not modify any Lean statement: this task's Part A 
 ---
 
 ### 695. Plus carrier normalization int transfer
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
