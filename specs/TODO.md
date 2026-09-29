@@ -11,7 +11,7 @@ next_project_number: 703
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,699,700,702 | -- | algebraic-representation, categorical-structure, completeness, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,700,702 | -- | algebraic-representation, categorical-structure, completeness, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650,696 | 298,464,502,563,649,700 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618,701 | 231,465,497,564,565,616,696 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -86,10 +86,6 @@ next_project_number: 703
 127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ...
 128 [NOT STARTED] — Add topological open set (interior) operator for dense and...
 
-### Incompleteness
-
-699 [IMPLEMENTING] — Generalize the lesson of the L-plus certificate...
-
 ### Literature
 
 664 [NOT STARTED] — Acquire and ingest the Cmiel-Kuhlmann-Kuhlmann ball-space...
@@ -153,12 +149,13 @@ CONSTRAINTS. Do not modify Lean source, the substrate design, or any other task'
 ---
 
 ### 699. Invariance clause audit and ockhamist grounding
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: formal:logic
 - **Topic**: incompleteness
 - **Dependencies**: None
 - **Research**: [699_invariance_clause_audit_and_ockhamist_grounding/reports/01_invariance-clause-audit-ockhamist-grounding.md]
 - **Plan**: [699_invariance_clause_audit_and_ockhamist_grounding/plans/01_invariance-clause-audit-ockhamist-grounding.md]
+- **Summary**: [699_invariance_clause_audit_and_ockhamist_grounding/summaries/01_invariance-clause-audit-ockhamist-grounding-summary.md]
 
 **Description**: Generalize the lesson of the L-plus certificate incompleteness into (A) a mechanical audit that finds the same latent defect wherever else it occurs, and (B) a literature grounding that says whether the defect and its repair instantiate a known result about tense in branching time. This task deliberately does NOT re-do the substrate repair: task 696 owns the design and implementation of that. What is unowned is whether the same clause shape is silently collapsing OTHER conditions, and whether the repair being adopted is the move philosophical logic already knows is forced.
 

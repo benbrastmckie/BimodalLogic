@@ -36,28 +36,49 @@
       "category": "TECHNIQUE",
       "source_artifact": "specs/699_invariance_clause_audit_and_ockhamist_grounding/summaries/01_invariance-clause-audit-ockhamist-grounding-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["invariance-audit", "clause-shape", "reflexive-relation", "Lean-proof-pattern", "collapse-detection"]
+      "suggested_keywords": [
+        "invariance-audit",
+        "clause-shape",
+        "reflexive-relation",
+        "Lean-proof-pattern",
+        "collapse-detection"
+      ]
     },
     {
       "content": "GNU grep silent-failure trap: `grep -rn \"pat1|pat2|pat3\" ...` (no -E/-P) treats `|` as a LITERAL character in basic-regex mode, not alternation, so it returns 0 matches instead of erroring. A documented/copy-pasteable enumeration or audit command using bare `|` alternation without -E is silently broken and will report success (exit 0, empty output) rather than failing loudly. Always verify a documented grep-with-alternation command by actually re-running it, not by trusting its recorded output count.",
       "category": "INSIGHT",
       "source_artifact": "specs/699_invariance_clause_audit_and_ockhamist_grounding/audit/01_enumeration-snapshot.md",
       "confidence": 0.9,
-      "suggested_keywords": ["grep", "basic-regex", "alternation", "silent-failure", "reproducibility"]
+      "suggested_keywords": [
+        "grep",
+        "basic-regex",
+        "alternation",
+        "silent-failure",
+        "reproducibility"
+      ]
     },
     {
       "content": "When a research report claims an enumeration covers 'every X under subtree/**', re-verify actual subtree coverage (e.g. via `find`/`git log --diff-filter=A`) before trusting the count -- a subtree that predates the report by weeks can still be silently omitted from an ad hoc one-off scan. A re-runnable script that re-derives the count against the live tree, rather than a prose-transcribed command, catches this class of coverage gap automatically on the next run.",
       "category": "PATTERN",
       "source_artifact": "specs/699_invariance_clause_audit_and_ockhamist_grounding/audit/01_enumeration-snapshot.md",
       "confidence": 0.75,
-      "suggested_keywords": ["enumeration-coverage", "audit-reproducibility", "scope-verification", "re-runnable-script"]
+      "suggested_keywords": [
+        "enumeration-coverage",
+        "audit-reproducibility",
+        "scope-verification",
+        "re-runnable-script"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1790656266_d2dc32",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 4,
     "phases_total": 4
   }
