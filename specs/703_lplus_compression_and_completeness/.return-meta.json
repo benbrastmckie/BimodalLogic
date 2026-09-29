@@ -13,7 +13,7 @@
     "axiom_count": 14,
     "axiom_baseline_unchanged": true,
     "build_passed": true,
-    "gates": "scripts/check-module-invariants.sh re-run after the fixes: zero FAIL lines. The two failures this dispatch introduced (INV stale inventory, C16 simpNF) were fixed, not waived."
+    "gates": "scripts/check-module-invariants.sh run in full after the fixes: ALL CHECKS PASSED, exit 0, zero FAIL lines. The three failures this dispatch introduced (INV stale inventory, C16 simpNF, C33 generated root) were fixed, not waived."
   },
   "user_decision": {
     "question": "Phase 8 cannot discharge (C5) at every time under the theorem's stated mid-segment bound. How should the alignment budget be resolved?",

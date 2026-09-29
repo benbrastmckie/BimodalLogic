@@ -30,7 +30,7 @@
     "sorry_count": 0,
     "axiom_count": 14,
     "axioms_unchanged": true,
-    "gates": "scripts/check-module-invariants.sh run in full. Three failures arising from this dispatch's own additions were fixed, not waived: INV (stale generated inventory blocks), C16 (two @[simp] lemmas not in simp-normal form) and C33 (the generated root not naming the new module)."
+    "gates": "scripts/check-module-invariants.sh run in full after the fixes: ALL CHECKS PASSED, exit 0, zero FAIL lines. The three failures this dispatch introduced (INV stale inventory, C16 simpNF, C33 generated root) were fixed, not waived."
   },
   "next_action": "Decide the Phase 8 alignment budget. The three resolutions are enumerated in the plan's Phase 8 BLOCKER record; resolution 1, giving mid its own larger bound in the Lean Challenge Statement while leaving back and fwd at plusCompressionBound, is recommended. Then re-plan Phase 8 against the chosen bound and redispatch. Phase 8's task 1 is already landed and does not need redoing."
 }
