@@ -1,7 +1,7 @@
 # Implementation Plan: Task #698
 
 - **Task**: 698 - file_scope_declaration_hygiene
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/698_file_scope_declaration_hygiene/reports/01_file-scope-hygiene-audit.md
