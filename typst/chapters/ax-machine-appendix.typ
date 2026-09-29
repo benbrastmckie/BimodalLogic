@@ -60,10 +60,13 @@ The `untl` and `snce` shapes are keyed by *role*, not by argument position, so t
 
 Loading the artifact is two lines of Python:
 
+#lean-code[
 ```python
 import json
-records = [json.loads(line) for line in open("machine-appendix.jsonl")]
+records = [json.loads(line)
+           for line in open("machine-appendix.jsonl")]
 ```
+]
 
 Derived operators are exported as *kernel-computed unfoldings*: each definition below is the real Lean `def` applied to schematic atoms, so the right-hand sides are the exact primitive-basis formulas the proof system manipulates.
 Schematic metavariables (φ, ψ, χ, θ, p) are encoded as atoms with those base names.

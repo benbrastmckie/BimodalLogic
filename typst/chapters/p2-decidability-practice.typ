@@ -54,11 +54,12 @@ The finiteness argument follows the classical filtration pattern, specialized to
 Everything is relativized to the input formula $φ$: the *subformula closure* of $φ$ collects its subformulas and their negations, a finite set; a *closure MCS* is a maximal consistent set restricted to that closure (`ClosureMCS`, with the bundled form `ClosureMCSBundle` pairing a carrier set with its maximality witness, `FormalSystem/Metalogic/Decidability/FMP/Filtration.lean`).
 Two closure MCSs are *filtration-equivalent* when they agree on every closure formula, and the quotient of bundles by this equivalence is the finite world type:
 
-#leansrc("FormalSystem.Metalogic.Decidability.FMP", "FilteredWorld")
+#lean-code(source: ("FormalSystem.Metalogic.Decidability.FMP", "FilteredWorld"))[
 ```
 def FilteredWorld (phi : Formula) : Type :=
   Quotient (ClosureMCSSetoid phi)
 ```
+]
 
 The number of equivalence classes is bounded by $2^(|op("closure")(φ)|)$, and finiteness is witnessed constructively by `FilteredWorld.finite` (`FormalSystem/Metalogic/Decidability/FMP/FiniteModel.lean`).
 // LEAN-ANCHOR-MAY-MOVE: semantic-fmp -- see typst/README.md
@@ -73,11 +74,13 @@ The construction is thus a complete, self-contained finite combinatorics of the 
 
 `decide` is the top-level entry point:
 
-#leansrc("FormalSystem.Metalogic.Decidability", "decide")
+#lean-code(source: ("FormalSystem.Metalogic.Decidability", "decide"))[
 ```
-def decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
+def decide (φ : Formula) (searchDepth : Nat := 10)
+    (tableauFuel : Nat := 1000)
     (fc : FrameClass := .Base) : DecisionResult φ
 ```
+]
 
 (`FormalSystem/Metalogic/Decidability/DecisionProcedure.lean`). It first tries direct axiom and compositional proof shortcuts, then falls back to bounded proof search (@sec:proof-automation), then to a tableau over $F(φ)$; `DecisionResult` (`FormalSystem/Metalogic/Decidability/DecisionProcedure.lean`) has four constructors: `valid` (carries a `DerivationTree`), `invalid` (carries a `SimpleCountermodel`), `fuelExhausted`, and `extractionFailed`. The `tableauFuel` parameter (default 1000 steps) bounds the tableau; running out gives `fuelExhausted`, meaning validity is genuinely undetermined. `extractionFailed` is different: the tableau closed on every branch -- so the formula *is* valid -- but proof-term reconstruction from that closed tableau did not succeed, so no `DerivationTree` witness is available. Only `fuelExhausted` leaves validity open; `extractionFailed` already establishes validity, just without a checkable term.
 Convenience wrappers `isValid` (`FormalSystem/Metalogic/Decidability/DecisionProcedure.lean`) and `isSatisfiable` (`FormalSystem/Metalogic/Decidability/DecisionProcedure.lean`) reduce to booleans.

@@ -54,10 +54,14 @@ Each exit hands downstream consumers a certificate of the corresponding kind, wh
 
 #example("Automated S5 Derivations via `modal_search`")[
   The T and 4 axioms, proven automatically rather than by direct axiom application:
+  #lean-code[
   ```
-  example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p") := by modal_search
-  example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p").box.box := by modal_search
+  example : ⊢ (Formula.atomS "p").box.imp (Formula.atomS "p") :=
+    by modal_search
+  example : ⊢ (Formula.atomS "p").box.imp
+    (Formula.atomS "p").box.box := by modal_search
   ```
+  ]
   #footnote[`FormalSystem/Examples/BimodalProofs.lean`; the proof-automation engine of @sec:proof-automation closes both goals within its default search depth.]
   A capstone combined example in the same file shows $square.stroked$ distributing over the derived always-future operator, $square.stroked φ arrow.r square.stroked (G φ)$#footnote[Via `allFuture`; note a commented-out BX1/reflexivity test in the same file documents that the T-axiom-style test for the *temporal* operator was intentionally disabled under the strict/irreflexive semantics convention (@sec:design-choices) -- reflexive temporal T-axioms are not valid here.], proven the same way.
 ]

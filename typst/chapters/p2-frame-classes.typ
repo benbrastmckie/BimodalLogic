@@ -21,7 +21,7 @@
 
 The `FrameClass` classification that parameterizes `DerivationTree` (@sec:formulas) is a *four*-element inductive type with an explicit partial order, defined in the `ProofSystem` module:
 
-#leansrc("FormalSystem.ProofSystem", "FrameClass")
+#lean-code(source: ("FormalSystem.ProofSystem", "FrameClass"))[
 ```
 inductive FrameClass where
   | Base
@@ -29,6 +29,7 @@ inductive FrameClass where
   | ZTime
   | RTime
 ```
+]
 
 `Base` is the bottom element (`FrameClass.base_le`); `Dense` and `ZTime` are incomparable extensions of `Base` -- density and discreteness are jointly inconsistent frame properties, so no derivation may combine both.
 `RTime` sits *strictly above* `Dense`, not as a fourth incomparable leaf: it is `ZTime` that is incomparable to both `Dense` and `RTime`.

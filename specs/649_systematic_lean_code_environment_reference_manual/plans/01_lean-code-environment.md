@@ -496,7 +496,7 @@ the labeled blocks, no label line, no wrapped code line.
 
 ---
 
-### Phase 6: Migrate the remaining chapters, including the non-Lean listings [NOT STARTED]
+### Phase 6: Migrate the remaining chapters, including the non-Lean listings [COMPLETED]
 
 **Goal**: Convert the code blocks in the four other code-bearing chapters, exercising the
 nested-environment case and the language parameter.
@@ -545,6 +545,24 @@ rendered box rather than from its source line length.
 - A scan for bare fenced blocks across these four files returns nothing.
 - `typst compile --root .. BimodalReference.typ` reports zero errors.
 - The nested example page renders with no wrapped line.
+
+**Measured results**: all five files migrated. `p2-decidability-practice.typ`'s two labeled
+blocks (`FilteredWorld`, `decide`); the `decide` signature (78 columns) re-broken across three
+lines (parameters, then `tableauFuel`, then the frame-class hypothesis and conclusion).
+`p2-frame-classes.typ`'s one labeled block (26 columns, no re-break needed).
+`p4-dual-verification.typ`'s didactic block nested in `#example`, the manual's widest (86
+columns before re-break) and narrowest real rendering box (321.28pt): both `modal_search`
+lines re-broken at `:=`/`.box.imp` whitespace boundaries; rendered page 87 confirmed no wrap and
+no regression from the Phase 1 before-image. `p4-dataset-pipeline.typ`'s JSON listing migrated
+through the same `lean-code[...]` call (language carried by the fence's own ` ```json ` tag, no
+separate parameter needed); two over-budget lines (`formula_ast`, `proof_trace`) re-broken at a
+JSON comma boundary, which is always a safe re-break since JSON's grammar is whitespace-
+insensitive outside string literals. `ax-machine-appendix.typ`'s Python listing migrated the
+same way; its one over-budget line re-broken inside the list comprehension's enclosing brackets,
+valid Python line-continuation with no token altered. A whole-chapters bare-fence scan (all of
+`typst/chapters/*.typ`) finds zero fenced blocks outside `lean-code(...)`/`lean-code[`. Both
+`typst compile --root .. BimodalReference.typ` and `... FormalFoundations.typ` are zero errors;
+`FormalFoundations.typ` remains byte-identical (`git diff` empty).
 
 ---
 

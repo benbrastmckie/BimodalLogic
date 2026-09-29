@@ -39,20 +39,24 @@ The pipeline comprises seven Lean modules under `BimodalTools/`: `BimodalTools/D
 Each exported JSONL line is a `DatasetRecord` (`BimodalTools/DatasetGeneratorMain.lean`), carrying the formula in several parallel encodings alongside its label and exactly one supervisory payload.
 A representative valid-formula record, abridged from the schema documented at the head of `BimodalTools/DatasetGeneratorMain.lean`:
 
+#lean-code[
 ```json
 {
   "id": "bmlogic-00001",
   "split": "train",
   "formula_str": "(□p → p)",
-  "formula_ast": {"tag": "imp", "left": {"tag": "box", ...}, "right": ...},
+  "formula_ast": {"tag": "imp", "left": {"tag": "box", ...},
+    "right": ...},
   "frame_class": "Base",
   "label": "valid",
-  "proof_trace": {"height": 0, "axiomsUsed": ["modal_t"], "rulesApplied": []},
+  "proof_trace": {"height": 0, "axiomsUsed": ["modal_t"],
+    "rulesApplied": []},
   "countermodel": null,
   "pattern_key": {"modalDepth": 1, ...},
   "metrics": {"complexity": 3, ...}
 }
 ```
+]
 
 The record design encodes the dual-signal contract structurally: `proof_trace` (a `ProofTrace` of derivation `height`, `axiomsUsed`, `rulesApplied`) is populated exactly when the label is `valid`, and `countermodel` (the `SimpleCountermodel` triple of `trueAtoms`/`falseAtoms`/`formula`) exactly when it is `invalid`.
 The redundant formula encodings serve different consumers: `formula_str` for human inspection, `formula_ast` (the `Formula.toJson` tag schema) for tokenizer-free tree models, an S-expression and a prefix-notation token list for sequence models, and folded variants that restore derived-operator vocabulary ($not$, $and$, $or$, $diamond.stroked$) for models trained on the surface language.
