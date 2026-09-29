@@ -59,7 +59,7 @@ manual's `chapter-quality-check.sh` Rule 1.2 findings.
 
 | What is being cited | Form | Notes |
 |---|---|---|
-| A declaration, as a standalone attribution after a definition or theorem | `#leansrc("FormalSystem.Module.Path", "declName")` | Block-level; place on its own line after a colon-terminated sentence. Never mid-sentence. |
+| A declaration, as a standalone attribution after a definition or theorem | `#leansrc("FormalSystem.Syntax.Formula", "Formula.atom_injective")` | Block-level; place on its own line after a colon-terminated sentence. Never mid-sentence. |
 | A declaration mentioned inline in prose | `` `declName` `` or `#leanref("declName")` | Identifier only, no path, no `.lean`. |
 | A file or directory cited as a file, not as a declaration | `` `FormalSystem/Syntax/Formula.lean` `` | Full repo-root-relative path, resolved per occurrence against the live tree. |
 
