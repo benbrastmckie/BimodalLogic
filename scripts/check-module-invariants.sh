@@ -1005,6 +1005,11 @@ echo
 # the flagships are: a silent `Classical`-free-to-not claim, or a new axiom, is a HARD
 # STOP. The four incompleteness rows carry a second reason: a future substrate redesign
 # that repairs (C1') must make them FAIL, which is exactly the signal wanted.
+# The last two are the carrier normalizations, for L and for L-plus: the reduction from an
+# arbitrary discrete duration carrier to `ℤ`. They are pinned because that reduction is what
+# licenses reading a `ℤ`-indexed candidate enumeration as a claim about validity over EVERY
+# carrier; an axiom appearing there would silently widen the foundation the whole
+# integer-indexed decidability route stands on, in a place no other row would report.
 #
 # Do NOT scrape `lake build` stdout for these -- an incremental build may not
 # re-emit them. A dedicated scratch file is compiled against the built library.
@@ -1024,6 +1029,8 @@ read -r -d '' AXIOM_BASELINE <<'BASELINE'
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabSnce' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabSnce_premise' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabSnce' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.validZTime_iff_validInt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt' depends on axioms: [propext, Classical.choice, Quot.sound]
 BASELINE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -1044,6 +1051,8 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabSnce
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusCertifies_stabSnce_premise
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabSnce
+#print axioms FormalSystem.Semantics.validZTime_iff_validInt
+#print axioms FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt
 LEAN
   # The pretty-printer wraps at a fixed width, and `FormalSystem.` is longer than the
   # namespace it replaced, so a long axiom record now spills onto continuation lines that
@@ -1054,7 +1063,7 @@ LEAN
     | grep 'depends on axioms')
   rm -f "$AX_SRC"
   if [ "$AX_OUT" = "$AXIOM_BASELINE" ]; then
-    pass C2 "all fourteen pinned axiom sets match baseline"
+    pass C2 "all sixteen pinned axiom sets match baseline"
     while IFS= read -r l; do note "$l"; done <<<"$AX_OUT"
   else
     fail C2 "axiom sets diverged from baseline -- this is a HARD STOP, not a new baseline"
