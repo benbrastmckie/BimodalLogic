@@ -42,7 +42,7 @@
       "description": "DESIGN-INVESTIGATION-FIRST TASK. Determine what the stability modals ideally require of the branching witness substrate, choose the best way to provide it, then plan and implement that refactor. Do NOT begin from the assumption that any particular repair is correct: the fourth-periodic-datum `trans` proposal recorded in WitnessFamily/Sharing/README.md's `### (c) What a follow-up needs` is ONE candidate to be evaluated against alternatives, not the settled design. Ground truth to build on, already machine-checked and landed in FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean: `snce_share_congr` shows that (C1') LocalCoherentShare's `snce` clause, by quantifying its predecessor over the share-class at the label's OWN time, forces any two indices naming the same world state to agree on every `snce` formula of the closure; `not_plusCertifies_stabSnce` and `not_plusCertifies_stabSnce_premise` show no six-condition L-plus family certifies any instance of `(g S e) -> stab (g S e)` in either target placement, at any time or size; and `not_plusValidZTime_stabSnce` shows `Pp -> stab Pp` is a genuine integer-time non-validity, so the empty certificate class is a completeness failure and not a vacuity. The `untl` clause escapes the defect only because it quantifies over the class at `t+1`, and that asymmetry traces to Sharing/Skeleton.lean's deliberately tight `Thread.step`. RESEARCH PHASE must answer, in order: (1) What does each stability modal's truth clause actually quantify over, semantically, and what is the weakest substrate datum that supplies exactly that -- stated as adequacy criteria before any candidate is scored, so the comparison is not retrofitted to a favoured answer. (2) Enumerate the candidate designs and score every one against those criteria. At minimum: the fourth-datum `trans` relation separating succession from state-identity; leaving `share` single but re-timing (C1')'s `snce` quantifier to `t-1` by analogy with `untl`'s `t+1`; indexing the share relation by the formula class it serves; and any design the investigation itself surfaces. For each, say what it costs in re-proof surface, what it costs in the model checker's export contract, and whether it is additive or breaking there. (3) Confirm by construction, not by argument, that the chosen design does NOT re-derive the defect: exhibit a concrete family satisfying all six redesigned conditions at NON-TRIVIAL sharing (no landed example of this exists at present -- Examples.lean's `stabFamily_separates` checks (C5) in isolation and the only producer of a branching `Certifies` is the deterministic diagonal, where (C5) provably collapses), AND check that the redesigned (C1') no longer entails an analogue of `snce_share_congr`. Without that second check a redesign can reproduce the present defect while type-checking. (4) Re-examine rather than inherit (C2')'s recorded (C1')-relative limitation: there is no standalone `Decidable (ThreadFulfilling S)`, only a hypothesised term plus an instance on the conjunction. HARD CONSTRAINTS on the implementation: soundness is not at issue and must stay untouched -- `plusTruth_iff_mem` and `plusRefutes_of_certifies` keep their current statements; zero sorries and no new axioms; the C2 axiom baseline rows and docs/theorem-index.md rows pinned for Incompleteness.lean must be updated deliberately and visibly, since a successful repair is expected to make the `not_plusCertifies_*` rows FAIL and that transition is the evidence the refactor worked. Re-proof surface is roughly 3500 lines across nine modules on both the Formula and PlusFormula sides, with WitnessFamily/Sharing/Fulfil.lean (1669 lines) and PlusWitnessFamily/Fulfil.lean (1093 lines) dominating, so the plan must phase the work so each phase ends green rather than carrying a broken tree between phases. Relationship to sibling work: this task is the design authority for the substrate question that task 694 prescribes one solution to, and task 694 should be re-scoped or folded in once this task's research settles the design; task 695's L-plus carrier normalization is an independent prerequisite for any decidability route and is deliberately not in scope here.",
       "topic": "decidability",
       "created": "2026-09-28T22:40:08Z",
-      "last_updated": "2026-09-29T00:01:31Z",
+      "last_updated": "2026-09-29T03:48:55Z",
       "session_id": "sess_1790637489_031208",
       "artifacts": [
         {
@@ -51,7 +51,21 @@
           "summary": "Round-2 verification of the trans-redesign: machine-checked probe shows Families A and B satisfy all six redesigned conditions with trans = eq and refute both congruences, stabFamily is not liftable (closure field necessary), Liftable suffices for the histories characterization; candidates B and C closed; re-proof surface corrected to 36 sites in 9 files."
         }
       ],
-      "next_artifact_number": 3
+      "next_artifact_number": 3,
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Skeleton.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Predicates.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Decide.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Fulfil.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Agreement.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Specialize.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md",
+        "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Predicates.lean",
+        "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Decide.lean",
+        "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Fulfil.lean",
+        "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Agreement.lean",
+        "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/README.md"
+      ]
     },
     {
       "project_number": 693,
@@ -114,7 +128,11 @@
         }
       ],
       "next_artifact_number": 2,
-      "completion_summary": "Resolved gate C23's two remaining red sub-assertions (2 Uppercase_x NM_nonneg names, 11 outer-shadows-inner shadow pairs) by adding a new (base, outer_ns, inner_ns)-triple-keyed SHADOW_PAIR_ALLOW exemption set and an NM_nonneg UPPER_ALLOW entry with restructured inline reasoning, entirely inside scripts/check-module-invariants.sh. Full gate run now exits 0 with ALL CHECKS PASSED; narrowness of the new exemption was verified via a throwaway scratch-scanner injection test (reverted)."
+      "completion_summary": "Resolved gate C23's two remaining red sub-assertions (2 Uppercase_x NM_nonneg names, 11 outer-shadows-inner shadow pairs) by adding a new (base, outer_ns, inner_ns)-triple-keyed SHADOW_PAIR_ALLOW exemption set and an NM_nonneg UPPER_ALLOW entry with restructured inline reasoning, entirely inside scripts/check-module-invariants.sh. Full gate run now exits 0 with ALL CHECKS PASSED; narrowness of the new exemption was verified via a throwaway scratch-scanner injection test (reverted).",
+      "file_scope": [
+        "scripts/check-module-invariants.sh",
+        "specs/691_resolve_c23_naming_exemptions/summaries/01_c23-naming-exemptions-summary.md"
+      ]
     },
     {
       "project_number": 689,
@@ -250,7 +268,15 @@
           "summary": "Six-phase, 6-hour plan discharging the ModelChecker-side contract handoffs; all source edits land in ~/Projects/ModelChecker, none in this repository."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "file_scope": [
+        "code/src/model_checker/syntactic/sentence.py",
+        "code/src/model_checker/theory_lib/bimodal/tests/README.md",
+        "code/src/model_checker/theory_lib/bimodal/tests/_lean_check.py",
+        "code/src/model_checker/theory_lib/bimodal/tests/integration/test_sentence_translation_agreement.py",
+        "code/src/model_checker/theory_lib/bimodal/tests/unit/test_formula.py",
+        "specs/686_modelchecker_contract_handoffs/summaries/01_modelchecker-contract-handoffs-summary.md"
+      ]
     },
     {
       "project_number": 682,
@@ -281,7 +307,17 @@
         }
       ],
       "next_artifact_number": 2,
-      "completion_summary": "Executed the provenance report's four in-scope recommendations. Repaired the archived Probe476.fmp_false evidence probe (it had stopped elaborating and was measuring sorryAx behind five FormalSystem/Metalogic/Decidability/ citations) and wired it into scripts/check-evidence-probes.sh via a new repository-relative entry form, verified by a negative test. Disambiguated the two Thomas 1997 corpus entries in specs/literature-index.json so the no_source_pdf hazard no longer reads onto the verified handbook chapter. Recorded the Rabin-theorem citation licence, its limits, the frame-class assumption, the finite-MODEL (refuted) vs finite-PRESENTATION (available) distinction, and the absence of any inherited complexity bound in the lean and literature extension source stores. No file under FormalSystem/ or Tests/ was modified."
+      "completion_summary": "Executed the provenance report's four in-scope recommendations. Repaired the archived Probe476.fmp_false evidence probe (it had stopped elaborating and was measuring sorryAx behind five FormalSystem/Metalogic/Decidability/ citations) and wired it into scripts/check-evidence-probes.sh via a new repository-relative entry form, verified by a negative test. Disambiguated the two Thomas 1997 corpus entries in specs/literature-index.json so the no_source_pdf hazard no longer reads onto the verified handbook chapter. Recorded the Rabin-theorem citation licence, its limits, the frame-class assumption, the finite-MODEL (refuted) vs finite-PRESENTATION (available) distinction, and the absence of any inherited complexity bound in the lean and literature extension source stores. No file under FormalSystem/ or Tests/ was modified.",
+      "file_scope": [
+        "/home/benjamin/.config/nvim/agent-system/extensions/lean/context/project/lean4/domain/",
+        "/home/benjamin/.config/nvim/agent-system/extensions/lean/manifest.json",
+        "/home/benjamin/.config/nvim/agent-system/extensions/literature/context/project/literature/domain/literature-index.md",
+        "scripts/check-evidence-probes.sh",
+        "specs/682_stability_decidability_provenance_gate/plans/01_stability-decidability-provenance-gate.md",
+        "specs/682_stability_decidability_provenance_gate/summaries/01_*-summary.md",
+        "specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean",
+        "specs/literature-index.json"
+      ]
     },
     {
       "project_number": 683,
@@ -447,7 +483,18 @@
         }
       ],
       "next_artifact_number": 2,
-      "completion_summary": "Made check_certificate's accepting branch proof-producing: added WitnessFamily.Certifies, decidableCertifies, Refutes and refutes_of_certifies to the library, and refutes_of_countermodel plus a dependent CheckOutcome/checkCertified/erase layer to BimodalTools.CertificateImport, so acceptance is a constructed entailment rather than a verdict about four Decidable instances. Extended the output contract with an additive \"acceptance\" key (absent reads as \"decided\") and corrected every in-repo trust-model disclaimer to the accurate build-time-implication claim. Full lake build green, zero sorries, no new axioms, and the real binary's rejected/error lines are byte-identical."
+      "completion_summary": "Made check_certificate's accepting branch proof-producing: added WitnessFamily.Certifies, decidableCertifies, Refutes and refutes_of_certifies to the library, and refutes_of_countermodel plus a dependent CheckOutcome/checkCertified/erase layer to BimodalTools.CertificateImport, so acceptance is a constructed entailment rather than a verdict about four Decidable instances. Extended the output contract with an additive \"acceptance\" key (absent reads as \"decided\") and corrected every in-repo trust-model disclaimer to the accurate build-time-implication claim. Full lake build green, zero sorries, no new axioms, and the real binary's rejected/error lines are byte-identical.",
+      "file_scope": [
+        "BimodalTools/CertificateImport.lean",
+        "BimodalTools/CheckCertificateMain.lean",
+        "BimodalTools/README.md",
+        "FormalSystem/Metalogic/Decidability/README.md",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Agreement.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Decide.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/Predicates.lean",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/README.md",
+        "Tests/BimodalToolsTest/CertificateImportTest.lean"
+      ]
     },
     {
       "project_number": 678,
@@ -480,7 +527,25 @@
         }
       ],
       "next_artifact_number": 2,
-      "completion_summary": "Replaced the certificate wire codec with a two-layer verified one: a canonical JSON printer plus a total (non-partial) fuel-indexed parser in BimodalTools/CanonicalWire/, and a schema encode/decode pair over it. All nine pinned theorems are proved -- including parse_print (parsing a printed certificate returns that same certificate) and print_parse_canonical (on canonical bytes the echo is byte-identical to what was sent) -- with zero sorry and no new axiom. All twelve recorded parser defects are closed by negative #guards, the envelope is migrated, and the output line carries an echo of what was parsed."
+      "completion_summary": "Replaced the certificate wire codec with a two-layer verified one: a canonical JSON printer plus a total (non-partial) fuel-indexed parser in BimodalTools/CanonicalWire/, and a schema encode/decode pair over it. All nine pinned theorems are proved -- including parse_print (parsing a printed certificate returns that same certificate) and print_parse_canonical (on canonical bytes the echo is byte-identical to what was sent) -- with zero sorry and no new axiom. All twelve recorded parser defects are closed by negative #guards, the envelope is migrated, and the output line carries an echo of what was parsed.",
+      "file_scope": [
+        "BimodalTools.lean",
+        "BimodalTools/CanonicalWire.lean",
+        "BimodalTools/CanonicalWire/Cert.lean",
+        "BimodalTools/CanonicalWire/Fuel.lean",
+        "BimodalTools/CanonicalWire/Json.lean",
+        "BimodalTools/CanonicalWire/Parse.lean",
+        "BimodalTools/CanonicalWire/README.md",
+        "BimodalTools/CanonicalWire/RoundTrip.lean",
+        "BimodalTools/CertificateImport.lean",
+        "BimodalTools/CertificateRecords.lean",
+        "BimodalTools/JsonParse.lean",
+        "BimodalTools/README.md",
+        "Tests/BimodalToolsTest.lean",
+        "Tests/BimodalToolsTest/CanonicalWireTest.lean",
+        "Tests/BimodalToolsTest/CertificateImportTest.lean",
+        "Tests/BimodalToolsTest/README.md"
+      ]
     },
     {
       "project_number": 679,
@@ -511,7 +576,30 @@
         }
       ],
       "next_artifact_number": 2,
-      "completion_summary": "A new FormalSystem/SourceLanguage/ component defines the consuming repository's 18-constructor source sentence AST, its elimination tr into this repository's six Formula primitives, and a native source-side evaluation Sat; sat_iff proves the two agree against Semantics.TruthAt itself at every frame, model, world history and time, with no sorry and no new axiom. A JSON codec, a translate_sentence executable and a committed 26-line fixture list expose the elimination so the consuming repository can diff its own translation against this verified one mechanically. The plan's tr_injective is false and was replaced by tr_not_injective, its disproof."
+      "completion_summary": "A new FormalSystem/SourceLanguage/ component defines the consuming repository's 18-constructor source sentence AST, its elimination tr into this repository's six Formula primitives, and a native source-side evaluation Sat; sat_iff proves the two agree against Semantics.TruthAt itself at every frame, model, world history and time, with no sorry and no new axiom. A JSON codec, a translate_sentence executable and a committed 26-line fixture list expose the elimination so the consuming repository can diff its own translation against this verified one mechanically. The plan's tr_injective is false and was replaced by tr_not_injective, its disproof.",
+      "file_scope": [
+        "<source_dir>/extensions/lean/.../context/project/lean4/domain/sentence-translation-contract.md",
+        "BimodalTools.lean",
+        "BimodalTools/README.md",
+        "BimodalTools/SentenceExport.lean",
+        "BimodalTools/TranslateSentenceMain.lean",
+        "FormalSystem.lean",
+        "FormalSystem/SourceLanguage.lean",
+        "FormalSystem/SourceLanguage/README.md",
+        "FormalSystem/SourceLanguage/Sentence.lean",
+        "FormalSystem/SourceLanguage/SentenceTruth.lean",
+        "ORGANISATION.md",
+        "README.md",
+        "Tests/BimodalTest.lean",
+        "Tests/BimodalTest/README.md",
+        "Tests/BimodalTest/Syntax/SentenceTranslationTest.lean",
+        "Tests/BimodalToolsTest.lean",
+        "Tests/BimodalToolsTest/README.md",
+        "Tests/BimodalToolsTest/SentenceCodecTest.lean",
+        "Tests/fixtures/sentence-translation-fixtures.jsonl",
+        "lakefile.toml",
+        "scripts/measure-refactor-partitions.py"
+      ]
     },
     {
       "project_number": 680,
@@ -542,7 +630,13 @@
         }
       ],
       "next_artifact_number": 2,
-      "completion_summary": "Recorded, on the BimodalLogic side, that the consuming repository's reduction condition (iii) is satisfiable in principle together with its non-monotonicity correction; corrected the refuted (not open) fmp hypothesis and added the durable without-stability-modal scope sentence in Assembly.lean and BiLasso/README.md; fixed the ValidDiscrete -> ValidZTime rename drift in BiLasso/README.md."
+      "completion_summary": "Recorded, on the BimodalLogic side, that the consuming repository's reduction condition (iii) is satisfiable in principle together with its non-monotonicity correction; corrected the refuted (not open) fmp hypothesis and added the durable without-stability-modal scope sentence in Assembly.lean and BiLasso/README.md; fixed the ValidDiscrete -> ValidZTime rename drift in BiLasso/README.md.",
+      "file_scope": [
+        "BimodalTools/README.md",
+        "FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean",
+        "FormalSystem/Metalogic/Decidability/BiLasso/README.md",
+        "FormalSystem/Metalogic/Decidability/WitnessFamily/README.md"
+      ]
     },
     {
       "project_number": 681,
@@ -1694,7 +1788,7 @@
     },
     {
       "project_name": "sharing_substrate_trans_redesign",
-      "status": "not_started",
+      "status": "abandoned",
       "task_type": "lean4",
       "topic": "decidability",
       "description": "Separate the branching substrate's two roles so that backward branching survives local coherence. Today SharingSkeleton carries one per-time equivalence `share u i j := rep u i = rep u j`, and Thread.step is defined as `share (u+1) (idx u) (idx (u+1))`, so the single relation carries both the stability modal's quantifier class and the thread's one-step succession. That conflation is what makes (C1') `LocalCoherentShare`'s `snce` clause quantify its predecessor over the share-class at the label's OWN time, which forces any two indices naming the same world state at that time to agree on every `snce` formula of the closure. The consequence is machine-checked and landed: PlusWitnessFamily/Incompleteness.lean's `snce_share_congr`, `not_plusCertifies_stabSnce` and `not_plusCertifies_stabSnce_premise` show no six-condition L-plus family certifies any instance of `(g S e) -> stab (g S e)`, while `not_plusValidZTime_stabSnce` shows `Pp -> stab Pp` is a genuine integer-time non-validity. So the certificate class is EMPTY for those targets and the compression analogue of `exists_witnessFamily_of_not_validZTime` is false against the landed conditions. The redesign: add a FOURTH periodic datum beside repBack/repMid/repFwd -- three lists transBack/transMid/transFwd, decoded by the same `Periodic.unrollOf` scheme, giving `trans u : Fin n -> Fin n -> Prop`. Change Thread's step to `trans u (idx u) (idx (u+1))`. Division of labour: `share` keeps the stability-modal quantifier, the quotient carrier, (C0) and (C5) -- everything asking which indices name this state now; `trans` carries one-step branching -- everything asking which index may follow this one. The model checker's export contract gains three fields additively, exactly as repBack/repMid/repFwd did, and is not otherwise re-opened. Re-proof surface is roughly 3500 lines across nine modules on both the Formula and PlusFormula sides, with WitnessFamily/Sharing/Fulfil.lean (1669 lines) and PlusWitnessFamily/Fulfil.lean (1093 lines) dominating. GATE THIS BEFORE THE FIXPOINT LAYER IS RE-PROVED: exhibit one concrete family satisfying all six redesigned conditions at non-trivial sharing, AND check that the redesigned (C1') no longer entails `snce_share_congr`. Without that second check the redesign can reproduce the present defect while type-checking. Note also that (C2')'s window reduction already carries a recorded (C1')-relative limitation -- there is no standalone `Decidable (ThreadFulfilling S)`, only a hypothesised term plus an instance on the conjunction -- which the redesign must re-examine rather than inherit. The full specification is in WitnessFamily/Sharing/README.md's `### Correction: (C1') is only half a repair` and `### (c) What a follow-up needs` sections, and in PlusWitnessFamily/README.md's `## What this certificate cannot refute`. Soundness is NOT at issue: plusTruth_iff_mem and plusRefutes_of_certifies are untouched and must stay so.",
@@ -1702,7 +1796,7 @@
         685
       ],
       "created": "2026-09-28T22:13:08Z",
-      "last_updated": "2026-09-28T22:13:08Z",
+      "last_updated": "2026-09-29T03:48:55Z",
       "file_scope": [
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Skeleton.lean",
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Predicates.lean",
@@ -1717,7 +1811,8 @@
         "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Agreement.lean",
         "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/README.md"
       ],
-      "project_number": 694
+      "project_number": 694,
+      "abandon_reason": "Superseded by task 696, which owns the substrate design question and will implement the chosen refactor. 694 prescribed one candidate (the fourth periodic datum trans) as settled; 696 research round 2 evaluated that candidate against alternatives, refuted candidate B at a named lemma, rescored candidate C as lossy, and machine-checked the two gate families as Lean terms. 696 report 02 states directly that 694 is to be folded in. 694 file_scope transferred to 696."
     },
     {
       "project_name": "plus_carrier_normalization_int_transfer",

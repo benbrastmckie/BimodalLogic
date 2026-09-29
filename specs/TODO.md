@@ -11,7 +11,7 @@ next_project_number: 699
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,694,695,696,697,698 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,695,696,697,698 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -77,7 +77,6 @@ next_project_number: 699
               └─ 412 [NOT STARTED] — Track B finish for the TM tableau decidability program...
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
-694 [NOT STARTED] — Separate the branching substrate's two roles so that backward...
 695 [NOT STARTED] — Prove plusValidZTimeiffplusValidInt, the L-plus twin of...
 696 [RESEARCHED] — DESIGN-INVESTIGATION-FIRST TASK. Determine what the stability...
 
@@ -150,7 +149,7 @@ next_project_number: 699
 ---
 
 ### 694. Sharing substrate trans redesign
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 685
