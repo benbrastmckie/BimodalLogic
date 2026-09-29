@@ -182,32 +182,33 @@ so in the snapshot rather than carrying the plan's number forward unchanged.
 
 ---
 
-### Phase 2: Write the re-scoped task 200 description [NOT STARTED]
+### Phase 2: Write the re-scoped task 200 description [COMPLETED]
 
 **Goal**: Produce copy-pasteable replacement text for ModelChecker task 200's description that
 corrects the stale upstream framing and carries the file-level porting map.
 
 **Tasks**:
 
-- [ ] Read ModelChecker task 200's current description in full from that repository's
+- [x] Read ModelChecker task 200's current description in full from that repository's
       `specs/state.json`, so the replacement preserves what is still correct rather than rewriting
-      from scratch.
-- [ ] Replace the upstream-status paragraph: state that the BimodalLogic redesign is completed and
+      from scratch. *(completed)*
+- [x] Replace the upstream-status paragraph: state that the BimodalLogic redesign is completed and
       landed, name `Sharing/Skeleton.lean` as the home of the `trans`/`Liftable` datum, and name
-      both gate families as landed `PlusCertifies` proofs rather than archived probes.
-- [ ] Restate the blocker: the design dependency is discharged; what remains is the compression
+      both gate families as landed `PlusCertifies` proofs rather than archived probes. *(completed)*
+- [x] Restate the blocker: the design dependency is discharged; what remains is the compression
       and enumeration bound, whose upstream task is in planning, not complete. Do not state that
-      the blocker lifts.
-- [ ] Fold in the Q1 replacement table: histories-as-lasso-orbits gives way to threads proved from
+      the blocker lifts. *(completed: upstream task is now "implementing", not "planning" -- see
+      Phase 1's snapshot -- text updated to the current word, same non-complete substance)*
+- [x] Fold in the Q1 replacement table: histories-as-lasso-orbits gives way to threads proved from
       `Liftable`; Saturation and Limit are unaffected; Box faithfulness needs the closure
       obligation; succession, currently identity on the lasso index in `_coherence_clause_at`,
-      becomes a `trans`-indexed neighbour lookup.
-- [ ] Fold in the Q2 porting map with its four file-level targets, including the finding that the
+      becomes a `trans`-indexed neighbour lookup. *(completed)*
+- [x] Fold in the Q2 porting map with its four file-level targets, including the finding that the
       pure-Python re-checker will need its own independently written thread characterization to
       preserve the independent-re-decision discipline, and the recorded decision that the `trans*`
-      fields belong on the family rather than on the individual labelled lasso.
-- [ ] Add a forward pointer to this task's research report by title and date, not by task number,
-      since the pointer is consumed inside ModelChecker's own task system.
+      fields belong on the family rather than on the individual labelled lasso. *(completed)*
+- [x] Add a forward pointer to this task's research report by title and date, not by task number,
+      since the pointer is consumed inside ModelChecker's own task system. *(completed)*
 
 **Timing**: 0.75 hours
 
