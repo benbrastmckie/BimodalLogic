@@ -5,11 +5,14 @@
 // A from-basics Lean 4 primer, scoped to exactly what a reader needs in order
 // to go from a formal claim cited in this book to the live declaration under
 // FormalSystem/ that backs it. Every Lean identifier cited here names a live
-// (non-Boneyard) declaration. Snippets are of two kinds:
-//   - #leansrc excerpts: quoted from the live source, verbatim up to
-//     whitespace (docstrings omitted, lines re-broken to fit the text width).
-//   - didactic examples (no #leansrc line), compiled against the current
-//     toolchain with lake env lean before being written here.
+// (non-Boneyard) declaration. Snippets are of two kinds, both presented via
+// typst/template.typ's lean-code() environment:
+//   - source excerpts (lean-code(source: (module, name))[...]): quoted from
+//     the live source, verbatim up to whitespace (docstrings omitted, lines
+//     re-broken to fit the column budget).
+//   - didactic examples (lean-code[...], no source: argument), compiled
+//     against the current toolchain with lake env lean before being
+//     written here.
 // See ../SYNC-MAP.md for the dated entry.
 // ============================================================================
 
@@ -37,18 +40,9 @@
 // same file-local pattern the machine-readable appendix repeats with "B.".
 #set heading(numbering: (..n) => "A." + numbering("1.1", ..n.pos().slice(1)))
 
-// Code blocks. 8pt fits 71 monospace columns in the text width, so no excerpt
-// below wraps. Explicit spacing keeps a block from running into the paragraph
-// after it (paragraph spacing is tight book-wide), and a snippet never splits
-// across a page break.
-// (Spacing is in pt because em inside this rule is the 8pt code size.)
-#show raw.where(block: true): set text(size: 8pt)
-#show raw.where(block: true): it => block(above: 11pt, below: 11pt, breakable: false, it)
-
-// Source labels. The template's leansrc line is kept on the same page as the
-// excerpt it introduces (call sites are unchanged).
-#let leansrc-line = leansrc
-#let leansrc(module, name) = block(sticky: true, above: 1em, below: 1em, leansrc-line(module, name))
+// Code blocks are presented by typst/template.typ's lean-code() environment
+// (geometry, column budget and fidelity policy documented there), applied
+// uniformly book-wide -- no file-local rule here.
 
 // Lists and tables. Same vertical rhythm as the template's items
 // environment, so neither runs into the paragraph that follows it.
@@ -115,11 +109,13 @@ Two universes matter for reading this codebase: `Type`, the universe of data, an
 `Derivable fc Γ φ` is the `Prop`-valued twin.
 It asserts *that* a derivation exists without retaining *which* one:
 
-#leansrc("FormalSystem.ProofSystem", "Derivable")
+#lean-code(source: ("FormalSystem.ProofSystem", "Derivable"))[
 ```
-def Derivable (fc : FrameClass) (G : Context) (p : Formula) : Prop :=
+def Derivable (fc : FrameClass) (G : Context) (p : Formula) :
+    Prop :=
   Nonempty (DerivationTree fc G p)
 ```
+]
 
 The wrapper exists for automation: `simp` and similar tactics target `Prop`-valued goals, so a consistency argument or a quick lemma application states its goal with `Derivable`, while the metalogic, which needs the tree itself, works with `DerivationTree`.
 
@@ -172,10 +168,12 @@ Proving `A → B` means writing a function from proofs of `A` to proofs of `B`, 
 A *term-mode* proof writes such a value down directly, with no tactic block.
 For an arbitrary formula `p`, the instance `⊢ □p → p` of the modal T axiom is:
 
+#lean-code[
 ```
 def boxPImpP (p : Formula) : ⊢ p.box.imp p :=
   DerivationTree.axiom [] _ (Axiom.modal_t p) trivial
 ```
+]
 
 `DerivationTree.axiom` takes four arguments: the context (here empty), the formula (here `_`, left for Lean to infer), an `Axiom` witness, and a proof of the frame-class side condition of @lean-appendix-types-props.
 For `Axiom.modal_t` the minimum frame class is `FrameClass.Base`, so at the base system the side condition is discharged by `trivial`.
@@ -183,16 +181,20 @@ For `Axiom.modal_t` the minimum frame class is `FrameClass.Base`, so at the base
 Derivations compose the way proof terms always do, by applying one term to another.
 Given a hypothetical derivation `dBoxP : ⊢ □p`, the `modus_ponens` constructor combines it with `boxPImpP` to build a derivation of `p`:
 
+#lean-code[
 ```
 example (p : Formula) (dBoxP : ⊢ p.box) : ⊢ p :=
   DerivationTree.modus_ponens [] p.box p (boxPImpP p) dBoxP
 ```
+]
 
 Passing from the tree to the bare fact of derivability is one step, because `Derivable` is defined by `Nonempty`: the anonymous-constructor brackets wrap the tree, and `Derivable.ofTree` is the same step by name.
 
+#lean-code[
 ```
 example (p : Formula) : |-! p.box.imp p := ⟨boxPImpP p⟩
 ```
+]
 
 @lean-appendix-tactics sets this term-mode style beside a tactic-mode proof of the same fact.
 
@@ -202,7 +204,7 @@ An *inductive type* is defined by an exhaustive list of constructors, each speci
 Recursion and structural induction over the type then come for free.
 `Formula` (@sec:formulas) is declared with exactly the six primitive constructors the syntax chapter states:
 
-#leansrc("FormalSystem.Syntax", "Formula")
+#lean-code(source: ("FormalSystem.Syntax", "Formula"))[
 ```
 inductive Formula : Type where
   | atom : Atom → Formula
@@ -213,24 +215,26 @@ inductive Formula : Type where
   | snce : Formula → Formula → Formula
   deriving Repr, DecidableEq, BEq, Hashable, Countable
 ```
+]
 
 Every other connective in the book is a `def` layered over these six, never a further constructor.
 `neg`, `and`, `or`, `diamond`, `allFuture`, `allPast`, `someFuture`, `somePast`, `always`, `sometimes`, and the rest are ordinary functions computing a `Formula` from `Formula` arguments.
 Dot notation keeps such definitions readable: `φ.neg` abbreviates `Formula.neg φ`, so operators chain left to right.
 The two temporal operators the book emphasizes are typical:
 
-#leansrc("FormalSystem.Syntax", "Formula.always")
+#lean-code(source: ("FormalSystem.Syntax", "Formula.always"))[
 ```
 def always (φ : Formula) : Formula :=
   φ.allPast.and (φ.and φ.allFuture)
 
 def sometimes (φ : Formula) : Formula := φ.neg.always.neg
 ```
+]
 
 `DerivationTree fc Γ φ` (@sec:proof-theory) is the second running example: an inductive *family*, indexed by frame class, context, and formula, with #rule-count constructors, one per inference rule of the Burgess-Xu system.
 Its constructor names are the rule names used throughout the metalogic chapters:
 
-#leansrc("FormalSystem.ProofSystem", "DerivationTree")
+#lean-code(source: ("FormalSystem.ProofSystem", "DerivationTree"))[
 ```
 inductive DerivationTree (fc : FrameClass) :
     Context → Formula → Type where
@@ -258,6 +262,7 @@ inductive DerivationTree (fc : FrameClass) :
       DerivationTree fc Δ φ
   deriving Repr
 ```
+]
 
 Reading a constructor is reading an inference rule.
 Each one is laid out above as name and parameters, then premises, then conclusion: `modus_ponens` takes two sub-derivations, of `φ.imp ψ` and of `φ` from the same `Γ` and `fc`, and returns a derivation of `ψ`.
@@ -269,13 +274,14 @@ The two necessitation constructors and `time_reflection` require their premise t
 A `structure` bundles named fields into a single value: it is Lean's record type.
 `Atom`, the type underlying `Formula.atom`, is a minimal example with two fields:
 
-#leansrc("FormalSystem.Syntax", "Atom")
+#lean-code(source: ("FormalSystem.Syntax", "Atom"))[
 ```
 structure Atom where
   base : String
   freshIndex : Option Nat
   deriving Repr, DecidableEq, BEq, Hashable
 ```
+]
 
 // TODO: Elaborate this example. The excerpt is clear and helpful, but nothing after it says what
 // the Lean syntax means. Walk through it line by line: the `structure ... where` header; each
@@ -329,9 +335,11 @@ A `class` is a structure that is additionally registered for *instance inference
 Writing `[DecidableEq α]` in a signature asks Lean's elaborator to find an instance on its own, rather than requiring the caller to supply one.
 `Formula`'s `deriving Repr, DecidableEq, BEq, Hashable, Countable` clause (@lean-appendix-inductive) generates exactly such instances, so wherever a `DecidableEq Formula` instance is needed, `inferInstance` finds it without help:
 
+#lean-code[
 ```
 example : DecidableEq Formula := inferInstance
 ```
+]
 
 This is why decidable equality and hashing simply work on formula-keyed collections (`Finset Formula` throughout `FormalSystem/`, `Std.HashMap Formula _` in the `BimodalTools` dataset generators) with no hand-written equality instance for `Formula` anywhere in the codebase.
 Square-bracketed instance arguments recur in the metalogic, where they state frame conditions: the dense soundness theorem of @lean-appendix-reading-source assumes `[DenselyOrdered F.Duration]`.
@@ -341,7 +349,7 @@ Square-bracketed instance arguments recur in the metalogic, where they state fra
 A structure's *fields* can carry instance brackets too, and the semantic layer opens with the clearest case.
 `TemporalOrder` (@sec:truth) bundles a type of durations together with the four algebraic properties the mathematics demands of it:
 
-#leansrc("FormalSystem.Semantics", "TemporalOrder")
+#lean-code(source: ("FormalSystem.Semantics", "TemporalOrder"))[
 ```
 structure TemporalOrder where
   carrier : Type
@@ -350,12 +358,14 @@ structure TemporalOrder where
   [isOrderedAddMonoid : IsOrderedAddMonoid carrier]
   [nontrivial : Nontrivial carrier]
 
-instance : CoeSort TemporalOrder Type := ⟨TemporalOrder.carrier⟩
+instance : CoeSort TemporalOrder Type :=
+  ⟨TemporalOrder.carrier⟩
 
 attribute [instance] TemporalOrder.addCommGroup
   TemporalOrder.linearOrder TemporalOrder.isOrderedAddMonoid
   TemporalOrder.nontrivial
 ```
+]
 
 Only `carrier` is data.
 The other four fields are Mathlib classes, bracketed so that constructing a `TemporalOrder` finds them by synthesis instead of demanding them positionally.
@@ -374,7 +384,7 @@ The re-export is what makes `[DenselyOrdered F.Duration]` in `soundness_dense` m
 A task frame is assembled in two steps, and both steps are ordinary structures.
 `FrameOver D` is everything a frame contributes *over a fixed temporal order* `D`, which is the second way a structure can depend on a value: @lean-appendix-types-props made the same point about `DerivationTree`.
 
-#leansrc("FormalSystem.Semantics", "FrameOver")
+#lean-code(source: ("FormalSystem.Semantics", "FrameOver"))[
 ```
 structure FrameOver (D : TemporalOrder) where
   WorldState : Type
@@ -388,6 +398,7 @@ structure FrameOver (D : TemporalOrder) where
 
 attribute [instance] FrameOver.worldNonempty
 ```
+]
 
 // TODO: Explain the `worldNonempty` field in full; "the same instance-bracket-field pattern one
 // level down" assumes too much. Say (1) that the line has the same `name : Type` shape as every
@@ -412,7 +423,7 @@ It is a field rather than a binder on the structure for a stated reason: a binde
 The primitive relation `PosRel` is indexed by `D.PositiveCone`, the nonnegative durations, and the four axiom fields are stated over `TaskFrame.reflect PosRel` rather than over `PosRel` itself.
 That is the *reflection convention*, which the source spells `FrameOver.TaskRel := TaskFrame.reflect PosRel`: the two-sided relation every consumer speaks about is the primitive one extended to negative durations by running it backwards.
 
-#leansrc("FormalSystem.Semantics", "FrameOver.TaskRel")
+#lean-code(source: ("FormalSystem.Semantics", "FrameOver.TaskRel"))[
 ```
 def TaskRel (F : FrameOver D) :
     F.WorldState → ↑D → F.WorldState → Prop :=
@@ -422,6 +433,7 @@ theorem reflection (F : FrameOver D) (w : F.WorldState)
     (d : ↑D) (u : F.WorldState) :
     F.TaskRel w d u ↔ F.TaskRel u (-d) w
 ```
+]
 
 Note which of these is which.
 `TaskRel` is a `def`, so reflection could have been imposed by fiat as an extra field.
@@ -430,7 +442,7 @@ The same holds of `nullity`, `eq_of_taskRel_zero` and `forward_comp`, which read
 
 The outer layer packages a fibre with the order it sits over:
 
-#leansrc("FormalSystem.Semantics", "TaskFrame")
+#lean-code(source: ("FormalSystem.Semantics", "TaskFrame"))[
 ```
 structure TaskFrame where
   Duration : TemporalOrder
@@ -443,6 +455,7 @@ structure TaskFrame where
     F.WorldState → F.Duration → F.WorldState → Prop :=
   F.toFibre.TaskRel
 ```
+]
 
 `F.Duration`, `F.WorldState` and `F.TaskRel` are the three accessors every later signature uses, and the last two are `@[reducible]` so that a proof about `F.toFibre` is definitionally a proof about `F`.
 This is the whole of the vocabulary `soundness` needs.
@@ -454,15 +467,17 @@ Histories are where dependent types stop being a slogan and start doing work.
 A history assigns a world state to each time *in its domain*, and to no other time, so the type of the assignment has to mention the domain.
 `PartialHistory` (@sec:convex-histories) says exactly that:
 
-#leansrc("FormalSystem.Semantics", "PartialHistory")
+#lean-code(source: ("FormalSystem.Semantics", "PartialHistory"))[
 ```
 structure PartialHistory (F : TaskFrame) where
   domain : F.Duration → Prop
   nonempty_domain : ∃ t, domain t
   states : (t : F.Duration) → domain t → F.WorldState
-  respects_task : ∀ (s t : F.Duration) (hs : domain s) (ht : domain t),
+  respects_task : ∀ (s t : F.Duration) (hs : domain s)
+      (ht : domain t),
     F.TaskRel (states s hs) (t - s) (states t ht)
 ```
+]
 
 The `states` field is a *dependent function*.
 The type of its second argument, `domain t`, mentions its first argument `t`, and the whole field's type mentions the earlier field `domain`.
@@ -481,7 +496,7 @@ Two of the other fields repay a close reading.
 @sec:convex-histories distinguishes convex and total histories from partial ones.
 Lean could give each its own structure, and deliberately does not:
 
-#leansrc("FormalSystem.Semantics", "PartialHistory.IsTotal")
+#lean-code(source: ("FormalSystem.Semantics", "PartialHistory.IsTotal"))[
 ```
 def IsTotal (τ : PartialHistory F) : Prop :=
   ∀ t : F.Duration, τ.domain t
@@ -490,6 +505,7 @@ def IsConvex (τ : PartialHistory F) : Prop :=
   ∀ (x z : F.Duration), τ.domain x → τ.domain z →
     ∀ (y : F.Duration), x ≤ y → y ≤ z → τ.domain y
 ```
+]
 
 Both are *predicates*, which is to say functions into `Prop`, each naming a property that a `PartialHistory` may or may not have.
 One structure then carries every history in the library, and the two conditions compose as ordinary propositions.
@@ -500,20 +516,23 @@ Where a property does have to travel with its subject, Lean offers the *subtype*
 A subtype is written as a type and a property separated by a double bar, and its inhabitants are pairs of a value and a proof of the property, with `.val` and `.property` as the two projections.
 `WorldHistory` is the total histories, packaged this way:
 
-#leansrc("FormalSystem.Semantics", "WorldHistory")
+#lean-code(source: ("FormalSystem.Semantics", "WorldHistory"))[
 ```
 def WorldHistory (F : TaskFrame) : Type _ :=
   {τ : PartialHistory F // τ.IsTotal}
 ```
+]
 
 This is the type that truth and validity quantify over, and it is a `def` rather than an `abbrev` so that the generic `Subtype` lemmas do not leak onto it.
 Its payoff is the accessor below.
 
-#leansrc("FormalSystem.Semantics", "WorldHistory.state")
+#lean-code(source: ("FormalSystem.Semantics", "WorldHistory.state"))[
 ```
-def state (τ : WorldHistory F) (t : F.Duration) : F.WorldState :=
+def state (τ : WorldHistory F) (t : F.Duration) :
+    F.WorldState :=
   τ.val.states t (τ.property t)
 ```
+]
 
 `state` takes a time and returns a state, with no domain proof anywhere in its signature, because `τ.property` supplies that proof for every time at once.
 The dependent field of `PartialHistory` is still doing its work underneath.
@@ -524,20 +543,23 @@ The `@[simp]` lemma `states_eq_state` rewrites any surviving dependent projectio
 
 A model adds the one thing a frame lacks, namely which atoms hold where.
 
-#leansrc("FormalSystem.Semantics", "TaskModel")
+#lean-code(source: ("FormalSystem.Semantics", "TaskModel"))[
 ```
 structure TaskModel (F : TaskFrame) where
   valuation : F.WorldState → Atom → Prop
 ```
+]
 
 The field is `Prop`-valued rather than `Bool`-valued, so a valuation is read as a *family of sets of world states*, one per atom, rather than as a computation.
 Fixing an atom and collecting the states where it holds gives that set directly:
 
+#lean-code[
 ```
 example (F : TaskFrame) (M : TaskModel F) (p : Atom) :
     Set F.WorldState :=
   {w | M.valuation w p}
 ```
+]
 
 This is the reading @sec:truth uses, and it is why the atomic clause of `TruthAt` (@lean-appendix-recursion) is just membership: an atom holds at a history and a time exactly when that history's state at that time lies in the set.
 
@@ -547,7 +569,7 @@ This is the reading @sec:truth uses, and it is why the atomic clause of `TruthAt
 `TruthAt` is what that looks like in practice.
 It is defined by one clause per `Formula` constructor, each clause written as a pattern on the left of `=>` and the truth condition on the right:
 
-#leansrc("FormalSystem.Semantics", "TruthAt")
+#lean-code(source: ("FormalSystem.Semantics", "TruthAt"))[
 ```
 def TruthAt (M : TaskModel F)
     (τ : WorldHistory F) (t : F.Duration) : Formula → Prop
@@ -555,11 +577,14 @@ def TruthAt (M : TaskModel F)
   | Formula.bot => False
   | Formula.imp φ ψ => TruthAt M τ t φ → TruthAt M τ t ψ
   | Formula.box φ => ∀ σ : WorldHistory F, TruthAt M σ t φ
-  | Formula.untl ψ φ => ∃ s : F.Duration, t < s ∧ TruthAt M τ s φ ∧
+  | Formula.untl ψ φ => ∃ s : F.Duration, t < s ∧
+      TruthAt M τ s φ ∧
       ∀ r : F.Duration, t < r → r < s → TruthAt M τ r ψ
-  | Formula.snce ψ φ => ∃ s : F.Duration, s < t ∧ TruthAt M τ s φ ∧
+  | Formula.snce ψ φ => ∃ s : F.Duration, s < t ∧
+      TruthAt M τ s φ ∧
       ∀ r : F.Duration, s < r → r < t → TruthAt M τ r ψ
 ```
+]
 
 Three things about the shape are worth naming before the content.
 
@@ -582,7 +607,7 @@ So `Formula.untl ψ φ` is the formula the book writes as $ψ$ until $φ$, with 
 L⁺ (@ch:vlach-blstar) adds a single stability modal to the language of *TM*, and both halves of that addition are visible in Lean as one extra line.
 The syntax gains a seventh constructor:
 
-#leansrc("FormalSystem.PlusLanguage", "PlusFormula")
+#lean-code(source: ("FormalSystem.PlusLanguage", "PlusFormula"))[
 ```
 inductive PlusFormula : Type where
   | atom : Atom → PlusFormula
@@ -594,10 +619,11 @@ inductive PlusFormula : Type where
   | stab : PlusFormula → PlusFormula
   deriving Repr, DecidableEq, Countable
 ```
+]
 
 The semantics gains a seventh clause, and nothing else changes:
 
-#leansrc("FormalSystem.PlusLanguage", "PlusTruthAt")
+#lean-code(source: ("FormalSystem.PlusLanguage", "PlusTruthAt"))[
 ```
 def PlusTruthAt (M : TaskModel F) (τ : WorldHistory F)
     (t : F.Duration) : PlusFormula → Prop
@@ -605,13 +631,16 @@ def PlusTruthAt (M : TaskModel F) (τ : WorldHistory F)
   | .bot => False
   | .imp φ ψ => PlusTruthAt M τ t φ → PlusTruthAt M τ t ψ
   | .box φ => ∀ σ : WorldHistory F, PlusTruthAt M σ t φ
-  | .untl ψ φ => ∃ s : F.Duration, t < s ∧ PlusTruthAt M τ s φ ∧
+  | .untl ψ φ => ∃ s : F.Duration, t < s ∧
+      PlusTruthAt M τ s φ ∧
       ∀ r : F.Duration, t < r → r < s → PlusTruthAt M τ r ψ
-  | .snce ψ φ => ∃ s : F.Duration, s < t ∧ PlusTruthAt M τ s φ ∧
+  | .snce ψ φ => ∃ s : F.Duration, s < t ∧
+      PlusTruthAt M τ s φ ∧
       ∀ r : F.Duration, s < r → r < t → PlusTruthAt M τ r ψ
   | .stab φ => ∀ σ : WorldHistory F, τ.state t = σ.state t →
       PlusTruthAt M σ t φ
 ```
+]
 
 The `stab` clause quantifies over the histories that agree with `τ` on the *present world state*, where the box clause quantifies over all of them.
 That single restriction is the whole semantic content of the added modal.
@@ -629,10 +658,12 @@ A `by` block lets an author build that term *interactively*, one tactic at a tim
 The `⊢ □p → p` example of @lean-appendix-props-as-types has both forms.
 The term-mode version there names the axiom directly, whereas the tactic-mode version runs a search procedure and lets it find the term:
 
+#lean-code[
 ```
 example (p : Formula) : ⊢ p.box.imp p := by
   modal_search
 ```
+]
 
 The project's tactics relevant to a first reading are these.
 
@@ -642,12 +673,14 @@ The project's tactics relevant to a first reading are these.
 
 The second of these, spelled out:
 
+#lean-code[
 ```
 example (p : Formula) : ⊢ p.box.imp p := by
   apply_axiom
   case h => exact Axiom.modal_t _
   case h_fc => trivial
 ```
+]
 
 Between these extremes, ordinary tactics compose the way they do in any Lean proof.
 
@@ -666,23 +699,26 @@ Everything so far has been vocabulary.
 This section reads one complete derived theorem of *TM* end to end.
 `perpetuity2` is the second perpetuity principle of @sec:perpetuity, that whatever is sometimes the case is possible.
 
-#leansrc("FormalSystem.Theorems.Perpetuity", "perpetuity2")
+#lean-code(source: ("FormalSystem.Theorems.Perpetuity", "perpetuity2"))[
 ```
 def perpetuity2 {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.sometimes.imp φ.diamond := by
   -- Goal: ⊢ ▽φ → ◇φ
-  -- Recall: ▽φ = sometimes φ = ¬(always ¬φ) = ¬(H¬φ ∧ ¬φ ∧ G¬φ)
+  -- Recall: ▽φ = sometimes φ = ¬(always ¬φ)
+  --   = ¬(H¬φ ∧ ¬φ ∧ G¬φ)
   -- Recall: ◇φ = diamond φ = ¬□¬φ = (φ.neg.box).neg
   -- By P1 for ¬φ: □(¬φ) → △(¬φ) = □(¬φ) → always(¬φ)
   -- By contraposition: ¬(always(¬φ)) → ¬(□(¬φ))
   -- Which is: sometimes φ → diamond φ = ▽φ → ◇φ
-  have h1 : ⊢[fc] φ.neg.box.imp φ.neg.always := perpetuity1 φ.neg
+  have h1 : ⊢[fc] φ.neg.box.imp φ.neg.always :=
+    perpetuity1 φ.neg
   -- Unfold: always (neg φ) = H(neg φ) ∧ neg φ ∧ G(neg φ)
   -- So h1 : ⊢ (¬φ).box → (¬φ).always
   -- We need: ⊢ ¬((¬φ).always) → ¬((¬φ).box)
   -- Which is: ⊢ sometimes φ → diamond φ
   exact contraposition h1
 ```
+]
 
 Read it a piece at a time.
 
@@ -702,19 +738,22 @@ A short name that reads unambiguously inside one file is not therefore unambiguo
 
 The ingredient it reuses is shown by its statement alone, with its body omitted:
 
-#leansrc("FormalSystem.Theorems.Perpetuity", "perpetuity1")
+#lean-code(source: ("FormalSystem.Theorems.Perpetuity", "perpetuity1"))[
 ```
 def perpetuity1 {fc : FrameClass} (φ : Formula) :
     ⊢[fc] φ.box.imp φ.always
 ```
+]
 
 Not every derived theorem needs writing out at all.
 The instance of the *MF* axiom (`Axiom.modal_future`) is found by the search tactic of @lean-appendix-tactics:
 
+#lean-code[
 ```
 example (φ : Formula) : ⊢ φ.box.imp φ.allFuture.box := by
   modal_search
 ```
+]
 
 The term `modal_search` produces is the same kind of object as the one `perpetuity2` writes by hand, and the kernel checks both the same way.
 
@@ -724,37 +763,41 @@ Every syntactic result has a semantic twin, and the twin is proved differently.
 The *MF* axiom is derivable, as just shown.
 It is also *valid*, and that is a separate theorem:
 
-#leansrc("FormalSystem.Metalogic", "modal_future_valid")
+#lean-code(source: ("FormalSystem.Metalogic", "modal_future_valid"))[
 ```
 theorem modal_future_valid (φ : Formula) :
     ⊨ ((φ.box).imp ((φ.allFuture).box))
 ```
+]
 
 Note `theorem` here against `def` above.
 This one really is `Prop`-valued, because validity is a proposition and not a piece of data.
 Its proof spends exactly one substantive fact, which is that shifting a history in time preserves truth:
 
-#leansrc("FormalSystem.Semantics.TimeShift", "timeShift_preserves_truth")
+#lean-code(source: ("FormalSystem.Semantics.TimeShift", "timeShift_preserves_truth"))[
 ```
 theorem timeShift_preserves_truth (M : TaskModel F)
     (σ : WorldHistory F) (x y : F.Duration)
     (φ : Formula) :
     TruthAt M (σ.timeShift (y - x)) x φ ↔ TruthAt M σ y φ
 ```
+]
 
 The statement is an `↔` rather than a one-way implication, so it can be used in either direction without a second lemma.
 What is worth noticing is how it is *not* proved.
 There is no induction over `Formula` here, even though the claim is about every formula.
 Instead it is an instance of one generic transport lemma:
 
-#leansrc("FormalSystem.Semantics", "Truth.truthAt_of_truthCorr")
+#lean-code(source: ("FormalSystem.Semantics", "Truth.truthAt_of_truthCorr"))[
 ```
 theorem truthAt_of_truthCorr {F F' : TaskFrame}
     {M : TaskModel F} {M' : TaskModel F'}
     (I : TruthCorr M M') (φ : Formula) :
     ∀ (σ : WorldHistory F) (σ' : WorldHistory F'), I.Rel σ σ' →
-      ∀ t : F.Duration, TruthAt M σ t φ ↔ TruthAt M' σ' (I.dur t) φ
+      ∀ t : F.Duration, TruthAt M σ t φ ↔
+        TruthAt M' σ' (I.dur t) φ
 ```
+]
 
 `TruthCorr M M'` bundles what it takes for two models to agree formula by formula, and the induction over `Formula` is done once, here.
 `shiftCorr` supplies that bundle for a shift, and `timeShift_preserves_truth` is the transport at `shiftCorr M (y - x)` followed by the arithmetic `x + (y - x) = y`.
@@ -774,7 +817,7 @@ The audit reports what a proof actually used rather than a fixed preamble, which
 This section shows one such computation.
 `lift` takes a derivation at one frame class and returns a derivation of the same formula at a larger one:
 
-#leansrc("FormalSystem.ProofSystem", "DerivationTree.lift")
+#lean-code(source: ("FormalSystem.ProofSystem", "DerivationTree.lift"))[
 ```
 def lift {fc₁ fc₂ : FrameClass} (h_le : fc₁ ≤ fc₂)
     {Γ : Context} {φ : Formula} :
@@ -789,6 +832,7 @@ def lift {fc₁ fc₂ : FrameClass} (h_le : fc₁ ≤ fc₂)
   | .time_reflection φ d => .time_reflection φ (d.lift h_le)
   | .weakening Γ Δ φ d h => .weakening Γ Δ φ (d.lift h_le) h
 ```
+]
 
 This is structural recursion again, now over derivations rather than over formulas, and with one clause per inference rule instead of one per connective.
 Six of the seven clauses are pure bookkeeping.
@@ -800,7 +844,7 @@ Every other rule is frame-class agnostic, so there is nothing for the other six 
 
 The order `h_le` refers to is a genuine partial order on the four-element `FrameClass`:
 
-#leansrc("FormalSystem.ProofSystem", "FrameClass")
+#lean-code(source: ("FormalSystem.ProofSystem", "FrameClass"))[
 ```
 instance : LE FrameClass where
   le a b := match a, b with
@@ -811,25 +855,30 @@ instance : LE FrameClass where
     | .ZTime, .ZTime => True
     | _, _ => False
 ```
+]
 
 `FrameClass.Base` is below everything, `FrameClass.Dense` is below `FrameClass.RTime`, and `FrameClass.ZTime` is comparable only with itself.
 The order is a branch and not a chain, which is the proof-theoretic shadow of the dense-versus-discrete dichotomy of @sec:dichotomy.
 A `PartialOrder FrameClass` instance is registered, so `le_trans` above is Mathlib's, and a `DecidableRel` instance makes every closed order goal a `decide`:
 
+#lean-code[
 ```
 example : FrameClass.Base ≤ FrameClass.Dense := by decide
 example : FrameClass.Base ≤ FrameClass.ZTime := by decide
 example : FrameClass.Dense ≤ FrameClass.RTime := by decide
 example : ¬(FrameClass.ZTime ≤ FrameClass.Dense) := by decide
 ```
+]
 
 Which is what makes `lift` pleasant to call.
 The side condition is discharged by the elaborator rather than by the caller:
 
+#lean-code[
 ```
 example (φ : Formula) (d : ⊢ φ) : ⊢[FrameClass.Dense] φ :=
   DerivationTree.lift (by decide) d
 ```
+]
 
 Step back and the reason for the `Type` declaration is visible.
 Because a derivation is data, the decision procedure of @lean-appendix-reading-source can *return* one as its certificate of validity, `DerivationTree.height` can recurse on one to give the deduction theorem its termination measure, and the dataset pipeline of @sec:dataset-pipeline can serialize one to disk.
@@ -1022,7 +1071,7 @@ Nothing this book cites resolves there.
 Two walkthroughs connect the book's central metatheoretic results to their declarations.
 Soundness first:
 
-#leansrc("FormalSystem.Metalogic", "soundness")
+#lean-code(source: ("FormalSystem.Metalogic", "soundness"))[
 ```
 theorem soundness (Γ : Context) (φ : Formula)
     (d : DerivationTree FrameClass.Base Γ φ)
@@ -1031,6 +1080,7 @@ theorem soundness (Γ : Context) (φ : Formula)
     (h_ctx : ∀ ψ ∈ Γ, TruthAt M τ t ψ) :
     TruthAt M τ t φ
 ```
+]
 
 Everything before the final colon is a hypothesis, and what follows it is the conclusion.
 The statement reads: given a `FrameClass.Base` derivation `d` of `φ` from `Γ`, and *any* frame, model, history, and time at which every formula in `Γ` is true, `φ` is true there too.
@@ -1040,11 +1090,12 @@ Each takes a derivation at its own frame class and adds the matching order-theor
 
 Completeness runs in the other direction:
 
-#leansrc("FormalSystem.Metalogic.BXCanonical", "completeness")
+#lean-code(source: ("FormalSystem.Metalogic.BXCanonical", "completeness"))[
 ```
 theorem completeness (φ : Formula) :
     Valid φ → Derivable FrameClass.Base [] φ
 ```
+]
 
 Every formula valid on all task frames is derivable in the base system.
 Note the `Prop`-valued `Derivable` in the conclusion: the canonical-model argument shows that a derivation exists without constructing one, which is exactly what `Derivable` was introduced to express (@lean-appendix-types-props).
@@ -1098,9 +1149,11 @@ Read them together rather than singly, because the pattern across them is the po
 Each of these has type `WeakCompleteness` at its own tag, which unfolds to the statement written out longhand in the `completeness` excerpt above.
 That excerpt and `completeness_base` are the same claim, not two, because validity on the base class and validity outright are definitionally equal:
 
+#lean-code[
 ```
 example : ValidIn FrameClass.Base = Valid := rfl
 ```
+]
 
 The remaining two results are where the frame classes part company.
 *Compactness*, that a set of premises with an unsatisfiable consequence already has a finite such subset:
@@ -1147,12 +1200,14 @@ A row marked refuted names a theorem whose statement carries a negation, proved 
 The library is not silent about compactness at `FrameClass.ZTime`.
 It says that compactness fails there, and it says so with a witness:
 
-#leansrc("FormalSystem.Metalogic", "notCompactZTime")
+#lean-code(source: ("FormalSystem.Metalogic", "notCompactZTime"))[
 ```
 theorem notCompactZTime : ¬ CompactZTime :=
-  not_compact_of_witness (archWitness_finitely_satisfiable ⟨"p", none⟩)
+  not_compact_of_witness
+    (archWitness_finitely_satisfiable ⟨"p", none⟩)
     (archWitness_not_satisfiable ⟨"p", none⟩)
 ```
+]
 
 The two arguments are the two halves of a counterexample, namely a set of formulas every finite part of which is satisfiable while the whole is not.
 Both are applied to the atom built by the *anonymous constructor* `⟨"p", none⟩`, which is `Atom`'s two fields written without naming the structure, Lean supplying the type from the expected argument.
@@ -1163,11 +1218,12 @@ The discrete witness is built from `Formula.next`, which is vacuous on a densely
 The proved rows compose out of one another, and the composition is legible in the Lean.
 Strong completeness at the base class is a single term:
 
-#leansrc("FormalSystem.Metalogic", "strongCompletenessBase")
+#lean-code(source: ("FormalSystem.Metalogic", "strongCompletenessBase"))[
 ```
 theorem strongCompletenessBase : StrongCompletenessBase :=
   strongCompleteness_of_compact compactBase completeness_base
 ```
+]
 
 `StrongCompletenessBase` is a `Prop`-valued `def` declared in a separate module, which lets the statement be named once as vocabulary and discharged elsewhere.
 The proof supplies compactness and the weak-completeness engine to one class-generic reduction, so the whole of the class-dependence sits in the two arguments rather than in the argument's shape.
@@ -1189,7 +1245,7 @@ The results above are about derivability and truth.
 The decision procedure of @sec:decidability-practice is about *computing*, and its types say precisely how far the computation is trusted.
 Its return type has four constructors, which is one more than a naive reading of "decides" would suggest:
 
-#leansrc("FormalSystem.Metalogic.Decidability", "DecisionResult")
+#lean-code(source: ("FormalSystem.Metalogic.Decidability", "DecisionResult"))[
 ```
 inductive DecisionResult (φ : Formula) : Type where
   | valid (proof : ⊢ φ)
@@ -1198,6 +1254,7 @@ inductive DecisionResult (φ : Formula) : Type where
   | extractionFailed
   deriving Repr
 ```
+]
 
 The type is indexed by the formula, so a `DecisionResult φ` can only be a verdict about `φ`.
 
@@ -1208,33 +1265,37 @@ The type is indexed by the formula, so a `DecisionResult φ` can only be a verdi
 
 The entry point shows Lean's *optional parameters*:
 
-#leansrc("FormalSystem.Metalogic.Decidability", "decide")
+#lean-code(source: ("FormalSystem.Metalogic.Decidability", "decide"))[
 ```
 def decide (φ : Formula) (searchDepth : Nat := 10)
     (tableauFuel : Nat := 1000) (fc : FrameClass := .Base) :
     DecisionResult φ
 ```
+]
 
 A `:=` inside a binder gives that argument a default.
 Three of the four arguments have one, so the two calls below are the same call:
 
+#lean-code[
 ```
 example (φ : Formula) : DecisionResult φ := decide φ
 
 example (φ : Formula) : DecisionResult φ :=
   decide φ 10 1000 .Base
 ```
+]
 
 A caller overrides `searchDepth := 10` or `tableauFuel := 1000` only when the defaults prove too small.
 This is the ordinary way a Lean API offers tuning without making every call site carry it.
 
 What the library proves about all this is narrower than the word *decide* suggests, and it is worth stating exactly.
 
-#leansrc("FormalSystem.Metalogic.Decidability", "sound_of_isValid")
+#lean-code(source: ("FormalSystem.Metalogic.Decidability", "sound_of_isValid"))[
 ```
 theorem sound_of_isValid {φ : Formula}
     (r : DecisionResult φ) (h : r.isValid = true) : ⊨ φ
 ```
+]
 
 - *Established.* A `valid` verdict is sound, by `decide_sound`, because it carries a `⊢ φ` and soundness applies. The `Bool`-level restatement `isValid φ fc = true → ⊨ φ` follows, which is the theorem above. On the tableau side, `ruleSound_of_mem_allRulesForFC` proves that every rule the scheduler can select preserves satisfiability at its frame class. A refuting verdict comes with the countermodel that justifies it.
 - *Open.* The converse `⊨ φ → isValid φ fc = true`, and with it the biconditional and a `Decidable (⊨ φ)` instance, is *not* proved. It needs `valid_iff_allClosed`, which in turn needs the termination side and the truth-lemma gate, and it must also account for the two rules scheduled outside `allRulesForFC`, namely `serialityRule` and `timeLinearity`.
@@ -1252,12 +1313,15 @@ Two commands let a reader audit a declaration without reading its proof.
 
 For the two theorems above, the second command reports:
 
+#lean-code[
 ```
 'FormalSystem.Metalogic.soundness' depends on axioms:
   [propext, Classical.choice, Quot.sound]
-'FormalSystem.Metalogic.BXCanonical.completeness' depends on axioms:
+'FormalSystem.Metalogic.BXCanonical.completeness'
+  depends on axioms:
   [propext, Classical.choice, Quot.sound]
 ```
+]
 
 These three are the standard axioms of classical reasoning in Lean and Mathlib: propositional extensionality, the axiom of choice, and the soundness of quotient types.
 What matters is what is absent.

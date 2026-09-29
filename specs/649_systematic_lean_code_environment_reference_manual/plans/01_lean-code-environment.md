@@ -381,7 +381,7 @@ pre-phase state (`git diff` empty).
 
 ---
 
-### Phase 4: Migrate the labeled excerpt blocks in the Lean appendix [NOT STARTED]
+### Phase 4: Migrate the labeled excerpt blocks in the Lean appendix [COMPLETED]
 
 **Goal**: Convert every `#leansrc`-paired block in `typst/chapters/ax-lean-appendix.typ` to the
 environment's source-excerpt kind, re-breaking any over-budget line, and delete the file-local
@@ -430,6 +430,21 @@ assumed to be zero.
   remain.
 - `typst compile --root .. BimodalReference.typ` reports zero errors.
 - Rendered appendix pages show every label banded to its code and no wrapped line.
+
+**Measured results**: all 31 `#leansrc`-paired blocks converted to
+`#lean-code(source: (module, name))[...]`, mechanically (script-driven wrap, verified 0 bad
+wraps by a fence-pair audit). 13 lines exceeded the 63-column budget after wrapping; each was
+re-broken at whitespace, following name-and-parameters/hypotheses/conclusion where the content
+was a declaration signature, and a plain whitespace split for a proof-body expression or a
+comment. A token-fidelity diff (concatenated non-whitespace characters, before vs. after, all 44
+blocks) found exactly one non-whitespace insertion: a repeated `--` comment marker needed to keep
+a wrapped continuation line a valid Lean line comment (`-- Recall: ... = ...` split across two
+comment lines) -- not a code token. The three file-local rules (8pt raw-block size, spacing plus
+unbreakability, and the shadowed `leansrc`) are deleted; the file's `A.n` heading-numbering rule
+and its list/figure spacing rules are untouched. `typst compile --root .. BimodalReference.typ`
+is zero errors; page 94 (`Derivable`) rendered and compared against the Phase 1 before-image:
+same tight label-to-code banding, left-indented, no wrapped line, same gap to the following
+paragraph.
 
 ---
 
