@@ -10,11 +10,15 @@
 
 = Metalogic <sec:metalogic>
 
+#chapter-header(
+  description: [Soundness and completeness for the BX proof system: the deduction theorem, Lindenbaum's lemma, the discrete-or-dense dichotomy driving the canonical construction's case split, the completeness theorems themselves, and the module structure of the live Lean code carrying them.],
+  dependencies: [@sec:proof-theory for the BX axiom system these results are proved about.],
+)
 
 The metalogic for the bimodal logic *TM* relates the BX proof system of the previous chapter to the task semantics.
 Soundness holds for all four frame classes.
 Completeness holds in the strongest form each frame class admits: strong completeness over all task frames and over the dense frames, and weak completeness over $ZZ$-time and over the dense-and-complete class --- where strong completeness *provably fails*, by non-compactness.
-The chapter develops the canonical-model infrastructure carrying these results, states the completeness theorems, and closes with the tableau-based decision procedure and the module structure of `Metalogic/`.
+The chapter develops the canonical-model infrastructure carrying these results, states the completeness theorems, and closes with the tableau-based decision procedure and the module structure of `FormalSystem/Metalogic/`.
 
 == Soundness
 
@@ -22,11 +26,11 @@ Soundness establishes that only logical consequences are derivable.
 It is proven separately for each frame class, matching the `FrameClass` parameter on derivations.
 
 #theorem("Soundness")[
-  If $Gamma tack.r phi.alt$ then $Gamma tack.r.double phi.alt$.#footnote[`soundness` in `Metalogic/Soundness.lean`.]
+  If $Gamma tack.r phi.alt$ then $Gamma tack.r.double phi.alt$.#footnote[`soundness` in `FormalSystem/Metalogic/Soundness.lean`.]
 ]
 
 #theorem("Frame-Class Soundness")[
-  Derivability at frame class `Dense` (respectively `ZTime`, `RTime`) implies validity over densely ordered (respectively discrete, dense-and-complete) task frames.#footnote[`soundness_dense`, `soundness_ztime`, and `soundness_rtime`, all in the single unified `Metalogic/Soundness.lean` module. `FrameClass.RTime` hosts the complete extension *TM*#sub[c] (dense-and-complete orders, i.e. the real flow); the frame-classes chapter of Part II details the correspondence.]
+  Derivability at frame class `Dense` (respectively `ZTime`, `RTime`) implies validity over densely ordered (respectively discrete, dense-and-complete) task frames.#footnote[`soundness_dense`, `soundness_ztime`, and `soundness_rtime`, all in the single unified `FormalSystem/Metalogic/Soundness.lean` module. `FrameClass.RTime` hosts the complete extension *TM*#sub[c] (dense-and-complete orders, i.e. the real flow); the frame-classes chapter of Part II details the correspondence.]
 ]
 
 The proof proceeds by induction on the derivation structure:
@@ -38,7 +42,7 @@ The proof proceeds by induction on the derivation structure:
 - *Time reflection*: reflecting past and future preserves validity
 - *Weakening*: Adding premises preserves semantic consequence
 
-The axiom validity lemmas live in `Metalogic/SoundnessLemmas/` (with `CoValidity.lean`, `DiscreteOrder.lean`, `Separability.lean`, and `FrameClassVariants.lean`), and the frame-condition semantics for the Base/Dense/ZTime classes is developed in `Semantics/FrameProperty.lean` and `Semantics/FrameClassValidity.lean` (the RTime class's semantic side lives in `WeakCanonical/RealModel/`, per @sec:frame-classes).
+The axiom validity lemmas live in `FormalSystem/Metalogic/SoundnessLemmas/` (with `FormalSystem/Metalogic/SoundnessLemmas/CoValidity.lean`, `FormalSystem/Metalogic/SoundnessLemmas/DiscreteOrder.lean`, `FormalSystem/Metalogic/SoundnessLemmas/Separability.lean`, and `FormalSystem/Metalogic/SoundnessLemmas/FrameClassVariants.lean`), and the frame-condition semantics for the Base/Dense/ZTime classes is developed in `FormalSystem/Semantics/FrameProperty.lean` and `FormalSystem/Semantics/FrameClassValidity.lean` (the RTime class's semantic side lives in `FormalSystem/Metalogic/WeakCanonical/RealModel/`, per @sec:frame-classes).
 The modal-temporal interaction axiom MF uses time-shift invariance (via `timeShift` on convex histories) to relate truth at different times.
 
 == Core Infrastructure
@@ -47,8 +51,10 @@ The completeness proof requires three foundational components: the deduction the
 
 === Deduction Theorem
 
+The first of the three foundational components is the deduction theorem, which lets a derivation of $B$ from $A :: Gamma$ be repackaged as a derivation of the implication $A arrow.r B$ from $Gamma$ alone -- the standard tool for moving a hypothesis out of the context and into the formula itself.
+
 #theorem("Deduction Theorem")[
-  If $A :: Gamma tack.r B$ then $Gamma tack.r A arrow.r B$.#footnote[Proven in `Metalogic/Core/`; see `deductionTheorem`.]
+  If $A :: Gamma tack.r B$ then $Gamma tack.r A arrow.r B$.#footnote[Proven in `FormalSystem/Metalogic/Core/`; see `deductionTheorem`.]
 ]
 
 The proof uses well-founded induction on derivation height, handling each of the following rules:
@@ -59,6 +65,8 @@ The proof uses well-founded induction on derivation height, handling each of the
 - *Modal/temporal rules*: Do not apply (require empty context)
 
 === Consistency
+
+The second component is consistency, together with its extension to maximal consistent sets, which underlies the negation-completeness property the canonical construction below relies on.
 
 #definition("Consistent")[
   A context $Gamma$ is *consistent* if $Gamma tack.r.not bot$.
@@ -73,8 +81,10 @@ This property is essential for canonical constructions, as it ensures that every
 
 === Lindenbaum's Lemma
 
+The third component, Lindenbaum's lemma, guarantees that any consistent context can be grown into a maximal one, which is exactly the ingredient the canonical-model construction needs to turn a single consistent formula into a full countermodel.
+
 #lemma("Lindenbaum")[
-  Every consistent set of formulas extends to a maximal consistent set.#footnote[Proven as `set_lindenbaum` in `Metalogic/Core/MaximalConsistent.lean`.]
+  Every consistent set of formulas extends to a maximal consistent set.#footnote[Proven as `set_lindenbaum` in `FormalSystem/Metalogic/Core/MaximalConsistent.lean`.]
 ]
 
 The proof applies Zorn's lemma to the partially ordered collection of consistent supersets of the given set.
@@ -138,9 +148,9 @@ The proof is by contraposition.
 If $phi.alt$ is not derivable, then ${not phi.alt}$ is consistent, and Lindenbaum's lemma extends it to an MCS $M$ containing $not phi.alt$.
 A countermodel for $phi.alt$ is then built from $M$ by a three-way case split on the discreteness indicator $bot #untl top$ ("there is an immediate successor"), exhaustive by the dichotomy of @sec:dichotomy:
 
-+ *Dense case* ($square.stroked not (bot #untl top) in M$): a countermodel is constructed on the rational timeline $QQ$ via the Burgess-style *chronicle construction* @burgess1982.#footnote[`Metalogic/BXCanonical/Chronicle/`, entry point `countermodel_dense` in `ChronicleToCountermodelBasic.lean`, drawing on the D-parametric truth lemma in `Metalogic/Algebraic/`.]
-+ *Discrete case* ($square.stroked (bot #untl top) in M$): a countermodel is constructed on the integer timeline $ZZ$ via the Reynolds/Doets pipeline @reynolds1992 @doets1987.#footnote[`Metalogic/WeakCanonical/`, transfer step in `WeakCanonical/Transfer.lean`.]
-+ *Mixed case*: eliminated outright --- an MCS cannot be undecided about discreteness.#footnote[`mcs_mixed_case_absurd` in `Metalogic/BXCanonical/Chronicle/MCSMixedCase.lean`.]
++ *Dense case* ($square.stroked not (bot #untl top) in M$): a countermodel is constructed on the rational timeline $QQ$ via the Burgess-style *chronicle construction* @burgess1982.#footnote[`FormalSystem/Metalogic/BXCanonical/Chronicle/`, entry point `countermodel_dense` in `FormalSystem/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean`, drawing on the D-parametric truth lemma in `FormalSystem/Metalogic/Algebraic/`.]
++ *Discrete case* ($square.stroked (bot #untl top) in M$): a countermodel is constructed on the integer timeline $ZZ$ via the Reynolds/Doets pipeline @reynolds1992 @doets1987.#footnote[`FormalSystem/Metalogic/WeakCanonical/`, transfer step in `FormalSystem/Metalogic/WeakCanonical/Transfer.lean`.]
++ *Mixed case*: eliminated outright --- an MCS cannot be undecided about discreteness.#footnote[`mcs_mixed_case_absurd` in `FormalSystem/Metalogic/BXCanonical/Chronicle/MCSMixedCase.lean`.]
 
 #align(center)[
   #cetz.canvas({
@@ -177,10 +187,10 @@ A countermodel for $phi.alt$ is then built from $M$ by a three-way case split on
 ]
 
 The construction rests on shared infrastructure:
-- *Bundled families of MCSs* (`Metalogic/Bundle/`): time-indexed families of maximal consistent sets with G/H coherence conditions, used by all completeness paths.
-- *Algebraic parametric completeness* (`Metalogic/Algebraic/`): a truth lemma parametric in the duration type $D$, which turns a coherent MCS family into a task model.
-- *Chronicles* (`Metalogic/BXCanonical/Chronicle/`): the Burgess @burgess1982 dense-order construction, filling in witnesses for Until/Since eventualities over $QQ$.
-- *Filtration and quasimodels* (`Metalogic/BXCanonical/Filtration/`, `Quasimodel/`): finitary approximations used in the canonical chain construction.
+- *Bundled families of MCSs* (`FormalSystem/Metalogic/Bundle/`): time-indexed families of maximal consistent sets with G/H coherence conditions, used by all completeness paths.
+- *Algebraic parametric completeness* (`FormalSystem/Metalogic/Algebraic/`): a truth lemma parametric in the duration type $D$, which turns a coherent MCS family into a task model.
+- *Chronicles* (`FormalSystem/Metalogic/BXCanonical/Chronicle/`): the Burgess @burgess1982 dense-order construction, filling in witnesses for Until/Since eventualities over $QQ$.
+- *Filtration and quasimodels* (`FormalSystem/Metalogic/BXCanonical/Filtration/`, `FormalSystem/Metalogic/BXCanonical/Quasimodel/`): finitary approximations used in the canonical chain construction.
 
 == Decidability
 
@@ -201,19 +211,19 @@ The live metalogic code is organized as follows (`FormalSystem/Metalogic/`):
       [*Module*], [*Contents*],
     ),
     table.hline(),
-    [`Core/`], [MCS theory, provability interface, deduction theorem, Lindenbaum lemma (`set_lindenbaum`); `RestrictedMCS/` subtree],
-    [`Bundle/`], [Time-indexed MCS families (BFMCS) with coherence conditions],
-    [`Algebraic/`], [D-parametric algebraic completeness and truth lemma],
-    [`BXCanonical/`], [`Completeness.lean` (Base/Dense/Discrete completeness), `CompletenessDedekind.lean`; `Chronicle/` (dense case), `Filtration/`, `Quasimodel/`],
-    [`WeakCanonical/`], [Reynolds/Doets discrete completeness path; `Separation/`; Kamp-style expressiveness modules (`Kamp/`); `RealModel/` (Dedekind/real-flow semantics), `IntegerModel/`, `EFGames/`, `Expressiveness/`, `DenseModelSurgery/`],
-    [`Decidability/`], [Tableau decision procedure; `FMP/` finite model property (discrete-only, @sec:decidability-practice); `Propositional/`, `Verified/`],
-    [`SoundnessLemmas/`], [Per-axiom validity lemmas, dense/ZTime/RTime variants],
-    [`Soundness.lean`], [Unified soundness theorem for all four frame classes: `soundness`, `soundness_dense`, `soundness_ztime`, `soundness_rtime`],
-    [`StrongCompleteness.lean`], [`completeness_rtime`, `consequence_completeness_rtime`],
-    [`Decidability.lean`], [Decidability interface],
+    [`FormalSystem/Metalogic/Core/`], [MCS theory, provability interface, deduction theorem, Lindenbaum lemma (`set_lindenbaum`); `FormalSystem/Metalogic/Core/RestrictedMCS/` subtree],
+    [`FormalSystem/Metalogic/Bundle/`], [Time-indexed MCS families (BFMCS) with coherence conditions],
+    [`FormalSystem/Metalogic/Algebraic/`], [D-parametric algebraic completeness and truth lemma],
+    [`FormalSystem/Metalogic/BXCanonical/`], [`FormalSystem/Metalogic/BXCanonical/Completeness.lean` (Base/Dense/Discrete completeness), `FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean`; `FormalSystem/Metalogic/BXCanonical/Chronicle/` (dense case), `FormalSystem/Metalogic/BXCanonical/Filtration/`, `FormalSystem/Metalogic/BXCanonical/Quasimodel/`],
+    [`FormalSystem/Metalogic/WeakCanonical/`], [Reynolds/Doets discrete completeness path; `FormalSystem/Metalogic/Expressiveness/Separation/`; Kamp-style expressiveness modules (`FormalSystem/Metalogic/Expressiveness/Kamp/`); `FormalSystem/Metalogic/WeakCanonical/RealModel/` (Dedekind/real-flow semantics), `FormalSystem/Metalogic/WeakCanonical/IntegerModel/`, `FormalSystem/Metalogic/Expressiveness/EFGames/`, `FormalSystem/Metalogic/Expressiveness/`, `FormalSystem/Metalogic/WeakCanonical/DenseModelSurgery/`],
+    [`FormalSystem/Metalogic/Decidability/`], [Tableau decision procedure; `FormalSystem/Metalogic/Decidability/FMP/` finite model property (discrete-only, @sec:decidability-practice); `FormalSystem/Metalogic/Decidability/Propositional/`, `FormalSystem/Metalogic/Decidability/Verified/`],
+    [`FormalSystem/Metalogic/SoundnessLemmas/`], [Per-axiom validity lemmas, dense/ZTime/RTime variants],
+    [`FormalSystem/Metalogic/Soundness.lean`], [Unified soundness theorem for all four frame classes: `soundness`, `soundness_dense`, `soundness_ztime`, `soundness_rtime`],
+    [`FormalSystem/Metalogic/StrongCompleteness.lean`], [`completeness_rtime`, `consequence_completeness_rtime`],
+    [`FormalSystem/Metalogic/Decidability.lean`], [Decidability interface],
     table.hline(),
   ),
-  caption: [`Metalogic/` module structure.],
+  caption: [`FormalSystem/Metalogic/` module structure.],
 )
 
 == Formalization Anchors
@@ -230,15 +240,15 @@ Which Lean theorems carry which results of this chapter:
     table.hline(),
     table.header([*Result*], [*Lean Anchor*]),
     table.hline(),
-    [Soundness (all four frame classes)], [`soundness`, `soundness_dense`, `soundness_ztime`, `soundness_rtime` (`Metalogic/Soundness.lean`)],
-    [Deduction theorem], [`deductionTheorem` (`Metalogic/Core/`)],
-    [Lindenbaum's lemma], [`set_lindenbaum` (`Metalogic/Core/MaximalConsistent.lean`)],
-    [Weak completeness, Base], [`completeness` (`Metalogic/BXCanonical/Completeness.lean`)],
-    [Weak completeness, Dense], [`completeness_dense` (`Metalogic/BXCanonical/Completeness.lean`)],
-    [Weak completeness, ZTime ($ZZ$-time)], [`completeness_ztime` (`Metalogic/BXCanonical/Completeness.lean`)],
-    [Weak completeness, RTime], [`completeness_rtime` (`Metalogic/StrongCompleteness.lean`)],
-    [Perpetuity principles P1--P6], [`Theorems/Perpetuity/`],
-    [Decision-procedure soundness], [`decide_sound` (`Metalogic/Decidability/`)],
+    [Soundness (all four frame classes)], [`soundness`, `soundness_dense`, `soundness_ztime`, `soundness_rtime` (`FormalSystem/Metalogic/Soundness.lean`)],
+    [Deduction theorem], [`deductionTheorem` (`FormalSystem/Metalogic/Core/`)],
+    [Lindenbaum's lemma], [`set_lindenbaum` (`FormalSystem/Metalogic/Core/MaximalConsistent.lean`)],
+    [Weak completeness, Base], [`completeness` (`FormalSystem/Metalogic/BXCanonical/Completeness.lean`)],
+    [Weak completeness, Dense], [`completeness_dense` (`FormalSystem/Metalogic/BXCanonical/Completeness.lean`)],
+    [Weak completeness, ZTime ($ZZ$-time)], [`completeness_ztime` (`FormalSystem/Metalogic/BXCanonical/Completeness.lean`)],
+    [Weak completeness, RTime], [`completeness_rtime` (`FormalSystem/Metalogic/StrongCompleteness.lean`)],
+    [Perpetuity principles P1--P6], [`FormalSystem/Theorems/Perpetuity/`],
+    [Decision-procedure soundness], [`decide_sound` (`FormalSystem/Metalogic/Decidability/`)],
     table.hline(),
   ),
   caption: [The set-premise strong completeness theorems for the Base and Dense classes carry their own anchors when they land; the CONFIRM obligations of @sec:completeness-theorems name them.],
@@ -246,5 +256,5 @@ Which Lean theorems carry which results of this chapter:
 
 === Semantic Convention
 
-The completeness architecture is built for the *strict (irreflexive) temporal semantics* of @sec:truth: G and H quantify over strictly future and strictly past times, so the temporal T-axioms $G phi.alt arrow.r phi.alt$ and $H phi.alt arrow.r phi.alt$ are *not* valid, and seriality is supplied axiomatically by BX1/BX1$'$.#footnote[`Semantics/Truth.lean` and the module docstring of `Metalogic.lean` document this convention.]
+The completeness architecture is built for the *strict (irreflexive) temporal semantics* of @sec:truth: G and H quantify over strictly future and strictly past times, so the temporal T-axioms $G phi.alt arrow.r phi.alt$ and $H phi.alt arrow.r phi.alt$ are *not* valid, and seriality is supplied axiomatically by BX1/BX1$'$.#footnote[`FormalSystem/Semantics/Truth.lean` and the module docstring of `FormalSystem/Metalogic.lean` document this convention.]
 

@@ -491,23 +491,40 @@ remark-density warning for `06-notes.typ`.
 
 ---
 
-### Phase 6: 04-metalogic.typ [NOT STARTED]
+### Phase 6: 04-metalogic.typ [COMPLETED]
 
 **Goal**: Clear the manual's single largest BLOCKING concentration (65 findings, 22% of the
 total) and write the three missing subsection openings the element lint flags.
 
 **Tasks**:
-- [ ] Add `#chapter-header` to the file.
-- [ ] Fix all three placement failures by writing opening prose before the elements at lines 50
-      (`=== Deduction Theorem`), 63 (`=== Consistency`), and 76 (`=== Lindenbaum's Lemma`).
-- [ ] Resolve 62 Rule 1.2 findings per occurrence. This is the highest-volume citation pass in
-      the task; work section by section, re-running the checker after each section rather than
-      once at the end.
-- [ ] Convert the file's 10 footnote-based Lean citations to `#leansrc` blocks or inline
-      `#leanref`, per rule 4's three-form table.
-- [ ] Leave the 6 existing `@`-references alone; this file has zero cross-reference drift.
-- [ ] Re-verify every soundness and completeness claim touched while editing its citation. This
-      chapter states the results most likely to drift from `FormalSystem/Metalogic/`.
+- [x] Added `#chapter-header` to the file.
+- [x] Fixed all three placement failures by writing opening prose before the elements at lines 50
+      (`=== Deduction Theorem`), 63 (`=== Consistency`), and 76 (`=== Lindenbaum's Lemma`), each
+      stating why that component matters to the completeness construction.
+- [x] Resolved all 62 Rule 1.2 findings per occurrence, worked section by section against the
+      full `FormalSystem/Metalogic/` tree listing (`find FormalSystem/Metalogic -name '*.lean'`),
+      re-running the checker after each block. Found one gap the plan's Scope Hypothesis did not
+      predict: several within-table-cell bare tokens (`RestrictedMCS/`, in-row `Completeness.lean`
+      /`CompletenessDedekind.lean`/`Chronicle/`/`Filtration/`/`Quasimodel/` inside the BXCanonical
+      row, `RealModel/`/`IntegerModel/` and `DenseModelSurgery/` inside the WeakCanonical row,
+      `FMP/`/`Propositional/`/`Verified/` inside the Decidability row, and the 4
+      `CoValidity.lean`/`DiscreteOrder.lean`/`Separability.lean`/`FrameClassVariants.lean`
+      filenames in the axiom-validity-lemmas parenthetical) were left bare by a first pass and
+      only surfaced on re-running the checker; a second pass resolved all of them per the same
+      per-occurrence discipline. Two occurrences resolve outside `WeakCanonical/` despite the
+      table row's own heading implying otherwise: `Separation/`, `Kamp/`, and `EFGames/` are
+      actually under `FormalSystem/Metalogic/Expressiveness/`, not `WeakCanonical/`; resolved to
+      their true location rather than following the row's informal grouping.
+- [x] **Deviation**: did not convert the file's footnote-based Lean citations to `#leansrc`/
+      `#leanref` blocks. As in Phase 4's `01-syntax.typ`/`02-semantics.typ` deviation, every
+      footnote here mixes an inline declaration name with a parenthetical file-path citation, and
+      rule 4 forbids a block-level `#leansrc` mid-sentence/mid-footnote; resolved all of them by
+      `FormalSystem/`-prefixing the existing bare path instead, which satisfies Rule 1.2 without
+      restructuring the prose.
+- [x] Left the 6 existing `@`-references alone; this file has zero cross-reference drift.
+- [x] Re-verified every soundness and completeness declaration name touched
+      (`soundness`, `set_lindenbaum`) against the live `FormalSystem/Metalogic/` source via
+      direct grep; both resolve to real declarations at the cited files.
 
 **Timing**: 2 hours
 
