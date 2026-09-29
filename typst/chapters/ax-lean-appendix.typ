@@ -141,12 +141,33 @@ Both come with turnstile notation, which the source uses far more often than the
     [`Γ ⊢[fc] φ`], [`DerivationTree fc Γ φ`], [`Type`],
     [`G |-! p`], [`Derivable FrameClass.Base G p`], [`Prop`],
     [`G |-![fc] p`], [`Derivable fc G p`], [`Prop`],
+    [`⊨ φ`], [`Valid φ`], [`Prop`],
     table.hline(),
   ),
   caption: none,
 )
 
-In all four forms the context may be omitted: `⊢ φ` abbreviates a derivation from the empty context, that is, a theorem of the base system.
+In all four turnstile forms the context may be omitted: `⊢ φ` abbreviates a derivation from the empty context, that is, a theorem of the base system.
+Six further points are worth fixing before any of these forms is read in anger.
+
+- *The brackets are literal tokens.* All eight turnstile forms are project-defined `notation` declarations, four in `FormalSystem/ProofSystem/Derivation.lean` and four in `FormalSystem/ProofSystem/Derivable.lean`. Neither the turnstile nor the square brackets are built-in Lean syntax, and the brackets are not Lean's instance binders of @lean-appendix-structures. They are punctuation this project chose, and they mean nothing outside it.
+- *What goes between them is a `FrameClass`.* Any term of that type may sit there. A concrete tag, as in `⊢[.Dense] φ`, gives a derivation in that one system. A bound variable, as in the `{fc : FrameClass}` binder of `perpetuity2` (@lean-appendix-derived-theorem), gives a statement holding in all four systems at once.
+- *This is the book's subscripted turnstile.* `⊢[.Dense] φ`, `⊢[.ZTime] φ` and `⊢[.RTime] φ` are the Lean spellings of derivability in *TM*#sub[d], *TM*#sub[f] and *TM*#sub[c] respectively (@sec:frame-classes).
+- *The bracket-free forms are the `FrameClass.Base` instances.* `Γ ⊢ φ` is not an abbreviation that unfolds to `Γ ⊢[.Base] φ` by some separate rule; the two notations produce the same term, so they are the same type and `rfl` proves it.
+- *The exclamation mark marks the `Prop`-valued twin.* `|-!` is `Derivable` where `⊢` is `DerivationTree`, which is the `Type`-versus-`Prop` contrast drawn above, and `⊨ φ` is neither: it is `Valid φ`, a semantic claim about models rather than a syntactic one about derivations. `Valid φ` is itself `ValidIn FrameClass.Base φ` by definition, so validity outright and validity on the base class are one notion. The source also declares a two-place `Γ ⊨ φ` for `SemanticConsequence`, which this appendix never uses.
+- *The two spellings of the variables are one convention.* The `DerivationTree` rows above write `Γ` and `φ`, the `Derivable` rows write `G` and `p`. Each notation quotes the variable names of its own source file, and nothing turns on the difference: `Γ` and `G` both range over contexts, `φ` and `p` both over formulas. The difference is spelling, not meaning.
+
+The identity of the bracket-free and `.Base` forms is checkable in one line:
+
+#lean-code[
+```
+example (Γ : Context) (φ : Formula) :
+    (Γ ⊢ φ) = (Γ ⊢[.Base] φ) := rfl
+
+example (G : Context) (p : Formula) :
+    (G |-! p) = (G |-![.Base] p) := rfl
+```
+]
 
 `DerivationTree` is also an example of a *dependent* type.
 Its type, `FrameClass → Context → Formula → Type`, takes ordinary values (a frame class, a context, a formula) as arguments, and the resulting type depends on which values were supplied.

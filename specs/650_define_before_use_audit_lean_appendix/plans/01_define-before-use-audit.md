@@ -1,7 +1,7 @@
 # Implementation Plan: Define-Before-Use Audit of the Lean Appendix
 
 - **Task**: 650 - Define-before-use audit of the Lean appendix
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: 647, 648, 649 (all landed)
 - **Research Inputs**: `specs/650_define_before_use_audit_lean_appendix/reports/01_define-before-use-audit.md`
@@ -112,7 +112,7 @@ above is the correct dispatch order, not a missed parallelisation.
 
 ---
 
-### Phase 1: Turnstile Notation and the `[fc]` Bracket [NOT STARTED]
+### Phase 1: Turnstile Notation and the `[fc]` Bracket [COMPLETED]
 
 **Goal**: Close seeded gap (i) and the `⊨`/`Valid`/`ValidIn` rows by extending the notation table
 and the prose that follows it in section A.2.

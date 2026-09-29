@@ -20,6 +20,10 @@ DerivationTree FrameClass.Base Γ φ
 DerivationTree fc Γ φ
 Γ ⊢ φ
 Γ ⊢[fc] φ
+Γ ⊢[.Base] φ
+⊢[.Dense] φ
+⊢[.ZTime] φ
+⊢[.RTime] φ
 atom a
 fmp_completeness (φ : Formula) : (∀ (S : FMP.ClosureMCSBundle φ), φ ∈ S.carrier) → Nonempty (DerivationTree FrameClass.Base [] φ)
 
