@@ -406,19 +406,19 @@ and the extraction of a good cycle from an arbitrary type sequence.
 
 ---
 
-### Phase 5: Fulfilment from good cycles [NOT STARTED]
+### Phase 5: Fulfilment from good cycles [COMPLETED]
 
 **Goal**: Transcribe the fulfilment layer: eventuality propagation to a cycle endpoint, label
 periodicity under the two cycle lengths, and the assembly of `PlusFulfillingSeqLab` from a pair of
 good cycles.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Fulfil.lean`.
-- [ ] Prove `plusUntl_propagates_to_endC` and `plusSnce_propagates_to_startC`.
-- [ ] Prove `plusLab_add_mul_nfC` and `plusLab_sub_mul_nbC`, the forward and backward label
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Fulfil.lean`.
+- [x] Prove `plusUntl_propagates_to_endC` and `plusSnce_propagates_to_startC`.
+- [x] Prove `plusLab_add_mul_nfC` and `plusLab_sub_mul_nbC`, the forward and backward label
       periodicities.
-- [ ] Prove `plusFulfillingSeqLab_of_good_cycles`, the phase's deliverable.
-- [ ] Add the import line to `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`.
+- [x] Prove `plusFulfillingSeqLab_of_good_cycles`, the phase's deliverable.
+- [x] Add the import line to `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`.
 
 **Timing**: 2 hours
 
