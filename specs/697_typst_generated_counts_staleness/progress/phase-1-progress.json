@@ -1,0 +1,21 @@
+{
+  "phase": 1,
+  "phase_name": "--counts-only and --fix modes on typst-sync-check.sh",
+  "started_at": "2026-09-29T05:05:35Z",
+  "last_updated": "2026-09-29T05:20:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-read typst-sync-check.sh; capture pre-change baseline", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Add argument-parsing block (--counts-only, --fix, --help, unknown-flag usage)", "status": "done", "files_touched": ["scripts/typst-sync-check.sh"]},
+    {"id": 3, "description": "Extend header Usage comment", "status": "done", "files_touched": ["scripts/typst-sync-check.sh"]},
+    {"id": 4, "description": "Implement --counts-only mode", "status": "done", "files_touched": ["scripts/typst-sync-check.sh"]},
+    {"id": 5, "description": "Implement --fix mode", "status": "done", "files_touched": ["scripts/typst-sync-check.sh"]},
+    {"id": 6, "description": "--fix honest about Check 2b/3 scope", "status": "done", "files_touched": ["scripts/typst-sync-check.sh"]},
+    {"id": 7, "description": "--fix states it does not git add", "status": "done", "files_touched": ["scripts/typst-sync-check.sh"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [
+    {"approach": "Refactor Check 2/2b/3 comparisons into bash functions (run_check2_status, run_check2_modulemap, run_check3_counts, run_check3_render) shared across full/--counts-only/--fix modes", "result": "success", "reason": "avoids a second implementation of the Check 2 field set, per the compatibility constraint"}
+  ],
+  "handoff_count": 0,
+  "notes": "Bare-invocation baseline compared byte-for-byte against the old script re-run at the same instant (copied to scripts/.typst-sync-check-OLD-baseline.sh temporarily, then removed) since a sibling task landed real .lean drift between the first baseline capture and the edit; confirmed identical stdout/stderr/exit code. Used --fix live to resolve real drift caused by sibling task 695 landing FormalSystem/PlusLanguage/PlusIntTransfer.lean (604->605 files, +208 lines); verified idempotence (second --fix run: 'Nothing to fix', file byte-unmodified). All Phase 1 verification criteria pass."
+}

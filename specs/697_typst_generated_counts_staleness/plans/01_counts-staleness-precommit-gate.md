@@ -1,7 +1,7 @@
 # Implementation Plan: Task #697
 
 - **Task**: 697 - Typst generated counts staleness
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/697_typst_generated_counts_staleness/reports/01_generated_counts_staleness.md
@@ -134,35 +134,37 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: `--counts-only` and `--fix` modes on `typst-sync-check.sh` [NOT STARTED]
+### Phase 1: `--counts-only` and `--fix` modes on `typst-sync-check.sh` [COMPLETED]
 
 **Goal**: Give the checker two new invocation modes — a build-free, Check-2-only gate mode the
 hook can call, and a self-healing `--fix` mode that is the remedy the hook points at — while
 leaving the bare invocation CI uses behaviourally identical.
 
 **Tasks**:
-- [ ] Re-read `scripts/typst-sync-check.sh` immediately before editing (sibling tasks are live on
-  this tree).
-- [ ] Record the pre-change baseline: `bash scripts/typst-sync-check.sh; echo "exit=$?"` captured
-  to the scratchpad for the Phase 1 comparison.
-- [ ] Add an argument-parsing block after `set -uo pipefail`, supporting `--counts-only`,
+- [x] Re-read `scripts/typst-sync-check.sh` immediately before editing (sibling tasks are live on
+  this tree). *(completed)*
+- [x] Record the pre-change baseline: `bash scripts/typst-sync-check.sh; echo "exit=$?"` captured
+  to the scratchpad for the Phase 1 comparison. *(completed)*
+- [x] Add an argument-parsing block after `set -uo pipefail`, supporting `--counts-only`,
   `--fix`, `--help`, no arguments (unchanged full three-check run), and an explicit non-zero
-  exit + usage on any unrecognized flag.
-- [ ] Extend the header comment's `# Usage:` line (currently `scripts/typst-sync-check.sh` with
+  exit + usage on any unrecognized flag. *(completed)*
+- [x] Extend the header comment's `# Usage:` line (currently `scripts/typst-sync-check.sh` with
   no arguments) to document all three forms, including that `--fix` needs a built library and
-  `--counts-only` does not.
-- [ ] Implement `--counts-only`: run Check 2's `status.typ` comparison alone — skipping Check 1,
+  `--counts-only` does not. *(completed)*
+- [x] Implement `--counts-only`: run Check 2's `status.typ` comparison alone — skipping Check 1,
   Check 2b and Check 3 — and exit 0/1 on its result. Reuse the existing comparison block rather
   than copying it: guard the other checks behind the mode flag so the compared field set cannot
-  diverge from the full run's.
-- [ ] Implement `--fix`: on a Check 2 mismatch, invoke `bash scripts/typst-status-counts.sh`
+  diverge from the full run's. *(completed: factored into run_check2_status(), shared by full,
+  --counts-only, and --fix)*
+- [x] Implement `--fix`: on a Check 2 mismatch, invoke `bash scripts/typst-status-counts.sh`
   (the write path), then re-run the comparison and report the fields that changed; exit 0 when
-  the regeneration resolved every mismatch, non-zero otherwise.
-- [ ] Make `--fix` honest about its reach: it repairs `typst/generated/status.typ` only. On a
+  the regeneration resolved every mismatch, non-zero otherwise. *(completed)*
+- [x] Make `--fix` honest about its reach: it repairs `typst/generated/status.typ` only. On a
   Check 2b or Check 3 mismatch it must report the mismatch plus the corresponding generator
   command (`scripts/typst-module-map.sh`, `scripts/typst-machine-appendix.sh`) without
-  attempting a fix, and exit non-zero.
-- [ ] Have `--fix` state clearly in its output that it does not `git add` the regenerated file.
+  attempting a fix, and exit non-zero. *(completed)*
+- [x] Have `--fix` state clearly in its output that it does not `git add` the regenerated file.
+  *(completed)*
 
 **Timing**: 1.5 hours
 
