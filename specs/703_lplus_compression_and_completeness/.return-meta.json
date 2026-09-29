@@ -1,37 +1,38 @@
 {
-  "status": "researched",
-  "started_at": "2026-09-29T20:42:48Z",
-  "completed_at": "2026-09-29T21:45:00Z",
-  "dispatch_seq": 19,
-  "requires_user_review": true,
-  "review_reason": "The L-plus compression theorem as stated in the plan's Lean Challenge Statement is refuted by a machine-checked probe. The task's target cannot be proved at any bound, so implementation cannot resume until the deliverable is re-scoped.",
+  "status": "planned",
+  "started_at": "2026-09-29T22:00:27Z",
+  "completed_at": "2026-09-29T22:57:00Z",
+  "dispatch_seq": 20,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/703_lplus_compression_and_completeness/reports/02_semantics-first-compression-research.md",
-      "summary": "Semantics-first round: the compression statement is false against the landed certificate class (machine-checked), the four recorded obstructions share one root cause and sit downstream of a fifth fatal one, and the recommended target is a finite-graph certificate with computed liveness."
+      "type": "plan",
+      "path": "specs/703_lplus_compression_and_completeness/plans/02_lplus-certificate-limits-graph-certificate.md",
+      "summary": "Plan v2: withdraws the refuted compression theorem, preserves Phases 1-8 as landed work, and stages the re-scoped task on candidate H — Stage 1 (Phases 9-12) lands the refutation as library declarations and corrects the coverage documentation, Stage 2 (Phases 13-18) builds the finite-graph certificate, its decidable checker with computed liveness, soundness into PlusWitnessFamily.PlusRefutes, and completeness relative to finite models."
     }
   ],
-  "probes": [
-    "specs/703_lplus_compression_and_completeness/probes/NoFiniteCertificate.lean",
-    "specs/703_lplus_compression_and_completeness/probes/HopFreeIncomplete.lean",
-    "specs/703_lplus_compression_and_completeness/probes/TypePreservingPaste.lean",
-    "specs/703_lplus_compression_and_completeness/probes/HoppingCertificateExists.lean"
-  ],
-  "user_decision": {
-    "question": "The L-plus compression theorem is false for the landed certificate class: a genuine Z-time non-validity has no certifying PlusSharingWitnessFamily of any size (probes/NoFiniteCertificate.lean, sorry-free). How should task 703 be re-scoped?",
-    "options": [
-      "Re-scope to a finite-graph certificate: withdraw the current statement, land the refutation as theorems, then build the graph certificate with its checker and soundness, and give the finite model property its own research-first task.",
-      "Restrict the theorem to a fragment the landed certificate class covers, keeping the landed class and adding a hypothesis on the target formula.",
-      "Repair the landed class with a fairness condition on threads, as a sibling class with its own soundness theorem, keeping lassos and time stamps."
-    ],
-    "recommended": "Re-scope to a finite-graph certificate: withdraw the current statement, land the refutation as theorems, then build the graph certificate with its checker and soundness, and give the finite model property its own research-first task.",
-    "blocking": true
-  },
+  "next_steps": "Run /orchestrate 703 --implement to execute Phase 9 of the revised plan. Stage 3 (the finite model property) is a non-goal; its ready-to-file successor description is in the plan's Non-Goals and was deliberately NOT filed.",
   "metadata": {
-    "session_id": "sess_1790714537_5a4adc_703",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1790718025_853e34_703",
+    "agent_type": "reviser-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "phase_count": 18,
+    "phases_landed": 8,
+    "phases_remaining": 10,
+    "estimated_hours": 35,
+    "plan_version": 2,
+    "supersedes": "specs/703_lplus_compression_and_completeness/plans/01_lplus-compression-completeness.md",
+    "reports_integrated": [
+      "01_lplus-compression-completeness-research.md",
+      "02_semantics-first-compression-research.md"
+    ],
+    "withdrawn_statement": "FormalSystem.Metalogic.Decidability.exists_plusSharingWitnessFamily_of_not_plusValidZTime",
+    "withdrawal_evidence": "specs/703_lplus_compression_and_completeness/probes/NoFiniteCertificate.lean (Probe703.compression_statement_fails)",
+    "dependency_waves": [[1,2],[3,6],[4],[5],[7],[8],[9],[10,11],[12],[13],[14],[15],[16],[17],[18]],
+    "verification": {
+      "validate_artifact": "PASS (--strict, 0 warnings)",
+      "challenge_goals_identifier_sets": "equal, 12 identifiers",
+      "lean_sources_edited": 0
+    }
   }
 }
