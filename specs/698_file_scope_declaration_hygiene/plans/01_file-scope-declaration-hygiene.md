@@ -276,35 +276,40 @@ signal to re-check the derivation rather than to declare it anyway.
 
 ---
 
-### Phase 3: Justify 177's `Decidability/` claim and close the 177 to 696 dependency gap [NOT STARTED]
+### Phase 3: Justify 177's `Decidability/` claim and close the 177 to 696 dependency gap [COMPLETED]
 
 **Goal**: Record inline why 177's whole-directory `FormalSystem/Metalogic/Decidability/`
 declaration is genuinely correct at this stage, and close the one real residual exposure by adding
 `696` to 177's `dependencies`.
 
 **Tasks**:
-- [ ] Re-read 177's description and confirm the justification still holds: the `Decidability/`
+- [x] Re-read 177's description and confirm the justification still holds: the `Decidability/`
       re-audit is gated on the decidability chain landing and the description itself defers the
       narrowing ("re-derive and widen file_scope at research time"), so narrowing now would be
-      guessing.
-- [ ] Re-run Check 8 and read 177's current overlap list. Confirm which of the reported overlaps
+      guessing. *(completed)*
+- [x] Re-run Check 8 and read 177's current overlap list. Confirm which of the reported overlaps
       are already covered by 177's `dependencies` (research found 7 of 8: 428, 429, 430, 464, 465,
       481, 482) and which are not (research found 696). If the overlap list has changed this cycle,
-      apply the same test to the new members rather than assuming the old list.
-- [ ] Add each un-gated overlapping task number to 177's `dependencies` via the mutex-guarded
+      apply the same test to the new members rather than assuming the old list. *(completed:
+      overlap list unchanged, 696 confirmed as the sole un-gated member)*
+- [x] Add each un-gated overlapping task number to 177's `dependencies` via the mutex-guarded
       writer, e.g.:
       `bash .claude/scripts/state-write.sh '.active_projects |= map(if .project_number==177 then .dependencies = ((.dependencies // []) + [696] | unique) else . end)' --session-id "$SESSION_ID"`
-- [ ] Append a dated note to 177's description, in its existing `FURTHER EDGES (YYYY-MM-DD): ...`
+      *(completed)*
+- [x] Append a dated note to 177's description, in its existing `FURTHER EDGES (YYYY-MM-DD): ...`
       shape, recording: (a) the justification for retaining the whole-directory entry, naming the
       description's own deferral clause; (b) that 7 of the 8 reported overlaps were already
       dependency-gated; (c) the new 696 edge and the specific shared paths that motivate it
       (`Decidability/PlusWitnessFamily/*`, `Decidability/WitnessFamily/Sharing/*`); (d) that the
       existing "if one stalls indefinitely, drop its edge rather than hold this task" clause extends
-      to the new edge.
-- [ ] Verify no dependency cycle was introduced (planning confirmed 696 → 700 → none, and nothing
-      depends on 177, but re-confirm mechanically).
-- [ ] Commit:
+      to the new edge. *(completed)*
+- [x] Verify no dependency cycle was introduced (planning confirmed 696 → 700 → none, and nothing
+      depends on 177, but re-confirm mechanically). *(completed: `validate-state.sh --deep` PASS
+      "No dependency cycles detected among active_projects"; note the plain (non-`--deep`) run has
+      no cycle check at all, so `--deep` is required here)*
+- [x] Commit:
       `bash .claude/scripts/git-commit-scoped.sh --message "task 698 phase 3: justify project 177 Decidability declaration and add missing 696 dependency edge" --session "$SESSION_ID" --honest-index-rows 698 -- specs/state.json`
+      *(completed: commit 475a55231)*
 
 **Timing**: 30 minutes
 
