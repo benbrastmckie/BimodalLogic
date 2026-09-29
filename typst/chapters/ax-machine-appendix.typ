@@ -68,7 +68,7 @@ records = [json.loads(line) for line in open("machine-appendix.jsonl")]
 Derived operators are exported as *kernel-computed unfoldings*: each definition below is the real Lean `def` applied to schematic atoms, so the right-hand sides are the exact primitive-basis formulas the proof system manipulates.
 Schematic metavariables (φ, ψ, χ, θ, p) are encoded as atoms with those base names.
 
-#heading(level: 2)[The Axiom Schemata #text(size: 10pt, weight: "regular")[(#machine-axiom-count constructors, `ProofSystem/Axioms.lean`)]]
+#heading(level: 2)[The Axiom Schemata #text(size: 10pt, weight: "regular")[(#machine-axiom-count constructors, `FormalSystem/ProofSystem/Axioms.lean`)]]
 
 #[
 #show figure: set block(breakable: true)
@@ -94,7 +94,7 @@ Schematic metavariables (φ, ψ, χ, θ, p) are encoded as atoms with those base
 )
 ]
 
-#heading(level: 2)[The Inference Rules #text(size: 10pt, weight: "regular")[(#machine-rule-count constructors, `ProofSystem/Derivation.lean`)]]
+#heading(level: 2)[The Inference Rules #text(size: 10pt, weight: "regular")[(#machine-rule-count constructors, `FormalSystem/ProofSystem/Derivation.lean`)]]
 
 #[
 #show figure: set block(breakable: true)
@@ -119,7 +119,7 @@ Schematic metavariables (φ, ψ, χ, θ, p) are encoded as atoms with those base
 )
 ]
 
-#heading(level: 2)[The Derived Operators #text(size: 10pt, weight: "regular")[(#machine-derived-op-count definitions, `Syntax/Formula.lean`)]]
+#heading(level: 2)[The Derived Operators #text(size: 10pt, weight: "regular")[(#machine-derived-op-count definitions, `FormalSystem/Syntax/Formula.lean`)]]
 
 #[
 #show figure: set block(breakable: true)

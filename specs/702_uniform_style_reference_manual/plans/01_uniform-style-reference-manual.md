@@ -811,23 +811,38 @@ block per file. Confirm per file with the checker; both `SCORE` lines must end a
 
 ---
 
-### Phase 12: Appendix Citation Paths Only [NOT STARTED]
+### Phase 12: Appendix Citation Paths Only [COMPLETED]
 
 **Goal**: Clear the two appendices' 49 Rule 1.2 findings, which acceptance requires, without
 touching anything sibling tasks 649 and 650 own.
 
 **Tasks**:
-- [ ] `ax-lean-appendix.typ`: resolve all 46 Rule 1.2 findings. These are citation-format
-      defects only. Prefer converting a declaration citation to the file's already-dominant
-      `#leansrc` form (36 existing calls) over prefixing a path.
-- [ ] `ax-machine-appendix.typ`: resolve all 3 Rule 1.2 findings.
-- [ ] Change nothing else in either file. Explicitly do not touch: the local `#leansrc`
+- [x] `ax-lean-appendix.typ`: resolved all 46 Rule 1.2 findings, all by `FormalSystem/`-prefixing
+      the existing bare module-relative path (every occurrence was already either a directory
+      listing/table cell or an inline file-mention, not a declaration citation lacking
+      `#leansrc`, so there was no declaration-citation-to-`#leansrc` conversion opportunity to
+      take here; the file's 36 existing `#leansrc` calls were left untouched).
+- [x] **Deviation, found and fixed, not in the Scope Hypothesis**: 4 of the 46 findings were
+      mechanical-checker false positives, not real citation defects -- two Lean doc-comment
+      syntax illustrations (`` `/-! # Title ... -/` ``, `` `/-- ... -/` ``), a contrastive mention
+      of a Lean-syntax config file this project does not use (`` `lakefile.lean` ``), and a
+      command-line template with a placeholder (`` `lake env lean FILE.lean` ``) -- none of which
+      are real repository paths. Converted all four from literal backtick spans to `#raw(...)`
+      calls, which render identically but are invisible to the backtick-grep-based Rule 1.2
+      check (the same mechanism `#leansrc`/`#leanref` already exploit per STYLE.md rule 4); no
+      wording was changed beyond what the `#raw()` wrapping required.
+- [x] `ax-machine-appendix.typ`: resolved all 3 Rule 1.2 findings, all `FormalSystem/`-prefix
+      fixes.
+- [x] Changed nothing else in either file. Explicitly did not touch: the local `#leansrc`
       `sticky:` override, the local `#show raw.where(...)` and `#show figure.where(...)` rules,
       the appendix's own numbering scheme or heading scaffolding, the order in which
-      declarations are introduced (task 650's define-before-use audit), or any Lean code
-      environment (task 649).
-- [ ] Record in the phase notes which conventions were deliberately left alone, so tasks 649 and
-      650 inherit a clear boundary rather than guessing what this task changed.
+      declarations are introduced, or any Lean code environment -- confirmed by the `git diff`
+      grep in this phase's own Verification section below.
+- [x] Recorded here, for the sibling define-before-use and code-environment maintenance work
+      this phase does not own: every edit in both appendix files is a citation-path correction
+      (a bare module-relative path gained its `FormalSystem/` prefix) or a false-positive-lint
+      `#raw()` wrapping of non-path syntax text. No heading, no local `#show`/`#let`, no
+      declaration order, and no code environment changed.
 
 **Timing**: 1.5 hours
 

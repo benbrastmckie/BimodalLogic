@@ -686,14 +686,14 @@ def perpetuity2 {fc : FrameClass} (φ : Formula) :
 
 Read it a piece at a time.
 
-- *`def`, not `theorem`.* The declared type is `DerivationTree`-valued, hence data rather than a proposition, which is the rule @lean-appendix-conventions states for the whole of `Theorems/`.
+- *`def`, not `theorem`.* The declared type is `DerivationTree`-valued, hence data rather than a proposition, which is the rule @lean-appendix-conventions states for the whole of `FormalSystem/Theorems/`.
 - *The implicit frame class.* `{fc : FrameClass}` is the implicit binder of @lean-appendix-structures. Nothing in the body mentions a particular frame class, so this one declaration is a derivation at *every* frame class rather than four parallel derivations.
 - *The type is the statement.* `⊢[fc] φ.sometimes.imp φ.diamond` is the turnstile notation of @lean-appendix-types-props, and it unfolds to a `DerivationTree` at `fc` from the empty context. A reader auditing this declaration audits that line and nothing else.
 - *`have` names an intermediate derivation.* `h1` is the first perpetuity principle at `φ.neg`, obtained by applying `perpetuity1` exactly as one applies any function.
 - *`exact` finishes with a term.* `contraposition h1` builds the goal's derivation from `h1`, and the tactic block exists only to let the two steps be named.
 
 The double-dash comment lines are the source author's own running commentary, kept here because they are what the source actually looks like.
-They work through the argument in the book's notation before the Lean lines do it in Lean's, which is the house style throughout `Theorems/`.
+They work through the argument in the book's notation before the Lean lines do it in Lean's, which is the house style throughout `FormalSystem/Theorems/`.
 
 One name in that body needs care.
 Two live declarations are called `contraposition` with identical statements, one in `Theorems.Perpetuity` and one in `Theorems.Propositional`, and the body above resolves to the first because that is its own namespace.
@@ -861,14 +861,14 @@ They key on what a declaration *produces* rather than on which command declares 
 
 Three consequences are worth knowing before searching the source.
 
-- *Derived theorems of TM are `def`s.* A result such as `perpetuity1` is mathematically a theorem, but its Lean type is `DerivationTree`-valued, hence data (@lean-appendix-types-props). Lean therefore requires `def` rather than `theorem`, and the name is lowerCamelCase. Most of `Theorems/` has this form.
+- *Derived theorems of TM are `def`s.* A result such as `perpetuity1` is mathematically a theorem, but its Lean type is `DerivationTree`-valued, hence data (@lean-appendix-types-props). Lean therefore requires `def` rather than `theorem`, and the name is lowerCamelCase. Most of `FormalSystem/Theorems/` has this form.
 - *Constructors are named for what they encode.* The constructors of `Axiom` and `DerivationTree` carry the snake_case names of the axioms and rules themselves (`modal_t`, `modus_ponens`, `temporal_necessitation`). `modal_t` is, in addition, the name of a tactic that applies that axiom, so the constructor is always written qualified, as `Axiom.modal_t`.
 - *A few tactics are lowerCamelCase*, `propDecide` among them, against the general rule.
 
-Namespaces mirror the directory structure: the declarations of `Syntax/` live in `FormalSystem.Syntax`, and those of `Metalogic/BXCanonical/` in `FormalSystem.Metalogic.BXCanonical`.
+Namespaces mirror the directory structure: the declarations of `FormalSystem/Syntax/` live in `FormalSystem.Syntax`, and those of `FormalSystem/Metalogic/BXCanonical/` in `FormalSystem.Metalogic.BXCanonical`.
 `open` is used sparingly, in favor of qualified names wherever a short name would be ambiguous.
 
-A module opens with a docstring (`/-! # Title ... -/`) stating its main definitions, main results, and implementation notes, and each nontrivial declaration carries its own `/-- ... -/` docstring.
+A module opens with a docstring (#raw("/-! # Title ... -/")) stating its main definitions, main results, and implementation notes, and each nontrivial declaration carries its own #raw("/-- ... -/") docstring.
 The excerpts in this appendix omit these for space, but in the source they are the first thing to read.
 `variable` blocks hoist repeated implicit or instance arguments (a frame `F`, a frame class `fc`) out of the individual signatures within a section.
 Unicode notation (`□`, `◇`, `⊢`, `Γ`, `φ`, `ψ`) follows the symbols the book's own mathematics uses, so that a Lean declaration and its prose statement read as the same expression in two fonts rather than as a translation.
@@ -876,7 +876,7 @@ Unicode notation (`□`, `◇`, `⊢`, `Γ`, `φ`, `ψ`) follows the symbols the
 == Lake and Project Layout <lean-appendix-lake>
 
 *Lake* is Lean's build tool.
-The project configures it declaratively, in the #link("https://toml.io")[TOML] file `lakefile.toml`, rather than by a Lean-syntax `lakefile.lean`.
+The project configures it declaratively, in the #link("https://toml.io")[TOML] file `lakefile.toml`, rather than by Lake's alternative Lean-syntax configuration file (conventionally named #raw("lakefile.lean")), which this project does not use.
 
 - *Package and libraries.* The package is named `BimodalLogic`. Its main library, and its only default build target, is `FormalSystem`. The test library is `BimodalTest` (`srcDir = "Tests"`). The dataset and benchmark tooling of Part II is a separate library, `BimodalTools`, built only on request.
 - *Mathlib.* A `[[require]]` block pins Mathlib to a specific tagged revision, so the whole project builds against one frozen, reproducible mathematical library rather than a moving target.
@@ -885,7 +885,7 @@ The project configures it declaratively, in the #link("https://toml.io")[TOML] f
 Three commands cover day-to-day reading.
 
 - `lake build` compiles the default target, which is the whole `FormalSystem` library, and `lake build FormalSystem` names the same target explicitly.
-- `lake env lean FILE.lean` runs the Lean elaborator on a standalone file with the project's dependencies and import path resolved. This is how this appendix's didactic snippets were checked, in a scratch file outside `FormalSystem/` and `Tests/`.
+- #raw("lake env lean FILE.lean") runs the Lean elaborator on a standalone file with the project's dependencies and import path resolved. This is how this appendix's didactic snippets were checked, in a scratch file outside `FormalSystem/` and `Tests/`.
 - `import FormalSystem`, or a specific submodule such as `import FormalSystem.Syntax.Formula`, brings the library into scope in any such file.
 
 === What Is Pinned, and How Much There Is
@@ -946,12 +946,12 @@ Its modules are arranged in import layers, and no module imports from a layer ab
     table.hline(),
     table.header([*Layer*], [*Directories*]),
     table.hline(),
-    [0, foundation], [`ForMathlib/`, `Tactic/`, `Syntax/`, `ProofSystem/`, `PlusLanguage/`],
-    [1], [`Semantics/`],
-    [2], [`Metalogic/`],
-    [3], [`Theorems/`],
-    [4], [`Automation/`],
-    [5], [`Examples/`],
+    [0, foundation], [`FormalSystem/ForMathlib/`, `FormalSystem/Tactic/`, `FormalSystem/Syntax/`, `FormalSystem/ProofSystem/`, `FormalSystem/PlusLanguage/`],
+    [1], [`FormalSystem/Semantics/`],
+    [2], [`FormalSystem/Metalogic/`],
+    [3], [`FormalSystem/Theorems/`],
+    [4], [`FormalSystem/Automation/`],
+    [5], [`FormalSystem/Examples/`],
     table.hline(),
   ),
   caption: none,
@@ -959,8 +959,8 @@ Its modules are arranged in import layers, and no module imports from a layer ab
 
 Reading in that order is reading in dependency order, and it is the order this appendix's own sections follow.
 Two entries in layer 0 are worth a note.
-`ForMathlib/` imports nothing from the rest of the library at all, because it is written to be upstreamed into Mathlib unchanged.
-`Tactic/` holds only attribute and simp-set declarations, and it sits upstream of everything so that every module inherits them without importing anything else.
+`FormalSystem/ForMathlib/` imports nothing from the rest of the library at all, because it is written to be upstreamed into Mathlib unchanged.
+`FormalSystem/Tactic/` holds only attribute and simp-set declarations, and it sits upstream of everything so that every module inherits them without importing anything else.
 
 === Four Proof Systems
 
@@ -974,25 +974,25 @@ The book studies *TM* alongside three neighboring object languages, and each is 
     table.hline(),
     table.header([*System*], [*Directory*], [*Language*]),
     table.hline(),
-    [*TM*], [`Syntax/`, `ProofSystem/`], [the language of Part I],
-    [*TM*#super[−]], [`MinusLanguage/`], [tense primitives, @sec:conservative-extension],
-    [*TM*#super[+]], [`PlusLanguage/`], [one stability modal added, @ch:vlach-blstar],
-    [*TM*#super[⋆]], [`StarLanguage/`], [the wider extension of @ch:vlach-blstar],
+    [*TM*], [`FormalSystem/Syntax/`, `FormalSystem/ProofSystem/`], [the language of Part I],
+    [*TM*#super[−]], [`FormalSystem/MinusLanguage/`], [tense primitives, @sec:conservative-extension],
+    [*TM*#super[+]], [`FormalSystem/PlusLanguage/`], [one stability modal added, @ch:vlach-blstar],
+    [*TM*#super[⋆]], [`FormalSystem/StarLanguage/`], [the wider extension of @ch:vlach-blstar],
     table.hline(),
   ),
   caption: none,
 )
 
 Each is developed over all four frame classes, using the same `FrameClass` index of @lean-appendix-types-props.
-There is a fifth component, `OpenLanguage/`, which carries a formula type, a truth definition and a validity notion but *no* proof system, so it appears in no row above.
+There is a fifth component, `FormalSystem/OpenLanguage/`, which carries a formula type, a truth definition and a validity notion but *no* proof system, so it appears in no row above.
 
 *TM*#super[+] is the one whose relationship to *TM* is settled at every frame class.
 Its soundness is `plus_soundness_base` and its three siblings, and conservativity over *TM* is `plusDerivable_ofFormula_iff` in the namespace `FormalSystem.Metalogic.Conservativity`, with a corollary per frame class.
 That result says a formula of *TM* is a theorem of *TM*#super[+] exactly when it is a theorem of *TM*, so the added modal proves nothing new in the old language.
 
 Two files with similar names hold different results, and conflating them is easy.
-`Metalogic/Conservativity/Plus.lean` aggregates the *TM*#super[+] result just described, which holds at all four frame classes.
-`Metalogic/Conservativity.lean` is about a different pair entirely, the *TM*#super[−] and *TM* bridge of @sec:conservative-extension, and its own module documentation is the place to read what is and is not established there.
+`FormalSystem/Metalogic/Conservativity/Plus.lean` aggregates the *TM*#super[+] result just described, which holds at all four frame classes.
+`FormalSystem/Metalogic/Conservativity.lean` is about a different pair entirely, the *TM*#super[−] and *TM* bridge of @sec:conservative-extension, and its own module documentation is the place to read what is and is not established there.
 
 For general Lean 4 reference beyond this appendix's scope, see the #link("https://leanprover.github.io/theorem_proving_in_lean4/")[Theorem Proving in Lean 4] book, the #link("https://lean-lang.org/documentation/")[Lean 4 documentation], and the #link("https://leanprover-community.github.io/mathlib4_docs/")[Mathlib4 docs].
 
@@ -1003,15 +1003,15 @@ For general Lean 4 reference beyond this appendix's scope, see the #link("https:
 `FormalSystem/` is organized so that each directory backs a recognizable stretch of this book.
 @lean-appendix-lake gives the same directories in import order, which is the order to read them in.
 
-- `Syntax/` -- `Formula` and its derived operators (@sec:formulas, @lean-appendix-inductive).
-- `ProofSystem/` -- the #axiom-count axiom constructors of `Axiom`, and the #rule-count inference rules of the `DerivationTree` and `Derivable` machinery (@sec:proof-theory), together with the `FrameClass` order and the functions on derivations of @lean-appendix-derivations-as-data.
-- `Semantics/` -- temporal orders, task frames, models, histories, and truth conditions (@sec:truth), which are the declarations @lean-appendix-structures through @lean-appendix-recursion read.
-- `Metalogic/` -- soundness and the completeness theorems at every frame class, the compactness results and their two refutations, the decision procedure, and the conservativity bridges (@sec:metalogic, @sec:decidability-practice). The result map below is the guide to it.
-- `Theorems/` -- the derived-theorem library, including the perpetuity principles read in @lean-appendix-derived-theorem.
-- `Automation/`, `Examples/` -- the proof tactics and worked examples of Part II (@sec:proof-automation), and the dataset pipeline of @sec:dataset-pipeline.
-- `MinusLanguage/`, `PlusLanguage/`, `StarLanguage/`, `OpenLanguage/` -- self-contained components for the neighboring object languages: the deferred tense-primitive subsystem of @sec:conservative-extension, and the extensions of *TM* surveyed in @ch:vlach-blstar.
-- `ForMathlib/` -- Mathlib-shaped extensions written to be upstreamed (the prime-filter API used in the algebraic route through completeness), importing nothing from the rest of `FormalSystem/`.
-- `Tactic/` -- the attributes and named `simp` sets the library registers, placed upstream of every other module.
+- `FormalSystem/Syntax/` -- `Formula` and its derived operators (@sec:formulas, @lean-appendix-inductive).
+- `FormalSystem/ProofSystem/` -- the #axiom-count axiom constructors of `Axiom`, and the #rule-count inference rules of the `DerivationTree` and `Derivable` machinery (@sec:proof-theory), together with the `FrameClass` order and the functions on derivations of @lean-appendix-derivations-as-data.
+- `FormalSystem/Semantics/` -- temporal orders, task frames, models, histories, and truth conditions (@sec:truth), which are the declarations @lean-appendix-structures through @lean-appendix-recursion read.
+- `FormalSystem/Metalogic/` -- soundness and the completeness theorems at every frame class, the compactness results and their two refutations, the decision procedure, and the conservativity bridges (@sec:metalogic, @sec:decidability-practice). The result map below is the guide to it.
+- `FormalSystem/Theorems/` -- the derived-theorem library, including the perpetuity principles read in @lean-appendix-derived-theorem.
+- `FormalSystem/Automation/`, `FormalSystem/Examples/` -- the proof tactics and worked examples of Part II (@sec:proof-automation), and the dataset pipeline of @sec:dataset-pipeline.
+- `FormalSystem/MinusLanguage/`, `FormalSystem/PlusLanguage/`, `FormalSystem/StarLanguage/`, `FormalSystem/OpenLanguage/` -- self-contained components for the neighboring object languages: the deferred tense-primitive subsystem of @sec:conservative-extension, and the extensions of *TM* surveyed in @ch:vlach-blstar.
+- `FormalSystem/ForMathlib/` -- Mathlib-shaped extensions written to be upstreamed (the prime-filter API used in the algebraic route through completeness), importing nothing from the rest of `FormalSystem/`.
+- `FormalSystem/Tactic/` -- the attributes and named `simp` sets the library registers, placed upstream of every other module.
 
 One file deserves a first visit: `FormalSystem/MainResults.lean` proves nothing, but lists the headline metatheory on one page and runs the two audit commands described below over each result.
 One directory is explicitly *not* live: `Boneyard/`, at the repository root and outside `FormalSystem/`, holds archived material, superseded constructions kept for historical reference.
@@ -1175,9 +1175,9 @@ This is why the compactness row and the strong-completeness row agree at every f
 
 Where the underlying proofs live is worth knowing before opening anything.
 
-- *The chronicle route*, `Metalogic/BXCanonical/`, carries the flagship completeness theorems. It builds a canonical chain of chronicles and reads a countermodel off it.
-- *The Kamp and Reynolds route*, `Metalogic/WeakCanonical/`, supplies the reflexive canonical model and the integer, real and group constructions the discrete and Dedekind cases need. It sits beside the chronicle route rather than under it, and the two import from each other.
-- *The algebraic route*, `Metalogic/Algebraic/`, supplies the Lindenbaum-Tarski quotient and the ultrafilter correspondence.
+- *The chronicle route*, `FormalSystem/Metalogic/BXCanonical/`, carries the flagship completeness theorems. It builds a canonical chain of chronicles and reads a countermodel off it.
+- *The Kamp and Reynolds route*, `FormalSystem/Metalogic/WeakCanonical/`, supplies the reflexive canonical model and the integer, real and group constructions the discrete and Dedekind cases need. It sits beside the chronicle route rather than under it, and the two import from each other.
+- *The algebraic route*, `FormalSystem/Metalogic/Algebraic/`, supplies the Lindenbaum-Tarski quotient and the ultrafilter correspondence.
 - *Compactness* takes none of these. It is an ultraproduct over `Ultraproduct.Idx`, the finite lists drawn from the premise set, with one model per index supplied by finite satisfiability and truth pulled back by `Ultraproduct.los_truthAt`. Strong completeness then follows uniformly, as the term above shows.
 
 The single hypothesis that the frame condition survives the ultraproduct is the whole of the class-dependence, and it is exactly what fails at the discrete and Dedekind classes.
@@ -1268,7 +1268,7 @@ There is a second thing the kernel cannot check, and it is the reason both comma
 A declaration's *name* is written by its author and is checked by nobody.
 Only the statement is checked, so only the statement can be trusted, and a reader who audits the name has audited nothing.
 
-`FormalSystem/` records one instance of this in its own source, in the retirement note in `Metalogic/Decidability/Correctness.lean`.
+`FormalSystem/` records one instance of this in its own source, in the retirement note in `FormalSystem/Metalogic/Decidability/Correctness.lean`.
 Two theorems once stood there whose names claimed a decidability result their proofs did not contain.
 The first was `validity_decidable (φ : Formula) : (⊨ φ) ∨ ¬(⊨ φ)`, proved by `exact Classical.em (⊨ φ)`.
 That is excluded middle at an arbitrary proposition.
