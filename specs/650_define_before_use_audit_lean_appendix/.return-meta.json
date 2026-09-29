@@ -1,22 +1,31 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "build_output": "typst compile --root .. BimodalReference.typ: zero errors, zero warnings. typst-element-lint.sh: 0 remarks, 0 failures, 0 warnings. typst-sync-check.sh Checks 1, 2b, 3, 4 pass; Check 2 reports formalsystem-file-count and formalsystem-line-count drift caused by concurrent task 703 Lean commits under FormalSystem/Metalogic/Decidability/, outside this task's scope and recorded as a reasoned exclusion on the plan's Phase 9 heading."
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/650_define_before_use_audit_lean_appendix/plans/01_define-before-use-audit.md",
-      "summary": "Nine-phase, 9-hour plan closing every non-OK row of the 140-row define-before-use ledger over the Lean appendix, including all three seeded gaps, the anonymous-constructor naming defect, and the three author TODO comments."
+      "type": "summary",
+      "path": "specs/650_define_before_use_audit_lean_appendix/summaries/01_define-before-use-audit-summary.md",
+      "summary": "Define-before-use audit of the Lean appendix: every ledger row closed, three author TODO comments resolved into prose, whitelist reworked, SYNC-MAP entry added."
     }
   ],
-  "next_steps": "Run /implement 650 to execute the plan",
-  "memory_candidates": [],
-  "metadata": {
-    "session_id": "sess_1790680388_3d4c26_650",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 9,
-    "estimated_hours": 9,
-    "dependency_waves": [[1],[2],[3],[4],[5],[6],[7],[8],[9]]
+  "completion_data": {
+    "completion_summary": "Applied the 140-row first-use ledger over typst/chapters/ax-lean-appendix.typ across nine phases, closing 30 forward references, 44 never-introduced items, 8 named-but-unexplained items and one naming defect by adding and relocating introductions, one-clause glosses with section pointers, and back-references. Resolved and removed the three author TODO comments (the Atom excerpt walkthrough, a five-part treatment of all three binders, and the worldNonempty and sibling proof-field account), reworked the sync-check whitelist, and added a dated SYNC-MAP entry. The manual builds with zero warnings and the element lint is clean.",
+    "roadmap_items": []
   },
-  "dispatch_seq": 14
+  "metadata": {
+    "session_id": "sess_1790680388_3d4c26",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "dispatch_seq": 17,
+    "compliance_check": "skipped",
+    "compliance_check_reason": "The plan's Lean Challenge Statements section declares an empty identifier set: this task commits to no new Lean declarations, so there are no goal identifiers to resolve against source."
+  }
 }

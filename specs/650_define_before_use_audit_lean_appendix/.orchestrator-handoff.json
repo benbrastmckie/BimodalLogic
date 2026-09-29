@@ -1,18 +1,29 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 14,
-  "summary": "Authored a nine-phase, 9-hour implementation plan for the define-before-use audit of typst/chapters/ax-lean-appendix.typ. The plan closes every non-OK row of the research report's 140-row first-use ledger: all three seeded gaps (the [fc] bracket, the FrameClass apparatus, the leading dot and the variable-name switch), the two unseeded high-cost gaps (Context as List Formula, and the missing turnstile notation for validity), the one naming defect at the leading-dot explanation, and the three author TODO comments. Phases are strictly linear because all eight editing phases touch one file.",
+  "status": "implemented",
+  "dispatch_seq": 17,
+  "task_number": 650,
+  "phases_completed": 9,
+  "phases_total": 9,
+  "session_id": "sess_1790680388_3d4c26",
+  "summary": "Define-before-use audit of typst/chapters/ax-lean-appendix.typ complete. All nine plan phases closed; Phase 9 closed with two reasoned exclusions. Three author TODO comments resolved into rendered prose and removed. Manual compiles with zero warnings; element lint clean; sync-check Checks 1, 2b, 3 and 4 pass. Check 2's FormalSystem count drift is concurrent task 703 Lean work, not this task's product.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/650_define_before_use_audit_lean_appendix/summaries/01_define-before-use-audit-summary.md",
+      "summary": "Execution summary with the reconciled ledger outcome, decisions, deviations and gate results."
+    },
     {
       "type": "plan",
       "path": "specs/650_define_before_use_audit_lean_appendix/plans/01_define-before-use-audit.md",
-      "summary": "Nine-phase implementation plan for the define-before-use audit of typst/chapters/ax-lean-appendix.typ."
+      "summary": "Nine-phase plan, all phases marked closed, with inline deviation annotations and a Phase 9 Reasoned Exclusions record."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 9,
-  "blockers": [],
-  "plan_markers_verified": true,
-  "next_action_hint": "Run /implement 650 to execute the plan"
+  "files_touched": [
+    "typst/chapters/ax-lean-appendix.typ",
+    "typst/sync-check-whitelist.txt",
+    "typst/SYNC-MAP.md"
+  ],
+  "follow_ups": [
+    "Regenerate typst/generated/status.typ and re-run scripts/typst-sync-check.sh once the concurrent FormalSystem/Metalogic/Decidability/ work settles, to bring Check 2 back to green."
+  ]
 }
