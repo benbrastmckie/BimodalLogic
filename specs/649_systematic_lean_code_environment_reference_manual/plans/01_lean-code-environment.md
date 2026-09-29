@@ -199,7 +199,7 @@ before-render PNGs captured to the session scratchpad (not committed).
 
 ---
 
-### Phase 2: Decide geometry, highlighting, separation, and inline policy by rendered comparison [NOT STARTED]
+### Phase 2: Decide geometry, highlighting, separation, and inline policy by rendered comparison [COMPLETED]
 
 **Goal**: Settle the four open design questions the research deliberately left open, each
 against a rendered comparison rather than an estimate, and write the decisions down where the
@@ -252,6 +252,53 @@ not by re-deriving the arithmetic.
 - A before-and-after render pair exists for the highlighting decision and for the separation
   decision.
 - All six decisions are written down, each with the render that justifies it named.
+
+**Decision Block (from rendered probes, scratch, not committed)**:
+
+1. **Geometry**: measured via `#layout` that the plain top-level content width is 343.28pt and
+   the nested width inside `#example`/`#definition` is 321.28pt (narrower than the report's
+   332pt estimate). A rendering sweep of the actual `raw()` default font found its per-glyph
+   width inconsistent (a repeated-`M` calibration predicted 70+ nested columns, but real
+   Lean-token content measurably wrapped as early as 66-67 columns), so the environment sets an
+   **explicit font, `"DejaVu Sans Mono"`**, confirmed by a glyph-coverage render to cover every
+   non-ASCII symbol appearing inside a code block across the manual (`¬ ↑ → ↔ ∀ ∃ ∈ ∧ ≤ ⊆ ⊢ ⊨ □
+   △ ▽ ◇ ⟨ ⟩ ₁ ₂ Γ Δ σ τ φ ψ`) with no missing-glyph fallback. At 8pt with this font, a
+   boundary sweep against real appendix content (the `Derivable` signature) found **66 columns
+   fit the nested width and 67 wraps**; the adopted **column budget is 65**, applied as one
+   number book-wide (not a tiered plain/nested pair), because it is derived from the binding
+   nested case and every plain top-level block has strictly more headroom at the same budget.
+   Font size stays 8pt, matching the appendix prototype's already-legible precedent.
+2. **Spacing**: 11pt above and below, absolute (not em), unchanged from the prototype -- em
+   inside the raw show rule resolves to the 8pt code size, not the 11pt body size.
+3. **Breakability**: unbreakable by default; an explicit `breakable: true` parameter opts out
+   for a listing too long to fit one page.
+4. **Highlighting**: adopted uniform **black-only, no syntax highlighting**, via `theme: none`
+   on every `raw()` call the environment makes, for every language. Before/after render:
+   before, JSON keys/strings render in blue/green while the Lean `def decide (phi : Formula) :
+   DecisionResult phi` line renders plain black in the same visual unit; after, both render
+   identically in black. This resolves the research's "accident, not a decision" finding in
+   favor of the template's stated austere, black-only, no-fills aesthetic.
+5. **Separation**: **left indent (1em)**, not a left rule. A rendered three-way comparison
+   (plain / left-indent / thin-left-rule) found the left rule visually competes with thmbox's
+   own colored left bar already marking `#example`/`#definition`/etc., which is confusing when
+   a code block sits inside one of those environments (a rule inside a rule); plain alone
+   under-distinguishes the block from surrounding prose. Left indent reads as a distinct
+   typographic unit without adding a second bar convention.
+6. **Language parameter**: one environment, not a sibling. `lang` is accepted for optional
+   semantic tagging only (documentation value; e.g. a future tool that reads it) and has no
+   visible rendering effect, since highlighting is globally disabled. JSON and Python share the
+   Lean environment rather than a separate one.
+7. **Atomicity mechanism**: a **single outer `#block(breakable: false)`** wraps the label (when
+   present) and the code as one unit, simpler than the prototype's separate `sticky: true`
+   label plus `breakable: false` code pairing. **Fallback**: if Phase 3's real-document
+   integration finds the single-block form mis-renders (e.g. the label's own internal spacing
+   fights the outer block's), fall back to the prototype's proven sticky-plus-unbreakable
+   pairing instead.
+8. **`#leanref`**: **adopted**, narrowly. Stated purpose: renders an inline Lean identifier in
+   the environment's own font (`DejaVu Sans Mono`) for visual consistency with block excerpts,
+   marking a name as a deliberate cross-reference to a live declaration rather than an ordinary
+   inline code span. No existing inline backtick span is converted; Check 1 keeps resolving all
+   of them unchanged.
 
 ---
 
