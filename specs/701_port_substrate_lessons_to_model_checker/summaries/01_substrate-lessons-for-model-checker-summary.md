@@ -242,9 +242,9 @@ still violate the never-report-validity discipline: reporting countermodels for 
 nothing yet certifies, even though two concrete instances now do have a certifying reference
 shape.
 
-Source: "Research Report: Task #701" (BimodalLogic, dated 2026-09-29), which carries the full
-Q1/Q2 file-level porting rationale and the wire-contract analysis this description's porting map
-summarizes.
+Source: BimodalLogic's research report "port_substrate_lessons_to_model_checker" (dated
+2026-09-29), which carries the full Q1/Q2 file-level porting rationale and the wire-contract
+analysis this description's porting map summarizes.
 ```
 
 **Verification against this deliverable's own criteria**: every Python path named above
@@ -503,7 +503,8 @@ Do NOT restate Corollary 2.2 or the Box case of Lemma 4 as already solved under 
 those still require the `Liftable` closure obligation in general, which this task does not
 discharge and does not claim to. Scope is limited to Lemma 2's own restatement.
 
-Source: "Research Report: Task #701" (BimodalLogic, dated 2026-09-29), Q5.
+Source: BimodalLogic's research report "port_substrate_lessons_to_model_checker" (dated
+2026-09-29), Q5.
 ```
 
 **Verification against this deliverable's own criteria**: `docs/ADEQUACY.md`'s Lemma 2 (line
@@ -549,3 +550,101 @@ separate ModelChecker tasks here, each for a stated reason:
 | New ADEQUACY.md restatement task | Ready-to-file description above | No upstream dependency, documentation-only | Yes — startable immediately |
 | `trans*` wire fields | Not filed (folded into task 200's scope) | Same as task 200 | No — not before task 200's search-code phase |
 | Cross-repository staleness pattern | Not filed (named proposal only) | Undetermined ownership | No — needs a design decision first |
+
+## Phased Proposal: Now vs. Later
+
+| Phase | What | Why now / why later |
+|---|---|---|
+| **Done (this task)** | This summary: verification snapshot, task 200 replacement text, task 219 reopen-and-amend text, one new task description, two recorded non-task decisions. | Research-first, then transcription-first — no certificate-search code change until a plan for that work exists, and none is proposed here. |
+| **Next, low-cost, no dependency** | File the task-200 update and the task-219 reopen-and-amend, as ready-to-file ModelChecker task text (both blocks above). | Both are corrections to already-written ModelChecker artifacts that are now factually stale against the landed tree; doing this promptly avoids the group's incorrect "STANDING CONSEQUENCE" framing and the three dangling citations propagating further into anyone reading `examples.py` in the meantime. Independent of any certificate-search code change. |
+| **Next, low-cost, no dependency** | File and land the new `docs/ADEQUACY.md` Lemma 2 restatement task. | Documentation-only, zero regression risk, makes a real future sharing extension cheaper. Not urgent, but cheap enough to bundle with the task-219 amendment pass. |
+| **Blocked on BimodalLogic's compression project** | Any `WitnessRegistry`/`witness_constraints.py` sharing search (task 200's own porting-map items 1-2, as executable Z3 code). | Building a bounded sharing search without a compression/enumeration bound for the general case risks searching an object that refutes its own axiom, the same class of failure `docs/ARCHITECTURE.md`'s "Retired Designs" section already records for a prior encoding attempt. The compression project is `implementing`, not `completed`, as of this phase's own re-check. |
+| **Blocked on the above, and on a ModelChecker-side decision to pursue sharing at all** | The `trans*` wire fields (task 200's porting-map item 3) in `certificate.py`, `WitnessRegistry`, `WitnessConstraintGenerator`. | Additive and safe to add early in isolation, but adding the fields before there is a producer that emits them or a consumer that needs them is dead code; sequence with the search-code phase above, not before it — recorded as a non-filed task above for exactly this reason. |
+
+### Confirmed wire-level conclusion (one place, stated plainly)
+
+Nothing in the ModelChecker tree must change now for correctness. The three `trans*` fields, when
+they land, are additive on both sides: BimodalLogic's own hand-off documentation and
+`transMatOf_full`'s decidable "all-true" case establish that absent means full on the Lean side,
+and the Python side has no `trans*` field at all today, which is the same thing as full by
+construction — there is no special case to implement for "absent" because absence is simply "not
+yet built," not a branch a decoder must handle. An **omitted key is not the same wire payload as
+an explicit `null`**: this task's ready-to-file porting map above explicitly directs a future
+implementer to omit the keys entirely when unset (matching `to_json`'s existing convention for
+other optional fields), not to emit `"transBack": null`, since the Lean-side canonical parser is
+documented elsewhere in `certificate.py`'s own module docstring as sensitive to exact byte shape.
+Re-confirmed in this phase: no file under `semantic/`, `tests/`, or `docs/` in the ModelChecker
+bimodal theory references `trans`, `Liftable`, or any sharing-shaped field today outside the
+already-quoted "extension point"/"Known Limitations" prose, and no fixture under
+`tests/fixtures/certificates/` carries a `trans*` key.
+
+### Final re-verification reconciliation
+
+Every Phase 1 verification command was re-run at the start of this phase (see the block above).
+Nothing drifted between Phase 1 (2026-09-29T16:53Z) and this closing pass: task 696 remains
+`completed` at the same timestamp, `trans*`/`Liftable` and both gate-family examples remain
+present, and all three dangling citations remain absent as declarations. No correction to any
+earlier phase's block was needed.
+
+### Repository boundary confirmation
+
+- **ModelChecker**: `git status --porcelain` in `/home/benjamin/Projects/ModelChecker` shows only
+  `M specs/events.jsonl`, a pre-existing modification to that repository's own internal event log
+  unrelated to any read performed by this task (this task performed only `grep`/`jq`/file reads
+  against ModelChecker, never a write). No file under `code/`, `docs/`, `tests/`, or
+  `specs/state.json` in ModelChecker was modified by this task.
+- **BimodalLogic**: every commit made by this implementation phase (`git log` against
+  `specs/701_port_substrate_lessons_to_model_checker/`) touched only files under this task's own
+  directory: the plan file (phase-status checkboxes and headings), this summary file, this task's
+  own `progress/*.json` files, and `.return-meta.json`. Two sibling tasks (650, 703) are visibly
+  active on the shared working tree this cycle (`typst/chapters/ax-lean-appendix.typ`,
+  `specs/650_.../` , `specs/703_.../`), and none of their files appear in this task's own commit
+  history. `specs/state.json`, `specs/TODO.md`, and `specs/events.jsonl` are modified in the
+  working tree by sibling activity and by this session's own orchestrator-level bookkeeping
+  (task-lock heartbeats, phase-status writes elsewhere in the cycle), not by any commit this
+  implementation phase made — this phase never staged those three shared files.
+
+## What Changed
+
+- `specs/701_port_substrate_lessons_to_model_checker/summaries/01_substrate-lessons-for-model-checker-summary.md` — created; the sole deliverable, containing the verification snapshot, three ready-to-file ModelChecker task texts (a task 200 replacement, a task 219 reopen-and-amend, and one new documentation task), two recorded non-task decisions with a dependency-status table, and the phased now-versus-later proposal.
+- `specs/701_port_substrate_lessons_to_model_checker/plans/01_substrate-lessons-for-model-checker.md` — phase headings advanced to `[COMPLETED]` and all per-phase checklist items checked off with completion annotations, as work progressed.
+- `specs/701_port_substrate_lessons_to_model_checker/progress/phase-{1..5}-progress.json` — created; per-phase objective tracking.
+- No file under `/home/benjamin/Projects/ModelChecker` and no BimodalLogic file outside this task's own `specs/701_port_substrate_lessons_to_model_checker/` directory was modified.
+
+## Decisions
+
+- Treated BimodalLogic task 696 as `completed` throughout (re-confirmed twice: once in Phase 1's snapshot, once again in Phase 5's reconciliation pass), superseding both the original dispatch framing and ModelChecker task 200's still-`implementing` framing.
+- Found a third defect in ModelChecker task 219's THEORY-LIMITS group beyond the research report's two (omission, framing): three dangling Lean citations, confirmed absent as declarations and replaced with the theorems that actually stand in their place.
+- Scoped the `trans*` wire fields and the cross-repository staleness-detection pattern as explicitly recorded non-task decisions rather than filed tasks, each with a stated reason, per the plan's Phase 4 instructions.
+- Did not run ModelChecker's own solver against the new `TL_CM_3`/`TL_CM_4` probe entries — doing so was outside this task's read-only repository boundary — and said so explicitly in the ready-to-file text, leaving the timing measurement as an explicit task for whoever files and applies the amendment.
+- Cited the research report inside every ready-to-file block by title and date only, never by this task's own number, consistent with `no-task-references-in-deliverables.md`'s deliverable-boundary rule; caught and corrected two instances where a task-number reference had leaked into a fenced block during drafting.
+
+## Plan Deviations
+
+- None (implementation followed plan). One phase task (Phase 3's dangling-citation count) explicitly predicted three defects via its own Scope Hypothesis, matching what was found; no count needed adjustment. One status word (BimodalLogic task 703's) drifted twice during the task's own lifetime (researching -> planning -> implementing) and was updated at each write point to the current word rather than treated as a deviation, per the plan's own Phase 1/Phase 5 re-verification instructions.
+
+## Verification
+
+- Build: N/A (documentation/text deliverable, no compiled artifact).
+- Tests: N/A (no test suite applies to a summary deliverable); `bash .claude/scripts/validate-artifact.sh <summary> summary` run twice — first run found 5 missing required sections, corrected, second run passes clean (0 errors, 0 warnings).
+- Files verified: Yes — every Lean identifier (13 checked) and every ModelChecker file path (9 checked) cited anywhere in the summary was re-confirmed present in the live trees in Phase 5's closing pass, after having already been individually verified at each phase that introduced it.
+
+## Impacts
+
+- Whoever next works in ModelChecker's task system has ready-to-paste, verified replacement text for two already-stale task artifacts (200, 219) and one new task description, removing the need to re-derive the Q1/Q2 file-level porting map or re-diagnose the three dangling citations.
+- The THEORY-LIMITS group's incorrect "the certificate class is EMPTY" framing, if left uncorrected, would have continued to mislead any future reader of `examples.py` into believing a repaired defect was still open; this task's amendment text corrects that framing precisely, without overclaiming that the general (non-atomic) case is resolved.
+- No BimodalLogic or ModelChecker source, build, or test state was changed by this task; all downstream impact is contingent on someone in the ModelChecker repository choosing to file and apply the texts above.
+
+## Follow-ups
+
+- File the task 200 replacement description and the task 219 reopen-and-amend in ModelChecker's own task system (recommended promptly, per the phased proposal, to stop the stale framing from propagating further).
+- File the new `docs/ADEQUACY.md` Lemma 2 restatement task in ModelChecker (documentation-only, no dependency, startable immediately).
+- When BimodalLogic's `lplus_compression_and_completeness` project completes, re-check whether task 200's blocker text needs a further update before its search-code phase begins.
+- When `TL_CM_3`/`TL_CM_4` are actually filed and run against ModelChecker's solver, replace the timing placeholders in this summary's ready-to-file text with the measured values before landing.
+
+## References
+
+- `specs/701_port_substrate_lessons_to_model_checker/reports/01_substrate-lessons-for-model-checker.md` — the research report this implementation phase transcribes and re-verifies.
+- `specs/701_port_substrate_lessons_to_model_checker/plans/01_substrate-lessons-for-model-checker.md` — the implementation plan this phase executed.
+- `/home/benjamin/Projects/BimodalLogic/FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Skeleton.lean`, `.../PlusWitnessFamily/{Examples,Incompleteness}.lean` — the landed BimodalLogic redesign this summary's ready-to-file text cites.
+- `/home/benjamin/Projects/ModelChecker/code/src/model_checker/theory_lib/bimodal/{examples.py,operators.py,docs/ADEQUACY.md,semantic/certificate.py}` — the ModelChecker files this summary's ready-to-file text targets.
