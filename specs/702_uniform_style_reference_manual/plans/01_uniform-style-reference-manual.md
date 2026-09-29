@@ -274,25 +274,36 @@ Validation checklist verifies.
 
 ---
 
-### Phase 2: Centralize the Shared Template Surface [NOT STARTED]
+### Phase 2: Centralize the Shared Template Surface [COMPLETED]
 
 **Goal**: Move the formatting helpers that chapters currently define locally into
 `template.typ`, and correct the notation-standard's documentation gap, so Wave 3's chapter
 phases can delete their local `#let` blocks without any of them needing to edit `template.typ`.
 
 **Tasks**:
-- [ ] Add `derivation-tree-rule(name)` to `template.typ`, lifted from `03-proof-theory.typ:319`.
-- [ ] Add `fmt-lines(n)` and `module-lines(path)` to `template.typ`, lifted from
-      `p4-proof-automation.typ`.
-- [ ] Compare `p2-frame-classes.typ`'s inline `module-lines`-style lookup against
-      `p4-proof-automation.typ`'s. If identical, one promoted helper serves both. If genuinely
-      distinct, promote both under distinct names and say so in a comment.
-- [ ] Add a deprecation comment above `items`/`item` in `template.typ` naming `typst/STYLE.md`
+- [x] Add `derivation-tree-rule(name)` to `template.typ`, lifted from `03-proof-theory.typ:319`.
+- [x] Add `fmt-lines(n)` and `module-lines(path)` to `template.typ`, lifted from
+      `p4-proof-automation.typ`. `module-lines` was generalized to take the module-map explicitly
+      (`module-lines(map, path)`) so it is reusable beyond `p4-proof-automation.typ`'s own
+      `automation-module-map`; see the call-site-update note left as a template.typ comment.
+- [x] **Deviation**: `p2-frame-classes.typ` has no `#let` of its own and no
+      `module-lines`-style lookup at all (`grep -n '^#let\|module-lines\|\.find(row' typst/chapters/p2-frame-classes.typ`
+      returned nothing) -- the plan's Scope Hypothesis on this point does not hold. There is
+      nothing to compare or promote for that file; Phase 8, which owns `p2-frame-classes.typ`,
+      inherits no obligation here.
+- [x] Add a deprecation comment above `items`/`item` in `template.typ` naming `typst/STYLE.md`
       rule 6 and saying the definitions are retained for other documents. Do not delete them.
-- [ ] Additive only: leave every chapter's local `#let` in place in this phase. A chapter-local
+- [x] Additive only: left every chapter's local `#let` in place in this phase. A chapter-local
       `#let` shadows the template one, so the manual stays green between Phase 2 and Wave 3.
-- [ ] Update `notation-conventions.md` in the source store to document `#leansrc` and `#leanref`
-      as the manual's actual Lean-citation commands and mark `srcref`/`coderef` as superseded.
+- [x] **Scope Hypothesis resolved**: `roles` (`p4-proof-automation.typ:115`) and
+      `all-sorry-free` (`:130`) are chapter-specific data/derived values, not formatting helpers
+      -- `roles` is a hand-written dictionary of per-module prose descriptions and
+      `all-sorry-free` is a one-line boolean folded from the imported module map. Both stay
+      local; Phase 10 (which owns this file) does not need to remove them.
+- [x] Update `notation-conventions.md` in the source store to document `#leansrc` and `#leanref`
+      as the manual's actual Lean-citation commands and mark `srcref`/`coderef` as superseded
+      (confirmed unused anywhere under `typst/` via
+      `grep -rn 'srcref\|coderef' typst/`).
       Edit target is
       `/home/benjamin/.config/nvim/agent-system/extensions/typst/context/project/typst/standards/notation-conventions.md`
       per `rules/source-store-deploy-boundary.md`, never the deployed `.claude/` copy.

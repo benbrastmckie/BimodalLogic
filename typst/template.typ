@@ -129,6 +129,40 @@
 // Inline Lean identifier reference (monospace, no path).
 #let leanref(name) = raw(name)
 
+// Dotted Lean declaration name as inline raw text, with a zero-width space
+// inserted after each "." so a long dotted name wraps at a dot boundary
+// instead of overflowing a table cell. Promoted from 03-proof-theory.typ's
+// former chapter-local definition (see STYLE.md rule 8); identical in
+// behavior to that definition.
+#let derivation-tree-rule(name) = raw(name.replace(".", "." + sym.zws))
+
+// --- Generated-data formatting helpers ---
+
+// Thousands-separator for line counts (max value in practice is a handful of
+// digits, but this handles any width via a single recursive comma
+// insertion). Promoted from p4-proof-automation.typ's former chapter-local
+// definition (see STYLE.md rule 8); identical in behavior to that
+// definition.
+#let fmt-lines(n) = {
+  let s = str(n)
+  if s.len() > 3 {
+    fmt-lines(int(s.slice(0, s.len() - 3))) + "," + s.slice(s.len() - 3)
+  } else {
+    s
+  }
+}
+
+// Look up a generated module-map row's line count by path, for inline prose
+// that cites a module-map count without hand-copying it. Generalized from
+// p4-proof-automation.typ's former chapter-local `module-lines(path)` (see
+// STYLE.md rule 8), which closed over that chapter's own imported
+// `automation-module-map` -- this version takes the map explicitly so any
+// chapter with a generated module-map data file (of the same
+// `(path, lines, sorry-free, ..)` row shape) can use it. A chapter switching
+// from its own local `module-lines(path)` to this one updates its call
+// sites from `module-lines(path)` to `module-lines(the-module-map, path)`.
+#let module-lines(map, path) = map.find(row => row.at(0) == path).at(1)
+
 // --- Chapter header (dependencies / Logos-connection metadata block) ---
 
 #let chapter-header(description: none, dependencies: none, connections: none) = {
@@ -153,6 +187,13 @@
 }
 
 // --- Items list environment (consistent bullet/enum styling) ---
+//
+// DEPRECATED per STYLE.md rule 6: the reference manual's chapters use
+// native Typst list syntax (`- item`, `+ item`) exclusively and none of
+// them call `items`/`item` any longer. The two definitions below are
+// retained, unchanged, because other documents in this repository may
+// still reference them -- do not delete without checking for other callers
+// first.
 
 #let items(body) = block(
   above: 0.8em,
