@@ -1,7 +1,7 @@
 # Implementation Plan: Task #702
 
 - **Task**: 702 - Improve the formatting and content of the Typst reference manual so every chapter follows one uniform approach in style and in the shape of its discussion
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 18 hours
 - **Dependencies**: None (coordinates with sibling tasks 649, 650, 697 — see Non-Goals)
 - **Research Inputs**: `specs/702_uniform_style_reference_manual/reports/01_style-audit-house-style.md`
@@ -234,7 +234,7 @@ its own files, and `chapter-quality-check.sh` reports `BLOCKING 0` for every fil
 
 ---
 
-### Phase 1: Write the House Style Sheet [NOT STARTED]
+### Phase 1: Write the House Style Sheet [COMPLETED]
 
 **Goal**: The style sheet exists as a committed reference before any chapter is edited, so every
 later phase enforces one written source rather than a reconstructed intent.

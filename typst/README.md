@@ -89,6 +89,14 @@ bash scripts/typst-sync-check.sh
 its header comment for the check definitions and `sync-check-whitelist.txt` for
 deliberate exceptions (external-repo citations, type-signature illustrations).
 
+## Style
+
+`STYLE.md` in this directory is the single house style for every chapter under `chapters/`
+(chapter opening shape, section rhythm, element order, Lean-citation forms, cross-reference
+convention, list syntax, table/figure convention, and the no-local-helpers rule). New chapters
+and any editorial pass over existing chapters follow it; the two appendices are governed by their
+own conventions instead, as `STYLE.md` states at its top.
+
 ## Package Dependencies
 
 - `@preview/thmbox:0.3.0` - Theorem environments (imported via `template.typ`)
