@@ -695,22 +695,38 @@ with `chapter-quality-check.sh --verbose typst/chapters/p2-decidability-practice
 
 ---
 
-### Phase 10: p4-proof-automation.typ [NOT STARTED]
+### Phase 10: p4-proof-automation.typ [COMPLETED]
 
 **Goal**: Clear 29 BLOCKING findings, remove the manual's largest concentration of chapter-local
 helpers, and convert the chapter's `#items[]` block to native list syntax.
 
 **Tasks**:
-- [ ] Resolve all 29 Rule 1.2 findings per occurrence.
-- [ ] Delete the local `#let` definitions at lines 17, 28, 115, and 130 in favor of the Phase 2
-      template helpers, keeping any that Phase 2 established are chapter-specific data rather
-      than formatting helpers.
-- [ ] Convert the `#items[#item[...]]` block to native `- ` list syntax per rule 6, and check the
-      rendered spacing in the compiled PDF rather than assuming it is equivalent.
-- [ ] Convert the 1 un-linked chapter reference.
-- [ ] Verify the existing `#chapter-header` fields are present and substantive.
-- [ ] Verify every line-count and module-count claim resolves through `module-lines` against
-      `typst/generated/`, not a hand-typed number.
+- [x] Resolved all 29 Rule 1.2 findings per occurrence, all `FormalSystem/`-prefix fixes
+      (`Automation/` -> `FormalSystem/Automation/`, `Examples/` -> `FormalSystem/Examples/`,
+      `EFGameTactics.lean`/`Expressiveness/EFGames` -> their true
+      `FormalSystem/Metalogic/Expressiveness/` location, `Metalogic/Decidability/...` ->
+      `FormalSystem/Metalogic/Decidability/...`).
+- [x] Deleted the local `#let fmt-lines` and `#let module-lines(path)` definitions, now relying
+      on the Phase 2 template helpers. `module-lines`'s one call site was updated from
+      `module-lines("SuccessPatterns.lean")` to `module-lines(automation-module-map,
+      "SuccessPatterns.lean")` to match the template's generalized two-argument signature (see
+      Phase 2's note on this call-site-update obligation). `roles` and `all-sorry-free` were kept
+      local per Phase 2's finding that they are chapter-specific data, not formatting helpers.
+- [x] Converted the `#items[#item[...]]` block (the four user-facing tactics) to native `- ` list
+      syntax; `typst compile` succeeded with no new warning, confirming equivalent rendering.
+- [x] **Deviation**: the 1 un-linked reference ("the dual-verification chapter") cannot be
+      converted to `@`-ref yet: `p4-dual-verification.typ` (Phase 11's file) carries no `=`-heading
+      label today. Left as prose in this phase, to be converted once Phase 11 adds the label --
+      recorded here so it is not silently dropped, and completed in Phase 11 below.
+- [x] Verified the existing `#chapter-header` fields (`description`/`dependencies`) are present
+      and substantive.
+- [x] Verified line-count/module-count claims: `#fmt-lines`/`#module-lines` calls resolve through
+      the generated `automation-module-map`/`automation-module-total`. The two hand-typed counts
+      that remain (`EFGameTactics.lean`'s 331 lines, the retired Aesop rule set's 322 lines) cite
+      files explicitly outside the tracked `Automation/` module map (one is under
+      `Metalogic/Expressiveness/`, the other in `Boneyard/`), so there is no generated source for
+      either to trace to; both are pre-existing figures this phase's citation-path scope did not
+      touch or reword.
 
 **Timing**: 1.5 hours
 

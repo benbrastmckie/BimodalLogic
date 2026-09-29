@@ -12,25 +12,10 @@
 #import "../generated/automation-module-map.typ": automation-module-map, automation-module-total
 #import "../generated/status.typ": axiom-count
 
-// Thousands-separator for line counts (max value in practice is 4 digits,
-// but this handles any width via a single recursive comma insertion).
-#let fmt-lines(n) = {
-  let s = str(n)
-  if s.len() > 3 {
-    fmt-lines(int(s.slice(0, s.len() - 3))) + "," + s.slice(s.len() - 3)
-  } else {
-    s
-  }
-}
-
-// Look up a generated row's line count by path, for inline prose that cites
-// a module-map count without hand-copying it.
-#let module-lines(path) = automation-module-map.find(row => row.at(0) == path).at(1)
-
 = Proof Automation <sec:proof-automation>
 
 #chapter-header(
-  description: [The tactic surface, the two proof-search engines behind it, and a retired Aesop integration, in `Automation/`: what each entry point does, one worked invocation each, and a precise account of what is wired to what.],
+  description: [The tactic surface, the two proof-search engines behind it, and a retired Aesop integration, in `FormalSystem/Automation/`: what each entry point does, one worked invocation each, and a precise account of what is wired to what.],
   dependencies: [Chapter 3 (proof theory) for the axiom/rule vocabulary these tactics target.],
 )
 
@@ -39,14 +24,12 @@
 
 Four user-facing tactics automate common derivation patterns.
 
-#items[
-  #item[`apply_axiom` (`Tactics/UserTactics.lean`) -- expands to `apply DerivationTree.axiom; refine ?_`, applying the generic axiom constructor and leaving the axiom witness (`h : Axiom φ`) and frame-class side condition (`h_fc`) as open goals for the caller to discharge; it does not unify with a schema or infer the formula parameters itself.]
-  #item[`modal_t` (`Tactics/UserTactics.lean`) -- named for the T axiom $square.stroked φ arrow.r φ$; its macro body expands identically to `apply_axiom`'s (`apply DerivationTree.axiom; refine ?_`), so it applies to any axiom-shaped goal.]
-  #item[`assumption_search` (`Tactics/UserTactics.lean`) -- searches the local context for an assumption matching the goal by definitional equality, with an explicit failure message on miss (unlike the built-in `assumption`).]
-  #item[`modal_search` (`Tactics/Commands.lean`) -- the single proof-search entry point. Three syntax forms: `modal_search` alone (default depth 10, visitLimit 1000), a bare custom depth (`modal_search 5`), and named parameters (`modal_search (depth := 20)`, or `modal_search (depth := 20) (visitLimit := 2000)` for both). It runs the bounded search engine below (@sec:proof-search-engine).]
-]
+- `apply_axiom` (`FormalSystem/Automation/Tactics/UserTactics.lean`) -- expands to `apply DerivationTree.axiom; refine ?_`, applying the generic axiom constructor and leaving the axiom witness (`h : Axiom φ`) and frame-class side condition (`h_fc`) as open goals for the caller to discharge; it does not unify with a schema or infer the formula parameters itself.
+- `modal_t` (`FormalSystem/Automation/Tactics/UserTactics.lean`) -- named for the T axiom $square.stroked φ arrow.r φ$; its macro body expands identically to `apply_axiom`'s (`apply DerivationTree.axiom; refine ?_`), so it applies to any axiom-shaped goal.
+- `assumption_search` (`FormalSystem/Automation/Tactics/UserTactics.lean`) -- searches the local context for an assumption matching the goal by definitional equality, with an explicit failure message on miss (unlike the built-in `assumption`).
+- `modal_search` (`FormalSystem/Automation/Tactics/Commands.lean`) -- the single proof-search entry point. Three syntax forms: `modal_search` alone (default depth 10, visitLimit 1000), a bare custom depth (`modal_search 5`), and named parameters (`modal_search (depth := 20)`, or `modal_search (depth := 20) (visitLimit := 2000)` for both). It runs the bounded search engine below (@sec:proof-search-engine).
 
-Two further tactics round out the surface: `deduction`/`deduction n`/`undischarge` (`Tactics/Deduction.lean`) apply the frame-class-polymorphic deduction theorem to transform a goal `Γ ⊢[fc] A → B` into `(A :: Γ) ⊢[fc] B` and back, built on `apply` rather than a syntactic match so it sees through `def`s like `Formula.neg`; and `propDecide` (`Metalogic/Decidability/Propositional/Tactic.lean`) reflectively decides any derivability goal whose implication/bot skeleton is a propositional tautology, reifying non-imp/bot subterms as opaque `PropForm` variables and closing with the kernel `decide` tactic (never `native_decide`).
+Two further tactics round out the surface: `deduction`/`deduction n`/`undischarge` (`FormalSystem/Automation/Tactics/Deduction.lean`) apply the frame-class-polymorphic deduction theorem to transform a goal `Γ ⊢[fc] A → B` into `(A :: Γ) ⊢[fc] B` and back, built on `apply` rather than a syntactic match so it sees through `def`s like `Formula.neg`; and `propDecide` (`FormalSystem/Metalogic/Decidability/Propositional/Tactic.lean`) reflectively decides any derivability goal whose implication/bot skeleton is a propositional tautology, reifying non-imp/bot subterms as opaque `PropForm` variables and closing with the kernel `decide` tactic (never `native_decide`).
 
 `modal_search` is the sole survivor of what were once four search-entry tactics: per `FormalSystem/Automation.lean`'s module docstring, it "replaced `temporal_search`, `propositional_search` and `tm_auto`, which differed from it only in `SearchConfig` weight fields that `searchProof` never read, and which have been removed."
 
@@ -57,27 +40,27 @@ A typical invocation: given a goal of the shape "$square.stroked φ arrow.r squa
 A dedicated Aesop rule set (named, by its own removed declaration, after the logic) once existed, populated across two modules (`Boneyard/RetiredTactics/AesopRuleSet.lean`, `Boneyard/RetiredTactics/AesopRules.lean`, 322 lines total) with rule-set-scoped attributes over the seven axioms most amenable to direct application, their forward-chaining variants, three inference-rule apply rules, and four normalization unfold rules.
 It was retired on measurement, not on a design change: because the rules lived in that *dedicated* rule set rather than Aesop's default one, plain `aesop` never saw them, and reaching them required an explicit rule-set-qualified invocation naming it -- of which there was none, anywhere in the live tree or in `Tests/`. The rule set therefore had zero consumers of any kind: it was not merely unused, it was unreachable.
 
-The deeper reason Aesop's automatic proof reconstruction does not work over these goals at all, even setting reachability aside: `Axiom` and `DerivationTree` are both `Type`-valued, not `Prop`-valued, and Aesop's reconstruction machinery is built for `Prop`-valued goals (per `Tactics/Search.lean`'s docstring, which is why the live search engines below work at the meta level with `mkAppM` instead).
+The deeper reason Aesop's automatic proof reconstruction does not work over these goals at all, even setting reachability aside: `Axiom` and `DerivationTree` are both `Type`-valued, not `Prop`-valued, and Aesop's reconstruction machinery is built for `Prop`-valued goals (per `FormalSystem/Automation/Tactics/Search.lean`'s docstring, which is why the live search engines below work at the meta level with `mkAppM` instead).
 
 Both retired modules were moved unchanged to `Boneyard/RetiredTactics/`; see that directory's `README.md` for the full inventory and the invocation count that retired it.
 
 == Bounded Proof Search <sec:proof-search-engine>
 
-Two independent search engines live under `Automation/`, with different interfaces, different callers, and no import relationship between them.
+Two independent search engines live under `FormalSystem/Automation/`, with different interfaces, different callers, and no import relationship between them.
 
-=== The tactic engine (`Tactics/Search.lean`)
+=== The tactic engine (`FormalSystem/Automation/Tactics/Search.lean`)
 
 `searchProof` is what `modal_search` runs. It tries, in order: `tryAxiomMatch` (27 of the #axiom-count axiom schemata; the two Layer-9 Reynolds Dedekind axioms `prior_U_gap` and `sep` are outside its list), `tryLemmaMatch` (tagged-lemma matching), `tryAssumptionMatch` (context lookup), `tryModusPonens` (backward-chaining decomposition), `tryModalK` (reduce $square.stroked Gamma tack.r square.stroked φ$ to $Gamma tack.r φ$), and `tryTemporalK` (the temporal analogue). This is a bounded depth-first search under an `IO.Ref`-threaded visit counter (`modal_search`'s `visitLimit`, default 1000), working entirely in `TacticM` and constructing proof terms directly with `mkAppM` -- the same `Type`-valuedness discussed above is why it does not return ordinary proof witnesses.
 
-=== The `ProofSearch/` engine (`ProofSearch/Core.lean`, `ProofSearch/Strategies.lean`)
+=== The `FormalSystem/Automation/ProofSearch/` engine (`FormalSystem/Automation/ProofSearch/Core.lean`, `FormalSystem/Automation/ProofSearch/Strategies.lean`)
 
-A second, larger search engine, reachable from *no* tactic. `boundedSearch` is a depth-limited, memoized DFS (default visit limit 500) with several heuristic-ordering functions (`heuristicScore`, `advancedHeuristicScore`, `patternAwareScore`) that reorder subgoals to prefer promising branches; `boundedSearchWithProof` is the proof-carrying variant that actually produces a `DerivationTree`. `iddfsSearch` (default max depth 100, default visit limit 10000) iteratively deepens `boundedSearch`, and is documented as complete and optimal (shortest proof) within the max-depth bound. `ProofSearch/Strategies.lean` adds a priority-queue best-first search (`bestFirstSearch`) and a `SearchStrategy` dispatcher (`BoundedDFS`/`IDDFS`/`BestFirst`, default `IDDFS 100`) that `search` selects between, plus a learning variant (`searchWithLearning`) that records success patterns (below) across calls.
+A second, larger search engine, reachable from *no* tactic. `boundedSearch` is a depth-limited, memoized DFS (default visit limit 500) with several heuristic-ordering functions (`heuristicScore`, `advancedHeuristicScore`, `patternAwareScore`) that reorder subgoals to prefer promising branches; `boundedSearchWithProof` is the proof-carrying variant that actually produces a `DerivationTree`. `iddfsSearch` (default max depth 100, default visit limit 10000) iteratively deepens `boundedSearch`, and is documented as complete and optimal (shortest proof) within the max-depth bound. `FormalSystem/Automation/ProofSearch/Strategies.lean` adds a priority-queue best-first search (`bestFirstSearch`) and a `SearchStrategy` dispatcher (`BoundedDFS`/`IDDFS`/`BestFirst`, default `IDDFS 100`) that `search` selects between, plus a learning variant (`searchWithLearning`) that records success patterns (below) across calls.
 
-This is the engine `decide`'s decision procedure (`Metalogic/Decidability/DecisionProcedure.lean`) reaches for as a fast path: after the direct axiom and compositional-proof checks fail, `decide` tries `boundedSearchWithProof` before falling back to the tableau method (@sec:decidability-practice). The two engines are, in this precise sense, a *different* algorithm on the *same* underlying proof system as the tableau -- the tableau builds a refutation tree over signed subformulas of a single target formula, while this engine explores `DerivationTree` construction directly -- but neither engine here is what the tactics above call; that is the tactic engine, immediately above.
+This is the engine `decide`'s decision procedure (`FormalSystem/Metalogic/Decidability/DecisionProcedure.lean`) reaches for as a fast path: after the direct axiom and compositional-proof checks fail, `decide` tries `boundedSearchWithProof` before falling back to the tableau method (@sec:decidability-practice). The two engines are, in this precise sense, a *different* algorithm on the *same* underlying proof system as the tableau -- the tableau builds a refutation tree over signed subformulas of a single target formula, while this engine explores `DerivationTree` construction directly -- but neither engine here is what the tactics above call; that is the tactic engine, immediately above.
 
 === The Search Space
 
-A search node is a pair of a context $Gamma$ and a goal formula $phi.alt$ -- exactly the data of a derivability claim $Gamma tack.r phi.alt$ -- and the `ProofSearch/` engine explores backward from the target claim toward closed leaves.
+A search node is a pair of a context $Gamma$ and a goal formula $phi.alt$ -- exactly the data of a derivability claim $Gamma tack.r phi.alt$ -- and the `FormalSystem/Automation/ProofSearch/` engine explores backward from the target claim toward closed leaves.
 At each node, `boundedSearch` proceeds through an ordered cascade:
 
 + *Leaf checks first.* If $phi.alt$ matches an axiom schema (`matchesAxiom`) or is an assumption in $Gamma$, the node closes immediately.
@@ -90,7 +73,7 @@ The engine also accumulates `SearchStats` (visits, cache hits and misses, limit-
 
 === Heuristic Ordering
 
-The subgoal ordering is where the `ProofSearch/` engine's domain knowledge lives.
+The subgoal ordering is where the `FormalSystem/Automation/ProofSearch/` engine's domain knowledge lives.
 `heuristicScore` assigns each candidate a cost: axiom-shaped goals score lowest, context assumptions next, modus-ponens candidates score by the complexity of their cheapest antecedent, and modal or temporal goals pay a base cost plus a penalty growing with context size; goals with none of these prospects score as dead ends.
 `advancedHeuristicScore` layers domain-specific adjustments on top -- bonuses for modal and temporal goals and a damped structural penalty `structureHeuristic` combining formula complexity, modal depth, temporal depth, and implication count -- and `patternAwareScore` further adds bonuses from the learned pattern database described below.
 All weights are configurable through a `HeuristicWeights` record, so the default ordering can be re-tuned without touching the algorithm.
@@ -99,16 +82,16 @@ All weights are configurable through a `HeuristicWeights` record, so the default
 
 Consider the M4 pattern $square.stroked p arrow.r square.stroked square.stroked p$ under `modal_search`.
 The goal is not an assumption; `tryAxiomMatch` recognizes it against the axiom table (M4 is primitive in BX), and the search closes at depth 1.
-A goal requiring genuine search, such as a chained implication whose antecedents must themselves be derived, exercises `tryModusPonens`'s cascade in the tactic engine: each candidate antecedent is tried in order via the fixed strategy sequence above, and `modal_search`'s depth/visitLimit parameters bound the recursion (worked instances in the `Examples/` library are collected in the dual-verification chapter).
+A goal requiring genuine search, such as a chained implication whose antecedents must themselves be derived, exercises `tryModusPonens`'s cascade in the tactic engine: each candidate antecedent is tried in order via the fixed strategy sequence above, and `modal_search`'s depth/visitLimit parameters bound the recursion (worked instances in the `FormalSystem/Examples/` library are collected in the dual-verification chapter).
 
 == Learning and Game-Theoretic Tactics
 
-`SuccessPatterns.lean` (#module-lines("SuccessPatterns.lean") lines, sorry-free) implements a `PatternDatabase`-based heuristic layer consumed by the `ProofSearch/` engine's `patternAwareScore`: it records structural features (modal depth, temporal depth, top-level operator, context size) of goals that were successfully closed, and boosts the heuristic score of future goals matching those patterns, citing the machine-learning-guided-search literature (Yang et al. 2019; Kaliszyk et al. 2018) as its design inspiration.
+`FormalSystem/Automation/SuccessPatterns.lean` (#module-lines(automation-module-map, "SuccessPatterns.lean") lines, sorry-free) implements a `PatternDatabase`-based heuristic layer consumed by the `FormalSystem/Automation/ProofSearch/` engine's `patternAwareScore`: it records structural features (modal depth, temporal depth, top-level operator, context size) of goals that were successfully closed, and boosts the heuristic score of future goals matching those patterns, citing the machine-learning-guided-search literature (Yang et al. 2019; Kaliszyk et al. 2018) as its design inspiration.
 The loop is deliberately conservative: patterns only ever *reorder* the search frontier, so a mistrained database can slow the search but can never cause an unsound answer -- soundness lives entirely in the `DerivationTree` terms the search produces, never in the heuristics that find them.
-`EFGameTactics.lean` (331 lines, sorry-free), at `FormalSystem/Metalogic/Expressiveness/EFGameTactics.lean` (not under `Automation/`), is a narrower-purpose module: tactic macros (`simp_game_tuple`, `game_tuple_unfold`) plus pivot-order (`pivot_chain_order'`) and winning-condition (`winning_condition_tac`) helpers automating repetitive steps in the `Expressiveness/EFGames` Ehrenfeucht-Fraïssé game infrastructure, built specifically for the Gabbay-Hodkinson-Reynolds expressive-completeness proof technique @gabbay1994.
-The module belongs to the discrete-case expressiveness infrastructure of the metalogic chapter: the GHR EF-game technique is the classical descendant of Kamp-style expressive-completeness arguments @kamp1971formalproperties for temporal logic over linear orders, and `EFGameTactics.lean` automates the game-position bookkeeping that technique requires.
+`FormalSystem/Metalogic/Expressiveness/EFGameTactics.lean` (331 lines, sorry-free), not under `FormalSystem/Automation/`, is a narrower-purpose module: tactic macros (`simp_game_tuple`, `game_tuple_unfold`) plus pivot-order (`pivot_chain_order'`) and winning-condition (`winning_condition_tac`) helpers automating repetitive steps in the `FormalSystem/Metalogic/Expressiveness/EFGames` Ehrenfeucht-Fraïssé game infrastructure, built specifically for the Gabbay-Hodkinson-Reynolds expressive-completeness proof technique @gabbay1994.
+The module belongs to the discrete-case expressiveness infrastructure of @sec:metalogic: the GHR EF-game technique is the classical descendant of Kamp-style expressive-completeness arguments @kamp1971formalproperties for temporal logic over linear orders, and `FormalSystem/Metalogic/Expressiveness/EFGameTactics.lean` automates the game-position bookkeeping that technique requires.
 
-Two further modules of the tactic surface sit outside `Automation/` as well, and so have no row in the map below. `propDecide` is `FormalSystem/Metalogic/Decidability/Propositional/Tactic.lean`, placed beside the Kalmar soundness theorem it applies; the shared `MetaM` plumbing both it and `Tactics/Commands.lean` read is `FormalSystem/Tactic/Meta.lean`, at the library's layer 0 because its consumers are spread across `Automation/` and `Metalogic/`. `FormalSystem/Automation.lean` still imports the propositional tactic, so the user-facing surface is unchanged: only the file locations differ.
+Two further modules of the tactic surface sit outside `FormalSystem/Automation/` as well, and so have no row in the map below. `propDecide` is `FormalSystem/Metalogic/Decidability/Propositional/Tactic.lean`, placed beside the Kalmar soundness theorem it applies; the shared `MetaM` plumbing both it and `FormalSystem/Automation/Tactics/Commands.lean` read is `FormalSystem/Tactic/Meta.lean`, at the library's layer 0 because its consumers are spread across `FormalSystem/Automation/` and `FormalSystem/Metalogic/`. `FormalSystem/Automation.lean` still imports the propositional tactic, so the user-facing surface is unchanged: only the file locations differ.
 
 == Module Map
 
@@ -144,7 +127,7 @@ Two further modules of the tactic surface sit outside `Automation/` as well, and
     )).flatten(),
     table.hline(),
   ),
-  caption: [The tactic and proof-search half of `Automation/` (#fmt-lines(automation-module-total) lines total, machine-generated via `scripts/typst-module-map.sh`). The dataset-pipeline half is covered in @sec:dataset-pipeline.],
+  caption: [The tactic and proof-search half of `FormalSystem/Automation/` (#fmt-lines(automation-module-total) lines total, machine-generated via `scripts/typst-module-map.sh`). The dataset-pipeline half is covered in @sec:dataset-pipeline.],
 )
 
 #if all-sorry-free [
