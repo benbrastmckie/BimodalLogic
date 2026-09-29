@@ -1,0 +1,18 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 14,
+  "summary": "Authored a nine-phase, 9-hour implementation plan for the define-before-use audit of typst/chapters/ax-lean-appendix.typ. The plan closes every non-OK row of the research report's 140-row first-use ledger: all three seeded gaps (the [fc] bracket, the FrameClass apparatus, the leading dot and the variable-name switch), the two unseeded high-cost gaps (Context as List Formula, and the missing turnstile notation for validity), the one naming defect at the leading-dot explanation, and the three author TODO comments. Phases are strictly linear because all eight editing phases touch one file.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/650_define_before_use_audit_lean_appendix/plans/01_define-before-use-audit.md",
+      "summary": "Nine-phase implementation plan for the define-before-use audit of typst/chapters/ax-lean-appendix.typ."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 9,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "next_action_hint": "Run /implement 650 to execute the plan"
+}

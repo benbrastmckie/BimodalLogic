@@ -1,17 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 11,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/650_define_before_use_audit_lean_appendix/reports/01_define-before-use-audit.md",
-      "summary": "Complete 140-row first-use ledger for typst/chapters/ax-lean-appendix.typ across the four item classes, with 62 clean rows, 30 forward references, 44 never-introduced items, 8 partials and 4 non-reproducing seeded items; all three seeded KNOWN GAPS confirmed, one terminology defect found at line 651, and eleven underpinning Lean facts verified by lake env lean."
+      "type": "plan",
+      "path": "specs/650_define_before_use_audit_lean_appendix/plans/01_define-before-use-audit.md",
+      "summary": "Nine-phase, 9-hour plan closing every non-OK row of the 140-row define-before-use ledger over the Lean appendix, including all three seeded gaps, the anonymous-constructor naming defect, and the three author TODO comments."
     }
   ],
+  "next_steps": "Run /implement 650 to execute the plan",
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1790680388_3d4c26_650",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 9,
+    "estimated_hours": 9,
+    "dependency_waves": [[1],[2],[3],[4],[5],[6],[7],[8],[9]]
+  },
+  "dispatch_seq": 14
 }

@@ -98,7 +98,7 @@ next_project_number: 706
 
 ### Reference Book
 
-650 [PLANNING] — Define-before-use audit of...
+650 [PLANNED] — Define-before-use audit of...
 
 ### Verification
 
@@ -194,11 +194,12 @@ Out of scope: any Lean change, and any edit to the manuscript.
 ---
 
 ### 650. Define before use audit lean appendix
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: reference-book
 - **Dependencies**: Task 647, Task 648, Task 649
 - **Research**: [650_define_before_use_audit_lean_appendix/reports/01_define-before-use-audit.md]
+- **Plan**: [650_define_before_use_audit_lean_appendix/plans/01_define-before-use-audit.md]
 
 **Description**: Define-before-use audit of typst/chapters/ax-lean-appendix.typ (the back-matter appendix "Reading the Lean Formalization" of typst/BimodalReference.typ): go through the appendix in reading order, as it stands AFTER tasks 647, 648 and 649 have landed, and make sure that EVERY convention, notation, identifier, and piece of Lean syntax is stated before it is first used. This is an improvement pass over the finished appendix to catch whatever was missed along the way; it depends on 647, 648 and 649 and must not start before they complete.
 
