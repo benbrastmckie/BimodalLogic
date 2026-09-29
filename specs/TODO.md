@@ -99,7 +99,7 @@ next_project_number: 706
 
 ### Reference Book
 
-649 [RESEARCHING] — Define one Typst environment for presenting Lean code in...
+649 [RESEARCHED] — Define one Typst environment for presenting Lean code in...
   └─ 650 [NOT STARTED] — Define-before-use audit of...
 
 ### Verification
@@ -616,10 +616,11 @@ CONSTRAINTS. Re-verify every Lean fact against live (non-Boneyard) source under 
 ---
 
 ### 649. Systematic lean code environment reference manual
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: Task 647, Task 648
+- **Research**: [649_systematic_lean_code_environment_reference_manual/reports/01_lean-code-environment.md]
 
 **Description**: Define one Typst environment for presenting Lean code in typst/template.typ and use it systematically throughout the Bimodal Reference Manual (typst/BimodalReference.typ and every file under typst/chapters/), so that every Lean code block is clear and is presented the same way. This is a formatting and structure task: it changes how code is displayed, never what the code or the prose says.
 
