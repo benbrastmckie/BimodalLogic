@@ -247,3 +247,15 @@ class inductive Nonempty (α : Sort u) : Prop
 Nonempty.intro : α → Nonempty α
 Nonempty Bool
 ∀ w u, (∀ x, 0 < x → ∃ y, ...) → u = w
+
+# --- typst/template.typ: illustrative code spans inside `//` comments
+# documenting the promoted formatting helpers (derivation-tree-rule,
+# fmt-lines, module-lines) and the deprecated items/item list environment.
+# Generic Typst-syntax examples and a row-shape description, not Lean
+# declaration citations ---
+(path, lines, sorry-free, ..)
++ item
+- item
+automation-module-map
+module-lines(path)
+module-lines(the-module-map, path)

@@ -9,7 +9,7 @@
 #import "../generated/status.typ": base-count, dense-only-count, ztime-only-count, rtime-only-count
 #import "@preview/cetz:0.3.4"
 
-= Frame Classes and Extensions
+= Frame Classes and Extensions <sec:frame-class-extensions>
 
 #chapter-header(
   description: [How the base proof system of @sec:formulas and @sec:proof-theory extends to dense, discrete, and complete linear orders, how the Since/Until-primitive language relates to the derived Next/Previous operators, and where the deferred tense-primitive subsystem sits relative to the full system.],

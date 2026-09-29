@@ -1,7 +1,7 @@
 # Implementation Plan: Task #702
 
 - **Task**: 702 - Improve the formatting and content of the Typst reference manual so every chapter follows one uniform approach in style and in the shape of its discussion
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 18 hours
 - **Dependencies**: None (coordinates with sibling tasks 649, 650, 697 — see Non-Goals)
 - **Research Inputs**: `specs/702_uniform_style_reference_manual/reports/01_style-audit-house-style.md`
@@ -867,31 +867,52 @@ diff must contain no `#show`, no `#let`, and no heading-line change.
 
 ---
 
-### Phase 13: Whole-Manual Acceptance Sweep [NOT STARTED]
+### Phase 13: Whole-Manual Acceptance Sweep [COMPLETED]
 
 **Goal**: Confirm every acceptance criterion in one pass over the finished manual, and correct
 the style sheet if implementation revealed a rule that could not be applied as written.
 
 **Tasks**:
-- [ ] Run `typst-element-lint.sh --verbose` over all of `typst/chapters/*.typ` and confirm zero
-      blocking placement findings.
-- [ ] Run `chapter-quality-check.sh --verbose` over all of `typst/chapters/*.typ` and confirm
-      zero BLOCKING findings, down from the 296 baseline.
-- [ ] Compile `BimodalReference.typ` from clean and confirm zero warnings. Compare the warning
-      set against the baseline (0 warnings) so no warning introduced by this task slips through.
-- [ ] Record the final page count from the fresh compile. The dispatch's "128 pages" and the
-      audit's "105 pages" are both stale; do not cite either.
-- [ ] Read each chapter's opening against `typst/STYLE.md` rules 1 and 2 and confirm the
-      `#chapter-header` shape is genuinely uniform, not merely present.
-- [ ] Confirm no non-appendix chapter defines a local `#let`:
-      `grep -n '^#let' typst/chapters/*.typ` should hit only the two appendices and whatever
-      Phase 2 documented as necessarily local.
-- [ ] Confirm no chapter calls `#items[`: `grep -n '#items\[' typst/chapters/*.typ`.
-- [ ] Confirm every Lean name cited manual-wide resolves in `FormalSystem/`.
-- [ ] If any style-sheet rule proved unworkable in practice, amend `typst/STYLE.md` to match what
-      was actually done and say why. The committed style sheet must describe the manual as it now
-      is, not an aspiration the chapters diverge from.
-- [ ] Regenerate `typst/BimodalReference.pdf` from the final source.
+- [x] Ran `typst-element-lint.sh --verbose` over all of `typst/chapters/*.typ`: `Failures: 0`,
+      `Warnings: 0`.
+- [x] Ran `chapter-quality-check.sh --verbose` over all of `typst/chapters/*.typ`: `Blocking: 0`,
+      down from the 296 baseline (Advisory 111, Judged 269 pending -- both explicitly non-blocking
+      per the acceptance criteria).
+- [x] Compiled `BimodalReference.typ` from a fully clean `build/` directory: exit 0, no warning
+      of any kind, matching the zero-warning baseline exactly.
+- [x] Recorded the final page count from the fresh compile: **131 pages** (via `pdfinfo`). Neither
+      the dispatch's "128 pages" nor the audit's "105 pages" is cited; both were stale as flagged.
+- [x] Read every chapter's opening against `typst/STYLE.md` rules 1 and 2. Found and fixed one
+      genuine gap the earlier per-chapter phases missed: `p2-frame-classes.typ`'s `=` heading
+      carried no label at all (every other of the 15 non-appendix chapters does), which would
+      have blocked any future `@`-reference to the chapter as a whole. Could not reuse
+      `sec:frame-classes` -- that label already names a `==` subsection inside
+      `03-proof-theory.typ` -- so added the chapter its own distinct
+      `<sec:frame-class-extensions>` label. Recompiled clean (no duplicate-label error) and
+      reran both lints (still `Blocking 0`, still `Failures 0`) after the fix. All 15
+      non-appendix chapters now carry the identical `#chapter-header(description:,
+      dependencies:)` shape with substantive prose in both fields.
+- [x] Confirmed no non-appendix chapter defines a local `#let`: the only hits are
+      `ax-lean-appendix.typ` (its scoped `#leansrc`/`figcount` overrides) and
+      `p4-proof-automation.typ`'s `roles`/`all-sorry-free`, which Phase 2 documented as
+      chapter-specific data rather than formatting helpers -- exactly the expected exception set.
+- [x] Confirmed no chapter calls `#items[`: `grep -n '#items\[' typst/chapters/*.typ` returns
+      nothing.
+- [x] Confirmed every Lean name cited manual-wide resolves in `FormalSystem/`: extracted all 122
+      distinct backtick-quoted `FormalSystem/`/`BimodalTools/`-prefixed paths across every chapter
+      and verified each with `test -e`; zero missing.
+- [x] **Found and fixed a real regression this task introduced, outside the plan's two named
+      gates**: `bash scripts/typst-sync-check.sh` (the repository's third, pre-existing drift
+      detector) went from 0 to 6 Check-1 violations, traced to Phase 2's own new `template.typ`
+      comments quoting illustrative, non-Lean code spans in backticks (a row-shape description
+      and three `template.typ`-internal API names). Added a new whitelist section to
+      `typst/sync-check-whitelist.txt` following the file's existing "template API names /
+      exposition, not a Lean claim" convention; `typst-sync-check.sh` is back to `PASS (all 3
+      checks green)`, matching its pre-task state.
+- [x] No `typst/STYLE.md` rule proved unworkable in practice; every rule was applied as written
+      across all 15 non-appendix chapters, so no amendment was needed.
+- [x] Regenerated `typst/BimodalReference.pdf` from the final source (the 131-page, zero-warning
+      compile above).
 
 **Timing**: 1 hour
 
