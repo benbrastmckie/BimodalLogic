@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-09-27",
+  "updated": "2026-09-28",
   "entries": [
     {
       "doc_id": "rabinovich_2014",
@@ -55,10 +55,6 @@
       "hazard": "provenance_fidelity is null in the global index — conversion NOT verified against source PDF. Treat all claims as PROVISIONAL; verify against the primary source before any load-bearing formal use. Cite by PDF page, never md:NN line numbers."
     },
     {
-      "doc_id": "gabbay_1993",
-      "reason": "Temporal Expressive Completeness in the Presence of Gaps (parent doc)."
-    },
-    {
       "doc_id": "reynolds_1992_sec06",
       "reason": "§5 Expressive and Dedekind Completeness — the monadic/temporal correspondence ('table' of a formula) underlying the expressive-completeness framework Reynolds 1992 builds on. Split out of reynolds_1992_sec02, which had merged §3-5 under a §3-4-only title.",
       "hazard": "provenance_fidelity is verified_conversion — manually spot-checked against source PDF p.174, PyMuPDF doc[9]. Cite by PDF page, never md:NN line numbers."
@@ -67,10 +63,6 @@
       "doc_id": "reynolds_1992_sec07",
       "reason": "§9 Completeness (Theorem 7: US/R sound and weakly complete over real flow) — the weak-completeness capstone the separation/expressive-completeness machinery (§§3-8) builds toward. Split out of reynolds_1992_sec04, which had merged §7-9 under a §7-8-only title.",
       "hazard": "provenance_fidelity is verified_conversion — manually spot-checked against source PDF p.189, PyMuPDF doc[24] (same page §10 begins on). Cite by PDF page, never md:NN line numbers."
-    },
-    {
-      "doc_id": "burgess_1982_i",
-      "reason": "Burgess's ALTERNATIVE Kamp proof via Since/Until axioms — exclusion machinery that may avoid the refutable .mp transport. Reference design for Route B."
     },
     {
       "doc_id": "burgess_1984_sec04",
@@ -99,11 +91,6 @@
       "source": "decidability provenance gate for the stability modal (Rabin-theorem citation licence)",
       "citation_rule": "Cite by theorem number and section — e.g. \"Thomas 1997, sec. 6.3, Thm. 6.20\" — never by md:NN line number (re-conversion invalidates line numbers). The stored conversion drops fi/fl ligatures systematically (\"finite\" reads \"nite\", \"definable\" reads \"denable\") and renders citation keys with a trailing bracket only (\"Rab69]\"); this is cosmetic and uniform, and the passages cited above were re-extracted from the source PDF independently with pdftotext rather than read off the markdown alone. Distinct from doc_id thomas_1997, which is a different Thomas 1997 document — match ids whole, never by the author-year stem.",
       "hazard": "None on fidelity: provenance_fidelity is verified_conversion with a source PDF present (word_ratio 1.0, combining marks checked, none dropped). The one live hazard is IDENTITY, not fidelity: the sub-index also carries doc_id thomas_1997, a different document (sources/thomas_1997/Thomas_1997_EF_Games_Composition_Monadic.md) whose own no_source_pdf hazard must not be transferred here, and whose hazard this entry does not inherit."
-    },
-    {
-      "doc_id": "hodkinson_2006",
-      "reason": "Modern survey chapter covering axiomatizations, completeness, filtration, and finite model property for temporal logic — orienting/context material, not primary source.",
-      "hazard": "RESIDUAL GAP (task 389 Phase 8, acquisition blocker): the corpus PDF is only 3 pages (TOC + the start of the Introduction, cutting off mid-sentence) — Sections 2-6 / pp.658-712, the bulk of the chapter, were never acquired. Time-boxed (30 min) acquisition attempt: WebSearch located the chapter's official free-hosting URL (https://cgi.csc.liv.ac.uk/~frank/MLHandbook/11.pdf, the Handbook of Modal Logic project site) and downloaded it; byte-for-byte identical to the existing 3-page corpus PDF (confirmed via diff) — this is the publisher's own truncated preview, not a workaround. No complete free copy was found. Reactivation condition: a complete scan/PDF of Handbook of Modal Logic Ch.11 (pp.655-720) becomes available (e.g. via institutional access or a future OUP/Elsevier open release)."
     },
     {
       "doc_id": "gabbay_2000",
@@ -175,11 +162,6 @@
       "doc_id": "goldblatt_2023_strong-completeness-real-time",
       "reason": "Task 408: the only published source directly on STRONG completeness over real-flowed time (arXiv:2310.20069). Propositional TL over the reals is finitely axiomatizable; the first-order counterpart is not recursively axiomatizable; strong completeness only via restricted admissible-models semantics. Decision-relevant cross-check for the finite-context strong-completeness verdict.",
       "hazard": "provenance_fidelity: unverified_conversion — converted via the PyMuPDF fallback tier after the primary tier failed the sentence-boundary-glue quality gate; chunks are auto-segmented (chunk_NNNN, no section titles). Spot-check against the source PDF (in the same sources dir) before any load-bearing citation. Result is for FIRST-ORDER temporal logic; applicability to the propositional bimodal TM must be argued, not assumed."
-    },
-    {
-      "doc_id": "caleiro_2013",
-      "relevance": "Termination-measure design (task 434 blocker): proves decidability for S5 combined with linear tense logic via the MOSAIC METHOD — bounding the model-search space by a finite set of compatible local configurations ('mosaics') rather than by a counter over an unboundedly-growing time set. This is the closest structural analogue to TM's S5-modal + linear-temporal combination in the corpus and the primary candidate for a mosaic-bound termination pattern that could replace/supplement the refuted mintPotential-based routes (see MintBound.lean section C9 entries 14). A mosaic bound is defined over local satisfiability configurations rather than ord.timeCount directly, which is the property that would need to survive TimeOrdering.identifyTime lowering timeCount.",
-      "reason": "Task 435 (curate_termination_literature_subindex): primary mosaic-method source for the fourth termination-measure component blocking task 434 Phase 7/8 (MintPaysForTime). Registered as the verified parent rather than its 7 secNN children — see plan Phase 3 granularity decision."
     },
     {
       "doc_id": "blackburn_2002_ch06_sec04-05",
@@ -487,6 +469,60 @@
       "added": "2026-09-18",
       "source": "/literature 560 discovery (Tier 1 local)",
       "citation_rule": "Cite by the paper's own section/lemma/axiom labels. Never cite md line numbers."
+    },
+    {
+      "doc_id": "burgess_1982_ii",
+      "reason": "Task 696: Burgess's period-based tense logic; alternative substrate (time periods rather than instants) relevant to the fourth-datum trans vs. share-retiming candidate comparison.",
+      "hazard": "provenance_fidelity is unverified_scan_source in the global index; verify any quoted text against the PDF before citing. Cite by PDF page, never md:NN line numbers.",
+      "added": "2026-09-28",
+      "source": "discover"
+    },
+    {
+      "doc_id": "venema_1993_since_until",
+      "reason": "Task 696: Venema's completeness/expressivity treatment of since and until; reference for adequacy criteria on the stability modals (stab / snce / untl) before candidate substrates are scored.",
+      "added": "2026-09-28",
+      "source": "discover"
+    },
+    {
+      "doc_id": "libkin_2004_ch3_ch7",
+      "reason": "Task 696 (marginal): EF games and MSO on strings/orders; background for finite-model arguments about integer-time witness families.",
+      "added": "2026-09-28",
+      "source": "discover"
+    },
+    {
+      "doc_id": "kupferman_vardi_2001_weak_alternating",
+      "reason": "Task 696 (marginal): automata-theoretic decidability for temporal logics; tangential comparison point for the certificate-based route.",
+      "added": "2026-09-28",
+      "source": "discover"
+    },
+    {
+      "doc_id": "gabbay_1993",
+      "reason": "Temporal Expressive Completeness in the Presence of Gaps (parent doc).",
+      "relevance": "Task 696: expressive completeness over flows with gaps; relevant to the integer-time non-validity of Pp -> stab Pp and to what the snce clause must quantify over on non-dense flows."
+    },
+    {
+      "doc_id": "burgess_1982_i",
+      "reason": "Burgess's ALTERNATIVE Kamp proof via Since/Until axioms — exclusion machinery that may avoid the refutable .mp transport. Reference design for Route B.",
+      "relevance": "Task 696: primary reference for what the S/U truth clauses quantify over and for the t-1 / t+1 asymmetry between the snce and untl coherence clauses of (C1')."
+    },
+    {
+      "doc_id": "hodkinson_2006",
+      "reason": "Modern survey chapter covering axiomatizations, completeness, filtration, and finite model property for temporal logic — orienting/context material, not primary source.",
+      "hazard": "RESIDUAL GAP (task 389 Phase 8, acquisition blocker): the corpus PDF is only 3 pages (TOC + the start of the Introduction, cutting off mid-sentence) — Sections 2-6 / pp.658-712, the bulk of the chapter, were never acquired. Time-boxed (30 min) acquisition attempt: WebSearch located the chapter's official free-hosting URL (https://cgi.csc.liv.ac.uk/~frank/MLHandbook/11.pdf, the Handbook of Modal Logic project site) and downloaded it; byte-for-byte identical to the existing 3-page corpus PDF (confirmed via diff) — this is the publisher's own truncated preview, not a workaround. No complete free copy was found. Reactivation condition: a complete scan/PDF of Handbook of Modal Logic Ch.11 (pp.655-720) becomes available (e.g. via institutional access or a future OUP/Elsevier open release).",
+      "relevance": "Task 696: orientation for the design-space enumeration (completeness/decidability of since/until logics). Truncated-PDF hazard above still applies."
+    },
+    {
+      "doc_id": "caleiro_2013",
+      "relevance": "Termination-measure design (task 434 blocker): proves decidability for S5 combined with linear tense logic via the MOSAIC METHOD — bounding the model-search space by a finite set of compatible local configurations ('mosaics') rather than by a counter over an unboundedly-growing time set. This is the closest structural analogue to TM's S5-modal + linear-temporal combination in the corpus and the primary candidate for a mosaic-bound termination pattern that could replace/supplement the refuted mintPotential-based routes (see MintBound.lean section C9 entries 14). A mosaic bound is defined over local satisfiability configurations rather than ord.timeCount directly, which is the property that would need to survive TimeOrdering.identifyTime lowering timeCount. | Task 696: candidate technique for the finite witness-family / certificate construction the branching substrate redesign must support.",
+      "reason": "Task 435 (curate_termination_literature_subindex): primary mosaic-method source for the fourth termination-measure component blocking task 434 Phase 7/8 (MintPaysForTime). Registered as the verified parent rather than its 7 secNN children — see plan Phase 3 granularity decision."
+    },
+    {
+      "doc_id": "20110405172837",
+      "relevance": "Primary historical source: introduces tree-structured (branching) time and the S4 tree matrix; directly relevant to what a branching substrate must model.",
+      "added": "2026-09-28",
+      "source": "discover",
+      "reason": "Task 696: Kripke's 1958 letter to Prior — the historical origin of branching-time (tree) semantics for tense logic; background for the branching witness substrate design. Ingested from the Zotero item for Ploug & Øhrstrøm 2012.",
+      "hazard": "CONTENT MISMATCH RESOLVED 2026-09-28: the corpus text under this doc_id is Kripke's 3-page letter (Prior Nachlass scan 20110405172837.pdf), not the Ploug & Øhrstrøm 2012 Synthese paper, which is NOT in the corpus. The global index entry was corrected to the letter's true title/author/year; the doc_id remains the archive timestamp. The same Zotero item carries a second archival scan (20111123175540.pdf) not yet ingested. Cite as Kripke to Prior, 3 Sept 1958, by page."
     }
   ]
 }

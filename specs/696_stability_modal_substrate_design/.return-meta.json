@@ -1,40 +1,15 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/696_stability_modal_substrate_design/plans/02_trans-arrival-substrate-refactor.md",
-      "summary": "Twelve-phase T-arrival substrate refactor: adds the arrival-pruned trans datum and a lift closure field to SharingSkeleton, moves Thread.step and (C1')'s untl/snce clauses onto trans across both the Formula and PlusFormula sides, lands the untl-side incompleteness first and both gate families last, and keeps the C2 axiom baseline and theorem-index rows in step at every phase boundary."
-    }
-  ],
+  "status": "in_progress",
+  "started_at": "2026-09-29T00:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, parsing delegation context and plan"
+  },
   "metadata": {
-    "session_id": "sess_1790680388_3d4c26_696",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1790680388_3d4c26",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 12,
-    "estimated_hours": 21.5,
-    "dependency_waves": 10
-  },
-  "memory_candidates": [
-    {
-      "content": "Keeping a large Lean substrate refactor green at every phase boundary: when a structure's defining relation must change (here SharingSkeleton's Thread.step moving from share (u+1) to a new trans datum), do not flip the definition and then repair consumers. Instead (1) land the hard new lemmas free-standing over explicitly-passed raw data first, so they need no structure change; (2) add the new structure fields plus every producer as one pre-declared atomic-batch phase, discharging the new proof obligation with the step-1 lemmas; (3) introduce a derived projection lemma (thread_share_succ) that is definitionally the OLD field, and rewrite every consumer to go through it while the old meaning still holds -- this phase is behaviour-preserving and green; (4) flip the definition, redefining the projection lemma as the new field's second component, so no consumer needs a second edit. Steps 3 and 4 split what would otherwise be one unavoidably red edit across many files into one green phase plus one small definition-site-only phase. The same shape applies to any refactor where a widely-consumed field weakens.",
-      "category": "PATTERN",
-      "source_artifact": "specs/696_stability_modal_substrate_design/plans/02_trans-arrival-substrate-refactor.md",
-      "confidence": 0.78,
-      "suggested_keywords": ["lean4", "refactor-phasing", "atomic-batch", "green-at-every-phase", "substrate-change", "consumer-insulation"]
-    }
-  ],
-  "user_decision": {
-    "question": "Task 694 prescribes the trans datum this plan implements as a strict subset (no arrival pruning, no closure field, no untl-side result, no gate families). Both research rounds recommend folding it in. How should task 694 be disposed of?",
-    "options": [
-      "Abandon task 694 as superseded by task 696's plan",
-      "Re-scope task 694 to the deferred exact-closure work (LiftWindow, liftable_of_liftWindow, Decidable LiftWindow), which this plan lists as a non-goal",
-      "Leave task 694 as it stands and accept the duplicated work"
-    ],
-    "recommended": "Re-scope task 694 to the deferred exact-closure work (LiftWindow, liftable_of_liftWindow, Decidable LiftWindow), which this plan lists as a non-goal",
-    "blocking": false
-  },
-  "next_steps": "Run /implement 696 to execute the plan",
-  "dispatch_seq": 3
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
+  }
 }

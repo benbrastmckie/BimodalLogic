@@ -1,21 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 4,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/649_systematic_lean_code_environment_reference_manual/reports/01_lean-code-environment.md",
-      "summary": "Re-measured current-state inventory (exact leansrc/raw-block counts, confirmed column-wrap and spacing defects via actual typst compile + pdftoppm renders of 8 pages), the ax-lean-appendix.typ prototype mechanism, a newly-found nested-width tax inside thmbox environments, existing undocumented JSON/Python syntax-highlighting inconsistency, the leansrc/leanref cross-project convention status, and a critical enforcement-surface finding steering the new mechanical check toward scripts/typst-sync-check.sh (git-tracked) rather than .claude/scripts/typst-element-lint.sh (gitignored deploy artifact)."
+      "type": "plan",
+      "path": "specs/649_systematic_lean_code_environment_reference_manual/plans/01_lean-code-environment.md",
+      "summary": "Nine-phase plan promoting the Lean appendix's file-local code-presentation rules to one book-wide Typst environment with two declared kinds, migrating all 50 code blocks, adding a Check 4 to the tracked drift detector, and documenting the budget and fidelity policy."
     }
   ],
-  "next_steps": "Proceed to /plan (or orchestrator plan phase) for task 649: design the single environment (kind discrimination, geometry, atomicity mechanism, column budget re-validated at the ~332pt nested width, syntax-highlighting decision with before/after renders, leanref disposition) and extend scripts/typst-sync-check.sh with the new mechanical check.",
   "metadata": {
     "session_id": "sess_1790680388_3d4c26_649",
-    "agent_type": "typst-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "typst-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 9,
+    "estimated_hours": 13,
+    "dependency_waves": [[1], [2], [3], [4, 6], [5], [7], [8], [9]]
   },
-  "modified_files": [
-    "specs/649_systematic_lean_code_environment_reference_manual/reports/01_lean-code-environment.md"
-  ]
+  "memory_candidates": [
+    {
+      "content": "When planning a mechanical enforcement check for this repository, the target script must be git-tracked. The typst element lint and chapter-quality check live under .claude/scripts/, which is gitignored and regenerated from an external source store, so an edit there is silently wiped by the next deploy and violates the source-store/deploy boundary rule. scripts/typst-sync-check.sh is the tracked, extensible enforcement surface for anything about typst/, and its Check 1 already carries reusable machinery for resolving an identifier against live non-Boneyard Lean source across multiple source roots with a whitelist escape hatch. Prefer extending it with a new named check over touching any deployed lint.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/649_systematic_lean_code_environment_reference_manual/plans/01_lean-code-environment.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["enforcement", "typst-sync-check", "deploy-boundary", "gitignored-scripts", "lint-placement"]
+    }
+  ],
+  "next_steps": "Run /implement 649 to execute the plan",
+  "dispatch_seq": 6
 }

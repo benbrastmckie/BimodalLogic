@@ -1,7 +1,7 @@
 # Implementation Plan: Task #696
 
 - **Task**: 696 - stability_modal_substrate_design
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 21.5 hours
 - **Dependencies**: 700 (complete)
 - **Research Inputs**: specs/696_stability_modal_substrate_design/reports/01_stability-modal-substrate-design.md, specs/696_stability_modal_substrate_design/reports/02_trans-redesign-gate-verification.md
@@ -124,7 +124,7 @@ parallel pair in the code phases: they touch disjoint directories. Phases 1 and 
 independent of each other but both touch the repository root's scripts or the skeleton, so
 running them sequentially is also fine.
 
-### Phase 1: Land the `untl`-side incompleteness [NOT STARTED]
+### Phase 1: Land the `untl`-side incompleteness [IN PROGRESS]
 
 **Goal**: Put the `untl`-side of the present defect on the record, from the two archived
 round-1 probes, before the redesign removes the ability to state it. This also corrects the two
