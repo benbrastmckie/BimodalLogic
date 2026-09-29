@@ -11,8 +11,8 @@ next_project_number: 706
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,701,703,705 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650,704 | 298,464,502,563,649,703 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,650,664,701,703,705 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,704 | 298,464,502,563,703 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -98,8 +98,7 @@ next_project_number: 706
 
 ### Reference Book
 
-649 [IMPLEMENTING] — Define one Typst environment for presenting Lean code in...
-  └─ 650 [NOT STARTED] — Define-before-use audit of...
+650 [NOT STARTED] — Define-before-use audit of...
 
 ### Verification
 
@@ -218,12 +217,13 @@ CONSTRAINTS. Re-verify every Lean fact against live (non-Boneyard) source under 
 ---
 
 ### 649. Systematic lean code environment reference manual
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: Task 647, Task 648
 - **Research**: [649_systematic_lean_code_environment_reference_manual/reports/01_lean-code-environment.md]
 - **Plan**: [649_systematic_lean_code_environment_reference_manual/plans/01_lean-code-environment.md]
+- **Summary**: [649_systematic_lean_code_environment_reference_manual/summaries/01_lean-code-environment-summary.md]
 
 **Description**: Define one Typst environment for presenting Lean code in typst/template.typ and use it systematically throughout the Bimodal Reference Manual (typst/BimodalReference.typ and every file under typst/chapters/), so that every Lean code block is clear and is presented the same way. This is a formatting and structure task: it changes how code is displayed, never what the code or the prose says.
 
