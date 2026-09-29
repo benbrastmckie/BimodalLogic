@@ -194,7 +194,8 @@ LANGUAGE_FILE_LAYERS = {
     "PlusLanguage": {
         "Axioms": 0, "Derivation": 0, "Formula": 0, "Substitution": 0,
         "Subformulas": 0,
-        "PlusDeterminism": 1, "PlusLimitClosure": 1, "PlusNonValidities": 1, "PlusPasting": 1,
+        "PlusDeterminism": 1, "PlusIntTransfer": 1, "PlusLimitClosure": 1,
+        "PlusNonValidities": 1, "PlusPasting": 1,
         "PlusStateLocal": 1, "PlusTruth": 1, "PlusValidity": 1,
     },
     "StarLanguage": {

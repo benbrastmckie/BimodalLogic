@@ -480,6 +480,7 @@ import FormalSystem.PlusLanguage.Axioms
 import FormalSystem.PlusLanguage.Derivation
 import FormalSystem.PlusLanguage.Formula
 import FormalSystem.PlusLanguage.PlusDeterminism
+import FormalSystem.PlusLanguage.PlusIntTransfer
 import FormalSystem.PlusLanguage.PlusLimitClosure
 import FormalSystem.PlusLanguage.PlusNonValidities
 import FormalSystem.PlusLanguage.PlusPasting

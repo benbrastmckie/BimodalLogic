@@ -16,6 +16,7 @@ import FormalSystem.PlusLanguage.PlusNonValidities
 import FormalSystem.PlusLanguage.PlusDeterminism
 import FormalSystem.PlusLanguage.PlusStateLocal
 import FormalSystem.PlusLanguage.PlusLimitClosure
+import FormalSystem.PlusLanguage.PlusIntTransfer
 
 /-!
 # `FormalSystem.PlusLanguage` — the language L⁺, its logic TM⁺, and its semantics
@@ -61,6 +62,9 @@ proof system mirroring `ProofSystem.DerivationTree` constructor for constructor.
 - `PlusLanguage.PlusStateLocal` — the state-locality fragment of L⁺ and its headline `φ ↔ ⊡φ`
 - `PlusLanguage.PlusLimitClosure` — the limit-closure formula `blc` and its validity at `.Base`,
   through a general Zorn-plus-extension lemma for chain-closed properties of partial histories
+- `PlusLanguage.PlusIntTransfer` — **carrier normalization for L⁺**: `PlusValidZTime φ ↔
+  PlusValidInt φ`, the twin of `Semantics/IntTransfer.lean`'s `validZTime_iff_validInt`, through
+  the seven-case truth transport `plusTruthAt_map`
 
 The cross-language bridges `Semantics/DeterministicBridge.lean` and
 `Semantics/StateLocalTransfer.lean` stay at the `Semantics/` root, because each spans two
