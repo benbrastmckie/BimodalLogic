@@ -703,6 +703,17 @@ warnings and the subtree is sorry-free.
      with a compensating `mid` adjustment that preserves the `-1 → 0` edge. Not known to exist;
      would need research before it is planned.
 
+- **The reach is budget-limited in *both* directions, which narrows the choice.** A rightward
+  shift (`PlusLabelledLasso.shiftBy`) spends `mid` budget. The symmetric leftward shift — move
+  `m` entries off the front of `mid` onto the end of `back` — spends `back` budget instead, and
+  is limited by `m ≤ |mid| ≤ plusMidBoundC` besides. So the reachable marks span an interval of
+  order `plusCompressionBound Γ Del` whichever direction is taken. Note the consequence for
+  resolution 2: with a common cycle length the demand spread falls to about
+  `|back| + |mid| + |fwd| ≈ 3 · plusCompressionBound Γ Del`, which still exceeds the
+  single-segment budget, so resolution 2 would most likely have to be **combined with** a modest
+  widening rather than replacing it. This was derived, not measured, and should be re-checked
+  before it is planned on.
+
 - **Recommendation**: resolution 1. It is the only one that neither reopens a landed proof nor
   depends on an unproved device, and the widened bound is stated honestly in the theorem rather
   than concealed. It does change the Lean Challenge Statement, which is why it is being asked

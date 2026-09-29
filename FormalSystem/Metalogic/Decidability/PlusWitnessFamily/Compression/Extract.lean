@@ -636,11 +636,15 @@ def shiftBy (Λ : PlusLabelledLasso C) (k : ℕ) : PlusLabelledLasso C where
 @[simp] theorem shiftBy_fwd (Λ : PlusLabelledLasso C) (k : ℕ) :
     (Λ.shiftBy k).fwd = Λ.fwd := rfl
 
-@[simp] theorem shiftBy_back_length (Λ : PlusLabelledLasso C) (k : ℕ) :
+/-- The leftward cycle keeps its length under a shift. Not `@[simp]`: `shiftBy_back` and
+`shiftBack_length` already put it in simp normal form. -/
+theorem shiftBy_back_length (Λ : PlusLabelledLasso C) (k : ℕ) :
     (Λ.shiftBy k).back.length = Λ.back.length := by
   rw [shiftBy_back, shiftBack_length]
 
-@[simp] theorem shiftBy_mid_length (Λ : PlusLabelledLasso C) (k : ℕ) :
+/-- The window grows by exactly the shift. Not `@[simp]`: `shiftBy_mid` and `preBlock_length`
+already put it in simp normal form. -/
+theorem shiftBy_mid_length (Λ : PlusLabelledLasso C) (k : ℕ) :
     (Λ.shiftBy k).mid.length = k + Λ.mid.length := by
   rw [shiftBy_mid, List.length_append, preBlock_length]
 
