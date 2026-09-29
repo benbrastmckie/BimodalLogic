@@ -1,7 +1,7 @@
 # Implementation Plan: Task #696
 
 - **Task**: 696 - stability_modal_substrate_design
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 21.5 hours
 - **Dependencies**: 700 (complete)
 - **Research Inputs**: specs/696_stability_modal_substrate_design/reports/01_stability-modal-substrate-design.md, specs/696_stability_modal_substrate_design/reports/02_trans-redesign-gate-verification.md
@@ -771,7 +771,7 @@ post-Phase-10 tree; if `stabFamily` now carries a non-trivial `trans`, restate t
 
 ---
 
-### Phase 12: Documentation, hand-off contract, and the full gate set [NOT STARTED]
+### Phase 12: Documentation, hand-off contract, and the full gate set [COMPLETED]
 
 **Goal**: Bring every prose account of the substrate into line with what now exists, record the
 export contract's additive extension, and run the complete gate set as the task's closing
@@ -779,26 +779,29 @@ evidence.
 
 **Tasks**:
 
-- [ ] Rewrite `Sharing/README.md`'s `### Correction: (C1') is only half a repair` and
+- [x] Rewrite `Sharing/README.md`'s `### Correction: (C1') is only half a repair` and
       `### (c) What a follow-up needs` to describe the landed design rather than a proposal, and
-      keep the "position = history type" paragraph added in Phase 1.
-- [ ] Update `## The substrate is label-free, and lives on SharingSkeleton` and
+      keep the "position = history type" paragraph added in Phase 1. *(the first section's heading had
+      drifted to `### Correction: (C1') is not a repair on either temporal side`; it is now
+      `### Correction: (C1') over \`share\` was not a repair; (C1') over \`trans\` is`, and
+      `### (c)` is now `### (c) What the follow-up delivered`)*
+- [x] Update `## The substrate is label-free, and lives on SharingSkeleton` and
       `## The thread characterization replaces the orbit characterization` for the fourth datum
       and the `lift` field.
-- [ ] Update `## Hand-off to the consuming model checker` with `transBack` / `transMid` /
+- [x] Update `## Hand-off to the consuming model checker` with `transBack` / `transMid` /
       `transFwd` as three optional lists of Boolean matrices whose lengths equal the
       corresponding `rep` lists, defaulting to the full relation when absent, and state
       explicitly that the change is additive and the accepting branch's `Refutes Γ Del` codomain
       is unchanged.
-- [ ] Update `PlusWitnessFamily/README.md`'s `## The six conditions` and
+- [x] Update `PlusWitnessFamily/README.md`'s `## The six conditions` and
       `## What this certificate cannot refute` — the latter now records what the certificate
       *can* refute, with both gate families named.
-- [ ] Record the (C2') limitation as re-examined and inherited, with the reason: the propagation
+- [x] Record the (C2') limitation as re-examined and inherited, with the reason: the propagation
       lemmas consume exactly the relation `θ.step` supplies, so the argument transfers verbatim
       and the limitation is about the backward region being a path, not about the substrate datum.
-- [ ] Note the deferred exact closure (`LiftWindow`, `liftable_of_liftWindow`,
+- [x] Note the deferred exact closure (`LiftWindow`, `liftable_of_liftWindow`,
       `Decidable LiftWindow`) as named follow-up work.
-- [ ] Run the full gate set and record the results.
+- [x] Run the full gate set and record the results.
 
 **Timing**: 1.5 hours
 
@@ -828,19 +831,19 @@ evidence.
 
 ## Testing & Validation
 
-- [ ] `lake build` green at every phase boundary, and from clean at the end.
-- [ ] Zero sorries across both touched directories, and no new axioms: every pinned declaration
+- [x] `lake build` green at every phase boundary, and from clean at the end.
+- [x] Zero sorries across both touched directories, and no new axioms: every pinned declaration
       reports `[propext, Classical.choice, Quot.sound]`.
-- [ ] `plusTruth_iff_mem`, `plusRefutes_of_certifies` and `total_eq_thread` statements are
+- [x] `plusTruth_iff_mem`, `plusRefutes_of_certifies` and `total_eq_thread` statements are
       byte-identical to their pre-refactor form.
-- [ ] Non-vacuity by construction, both temporal sides: `plusCertifies_stabSnce_example` and
+- [x] Non-vacuity by construction, both temporal sides: `plusCertifies_stabSnce_example` and
       `plusCertifies_stabUntl_example` are six-condition certificates at non-trivial sharing.
-- [ ] No re-derivation of the defect: `not_snce_share_congr` and `not_untl_shift_share_congr`
+- [x] No re-derivation of the defect: `not_snce_share_congr` and `not_untl_shift_share_congr`
       show the redesigned (C1') is satisfied by families on which the congruences fail.
-- [ ] `bash scripts/check-module-invariants.sh` passes at every phase boundary, with the C2 row
+- [x] `bash scripts/check-module-invariants.sh` passes at every phase boundary, with the C2 row
       set changing only in the phase that changes the corresponding declarations.
-- [ ] `bash scripts/check-evidence-probes.sh` passes with the new obstruction probe wired.
-- [ ] `docs/theorem-index.md` rows match the tree exactly: no row names a declaration that no
+- [x] `bash scripts/check-evidence-probes.sh` passes with the new obstruction probe wired.
+- [x] `docs/theorem-index.md` rows match the tree exactly: no row names a declaration that no
       longer exists, and every new pinned declaration has a row.
 
 ## Artifacts & Outputs

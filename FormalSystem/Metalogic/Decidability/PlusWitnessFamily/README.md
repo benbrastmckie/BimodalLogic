@@ -24,7 +24,7 @@ contract is unchanged in name, meaning and shape; this subtree is a parallel add
 | | Condition | Where | Decided by |
 |---|---|---|---|
 | (C0) | `PlusAtomCoherent` — indices naming the same state carry the same atoms | `Predicates.lean` | `decidablePlusAtomCoherent` (`Decide.lean`) |
-| (C1') | `PlusLocalCoherentShare` — local coherence, temporal clauses taken across shared states. Its `snce` clause quantifies the predecessor over the `share`-class at the label's **own** time, which forces that class to agree on every past-tense label; see *What this certificate cannot refute* below for the price | `Predicates.lean` | `decidablePlusLocalCoherentShare` (`Decide.lean`) |
+| (C1') | `PlusLocalCoherentShare` — local coherence, temporal clauses taken across **succession**: the `untl` unfolding over `trans t i j`, the `snce` unfolding over `trans (t-1) k i`. An earlier version quantified both over `share`-classes, which collapsed the branching; see *What this certificate can and cannot refute* below | `Predicates.lean` | `decidablePlusLocalCoherentShare` (`Decide.lean`) |
 | (C2') | `PlusThreadFulfilling` — every **thread** discharges its eventualities | `Predicates.lean` | jointly with (C1'), `decidablePlusCoherentShareAndFulfilling` (`Fulfil.lean`) |
 | (C3) | `PlusBoxFaithful` — the box guess is right at every position | `Predicates.lean` | `decidablePlusBoxFaithful` (`Decide.lean`) |
 | (C4) | `PlusTarget` — a time where every premise is labelled and no conclusion is | `Predicates.lean` | `decidablePlusTarget` (`Decide.lean`) |
@@ -39,6 +39,15 @@ relative to (C1') — the far-left case of `plusThreadFulfilling_of_window` walk
 the window by (C1') propagation rather than folding it in — so no standalone
 `Decidable PlusThreadFulfilling` instance exists. What exists is a `Decidable` *term* taking a
 (C1') proof, plus the genuine instance on the conjunction.
+
+**That limitation was re-examined under the succession redesign, not inherited by default.** It
+survives, and the reason is now known: the window reduction's far-left and far-right cases
+consume exactly the relation a thread's step supplies, so re-quantifying (C1') over `trans`
+transferred the argument verbatim and needed no new hypothesis. The limitation is about the
+position graph's backward region being a path rather than a cycle — a fact about the *graph* —
+which is why changing the substrate datum did not touch it. Closing it would need that region to
+carry a cycle edge alongside its existing one, with the fixpoint lemmas re-proved against the
+strictly larger walk set.
 
 ## (C5), stated
 
@@ -65,69 +74,63 @@ state at `u`. Three properties of that statement are the whole design:
    reports all six explicit hypotheses load-bearing, with `hstab`'s break located in the `stab`
    case and nowhere else.
 
-## What this certificate cannot refute
+## What this certificate can and cannot refute
 
-> **STATUS — SUPERSEDED BY THE `trans` SUBSTRATE REDESIGN.** Everything in this section
-> describes the certificate as it stood *before* (C1')'s two temporal clauses were re-quantified
-> over `trans`, the arrival-pruned succession relation. All seven declarations it names are now
-> either retired (`snce_share_congr`, `untl_shift_share_congr`, `not_plusCertifies_stabSnce`,
-> `not_plusCertifies_stabSnce_premise`, `not_plusCertifies_stabUntl`) or repurposed as the
-> targets the new certificates must refute (`not_plusValidZTime_stabSnce`,
-> `not_plusValidZTime_stabUntl`). The root cause is gone: succession is strictly finer than
-> state-identity at a time, so the doubled clause reading that produced the congruences no longer
-> type-checks. `Incompleteness.lean`'s header states what the module records now, and
-> `WitnessFamily/Sharing/Agreement.lean`'s `snce_pred_congr` and `untl_succ_congr` state the
-> residual agreement the clauses still force. This section is retained as the design record of
-> the defect, and is scheduled for a full rewrite alongside the in-tree certificates.
+The certificate is **sound**, and it is now known to be non-vacuous on the hardest targets it
+has: a stability modal over a tense operator, in both temporal directions. That was not always
+so, and the history is worth keeping, because the repair is only intelligible as an answer to a
+specific defect.
 
-The certificate is **sound** and **incomplete**, and the incompleteness is not a matter of the
-bound being too small: for one family of targets the certificate class is *empty*.
-`Incompleteness.lean` proves it, in seven declarations, on both temporal sides.
+### What went wrong, and is now fixed
 
-`snce_share_congr` is the root cause, and it is a consequence of (C1') alone. Reading the `snce`
-clause twice — once at `i` with the shared index `j`, once at `j` with itself by reflexivity of
-`share` — forces any two indices naming the same world state at `t` to agree on every `snce`
-formula of the closure. Past-tense truth in a presented model is therefore a function of the world
-state.
+(C1')'s `snce` clause used to quantify its predecessor over the `share`-class at the label's own
+time. Reading that clause twice — once at `i` with the shared index `j`, once at `j` with itself
+by reflexivity of `share` — forced any two indices naming the same world state at `t` to agree on
+every `snce` formula of the closure. Past-tense truth in a presented model was therefore a
+function of the world state, which is exactly what `⊡` quantifies over, so (C5) could never find
+the class member it demands. No family certified any instance of `(g S e) → ⊡(g S e)`, in either
+placement. The `untl` clause carried the same defect displaced by one step, and closed the other
+direction too.
 
-`not_plusCertifies_stabSnce` is the consequence: **no** `PlusSharingWitnessFamily` certifies any
-instance of the schema `(g S e) → ⊡(g S e)`, at any time and at any size.
-`not_plusCertifies_stabSnce_premise` shows the same for the negated-premise placement, so moving
-the target between the premise and conclusion lists is not an escape. Only (C1')'s
-`imp`/`bot`/`snce` clauses, (C4) and (C5) are used — not (C0), not (C2'), not (C3), and no bound.
-(C5) demands a `share`-class member missing `g S e` wherever `⊡(g S e)` is absent, and
-`snce_share_congr` says the class has none.
+Five declarations recorded that, and all five are retired. `Incompleteness.lean`'s header says
+what the module holds now.
 
-`not_plusValidZTime_stabSnce` closes the gap: at `g := ⊤`, `e := p` the instance is `Pp → ⊡Pp`,
-refuted on the permissive ℤ-frame of `PlusLanguage/PlusNonValidities.lean`. So the empty class is
-not the vacuous fact that the schema is valid. The certificate misses a real ℤ-time non-validity,
-and the L⁺ analogue of the deterministic route's `exists_witnessFamily_of_not_validZTime` is
-**false** against these six conditions.
+The repair was at the substrate level, as the rule of thumb predicted: any condition quantifying
+over the one-step *reach* of a position collapses whenever that reach is a whole `share`-class,
+at either time and in either direction, so narrowing or re-timing a clause while leaving the
+substrate alone relocates the problem rather than removing it.
+[The Sharing README](../WitnessFamily/Sharing/README.md) records the fourth periodic datum that
+separates succession from state-identity, and (C1')'s two clauses now quantify over it: the
+`untl` unfolding over `trans t i j`, the `snce` unfolding over `trans (t-1) k i`.
 
-**Soundness versus completeness, explicitly.** `plusTruth_iff_mem` and `plusRefutes_of_certifies`
-are untouched: a family that does meet the six conditions still presents a genuine countermodel,
-and nothing here weakens that. What fails is completeness of the certificate *class*. Nor is this
-a refutation of stability-modal decidability — it says only that this certificate cannot be the
-route, because a procedure enumerating certified families would answer "valid" for `Pp → ⊡Pp`.
+### What the certificate refutes now
 
-**The `untl` side fails too, and this is machine-checked rather than inspected.** An earlier
-version of this section called the future-tense half defect-free by inspection, on the ground
-that its clause quantifies over the class at `t+1` rather than at the label's own time. That
-reading was wrong. `untl_shift_share_congr` reads the one clause at `t - 1`, where `share t i j`
-*is* `share ((t-1)+1) i j`, and recovers the same forced class agreement on the one-step
-unfolding at `t`. `not_plusCertifies_stabUntl` turns that into an empty certificate class for
-`Fp → (¬p → ⊡Fp)`, and `not_plusValidZTime_stabUntl` makes that emptiness a completeness failure
-rather than a vacuity. The extra `¬p` antecedent is exactly what the shifted congruence needs:
-the congruence controls the unfolding `p ∨ (⊤ ∧ Fp)`, so the `p` disjunct has to be ruled out at
-the witnessing index.
+Two families in `Examples.lean`, one per temporal direction, each at **non-trivial** sharing:
 
-**Where the fix belongs.** Not in a re-wording of (C1'), and not in re-timing one clause's
-quantifier to match the other's. The rule of thumb the proofs expose is general: any condition
-quantifying over the one-step *reach* of a position collapses whenever that reach is a whole
-`share`-class, at either time and in either temporal direction. Since both clauses' reaches are
-`share`-classes, narrowing or re-timing either one while leaving the substrate alone relocates
-the problem rather than removing it. The repair is at the substrate level, and
-[the Sharing README](../WitnessFamily/Sharing/README.md) records what it requires.
+| Family | Target | Certificate | Sharing |
+|---|---|---|---|
+| A | `Pp → ⊡Pp` | `plusCertifies_stabSnce_example` | indices `0` and `1` name one state from the origin on, and disagree on `Pp` there (`famA_separates_snce`) |
+| B | `Fp → (¬p → ⊡Fp)` | `plusCertifies_stabUntl_example` | indices `0` and `1` name one state up to the origin, and disagree on the unfolding `p ∨ (⊤ ∧ Fp)` there (`famB_separates_untl`) |
+
+Both get their non-trivial sharing from index-identity succession: the indices share states
+without any thread crossing between them, which is precisely the separation the single relation
+made inexpressible. `targetA_eq` and `targetB_eq` record that each family's target is the schema
+instance `Incompleteness.lean` names, on the nose, and `not_plusValidZTime_stabSnce` /
+`not_plusValidZTime_stabUntl` record that both are genuine ℤ-time non-validities — so these are
+certificates for real countermodels, not for validities.
+
+### Why this is not a redesign that reproduced the defect in new spelling
+
+A redesign can break an old proof term while still entailing the old statement, so "the
+congruence no longer elaborates" would settle nothing on its own.
+`Incompleteness.lean`'s `not_snce_share_congr` and `not_untl_shift_share_congr` *refute* the two
+retired statements, on Family A and Family B respectively. The redesigned (C1') is satisfied by
+families on which those congruences are false, which is the strongest form the check can take.
+
+**Soundness was never at issue.** `plusTruth_iff_mem` and `plusRefutes_of_certifies` are
+byte-identical in statement across the whole redesign: a family meeting the six conditions always
+presented a genuine countermodel. What failed, and is now repaired, was completeness of the
+certificate *class* on these two targets.
 
 ## A parallel export, not a widened one
 
@@ -165,9 +168,11 @@ What is new is everything that reads a label.
 - `Fulfil.lean` — the two fixpoints at `PlusFormula` and the (C2') window reduction
 - `Agreement.lean` — the presented model, `plusTruth_iff_mem`, `PlusCertifies`, `PlusRefutes`
   and `plusRefutes_of_certifies`
-- `Examples.lean` — the two-lasso non-vacuity witness and the deterministic diagonal
-- `Incompleteness.lean` — `snce_share_congr` and the three declarations showing the certificate
-  class is empty for a `snce` under a `⊡`
+- `Examples.lean` — the (C5) non-vacuity witness, the deterministic diagonal, and the two gate
+  families with their certificates (`plusCertifies_stabSnce_example`,
+  `plusCertifies_stabUntl_example`)
+- `Incompleteness.lean` — the three stability targets, their ℤ-time non-validity, and the two
+  refutations of the retired congruences
 
 ## Dependencies
 

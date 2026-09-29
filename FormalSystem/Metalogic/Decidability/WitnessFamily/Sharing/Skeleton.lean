@@ -15,9 +15,10 @@ import Mathlib.Order.SuccPred.LinearLocallyFinite
 # The Label-Free Branching Substrate
 
 `SharingWitnessFamily` carries two independent data: a **label row** — the lassos, their decoded
-`Finset Formula` labels, and the box guess — and a **periodic representative structure** — three
-segments of maps `Fin n → Fin n` whose decoding says which lasso indices name the same world
-state at each time.
+`Finset Formula` labels, and the box guess — and a **periodic substrate** — three segments of
+maps `Fin n → Fin n` whose decoding says which lasso indices name the same world state at each
+time, together with three segments of Boolean matrices whose decoding says which index may
+*succeed* which.
 
 Every construction the branching device is built from stands on the second datum alone. The
 per-time equivalence `share`, the threads that step across it, the quotient frame over `intOrder`
@@ -64,11 +65,43 @@ arbitrary collapse.
 *choice of representatives* (`rep u i` is itself `share u`-equivalent to `i`), which is what the
 quotient carrier and the specialization consume.
 
+## Succession is a separate relation, and `lift` is what that costs
+
+`share u i j` answers "do `i` and `j` name the same world state at `u`". `trans u i j` answers
+"may a history on `i` at `u` continue on `j` at `u + 1`". These are different questions, and
+while `Thread.step` read `share (u+1) (idx u) (idx (u+1))` one relation answered both — which is
+what made a backward coherence clause, written in the only relation available, quantify over the
+`⊡` modality's own class and collapse the branching it was meant to admit.
+
+`trans` is **arrival-pruned**: `transRaw u i j = true ∧ share (u+1) i j`. The second conjunct is
+what keeps the frame untouched. `Step u i j := ∃ i', share u i i' ∧ share (u+1) i' j` is
+unchanged, and so is every frame lemma; succession is free to be strictly sparser than
+state-identity without the frame noticing.
+
+The price is the `lift` field. While succession *was* `share (u+1)`, "every world history is a
+thread's trace" came free: a `Step`-path's own intermediates already formed a thread. Once
+succession is separate a `Step`-path may cross between indices no `trans`-step connects, so
+`LiftableRaw` is **demanded** rather than derived, label-free and beside `rep_idem`, which is
+what keeps `total_eq_thread` stated exactly as it was. It is not a defensive field:
+`specs/evidence/stability-modal-substrate/closure-field-is-necessary.lean` exhibits a landed
+family for which it is false at index-identity succession.
+
+Three sufficient conditions discharge it in practice: `liftable_of_transFullOf` for a producer
+that does not constrain succession at all (every producer predating the redesign, which is why
+the fourth datum changed no theorem's content), and `liftable_of_constant_below` /
+`liftable_of_constant_above` for a producer discrete on one side of a cut and totally shared on
+the other.
+
 ## Main Definitions
 
-- `SharingSkeleton` — three periodic segments of representative maps on `Fin n`
+- `SharingSkeleton` — three periodic segments of representative maps on `Fin n`, three of
+  succession matrices at the same periods, and the `lift` obligation they create
 - `SharingSkeleton.rep` — the decoded bi-infinite representative map
 - `SharingSkeleton.share` — the per-time equivalence, as the kernel of `rep`
+- `SharingSkeleton.transRaw` — the decoded bi-infinite succession matrix
+- `SharingSkeleton.trans` — succession, arrival-pruned
+- `LiftableRaw` — every `Step`-path is tracked, up to `share`, by a succession path
+- `transFullOf` / `transIdOf` — the free-succession and no-hopping bundles
 
 ## Main Results
 
@@ -76,6 +109,11 @@ quotient carrier and the specialization consume.
 - `SharingSkeleton.rep_sub_back_length` / `rep_add_fwd_length` — the two periodicities
 - `SharingSkeleton.rep_idem'` — the decoded map is idempotent
 - `SharingSkeleton.decidableShare` — `share` is decidable
+- `SharingSkeleton.trans_refl'` — succession is reflexive, arrival pruning included
+- `liftable_of_transFullOf` / `liftable_of_constant_below` / `liftable_of_constant_above` — the
+  three sufficient conditions for `lift`
+- `SharingSkeleton.total_eq_thread` — every world history is a thread's trace, now proved from
+  `lift`
 -/
 
 set_option linter.style.longFile 1700

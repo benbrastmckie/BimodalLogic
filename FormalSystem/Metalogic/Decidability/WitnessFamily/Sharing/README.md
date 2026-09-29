@@ -34,11 +34,43 @@ across all four the tokens `Formula`, `.L `, `.lab` and `.bx` occurred **zero** 
 substrate is not *approximately* language-agnostic; it is exactly language-agnostic, and the
 `Formula` indexing it carried was incidental.
 
-`SharingSkeleton` (`Skeleton.lean`) is that datum on its own: an index count `n` and three
-periodic segments of representative maps `Fin n → Fin n`. Every construction the branching device
-is built from — `share`, the threads, the quotient frame over `intOrder`, and the world histories
-that frame admits — is a function of it, and `SharingWitnessFamily.skeleton` is the projection
+`SharingSkeleton` (`Skeleton.lean`) is that datum on its own: an index count `n`, three periodic
+segments of representative maps `Fin n → Fin n`, and — since the succession redesign — three
+further segments of Boolean succession matrices `Fin n → Fin n → Bool` at the representatives'
+own periods, plus the `lift` field they create. Every construction the branching device is built
+from — `share`, the threads, the quotient frame over `intOrder`, and the world histories that
+frame admits — is a function of it, and `SharingWitnessFamily.skeleton` is the projection
 through which the family inherits the whole theory rather than re-proving it.
+
+**The fourth datum, and why it is there.** `share u i j` answers "do `i` and `j` name the same
+world state at `u`". `trans u i j` answers "may a history on `i` at `u` continue on `j` at
+`u + 1`". While `Thread.step` read `share (u+1) (idx u) (idx (u+1))`, one relation carried both
+questions, and a backward coherence clause written in the only relation available could not help
+but quantify over the `⊡` modality's own class. Separating them is what the redesign did; the
+correction below records the defect that forced it and the certificates that now exist because of
+it.
+
+`trans` is **arrival-pruned**: `trans u i j` is `transRaw u i j = true ∧ share (u+1) i j`, the
+raw succession bit conjoined with the arrival share. That second conjunct is what keeps the frame
+untouched — `Step u i j := ∃ i', share u i i' ∧ share (u+1) i' j` is byte-identical to what it
+was, and every frame lemma with it — while still letting succession be strictly sparser than
+state-identity.
+
+**`lift` is a genuine obligation.** While succession *was* `share (u+1)`, "every world history is
+a thread's trace" came free: a `Step`-path's own intermediates already formed a thread. Once
+succession is a separate relation a `Step`-path may cross between indices that no `trans`-step
+connects, so `LiftableRaw` has to be demanded rather than derived, and it is demanded label-free,
+beside `rep_idem`, which is what keeps `total_eq_thread` stated exactly as it was. The field is
+not defensive: `specs/evidence/stability-modal-substrate/closure-field-is-necessary.lean` gives
+the landed (C5) witness the no-hopping succession bundle, changes nothing else, and shows
+`LiftableRaw` becomes false.
+
+Three sufficient conditions discharge `lift` in practice, all in `Skeleton.lean`:
+`liftable_of_transFullOf` for a producer that does not mean to constrain succession at all (and
+which every pre-redesign producer uses, so the fourth datum changed no theorem's content);
+`liftable_of_constant_below` and its mirror `liftable_of_constant_above` for a producer that is
+discrete on one side of a cut and shares totally on the other, which is the shape both gate
+families have.
 
 The four modules above are therefore re-export shells. Every name they have always exported still
 resolves at its original statement and with its original implicit/explicit argument structure;
@@ -110,18 +142,24 @@ Two details worth not rediscovering:
   by *absolute* time, so `share u` and `share (u + d)` are different relations for a general
   `d`. Time offsets therefore live in the history's parametrization — `total_eq_thread` carries
   an explicit `s : ℤ` and reads `θ.idx (s + t)` at time `s + t` — never in the thread.
-* **`Thread`'s step field is the tight one**, `share (u+1) (idx u) (idx (u+1))`, narrower than
-  the frame's `Step u i j = ∃ i', share u i i' ∧ share (u+1) i' j`. That costs nothing, because a
-  history's index at `u` may be chosen *knowing* the step it is about to take: the witness `i'`
-  supplied by `Step` is itself a legitimate name for the state at `u`, and is what the thread
-  records. There is no two-directional recursion and no gluing.
+* **`Thread`'s step field is `trans u (idx u) (idx (u+1))`**, the arrival-pruned succession
+  relation, narrower than the frame's `Step u i j = ∃ i', share u i i' ∧ share (u+1) i' j` and —
+  since the redesign — narrower than `share (u+1) (idx u) (idx (u+1))` too. Arrival pruning still
+  gives the sharing fact, which is what `thread_share_succ` exports and what every consumer that
+  predates the redesign reads. What it no longer gives is the converse: not every pair sharing
+  the arrival state is a step, and that gap is exactly the room the redesign bought.
+* **`total_eq_thread` is now proved from `lift`.** Its extraction half is unchanged: a world
+  history yields a `Step`-path. Its gluing half used to observe that the path's own intermediates
+  were consecutive in `share (u+1)`, hence a thread; with succession a separate relation that no
+  longer follows, and the tracking path is supplied by the skeleton's `lift` field instead. The
+  statement is byte-identical.
 
 ## Which conditions break under recombination, and which do not
 
 | Condition | Status | Why |
 |---|---|---|
 | (C0) `AtomCoherent` | **new, mandatory** | The branching carrier is a quotient, so the valuation reads a `share`-class; a `Quotient.lift` needs shared indices to agree on atoms. Without it the valuation is not even well defined |
-| (C1) `LocalCoherentLab` | **replaced** by (C1') `LocalCoherentShare`, and not repaired on either temporal side | Its two temporal clauses are stated per lasso, silently assuming a history never leaves the lasso it starts on. The branching form quantifies the `untl` unfolding over every shared successor and the `snce` unfolding over every shared predecessor. Both clauses collapse branching, at a completeness price the received account did not record — the `snce` half immediately, the `untl` half displaced by one step. See the correction below |
+| (C1) `LocalCoherentLab` | **replaced** by (C1') `LocalCoherentShare`, over `trans` | Its two temporal clauses are stated per lasso, silently assuming a history never leaves the lasso it starts on. The branching form quantifies the `untl` unfolding over succession *out of* `t` and the `snce` unfolding over succession *into* it. An earlier version quantified both over `share`-classes and collapsed branching on both temporal sides; see the correction below for that defect and for the repair |
 | (C2) `FulfillingLab` | **replaced** by (C2') `ThreadFulfilling` | It reads an eventuality's discharge off the one lasso the label sits on. The branching form is a universal path quantifier — `A[g U e]` — over every thread through the position |
 | (C3) `BoxFaithful` | **reused verbatim** | See the correction below |
 | (C4) `Target` | **reused verbatim** | It names a time on the main lasso and mentions neither the frame nor its histories |
@@ -146,78 +184,86 @@ redesign. The Lean reading refutes that: the two conditions that genuinely break
 (C2), both of which are stated *per lasso*. What (C3) needs is not a new statement but a new
 histories characterization underneath it, which is what `total_eq_thread` supplies.
 
-### Correction: (C1') is not a repair on either temporal side
-
-> **STATUS — SUPERSEDED BY THE `trans` SUBSTRATE REDESIGN.** This subsection and the two that
-> follow it record the defect as it stood *before* (C1')'s temporal clauses were re-quantified
-> over `trans`. The repair described further down as what "a follow-up needs" has landed: the
-> `untl` clause now reads `S.trans t i j` and the `snce` clause `S.trans (t - 1) k i`, and the
-> five declarations recording the empty certificate class were retired from
-> `PlusWitnessFamily/Incompleteness.lean` together with their C2 baseline and theorem-index rows.
-> Retained as the design record, and scheduled for a full rewrite alongside the in-tree
-> certificates.
+### Correction: (C1') over `share` was not a repair; (C1') over `trans` is
 
 The received account of this design named (C1') as *the* fix for recombination, with no
-qualification. The Lean reading shows it is not a fix at all: both temporal clauses fail, and
-they fail for one reason.
+qualification. The Lean reading refuted that for the clause as originally written, and the
+substrate redesign is what restored it. Both halves are machine-checked, and this section records
+them in that order because the second is only intelligible as an answer to the first.
 
-The two clauses look asymmetric, and an earlier version of this section read that asymmetry as a
-half-repair. The `snce` clause quantifies its predecessor over the `share`-class at the label's
-**own** time `t`; the `untl` clause quantifies its successor over the class at `t+1`. Read the
-`snce` clause twice — once at `i` with the shared index `j`, once at `j` with itself, using
-reflexivity of `share` — and it forces any two indices naming the same world state at `t` to
-agree on every `snce` formula of the closure. Past-tense truth in a presented model is a function
-of the world state, which is exactly the backward branching (C1') was supposed to admit.
+**The defect.** The two clauses looked asymmetric, and an earlier version of this section read
+that asymmetry as a half-repair. The `snce` clause quantified its predecessor over the
+`share`-class at the label's **own** time `t`; the `untl` clause quantified its successor over
+the class at `t+1`. Read the `snce` clause twice — once at `i` with the shared index `j`, once at
+`j` with itself, using reflexivity of `share` — and it forced any two indices naming the same
+world state at `t` to agree on every `snce` formula of the closure. Past-tense truth in a
+presented model was a function of the world state, which is exactly the backward branching (C1')
+was supposed to admit.
 
-The `untl` clause's extra step buys nothing. Reading it at `t - 1` instead of at `t` turns
-`share t i j` into `share ((t-1)+1) i j`, so the one clause at `(i, t-1)` applies to both `i` and
-`j`, and the two readings force class agreement on the one-step unfolding at `t`. The collapse is
-displaced by one step, not avoided.
+The `untl` clause's extra step bought nothing. Reading it at `t - 1` instead of at `t` turned
+`share t i j` into `share ((t-1)+1) i j`, so the one clause at `(i, t-1)` applied to both `i` and
+`j`, and the two readings forced class agreement on the one-step unfolding at `t`. The collapse
+was displaced by one step, not avoided — which is why re-timing one clause to match the other was
+never a repair.
 
-The price is a completeness failure on both sides, machine-checked on the L⁺ side where the
-stability modal exists to observe it. `PlusWitnessFamily/Incompleteness.lean` proves that no
-six-condition L⁺ family certifies any instance of `(g S e) → ⊡(g S e)` —
-`not_plusCertifies_stabSnce`, and `not_plusCertifies_stabSnce_premise` for the negated-premise
-placement — nor `Fp → (¬p → ⊡Fp)` (`not_plusCertifies_stabUntl`), while
-`not_plusValidZTime_stabSnce` and `not_plusValidZTime_stabUntl` show both targets are genuine
-ℤ-time non-validities. The certificate class is *empty* for them, not merely large.
-`snce_share_congr` and `untl_shift_share_congr` are the one-line root causes, and each uses (C1')
-and nothing else.
+The price was a completeness failure on both sides: no six-condition L⁺ family certified any
+instance of `(g S e) → ⊡(g S e)` or of `Fp → (¬p → ⊡Fp)`, while both targets are genuine ℤ-time
+non-validities. Five declarations in `PlusWitnessFamily/Incompleteness.lean` recorded that, and
+all five are now retired.
 
-**The rule of thumb**, stated once because it will recur, and stated correctly: a condition that
+**The rule of thumb** the defect exposed, stated once because it will recur: a condition that
 quantifies over the one-step **reach** of a position collapses whenever that reach is a whole
 `share`-class — at either time, and whichever temporal direction it points. Naming `t+1` rather
 than `t` is not what matters; being a `share`-class is. A condition is recombination-stable
 exactly when its quantifier ranges over something *other* than a class, which is why (C3)
 survives verbatim: its right-hand side quantifies the label pool and mentions no class at all.
 
-This also disposes of the obvious cheap repair. Re-timing the `snce` quantifier to `t - 1` by
-analogy with `untl` does not help, because the `untl` side is not the healthy one to imitate —
-both reaches are `share`-classes, and trading one timing for the other trades one side's defect
-for the other's.
-
-**Where the asymmetry comes from.** Not from the clause's wording, and so not fixable by
-re-wording it. `Thread.step` reads `share (u+1) (idx u) (idx (u+1))`: one-step succession is
+**Where the asymmetry came from.** Not from the clause's wording, and so not fixable by
+re-wording it. `Thread.step` read `share (u+1) (idx u) (idx (u+1))`: one-step succession was
 *defined* as membership of the same `share`-class at the arriving time. The single relation
-therefore carries two jobs — the `⊡` quantifier's class, and the thread's step — and a backward
-clause written in terms of the only relation available cannot help but quantify over the class.
-Separating those two jobs is a substrate change, not a clause change; `### (c) What a follow-up
-needs` below states what it takes.
+therefore carried two jobs — the `⊡` quantifier's class, and the thread's step — and a backward
+clause written in terms of the only relation available could not help but quantify over the
+class.
 
-**A position is a history type, and some neighbour agreement is therefore forced.** A repair
-that replaces the class-valued reach by a genuine succession relation does not, and should not,
-drive the residual agreement to nothing. An index at a time names a *history type* — a full
-bi-infinite labelling, not a world state — so two indices standing in the succession relation
-still constrain one another's labels at the one step they share. What the repair removes is the
-collapse of that constraint onto the whole `share`-class, which is what made past-tense truth a
-function of the world state. Constraints that survive between an index and its actual successors
-are semantically forced by what a position *is*, and reading them as a relapse into the defect
-misreads the defect: the defect was never neighbour agreement, it was neighbour agreement over a
-class that the `⊡` quantifier also ranges over.
+**The repair.** `SharingSkeleton` gained the fourth periodic datum described under *The substrate
+is label-free* above, `Thread.step` became `trans u (idx u) (idx (u+1))`, and (C1')'s two clauses
+were re-quantified: the `untl` clause over `S.trans t i j`, the `snce` clause over
+`S.trans (t-1) k i`. The two are now symmetric — succession out of `t`, succession into `t` —
+rather than one reading a class at `t` and the other a class at `t+1`. Succession is strictly
+finer than state-identity at a time, so the doubled clause reading that produced the congruences
+no longer type-checks.
+
+**The evidence that the repair is real, not cosmetic.** A redesign can reproduce a defect in a
+differently-spelled clause and still break the old proof term, so "the old theorem no longer
+elaborates" settles nothing. Four theorems settle it.
+
+* `PlusWitnessFamily/Examples.lean`'s `plusCertifies_stabSnce_example` and
+  `plusCertifies_stabUntl_example` are six-condition certificates, at `t = 0`, for the two
+  targets no family could certify before. Their sharing is **non-trivial**: Family A's indices
+  `0` and `1` name one world state from the origin on, Family B's up to and including it, and in
+  each case the two indices disagree on the relevant label at the origin.
+* `Incompleteness.lean`'s `not_snce_share_congr` and `not_untl_shift_share_congr` *refute* the
+  two retired congruence statements on those same families. The redesigned (C1') therefore does
+  not merely fail to prove them; it is satisfied by families on which they are false.
+
+Both families get their non-trivial sharing from the no-hopping succession bundle `transIdOf`:
+succession is index-identity while sharing is not, which is precisely the separation the single
+relation made inexpressible.
+
+**A position is a history type, and some neighbour agreement is therefore forced.** The repair
+does not, and should not, drive the residual agreement to nothing. An index at a time names a
+*history type* — a full bi-infinite labelling, not a world state — so two indices standing in the
+succession relation still constrain one another's labels at the one step they share.
+`Sharing/Agreement.lean` states exactly how much, as `untl_succ_congr` and `snce_pred_congr`:
+all the successors of one position agree on the `untl` unfolding, and all its predecessors agree
+on the `snce` unfolding. That is what a position *being* a history type requires, and it is not a
+relapse: the defect was never neighbour agreement, it was neighbour agreement over a class that
+the `⊡` quantifier also ranges over. Two indices sharing a state at `t` need not have a common
+successor, and that gap is where the certificates live.
 
 Nothing here touches soundness. `Agreement.lean`'s truth lemma and `refutes_of_certifies` are
-unaffected, and a family meeting the conditions still presents a genuine countermodel. What is
-refuted is the claim that (C1') restores completeness under recombination.
+unaffected across the whole redesign, and their statements are byte-identical to their
+pre-refactor form.
 
 ## Deciding (C2'): the finite position graph and the `A[g U e]` fixpoint
 
@@ -279,39 +325,43 @@ has one successor per lasso through it — so neither lemma applies to it and th
 not hold. That is precisely the obstruction a stability modal was blocked on, and it is what
 this directory removes.
 
-### (c) What a follow-up needs
+### (c) What the follow-up delivered
 
 An L⁺-indexed certificate datatype: `LabelledLasso`, `closureOf`, `WitnessFamily`, its
-conditions and its agreement theorem all re-indexed over `PlusFormula`. That re-indexing also
-re-opens the model checker's JSON export contract, since the exported label sets would carry
-`PlusFormula` rather than `Formula`. It is a separate, substantial addition, not a clause.
+conditions and its agreement theorem all re-indexed over `PlusFormula`. That landed as
+`../../PlusWitnessFamily/`.
 
-That re-index has since landed, as `../../PlusWitnessFamily/`. What it revealed is that the
-re-index alone is not enough, and the remaining obligation is at the substrate level rather than
-at the label level — see the (C1') correction above for the obstruction.
-
-A follow-up needs a **fourth periodic datum** beside `repBack`/`repMid`/`repFwd`: three lists
-`transBack`/`transMid`/`transFwd`, decoded by the same `Periodic.unrollOf` scheme, giving a
-one-step relation `trans u : Fin n → Fin n → Prop`. `Thread.step` then reads
-`trans u (idx u) (idx (u+1))` rather than `share (u+1) (idx u) (idx (u+1))`, which splits the two
-jobs the single relation currently carries:
+What it revealed is that the re-index alone was not enough, and the remaining obligation was at
+the substrate level rather than the label level. That obligation has since been discharged too.
+`SharingSkeleton` now carries a **fourth periodic datum** beside `repBack`/`repMid`/`repFwd`:
+three lists `transBack`/`transMid`/`transFwd` of Boolean matrices, decoded by the same
+`Periodic.unrollOf` scheme and carrying the representatives' own periods, giving the
+arrival-pruned relation `trans u : Fin n → Fin n → Prop`. `Thread.step` reads
+`trans u (idx u) (idx (u+1))`, which splits the two jobs the single relation used to carry:
 
 * `share` keeps the `⊡` quantifier, the quotient carrier, (C0) and (C5) — everything that asks
   "which indices name this state now";
 * `trans` carries one-step branching — everything that asks "which index may follow this one".
 
-Two consequences to plan for. The export contract gains three fields, additively, exactly as
-`repBack`/`repMid`/`repFwd` did, so the model checker is not re-opened beyond that. And the
-re-proof surface is large: `Predicates.lean`, `Decide.lean`, `Fulfil.lean`, `Agreement.lean` and
-`Specialize.lean` here, their four counterparts on the L⁺ side, and both READMEs, with the two
-`Fulfil.lean` modules dominating.
+The datum brought one obligation with it, `lift`, and the *substrate* section above says why it
+cannot be derived. The non-vacuity gate the design asked for was met before the record was
+retired, on both temporal sides and by construction: see the (C1') correction above for the two
+certificates and the two refutations.
 
-The **non-vacuity gate comes first**, before the fixpoint layer is re-proved: one concrete family
-satisfying all six redesigned conditions at non-trivial sharing, plus a check that the redesigned
-(C1') no longer entails `snce_share_congr`. Without that second check the redesign can reproduce
-the present defect while type-checking. Note also that (C2')'s window reduction already carries a
-recorded (C1')-relative limitation (below), which the redesign has to re-examine rather than
-inherit.
+**(C2')'s recorded limitation was re-examined, not inherited by default.** It survives, and the
+reason it survives is now known. Its window reduction's far-left and far-right cases consume
+exactly the relation `θ.step` supplies, so the re-quantification transferred verbatim and needed
+no new hypothesis. The limitation is about the backward region of the position graph being a
+path rather than a cycle — a statement about the *graph*, not about the substrate datum — which
+is why changing the datum did not touch it. It is restated below.
+
+**Deferred: exact closure.** The `lift` field is discharged in practice by one of three
+sufficient conditions (`liftable_of_transFullOf`, `liftable_of_constant_below`,
+`liftable_of_constant_above`), each strictly stronger than `LiftableRaw` itself. A decidable
+window-local characterization — `LiftWindow`, `liftable_of_liftWindow` and
+`Decidable LiftWindow` — would let a producer's `lift` obligation be *checked* rather than
+supplied by a matching sufficient condition. That is named follow-up work and is deliberately not
+part of this design.
 
 ## Hand-off to the consuming model checker
 
@@ -327,13 +377,31 @@ add three fields to what it already exports and nothing else:
 * Each listed map must be **idempotent**, which is the `rep_idem` field: it is what makes the
   map a choice of class representatives rather than an arbitrary function. A checker that
   computes classes and then picks each class's least member satisfies it automatically.
+* `transBack`, `transMid`, `transFwd` — three **optional** lists of Boolean succession matrices
+  on the same index set, one matrix per entry of the corresponding `rep` list, so
+  `|transBack| = |repBack|` and likewise for the other two. A matrix is exportable as
+  `|lassos|` rows of `|lassos|` booleans. Every listed matrix must be reflexive, which is the
+  `trans_refl` field: staying on one index is always a legitimate step.
+* **Absent means full.** A checker that omits the three succession lists is read as supplying
+  the all-true matrix at every time, which is exactly the pre-redesign substrate: succession is
+  then the arrival share and nothing changes. This is what makes the extension **additive** —
+  every certificate emitted before the redesign is still a valid certificate, unchanged, and no
+  consumer is required to compute a succession relation it has no use for.
 * The existing five fields (`back`, `mid`, `fwd`, `bx`, `lassos`) are unchanged in name,
   meaning and shape.
 
+A checker that *does* emit succession lists takes on one further obligation, the skeleton's
+`lift` field: every `Step`-path of the presented frame must be tracked, up to `share`, by a
+succession path. It is not checkable from the three lists alone, and it is not vacuous — see the
+*substrate* section above. In practice a checker discharges it by emitting a succession relation
+of one of the three recognized shapes (free, or discrete on one side of a cut and total on the
+other), each of which has a lemma in `Skeleton.lean` that closes the obligation outright.
+
 On the checking side the accepting branch changes from `WitnessFamily.refutes_of_certifies` to
 `SharingWitnessFamily.refutes_of_certifies`, whose codomain is the **same**
-`WitnessFamily.Refutes Γ Del`; a consumer written against `Refutes` needs no change at all. The
-conditions to decide become five rather than four, with (C1') and (C2') decided jointly.
+`WitnessFamily.Refutes Γ Del`; a consumer written against `Refutes` needs no change at all, and
+that is true across the succession redesign as well — the codomain did not move. The conditions
+to decide become five rather than four, with (C1') and (C2') decided jointly.
 
 ## The deterministic device as the diagonal instance
 

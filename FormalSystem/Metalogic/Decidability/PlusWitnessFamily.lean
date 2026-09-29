@@ -61,8 +61,9 @@ interface is affected by this one's existence.
   reduction, giving `decidablePlusCoherentShareAndFulfilling`
 - `PlusWitnessFamily.Agreement`: the presented model, `plusTruth_iff_mem` (all seven cases),
   the six-component `PlusCertifies` bundle and `plusRefutes_of_certifies`
-- `PlusWitnessFamily.Examples`: the two-lasso non-vacuity witness, `stabFamily_separates` and
-  `stabFaithful_diagonal`
+- `PlusWitnessFamily.Examples`: the (C5) non-vacuity witness (`stabFamily_separates`), the
+  deterministic diagonal (`stabFaithful_diagonal`), and the two gate families with their
+  certificates (`plusCertifies_stabSnce_example`, `plusCertifies_stabUntl_example`)
 - `PlusWitnessFamily.Incompleteness`: the three stability targets and the two theorems making
   them genuine ℤ-time non-validities. The five declarations that once recorded the certificate
   class as empty for a `snce` under a `⊡` were retired when the `trans` substrate landed; see
@@ -77,16 +78,25 @@ content: two lassos sharing a state at one time and separate everywhere else, so
 not degenerate. On a deterministic frame it would be — `PlusLanguage.stab_iff_of_deterministic`
 collapses `⊡φ` to `φ` — which is exactly why the branching substrate is the one this lives on.
 
-## The certificate class is empty for a tense operator under a `⊡`, on both sides
+## A tense operator under a `⊡`: the certificate class was empty, and is not any more
 
-Soundness is only half the story, and `Incompleteness.lean` records the other half: no family
-meeting the six conditions certifies any instance of `(g S e) → ⊡(g S e)`, nor `Fp → (¬p → ⊡Fp)`,
-while both targets are genuine ℤ-time non-validities. (C1')'s `snce` clause quantifies its
-predecessor over the `share`-class at the label's *own* time, which forces the class to agree on
-every past-tense label; its `untl` clause quantifies its successor over the class at `t+1`, which
-displaces the same collapse by one step rather than avoiding it, as reading that clause at `t-1`
-shows. (C5) then has no room to put the stability modal outside a label that carries the tense
-formula. So the L⁺ analogue of the deterministic route's
-`exists_witnessFamily_of_not_validZTime` is **false** against this condition set, and the repair
-is at the substrate level rather than in a re-wording — or a re-timing — of (C1').
+Soundness is only half the story. Until the succession redesign landed, no family meeting the six
+conditions certified any instance of `(g S e) → ⊡(g S e)`, nor of `Fp → (¬p → ⊡Fp)`, while both
+targets are genuine ℤ-time non-validities. (C1')'s `snce` clause quantified its predecessor over
+the `share`-class at the label's *own* time, which forced the class to agree on every past-tense
+label; its `untl` clause quantified its successor over the class at `t + 1`, which displaced the
+same collapse by one step rather than avoiding it. (C5) then had no room to put the stability
+modal outside a label carrying the tense formula, so the L⁺ analogue of the deterministic route's
+`exists_witnessFamily_of_not_validZTime` was **false** against the condition set.
+
+The repair was at the substrate level, as that diagnosis predicted: `SharingSkeleton` carries a
+fourth periodic datum, succession is no longer state-identity at the arrival time, and (C1')'s
+two clauses quantify over it. `Examples.lean` now exhibits a six-condition certificate for each
+target at non-trivial sharing, and `Incompleteness.lean`'s `not_snce_share_congr` and
+`not_untl_shift_share_congr` refute the two congruences that made such certificates impossible —
+refute, not merely leave unproved, which is what rules out a redesign that reproduced the defect
+in new spelling.
+
+`plusTruth_iff_mem` and `plusRefutes_of_certifies` are byte-identical in statement across the
+whole redesign: soundness was never what was at issue.
 -/
