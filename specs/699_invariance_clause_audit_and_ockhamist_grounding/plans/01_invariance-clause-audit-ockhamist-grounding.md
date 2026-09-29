@@ -210,7 +210,7 @@ holding to the count of three.
 
 ---
 
-### Phase 2: File the follow-on proposal and the unowned-documentation handoff [NOT STARTED]
+### Phase 2: File the follow-on proposal and the unowned-documentation handoff [COMPLETED]
 
 **Goal**: land the round's one time-critical actionable output — the follow-on that must precede
 task 696 Phase 1's declaration of `trans_refl` — as a verbatim-ready payload, plus the two
@@ -219,30 +219,32 @@ creating a task.
 
 **Tasks**:
 
-- [ ] Create `specs/699_invariance_clause_audit_and_ockhamist_grounding/proposals/01_trans-reflexivity-residual-collapse.md`
+- [x] Create `specs/699_invariance_clause_audit_and_ockhamist_grounding/proposals/01_trans-reflexivity-residual-collapse.md`
       containing a complete, paste-ready `/task "…"` invocation with no unresolved placeholder,
       carrying: the title `trans_reflexivity_residual_collapse`, type `formal:logic`, the defect
       statement, the report's four scope steps, its non-goals, and the ordering constraint
       (`blocks: task 696 Phase 1`, because removing a declared field afterwards costs more than
-      not declaring it).
-- [ ] In the same file, cite the two probe-01 declarations that evidence the defect
+      not declaring it). *(completed)*
+- [x] In the same file, cite the two probe-01 declarations that evidence the defect
       (`tUntl_trans_congr`, `tSnce_trans_congr`) and the one that shows what remains once
       `trans_refl` goes (`tUntl_common_succ_congr` / `clause_shape_common_witness`), with their
       probe path — so the reader of the filed task can check the claim without re-reading the
-      671-line report.
-- [ ] Record handoff item 1 (**unowned**): `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean:51-52`'s
+      671-line report. *(completed)*
+- [x] Record handoff item 1 (**unowned**): `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean:51-52`'s
       module docstring asserts the `untl` side is "defect-free by inspection, not by machine check",
       which row 2 refutes. State that `Incompleteness.lean` is not among task 696's fourteen
       declared `file_scope` paths, so no task owns the correction, and that this task cannot make
-      it (no Lean modification; path outside this task's `file_scope`).
-- [ ] Record handoff item 2 (**owned by task 696**): the same false text at
+      it (no Lean modification; path outside this task's `file_scope`). *(completed; line ref
+      re-verified by `grep -n` at write time)*
+- [x] Record handoff item 2 (**owned by task 696**): the same false text at
       `PlusWitnessFamily/README.md:100-102` and the related claim at `Sharing/README.md:124`. Both
       READMEs *are* in task 696's declared paths and its Phase 0 already schedules a correction, so
       the handoff is a strengthening of that correction's content, not a new owner: per row 2 the
       `untl` collapse is same-shape rather than shifted-only, and per rows 3-4 both halves collapse
-      on the `Formula` side too, which neither README records.
-- [ ] State explicitly, in the file, that filing the task is a user/`/task` action and that no
-      phase of this task writes `specs/state.json` or `specs/TODO.md`.
+      on the `Formula` side too, which neither README records. *(completed; both line refs
+      re-verified by `grep -n` at write time)*
+- [x] State explicitly, in the file, that filing the task is a user/`/task` action and that no
+      phase of this task writes `specs/state.json` or `specs/TODO.md`. *(completed)*
 
 **Timing**: 0.5 hours
 
