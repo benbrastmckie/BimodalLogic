@@ -159,11 +159,12 @@ theorem localCoherentShare_toSharing (W : WitnessFamily Γ Del) :
     obtain ⟨hbot, himp, hbox, huntl, hsnce⟩ := h i t
     refine ⟨hbot, himp, hbox, ?_, ?_⟩
     · intro j hj g e hc
-      have hij : i = j := (share_toSharing W (t + 1) i j).mp hj
+      have hij : i = j := (share_toSharing W (t + 1) i j).mp hj.2
       subst hij
       exact huntl g e hc
     · intro k hk g e hc
-      have hik : i = k := (share_toSharing W t i k).mp hk
+      have hik : i = k := (share_toSharing W t i k).mp
+        (W.toSharing.share_symm ((W.toSharing.trans_pred_iff t k i).mp hk).2)
       subst hik
       exact hsnce g e hc
 

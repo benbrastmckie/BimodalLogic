@@ -260,6 +260,19 @@ theorem trans_refl' (S : SharingWitnessFamily Γ Del) (u : ℤ) (i : Fin S.lasso
 theorem share_succ_of_trans {S : SharingWitnessFamily Γ Del} {u : ℤ} {i j : Fin S.lassos.length}
     (h : S.trans u i j) : S.share (u + 1) i j := h.2
 
+/--
+**Succession read *into* a time.** `S.trans (t - 1) k i` with its arrival share stated at `t`
+itself rather than at `t - 1 + 1`.
+
+`Int` subtraction-then-addition is not definitional, so the `snce` clause of (C1') — which
+quantifies over `trans (t - 1)` — does not on the nose present its share component at the
+clause's own time. This is the one-line bridge, and it is what lets the decision data in
+`Sharing/Decide.lean` carry the representative map at `t` rather than at `t - 1 + 1`.
+-/
+theorem trans_pred_iff (S : SharingWitnessFamily Γ Del) (t : ℤ) (k i : Fin S.lassos.length) :
+    S.trans (t - 1) k i ↔ (S.transRaw (t - 1) k i = true ∧ S.share t k i) := by
+  rw [S.trans_def, show t - 1 + 1 = t from by omega]
+
 instance decidableTrans (S : SharingWitnessFamily Γ Del) (u : ℤ) (i j : Fin S.lassos.length) :
     Decidable (S.trans u i j) := inferInstanceAs (Decidable (S.skeleton.trans u i j))
 

@@ -964,7 +964,7 @@ theorem untl_thread_step {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentS
     e ∈ S.L (θ.idx (t + 1)) (t + 1) ∨
       (g ∈ S.L (θ.idx (t + 1)) (t + 1) ∧
         Formula.untl g e ∈ S.L (θ.idx (t + 1)) (t + 1)) :=
-  ((h (θ.idx t) t).2.2.2.1 (θ.idx (t + 1)) (thread_share_succ θ t) g e hc).mp ht
+  ((h (θ.idx t) t).2.2.2.1 (θ.idx (t + 1)) (Thread.step θ t) g e hc).mp ht
 
 /-- A thread's index at `t` shares the state at `t` with its index at `t - 1`. -/
 theorem thread_share_pred {S : SharingWitnessFamily Γ Del} (θ : S.Thread) (t : ℤ) :
@@ -973,6 +973,20 @@ theorem thread_share_pred {S : SharingWitnessFamily Γ Del} (θ : S.Thread) (t :
   rw [show t - 1 + 1 = t by omega] at hstep
   exact S.share_symm hstep
 
+/--
+**A thread's step read *into* `t`.** The succession fact the `snce` clause of (C1') now consumes:
+the index at `t - 1` succeeds to the index at `t`.
+
+This is `θ.step (t - 1)` with its time argument normalized, and it is the direct replacement for
+`thread_share_pred` at the clause's side condition. Note the argument order: the predecessor is
+the *source* of the succession, so the index at `t - 1` comes first, where `thread_share_pred`
+— a symmetric relation — put the index at `t` first.
+-/
+theorem thread_trans_pred {S : SharingWitnessFamily Γ Del} (θ : S.Thread) (t : ℤ) :
+    S.trans (t - 1) (θ.idx (t - 1)) (θ.idx t) := by
+  have hstep := Thread.step θ (t - 1)
+  rwa [show t - 1 + 1 = t by omega] at hstep
+
 /-- **One step of the `snce` unfolding along a thread.** -/
 theorem snce_thread_step {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentShare)
     (θ : S.Thread) {g e : Formula} (hc : Formula.snce g e ∈ closureOf (Γ ++ Del)) {t : ℤ}
@@ -980,7 +994,7 @@ theorem snce_thread_step {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentS
     e ∈ S.L (θ.idx (t - 1)) (t - 1) ∨
       (g ∈ S.L (θ.idx (t - 1)) (t - 1) ∧
         Formula.snce g e ∈ S.L (θ.idx (t - 1)) (t - 1)) :=
-  ((h (θ.idx t) t).2.2.2.2 (θ.idx (t - 1)) (thread_share_pred θ t) g e hc).mp ht
+  ((h (θ.idx t) t).2.2.2.2 (θ.idx (t - 1)) (thread_trans_pred θ t) g e hc).mp ht
 
 /-- **(C1') propagation, forward, by step count.** -/
 theorem untl_propagate {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentShare)

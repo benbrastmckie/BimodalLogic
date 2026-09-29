@@ -467,7 +467,7 @@ mis-stated and the `trans` definition, not the frame, is what to fix.
 
 ---
 
-### Phase 7: Re-quantify (C1') over `trans`, Formula side [NOT STARTED]
+### Phase 7: Re-quantify (C1') over `trans`, Formula side [COMPLETED]
 
 **Goal**: Change the `untl` and `snce` clauses of `LocalCoherentShare` to quantify over
 `trans t` and `trans (t-1)` respectively, and carry that change through the decision data and
@@ -475,20 +475,26 @@ the propagation proofs on the Formula side. The three one-position clauses are v
 
 **Tasks**:
 
-- [ ] Rewrite the `untl` clause (`Sharing/Predicates.lean` around 154) as
+- [x] Rewrite the `untl` clause (`Sharing/Predicates.lean` around 154) as
       `∀ j, S.trans t i j → ...` and the `snce` clause (around 158) as
       `∀ k, S.trans (t-1) k i → ...`.
-- [ ] Re-derive `untl_self_of_share`, `snce_self_of_share` and `localCoherentLab_of_share` from
+- [x] Re-derive `untl_self_of_share`, `snce_self_of_share` and `localCoherentLab_of_share` from
       `trans_refl'` instead of `share_refl`.
-- [ ] Give `shareClauseAt` in `Sharing/Decide.lean` the `trans t` and `trans (t-1)` rows as data
+- [x] Give `shareClauseAt` in `Sharing/Decide.lean` the `trans t` and `trans (t-1)` rows as data
       alongside the `rep` tests; extend `data_congr_back` (236) and `data_congr_fwd` (245) with
-      `trans` components at the same periods.
-- [ ] Update `Sharing/Fulfil.lean`'s propagation lemmas to feed the clauses `θ.step` directly;
+      `trans` components at the same periods. *(deviation: altered — `data_congr_back` and
+      `data_congr_fwd` keep their two-component statements; the succession periodicity is carried
+      by the `transRaw_congr_NB`/`transRaw_congr_NF` lemmas Phase 6 already landed, which
+      `exists_window_repr` consumes directly as two further `first` alternatives. Extending the
+      pairs would have renumbered every `.1`/`.2` projection at their call sites for no gain)*
+- [x] Update `Sharing/Fulfil.lean`'s propagation lemmas to feed the clauses `θ.step` directly;
       `thread_share_pred` becomes an instance of `θ.step (t-1)` and loses its `share_symm`
-      rewrite.
-- [ ] Update the along-thread lemmas in `Sharing/Agreement.lean` and the reductions in
+      rewrite. *(deviation: altered — `thread_share_pred` is retained unchanged, since the `predF`
+      edge filter still carries a `share` row that consumes it; the clause's new side condition is
+      a separate lemma, `thread_trans_pred`, stated at the succession's own argument order)*
+- [x] Update the along-thread lemmas in `Sharing/Agreement.lean` and the reductions in
       `Sharing/Specialize.lean`.
-- [ ] Record `snce_pred_congr` and `untl_succ_congr` as named lemmas, with docstrings saying the
+- [x] Record `snce_pred_congr` and `untl_succ_congr` as named lemmas, with docstrings saying the
       residual agreement is semantically forced (a position is a history type) and is not a
       relapse into the repaired defect.
 

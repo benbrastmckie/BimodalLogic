@@ -148,7 +148,7 @@ theorem valuation_cls (S : SharingWitnessFamily Γ Del) (hat : S.AtomCoherent)
 `WitnessFamily/Agreement.lean`'s `untl_mem_of_witness` and `snce_mem_of_witness` walk the
 one-step unfolding clause along a *lasso*. The branching clauses of (C1') are quantified over
 shared successors and predecessors, so the same two inductions walk along a **thread**, with
-`thread_share_succ` and `thread_share_pred` supplying the sharing side condition at each step.
+`Thread.step` and `thread_trans_pred` supplying the succession side condition at each step.
 -/
 
 /--
@@ -167,7 +167,7 @@ theorem untl_mem_along_thread (S : SharingWitnessFamily Γ Del)
   | zero => intro t s hd hts _ _; omega
   | succ n ih =>
     intro t s hd hts hse hguard
-    have hclause := (hloc (θ.idx t) t).2.2.2.1 (θ.idx (t + 1)) (thread_share_succ θ t) g e hge
+    have hclause := (hloc (θ.idx t) t).2.2.2.1 (θ.idx (t + 1)) (Thread.step θ t) g e hge
     rcases eq_or_lt_of_le (show t + 1 ≤ s by omega) with heq | hlt
     · subst heq
       exact hclause.mpr (Or.inl hse)
@@ -189,12 +189,61 @@ theorem snce_mem_along_thread (S : SharingWitnessFamily Γ Del)
   | succ n ih =>
     intro t s hd hst hse hguard
     have hclause :=
-      (hloc (θ.idx t) t).2.2.2.2 (θ.idx (t - 1)) (thread_share_pred θ t) g e hge
+      (hloc (θ.idx t) t).2.2.2.2 (θ.idx (t - 1)) (thread_trans_pred θ t) g e hge
     rcases eq_or_lt_of_le (show s ≤ t - 1 by omega) with heq | hlt
     · subst heq
       exact hclause.mpr (Or.inl hse)
     · exact hclause.mpr (Or.inr ⟨hguard (t - 1) hlt (by omega),
         ih (t - 1) s (by omega) hlt hse (fun r hr1 hr2 => hguard r hr1 (by omega))⟩)
+
+/-!
+## The residual agreement the two clauses still force
+
+Neither clause is a one-position condition, so each still forces *some* agreement between
+distinct indices. Recording exactly how much, as named lemmas, is what keeps the redesign
+honest: it is easy to re-derive the repaired defect by accident, and a statement is the only
+form of that check which cannot drift.
+
+**What is forced.** Fix a position `(i, t)`. Every index the position succeeds *to* agrees on
+the `untl` unfolding, and every index it is succeeded *from* agrees on the `snce` unfolding.
+
+**Why that is semantically forced rather than a relapse.** A position in a task frame is a
+*history type*, not a world state: `untl g e` at `(i, t)` is `A[g U e]` there, so if two
+successors disagreed on the unfolding, the position would have to be true and false at once.
+The agreement below is that reading, transcribed.
+
+**Why it is not the repaired defect.** `snce_share_congr` forced agreement between any two
+indices merely *naming the same world state at `t`* — no succession required — which collapsed
+the branching outright: two threads passing through one state could not carry different pasts.
+`snce_pred_congr` requires a *common successor*, a strictly finer condition, and two indices
+sharing a state at `t` need not have one. That gap is exactly the room the certificates of
+`PlusWitnessFamily/Examples.lean` are built in.
+-/
+
+/--
+**Residual `untl` agreement across successors.** Two indices the same position succeeds to agree
+on the `untl` unfolding. See this section's header for why this is semantically forced.
+-/
+theorem untl_succ_congr {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentShare)
+    {i j j' : Fin S.lassos.length} {t : ℤ} (hj : S.trans t i j) (hj' : S.trans t i j')
+    {g e : Formula} (hc : Formula.untl g e ∈ closureOf (Γ ++ Del)) :
+    (e ∈ S.L j (t + 1) ∨ (g ∈ S.L j (t + 1) ∧ Formula.untl g e ∈ S.L j (t + 1))) ↔
+      (e ∈ S.L j' (t + 1) ∨ (g ∈ S.L j' (t + 1) ∧ Formula.untl g e ∈ S.L j' (t + 1))) :=
+  ((h i t).2.2.2.1 j hj g e hc).symm.trans ((h i t).2.2.2.1 j' hj' g e hc)
+
+/--
+**Residual `snce` agreement across predecessors.** Two indices the same position is succeeded
+from agree on the `snce` unfolding. The predecessor mirror of `untl_succ_congr`, and the
+statement that replaces the retired `snce_share_congr`: the hypothesis is a *common successor*,
+not a shared state.
+-/
+theorem snce_pred_congr {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentShare)
+    {i k k' : Fin S.lassos.length} {t : ℤ} (hk : S.trans (t - 1) k i)
+    (hk' : S.trans (t - 1) k' i)
+    {g e : Formula} (hc : Formula.snce g e ∈ closureOf (Γ ++ Del)) :
+    (e ∈ S.L k (t - 1) ∨ (g ∈ S.L k (t - 1) ∧ Formula.snce g e ∈ S.L k (t - 1))) ↔
+      (e ∈ S.L k' (t - 1) ∨ (g ∈ S.L k' (t - 1) ∧ Formula.snce g e ∈ S.L k' (t - 1))) :=
+  ((h i t).2.2.2.2 k hk g e hc).symm.trans ((h i t).2.2.2.2 k' hk' g e hc)
 
 /-!
 ## T1 for the branching device

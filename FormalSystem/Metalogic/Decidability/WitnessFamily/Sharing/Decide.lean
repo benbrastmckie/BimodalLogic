@@ -314,6 +314,7 @@ neighbourhood inside the periodic region.
 theorem exists_window_repr (S : SharingWitnessFamily Γ Del) (t : ℤ) :
     ∃ t' : ℤ, S.cohWindowLo ≤ t' ∧ t' < S.cohWindowHi ∧
       S.rep t = S.rep t' ∧ S.rep (t + 1) = S.rep (t' + 1) ∧
+      S.transRaw t = S.transRaw t' ∧ S.transRaw (t - 1) = S.transRaw (t' - 1) ∧
       (∀ i, S.L i (t - 1) = S.L i (t' - 1)) ∧ (∀ i, S.L i t = S.L i t') ∧
       (∀ i, S.L i (t + 1) = S.L i (t' + 1)) := by
   have hNB := S.NB_pos
@@ -321,7 +322,7 @@ theorem exists_window_repr (S : SharingWitnessFamily Γ Del) (t : ℤ) :
   have hNM := S.NM_nonneg
   rcases lt_or_ge t (-1) with hfar | hmid
   · -- far left: represent `t` in `[-2·NB, -NB)`, whose whole neighbourhood is negative
-    refine ⟨t % S.NB - 2 * S.NB, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
+    refine ⟨t % S.NB - 2 * S.NB, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
       set t' : ℤ := t % S.NB - 2 * S.NB with ht'
     all_goals {
       have h0 : 0 ≤ t % S.NB := Int.emod_nonneg _ (by omega)
@@ -338,6 +339,8 @@ theorem exists_window_repr (S : SharingWitnessFamily Γ Del) (t : ℤ) :
         | (simp only [cohWindowHi]; omega)
         | exact (S.data_congr_back (by omega) (by omega) hres).1
         | exact (S.data_congr_back (by omega) (by omega) hresp).1
+        | exact S.transRaw_congr_NB (by omega) (by omega) hres
+        | exact S.transRaw_congr_NB (by omega) (by omega) hresm
         | exact (S.data_congr_back (by omega) (by omega) hresm).2
         | exact (S.data_congr_back (by omega) (by omega) hres).2
         | exact (S.data_congr_back (by omega) (by omega) hresp).2
@@ -345,9 +348,9 @@ theorem exists_window_repr (S : SharingWitnessFamily Γ Del) (t : ℤ) :
   rcases le_or_gt t S.NM with hin | hfar
   · -- middle: already inside the window
     exact ⟨t, by simp only [cohWindowLo]; omega, by simp only [cohWindowHi]; omega,
-      rfl, rfl, fun _ => rfl, fun _ => rfl, fun _ => rfl⟩
+      rfl, rfl, rfl, rfl, fun _ => rfl, fun _ => rfl, fun _ => rfl⟩
   · -- far right: represent `t` in `[NM + NF, NM + 2·NF)`
-    refine ⟨S.NM + (t - S.NM) % S.NF + S.NF, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
+    refine ⟨S.NM + (t - S.NM) % S.NF + S.NF, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
       set t' : ℤ := S.NM + (t - S.NM) % S.NF + S.NF with ht'
     all_goals {
       have h0 : 0 ≤ (t - S.NM) % S.NF := Int.emod_nonneg _ (by omega)
@@ -368,6 +371,8 @@ theorem exists_window_repr (S : SharingWitnessFamily Γ Del) (t : ℤ) :
         | (simp only [cohWindowHi]; omega)
         | exact (S.data_congr_fwd (by omega) (by omega) hres).1
         | exact (S.data_congr_fwd (by omega) (by omega) hresp).1
+        | exact S.transRaw_congr_NF (by omega) (by omega) hres
+        | exact S.transRaw_congr_NF (by omega) (by omega) hresm
         | exact (S.data_congr_fwd (by omega) (by omega) hresm).2
         | exact (S.data_congr_fwd (by omega) (by omega) hres).2
         | exact (S.data_congr_fwd (by omega) (by omega) hresp).2
@@ -450,43 +455,54 @@ theorem atomCoherentAt_congr (S : SharingWitnessFamily Γ Del) {t t' : ℤ}
 /--
 The local clause a single closure member imposes on a sharing family, at explicit data.
 
-`rt`, `rp` are the representative maps at `t` and `t + 1`; `Lm`, `Lt`, `Lp` the per-lasso labels
-at `t - 1`, `t` and `t + 1`. The `untl` and `snce` clauses quantify over the shared successors
-and predecessors respectively — that is the whole difference from `labClauseAt`.
+`rt`, `rp` are the representative maps at `t` and `t + 1`; `tt`, `tm` the succession matrices at
+`t` and `t - 1`; `Lm`, `Lt`, `Lp` the per-lasso labels at `t - 1`, `t` and `t + 1`. The `untl`
+and `snce` clauses quantify over succession out of and into `t` respectively — that is the whole
+difference from `labClauseAt`.
+
+Each temporal side condition is spelled out as the pair the arrival-pruned `trans` is: the raw
+succession bit, and the arrival share as an equality of representatives. Both halves are stated
+here rather than folded into `trans` so that `Fin n`'s `DecidableEq` closes the instance below
+with no unfolding.
 -/
 def shareClauseAt {n : ℕ} (bx : Formula → Bool) (rt rp : Fin n → Fin n)
+    (tt tm : Fin n → Fin n → Bool)
     (Lm Lt Lp : Fin n → Finset Formula) (i : Fin n) : Formula → Prop
   | Formula.atom _ => True
   | Formula.bot => True
   | Formula.imp a b => (Formula.imp a b ∈ Lt i ↔ (a ∈ Lt i → b ∈ Lt i))
   | Formula.box χ => (Formula.box χ ∈ Lt i ↔ bx χ = true)
-  | Formula.untl g e => ∀ j : Fin n, rp i = rp j →
+  | Formula.untl g e => ∀ j : Fin n, (tt i j = true ∧ rp i = rp j) →
       (Formula.untl g e ∈ Lt i ↔ (e ∈ Lp j ∨ (g ∈ Lp j ∧ Formula.untl g e ∈ Lp j)))
-  | Formula.snce g e => ∀ k : Fin n, rt i = rt k →
+  | Formula.snce g e => ∀ k : Fin n, (tm k i = true ∧ rt k = rt i) →
       (Formula.snce g e ∈ Lt i ↔ (e ∈ Lm k ∨ (g ∈ Lm k ∧ Formula.snce g e ∈ Lm k)))
 
 /-- `shareClauseAt` is decidable at every formula: the two new quantifiers range over a
 `Fintype`. -/
 instance instDecidableShareClauseAt {n : ℕ} (bx : Formula → Bool) (rt rp : Fin n → Fin n)
+    (tt tm : Fin n → Fin n → Bool)
     (Lm Lt Lp : Fin n → Finset Formula) (i : Fin n) :
-    DecidablePred (shareClauseAt bx rt rp Lm Lt Lp i) := by
+    DecidablePred (shareClauseAt bx rt rp tt tm Lm Lt Lp i) := by
   intro ψ
   cases ψ <;> (dsimp only [shareClauseAt]; infer_instance)
 
 /-- (C1')'s content at explicit data. -/
 def coherentShareData {n : ℕ} (bx : Formula → Bool) (C : Finset Formula)
-    (rt rp : Fin n → Fin n) (Lm Lt Lp : Fin n → Finset Formula) : Prop :=
-  ∀ i : Fin n, Formula.bot ∉ Lt i ∧ ∀ ψ ∈ C, shareClauseAt bx rt rp Lm Lt Lp i ψ
+    (rt rp : Fin n → Fin n) (tt tm : Fin n → Fin n → Bool)
+    (Lm Lt Lp : Fin n → Finset Formula) : Prop :=
+  ∀ i : Fin n, Formula.bot ∉ Lt i ∧ ∀ ψ ∈ C, shareClauseAt bx rt rp tt tm Lm Lt Lp i ψ
 
 instance instDecidableCoherentShareData {n : ℕ} (bx : Formula → Bool) (C : Finset Formula)
-    (rt rp : Fin n → Fin n) (Lm Lt Lp : Fin n → Finset Formula) :
-    Decidable (coherentShareData bx C rt rp Lm Lt Lp) := by
+    (rt rp : Fin n → Fin n) (tt tm : Fin n → Fin n → Bool)
+    (Lm Lt Lp : Fin n → Finset Formula) :
+    Decidable (coherentShareData bx C rt rp tt tm Lm Lt Lp) := by
   dsimp only [coherentShareData]
   infer_instance
 
 /-- **(C1') at a single time.** -/
 def CoherentShareAt (S : SharingWitnessFamily Γ Del) (t : ℤ) : Prop :=
   coherentShareData S.bx (closureOf (Γ ++ Del)) (S.rep t) (S.rep (t + 1))
+    (S.transRaw t) (S.transRaw (t - 1))
     (fun i => S.L i (t - 1)) (fun i => S.L i t) (fun i => S.L i (t + 1))
 
 instance decidableCoherentShareAt (S : SharingWitnessFamily Γ Del) (t : ℤ) :
@@ -507,23 +523,25 @@ theorem localCoherentShare_iff_at (S : SharingWitnessFamily Γ Del) :
     | imp a b => exact himp a b hψ
     | box χ => exact hbox χ hψ
     | untl g e => exact fun j hj => huntl j hj g e hψ
-    | snce g e => exact fun k hk => hsnce k hk g e hψ
+    | snce g e => exact fun k hk => hsnce k ((S.trans_pred_iff t k i).mpr hk) g e hψ
   · intro h i t
     obtain ⟨hbot, hcl⟩ := h t i
     exact ⟨hbot, fun a b hab => hcl _ hab, fun χ hχ => hcl _ hχ,
-      fun j hj g e hge => hcl _ hge j hj, fun k hk g e hge => hcl _ hge k hk⟩
+      fun j hj g e hge => hcl _ hge j hj,
+      fun k hk g e hge => hcl _ hge k ((S.trans_pred_iff t k i).mp hk)⟩
 
 /-- The per-position check reads only the representative maps at `t` and `t + 1` and the labels
 at `t - 1`, `t` and `t + 1`. -/
 theorem coherentShareAt_congr (S : SharingWitnessFamily Γ Del) {t t' : ℤ}
     (hr0 : S.rep t = S.rep t') (hr1 : S.rep (t + 1) = S.rep (t' + 1))
+    (ht0 : S.transRaw t = S.transRaw t') (htm : S.transRaw (t - 1) = S.transRaw (t' - 1))
     (hm : ∀ i, S.L i (t - 1) = S.L i (t' - 1)) (h0 : ∀ i, S.L i t = S.L i t')
     (hp : ∀ i, S.L i (t + 1) = S.L i (t' + 1)) :
     S.CoherentShareAt t ↔ S.CoherentShareAt t' := by
   have em : (fun i => S.L i (t - 1)) = (fun i => S.L i (t' - 1)) := funext hm
   have e0 : (fun i => S.L i t) = (fun i => S.L i t') := funext h0
   have ep : (fun i => S.L i (t + 1)) = (fun i => S.L i (t' + 1)) := funext hp
-  simp only [CoherentShareAt, hr0, hr1, em, e0, ep]
+  simp only [CoherentShareAt, hr0, hr1, ht0, htm, em, e0, ep]
 
 /-! ## The two window collapses, and the two instances -/
 
@@ -535,7 +553,7 @@ theorem atomCoherent_iff_window (S : SharingWitnessFamily Γ Del) :
   constructor
   · intro h t _ _; exact h t
   · intro h t
-    obtain ⟨t', hlo, hhi, hr0, _, _, hL0, _⟩ := S.exists_window_repr t
+    obtain ⟨t', hlo, hhi, hr0, _, _, _, _, hL0, _⟩ := S.exists_window_repr t
     exact (S.atomCoherentAt_congr hr0 hL0).mpr (h t' hlo hhi)
 
 /-- **(C1') collapses to the combined window.** -/
@@ -546,8 +564,8 @@ theorem localCoherentShare_iff_window (S : SharingWitnessFamily Γ Del) :
   constructor
   · intro h t _ _; exact h t
   · intro h t
-    obtain ⟨t', hlo, hhi, hr0, hr1, hm, h0, hp⟩ := S.exists_window_repr t
-    exact (S.coherentShareAt_congr hr0 hr1 hm h0 hp).mpr (h t' hlo hhi)
+    obtain ⟨t', hlo, hhi, hr0, hr1, ht0, htm, hm, h0, hp⟩ := S.exists_window_repr t
+    exact (S.coherentShareAt_congr hr0 hr1 ht0 htm hm h0 hp).mpr (h t' hlo hhi)
 
 /-- **(C0) decides** by a bounded scan of the combined window. -/
 instance decidableAtomCoherent (S : SharingWitnessFamily Γ Del) : Decidable S.AtomCoherent :=

@@ -140,9 +140,18 @@ def AtomCoherent (S : SharingWitnessFamily Γ Del) : Prop :=
 /--
 **(C1') Local coherence across the branching.**
 
-`WitnessFamily.LocalCoherentLab` with the two temporal clauses taken across shared states: the
-`untl` unfolding against every successor index, the `snce` unfolding against every predecessor
-index. The `bot`, `imp` and `box` clauses are one-position conditions and are unchanged.
+`WitnessFamily.LocalCoherentLab` with the two temporal clauses taken across the **succession**
+relation: the `untl` unfolding against every index the position succeeds to, the `snce` unfolding
+against every index the position is succeeded from. The `bot`, `imp` and `box` clauses are
+one-position conditions and are unchanged.
+
+Quantifying over `trans` rather than over `share` is the repair this module's redesign exists
+for. Under the old reading the `snce` clause ranged over the share-class at the label's *own*
+time `t`, which forced any two indices naming one world state to agree on every `snce` formula of
+the closure — the congruence `snce_share_congr` recorded, and the reason no six-condition family
+could certify an instance of `g S e → ⊡(g S e)`. Succession is a genuinely finer relation than
+state-identity at a time, so the two clauses are now symmetric: `untl` reads succession *out of*
+`t`, `snce` reads succession *into* `t`.
 -/
 def LocalCoherentShare (S : SharingWitnessFamily Γ Del) : Prop :=
   ∀ (i : Fin S.lassos.length) (t : ℤ),
@@ -151,18 +160,19 @@ def LocalCoherentShare (S : SharingWitnessFamily Γ Del) : Prop :=
         (Formula.imp a b ∈ S.L i t ↔ (a ∈ S.L i t → b ∈ S.L i t))) ∧
     (∀ χ : Formula, Formula.box χ ∈ closureOf (Γ ++ Del) →
         (Formula.box χ ∈ S.L i t ↔ S.bx χ = true)) ∧
-    (∀ j : Fin S.lassos.length, S.share (t + 1) i j →
+    (∀ j : Fin S.lassos.length, S.trans t i j →
       ∀ g e : Formula, Formula.untl g e ∈ closureOf (Γ ++ Del) →
         (Formula.untl g e ∈ S.L i t ↔
           (e ∈ S.L j (t + 1) ∨ (g ∈ S.L j (t + 1) ∧ Formula.untl g e ∈ S.L j (t + 1))))) ∧
-    (∀ k : Fin S.lassos.length, S.share t i k →
+    (∀ k : Fin S.lassos.length, S.trans (t - 1) k i →
       ∀ g e : Formula, Formula.snce g e ∈ closureOf (Γ ++ Del) →
         (Formula.snce g e ∈ S.L i t ↔
           (e ∈ S.L k (t - 1) ∨ (g ∈ S.L k (t - 1) ∧ Formula.snce g e ∈ S.L k (t - 1)))))
 
 /--
 **(C1') implies (C1).** Instantiating the successor and predecessor quantifiers at the index
-itself — legitimate because `share` is reflexive — recovers the deterministic condition on the
+itself — legitimate because `trans` is reflexive, `trans_refl'` being the arrival-pruned
+consequence of the skeleton's `trans_refl` field — recovers the deterministic condition on the
 underlying family verbatim.
 
 This is the sense in which the branching condition is a strengthening rather than a replacement,
@@ -172,7 +182,7 @@ theorem localCoherentLab_of_share {S : SharingWitnessFamily Γ Del}
     (h : S.LocalCoherentShare) : S.toWitnessFamily.LocalCoherentLab := by
   intro i t
   obtain ⟨hbot, himp, hbox, huntl, hsnce⟩ := h i t
-  exact ⟨hbot, himp, hbox, huntl i (S.share_refl (t + 1) i), hsnce i (S.share_refl t i)⟩
+  exact ⟨hbot, himp, hbox, huntl i (S.trans_refl' t i), hsnce i (S.trans_refl' (t - 1) i)⟩
 
 /-- The deterministic `untl` clause, as the reflexive instance of the branching one. -/
 theorem untl_self_of_share {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentShare)
@@ -180,7 +190,7 @@ theorem untl_self_of_share {S : SharingWitnessFamily Γ Del} (h : S.LocalCoheren
     (hc : Formula.untl g e ∈ closureOf (Γ ++ Del)) :
     Formula.untl g e ∈ S.L i t ↔
       (e ∈ S.L i (t + 1) ∨ (g ∈ S.L i (t + 1) ∧ Formula.untl g e ∈ S.L i (t + 1))) :=
-  (h i t).2.2.2.1 i (S.share_refl (t + 1) i) g e hc
+  (h i t).2.2.2.1 i (S.trans_refl' t i) g e hc
 
 /-- The deterministic `snce` clause, as the reflexive instance of the branching one. -/
 theorem snce_self_of_share {S : SharingWitnessFamily Γ Del} (h : S.LocalCoherentShare)
@@ -188,7 +198,7 @@ theorem snce_self_of_share {S : SharingWitnessFamily Γ Del} (h : S.LocalCoheren
     (hc : Formula.snce g e ∈ closureOf (Γ ++ Del)) :
     Formula.snce g e ∈ S.L i t ↔
       (e ∈ S.L i (t - 1) ∨ (g ∈ S.L i (t - 1) ∧ Formula.snce g e ∈ S.L i (t - 1))) :=
-  (h i t).2.2.2.2 i (S.share_refl t i) g e hc
+  (h i t).2.2.2.2 i (S.trans_refl' (t - 1) i) g e hc
 
 /--
 **(C2') Thread fulfilment.**
