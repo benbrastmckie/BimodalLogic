@@ -122,7 +122,10 @@ Two names in those three lines are used everywhere below and are worth fixing he
 - *`Context`.* A context is a list of formulas: the source writes `abbrev Context := List Formula`, and an `abbrev` is a definition Lean unfolds eagerly, so a `Context` simply *is* a `List Formula` wherever one is expected. That is why the empty context is written `[]`, Lean's empty-list literal; why the `assumption` rule's hypothesis reads `φ ∈ Γ`, which is list membership; and why `weakening` reads `Γ ⊆ Δ`, which is list inclusion. All three appear in the `DerivationTree` constructors of @lean-appendix-inductive.
 - *`Nonempty`.* `Nonempty α` is a `Prop` recording *that* the type `α` has an element while forgetting *which* one. Its single constructor takes an element and returns the proposition, so an inhabitant of `Nonempty α` is a proof rather than a piece of data, and by proof irrelevance any two such inhabitants are equal. Wrapping `DerivationTree fc G p` in it is exactly how `Derivable` throws the tree away and keeps only the claim that some tree exists. The same type reappears as a structure field in @lean-appendix-structures.
 
-The wrapper exists for automation: `simp` and similar tactics target `Prop`-valued goals, so a consistency argument or a quick lemma application states its goal with `Derivable`, while the metalogic, which needs the tree itself, works with `DerivationTree`.
+The wrapper exists for automation: `simp`, the rewriting tactic of @lean-appendix-tactics, and similar tactics target `Prop`-valued goals, so a consistency argument or a quick lemma application states its goal with `Derivable`, while the metalogic, which needs the tree itself, works with `DerivationTree`.
+One word of the excerpt is itself worth noting: `Derivable` is declared with `def` rather than `theorem`.
+Both commands attach a name to a term; `theorem` is reserved for terms whose type is a `Prop`, that is, for proofs, and `def` is used for everything else, including a definition like this one whose *result* is a `Prop` without being a proof of one.
+The naming conventions that ride on that distinction are @lean-appendix-conventions.
 
 The `fc : FrameClass` argument should not be read as semantics entering a syntactic definition.
 `FrameClass` is a four-element tag (`Base`, `Dense`, `ZTime`, `RTime`) declared alongside the axioms in `FormalSystem.ProofSystem`, with no reference to frames, models, or truth.
@@ -251,6 +254,8 @@ inductive Formula : Type where
 ```
 ]
 
+The last line, `deriving`, asks Lean to generate instances of the named classes automatically rather than by hand: printing (`Repr`), decidable equality (`DecidableEq`), its Boolean twin (`BEq`), hashing (`Hashable`), and countability (`Countable`). What such generated instances are for is @lean-appendix-structures.
+
 Every other connective in the book is a `def` layered over these six, never a further constructor.
 `neg`, `and`, `or`, `diamond`, `allFuture`, `allPast`, `someFuture`, `somePast`, `always`, `sometimes`, and the rest are ordinary functions computing a `Formula` from `Formula` arguments.
 Dot notation keeps such definitions readable: `φ.neg` abbreviates `Formula.neg φ`, so operators chain left to right.
@@ -364,6 +369,7 @@ The brackets record *who supplies the argument*, not what kind of thing it is.
 An implicit argument is one Lean can read off the rest of the call, so writing it out would be noise.
 `perpetuity2` (@lean-appendix-derived-theorem) takes its frame class implicitly, which is what lets a single proof term serve all four frame classes.
 Prefixing a name with `@` turns every implicit argument back into an explicit one, which is how `#check` is made to print a signature with nothing hidden.
+`#check` is a command, not a tactic: applied to a name it prints that name's type and evaluates nothing, and @lean-appendix-reading-source is where it is put to work as an audit tool.
 
 A `class` is a structure that is additionally registered for *instance inference*.
 Writing `[DecidableEq α]` in a signature asks Lean's elaborator to find an instance on its own, rather than requiring the caller to supply one.
@@ -844,7 +850,8 @@ Soundness is what makes the two routes agree.
 The derivation of *MF* and the validity of *MF* are independent facts until `soundness` (@lean-appendix-reading-source) says that every derivable formula is valid, and the *MF* case of that proof is precisely where `modal_future_valid`, and through it time-shift invariance, is spent.
 
 The two routes also differ in what they cost at the kernel.
-`#print axioms` on `perpetuity2` reports `[propext]` alone, while `timeShift_preserves_truth` reports `[propext, Quot.sound]` and the metalogic results of @lean-appendix-reading-source report all three of the standard classical axioms.
+`#print axioms`, the companion command to `#check`, lists every axiom the kernel leaned on in checking a named declaration (@lean-appendix-reading-source).
+On `perpetuity2` it reports `[propext]` alone, while `timeShift_preserves_truth` reports `[propext, Quot.sound]` and the metalogic results of @lean-appendix-reading-source report all three of the standard classical axioms.
 The audit reports what a proof actually used rather than a fixed preamble, which is what makes it worth running.
 
 == Derivations Are Data <lean-appendix-derivations-as-data>

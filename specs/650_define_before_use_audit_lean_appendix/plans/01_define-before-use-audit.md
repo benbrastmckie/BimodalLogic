@@ -264,7 +264,7 @@ before editing.
 
 ---
 
-### Phase 4: Long-Range Forward-Reference Glosses [NOT STARTED]
+### Phase 4: Long-Range Forward-Reference Glosses [COMPLETED]
 
 **Goal**: Close the five longest-range `FWD` rows with a one-clause gloss plus a section pointer at
 each first use, leaving the full treatments where they earn their position.
