@@ -309,46 +309,54 @@ untracked change, not a committed one). Confirm: `git status --short` shows only
 
 ---
 
-### Phase 4: Demonstrate the mechanism firing on a synthetic `.lean` addition [NOT STARTED]
+### Phase 4: Demonstrate the mechanism firing on a synthetic `.lean` addition [COMPLETED]
 
 **Goal**: Show — not assert — that the stale-count class is now prevented: a staged synthetic
 `.lean` file makes the gate block the commit, `--fix` repairs the counts, and the tree is
 restored clean.
 
 **Tasks**:
-- [ ] Re-verify the counts are in sync before starting (`bash scripts/typst-sync-check.sh
+- [x] Re-verify the counts are in sync before starting (`bash scripts/typst-sync-check.sh
   --counts-only` exits 0). If sibling task 695 has landed `.lean` files and left real drift,
   resolve that first (`--fix`) and say so in the summary — do not build the demonstration on top
-  of pre-existing drift.
-- [ ] Create a synthetic file `Tests/BimodalTest/SyntheticCountProbe.lean` with a one-line
+  of pre-existing drift. *(completed: found real drift twice from sibling task 695's in-flight
+  edits to FormalSystem/Semantics/IntTransfer.lean and prior commits; resolved via `lake build` +
+  `--fix` before starting, and again mid-phase after a sibling commit landed between the block
+  transcript and the fix)*
+- [x] Create a synthetic file `Tests/BimodalTest/SyntheticCountProbe.lean` with a one-line
   comment body. `Tests/` is chosen deliberately: `BimodalTest`'s root is `Tests/BimodalTest.lean`,
   so an unimported file there is never compiled, and unlike a file under `FormalSystem/` it does
   not perturb `lake exe mk_all --lib FormalSystem --check`. It still moves `tests-file-count`.
-- [ ] Do not run `lake build` or `lake test` while this file exists (the tree is shared with
-  concurrent siblings).
-- [ ] `git add -- Tests/BimodalTest/SyntheticCountProbe.lean`, then attempt a real commit and
+  *(completed)*
+- [x] Do not run `lake build` or `lake test` while this file exists (the tree is shared with
+  concurrent siblings). *(completed)*
+- [x] `git add -- Tests/BimodalTest/SyntheticCountProbe.lean`, then attempt a real commit and
   capture the refusal: the hook must exit non-zero, name `tests-file-count` (and
-  `tests-line-count`) as drifted, and print the remedy. Record the verbatim output.
-- [ ] Confirm the commit did not happen (`git log -1` unchanged, file still staged).
-- [ ] Demonstrate the remedy end-to-end: run `bash scripts/typst-sync-check.sh --fix` (this
+  `tests-line-count`) as drifted, and print the remedy. Record the verbatim output. *(completed;
+  transcript in the implementation summary)*
+- [x] Confirm the commit did not happen (`git log -1` unchanged, file still staged). *(completed
+  — HEAD stayed at the sibling's own commit throughout)*
+- [x] Demonstrate the remedy end-to-end: run `bash scripts/typst-sync-check.sh --fix` (this
   needs a built library; if the build is not warm, `lake build` first and note the cost), confirm
   `typst/generated/status.typ` now reflects the synthetic file, and confirm a retried commit
   would pass the gate — verify by invoking `.githooks/pre-commit` directly rather than by
-  committing the synthetic file.
-- [ ] Tear down: unstage and delete `Tests/BimodalTest/SyntheticCountProbe.lean`, then restore
+  committing the synthetic file. *(completed)*
+- [x] Tear down: unstage and delete `Tests/BimodalTest/SyntheticCountProbe.lean`, then restore
   `typst/generated/status.typ` to its pre-demonstration content (`git checkout --` is forbidden
   on a dirty tree by `rules/git-workflow.md`; use `bash scripts/typst-sync-check.sh --fix` again
   to regenerate it from the now-synthetic-free tree, and accept that `stamp-commit`/`stamp-date`
-  may differ — see the note below).
-- [ ] Handle the stamp residue explicitly: if the teardown regeneration leaves
+  may differ — see the note below). *(completed)*
+- [x] Handle the stamp residue explicitly: if the teardown regeneration leaves
   `typst/generated/status.typ` differing from HEAD only in `stamp-commit`/`stamp-date`, either
   commit that stamp-only refresh as its own clearly-labelled change or restore the committed
   version via `git restore --staged`-safe means; state which was done and why. Do not leave an
-  uncommitted stray diff in a file inside this task's `file_scope`.
-- [ ] Confirm `git status --porcelain` carries no trace of the synthetic path, and
-  `bash scripts/typst-sync-check.sh --counts-only` exits 0.
-- [ ] Record the verbatim block/fix/teardown transcript for the implementation summary — this is
-  the task's "demonstrably prevented" evidence.
+  uncommitted stray diff in a file inside this task's `file_scope`. *(completed: committed the
+  stamp-only refresh as its own labelled commit, since a sibling commit had landed during
+  teardown)*
+- [x] Confirm `git status --porcelain` carries no trace of the synthetic path, and
+  `bash scripts/typst-sync-check.sh --counts-only` exits 0. *(completed)*
+- [x] Record the verbatim block/fix/teardown transcript for the implementation summary — this is
+  the task's "demonstrably prevented" evidence. *(completed)*
 
 **Timing**: 45 minutes
 
