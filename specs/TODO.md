@@ -11,10 +11,10 @@ next_project_number: 705
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,700 | -- | algebraic-representation, categorical-structure, completeness, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,650,696 | 298,464,502,563,649,700 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,618,701,703 | 231,465,497,564,565,616,696 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543,704 | 428,498,499,500,703 | algebraic-representation, decidability, metalogic, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,696 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,650,701,703 | 298,464,502,563,649,696 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,618,704 | 231,465,497,564,565,616,703 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
@@ -46,10 +46,6 @@ next_project_number: 705
   └─ 616 [NOT STARTED] — Formalize the duration monoid BD+, its twisted-arrow...
     └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove... (see above)
   └─ 617 [NOT STARTED] — Prove app:presheaf-dictionary's Reflection clause: reflection...
-
-### Completeness
-
-700 [IMPLEMENTING] — SURVEY-AND-SEQUENCE TASK, DELIBERATELY NOT A WORK TASK....
 
 ### Dataset Enhancement
 
@@ -164,12 +160,13 @@ Soundness is not in question anywhere in this task.
 ---
 
 ### 700. Lplus completeness programme survey
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: formal:logic
 - **Topic**: completeness
 - **Dependencies**: None
 - **Research**: [700_lplus_completeness_programme_survey/reports/01_lplus-completeness-programme-survey.md]
 - **Plan**: [700_lplus_completeness_programme_survey/plans/01_completeness-programme-sequencing.md]
+- **Summary**: [700_lplus_completeness_programme_survey/summaries/01_completeness-programme-sequencing-summary.md]
 
 **Description**: SURVEY-AND-SEQUENCE TASK, DELIBERATELY NOT A WORK TASK. Produce one coordinated programme for reaching a proved completeness result for the L-plus decision procedure, spanning this repository and the paired model checker, and sequence it. This task's deliverable is a survey, a dependency graph and a recommended order -- NOT the work itself, and NOT a burst of new task entries. Spawn at most what the survey concludes is needed, in the order it concludes, and justify every entry it proposes; if the survey concludes existing tasks already cover an area, say so and propose nothing there.
 
