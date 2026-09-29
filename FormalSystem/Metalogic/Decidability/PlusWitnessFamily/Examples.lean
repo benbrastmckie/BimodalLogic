@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Decide
+import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Agreement
 
 /-!
 # Non-Vacuity of (C5), and the Deterministic Diagonal
@@ -415,6 +415,421 @@ set_option linter.hashCommand false in
   (PlusSharingWitnessFamily.decidableStabFaithful (stabFamily guardAtom))
 
 end Computed
+
+/-! ## Family A: the `snce`-side certificate at non-trivial sharing
+
+The separation the `trans` substrate exists to make expressible, exhibited. Two lassos that name
+one world state from the origin on, yet whose succession relation is index-identity, so no thread
+crosses between them. Under the pre-redesign (C1') that combination was impossible: the `snce`
+clause quantified its predecessor over the whole `share`-class at `t`, which forced the two
+indices to agree on every past-tense formula of the closure. Under the redesign the clause
+quantifies over succession into `t`, which here is a singleton, and the two indices are free to
+disagree.
+
+What that buys is the target `Pp → ⊡Pp`. `Incompleteness.lean`'s `not_plusValidZTime_stabSnce`
+says it is a genuine ℤ-time non-validity; before the redesign no six-condition family certified
+any instance of it. `plusCertifies_stabSnce_example` is one.
+
+The `lift` obligation is discharged by `liftable_of_constant_below`: below the origin every
+`share`-class is a singleton, so a state path cannot move, and from the origin on every two
+indices share, so the constant path at the value just below the origin tracks anything.
+-/
+
+section FamilyA
+
+variable (p : Atom)
+
+/-- `Pp := ⊤ S p`. -/
+abbrev snceP : PlusFormula := PlusFormula.snce PlusFormula.top (.atom p)
+/-- `⊡Pp`. -/
+abbrev stabSnceP : PlusFormula := PlusFormula.stab (snceP p)
+/-- The target `Pp → ⊡Pp`; definitionally `stabSnceTarget ⊤ (atom p)`. -/
+abbrev targetA : PlusFormula := PlusFormula.imp (snceP p) (stabSnceP p)
+
+/-- The closure of Family A's target. -/
+abbrev closA : Finset PlusFormula := plusClosureOf (([] : PlusContext) ++ [targetA p])
+
+/-- The closure of the target, enumerated. -/
+theorem mem_closA (ψ : PlusFormula) :
+    ψ ∈ closA p ↔ ψ = targetA p ∨ ψ = snceP p ∨ ψ = stabSnceP p ∨ ψ = PlusFormula.top ∨
+      ψ = PlusFormula.bot ∨ ψ = PlusFormula.atom p := by
+  rw [mem_plusClosureOf]
+  simp only [List.nil_append, List.mem_singleton, exists_eq_left]
+  rw [plusSubformulaClosure, List.mem_toFinset]
+  simp only [PlusFormula.top, PlusFormula.subformulas, List.mem_cons, List.mem_append,
+    List.not_mem_nil, or_false]
+  tauto
+
+theorem imp_mem_closA {a b : PlusFormula} (h : PlusFormula.imp a b ∈ closA p) :
+    (a = snceP p ∧ b = stabSnceP p) ∨ (a = PlusFormula.bot ∧ b = PlusFormula.bot) := by
+  rw [mem_closA] at h
+  simp only [PlusFormula.top, PlusFormula.imp.injEq, reduceCtorEq, or_false] at h
+  tauto
+
+theorem snce_mem_closA {g e : PlusFormula} (h : PlusFormula.snce g e ∈ closA p) :
+    g = PlusFormula.top ∧ e = PlusFormula.atom p := by
+  rw [mem_closA] at h
+  simp only [PlusFormula.top, PlusFormula.snce.injEq, reduceCtorEq, or_false, false_or] at h
+  exact h
+
+theorem untl_not_mem_closA {g e : PlusFormula} (h : PlusFormula.untl g e ∈ closA p) : False := by
+  rw [mem_closA] at h
+  simp only [PlusFormula.top, reduceCtorEq, or_false] at h
+
+theorem box_not_mem_closA {χ : PlusFormula} (h : PlusFormula.box χ ∈ closA p) : False := by
+  rw [mem_closA] at h
+  simp only [PlusFormula.top, reduceCtorEq, or_false] at h
+
+theorem stab_mem_closA {φ : PlusFormula} (h : PlusFormula.stab φ ∈ closA p) : φ = snceP p := by
+  rw [mem_closA] at h
+  simp only [PlusFormula.top, PlusFormula.stab.injEq, reduceCtorEq, or_false, false_or] at h
+  exact h
+
+/-- Lasso 0 off the origin, and lasso 1 on `[1, ∞)`: `{p, Pp, ⊡Pp, ⊤, T}`. -/
+def a0b : Finset PlusFormula :=
+  {PlusFormula.atom p, snceP p, stabSnceP p, PlusFormula.top, targetA p}
+/-- Lasso 0 at the origin: `{p, Pp, ⊤}` — `⊡Pp` and hence the target absent. -/
+def a0m : Finset PlusFormula := {PlusFormula.atom p, snceP p, PlusFormula.top}
+/-- Lasso 1 on the negatives: `{⊤, T}`. -/
+def a1b : Finset PlusFormula := {PlusFormula.top, targetA p}
+/-- Lasso 1 at the origin: `{p, ⊤, T}` — `p` arrives, `Pp` not yet. -/
+def a1m : Finset PlusFormula := {PlusFormula.atom p, PlusFormula.top, targetA p}
+
+theorem a0b_sub : a0b p ⊆ closA p := by
+  intro ψ h; rw [mem_closA]; simp only [a0b, Finset.mem_insert, Finset.mem_singleton] at h; tauto
+theorem a0m_sub : a0m p ⊆ closA p := by
+  intro ψ h; rw [mem_closA]; simp only [a0m, Finset.mem_insert, Finset.mem_singleton] at h; tauto
+theorem a1b_sub : a1b p ⊆ closA p := by
+  intro ψ h; rw [mem_closA]; simp only [a1b, Finset.mem_insert, Finset.mem_singleton] at h; tauto
+theorem a1m_sub : a1m p ⊆ closA p := by
+  intro ψ h; rw [mem_closA]; simp only [a1m, Finset.mem_insert, Finset.mem_singleton] at h; tauto
+
+/-- Lasso 0 of Family A. -/
+def lassoA0 : PlusLabelledLasso (closA p) where
+  back := [a0b p]
+  mid := [a0m p]
+  fwd := [a0b p]
+  back_ne := by simp
+  fwd_ne := by simp
+  label_sub := by
+    intro X hX
+    simp only [List.cons_append, List.nil_append, List.mem_cons, List.not_mem_nil,
+      or_false] at hX
+    rcases hX with rfl | rfl | rfl
+    · exact a0b_sub p
+    · exact a0m_sub p
+    · exact a0b_sub p
+
+/-- Lasso 1 of Family A. -/
+def lassoA1 : PlusLabelledLasso (closA p) where
+  back := [a1b p]
+  mid := [a1m p]
+  fwd := [a0b p]
+  back_ne := by simp
+  fwd_ne := by simp
+  label_sub := by
+    intro X hX
+    simp only [List.cons_append, List.nil_append, List.mem_cons, List.not_mem_nil,
+      or_false] at hX
+    rcases hX with rfl | rfl | rfl
+    · exact a1b_sub p
+    · exact a1m_sub p
+    · exact a0b_sub p
+
+/--
+**Family A.** Separate on the negatives, one class on `[0, ∞)`, and succession is index-identity
+throughout.
+-/
+def famA : PlusSharingWitnessFamily ([] : PlusContext) [targetA p] where
+  bx := fun _ => false
+  lassos := [lassoA0 p, lassoA1 p]
+  lassos_ne := by simp
+  repBack := [id]
+  repMid := [fun _ => ⟨0, by simp⟩]
+  repFwd := [fun _ => ⟨0, by simp⟩]
+  repBack_ne := by simp
+  repFwd_ne := by simp
+  rep_idem := by
+    intro f hf i
+    simp only [List.cons_append, List.nil_append, List.mem_cons, List.not_mem_nil,
+      or_false] at hf
+    rcases hf with rfl | rfl | rfl <;> rfl
+  transBack := transIdOf _ [id]
+  transMid := transIdOf _ [fun _ => ⟨0, by simp⟩]
+  transFwd := transIdOf _ [fun _ => ⟨0, by simp⟩]
+  transBack_len := transIdOf_length _ _
+  transMid_len := transIdOf_length _ _
+  transFwd_len := transIdOf_length _ _
+  trans_refl := transIdOf_refl _ _ _ _
+  lift := by
+    refine liftable_of_constant_below _ _ _ _ _ _ _ 0 ?_ ?_ ?_
+    · intro u hu i j h
+      rw [shareOf, repOf_singletons, if_pos hu] at h
+      exact h
+    · intro u hu i j
+      rw [shareOf, repOf_singletons, if_neg (not_lt.mpr hu)]
+      split_ifs <;> rfl
+    · intro u i
+      rw [transMatOf_id]
+      exact transId_refl _ _
+
+@[simp] theorem famA_lassos_length : (famA p).lassos.length = 2 := rfl
+
+theorem famA_zero_lt : 0 < (famA p).lassos.length :=
+  (famA p).toPlusWitnessFamily.lassos_length_pos
+
+theorem famA_one_lt : 1 < (famA p).lassos.length := by
+  rw [famA_lassos_length]; omega
+
+theorem famA_index_cases (i : Fin (famA p).lassos.length) : i.val = 0 ∨ i.val = 1 := by
+  have h : i.val < 2 := i.isLt
+  omega
+
+/-- The labels, decoded. -/
+theorem famA_L (i : Fin (famA p).lassos.length) (u : ℤ) :
+    (famA p).L i u =
+      if i.val = 0 then (if u < 0 then a0b p else if u = 0 then a0m p else a0b p)
+      else (if u < 0 then a1b p else if u = 0 then a1m p else a0b p) := by
+  have hget : (famA p).lassos.get i = if i.val = 0 then lassoA0 p else lassoA1 p := by
+    rcases famA_index_cases p i with h | h
+    · rw [if_pos h]
+      have hi : i = ⟨0, famA_zero_lt p⟩ := Fin.ext h
+      rw [hi]; rfl
+    · rw [if_neg (by omega)]
+      have hi : i = ⟨1, famA_one_lt p⟩ := Fin.ext h
+      rw [hi]; rfl
+  rw [PlusWitnessFamily.L, hget]
+  rcases famA_index_cases p i with h | h
+  · rw [if_pos h, if_pos h, PlusLabelledLasso.lab_def]
+    exact unrollOf_singletons _ _ _ _ u
+  · rw [if_neg (by omega), if_neg (by omega), PlusLabelledLasso.lab_def]
+    exact unrollOf_singletons _ _ _ _ u
+
+/-- The origin representative. -/
+abbrev cA : Fin (famA p).lassos.length → Fin (famA p).lassos.length :=
+  fun _ => ⟨0, famA_zero_lt p⟩
+
+/-- The representative map: identity on the negatives, constant `0` from the origin on. -/
+theorem famA_rep (u : ℤ) (i : Fin (famA p).lassos.length) :
+    (famA p).rep u i = if u < 0 then i else ⟨0, famA_zero_lt p⟩ := by
+  have hrep : (famA p).rep u = if u < 0 then id else if u = 0 then cA p else cA p :=
+    repOf_singletons (famA p).lassos.length id (cA p) (cA p) u
+  rw [hrep]
+  split_ifs <;> rfl
+
+theorem famA_share_neg {u : ℤ} (hu : u < 0) (i j : Fin (famA p).lassos.length) :
+    (famA p).share u i j ↔ i = j := by
+  rw [(famA p).share_def, famA_rep, famA_rep]
+  simp [hu]
+
+theorem famA_share_nonneg {u : ℤ} (hu : 0 ≤ u) (i j : Fin (famA p).lassos.length) :
+    (famA p).share u i j := by
+  rw [(famA p).share_def, famA_rep, famA_rep]
+  simp [not_lt.mpr hu]
+
+/-- The succession matrix decodes to the identity at every time. -/
+theorem famA_transRaw (u : ℤ) :
+    (famA p).transRaw u = transId (famA p).lassos.length :=
+  transMatOf_id _ _ _ _ u
+
+/--
+**Succession in Family A is index-identity**, at every time, however much the indices share.
+This is the whole point of the family: sharing is non-trivial from the origin on, and succession
+is not.
+-/
+theorem famA_trans (u : ℤ) (i j : Fin (famA p).lassos.length) :
+    (famA p).trans u i j ↔ i = j := by
+  rw [(famA p).trans_def]
+  constructor
+  · rintro ⟨h, -⟩
+    rw [famA_transRaw] at h
+    exact transId_eq h
+  · rintro rfl
+    exact ⟨by rw [famA_transRaw]; exact transId_refl _ _, (famA p).share_refl _ _⟩
+
+/-- Every thread of Family A is constant: succession never moves the index. -/
+theorem famA_thread_const (θ : (famA p).Thread) (u v : ℤ) : θ.idx u = θ.idx v := by
+  have hfwd : ∀ (n : ℕ) (w : ℤ), θ.idx (w + n) = θ.idx w := by
+    intro n
+    induction n with
+    | zero => intro w; simp
+    | succ n ih =>
+      intro w
+      have hs : θ.idx (w + n) = θ.idx (w + n + 1) :=
+        (famA_trans p _ _ _).mp (Thread.step θ (w + n))
+      rw [show w + ((n + 1 : ℕ) : ℤ) = w + n + 1 by omega, ← hs, ih w]
+  rcases le_total u v with huv | huv
+  · have := hfwd (v - u).toNat u
+    rw [show u + (((v - u).toNat : ℕ) : ℤ) = v by omega] at this
+    exact this.symm
+  · have := hfwd (u - v).toNat v
+    rw [show v + (((u - v).toNat : ℕ) : ℤ) = u by omega] at this
+    exact this
+
+/-- (C0) for Family A. -/
+theorem famA_atomCoherent : (famA p).PlusAtomCoherent := by
+  intro u i j hij q
+  rcases lt_or_ge u 0 with hu | hu
+  · rw [famA_share_neg p hu] at hij
+    subst hij
+    exact Iff.rfl
+  · rw [famA_L, famA_L]
+    rcases eq_or_lt_of_le hu with hu0 | hu0
+    · subst hu0
+      rcases famA_index_cases p i with hi | hi <;> rcases famA_index_cases p j with hj | hj <;>
+        simp [hi, hj, a0m, a1m, PlusFormula.top]
+    · rcases famA_index_cases p i with hi | hi <;> rcases famA_index_cases p j with hj | hj <;>
+        simp [hi, hj, not_lt.mpr hu, hu0.ne', a0b]
+
+/-- (C1') for Family A. -/
+theorem famA_plusLocalCoherentShare : (famA p).PlusLocalCoherentShare := by
+  intro i t
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · rw [famA_L]
+    split_ifs <;> simp [a0b, a0m, a1b, a1m, PlusFormula.top]
+  · intro a b hab
+    rcases imp_mem_closA p hab with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+    · rw [famA_L]
+      split_ifs <;> simp [a0b, a0m, a1b, a1m, PlusFormula.top]
+    · rw [famA_L]
+      split_ifs <;> simp [a0b, a0m, a1b, a1m, PlusFormula.top]
+  · intro χ hχ
+    exact (box_not_mem_closA p hχ).elim
+  · intro j _ g e hge
+    exact (untl_not_mem_closA p hge).elim
+  · intro k hki g e hge
+    obtain ⟨rfl, rfl⟩ := snce_mem_closA p hge
+    rw [famA_trans] at hki
+    subst hki
+    rw [famA_L, famA_L]
+    rcases famA_index_cases p k with hk | hk
+    · simp only [hk, if_true]
+      rcases lt_trichotomy t 0 with ht | ht | ht
+      · simp [ht, show t - 1 < 0 by omega, a0b, PlusFormula.top]
+      · subst ht
+        simp [a0b, a0m, PlusFormula.top]
+      · rcases eq_or_lt_of_le (show 1 ≤ t by omega) with ht1 | ht1
+        · subst ht1
+          simp [a0b, a0m, PlusFormula.top]
+        · simp [not_lt.mpr ht.le, ht.ne', show ¬ t - 1 < 0 by omega,
+            show t - 1 ≠ 0 by omega, a0b, PlusFormula.top]
+    · simp only [hk, one_ne_zero, if_false]
+      rcases lt_trichotomy t 0 with ht | ht | ht
+      · simp [ht, show t - 1 < 0 by omega, a1b, PlusFormula.top]
+      · subst ht
+        simp [a1b, a1m, PlusFormula.top]
+      · rcases eq_or_lt_of_le (show 1 ≤ t by omega) with ht1 | ht1
+        · subst ht1
+          simp [a0b, a1m, PlusFormula.top]
+        · simp [not_lt.mpr ht.le, ht.ne', show ¬ t - 1 < 0 by omega,
+            show t - 1 ≠ 0 by omega, a0b, PlusFormula.top]
+
+/-- (C2') for Family A. -/
+theorem famA_plusThreadFulfilling : (famA p).PlusThreadFulfilling := by
+  refine ⟨fun i u g e hmem θ _ => ?_, fun i u g e hmem θ hθ => ?_⟩
+  · exact (untl_not_mem_closA p ((famA p).subset_plusClosureOf i u hmem)).elim
+  · obtain ⟨rfl, rfl⟩ := snce_mem_closA p ((famA p).subset_plusClosureOf i u hmem)
+    have hconst : ∀ r, θ.idx r = i := fun r => (famA_thread_const p θ r u).trans hθ
+    rcases famA_index_cases p i with hi | hi
+    · refine ⟨u - 1, by omega, ?_, fun r h1 h2 => by omega⟩
+      rw [hconst, famA_L]
+      simp only [hi, if_true]
+      split_ifs <;> simp [a0b, a0m]
+    · have hu : 1 ≤ u := by
+        rw [famA_L] at hmem
+        simp only [hi, one_ne_zero, if_false] at hmem
+        by_contra hlt
+        rcases lt_or_ge u 0 with hu0 | hu0
+        · simp [hu0, a1b, PlusFormula.top] at hmem
+        · have hu0' : u = 0 := by omega
+          simp [hu0', a1m, PlusFormula.top] at hmem
+      refine ⟨0, by omega, ?_, fun r h1 h2 => ?_⟩
+      · rw [hconst, famA_L]
+        simp [hi, a1m]
+      · rw [hconst, famA_L]
+        simp only [hi, one_ne_zero, if_false]
+        simp [not_lt.mpr h1.le, h1.ne', a0b]
+
+/-- (C3) for Family A: vacuous, no `box` in the closure. -/
+theorem famA_boxFaithful : (famA p).toPlusWitnessFamily.PlusBoxFaithful :=
+  fun _χ hχ => (box_not_mem_closA p hχ).elim
+
+/-- (C4) for Family A at `t = 0`. -/
+theorem famA_target : (famA p).toPlusWitnessFamily.PlusTarget 0 := by
+  refine ⟨fun γ hγ => (List.not_mem_nil hγ).elim, fun σ hσ => ?_⟩
+  have hσ' : σ = targetA p := by simpa using hσ
+  subst hσ'
+  change targetA p ∉ (famA p).L (famA p).toPlusWitnessFamily.mainIdx 0
+  rw [famA_L]
+  simp [PlusWitnessFamily.mainIdx, a0m, PlusFormula.top]
+
+/-- (C5) for Family A. -/
+theorem famA_stabFaithful : (famA p).StabFaithful := by
+  intro i u φ hc
+  obtain rfl := stab_mem_closA p hc
+  rcases lt_or_ge u 0 with hu | hu
+  · have hright : (∀ j, (famA p).share u i j → snceP p ∈ (famA p).L j u) ↔
+        snceP p ∈ (famA p).L i u := by
+      constructor
+      · intro h; exact h i ((famA_share_neg p hu i i).mpr rfl)
+      · intro h j hij
+        rw [famA_share_neg p hu] at hij
+        exact hij ▸ h
+    rw [hright, famA_L]
+    rcases famA_index_cases p i with hi | hi
+    · simp [hi, hu, a0b]
+    · simp [hi, hu, a1b, PlusFormula.top]
+  · rcases eq_or_lt_of_le hu with hu0 | hu0
+    · subst hu0
+      have hright : ¬ ∀ j, (famA p).share 0 i j → snceP p ∈ (famA p).L j 0 := by
+        intro h
+        have := h ⟨1, famA_one_lt p⟩ (famA_share_nonneg p le_rfl _ _)
+        rw [famA_L] at this
+        simp [a1m, PlusFormula.top] at this
+      rw [famA_L]
+      rcases famA_index_cases p i with hi | hi
+      · simp only [hi, if_true, lt_irrefl, if_false]
+        exact iff_of_false (by simp [a0m, PlusFormula.top]) hright
+      · simp only [hi, one_ne_zero, if_false, lt_irrefl]
+        exact iff_of_false (by simp [a1m, PlusFormula.top]) hright
+    · have hright : ∀ j, (famA p).share u i j → snceP p ∈ (famA p).L j u := by
+        intro j _
+        rw [famA_L]
+        rcases famA_index_cases p j with hj | hj <;>
+          simp [hj, not_lt.mpr hu, hu0.ne', a0b]
+      rw [famA_L]
+      rcases famA_index_cases p i with hi | hi
+      · simp only [hi, if_true, not_lt.mpr hu, hu0.ne', if_false]
+        exact iff_of_true (by simp [a0b]) hright
+      · simp only [hi, one_ne_zero, if_false, not_lt.mpr hu, hu0.ne']
+        exact iff_of_true (by simp [a0b]) hright
+
+/--
+**Family A is a six-condition certificate for `Pp → ⊡Pp` at non-trivial sharing.**
+
+The positive half of the redesign's evidence. Every condition of `PlusCertifies` holds at
+`t = 0`, and `famA_share_nonneg` together with `famA_separates_snce` shows the sharing is not
+degenerate: indices `0` and `1` name one state at the origin and disagree on `Pp` there.
+
+Paper: — (a formalization-native construction; the paper states no such result)
+-/
+theorem plusCertifies_stabSnce_example : (famA p).PlusCertifies 0 :=
+  ⟨famA_atomCoherent p, ⟨famA_plusLocalCoherentShare p, famA_plusThreadFulfilling p⟩,
+    famA_boxFaithful p, famA_target p, famA_stabFaithful p⟩
+
+/--
+**The sharing is non-trivial, and the old congruence fails on it.** Indices `0` and `1` name one
+world state at the origin, and exactly one of them carries `Pp` there.
+-/
+theorem famA_separates_snce :
+    (famA p).share 0 ⟨0, famA_zero_lt p⟩ ⟨1, famA_one_lt p⟩ ∧
+      snceP p ∈ (famA p).L ⟨0, famA_zero_lt p⟩ 0 ∧
+      snceP p ∉ (famA p).L ⟨1, famA_one_lt p⟩ 0 := by
+  refine ⟨famA_share_nonneg p le_rfl _ _, ?_, ?_⟩
+  · rw [famA_L]; simp [a0m]
+  · rw [famA_L]; simp [a1m, PlusFormula.top]
+
+end FamilyA
 
 end PlusSharingWitnessFamily
 

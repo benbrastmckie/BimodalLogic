@@ -993,13 +993,16 @@ echo
 # ---------------------------------------------------------------------------
 # C2: axiom sets for the flagship theorems, and for the certificate stack's pinned goals
 #
-# The first four rows are the completeness/countermodel flagships. The eight that
+# The first four rows are the completeness/countermodel flagships. The ten that
 # follow pin the branching witness-family stack: the histories characterization the whole
-# branching device rests on, and the seven L-plus declarations that carry the stability
+# branching device rests on, and the nine L-plus declarations that carry the stability
 # condition (C5) -- the condition itself, its decision procedure's correctness, the
-# agreement case that makes it load-bearing, the certificate producer, and the two
-# stability targets' ℤ-time non-validities. They are pinned here for the same reason the
-# flagships are: a silent `Classical`-free-to-not claim, or a new axiom, is a HARD STOP.
+# agreement case that makes it load-bearing, the certificate producer, the two stability
+# targets' ℤ-time non-validities, and the two POSITIVE results the substrate redesign
+# bought: a six-condition certificate for `Pp -> stab Pp` at non-trivial sharing, and the
+# refutation (not merely the absence) of the congruence that used to make such a
+# certificate impossible. They are pinned here for the same reason the flagships are: a
+# silent `Classical`-free-to-not claim, or a new axiom, is a HARD STOP.
 #
 # FIVE ROWS WERE RETIRED HERE, DELIBERATELY AND VISIBLY. Until the `trans` substrate
 # landed, this baseline also pinned `snce_share_congr`, `untl_shift_share_congr`,
@@ -1038,6 +1041,8 @@ read -r -d '' AXIOM_BASELINE <<'BASELINE'
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabFamily_separates' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabFaithful_diagonal' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabSnce' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusCertifies_stabSnce_example' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_snce_share_congr' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabUntl' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.validZTime_iff_validInt' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1058,6 +1063,8 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabFamily_separates
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.stabFaithful_diagonal
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabSnce
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusCertifies_stabSnce_example
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_snce_share_congr
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabUntl
 #print axioms FormalSystem.Semantics.validZTime_iff_validInt
 #print axioms FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt
@@ -1071,7 +1078,7 @@ LEAN
     | grep 'depends on axioms')
   rm -f "$AX_SRC"
   if [ "$AX_OUT" = "$AXIOM_BASELINE" ]; then
-    pass C2 "all fourteen pinned axiom sets match baseline"
+    pass C2 "all sixteen pinned axiom sets match baseline"
     while IFS= read -r l; do note "$l"; done <<<"$AX_OUT"
   else
     fail C2 "axiom sets diverged from baseline -- this is a HARD STOP, not a new baseline"

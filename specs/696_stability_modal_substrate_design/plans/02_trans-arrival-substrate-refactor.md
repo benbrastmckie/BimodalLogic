@@ -610,7 +610,7 @@ elaborates, stop and report it — that would mean the redesign did not actually
 
 ---
 
-### Phase 9: Family A in the tree — the `snce`-side certificate [NOT STARTED]
+### Phase 9: Family A in the tree — the `snce`-side certificate [COMPLETED]
 
 **Goal**: Port round 2's Family A into `PlusWitnessFamily/Examples.lean` and land the two
 positive theorems it licenses: a six-condition certificate for `Pp → ⊡Pp` at non-trivial
@@ -618,18 +618,26 @@ sharing, and the refutation of the old congruence statement.
 
 **Tasks**:
 
-- [ ] Port `famA` and its decoding lemmas (`famA_L`, `famA_rep`, `famA_share_neg`,
+- [x] Port `famA` and its decoding lemmas (`famA_L`, `famA_rep`, `famA_share_neg`,
       `famA_share_nonneg`) from `probes/03_trans_redesign_gate_probe.lean`, translating the
-      probe's external `trans` parameter into the structure field and `TThread` into `Thread`.
-- [ ] Discharge `lift` with Phase 2's constant-path corollary (the probe's `famA_liftable`
-      argument: every `Step`-path is constant on `(-∞, -1]`).
-- [ ] Port the six per-condition proofs (`famA_atomCoherent`, `famA_plusLocalCoherentShare`,
+      probe's external `trans` parameter into the structure field and `TThread` into `Thread`. *(deviation: altered — the probe's names collide with `Incompleteness.lean`'s
+      own, so `Pp`/`SPp`/`TA`/`c0` were renamed `snceP`/`stabSnceP`/`targetA`/`cA`; the
+      external `transEq` parameter became the no-hopping bundle `transIdOf`, added to
+      `Sharing/Skeleton.lean` alongside `transId`, `transIdOf_refl` and `transMatOf_id`)*
+- [x] Discharge `lift` with Phase 2's constant-path corollary (the probe's `famA_liftable`
+      argument: every `Step`-path is constant on `(-∞, -1]`). *(also needed
+      `unrollOf_singletons`/`repOf_singletons` in `Sharing/Skeleton.lean`, since `lift` is
+      discharged inside the producer's own structure literal where no family-level decoding
+      lemma exists yet)*
+- [x] Port the six per-condition proofs (`famA_atomCoherent`, `famA_plusLocalCoherentShare`,
       `famA_threadFulfilling`, `famA_boxFaithful`, `famA_target`, `famA_stabFaithful`) and bundle
       them as `plusCertifies_stabSnce_example : (famA p).PlusCertifies 0`.
-- [ ] Add `not_snce_share_congr` to `Incompleteness.lean`: the redesigned (C1') holds of `famA`
+- [x] Add `not_snce_share_congr` to `Incompleteness.lean`: the redesigned (C1') holds of `famA`
       while `share 0 0 1` with `Pp ∈ L 0 0` and `Pp ∉ L 1 0`, so the old congruence statement is
-      refuted rather than merely unproved.
-- [ ] Add two C2 baseline rows and two `#print axioms` lines for the new theorems, update the
+      refuted rather than merely unproved. *(deviation: altered — `Incompleteness.lean` now imports
+      `Examples.lean` rather than `Agreement.lean` directly, and `Examples.lean` imports
+      `Agreement.lean` for `PlusCertifies`; no cycle, since neither is imported by `Agreement`)*
+- [x] Add two C2 baseline rows and two `#print axioms` lines for the new theorems, update the
       pass-message count, and add the two matching `theorem-index.md` rows.
 
 **Timing**: 2 hours

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
-import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Agreement
+import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Examples
 import FormalSystem.PlusLanguage.PlusNonValidities
 
 /-!
@@ -60,6 +60,8 @@ failed was completeness of the certificate class on these two targets.
 
 ## Main Results
 
+- `PlusSharingWitnessFamily.not_snce_share_congr` — the redesigned (C1') does not entail the
+  retired congruence, refuted by `Examples.lean`'s Family A rather than merely unproved
 - `PlusSharingWitnessFamily.not_plusValidZTime_stabSnce` — `Pp → ⊡Pp` is a genuine ℤ-time
   non-validity
 - `PlusSharingWitnessFamily.not_plusValidZTime_stabUntl` — and so is `Fp → (¬p → ⊡Fp)`
@@ -88,6 +90,37 @@ def notStabSnceTarget (g e : PlusFormula) : PlusFormula :=
 def stabUntlTarget (p : Atom) : PlusFormula :=
   .imp (PlusFormula.untl PlusFormula.top (.atom p))
     (.imp (.imp (.atom p) .bot) (.stab (PlusFormula.untl PlusFormula.top (.atom p))))
+
+/-! ## The retired congruence is refuted, not merely unproved
+
+The check a redesign can otherwise pass by type-checking alone. That the old congruence no longer
+*elaborates* is weak evidence: a redesign can reproduce a defect in a differently-spelled clause
+and still break the old proof term. What settles it is a family that satisfies the redesigned
+(C1') at every position and violates the congruence's conclusion — which is what
+`Examples.lean`'s Family A is for.
+-/
+
+/--
+**The redesigned (C1') does not entail `share`-class agreement on past-tense labels.**
+
+The statement the retired `snce_share_congr` made, refuted. Family A satisfies (C1') everywhere,
+yet indices `0` and `1` name one world state at the origin and exactly one of them carries `Pp`
+there. Succession into the origin is a singleton at each index, so the doubled clause reading
+that produced the old congruence has nothing to read twice.
+
+Paper: — (a formalization-native result; the paper states no such result)
+-/
+theorem not_snce_share_congr (p : Atom) :
+    ¬ ∀ (Γ Del : PlusContext) (S : PlusSharingWitnessFamily Γ Del),
+        S.PlusLocalCoherentShare → ∀ (t : ℤ) (i j : Fin S.lassos.length), S.share t i j →
+          ∀ g e : PlusFormula, PlusFormula.snce g e ∈ plusClosureOf (Γ ++ Del) →
+            (PlusFormula.snce g e ∈ S.L i t ↔ PlusFormula.snce g e ∈ S.L j t) := by
+  intro h
+  obtain ⟨hshare, hin, hout⟩ := famA_separates_snce p
+  have hcl : PlusFormula.snce PlusFormula.top (.atom p) ∈
+      plusClosureOf (([] : PlusContext) ++ [targetA p]) :=
+    plusClosureOf_imp_left (plusConclusion_mem_closure (List.mem_singleton_self _))
+  exact hout ((h _ _ (famA p) (famA_plusLocalCoherentShare p) 0 _ _ hshare _ _ hcl).mp hin)
 
 /-! ## The schema is a genuine ℤ-time non-validity -/
 

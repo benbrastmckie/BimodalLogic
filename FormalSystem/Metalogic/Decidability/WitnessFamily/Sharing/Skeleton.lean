@@ -78,6 +78,8 @@ quotient carrier and the specialization consume.
 - `SharingSkeleton.decidableShare` — `share` is decidable
 -/
 
+set_option linter.style.longFile 1700
+
 namespace FormalSystem.Metalogic.Decidability
 
 /--
@@ -350,6 +352,59 @@ theorem liftable_of_transFullOf (n : ℕ) (repBack repMid repFwd : List (Fin n �
     (transMatOf_full n _ _ _ (transFullOf_ne hb) (transFullOf_ne hf)
       (transFullOf_all n repBack repMid repFwd))
 
+/-! ### The no-hopping bundle
+
+What a producer supplies when succession is to be index-identity: a thread may never change
+index, however much the indices share. One identity matrix per representative map, so the decoded
+relation is the identity at every time — the out-of-range default included, since
+`transEqInhabited`'s own default is already that matrix.
+
+This is the bundle the gate families use. It is what lets a family share states non-trivially
+without letting a thread cross between the shared indices, which is exactly the separation the
+redesign exists to make expressible.
+-/
+
+/-- The identity succession matrix: staying put is the only step. -/
+def transId (n : ℕ) : Fin n → Fin n → Bool := fun i j => decide (i = j)
+
+theorem transId_refl (n : ℕ) (i : Fin n) : transId n i i = true := decide_eq_true rfl
+
+theorem transId_eq {n : ℕ} {i j : Fin n} (h : transId n i j = true) : i = j := of_decide_eq_true h
+
+/-- One identity succession matrix per representative map, so the lengths agree by
+construction. -/
+def transIdOf (n : ℕ) (l : List (Fin n → Fin n)) : List (Fin n → Fin n → Bool) :=
+  l.map (fun _ => transId n)
+
+@[simp]
+theorem transIdOf_length (n : ℕ) (l : List (Fin n → Fin n)) :
+    (transIdOf n l).length = l.length := List.length_map _
+
+theorem eq_transId_of_mem_transIdOf {n : ℕ} {l : List (Fin n → Fin n)}
+    {r : Fin n → Fin n → Bool} (h : r ∈ transIdOf n l) : r = transId n := by
+  obtain ⟨_, _, hr⟩ := List.mem_map.mp h
+  exact hr.symm
+
+theorem transIdOf_refl (n : ℕ) (lb lm lf : List (Fin n → Fin n)) :
+    ∀ r ∈ transIdOf n lb ++ transIdOf n lm ++ transIdOf n lf, ∀ i : Fin n, r i i = true := by
+  intro r hr i
+  have hid : r = transId n := by
+    rcases List.mem_append.mp hr with h | h
+    · rcases List.mem_append.mp h with h' | h' <;> exact eq_transId_of_mem_transIdOf h'
+    · exact eq_transId_of_mem_transIdOf h
+  rw [hid]
+  exact transId_refl n i
+
+/-- **The no-hopping bundle decodes to the identity at every time.** -/
+theorem transMatOf_id (n : ℕ) (lb lm lf : List (Fin n → Fin n)) (u : ℤ) :
+    transMatOf n (transIdOf n lb) (transIdOf n lm) (transIdOf n lf) u = transId n := by
+  rcases unrollOf_mem_or_default' (transEqInhabited n) (transIdOf n lb) (transIdOf n lm)
+      (transIdOf n lf) u with h | h
+  · rcases List.mem_append.mp h with h' | h'
+    · rcases List.mem_append.mp h' with h'' | h'' <;> exact eq_transId_of_mem_transIdOf h''
+    · exact eq_transId_of_mem_transIdOf h'
+  · exact h
+
 /--
 **Splice closure**: any two indices naming the same state at `u` have a common index that copies
 the first strictly before `u` and the second from `u` on.
@@ -489,6 +544,33 @@ theorem liftable_of_constant_below (n : ℕ) (repBack repMid repFwd : List (Fin 
     rw [this]
     exact shareOf_refl _ _ _ _ _ _
   · exact htot u hu _ _
+
+/-! ### Three singleton segments, decoded
+
+The gate families' shape: one representative map before the origin, one at it, one after. Stated
+at the raw layer because the `lift` field is discharged inside a producer's own structure
+literal, where no family-level decoding lemma is available yet.
+-/
+
+/-- Three singleton segments decode to `a` before the origin, `b` at it, `d` after. -/
+theorem unrollOf_singletons {α : Type*} (inst : Inhabited α) (a b d : α) (t : ℤ) :
+    @Periodic.unrollOf α inst [a] [b] [d] t = if t < 0 then a else if t = 0 then b else d := by
+  have hcyc : ∀ x : α, ∀ i : ℤ, @Periodic.cyc α inst [x] i = x := by
+    intro x i
+    simp [Periodic.cyc, Int.emod_one]
+  rcases lt_trichotomy t 0 with ht | ht | ht
+  · rw [Periodic.unrollOf_neg _ _ _ ht, hcyc, if_pos ht]
+  · subst ht
+    rw [Periodic.unrollOf_mid _ _ _ le_rfl (by simp)]
+    simp
+  · have hlen : ((([b] : List α).length : ℕ) : ℤ) = 1 := by simp
+    rw [Periodic.unrollOf_fwd _ _ _ (by rw [hlen]; omega), hcyc,
+      if_neg (by omega), if_neg (by omega)]
+
+/-- The representative map of a three-singleton producer. -/
+theorem repOf_singletons (n : ℕ) (a b d : Fin n → Fin n) (t : ℤ) :
+    repOf n [a] [b] [d] t = if t < 0 then a else if t = 0 then b else d :=
+  unrollOf_singletons (repIdInhabited n) a b d t
 
 /--
 **The label-free branching substrate.**
