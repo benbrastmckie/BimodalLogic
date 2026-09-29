@@ -1,32 +1,47 @@
 {
-  "status": "researched",
-  "dispatch_seq": 5,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/700_lplus_completeness_programme_survey/reports/01_lplus-completeness-programme-survey.md",
-      "summary": "L-plus completeness programme survey: 8 findings, a justified 8-edge dependency graph over 7 items, a 5-wave execution order with file-territory serialization, a reachability verdict with 4 named open obligations, a cross-repository hand-off by fully-qualified declaration name, and exactly 2 proposed task entries with 6 areas explicitly left uncovered"
+      "type": "plan",
+      "path": "specs/700_lplus_completeness_programme_survey/plans/01_completeness-programme-sequencing.md",
+      "summary": "4-phase plan executing only what the survey concluded remains: resolve the three provisional graph edges against the now-landed sibling reports, create exactly the two justified task entries, and record the cross-repository hand-off by fully-qualified declaration name. No Lean, no other task's territory, no paired-repository edit."
     }
   ],
-  "next_steps": "Run /plan 700 to turn the two task proposals and the wave order into an implementation plan. The plan's implementation phase creates the two proposed task entries (lplus_compression_and_completeness, deps [695,696]; certificate_non_vacuity_and_shape_gates, deps [696]) and no others.",
+  "next_steps": "Run /implement 700 to execute the plan. Phase 1 is a read-only edge re-check that may adjust the two proposals before Phase 2 creates them; Phase 2 must hold specs/.scope-lock via task-lock.sh scope-acquire because task 698 declares specs/state.json and is a concurrent sibling.",
   "metadata": {
     "session_id": "sess_1790656266_d2dc32_700",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 3180,
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
-    "findings_count": 8,
-    "context_files_loaded": ["project/logic/README.md"],
-    "mathlib_lookups_performed": 0,
-    "key_conclusions": {
-      "sequence_695_first": "HARD prerequisite: Compression/Family.lean:165 opens exists_witnessFamily_of_not_validZTime with rw [validZTime_iff_validInt], so the L-plus twin is unstateable without plusValidZTime_iff_plusValidInt",
-      "699_partB_gates_696": "NO -- advisory to the new compression task instead; famA_tCertifies/famB_tCertifies already elaborate and a literature bound cannot invalidate them. 699 Part A DOES soft-gate 696's (C1')-rewrite phase.",
-      "general_consequence_obligation": "PARALLEL to the critical path, not on it. Propose nothing; one extension-point sentence in 695's plan.",
-      "lplus_compression_before_repair": "NO -- not_plusCertifies_stabSnce makes the target false against the landed conditions and three of its lemmas are scheduled for deletion by 696.",
-      "reachability": "Reachable, not provably blocked. Repository's state-indexed valuation puts it in the literature's decidable case for Ockhamist validity. Four obligations assigned: O1 Liftable decidability, O2 liftable-trans construction from an arbitrary countermodel, O3 (C5)'s time-indexed witness demand and the lasso-count bound (previously unrecorded anywhere), O4 GKWZ product bound (to 699 Part B).",
-      "tasks_proposed": 2,
-      "concurrency_hazard": "Never dispatch two of {695, 696, D, F} implementing in the same cycle -- scripts/check-module-invariants.sh (C2 AXIOM_BASELINE heredoc) and docs/theorem-index.md are shared, block-rewritten artifacts.",
-      "task_696_scope_gap": "696's declared file_scope understates its real footprint by 9 files named in its own round-2 report F6; task 698 is the right owner to widen it."
-    }
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 3.5,
+    "dependency_waves": [[1], [2], [3], [4]],
+    "plan_metadata": {
+      "phases": 4,
+      "total_effort_hours": 4,
+      "complexity": "medium",
+      "research_integrated": true,
+      "plan_version": 1,
+      "dependency_waves": [[1], [2], [3], [4]],
+      "reports_integrated": [
+        {
+          "path": "reports/01_lplus-completeness-programme-survey.md",
+          "integrated_in_plan_version": 1,
+          "integrated_date": "2026-09-28"
+        }
+      ]
+    },
+    "key_plan_decisions": {
+      "edge_recheck_before_creation": "Phase 1 resolves E2/E5/E8 against 695's, 698's and 699's now-landed reports BEFORE any task entry is created, so the re-check can still change the proposals. 699 Part A's finding that 696's redesign relocates rather than repairs the collapse is the concrete reason this is not a formality.",
+      "declaration_name_correction": "The survey's hand-off item 1 named FormalSystem.Semantics.plusValidZTime_iff_plusValidInt 'confirm on landing'; 695's landed probe proves it under namespace FormalSystem.PlusLanguage. Phase 1 corrects it, since a wrong namespace defeats the point of naming the hand-off by declaration.",
+      "f7_consumer_reassigned": "698's landed report declines to widen any task's file_scope by inference, so the F7 nine-file table's consumer is 696's PLAN phase via scripts/plan-file-scope-harvest.sh, not task 698. Handed off by note; no other task's entry is edited.",
+      "two_entries_exactly": "lplus_compression_and_completeness (deps [695, 696]) and certificate_non_vacuity_and_shape_gates (deps [696, entry A]), the second edge auto-derived from shared-gate file overlap per the multi-task-creation standard's Component 4a. No third task: the general-consequence form stays parallel, and 699 owns the trans_refl follow-on.",
+      "non_interactive_creation": "Component 7's interactive confirmation cannot surface from a background dispatch; the task description pre-authorizes creation and /orchestrate has no confirmation gates, so creation is non-interactive with the confirmation summary table preserved in the hand-off note for audit.",
+      "state_json_concurrency": "Task 698 declares specs/state.json and is a concurrent sibling, so Phase 2 brackets the write with task-lock.sh scope-acquire/scope-release, re-reads next_project_number inside the mutex, appends additively with jq '+=', and commits an explicit two-path list."
+    },
+    "footprint": ["specs/state.json", "specs/TODO.md", "specs/700_lplus_completeness_programme_survey/notes/01_sequence-addendum.md", "specs/700_lplus_completeness_programme_survey/notes/02_cross-repo-handoff.md"],
+    "lean_files_touched": 0
+  },
+  "memory_candidates": [],
+  "dispatch_seq": 10
 }

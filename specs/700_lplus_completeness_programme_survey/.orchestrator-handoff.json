@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 10,
+  "summary": "Wrote a 4-phase plan for the survey task's remaining work: Phase 1 resolves the report's three provisional dependency edges (E2, E5, E8) against 695's, 698's and 699's now-landed research reports and corrects one fully-qualified declaration name; Phase 2 creates exactly the two justified task entries (lplus_compression_and_completeness, deps [695,696]; certificate_non_vacuity_and_shape_gates, deps [696, entry A]) under the specs/.scope-lock mutex because concurrent sibling 698 declares specs/state.json; Phase 3 writes the cross-repository hand-off note by fully-qualified declaration name; Phase 4 audits territory and runs the state gates. Footprint is four files, all under specs/**; no Lean, no other task's territory, no paired-repository edit.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/700_lplus_completeness_programme_survey/plans/01_completeness-programme-sequencing.md",
+      "summary": "4 phases, 3.5 hours, strictly serial waves [[1],[2],[3],[4]]; verification tiers prose/local/prose/local; zero Lean files so no build gate is owed."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 4,
+  "blockers": [],
+  "next_action_hint": "Run /implement 700. Phase 1 is read-only and may adjust the two proposals before Phase 2 creates them; Phase 2 must hold specs/.scope-lock (task-lock.sh scope-acquire) and must read next_project_number inside the mutex rather than using the plan-time value 703.",
+  "sorry_inventory": [],
+  "continuation_path": null
+}
