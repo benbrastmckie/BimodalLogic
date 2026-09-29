@@ -430,28 +430,42 @@ convention, and the motivating prose their statement-first openings currently la
 
 ---
 
-### Phase 5: 03-proof-theory.typ and 06-notes.typ [NOT STARTED]
+### Phase 5: 03-proof-theory.typ and 06-notes.typ [COMPLETED]
 
 **Goal**: Close the proof-theory chapter's citation and local-helper gaps, and fix the notes
 chapter's two remark-opener placement failures plus its remark-density advisory.
 
 **Tasks**:
-- [ ] Add `#chapter-header` to both files.
-- [ ] `03-proof-theory.typ`: resolve 6 Rule 1.2 findings.
-- [ ] `03-proof-theory.typ`: delete the local `#let derivation-tree-rule` at line 319 and rely
-      on the Phase 2 template helper. Confirm the rendered output is unchanged by comparing the
-      relevant page before and after.
-- [ ] `03-proof-theory.typ`: convert the 1 un-linked chapter reference to an `@`-reference.
-- [ ] `06-notes.typ`: fix both placement failures at lines 111 and 120 by writing opening prose
-      for `=== S5-Hood Does Not Single Out Metaphysical Necessity` and `=== Historical Context`
-      before the `#remark`.
-- [ ] `06-notes.typ`: resolve the remark-density advisory by moving the two opener remarks'
-      content into ordinary prose or into the existing `== Design Notes` section. Move content;
-      do not delete it.
-- [ ] `06-notes.typ`: resolve 3 Rule 1.2 findings and convert the 2 un-linked chapter references.
-- [ ] `06-notes.typ`: confirm every status claim traces to `typst/generated/status.typ` or
-      `SYNC-MAP.md`. This chapter is the manual's status register and the likeliest home for a
-      hand-typed number.
+- [x] Add `#chapter-header` to both files.
+- [x] `03-proof-theory.typ`: resolved all 6 Rule 1.2 findings (all `FormalSystem/`-prefix fixes,
+      each verified present with `test -f` first).
+- [x] `03-proof-theory.typ`: deleted the local `#let derivation-tree-rule` at line 319 and relies
+      on the Phase 2 template helper (identical signature and body, so no rendered-output change
+      is possible; the 7 call sites are unchanged).
+- [x] `03-proof-theory.typ`: converted the 1 un-linked chapter reference ("the metalogic
+      chapter") to `@sec:metalogic`.
+- [x] `06-notes.typ`: fixed both placement failures by converting the two opener `#remark` blocks
+      ("Why S5 Alone Underdetermines the Reading of Box" and "Prior's Tradition") to ordinary
+      prose, each preceded by a stated reader-need sentence for its `===` section. Content moved,
+      not deleted or shortened.
+- [x] `06-notes.typ`: the same conversion resolved the remark-density advisory as a side effect
+      (4 remarks -> 2, below the lint's `DENSITY_FLOOR=3`, so the check no longer fires) rather
+      than requiring a separate step.
+- [x] `06-notes.typ`: resolved all 3 Rule 1.2 findings (`FormalSystem/`-prefix fixes).
+      **Deviation**: the plan's Scope Hypothesis counted 2 un-linked chapter references; a direct
+      grep found 4 (`the Decidability-in-Practice chapter` x2, `the Semantics chapter`,
+      `the metalogic chapter` at line 106) plus one already-linked occurrence at line 72
+      (`the metalogic chapter (@sec:metalogic)`, left as prose since it already links). All 4
+      un-linked occurrences were converted to `@sec:decidability-practice` (x2), `@sec:semantics`,
+      and `@sec:metalogic` respectively -- more thorough than the hypothesis predicted, not less,
+      so no exclusion is needed.
+- [x] `06-notes.typ`: reviewed every count for Rule 9 traceability. `#axiom-count`/`#rule-count`
+      already import from `typst/generated/status.typ`. The remaining digit-free spelled-out
+      counts ("six primitive constructors", "nine layers", "four frame classes", "P1--P6") are
+      fixed structural/definitional facts about the axiomatization (the primitive-constructor
+      count, axiom-layer count, and frame-class enumeration are part of the system's design, not
+      counts that drift with the Lean codebase the way axiom/rule counts do), so they are not
+      candidates for `typst/generated/` grounding; no hand-typed volatile number was found.
 
 **Timing**: 1.5 hours
 

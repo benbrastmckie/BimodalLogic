@@ -9,6 +9,10 @@
 
 = Proof Theory <sec:proof-theory>
 
+#chapter-header(
+  description: [The Burgess-Xu axiom system: the nine-layer axiom schemata and inference rules over the Since/Until language, frame-class-parameterized derivations, and the derivation-tree constructors the Lean formalization uses.],
+  dependencies: [@sec:formulas for the Since/Until formula language these axioms are stated over.],
+)
 
 The proof system for *TM* is the *Burgess-Xu (BX) axiom system*: a Hilbert-style calculus over the Since/Until language of @sec:formulas, with *#axiom-count axiom constructors* organized into nine layers and *#rule-count inference rules*.
 The axiom constructors are exactly the paper's primitive schemata; every past mirror, and the S5 schemata 4 and B, are derived theorems (`DerivedAxioms`).
@@ -17,10 +21,10 @@ The system is deliberately fine-grained at the constructor level; @sec:paper-con
 
 == The Burgess-Xu Axiom System
 
-The #axiom-count axiom schemata are the constructors of the inductive family `Axiom` in `ProofSystem/Axioms.lean`.
+The #axiom-count axiom schemata are the constructors of the inductive family `Axiom` in `FormalSystem/ProofSystem/Axioms.lean`.
 Throughout, $phi.alt #snce psi$ and $phi.alt #untl psi$ are the guard-first infix primitives of @sec:formulas: the *guard* $phi.alt$ holds at all strictly intermediate times and the *event* $psi$ at the witness time.
 Derived operators: $P phi.alt = top #snce phi.alt$, $F phi.alt = top #untl phi.alt$, $H phi.alt = not P not phi.alt$, $G phi.alt = not F not phi.alt$, and $top = bot arrow.r bot$.
-Alongside its structural name (BX1, BX2G, ...), each temporal schema carries a *short name* (TB, UG, UC, TA, ...) shown in the tables below; the short names are the citation form used when an axiom is invoked individually, and the extended systems of the metalogic chapter are picked out by which short-named axioms they add.
+Alongside its structural name (BX1, BX2G, ...), each temporal schema carries a *short name* (TB, UG, UC, TA, ...) shown in the tables below; the short names are the citation form used when an axiom is invoked individually, and the extended systems of @sec:metalogic are picked out by which short-named axioms they add.
 Past mirrors (primed rows) are the time-reflection images of their future counterparts, carry no separate short name, and are *derived theorems* rather than axiom constructors: each is proved by one application of the TR rule to its primary.
 
 === Layer 1: Propositional (4)
@@ -106,7 +110,7 @@ The primed names denote past mirrors, which are derived by the TR rule rather th
     [BX13$'$], [], [`DerivedAxioms.enrichmentSince`], [$p and (phi.alt #snce psi) arrow.r (phi.alt #snce (psi and (phi.alt #untl p)))$],
     table.hline(),
   ),
-  caption: [BX temporal layer. Gaps in the structural numbering (BX2, BX8, BX9, BX14) mark schemata of Burgess @burgess1982 that were removed as unsound or unnecessary under the strict-witness/open-guard semantics; see the source comments in `ProofSystem/Axioms.lean`. TB, TL and CN are stated as the paper states them, with 3-way disjunctions right-associated; their pre-paper forms ($top arrow.r F top$, and TL and CN in the former disjunct order and grouping) are derived (`DerivedAxioms.serialFutureImp`, `DerivedAxioms.tempLinearityLegacy`, `DerivedAxioms.linearUntilLegacy`). The primed rows are derived by TR.],
+  caption: [BX temporal layer. Gaps in the structural numbering (BX2, BX8, BX9, BX14) mark schemata of Burgess @burgess1982 that were removed as unsound or unnecessary under the strict-witness/open-guard semantics; see the source comments in `FormalSystem/ProofSystem/Axioms.lean`. TB, TL and CN are stated as the paper states them, with 3-way disjunctions right-associated; their pre-paper forms ($top arrow.r F top$, and TL and CN in the former disjunct order and grouping) are derived (`DerivedAxioms.serialFutureImp`, `DerivedAxioms.tempLinearityLegacy`, `DerivedAxioms.linearUntilLegacy`). The primed rows are derived by TR.],
   )
 }
 
@@ -229,7 +233,7 @@ where $K^+ phi.alt$ says that $phi.alt$ recurs arbitrarily soon in the future an
 )
 
 Prior-U says a bounded region where $phi.alt$ has held throughout acquires a definable upper endpoint; Sep is Reynolds' separation axiom, semantically backed by the separability of the reals.
-The axiom CO ($triangle.stroked.t (H phi.alt arrow.r F H phi.alt) arrow.r (H phi.alt arrow.r G phi.alt)$) is *derivable* over this layer rather than axiomatic: it follows from Prior-U together with the base axioms alone (`Theorems/DedekindDerived.lean` `coDerived`).
+The axiom CO ($triangle.stroked.t (H phi.alt arrow.r F H phi.alt) arrow.r (H phi.alt arrow.r G phi.alt)$) is *derivable* over this layer rather than axiomatic: it follows from Prior-U together with the base axioms alone (`FormalSystem/Theorems/DedekindDerived.lean` `coDerived`).
 
 == Frame Classes <sec:frame-classes>
 
@@ -259,9 +263,9 @@ Several schemata that are primitive axioms of the tense-primitive subsystem's tw
     table.hline(),
     table.header([*Name*], [*Schema*], [*Derived As*]),
     table.hline(),
-    [TK], [$G(phi.alt arrow.r psi) arrow.r (G phi.alt arrow.r G psi)$], [`temporalKDistDerived` (`Theorems/TemporalDerived.lean`)],
-    [T4], [$G phi.alt arrow.r G G phi.alt$], [`temporal4Derived` (`Theorems/TemporalDerived.lean`)],
-    [TF], [$square.stroked phi.alt arrow.r G square.stroked phi.alt$], [`temporalFutureDerived` (`Theorems/Combinators.lean`)],
+    [TK], [$G(phi.alt arrow.r psi) arrow.r (G phi.alt arrow.r G psi)$], [`temporalKDistDerived` (`FormalSystem/Theorems/TemporalDerived.lean`)],
+    [T4], [$G phi.alt arrow.r G G phi.alt$], [`temporal4Derived` (`FormalSystem/Theorems/TemporalDerived.lean`)],
+    [TF], [$square.stroked phi.alt arrow.r G square.stroked phi.alt$], [`temporalFutureDerived` (`FormalSystem/Theorems/Combinators.lean`)],
     table.hline(),
   ),
   caption: none,
@@ -316,7 +320,6 @@ Here $Gamma tack.r_(f c) phi.alt$ abbreviates `DerivationTree fc Γ φ`; the pla
   $
 ]
 
-#let derivation-tree-rule(name) = raw(name.replace(".", "." + sym.zws))
 #figure(
   table(
     columns: (auto, 1fr, auto),

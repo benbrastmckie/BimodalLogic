@@ -9,12 +9,16 @@
 
 = Notes <sec:notes>
 
+#chapter-header(
+  description: [A system overview, the permanent design facts of the mechanized presentation (irreflexive temporal semantics, S5's underdetermination of the necessity reading, historical context), and the implementation status register for this book's claims.],
+  dependencies: [The whole of Part I; this chapter summarizes and cross-references it rather than introducing new material.],
+)
 
 == System Overview
 
 The book's system comprises the syntax (six primitive constructors over the Since/Until basis), the task-frame semantics with strict truth conditions, and the BX proof system (#axiom-count axiom constructors in nine layers, #rule-count inference rules, frame-class parameter).
-Soundness for all four frame classes (Base, Dense, ZTime, RTime), the deduction theorem, and the perpetuity principles P1--P6 are carried by the anchors of @sec:metalogic; the canonical-model construction (`Metalogic/BXCanonical/`) carries the completeness theorems stated there.
-The tableau decision procedure is presented operationally in the Decidability-in-Practice chapter.
+Soundness for all four frame classes (Base, Dense, ZTime, RTime), the deduction theorem, and the perpetuity principles P1--P6 are carried by the anchors of @sec:metalogic; the canonical-model construction (`FormalSystem/Metalogic/BXCanonical/`) carries the completeness theorems stated there.
+The tableau decision procedure is presented operationally in @sec:decidability-practice.
 // CONFIRM(lean): scripts/typst-status-counts.sh --json reports sorry_total_excl_boneyard = 0
 
 == Design Notes
@@ -25,7 +29,7 @@ This chapter records the *permanent, intended* design facts of the mechanized pr
 
 - The perpetuity principles are named P1--P6, in prose and in the Lean code alike.
 - The notation $triangle.stroked.t$ and $triangle.stroked.b$ for "always" and "sometimes" corresponds to the Lean derived operators `always` and `sometimes`.
-- The reflection law is not an axiom: negative durations come from the reflection convention of the task-relation definition, and the Lean frame structure mirrors this, with the primitive relation `PosRel` on the positive cone, the two-sided `TaskRel` defined from it, and the law derived as the theorem `reflection`; *Nullity* is a derived lemma, not an axiom, and the mechanization derives it too: the Lean frame structure has no zero-duration field, and both `nullity` and its biconditional form `nullity_identity` are theorems proved from the `serial` and `limit` fields (the Task Frames section of the Semantics chapter has the full account).
+- The reflection law is not an axiom: negative durations come from the reflection convention of the task-relation definition, and the Lean frame structure mirrors this, with the primitive relation `PosRel` on the positive cone, the two-sided `TaskRel` defined from it, and the law derived as the theorem `reflection`; *Nullity* is a derived lemma, not an axiom, and the mechanization derives it too: the Lean frame structure has no zero-duration field, and both `nullity` and its biconditional form `nullity_identity` are theorems proved from the `serial` and `limit` fields (@sec:semantics has the full account).
 
 === Language Basis
 
@@ -64,24 +68,24 @@ This table is the subsystem's axiom map: it records, for each of the twelve, whe
 )
 
 The full system additionally derives M4 (`DerivedAxioms.modal4`) and MB (`DerivedAxioms.modalB`) from the S5 core, and has the full Burgess-Xu Since/Until layer, whose primed past mirrors are derived by the TR rule, and the frame-class layers (uniformity, Prior, Z1, density, Reynolds Dedekind) that gate the extended systems.
-TF ($square.stroked phi.alt arrow.r G square.stroked phi.alt$) is derived as `temporalFutureDerived` (`Theorems/Combinators.lean`) from MF, MT, and M4.
+TF ($square.stroked phi.alt arrow.r G square.stroked phi.alt$) is derived as `temporalFutureDerived` (`FormalSystem/Theorems/Combinators.lean`) from MF, MT, and M4.
 
 === Completeness
 
 // LEAN-ANCHOR-MAY-MOVE: canonical-completeness -- see typst/README.md
-The completeness theorems of the system --- strong over the Base and Dense classes, weak over $ZZ$-time and the dense-and-complete class, with the strong forms provably false over the non-compact flows --- are stated once, in the metalogic chapter (@sec:metalogic), and are not restated here.
+The completeness theorems of the system --- strong over the Base and Dense classes, weak over $ZZ$-time and the dense-and-complete class, with the strong forms provably false over the non-compact flows --- are stated once, in @sec:metalogic, and are not restated here.
 The discrete case runs through Kamp-theorem expressiveness @kamp1971formalproperties; a machine-checked Kamp theorem is a separate result in its own right (@ch:vlach-blstar), distinct from the completeness theorems.
 
 === Decidability
 
-The tableau-based decision procedure, its correctness properties, and its finite-model-property component are presented in the Decidability-in-Practice chapter of Part II, which also carries the decidability obligations.
+The tableau-based decision procedure, its correctness properties, and its finite-model-property component are presented in @sec:decidability-practice, which also carries the decidability obligations.
 
 == Design Choices <sec:design-choices>
 
 === Strict (Irreflexive) Temporal Semantics
 
 The temporal operators $G$ and $H$ can be interpreted with either *strict* or *reflexive* quantification over times.
-*TM* uses strict semantics --- the "A2 guard convention", documented in `Semantics/Truth.lean`:
+*TM* uses strict semantics --- the "A2 guard convention", documented in `FormalSystem/Semantics/Truth.lean`:
 
 #definition("Strict Temporal Semantics (Current)")[
   Temporal quantification excludes the present moment:
@@ -103,24 +107,22 @@ The irreflexive tense operators (primitive) are distinguished from their reflexi
   Under reflexive semantics all of these collapse to trivial validity.
 - *Four completeness targets*: the base, dense, ZTime, and RTime systems each get their own soundness statement (`soundness`, `soundness_dense`, `soundness_ztime`, `soundness_rtime`) and their own completeness theorem, each in the strongest form its frame class admits (@sec:metalogic).
 - *Irreflexivity is not modally definable* @blackburn2002: no axiom forces the canonical accessibility to be irreflexive.
-  The construction compensates with fresh-atom machinery --- the structured `Atom` type exists precisely so that a fresh atom is available outside any finite set --- and with the chronicle/transfer constructions of the metalogic chapter rather than a naive canonical model.
+  The construction compensates with fresh-atom machinery --- the structured `Atom` type exists precisely so that a fresh atom is available outside any finite set --- and with the chronicle/transfer constructions of @sec:metalogic rather than a naive canonical model.
 - *Seriality is axiomatic, not automatic*: BX1/BX1$'$ ($top arrow.r F top$, $top arrow.r P top$) require every time to have a strict successor and predecessor time, which holds in every nontrivial ordered abelian group of durations.
 
 === S5-Hood Does Not Single Out Metaphysical Necessity
 
-#remark("Why S5 Alone Underdetermines the Reading of Box")[
-  $square.stroked$ is S5 because $H_(cal(F))$-quantification is an equivalence-free but frame-wide universal: nothing about the *proof system* forces the reading "necessarily" onto $square.stroked$ rather than some other modality that happens to validate the same schemata.
-  The point is made by a deliberately close counterexample rather than an abstract worry: a *stability* operator $op("Stability") phi.alt$, true at a possible world $tau$ and time $x$ just in case $phi.alt$ holds at every possible world *agreeing with $tau$ at $x$* (not every possible world whatsoever), is monomodal S5 for exactly the same reason $square.stroked$ is --- membership in the same equivalence class --- yet it is manifestly *not* metaphysical necessity: for non-temporal $phi.alt$ it collapses to the trivial modality, since agreement at $x$ already fixes $phi.alt$'s truth value there.
-  S5-hood is therefore necessary but not sufficient for the metaphysical-necessity reading; what does the further work is the specific choice to quantify over *all* of $H_(cal(F))$ rather than a restricted equivalence class, which is a modeling decision the axioms alone do not force.
-]#footnote[Stability quantifies over the agreement class $chevron.l tau chevron.r_x := { sigma in H_(cal(F)) : sigma(x) = tau(x) }$; the Vlach/BL#super[⋆] chapter develops the restricted-modality apparatus. @bacon2022necessities]
+This section records why the proof system's S5-hood for $square.stroked$, by itself, does not settle the *reading* of the operator as metaphysical necessity -- a design fact worth stating explicitly since the axioms alone underdetermine it.
+$square.stroked$ is S5 because $H_(cal(F))$-quantification is an equivalence-free but frame-wide universal: nothing about the *proof system* forces the reading "necessarily" onto $square.stroked$ rather than some other modality that happens to validate the same schemata.
+The point is made by a deliberately close counterexample rather than an abstract worry: a *stability* operator $op("Stability") phi.alt$, true at a possible world $tau$ and time $x$ just in case $phi.alt$ holds at every possible world *agreeing with $tau$ at $x$* (not every possible world whatsoever), is monomodal S5 for exactly the same reason $square.stroked$ is --- membership in the same equivalence class --- yet it is manifestly *not* metaphysical necessity: for non-temporal $phi.alt$ it collapses to the trivial modality, since agreement at $x$ already fixes $phi.alt$'s truth value there.
+S5-hood is therefore necessary but not sufficient for the metaphysical-necessity reading; what does the further work is the specific choice to quantify over *all* of $H_(cal(F))$ rather than a restricted equivalence class, which is a modeling decision the axioms alone do not force.#footnote[Stability quantifies over the agreement class $chevron.l tau chevron.r_x := { sigma in H_(cal(F)) : sigma(x) = tau(x) }$; the Vlach/BL#super[⋆] chapter develops the restricted-modality apparatus. @bacon2022necessities]
 // CONFIRM(paper): sub:RestrictedModalities develops the restricted-modality material this note mentions.
 
 === Historical Context
 
-#remark("Prior's Tradition")[
-  Arthur Prior established tense logic using *strict* semantics: $F$ and $P$ quantify over strictly future and strictly past times, and temporal axioms genuinely characterize frame properties.
-  This tradition continues through Burgess @burgess1982 @burgess1984, Xu @xu1988until, Goldblatt, van Benthem, and Blackburn-de Rijke-Venema @blackburn2002, and the BX axiom system places the implementation squarely within it.
-]
+This section situates the strict-semantics choice within the tense-logic literature it descends from, and records two further design remarks against alternative conventions.
+Arthur Prior established tense logic using *strict* semantics: $F$ and $P$ quantify over strictly future and strictly past times, and temporal axioms genuinely characterize frame properties.
+This tradition continues through Burgess @burgess1982 @burgess1984, Xu @xu1988until, Goldblatt, van Benthem, and Blackburn-de Rijke-Venema @blackburn2002, and the BX axiom system places the implementation squarely within it.
 
 #remark("Computer Science Conventions")[
   Model checking traditions often use reflexive conventions (CTL's "AG $phi.alt$" includes the current state), trading frame-theoretic expressiveness for simpler boundary conditions.
