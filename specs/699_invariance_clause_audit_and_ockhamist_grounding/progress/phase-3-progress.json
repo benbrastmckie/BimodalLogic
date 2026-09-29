@@ -1,0 +1,36 @@
+{
+  "phase": 3,
+  "phase_name": "Make Part A's enumeration re-runnable",
+  "started_at": "2026-09-28T00:00:00Z",
+  "last_updated": "2026-09-29T05:12:34Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Create audit/enumerate-shape-s.sh implementing the report's three passes, with --help support, exit 0, deterministic sorted output",
+      "status": "done",
+      "files_touched": [
+        "specs/699_invariance_clause_audit_and_ockhamist_grounding/audit/enumerate-shape-s.sh"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Run the script and write audit/01_enumeration-snapshot.md with invocation, date, counts, full path:line lists, and comparison against the report's figures",
+      "status": "done",
+      "files_touched": [
+        "specs/699_invariance_clause_audit_and_ockhamist_grounding/audit/01_enumeration-snapshot.md"
+      ]
+    }
+  ],
+  "current_objective": 2,
+  "approaches_tried": [],
+  "deviations": [
+    {
+      "task_id": "3.divergence",
+      "description": "Script counts (64/18/45) diverge from the report's stated figures (67/40 files/39); investigated root cause rather than silently absorbing per the Scope Hypothesis",
+      "type": "altered",
+      "reason": "Confirmed no tree drift since report completion (git log empty); found the report's Appendix pass-3 grep command is missing -E and returns 0 hits if run literally; found the report's original enumeration never scanned FormalSystem/Metalogic/WeakCanonical/** (pre-dates the report by 4-8 weeks) even though it is in scope. Checked all 6 WeakCanonical/** pass-1 candidates against Shape (S) by hand: none qualifies (all OUT OF SHAPE, same two reasons row 17 already names). No table-membership change results, so this did not require stopping the phase, only recording the divergence for Phase 4's report correction.",
+      "annotation": "*(deviation: altered — divergence investigated and root-caused rather than merely noted; recorded in audit/01_enumeration-snapshot.md's Divergence analysis section)*"
+    }
+  ],
+  "handoff_count": 0
+}

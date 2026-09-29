@@ -270,7 +270,7 @@ creating a task.
 
 ---
 
-### Phase 3: Make Part A's enumeration re-runnable [NOT STARTED]
+### Phase 3: Make Part A's enumeration re-runnable [COMPLETED]
 
 **Goal**: replace the Appendix's three ad-hoc prose commands with one script and one dated output
 snapshot, so a future reader can re-run the Shape-(S) enumeration against a changed tree instead of
@@ -278,16 +278,21 @@ trusting a snapshot taken on 2026-09-28.
 
 **Tasks**:
 
-- [ ] Create `specs/699_invariance_clause_audit_and_ockhamist_grounding/audit/enumerate-shape-s.sh`
+- [x] Create `specs/699_invariance_clause_audit_and_ockhamist_grounding/audit/enumerate-shape-s.sh`
       implementing the report's three passes: (a) every `def`/`abbrev`/`structure`/`class` under
       `FormalSystem/Metalogic/**/*.lean` whose body contains `↔`; (b) `share`-guarded quantifiers;
       (c) reflexive relations, by `_refl` lemma name and `@[refl]` attribute. Each pass emits
-      `path:line` lines and a trailing count. Support `--help`. Exit 0 on success.
-- [ ] Run the script and write `audit/01_enumeration-snapshot.md`: the exact invocation, the run
-      date, the three counts, and each pass's full `path:line` list.
-- [ ] Compare the script's counts with the report's stated figures — 67 candidate definitions
+      `path:line` lines and a trailing count. Support `--help`. Exit 0 on success. *(completed)*
+- [x] Run the script and write `audit/01_enumeration-snapshot.md`: the exact invocation, the run
+      date, the three counts, and each pass's full `path:line` list. *(completed)*
+- [x] Compare the script's counts with the report's stated figures — 67 candidate definitions
       across 40 files, 39 reflexive-relation hits — and record the comparison in the snapshot,
-      including any divergence and its likely cause.
+      including any divergence and its likely cause. *(completed: script counts 64/39 files/18/45;
+      divergence root-caused to (a) a broken `-E`-less grep command in the report's own Appendix
+      and (b) the report's enumeration never having scanned `FormalSystem/Metalogic/WeakCanonical/**`,
+      which pre-dates the report by 4-8 weeks; all 6 candidates found there were individually
+      checked and are OUT OF SHAPE, so no table-membership change results — see
+      `audit/01_enumeration-snapshot.md`'s Divergence analysis)*
 
 **Timing**: 0.75 hours
 
