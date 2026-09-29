@@ -365,27 +365,46 @@ found a name that does not resolve, the list changes and the note says so.
 
 ---
 
-### Phase 4: Final gates and territory audit [NOT STARTED]
+### Phase 4: Final gates and territory audit [COMPLETED]
 
 **Goal**: Confirm the task's constraints held — nothing outside its own territory changed, no
 Lean was touched, no third task appeared — and leave the state consistent.
 
 **Tasks**:
-- [ ] `bash .claude/scripts/validate-state.sh` — green, with no WARN naming either new entry.
-- [ ] `bash .claude/scripts/check-task-references.sh` — confirm no task-number reference leaked
+- [x] `bash .claude/scripts/validate-state.sh` — green, with no WARN naming either new entry.
+      *(deviation: altered — the script exits 1 both before and after this task's write,
+      confirmed identical via `git stash` comparison; the FAIL lines name unrelated pre-existing
+      entries (previous_status on 428/481, researched on 298/428, resume_phase on 257), not 703
+      or 704. The one new WARN (project 177's coarse file_scope overlap, now including 703) is
+      the "pre-existing coarse declaration elsewhere" class the plan itself treats as acceptable.
+      No WARN or FAIL names 703 or 704 as its subject.)*
+- [x] `bash .claude/scripts/check-task-references.sh` — confirm no task-number reference leaked
       outside `specs/**` (all of this task's writes are under `specs/**`, so this should be a
       no-op, and a hit means something landed in the wrong place).
-- [ ] `git status --short` and `git log --oneline -5`: confirm this task's commits touch only
+      *(completed: the script's 198 pre-existing hits are all outside this task's writes --
+      every file this task touched is under specs/** or is specs/state.json/specs/TODO.md,
+      both excluded from the scan by the script's own design; zero hits attributable to this
+      task)*
+- [x] `git status --short` and `git log --oneline -5`: confirm this task's commits touch only
       `specs/state.json`, `specs/TODO.md` and
       `specs/700_lplus_completeness_programme_survey/**`. Confirm no `.lean` file and no file
       under `FormalSystem/`, `docs/` or `scripts/` was modified by this task.
-- [ ] Confirm the created-entry count is exactly two and that no entry of any other task was
+      *(completed: `git diff --stat` across all four of this task's commits lists exactly
+      specs/state.json, specs/TODO.md, and eight files under
+      specs/700_lplus_completeness_programme_survey/** -- no .lean file, no FormalSystem/,
+      docs/ or scripts/ path)*
+- [x] Confirm the created-entry count is exactly two and that no entry of any other task was
       modified: `git diff <pre-phase-2 sha> -- specs/state.json` touches only the two appended
       entries, `next_project_number`, and this task's own status/artifact bookkeeping.
-- [ ] If a foreign uncommitted modification or a foreign commit is observed on
+      *(completed: diff shows only project_number 703 and 704 added; next_project_number
+      703 -> 705)*
+- [x] If a foreign uncommitted modification or a foreign commit is observed on
       `specs/state.json` (task 698 is a concurrent sibling declaring exactly that file), STOP
       and report it after checking `git log` to confirm the work is not this task's own, per
       the dispatch's concurrency note — do not proceed and do not dismiss it as noise.
+      *(completed: no foreign modification observed; task 698 landed (status completed)
+      before this dispatch began, so the concurrency hazard did not materialize; `git log`
+      confirms no writer touched specs/state.json between this task's mutex-held write and now)*
 
 **Timing**: 0.5 hours
 
