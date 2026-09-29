@@ -200,30 +200,31 @@ to this enumeration.
 
 ---
 
-### Phase 2: Versioned `.githooks/pre-commit` gate [NOT STARTED]
+### Phase 2: Versioned `.githooks/pre-commit` gate [COMPLETED]
 
 **Goal**: Add the repository's first versioned git hook: a thin, build-free pre-commit gate that
 blocks a `.lean`-touching commit whose counts have drifted, and is a no-op otherwise.
 
 **Tasks**:
-- [ ] Create `.githooks/` and `.githooks/pre-commit`, executable (`chmod +x`), with a header
+- [x] Create `.githooks/` and `.githooks/pre-commit`, executable (`chmod +x`), with a header
   comment explaining what it gates, why it is build-free, and that CI's Check 2 remains the
-  backstop.
-- [ ] Trigger condition: exit 0 immediately unless `git diff --cached --name-only --diff-filter=ACMRD`
+  backstop. *(completed)*
+- [x] Trigger condition: exit 0 immediately unless `git diff --cached --name-only --diff-filter=ACMRD`
   contains at least one path matching `*.lean`. Include deletions (`D`) — a removed `.lean` file
-  moves the counts exactly as an added one does.
-- [ ] On trigger, run `bash scripts/typst-sync-check.sh --counts-only`; exit 0 when it passes.
-- [ ] On failure, print a blocking message that (a) names the drifted fields (pass through the
+  moves the counts exactly as an added one does. *(completed)*
+- [x] On trigger, run `bash scripts/typst-sync-check.sh --counts-only`; exit 0 when it passes.
+  *(completed)*
+- [x] On failure, print a blocking message that (a) names the drifted fields (pass through the
   checker's own report), (b) gives the exact remedy
   `lake build && bash scripts/typst-sync-check.sh --fix && git add typst/generated/status.typ`,
   (c) states that `git commit --no-verify` bypasses the gate and names the legitimate case for it
   (drift attributable to another writer's uncommitted files on a shared tree), and (d) states
-  that CI's Check 2 will still catch an unfixed bypass. Exit 1.
-- [ ] Make the hook robust to being run from a subdirectory: resolve the repository root via
-  `git rev-parse --show-toplevel` rather than assuming the CWD.
-- [ ] Degrade safely, not silently: if `scripts/typst-sync-check.sh` is missing or unexecutable,
+  that CI's Check 2 will still catch an unfixed bypass. Exit 1. *(completed)*
+- [x] Make the hook robust to being run from a subdirectory: resolve the repository root via
+  `git rev-parse --show-toplevel` rather than assuming the CWD. *(completed)*
+- [x] Degrade safely, not silently: if `scripts/typst-sync-check.sh` is missing or unexecutable,
   print a loud warning and exit 0 (a hook must never wedge commits on a tree where the script was
-  legitimately removed) — but never swallow a genuine mismatch this way.
+  legitimately removed) — but never swallow a genuine mismatch this way. *(completed)*
 
 **Timing**: 1 hour
 
@@ -235,7 +236,10 @@ blocks a `.lean`-touching commit whose counts have drifted, and is a no-op other
 
 **Scope Hypothesis**: the hook is asserted to be one new file of roughly 40-60 lines with no
 other repository file changed in this phase. Confirm with `git status --short` at phase close:
-exactly `.githooks/pre-commit` added, nothing else.
+exactly `.githooks/pre-commit` added, nothing else. *(Confirmed the "no other file changed"
+half; the hook came out at 85 lines, not 40-60, because of the fuller header comment and
+multi-line blocking message the Tasks above spell out in detail — this is a size-estimate miss,
+not a scope deviation: exactly the enumerated Tasks were implemented, nothing extra.)*
 
 **Files to modify**:
 - `.githooks/pre-commit` - new executable hook: staged-`.lean` trigger, `--counts-only`

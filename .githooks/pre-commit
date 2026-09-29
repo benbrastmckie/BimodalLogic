@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+# ============================================================================
+# .githooks/pre-commit
+#
+# Blocks a commit whose staged set touches any .lean file while
+# typst/generated/status.typ has drifted from a live regeneration
+# (scripts/typst-sync-check.sh's Check 2). A .lean file is the only thing
+# that moves the counts status.typ carries (sorry totals, axiom/rule
+# constructor counts, per-tree file/line scale figures), so a commit that
+# stages no .lean path is always a fast no-op.
+#
+# Build-free by construction: this gate calls
+# `scripts/typst-sync-check.sh --counts-only`, which uses
+# `typst-status-counts.sh --json` -- no `lake` invocation, so it never
+# risks hanging `git commit` on a multi-minute build. It is BLOCKING, not
+# auto-regenerating: on drift it prints the remedy and refuses the commit
+# rather than silently rewriting a tracked file underneath it (which would
+# also create a spurious stamp-only diff on every commit).
+#
+# CI's `typst-sync-check.sh` Check 2 (the full, bare invocation) remains the
+# authoritative, unbypassable backstop -- this hook is local convenience
+# only. `git commit --no-verify` bypasses it (see the message below for the
+# one legitimate case: a concurrent writer's uncommitted .lean file on a
+# shared working tree making the live counts disagree for reasons this
+# commit did not cause).
+#
+# Installed via: bash scripts/install-git-hooks.sh (sets core.hooksPath).
+# ============================================================================
+
+set -uo pipefail
+
+# Resolve the repository root via git itself rather than assuming CWD, so
+# this hook behaves identically whether git invokes it from the repo root
+# or a subdirectory (`git commit` run from inside a nested package, etc.).
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+if [[ -z "${REPO_ROOT}" ]]; then
+  echo "pre-commit: could not resolve repository root via 'git rev-parse --show-toplevel' -- skipping the count-freshness gate." >&2
+  exit 0
+fi
+
+CHECKER="${REPO_ROOT}/scripts/typst-sync-check.sh"
+
+# Trigger condition: only fire when the staged set touches at least one
+# .lean path. Include deletions (D) -- a removed .lean file moves the
+# counts exactly as an added one does. --diff-filter=ACMRD deliberately
+# excludes type-change/unmerged states, which are not ordinary content
+# changes this gate needs to react to.
+STAGED_LEAN_FILES="$(git diff --cached --name-only --diff-filter=ACMRD -- '*.lean' 2>/dev/null)"
+if [[ -z "${STAGED_LEAN_FILES}" ]]; then
+  exit 0
+fi
+
+# Degrade safely, not silently: a hook must never wedge every future commit
+# on a tree where the checker script was legitimately removed or made
+# non-executable-by-bash (it is invoked via `bash`, so the executable bit on
+# the script itself does not matter, but a missing file does).
+if [[ ! -f "${CHECKER}" ]]; then
+  echo "pre-commit: WARNING -- ${CHECKER} not found; skipping the count-freshness gate." >&2
+  echo "pre-commit: this commit stages .lean file(s) but could not be checked for count drift." >&2
+  exit 0
+fi
+
+GATE_LOG="$(mktemp)"
+trap 'rm -f "${GATE_LOG}"' EXIT
+
+if ! bash "${CHECKER}" --counts-only > "${GATE_LOG}" 2>&1; then
+  echo "" >&2
+  echo "pre-commit: BLOCKED -- staged .lean file(s) may have moved counts that" >&2
+  echo "typst/generated/status.typ no longer reflects (scripts/typst-sync-check.sh" >&2
+  echo "Check 2). Drifted fields:" >&2
+  echo "" >&2
+  sed 's/^/  /' "${GATE_LOG}" >&2
+  echo "" >&2
+  echo "Remedy:" >&2
+  echo "  lake build && bash scripts/typst-sync-check.sh --fix && git add typst/generated/status.typ" >&2
+  echo "" >&2
+  echo "Bypass: 'git commit --no-verify' skips this gate. The legitimate case for" >&2
+  echo "this is drift attributable to another writer's uncommitted .lean file(s) on" >&2
+  echo "a shared working tree, which this commit did not cause and cannot fix." >&2
+  echo "CI's typst-sync-check.sh Check 2 remains the authoritative backstop and" >&2
+  echo "will still catch an unfixed bypass." >&2
+  exit 1
+fi
+
+exit 0

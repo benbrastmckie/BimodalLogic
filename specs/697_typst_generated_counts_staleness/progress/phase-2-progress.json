@@ -1,0 +1,18 @@
+{
+  "phase": 2,
+  "phase_name": "Versioned .githooks/pre-commit gate",
+  "started_at": "2026-09-29T05:25:00Z",
+  "last_updated": "2026-09-29T05:40:00Z",
+  "objectives": [
+    {"id": 1, "description": "Create .githooks/pre-commit, executable, header comment", "status": "done", "files_touched": [".githooks/pre-commit"]},
+    {"id": 2, "description": "Trigger condition: staged .lean path via diff-filter ACMRD", "status": "done", "files_touched": [".githooks/pre-commit"]},
+    {"id": 3, "description": "On trigger, run --counts-only; exit 0 on pass", "status": "done", "files_touched": [".githooks/pre-commit"]},
+    {"id": 4, "description": "Blocking message with drifted fields, remedy, bypass, CI backstop note", "status": "done", "files_touched": [".githooks/pre-commit"]},
+    {"id": 5, "description": "Resolve repo root via git rev-parse --show-toplevel", "status": "done", "files_touched": [".githooks/pre-commit"]},
+    {"id": 6, "description": "Degrade safely if checker script missing/unexecutable", "status": "done", "files_touched": [".githooks/pre-commit"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "notes": "Verified: bash -n clean, executable bit set; direct invocation with nothing staged exits 0 silently; from a subdirectory (FormalSystem/) behaves identically; a staged non-.lean file (specs/697.../hook-test-scratch.md, added and immediately restored/removed) exits 0 without invoking the checker. File is 85 lines vs. the plan's 40-60 estimate (size-estimate miss noted inline in the plan, not a scope deviation)."
+}
