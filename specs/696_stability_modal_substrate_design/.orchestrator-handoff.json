@@ -1,27 +1,22 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "summary": "Wrote a twelve-phase implementation plan for the T-arrival substrate redesign. Phase 1 lands the untl-side incompleteness before the redesign removes the ability to state it; phase 2 lands LiftableRaw and its two sufficiency lemmas free-standing; phase 3 adds the trans and lift skeleton fields with every producer as one atomic batch; phases 4-5 insulate Formula- and Plus-side thread-step consumers behind thread_share_succ; phase 6 flips Thread.step to trans and reproves total_eq_thread from lift; phases 7-8 re-quantify (C1') over trans on each side, with phase 8 retiring the five now-unprovable incompleteness theorems and their C2 and theorem-index rows in the same edit; phases 9-10 land Families A and B as in-tree certificates with the positive theorems replacing them; phase 11 preserves the closure-necessity obstruction as a wired evidence probe; phase 12 does docs, the additive export contract, and the full gate set. Every phase ends green; the two atomic-batch phases are pre-declared.",
+  "status": "implemented",
+  "phase": "implement",
+  "summary": "All twelve phases of the trans-arrival substrate refactor are implemented and green. SharingSkeleton carries a fourth periodic datum for succession plus the lift obligation it creates; Thread.step reads the arrival-pruned trans relation; (C1')'s untl and snce clauses quantify over succession out of and into the time rather than over share-classes. The five declarations recording an empty L-plus certificate class for a stability modal over a tense operator were retired with their C2 baseline and theorem-index rows, the retirement documented as the intended signal of a successful repair. Four positive results replaced them: plusCertifies_stabSnce_example and plusCertifies_stabUntl_example are six-condition certificates at non-trivial sharing for Pp to stab Pp and Fp to (not p to stab Fp), and not_snce_share_congr and not_untl_shift_share_congr refute the retired congruences on those same families. A new wired evidence probe shows the lift field is a genuine obligation. Soundness did not move: plusTruth_iff_mem, plusRefutes_of_certifies and total_eq_thread are byte-identical to their pre-refactor form. lake build green over 2771 jobs, zero sorries, axiom count unchanged at 14, all gates passing.",
   "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/696_stability_modal_substrate_design/summaries/02_trans-arrival-substrate-refactor-summary.md",
+      "summary": "Implementation summary for the twelve-phase trans-arrival substrate refactor."
+    },
     {
       "type": "plan",
       "path": "specs/696_stability_modal_substrate_design/plans/02_trans-arrival-substrate-refactor.md",
-      "summary": "Twelve-phase T-arrival substrate refactor plan, 21.5 hours estimated across 10 dependency waves."
+      "summary": "The twelve-phase plan, every phase now marked COMPLETED with inline deviation annotations."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 12,
   "phases_total": 12,
   "blockers": [],
-  "user_decision": {
-    "question": "Task 694 prescribes the trans datum this plan implements as a strict subset (no arrival pruning, no closure field, no untl-side result, no gate families). Both research rounds recommend folding it in. How should task 694 be disposed of?",
-    "options": [
-      "Abandon task 694 as superseded by task 696's plan",
-      "Re-scope task 694 to the deferred exact-closure work (LiftWindow, liftable_of_liftWindow, Decidable LiftWindow), which this plan lists as a non-goal",
-      "Leave task 694 as it stands and accept the duplicated work"
-    ],
-    "recommended": "Re-scope task 694 to the deferred exact-closure work (LiftWindow, liftable_of_liftWindow, Decidable LiftWindow), which this plan lists as a non-goal",
-    "blocking": false
-  },
-  "next_action_hint": "Run /implement 696 to execute the plan, starting with wave 1 (phases 1 and 2, both independent).",
-  "dispatch_seq": 3
+  "next_action_hint": "Task 696 is ready to be marked completed. Task 694 should now be re-scoped to the deferred exact-closure work (LiftWindow, liftable_of_liftWindow, Decidable LiftWindow), per the recorded user decision from cycle 1.",
+  "dispatch_seq": 7
 }
