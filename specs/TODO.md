@@ -1,5 +1,5 @@
 ---
-next_project_number: 697
+next_project_number: 699
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 697
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,694,695,696 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,694,695,696,697,698 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650 | 298,464,502,563,649 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -23,6 +23,10 @@ next_project_number: 697
 | 10 | 177 | 178,282,296,481,482,543 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
+
+### Agent System
+
+698 [NOT STARTED] — Make this repository's filescope declarations describe what...
 
 ### Algebraic Representation
 
@@ -46,6 +50,10 @@ next_project_number: 697
   └─ 616 [NOT STARTED] — Formalize the duration monoid BD+, its twisted-arrow...
     └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove... (see above)
   └─ 617 [NOT STARTED] — Prove app:presheaf-dictionary's Reflection clause: reflection...
+
+### Code Quality
+
+697 [NOT STARTED] — Close the recurring staleness gap between...
 
 ### Dataset Enhancement
 
@@ -99,6 +107,26 @@ next_project_number: 697
   └─ 650 [NOT STARTED] — Define-before-use audit of...
 
 ## Tasks
+
+### 698. File scope declaration hygiene
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Make this repository's file_scope declarations describe what tasks actually touch, so the cross-task collision gate stops being advisory in name and permissive in fact. Evidence that the declarations are not load-bearing today, observed on one concurrent batch: one task declared file_scope over nine Decidability modules and then modified scripts/check-module-invariants.sh, a shared gate script named in no declaration; its sibling declared file_scope as exactly ["specs/"] and then committed into FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/. Neither overstep was caught, because the admission gate reads the declarations and the declarations were wrong. There was a real consequence, not merely a bookkeeping one: a gate run against the shared script crashed mid-parse with a bash syntax error as a Python f-string was reached as bash, the signature of a file being rewritten while another process reads it. Nothing cross-contaminated only because both agents happened to stage explicit per-file pathspecs. IN SCOPE, all repository-local data and all verifiable here: (1) Narrow or justify the four coarse whole-directory declarations that scripts/validate-state.sh Check 8 currently reports -- project 177's 'FormalSystem/Metalogic/Decidability/' which alone overlaps 8 distinct non-terminal tasks, and 'BimodalTools/' declared identically by 282, 296 and 298, each overlapping the other two. For each, either replace the directory root with the specific paths that task will touch, or record inline why a whole-directory claim is genuinely correct for it; do not narrow a declaration by guessing -- read the task description and say what it implies. (2) Repair the duplicate exact entry Check 9 reports on project 178 ('FormalSystem/Examples/' twice); confirm whether validate-state.sh --fix handles it and prefer that over a hand edit if so. (3) Add the shared gate and tooling scripts that tasks demonstrably edit -- scripts/check-module-invariants.sh above all, which is a serialization point for every task that pins an axiom baseline or a theorem-index row -- to the declarations of every non-terminal task whose plan will touch them. (4) Re-check that no remaining pair of non-terminal tasks has an undeclared shared write target, and report the residue rather than silently leaving it. EXPLICITLY OUT OF SCOPE, with the reason: the systemic enforcement half of this problem -- having postflight compare a dispatch's reported modified_files against the task's declared file_scope and surface an overstep -- lives in the agent-system source store at extensions/core/scripts/orchestrate-cycle-postflight.sh, which is a DIFFERENT repository (/home/benjamin/.config/nvim/agent-system, its own git repo with its own specs/ tree). Per .claude/rules/source-store-deploy-boundary.md, .claude/** here is a disposable deploy artifact and hand edits to it are wiped by the next regeneration, so that half must be raised as a task in that repository and must not be attempted from here. Record it as a named follow-on in the report so the hand-off is durable. Deliverable: validate-state.sh's Check 8 and Check 9 report zero file_scope findings for non-terminal tasks, or every surviving finding carries a recorded justification; no task's declaration was widened to silence a finding.
+
+---
+
+### 697. Typst generated counts staleness
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: code-quality
+- **Dependencies**: None
+
+**Description**: Close the recurring staleness gap between typst/generated/status.typ and the live Lean tree, so that a task adding or removing a .lean file cannot silently turn CI red. Observed failure, twice: scripts/typst-sync-check.sh's Check 2 (count freshness) compares the committed formalsystem-file-count / formalsystem-line-count / tests-* / tools-* scalars in typst/generated/status.typ against a live regeneration, and nothing in the repository regenerates them. The gate went red on 2026-09-25 with six stale counts (committed 537 files / 285608 lines vs live 568 / 301253) and was the SOLE failing step of that CI run, with build, test and lint all green; it then went red again as soon as FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean landed, moving the file count 603 -> 604 and the line count by 281. Both times the remedy was the same one command, `bash scripts/typst-status-counts.sh`, which regenerates the file from live source. So the defect is not in either script: the generator and the checker agree, and there is simply no moment in any workflow at which the generator runs. INVESTIGATE AND CHOOSE, recording the comparison in the report rather than adopting the first option: (a) a version-controlled hooks directory plus an installer script and `git config core.hooksPath`, running the generator pre-commit when the staged set touches any .lean file -- note the repository currently has NO versioned hooks directory and core.hooksPath is the default .git/hooks, so this introduces new contributor-facing infrastructure and must be documented wherever contributor setup is documented; (b) a `--fix` mode on scripts/typst-sync-check.sh that invokes the generator, making the check self-healing when run locally but still requiring someone to run it; (c) regeneration as a step in whatever workflow lands Lean files, so the counts move in the same commit as the source; (d) any option the investigation surfaces, including making the counts computed at Typst compile time rather than stamped, which would delete the class of defect outright instead of automating around it. Score each on whether it prevents the failure or merely detects it sooner, on what it costs a fresh clone, and on whether CI would still catch a bypass. CONSTRAINTS: scripts/typst-status-counts.sh --json is consumed by scripts/typst-sync-check.sh, so the two must stay compatible; the generator NEEDS A BUILT LIBRARY in its default mode because it reads a per-declaration axiom report out of the build, which rules out any hook shape that must run without oleans; the stamp-commit and stamp-date fields mean a regeneration always dirties the file even when counts are unchanged, so a naive always-run hook would create spurious diffs and the chosen design must address that. Deliverable: the chosen mechanism implemented, the stale-count class demonstrably prevented (show the mechanism firing on a synthetic .lean addition), and the full CI-equivalent gate sweep still green.
+
+---
 
 ### 696. Stability modal substrate design
 - **Status**: [RESEARCHED]
