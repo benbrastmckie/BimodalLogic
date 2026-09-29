@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/695_plus_carrier_normalization_int_transfer/reports/01_plus-carrier-normalization-transfer.md",
+      "summary": "Research for the L-plus carrier normalization: the route is machine-verified (a compiled probe proves plusTruthAt_map and plusValidZTime_iff_plusValidInt, pcq axioms, zero sorries), the direct seven-case shape is chosen over a PlusTruthCorr structure with reasons, siting is FormalSystem/PlusLanguage/PlusIntTransfer.lean, and the full C2/C15/C33/C34b gate-bookkeeping surface plus a pre-existing C28 red are enumerated."
+    },
+    {
+      "type": "probe",
+      "path": "specs/695_plus_carrier_normalization_int_transfer/probes/01_plus_int_transfer_probe.lean",
+      "summary": "Compiled probe (lake env lean, zero errors/warnings/sorries) proving plusTruthAt_map, PlusValidInt and plusValidZTime_iff_plusValidInt; the transcription source for implementation."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790656266_d2dc32_695",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
