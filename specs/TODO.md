@@ -11,7 +11,7 @@ next_project_number: 706
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,650,664,703,705 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,703,705 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,704 | 298,464,502,563,703 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -94,10 +94,6 @@ next_project_number: 706
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
-
-### Reference Book
-
-650 [IMPLEMENTING] — Define-before-use audit of...
 
 ### Verification
 
@@ -195,12 +191,13 @@ Out of scope: any Lean change, and any edit to the manuscript.
 ---
 
 ### 650. Define before use audit lean appendix
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: reference-book
 - **Dependencies**: Task 647, Task 648, Task 649
 - **Research**: [650_define_before_use_audit_lean_appendix/reports/01_define-before-use-audit.md]
 - **Plan**: [650_define_before_use_audit_lean_appendix/plans/01_define-before-use-audit.md]
+- **Summary**: [650_define_before_use_audit_lean_appendix/summaries/01_define-before-use-audit-summary.md]
 
 **Description**: Define-before-use audit of typst/chapters/ax-lean-appendix.typ (the back-matter appendix "Reading the Lean Formalization" of typst/BimodalReference.typ): go through the appendix in reading order, as it stands AFTER tasks 647, 648 and 649 have landed, and make sure that EVERY convention, notation, identifier, and piece of Lean syntax is stated before it is first used. This is an improvement pass over the finished appendix to catch whatever was missed along the way; it depends on 647, 648 and 649 and must not start before they complete.
 

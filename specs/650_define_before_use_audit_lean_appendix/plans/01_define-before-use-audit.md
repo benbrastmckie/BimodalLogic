@@ -1,7 +1,7 @@
 # Implementation Plan: Define-Before-Use Audit of the Lean Appendix
 
 - **Task**: 650 - Define-before-use audit of the Lean appendix
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9 hours
 - **Dependencies**: 647, 648, 649 (all landed)
 - **Research Inputs**: `specs/650_define_before_use_audit_lean_appendix/reports/01_define-before-use-audit.md`
