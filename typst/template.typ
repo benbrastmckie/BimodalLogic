@@ -134,8 +134,8 @@
 //     whole block).
 //   - didactic example (source: none, the default): a worked example
 //     written for this manual, no label, same visible family.
-// A block's own language (JSON, Python, Lean) is carried by the fenced
-// fence's own tag (```json, ```python, bare ``` for Lean) -- the
+// A block's own language (JSON, Python, Lean) is carried by the fence's own
+// language tag (json, python, or a bare fence with no tag for Lean) -- the
 // environment needs no separate language parameter, since the same fence
 // mechanism already selects it and highlighting is disabled uniformly
 // below regardless of that tag.
