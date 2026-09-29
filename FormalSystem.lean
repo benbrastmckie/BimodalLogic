@@ -152,6 +152,7 @@ import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Examples
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Fulfil
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Incompleteness
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Predicates
+import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.TransId
 import FormalSystem.Metalogic.Decidability.ProofExtraction
 import FormalSystem.Metalogic.Decidability.Propositional.Decidable
 import FormalSystem.Metalogic.Decidability.Propositional.Kalmar

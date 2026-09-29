@@ -1,7 +1,7 @@
 # Implementation Plan: L⁺ Compression and Completeness
 
 - **Task**: 703 - lplus_compression_and_completeness
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 25 hours
 - **Dependencies**: `FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt` (landed,
   `FormalSystem/PlusLanguage/PlusIntTransfer.lean`); the redesigned sharing substrate as finally
@@ -224,7 +224,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: The `transId` collapse for (C1') and (C2') [NOT STARTED]
+### Phase 1: The `transId` collapse for (C1') and (C2') [COMPLETED]
 
 **Goal**: Prove that on a hop-free family — one whose `trans` relates an index only to itself —
 the two branching conditions (C1') and (C2') follow from the per-lasso conditions
@@ -232,22 +232,24 @@ the two branching conditions (C1') and (C2') follow from the per-lasso condition
 on, so it is established first and as a reusable library lemma rather than as a throwaway probe.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/TransId.lean` with the module
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/TransId.lean` with the module
       docstring, `import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Predicates`, and
       the `FormalSystem.Metalogic.Decidability` namespace.
-- [ ] Prove `plusLocalCoherentShare_of_transId`. Under `hid`, the `untl` clause's `j` and the
+- [x] Prove `plusLocalCoherentShare_of_transId`. Under `hid`, the `untl` clause's `j` and the
       `snce` clause's `k` are forced equal to `i`, so each branching clause is exactly its
       one-position instance. Mirror the shape of the landed `plusUntl_self_of_share` and
       `plusSnce_self_of_share`, which are the same instantiation read in the opposite direction.
-- [ ] Prove `transId_forces_const_thread`: under `hid`, every `Thread`'s index function is
+- [x] Prove `transId_forces_const_thread`: under `hid`, every `Thread`'s index function is
       constant. `Thread.step θ u : S.trans u (θ.idx u) (θ.idx (u + 1))` plus `hid` gives
       `θ.idx u = θ.idx (u + 1)`; extend to all of ℤ by induction in both directions.
-- [ ] Prove `plusThreadFulfilling_of_transId` from the previous item plus `Thread.ext` and
-      `Thread.const_idx`.
-- [ ] Prove `transIdOf_hid`: a family whose three `trans` segments are `transIdOf` applied to the
+- [x] Prove `plusThreadFulfilling_of_transId` from the previous item plus `Thread.ext` and
+      `Thread.const_idx`. *(deviation: altered — routed through a named intermediate
+      `thread_eq_const_of_transId`, which is exactly the `Thread.ext` + `Thread.const_idx` step
+      the task names, extracted as a reusable lemma rather than inlined)*
+- [x] Prove `transIdOf_hid`: a family whose three `trans` segments are `transIdOf` applied to the
       three `rep` segments satisfies `hid`. This is the form Phase 9 will hand in.
-- [ ] Add the import line to `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`.
-- [ ] Confirm the new module transitively imports `FormalSystem.Init` (invariant C24).
+- [x] Add the import line to `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`.
+- [x] Confirm the new module transitively imports `FormalSystem.Init` (invariant C24).
 
 **Timing**: 2 hours
 
