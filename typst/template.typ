@@ -120,14 +120,116 @@
 #let example = thmbox.example.with(..example-style)
 #let notation-env = thmbox.remark.with(title: "Notation", ..remark-style)
 
+// --- Lean code environment (block excerpts and didactic examples) ---
+//
+// One environment for every Lean (and JSON/Python/shell) code block in the
+// reference manual, in two kinds selected by the `source` argument:
+//   - source excerpt (source: (module, name)): quotes the live source,
+//     verbatim up to whitespace, docstrings omitted, lines re-broken at
+//     whitespace only (never altering a token) to fit the column budget
+//     below. Renders the module-qualified label and the code as one
+//     unbreakable unit, the label visibly closer to its code (a small
+//     fixed gap, lean-code-label-gap) than the code is to the surrounding
+//     prose (lean-code-space, the same magnitude on both sides of the
+//     whole block).
+//   - didactic example (source: none, the default): a worked example
+//     written for this manual, no label, same visible family.
+// A block's own language (JSON, Python, Lean) is carried by the fenced
+// fence's own tag (```json, ```python, bare ``` for Lean) -- the
+// environment needs no separate language parameter, since the same fence
+// mechanism already selects it and highlighting is disabled uniformly
+// below regardless of that tag.
+//
+// GEOMETRY, decided by rendering candidates against the manual's real
+// content rather than by estimating: raw text at lean-code-size (8pt), in
+// the explicit font lean-code-font ("DejaVu Sans Mono") -- not raw()'s
+// implicit default, whose per-glyph width was measured uneven across the
+// manual's Lean unicode operators, making column-budget arithmetic against
+// it unreliable. DejaVu Sans Mono was confirmed by a rendered glyph-table
+// check to cover every non-ASCII symbol appearing inside a code block
+// across the manual (¬ ↑ → ↔ ∀ ∃ ∈ ∧ ≤ ⊆ ⊢ ⊨ □ △ ▽ ◇ ⟨ ⟩ ₁ ₂ Γ Δ σ τ φ ψ)
+// with no missing-glyph fallback.
+//
+// COLUMN BUDGET: lean-code-column-budget (63) monospace columns. This is
+// ONE number applied book-wide, not a tiered plain/nested pair, derived
+// from the narrowest real case: a block nested inside #example/#definition
+// (thmbox's fill:none insets narrow the 343.28pt plain text width to
+// 321.28pt there), combined with lean-code-indent's own 1em left inset.
+// A rendered boundary sweep of real appendix content at that width found
+// 64 columns fit and 65 wraps; 63 keeps a one-column safety margin. Every
+// plain top-level block has strictly more headroom at the same budget.
+//
+// SPACING: lean-code-space (11pt) above and below the whole block, in
+// absolute units, not em -- em inside a raw show rule resolves to the 8pt
+// code size, not the document's 11pt body size, which would visibly
+// undershoot the intended gap.
+//
+// BREAKABILITY: unbreakable by default (breakable: false); pass
+// breakable: true to opt out for a listing too long to fit one page.
+//
+// HIGHLIGHTING: uniform, black-only, no syntax highlighting for any
+// language (set raw(theme: none) applies inside the block's own scope),
+// matching the template's stated austere, black-only, no-fills aesthetic.
+// Before this decision, JSON/Python rendered auto-highlighted (colored by
+// their fence's own lang tag) while Lean rendered plain black in the same
+// visual family -- an accident of Typst's default behavior, not a design
+// choice; after, all three render identically in black.
+//
+// SEPARATION: lean-code-indent (1em) left inset, not a left rule -- a rule
+// was found, by rendered comparison, to visually compete with thmbox's own
+// colored left bar already marking #example/#definition/etc., which reads
+// as confusing when a code block sits inside one of those environments (a
+// rule inside a rule).
+//
+// FIDELITY POLICY: an excerpt is verbatim up to whitespace; docstrings are
+// omitted; a line exceeding the column budget is re-broken at whitespace
+// only, one consistent layout for a declaration (name and parameters, then
+// hypotheses, then conclusion), never altering a token.
+#let lean-code-size = 8pt
+#let lean-code-font = "DejaVu Sans Mono"
+#let lean-code-column-budget = 63
+#let lean-code-space = 11pt
+#let lean-code-indent = 1em
+#let lean-code-label-gap = 3pt
+
+// Raw label line only (no block wrapper) -- shared by the standalone
+// leansrc() below (kept for typst/FormalFoundations.typ compatibility) and
+// by lean-code()'s own source-excerpt kind, which supplies its own
+// spacing around it.
+#let lean-code-label-raw(module, name) = raw(block: true, theme: none, "> " + (module + "." + name).replace(".", "." + sym.zws) + ".")
+
+#let lean-code(source: none, breakable: false, body) = block(
+  above: lean-code-space,
+  below: lean-code-space,
+  breakable: breakable,
+  inset: (left: lean-code-indent),
+)[
+  #set raw(theme: none)
+  #show raw.where(block: true): set text(size: lean-code-size, font: lean-code-font)
+  #if source != none [
+    #block(below: lean-code-label-gap, lean-code-label-raw(source.at(0), source.at(1)))
+  ]
+  #body
+]
+
 // --- Lean source / reference helpers ---
 
 // Lean source reference block (module + declaration name, rendered as a
 // blockquote-style raw line). Usage: #leansrc("Metalogic.Soundness", "soundness")
-#let leansrc(module, name) = block(above: 1.0em, below: 1.0em, raw(block: true, "> " + (module + "." + name).replace(".", "." + sym.zws) + "."))
+// Kept exported with this exact two-argument signature for
+// typst/FormalFoundations.typ, whose ~67 call sites are attribution-only
+// (never followed by a code block) and must keep compiling unchanged. A
+// thin wrapper over the same label text lean-code() renders internally.
+#let leansrc(module, name) = block(above: 1.0em, below: 1.0em, lean-code-label-raw(module, name))
 
-// Inline Lean identifier reference (monospace, no path).
-#let leanref(name) = raw(name)
+// Inline Lean identifier reference: same explicit monospace font as the
+// lean-code() block environment (lean-code-font), for visual consistency
+// between an inline citation of a live declaration and a quoted block
+// excerpt -- it marks the name as a deliberate cross-reference rather than
+// an arbitrary inline code span. Adopted narrowly: no existing inline
+// backtick span in the manual is converted to it, and Check 1 of
+// scripts/typst-sync-check.sh keeps resolving every one of them unchanged.
+#let leanref(name) = text(font: lean-code-font, raw(name))
 
 // Dotted Lean declaration name as inline raw text, with a zero-width space
 // inserted after each "." so a long dotted name wraps at a dot boundary

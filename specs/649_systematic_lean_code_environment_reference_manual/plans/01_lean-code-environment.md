@@ -302,7 +302,7 @@ not by re-deriving the arithmetic.
 
 ---
 
-### Phase 3: Define the environment in the template [NOT STARTED]
+### Phase 3: Define the environment in the template [COMPLETED]
 
 **Goal**: Add one code environment to `typst/template.typ` implementing the Phase 2 decisions,
 keeping `leansrc` exported with its current signature so `FormalFoundations.typ` is untouched.
@@ -360,6 +360,24 @@ extended.
   `typst compile --root .. FormalFoundations.typ` both report zero errors.
 - `FormalFoundations.typ` is byte-identical to its pre-phase state.
 - A scratch call site of each kind renders with the Phase 2 geometry.
+
+**Budget correction found during implementation**: Phase 2's rendered sweep measured the
+nested-width cutoff (66 fits / 67 wraps) without the `lean-code-indent` 1em left inset that
+Phase 3's separation decision also applies. Re-measured with the actual `lean-code()` block
+(inset included), real appendix content cuts at **64 fits / 65 wraps**; the adopted
+`lean-code-column-budget` is **63** (one column of margin below the confirmed boundary),
+correcting the Phase 2 decision block's provisional 65. `lean-code-size` (8pt),
+`lean-code-font` ("DejaVu Sans Mono"), `lean-code-space` (11pt), `lean-code-indent` (1em) and
+`lean-code-label-gap` (3pt, the internal label-to-code gap, smaller than the 11pt block-to-prose
+gap on both sides) are unchanged from Phase 2. `typst/template.typ` now exports `lean-code`
+(the environment), `lean-code-label-raw` (shared internal helper), `leansrc` (thin wrapper,
+signature unchanged), `leanref` (adopted, rendered in `lean-code-font`), and the five geometry
+constants above. A scratch smoke test confirmed both kinds, `leanref`, standalone `leansrc`
+followed by a bare (unmigrated) raw block (proving `leansrc` alone does not leak styling into
+unrelated content, which `FormalFoundations.typ`'s ~67 attribution-only calls depend on), a
+`lean-code` nested inside `#example` with a `json`-fenced body (black, no highlighting), and
+`breakable: true` all render correctly. `typst/FormalFoundations.typ` is byte-identical to its
+pre-phase state (`git diff` empty).
 
 ---
 
