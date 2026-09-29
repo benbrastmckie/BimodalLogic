@@ -1,19 +1,15 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "summary": "Wrote a five-phase implementation plan for porting the landed BimodalLogic trans/Liftable substrate lessons to the ModelChecker bimodal theory. The plan's sole deliverable is a summary carrying ready-to-file ModelChecker task texts: a re-scoped task 200 (stale upstream framing corrected, Q1/Q2 file-level porting map folded in, blocker narrowed to the compression bound rather than lifted), a reopen-and-amend for task 219's THEORY-LIMITS group, and one new documentation task restating the Box case over threads. Planning re-verified the report's ground truth against both live trees: 696 is completed with trans/Liftable and both gate families landed, and the additive wire contract holds. Two drifts found beyond the report: BimodalLogic 703 moved from researching to planning, and the THEORY-LIMITS group carries a third defect the report did not enumerate -- three Lean theorem names it cites (not_plusCertifies_stabSnce, not_plusCertifies_stabSnce_premise, snce_share_congr) no longer have declaration sites anywhere in FormalSystem/, the first two deleted by the redesign and the third retired and refuted by not_snce_share_congr. Every phase is prose tier; no ModelChecker file and no BimodalLogic source file is touched.",
+  "dispatch_seq": 15,
+  "status": "implemented",
+  "phases_completed": 5,
+  "phases_total": 5,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/701_port_substrate_lessons_to_model_checker/plans/01_substrate-lessons-for-model-checker.md",
-      "summary": "Five-phase plan, 4 hours estimated, all phases prose tier, single markdown deliverable under this task's summaries/ directory."
+      "type": "summary",
+      "path": "specs/701_port_substrate_lessons_to_model_checker/summaries/01_substrate-lessons-for-model-checker-summary.md",
+      "summary": "Ready-to-file ModelChecker task 200 replacement text, task 219 reopen-and-amend text, one new documentation-only task description, two recorded non-task decisions, and a phased now-versus-later proposal, all re-verified against live BimodalLogic and ModelChecker trees at write time."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 5,
   "blockers": [],
-  "plan_markers_verified": true,
-  "next_action_hint": "Dispatch implement for task 701; the plan's Phase 1 re-verification is load-bearing because both repositories are actively in flight this cycle.",
-  "skeleton": false,
-  "dispatch_seq": 12
+  "notes": "All 5 plan phases completed. No file under /home/benjamin/Projects/ModelChecker was modified (confirmed via git status: only a pre-existing, unrelated events.jsonl diff present there). No BimodalLogic file outside this task's own specs/701_port_substrate_lessons_to_model_checker/ directory was modified. Sibling tasks 650 and 703 were live on this shared working tree throughout; every commit this task made staged only explicit paths under this task's own directory, never a directory or glob pathspec."
 }
