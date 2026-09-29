@@ -1,42 +1,30 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/698_file_scope_declaration_hygiene/reports/01_file-scope-hygiene-audit.md",
-      "summary": "Audits the four Check-8 coarse file_scope declarations (177 Decidability/, 282/296/298 BimodalTools/) and the Check-9 duplicate (178), recommending narrowing for 282/296/298, an inline justification plus a missing dependency edge (696) for 177, --fix for 178, confirming no further check-module-invariants.sh additions are evidenced, flagging project 412's missing file_scope as the most relevant residue, and recording the postflight-gating follow-on for the separate agent-system repository."
+      "type": "plan",
+      "path": "specs/698_file_scope_declaration_hygiene/plans/01_file-scope-declaration-hygiene.md",
+      "summary": "5-phase, 3-hour plan repairing the four Check-8 coarse file_scope declarations (narrow 282/296/298's inherited BimodalTools/ triad, justify 177's Decidability/ and add the missing 696 dependency edge), fixing 178's Check-9 duplicate via validate-state.sh --fix, re-verifying shared gate-script declarations, and reporting residue plus the out-of-repo enforcement follow-on."
     }
   ],
-  "next_steps": "Run /plan 698 to create implementation plan",
+  "next_steps": "Run /implement 698 to execute the plan",
   "metadata": {
     "session_id": "sess_1790656266_d2dc32_698",
-    "agent_type": "general-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 6
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 3,
+    "dependency_waves": [[1], [2], [3], [4], [5]]
   },
   "memory_candidates": [
     {
-      "content": "In this repo, validate-state.sh's Check 8 (coarse file_scope) only fires on directory-ending entries with >=3 overlapping non-terminal tasks (FILE_SCOPE_COARSE_MIN_OVERLAP, default 3); a missing/null file_scope is invisible to the same overlap predicate (scopes_overlap_first treats an absent array as empty, so it never overlaps anything) and is therefore a strictly worse, silent version of the same hazard a coarse directory declaration at least surfaces as a WARN. When auditing file_scope hygiene, missing/null declarations on tasks that plausibly touch a known shared serialization point (e.g. scripts/check-module-invariants.sh's AXIOM_BASELINE) deserve priority over merely-coarse ones.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/698_file_scope_declaration_hygiene/reports/01_file-scope-hygiene-audit.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["file_scope", "validate-state.sh", "Check 8", "coarse declaration", "overlap predicate", "missing file_scope"]
-    },
-    {
-      "content": "scripts/check-module-invariants.sh's C2 check pins a hardcoded AXIOM_BASELINE heredoc (theorem name -> expected axiom list) for flagship/certificate-stack theorems; a task that lands a new flagship theorem worth axiom-pinning (and a matching docs/theorem-index.md row, per C15) should declare scripts/check-module-invariants.sh and docs/theorem-index.md in its file_scope, as tasks 695/696 already correctly do. A task merely gated by an EXISTING check-module-invariants.sh check ('no regression to any currently-passing check') is not itself an editor of the script and should not have it added to file_scope on that basis alone.",
+      "content": "A task whose deliverable IS a shared, wholesale-regenerated index file (specs/state.json, specs/TODO.md) cannot stage its commits free of concurrent siblings' rows -- the contamination is structural, not a staging mistake. The sanctioned handling is a pair: every read-modify-write goes through .claude/scripts/state-write.sh (fail-closed specs/.scope-lock mutex, private mktemp staging; never a hand-rolled 'jq > tmp && mv', never Edit/Write on state.json), and every commit that stages specs/state.json or specs/TODO.md passes --honest-index-rows <task> to git-commit-scoped.sh, which appends an 'Also carries current index rows for tasks: ...' body line. Per git-staging-scope.md that flag is REQUIRED at every such site, not optional. Corollary for planning: sequence all phases of such a task rather than waving them in parallel, so each commit's diff stays attributable to one named repair.",
       "category": "PATTERN",
-      "source_artifact": "specs/698_file_scope_declaration_hygiene/reports/01_file-scope-hygiene-audit.md",
+      "source_artifact": "specs/698_file_scope_declaration_hygiene/plans/01_file-scope-declaration-hygiene.md",
       "confidence": 0.8,
-      "suggested_keywords": ["check-module-invariants.sh", "AXIOM_BASELINE", "C2", "theorem-index.md", "file_scope"]
-    },
-    {
-      "content": "orchestrate-cycle-postflight.sh (agent-system source-store repo, extensions/core/scripts/) already computes a modified_files-vs-declared-file_scope excursion at WORK (h), lines ~1053-1069, but only logs it to stderr as an ADVISORY with 'no gate, no exit-code, no verdict effect'. Any future task to make file_scope enforcement actually load-bearing should build on this existing detection logic (which is already correct) rather than re-deriving the comparison; the gap is purely in the consequence, not the detection.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/698_file_scope_declaration_hygiene/reports/01_file-scope-hygiene-audit.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["postflight", "file_scope enforcement", "modified_files", "advisory", "agent-system"]
+      "suggested_keywords": ["state.json", "state-write.sh", "honest-index-rows", "git-commit-scoped", "shared index file", "concurrent siblings"]
     }
   ],
-  "dispatch_seq": 3
+  "dispatch_seq": 8
 }

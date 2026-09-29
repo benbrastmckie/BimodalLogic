@@ -26,7 +26,7 @@ next_project_number: 703
 
 ### Agent System
 
-698 [PLANNING] — Make this repository's filescope declarations describe what...
+698 [PLANNED] — Make this repository's filescope declarations describe what...
 
 ### Algebraic Representation
 
@@ -176,11 +176,12 @@ CONSTRAINTS AND NON-GOALS. Do not modify any Lean statement: this task's Part A 
 ---
 
 ### 698. File scope declaration hygiene
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**: [698_file_scope_declaration_hygiene/reports/01_file-scope-hygiene-audit.md]
+- **Plan**: [698_file_scope_declaration_hygiene/plans/01_file-scope-declaration-hygiene.md]
 
 **Description**: Make this repository's file_scope declarations describe what tasks actually touch, so the cross-task collision gate stops being advisory in name and permissive in fact. Evidence that the declarations are not load-bearing today, observed on one concurrent batch: one task declared file_scope over nine Decidability modules and then modified scripts/check-module-invariants.sh, a shared gate script named in no declaration; its sibling declared file_scope as exactly ["specs/"] and then committed into FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/. Neither overstep was caught, because the admission gate reads the declarations and the declarations were wrong. There was a real consequence, not merely a bookkeeping one: a gate run against the shared script crashed mid-parse with a bash syntax error as a Python f-string was reached as bash, the signature of a file being rewritten while another process reads it. Nothing cross-contaminated only because both agents happened to stage explicit per-file pathspecs. IN SCOPE, all repository-local data and all verifiable here: (1) Narrow or justify the four coarse whole-directory declarations that scripts/validate-state.sh Check 8 currently reports -- project 177's 'FormalSystem/Metalogic/Decidability/' which alone overlaps 8 distinct non-terminal tasks, and 'BimodalTools/' declared identically by 282, 296 and 298, each overlapping the other two. For each, either replace the directory root with the specific paths that task will touch, or record inline why a whole-directory claim is genuinely correct for it; do not narrow a declaration by guessing -- read the task description and say what it implies. (2) Repair the duplicate exact entry Check 9 reports on project 178 ('FormalSystem/Examples/' twice); confirm whether validate-state.sh --fix handles it and prefer that over a hand edit if so. (3) Add the shared gate and tooling scripts that tasks demonstrably edit -- scripts/check-module-invariants.sh above all, which is a serialization point for every task that pins an axiom baseline or a theorem-index row -- to the declarations of every non-terminal task whose plan will touch them. (4) Re-check that no remaining pair of non-terminal tasks has an undeclared shared write target, and report the residue rather than silently leaving it. EXPLICITLY OUT OF SCOPE, with the reason: the systemic enforcement half of this problem -- having postflight compare a dispatch's reported modified_files against the task's declared file_scope and surface an overstep -- lives in the agent-system source store at extensions/core/scripts/orchestrate-cycle-postflight.sh, which is a DIFFERENT repository (/home/benjamin/.config/nvim/agent-system, its own git repo with its own specs/ tree). Per .claude/rules/source-store-deploy-boundary.md, .claude/** here is a disposable deploy artifact and hand edits to it are wiped by the next regeneration, so that half must be raised as a task in that repository and must not be attempted from here. Record it as a named follow-on in the report so the hand-off is durable. Deliverable: validate-state.sh's Check 8 and Check 9 report zero file_scope findings for non-terminal tasks, or every surviving finding carries a recorded justification; no task's declaration was widened to silence a finding.
 
