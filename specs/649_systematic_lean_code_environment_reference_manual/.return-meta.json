@@ -2,15 +2,17 @@
   "status": "implemented",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/649_systematic_lean_code_environment_reference_manual/plans/01_lean-code-environment.md",
-      "summary": "Nine-phase plan promoting the Lean appendix's file-local code-presentation rules to one book-wide Typst environment."
+      "type": "summary",
+      "path": "specs/649_systematic_lean_code_environment_reference_manual/summaries/01_lean-code-environment-summary.md",
+      "summary": "All nine plan phases completed: lean-code() environment defined in template.typ and every one of the manual's 50 code blocks migrated to it across six chapter files, with a new mechanical Check 4 in typst-sync-check.sh and documentation in README.md/STYLE.md."
     }
   ],
   "metadata": {
     "session_id": "sess_1790680388_3d4c26",
     "agent_type": "typst-implementation-agent",
     "dispatch_seq": 8,
-    "in_progress": true
-  }
+    "phase_count": 9,
+    "phases_completed": 9
+  },
+  "next_steps": "Task 649 is fully implemented; ready for postflight status transition to completed."
 }

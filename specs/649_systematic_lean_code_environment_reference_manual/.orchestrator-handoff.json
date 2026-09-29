@@ -1,16 +1,17 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 6,
-  "summary": "Wrote a nine-phase implementation plan for one book-wide Typst code environment with two declared kinds, covering geometry decided by rendered comparison, migration of all 50 code blocks across six chapters, a new Check 4 in the tracked drift detector, and documentation of the column budget and excerpt-fidelity policy.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 8,
+  "summary": "All nine plan phases completed: lean-code() environment defined in typst/template.typ and all 50 code blocks across six chapter files migrated to it; a new mechanical Check 4 added to scripts/typst-sync-check.sh; documentation added to typst/README.md and typst/STYLE.md. Both BimodalReference.typ and FormalFoundations.typ compile at zero errors.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/649_systematic_lean_code_environment_reference_manual/plans/01_lean-code-environment.md",
-      "summary": "Nine-phase plan, 13 hours estimated, eight dependency waves; strict artifact validation passes with zero warnings."
+      "type": "summary",
+      "path": "specs/649_systematic_lean_code_environment_reference_manual/summaries/01_lean-code-environment-summary.md",
+      "summary": "Implementation summary for the nine-phase lean-code() environment rollout."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 9,
   "phases_total": 9,
-  "blockers": []
+  "blockers": [],
+  "plan_markers_verified": true
 }
