@@ -37,6 +37,7 @@ atomization transfer rely on.
 | `Derivation.lean` | 288 | `PlusDerivationTree` (the seven rules of TM, constructor for constructor), `PlusDerivable`, `⊢⁺[fc]` notation, the derived `⊡`-necessitation rule `stabNecessitation`, and the backward conservativity bridge `PlusAxiom.ofTM` / `PlusDerivationTree.ofTM` / `plusDerivable_of_derivable` |
 | `Formula.lean` | 466 | `PlusFormula`, the derived operators (with `Formula`'s right-hand sides), the `⊡`-specific `dstab`/`Will`/`will`/`Could`/`could`, `reflectTime` (`stab ↦ stab`), the purity predicates `IsPureFuture`/`IsPurePast` with their `reflectTime` exchange lemmas, and the embedding `ofFormula`/`ofCtx` |
 | `PlusDeterminism.lean` | 154 | `app:deterministic`'s positive half: `states_eq_of_deterministic` (the singleton bridge), `stab_iff_of_deterministic`, `determined_of_deterministic`, `stab_biconditional_plusValidOn_of_deterministic` — the collapse `⊡φ ↔ φ` over every `TaskFrame.Deterministic` frame, choice-free (`[propext]` only) |
+| `PlusIntTransfer.lean` | 204 | Carrier normalization for L⁺: `plusValidZTime_iff_plusValidInt` (`PlusValidZTime φ ↔ PlusValidInt φ`), the twin of `Semantics/IntTransfer.lean`'s `validZTime_iff_validInt`, through the direct seven-case truth transport `plusTruthAt_map` and the shared frame/model/history transport; `PlusValidInt`, validity over `ℤ`-frames alone |
 | `PlusLimitClosure.lean` | 287 | The limit-closure formula `blc p` and `blc_plusValid`, its validity at `.Base`: the general lemma `PartialHistory.exists_maximal_of_chainClosed` (Zorn plus the Extension Theorem), instantiated at `LCProp` to give `limit_history`, with one `paste` closing the argument |
 | `PlusNonValidities.lean` | 205 | The five refutations on `natFrame` over ℤ that bound the `⊡` axiom set from above (`⊡p → □⊡p`, `G⊡p → ⊡Gp`, `⊡GPp → G⊡Pp`, *Determined*, `P⊡p → ⊡Pp`) |
 | `PlusPasting.lean` | 346 | `paste` — two total histories sharing a state paste into a total history — the purity congruences, and the pasting validities PS/US/FS/GS with their past mirrors |
@@ -75,6 +76,7 @@ beside them do, and that edge is what gives L⁺ its meaning:
 | `PlusDeterminism.lean` | `app:deterministic`'s positive half: the deterministic collapse `⊡φ ↔ φ`, choice-free |
 | `PlusStateLocal.lean` | the state-locality fragment of L⁺ and its headline `φ ↔ ⊡φ` |
 | `PlusLimitClosure.lean` | the limit-closure formula `blc` and its validity at `.Base` |
+| `PlusIntTransfer.lean` | `plusTruthAt_map` (L⁺ truth across a duration isomorphism, a direct seven-case induction) and `plusValidZTime_iff_plusValidInt`, carrier normalization for L⁺ |
 
 The two cross-language bridges stay at the `Semantics/` root, because each spans two families:
 `Semantics/DeterministicBridge.lean` (`lem:deterministic-singleton` as a biconditional) and
