@@ -548,24 +548,29 @@ after; the `SCORE` line must end at `BLOCKING 0`.
 
 ---
 
-### Phase 7: 05-theorems.typ [NOT STARTED]
+### Phase 7: 05-theorems.typ [COMPLETED]
 
 **Goal**: Fix the manual's sparsest chapter: three sections open directly on a `#theorem`, and
 the centerpiece Perpetuity Principles section presents six theorems back to back with no
 connecting prose.
 
 **Tasks**:
-- [ ] Add `#chapter-header` to the file.
-- [ ] Fix all three placement failures by writing opening prose before the theorems at lines 71
-      (`== Modal S5 Theorems`), 129 (`== Propositional Theorems`), and 175
-      (`== Generalized Necessitation`).
-- [ ] Write one connective sentence between each consecutive pair in the P1-P6 theorem run,
-      saying how each relates to or follows from the last. This is rule 3's connective-prose
-      requirement and goes beyond what the lint gate alone demands.
-- [ ] Resolve 21 Rule 1.2 findings per occurrence.
-- [ ] Add `@`-references where the chapter states a result proved elsewhere. This file has zero
-      `@`-refs today, which is itself the drift; confirm each target label exists before linking.
-- [ ] Add no new theorem, no new proof, and no restatement of an existing one. Prose only.
+- [x] Added `#chapter-header` to the file, plus a `<sec:theorems>` label on the `=` heading.
+- [x] Fixed all three placement failures by writing opening prose before the theorems at
+      `== Modal S5 Theorems`, `== Propositional Theorems`, and `== Generalized Necessitation`.
+- [x] Wrote one connective sentence between each consecutive pair in the P1-P6 theorem run (5
+      sentences), each keyed to the existing summary table's "Key Lemmas" column so the prose
+      restates the table's own reasoning rather than inventing a new justification.
+- [x] Resolved all 21 Rule 1.2 findings per occurrence, including two in-cell bare filenames one
+      pass missed (`Core.lean`/`Connectives.lean`/`Reasoning.lean` inside the Propositional-row
+      cell) and one introduced by this phase's own new connective prose (a bare
+      `MonotonicityDuality.lean` mention), both caught by re-running the checker rather than
+      trusting the first pass clean.
+- [x] Added `@`-references: `@sec:proof-theory` (twice, S5 and S4 theorem-set openings) and
+      `@sec:semantics` (once, the S5-core opening), confirming both labels exist before linking.
+      This file had zero `@`-refs before this phase.
+- [x] Added no new theorem, no new proof, and no restatement of an existing one; every edit was
+      opening/connective prose, `@`-references, or citation-path correction.
 
 **Timing**: 2 hours
 

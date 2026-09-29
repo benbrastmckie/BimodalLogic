@@ -5,33 +5,47 @@
 
 #import "../template.typ": *
 
-= Theorems
+= Theorems <sec:theorems>
 
+#chapter-header(
+  description: [The derived theorem library: the perpetuity principles P1--P6, the modal S5/S4 theorem sets, the propositional and combinator infrastructure, and generalized necessitation, each with its Lean anchor.],
+  dependencies: [@sec:proof-theory for the axiom system these theorems are derived from.],
+)
 
 == Perpetuity Principles <sec:perpetuity>
 
-The perpetuity principles establish deep connections between modal necessity ($square.stroked$) and temporal operators ($triangle.stroked.t$, $triangle.stroked.b$); they are the touchstone principles P1--P6 of @brastmckie2026construction, proven here in Lean (`Theorems/Perpetuity/`).
+The perpetuity principles establish deep connections between modal necessity ($square.stroked$) and temporal operators ($triangle.stroked.t$, $triangle.stroked.b$); they are the touchstone principles P1--P6 of @brastmckie2026construction, proven here in Lean (`FormalSystem/Theorems/Perpetuity/`).
 P1 in particular is the formal counterpart of a thesis defended independently in the philosophical literature: every necessarily true proposition is always true @dorr2020diamonds.
 
 #theorem("P1: Necessity Implies Always")[
   $tack.r square.stroked phi.alt arrow.r triangle.stroked.t phi.alt$
 ]
 
+P2 is P1's mirror-dual, obtained by contraposing P1 and rewriting through the modal/temporal duals ($diamond.stroked := not square.stroked not$, $triangle.stroked.b := not triangle.stroked.t not$) rather than by a fresh argument.
+
 #theorem("P2: Sometimes Implies Possible")[
   $tack.r triangle.stroked.b phi.alt arrow.r diamond.stroked phi.alt$
 ]
+
+P3 strengthens P1 itself: applying box monotonicity to P1's conclusion upgrades "necessity implies always" to "necessity implies necessarily always".
 
 #theorem("P3: Necessity of Perpetuity")[
   $tack.r square.stroked phi.alt arrow.r square.stroked triangle.stroked.t phi.alt$
 ]
 
+P4 is P3's contrapositive dual, exactly as P2 was P1's.
+
 #theorem("P4: Possibility of Occurrence")[
   $tack.r diamond.stroked triangle.stroked.b phi.alt arrow.r diamond.stroked phi.alt$
 ]
 
+P5 moves past pure duality: it combines the S5 axiom 5 ($diamond.stroked phi.alt arrow.r square.stroked diamond.stroked phi.alt$) with the temporal K-distribution law to show that persistent possibility now implies possibility perpetually into the future.
+
 #theorem("P5: Persistent Possibility")[
   $tack.r diamond.stroked triangle.stroked.b phi.alt arrow.r triangle.stroked.t diamond.stroked phi.alt$
 ]
+
+P6 composes P5 with the bridge lemmas of the `FormalSystem/Theorems/Perpetuity/MonotonicityDuality.lean` module to reach the chapter's final principle: occurrent necessity is itself perpetual.
 
 #theorem("P6: Occurrent Necessity is Perpetual")[
   $tack.r triangle.stroked.b square.stroked phi.alt arrow.r square.stroked triangle.stroked.t phi.alt$
@@ -44,7 +58,7 @@ P1 in particular is the formal counterpart of a thesis defended independently in
   P1--P6 then follow from TF (and its past mirror, via time reflection) together with classical propositional reasoning and the standard modal/tense duals ($diamond.stroked := not square.stroked not$, $triangle.stroked.b := not triangle.stroked.t not$): the *substance* of the perpetuity principles lives entirely in MF, and everything past that point is bookkeeping the Lean kernel checks mechanically rather than a further creative step.
 ]
 
-All six perpetuity principles are fully proven (sorry-free) in the Lean implementation, in `Theorems/Perpetuity/` (`Principles.lean`, with P6 infrastructure in `MonotonicityDuality.lean`'s "Bridge Lemmas for P6 Derivation" section).
+All six perpetuity principles are fully proven (sorry-free) in the Lean implementation, in `FormalSystem/Theorems/Perpetuity/` (`FormalSystem/Theorems/Perpetuity/Principles.lean`, with P6 infrastructure in `FormalSystem/Theorems/Perpetuity/MonotonicityDuality.lean`'s "Bridge Lemmas for P6 Derivation" section).
 
 #figure(
   table(
@@ -67,6 +81,8 @@ All six perpetuity principles are fully proven (sorry-free) in the Lean implemen
 )
 
 == Modal S5 Theorems
+
+The S5 core of *TM*'s modal fragment ($square.stroked$/$diamond.stroked$ over the equivalence-class-wide quantification of @sec:semantics) validates the standard S5 theorem set; the results below are stated here as the reusable library the rest of the book cites, rather than re-derived at each use site.
 
 #theorem("T-Box-to-Diamond")[
   $tack.r square.stroked phi.alt arrow.r diamond.stroked phi.alt$
@@ -106,7 +122,7 @@ All six perpetuity principles are fully proven (sorry-free) in the Lean implemen
 
 == Modal S4 Properties
 
-The following S4 properties are derived from the TM axiom system.
+The following S4 properties are derived from the *TM* axiom system of @sec:proof-theory.
 
 #theorem("Modal 5")[
   $tack.r diamond.stroked phi.alt arrow.r square.stroked diamond.stroked phi.alt$
@@ -125,6 +141,8 @@ The following S4 properties are derived from the TM axiom system.
 ]
 
 == Propositional Theorems
+
+These are the classical propositional theorems the derivations above and elsewhere in the book lean on, none of which use a modal or temporal axiom.
 
 #theorem("Identity")[
   $tack.r phi.alt arrow.r phi.alt$
@@ -172,6 +190,8 @@ The combinator infrastructure provides Hilbert-style proof tools.
 
 == Generalized Necessitation
 
+The necessitation rules of @sec:proof-theory apply only to the empty context; the two theorems below generalize necessitation to an arbitrary context $Gamma$, at the cost of boxing (respectively, G-prefixing) every member of $Gamma$ along with the conclusion.
+
 #theorem("Generalized Modal Necessitation")[
   If $Gamma tack.r phi.alt$ then $square.stroked Gamma tack.r square.stroked phi.alt$
   where $square.stroked Gamma = [square.stroked psi | psi in Gamma]$.
@@ -184,7 +204,7 @@ The combinator infrastructure provides Hilbert-style proof tools.
 
 == Module Organization
 
-The `Theorems/` directory is organized as follows:
+The `FormalSystem/Theorems/` directory is organized as follows:
 
 #figure(
   table(
@@ -196,17 +216,17 @@ The `Theorems/` directory is organized as follows:
       [*Module*], [*Contents*],
     ),
     table.hline(),
-    [`Perpetuity/`], [P1--P6 principles (`Principles.lean`, `MonotonicityDuality.lean`, `Helpers.lean`); re-exported by `Perpetuity.lean`],
-    [`Propositional/`], [Classical propositional theorems (`Core.lean`, `Connectives.lean`, `Reasoning.lean`)],
-    [`ModalS5.lean`], [S5 characteristic theorems],
-    [`ModalS4.lean`], [S4 properties (modal5, diamond4)],
-    [`Combinators.lean`], [B, I, S combinators, impTrans, `temporalFutureDerived` (TF)],
-    [`TemporalDerived.lean`], [Derived temporal axioms: `temporalKDistDerived` (TK), `temporal4Derived` (T4)],
-    [`ContextualProofs.lean`], [Derivations at non-empty contexts],
-    [`GeneralizedNecessitation.lean`], [Context-level necessitation],
+    [`FormalSystem/Theorems/Perpetuity/`], [P1--P6 principles (`FormalSystem/Theorems/Perpetuity/Principles.lean`, `FormalSystem/Theorems/Perpetuity/MonotonicityDuality.lean`, `FormalSystem/Theorems/Perpetuity/Helpers.lean`); re-exported by `FormalSystem/Theorems/Perpetuity.lean`],
+    [`FormalSystem/Theorems/Propositional/`], [Classical propositional theorems (`FormalSystem/Theorems/Propositional/Core.lean`, `FormalSystem/Theorems/Propositional/Connectives.lean`, `FormalSystem/Theorems/Propositional/Reasoning.lean`)],
+    [`FormalSystem/Theorems/ModalS5.lean`], [S5 characteristic theorems],
+    [`FormalSystem/Theorems/ModalS4.lean`], [S4 properties (modal5, diamond4)],
+    [`FormalSystem/Theorems/Combinators.lean`], [B, I, S combinators, impTrans, `temporalFutureDerived` (TF)],
+    [`FormalSystem/Theorems/TemporalDerived.lean`], [Derived temporal axioms: `temporalKDistDerived` (TK), `temporal4Derived` (T4)],
+    [`FormalSystem/Theorems/ContextualProofs.lean`], [Derivations at non-empty contexts],
+    [`FormalSystem/Theorems/GeneralizedNecessitation.lean`], [Context-level necessitation],
     table.hline(),
   ),
   caption: none,
 )
 
-The entire `Theorems/` tree is sorry-free.
+The entire `FormalSystem/Theorems/` tree is sorry-free.
