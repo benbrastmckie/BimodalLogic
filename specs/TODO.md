@@ -1,5 +1,5 @@
 ---
-next_project_number: 703
+next_project_number: 705
 ---
 
 # TODO
@@ -13,8 +13,8 @@ next_project_number: 703
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,464,481,502,559,563,570,604,649,664,700 | -- | algebraic-representation, categorical-structure, completeness, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,650,696 | 298,464,502,563,649,700 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,618,701 | 231,465,497,564,565,616,696 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
+| 3 | 219,428,498,499,500,566,618,701,703 | 231,465,497,564,565,616,696 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 4 | 125,429,543,704 | 428,498,499,500,703 | algebraic-representation, decidability, metalogic, ... |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
 | 7 | 430 | 411 | decidability |
@@ -75,6 +75,7 @@ next_project_number: 703
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 696 [RESEARCHED] — DESIGN-INVESTIGATION-FIRST TASK. Determine what the stability...
   └─ 701 [NOT STARTED] — Port the branching-substrate lessons from the ProofChecker's...
+  └─ 703 [NOT STARTED] — Prove the L-plus twin of...
 
 ### Formula Refactor
 
@@ -101,7 +102,43 @@ next_project_number: 703
 649 [NOT STARTED] — Define one Typst environment for presenting Lean code in...
   └─ 650 [NOT STARTED] — Define-before-use audit of...
 
+### Verification
+
+704 [NOT STARTED] — Two structural preventions against the class of defect the...
+
 ## Tasks
+
+### 704. Certificate non vacuity and shape gates
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: verification
+- **Dependencies**: Task 696, Task 703
+
+**Description**: Two structural preventions against the class of defect the L-plus completeness programme (tasks 695, 696, 699, 700, 703) exists to remove, filed as one task because both are assertions in scripts/check-module-invariants.sh and splitting them would put two tasks on the same single file. (a) A standing obligation that every certificate-shaped condition set carry an exhibited NON-TRIVIAL inhabitant as a checked artifact: the (C1')-clause defect survived undetected because no such witness had ever been exhibited, and a vacuously-satisfiable condition set type-checks indefinitely without ever certifying anything. Task 696's famA_tCertifies and famB_tCertifies (once landed) are the first instances the gate should check against. (b) A mechanical check against the collapsing clause shape -- a definition that universally quantifies a biconditional over a reflexive relation -- so the error class cannot be reintroduced silently. Task 699 Part A's audit table (specs/699_invariance_clause_audit_and_ockhamist_grounding/reports/01_invariance-clause-audit-ockhamist-grounding.md) and its clause_shape_collapse abstract lemma are the specification for (b): the table enumerates every occurrence of the shape and classifies each as intended-invariance or latent-collapse, which is exactly the allowlist a shape check needs.
+
+Sequencing: this task is sequenced LAST in the L-plus completeness programme, after both task 696 (the substrate repair) and task 703 (lplus_compression_and_completeness) land, and not before. A gate landed before task 696's refactor would go red on the very refactor it exists to protect, since 696 deletes and replaces the clauses this gate's allowlist must be built from. A shape check written against the pre-repair clauses would encode the defect itself as the baseline rather than the repair.
+
+Soundness is not in question anywhere in this task; both preventions are gates against future completeness-side regressions, not soundness gates. Existing invariants in scripts/check-module-invariants.sh run C1-C35; these are C36/C37.
+
+---
+
+### 703. Lplus compression and completeness
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 695, Task 696
+
+**Description**: Prove the L-plus twin of FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime: every ZTime non-validity of a PlusFormula admits a bounded, canonically guessed PlusSharingWitnessFamily certifying the refutation, against task 696's redesigned condition set. Soundness is not in question anywhere in this task: FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusTruth_iff_mem and ...plusRefutes_of_certifies are untouched by this task's proof and must survive with their statements unchanged. Acceptance: zero sorries, no new axioms, a docs/theorem-index.md row, and a C2 AXIOM_BASELINE pin for the new theorem.
+
+RESEARCH-FIRST. This task's research round must answer three obligations this repository's completeness-programme survey (task 700) found unrecorded before any plan is written: O1 -- is Liftable decidable, and by what argument (likely yes by finite-graph simulation on the periodic index set, but unscoped; if it is not decidable the compression theorem still holds but the decision procedure degrades to a semi-decision procedure again, which must be recorded plainly rather than concealed); O2 -- constructing a liftable arrival-pruned trans from an arbitrary countermodel, the general case rather than the constant-thread case the two landed lifts use; O3 -- (C5) StabFaithful's time-indexed witness demand and the resulting lasso-count bound, which may not be |closure| + 1 (the Formula side's bound) and may instead be |closure| times the window, a difference that propagates into the enumeration cost and into the paired repository's search-bound expectations. This task's research round must also read task 699 Part B's literature-grounding report, which bears on a fourth question (O4: whether GKWZ-style product-undecidability results for an S5-factor-plus-linear-factor combination bound this repository's two S5-like modalities, box over all histories and the state-agreeing-history stability modal) -- as landed, task 699 Part B does not address O4 (it answers different, adjacent questions: the Peircean/Ockhamist framing, Liftable's identification with Emerson-Halpern R-generability, and positive decidability results (Gurevich-Shelah, Burgess) that de-risk but do not settle O4), so this task's own research round must treat O4 as open and answer it directly rather than assuming 699 settled it.
+
+Why carrier normalization is a hard prerequisite: FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Family.lean:165 is `rw [validZTime_iff_validInt]`, Step 0 of the Formula-side theorem this task's L-plus statement mirrors; there is no provable Step 0 for the L-plus statement without FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt (task 695, landed in FormalSystem/PlusLanguage/PlusIntTransfer.lean).
+
+Substrate dependency: this task's dependency on task 696 is on the substrate as FINALLY CORRECTED, not on 696's design as first recommended. Task 699 Part A's audit found that 696's recommended redesign relocates rather than repairs the (C1')-clause collapse, because the proposed trans_refl field reproduces clause_shape_collapse's hypothesis; 699 has proposed (not yet filed as a numbered task) a follow-on to drop trans_refl before 696's Phase 1 declares it. This task's plan must state its dependency against 696 including that follow-on once it is filed, by fully-qualified declaration name, not by an invented task number.
+
+Soundness is not in question anywhere in this task.
+
+---
 
 ### 702. Uniform style reference manual
 - **Status**: [COMPLETED]
