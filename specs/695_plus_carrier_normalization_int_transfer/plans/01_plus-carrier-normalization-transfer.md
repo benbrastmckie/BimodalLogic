@@ -1,7 +1,7 @@
 # Implementation Plan: L⁺ carrier normalization (`plusValidZTime_iff_plusValidInt`)
 
 - **Task**: 695 - plus_carrier_normalization_int_transfer
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/695_plus_carrier_normalization_int_transfer/reports/01_plus-carrier-normalization-transfer.md`
@@ -165,43 +165,47 @@ Phases within the same wave can execute in parallel. Phases 2 and 3 touch disjoi
 (`scripts/check-module-invariants.sh` versus `docs/theorem-index.md` +
 `FormalSystem/Semantics/IntTransfer.lean`), which is why they share a wave.
 
-### Phase 1: Land `PlusIntTransfer.lean` and make the build green [NOT STARTED]
+### Phase 1: Land `PlusIntTransfer.lean` and make the build green [COMPLETED]
 
 **Goal**: The new module exists, compiles inside the library build graph with zero sorries, and
 every mechanical registration a new `FormalSystem/` file requires is in place.
 
 **Tasks**:
 
-- [ ] Capture the pre-edit gate baseline before touching anything:
+- [x] Capture the pre-edit gate baseline before touching anything:
       `bash scripts/check-module-invariants.sh --no-build 2>&1 | tee <scratchpad>/695-gate-baseline.txt`,
       and record which checks are already red (C28 on `FormalSystem/Version.lean` is expected).
       This file is the reference for "no NEW red" in every later phase.
-- [ ] Create `FormalSystem/PlusLanguage/PlusIntTransfer.lean`: the Apache copyright header and a
+- [x] Create `FormalSystem/PlusLanguage/PlusIntTransfer.lean`: the Apache copyright header and a
       module `/-! … -/` docstring shaped like `PlusValidity.lean`'s, then
       `import FormalSystem.Semantics.IntTransfer` / `import FormalSystem.PlusLanguage.PlusValidity`,
       `namespace FormalSystem.PlusLanguage`, `open FormalSystem.Syntax`,
       `open FormalSystem.Semantics`, `variable {D E : TemporalOrder}`.
-- [ ] Transcribe the three declarations from the probe **verbatim**, in the order `plusTruthAt_map`,
+- [x] Transcribe the three declarations from the probe **verbatim**, in the order `plusTruthAt_map`,
       `PlusValidInt`, `plusValidZTime_iff_plusValidInt`. Keep the
       `(D := F.Duration) (E := intOrder) (F := F.toFibre)` ascriptions — Lean cannot invert
       `↑E ≟ ℤ` to recover `E := intOrder`, the same recorded reason `IntTransfer.lean` carries them.
-      Drop the probe's `#print axioms` lines.
-- [ ] Write the three declaration docstrings. `plusValidZTime_iff_plusValidInt`'s MUST contain a
+      Drop the probe's `#print axioms` lines. *(deviation: altered — one tactic is not verbatim:
+      the `stab` case's `show ρ.state (e.symm (e t)) = ρ.state t` became `change ...`, because the
+      probe's `lake env lean` run did not surface the `linter.style.show` warning the library build
+      does; `scripts/warning-budget.txt`'s own disposition line for that linter prescribes `change`
+      where the goal changes. Proof structure otherwise byte-identical to the probe.)*
+- [x] Write the three declaration docstrings. `plusValidZTime_iff_plusValidInt`'s MUST contain a
       `Paper: — (…)` line whose value begins `— (`, copying `PlusValidity.lean`'s landed form
       (`Paper: — (formalization-native; …)`). Keep the tokens *Compositionality*, *Seriality*,
       *Limit* and *Saturation* out of all three `/-- … -/` blocks (C34b); any such discussion goes
       in the module-level `/-! … -/` header. Give `PlusValidInt` the eight-binder-collapse note
       `ValidInt`'s docstring carries. No task-number citation anywhere (C9).
-- [ ] Add `"PlusIntTransfer": 1,` to `LANGUAGE_FILE_LAYERS["PlusLanguage"]` in
+- [x] Add `"PlusIntTransfer": 1,` to `LANGUAGE_FILE_LAYERS["PlusLanguage"]` in
       `scripts/measure-refactor-partitions.py` (semantic half ⇒ layer 1).
-- [ ] Add `import FormalSystem.PlusLanguage.PlusIntTransfer` to `FormalSystem/PlusLanguage.lean` and
+- [x] Add `import FormalSystem.PlusLanguage.PlusIntTransfer` to `FormalSystem/PlusLanguage.lean` and
       a bullet for it in that file's `## Semantic modules` list.
-- [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem`, then confirm
+- [x] Regenerate the library root: `lake exe mk_all --lib FormalSystem`, then confirm
       `FormalSystem.lean` gained exactly the one new import line.
-- [ ] `lake build`, then confirm zero sorries in the new module and
+- [x] `lake build`, then confirm zero sorries in the new module and
       `#print axioms FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt` /
       `... .plusTruthAt_map` both reporting `[propext, Classical.choice, Quot.sound]`.
-- [ ] Commit (scoped: the new file, `PlusLanguage.lean`, `FormalSystem.lean`,
+- [x] Commit (scoped: the new file, `PlusLanguage.lean`, `FormalSystem.lean`,
       `measure-refactor-partitions.py`).
 
 **Timing**: 1 hour
@@ -231,33 +235,43 @@ a scope correction to report, not to absorb silently.
 - `bash scripts/check-metalogic-cycles.sh` passes (this is what the layer row buys).
 - `bash scripts/check-module-invariants.sh --no-build` shows C33 green and no NEW red against
   `<scratchpad>/695-gate-baseline.txt`.
+  *(observed: C33 green at 605 import lines; C9 green. Two differences from the baseline, neither a
+  regression of this phase's making that survives the plan: (i) **INV went red** on exactly the
+  three files Phase 4's scope hypothesis names — `FormalSystem/PlusLanguage/README.md`,
+  `FormalSystem/README.md`, `README.md` — which is the expected consequence of adding a module and
+  is cleared by Phase 4's `--emit-inventory` run, not a defect to repair here; (ii) **the inherited
+  C28 red cleared on its own**: C28 reads warnings build-free from Lake's trace store, and the
+  `FormalSystem/Version.lean` `linter.style.longLine` entry was stale trace-store data — that file
+  is unmodified in the working tree and carries no line over 100 characters, so the fresh full build
+  simply dropped it. C28 now reports 0 warnings across 0 files. No `warning-budget.py --update` was
+  run.)*
 
 ---
 
-### Phase 2: Pin both twins in the C2 axiom baseline [NOT STARTED]
+### Phase 2: Pin both twins in the C2 axiom baseline [COMPLETED]
 
 **Goal**: `plusValidZTime_iff_plusValidInt` and its L-side mirror `Semantics.validZTime_iff_validInt`
 are both pinned by C2, and C2 passes.
 
 **Tasks**:
 
-- [ ] Re-read `scripts/check-module-invariants.sh` immediately before editing (a sibling may have
+- [x] Re-read `scripts/check-module-invariants.sh` immediately before editing (a sibling may have
       touched the tree).
-- [ ] Append to the `AXIOM_BASELINE` heredoc, in this order, at the end of the block:
+- [x] Append to the `AXIOM_BASELINE` heredoc, in this order, at the end of the block:
       `'FormalSystem.Semantics.validZTime_iff_validInt' depends on axioms: [propext, Classical.choice, Quot.sound]`
       then
       `'FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt' depends on axioms: [propext, Classical.choice, Quot.sound]`.
-- [ ] Append the two matching `#print axioms` directives to the `AX_SRC` heredoc **in the same
+- [x] Append the two matching `#print axioms` directives to the `AX_SRC` heredoc **in the same
       order and the same relative position**. The comparison is exact whole-block string equality,
       so the two heredocs' orders must agree.
-- [ ] Change `pass C2 "all fourteen pinned axiom sets match baseline"` to `"all sixteen …"`.
+- [x] Change `pass C2 "all fourteen pinned axiom sets match baseline"` to `"all sixteen …"`.
       Re-check the two other `fourteen` occurrences in this script (the `lean_exe` root count and
       the elaboration-coverage note) and leave both alone — they are different subjects.
-- [ ] Extend the C2 block's header prose with a clause for the two new rows (carrier normalization
+- [x] Extend the C2 block's header prose with a clause for the two new rows (carrier normalization
       for L and L⁺: the reduction from arbitrary discrete duration carriers to `ℤ`, which any
       integer-indexed enumeration route rests on). No task-number citation (C9).
-- [ ] Run the **full** harness (not `--no-build`) and confirm C2 passes with the widened set.
-- [ ] Commit (scoped: `scripts/check-module-invariants.sh` only).
+- [x] Run the **full** harness (not `--no-build`) and confirm C2 passes with the widened set.
+- [x] Commit (scoped: `scripts/check-module-invariants.sh` only).
 
 **Timing**: 30 minutes
 
@@ -269,7 +283,11 @@ are both pinned by C2, and C2 passes.
 spelled-out count string, and the header prose. Confirm at implementation time with
 `grep -n "fourteen\|sixteen" scripts/check-module-invariants.sh` (expect the count string changed
 and the two unrelated occurrences untouched) and by reading the diff for symmetry between the two
-heredocs.
+heredocs. *(confirmed: exactly four edit sites in the one file. The count
+string now reads `sixteen`; the two unrelated `fourteen` occurrences survive at lines 780 (the
+`lean_exe` root count) and 4149 (the elaboration-coverage note). Both heredocs parse to 16 rows in
+identical order, checked programmatically, and C2 echoed both new rows at
+`[propext, Classical.choice, Quot.sound]`.)*
 
 **Files to modify**:
 
@@ -281,33 +299,49 @@ heredocs.
   `PASS  C2  all sixteen pinned axiom sets match baseline`.
 - No NEW red against `<scratchpad>/695-gate-baseline.txt`; C21 stays green (it only asserts that
   names on `MainResults.lean` are pinned, so widening the baseline cannot break it).
+  *(observed: C21 green at 33 pinned declarations; C1, C9, C15 (both), C16, C33 and C34b all green.
+  **One NEW red is a concurrent sibling's, not this task's**: `C5 — 1 unresolved module path(s) in
+  non-specs markdown`, at `typst/STYLE.md:62`, the placeholder `FormalSystem.Module.Path` inside a
+  citation-form table. `typst/STYLE.md` is task 702's file, written at 22:15:51 and committed at
+  22:16:02 as `9cd7b5841 task 702 phase 1: write the house style sheet` — after this task's own
+  `--no-build` run at 22:14:19, in which C5 PASSED across 1367 markdown files. It is outside this
+  task's file scope, was not touched here, and is deliberately left unrepaired and unstaged per
+  `context/contracts/territory.md`'s cross-task obligations. Reported, not absorbed.)*
 
 ---
 
-### Phase 3: Ledger both twins in `docs/theorem-index.md` [NOT STARTED]
+### Phase 3: Ledger both twins in `docs/theorem-index.md` [COMPLETED]
 
 **Goal**: Both carrier-normalization theorems have ledger rows, and C15's second assertion resolves
 each row's `Paper:` anchor at its declaration.
 
+*(deviation: altered — executed BEFORE Phase 2, not after. Both sit in wave 2 on disjoint files, so
+the plan's dependency table permits either order, and `context/contracts/phase-closure.md`'s
+cheapest-closure-first clause prefers this one: Phase 3 is tier `local` / 25 min against Phase 2's
+tier `full` / 30 min. Probed first that no script validates the `pinned:C2` literal in the ledger's
+Axioms column — it is descriptive prose, and C21 only asserts that `MainResults.lean` names are
+pinned, which neither of these two theorems is — so ledgering before pinning leaves no transient
+red. Evidence: `grep -rn "pinned:C2" scripts/*.sh scripts/*.py` returns nothing.)*
+
 **Tasks**:
 
-- [ ] Re-read `docs/theorem-index.md` and `FormalSystem/Semantics/IntTransfer.lean` immediately
+- [x] Re-read `docs/theorem-index.md` and `FormalSystem/Semantics/IntTransfer.lean` immediately
       before editing.
-- [ ] Insert two rows into `### Decidability`, immediately **before** the
+- [x] Insert two rows into `### Decidability`, immediately **before** the
       `SharingSkeleton.total_eq_thread` row that opens the branching L⁺ stack (carrier normalization
       is that stack's prerequisite), L side first:
       - `| — | {statement} | \`FormalSystem.Semantics.validZTime_iff_validInt\` | \`FormalSystem/Semantics/IntTransfer.lean\` | ZTime | pcq pinned:C2 |`
       - `| — | {statement} | \`FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt\` | \`FormalSystem/PlusLanguage/PlusIntTransfer.lean\` | ZTime | pcq pinned:C2 |`
       Six cells exactly, with backticks around the Lean name and the file path and no line number in
       the File cell — C15's row regex requires that shape.
-- [ ] Add a `Paper: — (…)` line to `validZTime_iff_validInt`'s existing `/-- … -/` block in
+- [x] Add a `Paper: — (…)` line to `validZTime_iff_validInt`'s existing `/-- … -/` block in
       `FormalSystem/Semantics/IntTransfer.lean`; it has none today, and without it the new L-side row
       is a hard C15 failure. The value must begin `— (` and give a one-clause reason (carrier
       normalization is formalization-native; the paper quantifies over its intended carrier and
       supplies no such reduction).
-- [ ] Confirm `plusValidZTime_iff_plusValidInt`'s own `Paper:` line (written in Phase 1) satisfies
+- [x] Confirm `plusValidZTime_iff_plusValidInt`'s own `Paper:` line (written in Phase 1) satisfies
       the same shape.
-- [ ] Commit (scoped: `docs/theorem-index.md`, `FormalSystem/Semantics/IntTransfer.lean`).
+- [x] Commit (scoped: `docs/theorem-index.md`, `FormalSystem/Semantics/IntTransfer.lean`).
 
 **Timing**: 25 minutes
 
@@ -319,7 +353,9 @@ each row's `Paper:` anchor at its declaration.
 declaration's was written in Phase 1). Confirm at implementation time by
 `grep -c "pinned:C2" docs/theorem-index.md` before and after (expect +2) and
 `grep -n "Paper:" FormalSystem/Semantics/IntTransfer.lean` (expect exactly one hit, at
-`validZTime_iff_validInt`).
+`validZTime_iff_validInt`). *(confirmed: `pinned:C2` count 14 → 16; exactly one
+`Paper:` hit in `IntTransfer.lean`, at line 335 in `validZTime_iff_validInt`'s own `/-- … -/`
+block. C15's second assertion now reads 225 rows, up from 223, all anchored.)*
 
 **Files to modify**:
 
@@ -336,31 +372,31 @@ declaration's was written in Phase 1). Confirm at implementation time by
 
 ---
 
-### Phase 4: Inventory and README bookkeeping, then the closing full gate [NOT STARTED]
+### Phase 4: Inventory and README bookkeeping, then the closing full gate [COMPLETED]
 
 **Goal**: Every generated and hand-maintained inventory surface knows about the new module, and the
 full gate is green except for the inherited C28 red.
 
 **Tasks**:
 
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory`, then `git status --short` and
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory`, then `git status --short` and
       `git diff` to see exactly which generated blocks moved.
-- [ ] Replace the new row's `<!-- TODO: add description -->` placeholder in
+- [x] Replace the new row's `<!-- TODO: add description -->` placeholder in
       `FormalSystem/PlusLanguage/README.md`'s generated inventory block with a real one-line
       description (the generator preserves hand-written descriptions across regenerations, so this
       is written once and survives).
-- [ ] Add a row for `PlusIntTransfer.lean` to `FormalSystem/PlusLanguage/README.md`'s separate,
+- [x] Add a row for `PlusIntTransfer.lean` to `FormalSystem/PlusLanguage/README.md`'s separate,
       hand-maintained "What it carries" table in the `## Syntax before semantics` section.
-- [ ] Stage **only** the inventory blocks whose content actually changed because of the new file
+- [x] Stage **only** the inventory blocks whose content actually changed because of the new file
       (expected: `FormalSystem/PlusLanguage/README.md`, `FormalSystem/README.md`, `README.md` — each
       carries a generated `dir=`-scoped block the same run refreshes). Never `git add -A`,
       `git add .`, `git commit -am`, or a directory/glob pathspec.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` to confirm a further
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` to confirm a further
       rewrite would change no byte.
-- [ ] Run the **full** harness one final time and diff its output against
+- [x] Run the **full** harness one final time and diff its output against
       `<scratchpad>/695-gate-baseline.txt`. The only red permitted is the inherited C28 finding on
       `FormalSystem/Version.lean`. Do **not** run `warning-budget.py --update`.
-- [ ] Commit (scoped: the README/inventory paths only), then write the execution summary recording
+- [x] Commit (scoped: the README/inventory paths only), then write the execution summary recording
       the zero-sorry/no-new-axiom result, the D5 decision, and the inherited C28 red as inherited.
 
 **Timing**: 35 minutes
@@ -373,7 +409,14 @@ full gate is green except for the inherited C28 red.
 `--emit-inventory` run touches on account of the new module. This is a hypothesis, not a fact:
 confirm with `git status --short` immediately after the run and stage only what actually moved. A
 fourth touched file, or a touched file whose change is unrelated to the new module, is a signal to
-stop and inspect (possibly a concurrent sibling's edit) rather than to stage.
+stop and inspect (possibly a concurrent sibling's edit) rather than to stage. *(confirmed exactly: the
+`--emit-inventory` run moved precisely the three predicted files, and every hunk traces to the new
+module — `PlusLanguage/README.md` gained one inventory row, `FormalSystem/README.md` moved
+`FormalSystem.lean` 604→605 and `PlusLanguage.lean` 85→89, and `README.md` moved the three totals.
+The signal this field anticipated did fire, on a fourth file: `typst/chapters/p4-proof-automation.typ`
+is modified in the working tree by a concurrent sibling (task 702) and was deliberately left
+unstaged. The pre-existing `<!-- TODO: add description -->` placeholders on `MinusLanguage.lean` and
+`PlusLanguage.lean` in `FormalSystem/README.md` are not this task's and were left alone.)*
 
 **Files to modify**:
 
@@ -386,23 +429,37 @@ stop and inspect (possibly a concurrent sibling's edit) rather than to stage.
 - `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0.
 - `bash scripts/check-module-invariants.sh` (full, with build): C2 sixteen rows, both C15 assertions
   green, C33 green, and no red other than the inherited C28 finding.
+  *(observed: C1, C2 (sixteen rows), INV, C9, C9D, C15 (both), C16, C21, C28, C33 and C34b all
+  green; `check-metalogic-cycles.sh` exits 0. **The single red is `C5`, and it is not this task's**:
+  `typst/STYLE.md:62`, placeholder `FormalSystem.Module.Path`, in task 702's file. The C28 finding
+  this bullet calls "inherited" is GONE — it was stale Lake-trace-store data for
+  `FormalSystem/Version.lean`, and the fresh full build dropped it; C28 now reports 0 warnings
+  across 0 files, with no `warning-budget.py --update` run. So the closing gate is green on every
+  check this task touches, and its one red belongs to a concurrent sibling.)*
 - `bash scripts/check-metalogic-cycles.sh` passes.
 - `git log --oneline` shows one scoped commit per phase and no staged file outside this plan's
   enumerated paths.
 
 ## Testing & Validation
 
-- [ ] `lake build` exits 0, with no new warning attributable to `PlusIntTransfer.lean`.
-- [ ] Zero sorries in `FormalSystem/PlusLanguage/PlusIntTransfer.lean`.
-- [ ] `#print axioms FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt` and
+- [x] `lake build` exits 0, with no new warning attributable to `PlusIntTransfer.lean`.
+- [x] Zero sorries in `FormalSystem/PlusLanguage/PlusIntTransfer.lean`.
+- [x] `#print axioms FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt` and
       `#print axioms FormalSystem.PlusLanguage.plusTruthAt_map` each report exactly
       `[propext, Classical.choice, Quot.sound]` — no new axiom.
-- [ ] Full `bash scripts/check-module-invariants.sh`: C2 passes at sixteen rows; C15's anchor half
+- [x] Full `bash scripts/check-module-invariants.sh`: C2 passes at sixteen rows; C15's anchor half
       and its theorem-index half both pass; C33 passes; C16 raises no docBlame finding on the three
       new declarations; C34b does not fire on `plusTruthAt_map`; C9 reports no task-number citation.
-- [ ] `bash scripts/check-metalogic-cycles.sh` passes (the `LANGUAGE_FILE_LAYERS` row).
-- [ ] The only gate red at the end is the inherited C28 `FormalSystem/Version.lean` finding, present
-      in `<scratchpad>/695-gate-baseline.txt` before any edit.
+- [x] `bash scripts/check-metalogic-cycles.sh` passes (the `LANGUAGE_FILE_LAYERS` row).
+- [x] The only gate red at the end is the inherited C28 `FormalSystem/Version.lean` finding, present
+      in `<scratchpad>/695-gate-baseline.txt` before any edit. *(deviation: altered — this predicted
+      outcome did not hold, in this task's favour and against it in different ways. The C28 red
+      CLEARED on its own: C28 reads warnings build-free from Lake's trace store, and the
+      `Version.lean` `linter.style.longLine` entry was stale trace-store data — the file is
+      unmodified and carries no line over 100 characters — so the fresh full build dropped it. C28
+      now reports 0 warnings across 0 files, with no `warning-budget.py --update` run. The one red at
+      the end is instead `C5` at `typst/STYLE.md:62`, a concurrent sibling's (task 702's) file,
+      which this task did not touch and deliberately did not repair.)*
 
 ## Artifacts & Outputs
 
