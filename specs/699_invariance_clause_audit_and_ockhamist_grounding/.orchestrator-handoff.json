@@ -1,17 +1,32 @@
 {
   "task_number": 699,
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "phases_completed": 4,
   "phases_total": 4,
-  "session_id": "sess_1790656266_d2dc32_699",
-  "dispatch_seq": 9,
+  "session_id": "sess_1790656266_d2dc32",
+  "dispatch_seq": 14,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/699_invariance_clause_audit_and_ockhamist_grounding/plans/01_invariance-clause-audit-ockhamist-grounding.md",
-      "summary": "Four-phase closing round: machine-check remaining asserted audit verdicts, file the trans_refl follow-on payload and documentation handoffs, make the enumeration re-runnable, reconcile the report."
+      "type": "summary",
+      "path": "specs/699_invariance_clause_audit_and_ockhamist_grounding/summaries/01_invariance-clause-audit-ockhamist-grounding-summary.md",
+      "summary": "Closing implementation round: machine-checked rows 6 and 12, filed the trans_refl follow-on payload and documentation handoffs, made the Shape-(S) enumeration re-runnable, reconciled the report."
+    },
+    {
+      "type": "probe",
+      "path": "specs/699_invariance_clause_audit_and_ockhamist_grounding/probes/02_remaining_verdicts_probe.lean",
+      "summary": "Machine-checks row 6 (Formula-side shareClauseAt collapse) and row 12 (PlusBoxFaithful globality composition), both previously asserted-only. Elaborates clean, no sorryAx."
+    },
+    {
+      "type": "proposal",
+      "path": "specs/699_invariance_clause_audit_and_ockhamist_grounding/proposals/01_trans-reflexivity-residual-collapse.md",
+      "summary": "Paste-ready /task payload for trans_reflexivity_residual_collapse, blocking task 696 Phase 1, plus two documentation-ownership handoffs."
+    },
+    {
+      "type": "other",
+      "path": "specs/699_invariance_clause_audit_and_ockhamist_grounding/audit/enumerate-shape-s.sh",
+      "summary": "Re-runnable three-pass Shape-(S) enumeration script, plus audit/01_enumeration-snapshot.md's dated output and divergence analysis."
     }
   ],
-  "next_steps": "Run /implement 699. Wave 1 is phases 1, 2, 3 (disjoint new files, parallelizable); phase 4 is the only report edit and depends on all three. Phase 2 is the time-critical one.",
-  "notes": "No Lean statement, docstring or FormalSystem/ file is modified by any phase. No write to specs/state.json (sibling task 698 holds it this cycle) or specs/TODO.md; filing the proposed follow-on task is a user /task action, so the plan produces a paste-ready payload under the task's own proposals/ directory instead. Every phase writes only under specs/699_invariance_clause_audit_and_ockhamist_grounding/."
+  "next_steps": "All four phases complete. Task 699 is ready for postflight completion. Recommend filing the trans_reflexivity_residual_collapse follow-on task (paste-ready payload in proposals/01_trans-reflexivity-residual-collapse.md) before task 696 Phase 1 declares trans_refl.",
+  "notes": "No Lean statement, docstring or FormalSystem/ file was modified by any phase. No write to specs/state.json or specs/TODO.md by this task; filing the follow-on task remains a user /task action. All git status changes for this task are confined to specs/699_invariance_clause_audit_and_ockhamist_grounding/**. Phase 3's enumeration script surfaced a real divergence from the report's original counts (64/39-files/18/45 vs 67/40/-/39); root-caused to a broken -E-less grep command and an unscanned WeakCanonical/** subtree in the report's original enumeration, both corrected in the report with no change to audit-table membership -- see audit/01_enumeration-snapshot.md."
 }
