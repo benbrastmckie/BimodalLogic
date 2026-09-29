@@ -333,26 +333,30 @@ surfaces, file it rather than forcing it into the recorded-decision list.
 
 ---
 
-### Phase 5: Write the phased proposal, close the deliverable, and confirm the boundary [NOT STARTED]
+### Phase 5: Write the phased proposal, close the deliverable, and confirm the boundary [COMPLETED]
 
 **Goal**: Complete the summary with the now-versus-later proposal, re-check every citation once
 more, and confirm no file outside this task's directory was touched.
 
 **Tasks**:
 
-- [ ] Write the phased proposal section: what changes now, what is cheap and unblocked, what is
+- [x] Write the phased proposal section: what changes now, what is cheap and unblocked, what is
       blocked on the compression bound, and what is blocked on a ModelChecker-side decision to
-      pursue sharing at all.
-- [ ] State the confirmed wire-level conclusion in one place: nothing in the ModelChecker tree must
+      pursue sharing at all. *(completed)*
+- [x] State the confirmed wire-level conclusion in one place: nothing in the ModelChecker tree must
       change now for correctness, the three fields are additive when they land, absent means full
       on both sides, and an omitted key is not the same wire payload as an explicit null.
-- [ ] Re-run the Phase 1 verification commands once more and reconcile: if anything drifted during
-      the writing phases, correct the affected block and note the drift.
-- [ ] Confirm `git status` in the ModelChecker repository shows no modification attributable to
+      *(completed)*
+- [x] Re-run the Phase 1 verification commands once more and reconcile: if anything drifted during
+      the writing phases, correct the affected block and note the drift. *(completed: no drift
+      found, all facts held unchanged since Phase 1)*
+- [x] Confirm `git status` in the ModelChecker repository shows no modification attributable to
       this task, and that this repository's working tree carries no change outside
-      `specs/701_port_substrate_lessons_to_model_checker/`.
-- [ ] Commit the summary with an explicit single-path pathspec. Never a directory or glob add; two
-      sibling tasks are live on this working tree.
+      `specs/701_port_substrate_lessons_to_model_checker/`. *(completed: ModelChecker shows only
+      a pre-existing events.jsonl diff unrelated to this task; this task's own commits touched
+      only its own task directory)*
+- [x] Commit the summary with an explicit single-path pathspec. Never a directory or glob add; two
+      sibling tasks are live on this working tree. *(completed)*
 
 **Timing**: 0.75 hours
 
@@ -377,17 +381,29 @@ more, and confirm no file outside this task's directory was touched.
 
 ## Testing & Validation
 
-- [ ] Every Lean theorem name appearing anywhere in the summary resolves to a declaration in
-      `FormalSystem/`, verified by grep at close time.
-- [ ] Every ModelChecker file path appearing in the summary exists in that repository.
-- [ ] No dangling identifier from the current THEORY-LIMITS group survives into the proposed
-      replacement text.
-- [ ] Each ready-to-file block is self-contained: no unresolved placeholder, no reference to this
+- [x] Every Lean theorem name appearing anywhere in the summary resolves to a declaration in
+      `FormalSystem/`, verified by grep at close time. *(completed: 13 identifiers checked, all
+      resolve)*
+- [x] Every ModelChecker file path appearing in the summary exists in that repository.
+      *(completed: 9 paths checked, all exist)*
+- [x] No dangling identifier from the current THEORY-LIMITS group survives into the proposed
+      replacement text. *(completed)*
+- [x] Each ready-to-file block is self-contained: no unresolved placeholder, no reference to this
       plan or to a BimodalLogic task number inside text destined for ModelChecker's task system.
-- [ ] The ModelChecker working tree is unmodified by this task.
-- [ ] This repository's working tree carries no change outside this task's directory.
-- [ ] `bash .claude/scripts/validate-artifact.sh` passes on the summary, if that script accepts
-      summary artifacts in this deploy.
+      *(completed: found and fixed two "Task #701" references that had leaked into fenced
+      ready-to-file blocks during drafting; both now cite the report by title/date only. A
+      fence-scoped re-grep for 696/703/694/695/200/219 found no further leaks; the two TL_CM_3/
+      TL_CM_4 timing placeholders are intentional and explicitly flagged as for the eventual
+      filer to fill in, not unresolved plan-authoring placeholders)*
+- [x] The ModelChecker working tree is unmodified by this task. *(completed: confirmed via
+      `git status --porcelain`, only a pre-existing unrelated `events.jsonl` diff present)*
+- [x] This repository's working tree carries no change outside this task's directory.
+      *(completed: confirmed via `git log --stat` on every commit this phase made)*
+- [x] `bash .claude/scripts/validate-artifact.sh` passes on the summary, if that script accepts
+      summary artifacts in this deploy. *(completed: script does accept `type=summary`; first run
+      found 5 missing required sections (What Changed, Decisions, Impacts, Follow-ups,
+      References) not yet appended at that point in Phase 5; appended below and re-ran to a clean
+      pass)*
 
 ## Artifacts & Outputs
 
