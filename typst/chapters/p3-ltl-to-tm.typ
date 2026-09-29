@@ -23,20 +23,20 @@
 
 Readers arriving from computer science will recognize much of *TM*'s operator vocabulary from linear temporal logic @pnueli1977 @baierkatoen2008 @demrigorankolange2016, and the recognition is legitimate -- but the identification is not.
 Stated precisely: *TM* is Until/Since temporal logic over linear orders -- durations form a totally ordered abelian group, and the operators quantify strictly -- fused with an S5 metaphysical modality through the interaction axiom MF and the uniformity axioms, interpreted over task frames in which possible worlds are task-constrained functions from convex sets of durations to world states.
-The modality is not a second primitive Kripke dimension laid alongside the temporal one: $square.stroked$ quantifies over the _constructed_ history space $H_(cal(F))$, and it is the time-shift invariance of that construction that validates the perpetuity principles connecting the two operator families (see the Time-Shift section of the semantics chapter and the perpetuity theorems P1--P6 of the theorems chapter; they are not restated here).
+The modality is not a second primitive Kripke dimension laid alongside the temporal one: $square.stroked$ quantifies over the _constructed_ history space $H_(cal(F))$, and it is the time-shift invariance of that construction that validates the perpetuity principles connecting the two operator families (see the Time-Shift discussion of @sec:semantics and the perpetuity theorems P1--P6 of @sec:perpetuity; they are not restated here).
 Every contrast drawn in this chapter unpacks some part of that sentence.
 
 == Traces versus Task Frames
 
 LTL is interpreted over traces: $omega$-sequences of states (or of atomic-proposition labelings), with a distinguished initial point, a primitive next-step operator, and a non-strict Until @pnueli1977 @baierkatoen2008 @demrigorankolange2016.
-*TM* is interpreted over the task frames of the semantics chapter, and the differences are structural rather than notational:
+*TM* is interpreted over the task frames of @sec:semantics, and the differences are structural rather than notational:
 
 - *Time domain.* A trace is indexed by $NN$; a *TM* history $tau : X arrow.r W$ has a convex domain $X$ in an arbitrary totally ordered abelian group of durations -- discrete, dense, or neither -- and may be bi-infinite or partial.
 - *Initial point.* A trace begins somewhere, and LTL validity is anchored at that initial position; a task-frame history has no distinguished start, and *TM* validity is floating -- quantified over all frames, histories, _and_ times.
 - *The underlying system.* A task frame is itself a labeled transition system in which the transition labels are durations carrying group structure @baierkatoen2008, so the model-checking reading of "system plus runs" transfers directly: a history is a labeled run of the system.
   What LTL calls the set of traces of a system, *TM* constructs as the history space $H_(cal(F))$ -- and then quantifies over it with $square.stroked$ in the object language.
 
-The semantics chapter (@sec:truth) gives the full truth conditions; nothing in this comparison modifies them.
+@sec:truth gives the full truth conditions; nothing in this comparison modifies them.
 
 == Operator Conventions
 
@@ -65,7 +65,7 @@ The future-only convention of LTL is principled, not an oversight: over discrete
 
 The convention deltas above compose into a systematic translation.
 An LTL trace -- an $omega$-sequence of states -- embeds into the task-frame setting as a history over the duration group $ZZ$ with convex domain ${ x : x gt.eq 0 }$, realized in the frame whose task relation is trivial: the identity at duration $0$ and the total relation at every other duration (this relation satisfies the *Compositionality*, *Seriality*, *Limit*, and *Saturation* frame axioms outright).
-Position $i$ of the trace becomes time $i$ of the history, and atoms are false at times outside the domain, matching the semantics chapter's convention.
+Position $i$ of the trace becomes time $i$ of the history, and atoms are false at times outside the domain, matching the convention of @sec:semantics.
 On formulas, each non-strict LTL operator has a strict *TM* rendering:
 
 #figure(
@@ -105,7 +105,7 @@ Two stock recipes combine a temporal logic with S5: the _fusion_, which imposes 
 *TM* is neither.
 It is more than the fusion, because MF (and the derived TF) are theorems relating $square.stroked$ to the temporal operators; and it is not literally the product of a linear tense logic with S5, because its interaction principles are not _imposed_ on a two-dimensional grid of evaluation points -- they _hold_ in virtue of the construction of the history space, whose time-shift invariance makes perpetuity come out valid.
 In the general product landscape such principles must be stipulated frame condition by frame condition; here a single semantic decision -- worlds are shift-invariant families of task-respecting functions -- yields them wholesale.
-This distinction matters again at the decidability frontier, since products and fusions have sharply different computational profiles -- the final chapter of this part surveys that landscape.
+This distinction matters again at the decidability frontier, since products and fusions have sharply different computational profiles -- @sec:decidability-frontier surveys that landscape.
 
 == Linear, Branching, and Hyper
 

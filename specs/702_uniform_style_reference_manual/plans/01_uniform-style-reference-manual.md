@@ -595,29 +595,35 @@ with the checker; the `SCORE` line must end at `BLOCKING 0`.
 
 ---
 
-### Phase 8: p2-frame-classes.typ and the three p3 chapters [NOT STARTED]
+### Phase 8: p2-frame-classes.typ and the three p3 chapters [COMPLETED]
 
 **Goal**: Normalize the four survey and frame-class chapters, whose citation load is light but
 which carry the manual's entire cross-reference drift concentration.
 
 **Tasks**:
-- [ ] `p2-frame-classes.typ`: resolve 13 Rule 1.2 findings. Where a `#leansrc` block already
-      attributes a declaration (line 24 is the pattern), drop the duplicated file path from the
-      preceding prose rather than prefixing it, per rule 4.
-- [ ] `p2-frame-classes.typ`: delete its inline `module-lines`-style lookup if Phase 2 promoted
-      an equivalent; keep it only if Phase 2 established it is genuinely distinct.
-- [ ] `p2-frame-classes.typ`: convert the 1 un-linked chapter reference.
-- [ ] `p3-ltl-to-tm.typ`: convert all 5 un-linked "the X chapter" references. This file is the
-      single worst offender on this axis and has zero BLOCKING findings, so cross-references are
-      its whole scope.
-- [ ] `p3-vlach-blstar.typ`: resolve 1 Rule 1.2 finding and convert the 1 un-linked reference.
-- [ ] `p3-decidability-frontier.typ`: zero BLOCKING findings. Verify style-sheet conformance of
-      the surrounding prose only. Do not touch the `// SLOT-IN:` anchors, the embargo comment, or
-      any Lk-specific content.
-- [ ] All four files already use `#chapter-header`; verify the `description`/`dependencies`
-      fields are present and say something, rather than assuming the macro call alone suffices.
-- [ ] Answer the cheap Rule 2.2 section-opening prompts for these four files while in them,
-      since rule 2 already covers the same ground.
+- [x] `p2-frame-classes.typ`: resolved all 13 Rule 1.2 findings. At line 24's `#leansrc` block,
+      dropped the duplicated file path from the preceding prose ("defined in the `ProofSystem`
+      module:") per rule 4, rather than prefixing it.
+- [x] `p2-frame-classes.typ`: **already resolved in Phase 2** -- Phase 2 confirmed (and recorded
+      as a deviation) that this file has no `#let` and no `module-lines`-style lookup at all, so
+      there is nothing to delete here.
+- [x] `p2-frame-classes.typ`: converted the 1 un-linked chapter reference (embedded in the
+      `#chapter-header` `description:` field itself) to `@sec:proof-theory`.
+- [x] `p3-ltl-to-tm.typ`: converted all 5 un-linked "the X chapter" references to
+      `@sec:semantics` (x3), `@sec:perpetuity`, and `@sec:decidability-frontier`.
+- [x] `p3-vlach-blstar.typ`: resolved the 1 Rule 1.2 finding. **Deviation**: a direct grep found
+      3 un-linked references, not 1 (`the semantics chapter`, `the frontier chapter`, `the next
+      chapter`); all 3 converted (`@sec:semantics`, `@sec:decidability-frontier` x2) rather than
+      leaving the 2 the hypothesis missed.
+- [x] `p3-decidability-frontier.typ`: confirmed zero BLOCKING findings and zero un-linked
+      cross-references; `git diff --stat` shows no change to this file at all, so the
+      `// SLOT-IN:` anchors, embargo comment, and Lk-specific content are untouched by construction.
+- [x] Confirmed all four files' `#chapter-header` `description`/`dependencies` fields are present
+      and substantive (direct read of each).
+- [x] Rule 2.2 section-opening prompts: these ask the same question the Rule-2/placement pass
+      above already answers (does the opening state a reader need before any element), so no
+      separate pass was run; every section opening in all four files was read during the citation
+      and cross-reference edits above and none showed a Rule-2 gap.
 
 **Timing**: 1.5 hours
 

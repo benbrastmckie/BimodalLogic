@@ -92,7 +92,7 @@ $ "BL"^star := chevron.l "SL", bot, arrow.r, square.stroked, S, U, dot.square, a
 the terminus of the extension tower that begins with the tense basis and passes through the Until/Since basis.
 // CONFIRM(paper): the source work explicitly declines to axiomatize BL-star (no proof system for it is stated).
 BL#super[⋆] is deliberately left without a proof system: axiomatizing it lies outside this book's scope, and none is formalized.
-The signature worked use of the Vlach operators is the analysis of the open future; see the closing remark of the semantics chapter on the determined/deterministic distinction.
+The signature worked use of the Vlach operators is the analysis of the open future; see the closing remark of @sec:semantics on the determined/deterministic distinction.
 
 == Prior Art: From "Now" to Hybrid Binders
 
@@ -106,7 +106,7 @@ The store/recall pattern has a well-charted history, and BL#super[⋆] is best u
 
 Against this backdrop, the Vlach families of BL#super[⋆] are hybrid-style binders over the time _and_ world coordinates, with an indexed register vector in place of hybrid logic's named variables.
 That identification cuts both ways: the hybrid $arrow.b$-binder has a well-known cost profile -- undecidability in general, with tamer behavior only in bounded or linearly-ordered fragments -- and that profile is what makes the ceiling-and-descent narrative of @sec:decidability-frontier the expected one for the BL#super[⋆] tower.
-No results are stated here; the frontier chapter surveys the published landscape.
+No results are stated here; @sec:decidability-frontier surveys the published landscape.
 
 == Kamp's Theorem, Correctly Scoped
 
@@ -122,13 +122,13 @@ First, the operators must be _strict_: they quantify over strictly earlier and s
 Second, the flow of time must be _Dedekind complete_; over arbitrary linear orders the result fails, which is why the completeness property of the paper's frame-constraint hierarchy earns its keep.
 The theorem is frequently miscited to Kamp's 1971 _Theoria_ paper; that paper introduces the _now_ operator (its role in the prior-art narrative above) and does not contain the expressive-completeness theorem.
 
-A completing note explains a difference from LTL that the next chapter revisits: over discrete, future-only, $NN$-like flows, the past-free fragment already suffices for first-order expressive completeness @gpss1980.
+A completing note explains a difference from LTL that @sec:decidability-frontier revisits: over discrete, future-only, $NN$-like flows, the past-free fragment already suffices for first-order expressive completeness @gpss1980.
 This is why LTL can afford to be a future-only language.
 *TM* keeps its past operators because its flows are arbitrary ordered abelian groups, where no such reduction is available.
 
 == The Formalization Frontier
 
 A machine-checked Kamp theorem is an open problem.
-`Metalogic/Expressiveness/Kamp/` develops toward it: the target statement `kampPriorExpressiveCompleteness` says that every `MonadicFormula` with one free variable has an Until/Since-equivalent formula on Prior structures.
+`FormalSystem/Metalogic/Expressiveness/Kamp/` develops toward it: the target statement `kampPriorExpressiveCompleteness` says that every `MonadicFormula` with one free variable has an Until/Since-equivalent formula on Prior structures.
 An earlier Rabinovich-style translation @rabinovich2014 has since been archived; it is a paper-side proof strategy, not a currently machine-checked component of the live chain toward `kampPriorExpressiveCompleteness`.
 The end-to-end theorem remains open.
