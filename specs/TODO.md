@@ -11,8 +11,8 @@ next_project_number: 707
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,703,705 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,704,706 | 298,464,502,563,703 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,703,705,706 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,704 | 298,464,502,563,703 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -20,7 +20,7 @@ next_project_number: 707
 | 7 | 430 | 411 | decidability |
 | 8 | 412 | 430 | decidability |
 | 9 | 482 | 412 | decidability |
-| 10 | 177 | 178,282,296,481,482,543,706 | formula-refactor |
+| 10 | 177 | 178,282,296,481,482,543,703,706 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -70,7 +70,7 @@ next_project_number: 707
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 703 [PLANNED] — Prove the L-plus twin of...
-  └─ 706 [NOT STARTED] — RESEARCH-FIRST. Establish the finite model property for...
+706 [NOT STARTED] — RESEARCH-FIRST. Establish the finite model property for...
 
 ### Formula Refactor
 
@@ -106,7 +106,7 @@ next_project_number: 707
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 695, Task 696, Task 703
+- **Dependencies**: Task 695, Task 696
 
 **Description**: RESEARCH-FIRST. Establish the finite model property for L-plus over integer time with a computable state bound, and derive full completeness of the finite-graph certificate class from it: every Z-time non-validity of a PlusFormula admits a PlusGraphCertificate meeting PlusGraphCertificate.Certifies, with the carrier bounded by a stated, computable function of plusClosureOf (Gamma ++ Del). Together with PlusGraphCertificate.plusRefutes_of_certifies and PlusGraphCertificate.decidableCertifies (both delivered by task 703 Stage 2) this yields decidability of L-plus Z-time validity, which is the result the L-plus completeness programme exists to reach. FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt (task 695, landed in FormalSystem/PlusLanguage/PlusIntTransfer.lean) is the Step 0 this statement rests on and has no substitute.
 
@@ -120,7 +120,7 @@ RESEARCH QUESTIONS, in order. (Q1) CERTIFICATE-SHAPE CHECK, to be answered FIRST
 
 HARD CONSTRAINTS. Soundness is not in question: plusTruth_iff_mem and plusRefutes_of_certifies keep their statements. Zero sorries, no new axioms, no vacuous placeholder definitions. No theorem statement or bound is committed to a plan until research supports it -- the predecessor's plan v1 committed to a statement that turned out false. If the property cannot be proved, the correct outcome is a task marked blocked with the obstruction recorded as a theorem where possible, never a deferred obligation behind a placeholder.
 
-SEQUENCING. Depends on task 703 because the implementation consumes the certificate type, checker and soundness theorem that task 703 Stage 2 lands. The RESEARCH round does not need them landed and is intended to run in parallel with task 703's implementation, as `/orchestrate 706 --research` on its own; an unforced run should wait for task 703.
+SEQUENCING. The IMPLEMENTATION consumes the certificate type, checker and soundness theorem that task 703 Stage 2 lands, so planning and implementation must follow task 703. The RESEARCH round does not need them landed and is intended to run in parallel with task 703's implementation. Because the orchestrator's dependency gate blocks even a forced research round on an unfinished predecessor, the dependency edge on task 703 is deliberately NOT recorded at filing. Run research only as `/orchestrate 706 --research`, which stops after research. BEFORE any plan or implement round, add task 703 to this task's dependencies. Never run this task unforced while task 703 is unfinished.
 
 ---
 
