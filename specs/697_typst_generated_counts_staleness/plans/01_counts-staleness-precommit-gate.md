@@ -255,26 +255,29 @@ not a scope deviation: exactly the enumerated Tasks were implemented, nothing ex
 
 ---
 
-### Phase 3: `scripts/install-git-hooks.sh` installer, and install it live [NOT STARTED]
+### Phase 3: `scripts/install-git-hooks.sh` installer, and install it live [COMPLETED]
 
 **Goal**: Make the hook reachable — an idempotent installer that points `core.hooksPath` at the
 versioned directory, run once against this actual working tree so the mechanism is live.
 
 **Tasks**:
-- [ ] Create `scripts/install-git-hooks.sh` (executable) that sets `git config core.hooksPath
+- [x] Create `scripts/install-git-hooks.sh` (executable) that sets `git config core.hooksPath
   .githooks` at local scope, matching the repository's existing script conventions (`set -euo
-  pipefail`, header comment block, `REPO_ROOT` resolution via `BASH_SOURCE`).
-- [ ] Handle the value that is already there: this tree's `.git/config` already carries an
+  pipefail`, header comment block, `REPO_ROOT` resolution via `BASH_SOURCE`). *(completed)*
+- [x] Handle the value that is already there: this tree's `.git/config` already carries an
   explicit absolute `core.hooksPath` of `.../.git/hooks`. Print the prior value (or "unset")
   before overwriting, then print the new one. Overwriting is correct and intended; it must be
-  visible, not silent.
-- [ ] Warn — without failing — if `.git/hooks/` contains any file that is not a `*.sample`,
-  since such a hook stops firing once `core.hooksPath` moves.
-- [ ] Make it idempotent: a second run is a no-op that reports "already installed" and exits 0.
-- [ ] Add a `--print`/`--check` read-only mode that reports whether the hooks are installed
-  without changing anything (useful in docs and for a contributor verifying setup).
-- [ ] Run `bash scripts/install-git-hooks.sh` against this working tree, and record the
+  visible, not silent. *(completed)*
+- [x] Warn — without failing — if `.git/hooks/` contains any file that is not a `*.sample`,
+  since such a hook stops firing once `core.hooksPath` moves. *(completed)*
+- [x] Make it idempotent: a second run is a no-op that reports "already installed" and exits 0.
+  *(completed)*
+- [x] Add a `--print`/`--check` read-only mode that reports whether the hooks are installed
+  without changing anything (useful in docs and for a contributor verifying setup). *(completed)*
+- [x] Run `bash scripts/install-git-hooks.sh` against this working tree, and record the
   before/after `git config --show-origin --get-all core.hooksPath` output in the phase notes.
+  *(completed: prior `file:.git/config	/home/benjamin/Projects/BimodalLogic/.git/hooks` -> after
+  `file:.git/config	.githooks`)*
 
 **Timing**: 45 minutes
 

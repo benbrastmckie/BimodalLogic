@@ -1,0 +1,18 @@
+{
+  "phase": 3,
+  "phase_name": "scripts/install-git-hooks.sh installer, and install it live",
+  "started_at": "2026-09-29T05:45:00Z",
+  "last_updated": "2026-09-29T05:55:00Z",
+  "objectives": [
+    {"id": 1, "description": "Create scripts/install-git-hooks.sh setting core.hooksPath .githooks", "status": "done", "files_touched": ["scripts/install-git-hooks.sh"]},
+    {"id": 2, "description": "Handle already-set explicit core.hooksPath (print prior/new value)", "status": "done", "files_touched": ["scripts/install-git-hooks.sh"]},
+    {"id": 3, "description": "Warn (non-fatal) if .git/hooks/ has non-.sample files", "status": "done", "files_touched": ["scripts/install-git-hooks.sh"]},
+    {"id": 4, "description": "Idempotent second run", "status": "done", "files_touched": ["scripts/install-git-hooks.sh"]},
+    {"id": 5, "description": "--print/--check read-only mode", "status": "done", "files_touched": ["scripts/install-git-hooks.sh"]},
+    {"id": 6, "description": "Run installer against this working tree; record before/after", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "notes": "Installed live: core.hooksPath went from file:.git/config /home/benjamin/Projects/BimodalLogic/.git/hooks to file:.git/config .githooks. Idempotence and --check verified before and after install. Observed: bash scripts/typst-sync-check.sh (bare) currently FAILs Check 2 (formalsystem-line-count 316757 committed vs 316760 live) due to sibling task 695's in-flight uncommitted edit to FormalSystem/Semantics/IntTransfer.lean (git log confirms it is not this task's own commit) -- this is the exact concurrent-writer scenario the plan's risk table anticipated; not a regression from this phase's changes, and not fixed here (Phase 4/6 will re-check once the tree is quieter or via --fix)."
+}
