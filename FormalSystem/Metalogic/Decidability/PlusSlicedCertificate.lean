@@ -10,6 +10,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Splice
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Position
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Live
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixture
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Stable
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
@@ -73,6 +74,11 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   although the slice and the position set are literally the same at all those times
   (`live_not_determined_by_slice`). This is what rules out the single-period window and confirms
   the doubled lower endpoint
+- `PlusSlicedCertificate.Stable`: the one-period transfer operators `Φ_back` / `Φ_fwd`, built from
+  the one-step `stepBack` / `stepFwd`, with monotonicity at each level, the two subset lemmas
+  placing their images on the doubled window's endpoint slices, and the soundness direction
+  `fwdLive_subset_stepBack` / `bwdLive_subset_stepFwd`. `TailStable` and its bridges are **not**
+  here: they depend on the computed liveness `Finset` that sub-phase 15.3 has yet to build
 
 ## Tags
 
