@@ -17,6 +17,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixpoint
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Computed
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fold
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Unroll
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.LiveFix
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate

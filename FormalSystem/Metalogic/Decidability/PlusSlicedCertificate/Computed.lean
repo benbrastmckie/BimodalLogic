@@ -228,26 +228,29 @@ theorem snceReach_induction (G : PlusSlicedCertificate Γ Del) (g e : PlusFormul
 
 /-! ### Membership is exactly the existence of a delivering path -/
 
-/-- **Membership yields a delivering forward path.** -/
+/-- **Membership yields a delivering forward path**, every vertex before the delivering one being a
+genuine vertex of the graph. -/
 theorem exists_untlPath_of_mem (G : PlusSlicedCertificate Γ Del) (g e : PlusFormula) :
     ∀ v ∈ G.untlReach g e,
-      ∃ (m : ℕ) (f : ℕ → G.TPos), 0 < m ∧ f 0 = v ∧ (∀ k < m, f (k + 1) ∈ G.succT (f k)) ∧
+      ∃ (m : ℕ) (f : ℕ → G.TPos), 0 < m ∧ f 0 = v ∧ (∀ k < m, f k ∈ G.verts) ∧
+        (∀ k < m, f (k + 1) ∈ G.succT (f k)) ∧
         e ∈ (f m).1.2.1 ∧ ∀ k, 0 < k → k < m → g ∈ (f k).1.2.1 := by
   intro v hv
-  obtain ⟨m, f, hm, hf0, hs, he, hg⟩ :=
+  obtain ⟨m, f, hm, hf0, hV, hs, he, hg⟩ :=
     EUFix.exists_path_of_mem_lfp G.verts G.succT (G.atPosT e) (G.atPosT g) v hv
-  exact ⟨m, f, hm, hf0, hs, (G.atPosT_iff e (f m)).mp he,
+  exact ⟨m, f, hm, hf0, hV, hs, (G.atPosT_iff e (f m)).mp he,
     fun k hk0 hk1 => (G.atPosT_iff g (f k)).mp (hg k hk0 hk1)⟩
 
-/-- **Membership yields a delivering backward path.** -/
+/-- **Membership yields a delivering backward path**, the mirror. -/
 theorem exists_sncePath_of_mem (G : PlusSlicedCertificate Γ Del) (g e : PlusFormula) :
     ∀ v ∈ G.snceReach g e,
-      ∃ (m : ℕ) (f : ℕ → G.TPos), 0 < m ∧ f 0 = v ∧ (∀ k < m, f (k + 1) ∈ G.predT (f k)) ∧
+      ∃ (m : ℕ) (f : ℕ → G.TPos), 0 < m ∧ f 0 = v ∧ (∀ k < m, f k ∈ G.verts) ∧
+        (∀ k < m, f (k + 1) ∈ G.predT (f k)) ∧
         e ∈ (f m).1.2.1 ∧ ∀ k, 0 < k → k < m → g ∈ (f k).1.2.1 := by
   intro v hv
-  obtain ⟨m, f, hm, hf0, hs, he, hg⟩ :=
+  obtain ⟨m, f, hm, hf0, hV, hs, he, hg⟩ :=
     EUFix.exists_path_of_mem_lfp G.verts G.predT (G.atPosT e) (G.atPosT g) v hv
-  exact ⟨m, f, hm, hf0, hs, (G.atPosT_iff e (f m)).mp he,
+  exact ⟨m, f, hm, hf0, hV, hs, (G.atPosT_iff e (f m)).mp he,
     fun k hk0 hk1 => (G.atPosT_iff g (f k)).mp (hg k hk0 hk1)⟩
 
 /-- **A delivering forward path yields membership.** -/
