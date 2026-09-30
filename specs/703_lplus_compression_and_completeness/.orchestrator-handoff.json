@@ -1,36 +1,33 @@
 {
-  "status": "blocked",
-  "dispatch_seq": 18,
-  "task_number": 703,
-  "phases_completed": 7,
-  "phases_total": 13,
-  "session_id": "sess_1790680388_3d4c26",
-  "summary": "Phase 7 unblocked and closed with one recorded exclusion: Invariant A dropped per the recorded decision, Invariant B landed as a constant-offset shift that preserves every stated bound. Phase 8's (C5) demand layer landed as a new module. Phase 8 is now blocked on an alignment budget forced by the compression theorem's own mid-segment bound, which is part of the Lean Challenge Statement; the statement was not edited.",
-  "blocked_reason": "StabFaithful is demanded at every integer time, but Invariant B can move a witness lasso's mark only by the mid budget plusCompressionBound, while with Invariant A dropped the demand times spread over the least common multiple of the lassos' cycle lengths. Far-away demands have no constructible witness under the stated mid bound. Resolving it changes the Lean Challenge Statement's mid conjunct or a landed Phase 4 theorem.",
-  "requires_user_decision": true,
+  "status": "partial",
+  "phase": "implement",
+  "dispatch_seq": 21,
+  "summary": "Phase 9 of 21 closed COMPLETED and verified sorry-free: the hopTarget/pumpTarget limit targets, their ZTime non-validity, and both closure-membership chains land in a new Limits/Targets.lean, with a full lake build at exit 0 and zero warnings. Stopped after one phase on a blocking environment fault: the harness refuses every git operation against the dispatch worktree, so the verified work sits on commit 228168b3b of branch worktree-agent-aa19bfa3bfef394ff instead of orchestrate/task-703-21, and the orchestrator must land it by one of the two routes named in blockers[0].",
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/703_lplus_compression_and_completeness/summaries/01_lplus-compression-completeness-summary.md",
-      "summary": "Implementation summary for dispatch 18: Phase 7 closed, Phase 8 task 1 landed, Phase 8 blocked."
-    },
-    {
-      "type": "plan",
-      "path": "specs/703_lplus_compression_and_completeness/plans/01_lplus-compression-completeness.md",
-      "summary": "Plan with the Phase 7 deviation and the Phase 8 BLOCKER record, including three enumerated resolutions."
+      "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
+      "summary": "Phase 9 implementation summary: the two limit targets, their ZTime non-validity, the two closure-membership chains, the falsified Scope Hypothesis, and the landing fault."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-8-handoff-20260929T183000Z.md",
-      "summary": "Phase 8 handoff naming the blocker and the recommended resolution."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-9-handoff-20260930T012200Z.md",
+      "summary": "Phase-end handoff: next action is Phase 10, plus the landing fault and the trans_refl risk scoped to Phases 10-11."
     }
   ],
-  "verification": {
-    "build_passed": true,
-    "sorry_count": 0,
-    "axiom_count": 14,
-    "axioms_unchanged": true,
-    "gates": "scripts/check-module-invariants.sh run in full after the fixes: ALL CHECKS PASSED, exit 0, zero FAIL lines. The three failures this dispatch introduced (INV stale inventory, C16 simpNF, C33 generated root) were fixed, not waived."
-  },
-  "next_action": "Decide the Phase 8 alignment budget. The three resolutions are enumerated in the plan's Phase 8 BLOCKER record; resolution 1, giving mid its own larger bound in the Lean Challenge Statement while leaving back and fwd at plusCompressionBound, is recommended. Then re-plan Phase 8 against the chosen bound and redispatch. Phase 8's task 1 is already landed and does not need redoing."
+  "phases_completed": 1,
+  "phases_total": 21,
+  "blockers": [
+    {
+      "phase": 9,
+      "target": "orchestrate/task-703-21 (git branch in /home/benjamin/Projects/BimodalLogic/.orchestrate-worktrees/703-21)",
+      "verbatim_goal": "Commit your source work on the dispatch branch INSIDE this worktree as usual -- the orchestrator lands that branch into the main tree after you return.",
+      "what_was_tried": "cd /home/benjamin/Projects/BimodalLogic/.orchestrate-worktrees/703-21 && git status; git -C /home/benjamin/Projects/BimodalLogic/.orchestrate-worktrees/703-21 status; EnterWorktree with path=/home/benjamin/Projects/BimodalLogic/.orchestrate-worktrees/703-21. Non-git writes and lake runs into that worktree were then used successfully to author, build and verify the work there. The work was additionally committed in the agent's own harness worktree, after fast-forwarding it from 166 commits behind main up to main (1db84f6eb) so the commit base matches the dispatch worktree's base exactly.",
+      "why_it_failed": "The harness pinned this agent into /home/benjamin/Projects/BimodalLogic/.claude/worktrees/agent-aa19bfa3bfef394ff and refuses EVERY git invocation targeting another checkout: the cd form and the -C form are both rejected by the worktree-isolation guard, and EnterWorktree rejects the path because the dispatch worktree is not under .claude/worktrees/. File writes and lake builds into the dispatch worktree are permitted, so only the commit is impossible. dispatch-worktree.sh land merges the BRANCH, so uncommitted dispatch-worktree content is discarded as nothing_to_land. TWO REMEDIES, EITHER SUFFICIENT, EACH ONE COMMAND FOR THE ORCHESTRATOR: (1) the four verified files are already physically present in /home/benjamin/Projects/BimodalLogic/.orchestrate-worktrees/703-21 -- commit them there on orchestrate/task-703-21 and land as normal; or (2) merge or cherry-pick commit 228168b3b from branch worktree-agent-aa19bfa3bfef394ff, which has the same base and touches exactly four paths, none under specs/**, so it passes land's specs-refusal check."
+    }
+  ],
+  "plan_markers_verified": true,
+  "continuation_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-9-handoff-20260930T012200Z.md",
+  "next_action_hint": "Land the Phase 9 commit by one of the two routes in blockers[0] FIRST -- otherwise the work is lost -- then dispatch Phase 10 (hop-free families are incomplete), which is unblocked by Phase 9's hopTarget, not_plusValidZTime_hopTarget and hopClosure chain.",
+  "git_checkpoint": "228168b3b (branch worktree-agent-aa19bfa3bfef394ff, base 1db84f6eb)"
 }

@@ -1333,40 +1333,70 @@ changes no existing declaration.
 
 ---
 
-### Phase 9: The two targets and their ℤ-time non-validity [NOT STARTED]
+### Phase 9: The two targets and their ℤ-time non-validity [COMPLETED]
 
 **Goal**: Restate, in library style rather than as a probe copy, the two targets the refutations
 are about, prove each is a genuine ℤ-time non-validity, and land the closure-membership
 scaffolding both refutations consume.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/Targets.lean` with a
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/Targets.lean` with a
       module docstring, `import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Examples`
       and `import FormalSystem.PlusLanguage.PlusNonValidities`, in the
       `FormalSystem.Metalogic.Decidability` namespace, `PlusSharingWitnessFamily` sub-namespace —
-      matching where `Incompleteness.lean` puts its targets.
-- [ ] Define `pumpTarget` and `hopTarget`. Record the primitive syntax in the module docstring
+      matching where `Incompleteness.lean` puts its targets. *(completed)*
+- [x] Define `pumpTarget` and `hopTarget`. Record the primitive syntax in the module docstring
       exactly as the research appendix gives it, so a reader can check the abbreviations:
       `Xp := untl ⊥ p`, `Xnp := untl ⊥ (p → ⊥)`, `Fp := untl (⊥ → ⊥) p`,
       `dXp := (⊡(Xp → ⊥)) → ⊥`, `dXnp := (⊡(Xnp → ⊥)) → ⊥`,
       `hopTarget := □dXp → (□dXnp → ⊥)` and
       `pumpTarget := □dXp → (□dXnp → ((Fp → Fp) → ⊥))`.
-- [ ] Prove `not_plusValidZTime_pumpTarget` and `not_plusValidZTime_hopTarget`. Both are refuted
+      *(deviation: altered — the abbreviation table is in the docstring verbatim as required, but
+      the declarations are named after what they say (`nextTrue`, `nextFalse`, `someFuture`,
+      `someNextTrue`, `someNextFalse`) rather than carrying the probes' `Xp`/`dXp` spellings into
+      library names, per invariant C26's camelCase rule and this phase's own "name them after the
+      formula" instruction. Both targets are parametric in `(p : Atom)` rather than fixed to a
+      concrete atom, which the probes' own proofs permit because `natModel`'s valuation is
+      atom-agnostic.)*
+- [x] Prove `not_plusValidZTime_pumpTarget` and `not_plusValidZTime_hopTarget`. Both are refuted
       on the permissive frame `FormalSystem.PlusLanguage.PlusNonValidities.NF` with `natModel`,
       at the constant history and time `0`. This is the probes' own route and it transfers.
-- [ ] Land the closure-membership chain for both targets — the `plusConclusion_mem_closure` root
+      *(deviation: altered — factored through two shared antecedent lemmas,
+      `plusTruthAt_box_someNextTrue` and `plusTruthAt_box_someNextFalse`, since both targets have
+      the same two antecedents; each non-validity theorem is then three lines. This is the
+      factoring the Scope Hypothesis expected, relocated from the membership block, where it is
+      not available, to the semantic side, where it is.)*
+- [x] Land the closure-membership chain for both targets — the `plusConclusion_mem_closure` root
       and the `plusClosureOf_imp_left` / `_imp_right` / `_box` / `_stab` / `_untl_left` /
       `_untl_right` steps down to `Xp`, `Xnp`, `np`, `Fp` and `tp`. Name them after the formula
       they place, not after the probe's local abbreviations.
-- [ ] Prove the closure-shape fact each refutation uses — that every `untl` member of the target
+      *(deviation: altered — landed as TWO chains, 13 steps for `hopClosure` and 17 for
+      `pumpClosure`, not one shared scaffolding. See the Scope Hypothesis resolution below.)*
+- [x] Prove the closure-shape fact each refutation uses — that every `untl` member of the target
       closure has the guard the argument assumes — by `decide` on the concrete closure, and state
       the proved form rather than the assumed one.
-- [ ] Add the import line to `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`.
-- [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem`. **Never hand-edit
+      *(deviation: altered — proved by `simp` on the computed subformula list rather than by
+      `decide`. `decide` cannot run here: with the atom left as a parameter the closure is not a
+      closed term, so no `Decidable` instance evaluates. The `simp` route is strictly better than
+      the `decide`-on-a-concrete-atom alternative, because it holds for every atom. The proved
+      form is the strong guard-AND-event characterization, not the guard-only fact: `untl` members
+      of `hopClosure p` are exactly `Xp` and `X¬p` (`untl_mem_hopClosure`), and of `pumpClosure p`
+      exactly `Xp`, `X¬p` and `Fp` (`untl_mem_pumpClosure`), with the guard corollaries
+      `untl_guard_eq_bot_of_mem_hopClosure` and
+      `untl_guard_eq_bot_or_top_of_mem_pumpClosure` derived from them.)*
+- [x] Add the import line to `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`.
+      *(completed; the aggregator's `## Submodules` list gained the matching bullet in the same
+      edit, so the docstring and the import block do not disagree.)*
+- [x] Regenerate the library root: `lake exe mk_all --lib FormalSystem`. **Never hand-edit
       `FormalSystem.lean`** — invariant C33 compares it byte-for-byte against the generator.
-- [ ] Confirm the new module transitively imports `FormalSystem.Init` (invariant C24).
-- [ ] **Do not delete the probes.** `specs/703_lplus_compression_and_completeness/probes/`
+      *(completed; the generator added exactly one line and nothing else, confirmed by diff.)*
+- [x] Confirm the new module transitively imports `FormalSystem.Init` (invariant C24).
+      *(completed; reached through `FormalSystem/Syntax/Atom.lean`, which imports
+      `FormalSystem.Init` directly and is in the new module's import closure via the `PlusFormula`
+      stack.)*
+- [x] **Do not delete the probes.** `specs/703_lplus_compression_and_completeness/probes/`
       remains the provenance record for every declaration landed in Stage 1.
+      *(completed — nothing under `probes/` was touched, renamed, or deleted.)*
 
 **Timing**: 3 hours
 
@@ -1380,6 +1410,31 @@ two probes' membership blocks (`probes/NoFiniteCertificate.lean` lines 72-91 aga
 `probes/HopFreeIncomplete.lean` lines 64-79); if the two closures diverge enough that factoring
 costs more than it saves, land two blocks and record the count rather than forcing the estimate.
 
+**Scope Hypothesis — RESOLVED, FALSIFIED.** The diff was performed as instructed, and the shared
+prefix is real: the two probes' membership blocks agree on eleven of thirteen lines, differing only
+in that the pump block adds `tail`, `FpFp`, `Fp` and `tp`. But the shared *text* cannot become a
+shared *theorem*, and the reason is structural rather than a matter of cost. `plusClosureOf` is
+indexed by the context, so `plusClosureOf ([] ++ [hopTarget p])` and
+`plusClosureOf ([] ++ [pumpTarget p])` are two different `Finset PlusFormula` values. Every
+membership fact is a fact about one of them, and nothing stated about either transports to the
+other without a closure-monotonicity principle — which would additionally need
+`hopTarget p ∈ plusClosureOf [pumpTarget p]`, and that is false: `hopTarget` is not a subformula
+of `pumpTarget` (the two differ at the innermost consequent, `⊥` against `(Fp → Fp) → ⊥`, so
+neither is a subformula of the other). Factoring here is not expensive; it is unavailable.
+
+Two blocks were therefore landed, with the counts the hypothesis asked to be recorded: **13 steps
+for `hopClosure`** (`hopTarget_mem_hopClosure` down to `notAtom_mem_hopClosure`) and **17 for
+`pumpClosure`** (`pumpTarget_mem_pumpClosure` down to `notAtom_mem_pumpClosure`), plus 2
+closure-shape lemmas on each side and one shared helper
+(`untl_not_mem_top_subformulas`) — 35 declarations of membership scaffolding in all.
+
+What *was* factored is the semantic side, which the hypothesis did not anticipate: both targets
+carry the identical two antecedents `□⟐Xp` and `□⟐X¬p`, and both hold at the constant history of
+the permissive frame for one reason, so `plusTruthAt_box_someNextTrue` and
+`plusTruthAt_box_someNextFalse` are proved once and consumed by both non-validity theorems. The
+sharing the hypothesis was reaching for exists; it lives one layer over from where the hypothesis
+looked for it.
+
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/Targets.lean` - new file
 - `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean` - one added import line
@@ -1390,6 +1445,27 @@ costs more than it saves, land two blocks and record the count rather than forci
 - No `sorry` in the new file; `#print axioms` on each new theorem shows no axiom beyond
   `propext`, `Classical.choice`, `Quot.sound`.
 - The two non-validity theorems are confirmed to mention `PlusValidZTime`, not `PlusValidInt`.
+
+**Verification — MEASURED**:
+- Scoped build `lake build FormalSystem.Metalogic.Decidability.PlusWitnessFamily`: exit 0,
+  1243 jobs, zero errors and zero warnings over both captured streams.
+- Full `lake build`: exit 0, 2778 jobs, zero errors and zero warnings. The `.olean` of each of the
+  three touched modules (`…Limits.Targets`, `…PlusWitnessFamily`, `FormalSystem`) is newer than
+  the last source write, so the success line is backed by a real re-elaboration rather than a
+  cache hit.
+- `sorry` census over all four resolved source roots: `sorry_count: 0`, empty inventory.
+- `#print axioms` on all fourteen new theorems: `[propext, Classical.choice, Quot.sound]`, except
+  `untl_not_mem_top_subformulas`, which needs only `[propext]`. No axiom beyond the permitted
+  three, and the new module declares no `axiom` of its own, so the repository's axiom count is
+  unchanged at 14.
+- Both non-validity theorems are stated against `PlusValidZTime`. `PlusValidInt` does not occur in
+  the new module, and no carrier-normalization step is used — which is why this phase does not
+  consume the `plusValidZTime_iff_plusValidInt` prerequisite.
+- The vacuous-definition scan reports one repository-wide match,
+  `FormalSystem/Examples/TemporalStructures.lean:495` (`int_domain_universal … := trivial`). It is
+  pre-existing, outside this task's file scope, and not a placeholder: the ℤ-time history's domain
+  is total by construction, so `trivial` is the honest proof term there. Zero vacuous definitions
+  are attributable to this phase.
 
 ---
 
