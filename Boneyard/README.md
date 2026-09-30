@@ -105,7 +105,7 @@ links here rather than restating them.**
 | Archived `.lean` files | 169 |
 | Archived lines | 91,983 |
 | Top-level subdirectories | 40 |
-| Archive directories in the repository | 2 |
+| Archive directories in the repository | 1 |
 <!-- END GENERATED -->
 
 Those four rows are **generated, not typed**. `--emit-inventory` rewrites them from the tree and
