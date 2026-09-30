@@ -2807,7 +2807,8 @@ definition, so a widening forced by a future fixture is a change to two `def`s a
 - Guarded, detached, `--no-share` full `lake build`: `exit_status=0`, **zero** `error:` and **zero**
   `warning:` lines.
 - `lean-sorry-census.sh` over all four resolved source roots: `sorry_count: 0`.
-- `#print axioms` on every new declaration: within `[propext, Classical.choice, Quot.sound]`.
+- `#print axioms` on **every** public declaration of `Window.lean` (30, audited by name, zero
+  unknown-constant errors): each within `[propext, Classical.choice, Quot.sound]` or a subset.
 - Two Mathlib imports were added to reach `Int.ModEq` and `Finset.Ico`
   (`Mathlib.Data.Int.ModEq`, `Mathlib.Data.Int.Interval`). `Basic.lean`'s import closure supplies
   neither, and direct Mathlib imports are the established pattern in this library
@@ -2864,7 +2865,11 @@ them:
 - Guarded, detached, `--no-share` full `lake build`: `exit_status=0`, **zero** `error:` and **zero**
   `warning:` lines.
 - `sorry_count: 0`; axiom census 14, unchanged from `main`; vacuous census 1, unchanged from `main`.
-- `#print axioms` on every new declaration: within `[propext, Classical.choice, Quot.sound]`.
+- `#print axioms` on **every** public declaration of `Timed.lean` (21, audited by name, zero
+  unknown-constant errors): each within `[propext, Classical.choice, Quot.sound]`.
+- Across all four new modules: **150 declarations, 149 of them public and all 149 audited by name**.
+  Nine depend on no axiom at all, one on `[propext]`, one on `[propext, Quot.sound]`, and 138 on
+  `[propext, Classical.choice, Quot.sound]`. No `sorryAx` anywhere.
 
 **Remaining for sub-phase 15.3** (STEPS 4, 5, 6 — not started, nothing stubbed): the timed graph
 `succT` / `predT` off `succP` / `predP` and `nextTime` / `prevTime`, with their `verts` subset lemmas
@@ -3102,9 +3107,11 @@ better recorded as a lemma here than rediscovered in 16.2.
   commit): `exit_status=0`, 2788 and 2789 jobs, **zero** `error:` and **zero** `warning:` lines in
   each.
 - `lean-sorry-census.sh` over all four resolved source roots: `sorry_count: 0`.
-- `#print axioms` on twenty-six new declarations (twelve of `Fixture`, fourteen of `Stable`): every
-  one within `[propext, Classical.choice, Quot.sound]`; no `sorryAx` and no other axiom anywhere in
-  the output.
+- `#print axioms` on **every** public declaration of both new modules — 70 in `Fixture` and 28 in
+  `Stable`, audited by name with zero unknown-constant errors. Each is within
+  `[propext, Classical.choice, Quot.sound]` or a subset of it; no `sorryAx` and no other axiom
+  appears anywhere in the output. One `private` helper (`Fixture.cyc_singleton`) is not nameable
+  from outside and is covered transitively by every lemma that uses it.
 - No `sorry`, no `admit`, no vacuous placeholder in either module.
 
 **Remaining for 16.2** (not started, nothing stubbed): `L₀` / `R₀`, `TailStable` with its `Decidable`

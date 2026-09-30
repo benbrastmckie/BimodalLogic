@@ -520,8 +520,11 @@ restriction was taken, deliberately: see the Decisions entry below.
 - Sorry count: **0** (`lean-sorry-census.sh` over all four resolved source roots).
 - Vacuous count: **1**, identical to `main`'s — pre-existing, not introduced here.
 - Axiom count: **14**, identical to `main`'s — unchanged.
-- `#print axioms` on all sixty-four new declarations: each within
-  `[propext, Classical.choice, Quot.sound]`; no `sorryAx` anywhere in the output.
+- `#print axioms`: the four new modules carry **150 declarations, 149 of them public, and all 149
+  were audited by name** with zero unknown-constant errors — nine depend on no axiom at all, one on
+  `[propext]`, one on `[propext, Quot.sound]`, and 138 on
+  `[propext, Classical.choice, Quot.sound]`. No `sorryAx` anywhere in the output. The single
+  `private` helper is not nameable from outside and is covered transitively by its users.
 - Anti-goal compliance checked explicitly: **no `[Fintype TPos]`** anywhere (the `Fintype` on
   `verts`' subtype and `DecidableEq TPos` are confirmed by `example … := inferInstance`); `live_iff`
   untouched, so no one-directional weakening; the widening to `-2 * NB` / `NM + 2 * NF` is recorded
