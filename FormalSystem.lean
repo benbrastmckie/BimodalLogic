@@ -145,6 +145,7 @@ import FormalSystem.Metalogic.Decidability.FMP.TruthPreservation
 import FormalSystem.Metalogic.Decidability.IntPresentation
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Basic
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixpoint
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixture
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Frame
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Live

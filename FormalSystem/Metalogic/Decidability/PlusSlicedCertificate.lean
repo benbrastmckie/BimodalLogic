@@ -13,6 +13,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Window
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixture
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Stable
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Timed
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixpoint
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
@@ -86,6 +87,11 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   free from `verts`, confirmed by an `example`), and the wrapping `nextTime` / `prevTime` with their
   edge, membership and **faithfulness** lemmas — the wraps preserve the slice sequence, the target
   path's data and the position space alike. The fixpoints and the bridge to `Live` are not here yet
+- `PlusSlicedCertificate.Fixpoint`: the two **existential** fixpoint operators the sliced side
+  needs, at an arbitrary finite graph — `EGFix.gfp` (an infinite walk exists) and `EUFix.lfp`
+  (some walk delivers), each with membership proved **equivalent** to the existence of the walk it
+  describes. `AUFix` is the universal `A[g U e]` operator and is deliberately not used here; that
+  module's header records why an existential outer fixpoint cannot consume a universal inner one
 - `PlusSlicedCertificate.Stable`: the one-period transfer operators `Φ_back` / `Φ_fwd`, built from
   the one-step `stepBack` / `stepFwd`, with monotonicity at each level, the two subset lemmas
   placing their images on the doubled window's endpoint slices, and the soundness direction

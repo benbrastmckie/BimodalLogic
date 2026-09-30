@@ -1,0 +1,492 @@
+/-
+Copyright (c) 2026 Benjamin Brast-McKie. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Brast-McKie
+-/
+
+import Mathlib.Data.Finset.Card
+import Mathlib.Logic.Function.Iterate
+
+/-!
+# Two Existential Fixpoints on a Finite Graph
+
+`WitnessFamily/Sharing/Fulfil.lean`'s `AUFix` is the **universal** `A[g U e]` operator: the least
+set of vertices from which *every* forward walk delivers `e`. It is exactly right for the
+`Formula`-side (C2'), which demands that every thread of a presentation discharge its
+eventualities. This module supplies the two operators the *sliced* side needs instead, and they
+are both **existential**.
+
+## Why `AUFix` is the wrong operator here, and is deliberately not used
+
+The sliced certificate class exists precisely to replace the all-threads demand with fulfilment of
+**live** positions only — a position is live when *some* run occupies it and discharges its
+eventualities, not when every walk through it does. So the outer condition is an existential
+greatest fixpoint (`EGFix`: an infinite walk exists), and the eventuality-discharge inside it is an
+existential least fixpoint (`EUFix`: some walk delivers). A universal inner operator cannot serve an
+existential outer one: `A[g U e]` at a vertex says nothing about whether the *particular* walk the
+outer fixpoint is building ever delivers.
+
+This is a recorded departure from the plan's sub-phase 15.3 STEP 5, which named
+`AUFix.lfp G.verts G.succT` for the inner step. The plan's own Scope Hypothesis asked for `AUFix`'s
+binders to be read at implementation time; read, they give the stronger conclusion that `AUFix`
+supplies **neither** half here. `AUFix` itself is untouched and remains in use, unchanged, on the
+`Formula` side.
+
+## Both operators terminate without any `Fintype`
+
+Each is stated at an arbitrary vertex type with `DecidableEq` and an explicit `V : Finset α`, and
+each terminates by `V.card` — `EGFix` by a strictly *decreasing* chain from `V`, `EUFix` by a
+strictly *increasing* chain from `∅`. Nothing here asks the vertex type to be finite, which is what
+lets them run on the rolled timed carrier `TPos := G.Pos × ℤ`.
+
+## Main definitions
+
+- `EGFix.gfp` — the greatest `X ⊆ V` in which every vertex has a successor: the vertices that
+  begin an infinite walk inside `V`
+- `EUFix.lfp` — the least set from which some walk delivers `e` with `g` throughout
+
+## Main results
+
+- `EGFix.gfp_fixed` / `EGFix.gfp_greatest` — the fixpoint and its coinduction principle
+- `EGFix.exists_walk_of_mem_gfp` / `EGFix.mem_gfp_of_walk` — membership **is** the existence of an
+  infinite walk, in both directions
+- `EUFix.mem_lfp_iff` / `EUFix.lfp_least` / `EUFix.lfp_induction`
+- `EUFix.exists_path_of_mem_lfp` / `EUFix.mem_lfp_of_path` — membership **is** the existence of a
+  delivering finite path, in both directions
+
+## Tags
+
+fixpoint · finite-graph · existential · decidable
+-/
+
+namespace FormalSystem.Metalogic.Decidability
+
+/-!
+## `EG ⊤`: the vertices that begin an infinite walk
+
+The greatest fixpoint of "has a successor in the set", computed by contracting from `V`. A vertex
+survives every contraction exactly when it begins a walk that never leaves `V`, which on a finite
+`V` is exactly when it reaches a cycle.
+-/
+
+namespace EGFix
+
+variable {α : Type*} [DecidableEq α]
+
+/-- One contraction: keep the vertices of `X` that have at least one successor inside `X`. -/
+def step (succ : α → Finset α) (X : Finset α) : Finset α :=
+  X.filter (fun v => ∃ w ∈ succ v, w ∈ X)
+
+theorem mem_step (succ : α → Finset α) (X : Finset α) (v : α) :
+    v ∈ step succ X ↔ v ∈ X ∧ ∃ w ∈ succ v, w ∈ X := Finset.mem_filter
+
+theorem step_subset (succ : α → Finset α) (X : Finset α) : step succ X ⊆ X :=
+  Finset.filter_subset _ _
+
+/-- **The operator is monotone**, which is what makes the iteration a chain. -/
+theorem step_mono (succ : α → Finset α) {X Y : Finset α} (h : X ⊆ Y) :
+    step succ X ⊆ step succ Y := by
+  intro v hv
+  rw [mem_step] at hv ⊢
+  obtain ⟨hvX, w, hw1, hw2⟩ := hv
+  exact ⟨h hvX, w, hw1, h hw2⟩
+
+/-- The iteration of the operator from `V`. -/
+def iter (V : Finset α) (succ : α → Finset α) : ℕ → Finset α
+  | 0 => V
+  | n + 1 => step succ (iter V succ n)
+
+theorem iter_subset (V : Finset α) (succ : α → Finset α) : ∀ n, iter V succ n ⊆ V
+  | 0 => Finset.Subset.refl _
+  | n + 1 => subset_trans (step_subset _ _) (iter_subset V succ n)
+
+theorem iter_succ_anti (V : Finset α) (succ : α → Finset α) :
+    ∀ n, iter V succ (n + 1) ⊆ iter V succ n
+  | 0 => step_subset _ _
+  | n + 1 => step_mono succ (iter_succ_anti V succ n)
+
+theorem iter_anti (V : Finset α) (succ : α → Finset α) {m n : ℕ} (h : m ≤ n) :
+    iter V succ n ⊆ iter V succ m := by
+  induction n with
+  | zero =>
+      have hm : m = 0 := Nat.le_zero.mp h
+      subst hm
+      exact Finset.Subset.refl _
+  | succ k ih =>
+      rcases Nat.lt_or_ge m (k + 1) with hlt | hge
+      · exact subset_trans (iter_succ_anti V succ k) (ih (Nat.lt_succ_iff.mp hlt))
+      · have hm : m = k + 1 := le_antisymm h hge
+        subst hm
+        exact Finset.Subset.refl _
+
+/-- **Stabilization propagates**: once one contraction is fixed, every later index agrees. -/
+theorem iter_stab (V : Finset α) (succ : α → Finset α) {n : ℕ}
+    (h : iter V succ (n + 1) = iter V succ n) :
+    ∀ m, n ≤ m → iter V succ m = iter V succ n := by
+  intro m
+  induction m with
+  | zero =>
+      intro hm
+      have hn : n = 0 := Nat.le_zero.mp hm
+      subst hn
+      rfl
+  | succ k ih =>
+      intro hm
+      rcases Nat.lt_or_ge n (k + 1) with hlt | hge
+      · have hk : n ≤ k := Nat.lt_succ_iff.mp hlt
+        have hek : iter V succ k = iter V succ n := ih hk
+        have hstep : iter V succ (k + 1) = step succ (iter V succ n) := by
+          rw [← hek]; rfl
+        rw [hstep]
+        exact h
+      · have hn : n = k + 1 := le_antisymm hm hge
+        subst hn
+        rfl
+
+/--
+**The contraction stabilizes within `|V|` steps.**
+
+The pigeonhole on the cardinality measure, mirrored: a *decreasing* chain inside `V` that never
+repeats would have to run below zero.
+-/
+theorem exists_stab (V : Finset α) (succ : α → Finset α) :
+    ∃ n ≤ V.card, iter V succ (n + 1) = iter V succ n := by
+  by_contra hc
+  push Not at hc
+  have hcard : ∀ n, n ≤ V.card + 1 → (iter V succ n).card + n ≤ V.card := by
+    intro n
+    induction n with
+    | zero => intro _; simpa using Finset.card_le_card (iter_subset V succ 0)
+    | succ k ih =>
+        intro hk
+        have hk' : k ≤ V.card := by omega
+        have hne := hc k hk'
+        have hsub := iter_succ_anti V succ k
+        have hss : iter V succ (k + 1) ⊂ iter V succ k :=
+          Finset.ssubset_iff_subset_ne.mpr ⟨hsub, hne⟩
+        have hlt := Finset.card_lt_card hss
+        have hprev := ih (by omega)
+        omega
+  have h1 := hcard (V.card + 1) (le_refl _)
+  omega
+
+/-- **The `EG ⊤` fixpoint**: the contraction run to its stabilization bound. -/
+def gfp (V : Finset α) (succ : α → Finset α) : Finset α := iter V succ (V.card + 1)
+
+theorem gfp_subset (V : Finset α) (succ : α → Finset α) : gfp V succ ⊆ V :=
+  iter_subset _ _ _
+
+/-- **It is a fixpoint.** -/
+theorem gfp_fixed (V : Finset α) (succ : α → Finset α) :
+    step succ (gfp V succ) = gfp V succ := by
+  obtain ⟨n, hn, hstab⟩ := exists_stab V succ
+  have e1 : iter V succ (V.card + 1) = iter V succ n := iter_stab V succ hstab _ (by omega)
+  have e2 : iter V succ (V.card + 2) = iter V succ n := iter_stab V succ hstab _ (by omega)
+  change iter V succ (V.card + 2) = iter V succ (V.card + 1)
+  rw [e1, e2]
+
+/-- **Every vertex of the fixpoint has a successor inside it.** -/
+theorem exists_succ_mem_gfp (V : Finset α) (succ : α → Finset α) {v : α} (hv : v ∈ gfp V succ) :
+    ∃ w ∈ succ v, w ∈ gfp V succ := by
+  rw [← gfp_fixed V succ, mem_step] at hv
+  exact hv.2
+
+/--
+**It is the greatest post-fixpoint** — the coinduction principle. Any set inside `V` in which every
+vertex has a successor is contained in the fixpoint, which is what makes membership a *complete*
+test for beginning an infinite walk rather than merely a sufficient one.
+-/
+theorem gfp_greatest (V : Finset α) (succ : α → Finset α) {X : Finset α} (hXV : X ⊆ V)
+    (hstep : ∀ v ∈ X, ∃ w ∈ succ v, w ∈ X) : X ⊆ gfp V succ := by
+  have key : ∀ n, X ⊆ iter V succ n := by
+    intro n
+    induction n with
+    | zero => exact hXV
+    | succ k ih =>
+        intro v hv
+        change v ∈ step succ (iter V succ k)
+        rw [mem_step]
+        obtain ⟨w, hw1, hw2⟩ := hstep v hv
+        exact ⟨ih hv, w, hw1, ih hw2⟩
+  exact key _
+
+/-! ### Membership is exactly the existence of an infinite walk
+
+Both directions, so that a soundness proof cites one and a completeness proof the other rather than
+re-deriving either.
+-/
+
+/-- **A vertex of the fixpoint begins an infinite walk inside the fixpoint.** -/
+theorem exists_walk_of_mem_gfp (V : Finset α) (succ : α → Finset α) {v : α}
+    (hv : v ∈ gfp V succ) :
+    ∃ f : ℕ → α, f 0 = v ∧ (∀ k, f k ∈ gfp V succ) ∧ ∀ k, f (k + 1) ∈ succ (f k) := by
+  classical
+  have hnext : ∀ x : {a // a ∈ gfp V succ}, ∃ y : {a // a ∈ gfp V succ}, y.1 ∈ succ x.1 := by
+    intro x
+    obtain ⟨w, hw1, hw2⟩ := exists_succ_mem_gfp V succ x.2
+    exact ⟨⟨w, hw2⟩, hw1⟩
+  choose g hg using hnext
+  refine ⟨fun k => (g^[k] ⟨v, hv⟩).1, rfl, fun k => (g^[k] ⟨v, hv⟩).2, fun k => ?_⟩
+  change (g^[k + 1] ⟨v, hv⟩).1 ∈ succ (g^[k] ⟨v, hv⟩).1
+  rw [Function.iterate_succ_apply']
+  exact hg _
+
+/-- **A vertex beginning an infinite walk inside `V` is in the fixpoint.** -/
+theorem mem_gfp_of_walk (V : Finset α) (succ : α → Finset α) (f : ℕ → α) (hV : ∀ k, f k ∈ V)
+    (hs : ∀ k, f (k + 1) ∈ succ (f k)) : f 0 ∈ gfp V succ := by
+  classical
+  refine gfp_greatest V succ (X := V.filter (fun a => ∃ k, f k = a)) (Finset.filter_subset _ _)
+    ?_ (Finset.mem_filter.mpr ⟨hV 0, 0, rfl⟩)
+  intro a ha
+  obtain ⟨-, k, hk⟩ := Finset.mem_filter.mp ha
+  refine ⟨f (k + 1), ?_, Finset.mem_filter.mpr ⟨hV (k + 1), k + 1, rfl⟩⟩
+  rw [← hk]
+  exact hs k
+
+end EGFix
+
+/-!
+## `E[g U e]`: the vertices from which some walk delivers
+
+The least fixpoint of "some successor delivers now, or carries the guard and delivers later",
+computed from `∅`. This is `AUFix` with its universal successor quantifier replaced by an
+existential one, and nothing else; the proofs are the same proofs, which is the point.
+-/
+
+namespace EUFix
+
+variable {α : Type*} [DecidableEq α]
+
+/-- Prepending a vertex to a path. Definitional at both `0` and `k + 1`, which keeps the path
+arithmetic below free of natural subtraction. -/
+def cons (v : α) (f : ℕ → α) : ℕ → α
+  | 0 => v
+  | k + 1 => f k
+
+omit [DecidableEq α] in
+@[simp] theorem cons_zero (v : α) (f : ℕ → α) : cons v f 0 = v := rfl
+
+omit [DecidableEq α] in
+@[simp] theorem cons_succ (v : α) (f : ℕ → α) (k : ℕ) : cons v f (k + 1) = f k := rfl
+
+/--
+One step of the `E[g U e]` operator: the vertices **some** of whose successors either deliver the
+event now, or carry the guard and are already known to deliver it later.
+-/
+def step (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) (X : Finset α) : Finset α :=
+  V.filter (fun v => ∃ w ∈ succ v, isE w = true ∨ (isG w = true ∧ w ∈ X))
+
+theorem mem_step (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) (X : Finset α)
+    (v : α) :
+    v ∈ step V succ isE isG X ↔
+      v ∈ V ∧ ∃ w ∈ succ v, isE w = true ∨ (isG w = true ∧ w ∈ X) := Finset.mem_filter
+
+theorem step_subset (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) (X : Finset α) :
+    step V succ isE isG X ⊆ V := Finset.filter_subset _ _
+
+/-- **The operator is monotone**, which is what makes the iteration a chain. -/
+theorem step_mono (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) {X Y : Finset α}
+    (h : X ⊆ Y) : step V succ isE isG X ⊆ step V succ isE isG Y := by
+  intro v hv
+  rw [mem_step] at hv ⊢
+  obtain ⟨hvV, w, hw1, hw⟩ := hv
+  refine ⟨hvV, w, hw1, ?_⟩
+  rcases hw with he | ⟨hg, hx⟩
+  · exact Or.inl he
+  · exact Or.inr ⟨hg, h hx⟩
+
+/-- The iteration of the operator from `∅`. -/
+def iter (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) : ℕ → Finset α
+  | 0 => ∅
+  | n + 1 => step V succ isE isG (iter V succ isE isG n)
+
+theorem iter_subset (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) :
+    ∀ n, iter V succ isE isG n ⊆ V
+  | 0 => Finset.empty_subset _
+  | _ + 1 => step_subset _ _ _ _ _
+
+theorem iter_succ_mono (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) :
+    ∀ n, iter V succ isE isG n ⊆ iter V succ isE isG (n + 1)
+  | 0 => Finset.empty_subset _
+  | n + 1 => step_mono V succ isE isG (iter_succ_mono V succ isE isG n)
+
+theorem iter_mono (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) {m n : ℕ}
+    (h : m ≤ n) : iter V succ isE isG m ⊆ iter V succ isE isG n := by
+  induction n with
+  | zero =>
+      have hm : m = 0 := Nat.le_zero.mp h
+      subst hm
+      exact Finset.Subset.refl _
+  | succ k ih =>
+      rcases Nat.lt_or_ge m (k + 1) with hlt | hge
+      · exact subset_trans (ih (Nat.lt_succ_iff.mp hlt)) (iter_succ_mono V succ isE isG k)
+      · have hm : m = k + 1 := le_antisymm h hge
+        subst hm
+        exact Finset.Subset.refl _
+
+/-- **Stabilization propagates**: once one step is fixed, every later index agrees with it. -/
+theorem iter_stab (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) {n : ℕ}
+    (h : iter V succ isE isG (n + 1) = iter V succ isE isG n) :
+    ∀ m, n ≤ m → iter V succ isE isG m = iter V succ isE isG n := by
+  intro m
+  induction m with
+  | zero =>
+      intro hm
+      have hn : n = 0 := Nat.le_zero.mp hm
+      subst hn
+      rfl
+  | succ k ih =>
+      intro hm
+      rcases Nat.lt_or_ge n (k + 1) with hlt | hge
+      · have hk : n ≤ k := Nat.lt_succ_iff.mp hlt
+        have hek : iter V succ isE isG k = iter V succ isE isG n := ih hk
+        have hs : iter V succ isE isG (k + 1) = step V succ isE isG (iter V succ isE isG n) := by
+          rw [← hek]; rfl
+        rw [hs]
+        exact h
+      · have hn : n = k + 1 := le_antisymm hm hge
+        subst hn
+        rfl
+
+/-- **The iteration stabilizes within `|V|` steps.** -/
+theorem exists_stab (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) :
+    ∃ n ≤ V.card, iter V succ isE isG (n + 1) = iter V succ isE isG n := by
+  by_contra hc
+  push Not at hc
+  have hcard : ∀ n, n ≤ V.card + 1 → n ≤ (iter V succ isE isG n).card := by
+    intro n
+    induction n with
+    | zero => intro _; exact Nat.zero_le _
+    | succ k ih =>
+        intro hk
+        have hk' : k ≤ V.card := by omega
+        have hne := hc k hk'
+        have hsub := iter_succ_mono V succ isE isG k
+        have hss : iter V succ isE isG k ⊂ iter V succ isE isG (k + 1) :=
+          Finset.ssubset_iff_subset_ne.mpr ⟨hsub, fun hcon => hne hcon.symm⟩
+        have hlt := Finset.card_lt_card hss
+        have hprev := ih (by omega)
+        omega
+  have h1 := hcard (V.card + 1) (le_refl _)
+  have h2 : (iter V succ isE isG (V.card + 1)).card ≤ V.card :=
+    Finset.card_le_card (iter_subset V succ isE isG _)
+  omega
+
+/-- **The `E[g U e]` fixpoint**: the iteration run to its stabilization bound. -/
+def lfp (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) : Finset α :=
+  iter V succ isE isG (V.card + 1)
+
+theorem lfp_subset (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) :
+    lfp V succ isE isG ⊆ V := iter_subset _ _ _ _ _
+
+/-- **It is a fixpoint.** -/
+theorem lfp_fixed (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) :
+    step V succ isE isG (lfp V succ isE isG) = lfp V succ isE isG := by
+  obtain ⟨n, hn, hstab⟩ := exists_stab V succ isE isG
+  have e1 : iter V succ isE isG (V.card + 1) = iter V succ isE isG n :=
+    iter_stab V succ isE isG hstab _ (by omega)
+  have e2 : iter V succ isE isG (V.card + 2) = iter V succ isE isG n :=
+    iter_stab V succ isE isG hstab _ (by omega)
+  change iter V succ isE isG (V.card + 2) = iter V succ isE isG (V.card + 1)
+  rw [e1, e2]
+
+/-- **It is the least pre-fixpoint**, which is what excludes an eventuality that is passed around a
+cycle forever without ever being delivered. -/
+theorem lfp_least (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) {X : Finset α}
+    (h : step V succ isE isG X ⊆ X) : lfp V succ isE isG ⊆ X := by
+  have key : ∀ n, iter V succ isE isG n ⊆ X := by
+    intro n
+    induction n with
+    | zero => exact Finset.empty_subset _
+    | succ k ih => exact subset_trans (step_mono V succ isE isG ih) h
+  exact key _
+
+/-- Membership in the fixpoint, unfolded one step. -/
+theorem mem_lfp_iff (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) (v : α) :
+    v ∈ lfp V succ isE isG ↔
+      v ∈ V ∧ ∃ w ∈ succ v, isE w = true ∨ (isG w = true ∧ w ∈ lfp V succ isE isG) := by
+  constructor
+  · intro hv
+    rw [← lfp_fixed V succ isE isG, mem_step] at hv
+    exact hv
+  · intro hv
+    rw [← lfp_fixed V succ isE isG, mem_step]
+    exact hv
+
+/-- **Induction along the iteration.** -/
+theorem lfp_induction (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) {P : α → Prop}
+    (hstep : ∀ v ∈ V, (∃ w ∈ succ v, isE w = true ∨ (isG w = true ∧ P w)) → P v) :
+    ∀ v ∈ lfp V succ isE isG, P v := by
+  have key : ∀ n, ∀ v ∈ iter V succ isE isG n, P v := by
+    intro n
+    induction n with
+    | zero => intro v hv; simp only [iter] at hv; exact absurd hv (by simp)
+    | succ k ih =>
+        intro v hv
+        have hv' : v ∈ step V succ isE isG (iter V succ isE isG k) := hv
+        rw [mem_step] at hv'
+        obtain ⟨hvV, w, hw1, hw⟩ := hv'
+        refine hstep v hvV ⟨w, hw1, ?_⟩
+        rcases hw with he | ⟨hg, hx⟩
+        · exact Or.inl he
+        · exact Or.inr ⟨hg, ih w hx⟩
+  exact key _
+
+/-! ### Membership is exactly the existence of a delivering path
+
+Both directions, so that a soundness proof cites one and a completeness proof the other.
+-/
+
+/-- **A vertex of the fixpoint begins a finite path that delivers the event**, with the guard at
+every strictly intermediate vertex. -/
+theorem exists_path_of_mem_lfp (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) :
+    ∀ v ∈ lfp V succ isE isG,
+      ∃ (m : ℕ) (f : ℕ → α), 0 < m ∧ f 0 = v ∧ (∀ k < m, f (k + 1) ∈ succ (f k)) ∧
+        isE (f m) = true ∧ ∀ k, 0 < k → k < m → isG (f k) = true := by
+  refine lfp_induction V succ isE isG (fun v _ h => ?_)
+  obtain ⟨w, hw1, hw⟩ := h
+  rcases hw with he | ⟨hg, m', f', hm', hf0, hstep', he', hg'⟩
+  · refine ⟨1, cons v (fun _ => w), Nat.one_pos, rfl, ?_, he, ?_⟩
+    · intro k hk
+      have hk0 : k = 0 := by omega
+      subst hk0
+      simpa using hw1
+    · intro k hk0 hk1
+      omega
+  · refine ⟨m' + 1, cons v f', Nat.succ_pos _, rfl, ?_, he', ?_⟩
+    · intro k hk
+      cases k with
+      | zero => simpa [hf0] using hw1
+      | succ j => simpa using hstep' j (by omega)
+    · intro k hk0 hk1
+      cases k with
+      | zero => omega
+      | succ j =>
+          cases j with
+          | zero => simpa [hf0] using hg
+          | succ i => simpa using hg' (i + 1) (by omega) (by omega)
+
+/-- **A vertex beginning a delivering path is in the fixpoint.** -/
+theorem mem_lfp_of_path (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) (f : ℕ → α)
+    (m : ℕ) (hm : 0 < m) (hV : ∀ k, k < m → f k ∈ V) (hs : ∀ k < m, f (k + 1) ∈ succ (f k))
+    (he : isE (f m) = true) (hg : ∀ k, 0 < k → k < m → isG (f k) = true) :
+    f 0 ∈ lfp V succ isE isG := by
+  have key : ∀ d j, j + d + 1 = m → f j ∈ lfp V succ isE isG := by
+    intro d
+    induction d with
+    | zero =>
+        intro j hj
+        rw [mem_lfp_iff]
+        refine ⟨hV j (by omega), f (j + 1), hs j (by omega), Or.inl ?_⟩
+        rw [show j + 1 = m from by omega]
+        exact he
+    | succ c ih =>
+        intro j hj
+        rw [mem_lfp_iff]
+        exact ⟨hV j (by omega), f (j + 1), hs j (by omega),
+          Or.inr ⟨hg (j + 1) (by omega) (by omega), ih (j + 1) (by omega)⟩⟩
+  exact key (m - 1) 0 (by omega)
+
+end EUFix
+
+end FormalSystem.Metalogic.Decidability
