@@ -1,27 +1,28 @@
 {
   "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 34,
-  "summary": "Sub-phase 15.3 STEP 6d is landed and Phase 15 is COMPLETED, its last verification bullet included: the new module Bridge.lean proves G.Live s p <-> (p, s) in G.liveT at a window time, together with the Decidable instance for liveness that Phase 17's checker is written against, and Fixture.lean closes 15.3's gate by proof. Sub-phase 16.2 and Phases 17-21 remain; nothing is stubbed.",
+  "dispatch_seq": 36,
+  "summary": "Sub-phases 16.2a and 16.2b are landed in three green sub-steps and the plan's linchpin tailStable_iff_window is proved in BOTH directions at every time down either periodic tail. The Phi operators were re-indexed to the combined periods (settling the mismatch dispatch 34 flagged), liveAt/L0/R0/TailStable are defined with a synthesized Decidable instance, and the reverse direction is a three-region LabRun built with the new general runOfPos. Sub-phase 16.2c (exists_tailStable_repr and the fixture's re-presentation) remains, so Phase 16 stays [IN PROGRESS]; Phases 17-21 are NOT STARTED. Nothing is stubbed.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-4 summary extended with dispatch 34: sub-phase 15.3 complete (the bridge, its Decidable payoff, and 15.3's gate), the resolution taken on the box-clause question, and three corrections to the plan."
+      "summary": "Round-4 summary extended with dispatch 36: sub-phases 16.2a and 16.2b complete, the Phi re-indexing deviation, and tailStable_iff_window landed as a biconditional on both tails."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T175901Z.md",
-      "summary": "Resume point: sub-phase 16.2's four pieces in dependency order with a recommended 16.2a/16.2b split, the L0 indexing mismatch to settle first, and 19 carried-forward environment hazards."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-16-handoff-20260930T184127Z.md",
+      "summary": "Resume point: sub-phase 16.2c (exists_tailStable_repr plus the fixture's re-presentation), what it can build on, the G'.liveT hazard, and 23 carried-forward environment hazards."
     }
   ],
   "phases_completed": 15,
   "phases_total": 21,
   "blockers": [],
   "decisions_made": [
-    "The box-clause gap is closed by resolution (a): Basic.lean gains BoxLabelFaithful (C3b) with boxLabelFaithful_iff_window, threaded as a hypothesis through the four soundness declarations that need it. Dispatch 33's non-blocking user_decision on this is closed, not carried forward, per the user-decision contract's rule that a fully reversible in-repository choice is recorded rather than re-asked; the reversal cost is stated in the handoff.",
-    "The bridge is stated at a window time rather than at a general time, because FoldF and FoldB are disjoint away from the diagonal, so no single window time carries both half-line readouts outside the window. exists_foldF / exists_foldB are therefore not consumed by the bridge, contrary to the plan's instruction.",
-    "No fwdLive_iff_mem_fwdLiveT is landed and none should be sought: it would be false, since FwdLive demands a bi-infinite run that the forward fixpoint alone cannot produce. The completeness direction does factor and both its halves are landed separately.",
-    "15.3's gate is discharged by proof rather than by evaluation; decide is infeasible because liveT is a greatest fixpoint iterated verts.card + 1 times whose every iteration runs an inner least fixpoint of the same height."
+    "The indexing mismatch dispatch 34's handoff required be settled explicitly is settled by RE-INDEXING Phi_back/Phi_fwd to the combined periods (-G.NB -> G.winLo, G.NM+G.NF -> G.winHi), not by relating two indexings. Decisive reason: Timed.lean's prevTime_edge folds by G.NB, so an operator fixed for one G.nb-period constrains nothing about the fold TailStable exists to certify. Two supporting reasons and the reversal cost are recorded at the plan's Phase 16 heading and in the handoff.",
+    "L0 and R0 are sets of TWO-directionally live positions, read off G.liveT rather than G.fwdLiveT/G.bwdLiveT. Defining them from the one-directional fixpoints would have made the linchpin's reverse direction false, because fwdLiveT membership does not yield the bi-infinite run FwdLive demands. The transfer's soundness was therefore re-proved at that strength (live_subset_stepBack/live_subset_stepFwd), added alongside 16.1's forward-only pair rather than replacing it.",
+    "The reverse half of the linchpin was pursued to completion in this dispatch rather than deferred. It was first scoped out and committed in that state (16.2a carried a SCOPE section naming the three-region run as a later obligation), then landed, so the intermediate commit is a genuine green checkpoint and not a retracted claim.",
+    "No strengthening of the demand was needed, so the plan's Contingency branch (a deeper Phi iteration or a type-recurrence cut) was not taken and the fixture was not relaxed. One application of each period transfer suffices; iterBack_L0 is what makes it stand in for every later one, and it is not immediate from the equation because the reference time moves one period left with each application.",
+    "The right tail is a separate construction rather than a symmetry argument, because PlusSlicedCertificate is not symmetric under time reversal and runOfPos asks for succP steps; the right-tail chain runs along predP and is converted by mem_succP_iff_mem_predP."
   ]
 }

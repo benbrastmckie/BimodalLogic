@@ -1366,7 +1366,7 @@
         {
           "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
           "type": "summary",
-          "summary": "Round-4 summary extended with dispatch 34: sub-phase 15.3 complete (the bridge, its Decidable payoff, and 15.3's gate), the resolution taken on the box-clause question, and three corrections to the plan."
+          "summary": "Round-4 summary extended with dispatch 36: sub-phases 16.2a and 16.2b complete, the Phi re-indexing deviation, and tailStable_iff_window landed as a biconditional on both tails."
         }
       ],
       "next_artifact_number": 5

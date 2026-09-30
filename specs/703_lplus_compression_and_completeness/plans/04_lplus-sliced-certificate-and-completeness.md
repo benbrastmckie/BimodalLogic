@@ -3364,26 +3364,26 @@ easier to lose.
       each is monotone on `Finset G.Pos` — **not** `Finset (G.Pos χ)` as this bullet read before
       dispatch seq 28: 15.1 landed `G.Pos` with no `χ` parameter, because the relevant formula set is
       already fixed as `plusClosureOf (Γ ++ Del)`. See Phase 15's deviations block.
-- [ ] Define `L₀`, the live-position set computed from the window together with the forward tail,
-      and its mirror `R₀`.
-- [ ] Define `PlusSlicedCertificate.TailStable` as `Φ_back L₀ = L₀ ∧ Φ_fwd R₀ = R₀`, and prove it
+- [x] Define `L₀`, the live-position set computed from the window together with the forward tail,
+      and its mirror `R₀`. *(deviation: altered — landed as `liveAt` at two reference times, and the Φ operators were RE-INDEXED to the combined periods to make those reference times the window's own endpoints. See the 16.2 record below.)*
+- [x] Define `PlusSlicedCertificate.TailStable` as `Φ_back L₀ = L₀ ∧ Φ_fwd R₀ = R₀`, and prove it
       `Decidable`. Prove `tailStable_iff_window`: under tail-stability, the true forward-live sets
       at every `t = -k · |back|` coincide with `L₀`, so every stability clause is decidable on the
       window. **This is the lemma the whole design rests on**; state it as a biconditional or as
-      two named implications, never as a one-line `by simp`.
+      two named implications, never as a one-line `by simp`. *(deviation: altered — landed as a biconditional AND as two separately named implications, and about two-directional `Live` rather than `FwdLive`; the period is the combined `G.NB` / `G.NF`, not `|back|` / `|fwd|`. See the 16.2 record below.)*
 - [ ] Prove the **re-presentation lemma**, `exists_tailStable_repr`: for any `G`, there is a `G'`
       with the pre-period absorbed into `mid` and the period multiplied by the cycle length such
       that `G'.TailStable`, and `G'.frame` is isomorphic to `G.frame` — hence truth is unchanged.
       The sequence `Φ_back^k L₀` is eventually periodic because subsets of a finite position space
       are finite, which is what makes the pre-period and period exist. **State no order for
-      either**; see "Bounds: none, deliberately".
+      either**; see "Bounds: none, deliberately". *(deviation: deferred to sub-phase 16.2c — see the 16.2 record below.)*
 - [ ] Prove `Fixture.fourState` is **not** tail-stable as presented, and exhibit its
       re-presentation, so the fixture doubles as the worked example of
-      `exists_tailStable_repr`.
-- [ ] Record in the module docstring: what tail-stability is, why it is required (the fixture),
+      `exists_tailStable_repr`. *(deviation: deferred to sub-phase 16.2c, with `exists_tailStable_repr` it is the worked example of.)*
+- [x] Record in the module docstring: what tail-stability is, why it is required (the fixture),
       that it costs the checker exactly one `Φ` application beyond the Phase 15 fixpoints, and
       that a search on the paired repository's side must re-present an unstable countermodel
-      rather than reject it.
+      rather than reject it. *(all four recorded on `TailStable`'s own docstring and in `Stable.lean`'s header; the fourth is flagged there as argued-but-not-yet-proved until `exists_tailStable_repr` lands.)*
 
 **SUB-PHASE DEPENDENCY SPLIT — dispatch seq 28. The `Depends on` line below is correct for the
 phase as a whole and wrong for the fixture, and the seq-27 amendment left that unreconciled.**
@@ -3500,6 +3500,96 @@ better recorded as a lemma here than rediscovered in 16.2.
 instance, `tailStable_iff_window`, `exists_tailStable_repr`, and the fixture's own re-presentation as
 the worked example. All four need 15.3's computed liveness `Finset` first. The task bullet asking for
 `Fixture.fourState` to be shown not tail-stable now reads on `Fixture.cert`.
+
+**SUB-PHASES 16.2a AND 16.2b ARE LANDED — dispatch seq 36. One deviation of substance, the linchpin
+proved in both directions, and one sub-phase left.**
+
+*What landed, in three green sub-steps.* All in `PlusSlicedCertificate/Stable.lean`, which grew from
+287 to roughly 1,300 lines; no new module and no new import.
+- **16.2a** — the Φ re-indexing, the congruence/composition/period-shift machinery, `liveAt` with
+  `L₀` / `R₀`, `TailStable` with `decidableTailStable`, the `Live`-level transfer soundness, and the
+  forward half of the linchpin (`mem_L₀_of_live_tail`, `live_ref_of_live_tail`, and mirrors).
+- **16.2b** — `runOfPos`, `exists_chain_of_mem_iterBack`, and the three-region run, giving
+  `live_of_mem_L₀_tail`.
+- **16.2b (right tail)** — `exists_chain_of_mem_iterFwd`, `headPos`, `live_of_mem_R₀_head`, and then
+  `tailStable_iff_window` / `tailStable_iff_window_fwd` as biconditionals, with
+  `liveAt_tail_eq_L₀` / `liveAt_winLo_eq_L₀` as the `Finset` equalities Phase 17 reads.
+
+*DEVIATION OF SUBSTANCE — `Φ_back` / `Φ_fwd` are re-indexed to the COMBINED periods.* 16.1 landed
+them at the single-object reference times `-G.nb` → `-2 * G.nb` and `G.nm + G.nf` → `G.nm + 2 * G.nf`.
+They now run `-G.NB` → `G.winLo` and `G.NM + G.NF` → `G.winHi`. The handoff at the end of dispatch 34
+flagged this indexing mismatch and required it be settled explicitly rather than left to coexist; it
+is settled in favour of re-indexing, for a reason that is forced and not stylistic:
+
+1. **The fold `TailStable` exists to certify moves by `G.NB`, not by `G.nb`.** `Timed.lean`'s
+   `prevTime_edge` sends the unwrapped predecessor `-2 * G.NB - 1` to the window time `-G.NB - 1`,
+   and `nextTime_edge` shifts by `G.NF`. An operator fixed for one `G.nb`-period constrains nothing
+   about a fold that moves by `G.NB`.
+2. **`L₀` has to be readable off `G.liveT`, which is supported only on `G.winTimes`.** The re-indexed
+   reference times are window times by `neg_NB_mem_winTimes` / `NM_add_NF_mem_winTimes`, so
+   `mem_liveAt_iff_live` makes `L₀` / `R₀` *exactly* the declarative live sets there rather than
+   merely over-approximating them.
+3. **`Stable.lean`'s own 16.1 header already claimed the reference times "match the doubled window
+   endpoints"** — which `-G.nb` / `-2 * G.nb` are not, since `G.winLo = -2 * G.NB`. The landed
+   indexing contradicted its own stated purpose; this is a repair, not a redesign.
+Nothing outside `Stable.lean` consumed `Φ_back` / `Φ_fwd`, so the re-index touched no other module.
+Every 16.1 lemma survives with its statement re-indexed; the generic `stepBack` / `iterBack`,
+monotonicity at all three levels, and `fwdLive_subset_stepBack` / `bwdLive_subset_stepFwd` are
+unchanged.
+
+*THREE FURTHER CORRECTIONS TO THIS PHASE'S TASK BULLETS, recorded not absorbed.*
+1. **`tailStable_iff_window` is about two-directional `Live`, not `FwdLive`.** The bullet says "the
+   true forward-live sets". It cannot: `fwdLiveT` membership does **not** imply `FwdLive` (no
+   bi-infinite run), so a biconditional stated on the forward half alone is false in the `←`
+   direction. `G.liveT` is exact for `Live` in both directions (`Bridge.live_iff_mem_liveT`), so
+   `L₀` is a set of two-directionally live positions and the transfer's soundness had to be re-proved
+   at that strength — `live_subset_stepBack` / `live_subset_stepFwd`, whose witness is `live_iff`'s
+   single fully fulfilling run. This is a strengthening of what was asked, not a weakening.
+2. **The `←` direction needs a genuine three-region run, and no shift of a `LabRun` is a `LabRun`.**
+   `LabRun.agrees` and `LabRun.steps` are conditions at *every* time while the slice sequence is
+   periodic only away from `mid`, so the obvious "shift the run" argument fails outright. The landed
+   route is `runOfPos` (a `LabRun` from any family of positions at their own slices stepping along
+   `succP` — `Bridge`'s two-region walk splice is a special case) applied to: the reference run of
+   `p` shifted by the whole distance on the closed left half-line, the `Φ_back`-chain in the middle,
+   and the reference run of the chain's **endpoint** — a different member of `L₀` — on the closed
+   right half-line. Fulfilment is not spliced: `plusBwdFulfilling_of_le` reads the backward half off
+   region one and `plusFwdFulfilling_of_ge` the forward half off region three.
+3. **The right tail is a separate construction, not a symmetry argument.**
+   `PlusSlicedCertificate` is not symmetric under time reversal (`mid` sits at `[0, G.nm)`,
+   `slice_fwd` reads at or past `G.nm` and `slice_neg` strictly below `0`) and `runOfPos` asks for
+   `succP` steps in the one direction the carrier fixes, so the right-tail chain runs along `predP`
+   and is converted by `mem_succP_iff_mem_predP`. That adjointness lemma earns its keep here.
+
+*THE SCOPE HYPOTHESIS IS CONFIRMED, and the confirmation is not the trivial one.* The hypothesis
+asserts that one application suffices, noting that `Φ_back^k L₀ = L₀` is "immediate from the
+equation" but is "not by itself the claim that the true forward-live sets equal `L₀`". Both halves are
+now discharged separately: `iterBack_L₀` is the first (and is *not* immediate — the reference time
+moves one period left with each application, so the iterate has to be transported by
+`iterBack_shift`, which needs `slice` periodicity at a multiple of the combined period), and
+`tailStable_iff_window` is the second. **No strengthening of the demand was needed**, so the
+Contingency's "strengthen the demand" branch was not taken and the fixture was not relaxed.
+
+**Remaining as sub-phase 16.2c** (not started, nothing stubbed, no `sorry` and no placeholder
+anywhere): `exists_tailStable_repr`, and `Fixture.cert` shown not tail-stable together with its
+re-presentation as that lemma's worked example. `Frame.lean` is where the frame isomorphism has to
+land. Note for whoever takes it: dispatch 34 already landed the computed-side facts the fixture's
+instability argument needs (`mem_liveT_neg_one`, `mem_verts_neg_two`, `not_mem_liveT_neg_two`,
+`liveT_ne_empty_and_ne_verts`), and `Fixture.cert` has `G.NB = 1`, so its `L₀` sits at `-1` and
+`G.Φ_back L₀` at `-2` — which is exactly where `not_mem_liveT_neg_two` bites. Until 16.2c lands,
+`TailStable`'s docstring flags the harmlessness of the demand as argued but not proved.
+
+**Verification — MEASURED (16.2a + 16.2b):**
+- Four full guarded, detached, `--no-share` `lake build` runs over the whole library (one per green
+  sub-step plus the final docstring pass): each `exit_status=0`, **2797** jobs, **zero** `error:` and
+  **zero** `warning:` lines.
+- `lean-sorry-census.sh` over all four resolved source roots: `sorry_count: 0`.
+- `#print axioms` on **every** public declaration of `Stable.lean`, audited by name: each within
+  `[propext, Classical.choice, Quot.sound]`; zero unknown constants, no `sorryAx`.
+- `decidableTailStable` confirmed by `example (G) : Decidable G.TailStable := inferInstance`
+  synthesizing, as this phase's Verification block requires.
+- `exists_tailStable_repr` is absent rather than weakened, and no landed statement mentions a bound
+  on a period — confirmed by reading, since the lemma that would state one does not exist yet.
+- Vacuous census **1** and axiom census **14**, both unchanged from `main`.
 
 **Timing**: 4 hours (16.1 ≈ 2, 16.2 ≈ 2)
 
