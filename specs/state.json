@@ -1318,6 +1318,15 @@
         "FormalSystem/Metalogic/Decidability/PlusGraphCertificate/Finite.lean",
         "FormalSystem/Metalogic/Decidability/PlusGraphCertificate/Live.lean",
         "FormalSystem/Metalogic/Decidability/PlusGraphCertificate/Sound.lean",
+        "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean",
+        "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Basic.lean",
+        "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean",
+        "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Complete.lean",
+        "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Embed.lean",
+        "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Frame.lean",
+        "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Live.lean",
+        "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Sound.lean",
+        "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Stable.lean",
         "FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean",
         "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/",
         "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Cycle.lean",
@@ -1336,6 +1345,8 @@
         "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/README.md",
         "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/TransId.lean",
         "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md",
+        "FormalSystem/Semantics.lean",
+        "FormalSystem/Semantics/SlicedFrame.lean",
         "docs/theorem-index.md",
         "scripts/check-module-invariants.sh",
         "typst/generated/status.typ"
@@ -1359,12 +1370,11 @@
           "summary": "Semantics-first round: the compression statement is false against the landed certificate class (machine-checked), the four recorded obstructions share one root cause and sit downstream of a fifth fatal one, and the recommended target is a finite-graph certificate with computed liveness."
         },
         {
-          "path": "specs/703_lplus_compression_and_completeness/plans/02_lplus-certificate-limits-graph-certificate.md",
-          "type": "plan",
-          "summary": "Plan v2: withdraws the refuted compression theorem, preserves Phases 1-8 as landed work, and stages the re-scoped task on candidate H — Stage 1 (Phases 9-12) lands the refutation as library declarations and corrects the coverage documentation, Stage 2 (Phases 13-18) builds the finite-graph certificate, its decidable checker with computed liveness, soundness into PlusWitnessFamily.PlusRefutes, and completeness relative to finite models."
+          "path": "specs/703_lplus_compression_and_completeness/plans/04_lplus-sliced-certificate-and-completeness.md",
+          "type": "plan"
         }
       ],
-      "next_artifact_number": 4
+      "next_artifact_number": 5
     },
     {
       "project_number": 704,

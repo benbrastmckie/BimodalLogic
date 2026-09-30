@@ -1,38 +1,24 @@
 {
   "status": "planned",
-  "started_at": "2026-09-29T22:00:27Z",
-  "completed_at": "2026-09-29T22:57:00Z",
-  "dispatch_seq": 20,
   "artifacts": [
     {
       "type": "plan",
-      "path": "specs/703_lplus_compression_and_completeness/plans/02_lplus-certificate-limits-graph-certificate.md",
-      "summary": "Plan v2: withdraws the refuted compression theorem, preserves Phases 1-8 as landed work, and stages the re-scoped task on candidate H — Stage 1 (Phases 9-12) lands the refutation as library declarations and corrects the coverage documentation, Stage 2 (Phases 13-18) builds the finite-graph certificate, its decidable checker with computed liveness, soundness into PlusWitnessFamily.PlusRefutes, and completeness relative to finite models."
+      "path": "specs/703_lplus_compression_and_completeness/plans/04_lplus-sliced-certificate-and-completeness.md",
+      "summary": "Plan v4: Stage 1 (Phases 1-12) preserved verbatim; Stage 2 re-authored from the finite-graph PlusGraphCertificate to a time-sliced PlusSlicedCertificate presenting a frame on the infinite carrier ZxFin n, following report 706 Q1.4 items 1-7. Phases 13-21 replace plan v2's 13-18: sliced type and window-decided bi-seriality; FrameOver.ofSlicedStep with Limit/Saturation on finite fibres; positions, computed liveness and the Q5 factorization as an explicit lemma; tail-stability with the four-state fixture; the decidable checker; soundness; completeness relative to tail-stable sliced models; and a new phase proving the landed L witness family embeds. No bound on slice width or tail periods is committed."
     }
   ],
-  "next_steps": "Run /orchestrate 703 --implement to execute Phase 9 of the revised plan. Stage 3 (the finite model property) is a non-goal; its ready-to-file successor description is in the plan's Non-Goals and was deliberately NOT filed.",
+  "next_steps": "Run /implement 703 to execute the revised plan; the live work starts at Phase 9 (Stage 1), and the amended Stage 2 starts at Phase 13.",
   "metadata": {
-    "session_id": "sess_1790718025_853e34_703",
+    "session_id": "sess_1790753172_603239",
     "agent_type": "reviser-agent",
-    "delegation_depth": 1,
     "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "phase_count": 18,
-    "phases_landed": 8,
-    "phases_remaining": 10,
-    "estimated_hours": 35,
-    "plan_version": 2,
-    "supersedes": "specs/703_lplus_compression_and_completeness/plans/01_lplus-compression-completeness.md",
+    "phase_count": 21,
+    "estimated_hours": 67,
+    "plan_version": 4,
     "reports_integrated": [
       "01_lplus-compression-completeness-research.md",
-      "02_semantics-first-compression-research.md"
-    ],
-    "withdrawn_statement": "FormalSystem.Metalogic.Decidability.exists_plusSharingWitnessFamily_of_not_plusValidZTime",
-    "withdrawal_evidence": "specs/703_lplus_compression_and_completeness/probes/NoFiniteCertificate.lean (Probe703.compression_statement_fails)",
-    "dependency_waves": [[1,2],[3,6],[4],[5],[7],[8],[9],[10,11],[12],[13],[14],[15],[16],[17],[18]],
-    "verification": {
-      "validate_artifact": "PASS (--strict, 0 warnings)",
-      "challenge_goals_identifier_sets": "equal, 12 identifiers",
-      "lean_sources_edited": 0
-    }
+      "02_semantics-first-compression-research.md",
+      "706/01_lplus-finite-model-property-research.md"
+    ]
   }
 }
