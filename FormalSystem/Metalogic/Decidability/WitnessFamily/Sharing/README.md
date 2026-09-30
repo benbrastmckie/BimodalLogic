@@ -438,5 +438,12 @@ Within the repository: `../Basic.lean`, `../Predicates.lean`, `../Closure.lean`,
 - `../../BiLasso/README.md` — the single-lasso development and its stability-modal scope note
 - `FormalSystem/PlusLanguage/PlusDeterminism.lean` — `states_eq_of_deterministic` and
   `stab_iff_of_deterministic`, the two lemmas the stability discussion above turns on
-- [PlusWitnessFamily README](../../PlusWitnessFamily/README.md) — the landed L⁺ re-index, and
-  the empty certificate class that bounds what it can refute
+- [PlusWitnessFamily README](../../PlusWitnessFamily/README.md) — the landed L⁺ re-index, and the
+  **limits** that bound what it can refute. This is a coverage claim about the live L⁺ class, not a
+  note on pre-redesign history, so it is stated at its current strength: the class is **not** empty
+  — `Examples.lean` exhibits certificates for both stability targets — but it is **not complete**
+  either. `PlusWitnessFamily/Limits/NoCertificate.lean`'s `not_exists_plusCertifies_pumpTarget`
+  refutes completeness for the class outright, under no hypothesis, and
+  `Limits/HopFree.lean`'s `not_exists_hopFree_plusCertifies_hopTarget` refutes the hop-free
+  strategy separately. Nothing in this directory's substrate is implicated: both limits are about
+  what a *label* assignment can be made to satisfy.

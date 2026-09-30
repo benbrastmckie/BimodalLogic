@@ -11,8 +11,13 @@ import FormalSystem.PlusLanguage.PlusNonValidities
 # The Two Stability Targets, and Their Genuine ℤ-Time Non-Validity
 
 This module records the two schema instances that drove the substrate redesign, and the fact
-that each is a real ℤ-time non-validity. It no longer records an obstruction, because there is
-no longer one to record.
+that each is a real ℤ-time non-validity. It no longer records **the** obstruction it once
+recorded — the `share`-congruence collapse, which the `trans` substrate removed. It is not that
+there is no obstruction left to record: there is, at a different target and for a different
+reason, and it lives in `Limits/` —
+`Limits.NoCertificate.not_exists_plusCertifies_pumpTarget` (no family of the class certifies
+`pumpTarget`) and `Limits.HopFree.not_exists_hopFree_plusCertifies_hopTarget` (no hop-free family
+certifies `hopTarget`). What follows is about the retired congruences, and is accurate.
 
 ## What this module used to say, and why it no longer says it
 

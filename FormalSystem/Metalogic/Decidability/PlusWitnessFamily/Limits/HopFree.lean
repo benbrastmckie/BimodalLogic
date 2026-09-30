@@ -67,8 +67,10 @@ probe-local definitions, and the theorem is parametric in the atom.
 
 ## Main Results
 
-- `PlusSharingWitnessFamily.not_exists_hopFree_plusCertifies_hopTarget` — no hop-free family
-  certifies `hopTarget p`
+- `PlusSharingWitnessFamily.not_plusCertifies_hopTarget_of_hopFree` — no hop-free family
+  certifies `hopTarget p`, universally quantified
+- `PlusSharingWitnessFamily.not_exists_hopFree_plusCertifies_hopTarget` — the same, in the
+  existential shape the plan's Lean Challenge Statement pins
 - `PlusSharingWitnessFamily.hopFree_branchesTrue`, `.hopFree_branchesFalse` — the forced
   successors, stated separately because both limit arguments read them
 - `PlusSharingWitnessFamily.hopFree_deviates` — the state-level deviation at every time
@@ -225,9 +227,12 @@ The hypothesis is spelled exactly as `TransId.lean`'s `hid`, so this theorem and
 four collapse theorems quantify over the same class of families. What is bounded is the hop-free
 *strategy*; `hopTarget p` is refutable, by `not_plusValidZTime_hopTarget`, just not this way.
 
+The universally-quantified workhorse; `not_exists_hopFree_plusCertifies_hopTarget` below is the
+existential form the plan pins, and is a one-line consequence.
+
 Paper: — (a formalization-native limit; the paper states no such result)
 -/
-theorem not_exists_hopFree_plusCertifies_hopTarget
+theorem not_plusCertifies_hopTarget_of_hopFree
     (S : PlusSharingWitnessFamily ([] : PlusContext) (hopDelta p)) (t : ℤ)
     (hid : ∀ (u : ℤ) (i j : Fin S.lassos.length), S.trans u i j → i = j) :
     ¬ S.PlusCertifies t := by
@@ -301,6 +306,20 @@ theorem not_exists_hopFree_plusCertifies_hopTarget
     · exact hk2 ((y : ℕ) : ℤ) (by rw [← hxy]; exact hk1 _ _ (by omega))
   have := Fintype.card_le_of_injective _ hinj
   simp at this
+
+/--
+**Hop-free families are incomplete**, existentially.
+
+The pinned statement shape: no family of the class is *both* hop-free and certifying, at any time.
+Logically the same content as `not_plusCertifies_hopTarget_of_hopFree`, stated in the form the
+plan's Lean Challenge Statement fixes so that the flagship does not drift.
+
+Paper: — (a formalization-native limit; the paper states no such result)
+-/
+theorem not_exists_hopFree_plusCertifies_hopTarget (p : Atom) :
+    ¬ ∃ (S : PlusSharingWitnessFamily ([] : PlusContext) (hopDelta p)) (t : ℤ),
+        (∀ (u : ℤ) (i j : Fin S.lassos.length), S.trans u i j → i = j) ∧ S.PlusCertifies t :=
+  fun ⟨S, t, hid, hc⟩ => not_plusCertifies_hopTarget_of_hopFree S t hid hc
 
 end PlusSharingWitnessFamily
 

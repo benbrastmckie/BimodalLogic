@@ -39,9 +39,24 @@ On a hop-free family the collapse is exact, not merely sufficient:
 Hop-freedom constrains `trans`, not `share`. The representative structure stays as branching as
 the producer makes it, so (C0) and (C5) keep their content: (C5) quantifies over the `share`-class
 at one time and never over succession. This is the separation the succession redesign exists to
-make expressible, and it is why the hop-free bundle is the compression's choice rather than
-`transFullOf`. Under `transFullOf`, (C1')'s two clauses revert to the pre-redesign reading that
-made the certificate class empty for exactly the stability targets the compression must certify.
+make expressible, and it is why the hop-free bundle was the intended producer's choice rather
+than `transFullOf`. Under `transFullOf`, (C1')'s two clauses revert to the pre-redesign reading
+that made the certificate class empty for exactly the stability targets such a producer must
+certify.
+
+## There is no compression, and hop-freedom is incomplete
+
+The compression this module's second heading anticipates does not exist: no theorem in this tree
+produces a certifying family from an arbitrary ℤ-time non-validity, and none can for the class as
+it stands (`Limits/NoCertificate.lean`). Hop-freedom fails one step earlier and independently:
+`Limits/HopFree.lean`'s `not_exists_hopFree_plusCertifies_hopTarget` shows no hop-free family
+certifies `hopTarget`, because a hop-free family presents at most `lassos.length` distinct state
+paths while that target forces unboundedly many.
+
+**The four theorems below remain true, remain proved, and are kept.** They are statements about
+what hop-freedom buys a producer that already has per-lasso data; that they cannot be fed by a
+general producer does not touch them. Read them as a substrate fact, not as a completeness
+strategy.
 
 ## Main Results
 

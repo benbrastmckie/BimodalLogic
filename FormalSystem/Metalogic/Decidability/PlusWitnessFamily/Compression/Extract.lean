@@ -45,6 +45,32 @@ stays correct with no side condition.
 - `plusMidBoundC` — the mid-segment bound, twice one full residue system
 - `plusCompressionBound` — the segment-length bound the L⁺ compression theorem states
 
+## The alignment half is retained and unused
+
+Everything from `plusAlignOffset` (line 147) through
+`exists_plusLabelledLasso_of_history_aligned` (line 770) — the offset definition, its two
+arithmetic lemmas, `shiftBy` and its readout lemmas, the two `comp_sub` transport lemmas, and the
+aligned extraction itself — has **no consumer in this tree**, and is expected to have none.
+
+It was built for an L⁺ compression theorem that does not exist and cannot exist for the landed
+certificate class: `PlusWitnessFamily/Limits/NoCertificate.lean`'s
+`not_exists_plusCertifies_pumpTarget` refutes that theorem outright, under no hypothesis. Absolute-
+time alignment is exactly the step a compression needs and a time-sliced certificate does not — a
+slice's own time is the only time there is, so there is no absolute origin to align rows to and no
+offset to compute.
+
+It is **kept rather than deleted** for two reasons. First, it is correct, non-trivial and tested by
+elaboration: the `two_mul_plusAlignOffset_le` arithmetic (shifting a mid of length `a + b` from
+landing offset `a` to `plusAlignOffset` leaves `b + plusAlignOffset < 2 * plusAlignOffset`) is the
+kind of bound that is cheaper to keep than to re-derive, and any future device that does pin rows to
+an absolute origin will want it. Second, deleting it would erase the record of what the withdrawn
+route actually required, which is part of why the withdrawal is intelligible.
+
+C17's dead-declaration census is therefore **expected to report this block**. C17 is reporting-only
+and never affects the exit code, so this paragraph is documentation of an intended state, not a
+waiver of a gate. A reader who finds these declarations in a C17 report should read this section
+rather than assume an oversight.
+
 ## Main Results
 
 - `plusTypeOfT_unrollOf` — the type component of a decoded L⁺ datum is the decoded label

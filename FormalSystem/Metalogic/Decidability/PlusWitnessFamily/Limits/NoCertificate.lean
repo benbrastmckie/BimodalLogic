@@ -417,7 +417,11 @@ theorem not_plusCertifies_pumpTarget
     have := hr_lt s
     omega
 
-/-- **No family certifies `pumpTarget p`**, existentially. -/
+/--
+**No family certifies `pumpTarget p`**, existentially.
+
+Paper: — (a formalization-native limit; the paper states no such result)
+-/
 theorem not_exists_plusCertifies_pumpTarget (p : Atom) :
     ¬ ∃ (S : PlusSharingWitnessFamily ([] : PlusContext) (pumpDelta p)) (t : ℤ),
         S.PlusCertifies t :=
