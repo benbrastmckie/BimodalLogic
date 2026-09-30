@@ -15,6 +15,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Stable
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Timed
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixpoint
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Computed
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fold
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
@@ -98,6 +99,12 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   `untlReach` / `snceReach` (`EUFix.lfp`: some walk delivers), each with **both** directions of its
   own graph-theoretic characterization. It does **not** claim any of the four equals `Live`; that
   equality is the bridge, and nothing here stands in for it
+- `PlusSlicedCertificate.Fold`: the two folding relations `FoldF` / `FoldB` on times, with each
+  wrap proved to be a fold (`foldF_nextTime` / `foldB_prevTime`) and folded times proved to carry
+  the same slice, the same target datum, the same edge relation, the same position space and the
+  same one-step position graph. Each relation carries the **residue** condition rather than the data
+  agreement it implies, because only the residue survives a common step (`foldF_succ` /
+  `foldB_pred`). This is what will let a graph walk be read as a ℤ-indexed run
 - `PlusSlicedCertificate.Stable`: the one-period transfer operators `Φ_back` / `Φ_fwd`, built from
   the one-step `stepBack` / `stepFwd`, with monotonicity at each level, the two subset lemmas
   placing their images on the doubled window's endpoint slices, and the soundness direction
