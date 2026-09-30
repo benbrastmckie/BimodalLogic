@@ -118,11 +118,16 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   positions are positions of the **genuine** slices and step along `succP` / `predP` at the
   **genuine** times, with `fwdWalkPos` / `bwdWalkPos` reading them off as functions of the time. It
   builds no `LabRun` and mentions no `Live`
-- `PlusSlicedCertificate.Stable`: the one-period transfer operators `Φ_back` / `Φ_fwd`, built from
-  the one-step `stepBack` / `stepFwd`, with monotonicity at each level, the two subset lemmas
-  placing their images on the doubled window's endpoint slices, and the soundness direction
-  `fwdLive_subset_stepBack` / `bwdLive_subset_stepFwd`. `TailStable` and its bridges are **not**
-  here: they consume `Bridge`'s equality and are still ahead
+- `PlusSlicedCertificate.Stable`: the one-**combined**-period transfer operators `Φ_back` / `Φ_fwd`,
+  built from the one-step `stepBack` / `stepFwd`, with monotonicity at each level, the two subset
+  lemmas placing their images on the window's own endpoint slices, the soundness direction
+  `fwdLive_subset_stepBack` / `bwdLive_subset_stepFwd` and its two-directional counterpart
+  `live_subset_stepBack` / `live_subset_stepFwd`, and `TailStable` with `decidableTailStable`,
+  `L₀` / `R₀` read off `Bridge`'s equality, and **both** directions of the linchpin
+  `tailStable_iff_window`: the transfer's soundness iterated (`mem_L₀_of_live_tail`) and the
+  three-region run `runOfPos` builds from a shifted reference run, a `Φ_back`-chain and a second
+  reference run (`live_of_mem_L₀_tail`), with right-tail mirrors for both.
+  `exists_tailStable_repr` is **not** here and is sub-phase 16.2's remaining obligation
 - `PlusSlicedCertificate.LiveFix`: the **eventuality-aware** liveness fixpoint — `fwdLiveT` /
   `bwdLiveT` / `liveT` as a nested `Nu.gfp` whose inner reachability is relativized to the set being
   contracted, both directions of its fixpoint characterization, and `exists_fwdLive_walk` /
