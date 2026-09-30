@@ -17,6 +17,7 @@ import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Fulfil
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Agreement
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Examples
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Incompleteness
+import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Limits.Targets
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusWitnessFamily` — the L⁺ certificate
@@ -73,6 +74,9 @@ interface is affected by this one's existence.
   them genuine ℤ-time non-validities. The five declarations that once recorded the certificate
   class as empty for a `snce` under a `⊡` were retired when the `trans` substrate landed; see
   that module's header.
+- `PlusWitnessFamily.Limits.Targets`: the two *limit* targets — `hopTarget` and `pumpTarget` —
+  their ℤ-time non-validity, and the two subformula-closure membership chains the limit theorems
+  read. The limits themselves are stated beside it; this module is only their specification.
 
 ## Why (C5) is a pinned obligation rather than a signature
 
