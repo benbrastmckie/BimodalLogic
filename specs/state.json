@@ -1351,7 +1351,7 @@
         696
       ],
       "created": "2026-09-29T05:45:32Z",
-      "last_updated": "2026-09-30T10:09:07Z",
+      "last_updated": "2026-09-30T10:37:42Z",
       "session_id": "sess_1790754653_96e30c",
       "artifacts": [
         {
@@ -1366,7 +1366,7 @@
         {
           "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
           "type": "summary",
-          "summary": "Round-04 implementation summary, extended with dispatch 25's Phase 14 and Phase 15.1 work, its measured verification, and the two findings."
+          "summary": "Cumulative task summary, extended with the Phase 15.2 record, the superseded-routes decision, six plan deviations, and dispatch 27's measured verification."
         }
       ],
       "next_artifact_number": 5

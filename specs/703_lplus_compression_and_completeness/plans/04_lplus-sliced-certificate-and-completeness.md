@@ -2296,7 +2296,7 @@ directions with **both** directions of the characterization proved, and prove th
 that justifies combining them. This is Stage 2's novel core and one of its two highest-risk phases.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Live.lean`. *(deviation: deferred to 15.2 — 15.1's content landed in two files instead, `Splice.lean` and `Position.lean`; see the deviations block)*
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Live.lean`. *(deviation: altered — 15.1's content landed in two files instead, `Splice.lean` and `Position.lean`; `Live.lean` itself was created in 15.2 and holds the declarative liveness layer, not a computed fixpoint. See the 15.2 resolution block.)*
 - [x] Define `G.Pos χ`: *(deviation: altered — `G.Pos` carries no `χ` parameter; see the deviations block)* pairs of a slice state and a Hintikka type over the subformulas of `χ`
       that agrees with `G.slab t w` on the state formulas at the relevant slice. Prove it is a
       `Fintype` with a `DecidableEq`, and bound its cardinality by `G.n * 2 ^ |subformulas χ|`.
@@ -2326,26 +2326,26 @@ that justifies combining them. This is Stage 2's novel core and one of its two h
       `(t, w)`" is "no backward continuation in the backward language at `h`, **or** no forward
       continuation in the forward language at `h`". **This lemma is the justification for
       `live = fwdLive ∩ bwdLive`**, and the module docstring must say so by name.
-- [ ] Record, as a one-line lemma or a docstring note citing `PlusFormula.reflectTime`, *(deviation: deferred to 15.2; the `succP`/`predP` adjointness `mem_succP_iff_mem_predP` is landed and is the mechanical half of it)* that the
+- [x] Record, as a one-line lemma or a docstring note citing `PlusFormula.reflectTime`, *(deviation: altered — the reflection was NOT cheap at the declarative level, so the plan's own sanctioned fallback was taken: `BwdLive` and its whole supporting chain (`snce_push`, `plusBwdFulfilling_of_le`, `splice_bwdFulfilling`, `bwdLive_step`) were WRITTEN as the mirror of the forward chain rather than DERIVED from it by time reflection. `mem_succP_iff_mem_predP` remains the mechanical half. Whether 15.3's computed backward fixpoint can be derived by reflection instead is reopened there, where the objects are `Finset`s and a reflection is a concrete map.)* that the
       backward condition is the forward one on the reversed slice graph, so `bwdLive` is `fwdLive`
       of the time-reflected certificate. Use this to avoid writing the backward fixpoint twice if
       the reflection is cheap; if it is not, write both and record that it was written rather than
       derived.
-- [ ] Define `G.fwdLive t χ`, the forward-live positions at slice `t`: the greatest set `X` of
+- [ ] *(deviation: deferred to 15.3 and re-carriered — the greatest-fixpoint `Finset` is ill-posed on the time-indexed carrier; 15.2 landed the declarative `FwdLive` with both characterization directions instead. See the 15.2 resolution block.)* Define `G.fwdLive t χ`, the forward-live positions at slice `t`: the greatest set `X` of
       positions such that from every position of `X` there is a `succP`-path inside `X`
       discharging each eventuality pending at it. Implement as a decreasing `Finset` iteration
       whose inner reachability step is the least fixpoint `AUFix.lfp`, imported from
       `WitnessFamily/Sharing/Fulfil.lean` — it is stated at `{α : Type*} [DecidableEq α]` and
       mentions no formula, so it is reused, not transcribed. Prove termination and the fixpoint
       property.
-- [ ] Define `G.bwdLive t χ` symmetrically on `predP`, and `G.live t χ := G.fwdLive t χ ∩ G.bwdLive t χ`.
-- [ ] Prove the **soundness direction**, `mem_live_of_path`: a position occupied at slice time `t`
+- [ ] Define `G.bwdLive t χ` symmetrically on `predP`, and `G.live t χ := G.fwdLive t χ ∩ G.bwdLive t χ`. *(deviation: deferred to 15.3; 15.2 landed `BwdLive` and `Live := FwdLive ∧ BwdLive` declaratively, with `live_iff` as the justification for the conjunction.)*
+- [x] *(deviation: altered — landed as `live_of_path`, not `mem_live_of_path`: `Live` is a `Prop`, so there is no `∈` to name. Stated at `∀ t`, no window restriction.)* Prove the **soundness direction**, `mem_live_of_path`: a position occupied at slice time `t`
       by a bi-infinite locally coherent, fulfilling labelled path of `G` is live.
-- [ ] Prove the **completeness direction**, `exists_path_of_mem_live`: every live position lies on
+- [x] *(deviation: altered — landed as `exists_path_of_live`, and factored through the LABEL-level splice (`splice`, `splice_fwdFulfilling`, `splice_bwdFulfilling`) rather than through `stab_factors`, which is the SEMANTIC counterpart and is what Phases 18/19 consume. Neither derives the other; both are landed and the plan now says so.)* Prove the **completeness direction**, `exists_path_of_mem_live`: every live position lies on
       such a path. Factor it through the Q5 factorization above — a position lies on a bi-infinite
       fulfilling labelled path exactly when it has a fulfilling forward half and a fulfilling
       backward half — so the two fixpoints are combined rather than solved jointly.
-- [ ] Record in the module docstring why liveness is computed rather than demanded, naming the
+- [x] *(deviation: altered — `Live.lean`'s header records why liveness is a property of the certificate's own runs rather than a demanded field, naming `not_exists_plusCertifies_pumpTarget`. "Computed" is 15.3's word: 15.2's claim is the weaker and true one, that liveness adds no field and no obligation on the certificate's author.)* Record in the module docstring why liveness is computed rather than demanded, naming the
       refutation: a demanded all-threads fulfilment condition on a finite eventually periodic
       structure is refuted by `not_exists_plusCertifies_pumpTarget`, and asking only live positions
       to fulfil is exactly what removes that root cause.
@@ -2464,6 +2464,132 @@ precisely the object that shows the naive periodic extension is unsound, which i
 that the two phases are entangled.
 
 
+**RESOLUTION OF THE 15.2 ORDERING QUESTION — dispatch seq 27, recorded not absorbed.**
+
+The question above is **settled, and both of its candidate routes are superseded.** The decision
+rests on a mid-dispatch blocker-research finding (`.blocker-research.json`, this task's directory),
+which root-caused the symptom the FINDING correctly described but misattributed.
+
+*Root cause, restated.* `Position.lean`'s carrier factors time **out**:
+`Pos := Fin G.n × Lab Γ Del`, so time reappears as an index on everything derived (`posAt : ℤ → …`,
+`succP : ℤ → …`). A greatest fixpoint of a slice-indexed condition therefore lives in
+`(Finset Pos)^ℤ`, a lattice of **infinite height**, and the finite-lattice termination argument is
+not merely unavailable but false as a *uniform* claim: each individual `t` stabilizes within
+`card Pos` strict decreases, but bad news propagates leftward one slice per iteration, so strict
+decreases occur at unboundedly large iteration counts and no single `K` works for every `t`.
+
+*The fix is a transcription, not new mathematics.* The `Formula` side does the **opposite** in the
+very module Phase 15 was told to import `AUFix` from: `SharingWitnessFamily.Pos` is
+`Fin S.lassos.length × ℤ` — time **in** the carrier — with finiteness living on `verts`, a `Finset`
+of positions formed as `Finset.univ ×ˢ winTimes`, closed under **wrapping** `nextTime` / `prevTime`
+that fold by one period at the window edges. `AUFix` needs only `[DecidableEq α]` and an explicit
+`V : Finset α`, and terminates by `V.card`. So termination never needed eventual periodicity at all.
+
+*Consequence for the two recorded candidates.* **Route (i) is unnecessary** — Phase 16's transfer
+operators are not what makes the computation finite. **Route (ii) has the right statement shape but
+keeps the disease** — it leaves `fwdLive` a `t`-indexed object. The L-side rolled carrier is a third
+route the plan did not list, and it is the right one for the *computation*.
+
+**The split actually taken — the Prop/compute seam, and why it is neither (i) nor (ii) nor a bare
+(iii).** Sub-phase 15.2 lands `Live.lean`: the **declarative** liveness predicates and **both**
+characterization directions, at an arbitrary `t : ℤ` with no window restriction. The *computation*
+on the rolled timed carrier moves to sub-phase 15.3 and Phase 16. The reason for cutting here rather
+than at route (ii)'s window/`∀ t` seam: route (ii) would have restricted `mem_live_of_path` and
+`exists_path_of_mem_live` to window times, and Phases 18 and 19 — the two phases that cite them —
+need the `∀ t` form, so each would have had to re-extend a lemma the plan promised them whole. The
+seam taken leaves both lemmas in the form those phases consume, and makes the rolled carrier's job
+precise and checkable: 15.3 must prove its computed `Finset` **equals** this module's declarative
+object at the times the checker reads, which is exactly the wrap-faithfulness obligation and is a
+statement the route-(ii) split could not even have formulated.
+
+**What 15.2 landed** (all in `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Live.lean`):
+- `PlusFwdFulfilling` / `PlusBwdFulfilling`, the two halves of `PlusFulfillingSeqLab`, with
+  `plusFulfillingSeqLab_iff_halves` (definitional, so no use site unfolds the conjunction).
+- `untl_push` / `snce_push` — **the content**: an undischarged eventuality propagates across the
+  splice time. Each consumes only the corresponding one-step unfolding clause of
+  `PlusLocalCoherentSeqLab`, so each holds of an arbitrary locally coherent labelling, not only of a
+  run. `plusFwdFulfilling_of_ge` / `plusBwdFulfilling_of_le` are the half-line forms.
+- `PlusSlicedCertificate.LabRun`, a bi-infinite labelled run, with `pos`, `pos_eq_iff`,
+  `pos_mem_posAt`, `pos_mem_succP`, `pos_mem_predP` — the last three are exactly the three lemmas
+  15.1 landed in place of the false totality obligation, consumed here as intended.
+- `FwdLive` / `BwdLive` / `Live`, and `mem_posAt_of_fwdLive` / `mem_posAt_of_live`.
+- `fwdLive_step` / `bwdLive_step` — liveness advances along `succP` / `predP`. These are what 15.3's
+  transfer operators consume. Only these directions are available from the definitions, and
+  deliberately so: the converse needs the splice, not a one-step lemma.
+- `spliceSt` / `spliceLab` / `splice` with `splice_pos`, `splice_fwdFulfilling`,
+  `splice_bwdFulfilling` — the label-level splice. **No `paste` is needed**: two runs agreeing at
+  `t` splice by a literal `if s ≤ t`, and `PlusPasting` is required only once the claim is
+  transported to histories, which is Phase 18/19's business.
+- `live_of_path` (soundness), `exists_path_of_live` (completeness, by splicing), and `live_iff`,
+  the two directions as one biconditional. **Both directions are named declarations at `∀ t`**,
+  which is the plan's own verification criterion for this phase.
+
+**`live = fwdLive ∩ bwdLive` is now justified twice, at two levels, and neither derives the other.**
+`stab_factors` (15.1, `Splice.lean`) splits the existential over `WorldHistory`; `live_iff` (15.2)
+splits the same existential over label sequences. The semantic half is what Phases 18 and 19 read
+the `⊡`-clause through; the syntactic half is what the liveness computation is about. Recorded here
+because a reader could reasonably expect one to be a corollary of the other, and it is not.
+
+**Deviation: `Live` is a `Prop`, not a `Finset`.** The plan asks for `G.fwdLive t χ` as a computed
+`Finset` and for "termination and the fixpoint property". Neither is in 15.2, and no placeholder
+stands in for them — the declarations simply do not exist yet. `Live` is not vacuous: it is the
+genuine semantic object, and both directions of its characterization are proved. What it is **not**
+is decidable, and Phase 17's decidability therefore depends on 15.3's computed form plus the
+equality theorem, not on this module. That dependency is stated rather than discovered later.
+
+**Non-emptiness is Phase 19's obligation, and is flagged rather than assumed.** Nothing in 15.2
+exhibits a `LabRun`. If no run existed for a given certificate, every position would be non-live and
+the checker's `⊡`-clause would be trivially satisfied. `live_iff`'s `→` direction is what makes that
+visible rather than silent, and Phase 19 must exhibit runs from `G.BiSerial` plus type completion.
+Do not treat 15.2 as having discharged it.
+
+**Verification — MEASURED (15.2):**
+- Guarded, detached, `--no-share` scoped build of
+  `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Live`: `exit_status=0`, 1213 jobs,
+  **zero** `error:` and **zero** `warning:` lines; `Live.olean` confirmed newer than `Live.lean`.
+  The module compiled on the **first** attempt (the two warnings the first build emitted were
+  unused `simp` arguments, removed before the recorded run).
+- `#print axioms` on all twenty-six new declarations: each within
+  `[propext, Classical.choice, Quot.sound]`; no other axiom appears anywhere in the output.
+- No `sorry`, no `admit`, no vacuous placeholder in the module.
+
+**Remaining for sub-phase 15.3** (not started, nothing stubbed) — the L-side transcription, in this
+order, with the plan's anti-goals restated at the end:
+1. **Re-carrier.** `TPos := G.Pos × ℤ`, `winTimes`, `verts`, mirroring
+   `SharingWitnessFamily.Pos` / `winTimes` / `verts` name for name so the correspondence is
+   auditable. `Pos`, `posAt`, `succP`, `predP` stay **untouched** and become the per-slice
+   ingredients. Record in the docstring, citing `Fulfil.lean`'s own docstring, that `TPos` is
+   deliberately **not** a `Fintype` and that finiteness lives on `verts`.
+2. **Window width, fixture first.** `winLo := -2 * G.nb`, `winHi := G.nm + 2 * G.nf`, matching the
+   `Formula` side's `cohWindowLo` / `cohWindowHi`. The landed `exists_window_eq` window is
+   **single**-period `[-nb, nm + nf)`, which is *not* wide enough for a sound wrap: identical local
+   graphs do not imply identical liveness, because an eventuality may only be dischargeable by
+   reaching the non-periodic window and the distance to it differs between same-residue times.
+   Phase 16's `Fixture.fourState` is exactly that phenomenon, so **build the fixture before fixing
+   the width** and let it confirm the doubling rather than assuming it. Prove the wrap lemmas from
+   the generic inequalities (`winLo ≤ -nb`, `nm + nf ≤ winHi`) rather than from the literal
+   doubling, so a widening the fixture forces is a local change.
+3. **Wrapping time successors.** `nextTime u := if u + 1 < winHi then u + 1 else u + 1 - G.nf`,
+   `prevTime u := if winLo ≤ u - 1 then u - 1 else u - 1 + G.nb`, with the edge and membership
+   lemmas. Soundness of the fold is `slice_periodic_back` / `slice_periodic_fwd`, already landed —
+   citation, not proof work.
+4. **The timed graph.** `succT` / `predT` off `succP` / `predP` and `nextTime` / `prevTime`, with
+   their `verts` subset lemmas; `mem_succP_iff_mem_predP` supplies adjointness.
+5. **The fixpoints.** `AUFix.lfp G.verts G.succT isE isG` for the inner eventuality-discharge step.
+   For the **outer** greatest fixpoint — the existential fair-path half `AUFix` does not supply,
+   as this phase's Scope Hypothesis correctly established — write a decreasing `Finset` iteration on
+   `G.verts` whose termination is `G.verts.card`, by the same shape as `AUFix.exists_stab`. Write it
+   **generically in that module**, once, rather than inlining it for `fwd` and `bwd` separately.
+6. **The bridge.** Prove the computed object equals `Live` at the times the checker reads. This is
+   the wrap-faithfulness obligation, and it is what Phase 16's `TailStable` certifies.
+
+**Anti-goals for 15.3, from the blocker research and binding:** do **not** add `[Fintype TPos]` (it
+is false, and the `Formula`-side docstring explains why it must stay false); do **not** weaken the
+liveness characterization to a one-directional implication to dodge wrap soundness; do **not** widen
+the window silently if the fixture rejects the doubling; and do **not** introduce any bound on `n`,
+the periods, or lasso counts — "Bounds: none, deliberately" still governs, and `winLo` / `winHi` are
+window endpoints computed from the certificate's own segment lengths, not bounds imposed on it.
+
 **Timing**: 5 hours
 
 **Depends on**: 14
@@ -2507,6 +2633,45 @@ prove the re-presentation lemma that makes the demand harmless, and **build the 
 counterexample as a named test fixture** confirming the demand is actually needed. This is the
 amendment's only visible failure mode (report 706, risk R2), so it gets its own phase and is
 scheduled **before** the checker.
+
+**AMENDMENT TO PHASE 16 — dispatch seq 27. The job of every declaration in this phase changed, and
+the change is a reframing, not a relaxation.**
+
+`Φ_back`, `Φ_fwd`, `TailStable`, `tailStable_iff_window` and `exists_tailStable_repr` all stay, with
+their statements intact. What changed is **what they are for**. As written, this phase's heading
+reads as though eventual periodicity is what makes the liveness computation finite. It is not:
+termination comes from `AUFix`'s explicit `V : Finset α` and its `V.card` bound, on the rolled timed
+carrier sub-phase 15.3 introduces (see the 15.2 resolution block under Phase 15). Eventual
+periodicity is what makes the **wrap sound** — that the liveness read at a wrapped window time
+really is the liveness at every time that window time represents. That is a different obligation, it
+is the harder one, and this phase is where it is discharged.
+
+Three consequences, each of which changes what a reader should check:
+
+1. **`TailStable` is a wrap-faithfulness demand, not a finiteness device.** Under the rolled carrier
+   it says the orbit of the window's edge value under one period is already fixed, and
+   `tailStable_iff_window` is the bridge from the window-local fixpoint to the `∀ t` claim. Read
+   both that way; a proof that only established finiteness would not establish anything this phase
+   needs.
+
+2. **The four-state fixture is now a PREREQUISITE of 15.3, not a consequence of this phase.** The
+   landed `exists_window_eq` window is single-period `[-nb, nm + nf)`; the `Formula` side's is
+   **doubled** on both sides. Identical local graphs do not imply identical liveness, because an
+   eventuality may only be dischargeable by reaching the non-periodic window and the distance to it
+   differs between same-residue times — which is exactly what the fixture's `⊡(XX ¬q)` asymmetry
+   between `(-1, a)` and `(-2, a)` at back period 1 exhibits. So **build the fixture first**, before
+   15.3 fixes its window width, and let it confirm the doubling. The fixture's task bullet already
+   says "build the fixture first"; this amendment says *how early* "first" is.
+
+3. **The plan's original route (i)/route (ii) dichotomy was superseded, not resolved in favour of
+   either.** Do not read this phase as having been chosen over 15.2, or vice versa. The ordering
+   question was dissolved by a carrier change, and the record of that is under Phase 15.
+
+**One thing this amendment does NOT license.** If the fixture shows the doubled window is still too
+narrow, the response is to widen it and record the widening loudly at this heading — never to weaken
+`tailStable_iff_window` to one implication, never to relax the fixture, and never to reach for a
+`sorry`. That is the phase's existing Scope Hypothesis, restated because the reframing makes it
+easier to lose.
 
 **Tasks**:
 - [ ] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Stable.lean`.

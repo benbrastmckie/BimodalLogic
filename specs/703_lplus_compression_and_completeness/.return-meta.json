@@ -1,81 +1,54 @@
 {
   "status": "partial",
-  "started_at": "2026-09-30T02:05:00Z",
-  "completed_at": "2026-09-30T04:10:00Z",
+  "started_at": "2026-09-30T10:10:00Z",
+  "completed_at": "2026-09-30T10:40:00Z",
   "requires_user_review": true,
-  "review_reason": "Phase 14 COMPLETED and Phase 15 PARTIAL (15.1 landed, 15.2 not started); Phases 16-21 not started, so the plan's two flagship declarations do not exist yet and the mechanical plan-compliance spot-check reads 'failed' for that reason alone. Two findings need a decision: (1) the plan's Phase 15 succP/predP-totality obligation is FALSE (counterexample recorded) and was replaced by mem_succP_of_path; (2) the Phase 15 / Phase 16 boundary may be in the wrong place, because fwdLive t at an arbitrary t is a Z-indexed family rather than one Finset. Separately, check-module-invariants.sh's C9 gate is in direct conflict with this plan's own instruction to cite specs/**/probes/ paths in Lean docstrings.",
+  "review_reason": "Phase 15 remains PARTIAL: 15.2 landed green, but sub-phase 15.3 (the computed liveness on a rolled timed carrier) was deliberately NOT started because its first definition fixes the window width, and that width can only be fixed after Phase 16's four-state fixture confirms the doubling. A mid-dispatch blocker-research finding superseded BOTH of the plan's recorded candidate routes for 15.2; the resolution and a Phase 16 amendment are written into the plan. Phases 16-21 not started, so the mechanical plan-compliance spot-check reports 9 of 11 Goals names present.",
+  "blocked_phase": null,
+  "partial_progress": {
+    "stage": "phase_15.2_complete_15.3_reordered",
+    "details": "Phase 15.2 landed as commit b6f5c8c2e on branch orchestrate/task-703-27: FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Live.lean (529 lines, new), both directions of the liveness characterization proved at forall t. Sub-phase 15.3 not started, nothing stubbed; it is blocked behind Phase 16's four-state fixture by a recorded reorder, not by a defect.",
+    "phases_completed": 14,
+    "phases_total": 21
+  },
   "verification": {
     "verification_passed": false,
     "sorry_count": 0,
     "vacuous_count": 1,
-    "vacuous_note": "Unchanged from main's baseline of 1 and a false positive: Examples/TemporalStructures.lean's int_domain_universal is a genuine statement whose proof is `trivial`. Zero vacuous definitions were introduced.",
+    "vacuous_note": "Pre-existing on main and unchanged: FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal := trivial, a true statement about the Int time domain, not a placeholder. Delta from main: 0.",
     "axiom_count": 14,
-    "axiom_note": "Identical to main's baseline of 14; zero `axiom` lines in the four new modules.",
+    "axiom_note": "Unchanged from main. Delta: 0. All 26 new declarations audited with #print axioms: each within [propext, Classical.choice, Quot.sound], no other axiom anywhere in the output.",
     "build_passed": true,
-    "build_note": "Full guarded, detached `--no-share` lake build: exit_status=0, 2786 jobs, zero `error:` and zero `warning:` lines over both captured streams. Tier 3 confirmed: the .olean of all four new modules is newer than its source.",
-    "invariants_note": "check-module-invariants.sh exits 1 with three failing groups. B0 and C23 are PRE-EXISTING at main's HEAD (confirmed). C9 is a plan-versus-rule conflict over four specs/**/probes/ citations that the plan mandates. INV failed, was caused by this dispatch, and was FIXED (hand-written README row + --emit-inventory), not waived."
+    "build_detail": "Full guarded, detached, --no-share lake build: exit_status=0, 2787 jobs, zero error: and zero warning: lines over both captured streams; Live.olean confirmed newer than Live.lean.",
+    "verification_failure_reason": "verification_passed is false ONLY because the task is not finished: Phase 15 is PARTIAL and Phases 16-21 are NOT STARTED, so the plan-compliance spot-check finds 9 of 11 Goals declaration names. No sorry, no new axiom, no vacuous placeholder, and the build is green."
   },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-04 implementation summary, extended with dispatch 25's Phase 14 and Phase 15.1 work, its measured verification, and the two findings."
+      "summary": "Cumulative task summary, extended with the Phase 15.2 record, the superseded-routes decision, the six plan deviations, and dispatch 27's measured verification."
+    },
+    {
+      "type": "plan",
+      "path": "specs/703_lplus_compression_and_completeness/plans/04_lplus-sliced-certificate-and-completeness.md",
+      "summary": "Amended: Phase 15 carries the RESOLUTION OF THE 15.2 ORDERING QUESTION block and seven annotated checklist deviations; Phase 16 carries the AMENDMENT reframing its declarations as wrap-faithfulness certifiers."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-14-handoff-20260930T094316Z.md",
-      "summary": "Phase 14 phase-end handoff: state, citable declarations, environment hazards."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T095826Z.md",
-      "summary": "Phase 15 PARTIAL handoff: the Phase 15 / Phase 16 ordering question, the false succP-totality obligation, and the measured gate state."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T103514Z.md",
+      "summary": "Resume point for sub-phase 15.3, with the fixture prerequisite, two cautions about the fixture's realizability, and seven carried-forward environment hazards."
     }
   ],
-  "partial_progress": {
-    "stage": "phase_15_partial",
-    "details": "Phase 14 COMPLETED (14.1 FormalSystem/Semantics/SlicedFrame.lean, 14.2 PlusSlicedCertificate/Frame.lean). Phase 15 PARTIAL: 15.1 landed (PlusSlicedCertificate/Splice.lean, PlusSlicedCertificate/Position.lean); 15.2 (fwdLive, bwdLive, live, mem_live_of_path, exists_path_of_mem_live) not started and nothing stubbed. Phases 16-21 not started. Four commits on branch orchestrate/task-703-25.",
-    "phases_completed": 1,
-    "phases_total": 21
-  },
-  "modified_files": [
-    "specs/703_lplus_compression_and_completeness/plans/04_lplus-sliced-certificate-and-completeness.md",
-    "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
-    "specs/703_lplus_compression_and_completeness/handoffs/phase-14-handoff-20260930T094316Z.md",
-    "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T095826Z.md",
-    "FormalSystem/Semantics/SlicedFrame.lean",
-    "FormalSystem/Semantics.lean",
-    "FormalSystem/Semantics/README.md",
-    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Frame.lean",
-    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Splice.lean",
-    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Position.lean",
-    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean",
-    "FormalSystem.lean",
-    "FormalSystem/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "typst/generated/status.typ"
-  ],
-  "next_steps": "Re-dispatch implement. First resolve the Phase 15 / Phase 16 ordering question recorded under the plan's Phase 15 heading, then do 15.2 (fwdLive, bwdLive, live, and both directions of the liveness characterization). Pass --no-share on every guarded build in the worktree and run scripts/typst-sync-check.sh --fix plus check-module-invariants.sh --emit-inventory in every phase that adds a module.",
   "metadata": {
     "session_id": "sess_1790754653_96e30c",
     "agent_type": "lean-implementation-agent",
-    "dispatch_seq": 25,
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "skill-lean-implementation"
-    ],
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "dispatch_seq": 27,
     "compliance_check": "failed",
-    "compliance_note": "Nine of the plan's eleven Goals declaration names resolve. The two that do not are exists_plusSlicedCertificate_of_tailStable_countermodel (Phase 19) and exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula (Phase 20), neither in scope for a dispatch that reached Phase 15.1. No landed declaration drifted from a pinned name.",
-    "worktree_path": "/home/benjamin/Projects/BimodalLogic/.orchestrate-worktrees/703-25",
-    "worktree_branch": "orchestrate/task-703-25",
-    "commits": [
-      "d02fad200",
-      "24690da51",
-      "1f0140244",
-      "3dc438278"
-    ]
+    "compliance_note": "9 of 11 Goals declaration names present; the two absent are Phase 19's and Phase 20's top-level theorems and those phases are NOT STARTED. No integrity failure: no new declaration delegates to a superseded one.",
+    "commits": ["b6f5c8c2ed4181bbb64e4b99cab8e43c023621cd"],
+    "branch": "orchestrate/task-703-27",
+    "gate_findings_reported_unresolved": ["B0", "C9", "C23"]
   }
 }

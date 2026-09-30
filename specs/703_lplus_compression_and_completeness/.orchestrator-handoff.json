@@ -1,52 +1,45 @@
 {
   "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 25,
-  "summary": "Phase 14 COMPLETED: FrameOver.ofSlicedStep presents a frame on the infinite carrier Z x Fin n with finite fibres, its infinitude proved, and PlusSlicedCertificate.frame/model plus the history space in both directions. Phase 15 PARTIAL: 15.1 landed the position space, the one-step graph and the Q5 factorization stab_factors; 15.2 is not started and nothing is stubbed.",
+  "dispatch_seq": 27,
+  "summary": "Phase 15.2 landed green as commit b6f5c8c2e (Live.lean, 529 lines: declarative liveness with BOTH characterization directions proved at forall t). Sub-phase 15.3 was deliberately not started: a mid-dispatch blocker-research finding superseded both of the plan's candidate routes for 15.2, and 15.3's first definition fixes a window width that only Phase 16's four-state fixture can confirm.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-04 implementation summary, extended with dispatch 25's Phase 14 and Phase 15.1 work, its measured verification, and the two findings."
+      "summary": "Cumulative task summary, extended with the Phase 15.2 record, the superseded-routes decision, six plan deviations, and dispatch 27's measured verification."
+    },
+    {
+      "type": "plan",
+      "path": "specs/703_lplus_compression_and_completeness/plans/04_lplus-sliced-certificate-and-completeness.md",
+      "summary": "Amended: Phase 15 carries the RESOLUTION OF THE 15.2 ORDERING QUESTION block plus seven annotated checklist deviations; Phase 16 carries the AMENDMENT reframing its declarations as wrap-faithfulness certifiers rather than finiteness devices."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T095826Z.md",
-      "summary": "Phase 15 PARTIAL handoff: the Phase 15 / Phase 16 ordering question, the false succP-totality obligation, and the measured gate state."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-14-handoff-20260930T094316Z.md",
-      "summary": "Phase 14 phase-end handoff: state, citable declarations, environment hazards."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T103514Z.md",
+      "summary": "Resume point for sub-phase 15.3: the fixture prerequisite, two cautions about the fixture's realizability at uniform slice width, and seven carried-forward environment hazards."
     }
   ],
-  "phases_completed": 1,
+  "phases_completed": 14,
   "phases_total": 21,
   "blockers": [
     {
-      "phase": "15",
-      "target": "FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.fwdLive",
-      "verbatim_goal": "Define G.fwdLive t chi, the forward-live positions at slice t: the greatest set X of positions such that from every position of X there is a succP-path inside X discharging each eventuality pending at it. Implement as a decreasing Finset iteration whose inner reachability step is the least fixpoint AUFix.lfp.",
-      "what_was_tried": "The position space, succP/predP and the Q5 factorization were all landed first (15.1) so that 15.2 would have every ingredient. AUFix was read and confirmed generic and reusable; the probe TypePreservingPaste.lean was transcribed with no added hypothesis.",
-      "why_it_failed": "Not attempted, deliberately, because the definition as the plan states it is not well posed. posAt and succP are slice-indexed, so fwdLive t at an arbitrary t : Z is a Z-indexed FAMILY of Finsets, not one Finset, and a decreasing iteration on a family does not terminate for the reason a decreasing iteration on one Finset does. What makes it finite is the eventual periodicity of G.slice, and turning that into a computation is exactly what Phase 16's Phi_back / Phi_fwd and tailStable_iff_window are for -- so the Phase 15 / Phase 16 boundary is probably in the wrong place. The full argument and two candidate resolutions are recorded under the plan's Phase 15 heading. Writing a definition before that decision is taken would have produced either a non-terminating iteration or a silently weaker theorem."
-    },
-    {
-      "phase": "15",
-      "target": "PlusSlicedCertificate.succP non-emptiness on the position space",
-      "verbatim_goal": "Prove succP and predP are non-empty on the position space, from G.BiSerial and the type-completion argument. Without this the fixpoints are vacuous.",
-      "what_was_tried": "The construction was attempted and a counterexample was found instead: with untl g e in the closure, g and e both atoms, and a certificate whose slice labelling carries no atom, X = {untl g e} is a legitimate member of posAt t with no successor, because every successor label must also carry no atom and the untl clause then demands untl g e not-in X.",
-      "why_it_failed": "The obligation is FALSE as stated, and the parenthetical worry is mistaken too: successor-less positions are exactly what the GREATEST fixpoint fwdLive exists to discard. Replaced, not dropped, by mem_succP_of_path and mem_predP_of_path, both proved: every position a genuine locally-coherent labelled path visits has that path's own next (resp. previous) position as a witness, which is all the fixpoints need. Recorded in Position.lean's module header and in the plan's Phase 15 deviations. A machine-checked #eval witness is flagged as not landed rather than concealed."
+      "phase": "15.3",
+      "target": "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate (the timed carrier's winLo/winHi)",
+      "verbatim_goal": "Define G.fwdLive t chi, the forward-live positions at slice t: the greatest set X of positions such that from every position of X there is a succP-path inside X discharging each eventuality pending at it. Implement as a decreasing Finset iteration.",
+      "what_was_tried": "The plan's own two recorded candidate routes were evaluated and both rejected on the blocker-research finding: route (i) (move Phase 16's transfer operators before 15.2) is unnecessary because AUFix terminates by the cardinality of an explicit V : Finset alpha and needs no Fintype on the carrier, so eventual periodicity was never what made the fixpoint finite; route (ii) (define fwdLive on the window only) keeps fwdLive a t-indexed object and so preserves the defect. The Formula side's rolled timed carrier (SharingWitnessFamily.Pos = Fin lassos.length times Z, finiteness on verts := univ product winTimes, wrapping nextTime/prevTime) was adopted as the route for the computation, and the Prop-vs-compute seam was taken so that 15.2 could land the declarative object with both characterization directions at forall t.",
+      "why_it_failed": "Not a failure of proof but a real ordering dependency. STEP 2 of the rolled-carrier transcription fixes winLo/winHi, and the landed exists_window_eq window is single-period [-nb, nm + nf) where the Formula side's is doubled on both sides. Identical local graphs do not imply identical liveness, because an eventuality may only be dischargeable by reaching the non-periodic window and the distance to it differs between two same-residue times. Phase 16's Fixture.fourState is exactly that phenomenon and is the only thing that can confirm the doubling. Fixing the width before the fixture confirms it is the improvisation the blocker research's anti-goals explicitly forbid, so it was not done."
     },
     {
       "phase": "21",
       "target": "scripts/check-module-invariants.sh C9",
-      "verbatim_goal": "Run bash scripts/check-module-invariants.sh in full and confirm every gate passes -- C2, C15, C19, C23, C24 and C33 included.",
-      "what_was_tried": "The gate was run in full. INV failed, was caused by this dispatch, and was fixed (hand-written Semantics/README.md row for SlicedFrame.lean plus --emit-inventory). B0 and C23 were confirmed PRE-EXISTING at main's HEAD.",
-      "why_it_failed": "C9 reports four specs/{NNN}_.../probes/... citations in Lean docstrings, one of them already on main. This plan MANDATES those citations in four separate places (Phases 13, 14, 20, 21) and .claude/context/standards/task-reference-exemptions.md has no covering category, so it is a genuine plan-versus-rule conflict rather than an oversight. Two candidate resolutions are recorded under the plan's Phase 21 heading; the path-dropping one is recommended. The decision must be made once and applied to all four citations."
+      "verbatim_goal": "Zero task-number and specs-path citations under FormalSystem/.",
+      "what_was_tried": "Live.lean was written to cite declaration names only, so it adds no new C9 occurrence and the count is unchanged.",
+      "why_it_failed": "Standing conflict, re-reported unresolved as instructed: the plan mandates citing specs/{NNN}_.../probes/... paths in Lean docstrings in four places and the exemption taxonomy has no covering category. One decision must be taken at Phase 21 and applied to all four. It was not resolved by weakening the invariant."
     }
   ],
   "plan_markers_verified": true,
-  "continuation_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T095826Z.md",
-  "next_action_hint": "Resolve the Phase 15 / Phase 16 ordering question under the plan's Phase 15 heading, then implement 15.2. Every guarded build in the worktree needs --no-share.",
-  "git_checkpoint": "3dc438278"
+  "continuation_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T103514Z.md",
+  "next_action_hint": "Build Phase 16's Fixture.fourState BEFORE writing one line of sub-phase 15.3; the fixture decides 15.3's first definition (winLo/winHi). Read the plan's Phase 15 RESOLUTION block and Phase 16 AMENDMENT first.",
+  "git_checkpoint": "b6f5c8c2ed4181bbb64e4b99cab8e43c023621cd"
 }
