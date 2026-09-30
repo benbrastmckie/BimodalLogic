@@ -90,10 +90,14 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   free from `verts`, confirmed by an `example`), and the wrapping `nextTime` / `prevTime` with their
   edge, membership and **faithfulness** lemmas — the wraps preserve the slice sequence, the target
   path's data and the position space alike. The fixpoints and the bridge to `Live` are not here yet
-- `PlusSlicedCertificate.Fixpoint`: the two **existential** fixpoint operators the sliced side
-  needs, at an arbitrary finite graph — `EGFix.gfp` (an infinite walk exists) and `EUFix.lfp`
-  (some walk delivers), each with membership proved **equivalent** to the existence of the walk it
-  describes. `AUFix` is the universal `A[g U e]` operator and is deliberately not used here; that
+- `PlusSlicedCertificate.Fixpoint`: the **existential** fixpoint machinery the sliced side needs, at
+  an arbitrary finite graph. `Nu.gfp` is the greatest fixpoint of an arbitrary deflating monotone
+  contraction, stated at an arbitrary `F` rather than an arbitrary successor function because the
+  eventuality-aware liveness fixpoint is a *nested* one. `EGFix.gfp` is the instance at "has a
+  successor in the set" (an infinite walk exists) and `EUFix.lfp` the existential `E[g U e]` (some
+  walk delivers), each with membership proved **equivalent** to the existence of the walk it
+  describes, and `EUFix.lfp_mono_V` supplying what a nested outer contraction needs of its inner
+  test. `AUFix` is the universal `A[g U e]` operator and is deliberately not used here; that
   module's header records why an existential outer fixpoint cannot consume a universal inner one
 - `PlusSlicedCertificate.Computed`: the four fixpoints instantiated at the timed graph —
   `fwdWalkable` / `bwdWalkable` (`EGFix.gfp` at `succT` / `predT`: an infinite walk exists) and
