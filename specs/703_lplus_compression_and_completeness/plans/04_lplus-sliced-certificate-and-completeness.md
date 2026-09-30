@@ -1,9 +1,12 @@
 # Implementation Plan: L⁺ Certificate Limits and the Time-Sliced Certificate
 
 - **Task**: 703 - lplus_compression_and_completeness
-- **Status**: [IMPLEMENTING] (Phases 1-8 landed; Stage 2 amended at plan v4, Phases 13-21 re-authored)
-- **Effort**: 67 hours (16 landed in Phases 1-8; 13 in Stage 1, Phases 9-12; 38 in the amended
-  Stage 2, Phases 13-21)
+- **Status**: [IMPLEMENTING] (Phases 1-15 landed; Phase 16 [IN PROGRESS] through sub-phase 16.2b,
+  with 16.2c open; Phases 17-21 [NOT STARTED]. Stage 2 amended at plan v4, Phases 13-21
+  re-authored, and amended again at plan v7 for the landed (C3b) clause)
+- **Effort**: 68 hours (16 landed in Phases 1-8; 13 in Stage 1, Phases 9-12; 39 in the amended
+  Stage 2, Phases 13-21 — one hour added to Phase 17 at plan v7 for the two `Decidable` instances
+  its structural conjuncts still need, and nothing else)
 - **Dependencies**: `FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt` (landed,
   `FormalSystem/PlusLanguage/PlusIntTransfer.lean`) — still required by the Stage 3 successor
   named under Non-Goals, and no longer on this plan's own critical path, for the reason given
@@ -22,7 +25,7 @@
 - **Reports Integrated**: `01_lplus-compression-completeness-research.md`,
   `02_semantics-first-compression-research.md`,
   `706/01_lplus-finite-model-property-research.md`
-- **Plan Version**: 6 (revision of `plans/02_lplus-certificate-limits-graph-certificate.md` at
+- **Plan Version**: 7 (revision of `plans/02_lplus-certificate-limits-graph-certificate.md` at
   v4, amended in place at v5 and again at v6; artifact number 03 is deliberately skipped — the
   artifact counter, not the file listing, is authoritative. **Plan v5 changes no mathematics**: it
   adds the execution preconditions recorded under "Revision record — plan v5" below and integrates
@@ -38,7 +41,11 @@
   Hypothesis amended, since "nothing is aligned here" is confirmed for two of its four clause groups
   and not for the existential side. Effort is unchanged at 67 hours because no phase is added,
   removed or rescoped: the combined window **replaces** the single-period window 15.3 was already
-  going to define, and the 16.1/16.2 split redistributes Phase 16's four hours without changing them)
+  going to define, and the 16.1/16.2 split redistributes Phase 16's four hours without changing them. **Plan v7 integrates no new report, adds
+  no phase, removes none and rescopes none**: it records that condition (C3b) `BoxLabelFaithful` is
+  landed and propagates that one fact into the four [NOT STARTED] phases that consume it, correcting
+  three stale claims on the way. Every claim it adds is a cited reading of a landed Lean file — see
+  "Revision record — plan v7" below)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -66,6 +73,71 @@ separate, research-first successor that is **not filed here**.
 Definition of done: Stages 1 and 2 land sorry-free with no new axioms, every new flagship carries
 a `docs/theorem-index.md` row and a C2 `AXIOM_BASELINE` pin, and
 `bash scripts/check-module-invariants.sh` passes in full.
+
+### Revision record — plan v7: (C3b) is landed, and what it obliges of Phases 17-20
+
+**This revision was dispatched to address a blocker that no longer exists, and the first thing it
+records is that.** The box-clause gap that dispatch 33 raised as a condition-set question — nothing
+in the condition set supplies `PlusFormula.box χ ∈ G.slab t w ↔ G.bx χ = true`, so a walk in the
+timed graph could not be read as a `LabRun` at all — was **closed in dispatch 34** (commit
+`4e6be5743`, landed on `main` via `ee0feabd2`) by taking dispatch 33's own recommended option (a).
+Verified in the landed tree at this revision:
+
+- `PlusSlicedCertificate.BoxLabelFaithful` is at `Basic.lean:552`, with `BoxLabelFaithfulWindow` at
+  `:557` and the two-directional window reduction `boxLabelFaithful_iff_window` at `:597`.
+- It is threaded as an explicit hypothesis through `Bridge.lean` and nothing else: 13 occurrences,
+  consumed at exactly one place, `spliceWalkPos_coherent`'s box clause (`Bridge.lean:448`, closing
+  at `:462`), and carried outward by `runOfWalks`, `live_of_mem_liveT` (`:569`),
+  `live_iff_mem_liveT` (`:592`) and `decidableLive` (`:603`).
+- Route (b) was correctly rejected and **left no trace**: `Position.lean`'s `LabCoherent` (`:143`)
+  still omits the box clause, its docstring still says so, and `Position.lean`'s last commit is
+  still `1f0140244` (phase 15.1) — so `posAt`, `AgreesOnState`, `succP`, `predP` and
+  `mem_posAt_of_path` are unperturbed, exactly as the rejection required.
+- The fixture discharges the new clause vacuously at `Fixture.lean:744`
+  (`boxLabelFaithful : cert.BoxLabelFaithful := fun χ hχ => absurd hχ (Cl_no_box χ)`), its closure
+  carrying no `□`; `Fixture.lean:767` then uses `live_of_mem_liveT boxLabelFaithful`, so the
+  hypothesis is exercised at a real call site rather than only declared.
+- `sorry` count over the whole `PlusSlicedCertificate` subtree, including the aggregator: **0**.
+
+**No phase is reopened and no work is added for the blocker itself.** What this revision does is
+propagate the one landed fact forward, because four [NOT STARTED] phases were written against the
+pre-(C3b) condition set and would each have rediscovered it late:
+
+1. **Phase 17** listed `BiSerial` and `TailStable` as "the first two conjuncts" of `Certifies`.
+   There are **three**: (C3b) has to be *in* `Certifies`, because `live_of_mem_liveT`,
+   `live_iff_mem_liveT` and `decidableLive` each take it as a hypothesis and Phase 18 cannot reach
+   any of them otherwise. Phase 17 now lists three and says why the third is there.
+2. **Phase 17's decidability claim was wrong**, and this is a correction rather than an addition:
+   "both are already `Decidable`" holds of `TailStable` alone (`Stable.lean:570`
+   `decidableTailStable`). `Basic.lean` declares **no** `Decidable` instance whatever, so `BiSerial`
+   and `BoxLabelFaithful` both need one written. That is the one hour added to Phase 17 and the one
+   hour added to this plan's total.
+3. **Phase 18's box case and its "needs nothing from 15.3's computed form" claim.** The box case now
+   names both clauses and what each does. The stronger correction concerns where (C3b) is consumed:
+   Phase 17 requires `Certifies` to be stated against the **computed** `liveT`, so Phase 18's truth
+   lemma must cross the bridge, and the two directions do not cost the same. The `→` direction of
+   the `stab` case goes through `mem_liveT_of_live`, which needs no (C3b); the `←` direction — the
+   one that pays for the dropped `witness` field — goes through `live_of_mem_liveT`, which does.
+   Phase 18 therefore does read 15.3's computed form, contrary to what that phase asserted, and the
+   (C3b) conjunct must be projected out of `G.Certifies` and passed down. Recorded as an obligation
+   to confirm at implementation time, since the exact shape depends on how Phase 17 words the
+   universal and existential sides.
+4. **Phases 19 and 20 each had one box-clause bullet where two obligations now sit.** Phase 19
+   discharges both from `plusBox_const` on the countermodel; Phase 20 discharges (C3b) from the
+   embedding's own definition of `slab` ("the atoms and `bx`-boxes of `(lassos i).lab t`"), which
+   makes it true by construction rather than by any condition of the L-side family.
+
+**What is deliberately not changed.** Phase 13 is `[COMPLETED]` and its record stands; a single
+additive parenthetical notes that the third clause landed at dispatch 34 rather than in that phase,
+and that half 1 of its Scope Hypothesis is unaffected because (C3b) needed no field Phase 13 did not
+declare. Phase 21's pins are unchanged: (C3b) adds no flagship, so the four `docs/theorem-index.md`
+rows and four `AXIOM_BASELINE` lines stand at four, and the baseline count still moves 22 → 26. One
+bullet is added to Phase 21's README task, because a condition set the README describes is now five
+clauses and not four.
+
+**Soundness remains not in question.** `PlusSharingWitnessFamily.plusTruth_iff_mem` and
+`...plusRefutes_of_certifies` are untouched by (C3b) — it is a condition on the *sliced* certificate
+class, declared in a module those two do not import.
 
 ### Revision record — plan v5: the dispatch-isolation incident and the nested-checkout gate hazard
 
@@ -322,7 +394,13 @@ below implement them.
 5. **`Certifies` keeps its four clause groups** — existential from liveness, universal, box,
    target — all read on the window under tail-stability. Plan v2's Phase 15 constraint survives
    verbatim: no clause may quantify over a time in a way that would need alignment. Nothing is
-   aligned; the slice time is the only time.
+   aligned; the slice time is the only time. **Amended at plan v7**: the group *count* is still
+   four, but the condition set behind it is five clauses, not four. The box group carries **two** —
+   (C3) `BoxFaithful`, relating `G.bx χ = true` to the subformula `χ` holding everywhere, and (C3b)
+   `BoxLabelFaithful` (`Basic.lean:552`), relating it to the *label member* `box χ` — and (C3b) is
+   listed with the structural conjuncts `BiSerial` and `TailStable` rather than inside the box
+   group, because its consumer is the liveness bridge (`Bridge.lean`'s `live_of_mem_liveT`) and not
+   the truth lemma's box case alone. See "Revision record — plan v7".
 6. **Relative completeness is relative to tail-stable sliced models**, and a **new phase** proves
    the landed L witness family **embeds**: a `WitnessFamily [] [φ]` with `k` lassos becomes a
    sliced certificate with `n = k`, edges `i → i` only, `slab t i` the atoms and `bx`-boxes of
@@ -2138,7 +2216,11 @@ it was written rather than reused.
 1. *The field lists are sufficient.* Confirmed by **writing**, not asserting: `BiSerial` and
    `BiSerialWindow` are defined in full against the declared fields, and two of the checker's four
    clause groups — `BoxFaithful` (C3, on `bx` and `slab`) and `Target` (C4, on `target` and
-   `targetTime`) — are written here rather than deferred to Phase 17, which will consume them. The
+   `targetTime`) — are written here rather than deferred to Phase 17, which will consume them.
+   *(plan v7, additive: a **third** clause, (C3b) `BoxLabelFaithful`, was later added to
+   `Basic.lean` at dispatch seq 34 — not by this phase — for the reason recorded under sub-phase
+   15.3 step 6d. It needed no field this phase did not declare, so half 1 of this Scope Hypothesis
+   stands as confirmed and nothing in this phase's record changes.)* The
    two remaining groups need Phase 15's computed liveness for their *content*, but their field
    dependencies (`slice`, `edge`, `slab`) are all present and are exercised by the two written here.
    **No field was found missing or wrong, so no correction to the Challenge block is needed.**
@@ -3634,8 +3716,26 @@ by Phase 15's fixpoints and every clause read on the window under Phase 16's tai
 
 **Tasks**:
 - [ ] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean`.
-- [ ] Include `G.BiSerial` and `G.TailStable` as the first two conjuncts of `Certifies`. Both are
-      window-decided and both are already `Decidable`.
+- [ ] Include `G.BiSerial`, `G.TailStable` and `G.BoxLabelFaithful` as the first **three**
+      conjuncts of `Certifies`. All three are window-decided, each by a landed **biconditional** —
+      `biSerial_iff_window` (`Basic.lean:488`), `tailStable_iff_window` (Phase 16) and
+      `boxLabelFaithful_iff_window` (`Basic.lean:597`). *(corrected at plan v7: the previous text
+      said "both are already `Decidable`". That is true of `TailStable` only —
+      `Stable.lean:570 decidableTailStable`, synthesized off a pair of `Finset` equalities.
+      `Basic.lean` declares **no** `Decidable` instance at all, so `BiSerial` and
+      `BoxLabelFaithful` each need one written here: `decidable_of_iff` through the window
+      biconditional, then a bounded ball over the **own** window `[-G.nb, G.nm + G.nf)` as a
+      `Finset.Ico` — not the combined window, since neither clause reads `G.target`. Confirm each
+      in isolation with `example (G) : Decidable G.BiSerial := inferInstance`, never by
+      assertion.)*
+- [ ] **Why (C3b) is a structural conjunct and not merely a box-group clause.** `Bridge.lean`'s
+      `live_of_mem_liveT` (`:569`), `live_iff_mem_liveT` (`:592`) and `decidableLive` (`:603`) each
+      take `hbox : G.BoxLabelFaithful` as an explicit hypothesis, so the clause must be
+      *extractable from* `G.Certifies` or Phase 18 cannot reach the bridge at all. Filing it in the
+      box group would be mathematically equivalent; listing it with `BiSerial` and `TailStable` is
+      what makes the extraction a projection rather than a dig through a nested conjunction. Either
+      way it must be **in** `Certifies`; omitting it strands Phase 18 with a computed universal side
+      it cannot read as a statement about `Live`. *(added at plan v7)*
 - [ ] Define the **existential side**: the target path is locally coherent
       (`PlusLocalCoherentSeqLab` on its decoded labels, reused from `Compression/Types.lean`),
       fulfilling (`PlusFulfillingSeqLab`, likewise), follows `G.edge` on its state component at
@@ -3662,7 +3762,11 @@ by Phase 15's fixpoints and every clause read on the window under Phase 16's tai
       **window position**, extended to all `t` by periodicity.
 - [ ] Define the **box clause**: `G.bx χ = true` exactly when `χ` belongs to every live position of
       every state of every window slice. By `plusBox_const` this is what a global modality needs,
-      and by the periodicity lemmas the window suffices.
+      and by the periodicity lemmas the window suffices. *(plan v7: this is (C3) `BoxFaithful`'s
+      content as the checker reads it, and it is **not** (C3b). The two must not be collapsed: (C3)
+      constrains `G.bx χ` against the subformula `χ`, (C3b) against the label member `box χ`, and
+      `Basic.lean` carries a separate window reduction for each — `forall_slab_iff_window` for (C3),
+      `boxLabelFaithful_iff_window` for (C3b).)*
 - [ ] Define the **target clause**: every `γ ∈ Γ` is in the target path's label at `targetTime` and
       every `δ ∈ Del` is not.
 - [ ] Assemble `Certifies` as the conjunction and prove `decidableCertifies`. Every quantifier
@@ -3675,15 +3779,20 @@ by Phase 15's fixpoints and every clause read on the window under Phase 16's tai
       decision procedure of the withdrawn route did not finish in 150 seconds interpreted on a
       four-lasso family, so a checker that runs is itself a result.
 
-**Timing**: 4 hours
+**Timing**: 5 hours *(4 at plan v6, plus one at plan v7 for the two `Decidable` instances
+`BiSerial` and `BoxLabelFaithful` still need)*
 
 **Depends on**: 16
 
 **Verification Tier**: interface
 
-**Scope Hypothesis**: `Certifies` is asserted to need exactly the two structural conjuncts
-(`BiSerial`, `TailStable`) plus four groups of clauses — existential, universal, box, target — with
-no residual field-shaped demand. Confirm by checking that **no clause quantifies over a time in a
+**Scope Hypothesis (amended at plan v7)**: `Certifies` is asserted to need exactly the **three**
+structural conjuncts (`BiSerial`, `TailStable`, `BoxLabelFaithful`) plus four groups of clauses —
+existential, universal, box, target — with no residual field-shaped demand. The third conjunct is
+not a prediction: it is landed (`Basic.lean:552`) and already consumed by `Bridge.lean`. If a
+**fourth** structural conjunct turns out to be needed, record it at this phase's heading as a
+deviation rather than absorbing it — and check first whether it is (C3b) being asked for a second
+time under another name. Confirm by checking that **no clause quantifies over a time in a
 way that would need alignment**; any clause that does is a relapse into the withdrawn plan v1
 design and must be recorded and redesigned, not absorbed. Nothing is aligned here: the slice time
 is the only time.
@@ -3710,6 +3819,9 @@ record it** rather than reinstating a field whose index set is infinite.
 - `lake build` exits 0; no `sorry`; axioms unchanged.
 - `decidableCertifies` is confirmed by `example (G) : Decidable G.Certifies := inferInstance`
   synthesizing, not by assertion.
+- Each of the three structural conjuncts synthesizes its own `Decidable` instance **in isolation**,
+  confirmed by three separate `example ... := inferInstance` lines, so a failure is localized to the
+  conjunct that caused it rather than reported as "`Certifies` is not decidable". *(plan v7)*
 - The `#guard` on each concrete certificate returns, within a recorded wall time.
 - No clause of `Certifies` mentions an alignment offset, a period product, or an absolute origin —
   confirmed by grep for `plusAlignOffset` and by reading the definition.
@@ -3728,7 +3840,11 @@ record it** rather than reinstating a field whose index set is infinite.
       Structural induction on `χ`, restricted to the subformulas of the formula in hand.
       - `atom`, `bot`, `imp`: local coherence, plus the slice labelling at the position's own slice
         time.
-      - `box`: the box clause plus `plusBox_const`.
+      - `box`: the box clauses plus `plusBox_const`. *(plan v7: **both** box clauses are in play
+        and they do different work. (C3) `BoxFaithful` is what relates `G.bx χ = true` to `χ`
+        holding at every carrier element; (C3b) `BoxLabelFaithful` is what puts `box χ` in the
+        label exactly when `G.bx χ = true`. The induction's `box` case needs the composite, and
+        neither clause alone gives it.)*
       - `untl`, `snce`: fulfilment plus the one-step clauses. These are the cases
         `plusTruth_iff_mem` already proves along a thread; mirror that proof rather than inventing
         a new one.
@@ -3744,6 +3860,24 @@ record it** rather than reinstating a field whose index set is infinite.
       `(G.frame h).toTaskFrame`, its `FrameClass.ZTime.Sat` instance, `G.model h`, the target
       path's history and `G.targetTime`, discharging the two conjuncts from the target clause and
       the truth lemma.
+- [ ] **Project the (C3b) conjunct out of `G.Certifies` once, at the top of the proof, and pass it
+      down.** *(added at plan v7, and it corrects this phase's `stab` bullet below.)* That bullet
+      says soundness "reads `live_iff` and needs nothing from 15.3's computed form. Only Phase 17
+      needs the computed form." That is not sustainable now that Phase 17 states `Certifies`
+      against the computed `liveT` — writing it against `Live` is the failure mode Phase 17
+      explicitly forbids — so this phase must cross the bridge, and the two directions do not cost
+      the same:
+      - `→` of the `stab` case: an actual history through `(t, w)` is a labelled path, hence live,
+        hence in `liveT` by `mem_liveT_of_live`, whereupon the universal side applies. **No (C3b)
+        needed** in this direction.
+      - `←` of the `stab` case — the direction that pays for the dropped `witness` field: the
+        existential side hands back a `liveT` member omitting `χ`, and turning that into a real
+        history is `live_of_mem_liveT`, which **takes `hbox`**, followed by `exists_path_of_live`.
+      Confirm the exact shape at implementation time against how Phase 17 words the universal and
+      existential sides; if it turns out that neither direction needs `live_of_mem_liveT`, record
+      that as a finding rather than silently dropping the projection. And do not look for
+      `fwdLive_iff_mem_fwdLiveT` as a way around it: sub-phase 15.3's record says it would be false
+      as stated and is deliberately absent.
 - [ ] Record in the module docstring that this declaration is **beside** the landed
       `PlusSharingWitnessFamily.plusRefutes_of_certifies`, not in place of it: the two are about
       different certificate classes and land the same interface. Record also that the presented
@@ -3801,8 +3935,14 @@ checker accepts.
       `plusTypeAtM_stab_iff_forall_sameState` turns `⊡χ ∈ G.slab t w` into `χ` at every history
       through `(t, w)`. So no live position over `(t, w)` omits `χ`. Tail-stability is what makes
       the window check equivalent to the `∀ t` statement — cite `tailStable_iff_window`.
-- [ ] Discharge the **box clause** from `plusBox_const`, and the **target clause** from the
-      refuting time.
+- [ ] Discharge **both box clauses** from `plusBox_const`, and the **target clause** from the
+      refuting time. *(plan v7: (C3) `BoxFaithful` and (C3b) `BoxLabelFaithful` are two obligations
+      with one source — in an L⁺ model a boxed formula's truth is independent of history and time,
+      so `box χ` belongs to the L⁺ type at a carrier element exactly when `χ` is true everywhere,
+      which is what `bx` is set to report. Discharge them as two named lemmas rather than one:
+      (C3b) is the one the produced certificate needs in order to meet `Certifies` at all, since
+      Phase 17 lists it among the structural conjuncts, and unlike `BiSerial` and `TailStable` it
+      is **not** carried by a hypothesis of this theorem — it must be constructed.)*
 - [ ] Discharge `BiSerial` and `TailStable` from the hypotheses `hser` and `hstab` directly; they
       are carried, not re-derived.
 - [ ] Record in the module docstring what this theorem is and is not. It is **completeness relative
@@ -3874,6 +4014,12 @@ this research supports**.
       clause groups come from the family's own certification conditions; the universal side is the
       one to watch, since with edges `i → i` only, the live positions over `(t, i)` are exactly the
       ones the single lasso `i` realizes.
+- [ ] **Prove the third structural conjunct too**, not only the two in the bullet above:
+      (C3b) `BoxLabelFaithful`. *(added at plan v7.)* This is where the embedding's own definition
+      of `slab` pays off — `G.slab t i` is "the atoms and `bx`-boxes of `(lassos i).lab t`", so
+      `box χ ∈ G.slab t i ↔ G.bx χ = true` holds **by construction**, off the `bx`-boxes half of
+      that definition and not off any certification condition of the L-side family. Prove it; do
+      not assert it, and do not route it through the family's conditions, which do not supply it.
 - [ ] Assemble the flagship: start from `¬ PlusValidZTime (ofFormula φ)`, transport to
       `¬ ValidZTime φ` with `plusTruthAt_ofFormula` (`PlusLanguage/PlusValidity.lean:168`), apply
       the landed `exists_witnessFamily_of_not_validZTime`
@@ -3996,6 +4142,14 @@ task with an honest record of what was proved and what was not.
       property is **refuted**; that the **sliced** finite model property is **open, not refuted**,
       and is a separate task; and that the expected slice width is doubly exponential as a research
       finding rather than a theorem of this tree.
+- [ ] Record, in the same place, the condition set as it actually stands: **five** clauses, not
+      four — (C0)-shaped structural demands aside, `BiSerial`, `TailStable`, (C3) `BoxFaithful`,
+      (C3b) `BoxLabelFaithful` and (C4) `Target` — and state plainly what (C3b) costs, namely that
+      it narrows the certificate class only away from certificates whose slice labelling
+      contradicts their own box guess, and away from no certificate a countermodel presents.
+      *(added at plan v7; the pins are unaffected, since (C3b) adds no flagship — the four index
+      rows and four `AXIOM_BASELINE` lines stand at four and the baseline count still moves
+      22 → 26.)*
 - [ ] Record, in the same place, that the CTL-like fragment does not rescue the finite-carrier
       shape (`Probe706.not_finite_carrier_fmp_fragment`), so the sliced shape is needed already
       there, and that the fragment's own finite model property is a separate research-first
