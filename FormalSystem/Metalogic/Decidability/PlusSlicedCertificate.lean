@@ -123,10 +123,11 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   lemmas placing their images on the window's own endpoint slices, the soundness direction
   `fwdLive_subset_stepBack` / `bwdLive_subset_stepFwd` and its two-directional counterpart
   `live_subset_stepBack` / `live_subset_stepFwd`, and `TailStable` with `decidableTailStable`,
-  `L₀` / `R₀` read off `Bridge`'s equality, and the tail-collapse half of the linchpin
-  (`mem_L₀_of_live_tail`, `live_ref_of_live_tail`, and mirrors). Its converse — every member of `L₀`
-  live at every tail time, and not only at the reference time — is **not** here; that module's own
-  SCOPE section names the three-region run construction it needs
+  `L₀` / `R₀` read off `Bridge`'s equality, and **both** directions of the linchpin
+  `tailStable_iff_window`: the transfer's soundness iterated (`mem_L₀_of_live_tail`) and the
+  three-region run `runOfPos` builds from a shifted reference run, a `Φ_back`-chain and a second
+  reference run (`live_of_mem_L₀_tail`), with right-tail mirrors for both.
+  `exists_tailStable_repr` is **not** here and is sub-phase 16.2's remaining obligation
 - `PlusSlicedCertificate.LiveFix`: the **eventuality-aware** liveness fixpoint — `fwdLiveT` /
   `bwdLiveT` / `liveT` as a nested `Nu.gfp` whose inner reachability is relativized to the set being
   contracted, both directions of its fixpoint characterization, and `exists_fwdLive_walk` /

@@ -48,26 +48,27 @@ not claimed — a position with a successor in `X` need not be live, because liv
 fulfilling run and not merely one edge. That asymmetry is exactly why `TailStable` (sub-phase 16.2)
 has to be an equation `Φ_back L₀ = L₀` rather than an inclusion.
 
-## SCOPE: which half of the design's linchpin is landed here, and which is not
+## What is landed here, and what remains of sub-phase 16.2
 
-`TailStable` is defined here, it is `Decidable`, and the direction of its consequence that a
-soundness argument needs is **proved** here for every time down the periodic tail:
-`mem_L₀_of_live_tail` and `live_ref_of_live_tail` (with their right-tail mirrors). The converse
-direction — that every member of `L₀` is genuinely live at every tail time, and not only at the
-reference time where `live_of_mem_L₀` gives it — is **not** here, and nothing below is stated as
-though it were.
+`TailStable` is defined here, it is `Decidable`, and **both** directions of its consequence are
+proved, for every time down either periodic tail: `tailStable_iff_window` (with
+`tailStable_iff_window_fwd`) says that under the demand the computed reference set `L₀` *is* the
+true live set at every `-G.NB - k * G.NB`, and `R₀` at every `G.NM + G.NF + k * G.NF`. The two
+halves are separately named — `mem_L₀_of_live_tail` is the transfer's soundness iterated, and
+`live_of_mem_L₀_tail` the three-region run — because Phase 17's universal side needs only the first
+and its existential side only the second.
 
-That converse is not a formality and it is not obtainable from the material in this module. `Live`
-is witnessed only by a bi-infinite `LabRun`, and no shift of a run is a run: `LabRun.agrees` and
-`LabRun.steps` are conditions at *every* time, while the slice sequence is periodic only on the
-negatives. The route that does work, recorded here so it is not rediscovered, is a **three-region**
-run: the reference run's left half shifted by `k * G.NB` on `u ≤ -(k + 1) * G.NB`, then the finite
-`Φ_back`-path that `L₀ ⊆ G.Φ_back L₀` supplies, then the reference run of the path's endpoint on
-`u ≥ -G.NB`; fulfilment in both directions then comes from `plusFwdFulfilling_of_ge` and
-`plusBwdFulfilling_of_le`, and the seams from the same assembly `Bridge.lean`'s `runOfWalks` already
-performs for two regions. It is the remaining obligation of sub-phase 16.2, together with
-`exists_tailStable_repr` and the fixture's worked example; neither is stubbed and no placeholder
-stands in for either.
+Neither direction is cheap and neither is a formality. The forward one needs the transfer to be
+sound for **two**-directional `Live` and not only for `FwdLive` (`live_subset_stepBack`), and the
+reverse one needs a genuine run: `Live` is witnessed only by a bi-infinite `LabRun`, and no shift of
+a run is a run, because `LabRun.agrees` and `LabRun.steps` are conditions at *every* time while the
+slice sequence is periodic only away from `mid`. `runOfPos` and the three regions are how that is
+discharged; the block headed "The converse half" states the construction and why each region is
+closed under the direction its fulfilment half looks in.
+
+What remains of sub-phase 16.2 is `exists_tailStable_repr` — the re-presentation making the demand
+harmless for an arbitrary certificate — and the fixture's own worked example. Nothing is stubbed for
+either and no placeholder stands in.
 
 ## Main definitions
 
@@ -92,9 +93,17 @@ stands in for either.
 - `PlusSlicedCertificate.stepBack_congr` / `iterBack_congr` / `iterBack_shift` and mirrors — the
   transfer transported along a period of the slice sequence
 - `PlusSlicedCertificate.iterBack_L₀` / `iterFwd_R₀` — one application iterated to `k`
-- `PlusSlicedCertificate.mem_L₀_of_live_tail` / `live_ref_of_live_tail` and mirrors — **the half of
-  the linchpin that is landed**; see the scope note above
-- `PlusSlicedCertificate.mem_L₀_iff_live` / `mem_R₀_iff_live` — exactness at the reference times
+- `PlusSlicedCertificate.mem_L₀_of_live_tail` / `live_ref_of_live_tail` and mirrors — the forward
+  half of the linchpin, the transfer's soundness iterated
+- `PlusSlicedCertificate.runOfPos` — a `LabRun` from any family of positions stepping along `succP`
+- `PlusSlicedCertificate.exists_chain_of_mem_iterBack` / `exists_chain_of_mem_iterFwd` — the path an
+  iterate witnesses, made explicit
+- `PlusSlicedCertificate.live_of_mem_L₀_tail` / `live_of_mem_R₀_head` — the reverse half, by the
+  three-region run
+- `PlusSlicedCertificate.tailStable_iff_window` / `tailStable_iff_window_fwd` — **the linchpin**, as
+  a biconditional at every time down either periodic tail
+- `PlusSlicedCertificate.mem_L₀_iff_live` / `mem_R₀_iff_live` — exactness at the reference times,
+  with `liveAt_tail_eq_L₀` / `liveAt_winLo_eq_L₀` as the `Finset` equalities a checker reads
 
 ## Tags
 
@@ -543,6 +552,17 @@ not be, so something has to be demanded. This is that demand.
 It is an **equation** and not an inclusion because `Φ` over-approximates in only one direction:
 `fwdLive_subset_stepBack` holds and its converse fails, since a position with a successor in `X`
 need not be live. The equation is what closes the gap the inclusion leaves.
+**What it costs the checker.** Exactly one application of each period transfer beyond Phase 15's
+fixpoints — `G.Φ_back` on `L₀` and `G.Φ_fwd` on `R₀`, each an iterate of the one-step `stepBack` /
+`stepFwd` over one combined period — and one `Finset` equality test on each. Nothing recomputes a
+fixpoint, and `iterBack_L₀` is what makes the single application stand in for every later one.
+
+**What it costs a search on the paired repository's side.** An unstable countermodel must be
+**re-presented**, not rejected: absorbing its pre-period into `mid` and multiplying its period by
+the cycle length yields a tail-stable presentation of the same frame, so tail-stability narrows the
+*presentations* a checker accepts and not the frames a countermodel may have. That is
+`exists_tailStable_repr`'s obligation; until it is landed the demand should be read as a constraint
+on presentations whose harmlessness is argued but not yet proved.
 -/
 def TailStable (G : PlusSlicedCertificate Γ Del) : Prop :=
   G.Φ_back G.L₀ = G.L₀ ∧ G.Φ_fwd G.R₀ = G.R₀
@@ -1016,6 +1036,265 @@ theorem live_of_mem_L₀_tail (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLa
   exact G.live_of_path (runOfPos hbox hP hS) ⟨hfwd, hbwd⟩ _
 
 end Tail
+
+/-! ## The right tail
+
+The mirror of everything above, and a **separate construction** rather than a symmetry argument:
+`PlusSlicedCertificate` is not symmetric under time reversal (`mid` sits at `[0, G.nm)`, `slice_fwd`
+is stated at or past `G.nm` and `slice_neg` strictly below `0`), and `runOfPos` asks for `succP`
+steps in the one direction the carrier fixes. So the chain here runs along `predP` and is converted
+by `mem_succP_iff_mem_predP`, which is exactly the adjointness that lemma was landed for.
+-/
+
+theorem exists_chain_of_mem_iterFwd (G : PlusSlicedCertificate Γ Del) (t : ℤ)
+    {X : Finset G.Pos} (hX : X ⊆ G.posAt t) (k : ℕ) {q : G.Pos}
+    (hq : q ∈ G.iterFwd t X k) :
+    ∃ c : ℕ → G.Pos, c 0 = q ∧ c k ∈ X ∧ (∀ j ≤ k, c j ∈ G.posAt (t + (k : ℤ) - (j : ℤ))) ∧
+      ∀ j < k, c (j + 1) ∈ G.predP (t + (k : ℤ) - (j : ℤ)) (c j) := by
+  induction k generalizing q with
+  | zero =>
+    refine ⟨fun _ => q, rfl, hq, ?_, by omega⟩
+    intro j hj
+    have hj0 : j = 0 := by omega
+    subst hj0
+    simpa using hX hq
+  | succ k ih =>
+    rw [iterFwd_succ, mem_stepFwd] at hq
+    obtain ⟨hqpos, p, hp1, hp2⟩ := hq
+    obtain ⟨c, hc0, hck, hcpos, hcstep⟩ := ih hp2
+    refine ⟨fun j => Nat.rec q (fun i _ => c i) j, rfl, hck, ?_, ?_⟩
+    · intro j hj
+      match j with
+      | 0 =>
+        rw [show t + ((k + 1 : ℕ) : ℤ) - ((0 : ℕ) : ℤ) = t + (k : ℤ) + 1 from by push_cast; omega]
+        exact hqpos
+      | (i + 1) =>
+        have h := hcpos i (by omega)
+        rw [show t + ((k + 1 : ℕ) : ℤ) - ((i + 1 : ℕ) : ℤ) = t + (k : ℤ) - (i : ℤ) from by
+          push_cast; omega]
+        exact h
+    · intro j hj
+      match j with
+      | 0 =>
+        rw [show t + ((k + 1 : ℕ) : ℤ) - ((0 : ℕ) : ℤ) = t + (k : ℤ) + 1 from by push_cast; omega]
+        change c 0 ∈ G.predP (t + (k : ℤ) + 1) q
+        rw [hc0]
+        exact hp1
+      | (i + 1) =>
+        have h := hcstep i (by omega)
+        rw [show t + ((k + 1 : ℕ) : ℤ) - ((i + 1 : ℕ) : ℤ) = t + (k : ℤ) - (i : ℤ) from by
+          push_cast; omega]
+        exact h
+
+section Head
+
+variable {G : PlusSlicedCertificate Γ Del}
+
+/-- **The three-region position family on the right**, the mirror of `tailPos`. -/
+def headPos (G : PlusSlicedCertificate Γ Del) (Rq Rp : G.LabRun) (c : ℕ → G.Pos) (m : ℕ)
+    (u : ℤ) : G.Pos :=
+  if G.NM + G.NF + (m : ℤ) < u then Rq.pos (u - (m : ℤ))
+  else if G.NM + G.NF ≤ u then c (G.NM + G.NF + (m : ℤ) - u).toNat
+  else Rp.pos u
+
+theorem headPos_far (G : PlusSlicedCertificate Γ Del) (Rq Rp : G.LabRun) (c : ℕ → G.Pos) (m : ℕ)
+    (u : ℤ) (hu : G.NM + G.NF + (m : ℤ) < u) :
+    G.headPos Rq Rp c m u = Rq.pos (u - (m : ℤ)) := by
+  rw [headPos, if_pos hu]
+
+theorem headPos_mid (G : PlusSlicedCertificate Γ Del) (Rq Rp : G.LabRun) (c : ℕ → G.Pos) (m : ℕ)
+    (u : ℤ) (h1 : u ≤ G.NM + G.NF + (m : ℤ)) (h2 : G.NM + G.NF ≤ u) :
+    G.headPos Rq Rp c m u = c (G.NM + G.NF + (m : ℤ) - u).toNat := by
+  rw [headPos, if_neg (by omega), if_pos h2]
+
+theorem headPos_near (G : PlusSlicedCertificate Γ Del) (Rq Rp : G.LabRun) (c : ℕ → G.Pos) (m : ℕ)
+    (u : ℤ) (hu : u < G.NM + G.NF) : G.headPos Rq Rp c m u = Rp.pos u := by
+  rw [headPos, if_neg (by omega), if_neg (by omega)]
+
+/-- **On the whole closed far half-line the family is the shifted reference run.** -/
+theorem headPos_ge (G : PlusSlicedCertificate Γ Del) (Rq Rp : G.LabRun) (c : ℕ → G.Pos) (m : ℕ)
+    (hc0 : c 0 = Rq.pos (G.NM + G.NF)) (u : ℤ) (hu : G.NM + G.NF + (m : ℤ) ≤ u) :
+    G.headPos Rq Rp c m u = Rq.pos (u - (m : ℤ)) := by
+  rcases lt_or_eq_of_le hu with h | h
+  · exact G.headPos_far Rq Rp c m u h
+  · rw [G.headPos_mid Rq Rp c m u (le_of_eq h.symm) (by omega),
+      show G.NM + G.NF + (m : ℤ) - u = 0 from by omega,
+      show u - (m : ℤ) = G.NM + G.NF from by omega]
+    simpa using hc0
+
+/-- **On the whole closed near half-line the family is the endpoint's reference run.** -/
+theorem headPos_le (G : PlusSlicedCertificate Γ Del) (Rq Rp : G.LabRun) (c : ℕ → G.Pos) (m : ℕ)
+    (hcm : c m = Rp.pos (G.NM + G.NF)) (u : ℤ) (hu : u ≤ G.NM + G.NF) :
+    G.headPos Rq Rp c m u = Rp.pos u := by
+  rcases lt_or_eq_of_le hu with h | h
+  · exact G.headPos_near Rq Rp c m u h
+  · rw [h, G.headPos_mid Rq Rp c m (G.NM + G.NF) (by omega) le_rfl,
+      show G.NM + G.NF + (m : ℤ) - (G.NM + G.NF) = (m : ℤ) from by omega]
+    simpa using hcm
+
+theorem headPos_mem_posAt (G : PlusSlicedCertificate Γ Del) (Rq Rp : G.LabRun) (c : ℕ → G.Pos)
+    (m k : ℕ) (hmc : (m : ℤ) = (k : ℤ) * G.NF)
+    (hcpos : ∀ j ≤ m, c j ∈ G.posAt (G.NM + G.NF + (m : ℤ) - (j : ℤ)))
+    (hc0 : c 0 = Rq.pos (G.NM + G.NF)) (u : ℤ) :
+    G.headPos Rq Rp c m u ∈ G.posAt u := by
+  have hNF := G.NF_pos
+  have hnm := G.nm_le_NM
+  by_cases h1 : G.NM + G.NF + (m : ℤ) ≤ u
+  · rw [G.headPos_ge Rq Rp c m hc0 u h1]
+    have h := G.slice_add_mul_NF_of_ge (show G.nm ≤ u - (m : ℤ) from by omega) k
+    rw [← hmc, show u - (m : ℤ) + (m : ℤ) = u from by omega] at h
+    rw [G.posAt_congr h]
+    exact Rq.pos_mem_posAt _
+  · by_cases h2 : G.NM + G.NF ≤ u
+    · rw [G.headPos_mid Rq Rp c m u (by omega) h2]
+      have h := hcpos (G.NM + G.NF + (m : ℤ) - u).toNat (by omega)
+      rw [show (((G.NM + G.NF + (m : ℤ) - u).toNat : ℕ) : ℤ) = G.NM + G.NF + (m : ℤ) - u from
+          Int.toNat_of_nonneg (by omega),
+        show G.NM + G.NF + (m : ℤ) - (G.NM + G.NF + (m : ℤ) - u) = u from by omega] at h
+      exact h
+    · rw [G.headPos_near Rq Rp c m u (by omega)]
+      exact Rp.pos_mem_posAt _
+
+theorem headPos_mem_succP (G : PlusSlicedCertificate Γ Del) (Rq Rp : G.LabRun) (c : ℕ → G.Pos)
+    (m k : ℕ) (hmc : (m : ℤ) = (k : ℤ) * G.NF)
+    (hcpos : ∀ j ≤ m, c j ∈ G.posAt (G.NM + G.NF + (m : ℤ) - (j : ℤ)))
+    (hcstep : ∀ j < m, c (j + 1) ∈ G.predP (G.NM + G.NF + (m : ℤ) - (j : ℤ)) (c j))
+    (hc0 : c 0 = Rq.pos (G.NM + G.NF)) (hcm : c m = Rp.pos (G.NM + G.NF)) (u : ℤ) :
+    G.headPos Rq Rp c m (u + 1) ∈ G.succP u (G.headPos Rq Rp c m u) := by
+  have hNF := G.NF_pos
+  have hnm := G.nm_le_NM
+  by_cases h1 : G.NM + G.NF + (m : ℤ) ≤ u
+  · rw [G.headPos_ge Rq Rp c m hc0 (u + 1) (by omega), G.headPos_ge Rq Rp c m hc0 u h1]
+    have hs0 := G.slice_add_mul_NF_of_ge (show G.nm ≤ u - (m : ℤ) from by omega) k
+    rw [← hmc, show u - (m : ℤ) + (m : ℤ) = u from by omega] at hs0
+    have hs1 := G.slice_add_mul_NF_of_ge (show G.nm ≤ u - (m : ℤ) + 1 from by omega) k
+    rw [← hmc, show u - (m : ℤ) + 1 + (m : ℤ) = u + 1 from by omega] at hs1
+    rw [G.succP_congr hs0 hs1 _]
+    have h := Rq.pos_mem_succP (u - (m : ℤ))
+    rwa [show u - (m : ℤ) + 1 = u + 1 - (m : ℤ) from by omega] at h
+  · by_cases h2 : u + 1 ≤ G.NM + G.NF
+    · rw [G.headPos_le Rq Rp c m hcm (u + 1) h2, G.headPos_le Rq Rp c m hcm u (by omega)]
+      exact Rp.pos_mem_succP u
+    · rw [G.headPos_mid Rq Rp c m (u + 1) (by omega) (by omega),
+        G.headPos_mid Rq Rp c m u (by omega) (by omega),
+        show (G.NM + G.NF + (m : ℤ) - u).toNat
+          = (G.NM + G.NF + (m : ℤ) - (u + 1)).toNat + 1 from by omega]
+      have hi : ((G.NM + G.NF + (m : ℤ) - (u + 1)).toNat : ℤ)
+          = G.NM + G.NF + (m : ℤ) - (u + 1) := Int.toNat_of_nonneg (by omega)
+      have harith : G.NM + G.NF + (m : ℤ) - (G.NM + G.NF + (m : ℤ) - (u + 1)) = u + 1 := by omega
+      have hstep := hcstep (G.NM + G.NF + (m : ℤ) - (u + 1)).toNat (by omega)
+      rw [hi, harith] at hstep
+      have hp1 : c ((G.NM + G.NF + (m : ℤ) - (u + 1)).toNat + 1) ∈ G.posAt u := by
+        have h := hcpos ((G.NM + G.NF + (m : ℤ) - (u + 1)).toNat + 1) (by omega)
+        rw [show (((G.NM + G.NF + (m : ℤ) - (u + 1)).toNat + 1 : ℕ) : ℤ)
+            = G.NM + G.NF + (m : ℤ) - u from by push_cast [hi]; omega,
+          show G.NM + G.NF + (m : ℤ) - (G.NM + G.NF + (m : ℤ) - u) = u from by omega] at h
+        exact h
+      have hp2 : c ((G.NM + G.NF + (m : ℤ) - (u + 1)).toNat) ∈ G.posAt (u + 1) := by
+        have h := hcpos ((G.NM + G.NF + (m : ℤ) - (u + 1)).toNat) (by omega)
+        rw [hi, harith] at h
+        exact h
+      exact (G.mem_succP_iff_mem_predP u _ _ hp1 hp2).mpr hstep
+
+/-- **Every member of `R₀` is live at every time up the periodic right tail**, the mirror of
+`live_of_mem_L₀_tail`. -/
+theorem live_of_mem_R₀_head (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLabelFaithful)
+    (hTS : G.TailStable) (k : ℕ) {q : G.Pos} (hq : q ∈ G.R₀) :
+    G.Live (G.NM + G.NF + (k : ℤ) * G.NF) q := by
+  have hNF := G.NF_pos
+  have hnm := G.nm_le_NM
+  obtain ⟨Rq, hRqf, hRqp⟩ := G.exists_path_of_live (G.live_of_mem_R₀ hbox hq)
+  have hmc : ((k * G.NFnat : ℕ) : ℤ) = (k : ℤ) * G.NF := by rw [NF, Nat.cast_mul]
+  have hqm : q ∈ G.iterFwd (G.NM + G.NF) G.R₀ (k * G.NFnat) := by
+    rw [G.iterFwd_R₀ hTS k]; exact hq
+  obtain ⟨c, hc0, hck, hcpos, hcstep⟩ :=
+    G.exists_chain_of_mem_iterFwd (G.NM + G.NF) (G.liveAt_subset_posAt (G.NM + G.NF))
+      (k * G.NFnat) hqm
+  obtain ⟨Rp, hRpf, hRpp⟩ := G.exists_path_of_live (G.live_of_mem_R₀ hbox hck)
+  set m := k * G.NFnat with hmdef
+  have hc0' : c 0 = Rq.pos (G.NM + G.NF) := by rw [hc0, hRqp]
+  have hcm' : c m = Rp.pos (G.NM + G.NF) := hRpp.symm
+  have hP := G.headPos_mem_posAt Rq Rp c m k hmc hcpos hc0'
+  have hS := G.headPos_mem_succP Rq Rp c m k hmc hcpos hcstep hc0' hcm'
+  have hlabF : ∀ v : ℤ, G.NM + G.NF + (m : ℤ) ≤ v →
+      (G.headPos Rq Rp c m v).2.1 = Rq.lab (v - (m : ℤ)) := by
+    intro v hv
+    rw [G.headPos_ge Rq Rp c m hc0' v hv]
+    exact Rq.pos_snd _
+  have hlabN : ∀ v : ℤ, v ≤ G.NM + G.NF → (G.headPos Rq Rp c m v).2.1 = Rp.lab v := by
+    intro v hv
+    rw [G.headPos_le Rq Rp c m hcm' v hv]
+    exact Rp.pos_snd v
+  have hfwd : PlusFwdFulfilling (fun v => (G.headPos Rq Rp c m v).2.1) := by
+    refine plusFwdFulfilling_of_ge (coherent_of_pos hbox hP hS)
+      (fun v => G.pos_lab_sub (G.headPos Rq Rp c m v)) (G.NM + G.NF + (m : ℤ)) ?_
+    intro s hs g e hu
+    rw [hlabF s hs] at hu
+    obtain ⟨r, hr1, hr2, hr3⟩ := hRqf.1 (s - (m : ℤ)) g e hu
+    refine ⟨r + (m : ℤ), by omega, ?_, ?_⟩
+    · rw [hlabF (r + (m : ℤ)) (by omega), show r + (m : ℤ) - (m : ℤ) = r from by omega]
+      exact hr2
+    · intro v hv1 hv2
+      rw [hlabF v (by omega)]
+      exact hr3 (v - (m : ℤ)) (by omega) (by omega)
+  have hbwd : PlusBwdFulfilling (fun v => (G.headPos Rq Rp c m v).2.1) := by
+    refine plusBwdFulfilling_of_le (coherent_of_pos hbox hP hS)
+      (fun v => G.pos_lab_sub (G.headPos Rq Rp c m v)) (G.NM + G.NF) ?_
+    intro s hs g e hu
+    rw [hlabN s hs] at hu
+    obtain ⟨r, hr1, hr2, hr3⟩ := hRpf.2 s g e hu
+    refine ⟨r, hr1, ?_, ?_⟩
+    · rw [hlabN r (by omega)]; exact hr2
+    · intro v hv1 hv2
+      rw [hlabN v (by omega)]
+      exact hr3 v hv1 hv2
+  have hpos : (runOfPos hbox hP hS).pos (G.NM + G.NF + (m : ℤ)) = q := by
+    rw [runOfPos_pos, G.headPos_ge Rq Rp c m hc0' _ le_rfl,
+      show G.NM + G.NF + (m : ℤ) - (m : ℤ) = G.NM + G.NF from by omega, hRqp]
+  rw [← hmc, ← hpos]
+  exact G.live_of_path (runOfPos hbox hP hS) ⟨hfwd, hbwd⟩ _
+
+end Head
+
+/-! ## `tailStable_iff_window`
+
+The plan's linchpin, now a genuine biconditional at every time down either periodic tail: under
+tail-stability the computed reference set `L₀` **is** the true live set at every `-G.NB - k * G.NB`,
+and `R₀` at every `G.NM + G.NF + k * G.NF`. The `→` direction is the transfer's soundness iterated
+(`mem_L₀_of_live_tail`) and the `←` direction the three-region run (`live_of_mem_L₀_tail`); neither
+is a `simp`, and neither would hold without the demand — `Fixture.live_not_determined_by_slice` is
+a certificate where the two sides come apart at one period.
+-/
+
+/-- **The linchpin, on the left tail.** -/
+theorem tailStable_iff_window (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLabelFaithful)
+    (hTS : G.TailStable) (k : ℕ) (p : G.Pos) :
+    p ∈ G.L₀ ↔ G.Live (-G.NB - (k : ℤ) * G.NB) p :=
+  ⟨fun hp => G.live_of_mem_L₀_tail hbox hTS k hp, fun hp => G.mem_L₀_of_live_tail hTS k hp⟩
+
+/-- **The linchpin, on the right tail.** -/
+theorem tailStable_iff_window_fwd (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLabelFaithful)
+    (hTS : G.TailStable) (k : ℕ) (q : G.Pos) :
+    q ∈ G.R₀ ↔ G.Live (G.NM + G.NF + (k : ℤ) * G.NF) q :=
+  ⟨fun hq => G.live_of_mem_R₀_head hbox hTS k hq, fun hq => G.mem_R₀_of_live_head hTS k hq⟩
+
+/-- **The live set is the same at every period-multiple of the left tail.** The form a checker
+reads: `liveAt` at any such time is literally `L₀`. -/
+theorem liveAt_tail_eq_L₀ (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLabelFaithful)
+    (hTS : G.TailStable) (k : ℕ) (hw : -G.NB - (k : ℤ) * G.NB ∈ G.winTimes) :
+    G.liveAt (-G.NB - (k : ℤ) * G.NB) = G.L₀ := by
+  ext p
+  rw [G.mem_liveAt_iff_live hbox hw p]
+  exact (G.tailStable_iff_window hbox hTS k p).symm
+
+/-- **The window's own left endpoint is the `k = 1` instance**, with equality rather than the
+inclusion `liveAt_winLo_subset_L₀` gives on its own. -/
+theorem liveAt_winLo_eq_L₀ (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLabelFaithful)
+    (hTS : G.TailStable) : G.liveAt G.winLo = G.L₀ := by
+  have hw : -G.NB - ((1 : ℕ) : ℤ) * G.NB = G.winLo := by
+    rw [show G.winLo = -2 * G.NB from rfl]; push_cast; omega
+  rw [← hw]
+  exact G.liveAt_tail_eq_L₀ hbox hTS 1 (by rw [hw]; exact G.winLo_mem_winTimes)
 
 end PlusSlicedCertificate
 
