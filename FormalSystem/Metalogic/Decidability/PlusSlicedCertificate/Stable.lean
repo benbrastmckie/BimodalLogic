@@ -720,6 +720,303 @@ theorem liveAt_winLo_subset_L₀ (G : PlusSlicedCertificate Γ Del) (hbox : G.Bo
     rw [show G.winLo = -2 * G.NB from rfl]; push_cast; omega]
   exact G.live_of_mem_liveAt hbox G.winLo_mem_winTimes hp
 
+/-! ## A run from a time-indexed family of positions
+
+`Bridge.lean` builds its `LabRun` out of two half-line **walks** and folds their times; the
+construction the converse half needs has a finite middle region and so is not a pair of walks at
+all. What both have in common is all a `LabRun` ever needs: a position at every time, each at its
+own slice, each a `succP`-successor of the one before. `runOfPos` isolates exactly that, and the
+five fields — including the box clause, where (C3b) enters and nothing else does — are read off
+those two hypotheses.
+-/
+
+section RunOfPos
+
+variable {G : PlusSlicedCertificate Γ Del}
+
+/-- **The five local-coherence clauses of a position family's labelling.** The box clause consumes
+(C3b) and `AgreesOnState` together; the two temporal clauses are the `succP` step's own
+`StepClause`, read forwards at `t` and backwards at `t - 1`. -/
+theorem coherent_of_pos (hbox : G.BoxLabelFaithful) {P : ℤ → G.Pos}
+    (hP : ∀ t, P t ∈ G.posAt t) (hstep : ∀ t, P (t + 1) ∈ G.succP t (P t)) :
+    PlusLocalCoherentSeqLab Γ Del G.bx (fun t => (P t).2.1) := by
+  intro t
+  obtain ⟨hlab, hagr⟩ := (G.mem_posAt t (P t)).mp (hP t)
+  refine ⟨hlab.1, ?_, ?_, ?_, ?_⟩
+  · intro a b hab
+    have hc := hlab.2 _ hab
+    simp only [impClauseAt, decide_eq_true_eq] at hc
+    exact hc
+  · intro χ hχ
+    have hst : IsStateShape (PlusFormula.box χ) = true := rfl
+    exact (hagr (PlusFormula.box χ) hχ hst).trans (hbox χ hχ t _)
+  · intro g e hge
+    have hc := ((G.mem_succP t (P t) (P (t + 1))).mp (hstep t)).2.2.1 _ hge
+    simp only [untlClauseAt, decide_eq_true_eq] at hc
+    exact hc
+  · intro g e hge
+    have hs := hstep (t - 1)
+    rw [show t - 1 + 1 = t from by omega] at hs
+    have hc := ((G.mem_succP (t - 1) (P (t - 1)) (P t)).mp hs).2.2.2 _ hge
+    simp only [snceClauseAt, decide_eq_true_eq] at hc
+    exact hc
+
+/-- **The run a position family presents.** -/
+def runOfPos (hbox : G.BoxLabelFaithful) {P : ℤ → G.Pos} (hP : ∀ t, P t ∈ G.posAt t)
+    (hstep : ∀ t, P (t + 1) ∈ G.succP t (P t)) : G.LabRun where
+  st := fun t => (P t).1
+  lab := fun t => (P t).2.1
+  lab_sub := fun t => G.pos_lab_sub (P t)
+  agrees := fun t => ((G.mem_posAt t (P t)).mp (hP t)).2
+  steps := fun t => ((G.mem_succP t (P t) (P (t + 1))).mp (hstep t)).2.1
+  coherent := coherent_of_pos hbox hP hstep
+
+@[simp] theorem runOfPos_lab (hbox : G.BoxLabelFaithful) {P : ℤ → G.Pos}
+    (hP : ∀ t, P t ∈ G.posAt t) (hstep : ∀ t, P (t + 1) ∈ G.succP t (P t)) (t : ℤ) :
+    (runOfPos hbox hP hstep).lab t = (P t).2.1 := rfl
+
+theorem runOfPos_pos (hbox : G.BoxLabelFaithful) {P : ℤ → G.Pos} (hP : ∀ t, P t ∈ G.posAt t)
+    (hstep : ∀ t, P (t + 1) ∈ G.succP t (P t)) (t : ℤ) :
+    (runOfPos hbox hP hstep).pos t = P t := Prod.ext rfl (Subtype.ext rfl)
+
+end RunOfPos
+
+/-! ## The chain an iterate witnesses
+
+`p ∈ G.iterBack t X k` is an existential about a path, unwound `k` times. This makes the path
+explicit, because the converse half has to *walk* it and not merely know it is there. The hypothesis
+`X ⊆ G.posAt t` is what pins the chain's last vertex to the reference slice; `L₀` satisfies it by
+`liveAt_subset_posAt`.
+-/
+
+theorem exists_chain_of_mem_iterBack (G : PlusSlicedCertificate Γ Del) (t : ℤ)
+    {X : Finset G.Pos} (hX : X ⊆ G.posAt t) (k : ℕ) {p : G.Pos}
+    (hp : p ∈ G.iterBack t X k) :
+    ∃ c : ℕ → G.Pos, c 0 = p ∧ c k ∈ X ∧ (∀ j ≤ k, c j ∈ G.posAt (t - (k : ℤ) + (j : ℤ))) ∧
+      ∀ j < k, c (j + 1) ∈ G.succP (t - (k : ℤ) + (j : ℤ)) (c j) := by
+  induction k generalizing p with
+  | zero =>
+    refine ⟨fun _ => p, rfl, hp, ?_, by omega⟩
+    intro j hj
+    have hj0 : j = 0 := by omega
+    subst hj0
+    simpa using hX hp
+  | succ k ih =>
+    rw [iterBack_succ, mem_stepBack] at hp
+    obtain ⟨hppos, q, hq1, hq2⟩ := hp
+    obtain ⟨c, hc0, hck, hcpos, hcstep⟩ := ih hq2
+    refine ⟨fun j => Nat.rec p (fun i _ => c i) j, rfl, hck, ?_, ?_⟩
+    · intro j hj
+      match j with
+      | 0 =>
+        rw [show t - ((k + 1 : ℕ) : ℤ) + ((0 : ℕ) : ℤ) = t - (k : ℤ) - 1 from by push_cast; omega]
+        exact hppos
+      | (i + 1) =>
+        have h := hcpos i (by omega)
+        rw [show t - ((k + 1 : ℕ) : ℤ) + ((i + 1 : ℕ) : ℤ) = t - (k : ℤ) + (i : ℤ) from by
+          push_cast; omega]
+        exact h
+    · intro j hj
+      match j with
+      | 0 =>
+        rw [show t - ((k + 1 : ℕ) : ℤ) + ((0 : ℕ) : ℤ) = t - (k : ℤ) - 1 from by push_cast; omega]
+        change c 0 ∈ G.succP (t - (k : ℤ) - 1) p
+        rw [hc0]
+        exact hq1
+      | (i + 1) =>
+        have h := hcstep i (by omega)
+        rw [show t - ((k + 1 : ℕ) : ℤ) + ((i + 1 : ℕ) : ℤ) = t - (k : ℤ) + (i : ℤ) from by
+          push_cast; omega]
+        exact h
+
+/-! ## The converse half: every member of `L₀` is live all the way down the tail
+
+The construction, in the three regions the module header names.
+
+* On `u ≤ t₀` (where `t₀ = -G.NB - k * G.NB`) the reference run of `p` itself, **shifted right by
+  the whole distance**. A shift is not a run — `LabRun.agrees` and `LabRun.steps` are conditions at
+  every time and the slice sequence is periodic only on the negatives — but on this region every
+  time and its shift are negative, so `posAt_congr` and `succP_congr` transport both fields.
+* On `t₀ ≤ u ≤ -G.NB` the finite `Φ_back`-chain that `G.Φ_back L₀ = L₀` supplies, iterated to `k`
+  periods by `iterBack_L₀` and made explicit by `exists_chain_of_mem_iterBack`.
+* On `-G.NB ≤ u` the reference run of the chain's **endpoint**, which is a member of `L₀` again and
+  in general not `p`. That is why the construction needs two reference runs and not one.
+
+The two seams are consistent rather than glued: at `t₀` the chain's first vertex *is* `p`, and at
+`-G.NB` its last vertex *is* where the endpoint's run sits, so `tailPos_le` and `tailPos_ge` each
+hold on a *closed* half-line and the case analysis never has a boundary to negotiate.
+
+Fulfilment is not spliced either: `plusBwdFulfilling_of_le` reads the whole backward half off region
+one and `plusFwdFulfilling_of_ge` the whole forward half off region three, because each region's own
+reference run is fully fulfilling to begin with and each region is closed under the direction its
+half looks in.
+-/
+
+section Tail
+
+variable {G : PlusSlicedCertificate Γ Del}
+
+/-- **The three-region position family.** `m` is the whole shift, `Rp` the reference run through the
+chain's first vertex, `c` the chain, `Rq` the reference run through its last. -/
+def tailPos (G : PlusSlicedCertificate Γ Del) (Rp Rq : G.LabRun) (c : ℕ → G.Pos) (m : ℕ)
+    (u : ℤ) : G.Pos :=
+  if u < -G.NB - (m : ℤ) then Rp.pos (u + (m : ℤ))
+  else if u ≤ -G.NB then c (u - (-G.NB - (m : ℤ))).toNat
+  else Rq.pos u
+
+theorem tailPos_left (G : PlusSlicedCertificate Γ Del) (Rp Rq : G.LabRun) (c : ℕ → G.Pos) (m : ℕ)
+    (u : ℤ) (hu : u < -G.NB - (m : ℤ)) : G.tailPos Rp Rq c m u = Rp.pos (u + (m : ℤ)) := by
+  rw [tailPos, if_pos hu]
+
+theorem tailPos_mid (G : PlusSlicedCertificate Γ Del) (Rp Rq : G.LabRun) (c : ℕ → G.Pos) (m : ℕ)
+    (u : ℤ) (h1 : -G.NB - (m : ℤ) ≤ u) (h2 : u ≤ -G.NB) :
+    G.tailPos Rp Rq c m u = c (u - (-G.NB - (m : ℤ))).toNat := by
+  rw [tailPos, if_neg (by omega), if_pos h2]
+
+theorem tailPos_right (G : PlusSlicedCertificate Γ Del) (Rp Rq : G.LabRun) (c : ℕ → G.Pos) (m : ℕ)
+    (u : ℤ) (hu : -G.NB < u) : G.tailPos Rp Rq c m u = Rq.pos u := by
+  rw [tailPos, if_neg (by have := G.NB_pos; omega), if_neg (by omega)]
+
+/-- **On the whole closed left half-line the family is the shifted reference run**, the seam
+included. -/
+theorem tailPos_le (G : PlusSlicedCertificate Γ Del) (Rp Rq : G.LabRun) (c : ℕ → G.Pos) (m : ℕ)
+    (hc0 : c 0 = Rp.pos (-G.NB)) (u : ℤ) (hu : u ≤ -G.NB - (m : ℤ)) :
+    G.tailPos Rp Rq c m u = Rp.pos (u + (m : ℤ)) := by
+  rcases lt_or_eq_of_le hu with h | h
+  · exact G.tailPos_left Rp Rq c m u h
+  · rw [G.tailPos_mid Rp Rq c m u (le_of_eq h.symm) (by have := G.NB_pos; omega),
+      show u - (-G.NB - (m : ℤ)) = 0 from by omega,
+      show u + (m : ℤ) = -G.NB from by omega]
+    simpa using hc0
+
+/-- **On the whole closed right half-line the family is the endpoint's reference run**, the seam
+included. -/
+theorem tailPos_ge (G : PlusSlicedCertificate Γ Del) (Rp Rq : G.LabRun) (c : ℕ → G.Pos) (m : ℕ)
+    (hcm : c m = Rq.pos (-G.NB)) (u : ℤ) (hu : -G.NB ≤ u) :
+    G.tailPos Rp Rq c m u = Rq.pos u := by
+  rcases lt_or_eq_of_le hu with h | h
+  · exact G.tailPos_right Rp Rq c m u h
+  · rw [← h, G.tailPos_mid Rp Rq c m (-G.NB) (by omega) le_rfl,
+      show -G.NB - (-G.NB - (m : ℤ)) = (m : ℤ) from by omega]
+    simpa using hcm
+
+/-! ### The two hypotheses `runOfPos` asks for -/
+
+theorem tailPos_mem_posAt (G : PlusSlicedCertificate Γ Del) (Rp Rq : G.LabRun) (c : ℕ → G.Pos)
+    (m k : ℕ) (hmc : (m : ℤ) = (k : ℤ) * G.NB)
+    (hcpos : ∀ j ≤ m, c j ∈ G.posAt (-G.NB - (m : ℤ) + (j : ℤ)))
+    (hc0 : c 0 = Rp.pos (-G.NB)) (u : ℤ) :
+    G.tailPos Rp Rq c m u ∈ G.posAt u := by
+  have hNB := G.NB_pos
+  by_cases h1 : u ≤ -G.NB - (m : ℤ)
+  · rw [G.tailPos_le Rp Rq c m hc0 u h1]
+    have h := G.slice_sub_mul_NB_of_neg (show u + (m : ℤ) < 0 from by omega) k
+    rw [← hmc, show u + (m : ℤ) - (m : ℤ) = u from by omega] at h
+    rw [G.posAt_congr h]
+    exact Rp.pos_mem_posAt _
+  · by_cases h2 : u ≤ -G.NB
+    · rw [G.tailPos_mid Rp Rq c m u (by omega) h2]
+      have h := hcpos (u - (-G.NB - (m : ℤ))).toNat (by omega)
+      rw [show (((u - (-G.NB - (m : ℤ))).toNat : ℕ) : ℤ) = u - (-G.NB - (m : ℤ)) from
+          Int.toNat_of_nonneg (by omega),
+        show -G.NB - (m : ℤ) + (u - (-G.NB - (m : ℤ))) = u from by omega] at h
+      exact h
+    · rw [G.tailPos_right Rp Rq c m u (by omega)]
+      exact Rq.pos_mem_posAt _
+
+theorem tailPos_mem_succP (G : PlusSlicedCertificate Γ Del) (Rp Rq : G.LabRun) (c : ℕ → G.Pos)
+    (m k : ℕ) (hmc : (m : ℤ) = (k : ℤ) * G.NB)
+    (hcstep : ∀ j < m, c (j + 1) ∈ G.succP (-G.NB - (m : ℤ) + (j : ℤ)) (c j))
+    (hc0 : c 0 = Rp.pos (-G.NB)) (hcm : c m = Rq.pos (-G.NB)) (u : ℤ) :
+    G.tailPos Rp Rq c m (u + 1) ∈ G.succP u (G.tailPos Rp Rq c m u) := by
+  have hNB := G.NB_pos
+  by_cases h1 : u + 1 ≤ -G.NB - (m : ℤ)
+  · rw [G.tailPos_le Rp Rq c m hc0 (u + 1) h1, G.tailPos_le Rp Rq c m hc0 u (by omega)]
+    have hs0 := G.slice_sub_mul_NB_of_neg (show u + (m : ℤ) < 0 from by omega) k
+    rw [← hmc, show u + (m : ℤ) - (m : ℤ) = u from by omega] at hs0
+    have hs1 := G.slice_sub_mul_NB_of_neg (show u + (m : ℤ) + 1 < 0 from by omega) k
+    rw [← hmc, show u + (m : ℤ) + 1 - (m : ℤ) = u + 1 from by omega] at hs1
+    rw [G.succP_congr hs0 hs1 _]
+    have h := Rp.pos_mem_succP (u + (m : ℤ))
+    rwa [show u + (m : ℤ) + 1 = u + 1 + (m : ℤ) from by omega] at h
+  · by_cases h2 : -G.NB ≤ u
+    · rw [G.tailPos_ge Rp Rq c m hcm (u + 1) (by omega), G.tailPos_ge Rp Rq c m hcm u h2]
+      exact Rq.pos_mem_succP u
+    · rw [G.tailPos_mid Rp Rq c m (u + 1) (by omega) (by omega),
+        G.tailPos_mid Rp Rq c m u (by omega) (by omega),
+        show (u + 1 - (-G.NB - (m : ℤ))).toNat = (u - (-G.NB - (m : ℤ))).toNat + 1 from by omega]
+      have h := hcstep (u - (-G.NB - (m : ℤ))).toNat (by omega)
+      rw [show (((u - (-G.NB - (m : ℤ))).toNat : ℕ) : ℤ) = u - (-G.NB - (m : ℤ)) from
+          Int.toNat_of_nonneg (by omega),
+        show -G.NB - (m : ℤ) + (u - (-G.NB - (m : ℤ))) = u from by omega] at h
+      exact h
+
+/-! ### The headline
+
+`live_of_mem_L₀_tail` is the converse the module header's scope note named as missing; with
+`mem_L₀_of_live_tail` it makes `tailStable_iff_window` a genuine biconditional at every time down
+the periodic tail.
+-/
+
+/-- **Every member of `L₀` is live at every time down the periodic left tail.** -/
+theorem live_of_mem_L₀_tail (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLabelFaithful)
+    (hTS : G.TailStable) (k : ℕ) {p : G.Pos} (hp : p ∈ G.L₀) :
+    G.Live (-G.NB - (k : ℤ) * G.NB) p := by
+  have hNB := G.NB_pos
+  obtain ⟨Rp, hRpf, hRpp⟩ := G.exists_path_of_live (G.live_of_mem_L₀ hbox hp)
+  have hmc : ((k * G.NBnat : ℕ) : ℤ) = (k : ℤ) * G.NB := by rw [NB, Nat.cast_mul]
+  have hpm : p ∈ G.iterBack (-G.NB) G.L₀ (k * G.NBnat) := by
+    rw [G.iterBack_L₀ hTS k]; exact hp
+  obtain ⟨c, hc0, hck, hcpos, hcstep⟩ :=
+    G.exists_chain_of_mem_iterBack (-G.NB) (G.liveAt_subset_posAt (-G.NB)) (k * G.NBnat) hpm
+  obtain ⟨Rq, hRqf, hRqp⟩ := G.exists_path_of_live (G.live_of_mem_L₀ hbox hck)
+  set m := k * G.NBnat with hmdef
+  have hc0' : c 0 = Rp.pos (-G.NB) := by rw [hc0, hRpp]
+  have hcm' : c m = Rq.pos (-G.NB) := hRqp.symm
+  have hP := G.tailPos_mem_posAt Rp Rq c m k hmc hcpos hc0'
+  have hS := G.tailPos_mem_succP Rp Rq c m k hmc hcstep hc0' hcm'
+  -- the readouts on the two closed half-lines
+  have hlabR : ∀ v : ℤ, -G.NB ≤ v → (G.tailPos Rp Rq c m v).2.1 = Rq.lab v := by
+    intro v hv
+    rw [G.tailPos_ge Rp Rq c m hcm' v hv]
+    exact Rq.pos_snd v
+  have hlabL : ∀ v : ℤ, v ≤ -G.NB - (m : ℤ) → (G.tailPos Rp Rq c m v).2.1
+      = Rp.lab (v + (m : ℤ)) := by
+    intro v hv
+    rw [G.tailPos_le Rp Rq c m hc0' v hv]
+    exact Rp.pos_snd _
+  -- the run
+  have hfwd : PlusFwdFulfilling (fun v => (G.tailPos Rp Rq c m v).2.1) := by
+    refine plusFwdFulfilling_of_ge (coherent_of_pos hbox hP hS)
+      (fun v => G.pos_lab_sub (G.tailPos Rp Rq c m v)) (-G.NB) ?_
+    intro s hs g e hu
+    rw [hlabR s hs] at hu
+    obtain ⟨r, hr1, hr2, hr3⟩ := hRqf.1 s g e hu
+    refine ⟨r, hr1, ?_, ?_⟩
+    · rw [hlabR r (by omega)]; exact hr2
+    · intro v hv1 hv2
+      rw [hlabR v (by omega)]
+      exact hr3 v hv1 hv2
+  have hbwd : PlusBwdFulfilling (fun v => (G.tailPos Rp Rq c m v).2.1) := by
+    refine plusBwdFulfilling_of_le (coherent_of_pos hbox hP hS)
+      (fun v => G.pos_lab_sub (G.tailPos Rp Rq c m v)) (-G.NB - (m : ℤ)) ?_
+    intro s hs g e hu
+    rw [hlabL s hs] at hu
+    obtain ⟨r, hr1, hr2, hr3⟩ := hRpf.2 (s + (m : ℤ)) g e hu
+    refine ⟨r - (m : ℤ), by omega, ?_, ?_⟩
+    · rw [hlabL (r - (m : ℤ)) (by omega), show r - (m : ℤ) + (m : ℤ) = r from by omega]
+      exact hr2
+    · intro v hv1 hv2
+      rw [hlabL v (by omega)]
+      exact hr3 (v + (m : ℤ)) (by omega) (by omega)
+  have hpos : (runOfPos hbox hP hS).pos (-G.NB - (m : ℤ)) = p := by
+    rw [runOfPos_pos, G.tailPos_le Rp Rq c m hc0' _ le_rfl,
+      show -G.NB - (m : ℤ) + (m : ℤ) = -G.NB from by omega, hRpp]
+  rw [← hmc, ← hpos]
+  exact G.live_of_path (runOfPos hbox hP hS) ⟨hfwd, hbwd⟩ _
+
+end Tail
+
 end PlusSlicedCertificate
 
 end FormalSystem.Metalogic.Decidability
