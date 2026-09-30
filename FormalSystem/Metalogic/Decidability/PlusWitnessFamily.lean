@@ -18,6 +18,8 @@ import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Agreement
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Examples
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Incompleteness
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Limits.Targets
+import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Limits.HopFree
+import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Limits.NoCertificate
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusWitnessFamily` — the L⁺ certificate
@@ -77,6 +79,14 @@ interface is affected by this one's existence.
 - `PlusWitnessFamily.Limits.Targets`: the two *limit* targets — `hopTarget` and `pumpTarget` —
   their ℤ-time non-validity, and the two subformula-closure membership chains the limit theorems
   read. The limits themselves are stated beside it; this module is only their specification.
+- `PlusWitnessFamily.Limits.HopFree`: `not_plusCertifies_hopTarget_of_hopFree` and its existential
+  form `not_exists_hopFree_plusCertifies_hopTarget` — no hop-free family certifies `hopTarget`. It
+  bounds the hop-free *strategy*, not the substrate: `TransId.lean`'s four collapse theorems remain
+  true and remain in the tree.
+- `PlusWitnessFamily.Limits.NoCertificate`: `not_exists_plusCertifies_pumpTarget` — **no** family
+  of this class certifies `pumpTarget`, under no hypothesis at all. This is the class-level
+  incompleteness, not a strategy-level one, and `plusCompression_fails_at_pumpTarget` bundles it
+  with the non-validity as the counterexample to the L⁺ compression statement.
 
 ## Why (C5) is a pinned obligation rather than a signature
 
@@ -108,4 +118,20 @@ in new spelling.
 
 `plusTruth_iff_mem` and `plusRefutes_of_certifies` are byte-identical in statement across the
 whole redesign: soundness was never what was at issue.
+
+### Non-empty is not complete
+
+The heading above says what it says and no more: the class is non-empty, and it certifies both
+stability targets. It is **not** complete. `Limits/NoCertificate.lean`'s
+`not_exists_plusCertifies_pumpTarget` exhibits a genuine ℤ-time non-validity, `pumpTarget p`, that
+**no** family of this class certifies — at any time, for any lasso count, for any window or period
+lengths, and under no hypothesis on `trans`. The root cause is (C2'): it is a demand about every
+thread of a finite, eventually periodic presentation, so any target whose countermodels must
+contain a cycle with an exit under a pending eventuality is out of reach, and no bound repairs
+that. `Limits/HopFree.lean` records the weaker, independent failure of the hop-free strategy.
+
+**Which fragment the class does cover is an open question.** It is not the whole of the ℤ-time
+non-validities, and nothing in this subtree currently delimits it from below beyond the two
+stability targets of `Examples.lean`. Soundness is unaffected in either direction: a certificate
+still always presents a genuine countermodel.
 -/

@@ -130,7 +130,13 @@ families on which those congruences are false, which is the strongest form the c
 **Soundness was never at issue.** `plusTruth_iff_mem` and `plusRefutes_of_certifies` are
 byte-identical in statement across the whole redesign: a family meeting the six conditions always
 presented a genuine countermodel. What failed, and is now repaired, was completeness of the
-certificate *class* on these two targets.
+certificate *class* **on these two targets**.
+
+Completeness in general is **refuted**, not repaired. `Limits/NoCertificate.lean`'s
+`not_exists_plusCertifies_pumpTarget` exhibits a ℤ-time non-validity no family of the class
+certifies, under no hypothesis at all; `Limits/HopFree.lean` refutes the hop-free strategy
+separately. The repair recorded above is a repair at `Pp → ⊡Pp` and `Fp → (¬p → ⊡Fp)`, and the
+fragment the class does cover is open.
 
 ## A parallel export, not a widened one
 

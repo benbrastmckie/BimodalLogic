@@ -40,6 +40,7 @@ import FormalSystem.Metalogic.Decidability.Verified.Bridge.DenseTruth
 import FormalSystem.Metalogic.Decidability.Verified.Decidable
 import FormalSystem.Metalogic.Decidability.BiLasso
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate
 
 /-!
 # FormalSystem.Metalogic.Decidability - Decision Procedure for TM Logic
