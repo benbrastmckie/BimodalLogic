@@ -145,6 +145,9 @@ import FormalSystem.Metalogic.Decidability.FMP.TruthPreservation
 import FormalSystem.Metalogic.Decidability.IntPresentation
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Basic
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Frame
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Position
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Splice
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Agreement
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Basic
@@ -548,6 +551,7 @@ import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
 import FormalSystem.Semantics.Periodicity
 import FormalSystem.Semantics.ShiftSet
+import FormalSystem.Semantics.SlicedFrame
 import FormalSystem.Semantics.StateLocalTransfer
 import FormalSystem.Semantics.StateTopology
 import FormalSystem.Semantics.StateTopology.ConstraintWitnesses

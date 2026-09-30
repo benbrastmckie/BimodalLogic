@@ -11,6 +11,7 @@ import FormalSystem.Semantics.FrameProperty
 import FormalSystem.Semantics.FrameClassValidity
 import FormalSystem.Semantics.FrameConstraintIndependence
 import FormalSystem.Semantics.IntNormalForm
+import FormalSystem.Semantics.SlicedFrame
 import FormalSystem.Semantics.Periodicity
 import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
