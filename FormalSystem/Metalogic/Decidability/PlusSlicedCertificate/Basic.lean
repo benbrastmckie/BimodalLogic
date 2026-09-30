@@ -74,8 +74,8 @@ differently, for a reason worth stating:
 - `PlusGraphPath.lab`, `.st` — the decoded label and state functions
 - `PlusSlicedCertificate.slice`, `.edge`, `.slab` — the decoded slice sequence and its accessors
 - `PlusSlice.BiSerialAt`, `PlusSlicedCertificate.BiSerial`, `.BiSerialWindow`
-- `PlusSlicedCertificate.BoxFaithful`, `.Target` — two of the checker's four clause groups,
-  written here to confirm the field list rather than to assert it
+- `PlusSlicedCertificate.BoxFaithful`, `.BoxLabelFaithful`, `.Target` — two of the checker's four
+  clause groups, written here to confirm the field list rather than to assert it
 - `PlusSlicedCertificate.onePointCertificate` — the finite-graph special case, exhibited
 
 ## Main Results
@@ -90,6 +90,7 @@ differently, for a reason worth stating:
   **in both directions**
 - `PlusSlicedCertificate.forall_slab_iff_window` — the box clause's `∀ t` quantifier costs the
   checker nothing
+- `PlusSlicedCertificate.boxLabelFaithful_iff_window` — the same for the box-**label** clause
 
 ## Tags
 
@@ -523,6 +524,42 @@ def BoxFaithful (G : PlusSlicedCertificate Γ Del) : Prop :=
     (G.bx χ = true ↔ ∀ (t : ℤ) (w : Fin G.n), χ ∈ G.slab t w)
 
 /--
+**(C3b) The box-label clause**, on the slice labelling.
+
+(C3) `BoxFaithful` constrains the box guess against the **subformula** `χ`: `G.bx χ = true` exactly
+when `χ` is labelled at every state of every slice. It says nothing about where the **boxed**
+formula `PlusFormula.box χ` is labelled, and in a `PlusSlice` the two are independent data. This
+clause is the missing half: a slice labels `box χ` exactly when the box guess reports `χ`.
+
+**Why it is a separate clause and not a consequence.** `PlusLocalCoherentSeqLab`'s box clause reads
+`box χ ∈ lab t ↔ bx χ = true`, and nothing else in the condition set delivers it.
+`Position.lean`'s `AgreesOnState` gives only `box χ ∈ X ↔ box χ ∈ G.slab t w`, because `box` is a
+state shape; `LabCoherent` deliberately omits the box clause, since it is global rather than
+one-step; and (C3) relates `bx` to `χ`, not to `box χ`. So a labelling read off the position graph
+carries `box χ ∈ lab t ↔ box χ ∈ G.slab t (st t)` and no more, and without this clause a walk in
+the timed graph cannot be read as a `LabRun` at all — whatever else the walk does.
+
+**A genuine model satisfies it**, for the same reason it satisfies (C3): in an L⁺ model the truth of
+a boxed formula is independent of both history and time (`plusBox_const`), so `box χ` belongs to the
+L⁺ type at a carrier element exactly when `χ` is true everywhere, which is what `bx` is required to
+report. The clause therefore narrows the certificate class only away from certificates whose slice
+labelling contradicts their own box guess, and not away from any certificate a countermodel
+presents.
+
+Stated with the `∀ t` quantifier, which `exists_window_eq` reduces to the window when the checker
+evaluates it — see `boxLabelFaithful_iff_window`.
+-/
+def BoxLabelFaithful (G : PlusSlicedCertificate Γ Del) : Prop :=
+  ∀ χ : PlusFormula, PlusFormula.box χ ∈ plusClosureOf (Γ ++ Del) →
+    ∀ (t : ℤ) (w : Fin G.n), (PlusFormula.box χ ∈ G.slab t w ↔ G.bx χ = true)
+
+/-- **(C3b), decided on the window** `[-|back|, |mid| + |fwd|)`: the form a checker evaluates. -/
+def BoxLabelFaithfulWindow (G : PlusSlicedCertificate Γ Del) : Prop :=
+  ∀ χ : PlusFormula, PlusFormula.box χ ∈ plusClosureOf (Γ ++ Del) →
+    ∀ t : ℤ, -G.nb ≤ t → t < G.nm + G.nf → ∀ w : Fin G.n,
+      (PlusFormula.box χ ∈ G.slab t w ↔ G.bx χ = true)
+
+/--
 **(C4) The target clause**, on the target path.
 
 Every premise is labelled at the target time and no conclusion is. Read on `target.lab` rather than
@@ -549,6 +586,24 @@ theorem forall_slab_iff_window (G : PlusSlicedCertificate Γ Del) (χ : PlusForm
     have : G.slab t w = G.slab s w := by rw [slab, slab, hs3]
     rw [this]
     exact h s hs1 hs2 w
+
+/--
+**The box-label clause is decided on the window**, by the same residue reduction as (C3).
+
+Both directions, as `biSerial_iff_window` has both and for the same two consumers: `←` is what a
+checker needs, and `→` is what a soundness proof needs when it reads the clause at an arbitrary
+time.
+-/
+theorem boxLabelFaithful_iff_window (G : PlusSlicedCertificate Γ Del) :
+    G.BoxLabelFaithful ↔ G.BoxLabelFaithfulWindow := by
+  constructor
+  · intro h χ hχ t _ _ w
+    exact h χ hχ t w
+  · intro h χ hχ t w
+    obtain ⟨s, hs1, hs2, hs3⟩ := G.exists_window_eq t
+    have hslab : G.slab t w = G.slab s w := by rw [slab, slab, hs3]
+    rw [hslab]
+    exact h χ hχ s hs1 hs2 w
 
 /-! ### The finite graph is the one-slice special case
 
