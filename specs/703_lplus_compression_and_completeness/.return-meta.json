@@ -1,54 +1,51 @@
 {
   "status": "partial",
-  "started_at": "2026-09-30T10:10:00Z",
-  "completed_at": "2026-09-30T10:40:00Z",
-  "requires_user_review": true,
-  "review_reason": "Phase 15 remains PARTIAL: 15.2 landed green, but sub-phase 15.3 (the computed liveness on a rolled timed carrier) was deliberately NOT started because its first definition fixes the window width, and that width can only be fixed after Phase 16's four-state fixture confirms the doubling. A mid-dispatch blocker-research finding superseded BOTH of the plan's recorded candidate routes for 15.2; the resolution and a Phase 16 amendment are written into the plan. Phases 16-21 not started, so the mechanical plan-compliance spot-check reports 9 of 11 Goals names present.",
-  "blocked_phase": null,
-  "partial_progress": {
-    "stage": "phase_15.2_complete_15.3_reordered",
-    "details": "Phase 15.2 landed as commit b6f5c8c2e on branch orchestrate/task-703-27: FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Live.lean (529 lines, new), both directions of the liveness characterization proved at forall t. Sub-phase 15.3 not started, nothing stubbed; it is blocked behind Phase 16's four-state fixture by a recorded reorder, not by a defect.",
-    "phases_completed": 14,
-    "phases_total": 21
-  },
+  "started_at": "2026-09-30T10:39:15Z",
+  "completed_at": "2026-09-30T11:16:07Z",
+  "requires_user_review": false,
   "verification": {
-    "verification_passed": false,
+    "verification_passed": true,
     "sorry_count": 0,
     "vacuous_count": 1,
-    "vacuous_note": "Pre-existing on main and unchanged: FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal := trivial, a true statement about the Int time domain, not a placeholder. Delta from main: 0.",
     "axiom_count": 14,
-    "axiom_note": "Unchanged from main. Delta: 0. All 26 new declarations audited with #print axioms: each within [propext, Classical.choice, Quot.sound], no other axiom anywhere in the output.",
-    "build_passed": true,
-    "build_detail": "Full guarded, detached, --no-share lake build: exit_status=0, 2787 jobs, zero error: and zero warning: lines over both captured streams; Live.olean confirmed newer than Live.lean.",
-    "verification_failure_reason": "verification_passed is false ONLY because the task is not finished: Phase 15 is PARTIAL and Phases 16-21 are NOT STARTED, so the plan-compliance spot-check finds 9 of 11 Goals declaration names. No sorry, no new axiom, no vacuous placeholder, and the build is green."
+    "build_passed": true
   },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Cumulative task summary, extended with the Phase 15.2 record, the superseded-routes decision, the six plan deviations, and dispatch 27's measured verification."
-    },
-    {
-      "type": "plan",
-      "path": "specs/703_lplus_compression_and_completeness/plans/04_lplus-sliced-certificate-and-completeness.md",
-      "summary": "Amended: Phase 15 carries the RESOLUTION OF THE 15.2 ORDERING QUESTION block and seven annotated checklist deviations; Phase 16 carries the AMENDMENT reframing its declarations as wrap-faithfulness certifiers."
+      "summary": "Round-4 summary extended with dispatch 29: sub-phase 16.1 complete (window-width fixture plus the one-period transfer operators) and sub-phase 15.3 STEPS 1-3 (combined window, rolled timed carrier, wrapping time successors)."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T103514Z.md",
-      "summary": "Resume point for sub-phase 15.3, with the fixture prerequisite, two cautions about the fixture's realizability, and seven carried-forward environment hazards."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-16-handoff-20260930T111427Z.md",
+      "summary": "Resume point: sub-phase 15.3 STEP 4, with the four prerequisite lemmas named and the intended succT/predT definitions written out; plus four carried-forward environment hazards, two of them new."
     }
   ],
+  "partial_progress": {
+    "stage": "phase_16.1_complete_15.3_steps_1_to_3_complete",
+    "details": "Four green sub-steps landed and committed on orchestrate/task-703-29. Sub-phase 16.1 is COMPLETE (Fixture.lean, Stable.lean). Sub-phase 15.3 STEPS 1, 2 and 3 are COMPLETE (Window.lean, Timed.lean); STEPS 4, 5, 6 not started and nothing stubbed. Sub-phase 16.2 not started. Phases 17-21 NOT STARTED. Full lake build clean at 2791 jobs, zero errors, zero warnings; sorry_count 0; axiom and vacuous censuses unchanged from main.",
+    "phases_completed": 14,
+    "phases_total": 21
+  },
+  "completion_data": {
+    "completion_summary": "Dispatch 29 closed the two blockers that stopped dispatch 27. Sub-phase 16.1 is complete: Fixture.cert proves, as named lemmas about a bi-serial certificate of back period 1, that identical slices carry different liveness, which rejects the single-period window lower endpoint and confirms the doubled one; and Phi_back/Phi_fwd land with monotonicity plus a soundness pair showing they over-approximate. Sub-phase 15.3 STEPS 1-3 then fixed the window per plan v6 addendum (d) response (alpha): the combined lcm periods with all six compatibility facts as theorems, the pair fold forall_iff_win that Phase 17 needs, the rolled timed carrier TPos with finiteness on verts, and the wrapping nextTime/prevTime with four lemmas proving the fold preserves both the slice sequence and the target path.",
+    "roadmap_items": []
+  },
   "metadata": {
     "session_id": "sess_1790754653_96e30c",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "dispatch_seq": 27,
-    "compliance_check": "failed",
-    "compliance_note": "9 of 11 Goals declaration names present; the two absent are Phase 19's and Phase 20's top-level theorems and those phases are NOT STARTED. No integrity failure: no new declaration delegates to a superseded one.",
-    "commits": ["b6f5c8c2ed4181bbb64e4b99cab8e43c023621cd"],
-    "branch": "orchestrate/task-703-27",
-    "gate_findings_reported_unresolved": ["B0", "C9", "C23"]
+    "compliance_check": "skipped",
+    "dispatch_seq": 29,
+    "worktree_path": "/home/benjamin/Projects/BimodalLogic/.orchestrate-worktrees/703-29",
+    "worktree_branch": "orchestrate/task-703-29",
+    "commits": [
+      "1e5219782 task 703 phase 16.1: window-width fixture, identical slices with different liveness",
+      "cedf558d5 task 703 phase 16.1: one-period transfer operators with monotonicity and soundness",
+      "642cf766d task 703 phase 15.3.2: the combined window, response (alpha), with the pair fold",
+      "a11dcfd31 task 703 phase 15.3.1+15.3.3: rolled timed carrier and wrapping time successors"
+    ]
   }
 }

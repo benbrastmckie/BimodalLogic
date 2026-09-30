@@ -1,45 +1,29 @@
 {
-  "status": "partial",
+  "task_number": 703,
+  "dispatch_seq": 29,
   "phase": "implement",
-  "dispatch_seq": 27,
-  "summary": "Phase 15.2 landed green as commit b6f5c8c2e (Live.lean, 529 lines: declarative liveness with BOTH characterization directions proved at forall t). Sub-phase 15.3 was deliberately not started: a mid-dispatch blocker-research finding superseded both of the plan's candidate routes for 15.2, and 15.3's first definition fixes a window width that only Phase 16's four-state fixture can confirm.",
+  "status": "partial",
+  "session_id": "sess_1790754653_96e30c",
+  "phases_completed": 14,
+  "phases_total": 21,
+  "summary": "Sub-phase 16.1 complete and sub-phase 15.3 STEPS 1-3 complete, in four committed green sub-steps on orchestrate/task-703-29. The window-width fixture proves identical slices carry different liveness, rejecting winLo = -NB and confirming winLo = -2*NB; the combined window of addendum (d) response (alpha) is landed with the pair fold Phase 17 needs; the rolled timed carrier and the wrapping time successors follow with four faithfulness lemmas. 15.3 STEPS 4-6 and 16.2 are the resume point, nothing stubbed.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Cumulative task summary, extended with the Phase 15.2 record, the superseded-routes decision, six plan deviations, and dispatch 27's measured verification."
+      "summary": "Round-4 summary, extended with a dispatch-29 section in Overview, What Changed, Decisions, Plan Deviations, Verification and Follow-ups."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-16-handoff-20260930T111427Z.md",
+      "summary": "Resume point for 15.3 STEP 4 with the four prerequisite lemmas named, plus four environment hazards (two new: git-commit-scoped.sh cannot commit in a worktree; Basic.lean's import closure lacks Int.ModEq/Finset.Ico/ring)."
     },
     {
       "type": "plan",
       "path": "specs/703_lplus_compression_and_completeness/plans/04_lplus-sliced-certificate-and-completeness.md",
-      "summary": "Amended: Phase 15 carries the RESOLUTION OF THE 15.2 ORDERING QUESTION block plus seven annotated checklist deviations; Phase 16 carries the AMENDMENT reframing its declarations as wrap-faithfulness certifiers rather than finiteness devices."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T103514Z.md",
-      "summary": "Resume point for sub-phase 15.3: the fixture prerequisite, two cautions about the fixture's realizability at uniform slice width, and seven carried-forward environment hazards."
+      "summary": "Phase 16 marked IN PROGRESS with a full 16.1 record (the fixture redesign, its three reasons, and the binding window verdict); Phase 15 gained two records for 15.3 STEP 2 and STEPS 1+3."
     }
   ],
-  "phases_completed": 14,
-  "phases_total": 21,
-  "blockers": [
-    {
-      "phase": "15.3",
-      "target": "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate (the timed carrier's winLo/winHi)",
-      "verbatim_goal": "Define G.fwdLive t chi, the forward-live positions at slice t: the greatest set X of positions such that from every position of X there is a succP-path inside X discharging each eventuality pending at it. Implement as a decreasing Finset iteration.",
-      "what_was_tried": "The plan's own two recorded candidate routes were evaluated and both rejected on the blocker-research finding: route (i) (move Phase 16's transfer operators before 15.2) is unnecessary because AUFix terminates by the cardinality of an explicit V : Finset alpha and needs no Fintype on the carrier, so eventual periodicity was never what made the fixpoint finite; route (ii) (define fwdLive on the window only) keeps fwdLive a t-indexed object and so preserves the defect. The Formula side's rolled timed carrier (SharingWitnessFamily.Pos = Fin lassos.length times Z, finiteness on verts := univ product winTimes, wrapping nextTime/prevTime) was adopted as the route for the computation, and the Prop-vs-compute seam was taken so that 15.2 could land the declarative object with both characterization directions at forall t.",
-      "why_it_failed": "Not a failure of proof but a real ordering dependency. STEP 2 of the rolled-carrier transcription fixes winLo/winHi, and the landed exists_window_eq window is single-period [-nb, nm + nf) where the Formula side's is doubled on both sides. Identical local graphs do not imply identical liveness, because an eventuality may only be dischargeable by reaching the non-periodic window and the distance to it differs between two same-residue times. Phase 16's Fixture.fourState is exactly that phenomenon and is the only thing that can confirm the doubling. Fixing the width before the fixture confirms it is the improvisation the blocker research's anti-goals explicitly forbid, so it was not done."
-    },
-    {
-      "phase": "21",
-      "target": "scripts/check-module-invariants.sh C9",
-      "verbatim_goal": "Zero task-number and specs-path citations under FormalSystem/.",
-      "what_was_tried": "Live.lean was written to cite declaration names only, so it adds no new C9 occurrence and the count is unchanged.",
-      "why_it_failed": "Standing conflict, re-reported unresolved as instructed: the plan mandates citing specs/{NNN}_.../probes/... paths in Lean docstrings in four places and the exemption taxonomy has no covering category. One decision must be taken at Phase 21 and applied to all four. It was not resolved by weakening the invariant."
-    }
-  ],
-  "plan_markers_verified": true,
-  "continuation_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T103514Z.md",
-  "next_action_hint": "Build Phase 16's Fixture.fourState BEFORE writing one line of sub-phase 15.3; the fixture decides 15.3's first definition (winLo/winHi). Read the plan's Phase 15 RESOLUTION block and Phase 16 AMENDMENT first.",
-  "git_checkpoint": "b6f5c8c2ed4181bbb64e4b99cab8e43c023621cd"
+  "next_action": "Sub-phase 15.3 STEP 4: define succT / predT in the landed Timed.lean, then STEP 5 (the two fixpoints) and STEP 6 (the bridge to Live), then 16.2.",
+  "blockers": []
 }
