@@ -4,14 +4,16 @@
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-09-30T00:52:00Z (dispatch 21); 2026-09-30T01:20:00Z (dispatch 23);
   2026-09-30T02:05:00Z (dispatch 25); 2026-09-30T10:10:00Z (dispatch 27);
-  2026-09-30T10:39:15Z (dispatch 29); 2026-09-30T16:14:55Z (dispatch 31)
-- **Completed**: not complete — Phase 15 is PARTIAL (15.1, 15.2 and 15.3 STEPS 1-5, 6a, 6b landed;
-  STEPS 6c and 6d open), Phase 16 is IN PROGRESS (16.1 complete, 16.2 open) and Phases 17-21 are
-  NOT STARTED. Last dispatch ended 2026-09-30T16:55:00Z
+  2026-09-30T10:39:15Z (dispatch 29); 2026-09-30T16:14:55Z (dispatch 31);
+  2026-09-30T17:20:00Z (dispatch 33)
+- **Completed**: not complete — Phase 15 is PARTIAL (15.1, 15.2 and 15.3 STEPS 1-6c landed; STEP 6d
+  open and blocked on a condition-set question, see Decisions), Phase 16 is IN PROGRESS (16.1
+  complete, 16.2 open) and Phases 17-21 are NOT STARTED. Last dispatch ended 2026-09-30T18:15:00Z
 - **Effort**: ~30 minutes (dispatch 21, Phase 9) + ~70 minutes (dispatch 23, Phases 10-13)
   + ~125 minutes (dispatch 25, Phase 14 and Phase 15.1) + ~30 minutes (dispatch 27, Phase 15.2)
   + ~35 minutes (dispatch 29, Phase 16.1 and Phase 15.3 STEPS 1-3)
   + ~40 minutes (dispatch 31, Phase 15.3 STEPS 4, 5, 6a, 6b and the 6c prerequisite)
+  + ~55 minutes (dispatch 33, Phase 15.3 STEP 6c complete, and 6d's blocker identified)
 - **Dependencies**: `FormalSystem.Metalogic.Decidability.SharingSkeleton`,
   `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily` (both landed).
   `FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt` is NOT consumed by Stage 1 — see
@@ -20,6 +22,27 @@
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
+
+**Dispatch 33 closed sub-phase 15.3's STEP 6c — the eventuality-aware liveness fixpoint and the
+round-robin concatenation the plan named as STEP 6's single largest remaining piece — and identified,
+by measurement rather than by reasoning, the exact obstacle that blocks STEP 6d.** Two green
+sub-steps, a commit each. `Fixpoint.lean` gains two generic namespaces with no counterpart anywhere
+in the tree: `Glue`, which turns a sequence of finite paths into one infinite walk, and `Fair`, which
+schedules obligations round-robin across those blocks and proves that a late discharge answers an
+early demand. The new module `LiveFix.lean` instantiates both at the timed graph, giving `fwdLiveT`,
+`bwdLiveT`, `liveT`, each with **both** directions of its fixpoint characterization, and the two
+headline theorems `exists_fwdLive_walk` / `exists_bwdLive_walk`: **one** infinite walk inside the
+fixpoint discharging **every** eventuality pending anywhere along it, guard included.
+
+Two corrections to instructions this dispatch was given, both recorded rather than absorbed. First,
+the prescribed inner reachability test was insufficient in precisely the way the already-rejected
+route (β) was — `EUFix`'s path constrains its interior and says nothing about its endpoint, so a
+discharging segment can end outside the set the walk may never leave. The event has to be relativized
+too, and that in turn is why monotonicity in the vertex set alone was not enough. Second, the plan's
+claim that a spliced walk's "five `LabRun` fields are exactly the eight readouts 6b landed" is four
+of five: `coherent`'s **box clause** is supplied by nothing in the condition set, and closing it is a
+condition-set decision rather than proof work. STEP 6d therefore stops before its first line, with
+both candidate resolutions written out and a recommendation.
 
 **Dispatch 31 closed sub-phase 15.3's STEPS 4 and 5 and two of STEP 6's four pieces**, in five green
 sub-steps with a commit each. The timed graph `succT` / `predT` now exists; the two fixpoint operators
@@ -89,6 +112,35 @@ this carrier, and the response was to rebuild the fixture, keeping the obligatio
 `sorry`, no vacuous placeholder, no new axiom, and no bound on `n`, on a period or on a lasso count.
 
 ## What Changed
+
+### Phase 15.3 STEP 6c (dispatch 33, on branch `orchestrate/task-703-33`)
+
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Fixpoint.lean` — **extended** by ~454
+  lines with two generic namespaces, and corrected in two places:
+  - `EUFix.exists_path_of_mem_lfp` now *also* concludes `∀ k < m, f k ∈ V` — strictly more than
+    before, so nothing landed is weakened — and `EUFix.lfp_mono_all` generalizes `lfp_mono_V` to
+    monotonicity in the **event and guard predicates** as well as the vertex set. `step_mono_V` /
+    `iter_mono_V` / `lfp_mono_V` survive unchanged as the special cases.
+  - `Glue` — `off` (block addresses), `idx` (an index's block, by recursion rather than by
+    minimization), `walk`, and the three readouts `walk_mem` / `walk_step` / `walk_eq`.
+  - `Fair` — `inSet` (the endpoint condition), `fair_of_blocks` (propagation plus schedule, at an
+    **arbitrary** block structure needing only `n ≤ start n`), `exists_block`,
+    `exists_fair_walk_of_blocks`, `exists_fair_walk`.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Computed.lean` — `exists_untlPath_of_mem`
+  and `exists_sncePath_of_mem` carry the new `∀ k < m, f k ∈ G.verts` conjunct through.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/LiveFix.lean` — **created**, ~471 lines:
+  `untlLive` / `snceLive` and their monotonicity; `untlLiveAt` / `snceLiveAt`, the per-formula clause
+  in `Position.lean`'s `untlClauseAt` idiom; `fwdLiveStep` / `bwdLiveStep` (deflating, monotone);
+  `fwdLiveT` / `bwdLiveT` / `liveT`; `fwdLiveT_fixed` / `fwdLiveT_greatest` and the backward pair;
+  `fwdLiveT_subset_fwdWalkable` / `bwdLiveT_subset_bwdWalkable`; `untl_step_dichotomy` /
+  `snce_step_dichotomy`, the (C1') propagation clause read along an edge; the four schedule
+  declarations; and `exists_fwdLive_walk` / `exists_bwdLive_walk`.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean` — one added import line.
+- `FormalSystem.lean` — regenerated by `lake exe mk_all --lib FormalSystem`.
+- `typst/generated/status.typ` — regenerated line counts (the pre-commit gate requires it).
+
+Nothing in `LiveFix.lean` mentions `Live`, `FwdLive`, `BwdLive` or `LabRun`: the bridge is STEP 6d and
+no placeholder stands in for it.
 
 ### Phase 16.1 and Phase 15.3 STEPS 1-3 (dispatch 29, on branch `orchestrate/task-703-29`)
 
@@ -339,6 +391,55 @@ restriction was taken, deliberately: see the Decisions entry below.
 
 ## Decisions
 
+- **(dispatch 33) The inner reachability must relativize its ENDPOINT, not only its interior — and
+  the prescription that said otherwise was wrong in the same way route (β) was.** The prescribed test
+  `EUFix.lfp X G.succT (G.atPosT e) (G.atPosT g)` puts every *intermediate* vertex of its delivering
+  path in the vertex set and constrains the endpoint not at all (`EUFix.mem_lfp_iff`'s disjunction
+  takes the delivering successor out of the recursion). A walk obliged to stay inside `X` forever
+  cannot splice in a segment that ends outside `X` — which is route (β)'s defect, one level further
+  in. Resolution: `Fair.inSet X (G.atPosT e) := G.atPosT e w && decide (w ∈ X)`. This is not a
+  refinement for tidiness; without it the round-robin has nothing to concatenate, exactly as the
+  plan's own rejection of (β) says.
+- **(dispatch 33) `EUFix.lfp_mono_V` was not enough, and `lfp_mono_all` is why the nested fixpoint
+  is legal at all.** Once the event predicate carries a `w ∈ X` conjunct it varies with `X`, so
+  monotonicity in the vertex set does not give monotonicity of the outer contraction, and `Nu` does
+  not apply. `lfp_mono_all` (vertex set, event, guard) closes it; the `_V` forms remain as
+  corollaries, so the landed API is extended and not perturbed.
+- **(dispatch 33) The round-robin is written at `Nu` / `EUFix`'s level, with the SCHEDULE as a
+  parameter.** `fair_of_blocks` asks of the block structure only that `n ≤ start n`, and of the
+  schedule only that a servable obligation be scheduled arbitrarily late. That keeps the modular
+  arithmetic of a concrete round-robin at the certificate, where the obligation set is known, and
+  keeps the concatenation proof about concatenation. It is reusable by anything with the same shape.
+- **(dispatch 33) Obligations are indexed by the `(guard, event)` PAIR, not by a formula shape.**
+  Indexing by `PlusFormula` would force a seven-constructor case split at every clause; indexing by
+  `PlusFormula × PlusFormula` removes all of them, and `untl_step_dichotomy` /
+  `snce_step_dichotomy` become four-line proofs off `StepClause`.
+- **(dispatch 33) `Glue.idx` and its characterizations are phrased with `off len n + len n`, never
+  `off len (n + 1)`.** The two are equal by `rfl`, but `omega` treats `off len (n + 1)` as an atom
+  unrelated to `off len n`, so every arithmetic step would otherwise need `off_succ` supplied by hand
+  at exactly the right instantiation. The phrasing is load-bearing; reverting it re-introduced four
+  arithmetic failures when first written the other way.
+- **(dispatch 33) The four schedule declarations are `noncomputable`, deliberately and at no cost.**
+  `Finset.toList` is noncomputable, and a schedule is only ever the parameter of an existence
+  theorem. Every `Finset` the decidable checker evaluates — `verts`, `succT`, `predT`, `fwdLiveT`,
+  `bwdLiveT`, `liveT` — stays computable, which is the property that actually matters.
+- **(dispatch 33) STEP 6d is blocked on a MISSING CONDITION, not on proof difficulty, and the
+  decision is escalated rather than taken.** `LabRun.coherent` demands
+  `PlusLocalCoherentSeqLab Γ Del G.bx lab`, whose box clause is
+  `PlusFormula.box χ ∈ lab t ↔ G.bx χ = true`. `Position.lean`'s `LabCoherent` deliberately omits it;
+  `AgreesOnState` gives only `box χ ∈ lab t ↔ box χ ∈ G.slab t (st t)`; and (C3) `BoxFaithful` relates
+  `G.bx χ` to `∀ t w, χ ∈ G.slab t w` — the **subformula** `χ`, not `box χ`. The subtree's complete
+  inventory of `Prop`-valued certificate conditions (`BiSerial`, `BiSerialWindow`, `BoxFaithful`,
+  `Target`) closes none of it, and `mem_posAt_of_path` runs the other way, dropping the clause on the
+  way in. Recommended resolution **(a)**: add a (C3b) box-**label** clause
+  `∀ χ, box χ ∈ plusClosureOf (Γ ++ Del) → ∀ t w, (box χ ∈ G.slab t w ↔ G.bx χ = true)`, decided on
+  the window by `exists_window_eq` exactly as `BoxFaithful` is. Resolution **(b)** — folding the
+  clause into `LabCoherent` — is rejected as written: combined with `AgreesOnState` it would silently
+  force the same constraint on the certificate, emptying `posAt t` for a violating certificate with no
+  stated clause saying why, and it perturbs `succP` / `predP` / `verts` and `mem_posAt_of_path`.
+  Because either route changes the condition set this task depends on, it is surfaced as a
+  non-blocking user decision rather than chosen here.
+
 - **(dispatch 29) The fixture was redesigned and the theorem was not.** `Fixture.fourState` as the
   plan words it is not realizable in this carrier, for three independent reasons: slice width is
   uniform and `edge` is per slice, so the plan's `a → c` edges would hold at every negative time;
@@ -475,6 +576,20 @@ restriction was taken, deliberately: see the Decisions entry below.
   need keeps the refactor off the next dispatch's critical path.
 
 ## Plan Deviations
+
+- **Phase 15.3 STEP 6c, altered (the inner test)**: the resolution block's
+  `EUFix.lfp X G.succT (G.atPosT e) (G.atPosT g)` is replaced by the endpoint-relativized
+  `EUFix.lfp X G.succT (Fair.inSet X (G.atPosT e)) (G.atPosT g)`, with `EUFix.lfp_mono_all` added to
+  keep the outer contraction monotone. See Decisions; the unrelativized form does not support the
+  round-robin at all.
+- **Phase 15.3 STEP 6c, added**: `Glue`, an infinite-walk-from-blocks layer the plan does not name.
+  The round-robin the plan *does* name cannot be stated without it, and it is generic.
+- **Phase 15.3 STEP 6d, deferred**: blocked on the box-clause question above. Nothing stubbed, and
+  the phase marker stays `[PARTIAL]` rather than advancing.
+- **Phase 15's last verification bullet (`G.live` on a concrete certificate), still open**: it is now
+  *stateable* — the computed object exists — but `Nu.gfp` iterates `verts.card + 1` times over a
+  `Finset` of size `G.n * 2 ^ |closure|`, so whether a `decide`-based evaluation is feasible at all
+  must be established before a run is spent on it. Flagged, not attempted.
 
 - **Phase 16.1, altered (the fixture)**: `Fixture.fourState` redesigned as `Fixture.cert`; the
   `#eval` / `#guard` half dropped as impossible. See Decisions and the plan's 16.1 record.
@@ -624,7 +739,32 @@ restriction was taken, deliberately: see the Decisions entry below.
 
 ## Verification
 
-### Dispatch 29 (the current end state)
+### Dispatch 33 (the current end state)
+
+- Build: **Success**. Full `lake build`, guarded and detached (`--no-share`): `exit_status=0`,
+  **2796 jobs**, **zero** `error:` and **zero** `warning:` lines. Tier 3 confirmed: the `.olean` of
+  `Fixpoint`, `Computed`, `LiveFix` and `PlusSlicedCertificate` are each newer than their sources.
+- Sorry count: **0** (`lean-sorry-census.sh` over all four resolved source roots).
+- Vacuous count: **1**, identical to `main`'s — the pre-existing
+  `FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal`, untouched.
+- Axiom count: **14**, identical to `main`'s — unchanged.
+- `#print axioms`: all **116** declarations of `Fixpoint.lean` and `LiveFix.lean` audited by name in
+  one pass — **60 depend on no axiom at all**, 6 on `[propext, Quot.sound]`, 50 within
+  `[propext, Classical.choice, Quot.sound]`. Zero unknown-constant errors, no `sorryAx` anywhere.
+- Anti-goals checked explicitly: no `[Fintype TPos]` and no `Fintype` on any carrier; **both**
+  directions of every characterization (`fwdLiveT_fixed` **and** `fwdLiveT_greatest`, and the backward
+  pair); no declaration added mentions `winLo` or `winHi`; the only cardinality mentioned anywhere is
+  `V.card`, a `Finset` iteration's termination measure.
+- **One environment repair was required and is recorded**: the worktree's seeded `.lake` carried eight
+  modules whose `<Module>.olean.hash` disagreed with their own `<Module>.trace`'s expected
+  `outputs.o` hash, so lake served a **stale** `Timed.olean` and reported `succT` "not in the
+  environment" — a symptom indistinguishable from a source error. Deleting those eight modules'
+  outputs inside the worktree (hardlinks; the main tree untouched) and rebuilding fixed it. Check this
+  first on any "unknown constant that plainly exists" error in a dispatch worktree.
+- Tests: **N/A** — no test target covers this subtree yet; Phase 21 owns the gates.
+- Files verified: **Yes**.
+
+### Dispatch 29 (superseded as the end state; retained as the record)
 
 - Build: **Success**. Full `lake build`, guarded and detached (`--no-share`): `exit_status=0`,
   **2791 jobs**, **zero** `error:` and **zero** `warning:` lines. Run four times over the dispatch,
@@ -916,7 +1056,19 @@ as a completed read.
 
 ## Follow-ups
 
-- **NEXT (dispatch 29's seam): sub-phase 15.3 STEP 4**, the timed graph `succT` / `predT`. All four
+- **NEXT (dispatch 33's seam): settle STEP 6d's box-clause question, then write 6d.** The question,
+  the evidence for it, the two candidate resolutions and the recommendation are in
+  `handoffs/phase-15-handoff-20260930T181500Z.md`. Do **not** begin the splice before it is settled:
+  four of `LabRun`'s five fields come straight off `Unroll.lean`'s readouts, and the fifth cannot be
+  built at all until a clause supplies `box χ ∈ G.slab t w ↔ G.bx χ = true`. Once settled, 6d's other
+  three pieces are the position-level splice (small and new — `Live.lean`'s own `splice` takes two
+  `LabRun`s, not two half-lines, so it is not reusable), the lift by `plusFwdFulfilling_of_ge` /
+  `plusBwdFulfilling_of_le` (landed, citation only), and the two directions of
+  `G.Live t p ↔ (p, s) ∈ G.liveT` with `exists_foldF` / `exists_foldB` supplying `s`. Completeness is
+  `fwdLiveT_greatest` / `bwdLiveT_greatest` at `X` = the run's folded timed positions, where the
+  delivering vertex is on the run and hence in `X` — which is why `Fair.inSet`'s endpoint condition
+  is satisfiable and not merely convenient.
+- **NEXT (dispatch 29's seam, now closed): sub-phase 15.3 STEP 4**, the timed graph `succT` / `predT`. All four
   lemmas it needs are landed (`posAt_nextTime` / `posAt_prevTime` and `slice_nextTime_pred` /
   `slice_prevTime_succ`); the intended definitions are written out in the dispatch-29 handoff. Then
   STEP 5 (the two fixpoints, with a **generic** decreasing `Finset` iteration written once), STEP 6
@@ -1009,6 +1161,9 @@ as a completed read.
   `namespace` or `variable` (use `/-! … -/`). Both cost a build round here.
 
 ## References
+
+- `specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T181500Z.md`
+  — dispatch 33's resume point: STEP 6d's blocker, its two resolutions, and 17 environment hazards.
 
 - `specs/703_lplus_compression_and_completeness/plans/04_lplus-sliced-certificate-and-completeness.md`
   — the plan. Phases 9, 10, 11 and 13 are `[COMPLETED]` and Phase 12 is

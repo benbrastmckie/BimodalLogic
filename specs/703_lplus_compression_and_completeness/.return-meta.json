@@ -1,9 +1,9 @@
 {
   "status": "partial",
-  "started_at": "2026-09-30T16:14:55Z",
-  "completed_at": "2026-09-30T16:58:00Z",
+  "started_at": "2026-09-30T17:20:00Z",
+  "completed_at": "2026-09-30T18:15:00Z",
   "requires_user_review": true,
-  "review_reason": "Plan-compliance spot-check fails by design at this point in the plan: 9 of the 11 names in the plan's Goals block resolve to landed declarations, and the two that do not -- exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula and exists_plusSlicedCertificate_of_tailStable_countermodel -- are the task's two headline theorems, owned by Phases 19 and 20, which are [NOT STARTED]. Every substantive check PASSED: full lake build exit 0 at 2795 jobs with zero error: and zero warning: lines, sorry_count 0, vacuous census 1 unchanged from main, axiom census 14 unchanged from main, and all 131 new declarations axiom-audited by name with no sorryAx. Nothing regressed and nothing is stubbed. No user decision is needed; this flag marks that the task's own goals are not yet reached at phase 15 of 21.",
+  "review_reason": "Plan-compliance spot-check fails by design at this point in the plan. Of the 11 names in the plan's Goals block, 9 resolve to landed declarations: 6 to theorems/defs the grep matches directly (hopTarget, pumpTarget, not_plusValidZTime_hopTarget, not_plusValidZTime_pumpTarget, not_exists_hopFree_plusCertifies_hopTarget, not_exists_plusCertifies_pumpTarget) and 3 to `structure` declarations the spot-check's grep pattern does not cover and which were confirmed by hand (PlusGraphPath, PlusSlice, PlusSlicedCertificate, all in FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Basic.lean). The 2 that genuinely do not resolve -- exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula and exists_plusSlicedCertificate_of_tailStable_countermodel -- are the task's two headline theorems, owned by Phases 19 and 20, which are [NOT STARTED]. The plan names no replacement/supersession target, so the integrity half of the check is vacuously clean. Every substantive check PASSED: full lake build exit 0 at 2796 jobs with zero error: and zero warning: lines, sorry_count 0, vacuous census 1 unchanged from main, axiom census 14 unchanged from main, and all 116 new/extended declarations axiom-audited by name with no sorryAx. Nothing regressed and nothing is stubbed. Separately, a NON-BLOCKING user_decision is attached: STEP 6d cannot build a LabRun until the condition set supplies PlusLocalCoherentSeqLab's box clause, which no existing clause does.",
   "verification": {
     "verification_passed": false,
     "sorry_count": 0,
@@ -12,58 +12,68 @@
     "axiom_count": 14,
     "axiom_note": "Unchanged from main. No axiom was added.",
     "build_passed": true,
-    "build_note": "Full guarded, detached, --no-share lake build: exit_status=0, 2795 jobs, zero error: and zero warning: lines. Olean-newer-than-source confirmed for all seven modules this dispatch touched.",
-    "verification_passed_note": "false ONLY because metadata.compliance_check is 'failed'; all five substantive checks above passed. See review_reason."
+    "build_note": "Full guarded, detached, --no-share lake build: exit_status=0, 2796 jobs, zero error: and zero warning: lines. Olean-newer-than-source confirmed for all four modules this dispatch touched (Fixpoint, Computed, LiveFix, PlusSlicedCertificate).",
+    "verification_passed_note": "false ONLY because metadata.compliance_check is 'failed'; all five substantive checks above passed. See review_reason.",
+    "compliance_note": "Spot-check run in this dispatch against the resolved source roots. 9/11 Goals names resolve (6 by grep, 3 structures confirmed by hand); the 2 that do not are Phases 19-20's headline theorems, both [NOT STARTED]. No replacement targets are named in the plan, so the integrity half is vacuously clean."
   },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-4 summary extended with dispatch 31: sub-phase 15.3 STEPS 4 and 5 complete, STEP 6 part-landed (6a the fold relation, 6b a walk read as a Z-indexed half-run), plus the 6c prerequisite."
+      "summary": "Round-4 summary extended with dispatch 33: sub-phase 15.3 STEP 6c complete (Glue and Fair in Fixpoint.lean, the new LiveFix.lean), the two corrections it recorded, and the STEP 6d blocker."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T164815Z.md",
-      "summary": "Resume point: sub-phase 15.3 STEP 6c, with its contraction written out, its two monotonicity lemmas named, the unsound alternative recorded, and the round-robin concatenation identified as the largest remaining piece."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T181500Z.md",
+      "summary": "Resume point: STEP 6d's box-clause blocker with both candidate resolutions and a recommendation, the other three 6d pieces named, and 17 environment hazards."
     }
   ],
   "partial_progress": {
-    "stage": "phase_15.3_steps_4_5_6a_6b_complete",
-    "details": "Five green sub-steps landed and committed on orchestrate/task-703-31, plus a sixth commit for the 6c prerequisite. Sub-phase 15.3 STEPS 4 and 5 are COMPLETE; STEP 6 is PART-landed (6a and 6b done, 6c and 6d not started and nothing stubbed). Sub-phase 16.2 not started. Phases 17-21 NOT STARTED. Full lake build clean at 2795 jobs, zero errors, zero warnings; sorry_count 0; axiom and vacuous censuses unchanged from main.",
+    "stage": "phase_15.3_step_6c_complete",
+    "details": "Two green sub-steps landed and committed on orchestrate/task-703-33. Sub-phase 15.3 STEP 6c is COMPLETE: the nested eventuality-aware liveness fixpoint (fwdLiveT / bwdLiveT / liveT) with both directions of its characterization, and the generic round-robin concatenation (Glue, Fair) yielding one fair walk per live position. STEP 6d is NOT started and is blocked on a condition-set question, nothing stubbed. Sub-phase 16.2 not started. Phases 17-21 NOT STARTED. Full lake build clean at 2796 jobs, zero errors, zero warnings; sorry_count 0; axiom and vacuous censuses unchanged from main.",
     "phases_completed": 14,
     "phases_total": 21
   },
+  "user_decision": {
+    "question": "STEP 6d cannot build a LabRun until something supplies PlusLocalCoherentSeqLab's box clause, `PlusFormula.box chi in lab t iff G.bx chi = true`. No clause in the sliced certificate's condition set does: (C3) BoxFaithful constrains the subformula chi, not the boxed formula box chi. How should that gap be closed?",
+    "options": [
+      "(a) Add a (C3b) box-label clause to the condition set -- `forall chi, box chi in plusClosureOf (Gamma ++ Del) -> forall t w, (box chi in G.slab t w iff G.bx chi = true)` -- and thread it as a hypothesis through 6d's LabRun construction; decided on the window by exists_window_eq exactly as BoxFaithful is.",
+      "(b) Fold the box clause into Position.lean's LabCoherent, so posAt membership carries it, accepting that AgreesOnState then silently forces the same constraint on the certificate and that succP / predP / verts / mem_posAt_of_path are perturbed."
+    ],
+    "recommended": "(a) Add a (C3b) box-label clause to the condition set -- `forall chi, box chi in plusClosureOf (Gamma ++ Del) -> forall t w, (box chi in G.slab t w iff G.bx chi = true)` -- and thread it as a hypothesis through 6d's LabRun construction; decided on the window by exists_window_eq exactly as BoxFaithful is.",
+    "blocking": false
+  },
   "completion_data": {
-    "completion_summary": "Dispatch 31 closed sub-phase 15.3's STEPS 4 and 5 and two of STEP 6's four pieces. The timed graph succT/predT now exists with the honest edge-level adjointness (succT and predT are NOT mutual inverses, and the module records the negative); the two existential fixpoint operators the sliced side needs exist generically in Fixpoint.lean (Nu.gfp at an arbitrary contraction, EGFix at 'has a successor', EUFix the existential E[g U e]), each with membership proved equivalent to the existence of the walk it describes; Computed.lean instantiates both at both graphs; Fold.lean supplies the two folding relations with each wrap proved to be a fold; and Unroll.lean reads a graph walk as a Z-indexed half-run in exactly the shape a LabRun field consumes. The plan's prescription of AUFix for the inner eventuality-discharge step is superseded: AUFix is the universal operator and supplies neither half of an existential liveness condition, which is a stronger conclusion than the plan's own Scope Hypothesis stated.",
+    "completion_summary": "Dispatch 33 closed sub-phase 15.3 STEP 6c. Fixpoint.lean gains two generic namespaces with no counterpart in the tree -- Glue, which glues finite paths into one infinite walk, and Fair, the round-robin concatenation whose propagation argument makes a late discharge answer an early demand -- and the new LiveFix.lean instantiates both at the timed graph, giving fwdLiveT / bwdLiveT / liveT with both directions of their fixpoint characterization and the two headline theorems exists_fwdLive_walk / exists_bwdLive_walk: one infinite walk inside the fixpoint discharging every eventuality pending anywhere along it, guard included. Two instructions it was given turned out to be wrong and are corrected rather than absorbed: the prescribed inner reachability test fails in exactly the way the already-rejected route (beta) does, because EUFix constrains a delivering path's interior and not its endpoint; and the plan's claim that a spliced walk's five LabRun fields are exactly the readouts already landed is four of five, the missing one being coherent's box clause, which nothing in the condition set supplies.",
     "roadmap_items": []
   },
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Fixpoint.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Computed.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/LiveFix.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean",
+    "FormalSystem.lean",
+    "typst/generated/status.typ",
+    "specs/703_lplus_compression_and_completeness/plans/04_lplus-sliced-certificate-and-completeness.md",
+    "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
+    "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T181500Z.md"
+  ],
   "metadata": {
     "session_id": "sess_1790784781_504148",
     "agent_type": "lean-implementation-agent",
+    "dispatch_seq": 33,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "failed",
-    "compliance_note": "9 of 11 Goals names landed. Missing: exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula (Phase 19) and exists_plusSlicedCertificate_of_tailStable_countermodel (Phase 20), both [NOT STARTED]. No integrity failure: no landed declaration delegates to a name it claims to replace.",
-    "dispatch_seq": 31,
-    "worktree_path": "/home/benjamin/Projects/BimodalLogic/.orchestrate-worktrees/703-31",
-    "worktree_branch": "orchestrate/task-703-31",
-    "commits": [
-      "0de1bc5bc task 703 phase 15.3.4: the timed graph, with the edge-level adjointness",
-      "478ae17e1 task 703 phase 15.3.5a: the two existential fixpoint operators, generically",
-      "400ad00a2 task 703 phase 15.3.5b: the four fixpoints instantiated at the timed graph",
-      "14bbb2db6 task 703 phase 15.3.6a: the combined fold relation on times",
-      "6452aa002 task 703 phase 15.3.6b: a graph walk read as a Z-indexed half-run",
-      "ebcf91121 task 703 phase 15.3.6c-prep: the generic nu-iteration at an arbitrary contraction"
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
     ],
-    "modified_files": [
-      "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Timed.lean",
-      "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Fixpoint.lean",
-      "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Computed.lean",
-      "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Fold.lean",
-      "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Unroll.lean",
-      "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean",
-      "FormalSystem.lean",
-      "typst/generated/status.typ"
+    "compliance_check": "failed",
+    "worktree_path": "/home/benjamin/Projects/BimodalLogic/.orchestrate-worktrees/703-33",
+    "branch": "orchestrate/task-703-33",
+    "commits": [
+      "77fb5f38e",
+      "6e9e565ef"
     ]
   }
 }
