@@ -17,12 +17,10 @@ consume what is here.
 
 ## Why the carrier is sliced
 
-A certificate presenting a frame on a **finite** carrier cannot be complete. The refutation is
-`Probe706.no_ofStep_sat`, recorded with this task's second research round at
-`specs/703_lplus_compression_and_completeness/probes/` and summarized in report 706: `θ.neg` is a
-`⊡`-free ℤ-time non-validity that the landed `Formula`-side witness family already certifies, and
-no finite-carrier certificate can certify it. `FrameOver.ofStep` requires `[Finite W]` on the whole
-carrier and is therefore unusable here.
+A certificate presenting a frame on a **finite** carrier cannot be complete. There is a
+`⊡`-free ℤ-time non-validity that the landed `Formula`-side witness family already certifies and
+that no finite-carrier certificate can certify. `FrameOver.ofStep` requires `[Finite W]` on the
+whole carrier and is therefore unusable here.
 
 The carrier of the frame this certificate presents is `ℤ × Fin n` — **infinite, with finite
 fibres**. Limit is discharged by `TaskFrame.limit_of_succOrder` and Saturation by

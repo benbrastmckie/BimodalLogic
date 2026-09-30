@@ -50,11 +50,8 @@ fixpoints use.
 
 ## Provenance
 
-`truth_of_agree_of_type_eq` is transcribed from this task's own research probe
-`specs/703_lplus_compression_and_completeness/probes/TypePreservingPaste.lean`
-(`Probe703Paste.truth_of_agree_of_type_eq`), which is a probe rather than a library declaration.
-The transcription adds **no hypothesis**: the statement, the hypothesis list and the proof are the
-probe's, restated in library style.
+`truth_of_agree_of_type_eq` is stated and proved here, in library style, with **no hypothesis**
+beyond those listed on the declaration itself.
 
 ## Tags
 

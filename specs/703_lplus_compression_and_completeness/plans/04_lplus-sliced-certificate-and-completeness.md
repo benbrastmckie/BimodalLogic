@@ -2075,11 +2075,10 @@ readout and the derived per-slice edge and label functions, and define `BiSerial
       window-decided form and the `∀ t` form, **in both directions** — the `←` direction is what
       the checker needs and the `→` direction is what Phase 14's frame construction needs.
 - [x] Prove `BiSerial` is `Decidable`.
-- [x] Record in the module docstring, citing
-      `specs/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean`
-      by path and `Probe706.no_ofStep_sat` by name, why the carrier is sliced: a certificate
-      presenting a finite-carrier frame cannot certify `θ.neg`, a `⊡`-free ℤ-time non-validity the
-      landed L family already certifies. State plainly that the finite graph is the one-slice
+- [x] Record in the module docstring why the carrier is sliced — **citing no probe, by path or by
+      declaration name** (USER RULING, see `.decisions.json`): a certificate presenting a
+      finite-carrier frame cannot certify a `⊡`-free ℤ-time non-validity that the landed L family
+      already certifies. State the claim itself as the anchor. State plainly that the finite graph is the one-slice
       special case (`back = fwd = [slice]`, `mid = []`), so nothing was lost.
 - [x] Confirm the new modules transitively import `FormalSystem.Init` (invariant C24).
 
@@ -3408,8 +3407,9 @@ this research supports**.
       (`WitnessFamily/Compression/Family.lean:153`), and embed.
 - [ ] Record in the module docstring what this theorem buys: the sliced class is **non-vacuous on
       branching-free targets** and is at least as strong as the landed L class there — which is
-      exactly what the withdrawn `PlusGraphCertificate` was not, by `Probe706.no_ofStep_sat`. Cite
-      the probe by path. State plainly that this is **not** completeness for L⁺: targets containing
+      exactly what the withdrawn `PlusGraphCertificate` was not. **Cite no probe, by path or by
+      declaration name** (USER RULING, see `.decisions.json`); state the mathematical claim itself
+      as the anchor. State plainly that this is **not** completeness for L⁺: targets containing
       `⊡` are not covered, and that is the open Stage 3 question.
 - [ ] Record the hand-off to task 704: this theorem is a ready-made non-vacuity witness for its
       shape gates.
@@ -3514,9 +3514,11 @@ task with an honest record of what was proved and what was not.
       are formalization-native.
 - [ ] Write the `PlusSlicedCertificate` subtree README, or a header section in the aggregator,
       stating plainly: what the certificate class is; that its presented frame has an **infinite**
-      carrier with finite fibres, and **why** — citing
-      `specs/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean`
-      and `Probe706.no_ofStep_sat`; that soundness, relative completeness for tail-stable sliced
+      carrier with finite fibres, and **why** — **citing no probe, by path or by declaration
+      name** (USER RULING, see `.decisions.json`; this README is under `FormalSystem/`, which
+      invariant C9 scans for `*.md` too), stating instead the claim that no finite-carrier
+      certificate can certify a `⊡`-free ℤ-time non-validity the landed L family already
+      certifies; that soundness, relative completeness for tail-stable sliced
       models, and the L-family embedding are proved; that the **finite-carrier** finite model
       property is **refuted**; that the **sliced** finite model property is **open, not refuted**,
       and is a separate task; and that the expected slice width is doubly exponential as a research

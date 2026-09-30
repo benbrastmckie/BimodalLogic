@@ -17,12 +17,11 @@ carrier `ℤ × Fin G.n`. `G.model h` values an atom at `(t, w)` by its membersh
 ## What is cashed out here
 
 The carrier is **infinite with finite fibres**, not finite. That is the amendment this subtree
-exists for, and it is not a matter of taste:
-`specs/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean`'s
-`Probe706.no_ofStep_sat` exhibits a `⊡`-free ℤ-time non-validity that **no** `FrameOver.ofStep`
-frame satisfies, so a certificate presenting a finite-carrier frame cannot certify it, while the
-landed `Formula`-side witness family already does. `FrameOver.ofSlicedStep` is therefore not a
-convenience over `FrameOver.ofStep`; it is the only available route.
+exists for, and it is not a matter of taste: there is a `⊡`-free ℤ-time non-validity that **no**
+`FrameOver.ofStep` frame satisfies, so a certificate presenting a finite-carrier frame cannot
+certify it, while the landed `Formula`-side witness family already does.
+`FrameOver.ofSlicedStep` is therefore not a convenience over `FrameOver.ofStep`; it is the only
+available route.
 
 `ofSlicedStep_not_finite_worldState` proves the carrier is not finite rather than asserting it,
 and `frame_worldState_not_finite` restates that at `G.frame h`.

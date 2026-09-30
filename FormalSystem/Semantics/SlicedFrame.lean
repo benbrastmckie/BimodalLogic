@@ -19,13 +19,11 @@ finite fibres.
 `FrameOver.ofStep` requires `[Finite W]` on the whole carrier, and that requirement is not a
 technicality of its proof — it is what its *Saturation* discharge
 (`TaskFrame.saturation_of_finite`) consumes. A finite carrier is a genuine restriction on which
-formulas a presented frame can refute:
-`specs/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean`'s
-`Probe706.no_ofStep_sat` exhibits a `⊡`-free ℤ-time non-validity that **no** frame built by
-`ofStep` satisfies at any finite carrier, while the landed `Formula`-side witness family already
-certifies it. So a certificate class that presents its frame through `ofStep` cannot be complete
-even on the `⊡`-free fragment, and the fix is to slice the carrier by time rather than to enlarge
-a finite one.
+formulas a presented frame can refute: there is a `⊡`-free ℤ-time non-validity that **no**
+frame built by `ofStep` satisfies at any finite carrier, while the landed `Formula`-side witness
+family already certifies it. So a certificate class that presents its frame through `ofStep`
+cannot be complete even on the `⊡`-free fragment, and the fix is to slice the carrier by time
+rather than to enlarge a finite one.
 
 `IntNormalForm.lean` is **not** modified by this module. Everything here is new: the time-indexed
 iterate `iterS`, the two-sided relation `ofSlicedStepRel`, and the frame `FrameOver.ofSlicedStep`
