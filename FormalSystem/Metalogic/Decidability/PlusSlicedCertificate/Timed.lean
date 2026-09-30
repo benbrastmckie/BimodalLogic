@@ -51,19 +51,27 @@ land at `-NB - 1`'s representative and not conflate the first period with the re
 `winLo = -2 * NB` is what makes that possible. The fixture is a proved lemma about a named
 certificate, not an expectation.
 
+## The timed graph, and why it is not a pair of mutual inverses
+
+`succT` / `predT` read `succP` / `predP` at the **unwrapped** time and place the result at the
+**wrapped** one. `prevTime (nextTime u) ≠ u` at the window's right edge, so
+`w ∈ succT v ↔ v ∈ predT w` is **false** and no lemma here claims it;
+`SharingWitnessFamily`'s `succF` / `predF` are built the same way and carry no adjointness lemma
+either. What is true is the *edge-level* adjointness `mem_succT_iff_mem_predP` /
+`mem_predT_iff_mem_succP`, and it is what the fixpoints consume.
+
 ## What this module does NOT yet contain
 
-The timed graph `succT` / `predT` (STEP 4), the two fixpoints (STEP 5) and the bridge proving the
-computed object equals `Live.lean`'s declarative `Live` at the times the checker reads (STEP 6) are
-**not** here. Nothing is stubbed for them and no placeholder stands in. `slice_nextTime_pred` and
-`slice_prevTime_succ` are landed here because they are what STEP 4's adjointness will need, and they
-belong with the other wrap lemmas rather than with the graph.
+The two fixpoints (STEP 5) and the bridge proving the computed object equals `Live.lean`'s
+declarative `Live` at the times the checker reads (STEP 6) are **not** here. Nothing is stubbed for
+them and no placeholder stands in.
 
 ## Main definitions
 
 - `PlusSlicedCertificate.TPos` — the rolled timed carrier
 - `PlusSlicedCertificate.verts` — the finite vertex set: genuine positions at window times
 - `PlusSlicedCertificate.nextTime` / `prevTime` — the wrapping time successors
+- `PlusSlicedCertificate.succT` / `predT` — the timed graph on `verts`
 
 ## Main results
 
@@ -74,6 +82,11 @@ belong with the other wrap lemmas rather than with the graph.
   `target_datum_prevTime` — the wraps preserve **both** objects' data
 - `PlusSlicedCertificate.posAt_congr`, `posAt_nextTime` / `posAt_prevTime`
 - `PlusSlicedCertificate.slice_nextTime_pred` / `slice_prevTime_succ`
+- `PlusSlicedCertificate.succP_congr` / `predP_congr`, and the two transports
+  `predP_nextTime` / `succP_prevTime`
+- `PlusSlicedCertificate.succT_subset` / `predT_subset` — the graph stays inside `verts`
+- `PlusSlicedCertificate.mem_succT_iff_mem_predP` / `mem_predT_iff_mem_succP` — the edge-level
+  adjointness, which is the only adjointness available
 
 ## Tags
 
@@ -323,6 +336,138 @@ theorem slice_prevTime_succ (G : PlusSlicedCertificate Γ Del) {u : ℤ} (hu : u
     refine Periodic.cyc_congr (Int.ModEq.symm (Int.modEq_iff_dvd.mpr ?_))
     rw [show -G.NB - 1 + 1 - u = G.NB from by omega]
     exact G.nb_dvd_NB
+
+/-! ## The one-step relations transported along a wrap
+
+`succP t` reads `G.slice t` (through `edge t`) and `G.slice (t + 1)` (through `posAt (t + 1)`);
+`predP t` reads `G.slice (t - 1)` alone, through both. So each is a function of the slice sequence
+at the times it touches, and the wrap lemmas above transport it. These two congruences are what let
+the timed graph read a relation at the **unwrapped** time and be recognised at the **wrapped** one.
+-/
+
+/-- The edge relation depends on the time only through the slice. -/
+theorem edge_congr (G : PlusSlicedCertificate Γ Del) {t s : ℤ} (h : G.slice t = G.slice s)
+    (w u : Fin G.n) : G.edge t w u = G.edge s w u := by
+  rw [edge, edge, h]
+
+/-- **`succP` depends on the time only through the two slices it touches.** -/
+theorem succP_congr (G : PlusSlicedCertificate Γ Del) {t s : ℤ} (h : G.slice t = G.slice s)
+    (h1 : G.slice (t + 1) = G.slice (s + 1)) (p : G.Pos) : G.succP t p = G.succP s p := by
+  ext q
+  rw [mem_succP, mem_succP, G.posAt_congr h1, G.edge_congr h]
+
+/-- **`predP` depends on the time only through the one slice it touches.** -/
+theorem predP_congr (G : PlusSlicedCertificate Γ Del) {t s : ℤ}
+    (h : G.slice (t - 1) = G.slice (s - 1)) (q : G.Pos) : G.predP t q = G.predP s q := by
+  ext p
+  rw [mem_predP, mem_predP, G.posAt_congr h, G.edge_congr h]
+
+/-- **The backward relation read at the forward wrap's target is the unwrapped one.** -/
+theorem predP_nextTime (G : PlusSlicedCertificate Γ Del) {u : ℤ} (hu : u ∈ G.winTimes)
+    (q : G.Pos) : G.predP (G.nextTime u) q = G.predP (u + 1) q := by
+  refine G.predP_congr ?_ q
+  rw [show u + 1 - 1 = u from by omega]
+  exact G.slice_nextTime_pred hu
+
+/-- **The forward relation read at the backward wrap's target is the unwrapped one.** -/
+theorem succP_prevTime (G : PlusSlicedCertificate Γ Del) {u : ℤ} (hu : u ∈ G.winTimes)
+    (p : G.Pos) : G.succP (G.prevTime u) p = G.succP (u - 1) p := by
+  refine G.succP_congr (G.slice_prevTime hu) ?_ p
+  rw [show u - 1 + 1 = u from by omega]
+  exact G.slice_prevTime_succ hu
+
+/-! ## The timed graph
+
+`succT` and `predT` read `succP` / `predP` at the **unwrapped** time `v.2` and place the result at
+the **wrapped** one, which `posAt_nextTime` / `posAt_prevTime` license. Both land inside `verts` by
+construction, so a walk in either graph never leaves the finite vertex set and a `Finset` iteration
+on `verts` terminates.
+
+### They are NOT mutual inverses, and must not be stated as though they were
+
+`prevTime (nextTime u) ≠ u` at the window's right edge — `nextTime` folds back by `NF` there and
+`prevTime` merely decrements — so `w ∈ succT v ↔ v ∈ predT w` is **false**, and no lemma below
+claims it. `SharingWitnessFamily`'s `succF` / `predF` are built the same way and carry no
+adjointness lemma either, for the same reason. What is true, and what the fixpoints actually
+consume, is the *edge-level* adjointness `mem_succT_iff_mem_predP` / `mem_predT_iff_mem_succP`:
+at a fixed pair of vertices whose times are related by one wrap, the forward and backward
+one-step relations agree. The time-matching conjunct is dropped rather than proved, because it is
+not available.
+-/
+
+/-- **The successors of a timed position**: the `succP`-successors at the unwrapped next time,
+placed at the wrapped one. -/
+def succT (G : PlusSlicedCertificate Γ Del) (v : G.TPos) : Finset G.TPos :=
+  G.verts.filter (fun w => w.2 = G.nextTime v.2 ∧ w.1 ∈ G.succP v.2 v.1)
+
+/-- **The predecessors of a timed position**, the leftward mirror. -/
+def predT (G : PlusSlicedCertificate Γ Del) (v : G.TPos) : Finset G.TPos :=
+  G.verts.filter (fun w => w.2 = G.prevTime v.2 ∧ w.1 ∈ G.predP v.2 v.1)
+
+theorem mem_succT (G : PlusSlicedCertificate Γ Del) (v w : G.TPos) :
+    w ∈ G.succT v ↔ w ∈ G.verts ∧ (w.2 = G.nextTime v.2 ∧ w.1 ∈ G.succP v.2 v.1) :=
+  Finset.mem_filter
+
+theorem mem_predT (G : PlusSlicedCertificate Γ Del) (v w : G.TPos) :
+    w ∈ G.predT v ↔ w ∈ G.verts ∧ (w.2 = G.prevTime v.2 ∧ w.1 ∈ G.predP v.2 v.1) :=
+  Finset.mem_filter
+
+/-- **The forward graph never leaves the vertex set.** -/
+theorem succT_subset (G : PlusSlicedCertificate Γ Del) (v : G.TPos) : G.succT v ⊆ G.verts :=
+  Finset.filter_subset _ _
+
+/-- **The backward graph never leaves the vertex set.** -/
+theorem predT_subset (G : PlusSlicedCertificate Γ Del) (v : G.TPos) : G.predT v ⊆ G.verts :=
+  Finset.filter_subset _ _
+
+theorem snd_of_mem_succT (G : PlusSlicedCertificate Γ Del) {v w : G.TPos} (h : w ∈ G.succT v) :
+    w.2 = G.nextTime v.2 := ((G.mem_succT v w).mp h).2.1
+
+theorem snd_of_mem_predT (G : PlusSlicedCertificate Γ Del) {v w : G.TPos} (h : w ∈ G.predT v) :
+    w.2 = G.prevTime v.2 := ((G.mem_predT v w).mp h).2.1
+
+theorem fst_mem_succP_of_mem_succT (G : PlusSlicedCertificate Γ Del) {v w : G.TPos}
+    (h : w ∈ G.succT v) : w.1 ∈ G.succP v.2 v.1 := ((G.mem_succT v w).mp h).2.2
+
+theorem fst_mem_predP_of_mem_predT (G : PlusSlicedCertificate Γ Del) {v w : G.TPos}
+    (h : w ∈ G.predT v) : w.1 ∈ G.predP v.2 v.1 := ((G.mem_predT v w).mp h).2.2
+
+/-! ### The edge-level adjointness
+
+The honest form of the plan's "`mem_succP_iff_mem_predP` supplies adjointness": at a fixed pair of
+vertices whose times are one wrap apart, membership in the forward graph is membership of the
+source in the backward *relation read at the target's own time*. Both directions of time-matching
+are hypotheses, not conclusions — see the section header above for why they cannot be conclusions.
+-/
+
+/-- **A forward edge is a backward relation at the target's own time.** -/
+theorem mem_succT_iff_mem_predP (G : PlusSlicedCertificate Γ Del) {v w : G.TPos}
+    (hv : v ∈ G.verts) (hw : w ∈ G.verts) (ht : w.2 = G.nextTime v.2) :
+    w ∈ G.succT v ↔ v.1 ∈ G.predP w.2 w.1 := by
+  have hvw : v.2 ∈ G.winTimes := G.snd_mem_winTimes_of_mem_verts hv
+  have hq : w.1 ∈ G.posAt (v.2 + 1) := by
+    have := G.fst_mem_posAt_of_mem_verts hw
+    rwa [ht, G.posAt_nextTime hvw] at this
+  rw [G.mem_succT, ht, G.predP_nextTime hvw]
+  refine ⟨fun h => ?_, fun h => ⟨hw, rfl, ?_⟩⟩
+  · exact (G.mem_succP_iff_mem_predP v.2 v.1 w.1 (G.fst_mem_posAt_of_mem_verts hv) hq).mp h.2.2
+  · exact (G.mem_succP_iff_mem_predP v.2 v.1 w.1 (G.fst_mem_posAt_of_mem_verts hv) hq).mpr h
+
+/-- **A backward edge is a forward relation at the target's own time.** -/
+theorem mem_predT_iff_mem_succP (G : PlusSlicedCertificate Γ Del) {v w : G.TPos}
+    (hv : v ∈ G.verts) (hw : w ∈ G.verts) (ht : w.2 = G.prevTime v.2) :
+    w ∈ G.predT v ↔ v.1 ∈ G.succP w.2 w.1 := by
+  have hvw : v.2 ∈ G.winTimes := G.snd_mem_winTimes_of_mem_verts hv
+  have hp : w.1 ∈ G.posAt (v.2 - 1) := by
+    have := G.fst_mem_posAt_of_mem_verts hw
+    rwa [ht, G.posAt_prevTime hvw] at this
+  have hq : v.1 ∈ G.posAt (v.2 - 1 + 1) := by
+    rw [show v.2 - 1 + 1 = v.2 from by omega]
+    exact G.fst_mem_posAt_of_mem_verts hv
+  have hadj := G.mem_succP_iff_mem_predP (v.2 - 1) w.1 v.1 hp hq
+  rw [show v.2 - 1 + 1 = v.2 from by omega] at hadj
+  rw [G.mem_predT, ht, G.succP_prevTime hvw]
+  exact ⟨fun h => hadj.mpr h.2.2, fun h => ⟨hw, rfl, hadj.mp h⟩⟩
 
 end PlusSlicedCertificate
 
