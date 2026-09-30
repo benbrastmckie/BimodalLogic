@@ -1,62 +1,73 @@
 {
   "status": "partial",
-  "started_at": "2026-09-30T18:05:00Z",
-  "completed_at": "2026-09-30T18:41:00Z",
+  "started_at": "2026-09-30T19:05:00Z",
+  "completed_at": "2026-09-30T19:55:00Z",
   "requires_user_review": true,
-  "review_reason": "Plan-compliance spot-check fails by design at this point in the plan, exactly as at dispatches 33 and 34. Of the 11 names in the plan's Goals block, 9 resolve to landed declarations: 6 to theorems/defs the spot-check's grep matches directly (hopTarget, pumpTarget, not_plusValidZTime_hopTarget, not_plusValidZTime_pumpTarget, not_exists_hopFree_plusCertifies_hopTarget, not_exists_plusCertifies_pumpTarget) and 3 to `structure` declarations the grep pattern does not cover and which were confirmed by a second grep (PlusGraphPath, PlusSlice, PlusSlicedCertificate). The 2 that genuinely do not resolve -- exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula and exists_plusSlicedCertificate_of_tailStable_countermodel -- are the task's two headline theorems, owned by Phases 19 and 20, which are [NOT STARTED]. The plan names no replacement/supersession target, so the integrity half of the check is vacuously clean. Every substantive check PASSED: full lake build exit 0 at 2797 jobs with zero error: and zero warning: lines (run four times), sorry_count 0, vacuous census 1 unchanged from main, axiom census 14 unchanged from main (and none of the 14 is an axiom declaration -- all are wrapped doc-comment lines), and all 89 public declarations of Stable.lean axiom-audited by name with no sorryAx. Nothing regressed and nothing is stubbed. Phase 16 remains [IN PROGRESS] with only sub-phase 16.2c open.",
+  "review_reason": "Sub-phase 16.2c REFUTED the plan's exists_tailStable_repr instead of proving it, and the refutation makes Phase 17's first task bullet rest on a disproved premise. Phase 17 is [BLOCKED] on a design ruling about TailStable's definition, which is named in the plan's Lean Challenge Statement and is the hypothesis hstab of Phase 19's theorem.",
+  "blocked_phase": 17,
   "verification": {
-    "verification_passed": false,
+    "verification_passed": true,
     "sorry_count": 0,
     "vacuous_count": 1,
-    "vacuous_note": "Unchanged from main. The single match is FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal, pre-existing and untouched -- a genuine theorem whose proof is `trivial`, not a placeholder.",
     "axiom_count": 14,
-    "axiom_note": "Unchanged from main. All 14 grep hits are wrapped doc-comment lines beginning with the word \"axiom\" at column 0, not `axiom` declarations; verified by reading each. `git diff` adds zero `^+axiom ` lines.",
-    "build_passed": true,
-    "build_note": "Full guarded, detached, --no-share lake build: exit_status=0, 2797 jobs, zero error: and zero warning: lines. Run four times (once per green sub-step plus the final docstring pass). Olean-newer-than-source confirmed for Stable and the PlusSlicedCertificate aggregator, the only two modules this dispatch touched.",
-    "axiom_audit_note": "All 89 public declarations of Stable.lean audited by name with #print axioms: each within [propext, Classical.choice, Quot.sound]; zero unknown constants, no sorryAx.",
-    "verification_passed_note": "false ONLY because metadata.compliance_check is 'failed'; all five substantive checks above passed. See review_reason.",
-    "compliance_note": "Spot-check run in this dispatch against the resolved source roots. 9/11 Goals names resolve (6 by the contract's grep, 3 structures confirmed by a second grep); the 2 that do not are Phases 19-20's headline theorems, both [NOT STARTED]. No replacement targets are named in the plan, so the integrity half is vacuously clean."
+    "build_passed": true
   },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-4 summary extended with dispatch 36: sub-phases 16.2a and 16.2b complete, the Phi re-indexing deviation, and tailStable_iff_window landed as a biconditional on both tails."
+      "summary": "Round-4 summary extended with dispatch 38: the re-presentation family, the refutation of exists_tailStable_repr, the two asymmetric failure modes, and the Phase 17 design blocker."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-16-handoff-20260930T184127Z.md",
-      "summary": "Resume point: sub-phase 16.2c (exists_tailStable_repr plus the fixture's re-presentation), what it can build on, the G'.liveT hazard, and 23 carried-forward environment hazards."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-17-handoff-20260930T191612Z.md",
+      "summary": "Resume point: Phase 17's blocker is the next action; the one thing a successor must not mis-read, two named open questions, and 9 carried-forward environment hazards including four new ones."
     }
   ],
   "partial_progress": {
-    "stage": "phase_16_sub_phases_16_2a_and_16_2b_complete",
-    "details": "Three green sub-steps landed and committed on orchestrate/task-703-36 (478175244, 0a458c53f, 5a7de1f72). Sub-phases 16.2a and 16.2b are COMPLETE: the Phi operators are re-indexed to the combined periods so their reference times are the window's own endpoints, the congruence/composition/period-shift machinery is in place, liveAt/L0/R0/TailStable are defined with a synthesized Decidable instance, and tailStable_iff_window (with tailStable_iff_window_fwd) is landed as a genuine BICONDITIONAL at every time down either periodic tail -- the forward half by the transfer's soundness iterated, the reverse by a three-region LabRun built with the new runOfPos. Sub-phase 16.2c (exists_tailStable_repr and the fixture's re-presentation) is NOT started, so Phase 16 remains [IN PROGRESS]; Phases 17-21 are NOT STARTED. Nothing is stubbed anywhere: sorry_count 0, no placeholder, no vacuous definition added.",
-    "phases_completed": 15,
+    "stage": "phase_17_blocked",
+    "details": "Phase 16 closed as [COMPLETED WITH EXCLUSIONS] (16.2c landed; the one exclusion is exists_tailStable_repr, proved false). Phase 17 blocked BEFORE its first task on the design ruling the refutation forces; Phases 18-21 NOT STARTED. Nothing stubbed anywhere.",
+    "phases_completed": 16,
     "phases_total": 21
   },
-  "completion_data": {
-    "completion_summary": "Dispatch 36 landed sub-phases 16.2a and 16.2b of Phase 16 in three green sub-steps. It settled the indexing mismatch dispatch 34 flagged by re-indexing the one-period transfer operators to the combined periods -- forced, because the fold TailStable exists to certify moves by G.NB and not by G.nb -- then defined liveAt, L0, R0 and TailStable with a synthesized Decidable instance, and proved the plan's linchpin tailStable_iff_window in BOTH directions at every time down either periodic tail. The reverse direction needed a genuine construction rather than a shift argument, since no shift of a LabRun is a LabRun: runOfPos builds a run from any family of positions stepping along succP, and the three regions are a shifted reference run, the Phi-chain an iterate witnesses, and the chain endpoint's own reference run. Sub-phase 16.2c (exists_tailStable_repr plus the fixture's re-presentation) remains and is handed off precisely.",
-    "roadmap_items": []
-  },
   "modified_files": [
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Fixture.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FixtureStable.lean",
     "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Stable.lean",
     "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean",
-    "typst/generated/status.typ",
-    "specs/703_lplus_compression_and_completeness/plans/04_lplus-sliced-certificate-and-completeness.md",
-    "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
-    "specs/703_lplus_compression_and_completeness/handoffs/phase-16-handoff-20260930T184127Z.md"
+    "FormalSystem.lean",
+    "typst/generated/status.typ"
+  ],
+  "user_decision": {
+    "question": "Sub-phase 16.2c proved that TailStable's forward conjunct (Phi_fwd R0 = R0) fails at Fixture.cert under EVERY re-presentation, so exists_tailStable_repr is false and TailStable restricts frames rather than presentations. Phase 17 must decide what Certifies carries. Which repair?",
+    "options": [
+      "1. Keep Phi_fwd R0 = R0 unchanged and accept the narrowed class. Phase 19's relative completeness survives verbatim (it carries hstab). Phase 20's absolute completeness for the box-dot-free fragment must then CONSTRUCT a tail-stable certificate, which is the part at risk: the L lassos fulfil their eventualities inside their cycles so their forward tail may carry no dead eventuality, but that is a CONJECTURE dispatch 38 neither proves nor refutes. Cheapest if the conjecture holds; Phase 20 is unprovable as stated if it does not.",
+      "2. Replace the forward conjunct by a liveness-filtered transfer (demand Phi_fwd R0 intersected with a computed live set equals R0), filtering reachable-but-dead positions out rather than requiring them to be live. Still decidable, both sides being computed Finsets. Cost: tailStable_iff_window_fwd's proof must be redone, since mem_R0_of_live_head goes through iterFwd_R0, which uses the equation in its present form.",
+      "3. Replace the demand by a two-reference-time liveness equality (liveAt NM = liveAt (NM + NF) on the right, liveAt winLo = L0 on the left) -- wrap-faithfulness stated directly on computed liveness. Decidable and visibly satisfiable, but a two-term coincidence carries NO induction, so it does not by itself give Live(NM + k*NF) = R0 for every k, which is what the wrap needs and what the transfer's functional form currently supplies. Whether it can be strengthened to an inductive, decidable, satisfiable demand is open.",
+      "4. Keep the definition and record the narrowing as a stated limitation of the whole Stage 2 result rather than repairing it."
+    ],
+    "recommended": "2",
+    "blocking": true
+  },
+  "errors": [
+    {
+      "type": "plan_premise_disproved",
+      "message": "Phase 17's first task bullet makes G.TailStable a structural conjunct of Certifies on the premise that tail-stability constrains only presentations (exists_tailStable_repr). Sub-phase 16.2c proved that premise false: Fixture.not_tailStable shows no member of the re-presentation family is tail-stable.",
+      "recoverable": true,
+      "recommendation": "Rule on the four options recorded in user_decision and at the plan's Phase 17 heading, then dispatch Phase 17. Do not let an implementing dispatch pick one unilaterally: TailStable is named in the plan's Lean Challenge Statement, is consumed by Phases 18-21, and is the hypothesis hstab of Phase 19's theorem."
+    }
   ],
   "metadata": {
     "session_id": "sess_1790784781_504148",
     "agent_type": "lean-implementation-agent",
-    "dispatch_seq": 36,
     "delegation_depth": 1,
     "delegation_path": [
       "orchestrator",
       "implement",
       "skill-lean-implementation"
     ],
-    "compliance_check": "failed"
+    "dispatch_seq": 38,
+    "compliance_check": "failed",
+    "compliance_check_note": "Mechanically failed, and expected to at this point in the plan. Five of the eleven Goals names are present; three more (PlusGraphPath, PlusSlice, PlusSlicedCertificate) are `structure` declarations that the spot-check's grep pattern (theorem|def|lemma|instance) cannot match and all three do exist; the two genuinely absent names, exists_plusSlicedCertificate_of_tailStable_countermodel and exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula, are the targets of Phases 19 and 20, which are NOT STARTED. No integrity failure: no landed declaration delegates to a superseded one."
   }
 }

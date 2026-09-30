@@ -3385,7 +3385,7 @@ sub-phases; never carry a `sorry` and never define a placeholder that is vacuous
 
 ---
 
-### Phase 16: Tail-stability, with the four-state fixture [IN PROGRESS]
+### Phase 16: Tail-stability, with the four-state fixture [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Define the one-period transfer operators on live-position sets, define `TailStable`,
 prove the re-presentation lemma that makes the demand harmless, and **build the four-state
@@ -3453,15 +3453,15 @@ easier to lose.
       at every `t = -k · |back|` coincide with `L₀`, so every stability clause is decidable on the
       window. **This is the lemma the whole design rests on**; state it as a biconditional or as
       two named implications, never as a one-line `by simp`. *(deviation: altered — landed as a biconditional AND as two separately named implications, and about two-directional `Live` rather than `FwdLive`; the period is the combined `G.NB` / `G.NF`, not `|back|` / `|fwd|`. See the 16.2 record below.)*
-- [ ] Prove the **re-presentation lemma**, `exists_tailStable_repr`: for any `G`, there is a `G'`
+- [ ] ~~Prove the **re-presentation lemma**, `exists_tailStable_repr`~~ *(deviation: EXCLUDED — the lemma is FALSE, refuted in sub-phase 16.2c by `Fixture.not_tailStable`. See the Reasoned Exclusions record under this phase.)* for any `G`, there is a `G'`
       with the pre-period absorbed into `mid` and the period multiplied by the cycle length such
       that `G'.TailStable`, and `G'.frame` is isomorphic to `G.frame` — hence truth is unchanged.
       The sequence `Φ_back^k L₀` is eventually periodic because subsets of a finite position space
       are finite, which is what makes the pre-period and period exist. **State no order for
       either**; see "Bounds: none, deliberately". *(deviation: deferred to sub-phase 16.2c — see the 16.2 record below.)*
-- [ ] Prove `Fixture.fourState` is **not** tail-stable as presented, and exhibit its
+- [x] Prove `Fixture.fourState` is **not** tail-stable as presented, and exhibit its
       re-presentation, so the fixture doubles as the worked example of
-      `exists_tailStable_repr`. *(deviation: deferred to sub-phase 16.2c, with `exists_tailStable_repr` it is the worked example of.)*
+      `exists_tailStable_repr`. *(deviation: altered — done on `Fixture.cert` (`Fixture.not_tailStable_cert`, both conjuncts) and the re-presentation exhibited as the family `Fixture.certRep a b c` with `Fixture.certRep_slice_shift`; but the worked example came out the OTHER WAY — `Fixture.not_tailStable` proves no member of the family is tail-stable, refuting `exists_tailStable_repr` rather than illustrating it.)*
 - [x] Record in the module docstring: what tail-stability is, why it is required (the fixture),
       that it costs the checker exactly one `Φ` application beyond the Phase 15 fixpoints, and
       that a search on the paired repository's side must re-present an unstable countermodel
@@ -3651,9 +3651,11 @@ moves one period left with each application, so the iterate has to be transporte
 `tailStable_iff_window` is the second. **No strengthening of the demand was needed**, so the
 Contingency's "strengthen the demand" branch was not taken and the fixture was not relaxed.
 
-**Remaining as sub-phase 16.2c** (not started, nothing stubbed, no `sorry` and no placeholder
-anywhere): `exists_tailStable_repr`, and `Fixture.cert` shown not tail-stable together with its
-re-presentation as that lemma's worked example. `Frame.lean` is where the frame isomorphism has to
+**Remaining as sub-phase 16.2c** *(SUPERSEDED at dispatch seq 38 — 16.2c is landed and its outcome
+is the refutation of `exists_tailStable_repr`, not the lemma. Read the "SUB-PHASE 16.2c IS LANDED"
+record below before anything in this paragraph.)* (not started, nothing stubbed, no `sorry` and no
+placeholder anywhere): `exists_tailStable_repr`, and `Fixture.cert` shown not tail-stable together
+with its re-presentation as that lemma's worked example. `Frame.lean` is where the frame isomorphism has to
 land. Note for whoever takes it: dispatch 34 already landed the computed-side facts the fixture's
 instability argument needs (`mem_liveT_neg_one`, `mem_verts_neg_two`, `not_mem_liveT_neg_two`,
 `liveT_ne_empty_and_ne_verts`), and `Fixture.cert` has `G.NB = 1`, so its `L₀` sits at `-1` and
@@ -3672,6 +3674,91 @@ instability argument needs (`mem_liveT_neg_one`, `mem_verts_neg_two`, `not_mem_l
 - `exists_tailStable_repr` is absent rather than weakened, and no landed statement mentions a bound
   on a period — confirmed by reading, since the lemma that would state one does not exist yet.
 - Vacuous census **1** and axiom census **14**, both unchanged from `main`.
+
+**SUB-PHASE 16.2c IS LANDED, AND IT REFUTES `exists_tailStable_repr` — dispatch seq 38. Read this
+before Phase 17.**
+
+*What was asked, and what came out.* 16.2c was to prove `exists_tailStable_repr` — every `G` has a
+tail-stable re-presentation, pre-period absorbed into `mid` and period multiplied by the cycle
+length, frame unchanged — with `Fixture.cert` as its worked example. The worked example came out the
+other way. The lemma is **false**, and it is refuted at exactly the certificate this plan named.
+
+*What landed.* Two modules, one new. `Fixture.lean` gained the re-presentation family and everything
+sayable about it without `Stable.lean`; the new `PlusSlicedCertificate/FixtureStable.lean` (which
+imports `Stable`, since `Stable` imports `Fixture` and the verdict mentions `Φ_back` / `Φ_fwd` /
+`L₀` / `R₀` / `TailStable`) holds the verdict.
+- `Fixture.certRep a b c` — the fixture with the back period repeated `a + 1` times, `b` back slices
+  absorbed into `mid` ahead of the mid slice, and the forward period repeated `c + 1` times. The
+  guessed fields and the target path are untouched. `Fixture.cert_eq_certRep` makes `cert` its
+  `a = b = c = 0` member, by `rfl`.
+- `Fixture.certRep_slice_shift` and `Fixture.certRep_slab_shift` — **every member presents `cert`'s
+  own slice sequence, and hence `cert`'s own model valuation, shifted right by `b`.** This is what
+  makes the family a re-presentation in this plan's sense rather than a different certificate. It is
+  stated as the shift identity, not through a frame-isomorphism API, because this repository has no
+  such API; nothing in the refutation needs more.
+- `Fixture.not_tailStable_cert` — `cert` is not tail-stable, with **both** conjuncts failing and the
+  two failures named separately (`Φ_back_L₀_ne_cert`, and `Φ_fwd_R₀_ne` at `0 0 0`).
+- `Fixture.not_tailStable` — **no member of the family is tail-stable**, for any `a`, `b`, `c`.
+
+*THE TWO FAILURES ARE DIFFERENT, and only one of them is presentational.*
+1. **The backward conjunct fails for the pre-period reason the plan expected.** `p₀` is live at
+   `-cert.NB = -1` and has no `succP`-successor at all at `cert.winLo = -2`
+   (`succP_eq_empty_of_le_neg_two`, landed at 16.1), so it is in `L₀` and not in `Φ_back L₀`.
+   `Fixture.not_mem_L₀_pR` records that this witness leaves `L₀` as soon as `1 ≤ b` — so absorbing the
+   pre-period does do the job the plan claimed for it, **on this conjunct**. That lemma is stated
+   exactly that far and no further: it is *not* a proof that `Φ_back L₀ = L₀` holds of `certRep a b c`,
+   which 16.2c does not claim.
+2. **The forward conjunct fails for a reason no presentation can touch.** `Φ_fwd` is a
+   *reachability* transfer: `q ∈ G.Φ_fwd X` asks only for a `predP`-chain of one combined forward
+   period from a member of `X`, every link in `posAt`. And `Position.lean`'s `StepClause` constrains
+   `untl g e ∈ X` in terms of the **later** label and `snce g e ∈ Y` in terms of the **earlier** one,
+   so a step rightward out of a live position leaves the arriving label's `untl`-membership entirely
+   unconstrained — and `LabCoherent` does not constrain it either, being `⊥`-freeness plus the
+   implication clause and nothing else. At this fixture the closure's only eventuality is
+   `phi = untl gd ev`, `ev` is labelled at one time only and `gd` nowhere, so `{phi}` is a legitimate
+   label at every far-right time (`mem_posAt_pR`), is reached from the all-empty live label in one
+   step (`stepClause_empty_phi`), and is occupied by no run there (`not_exists_labRun_pR`).
+   Lengthening the period only lengthens the chain and the chain exists at every length; moving the
+   window only moves where the chain is read; absorbing a pre-period acts at the *left* end while the
+   obstruction is at the *right*.
+
+*WHAT THIS COSTS THE DESIGN — and it is a design question, not an implementation one.* `TailStable`
+as landed is a demand on the **frame together with its closure**, not on the presentation:
+`cert`'s frame has no tail-stable presentation at all. Three consequences:
+- The harmlessness paragraph on `PlusSlicedCertificate.TailStable`'s docstring was **wrong** and has
+  been corrected in place, as has `Stable.lean`'s header. Neither now claims what is false.
+- `exists_tailStable_repr` is **absent because it is false**, not because it is pending. That is the
+  exclusion recorded under this phase.
+- **Phase 17 is BLOCKED on a decision this sub-phase will not take.** `Certifies` is to carry
+  `G.TailStable` as a structural conjunct, and Phase 20
+  (`exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula`) must **construct** a certificate
+  meeting it. If `Φ_fwd R₀ = R₀` is unsatisfiable whenever the closure carries an eventuality that
+  is dead in the forward tail — which is what the refutation's mechanism suggests, though 16.2c
+  proves it only at this one fixture — then Phase 20 is not provable as stated and Phase 19's
+  relative completeness, while still true, is relative to a class that may be much smaller than
+  intended. The blocker is recorded at Phase 17's heading.
+
+*What 16.2c did NOT do, stated so nobody assumes it.* It did not weaken `TailStable`, did not
+weaken or relax the fixture, did not introduce a `sorry` or a placeholder, and did not redesign
+`Certifies`. It also did not prove the general claim "`Φ_fwd R₀ = R₀` is unsatisfiable whenever the
+closure has a tail-dead eventuality" — that is a conjecture the mechanism suggests and a separate
+obligation, and it is named as a conjecture rather than a result.
+
+**Verification — MEASURED (16.2c):**
+- Full guarded, detached, `--no-share` `lake build` over the whole library: `exit_status=0`,
+  **2798** jobs, **zero** `error:` and **zero** `warning:` lines across both captured streams.
+- `.olean` confirmed newer than source for `Fixture`, `FixtureStable`, `Stable` and the aggregator.
+- `lean-sorry-census.sh` over all four resolved source roots: `sorry_count: 0`.
+- `#print axioms` on **all 64** public declarations added by this sub-phase, audited by name:
+  every one within `[propext, Classical.choice, Quot.sound]`; **zero** `sorryAx`, zero unknown
+  constants, zero `ofReduceBool` (no `native_decide` anywhere).
+- `decide` was confirmed **not** a route and is not used: a `#eval`/`decide` probe of
+  `cert.TailStable` was run and did not terminate inside 15 minutes, exactly as `Fixture.lean`'s own
+  landed note ("`decide` is not a route to either fact and no amount of patience makes it one")
+  predicts. Every fact above is proved from the one-step clauses and the bridge instead.
+- `exists_tailStable_repr` is **absent** from the whole subtree — confirmed by
+  `grep -rn exists_tailStable_repr FormalSystem/`: every occurrence is inside a docstring saying it
+  is false, and no declaration of that name exists.
 
 **Timing**: 4 hours (16.1 ≈ 2, 16.2 ≈ 2)
 
@@ -3704,15 +3791,97 @@ carry a `sorry`.
 - The fixture's two asymmetry lemmas are **proved**, not `#eval`-ed only, so a later refactor
   cannot silently break the fact that motivates the design.
 - `TailStable` synthesizes a `Decidable` instance by `inferInstance`, not by assertion.
-- `exists_tailStable_repr`'s statement mentions **no** bound on the resulting periods — confirmed
-  by reading it.
+- ~~`exists_tailStable_repr`'s statement mentions **no** bound on the resulting periods — confirmed
+  by reading it.~~ *(MOOT at dispatch seq 38: the lemma is false and is not stated. `grep -rn
+  exists_tailStable_repr FormalSystem/` finds only docstrings saying so. See the Reasoned Exclusions
+  record under this phase.)*
 
 ---
 
-### Phase 17: The decidable checker [NOT STARTED]
+#### Reasoned Exclusions
+
+*(Added at dispatch seq 38, closing Phase 16. One item is excluded: the re-presentation lemma.)*
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `exists_tailStable_repr` — "for any `G`, there is a `G'` with the pre-period absorbed into `mid` and the period multiplied by the cycle length such that `G'.TailStable`, and `G'.frame` is isomorphic to `G.frame`" | **The lemma is false.** `TailStable`'s forward conjunct `Φ_fwd R₀ = R₀` fails at `Fixture.cert` for a reason no re-presentation can touch: `Φ_fwd` is a reachability transfer, `StepClause`'s `untl` clause constrains only the *earlier* label, and `LabCoherent` does not constrain the arriving label's `untl`-membership at all, so a label carrying a tail-dead eventuality is legitimate at the window's right endpoint and reachable from `R₀` at every period length | `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FixtureStable.lean`: `Fixture.not_tailStable (a b c : ℕ) : ¬ (Fixture.certRep a b c).TailStable`, proved for every pre-period `b` and every period multipliers `a`, `c`, together with `Fixture.certRep_slice_shift` proving each member presents `Fixture.cert`'s own slice sequence shifted. Full `lake build` `exit_status=0`, 2798 jobs, zero errors and zero warnings; `sorry_count: 0`; 64/64 new declarations within `[propext, Classical.choice, Quot.sound]` |
+
+**No residual work in Phase 16.** The refutation is complete and will not be revisited: there is no
+weaker true version of `exists_tailStable_repr` to reach for, because the obstruction is in
+`TailStable`'s own definition rather than in the re-presentation recipe. What the refutation *does*
+open is a decision about that definition, and that decision belongs to Phase 17 — it is recorded as
+Phase 17's BLOCKER, not as unfinished Phase 16 work, because nothing in Phase 16 changes whichever
+way it goes.
+
+**Closure record**: the phase's headline deliverables are all landed and unweakened — `Φ_back` /
+`Φ_fwd` with monotonicity at three levels (16.1), the fixture and its window verdict (16.1), `L₀` /
+`R₀`, `TailStable` with a synthesized `Decidable` instance, and `tailStable_iff_window` as a genuine
+biconditional at every time down either periodic tail (16.2a/16.2b). What 16.2c adds is the
+fixture's re-presentation, exhibited as the family `Fixture.certRep`, together with the proof that
+it does not do what the plan expected of it.
+
+---
+
+### Phase 17: The decidable checker [BLOCKED]
 
 **Goal**: Define `PlusSlicedCertificate.Certifies` and prove it decidable, with liveness computed
 by Phase 15's fixpoints and every clause read on the window under Phase 16's tail-stability.
+
+**BLOCKER** (Phase 17) — raised at dispatch seq 38, on the strength of sub-phase 16.2c's refutation:
+
+- **What failed**: nothing was attempted and then failed. This phase is blocked *before* its first
+  task, because its first task bullet — "Include `G.BiSerial` and `G.TailStable` as the first two
+  conjuncts of `Certifies`" — rests on a claim sub-phase 16.2c has just disproved. The plan's
+  premise was that `TailStable` constrains only the *presentations* a checker accepts, because any
+  unstable certificate could be re-presented (`exists_tailStable_repr`). It does not: `Fixture.cert`'s
+  frame has **no** tail-stable presentation, by `Fixture.not_tailStable` over the whole
+  re-presentation family. Writing `Certifies` with `TailStable` as a structural conjunct on the
+  strength of the disproved premise would build Phases 18–21 on it.
+- **What was tried**: 16.2c's own route was tried to completion and produced the refutation rather
+  than the lemma — see the sub-phase 16.2c record at Phase 16's heading for the family, the shift
+  identity, the two failure modes, and the full measured verification. The mechanism was then traced
+  to its source: `Φ_fwd` is a reachability transfer; `Position.lean`'s `StepClause` constrains
+  `untl g e ∈ X` in terms of the later label only; `LabCoherent` is `⊥`-freeness plus the implication
+  clause and constrains no eventuality at all. So `Φ_fwd R₀ = R₀` demands that every position at
+  `winHi` reachable from a live position be itself live, and reachability there cannot see forward
+  fulfilment of the arriving label.
+- **Why it is stuck**: the repair is a **change to `TailStable`'s definition**, and `TailStable` is
+  named in this plan's own Lean Challenge Statement, is consumed by Phases 18–21, and is the
+  hypothesis `hstab` of Phase 19's relative-completeness theorem. The landed linchpin
+  `tailStable_iff_window` is stated *from* it. Choosing the repair is a design decision with
+  consequences for what this task's headline completeness theorems can say; it is not an
+  implementation detail an implementing dispatch should settle on its own authority.
+- **What is needed**: a ruling on which of these the checker should carry. Stated in what is
+  believed to be increasing order of cost, with what each is believed to buy and what is NOT yet
+  proved about any of them flagged explicitly:
+  1. **Keep `Φ_fwd R₀ = R₀` and accept the narrowed class.** Phase 19's relative completeness
+     survives verbatim (it carries `hstab` as a hypothesis). Phase 20's absolute completeness for the
+     `⊡`-free fragment must then *construct* a tail-stable certificate, which is the part at risk:
+     the L lassos fulfil their eventualities inside their cycles, so their forward tail may carry no
+     dead eventuality and the conjunct may be satisfiable there — **this is a conjecture, not a
+     result, and 16.2c proves nothing about it either way.** Cheapest if the conjecture holds;
+     Phase 20 is unprovable as stated if it does not.
+  2. **Replace the forward conjunct by a liveness-filtered transfer**, e.g. demand
+     `Φ_fwd R₀ ∩ G.liveAt G.winHi' = R₀` at a window time `winHi'` representing the right tail, so
+     that reachable-but-dead positions are filtered out rather than required to be live. Still
+     decidable, since both sides are computed `Finset`s. Cost: `tailStable_iff_window_fwd`'s proof
+     must be redone at the new demand — `mem_R₀_of_live_head` uses `iterFwd_R₀`, which uses the
+     equation in its present form.
+  3. **Replace the demand by a two-reference-time liveness equality**, e.g.
+     `G.liveAt G.NM = G.liveAt (G.NM + G.NF)` on the right and `G.liveAt G.winLo = G.L₀` on the left
+     — wrap-faithfulness stated directly on the computed liveness rather than through a transfer.
+     Decidable and visibly satisfiable. Cost, and the reason this is not simply the obvious answer:
+     a two-term coincidence carries **no induction**, so it does not by itself give
+     `Live(NM + NF + k·NF) = R₀` for every `k`, which is what the wrap needs and what the transfer's
+     functional form is what currently supplies. Whether it can be strengthened to an inductive
+     demand that is both decidable and satisfiable is open.
+  4. **Keep the definition and prove the class non-empty-but-narrow honestly**, recording the
+     narrowing as a stated limitation of the whole Stage 2 result rather than repairing it.
+- **Prohibited workarounds**: do NOT use `sorry`, `def X := True`, or any vacuous placeholder; do
+  NOT state `exists_tailStable_repr` in a weakened form; do NOT quietly redefine `TailStable`
+  without recording the change at Phase 16's heading and in the Lean Challenge Statement; do NOT
+  delete or weaken `tailStable_iff_window`, `Fixture.not_tailStable`, or any landed declaration of
+  `Stable.lean` or `FixtureStable.lean`.
 
 **Tasks**:
 - [ ] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean`.

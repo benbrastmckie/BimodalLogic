@@ -6,11 +6,12 @@
   2026-09-30T02:05:00Z (dispatch 25); 2026-09-30T10:10:00Z (dispatch 27);
   2026-09-30T10:39:15Z (dispatch 29); 2026-09-30T16:14:55Z (dispatch 31);
   2026-09-30T17:20:00Z (dispatch 33); 2026-09-30T18:40:00Z (dispatch 34);
-  2026-09-30T18:05:00Z (dispatch 36)
-- **Completed**: not complete — **Phase 15 is COMPLETED** (15.1, 15.2 and 15.3 in full, including
-  15.3's own gate), Phase 16 is IN PROGRESS (16.1, 16.2a and 16.2b complete — including
-  `tailStable_iff_window` as a biconditional on both tails — with only 16.2c open) and Phases 17-21
-  are NOT STARTED. Last dispatch ended 2026-09-30T18:41:00Z
+  2026-09-30T18:05:00Z (dispatch 36); 2026-09-30T19:05:00Z (dispatch 38)
+- **Completed**: not complete — **Phase 15 is COMPLETED** and **Phase 16 is now COMPLETED WITH
+  EXCLUSIONS** (16.1, 16.2a, 16.2b and 16.2c all landed; the one exclusion is
+  `exists_tailStable_repr`, which dispatch 38 proved FALSE). **Phase 17 is BLOCKED** on a design
+  ruling that refutation forces, and Phases 18-21 remain NOT STARTED. Last dispatch ended
+  2026-09-30T19:55:00Z
 - **Effort**: ~30 minutes (dispatch 21, Phase 9) + ~70 minutes (dispatch 23, Phases 10-13)
   + ~125 minutes (dispatch 25, Phase 14 and Phase 15.1) + ~30 minutes (dispatch 27, Phase 15.2)
   + ~35 minutes (dispatch 29, Phase 16.1 and Phase 15.3 STEPS 1-3)
@@ -18,6 +19,7 @@
   + ~55 minutes (dispatch 33, Phase 15.3 STEP 6c complete, and 6d's blocker identified)
   + ~40 minutes (dispatch 34, Phase 15.3 STEP 6d, 15.3's gate, and Phase 15 closed)
   + ~35 minutes (dispatch 36, Phases 16.2a and 16.2b, both tails)
+  + ~50 minutes (dispatch 38, Phase 16.2c — the re-presentation family and the refutation)
 - **Dependencies**: `FormalSystem.Metalogic.Decidability.SharingSkeleton`,
   `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily` (both landed).
   `FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt` is NOT consumed by Stage 1 — see
@@ -26,6 +28,20 @@
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
+
+**Dispatch 38 closed sub-phase 16.2c, and closed it with the opposite result from the one the plan
+asked for.** 16.2c was to prove `exists_tailStable_repr` — every certificate has a tail-stable
+re-presentation, pre-period absorbed into `mid` and period multiplied by the cycle length, frame
+unchanged — with `Fixture.cert` as its worked example. The worked example refutes it. The
+re-presentation family `Fixture.certRep a b c` is built, `Fixture.certRep_slice_shift` proves every
+member presents `Fixture.cert`'s own slice sequence shifted right by `b`, and
+`Fixture.not_tailStable` proves **no member is tail-stable**, for any pre-period and any period
+multipliers. So `TailStable` is a demand on the frame together with its closure and not on the
+presentation, `exists_tailStable_repr` is absent because it is false rather than pending, and the
+false harmlessness claim on `TailStable`'s own docstring is corrected in place. Phase 16 is closed
+as `[COMPLETED WITH EXCLUSIONS]` with that one exclusion recorded, and **Phase 17 is marked
+`[BLOCKED]`** on the design ruling the refutation forces: whether `Certifies` should carry
+`Φ_fwd R₀ = R₀` at all, given that Phase 20 must *construct* a certificate meeting it.
 
 **Dispatch 33 closed sub-phase 15.3's STEP 6c — the eventuality-aware liveness fixpoint and the
 round-robin concatenation the plan named as STEP 6's single largest remaining piece — and identified,
@@ -151,6 +167,37 @@ uses the bridge in **both** directions, which is what makes the gate evidence th
 is vacuous.
 
 ## What Changed
+
+### Phase 16.2c (dispatch 38, on branch `orchestrate/task-703-38`, commit `5c83389b6`)
+
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Fixture.lean` — +519 lines. The
+  re-presentation family and everything sayable about it without `Stable.lean`:
+  `certRep a b c` (back period ×`(a+1)`, `b` back slices absorbed into `mid`, forward period
+  ×`(c+1)`, guessed fields and target path untouched), `cert_eq_certRep` making `cert` its
+  `0 0 0` member by `rfl`, the numeric lemmas (`certRep_nb`/`nm`/`nf`/`NBnat`/`NFnat`/`NB`/`NF`/
+  `NM`/`winHi`), the closed-form slice sequence `certRep_slice`, **the shift identities
+  `certRep_slice_shift` and `certRep_slab_shift`**, `certRep_edge_eq_true`, `certRep_biSerial`,
+  `certRep_slab_mem_ev_iff`, `certRep_slab_not_mem_gd`, `certRep_boxLabelFaithful`, the reusable
+  `labCoherent_of_not_mem_bot` and `certRep_agreesOnState`, the two positions `pR` / `eR` with
+  their `posAt` memberships, the two one-step clauses `stepClause_empty_empty` /
+  `stepClause_empty_phi`, the fulfilling run `repRun` with `repRun_fulfilling`, `live_eR`, and the
+  generalized `not_exists_labRun_pR` / `not_live_pR`.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FixtureStable.lean` — **new module**,
+  256 lines, importing `Stable`. It has to be a separate module because `Stable.lean` imports
+  `Fixture.lean` and the verdict mentions `Φ_back`, `Φ_fwd`, `L₀`, `R₀` and `TailStable`. Holds
+  `not_mem_liveAt_pR`, `NM_add_NF_ne`, `mem_R₀_eR`, `not_mem_R₀_pR`, `mem_iterFwd_eR`,
+  `mem_Φ_fwd_R₀_pR`, **`Φ_fwd_R₀_ne`**, **`not_tailStable`** (the headline: no member of the family
+  is tail-stable), `cert_L₀_eq`, `mem_L₀_p₀`, `cert_Φ_back_eq`, `not_mem_Φ_back_L₀_p₀`,
+  `Φ_back_L₀_ne_cert`, **`not_tailStable_cert`** (both conjuncts fail), and `not_mem_L₀_pR`.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Stable.lean` — docstring corrections
+  only, no declaration touched. `TailStable`'s harmlessness paragraph said re-presentation makes the
+  demand harmless; it now says that is false and points at `FixtureStable.lean`. The module header's
+  "what remains of 16.2" paragraph now says the lemma is absent because it is untrue rather than
+  pending.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean`, `FormalSystem.lean` — one import
+  line each for the new module.
+- `typst/generated/status.typ` — regenerated by `scripts/typst-sync-check.sh --fix`, as the
+  pre-commit count check requires.
 
 ### Phase 15.3 STEP 6d and 15.3's gate (dispatch 34, on branch `orchestrate/task-703-34`)
 
@@ -495,6 +542,38 @@ restriction was taken, deliberately: see the Decisions entry below.
 
 ## Decisions
 
+### Dispatch 38
+
+- **`exists_tailStable_repr` is NOT stated in any form, because it is false.** The alternative
+  considered and rejected was to state a weakened version (a re-presentation that is tail-stable on
+  the backward conjunct only, or one under an extra hypothesis on the closure). Rejected because the
+  plan's Phase 16 Scope Hypothesis forbids weakening a theorem to make it come out true, and because
+  a weakened lemma named `exists_tailStable_repr` would be read downstream as the harmlessness claim
+  it is not. The refutation is stated instead, as a theorem.
+- **The refutation is a family statement, not a single-certificate one.** Proving only
+  `¬ cert.TailStable` would have been consistent with the plan's claim, since the plan says an
+  unstable certificate should be *re-presented* rather than rejected. So the family `certRep a b c`
+  was built and quantified over: `not_tailStable (a b c : ℕ)`. This is what makes the result a
+  refutation of the recipe rather than an instance of it.
+- **The verdict went into a NEW module rather than into `Stable.lean`.** `Stable.lean` imports
+  `Fixture.lean`, so the verdict — which needs both the fixture and `Φ_fwd` — can live in neither.
+  `FixtureStable.lean` imports `Stable` and is imported by the aggregator. The alternative, moving
+  the fixture into `Stable.lean`, would have merged two modules whose separation the 16.1 record
+  justified on independent grounds.
+- **The two failure modes are recorded as two separate named theorems rather than one.**
+  `Φ_back_L₀_ne_cert` is the pre-period showing through and *is* repaired by the recipe
+  (`not_mem_L₀_pR`); `Φ_fwd_R₀_ne` is not repaired by anything. Collapsing them into a single
+  `¬ TailStable` would have hidden exactly the asymmetry that makes the finding a design problem
+  rather than a fixture artifact.
+- **`not_mem_L₀_pR` is stated only about the witness, not about `Φ_back L₀ = L₀`.** It says the
+  backward failure's witness leaves `L₀` once `1 ≤ b`; it does **not** claim `certRep a b c`
+  satisfies the backward conjunct, which would be a separate and larger obligation. The docstring
+  says so in those words.
+- **Phase 17 is marked `[BLOCKED]` rather than started with a guessed repair.** Four candidate
+  repairs are enumerated at its heading with what each is believed to buy and what is not proved
+  about any of them. `TailStable` is named in the plan's Lean Challenge Statement and is `hstab` in
+  Phase 19's theorem; redefining it is a design decision, not an implementation detail.
+
 - **(dispatch 34) Resolution (a) is taken for the box-clause gap, and the decision was the agent's
   to make.** `Basic.lean` gains `BoxLabelFaithful`, threaded as an explicit hypothesis through the
   four soundness declarations that need it and through nothing else. Route (b) — folding the box
@@ -736,6 +815,31 @@ restriction was taken, deliberately: see the Decisions entry below.
 
 ## Plan Deviations
 
+### Dispatch 38
+
+- **Phase 16 task bullet "Prove the re-presentation lemma, `exists_tailStable_repr`" — EXCLUDED, not
+  done and not deferred.** The lemma is false. Recorded as the single row of the
+  `#### Reasoned Exclusions` table under Phase 16, with `Fixture.not_tailStable` as the evidence.
+  There is no follow-up task, because there is nothing to hand off: no weaker true version of the
+  lemma exists to reach for, since the obstruction is in `TailStable`'s definition rather than in the
+  re-presentation recipe.
+- **Phase 16 task bullet "Prove `Fixture.fourState` is not tail-stable as presented, and exhibit its
+  re-presentation" — altered.** Done on `Fixture.cert` (the 16.1 deviation already replaced
+  `fourState` by `cert`), with the re-presentation exhibited as the family `Fixture.certRep a b c`
+  and the shift identity proved. But the bullet's stated purpose — "so the fixture doubles as the
+  worked example of `exists_tailStable_repr`" — came out inverted: the worked example refutes the
+  lemma.
+- **Phase 16's Verification line "`exists_tailStable_repr`'s statement mentions no bound on the
+  resulting periods — confirmed by reading it" — MOOT.** There is no statement to read. Confirmed
+  instead by `grep -rn exists_tailStable_repr FormalSystem/`: every hit is a docstring saying the
+  lemma is false, and no declaration of that name exists.
+- **Phase 16's "Files to modify" list is exceeded by one file.** It names `Stable.lean`, the
+  aggregator and `FormalSystem.lean`; this sub-phase also created
+  `PlusSlicedCertificate/FixtureStable.lean` and extended `Fixture.lean`. Both are forced by the
+  import direction (`Stable` imports `Fixture`), which the 16.1 deviation had already established.
+- **Phase 17 was not started.** It is marked `[BLOCKED]` with a structured blocker at its heading
+  rather than attempted, because its first task bullet rests on the claim 16.2c disproved.
+
 - **Phase 15.3 STEP 6d, altered (the bridge's time)**: the plan asks for
   `G.Live t p ↔ (p, s) ∈ G.liveT` "at a folded time `s`, with `exists_foldF` / `exists_foldB`
   supplying `s`". Landed as `live_iff_mem_liveT`, quantified over `s ∈ G.winTimes` instead, because
@@ -945,7 +1049,36 @@ restriction was taken, deliberately: see the Decisions entry below.
 
 ## Verification
 
-### Dispatch 34 (the current end state)
+### Dispatch 38 (the current end state) — measured
+
+- **Full guarded, detached, `--no-share` `lake build` over the whole library**: `exit_status=0`,
+  **2798** jobs, **zero** `error:` and **zero** `warning:` lines across both captured streams
+  (`.lake/build-guard.stdout` and `.lake/build-guard.stderr`, each `grep -c` = 0). The `--no-share`
+  flag was passed on every build in this dispatch, per the carried-forward worktree hazard.
+- **`.olean` newer than source** confirmed for `Fixture`, `FixtureStable`, `Stable` and the
+  aggregator.
+- **`lean-sorry-census.sh`** over all four resolved source roots (`FormalSystem`, `FormalSystem.lean`,
+  `Tests/BimodalTest`, `Tests/BimodalTest.lean`, `BimodalTools`, `BimodalTools.lean`,
+  `Tests/BimodalToolsTest`, `Tests/BimodalToolsTest.lean`): `sorry_count: 0`, empty
+  `sorry_inventory`.
+- **`#print axioms` on all 64 public declarations added by this dispatch**, audited by name: 64/64
+  report `[propext, Classical.choice, Quot.sound]`; `grep -c sorryAx` = 0, `grep -ci 'unknown|error'`
+  = 0, and the only axiom names appearing anywhere in the output are those three. No
+  `Lean.ofReduceBool`, so no `native_decide`.
+- **No new axiom declaration and no vacuous definition**: axiom census and vacuous census unchanged
+  from `main` (the 14 "axiom" grep hits remain wrapped doc-comment lines, as dispatch 36 verified by
+  reading each).
+- **`decide` was confirmed not a route, and is not used.** A `#eval`/`decide` probe of
+  `cert.TailStable` was launched and did not terminate within 15 minutes, exactly as `Fixture.lean`'s
+  own landed note predicts ("`decide` is not a route to either fact and no amount of patience makes
+  it one"). Every fact in this dispatch is proved from the one-step clauses and `Bridge.lean`'s
+  equality instead.
+- **`exists_tailStable_repr` is absent from the subtree**: `grep -rn exists_tailStable_repr
+  FormalSystem/` returns only docstring lines stating that it is false.
+- **Pre-commit**: `scripts/typst-sync-check.sh --fix` run before staging, `typst/generated/status.typ`
+  staged with the source files; `--no-verify` was not used.
+
+### Dispatch 34 (superseded as the end state; retained as the record)
 
 - Build: **Success**. Full `lake build`, guarded and detached (`--no-share`): `exit_status=0`,
   **2797 jobs**, **zero** `error:` and **zero** `warning:` lines. Run twice, once per green sub-step.
@@ -1289,6 +1422,31 @@ as a completed read.
 
 ## Impacts
 
+### Dispatch 38
+
+- **`Certifies` cannot be written as the plan specifies it without a design ruling.** Phase 17's
+  first task bullet makes `G.TailStable` a structural conjunct on the premise that the demand is
+  presentational. That premise is now disproved. Phase 17 is blocked at its heading with four
+  candidate repairs enumerated.
+- **Phase 19's relative completeness survives verbatim, and is now known to be more relative than
+  intended.** `exists_plusSlicedCertificate_of_tailStable_countermodel` carries `hstab` as a
+  hypothesis, so it is unaffected as a *statement*. What changed is what the hypothesis costs: it is
+  no longer "choose a better presentation of your countermodel" but "your countermodel's frame must
+  have this property".
+- **Phase 20 is the one at genuine risk.**
+  `exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula` must *construct* a certificate
+  meeting `Certifies`, hence meeting `TailStable`. Whether the L witness family's certificate does is
+  **open**: its lassos fulfil their eventualities inside their cycles, so their forward tail may
+  carry no dead eventuality — but that is a conjecture this dispatch neither proves nor refutes.
+- **The paired repository's search side is affected in the opposite direction from what was
+  recorded.** `TailStable`'s docstring previously told a searcher to re-present an unstable
+  countermodel rather than reject it. That advice was wrong and has been removed. Until Phase 17's
+  ruling, a searcher should be told that the demand may reject frames, not merely presentations.
+- **`Fixture.lean` grew a reusable family, not just a counterexample.** `certRep`, the shift
+  identities, `labCoherent_of_not_mem_bot`, `certRep_agreesOnState`, `stepClause_empty_empty` and
+  `stepClause_empty_phi` are generic enough to state further facts about this closure, and
+  `not_exists_labRun_pR` / `not_live_pR` generalize the landed `t ≤ -2` forms to `t ≠ b - 1`.
+
 - **(dispatch 34) Liveness is decidable at a window time, so Phase 17's existential and universal
   clause groups are now stateable.** `decidableLive` is what `Basic.lean`'s own confirmation block
   said was missing: "the other two groups — existential-from-liveness, and universal — need Phase
@@ -1332,6 +1490,25 @@ as a completed read.
   the kind of claim that was previously only implicit in the two subtrees' shapes.
 
 ## Follow-ups
+
+### Dispatch 38
+
+- **BLOCKING, and the reason this dispatch returns `partial`**: rule on Phase 17's blocker — which of
+  the four enumerated options `Certifies`' forward tail-stability conjunct should take. Recorded in
+  full at the plan's Phase 17 heading. No implementing dispatch should pick one unilaterally:
+  `TailStable` is named in the plan's Lean Challenge Statement and is `hstab` in Phase 19's theorem.
+- **Open conjecture, not a result**: is `Φ_fwd R₀ = R₀` unsatisfiable at *every* certificate whose
+  closure carries an eventuality that is dead in the forward tail? The mechanism traced in
+  `FixtureStable.lean`'s header suggests yes; dispatch 38 proves it only at `Fixture.cert`. Whoever
+  takes Phase 17's option 1 needs the answer, because it decides whether Phase 20 is provable.
+- **Open, and separate**: does the *backward* conjunct `Φ_back L₀ = L₀` have the mirror defect? The
+  mechanism says it should — `StepClause`'s `snce` clause constrains only the *later* label, so a
+  label carrying a backward-dead `snce` should be legitimate at `winLo` and reachable — but this
+  fixture's closure contains no `snce` formula (`Fixture.Cl_no_snce`), so it cannot exhibit it. A
+  second fixture over a closure with an `snce` would settle it. Not attempted here.
+- **Not a defect, but worth a line**: `Fixture.not_mem_L₀_pR` shows only that the backward failure's
+  *witness* leaves `L₀`; whether `certRep a b c` actually satisfies `Φ_back L₀ = L₀` for `1 ≤ b` is
+  unproved either way.
 
 - **NEXT (dispatch 34's seam): sub-phase 16.2**, and it is the last thing between the tree and the
   checker. Four pieces, in dependency order: `L₀` / `R₀` off `liveT`; `TailStable` as
