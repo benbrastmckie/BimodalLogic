@@ -9,6 +9,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Frame
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Splice
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Position
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Live
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixture
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
@@ -63,6 +64,15 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   the one-step position graph `succP` / `predP` with their adjointness, and
   `mem_succP_of_path` — the replacement for the plan's (false) `succP`-totality obligation; see
   that module's header for the counterexample
+- `PlusSlicedCertificate.Live`: liveness as a property of the certificate's **own runs** —
+  `LabRun`, the two halves `FwdLive` / `BwdLive` and their conjunction `Live`, the two propagation
+  lemmas `untl_push` / `snce_push`, the label-level splice, and **both** directions of the
+  characterization (`live_of_path`, `exists_path_of_live`, `live_iff`) at an arbitrary `t : ℤ`
+- `PlusSlicedCertificate.Fixture`: the window-width fixture — a bi-serial certificate of back
+  period `1` in which one position is live at `-1` and occupied by no run at any time `≤ -2`,
+  although the slice and the position set are literally the same at all those times
+  (`live_not_determined_by_slice`). This is what rules out the single-period window and confirms
+  the doubled lower endpoint
 
 ## Tags
 
