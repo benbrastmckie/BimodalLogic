@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Live
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Window
 
 /-!
 # The Window-Width Fixture: Identical Slices, Different Liveness
@@ -90,6 +91,9 @@ time, and `succP (-2) p₀` is empty for a purely label-theoretic reason.
 - `Fixture.live_neg_one` / `not_live_of_le_neg_two` — the liveness asymmetry
 - `Fixture.live_not_determined_by_slice` — the headline: same slice, different liveness
 - `Fixture.not_exists_labRun_of_le_neg_two` — `-2` faithfully represents the whole left tail
+- `Fixture.window_verdict` — the verdict stated against `Window.lean`'s actual `winLo`: the position
+  is live at `-NB = -1` and dead at `winLo = -2 * NB = -2`, so the lower endpoint cannot be raised
+  from the doubled value to the single-period one
 
 ## Tags
 
@@ -657,6 +661,53 @@ theorem live_not_determined_by_slice :
       cert.Live (-1) p₀ ∧ ¬ cert.Live (-2) p₀ :=
   ⟨slice_neg_one_eq (by omega), posAt_eq_of_neg (by omega) (by omega), live_neg_one,
     not_live_of_le_neg_two le_rfl⟩
+
+/-! ## The verdict, stated against the window the checker will actually use
+
+`Window.lean` defines `winLo := -2 * NB` with `NB := lcm G.nb G.target.nb`. This fixture's target
+path has back period `1` as well, so `NB = 1` here and the combined window's lower endpoint is `-2`
+while the single-period one would be `-1`. The verdict therefore reads on the **combined** window
+unchanged — which is also why this fixture does **not** adjudicate between addendum (d)'s responses
+(α) and (β), and must not be cited as if it did.
+-/
+
+@[simp] theorem cert_NBnat : cert.NBnat = 1 := by
+  rw [NBnat]
+  rfl
+
+@[simp] theorem cert_NFnat : cert.NFnat = 1 := by
+  rw [NFnat]
+  rfl
+
+@[simp] theorem cert_NB : cert.NB = 1 := by rw [NB, cert_NBnat]; rfl
+
+@[simp] theorem cert_NF : cert.NF = 1 := by rw [NF, cert_NFnat]; rfl
+
+@[simp] theorem cert_NM : cert.NM = 1 := by
+  rw [NM, cert_nm]
+  rfl
+
+@[simp] theorem cert_winLo : cert.winLo = -2 := by rw [winLo, cert_NB]; rfl
+
+@[simp] theorem cert_winHi : cert.winHi = 3 := by rw [winHi, cert_NM, cert_NF]; rfl
+
+/--
+**The verdict against the real window endpoints.**
+
+`p₀` is live at `-cert.NB`, the lower endpoint a single-period window would have, and dead at
+`cert.winLo`, the doubled one. So the doubled endpoint cannot be raised to the single-period one
+without asserting liveness at `winLo` on behalf of a time where it fails. This is the fact
+`Window.lean`'s `winLo` is defined the way it is *because of*, and it is a proved lemma about a
+named certificate rather than an expectation.
+-/
+theorem window_verdict :
+    cert.winLo = -2 ∧ -cert.NB = (-1 : ℤ) ∧
+      cert.Live (-cert.NB) p₀ ∧ ¬ cert.Live cert.winLo p₀ := by
+  refine ⟨cert_winLo, by rw [cert_NB], ?_, ?_⟩
+  · rw [cert_NB]
+    exact live_neg_one
+  · rw [cert_winLo]
+    exact not_live_of_le_neg_two le_rfl
 
 /--
 **The single-period window is unsound, stated as a window fact.**

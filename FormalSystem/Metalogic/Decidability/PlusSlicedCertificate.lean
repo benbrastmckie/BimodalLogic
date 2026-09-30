@@ -9,6 +9,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Frame
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Splice
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Position
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Live
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Window
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixture
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Stable
 
@@ -73,7 +74,12 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   period `1` in which one position is live at `-1` and occupied by no run at any time `≤ -2`,
   although the slice and the position set are literally the same at all those times
   (`live_not_determined_by_slice`). This is what rules out the single-period window and confirms
-  the doubled lower endpoint
+  the doubled lower endpoint, stated against the real endpoints by `Fixture.window_verdict`
+- `PlusSlicedCertificate.Window`: the **combined** window — `NB` / `NF` / `NM` from the least common
+  multiples of the certificate's and the target path's own segment lengths, the six compatibility
+  facts, the doubled endpoints `winLo` / `winHi` with `winTimes`, and the fold `exists_win_eq` /
+  `forall_iff_win` that reduces a `∀ t` claim over **both** `G.slice` and `G.target.datum` to the
+  window. `Basic.lean`'s `exists_window_eq` folds the slice sequence alone and cannot state this
 - `PlusSlicedCertificate.Stable`: the one-period transfer operators `Φ_back` / `Φ_fwd`, built from
   the one-step `stepBack` / `stepFwd`, with monotonicity at each level, the two subset lemmas
   placing their images on the doubled window's endpoint slices, and the soundness direction
