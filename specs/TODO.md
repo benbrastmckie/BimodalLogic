@@ -1,18 +1,18 @@
 ---
-next_project_number: 707
+next_project_number: 714
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-09-29. Generated from state.json dependency graph.*
+*Updated 2026-09-30. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,703,705,706 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,564,565,567,616,617,704 | 298,464,502,563,703 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,703,705,707,711,713 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,564,565,567,616,617,704,706,708,709,710,712 | 298,464,502,563,703,711 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -20,7 +20,7 @@ next_project_number: 707
 | 7 | 430 | 411 | decidability |
 | 8 | 412 | 430 | decidability |
 | 9 | 482 | 412 | decidability |
-| 10 | 177 | 178,282,296,481,482,543,703,706 | formula-refactor |
+| 10 | 177 | 178,282,296,481,482,543,706 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -70,7 +70,15 @@ next_project_number: 707
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 703 [PLANNED] — Prove the L-plus twin of...
-706 [RESEARCHED] — RESEARCH-FIRST. Establish the finite model property for...
+  └─ 706 [RESEARCHED] — RESEARCH-FIRST. Establish the finite model property for...
+  └─ 708 [NOT STARTED] — Relay the certificate-contract change to the paired...
+  └─ 709 [NOT STARTED] — RESEARCH-FIRST. Establish the finite model property for the...
+  └─ 712 [BLOCKED] — BLOCKED. This task is the durable record of the L-plus...
+713 [NOT STARTED] — OPTIONAL, FILED NOT SCHEDULED. Nothing depends on this task...
+
+### Documentation
+
+707 [NOT STARTED] — Write...
 
 ### Formula Refactor
 
@@ -85,6 +93,7 @@ next_project_number: 707
 ### Incompleteness
 
 705 [NOT STARTED] — STATUS NOTE (2026-09-29, supersedes the ordering constraint...
+710 [NOT STARTED] — RESEARCH-FIRST. Determine whether the TIME-SLICED certificate...
 
 ### Literature
 
@@ -94,6 +103,7 @@ next_project_number: 707
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
+711 [BLOCKED] — BLOCKED AND DELIBERATELY NOT SCHEDULED. This task exists to...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Verification
@@ -102,11 +112,137 @@ next_project_number: 707
 
 ## Tasks
 
+### 713. Formalize ctl star reduction 2exptime lower bound
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: OPTIONAL, FILED NOT SCHEDULED. Nothing depends on this task and none of the L-plus programme's recommendations rest on it. It is filed so the analysis is not lost; abandon it without loss if task 709 or task 710 proves more urgent.
+
+GOAL. Raise the 2EXPTIME-hardness of L-plus Z-time validity from ARGUED to MACHINE-CHECKED. The argument is given in both directions in specs/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md section Q4, completing what task 703's round-2 report section 1.6 argued in one direction only.
+
+THE REDUCTION. Translate CTL-star by A |-> stab and X |-> bottom U ., with non-strict U rendered as e or (g and (g U e)). FORWARD: a rooted total Kripke structure becomes bi-serial by adding one fresh state with a self-loop and an edge to the root, which leaves forward paths from the original states unchanged; stab at (sigma, t) with sigma t = w ranges over histories through w, whose futures are exactly the forward paths from w, and the translation is pure-future so its truth depends only on the future (truth_congr_agreeFrom). BACKWARD: from a Z-model of the translation at (sigma, t), the Kripke structure of the state graph forward-reachable from sigma t satisfies the CTL-star formula at sigma t, by the same two facts read backwards. CTL-star satisfiability is over arbitrary, possibly infinite structures, so no finiteness is needed anywhere.
+
+WHAT IT WOULD BUY. The sharpest available limit on how good ANY certificate class can be: with the reduction a theorem, no complete certificate class with singly exponential, polynomially checkable certificates can exist for full L-plus without a complexity-theoretic surprise (2EXPTIME inside co-NEXPTIME). That is the external ceiling on every compensation the programme can offer for incompleteness.
+
+WHAT IT COSTS. A CTL-star syntax and semantics must be added to the tree, which is substantial standalone work the programme otherwise has no need for. Task 706 rates the risk that the reduction has a gap as LOW (its R4) and records it as affecting the complexity picture only. File for the eventual write-up.
+
+---
+
+### 712. Lplus sliced finite model property
+- **Status**: [BLOCKED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 703, Task 711
+
+**Description**: BLOCKED. This task is the durable record of the L-plus completeness programme's OPEN headline statement, so that it lives in the task list rather than only in a module docstring.
+
+THE STATEMENT, to be held open and unamended until proved: every Z-time non-validity of a PlusFormula admits a TAIL-STABLE SLICED certificate -- the class task 703's amended Stage 2 lands -- meeting its Certifies predicate. Together with the soundness theorem and the decidable checker that Stage 2 also lands, this would yield decidability of L-plus Z-time validity, which is the result the L-plus completeness programme exists to reach.
+
+STATUS OF THE STATEMENT, per specs/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md decision D3: it is OPEN, NOT REFUTED. What task 706 refuted is the FINITE-CARRIER statement only (Probe706.not_finite_carrier_fmp, sorry-free, machine-checked), which killed the finite-graph certificate type. The sliced statement has no counterexample and none is expected; task 710 exists to attack it adversarially before task 709 spends 60-100 hours downstream of it.
+
+WHY BLOCKED. The only known proof route needs omega-automata determinization, which neither this tree nor Mathlib has (task 711, filed as the named blocker). The alternative -- a direct construction over the product of the state graph with the Hintikka types -- is refuted by the classical new-path example Reynolds 2001 records: in the limit, a step-by-step or filtration construction produces many more paths than were ever chosen explicitly, and a new path can postpone an eventuality forever.
+
+NO BOUND IS COMMITTED and none should be. Doubly exponential slice width is the honest expectation for full L-plus: L-plus Z-time validity is 2EXPTIME-hard by the CTL-star reduction argued in both directions in that report's section Q4, so a singly exponential certificate checkable in time polynomial in its size would place a 2EXPTIME-hard problem in co-NEXPTIME. No order is claimed for the tail periods either -- the natural tail-stability argument gives a third exponential, but that is an artefact of that argument, and a type-recurrence cut on slices may do better as the L side does for a single history.
+
+DO NOT UNBLOCK THIS TASK ON AN ARGUMENT. Unblock it only on a proof, or convert it to a refutation task if task 710 produces a counterexample.
+
+---
+
+### 711. Omega automata determinization substrate
+- **Status**: [BLOCKED]
+- **Task Type**: lean4
+- **Topic**: metalogic
+- **Dependencies**: None
+
+**Description**: BLOCKED AND DELIBERATELY NOT SCHEDULED. This task exists to make a dependency VISIBLE, not to be worked. Do not plan it and do not implement it.
+
+WHAT IT NAMES. The only known proof route to the finite model property for FULL L-plus (task 712) is the deterministic-automata route the CTL-star proofs take -- Emerson and Jutla 1988 via Reynolds 2001, which lets a deterministic Rabin linear automaton run in the background along each path. That route needs omega-automata DETERMINIZATION (Safra's construction, or Piterman's improvement) together with the Rabin or parity acceptance infrastructure it rests on.
+
+WHY BLOCKED. Neither this tree nor Mathlib has any of it. Building it is a research project in its own right, comparable in size to the whole L-plus programme to date. Task 706's research records the route as OUT OF REACH rather than extracting it step by step (its decision D4: no literature extraction protocol was run, because the task cites no proof that could be transcribed within reach of the tree).
+
+ITS SOLE FUNCTION is to be the named, honest blocker of the full L-plus finite model property, so that the obstruction is a visible dependency edge in the task graph rather than folklore recorded in a module docstring.
+
+REVISIT ONLY IF Mathlib gains omega-automata determinization, or if a determinization-free route to the full finite model property is found -- in which case this task is ABANDONED rather than completed, and task 712 is unblocked against the new route instead.
+
+---
+
+### 710. Sliced class incompleteness characterization
+- **Status**: [NOT STARTED]
+- **Task Type**: formal:logic
+- **Topic**: incompleteness
+- **Dependencies**: Task 703
+
+**Description**: RESEARCH-FIRST. Determine whether the TIME-SLICED certificate class of task 703's amended Stage 2 is itself incomplete for full L-plus, and if so characterize the gap.
+
+WHY NOW. This is risk R3 of specs/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md, rated Medium. No candidate counterexample was found, and the class contains every eventually periodic time-stamped countermodel, which is what every known finite-model theorem for branching time produces -- but that is absence of evidence, not evidence of absence. The programme has now had ONE certificate class refuted after a plan was written against it (the lasso-based PlusSharingWitnessFamily class, task 703 round 2) and a SECOND refuted before implementation began (the finite-graph PlusGraphCertificate class, task 706). A third refutation discovered after the amended Stage 2 has landed would be far more expensive than one found now, and the two prior refutations were both found by probe within a single research round.
+
+METHOD. Attempt the refutation FIRST, on the pattern that worked twice: construct a candidate Z-time non-validity whose countermodels cannot be eventually periodic in the slice parameter, and settle it by machine-checked probe as NoFiniteCarrierModel.lean and NoFiniteCertificate.lean were settled. Only if no refutation is found, record precisely what is known and what remains open. Either outcome is a result: a refutation reshapes the programme a third time and must be landed as a theorem; a failed refutation attempt with the obstruction stated sharpens confidence in the class before 60-100 hours are spent on task 709.
+
+SUPERSESSION, deliberate. This task SUPERSEDES the question task 703's plan recorded as open and task 706 left open as its research question Q6 -- which fragment the OLD PlusSharingWitnessFamily class covers. That question is NOT inherited here: the class is being retired in favour of the sliced class, so characterizing its coverage buys little. What is known about it is only a necessary condition (a target is certifiable by that class only if it has a finite, eventually periodic sharing countermodel ALL of whose threads fulfil their eventualities -- i.e. no cycle carrying a pending eventuality with an exit; 703 round 2 section 2.5), with no syntactic characterization offered. Record that as closed-by-supersession in this task's report, not as a surviving open obligation.
+
+---
+
+### 709. Ctl like fragment finite model property
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 703
+
+**Description**: RESEARCH-FIRST. Establish the finite model property for the CTL-like FRAGMENT of L-plus against the time-sliced certificate class that task 703's amended Stage 2 lands. This is the only route in sight to an actual decidability result for any part of the programme: the finite model property for full L-plus is open with no feasible known proof route (task 712), so the fragment is where a real theorem is reachable.
+
+FRAGMENT. State formulas S ::= atom | bottom | S -> S | Box S | stab(S U S) | stab(S S S), with X, F, G and their past mirrors as instances; the target is an arbitrary L-plus formula whose Box- and stab-subformulas are of this shape. BOTH Box and stab must be restricted: Box psi for a path formula psi is stab psi at every state, which on a branching structure is exactly the universal path condition the direct product-with-types route cannot quotient. NOTE the fragment does NOT contain L -- the witness theta of task 706 lies outside it -- so "fragment first" does not subsume the L side. Parity with L comes instead from the L-family embedding proved by task 703's amended Phase 17b, not from this task.
+
+ROUTE, from specs/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md section Q3: the Emerson-Halpern tableau unwinding, run on SLICES rather than on a time-homogeneous Kripke structure, with the two tails closed by a type-recurrence cut as the L side already does for a single history (exists_plusLabelledLasso_of_history_realized). stab(g U e) at w is witnessed by a well-founded ordinal rank on the tree of g-paths from w, needing no finite-branching assumption; choosing for each type a node of minimal rank makes the type-level successor graph acyclic for that eventuality, which is exactly the fulfilling-DAG condition the landed AUFix.lfp (WitnessFamily/Sharing/Fulfil.lean:242) computes. The existential side not-stab(g U e) needs one path, kept explicitly.
+
+BOUND. Expected slice width is SINGLY exponential in the closure size, since CTL is EXPTIME-complete -- but commit no bound to a plan until research supports it. The programme has already had one plan commit to a statement that turned out false.
+
+NAMED RISK: the periodic-tail closure. This is the step that is new relative to the CTL small-model literature, which builds time-homogeneous Kripke models by unwinding a pruned tableau; the Z-time analogue needs the tableau run on slices and both tails closed. Estimated 60-100 hours of formalization.
+
+HARD CONSTRAINTS. Zero sorries, no new axioms, no vacuous placeholder definitions. If the property cannot be proved, record the obstruction as a theorem where possible and mark the task blocked, never leave a deferred obligation behind a placeholder.
+
+---
+
+### 708. Relay sliced certificate contract to model checker
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: decidability
+- **Dependencies**: Task 703
+
+**Description**: Relay the certificate-contract change to the paired ModelChecker repository (/home/benjamin/Projects/ModelChecker), whose specs/TODO.md entry 200 is BLOCKED awaiting this side's compression bound and branching structure, and whose theory_lib/bimodal/docs/ADEQUACY.md rows A1, A1-Gamma and A3 set search bounds from the L-side compressionBound with the registry folding back/fwd by exact modulus.
+
+THE PROBLEM TO RELAY. The finite-graph certificate specified in task 703's plan v2 must NOT become an export contract: it cannot represent countermodels the CURRENT lasso-family wire contract already represents (BimodalTools/README.md: lassos: [{back, mid, fwd}], bx, target), theta.neg among them. The expectation relayed after task 703 round 2 -- that the search bound would be a bound on the number of world states -- is wrong in kind: there is no finite number of world states to bound.
+
+WHAT TO RELAY, from specs/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md section Q7. (1) Withdraw the finite graph as a contract. (2) The intended L-plus contract is the TIME-SLICED graph: per slice an edge matrix and a state labelling; three segments back/mid/fwd of slices; one target path and time; bx. The current lasso family is the special case of k lassos with edges i->i only, so the wire format is a strict EXTENSION, not a replacement, and nothing already shipped breaks. (3) The search bound is a tuple (n, nb, nm, nf) -- slice width and three segment lengths. NO bound on n is proved for any L-plus target and none should be configured from a formula yet; for stability-modal-free targets the landed L bounds apply unchanged (at most |C| + 1 lassos, segments at most compressionBound), and the registry's period-folding caveat (ADEQUACY section 7.1(iii-a), WitnessFamily/README.md) carries over to nb and nf. (4) Liveness is computed by the verified checker, which additionally requires TAIL-STABILITY, so a search that finds a countermodel with unstable tails must re-present it with the pre-period moved into mid and the period multiplied -- the same divisor-period sweep the registry already performs for A3. (5) The never-report-validity discipline stands: an empty search at any bound licenses nothing for L-plus targets containing the stability modal, and will until a finite model property is proved.
+
+CONSTRAINT. The ModelChecker repository is READ-ONLY from this repository. Produce the relay text as an artifact here and state precisely which entries and which ADEQUACY rows it amends; do not edit that repository from this task. The completed port of substrate lessons to the model checker is the precedent for this shape of task.
+
+---
+
+### 707. Ztime no finite carrier fmp context note
+- **Status**: [NOT STARTED]
+- **Task Type**: markdown
+- **Topic**: documentation
+- **Dependencies**: None
+
+**Description**: Write context/project/logic/domain/ztime-no-finite-carrier-fmp.md recording that the finite-carrier finite model property FAILS for L and L-plus over Z-time, so the fact is never rediscovered a third time.
+
+JUSTIFICATION. Two independent research rounds (task 703 round 2, task 706 round 1) each had to re-derive this fact's consequence for certificate design, and in both cases the re-derivation happened only AFTER a certificate type had been specified against the wrong assumption. Before task 706 the fact was recorded only in an archived probe (specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean) and one paragraph of BiLasso/README.md -- neither of which is on any path a certificate-design round would read.
+
+CONTENT, from specs/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md sections Q1.1 and Q1.2: the witness theta := Box(p or Fp or Pp) and Box(p -> not Pp), together with its stability-modal-free reading and the CTL-like-fragment variant theta'; the pumping argument in the order the probe runs it (Box is history- and time-independent by plusBox_const, so A says every history meets p somewhere and C says a p-time has no earlier p-time on the same history; the target history meets p at some a, so every earlier time on it is p-free; pigeonhole via Finite.exists_ne_map_eq_of_infinite on the states before a; the resulting cycle is a bi-infinite step path, hence a history by mem_HF_iff_adjacent, and never meets p, contradicting A); why this is a defect in the certificate TYPE and not in any bound (the presented frame's carrier is finite by construction and that alone is fatal -- no n, no checker clause and no liveness formulation repairs it); and the design rule it implies: A Z-TIME CERTIFICATE CLASS MUST PRESENT AN INFINITE, FINITELY PRESENTED CARRIER -- Z x Fin n with finite fibres, via TaskFrame.saturation_of_fib_finite -- NEVER A FINITE ONE VIA FrameOver.ofStep.
+
+Also fold in the report's second context recommendation, which task 703 round 2 had already raised and this round sharpens: Z-time semantics read as a graph semantics, with the addition that the graph must be TIME-SLICED rather than time-homogeneous. The diagnosis to record is that 703 round 2's S1-S5 analysis missed this because it was time-homogeneous throughout -- its "period one and no time origin" is exactly what theta forbids, since a countermodel to theta.neg must have a time at which something happens once.
+
+Cite the sorry-free probe specs/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean as the machine-checked source. No Lean work in this task; it is a context note only.
+
+---
+
 ### 706. Lplus finite model property and completeness
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 695, Task 696
+- **Dependencies**: Task 695, Task 696, Task 703
 - **Research**: [706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md]
 
 **Description**: RESEARCH-FIRST. Establish the finite model property for L-plus over integer time with a computable state bound, and derive full completeness of the finite-graph certificate class from it: every Z-time non-validity of a PlusFormula admits a PlusGraphCertificate meeting PlusGraphCertificate.Certifies, with the carrier bounded by a stated, computable function of plusClosureOf (Gamma ++ Del). Together with PlusGraphCertificate.plusRefutes_of_certifies and PlusGraphCertificate.decidableCertifies (both delivered by task 703 Stage 2) this yields decidability of L-plus Z-time validity, which is the result the L-plus completeness programme exists to reach. FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt (task 695, landed in FormalSystem/PlusLanguage/PlusIntTransfer.lean) is the Step 0 this statement rests on and has no substitute.
@@ -154,6 +290,9 @@ RESEARCH MUST FIRST re-verify every declaration name and path in this descriptio
 Sequencing: this task runs after task 696 (the substrate repair, completed) and task 703 (certificate limits and the graph certificate) land, and not before. A gate written before task 703 Stage 2 lands would have no PlusGraphCertificate to check, and a shape check written against pre-repair clauses would encode the defect itself as the baseline rather than the repair. It does NOT wait for task 706 (the finite model property): the gates protect what is landed, and task 706 may take long or end blocked.
 
 Soundness is not in question anywhere in this task; all preventions are gates against future completeness-side regressions, not soundness gates. Existing invariants in scripts/check-module-invariants.sh run C1-C35 at the time of filing; confirm the next free numbers at implementation time rather than assuming C36/C37.
+
+
+AMENDMENT (filed after task 706's research round). Every reference above to the finite-graph PlusGraphCertificate class is SUPERSEDED. Task 706 refuted that type by machine-checked probe (Probe706.no_ofStep_sat, sorry-free): the finite-carrier finite model property fails for L-plus over Z-time, so a class presenting FrameOver.ofStep cannot certify Z-time non-validities that the already-landed L witness family certifies. Task 703's Stage 2 has been re-planned onto a TIME-SLICED certificate (PlusSlicedCertificate: per-slice edge matrix and state labelling, three segments back/mid/fwd, carrier Z x Fin n, tail-stability required). Re-point this task accordingly: (a2) exhibits a non-trivial inhabitant of the SLICED class, not the graph class; (b)'s shape check covers the SLICED conditions -- in particular its two-regime liveness condition under tail-stability and its box condition -- not the graph conditions. (a3) is UNCHANGED and gains one more refutation family to guard: task 706's finite-carrier refutation declarations, landed beside the Stage 1 declarations, must also continue to exist and stay axiom-clean. The standing instruction above -- re-verify every declaration name and path against the live tree before planning -- applies with extra force here, since this description now has two layers of supersession.
 
 ---
 
