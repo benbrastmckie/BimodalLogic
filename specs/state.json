@@ -1306,7 +1306,7 @@
     {
       "project_number": 703,
       "project_name": "lplus_compression_and_completeness",
-      "status": "partial",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Prove the L-plus twin of FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime: every ZTime non-validity of a PlusFormula admits a bounded, canonically guessed PlusSharingWitnessFamily certifying the refutation, against task 696's redesigned condition set. Soundness is not in question anywhere in this task: FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusTruth_iff_mem and ...plusRefutes_of_certifies are untouched by this task's proof and must survive with their statements unchanged. Acceptance: zero sorries, no new axioms, a docs/theorem-index.md row, and a C2 AXIOM_BASELINE pin for the new theorem.\n\nRESEARCH-FIRST. This task's research round must answer three obligations this repository's completeness-programme survey (task 700) found unrecorded before any plan is written: O1 -- is Liftable decidable, and by what argument (likely yes by finite-graph simulation on the periodic index set, but unscoped; if it is not decidable the compression theorem still holds but the decision procedure degrades to a semi-decision procedure again, which must be recorded plainly rather than concealed); O2 -- constructing a liftable arrival-pruned trans from an arbitrary countermodel, the general case rather than the constant-thread case the two landed lifts use; O3 -- (C5) StabFaithful's time-indexed witness demand and the resulting lasso-count bound, which may not be |closure| + 1 (the Formula side's bound) and may instead be |closure| times the window, a difference that propagates into the enumeration cost and into the paired repository's search-bound expectations. This task's research round must also read task 699 Part B's literature-grounding report, which bears on a fourth question (O4: whether GKWZ-style product-undecidability results for an S5-factor-plus-linear-factor combination bound this repository's two S5-like modalities, box over all histories and the state-agreeing-history stability modal) -- as landed, task 699 Part B does not address O4 (it answers different, adjacent questions: the Peircean/Ockhamist framing, Liftable's identification with Emerson-Halpern R-generability, and positive decidability results (Gurevich-Shelah, Burgess) that de-risk but do not settle O4), so this task's own research round must treat O4 as open and answer it directly rather than assuming 699 settled it.\n\nWhy carrier normalization is a hard prerequisite: FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Family.lean:165 is `rw [validZTime_iff_validInt]`, Step 0 of the Formula-side theorem this task's L-plus statement mirrors; there is no provable Step 0 for the L-plus statement without FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt (task 695, landed in FormalSystem/PlusLanguage/PlusIntTransfer.lean).\n\nSubstrate dependency: this task's dependency on task 696 is on the substrate as FINALLY CORRECTED, not on 696's design as first recommended. Task 699 Part A's audit found that 696's recommended redesign relocates rather than repairs the (C1')-clause collapse, because the proposed trans_refl field reproduces clause_shape_collapse's hypothesis; 699 has proposed (not yet filed as a numbered task) a follow-on to drop trans_refl before 696's Phase 1 declares it. This task's plan must state its dependency against 696 including that follow-on once it is filed, by fully-qualified declaration name, not by an invented task number.\n\nSoundness is not in question anywhere in this task.",
       "topic": "decidability",
@@ -1351,7 +1351,7 @@
         696
       ],
       "created": "2026-09-29T05:45:32Z",
-      "last_updated": "2026-09-30T17:35:30Z",
+      "last_updated": "2026-09-30T17:36:17Z",
       "session_id": "sess_1790784781_504148",
       "artifacts": [
         {
@@ -1366,7 +1366,7 @@
         {
           "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
           "type": "summary",
-          "summary": "Round-4 summary extended with dispatch 33: STEP 6c complete (Glue, Fair, LiveFix.lean), plus the two corrections it recorded and the STEP 6d blocker."
+          "summary": "Round-4 summary extended with dispatch 34: sub-phase 15.3 complete (the bridge, its Decidable payoff, and 15.3's gate), the resolution taken on the box-clause question, and three corrections to the plan."
         }
       ],
       "next_artifact_number": 5

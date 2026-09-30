@@ -5,15 +5,16 @@
 - **Started**: 2026-09-30T00:52:00Z (dispatch 21); 2026-09-30T01:20:00Z (dispatch 23);
   2026-09-30T02:05:00Z (dispatch 25); 2026-09-30T10:10:00Z (dispatch 27);
   2026-09-30T10:39:15Z (dispatch 29); 2026-09-30T16:14:55Z (dispatch 31);
-  2026-09-30T17:20:00Z (dispatch 33)
-- **Completed**: not complete — Phase 15 is PARTIAL (15.1, 15.2 and 15.3 STEPS 1-6c landed; STEP 6d
-  open and blocked on a condition-set question, see Decisions), Phase 16 is IN PROGRESS (16.1
-  complete, 16.2 open) and Phases 17-21 are NOT STARTED. Last dispatch ended 2026-09-30T18:15:00Z
+  2026-09-30T17:20:00Z (dispatch 33); 2026-09-30T18:40:00Z (dispatch 34)
+- **Completed**: not complete — **Phase 15 is COMPLETED** (15.1, 15.2 and 15.3 in full, including
+  15.3's own gate), Phase 16 is IN PROGRESS (16.1 complete, 16.2 open) and Phases 17-21 are NOT
+  STARTED. Last dispatch ended 2026-09-30T17:59:00Z
 - **Effort**: ~30 minutes (dispatch 21, Phase 9) + ~70 minutes (dispatch 23, Phases 10-13)
   + ~125 minutes (dispatch 25, Phase 14 and Phase 15.1) + ~30 minutes (dispatch 27, Phase 15.2)
   + ~35 minutes (dispatch 29, Phase 16.1 and Phase 15.3 STEPS 1-3)
   + ~40 minutes (dispatch 31, Phase 15.3 STEPS 4, 5, 6a, 6b and the 6c prerequisite)
   + ~55 minutes (dispatch 33, Phase 15.3 STEP 6c complete, and 6d's blocker identified)
+  + ~40 minutes (dispatch 34, Phase 15.3 STEP 6d, 15.3's gate, and Phase 15 closed)
 - **Dependencies**: `FormalSystem.Metalogic.Decidability.SharingSkeleton`,
   `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily` (both landed).
   `FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt` is NOT consumed by Stage 1 — see
@@ -111,7 +112,69 @@ Nothing was weakened to get there. The plan's four-state fixture turned out not 
 this carrier, and the response was to rebuild the fixture, keeping the obligation intact. No
 `sorry`, no vacuous placeholder, no new axiom, and no bound on `n`, on a period or on a lasso count.
 
+### Dispatch 34 — the bridge, the gate, and Phase 15 closed
+
+**Sub-phase 15.3's STEP 6d is landed and Phase 15 is `[COMPLETED]`, its last verification bullet
+included.** Two green sub-steps, a commit each. The new module `Bridge.lean` proves the equality the
+whole computed-liveness development exists to establish —
+`G.Live s p ↔ (p, s) ∈ G.liveT` at a window time — and with it `decidableLive`, the `Decidable`
+instance Phase 17's checker is written against. `Live` as `Live.lean` states it quantifies over runs
+of a structure with an infinite carrier and admits no instance of its own; this is where that
+becomes a decidable test.
+
+Dispatch 33's condition-set blocker is **resolved by taking its own recommendation (a)**:
+`Basic.lean` gains `BoxLabelFaithful`, the (C3b) box-**label** clause, with the two-directional
+window reduction `boxLabelFaithful_iff_window` that costs a checker one more bounded quantifier and
+nothing else. The choice was the agent's to make rather than the user's, because it is fully
+reversible inside this repository — overturning it costs one `def`, one `theorem` and the removal of
+one hypothesis from four declarations, since (C3b) is consumed at exactly one place. Two facts
+confirm it narrows nothing that matters: any certificate a genuine countermodel presents satisfies
+it (`plusBox_const`), and `Fixture.cert` satisfies it **vacuously**, its closure carrying no
+`□`-formula at all.
+
+Two further corrections to the plan, both found by reading the landed definitions rather than by
+reasoning about them. The bridge **cannot** be stated at a general time: `FoldF` and `FoldB` are
+disjoint away from the diagonal, so no single window time carries both half-line readouts at a time
+outside the window, and this plan's instruction to have `exists_foldF` / `exists_foldB` supply the
+bridge's time is superseded. And the two directions are **not** symmetric: completeness factors into
+independent halves needing no box clause, while soundness factors into none, because `FwdLive`
+demands a bi-infinite run that the forward fixpoint alone cannot produce.
+
+15.3's gate — `G.live` on a concrete certificate, neither empty nor the whole position space — is
+closed by proof, not by evaluation, and the route was established before a run was spent on it, as
+dispatch 33 asked: `liveT` is a greatest fixpoint iterated `verts.card + 1` times whose every
+iteration runs an inner least fixpoint of the same height, so `decide` is not a route. The hand route
+uses the bridge in **both** directions, which is what makes the gate evidence that neither direction
+is vacuous.
+
 ## What Changed
+
+### Phase 15.3 STEP 6d and 15.3's gate (dispatch 34, on branch `orchestrate/task-703-34`)
+
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Basic.lean` — **extended** with the
+  (C3b) condition: `BoxLabelFaithful`, `BoxLabelFaithfulWindow`, and
+  `boxLabelFaithful_iff_window`, the two-directional window reduction, proved by the same residue
+  argument as (C3)'s `forall_slab_iff_window`. The docstring states why the clause is not a
+  consequence of (C3) — (C3) constrains `G.bx χ` against the subformula `χ`, not against `box χ` —
+  and why a genuine model satisfies it.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Bridge.lean` — **new**, 609 lines.
+  `fwdOrbit` / `bwdOrbit` and `fwdVert` / `bwdVert` fold a run's own positions into the window;
+  `mem_fwdLiveT_of_fwdLive` / `mem_bwdLiveT_of_bwdLive` / `mem_liveT_of_live` are the completeness
+  direction; `spliceWalkPos` with `runOfWalks` and its five field lemmas is the **position-level**
+  splice and the run it presents; `fwdFulfilling_runOfWalks` / `bwdFulfilling_runOfWalks` lift the
+  half-line discharge; `live_of_mem_liveT`, `live_iff_mem_liveT` and `decidableLive` are the bridge
+  and its payoff.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Fixture.lean` — **extended** by 62
+  lines with 15.3's gate: `boxLabelFaithful` (vacuous here), `mem_liveT_neg_one`,
+  `mem_verts_neg_two`, `not_mem_liveT_neg_two`, and `liveT_ne_empty_and_ne_verts` — one and the same
+  position a live vertex at `-1` and a dead one at `-2`, on a certificate whose slice is literally
+  the same at both times.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean` — the `Bridge` import, plus the
+  aggregator doc entries for `LiveFix` (missing since dispatch 33) and `Bridge`, and a correction to
+  `Stable`'s entry, which still said the computed liveness `Finset` had yet to be built.
+- `FormalSystem.lean` — regenerated by `lake exe mk_all --lib FormalSystem`.
+- `typst/generated/status.typ` — regenerated by `scripts/typst-sync-check.sh --fix`, once per
+  commit, as the pre-commit hook requires.
 
 ### Phase 15.3 STEP 6c (dispatch 33, on branch `orchestrate/task-703-33`)
 
@@ -391,6 +454,38 @@ restriction was taken, deliberately: see the Decisions entry below.
 
 ## Decisions
 
+- **(dispatch 34) Resolution (a) is taken for the box-clause gap, and the decision was the agent's
+  to make.** `Basic.lean` gains `BoxLabelFaithful`, threaded as an explicit hypothesis through the
+  four soundness declarations that need it and through nothing else. Route (b) — folding the box
+  clause into `Position.lean`'s `LabCoherent` — stays rejected for the reason dispatch 33 gave: it
+  would silently force the same constraint on the certificate through `AgreesOnState`, making
+  `posAt t` empty for a violating certificate with no stated clause saying why, and it would perturb
+  `succP` / `predP` / `verts` and the landed `mem_posAt_of_path`. Dispatch 33 attached this as a
+  non-blocking `user_decision`; it is **not** carried forward, because
+  `context/standards/user-decision-contract.md`'s "When NOT to Raise One" is explicit that a fully
+  reversible in-repository choice is recorded rather than re-asked, and this one is reversible at the
+  cost of one `def`, one `theorem`, and one hypothesis in four signatures.
+- **(dispatch 34) The bridge is stated at a window time, and that is forced by the fold relations,
+  not chosen for convenience.** `FoldF a b` holds only when `a = b` or both `a, b ≥ NM`; `FoldB a b`
+  only when `a = b` or both `a, b < 0`. A biconditional at a general `t` would need one window time
+  `s` carrying both, and away from the diagonal the two relations are disjoint, so outside the window
+  no such `s` exists. At a window time both hold reflexively. This is not a weakening for the
+  checker: `winTimes` is exactly the finite set it iterates over. Consequently `exists_foldF` /
+  `exists_foldB` are **not** what supply the bridge's time, contrary to the plan's own instruction;
+  they stay `Unroll.lean`'s internal machinery.
+- **(dispatch 34) No `fwdLive_iff_mem_fwdLiveT` is landed, deliberately, and it would be false.**
+  `G.FwdLive s p` demands a bi-infinite `LabRun`; membership in `G.fwdLiveT` yields a forward walk
+  and constrains the past not at all, and `succP`-totality is false (`Position.lean`'s counterexample),
+  so no seriality argument recovers a backward half. Soundness therefore consumes both halves of
+  `G.liveT` at once. Completeness does factor, and both its halves are landed separately, so Phase 19
+  can cite one without the other.
+- **(dispatch 34) 15.3's gate is discharged by proof rather than by evaluation, and the infeasibility
+  was established before the attempt.** `liveT` is `Nu.gfp` over `verts` iterated `verts.card + 1`
+  times, every iteration running an inner `EUFix.lfp` of the same height over a vertex set of size
+  `n * 2 ^ |Cl| * |winTimes|`. `decide` is not a route at any patience. The landed route uses the
+  bridge in both directions, which is why passing the gate is evidence about the bridge and not only
+  about the fixture.
+
 - **(dispatch 33) The inner reachability must relativize its ENDPOINT, not only its interior — and
   the prescription that said otherwise was wrong in the same way route (β) was.** The prescribed test
   `EUFix.lfp X G.succT (G.atPosT e) (G.atPosT g)` puts every *intermediate* vertex of its delivering
@@ -577,6 +672,27 @@ restriction was taken, deliberately: see the Decisions entry below.
 
 ## Plan Deviations
 
+- **Phase 15.3 STEP 6d, altered (the bridge's time)**: the plan asks for
+  `G.Live t p ↔ (p, s) ∈ G.liveT` "at a folded time `s`, with `exists_foldF` / `exists_foldB`
+  supplying `s`". Landed as `live_iff_mem_liveT`, quantified over `s ∈ G.winTimes` instead, because
+  the general-`t` form is not provable: `FoldF` and `FoldB` are disjoint away from the diagonal, so
+  no single window time carries both half-line readouts at a time outside the window. The two fold
+  existence lemmas are not consumed here.
+- **Phase 15.3 STEP 6d, altered (the condition set)**: (C3b) `BoxLabelFaithful` is **added** to the
+  condition set, which the plan's 6d entry did not anticipate; it is dispatch 33's recommended
+  resolution (a), and it is consumed at exactly one place, `spliceWalkPos_coherent`'s box clause.
+- **Phase 15.3 STEP 6d, altered (the "five fields are the eight readouts" claim)**: four of five, as
+  dispatch 33 measured. `lab_sub`, `agrees`, `steps` and the non-box clauses of `coherent` are the
+  readouts; `coherent`'s box clause is not a half-line fact at all.
+- **Phase 15.3 STEP 6d, altered (the direction symmetry)**: the plan treats soundness and
+  completeness symmetrically. Completeness factors into two independent halves; soundness factors
+  into none. No `fwdLive_iff_mem_fwdLiveT` exists, and the reason is recorded at the plan's Phase 15
+  heading so no later dispatch looks for one.
+- **Phase 15's last verification bullet, altered (the method)**: the plan asks that `G.live` be
+  "evaluated on a small concrete certificate". It is not evaluated; it is proved, by
+  `Fixture.liveT_ne_empty_and_ne_verts`. Evaluation is infeasible for the reason recorded under
+  Decisions, and the plan's own stronger preference — named lemmas over an evaluation, stated in
+  `Fixture.lean`'s header for the same reason at 16.1 — is what was satisfied.
 - **Phase 15.3 STEP 6c, altered (the inner test)**: the resolution block's
   `EUFix.lfp X G.succT (G.atPosT e) (G.atPosT g)` is replaced by the endpoint-relativized
   `EUFix.lfp X G.succT (Fair.inSet X (G.atPosT e)) (G.atPosT g)`, with `EUFix.lfp_mono_all` added to
@@ -739,7 +855,35 @@ restriction was taken, deliberately: see the Decisions entry below.
 
 ## Verification
 
-### Dispatch 33 (the current end state)
+### Dispatch 34 (the current end state)
+
+- Build: **Success**. Full `lake build`, guarded and detached (`--no-share`): `exit_status=0`,
+  **2797 jobs**, **zero** `error:` and **zero** `warning:` lines. Run twice, once per green sub-step.
+  Tier 3 confirmed: the `.olean` of `Bridge`, `Basic` and `Fixture` are each newer than their
+  sources.
+- Sorry count: **0** (`lean-sorry-census.sh` over all four resolved source roots).
+- Vacuous count: **1**, identical to `main`'s — the pre-existing
+  `FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal`, untouched.
+- Axiom count: **14**, identical to `main`'s — unchanged. No axiom was added.
+- `#print axioms`: all **48** new declarations audited by name in one pass — every one within
+  `[propext, Classical.choice, Quot.sound]`. Zero unknown-constant errors, no `sorryAx` anywhere.
+- Anti-goals checked explicitly: no `[Fintype TPos]` and no `Fintype` on any carrier; **both**
+  directions of the bridge landed as separately named theorems, so Phase 17 cites one and Phase 18
+  the other; no declaration added cites a probe, by path or by declaration name, per the
+  `.decisions.json` C9 ruling; the only cardinality mentioned anywhere is `V.card`, a `Finset`
+  iteration's termination measure.
+- **The same worktree `.lake` inconsistency recurred and was repaired the same way.** Eight modules'
+  `<Module>.olean.hash` disagreed with their own `<Module>.trace`'s expected `outputs.o` hash.
+  Deleting those eight modules' outputs inside the worktree (hardlinks; the main tree untouched) and
+  rebuilding fixed it. This is now the second consecutive dispatch to hit it on a freshly provisioned
+  worktree, so treat it as the **expected** first step rather than as a rare hazard. Note also that
+  the hash comparison must strip the `.olean` suffix from the trace's `outputs.o` entry, which is a
+  one-element list of `<hash>.olean`, before comparing — a naive comparison reports every module as a
+  mismatch.
+- Tests: **N/A** — no test target covers this subtree yet; Phase 21 owns the gates.
+- Files verified: **Yes**.
+
+### Dispatch 33 (superseded as the end state; retained as the record)
 
 - Build: **Success**. Full `lake build`, guarded and detached (`--no-share`): `exit_status=0`,
   **2796 jobs**, **zero** `error:` and **zero** `warning:` lines. Tier 3 confirmed: the `.olean` of
@@ -1024,6 +1168,18 @@ as a completed read.
 
 ## Impacts
 
+- **(dispatch 34) Liveness is decidable at a window time, so Phase 17's existential and universal
+  clause groups are now stateable.** `decidableLive` is what `Basic.lean`'s own confirmation block
+  said was missing: "the other two groups — existential-from-liveness, and universal — need Phase
+  15's computed liveness and are not stateable yet". They are stateable now.
+- **(dispatch 34) Phase 17's `Certifies` gains a clause.** (C3b) `BoxLabelFaithful` joins `BiSerial`,
+  `BoxFaithful` and `Target` in the condition set, and `boxLabelFaithful_iff_window` is the reduction
+  the checker evaluates it by. Phase 19 owes the clause for the certificate it builds from a
+  countermodel, and `plusBox_const` is what discharges it.
+- **(dispatch 34) Phase 16.2's `L₀` / `R₀` now have something to be.** `Stable.lean`'s header says
+  `TailStable` waited on "the computed liveness `Finset` that sub-phase 15.3 has yet to build". It is
+  built, and `liveT` together with `live_iff_mem_liveT` is what `tailStable_iff_window` will bridge
+  from.
 - **The L⁺ compression statement is refuted in the tree.** `plusCompression_fails_at_pumpTarget`
   bundles the non-validity and the absence of a certificate, so the withdrawal can be cited as one
   declaration rather than argued from a report.
@@ -1056,18 +1212,25 @@ as a completed read.
 
 ## Follow-ups
 
-- **NEXT (dispatch 33's seam): settle STEP 6d's box-clause question, then write 6d.** The question,
-  the evidence for it, the two candidate resolutions and the recommendation are in
-  `handoffs/phase-15-handoff-20260930T181500Z.md`. Do **not** begin the splice before it is settled:
-  four of `LabRun`'s five fields come straight off `Unroll.lean`'s readouts, and the fifth cannot be
-  built at all until a clause supplies `box χ ∈ G.slab t w ↔ G.bx χ = true`. Once settled, 6d's other
-  three pieces are the position-level splice (small and new — `Live.lean`'s own `splice` takes two
-  `LabRun`s, not two half-lines, so it is not reusable), the lift by `plusFwdFulfilling_of_ge` /
-  `plusBwdFulfilling_of_le` (landed, citation only), and the two directions of
-  `G.Live t p ↔ (p, s) ∈ G.liveT` with `exists_foldF` / `exists_foldB` supplying `s`. Completeness is
-  `fwdLiveT_greatest` / `bwdLiveT_greatest` at `X` = the run's folded timed positions, where the
-  delivering vertex is on the run and hence in `X` — which is why `Fair.inSet`'s endpoint condition
-  is satisfiable and not merely convenient.
+- **NEXT (dispatch 34's seam): sub-phase 16.2**, and it is the last thing between the tree and the
+  checker. Four pieces, in dependency order: `L₀` / `R₀` off `liveT`; `TailStable` as
+  `Φ_back L₀ = L₀ ∧ Φ_fwd R₀ = R₀` with its `Decidable` instance; `tailStable_iff_window`, which the
+  plan calls "the lemma the whole design rests on" and requires as a biconditional or as two named
+  implications; and `exists_tailStable_repr`, the re-presentation lemma with a frame isomorphism.
+  **Budget the last two as the hard ones** and do not write a `Stable.lean` extension whose headline
+  declaration is absent — the plan criticizes that shape twice already (15.1's `Live.lean`, 16.1's
+  `Stable.lean`), and both times the right response was to split the sub-phase rather than to stub.
+  `exists_tailStable_repr` is the only piece requiring a *new certificate construction* plus a frame
+  isomorphism, so it is the natural split point if 16.2 overruns one run.
+- **(dispatch 34) The fixture doubles as 16.2's worked example, and `not_mem_liveT_neg_two` is
+  already half of it.** The plan's own bullet asks that `Fixture.cert` be proved **not** tail-stable
+  as presented and that its re-presentation be exhibited. Its liveness asymmetry at `-1` versus `-2`
+  is exactly the failure of one-period stability, and the two gate lemmas landed here are the
+  computed-side facts that argument needs.
+- **(dispatch 34) (C3b) must be added to Phase 17's `Certifies` and discharged in Phase 19.** It is
+  a condition on the certificate, not a fact about it, so it is an obligation for whoever constructs
+  a certificate from a countermodel. `plusBox_const` is what discharges it, and
+  `boxLabelFaithful_iff_window` is what makes a checker able to evaluate it.
 - **NEXT (dispatch 29's seam, now closed): sub-phase 15.3 STEP 4**, the timed graph `succT` / `predT`. All four
   lemmas it needs are landed (`posAt_nextTime` / `posAt_prevTime` and `slice_nextTime_pred` /
   `slice_prevTime_succ`); the intended definitions are written out in the dispatch-29 handoff. Then
@@ -1162,8 +1325,13 @@ as a completed read.
 
 ## References
 
+- `specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T175901Z.md`
+  — dispatch 34's resume point: sub-phase 16.2's four pieces with a recommended split, and the
+  carried-forward environment hazards.
 - `specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T181500Z.md`
   — dispatch 33's resume point: STEP 6d's blocker, its two resolutions, and 17 environment hazards.
+  The blocker is now closed; the resolution is recorded under Decisions.
+- `specs/703_lplus_compression_and_completeness/.dispatch/34.md` — this dispatch's context.
 
 - `specs/703_lplus_compression_and_completeness/plans/04_lplus-sliced-certificate-and-completeness.md`
   — the plan. Phases 9, 10, 11 and 13 are `[COMPLETED]` and Phase 12 is

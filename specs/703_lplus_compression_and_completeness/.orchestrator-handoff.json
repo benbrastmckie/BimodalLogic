@@ -1,39 +1,27 @@
 {
   "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 33,
-  "summary": "Sub-phase 15.3 STEP 6c is complete: the nested eventuality-aware liveness fixpoint (fwdLiveT / bwdLiveT / liveT) and the generic round-robin concatenation, with one fair walk per live position. STEP 6d stops at a condition-set question -- LabRun.coherent's box clause is supplied by nothing in the condition set -- raised as a non-blocking user decision with a recommendation.",
+  "dispatch_seq": 34,
+  "summary": "Sub-phase 15.3 STEP 6d is landed and Phase 15 is COMPLETED, its last verification bullet included: the new module Bridge.lean proves G.Live s p <-> (p, s) in G.liveT at a window time, together with the Decidable instance for liveness that Phase 17's checker is written against, and Fixture.lean closes 15.3's gate by proof. Sub-phase 16.2 and Phases 17-21 remain; nothing is stubbed.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-4 summary extended with dispatch 33: STEP 6c complete (Glue, Fair, LiveFix.lean), plus the two corrections it recorded and the STEP 6d blocker."
+      "summary": "Round-4 summary extended with dispatch 34: sub-phase 15.3 complete (the bridge, its Decidable payoff, and 15.3's gate), the resolution taken on the box-clause question, and three corrections to the plan."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T181500Z.md",
-      "summary": "Resume point: STEP 6d's box-clause blocker with both candidate resolutions and a recommendation, the other three 6d pieces named, and 17 environment hazards."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T175901Z.md",
+      "summary": "Resume point: sub-phase 16.2's four pieces in dependency order with a recommended 16.2a/16.2b split, the L0 indexing mismatch to settle first, and 19 carried-forward environment hazards."
     }
   ],
-  "phases_completed": 14,
+  "phases_completed": 15,
   "phases_total": 21,
-  "blockers": [
-    {
-      "phase": "15",
-      "target": "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate (STEP 6d, the LabRun splice)",
-      "verbatim_goal": "A forward walk and a backward walk agreeing at one vertex splice at position level into a LabRun, whose five fields are exactly the eight readouts 6b landed.",
-      "what_was_tried": "Enumerated every Prop-valued certificate condition in the subtree (BiSerial, BiSerialWindow, BoxFaithful, Target, plus AgreesOnState and the two Fold relations) and checked each against PlusLocalCoherentSeqLab's five clauses. Four of LabRun's five fields do come straight off Unroll.lean's readouts.",
-      "why_it_failed": "LabRun.coherent demands PlusLocalCoherentSeqLab, whose box clause is `PlusFormula.box chi in lab t iff G.bx chi = true`. Position.lean's LabCoherent deliberately omits it; AgreesOnState only gives `box chi in lab t iff box chi in G.slab t (st t)`; and (C3) BoxFaithful relates G.bx chi to `forall t w, chi in G.slab t w` -- the SUBFORMULA chi, not the boxed formula box chi. No condition supplies `box chi in G.slab t w iff G.bx chi = true`, and mem_posAt_of_path runs the other way, dropping the clause on the way in. Closing it is a condition-set decision, not proof work."
-    }
-  ],
-  "continuation_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T181500Z.md",
-  "user_decision": {
-    "question": "STEP 6d cannot build a LabRun until something supplies PlusLocalCoherentSeqLab's box clause, `PlusFormula.box chi in lab t iff G.bx chi = true`. No clause in the sliced certificate's condition set does: (C3) BoxFaithful constrains the subformula chi, not the boxed formula box chi. How should that gap be closed?",
-    "options": [
-      "(a) Add a (C3b) box-label clause to the condition set -- `forall chi, box chi in plusClosureOf (Gamma ++ Del) -> forall t w, (box chi in G.slab t w iff G.bx chi = true)` -- and thread it as a hypothesis through 6d's LabRun construction; decided on the window by exists_window_eq exactly as BoxFaithful is.",
-      "(b) Fold the box clause into Position.lean's LabCoherent, so posAt membership carries it, accepting that AgreesOnState then silently forces the same constraint on the certificate and that succP / predP / verts / mem_posAt_of_path are perturbed."
-    ],
-    "recommended": "(a) Add a (C3b) box-label clause to the condition set -- `forall chi, box chi in plusClosureOf (Gamma ++ Del) -> forall t w, (box chi in G.slab t w iff G.bx chi = true)` -- and thread it as a hypothesis through 6d's LabRun construction; decided on the window by exists_window_eq exactly as BoxFaithful is.",
-    "blocking": false
-  }
+  "blockers": [],
+  "decisions_made": [
+    "The box-clause gap is closed by resolution (a): Basic.lean gains BoxLabelFaithful (C3b) with boxLabelFaithful_iff_window, threaded as a hypothesis through the four soundness declarations that need it. Dispatch 33's non-blocking user_decision on this is closed, not carried forward, per the user-decision contract's rule that a fully reversible in-repository choice is recorded rather than re-asked; the reversal cost is stated in the handoff.",
+    "The bridge is stated at a window time rather than at a general time, because FoldF and FoldB are disjoint away from the diagonal, so no single window time carries both half-line readouts outside the window. exists_foldF / exists_foldB are therefore not consumed by the bridge, contrary to the plan's instruction.",
+    "No fwdLive_iff_mem_fwdLiveT is landed and none should be sought: it would be false, since FwdLive demands a bi-infinite run that the forward fixpoint alone cannot produce. The completeness direction does factor and both its halves are landed separately.",
+    "15.3's gate is discharged by proof rather than by evaluation; decide is infeasible because liveT is a greatest fixpoint iterated verts.card + 1 times whose every iteration runs an inner least fixpoint of the same height."
+  ]
 }

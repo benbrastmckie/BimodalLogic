@@ -2335,7 +2335,7 @@ lemma). Decompose into decimal sub-phases; never carry a `sorry`.
 
 ---
 
-### Phase 15: Positions, computed liveness, and the Q5 factorization [PARTIAL]
+### Phase 15: Positions, computed liveness, and the Q5 factorization [COMPLETED]
 
 **Goal**: Build the position space over a slice, compute liveness on it as a fixpoint in both time
 directions with **both** directions of the characterization proved, and prove the factorization
@@ -2351,7 +2351,7 @@ that justifies combining them. This is Stage 2's novel core and one of its two h
 - [x] Define `G.succP t` and `G.predP t`, the `Finset`-valued one-step successor and predecessor
       on positions **from slice `t` to slice `t + 1`** and back: an edge requires `G.edge t` on the
       state component and the (C1') one-step unfolding clauses on the type component.
-- [ ] Prove `succP` and `predP` are non-empty on the position space, *(deviation: altered — the claim is FALSE as stated and a counterexample is recorded; replaced by `mem_succP_of_path`/`mem_predP_of_path`, which is what the fixpoints actually need. See the deviations block.)* from `G.BiSerial` and the
+- [x] Prove `succP` and `predP` are non-empty on the position space, *(deviation: altered — the claim is FALSE as stated and a counterexample is recorded; replaced by `mem_succP_of_path`/`mem_predP_of_path`, which is what the fixpoints actually need. See the deviations block.)* from `G.BiSerial` and the
       type-completion argument. Without this the fixpoints are vacuous.
 - [x] Prove the **Q5 factorization**, as an explicit named lemma rather than as a rationale in a
       comment. Three named pieces, in this order:
@@ -2377,14 +2377,14 @@ that justifies combining them. This is Stage 2's novel core and one of its two h
       of the time-reflected certificate. Use this to avoid writing the backward fixpoint twice if
       the reflection is cheap; if it is not, write both and record that it was written rather than
       derived.
-- [ ] *(deviation: deferred to 15.3 and re-carriered — the greatest-fixpoint `Finset` is ill-posed on the time-indexed carrier; 15.2 landed the declarative `FwdLive` with both characterization directions instead. See the 15.2 resolution block. FURTHER at seq 31: the re-carriered object exists (`Nu.gfp` on `TPos` over `verts`) and its two halves are landed as `fwdWalkable` (`EGFix.gfp`, the infinite-walk half) and `untlReach` (`EUFix.lfp`, the discharge half); the eventuality-aware combination of the two is STEP 6c and is still open. ALSO altered: this item's instruction to use `AUFix.lfp` for the inner reachability step is SUPERSEDED — `AUFix` is the universal operator and cannot serve an existential outer fixpoint; `EUFix`, its existential dual, is what landed. See the amended Scope Hypothesis and the STEP 5 record. FURTHER at seq 33: the computed object EXISTS as `fwdLiveT` (`LiveFix.lean`), a nested `Nu.gfp` whose inner reachability is relativized to the contracted set with the delivering vertex included, together with `exists_fwdLive_walk` — one walk discharging every eventuality. This item stays unchecked only because its equality with `Live.lean`'s declarative `FwdLive` is STEP 6d and is blocked on the box-clause question recorded below.)* Define `G.fwdLive t χ`, the forward-live positions at slice `t`: the greatest set `X` of
+- [x] *(deviation: deferred to 15.3 and re-carriered — the greatest-fixpoint `Finset` is ill-posed on the time-indexed carrier; 15.2 landed the declarative `FwdLive` with both characterization directions instead. See the 15.2 resolution block. FURTHER at seq 31: the re-carriered object exists (`Nu.gfp` on `TPos` over `verts`) and its two halves are landed as `fwdWalkable` (`EGFix.gfp`, the infinite-walk half) and `untlReach` (`EUFix.lfp`, the discharge half); the eventuality-aware combination of the two is STEP 6c and is still open. ALSO altered: this item's instruction to use `AUFix.lfp` for the inner reachability step is SUPERSEDED — `AUFix` is the universal operator and cannot serve an existential outer fixpoint; `EUFix`, its existential dual, is what landed. See the amended Scope Hypothesis and the STEP 5 record. FURTHER at seq 33: the computed object EXISTS as `fwdLiveT` (`LiveFix.lean`), a nested `Nu.gfp` whose inner reachability is relativized to the contracted set with the delivering vertex included, together with `exists_fwdLive_walk` — one walk discharging every eventuality. CHECKED at seq 34: the equality with `Live.lean`'s declarative `FwdLive` is landed as `Bridge.lean`'s `mem_fwdLiveT_of_fwdLive`, and the two-sided bridge as `live_iff_mem_liveT`, at a window time.)* Define `G.fwdLive t χ`, the forward-live positions at slice `t`: the greatest set `X` of
       positions such that from every position of `X` there is a `succP`-path inside `X`
       discharging each eventuality pending at it. Implement as a decreasing `Finset` iteration
       whose inner reachability step is the least fixpoint `AUFix.lfp`, imported from
       `WitnessFamily/Sharing/Fulfil.lean` — it is stated at `{α : Type*} [DecidableEq α]` and
       mentions no formula, so it is reused, not transcribed. Prove termination and the fixpoint
       property.
-- [ ] Define `G.bwdLive t χ` symmetrically on `predP`, and `G.live t χ := G.fwdLive t χ ∩ G.bwdLive t χ`. *(deviation: deferred to 15.3; 15.2 landed `BwdLive` and `Live := FwdLive ∧ BwdLive` declaratively, with `live_iff` as the justification for the conjunction. FURTHER at seq 31: the backward halves `bwdWalkable` and `snceReach` are landed as the mirror instantiations at `predT`, written once generically rather than twice; the intersection awaits STEP 6c. FURTHER at seq 33: `bwdLiveT` and `liveT := fwdLiveT ∩ bwdLiveT` are landed in `LiveFix.lean`, with `exists_bwdLive_walk` as the backward headline; what remains unchecked is the equality with `Live`, i.e. STEP 6d.)*
+- [x] Define `G.bwdLive t χ` symmetrically on `predP`, and `G.live t χ := G.fwdLive t χ ∩ G.bwdLive t χ`. *(deviation: deferred to 15.3; 15.2 landed `BwdLive` and `Live := FwdLive ∧ BwdLive` declaratively, with `live_iff` as the justification for the conjunction. FURTHER at seq 31: the backward halves `bwdWalkable` and `snceReach` are landed as the mirror instantiations at `predT`, written once generically rather than twice; the intersection awaits STEP 6c. FURTHER at seq 33: `bwdLiveT` and `liveT := fwdLiveT ∩ bwdLiveT` are landed in `LiveFix.lean`, with `exists_bwdLive_walk` as the backward headline; CHECKED at seq 34 — the equality with `Live` is `Bridge.lean`'s `mem_bwdLiveT_of_bwdLive` / `mem_liveT_of_live` / `live_of_mem_liveT`.)*
 - [x] *(deviation: altered — landed as `live_of_path`, not `mem_live_of_path`: `Live` is a `Prop`, so there is no `∈` to name. Stated at `∀ t`, no window restriction.)* Prove the **soundness direction**, `mem_live_of_path`: a position occupied at slice time `t`
       by a bi-infinite locally coherent, fulfilling labelled path of `G` is live.
 - [x] *(deviation: altered — landed as `exists_path_of_live`, and factored through the LABEL-level splice (`splice`, `splice_fwdFulfilling`, `splice_bwdFulfilling`) rather than through `stab_factors`, which is the SEMANTIC counterpart and is what Phases 18/19 consume. Neither derives the other; both are landed and the plan now says so.)* Prove the **completeness direction**, `exists_path_of_mem_live`: every live position lies on
@@ -3076,7 +3076,113 @@ theorem, and every `Finset` the checker evaluates — `verts`, `succT`, `predT`,
   directions of every characterization; no declaration added mentions `winLo` or `winHi`; the only
   cardinality mentioned anywhere is `V.card`, a `Finset` iteration's termination measure.
 
-**STEP 6d IS BLOCKED ON A CONDITION-SET QUESTION, and this is dispatch 33's second finding.**
+**SUB-PHASE 15.3 STEP 6d IS LANDED — dispatch seq 34, and with it sub-phase 15.3 is COMPLETE,
+including Phase 15's last verification bullet.** The record below keeps dispatch 33's blocker
+statement verbatim as the design record, then states what was done about it.
+
+*THE CONDITION-SET QUESTION IS RESOLVED BY TAKING (a), AND THIS IS THE RECORD.* Resolution (a) is
+implemented: `Basic.lean` gains `BoxLabelFaithful` — the (C3b) box-**label** clause — with
+`BoxLabelFaithfulWindow` and `boxLabelFaithful_iff_window`, its two-directional window reduction,
+proved by the same residue argument as (C3)'s `forall_slab_iff_window`. It is threaded as an
+explicit hypothesis through every soundness statement in the new module and through nothing else.
+
+The choice was the agent's own, not the user's, and per
+`context/standards/user-decision-contract.md`'s "When NOT to Raise One" that is the correct
+channel: the risk is fully reversible inside this repository. Overturning it costs one `def` plus
+one `theorem` in `Basic.lean` and the removal of one hypothesis from four declarations in
+`Bridge.lean` — no proof of anything else changes, because (C3b) is consumed at exactly one place,
+`spliceWalkPos_coherent`'s box clause. Dispatch 33's `user_decision` on this question is therefore
+**closed**, not carried forward, and it is recorded here rather than re-asked.
+
+Two independent facts confirm (a) does not narrow the certificate class where it matters. First,
+(C3b) is satisfied by any certificate a genuine countermodel presents, for the same reason (C3) is:
+`plusBox_const` makes a boxed L⁺ formula's truth independent of history and time, so `box χ` belongs
+to the L⁺ type at a carrier element exactly when `χ` is true everywhere, which is what `bx` reports.
+Second, it is satisfied **vacuously** by `Fixture.cert`, whose closure carries no `□`-formula
+(`Fixture.boxLabelFaithful`), so the gate below exercises the rest of the splice with the box clause
+doing no work at all.
+
+*THE FINDING THIS STEP RECORDS, and it corrects this plan rather than absorbing it: the bridge
+cannot be stated at a general `t`, and the reason is structural.* This plan asks for
+`G.Live t p ↔ (p, s) ∈ G.liveT` "at a folded time `s`, with `exists_foldF` / `exists_foldB`
+supplying `s`". That needs ONE window time `s` carrying BOTH `G.FoldF s t` (for the forward
+half-line readout) and `G.FoldB s t` (for the backward one). Read the two definitions (`Fold.lean`):
+`FoldF a b` holds only when `a = b` or both `a, b ≥ G.NM`; `FoldB a b` only when `a = b` or both
+`a, b < 0`. Away from the diagonal the two relations are **disjoint**, so at a general `t` outside
+the window no such `s` exists and the biconditional as written is not provable — it is not a matter
+of finding the right argument. At a **window time** it is provable, because both folds hold
+reflexively there, and that is the form landed:
+`live_iff_mem_liveT (hbox) (hs : s ∈ G.winTimes) (p) : G.Live s p ↔ (p, s) ∈ G.liveT`. This is not
+a weakening for the checker: `winTimes` is exactly the finite set a checker iterates over.
+`exists_foldF` / `exists_foldB` are consequently **not** what supply the bridge's time; they remain
+`Unroll.lean`'s internal machinery, and this plan's instruction to use them here is superseded.
+
+*THE SECOND FINDING: the soundness direction does not factor into halves, although the completeness
+direction does.* This plan's 6d entry treats the two directions symmetrically. They are not.
+Completeness splits cleanly into `mem_fwdLiveT_of_fwdLive` and `mem_bwdLiveT_of_bwdLive`, proved
+independently of each other and of (C3b), each by handing `fwdLiveT_greatest` / `bwdLiveT_greatest`
+the run's own visited timed positions folded into the window as a post-fixpoint — and the
+discharging segment is a segment *of the run*, which is exactly why it never leaves the set and why
+the relativized inner reachability accepts it. Soundness does not split: `G.FwdLive s p` demands a
+**bi-infinite** `LabRun`, while membership in `G.fwdLiveT` yields a forward walk and says nothing
+whatever about the past, and `succP`-totality is false (`Position.lean`), so no seriality argument
+recovers a backward half. Both halves of `G.liveT` are therefore consumed together by
+`live_of_mem_liveT`. **There is deliberately no `fwdLive_iff_mem_fwdLiveT`**: it would be false as
+stated, and landing it would hand Phase 18 a lemma it cannot use. Recorded so no later dispatch
+spends a run looking for it.
+
+**What landed, by declaration.** `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/`
+`Bridge.lean` (new, 609 lines):
+- `fwdOrbit` / `bwdOrbit` with `fwdOrbit_mem` / `bwdOrbit_mem` and `foldF_fwdOrbit` /
+  `foldB_bwdOrbit` — the window times a wrapped walk visits, and each one a fold of the genuine time
+  it stands for. The same induction as `Unroll.lean`'s `fwdWalk_foldF`, run on the orbit instead of
+  on a walk, because the completeness direction starts from a run and needs the orbit, not a walk
+- `fwdVert` / `bwdVert` with `fwdVert_mem_verts` / `fwdVert_mem_succT` and the backward pair — a
+  run's own positions, folded into the window, as vertices of the timed graph
+- `mem_fwdLiveT_of_fwdLive` / `mem_bwdLiveT_of_bwdLive` / `mem_liveT_of_live` — the completeness
+  direction
+- `spliceWalkPos` with `spliceWalkPos_ge` / `_le` / `_add` / `_sub` — the **position-level** splice.
+  `Live.lean`'s own `splice` takes two `LabRun`s and is `live_iff`'s justification, so it is not
+  reusable here, exactly as dispatch 33 recorded; this one takes the two half-lines and is small
+- `spliceWalkPos_labCoherent` / `_agrees` / `_edge` / `_stepClause` / `_coherent` and `runOfWalks`
+  with `runOfWalks_lab` / `_st` / `_pos` / `_pos_start` — the five `LabRun` fields off the splice.
+  Four are a case split over `Unroll.lean`'s two half-line readouts; the fifth is the box clause and
+  is where (C3b) is consumed, together with `AgreesOnState` and nothing else
+- `fwdFulfilling_runOfWalks` / `bwdFulfilling_runOfWalks` — `plusFwdFulfilling_of_ge` /
+  `plusBwdFulfilling_of_le` applied, citation as this plan says, not proof work
+- `live_of_mem_liveT`, `live_iff_mem_liveT`, and `decidableLive` — **the bridge and its payoff**.
+  `decidableLive` is the declaration Phase 17 exists to consume: `Live` as `Live.lean` states it
+  quantifies over runs of a structure with an infinite carrier and admits no instance
+
+**Phase 15's last verification bullet is CLOSED — `Fixture.lean`, +62 lines.** Dispatch 33 warned
+that a `decide`-based evaluation may be infeasible and asked that the route be established before a
+run was spent on it. It was, and it is infeasible: `liveT` is `Nu.gfp` over `verts` iterated
+`verts.card + 1` times, every iteration running an inner `EUFix.lfp` of the same height over a
+vertex set of size `n * 2 ^ |Cl| * |winTimes|`. The hand route is what landed, and it uses the
+bridge in **both** directions, which is what makes the gate evidence that neither direction is
+vacuous: `mem_liveT_neg_one` is completeness applied to `live_neg_one`, `not_mem_liveT_neg_two` is
+soundness contraposed against `not_live_of_le_neg_two`, `mem_verts_neg_two` confirms the excluded
+pair is a vertex at all, and `liveT_ne_empty_and_ne_verts` is the gate itself —
+`cert.liveT ≠ ∅ ∧ cert.liveT ≠ cert.verts`. One and the same position is a live vertex at `-1` and a
+dead one at `-2`, on a certificate whose slice is literally the same at both times.
+
+**Verification — MEASURED (15.3 STEP 6d and the gate):**
+- Full guarded, detached, `--no-share` `lake build` over the whole library: `exit_status=0`,
+  **2797** jobs, **zero** `error:` and **zero** `warning:` lines. Run twice, once per green
+  sub-step. `.olean`-newer-than-source confirmed for `Bridge`, `Basic` and `Fixture`.
+- `lean-sorry-census.sh` over the resolved source roots: `sorry_count: 0`.
+- Vacuous census **1**, unchanged from `main` (the pre-existing `int_domain_universal`). Axiom
+  census **14**, unchanged from `main`.
+- All **48** new declarations audited by name with `#print axioms`: every one within
+  `[propext, Classical.choice, Quot.sound]`; zero `sorryAx`, zero unknown constants.
+- Anti-goals checked explicitly: no `[Fintype TPos]` and no `Fintype` on any carrier; **both**
+  directions of the bridge landed as separately named theorems, so Phase 17 cites one and Phase 18
+  the other; no declaration added cites a probe, by path or by name (the `.decisions.json` C9
+  ruling); the only cardinality mentioned is `V.card`, a `Finset` iteration's termination measure.
+
+**The design record dispatch 33 wrote, kept verbatim below.**
+
+**STEP 6d WAS BLOCKED ON A CONDITION-SET QUESTION, and this was dispatch 33's second finding.**
 This plan states that a spliced forward/backward walk's "five `LabRun` fields are exactly the eight
 readouts 6b landed". **Four of the five, not five.** `LabRun.coherent` demands
 `PlusLocalCoherentSeqLab Γ Del G.bx lab`, whose **box clause** is
@@ -3114,8 +3220,8 @@ splice into a `LabRun` (small, once `coherent` is available), `plusFwdFulfilling
 directions of `G.Live t p ↔ (p, s) ∈ G.liveT` at a folded time with `exists_foldF` / `exists_foldB`
 supplying `s`.
 
-**Remaining for sub-phase 15.3 (STEP 6d only — 6c is landed above; nothing stubbed).** The 6c
-entries below are retained as the design record that dispatch 33 executed, not as open work.
+**Nothing remains for sub-phase 15.3.** The entries below are retained as the design record that
+dispatches 33 and 34 executed, not as open work.
 
 - **6c, the eventuality-aware liveness fixpoint. The design question is SETTLED by this dispatch's
   reading, and the settling is the finding: the two routes are not a 50/50 choice, because one of
@@ -3152,9 +3258,9 @@ entries below are retained as the design record that dispatch 33 executed, not a
   not two half-lines, so it is `live_iff`'s justification and is **not** directly reusable here. The
   position-level splice is new, and small.
 - Phase 15's last verification bullet (`G.live` evaluated on a concrete certificate and confirmed
-  neither empty nor the whole position space) **remains open and is still 15.3's gate**. It needs
-  6c/6d's computed object, and `Fixture.cert` is the intended subject. It could not be met by STEPS
-  4–6b: no computed liveness object exists yet, only its two halves.
+  neither empty nor the whole position space) **is CLOSED at seq 34** by
+  `Fixture.liveT_ne_empty_and_ne_verts`, and not by evaluation — see the STEP 6d record above for
+  why evaluation is infeasible here and what replaced it.
 
 **Timing**: 5 hours
 
