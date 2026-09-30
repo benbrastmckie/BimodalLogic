@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Basic
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Frame
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
