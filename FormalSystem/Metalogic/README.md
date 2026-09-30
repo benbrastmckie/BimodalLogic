@@ -92,7 +92,7 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Conservativity.lean` | 449 | `Conservativity/` |
 | `ConvexConsequence.lean` | 44 | Aggregator for the metatheory of the convex-index consequence relations C3 and C4; holds no declarations |
 | `Core.lean` | 40 | `Core/` |
-| `Decidability.lean` | 172 | `Decidability/` |
+| `Decidability.lean` | 173 | `Decidability/` |
 | `Deterministic.lean` | 30 | <!-- TODO: add description --> |
 | `Expressiveness.lean` | 77 | `Expressiveness/` |
 | `Independence.lean` | 211 | `Independence/` |
@@ -152,7 +152,7 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`Conservativity/`](Conservativity/README.md) | 28 | 8,535 | Conservativity of TM over the base language L⁻: the translation, the backward direction, and the CEB/CEF/CED/CEC status record |
 | [`ConvexConsequence/`](ConvexConsequence/README.md) | 6 | 1,405 | The metatheory of the convex-index consequence relations C3 and C4 of `Semantics/ConvexTruth.lean`: the separations from C1 and from each other, and the axiom-survival table as one theorem per row |
 | [`Core/`](Core/README.md) | 3 | 1,345 | MCS machinery shared by all three routes |
-| [`Decidability/`](Decidability/README.md) | 124 | 71,982 | Tableau decision procedure and countermodel extraction |
+| [`Decidability/`](Decidability/README.md) | 129 | 73,531 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 8 | 1,769 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Expressiveness/`](Expressiveness/README.md) | 143 | 104,211 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
 | [`Independence/`](Independence/README.md) | 26 | 7,443 | Axiom-independence models |
