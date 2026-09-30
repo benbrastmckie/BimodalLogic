@@ -157,6 +157,7 @@ import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Examples
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Fulfil
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Incompleteness
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Limits.HopFree
+import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Limits.NoCertificate
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Limits.Targets
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Predicates
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.TransId

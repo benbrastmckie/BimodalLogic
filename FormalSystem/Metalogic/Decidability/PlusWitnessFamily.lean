@@ -19,6 +19,7 @@ import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Examples
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Incompleteness
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Limits.Targets
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Limits.HopFree
+import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Limits.NoCertificate
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusWitnessFamily` — the L⁺ certificate
@@ -81,6 +82,10 @@ interface is affected by this one's existence.
 - `PlusWitnessFamily.Limits.HopFree`: `not_exists_hopFree_plusCertifies_hopTarget` — no hop-free
   family certifies `hopTarget`. It bounds the hop-free *strategy*, not the substrate:
   `TransId.lean`'s four collapse theorems remain true and remain in the tree.
+- `PlusWitnessFamily.Limits.NoCertificate`: `not_exists_plusCertifies_pumpTarget` — **no** family
+  of this class certifies `pumpTarget`, under no hypothesis at all. This is the class-level
+  incompleteness, not a strategy-level one, and `plusCompression_fails_at_pumpTarget` bundles it
+  with the non-validity as the counterexample to the L⁺ compression statement.
 
 ## Why (C5) is a pinned obligation rather than a signature
 
