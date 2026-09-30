@@ -548,6 +548,7 @@ import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
 import FormalSystem.Semantics.Periodicity
 import FormalSystem.Semantics.ShiftSet
+import FormalSystem.Semantics.SlicedFrame
 import FormalSystem.Semantics.StateLocalTransfer
 import FormalSystem.Semantics.StateTopology
 import FormalSystem.Semantics.StateTopology.ConstraintWitnesses
