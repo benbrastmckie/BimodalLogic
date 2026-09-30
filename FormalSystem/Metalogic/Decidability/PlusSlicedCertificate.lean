@@ -18,6 +18,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Computed
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fold
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Unroll
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.LiveFix
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Bridge
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
@@ -121,7 +122,17 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   the one-step `stepBack` / `stepFwd`, with monotonicity at each level, the two subset lemmas
   placing their images on the doubled window's endpoint slices, and the soundness direction
   `fwdLive_subset_stepBack` / `bwdLive_subset_stepFwd`. `TailStable` and its bridges are **not**
-  here: they depend on the computed liveness `Finset` that sub-phase 15.3 has yet to build
+  here: they consume `Bridge`'s equality and are still ahead
+- `PlusSlicedCertificate.LiveFix`: the **eventuality-aware** liveness fixpoint — `fwdLiveT` /
+  `bwdLiveT` / `liveT` as a nested `Nu.gfp` whose inner reachability is relativized to the set being
+  contracted, both directions of its fixpoint characterization, and `exists_fwdLive_walk` /
+  `exists_bwdLive_walk`: one infinite walk inside the fixpoint discharging every eventuality pending
+  anywhere along it. Nothing here mentions `Live` — that is `Bridge`'s business
+- `PlusSlicedCertificate.Bridge`: the equality `G.Live s p ↔ (p, s) ∈ G.liveT` at a **window time**,
+  by the position-level splice `runOfWalks` of a forward and a backward walk, and the `Decidable`
+  instance for liveness it yields. The completeness direction factors into halves and needs no box
+  clause; the soundness direction does neither — it consumes both halves at once and needs (C3b)
+  `BoxLabelFaithful`
 
 ## Tags
 
