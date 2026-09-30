@@ -12,6 +12,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Live
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Window
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixture
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Stable
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Timed
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
@@ -80,6 +81,11 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   facts, the doubled endpoints `winLo` / `winHi` with `winTimes`, and the fold `exists_win_eq` /
   `forall_iff_win` that reduces a `∀ t` claim over **both** `G.slice` and `G.target.datum` to the
   window. `Basic.lean`'s `exists_window_eq` folds the slice sequence alone and cannot state this
+- `PlusSlicedCertificate.Timed`: the **rolled** timed carrier `TPos := G.Pos × ℤ` with its finite
+  vertex set `verts` (`TPos` is deliberately not a `Fintype`; the `Fintype` a fixpoint needs comes
+  free from `verts`, confirmed by an `example`), and the wrapping `nextTime` / `prevTime` with their
+  edge, membership and **faithfulness** lemmas — the wraps preserve the slice sequence, the target
+  path's data and the position space alike. The fixpoints and the bridge to `Live` are not here yet
 - `PlusSlicedCertificate.Stable`: the one-period transfer operators `Φ_back` / `Φ_fwd`, built from
   the one-step `stepBack` / `stepFwd`, with monotonicity at each level, the two subset lemmas
   placing their images on the doubled window's endpoint slices, and the soundness direction
