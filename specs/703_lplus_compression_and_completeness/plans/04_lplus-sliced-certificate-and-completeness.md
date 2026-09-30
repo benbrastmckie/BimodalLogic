@@ -2377,14 +2377,14 @@ that justifies combining them. This is Stage 2's novel core and one of its two h
       of the time-reflected certificate. Use this to avoid writing the backward fixpoint twice if
       the reflection is cheap; if it is not, write both and record that it was written rather than
       derived.
-- [ ] *(deviation: deferred to 15.3 and re-carriered — the greatest-fixpoint `Finset` is ill-posed on the time-indexed carrier; 15.2 landed the declarative `FwdLive` with both characterization directions instead. See the 15.2 resolution block.)* Define `G.fwdLive t χ`, the forward-live positions at slice `t`: the greatest set `X` of
+- [ ] *(deviation: deferred to 15.3 and re-carriered — the greatest-fixpoint `Finset` is ill-posed on the time-indexed carrier; 15.2 landed the declarative `FwdLive` with both characterization directions instead. See the 15.2 resolution block. FURTHER at seq 31: the re-carriered object exists (`Nu.gfp` on `TPos` over `verts`) and its two halves are landed as `fwdWalkable` (`EGFix.gfp`, the infinite-walk half) and `untlReach` (`EUFix.lfp`, the discharge half); the eventuality-aware combination of the two is STEP 6c and is still open. ALSO altered: this item's instruction to use `AUFix.lfp` for the inner reachability step is SUPERSEDED — `AUFix` is the universal operator and cannot serve an existential outer fixpoint; `EUFix`, its existential dual, is what landed. See the amended Scope Hypothesis and the STEP 5 record.)* Define `G.fwdLive t χ`, the forward-live positions at slice `t`: the greatest set `X` of
       positions such that from every position of `X` there is a `succP`-path inside `X`
       discharging each eventuality pending at it. Implement as a decreasing `Finset` iteration
       whose inner reachability step is the least fixpoint `AUFix.lfp`, imported from
       `WitnessFamily/Sharing/Fulfil.lean` — it is stated at `{α : Type*} [DecidableEq α]` and
       mentions no formula, so it is reused, not transcribed. Prove termination and the fixpoint
       property.
-- [ ] Define `G.bwdLive t χ` symmetrically on `predP`, and `G.live t χ := G.fwdLive t χ ∩ G.bwdLive t χ`. *(deviation: deferred to 15.3; 15.2 landed `BwdLive` and `Live := FwdLive ∧ BwdLive` declaratively, with `live_iff` as the justification for the conjunction.)*
+- [ ] Define `G.bwdLive t χ` symmetrically on `predP`, and `G.live t χ := G.fwdLive t χ ∩ G.bwdLive t χ`. *(deviation: deferred to 15.3; 15.2 landed `BwdLive` and `Live := FwdLive ∧ BwdLive` declaratively, with `live_iff` as the justification for the conjunction. FURTHER at seq 31: the backward halves `bwdWalkable` and `snceReach` are landed as the mirror instantiations at `predT`, written once generically rather than twice; the intersection awaits STEP 6c.)*
 - [x] *(deviation: altered — landed as `live_of_path`, not `mem_live_of_path`: `Live` is a `Prop`, so there is no `∈` to name. Stated at `∀ t`, no window restriction.)* Prove the **soundness direction**, `mem_live_of_path`: a position occupied at slice time `t`
       by a bi-infinite locally coherent, fulfilling labelled path of `G` is live.
 - [x] *(deviation: altered — landed as `exists_path_of_live`, and factored through the LABEL-level splice (`splice`, `splice_fwdFulfilling`, `splice_bwdFulfilling`) rather than through `stab_factors`, which is the SEMANTIC counterpart and is what Phases 18/19 consume. Neither derives the other; both are landed and the plan now says so.)* Prove the **completeness direction**, `exists_path_of_mem_live`: every live position lies on
@@ -2419,6 +2419,15 @@ that justifies combining them. This is Stage 2's novel core and one of its two h
    `mem_lfp_iff` and `lfp_induction`. It is the **universal** `A[g U e]` operator, so — exactly as the
    hypothesis anticipated — it supplies the inner "all successors eventually deliver" half and **not**
    the existential fair-path half. The outer greatest fixpoint therefore remains new work, as asserted.
+   **AMENDED at dispatch seq 31, and the amendment is stronger than this reading.** Carrying the
+   reading through to STEP 5's implementation shows `AUFix` supplies **neither** half on the sliced
+   side, not merely "not the outer one". The inner eventuality-discharge step of an *existential*
+   outer fixpoint is `E[g U e]`, not `A[g U e]`: `A[g U e]` at a vertex says nothing about whether the
+   particular walk the outer fixpoint is building ever delivers, and the all-walks reading is
+   precisely the (C2') demand whose failure is why this subtree exists. So the inner operator is
+   `EUFix`, the existential dual, written generically once in
+   `PlusSlicedCertificate/Fixpoint.lean`. `AUFix` itself is untouched and remains in use, unchanged,
+   on the `Formula` side — the amendment removes nothing from the tree. See the STEP 5 record below.
 2. *`truth_paste_of_type_eq` transcribes from the probe without change of hypotheses.* **CONFIRMED by
    diffing**: `Splice.lean`'s `truth_of_agree_of_type_eq` and `label_splices_of_type_eq` carry the
    probe's statement, hypothesis list and proof unchanged. **No hypothesis was added.**
@@ -2870,14 +2879,173 @@ them:
   Nine depend on no axiom at all, one on `[propext]`, one on `[propext, Quot.sound]`, and 138 on
   `[propext, Classical.choice, Quot.sound]`. No `sorryAx` anywhere.
 
-**Remaining for sub-phase 15.3** (STEPS 4, 5, 6 — not started, nothing stubbed): the timed graph
-`succT` / `predT` off `succP` / `predP` and `nextTime` / `prevTime`, with their `verts` subset lemmas
-and the adjointness (STEP 4 — `slice_nextTime_pred` / `slice_prevTime_succ` and `posAt_nextTime` /
-`posAt_prevTime` are the four lemmas it needs and all four are landed); the two fixpoints, with
-`AUFix.lfp G.verts G.succT` inside and a **generic** decreasing `Finset` iteration on `G.verts`
-outside, written once rather than inlined for `fwd` and `bwd` (STEP 5); and the bridge proving the
-computed object equals `Live.lean`'s declarative `Live` at the times the checker reads (STEP 6).
-The window every one of them consumes is now fixed, so the reason 15.3 stopped at seq 27 is removed.
+**SUB-PHASE 15.3 STEP 4 IS LANDED — dispatch seq 31**, appended to
+`PlusSlicedCertificate/Timed.lean`.
+
+*What landed.* `succT` / `predT`, each reading `succP` / `predP` at the **unwrapped** time `v.2` and
+placing the result at the **wrapped** one, which is exactly what `posAt_nextTime` / `posAt_prevTime`
+license. With them: `mem_succT` / `mem_predT`, the two `verts` subset lemmas, the four projections,
+and two new congruences with their transports — `succP_congr` (which needs **both** slices `succP`
+touches, since `succP t` reads `slice t` through `edge` and `slice (t + 1)` through `posAt`),
+`predP_congr` (which needs only one, since `predP t` reads `slice (t - 1)` through both),
+`predP_nextTime` and `succP_prevTime`.
+
+*DEVIATION, and it is a correction to the plan rather than a shortcut: `succT` and `predT` are NOT
+mutual inverses, and the resolution block's "`mem_succP_iff_mem_predP` supplies adjointness" is
+discharged in its honest form only.* `prevTime (nextTime u) ≠ u` at the window's right edge —
+`nextTime` folds back by `NF` there while `prevTime` merely decrements — so `w ∈ succT v ↔ v ∈ predT w`
+is **false**, and no landed lemma claims it. What is true, and what STEP 5 actually consumes, is the
+*edge-level* adjointness `mem_succT_iff_mem_predP` / `mem_predT_iff_mem_succP`: at a fixed pair of
+vertices whose times are one wrap apart, the forward and backward one-step relations agree, with the
+time-matching conjunct as a **hypothesis** rather than a conclusion. Confirmed against the `Formula`
+side: `SharingWitnessFamily.succF` / `predF` (`Sharing/Fulfil.lean:458,463`) are built the same way
+and carry **no** adjointness lemma either. The module header records the negative so no later
+dispatch spends a run trying to prove it.
+
+**Verification — MEASURED (15.3 STEP 4):** guarded, detached, `--no-share` scoped build of
+`…PlusSlicedCertificate.Timed`: `exit_status=0`, 1218 jobs, **zero** `error:` and **zero** `warning:`
+lines, compiled on the **first** attempt; `.olean` newer than source. `#print axioms` on all 17 new
+declarations by name: each within `[propext, Classical.choice, Quot.sound]`, zero unknown-constant
+errors, no `sorryAx`.
+
+**SUB-PHASE 15.3 STEP 5 IS LANDED — dispatch seq 31**, in two new modules.
+
+*THE DEVIATION THIS STEP TURNS ON, and the plan's own Scope Hypothesis is what asked for it.* STEP 5
+as planned names `AUFix.lfp G.verts G.succT isE isG` "for the inner eventuality-discharge step", and
+the Scope Hypothesis says to "confirm at implementation time by reading `AUFix`'s binders". Read, they
+give a **stronger** conclusion than the hypothesis stated: `AUFix` supplies **neither** half on the
+sliced side. `AUFix` is the *universal* `A[g U e]`; the outer condition here is *existential* (some
+infinite walk exists), and `A[g U e]` at a vertex says nothing about whether the particular walk the
+outer fixpoint is building ever delivers. Worse, the all-walks reading is precisely the (C2') demand
+whose failure is the reason this subtree exists at all (`PlusSlicedCertificate.lean`'s header, on
+`not_exists_plusCertifies_pumpTarget`). So the inner operator is the **existential dual**, written
+generically once. `AUFix` itself is untouched and remains in use, unchanged, on the `Formula` side —
+this deviation removes nothing from the tree.
+
+*What landed, 5a — `PlusSlicedCertificate/Fixpoint.lean` (new), generic, no certificate anywhere.*
+Two operators at an arbitrary vertex type with `DecidableEq` and an explicit `V : Finset α`, with no
+`Fintype` on the carrier:
+- **`EGFix`** — the outer half, the one the Scope Hypothesis correctly called new work with no
+  counterpart in the tree. `step succ X` keeps the vertices of `X` with a successor inside `X`;
+  `iter` contracts from `V`; `gfp` is the iteration at `V.card + 1`. The decreasing-chain pigeonhole
+  is the mirror of `AUFix.exists_stab` (`exists_stab`, `iter_stab`, `gfp_fixed`), and `gfp_greatest`
+  is the coinduction principle. **Membership is proved *equivalent* to beginning an infinite walk**,
+  in both directions (`exists_walk_of_mem_gfp`, `mem_gfp_of_walk`) — so the test is complete, not
+  merely sufficient, and a soundness proof cites one direction where a completeness proof cites the
+  other.
+- **`EUFix`** — the inner half. `AUFix` with its universal successor quantifier replaced by an
+  existential one and nothing else changed: the same `step` / `iter` / `lfp` / `mem_lfp_iff` /
+  `lfp_least` / `lfp_induction` shapes, the same proofs. Membership is likewise proved **equivalent**
+  to the existence of a delivering finite path (`exists_path_of_mem_lfp`, `mem_lfp_of_path`), with a
+  `cons` helper whose two definitional equations keep the path arithmetic free of natural subtraction.
+
+*What landed, 5b — `PlusSlicedCertificate/Computed.lean` (new).* Each generic operator instantiated
+**twice**, once at `succT` and once at `predT`, which is the "written once rather than inlined for
+`fwd` and `bwd`" the resolution block demands: `fwdWalkable` / `bwdWalkable` (`EGFix.gfp`) and
+`untlReach` / `snceReach` (`EUFix.lfp`), plus `atPosT`, the subset lemmas, the one-step unfoldings
+`mem_untlReach_iff` / `mem_snceReach_iff`, the two induction principles in `untlFix_induction`'s own
+shape, the four walk-readout lemmas, and each of the four characterizations in **both** directions.
+
+*The anti-goals, checked explicitly.* No `[Fintype TPos]` and no `Fintype` on any carrier — both
+generic operators are stated at `[DecidableEq α]` with an explicit `Finset`. No one-directional
+weakening: every one of the four fixpoints carries **both** directions of its characterization. No
+widening of the window: `Fixpoint.lean` and `Computed.lean` add no definition that mentions `winLo`
+or `winHi`. No bound on `n`, on a period, or on a lasso count: the only cardinality any declaration
+mentions is `V.card`, the termination measure of a `Finset` iteration.
+
+**Verification — MEASURED (15.3 STEP 5):**
+- Guarded, detached, `--no-share` full `lake build` after each sub-step: `exit_status=0`, **2792**
+  then **2793** jobs, **zero** `error:` and **zero** `warning:` lines.
+- `#print axioms` on **every** declaration of both modules by name (38 in `Fixpoint.lean`, 28 in
+  `Computed.lean`): three depend on no axiom at all, the remaining 63 within
+  `[propext, Classical.choice, Quot.sound]`. Zero unknown-constant errors, no `sorryAx` anywhere.
+
+**SUB-PHASE 15.3 STEP 6 IS PART-LANDED — dispatch seq 31. Two of its four pieces are done; the
+remaining two are named below and nothing is stubbed for them.**
+
+*6a — `PlusSlicedCertificate/Fold.lean` (new). The transcription grounding addendum (c) predicted
+would be mechanical, and it was: the module compiled on the **first** attempt with zero errors and
+zero warnings, and no lemma needed an argument the `Formula`-side source did not need.* `FoldF` /
+`FoldB`, the equivalences the two wraps generate, each carrying the **residue** condition rather
+than the data agreement it implies — `foldF_succ` / `foldB_pred` are the lemmas that would be false
+for the weaker relation. Landed with them: refl/symm/trans for each; the **data pair** for each
+direction (`foldF_slice` with `foldF_target_datum`, and the backward pair), which is where
+`Window.lean`'s combined period earns its definition a second time, since a single-source window
+cannot state the pair at all; the three graph-layer liftings `foldF_edge` / `foldF_posAt` /
+`foldF_succP` and their backward analogues ending in `foldB_predP`; `foldF_nextTime` /
+`foldB_prevTime`, each wrap proved to be a fold; and `exists_foldF` / `exists_foldB`.
+
+*6b — `PlusSlicedCertificate/Unroll.lean` (new). A graph walk read as a ℤ-indexed half-run.*
+`fwdWalk_foldF` / `bwdWalk_foldB` are the induction the whole module rests on: at step `k` a walk
+sits at a window time that is **not** `(f 0).2 ± k`, because the wrap has folded it back possibly
+many times, but the two are fold-equivalent. Everything else is that lemma composed with one of
+`Fold.lean`'s transports, and the payoff is that the walk's positions are positions of the
+**genuine** slices and step along `succP` / `predP` at the **genuine** times: `fwdWalk_posAt`,
+`fwdWalk_succP` and the backward pair, then `fwdWalkPos` / `bwdWalkPos` reading them off as functions
+of the time, then the eight `LabRun`-shaped readouts (`lab_sub`, `labCoherent`, `agrees`, `edge`,
+`stepClause`, each in both directions). It builds **no** `LabRun` and mentions **no** `Live`.
+
+**Verification — MEASURED (15.3 STEP 6a and 6b):**
+- Guarded, detached, `--no-share` full `lake build` after each: `exit_status=0`, **2794** then
+  **2795** jobs, **zero** `error:` and **zero** `warning:` lines.
+- `#print axioms` on all 24 declarations of `Fold.lean` and all 26 of `Unroll.lean`, by name: 48
+  within `[propext, Classical.choice, Quot.sound]` and two within `[propext, Quot.sound]`. Zero
+  unknown-constant errors, no `sorryAx`.
+
+*6c-prep, landed as part of 6b's wave — the generic ν-iteration at an ARBITRARY contraction.*
+`Fixpoint.lean` gained a `Nu` namespace: `Nu.gfp V F` for any `F : Finset α → Finset α` that is
+*deflating* (`F X ⊆ X`) and *monotone*, with `iter` / `iter_anti` / `iter_stab` / `exists_stab` /
+`gfp_fixed` / `gfp_greatest`, and no `DecidableEq` on the carrier at that level (nothing there
+filters). `EGFix` is now the **instance** at "has a successor in the set": its own iteration block is
+gone and its six public iteration lemmas with it, replaced by four one-line derivations, while every
+name `Computed.lean` consumes is unchanged. `EUFix` gained `step_mono_V` / `iter_mono_V` /
+`lfp_mono_V`, monotonicity in the **vertex set** (not immediate from `iter_mono_V` alone, since the
+two iterations run to different bounds). Both additions exist for one reason, stated in the module
+header: **the eventuality-aware liveness fixpoint is a nested one**, its inner reachability test is
+taken inside the set being contracted, so it is not of the form `step succ` and could not be an
+`EGFix` instance. 6c can now define its contraction and get the fixpoint and the coinduction
+principle for free.
+
+**Remaining for sub-phase 15.3 (STEP 6c and 6d — not started, nothing stubbed).**
+
+- **6c, the eventuality-aware liveness fixpoint. The design question is SETTLED by this dispatch's
+  reading, and the settling is the finding: the two routes are not a 50/50 choice, because one of
+  them is unsound.**
+  - *Route (α), the nested (Emerson–Lei) fixpoint, is the correct one.* Compute `Nu.gfp G.verts F`
+    where `F X` keeps the vertices of `X` that have a successor in `X` **and**, for each `untl g e`
+    pending in the vertex's own label, lie in `EUFix.lfp X G.succT (atPosT e) (atPosT g)` — the
+    reachability taken **inside `X`**. `F` is deflating by construction and monotone by
+    `EGFix.step_mono` together with `EUFix.lfp_mono_V`, both landed.
+  - *Route (β), two separate clauses — `fwdWalkable` membership plus "every walkable position with a
+    pending eventuality lies in `untlReach g e`" — is UNSOUND and must not be taken.* `untlReach` takes
+    its reachability inside all of `verts`, so a discharging path it certifies may leave the set from
+    which the walk can be continued forever. The round-robin construction then has nothing to
+    concatenate: a segment that delivers `e` but strands the walk at a dead end does not extend to a
+    fair walk. This is why the reachability must be relativized to the set being contracted, and
+    therefore why the nested fixpoint is not an optional refinement. Recorded so no dispatch spends a
+    run on the cheaper-looking clause pair.
+  - *What (α) does NOT buy, and this is the remaining hard work:* the fixpoint being the right **set**
+    does not by itself produce the single walk that discharges **every** eventuality. That still needs
+    the **round-robin concatenation** — finitely many eventualities, each deliverable from every
+    vertex of the fixpoint without leaving it, so splice the delivering segments in rotation and
+    interleave them into one infinite walk. That argument has no counterpart in the tree: the
+    `Formula` side never needed it, because there the demand is universal over threads and
+    `threadFulfilling_iff_window` is proved directly. It is the single largest remaining piece of
+    STEP 6 and it should be written **generically**, at `Nu` / `EUFix`'s own level, not at the
+    certificate.
+- **6d, the splice and the equality.** With 6c in hand: a forward walk and a backward walk agreeing at
+  one vertex splice at **position** level into a `LabRun` (`st t := if t₀ ≤ t then (fwdWalkPos …).1
+  else (bwdWalkPos …).1`, and likewise the labelling), whose five fields are exactly the eight
+  readouts 6b landed; `plusFwdFulfilling_of_ge` / `plusBwdFulfilling_of_le` (both landed in
+  `Live.lean`) turn the half-line discharge into full fulfilment; and the equality
+  `G.Live t p ↔ (p, s) ∈ …` at a folded time `s` follows, with `exists_foldF` / `exists_foldB`
+  supplying `s`. **Note for whoever writes it:** `Live.lean`'s own `splice` takes two **`LabRun`s**,
+  not two half-lines, so it is `live_iff`'s justification and is **not** directly reusable here. The
+  position-level splice is new, and small.
+- Phase 15's last verification bullet (`G.live` evaluated on a concrete certificate and confirmed
+  neither empty nor the whole position space) **remains open and is still 15.3's gate**. It needs
+  6c/6d's computed object, and `Fixture.cert` is the intended subject. It could not be met by STEPS
+  4–6b: no computed liveness object exists yet, only its two halves.
 
 **Timing**: 5 hours
 
