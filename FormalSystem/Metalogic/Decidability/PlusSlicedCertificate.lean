@@ -6,6 +6,8 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Basic
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Frame
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Splice
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Position
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
@@ -48,6 +50,18 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   three-segment readout with its decoding-region and periodicity lemmas, `exists_window_eq`,
   bi-seriality in both the `∀ t` and the window-decided form with `biSerial_iff_window` bridging
   them, and `onePointCertificate` — the finite-graph special case, exhibited rather than asserted
+- `PlusSlicedCertificate.Frame`: the presented frame `G.frame h` on the **infinite** carrier
+  `ℤ × Fin G.n` (its infinitude proved, not asserted), the model `G.model h`, the history space
+  `mem_HF_iff_slicedPath` in both directions, `pathHistory`, and the shift-normalization pair
+  `plusTruthAt_shiftBack` / `timeShift_offset_zero`
+- `PlusSlicedCertificate.Splice`: the **Q5 factorization** — `histories_through_paste`,
+  `truth_of_agree_of_type_eq` with its `paste` instance `label_splices_of_type_eq`, and
+  `forall_forall_or_iff` — assembled into `stab_factors` and its `⊡`-shaped reading
+  `not_stab_factors`. This is the justification for `live = fwdLive ∩ bwdLive`
+- `PlusSlicedCertificate.Position`: the finite position space over one slice with its cardinality,
+  the one-step position graph `succP` / `predP` with their adjointness, and
+  `mem_succP_of_path` — the replacement for the plan's (false) `succP`-totality obligation; see
+  that module's header for the counterexample
 
 ## Tags
 
