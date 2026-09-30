@@ -1,29 +1,25 @@
 {
-  "task_number": 703,
-  "dispatch_seq": 29,
-  "phase": "implement",
   "status": "partial",
-  "session_id": "sess_1790754653_96e30c",
-  "phases_completed": 14,
-  "phases_total": 21,
-  "summary": "Sub-phase 16.1 complete and sub-phase 15.3 STEPS 1-3 complete, in four committed green sub-steps on orchestrate/task-703-29. The window-width fixture proves identical slices carry different liveness, rejecting winLo = -NB and confirming winLo = -2*NB; the combined window of addendum (d) response (alpha) is landed with the pair fold Phase 17 needs; the rolled timed carrier and the wrapping time successors follow with four faithfulness lemmas. 15.3 STEPS 4-6 and 16.2 are the resume point, nothing stubbed.",
+  "phase": "implement",
+  "dispatch_seq": 31,
+  "summary": "Sub-phase 15.3 STEPS 4 and 5 are complete and STEP 6 is part-landed (6a the fold relation, 6b a walk read as a Z-indexed half-run), in five green sub-steps plus a sixth commit for the 6c prerequisite; full lake build clean at 2795 jobs with zero errors and zero warnings, sorry_count 0, and axiom and vacuous censuses unchanged from main. STEPS 6c and 6d remain, with 6c's design settled and nothing stubbed for either.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-4 summary, extended with a dispatch-29 section in Overview, What Changed, Decisions, Plan Deviations, Verification and Follow-ups."
+      "summary": "Round-4 summary extended with dispatch 31: 15.3 STEPS 4 and 5 complete, STEP 6 part-landed, plus the 6c prerequisite."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-16-handoff-20260930T111427Z.md",
-      "summary": "Resume point for 15.3 STEP 4 with the four prerequisite lemmas named, plus four environment hazards (two new: git-commit-scoped.sh cannot commit in a worktree; Basic.lean's import closure lacks Int.ModEq/Finset.Ico/ring)."
-    },
-    {
-      "type": "plan",
-      "path": "specs/703_lplus_compression_and_completeness/plans/04_lplus-sliced-certificate-and-completeness.md",
-      "summary": "Phase 16 marked IN PROGRESS with a full 16.1 record (the fixture redesign, its three reasons, and the binding window verdict); Phase 15 gained two records for 15.3 STEP 2 and STEPS 1+3."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T164815Z.md",
+      "summary": "Resume point: 15.3 STEP 6c, with its contraction written out, its two monotonicity lemmas named, the unsound alternative recorded, and the round-robin concatenation identified as the largest remaining piece."
     }
   ],
-  "next_action": "Sub-phase 15.3 STEP 4: define succT / predT in the landed Timed.lean, then STEP 5 (the two fixpoints) and STEP 6 (the bridge to Live), then 16.2.",
-  "blockers": []
+  "phases_completed": 14,
+  "phases_total": 21,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "continuation_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T164815Z.md",
+  "next_action_hint": "Sub-phase 15.3 STEP 6c: the eventuality-aware liveness fixpoint, as Nu.gfp G.verts liveStepF in a new PlusSlicedCertificate/LiveFix.lean, with the inner reachability taken inside the set being contracted (EUFix.lfp X G.succT, not EUFix.lfp G.verts G.succT). Monotonicity comes from EGFix.step_mono plus EUFix.lfp_mono_V, both landed. Then the round-robin concatenation, generically at Nu/EUFix's level, then STEP 6d's position-level splice and the equality with Live.",
+  "git_checkpoint": "ebcf91121"
 }

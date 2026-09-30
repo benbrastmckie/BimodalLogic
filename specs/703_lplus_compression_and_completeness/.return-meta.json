@@ -1,51 +1,69 @@
 {
   "status": "partial",
-  "started_at": "2026-09-30T10:39:15Z",
-  "completed_at": "2026-09-30T11:16:07Z",
-  "requires_user_review": false,
+  "started_at": "2026-09-30T16:14:55Z",
+  "completed_at": "2026-09-30T16:58:00Z",
+  "requires_user_review": true,
+  "review_reason": "Plan-compliance spot-check fails by design at this point in the plan: 9 of the 11 names in the plan's Goals block resolve to landed declarations, and the two that do not -- exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula and exists_plusSlicedCertificate_of_tailStable_countermodel -- are the task's two headline theorems, owned by Phases 19 and 20, which are [NOT STARTED]. Every substantive check PASSED: full lake build exit 0 at 2795 jobs with zero error: and zero warning: lines, sorry_count 0, vacuous census 1 unchanged from main, axiom census 14 unchanged from main, and all 131 new declarations axiom-audited by name with no sorryAx. Nothing regressed and nothing is stubbed. No user decision is needed; this flag marks that the task's own goals are not yet reached at phase 15 of 21.",
   "verification": {
-    "verification_passed": true,
+    "verification_passed": false,
     "sorry_count": 0,
     "vacuous_count": 1,
+    "vacuous_note": "Unchanged from main. The single match is FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal, pre-existing and untouched -- a genuine theorem whose proof is `trivial`, not a placeholder.",
     "axiom_count": 14,
-    "build_passed": true
+    "axiom_note": "Unchanged from main. No axiom was added.",
+    "build_passed": true,
+    "build_note": "Full guarded, detached, --no-share lake build: exit_status=0, 2795 jobs, zero error: and zero warning: lines. Olean-newer-than-source confirmed for all seven modules this dispatch touched.",
+    "verification_passed_note": "false ONLY because metadata.compliance_check is 'failed'; all five substantive checks above passed. See review_reason."
   },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-4 summary extended with dispatch 29: sub-phase 16.1 complete (window-width fixture plus the one-period transfer operators) and sub-phase 15.3 STEPS 1-3 (combined window, rolled timed carrier, wrapping time successors)."
+      "summary": "Round-4 summary extended with dispatch 31: sub-phase 15.3 STEPS 4 and 5 complete, STEP 6 part-landed (6a the fold relation, 6b a walk read as a Z-indexed half-run), plus the 6c prerequisite."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-16-handoff-20260930T111427Z.md",
-      "summary": "Resume point: sub-phase 15.3 STEP 4, with the four prerequisite lemmas named and the intended succT/predT definitions written out; plus four carried-forward environment hazards, two of them new."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T164815Z.md",
+      "summary": "Resume point: sub-phase 15.3 STEP 6c, with its contraction written out, its two monotonicity lemmas named, the unsound alternative recorded, and the round-robin concatenation identified as the largest remaining piece."
     }
   ],
   "partial_progress": {
-    "stage": "phase_16.1_complete_15.3_steps_1_to_3_complete",
-    "details": "Four green sub-steps landed and committed on orchestrate/task-703-29. Sub-phase 16.1 is COMPLETE (Fixture.lean, Stable.lean). Sub-phase 15.3 STEPS 1, 2 and 3 are COMPLETE (Window.lean, Timed.lean); STEPS 4, 5, 6 not started and nothing stubbed. Sub-phase 16.2 not started. Phases 17-21 NOT STARTED. Full lake build clean at 2791 jobs, zero errors, zero warnings; sorry_count 0; axiom and vacuous censuses unchanged from main.",
+    "stage": "phase_15.3_steps_4_5_6a_6b_complete",
+    "details": "Five green sub-steps landed and committed on orchestrate/task-703-31, plus a sixth commit for the 6c prerequisite. Sub-phase 15.3 STEPS 4 and 5 are COMPLETE; STEP 6 is PART-landed (6a and 6b done, 6c and 6d not started and nothing stubbed). Sub-phase 16.2 not started. Phases 17-21 NOT STARTED. Full lake build clean at 2795 jobs, zero errors, zero warnings; sorry_count 0; axiom and vacuous censuses unchanged from main.",
     "phases_completed": 14,
     "phases_total": 21
   },
   "completion_data": {
-    "completion_summary": "Dispatch 29 closed the two blockers that stopped dispatch 27. Sub-phase 16.1 is complete: Fixture.cert proves, as named lemmas about a bi-serial certificate of back period 1, that identical slices carry different liveness, which rejects the single-period window lower endpoint and confirms the doubled one; and Phi_back/Phi_fwd land with monotonicity plus a soundness pair showing they over-approximate. Sub-phase 15.3 STEPS 1-3 then fixed the window per plan v6 addendum (d) response (alpha): the combined lcm periods with all six compatibility facts as theorems, the pair fold forall_iff_win that Phase 17 needs, the rolled timed carrier TPos with finiteness on verts, and the wrapping nextTime/prevTime with four lemmas proving the fold preserves both the slice sequence and the target path.",
+    "completion_summary": "Dispatch 31 closed sub-phase 15.3's STEPS 4 and 5 and two of STEP 6's four pieces. The timed graph succT/predT now exists with the honest edge-level adjointness (succT and predT are NOT mutual inverses, and the module records the negative); the two existential fixpoint operators the sliced side needs exist generically in Fixpoint.lean (Nu.gfp at an arbitrary contraction, EGFix at 'has a successor', EUFix the existential E[g U e]), each with membership proved equivalent to the existence of the walk it describes; Computed.lean instantiates both at both graphs; Fold.lean supplies the two folding relations with each wrap proved to be a fold; and Unroll.lean reads a graph walk as a Z-indexed half-run in exactly the shape a LabRun field consumes. The plan's prescription of AUFix for the inner eventuality-discharge step is superseded: AUFix is the universal operator and supplies neither half of an existential liveness condition, which is a stronger conclusion than the plan's own Scope Hypothesis stated.",
     "roadmap_items": []
   },
   "metadata": {
-    "session_id": "sess_1790754653_96e30c",
+    "session_id": "sess_1790784781_504148",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "skipped",
-    "dispatch_seq": 29,
-    "worktree_path": "/home/benjamin/Projects/BimodalLogic/.orchestrate-worktrees/703-29",
-    "worktree_branch": "orchestrate/task-703-29",
+    "compliance_check": "failed",
+    "compliance_note": "9 of 11 Goals names landed. Missing: exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula (Phase 19) and exists_plusSlicedCertificate_of_tailStable_countermodel (Phase 20), both [NOT STARTED]. No integrity failure: no landed declaration delegates to a name it claims to replace.",
+    "dispatch_seq": 31,
+    "worktree_path": "/home/benjamin/Projects/BimodalLogic/.orchestrate-worktrees/703-31",
+    "worktree_branch": "orchestrate/task-703-31",
     "commits": [
-      "1e5219782 task 703 phase 16.1: window-width fixture, identical slices with different liveness",
-      "cedf558d5 task 703 phase 16.1: one-period transfer operators with monotonicity and soundness",
-      "642cf766d task 703 phase 15.3.2: the combined window, response (alpha), with the pair fold",
-      "a11dcfd31 task 703 phase 15.3.1+15.3.3: rolled timed carrier and wrapping time successors"
+      "0de1bc5bc task 703 phase 15.3.4: the timed graph, with the edge-level adjointness",
+      "478ae17e1 task 703 phase 15.3.5a: the two existential fixpoint operators, generically",
+      "400ad00a2 task 703 phase 15.3.5b: the four fixpoints instantiated at the timed graph",
+      "14bbb2db6 task 703 phase 15.3.6a: the combined fold relation on times",
+      "6452aa002 task 703 phase 15.3.6b: a graph walk read as a Z-indexed half-run",
+      "ebcf91121 task 703 phase 15.3.6c-prep: the generic nu-iteration at an arbitrary contraction"
+    ],
+    "modified_files": [
+      "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Timed.lean",
+      "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Fixpoint.lean",
+      "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Computed.lean",
+      "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Fold.lean",
+      "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Unroll.lean",
+      "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean",
+      "FormalSystem.lean",
+      "typst/generated/status.typ"
     ]
   }
 }

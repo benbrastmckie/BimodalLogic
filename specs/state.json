@@ -1351,8 +1351,8 @@
         696
       ],
       "created": "2026-09-29T05:45:32Z",
-      "last_updated": "2026-09-30T10:38:09Z",
-      "session_id": "sess_1790754653_96e30c",
+      "last_updated": "2026-09-30T16:13:34Z",
+      "session_id": "sess_1790784781_504148",
       "artifacts": [
         {
           "path": "specs/703_lplus_compression_and_completeness/reports/02_semantics-first-compression-research.md",
@@ -1366,7 +1366,7 @@
         {
           "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
           "type": "summary",
-          "summary": "Round-4 summary, extended with a dispatch-29 section in Overview, What Changed, Decisions, Plan Deviations, Verification and Follow-ups."
+          "summary": "Round-4 summary extended with dispatch 31: 15.3 STEPS 4 and 5 complete, STEP 6 part-landed, plus the 6c prerequisite."
         }
       ],
       "next_artifact_number": 5
