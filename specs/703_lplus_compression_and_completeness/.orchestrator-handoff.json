@@ -1,33 +1,38 @@
 {
   "status": "partial",
-  "phase": "implement",
-  "dispatch_seq": 21,
-  "summary": "Phase 9 of 21 closed COMPLETED and verified sorry-free: the hopTarget/pumpTarget limit targets, their ZTime non-validity, and both closure-membership chains land in a new Limits/Targets.lean, with a full lake build at exit 0 and zero warnings. Stopped after one phase on a blocking environment fault: the harness refuses every git operation against the dispatch worktree, so the verified work sits on commit 228168b3b of branch worktree-agent-aa19bfa3bfef394ff instead of orchestrate/task-703-21, and the orchestrator must land it by one of the two routes named in blockers[0].",
+  "dispatch_seq": 23,
+  "task_number": 703,
+  "phases_completed": 5,
+  "phases_total": 21,
+  "session_id": "sess_1790754653_96e30c",
+  "summary": "Stage 1 of the plan is COMPLETE and Stage 2 is OPEN. Phases 10, 11 and 13 closed [COMPLETED] and Phase 12 [COMPLETED WITH EXCLUSIONS], on top of Phase 9 which dispatch 21 closed and which is already landed on main. Stage 1: the L-plus compression statement is now refuted as a theorem of the tree -- not_exists_plusCertifies_pumpTarget proves NO PlusSharingWitnessFamily certifies pumpTarget under no hypothesis at all, and not_exists_hopFree_plusCertifies_hopTarget separately retires the hop-free strategy; six documentation corrections stop the tree overstating the class's coverage; four theorem-index rows and four C2 axiom pins landed (AXIOM_BASELINE 18 -> 22). Stage 2: Phase 13 lands PlusGraphPath, PlusSlice and PlusSlicedCertificate with the plan's pinned field lists (no lift, trans, witness, stepR or stateLab), the three-segment readout, exists_window_eq by residue, biSerial_iff_window in both directions, and onePointCertificate -- the finite-graph special case exhibited and proved constant. Full lake build exit 0, 2782 jobs, zero errors and zero warnings; sorry_count 0; axiom count 14 unchanged; plusTruth_iff_mem and plusRefutes_of_certifies unedited and unchanged in axioms, so soundness survives. check-module-invariants.sh (run at Phase 12) passes every group except B0, which fails identically at main's HEAD for a reason that is not this task's. Four commits on orchestrate/task-703-23: 09ab45be9, 726b6d99f, abb4e85b4, 5908fc924. Phases 14-21 remain; no probe exists for them.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Phase 9 implementation summary: the two limit targets, their ZTime non-validity, the two closure-membership chains, the falsified Scope Hypothesis, and the landing fault."
+      "summary": "Stage 1 complete: the two limit targets, both incompleteness theorems, the six record corrections, the four C2 pins, and the measured verification."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-9-handoff-20260930T012200Z.md",
-      "summary": "Phase-end handoff: next action is Phase 10, plus the landing fault and the trans_refl risk scoped to Phases 10-11."
-    }
-  ],
-  "phases_completed": 1,
-  "phases_total": 21,
-  "blockers": [
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-13-handoff-20260930T023000Z.md",
+      "summary": "Phase-end handoff: next action is Phase 14 (the frame on Z x Fin n), plus the five Phase 13 design decisions and the unavailable-Mathlib-name list."
+    },
     {
-      "phase": 9,
-      "target": "orchestrate/task-703-21 (git branch in /home/benjamin/Projects/BimodalLogic/.orchestrate-worktrees/703-21)",
-      "verbatim_goal": "Commit your source work on the dispatch branch INSIDE this worktree as usual -- the orchestrator lands that branch into the main tree after you return.",
-      "what_was_tried": "cd /home/benjamin/Projects/BimodalLogic/.orchestrate-worktrees/703-21 && git status; git -C /home/benjamin/Projects/BimodalLogic/.orchestrate-worktrees/703-21 status; EnterWorktree with path=/home/benjamin/Projects/BimodalLogic/.orchestrate-worktrees/703-21. Non-git writes and lake runs into that worktree were then used successfully to author, build and verify the work there. The work was additionally committed in the agent's own harness worktree, after fast-forwarding it from 166 commits behind main up to main (1db84f6eb) so the commit base matches the dispatch worktree's base exactly.",
-      "why_it_failed": "The harness pinned this agent into /home/benjamin/Projects/BimodalLogic/.claude/worktrees/agent-aa19bfa3bfef394ff and refuses EVERY git invocation targeting another checkout: the cd form and the -C form are both rejected by the worktree-isolation guard, and EnterWorktree rejects the path because the dispatch worktree is not under .claude/worktrees/. File writes and lake builds into the dispatch worktree are permitted, so only the commit is impossible. dispatch-worktree.sh land merges the BRANCH, so uncommitted dispatch-worktree content is discarded as nothing_to_land. TWO REMEDIES, EITHER SUFFICIENT, EACH ONE COMMAND FOR THE ORCHESTRATOR: (1) the four verified files are already physically present in /home/benjamin/Projects/BimodalLogic/.orchestrate-worktrees/703-21 -- commit them there on orchestrate/task-703-21 and land as normal; or (2) merge or cherry-pick commit 228168b3b from branch worktree-agent-aa19bfa3bfef394ff, which has the same base and touches exactly four paths, none under specs/**, so it passes land's specs-refusal check."
+      "type": "handoff",
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-12-handoff-20260930T021000Z.md",
+      "summary": "Phase-end handoff: next action is Phase 13 (Stage 2, no probe exists), plus the build-guard false-pass hazard and the git-commit-scoped.sh worktree pitfall."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-11-handoff-20260930T015500Z.md",
+      "summary": "Phase 11 handoff: the class-level incompleteness and why no bound repairs it."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-10-handoff-20260930T014500Z.md",
+      "summary": "Phase 10 handoff: the hop-free limit and the import-closure finding."
     }
   ],
-  "plan_markers_verified": true,
-  "continuation_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-9-handoff-20260930T012200Z.md",
-  "next_action_hint": "Land the Phase 9 commit by one of the two routes in blockers[0] FIRST -- otherwise the work is lost -- then dispatch Phase 10 (hop-free families are incomplete), which is unblocked by Phase 9's hopTarget, not_plusValidZTime_hopTarget and hopClosure chain.",
-  "git_checkpoint": "228168b3b (branch worktree-agent-aa19bfa3bfef394ff, base 1db84f6eb)"
+  "blockers": [],
+  "next_action": "Dispatch Phase 14 (the presented frame on Z x Fin n): create FormalSystem/Semantics/SlicedFrame.lean with FrameOver.ofSlicedStep, wire its import into FormalSystem/Semantics.lean, regenerate the root, then instantiate G.frame and G.model and prove the histories characterization. Everything it reads from Phase 13 is landed: slice, edge, slab, slab_sub, BiSerial (the forall-t form, which is the hypothesis G.frame takes), biSerial_iff_window, slice_periodic_back/_fwd and exists_window_eq. Three environment facts must be carried in: (1) lake-build-guard.sh shares its result file by hardlink with the main tree, so always pass --no-share inside a worktree and confirm against .olean timestamps -- a bare build reported a false exit 0 this dispatch for a module that had never compiled; (2) .claude/scripts/git-commit-scoped.sh resolves the main tree rather than the cwd and silently commits nothing from a worktree, so use plain git add/commit there; (3) ring, neg_one_mul, dvd_rfl, add_sub_cancel_right, le_or_lt and List.getD_eq_getElem are NOT in these modules' import closures -- substitutes are recorded in the Phase 13 handoff. Separately, one operator command clears the outstanding B0 gate failure: git worktree remove --force .claude/worktrees/agent-aa19bfa3bfef394ff. One loose end for the parent session: a read-only subagent named mc-export-read was dispatched to establish ModelChecker's current export format and bound configuration (Phase 12's second exclusion). It is owned by the parent session, so its report arrives there; reconcile it against the five numbered points in the implementation summary's 'The paired repository's export contract' section and amend that section rather than adding a second account."
 }

@@ -1469,7 +1469,7 @@ looked for it.
 
 ---
 
-### Phase 10: Hop-free families are incomplete [NOT STARTED]
+### Phase 10: Hop-free families are incomplete [COMPLETED]
 
 **Goal**: Land `not_exists_hopFree_plusCertifies_hopTarget`: no family whose succession relation
 never leaves the index it is read at certifies `hopTarget`. This is an independent incompleteness,
@@ -1477,20 +1477,20 @@ and it is what retires the hop-free route of Phase 1 as a completeness strategy 
 Phase 1's theorems true.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/HopFree.lean`,
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/HopFree.lean`,
       importing `Limits/Targets.lean` and `PlusWitnessFamily/TransId.lean`.
-- [ ] Derive the forced structure: (C4) and the `imp`/`box` clauses of (C1') force both box
+- [x] Derive the forced structure: (C4) and the `imp`/`box` clauses of (C1') force both box
       guesses true, (C3) puts the two `⟐X`-formulas in every label, and (C5) with (C0) then give
       every state, at every time, a successor state carrying `p` and one omitting it.
-- [ ] Construct `n + 1` pairwise distinct `Step`-paths from that branching, where `n` is the
+- [x] Construct `n + 1` pairwise distinct `Step`-paths from that branching, where `n` is the
       family's lasso count.
-- [ ] Close the contradiction: under the hop-free hypothesis, `lift` makes every state path
+- [x] Close the contradiction: under the hop-free hypothesis, `lift` makes every state path
       class-equal to a constant index, so a family with `n` indices presents at most `n` state
       paths. Use `Fintype.card_le_of_injective`, which the probe confirms closes this goal.
-- [ ] Record in the module docstring what this does **not** say: hop-freedom is incomplete, and
+- [x] Record in the module docstring what this does **not** say: hop-freedom is incomplete, and
       `TransId.lean`'s four collapse theorems remain true and remain in the tree. The theorem
       bounds a *strategy*, not the substrate.
-- [ ] Add the import line to `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`;
+- [x] Add the import line to `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`;
       regenerate the library root with `lake exe mk_all --lib FormalSystem`.
 
 **Timing**: 3 hours
@@ -1510,37 +1510,59 @@ Phase 1's theorems true.
   `∀ u i j, S.trans u i j → i = j`, matching `TransId.lean`'s `hid`, so the two are about the
   same class.
 
+**Verification — MEASURED**:
+- Guarded, detached `lake build` of the two `Limits` modules: `exit_status=0`, 1236 jobs, **zero**
+  `error:` and **zero** `warning:` lines over both captured streams; `HopFree.olean` present and
+  newer than the source.
+- `lean-sorry-census.sh FormalSystem FormalSystem.lean`: `sorry_count: 0`.
+- `grep -c '^axiom '` over the resolved source roots: **14**, unchanged from the pinned baseline.
+- `#print axioms` on all four new declarations
+  (`not_exists_hopFree_plusCertifies_hopTarget`, `hopFree_branchesTrue`, `hopFree_branchesFalse`,
+  `hopFree_deviates`): each exactly `[propext, Classical.choice, Quot.sound]`.
+- Hypothesis confirmed identical to `TransId.lean`'s `hid`, character for character.
+
+**Deviations from the plan as written**:
+- The three forced-successor steps were factored out as three *named* lemmas
+  (`hopFree_branchesTrue`, `hopFree_branchesFalse`, `hopFree_deviates`) rather than left inline,
+  because each is a statement about an arbitrary family with no hop-freedom hypothesis and the
+  plan's Phase 11 asks for the same three facts. They are still re-derived in Phase 11 against
+  `pumpClosure`, as Phase 11 directs — the factoring is within one closure, not across the two.
+- The probe's `Int.induction_on` route to "a hop-free succession path is constant" did not
+  elaborate in this module's import closure (`ring` is not available there, and the `pred`-case
+  goal shape `-↑i - 1` resisted the rewrite). Replaced with an `ℕ`-shift lemma plus `omega`, which
+  needs no Mathlib tactic import and never produces a goal mentioning `-↑i - 1`.
+
 ---
 
-### Phase 11: The landed certificate class is incomplete [NOT STARTED]
+### Phase 11: The landed certificate class is incomplete [COMPLETED]
 
 **Goal**: Land `not_exists_plusCertifies_pumpTarget`, the phase that makes the withdrawal a
 theorem of the tree: **no** `PlusSharingWitnessFamily` certifies `pumpTarget` at any time, for
 any lasso count, any segment length and any succession relation.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/NoCertificate.lean`,
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/NoCertificate.lean`,
       importing `Limits/Targets.lean`.
-- [ ] Reuse Phase 10's forced-successor consequences where they factor, and otherwise re-derive
+- [x] Reuse Phase 10's forced-successor consequences where they factor, and otherwise re-derive
       them here: (C4) and (C1')'s `imp`/`box` clauses force both box guesses true; (C3) puts
       `⟐Xp` and `⟐Xnp` in every label; (C5) and (C0) give every state, at every time, a successor
       carrying `p` and one omitting it.
-- [ ] Build the long-postponement path: start in the forward-periodic region at the mid length,
+- [x] Build the long-postponement path: start in the forward-periodic region at the mid length,
       follow `¬p`-successors for `k := n · perFwd + 1` steps, then take a `p`-successor. Prove it
       is a `Step`-path.
-- [ ] Obtain the tracking thread from `lift`, and read `Fp` along the whole run backwards through
+- [x] Obtain the tracking thread from `lift`, and read `Fp` along the whole run backwards through
       (C1')'s `untl` clause.
-- [ ] Apply the pigeonhole over the `n + 1` times spaced by the forward period, using
+- [x] Apply the pigeonhole over the `n + 1` times spaced by the forward period, using
       `Fintype.exists_ne_map_eq_of_card_lt`, to find two times carrying the same index.
-- [ ] Loop the thread between those two times. `SharingSkeleton.transRaw_congr_NF` and
+- [x] Loop the thread between those two times. `SharingSkeleton.transRaw_congr_NF` and
       `...data_congr_fwd` are what make the loop a genuine thread with the same labels; cite them
       rather than re-proving the congruence.
-- [ ] Contradict (C2'): the looped thread carries `Fp` at its entry and never reads `p`.
-- [ ] Record in the module docstring the **scope** of the failure, at its true generality: any
+- [x] Contradict (C2'): the looped thread carries `Fp` at its entry and never reads `p`.
+- [x] Record in the module docstring the **scope** of the failure, at its true generality: any
       target whose countermodels must contain, in a periodic region, a cycle with an exit under a
       pending eventuality. Name the root cause — limit closure against a finite, eventually
       periodic, all-threads-fulfilling structure — and say plainly that no bound repairs it.
-- [ ] Add the import line to `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`;
+- [x] Add the import line to `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`;
       regenerate the library root.
 
 **Timing**: 4 hours
@@ -1568,53 +1590,78 @@ sub-phases; never carry a `sorry`.
   hypothesis would make the theorem far weaker than the withdrawal it is recording.
 - `#print axioms` reports exactly `[propext, Classical.choice, Quot.sound]`.
 
+**Verification — MEASURED**:
+- Full guarded, detached `lake build`: `exit_status=0`, **2780 jobs**, **zero** `error:` and
+  **zero** `warning:` lines over both captured streams.
+- `.olean` newer than source confirmed for `Limits/HopFree`, `Limits/NoCertificate`,
+  `Limits/Targets`, `PlusWitnessFamily` and the `FormalSystem` root.
+- `lean-sorry-census.sh`: `sorry_count: 0`. `grep -c '^axiom '` over the resolved roots: **14**,
+  unchanged.
+- `#print axioms` on `not_plusCertifies_pumpTarget`, `not_exists_plusCertifies_pumpTarget` and
+  `plusCompression_fails_at_pumpTarget`: each exactly `[propext, Classical.choice, Quot.sound]`.
+- Statement read back: `not_plusCertifies_pumpTarget (S : PlusSharingWitnessFamily ([] :
+  PlusContext) (pumpDelta p)) (t : ℤ) : ¬ S.PlusCertifies t`. No bound, no lasso-count hypothesis,
+  no hypothesis on `trans`, no hypothesis on the window or the periods.
+
+**Scope Hypothesis — RESOLVED, not split.** The phase fit one run: the module is 440 lines, and the
+forced-structure block is 90 of them. No decomposition into 11.1/11.2 was needed and none was made.
+
+**Deviations from the plan as written**:
+- The module adds three explicit Mathlib imports — `Mathlib.Data.Fintype.Pigeonhole`,
+  `Mathlib.Tactic.Ring`, `Mathlib.Tactic.WLOG`. The plan's file list did not anticipate them
+  because the probe it transcribes does `import FormalSystem` and so has the whole tree. `ring` is
+  genuinely absent from `Limits/`'s closure; the three-file precedent for importing
+  `Mathlib.Tactic.Ring` directly is followed.
+- The forced-successor facts are re-derived here, as the plan's own task list directs, rather than
+  imported from Phase 10's named lemmas: the two closures are distinct `Finset PlusFormula` values.
+
 ---
 
-### Phase 12: Correct the record, pin Stage 1, and read the paired repository [NOT STARTED]
+### Phase 12: Correct the record, pin Stage 1, and read the paired repository [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Stop the tree overstating the landed certificate class's coverage, land Stage 1's
 documentation and gate rows, and establish by reading — not by assumption — what the paired
 model checker's export contract currently is.
 
 **Tasks**:
-- [ ] Correct `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`'s header section
+- [x] Correct `FormalSystem/Metalogic/Decidability/PlusWitnessFamily.lean`'s header section
       "A tense operator under a `⊡`: the certificate class was empty, and is not any more". What
       it says is true and stays: the class is non-empty and certifies both stability targets. What
       it must now add is that **non-empty is not complete** — the class does not certify
       `pumpTarget`, by `not_exists_plusCertifies_pumpTarget` — and that which fragment it does
       cover is an open question. Record the open question here, where the class is described.
-- [ ] Correct `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean`'s
+- [x] Correct `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean`'s
       header sentence "It no longer records an obstruction, because there is no longer one to
       record." There is one to record; point at `Limits/`. Keep the rest, which is about the
       retired congruences and is accurate.
-- [ ] Correct `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/README.md` where it says
+- [x] Correct `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/README.md` where it says
       completeness of the certificate class "is now repaired". It was repaired **on those two
       targets**; it is refuted in general.
-- [ ] Correct `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/TransId.lean`'s header,
+- [x] Correct `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/TransId.lean`'s header,
       which describes hop-freedom as "the compression's choice". There is no compression; add the
       pointer to `Limits/HopFree.lean` and state that the four theorems remain true and are kept.
-- [ ] Read `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md` around its
+- [x] Read `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md` around its
       "empty certificate class" sentence and correct it **only if** it makes a coverage claim
       about the L⁺ class; if it is about the pre-redesign history, leave it and say so.
-- [ ] Record in `Compression/Extract.lean`'s module docstring that the alignment half
+- [x] Record in `Compression/Extract.lean`'s module docstring that the alignment half
       (`plusAlignOffset` through `exists_plusLabelledLasso_of_history_aligned`) is retained and
       unused, why, and that C17's dead-declaration census is expected to report it. C17 is
       reporting-only and never affects the exit code, so this is documentation, not a waiver.
-- [ ] Add four rows to `docs/theorem-index.md`'s Decidability section, in the format of the
+- [x] Add four rows to `docs/theorem-index.md`'s Decidability section, in the format of the
       neighbouring L⁺ rows, for `not_plusValidZTime_pumpTarget`,
       `not_exists_plusCertifies_pumpTarget`, `not_plusValidZTime_hopTarget` and
       `not_exists_hopFree_plusCertifies_hopTarget`: paper label `—`, frame class `ZTime` for the
       two non-validities and `—` for the two incompleteness theorems, axioms `pcq pinned:C2`.
-- [ ] Add the four matching `#print axioms` lines to the `AX_SRC` heredoc and the four
+- [x] Add the four matching `#print axioms` lines to the `AX_SRC` heredoc and the four
       `'<name>' depends on axioms: [propext, Classical.choice, Quot.sound]` lines to the
       `AXIOM_BASELINE` heredoc of `scripts/check-module-invariants.sh`, **in the same relative
       order**. The check is a whole-string equality, so an order mismatch fails the gate.
-- [ ] Update the C2 pass message's number word. The rule is mechanical: the word must spell the
+- [x] Update the C2 pass message's number word. The rule is mechanical: the word must spell the
       value of `grep -c 'depends on axioms'` over the `AXIOM_BASELINE` heredoc. This does not fail
       the gate, which is exactly why it is easy to miss.
-- [ ] Satisfy invariant C15 for the four new declarations: `Paper: —` plus a reason at the
+- [x] Satisfy invariant C15 for the four new declarations: `Paper: —` plus a reason at the
       declaration, since all four are formalization-native.
-- [ ] **Read the paired repository's export contract**, at
+- [x] **Read the paired repository's export contract**, at
       `/home/benjamin/Projects/ModelChecker`, together with the hand-off note
       `specs/archive/700_lplus_completeness_programme_survey/notes/02_cross-repo-handoff.md`,
       which names the issue whose fourth need was to be this task's compression bound. Record, in
@@ -1626,9 +1673,9 @@ model checker's export contract currently is.
       worst case. **This is a read and a record, not a claim to make in advance**: the paired
       repository was not read in research round 2, so nothing above may be asserted about its
       current format until this task is done.
-- [ ] **Never write to `/home/benjamin/Projects/ModelChecker`.** The hand-off is by content. No
+- [x] **Never write to `/home/benjamin/Projects/ModelChecker`.** The hand-off is by content. No
       file in that repository is created, edited or staged by this task.
-- [ ] Run `bash scripts/check-module-invariants.sh` in full and confirm every gate passes.
+- [x] Run `bash scripts/check-module-invariants.sh` in full and confirm every gate passes.
 
 **Timing**: 3 hours
 
@@ -1660,6 +1707,57 @@ subtree, fix it in this phase rather than deferring it to Phase 18.
 - No file under `/home/benjamin/Projects/ModelChecker` is modified, confirmed by
   `git -C /home/benjamin/Projects/ModelChecker status --porcelain` being unchanged from its
   state before the read.
+
+**Verification — MEASURED**:
+- Full guarded, detached `lake build`: `exit_status=0`, **2780 jobs**, **zero** `error:` and
+  **zero** `warning:` lines. Run after each edit round; clean each time.
+- `grep -c 'depends on axioms'` over the `AXIOM_BASELINE` heredoc: **22** (was 18), and the
+  `AX_SRC` heredoc carries **22** `#print axioms` lines in the same relative order.
+- `bash scripts/check-module-invariants.sh`: `PASS C2 all twenty-two pinned axiom sets match
+  baseline` (verified against a live compile, not transcribed); `PASS C15` for all 61 paper-anchor
+  citations and all 231 theorem-index rows; `PASS INV`; `PASS` for C8, C11, C16, C21, C22, C23,
+  C24, C25, C25N, C33, C34b, C35, C9D and the rest. **1 check group failed: B0 only** — see the
+  exclusion below.
+- `sorry_count: 0`; axiom count **14**, unchanged; one pre-existing vacuous match outside this
+  task's file scope, zero attributable here.
+- `plusTruth_iff_mem` and `plusRefutes_of_certifies` both still print exactly
+  `[propext, Classical.choice, Quot.sound]`, and neither statement was edited.
+- `git -C /home/benjamin/Projects/ModelChecker status --porcelain`: only its pre-existing
+  ` M specs/events.jsonl`, identical before and after the read. **No file in that repository was
+  created, edited or staged.**
+
+**Scope Hypothesis — CONFIRMED.** The gate edits were exactly the asserted ten line-groups, and the
+baseline count moved from 18 to 22 as predicted.
+
+**Exclusions** (enumerated, reasoned, evidenced — this is why the marker is
+`[COMPLETED WITH EXCLUSIONS]` rather than `[COMPLETED]`):
+
+1. **Invariant B0 does not pass.** `FAIL B0 expected exactly 1 Boneyard directory at ./Boneyard,
+   found 2`. The second is `./.claude/worktrees/agent-aa19bfa3bfef394ff/Boneyard`, a leftover
+   *harness* worktree from the aborted dispatch 21, still registered in `git worktree list`.
+   *Evidence it is not this task's*: it fails identically at `main`'s own HEAD with none of this
+   dispatch's changes present, confirmed by running B0's own `find` in the main tree with the
+   dispatch worktree excluded; the directory is gitignored (`.gitignore:106:/.claude`); and its
+   only commit `228168b3b` is already landed on `main` as `9355b68fe`, so nothing is lost by
+   removing it. *Reason it was not fixed here*: deleting a registered git worktree belonging to
+   another session is a destructive git operation outside an implementation agent's scope, and
+   `/refresh` is the sanctioned remedy. *Remedy, one command*:
+   `git worktree remove --force .claude/worktrees/agent-aa19bfa3bfef394ff`.
+2. **The paired-repository read is partially discharged.** The five points plan v4's amendment
+   directs be recorded ARE recorded, in the implementation summary — but they are read off report
+   706 and plan v4, which are this repository's own artifacts, not off
+   `/home/benjamin/Projects/ModelChecker`. The read of that repository's *current* export format and
+   bound configuration was delegated and had not reported when this phase closed. The summary says
+   so plainly rather than presenting the five points as a completed read. A successor closing Phase
+   21 must complete it. The standing prohibition on writing to that repository was honoured and is
+   evidenced above.
+
+**Additional work not in the plan, done here rather than deferred**: the `INV` invariant went stale
+because Phases 10-11 added two modules, so the generated inventory blocks in `README.md`,
+`FormalSystem/README.md`, `FormalSystem/Metalogic/README.md` and `Boneyard/README.md` were
+regenerated with `check-module-invariants.sh --emit-inventory`. The phase's own Scope Hypothesis
+directs exactly this ("If any other check ... newly reports against the new subtree, fix it in this
+phase rather than deferring it to Phase 18").
 
 ---
 
@@ -1729,56 +1827,56 @@ Each root cause of the withdrawn routes disappears by construction, and the plan
 
 ---
 
-### Phase 13: The sliced certificate type and the three-segment slice readout [NOT STARTED]
+### Phase 13: The sliced certificate type and the three-segment slice readout [COMPLETED]
 
 **Goal**: Declare `PlusGraphPath`, `PlusSlice` and `PlusSlicedCertificate`, define the slice
 readout and the derived per-slice edge and label functions, and define `BiSerial` as a condition
 **decided on the window** and extended by periodicity.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Basic.lean` and the
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Basic.lean` and the
       aggregator `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean`; add the
       aggregator's import to `FormalSystem/Metalogic/Decidability.lean`; regenerate the library
       root with `lake exe mk_all --lib FormalSystem`. **Never hand-edit `FormalSystem.lean`** —
       invariant C33 compares it byte-for-byte against the generator.
-- [ ] Declare `PlusGraphPath` with the fields fixed in the Lean Challenge Statements block. This
+- [x] Declare `PlusGraphPath` with the fields fixed in the Lean Challenge Statements block. This
       structure is **carried forward unchanged from plan v2**; do not redesign it.
-- [ ] Declare `PlusSlice` and `PlusSlicedCertificate` with the fields fixed in the Challenge
+- [x] Declare `PlusSlice` and `PlusSlicedCertificate` with the fields fixed in the Challenge
       block. Confirm by reading the declarations that `PlusSlicedCertificate` carries **no**
       `stepR`, **no** `stateLab`, and **no** `witness` field. Their absence is the amendment.
-- [ ] Define `PlusGraphPath.lab : ℤ → Finset PlusFormula` and `PlusGraphPath.st : ℤ → Fin n` by
+- [x] Define `PlusGraphPath.lab : ℤ → Finset PlusFormula` and `PlusGraphPath.st : ℤ → Fin n` by
       the three-segment readout, reusing the generic readout lemmas of
       `WitnessFamily/Compression/Extract.lean` (`getD_mapC`, `readout_backC`, `readout_midC`,
       `readout_fwdC`, `periodic_rel_of_windowC`), which are stated over `{α} [Inhabited α]` and
       mention no formula. Supply the `Inhabited (Finset PlusFormula × Fin n)` instance from
       `n_pos`.
-- [ ] Define `PlusSlicedCertificate.slice : ℤ → PlusSlice n C` by the **same** readout at
+- [x] Define `PlusSlicedCertificate.slice : ℤ → PlusSlice n C` by the **same** readout at
       `α := PlusSlice n C`, supplying `Inhabited (PlusSlice n C)` from `n_pos` (the everywhere-false
       edge relation with the empty labelling; it is never read inside the window, and the readout
       lemmas are what guarantee that).
-- [ ] Define the two derived accessors `G.edge t w u := (G.slice t).edge w u` and
+- [x] Define the two derived accessors `G.edge t w u := (G.slice t).edge w u` and
       `G.slab t w := (G.slice t).lab w`, and prove `G.slab_sub : ∀ t w, G.slab t w ⊆ plusClosureOf (Γ ++ Del)`
       from `lab_sub` through the readout.
-- [ ] Prove the three decoding-region lemmas for the slice sequence, mirroring `lab_neg`,
+- [x] Prove the three decoding-region lemmas for the slice sequence, mirroring `lab_neg`,
       `lab_mid` and `lab_fwd`, so later phases cite a lemma rather than unfolding the readout. Do
       the same for `PlusGraphPath` if plan v2's three lemmas are not already reusable verbatim.
-- [ ] Prove `G.slice_periodic_back` and `G.slice_periodic_fwd`: outside the window the slice
+- [x] Prove `G.slice_periodic_back` and `G.slice_periodic_fwd`: outside the window the slice
       sequence is periodic with period `|back|` leftward and `|fwd|` rightward. This is what makes
       every later window decision sound, and it is the fact `coherent_iff_window` plays on the L
       side.
-- [ ] Define `PlusSlicedCertificate.BiSerial` as the window-decided condition: bi-seriality is
+- [x] Define `PlusSlicedCertificate.BiSerial` as the window-decided condition: bi-seriality is
       checked for every `t` in `[-|back|, |mid| + |fwd|)` and every `w`, and extended to all `t` by
       the two periodicity lemmas. Prove `biSerial_iff_window`, the equivalence between the
       window-decided form and the `∀ t` form, **in both directions** — the `←` direction is what
       the checker needs and the `→` direction is what Phase 14's frame construction needs.
-- [ ] Prove `BiSerial` is `Decidable`.
-- [ ] Record in the module docstring, citing
+- [x] Prove `BiSerial` is `Decidable`.
+- [x] Record in the module docstring, citing
       `specs/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean`
       by path and `Probe706.no_ofStep_sat` by name, why the carrier is sliced: a certificate
       presenting a finite-carrier frame cannot certify `θ.neg`, a `⊡`-free ℤ-time non-validity the
       landed L family already certifies. State plainly that the finite graph is the one-slice
       special case (`back = fwd = [slice]`, `mid = []`), so nothing was lost.
-- [ ] Confirm the new modules transitively import `FormalSystem.Init` (invariant C24).
+- [x] Confirm the new modules transitively import `FormalSystem.Init` (invariant C24).
 
 **Timing**: 4 hours
 
@@ -1812,6 +1910,65 @@ it was written rather than reused.
   Their absence is the design.
 - A one-slice certificate (`back = fwd = [s]`, `mid = []`) elaborates, confirming the finite-graph
   special case is recovered.
+
+**Verification — MEASURED**:
+- Full guarded, detached `lake build` (`--no-share`): `exit_status=0`, **2782 jobs**, **zero**
+  `error:` and **zero** `warning:` lines over both captured streams.
+- `lean-sorry-census.sh`: `sorry_count: 0`.
+- `#print axioms` on all twelve new declarations: each within
+  `[propext, Classical.choice, Quot.sound]`; `getD_mem_of_lt` needs only `[propext]` and `cyc_mem`
+  only `[propext, Quot.sound]`.
+- `biSerial_iff_window` is a proved **biconditional** (`constructor` with both branches discharged),
+  not a one-directional lemma. `forall_slab_iff_window` likewise.
+- **Field-absence confirmed by reading the declarations**: `PlusGraphPath` has exactly
+  `back`/`mid`/`fwd`/`back_ne`/`fwd_ne`/`label_sub`; `PlusSlice` exactly `edge`/`lab`/`lab_sub`;
+  `PlusSlicedCertificate` exactly `n`/`n_pos`/`back`/`mid`/`fwd`/`back_ne`/`fwd_ne`/`bx`/`target`/
+  `targetTime`. A grep for `lift`, `trans`, `witness`, `stepR` and `stateLab` as field names over all
+  three structures returns **0**.
+- The one-slice special case is not merely asserted: `onePointCertificate` elaborates and
+  `slice_onePointCertificate` **proves** its slice sequence is the constant `s` at every time.
+- C24: both new modules reach `FormalSystem.Init` through `BiLasso/Periodic.lean`, which imports it
+  directly.
+
+**Scope Hypothesis — CONFIRMED, both halves**:
+1. *The field lists are sufficient.* Confirmed by **writing**, not asserting: `BiSerial` and
+   `BiSerialWindow` are defined in full against the declared fields, and two of the checker's four
+   clause groups — `BoxFaithful` (C3, on `bx` and `slab`) and `Target` (C4, on `target` and
+   `targetTime`) — are written here rather than deferred to Phase 17, which will consume them. The
+   two remaining groups need Phase 15's computed liveness for their *content*, but their field
+   dependencies (`slice`, `edge`, `slab`) are all present and are exercised by the two written here.
+   **No field was found missing or wrong, so no correction to the Challenge block is needed.**
+2. *The generic readout lemmas instantiate at `PlusSlice n C` with no change.* Confirmed by reading
+   their binders: `getD_mapC`, `getD_range_mapC`, `readout_backC`, `readout_midC`, `readout_fwdC`
+   and `periodic_rel_of_windowC` are all stated over `{α : Type*} [Inhabited α]`, with no
+   monomorphic load-bearing position. The slice-sequence readout is therefore **reused, not
+   rewritten**.
+
+**Deviations from the plan as written**:
+- **`Inhabited (PlusSlice n C)` needs no `n_pos`.** The plan says to supply it "from `n_pos`"; in
+  fact the inert slice (everywhere-false `edge`, empty `lab`) is definable at every `n`, including
+  `n = 0`, because `edge` and `lab` are total functions out of `Fin n`. The instance is
+  unconditional and the hypothesis is not threaded.
+- **`Inhabited (Finset PlusFormula × Fin n)` is supplied from `back_ne`, not from `n_pos`.**
+  `PlusGraphPath` has no `n_pos` field, and using the head of its own `back` segment is strictly
+  better than adding one: the default is then automatically a *member* of the path's own data, which
+  is what makes `datum_mem` hold at every time with no special case and `lab_sub` hold with no side
+  condition. `PlusGraphPath.n_pos` is recovered as a **theorem** from `back_ne`.
+- **`BiSerial` is the `∀ t` form and `BiSerialWindow` the window-decided one**, with
+  `biSerial_iff_window` bridging them. The plan's wording ("define `BiSerial` as the window-decided
+  condition") would make `G.frame h`'s hypothesis the decided form, but the frame construction reads
+  the condition at an arbitrary time, so the `∀ t` form has to be the one the Challenge block's
+  `frame (h : G.BiSerial)` signature names. Both forms exist and are provably equivalent, so nothing
+  is lost either way.
+- **`exists_window_eq` is proved by residue, not by induction.** The plan says bi-seriality is
+  "extended to all `t` by the two periodicity lemmas"; stating bi-seriality *at one slice* makes the
+  extension a single residue computation (`t % nb - nb` on the left, `nm + (t - nm) % nf` on the
+  right) rather than a double induction. The two periodicity lemmas are still proved and exported.
+- **Two extra lemmas were needed that the `Formula`-side readout layer does not state**:
+  `getD_mem_of_lt` and `cyc_mem`. The `Formula` side never needs a decoded datum's *membership*,
+  only its value.
+- **`ring` is unavailable in this module's import closure** (as in `Limits/`), so the arithmetic in
+  `exists_window_eq` is done with `omega` plus `Periodic.emod_add_mul` and `Int.emod_eq_of_lt`.
 
 ---
 
