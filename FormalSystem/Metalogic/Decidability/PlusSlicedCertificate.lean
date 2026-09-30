@@ -9,6 +9,10 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Frame
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Splice
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Position
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Live
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Window
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixture
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Stable
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Timed
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
@@ -63,6 +67,30 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   the one-step position graph `succP` / `predP` with their adjointness, and
   `mem_succP_of_path` — the replacement for the plan's (false) `succP`-totality obligation; see
   that module's header for the counterexample
+- `PlusSlicedCertificate.Live`: liveness as a property of the certificate's **own runs** —
+  `LabRun`, the two halves `FwdLive` / `BwdLive` and their conjunction `Live`, the two propagation
+  lemmas `untl_push` / `snce_push`, the label-level splice, and **both** directions of the
+  characterization (`live_of_path`, `exists_path_of_live`, `live_iff`) at an arbitrary `t : ℤ`
+- `PlusSlicedCertificate.Fixture`: the window-width fixture — a bi-serial certificate of back
+  period `1` in which one position is live at `-1` and occupied by no run at any time `≤ -2`,
+  although the slice and the position set are literally the same at all those times
+  (`live_not_determined_by_slice`). This is what rules out the single-period window and confirms
+  the doubled lower endpoint, stated against the real endpoints by `Fixture.window_verdict`
+- `PlusSlicedCertificate.Window`: the **combined** window — `NB` / `NF` / `NM` from the least common
+  multiples of the certificate's and the target path's own segment lengths, the six compatibility
+  facts, the doubled endpoints `winLo` / `winHi` with `winTimes`, and the fold `exists_win_eq` /
+  `forall_iff_win` that reduces a `∀ t` claim over **both** `G.slice` and `G.target.datum` to the
+  window. `Basic.lean`'s `exists_window_eq` folds the slice sequence alone and cannot state this
+- `PlusSlicedCertificate.Timed`: the **rolled** timed carrier `TPos := G.Pos × ℤ` with its finite
+  vertex set `verts` (`TPos` is deliberately not a `Fintype`; the `Fintype` a fixpoint needs comes
+  free from `verts`, confirmed by an `example`), and the wrapping `nextTime` / `prevTime` with their
+  edge, membership and **faithfulness** lemmas — the wraps preserve the slice sequence, the target
+  path's data and the position space alike. The fixpoints and the bridge to `Live` are not here yet
+- `PlusSlicedCertificate.Stable`: the one-period transfer operators `Φ_back` / `Φ_fwd`, built from
+  the one-step `stepBack` / `stepFwd`, with monotonicity at each level, the two subset lemmas
+  placing their images on the doubled window's endpoint slices, and the soundness direction
+  `fwdLive_subset_stepBack` / `bwdLive_subset_stepFwd`. `TailStable` and its bridges are **not**
+  here: they depend on the computed liveness `Finset` that sub-phase 15.3 has yet to build
 
 ## Tags
 

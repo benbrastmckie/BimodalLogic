@@ -145,10 +145,14 @@ import FormalSystem.Metalogic.Decidability.FMP.TruthPreservation
 import FormalSystem.Metalogic.Decidability.IntPresentation
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Basic
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixture
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Frame
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Live
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Position
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Splice
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Stable
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Timed
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Window
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Agreement
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Basic
