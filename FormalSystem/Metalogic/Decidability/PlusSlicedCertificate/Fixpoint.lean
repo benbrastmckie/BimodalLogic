@@ -59,8 +59,14 @@ lets them run on the rolled timed carrier `TPos := G.Pos × ℤ`.
 - `EUFix.mem_lfp_iff` / `EUFix.lfp_least` / `EUFix.lfp_induction`
 - `EUFix.exists_path_of_mem_lfp` / `EUFix.mem_lfp_of_path` — membership **is** the existence of a
   delivering finite path, in both directions
-- `EUFix.lfp_mono_V` — monotonicity in the vertex set, which is what a nested outer contraction
-  needs of its inner test
+- `EUFix.lfp_mono_all` — monotonicity in the vertex set **and** in the event and guard predicates,
+  which is what a nested outer contraction needs of its inner test; `EUFix.lfp_mono_V` is the
+  special case at a fixed event and guard
+- `Glue.walk` — a sequence of finite paths glued into one infinite walk, with the three readouts
+  (`walk_mem`, `walk_step`, `walk_eq`) a fairness argument reads off it
+- `Fair.exists_fair_walk` — the round-robin concatenation: on a set where every vertex both
+  continues and can discharge each of its pending eventualities *without leaving the set*, one
+  infinite walk discharges **every** eventuality pending anywhere along it
 
 ## Tags
 
@@ -480,23 +486,40 @@ theorem lfp_induction (V : Finset α) (succ : α → Finset α) (isE isG : α �
 Both directions, so that a soundness proof cites one and a completeness proof the other.
 -/
 
-/-- **A vertex of the fixpoint begins a finite path that delivers the event**, with the guard at
-every strictly intermediate vertex. -/
+/--
+**A vertex of the fixpoint begins a finite path that delivers the event**, with the guard at
+every strictly intermediate vertex, and with every vertex *before* the delivering one inside `V`.
+
+The `∀ k < m, f k ∈ V` conjunct is what makes the path usable by a **nested** fixpoint: an outer
+contraction building an infinite walk inside its own set can only splice this path in if the path
+does not leave that set. The delivering vertex `f m` is deliberately **not** claimed to lie in `V`
+— it need not, and a caller that needs it there says so through `isE`, as
+`LiveFix.lean`'s `untlLiveAt` does.
+-/
 theorem exists_path_of_mem_lfp (V : Finset α) (succ : α → Finset α) (isE isG : α → Bool) :
     ∀ v ∈ lfp V succ isE isG,
-      ∃ (m : ℕ) (f : ℕ → α), 0 < m ∧ f 0 = v ∧ (∀ k < m, f (k + 1) ∈ succ (f k)) ∧
+      ∃ (m : ℕ) (f : ℕ → α), 0 < m ∧ f 0 = v ∧ (∀ k < m, f k ∈ V) ∧
+        (∀ k < m, f (k + 1) ∈ succ (f k)) ∧
         isE (f m) = true ∧ ∀ k, 0 < k → k < m → isG (f k) = true := by
-  refine lfp_induction V succ isE isG (fun v _ h => ?_)
+  refine lfp_induction V succ isE isG (fun v hv h => ?_)
   obtain ⟨w, hw1, hw⟩ := h
-  rcases hw with he | ⟨hg, m', f', hm', hf0, hstep', he', hg'⟩
-  · refine ⟨1, cons v (fun _ => w), Nat.one_pos, rfl, ?_, he, ?_⟩
+  rcases hw with he | ⟨hg, m', f', hm', hf0, hmem', hstep', he', hg'⟩
+  · refine ⟨1, cons v (fun _ => w), Nat.one_pos, rfl, ?_, ?_, he, ?_⟩
+    · intro k hk
+      have hk0 : k = 0 := by omega
+      subst hk0
+      simpa using hv
     · intro k hk
       have hk0 : k = 0 := by omega
       subst hk0
       simpa using hw1
     · intro k hk0 hk1
       omega
-  · refine ⟨m' + 1, cons v f', Nat.succ_pos _, rfl, ?_, he', ?_⟩
+  · refine ⟨m' + 1, cons v f', Nat.succ_pos _, rfl, ?_, ?_, he', ?_⟩
+    · intro k hk
+      cases k with
+      | zero => simpa using hv
+      | succ j => simpa using hmem' j (by omega)
     · intro k hk
       cases k with
       | zero => simpa [hf0] using hw1
@@ -537,29 +560,59 @@ the set being contracted is monotone only if `lfp` is monotone in that set. Land
 eventuality-aware liveness fixpoint can cite it rather than re-prove it.
 -/
 
-theorem step_mono_V {V V' : Finset α} (hV : V ⊆ V') (succ : α → Finset α) (isE isG : α → Bool)
-    {X X' : Finset α} (hX : X ⊆ X') :
-    step V succ isE isG X ⊆ step V' succ isE isG X' := by
+/--
+**One step is monotone in the vertex set, in the event, and in the guard, all at once.**
+
+The vertex-set argument alone is not enough for the nested liveness fixpoint. That fixpoint's inner
+test relativizes **both** the intermediate vertices *and* the delivering one to the set being
+contracted — `isE` carries a `w ∈ X` conjunct — so the inner `lfp` varies with `X` through its
+event predicate as well as through its vertex set. Monotonicity in `isE` / `isG` is therefore not a
+generalization for its own sake; without it the outer contraction is not monotone and `Nu` does not
+apply. See `LiveFix.lean`'s `untlLiveAt` for the predicate that needs it.
+-/
+theorem step_mono_all {V V' : Finset α} (hV : V ⊆ V') (succ : α → Finset α)
+    {isE isG isE' isG' : α → Bool} (hE : ∀ w, isE w = true → isE' w = true)
+    (hG : ∀ w, isG w = true → isG' w = true) {X X' : Finset α} (hX : X ⊆ X') :
+    step V succ isE isG X ⊆ step V' succ isE' isG' X' := by
   intro v hv
   rw [mem_step] at hv ⊢
   obtain ⟨hvV, w, hw1, hw⟩ := hv
   refine ⟨hV hvV, w, hw1, ?_⟩
   rcases hw with he | ⟨hg, hx⟩
-  · exact Or.inl he
-  · exact Or.inr ⟨hg, hX hx⟩
+  · exact Or.inl (hE w he)
+  · exact Or.inr ⟨hG w hg, hX hx⟩
+
+theorem iter_mono_all {V V' : Finset α} (hV : V ⊆ V') (succ : α → Finset α)
+    {isE isG isE' isG' : α → Bool} (hE : ∀ w, isE w = true → isE' w = true)
+    (hG : ∀ w, isG w = true → isG' w = true) :
+    ∀ n, iter V succ isE isG n ⊆ iter V' succ isE' isG' n
+  | 0 => Finset.Subset.refl _
+  | n + 1 => step_mono_all hV succ hE hG (iter_mono_all hV succ hE hG n)
+
+/-- **The fixpoint is monotone in all three arguments.** Not immediate from `iter_mono_all` alone,
+because the two iterations are run to *different* bounds; the increasing chain closes the gap. -/
+theorem lfp_mono_all {V V' : Finset α} (hV : V ⊆ V') (succ : α → Finset α)
+    {isE isG isE' isG' : α → Bool} (hE : ∀ w, isE w = true → isE' w = true)
+    (hG : ∀ w, isG w = true → isG' w = true) :
+    lfp V succ isE isG ⊆ lfp V' succ isE' isG' := by
+  refine subset_trans (iter_mono_all hV succ hE hG (V.card + 1)) ?_
+  have hc : V.card ≤ V'.card := Finset.card_le_card hV
+  exact iter_mono V' succ isE' isG' (by omega)
+
+theorem step_mono_V {V V' : Finset α} (hV : V ⊆ V') (succ : α → Finset α) (isE isG : α → Bool)
+    {X X' : Finset α} (hX : X ⊆ X') :
+    step V succ isE isG X ⊆ step V' succ isE isG X' :=
+  step_mono_all hV succ (fun _ h => h) (fun _ h => h) hX
 
 theorem iter_mono_V {V V' : Finset α} (hV : V ⊆ V') (succ : α → Finset α) (isE isG : α → Bool) :
-    ∀ n, iter V succ isE isG n ⊆ iter V' succ isE isG n
-  | 0 => Finset.Subset.refl _
-  | n + 1 => step_mono_V hV succ isE isG (iter_mono_V hV succ isE isG n)
+    ∀ n, iter V succ isE isG n ⊆ iter V' succ isE isG n :=
+  iter_mono_all hV succ (fun _ h => h) (fun _ h => h)
 
-/-- **The fixpoint is monotone in the vertex set.** Not immediate from `iter_mono_V` alone, because
-the two iterations are run to *different* bounds; the increasing chain closes the gap. -/
+/-- **The fixpoint is monotone in the vertex set**, the special case of `lfp_mono_all` at a fixed
+event and guard. -/
 theorem lfp_mono_V {V V' : Finset α} (hV : V ⊆ V') (succ : α → Finset α) (isE isG : α → Bool) :
-    lfp V succ isE isG ⊆ lfp V' succ isE isG := by
-  refine subset_trans (iter_mono_V hV succ isE isG (V.card + 1)) ?_
-  have hc : V.card ≤ V'.card := Finset.card_le_card hV
-  exact iter_mono V' succ isE isG (by omega)
+    lfp V succ isE isG ⊆ lfp V' succ isE isG :=
+  lfp_mono_all hV succ (fun _ h => h) (fun _ h => h)
 
 end EUFix
 
