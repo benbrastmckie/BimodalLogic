@@ -3,11 +3,14 @@
 - **Task**: 703 - lplus_compression_and_completeness
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-09-30T00:52:00Z (dispatch 21); 2026-09-30T01:20:00Z (dispatch 23);
-  2026-09-30T02:05:00Z (dispatch 25); 2026-09-30T10:10:00Z (dispatch 27)
-- **Completed**: not complete — Phase 15 is PARTIAL and Phases 16-21 are NOT STARTED.
-  Last dispatch ended 2026-09-30T10:40:00Z
+  2026-09-30T02:05:00Z (dispatch 25); 2026-09-30T10:10:00Z (dispatch 27);
+  2026-09-30T10:39:15Z (dispatch 29)
+- **Completed**: not complete — Phase 15 is PARTIAL (15.1, 15.2, 15.3 STEPS 1-3 landed; STEPS 4-6
+  open), Phase 16 is IN PROGRESS (16.1 complete, 16.2 open) and Phases 17-21 are NOT STARTED.
+  Last dispatch ended 2026-09-30T11:14:00Z
 - **Effort**: ~30 minutes (dispatch 21, Phase 9) + ~70 minutes (dispatch 23, Phases 10-13)
   + ~125 minutes (dispatch 25, Phase 14 and Phase 15.1) + ~30 minutes (dispatch 27, Phase 15.2)
+  + ~35 minutes (dispatch 29, Phase 16.1 and Phase 15.3 STEPS 1-3)
 - **Dependencies**: `FormalSystem.Metalogic.Decidability.SharingSkeleton`,
   `FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily` (both landed).
   `FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt` is NOT consumed by Stage 1 — see
@@ -54,7 +57,48 @@ Phase 15 heading for the next dispatch to decide before writing a definition.
 Phases 15.2 and 16-21 remain. Nothing anywhere is stubbed: no `sorry`, no vacuous placeholder, no
 half-written declaration. The missing halves simply do not exist yet.
 
+### Dispatch 29 — the window width is settled, and settled by proof
+
+Two blockers are closed. **Sub-phase 16.1 is complete**: the window-width fixture is built and its
+asymmetry lemmas are proved, so the claim that identical slices can carry different liveness is now a
+theorem about a named certificate rather than an expectation — and it decides the width the checker's
+wrap may use. **Sub-phase 15.3's window is fixed**, taking plan v6 addendum (d)'s response (α): the
+periods are combined by least common multiple with the target path's, so the checker can fold the
+slice sequence and the target path *together*, which no landed lemma could do. The rolled timed
+carrier and the wrapping time successors follow, with four faithfulness lemmas proving the fold
+preserves both objects' data.
+
+Nothing was weakened to get there. The plan's four-state fixture turned out not to be realizable in
+this carrier, and the response was to rebuild the fixture, keeping the obligation intact. No
+`sorry`, no vacuous placeholder, no new axiom, and no bound on `n`, on a period or on a lasso count.
+
 ## What Changed
+
+### Phase 16.1 and Phase 15.3 STEPS 1-3 (dispatch 29, on branch `orchestrate/task-703-29`)
+
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Fixture.lean` — **created**, ~700
+  lines: `Fixture.cert`, a bi-serial two-state certificate of back period `1`, with `biSerial`,
+  `slice_of_neg`, `posAt_eq_of_neg`, the one-step asymmetry (`succP_ne_empty_neg_one`,
+  `succP_eq_empty_of_le_neg_two`), the fulfilling `run`, the liveness asymmetry (`live_neg_one`,
+  `not_exists_labRun_of_le_neg_two`, `not_live_of_le_neg_two`), and the two headline theorems
+  `live_not_determined_by_slice` and `window_verdict`.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Stable.lean` — **created**, ~290 lines:
+  `stepBack` / `stepFwd`, `iterBack` / `iterFwd`, `Φ_back` / `Φ_fwd`, monotonicity at all three
+  levels, the two endpoint-placement lemmas, and the soundness pair `fwdLive_subset_stepBack` /
+  `bwdLive_subset_stepFwd`.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Window.lean` — **created**, ~290 lines:
+  the **combined** window `NB` / `NF` / `NM`, the six compatibility facts, `winLo` / `winHi` /
+  `winTimes` with the generic inequalities, `exists_combined_window_eq`, `exists_win_eq`, and
+  **`forall_iff_win`** — the pair fold Phase 17's existential side needs.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Timed.lean` — **created**, ~330 lines:
+  `TPos` and `verts` (with `Fintype` on the subtype and `DecidableEq TPos` confirmed by `example`),
+  `slab_congr` / `posAt_congr`, `nextTime` / `prevTime` with `nextTime_edge` / `prevTime_edge` and
+  `nextTime_mem` / `prevTime_mem`, the four faithfulness lemmas (`slice_nextTime`, `slice_prevTime`,
+  `target_datum_nextTime`, `target_datum_prevTime`), `posAt_nextTime` / `posAt_prevTime`, and
+  `slice_nextTime_pred` / `slice_prevTime_succ`.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean` — four import lines and four
+  submodule entries added; the missing `Live` entry was added at the same time.
+- `FormalSystem.lean`, `typst/generated/status.typ` — regenerated.
 
 ### Phase 9 (dispatch 21, already landed on `main` as `9355b68fe`)
 
@@ -233,6 +277,26 @@ restriction was taken, deliberately: see the Decisions entry below.
 
 ## Decisions
 
+- **(dispatch 29) The fixture was redesigned and the theorem was not.** `Fixture.fourState` as the
+  plan words it is not realizable in this carrier, for three independent reasons: slice width is
+  uniform and `edge` is per slice, so the plan's `a → c` edges would hold at every negative time;
+  "`q` true at `b` only" in the back slice would let a run at `-2` discharge the eventuality at
+  `-1`, destroying the very asymmetry the fixture exists for; and `XX` is not in L⁺ while `⊡`-truth
+  is a universal over histories of an infinite carrier and so not `Decidable`, which makes the
+  `#eval` / `#guard` half of the task impossible rather than merely awkward. The obligation — a
+  proved instance of "identical slices, different liveness" — is discharged, on a **temporal**
+  mechanism (distance to the non-periodic window) rather than a branching one. Two states are kept
+  rather than one so the failure at `-2` is visibly not a lack of successors: the edge relation is
+  total at every slice.
+- **(dispatch 29) Addendum (d) response (α) is taken: the window is combined by least common
+  multiple.** (β) — the three compatibility facts as `Certifies` hypotheses — was not taken and is
+  not held in reserve, because (α) turned out to need no new field and no new hypothesis at all:
+  every compatibility fact is a theorem about the certificate's own data. That is strictly cheaper
+  here than the `Formula` side's field-carrying `SharingWindow`.
+- **(dispatch 29) `verts` filters by `posAt`, unlike `SharingWitnessFamily.verts`.** There the first
+  coordinate is a lasso index, legitimate at every time; here it is a (state, label) pair and `posAt`
+  is exactly the legitimacy predicate. Starting a greatest-fixpoint iteration from a set containing
+  pairs that are not positions of their own slice would make the fixpoint's statement harder.
 - **The three forced-successor facts are named lemmas in `HopFree.lean` and re-derived, not
   imported, in `NoCertificate.lean`.** This is not duplication by oversight: `plusClosureOf` is
   indexed by the context, so `hopClosure p` and `pumpClosure p` are distinct `Finset PlusFormula`
@@ -316,6 +380,19 @@ restriction was taken, deliberately: see the Decisions entry below.
 
 ## Plan Deviations
 
+- **Phase 16.1, altered (the fixture)**: `Fixture.fourState` redesigned as `Fixture.cert`; the
+  `#eval` / `#guard` half dropped as impossible. See Decisions and the plan's 16.1 record.
+- **Phase 16, altered (files)**: the phase's single `Stable.lean` landed as **two** modules —
+  `Fixture.lean` for the fixture and `Stable.lean` for the Φ operators — and `Stable.lean` was
+  written without `TailStable`, which needs 15.3's computed liveness set and is 16.2's business.
+- **Phase 16.1, added**: `fwdLive_subset_stepBack` / `bwdLive_subset_stepFwd`, a soundness pair the
+  plan does not name. They settle that Φ over-approximates and that the converse is false, which is
+  *why* 16.2's `TailStable` must be an equation rather than an inclusion.
+- **Phase 15.3, altered (`verts`)**: filtered by `posAt`; see Decisions.
+- **Phase 15.3, altered (file placement)**: `slab_congr` and `posAt_congr` belong with
+  `Position.lean`'s development and were landed in `Timed.lean` instead, so that no already-landed
+  module had to be reopened.
+- **Phase 16.2 and Phase 15.3 STEPS 4-6, deferred**: not started, nothing stubbed.
 - **Phase 10, altered**: the three forced-successor steps were factored into named lemmas rather
   than left inline, because each is a fact about an arbitrary family and Phase 11 asks for the same
   three facts.
@@ -433,6 +510,27 @@ restriction was taken, deliberately: see the Decisions entry below.
   unchanged. The four-state fixture was promoted to a prerequisite of 15.3.
 
 ## Verification
+
+### Dispatch 29 (the current end state)
+
+- Build: **Success**. Full `lake build`, guarded and detached (`--no-share`): `exit_status=0`,
+  **2791 jobs**, **zero** `error:` and **zero** `warning:` lines. Run four times over the dispatch,
+  once per green sub-step, clean each time. Tier 3 confirmed: the `.olean` of `Fixture`, `Stable`,
+  `Window` and `Timed` are each newer than their sources.
+- Sorry count: **0** (`lean-sorry-census.sh` over all four resolved source roots).
+- Vacuous count: **1**, identical to `main`'s — pre-existing, not introduced here.
+- Axiom count: **14**, identical to `main`'s — unchanged.
+- `#print axioms` on all sixty-four new declarations: each within
+  `[propext, Classical.choice, Quot.sound]`; no `sorryAx` anywhere in the output.
+- Anti-goal compliance checked explicitly: **no `[Fintype TPos]`** anywhere (the `Fintype` on
+  `verts`' subtype and `DecidableEq TPos` are confirmed by `example … := inferInstance`); `live_iff`
+  untouched, so no one-directional weakening; the widening to `-2 * NB` / `NM + 2 * NF` is recorded
+  loudly with the fixture as its justification; and `NB` / `NF` / `NM` are an lcm, an lcm and a max
+  **of the certificate's own segment lengths**, so no declaration states a bound on `n`, on a period
+  or on a lasso count.
+- Files verified: Yes.
+
+### Dispatches 21-27 (retained)
 
 - Build: **Success**. Full `lake build`, guarded and detached (`--no-share`): `exit_status=0`,
   **2780 jobs** through Phase 12 and **2782 jobs** after Phase 13, **zero** `error:` and **zero**
@@ -646,6 +744,21 @@ as a completed read.
 
 ## Follow-ups
 
+- **NEXT (dispatch 29's seam): sub-phase 15.3 STEP 4**, the timed graph `succT` / `predT`. All four
+  lemmas it needs are landed (`posAt_nextTime` / `posAt_prevTime` and `slice_nextTime_pred` /
+  `slice_prevTime_succ`); the intended definitions are written out in the dispatch-29 handoff. Then
+  STEP 5 (the two fixpoints, with a **generic** decreasing `Finset` iteration written once), STEP 6
+  (the bridge to `Live`), then Phase 16.2.
+- **The fixture does not settle everything it might be read as settling.** It proves the doubling
+  necessary, and sufficient *for itself* at `NB = 1`; the general wrap-soundness claim is the four
+  faithfulness lemmas of `Timed.lean`, proved from the generic inequalities rather than from the
+  factor `2`. It also does **not** adjudicate between addendum (d)'s (α) and (β), since its target
+  path has back period `1` too.
+- **`git-commit-scoped.sh` cannot commit inside a dispatch worktree**, and fails as a silent "Nothing
+  to commit". It derives `PROJECT_ROOT` from its own location under `.claude/scripts/` and `cd`s
+  there, so it always operates on the main tree. This is the cause of seq 27's missing attribution
+  trailers; dispatch 29's four commits use plain `git -C <worktree>` with an explicit file list and
+  carry the trailers. Recorded in the handoff as an environment hazard.
 - **RESOLVED in dispatch 27 — the Phase 15 / Phase 16 ordering question, and both of its candidate
   routes, are superseded.** The presupposition was false: eventual periodicity is not what makes the
   liveness fixpoint finite (`AUFix` terminates by the cardinality of an explicit `V : Finset α` and

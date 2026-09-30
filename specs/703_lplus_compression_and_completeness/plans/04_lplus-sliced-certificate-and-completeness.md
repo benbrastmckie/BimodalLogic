@@ -22,11 +22,23 @@
 - **Reports Integrated**: `01_lplus-compression-completeness-research.md`,
   `02_semantics-first-compression-research.md`,
   `706/01_lplus-finite-model-property-research.md`
-- **Plan Version**: 5 (revision of `plans/02_lplus-certificate-limits-graph-certificate.md` at
-  v4, amended in place at v5; artifact number 03 is deliberately skipped — the artifact counter,
-  not the file listing, is authoritative. **Plan v5 changes no mathematics**: it adds the execution
-  preconditions recorded under "Revision record — plan v5" below and integrates no new report.
-  Effort is unchanged at 67 hours because no phase is added, removed or rescoped)
+- **Plan Version**: 6 (revision of `plans/02_lplus-certificate-limits-graph-certificate.md` at
+  v4, amended in place at v5 and again at v6; artifact number 03 is deliberately skipped — the
+  artifact counter, not the file listing, is authoritative. **Plan v5 changes no mathematics**: it
+  adds the execution preconditions recorded under "Revision record — plan v5" below and integrates
+  no new report. **Plan v6 adds one mathematical obligation and corrects four stale citations**,
+  and integrates no new report either — every claim it adds is a cited reading of a landed Lean
+  file. Its four changes: (1) Phase 15's "GROUNDING ADDENDUM FOR 15.3", which names the L⁺-side
+  transcription source, records `SharingWindow`-instantiation as a **blocked** route, and adds the
+  **combined-window** obligation (d) that the seq-27 resolution block does not state; (2) Phase 16's
+  "SUB-PHASE DEPENDENCY SPLIT", reconciling the seq-27 amendment's "build the fixture first" with
+  this phase's `Depends on: 15`, which had scheduled it last; (3) the stale citations
+  `exists_path_of_mem_live` → `exists_path_of_live` in Phases 17 and 18 and `Finset (G.Pos χ)` →
+  `Finset G.Pos` in Phase 16, all against names 15.1/15.2 actually landed; (4) Phase 17's Scope
+  Hypothesis amended, since "nothing is aligned here" is confirmed for two of its four clause groups
+  and not for the existential side. Effort is unchanged at 67 hours because no phase is added,
+  removed or rescoped: the combined window **replaces** the single-period window 15.3 was already
+  going to define, and the 16.1/16.2 split redistributes Phase 16's four hours without changing them)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -413,6 +425,21 @@ report supersedes.
   case with edges `i → i` only, so the wire format is a strict extension rather than a
   replacement. The search bound is a tuple `(n, nb, nm, nf)` and **no bound on `n` is proved for
   any L⁺ target**. Phases 12 and 21 own the recording; neither writes to that repository.
+
+**Integrated at plan v6 — no report, and that is a deliberate statement, not an omission.** The v6
+revision round received its findings as a blocker-research relay in its own dispatch context rather
+than as a new report file, and every claim v6 adds was then re-derived by reading landed Lean
+sources, each cited by `file:line` at its point of use in Phase 15's grounding addendum. **`Reports
+Integrated` is therefore unchanged**; do not add a phantom entry to it, and do not cite plan v6's
+additions to a report. The sources actually read were
+`WitnessFamily/Sharing/Fulfil.lean` (`AUFix`), `WitnessFamily/Sharing/Window.lean` (`SharingWindow`
+and its time-arithmetic layer), `WitnessFamily/Sharing/Skeleton.lean` (`SharingSkeleton`'s field
+list, which is what blocks the instantiation route), `PlusWitnessFamily/Fulfil.lean` and
+`PlusWitnessFamily/Decide.lean` (the L⁺-side re-indexing and its doubled window), and
+`PlusSlicedCertificate/Basic.lean` (`G.nb` / `G.nm` / `G.nf`, `exists_window_eq`,
+`forall_slab_iff_window`, and the `target` field). One finding among them is **new to this plan at
+v6 and is not in any report**: the certificate's periods and its target path's periods are unrelated
+integers, so the checker needs a combined window. See Phase 15's addendum (d).
 
 **From reports 01 and 02 (unchanged at this revision, restated because they remain binding):**
 
@@ -932,6 +959,8 @@ Stage 1 or Stage 2 calls it; it stays compiled, documented and in the tree.
 | The probes were compiled against built `.olean` files that could have gone stale, and the library restatement will be compiled against a different import surface | M | L | Each of Phases 9-11 ends with a real `lake build` of the new module, not a probe recompile. The probes stay in `probes/` as the provenance record and are **not** deleted when the library declarations land. The same applies to task 706's probe, which this plan cites but does not transcribe |
 | C17's dead-declaration census reports the now-unused alignment half of `Compression/Extract.lean` | L | H | **Not a gate failure.** C17 is reporting-only: `scripts/check-module-invariants.sh` states "No ENFORCE_C17 flag -- reporting-only per the delegation", and a textual census with a known false-positive rate never affects the exit code. Phase 12 records the expected C17 report in the module docstring so a later reader does not mistake it for rot |
 | `.githooks/pre-commit` fires on every commit staging a `.lean` file because this task's new modules move the committed counts in `typst/generated/status.typ` | M | H | Same mechanism plan v1 recorded, and its condition is now met: `specs/state.json` reports task 650 as `completed`. Phase 21 runs `bash scripts/typst-sync-check.sh --fix` and commits **only** `typst/generated/status.typ`, by explicit path. Before any use of the hook's `--no-verify` bypass, confirm the count drift is the **only** failing gate; anything else the hook reports is to be fixed, never bypassed |
+| **The checker cannot fold the existential side to a window, because the target path's periods are unrelated to the certificate's.** `PlusSlicedCertificate` relates `G.target`'s `nb`/`nm`/`nf` to `G.nb`/`G.nm`/`G.nf` by no field at all, and neither `exists_window_eq` nor `forall_slab_iff_window` folds a pair of objects with different periods | H | M | Identified at plan v6 by reading the landed sources, **before** Phase 17 starts, which is the whole value of catching it here. 15.3 defines its window from **combined** periods (response (α) of Phase 15's addendum (d)), and Phase 17 carries an explicit task bullet for the clause. Fallback (β) — the three compatibility facts as `Certifies` hypotheses — narrows the certificate class and shifts an obligation onto Phase 19, so it is second choice and must be recorded if taken. The `Formula` side solved exactly this with `SharingWindow`'s `NB`/`NF`/`NM`-as-data plus `nbr_dvd_NB`/`nfr_dvd_NF`/`nmr_le_NM`, so the shape of the fix is known, not invented |
+| **A dispatch spends a run trying to instantiate `SharingWindow` for a sliced certificate**, since it would inherit the whole position graph | M | M | Closed at plan v6 as a measured negative: `SharingWindow extends SharingSkeleton`, whose fields include `rep_idem`-constrained representative maps and `lift : LiftableRaw …`, none of which a sliced certificate has or will acquire — a `Decidable (LiftableRaw …)` instance is an explicit Non-Goal and avoiding the sharing substrate is why the sliced class exists. Phase 15's addendum (b) states the negative and addendum (c) names the sub-layer that **does** transcribe, with the six things it consumes. Weakening `SharingSkeleton` to permit the instantiation is prohibited: it is a landed `Formula`-side module the whole L-side decision procedure rests on |
 | A concurrent sibling touches this working tree | M | M | Re-read every file immediately before editing; stage only this task's own files by explicit path, never a directory or glob `git add`; never run `git-snapshot.sh` in its reverting default mode; treat a build failure outside this task's files as possibly a sibling's in-flight edit; stop and report any foreign commit or foreign uncommitted modification after checking `git log`. **Task 706 is live in this tree**; its scope is `specs/706_*/` plus a future `PlusWitnessFamily/FiniteCarrier.lean`, neither of which this plan writes |
 | A phase cannot close a goal and reaches for a `sorry` | H | L | Acceptance is zero sorries and no vacuous placeholder definitions. The correct response is plan decomposition into a new decimal sub-phase, never deferral and never a `def X := True` |
 | Documentation corrections in Phase 12 overstate in the other direction, reading the refutation as a defect in the substrate redesign | M | M | It is not one. The redesign did what it was for: `Examples.lean`'s two certificates are real and `Incompleteness.lean`'s two refuted congruences are real. What Phase 12 corrects is a claim about **coverage**, and each edit must say what remains true as well as what does not |
@@ -965,6 +994,24 @@ Stage 1 or Stage 2 calls it; it stays compiled, documented and in the tree.
 
 Phases within the same wave can execute in parallel. Phases 1 through 8 are landed and are
 reproduced below as the record of what exists; the live work starts at Phase 9.
+
+**Waves 12-13 interleave at the sub-phase level — read this before dispatching Phase 16.** The
+table above is stated at whole-phase granularity and is *conservative*, not wrong: every dependency
+it records holds. But Phase 15 is `[PARTIAL]` with 15.1 and 15.2 landed, and the seq-27 amendment
+made Phase 16's fixture a **prerequisite** of 15.3, so the two waves are not sequential in
+execution. The true order is:
+
+| Sub-wave | Work | Blocked by |
+|----------|------|------------|
+| 12a | 15.1, 15.2 | 14 — **both landed** |
+| 12b | **16.1** — `Fixture.fourState`, its two asymmetry lemmas, `Φ_back` / `Φ_fwd` + monotonicity | 15.2 |
+| 12c | 15.3 — the rolled timed carrier, the combined window, the two fixpoints, the bridge | 16.1 |
+| 13 | 16.2 — `TailStable`, `tailStable_iff_window`, `exists_tailStable_repr` | 15.3 |
+| 14 | 17 | 16.2 |
+
+Nothing downstream of Phase 16 changes, and Phase 17's `Depends on: 16` still holds because 16.2
+precedes it. See Phase 16's "SUB-PHASE DEPENDENCY SPLIT" for the reasoning and Phase 15's grounding
+addendum for why 16.1 must come first (the fixture is what decides 15.3's window width).
 
 ## Landed work, preserved (Phases 1-8)
 
@@ -2435,6 +2482,16 @@ that justifies combining them. This is Stage 2's novel core and one of its two h
 soundness direction) and `exists_path_of_mem_live` (the completeness direction), plus the
 `PlusFormula.reflectTime` note on deriving `bwdLive` from `fwdLive` on the reversed slice graph.
 
+> **SUPERSEDED — history, not instructions (marked at dispatch seq 28).** 15.2 is landed. This
+> paragraph and the FINDING that follows it are the record of what was believed *before* it was,
+> and they are left unedited on purpose: the FINDING's diagnosis is what the seq-27 resolution
+> block below then corrected, and deleting it would erase why the design changed. Three of the
+> names above do not exist in the tree — `fwdLive` / `bwdLive` / `live` landed as the `Prop`s
+> `FwdLive` / `BwdLive` / `Live`, `mem_live_of_path` landed as `live_of_path`, and
+> `exists_path_of_mem_live` as `exists_path_of_live`. **Read the seq-27 resolution block and the
+> seq-28 grounding addendum for what is actually owed**; take no instruction from the two
+> paragraphs between here and there.
+
 **FINDING FOR 15.2 — the Phase 15 / Phase 16 ordering may be inverted.** Recorded here so the next
 dispatch confronts it before writing a definition rather than after.
 
@@ -2590,6 +2647,234 @@ the window silently if the fixture rejects the doubling; and do **not** introduc
 the periods, or lasso counts — "Bounds: none, deliberately" still governs, and `winLo` / `winHi` are
 window endpoints computed from the certificate's own segment lengths, not bounds imposed on it.
 
+**GROUNDING ADDENDUM FOR 15.3 — dispatch seq 28. Measured against the landed tree, not reasoned
+from the plan.** The resolution block above is confirmed in every claim it makes about `AUFix`. This
+addendum changes none of it. What it adds is (a) a nearer and cheaper transcription source than the
+one named, (b) a tempting route that is **blocked**, recorded so no dispatch spends a run
+discovering it, and (c) **one obligation the resolution block does not state and that 15.3 must
+carry**. No new report is integrated; every claim below is a reading of a landed file, cited.
+
+**(a) The transcription source is the L⁺ module, not the `Formula` module.** The resolution block
+says to mirror `SharingWitnessFamily.Pos` / `winTimes` / `verts` "name for name". There is a nearer
+model: `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Fulfil.lean` already does this
+re-indexing **at `PlusFormula`**, for `PlusSharingWitnessFamily`, and its own header states the
+division of labour 15.3 is about to repeat — `AUFix` "imported … and used as-is"; the position graph
+"inherited, not transcribed"; and "what is genuinely re-indexed here is exactly the part that reads
+a label". Read that header first. Its `cohWindowLo = -2 * S.NB` / `cohWindowHi = S.NM + 2 * S.NF`
+(`PlusWitnessFamily/Decide.lean:300,303`) is the doubling the resolution block predicts, already
+landed in this language.
+
+**(b) `SharingWindow` cannot be instantiated from a sliced certificate — a measured negative.** The
+inherited graph layer lives on `SharingWindow`
+(`FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Window.lean:93`), and the obvious move
+is to instantiate it for `G` and inherit ~40 landed declarations. **That route is closed.**
+`SharingWindow extends SharingSkeleton` (`Sharing/Skeleton.lean:653`), whose fields include
+`repBack` / `repMid` / `repFwd` with `rep_idem`, `transBack` / `transMid` / `transFwd` with
+`trans_refl`, and `lift : LiftableRaw n repBack repMid repFwd transBack transMid transFwd`. A
+sliced certificate has none of these and is not going to acquire them: a `Decidable (LiftableRaw …)`
+instance is an explicit Non-Goal of this plan, and avoiding the sharing substrate is the whole
+reason the sliced class exists. Do **not** attempt the instantiation, and do **not** weaken
+`SharingSkeleton` to permit it — that would edit a landed `Formula`-side module on which the whole
+L-side decision procedure rests. The reuse is by transcription of a sub-layer, stated next.
+
+**(c) The sub-layer that transcribes mechanically, and why it is mechanical.** Every declaration in
+this list depends on `SharingWindow` **only** through the three integers `NB` / `NF` / `NM` and the
+three facts `NB_pos` / `NF_pos` / `NM_nonneg` (`Window.lean:95-105`), plus `n` for the carrier. None
+of them reads `rep*`, `trans*`, `share` or `lift` — checked by reading each proof:
+`cohWindowLo`, `cohWindowHi`, `winTimes`, `mem_winTimes`, `Pos`, `verts`, `mem_verts`, `nextTime`,
+`prevTime`, `nextTime_edge`, `prevTime_edge`, `nextTime_mem`, `prevTime_mem`, `FoldRel`, `FoldRelB`,
+their `refl` / `symm` / `trans`, `exists_fold_fwd`, `exists_fold_back`. The sliced certificate
+already supplies exactly the six things that layer consumes: `G.nb` / `G.nm` / `G.nf` with
+`G.nb_pos` / `G.nf_pos` / `G.nm_nonneg` (`PlusSlicedCertificate/Basic.lean:381-393`). In the source
+the proofs are `omega` after unfolding the two window endpoints by `rfl` — see `nextTime_mem`
+(`Window.lean:250`) and `exists_fold_fwd` (`Window.lean:484`). Budget this layer as transcription,
+and if any of it needs an argument the source did not need, **stop and record that** — it is
+evidence the carriers differ in a way this addendum missed.
+
+*Two places the transcription is strictly simpler than its source, so do not import the machinery
+for them.* `SharingWindow` carries `NB` / `NF` / `NM` as **data** with side conditions
+`nbr_dvd_NB` / `nfr_dvd_NF` / `nmr_le_NM`, because on the `Formula` side the combined period is a
+join of the skeleton's and the lassos' segment lengths and is not a function of the skeleton. On the
+sliced side `G.nb` is the `abbrev` `(G.back.length : ℤ)` — the period **is** the segment length —
+and `slice_periodic_back` / `slice_periodic_fwd` are already stated at exactly that period. So the
+three divisibility fields have no sliced counterpart and none is needed for the **slices**. Second,
+`SharingWindow`'s `succF_nonempty` / `predF_nonempty` come from the skeleton; the sliced analogue
+comes from `G.BiSerial`, which is a hypothesis the checker already carries, not a field.
+
+**(d) THE OBLIGATION THE RESOLUTION BLOCK DOES NOT STATE: the window must be a COMBINED window,
+because the target path has its own periods.** This is the one genuinely new demand in this
+addendum and it is not a refinement — a 15.3 that ignores it hands Phase 17 an unprovable clause.
+
+`PlusSlicedCertificate` (`Basic.lean:330-349`) carries `target : PlusGraphPath n (plusClosureOf (Γ
+++ Del))` and **no field whatsoever relating the target path's periods to the certificate's**.
+`PlusGraphPath` has its own `nb` / `nm` / `nf` (`Basic.lean:188-200`), so `G.target.nb` and `G.nb`
+are unrelated integers. Consequently `exists_window_eq`'s window `[-G.nb, G.nm + G.nf)`
+(`Basic.lean:437`) folds `G.slice` and nothing else, and `forall_slab_iff_window`
+(`Basic.lean:543`) folds `G.slab` and nothing else. **Neither folds a pair.**
+
+Where this bites: Phase 17's existential side demands the target path "agrees with `G.slab` on the
+state formulas at **every time**" — a `∀ t` claim over a conjunction of two objects with different
+periods and different offsets. No landed lemma reduces it to a window, and `Basic.lean`'s own
+docstring assertion that "the slice time is the only time there is" is confirmed **only** for the
+two clauses landed in Phase 13 (`BoxFaithful` and `Target`, the latter reading one time on one
+path), not for this one. This is precisely the gap `SharingWindow`'s `NB` / `NF` / `NM`-as-data plus
+its three divisibility conditions close on the `Formula` side, and the sliced side has no
+counterpart.
+
+Two admissible responses, and 15.3 must take one **explicitly** and record which:
+  (α) Define `winLo` / `winHi` from **combined** periods — e.g. `NB := lcm G.nb G.target.nb`,
+      `NF := lcm G.nf G.target.nf`, `NM := max G.nm G.target.nm`, then
+      `winLo := -2 * NB`, `winHi := NM + 2 * NF` — and prove the three compatibility facts
+      (`G.nb ∣ NB`, `G.nf ∣ NF`, `G.nm ≤ NM`, and the same for `target`) as lemmas. This is the
+      `Formula` side's own answer and it keeps the target path inside the window discipline.
+  (β) Add the three compatibility facts as hypotheses on `Certifies` (not as fields on
+      `PlusSlicedCertificate`, which is landed and whose field list Phase 13 already confirmed) and
+      keep the single-period definitions. Cheaper, but it narrows the certificate class, and Phase
+      19 then owes a construction that meets them.
+(α) is expected to be right, for the same reason it was right on the `Formula` side, and it composes
+with the doubling: the doubling and the combining are independent and **both** are needed. Take (α)
+unless the fixture or a concrete obstruction says otherwise, and record the choice at this heading.
+
+**This is not a bound, and the anti-goal is unamended.** `NB` / `NF` / `NM` above are least common
+multiples and a maximum of the certificate's own segment lengths — quantities computed *from* the
+certificate, exactly as `winLo` / `winHi` already are. No theorem below states an inequality on `n`,
+on a period, or on a lasso count, and none may. "Bounds: none, deliberately" still governs verbatim.
+
+**One further confirmation, so the Scope Hypothesis need not wait for implementation.**
+`AUFix.lfp V succ isE isG := iter V succ isE isG (V.card + 1)` is the **least** fixpoint from `∅`
+(`Sharing/Fulfil.lean:159,242`), and `AUFix.step` filters `V` by "every successor either delivers
+now or carries the guard and is already in `X`" (`Fulfil.lean:142`) — the **universal** `A[g U e]`
+operator, over `[DecidableEq α]` with an explicit `V : Finset α` and no `Fintype`. The phase's Scope
+Hypothesis is therefore confirmed in advance: `AUFix` supplies the inner eventuality-discharge step
+and supplies **nothing** for the outer existential fair-path half, which is genuinely new work.
+Write that outer iteration once, generically, in 15.3's module, as the resolution block already
+instructs — not twice, and not inside `AUFix`.
+
+**SUB-PHASE 15.3 STEP 2 IS LANDED — dispatch seq 29. Response (α) is taken, and this is the record
+addendum (d) asks for.**
+
+*The choice, recorded explicitly as (d) requires.* **Response (α)**, the combined periods. `(β)` was
+not taken and is not held in reserve as an equal option: it narrows the certificate class and moves
+an obligation onto Phase 19, and (α) turned out to need no new field and no new hypothesis — every
+compatibility fact is a theorem about the certificate's own data, which is exactly why (α) is
+cheaper here than the `Formula` side's field-carrying `SharingWindow`.
+
+*What landed*, all in the new module `PlusSlicedCertificate/Window.lean`:
+- `NBnat` / `NFnat` and `NB` / `NF` / `NM` — `NB := lcm G.back.length G.target.back.length`,
+  `NF := lcm G.fwd.length G.target.fwd.length`, `NM := max G.nm G.target.nm`, verbatim the shapes
+  addendum (d) prescribes, with `NB_pos` / `NF_pos` / `NM_nonneg`.
+- **The six compatibility facts as theorems**, not fields and not hypotheses: `nb_dvd_NB`,
+  `target_nb_dvd_NB`, `nf_dvd_NF`, `target_nf_dvd_NF`, `nm_le_NM`, `target_nm_le_NM`. These are the
+  sliced-side counterpart of `SharingWindow`'s `nbr_dvd_NB` / `nfr_dvd_NF` / `nmr_le_NM`, and each
+  is one `Nat.lcm` projection.
+- `winLo := -2 * NB`, `winHi := NM + 2 * NF`, `winTimes := Finset.Ico winLo winHi` with
+  `mem_winTimes`, and the **generic** inequalities `winLo_le_neg_NB` / `le_winHi` /
+  `winLo_lt_winHi`.
+- `emod_eq_of_dvd_of_emod_eq` — the one arithmetic fact every fold rests on: agreement modulo the
+  combined period descends to each component period.
+- **`exists_combined_window_eq`** — the statement `Basic.lean` cannot make: every time `t` has a
+  representative `s` in `[-NB, NM + NF)` with `G.slice s = G.slice t` **and**
+  `G.target.datum s = G.target.datum t`. Proved by residue in the three regions, exactly as
+  `exists_window_eq` is; the only new step is choosing the representative modulo the combined period
+  and pushing down to each component.
+- `exists_win_eq` (the same inside the doubled window) and `exists_win_eq_slice`, which recovers
+  `exists_window_eq`'s slice-only shape and thereby shows the combined window refines the landed one
+  rather than replacing it with a different object.
+- **`forall_iff_win`** — **the lemma Phase 17's fourth task bullet demands.** Any predicate on times
+  that factors through `G.slice` and `G.target.datum` has its `∀ t` form decided on the window. It is
+  stated with the factoring as a hypothesis rather than against a concrete clause, so the box clause,
+  the target-agreement clause and the universal side can each cite **one named lemma** — which is
+  precisely what the amended Phase 17 Scope Hypothesis says to confirm ("by a **named lemma**, not by
+  a `decide` that happens to typecheck").
+
+*The doubling and the combining are both present and are independent, as (d) says.* `winLo` carries
+the factor `2` (the fixture's verdict) applied to `NB` (the combining). `Fixture.window_verdict`
+states the verdict against these very definitions: `cert.NB = 1`, `cert.winLo = -2`, `p₀` is live at
+`-cert.NB = -1` and dead at `cert.winLo = -2`. So the lower endpoint cannot be raised from the
+doubled value to the single-period one, by a proved lemma about a named certificate.
+
+*Not a bound.* `NB` / `NF` / `NM` are a least common multiple, a least common multiple and a maximum
+**of the certificate's own segment lengths**. No declaration in `Window.lean` states an inequality on
+`n`, on a period, or on a lasso count. The anti-goal is unamended and unviolated.
+
+*Every later consumer is insulated from the factor `2`.* `exists_win_eq`, `forall_iff_win` and
+`exists_win_eq_slice` are all proved from `winLo_le_neg_NB` and `le_winHi` rather than from `winLo`'s
+definition, so a widening forced by a future fixture is a change to two `def`s and nothing else.
+
+**Verification — MEASURED (15.3 STEP 2):**
+- Guarded, detached, `--no-share` scoped build of `…PlusSlicedCertificate.Window`: `exit_status=0`,
+  **zero** `error:` and **zero** `warning:` lines; `.olean` newer than source.
+- Guarded, detached, `--no-share` full `lake build`: `exit_status=0`, **zero** `error:` and **zero**
+  `warning:` lines.
+- `lean-sorry-census.sh` over all four resolved source roots: `sorry_count: 0`.
+- `#print axioms` on every new declaration: within `[propext, Classical.choice, Quot.sound]`.
+- Two Mathlib imports were added to reach `Int.ModEq` and `Finset.Ico`
+  (`Mathlib.Data.Int.ModEq`, `Mathlib.Data.Int.Interval`). `Basic.lean`'s import closure supplies
+  neither, and direct Mathlib imports are the established pattern in this library
+  (`Metalogic/Core/MaximalConsistent.lean`).
+
+**SUB-PHASE 15.3 STEPS 1 AND 3 ARE ALSO LANDED — dispatch seq 29**, in the new module
+`PlusSlicedCertificate/Timed.lean`.
+
+*STEP 1, the re-carrier.* `TPos := G.Pos × ℤ`; `verts`; `mem_verts` with the two projections
+`snd_mem_winTimes_of_mem_verts` / `fst_mem_posAt_of_mem_verts`. The docstring records, citing
+`Fulfil.lean`'s own docstring, that `TPos` is deliberately **not** a `Fintype` and that finiteness
+lives on `verts`; both the `Fintype {v // v ∈ verts}` and the `DecidableEq TPos` that `AUFix` asks
+for are confirmed by `example … := inferInstance`, not asserted. The anti-goal "do not add
+`[Fintype TPos]`" is honoured: no such instance exists anywhere in the module.
+
+**One deviation from the L-side transcription, deliberate.** `verts` is
+`(Finset.univ ×ˢ winTimes).filter (fun v => v.1 ∈ G.posAt v.2)`, **not** `Finset.univ ×ˢ winTimes`.
+On the `Formula` side the first coordinate is a lasso index and every index is legitimate at every
+time, so no filter is needed; here it is a (state, label) pair and `posAt` is precisely the predicate
+separating the legitimate ones. Starting a greatest-fixpoint iteration from a set containing pairs
+that are not positions of their own slice would make the fixpoint's *statement* harder rather than
+its proof easier. Recorded because a reader diffing against `SharingWitnessFamily.verts` will see the
+difference.
+
+*Two supporting lemmas landed here rather than in `Position.lean`.* `slab_congr` and **`posAt_congr`**
+— the position space depends on the time only through the slice. They belong with Position's
+development and are landed in `Timed.lean` so that no already-landed module has to be reopened; the
+module docstring says so. `posAt_congr` is what turns each wrap-faithfulness lemma about `slice` into
+one about `posAt`.
+
+*STEP 3, the wrapping time successors.* `nextTime u := if u + 1 < winHi then u + 1 else u + 1 - NF`
+and `prevTime u := if winLo ≤ u - 1 then u - 1 else u - 1 + NB`, transcribed from
+`Fulfil.lean:343-348` with the combined periods in place of `SharingWitnessFamily`'s. Landed with
+them:
+- `nextTime_edge` / `prevTime_edge` — what the fold does at each edge, in the `Formula` side's own
+  shape (`u + 1 = NM + 2 * NF ∧ nextTime u = NM + NF`, and the mirror).
+- `nextTime_mem` / `prevTime_mem` — the graph never leaves the window.
+- **The four faithfulness lemmas**: `slice_nextTime`, `slice_prevTime`, `target_datum_nextTime`,
+  `target_datum_prevTime`. These are the pair `rep_nextTime` / `L_nextTime` and duals, re-indexed —
+  and they are the point at which the **combined** window of STEP 2 earns its definition: a
+  single-source window could not state them at all, because one of the two objects would be folded by
+  a period that is not its own. Each is a residue computation via `Int.modEq_iff_dvd` against a
+  divisor of the combined period, citing `nb_dvd_NB` / `nf_dvd_NF` and the two target-side facts —
+  **citation, not proof work**, exactly as STEP 3 predicted.
+- `posAt_nextTime` / `posAt_prevTime` — the same at the level of the position space. These are what
+  will license STEP 4's graph reading `succP` at the **unwrapped** time while placing its result at
+  the **wrapped** one.
+- `slice_nextTime_pred` / `slice_prevTime_succ` — landed here because they are what STEP 4's
+  adjointness needs, and they are facts about the fold rather than about any edge relation.
+
+**Verification — MEASURED (15.3 STEPS 1 and 3):**
+- Guarded, detached, `--no-share` scoped build of `…PlusSlicedCertificate.Timed`: `exit_status=0`,
+  **zero** `error:` and **zero** `warning:` lines; `.olean` newer than source.
+- Guarded, detached, `--no-share` full `lake build`: `exit_status=0`, **zero** `error:` and **zero**
+  `warning:` lines.
+- `sorry_count: 0`; axiom census 14, unchanged from `main`; vacuous census 1, unchanged from `main`.
+- `#print axioms` on every new declaration: within `[propext, Classical.choice, Quot.sound]`.
+
+**Remaining for sub-phase 15.3** (STEPS 4, 5, 6 — not started, nothing stubbed): the timed graph
+`succT` / `predT` off `succP` / `predP` and `nextTime` / `prevTime`, with their `verts` subset lemmas
+and the adjointness (STEP 4 — `slice_nextTime_pred` / `slice_prevTime_succ` and `posAt_nextTime` /
+`posAt_prevTime` are the four lemmas it needs and all four are landed); the two fixpoints, with
+`AUFix.lfp G.verts G.succT` inside and a **generic** decreasing `Finset` iteration on `G.verts`
+outside, written once rather than inlined for `fwd` and `bwd` (STEP 5); and the bridge proving the
+computed object equals `Live.lean`'s declarative `Live` at the times the checker reads (STEP 6).
+The window every one of them consumes is now fixed, so the reason 15.3 stopped at seq 27 is removed.
+
 **Timing**: 5 hours
 
 **Depends on**: 14
@@ -2622,11 +2907,16 @@ sub-phases; never carry a `sorry` and never define a placeholder that is vacuous
   cites one and Phase 19 cites the other rather than re-deriving either.
 - `stab_factors` exists as a named declaration, not as a comment — grep for it.
 - `G.live` is evaluated on a small concrete certificate and confirmed to be neither empty nor the
-  whole position space, so the fixpoint is not vacuous in either direction.
+  whole position space, so the fixpoint is not vacuous in either direction. **Scoped to 15.3 at
+  dispatch seq 28**: `Live` as 15.2 landed it is a `Prop` with no `Decidable` instance, so there is
+  nothing to evaluate yet and this criterion cannot be met by 15.2 — it is not a defect of 15.2 and
+  must not be recorded as one. It becomes checkable once 15.3's computed `Finset` and its equality
+  bridge exist, and it is 15.3's gate. The non-vacuity it probes is the same fact Phase 19 owes as a
+  theorem; passing it here is evidence, not the discharge.
 
 ---
 
-### Phase 16: Tail-stability, with the four-state fixture [NOT STARTED]
+### Phase 16: Tail-stability, with the four-state fixture [IN PROGRESS]
 
 **Goal**: Define the one-period transfer operators on live-position sets, define `TailStable`,
 prove the re-presentation lemma that makes the demand harmless, and **build the four-state
@@ -2674,17 +2964,19 @@ narrow, the response is to widen it and record the widening loudly at this headi
 easier to lose.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Stable.lean`.
-- [ ] **Build the fixture first**, before the definitions, as `Fixture.fourState`: a certificate
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Stable.lean`. *(deviation: altered — landed as TWO files: the fixture went to its own new `PlusSlicedCertificate/Fixture.lean`, and `Stable.lean` holds the Φ operators only. See the 16.1 record below.)*
+- [x] **Build the fixture first**, before the definitions, as `Fixture.fourState`: a certificate *(deviation: altered — the four-state design is NOT realizable in this carrier and was redesigned; the landed object is `Fixture.cert`, and the `#eval`/`#guard` half is dropped as impossible. Three independent reasons and the replacement obligation are in the 16.1 record below and in `Fixture.lean`'s header.)*
       with back-tail slice `{a, b}` and edges `a → a`, `a → b`, `b → b`, with an atom `q` true at
       `b` only; `mid = [c]` with `a → c`, `b → c`; forward tail `{d}` with `c → d`, `d → d`.
       Evaluate the stability label of `⊡(XX ¬q)` at `(-1, a)` and at `(-2, a)` with `#eval` or
       `#guard`, and prove as named lemmas that it is **true** at `(-1, a)` and **false** at
       `(-2, a)`. This is the fact that forces the design: the checker must not read tail
       stability-labels at one residue only.
-- [ ] Define `Φ_back`, the one-period transfer of live-position sets leftward through the back
+- [x] Define `Φ_back`, the one-period transfer of live-position sets leftward through the back
       tail, carrying pending eventualities on the type component; and `Φ_fwd`, its mirror. Prove
-      each is monotone on `Finset (G.Pos χ)`.
+      each is monotone on `Finset G.Pos` — **not** `Finset (G.Pos χ)` as this bullet read before
+      dispatch seq 28: 15.1 landed `G.Pos` with no `χ` parameter, because the relevant formula set is
+      already fixed as `plusClosureOf (Γ ++ Del)`. See Phase 15's deviations block.
 - [ ] Define `L₀`, the live-position set computed from the window together with the forward tail,
       and its mirror `R₀`.
 - [ ] Define `PlusSlicedCertificate.TailStable` as `Φ_back L₀ = L₀ ∧ Φ_fwd R₀ = R₀`, and prove it
@@ -2706,7 +2998,121 @@ easier to lose.
       that a search on the paired repository's side must re-present an unstable countermodel
       rather than reject it.
 
-**Timing**: 4 hours
+**SUB-PHASE DEPENDENCY SPLIT — dispatch seq 28. The `Depends on` line below is correct for the
+phase as a whole and wrong for the fixture, and the seq-27 amendment left that unreconciled.**
+The amendment above makes `Fixture.fourState` a **prerequisite of 15.3** while this phase still
+declares `Depends on: 15`, which would schedule the fixture after all of Phase 15 — the opposite
+order. Take the Contingency's split as the standing plan, not as a fallback, with these
+dependencies:
+- **16.1** — `Fixture.fourState`, its two asymmetry lemmas, and `Φ_back` / `Φ_fwd` with their
+  monotonicity. **Depends on: 14, and on 15.2 only** (it needs the slice labelling and the position
+  space, both landed; it needs nothing from 15.3). **Runs before 15.3**, because its two asymmetry
+  lemmas are what decide 15.3's window width.
+- **16.2** — `TailStable`, `tailStable_iff_window`, `exists_tailStable_repr`. **Depends on 15.3**,
+  since tail-stability is what certifies 15.3's wrap.
+So the executed order is 15.2 (landed) → **16.1** → 15.3 → 16.2 → 17, and Phase 17's `Depends on: 16`
+still holds because 16.2 precedes it. The phase-level line below is left at `15` deliberately: it is
+the conservative value for wave analysis and is not a licence to run 16.1 late.
+
+**SUB-PHASE 16.1 IS LANDED — dispatch seq 29. What it landed, what it decided, and the two
+deviations, recorded not absorbed.**
+
+*Files.* Two new modules, not one. `PlusSlicedCertificate/Fixture.lean` holds the fixture;
+`PlusSlicedCertificate/Stable.lean` holds the Φ operators. `Stable.lean` was created without
+`TailStable` in it because `L₀` / `R₀` have nothing to be yet — they are the *computed* liveness sets
+and 15.3 has not built the computed object. Writing a `Stable.lean` whose headline declaration was
+absent would have repeated 15.1's `Live.lean` mistake; both module headers say where the missing half
+went. Two commits, one per green sub-step: the fixture, then the operators.
+
+*DEVIATION 1 — the fixture is not `Fixture.fourState`, and the four-state design is not realizable.*
+The landed object is `Fixture.cert`, a **two**-state, three-slice certificate with back period `1`.
+The plan's design was attempted first and fails for three independent reasons, each recorded in
+`Fixture.lean`'s header:
+1. **Slice width is uniform and `edge` is per slice.** The plan's `a → c` / `b → c` edges are the step
+   *out of* a negative time, so they must live in the back slice's single `edge` — and therefore hold
+   at `-2`, `-3`, … as well. The intended asymmetry does not survive, which is exactly the caution
+   dispatch seq 27 recorded in its handoff.
+2. **"`q` true at `b` only" destroys the asymmetry the fixture exists for.** A run at `a` at `-2`
+   could step to `b` at `-1` and discharge there, making the position live at `-2` too.
+3. **`XX` is not in L⁺ and `⊡`-truth is not `Decidable`.** `PlusFormula` has no `next`, and the
+   `⊡`-clause is a universal over histories of an infinite carrier, so the `#eval` / `#guard` half of
+   the task bullet is impossible, not merely inconvenient. The plan's own stronger requirement
+   — **named lemmas** — is what is satisfied.
+The *obligation* is unchanged and discharged: a proved instance of "identical slices, different
+liveness". The theorem was not weakened and the fixture was not relaxed; it was rebuilt on a
+temporal rather than a branching mechanism. Two states are kept rather than one so that the failure
+at `-2` is visibly **not** a lack of successors: the edge relation is total at every slice
+(`Fixture.edge_eq_true`, `Fixture.biSerial`).
+
+*THE WINDOW VERDICT — this is what 15.3 STEP 2 must obey.* All four facts are proved named lemmas of
+`Fixture`:
+- `slice_of_neg` / `posAt_eq_of_neg`: every negative time carries **literally the same** slice and the
+  **same** position set (back period `1`).
+- `succP_ne_empty_neg_one` and `succP_eq_empty_of_le_neg_two`: `succP (-1) p₀` is non-empty and
+  `succP t p₀` is **empty** for every `t ≤ -2`. So `succP t` is not a function of `slice t`: it reads
+  `posAt (t + 1)` too, and at `t = -1` that is the mid slice.
+- `live_neg_one` and `not_live_of_le_neg_two`, strengthened to `not_exists_labRun_of_le_neg_two`:
+  `p₀` is live at `-1` and is occupied by **no run at all** at any `t ≤ -2`.
+- `live_not_determined_by_slice` and `neg_two_outside_single_period_window` bundle the verdict.
+
+Read off it, and binding on 15.3:
+(i) **`winLo = -NB` is UNSOUND.** With `nb = 1` the single-period lower endpoint is `-1`, and
+    `prevTime`'s fold at the left edge makes `-1` its own predecessor, asserting liveness at `-1` on
+    behalf of `-2`. That is false here, by proved lemmas rather than by expectation.
+(ii) **`winLo = -2 * NB` is exactly sufficient *for this fixture*, not merely wider.**
+     `not_exists_labRun_of_le_neg_two` holds **uniformly for every `t ≤ -2`**, so `-2` is a faithful
+     representative of the whole left tail. The doubling is therefore *confirmed*, which is what the
+     seq-27 amendment asked this fixture to do.
+(iii) **HONEST LIMIT.** The fixture confirms the factor at `nb = 1`; it does **not** prove the
+      doubling sufficient in general. The general wrap-soundness lemma remains 15.3 STEP 3's
+      obligation, and per STEP 2 must be proved from the generic inequalities `winLo ≤ -NB` and
+      `NM + NF ≤ winHi` together with `slice_periodic_back` / `slice_periodic_fwd`, never from the
+      literal doubling.
+(iv) **The verdict composes with addendum (d)'s combined window and does not weaken it.** The two
+     constraints are orthogonal: (d) says the window must absorb the *target path's* independent
+     period triple; the fixture says the *back factor* must be at least `2`. Both hold of
+     `winLo := -2 * NB` with `NB := lcm G.nb G.target.nb`. The fixture's own `target` has
+     `target.nb = 1`, so `lcm 1 1 = 1` and the verdict reads on the combined window unchanged — which
+     is why the fixture does not adjudicate between (α) and (β) and must not be cited as if it did.
+
+*What the Φ half landed.* `stepBack` / `stepFwd` (the one-step transfers, `Finset`-valued and
+decidable, with `mem_stepBack` / `mem_stepFwd`), `iterBack` / `iterFwd` (the `k`-fold iterates from a
+reference time, with `iterBack_subset_posAt` / `iterFwd_subset_posAt` pinning which slice each
+iterate lands on), and `Φ_back` / `Φ_fwd` as one full period. Monotonicity is proved at all three
+levels (`stepBack_mono`, `iterBack_mono`, `Φ_back_mono`, plus `monotone_Φ_back` / `monotone_Φ_fwd` in
+the lattice form) — which is the plan's stated 16.1 deliverable, on `Finset G.Pos` as seq 28
+corrected. `Φ_back_subset_posAt` / `Φ_fwd_subset_posAt` prove the operators run from the
+single-period endpoints to the **doubled** ones, so the arithmetic of the verdict above is a lemma
+rather than a comment.
+
+*DEVIATION 2 — a soundness pair was added that the plan does not name.*
+`fwdLive_subset_stepBack` / `bwdLive_subset_stepFwd`: if `X` over-approximates the forward-live set at
+`t`, then one leftward step over-approximates it at `t - 1`. They consume 15.2's `fwdLive_step` /
+`bwdLive_step` exactly as that phase predicted, and they are added because they settle the direction
+Φ is usable in: **Φ over-approximates, and the converse is false** — a position with a successor in
+`X` need not be live, since liveness demands a whole fulfilling run and not one edge. That asymmetry
+is *why* 16.2's `TailStable` has to be the equation `Φ_back L₀ = L₀` and not an inclusion, and it is
+better recorded as a lemma here than rediscovered in 16.2.
+
+**Verification — MEASURED (16.1):**
+- Guarded, detached, `--no-share` scoped builds of `…PlusSlicedCertificate.Fixture` and
+  `…PlusSlicedCertificate.Stable`: each `exit_status=0`, **zero** `error:` and **zero** `warning:`
+  lines; each `.olean` confirmed newer than its source.
+- Two full guarded, detached, `--no-share` `lake build` runs over the whole library (one per
+  commit): `exit_status=0`, 2788 and 2789 jobs, **zero** `error:` and **zero** `warning:` lines in
+  each.
+- `lean-sorry-census.sh` over all four resolved source roots: `sorry_count: 0`.
+- `#print axioms` on twenty-six new declarations (twelve of `Fixture`, fourteen of `Stable`): every
+  one within `[propext, Classical.choice, Quot.sound]`; no `sorryAx` and no other axiom anywhere in
+  the output.
+- No `sorry`, no `admit`, no vacuous placeholder in either module.
+
+**Remaining for 16.2** (not started, nothing stubbed): `L₀` / `R₀`, `TailStable` with its `Decidable`
+instance, `tailStable_iff_window`, `exists_tailStable_repr`, and the fixture's own re-presentation as
+the worked example. All four need 15.3's computed liveness `Finset` first. The task bullet asking for
+`Fixture.fourState` to be shown not tail-stable now reads on `Fixture.cert`.
+
+**Timing**: 4 hours (16.1 ≈ 2, 16.2 ≈ 2)
 
 **Depends on**: 15
 
@@ -2757,7 +3163,20 @@ by Phase 15's fixpoints and every clause read on the window under Phase 16's tai
       each slice time, and agrees with `G.slab` on the state formulas at every time. There are
       **no witness paths**: the `witness` field is dropped, and the existential obligations it
       carried are discharged by liveness — "`⊡χ ∉ G.slab t w`" is "some live position over
-      `(t, w)` omits `χ`", by Phase 15's `exists_path_of_mem_live`.
+      `(t, w)` omits `χ`", by Phase 15's `exists_path_of_live`. *(name corrected at dispatch seq 28:
+      15.2 landed `exists_path_of_live`, not `exists_path_of_mem_live`; `Live` is a `Prop`, so there
+      is no `∈`. **And note which object this clause must read**: `exists_path_of_live` is
+      declarative and undecidable, so `Certifies` must be written against 15.3's **computed** form
+      plus 15.3's equality bridge, citing `live_iff` only for the mathematics. Writing the clause
+      against `Live` directly will fail `decidableCertifies` and is the failure mode to avoid.)*
+- [ ] **Fold the target path, not only the slices.** The existential side's "agrees with `G.slab`
+      on the state formulas at every time" is a `∀ t` claim over two objects with **different**
+      periods: `G.slice` at `G.nb` / `G.nf` / `G.nm`, and `G.target` at its own `target.nb` /
+      `target.nf` / `target.nm`, which no field of `PlusSlicedCertificate` relates. Neither
+      `exists_window_eq` nor `forall_slab_iff_window` folds a pair. Write this clause against
+      15.3's **combined** window (response (α) of Phase 15's grounding addendum), and if 15.3 took
+      response (β) instead, carry its three compatibility facts as hypotheses here. Do not discover
+      this at the end of the phase.
 - [ ] Define the **universal side**: for every slice time `t` in the window, every state `w` and
       every `⊡χ` in `G.slab t w`, no live position over `(t, w)` omits `χ`. This is the clause that
       replaces plan v2's time-indexed (C5) demand, and under tail-stability it is a property of a
@@ -2788,7 +3207,17 @@ by Phase 15's fixpoints and every clause read on the window under Phase 16's tai
 no residual field-shaped demand. Confirm by checking that **no clause quantifies over a time in a
 way that would need alignment**; any clause that does is a relapse into the withdrawn plan v1
 design and must be recorded and redesigned, not absorbed. Nothing is aligned here: the slice time
-is the only time. Separately asserted: dropping the `witness` field costs the checker nothing,
+is the only time.
+
+**Amended at dispatch seq 28 — the "nothing is aligned" assertion is confirmed for two clauses, not
+four, and the gap is named.** `Basic.lean`'s own docstring makes this claim, and Phase 13 confirmed
+it for `BoxFaithful` (`∀ t`, folded by `forall_slab_iff_window`) and `Target` (one time on one
+path). It is **not** confirmed for the existential side, which reads `G.target` and `G.slab`
+together at every time under two unrelated period triples. That is a *period-combining* demand, not
+an alignment-offset demand — no origin, no `plusAlignOffset`, nothing of plan v1's shape — so it is
+**not** a relapse and must not be recorded as one. It is discharged by the combined window of Phase
+15's grounding addendum (d). Confirm here by checking that the existential clause's `∀ t` reduces to
+the combined window by a **named lemma**, not by a `decide` that happens to typecheck. Separately asserted: dropping the `witness` field costs the checker nothing,
 because both directions of the Phase 15 characterization are available. Confirm by writing the
 `⊡`-clauses first; if an existential obligation cannot be discharged from liveness, **stop and
 record it** rather than reinstating a field whose index set is infinite.
@@ -2827,8 +3256,11 @@ record it** rather than reinstating a field whose index set is infinite.
       - `stab`: the universal side gives the `→` direction, because every history of `G.frame h`
         is an **offset** step path (Phase 14's `mem_HF_iff_slicedPath`), hence, after the
         shift-normalization lemma, a labelled path of `G`, hence occupies a live position; the
-        completeness direction of liveness (`exists_path_of_mem_live`) gives the `←` direction,
-        which is where the dropped `witness` field is paid for.
+        completeness direction of liveness (`exists_path_of_live` — name corrected at dispatch seq
+        28; `Live` is a `Prop`, so there is no `∈`) gives the `←` direction, which is where the
+        dropped `witness` field is paid for. This phase cites the **declarative** lemma, correctly:
+        soundness is a proof, not a computation, so it reads `live_iff` and needs nothing from
+        15.3's computed form. Only Phase 17 needs the computed form.
 - [ ] Prove `plusRefutes_of_certifies` by instantiating `PlusWitnessFamily.PlusRefutes` at
       `(G.frame h).toTaskFrame`, its `FrameClass.ZTime.Sat` instance, `G.model h`, the target
       path's history and `G.targetTime`, discharging the two conjuncts from the target clause and
