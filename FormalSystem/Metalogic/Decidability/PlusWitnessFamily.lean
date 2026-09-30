@@ -18,6 +18,7 @@ import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Agreement
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Examples
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Incompleteness
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Limits.Targets
+import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Limits.HopFree
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusWitnessFamily` — the L⁺ certificate
@@ -77,6 +78,9 @@ interface is affected by this one's existence.
 - `PlusWitnessFamily.Limits.Targets`: the two *limit* targets — `hopTarget` and `pumpTarget` —
   their ℤ-time non-validity, and the two subformula-closure membership chains the limit theorems
   read. The limits themselves are stated beside it; this module is only their specification.
+- `PlusWitnessFamily.Limits.HopFree`: `not_exists_hopFree_plusCertifies_hopTarget` — no hop-free
+  family certifies `hopTarget`. It bounds the hop-free *strategy*, not the substrate:
+  `TransId.lean`'s four collapse theorems remain true and remain in the tree.
 
 ## Why (C5) is a pinned obligation rather than a signature
 
