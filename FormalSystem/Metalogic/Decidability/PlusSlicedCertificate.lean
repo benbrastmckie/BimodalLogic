@@ -12,6 +12,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Live
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Window
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixture
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Stable
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FixtureStable
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Timed
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixpoint
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Computed

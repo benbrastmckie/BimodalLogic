@@ -66,9 +66,13 @@ slice sequence is periodic only away from `mid`. `runOfPos` and the three region
 discharged; the block headed "The converse half" states the construction and why each region is
 closed under the direction its fulfilment half looks in.
 
-What remains of sub-phase 16.2 is `exists_tailStable_repr` — the re-presentation making the demand
-harmless for an arbitrary certificate — and the fixture's own worked example. Nothing is stubbed for
-either and no placeholder stands in.
+Sub-phase 16.2 is closed, but **not** by landing `exists_tailStable_repr` — the re-presentation that
+was supposed to make the demand harmless for an arbitrary certificate. That lemma is **false**, and
+`FixtureStable.lean` proves it false at `Fixture.cert`: no re-presentation of that certificate is
+tail-stable. So `TailStable` is a demand on the frame together with its closure and not on the
+presentation, and the corrected record is on `TailStable`'s own docstring below and in
+`FixtureStable.lean`'s header. Nothing here is stubbed and no placeholder stands in; the lemma is
+absent because it is not true, not because it is pending.
 
 ## Main definitions
 
@@ -557,12 +561,23 @@ fixpoints — `G.Φ_back` on `L₀` and `G.Φ_fwd` on `R₀`, each an iterate of
 `stepFwd` over one combined period — and one `Finset` equality test on each. Nothing recomputes a
 fixpoint, and `iterBack_L₀` is what makes the single application stand in for every later one.
 
-**What it costs a search on the paired repository's side.** An unstable countermodel must be
-**re-presented**, not rejected: absorbing its pre-period into `mid` and multiplying its period by
-the cycle length yields a tail-stable presentation of the same frame, so tail-stability narrows the
-*presentations* a checker accepts and not the frames a countermodel may have. That is
-`exists_tailStable_repr`'s obligation; until it is landed the demand should be read as a constraint
-on presentations whose harmlessness is argued but not yet proved.
+**What it costs a search on the paired repository's side — CORRECTED, and the correction is bad
+news.** An earlier version of this paragraph said that an unstable countermodel need only be
+**re-presented**, not rejected: that absorbing its pre-period into `mid` and multiplying its period
+by the cycle length yields a tail-stable presentation of the same frame, so that tail-stability
+would narrow the *presentations* a checker accepts and not the frames a countermodel may have.
+**That is false**, and `FixtureStable.lean` proves it false at `Fixture.cert`:
+`Fixture.not_tailStable` shows that **no** member of the re-presentation family
+`Fixture.certRep a b c` is tail-stable, for any pre-period and any period multipliers, while
+`Fixture.certRep_slice_shift` shows every member presents `Fixture.cert`'s own slice sequence
+shifted. The obstruction is the forward conjunct and it is structural: `Φ_fwd` is a reachability
+transfer, the one-step clauses do not constrain the arriving label's `untl`-membership, and
+re-presentation changes neither `posAt` nor the reachability. Read `FixtureStable.lean`'s header for
+the argument in full.
+
+So `TailStable` is a demand on the **frame together with its closure**, not on the presentation, and
+`exists_tailStable_repr` is not stated anywhere in this subtree because it is false. Whether
+`Certifies` should carry `Φ_fwd R₀ = R₀` at all is an open design question, not a settled point.
 -/
 def TailStable (G : PlusSlicedCertificate Γ Del) : Prop :=
   G.Φ_back G.L₀ = G.L₀ ∧ G.Φ_fwd G.R₀ = G.R₀

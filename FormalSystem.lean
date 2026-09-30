@@ -149,6 +149,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Bridge
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Computed
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixpoint
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixture
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FixtureStable
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fold
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Frame
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Live
