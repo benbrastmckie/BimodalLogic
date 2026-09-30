@@ -143,6 +143,8 @@ import FormalSystem.Metalogic.Decidability.FMP.Filtration
 import FormalSystem.Metalogic.Decidability.FMP.FiniteModel
 import FormalSystem.Metalogic.Decidability.FMP.TruthPreservation
 import FormalSystem.Metalogic.Decidability.IntPresentation
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Basic
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Agreement
 import FormalSystem.Metalogic.Decidability.PlusWitnessFamily.Basic
