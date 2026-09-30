@@ -1,38 +1,52 @@
 {
   "status": "partial",
-  "dispatch_seq": 23,
-  "task_number": 703,
-  "phases_completed": 5,
-  "phases_total": 21,
-  "session_id": "sess_1790754653_96e30c",
-  "summary": "Stage 1 of the plan is COMPLETE and Stage 2 is OPEN. Phases 10, 11 and 13 closed [COMPLETED] and Phase 12 [COMPLETED WITH EXCLUSIONS], on top of Phase 9 which dispatch 21 closed and which is already landed on main. Stage 1: the L-plus compression statement is now refuted as a theorem of the tree -- not_exists_plusCertifies_pumpTarget proves NO PlusSharingWitnessFamily certifies pumpTarget under no hypothesis at all, and not_exists_hopFree_plusCertifies_hopTarget separately retires the hop-free strategy; six documentation corrections stop the tree overstating the class's coverage; four theorem-index rows and four C2 axiom pins landed (AXIOM_BASELINE 18 -> 22). Stage 2: Phase 13 lands PlusGraphPath, PlusSlice and PlusSlicedCertificate with the plan's pinned field lists (no lift, trans, witness, stepR or stateLab), the three-segment readout, exists_window_eq by residue, biSerial_iff_window in both directions, and onePointCertificate -- the finite-graph special case exhibited and proved constant. Full lake build exit 0, 2782 jobs, zero errors and zero warnings; sorry_count 0; axiom count 14 unchanged; plusTruth_iff_mem and plusRefutes_of_certifies unedited and unchanged in axioms, so soundness survives. check-module-invariants.sh (run at Phase 12) passes every group except B0, which fails identically at main's HEAD for a reason that is not this task's. Four commits on orchestrate/task-703-23: 09ab45be9, 726b6d99f, abb4e85b4, 5908fc924. Phases 14-21 remain; no probe exists for them.",
+  "phase": "implement",
+  "dispatch_seq": 25,
+  "summary": "Phase 14 COMPLETED: FrameOver.ofSlicedStep presents a frame on the infinite carrier Z x Fin n with finite fibres, its infinitude proved, and PlusSlicedCertificate.frame/model plus the history space in both directions. Phase 15 PARTIAL: 15.1 landed the position space, the one-step graph and the Q5 factorization stab_factors; 15.2 is not started and nothing is stubbed.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Stage 1 complete: the two limit targets, both incompleteness theorems, the six record corrections, the four C2 pins, and the measured verification."
+      "summary": "Round-04 implementation summary, extended with dispatch 25's Phase 14 and Phase 15.1 work, its measured verification, and the two findings."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-13-handoff-20260930T023000Z.md",
-      "summary": "Phase-end handoff: next action is Phase 14 (the frame on Z x Fin n), plus the five Phase 13 design decisions and the unavailable-Mathlib-name list."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T095826Z.md",
+      "summary": "Phase 15 PARTIAL handoff: the Phase 15 / Phase 16 ordering question, the false succP-totality obligation, and the measured gate state."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-12-handoff-20260930T021000Z.md",
-      "summary": "Phase-end handoff: next action is Phase 13 (Stage 2, no probe exists), plus the build-guard false-pass hazard and the git-commit-scoped.sh worktree pitfall."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-11-handoff-20260930T015500Z.md",
-      "summary": "Phase 11 handoff: the class-level incompleteness and why no bound repairs it."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-10-handoff-20260930T014500Z.md",
-      "summary": "Phase 10 handoff: the hop-free limit and the import-closure finding."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-14-handoff-20260930T094316Z.md",
+      "summary": "Phase 14 phase-end handoff: state, citable declarations, environment hazards."
     }
   ],
-  "blockers": [],
-  "next_action": "Dispatch Phase 14 (the presented frame on Z x Fin n): create FormalSystem/Semantics/SlicedFrame.lean with FrameOver.ofSlicedStep, wire its import into FormalSystem/Semantics.lean, regenerate the root, then instantiate G.frame and G.model and prove the histories characterization. Everything it reads from Phase 13 is landed: slice, edge, slab, slab_sub, BiSerial (the forall-t form, which is the hypothesis G.frame takes), biSerial_iff_window, slice_periodic_back/_fwd and exists_window_eq. Three environment facts must be carried in: (1) lake-build-guard.sh shares its result file by hardlink with the main tree, so always pass --no-share inside a worktree and confirm against .olean timestamps -- a bare build reported a false exit 0 this dispatch for a module that had never compiled; (2) .claude/scripts/git-commit-scoped.sh resolves the main tree rather than the cwd and silently commits nothing from a worktree, so use plain git add/commit there; (3) ring, neg_one_mul, dvd_rfl, add_sub_cancel_right, le_or_lt and List.getD_eq_getElem are NOT in these modules' import closures -- substitutes are recorded in the Phase 13 handoff. Separately, one operator command clears the outstanding B0 gate failure: git worktree remove --force .claude/worktrees/agent-aa19bfa3bfef394ff. One loose end for the parent session: a read-only subagent named mc-export-read was dispatched to establish ModelChecker's current export format and bound configuration (Phase 12's second exclusion). It is owned by the parent session, so its report arrives there; reconcile it against the five numbered points in the implementation summary's 'The paired repository's export contract' section and amend that section rather than adding a second account."
+  "phases_completed": 1,
+  "phases_total": 21,
+  "blockers": [
+    {
+      "phase": "15",
+      "target": "FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.fwdLive",
+      "verbatim_goal": "Define G.fwdLive t chi, the forward-live positions at slice t: the greatest set X of positions such that from every position of X there is a succP-path inside X discharging each eventuality pending at it. Implement as a decreasing Finset iteration whose inner reachability step is the least fixpoint AUFix.lfp.",
+      "what_was_tried": "The position space, succP/predP and the Q5 factorization were all landed first (15.1) so that 15.2 would have every ingredient. AUFix was read and confirmed generic and reusable; the probe TypePreservingPaste.lean was transcribed with no added hypothesis.",
+      "why_it_failed": "Not attempted, deliberately, because the definition as the plan states it is not well posed. posAt and succP are slice-indexed, so fwdLive t at an arbitrary t : Z is a Z-indexed FAMILY of Finsets, not one Finset, and a decreasing iteration on a family does not terminate for the reason a decreasing iteration on one Finset does. What makes it finite is the eventual periodicity of G.slice, and turning that into a computation is exactly what Phase 16's Phi_back / Phi_fwd and tailStable_iff_window are for -- so the Phase 15 / Phase 16 boundary is probably in the wrong place. The full argument and two candidate resolutions are recorded under the plan's Phase 15 heading. Writing a definition before that decision is taken would have produced either a non-terminating iteration or a silently weaker theorem."
+    },
+    {
+      "phase": "15",
+      "target": "PlusSlicedCertificate.succP non-emptiness on the position space",
+      "verbatim_goal": "Prove succP and predP are non-empty on the position space, from G.BiSerial and the type-completion argument. Without this the fixpoints are vacuous.",
+      "what_was_tried": "The construction was attempted and a counterexample was found instead: with untl g e in the closure, g and e both atoms, and a certificate whose slice labelling carries no atom, X = {untl g e} is a legitimate member of posAt t with no successor, because every successor label must also carry no atom and the untl clause then demands untl g e not-in X.",
+      "why_it_failed": "The obligation is FALSE as stated, and the parenthetical worry is mistaken too: successor-less positions are exactly what the GREATEST fixpoint fwdLive exists to discard. Replaced, not dropped, by mem_succP_of_path and mem_predP_of_path, both proved: every position a genuine locally-coherent labelled path visits has that path's own next (resp. previous) position as a witness, which is all the fixpoints need. Recorded in Position.lean's module header and in the plan's Phase 15 deviations. A machine-checked #eval witness is flagged as not landed rather than concealed."
+    },
+    {
+      "phase": "21",
+      "target": "scripts/check-module-invariants.sh C9",
+      "verbatim_goal": "Run bash scripts/check-module-invariants.sh in full and confirm every gate passes -- C2, C15, C19, C23, C24 and C33 included.",
+      "what_was_tried": "The gate was run in full. INV failed, was caused by this dispatch, and was fixed (hand-written Semantics/README.md row for SlicedFrame.lean plus --emit-inventory). B0 and C23 were confirmed PRE-EXISTING at main's HEAD.",
+      "why_it_failed": "C9 reports four specs/{NNN}_.../probes/... citations in Lean docstrings, one of them already on main. This plan MANDATES those citations in four separate places (Phases 13, 14, 20, 21) and .claude/context/standards/task-reference-exemptions.md has no covering category, so it is a genuine plan-versus-rule conflict rather than an oversight. Two candidate resolutions are recorded under the plan's Phase 21 heading; the path-dropping one is recommended. The decision must be made once and applied to all four citations."
+    }
+  ],
+  "plan_markers_verified": true,
+  "continuation_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-15-handoff-20260930T095826Z.md",
+  "next_action_hint": "Resolve the Phase 15 / Phase 16 ordering question under the plan's Phase 15 heading, then implement 15.2. Every guarded build in the worktree needs --no-share.",
+  "git_checkpoint": "3dc438278"
 }

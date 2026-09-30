@@ -22,9 +22,11 @@
 - **Reports Integrated**: `01_lplus-compression-completeness-research.md`,
   `02_semantics-first-compression-research.md`,
   `706/01_lplus-finite-model-property-research.md`
-- **Plan Version**: 4 (revision of `plans/02_lplus-certificate-limits-graph-certificate.md`;
-  artifact number 03 is deliberately skipped — the artifact counter, not the file listing, is
-  authoritative)
+- **Plan Version**: 5 (revision of `plans/02_lplus-certificate-limits-graph-certificate.md` at
+  v4, amended in place at v5; artifact number 03 is deliberately skipped — the artifact counter,
+  not the file listing, is authoritative. **Plan v5 changes no mathematics**: it adds the execution
+  preconditions recorded under "Revision record — plan v5" below and integrates no new report.
+  Effort is unchanged at 67 hours because no phase is added, removed or rescoped)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -52,6 +54,141 @@ separate, research-first successor that is **not filed here**.
 Definition of done: Stages 1 and 2 land sorry-free with no new axioms, every new flagship carries
 a `docs/theorem-index.md` row and a C2 `AXIOM_BASELINE` pin, and
 `bash scripts/check-module-invariants.sh` passes in full.
+
+### Revision record — plan v5: the dispatch-isolation incident and the nested-checkout gate hazard
+
+**Nothing in Stage 1 or Stage 2's mathematics changes at plan v5.** No phase is added, removed,
+renumbered or rescoped; no theorem statement, field list, bound commitment, dependency or non-goal
+moves; no landed phase's text is retouched. This revision is about the *execution environment* the
+remaining phases run in, and it exists because one dispatch of this plan lost twenty of its
+twenty-one phases to that environment rather than to the mathematics.
+
+**No new research report is integrated at plan v5.** The `Reports Integrated` list above is
+unchanged, deliberately: this revision's inputs are a dispatch post-mortem and measurements taken
+in the working tree at revision time, both reproduced below together with the commands that
+produced them, so that a successor can re-derive them rather than trust them.
+
+#### What happened at dispatch 21
+
+Dispatch 21 closed **1 of 21 phases**. The cause was not in this plan, not in the dispatch file,
+and not in `scripts/dispatch-worktree.sh`:
+
+- The dispatch **site** passed the Agent tool's harness-level `isolation: "worktree"` parameter in
+  addition to the orchestrator's own already-provisioned worktree at
+  `.orchestrate-worktrees/703-21`. Those are two mutually exclusive isolation mechanisms.
+- The harness therefore created a **second** checkout,
+  `.claude/worktrees/agent-aa19bfa3bfef394ff`, pinned the agent inside it, and its
+  worktree-isolation guard refused every cross-checkout `git` invocation by design — the `cd`
+  form, the `-C` form and `EnterWorktree` alike.
+- **File writes and `lake` runs into the orchestrator's worktree stayed permitted.** So the agent
+  could author, build and verify there, and could never commit. That asymmetry is the whole
+  failure: the work was real and the record of it was unobtainable.
+- Already remediated for dispatch 21: the four byte-identical verified files were committed on
+  `orchestrate/task-703-21` as `9355b68fe` and landed to `main` via `f90e45cdf`. Phase 9 is on
+  `main` — confirmed at revision time by `git log -1 9355b68fe`, which reads "task 703: phase 9:
+  the two limit targets and their ZTime non-validity" — and that worktree was released.
+
+The durable consequence for this plan is a **commit-availability precondition**, next. It is not a
+mitigation for a hypothetical: the mechanism is understood, the remedy is one line at the dispatch
+site, and the condition is silent from inside the agent until the first commit is attempted.
+
+#### Commit-availability precondition — binding on every remaining phase (14-21)
+
+Additive to each remaining phase's own task list. No phase body is edited.
+
+- [ ] **Attempt a real commit at the first green sub-step, not at the end of the phase.** The
+      repository's commit-per-green-substep mandate (`.claude/rules/git-workflow.md`) already
+      requires this; dispatch 21 is the evidence for why it is load-bearing here rather than merely
+      tidy. A phase that authors three files and then discovers commits are refused has produced
+      nothing recoverable; a phase that commits its first green file has produced one.
+- [ ] **If a `git` invocation is refused by the harness rather than by the repository, STOP and
+      report it as a dispatch-site defect.** Do not continue accumulating uncommittable work, do
+      not retry in another form — dispatch 21 tried all three — and do not read it as licence to
+      batch phases. The distinguishing signal is that file writes and `lake` runs into the *same*
+      directory still succeed; a repository-level refusal (a hook, a guard, a dirty-tree block)
+      looks different and is to be fixed, not reported as this defect.
+- [ ] Record, in the phase's closing note, the sha of every commit the phase made. A phase that
+      closes with no sha is a phase whose verification cannot be reproduced.
+
+#### The nested-checkout gate hazard — measured, and on Phase 21's critical path
+
+Phase 21's acceptance gate requires `bash scripts/check-module-invariants.sh` to pass **in full**.
+Invariant **B0** — "expected exactly 1 Boneyard directory at ./Boneyard" — cannot currently pass
+from either tree, and the reason is nested checkouts inside the repository root, not anything in
+this task's file scope.
+
+Measured at plan v5:
+
+| Counted from | `Boneyard` directories found | B0 verdict |
+|---|---|---|
+| main tree, `/home/benjamin/Projects/BimodalLogic` | **4** | FAIL (expects 1) |
+| dispatch worktree, `.orchestrate-worktrees/703-25` | **2** | FAIL (expects 1) |
+
+The four, from `find . -type d -name Boneyard` in the main tree:
+
+1. `./Boneyard` — the real archive.
+2. `./.claude/worktrees/agent-aa19bfa3bfef394ff/Boneyard` — dispatch 21's leftover harness
+   checkout, **still registered** in `git worktree list` at plan v5.
+3. `./.orchestrate-worktrees/703-25/Boneyard` — the live dispatch worktree.
+4. `./.orchestrate-worktrees/703-25/.claude/worktrees/agent-aa19bfa3bfef394ff/Boneyard` — because
+   a dispatch worktree carries a copy of the `.claude/` tree, item 2 is **inherited by every
+   dispatch worktree provisioned while it remains**. This is the fact that moves the leftover from
+   nuisance to blocker.
+
+Why the checker does not filter these: B0's `find` excludes only `./.lake/*` and `./.git/*`
+(`scripts/check-module-invariants.sh:816-822`), and the `archive_dir_count` walk that feeds the
+`INV` inventory prunes only `.lake` and `.git` (same file, `:328-343`). Neither prunes `.claude` or
+`.orchestrate-worktrees`. The same omission affects the script's other `os.walk(".")` traversals,
+which prune `.git`, `.lake`, `specs`, `Boneyard`, `build` and `__pycache__` but not `.claude` or
+`.orchestrate-worktrees` (`:1221`, `:2624`, `:3503`) — so while a dispatch worktree is live those
+walks additionally see a duplicate of every live `.lean` and `.md` file in the repository. Phase
+21's gate run is therefore not merely at risk on B0; it is being run against a doubled file
+inventory.
+
+**This is the same condition Phase 12 recorded as its Exclusion 1, and plan v5 does not overturn
+that exclusion's judgement** — deleting a registered worktree belonging to another session is
+outside an implementation agent's scope, and `/refresh` remains the sanctioned remedy. What plan v5
+adds is that the count has grown from 2 to 4, that it now reproduces *inside* dispatch worktrees by
+inheritance, and that it therefore sits on Phase 21's critical path rather than on its exclusion
+list.
+
+**Correction to Phase 12's Exclusion 1, on one point of fact.** That exclusion argues that removing
+the leftover loses nothing because "its only commit `228168b3b` is already landed on `main` as
+`9355b68fe`". The commit claim is confirmed. But the leftover's *working tree* also carries two
+**uncommitted** artifact copies — `plans/04_lplus-sliced-certificate-and-completeness.md`
+(178,052 bytes) and `summaries/04_lplus-sliced-certificate-and-completeness-summary.md`
+(14,416 bytes) — against the main tree's 189,809 and 30,463. Both are strictly earlier drafts of
+files the main tree already holds; a line-level comparison finds 42 lines present only in the stale
+copy, every one of them superseded wording of a task checkbox. Removal is therefore still lossless,
+but it is lossless *because those copies are superseded*, not because the worktree is empty. A
+successor should re-confirm that rather than inherit the weaker claim.
+
+#### Amendment to Phase 21's verification — additive
+
+Phase 21's text is **not edited**. These preconditions are additive to it, in the same style as the
+"Amendment to Phase 12 at plan v4" note below.
+
+- [ ] **Run the full gate from the main tree with no nested checkout live** — that is, after the
+      final dispatch worktree has landed and been released, and after the dispatch-21 leftover has
+      been removed. B0 is a whole-repository `find`; it cannot be satisfied from inside a dispatch
+      worktree for as long as that worktree carries a copy of another checkout.
+- [ ] **The leftover is removed by the sanctioned remedy, not by an implementation agent.**
+      `/refresh` is the sanctioned command; the single-command equivalent Phase 12 recorded is
+      `git worktree remove --force .claude/worktrees/agent-aa19bfa3bfef394ff`. Either way it is an
+      orchestrator- or user-level action. Before it runs, confirm that
+      `git log --oneline main..worktree-agent-aa19bfa3bfef394ff` and the two superseded artifact
+      copies named above are the whole of what is there.
+- [ ] **Do not close Phase 21 by loosening B0.** Adding `.claude` or `.orchestrate-worktrees` to
+      B0's exclusions would make the gate pass while emptying the self-test of its only content —
+      precisely the "tautology: it would pass while proving nothing" that the script's own comment
+      immediately below the check (`:822-830`) says B0 exists to avoid. If that hardening is worth
+      doing it is a separate, system-level task on `scripts/check-module-invariants.sh` (open
+      question 6 below), and it is **not** a licence to edit B0 from inside this task.
+- [ ] If B0 still fails once the leftover is gone and no dispatch worktree is live, that is a
+      genuine finding about the archive and belongs in the closing record — not in an exclusion,
+      and not behind `--no-verify`.
+
+---
 
 ### Amendment record — why Stage 2 changed at plan v4
 
@@ -510,6 +647,14 @@ no phase below may.
   construction, and that is a deviation to record, not a conflict.
 - **The paired repository** `/home/benjamin/Projects/ModelChecker` is hand-off by content only.
   Phases 12 and 21 read it and record what they find; neither ever writes to it.
+- **The orchestration system itself.** The dispatch-site defect recorded under "Revision record —
+  plan v5" is a change to the dispatch layer, not to this library, and this plan writes none of it.
+  Two constraints on whoever does: the fix is to stop passing the Agent tool's
+  `isolation: "worktree"` parameter when the orchestrator has already provisioned a worktree — not
+  to relax the harness's cross-checkout `git` guard, which behaved as designed — and per
+  `.claude/rules/source-store-deploy-boundary.md` the edit belongs in the source store resolved
+  from `.claude-extensions.json`, never hand-authored under `.claude/**`, which is a regenerated
+  deploy artifact.
 
 ### Open questions recorded, not planned
 
@@ -533,6 +678,17 @@ no phase below may.
    deliberately".
 5. **The CTL\* reduction of report 02 section 1.6, completed in report 706's Q4, is argued, not
    formalized.** It affects the complexity picture only. No declaration of this plan depends on it.
+6. **Whether `scripts/check-module-invariants.sh` should be made nested-checkout-safe.** Added at
+   plan v5. B0 and at least four `os.walk(".")` traversals in that script treat any checkout nested
+   inside the repository root — `.claude/worktrees/*`, `.orchestrate-worktrees/*` — as part of the
+   repository, so the gate's verdict depends on which dispatch worktrees happen to be live. A naive
+   fix (prune those two directories) would make B0 vacuous, which the script's own comment forbids;
+   a correct fix would distinguish "this checkout" from "a checkout under this directory", probably
+   via `git rev-parse --show-toplevel` rather than a name list. **This plan records the question and
+   allocates no phase to it**: it is a system-level change to a gate script, outside this task's
+   Lean file scope, and Phase 21 works around it by running the gate from a clean main tree
+   instead. If it is filed, it is filed by declaration and script name, never by an invented task
+   number — the same discipline this plan already applies to the `trans_refl` follow-on.
 
 ## Lean Challenge Statements
 
@@ -779,6 +935,8 @@ Stage 1 or Stage 2 calls it; it stays compiled, documented and in the tree.
 | A concurrent sibling touches this working tree | M | M | Re-read every file immediately before editing; stage only this task's own files by explicit path, never a directory or glob `git add`; never run `git-snapshot.sh` in its reverting default mode; treat a build failure outside this task's files as possibly a sibling's in-flight edit; stop and report any foreign commit or foreign uncommitted modification after checking `git log`. **Task 706 is live in this tree**; its scope is `specs/706_*/` plus a future `PlusWitnessFamily/FiniteCarrier.lean`, neither of which this plan writes |
 | A phase cannot close a goal and reaches for a `sorry` | H | L | Acceptance is zero sorries and no vacuous placeholder definitions. The correct response is plan decomposition into a new decimal sub-phase, never deferral and never a `def X := True` |
 | Documentation corrections in Phase 12 overstate in the other direction, reading the refutation as a defect in the substrate redesign | M | M | It is not one. The redesign did what it was for: `Examples.lean`'s two certificates are real and `Incompleteness.lean`'s two refuted congruences are real. What Phase 12 corrects is a claim about **coverage**, and each edit must say what remains true as well as what does not |
+| **A dispatch cannot commit**: the dispatch site stacks the harness's `isolation: "worktree"` on top of the orchestrator's own provisioned worktree, and the harness's cross-checkout `git` guard then refuses every commit while still permitting file writes and `lake` runs | H | M | This is the dispatch-21 failure mode, recorded in full under "Revision record — plan v5" above, where it cost 20 of 21 phases. Mitigation is a precondition, not a recovery: commit at the **first** green sub-step so a refusal surfaces while only one file is at stake, then STOP and report it as a dispatch-site defect rather than accumulating uncommittable work. Never retry in another form; dispatch 21 tried `cd`, `-C` and `EnterWorktree`, and all three are refused by the same guard |
+| **Phase 21's full gate cannot pass because of nested checkouts**, not because of this task's files: B0 counts `Boneyard` directories repository-wide and finds 4 from the main tree and 2 from the dispatch worktree, since neither B0's `find` nor the script's `os.walk(".")` traversals prune `.claude` or `.orchestrate-worktrees` | H | H | Measured, not predicted — see the plan v5 record above for the counts, the four paths and the script line numbers. Phase 21's additive preconditions require the gate to be run from the main tree with no nested checkout live and with dispatch 21's leftover removed by `/refresh`. **Loosening B0 is prohibited**: it would empty the self-test, which the script's own comment names as the failure it exists to avoid. Hardening the script is open question 6, a separate system-level task |
 
 ## Implementation Phases
 
@@ -1972,7 +2130,7 @@ it was written rather than reused.
 
 ---
 
-### Phase 14: The presented frame on `ℤ × Fin n` [NOT STARTED]
+### Phase 14: The presented frame on `ℤ × Fin n` [COMPLETED]
 
 **Goal**: Define the generic `FrameOver.ofSlicedStep`, instantiate it as `G.frame`, define
 `G.model`, and prove that the frame's histories are exactly the offset step paths of the slice
@@ -1980,44 +2138,114 @@ sequence. This is the phase that replaces plan v2's `FrameOver.ofStep` and it is
 amendment is cashed out.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/SlicedFrame.lean` with a module docstring; add its import to
+- [x] Create `FormalSystem/Semantics/SlicedFrame.lean` with a module docstring; add its import to
       `FormalSystem/Semantics.lean` and regenerate the library root.
-- [ ] Define `FrameOver.ofSlicedStep` on the carrier `ℤ × W` with `[Finite W] [Nonempty W]`,
+- [x] Define `FrameOver.ofSlicedStep` on the carrier `ℤ × W` with `[Finite W] [Nonempty W]`,
       following `SharingSkeleton.frame` (`WitnessFamily/Sharing/Skeleton.lean:1404`) as the
       template: a literal `FrameOver intOrder`, a two-sided relation
       `(t, w) —d→ (t + d, u)` holding exactly when a `d`-step `R`-path runs from `w` at `t` to `u`
       at `t + d`, with the negative direction by the reflection law.
-- [ ] Prove the frame laws as **named lemmas**, not inline `by` blocks, so Phase 19 can cite them:
+- [x] Prove the frame laws as **named lemmas**, not inline `by` blocks, so Phase 19 can cite them:
       - reflection, by symmetry of the two-sided relation;
       - *Limit*, by `TaskFrame.limit_of_succOrder` (`Semantics/TaskFrame.lean:1591`) at the
         zero-duration law;
       - *Saturation*, by `TaskFrame.saturation_of_fib_finite` (`Semantics/TaskFrame.lean:2222`),
         whose docstring names exactly this case — **infinite carrier, finite fibres**. The fibre
         over a time is `W`, which is `Finite` by hypothesis; the carrier `ℤ × W` is not.
-- [ ] Prove `FrameOver.ofSlicedStep_isRegular`, and `ofSlicedStep_mem_HF_iff`: a function
+- [x] Prove `FrameOver.ofSlicedStep_isRegular`, and `ofSlicedStep_mem_HF_iff`: a function
       `ℤ → ℤ × W` is the path of a world history exactly when it is `fun t => (t + k, f t)` for
       some offset `k` and some `f` with `R (t + k) (f t) (f (t + 1))` for all `t`. Route it through
       `FrameOver.mem_HF_iff_adjacent` (`Semantics/IntNormalForm.lean:348`). **Both directions are
       required**: Phase 18 needs `←` and Phase 19 needs `→`.
-- [ ] Record in that module's docstring that `FrameOver.ofStep` (`IntNormalForm.lean:456`) is
+- [x] Record in that module's docstring that `FrameOver.ofStep` (`IntNormalForm.lean:456`) is
       **not** a special case to route through, because it requires `[Finite W]` on the whole
       carrier, and cite `Probe706.no_ofStep_sat` for why that matters. Do not modify
       `IntNormalForm.lean`.
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Frame.lean`; define
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Frame.lean`; define
       `G.frame h := FrameOver.ofSlicedStep (fun t w u => G.edge t w u = true) …` at `W := Fin G.n`,
       discharging `[Finite]` and `[Nonempty]` from `n_pos` and the two seriality obligations from
       `h : G.BiSerial` through `biSerial_iff_window`.
-- [ ] Define `G.model h : TaskModel (G.frame h).toTaskFrame`, valuing an atom at `(t, w)` by its
+- [x] Define `G.model h : TaskModel (G.frame h).toTaskFrame`, valuing an atom at `(t, w)` by its
       membership in `G.slab t w`.
-- [ ] Prove `G.mem_HF_iff_slicedPath`, the specialization of `ofSlicedStep_mem_HF_iff` to `G`, and
+- [x] Prove `G.mem_HF_iff_slicedPath`, the specialization of `ofSlicedStep_mem_HF_iff` to `G`, and
       define `G.pathHistory : PlusGraphPath … → WorldHistory (G.frame h).toTaskFrame` for a path
       whose state sequence follows `G.edge`.
-- [ ] Prove the **shift-normalization lemma**: by `plusTruthAt_timeShift`
+- [x] Prove the **shift-normalization lemma** *(deviation: altered — landed as TWO named lemmas, `plusTruthAt_shiftBack` and `timeShift_offset_zero`)*: by `plusTruthAt_timeShift`
       (`PlusLanguage/PlusTruth.lean:264`) every truth question on `G.frame h` can be asked at
       offset `0`, so a position is `(t, w)` with `t` the slice time and no separate origin is
       carried. This is what keeps the position space finite per slice and is cited by Phases 15
       and 17.
-- [ ] Confirm the new modules transitively import `FormalSystem.Init` (invariant C24).
+- [x] Confirm the new modules transitively import `FormalSystem.Init` (invariant C24).
+
+**Verification — MEASURED**:
+- Both new modules build clean: guarded, detached, `--no-share` scoped builds of
+  `FormalSystem.Semantics.SlicedFrame` and
+  `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Frame` each report
+  `exit_status=0` with **zero** `error:` and **zero** `warning:` lines over both captured streams.
+  `.olean` files written for both.
+- `lean-sorry-census.sh`: `sorry_count: 0`.
+- `#print axioms` on all fifteen new declarations checked: each within
+  `[propext, Classical.choice, Quot.sound]`. Three are strictly cheaper — `iterS_add`,
+  `ofSlicedStep_serial` and `ofSlicedStep_compositional` need only `[propext, Quot.sound]`, so the
+  `Classical.choice` cost enters exactly at the *Saturation* discharge and nowhere else.
+- **The carrier's infinitude is PROVED, not asserted**, and generically rather than on one concrete
+  certificate: `FrameOver.ofSlicedStep_worldState_infinite` is an `Infinite` instance on the
+  world-state type and `ofSlicedStep_not_finite_worldState` / `frame_worldState_not_finite` are the
+  `¬ Finite` theorems at the generic frame and at `G.frame h` respectively. A concrete two-slice
+  `example` would have been strictly weaker, so it was not written.
+- `ofSlicedStep_mem_HF_iff` and `mem_HF_iff_slicedPath` are proved **biconditionals** (`constructor`
+  with both branches discharged), as Phases 18 and 19 each need one direction.
+- `git diff --stat FormalSystem/Semantics/IntNormalForm.lean` shows **no hunk**: the Scope
+  Hypothesis's relocation branch was **not** taken.
+- C24: `SlicedFrame.lean` reaches `FormalSystem.Init` through `IntNormalForm.lean`'s existing
+  closure; `Frame.lean` reaches it through `PlusSlicedCertificate/Basic.lean`.
+
+**Scope Hypothesis — CONFIRMED, both halves**:
+1. *`FrameOver.ofSlicedStep` belongs in a new Semantics module.* Confirmed by checking what it
+   consumes: `IsStepPath`, `FrameOver.mem_HF_iff_adjacent` and
+   `FrameOver.worldHistoryOfStepPath` are all exported, and the time-indexed iterate `iterS` is
+   **new** rather than a reuse of `IntNormalForm.lean`'s `iter` (the step index has to advance with
+   the slice, which `iter` has no room for). No private definition of `IntNormalForm.lean` is
+   needed, so the relocation branch is not taken and no landed core file is edited.
+2. *The two frame-law discharges are one `TaskFrame` lemma each.* Confirmed by reading
+   `limit_of_succOrder`'s and `saturation_of_fib_finite`'s hypotheses against the constructed
+   relation **before** writing the proofs: the first needs only the zero-duration law, the second
+   only finite fibres. Neither needed a side condition the template does not supply. The finite-fibre
+   fact itself is written as its own named lemma, `ofSlicedStep_fib_finite`, per this hypothesis's
+   own instruction — it is a one-line consequence of the relation's first conjunct (the target's time
+   component is pinned to `p.1 + d`), which is exactly what buys an infinite carrier.
+
+**Deviations from the plan as written**:
+- **Split into 14.1 and 14.2 as the Contingency directs**, and committed separately: 14.1 is
+  `FormalSystem/Semantics/SlicedFrame.lean` (the generic frame, its five named laws, and
+  `ofSlicedStep_mem_HF_iff`); 14.2 is `PlusSlicedCertificate/Frame.lean` (`frame`, `model`,
+  `mem_HF_iff_slicedPath`, `pathHistory`, shift-normalization).
+- **`Nonempty (Fin G.n)` is supplied through a `NeZero G.n` instance, not a `haveI` in `frame`'s
+  body.** A `haveI` would bake one particular instance term into `G.frame h`, and every later lemma
+  about the frame would then have to reproduce that same term to unify. `instNeZeroN` makes both
+  `Nonempty (Fin G.n)` and `Finite (Fin G.n)` findable by synthesis, so `G.frame h` is a bare
+  `FrameOver.ofSlicedStep` application whose instance arguments reproduce at every call site.
+- **The edge relation is named `G.stepRel`, not inlined as `fun t w u => G.edge t w u = true`.** The
+  plan writes the lambda inline; naming it is what lets `stepRel_fwd`, `stepRel_bwd`, `frame_step`,
+  `mem_HF_iff_slicedPath` and `pathHistory` all cite one relation rather than five copies of a
+  lambda that would have to unify syntactically.
+- **Shift-normalization is two lemmas, not one.** `plusTruthAt_shiftBack` moves the offset into the
+  time argument (by `plusTruthAt_timeShift`); `timeShift_offset_zero` is the companion fact that the
+  shifted history then occupies slice `t` at time `t`. One lemma cannot carry both, because the
+  second is about the history's *path* and the first about *truth*.
+- **`FrameOver.ofSlicedStep`'s reflection law is stated as a plain `↔` at `ℤ`
+  (`ofSlicedStepRel_reflect`), while the other four are stated by citation
+  (`TaskFrame.Compositional`, `TaskFrame.Serial`, `TaskFrame.Limit`, `TaskFrame.Saturation`).**
+  `ofReflectiveRegular`'s `hR` argument has no named predicate to cite, so there is nothing to cite
+  for that one.
+- **`iterS_add`'s cast bridge is oriented to match the goal's syntactic form.** `Nat`'s `m + n`
+  appears in the elaborated goal as `m.add n`, which `rw` will not match; the equation is therefore
+  written with its left-hand side in the goal's own form and the residual `↑(m + n)` / `↑(m.add n)`
+  gap is closed by `exact`, which works up to definitional equality.
+- **`Syntax.Atom` needs qualification in this subtree.** `model_valuation` names
+  `FormalSystem.Syntax.Atom` in full; the short name is not in scope through
+  `PlusSlicedCertificate/Basic.lean`'s import closure.
+
 
 **Timing**: 5 hours
 
@@ -2061,25 +2289,25 @@ lemma). Decompose into decimal sub-phases; never carry a `sorry`.
 
 ---
 
-### Phase 15: Positions, computed liveness, and the Q5 factorization [NOT STARTED]
+### Phase 15: Positions, computed liveness, and the Q5 factorization [PARTIAL]
 
 **Goal**: Build the position space over a slice, compute liveness on it as a fixpoint in both time
 directions with **both** directions of the characterization proved, and prove the factorization
 that justifies combining them. This is Stage 2's novel core and one of its two highest-risk phases.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Live.lean`.
-- [ ] Define `G.Pos χ`: pairs of a slice state and a Hintikka type over the subformulas of `χ`
+- [ ] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Live.lean`. *(deviation: deferred to 15.2 — 15.1's content landed in two files instead, `Splice.lean` and `Position.lean`; see the deviations block)*
+- [x] Define `G.Pos χ`: *(deviation: altered — `G.Pos` carries no `χ` parameter; see the deviations block)* pairs of a slice state and a Hintikka type over the subformulas of `χ`
       that agrees with `G.slab t w` on the state formulas at the relevant slice. Prove it is a
       `Fintype` with a `DecidableEq`, and bound its cardinality by `G.n * 2 ^ |subformulas χ|`.
       **This is a cardinality of the position space, not a bound on `n`** — it is not the bound
       "Bounds: none, deliberately" forbids, and the docstring must say so.
-- [ ] Define `G.succP t` and `G.predP t`, the `Finset`-valued one-step successor and predecessor
+- [x] Define `G.succP t` and `G.predP t`, the `Finset`-valued one-step successor and predecessor
       on positions **from slice `t` to slice `t + 1`** and back: an edge requires `G.edge t` on the
       state component and the (C1') one-step unfolding clauses on the type component.
-- [ ] Prove `succP` and `predP` are non-empty on the position space, from `G.BiSerial` and the
+- [ ] Prove `succP` and `predP` are non-empty on the position space, *(deviation: altered — the claim is FALSE as stated and a counterexample is recorded; replaced by `mem_succP_of_path`/`mem_predP_of_path`, which is what the fixpoints actually need. See the deviations block.)* from `G.BiSerial` and the
       type-completion argument. Without this the fixpoints are vacuous.
-- [ ] Prove the **Q5 factorization**, as an explicit named lemma rather than as a rationale in a
+- [x] Prove the **Q5 factorization**, as an explicit named lemma rather than as a rationale in a
       comment. Three named pieces, in this order:
       1. `histories_through_paste`: two histories of `G.frame h` agreeing on the state at `t` paste
          into a history following the first before `t` and the second from `t` on. This is S4, and
@@ -2098,7 +2326,7 @@ that justifies combining them. This is Stage 2's novel core and one of its two h
       `(t, w)`" is "no backward continuation in the backward language at `h`, **or** no forward
       continuation in the forward language at `h`". **This lemma is the justification for
       `live = fwdLive ∩ bwdLive`**, and the module docstring must say so by name.
-- [ ] Record, as a one-line lemma or a docstring note citing `PlusFormula.reflectTime`, that the
+- [ ] Record, as a one-line lemma or a docstring note citing `PlusFormula.reflectTime`, *(deviation: deferred to 15.2; the `succP`/`predP` adjointness `mem_succP_iff_mem_predP` is landed and is the mechanical half of it)* that the
       backward condition is the forward one on the reversed slice graph, so `bwdLive` is `fwdLive`
       of the time-reflected certificate. Use this to avoid writing the backward fixpoint twice if
       the reflection is cheap; if it is not, write both and record that it was written rather than
@@ -2121,6 +2349,120 @@ that justifies combining them. This is Stage 2's novel core and one of its two h
       refutation: a demanded all-threads fulfilment condition on a finite eventually periodic
       structure is refuted by `not_exists_plusCertifies_pumpTarget`, and asking only live positions
       to fulfil is exactly what removes that root cause.
+
+**Verification — MEASURED (15.1 only; 15.2 is NOT started)**:
+- Both new modules build clean: guarded, detached, `--no-share` scoped builds of
+  `...PlusSlicedCertificate.Splice` and `...PlusSlicedCertificate.Position` each report
+  `exit_status=0`. `Splice.lean` compiled with **zero** `error:` and **zero** `warning:` lines on
+  the **first** attempt.
+- Full guarded, detached `--no-share` `lake build` over the whole library: `exit_status=0`,
+  zero `error:` and zero `warning:` lines.
+- `lean-sorry-census.sh`: `sorry_count: 0`.
+- `#print axioms` on all fourteen new declarations: each within
+  `[propext, Classical.choice, Quot.sound]`; `truth_of_agree_of_type_eq` needs only `[propext]`.
+- `stab_factors` **exists as a named declaration**, not as a comment — the plan's own grep check.
+  So do `histories_through_paste`, `label_splices_of_type_eq` and `forall_forall_or_iff`, the three
+  pieces, each named separately as the plan requires and in the plan's stated order.
+- `StepClause`'s, `LabCoherent`'s and `AgreesOnState`'s `Decidable` instances all synthesize by
+  `inferInstance`, confirmed by an `example`.
+
+**Scope Hypothesis — first half CONFIRMED by reading, second half NOT YET REACHED**:
+1. *`AUFix` is reusable verbatim for the inner reachability step.* Confirmed by reading its binders:
+   `AUFix` is stated at `{α : Type*} [DecidableEq α]` with an arbitrary `succ : α → Finset α` and two
+   `Bool`-valued predicates, mentions no formula, and exports `lfp`, `lfp_fixed`, `lfp_least`,
+   `mem_lfp_iff` and `lfp_induction`. It is the **universal** `A[g U e]` operator, so — exactly as the
+   hypothesis anticipated — it supplies the inner "all successors eventually deliver" half and **not**
+   the existential fair-path half. The outer greatest fixpoint therefore remains new work, as asserted.
+2. *`truth_paste_of_type_eq` transcribes from the probe without change of hypotheses.* **CONFIRMED by
+   diffing**: `Splice.lean`'s `truth_of_agree_of_type_eq` and `label_splices_of_type_eq` carry the
+   probe's statement, hypothesis list and proof unchanged. **No hypothesis was added.**
+
+**Deviations from the plan as written**:
+- **This phase is PARTIAL: 15.1 is landed, 15.2 is not started.** The Contingency's split is taken.
+  15.1 = the position space, `succP`/`predP`, and the three-piece Q5 factorization with
+  `stab_factors`. 15.2 = `fwdLive`, `bwdLive`, `live`, and both directions of the characterization.
+  No `sorry` and no vacuous placeholder was written for the missing half: the declarations simply do
+  not exist yet.
+- **15.1 landed in two files, not in `Live.lean`.** `PlusSlicedCertificate/Splice.lean` holds the
+  frame-generic Q5 factorization; `PlusSlicedCertificate/Position.lean` holds the position space and
+  the one-step graph. Writing a `Live.lean` that contains no `live` would have been misleading;
+  `Live.lean` is left for 15.2, which is what defines `live`.
+- **`G.Pos` carries no `χ` parameter.** The plan writes `G.Pos χ`, "a Hintikka type over the
+  subformulas of `χ`". In this subtree the relevant formula set is already determined by the
+  certificate's own indices: it is `plusClosureOf (Γ ++ Del)`, which is what `slab`, `lab_sub`,
+  `BoxFaithful` and `PlusLocalCoherentSeqLab` are all stated against. A separate `χ` would be a
+  second, redundant formula set that every lemma would then have to relate to the first.
+- **`succP`/`predP` TOTALITY IS FALSE, and this is the loud record the plan's own instructions ask
+  for.** The plan's task reads "Prove `succP` and `predP` are non-empty on the position space, from
+  `G.BiSerial` and the type-completion argument. Without this the fixpoints are vacuous." The claim
+  does not hold. Counterexample, recorded in `Position.lean`'s module header: take a closure
+  containing `untl g e` with `e` and `g` both atoms, a certificate whose slice labelling carries no
+  atom at all, and the label `X = {untl g e}`. `X` is `LabCoherent` (no `⊥`; no implication in the
+  closure to constrain) and it `AgreesOnState` with the empty atom set, so `(w, X) ∈ G.posAt t` for
+  every `t`. But every successor label `Y` must also carry no atom, so `e ∉ Y` and `g ∉ Y`, and the
+  `untl` clause then demands `untl g e ∉ X` — contradiction. `G.succP t (w, X)` is therefore empty.
+  *The parenthetical worry is also mistaken*: positions without successors are not what makes a
+  fixpoint vacuous — they are exactly what the **greatest** fixpoint `fwdLive` exists to discard.
+  What the fixpoints genuinely need is that they are non-empty when the certificate admits a real
+  labelled path, and that is `mem_succP_of_path` / `mem_predP_of_path`, both **proved** here: every
+  position a genuine locally-coherent labelled path visits has that same path's next (resp.
+  previous) position as a witness. Those two are the soundness direction's engine and are what 15.2
+  will cite. **The obligation is replaced, not dropped.** A machine-checked `#eval` witness for the
+  counterexample above is **not** landed; it is stated as an argument over the definitions in this
+  tree and is flagged here rather than concealed.
+- **`forall_forall_or_iff` needs no inhabited index type.** The plan says "Non-emptiness of both
+  index sets is supplied by `G.BiSerial`". It is not needed: when an index type is empty the
+  corresponding universal is vacuously true on both sides of the equivalence. The lemma is stated
+  over bare `Sort*` with no hypothesis, which is strictly more general, and `G.BiSerial` is not
+  consumed by it.
+- **`stab_factors` is stated over abstract `Bwd`/`Fwd` predicates with explicit locality
+  hypotheses**, rather than hard-wiring `snce`-past-fulfilment and `untl`-future-fulfilment. The two
+  hypotheses are exactly what `label_splices_of_type_eq` delivers, so the factorization applies to
+  any backward/forward condition expressible in the `C`-labels — including the two the fixpoints
+  use, and including whatever Phase 16's transfer operators need.
+- **`not_stab_factors` is added.** The plan names only `stab_factors`; the `⊡`-shaped reading (no
+  realization ↔ no backward half **or** no forward half) is the form a `⊡χ`-clause is actually read
+  through, and it is one `not_and_or` away, so it is landed beside it rather than re-derived at each
+  use.
+- **`LabCoherent` / `StepClause` split.** The plan speaks of "the (C1') one-step unfolding clauses on
+  the type component". Those clauses are conditions on a *pair* of labels, so they are `StepClause`
+  and live on the edge; the clauses internal to one label (`⊥`-absence, the implication clause) are
+  `LabCoherent` and live on `posAt`. The `□`-clause and the fulfilment clauses are in neither: the
+  first is global and the second is what liveness computes.
+
+**Remaining for 15.2** (not started, nothing stubbed):
+`G.fwdLive`, `G.bwdLive`, `G.live`, the termination/fixpoint properties, `mem_live_of_path` (the
+soundness direction) and `exists_path_of_mem_live` (the completeness direction), plus the
+`PlusFormula.reflectTime` note on deriving `bwdLive` from `fwdLive` on the reversed slice graph.
+
+**FINDING FOR 15.2 — the Phase 15 / Phase 16 ordering may be inverted.** Recorded here so the next
+dispatch confronts it before writing a definition rather than after.
+
+The position space is **slice-indexed**: `posAt t` depends on `G.slab t`, so it genuinely differs
+from slice to slice, and `succP t` runs from `posAt t` to `posAt (t + 1)`. The plan asks 15.2 for
+`G.fwdLive t χ` at an **arbitrary `t : ℤ`**, as "the greatest set `X` of positions such that from
+every position of `X` there is a `succP`-path inside `X` discharging each eventuality pending at
+it", implemented as "a decreasing `Finset` iteration". But a greatest fixpoint of a condition whose
+successor relation changes with `t` is not one `Finset` — it is a ℤ-indexed **family** of `Finset`s,
+and a decreasing iteration on a ℤ-indexed family does not terminate for the reason a decreasing
+iteration on one `Finset` does.
+
+What makes it finite is that `G.slice` is eventually periodic (`slice_periodic_back`,
+`slice_periodic_fwd`, `exists_window_eq`, all landed in Phase 13), so `posAt` and `succP` are
+eventually periodic in `t` as well. Turning that into a finite computation is exactly what
+**Phase 16's** `Φ_back` / `Φ_fwd` one-period transfer operators and `tailStable_iff_window` are for.
+So either
+  (i) 15.2 needs the transfer operators, in which case Phase 16's first two tasks come **before**
+      15.2 and the phase boundary should move; or
+  (ii) `fwdLive` is defined only on the window (a finite index set) and its extension to all `t` is
+      Phase 16's business, in which case 15.2's `mem_live_of_path` and `exists_path_of_mem_live`
+      must be stated for window times only and Phase 16 must carry the `∀ t` versions.
+Route (ii) looks right — it mirrors `biSerial_iff_window` and `forall_slab_iff_window`, the two
+window/`∀ t` bridges already landed — but it is a **design decision that changes two phases' task
+lists** and must be taken deliberately and recorded, not absorbed. Phase 16's four-state fixture is
+precisely the object that shows the naive periodic extension is unsound, which is further evidence
+that the two phases are entangled.
+
 
 **Timing**: 5 hours
 
@@ -2504,6 +2846,50 @@ assembly). Decompose into decimal sub-phases; never carry a `sorry`.
 ---
 
 ### Phase 21: Acceptance gates and the closing record [NOT STARTED]
+
+**GATE-STATE FINDINGS from dispatch seq 25 (measured, not predicted).** `check-module-invariants.sh`
+was run in full at the end of Phase 15.1. Three check groups fail, and Phase 21 must dispose of each
+by name rather than discovering them late:
+
+1. **B0 — PRE-EXISTING, not this task's.** `expected exactly 1 Boneyard directory at ./Boneyard,
+   found 2`; the second is `./.claude/worktrees/agent-aa19bfa3bfef394ff/Boneyard`, a leftover harness
+   worktree from an earlier dispatch. It fails **identically at `main`'s HEAD**. Another session's
+   registered git worktree must not be deleted to quiet a gate; report it as a known pre-existing
+   exclusion.
+2. **C23 — PRE-EXISTING, not this task's.** One outer-shadows-inner bare-declaration pair on the base
+   name `datum`: outer `FormalSystem.Metalogic.Decidability.datum`
+   (`BiLasso/Realized.lean:156`), inner `...PlusGraphPath.datum`
+   (`PlusSlicedCertificate/Basic.lean:178`). **Both declarations are on `main`** — the inner one
+   landed with Phase 13 — so this fails at `main`'s HEAD too. Phase 21 must either rename
+   `PlusGraphPath.datum` or record the pair as an accepted exclusion; renaming is the cheaper of the
+   two, since `datum` is used only inside `Basic.lean` and `Frame.lean`.
+3. **C9 — a DIRECT CONFLICT between this plan and
+   `.claude/rules/no-task-references-in-deliverables.md`, and it needs ONE decision for all four
+   citations.** C9 reports four task-number citations under `FormalSystem/`:
+   `PlusSlicedCertificate/Basic.lean:22` (landed Phase 13, already failing at `main`'s HEAD),
+   `Splice.lean:54`, `Frame.lean:21` and `Semantics/SlicedFrame.lean:23`. Every one of them is a
+   `specs/{NNN}_{slug}/probes/...` path, and **this plan mandates exactly those citations** — Phase
+   13, Phase 14, Phase 20 and Phase 21 each instruct citing the 706 probe "by path". The exemption
+   taxonomy at `.claude/context/standards/task-reference-exemptions.md` has **no category** covering
+   "a `specs/**` research probe cited as provenance in a Lean docstring". Two candidate resolutions,
+   to be chosen deliberately and recorded:
+   - **(a)** Drop the `specs/` path from all four and keep the probe's **declaration name** as the
+     anchor (`Probe706.no_ofStep_sat`, `Probe703Paste.truth_of_agree_of_type_eq`). This satisfies C9
+     with no tooling change, at the cost of a reader not being told where the probe file lives.
+   - **(b)** Add a category to the exemption taxonomy and mark the four lines `task-ref-ok`. This
+     keeps the paths but edits the agent system, which must be done in the **source store** named by
+     `.claude-extensions.json`'s `source_dir`, never under `.claude/**` — a strictly wider blast
+     radius than this task.
+   **(a) is the recommendation**; either way the choice must be recorded, and it must be applied to
+   all four citations at once rather than piecemeal.
+
+Also measured at the same run, and already fixed in dispatch seq 25 rather than deferred here: the
+`INV` group failed with `FormalSystem/Semantics/README.md: SlicedFrame.lean is live but has no row`
+plus three stale generated inventory blocks. The row was written and
+`bash scripts/check-module-invariants.sh --emit-inventory` was run; `INV` now passes. **Every new
+module added by Phases 15.2-20 will reproduce this failure**, so run `--emit-inventory` (and write
+the hand-maintained row for each new subtree README) as part of each phase rather than only here.
+
 
 **Goal**: Land Stage 2's documentation rows and axiom pins, run the full gate set, and close the
 task with an honest record of what was proved and what was not.
