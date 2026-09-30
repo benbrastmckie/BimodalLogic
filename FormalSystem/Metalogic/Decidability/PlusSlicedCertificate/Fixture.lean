@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Live
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Window
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Bridge
 
 /-!
 # The Window-Width Fixture: Identical Slices, Different Liveness
@@ -94,6 +95,9 @@ time, and `succP (-2) p₀` is empty for a purely label-theoretic reason.
 - `Fixture.window_verdict` — the verdict stated against `Window.lean`'s actual `winLo`: the position
   is live at `-NB = -1` and dead at `winLo = -2 * NB = -2`, so the lower endpoint cannot be raised
   from the doubled value to the single-period one
+- `Fixture.liveT_ne_empty_and_ne_verts` — the computed liveness `Finset` on this certificate is
+  neither empty nor the whole vertex set, proved through the bridge in both directions rather than
+  by evaluation
 
 ## Tags
 
@@ -720,6 +724,64 @@ theorem neg_two_outside_single_period_window :
     -cert.nb ≤ (-1 : ℤ) ∧ ¬ (-cert.nb ≤ (-2 : ℤ)) ∧ -2 * cert.nb ≤ (-2 : ℤ) ∧
       cert.Live (-1) p₀ ∧ ¬ cert.Live (-2) p₀ := by
   refine ⟨by simp, by simp, by simp, live_neg_one, not_live_of_le_neg_two le_rfl⟩
+
+/-! ## The computed liveness `Finset` is neither empty nor the whole vertex set
+
+Phase 15's last verification criterion, discharged as named theorems rather than by evaluation.
+`liveT` is `Nu.gfp` over `verts` iterated `verts.card + 1` times, and every iteration runs an inner
+`EUFix.lfp` of the same height over a vertex set of size `n * 2 ^ |Cl| * |winTimes|`, so `decide` is
+not a route to either fact and no amount of patience makes it one.
+
+`Bridge.lean`'s equality is the route, and it is used in **both** directions, which is why the gate
+is evidence that the bridge is not vacuous either way: non-emptiness is the completeness direction
+applied to `live_neg_one`, and properness is the soundness direction contraposed against
+`not_live_of_le_neg_two`. Neither direction alone would give both halves.
+-/
+
+/-- **(C3b) holds of the fixture, vacuously**: its closure carries no `□`-formula, so the box guess
+has nothing to be faithful to. The fixture therefore exercises the bridge's soundness direction
+without the box clause doing any work — which is the right test of the rest of the splice. -/
+theorem boxLabelFaithful : cert.BoxLabelFaithful := fun χ hχ => absurd hχ (Cl_no_box χ)
+
+theorem mem_winTimes_neg_one : (-1 : ℤ) ∈ cert.winTimes := by
+  rw [cert.mem_winTimes, cert_winLo, cert_winHi]
+  omega
+
+theorem mem_winTimes_neg_two : (-2 : ℤ) ∈ cert.winTimes := by
+  rw [cert.mem_winTimes, cert_winLo, cert_winHi]
+  omega
+
+/-- **`p₀` at `-1` is a live vertex**, by the bridge's completeness direction. -/
+theorem mem_liveT_neg_one : (p₀, (-1 : ℤ)) ∈ cert.liveT :=
+  cert.mem_liveT_of_live mem_winTimes_neg_one live_neg_one
+
+/-- **`p₀` at `-2` is a vertex.** Stated separately, because "not the whole position space" is only
+informative if the excluded pair is a vertex to begin with. -/
+theorem mem_verts_neg_two : (p₀, (-2 : ℤ)) ∈ cert.verts :=
+  (cert.mem_verts _).mpr ⟨mem_winTimes_neg_two, mem_posAt_p₀ (by omega)⟩
+
+/-- **`p₀` at `-2` is not a live vertex**, by the bridge's soundness direction against this module's
+own `not_live_of_le_neg_two`. -/
+theorem not_mem_liveT_neg_two : (p₀, (-2 : ℤ)) ∉ cert.liveT := by
+  intro hv
+  have h : cert.Live (-2) p₀ := cert.live_of_mem_liveT boxLabelFaithful hv
+  exact not_live_of_le_neg_two le_rfl h
+
+/--
+**The gate: the computed liveness `Finset` is neither empty nor the whole vertex set.**
+
+One and the same position is a live vertex at `-1` and a dead one at `-2`, on a certificate whose
+slice is literally the same at both times. So the fixpoint discards something and keeps something,
+and it is not discarding or keeping on the strength of the slice alone.
+-/
+theorem liveT_ne_empty_and_ne_verts : cert.liveT ≠ ∅ ∧ cert.liveT ≠ cert.verts := by
+  refine ⟨?_, ?_⟩
+  · intro hE
+    have h := mem_liveT_neg_one
+    rw [hE] at h
+    simp at h
+  · intro hV
+    exact not_mem_liveT_neg_two (by rw [hV]; exact mem_verts_neg_two)
 
 end Fixture
 
