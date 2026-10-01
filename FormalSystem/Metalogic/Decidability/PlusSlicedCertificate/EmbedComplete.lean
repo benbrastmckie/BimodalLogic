@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Embed
+import FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Family
 
 /-!
 # The Embedded Certificate's Semantics, and the Flagship
@@ -40,6 +41,20 @@ without being re-derived. The `⊡` case never arises: the induction runs over `
 - `WitnessFamily.sliced_canAt_iff_mem` — the canonical membership predicate, likewise
 - `WitnessFamily.sliced_target_lab_eq_canLab` — hypothesis `hcan` of the completeness headline
 - `WitnessFamily.sliced_slabTrue` — hypothesis `hst`, both clauses
+- `WitnessFamily.SnceProbe.snceProbeFamily_not_tailStable` and the `Live` mirror — the **backward**
+  conjunct of `Stable.lean`'s `TailStable` is **refuted** at a certifying embedded certificate, at
+  the single residue `r = 0`
+- `PlusSlicedCertificate.TailStableMirror` — the mirror-filtered backward demand, a **candidate**
+  and not the operative one, evaluated at four embedded certificates
+
+## What is NOT here, and why
+
+The flagship `exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula` is **not** here. Its
+route through `Complete.lean`'s headline needs `(W.sliced tt).TailStable`, and the section below
+refutes that demand at a family meeting every output condition of
+`WitnessFamily.exists_witnessFamily_of_not_validZTime`. The obstruction is recorded as
+kernel-checked theorems rather than worked around; no `sorry` and no weakened statement stands in
+for it.
 
 ## Tags
 
@@ -384,6 +399,290 @@ theorem sliced_slabTrue (W : WitnessFamily ([] : Context) [φ])
         add_zero] at this
   · intro χ hχ
     exact absurd hχ (sliced_not_stab_mem φ χ)
+
+end WitnessFamily
+
+/-! ## A backward counterpart of the forward liveness filter, as a CANDIDATE
+
+`Stable.lean`'s `TailStable` filters its **forward** conjunct by the computed forward-live set and
+leaves its **backward** conjunct unfiltered. The section after this one refutes the unfiltered
+backward conjunct at the embedding, so the mirror filter is the obvious candidate repair and is
+named here so that the measurement is durable rather than transient.
+
+**This is a candidate, not the operative demand.** `TailStable` is unchanged, and nothing in the
+library consumes anything below. The design decision belongs to whoever reads the refutation.
+-/
+
+namespace PlusSlicedCertificate
+
+variable {Γ Del : PlusContext}
+
+/-- **The computed backward-live positions at a time**, the exact mirror of
+`PlusSlicedCertificate.fwdLiveAt`. -/
+def bwdLiveAtCand (G : PlusSlicedCertificate Γ Del) (s : ℤ) : Finset G.Pos :=
+  (G.posAt s).filter (fun p => (p, s) ∈ G.bwdLiveT)
+
+theorem liveAt_subset_bwdLiveAtCand (G : PlusSlicedCertificate Γ Del) (s : ℤ) :
+    G.liveAt s ⊆ G.bwdLiveAtCand s := by
+  intro p hp
+  rw [G.mem_liveAt] at hp
+  exact Finset.mem_filter.mpr ⟨hp.1, ((G.mem_liveT (p, s)).mp hp.2).2⟩
+
+/-- **The backward conjunct with the mirror filter applied**: the candidate repair. Strictly weaker
+than the landed backward conjunct, by `liveAt_subset_bwdLiveAtCand`. -/
+def TailStableMirror (G : PlusSlicedCertificate Γ Del) : Prop :=
+  ∀ r ∈ Finset.range G.NBnat,
+    G.iterBack (-G.NB - (r : ℤ)) (G.liveAt (-G.NB - (r : ℤ))) G.NBnat
+      ∩ G.bwdLiveAtCand (-G.NB - (r : ℤ)) = G.liveAt (-G.NB - (r : ℤ))
+
+instance decidableTailStableMirror (G : PlusSlicedCertificate Γ Del) :
+    Decidable G.TailStableMirror :=
+  inferInstanceAs (Decidable (∀ r ∈ Finset.range G.NBnat,
+    G.iterBack (-G.NB - (r : ℤ)) (G.liveAt (-G.NB - (r : ℤ))) G.NBnat
+      ∩ G.bwdLiveAtCand (-G.NB - (r : ℤ)) = G.liveAt (-G.NB - (r : ℤ))))
+
+/-- **The landed backward conjunct, isolated**, so that a refutation can name it. The `r = 0`
+instance is `Φ_back L₀ = L₀` verbatim. -/
+def TailStableBack (G : PlusSlicedCertificate Γ Del) : Prop :=
+  ∀ r ∈ Finset.range G.NBnat,
+    G.iterBack (-G.NB - (r : ℤ)) (G.liveAt (-G.NB - (r : ℤ))) G.NBnat
+      = G.liveAt (-G.NB - (r : ℤ))
+
+instance decidableTailStableBack (G : PlusSlicedCertificate Γ Del) :
+    Decidable G.TailStableBack :=
+  inferInstanceAs (Decidable (∀ r ∈ Finset.range G.NBnat,
+    G.iterBack (-G.NB - (r : ℤ)) (G.liveAt (-G.NB - (r : ℤ))) G.NBnat
+      = G.liveAt (-G.NB - (r : ℤ))))
+
+/-- **The landed forward conjunct, isolated**, the mirror of `TailStableBack`. -/
+def TailStableFwd (G : PlusSlicedCertificate Γ Del) : Prop :=
+  ∀ r ∈ Finset.range G.NFnat,
+    G.iterFwd (G.NM + G.NF + (r : ℤ)) (G.liveAt (G.NM + G.NF + (r : ℤ))) G.NFnat
+      ∩ G.fwdLiveAt (G.NM + G.NF + (r : ℤ)) = G.liveAt (G.NM + G.NF + (r : ℤ))
+
+instance decidableTailStableFwd (G : PlusSlicedCertificate Γ Del) : Decidable G.TailStableFwd :=
+  inferInstanceAs (Decidable (∀ r ∈ Finset.range G.NFnat,
+    G.iterFwd (G.NM + G.NF + (r : ℤ)) (G.liveAt (G.NM + G.NF + (r : ℤ))) G.NFnat
+      ∩ G.fwdLiveAt (G.NM + G.NF + (r : ℤ)) = G.liveAt (G.NM + G.NF + (r : ℤ))))
+
+/-- **The two isolated conjuncts are `TailStable`.** Definitional, so a refutation of either is a
+refutation of the demand. -/
+theorem tailStable_iff_conjuncts (G : PlusSlicedCertificate Γ Del) :
+    G.TailStable ↔ (G.TailStableBack ∧ G.TailStableFwd) := Iff.rfl
+
+end PlusSlicedCertificate
+
+/-! ## The backward conjunct is REFUTED at the embedding
+
+Sub-phase 20.1 evaluated `TailStable` at two embedded certificates and found it **true**, and
+recorded explicitly that two certificates are not a general argument. Both of those certificates
+carry an `untl` closure and no `snce` at all. That is the gap: the two conjuncts of `TailStable` are
+**not** symmetric — the forward one filters by the computed forward-live set (the repair landed at
+sub-phase 16.3) and the backward one does not — so an obstruction living in the `snce` direction is
+invisible to an `untl`-only probe.
+
+**The mechanism, stated before the witnesses.** `Position.lean`'s `snceClauseAt` constrains the
+**later** label from the earlier one: `snce g e ∈ Y ↔ e ∈ X ∨ (g ∈ X ∧ snce g e ∈ X)`. So a label
+carrying a `snce` obligation constrains its *predecessors* and leaves its *successors* free, and
+`LabCoherent` constrains no eventuality at all. Hence a position whose label carries a `snce`
+obligation that no admissible predecessor can discharge is a legitimate member of `posAt` with an
+empty `predP` — not backward-live, therefore not live — while its `succP` is non-empty, because
+dropping the obligation rightward is always permitted. `Stable.lean`'s `stepBack` is a
+`succP`-**preimage**, so that position is in `iterBack`, and the backward conjunct, having no
+filter, demands it be live. It is not.
+
+This is the exact mirror of `FixtureStable.lean`'s obstruction to the raw forward demand, and the
+mirror filter removes the mirror witness exactly as `Fixture.not_mem_R₀fwd_pR` records for the
+forward one. The justification offered for the asymmetry at `Stable.lean`'s `fwdLiveAt` — that
+`FoldB` relates only negative times, so no backward counterpart of `mem_fwdLiveT_of_fwdLive_fold`
+exists — is a statement about the **right** tail, whose times are positive. The left tail's times
+`-G.NB - k * G.NB` are negative and `FoldB` does relate them, and `Fold.lean` already lands every
+transport the mirror construction would need (`foldB_slice`, `foldB_posAt`, `foldB_predP`,
+`foldB_prevTime`); only a `bwdVertFold` counterpart of `Bridge.lean`'s `fwdVertFold` is missing.
+
+**What is claimed and what is not.** What is claimed: `(W.sliced tt).TailStable` does **not** follow
+from `W.Certifies tt`, and the counterexample family meets every output condition of
+`WitnessFamily.exists_witnessFamily_of_not_validZTime` besides the invalidity of its own target —
+so the flagship cannot be proved from that theorem's stated output along this route. What is **not**
+claimed: that no repair exists (the mirror filter is measured clean at all four certificates below),
+and that `snce p q` is ℤ-time invalid, which is evident but is not mechanized here.
+-/
+
+namespace WitnessFamily
+
+namespace SnceProbe
+
+open FormalSystem.Syntax
+
+/-- The guard atom of the `snce` probe. -/
+def snceProbeAtomG : Atom := Atom.mkBase "g"
+
+/-- The event atom of the `snce` probe. -/
+def snceProbeAtomE : Atom := Atom.mkBase "e"
+
+/-- The guard of the probe obligation. -/
+def snceProbeGuard : Formula := Formula.atom snceProbeAtomG
+
+/-- The event of the probe obligation. -/
+def snceProbeEvent : Formula := Formula.atom snceProbeAtomE
+
+/-- The smallest target whose closure carries a `snce` obligation at all: the exact mirror of
+`Embedded.evTarget`. -/
+def snceProbeTarget : Formula := Formula.snce snceProbeGuard snceProbeEvent
+
+theorem snceProbeTarget_mem :
+    snceProbeTarget ∈ closureOf (([] : Context) ++ [snceProbeTarget]) :=
+  self_mem_closureOf (by simp)
+
+theorem snceProbeEvent_mem :
+    snceProbeEvent ∈ closureOf (([] : Context) ++ [snceProbeTarget]) :=
+  closureOf_snce_left snceProbeTarget_mem
+
+/-- The empty-labelled lasso over the `snce` target: locally coherent, vacuously fulfilling, and
+refuting the target everywhere. -/
+def snceProbeLasso : LabelledLasso (closureOf (([] : Context) ++ [snceProbeTarget])) where
+  back := [∅]
+  mid := []
+  fwd := [∅]
+  back_ne := by simp
+  fwd_ne := by simp
+  label_sub := by
+    intro X hX
+    have hE : X = ∅ := by
+      rcases List.mem_append.mp hX with h | h
+      · rcases List.mem_append.mp h with h | h
+        · exact List.mem_singleton.mp h
+        · simp at h
+      · exact List.mem_singleton.mp h
+    subst hE
+    exact Finset.empty_subset _
+
+/-- The one-lasso family over `snceProbeLasso`. -/
+def snceProbeFamily : WitnessFamily ([] : Context) [snceProbeTarget] where
+  bx := fun _ => false
+  lassos := [snceProbeLasso]
+  lassos_ne := by simp
+
+/-- **The family certifies**, so the refutation below is at a genuine member of the class the
+embedding consumes and not at an arbitrary structure. -/
+theorem snceProbeFamily_certifies : snceProbeFamily.Certifies 0 := by decide
+
+/-- **THE REFUTATION.** The embedded certificate of a certifying family fails `TailStable`. -/
+theorem snceProbeFamily_not_tailStable : ¬ (snceProbeFamily.sliced 0).TailStable := by decide
+
+/-- **The failing conjunct is the BACKWARD one**, and `NBnat = 1` here, so the single residue it
+quantifies over is `r = 0` — the pre-residue demand `Φ_back L₀ = L₀` itself, not an artifact of the
+residue indexing landed at sub-phase 18.3. -/
+theorem snceProbeFamily_not_tailStableBack :
+    ¬ (snceProbeFamily.sliced 0).TailStableBack := by decide
+
+/-- **The forward conjunct holds** at the same certificate. The failure is one-sided, and it is on
+the side that carries no liveness filter. -/
+theorem snceProbeFamily_tailStableFwd : (snceProbeFamily.sliced 0).TailStableFwd := by decide
+
+/-- **The residue count is one**, so `r = 0` is the whole of the backward demand here. -/
+theorem snceProbeFamily_nBnat : (snceProbeFamily.sliced 0).NBnat = 1 := by decide
+
+/-- **The mirror filter repairs it**, at this certificate. -/
+theorem snceProbeFamily_tailStableMirror : (snceProbeFamily.sliced 0).TailStableMirror := by decide
+
+/-! ### The same refutation at a family that genuinely carries and discharges the obligation
+
+The empty-labelled family above tests the demand against an empty closure, which sub-phase 20.1
+rightly treated as the weaker of two probe shapes. This one is the mirror of `Embedded.liveFamily`:
+the event at time `0`, the obligation at time `1`, `perM = 2`, twelve timed vertices, and the
+obligation genuinely discharged inside the lasso. The verdict is the same, so the refutation is
+structural rather than an artifact of empty labels.
+-/
+
+/-- `e` at time `0`, `e S g` at time `1`, empty elsewhere. -/
+def snceProbeLiveLasso : LabelledLasso (closureOf (([] : Context) ++ [snceProbeTarget])) where
+  back := [∅]
+  mid := [{snceProbeEvent}, {snceProbeTarget}]
+  fwd := [∅]
+  back_ne := by simp
+  fwd_ne := by simp
+  label_sub := by
+    intro X hX
+    have hE : X = ∅ ∨ X = {snceProbeEvent} ∨ X = {snceProbeTarget} := by
+      rcases List.mem_append.mp hX with h | h
+      · rcases List.mem_append.mp h with h | h
+        · exact Or.inl (List.mem_singleton.mp h)
+        · rcases List.mem_cons.mp h with rfl | h
+          · exact Or.inr (Or.inl rfl)
+          · exact Or.inr (Or.inr (List.mem_singleton.mp h))
+      · exact Or.inl (List.mem_singleton.mp h)
+    rcases hE with rfl | rfl | rfl
+    · exact Finset.empty_subset _
+    · exact Finset.singleton_subset_iff.mpr snceProbeEvent_mem
+    · exact Finset.singleton_subset_iff.mpr snceProbeTarget_mem
+
+/-- The one-lasso family over `snceProbeLiveLasso`. -/
+def snceProbeLiveFamily : WitnessFamily ([] : Context) [snceProbeTarget] where
+  bx := fun _ => false
+  lassos := [snceProbeLiveLasso]
+  lassos_ne := by simp
+
+theorem snceProbeLiveFamily_certifies : snceProbeLiveFamily.Certifies 0 := by decide
+
+/-- **The refutation again**, at twelve timed vertices and with the obligation genuinely carried and
+genuinely discharged. -/
+theorem snceProbeLiveFamily_not_tailStable :
+    ¬ (snceProbeLiveFamily.sliced 0).TailStable := by decide
+
+theorem snceProbeLiveFamily_not_tailStableBack :
+    ¬ (snceProbeLiveFamily.sliced 0).TailStableBack := by decide
+
+theorem snceProbeLiveFamily_tailStableFwd : (snceProbeLiveFamily.sliced 0).TailStableFwd := by
+  decide
+
+theorem snceProbeLiveFamily_tailStableMirror :
+    (snceProbeLiveFamily.sliced 0).TailStableMirror := by decide
+
+/-! ### The mirror filter does not regress the two certificates sub-phase 20.1 landed
+
+Both of 20.1's `untl` certificates already satisfy the unfiltered backward conjunct, and the mirror
+filter is weaker, so neither verdict can change. Evaluated rather than argued, because the point of
+a candidate repair is that it is measured at every certificate the tree has.
+-/
+
+theorem emptyFamily_tailStableMirror : (Embedded.emptyFamily.sliced 0).TailStableMirror := by decide
+
+theorem liveFamily_tailStableMirror :
+    (Embedded.liveFamily.sliced (-1)).TailStableMirror := by decide
+
+/-! ### The refuting family meets the compression theorem's own output specification
+
+`WitnessFamily.exists_witnessFamily_of_not_validZTime` outputs a family together with four
+conditions besides `Certifies`: per-lasso segment bounds, a lasso-count bound, a `bx` of the form
+`fun χ => decide (χ ∈ S)` for some closure subset `S`, and a target time in `[0, compressionBound]`.
+The refuting family satisfies all four. So the obstruction is not dodged by reading more of that
+theorem's conclusion: the flagship's route has to repair the demand, strengthen the compression
+theorem's output, or change route.
+-/
+
+theorem snceProbeFamily_segment_bounds : ∀ Λ ∈ snceProbeFamily.lassos,
+    Λ.back.length ≤ compressionBound ([] : Context) [snceProbeTarget] ∧
+    Λ.mid.length ≤ compressionBound ([] : Context) [snceProbeTarget] ∧
+    Λ.fwd.length ≤ compressionBound ([] : Context) [snceProbeTarget] := by decide
+
+theorem snceProbeFamily_lasso_count : snceProbeFamily.lassos.length
+    ≤ (closureOf (([] : Context) ++ [snceProbeTarget])).card + 1 := by decide
+
+theorem snceProbeFamily_bx_shape :
+    snceProbeFamily.bx = fun χ => decide (χ ∈ (∅ : Finset Formula)) := by
+  funext χ
+  simp [snceProbeFamily]
+
+theorem snceProbeFamily_target_time :
+    (0 : ℤ) ≤ 0 ∧ (0 : ℤ) ≤ (compressionBound ([] : Context) [snceProbeTarget] : ℤ) := by decide
+
+theorem snceProbeLiveFamily_segment_bounds : ∀ Λ ∈ snceProbeLiveFamily.lassos,
+    Λ.back.length ≤ compressionBound ([] : Context) [snceProbeTarget] ∧
+    Λ.mid.length ≤ compressionBound ([] : Context) [snceProbeTarget] ∧
+    Λ.fwd.length ≤ compressionBound ([] : Context) [snceProbeTarget] := by decide
+
+end SnceProbe
 
 end WitnessFamily
 
