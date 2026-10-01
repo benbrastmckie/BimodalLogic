@@ -17,15 +17,7 @@
   ],
   "phases_completed": 16,
   "phases_total": 21,
-  "blockers": [
-    {
-      "phase": "17",
-      "target": "FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Certifies",
-      "verbatim_goal": "Include `G.BiSerial` and `G.TailStable` as the first two conjuncts of `Certifies`. Both are window-decided and both are already `Decidable`.",
-      "what_was_tried": "Sub-phase 16.2c's own route was run to completion and produced a refutation rather than the lemma it was asked for. The re-presentation family Fixture.certRep a b c was built (pre-period absorbed into mid, either period multiplied), certRep_slice_shift proves each member presents Fixture.cert's own slice sequence shifted right by b, and Fixture.not_tailStable proves no member is tail-stable. The mechanism was then traced to its source: Phi_fwd is a reachability transfer; Position.lean's StepClause constrains untl g e in X in terms of the LATER label only; LabCoherent is bottom-freeness plus the implication clause and constrains no eventuality at all.",
-      "why_it_failed": "Phase 17's first task bullet rests on a premise sub-phase 16.2c disproved: that TailStable constrains only the presentations a checker accepts, because any unstable certificate could be re-presented (exists_tailStable_repr). Fixture.cert's frame has NO tail-stable presentation. The repair is a change to TailStable's own definition, which is named in this plan's Lean Challenge Statement, is consumed by Phases 18-21, and is the hypothesis hstab of Phase 19's relative-completeness theorem whose landed linchpin tailStable_iff_window is stated from it. That is a design decision, not an implementation detail, so it is escalated rather than guessed. Four candidate repairs, with what each is believed to buy and what is NOT proved about any of them, are enumerated at the plan's Phase 17 heading."
-    }
-  ],
+  "blockers": [],
   "decisions_made": [
     "exists_tailStable_repr is NOT stated in any form, because it is false. A weakened version (backward conjunct only, or under an extra closure hypothesis) was considered and rejected: the plan's own Phase 16 Scope Hypothesis forbids weakening a theorem to make it come out true, and a weakened lemma under that name would be read downstream as the harmlessness claim it is not.",
     "The refutation is a FAMILY statement, not a single-certificate one. Proving only not cert.TailStable would have been consistent with the plan, which says an unstable certificate should be re-presented rather than rejected. Hence certRep a b c and not_tailStable (a b c).",
