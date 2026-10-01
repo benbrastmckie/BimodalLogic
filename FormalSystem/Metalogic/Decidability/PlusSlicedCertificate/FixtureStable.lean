@@ -73,11 +73,17 @@ module resolves:
 2. `exists_tailStable_repr` cannot be stated, so the plan's Phase 16 task bullet asking for it, and
    its Verification line asking that its statement mention no bound, are both moot. The record of
    that is at the plan's Phase 16 heading.
-3. Whether `Certifies` should carry `Φ_fwd R₀ = R₀` at all is a **design question**, because a
+3. Whether `Certifies` should carry `Φ_fwd R₀ = R₀` at all was a **design question**, because a
    checker clause that is unsatisfiable at a frame whose closure carries a tail-dead eventuality
    would make Phase 19's and Phase 20's completeness statements unprovable rather than merely
-   relativized. This module escalates that question; it does not settle it, and it does not weaken
-   `TailStable` on its own authority.
+   relativized. This module escalated that question rather than settling it. **It has since been
+   settled, by the user ruling of 2026-09-30, in favour of the liveness-filtered transfer**: the raw
+   demand `Φ_fwd R₀ = R₀` is kept under the name `TailStableRaw` and every theorem of this module is
+   stated from it, while `TailStable` itself now carries
+   `Φ_fwd R₀ ∩ R₀fwd = R₀` — see `PlusSlicedCertificate.TailStable`'s own docstring for the repaired
+   definition and for what it still buys. Nothing proved in this module is weakened by that change:
+   the raw forward conjunct still fails in every member of the family, and that failure is exactly
+   why the filter is there.
 
 ## Tags
 
@@ -119,6 +125,87 @@ theorem mem_R₀_eR (a b c : ℕ) : eR a b c ∈ (certRep a b c).R₀ :=
 /-- **`pR` is not in `R₀`.** -/
 theorem not_mem_R₀_pR (a b c : ℕ) : pR a b c ∉ (certRep a b c).R₀ :=
   not_mem_liveAt_pR a b c (NM_add_NF_ne a b c).2
+
+/-! ### What the liveness filter removes: the witness is forward-dead at the reference time
+
+The three lemmas below are the evidence that the repaired forward conjunct of `TailStable` addresses
+this module's refutation rather than merely sidestepping it. The raw conjunct's refuting witness is
+`pR`, reachable from `R₀` in one period (`mem_Φ_fwd_R₀_pR`) and live nowhere but at `b - 1`
+(`not_live_pR`). What is proved here is the **computed** counterpart of that deadness at the right
+reference time: `pR ∉ R₀fwd`. So `mem_Φ_fwd_R₀_pR` no longer contradicts tail-stability's forward
+conjunct, and the position the filter removes is exactly the one the refutation produced.
+
+The argument is the module header's, read on the computed side. A forward walk out of the right
+reference time stays in the right periodic region (`nextTime_ge_right`); the event atom `ev` is
+labelled at the mid time `b` alone and the guard atom `gd` nowhere; and `NM + NF = b + c + 2` is
+past the mid time. So the fixpoint's own `untl` clause at `phi` cannot be met: a delivering vertex
+would have to carry `ev` at a time past `b`, and a longer walk would need `gd` at its first vertex.
+-/
+
+/-- **No position of any slice carries the guard atom.** Every position agrees with the slice
+labelling on the state formulas, and the guard is labelled nowhere. -/
+theorem not_mem_lab_gd (a b c : ℕ) {t : ℤ} {p : (certRep a b c).Pos}
+    (hp : p ∈ (certRep a b c).posAt t) : gd ∉ p.2.1 := fun h =>
+  certRep_slab_not_mem_gd a b c t p.1
+    (((((certRep a b c).mem_posAt t p).mp hp).2 gd mem_Cl_gd rfl).mp h)
+
+/-- **No position away from the mid time carries the event atom.** -/
+theorem not_mem_lab_ev (a b c : ℕ) {t : ℤ} (ht : t ≠ (b : ℤ)) {p : (certRep a b c).Pos}
+    (hp : p ∈ (certRep a b c).posAt t) : ev ∉ p.2.1 := fun h =>
+  ht ((certRep_slab_mem_ev_iff a b c t p.1).mp
+    (((((certRep a b c).mem_posAt t p).mp hp).2 ev mem_Cl_ev rfl).mp h))
+
+/--
+**The dead position is not computed-forward-live at the right reference time**, in every member of
+the family.
+
+This is what makes the liveness filter the right repair and not a dodge: the witness that refutes
+`Φ_fwd R₀ = R₀` is removed by the filter, because it is forward-dead where the filter reads.
+-/
+theorem not_mem_R₀fwd_pR (a b c : ℕ) : pR a b c ∉ (certRep a b c).R₀fwd := by
+  intro hmem
+  have hfl : (pR a b c, (certRep a b c).NM + (certRep a b c).NF) ∈ (certRep a b c).fwdLiveT :=
+    (((certRep a b c).mem_fwdLiveAt _ _).mp hmem).2
+  have hstep : (pR a b c, (certRep a b c).NM + (certRep a b c).NF) ∈
+      (certRep a b c).fwdLiveStep (certRep a b c).fwdLiveT := by
+    rw [(certRep a b c).fwdLiveT_fixed]
+    exact hfl
+  have hclause := (((certRep a b c).mem_fwdLiveStep (certRep a b c).fwdLiveT _).mp hstep).2.2
+    phi mem_Cl_phi
+  simp only [phi, untlLiveAt, decide_eq_true_eq] at hclause
+  have hin : PlusFormula.untl gd ev ∈
+      (pR a b c, (certRep a b c).NM + (certRep a b c).NF).1.2.1 := by
+    rw [pR_snd]
+    exact Finset.mem_singleton_self phi
+  have hlive := hclause hin
+  have hbc : (certRep a b c).NM + (certRep a b c).NF = (b : ℤ) + (c : ℤ) + 2 := by
+    rw [certRep_NM, certRep_NF]
+    omega
+  have key : ∀ v ∈ (certRep a b c).untlLive (certRep a b c).fwdLiveT gd ev,
+      ¬ ((certRep a b c).NM + (certRep a b c).NF ≤ v.2) := by
+    rw [untlLive]
+    refine EUFix.lfp_induction (certRep a b c).fwdLiveT (certRep a b c).succT
+      (Fair.inSet (certRep a b c).fwdLiveT ((certRep a b c).atPosT ev))
+      ((certRep a b c).atPosT gd) ?_
+    intro v hv hex hge
+    obtain ⟨w, hw, hcase⟩ := hex
+    have hwv : w ∈ (certRep a b c).verts := (certRep a b c).succT_subset v hw
+    have hwt : w.2 = (certRep a b c).nextTime v.2 := (certRep a b c).snd_of_mem_succT hw
+    have hvw : v.2 ∈ (certRep a b c).winTimes :=
+      (certRep a b c).snd_mem_winTimes_of_mem_verts ((certRep a b c).fwdLiveT_subset hv)
+    have hwge : (certRep a b c).NM + (certRep a b c).NF ≤ w.2 := by
+      rw [hwt]
+      exact (certRep a b c).nextTime_ge_right hvw hge
+    have hwpos : w.1 ∈ (certRep a b c).posAt w.2 :=
+      (certRep a b c).fst_mem_posAt_of_mem_verts hwv
+    have hbne : w.2 ≠ (b : ℤ) := by
+      have hc : (0 : ℤ) ≤ (c : ℤ) := Int.natCast_nonneg c
+      omega
+    rcases hcase with he | ⟨hg, -⟩
+    · rw [Fair.inSet_iff] at he
+      exact not_mem_lab_ev a b c hbne hwpos (((certRep a b c).atPosT_iff ev w).mp he.1)
+    · exact not_mem_lab_gd a b c hwpos (((certRep a b c).atPosT_iff gd w).mp hg)
+  exact key _ hlive le_rfl
 
 /-- **The all-empty position survives every partial rightward transfer.** The chain the failure
 runs along: `eR` is live at the right reference time and steps to itself, period after period. -/
@@ -184,14 +271,22 @@ theorem Φ_fwd_R₀_ne (a b c : ℕ) :
   not_mem_R₀_pR a b c (h ▸ mem_Φ_fwd_R₀_pR a b c)
 
 /--
-**No re-presentation of the fixture is tail-stable.**
+**No re-presentation of the fixture satisfies the RAW tail-stability demand.**
 
 This is sub-phase 16.2c's actual result, and it is the negation of what the plan's
 `exists_tailStable_repr` asserts at the very certificate the plan named as that lemma's worked
-example. Absorbing the pre-period into `mid` and multiplying either period changes nothing: the
+example. Absorbing the pre-period into `mid` and multiplying either period changes nothing: the raw
 forward conjunct fails in every member, by `Φ_fwd_R₀_ne`.
+
+**Renamed from `not_tailStable` when the forward conjunct was repaired.** The statement is the one
+that is true and provable: it is about `TailStableRaw`, the pre-repair demand, which `Stable.lean`
+keeps under that name for exactly this record. It is **not** about the repaired `TailStable`, whose
+forward conjunct this family's witness `pR` does not refute — `pR` is reachable but forward-dead, so
+the liveness filter removes it, which is the whole point of the repair. No claim is made here either
+way about `(certRep a b c).TailStable`; see this module's header.
 -/
-theorem not_tailStable (a b c : ℕ) : ¬ (certRep a b c).TailStable := fun h => Φ_fwd_R₀_ne a b c h.2
+theorem not_tailStableRaw (a b c : ℕ) : ¬ (certRep a b c).TailStableRaw :=
+  fun h => Φ_fwd_R₀_ne a b c h.2
 
 /-! ### The fixture itself, and the one half re-presentation does repair -/
 
@@ -229,9 +324,17 @@ recording them separately: `Φ_back_L₀_ne_cert` is repaired by absorbing the p
 -/
 theorem not_tailStable_cert :
     ¬ cert.TailStable ∧ cert.Φ_back cert.L₀ ≠ cert.L₀ ∧ cert.Φ_fwd cert.R₀ ≠ cert.R₀ := by
-  refine ⟨?_, Φ_back_L₀_ne_cert, ?_⟩
-  · rw [cert_eq_certRep]; exact not_tailStable 0 0 0
-  · rw [cert_eq_certRep]; exact Φ_fwd_R₀_ne 0 0 0
+  refine ⟨fun h => Φ_back_L₀_ne_cert h.1, Φ_back_L₀_ne_cert, ?_⟩
+  rw [cert_eq_certRep]
+  exact Φ_fwd_R₀_ne 0 0 0
+
+/-- **The fixture also fails the raw demand**, and by its forward conjunct as well as its backward
+one. Kept separate from `not_tailStable_cert` because the two statements now say different things:
+this one is about the pre-repair demand, that one about the repaired `TailStable`, which the fixture
+fails only at its backward conjunct. -/
+theorem not_tailStableRaw_cert : ¬ cert.TailStableRaw := by
+  rw [cert_eq_certRep]
+  exact not_tailStableRaw 0 0 0
 
 /--
 **What absorbing the pre-period does achieve**: the witness of the backward failure leaves `L₀`.
