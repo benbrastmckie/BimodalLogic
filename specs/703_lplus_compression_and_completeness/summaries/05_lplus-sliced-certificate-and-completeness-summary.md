@@ -8,13 +8,18 @@
 - **Completed**: not complete — **sub-phase 16.3 and Phases 17, 18 and 19 are all closed** (19 as
   [COMPLETED WITH EXCLUSIONS]). Phase 18's blocker (a demand-level gap in `TailStable`, recorded at
   dispatch 42) is **RESOLVED** at dispatch 44 by the residue-indexed demand the user ruled for in
-  cycle 3. **Phase 20 is now [PARTIAL]: dispatch 47 closed sub-phase 20.1 and left 20.2 open.**
-  Phase 21 remains NOT STARTED. Dispatch 44 ended 2026-10-01T04:05:00Z; dispatch 46
-  ended 2026-10-01T05:05:00Z; dispatch 47 ended 2026-10-01T05:53:00Z
+  cycle 3. **Phase 20 is now [BLOCKED]: dispatch 47 closed sub-phase 20.1; dispatch 49 closed two of
+  sub-phase 20.2's four obligations and REFUTED the third.** The backward conjunct of `TailStable` is
+  false at an embedded certificate built from a certifying family, at residue `r = 0`, and the
+  flagship depends on it — a USER RULING is required and no repair was chosen on the agent's
+  authority. Phase 21 remains NOT STARTED. Dispatch 44 ended 2026-10-01T04:05:00Z; dispatch 46
+  ended 2026-10-01T05:05:00Z; dispatch 47 ended 2026-10-01T05:53:00Z; dispatch 49 ended
+  2026-10-01T16:45:00Z
 - **Effort**: ~35 minutes (dispatch 40, sub-phase 16.3) + ~40 minutes (dispatch 41, Phase 17) +
   ~40 minutes (dispatch 42, Phase 18's prerequisites and its blocker) + ~50 minutes (dispatch 44,
   the demand change and Phase 18) + ~60 minutes (dispatch 46, Phase 19) + ~30 minutes (dispatch 47,
-  sub-phase 20.1)
+  sub-phase 20.1) + ~95 minutes (dispatch 49, sub-phase 20.2's two landed obligations and the
+  refutation of its third)
 - **Dependencies**: `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Stable`,
   `...PlusSlicedCertificate.Bridge`, `...PlusSlicedCertificate.FixtureStable`,
   `...PlusSlicedCertificate.Window`, `...PlusSlicedCertificate.Position`,
@@ -24,11 +29,42 @@
   `...PlusSlicedCertificate.Tail`. Dispatch 47 adds **one** new intra-repository dependency:
   `Embed.lean` imports `...WitnessFamily.Agreement` alongside `...PlusSlicedCertificate.Complete`,
   which is the first time this subtree depends on the `Formula`-side witness-family layer at all —
-  necessarily, since the embedding's source object lives there
+  necessarily, since the embedding's source object lives there. Dispatch 49 adds **one** further:
+  `EmbedComplete.lean` imports `...WitnessFamily.Compression.Family` alongside
+  `...PlusSlicedCertificate.Embed`, needed only so that the refuting family can be checked against
+  `compressionBound` — i.e. against the compression theorem's own output specification
 - **Artifacts**: plans/05_lplus-sliced-certificate-and-completeness.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
+
+**Dispatch 49 lands two of sub-phase 20.2's four obligations and REFUTES the third.** The two that
+landed are the ones the dispatch-47 handoff mapped: a **truth lemma for the embedded model** that
+stands on the family's own four certification conditions and on nothing the certificate has yet to
+establish (`Sound.lean`'s own `plusTruthAt_iff_canAt` cannot serve — it takes `BoxLabelFaithful`,
+`TailStable`, `StabFaithful` and `BoxLiveFaithful` as hypotheses, which is exactly what an embedded
+certificate is trying to establish), and from it `SlabTrue` (`hst`) and the canonical-label
+identification (`hcan`), two of the four hypotheses `Complete.lean`'s completeness headline leaves
+outstanding. The self-loop edge relation is what makes the induction cheap: every history of the
+embedded frame has a **constant** index, so the `□` clause's history quantifier collapses to a
+quantifier over one index and one offset, which is exactly what `BoxFaithful` reports.
+
+**The third obligation is false.** The **backward** conjunct of `Stable.lean`'s `TailStable` does
+**not** hold at an embedded certificate. It is refuted by `decide` at two separate families, both of
+which satisfy `WitnessFamily.Certifies`, at the single residue `r = 0` — the pre-residue demand
+`Φ_back L₀ = L₀` itself, not an artifact of the residue indexing landed at sub-phase 18.3 — while
+the **forward** conjunct holds at both. Sub-phase 20.1's favourable probe missed this because both
+of its certificates carry an `untl` closure and **no `snce` at all**, and the two conjuncts are not
+symmetric: the forward one filters by the computed forward-live set (the user's option-2 ruling,
+landed at 16.3) and the backward one does not, so an obstruction in the `snce` direction is
+structurally invisible to an `untl`-only probe at any size. The mechanism is the exact mirror of
+`FixtureStable.lean`'s obstruction to the raw forward demand: `snceClauseAt` constrains the **later**
+label from the earlier, so a position carrying an undischargeable `snce` obligation has empty
+`predP` (hence is not live) but non-empty `succP`, and `stepBack` is a `succP`-**preimage**.
+
+Per this phase's own Fallback bullet the refutation is reported and **no repair is chosen on the
+agent's authority**. One candidate is measured clean at all four certificates the tree now has and
+is named as a candidate only, with `TailStable` left unchanged. Phase 20 is `[BLOCKED]`.
 
 **Dispatch 47 closes sub-phase 20.1** — the construction half of the embedding of the landed
 `Formula`-side witness family — and splits Phase 20 as that phase's own Contingency declares.
@@ -117,6 +153,38 @@ demand written out and raised as this round's `user_decision`, because it narrow
 class Phases 19-20 claim completeness relative to.
 
 ## What Changed
+
+### Dispatch 49 (sub-phase 20.2 — two obligations landed, the third refuted)
+
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/EmbedComplete.lean` — **new**, 690
+  lines. Three sections:
+  - **The embedded frame's histories, and the truth lemma.** `Periodic.const_of_step_eq` (a function
+    on `ℤ` fixed across one step is constant), `WitnessFamily.sliced_history_const` (every history of
+    the embedded frame has a constant index) and `sliced_exists_history` (every index-and-offset pair
+    is realized by one); then `sliced_plusTruthAt_iff_mem`, the truth lemma, six cases on
+    `ψ : Formula` with the `⊡` case absent because `ofFormula ψ` is never a top-level `stab`.
+    `WitnessFamily.untl_mem_of_witness` and `snce_mem_of_witness` are reused verbatim for the two
+    temporal cases rather than re-derived, as the dispatch-47 handoff asked.
+  - **The two headline hypotheses.** `sliced_canAt_iff_mem` (the canonical membership predicate at a
+    constant index is label membership — cheaper than the truth lemma, since `canAt`'s `□` clause
+    *is* the slice labelling and `BoxFaithful` is not needed), `sliced_target_lab_eq_canLab`
+    (**`hcan`**) and `sliced_slabTrue` (**`hst`**, both clauses; the `⊡` clause by the vacuity 20.1
+    landed).
+  - **The refutation, as kernel-checked theorems.** `TailStableBack` / `TailStableFwd`, the two
+    conjuncts isolated with `tailStable_iff_conjuncts : TailStable ↔ (TailStableBack ∧ TailStableFwd)`
+    by `rfl` so the record can name which side failed; the two refuting families
+    (`SnceProbe.snceProbeFamily`, `...snceProbeLiveFamily`) with their `Certifies` verdicts, their
+    `¬ TailStable` and `¬ TailStableBack` verdicts, their `TailStableFwd` verdicts, `NBnat = 1`, and
+    the four theorems placing `snceProbeFamily` inside the compression theorem's own output
+    specification; and the candidate repair `bwdLiveAtCand` / `TailStableMirror` with
+    `liveAt_subset_bwdLiveAtCand` and its four `decide` verdicts.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean` — one added import and one added
+  submodule bullet.
+- `FormalSystem.lean`, `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md`, `README.md`,
+  `typst/generated/status.typ` — regenerated.
+- **Untouched**: `Stable.lean`, `Tail.lean`, `Sound.lean`, `Complete.lean`, `Embed.lean`, and the
+  whole of `PlusWitnessFamily/`. `TailStable` is not weakened and the two protected soundness
+  theorems are not touched.
 
 ### Dispatch 47 (sub-phase 20.1)
 
@@ -348,6 +416,41 @@ class Phases 19-20 claim completeness relative to.
 
 ## Decisions
 
+### Dispatch 49 (sub-phase 20.2)
+
+- **A second truth lemma, not a reuse of either existing one.** `Sound.lean`'s
+  `plusTruthAt_iff_canAt` takes `BoxLabelFaithful`, `TailStable`, `StabFaithful` and
+  `BoxLiveFaithful`; using it to establish `SlabTrue` at an embedded certificate would be circular.
+  `WitnessFamily.truth_iff_mem` is stated at the L side's own shift-set model on carrier
+  `Fin k × ℤ`, not at the sliced frame on `ℤ × Fin k`, and transporting it would need a model
+  isomorphism this subtree does not have — exactly as the dispatch-47 handoff recorded. So the
+  induction was redone at the sliced model, over `ψ : Formula` rather than over `PlusFormula`, which
+  is what removes the `⊡` case entirely.
+- **The truth lemma quantifies the history, its index and its offset INSIDE the induction**, rather
+  than fixing a history and proving the statement for it. The `□` case needs the induction hypothesis
+  at *every* history, so a fixed-history formulation does not close; this is the one design choice in
+  that proof and it is the reason the `□` case is four lines.
+- **The refutation is landed as theorems, not reported as a measurement.** Sub-phase 20.1 set this
+  precedent for its favourable probe and the same reasoning applies with more force to an unfavourable
+  one: a `decide` verdict in a transcript is lost, a kernel-checked theorem is not, and a later
+  dispatch must not be able to re-litigate whether the demand holds.
+- **A SECOND refuting family, deliberately.** The first has an empty closure, which 20.1 itself
+  identified as the weaker of two probe shapes. The second mirrors `Embedded.liveFamily`: twelve timed
+  vertices, `perM = 2`, the obligation genuinely carried at one time and genuinely discharged at
+  another. Same verdict, so the failure is structural and not an artifact of empty labels.
+- **The candidate repair is NAMED but NOT ADOPTED.** `TailStable` is unchanged; `bwdLiveAtCand` and
+  `TailStableMirror` live in the new module, are consumed by nothing in the library, and are
+  documented in their own docstrings as candidates. This phase's Fallback bullet forbids picking a
+  repair on the agent's authority, and the plan forbids weakening `TailStable`. Measuring the
+  candidate is not choosing it, and measuring it is what makes the escalation actionable rather than
+  a bare refusal.
+- **The four compression-output theorems were added because the obvious objection to the refutation
+  is that the compression theorem would never produce such a family.** It would: the refuting family
+  satisfies every output condition of `exists_witnessFamily_of_not_validZTime` besides the invalidity
+  of its own target. That is checked rather than argued, and the one soft link — that `snce g e` with
+  atomic `g`, `e` is ℤ-time invalid with an all-empty type at every world — is flagged as stated
+  rather than proved.
+
 ### Dispatch 47 (sub-phase 20.1)
 
 - **Split Phase 20 at a point one bullet earlier than its Contingency names, and say why.** The
@@ -523,6 +626,44 @@ class Phases 19-20 claim completeness relative to.
 
 ## Plan Deviations
 
+### Dispatch 49 (sub-phase 20.2)
+
+- **Phase 20's `BiSerial`-and-backward-`TailStable` bullet** — *altered to BLOCKED, and the demand
+  REFUTED*. The bullet asserts the backward half is "genuinely short" because `Φ_back` is the
+  identity under self-loops. 20.1 corrected that premise (it is a `succP`-preimage, not the
+  identity). The correction did not go far enough: the conjunct does not merely cost more than
+  claimed, it is **false** at the embedding.
+- **Phase 20's PRINCIPAL-RISK forward bullet** — *the mandated Fallback was executed, for the sibling
+  conjunct*. The forward conjunct now returns favourable at **four** certificates (20.1's two plus
+  both refuting ones), so it is not where the phase is stuck and its general proof was not attempted.
+  The Fallback's instructions were followed for the backward conjunct instead: refuting witness
+  reported, residue named (`r = 0`), no repair chosen on the agent's authority.
+- **Phase 20's `slicedOfWitnessFamily_certifies` bullet** — *partially done, then blocked*. Of the
+  four hypotheses `Complete.lean`'s headline leaves outstanding, `hst` and `hcan` are landed and
+  `hTS` is refuted; `hconc` was not reached. The bullet's own claim that "the live positions over
+  `(t, i)` are exactly the ones the single lasso `i` realizes" is precisely what the refutation
+  falsifies.
+- **Phase 20's (C3b) `BoxLabelFaithful` bullet** — *DISCHARGED by the route 20.1's annotation named*:
+  on the headline (C3b) is produced from `canonBx`, so what was owed was `SlabTrue`'s `□` clause, and
+  that is landed.
+- **Phase 20's flagship-assembly bullet** — *BLOCKED*. Its first two steps are unobstructed; the
+  embed step needs the refuted demand.
+- **Phase 20's module-docstring bullet** — *partially done*. `EmbedComplete.lean`'s header records
+  what the embedded truth lemma buys and why the flagship is absent; the "what this theorem buys"
+  paragraph proper is blocked with the theorem. C9 is respected: no `specs/**` path and no probe name
+  from outside the library appears in either module, per the user's ruling of cycle 5.
+- **Phase 20's task-704 hand-off bullet** — *BLOCKED with the theorem*. What 704 can be handed
+  instead is the refutation: the sliced class as presently defined does not contain the embedded
+  image of every certifying `WitnessFamily`, so it is not a non-vacuity witness for a shape gate that
+  assumes it does.
+- **A new module rather than an extension of `Embed.lean`** — *altered*. The plan's "Files to modify"
+  names `Embed.lean`. The 20.2 work went into a new sibling `EmbedComplete.lean` instead, for two
+  reasons: `Embed.lean` is 851 lines and carries four `decide` probes, so iterating inside it costs a
+  re-elaboration of all of them; and keeping the construction half and the semantic-plus-refutation
+  half in separate modules makes the import of `WitnessFamily.Compression.Family` (needed only for
+  the `compressionBound` checks) local to the half that needs it. The aggregator carries one added
+  import and one added submodule bullet, exactly as 20.1 did.
+
 ### Dispatch 47 (sub-phase 20.1)
 
 - **Phase 20 task 4 ("Prove the embedded certificate is `BiSerial` … and prove the **backward** half
@@ -661,6 +802,47 @@ class Phases 19-20 claim completeness relative to.
   silently overridden.
 
 ## Verification
+
+### Dispatch 49 (sub-phase 20.2)
+
+- **Build**: full `lake build` **SUCCESS**, **2805 jobs** (one more than dispatch 47's 2804 — the new
+  module), **zero errors, zero warnings**, build-guard exit 0. Run detached through
+  `lake-build-guard.sh build --no-share`. A baseline build at the worktree's provisioned state was
+  run first and was green at 2804 jobs, so the delta is attributable.
+- **Sorry count**: **0** (`lean-sorry-census.sh` over the four resolved source roots).
+- **Vacuous-definition grep**: **1** hit, `FormalSystem/Examples/TemporalStructures.lean:495`,
+  pre-existing and untouched — the same single hit dispatch 47 recorded.
+- **Axiom count**: **14**, unchanged. `#print axioms` on all fifteen new declarations checked: each
+  is exactly `[propext, Classical.choice, Quot.sound]`.
+- **The two protected soundness theorems survive untouched.**
+  `git diff --stat main...HEAD -- FormalSystem/Metalogic/Decidability/PlusWitnessFamily/` is
+  **empty**, and `PlusSharingWitnessFamily.plusTruth_iff_mem` and `...plusRefutes_of_certifies` both
+  report `[propext, Classical.choice, Quot.sound]`.
+- **`scripts/check-module-invariants.sh`**: C1 PASS, **C2 PASS** (all twenty-two pinned axiom sets
+  match baseline), C3 PASS (zero structural sorries), and C4, C5, C6, C8, C9, C10, C11, C12, C13,
+  C14, C15, C20, C25, C25N, C27-C35, C9D and INV all PASS. Four residual groups fail, and they are
+  **exactly** dispatch 47's pre-existing set at **identical counts**: C16 (2 findings, both the
+  `Φ_back` / `Φ_fwd` pair in `Stable.lean`), C23 (7 `Uppercase_x` names + 1 outer-shadows-inner
+  pair), C24 (`Fixpoint` does not transitively import `FormalSystem.Init`), C26 (the same two `Φ`
+  names). **No new module, declaration or name from this dispatch appears anywhere in the gate
+  output** — checked by grep for `EmbedComplete`, `snceProbe`, `TailStableMirror` and
+  `bwdLiveAtCand`: zero hits.
+- **`scripts/typst-sync-check.sh --fix`**: PASS (status.typ, module map and machine appendix all in
+  sync). README inventories regenerated via `--emit-inventory`.
+- **Module elaboration time**: the whole of `EmbedComplete.lean`, including all fifteen `decide`
+  evaluations, elaborates in **7 s**. The kernel remains the cheaper evaluator at these sizes, as
+  20.1 found; no probe needed the interpreter.
+- **Plan-compliance spot-check**: still **failed**, for the reason dispatch 46 recorded — it scans
+  every `**Goals**:` block including `[NOT STARTED]` and `[BLOCKED]` phases, so it cannot pass while
+  the flagship is absent. Its outstanding finding is
+  `exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula`, which is the refuted obligation.
+- **What was NOT verified, stated rather than implied**: that `snce g e` with atomic `g`, `e` is
+  ℤ-time invalid, and that the family `exists_witnessFamily_of_not_validZTime` actually chooses for
+  such a target is the refuting one. Both are evident (take `g`, `e` false throughout; the full type
+  of every world is then empty, which is the refuting family's labelling) and neither is mechanized.
+  What *is* mechanized is that the refuting family satisfies every one of that theorem's output
+  conditions besides its target's invalidity, which is what makes the obstruction unavoidable along
+  this route.
 
 ### Dispatch 47 (sub-phase 20.1)
 
@@ -898,6 +1080,28 @@ Every `lake` invocation in this dispatch went through the build guard, detached,
 
 ## Impacts
 
+### Dispatch 49 (sub-phase 20.2)
+
+- **The Stage-2 result's scope claim changes.** Until a ruling lands, the sliced certificate class
+  does **not** contain the embedded image of every certifying `WitnessFamily`, so no statement of the
+  form "the sliced class is at least as strong as the landed L class on branching-free targets" is
+  available. Anything downstream that was going to cite that — Phase 20's own docstring bullet, the
+  hand-off to task 704, and Phase 21's acceptance record — must not assert it.
+- **`TailStable`'s asymmetry is now a known defect rather than a design choice.** The forward
+  conjunct's liveness filter was landed at sub-phase 16.3 on a user ruling, in response to a
+  refutation at `Fixture.cert`. The identical obstruction exists on the backward side and was never
+  filtered, and the justification recorded at `Stable.lean`'s `fwdLiveAt` for not filtering it is a
+  statement about the **right** tail only. Any future work on this demand should read both conjuncts
+  together.
+- **Probe discipline for this subtree has a new requirement**: a probe of `TailStable` must carry
+  **both** an `untl` and a `snce` in its closure. Every probe this task landed before dispatch 49
+  carried only an `untl`, and that is why a favourable verdict at 20.1 coexisted with a false demand.
+- **Two headline hypotheses are now reusable regardless of how the ruling goes.** `sliced_slabTrue`
+  and `sliced_target_lab_eq_canLab`, and the truth lemma under them, consume only
+  `W.LocalCoherentLab`, `W.FulfillingLab` and `W.BoxFaithful` — never `TailStable` — so they survive
+  any repair to the demand, including a change of certificate notion that keeps the frame and the
+  slice labelling.
+
 ### Dispatch 47 (sub-phase 20.1)
 
 - **The embedding's source object is now reachable from this subtree.** `Embed.lean` is the first
@@ -1000,6 +1204,38 @@ Every `lake` invocation in this dispatch went through the build guard, detached,
 
 ## Follow-ups
 
+### Dispatch 49 — what the ruling has to decide, and what each option costs
+
+1. **Mirror the filter on the backward conjunct** — replace it by `TailStableMirror`. Measured clean
+   at all four certificates the tree has: it repairs both refuting ones and regresses neither of
+   20.1's. **Cost, stated now rather than discovered later**: everything stated from the backward
+   conjunct's *functional* form must be redone, exactly as `tailStable_iff_window_fwd` was redone when
+   the forward filter landed — `Stable.lean`'s `iterBack_liveAt_refBack` and `iterBack_L₀`;
+   `Tail.lean`'s `mem_L₀_of_live_tail`, `live_of_mem_L₀_tail`, `tailStable_iff_window`,
+   `liveAt_tail_eq_L₀`, `liveAt_winLo_eq_L₀`; and the **left branch** of `exists_win_live_eq`, which
+   is what Phase 18's truth lemma consumes. The soundness lemma the redo would need is the `FoldB`
+   analogue of `mem_fwdLiveT_of_fwdLive_fold`; `Fold.lean` already lands every transport it requires
+   (`foldB_slice`, `foldB_posAt`, `foldB_predP`, `foldB_prevTime`) and only a `bwdVertFold`
+   counterpart of `Bridge.lean`'s `fwdVertFold` is missing. That the mirror lemma closes is
+   **plausible and unproved**.
+2. **Strengthen the compression theorem's output** so that the families it produces exclude the junk
+   positions. Unmeasured, and it reopens `WitnessFamily/Compression/Family.lean`, which this task's
+   description does not scope.
+3. **Change route** — do not go through `Complete.lean`'s `TailStable`-hypothesised headline.
+   Unmeasured, and since `TailStable` is a field of `Certifies` this means a different certificate
+   notion, i.e. most of Stage 2 again.
+
+**What the ruling should not choose**: narrowing the embedded class to `snce`-free targets.
+`Del = [ofFormula φ]` with `φ` carrying a `snce` is an ordinary instance of the flagship's own
+statement, and excluding it would make the flagship something other than what this task asks for.
+
+**Also outstanding, independent of the ruling**: the stale-`.olean` hazard reproduced a **sixth**
+time in this dispatch's worktree (9 `.olean`s for 22 `PlusSlicedCertificate` modules, every `.trace`
+claiming current). The main tree still carries the stale pairs, so the next worktree inherits them a
+seventh time. The working fix remains: delete
+`.lake/build/{lib/lean,ir}/…/PlusSlicedCertificate/`, plus `PlusSlicedCertificate.*`,
+`FormalSystem.*` and the five `.lake/build-guard.*` files, then build with `--no-share`.
+
 ### Dispatch 47 (sub-phase 20.1)
 
 - **Sub-phase 20.2 is the next work**, and it owes four things in this order: `TailStable` for the
@@ -1088,6 +1324,32 @@ Every `lake` invocation in this dispatch went through the build guard, detached,
 - `iterFwd_R₀` still has no consumer inside the subtree; kept deliberately (dispatch 40's record).
 
 ## References
+
+### Dispatch 49
+
+- `specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md`
+  — the Phase 20 heading, its new BLOCKER block, the updated sub-phase record and the annotated
+  checklist
+- `specs/703_lplus_compression_and_completeness/handoffs/phase-20-handoff-20261001T055301Z.md` — the
+  dispatch-47 handoff this dispatch opened from; its route map for `SlabTrue` and `hcan` was accurate
+  and was followed
+- `specs/703_lplus_compression_and_completeness/handoffs/phase-20-handoff-20261001T163527Z.md` — this
+  dispatch's own handoff: the refutation, the mechanism, the candidate repair's four verdicts, the
+  correction to the `fwdLiveAt` justification, and the three options for the ruling
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/EmbedComplete.lean` — this dispatch's
+  output
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Stable.lean` — `TailStable`'s docstring
+  (the option-2 ruling and the residue indexing) and `fwdLiveAt`'s note (the asymmetry justification
+  this dispatch corrects as right-tail-only)
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Position.lean` — `snceClauseAt` and
+  `LabCoherent`, the two definitions the refutation's mechanism turns on, and the module header's own
+  account of why `succP` is not total
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FixtureStable.lean` — the forward
+  obstruction this one mirrors
+- `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Family.lean` —
+  `exists_witnessFamily_of_not_validZTime` and its five output conditions
+- `FormalSystem/Metalogic/Decidability/WitnessFamily/Agreement.lean` — `untl_mem_of_witness` and
+  `snce_mem_of_witness`, reused verbatim
 
 ### Dispatch 46
 
