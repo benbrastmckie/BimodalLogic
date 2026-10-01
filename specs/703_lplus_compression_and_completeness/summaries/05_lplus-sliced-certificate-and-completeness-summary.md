@@ -2,44 +2,102 @@
 
 - **Task**: 703 - lplus_compression_and_completeness
 - **Status**: [IN PROGRESS]
-- **Started**: 2026-10-01T00:09:00Z (dispatch 40)
-- **Completed**: not complete — **sub-phase 16.3 is COMPLETED** (the repaired forward conjunct of
-  `TailStable`, implementing the user ruling of 2026-09-30). **Phase 17 is unblocked and remains
-  NOT STARTED**; Phases 18-21 remain NOT STARTED. Dispatch 40 ended 2026-10-01T00:40:00Z
-- **Effort**: ~35 minutes (dispatch 40, sub-phase 16.3)
+- **Started**: 2026-10-01T00:09:00Z (dispatch 40); dispatch 41 began 2026-10-01T00:47:00Z
+- **Completed**: not complete — **sub-phase 16.3 and Phase 17 are both COMPLETED**. Phases 18-21
+  remain NOT STARTED. Dispatch 41 ended 2026-10-01T01:25:00Z
+- **Effort**: ~35 minutes (dispatch 40, sub-phase 16.3) + ~40 minutes (dispatch 41, Phase 17)
 - **Dependencies**: `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Stable`,
-  `...PlusSlicedCertificate.Bridge`, `...PlusSlicedCertificate.FixtureStable` (all landed before
-  this dispatch); no new external dependency
+  `...PlusSlicedCertificate.Bridge`, `...PlusSlicedCertificate.FixtureStable`,
+  `...PlusSlicedCertificate.Window`, `...PlusSlicedCertificate.Position`,
+  `...PlusWitnessFamily.Compression.Types` (all landed before these dispatches); no new external
+  dependency
 - **Artifacts**: plans/05_lplus-sliced-certificate-and-completeness.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Dispatch 40 implements the user's tail-stability ruling. `TailStable`'s forward conjunct is no
-longer the raw reachability equation `Φ_fwd R₀ = R₀` — which sub-phase 16.2c refuted at a named
-certificate, for every member of its re-presentation family — but the **liveness-filtered** transfer
-`Φ_fwd R₀ ∩ R₀fwd = R₀`, where `R₀fwd` is the computed **forward**-live set at the right reference
-time. The raw demand survives, unchanged and still decidable, as `TailStableRaw`, and every theorem
-that was stated from it is now stated from that name instead of being deleted or weakened.
+Round 5 covers two dispatches. **Dispatch 40** implemented the user's tail-stability ruling:
+`TailStable`'s forward conjunct became the liveness-filtered transfer `Φ_fwd R₀ ∩ R₀fwd = R₀`, with
+the raw demand preserved as `TailStableRaw`. **Dispatch 41** wrote Phase 17, the decidable checker:
+`FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean` defines `Certifies` as nine
+clauses and synthesizes `decidableCertifies` from them, and the checker has been **run** — a
+concrete certificate is exhibited and accepted, by `#guard` lines that evaluate during the build
+rather than by assertion.
 
-Both halves of the tail collapse survive the change with their statements intact. The `←` half needed
-only the filtered equation's `⊇` half, iterated by monotonicity. The `→` half needed a genuinely new
-ingredient, and it is the mathematical content of this dispatch: `mem_fwdLiveT_of_fwdLive_fold`, the
-`FoldF`-general forward half of the bridge, which carries forward liveness from an arbitrarily far
-right-tail time `G.NM + G.NF + k · G.NF` down to the reference time. That is what lets the induction
-conclude that an arriving live position is in the filter, one period at a time, without the
-functional equation the raw demand supplied.
+The three structural conjuncts are `BiSerial`, `TailStable` and `BoxLabelFaithful`, each decided
+through a landed window biconditional. Two of the three needed a `Decidable` instance written here,
+and one of those needed a piece the plan had not anticipated: `BoxLabelFaithful`'s
+`∀ χ, □χ ∈ closure → …` is not a bounded quantifier and no instance resolves against it, so the
+reindexing `boxArgs` / `stabArgs` had to be written first.
 
-The repair is also shown to address 16.2c's refutation rather than sidestep it:
-`Fixture.not_mem_R₀fwd_pR` proves that the very witness which refuted the raw conjunct — reachable
-from `R₀` in one period, occupied by no run down the right tail — is **not** in the filter, in every
-member of the family.
+Three of the plan's clause descriptions could not be implemented as written, and each alternative is
+forced rather than chosen. The **existential side** is stated on the position graph (`TargetPathPos`:
+the target path's position lies in `G.posAt` at every time and steps along `G.succP`) plus a single
+liveness clause, because `PlusFulfillingSeqLab` is an unbounded existential over ℤ and is not
+decidable at all, and `PlusLocalCoherentSeqLab` reads `lab (t ± 1)`, which no one-time fold reaches.
+Nothing is lost: `targetRun` rebuilds the `LabRun` and `exists_fulfilling_run_at_targetTime` rebuilds
+the fulfilling run. The **box clause** is `BoxLiveFaithful`, on live positions, not (C3)
+`BoxFaithful` on the slice labelling — which is what the plan's box-clause bullet's own first
+sentence asks for, and which its plan-v7 parenthetical contradicted. And one clause was **added**,
+`G.targetTime ∈ G.winTimes`, because the computed live set exists only at window times while
+`targetTime` is an unconstrained field.
 
-**One conflict had to be resolved to do this work, and it is reported rather than papered over.**
-Plan v8's Phase 17 heading records candidate 1 ("keep `TailStable` exactly as landed") as the user's
-ruling. The user's recorded ruling says the opposite. See Decisions below.
+The folding the phase needed did not exist either. `Window.lean`'s `forall_iff_win` folds a predicate
+reading **one** time; `succP` reads two consecutive slices. `forall_iff_win_succ` is the
+one-step-lookahead fold, proved here from four new combined-period shift lemmas, and the doubled
+window endpoints are exactly what make the lookahead land inside the window on both tails.
 
 ## What Changed
+
+### Dispatch 41 — Phase 17, the decidable checker
+
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean` — **new file, 737 lines.**
+  - `boxArgs` / `mem_boxArgs`, `stabArgs` / `mem_stabArgs`: the closure's `□`- and `⊡`-arguments as
+    `Finset`s, which is the shape-guarded quantifier read as a domain.
+  - `decidableBiSerialAt`, `decidableBiSerialWindow`, `decidableBiSerial` — (C1) through
+    `biSerial_iff_window` over a `Finset.Ico` of the **own** window.
+  - `decidableBoxLabelFaithfulWindow`, `decidableBoxLabelFaithful` — (C3b) through
+    `boxLabelFaithful_iff_window`, over the same own window.
+  - `decidableTarget` — (C4); `Basic.lean` declares no instance.
+  - `slice_sub_NB`, `target_datum_sub_NB`, `slice_add_NF`, `target_datum_add_NF` — the **combined**
+    period shifts, each a residue computation citing `nb_dvd_NB` / `target_nb_dvd_NB` /
+    `nf_dvd_NF` / `target_nf_dvd_NF`. `Basic.lean`'s own periodicity lemmas shift by the
+    certificate's periods and leave the target path's data behind; these move both at once.
+  - `forall_iff_win_succ` — the fold with one step of lookahead, by induction on the number of
+    period shifts needed to reach the window, one shift at a time so that each shift's side
+    condition is discharged where it holds.
+  - `targetPos`, `targetPos_fst` / `targetPos_snd`, `targetPos_congr`, `TargetPathPos`,
+    `decidableTargetPathPos`.
+  - `target_labCoherent`, `target_agrees`, `target_edge`, `target_stepClause`, `target_coherent`,
+    `targetRun` with `targetRun_lab` / `targetRun_st` / `targetRun_pos` — the four local clauses
+    projected out, the fifth (box) clause recovered from (C3b) and `AgreesOnState`, and the `LabRun`
+    they assemble into. The box-clause derivation mirrors `Bridge.lean`'s `spliceWalkPos_coherent`.
+  - `StabFaithful` with `decidableStabFaithful` — (C5) as **one** biconditional carrying both the
+    universal obligation (`→`) and the existential one (`←`).
+  - `BoxLiveFaithful` with `decidableBoxLiveFaithful` — the box clause, on live positions.
+  - `Certifies`, `decidableCertifies`, eight `example … := inferInstance` lines confirming the
+    conjuncts in isolation, and nine `…_of_certifies` projections.
+  - `exists_fulfilling_run_at_targetTime` — the fulfilling run whose label at `G.targetTime` is the
+    target path's own. This is what the dropped `witness` field is paid for with, and it already
+    routes through `live_of_mem_liveAt`, hence through `hbox`.
+  - `Probe.triv` — the one-slice `onePointCertificate` at the empty context, with `closure_empty`
+    stated rather than assumed, and **ten `#guard` lines** (nine clauses plus `Certifies`), each
+    `set_option linter.hashCommand false in` with the repository's existing reason comment.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean` — one import line and one
+  submodule bullet.
+- `FormalSystem.lean` — the regenerated root's one added import.
+- `typst/generated/status.typ` — regenerated counts (`typst-sync-check.sh --fix`), required by the
+  pre-commit gate.
+- `README.md`, `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md` — refreshed generated
+  inventory blocks (`check-module-invariants.sh --emit-inventory`). The drift was 12 files and
+  ~4,400 lines, i.e. mostly Phases 15-16's rather than Phase 17's alone; `INV` now passes.
+- `specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md`
+  — the PHASE 17 RECORD at Phase 17's heading; all ten Phase 17 checklist items marked `[x]` with
+  inline annotations (three of them deviations); the plan's design-decision item 5 amended where it
+  named (C3) `BoxFaithful` as a box-group clause; a READ FIRST block at Phase 18's heading naming
+  what Phase 17 hands it and the one unverified risk; and Phase 21's gate-state findings re-measured.
+
+### Dispatch 40 — sub-phase 16.3, the repaired forward conjunct
 
 - `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Bridge.lean` — new `fwdVertFold` and
   its three facts (`fwdVertFold_mem_verts`, `fwdVertFold_mem_succT`, `foldF_fwdOrbit_fold`), the
@@ -66,14 +124,45 @@ ruling. The user's recorded ruling says the opposite. See Decisions below.
   `not_mem_lab_ev` and `not_mem_R₀fwd_pR` — the witness of the raw refutation is forward-dead at
   the reference time, so the filter removes it. Module header records the ruling that settled the
   design question it escalated.
-- `typst/generated/status.typ` — regenerated line counts (`typst-sync-check.sh --fix`), required by
-  the repository's pre-commit gate.
-- `specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md`
-  — sub-phase 16.3 record under Phase 16's heading; the correction block at Phase 17's heading; the
-  Lean Challenge Statement's `TailStable` docstring amended; risk row R2b amended; the Phase 16
-  `TailStable` checklist item annotated as altered.
 
 ## Decisions
+
+### Dispatch 41
+
+- **The box clause reads live positions, not the slice labelling.** The Phase 17 bullet's first
+  sentence and its plan-v7 parenthetical disagree, and the first sentence is the one that is right.
+  `AgreesOnState` pins the slice labelling to a position's label only on the **state shapes**
+  (`IsStateShape`: `atom`, `box`, `stab`), so for a `χ` of any other shape `χ ∈ G.slab t w` is
+  unconstrained data: a demand stated against it would neither follow from nor imply `χ`'s holding
+  at the carrier element, and a countermodel-derived certificate whose `slab` carries the
+  state-shaped part of the L⁺ type would be forced to report `G.bx χ = false` for every
+  non-state-shaped `χ`. `Certifies` carries `BoxLiveFaithful`; `BoxFaithful` stays in `Basic.lean`,
+  unweakened and unused. **Phase 21's condition-set record must be rewritten** — the plan's design
+  item 5 is amended accordingly.
+- **The existential side is stated on the computed position graph, and fulfilment is supplied rather
+  than demanded.** Both halves of this are forced: `PlusFulfillingSeqLab`'s two clauses are
+  unbounded existentials over ℤ, so no checker can carry them, and `PlusLocalCoherentSeqLab` reads
+  `lab (t ± 1)`, so `forall_iff_win` cannot fold it. `TargetPathPos`'s two `Finset` memberships are
+  *exactly* `LabCoherent`, `AgreesOnState`, `G.edge` and `StepClause`, and the box clause follows
+  from (C3b). The plan's own instruction — write the clause against the computed form, never against
+  `Live` — is what this honours.
+- **`G.targetTime ∈ G.winTimes` is added as a target-group side condition.** It is not a fourth
+  structural conjunct and not (C3b) under another name; the Scope Hypothesis's check was applied
+  before adding it. `Fixture.live_not_determined_by_slice` is the reason it is needed: liveness is
+  not a function of the slice, so the computed live set exists only at window times. It narrows the
+  class not at all, since `winLo = -2·NB < 0 ≤ NM + 2·NF = winHi`.
+- **`forall_iff_win_succ` proves the fold by single-period induction, not by residue arithmetic.**
+  The residue route would need the representative's distance from `t` as an explicit multiple of the
+  period, which forces reasoning about `Int` division's rounding; the single-shift induction needs
+  only `0 < NB` and the two region bounds, and `omega` discharges every side condition.
+- **The `#guard`s are `#guard`, not `decide`-in-a-proof.** A kernel proof that `triv.Certifies`
+  holds would not show that the instance *computes*; `#guard` runs the compiled instance, which is
+  the point of exhibiting a certificate at all. The repository's existing idiom
+  (`BiLasso/Examples.lean`, `PlusWitnessFamily/Fulfil.lean`) is followed verbatim, including the
+  `linter.hashCommand` reason comment.
+- **The second concrete certificate is not exhibited, and the reason is measured.** See Verification.
+
+### Dispatch 40
 
 - **The ruling implemented is option 2, the liveness-filtered transfer, and plan v8's candidate-1
   record is treated as a misattribution.** `.decisions.json`'s third entry, timestamped
@@ -87,128 +176,167 @@ ruling. The user's recorded ruling says the opposite. See Decisions below.
   the candidate-1 text is aux dispatch 39's blocker-research recommendation read as a ruling.
 - **The change is made non-destructively, so that reverting it is a one-line swap.** `TailStableRaw`
   keeps the raw demand and `iterFwd_R₀` keeps its body; `Fixture.Φ_fwd_R₀_ne` and
-  `Fixture.mem_Φ_fwd_R₀_pR` are untouched. If the user did mean candidate 1, nothing is lost:
-  `TailStable := TailStableRaw` restores the previous class, and `not_tailStableRaw` is
-  `not_tailStable` under a different name.
-- **The filter is the computed FORWARD-live set, not `liveAt`.** The ruling's wording left the filter
-  open ("intersected with a computed live set", with `Φ_fwd R₀ ∩ G.liveAt G.winHi' = R₀` as an
-  example). The choice is not free, for two reasons now recorded in the Lean source: (i) `winHi ∉
-  winTimes`, so `liveAt winHi = ∅` and that demand would force `R₀ = ∅`; (ii) the `→` half of the
-  collapse needs "genuinely live far down the tail ⟹ in the filter", which is available for the
-  forward half because `FoldF` relates the whole right tail to the reference time, and is available
-  for no backward half at all, because `FoldB` relates only negative times.
-- **`Fixture.not_tailStable` is renamed rather than weakened or deleted.** Its statement
-  (`¬ (certRep a b c).TailStable`) is not provable under the repair and is not asserted in any
-  weakened form; its content is preserved verbatim as `not_tailStableRaw`. This is the one landed
-  name that does not survive, and it is the only one.
-- **No claim is made that `(certRep a b c).TailStable` holds.** What is proved is that the filter
-  removes the refutation's witness. Characterizing the fixture's whole `Φ_fwd R₀` is recorded as a
-  follow-up, not claimed.
+  `Fixture.mem_Φ_fwd_R₀_pR` are untouched.
+- **The filter is the computed FORWARD-live set, not `liveAt`.** (i) `winHi ∉ winTimes`, so
+  `liveAt winHi = ∅` and that demand would force `R₀ = ∅`; (ii) the `→` half of the collapse needs
+  "genuinely live far down the tail ⟹ in the filter", which `FoldF` supplies for the forward half
+  and no relation supplies for a backward half, because `FoldB` relates only negative times.
+- **`Fixture.not_tailStable` is renamed rather than weakened or deleted.** Its content is preserved
+  verbatim as `not_tailStableRaw`; this is the one landed name that does not survive.
+- **No claim is made that `(certRep a b c).TailStable` holds.**
 
 ## Plan Deviations
 
+### Dispatch 41 — Phase 17
+
+- **Existential-side bullet** altered: stated as `TargetPathPos` + `targetLive` on the computed side,
+  not as `PlusLocalCoherentSeqLab` + `PlusFulfillingSeqLab`. Annotated inline; reason above.
+- **Universal-side bullet** altered: the universal obligation is the `→` direction of
+  `StabFaithful`'s biconditional rather than a clause of its own.
+- **Box-clause bullet** altered: `BoxLiveFaithful` on live positions, not (C3) `BoxFaithful` via
+  `forall_slab_iff_window`. This one propagates: Phase 21's condition-set record and the plan's
+  design item 5 are both amended.
+- **Assembly bullet**: one clause added (`G.targetTime ∈ G.winTimes`) and the conjunct count is nine
+  rather than "three plus four groups", because the target group is four clauses.
+- **Concrete-certificate bullet** altered: the first certificate is exhibited and green; the second
+  (the fixture's re-presentation) is **not**, because it does not evaluate at the fixpoints' present
+  implementation. Measured, not predicted — see Verification.
+- Every other Phase 17 bullet is completed as written. No bullet was skipped and none deferred.
+
+### Dispatch 40 — sub-phase 16.3
+
 - **Phase 16's `TailStable` checklist item** altered: the forward conjunct is now
-  `Φ_fwd R₀ ∩ R₀fwd = R₀`; the conjunction the item names is kept as `TailStableRaw`. Annotated
-  inline on the item and recorded in full in the sub-phase 16.3 record.
-- **Phase 17 not started.** The dispatch's nominal target was Phase 17, but the ruling makes the
-  `TailStable` repair a hard prerequisite: Phase 17 writes `Certifies` with `TailStable` as a
-  structural conjunct, and writing it against the demand the user rejected would build Phases 18-21
-  on it. The repair is landed, committed and green; Phase 17's Tasks list is executable verbatim and
-  is left [NOT STARTED] rather than opened and abandoned half-done.
+  `Φ_fwd R₀ ∩ R₀fwd = R₀`; the conjunction the item names is kept as `TailStableRaw`.
+- **Phase 17 was not started in dispatch 40**, the repair being its hard prerequisite. Dispatch 41
+  closed it.
 - **A plan-text correction was written at Phase 17's heading** rather than silently followed or
-  silently overridden. This is prose in a plan, normally reviser territory; it is written here
-  because the plan's Prohibited-workarounds bullet requires any `TailStable` redefinition to be
-  recorded at Phase 16's heading and in the Lean Challenge Statement, and because the next dispatch
-  reading only the candidate-1 paragraph would revert correct work.
+  silently overridden.
 
 ## Verification
 
-- Build: **Success**. Full `lake build` through the build guard, detached: 2798 jobs,
-  `exit_status=0`, zero `error:` and zero `warning:` across both captured streams. The final scoped
-  re-verification after the last style trim: 1231 jobs, `exit_status=0`, zero warnings. Tier 3
-  checked: the `.olean` for each of `Bridge`, `Stable` and `FixtureStable` is newer than its source.
+- Build: **Success.** Full `lake build` through the build guard, detached, `--no-share`:
+  **2799 jobs, `exit_status=0`, zero `error:` and zero `warning:`** across both captured streams.
+  Tier 3 checked by hand: the `.olean` for `PlusSlicedCertificate.Check`,
+  `PlusSlicedCertificate` and `FormalSystem` is newer than its source.
 - Sorry count: **0** (`lean-sorry-census.sh` over the resolved source roots; empty inventory).
-- Vacuous count: **1, pre-existing and not a placeholder.** The single-line grep flags
-  `FormalSystem/Examples/TemporalStructures.lean:495`
-  `theorem int_domain_universal (t : Int) : intTimeHistory.domain t := trivial` — a true statement
-  about the `Int` time domain whose proof happens to be `trivial`. The same count holds at main-tree
-  `HEAD`, so this dispatch introduced nothing: no vacuous definition was added.
-- Axiom count: **14, unchanged** (`grep -rn "^axiom "` over the resolved source roots; identical at
-  main-tree `HEAD`). No new axiom.
+- Vacuous count: **1, pre-existing and not a placeholder.** `FormalSystem/Examples/
+  TemporalStructures.lean:495` `theorem int_domain_universal (t : Int) : intTimeHistory.domain t :=
+  trivial` — a true statement about the `Int` time domain whose proof happens to be `trivial`. The
+  file is untouched by this dispatch (`git diff HEAD -- …` is empty) and the same count holds at
+  main-tree `HEAD`.
+- Axiom count: **14, unchanged**, identical at main-tree `HEAD`. No new axiom.
 - Tests: N/A — no test-suite change in scope; `lake build` covers `Tests/BimodalTest`.
 - Files verified: Yes.
-- Decidability confirmed by synthesis, not assertion: `example (G) : Decidable G.TailStable :=
-  inferInstance` and the same for `TailStableRaw` both elaborate.
-- Axiom dependencies **measured per declaration**, not inferred: a temporary `#print axioms` probe
-  over the twelve declarations this dispatch added or re-proved —
-  `mem_fwdLiveT_of_fwdLive_fold`, `TailStable`, `tailStable_of_raw`,
-  `forall_mem_R₀_of_live_head`, `mem_R₀_of_live_head`, `live_of_mem_R₀_head`,
-  `tailStable_iff_window_fwd`, `R₀_subset_iterFwd`, `mem_R₀fwd_of_fwdLive_head`,
-  `Fixture.not_mem_R₀fwd_pR`, `Fixture.not_tailStableRaw`, `Fixture.not_tailStable_cert` —
-  reports `[propext, Classical.choice, Quot.sound]` for all twelve, the three standard axioms and
-  nothing else. The probe was removed and the subtree rebuilt green afterwards; the working tree is
-  clean.
+- **Decidability confirmed by synthesis, never by assertion.** Eight `example … := inferInstance`
+  lines elaborate: `Decidable G.BiSerial`, `G.TailStable`, `G.BoxLabelFaithful`, `G.TargetPathPos`,
+  `G.StabFaithful`, `G.BoxLiveFaithful`, `G.Target` and `G.Certifies`. The first attempt at
+  `decidableCertifies` failed for two of them, which is why they are confirmed separately: a
+  "`Certifies` is not decidable" message does not say which conjunct caused it.
+- **No clause is aligned.** `grep -n plusAlignOffset Check.lean` returns nothing, and no clause
+  mentions a period product or an absolute origin.
+- **The checker runs, and it is green on a concrete certificate.** `Probe.triv` — the one-slice
+  `onePointCertificate` at the empty context — satisfies all nine clauses and `Certifies`; the ten
+  `#guard` lines evaluate during `lake build` and all return `true`. Measured wall time, by
+  `IO.monoMsNow` either side of the `decide`s in a scratch file, interpreted under Lean
+  v4.33.0-rc1: **11 ms** for all nine clauses together and **under 1 ms** for `Certifies`.
+- **What does not run, measured rather than predicted.** The liveness fixpoint at `Fixture.cert`
+  did **not** produce a value in **15 minutes** interpreted, so the plan's second concrete
+  certificate is not exhibited. `Fixture.cert` is the family's smallest member
+  (`cert = certRep 0 0 0`), and the **scale is not the reason**: `Fixture.cert.posAt 0` has **4**
+  positions, `winTimes` has **5** times and `verts` has **20** timed vertices, all three of those
+  counts evaluate instantly, and `fwdLiveT.card` evaluates too — it is **10**. What does not
+  return is the pair: a run asking for `fwdLiveT.card` and then `bwdLiveT.card` did not finish in
+  **7 minutes**, and the full clause sweep including `TailStable` did not finish in **15**. The cost is the nested fixpoint's and is visible in its shape:
+  `fwdLiveStep` calls `untlLiveAt` once per vertex per closure member, each call an `EUFix.lfp`
+  iterating `|verts| + 1` times over `|verts|` vertices, and `Nu.gfp` calls `fwdLiveStep`
+  `|verts| + 1` times — with no sharing between calls, and `G.liveT` recomputed at every use site.
+  **This is a statement about the fixpoints' present implementation, not about decidability:**
+  `decidableCertifies` is a proof, and `Nu.gfp`'s iteration count is `V.card + 1`, a bound chosen
+  for provability rather than for speed. (The 15-minute run's own `IO.println` output was lost to
+  stdout buffering when `timeout` killed it, so the time is attributed to the fixpoint rather than
+  to one named line; the surrounding counts were measured in separate, fast runs.)
+- **Gate set re-measured in full.** `check-module-invariants.sh`: **five** groups failed before this
+  dispatch's fix, four after. `INV` was fixed here by `--emit-inventory`. `B0` and `C9`, both
+  recorded as failing at dispatch 25, now **pass**. The four survivors — `C16` (`Φ_back` / `Φ_fwd`
+  underscores), `C23` Uppercase_x (7 names), `C23` shadowing (the `datum` pair) and `C24`
+  (`Fixpoint` does not transitively import `FormalSystem.Init`) — are each attributable to Phases
+  15-16, not to Phase 17: `Check.lean` introduces no underscore name, no `Uppercase_x` name, no
+  shadowing pair and no new minimal element. All four are tabulated with disposal advice at Phase
+  21's heading.
+- `typst-sync-check.sh --fix`: **PASS** on all three checks after the full build.
+- `validate-artifact.sh … plan`: **PASS**, 0 warnings.
+- Plan compliance spot-check: the plan's Lean Challenge Statement names
+  `PlusSlicedCertificate.Certifies` and `PlusSlicedCertificate.decidableCertifies`; both now exist
+  under those exact names in `Check.lean`, and neither delegates to a replaced declaration.
 
-### Environment hazard found and worked around (report, not a side quest)
+### Environment hazards (carried forward from dispatch 40, both re-encountered)
 
-The dispatch worktree's hardlinked `.lake` carried a **mismatched olean/trace pair** for
-`FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Timed`: the `.olean` predated the commit
-that added `edge_congr`, `succP_congr`, `predP_congr`, `succT` and `predT`, while the `.trace`
-claimed it current. Lake therefore treated the module as up to date and `Fold.lean` / `Computed.lean`
-failed with "the environment does not contain `edge_congr`" on code **nobody had touched**. Two
-further facts matter for whoever fixes this properly:
-
-1. The same mismatched pair is present in the **main tree's** `.lake` (link count 2 on both files),
-   so the next build in the main tree will hit it again. It was repaired only inside this worktree,
-   by deleting the subtree's artifacts and rebuilding.
-2. `lake-build-guard.sh` **replayed** the first failed result on the second invocation, so the
-   deletion appeared to have had no effect. Diagnosis required `--no-share`. Every build in this
-   dispatch after that point passes `--no-share`.
-
-One diagnostic `lake build` of a single module was run outside the guard while isolating this; every
-other `lake` invocation in this dispatch went through the guard, detached.
+The dispatch-41 worktree, provisioned from the main tree, inherited the **mismatched olean/trace
+pairs** dispatch 40 reported: `PlusSlicedCertificate.Timed.olean` lacked `edge_congr`,
+`succP_congr` and `predP_congr`; `Stable.olean` lacked `TailStableRaw`, `R₀fwd` and `fwdLiveAt`;
+`Basic.olean` lacked `boxLabelFaithful_iff_window` — while every `.trace` claimed them current.
+Seven of the subtree's sixteen modules had no `.olean` at all. The fix applied here was to delete
+the whole `PlusSlicedCertificate` subtree's build artifacts (lib and ir) plus
+`PlusSlicedCertificate.*` and `FormalSystem.*`, then rebuild. **The main tree still carries the
+stale pairs** (link count 2), so the next worktree provisioned from it will inherit them again.
+Every `lake` invocation in this dispatch went through the build guard, detached, with `--no-share`.
 
 ## Impacts
 
-- **Phase 17 is unblocked and its Tasks list is unchanged.** `TailStable` is still one of the three
-  structural conjuncts of `Certifies`, still decidable by a synthesized instance, still backed by a
-  landed window biconditional. Nothing in Phase 17 reads the forward conjunct's internal shape.
-- **Phase 19's relative completeness is unaffected in form** — it carries `hstab : G₀.TailStable` as
-  a hypothesis — but the hypothesis is now **weaker**, so the theorem it will state is **stronger**:
-  it quantifies over a larger class of certificates.
-- **Phase 20's risk changes shape.** Its probe must now evaluate `Φ_fwd R₀ ∩ R₀fwd = R₀`, not
-  `Φ_fwd R₀ = R₀`, and the evidence from `Fixture.not_mem_R₀fwd_pR` is that the filter removes
-  exactly the kind of position that defeated the raw demand. Risk row R2b is amended accordingly;
-  candidate 1 leaves the fallback menu, candidates 3 and 4 stay on it.
-- **`mem_fwdLiveT_of_fwdLive_fold` is reusable beyond tail-stability.** Any later clause that must
-  read computed forward liveness at a folded time — Phase 18's soundness pass through the bridge is
-  the obvious consumer — can cite it instead of re-running the coinduction.
-- A reviser pass is needed on plan v8's Phase 17 paragraph; the correction block says exactly what
-  to rewrite.
+- **Phase 18 is unblocked and is handed four things to consume rather than rebuild**: `targetRun`,
+  `exists_fulfilling_run_at_targetTime` (which already performs the (C3b) projection that phase's
+  fourth bullet asks for), the nine `…_of_certifies` projections, and `StabFaithful` /
+  `BoxLiveFaithful` as the clauses its `stab` and `box` cases read. A READ FIRST block at its
+  heading says so.
+- **One unverified risk is flagged for Phase 18, with both routes to check named.** `StabFaithful`
+  and `BoxLiveFaithful` are stated at **window** times, because that is the only decidable form;
+  the truth lemma needs the `stab` clause at an **arbitrary** time. The slab side folds freely, but
+  the liveness side needs `{p | Live t p}` to agree with `{p | Live s p}` at the window
+  representative, and the landed linchpins give that only at the period multiples
+  `-NB - k·NB` and `NM + NF + k·NF`, not at an arbitrary tail time of a different residue. Check
+  frame-side normalization (`plusTruthAt_shiftBack` / `timeShift_offset_zero`) first; a
+  liveness-periodicity lemma at an arbitrary residue is the expensive fallback and belongs to Phase
+  16's machinery. Dispatch 41 attempted neither, so this is a risk and not a measured defect.
+- **Phase 21's condition-set record must change**: `BiSerial`, `TailStable`, (C3b)
+  `BoxLabelFaithful`, `BoxLiveFaithful`, (C4) `Target`, plus (C5) `StabFaithful` and the three
+  remaining target-group clauses — nine conjuncts, and **not** (C3) `BoxFaithful`.
+- **Phase 20's `#guard` probe is not available at the present implementation.** Risk row R2b expects
+  the satisfiability of `Φ_fwd R₀ ∩ R₀fwd = R₀` at `Fixture.certRep` to be answered by evaluation;
+  the 15-minute non-finish above says it cannot be, so that row should expect a hand proof instead.
+- **`forall_iff_win_succ` and the four combined-period shifts are reusable.** Any later clause or
+  lemma that must fold a predicate reading two consecutive times — or that needs `G.slice` and
+  `G.target.datum` moved together by one combined period — can cite them.
+- **Phase 19's relative completeness is unaffected in form** and its hypothesis is now weaker
+  (dispatch 40's filtered conjunct), so the theorem it will state is stronger.
+- A reviser pass is still needed on plan v8's Phase 17 candidate-1 paragraph and on its revision
+  record (lines 55-140), which describes four edits made on the candidate-1 premise.
 
 ## Follow-ups
 
+- **Phase 18**, next. Start with the frame-side normalization check named in Impacts before writing
+  the `stab` case.
 - **Reviser**: rewrite plan v8's Phase 17 candidate-1 paragraph to record the option-2 ruling, and
-  fold the dispatch-40 correction block into it. Plan v8's own revision record (lines 55-140) still
-  describes four edits made on the candidate-1 premise.
-- **Satisfiability of the repaired conjunct at the fixture** is open: `(certRep a b c).TailStable`
-  for `b ≥ 1` would need `Φ_fwd R₀` characterized at the fixture (the backward conjunct's repair is
-  only known to remove *its* witness, by `not_mem_L₀_pR`, which is explicitly not a proof that
-  `Φ_fwd L₀ = L₀` holds). Worth one probe before Phase 20 rather than at it.
-- **The main tree's stale `Timed` olean/trace pair** should be cleared (`rm` the two files and
-  rebuild) before the next dispatch is provisioned from it, or every future worktree inherits the
-  same failure.
-- `iterFwd_R₀` now has no consumer inside the subtree. It is kept because it is the raw demand's
-  content and the record of what the functional form bought; if Phase 21's audit wants it gone, that
-  is a deliberate deletion, not a cleanup.
+  fold both the dispatch-40 correction block and the dispatch-41 PHASE 17 RECORD into it.
+- **A fixpoint that iterates to stability** rather than to the `V.card + 1` cardinality bound is what
+  would make the checker run at fixture scale. It is also the only cheap route to the satisfiability
+  question dispatch 40 left open. Separate work; not attempted here.
+- **The four surviving gate failures** (`C16`, `C23` ×2, `C24`) are this task's, all from Phases
+  15-16, and are tabulated with disposal advice at Phase 21's heading.
+- **The main tree's stale olean/trace pairs** should be cleared before the next dispatch is
+  provisioned from it.
+- `iterFwd_R₀` still has no consumer inside the subtree; kept deliberately (dispatch 40's record).
 
 ## References
 
 - `specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md`
-  — sub-phase 16.3 record (Phase 16), the correction block (Phase 17), amended Lean Challenge
-  Statement and risk row R2b
+  — the PHASE 17 RECORD and annotated checklist (Phase 17), the READ FIRST block (Phase 18), the
+  amended design item 5, the re-measured gate state (Phase 21), and dispatch 40's sub-phase 16.3
+  record (Phase 16)
 - `specs/703_lplus_compression_and_completeness/.decisions.json` — the option-2 ruling, entry 3
 - `specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md`
   — dispatches 21-38, including 16.2c's refutation
-- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Stable.lean`,
-  `.../Bridge.lean`, `.../FixtureStable.lean`
+- `specs/703_lplus_compression_and_completeness/handoffs/phase-17-handoff-20261001T004227Z.md`
+  — dispatch 40's resume point, consumed by dispatch 41
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean` (new),
+  `.../Stable.lean`, `.../Bridge.lean`, `.../FixtureStable.lean`, `.../Window.lean`,
+  `.../Position.lean`

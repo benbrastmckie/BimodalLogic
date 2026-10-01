@@ -1,7 +1,7 @@
 {
-  "status": "partial",
-  "started_at": "2026-10-01T00:09:00Z",
-  "completed_at": "2026-10-01T00:45:00Z",
+  "status": "implemented",
+  "started_at": "2026-10-01T00:47:00Z",
+  "completed_at": "2026-10-01T01:30:00Z",
   "verification": {
     "verification_passed": true,
     "sorry_count": 0,
@@ -13,46 +13,35 @@
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Sub-phase 16.3: TailStable's forward conjunct repaired to the liveness-filtered transfer per the user's option-2 ruling, with the plan-v8 candidate-1 misattribution reported."
+      "summary": "Round-5 summary: dispatch 40's repaired forward conjunct and dispatch 41's Phase 17, the decidable checker."
+    },
+    {
+      "type": "plan",
+      "path": "specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md",
+      "summary": "Phase 17 [COMPLETED] with its record and ten annotated checklist items; design item 5 amended; READ FIRST block at Phase 18; Phase 21 gate state re-measured."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-17-handoff-20261001T004227Z.md",
-      "summary": "Resume point: Phase 17 is unblocked and executable verbatim; the one thing not to mis-read is that TailStable's forward conjunct is now filtered; 2 new environment hazards."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T012500Z.md",
+      "summary": "Resume point for Phase 18, with the one unverified liveness-transport risk and both routes to check."
     }
   ],
+  "completion_data": {
+    "completion_summary": "Phase 17 of task 703 is complete: FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean defines PlusSlicedCertificate.Certifies as nine clauses and synthesizes decidableCertifies from them, with each structural conjunct confirmed in isolation and the checker actually run -- a one-slice concrete certificate satisfies all nine clauses and Certifies, by ten #guard lines evaluating during the build. Three of the plan's clause descriptions were implemented in forced alternative forms (the existential side on the position graph, the box clause on live positions rather than on the slice labelling, and one added window-time side condition), and the new fold lemma forall_iff_win_succ with four combined-period shift lemmas was proved to make the stepping clause decidable. Full lake build green at 2799 jobs with zero errors and zero warnings, zero sorries, and no new axioms.",
+    "roadmap_items": []
+  },
   "partial_progress": {
-    "stage": "sub_phase_16.3_complete",
-    "details": "Sub-phase 16.3 and 16.3b landed and committed on orchestrate/task-703-40 (two green sub-steps). Phase 17 NOT started: the ruling made the TailStable repair a hard prerequisite, and Phase 17 is a full 8-bullet phase left for a dispatch that can carry it to completion. Phases 18-21 NOT started.",
-    "phases_completed": 16,
+    "stage": "phase_17_completed",
+    "details": "Phases 1-17 complete (16 is [COMPLETED WITH EXCLUSIONS]); Phases 18-21 NOT STARTED.",
+    "phases_completed": 17,
     "phases_total": 21
   },
-  "user_decision": {
-    "question": "Two conflicting records exist of your tail-stability ruling: .decisions.json (2026-09-30T19:31:18Z) selects option 2, the liveness-filtered transfer, and explicitly rejects option 1; plan v8's Phase 17 heading, written after it, records candidate 1 (keep TailStable as landed). Dispatch 40 implemented option 2, per the relayed decision record. Which stands?",
-    "options": [
-      "Option 2 stands — the liveness-filtered forward conjunct, as implemented and committed in sub-phase 16.3; plan v8's candidate-1 paragraph is a misattribution for the reviser to correct",
-      "Candidate 1 stands — revert to the raw forward conjunct Phi_fwd R0 = R0 (one-line swap: TailStable := TailStableRaw, and rename not_tailStableRaw back), accepting the narrowed certificate class and betting on the Phase 20 conjecture"
-    ],
-    "recommended": "Option 2 stands — the liveness-filtered forward conjunct, as implemented and committed in sub-phase 16.3; plan v8's candidate-1 paragraph is a misattribution for the reviser to correct",
-    "blocking": false
-  },
-  "modified_files": [
-    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Bridge.lean",
-    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Stable.lean",
-    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FixtureStable.lean",
-    "typst/generated/status.typ",
-    "specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md",
-    "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
-    "specs/703_lplus_compression_and_completeness/handoffs/phase-17-handoff-20261001T004227Z.md"
-  ],
   "metadata": {
     "session_id": "sess_1790813184_a45978",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "dispatch_seq": 40,
-    "compliance_check": "skipped",
-    "compliance_check_reason": "The plan's Goals bullets name the Stage-2 headline theorems (Certifies, plusRefutes_of_certifies, the two completeness theorems), none of which this dispatch's sub-phase was scoped to declare; a name-presence grep would report them all missing and say nothing about this dispatch.",
-    "notes": "vacuous_count is reported 0 because the single grep hit (FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal := trivial) is pre-existing at main-tree HEAD and is a true statement about the Int time domain, not a placeholder. This dispatch added none."
+    "compliance_check": "passed",
+    "notes": "vacuous_count is reported as 0 for this task's own work: the single-line grep reports 1 hit, FormalSystem/Examples/TemporalStructures.lean:495 (int_domain_universal := trivial), which is a true statement about the Int time domain, is untouched by this dispatch, and holds identically at main-tree HEAD. check-module-invariants.sh has four surviving group failures (C16 underscore names, C23 Uppercase_x, C23 shadowing, C24 Init import) -- all attributable to this task's Phases 15-16, none to Phase 17, and all tabulated with disposal advice at the plan's Phase 21 heading."
   }
 }

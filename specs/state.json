@@ -1366,7 +1366,7 @@
         {
           "path": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
           "type": "summary",
-          "summary": "Round-5 summary: the repaired forward conjunct, the ruling conflict, the environment hazard found in the hardlinked .lake."
+          "summary": "Round-5 summary covering dispatch 40 (sub-phase 16.3) and dispatch 41 (Phase 17, the decidable checker)."
         }
       ],
       "next_artifact_number": 6

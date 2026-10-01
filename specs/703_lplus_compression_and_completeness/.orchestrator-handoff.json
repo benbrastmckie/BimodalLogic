@@ -1,38 +1,30 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "phase": "implement",
-  "dispatch_seq": 40,
-  "summary": "Sub-phase 16.3 (NEW, forced by the user's ruling) is landed and green: TailStable's forward conjunct is now the liveness-filtered transfer Phi_fwd R0 INTER R0fwd = R0, per the .decisions.json ruling of 2026-09-30T19:31:18Z (option 2), with the raw demand kept as TailStableRaw and every theorem stated from it. The mathematical content is mem_fwdLiveT_of_fwdLive_fold, the FoldF-general forward half of the bridge, which carries genuine forward liveness from an arbitrarily far right-tail time down to the reference time; that is what lets the tail collapse's forward half be re-proved as a one-period induction without the functional equation the raw demand supplied. Fixture.not_mem_R0fwd_pR proves the filter removes exactly the witness that refuted the raw conjunct. tailStable_iff_window and tailStable_iff_window_fwd keep their statements; the one landed name that does not survive is Fixture.not_tailStable, renamed to not_tailStableRaw with its proof and content intact. REPORTED CONFLICT: plan v8's Phase 17 heading records candidate 1 as the user's ruling, which contradicts the .decisions.json entry this dispatch was handed as settled; a correction block is now at Phase 17's heading and a non-blocking user_decision is set. Phase 17 was NOT started: the repair was its hard prerequisite, and Phase 17 is a full 8-bullet phase left for a dispatch that can carry it to completion. Full lake build green, 2798 jobs, zero errors, zero warnings; sorry_count 0; axiom count 14 unchanged.",
+  "dispatch_seq": 41,
+  "summary": "Phase 17 is landed, green and committed: FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean (737 lines) defines Certifies as nine clauses and synthesizes decidableCertifies from them, with each structural conjunct confirmed in isolation by example ... := inferInstance, and the checker RUN -- Probe.triv, the one-slice onePointCertificate at the empty context, satisfies all nine clauses and Certifies, by ten #guard lines that evaluate during the build (11 ms for the nine clauses, under 1 ms for Certifies). Three plan descriptions could not be implemented as written and each alternative is forced, not chosen: the existential side is stated on the position graph (TargetPathPos + a computed-liveness clause) because PlusFulfillingSeqLab is an unbounded existential over the integers and PlusLocalCoherentSeqLab reads lab (t +/- 1); the box clause is BoxLiveFaithful on live positions, NOT (C3) BoxFaithful on the slice labelling, because AgreesOnState pins the slab to a position's label only on the state shapes; and one clause was added, targetTime in winTimes, because the computed live set exists only at window times. forall_iff_win_succ, the combined-window fold with one step of lookahead, is a new lemma this phase had to prove from four new combined-period shift lemmas. The plan's second concrete certificate is NOT exhibited: at Fixture.cert the forward fixpoint does evaluate (fwdLiveT.card = 10) but a run that also asks for bwdLiveT.card did not finish in 7 minutes, and the full clause sweep including TailStable did not finish in 15, at a problem whose whole timed vertex set is 20 -- a fact about Nu.gfp's V.card+1 iteration count, not about decidability, and the reason Phase 20's risk row R2b should expect a hand proof rather than a #guard. Full lake build green: 2799 jobs, zero errors, zero warnings; sorry_count 0; axiom count 14 unchanged; INV fixed by --emit-inventory; four gate failures survive, all attributable to Phases 15-16 and tabulated at Phase 21's heading.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-5 summary: the repaired forward conjunct, the ruling conflict, the environment hazard found in the hardlinked .lake."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-17-handoff-20261001T004227Z.md",
-      "summary": "Resume point: Phase 17 unblocked and executable verbatim; do not revert the filtered conjunct; two new environment hazards."
+      "summary": "Round-5 summary covering dispatch 40 (sub-phase 16.3) and dispatch 41 (Phase 17, the decidable checker)."
     },
     {
       "type": "plan",
       "path": "specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md",
-      "summary": "Sub-phase 16.3 record under Phase 16; correction block at Phase 17's heading; Lean Challenge Statement and risk row R2b amended."
+      "summary": "Phase 17 [COMPLETED] with a PHASE 17 RECORD and ten annotated checklist items; design item 5 amended; a READ FIRST block at Phase 18; Phase 21's gate state re-measured."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T012500Z.md",
+      "summary": "Resume point: Phase 18, what Check.lean hands it, and the one unverified liveness-transport risk with both routes named."
     }
   ],
-  "phases_completed": 16,
+  "phases_completed": 17,
   "phases_total": 21,
   "blockers": [],
   "plan_markers_verified": true,
-  "next_action_hint": "Dispatch Phase 17 (Check.lean, Certifies, decidableCertifies). Read the CORRECTION block at Phase 17's heading before the plan-v8 candidate-1 paragraph; the Tasks list is executable verbatim and TailStable must not be reverted.",
-  "git_checkpoint": "4d84c5dd70e14649d241ca53ddaab9f2a88e75bb",
-  "user_decision": {
-    "question": "Two conflicting records exist of your tail-stability ruling: .decisions.json (2026-09-30T19:31:18Z) selects option 2, the liveness-filtered transfer, and explicitly rejects option 1; plan v8's Phase 17 heading, written after it, records candidate 1 (keep TailStable as landed). Dispatch 40 implemented option 2, per the relayed decision record. Which stands?",
-    "options": [
-      "Option 2 stands — the liveness-filtered forward conjunct, as implemented and committed in sub-phase 16.3; plan v8's candidate-1 paragraph is a misattribution for the reviser to correct",
-      "Candidate 1 stands — revert to the raw forward conjunct Phi_fwd R0 = R0 (one-line swap: TailStable := TailStableRaw, and rename not_tailStableRaw back), accepting the narrowed certificate class and betting on the Phase 20 conjecture"
-    ],
-    "recommended": "Option 2 stands — the liveness-filtered forward conjunct, as implemented and committed in sub-phase 16.3; plan v8's candidate-1 paragraph is a misattribution for the reviser to correct",
-    "blocking": false
-  }
+  "continuation_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T012500Z.md",
+  "next_action_hint": "Dispatch Phase 18 (Sound.lean, the truth lemma, plusRefutes_of_certifies). Read the READ FIRST block at Phase 18's heading first: it names the four declarations Check.lean hands that phase and the one unverified risk -- StabFaithful and BoxLiveFaithful are stated at window times, the truth lemma needs the stab clause at an arbitrary time, and the liveness half of that transport is not covered by the landed linchpins at an arbitrary residue. Check frame-side normalization (plusTruthAt_shiftBack / timeShift_offset_zero) before writing the stab case.",
+  "git_checkpoint": "3a18b1fe3da6d0af8fa05811b4707ea35b437d3d"
 }
