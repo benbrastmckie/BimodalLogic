@@ -13,6 +13,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Canon
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Window
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixture
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Stable
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Tail
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FixtureStable
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Timed
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixpoint
@@ -22,6 +23,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Unroll
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.LiveFix
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Bridge
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Check
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Sound
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
@@ -132,12 +134,20 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   built from the one-step `stepBack` / `stepFwd`, with monotonicity at each level, the two subset
   lemmas placing their images on the window's own endpoint slices, the soundness direction
   `fwdLive_subset_stepBack` / `bwdLive_subset_stepFwd` and its two-directional counterpart
-  `live_subset_stepBack` / `live_subset_stepFwd`, and `TailStable` with `decidableTailStable`,
-  `L₀` / `R₀` read off `Bridge`'s equality, and **both** directions of the linchpin
-  `tailStable_iff_window`: the transfer's soundness iterated (`mem_L₀_of_live_tail`) and the
-  three-region run `runOfPos` builds from a shifted reference run, a `Φ_back`-chain and a second
-  reference run (`live_of_mem_L₀_tail`), with right-tail mirrors for both.
-  `exists_tailStable_repr` is **not** here and is sub-phase 16.2's remaining obligation
+  `live_subset_stepBack` / `live_subset_stepFwd`, and `TailStable` with `decidableTailStable` — a
+  **residue-indexed** demand, one conjunct per residue of each period, with `tailStable_back` /
+  `tailStable_fwd` recovering the single-equation conjuncts as its `r = 0` instances. `L₀` / `R₀`
+  are read off `Bridge`'s equality, and the **forward** direction of the linchpin is here
+  (`mem_L₀_of_live_tail`, the transfer's soundness iterated). `exists_tailStable_repr` is **not**
+  here and is not anywhere: it is false, and `FixtureStable` proves it false
+- `PlusSlicedCertificate.Tail`: the **reverse** direction of the linchpin, which needs a genuine run
+  rather than an iterate — the three-region position families `tailPos` / `headPos` at an arbitrary
+  reference time, built from a shifted reference run, a transfer chain and a second reference run,
+  with `live_of_mem_L₀_tail` / `live_of_mem_R₀_head` as their headlines and
+  `tailStable_iff_window` / `tailStable_iff_window_fwd` as the biconditionals they complete at every
+  time down either periodic tail. `exists_win_live_eq` is the form a clause stated at a window time
+  costs to transport to an arbitrary time: every time has a window representative carrying the same
+  slice **and** the same live set
 - `PlusSlicedCertificate.LiveFix`: the **eventuality-aware** liveness fixpoint — `fwdLiveT` /
   `bwdLiveT` / `liveT` as a nested `Nu.gfp` whose inner reachability is relativized to the set being
   contracted, both directions of its fixpoint characterization, and `exists_fwdLive_walk` /
@@ -156,6 +166,14 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   box clause is read on live positions rather than on the slice labelling; see that module's header
   for why each of those three is the only decidable form available. `forall_iff_win_succ` is the
   one-step-lookahead fold the `succP` clause needs and `Window.lean`'s `forall_iff_win` cannot give
+- `PlusSlicedCertificate.Sound`: the **truth lemma** and the refutation interface it lands —
+  `plusTruthAt_iff_canAt` relates truth in the presented model along an arbitrary edge path to
+  `Canon`'s canonical membership predicate (not to a run's label, which would argue in a circle),
+  and `plusRefutes_of_certifies` lands `PlusWitnessFamily.PlusRefutes Γ Del` **unchanged** — the
+  same proposition the landed `PlusSharingWitnessFamily.plusRefutes_of_certifies` lands, beside it
+  and not in place of it. The `□` case reads the box clause through `plusBox_const`, the `⊡` case
+  reads (C5) at the window representative `Tail`'s `exists_win_live_eq` supplies, and `untl` /
+  `snce` are a direct transfer because `canAt` takes the existential form of both
 
 ## Tags
 
