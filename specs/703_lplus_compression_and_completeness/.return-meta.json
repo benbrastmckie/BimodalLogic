@@ -1,16 +1,53 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-09-30T00:00:00Z",
-  "artifacts": [],
+  "status": "partial",
+  "started_at": "2026-10-01T09:10:00Z",
+  "completed_at": "2026-10-01T16:45:00Z",
+  "requires_user_review": true,
+  "review_reason": "Phase 20 BLOCKED at sub-phase 20.2: the BACKWARD conjunct of PlusSlicedCertificate.TailStable is REFUTED at an embedded certificate built from a certifying WitnessFamily, at residue r = 0, by kernel-checked decide at two separate families. The flagship exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula depends on it and cannot be assembled. Two of sub-phase 20.2's four obligations did land (SlabTrue and the canonical-label identification, via a new truth lemma for the embedded model). Per the plan's own Fallback bullet no repair was chosen on the agent's authority; one candidate is measured clean at all four certificates and is named as a candidate only, with TailStable left unchanged.",
+  "blocked_phase": 20,
   "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context for sub-phase 20.2"
+    "stage": "phase_20_blocked",
+    "details": "Sub-phase 20.1 closed at dispatch 47. Dispatch 49 landed 20.2's first two obligations (sliced_slabTrue = hst, sliced_target_lab_eq_canLab = hcan, both from a new truth lemma sliced_plusTruthAt_iff_mem that consumes only the family's own four certification conditions) and REFUTED the third (TailStable's backward conjunct). The fourth, the flagship, is blocked on the third. See the BLOCKER at the plan's Phase 20 heading and the dispatch-49 handoff.",
+    "phases_completed": 19,
+    "phases_total": 21
+  },
+  "verification": {
+    "verification_passed": false,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "axiom_count": 14,
+    "build_passed": true,
+    "build_output": "Build completed successfully (2805 jobs); zero errors, zero warnings, build-guard exit 0. verification_passed is false because the phase is BLOCKED on a refuted proof obligation, not because any mechanical check failed: sorry_count is 0, axiom_count is unchanged at 14, the single vacuous-grep hit is the pre-existing FormalSystem/Examples/TemporalStructures.lean:495, and check-module-invariants.sh's four residual failing groups (C16, C23, C24, C26) are exactly dispatch 47's pre-existing set at identical counts with no declaration from this dispatch appearing in the output."
+  },
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
+      "summary": "Round-05 implementation summary, extended with the dispatch-49 record: the embedded model's truth lemma, hcan, SlabTrue, and the refutation of TailStable's backward conjunct."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-20-handoff-20261001T163527Z.md",
+      "summary": "Phase 20 BLOCKED handoff: the refutation and its mechanism, why 20.1's untl-only probe missed it, the candidate repair's four measured verdicts, the right-tail-only correction to the fwdLiveAt asymmetry justification, and the three options for the ruling."
+    }
+  ],
+  "user_decision": {
+    "question": "The backward conjunct of PlusSlicedCertificate.TailStable is refuted at an embedded certificate built from a certifying WitnessFamily (kernel-checked, residue r = 0, two separate families), so the flagship cannot be assembled along the planned route. The forward conjunct already carries a liveness filter from your option-2 ruling at sub-phase 16.3; the backward one carries none, and that is the gap. How should this be repaired?",
+    "options": [
+      "Mirror the filter: replace the backward conjunct by TailStableMirror, filtering by the computed backward-live set bwdLiveAtCand. Measured clean at all four certificates (repairs both refuting ones, regresses neither of sub-phase 20.1's). Accepted cost: every result stated from the backward conjunct's functional form must be redone, exactly as tailStable_iff_window_fwd was when the forward filter landed -- Stable.lean's iterBack_liveAt_refBack and iterBack_L0, Tail.lean's mem_L0_of_live_tail, live_of_mem_L0_tail, tailStable_iff_window, liveAt_tail_eq_L0, liveAt_winLo_eq_L0, and the left branch of exists_win_live_eq, which Phase 18's truth lemma consumes. The soundness lemma the redo needs is the FoldB analogue of mem_fwdLiveT_of_fwdLive_fold; Fold.lean lands every transport it requires and only a bwdVertFold counterpart of fwdVertFold is missing, so it is plausible and unproved.",
+      "Strengthen the compression theorem's output so the families it produces exclude the junk positions -- unmeasured, and it reopens WitnessFamily/Compression/Family.lean, which this task's description does not scope.",
+      "Change route: abandon Complete.lean's TailStable-hypothesised headline. Unmeasured, and since TailStable is a field of Certifies this means a different certificate notion, i.e. most of Stage 2 again.",
+      "Record the failure as a stated limitation of the Stage 2 result and stop short of the flagship, leaving the sliced class without the non-vacuity the task asks for."
+    ],
+    "recommended": "Mirror the filter: replace the backward conjunct by TailStableMirror, filtering by the computed backward-live set bwdLiveAtCand. Measured clean at all four certificates (repairs both refuting ones, regresses neither of sub-phase 20.1's). Accepted cost: every result stated from the backward conjunct's functional form must be redone, exactly as tailStable_iff_window_fwd was when the forward filter landed -- Stable.lean's iterBack_liveAt_refBack and iterBack_L0, Tail.lean's mem_L0_of_live_tail, live_of_mem_L0_tail, tailStable_iff_window, liveAt_tail_eq_L0, liveAt_winLo_eq_L0, and the left branch of exists_win_live_eq, which Phase 18's truth lemma consumes. The soundness lemma the redo needs is the FoldB analogue of mem_fwdLiveT_of_fwdLive_fold; Fold.lean lands every transport it requires and only a bwdVertFold counterpart of fwdVertFold is missing, so it is plausible and unproved.",
+    "blocking": true
   },
   "metadata": {
-    "session_id": "sess_1790832139_cbc5b7",
+    "session_id": "sess_1790870755_74eff0",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "dispatch_seq": 48
+    "dispatch_seq": 49,
+    "compliance_check": "failed"
   }
 }
