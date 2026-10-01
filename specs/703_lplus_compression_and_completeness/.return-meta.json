@@ -1,47 +1,70 @@
 {
-  "status": "implemented",
-  "started_at": "2026-10-01T00:47:00Z",
-  "completed_at": "2026-10-01T01:30:00Z",
+  "status": "partial",
+  "started_at": "2026-10-01T01:36:00Z",
+  "completed_at": "2026-10-01T02:15:00Z",
+  "requires_user_review": true,
+  "review_reason": "Phase 18 is BLOCKED: the truth lemma's stab case needs the (C5) clause at every time, and TailStable demands tail stability in one residue class mod G.NB (and one mod G.NF) rather than all of them. The repair narrows the certificate class and edits a Phase 16 definition, so it is escalated rather than substituted.",
+  "blocked_phase": 18,
   "verification": {
-    "verification_passed": true,
+    "verification_passed": false,
     "sorry_count": 0,
-    "vacuous_count": 0,
+    "vacuous_count": 1,
     "axiom_count": 14,
-    "build_passed": true
+    "build_passed": true,
+    "build_output": "Full lake build green: 2800 jobs, exit_status=0, zero error: and zero warning:. verification_passed is false only because Phase 18 is BLOCKED, not because any gate failed. vacuous_count 1 is the pre-existing FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal := trivial, a true statement untouched by this dispatch. #print axioms on canRun, live_canRun, lab_eq_canLab, live_iff_canLab and canLab_fulfilling reports exactly [propext, Classical.choice, Quot.sound] for each."
+  },
+  "user_decision": {
+    "question": "Phase 18's truth lemma needs the (C5) stability clause at every time, but TailStable constrains the live set in only one residue class mod G.NB (and one mod G.NF). Replacing each conjunct by a bounded quantifier over its period's residues closes it and keeps the checker decidable, but narrows the certificate class Phases 19-20 claim completeness relative to. Accept that narrowing?",
+    "options": [
+      "Accept the residue-indexed TailStable — strengthen the demand, keep soundness reachable, and re-check Phases 19-20 against the narrower class",
+      "Do not accept — send Phase 18 back to a reviser pass to find a different soundness route or to restate what the subtree claims",
+      "Accept, and additionally commission a probe that measures how much the narrowing actually costs (whether the landed L witness family's embedding in Phase 20 still satisfies the new demand) before Phases 19-20 are written"
+    ],
+    "recommended": "Accept the residue-indexed TailStable — strengthen the demand, keep soundness reachable, and re-check Phases 19-20 against the narrower class",
+    "blocking": true
   },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-5 summary: dispatch 40's repaired forward conjunct and dispatch 41's Phase 17, the decidable checker."
+      "summary": "Round-5 summary extended with dispatch 42: Phase 18's two gaps, the canonical labelling that closes the first, and the demand-level blocker that is the second."
     },
     {
       "type": "plan",
       "path": "specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md",
-      "summary": "Phase 17 [COMPLETED] with its record and ten annotated checklist items; design item 5 amended; READ FIRST block at Phase 18; Phase 21 gate state re-measured."
+      "summary": "Phase 18 marked [BLOCKED] with a five-part BLOCKER record (both routes settled, two dead-end derivations, the replacement demand written out) and its five checklist items annotated."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T012500Z.md",
-      "summary": "Resume point for Phase 18, with the one unverified liveness-transport risk and both routes to check."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T020855Z.md",
+      "summary": "Resume point for Phase 18: the two gaps, the declaration table for Canon.lean, the two dead ends not to re-derive, and the reproduced stale-olean hazard."
     }
   ],
-  "completion_data": {
-    "completion_summary": "Phase 17 of task 703 is complete: FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean defines PlusSlicedCertificate.Certifies as nine clauses and synthesizes decidableCertifies from them, with each structural conjunct confirmed in isolation and the checker actually run -- a one-slice concrete certificate satisfies all nine clauses and Certifies, by ten #guard lines evaluating during the build. Three of the plan's clause descriptions were implemented in forced alternative forms (the existential side on the position graph, the box clause on live positions rather than on the slice labelling, and one added window-time side condition), and the new fold lemma forall_iff_win_succ with four combined-period shift lemmas was proved to make the stepping clause decidable. Full lake build green at 2799 jobs with zero errors and zero warnings, zero sorries, and no new axioms.",
-    "roadmap_items": []
-  },
   "partial_progress": {
-    "stage": "phase_17_completed",
-    "details": "Phases 1-17 complete (16 is [COMPLETED WITH EXCLUSIONS]); Phases 18-21 NOT STARTED.",
+    "stage": "phase_18_blocked",
+    "details": "Phase 18's two prerequisites landed in FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Canon.lean (canonical labelling of a step path; a fulfilling run's labelling is forced by its state path; the live set is exactly the canonical image of the edge-path space), in two green commits. Sound.lean is not written: the truth lemma's stab case is blocked on a residue-indexed TailStable. See the plan's Phase 18 BLOCKER record.",
     "phases_completed": 17,
     "phases_total": 21
   },
+  "modified_files": [
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Canon.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean",
+    "FormalSystem.lean",
+    "typst/generated/status.typ",
+    "README.md",
+    "FormalSystem/README.md",
+    "FormalSystem/Metalogic/README.md"
+  ],
   "metadata": {
     "session_id": "sess_1790813184_a45978",
     "agent_type": "lean-implementation-agent",
+    "dispatch_seq": 42,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "passed",
-    "notes": "vacuous_count is reported as 0 for this task's own work: the single-line grep reports 1 hit, FormalSystem/Examples/TemporalStructures.lean:495 (int_domain_universal := trivial), which is a true statement about the Int time domain, is untouched by this dispatch, and holds identically at main-tree HEAD. check-module-invariants.sh has four surviving group failures (C16 underscore names, C23 Uppercase_x, C23 shadowing, C24 Init import) -- all attributable to this task's Phases 15-16, none to Phase 17, and all tabulated with disposal advice at the plan's Phase 21 heading."
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "skipped"
   }
 }

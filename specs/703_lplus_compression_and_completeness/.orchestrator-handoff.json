@@ -1,30 +1,48 @@
 {
-  "status": "implemented",
+  "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 41,
-  "summary": "Phase 17 is landed, green and committed: FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean (737 lines) defines Certifies as nine clauses and synthesizes decidableCertifies from them, with each structural conjunct confirmed in isolation by example ... := inferInstance, and the checker RUN -- Probe.triv, the one-slice onePointCertificate at the empty context, satisfies all nine clauses and Certifies, by ten #guard lines that evaluate during the build (11 ms for the nine clauses, under 1 ms for Certifies). Three plan descriptions could not be implemented as written and each alternative is forced, not chosen: the existential side is stated on the position graph (TargetPathPos + a computed-liveness clause) because PlusFulfillingSeqLab is an unbounded existential over the integers and PlusLocalCoherentSeqLab reads lab (t +/- 1); the box clause is BoxLiveFaithful on live positions, NOT (C3) BoxFaithful on the slice labelling, because AgreesOnState pins the slab to a position's label only on the state shapes; and one clause was added, targetTime in winTimes, because the computed live set exists only at window times. forall_iff_win_succ, the combined-window fold with one step of lookahead, is a new lemma this phase had to prove from four new combined-period shift lemmas. The plan's second concrete certificate is NOT exhibited: at Fixture.cert the forward fixpoint does evaluate (fwdLiveT.card = 10) but a run that also asks for bwdLiveT.card did not finish in 7 minutes, and the full clause sweep including TailStable did not finish in 15, at a problem whose whole timed vertex set is 20 -- a fact about Nu.gfp's V.card+1 iteration count, not about decidability, and the reason Phase 20's risk row R2b should expect a hand proof rather than a #guard. Full lake build green: 2799 jobs, zero errors, zero warnings; sorry_count 0; axiom count 14 unchanged; INV fixed by --emit-inventory; four gate failures survive, all attributable to Phases 15-16 and tabulated at Phase 21's heading.",
+  "dispatch_seq": 42,
+  "summary": "Phase 18's two prerequisites landed in Canon.lean (every step path is a fulfilling LabRun; a run's labelling is forced by its state path; the live set is exactly the canonical image of the edge-path space), full lake build green at 2800 jobs with zero sorries and no new axioms. Phase 18 itself is BLOCKED: the truth lemma needs the (C5) clause at every time and TailStable demands tail stability in one residue class only.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-5 summary covering dispatch 40 (sub-phase 16.3) and dispatch 41 (Phase 17, the decidable checker)."
+      "summary": "Round-5 summary extended with dispatch 42."
     },
     {
       "type": "plan",
       "path": "specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md",
-      "summary": "Phase 17 [COMPLETED] with a PHASE 17 RECORD and ten annotated checklist items; design item 5 amended; a READ FIRST block at Phase 18; Phase 21's gate state re-measured."
+      "summary": "Phase 18 [BLOCKED] with its BLOCKER record and annotated checklist."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T012500Z.md",
-      "summary": "Resume point: Phase 18, what Check.lean hands it, and the one unverified liveness-transport risk with both routes named."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T020855Z.md",
+      "summary": "Resume point for Phase 18."
     }
   ],
   "phases_completed": 17,
   "phases_total": 21,
-  "blockers": [],
+  "blockers": [
+    {
+      "phase": 18,
+      "target": "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Sound.lean (not created); the obligation lives in FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Stable.lean's TailStable",
+      "verbatim_goal": "Prove PlusSlicedCertificate.plusRefutes_of_certifies, landing PlusWitnessFamily.PlusRefutes Gamma Del unchanged.",
+      "what_was_tried": "Both routes the plan's READ FIRST block names. Route 1 (frame-side normalization via plusTruthAt_shiftBack / timeShift_offset_zero): closes the box case outright, since plusBox_const makes the box clause readable at one fixed window time; does not touch the stab case, whose comparison class is pinned by the carrier element's own time. Route 2 (liveness periodicity at an arbitrary residue): two candidate derivations of the needed stability equation from Phi_back L0 = L0 were worked through, one via A_r = iterBack (-NB) L0 r and one via the live set at -NB - r itself.",
+      "why_it_failed": "A_r satisfies the residue stability equation (by iterBack_add, iterBack_L0 and iterBack_shift) but is not contained in the live set at -NB - r, so it cannot be the reference set the three-region construction needs; and the live set at -NB - r satisfies no equation the landed demand implies, because Phi_back L0 = L0 constrains the live set at one reference time only. The gap is in the demand, not in its proof: TailStable constrains one residue class mod G.NB (and one mod G.NF) while the truth lemma needs all of them."
+    }
+  ],
   "plan_markers_verified": true,
-  "continuation_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T012500Z.md",
-  "next_action_hint": "Dispatch Phase 18 (Sound.lean, the truth lemma, plusRefutes_of_certifies). Read the READ FIRST block at Phase 18's heading first: it names the four declarations Check.lean hands that phase and the one unverified risk -- StabFaithful and BoxLiveFaithful are stated at window times, the truth lemma needs the stab clause at an arbitrary time, and the liveness half of that transport is not covered by the landed linchpins at an arbitrary residue. Check frame-side normalization (plusTruthAt_shiftBack / timeShift_offset_zero) before writing the stab case.",
-  "git_checkpoint": "3a18b1fe3da6d0af8fa05811b4707ea35b437d3d"
+  "continuation_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T020855Z.md",
+  "next_action_hint": "Answer the user_decision on the residue-indexed TailStable before dispatching Phase 18 again; on acceptance, change TailStable, re-derive decidableTailStable, write a reference-time-generic tailPos plus exists_win_live_eq, then Sound.lean.",
+  "git_checkpoint": "orchestrate/task-703-42",
+  "user_decision": {
+    "question": "Phase 18's truth lemma needs the (C5) stability clause at every time, but TailStable constrains the live set in only one residue class mod G.NB (and one mod G.NF). Replacing each conjunct by a bounded quantifier over its period's residues closes it and keeps the checker decidable, but narrows the certificate class Phases 19-20 claim completeness relative to. Accept that narrowing?",
+    "options": [
+      "Accept the residue-indexed TailStable — strengthen the demand, keep soundness reachable, and re-check Phases 19-20 against the narrower class",
+      "Do not accept — send Phase 18 back to a reviser pass to find a different soundness route or to restate what the subtree claims",
+      "Accept, and additionally commission a probe that measures how much the narrowing actually costs (whether the landed L witness family's embedding in Phase 20 still satisfies the new demand) before Phases 19-20 are written"
+    ],
+    "recommended": "Accept the residue-indexed TailStable — strengthen the demand, keep soundness reachable, and re-check Phases 19-20 against the narrower class",
+    "blocking": true
+  }
 }
