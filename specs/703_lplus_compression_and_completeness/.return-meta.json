@@ -1,47 +1,44 @@
 {
-  "status": "implemented",
-  "started_at": "2026-10-01T04:05:37Z",
-  "completed_at": "2026-10-01T05:05:00Z",
+  "status": "partial",
+  "started_at": "2026-10-01T05:22:34Z",
+  "completed_at": "2026-10-01T05:53:01Z",
   "verification": {
-    "verification_passed": true,
+    "verification_passed": false,
     "sorry_count": 0,
     "vacuous_count": 1,
     "axiom_count": 14,
-    "build_passed": true
+    "build_passed": true,
+    "build_output": "Build completed successfully (2804 jobs); zero errors, zero warnings; guard exit 0. The two non-green verification fields below are NOT regressions introduced by this dispatch: vacuous_count 1 is FormalSystem/Examples/TemporalStructures.lean:495 (int_domain_universal := trivial), pre-existing and untouched, recorded identically by every prior dispatch in this round; compliance_check failed because the spot-check scans every **Goals** block including [NOT STARTED] phases, and three of its four findings are false negatives on `structure` declarations (PlusGraphPath, PlusSlice, PlusSlicedCertificate at PlusSlicedCertificate/Basic.lean:140,:280,:328 -- the check's grep matches only theorem/def/lemma/instance). The fourth finding, exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula, is genuinely absent: it is sub-phase 20.2's goal."
   },
+  "partial_progress": {
+    "stage": "phase_20_split_subphase_20_1_closed",
+    "details": "Phase 20 split as its own declared Contingency permits. Sub-phase 20.1 CLOSED and committed (6b8e3d05d): FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Embed.lean (new, 865 lines) lands the generic three-segment materialization with its decoding converse, the identification of an embedded context's L-plus closure with the ofFormula-image of the base closure (whence no stab-formula lies in it, so (C5) StabFaithful and SlabTrue's second clause are both vacuous there), the certificate WitnessFamily.sliced with slice width the lasso count and edges i-to-i only, its full readout, the collapse of the combined window onto the family's own periods, sliced_biSerial, sliced_stabFaithful and sliced_target_edge. The phase's mandated PROBE-FIRST step RAN and returned FAVOURABLE and is landed as five kernel-checked theorems rather than as a measurement: TailStable is TRUE at two embedded certificates (8 and 12 timed vertices, the second a certifying family whose lasso carries and discharges an untl obligation) while TailStableRaw and the raw Phi_fwd equation are FALSE at both, so the cycle-5 liveness filter is load-bearing on this route. Sub-phase 20.2 remains open and owes four things: TailStable in general (both conjuncts), SlabTrue's box clause, the identification target.lab t = canLab target.st t, and the flagship exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula. Phase 21 NOT STARTED.",
+    "phases_completed": 19,
+    "phases_total": 21
+  },
+  "requires_user_review": true,
+  "review_reason": "Informational, NOT a blocking decision -- no user ruling is requested and none is needed. Flagged only because the agent contract requires it when any verification field is non-green: compliance_check is 'failed' (an expected scan artefact until the last phase lands; three of four findings are false negatives on structure declarations and the fourth is sub-phase 20.2's own goal) and vacuous_count is 1 (pre-existing, FormalSystem/Examples/TemporalStructures.lean:495, untouched). Substantively: Phase 20 was split at a point one bullet earlier than its own Contingency names, because that bullet's premise -- 'with edges i-to-i only, Phi_back is the identity on the position sets it acts on' -- is FALSE (stepBack is a succP-preimage and StepClause permits the label to change along the step), so the backward conjunct is not short and moved into 20.2 with the forward one. Also recorded rather than hidden: commit 6b8e3d05d lacks its two attribution trailers, and the amend was correctly refused by guard-destructive-git.sh because a live concurrent writer exists in this repo.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-05 implementation summary, extended with the dispatch-46 Phase 19 record."
+      "summary": "Round-05 implementation summary, extended with the dispatch-47 sub-phase 20.1 record, the probe verdict table and the corrected plan claim."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-19-handoff-20261001T043610Z.md",
-      "summary": "Phase 19 closure handoff; names the superseded demand in Phase 20's PRINCIPAL RISK bullet."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-20-handoff-20261001T055301Z.md",
+      "summary": "Sub-phase 20.1 closure handoff; corrects Phase 20's false Phi_back-is-the-identity premise and maps 20.2's route, including which L-side lemmas transfer and which do not."
     }
   ],
-  "completion_data": {
-    "completion_summary": "Phase 19 of task 703 is closed as [COMPLETED WITH EXCLUSIONS]. FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Complete.lean (711 lines, 40 declarations) proves exists_plusSlicedCertificate_of_tailStable_countermodel -- completeness relative to tail-stable sliced models -- together with a truth lemma that needs no checker clause (plusTruthAt_iff_canAt_of_slabTrue), the three semantic clauses of Certifies, the composite plusRefutes_of_tailStable_countermodel, and Probe.exists_certifying_triv proving the hypothesis set satisfiable. The produced certificate agrees with the given structure on six carrier fields rather than the plan's four, because TailStable turns out to depend on the target path's segment lengths through the combined window -- a measured correction to the plan's own claim, which is why the paired-carrier pigeonhole extraction was excluded. Full lake build green at 2803 jobs, zero errors, zero warnings, zero sorries, axiom count 14 unchanged, and both protected soundness theorems untouched.",
-    "roadmap_items": []
-  },
-  "partial_progress": {
-    "stage": "phase_19_closed",
-    "details": "Phases 1-19 closed; Phases 20-21 NOT STARTED. Phase 20 should read the phase-19 handoff first: its PRINCIPAL RISK bullet targets a tail-stability conjunct that two user rulings have since replaced.",
-    "phases_completed": 19,
-    "phases_total": 21
-  },
   "metadata": {
-    "session_id": "sess_1790813184_a45978",
+    "session_id": "sess_1790832139_cbc5b7",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "skill-lean-implementation"
-    ],
-    "dispatch_seq": 46,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "dispatch_seq": 47,
     "compliance_check": "failed",
-    "compliance_check_note": "The spot-check scans EVERY `**Goals**:` block in the plan, including phases that are [NOT STARTED], so it structurally cannot pass until the last phase lands. Its four findings break into two classes, neither of which is a defect of this dispatch. (1) Three FALSE NEGATIVES: PlusGraphPath, PlusSlice and PlusSlicedCertificate are `structure` declarations, and the check's grep matches only theorem/def/lemma/instance. All three are present at FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Basic.lean:140, :280 and :328. (2) One genuinely absent goal: exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula is Phase 20's goal, and Phase 20 is [NOT STARTED]. Phase 19's own goal, exists_plusSlicedCertificate_of_tailStable_countermodel, is [OK]. verification_passed and the dispatch status are therefore left as they are rather than demoted: nothing here needs the user's judgement, and phases_completed 19 of 21 already carries the incompleteness signal."
+    "handoff_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-20-handoff-20261001T055301Z.md",
+    "commits": ["6b8e3d05d"],
+    "worktree_branch": "orchestrate/task-703-47"
   }
 }

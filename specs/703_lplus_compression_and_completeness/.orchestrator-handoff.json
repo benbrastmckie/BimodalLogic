@@ -1,22 +1,22 @@
 {
-  "status": "implemented",
+  "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 46,
-  "summary": "Phase 19 closed as [COMPLETED WITH EXCLUSIONS]: PlusSlicedCertificate/Complete.lean lands exists_plusSlicedCertificate_of_tailStable_countermodel (completeness relative to tail-stable sliced models) with six carrier equations, a truth lemma needing no checker clause, and a proof that the hypothesis set is satisfiable. Full lake build green at 2803 jobs, zero sorries, axiom count 14 unchanged.",
+  "dispatch_seq": 47,
+  "summary": "Phase 20 split as its own Contingency declares: sub-phase 20.1 is CLOSED and committed (PlusSlicedCertificate/Embed.lean, 865 lines — the generic segment layer, the embedded-closure identification whence no stab-formula is in it and (C5) is vacuous, the certificate WitnessFamily.sliced with self-loop edges, its readout, the window collapse, sliced_biSerial), and the phase's mandated tail-stability PROBE ran and returned FAVOURABLE: TailStable is true at two embedded certificates while TailStableRaw is false at both, both landed as kernel-checked theorems. Phase 20 is [PARTIAL]; sub-phase 20.2 owes TailStable in general, SlabTrue's box clause, the canonical-label identification and the flagship. Full lake build green at 2804 jobs, zero errors, zero warnings, zero sorries, axiom count 14 unchanged.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-05 implementation summary, extended with the dispatch-46 Phase 19 record."
+      "summary": "Round-05 implementation summary, extended with the dispatch-47 sub-phase 20.1 record and the probe verdict."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-19-handoff-20261001T043610Z.md",
-      "summary": "Phase 19 closure handoff; names the superseded demand in Phase 20's PRINCIPAL RISK bullet."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-20-handoff-20261001T055301Z.md",
+      "summary": "Sub-phase 20.1 closure handoff; corrects Phase 20's false 'Phi_back is the identity' premise and maps the route to 20.2's two semantic obligations."
     }
   ],
   "phases_completed": 19,
   "phases_total": 21,
   "blockers": [],
-  "continuation_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-19-handoff-20261001T043610Z.md"
+  "continuation_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-20-handoff-20261001T055301Z.md"
 }

@@ -5066,19 +5066,86 @@ sub-phases; never carry a `sorry`.
 
 ---
 
-### Phase 20: The landed L witness family embeds [NOT STARTED]
+### Phase 20: The landed L witness family embeds [PARTIAL]
 
 **Goal**: Prove `exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula` — every ℤ-time
 non-validity of L, transported to L⁺, has a sliced certificate. This restores parity with the
 landed L class that plan v2's finite-graph shape gave up, and it is **the only completeness theorem
 this research supports**.
 
+**SUB-PHASE SPLIT TAKEN (the Contingency below, invoked).** The phase overran one agent run and
+was split as the Contingency declares, with the boundary moved one bullet earlier than the
+Contingency's own wording anticipated and for a reason recorded here rather than absorbed:
+
+- **20.1 [COMPLETED]** — `Embed.lean`: the generic segment layer, the closure transfer, the
+  construction `WitnessFamily.sliced`, the readout, the window collapse, `sliced_biSerial`, the two
+  `⊡`-vacuity results, the target-path edge condition, and the **mandated tail-stability probe**.
+- **20.2 [NOT STARTED]** — `TailStable` in general (both conjuncts), `SlabTrue`'s `□` clause, the
+  identification of the embedded target labels with the canonical ones, and the flagship assembly.
+
+**The Contingency puts `TailStable` in 20.1; it is in 20.2 instead, because this phase's own
+"backward half is genuinely short" claim is FALSE.** The claim rests on "with edges `i → i` only,
+`Φ_back` is the identity on the position sets it acts on". It is not. `Stable.lean`'s
+`stepBack t X = (posAt (t-1)).filter (fun p => (succP (t-1) p ∩ X).Nonempty)` is a `succP`-preimage,
+and `succP` constrains the arriving label only through `StepClause`, which permits the label to
+change along the step. So with self-loops `stepBack t X` is "the positions at `t-1` whose index
+matches some member of `X` and whose label is `StepClause`-compatible with it" — a different set at a
+different time, not `X`. The backward conjunct is therefore a genuine equation between a
+`succP`-preimage and a computed live set, of the same order of difficulty as the forward one, and it
+does not reduce to the self-loop structure. Both conjuncts move together to 20.2.
+
+**THE MANDATED PROBE RAN, AND THE VERDICT IS FAVOURABLE.** `decide G.TailStable` was evaluated at
+two embedded certificates, both conjuncts separately first as the bullet asks, and both are landed
+as kernel-checked theorems rather than left as transient measurements:
+
+| Certificate | window times | timed vertices | `TailStable` | `TailStableRaw` | raw `Φ_fwd R₀ = R₀` |
+|---|---|---|---|---|---|
+| `Embedded.emptyFamily.sliced 0` (closure card 3, all labels empty) | 4 | 8 | **true** | false | false |
+| `Embedded.liveFamily.sliced (-1)` (a carried **and discharged** `untl`) | 6 | 12 | **true** | false | false |
+
+Both families have `perB = perF = 1`; `perM` is `0` and `2`. The second family is a **certifying**
+one — `Embedded.liveFamily_certifies : liveFamily.Certifies (-1)`, also by `decide` — so the demand
+is tested against a live eventuality obligation and not against an empty closure. Wall time: the
+whole module, including all four `decide`s, elaborates in **4.6 s**; the same verdicts computed
+through the interpreter in a scratch file took 15 s and 94 s respectively, so the kernel is the
+cheaper evaluator here and the Phase-17 fear that the probe itself would be the expensive thing did
+not materialize at these sizes.
+
+**What the probe shows and what it does not.** It shows the conjecture is **not refuted** at the
+embedding, and that the **liveness filter is load-bearing** there: at the same certificate where the
+landed demand holds, the raw demand fails. It does **not** show `TailStable` holds at every embedded
+certificate — these are two certificates of eight and twelve timed vertices — and nothing landed
+claims that. 20.2 still has to prove the general statement, and the escape route the pre-v9 body
+describes (the lassos fulfil their eventualities inside their own cycles) is now evidenced rather
+than merely hoped for.
+
+**Scope Hypothesis, confirmed.** The `WitnessFamily` structure was read before the edge relation was
+fixed, as the hypothesis asks. It carries `bx`, `lassos` and `lassos_ne` and **no succession
+relation of any kind**; its four conditions quantify over one lasso index at a time
+(`LocalCoherentLab` and `FulfillingLab` at a single `i`, `BoxFaithful` relating no two indices,
+`Target` reading lasso `0`). So `fun i j => decide (i = j)` needs no correction. The period
+assertion is confirmed too: the L-side family stores no periods, so `perB` / `perF` / `perM` mirror
+`PlusSharingWitnessFamily.perBack` / `perFwd` / `perMid` — **product**, **product**, **sum** — and
+only divisibility, the sum bound and positivity are used.
+
+**Design move recorded, as the v10 bullet asks.** The embedded target path is cut at **exactly** the
+slice sequence's own three lengths, so `NBnat = Nat.lcm perB perB = perB`, `NFnat = perF` and
+`NM = perM` (`sliced_NBnat`, `sliced_NFnat`, `sliced_NM`). A coprime choice would have multiplied
+both residue counts and with them 20.2's proof obligation. No bound is claimed either way.
+
+**One clause group turns out to be free, and it is worth not re-deriving in 20.2.**
+`plusClosureOf_ofCtx` identifies an embedded context's L⁺ closure with the `ofFormula`-image of the
+base closure, and nothing in that image is a top-level `⊡`. So **(C5) `StabFaithful` is vacuous at
+an embedded certificate** (`sliced_stabFaithful`), and so is the second clause of `SlabTrue`, which
+carries the identical guard. The only semantic clause 20.2 has to establish is the `□` one.
+
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Embed.lean`.
-- [ ] Define the embedding `slicedOfWitnessFamily`: from a `WitnessFamily [] [φ]` with `k` lassos,
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Embed.lean`.
+- [x] Define the embedding `slicedOfWitnessFamily`: from a `WitnessFamily [] [φ]` with `k` lassos,
       build a certificate with `n = k`, edges `i → i` only, and `G.slab t i` the atoms and
       `bx`-boxes of `(lassos i).lab t`.
-- [ ] Build the tails and the window from the lassos' **common periods** — their product, which is
+      *(deviation: altered — landed as `WitnessFamily.sliced`, a namespaced member of `WitnessFamily` rather than a free function, so the family is the receiver; `n = k`, edges `i → i` only, and `slab t i` the translated label `trLab (W.L i t)` in full rather than its atom-and-box part only, because `AgreesOnState` reads only the state shapes and the full image costs nothing)*
+- [x] Build the tails and the window from the lassos' **common periods** — their product, which is
       exactly what `perBack` (`PlusWitnessFamily/Decide.lean:181`) already computes on the L⁺ side;
       mirror that computation rather than inventing a second one. **Claim no order for the
       resulting periods**; a product of the family's own periods is a construction, not a bound.
@@ -5121,6 +5188,7 @@ this research supports**.
       `Tail.lean`'s reference-time-generic `tailPos` / `headPos` layer exists precisely so a proof of
       this shape does not have to be re-derived — read it before writing this bullet. Budget this at
       the hour plan v9 adds to the phase, not at zero.)*
+      *(deviation: partially done — `sliced_biSerial` is proved; the backward half of `TailStable` is DEFERRED to 20.2, because this bullet's "`Φ_back` is the identity" premise is false (see the sub-phase record above))*
 - [ ] **PRINCIPAL RISK OF THIS PHASE — the forward conjunct. READ THE PLAN-v9 CORRECTION BELOW
       BEFORE THE BODY OF THIS BULLET; the demand it names is not the demand that landed.** The
       operative forward conjunct is **neither** `Φ_fwd R₀ = R₀` **nor** the candidate-1 bet this
@@ -5212,28 +5280,34 @@ this research supports**.
     itself give the wrap; **candidate 4** keeps the definition and records the narrowing as a stated
     limitation of the whole Stage 2 result. Under no circumstances weaken `TailStable`, state
     `exists_tailStable_repr` in any form, or reach for a `sorry`.
+      *(deviation: partially done — the mandated PROBE-FIRST step ran and returned FAVOURABLE at two embedded certificates (see the record above); the proof of the forward conjunct is DEFERRED to 20.2)*
 - [ ] Prove `slicedOfWitnessFamily_certifies`: the embedded certificate meets `Certifies`. The four
       clause groups come from the family's own certification conditions; the universal side is the
       one to watch, since with edges `i → i` only, the live positions over `(t, i)` are exactly the
       ones the single lasso `i` realizes.
+      *(deviation: deferred to sub-phase 20.2)*
 - [ ] **Prove the third structural conjunct too**, not only the two in the bullet above:
       (C3b) `BoxLabelFaithful`. *(added at plan v7.)* This is where the embedding's own definition
       of `slab` pays off — `G.slab t i` is "the atoms and `bx`-boxes of `(lassos i).lab t`", so
       `box χ ∈ G.slab t i ↔ G.bx χ = true` holds **by construction**, off the `bx`-boxes half of
       that definition and not off any certification condition of the L-side family. Prove it; do
       not assert it, and do not route it through the family's conditions, which do not supply it.
+      *(deviation: deferred to sub-phase 20.2 — and note the route: on `Complete.lean`'s headline (C3b) is PRODUCED from `canonBx` rather than constructed, so what 20.2 owes is `SlabTrue`'s `□` clause, not this clause directly)*
 - [ ] Assemble the flagship: start from `¬ PlusValidZTime (ofFormula φ)`, transport to
       `¬ ValidZTime φ` with `plusTruthAt_ofFormula` (`PlusLanguage/PlusValidity.lean:168`), apply
       the landed `exists_witnessFamily_of_not_validZTime`
       (`WitnessFamily/Compression/Family.lean:153`), and embed.
+      *(deviation: deferred to sub-phase 20.2)*
 - [ ] Record in the module docstring what this theorem buys: the sliced class is **non-vacuous on
       branching-free targets** and is at least as strong as the landed L class there — which is
       exactly what the withdrawn `PlusGraphCertificate` was not. **Cite no probe, by path or by
       declaration name** (USER RULING, see `.decisions.json`); state the mathematical claim itself
       as the anchor. State plainly that this is **not** completeness for L⁺: targets containing
       `⊡` are not covered, and that is the open Stage 3 question.
+      *(deviation: partially done — `Embed.lean`'s header records the construction, the period choice and the probe's limits, and cites no probe path or probe declaration name from outside the library; the "what this theorem buys" paragraph belongs with the flagship and is deferred to 20.2)*
 - [ ] Record the hand-off to task 704: this theorem is a ready-made non-vacuity witness for its
       shape gates.
+      *(deviation: deferred to sub-phase 20.2)*
 
 **Timing**: 7 hours *(4 through plan v7; **+2 at plan v8**; **+1 at plan v9** for the every-residue
 obligation on both halves of `TailStable` — the backward half becomes a uniform-in-`r` lemma at a

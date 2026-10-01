@@ -4,26 +4,52 @@
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-10-01T00:09:00Z (dispatch 40); dispatch 41 began 2026-10-01T00:47:00Z;
   dispatch 42 began 2026-10-01T01:36:00Z; dispatch 44 began 2026-10-01T03:15:25Z; dispatch 46 began
-  2026-10-01T04:05:37Z
+  2026-10-01T04:05:37Z; dispatch 47 began 2026-10-01T05:22:34Z
 - **Completed**: not complete — **sub-phase 16.3 and Phases 17, 18 and 19 are all closed** (19 as
   [COMPLETED WITH EXCLUSIONS]). Phase 18's blocker (a demand-level gap in `TailStable`, recorded at
   dispatch 42) is **RESOLVED** at dispatch 44 by the residue-indexed demand the user ruled for in
-  cycle 3. Phases 20-21 remain NOT STARTED. Dispatch 44 ended 2026-10-01T04:05:00Z; dispatch 46
-  ended 2026-10-01T05:05:00Z
+  cycle 3. **Phase 20 is now [PARTIAL]: dispatch 47 closed sub-phase 20.1 and left 20.2 open.**
+  Phase 21 remains NOT STARTED. Dispatch 44 ended 2026-10-01T04:05:00Z; dispatch 46
+  ended 2026-10-01T05:05:00Z; dispatch 47 ended 2026-10-01T05:53:00Z
 - **Effort**: ~35 minutes (dispatch 40, sub-phase 16.3) + ~40 minutes (dispatch 41, Phase 17) +
   ~40 minutes (dispatch 42, Phase 18's prerequisites and its blocker) + ~50 minutes (dispatch 44,
-  the demand change and Phase 18) + ~60 minutes (dispatch 46, Phase 19)
+  the demand change and Phase 18) + ~60 minutes (dispatch 46, Phase 19) + ~30 minutes (dispatch 47,
+  sub-phase 20.1)
 - **Dependencies**: `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Stable`,
   `...PlusSlicedCertificate.Bridge`, `...PlusSlicedCertificate.FixtureStable`,
   `...PlusSlicedCertificate.Window`, `...PlusSlicedCertificate.Position`,
   `...PlusWitnessFamily.Compression.Types` (all landed before these dispatches); no new external
   dependency. Dispatch 46 adds no external dependency either: Phase 19 consumes
   `...PlusSlicedCertificate.Sound` and, through it, `...PlusSlicedCertificate.Canon` and
-  `...PlusSlicedCertificate.Tail`
+  `...PlusSlicedCertificate.Tail`. Dispatch 47 adds **one** new intra-repository dependency:
+  `Embed.lean` imports `...WitnessFamily.Agreement` alongside `...PlusSlicedCertificate.Complete`,
+  which is the first time this subtree depends on the `Formula`-side witness-family layer at all —
+  necessarily, since the embedding's source object lives there
 - **Artifacts**: plans/05_lplus-sliced-certificate-and-completeness.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
+
+**Dispatch 47 closes sub-phase 20.1** — the construction half of the embedding of the landed
+`Formula`-side witness family — and splits Phase 20 as that phase's own Contingency declares.
+`Embed.lean` lands a generic layer the subtree did not have (an eventually periodic function cut
+into the three segments that decode back to it), the identification of an embedded context's L⁺
+closure with the `ofFormula`-image of the base closure, the certificate `WitnessFamily.sliced`
+itself with slice width the lasso count and edges `i → i` only, its readout, the collapse of the
+combined window onto the family's own periods, and `sliced_biSerial`. Two consequences of the
+closure identification are landed as results rather than noted as remarks: **no `⊡`-formula lies in
+an embedded closure at all**, so (C5) `StabFaithful` is vacuous there (`sliced_stabFaithful`) and so
+is the second clause of `SlabTrue`.
+
+**The phase's mandated PROBE-FIRST step ran and returned favourable**: `decide G.TailStable` is
+**true** at two embedded certificates while `TailStableRaw` is **false** at both, so the liveness
+filter the user ruled for in cycle 5 is load-bearing on this route. Both verdicts are landed as
+kernel-checked theorems rather than left as transient measurements. `TailStable` in general,
+`SlabTrue`'s `□` clause, the canonical-label identification and the flagship are sub-phase 20.2.
+
+**One plan claim is corrected rather than absorbed**: Phase 20's "the backward half of `TailStable`
+is genuinely short, because `Φ_back` is the identity on the position sets it acts on" is **false**,
+and that is why `TailStable` moved out of 20.1. See Plan Deviations.
 
 **Dispatch 46 closes Phase 19**, the converse of Phase 18. `Complete.lean` lands
 `exists_plusSlicedCertificate_of_tailStable_countermodel`: a bi-serial, tail-stable sliced structure
@@ -91,6 +117,45 @@ demand written out and raised as this round's `user_decision`, because it narrow
 class Phases 19-20 claim completeness relative to.
 
 ## What Changed
+
+### Dispatch 47 (sub-phase 20.1)
+
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Embed.lean` — **created**, 865 lines.
+  - **The generic segment layer** (`namespace Periodic`): `segBack` / `segMid` / `segFwd` cut a
+    function into three lists, with `unrollOf_seg` proving they decode back to it, off two
+    hypotheses (leftward period `pb` below `0`, rightward period `pf` at or past `m`). The two
+    multiple-periodicity lemmas `periodic_back_mul` / `periodic_fwd_mul` do the work of getting from
+    a residue representative back to the original time. This is the **converse** of the three region
+    lemmas `Periodic.unrollOf_neg` / `_mid` / `_fwd`, and the subtree had only the forward direction.
+  - **The closure transfer**: `PlusFormula.subformulas_ofFormula`,
+    `plusSubformulaClosure_ofFormula`, `plusClosureOf_ofCtx`, `mem_plusClosureOf_ofCtx`,
+    `exists_ofFormula_of_mem_plusClosureOf_ofCtx` and — the one this phase turns on —
+    `not_stab_mem_plusClosureOf_ofCtx`.
+  - **`PlusSlice.ext'`**: two slices with the same edge relation and labelling are equal (the subset
+    field is a `Prop`). Needed because the segment layer is applied at `α := PlusSlice n C`.
+  - **The common periods**: `WitnessFamily.perB` / `perF` / `perM`, mirroring
+    `PlusSharingWitnessFamily.perBack` / `perFwd` / `perMid` — product, product, sum — with
+    `perB_pos`, `perF_pos`, `back_length_dvd_perB`, `fwd_length_dvd_perF`, `mid_length_le_perM`.
+  - **Lasso periodicity by any multiple**: `lab_sub_dvd`, `lab_add_dvd`, and their instances
+    `lab_sub_perB`, `lab_add_perF` at the family's own periods.
+  - **The construction**: `trLab`, `embSlice`, `embTargetFun`, `embTarget`, and
+    `WitnessFamily.sliced` — the certificate, with `bx := fun _ => false` deliberately.
+  - **The readout**: `sliced_slice`, `sliced_edge`, `sliced_slab`, `sliced_target_datum`,
+    `sliced_target_lab`, `sliced_target_st`.
+  - **The window collapse**: `sliced_NBnat = perB`, `sliced_NFnat = perF`, `sliced_NM = perM`, plus
+    `sliced_winLo`, `sliced_winHi`, `sliced_mem_winTimes`.
+  - **Proved clauses**: `sliced_biSerial` (C1, both directions), `sliced_stabFaithful` (C5,
+    vacuously), `sliced_target_edge` (the `hedge` hypothesis of the Phase-19 headline).
+  - **The probe, landed as theorems** (`namespace WitnessFamily.Embedded`): `evTarget` = `p U q`,
+    `emptyLasso` / `emptyFamily` and `liveLasso` / `liveFamily`, with
+    `emptyFamily_tailStable`, `emptyFamily_not_tailStableRaw`, `liveFamily_certifies`,
+    `liveFamily_tailStable`, `liveFamily_not_tailStableRaw` — five `by decide` facts.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean` — one added import, one added
+  submodule inventory bullet.
+- `FormalSystem.lean` — one added import line.
+- `FormalSystem/Metalogic/README.md`, `FormalSystem/README.md`, `README.md` — regenerated
+  inventories (`check-module-invariants.sh --emit-inventory`).
+- `typst/generated/status.typ` — regenerated (`typst-sync-check.sh --fix`).
 
 ### Dispatch 46 — Phase 19, completeness relative to tail-stable sliced models
 
@@ -283,6 +348,45 @@ class Phases 19-20 claim completeness relative to.
 
 ## Decisions
 
+### Dispatch 47 (sub-phase 20.1)
+
+- **Split Phase 20 at a point one bullet earlier than its Contingency names, and say why.** The
+  Contingency puts the construction, `BiSerial` **and `TailStable`** in 20.1. `TailStable` is in 20.2
+  instead, because the Contingency's split point was chosen on the strength of a false claim about
+  the backward conjunct (see Plan Deviations). Reporting 20.1 as "the construction plus `BiSerial`
+  plus the probe" is the honest description of what closed.
+- **Reuse `Complete.lean`'s headline rather than proving `Certifies` directly.** `Certifies` has nine
+  conjuncts, three of which read the computed liveness fixpoint. `Complete.lean`'s
+  `exists_plusSlicedCertificate_of_tailStable_countermodel` constructs those three from `SlabTrue`
+  and **produces** the box guess, so the embedding owes `BiSerial`, `TailStable`, `SlabTrue` and the
+  four path hypotheses instead. This is why `bx := fun _ => false` is a deliberate choice and not a
+  placeholder: `canAt`, and hence `canLab`, read the slice labelling rather than the box guess
+  (`Complete.lean`'s `withBx_canAt` is the lemma that says so), so nothing 20.2 must establish
+  depends on it.
+- **`slab t i` is the FULL translated label `trLab (W.L i t)`, not its atom-and-box part.** The plan
+  says "the atoms and `bx`-boxes of `(lassos i).lab t`". Restricting is unnecessary —
+  `AgreesOnState` quantifies only over the state shapes in the closure, so extra non-state-shape
+  content is invisible to it — and the unrestricted image makes `sliced_slab` a one-line readout and
+  `mem_trLab` an injectivity transfer. Recorded because it is a divergence from the plan's wording,
+  not because it is load-bearing.
+- **The embedded target path is cut at exactly the slice sequence's own three lengths.** This is the
+  deliberate choice the plan's v10 bullet asks to be made and recorded: it collapses
+  `NBnat = Nat.lcm perB perB` to `perB` and likewise forward, keeping the residue count of the
+  tail-stability demand at the family's own periods. A coprime choice would have multiplied both
+  counts and with them 20.2's proof obligation. **No bound is claimed either way** — a product of the
+  family's own periods is a construction, not a complexity claim.
+- **Land the probe as kernel-checked theorems rather than as `#eval` measurements.** A `#guard` or a
+  scratch-file `#eval` records a number in a report; a `by decide` theorem records it in the build.
+  The user ruling on probe citation is satisfied by this route rather than worked around: these are
+  ordinary library declarations in `FormalSystem/**`, so the module docstring cites them by name, and
+  no `specs/**/probes/...` path and no probe declaration name from outside the library is cited
+  anywhere.
+- **Prefer `by decide` over `#eval` when probing this subtree.** Measured, not assumed: the module
+  with all four `decide`s elaborates in 4.6 s, while the same verdicts through the interpreter took
+  15 s and 94 s. The liveness path contains `noncomputable` declarations (`untlTasks` and friends,
+  via `Finset.toList`) that make `#eval` refuse outright on anything touching a failed elaboration,
+  which is a second reason to stay in the kernel.
+
 ### Dispatch 46 — Phase 19
 
 - **The produced certificate keeps `G₀`'s target path and target time, rather than re-extracting a
@@ -419,6 +523,59 @@ class Phases 19-20 claim completeness relative to.
 
 ## Plan Deviations
 
+### Dispatch 47 (sub-phase 20.1)
+
+- **Phase 20 task 4 ("Prove the embedded certificate is `BiSerial` … and prove the **backward** half
+  of `TailStable`") — the bullet's premise is FALSE and the backward half is DEFERRED to 20.2.** The
+  bullet reasons that "with edges `i → i` only, `Φ_back` is the identity on the position sets it acts
+  on, so the fixed-point demand `Φ_back L₀ = L₀` is immediate", and plan v9's amendment keeps that
+  identity argument while making it uniform in `r`. The identity claim does not hold.
+  `Stable.lean:130` defines
+  `stepBack t X = (posAt (t - 1)).filter (fun p => (succP (t - 1) p ∩ X).Nonempty)` — a
+  `succP`-**preimage** — and `succP` constrains the arriving label only through `StepClause`, which
+  permits the label to change along the step. The self-loop relation pins the **state** component of
+  a position and says nothing about its **label** component, and the label component is where the
+  difficulty lives. So `stepBack t X` is "the positions at `t - 1` whose index matches some member of
+  `X` and whose label is `StepClause`-compatible with it", at a different time and in general a
+  different set. The backward conjunct is an equation between a `succP`-preimage and a computed live
+  set, of the same order of difficulty as the forward one, and it does not reduce to the self-loop
+  structure. Both conjuncts therefore moved together into 20.2, and `sliced_biSerial` — which **is**
+  short, and is proved — is all that closed from this bullet.
+- **Phase 20 task 5 (the PRINCIPAL RISK bullet) — the mandated probe RAN; the proof is DEFERRED to
+  20.2.** The bullet's instruction was followed to the letter as plan v9 amends it: the object
+  evaluated is the **landed** `G.TailStable`, each conjunct separately first, at a concrete embedded
+  certificate, with the verdict and the wall time recorded. Verdict: **favourable** — see
+  Verification. The bullet's "do not start the proof before the probe returns" is honoured; the proof
+  itself did not fit this run.
+- **Phase 20 task 2 — altered.** The embedding landed as `WitnessFamily.sliced`, a namespaced member
+  taking the family as receiver, rather than as a free `slicedOfWitnessFamily`. Same object, same
+  signature content.
+- **Phase 20 tasks 6, 8, 10 — deferred to sub-phase 20.2** (`Certifies`, the flagship assembly, the
+  task-704 hand-off record).
+- **Phase 20 task 7 ((C3b) `BoxLabelFaithful`) — deferred to 20.2, and the route changed.** On
+  `Complete.lean`'s headline (C3b) is **produced** from `canonBx` rather than constructed by the
+  embedding, so what 20.2 actually owes is `SlabTrue`'s `□` clause. The bullet's observation — that
+  `box χ ∈ slab t i ↔ bx χ` holds by construction off the translated label — remains true and is
+  available, but it is not the clause the chosen route consumes.
+- **Phase 20 task 9 — partially done.** `Embed.lean`'s header records the construction, the period
+  choice and, explicitly, the limits of what the probe shows. The "what this theorem buys" paragraph
+  (non-vacuity on branching-free targets; **not** completeness for L⁺) belongs with the flagship and
+  is deferred to 20.2.
+- **Scope Hypothesis — CONFIRMED, no correction needed.** The `WitnessFamily` structure was read
+  before the edge relation was fixed, as the hypothesis requires. It carries `bx`, `lassos` and
+  `lassos_ne` and **no succession relation of any kind**, and its four conditions quantify over one
+  lasso index at a time (`LocalCoherentLab` and `FulfillingLab` at a single `i`; `BoxFaithful`
+  universally quantifies indices on its right-hand side but relates no two of them; `Target` reads
+  lasso `0`). So `fun i j => decide (i = j)` needs no amendment. The period assertion is confirmed
+  too: the L-side family stores no periods at all, so `perB` / `perF` / `perM` mirror the L⁺ side's
+  `perBack` / `perFwd` / `perMid` computation, and only divisibility, the sum bound and positivity
+  are used.
+- **One commit defect, recorded rather than hidden.** Commit `6b8e3d05d` carries `Session:` but not
+  the two attribution trailers every other task-703 commit carries;
+  `git-commit-scoped.sh` does not add them and they were omitted from the `--message`. The amend was
+  attempted and **correctly refused** by `guard-destructive-git.sh` (a live concurrent writer exists
+  in this repo), so the commit was left as it stands rather than force-rewritten.
+
 ### Dispatch 46 — Phase 19
 
 - **Phase 19 closes as [COMPLETED WITH EXCLUSIONS]**, with three exclusions enumerated under the
@@ -504,6 +661,60 @@ class Phases 19-20 claim completeness relative to.
   silently overridden.
 
 ## Verification
+
+### Dispatch 47 (sub-phase 20.1)
+
+- **Build**: full `lake build` **Success** — 2804 jobs (one more than dispatch 46's 2803, the new
+  module), **zero errors, zero warnings**, guard exit 0, run detached through
+  `lake-build-guard.sh --no-share`. Tier-3 evidence recorded: `.olean` newer than source for
+  `Embed.lean`, the aggregator and `FormalSystem.lean`.
+- **Sorry count**: 0 (`lean-sorry-census.sh` over the 8 resolved source roots).
+- **Vacuous count**: 1 — `FormalSystem/Examples/TemporalStructures.lean:495`
+  (`int_domain_universal … := trivial`), **pre-existing and untouched**, as every prior dispatch in
+  this round records.
+- **Axiom count**: 14, **unchanged**. `#print axioms` on all twelve new declarations
+  (`sliced`, `sliced_biSerial`, `sliced_slice`, `sliced_stabFaithful`, `sliced_target_edge`,
+  `plusClosureOf_ofCtx`, `Periodic.unrollOf_seg`, and the five `Embedded.*` probe facts): each
+  exactly `[propext, Classical.choice, Quot.sound]`.
+- **The two protected soundness theorems survive with their statements unchanged**:
+  `git diff --stat -- FormalSystem/Metalogic/Decidability/PlusWitnessFamily/` is **empty**, and
+  `PlusSharingWitnessFamily.plusTruth_iff_mem` and `...plusRefutes_of_certifies` report the same
+  three-axiom set.
+- **THE TAIL-STABILITY PROBE — the phase's mandated measurement.** Each conjunct was evaluated
+  separately first, as the bullet asks, then the conjunction:
+
+  | Certificate | window times | timed vertices | backward conjunct | forward (filtered) conjunct | `TailStable` | `TailStableRaw` | raw `Φ_fwd R₀ = R₀` |
+  |---|---|---|---|---|---|---|---|
+  | `Embedded.emptyFamily.sliced 0` | 4 | 8 | true | true | **true** | false | false |
+  | `Embedded.liveFamily.sliced (-1)` | 6 | 12 | — (conjunction only) | — | **true** | false | false |
+
+  Both families have `perB = perF = 1`; `perM` is `0` and `2`. The second is a **certifying**
+  `WitnessFamily [] [p U q]` (`liveFamily_certifies : liveFamily.Certifies (-1)`, also by `decide`)
+  whose single lasso carries the eventuality at time `0` and discharges it at time `1`, so the demand
+  is tested against a live `untl` obligation rather than an empty closure.
+
+  **Wall time, as the bullet requires**: the whole module including all four `decide`s elaborates in
+  **4.6 s**; the same verdicts computed through the interpreter in a scratch file took **15 s** and
+  **94 s**. Phase 17's fear that the probe itself would be the expensive thing did not materialize at
+  these sizes.
+
+  **What the probe shows**: the conjecture is **not refuted** at the embedding, and the liveness
+  filter is **load-bearing** there — at the same certificate where the landed demand holds, the raw
+  demand fails. **What it does not show**: that `TailStable` holds at every embedded certificate.
+  Two certificates of eight and twelve timed vertices is not a general argument, and nothing landed
+  claims one.
+- **Repo gates**: `scripts/typst-sync-check.sh --fix` **PASS**.
+  `scripts/check-module-invariants.sh`: **C2 PASS** (all twenty-two pinned axiom sets match
+  baseline), **C3 PASS**, **C9 PASS** (zero task-number citations under `FormalSystem/`), **INV
+  PASS**. Residual failures are **exactly** dispatch 46's pre-existing set at **identical counts** —
+  `C16`, `C23` (7 `Uppercase_x` + 1 shadowing pair), `C24`, `C26` — and **`Embed` appears nowhere in
+  the gate output**. Two C23 regressions this file did introduce
+  (`L_sub_perB`/`L_add_perF` as `Uppercase_x` names; `getD_range_map` and `qF` shadowing existing
+  declarations at `BiLasso/Extraction.lean:91` and `Conservativity/DenseObstructionTransfer.lean:196`)
+  were caught by the gate and renamed before the commit.
+- **Files verified**: Yes.
+- **Tests**: N/A for this sub-phase (no `BimodalTest` surface added); `C1 lake build BimodalTest`
+  passes inside the invariants run.
 
 ### Dispatch 46 — Phase 19
 
@@ -687,6 +898,27 @@ Every `lake` invocation in this dispatch went through the build guard, detached,
 
 ## Impacts
 
+### Dispatch 47 (sub-phase 20.1)
+
+- **The embedding's source object is now reachable from this subtree.** `Embed.lean` is the first
+  module under `PlusSlicedCertificate/` to import the `Formula`-side witness-family layer
+  (`WitnessFamily.Agreement`). Anything 20.2 needs from the L side — notably the two label-level
+  inner inductions `untl_mem_of_witness` and `snce_mem_of_witness` — is in scope without a further
+  import.
+- **`Periodic.unrollOf_seg` is generic and reusable.** It is the converse of the three region
+  lemmas, stated at an arbitrary `[Inhabited α]`, so any later construction that knows a function's
+  two eventual periods can cut it into a lasso or a slice sequence without a bespoke argument. It is
+  already used at two different `α` here (`PlusSlice n C` and `Finset PlusFormula × Fin n`, the
+  latter at the path-dependent `Inhabited` instance `PlusGraphPath.inh`).
+- **`plusClosureOf_ofCtx` removes a whole clause group from the `⊡`-free fragment.** Every
+  `stab`-guarded clause in the condition set — (C5) `StabFaithful` and `SlabTrue`'s second
+  conjunct — is vacuous on an embedded context. Any later work on the `⊡`-free fragment inherits
+  that for free.
+- **The liveness filter now has a positive witness, not only a negative one.** `FixtureStable.lean`
+  shows the raw demand is unsatisfiable at a named certificate; these two certificates show the
+  filtered demand is satisfiable at an embedded one while the raw demand still fails there. Together
+  they are the two-sided evidence the cycle-5 ruling was taken on.
+
 ### Dispatch 46 — Phase 19
 
 - **The sliced certificate class now has both adequacy directions.** `Sound.lean` takes an accepted
@@ -767,6 +999,30 @@ Every `lake` invocation in this dispatch went through the build guard, detached,
   record (lines 55-140), which describes four edits made on the candidate-1 premise.
 
 ## Follow-ups
+
+### Dispatch 47 (sub-phase 20.1)
+
+- **Sub-phase 20.2 is the next work**, and it owes four things in this order: `TailStable` for the
+  embedded certificate in general (both conjuncts — the phase's principal risk, now with favourable
+  probe evidence behind it but still unproved); `SlabTrue`'s `□` clause; the identification
+  `target.lab t = canLab target.st t`; and the flagship
+  `exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula`.
+- **The route to the two semantic obligations is mapped in the dispatch-47 handoff and should not be
+  re-derived.** Two facts make it tractable: every `G.edge`-path of the embedded certificate is
+  **constant** in its index (so the frame's histories are the stepHistories of constant paths and
+  their shifts, and `□`'s semantics collapses to "true at every index and every time"); and the two
+  ℤ-distance inner inductions are already landed, label-level, on the L side. One trap is recorded
+  there too: `WitnessFamily.truth_iff_mem` is **not** reusable, because it is stated at the L side's
+  own shift-set model on `Fin k × ℤ` rather than at the sliced frame on `ℤ × Fin k`.
+- **Phase 21's two acceptance obligations are still outstanding and are not touched here**: the
+  `docs/theorem-index.md` row and the C2 `AXIOM_BASELINE` pin for the flagship. Neither can be added
+  before the flagship exists.
+- **The stale-olean hazard reproduced a fifth time** and the main tree still carries the stale
+  `.olean`/`.trace` pairs, so dispatch 48's worktree will inherit them a sixth time. The fix is
+  mechanical and is recorded in the handoff; the underlying hardlinked-`.lake` provisioning issue is
+  not a task-703 concern and has not been filed as one.
+- **Commit `6b8e3d05d` lacks its two attribution trailers** and could not be amended (the
+  concurrency guard correctly refused). A human working this branch solo can repair it.
 
 ### Dispatch 46 — what Phase 20 should know before it starts
 
