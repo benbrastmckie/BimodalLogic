@@ -25,6 +25,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Bridge
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Check
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Sound
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Complete
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Embed
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
@@ -188,6 +189,17 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   segment lengths, so a re-extracted target path with different periods would change the window, the
   computed live set and the tail-stability demand together. `Probe.exists_certifying_triv` exhibits
   a certificate meeting every hypothesis, so the statement is not empty
+- `PlusSlicedCertificate.Embed`: the **construction** half of the embedding of the landed
+  `Formula`-side witness family — `Periodic.segBack` / `segMid` / `segFwd` materialize an eventually
+  periodic function as the three segments that decode back to it, `plusClosureOf_ofCtx` identifies
+  an embedded context's L⁺ closure with the image of the base closure (whence **no `⊡`-formula is
+  in an embedded closure at all**, so (C5) and `SlabTrue`'s second clause are vacuous there), and
+  `WitnessFamily.sliced` is the certificate itself: slice width the lasso count, edges `i → i`
+  only, the slice sequence and the target path cut at the family's common periods so that the
+  combined window collapses to those same periods. `sliced_biSerial` is proved; the tail-stability
+  demand is **evaluated** at two embedded certificates — `Embedded.emptyFamily_tailStable` and
+  `Embedded.liveFamily_tailStable`, with `..._not_tailStableRaw` showing the liveness filter is
+  load-bearing there — and is **not** claimed in general
 
 ## Tags
 
