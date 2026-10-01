@@ -73,11 +73,17 @@ module resolves:
 2. `exists_tailStable_repr` cannot be stated, so the plan's Phase 16 task bullet asking for it, and
    its Verification line asking that its statement mention no bound, are both moot. The record of
    that is at the plan's Phase 16 heading.
-3. Whether `Certifies` should carry `Φ_fwd R₀ = R₀` at all is a **design question**, because a
+3. Whether `Certifies` should carry `Φ_fwd R₀ = R₀` at all was a **design question**, because a
    checker clause that is unsatisfiable at a frame whose closure carries a tail-dead eventuality
    would make Phase 19's and Phase 20's completeness statements unprovable rather than merely
-   relativized. This module escalates that question; it does not settle it, and it does not weaken
-   `TailStable` on its own authority.
+   relativized. This module escalated that question rather than settling it. **It has since been
+   settled, by the user ruling of 2026-09-30, in favour of the liveness-filtered transfer**: the raw
+   demand `Φ_fwd R₀ = R₀` is kept under the name `TailStableRaw` and every theorem of this module is
+   stated from it, while `TailStable` itself now carries
+   `Φ_fwd R₀ ∩ R₀fwd = R₀` — see `PlusSlicedCertificate.TailStable`'s own docstring for the repaired
+   definition and for what it still buys. Nothing proved in this module is weakened by that change:
+   the raw forward conjunct still fails in every member of the family, and that failure is exactly
+   why the filter is there.
 
 ## Tags
 
@@ -184,14 +190,22 @@ theorem Φ_fwd_R₀_ne (a b c : ℕ) :
   not_mem_R₀_pR a b c (h ▸ mem_Φ_fwd_R₀_pR a b c)
 
 /--
-**No re-presentation of the fixture is tail-stable.**
+**No re-presentation of the fixture satisfies the RAW tail-stability demand.**
 
 This is sub-phase 16.2c's actual result, and it is the negation of what the plan's
 `exists_tailStable_repr` asserts at the very certificate the plan named as that lemma's worked
-example. Absorbing the pre-period into `mid` and multiplying either period changes nothing: the
+example. Absorbing the pre-period into `mid` and multiplying either period changes nothing: the raw
 forward conjunct fails in every member, by `Φ_fwd_R₀_ne`.
+
+**Renamed from `not_tailStable` when the forward conjunct was repaired.** The statement is the one
+that is true and provable: it is about `TailStableRaw`, the pre-repair demand, which `Stable.lean`
+keeps under that name for exactly this record. It is **not** about the repaired `TailStable`, whose
+forward conjunct this family's witness `pR` does not refute — `pR` is reachable but forward-dead, so
+the liveness filter removes it, which is the whole point of the repair. No claim is made here either
+way about `(certRep a b c).TailStable`; see this module's header.
 -/
-theorem not_tailStable (a b c : ℕ) : ¬ (certRep a b c).TailStable := fun h => Φ_fwd_R₀_ne a b c h.2
+theorem not_tailStableRaw (a b c : ℕ) : ¬ (certRep a b c).TailStableRaw :=
+  fun h => Φ_fwd_R₀_ne a b c h.2
 
 /-! ### The fixture itself, and the one half re-presentation does repair -/
 
@@ -229,9 +243,17 @@ recording them separately: `Φ_back_L₀_ne_cert` is repaired by absorbing the p
 -/
 theorem not_tailStable_cert :
     ¬ cert.TailStable ∧ cert.Φ_back cert.L₀ ≠ cert.L₀ ∧ cert.Φ_fwd cert.R₀ ≠ cert.R₀ := by
-  refine ⟨?_, Φ_back_L₀_ne_cert, ?_⟩
-  · rw [cert_eq_certRep]; exact not_tailStable 0 0 0
-  · rw [cert_eq_certRep]; exact Φ_fwd_R₀_ne 0 0 0
+  refine ⟨fun h => Φ_back_L₀_ne_cert h.1, Φ_back_L₀_ne_cert, ?_⟩
+  rw [cert_eq_certRep]
+  exact Φ_fwd_R₀_ne 0 0 0
+
+/-- **The fixture also fails the raw demand**, and by its forward conjunct as well as its backward
+one. Kept separate from `not_tailStable_cert` because the two statements now say different things:
+this one is about the pre-repair demand, that one about the repaired `TailStable`, which the fixture
+fails only at its backward conjunct. -/
+theorem not_tailStableRaw_cert : ¬ cert.TailStableRaw := by
+  rw [cert_eq_certRep]
+  exact not_tailStableRaw 0 0 0
 
 /--
 **What absorbing the pre-period does achieve**: the witness of the backward failure leaves `L₀`.
