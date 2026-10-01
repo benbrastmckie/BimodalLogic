@@ -547,11 +547,10 @@ def R₀ (G : PlusSlicedCertificate Γ Del) : Finset G.Pos := G.liveAt (G.NM + G
 /-! ### The computed **forward**-live set, and why the right tail needs it
 
 `liveAt` reads `G.liveT`, which is two-directional. The repaired forward conjunct of `TailStable`
-below filters by the **forward** half alone, and the asymmetry is forced rather than chosen:
-`mem_fwdLiveT_of_fwdLive_fold` carries forward liveness from a far right-tail time
-`G.NM + G.NF + k * G.NF` down to the reference time because `FoldF` relates those times, while
-`FoldB` relates only *negative* times and so relates none of them. There is therefore no backward
-counterpart to filter by, and none is claimed.
+below filters by the **forward** half alone, and the asymmetry is forced: `FoldF` relates the
+right-tail times `G.NM + G.NF + k * G.NF` to the reference time, so forward liveness carries down
+from them (`mem_fwdLiveT_of_fwdLive_fold`), while `FoldB` relates only *negative* times and relates
+none of them. There is no backward counterpart to filter by, and none is claimed.
 -/
 
 /-- **The computed forward-live positions at a time**, the one-directional counterpart of
@@ -589,6 +588,17 @@ theorem foldF_head (G : PlusSlicedCertificate Γ Del) (k : ℕ) :
   have h2 : G.NM + G.NF + (k : ℤ) * G.NF - G.NM = G.NF + (k : ℤ) * G.NF := by omega
   refine Or.inr ⟨by omega, by omega, ?_⟩
   rw [h1, h2, Int.add_mul_emod_self_right]
+
+/-- **The forward wrap never leaves the right periodic region.** At a window time at or past the
+right reference time the successor time is either one later or the reference time itself, so a
+forward walk out of `G.NM + G.NF` stays in the right tail. -/
+theorem nextTime_ge_right (G : PlusSlicedCertificate Γ Del) {u : ℤ} (hu : u ∈ G.winTimes)
+    (h : G.NM + G.NF ≤ u) : G.NM + G.NF ≤ G.nextTime u := by
+  by_cases hw : u + 1 < G.winHi
+  · simp only [nextTime, if_pos hw]
+    omega
+  · obtain ⟨-, he⟩ := G.nextTime_edge hu hw
+    rw [he]
 
 /-- **A position forward-live anywhere down the periodic right tail is in `R₀fwd`.** This is the
 one soundness fact the liveness filter needs, and it is what makes the filtered demand usable where
@@ -654,14 +664,14 @@ is unchanged. The forward conjunct is **not** the raw `Φ_fwd R₀ = R₀`: it i
 the transfer **filtered by the computed forward-live set** at the right reference time. Both sides
 are computed `Finset`s, so the demand is decidable exactly as the raw one was.
 
-**Why the raw forward demand had to go.** `Φ_fwd` is a reachability transfer, and the one-step
+**Why the raw forward demand had to go.** `Φ_fwd` is a reachability transfer and the one-step
 clauses do not constrain the arriving label's `untl`-membership, so the raw equation demands that
 every position at the window's right endpoint reachable from a live position be itself live. That is
-unsatisfiable at a frame whose closure carries a tail-dead eventuality: a box-dot-free `ℤ`-time
-non-validity exists at which the reachable set contains a label that no run ever occupies down the
-right tail, and no re-presentation removes it, because a re-presentation changes neither `posAt` nor
-the reachability. `FixtureStable.lean` proves exactly that, at a named certificate, for the whole
-re-presentation family (`Fixture.Φ_fwd_R₀_ne`).
+unsatisfiable at a frame whose closure carries a tail-dead eventuality, and no re-presentation
+removes the obstruction, because it changes neither `posAt` nor the reachability.
+`FixtureStable.lean` proves exactly that, at a named certificate, for the whole re-presentation
+family (`Fixture.Φ_fwd_R₀_ne`), and `Fixture.not_mem_R₀fwd_pR` proves that the filter removes that
+family's witness.
 
 **What the filter changes, and what it does not.** The filtered demand removes the
 reachable-but-forward-dead positions rather than requiring them to be live, and it is strictly
@@ -669,14 +679,13 @@ weaker than the raw one (`tailStable_of_raw`, with `Fixture.Φ_fwd_R₀_ne` show
 does not reverse). What it still buys is the whole tail collapse, in both directions and at every
 period multiple:
 
-* `→` (`mem_R₀_of_live_head`): a position live at `G.NM + G.NF + k * G.NF` is in `R₀`. The
-  functional form of the raw equation is **not** what supplies this any more — `iterFwd_R₀` is
-  stated from `TailStableRaw` and is not available here. The induction instead carries one period at
-  a time, and the arriving position's membership in the filter comes from
-  `mem_R₀fwd_of_fwdLive_head`, i.e. from `FoldF` carrying genuine forward liveness down the tail to
-  the reference time.
-* `←` (`live_of_mem_R₀_head`): needs only `R₀ ⊆ Φ_fwd R₀`, which the filtered equation's `⊇` half
-  gives, iterated by monotonicity in `R₀_subset_iterFwd`.
+* `→` (`mem_R₀_of_live_head`): a position live at `G.NM + G.NF + k * G.NF` is in `R₀`. The raw
+  equation's functional form is **not** what supplies this any more — `iterFwd_R₀` is stated from
+  `TailStableRaw`. The induction carries one period at a time, and the arriving position's filter
+  membership comes from `mem_R₀fwd_of_fwdLive_head`, i.e. from `FoldF` carrying genuine forward
+  liveness down the tail to the reference time.
+* `←` (`live_of_mem_R₀_head`): needs only `R₀ ⊆ Φ_fwd R₀`, the filtered equation's `⊇` half,
+  iterated by monotonicity in `R₀_subset_iterFwd`.
 
 **Why the filter is the forward half and not `liveAt`.** `FoldB` relates two negative times only, so
 no backward counterpart of `mem_fwdLiveT_of_fwdLive_fold` exists at the right tail and a filter by
