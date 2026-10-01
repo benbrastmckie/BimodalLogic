@@ -1366,7 +1366,7 @@
         {
           "path": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
           "type": "summary",
-          "summary": "Phase 18 closed: the sliced certificate's truth lemma and its refutation interface, on a residue-indexed tail-stability demand."
+          "summary": "Round-05 implementation summary, extended with the dispatch-46 Phase 19 record."
         }
       ],
       "next_artifact_number": 6

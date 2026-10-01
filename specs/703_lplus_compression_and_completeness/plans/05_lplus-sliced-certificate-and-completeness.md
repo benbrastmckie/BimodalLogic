@@ -4736,7 +4736,74 @@ either route.
 
 ---
 
-### Phase 19: Completeness relative to tail-stable sliced models [IN PROGRESS]
+### Phase 19: Completeness relative to tail-stable sliced models [COMPLETED WITH EXCLUSIONS]
+
+**CLOSURE RECORD (dispatch seq 46, measured).** `Complete.lean` landed, 711 lines, **40 declarations** (the count the Scope
+Hypothesis asks to be recorded);
+full `lake build` green at **2803 jobs**, zero errors, zero warnings, `sorry_count: 0`, axiom count
+**14** unchanged, and `#print axioms` on each of
+`exists_plusSlicedCertificate_of_tailStable_countermodel`,
+`exists_certifying_of_tailStable_countermodel`, `plusRefutes_of_tailStable_countermodel`,
+`plusTruthAt_iff_canAt_of_slabTrue` and `Probe.exists_certifying_triv` reports exactly
+`[propext, Classical.choice, Quot.sound]`. `git diff` over
+`FormalSystem/Metalogic/Decidability/PlusWitnessFamily/` shows **no hunk**, so both protected
+soundness theorems are untouched.
+
+**FINDING THAT CONTRADICTS THIS PHASE'S OWN PLAN TEXT, and that changed the construction.** Plan
+v9's READ-FIRST item 3 and the `BiSerial`/`TailStable` bullet both assert that `TailStable`
+"quantifies over `n`, `back`, `mid`, `fwd` and the closure only" and therefore transfers off the
+four carrier equations. **That is false.** `Window.lean:95-109` defines
+`NBnat = Nat.lcm back.length target.back.length`, `NFnat = Nat.lcm fwd.length target.fwd.length` and
+`NM = max nm target.nm`: the combined window depends on the **target path's three segment lengths**.
+`winTimes` is cut from that window, the `liveT` fixpoint ranges over `winTimes`, and `liveAt` is what
+`TailStable` is stated about — so a re-extracted target path with different periods yields a
+different window, a different computed live set and a **different** tail-stability demand, and this
+subtree has no period-independence theory to transport one to the other.
+
+**EXCLUSIONS, enumerated and evidenced:**
+
+1. **The paired-carrier pigeonhole extraction of the target path was NOT performed** (the "Build the
+   target path" bullet, and with it the `exists_iterT_lt_card` / `exists_good_cycle_of_plusTypeSeq`
+   Scope Hypothesis, which is therefore neither confirmed nor refuted and is **not** carried as
+   settled). Reason: the finding above. The refuting path is instead carried by the structure handed
+   in, as two hypotheses (`hedge`: its state sequence is a `G.edge`-path; `hcan`: its labels are the
+   canonical ones) plus the semantic refutation at the target time. The conclusion is correspondingly
+   **stronger, not weaker**: the produced certificate agrees with `G₀` on **six** fields — `n`,
+   `back`, `mid`, `fwd`, `target` and `targetTime` — where the plan asked for four, and `hstab` then
+   transfers at every residue of both periods at once, which is exactly what the plan wanted the four
+   equations to buy.
+2. **`plusTypeAtM_stab_congr_state` / `plusTypeAtM_atom_congr_state` / `plusTypeAtM_stab_iff_forall_sameState`
+   / `plusTypeAtM_localCoherentSeqLab` / `plusTypeAtM_fulfillingSeqLab` are NOT cited.** Reason: the
+   `plusTypeAtM` layer is the *compression* side's true-type machinery, and the sliced side cannot use
+   a truth-based labelling at all — `Canon.lean`'s header records why (`AgreesOnState` for the true
+   type is the box guess's semantic correctness, so a truth-based labelling argues in a circle). The
+   same five obligations are discharged against `Canon.lean` instead: well-definedness of the slice
+   labelling is structural (`slab : ℤ → Fin n → Finset _` is a function of `(t, w)` by construction,
+   so no congruence lemma is needed), local coherence and fulfilment are `canLab_localCoherent` and
+   `canLab_fulfilling`, and the universal side's "a live position is realized by an actual labelled
+   path" is `exists_path_canLab_of_live` — `Canon.lean`'s **uniqueness** half, which is strictly more
+   than the plan's bullet asked for: a live position's label is not merely realized, it *is* the
+   canonical label.
+3. **`tailStable_iff_window` is not cited anywhere**, per plan v9's own amendment. The one place a
+   window-stated clause has to reach an arbitrary time is the box clause's `←` direction, and it
+   cites `Tail.lean`'s `exists_win_live_eq`, which holds at an arbitrary residue. `StabFaithful`
+   needs no transport at all: it is stated at window times and its own asking time is one.
+
+**TWO FACTS WORTH CARRYING FORWARD.**
+
+* **`withBx` must be `@[reducible]`.** `bx` occurs in no part of the computed layer — not in `posAt`,
+  `succP`, `liveT`, `liveAt`, `winTimes` or `TailStable` — so almost everything transfers across a
+  changed box guess by `rfl`. Two things do **not**, and for one shared reason: `iterBack`/`iterFwd`
+  recurse on the iterate count (instantiated at `NBnat`/`NFnat`, not a literal) and `canAt` recurses
+  on the formula (quantified inside `canLab`'s filter), so the recursor cannot iota-reduce and one
+  induction each is required. Separately, `rw` typechecks its motive at *implicit* transparency,
+  where a semireducible `withBx` leaves `Finset (G.withBx bx).Pos` and `Finset G.Pos` as different
+  types and the rewrite fails inside a tail-stability conjunct. `@[reducible]` is what fixes that.
+* **The hypothesis set is satisfiable**, and that is proved rather than argued:
+  `Probe.exists_certifying_triv` discharges all eight hypotheses at `Check.lean`'s `Probe.triv`,
+  three of them by the kernel's own `decide`. What it does **not** show is that the class is
+  interesting — at the empty context every closure-guarded clause is vacuous. A non-degenerate
+  instance is Phase 20's business.
 
 **Goal**: Prove `exists_plusSlicedCertificate_of_tailStable_countermodel`: a countermodel carried
 by a bi-serial, tail-stable sliced structure yields a certificate on the same carrier that the
@@ -4767,25 +4834,25 @@ plan v9"). Four consequences for this phase, in the order they bite:
    `exists_tailStable_repr` in any form (it is false), never weaken `TailStable`, never `sorry`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Complete.lean`.
-- [ ] Take the carrier from `G₀` unchanged — `n`, `back`, `mid`, `fwd` — so the produced `G` differs
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Complete.lean`. *(completed)*
+- [x] *(deviation: altered — six carrier equations, not four; see EXCLUSION 1)* Take the carrier from `G₀` unchanged — `n`, `back`, `mid`, `fwd` — so the produced `G` differs
       from `G₀` only in the guessed fields `bx`, `target` and `targetTime`. The conclusion's four
       equations pin exactly that, and they are what make the theorem a statement about the class
       rather than about a re-derived structure.
-- [ ] Confirm the slice labelling is **well defined** at each carrier element `(t, w)`: `⊡` and the
+- [x] *(deviation: altered — discharged structurally against `Canon.lean`, not by the named `plusTypeAtM` citations; see EXCLUSION 2)* Confirm the slice labelling is **well defined** at each carrier element `(t, w)`: `⊡` and the
       atoms are state determined, and `Compression/Saturate.lean`'s `plusTypeAtM_stab_congr_state`
       and `plusTypeAtM_atom_congr_state` are exactly this fact, with `plusBox_const` handling `□`.
       Cite them; do not re-prove them. Note the difference from plan v2: the "state" here is the
       carrier element `(t, w)`, not a time-free graph vertex.
-- [ ] Build the target path. The label sequence and the state sequence must be cut at the **same**
+- [ ] *(deviation: skipped — the window depends on the target path's segment lengths, so a re-extracted path breaks the `TailStable` transfer; the path is carried by hypothesis instead. See the FINDING and EXCLUSION 1)* Build the target path. The label sequence and the state sequence must be cut at the **same**
       recurrence, so run the pigeonhole on the **paired** carrier `Fin n × PlusTypeState C` rather
       than on `PlusTypeState C` alone. `exists_iterT_lt_card` and `exists_iterT_lt_card_aux` are
       stated over `{W : Type} [Finite W] [Nonempty W]` with an abstract relation, so they apply at
       the paired carrier directly. The slice time supplies the period; there is nothing to align.
-- [ ] Discharge the **existential side** from the extraction's realization facts:
+- [x] *(deviation: altered — discharged from `canLab_localCoherent` / `canLab_fulfilling` instead; see EXCLUSION 2)* Discharge the **existential side** from the extraction's realization facts:
       `plusTypeAtM_localCoherentSeqLab` and `plusTypeAtM_fulfillingSeqLab` give local coherence and
       fulfilment, and agreement with `G.slab` is the state-determination step above.
-- [ ] Discharge the **universal side**: a live position over `(t, w)` is realized by an actual
+- [x] *(deviation: altered — `exists_path_canLab_of_live` and `SlabTrue`'s `⊡` clause; no transport needed, since `StabFaithful`'s asking time is a window time. See EXCLUSION 3)* Discharge the **universal side**: a live position over `(t, w)` is realized by an actual
       labelled path through `(t, w)` (Phase 15's completeness direction), and
       `plusTypeAtM_stab_iff_forall_sameState` turns `⊡χ ∈ G.slab t w` into `χ` at every history
       through `(t, w)`. So no live position over `(t, w)` omits `χ`. Tail-stability is what makes
@@ -4799,7 +4866,7 @@ plan v9"). Four consequences for this phase, in the order they bite:
       stretch the period-multiple lemma over an arbitrary residue, which is exactly the gap that
       forced the residue indexing. Both consume `hbox : G.BoxLabelFaithful`, which this phase
       constructs rather than carries — so construct it **before** the universal side, not after.)*
-- [ ] Discharge **both box clauses** from `plusBox_const`, and the **target clause** from the
+- [x] *(completed — `boxLabelFaithful_of_slabTrue` and `boxLiveFaithful_of_slabTrue` as two named lemmas, `target_of_refutes` for the target clause)* Discharge **both box clauses** from `plusBox_const`, and the **target clause** from the
       refuting time. *(plan v7: (C3) `BoxFaithful` and (C3b) `BoxLabelFaithful` are two obligations
       with one source — in an L⁺ model a boxed formula's truth is independent of history and time,
       so `box χ` belongs to the L⁺ type at a carrier element exactly when `χ` is true everywhere,
@@ -4807,14 +4874,14 @@ plan v9"). Four consequences for this phase, in the order they bite:
       (C3b) is the one the produced certificate needs in order to meet `Certifies` at all, since
       Phase 17 lists it among the structural conjuncts, and unlike `BiSerial` and `TailStable` it
       is **not** carried by a hypothesis of this theorem — it must be constructed.)*
-- [ ] Discharge `BiSerial` and `TailStable` from the hypotheses `hser` and `hstab` directly; they
+- [x] *(deviation: altered — `BiSerial` transfers by `rfl`; `TailStable` needs `withBx_tailStable`, which needs one induction each on `iterBack`/`iterFwd`, because the plan's reason for expecting a one-liner is the false claim corrected in the FINDING above)* Discharge `BiSerial` and `TailStable` from the hypotheses `hser` and `hstab` directly; they
       are carried, not re-derived. *(plan v9: this stays a one-liner under the residue-indexed demand,
       and the reason is worth stating so it is not re-examined: `TailStable` quantifies over `n`,
       `back`, `mid`, `fwd` and the closure only, and the produced `G` agrees with `G₀` on all four
       carrier fields, so `hstab` transfers by the carrier equations at **every** residue at once. If
       the produced certificate ever stops agreeing with `G₀` on a carrier field, this bullet breaks
       and the theorem statement breaks with it — that is what the four conclusion equations protect.)*
-- [ ] Record in the module docstring what this theorem is and is not. It is **completeness relative
+- [x] *(completed)* Record in the module docstring what this theorem is and is not. It is **completeness relative
       to tail-stable sliced models**. It is **not** the finite model property: it says nothing
       about whether a ℤ-time non-validity has such a countermodel at all. It is also **not**
       completeness relative to *finite* models, which is the statement plan v2 aimed at and which

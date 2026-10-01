@@ -3,23 +3,37 @@
 - **Task**: 703 - lplus_compression_and_completeness
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-10-01T00:09:00Z (dispatch 40); dispatch 41 began 2026-10-01T00:47:00Z;
-  dispatch 42 began 2026-10-01T01:36:00Z; dispatch 44 began 2026-10-01T03:15:25Z
-- **Completed**: not complete — **sub-phase 16.3, Phase 17 and Phase 18 are all COMPLETED**.
-  Phase 18's blocker (a demand-level gap in `TailStable`, recorded at dispatch 42) is **RESOLVED**
-  at dispatch 44 by the residue-indexed demand the user ruled for in cycle 3. Phases 19-21 remain
-  NOT STARTED. Dispatch 44 ended 2026-10-01T04:05:00Z
+  dispatch 42 began 2026-10-01T01:36:00Z; dispatch 44 began 2026-10-01T03:15:25Z; dispatch 46 began
+  2026-10-01T04:05:37Z
+- **Completed**: not complete — **sub-phase 16.3 and Phases 17, 18 and 19 are all closed** (19 as
+  [COMPLETED WITH EXCLUSIONS]). Phase 18's blocker (a demand-level gap in `TailStable`, recorded at
+  dispatch 42) is **RESOLVED** at dispatch 44 by the residue-indexed demand the user ruled for in
+  cycle 3. Phases 20-21 remain NOT STARTED. Dispatch 44 ended 2026-10-01T04:05:00Z; dispatch 46
+  ended 2026-10-01T05:05:00Z
 - **Effort**: ~35 minutes (dispatch 40, sub-phase 16.3) + ~40 minutes (dispatch 41, Phase 17) +
   ~40 minutes (dispatch 42, Phase 18's prerequisites and its blocker) + ~50 minutes (dispatch 44,
-  the demand change and Phase 18)
+  the demand change and Phase 18) + ~60 minutes (dispatch 46, Phase 19)
 - **Dependencies**: `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Stable`,
   `...PlusSlicedCertificate.Bridge`, `...PlusSlicedCertificate.FixtureStable`,
   `...PlusSlicedCertificate.Window`, `...PlusSlicedCertificate.Position`,
   `...PlusWitnessFamily.Compression.Types` (all landed before these dispatches); no new external
-  dependency
+  dependency. Dispatch 46 adds no external dependency either: Phase 19 consumes
+  `...PlusSlicedCertificate.Sound` and, through it, `...PlusSlicedCertificate.Canon` and
+  `...PlusSlicedCertificate.Tail`
 - **Artifacts**: plans/05_lplus-sliced-certificate-and-completeness.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
+
+**Dispatch 46 closes Phase 19**, the converse of Phase 18. `Complete.lean` lands
+`exists_plusSlicedCertificate_of_tailStable_countermodel`: a bi-serial, tail-stable sliced structure
+whose slice labelling reports the truth of its own `□`- and `⊡`-arguments, and which carries a
+canonically labelled refuting path, admits a **box guess** making the checker of `Check.lean` accept
+— on the same carrier. Soundness and completeness then meet on the unchanged
+`PlusWitnessFamily.PlusRefutes Γ Del` interface
+(`plusRefutes_of_tailStable_countermodel`), and the hypothesis set is proved satisfiable rather than
+left open (`Probe.exists_certifying_triv`). The phase closes WITH EXCLUSIONS, because one of its
+plan bullets rested on a claim about `TailStable` that turned out to be false; see Plan Deviations.
 
 **Dispatch 44 closes Phase 18.** The sliced certificate now has a truth lemma
 (`plusTruthAt_iff_canAt`, all seven cases) and lands the L⁺ refutation interface:
@@ -77,6 +91,43 @@ demand written out and raised as this round's `user_decision`, because it narrow
 class Phases 19-20 claim completeness relative to.
 
 ## What Changed
+
+### Dispatch 46 — Phase 19, completeness relative to tail-stable sliced models
+
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Complete.lean` — **new**, 711 lines,
+  40 declarations. Contents, in the order their dependencies force:
+  - `SlabTrue` — semantic correctness of the slice labelling at the two non-atomic **state shapes**.
+    `□χ` is labelled exactly when `χ` is true at every history and every time (time- and
+    history-free because `plusBox_const` makes it so); `⊡χ` is labelled at `(t, w)` exactly when `χ`
+    is true at `t` along every history through `(t, w)`. **No atom clause**, because
+    `Frame.lean`'s `model_valuation` makes the presented model's valuation the slice labelling by
+    definition.
+  - `withBx` (`@[reducible]`) and `canonBx` — the structure with a replaced box guess, and the
+    canonical guess read off one slice label (so it stays a computable `Finset` membership).
+  - the transfer layer — `withBx_posAt` / `_winTimes` / `_liveAt` / `_fwdLiveAt` / `_stepBack` /
+    `_stepFwd` / `_slab` and the six field projections, all `rfl`; `withBx_iterBack` /
+    `withBx_iterFwd` / `withBx_canAt` by induction; `withBx_tailStable` and `withBx_canLab` on top
+    of those.
+  - `plusTruthAt_iff_canAt_of_slabTrue` — **the truth lemma with no checker clause as a hypothesis**.
+    `Sound.lean`'s `plusTruthAt_iff_canAt` reaches the same conclusion from the checker's four
+    clauses; neither subsumes the other, and completeness needs this direction because it *has*
+    truth and must reach the clauses.
+  - `boxLabelFaithful_of_slabTrue`, `stabFaithful_of_slabTrue`, `boxLiveFaithful_of_slabTrue` — the
+    three semantic clauses of `Certifies`, in that order. (C3b) must come first: the
+    computed/declarative liveness bridge `mem_liveAt_iff_live` consumes it, and both of the others
+    read a live position's label.
+  - `targetPos_eq_canRun_pos`, `targetPathPos_of_canLab`, `targetPos_mem_liveAt_of_canLab`,
+    `target_of_refutes` — the target group, all four through the one identification that the target
+    path's position **is** the canonical run's position.
+  - `exists_plusSlicedCertificate_of_tailStable_countermodel`,
+    `exists_certifying_of_tailStable_countermodel` (the six carrier equations spelled out),
+    `plusRefutes_of_tailStable_countermodel`.
+  - `Probe.triv_slice` / `triv_edge` / `path1_lab` / `triv_canLab` / `triv_slabTrue` /
+    `exists_certifying_triv` — the satisfiability witness.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean` — one import line and one
+  submodule bullet.
+- `FormalSystem.lean`, `README.md`, `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md`,
+  `typst/generated/status.typ` — regenerated.
 
 ### Dispatch 44 — Phase 18, the demand change and the truth lemma
 
@@ -232,6 +283,35 @@ class Phases 19-20 claim completeness relative to.
 
 ## Decisions
 
+### Dispatch 46 — Phase 19
+
+- **The produced certificate keeps `G₀`'s target path and target time, rather than re-extracting a
+  path by pigeonhole.** This is the dispatch's one substantive design decision and it was forced by
+  a measurement, not chosen for convenience: `Window.lean`'s combined periods are
+  `NBnat = Nat.lcm back.length target.back.length` and `NFnat = Nat.lcm fwd.length target.fwd.length`
+  with `NM = max nm target.nm`, so the window — and therefore `winTimes`, the `liveT` fixpoint and
+  `liveAt`, and therefore `TailStable` itself — depends on the target path's three segment lengths.
+  A re-extracted path with different periods changes the demand the hypothesis `hstab` is supposed to
+  discharge, and no period-independence theory exists here. Keeping the path makes the conclusion
+  **stronger** (six carrier equations, not four) and moves the refuting path into the hypotheses,
+  where a countermodel naturally carries it.
+- **`SlabTrue` is stated against truth, and the truth lemma is re-proved rather than reused.**
+  `Sound.lean`'s truth lemma takes the checker's clauses as hypotheses, which is exactly what this
+  phase has to *produce*; reusing it would be circular. The new proof is the same seven cases with
+  the `□` and `⊡` cases one rewrite each, and it consumes no checker clause at all.
+- **The canonical box guess is read off a slice label, not defined semantically.** `canonBx χ` is
+  `decide (box χ ∈ G.slab 0 ⟨0, _⟩)`. A semantic definition would have needed `Classical.dec` and
+  made the guess noncomputable for no gain: under `SlabTrue` the `□`-content of the labelling is the
+  same at every carrier element, because that clause's right-hand side mentions neither time nor
+  state.
+- **`withBx` is `@[reducible]`, deliberately.** Not a style choice: `rw` typechecks its motive at
+  *implicit* transparency, where a semireducible `withBx` leaves `Finset (G.withBx bx).Pos` and
+  `Finset G.Pos` as different types, and the rewrite inside a tail-stability conjunct fails with an
+  "Application type mismatch" on an argument that is definitionally fine.
+- **Non-vacuity is proved, not asserted.** `Probe.exists_certifying_triv` discharges all eight
+  hypotheses at `Check.lean`'s `Probe.triv`. The honest limit is stated in the module itself: it
+  shows the hypothesis set is *consistent*, not that the class is interesting.
+
 ### Dispatch 44 — Phase 18
 
 - **`TailStableRaw` was strengthened alongside `TailStable`.** Had the raw demand kept its
@@ -339,6 +419,28 @@ class Phases 19-20 claim completeness relative to.
 
 ## Plan Deviations
 
+### Dispatch 46 — Phase 19
+
+- **Phase 19 closes as [COMPLETED WITH EXCLUSIONS]**, with three exclusions enumerated under the
+  plan's Phase 19 heading. In brief:
+  1. **"Build the target path" (paired-carrier pigeonhole) — SKIPPED.** Reason: the plan's own
+     justification for expecting the `TailStable` transfer to be a one-liner is **false**. Plan v9's
+     READ-FIRST item 3 asserts `TailStable` "quantifies over `n`, `back`, `mid`, `fwd` and the
+     closure only"; `Window.lean:95-109` shows it also depends on the target path's three segment
+     lengths. The refuting path is carried by hypothesis instead and the conclusion carries **six**
+     carrier equations rather than four. The `exists_good_cycle_of_plusTypeSeq` Scope Hypothesis is
+     therefore **neither confirmed nor refuted**, and is not carried as settled.
+  2. **The five `plusTypeAtM_*` citations the plan names — NOT USED.** The sliced side cannot argue
+     from a truth-based labelling at all (`Canon.lean`'s header records why), so the same five
+     obligations are discharged against `Canon.lean`: well-definedness is structural, local coherence
+     and fulfilment are `canLab_localCoherent` / `canLab_fulfilling`, and the universal side is
+     `exists_path_canLab_of_live` — the **uniqueness** half, which gives strictly more than the
+     bullet asked for.
+  3. **`tailStable_iff_window` — NOT CITED**, per plan v9's own amendment. Only the box clause's `←`
+     direction needs a transport to an arbitrary time, and it cites `exists_win_live_eq`.
+     `StabFaithful` needs none: its asking time is already a window time.
+- **Declaration count recorded** (the Scope Hypothesis asks for it): 40 declarations, 711 lines.
+
 ### Dispatch 44 — Phase 18
 
 - **Truth-lemma bullet** altered: landed as `plusTruthAt_iff_canAt` against `canAt` rather than
@@ -402,6 +504,55 @@ class Phases 19-20 claim completeness relative to.
   silently overridden.
 
 ## Verification
+
+### Dispatch 46 — Phase 19
+
+- Build: **Success** — full `lake build` through `.claude/scripts/lake-build-guard.sh` (detached,
+  `--no-share`, `--timeout 5400`): **2803 jobs**, exit 0, zero errors, zero warnings. The guard's own
+  `STATUS: exit_status=0` is the recorded verdict; `Complete.olean` and every module this dispatch
+  touched are newer than their sources.
+- Sorry count: **0** (`lean-sorry-census.sh` over the 8 roots `lean-src-roots.sh` resolves).
+- Vacuous count: **1**, pre-existing and untouched —
+  `FormalSystem/Examples/TemporalStructures.lean:495` (`int_domain_universal … := trivial`), a true
+  statement about `intTimeHistory.domain` over `ℤ`, not a placeholder.
+- Axiom count: **14**, unchanged.
+- `#print axioms`: `exists_plusSlicedCertificate_of_tailStable_countermodel`,
+  `exists_certifying_of_tailStable_countermodel`, `plusRefutes_of_tailStable_countermodel`,
+  `plusTruthAt_iff_canAt_of_slabTrue` and `Probe.exists_certifying_triv` each report exactly
+  `[propext, Classical.choice, Quot.sound]`.
+- **The two protected soundness theorems are untouched**:
+  `PlusSharingWitnessFamily.plusRefutes_of_certifies` and `...plusTruth_iff_mem` report the same
+  three axioms, and `git diff --stat` over
+  `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/` is **empty**.
+- `scripts/typst-sync-check.sh --fix`: **PASS** (status.typ, module map and machine appendix all in
+  sync; `status.typ` regenerated and staged).
+- `scripts/check-module-invariants.sh`: the two groups this dispatch perturbed are **repaired** — the
+  `INV` generated-inventory block (fixed with `--emit-inventory`, rewriting the three README
+  inventories) and the warning budget (two `linter.style.longLine` NEW findings in the aggregator's
+  added bullet, fixed by reflowing to 100 columns; the budget file was **not** raised). The residual
+  four failures are pre-existing and untouched, and none names `Complete.lean`: `C16` (the
+  `env_linter defsWithUnderscore` findings on `Φ_back` / `Φ_fwd`), `C23` (seven `Uppercase_x` names
+  in `Fixture.lean` / `FixtureStable.lean` / `Stable.lean` plus one outer-shadows-inner pair on
+  `datum`), `C24` (`PlusSlicedCertificate.Fixpoint` does not transitively import
+  `FormalSystem.Init`), `C26` (`Φ_back` / `Φ_fwd`).
+- The headline's hypotheses place **no** bound on `G₀.n`, `|G₀.back|`, `|G₀.mid|` or `|G₀.fwd|`,
+  confirmed by reading the statement: the only hypotheses are bi-seriality, tail-stability, slab
+  truth, the two path conditions, the window membership of the target time and the two refutation
+  conditions.
+- The module states no width bound and no period bound, and nowhere describes the sliced finite model
+  property as refuted: it says the opposite ("open, not refuted"), confirmed by grep for `refut` in
+  its docstrings.
+- Files verified: Yes.
+- **Plan-compliance spot-check: FAILED, and recorded as failed rather than smoothed over** — but
+  neither finding class is a defect of this dispatch, and the dispatch status is deliberately not
+  demoted. The check scans *every* `**Goals**:` block in the plan, including `[NOT STARTED]` phases,
+  so it structurally cannot pass until the last phase lands. Three of its four findings are **false
+  negatives**: `PlusGraphPath`, `PlusSlice` and `PlusSlicedCertificate` are `structure` declarations
+  and the check's grep matches only `theorem`/`def`/`lemma`/`instance`; all three are present at
+  `PlusSlicedCertificate/Basic.lean:140`, `:280` and `:328`. The fourth is genuinely absent:
+  `exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula` is **Phase 20's** goal and Phase 20
+  is `[NOT STARTED]`. Phase 19's own goal,
+  `exists_plusSlicedCertificate_of_tailStable_countermodel`, is `[OK]`.
 
 ### Dispatch 44 — Phase 18
 
@@ -536,6 +687,21 @@ Every `lake` invocation in this dispatch went through the build guard, detached,
 
 ## Impacts
 
+### Dispatch 46 — Phase 19
+
+- **The sliced certificate class now has both adequacy directions.** `Sound.lean` takes an accepted
+  certificate to `PlusWitnessFamily.PlusRefutes Γ Del`; `Complete.lean` takes a countermodel in the
+  tail-stable, semantically labelled class to an accepted certificate, and composes the two
+  (`plusRefutes_of_tailStable_countermodel`). Neither export was weakened to make them meet.
+- **`plusTruthAt_iff_canAt_of_slabTrue` is reusable beyond this phase.** It is a truth lemma for the
+  presented model that costs only semantic correctness of the slice labelling — no checker clause —
+  so any later construction that *builds* a sliced structure from a model (Phase 20's embedding, or
+  a Stage 3 successor) can read truth off `canAt` without first discharging the checker.
+- **A correction to the record propagates.** Plan v9 asserts in two places that `TailStable` does not
+  depend on the target path. It does, through the combined window. Any later phase that plans to
+  re-present a certificate with a different target path must treat its tail-stability demand as a
+  **new** demand, not a transferred one.
+
 - **Dispatch 44 supersedes the first dispatch-42 bullet below and both dispatch-41 bullets it in turn
   supersedes.** Phase 18 is **not** blocked: it is `[COMPLETED]`. `exists_win_live_eq` — the single
   remaining obligation that bullet names — is landed in `Tail.lean`, and the `⊡` case consumes it in
@@ -602,6 +768,26 @@ Every `lake` invocation in this dispatch went through the build guard, detached,
 
 ## Follow-ups
 
+### Dispatch 46 — what Phase 20 should know before it starts
+
+- **Phase 20's PRINCIPAL RISK bullet is written against a demand that no longer exists.** It budgets
+  the phase's hard work on proving `Φ_fwd R₀ = R₀` for the embedded certificate — candidate 1. The
+  user's cycle-5 ruling replaced that conjunct by the **liveness-filtered** transfer
+  `Φ_fwd R₀ ∩ R₀fwd = R₀`, and the cycle-3 ruling then made both conjuncts **residue-indexed**. The
+  probe that bullet mandates should therefore evaluate `decide G.TailStable` (or the two residue
+  families separately, so a failure localizes) on a concrete embedded certificate — **not**
+  `Φ_fwd R₀ = R₀`, which is no longer the demand. The STOP-and-ESCALATE fallback and the prohibition
+  on weakening `TailStable` or stating `exists_tailStable_repr` are unaffected and still stand.
+- **Phase 20 inherits the window finding.** Its embedding chooses the tails and the window from the
+  lassos' common periods, and `NBnat`/`NFnat` are least common multiples of the *certificate's* and
+  the *target path's* segment lengths. The embedded certificate's target path must be built with
+  that in mind, because its periods feed the very window the tail-stability demand is read in.
+- **`Complete.lean`'s headline is ready to consume.** Phase 20's embedded certificate, once it meets
+  `SlabTrue`, bi-seriality, tail-stability and the two path conditions, does not need its own box
+  guess argued: `exists_plusSlicedCertificate_of_tailStable_countermodel` supplies one. Whether that
+  is the cheaper route than discharging `BoxLabelFaithful`/`BoxLiveFaithful` by hand on the
+  embedding's `bx`-boxes definition is a judgement for that phase; both are available.
+
 - **Phase 19 must be re-read against the narrowed class before `Complete.lean` is written.** Its
   construction currently assumes the `r = 0`-only obligation. This is the first thing dispatch 45
   should do, and the Phase 18 handoff says so at its head.
@@ -639,6 +825,16 @@ Every `lake` invocation in this dispatch went through the build guard, detached,
 - `iterFwd_R₀` still has no consumer inside the subtree; kept deliberately (dispatch 40's record).
 
 ## References
+
+### Dispatch 46
+
+- `specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md`
+  — Phase 19 heading, including this dispatch's CLOSURE RECORD and the three enumerated exclusions
+- `specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T035749Z.md` — the
+  dispatch-44 handoff this dispatch opened from
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Complete.lean` — the phase's output
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Window.lean` lines 95-109 — the
+  measurement that contradicts the plan's claim about `TailStable`'s dependencies
 
 - `specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md`
   — the PHASE 17 RECORD and annotated checklist (Phase 17), the READ FIRST block (Phase 18), the
