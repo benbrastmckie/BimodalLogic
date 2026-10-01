@@ -9,6 +9,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Frame
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Splice
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Position
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Live
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Canon
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Window
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixture
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Stable
