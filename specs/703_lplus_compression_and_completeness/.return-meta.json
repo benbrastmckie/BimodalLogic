@@ -1,33 +1,11 @@
 {
-  "status": "researched",
-  "dispatch_seq": 50,
-  "artifacts": [
-    {
-      "type": "report",
-      "path": "specs/703_lplus_compression_and_completeness/reports/06_tailstable-backward-conjunct-repair.md",
-      "summary": "Settles the TailStable backward-conjunct repair target: the dispatch-49 soft link is proved; the undischargeable snce positions are FORCED (option 2 impossible, demonstrated at the target bot-S-bot where posAt is family-independent and every certifying family is label-determined); the forward filter is not removable either (mirror target bot-U-bot); the dispatch-49 Fold.lean challenge holds, only bwdVertFold is missing; option 1 is the ideal target, adopted as the symmetric design."
-    },
-    {
-      "type": "probe",
-      "path": "specs/703_lplus_compression_and_completeness/probes/TailStableBackForced.lean",
-      "summary": "377-line probe, zero sorries, all results on [propext, Classical.choice, Quot.sound]: the two ZTime non-validities, typeAtM_empty, the family-independent posAt/predP lemmas, all_labels_empty for both bot-targets, and the decide verdicts at seven certificates."
-    }
-  ],
-  "user_decision": {
-    "question": "Research has delivered the demonstration of impossibility your ruling named as the condition for falling back from option 2: the undischargeable snce positions are determined by the certificate's position space (posAt), not by the family, so no strengthening of the compression theorem's output can exclude them. Strengthening would also not permit removing the forward liveness filter. Which repair stands?",
-    "options": [
-      "Option 1 — mirror the filter (TailStableMirror/bwdLiveAt becomes the landed backward conjunct), adopted as the symmetric design: both obligation directions then carry one filter each, Stable.lean's asymmetry note is deleted rather than amended, and Compression/Family.lean stays closed so the task description's scope is preserved",
-      "Option 2 — strengthen the compression theorem's output (research demonstrates this is impossible as framed; not recommended)",
-      "Option 3 — change route: the certificate carries full labels rather than only the state part, so posAt becomes a singleton and no junk position exists; this removes the obstruction at its source and costs the decidable search Check.lean is built around, i.e. most of Stage 2 again",
-      "Option 4 — record as a stated limitation, with the bot-S-bot witness quoted"
-    ],
-    "recommended": "Option 1 — mirror the filter (TailStableMirror/bwdLiveAt becomes the landed backward conjunct), adopted as the symmetric design: both obligation directions then carry one filter each, Stable.lean's asymmetry note is deleted rather than amended, and Compression/Family.lean stays closed so the task description's scope is preserved",
-    "blocking": false
-  },
+  "status": "in_progress",
+  "artifacts": [],
+  "next_steps": "Plan revision in progress (option 1: mirror the filter)",
   "metadata": {
-    "session_id": "sess_1790875964_28effa_703",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "session_id": "sess_1790877597_7cfc7c_703",
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "dispatch_seq": 51
   }
 }

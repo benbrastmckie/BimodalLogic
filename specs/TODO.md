@@ -1,5 +1,5 @@
 ---
-next_project_number: 714
+next_project_number: 715
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 714
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,703,707,711,713 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,703,707,711,713,714 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,704,705,706,708,709,710,712 | 298,464,502,563,703,711 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -75,6 +75,7 @@ next_project_number: 714
   └─ 709 [NOT STARTED] — RESEARCH-FIRST. Establish the finite model property for the...
   └─ 712 [BLOCKED] — BLOCKED. This task is the durable record of the L-plus...
 713 [NOT STARTED] — OPTIONAL, FILED NOT SCHEDULED. Nothing depends on this task...
+714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 
 ### Documentation
 
@@ -111,6 +112,16 @@ next_project_number: 714
 704 [NOT STARTED] — Two structural preventions against the class of defect the...
 
 ## Tasks
+
+### 714. Evaluate full labels in sliced certificate
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Evaluate removing the TailStable junk-position obstruction at its root by carrying full labels in the sliced certificate. Research report 06_tailstable-backward-conjunct-repair.md established that undischargeable snce positions are determined by the certificate position space posAt, not by the witness family: at target bot-S-bot the closure is {bot S bot, bot} with no state shape, so posAt is the same two-label set for every certificate and LocalCoherentLab forces every label of every certifying family to be empty. Because posAt admits every coherent closure-subset agreeing with slab on state shapes only (atom/box/stab) while temporal obligations are pinned by nothing, carrying FULL labels in the certificate rather than only the state part would make posAt a singleton, so no junk position could exist for either obligation direction and arguably neither liveness filter would be needed. This was option 3 in the repair decision; the chosen repair was option 1 (mirror the filter, landing as TailStableMirror/bwdLiveAt). Option 3 was NOT rejected on the merits, only deferred, because it costs the decidable search that FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean is built around, i.e. most of Stage 2 again. Determine whether the obstruction can be removed at the root this way, with refactoring permitted as needed to obtain the best result. The central question is whether decidability of the certificate check survives full labels, and if not, whether a weaker label refinement makes posAt small enough to drop both filters while keeping the search decidable. Compare against the landed option-1 design: with full labels, both TailStableMirror and the forward filter would become deletable and the symmetric two-filter shape in Stable.lean would collapse. Also settle whether the superset failure mode (the Fixture.cert pre-period, repaired by absorption rather than by any filter) likewise disappears under full labels or survives independently.
+
+---
 
 ### 713. Formalize ctl star reduction 2exptime lower bound
 - **Status**: [NOT STARTED]
