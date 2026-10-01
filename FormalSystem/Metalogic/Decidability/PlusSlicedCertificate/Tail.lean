@@ -265,18 +265,20 @@ down the periodic tail, at **every** residue reference time and not only at `-G.
 **Every member of the live set at a stable reference time is live all the way down its periodic
 tail.**
 
-`t₀` is any negative window time whose live set the whole-period leftward transfer fixes; `hstab` is
-that fixity at every number of periods, which `iterBack_liveAt_refBack` supplies at every residue
-reference time and `iterBack_L₀` at `-G.NB`.
+`t₀` is any negative window time whose live set the whole-period leftward transfer **contains**;
+`hstab` is that inclusion at every number of periods, which `liveAt_refBack_subset_iterBack`
+supplies at every residue reference time and `L₀_subset_iterBack` at `-G.NB`. The inclusion and
+not the equation is what is asked for, because sub-phase 20.4 filtered the backward conjunct and
+only its `⊇` half survives at `TailStable` — exactly as on the right tail, where
+`live_of_mem_liveAt_head` already asks for the inclusion.
 -/
 theorem live_of_mem_liveAt_tail (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLabelFaithful)
     {t₀ : ℤ} (ht₀ : t₀ < 0) (hwin : t₀ ∈ G.winTimes)
-    (hstab : ∀ j : ℕ, G.iterBack t₀ (G.liveAt t₀) (j * G.NBnat) = G.liveAt t₀) (k : ℕ)
+    (hstab : ∀ j : ℕ, G.liveAt t₀ ⊆ G.iterBack t₀ (G.liveAt t₀) (j * G.NBnat)) (k : ℕ)
     {p : G.Pos} (hp : p ∈ G.liveAt t₀) : G.Live (t₀ - (k : ℤ) * G.NB) p := by
   obtain ⟨Rp, hRpf, hRpp⟩ := G.exists_path_of_live (G.live_of_mem_liveAt hbox hwin hp)
   have hmc : ((k * G.NBnat : ℕ) : ℤ) = (k : ℤ) * G.NB := by rw [NB, Nat.cast_mul]
-  have hpm : p ∈ G.iterBack t₀ (G.liveAt t₀) (k * G.NBnat) := by
-    rw [hstab k]; exact hp
+  have hpm : p ∈ G.iterBack t₀ (G.liveAt t₀) (k * G.NBnat) := hstab k hp
   obtain ⟨c, hc0, hck, hcpos, hcstep⟩ :=
     G.exists_chain_of_mem_iterBack t₀ (G.liveAt_subset_posAt t₀) (k * G.NBnat) hpm
   obtain ⟨Rq, hRqf, hRqp⟩ := G.exists_path_of_live (G.live_of_mem_liveAt hbox hwin hck)
@@ -332,7 +334,7 @@ theorem live_of_mem_liveAt_refBack (G : PlusSlicedCertificate Γ Del) (hbox : G.
     (hp : p ∈ G.liveAt (-G.NB - (r : ℤ))) :
     G.Live (-G.NB - (r : ℤ) - (k : ℤ) * G.NB) p :=
   G.live_of_mem_liveAt_tail hbox (G.refBack_neg r) (G.refBack_mem_winTimes hr)
-    (G.iterBack_liveAt_refBack hTS hr) k hp
+    (G.liveAt_refBack_subset_iterBack hTS hr) k hp
 
 /-- **Every member of `L₀` is live at every time down the periodic left tail** — the `r = 0`
 instance. -/
@@ -340,7 +342,7 @@ theorem live_of_mem_L₀_tail (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLa
     (hTS : G.TailStable) (k : ℕ) {p : G.Pos} (hp : p ∈ G.L₀) :
     G.Live (-G.NB - (k : ℤ) * G.NB) p :=
   G.live_of_mem_liveAt_tail hbox (show -G.NB < 0 from by have := G.NB_pos; omega)
-    G.neg_NB_mem_winTimes (fun j => G.iterBack_L₀ hTS j) k hp
+    G.neg_NB_mem_winTimes (fun j => G.L₀_subset_iterBack hTS j) k hp
 
 end Tail
 

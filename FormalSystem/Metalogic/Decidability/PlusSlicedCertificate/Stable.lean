@@ -111,6 +111,8 @@ absent because it is not true, not because it is pending.
 plus-language · certificate · time-sliced · transfer · monotone
 -/
 
+set_option linter.style.longFile 1700
+
 namespace FormalSystem.Metalogic.Decidability
 
 open FormalSystem.PlusLanguage
@@ -541,13 +543,24 @@ def L₀ (G : PlusSlicedCertificate Γ Del) : Finset G.Pos := G.liveAt (-G.NB)
 /-- **`R₀`**: the computed live positions at the window's right reference time `G.NM + G.NF`. -/
 def R₀ (G : PlusSlicedCertificate Γ Del) : Finset G.Pos := G.liveAt (G.NM + G.NF)
 
-/-! ### The computed **forward**-live set, and why the right tail needs it
+/-! ### The two computed one-directional live sets, and why each conjunct needs its own
 
-`liveAt` reads `G.liveT`, which is two-directional. The repaired forward conjunct of `TailStable`
-below filters by the **forward** half alone, and the asymmetry is forced: `FoldF` relates the
-right-tail times `G.NM + G.NF + k * G.NF` to the reference time, so forward liveness carries down
-from them (`mem_fwdLiveT_of_fwdLive_fold`), while `FoldB` relates only *negative* times and relates
-none of them. There is no backward counterpart to filter by, and none is claimed.
+`liveAt` reads `G.liveT`, which is two-directional. **Both** conjuncts of `TailStable` below filter
+by the matching one-directional half — the forward one by `fwdLiveAt`, the backward one by
+`bwdLiveAt` — and each filter is needed for the same reason, in its own direction: `posAt` is a
+deliberate over-approximation, so each obligation direction admits coherent labels carrying an
+obligation that direction cannot discharge, and each such label-determined position is caught by its
+own iterate (`iterFwd` resp. `iterBack`) while being dead in that direction. See `Position.lean`'s
+header for the `⊆`/`⊇` dichotomy this rests on and for why the filtered demand is a **demand** and
+not a theorem.
+
+Each filter has its own soundness lemma, and they are proved in mirror directions for mirror
+reasons: `FoldF` relates the right-tail times `G.NM + G.NF + k * G.NF` to the right reference time,
+so genuine forward liveness carries down the right tail (`mem_fwdLiveT_of_fwdLive_fold`); `FoldB`
+relates two *negative* times, which is exactly what the left-tail times `-G.NB - k * G.NB` are, so
+genuine backward liveness carries down the left tail (`mem_bwdLiveT_of_bwdLive_fold`). Neither
+transport reaches the other tail, which is why each conjunct filters one-directionally rather than
+by `liveAt`.
 -/
 
 /-- **The computed forward-live positions at a time**, the one-directional counterpart of
@@ -607,6 +620,73 @@ theorem mem_R₀fwd_of_fwdLive_head (G : PlusSlicedCertificate Γ Del) (k : ℕ)
   rw [G.foldF_posAt (G.foldF_head k)]
   exact G.mem_posAt_of_fwdLive hq
 
+/-! ### The computed **backward**-live set, and the left tail it carries liveness down
+
+The exact mirror of the block above, landed at sub-phase 20.4 when the backward conjunct was
+filtered. `bwdVertFold` / `mem_bwdLiveT_of_bwdLive_fold` (`Bridge.lean`) is what makes it sound.
+-/
+
+/-- **The computed backward-live positions at a time**, the exact mirror of `fwdLiveAt`. -/
+def bwdLiveAt (G : PlusSlicedCertificate Γ Del) (s : ℤ) : Finset G.Pos :=
+  (G.posAt s).filter (fun p => (p, s) ∈ G.bwdLiveT)
+
+theorem mem_bwdLiveAt (G : PlusSlicedCertificate Γ Del) (s : ℤ) (p : G.Pos) :
+    p ∈ G.bwdLiveAt s ↔ p ∈ G.posAt s ∧ (p, s) ∈ G.bwdLiveT := Finset.mem_filter
+
+theorem bwdLiveAt_subset_posAt (G : PlusSlicedCertificate Γ Del) (s : ℤ) :
+    G.bwdLiveAt s ⊆ G.posAt s := Finset.filter_subset _ _
+
+/-- **Two-directional liveness is one-directional liveness**, the backward half. -/
+theorem liveAt_subset_bwdLiveAt (G : PlusSlicedCertificate Γ Del) (s : ℤ) :
+    G.liveAt s ⊆ G.bwdLiveAt s := by
+  intro p hp
+  rw [G.mem_liveAt] at hp
+  exact (G.mem_bwdLiveAt s p).mpr ⟨hp.1, ((G.mem_liveT (p, s)).mp hp.2).2⟩
+
+/-- **`L₀bwd`**: the computed backward-live positions at the window's left reference time. -/
+def L₀bwd (G : PlusSlicedCertificate Γ Del) : Finset G.Pos := G.bwdLiveAt (-G.NB)
+
+theorem L₀_subset_L₀bwd (G : PlusSlicedCertificate Γ Del) : G.L₀ ⊆ G.L₀bwd :=
+  G.liveAt_subset_bwdLiveAt _
+
+/-- **Every left-tail period multiple is a backward fold of the left reference time.** Both times
+are negative and they differ by a multiple of `G.NB`, which is exactly `FoldB`. The mirror of
+`foldF_head`, and the place where the left tail's negativity — the thing the right tail does not
+have — does the work. -/
+theorem foldB_tail (G : PlusSlicedCertificate Γ Del) (k : ℕ) :
+    G.FoldB (-G.NB) (-G.NB - (k : ℤ) * G.NB) := by
+  have hB := G.NB_pos
+  have hk : (0 : ℤ) ≤ (k : ℤ) * G.NB := mul_nonneg (Int.natCast_nonneg k) (le_of_lt hB)
+  refine Or.inr ⟨by omega, by omega, ?_⟩
+  rw [show -G.NB - (k : ℤ) * G.NB = -G.NB + (-(k : ℤ)) * G.NB from by
+      rw [neg_mul, ← sub_eq_add_neg],
+    Int.add_mul_emod_self_right]
+
+/-- **The backward wrap never leaves the left periodic region.** At a window time at or before the
+left reference time the predecessor time is either one earlier or the reference time itself, so a
+backward walk out of `-G.NB` stays in the left tail. The mirror of `nextTime_ge_right`. -/
+theorem prevTime_le_left (G : PlusSlicedCertificate Γ Del) {u : ℤ} (hu : u ∈ G.winTimes)
+    (h : u ≤ -G.NB) : G.prevTime u ≤ -G.NB := by
+  by_cases hw : G.winLo ≤ u - 1
+  · simp only [prevTime, if_pos hw]
+    omega
+  · obtain ⟨-, he⟩ := G.prevTime_edge hu hw
+    have hB := G.NB_pos
+    rw [he]
+    omega
+
+/-- **A position backward-live anywhere down the periodic left tail is in `L₀bwd`.** The one
+soundness fact the backward liveness filter needs, and the mirror of `mem_R₀fwd_of_fwdLive_head`:
+`FoldB` reaches the whole left tail, because every one of its times is negative. -/
+theorem mem_L₀bwd_of_bwdLive_tail (G : PlusSlicedCertificate Γ Del) (k : ℕ) {q : G.Pos}
+    (hq : G.BwdLive (-G.NB - (k : ℤ) * G.NB) q) : q ∈ G.L₀bwd := by
+  rw [L₀bwd, G.mem_bwdLiveAt]
+  refine ⟨?_, G.mem_bwdLiveT_of_bwdLive_fold G.neg_NB_mem_winTimes (G.foldB_tail k) hq⟩
+  rw [G.foldB_posAt (G.foldB_tail k)]
+  obtain ⟨R, -, hp⟩ := hq
+  rw [← hp]
+  exact R.pos_mem_posAt _
+
 /--
 **Tail-stability.** One application of each period transfer leaves the reference set fixed.
 
@@ -647,9 +727,9 @@ documented at its own definition.
 **Residue-indexed, at sub-phase 18.3.** Both conjuncts below are bounded quantifiers over their own
 period's residues rather than single equations at `-G.NB` and `G.NM + G.NF`. The reason is recorded
 in full on `TailStable`'s docstring; `TailStableRaw` is strengthened in the same way so that
-`tailStable_of_raw` survives and the two demands keep differing in exactly one respect, the liveness
-filter on the forward conjunct. The `r = 0` instances are the pre-residue conjuncts verbatim
-(`tailStableRaw_back`, `tailStableRaw_fwd`).
+`tailStable_of_raw` survives and the two demands keep differing in exactly one respect, the
+one-directional liveness filter on each conjunct. The `r = 0` instances are the pre-residue
+conjuncts verbatim (`tailStableRaw_back`, `tailStableRaw_fwd`).
 -/
 def TailStableRaw (G : PlusSlicedCertificate Γ Del) : Prop :=
   (∀ r ∈ Finset.range G.NBnat,
@@ -669,15 +749,25 @@ instance decidableTailStableRaw (G : PlusSlicedCertificate Γ Del) : Decidable G
           = G.liveAt (G.NM + G.NF + (r : ℤ)))))
 
 /--
-**Tail-stability, with the forward conjunct liveness-filtered.**
+**Tail-stability, with each conjunct liveness-filtered in its own direction.**
 
-The backward conjunct is the raw one: `Φ_back L₀ = L₀`, unchanged, and every theorem stated from it
-is unchanged. The forward conjunct is **not** the raw `Φ_fwd R₀ = R₀`: it is
+Neither conjunct is the raw equation. The forward one is
 
   `Φ_fwd R₀ ∩ R₀fwd = R₀`,
 
-the transfer **filtered by the computed forward-live set** at the right reference time. Both sides
-are computed `Finset`s, so the demand is decidable exactly as the raw one was.
+and the backward one is its mirror
+
+  `Φ_back L₀ ∩ L₀bwd = L₀`,
+
+each transfer **filtered by the computed one-directional live set** at its own reference time. All
+four sides are computed `Finset`s, so the demand is decidable exactly as the raw one was.
+
+**This is a per-certificate demand and not a theorem.** `FixtureStable.not_tailStable_cert` refutes
+it, after the filters, at a named certificate. The backward conjunct in particular fails in two
+independent ways and only one of them is filterable: a `⊆` failure (a reachable position that is
+backward-dead, which the filter removes) and a `⊇` failure (`Fixture.cert`'s pre-period, which no
+filter repairs and which is repaired only by absorbing the pre-period into `mid`). See
+`Position.lean`'s header for the dichotomy.
 
 **Why the raw forward demand had to go.** `Φ_fwd` is a reachability transfer and the one-step
 clauses do not constrain the arriving label's `untl`-membership, so the raw equation demands that
@@ -688,11 +778,23 @@ removes the obstruction, because it changes neither `posAt` nor the reachability
 family (`Fixture.Φ_fwd_R₀_ne`), and `Fixture.not_mem_R₀fwd_pR` proves that the filter removes that
 family's witness.
 
-**What the filter changes, and what it does not.** The filtered demand removes the
-reachable-but-forward-dead positions rather than requiring them to be live, and it is strictly
-weaker than the raw one (`tailStable_of_raw`, with `Fixture.Φ_fwd_R₀_ne` showing the implication
-does not reverse). What it still buys is the whole tail collapse, in both directions and at every
-period multiple:
+**Why the raw backward demand had to go too.** The mirror obstruction is real and is landed as
+kernel-checked theorems in `EmbedComplete.lean`: `snceProbeFamily_not_tailStableBackRaw` refutes
+raw backward conjunct at an **embedded** certificate that genuinely satisfies `W.Certifies 0` and
+meets every output condition of `WitnessFamily.exists_witnessFamily_of_not_validZTime`, at the
+single residue `r = 0`, and `snceProbeLiveFamily_not_tailStableBackRaw` repeats it at a larger
+family so that the failure is structural rather than an artifact of empty labels.
+`Position.lean`'s `snceClauseAt` constrains the *later* label from the earlier one, so a label
+carrying a `snce` obligation no admissible predecessor can discharge is a legitimate member of
+`posAt` with empty `predP` — not backward-live — while its `succP` is non-empty, so `stepBack`, a
+`succP`-preimage, catches it. That is the exact mirror of the forward obstruction, and the mirror
+filter removes it.
+
+**What the filters change, and what they do not.** Each filtered demand removes the
+reachable-but-dead-in-that-direction positions rather than requiring them to be live, and the
+conjunction is strictly weaker than the raw one (`tailStable_of_raw`, with `Fixture.Φ_fwd_R₀_ne`
+showing the implication does not reverse). What they still buy is the whole tail collapse, in both
+directions and at every period multiple:
 
 * `→` (`mem_R₀_of_live_head`): a position live at `G.NM + G.NF + k * G.NF` is in `R₀`. The raw
   equation's functional form is **not** what supplies this any more — `iterFwd_R₀` is stated from
@@ -702,9 +804,15 @@ period multiple:
 * `←` (`live_of_mem_R₀_head`): needs only `R₀ ⊆ Φ_fwd R₀`, the filtered equation's `⊇` half,
   iterated by monotonicity in `R₀_subset_iterFwd`.
 
-**Why the filter is the forward half and not `liveAt`.** `FoldB` relates two negative times only, so
-no backward counterpart of `mem_fwdLiveT_of_fwdLive_fold` exists at the right tail and a filter by
-the two-directional `liveAt` would have no soundness lemma to stand on. See the note at `fwdLiveAt`.
+The backward conjunct buys the same two halves on the left tail, by the same route with every name
+mirrored: `mem_L₀_of_live_tail` with its filter step from `mem_L₀bwd_of_bwdLive_tail`, and
+`live_of_mem_L₀_tail` from `L₀ ⊆ Φ_back L₀` iterated in `L₀_subset_iterBack`. `iterBack_L₀` is
+likewise stated from `TailStableRaw`, where the backward equation's functional form survives.
+
+**Why each filter is its own one-directional half and not `liveAt`.** A filter by the
+two-directional `liveAt` would have no soundness lemma to stand on in either direction: what carries
+genuine liveness down a tail to its reference time is that tail's own fold relation, and each fold
+relation reaches one tail only. See the note at `fwdLiveAt` / `bwdLiveAt`.
 
 **Residue-indexed, at sub-phase 18.3, and the narrowing that costs.** Each conjunct is a bounded
 quantifier over its own period's residues: the backward one over `r < G.NBnat` at reference time
@@ -733,7 +841,7 @@ the checker's cost goes from two `Φ` applications to `G.NBnat + G.NFnat` of the
 def TailStable (G : PlusSlicedCertificate Γ Del) : Prop :=
   (∀ r ∈ Finset.range G.NBnat,
       G.iterBack (-G.NB - (r : ℤ)) (G.liveAt (-G.NB - (r : ℤ))) G.NBnat
-        = G.liveAt (-G.NB - (r : ℤ)))
+        ∩ G.bwdLiveAt (-G.NB - (r : ℤ)) = G.liveAt (-G.NB - (r : ℤ)))
   ∧ (∀ r ∈ Finset.range G.NFnat,
       G.iterFwd (G.NM + G.NF + (r : ℤ)) (G.liveAt (G.NM + G.NF + (r : ℤ))) G.NFnat
         ∩ G.fwdLiveAt (G.NM + G.NF + (r : ℤ)) = G.liveAt (G.NM + G.NF + (r : ℤ)))
@@ -742,7 +850,7 @@ instance decidableTailStable (G : PlusSlicedCertificate Γ Del) : Decidable G.Ta
   inferInstanceAs (Decidable
     ((∀ r ∈ Finset.range G.NBnat,
         G.iterBack (-G.NB - (r : ℤ)) (G.liveAt (-G.NB - (r : ℤ))) G.NBnat
-          = G.liveAt (-G.NB - (r : ℤ)))
+          ∩ G.bwdLiveAt (-G.NB - (r : ℤ)) = G.liveAt (-G.NB - (r : ℤ)))
       ∧ (∀ r ∈ Finset.range G.NFnat,
         G.iterFwd (G.NM + G.NF + (r : ℤ)) (G.liveAt (G.NM + G.NF + (r : ℤ))) G.NFnat
           ∩ G.fwdLiveAt (G.NM + G.NF + (r : ℤ)) = G.liveAt (G.NM + G.NF + (r : ℤ)))))
@@ -822,11 +930,11 @@ theorem tailStableRaw_fwd (G : PlusSlicedCertificate Γ Del) (h : G.TailStableRa
   rw [Φ_fwd, R₀]
   simpa using h0
 
-/-- **The `r = 0` instance of the backward conjunct.** -/
+/-- **The `r = 0` instance of the filtered backward conjunct.** -/
 theorem tailStable_back (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable) :
-    G.Φ_back G.L₀ = G.L₀ := by
+    G.Φ_back G.L₀ ∩ G.L₀bwd = G.L₀ := by
   have h0 := hTS.1 0 (Finset.mem_range.mpr G.NBnat_pos)
-  rw [Φ_back, L₀]
+  rw [Φ_back, L₀, L₀bwd]
   simpa using h0
 
 /-- **The `r = 0` instance of the filtered forward conjunct.** -/
@@ -841,12 +949,34 @@ theorem tailStable_fwd (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable) :
 re-presentation family. -/
 theorem tailStable_of_raw (G : PlusSlicedCertificate Γ Del) (h : G.TailStableRaw) :
     G.TailStable := by
-  refine ⟨h.1, ?_⟩
-  intro r hr
-  rw [h.2 r hr]
-  exact Finset.ext fun p =>
-    ⟨fun hp => (Finset.mem_inter.mp hp).1,
-      fun hp => Finset.mem_inter.mpr ⟨hp, G.liveAt_subset_fwdLiveAt _ hp⟩⟩
+  refine ⟨?_, ?_⟩
+  · intro r hr
+    rw [h.1 r hr]
+    exact Finset.ext fun p =>
+      ⟨fun hp => (Finset.mem_inter.mp hp).1,
+        fun hp => Finset.mem_inter.mpr ⟨hp, G.liveAt_subset_bwdLiveAt _ hp⟩⟩
+  · intro r hr
+    rw [h.2 r hr]
+    exact Finset.ext fun p =>
+      ⟨fun hp => (Finset.mem_inter.mp hp).1,
+        fun hp => Finset.mem_inter.mpr ⟨hp, G.liveAt_subset_fwdLiveAt _ hp⟩⟩
+
+/-- **The `⊇` half of the filtered backward conjunct at an arbitrary residue**, which is all the `←`
+direction of the left-tail collapse consumes. -/
+theorem liveAt_refBack_subset_Φ (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable) {r : ℕ}
+    (hr : r < G.NBnat) :
+    G.liveAt (-G.NB - (r : ℤ))
+      ⊆ G.iterBack (-G.NB - (r : ℤ)) (G.liveAt (-G.NB - (r : ℤ))) G.NBnat := by
+  intro p hp
+  rw [← hTS.1 r (Finset.mem_range.mpr hr)] at hp
+  exact (Finset.mem_inter.mp hp).1
+
+/-- **The `r = 0` instance**, in the shape the pre-residue development cites. -/
+theorem L₀_subset_Φ_back_L₀ (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable) :
+    G.L₀ ⊆ G.Φ_back G.L₀ := by
+  intro p hp
+  rw [← G.tailStable_back hTS] at hp
+  exact (Finset.mem_inter.mp hp).1
 
 /-- **The `⊇` half of the filtered forward conjunct at an arbitrary residue**, which is all the `←`
 direction of the tail collapse consumes. -/
@@ -868,8 +998,13 @@ theorem R₀_subset_Φ_fwd_R₀ (G : PlusSlicedCertificate Γ Del) (hTS : G.Tail
 /-- **One application iterated, at an arbitrary left residue.** Under tail-stability every
 whole-period leftward iterate of the live set at `-G.NB - r` is that same set again — the content
 the plan's Scope Hypothesis calls "immediate from the equation", made a theorem because the
-reference time moves with each period and the shift has to be justified by `iterBack_shift`. -/
-theorem iterBack_liveAt_refBack (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable) {r : ℕ}
+reference time moves with each period and the shift has to be justified by `iterBack_shift`.
+
+**Stated from the raw demand `TailStableRaw`**, which is where the backward equation's functional
+form survives: sub-phase 20.4 filtered the backward conjunct, and under the filtered conjunct the
+iterate may grow, exactly as on the forward side. `liveAt_refBack_subset_iterBack` is the one-sided
+replacement the left-tail collapse uses instead. -/
+theorem iterBack_liveAt_refBack (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStableRaw) {r : ℕ}
     (hr : r < G.NBnat) (k : ℕ) :
     G.iterBack (-G.NB - (r : ℤ)) (G.liveAt (-G.NB - (r : ℤ))) (k * G.NBnat)
       = G.liveAt (-G.NB - (r : ℤ)) := by
@@ -882,7 +1017,7 @@ theorem iterBack_liveAt_refBack (G : PlusSlicedCertificate Γ Del) (hTS : G.Tail
     exact hTS.1 r (Finset.mem_range.mpr hr)
 
 /-- **The `r = 0` instance**, the form the pre-residue development cites. -/
-theorem iterBack_L₀ (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable) (k : ℕ) :
+theorem iterBack_L₀ (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStableRaw) (k : ℕ) :
     G.iterBack (-G.NB) G.L₀ (k * G.NBnat) = G.L₀ := by
   have h := G.iterBack_liveAt_refBack hTS G.NBnat_pos k
   rw [L₀]
@@ -909,6 +1044,28 @@ theorem iterFwd_R₀ (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStableRaw) 
     G.iterFwd (G.NM + G.NF) G.R₀ (k * G.NFnat) = G.R₀ := by
   have h := G.iterFwd_liveAt_refFwd hTS G.NFnat_pos k
   rw [R₀]
+  simpa using h
+
+/-- **The one-sided replacement for `iterBack_liveAt_refBack` under the filtered backward
+conjunct.** Only the `⊇` half of the filtered equation is used, iterated by monotonicity. -/
+theorem liveAt_refBack_subset_iterBack (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable)
+    {r : ℕ} (hr : r < G.NBnat) (k : ℕ) :
+    G.liveAt (-G.NB - (r : ℤ))
+      ⊆ G.iterBack (-G.NB - (r : ℤ)) (G.liveAt (-G.NB - (r : ℤ))) (k * G.NBnat) := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+    rw [add_one_mul, G.iterBack_add,
+      show ((k * G.NBnat : ℕ) : ℤ) = (k : ℤ) * G.NB from by rw [NB, Nat.cast_mul],
+      G.iterBack_shift (G.refBack_neg r)
+        (G.iterBack (-G.NB - (r : ℤ)) (G.liveAt (-G.NB - (r : ℤ))) (k * G.NBnat)) G.NBnat k]
+    exact subset_trans (G.liveAt_refBack_subset_Φ hTS hr) (G.iterBack_mono _ ih _)
+
+/-- **The `r = 0` instance**, the form the pre-residue development cites. -/
+theorem L₀_subset_iterBack (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable) (k : ℕ) :
+    G.L₀ ⊆ G.iterBack (-G.NB) G.L₀ (k * G.NBnat) := by
+  have h := G.liveAt_refBack_subset_iterBack hTS G.NBnat_pos k
+  rw [L₀]
   simpa using h
 
 /-- **The one-sided replacement for `iterFwd_liveAt_refFwd` under the filtered forward conjunct.**
@@ -1004,15 +1161,44 @@ otherwise, and no declaration below is stated more strongly than it is proved.
 The `∀ t` claim Phase 17's *universal* side needs. A universal clause checked against the positions
 of `L₀` therefore holds at every time `-G.NB - k * G.NB`, without the checker ever looking outside
 the window.
+
+**The proof is one-period-at-a-time**, as the right tail's is, and for the same reason: sub-phase
+20.4 filtered the backward conjunct, so `iterBack_L₀` — which is stated from `TailStableRaw` — is
+no longer available here. The raw demand proved this in one step; the filtered one does not
+collapse the iterate, so the inductive hypothesis is the whole `∀ p` statement at `k`, which is
+exactly the `hX` that `live_subset_iterBack` asks for over the single period down from
+`-G.NB - k * G.NB`, and the filter membership of the arriving position comes from its genuine
+**backward** liveness through `mem_L₀bwd_of_bwdLive_tail`.
 -/
+theorem forall_mem_L₀_of_live_tail (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable) (k : ℕ) :
+    ∀ p : G.Pos, G.Live (-G.NB - (k : ℤ) * G.NB) p → p ∈ G.L₀ := by
+  induction k with
+  | zero =>
+    intro p hp
+    exact G.mem_liveAt_of_live G.neg_NB_mem_winTimes (by simpa using hp)
+  | succ k ih =>
+    intro p hp
+    have hB := G.NB_pos
+    have hknn : (0 : ℤ) ≤ (k : ℤ) * G.NB :=
+      mul_nonneg (Int.natCast_nonneg k) (le_of_lt hB)
+    have hneg : -G.NB - (k : ℤ) * G.NB < 0 := by omega
+    have hsucc : ((k + 1 : ℕ) : ℤ) = (k : ℤ) + 1 := by push_cast; rfl
+    have htime : -G.NB - (k : ℤ) * G.NB - G.NB = -G.NB - ((k + 1 : ℕ) : ℤ) * G.NB := by
+      rw [hsucc, add_one_mul, sub_sub]
+    have hp' : G.Live (-G.NB - (k : ℤ) * G.NB - ((G.NBnat : ℕ) : ℤ)) p := by
+      rw [show ((G.NBnat : ℕ) : ℤ) = G.NB from by rw [NB], htime]
+      exact hp
+    have h1 := G.live_subset_iterBack (-G.NB - (k : ℤ) * G.NB) G.L₀ ih G.NBnat p hp'
+    rw [G.iterBack_shift (show (-G.NB : ℤ) < 0 from by omega) G.L₀ G.NBnat k] at h1
+    rw [← G.tailStable_back hTS]
+    refine Finset.mem_inter.mpr ⟨h1, ?_⟩
+    have hp2 : G.BwdLive (-G.NB - ((k + 1 : ℕ) : ℤ) * G.NB) p := hp.2
+    exact G.mem_L₀bwd_of_bwdLive_tail (k + 1) hp2
+
+/-- **In the shape the rest of this module cites.** -/
 theorem mem_L₀_of_live_tail (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable) (k : ℕ)
-    {p : G.Pos} (hp : G.Live (-G.NB - (k : ℤ) * G.NB) p) : p ∈ G.L₀ := by
-  have hcast : ((k * G.NBnat : ℕ) : ℤ) = (k : ℤ) * G.NB := by rw [NB, Nat.cast_mul]
-  have hX : ∀ q, G.Live (-G.NB) q → q ∈ G.L₀ := fun q hq =>
-    G.mem_liveAt_of_live G.neg_NB_mem_winTimes hq
-  have hp' : G.Live (-G.NB - ((k * G.NBnat : ℕ) : ℤ)) p := by rw [hcast]; exact hp
-  have h := G.live_subset_iterBack (-G.NB) G.L₀ hX (k * G.NBnat) p hp'
-  rwa [G.iterBack_L₀ hTS k] at h
+    {p : G.Pos} (hp : G.Live (-G.NB - (k : ℤ) * G.NB) p) : p ∈ G.L₀ :=
+  G.forall_mem_L₀_of_live_tail hTS k p hp
 
 /--
 **The mirror, on the right tail** — and the one declaration of this module whose **proof** the
@@ -1074,11 +1260,60 @@ theorem mem_liveAt_of_live_tail (G : PlusSlicedCertificate Γ Del) {t₀ : ℤ}
   have h := G.live_subset_iterBack t₀ (G.liveAt t₀) hX (k * G.NBnat) p hp'
   rwa [hstab k] at h
 
-/-- **The forward half at an arbitrary left residue reference time.** -/
+/-- **Every left-tail period multiple of an arbitrary negative reference time is a backward fold of
+it.** The generic form of `foldB_tail`, and the mirror of `foldF_shift`. -/
+theorem foldB_shift (G : PlusSlicedCertificate Γ Del) {t₀ : ℤ} (hneg : t₀ < 0) (k : ℕ) :
+    G.FoldB t₀ (t₀ - (k : ℤ) * G.NB) := by
+  have hB := G.NB_pos
+  have hk : (0 : ℤ) ≤ (k : ℤ) * G.NB := mul_nonneg (Int.natCast_nonneg k) (le_of_lt hB)
+  refine Or.inr ⟨hneg, by omega, ?_⟩
+  rw [show t₀ - (k : ℤ) * G.NB = t₀ + (-(k : ℤ)) * G.NB from by rw [neg_mul, ← sub_eq_add_neg],
+    Int.add_mul_emod_self_right]
+
+/-- **A position backward-live anywhere down the periodic left tail of an arbitrary negative window
+reference time is in that time's computed backward-live set.** The generic form of
+`mem_L₀bwd_of_bwdLive_tail`, and the mirror of `mem_fwdLiveAt_of_fwdLive_head`. -/
+theorem mem_bwdLiveAt_of_bwdLive_tail (G : PlusSlicedCertificate Γ Del) {t₀ : ℤ}
+    (hwin : t₀ ∈ G.winTimes) (hneg : t₀ < 0) (k : ℕ) {p : G.Pos}
+    (hp : G.BwdLive (t₀ - (k : ℤ) * G.NB) p) : p ∈ G.bwdLiveAt t₀ := by
+  rw [G.mem_bwdLiveAt]
+  refine ⟨?_, G.mem_bwdLiveT_of_bwdLive_fold hwin (G.foldB_shift hneg k) hp⟩
+  rw [G.foldB_posAt (G.foldB_shift hneg k)]
+  obtain ⟨R, -, hq⟩ := hp
+  rw [← hq]
+  exact R.pos_mem_posAt _
+
+/-- **The backward half on the left tail of an arbitrary reference time.** `hstab` is the one-period
+**filtered** equation at `t₀`, which the residue-indexed demand supplies at every residue reference
+time; the induction carries one period at a time, exactly as `forall_mem_L₀_of_live_tail` does and
+for the same reason. -/
+theorem forall_mem_liveAt_of_live_tail (G : PlusSlicedCertificate Γ Del) {t₀ : ℤ}
+    (hwin : t₀ ∈ G.winTimes) (hneg : t₀ < 0)
+    (hstab : G.iterBack t₀ (G.liveAt t₀) G.NBnat ∩ G.bwdLiveAt t₀ = G.liveAt t₀) (k : ℕ) :
+    ∀ p : G.Pos, G.Live (t₀ - (k : ℤ) * G.NB) p → p ∈ G.liveAt t₀ := by
+  induction k with
+  | zero =>
+    intro p hp
+    exact G.mem_liveAt_of_live hwin (by simpa using hp)
+  | succ k ih =>
+    intro p hp
+    have hsucc : ((k + 1 : ℕ) : ℤ) = (k : ℤ) + 1 := by push_cast; rfl
+    have htime : t₀ - (k : ℤ) * G.NB - G.NB = t₀ - ((k + 1 : ℕ) : ℤ) * G.NB := by
+      rw [hsucc, add_one_mul, sub_sub]
+    have hp' : G.Live (t₀ - (k : ℤ) * G.NB - ((G.NBnat : ℕ) : ℤ)) p := by
+      rw [show ((G.NBnat : ℕ) : ℤ) = G.NB from by rw [NB], htime]
+      exact hp
+    have h1 := G.live_subset_iterBack (t₀ - (k : ℤ) * G.NB) (G.liveAt t₀) ih G.NBnat p hp'
+    rw [G.iterBack_shift hneg (G.liveAt t₀) G.NBnat k] at h1
+    rw [← hstab]
+    exact Finset.mem_inter.mpr ⟨h1, G.mem_bwdLiveAt_of_bwdLive_tail hwin hneg (k + 1) hp.2⟩
+
+/-- **The backward half at an arbitrary left residue reference time.** -/
 theorem mem_liveAt_of_live_refBack (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable) {r : ℕ}
     (hr : r < G.NBnat) (k : ℕ) {p : G.Pos}
     (hp : G.Live (-G.NB - (r : ℤ) - (k : ℤ) * G.NB) p) : p ∈ G.liveAt (-G.NB - (r : ℤ)) :=
-  G.mem_liveAt_of_live_tail (G.refBack_mem_winTimes hr) (G.iterBack_liveAt_refBack hTS hr) k hp
+  G.forall_mem_liveAt_of_live_tail (G.refBack_mem_winTimes hr) (G.refBack_neg r)
+    (hTS.1 r (Finset.mem_range.mpr hr)) k p hp
 
 /-- **Every right-tail period multiple of an arbitrary reference time at or past `G.NM` is a forward
 fold of it.** The generic form of `foldF_head`. -/
