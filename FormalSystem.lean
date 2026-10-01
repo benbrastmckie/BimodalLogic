@@ -148,6 +148,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Basic
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Bridge
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Canon
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Check
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Complete
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Computed
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixpoint
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixture
