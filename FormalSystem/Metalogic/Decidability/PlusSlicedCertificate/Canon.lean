@@ -365,6 +365,181 @@ theorem live_canRun_pair (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLabelFa
     Prod.ext rfl (Subtype.ext rfl)
   rwa [he] at h
 
+/-! ## The canonical labelling is the only one
+
+`canRun` says a step path has *a* coherent fulfilling labelling. This section says it has exactly
+one: a run's labelling is **forced** by its state path, at every closure member and every time.
+
+That is a stronger fact than it may look, and it is what turns the certificate's liveness into a
+description of the edge-path space rather than of some sub-collection of it. A label is pinned on
+the state shapes by `AgreesOnState`, on `→` by the implication clause, and on `U` and `S` by the
+one-step clauses *together with fulfilment* — neither alone suffices, since the one-step clauses
+have no base case over `ℤ` and admit a labelling that postpones an eventuality forever, which is
+precisely what fulfilment rules out.
+
+The two downward-propagation lemmas below are the bare-sequence counterparts of
+`PlusSharingWitnessFamily.plusUntl_mem_along_thread` / `plusSnce_mem_along_thread`, which are
+stated along a thread of the branching device and so do not apply to a label sequence of this
+subtree. They are the converse direction of `Live.lean`'s `untl_push` / `snce_push`: those push a
+*pending* eventuality forward, these pull a *delivered* one back.
+-/
+
+/--
+**A delivered `untl` is pending at every earlier time**, for an arbitrary locally coherent label
+sequence. Induction on the ℤ-distance, as `untl_push` is.
+-/
+theorem untl_pull {bx : PlusFormula → Bool} {lab : ℤ → Finset PlusFormula}
+    (hcoh : PlusLocalCoherentSeqLab Γ Del bx lab) {a b : PlusFormula}
+    (hmem : PlusFormula.untl a b ∈ plusClosureOf (Γ ++ Del)) :
+    ∀ (d : ℕ) (t s : ℤ), s - t = (d : ℤ) → t < s → b ∈ lab s →
+      (∀ r : ℤ, t < r → r < s → a ∈ lab r) → PlusFormula.untl a b ∈ lab t := by
+  intro d
+  induction d with
+  | zero => intro t s hd hts _ _; omega
+  | succ d ih =>
+    intro t s hd hts hbs hguard
+    rcases eq_or_lt_of_le (show t + 1 ≤ s by omega) with heq | hlt
+    · exact ((hcoh t).2.2.2.1 a b hmem).mpr (Or.inl (heq ▸ hbs))
+    · refine ((hcoh t).2.2.2.1 a b hmem).mpr (Or.inr ⟨hguard (t + 1) (by omega) hlt, ?_⟩)
+      exact ih (t + 1) s (by omega) hlt hbs (fun r hr1 hr2 => hguard r (by omega) hr2)
+
+/-- **A delivered `snce` is pending at every later time**, the leftward mirror. -/
+theorem snce_pull {bx : PlusFormula → Bool} {lab : ℤ → Finset PlusFormula}
+    (hcoh : PlusLocalCoherentSeqLab Γ Del bx lab) {a b : PlusFormula}
+    (hmem : PlusFormula.snce a b ∈ plusClosureOf (Γ ++ Del)) :
+    ∀ (d : ℕ) (t s : ℤ), t - s = (d : ℤ) → s < t → b ∈ lab s →
+      (∀ r : ℤ, s < r → r < t → a ∈ lab r) → PlusFormula.snce a b ∈ lab t := by
+  intro d
+  induction d with
+  | zero => intro t s hd hst _ _; omega
+  | succ d ih =>
+    intro t s hd hst hbs hguard
+    rcases eq_or_lt_of_le (show s ≤ t - 1 by omega) with heq | hlt
+    · exact ((hcoh t).2.2.2.2 a b hmem).mpr (Or.inl (heq ▸ hbs))
+    · refine ((hcoh t).2.2.2.2 a b hmem).mpr (Or.inr ⟨hguard (t - 1) hlt (by omega), ?_⟩)
+      exact ih (t - 1) s (by omega) hlt hbs (fun r hr1 hr2 => hguard r hr1 (by omega))
+
+/--
+**A fulfilling run's labelling is the canonical one**, formula by formula.
+
+The induction is on the formula, and each case is one of the run's own obligations read against the
+matching clause of `canAt`:
+
+* `atom`, `box`, `stab` — `LabRun.agrees`, since all three are state shapes. Note the `box` case
+  needs **no** box clause and no (C3b): both sides are the slice labelling.
+* `bot` — the run's own `⊥ ∉ lab`.
+* `imp` — the implication clause, plus the induction hypothesis at both sides.
+* `untl`, `snce` — fulfilment one way and `untl_pull` / `snce_pull` the other. This is the only
+  place either hypothesis of the theorem is used.
+-/
+theorem canAt_iff_mem_lab (G : PlusSlicedCertificate Γ Del) (R : G.LabRun)
+    (hf : PlusFulfillingSeqLab R.lab) :
+    ∀ ψ ∈ plusClosureOf (Γ ++ Del), ∀ t : ℤ, (ψ ∈ R.lab t ↔ G.canAt R.st ψ t) := by
+  intro ψ
+  induction ψ with
+  | atom a =>
+    intro hψ t
+    exact R.agrees t (PlusFormula.atom a) hψ rfl
+  | bot =>
+    intro _ t
+    exact ⟨fun h => absurd h (R.coherent t).1, fun h => absurd h (G.canAt_bot R.st t)⟩
+  | imp a b iha ihb =>
+    intro hψ t
+    rw [(R.coherent t).2.1 a b hψ, G.canAt_imp R.st a b t,
+      iha (plusClosureOf_imp_left hψ) t, ihb (plusClosureOf_imp_right hψ) t]
+  | box χ _ =>
+    intro hψ t
+    exact R.agrees t (PlusFormula.box χ) hψ rfl
+  | untl a b iha ihb =>
+    intro hψ t
+    constructor
+    · intro h
+      obtain ⟨s, hts, hbs, hguard⟩ := hf.1 t a b h
+      refine ⟨s, hts, (ihb (plusClosureOf_untl_left hψ) s).mp hbs, ?_⟩
+      intro r hr1 hr2
+      exact (iha (plusClosureOf_untl_right hψ) r).mp (hguard r hr1 hr2)
+    · rintro ⟨s, hts, hbs, hguard⟩
+      refine untl_pull R.coherent hψ (s - t).toNat t s
+        (Int.toNat_of_nonneg (show (0 : ℤ) ≤ s - t by omega)).symm hts
+        ((ihb (plusClosureOf_untl_left hψ) s).mpr hbs) ?_
+      intro r hr1 hr2
+      exact (iha (plusClosureOf_untl_right hψ) r).mpr (hguard r hr1 hr2)
+  | snce a b iha ihb =>
+    intro hψ t
+    constructor
+    · intro h
+      obtain ⟨s, hst, hbs, hguard⟩ := hf.2 t a b h
+      refine ⟨s, hst, (ihb (plusClosureOf_snce_left hψ) s).mp hbs, ?_⟩
+      intro r hr1 hr2
+      exact (iha (plusClosureOf_snce_right hψ) r).mp (hguard r hr1 hr2)
+    · rintro ⟨s, hst, hbs, hguard⟩
+      refine snce_pull R.coherent hψ (t - s).toNat t s
+        (Int.toNat_of_nonneg (show (0 : ℤ) ≤ t - s by omega)).symm hst
+        ((ihb (plusClosureOf_snce_left hψ) s).mpr hbs) ?_
+      intro r hr1 hr2
+      exact (iha (plusClosureOf_snce_right hψ) r).mpr (hguard r hr1 hr2)
+  | stab χ _ =>
+    intro hψ t
+    exact R.agrees t (PlusFormula.stab χ) hψ rfl
+
+/-- **A fulfilling run's labelling *is* the canonical labelling of its state path.** -/
+theorem lab_eq_canLab (G : PlusSlicedCertificate Γ Del) (R : G.LabRun)
+    (hf : PlusFulfillingSeqLab R.lab) (t : ℤ) : R.lab t = G.canLab R.st t := by
+  ext ψ
+  constructor
+  · intro h
+    refine (G.mem_canLab R.st).mpr ⟨R.lab_sub t h, ?_⟩
+    exact (G.canAt_iff_mem_lab R hf ψ (R.lab_sub t h) t).mp h
+  · intro h
+    obtain ⟨hcl, hcan⟩ := (G.mem_canLab R.st).mp h
+    exact (G.canAt_iff_mem_lab R hf ψ hcl t).mpr hcan
+
+/--
+**The live positions at a time are exactly the canonical positions of the step paths.**
+
+Liveness is a `∃` over runs; this replaces it by a `∃` over **state paths**, with the label no
+longer existentially quantified but computed from the path. `→` is `lab_eq_canLab`; `←` is
+`canRun`.
+
+This is the form the `□` and `⊡` cases of a truth lemma want, because the semantic side quantifies
+over histories — that is, over state paths — and this says the certificate's own liveness condition
+is a condition on exactly that collection, with nothing else in it and nothing missing.
+-/
+theorem live_iff_canLab (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLabelFaithful) (t : ℤ)
+    (p : G.Pos) :
+    G.Live t p ↔
+      ∃ g : ℤ → Fin G.n, (∀ s : ℤ, G.edge s (g s) (g (s + 1)) = true) ∧
+        p.1 = g t ∧ (p.2.1 : Finset PlusFormula) = G.canLab g t := by
+  constructor
+  · intro h
+    obtain ⟨R, hf, hp⟩ := G.exists_path_of_live h
+    refine ⟨R.st, R.steps, ?_, ?_⟩
+    · rw [← hp]; rfl
+    · rw [← hp]
+      exact G.lab_eq_canLab R hf t
+  · rintro ⟨g, hg, h1, h2⟩
+    have he : p = ((g t, ⟨G.canLab g t,
+        Finset.mem_powerset.mpr (G.canLab_subset g t)⟩) : G.Pos) :=
+      Prod.ext h1 (Subtype.ext h2)
+    rw [he]
+    exact G.live_canRun_pair hbox g hg t
+
+/--
+**The label of a live position is the canonical label of a step path through its state.**
+
+The projection of `live_iff_canLab` a clause quantifying over `p ∈ G.liveAt t` consumes: whatever
+such a `p`'s label contains, it contains because some step path's canonical label contains it.
+-/
+theorem exists_path_canLab_of_live (G : PlusSlicedCertificate Γ Del) {t : ℤ} {p : G.Pos}
+    (h : G.Live t p) :
+    ∃ g : ℤ → Fin G.n, (∀ s : ℤ, G.edge s (g s) (g (s + 1)) = true) ∧
+      p.1 = g t ∧ (p.2.1 : Finset PlusFormula) = G.canLab g t := by
+  obtain ⟨R, hf, hp⟩ := G.exists_path_of_live h
+  refine ⟨R.st, R.steps, ?_, ?_⟩
+  · rw [← hp]; rfl
+  · rw [← hp]
+    exact G.lab_eq_canLab R hf t
+
 end PlusSlicedCertificate
 
 end FormalSystem.Metalogic.Decidability

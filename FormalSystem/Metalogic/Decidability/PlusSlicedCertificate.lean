@@ -80,6 +80,13 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   `LabRun`, the two halves `FwdLive` / `BwdLive` and their conjunction `Live`, the two propagation
   lemmas `untl_push` / `snce_push`, the label-level splice, and **both** directions of the
   characterization (`live_of_path`, `exists_path_of_live`, `live_iff`) at an arbitrary `t : ℤ`
+- `PlusSlicedCertificate.Canon`: the **canonical labelling** of a step path — `canAt` by recursion
+  on the formula, `canLab`, and `canRun`, by which **every** `G.edge`-path is a locally coherent,
+  fulfilling `LabRun` on (C3b) alone. The uniqueness half (`canAt_iff_mem_lab`, `lab_eq_canLab`)
+  says a fulfilling run's labelling is *forced* by its state path, and `live_iff_canLab` reads the
+  live set off the edge-path space with nothing else in it and nothing missing. This is what the
+  step "a history of the presented frame is an offset step path, hence a labelled path of `G`"
+  actually requires: the true type cannot play the role, and that module's header records why
 - `PlusSlicedCertificate.Fixture`: the window-width fixture — a bi-serial certificate of back
   period `1` in which one position is live at `-1` and occupied by no run at any time `≤ -2`,
   although the slice and the position set are literally the same at all those times
