@@ -1,11 +1,32 @@
 {
-  "status": "in_progress",
-  "artifacts": [],
-  "next_steps": "Plan revision in progress (option 1: mirror the filter)",
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/703_lplus_compression_and_completeness/plans/06_lplus-sliced-certificate-and-completeness.md",
+      "summary": "Plan v12: implements the user's option-1 ruling (mirror the filter) as sub-phases 20.3/20.4/20.5, resolves the Phase 20 blocker, closes option 2 as refuted, and defers option 3 to a specified-not-filed successor."
+    }
+  ],
+  "next_steps": "Run /orchestrate 703 --implement to dispatch sub-phase 20.3 (bwdVertFold and mem_bwdLiveT_of_bwdLive_fold in Bridge.lean, no consumer changes). The user's ruling also calls for a separate follow-up task to evaluate option 3 (full labels in the certificate, removing the posAt over-approximation at its root); the plan specifies it under 'The option-3 successor, specified and deliberately not filed' and does not file it.",
   "metadata": {
     "session_id": "sess_1790877597_7cfc7c_703",
     "agent_type": "reviser-agent",
     "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "dispatch_seq": 51
+    "dispatch_seq": 51,
+    "plan_version": 12,
+    "phase_count": 21,
+    "estimated_hours": 78,
+    "reports_integrated": [
+      "01_lplus-compression-completeness-research.md",
+      "02_semantics-first-compression-research.md",
+      "706/01_lplus-finite-model-property-research.md",
+      "06_tailstable-backward-conjunct-repair.md"
+    ],
+    "revision_mode": "plan_revision",
+    "phases_preserved": "1-19 verbatim, including all [COMPLETED] and [COMPLETED WITH EXCLUSIONS] markers; sub-phase 16.3 untouched",
+    "phases_revised": "Phase 20 (heading [BLOCKED] -> [IN PROGRESS]; BLOCKER becomes a RESOLVED record with its body retained and marked inside; 20.2 marker [BLOCKED] -> [PARTIAL]; Timing 7 -> 13; Files list extended), Phase 21 (four added gate bullets)",
+    "phases_added": "Sub-phases 20.3, 20.4, 20.5",
+    "phases_removed": "none",
+    "follow_up_specified_not_filed": "option-3 successor: carry full labels in PlusSlicedCertificate so posAt becomes a singleton and the obstruction is removed at its root"
   }
 }

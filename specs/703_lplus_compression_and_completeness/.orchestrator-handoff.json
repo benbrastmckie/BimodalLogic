@@ -1,44 +1,25 @@
 {
-  "status": "blocked",
-  "phase": "implement",
-  "dispatch_seq": 49,
-  "summary": "Sub-phase 20.2 landed two of its four obligations and REFUTED the third. Landed: a truth lemma for the embedded model standing only on the family's own four certification conditions (Sound.lean's own truth lemma cannot serve -- it hypothesises exactly what an embedded certificate must establish), and from it SlabTrue (hst) and the canonical-label identification (hcan). Refuted: the BACKWARD conjunct of PlusSlicedCertificate.TailStable is FALSE at an embedded certificate built from a certifying WitnessFamily, by kernel-checked decide at two separate families, at residue r = 0 -- the pre-residue demand itself, not an artifact of the residue indexing -- while the forward conjunct holds at both. Sub-phase 20.1's favourable probe missed it because both of its certificates carry an untl closure and no snce, and the two conjuncts are not symmetric: the forward one carries the option-2 liveness filter and the backward one carries none. The flagship depends on the refuted demand and is blocked. Per the plan's Fallback bullet no repair was chosen; one candidate (the exact mirror filter) is measured clean at all four certificates and named as a candidate only, with TailStable unchanged. Full lake build green at 2805 jobs, zero errors, zero warnings, zero sorries, axiom count 14 unchanged.",
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 51,
+  "summary": "Plan v12 landed at plans/06_lplus-sliced-certificate-and-completeness.md. The dispatch-49 BLOCKER at Phase 20 is RESOLVED by the user ruling of 2026-10-01T17:59:36Z (option 1, mirror the filter), so the blocking user_decision carried by the dispatch-49 handoff is spent and is cleared here. The repair is scheduled as three new sub-phases: 20.3 lands bwdVertFold and mem_bwdLiveT_of_bwdLive_fold in Bridge.lean with no consumer changes (the single unproved input, independently green and committable); 20.4 promotes bwdLiveAtCand into Stable.lean as bwdLiveAt, swaps TailStable's backward conjunct to the filtered form, deletes Stable.lean's asymmetry note, consumes the research's by-name restatement table across Stable.lean/Tail.lean/FixtureStable.lean/EmbedComplete.lean, retires the candidate TailStableMirror, and lands the bot-U-bot / bot-S-bot regression pair; 20.5 proves hTS at the embedding against the filtered conjunct, proves hconc, and assembles the flagship. Option 2 is refuted and closed (the junk positions are posAt-determined, not family-determined), so WitnessFamily/Compression/Family.lean stays read-only and no scope widening is needed. Option 3 is deferred, not rejected, and is specified in the plan as a not-filed successor. CRITICAL CAVEAT carried into every sub-phase: the both-filtered demand is NOT a theorem (Fixture.cert.TailStableMirror is false by decide), so TailStable stays a field of Certifies.",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-05 implementation summary, extended with the dispatch-49 record: the embedded model's truth lemma, hcan, SlabTrue, and the refutation of TailStable's backward conjunct."
+      "type": "plan",
+      "path": "specs/703_lplus_compression_and_completeness/plans/06_lplus-sliced-certificate-and-completeness.md",
+      "summary": "Plan v12, round 06: the option-1 mirror repair as sub-phases 20.3-20.5, with the option-2 impossibility and the option-3 deferral recorded."
     },
     {
-      "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-20-handoff-20261001T163527Z.md",
-      "summary": "Phase 20 BLOCKED handoff: the refutation and its mechanism, why 20.1's untl-only probe missed it, the candidate repair's four measured verdicts, the right-tail-only correction to the fwdLiveAt asymmetry justification, and the three options for the ruling."
+      "type": "report",
+      "path": "specs/703_lplus_compression_and_completeness/reports/06_tailstable-backward-conjunct-repair.md",
+      "summary": "Round-06 research: the five-question adjudication this plan integrates."
     }
   ],
   "phases_completed": 19,
   "phases_total": 21,
-  "blockers": [
-    {
-      "phase": 20,
-      "target": "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Stable.lean -- PlusSlicedCertificate.TailStable, backward conjunct",
-      "verbatim_goal": "Prove exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula -- every Z-time non-validity of L, transported to L-plus, has a sliced certificate.",
-      "what_was_tried": "Complete.lean's exists_plusSlicedCertificate_of_tailStable_countermodel leaves four hypotheses outstanding at the embedded certificate: hTS, hst, hcan, hconc. hst and hcan were proved (sliced_slabTrue, sliced_target_lab_eq_canLab), via a new truth lemma sliced_plusTruthAt_iff_mem for the embedded model that consumes only W.LocalCoherentLab, W.FulfillingLab and W.BoxFaithful. hTS was then attacked, starting from the plan's mandated PROBE-FIRST discipline: a probe of TailStable was built at a certifying family whose target carries a snce rather than an untl -- the one shape sub-phase 20.1's two favourable certificates do not cover.",
-      "why_it_failed": "The backward conjunct is FALSE, not merely hard. snceClauseAt constrains the LATER label from the earlier, so a position whose label carries a snce obligation no admissible predecessor can discharge is a legitimate member of posAt with empty predP -- not backward-live, hence not live -- while its succP is non-empty. stepBack is a succP-preimage, so that position lands in iterBack, and the backward conjunct, unlike the forward one, carries no liveness filter to remove it. Landed as snceProbeFamily_not_tailStableBack and snceProbeLiveFamily_not_tailStableBack, at residue r = 0 (NBnat = 1), at two families whose Certifies verdicts are also landed. The refuting family additionally satisfies every output condition of exists_witnessFamily_of_not_validZTime besides its own target's invalidity (snceProbeFamily_segment_bounds, _lasso_count, _bx_shape, _target_time), so reading more of that theorem's conclusion does not dodge the obstruction. A USER RULING is required: the demand must be repaired, the compression theorem's output strengthened, or the route changed."
-    }
-  ],
+  "blockers": [],
   "plan_markers_verified": true,
-  "continuation_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-20-handoff-20261001T163527Z.md",
-  "next_action_hint": "Do NOT open 20.2's remaining work. Put the user_decision on .return-meta.json to the user and resume only once the ruling lands. If the mirror filter is chosen, the redo list is named in the handoff and in the summary's Follow-ups.",
-  "git_checkpoint": "0c8b2422c",
-  "user_decision": {
-    "question": "The backward conjunct of PlusSlicedCertificate.TailStable is refuted at an embedded certificate built from a certifying WitnessFamily (kernel-checked, residue r = 0, two separate families), so the flagship cannot be assembled along the planned route. The forward conjunct already carries a liveness filter from your option-2 ruling at sub-phase 16.3; the backward one carries none, and that is the gap. How should this be repaired?",
-    "options": [
-      "Mirror the filter: replace the backward conjunct by TailStableMirror, filtering by the computed backward-live set bwdLiveAtCand. Measured clean at all four certificates (repairs both refuting ones, regresses neither of sub-phase 20.1's). Accepted cost: every result stated from the backward conjunct's functional form must be redone, exactly as tailStable_iff_window_fwd was when the forward filter landed -- Stable.lean's iterBack_liveAt_refBack and iterBack_L0, Tail.lean's mem_L0_of_live_tail, live_of_mem_L0_tail, tailStable_iff_window, liveAt_tail_eq_L0, liveAt_winLo_eq_L0, and the left branch of exists_win_live_eq, which Phase 18's truth lemma consumes. The soundness lemma the redo needs is the FoldB analogue of mem_fwdLiveT_of_fwdLive_fold; Fold.lean lands every transport it requires and only a bwdVertFold counterpart of fwdVertFold is missing, so it is plausible and unproved.",
-      "Strengthen the compression theorem's output so the families it produces exclude the junk positions -- unmeasured, and it reopens WitnessFamily/Compression/Family.lean, which this task's description does not scope.",
-      "Change route: abandon Complete.lean's TailStable-hypothesised headline. Unmeasured, and since TailStable is a field of Certifies this means a different certificate notion, i.e. most of Stage 2 again.",
-      "Record the failure as a stated limitation of the Stage 2 result and stop short of the flagship, leaving the sliced class without the non-vacuity the task asks for."
-    ],
-    "recommended": "Mirror the filter: replace the backward conjunct by TailStableMirror, filtering by the computed backward-live set bwdLiveAtCand. Measured clean at all four certificates (repairs both refuting ones, regresses neither of sub-phase 20.1's). Accepted cost: every result stated from the backward conjunct's functional form must be redone, exactly as tailStable_iff_window_fwd was when the forward filter landed -- Stable.lean's iterBack_liveAt_refBack and iterBack_L0, Tail.lean's mem_L0_of_live_tail, live_of_mem_L0_tail, tailStable_iff_window, liveAt_tail_eq_L0, liveAt_winLo_eq_L0, and the left branch of exists_win_live_eq, which Phase 18's truth lemma consumes. The soundness lemma the redo needs is the FoldB analogue of mem_fwdLiveT_of_fwdLive_fold; Fold.lean lands every transport it requires and only a bwdVertFold counterpart of fwdVertFold is missing, so it is plausible and unproved.",
-    "blocking": true
-  }
+  "continuation_path": "specs/703_lplus_compression_and_completeness/plans/06_lplus-sliced-certificate-and-completeness.md",
+  "next_action_hint": "Dispatch implement at sub-phase 20.3 (Bridge.lean only). Its Contingency is the research's D7 fallback ordering and is the only place a fresh ruling can become necessary; do not improvise a weaker filter there. The prior dispatch-49 handoff is preserved at .orchestrator-handoff.json.pre-51.",
+  "git_checkpoint": "d3a0b6918"
 }

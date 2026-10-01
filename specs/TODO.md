@@ -312,9 +312,9 @@ AMENDMENT (filed after task 706's research round). Every reference above to the 
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 695, Task 696
-- **Plan**: [703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md]
 - **Summary**: [703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md]
 - **Research**: [703_lplus_compression_and_completeness/reports/06_tailstable-backward-conjunct-repair.md]
+- **Plan**: [703_lplus_compression_and_completeness/plans/06_lplus-sliced-certificate-and-completeness.md]
 
 **Description**: Prove the L-plus twin of FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime: every ZTime non-validity of a PlusFormula admits a bounded, canonically guessed PlusSharingWitnessFamily certifying the refutation, against task 696's redesigned condition set. Soundness is not in question anywhere in this task: FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusTruth_iff_mem and ...plusRefutes_of_certifies are untouched by this task's proof and must survive with their statements unchanged. Acceptance: zero sorries, no new axioms, a docs/theorem-index.md row, and a C2 AXIOM_BASELINE pin for the new theorem.
 
