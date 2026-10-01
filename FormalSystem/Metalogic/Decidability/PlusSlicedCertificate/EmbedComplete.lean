@@ -1115,6 +1115,21 @@ certificate's live sets **periodic** where a general certificate's are not: `can
 `perB`-periodic on the negatives for an arbitrary certificate, because its `U` clause looks into the
 non-periodic middle, but here it coincides with a label sequence that is periodic by construction.
 -/
+theorem slicedCanon_lab_of_live (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ) {t : ℤ}
+    {p : (W.slicedCanon tt).Pos} (hp : (W.slicedCanon tt).Live t p) :
+    (p.2.1 : Finset PlusFormula) = trLab (W.L p.1 t) := by
+  obtain ⟨g, hg, h1, h2⟩ := (W.slicedCanon tt).exists_path_canLab_of_live hp
+  have hgc : ∀ u : ℤ, g u = p.1 := by
+    intro u
+    rw [W.slicedCanon_path_const tt hg u t, ← h1]
+  rw [h2, PlusSlicedCertificate.withBx_canLab,
+    W.sliced_canLab_const hloc hful tt g p.1 hgc t]
+
+/--
+**The live positions of the embedded certificate are exactly the canonical ones.** The `liveAt`
+reading of `slicedCanon_lab_of_live`, with the converse: `←` is the canonical run itself.
+-/
 theorem slicedCanon_mem_liveAt_iff (W : WitnessFamily ([] : Context) [φ])
     (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ) {t : ℤ}
     (ht : t ∈ (W.slicedCanon tt).winTimes) (p : (W.slicedCanon tt).Pos) :
@@ -1122,13 +1137,8 @@ theorem slicedCanon_mem_liveAt_iff (W : WitnessFamily ([] : Context) [φ])
   have hbox := W.slicedCanon_boxLabelFaithful hloc hful hbf tt
   constructor
   · intro hp
-    obtain ⟨g, hg, h1, h2⟩ := (W.slicedCanon tt).exists_path_canLab_of_live
+    exact W.slicedCanon_lab_of_live hloc hful hbf tt
       ((W.slicedCanon tt).live_of_mem_liveAt hbox ht hp)
-    have hgc : ∀ u : ℤ, g u = p.1 := by
-      intro u
-      rw [W.slicedCanon_path_const tt hg u t, ← h1]
-    rw [h2, PlusSlicedCertificate.withBx_canLab,
-      W.sliced_canLab_const hloc hful tt g p.1 hgc t]
   · intro hcan
     have hlive := (W.slicedCanon tt).live_canRun hbox (fun _ => p.1)
       (fun t => W.slicedCanon_edge_self tt p.1 t) t
@@ -1228,6 +1238,169 @@ theorem slicedCanon_liveAt_subset_iterFwd (W : WitnessFamily ([] : Context) [φ]
     rw [W.slicedCanon_NFnat tt, Nat.cast_mul]
   rw [hmc, W.famRun_pos_add_mul_perF hloc hful hbf tt p.1 ht₁ k, hpR] at h
   exact h
+
+/-! ## The `⊆` halves of both tail-stability conjuncts
+
+Each half is the same three-region construction, mirrored. In both the chain pins one half of the
+arriving label and the matching one-directional **filter** pins the other — down a `succP`-chain the
+one-step `untl` clause determines the earlier label's `untl`-content from the later one, and up a
+chain the `snce` clause determines the later label's `snce`-content from the earlier, so a chain from
+a canonical endpoint leaves exactly the opposite half of the other endpoint free. `HalfRun.lean`'s
+unrollings turn the filter's **computed** membership into the half-line the splice needs, and
+`slicedCanon_lab_of_live` then reads canonicity off the spliced run.
+
+**Why the reference time of the conclusion is the chain's far end and not the iterate's own.** The
+chain an iterate witnesses places the position it is applied to one whole period away from the
+reference time, and that is where the spliced run puts it. Canonicity is therefore obtained at
+`t₀ - NB` (resp. `t₁ + NF`), and the family's own periodicity carries it back — which is also what
+keeps the construction available at **every** residue: shifting the chain *towards* the reference
+time instead would cross the origin at residue `0`, where the slice congruence it would need fails.
+-/
+
+/--
+**The `⊆` half of the backward conjunct**, at any negative window reference time.
+
+`hq2` — membership in the computed backward-live set — is what the construction's far region is built
+from, and it is exactly the filter sub-phase 20.4 put on this conjunct. Without it the inclusion is
+false: `snceProbeFamily_not_tailStableBackRaw` refutes the unfiltered demand at a certifying embedded
+certificate.
+-/
+theorem slicedCanon_iterBack_inter_subset (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ) {t₀ : ℤ}
+    (ht₀ : t₀ < 0) (hwin : t₀ ∈ (W.slicedCanon tt).winTimes) :
+    (W.slicedCanon tt).iterBack t₀ ((W.slicedCanon tt).liveAt t₀) (W.slicedCanon tt).NBnat
+        ∩ (W.slicedCanon tt).bwdLiveAt t₀
+      ⊆ (W.slicedCanon tt).liveAt t₀ := by
+  intro q hq
+  obtain ⟨hq1, hq2⟩ := Finset.mem_inter.mp hq
+  have hbox := W.slicedCanon_boxLabelFaithful hloc hful hbf tt
+  have hNB : ((W.slicedCanon tt).NBnat : ℤ) = (W.slicedCanon tt).NB := rfl
+  have hperB : (W.slicedCanon tt).NBnat = W.perB := W.slicedCanon_NBnat tt
+  -- the chain the iterate witnesses, read from the far end `t₀ - NBnat`
+  obtain ⟨c, hc0, hcX, hcpos, hcstep⟩ := (W.slicedCanon tt).exists_chain_of_mem_iterBack t₀
+    ((W.slicedCanon tt).liveAt_subset_posAt t₀) (W.slicedCanon tt).NBnat hq1
+  -- the chain's state never moves, so its top's index is the one the reference run is taken at
+  have hRqf := W.famRun_fulfilling hloc hful hbf tt (c (W.slicedCanon tt).NBnat).1
+  have hm : c (W.slicedCanon tt).NBnat
+      = (W.famRun hloc hful hbf tt (c (W.slicedCanon tt).NBnat).1).pos
+          (t₀ - ((W.slicedCanon tt).NBnat : ℤ) + ((W.slicedCanon tt).NBnat : ℤ)) := by
+    rw [show t₀ - ((W.slicedCanon tt).NBnat : ℤ) + ((W.slicedCanon tt).NBnat : ℤ) = t₀ from by omega]
+    exact (W.famRun_pos_eq hloc hful hbf tt (c (W.slicedCanon tt).NBnat) t₀
+      ((W.slicedCanon_mem_liveAt_iff hloc hful hbf tt hwin _).mp hcX)).symm
+  -- the far region: the computed backward-live set's own fair walk, rooted one period down
+  have hfold : (W.slicedCanon tt).FoldB t₀ (t₀ - ((W.slicedCanon tt).NBnat : ℤ)) := by
+    have h := (W.slicedCanon tt).foldB_shift ht₀ 1
+    rwa [Nat.cast_one, one_mul, ← hNB] at h
+  obtain ⟨Pb, hPb0, hPbpos, hPbstep, hPbfair⟩ :=
+    (W.slicedCanon tt).exists_bwdHalfRun_of_mem_bwdLiveT hwin hfold
+      (((W.slicedCanon tt).mem_bwdLiveAt t₀ q).mp hq2).2
+  -- the spliced run, and the liveness it witnesses at the chain's far end
+  have hlive := (W.slicedCanon tt).live_of_bwdHalf_chain_run hbox
+    (t₀ - ((W.slicedCanon tt).NBnat : ℤ)) (W.slicedCanon tt).NBnat Pb c
+    (W.famRun hloc hful hbf tt (c (W.slicedCanon tt).NBnat).1)
+    hPbpos hPbstep hPbfair hcpos hcstep hRqf.1 (by rw [hPb0, hc0]) hm
+  rw [hc0] at hlive
+  -- canonicity at the far end, carried back by the family's own leftward periodicity
+  have hcan := W.slicedCanon_lab_of_live hloc hful hbf tt hlive
+  rw [show t₀ - ((W.slicedCanon tt).NBnat : ℤ) = t₀ - (W.perB : ℤ) from by rw [hperB],
+    W.lab_sub_perB q.1 ht₀] at hcan
+  exact (W.slicedCanon_mem_liveAt_iff hloc hful hbf tt hwin q).mpr hcan
+
+/--
+**The `⊆` half of the forward conjunct**, at any window reference time at or past `NM`.
+
+The mirror, with the filter `fwdLiveAt` playing the role `bwdLiveAt` plays above. `FixtureStable`'s
+`not_tailStable_cert` is what says the filter is not removable here either.
+-/
+theorem slicedCanon_iterFwd_inter_subset (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ) {t₁ : ℤ}
+    (ht₁ : (W.slicedCanon tt).NM ≤ t₁) (hwin : t₁ ∈ (W.slicedCanon tt).winTimes) :
+    (W.slicedCanon tt).iterFwd t₁ ((W.slicedCanon tt).liveAt t₁) (W.slicedCanon tt).NFnat
+        ∩ (W.slicedCanon tt).fwdLiveAt t₁
+      ⊆ (W.slicedCanon tt).liveAt t₁ := by
+  intro q hq
+  obtain ⟨hq1, hq2⟩ := Finset.mem_inter.mp hq
+  have hbox := W.slicedCanon_boxLabelFaithful hloc hful hbf tt
+  have hNF : ((W.slicedCanon tt).NFnat : ℤ) = (W.slicedCanon tt).NF := rfl
+  have hperF : (W.slicedCanon tt).NFnat = W.perF := W.slicedCanon_NFnat tt
+  have hperM : (W.perM : ℤ) ≤ t₁ := by
+    have h := W.slicedCanon_NM tt
+    omega
+  obtain ⟨c, hc0, hcX, hcpos, hcstep⟩ := (W.slicedCanon tt).exists_chain_of_mem_iterFwd t₁
+    ((W.slicedCanon tt).liveAt_subset_posAt t₁) (W.slicedCanon tt).NFnat hq1
+  have hRpf := W.famRun_fulfilling hloc hful hbf tt (c (W.slicedCanon tt).NFnat).1
+  have hm : c (W.slicedCanon tt).NFnat
+      = (W.famRun hloc hful hbf tt (c (W.slicedCanon tt).NFnat).1).pos
+          (t₁ + ((W.slicedCanon tt).NFnat : ℤ) - ((W.slicedCanon tt).NFnat : ℤ)) := by
+    rw [show t₁ + ((W.slicedCanon tt).NFnat : ℤ) - ((W.slicedCanon tt).NFnat : ℤ) = t₁ from by omega]
+    exact (W.famRun_pos_eq hloc hful hbf tt (c (W.slicedCanon tt).NFnat) t₁
+      ((W.slicedCanon_mem_liveAt_iff hloc hful hbf tt hwin _).mp hcX)).symm
+  have hfold : (W.slicedCanon tt).FoldF t₁ (t₁ + ((W.slicedCanon tt).NFnat : ℤ)) := by
+    have h := (W.slicedCanon tt).foldF_shift ht₁ 1
+    rwa [Nat.cast_one, one_mul, ← hNF] at h
+  obtain ⟨Pf, hPf0, hPfpos, hPfstep, hPffair⟩ :=
+    (W.slicedCanon tt).exists_fwdHalfRun_of_mem_fwdLiveT hwin hfold
+      (((W.slicedCanon tt).mem_fwdLiveAt t₁ q).mp hq2).2
+  have hlive := (W.slicedCanon tt).live_of_run_chain_fwdHalf hbox
+    (t₁ + ((W.slicedCanon tt).NFnat : ℤ)) (W.slicedCanon tt).NFnat Pf c
+    (W.famRun hloc hful hbf tt (c (W.slicedCanon tt).NFnat).1)
+    hPfpos hPfstep hPffair hcpos hcstep hRpf.2 (by rw [hPf0, hc0]) hm
+  rw [hc0] at hlive
+  have hcan := W.slicedCanon_lab_of_live hloc hful hbf tt hlive
+  rw [show t₁ + ((W.slicedCanon tt).NFnat : ℤ) = t₁ + (W.perF : ℤ) from by rw [hperF],
+    W.lab_add_perF q.1 hperM] at hcan
+  exact (W.slicedCanon_mem_liveAt_iff hloc hful hbf tt hwin q).mpr hcan
+
+/-! ## `hTS`: the embedded certificate is tail-stable
+
+The theorem sub-phase 20.5 owes, for an **arbitrary** certifying family and at **every** residue of
+both periods. Nothing here is a verdict at finitely many certificates: the seven kernel-checked
+verdicts above and in `Embed.lean` were evidence for this statement and are now instances of it.
+-/
+
+/-- **Tail-stability of the embedded certificate, under the canonical box guess.** -/
+theorem slicedCanon_tailStable (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ) :
+    (W.slicedCanon tt).TailStable := by
+  refine ⟨fun r hr => ?_, fun r hr => ?_⟩
+  · have hrlt := Finset.mem_range.mp hr
+    refine Finset.Subset.antisymm
+      (W.slicedCanon_iterBack_inter_subset hloc hful hbf tt ((W.slicedCanon tt).refBack_neg r)
+        ((W.slicedCanon tt).refBack_mem_winTimes hrlt))
+      (Finset.subset_inter ?_ ((W.slicedCanon tt).liveAt_subset_bwdLiveAt _))
+    have h := W.slicedCanon_liveAt_subset_iterBack hloc hful hbf tt
+      ((W.slicedCanon tt).refBack_neg r) ((W.slicedCanon tt).refBack_mem_winTimes hrlt) 1
+    rwa [one_mul] at h
+  · have hrlt := Finset.mem_range.mp hr
+    have hNM : (W.slicedCanon tt).NM ≤ (W.slicedCanon tt).NM + (W.slicedCanon tt).NF + (r : ℤ) := by
+      have h1 := (W.slicedCanon tt).NF_pos
+      have h2 : (0 : ℤ) ≤ (r : ℤ) := Int.natCast_nonneg r
+      omega
+    have hperM : (W.perM : ℤ)
+        ≤ (W.slicedCanon tt).NM + (W.slicedCanon tt).NF + (r : ℤ) := by
+      have h := W.slicedCanon_NM tt
+      omega
+    refine Finset.Subset.antisymm
+      (W.slicedCanon_iterFwd_inter_subset hloc hful hbf tt hNM
+        ((W.slicedCanon tt).refFwd_mem_winTimes hrlt))
+      (Finset.subset_inter ?_ ((W.slicedCanon tt).liveAt_subset_fwdLiveAt _))
+    have h := W.slicedCanon_liveAt_subset_iterFwd hloc hful hbf tt hperM
+      ((W.slicedCanon tt).refFwd_mem_winTimes hrlt) 1
+    rwa [one_mul] at h
+
+/-- **Tail-stability of the embedded certificate as `Embed.lean` builds it.** `TailStable` never
+mentions `bx`, so the canonical box guess is invisible to it — which is exactly what
+`withBx_tailStable` records. -/
+theorem sliced_tailStable (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ) :
+    (W.sliced tt).TailStable :=
+  ((W.sliced tt).withBx_tailStable (W.sliced tt).canonBx).mp
+    (W.slicedCanon_tailStable hloc hful hbf tt)
+
+/-- **Tail-stability from the family's own certification bundle**, in the shape the flagship uses. -/
+theorem sliced_tailStable_of_certifies (W : WitnessFamily ([] : Context) [φ]) {tt : ℤ}
+    (hC : W.Certifies tt) : (W.sliced tt).TailStable :=
+  W.sliced_tailStable hC.1 hC.2.1 hC.2.2.1 tt
 
 end WitnessFamily
 
