@@ -26,6 +26,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Check
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Sound
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Complete
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Embed
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.EmbedComplete
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
@@ -200,6 +201,15 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   demand is **evaluated** at two embedded certificates — `Embedded.emptyFamily_tailStable` and
   `Embedded.liveFamily_tailStable`, with `..._not_tailStableRaw` showing the liveness filter is
   load-bearing there — and is **not** claimed in general
+- `PlusSlicedCertificate.EmbedComplete`: the **semantic** half of the same embedding. A truth lemma
+  for the embedded model that stands on the family's own four certification conditions and on
+  nothing the certificate has yet to establish — `Sound.lean`'s own truth lemma cannot serve,
+  because it takes as hypotheses exactly what an embedded certificate is trying to establish. The
+  self-loop edge relation is what makes a direct induction cheap: every history of the embedded
+  frame has a **constant** index (`sliced_history_const`), so the `□` clause collapses to a
+  quantifier over one index and one offset, which is what `BoxFaithful` reports.
+  `sliced_target_lab_eq_canLab` and `sliced_slabTrue` are two of the four hypotheses of the
+  completeness headline
 
 ## Tags
 
