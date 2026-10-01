@@ -37,7 +37,7 @@
 - **Reports Integrated**: `01_lplus-compression-completeness-research.md`,
   `02_semantics-first-compression-research.md`,
   `706/01_lplus-finite-model-property-research.md`
-- **Plan Version**: 10 (revision of `plans/02_lplus-certificate-limits-graph-certificate.md` at
+- **Plan Version**: 11 (revision of `plans/02_lplus-certificate-limits-graph-certificate.md` at
   v4, amended in place at v5 and again at v6; artifact number 03 is deliberately skipped — the
   artifact counter, not the file listing, is authoritative. **Plan v5 changes no mathematics**: it
   adds the execution preconditions recorded under "Revision record — plan v5" below and integrates
@@ -80,7 +80,13 @@
   `Window.lean:94-108`, and v10 strikes it at both places v9 wrote it, propagates the consequence into
   Phase 20's window bullet, and records Phase 19's closure. It integrates no report, adds no phase,
   removes none, renumbers none, and changes no theorem statement, dependency, non-goal or bound
-  commitment. Effort unchanged at 72. See "Revision record — plan v10" below)
+  commitment. Effort unchanged at 72. See "Revision record — plan v10" below. **Plan v11 adds three
+  superseded-markers and nothing else**: no prose is rewritten, no claim changes, no phase is touched,
+  Effort is unchanged at 72. Dispatch 46 reported — from having hit it — that this plan's
+  retained-superseded-body pattern fails under a *line-range* read, because a range starting below a
+  correction block silently drops it, so v11 puts a marker **inside** each retained body in Phase 20
+  that an excerpt could otherwise pick up bare. The pattern itself is kept; it is sound and the same
+  dispatch recommended keeping it. See "Revision record — plan v11" below)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -108,6 +114,49 @@ separate, research-first successor that is **not filed here**.
 Definition of done: Stages 1 and 2 land sorry-free with no new axioms, every new flagship carries
 a `docs/theorem-index.md` row and a C2 `AXIOM_BASELINE` pin, and
 `bash scripts/check-module-invariants.sh` passes in full.
+
+### Revision record — plan v11: three superseded-markers, so a line-range read cannot drop a correction
+
+**This is the smallest revision in this plan's history and is deliberately so: three markers, no
+prose rewritten, no claim changed, no phase touched, Effort unchanged.**
+
+**Where it comes from.** Dispatch 46 misread Phase 20's PRINCIPAL RISK bullet as uncorrected, reported
+it, then checked its own trace and **retracted** the report: the plan-v9 correction block was present
+and adequately labelled (`git show 6b83c58d3:<plan> | grep -c "PRINCIPAL RISK"` returns 2, its parent
+1), and what had happened was a stale read — the dispatch excerpted Phase 20 from the pre-v9 file and
+Phase 19 from the v9 file, because an in-place revision landed between its two reads. The retraction
+is recorded in that dispatch's own handoff and summary. **So this revision is not a response to a
+defect in the correction blocks, and it must not be read as one.**
+
+**What it is a response to is the one durable finding that survived the retraction**, offered by that
+dispatch as a suggestion rather than a request: the retained-superseded-body pattern's failure mode is
+not that a reader misreads the label, it is that the superseded body is long enough to be **excerpted
+without** it. A line-range read that starts below a correction block drops the block silently and
+leaves the reader holding text that looks current. A marker *inside* the retained body survives
+excerpting in a way a header-only label cannot.
+
+**The three markers, all in Phase 20, all one line or less.** (i) The retained PRINCIPAL RISK body's
+own first sentence now carries "SUPERSEDED at plan v9 — see the correction block above this line; the
+demand named in this sentence is not the demand the tree carries". (ii) The retained `Φ_fwd R₀ = R₀`
+probe instruction is prefixed with a one-sentence superseded note naming `decide G.TailStable` as the
+object to evaluate. (iii) The retained candidate menu names, in the clause that introduces it, that
+candidates 1 and 2 are spent.
+
+**The pattern is kept, not reshaped.** The same dispatch that hit the failure mode recommended keeping
+it, and this plan depends on it in at least four places (Phase 17's heading, Phase 18's blocker record,
+Phase 20's three retained bodies, risk row R2b). Three of those four already carried an in-body
+marker on their own first line and needed nothing: Phase 17's retained paragraph opens
+"MISATTRIBUTED; SUPERSEDED BY THE BLOCK ABOVE", Phase 18's opens "The original blocker, recorded at
+dispatch seq 42", and R2b's amendment is the first clause of a single-line table cell, which no line
+range can split. Phase 20 was the gap.
+
+**The finding this revision does NOT try to fix, because it is not a plan-text problem.** The
+underlying hazard is in-place plan revision concurrent with a live implement dispatch: an agent that
+excerpts a phase early and acts on it later cannot tell the file moved under it. Two things close that,
+neither of them an edit to this plan — the dispatching side notifying an in-flight implement dispatch
+when an aux revision lands (which is what caught the Phase 19 half of this one), and the implement side
+re-reading every phase it excerpted before writing against it. Recorded here so a future reviser does
+not try to solve it with more plan prose.
 
 ### Revision record — plan v10: one plan-v9 claim was false, and what it costs Phase 20
 
@@ -5102,7 +5151,8 @@ this research supports**.
 
       *The pre-v9 body of this bullet follows, unedited, as the record of what was foreseen and because
       its mechanism analysis is still the right one.* **PRINCIPAL RISK OF THIS PHASE — the forward
-      conjunct `Φ_fwd R₀ = R₀`.** This is the
+      conjunct `Φ_fwd R₀ = R₀`. SUPERSEDED at plan v9 — see the correction block above this line; the
+      demand named in this sentence is not the demand the tree carries.** This is the
       conjecture the plan-v8 ruling bets on (candidate 1 at Phase 17's heading, selected by the user
       on 2026-09-30), and it is a **conjecture, not a corollary of the construction**. Sub-phase
       16.2c proved the same demand **false** at `Fixture.cert`, over the whole re-presentation
@@ -5136,7 +5186,9 @@ this research supports**.
     certificate as small as the construction allows, evaluate the backward conjunct first since it is
     the one the previous bullet expects to hold, and if neither returns, record **that** as the
     verdict — a non-returning probe is a measured fact about the present fixpoint implementation, not
-    a refutation of the conjunct, and it must not be reported as one.)* Build one embedded certificate from a small
+    a refutation of the conjunct, and it must not be reported as one.)* **(What follows is the pre-v9
+    instruction, SUPERSEDED — the object to evaluate is `decide G.TailStable`, per the amendment just
+    above.)** Build one embedded certificate from a small
     existing L witness family and evaluate `Φ_fwd R₀ = R₀` on it with `#guard` (or
     `#eval decide (G.Φ_fwd G.R₀ = G.R₀)`), then record the verdict **and the wall time** in this
     phase's record. This is the same work either way if the conjecture holds — this phase's
@@ -5154,7 +5206,8 @@ this research supports**.
     than all residues. That last is a genuine option and also a genuine hazard — it is the exact
     strengthening the truth lemma's `⊡` clause forced, so weakening it re-opens Phase 18, and it may
     be proposed to the user only together with that consequence stated plainly.)* The retained
-    candidates at Phase 17's heading: **candidate 3** — the two-reference-time liveness
+    candidates at Phase 17's heading (**candidates 1 and 2 are spent — see the v9 amendment above
+    before treating any item here as available**): **candidate 3** — the two-reference-time liveness
     equality — is decidable and visibly satisfiable but carries **no** induction, so it does not by
     itself give the wrap; **candidate 4** keeps the definition and records the narrowing as a stated
     limitation of the whole Stage 2 result. Under no circumstances weaken `TailStable`, state
