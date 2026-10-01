@@ -1,34 +1,58 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "started_at": "2026-10-01T00:09:00Z",
+  "completed_at": "2026-10-01T00:45:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md",
-      "summary": "Plan v8: records the user's ruling on the Phase 17 tail-stability blocker (candidate 1 -- keep TailStable as landed, attempt the Phi_fwd conjecture at Phase 20) via exactly four surgical edits to plan v7."
+      "type": "summary",
+      "path": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
+      "summary": "Sub-phase 16.3: TailStable's forward conjunct repaired to the liveness-filtered transfer per the user's option-2 ruling, with the plan-v8 candidate-1 misattribution reported."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-17-handoff-20261001T004227Z.md",
+      "summary": "Resume point: Phase 17 is unblocked and executable verbatim; the one thing not to mis-read is that TailStable's forward conjunct is now filtered; 2 new environment hazards."
     }
   ],
-  "next_steps": "Run /orchestrate 703 to dispatch Phase 17 (the decidable checker). Phase 17's Tasks list is executable verbatim under the ruling; the handoff blockers[] array is cleared so triage no longer routes to needs_human.",
-  "metadata": {
-    "session_id": "sess_1790812254_f4359f",
-    "agent_type": "reviser-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "phase_count": 21,
-    "estimated_hours": 70,
-    "plan_version": 8,
-    "reports_integrated": [
-      "01_lplus-compression-completeness-research.md",
-      "02_semantics-first-compression-research.md",
-      "706/01_lplus-finite-model-property-research.md"
+  "partial_progress": {
+    "stage": "sub_phase_16.3_complete",
+    "details": "Sub-phase 16.3 and 16.3b landed and committed on orchestrate/task-703-40 (two green sub-steps). Phase 17 NOT started: the ruling made the TailStable repair a hard prerequisite, and Phase 17 is a full 8-bullet phase left for a dispatch that can carry it to completion. Phases 18-21 NOT started.",
+    "phases_completed": 16,
+    "phases_total": 21
+  },
+  "user_decision": {
+    "question": "Two conflicting records exist of your tail-stability ruling: .decisions.json (2026-09-30T19:31:18Z) selects option 2, the liveness-filtered transfer, and explicitly rejects option 1; plan v8's Phase 17 heading, written after it, records candidate 1 (keep TailStable as landed). Dispatch 40 implemented option 2, per the relayed decision record. Which stands?",
+    "options": [
+      "Option 2 stands — the liveness-filtered forward conjunct, as implemented and committed in sub-phase 16.3; plan v8's candidate-1 paragraph is a misattribution for the reviser to correct",
+      "Candidate 1 stands — revert to the raw forward conjunct Phi_fwd R0 = R0 (one-line swap: TailStable := TailStableRaw, and rename not_tailStableRaw back), accepting the narrowed certificate class and betting on the Phase 20 conjecture"
     ],
-    "new_reports_integrated": [],
-    "revision_mode": "plan_revision",
-    "revision_summary": "Ruling-driven revision, no new research integrated. Four edits: (1) Phase 17's heading -- [BLOCKED] marker returns to [NOT STARTED] and the BLOCKER block becomes a resolution record naming candidate 1 as the user's selection (2026-09-30), stating explicitly that Phase 17's Tasks list is executable verbatim and that no bullet it now carries ever rested on the disproved re-presentation premise, with the four candidates and the Prohibited-workarounds list kept intact as the ruled-among record and the live fallback menu; (2) Phase 20's TailStable task bullet rewritten -- BiSerial and the Phi_back half stay short, Phi_fwd R0 = R0 is named the phase's principal risk and the conjecture the ruling bets on, with the FixtureStable.lean reachability mechanism cited, the non-automatic escape via i->i self-loops stated with the posAt junk-label caveat, a #guard probe-first instruction, and a STOP-and-escalate fallback to candidates 2/3/4; Timing 4 -> 6 hours with what the added hours buy; (3) risk register -- new row R2b for the live unsatisfiability risk (H/M) with the probe as mitigation and candidates 2/3/4 as escape hatch, plus an amendment to R2 recording that its anticipated direction (demand too weak) was wrong and 16.2c showed the opposite (too strong), without deleting the row; (4) the Lean Challenge Statement's TailStable docstring corrected -- its pre-v8 text asserted the re-presentation harmlessness claim, now replaced by the frame-together-with-its-closure wording of Stable.lean:540-580, with the def's statement unchanged. Phase 16 and its sub-phases, Phase 17's Tasks list and Scope Hypothesis, and Phases 18/19/21 are untouched. Plan-level Status line's stale Phase 16 annotation corrected and the correction disclosed in the v8 revision record. The handoff's blockers[] array was cleared to [] with every other field preserved.",
-    "handoff_blockers_cleared": true,
-    "edit_4_condition_met": true
+    "recommended": "Option 2 stands — the liveness-filtered forward conjunct, as implemented and committed in sub-phase 16.3; plan v8's candidate-1 paragraph is a misattribution for the reviser to correct",
+    "blocking": false
   },
   "modified_files": [
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Bridge.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Stable.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FixtureStable.lean",
+    "typst/generated/status.typ",
     "specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md",
-    "specs/703_lplus_compression_and_completeness/.orchestrator-handoff.json"
-  ]
+    "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
+    "specs/703_lplus_compression_and_completeness/handoffs/phase-17-handoff-20261001T004227Z.md"
+  ],
+  "metadata": {
+    "session_id": "sess_1790813184_a45978",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "dispatch_seq": 40,
+    "compliance_check": "skipped",
+    "compliance_check_reason": "The plan's Goals bullets name the Stage-2 headline theorems (Certifies, plusRefutes_of_certifies, the two completeness theorems), none of which this dispatch's sub-phase was scoped to declare; a name-presence grep would report them all missing and say nothing about this dispatch.",
+    "notes": "vacuous_count is reported 0 because the single grep hit (FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal := trivial) is pre-existing at main-tree HEAD and is a true statement about the Int time domain, not a placeholder. This dispatch added none."
+  }
 }

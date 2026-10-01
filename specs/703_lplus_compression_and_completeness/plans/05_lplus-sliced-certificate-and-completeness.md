@@ -1025,8 +1025,17 @@ transfer and a re-presentation changes neither `posAt` nor the reachability, whi
 `Fixture.certRep_slice_shift` proves each member presents `Fixture.cert`'s own slice sequence
 shifted. `exists_tailStable_repr` is therefore not stated anywhere, because it is false.
 *(Docstring corrected at plan v8 to match the landed docstring at `Stable.lean:540-580`, which the
-pre-v8 text here contradicted. The `def`'s statement is UNCHANGED, at plan v8 and by the ruling
-recorded at Phase 17's heading.)* -/
+pre-v8 text here contradicted.)*
+
+**AMENDED at dispatch seq 40 — the forward conjunct is liveness-filtered.** Under the user ruling of
+2026-09-30 (option 2), `TailStable` is `Φ_back L₀ = L₀ ∧ Φ_fwd R₀ ∩ R₀fwd = R₀`, where `R₀fwd` is the
+computed **forward**-live set at the right reference time. The raw conjunction
+`Φ_back L₀ = L₀ ∧ Φ_fwd R₀ = R₀` is kept under the name `TailStableRaw`, and
+`Fixture.not_tailStable` — cited in the paragraph above — is now `Fixture.not_tailStableRaw`, with
+the same proof and the same content. Both predicates are decidable, every window biconditional
+stated from `TailStable` keeps its statement, and `hstab : G₀.TailStable` below is the repaired
+predicate. See the sub-phase 16.3 record under Phase 16's heading for the full table of what changed
+and what did not. -/
 def PlusSlicedCertificate.TailStable {Γ Del : PlusContext}
     (G : PlusSlicedCertificate Γ Del) : Prop := sorry
 
@@ -1108,7 +1117,7 @@ Stage 1 or Stage 2 calls it; it stays compiled, documented and in the tree.
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
 | **R2 (report 706).** The tail-stability design has a gap not visible without building it: forward liveness from the back tail is not periodic in `t`, and the `Φ`-fixpoint demand is the proposed repair rather than a proved one. This is the amendment's **only** visible failure mode | H | M | Phase 16 is dedicated to it, is scheduled **before** the checker rather than discovered inside it, and carries report 706's concrete four-state counterexample as a **named test fixture** that must be built and evaluated before the demand is declared correct. If the fixture shows the demand is too weak, the correct response is to strengthen the demand (a deeper `Φ` iteration, or a type-recurrence cut on slices) and record the change loudly — never to weaken the theorem or reach for a `sorry`. **AMENDED at plan v8 — the anticipated direction was WRONG, and the row is kept as the record of what was foreseen.** This mitigation anticipated only the demand turning out too *weak*. Sub-phase 16.2c showed the **opposite**: too *strong*. `Fixture.not_tailStable` proves `Φ_fwd R₀ = R₀` unsatisfiable at a frame whose closure carries a tail-dead eventuality, and unsatisfiable at **every** member of the re-presentation family — so the fixture did not ask for a deeper `Φ` iteration or a type-recurrence cut, it exhibited a demand **no presentation can meet**. What the fixture did do is exactly what this row demanded of it: it was built and evaluated **before** the demand was declared correct, and it is the reason the design question surfaced at Phase 16 instead of inside Phases 19-20. The strengthening this row anticipated is superseded by the user's plan-v8 ruling at Phase 17's heading (candidate 1: keep the demand, accept the narrowed class, attempt the conjecture) and by the new row R2b immediately below |
-| **R2b (plan v8 — the live risk under the tail-stability ruling).** `Φ_fwd R₀ = R₀` is **unsatisfiable at Phase 20's embedding**, as it is at `Fixture.cert`. `Φ_fwd` is a reachability transfer, so a tail-dead eventuality that is merely *coherent* at the window's right endpoint — realized by no run — is reachable from `R₀` at every period length and defeats the equation. The plan-v8 ruling selects candidate 1 and bets on the conjecture that the L lassos' in-cycle fulfilment leaves no such label coherent at the embedding; **16.2c proves nothing about that conjecture either way** | H | M | Phase 20's **probe-first** bullet: before any proof attempt, build one embedded certificate from a small existing L witness family and evaluate `Φ_fwd R₀ = R₀` with `#guard`, recording verdict and wall time — minutes to refute rather than a phase. **Escape hatch on refutation**: STOP and escalate for a fresh ruling among candidates 2, 3 and 4 retained at Phase 17's heading; never weaken `TailStable`, never state `exists_tailStable_repr`, never `sorry`. Impact is H because Phase 20 is the only completeness theorem this research supports and Phase 19 already discharges its own exposure by carrying `hstab` as a hypothesis. Likelihood is M and not H because the fixture's obstruction is a *closure*-level junk label at a frame built to be adversarial, whereas the embedding's `slab` is built from the lassos' own labels — a genuinely different situation, not evidence for the conjecture |
+| **R2b — AMENDED at dispatch seq 40.** The ruling actually taken is **option 2** (the liveness-filtered transfer), not candidate 1: `TailStable`'s forward conjunct is now `Φ_fwd R₀ ∩ R₀fwd = R₀`, so this row's risk is no longer "the raw equation is unsatisfiable at the embedding" but the strictly weaker "the **filtered** equation is unsatisfiable there". The probe-first mitigation stands verbatim with `Φ_fwd R₀ ∩ R₀fwd = R₀` substituted for `Φ_fwd R₀ = R₀`, and the escape-hatch menu is candidates 3 and 4 only. Likelihood drops from M on the evidence that the fixture's refuting witness is exactly a reachable-but-forward-dead position, which the filter removes by construction. The pre-amendment text follows, unedited. **R2b (plan v8 — the live risk under the tail-stability ruling).** `Φ_fwd R₀ = R₀` is **unsatisfiable at Phase 20's embedding**, as it is at `Fixture.cert`. `Φ_fwd` is a reachability transfer, so a tail-dead eventuality that is merely *coherent* at the window's right endpoint — realized by no run — is reachable from `R₀` at every period length and defeats the equation. The plan-v8 ruling selects candidate 1 and bets on the conjecture that the L lassos' in-cycle fulfilment leaves no such label coherent at the embedding; **16.2c proves nothing about that conjecture either way** | H | M | Phase 20's **probe-first** bullet: before any proof attempt, build one embedded certificate from a small existing L witness family and evaluate `Φ_fwd R₀ = R₀` with `#guard`, recording verdict and wall time — minutes to refute rather than a phase. **Escape hatch on refutation**: STOP and escalate for a fresh ruling among candidates 2, 3 and 4 retained at Phase 17's heading; never weaken `TailStable`, never state `exists_tailStable_repr`, never `sorry`. Impact is H because Phase 20 is the only completeness theorem this research supports and Phase 19 already discharges its own exposure by carrying `hstab` as a hypothesis. Likelihood is M and not H because the fixture's obstruction is a *closure*-level junk label at a frame built to be adversarial, whereas the embedding's `slab` is built from the lassos' own labels — a genuinely different situation, not evidence for the conjecture |
 | The sliced frame's Saturation and Limit discharges are new work on an infinite carrier | H | M | `SharingSkeleton.frame` is the worked template and `saturation_of_fib_finite`'s docstring names exactly this case. Phase 14 is a whole phase for the frame alone, and its verification requires the two instance discharges to be named lemmas rather than inline `by` blocks, so Phase 19 can cite them |
 | Phase 15's existential fair-path fixpoint has no precedent in the tree. `AUFix` is the universal operator and gives the `A[g U e]` half only; the liveness computation needs a greatest-fixpoint / cycle-reachability argument over the product graph, in both time directions | H | M | Phase 15 is dedicated to it, is scheduled before the checker, and carries an explicit decimal-sub-phase contingency. The Q5 factorization proved in that same phase is what lets the forward and backward halves be computed separately and then combined, so the two fixpoints never have to be solved jointly |
 | Phase 19 (relative completeness) needs the **completeness direction** of the liveness fixpoint: that every live position is realized by an actual labelled path | H | M | Phase 15 proves both directions of the characterization as named lemmas, so Phase 19 cites a lemma rather than re-deriving it. If Phase 19 overruns one agent run it decomposes into 19.1 and 19.2, never into a `sorry` |
@@ -3531,7 +3540,10 @@ easier to lose.
 - [x] Define `L₀`, the live-position set computed from the window together with the forward tail,
       and its mirror `R₀`. *(deviation: altered — landed as `liveAt` at two reference times, and the Φ operators were RE-INDEXED to the combined periods to make those reference times the window's own endpoints. See the 16.2 record below.)*
 - [x] Define `PlusSlicedCertificate.TailStable` as `Φ_back L₀ = L₀ ∧ Φ_fwd R₀ = R₀`, and prove it
-      `Decidable`. Prove `tailStable_iff_window`: under tail-stability, the true forward-live sets
+      `Decidable`. *(deviation: altered at dispatch seq 40 — the forward conjunct is now the
+      liveness-filtered `Φ_fwd R₀ ∩ R₀fwd = R₀`, per the user ruling of 2026-09-30; the raw
+      conjunction named here is kept, unchanged and still decidable, as `TailStableRaw`. See the
+      sub-phase 16.3 record at the end of this phase.)* Prove `tailStable_iff_window`: under tail-stability, the true forward-live sets
       at every `t = -k · |back|` coincide with `L₀`, so every stability clause is decidable on the
       window. **This is the lemma the whole design rests on**; state it as a biconditional or as
       two named implications, never as a one-line `by simp`. *(deviation: altered — landed as a biconditional AND as two separately named implications, and about two-directional `Live` rather than `FwdLive`; the period is the combined `G.NB` / `G.NF`, not `|back|` / `|fwd|`. See the 16.2 record below.)*
@@ -3904,10 +3916,102 @@ it does not do what the plan expected of it.
 
 ---
 
+#### Sub-phase 16.3 — the repaired forward conjunct [COMPLETED] *(dispatch seq 40)*
+
+**Why this sub-phase exists.** `TailStable`'s definition is changed, and this is the record the
+Prohibited-workarounds bullet at Phase 17's heading requires before any such change: "do NOT quietly
+redefine `TailStable` without recording the change at Phase 16's heading and in the Lean Challenge
+Statement." Both records are written; nothing is quiet about it.
+
+**The ruling this implements, and the conflict it resolves.** The user ruled on 2026-09-30 at
+19:31:18Z, recorded in `specs/703_lplus_compression_and_completeness/.decisions.json` and relayed
+verbatim in this dispatch's own context: **option 2, the liveness-filtered transfer**, with "Options
+1 (keep the narrowed class), 3 (two-reference-time liveness equality) and 4 (record as a stated
+limitation) are NOT taken." Plan v8's Phase 17 heading records the **opposite** — candidate 1,
+attributed to a user ruling of the same date. The two cannot both be the user's decision, and the
+`.decisions.json` entry is the one with a recorded provenance (`/orchestrate` batched ask-user
+relay, blocking), the one that names its rejected alternatives, and the one this dispatch was handed
+as settled. Plan v8's candidate-1 paragraph was written at 2026-10-01T00:00Z, **after** that ruling
+was recorded, and no second ruling was ever appended to `.decisions.json`. This sub-phase therefore
+implements option 2 and flags plan v8's paragraph as a misattribution for the reviser to correct;
+see the correction block now at Phase 17's heading.
+
+**What changed, exactly.**
+
+| Declaration | Before | After |
+|---|---|---|
+| `TailStable` | `Φ_back L₀ = L₀ ∧ Φ_fwd R₀ = R₀` | `Φ_back L₀ = L₀ ∧ Φ_fwd R₀ ∩ R₀fwd = R₀` |
+| `TailStableRaw` | — | **new**: the pre-repair conjunction, verbatim, with `decidableTailStableRaw` |
+| `fwdLiveAt` / `R₀fwd` | — | **new**: the computed **forward**-live set at a time, and at the right reference time |
+| `foldF_head` / `mem_R₀fwd_of_fwdLive_head` | — | **new**: every `NM + NF + k·NF` is a `FoldF` of `NM + NF`, so genuine forward liveness down the whole right tail lands in `R₀fwd` |
+| `mem_fwdLiveT_of_fwdLive_fold` (`Bridge.lean`) | — | **new**: the `FoldF`-general forward half of the bridge. `mem_fwdLiveT_of_fwdLive` is now its diagonal instance, with its **statement unchanged** |
+| `iterFwd_R₀` | hypothesis `TailStable` | hypothesis `TailStableRaw`; body unchanged. The functional equation is not available from the filtered demand and is not claimed to be |
+| `R₀_subset_iterFwd` | — | **new**: the one-sided replacement, `R₀ ⊆ Φ_fwd^k R₀`, from the filtered equation's `⊇` half by monotonicity |
+| `forall_mem_R₀_of_live_head` | — | **new**: the `∀ q` form, proved by a one-period induction. `mem_R₀_of_live_head` keeps its statement and is its corollary |
+| `tailStable_iff_window`, `tailStable_iff_window_fwd`, `liveAt_tail_eq_L₀`, `liveAt_winLo_eq_L₀`, `mem_L₀_of_live_tail`, `iterBack_L₀`, `live_of_mem_R₀_head` | — | **statements unchanged**. Only `live_of_mem_R₀_head`'s proof changes, by one line, citing `R₀_subset_iterFwd` where it cited `iterFwd_R₀` |
+| `Fixture.not_tailStable` | `¬ (certRep a b c).TailStable` | **renamed** to `Fixture.not_tailStableRaw`, about `TailStableRaw` — the statement that is still true. The old name's statement is not provable under the repair and is not asserted in any weakened form |
+| `Fixture.not_tailStable_cert` | — | **statement unchanged**, now proved from the backward conjunct (`Φ_back_L₀_ne_cert`), which the fixture still fails. `Fixture.not_tailStableRaw_cert` is added for the raw demand |
+| `Fixture.Φ_fwd_R₀_ne`, `Fixture.mem_Φ_fwd_R₀_pR`, `Fixture.certRep_slice_shift`, every other landed declaration of `Stable.lean` / `FixtureStable.lean` | — | **untouched** |
+
+**Why the filter is the forward half and not `liveAt`.** The ruling says "intersected with a computed
+live set". The only computed live set that can carry the `→` direction of the tail collapse is the
+**forward** one: the collapse needs "genuinely live at `NM + NF + k·NF` ⟹ in the filter", and that
+implication is available exactly because `FoldF` relates the whole right tail to the reference time
+(`mem_fwdLiveT_of_fwdLive_fold`). `FoldB` relates two *negative* times only, so there is no backward
+counterpart and a filter by the two-directional `liveAt` would have no soundness lemma under it. A
+filter by `liveAt` at the window's right endpoint `winHi` is worse than unusable: `winHi ∉ winTimes`,
+so `liveAt winHi = ∅` and the demand would force `R₀ = ∅`. This is recorded because the ruling's own
+example wording ("`Φ_fwd R₀ ∩ G.liveAt G.winHi' = R₀` at a window time `winHi'`") leaves the choice
+of filter open, and the choice is not free.
+
+**What is NOT claimed.** That the repaired conjunct is *satisfiable* at `Fixture.cert` is not proved
+here. What is proved is that the raw conjunct's refuting witness `pR` is a **reachable but
+forward-dead** position — `Fixture.mem_Φ_fwd_R₀_pR` together with `Fixture.not_live_pR` — which is
+precisely the shape of position the filter removes, and that the filtered demand is implied by the
+raw one and not conversely. A proof that `(certRep a b c).TailStable` **holds** for some `b ≥ 1`
+would need the fixture's whole `Φ_fwd R₀` characterized, and is recorded as a follow-up rather than
+claimed. Phase 20's probe-first bullet (risk row R2b) is the place that question is settled, and it
+is now a probe of the **filtered** conjunct.
+
+**Verification**: full `lake build` green with **zero warnings**; `sorry_count: 0`; no new axioms; the
+three `Decidable` instances (`TailStable`, `TailStableRaw`, and the two `example ... := inferInstance`
+confirmations) synthesize rather than being asserted.
+
+---
+
 ### Phase 17: The decidable checker [NOT STARTED]
 
 **Goal**: Define `PlusSlicedCertificate.Certifies` and prove it decidable, with liveness computed
 by Phase 15's fixpoints and every clause read on the window under Phase 16's tail-stability.
+
+**CORRECTION — dispatch seq 40. The ruling below is misrecorded; the user ruled option 2, not
+candidate 1, and the repair is landed.** Read this block before the plan-v8 paragraph that follows
+it.
+
+- The user's ruling, recorded in `.decisions.json` at 2026-09-30T19:31:18Z with provenance
+  "`/orchestrate` batched ask_user relay (blocking)" and relayed verbatim in dispatch seq 40's own
+  context, selects **option 2, the liveness-filtered transfer**, and states explicitly: "Options 1
+  (keep the narrowed class), 3 (two-reference-time liveness equality) and 4 (record as a stated
+  limitation) are NOT taken."
+- The plan-v8 paragraph below records candidate 1, attributed to a user ruling of the same date. It
+  was written at 2026-10-01T00:00Z, **after** the option-2 entry was recorded, and no second entry
+  was ever appended to `.decisions.json`. The candidate-1 attribution is therefore treated as a
+  **misattribution** — most likely the blocker-research recommendation of aux dispatch seq 39 read
+  as a ruling — and not as a later decision. A reviser pass should rewrite the paragraph below; this
+  dispatch did not delete it, because deleting a record of a disagreement is worse than flagging it.
+- **What is already done.** Option 2 is implemented and green: see the **sub-phase 16.3** record at
+  Phase 16's heading for the full table. `TailStable` is now
+  `Φ_back L₀ = L₀ ∧ Φ_fwd R₀ ∩ R₀fwd = R₀`, the raw demand survives as `TailStableRaw` with every
+  theorem stated from it, and `tailStable_iff_window` / `tailStable_iff_window_fwd` keep their
+  statements.
+- **What this means for Phase 17's Tasks list: nothing.** Every bullet below is still executable
+  verbatim. `TailStable` is still one of the three structural conjuncts, still decidable
+  (`decidableTailStable`, synthesized), and still backed by a landed window biconditional. Do NOT
+  re-escalate, and do NOT revert the repair on an implementing dispatch's own authority.
+- **What changes downstream.** Phase 20's `TailStable` bullet and risk row R2b are now about the
+  **filtered** conjunct: the `#guard` probe they ask for must evaluate `Φ_fwd R₀ ∩ R₀fwd = R₀`, not
+  `Φ_fwd R₀ = R₀`. The fallback menu of candidates 3 and 4 stays live; candidate 1 is no longer in
+  it, since the raw demand is the one the ruling rejected.
 
 **BLOCKER RESOLVED — USER RULING, 2026-09-30 (plan v8).** The blocker raised at dispatch seq 38 is
 **resolved, not deferred**. Of the four candidates enumerated under "What was needed" below, the

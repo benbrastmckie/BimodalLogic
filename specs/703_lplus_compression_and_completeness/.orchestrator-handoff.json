@@ -1,29 +1,38 @@
 {
   "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 38,
-  "summary": "Sub-phase 16.2c is landed in one green sub-step and it REFUTES the plan's exists_tailStable_repr rather than proving it: Fixture.not_tailStable shows no member of the re-presentation family Fixture.certRep a b c is tail-stable, for any pre-period or period multiplier, while Fixture.certRep_slice_shift shows every member presents Fixture.cert's own slice sequence shifted. TailStable is therefore a demand on the frame together with its closure and not on the presentation; the false harmlessness claim on TailStable's docstring is corrected in place and the lemma is absent because it is untrue, not pending. Phase 16 closes as [COMPLETED WITH EXCLUSIONS] with that one reasoned exclusion, and Phase 17 is marked [BLOCKED] on the design ruling the refutation forces (four candidate repairs enumerated at its heading). Nothing is stubbed: sorry_count 0, 64/64 new declarations within the three standard axioms, full lake build 2798 jobs with zero errors and zero warnings.",
+  "dispatch_seq": 40,
+  "summary": "Sub-phase 16.3 (NEW, forced by the user's ruling) is landed and green: TailStable's forward conjunct is now the liveness-filtered transfer Phi_fwd R0 INTER R0fwd = R0, per the .decisions.json ruling of 2026-09-30T19:31:18Z (option 2), with the raw demand kept as TailStableRaw and every theorem stated from it. The mathematical content is mem_fwdLiveT_of_fwdLive_fold, the FoldF-general forward half of the bridge, which carries genuine forward liveness from an arbitrarily far right-tail time down to the reference time; that is what lets the tail collapse's forward half be re-proved as a one-period induction without the functional equation the raw demand supplied. Fixture.not_mem_R0fwd_pR proves the filter removes exactly the witness that refuted the raw conjunct. tailStable_iff_window and tailStable_iff_window_fwd keep their statements; the one landed name that does not survive is Fixture.not_tailStable, renamed to not_tailStableRaw with its proof and content intact. REPORTED CONFLICT: plan v8's Phase 17 heading records candidate 1 as the user's ruling, which contradicts the .decisions.json entry this dispatch was handed as settled; a correction block is now at Phase 17's heading and a non-blocking user_decision is set. Phase 17 was NOT started: the repair was its hard prerequisite, and Phase 17 is a full 8-bullet phase left for a dispatch that can carry it to completion. Full lake build green, 2798 jobs, zero errors, zero warnings; sorry_count 0; axiom count 14 unchanged.",
   "artifacts": [
     {
       "type": "summary",
-      "path": "specs/703_lplus_compression_and_completeness/summaries/04_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-4 summary extended with dispatch 38: the re-presentation family, the refutation of exists_tailStable_repr, the two asymmetric failure modes, and the Phase 17 design blocker."
+      "path": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
+      "summary": "Round-5 summary: the repaired forward conjunct, the ruling conflict, the environment hazard found in the hardlinked .lake."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-17-handoff-20260930T191612Z.md",
-      "summary": "Resume point: Phase 17's blocker is the next action; the one thing a successor must not mis-read, two named open questions, and 9 carried-forward environment hazards including four new ones."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-17-handoff-20261001T004227Z.md",
+      "summary": "Resume point: Phase 17 unblocked and executable verbatim; do not revert the filtered conjunct; two new environment hazards."
+    },
+    {
+      "type": "plan",
+      "path": "specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md",
+      "summary": "Sub-phase 16.3 record under Phase 16; correction block at Phase 17's heading; Lean Challenge Statement and risk row R2b amended."
     }
   ],
   "phases_completed": 16,
   "phases_total": 21,
   "blockers": [],
-  "decisions_made": [
-    "exists_tailStable_repr is NOT stated in any form, because it is false. A weakened version (backward conjunct only, or under an extra closure hypothesis) was considered and rejected: the plan's own Phase 16 Scope Hypothesis forbids weakening a theorem to make it come out true, and a weakened lemma under that name would be read downstream as the harmlessness claim it is not.",
-    "The refutation is a FAMILY statement, not a single-certificate one. Proving only not cert.TailStable would have been consistent with the plan, which says an unstable certificate should be re-presented rather than rejected. Hence certRep a b c and not_tailStable (a b c).",
-    "The verdict went into a NEW module PlusSlicedCertificate/FixtureStable.lean rather than into Stable.lean, because Stable.lean imports Fixture.lean and the verdict needs both the fixture and Phi_fwd. Merging the two modules was the alternative and was rejected on the grounds the 16.1 record already gave for separating them.",
-    "The two failure modes are two separately named theorems, not one. Phi_back_L0_ne_cert is the pre-period showing through and IS repaired by the recipe (not_mem_L0_pR); Phi_fwd_R0_ne is repaired by nothing. Collapsing them would have hidden the asymmetry that makes this a design problem rather than a fixture artifact.",
-    "not_mem_L0_pR is stated only about the witness, not about Phi_back L0 = L0. It says the backward failure's witness leaves L0 once 1 <= b; it does NOT claim certRep a b c satisfies the backward conjunct, and its docstring says so.",
-    "Phase 17 is marked [BLOCKED] rather than started with a guessed repair, and Phase 16 is closed as [COMPLETED WITH EXCLUSIONS] rather than [PARTIAL], because nothing in Phase 16 changes whichever way the ruling goes and there is no residual Phase 16 work to hand off."
-  ]
+  "plan_markers_verified": true,
+  "next_action_hint": "Dispatch Phase 17 (Check.lean, Certifies, decidableCertifies). Read the CORRECTION block at Phase 17's heading before the plan-v8 candidate-1 paragraph; the Tasks list is executable verbatim and TailStable must not be reverted.",
+  "git_checkpoint": "4d84c5dd70e14649d241ca53ddaab9f2a88e75bb",
+  "user_decision": {
+    "question": "Two conflicting records exist of your tail-stability ruling: .decisions.json (2026-09-30T19:31:18Z) selects option 2, the liveness-filtered transfer, and explicitly rejects option 1; plan v8's Phase 17 heading, written after it, records candidate 1 (keep TailStable as landed). Dispatch 40 implemented option 2, per the relayed decision record. Which stands?",
+    "options": [
+      "Option 2 stands — the liveness-filtered forward conjunct, as implemented and committed in sub-phase 16.3; plan v8's candidate-1 paragraph is a misattribution for the reviser to correct",
+      "Candidate 1 stands — revert to the raw forward conjunct Phi_fwd R0 = R0 (one-line swap: TailStable := TailStableRaw, and rename not_tailStableRaw back), accepting the narrowed certificate class and betting on the Phase 20 conjecture"
+    ],
+    "recommended": "Option 2 stands — the liveness-filtered forward conjunct, as implemented and committed in sub-phase 16.3; plan v8's candidate-1 paragraph is a misattribution for the reviser to correct",
+    "blocking": false
+  }
 }
