@@ -2,7 +2,8 @@
 
 - **Task**: 703 - lplus_compression_and_completeness
 - **Status**: [IMPLEMENTING] (Phases 1-18 landed — 7, 8, 12 and 16 as [COMPLETED WITH EXCLUSIONS],
-  17 and 18 as [COMPLETED]; Phase 19 [IN PROGRESS] as of plan v9, Phases 20-21 [NOT STARTED]. Stage 2 amended at plan v4, Phases 13-21
+  17 and 18 as [COMPLETED] and 19 as [COMPLETED WITH EXCLUSIONS] at dispatch 46; Phases 20-21
+  [NOT STARTED]. Stage 2 amended at plan v4, Phases 13-21
   re-authored, amended again at plan v7 for the landed (C3b) clause, amended at plan v8 to record a
   tail-stability ruling that **plan v9 corrects as a misattribution**, and amended at **plan v9** to
   record the **residue-indexed** `TailStable` landed at sub-phase 18.3 and to re-check Phases 19-21
@@ -36,7 +37,7 @@
 - **Reports Integrated**: `01_lplus-compression-completeness-research.md`,
   `02_semantics-first-compression-research.md`,
   `706/01_lplus-finite-model-property-research.md`
-- **Plan Version**: 9 (revision of `plans/02_lplus-certificate-limits-graph-certificate.md` at
+- **Plan Version**: 10 (revision of `plans/02_lplus-certificate-limits-graph-certificate.md` at
   v4, amended in place at v5 and again at v6; artifact number 03 is deliberately skipped — the
   artifact counter, not the file listing, is authoritative. **Plan v5 changes no mathematics**: it
   adds the execution preconditions recorded under "Revision record — plan v5" below and integrates
@@ -74,7 +75,12 @@
   to be re-checked against the narrower class. Edits land in Overview item 4's cost sentence, the
   `TailStable` docstring in the Lean Challenge Statement, the risk register (R2b amended, R2c added),
   Phase 17's heading, Phase 19, Phase 20, and two stale Phase 21 record bullets. Effort 70 → 72. See
-  "Revision record — plan v9" below)
+  "Revision record — plan v9" below. **Plan v10 is a correction pass over plan v9, dispatched by
+  nothing but a refutation**: dispatch 46 proved one claim v9 added to Phase 19 **false** against
+  `Window.lean:94-108`, and v10 strikes it at both places v9 wrote it, propagates the consequence into
+  Phase 20's window bullet, and records Phase 19's closure. It integrates no report, adds no phase,
+  removes none, renumbers none, and changes no theorem statement, dependency, non-goal or bound
+  commitment. Effort unchanged at 72. See "Revision record — plan v10" below)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -102,6 +108,71 @@ separate, research-first successor that is **not filed here**.
 Definition of done: Stages 1 and 2 land sorry-free with no new axioms, every new flagship carries
 a `docs/theorem-index.md` row and a C2 `AXIOM_BASELINE` pin, and
 `bash scripts/check-module-invariants.sh` passes in full.
+
+### Revision record — plan v10: one plan-v9 claim was false, and what it costs Phase 20
+
+**This revision exists because an implementing dispatch refuted a claim the reviser added**, which is
+the outcome the plan's own escalation discipline is for, and it is recorded as a correction rather
+than absorbed into a rewrite.
+
+**The false claim.** Plan v9 asserted, in two places — Phase 19's READ FIRST item 3 and the
+`BiSerial`/`TailStable` task bullet's annotation — that `TailStable` "quantifies over `n`, `back`,
+`mid`, `fwd` and the closure only", and therefore that `hstab` transfers off the four carrier
+equations as a one-liner. **Both halves are false**, and `Window.lean:94-108` is the refutation:
+
+```
+NBnat = Nat.lcm back.length target.back.length
+NFnat = Nat.lcm fwd.length target.fwd.length
+NM    = max nm target.nm
+```
+
+The combined window depends on the **target path's** three segment lengths. `winTimes` is cut from
+that window, the `liveT` fixpoint ranges over `winTimes`, `liveAt` is filtered from `liveT`, and
+`TailStable` is stated about `liveAt` and `fwdLiveAt` — so `TailStable` depends on the `target` field,
+and a certificate that re-extracts its target path with different segment lengths faces a **different
+tail-stability demand**, with no period-independence theory in this subtree to transport one to the
+other. Nor is the transfer a one-liner even when the fields do agree: `iterBack`/`iterFwd` recurse on
+an iterate count instantiated at `NBnat`/`NFnat` rather than at a literal, so the recursor cannot
+iota-reduce and `withBx_tailStable` needs one induction each — and `withBx` has to be `@[reducible]`,
+because `rw` typechecks its motive at implicit transparency, where a semireducible `withBx` leaves
+`Finset (G.withBx bx).Pos` and `Finset G.Pos` as different types.
+
+**How Phase 19 closed anyway, and why the conclusion is stronger rather than weaker.** Dispatch 46
+dropped the paired-carrier pigeonhole extraction and carried the refuting path in as hypotheses
+(`hedge`, `hcan`) instead, so the produced certificate agrees with `G₀` on **six** fields — `n`,
+`back`, `mid`, `fwd`, `target`, `targetTime` — where this plan asked for four, and `hstab` then
+transfers at every residue of both periods at once. `exists_certifying_of_tailStable_countermodel`
+spells all six out. The cost is an enumerated exclusion, not a weakened theorem: the extraction bullet
+is excluded, and the `exists_good_cycle_of_plusTypeSeq` Scope Hypothesis is consequently **neither
+confirmed nor refuted** and must not be carried as settled. Phase 19's CLOSURE RECORD holds the
+measured detail; it is the authoritative record and this entry does not duplicate it.
+
+**The three edits.**
+
+1. **Phase 19's READ FIRST item 3** — the false clause struck in place, with the refutation and a
+   pointer to the CLOSURE RECORD. Items 1, 2 and 4 stand: item 2's citation correction
+   (`exists_win_live_eq` over `tailStable_iff_window`) was followed and is confirmed by the landed
+   file, which cites `tailStable_iff_window` nowhere.
+2. **The `BiSerial`/`TailStable` bullet's plan-v9 annotation** — struck, with the same refutation and
+   the landed `withBx_tailStable` shape in its place.
+3. **Phase 20's "build the tails and the window" bullet** — the substantive propagation, and the
+   reason this correction could not stop at Phase 19. Phase 20 **constructs** its certificate, target
+   path included, so its tail-stability demand is a **new** demand it must establish at the window its
+   own construction induces — never a transferred one, and with a residue count (`Nat.lcm` of each
+   slice tail length with the embedded target path's) that is its own rather than the lassos' period.
+   The bullet now also records that the target path's tail lengths are a deliberate design lever,
+   since they enter through an `lcm`: a dividing choice leaves the periods at the slice tails' own
+   lengths, a coprime choice multiplies them and multiplies the residue count, the proof obligation
+   and the probe cost with them. No bound is claimed either way.
+
+**What plan v10 does NOT do.** It does not re-open Phase 19, which is closed as
+`[COMPLETED WITH EXCLUSIONS]`; it does not restate or relocate that phase's CLOSURE RECORD; it adds,
+removes, renumbers and rescopes no phase; it changes no theorem statement, field list, dependency,
+non-goal or bound commitment; it changes no Effort figure; and it integrates no report. It does not
+re-edit Phase 20's PRINCIPAL RISK bullet, whose plan-v9 correction block already replaces
+`Φ_fwd R₀ = R₀` with the landed liveness-filtered, residue-indexed conjunct and already re-points the
+probe at `decide G.TailStable` — the pre-v9 body retained beneath that block is a labelled historical
+record, not a live instruction, and a reader who takes it for one should read the block above it.
 
 ### Revision record — plan v9: the residue-indexed `TailStable`, and what it obliges of Phases 19-21
 
@@ -4827,8 +4898,20 @@ plan v9"). Four consequences for this phase, in the order they bite:
    beneath them. Cite those; `tailStable_iff_window` remains true and remains the right citation only
    where the time genuinely is a period multiple.
 3. **What this phase must produce is unchanged**, including the four carrier equations: the produced
-   `G` differs from `G₀` only in `bx`, `target` and `targetTime`, and `G.TailStable` is discharged
-   from `hstab` because the demand mentions none of those three fields.
+   `G` differs from `G₀` only in `bx`, `target` and `targetTime`, and ~~`G.TailStable` is discharged
+   from `hstab` because the demand mentions none of those three fields~~. **THE STRUCK CLAUSE IS
+   FALSE — refuted by dispatch 46 and corrected at plan v10; read the FINDING in this phase's CLOSURE
+   RECORD above before relying on any period-independence of `TailStable`.** `Window.lean:94-108`
+   defines `NBnat = Nat.lcm back.length target.back.length`,
+   `NFnat = Nat.lcm fwd.length target.fwd.length` and `NM = max nm target.nm`, so the combined window
+   — hence `winTimes`, hence the `liveT` fixpoint, hence `liveAt`, hence `TailStable` itself —
+   **depends on the `target` field**. A certificate that re-extracts its target path with different
+   segment lengths faces a *different* tail-stability demand, and this subtree carries no
+   period-independence theory to transport one demand to the other. What made the transfer available
+   in the landed proof is that the produced certificate agrees with `G₀` on **six** fields (`target`
+   and `targetTime` included), not four — and even then it is not a one-liner, because
+   `iterBack`/`iterFwd` recurse on an iterate count instantiated at `NBnat`/`NFnat` rather than a
+   literal, so `withBx_tailStable` needs one induction each.
 4. **Do not weaken the theorem to recover the wider class.** If the narrowing turns out to make this
    theorem's reach unacceptable, that is an escalation, not an edit: STOP and report. Never state
    `exists_tailStable_repr` in any form (it is false), never weaken `TailStable`, never `sorry`.
@@ -4875,12 +4958,17 @@ plan v9"). Four consequences for this phase, in the order they bite:
       Phase 17 lists it among the structural conjuncts, and unlike `BiSerial` and `TailStable` it
       is **not** carried by a hypothesis of this theorem — it must be constructed.)*
 - [x] *(deviation: altered — `BiSerial` transfers by `rfl`; `TailStable` needs `withBx_tailStable`, which needs one induction each on `iterBack`/`iterFwd`, because the plan's reason for expecting a one-liner is the false claim corrected in the FINDING above)* Discharge `BiSerial` and `TailStable` from the hypotheses `hser` and `hstab` directly; they
-      are carried, not re-derived. *(plan v9: this stays a one-liner under the residue-indexed demand,
-      and the reason is worth stating so it is not re-examined: `TailStable` quantifies over `n`,
-      `back`, `mid`, `fwd` and the closure only, and the produced `G` agrees with `G₀` on all four
-      carrier fields, so `hstab` transfers by the carrier equations at **every** residue at once. If
-      the produced certificate ever stops agreeing with `G₀` on a carrier field, this bullet breaks
-      and the theorem statement breaks with it — that is what the four conclusion equations protect.)*
+      are carried, not re-derived. *(**plan v9's annotation here was FALSE and is struck at plan v10.**
+      It claimed `TailStable` "quantifies over `n`, `back`, `mid`, `fwd` and the closure only" and so
+      transfers off the four carrier equations as a one-liner. `Window.lean:94-108` refutes both halves:
+      the combined periods are `Nat.lcm` against the **target path's** segment lengths and `NM` is a
+      `max` against `target.nm`, so `TailStable` depends on `target`; and the transfer needs one
+      induction each on `iterBack`/`iterFwd`, whose iterate count is `NBnat`/`NFnat` rather than a
+      literal, so the recursor cannot iota-reduce. Landed as `withBx_tailStable`, off **six** agreeing
+      fields. See this phase's CLOSURE RECORD for the measured record and for the `@[reducible] withBx`
+      requirement that goes with it. The one thing v9 got right is the last sentence's shape: the
+      conclusion's field equations are what protect this bullet — there are just six of them, not
+      four.)*
 - [x] *(completed)* Record in the module docstring what this theorem is and is not. It is **completeness relative
       to tail-stable sliced models**. It is **not** the finite model property: it says nothing
       about whether a ℤ-time non-validity has such a countermodel at all. It is also **not**
@@ -4945,6 +5033,30 @@ this research supports**.
       exactly what `perBack` (`PlusWitnessFamily/Decide.lean:181`) already computes on the L⁺ side;
       mirror that computation rather than inventing a second one. **Claim no order for the
       resulting periods**; a product of the family's own periods is a construction, not a bound.
+      *(**ADDED at plan v10, and this is the bullet that decides this phase's tail-stability demand —
+      read it before the `TailStable` bullets below.**) The combined window is **not** a free choice
+      once the tails are chosen, and it is not determined by the slice sequence alone.
+      `Window.lean:94-108`: `NBnat = Nat.lcm back.length target.back.length`,
+      `NFnat = Nat.lcm fwd.length target.fwd.length`, `NM = max nm target.nm`. So the embedded
+      certificate's **target path's** three segment lengths enter `NBnat`, `NFnat` and `NM`, and
+      through them `winTimes`, the `liveT` fixpoint, `liveAt` and `TailStable` itself. Three
+      consequences for this phase, all of them things it would otherwise discover late:
+  - **This phase's tail-stability demand is a NEW demand, never a transferred one.** Unlike Phase 19 —
+    which gets `hstab` as a hypothesis and transfers it across six agreeing fields — this phase
+    *constructs* the certificate, target path included, so it must **establish** `TailStable` at the
+    window its own construction induces. No Phase 19 result and no `G₀` hypothesis is available to
+    carry here. This was stated loosely in the pre-v10 text ("prove the backward half"); it is stated
+    exactly now because dispatch 46 proved the loose version misleading on the Phase 19 side.
+  - **The residue count is the embedded certificate's own**, i.e. `Nat.lcm` of the slice tail length
+    with the embedded target path's tail length in each direction — not the lassos' period, and not
+    `back.length`. Both `TailStable` bullets below must be read with that `r` range, and the probe
+    below evaluates at that range too.
+  - **Choosing the target path to keep the window small is a legitimate design move and should be
+    made deliberately**, since the periods enter through an `lcm`: a target path whose tail lengths
+    divide the slice tails' leaves `NBnat`/`NFnat` at the slice tails' own lengths, while a coprime
+    choice multiplies them and multiplies the residue count — and hence the proof obligation and the
+    probe cost — with them. Record which choice was made and why. **Claim no bound either way**; this
+    is a construction note, not a complexity claim.
 - [ ] Prove the embedded certificate is `BiSerial` — each `i → i` self-loop is its own forward and
       backward successor — and prove the **backward** half of `TailStable`: with edges `i → i` only,
       `Φ_back` is the identity on the position sets it acts on, so the fixed-point demand
