@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Embed
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.HalfRun
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Family
 
 /-!
@@ -942,54 +943,6 @@ end Embedded
 
 
 end WitnessFamily
-
-/-! ## The converse of `exists_chain_of_mem_iterBack`, for an arbitrary certificate
-
-`Tail.lean` makes explicit the chain that a membership in an iterate witnesses. What a *producer* of
-such a membership needs is the other direction, and a run is already a chain: its positions sit at
-their own slices (`LabRun.pos_mem_posAt`) and step along `succP` (`LabRun.pos_mem_succP`), which is
-exactly what each unfolding of `iterBack` / `iterFwd` asks for. Neither statement mentions the
-embedding, so both are stated at an arbitrary certificate.
--/
-
-namespace PlusSlicedCertificate
-
-variable {Γ Del : PlusContext}
-
-/--
-**A run's position `k` steps to the left lies in the `k`-fold leftward transfer** of any set
-containing the run's position at the reference time.
-
-The converse of `exists_chain_of_mem_iterBack`, and the only way this subtree ever *enters* an
-iterate: the chain is the run itself.
--/
-theorem mem_iterBack_of_run (G : PlusSlicedCertificate Γ Del) (R : G.LabRun) (t : ℤ)
-    {X : Finset G.Pos} (hX : R.pos t ∈ X) :
-    ∀ k : ℕ, R.pos (t - (k : ℤ)) ∈ G.iterBack t X k := by
-  intro k
-  induction k with
-  | zero => simpa using hX
-  | succ k ih =>
-    have hcast : t - ((k + 1 : ℕ) : ℤ) = t - (k : ℤ) - 1 := by push_cast; omega
-    rw [iterBack_succ, hcast, mem_stepBack]
-    refine ⟨R.pos_mem_posAt _, R.pos (t - (k : ℤ)), ?_, ih⟩
-    have h := R.pos_mem_succP (t - (k : ℤ) - 1)
-    rwa [show t - (k : ℤ) - 1 + 1 = t - (k : ℤ) from by omega] at h
-
-/-- **The mirror**: a run's position `k` steps to the right lies in the `k`-fold rightward
-transfer. -/
-theorem mem_iterFwd_of_run (G : PlusSlicedCertificate Γ Del) (R : G.LabRun) (t : ℤ)
-    {X : Finset G.Pos} (hX : R.pos t ∈ X) :
-    ∀ k : ℕ, R.pos (t + (k : ℤ)) ∈ G.iterFwd t X k := by
-  intro k
-  induction k with
-  | zero => simpa using hX
-  | succ k ih =>
-    have hcast : t + ((k + 1 : ℕ) : ℤ) = t + (k : ℤ) + 1 := by push_cast; omega
-    rw [iterFwd_succ, hcast, mem_stepFwd]
-    exact ⟨R.pos_mem_posAt _, R.pos (t + (k : ℤ)), R.pos_mem_predP (t + (k : ℤ)), ih⟩
-
-end PlusSlicedCertificate
 
 namespace WitnessFamily
 
