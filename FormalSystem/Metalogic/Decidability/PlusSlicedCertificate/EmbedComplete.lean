@@ -852,6 +852,81 @@ theorem botSnceFamily_tailStable : (botSnceFamily.sliced 0).TailStable := by dec
 
 end BotTargets
 
+/-! ## Towards `hTS` in general: every run of the embedded certificate has CONSTANT state
+
+Sub-phase 20.5 owes `(W.sliced tt).TailStable` for an **arbitrary** certifying `W`, not a verdict at
+finitely many certificates. The structural fact that route turns on is below, and it is landed here
+rather than assumed: the embedded certificate's edge relation is the identity
+(`sliced_edge : edge t i j = decide (i = j)`), so a run's `steps` field forces its state to be the
+same at every time. A run of `W.sliced tt` is therefore exactly a **fixed lasso index** `w` together
+with a labelling `ℤ → Finset PlusFormula` that agrees with `trLab (W.L w ·)` on the state formulas
+at every time, is locally coherent, and is fulfilling.
+
+**What this reduces the remaining obligation to, stated exactly so the next dispatch does not
+re-derive it.** Fix a left residue `r < W.perB` and write `t₀ = -NB - r`. The `⊇` half of the
+backward conjunct asks, for each `p = (w, X) ∈ liveAt t₀`, that `p ∈ iterBack t₀ (liveAt t₀) NBnat`
+— i.e. that there is a `succP`-chain of one whole back period from `p` *placed at* `t₀ - NB` up to
+some member of `liveAt t₀`. The run `R` witnessing `Live t₀ p` supplies the chain
+`j ↦ (w, R.lab (t₀ - NB + j))`, whose top is `R.pos t₀ = p` and whose bottom is
+`R.pos (t₀ - NB)` — the wrong endpoint. Reading `R` one period to the left instead needs
+`R.lab (t₀ - NB) = X`, which is **period-invariance of the label along the run** and is *not*
+available for an arbitrary run: `LabRun.agrees` is demanded at every `s : ℤ`, including the
+non-negative times where `trLab (W.L w ·)` is not `perB`-periodic, so a run cannot simply be
+shifted.
+
+So the remaining obligation is: **every live position at a left residue reference time carries a
+label that is period-invariant along some fulfilling run.** That is plausible from the lasso
+structure — `trLab (W.L w ·)` is itself `perB`-periodic on the negatives and is fulfilling by
+`W.Certifies` — but `posAt` admits non-canonical labels too, which is exactly the
+over-approximation `Position.lean`'s header records and exactly why the filter was needed in the
+first place. The splice machinery the construction would use already exists
+(`Tail.lean`'s `tailPos` / `runOfPos`); what is missing is its chain input.
+
+**Nothing below is stated more strongly than it is proved**, and no `sorry` or weakened `TailStable`
+stands in for the gap. The seven favourable verdicts above and in `Embed.lean` are evidence; this
+section does not pretend they are a theorem.
+-/
+
+namespace Embedded
+
+variable {φ : Formula}
+
+/--
+**Every run of the embedded certificate has constant state.**
+
+Immediate from `sliced_edge`: the edge relation is `decide (i = j)`, so `LabRun.steps` reads
+`R.st s = R.st (s + 1)` at every `s`, and the two-sided induction closes it. This is what makes a
+run of `W.sliced tt` a *labelling at a fixed lasso index* rather than a wandering path, and it is
+the first input of the general `hTS` argument sub-phase 20.5 owes.
+-/
+theorem sliced_run_st_const (W : WitnessFamily ([] : Context) [φ]) (tt : ℤ)
+    (R : (W.sliced tt).LabRun) (s t : ℤ) : R.st s = R.st t := by
+  have hstep : ∀ u : ℤ, R.st u = R.st (u + 1) := by
+    intro u
+    have h := R.steps u
+    rw [W.sliced_edge tt u (R.st u) (R.st (u + 1))] at h
+    exact of_decide_eq_true h
+  have hup : ∀ (a : ℤ) (k : ℕ), R.st a = R.st (a + (k : ℤ)) := by
+    intro a k
+    induction k with
+    | zero => rw [Nat.cast_zero, add_zero]
+    | succ j ih =>
+        rw [show a + ((j + 1 : ℕ) : ℤ) = (a + (j : ℤ)) + 1 from by push_cast; omega]
+        exact ih.trans (hstep _)
+  rcases le_total s t with h | h
+  · obtain ⟨k, hk⟩ : ∃ k : ℕ, t = s + (k : ℤ) := ⟨(t - s).toNat, by omega⟩
+    rw [hk]; exact hup s k
+  · obtain ⟨k, hk⟩ : ∃ k : ℕ, s = t + (k : ℤ) := ⟨(s - t).toNat, by omega⟩
+    rw [hk]; exact (hup t k).symm
+
+/-- **A run's position is determined by its label**, once the state is known to be constant: the
+state component never moves off the index the run starts at. -/
+theorem sliced_run_pos_fst (W : WitnessFamily ([] : Context) [φ]) (tt : ℤ)
+    (R : (W.sliced tt).LabRun) (t : ℤ) : (R.pos t).1 = R.st 0 :=
+  sliced_run_st_const W tt R t 0
+
+end Embedded
+
 end WitnessFamily
 
 end FormalSystem.Metalogic.Decidability
