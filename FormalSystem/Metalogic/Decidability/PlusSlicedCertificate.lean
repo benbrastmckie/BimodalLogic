@@ -24,6 +24,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.LiveFix
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Bridge
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Check
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Sound
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Complete
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
@@ -174,6 +175,19 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   and not in place of it. The `□` case reads the box clause through `plusBox_const`, the `⊡` case
   reads (C5) at the window representative `Tail`'s `exists_win_live_eq` supplies, and `untl` /
   `snce` are a direct transfer because `canAt` takes the existential form of both
+- `PlusSlicedCertificate.Complete`: the **converse** — `SlabTrue` (the slice labelling reports the
+  truth of its own `□`- and `⊡`-arguments; the atoms need no clause, since the presented model's
+  valuation *is* the labelling), the truth lemma from that alone with no checker clause as a
+  hypothesis, and the three semantic clauses of `Certifies` constructed from it in the one order
+  their dependencies permit — (C3b) first, because the computed/declarative liveness bridge consumes
+  it, then (C5) and the box clause. `exists_plusSlicedCertificate_of_tailStable_countermodel` is the
+  headline: a bi-serial, tail-stable, semantically labelled structure carrying a refuting path
+  admits a box guess the checker accepts, on the same carrier. The produced certificate agrees with
+  the given one on **six** fields rather than four, and that is forced rather than generous — the
+  combined window is a least common multiple of the certificate's *and the target path's* own
+  segment lengths, so a re-extracted target path with different periods would change the window, the
+  computed live set and the tail-stability demand together. `Probe.exists_certifying_triv` exhibits
+  a certificate meeting every hypothesis, so the statement is not empty
 
 ## Tags
 
