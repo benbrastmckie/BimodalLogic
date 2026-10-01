@@ -770,7 +770,14 @@ Every `lake` invocation in this dispatch went through the build guard, detached,
 
 ### Dispatch 46 — what Phase 20 should know before it starts
 
-- **Phase 20's PRINCIPAL RISK bullet is written against a demand that no longer exists.** It budgets
+- **Phase 20's PRINCIPAL RISK bullet retains a superseded body beneath a correction block — read the
+  block, not the body.** Plan v9 corrected the bullet in place and plan v10 added the
+  window-propagation sub-points; an earlier version of this summary and of the phase-19 handoff
+  claimed the bullet was uncorrected, which was **wrong**. The cause was a stale read, not a missing
+  label: the plan was revised in place between this dispatch's two reads of it, and the Phase 20
+  excerpt came from the pre-v9 state. This plan uses the retained-body pattern in several places
+  (Phase 17's heading, Phase 18's blocker, R2b, Phase 20's risk bullet). The substance of the
+  correction, which the plan already states, is: the superseded body budgets
   the phase's hard work on proving `Φ_fwd R₀ = R₀` for the embedded certificate — candidate 1. The
   user's cycle-5 ruling replaced that conjunct by the **liveness-filtered** transfer
   `Φ_fwd R₀ ∩ R₀fwd = R₀`, and the cycle-3 ruling then made both conjuncts **residue-indexed**. The
