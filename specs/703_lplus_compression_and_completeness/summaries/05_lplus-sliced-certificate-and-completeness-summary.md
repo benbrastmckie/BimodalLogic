@@ -1,15 +1,16 @@
 # Implementation Summary: Task #703
 
 - **Task**: 703 - lplus_compression_and_completeness
-- **Status**: [BLOCKED]
+- **Status**: [IN PROGRESS]
 - **Started**: 2026-10-01T00:09:00Z (dispatch 40); dispatch 41 began 2026-10-01T00:47:00Z;
-  dispatch 42 began 2026-10-01T01:36:00Z
-- **Completed**: not complete — **sub-phase 16.3 and Phase 17 are both COMPLETED**; **Phase 18 is
-  BLOCKED** on a demand-level gap in `TailStable` (dispatch 42, recorded at the Phase 18 heading),
-  with its two prerequisites landed. Phases 19-21 remain NOT STARTED. Dispatch 42 ended
-  2026-10-01T02:15:00Z
+  dispatch 42 began 2026-10-01T01:36:00Z; dispatch 44 began 2026-10-01T03:15:25Z
+- **Completed**: not complete — **sub-phase 16.3, Phase 17 and Phase 18 are all COMPLETED**.
+  Phase 18's blocker (a demand-level gap in `TailStable`, recorded at dispatch 42) is **RESOLVED**
+  at dispatch 44 by the residue-indexed demand the user ruled for in cycle 3. Phases 19-21 remain
+  NOT STARTED. Dispatch 44 ended 2026-10-01T04:05:00Z
 - **Effort**: ~35 minutes (dispatch 40, sub-phase 16.3) + ~40 minutes (dispatch 41, Phase 17) +
-  ~40 minutes (dispatch 42, Phase 18's prerequisites and its blocker)
+  ~40 minutes (dispatch 42, Phase 18's prerequisites and its blocker) + ~50 minutes (dispatch 44,
+  the demand change and Phase 18)
 - **Dependencies**: `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Stable`,
   `...PlusSlicedCertificate.Bridge`, `...PlusSlicedCertificate.FixtureStable`,
   `...PlusSlicedCertificate.Window`, `...PlusSlicedCertificate.Position`,
@@ -20,7 +21,21 @@
 
 ## Overview
 
-Round 5 covers three dispatches. **Dispatch 40** implemented the user's tail-stability ruling:
+**Dispatch 44 closes Phase 18.** The sliced certificate now has a truth lemma
+(`plusTruthAt_iff_canAt`, all seven cases) and lands the L⁺ refutation interface:
+`PlusSlicedCertificate.plusRefutes_of_certifies` produces `PlusWitnessFamily.PlusRefutes Γ Del` —
+the same proposition the landed `PlusSharingWitnessFamily.plusRefutes_of_certifies` produces, beside
+it and not in place of it. Closing the phase required the demand change the user ruled for in cycle
+3: `TailStable` is now **residue-indexed**, a bounded quantifier over each period's residues rather
+than one equation per direction, which is what makes the truth lemma's `⊡` clause provable at an
+arbitrary time. The narrowing is real and Phases 19-20 must be re-checked against it; that is the
+cost the ruling accepted.
+
+Soundness was not touched. `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/` carries no diff
+at all across this whole round, and both landed soundness theorems still report exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+Round 5 covers four dispatches. The three earlier ones: **Dispatch 40** implemented the user's tail-stability ruling:
 `TailStable`'s forward conjunct became the liveness-filtered transfer `Φ_fwd R₀ ∩ R₀fwd = R₀`, with
 the raw demand preserved as `TailStableRaw`. **Dispatch 41** wrote Phase 17, the decidable checker:
 `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean` defines `Certifies` as nine
@@ -62,6 +77,53 @@ demand written out and raised as this round's `user_decision`, because it narrow
 class Phases 19-20 claim completeness relative to.
 
 ## What Changed
+
+### Dispatch 44 — Phase 18, the demand change and the truth lemma
+
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Stable.lean` — `TailStable` and
+  `TailStableRaw` restated as bounded quantifiers over their own period's residues, with
+  `refBack_mem_winTimes` / `refFwd_mem_winTimes` (every reference time is a window time, so
+  `decidableTailStable` survives as a bounded conjunction of `Finset` equality tests), the four
+  `r = 0` projections `tailStable_back` / `tailStable_fwd` / `tailStableRaw_back` /
+  `tailStableRaw_fwd`, residue-generic iterates `iterBack_liveAt_refBack` / `iterFwd_liveAt_refFwd` /
+  `liveAt_refFwd_subset_iterFwd` with the old `iterBack_L₀` / `iterFwd_R₀` / `R₀_subset_iterFwd` as
+  their `r = 0` instances, the generic forward halves `mem_liveAt_of_live_tail` /
+  `forall_mem_liveAt_of_live_head` with `foldF_shift` and `mem_fwdLiveAt_of_fwdLive_head` generalizing
+  `foldF_head` / `mem_R₀fwd_of_fwdLive_head`, and the arithmetic `exists_residue_back` /
+  `exists_residue_fwd`. 494 lines moved out to `Tail.lean`: the file had reached the 1500-line module
+  limit.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Tail.lean` — **created**, 650 lines. The
+  three-region construction, now generic in its reference time: `tailPos` / `headPos` and their six
+  placement and seam lemmas each, the generic headlines `live_of_mem_liveAt_tail` /
+  `live_of_mem_liveAt_head`, the residue instances `live_of_mem_liveAt_refBack` / `_refFwd`, the
+  `r = 0` instances `live_of_mem_L₀_tail` / `live_of_mem_R₀_head`, the linchpins
+  `tailStable_iff_window` / `_fwd` and the `Finset` forms `liveAt_tail_eq_L₀` / `liveAt_winLo_eq_L₀`
+  (all moved, not rewritten), and **`exists_win_live_eq`** — the obligation dispatch 42 named as the
+  single remaining one: every time has a window representative carrying the same slice *and* the same
+  live set.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Sound.lean` — **created**, 364 lines.
+  `frame_isZTime` / `frame_sat_ztime`, `stepHistory` with `exists_stepHistory`, the truth lemma
+  `plusTruthAt_iff_canAt`, `mem_canLab_iff_plusTruthAt`, and `plusRefutes_of_certifies`.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FixtureStable.lean` —
+  `not_tailStableRaw` and `not_tailStable_cert` re-proved through the `r = 0` projections; both
+  statements unchanged.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean` — two added imports and two added
+  module bullets; the `Stable` bullet corrected to say the demand is residue-indexed and that the
+  reverse half of the linchpin now lives in `Tail`.
+- `FormalSystem.lean`, `README.md`, `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md`,
+  `typst/generated/status.typ` — regenerated.
+
+**Theorems proved at dispatch 44**
+
+| Declaration | What it says |
+|---|---|
+| `plusTruthAt_iff_canAt` | truth in the presented model along an arbitrary `G.edge`-path agrees with `Canon`'s canonical membership predicate, at every time and every closure member |
+| `plusRefutes_of_certifies` | an accepted `PlusSlicedCertificate` yields `PlusWitnessFamily.PlusRefutes Γ Del` |
+| `exists_win_live_eq` | every time has a window representative carrying the same slice and the same live set |
+| `live_of_mem_liveAt_tail` / `_head` | the reverse half of the tail collapse, at an arbitrary stable reference time |
+| `mem_liveAt_of_live_tail` / `forall_mem_liveAt_of_live_head` | the forward half, likewise |
+| `frame_sat_ztime` | the presented frame satisfies `FrameClass.ZTime` |
+| `tailStable_back` / `_fwd` and the two raw mirrors | the `r = 0` projections of the residue-indexed demand |
 
 ### Dispatch 42 — Phase 18's two prerequisites
 
@@ -170,6 +232,28 @@ class Phases 19-20 claim completeness relative to.
 
 ## Decisions
 
+### Dispatch 44 — Phase 18
+
+- **`TailStableRaw` was strengthened alongside `TailStable`.** Had the raw demand kept its
+  single-equation form, `tailStable_of_raw` would have become **false** — the residue-indexed
+  `TailStable` does not follow from two equations at `r = 0`. Strengthening both keeps the two demands
+  differing in exactly one respect, the liveness filter on the forward conjunct, which is what the
+  existing docstrings claim about their relationship.
+- **The three-region construction was generalized in place rather than copied.** The blocker record
+  asked for "a reference-time-generic copy of `tailPos` and its six lemmas". A copy would have
+  duplicated ~150 lines and left two objects to keep in step; adding the reference time as a parameter
+  and deriving the `-G.NB` case as an instance costs nothing and cannot drift. The same was done on
+  the right tail (`headPos`), which the blocker record did not mention but which `exists_win_live_eq`
+  needs — `exists_win_live_eq` quantifies over *every* `t`, including large positive ones.
+- **`Tail.lean` was created rather than growing `Stable.lean`.** `Stable.lean` stood at 1498 lines
+  against a 1500-line limit; the residue machinery would have pushed it to ~1670. The split line is the
+  one the mathematics already draws: the forward half of the collapse is the transfer's own soundness
+  iterated and stays, the reverse half is a construction and moves. `runOfPos` is the interface between
+  the two and stays where it was.
+- **The truth lemma is stated against `canAt`, not against a run's label.** This follows dispatch 42's
+  finding rather than being a new decision, but it is what makes the statement's shape look unusual: a
+  run's label is recovered as a theorem (`lab_eq_canLab`) rather than assumed.
+
 ### Dispatch 41
 
 - **The box clause reads live positions, not the slice labelling.** The Phase 17 bullet's first
@@ -255,6 +339,28 @@ class Phases 19-20 claim completeness relative to.
 
 ## Plan Deviations
 
+### Dispatch 44 — Phase 18
+
+- **Truth-lemma bullet** altered: landed as `plusTruthAt_iff_canAt` against `canAt` rather than
+  against "the label of a labelled path of `G`", for the circularity reason dispatch 42 recorded. The
+  bullet's sub-item for `untl` / `snce` ("mirror `plusTruth_iff_mem`'s proof rather than inventing a
+  new one") was **not needed**: `canAt` takes the existential form of both, which is the semantic
+  clause verbatim, so each direction is a direct transfer under the induction hypotheses. No
+  fulfilment and no step clause is consumed anywhere in the truth lemma; both were spent inside
+  `Canon.lean`.
+- **`box` sub-item** altered: the plan's dispatch-42 record says Route 1 "*does* work — for `box`, and
+  only for `box`", i.e. that the box clause may be read at one fixed window time with no transport.
+  That is correct about the **formula's** time and incomplete about the **position's**: the live
+  position whose label must carry `χ` still sits at an arbitrary time, so the `□` case consumes
+  `exists_win_live_eq` as well. Recorded as a finding at the plan's Phase 18 heading.
+- **Phase 16's `TailStable` was edited**, which `.claude/rules/plan-compliance.md` requires be
+  escalated rather than substituted. It **was** escalated — dispatch 42 returned `user_decision`, the
+  user ruled in cycle 3 — and this dispatch implemented the ruling as worded: a bounded quantifier
+  over each period's residues, `r = 0` recovering the present conjunct verbatim, every reference time
+  a window time so `decidableTailStable` survives.
+- The four Phase 18 checklist items dispatch 42 annotated `*(deviation: deferred — …)*` are now
+  `- [x]`, each with its deferral replaced by what landed.
+
 ### Dispatch 42 — Phase 18
 
 - **`Sound.lean` deferred** (checklist item 1), **truth lemma deferred** (item 2),
@@ -296,6 +402,41 @@ class Phases 19-20 claim completeness relative to.
   silently overridden.
 
 ## Verification
+
+### Dispatch 44 — Phase 18
+
+- Build: Success — full `lake build`, **2802 jobs**, exit 0, zero errors, zero warnings.
+- Sorry count: 0.
+- Vacuous count: 1 — `FormalSystem/Examples/TemporalStructures.lean:495`
+  (`int_domain_universal … := trivial`), pre-existing, landed under a much earlier task, untouched
+  here, and a true statement about `intTimeHistory.domain` over `ℤ` rather than a placeholder.
+- Axiom count: 14, unchanged.
+- `#print axioms`: `plusRefutes_of_certifies`, `plusTruthAt_iff_canAt` and `exists_win_live_eq` each
+  report exactly `[propext, Classical.choice, Quot.sound]`.
+- **Soundness untouched**: `git diff` over
+  `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/` against the dispatch's base commit shows
+  **no hunk at all**, and `PlusSharingWitnessFamily.plusRefutes_of_certifies` /
+  `...plusTruth_iff_mem` still report the same three axioms.
+- The new theorem's conclusion is `PlusWitnessFamily.PlusRefutes Γ Del` verbatim, not a new
+  refutation predicate.
+- `#guard decide triv.TailStable` still passes under the residue-indexed demand.
+- `scripts/typst-sync-check.sh --fix`: PASS.
+- `scripts/check-module-invariants.sh`: **4** failing groups, down from 5. The `FAIL INV` this
+  dispatch introduced by adding two modules was repaired with `--emit-inventory`. `C16` (the
+  `env_linter` `defsWithUnderscore` findings on `Φ_back` / `Φ_fwd`), `C23`, `C24`
+  (`PlusSlicedCertificate.Fixpoint` does not transitively import `FormalSystem.Init`) and `C26` are
+  pre-existing, name declarations and modules this dispatch did not create, and are untouched.
+- Tests: N/A (no test-suite change). Files verified: Yes.
+
+**Mechanical notes that cost time, recorded so they are not re-discovered.** `ring` is **not** in
+`Stable.lean`'s import closure, so `exists_residue_back` / `_fwd` use `Nat.mod_add_div'` plus
+`sub_add_eq_sub_sub` / `← add_assoc`. Mixing `ℤ × Fin G.n` and `(G.frame h).WorldState` in a `rw`
+motive produces an "Application type mismatch … expected to have type `(G.frame h).WorldState`" note
+and then leaves a goal that *prints* as `X = X` unsolved; keep every intermediate equation ascribed at
+one of the two types and hand the result to `WorldHistory.ext_state` by `exact`. `omega` fails on a
+`WorldHistory.ext_state` binder, whose type is `F.Duration.carrier` rather than syntactically `ℤ`:
+prove the pointwise statement over `v : ℤ` first. A `show` that changes the goal now trips a style
+linter; use `change`.
 
 ### Dispatch 42 — Phase 18's prerequisites
 
@@ -395,6 +536,26 @@ Every `lake` invocation in this dispatch went through the build guard, detached,
 
 ## Impacts
 
+- **Dispatch 44 supersedes the first dispatch-42 bullet below and both dispatch-41 bullets it in turn
+  supersedes.** Phase 18 is **not** blocked: it is `[COMPLETED]`. `exists_win_live_eq` — the single
+  remaining obligation that bullet names — is landed in `Tail.lean`, and the `⊡` case consumes it in
+  both directions as predicted. The bullets are kept verbatim below as the records they are.
+- **The certificate class is narrower, and this is the live consequence for Phases 19-20.** A frame
+  whose liveness wraps faithfully at one residue but not at another is now rejected. Phase 19's
+  construction must satisfy the demand at **every** residue `r < G.NBnat` and `r < G.NFnat`, not only
+  at `r = 0`, and Phase 20's embedding of the landed L witness family must be re-checked against the
+  same. This is what the dispatch-42 `TailScheme`-level bullet anticipated; it is now actual rather
+  than prospective.
+- **The checker's cost rises** from two `Φ` applications and two `Finset` equality tests to
+  `G.NBnat + G.NFnat` of each. Both sides of every conjunct remain computed `Finset`s, so the paired
+  repository's search-bound expectations change by a factor of the period lengths, not in kind.
+- **`PlusSlicedCertificate.plusRefutes_of_certifies` is now available** to any later module wanting a
+  ℤ-time countermodel from a sliced certificate, with no hypothesis beyond `G.Certifies`.
+- **Phase 21's acceptance gates are now actionable** — a `docs/theorem-index.md` row and a C2
+  `AXIOM_BASELINE` pin for the new theorem. They were not before, because the theorem did not exist.
+- **The reference-time-generic `tailPos` / `headPos` and the four `r = 0` projections are reusable.**
+  Any later argument needing the tail collapse at a reference time other than `-G.NB` or `G.NM + G.NF`
+  can instantiate the generic headline instead of re-running the construction.
 - **Dispatch 42 supersedes the next two bullets.** Phase 18 is *not* unblocked: it is `[BLOCKED]`,
   the flagged risk is now a measured demand-level defect rather than a risk, and the `box` half of it
   has dissolved. The two bullets are kept verbatim below as the dispatch-41 record they are.
@@ -441,6 +602,20 @@ Every `lake` invocation in this dispatch went through the build guard, detached,
 
 ## Follow-ups
 
+- **Phase 19 must be re-read against the narrowed class before `Complete.lean` is written.** Its
+  construction currently assumes the `r = 0`-only obligation. This is the first thing dispatch 45
+  should do, and the Phase 18 handoff says so at its head.
+- **Superseded by dispatch 44**: "Phase 18's blocker is the next decision, not the next dispatch", and
+  the whole of its remaining-work list — the demand was changed, `decidableTailStable` re-derived, the
+  `r = 0` instances confirmed to discharge every landed theorem, the reference-time-generic
+  construction and `exists_win_live_eq` written, and `Sound.lean` landed. The bullet is kept below as
+  the record it is.
+- **The stale olean/trace hazard reproduced a third time** in the dispatch-44 worktree, exactly as the
+  dispatch-41 and -42 handoffs predicted, and **the main tree still carries the stale pairs**. Dispatch
+  45's worktree will inherit them a fourth time unless the main tree's
+  `.lake/build/{lib/lean,ir}/…/PlusSlicedCertificate/` is cleaned first.
+- **`ring` is absent from `Stable.lean`'s import closure.** Worth knowing before a later module in this
+  subtree reaches for it.
 - **Phase 18's blocker is the next decision, not the next dispatch.** Answer this round's
   `user_decision` (accept the residue-indexed `TailStable`, or re-plan Phase 18). On acceptance the
   remaining work is: change `TailStable`, re-derive `decidableTailStable`, confirm the `r = 0`
@@ -476,6 +651,11 @@ Every `lake` invocation in this dispatch went through the build guard, detached,
   — dispatch 40's resume point, consumed by dispatch 41
 - `specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T020855Z.md`
   — dispatch 42's resume point, with both gaps, the two dead ends, and the environment hazards
+- `specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T035749Z.md`
+  — dispatch 44's resume point: the demand change stated so it is not re-litigated, the two
+  truth-lemma findings, the mechanical notes, and the Phase 19 re-check obligation
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Tail.lean` (new, dispatch 44),
+  `.../Sound.lean` (new, dispatch 44)
 - `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Canon.lean` (new, dispatch 42)
 - `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean` (new),
   `.../Stable.lean`, `.../Bridge.lean`, `.../FixtureStable.lean`, `.../Window.lean`,

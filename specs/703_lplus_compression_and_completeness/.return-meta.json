@@ -1,70 +1,76 @@
 {
   "status": "partial",
-  "started_at": "2026-10-01T01:36:00Z",
-  "completed_at": "2026-10-01T02:15:00Z",
-  "requires_user_review": true,
-  "review_reason": "Phase 18 is BLOCKED: the truth lemma's stab case needs the (C5) clause at every time, and TailStable demands tail stability in one residue class mod G.NB (and one mod G.NF) rather than all of them. The repair narrows the certificate class and edits a Phase 16 definition, so it is escalated rather than substituted.",
-  "blocked_phase": 18,
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "axiom_count": 14,
-    "build_passed": true,
-    "build_output": "Full lake build green: 2800 jobs, exit_status=0, zero error: and zero warning:. verification_passed is false only because Phase 18 is BLOCKED, not because any gate failed. vacuous_count 1 is the pre-existing FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal := trivial, a true statement untouched by this dispatch. #print axioms on canRun, live_canRun, lab_eq_canLab, live_iff_canLab and canLab_fulfilling reports exactly [propext, Classical.choice, Quot.sound] for each."
-  },
-  "user_decision": {
-    "question": "Phase 18's truth lemma needs the (C5) stability clause at every time, but TailStable constrains the live set in only one residue class mod G.NB (and one mod G.NF). Replacing each conjunct by a bounded quantifier over its period's residues closes it and keeps the checker decidable, but narrows the certificate class Phases 19-20 claim completeness relative to. Accept that narrowing?",
-    "options": [
-      "Accept the residue-indexed TailStable — strengthen the demand, keep soundness reachable, and re-check Phases 19-20 against the narrower class",
-      "Do not accept — send Phase 18 back to a reviser pass to find a different soundness route or to restate what the subtree claims",
-      "Accept, and additionally commission a probe that measures how much the narrowing actually costs (whether the landed L witness family's embedding in Phase 20 still satisfies the new demand) before Phases 19-20 are written"
-    ],
-    "recommended": "Accept the residue-indexed TailStable — strengthen the demand, keep soundness reachable, and re-check Phases 19-20 against the narrower class",
-    "blocking": true
-  },
+  "started_at": "2026-10-01T03:15:25Z",
+  "completed_at": "2026-10-01T04:05:00Z",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-5 summary extended with dispatch 42: Phase 18's two gaps, the canonical labelling that closes the first, and the demand-level blocker that is the second."
-    },
-    {
-      "type": "plan",
-      "path": "specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md",
-      "summary": "Phase 18 marked [BLOCKED] with a five-part BLOCKER record (both routes settled, two dead-end derivations, the replacement demand written out) and its five checklist items annotated."
+      "summary": "Phase 18 closed: the sliced certificate's truth lemma and its refutation interface, on a residue-indexed tail-stability demand."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T020855Z.md",
-      "summary": "Resume point for Phase 18: the two gaps, the declaration table for Canon.lean, the two dead ends not to re-derive, and the reproduced stale-olean hazard."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T035749Z.md",
+      "summary": "Phase 18 completion handoff: the demand change, the two truth-lemma findings, and the Phase 19 re-check obligation."
     }
   ],
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "axiom_count": 14,
+    "build_passed": true
+  },
   "partial_progress": {
-    "stage": "phase_18_blocked",
-    "details": "Phase 18's two prerequisites landed in FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Canon.lean (canonical labelling of a step path; a fulfilling run's labelling is forced by its state path; the live set is exactly the canonical image of the edge-path space), in two green commits. Sound.lean is not written: the truth lemma's stab case is blocked on a residue-indexed TailStable. See the plan's Phase 18 BLOCKER record.",
-    "phases_completed": 17,
+    "stage": "phase_18_completed",
+    "details": "Phase 18 is [COMPLETED]. Phases 19, 20 and 21 remain [NOT STARTED] and are the next dispatch's work; Phase 19 must be re-read against the narrowed certificate class before Complete.lean is written.",
+    "phases_completed": 18,
     "phases_total": 21
   },
   "modified_files": [
-    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Canon.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Stable.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Tail.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Sound.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FixtureStable.lean",
     "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean",
     "FormalSystem.lean",
-    "typst/generated/status.typ",
     "README.md",
     "FormalSystem/README.md",
-    "FormalSystem/Metalogic/README.md"
+    "FormalSystem/Metalogic/README.md",
+    "typst/generated/status.typ",
+    "specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md",
+    "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
+    "specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T035749Z.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "In this Lean repo a clause stated at window times against a computed Finset cannot be read at an arbitrary time unless the wrap-faithfulness demand is indexed by residue: a single equation at one reference time constrains only one residue class mod the period, and the two obvious derivations of the other classes both fail (backward reachability satisfies the shifted equation but is not contained in the live set there; the live set there satisfies no equation the single-residue demand implies).",
+      "category": "INSIGHT",
+      "source_artifact": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["tail-stability", "residue-indexed", "window-time", "decidable-checker", "lean4"]
+    },
+    {
+      "content": "Mixing two definitionally-equal-but-syntactically-different types in a Lean 4 rw motive (here the frame carrier `(G.frame h).WorldState` versus `ℤ × Fin n`) produces an 'Application type mismatch ... expected to have type' note and then leaves a goal that prints as `X = X` unsolved. Keep every intermediate equation ascribed at one of the two types and hand the result over by `exact`, which checks defeq. Relatedly, `omega` fails on a binder whose type is `F.Duration.carrier` rather than syntactically `Int`: prove the pointwise statement over `v : Int` first.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lean4", "rw-motive", "defeq", "omega", "type-ascription"]
+    },
+    {
+      "content": "When a Lean truth lemma must relate a semantic clause to a label, defining the label by a recursion that never mentions truth (reading the structure's own data by fiat at the state shapes, and taking the existential form of the temporal operators) makes the until/since cases a direct transfer under the induction hypotheses and removes the circularity a truth-based labelling creates, because agreement-on-state for the true type IS the semantic correctness the local-coherence lemma takes as a hypothesis.",
+      "category": "PATTERN",
+      "source_artifact": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["truth-lemma", "canonical-labelling", "circularity", "lean4", "modal-logic"]
+    }
   ],
   "metadata": {
     "session_id": "sess_1790813184_a45978",
     "agent_type": "lean-implementation-agent",
-    "dispatch_seq": 42,
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "implement",
-      "skill-lean-implementation"
-    ],
-    "compliance_check": "skipped"
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "dispatch_seq": 44
   }
 }

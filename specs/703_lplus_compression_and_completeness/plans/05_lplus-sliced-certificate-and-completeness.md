@@ -4295,9 +4295,14 @@ record it** rather than reinstating a field whose index set is infinite.
 
 ---
 
-### Phase 18: Soundness into the existing interface [BLOCKED]
+### Phase 18: Soundness into the existing interface [COMPLETED]
 
-**BLOCKER** (Phase 18), recorded at dispatch seq 42:
+**BLOCKER RESOLVED** (Phase 18) at dispatch seq 44, by the residue-indexed `TailStable` the user
+ruled for in cycle 3. The record below is kept verbatim because it is the argument for the demand
+change and names two derivations that do **not** work; what was actually landed is stated under
+"How it was resolved" after it.
+
+**The original blocker**, recorded at dispatch seq 42:
 
 - **What failed**: the truth lemma's `stab` case at an **arbitrary** time `t`. `Check.lean`'s
   `StabFaithful` is stated at `t ∈ G.winTimes` against the computed `G.liveAt t`; the truth lemma
@@ -4370,6 +4375,38 @@ record it** rather than reinstating a field whose index set is infinite.
   positions — that form transports freely by `posAt_congr` and makes the `→` direction trivial, but
   its `←` direction is false, since a position no history occupies constrains nothing.
 
+**How it was resolved** (dispatch seq 44, three commits on `orchestrate/task-703-44`):
+
+- **Sub-phase 18.3** — `TailStable` and `TailStableRaw` are now bounded quantifiers over their own
+  period's residues, exactly the shape the "What is needed" bullet above spells out. The `r = 0`
+  instances recover the pre-residue conjuncts verbatim (`tailStable_back`, `tailStable_fwd`, and the
+  two raw mirrors), so every theorem stated from the single-equation form is unchanged, and
+  `tailStable_of_raw` survives because the raw demand was strengthened in the same way. Every
+  reference time named is a window time (`refBack_mem_winTimes`, `refFwd_mem_winTimes`), so
+  `decidableTailStable` stays a bounded conjunction of `Finset` equality tests and `#guard decide
+  triv.TailStable` still passes. `FixtureStable`'s two negative results are re-proved through the
+  `r = 0` projections; neither statement changed.
+- **Sub-phase 18.3, continued** — the three-region construction moved out of `Stable.lean` into a new
+  `Tail.lean` (`Stable.lean` had reached the 1500-line limit) and took its reference time as a
+  parameter: `tailPos` / `headPos` and their six lemmas each, then `live_of_mem_liveAt_tail` /
+  `live_of_mem_liveAt_head` generic in the reference time, with the residue instances
+  `live_of_mem_liveAt_refBack` / `_refFwd` and the `r = 0` instances `live_of_mem_L₀_tail` /
+  `live_of_mem_R₀_head` as one-liners. The forward halves got the same treatment in `Stable.lean`
+  (`mem_liveAt_of_live_tail`, `forall_mem_liveAt_of_live_head`, with `foldF_shift` and
+  `mem_fwdLiveAt_of_fwdLive_head` generalizing `foldF_head` / `mem_R₀fwd_of_fwdLive_head`).
+  `exists_win_live_eq` is the transport the `⊡` case consumes: every `t` has a window representative
+  carrying the same slice **and** the same live set, by the residue decomposition
+  (`exists_residue_back` / `exists_residue_fwd`) in three regions.
+- **Sub-phase 18.4** — `Sound.lean`, with `plusTruthAt_iff_canAt` (all seven cases) and
+  `plusRefutes_of_certifies`. Two findings worth keeping: the `untl` and `snce` cases are a **direct
+  transfer** under the induction hypotheses, because `canAt` takes the existential form of both and
+  that is the semantic clause verbatim — no fulfilment and no step clause is consumed in the truth
+  lemma, both having been spent inside `Canon.lean`; and the `□` case needs `exists_win_live_eq`
+  too, not merely `plusBox_const`, because although `plusBox_const` frees the clause from the asking
+  time, the live position whose label must carry `χ` still sits at an arbitrary time and its
+  liveness still has to reach a window time. The plan's Route-1 note ("Route 1 therefore *does*
+  work — for `box`") is correct about the formula's time and incomplete about the position's.
+
 **What this dispatch did land** (`FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Canon.lean`,
 full `lake build` green, zero sorries, no new axioms): the prerequisite this phase's third bullet
 assumed without stating. The plan's design item "every step path carries its own true type sequence"
@@ -4429,8 +4466,8 @@ This is flagged as an **unverified risk**, not as a measured defect: dispatch 41
 either route.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Sound.lean`. *(deviation: deferred — blocked on the residue-indexed `TailStable` recorded above; `Canon.lean` was created instead and carries the prerequisite this phase assumed)*
-- [ ] Prove the truth lemma: for a labelled path of `G` meeting the existential side, and every `χ` *(deviation: deferred — the `box` case is unblocked by `Canon.lean` and `plusBox_const`; the `stab` case is the blocker)*
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Sound.lean`. *(completed at dispatch 44; `Canon.lean` (dispatch 42) and `Tail.lean` (dispatch 44) are its two prerequisites)*
+- [x] Prove the truth lemma: for a labelled path of `G` meeting the existential side, and every `χ` *(deviation: altered — landed as `plusTruthAt_iff_canAt`, stated against `Canon.lean`'s `canAt` rather than against a run's label, because a truth-based labelling argues in a circle; a run's label is recovered as a theorem by `lab_eq_canLab`. The `untl` / `snce` cases are a direct transfer rather than the mirrored fulfilment argument this bullet anticipates, since `canAt` takes the existential form of both.)*
       in the target closure, `χ ∈ path.lab t ↔ PlusTruthAt (G.model h) (G.pathHistory path) t χ`.
       Structural induction on `χ`, restricted to the subformulas of the formula in hand.
       - `atom`, `bot`, `imp`: local coherence, plus the slice labelling at the position's own slice
@@ -4451,7 +4488,7 @@ either route.
         dropped `witness` field is paid for. This phase cites the **declarative** lemma, correctly:
         soundness is a proof, not a computation, so it reads `live_iff` and needs nothing from
         15.3's computed form. Only Phase 17 needs the computed form.
-- [ ] Prove `plusRefutes_of_certifies` by instantiating `PlusWitnessFamily.PlusRefutes` at *(deviation: deferred — depends on the truth lemma)*
+- [x] Prove `plusRefutes_of_certifies` by instantiating `PlusWitnessFamily.PlusRefutes` at *(completed at dispatch 44; the `FrameClass.ZTime.Sat` instance is `frame_sat_ztime`, new here, via `TaskFrame.isZTime_of_instances`)*
       `(G.frame h).toTaskFrame`, its `FrameClass.ZTime.Sat` instance, `G.model h`, the target
       path's history and `G.targetTime`, discharging the two conjuncts from the target clause and
       the truth lemma.
@@ -4473,7 +4510,7 @@ either route.
       that as a finding rather than silently dropping the projection. And do not look for
       `fwdLive_iff_mem_fwdLiveT` as a way around it: sub-phase 15.3's record says it would be false
       as stated and is deliberately absent.
-- [ ] Record in the module docstring that this declaration is **beside** the landed *(deviation: deferred — no `Sound.lean` docstring exists yet; `Canon.lean`'s header carries the analogous record for the canonical labelling)*
+- [x] Record in the module docstring that this declaration is **beside** the landed *(completed at dispatch 44; `Sound.lean`'s header carries both records — the beside-not-in-place-of record and the infinite-carrier record — and the aggregator's module bullet repeats the first)*
       `PlusSharingWitnessFamily.plusRefutes_of_certifies`, not in place of it: the two are about
       different certificate classes and land the same interface. Record also that the presented
       frame's carrier is infinite, and why that is required.

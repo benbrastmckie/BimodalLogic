@@ -1,48 +1,25 @@
 {
   "status": "partial",
   "phase": "implement",
-  "dispatch_seq": 42,
-  "summary": "Phase 18's two prerequisites landed in Canon.lean (every step path is a fulfilling LabRun; a run's labelling is forced by its state path; the live set is exactly the canonical image of the edge-path space), full lake build green at 2800 jobs with zero sorries and no new axioms. Phase 18 itself is BLOCKED: the truth lemma needs the (C5) clause at every time and TailStable demands tail stability in one residue class only.",
+  "dispatch_seq": 44,
+  "summary": "Phase 18 is closed: the sliced certificate now has a truth lemma (plusTruthAt_iff_canAt) and lands PlusWitnessFamily.PlusRefutes unchanged via plusRefutes_of_certifies, on a residue-indexed TailStable demand implementing the cycle-3 ruling. Phases 19-21 remain, and Phase 19 must be re-read against the narrowed certificate class before Complete.lean is written.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Round-5 summary extended with dispatch 42."
-    },
-    {
-      "type": "plan",
-      "path": "specs/703_lplus_compression_and_completeness/plans/05_lplus-sliced-certificate-and-completeness.md",
-      "summary": "Phase 18 [BLOCKED] with its BLOCKER record and annotated checklist."
+      "summary": "Phase 18 closed: the sliced certificate's truth lemma and its refutation interface, on a residue-indexed tail-stability demand."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T020855Z.md",
-      "summary": "Resume point for Phase 18."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T035749Z.md",
+      "summary": "Phase 18 completion handoff: the demand change, the two truth-lemma findings, and the Phase 19 re-check obligation."
     }
   ],
-  "phases_completed": 17,
+  "phases_completed": 18,
   "phases_total": 21,
-  "blockers": [
-    {
-      "phase": 18,
-      "target": "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Sound.lean (not created); the obligation lives in FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Stable.lean's TailStable",
-      "verbatim_goal": "Prove PlusSlicedCertificate.plusRefutes_of_certifies, landing PlusWitnessFamily.PlusRefutes Gamma Del unchanged.",
-      "what_was_tried": "Both routes the plan's READ FIRST block names. Route 1 (frame-side normalization via plusTruthAt_shiftBack / timeShift_offset_zero): closes the box case outright, since plusBox_const makes the box clause readable at one fixed window time; does not touch the stab case, whose comparison class is pinned by the carrier element's own time. Route 2 (liveness periodicity at an arbitrary residue): two candidate derivations of the needed stability equation from Phi_back L0 = L0 were worked through, one via A_r = iterBack (-NB) L0 r and one via the live set at -NB - r itself.",
-      "why_it_failed": "A_r satisfies the residue stability equation (by iterBack_add, iterBack_L0 and iterBack_shift) but is not contained in the live set at -NB - r, so it cannot be the reference set the three-region construction needs; and the live set at -NB - r satisfies no equation the landed demand implies, because Phi_back L0 = L0 constrains the live set at one reference time only. The gap is in the demand, not in its proof: TailStable constrains one residue class mod G.NB (and one mod G.NF) while the truth lemma needs all of them."
-    }
-  ],
+  "blockers": [],
   "plan_markers_verified": true,
-  "continuation_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T020855Z.md",
-  "next_action_hint": "Answer the user_decision on the residue-indexed TailStable before dispatching Phase 18 again; on acceptance, change TailStable, re-derive decidableTailStable, write a reference-time-generic tailPos plus exists_win_live_eq, then Sound.lean.",
-  "git_checkpoint": "orchestrate/task-703-42",
-  "user_decision": {
-    "question": "Phase 18's truth lemma needs the (C5) stability clause at every time, but TailStable constrains the live set in only one residue class mod G.NB (and one mod G.NF). Replacing each conjunct by a bounded quantifier over its period's residues closes it and keeps the checker decidable, but narrows the certificate class Phases 19-20 claim completeness relative to. Accept that narrowing?",
-    "options": [
-      "Accept the residue-indexed TailStable — strengthen the demand, keep soundness reachable, and re-check Phases 19-20 against the narrower class",
-      "Do not accept — send Phase 18 back to a reviser pass to find a different soundness route or to restate what the subtree claims",
-      "Accept, and additionally commission a probe that measures how much the narrowing actually costs (whether the landed L witness family's embedding in Phase 20 still satisfies the new demand) before Phases 19-20 are written"
-    ],
-    "recommended": "Accept the residue-indexed TailStable — strengthen the demand, keep soundness reachable, and re-check Phases 19-20 against the narrower class",
-    "blocking": true
-  }
+  "continuation_path": "specs/703_lplus_compression_and_completeness/handoffs/phase-18-handoff-20261001T035749Z.md",
+  "next_action_hint": "Open Phase 19 only after re-reading its construction against the narrowed certificate class: TailStable is now a bounded quantifier over each period's residues, so the construction must satisfy the demand at every r < NBnat and r < NFnat, not only at r = 0.",
+  "git_checkpoint": "e86efb5a2"
 }
