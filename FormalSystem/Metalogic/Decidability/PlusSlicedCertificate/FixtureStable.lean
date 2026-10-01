@@ -286,7 +286,7 @@ the liveness filter removes it, which is the whole point of the repair. No claim
 way about `(certRep a b c).TailStable`; see this module's header.
 -/
 theorem not_tailStableRaw (a b c : ℕ) : ¬ (certRep a b c).TailStableRaw :=
-  fun h => Φ_fwd_R₀_ne a b c h.2
+  fun h => Φ_fwd_R₀_ne a b c ((certRep a b c).tailStableRaw_fwd h)
 
 /-! ### The fixture itself, and the one half re-presentation does repair -/
 
@@ -324,7 +324,7 @@ recording them separately: `Φ_back_L₀_ne_cert` is repaired by absorbing the p
 -/
 theorem not_tailStable_cert :
     ¬ cert.TailStable ∧ cert.Φ_back cert.L₀ ≠ cert.L₀ ∧ cert.Φ_fwd cert.R₀ ≠ cert.R₀ := by
-  refine ⟨fun h => Φ_back_L₀_ne_cert h.1, Φ_back_L₀_ne_cert, ?_⟩
+  refine ⟨fun h => Φ_back_L₀_ne_cert (cert.tailStable_back h), Φ_back_L₀_ne_cert, ?_⟩
   rw [cert_eq_certRep]
   exact Φ_fwd_R₀_ne 0 0 0
 

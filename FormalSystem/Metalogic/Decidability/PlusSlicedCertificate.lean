@@ -13,6 +13,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Canon
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Window
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixture
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Stable
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Tail
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FixtureStable
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Timed
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixpoint
@@ -132,12 +133,20 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   built from the one-step `stepBack` / `stepFwd`, with monotonicity at each level, the two subset
   lemmas placing their images on the window's own endpoint slices, the soundness direction
   `fwdLive_subset_stepBack` / `bwdLive_subset_stepFwd` and its two-directional counterpart
-  `live_subset_stepBack` / `live_subset_stepFwd`, and `TailStable` with `decidableTailStable`,
-  `L₀` / `R₀` read off `Bridge`'s equality, and **both** directions of the linchpin
-  `tailStable_iff_window`: the transfer's soundness iterated (`mem_L₀_of_live_tail`) and the
-  three-region run `runOfPos` builds from a shifted reference run, a `Φ_back`-chain and a second
-  reference run (`live_of_mem_L₀_tail`), with right-tail mirrors for both.
-  `exists_tailStable_repr` is **not** here and is sub-phase 16.2's remaining obligation
+  `live_subset_stepBack` / `live_subset_stepFwd`, and `TailStable` with `decidableTailStable` — a
+  **residue-indexed** demand, one conjunct per residue of each period, with `tailStable_back` /
+  `tailStable_fwd` recovering the single-equation conjuncts as its `r = 0` instances. `L₀` / `R₀`
+  are read off `Bridge`'s equality, and the **forward** direction of the linchpin is here
+  (`mem_L₀_of_live_tail`, the transfer's soundness iterated). `exists_tailStable_repr` is **not**
+  here and is not anywhere: it is false, and `FixtureStable` proves it false
+- `PlusSlicedCertificate.Tail`: the **reverse** direction of the linchpin, which needs a genuine run
+  rather than an iterate — the three-region position families `tailPos` / `headPos` at an arbitrary
+  reference time, built from a shifted reference run, a transfer chain and a second reference run,
+  with `live_of_mem_L₀_tail` / `live_of_mem_R₀_head` as their headlines and
+  `tailStable_iff_window` / `tailStable_iff_window_fwd` as the biconditionals they complete at every
+  time down either periodic tail. `exists_win_live_eq` is the form a clause stated at a window time
+  costs to transport to an arbitrary time: every time has a window representative carrying the same
+  slice **and** the same live set
 - `PlusSlicedCertificate.LiveFix`: the **eventuality-aware** liveness fixpoint — `fwdLiveT` /
   `bwdLiveT` / `liveT` as a nested `Nu.gfp` whose inner reachability is relativized to the set being
   contracted, both directions of its fixpoint characterization, and `exists_fwdLive_walk` /
