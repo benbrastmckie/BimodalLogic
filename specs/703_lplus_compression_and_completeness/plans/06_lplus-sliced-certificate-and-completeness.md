@@ -5708,7 +5708,7 @@ assembly). Decompose into decimal sub-phases; never carry a `sorry`.
   the construction is not merely type-correct.
 - The module nowhere claims completeness for L⁺, confirmed by reading its docstrings.
 
-#### Sub-phase 20.3 — the backward fold lemma [NOT STARTED] *(new at plan v12)*
+#### Sub-phase 20.3 — the backward fold lemma [COMPLETED] *(new at plan v12, landed dispatch seq 52)*
 
 **Goal**: land `bwdVertFold` and `mem_bwdLiveT_of_bwdLive_fold` in `Bridge.lean` — the single
 unproved input the mirror filter rests on — **with no consumer change anywhere**. This sub-phase is
@@ -5717,30 +5717,30 @@ one identified way option 1 can fail is discovered before `Stable.lean` or `Tail
 (risk R2d).
 
 **Tasks**:
-- [ ] Read `Bridge.lean:241-370` **before writing a line** — `fwdVertFold`, `fwdVertFold_lab`,
+- [x] Read `Bridge.lean:241-370` **before writing a line** — `fwdVertFold`, `fwdVertFold_lab`,
       `fwdVertFold_snd`, `fwdVertFold_self`, `fwdVertFold_mem_verts`, `fwdVertFold_mem_succT`,
       `mem_fwdLiveT_of_fwdLive_fold`, and the diagonal `mem_fwdLiveT_of_fwdLive` at `:364-367`. Every
       declaration below is a transcription of one of them with `predT` / `snceLive` / `snceLiveAt` /
       `bwdLiveT_greatest` / `foldB_*` in place of the forward names. The backward **diagonal**
       `bwdVert` and its lemmas already exist at `Bridge.lean:174-240`; what is missing is its
       **off-diagonal** generalization.
-- [ ] Define `bwdVertFold (G) (R : G.LabRun) (s s' : ℤ) (k : ℕ) : G.TPos`, mirroring `fwdVertFold`
+- [x] Define `bwdVertFold (G) (R : G.LabRun) (s s' : ℤ) (k : ℕ) : G.TPos`, mirroring `fwdVertFold`
       with `bwdOrbit` for `fwdOrbit` and the label read at `s' - k` where the forward one reads
       `s' + k`.
-- [ ] Land its five structural lemmas: `bwdVertFold_lab` and `bwdVertFold_snd` (both `rfl`, both
+- [x] Land its five structural lemmas: `bwdVertFold_lab` and `bwdVertFold_snd` (both `rfl`, both
       `@[simp]`), `bwdVertFold_self` (`bwdVertFold R s s k = bwdVert R s k`, `rfl`),
       `bwdVertFold_mem_verts` and `bwdVertFold_mem_predT`. The last two consume `foldB_posAt` and
       `foldB_predP`, both landed.
-- [ ] Prove `mem_bwdLiveT_of_bwdLive_fold`: from `s ∈ G.winTimes`, `G.FoldB s s'` and
+- [x] Prove `mem_bwdLiveT_of_bwdLive_fold`: from `s ∈ G.winTimes`, `G.FoldB s s'` and
       `G.BwdLive s' p`, conclude `(p, s) ∈ G.bwdLiveT`. Route: `bwdLiveT_greatest` applied to
       `G.verts.filter (fun v => ∃ k, G.bwdVertFold R s s' k = v)`, exactly as the forward proof does on
       its own orbit set, with the fairness step using `snceLive` / `snceLiveAt` where the forward proof
       uses its `untl` counterpart.
-- [ ] Restate the landed `mem_bwdLiveT_of_bwdLive` as the **diagonal instance** (via `G.foldB_refl s`),
+- [x] Restate the landed `mem_bwdLiveT_of_bwdLive` as the **diagonal instance** (via `G.foldB_refl s`),
       as `Bridge.lean:364-367` does on the forward side. **Its statement does not change** — confirm
       that by reading it and record the confirmation, since every existing consumer of it must keep
       elaborating untouched.
-- [ ] **Rewrite `Bridge.lean`'s "Why there is no backward counterpart" paragraph (`Bridge.lean:306-309`)
+- [x] **Rewrite `Bridge.lean`'s "Why there is no backward counterpart" paragraph (`Bridge.lean:306-309`)
       to say what it actually establishes**: that the **forward** filter must be one-directional
       because `FoldB` does not reach the right tail. Do not delete the paragraph's content — the claim
       is true about the right tail and is the reason `fwdLiveAt` is the forward filter; what is wrong
@@ -5778,7 +5778,7 @@ placeholder, never a silent narrowing.
 **Files to modify**:
 - `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Bridge.lean`
 
-#### Sub-phase 20.4 — the promoted filter, the conjunct swap, and the by-name restatements [NOT STARTED] *(new at plan v12)*
+#### Sub-phase 20.4 — the promoted filter, the conjunct swap, and the by-name restatements [COMPLETED] *(new at plan v12, landed dispatch seq 52)*
 
 **Goal**: make the mirror-filtered backward demand the **landed** backward conjunct of `TailStable`,
 and restate every result stated from the old conjunct's functional form — exactly as
@@ -5791,12 +5791,12 @@ independent ways and only the `⊆` one is filterable. A dispatch that reads thi
 `Fixture.cert` tail-stable has misread it.
 
 **Tasks**:
-- [ ] Promote `EmbedComplete.lean`'s candidate `bwdLiveAtCand` into `Stable.lean` as **`bwdLiveAt`**,
+- [x] Promote `EmbedComplete.lean`'s candidate `bwdLiveAtCand` into `Stable.lean` as **`bwdLiveAt`**,
       beside `fwdLiveAt`, with the three lemmas the forward side carries: `mem_bwdLiveAt`,
       `bwdLiveAt_subset_posAt`, and `liveAt_subset_bwdLiveAt` (the landed `liveAt_subset_bwdLiveAtCand`,
       renamed). Add `L₀bwd := G.bwdLiveAt (-G.NB)` mirroring `R₀fwd`, and `L₀_subset_L₀bwd` mirroring
       `R₀_subset_R₀fwd`.
-- [ ] **DELETE `Stable.lean`'s asymmetry note**: the `/-! ### The computed forward-live set, and why
+- [x] **DELETE `Stable.lean`'s asymmetry note**: the `/-! ### The computed forward-live set, and why
       the right tail needs it` note (`Stable.lean:544-551`) and the matching sentence inside
       `TailStable`'s docstring ("`FoldB` relates two negative times only, so no backward counterpart of
       `mem_fwdLiveT_of_fwdLive_fold` exists at the right tail…", `Stable.lean:703-707`). **Delete, do
@@ -5804,12 +5804,12 @@ independent ways and only the `⊆` one is filterable. A dispatch that reads thi
       replaces it is one short note saying that **both** obligation directions carry an
       unfulfillable-label obstruction, each caught by its own iterate and each needing its own filter,
       and that this is a consequence of `posAt` being a deliberate over-approximation.
-- [ ] Land the two arithmetic mirrors `foldB_tail` (`G.FoldB (-G.NB) (-G.NB - k * G.NB)`, the mirror of
+- [x] Land the two arithmetic mirrors `foldB_tail` (`G.FoldB (-G.NB) (-G.NB - k * G.NB)`, the mirror of
       `foldF_head`) and `prevTime_le_left` (the mirror of `nextTime_ge_right`), then
       `mem_L₀bwd_of_bwdLive_tail` (the mirror of `mem_R₀fwd_of_fwdLive_head`). These are what carry
       genuine backward liveness down the **left** tail to the reference time, and they are the reason
       the filter is **sound** rather than merely decidable.
-- [ ] **Swap the conjunct.** `TailStable`'s backward conjunct becomes
+- [x] **Swap the conjunct.** `TailStable`'s backward conjunct becomes
       `∀ r ∈ Finset.range G.NBnat, G.iterBack (-G.NB - r) (G.liveAt (-G.NB - r)) G.NBnat ∩
       G.bwdLiveAt (-G.NB - r) = G.liveAt (-G.NB - r)`, the residue indexing preserved exactly as
       sub-phase 18.3 landed it. Confirm `decidableTailStable` is still **synthesized** (the
@@ -5818,7 +5818,7 @@ independent ways and only the `⊆` one is filterable. A dispatch that reads thi
       unfiltered conjuncts and stays the **retained** raw demand, not the operative one; re-prove
       `tailStable_of_raw`, which is now two lines on each side — `liveAt ⊆ bwdLiveAt` and
       `liveAt ⊆ fwdLiveAt` turn each raw equation into its filtered one.
-- [ ] **Consume the restatement table below rather than re-deriving it.** Every entry already exists on
+- [x] **Consume the restatement table below rather than re-deriving it.** Every entry already exists on
       the forward side in the shape the backward side needs, because 16.3 did this once already.
 
 | Backward declaration to restate | Landed forward twin to copy |
@@ -5839,7 +5839,7 @@ independent ways and only the `⊆` one is filterable. A dispatch that reads thi
 | `Tail.exists_win_live_eq` — **left branch only** | the right branch, unchanged |
 | `FixtureStable.not_tailStable_cert` — restate its first component against the filtered conjunct | `TailStableMirror` is **false** at `cert` by `decide`, so the fixture's verdict survives |
 
-- [ ] **Retire the candidate.** `EmbedComplete.lean`'s `TailStableMirror`, `bwdLiveAtCand`,
+- [x] **Retire the candidate.** `EmbedComplete.lean`'s `TailStableMirror`, `bwdLiveAtCand`,
       `liveAt_subset_bwdLiveAtCand` and `decidableTailStableMirror` are superseded by the landed
       conjunct: remove the candidate definitions and restate the four measured verdict theorems
       (`snceProbeFamily_tailStableMirror`, `snceProbeLiveFamily_tailStableMirror`,
@@ -5848,7 +5848,7 @@ independent ways and only the `⊆` one is filterable. A dispatch that reads thi
       certificates and regresses neither of 20.1's**. Also delete the header paragraph describing
       `TailStableMirror` as a *candidate* and the paragraph at `EmbedComplete.lean:497-501` restating
       the asymmetry claim 20.3 retires.
-- [ ] **Land the two `⊥`-targets as a permanent regression pair**, beside `FixtureStable.lean`'s
+- [x] **Land the two `⊥`-targets as a permanent regression pair** *(deviation: altered — landed in `EmbedComplete.lean`'s new `BotTargets` namespace rather than in `FixtureStable.lean`, because the pair needs `WitnessFamily` and `.sliced`, which `FixtureStable.lean` does not carry and `EmbedComplete.lean` already does beside the two `snce` probes; `FixtureStable.lean`'s header points at it by name)*, beside `FixtureStable.lean`'s
       fixtures: `⊥ U ⊥` (the raw forward demand fails there, the filtered one holds) and `⊥ S ⊥` (the
       raw backward demand fails, the filtered one holds), each with its ℤ-time non-validity and its
       family's `Certifies` verdict. They are the smallest witnesses that each conjunct needs its filter,
@@ -5858,12 +5858,12 @@ independent ways and only the `⊆` one is filterable. A dispatch that reads thi
       ordinary library declarations and are cited as such; the durable anchor to state is the
       mathematical claim itself, that a ℤ-time non-validity exists whose closure admits a backward-dead
       coherent label at every slice of every certificate over it.
-- [ ] **Record the `⊆`/`⊇` dichotomy and the `posAt` over-approximation once, where a reader meets
+- [x] **Record the `⊆`/`⊇` dichotomy and the `posAt` over-approximation once, where a reader meets
       them.** `Position.lean`'s header already discusses `succP` non-totality and is the right place for
       the sentence that closes option 2; `Stable.lean`'s two filter docstrings then point at it instead
       of each restating half of it. State plainly that a `⊆` failure is filterable and a `⊇` failure is
       not, and that the filtered demand is therefore a **demand** and not a theorem.
-- [ ] **Add the standing probe-shape rule** to the fixture module's header: any future evaluation of a
+- [x] **Add the standing probe-shape rule** to the fixture module's header: any future evaluation of a
       `TailStable`-like demand must carry **both** an `untl` and a `snce` in its closure. This is the
       rule whose absence cost dispatches 20.1 and 20.2.
 
@@ -5900,7 +5900,7 @@ green build between the two halves, and never leave a `TailStable` that no consu
 - `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/EmbedComplete.lean`
 - `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Position.lean` — module header only
 
-#### Sub-phase 20.5 — `hTS` at the embedding, `hconc`, and the flagship [NOT STARTED] *(new at plan v12)*
+#### Sub-phase 20.5 — `hTS` at the embedding, `hconc`, and the flagship [PARTIAL] *(new at plan v12; dispatch seq 52 landed the constant-state reduction only)*
 
 **Goal**: finish Phase 20. With the filtered backward conjunct landed, discharge the two remaining
 hypotheses of `Complete.lean`'s `exists_plusSlicedCertificate_of_tailStable_countermodel` at the
@@ -5914,20 +5914,29 @@ two `untl`, two atomic `snce`, three over `⊥ S ⊥` — and seven certificates
 
 **Tasks**:
 - [ ] Prove `(W.sliced tt).TailStable` for an **arbitrary** certifying `W : WitnessFamily [] [φ]`, at
-      **every** residue of both periods. Route named by the research: the `⊆` direction from
+      **every** residue of both periods. *(deviation: partial — dispatch 52 landed the first input,
+      `Embedded.sliced_run_st_const` (every run of the embedded certificate has CONSTANT state, from
+      `sliced_edge`'s identity edge relation) plus `sliced_run_pos_fst`, and recorded the exact
+      remaining obligation in `EmbedComplete.lean`'s own section docstring: every live position at a
+      left residue reference time must carry a label that is period-invariant along some fulfilling
+      run. `LabRun.agrees` is demanded at every `s : ℤ`, including the non-negative times where
+      `trLab (W.L w ·)` is not `perB`-periodic, so a run cannot simply be shifted; the splice
+      machinery exists (`Tail.lean`'s `tailPos`/`runOfPos`) and what is missing is its chain input.
+      NOT refuted — no certificate refutes `TailStable`, so this is an open proof obligation and not
+      a blocker.)* Route named by the research: the `⊆` direction from
       `bwdLiveT`'s own greatest-fixpoint unfolding along the `stepBack` chain, with the filter removing
       the junk positions by construction; the `⊇` direction from the genuine run that witnesses
       liveness. The forward conjunct is the mirror and has already returned favourable at four
       certificates.
-- [ ] Prove `hconc` and assemble the flagship: transport `¬ PlusValidZTime (ofFormula φ)` to
+- [ ] Prove `hconc` and assemble the flagship: *(deviation: deferred — depends on `hTS`)* transport `¬ PlusValidZTime (ofFormula φ)` to
       `¬ ValidZTime φ`, apply the landed `exists_witnessFamily_of_not_validZTime`
       (`WitnessFamily/Compression/Family.lean:153` — **read-only; this file is not edited by this task
       and the option-1 ruling is what keeps it closed**), and embed.
-- [ ] Record in the module docstring what the theorem buys: the sliced class is **non-vacuous on
+- [ ] Record in the module docstring what the theorem buys: *(deviation: deferred — depends on the flagship)* the sliced class is **non-vacuous on
       branching-free targets** and at least as strong as the landed L class there. State plainly that
       this is **not** completeness for L⁺ — `⊡`-carrying targets are not covered, and that is the open
       Stage 3 question. **Cite no probe**, by path or by declaration name (C9, user ruling).
-- [ ] Record the hand-off to the certificate-non-vacuity-and-shape-gates successor: the flagship is a
+- [ ] Record the hand-off to the certificate-non-vacuity-and-shape-gates successor: *(deviation: deferred — depends on the flagship)* the flagship is a
       ready-made non-vacuity witness for its shape gates. Record **also** what the repair changed, so
       that successor does not inherit a stale picture — `TailStable` now carries one filter per
       obligation direction and is a per-certificate demand.

@@ -1,32 +1,46 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "requires_user_review": false,
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 14,
+    "axiom_baseline": 14,
+    "build_passed": true,
+    "notes": "Full `lake build` exit 0, 'Build completed successfully (2805 jobs)', zero error: lines, and every touched module's .olean is newer than its source. The vacuous census's single hit (FormalSystem/Examples/TemporalStructures.lean:495, int_domain_universal := trivial) is pre-existing, untouched, a genuine theorem, and a false positive of the single-line grep. Axiom count unchanged: `git diff 9267c5837 -- '*.lean' | grep -cE '^\\+axiom '` is 0, and the base census over all four source roots is likewise 14 (12 FormalSystem + 2 Tests/BimodalTest)."
+  },
+  "partial_progress": {
+    "stage": "phase_20_sub_phases_20.3_and_20.4_complete_20.5_partial",
+    "details": "Sub-phases 20.3 and 20.4 COMPLETE and verified; sub-phase 20.5 PARTIAL. 20.5's remaining obligation is the general hTS theorem and is now stated exactly rather than estimated. NOT blocked: no certificate refutes TailStable, so the 20.5 Contingency's escalation trigger (a refuting certificate with its residue named) did not fire. Phase 20 stays [IN PROGRESS]; Phase 21 untouched.",
+    "phases_completed": 19,
+    "phases_total": 21
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/703_lplus_compression_and_completeness/plans/06_lplus-sliced-certificate-and-completeness.md",
-      "summary": "Plan v12: implements the user's option-1 ruling (mirror the filter) as sub-phases 20.3/20.4/20.5, resolves the Phase 20 blocker, closes option 2 as refuted, and defers option 3 to a specified-not-filed successor."
+      "type": "summary",
+      "path": "specs/703_lplus_compression_and_completeness/summaries/07_lplus-sliced-certificate-and-completeness-summary.md",
+      "summary": "Executes the option-1 ruling: the mirror liveness filter is landed as TailStable's backward conjunct (sub-phases 20.3, 20.4 complete), resolving the Phase 20 blocker; sub-phase 20.5 partial with its remaining obligation stated exactly."
     }
   ],
-  "next_steps": "Run /orchestrate 703 --implement to dispatch sub-phase 20.3 (bwdVertFold and mem_bwdLiveT_of_bwdLive_fold in Bridge.lean, no consumer changes). The user's ruling also calls for a separate follow-up task to evaluate option 3 (full labels in the certificate, removing the posAt over-approximation at its root); the plan specifies it under 'The option-3 successor, specified and deliberately not filed' and does not file it.",
+  "completion_data": {
+    "completion_summary": "Landed the user's option-1 ruling: Bridge.lean's mem_bwdLiveT_of_bwdLive_fold proves the mirror filter's one unproved input, and PlusSlicedCertificate.TailStable's backward conjunct is now the bwdLiveAt-filtered one, with every result stated from the old conjunct's functional form restated and the EmbedComplete.lean candidate retired. The two families that refuted the raw backward conjunct now satisfy the landed demand, and FixtureStable.Phi_back_L0_inter_ne_cert confirms the repaired demand is still non-vacuous. Sub-phase 20.5 is partial: its first structural input landed and its remaining obligation is recorded in Lean.",
+    "roadmap_items": []
+  },
   "metadata": {
-    "session_id": "sess_1790877597_7cfc7c_703",
-    "agent_type": "reviser-agent",
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "dispatch_seq": 51,
-    "plan_version": 12,
-    "phase_count": 21,
-    "estimated_hours": 78,
-    "reports_integrated": [
-      "01_lplus-compression-completeness-research.md",
-      "02_semantics-first-compression-research.md",
-      "706/01_lplus-finite-model-property-research.md",
-      "06_tailstable-backward-conjunct-repair.md"
+    "session_id": "sess_1790878557_2f4b14",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "dispatch_seq": 52,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "skipped",
+    "compliance_note": "The plan's `**Goals**:` bullets name no backticked declaration for sub-phases 20.3-20.5, so the Stage-5 goal-name extraction yields an empty set and the spot-check is vacuous. Verified by name instead: mem_bwdLiveT_of_bwdLive_fold, bwdLiveAt, mem_L0bwd_of_bwdLive_tail, TailStableBack, Phi_back_L0_inter_ne_cert, BotTargets.*, Embedded.sliced_run_st_const all elaborate, and the flagship exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula is deliberately NOT yet stated (sub-phase 20.5).",
+    "commits": [
+      "f082fbfc4 task 703 phase 20.3: the backward fold lemma",
+      "779cd6b9a task 703 phase 20.4: the promoted filter, the conjunct swap, and the restatements",
+      "34ff57ac3 task 703 phase 20.5.1: every run of the embedded certificate has constant state"
     ],
-    "revision_mode": "plan_revision",
-    "phases_preserved": "1-19 verbatim, including all [COMPLETED] and [COMPLETED WITH EXCLUSIONS] markers; sub-phase 16.3 untouched",
-    "phases_revised": "Phase 20 (heading [BLOCKED] -> [IN PROGRESS]; BLOCKER becomes a RESOLVED record with its body retained and marked inside; 20.2 marker [BLOCKED] -> [PARTIAL]; Timing 7 -> 13; Files list extended), Phase 21 (four added gate bullets)",
-    "phases_added": "Sub-phases 20.3, 20.4, 20.5",
-    "phases_removed": "none",
-    "follow_up_specified_not_filed": "option-3 successor: carry full labels in PlusSlicedCertificate so posAt becomes a singleton and the obstruction is removed at its root"
-  }
+    "worktree_branch": "orchestrate/task-703-52"
+  },
+  "next_steps": "Re-dispatch implement for sub-phase 20.5's general hTS theorem. The obligation is sharp: every live position at a left residue reference time must carry a label that is period-invariant along some fulfilling run. LabRun.agrees is demanded at every s : Z, including the non-negative times where trLab (W.L w .) is not perB-periodic, so a run cannot be shifted by a period; the splice machinery exists (Tail.lean's tailPos/runOfPos) and what is missing is its chain input. Embedded.sliced_run_st_const is the first input, landed. Separately, the user's ruling also calls for filing the option-3 successor task (carry full labels in PlusSlicedCertificate so posAt becomes a singleton); it is specified under the plan's 'The option-3 successor, specified and deliberately not filed' and this dispatch did not file it."
 }

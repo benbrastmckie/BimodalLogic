@@ -1365,11 +1365,6 @@
       "session_id": "sess_1790870755_74eff0",
       "artifacts": [
         {
-          "path": "specs/703_lplus_compression_and_completeness/summaries/05_lplus-sliced-certificate-and-completeness-summary.md",
-          "type": "summary",
-          "summary": "Round-05 implementation summary, extended with the dispatch-49 record: the embedded model's truth lemma, hcan, SlabTrue, and the refutation of TailStable's backward conjunct."
-        },
-        {
           "path": "specs/703_lplus_compression_and_completeness/reports/06_tailstable-backward-conjunct-repair.md",
           "type": "report",
           "summary": "Settles the TailStable backward-conjunct repair target: the dispatch-49 soft link is proved; the undischargeable snce positions are FORCED (option 2 impossible, demonstrated at the target bot-S-bot where posAt is family-independent and every certifying family is label-determined); the forward filter is not removable either (mirror target bot-U-bot); the dispatch-49 Fold.lean challenge holds, only bwdVertFold is missing; option 1 is the ideal target, adopted as the symmetric design."
@@ -1378,6 +1373,11 @@
           "path": "specs/703_lplus_compression_and_completeness/plans/06_lplus-sliced-certificate-and-completeness.md",
           "type": "plan",
           "summary": "Plan v12, round 06: the option-1 mirror repair as sub-phases 20.3-20.5, with the option-2 impossibility and the option-3 deferral recorded."
+        },
+        {
+          "path": "specs/703_lplus_compression_and_completeness/summaries/07_lplus-sliced-certificate-and-completeness-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for sub-phases 20.3 (complete), 20.4 (complete) and 20.5 (partial)."
         }
       ],
       "next_artifact_number": 8
