@@ -20,6 +20,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fold
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Unroll
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.LiveFix
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Bridge
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Check
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
@@ -139,6 +140,14 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   instance for liveness it yields. The completeness direction factors into halves and needs no box
   clause; the soundness direction does neither — it consumes both halves at once and needs (C3b)
   `BoxLabelFaithful`
+- `PlusSlicedCertificate.Check`: the **decidable checker** — `Certifies` as nine clauses (three
+  structural conjuncts off landed window biconditionals, then the target group), with
+  `decidableCertifies` synthesized and each structural conjunct's instance confirmed in isolation.
+  The existential side is stated on the position graph rather than on `PlusLocalCoherentSeqLab`,
+  fulfilment is supplied by the computed live set rather than demanded of the target path, and the
+  box clause is read on live positions rather than on the slice labelling; see that module's header
+  for why each of those three is the only decidable form available. `forall_iff_win_succ` is the
+  one-step-lookahead fold the `succP` clause needs and `Window.lean`'s `forall_iff_win` cannot give
 
 ## Tags
 
