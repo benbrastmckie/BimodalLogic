@@ -23,6 +23,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Unroll
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.LiveFix
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Bridge
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Check
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Sound
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
@@ -165,6 +166,14 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   box clause is read on live positions rather than on the slice labelling; see that module's header
   for why each of those three is the only decidable form available. `forall_iff_win_succ` is the
   one-step-lookahead fold the `succP` clause needs and `Window.lean`'s `forall_iff_win` cannot give
+- `PlusSlicedCertificate.Sound`: the **truth lemma** and the refutation interface it lands —
+  `plusTruthAt_iff_canAt` relates truth in the presented model along an arbitrary edge path to
+  `Canon`'s canonical membership predicate (not to a run's label, which would argue in a circle),
+  and `plusRefutes_of_certifies` lands `PlusWitnessFamily.PlusRefutes Γ Del` **unchanged** — the
+  same proposition the landed `PlusSharingWitnessFamily.plusRefutes_of_certifies` lands, beside it
+  and not in place of it. The `□` case reads the box clause through `plusBox_const`, the `⊡` case
+  reads (C5) at the window representative `Tail`'s `exists_win_live_eq` supplies, and `untl` /
+  `snce` are a direct transfer because `canAt` takes the existential form of both
 
 ## Tags
 
