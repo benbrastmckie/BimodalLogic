@@ -1,18 +1,22 @@
 # Implementation Plan: L⁺ Certificate Limits and the Time-Sliced Certificate
 
 - **Task**: 703 - lplus_compression_and_completeness
-- **Status**: [IMPLEMENTING] (Phases 1-15 landed; Phase 16 [COMPLETED WITH EXCLUSIONS] with
-  16.2c landed as a refutation; Phases 17-21 [NOT STARTED] — Phase 17's plan-v7 [BLOCKED] marker is
-  **cleared at plan v8** by the user's ruling recorded at its heading. Stage 2 amended at plan v4,
-  Phases 13-21 re-authored, amended again at plan v7 for the landed (C3b) clause, and amended at
-  plan v8 to record the tail-stability ruling. *The pre-v8 text of this line still described Phase
-  16 as [IN PROGRESS] with 16.2c open; that was stale from dispatch seq 38 and is corrected here —
-  see "Revision record — plan v8" for the disclosure.*)
-- **Effort**: 70 hours (16 landed in Phases 1-8; 13 in Stage 1, Phases 9-12; 41 in the amended
+- **Status**: [IMPLEMENTING] (Phases 1-18 landed — 7, 8, 12 and 16 as [COMPLETED WITH EXCLUSIONS],
+  17 and 18 as [COMPLETED]; Phase 19 [IN PROGRESS] as of plan v9, Phases 20-21 [NOT STARTED]. Stage 2 amended at plan v4, Phases 13-21
+  re-authored, amended again at plan v7 for the landed (C3b) clause, amended at plan v8 to record a
+  tail-stability ruling that **plan v9 corrects as a misattribution**, and amended at **plan v9** to
+  record the **residue-indexed** `TailStable` landed at sub-phase 18.3 and to re-check Phases 19-21
+  against the narrower certificate class it defines. *Two stale descriptions of this line are
+  corrected rather than carried: the pre-v8 text described Phase 16 as [IN PROGRESS] with 16.2c
+  open, and the pre-v9 text described Phases 17-21 as [NOT STARTED] after 17 and 18 had both
+  landed. See "Revision record — plan v9" and "Revision record — plan v8" for the disclosures.*)
+- **Effort**: 72 hours (16 landed in Phases 1-8; 13 in Stage 1, Phases 9-12; 43 in the amended
   Stage 2, Phases 13-21 — one hour added to Phase 17 at plan v7 for the two `Decidable` instances
-  its structural conjuncts still need, and two hours added to Phase 20 at plan v8 for the `#guard`
+  its structural conjuncts still need, two hours added to Phase 20 at plan v8 for the `#guard`
   probe of the forward conjunct and for the raised risk the tail-stability ruling puts on it, and
-  nothing else)
+  **two more at plan v9**: one to Phase 19 and one to Phase 20, for the every-residue obligation the
+  residue-indexed `TailStable` puts on each of them. Nothing else, and no phase is added, removed or
+  rescoped)
 - **Dependencies**: `FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt` (landed,
   `FormalSystem/PlusLanguage/PlusIntTransfer.lean`) — still required by the Stage 3 successor
   named under Non-Goals, and no longer on this plan's own critical path, for the reason given
@@ -32,7 +36,7 @@
 - **Reports Integrated**: `01_lplus-compression-completeness-research.md`,
   `02_semantics-first-compression-research.md`,
   `706/01_lplus-finite-model-property-research.md`
-- **Plan Version**: 8 (revision of `plans/02_lplus-certificate-limits-graph-certificate.md` at
+- **Plan Version**: 9 (revision of `plans/02_lplus-certificate-limits-graph-certificate.md` at
   v4, amended in place at v5 and again at v6; artifact number 03 is deliberately skipped — the
   artifact counter, not the file listing, is authoritative. **Plan v5 changes no mathematics**: it
   adds the execution preconditions recorded under "Revision record — plan v5" below and integrates
@@ -59,8 +63,18 @@
   that its forward conjunct is satisfiable at Phase 20's embedding — and propagates that one fact
   into exactly four places: Phase 17's heading (blocker becomes a resolution record, marker returns
   to [NOT STARTED]), Phase 20's `TailStable` task bullet and Timing, the risk register (one new row
-  R2b, one amendment to R2), and the `TailStable` docstring in the Lean Challenge Statement. See
-  "Revision record — plan v8" below)
+  R2b, one amendment to R2), and the `TailStable` docstring in the Lean Challenge Statement. *That
+  candidate-1 attribution is a **misattribution** — ruled so by the user on 2026-10-01 and corrected
+  at plan v9; see "Revision record — plan v9".* **Plan v9 integrates no new report, adds no phase,
+  removes none, renumbers none, and changes no flagship theorem statement, field list, bound
+  commitment, dependency or non-goal.** It records two user rulings of 2026-10-01T03:14:32Z and
+  propagates the landed consequence of the second: (i) the liveness-filtered forward conjunct
+  (option 2) **stands**, and the plan-v8 candidate-1 paragraph is a misattribution the reviser is
+  directed to correct; (ii) the **residue-indexed** `TailStable` is **accepted**, with Phases 19-20
+  to be re-checked against the narrower class. Edits land in Overview item 4's cost sentence, the
+  `TailStable` docstring in the Lean Challenge Statement, the risk register (R2b amended, R2c added),
+  Phase 17's heading, Phase 19, Phase 20, and two stale Phase 21 record bullets. Effort 70 → 72. See
+  "Revision record — plan v9" below)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
@@ -88,6 +102,130 @@ separate, research-first successor that is **not filed here**.
 Definition of done: Stages 1 and 2 land sorry-free with no new axioms, every new flagship carries
 a `docs/theorem-index.md` row and a C2 `AXIOM_BASELINE` pin, and
 `bash scripts/check-module-invariants.sh` passes in full.
+
+### Revision record — plan v9: the residue-indexed `TailStable`, and what it obliges of Phases 19-21
+
+**Research integrated at plan v9: none.** This is a ruling-driven revision that propagates one
+landed code change. Both of this task's reports predate plan v7 and are already reflected in it;
+`Reports Integrated` above is unchanged. Every claim this revision adds is either a quotation of a
+`.decisions.json` ruling or a cited reading of a landed Lean file.
+
+**The two rulings, both dated 2026-10-01T03:14:32Z, both relayed as explicit user rulings.**
+
+1. **Option 2 stands, and plan v8's candidate-1 paragraph is a misattribution the reviser must
+   correct.** The user was asked which of two conflicting records of the tail-stability ruling holds
+   — `.decisions.json`'s 2026-09-30T19:31:18Z entry (option 2, the liveness-filtered transfer) or
+   plan v8's Phase 17 heading (candidate 1, keep `TailStable` as landed) — and ruled: *"Option 2
+   stands. The liveness-filtered forward conjunct, as implemented and committed in sub-phase 16.3,
+   is correct and stays. Plan v8 Phase 17 heading paragraph recording candidate 1 is a
+   MISATTRIBUTION and must be corrected by the reviser … Nothing is reverted; `TailStableRaw`
+   remains the retained raw demand, not the operative one."* That correction is edit 4 below. The
+   dispatch-40 CORRECTION block at Phase 17's heading, which first flagged the conflict and asked
+   for exactly this pass, is left in place: it is the record of the disagreement, and deleting it
+   would be worse than carrying it.
+2. **The residue-indexed `TailStable` is accepted, and Phases 19-20 are to be re-checked against the
+   narrower class.** The user was asked whether to accept a demand narrowing in exchange for a
+   reachable soundness proof, and ruled: *"ACCEPT the residue-indexed `TailStable`. Strengthen the
+   demand to a bounded quantifier over each period's residues, keeping soundness reachable, then
+   re-check Phases 19-20 against the narrower class. The `r = 0` instance must recover the present
+   conjunct verbatim and every reference time must stay a window time so `decidableTailStable`
+   survives. The optional cost-measuring probe was offered and NOT taken; proceed directly."*
+
+**What the demand now is**, as landed at sub-phase 18.3 (`Stable.lean`, commit `51b44026c`) and read
+off the tree at this revision:
+
+```
+TailStable G :=
+  (∀ r ∈ Finset.range G.NBnat,
+      G.iterBack (-G.NB - (r : ℤ)) (G.liveAt (-G.NB - (r : ℤ))) G.NBnat
+        = G.liveAt (-G.NB - (r : ℤ)))
+  ∧ (∀ r ∈ Finset.range G.NFnat,
+      G.iterFwd (G.NM + G.NF + (r : ℤ)) (G.liveAt (G.NM + G.NF + (r : ℤ))) G.NFnat
+        ∩ G.fwdLiveAt (G.NM + G.NF + (r : ℤ)) = G.liveAt (G.NM + G.NF + (r : ℤ)))
+```
+
+with `TailStableRaw` the same without the filter, strengthened in the same way so that
+`tailStable_of_raw` survives. The two demands still differ in exactly one respect, the liveness
+filter on the forward conjunct — ruling 1's option 2, preserved residue by residue.
+
+**Why the single equation was not enough**, stated once so it is not re-litigated: the truth lemma's
+`⊡` clause is pinned to the time its carrier element names (the comparison class is the histories
+agreeing at `τ.state t = (t, w)`, whose first component *is* the time), so no shift normalizes it and
+the clause is needed at **every** `t : ℤ`. Transporting the computed live set from an arbitrary `t`
+to a window representative needs the tail collapse at `t`'s own residue class, and
+`Φ_back L₀ = L₀` is a statement about one residue class only. Two derivations of the shifted equation
+from the single-residue demand were worked through and **both fail**; they are recorded under
+Phase 18's heading and must not be re-attempted.
+
+**What it costs — three things, stated plainly rather than absorbed.**
+
+1. **The certificate class is narrower.** The demand is strictly stronger, so a frame whose liveness
+   wraps faithfully at one residue but not at another is now **rejected**. The class is what Phases
+   19 and 20 claim completeness relative to, which is why ruling 2 directs a re-check and why edits
+   5, 6 and 7 below exist. Phase 19 is insulated by construction — it carries `hstab` as a
+   *hypothesis*, so a narrower demand narrows the theorem's reach without touching its proof — while
+   Phase 20 must **construct** a certificate meeting the demand and is therefore where the narrowing
+   is actually paid for.
+2. **The checker's cost is quadratic, and this is the one piece of bad news.** Deciding `TailStable`
+   goes from **two** `Φ` applications to `G.NBnat + G.NFnat` of them, each over a live-position set
+   whose own computation is a fixpoint on the timed carrier. Phase 17's measured figures (`Probe.triv`
+   at 11 ms, `decide Fixture.cert.TailStable` not returning in 15 minutes interpreted) were taken
+   against the two-application form and are now **lower bounds**, not estimates. No complexity claim
+   is made in the Lean tree and none is added here — this is a recorded cost, not a bound.
+3. **Nothing landed was weakened to buy it.** The `r = 0` instances are the pre-residue conjuncts
+   verbatim (`tailStable_back`, `tailStable_fwd`, `tailStableRaw_back`, `tailStableRaw_fwd`), so
+   every theorem previously stated from `hTS.1` / `hTS.2` is unchanged, and `FixtureStable`'s two
+   negative results are re-proved through those projections with their statements unchanged. Every
+   reference time named is a window time (`refBack_mem_winTimes`, `refFwd_mem_winTimes` — the lower
+   bound `-2 * G.NB ≤ -G.NB - r` is where the doubled window earns its factor), so both sides stay
+   computed `Finset`s and `decidableTailStable` stays a bounded conjunction of `Finset` equality
+   tests, synthesized rather than asserted.
+
+**The eight edits, and only those eight.**
+
+1. **The metadata block** — Status (two stale descriptions corrected, disclosed in the line itself),
+   Effort 70 → 72, Plan Version 8 → 9.
+2. **This record.**
+3. **Overview item 4's cost sentence**, which still said the design "keeps the checker one `Φ`
+   application beyond plan v2's fixpoints", and its re-presentation sentence, which sub-phase 16.2c
+   refuted and which no reviser pass had yet corrected in the Overview.
+4. **Phase 17's heading**: the plan-v8 candidate-1 paragraph is marked as the misattribution ruling 1
+   names, pointing at the dispatch-40 CORRECTION block above it and at the residue indexing that
+   finally landed. The paragraph is **not deleted** — ruling 1 says to correct it, and the
+   dispatch-40 block's reason for keeping it stands.
+5. **The Lean Challenge Statement's `TailStable` docstring**, which carried the dispatch-40 filtered
+   amendment but not the residue indexing. The `def`'s body is `sorry` in this pinned statement and
+   is unchanged; only the docstring moves.
+6. **The risk register**: R2b amended to be about the residue-indexed filtered conjunct (its probe
+   must now evaluate every residue, and its "the backward half is free at the embedding" premise is
+   no longer free); one new row **R2c** for the narrowed-class exposure of Phases 19-20. R2 and
+   R2b's earlier text are kept as the durable record of what was foreseen.
+7. **Phase 19** — a READ FIRST block stating the every-residue obligation, the universal-side bullet
+   re-pointed from `tailStable_iff_window` (period multiples only, i.e. residue 0) to
+   `exists_win_live_eq` (every `t`), the `hstab` bullet amended, Timing 5 → 6.
+8. **Phase 20** — the `TailStable` bullet rewritten (the backward half is still short but must now be
+   proved uniformly in `r`; the forward half is the filtered conjunct at every residue), the probe
+   instruction re-pointed at the residue-indexed conjunct, the fallback menu corrected (candidates 1
+   and 2 are spent), Timing 6 → 7. **Plus two stale Phase 21 record bullets**: the condition-set
+   bullet, whose "five clauses … (C3) `BoxFaithful`" list dispatch 41 superseded and whose promised
+   inline annotation was never written, and the ModelChecker hand-off bullet, which still tells the
+   paired repository that "tail-stability requires re-presentation rather than rejection" — false
+   since 16.2c, and now also silent about the residue-indexed checker cost that bullet's own
+   search-bound hand-off depends on.
+
+**What this revision does NOT do.** It changes no flagship theorem statement, no `PlusSlicedCertificate`
+field, no dependency, no non-goal and no bound commitment (there are none, deliberately). It adds,
+removes, renumbers and rescopes no phase, and changes no phase marker except by recording markers
+that landed. It states `exists_tailStable_repr` in no form, because the lemma is false. It prescribes
+no `sorry` and no vacuous placeholder. It does not revert the liveness filter or the residue
+indexing, and it does not re-open Phases 1-18.
+
+**One contradiction carried forward from plan v8, deliberately NOT edited, for the second time.** The
+sub-wave table under `## Implementation Phases` still lists sub-wave 13 as "16.2 — `TailStable`,
+`tailStable_iff_window`, `exists_tailStable_repr`". The third name is the lemma 16.2c refuted. The
+table is a *scheduling* record of what 16.2 was dispatched to do; Phase 16's own heading and its
+`#### Reasoned Exclusions` record carry the authoritative correction. Reported here rather than
+silently rewritten, as at plan v8.
 
 ### Revision record — plan v8: the tail-stability ruling, and what it obliges of Phases 17 and 20
 
@@ -464,6 +602,20 @@ below implement them.
    stable is **re-presented** with the pre-period absorbed into `mid` and the period multiplied by
    the cycle length; the frame — and hence truth — is unchanged. This keeps the checker one `Φ`
    application beyond plan v2's fixpoints and every clause decidable on the window.
+   **AMENDED at plan v9 — the last two sentences of this item are both superseded, and both were
+   wrong in the same direction: they understated what tail-stability demands and what it costs.**
+   (i) *Re-presentation does not repair unstable tails.* Sub-phase 16.2c proved the forward demand
+   unsatisfiable at a named certificate for **every** member of the re-presentation family
+   (`FixtureStable.lean`), because `Φ_fwd` is a reachability transfer and a re-presentation changes
+   neither `posAt` nor the reachability. Tail-stability is a demand on the **frame together with its
+   closure**, not on the presentation; `exists_tailStable_repr` is false and is stated nowhere. The
+   demand's forward conjunct is accordingly **liveness-filtered** (`Φ_fwd R₀ ∩ R₀fwd = R₀`, the user's
+   option-2 ruling, landed at sub-phase 16.3). (ii) *The checker is not one `Φ` application.* Under
+   the residue-indexed demand landed at sub-phase 18.3 — a bounded quantifier over each period's
+   residues, which the truth lemma's `⊡` clause requires and which the user accepted — deciding
+   `TailStable` costs `G.NBnat + G.NFnat` `Φ` applications, not two. Every clause is still decidable
+   on the window, because every residue reference time is still a window time; the cost is quadratic
+   and is recorded, not bounded. See "Revision record — plan v9".
 5. **`Certifies` keeps its four clause groups** — existential from liveness, universal, box,
    target — all read on the window under tail-stability. Plan v2's Phase 15 constraint survives
    verbatim: no clause may quantify over a time in a way that would need alignment. Nothing is
@@ -1049,7 +1201,23 @@ computed **forward**-live set at the right reference time. The raw conjunction
 the same proof and the same content. Both predicates are decidable, every window biconditional
 stated from `TailStable` keeps its statement, and `hstab : G₀.TailStable` below is the repaired
 predicate. See the sub-phase 16.3 record under Phase 16's heading for the full table of what changed
-and what did not. -/
+and what did not.
+
+**AMENDED at plan v9 — residue-indexed, under the user ruling of 2026-10-01.** Each conjunct is now a
+bounded quantifier over its **own period's residues** rather than a single equation at `-G.NB` and
+`G.NM + G.NF`: the backward one over `r < G.NBnat` at reference time `-G.NB - r`, the forward one over
+`r < G.NFnat` at `G.NM + G.NF + r`, with the liveness filter preserved residue by residue. The
+`r = 0` instances are the pre-residue conjuncts verbatim (`tailStable_back`, `tailStable_fwd`), so
+nothing stated from the single-equation form is weakened, and `TailStableRaw` is strengthened the same
+way so `tailStable_of_raw` survives. *Why*: the truth lemma's `⊡` clause is pinned to the time its
+carrier element names, so no shift normalizes it and it is needed at every `t : ℤ`; transporting the
+computed live set to a window representative needs the tail collapse at `t`'s own residue class, and
+`Φ_back L₀ = L₀` constrains one residue class only. *What it costs*: the class is strictly narrower —
+a frame whose liveness wraps faithfully at one residue but not another is rejected — and the checker
+goes from two `Φ` applications to `G.NBnat + G.NFnat` of them. *What it does not cost*: decidability,
+since every residue reference time is a window time (`refBack_mem_winTimes`, `refFwd_mem_winTimes`),
+so both sides stay computed `Finset`s and `decidableTailStable` stays synthesized. The landed
+definition is at `Stable.lean`'s `TailStable`; `hstab` below is that predicate. -/
 def PlusSlicedCertificate.TailStable {Γ Del : PlusContext}
     (G : PlusSlicedCertificate Γ Del) : Prop := sorry
 
@@ -1131,7 +1299,8 @@ Stage 1 or Stage 2 calls it; it stays compiled, documented and in the tree.
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
 | **R2 (report 706).** The tail-stability design has a gap not visible without building it: forward liveness from the back tail is not periodic in `t`, and the `Φ`-fixpoint demand is the proposed repair rather than a proved one. This is the amendment's **only** visible failure mode | H | M | Phase 16 is dedicated to it, is scheduled **before** the checker rather than discovered inside it, and carries report 706's concrete four-state counterexample as a **named test fixture** that must be built and evaluated before the demand is declared correct. If the fixture shows the demand is too weak, the correct response is to strengthen the demand (a deeper `Φ` iteration, or a type-recurrence cut on slices) and record the change loudly — never to weaken the theorem or reach for a `sorry`. **AMENDED at plan v8 — the anticipated direction was WRONG, and the row is kept as the record of what was foreseen.** This mitigation anticipated only the demand turning out too *weak*. Sub-phase 16.2c showed the **opposite**: too *strong*. `Fixture.not_tailStable` proves `Φ_fwd R₀ = R₀` unsatisfiable at a frame whose closure carries a tail-dead eventuality, and unsatisfiable at **every** member of the re-presentation family — so the fixture did not ask for a deeper `Φ` iteration or a type-recurrence cut, it exhibited a demand **no presentation can meet**. What the fixture did do is exactly what this row demanded of it: it was built and evaluated **before** the demand was declared correct, and it is the reason the design question surfaced at Phase 16 instead of inside Phases 19-20. The strengthening this row anticipated is superseded by the user's plan-v8 ruling at Phase 17's heading (candidate 1: keep the demand, accept the narrowed class, attempt the conjecture) and by the new row R2b immediately below |
-| **R2b — AMENDED at dispatch seq 40.** The ruling actually taken is **option 2** (the liveness-filtered transfer), not candidate 1: `TailStable`'s forward conjunct is now `Φ_fwd R₀ ∩ R₀fwd = R₀`, so this row's risk is no longer "the raw equation is unsatisfiable at the embedding" but the strictly weaker "the **filtered** equation is unsatisfiable there". The probe-first mitigation stands verbatim with `Φ_fwd R₀ ∩ R₀fwd = R₀` substituted for `Φ_fwd R₀ = R₀`, and the escape-hatch menu is candidates 3 and 4 only. Likelihood drops from M on the evidence that the fixture's refuting witness is exactly a reachable-but-forward-dead position, which the filter removes by construction. The pre-amendment text follows, unedited. **R2b (plan v8 — the live risk under the tail-stability ruling).** `Φ_fwd R₀ = R₀` is **unsatisfiable at Phase 20's embedding**, as it is at `Fixture.cert`. `Φ_fwd` is a reachability transfer, so a tail-dead eventuality that is merely *coherent* at the window's right endpoint — realized by no run — is reachable from `R₀` at every period length and defeats the equation. The plan-v8 ruling selects candidate 1 and bets on the conjecture that the L lassos' in-cycle fulfilment leaves no such label coherent at the embedding; **16.2c proves nothing about that conjecture either way** | H | M | Phase 20's **probe-first** bullet: before any proof attempt, build one embedded certificate from a small existing L witness family and evaluate `Φ_fwd R₀ = R₀` with `#guard`, recording verdict and wall time — minutes to refute rather than a phase. **Escape hatch on refutation**: STOP and escalate for a fresh ruling among candidates 2, 3 and 4 retained at Phase 17's heading; never weaken `TailStable`, never state `exists_tailStable_repr`, never `sorry`. Impact is H because Phase 20 is the only completeness theorem this research supports and Phase 19 already discharges its own exposure by carrying `hstab` as a hypothesis. Likelihood is M and not H because the fixture's obstruction is a *closure*-level junk label at a frame built to be adversarial, whereas the embedding's `slab` is built from the lassos' own labels — a genuinely different situation, not evidence for the conjecture |
+| **R2b — AMENDED AGAIN at plan v9; read this clause first.** Two of this row's premises are superseded by the residue-indexed demand landed at sub-phase 18.3. (i) The `#guard` probe it asks for must evaluate the forward conjunct at **every** `r < G.NFnat`, not at `r = 0` alone, so the probe is `G.NFnat` times the work and its wall time is the figure to record. (ii) The row's companion assumption — carried in Phase 20's bullet, that the **backward** half is free at the embedding because `Φ_back` is the identity under `i → i` self-loops — is no longer free as stated: the identity argument still works, but it must now be run at a **generic** reference time `-G.NB - r` and proved uniformly in `r`, which is a lemma rather than a one-liner. Neither change alters this row's Impact or Likelihood. The pre-v9 text follows, unedited. **AMENDED at dispatch seq 40.** The ruling actually taken is **option 2** (the liveness-filtered transfer), not candidate 1: `TailStable`'s forward conjunct is now `Φ_fwd R₀ ∩ R₀fwd = R₀`, so this row's risk is no longer "the raw equation is unsatisfiable at the embedding" but the strictly weaker "the **filtered** equation is unsatisfiable there". The probe-first mitigation stands verbatim with `Φ_fwd R₀ ∩ R₀fwd = R₀` substituted for `Φ_fwd R₀ = R₀`, and the escape-hatch menu is candidates 3 and 4 only. Likelihood drops from M on the evidence that the fixture's refuting witness is exactly a reachable-but-forward-dead position, which the filter removes by construction. The pre-amendment text follows, unedited. **R2b (plan v8 — the live risk under the tail-stability ruling).** `Φ_fwd R₀ = R₀` is **unsatisfiable at Phase 20's embedding**, as it is at `Fixture.cert`. `Φ_fwd` is a reachability transfer, so a tail-dead eventuality that is merely *coherent* at the window's right endpoint — realized by no run — is reachable from `R₀` at every period length and defeats the equation. The plan-v8 ruling selects candidate 1 and bets on the conjecture that the L lassos' in-cycle fulfilment leaves no such label coherent at the embedding; **16.2c proves nothing about that conjecture either way** | H | M | Phase 20's **probe-first** bullet: before any proof attempt, build one embedded certificate from a small existing L witness family and evaluate `Φ_fwd R₀ = R₀` with `#guard`, recording verdict and wall time — minutes to refute rather than a phase. **Escape hatch on refutation**: STOP and escalate for a fresh ruling among candidates 2, 3 and 4 retained at Phase 17's heading; never weaken `TailStable`, never state `exists_tailStable_repr`, never `sorry`. Impact is H because Phase 20 is the only completeness theorem this research supports and Phase 19 already discharges its own exposure by carrying `hstab` as a hypothesis. Likelihood is M and not H because the fixture's obstruction is a *closure*-level junk label at a frame built to be adversarial, whereas the embedding's `slab` is built from the lassos' own labels — a genuinely different situation, not evidence for the conjecture |
+| **R2c — NEW at plan v9. The residue-indexed `TailStable` narrows the class Phases 19-20 claim completeness relative to, and Phase 20 is where that is paid for.** The demand landed at sub-phase 18.3 is strictly stronger than the one Phases 19 and 20 were written against: a frame whose liveness wraps faithfully at one residue but not at another is now rejected. Phase 19 is insulated by construction — it carries `hstab` as a **hypothesis**, so the narrowing shrinks the theorem's reach without touching its proof — but Phase 20 must **construct** a certificate meeting the demand at every `r < G.NBnat` and every `r < G.NFnat`, and its text was written for the `r = 0` obligation alone. A secondary exposure is cost, not correctness: deciding `TailStable` is now `G.NBnat + G.NFnat` `Φ` applications rather than two, and Phase 17's measured figures were taken against the two-application form, so Phase 20's probe and Phase 21's gates should expect worse | H | M | The user accepted the narrowing explicitly, with the re-check of Phases 19-20 as the stated condition (ruling of 2026-10-01, `.decisions.json`), and plan v9's edits 7 and 8 are that re-check: Phase 19 carries a READ FIRST block naming the every-residue obligation and cites `exists_win_live_eq` rather than `tailStable_iff_window`, which holds at period multiples only; Phase 20's `TailStable` bullet is rewritten for both halves at every residue and keeps its probe-first instruction, now against the residue-indexed conjunct. Impact is H because Phase 20 is the only completeness theorem this research supports. Likelihood is M and not H because the `r = 0` instances are the old conjuncts verbatim, so the construction has a proved starting point at one residue and the question is uniformity in `r`, not a new obstruction — and because the self-loop structure that makes the backward half short is residue-independent. **If the uniform version is refuted at the embedding, STOP and escalate** for a fresh ruling; never weaken `TailStable`, never state `exists_tailStable_repr`, never `sorry` |
 | The sliced frame's Saturation and Limit discharges are new work on an infinite carrier | H | M | `SharingSkeleton.frame` is the worked template and `saturation_of_fib_finite`'s docstring names exactly this case. Phase 14 is a whole phase for the frame alone, and its verification requires the two instance discharges to be named lemmas rather than inline `by` blocks, so Phase 19 can cite them |
 | Phase 15's existential fair-path fixpoint has no precedent in the tree. `AUFix` is the universal operator and gives the `A[g U e]` half only; the liveness computation needs a greatest-fixpoint / cycle-reachability argument over the product graph, in both time directions | H | M | Phase 15 is dedicated to it, is scheduled before the checker, and carries an explicit decimal-sub-phase contingency. The Q5 factorization proved in that same phase is what lets the forward and backward halves be computed separately and then combined, so the two fixpoints never have to be solved jointly |
 | Phase 19 (relative completeness) needs the **completeness direction** of the liveness fixpoint: that every live position is realized by an actual labelled path | H | M | Phase 15 proves both directions of the characterization as named lemmas, so Phase 19 cites a lemma rather than re-deriving it. If Phase 19 overruns one agent run it decomposes into 19.1 and 19.2, never into a `sorry` |
@@ -4087,7 +4256,37 @@ it.
   `Φ_fwd R₀ = R₀`. The fallback menu of candidates 3 and 4 stays live; candidate 1 is no longer in
   it, since the raw demand is the one the ruling rejected.
 
-**BLOCKER RESOLVED — USER RULING, 2026-09-30 (plan v8).** The blocker raised at dispatch seq 38 is
+**THE PARAGRAPH IMMEDIATELY BELOW IS A MISATTRIBUTION, RULED SO BY THE USER ON 2026-10-01, AND IS
+CORRECTED HERE AT PLAN v9. Read this block before it; do not act on the paragraph it corrects.** The
+conflict the dispatch-40 CORRECTION block above first flagged was put to the user, who ruled:
+*"Option 2 stands. The liveness-filtered forward conjunct, as implemented and committed in sub-phase
+16.3, is correct and stays. Plan v8 Phase 17 heading paragraph recording candidate 1 is a
+MISATTRIBUTION and must be corrected by the reviser — most likely aux dispatch 39's blocker-research
+recommendation read as a ruling. Nothing is reverted; `TailStableRaw` remains the retained raw demand,
+not the operative one."* (`.decisions.json`, 2026-10-01T03:14:32Z.) Three consequences, all of them
+already landed in the tree rather than pending:
+
+- **Candidate 1 was never ruled and is not the live design.** `TailStable` does **not** keep its
+  pre-16.3 definition. Its forward conjunct is the liveness-filtered `Φ_fwd R₀ ∩ R₀fwd = R₀`, and the
+  raw conjunction survives beside it as `TailStableRaw`, retained but not operative.
+- **The demand is additionally residue-indexed**, at sub-phase 18.3, under a second user ruling of the
+  same timestamp: each conjunct is a bounded quantifier over its own period's residues, because the
+  truth lemma's `⊡` clause is needed at every `t : ℤ` and the single equation constrains one residue
+  class only. The `r = 0` instances are the pre-residue conjuncts verbatim. See "Revision record —
+  plan v9" and Phase 18's heading.
+- **Phase 17's Tasks list is still executable verbatim and is still unchanged** — which is what the
+  paragraph below gets right, for the wrong reason. `TailStable` is one of the three structural
+  conjuncts, `decidableTailStable` is synthesized, and `Check.lean` reads no conjunct's internal
+  shape, so neither the filter nor the residue indexing touches a bullet of this phase. The checker's
+  **cost** does change (`G.NBnat + G.NFnat` `Φ` applications, not two); the checker's **text** does
+  not. Do NOT re-escalate, and do NOT revert either repair on an implementing dispatch's own
+  authority.
+
+The paragraph is kept rather than deleted for the reason the dispatch-40 block gives: it is the
+record of a disagreement, and the ruling directs the reviser to correct it, not to erase it.
+
+**BLOCKER RESOLVED — USER RULING, 2026-09-30 (plan v8). MISATTRIBUTED; SUPERSEDED BY THE BLOCK ABOVE.
+RETAINED AS THE RECORD, NOT AS AN INSTRUCTION.** The blocker raised at dispatch seq 38 is
 **resolved, not deferred**. Of the four candidates enumerated under "What was needed" below, the
 user selected **candidate 1**: keep `TailStable` exactly as landed —
 `TailStable G := G.Φ_back G.L₀ = G.L₀ ∧ G.Φ_fwd G.R₀ = G.R₀`
@@ -4537,11 +4736,35 @@ either route.
 
 ---
 
-### Phase 19: Completeness relative to tail-stable sliced models [NOT STARTED]
+### Phase 19: Completeness relative to tail-stable sliced models [IN PROGRESS]
 
 **Goal**: Prove `exists_plusSlicedCertificate_of_tailStable_countermodel`: a countermodel carried
 by a bi-serial, tail-stable sliced structure yields a certificate on the same carrier that the
 checker accepts.
+
+**READ FIRST — the certificate class narrowed under you at sub-phase 18.3, and this phase's text was
+written against the wider one (plan v9).** `TailStable` is no longer two equations; it is a bounded
+quantifier over each period's residues (`Stable.lean`; see Phase 18's heading and "Revision record —
+plan v9"). Four consequences for this phase, in the order they bite:
+
+1. **This phase is the *insulated* one, and that is not an accident to be relied on carelessly.**
+   `hstab : G₀.TailStable` is a **hypothesis** of this theorem, so a stronger demand narrows what the
+   theorem *reaches* without adding a single proof obligation to it. Nothing below needs to
+   *establish* tail-stability at any residue. The phase whose job that is, is Phase 20.
+2. **But the clause this phase discharges is now stated at every residue**, so its citation changes.
+   The universal-side bullet below cited `tailStable_iff_window`, which holds at the **period
+   multiples** `-G.NB - k * G.NB` only — residue 0. The transport that holds at an arbitrary `t` is
+   `Tail.lean`'s `exists_win_live_eq` (every `t` has a window representative carrying the same slice
+   **and** the same live set) with `exists_win_liveAt_eq` its computed companion, and the residue
+   instances `live_of_mem_liveAt_refBack` / `_refFwd` and `mem_liveAt_of_live_refBack` / `_refFwd`
+   beneath them. Cite those; `tailStable_iff_window` remains true and remains the right citation only
+   where the time genuinely is a period multiple.
+3. **What this phase must produce is unchanged**, including the four carrier equations: the produced
+   `G` differs from `G₀` only in `bx`, `target` and `targetTime`, and `G.TailStable` is discharged
+   from `hstab` because the demand mentions none of those three fields.
+4. **Do not weaken the theorem to recover the wider class.** If the narrowing turns out to make this
+   theorem's reach unacceptable, that is an escalation, not an edit: STOP and report. Never state
+   `exists_tailStable_repr` in any form (it is false), never weaken `TailStable`, never `sorry`.
 
 **Tasks**:
 - [ ] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Complete.lean`.
@@ -4567,6 +4790,15 @@ checker accepts.
       `plusTypeAtM_stab_iff_forall_sameState` turns `⊡χ ∈ G.slab t w` into `χ` at every history
       through `(t, w)`. So no live position over `(t, w)` omits `χ`. Tail-stability is what makes
       the window check equivalent to the `∀ t` statement — cite `tailStable_iff_window`.
+      *(AMENDED at plan v9: `tailStable_iff_window` is the right citation only at the period
+      multiples `-G.NB - k * G.NB` — residue 0. The `∀ t` statement needs the transport that holds at
+      an **arbitrary** time, which is `Tail.lean`'s `exists_win_live_eq` (same slice **and** same live
+      set at a window representative), with `exists_win_liveAt_eq` for the computed side and
+      `live_of_mem_liveAt_refBack` / `_refFwd`, `mem_liveAt_of_live_refBack` / `_refFwd` as the
+      residue-level lemmas it is built from. Cite whichever the time in hand actually is; do not
+      stretch the period-multiple lemma over an arbitrary residue, which is exactly the gap that
+      forced the residue indexing. Both consume `hbox : G.BoxLabelFaithful`, which this phase
+      constructs rather than carries — so construct it **before** the universal side, not after.)*
 - [ ] Discharge **both box clauses** from `plusBox_const`, and the **target clause** from the
       refuting time. *(plan v7: (C3) `BoxFaithful` and (C3b) `BoxLabelFaithful` are two obligations
       with one source — in an L⁺ model a boxed formula's truth is independent of history and time,
@@ -4576,7 +4808,12 @@ checker accepts.
       Phase 17 lists it among the structural conjuncts, and unlike `BiSerial` and `TailStable` it
       is **not** carried by a hypothesis of this theorem — it must be constructed.)*
 - [ ] Discharge `BiSerial` and `TailStable` from the hypotheses `hser` and `hstab` directly; they
-      are carried, not re-derived.
+      are carried, not re-derived. *(plan v9: this stays a one-liner under the residue-indexed demand,
+      and the reason is worth stating so it is not re-examined: `TailStable` quantifies over `n`,
+      `back`, `mid`, `fwd` and the closure only, and the produced `G` agrees with `G₀` on all four
+      carrier fields, so `hstab` transfers by the carrier equations at **every** residue at once. If
+      the produced certificate ever stops agreeing with `G₀` on a carrier field, this bullet breaks
+      and the theorem statement breaks with it — that is what the four conclusion equations protect.)*
 - [ ] Record in the module docstring what this theorem is and is not. It is **completeness relative
       to tail-stable sliced models**. It is **not** the finite model property: it says nothing
       about whether a ℤ-time non-validity has such a countermodel at all. It is also **not**
@@ -4585,7 +4822,10 @@ checker accepts.
       bound and no period bound is stated here, because none is proved; and the full-L⁺ sliced
       finite model property is **open, not refuted**.
 
-**Timing**: 5 hours
+**Timing**: 6 hours *(5 through plan v8; **+1 at plan v9** for the every-residue re-check the user's
+ruling of 2026-10-01 directs, which this phase pays almost entirely in citation discipline rather than
+in new proof: finding the right transport lemma for an arbitrary time, and constructing `hbox` before
+the universal side needs it.)*
 
 **Depends on**: 18
 
@@ -4643,7 +4883,47 @@ this research supports**.
       `Φ_back` is the identity on the position sets it acts on, so the fixed-point demand
       `Φ_back L₀ = L₀` is immediate. **Both of these are genuinely short**, and both must be
       **proved**, not asserted. What is *not* short is the forward half, which is the next bullet.
-- [ ] **PRINCIPAL RISK OF THIS PHASE — the forward conjunct `Φ_fwd R₀ = R₀`.** This is the
+      *(AMENDED at plan v9 — the backward half is still short but is no longer a single equation.
+      Under the residue-indexed demand it is `∀ r < G.NBnat, iterBack (-G.NB - r) (liveAt (-G.NB - r))
+      NBnat = liveAt (-G.NB - r)`: the identity argument is unchanged and is residue-independent —
+      a self-loop is its own backward successor at every time — but it must be run at a **generic**
+      reference time and proved **uniformly in `r`**, which is a lemma with a bound variable rather
+      than a one-liner at `-G.NB`. Write it that way from the start: prove the generic statement at an
+      arbitrary `t₀ < 0` and instantiate, rather than proving `r = 0` and then generalizing.
+      `Tail.lean`'s reference-time-generic `tailPos` / `headPos` layer exists precisely so a proof of
+      this shape does not have to be re-derived — read it before writing this bullet. Budget this at
+      the hour plan v9 adds to the phase, not at zero.)*
+- [ ] **PRINCIPAL RISK OF THIS PHASE — the forward conjunct. READ THE PLAN-v9 CORRECTION BELOW
+      BEFORE THE BODY OF THIS BULLET; the demand it names is not the demand that landed.** The
+      operative forward conjunct is **neither** `Φ_fwd R₀ = R₀` **nor** the candidate-1 bet this
+      bullet's body describes. It is, at every residue:
+      `∀ r < G.NFnat, iterFwd (G.NM + G.NF + r) (liveAt (G.NM + G.NF + r)) NFnat ∩ fwdLiveAt (G.NM +
+      G.NF + r) = liveAt (G.NM + G.NF + r)` — the **liveness-filtered** transfer (the user's option-2
+      ruling, landed at sub-phase 16.3) **residue-indexed** (the user's ruling of 2026-10-01, landed at
+      sub-phase 18.3). Three things that changes for this bullet, and one it does not:
+  - **The body's mechanism paragraph still applies, and is still the reason to budget this as the hard
+    bullet** — `Φ_fwd` is a reachability transfer and the one-step clauses leave the arriving label's
+    `untl`-membership unconstrained. What the **filter** does is remove exactly the
+    reachable-but-forward-dead positions that mechanism produces (`Fixture.not_mem_R₀fwd_pR` proves it
+    removes the fixture's own witness), so the obstruction 16.2c exhibited is the one the landed demand
+    was repaired to dodge. The risk is therefore no longer "the raw equation is unsatisfiable at the
+    embedding" but the strictly weaker "the **filtered** equation fails at some residue there".
+  - **It is now `G.NFnat` obligations, not one**, and the argument must be uniform in `r`. The
+    embedding's escape route — the L lassos fulfil their eventualities inside their own cycles — is
+    residue-independent in shape, which is the reason for optimism; but `posAt` still ranges over
+    every label coherent at a slice, so uniformity must be **proved**, not inferred from the `r = 0`
+    case.
+  - **Candidate 1 is not the live design and was never ruled** (`.decisions.json`, 2026-10-01: the
+    plan-v8 candidate-1 record is a misattribution). Do not "keep `TailStable` as landed" in the
+    pre-16.3 sense, and do not treat `TailStableRaw` as the demand to meet — it is retained, not
+    operative. `tailStable_of_raw` means a proof of the raw demand would suffice, if one were
+    available; 16.2c is the reason to expect none.
+  - **Unchanged**: this is a **conjecture, not a corollary of the construction**, and it is this
+    phase's hard bullet. Do not plan around it as "immediate".
+
+      *The pre-v9 body of this bullet follows, unedited, as the record of what was foreseen and because
+      its mechanism analysis is still the right one.* **PRINCIPAL RISK OF THIS PHASE — the forward
+      conjunct `Φ_fwd R₀ = R₀`.** This is the
       conjecture the plan-v8 ruling bets on (candidate 1 at Phase 17's heading, selected by the user
       on 2026-09-30), and it is a **conjecture, not a corollary of the construction**. Sub-phase
       16.2c proved the same demand **false** at `Fixture.cert`, over the whole re-presentation
@@ -4668,7 +4948,16 @@ this research supports**.
     embedding's `slab` and `plusClosureOf (Γ ++ Del)` are tight enough that no tail-dead eventuality
     is coherent at the right endpoint — a claim about the closure and the lassos' labels, not about
     the edge relation.
-  - **PROBE FIRST, before attempting the proof.** Build one embedded certificate from a small
+  - **PROBE FIRST, before attempting the proof.** *(AMENDED at plan v9: the thing to evaluate is the
+    **landed** `G.TailStable` — `#guard decide G.TailStable`, or its two conjuncts separately when the
+    pair does not return — not `Φ_fwd R₀ = R₀`, which is a demand the tree no longer carries. That is
+    `G.NBnat + G.NFnat` `Φ` applications rather than two, so expect the probe itself to be the
+    expensive thing: Phase 17 measured `decide Fixture.cert.TailStable` **not returning in 15 minutes
+    interpreted** at the two-application form, at a 20-timed-vertex problem. Keep the embedded
+    certificate as small as the construction allows, evaluate the backward conjunct first since it is
+    the one the previous bullet expects to hold, and if neither returns, record **that** as the
+    verdict — a non-returning probe is a measured fact about the present fixpoint implementation, not
+    a refutation of the conjunct, and it must not be reported as one.)* Build one embedded certificate from a small
     existing L witness family and evaluate `Φ_fwd R₀ = R₀` on it with `#guard` (or
     `#eval decide (G.Φ_fwd G.R₀ = G.R₀)`), then record the verdict **and the wall time** in this
     phase's record. This is the same work either way if the conjecture holds — this phase's
@@ -4676,11 +4965,17 @@ this research supports**.
     **minutes instead of a phase** if it does not. Do not start the proof before the probe returns.
   - **Fallback if the probe or the proof refutes the conjecture: STOP and ESCALATE.** Do **not**
     re-derive the analysis; it is already recorded at Phase 17's heading and in `FixtureStable.lean`'s
-    header. Do **not** pick a repair on your own authority. Report the refuting witness and request a
-    fresh ruling among the three retained candidates at Phase 17's heading: **candidate 2** — the
-    liveness-filtered transfer `Φ_fwd R₀ ∩ G.liveAt G.winHi' = R₀` — is the only one that removes the
-    over-approximation **while keeping the induction** that `iterFwd_R₀` supplies, at the cost of
-    redoing `tailStable_iff_window`'s forward half; **candidate 3** — the two-reference-time liveness
+    header. Do **not** pick a repair on your own authority. Report the refuting witness — **naming the
+    residue `r` at which it refutes**, since that is the new information a residue-indexed demand can
+    yield — and request a fresh ruling. *(AMENDED at plan v9: the menu below is two items shorter than
+    it reads. **Candidate 2 is spent** — the liveness filter is the ruling that was taken and is
+    landed, so it is not available as a fallback; **candidate 1 is spent** too, and was never ruled.
+    The live menu is **candidate 3** and **candidate 4** only, plus one option the pre-v9 text could
+    not have listed: a **per-residue weakening** of the demand, i.e. requiring the conjunct at fewer
+    than all residues. That last is a genuine option and also a genuine hazard — it is the exact
+    strengthening the truth lemma's `⊡` clause forced, so weakening it re-opens Phase 18, and it may
+    be proposed to the user only together with that consequence stated plainly.)* The retained
+    candidates at Phase 17's heading: **candidate 3** — the two-reference-time liveness
     equality — is decidable and visibly satisfiable but carries **no** induction, so it does not by
     itself give the wrap; **candidate 4** keeps the definition and records the narrowing as a stated
     limitation of the whole Stage 2 result. Under no circumstances weaken `TailStable`, state
@@ -4708,7 +5003,10 @@ this research supports**.
 - [ ] Record the hand-off to task 704: this theorem is a ready-made non-vacuity witness for its
       shape gates.
 
-**Timing**: 6 hours *(4 through plan v7; **+2 at plan v8**. Roughly half an hour of the addition is
+**Timing**: 7 hours *(4 through plan v7; **+2 at plan v8**; **+1 at plan v9** for the every-residue
+obligation on both halves of `TailStable` — the backward half becomes a uniform-in-`r` lemma at a
+generic reference time rather than a one-liner at `-G.NB`, and the probe is `G.NBnat + G.NFnat` `Φ`
+applications rather than two. The plan-v8 rationale follows.)* *(Plan v8: roughly half an hour of its addition is
 the `#guard` probe of `Φ_fwd R₀ = R₀` on one concrete embedded certificate; the rest is the forward
 half of `TailStable`, which the ruling promotes from "immediate" to this phase's principal risk.
 **What the added hours buy**: the difference between learning in minutes, from a concrete
@@ -4851,6 +5149,27 @@ task with an honest record of what was proved and what was not.
       *(added at plan v7; the pins are unaffected, since (C3b) adds no flagship — the four index
       rows and four `AXIOM_BASELINE` lines stand at four and the baseline count still moves
       22 → 26.)*
+      *(**THE CORRECTED LIST, written at plan v9 — this is the inline annotation Phase 17's deviation
+      2 promised and no pass had yet supplied; the five-clause list above is superseded and must not be
+      recorded as the condition set.** What `Certifies` actually carries, read off the landed
+      `Check.lean`, is **nine** conjuncts: three structural — `BiSerial`, `TailStable`, (C3b)
+      `BoxLabelFaithful` — then `BoxLiveFaithful`, then (C4) `Target` with three target-group side
+      conditions (`targetTime ∈ winTimes`, `TargetPathPos`, `targetPos targetTime ∈ liveAt targetTime`),
+      then (C5) `StabFaithful`. Two corrections to the superseded list, each with its reason: (C3)
+      `BoxFaithful` is **not** a conjunct of `Certifies` — `AgreesOnState` pins the slice labelling to a
+      position's label only on the state shapes, so for a `χ` of any other shape `χ ∈ G.slab t w` is
+      unconstrained data and the demand would be the wrong object; `BoxFaithful` stays in `Basic.lean`,
+      unweakened and unused by `Certifies`, and the clause carried instead is `Check.lean`'s
+      `BoxLiveFaithful`, on **live** positions. And `G.targetTime ∈ G.winTimes` is a target-group side
+      condition forced by the computed live set existing only at window times; it narrows the class not
+      at all. **What to record about `TailStable`, added at plan v9**: it is the liveness-filtered
+      forward conjunct (option 2, sub-phase 16.3) **residue-indexed** over each period's residues
+      (sub-phase 18.3), it narrows the class to frames whose liveness wraps faithfully at **every**
+      residue, and deciding it costs `G.NBnat + G.NFnat` `Φ` applications rather than two. Record the
+      narrowing and the cost plainly as what they are; state **no** complexity bound, here or anywhere,
+      and do not describe the narrowing as harmless — `FixtureStable.lean` exhibits a certificate it
+      rejects. The pins are still unaffected: no flagship is added and the baseline count still moves
+      22 → 26.)*
 - [ ] Record, in the same place, that the CTL-like fragment does not rescue the finite-carrier
       shape (`Probe706.not_finite_carrier_fmp_fragment`), so the sliced shape is needed already
       there, and that the fragment's own finite model property is a separate research-first
@@ -4861,6 +5180,22 @@ task with an honest record of what was proved and what was not.
       the search bound is the tuple `(n, nb, nm, nf)` with **no bound on `n` proved**;
       tail-stability requires re-presentation rather than rejection; and the never-report-validity
       discipline stands. **This is a read and a record, not a claim to make in advance.**
+      *(**CORRECTED at plan v9 — the fourth point above is FALSE and must not be handed to the paired
+      repository in that form.** Tail-stability does **not** "require re-presentation rather than
+      rejection": sub-phase 16.2c proved the forward demand unsatisfiable at a named certificate for
+      every member of the re-presentation family, so `exists_tailStable_repr` is false and is stated
+      nowhere. Tail-stability is a demand on the **frame together with its closure**, and a structure
+      failing it is **rejected**, not repaired. What to hand over instead, in the fourth point's place
+      and as one additional point, since the paired repository's search-bound expectations depend on
+      both: (iv) tail-stability is a rejection criterion on the frame-with-closure, with the forward
+      conjunct **liveness-filtered** (`Φ_fwd R₀ ∩ R₀fwd = R₀`) so that reachable-but-forward-dead
+      positions are filtered out rather than required to be live; and (vi) the demand is
+      **residue-indexed** — a bounded quantifier over each period's residues, which is what the `⊡`
+      clause of the truth lemma requires — so the checker's tail-stability cost is `G.NBnat + G.NFnat`
+      `Φ` applications rather than two, each over a live-position set that is itself a fixpoint. Points
+      (i), (ii), (iii) and (v) stand as written. This correction changes **no** bound: there is still no
+      bound on `n`, and the cost figures are measured and recorded, never stated as complexity claims.
+      It remains a read and a record.)*
 - [ ] **Never write to `/home/benjamin/Projects/ModelChecker`.** The hand-off is by content. No
       file in that repository is created, edited or staged by this task.
 - [ ] Regenerate the library root with `lake exe mk_all --lib FormalSystem` and confirm C33 passes.
