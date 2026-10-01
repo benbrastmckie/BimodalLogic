@@ -62,6 +62,8 @@ genuine countermodel presents.
 
 - `PlusSlicedCertificate.fwdOrbit` / `bwdOrbit` — the window times a wrapped walk visits
 - `PlusSlicedCertificate.fwdVert` / `bwdVert` — a run's own timed positions, folded into the window
+- `PlusSlicedCertificate.fwdVertFold` / `bwdVertFold` — the same at a `FoldF`- resp. `FoldB`-equivalent
+  genuine time, which is what each tail-stability conjunct's filter rests on
 - `PlusSlicedCertificate.spliceWalkPos` — the position-level splice of a forward and a backward walk
 - `PlusSlicedCertificate.runOfWalks` — the `LabRun` a spliced pair of walks presents
 
@@ -69,6 +71,8 @@ genuine countermodel presents.
 
 - `PlusSlicedCertificate.mem_fwdLiveT_of_fwdLive` / `mem_bwdLiveT_of_bwdLive` — the two halves of
   the completeness direction, independent of each other and of (C3b)
+- `PlusSlicedCertificate.mem_fwdLiveT_of_fwdLive_fold` / `mem_bwdLiveT_of_bwdLive_fold` — those two
+  halves at a folded time, of which the two above are the diagonal instances
 - `PlusSlicedCertificate.mem_liveT_of_live` — the completeness direction
 - `PlusSlicedCertificate.live_of_mem_liveT` — the soundness direction, by splicing
 - `PlusSlicedCertificate.live_iff_mem_liveT` — **the bridge**
@@ -285,6 +289,68 @@ theorem fwdVertFold_mem_succT (G : PlusSlicedCertificate Γ Del) (R : G.LabRun) 
   simp only [fwdVertFold, hcast, G.foldF_succP (G.foldF_fwdOrbit_fold hs hfold k)]
   exact R.pos_mem_succP (s' + (k : ℤ))
 
+/-! ## A run's own timed positions at a folded time, backward
+
+The mirror of the forward generalization above, and for the mirror reason: the backward demand of
+tail-stability is read against the computed backward-live set at the reference time, while the
+liveness it has to capture sits arbitrarily far down the periodic **left** tail, at
+`-G.NB - k * G.NB` and not only at `-G.NB`. Those times are negative, and `FoldB` relates two
+negative times, so the generalization is available on this side. That is the precise sense in which
+the right tail is the asymmetric one: see `mem_fwdLiveT_of_fwdLive_fold`'s docstring.
+-/
+
+/-- **The timed position a run occupies `k` steps backward of a genuine time `s'`**, tagged with the
+window time the graph would be at after `k` backward wraps from a `FoldB`-equivalent window time
+`s`. `bwdVert` is the diagonal case `s' = s`. -/
+def bwdVertFold (G : PlusSlicedCertificate Γ Del) (R : G.LabRun) (s s' : ℤ) (k : ℕ) : G.TPos :=
+  (R.pos (s' - (k : ℤ)), G.bwdOrbit s k)
+
+@[simp] theorem bwdVertFold_lab (G : PlusSlicedCertificate Γ Del) (R : G.LabRun) (s s' : ℤ)
+    (k : ℕ) : (G.bwdVertFold R s s' k).1.2.1 = R.lab (s' - (k : ℤ)) := rfl
+
+@[simp] theorem bwdVertFold_snd (G : PlusSlicedCertificate Γ Del) (R : G.LabRun) (s s' : ℤ)
+    (k : ℕ) : (G.bwdVertFold R s s' k).2 = G.bwdOrbit s k := rfl
+
+/-- **`bwdVert` is the diagonal case**, so nothing below duplicates it. -/
+theorem bwdVertFold_self (G : PlusSlicedCertificate Γ Del) (R : G.LabRun) (s : ℤ) (k : ℕ) :
+    G.bwdVertFold R s s k = G.bwdVert R s k := rfl
+
+/-- **The backward fold relation is closed under subtracting a common natural number.** -/
+theorem foldB_sub_nat (G : PlusSlicedCertificate Γ Del) {a b : ℤ} (h : G.FoldB a b) (k : ℕ) :
+    G.FoldB (a - (k : ℤ)) (b - (k : ℤ)) := by
+  induction k with
+  | zero => simpa using h
+  | succ j ih =>
+      rw [show a - ((j + 1 : ℕ) : ℤ) = a - (j : ℤ) - 1 from by push_cast; omega,
+        show b - ((j + 1 : ℕ) : ℤ) = b - (j : ℤ) - 1 from by push_cast; omega]
+      exact foldB_pred ih
+
+/-- **Each backward orbit time is a fold of the genuine time the folded run is read at.** -/
+theorem foldB_bwdOrbit_fold (G : PlusSlicedCertificate Γ Del) {s s' : ℤ} (hs : s ∈ G.winTimes)
+    (hfold : G.FoldB s s') (k : ℕ) : G.FoldB (G.bwdOrbit s k) (s' - (k : ℤ)) :=
+  foldB_trans (G.foldB_bwdOrbit hs k) (G.foldB_sub_nat hfold k)
+
+/-- **A folded run's backward vertices are vertices of the timed graph.** -/
+theorem bwdVertFold_mem_verts (G : PlusSlicedCertificate Γ Del) (R : G.LabRun) {s s' : ℤ}
+    (hs : s ∈ G.winTimes) (hfold : G.FoldB s s') (k : ℕ) :
+    G.bwdVertFold R s s' k ∈ G.verts := by
+  rw [G.mem_verts]
+  refine ⟨by simpa using G.bwdOrbit_mem hs k, ?_⟩
+  have h := R.pos_mem_posAt (s' - (k : ℤ))
+  simpa [bwdVertFold, G.foldB_posAt (G.foldB_bwdOrbit_fold hs hfold k)] using h
+
+/-- **A folded run's backward vertices step along `predT`.** -/
+theorem bwdVertFold_mem_predT (G : PlusSlicedCertificate Γ Del) (R : G.LabRun) {s s' : ℤ}
+    (hs : s ∈ G.winTimes) (hfold : G.FoldB s s') (k : ℕ) :
+    G.bwdVertFold R s s' (k + 1) ∈ G.predT (G.bwdVertFold R s s' k) := by
+  rw [G.mem_predT]
+  refine ⟨G.bwdVertFold_mem_verts R hs hfold (k + 1), by simp [bwdVertFold], ?_⟩
+  have hcast : s' - ((k + 1 : ℕ) : ℤ) = s' - (k : ℤ) - 1 := by push_cast; omega
+  have hstep := R.pos_mem_predP (s' - (k : ℤ) - 1)
+  rw [show s' - (k : ℤ) - 1 + 1 = s' - (k : ℤ) from by omega] at hstep
+  simp only [bwdVertFold, hcast, G.foldB_predP (G.foldB_bwdOrbit_fold hs hfold k)]
+  exact hstep
+
 /-! ## The completeness direction
 
 Each half hands the fixpoint's own coinduction principle the run's visited vertices. The `untl`
@@ -303,10 +369,14 @@ and the run's own `untl` fulfilment is a property of the run rather than of wher
 the construction is the original one with the run read at `s'` and the orbit walked from `s`, and
 `mem_fwdLiveT_of_fwdLive` becomes its diagonal instance.
 
-**Why there is no backward counterpart.** `FoldB` relates two *negative* times, so it does not
+**Why the forward filter is one-directional.** `FoldB` relates two *negative* times, so it does not
 relate the right-tail times `G.NM + G.NF + k * G.NF` at all, and a backward walk out of such a time
-leaves the right tail after finitely many steps. That asymmetry is the reason the repaired
-forward conjunct of `TailStable` filters by the **forward** computed liveness and not by `liveAt`.
+leaves the right tail after finitely many steps. So on the right tail only the **forward** readout is
+available, and that is the reason the repaired forward conjunct of `TailStable` filters by the
+forward computed liveness rather than by `liveAt`. This says nothing against a backward fold lemma:
+the left tail's times `-G.NB - k * G.NB` are negative, `FoldB` does relate them, and
+`mem_bwdLiveT_of_bwdLive_fold` below is the backward counterpart, generalizing in the mirror
+direction for the mirror reason.
 -/
 theorem mem_fwdLiveT_of_fwdLive_fold (G : PlusSlicedCertificate Γ Del) {s s' : ℤ}
     (hs : s ∈ G.winTimes) (hfold : G.FoldF s s') {p : G.Pos} (hp : G.FwdLive s' p) :
@@ -366,20 +436,32 @@ theorem mem_fwdLiveT_of_fwdLive (G : PlusSlicedCertificate Γ Del) {s : ℤ} (hs
     {p : G.Pos} (hp : G.FwdLive s p) : (p, s) ∈ G.fwdLiveT :=
   G.mem_fwdLiveT_of_fwdLive_fold hs (G.foldF_refl s) hp
 
-/-- **A backward-live position is in the computed backward fixpoint.** -/
-theorem mem_bwdLiveT_of_bwdLive (G : PlusSlicedCertificate Γ Del) {s : ℤ} (hs : s ∈ G.winTimes)
-    {p : G.Pos} (hp : G.BwdLive s p) : (p, s) ∈ G.bwdLiveT := by
+/--
+**A backward-live position at a folded time is in the computed backward fixpoint at the window time
+it folds to.**
+
+The mirror of `mem_fwdLiveT_of_fwdLive_fold`, and the single unproved input the mirror-filtered
+backward conjunct of `TailStable` rests on: the run may be read at any `s'` with `G.FoldB s s'`, and
+not only at the window time `s` itself. `FoldB`-equivalent times carry the same slice, hence the
+same positions and the same one-step graph, and the run's own `snce` fulfilment is a property of the
+run rather than of where the window is. So the construction is the original one with the run read at
+`s'` and the orbit walked from `s`, and `mem_bwdLiveT_of_bwdLive` becomes its diagonal instance.
+-/
+theorem mem_bwdLiveT_of_bwdLive_fold (G : PlusSlicedCertificate Γ Del) {s s' : ℤ}
+    (hs : s ∈ G.winTimes) (hfold : G.FoldB s s') {p : G.Pos} (hp : G.BwdLive s' p) :
+    (p, s) ∈ G.bwdLiveT := by
   classical
   obtain ⟨R, hful, hpos⟩ := hp
-  refine G.bwdLiveT_greatest (X := G.verts.filter (fun v => ∃ k : ℕ, G.bwdVert R s k = v))
+  refine G.bwdLiveT_greatest (X := G.verts.filter (fun v => ∃ k : ℕ, G.bwdVertFold R s s' k = v))
     (Finset.filter_subset _ _) ?_ ?_
   · intro v hv
     obtain ⟨-, k, hk⟩ := Finset.mem_filter.mp hv
     subst hk
-    have hmemX : ∀ j : ℕ, G.bwdVert R s j ∈
-        G.verts.filter (fun v => ∃ k : ℕ, G.bwdVert R s k = v) := fun j =>
-      Finset.mem_filter.mpr ⟨G.bwdVert_mem_verts R hs j, j, rfl⟩
-    refine ⟨⟨G.bwdVert R s (k + 1), G.bwdVert_mem_predT R hs k, hmemX (k + 1)⟩, ?_⟩
+    have hmemX : ∀ j : ℕ, G.bwdVertFold R s s' j ∈
+        G.verts.filter (fun v => ∃ k : ℕ, G.bwdVertFold R s s' k = v) := fun j =>
+      Finset.mem_filter.mpr ⟨G.bwdVertFold_mem_verts R hs hfold j, j, rfl⟩
+    refine ⟨⟨G.bwdVertFold R s s' (k + 1), G.bwdVertFold_mem_predT R hs hfold k,
+      hmemX (k + 1)⟩, ?_⟩
     intro ψ hψ
     match ψ with
     | .atom _ => rfl
@@ -391,29 +473,37 @@ theorem mem_bwdLiveT_of_bwdLive (G : PlusSlicedCertificate Γ Del) {s : ℤ} (hs
     | .snce g e =>
         simp only [snceLiveAt, decide_eq_true_eq]
         intro hpend
-        rw [bwdVert_lab] at hpend
-        obtain ⟨r, hr1, hr2, hr3⟩ := hful (s - (k : ℤ)) g e hpend
+        rw [bwdVertFold_lab] at hpend
+        obtain ⟨r, hr1, hr2, hr3⟩ := hful (s' - (k : ℤ)) g e hpend
         obtain ⟨j, hj⟩ := exists_nat_sub (le_of_lt hr1)
         have hj0 : 0 < j := by omega
-        have hpath : ∀ i : ℕ, G.bwdVert R s (k + (i + 1)) ∈ G.predT (G.bwdVert R s (k + i)) :=
-          fun i => G.bwdVert_mem_predT R hs (k + i)
+        have hpath : ∀ i : ℕ, G.bwdVertFold R s s' (k + (i + 1)) ∈
+            G.predT (G.bwdVertFold R s s' (k + i)) :=
+          fun i => G.bwdVertFold_mem_predT R hs hfold (k + i)
         have hkey := EUFix.mem_lfp_of_path
-          (G.verts.filter (fun v => ∃ k : ℕ, G.bwdVert R s k = v)) G.predT
-          (Fair.inSet (G.verts.filter (fun v => ∃ k : ℕ, G.bwdVert R s k = v)) (G.atPosT e))
-          (G.atPosT g) (fun i => G.bwdVert R s (k + i)) j hj0
+          (G.verts.filter (fun v => ∃ k : ℕ, G.bwdVertFold R s s' k = v)) G.predT
+          (Fair.inSet (G.verts.filter (fun v => ∃ k : ℕ, G.bwdVertFold R s s' k = v))
+            (G.atPosT e))
+          (G.atPosT g) (fun i => G.bwdVertFold R s s' (k + i)) j hj0
           (fun i _ => hmemX (k + i)) (fun i _ => hpath i) ?_ ?_
         · unfold snceLive
           simpa using hkey
         · rw [Fair.inSet_iff]
           refine ⟨?_, hmemX (k + j)⟩
-          rw [G.atPosT_iff, bwdVert_lab, show s - ((k + j : ℕ) : ℤ) = r from by omega]
+          rw [G.atPosT_iff, bwdVertFold_lab, show s' - ((k + j : ℕ) : ℤ) = r from by omega]
           exact hr2
         · intro i hi0 hij
-          rw [G.atPosT_iff, bwdVert_lab]
-          exact hr3 (s - ((k + i : ℕ) : ℤ)) (by omega) (by omega)
-  · have h0 : G.bwdVert R s 0 = (p, s) := by simp [bwdVert, hpos]
+          rw [G.atPosT_iff, bwdVertFold_lab]
+          exact hr3 (s' - ((k + i : ℕ) : ℤ)) (by omega) (by omega)
+  · have h0 : G.bwdVertFold R s s' 0 = (p, s) := by simp [bwdVertFold, hpos]
     rw [← h0]
-    exact Finset.mem_filter.mpr ⟨G.bwdVert_mem_verts R hs 0, 0, rfl⟩
+    exact Finset.mem_filter.mpr ⟨G.bwdVertFold_mem_verts R hs hfold 0, 0, rfl⟩
+
+/-- **A backward-live position is in the computed backward fixpoint.** The diagonal instance of
+`mem_bwdLiveT_of_bwdLive_fold`; its statement is unchanged from the one this module landed. -/
+theorem mem_bwdLiveT_of_bwdLive (G : PlusSlicedCertificate Γ Del) {s : ℤ} (hs : s ∈ G.winTimes)
+    {p : G.Pos} (hp : G.BwdLive s p) : (p, s) ∈ G.bwdLiveT :=
+  G.mem_bwdLiveT_of_bwdLive_fold hs (G.foldB_refl s) hp
 
 /-- **A live position is in the computed fixpoint.** The two halves are independent, so this is
 their conjunction and nothing more. -/
