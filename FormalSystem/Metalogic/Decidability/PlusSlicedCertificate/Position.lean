@@ -54,6 +54,35 @@ are non-empty *when the certificate admits a genuine labelled path*, and that is
 deviation at the plan's Phase 15 heading, loudly, rather than absorbed: the obligation is replaced,
 not dropped.
 
+## `posAt` over-approximates, and what that costs the tail-stability demands
+
+`posAt` admits every `LabCoherent`, state-agreeing label, including labels carrying an eventuality
+obligation that **nothing** on the relevant side can discharge. The paragraph above records that in
+the `untl` direction, where it leaves `succP` empty; `snceClauseAt` constrains the *later* label
+from the earlier one, so the same thing happens mirror-wise in the `snce` direction, leaving
+`predP` empty instead. Those positions are legitimate members of `posAt`, not artifacts.
+
+**The consequence, and the `⊆`/`⊇` dichotomy it forces.** The one-step transfers `Stable.stepFwd`
+and `Stable.stepBack` are reachability relations — `stepBack` is a `succP`-preimage — so a
+dead-in-one-direction position reachable from a live one lands in that direction's iterate. A raw
+demand `Φ X = X` then fails in the `⊆` direction: the iterate is **too big**. That failure is
+repairable by intersecting with the computed one-directional live set, which is what
+`Stable.fwdLiveAt` and `Stable.bwdLiveAt` are and why each conjunct of `Stable.TailStable` carries
+one.
+
+A `⊇` failure is a different thing and **no filter repairs it**: there the iterate is too *small*,
+because a genuinely live position has no live predecessor one whole period back. Intersecting can
+only shrink the left-hand side, so it cannot close a `⊇` gap.
+`FixtureStable.Φ_back_L₀_inter_ne_cert` is exactly such a failure, at a named certificate, and it is
+repaired only by re-presenting the frame — absorbing the pre-period into `mid`.
+
+So `Stable.TailStable`, with both filters in place, is a **demand on a certificate and not a
+theorem**: it is satisfiable, strictly weaker than the raw demand, and refuted at a certificate. It
+is a field of `Certifies` for that reason. This is also what closes the question of strengthening
+the compression theorem's output to avoid the obstruction: the undischargeable positions are
+determined by `posAt` — by the closure and the slice labelling — and not by any witness family, so
+no strengthening of a family-producing theorem can exclude them.
+
 ## Main definitions
 
 - `PlusSlicedCertificate.Pos` — the position type, with `Fintype` and `DecidableEq`
@@ -61,7 +90,8 @@ not dropped.
 - `PlusSlicedCertificate.LabCoherent` / `AgreesOnState` / `posAt` — the positions at one slice
 - `PlusSlicedCertificate.StepClause` / `succP` / `predP` — the one-step position graph
 - `PlusSlicedCertificate.mem_succP_of_path` — positions on a genuine labelled path do have
-  successors
+  successors; see this header's over-approximation note for what the positions *without* them cost
+  the tail-stability demands
 
 ## Tags
 

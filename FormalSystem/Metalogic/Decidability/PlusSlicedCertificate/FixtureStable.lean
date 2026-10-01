@@ -20,6 +20,8 @@ what is proved.
 
 ## What is proved
 
+* `Fixture.Φ_back_L₀_inter_ne_cert` — the **filtered** backward conjunct fails at the fixture, a `⊇`
+  failure that no filter repairs
 * `Fixture.not_tailStable_cert` — the fixture is not tail-stable as presented, and **both**
   conjuncts of `TailStable` fail, for two genuinely different reasons:
   - `Fixture.Φ_back_L₀_ne_cert`: `p₀` is live at `-cert.NB = -1` and has no `succP`-successor at all
@@ -35,6 +37,18 @@ what is proved.
   by its forward conjunct. `Fixture.certRep_slice_shift` (in `Fixture.lean`) proves each member
   presents `cert`'s own slice sequence shifted right by `b`, so the family is exactly the plan's
   recipe applied to the certificate the plan named as its worked example.
+
+## STANDING RULE: a probe of a `TailStable`-like demand must carry BOTH an `untl` AND a `snce`
+
+Binding on every future fixture in this module and on every evaluation of a `TailStable`-like demand
+anywhere in this subtree. `TailStable` has two conjuncts, each with its own obligation direction and
+its own liveness filter, and a closure carrying only one of the two eventuality operators exercises
+only one conjunct while the `decide` reports on their conjunction. That is not a hypothetical
+hazard: two dispatches returned a favourable verdict for the whole demand from two `untl`-only
+certificates, and the `snce`-direction obstruction they concealed is the one
+`EmbedComplete.lean`'s `snceProbeFamily_not_tailStableBackRaw` eventually found. The two smallest
+witnesses of each direction are kept as a permanent regression pair in
+`EmbedComplete.lean`'s `BotTargets` namespace (`⊥ U ⊥` and `⊥ S ⊥`).
 
 ## Why the forward failure is structural and not presentational
 
@@ -310,21 +324,41 @@ theorem not_mem_Φ_back_L₀_p₀ : p₀ ∉ cert.Φ_back cert.L₀ := by
   rw [show (-1 : ℤ) - 1 = -2 from by norm_num, succP_eq_empty_of_le_neg_two le_rfl] at hq
   exact absurd hq (Finset.notMem_empty _)
 
-/-- **The backward conjunct fails for the fixture as presented.** This is the pre-period showing
+/-- **The raw backward conjunct fails for the fixture as presented.** This is the pre-period showing
 through, and it is the half the plan's recipe really does repair. -/
 theorem Φ_back_L₀_ne_cert : cert.Φ_back cert.L₀ ≠ cert.L₀ := fun h =>
   not_mem_Φ_back_L₀_p₀ (h ▸ mem_L₀_p₀)
 
 /--
+**The FILTERED backward conjunct fails too**, and that is the point: `p₀` is genuinely live at the
+reference time, hence in `L₀bwd`, so the backward liveness filter does not remove it. This is a `⊇`
+failure — the demanded set is too small, not too large — and **no filter repairs a `⊇` failure**. It
+is repaired only by absorbing the pre-period into `mid`. See `Position.lean`'s header for the
+`⊆`/`⊇` dichotomy, and sub-phase 20.4's own record of it: the both-filtered demand is a
+per-certificate demand and not a theorem, and this declaration is the witness that it is not
+vacuous either. -/
+theorem Φ_back_L₀_inter_ne_cert : cert.Φ_back cert.L₀ ∩ cert.L₀bwd ≠ cert.L₀ := by
+  intro h
+  have hp : p₀ ∈ cert.L₀ := mem_L₀_p₀
+  rw [← h] at hp
+  exact not_mem_Φ_back_L₀_p₀ (Finset.mem_inter.mp hp).1
+
+/--
 **The fixture is not tail-stable, and BOTH conjuncts fail.**
 
 The two failures are independent and have different characters, which is the whole point of
-recording them separately: `Φ_back_L₀_ne_cert` is repaired by absorbing the pre-period, and
+recording them separately: `Φ_back_L₀_inter_ne_cert` is repaired by absorbing the pre-period, and
 `Φ_fwd_R₀_ne` is not repaired by anything.
+
+**The first component is stated against the FILTERED backward conjunct**, as sub-phase 20.4 requires
+once the backward filter lands: the unfiltered inequality would no longer refute `TailStable`. The
+raw inequality survives beside it as `Φ_back_L₀_ne_cert`.
 -/
 theorem not_tailStable_cert :
-    ¬ cert.TailStable ∧ cert.Φ_back cert.L₀ ≠ cert.L₀ ∧ cert.Φ_fwd cert.R₀ ≠ cert.R₀ := by
-  refine ⟨fun h => Φ_back_L₀_ne_cert (cert.tailStable_back h), Φ_back_L₀_ne_cert, ?_⟩
+    ¬ cert.TailStable ∧ cert.Φ_back cert.L₀ ∩ cert.L₀bwd ≠ cert.L₀
+      ∧ cert.Φ_fwd cert.R₀ ≠ cert.R₀ := by
+  refine ⟨fun h => Φ_back_L₀_inter_ne_cert (cert.tailStable_back h),
+    Φ_back_L₀_inter_ne_cert, ?_⟩
   rw [cert_eq_certRep]
   exact Φ_fwd_R₀_ne 0 0 0
 

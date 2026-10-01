@@ -62,8 +62,8 @@ genuine countermodel presents.
 
 - `PlusSlicedCertificate.fwdOrbit` / `bwdOrbit` — the window times a wrapped walk visits
 - `PlusSlicedCertificate.fwdVert` / `bwdVert` — a run's own timed positions, folded into the window
-- `PlusSlicedCertificate.fwdVertFold` / `bwdVertFold` — the same at a `FoldF`- resp. `FoldB`-equivalent
-  genuine time, which is what each tail-stability conjunct's filter rests on
+- `PlusSlicedCertificate.fwdVertFold` / `bwdVertFold` — the same at a `FoldF`- resp.
+  `FoldB`-equivalent genuine time, which is what each tail-stability conjunct's filter rests on
 - `PlusSlicedCertificate.spliceWalkPos` — the position-level splice of a forward and a backward walk
 - `PlusSlicedCertificate.runOfWalks` — the `LabRun` a spliced pair of walks presents
 
@@ -371,8 +371,8 @@ the construction is the original one with the run read at `s'` and the orbit wal
 
 **Why the forward filter is one-directional.** `FoldB` relates two *negative* times, so it does not
 relate the right-tail times `G.NM + G.NF + k * G.NF` at all, and a backward walk out of such a time
-leaves the right tail after finitely many steps. So on the right tail only the **forward** readout is
-available, and that is the reason the repaired forward conjunct of `TailStable` filters by the
+leaves the right tail after finitely many steps. So on the right tail only the **forward** readout
+is available, and that is the reason the repaired forward conjunct of `TailStable` filters by the
 forward computed liveness rather than by `liveAt`. This says nothing against a backward fold lemma:
 the left tail's times `-G.NB - k * G.NB` are negative, `FoldB` does relate them, and
 `mem_bwdLiveT_of_bwdLive_fold` below is the backward counterpart, generalizing in the mirror
