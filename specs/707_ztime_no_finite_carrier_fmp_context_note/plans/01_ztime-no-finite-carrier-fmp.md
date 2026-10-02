@@ -362,7 +362,7 @@ label every source's fidelity.
 
 ---
 
-### Phase 5: Register, lint, commit in the source store, deploy, verify [COMPLETED]
+### Phase 5: Register, lint, commit in the source store, deploy, verify [IN PROGRESS]
 
 **Goal**: Make the note discoverable and deployed, with concurrency-safe edits and staging.
 
@@ -398,6 +398,7 @@ label every source's fidelity.
 - [x] In the BimodalLogic repository, nothing under `.claude/` is to be committed (gitignored
   deploy artifact); the task's own commit covers `specs/707_.../` artifacts only, via the
   sanctioned scoped-commit path. *(completed)*
+- [ ] Forced round (dispatch 10, single-defect correction): rewrite the one dotted citation `FormalSystem.PlusLanguage.PlusValidZTime` at line 352 to the bare `PlusValidZTime` used by the note's five other citations, so `check-module-invariants.sh` C5 no longer reads it as a module path; source store only, re-lint, commit the single path, redeploy, `cmp`, re-run C5. *(in progress)*
 
 **Timing**: 1 hour
 
