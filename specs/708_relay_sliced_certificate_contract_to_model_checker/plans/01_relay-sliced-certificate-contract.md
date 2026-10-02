@@ -309,14 +309,14 @@ headings to the live names and note the drift in the Verification Snapshot.
 
 ---
 
-### Phase 4: Write the TRUST_PIPELINE rewrite, the HOA decision record, and the vocabulary glossary [IN PROGRESS]
+### Phase 4: Write the TRUST_PIPELINE rewrite, the HOA decision record, and the vocabulary glossary [COMPLETED]
 
 **Goal**: Ready-to-file rewrite of TRUST_PIPELINE.md's "The stability modal" middle paragraphs; the
 HOA decision recorded with reasons; a published-vocabulary glossary applying F5's corrections and
 casting the incompleteness result in HWZ terms.
 
 **Tasks**:
-- [ ] Add `## TRUST_PIPELINE.md — "The stability modal" rewrite`: replaces "blocked on four
+- [x] Add `## TRUST_PIPELINE.md — "The stability modal" rewrite`: replaces "blocked on four
       Lean-side results", "requires re-proving Lemma 2 and redesigning (C3)", decidability
       "paper-level only". New content: the histories characterization is re-proved
       (`Frame.mem_HF_iff_slicedPath`), (C3) is replaced by `BoxLiveFaithful` plus (C3b), (C5)
@@ -325,8 +325,8 @@ casting the incompleteness result in HWZ terms.
       decidability of full L⁺ remains open with no complete certificate class in sight (the next
       candidate, the regular two-way tree class, is unanalysed — task 710's Recommendation 5,
       stated as this side's position, not theirs); the "honest ceiling" item 3 wording stays,
-      with the route named and its limit named. Keep their "In this repository" row's shape.
-- [ ] Add `## Wire-format decision — no HOA profile`: the four reasons from the report's F4 (wrong
+      with the route named and its limit named. Keep their "In this repository" row's shape. *(completed)*
+- [x] Add `## Wire-format decision — no HOA profile`: the four reasons from the report's F4 (wrong
       kind of object — bi-infinite, no start state, acceptance is `Check.Certifies` not
       `Inf`/`Fin`; no canonical byte form versus `CanonicalWire.parse_print` and the echo
       protocol; "strict extension" is a requirement and HOA would be a replacement; labels are
@@ -336,8 +336,8 @@ casting the incompleteness result in HWZ terms.
       both read absence as `[]` and reject structurally); the optional lossy HOA export of the
       unrolled window graph as a visualisation aid, explicitly not a certificate. Add the
       handoff note that recording this rule in `BimodalTools/README.md` is owed by the task that
-      ships the envelope.
-- [ ] Add `## Published vocabulary`: a table from this repository's terms to the published ones —
+      ships the envelope. *(completed)*
+- [x] Add `## Published vocabulary`: a table from this repository's terms to the published ones —
       lasso family = (k,l)-loop / lasso-shaped `βγ^ω` (Biere et al. 2006 §2, Def 5.1); slice =
       state candidate (HWZ Def 6) / quasistate (Def 12); slice sequence = state function (Def 10);
       target path = run (Def 11); sliced certificate = quasimodel with named states (Def 12);
@@ -345,16 +345,16 @@ casting the incompleteness result in HWZ terms.
       periodic state function (**not** Def 20); `⊆`/`⊇` dichotomy = Def 22 suitable pair. The two
       corrections stated as corrections: `n` is not `♯(ϕ)` (equal-label states are distinct here
       and must be, for `⊡`); "ultimately periodic" is standard automata vocabulary but does not
-      occur in Biere et al. and is not attributed to them.
-- [ ] In the same section, cast the incompleteness in HWZ terms (from task 710's report, labelled
+      occur in Biere et al. and is not attributed to them. *(completed)*
+- [x] In the same section, cast the incompleteness in HWZ terms (from task 710's report, labelled
       as argued where it is argued): HWZ's Theorem 14 collapse to realised types is sound because
       monodic FOTL has no quantifier over runs; L⁺'s `⊡` is a universal quantifier over runs, and
       any collapse to finitely many states per time adds limit runs — which is why the
       obstruction is width and nothing else, and why their quasimodel technique transfers for
-      periodicity but not for completeness.
-- [ ] State the limit of the certifying literature in one paragraph: soundness only, never
+      periodicity but not for completeness. *(completed)*
+- [x] State the limit of the certifying literature in one paragraph: soundness only, never
       completeness of a certificate class; it informs the format decision and says nothing about
-      point (5).
+      point (5). *(completed)*
 
 **Timing**: 1.25 hours
 
@@ -373,7 +373,7 @@ casting the incompleteness result in HWZ terms.
 
 ---
 
-### Phase 5: Close the deliverable, re-check citations, and confirm the boundary [NOT STARTED]
+### Phase 5: Close the deliverable, re-check citations, and confirm the boundary [IN PROGRESS]
 
 **Goal**: Add the amendment index and five-point disposition tables, re-run the dangling-citation
 checks over the written text, confirm nothing outside `specs/708_*/` changed here and nothing

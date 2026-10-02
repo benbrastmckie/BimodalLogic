@@ -2,15 +2,50 @@
   "phase": 4,
   "phase_name": "Write the TRUST_PIPELINE rewrite, the HOA decision record, and the vocabulary glossary",
   "started_at": "2026-10-02T16:59:44Z",
-  "last_updated": "2026-10-02T16:59:44Z",
+  "last_updated": "2026-10-02T17:01:49Z",
   "objectives": [
-    {"id": 1, "description": "TRUST_PIPELINE 'The stability modal' rewrite", "status": "in_progress", "files_touched": []},
-    {"id": 2, "description": "Wire-format decision: no HOA profile (four reasons, one discipline, README handoff note)", "status": "not_started", "files_touched": []},
-    {"id": 3, "description": "Published vocabulary table with F5 corrections", "status": "not_started", "files_touched": []},
-    {"id": 4, "description": "Incompleteness cast in HWZ terms (argued where argued)", "status": "not_started", "files_touched": []},
-    {"id": 5, "description": "Limit of the certifying literature paragraph", "status": "not_started", "files_touched": []}
+    {
+      "id": 1,
+      "description": "TRUST_PIPELINE 'The stability modal' rewrite",
+      "status": "done",
+      "files_touched": [
+        "specs/708_relay_sliced_certificate_contract_to_model_checker/summaries/01_relay-sliced-certificate-contract-summary.md"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Wire-format decision: no HOA profile (four reasons, one discipline, README handoff note)",
+      "status": "done",
+      "files_touched": [
+        "specs/708_relay_sliced_certificate_contract_to_model_checker/summaries/01_relay-sliced-certificate-contract-summary.md"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "Published vocabulary table with F5 corrections",
+      "status": "done",
+      "files_touched": [
+        "specs/708_relay_sliced_certificate_contract_to_model_checker/summaries/01_relay-sliced-certificate-contract-summary.md"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "Incompleteness cast in HWZ terms (argued where argued)",
+      "status": "done",
+      "files_touched": [
+        "specs/708_relay_sliced_certificate_contract_to_model_checker/summaries/01_relay-sliced-certificate-contract-summary.md"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "Limit of the certifying literature paragraph",
+      "status": "done",
+      "files_touched": [
+        "specs/708_relay_sliced_certificate_contract_to_model_checker/summaries/01_relay-sliced-certificate-contract-summary.md"
+      ]
+    }
   ],
-  "current_objective": 1,
+  "current_objective": 5,
   "approaches_tried": [],
   "deviations": [],
   "handoff_count": 0

@@ -629,3 +629,203 @@ Confirmed against the live files; nothing in this relay touches them:
 | SEARCH_COVERAGE.md §3(b), §4 | lines 73, 118 | Route (b), the bounded sweep over `(back', fwd')` with `mid` fixed, stands. One note for whoever builds the sweep driver (its §5 staged path): absorbing a pre-period to repair a tail-stability `⊇` failure is a `mid` increase, which composes with the sweep — `mid` is held fixed per sweep and raised between sweeps, never swept. |
 | SETTINGS.md divisibility caveat | lines 33-39 | Carries over to `nb`/`nf` verbatim; `mid` remains unaffected. |
 | TRUST_PIPELINE.md "Compute bounds from the closure (A3)" row | line 309 | About the L bound and the representability gap; unchanged. |
+
+## TRUST_PIPELINE.md — "The stability modal" rewrite
+
+Live anchors: the "In this repository" table row at line 310 (`| **The stability modal** | See
+below. Blocked on four Lean-side results. |`); the section "## The stability modal" at line 330;
+"The honest ceiling" item 3 at line 374. The section's first three paragraphs (out of scope today;
+"The obstruction is not Limit or Saturation"; "It is Lemma 2 and the Box case of Lemma 4") are a
+correct account of why the *deterministic* lasso design cannot host `⊡` and are kept verbatim.
+Replaced: the paragraph beginning "So supporting `⊡` requires **re-proving Lemma 2 and
+redesigning (C3)**", the paragraph beginning "One fact helps", the paragraph beginning
+"Decidability for the larger language at integer time is currently **paper-level only**", the
+table row, and honest-ceiling item 3. Ready to file:
+
+**Table row** (replaces line 310):
+
+```
+| **The stability modal** | See below. The Lean side has landed the branching certificate (time-sliced), its histories characterization, its redesigned box clause and a new tail-stability clause; the class is sound, complete on the stability-free fragment, and proved INCOMPLETE for the full language. What remains open is decidability of full L⁺, for which no complete certificate class is in sight. |
+```
+
+**Middle paragraphs** (replace the three paragraphs named above, keeping the first three):
+
+```
+Supporting `⊡` therefore required re-proving Lemma 2 and redesigning (C3), and on the Lean side
+both have now been done, in a different certificate class. The time-sliced certificate
+(`FormalSystem.Metalogic.Decidability.PlusSlicedCertificate`: per time a slice with an edge
+matrix and a state labelling, three segments `back`/`mid`/`fwd`, a box guess, a target path and
+time) presents a frame on `ℤ × Fin n` with finite fibres in which histories DO recombine. Its
+histories characterization is re-proved for that frame
+(`...PlusSlicedCertificate.mem_HF_iff_slicedPath`: the frame's history space is exactly the set
+of offset edge-paths, both directions), and (C3) is replaced: the box clause is now stated over
+COMPUTED LIVE POSITIONS (`...PlusSlicedCertificate.BoxLiveFaithful`), with a label-level
+companion (`...PlusSlicedCertificate.BoxLabelFaithful`, (C3b)) and a new stability clause
+`...PlusSlicedCertificate.StabFaithful` ((C5), both the universal and the existential
+`⊡`-obligation). Liveness replaces all-threads fulfilment, and a new TAIL-STABILITY conjunct
+(`...PlusSlicedCertificate.TailStable`; `ADEQUACY.md` §7.5) makes the window's liveness verdict
+the verdict at every time. The lasso family is the special case of identity edge matrices, so
+the current wire contract is a strict special case of the new one (`ADEQUACY.md` §6.1.1).
+
+One fact still helps: `⊡`-truth is a function of the present world state alone
+(`stab_state_only`), so the modal needs no history information beyond the state; on
+deterministic frames it collapses to the identity (`states_eq_of_deterministic`), which is why
+the lasso device is blind to it by construction. The entire difficulty was that `□` must range
+over recombined histories, and the live-position box clause is how the sliced checker does that.
+
+What the class buys, stated exactly. It is SOUND
+(`...PlusSlicedCertificate.plusRefutes_of_certifies`: an accepted certificate is a ℤ-time
+countermodel). It is RELATIVELY COMPLETE for tail-stable countermodels
+(`...PlusSlicedCertificate.exists_plusSlicedCertificate_of_tailStable_countermodel`). It is
+COMPLETE on the stability-free fragment
+(`FormalSystem.Metalogic.Decidability.WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula`),
+so nothing this repository does today loses anything by the extension. And it is INCOMPLETE for
+L⁺ — already for the CTL-like fragment — by a machine-checked witness
+`Φ := θ' ∧ □(⊡Fp → ¬⊡¬Xp)`: `Φ.neg` is a ℤ-time non-validity no sliced certificate certifies
+(`Probe710.not_sliced_complete`), and no certificate class presenting a frame with finitely many
+states per time can certify it (`Probe710.not_finite_width_fmp`) — every countermodel of `Φ.neg`
+has infinitely many states at some time. The refutation is of the frame class, so no change to
+clauses, tails, windows or the stability demand rescues it.
+
+Decidability for the larger language at integer time therefore remains OPEN, and the shape of
+the openness has changed: the certificate-class route is closed for the full language, and the
+MSO-over-the-ω-branching-tree translation plus Rabin's theorem remains *recalled, not held*, with
+no finite certificate, no complexity bound and no basis for a `Decidable` instance. The next
+candidate the Lean side has named — a regular two-way tree class, a finite class graph with
+forward- and backward-child labels whose carrier is the set of root paths — is unanalysed, and its
+checker's `⊡` clause (liveness over paths that ascend unboundedly) has no formalised precedent.
+That is the Lean side's own assessment of its own programme, recorded here so this repository
+does not wait on it.
+```
+
+**Honest ceiling item 3** (replaces item 3; items 1 and 2 unchanged):
+
+```
+3. **The stability modal — routed, and now with a proved limit on the route.** Unlike the first
+   two, this was excluded *pending identified work*, and that work has landed: the time-sliced
+   certificate class is sound and complete on the stability-free fragment. But it is proved
+   incomplete for the full language, and so is every finite-width class, so for targets
+   containing `⊡` "no certificate found" never becomes "valid" — permanently, by the frame class,
+   not pending further work. The decidability of full L⁺ stays open with no complete certificate
+   class in sight.
+```
+
+The closing sentence of the section ("Conflating the third with the first two would tell a reader
+the stability modal is impossible when it is merely unbuilt…") should then read: "Conflating the
+third with the first two would tell a reader the stability modal is impossible when it is built and
+sound; conflating the first two with the third would promise a completeness the frame class cannot
+deliver — and for `⊡`-targets the third now shares exactly that permanence."
+
+## Wire-format decision — no HOA profile
+
+**Decision**: the sliced certificate is NOT expressed as a Hanoi Omega-Automata (HOA; Babiak et
+al., CAV 2015) profile or extension. It stays a bespoke, canonical-JSON strict extension of the
+existing lasso envelope (§6.1.1 above). This answers the scope question the task filing added
+("determine whether it should be expressed as an HOA extension or profile rather than a bespoke
+format, and record the decision either way with its reason"). Four reasons, each sufficient alone:
+
+1. **Wrong kind of object.** A HOA automaton accepts ω-words from a `Start:` state under an
+   `Acceptance:` condition that is a Boolean combination of `Inf(s)`/`Fin(s)` over acceptance
+   sets. A sliced certificate is a `ℤ`-indexed structure with two periodic tails and no start
+   state, and its acceptance is `…PlusSlicedCertificate.Certifies` — nine conjuncts over a
+   closure, a box guess, a target path, a target time and computed live sets, including
+   `TailStable` and `StabFaithful`. None of that is an `Inf`/`Fin` condition. A HOA consumer
+   given such a file would parse it and check nothing that matters; the semantics-bearing
+   content would have to ride in headers, which HOA says a consumer may ignore (lower-case
+   header) or must reject (capitalised header). Either way no existing tool gains a checking
+   capability.
+2. **Canonical bytes.** The joint contract (`BimodalTools/README.md` "The joint canonical
+   contract") is one certificate, one byte string: the Lean printer and parser are proved
+   inverse (`BimodalTools.CanonicalWire.parse_print`,
+   `BimodalTools.CanonicalWire.print_parse_canonical`) and the paired repository's
+   `assert_echo_matches_sent` compares echoed bytes to sent bytes. HOA has no canonical byte
+   form (free whitespace, optional headers, free state naming), so the echo protocol and the
+   round-trip theorem would both have to be redone, for no checking gain.
+3. **"Strict extension" is a requirement, and HOA would be a replacement.** The lasso family is
+   the degenerate sliced certificate (identity edge matrices), and the existing JSON must remain
+   the special case byte-for-byte. A HOA profile cannot contain the current JSON.
+4. **Labels are closure formulas, not atomic propositions, and several fields have no HOA
+   slot.** HOA state labels are Boolean formulas over `AP:` indices; one could index the closure
+   and label states with conjunctions, but `bx`, `target.premises`/`conclusions`, `target.time`
+   and the per-slice `edge` matrix have no place in the format. The per-slice edges could be
+   encoded as transitions of the unrolled window graph (states `(t, w)`) with the tails as
+   cycles — a faithful one-sided picture of each tail, not of the bi-infinite whole.
+
+**The one HOA discipline adopted.** HOA's capitalised-header rule — *a consumer that does not
+understand a semantics-bearing field must error, never silently reinterpret* — is adopted as the
+extension's rule, and it fixes one concrete contract point: a sliced envelope must **omit** the
+`lassos` key. Both re-checkers read an absent `lassos` as empty
+(`BimodalTools.CanonicalWire.decodeOptLassos` → `[]`; `raw.get("lassos", [])` in the paired
+`certificate.py`) and then reject structurally, so a lasso-only checker fails loudly on a sliced
+envelope; an envelope carrying both keys would be silently checked as a lasso family with its
+slices ignored. Carrying both keys in one document is the one encoding the contract forbids.
+
+**Optional non-contract export.** A lossy HOA rendering of the unrolled window graph (one file per
+tail direction, states `(t, w)`, labels the closure atoms, no acceptance) is a reasonable
+*visualisation* aid via Spot's `autfilt`/`dot` output, and is explicitly not a certificate.
+
+**Handoff note (owed by another task).** Recording this rule — canonical-JSON strict extension;
+`lassos` omitted in a sliced envelope; both keys forbidden; optional lossy HOA export for
+visualisation only — in this repository's `BimodalTools/README.md` re-verification-protocol
+section is owed by the task that ships the sliced envelope, not by this one, which writes nothing
+outside `specs/`.
+
+## Published vocabulary
+
+The relay uses published vocabulary so the paired repository's implementers can check the contract
+against citable sources rather than against this repository's coinages. Two corrections to the
+filing are applied and stated as corrections below the table. All definition and lemma numbers
+were read from the chunk text of the cited papers during research (the three sources carry
+`provenance_fidelity: unverified_summary` in the sub-index, but the chunks are OCR of the papers
+themselves).
+
+| This repository's term | Published term | Source |
+|---|---|---|
+| lasso family; one lasso `(back)^ω mid (fwd)^ω` | **(k,l)-loop**; **lasso-shaped** path `βγ^ω`; period `p(π) = k − l + 1`; `LoopConstraints`, `InLoop` | Biere, Heljanko, Junttila, Latvala, Schuppan 2006, §1-2, Def 5.1 |
+| time slice (`PlusSlice`) | **state candidate** `⟨T, T^con⟩` (Def 6); **quasistate** once inside a quasimodel (Def 12) | Hodkinson, Wolter, Zakharyaschev 2000 (HWZ) |
+| slice sequence `back/mid/fwd` | **state function** `f : W → candidates` (Def 10); periodic form `f₁ · f₂^ω` | HWZ, Theorem 24 |
+| target path (`PlusGraphPath`) | **run** `r`, with the `U`/`S` clauses (Def 11) | HWZ |
+| sliced certificate (`PlusSlicedCertificate`) | **quasimodel** `⟨f, R⟩` (Def 12) **with named states** — the quasimodel proper is its quotient by label | HWZ |
+| pumping / `exists_window_eq` | **Lemma 17** splice: `f(n) = f(m)` ⇒ `f^{≤n} · f^{>m}` is a quasimodel | HWZ |
+| liveness + `TailStable` | **Lemma 23**'s conditions on `f₁ · f₂^ω` and **Theorem 24**, the periodic state function with bounded period (§5); Lemmas 21, 23 | HWZ — **not** Def 20 |
+| the `⊆`/`⊇` failure dichotomy | Def 22 **suitable pair** (one-step `U`-coherence) is what reachability sees; fulfilment is what it does not | HWZ |
+| non-vacuity of a certificate class (the gate task 704 enforces) | **interesting witness** / **antecedent failure** | Beer, Ben-David, Eisner, Rodeh 2001 |
+
+**Correction 1 — the slice width is not `♯(ϕ)`.** HWZ's `♯(ϕ)` is the number of distinct
+*realizable state candidates*, and `♭(ϕ) = 2^{|sub_x ϕ|}` the number of types. The slice width
+`n` of a sliced certificate is neither: two states with the same label are one type (one
+quasistate member) but two states here, and must be, because `⊡` quantifies over histories
+through a *state*. No number from HWZ bounds `n`, and the relay supplies none.
+
+**Correction 2 — the tail condition is Theorem 24 / Lemmas 21, 23, not Definition 20.** HWZ's
+Definition 20 defines "`r` realizes `ψ₁Uψ₂` in `m` steps"; the periodic-state-function result the
+filing meant is Theorem 24 (§5), with Lemma 23's conditions 1-3 as the literature counterpart of
+liveness-plus-`TailStable`.
+
+**Correction 3 — "ultimately periodic" is not Biere et al.'s wording.** The phrase does not
+occur in that paper (it says "lasso-shaped", `βγ^ω`, "(k,l)-loop", "period"). It is standard
+automata-theoretic vocabulary for `u · v^ω` words and may be used, but it must not be attributed
+to Biere et al. 2006; the paired repository's own earlier research sourced it elsewhere.
+
+**The incompleteness result in HWZ terms** (from the sliced-class incompleteness research; labelled
+*argued* where it is argued, *checked* where machine-checked). HWZ's Theorem 14 (model →
+quasimodel) collapses the domain at each time to its set of realised types; that collapse is sound
+because monodic first-order temporal logic has no quantifier over runs — every run condition in
+Def 12 is existential — and Lemma 17's splice routes runs through equal quasistates for the same
+reason. L⁺'s `⊡` is a *universal* quantifier over runs through a state, and any collapse to finitely
+many states per time adds limit runs that `⊡` can see. `Φ` is a formula that forbids every
+finite-width collapse at once (*checked*: `Probe710.no_finite_width_sat`). The periodicity half of
+HWZ's argument (Lemma 21) does transfer to fixed finite width by a Ramsey-type strengthening of the
+splice (*argued*, not machine-checked), which is why the obstruction is **width and nothing else**:
+their quasimodel technique transfers for periodicity (tail-stability is its named-state form) but
+not for completeness.
+
+**Limit of the certifying literature.** The certificate literature cited in the filing (Froleyks,
+Yu, Biere, Heljanko 2024; the PLTL one-pass-tableau certification line; the sosy-lab verification
+witnesses project page) is uniformly about certificate **soundness** — does the checker's
+acceptance imply the property — and never about **completeness of a certificate class**. Nothing
+published treats a counterexample exchange format as an object whose completeness is proved or
+refuted. That literature therefore informs the wire-format decision above and points (1)-(4), and
+says nothing about point (5): it licenses no weakening of the never-report-validity discipline,
+which this relay states as permanent for `⊡`-targets on the strength of the probe, not of any
+published result.
