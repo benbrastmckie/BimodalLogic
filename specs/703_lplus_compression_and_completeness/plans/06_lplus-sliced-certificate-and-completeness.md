@@ -5306,7 +5306,7 @@ sub-phases; never carry a `sorry`.
 
 ---
 
-### Phase 20: The landed L witness family embeds [IN PROGRESS]
+### Phase 20: The landed L witness family embeds [COMPLETED]
 
 **Goal**: Prove `exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula` — every ℤ-time
 non-validity of L, transported to L⁺, has a sliced certificate. This restores parity with the
@@ -5900,7 +5900,7 @@ green build between the two halves, and never leave a `TailStable` that no consu
 - `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/EmbedComplete.lean`
 - `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Position.lean` — module header only
 
-#### Sub-phase 20.5 — `hTS` at the embedding, `hconc`, and the flagship [PARTIAL] *(new at plan v12; dispatch seq 52 landed the constant-state reduction only)*
+#### Sub-phase 20.5 — `hTS` at the embedding, `hconc`, and the flagship [COMPLETED] *(new at plan v12; dispatch seq 52 landed the constant-state reduction, dispatch seq 53 landed the rest)*
 
 **Goal**: finish Phase 20. With the filtered backward conjunct landed, discharge the two remaining
 hypotheses of `Complete.lean`'s `exists_plusSlicedCertificate_of_tailStable_countermodel` at the
@@ -5913,8 +5913,18 @@ two `untl`, two atomic `snce`, three over `⊥ S ⊥` — and seven certificates
 (research risk R1). The obligation is the same under either repair and is **not** created by option 1.
 
 **Tasks**:
-- [ ] Prove `(W.sliced tt).TailStable` for an **arbitrary** certifying `W : WitnessFamily [] [φ]`, at
-      **every** residue of both periods. *(deviation: partial — dispatch 52 landed the first input,
+- [x] Prove `(W.sliced tt).TailStable` for an **arbitrary** certifying `W : WitnessFamily [] [φ]`, at
+      **every** residue of both periods. *(completed at dispatch seq 53 as
+      `WitnessFamily.sliced_tailStable`. The route did NOT need the period-invariance of an arbitrary
+      run that the dispatch-52 note below reduced it to: `slicedCanon_mem_liveAt_iff` proves that a
+      live position's label IS the family's own translated label — by `Canon.lean`'s rigidity plus
+      the self-loop edge relation plus `sliced_canAt_iff_mem` — so periodicity comes from
+      `lab_sub_perB` / `lab_add_perF` free. The `⊆` halves needed one new piece of general machinery,
+      landed as `PlusSlicedCertificate/HalfRun.lean`: a one-directional computed-to-declarative
+      liveness bridge that accepts an explicit half-run for the other direction, plus two
+      three-region splices that take a half-run where `tailPos` / `headPos` take a *shifted* run —
+      which is exactly what makes residue 0 available, since the shift would cross the origin there.
+      Dispatch-52 note retained below for the record.)* *(dispatch 52 landed the first input,
       `Embedded.sliced_run_st_const` (every run of the embedded certificate has CONSTANT state, from
       `sliced_edge`'s identity edge relation) plus `sliced_run_pos_fst`, and recorded the exact
       remaining obligation in `EmbedComplete.lean`'s own section docstring: every live position at a
@@ -5928,15 +5938,28 @@ two `untl`, two atomic `snce`, three over `⊥ S ⊥` — and seven certificates
       the junk positions by construction; the `⊇` direction from the genuine run that witnesses
       liveness. The forward conjunct is the mirror and has already returned favourable at four
       certificates.
-- [ ] Prove `hconc` and assemble the flagship: *(deviation: deferred — depends on `hTS`)* transport `¬ PlusValidZTime (ofFormula φ)` to
+- [x] Prove `hconc` and assemble the flagship: *(completed at dispatch seq 53 as
+      `WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula`, with
+      `WitnessFamily.plusRefutes_of_not_plusValidZTime_ofFormula` through the refutation interface.
+      One hypothesis of the headline needed work the plan did not anticipate and is landed as
+      `WitnessFamily.exists_certifies_mem_winTimes`: the compression theorem bounds its target time
+      by `compressionBound` and nothing relates that bound to the family's own periods, so the
+      target time has to be normalized into the window first — free, because `lab_add_mul_perF`
+      makes the label invariant under the normalization and `Target` reads it at one time only.)*
+      transport `¬ PlusValidZTime (ofFormula φ)` to
       `¬ ValidZTime φ`, apply the landed `exists_witnessFamily_of_not_validZTime`
       (`WitnessFamily/Compression/Family.lean:153` — **read-only; this file is not edited by this task
       and the option-1 ruling is what keeps it closed**), and embed.
-- [ ] Record in the module docstring what the theorem buys: *(deviation: deferred — depends on the flagship)* the sliced class is **non-vacuous on
+- [x] Record in the module docstring what the theorem buys: *(completed at dispatch seq 53 —
+      `EmbedComplete.lean`'s "What the flagship does and does not buy" section; no probe is cited,
+      by path or by declaration name)* the sliced class is **non-vacuous on
       branching-free targets** and at least as strong as the landed L class there. State plainly that
       this is **not** completeness for L⁺ — `⊡`-carrying targets are not covered, and that is the open
       Stage 3 question. **Cite no probe**, by path or by declaration name (C9, user ruling).
-- [ ] Record the hand-off to the certificate-non-vacuity-and-shape-gates successor: *(deviation: deferred — depends on the flagship)* the flagship is a
+- [x] Record the hand-off to the certificate-non-vacuity-and-shape-gates successor: *(completed at
+      dispatch seq 53 — the same docstring section records both what the flagship gives that
+      successor and what the option-1 repair changed: one liveness filter per obligation direction,
+      and `TailStable` a per-certificate demand rather than a theorem)* the flagship is a
       ready-made non-vacuity witness for its shape gates. Record **also** what the repair changed, so
       that successor does not inherit a stale picture — `TailStable` now carries one filter per
       obligation direction and is a per-certificate demand.
@@ -5962,7 +5985,7 @@ the flagship's own statement.
 
 ---
 
-### Phase 21: Acceptance gates and the closing record [NOT STARTED]
+### Phase 21: Acceptance gates and the closing record [IN PROGRESS]
 
 **GATE-STATE FINDINGS from dispatch seq 25 (measured, not predicted).** `check-module-invariants.sh`
 was run in full at the end of Phase 15.1. Three check groups fail, and Phase 21 must dispose of each
