@@ -299,14 +299,14 @@ correction, and keep the three obstructions apart.
 
 ---
 
-### Phase 4: Published counterpart, the "not undecidability" warning, secondary literature, fidelity labels [NOT STARTED]
+### Phase 4: Published counterpart, the "not undecidability" warning, secondary literature, fidelity labels [COMPLETED]
 
 **Goal**: Name the published construction that satisfies the rule, record that FMP failure is
 not an undecidability result, record that the technique was in the corpus the whole time, and
 label every source's fidelity.
 
 **Tasks**:
-- [ ] Section *The published counterpart*: GKWZ 2003 printed pp. 234 and 236, the two
+- [x] Section *The published counterpart*: GKWZ 2003 printed pp. 234 and 236, the two
   "repeating finite pieces" sentences quoted as the research report gives them, labelled
   **[verified-pdf]**; HWZ 2000's quasimodel over `⟨ℤ, <⟩` as the concrete form, with the
   correspondence table (type / state candidate / state function / run / quasimodel / splice
@@ -318,8 +318,8 @@ label every source's fidelity.
   construction; GKWZ Chapter 11 (§11.3 K-quasimodel and Lemma 11.22, Theorem 11.21; §11.4
   periodic state functions, Lemmas 11.27/11.29 = HWZ Lemmas 17/21; §13.2 Theorem 13.6 for
   PTL × S5) as the book form, with the diagnosis that it was ingested 2026-08-18 and never read
-  for this purpose.
-- [ ] Section *FMP failure is not undecidability*: Krommes 2020 Theorem 1.1 (`K4 × S5`,
+  for this purpose. *(completed)*
+- [x] Section *FMP failure is not undecidability*: Krommes 2020 Theorem 1.1 (`K4 × S5`,
   `S4 × S5`, SSL are EXPSPACE-complete) alongside its own sentence that both lack the finite
   product model property [GKWZ Thm 5.32] but are decidable, in coN2EXPTIME [GKWZ Thm 5.28];
   GKWZ Theorem 5.32 (printed p. 246) and 5.28 (printed p. 244) stated as the research verified
@@ -328,22 +328,22 @@ label every source's fidelity.
   (`PlusValidZTime` ranges over regular ℤ-frames only); "structurally the same trick" for the
   5.32 countermodel, no more; the three wrong readings (a large enough `n` will do; decidability
   is hopeless; retreat to an abstract fmp). Do NOT state a complexity for this logic. Do NOT
-  transcribe the 5.32 proof formula; cite Figure 5.9's caption.
-- [ ] Section *Secondary literature*: HVV 2004 §2 / Table 1 as a summary of Halpern-Vardi 1989
+  transcribe the 5.32 proof formula; cite Figure 5.9's caption. *(completed)*
+- [x] Section *Secondary literature*: HVV 2004 §2 / Table 1 as a summary of Halpern-Vardi 1989
   (S5-like modality over a discrete linear flow; perfect-recall / no-learning as the knob from
   PSPACE to non-r.e.; HVV's own contribution is axiomatizability); HKKM 2019 (Diff × Diff
   non-finitely axiomatisable but axiomatisable by infinitely many Sahlqvist axioms) as "what an
   axiomatisation of a product-like system can look like", in the same sentence that this logic
   is not a product (GKWZ product quasimodels presuppose commutativity and Church-Rosser, which
-  the stability modal lacks).
-- [ ] Section *Sources and fidelity*: a table of the five documents with corpus id, what was
+  the stability modal lacks). *(completed)*
+- [x] Section *Sources and fidelity*: a table of the five documents with corpus id, what was
   read, and label — GKWZ **[verified-pdf]** for 5.27/5.28/5.32 and pp. 234/236, otherwise
   **[literature]** (`unverified_conversion`); HWZ, Krommes, HVV, HKKM **[literature]**
   (`unverified_conversion`); the probes **[checked]**; the archived twin **[archived]**. Name
   the verification recipe (`pdftotext -layout` on the staging PDF named by the global
-  `metadata.json`) in one line so the next reader can repeat it.
-- [ ] Confirm `wc -l` against Phase 1's scope hypothesis; record the count for Phase 5's
-  `line_count`.
+  `metadata.json`) in one line so the next reader can repeat it. *(completed)*
+- [x] Confirm `wc -l` against Phase 1's scope hypothesis; record the count for Phase 5's
+  `line_count`. *(completed)*
 
 **Timing**: 1.5 hours
 
