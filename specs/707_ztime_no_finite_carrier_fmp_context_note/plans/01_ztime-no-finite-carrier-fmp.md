@@ -260,28 +260,28 @@ strengthened rule so that the carrier rule is never recorded alone.
 
 ---
 
-### Phase 3: ℤ-time semantics as a time-sliced graph semantics [NOT STARTED]
+### Phase 3: ℤ-time semantics as a time-sliced graph semantics [COMPLETED]
 
 **Goal**: Fold in the earlier round's graph-semantics recommendation with the sliced
 correction, and keep the three obstructions apart.
 
 **Tasks**:
-- [ ] Section *ℤ-time semantics as a time-sliced graph semantics*: state S1-S5 from
+- [x] Section *ℤ-time semantics as a time-sliced graph semantics*: state S1-S5 from
   `specs/703_lplus_compression_and_completeness/reports/02_semantics-first-compression-research.md`
   §1.1 as TRUE, time-homogeneous facts (histories are the step paths; shift invariance; `⊡` is
   state-determined; fusion and limit closure; type-preserving pasting), with the landed names
   the round cited (`FrameOver.mem_HF_iff_adjacent`, `FrameOver.ofStep`, `plusTruthAt_timeShift`,
-  `stab_state_only`, `paste`) — confirm each by grep before citing.
-- [ ] The diagnosis: that round's "period one and no time origin" is exactly what `θ` forbids;
+  `stab_state_only`, `paste`) — confirm each by grep before citing. *(completed)*
+- [x] The diagnosis: that round's "period one and no time origin" is exactly what `θ` forbids;
   a countermodel to `θ.neg` must have a time at which something happens once, so its state space
-  cannot be time-homogeneous and finite; the graph must be TIME-SLICED, not time-homogeneous.
-- [ ] One sentence each for the three distinct obstructions, with witness and what answered it:
+  cannot be time-homogeneous and finite; the graph must be TIME-SLICED, not time-homogeneous. *(completed)*
+- [x] One sentence each for the three distinct obstructions, with witness and what answered it:
   carrier size (`θ`, `no_ofStep_sat`; answered by `ℤ × Fin n`); all-threads fulfilment (the
   sharing-class pumping, `not_exists_plusCertifies_pumpTarget`; answered by liveness-as-fixpoint,
   see `PlusSlicedCertificate.lean`'s header); finite width (`Φ`, `not_finite_width_fmp`; NOT
-  answered by any landed class).
-- [ ] Cross-reference the still-missing `limit-closure-and-fairness.md` as a gap, citing
-  `PlusWitnessFamily/Limits/NoCertificate.lean` as where that note would start.
+  answered by any landed class). *(completed)*
+- [x] Cross-reference the still-missing `limit-closure-and-fairness.md` as a gap, citing
+  `PlusWitnessFamily/Limits/NoCertificate.lean` as where that note would start. *(completed)*
 
 **Timing**: 45 minutes
 
