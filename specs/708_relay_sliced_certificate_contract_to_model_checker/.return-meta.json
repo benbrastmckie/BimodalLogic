@@ -1,75 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 4,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/708_relay_sliced_certificate_contract_to_model_checker/reports/01_relay-sliced-certificate-contract.md",
-      "summary": "Verifies the five relay points against the landed PlusSlicedCertificate tree and the paired ModelChecker repository, corrects point (4) to the landed liveness-filtered residue-indexed TailStable, decides against a HOA profile with reasons, fixes the published vocabulary, and names every ModelChecker entry and ADEQUACY row the relay amends."
+      "type": "plan",
+      "path": "specs/708_relay_sliced_certificate_contract_to_model_checker/plans/01_relay-sliced-certificate-contract.md",
+      "summary": "Five sequential prose phases (5.5 h) producing, in this task's summary only, the ready-to-file relay text for ModelChecker entries 200/219, ADEQUACY.md (A3, 7.1(iii-e), 6.1 sliced envelope, new tail-stability item, 7.4) and TRUST_PIPELINE.md, with the landed TailStable form, the HOA no-profile decision, published vocabulary, the permanent never-report-validity discipline citing the task-710 witness Phi, and implementation-time dangling-citation checks on both sides; nothing written outside specs/708_*/ and the paired repository read-only."
     }
   ],
-  "next_steps": "Run /plan 708 to create implementation plan",
-  "metadata": {
-    "session_id": "sess_1790948286_150db5_708",
-    "agent_type": "general-research-agent",
-    "task_number": 708,
-    "duration_seconds": 2400,
-    "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "research",
-      "general-research-agent"
-    ],
-    "findings_count": 6,
-    "paired_repository_written": false
-  },
+  "next_steps": "Run /implement 708 to execute the plan",
+  "phase_count": 5,
+  "estimated_hours": 5.5,
+  "dependency_waves": [[1], [2], [3], [4], [5]],
   "memory_candidates": [
     {
-      "content": "Cross-repository relay tasks (BimodalLogic -> ModelChecker) follow the task-701 shape: ready-to-file replacement text inside this repository's summary, per amended entry/row; citations by fully qualified Lean declaration name (never file:line, per the paired repo's own convention); dangling-citation checks on both sides at filing time; the paired repository is never written. Triage each relay point as confirm (already their position), correct (their text is stale), or introduce (new information that changes their logic).",
-      "category": "WORKFLOW",
-      "source_artifact": "specs/708_relay_sliced_certificate_contract_to_model_checker/reports/01_relay-sliced-certificate-contract.md",
-      "confidence": 0.85,
-      "suggested_keywords": [
-        "relay",
-        "ModelChecker",
-        "paired-repository",
-        "ready-to-file",
-        "citation-convention",
-        "read-only"
-      ]
-    },
-    {
-      "content": "Wire-format extension rule derived from HOA's header discipline: a consumer that does not understand semantics-bearing content must error, never reinterpret. For the bimodal certificate wire, both re-checkers (Lean decodeOptLassos and Python raw.get('lassos', [])) read an absent lassos key as [] and then reject structurally, so a sliced-certificate envelope must OMIT lassos entirely; a document carrying both lassos and slices would be silently checked as a lasso family by an unaware checker.",
+      "content": "Cross-repository relay tasks (BimodalLogic -> paired ModelChecker, read-only) have a stable deliverable shape: the task's own summary carries a re-run Verification Snapshot (live HEAD SHAs on both sides, declaration-site grep for every cited Lean name, anchor grep for every paired entry/row/section), then one ready-to-file section per amended artifact stating what it replaces, confirms (already their position) or introduces (new to their side), with every citation by fully qualified declaration name, never file:line. Plan it as sequential prose phases over one summary file, with the citation and boundary checks repeated after writing, because the 701 precedent found cross-repository drift between research and implementation.",
       "category": "PATTERN",
-      "source_artifact": "specs/708_relay_sliced_certificate_contract_to_model_checker/reports/01_relay-sliced-certificate-contract.md",
-      "confidence": 0.8,
-      "suggested_keywords": [
-        "wire-format",
-        "canonical-json",
-        "lassos",
-        "sliced-certificate",
-        "HOA",
-        "strict-extension"
-      ]
-    },
-    {
-      "content": "Literature-index relevance notes can mis-cite definition numbers; verify against chunk text before relaying. In hodkinson_wolter_zakharyaschev_2000, the periodic state function with bounded period is Theorem 24 / Lemmas 21, 23 (section 5), not Definition 20 (which defines 'realizes psi1 U psi2 in m steps'); sharp(phi) counts distinct realizable state candidates, not slice width. 'Ultimately periodic' does not occur in biere_heljanko_junttila_latvala_schuppan_2006, which says 'lasso-shaped', beta gamma^omega, '(k,l)-loop'.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/708_relay_sliced_certificate_contract_to_model_checker/reports/01_relay-sliced-certificate-contract.md",
-      "confidence": 0.75,
-      "suggested_keywords": [
-        "quasimodel",
-        "HWZ-2000",
-        "Biere-2006",
-        "k-l-loop",
-        "literature-verification",
-        "tail-stability"
-      ]
+      "source_artifact": "specs/708_relay_sliced_certificate_contract_to_model_checker/plans/01_relay-sliced-certificate-contract.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["paired-repository", "relay", "ModelChecker", "dangling-citation", "read-only", "ready-to-file"]
     }
   ],
-  "modified_files": [
-    "specs/708_relay_sliced_certificate_contract_to_model_checker/reports/01_relay-sliced-certificate-contract.md",
-    "specs/708_relay_sliced_certificate_contract_to_model_checker/.return-meta.json"
-  ],
-  "errors": []
+  "metadata": {
+    "session_id": "sess_1790958227_8d0c76_708",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "dispatch_seq": 8
 }

@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 8,
+  "summary": "Plan written: five sequential prose phases (5.5 h) producing the ready-to-file ModelChecker relay text in this task's summary, with the landed TailStable form, the HOA decision, published vocabulary, and the permanent never-report-validity discipline citing the task-710 witness; nothing outside specs/708_*/ is written and the paired repository stays read-only.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/708_relay_sliced_certificate_contract_to_model_checker/plans/01_relay-sliced-certificate-contract.md",
+      "summary": "Five-phase implementation plan for the sliced-certificate contract relay."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implement for task 708 against plans/01_relay-sliced-certificate-contract.md, starting at Phase 1."
+}
