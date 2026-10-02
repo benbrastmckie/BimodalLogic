@@ -1,7 +1,7 @@
 # Implementation Plan: Task #708
 
 - **Task**: 708 - Relay the sliced certificate contract to the model checker
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours
 - **Dependencies**: 703 (completed; the landed `PlusSlicedCertificate` tree is the source of truth). Soft: 710 (its probe is the citation source for the incompleteness result), 704 (gates the entry-219 non-vacuity wording), 712 (if it lands the probe's theorems as library declarations, the cited path moves)
 - **Research Inputs**: specs/708_relay_sliced_certificate_contract_to_model_checker/reports/01_relay-sliced-certificate-contract.md; specs/710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md (Recommendation 4, via the dispatch's STATUS NOTE ADDENDUM)
@@ -110,17 +110,17 @@ No ROADMAP.md found.
 Phases within the same wave can execute in parallel. All five phases write the same summary
 file, so they are serialized; there is no parallel wave.
 
-### Phase 1: Re-verify cross-repository ground truth and open the summary [NOT STARTED]
+### Phase 1: Re-verify cross-repository ground truth and open the summary [IN PROGRESS]
 
 **Goal**: Establish, at implementation time, that every fact the relay will cite still holds on
 both live trees, and open the summary with a Verification Snapshot section recording the checks.
 
 **Tasks**:
-- [ ] Record the BimodalLogic HEAD SHA and the paired repository's HEAD SHA (`git -C
+- [x] Record the BimodalLogic HEAD SHA and the paired repository's HEAD SHA (`git -C
       /home/benjamin/Projects/ModelChecker rev-parse --short HEAD`) and `git -C ... status
       --porcelain` output (expected empty; if non-empty, record it verbatim as pre-existing and
-      do not touch it).
-- [ ] Confirm each Lean declaration the relay will cite exists as a declaration (not only in
+      do not touch it). *(completed)*
+- [x] Confirm each Lean declaration the relay will cite exists as a declaration (not only in
       prose), with its defining file: `PlusSlicedCertificate.PlusSlice`, `.PlusSlicedCertificate`,
       `.PlusGraphPath`, `.onePointCertificate` (`Basic.lean`); `.TailStable`, `.TailStableRaw`,
       `.decidableTailStable`, `.fwdLiveAt`, `.bwdLiveAt` (`Stable.lean`); `.Check.Certifies`,
@@ -131,26 +131,26 @@ both live trees, and open the summary with a Verification Snapshot section recor
       `FixtureStable.not_mem_L₀_pR`, `Fixture.not_tailStable`, `Fixture.live_not_determined_by_slice`;
       `Frame.mem_HF_iff_slicedPath`; `StabFaithful`; `CanonicalWire.decodeOptLassos` and
       `CanonicalWire.parse_print` (`BimodalTools/`). Record the fully qualified name actually
-      found for each; where the report's short name differs from the live one, the live one wins.
-- [ ] Confirm `exists_tailStable_repr` has no declaration site (prose mentions only) — it is
-      cited as refuted and must stay dangling.
-- [ ] Run `lake build` to completion, then `lake env lean
+      found for each; where the report's short name differs from the live one, the live one wins. *(completed)*
+- [x] Confirm `exists_tailStable_repr` has no declaration site (prose mentions only) — it is
+      cited as refuted and must stay dangling. *(completed)*
+- [x] Run `lake build` to completion, then `lake env lean
       specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean`;
       record exit status, the `#print axioms` lines, and `grep -c sorry` (expected 0). Confirm
       `not_plusValidZTime_neg_Φ`, `no_finite_width_sat`, `not_certifies`, `not_sliced_complete`,
       `not_finite_width_fmp` are present. If the probe does not compile, stop and report
-      `blocked` with the output — the relay's central claim is that this is machine-checked.
-- [ ] Confirm the paired-repository anchors (read-only `grep`/`sed` only): entries 200 and 219 in
+      `blocked` with the output — the relay's central claim is that this is machine-checked. *(completed)*
+- [x] Confirm the paired-repository anchors (read-only `grep`/`sed` only): entries 200 and 219 in
       `specs/TODO.md` with their live `status` from their `specs/state.json`; ADEQUACY.md row A3,
       §6.1, §7.1(iii-a), §7.1(iii-e), §7.4, rows A0/A1/A1-Γ/A2; TRUST_PIPELINE.md "The stability
       modal" section and its "In this repository" row; SEARCH_COVERAGE.md §3(b)/§4;
       SETTINGS.md's divisibility caveat; `semantic/certificate.py`'s `raw.get("lassos", [])`;
       repo-wide zero hits for `tail.{0,3}stab`, `Hanoi|\bHOA\b`, `sliced|time-slice`,
-      `finite.graph`.
-- [ ] Open `summaries/01_relay-sliced-certificate-contract-summary.md` with the summary-format.md
+      `finite.graph`. *(completed)*
+- [x] Open `summaries/01_relay-sliced-certificate-contract-summary.md` with the summary-format.md
       header and a `## Verification Snapshot` section holding the tables above (BimodalLogic
       checks; BimodalLogic dangling-citation checks; probe compile check; ModelChecker checks),
-      each row giving the command and the result, as the 701 summary did.
+      each row giving the command and the result, as the 701 summary did. *(completed)*
 
 **Timing**: 1 hour
 
