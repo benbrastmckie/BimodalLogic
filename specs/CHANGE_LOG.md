@@ -1,6 +1,22 @@
 # Change Log
 
 
+## 2026-10-02: Archive 8 completed tasks
+
+**Archived**:
+- **708** (completed, general): Wrote the sliced-certificate contract relay to the ModelChecker -- re-verified all 26 cited Lean declarations and every paired-repository anchor, compiled the task-710 probe (exit 0, zero sorry), produced ready-to-file replacement text for ModelChecker entries 200/219 and ADEQUACY.md amendments
+- **707** (completed, markdown): Fixed a dotted citation in the ztime-no-finite-carrier-fmp source-store note so check-module-invariants.sh C5 stops reading it as a nonexistent module path; redeployed, confirmed byte-identical, re-ran invariants (ALL CHECKS PASSED)
+- **701** (completed, general): Produced verified replacement/amendment text for ModelChecker tasks 200 and 219, correcting stale framing and three dangling Lean citations left mid-research by task 696
+- **696** (completed, lean4): Completed all twelve phases of the trans-arrival substrate refactor -- SharingSkeleton gained a fourth periodic datum for succession, Thread.step reads the arrival-pruned trans relation, and (C1')'s temporal clauses now quantify over succession rather than share-classes
+- **650** (completed, lean4): Closed a 140-row first-use ledger over the Lean appendix across nine phases -- 30 forward references, 44 never-introduced items, 8 named-but-unexplained items and one naming defect resolved; three author TODOs removed
+- **649** (completed, typst): Promoted file-local code-presentation rules into one book-wide `lean-code()` environment in typst/template.typ, with two declared kinds and a module-qualified label discipline
+- **703** (completed, lean4): Closed Phase 21 -- four docs/theorem-index.md rows and matching C2 AXIOM_BASELINE pins (22 -> 26), closing the sliced subtree's aggregator record with the corrected nine-conjunct condition set
+- **704** (completed, general): Landed C36/C37 module invariants, exhibited the sliced class's first interesting witness, and closed the Tier-2 box-dot witnesses with a reasoned exclusion; both gate modes print ALL CHECKS PASSED
+
+**Directories moved**: 8 (specs/ -> specs/archive/)
+**Roadmap updates**: 0 (2 matches skipped: low confidence)
+**Memory harvest**: none
+
 ## 2026-09-17: Archive 20 completed tasks
 
 **Archived**:
