@@ -1,0 +1,36 @@
+{
+  "phase": 2,
+  "phase_name": "Write the entry 200 replacement paragraphs and the entry 219 conditional amendment",
+  "started_at": "2026-10-02T16:54:36Z",
+  "last_updated": "2026-10-02T16:57:19Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Add entry 200 section: state what is replaced and what is kept verbatim",
+      "status": "done",
+      "files_touched": [
+        "specs/708_relay_sliced_certificate_contract_to_model_checker/summaries/01_relay-sliced-certificate-contract-summary.md"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Entry 200 replacement content (a)-(f)",
+      "status": "done",
+      "files_touched": [
+        "specs/708_relay_sliced_certificate_contract_to_model_checker/summaries/01_relay-sliced-certificate-contract-summary.md"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "Add entry 219 conditional citation amendment",
+      "status": "done",
+      "files_touched": [
+        "specs/708_relay_sliced_certificate_contract_to_model_checker/summaries/01_relay-sliced-certificate-contract-summary.md"
+      ]
+    }
+  ],
+  "current_objective": 3,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}

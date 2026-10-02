@@ -110,7 +110,7 @@ No ROADMAP.md found.
 Phases within the same wave can execute in parallel. All five phases write the same summary
 file, so they are serialized; there is no parallel wave.
 
-### Phase 1: Re-verify cross-repository ground truth and open the summary [IN PROGRESS]
+### Phase 1: Re-verify cross-repository ground truth and open the summary [COMPLETED]
 
 **Goal**: Establish, at implementation time, that every fact the relay will cite still holds on
 both live trees, and open the summary with a Verification Snapshot section recording the checks.
@@ -174,20 +174,20 @@ is missing from this list.
 
 ---
 
-### Phase 2: Write the entry 200 replacement paragraphs and the entry 219 conditional amendment [NOT STARTED]
+### Phase 2: Write the entry 200 replacement paragraphs and the entry 219 conditional amendment [IN PROGRESS]
 
 **Goal**: Ready-to-file text for ModelChecker `specs/TODO.md` entry 200's blocker paragraphs and
 a conditional citation amendment for entry 219, each stating exactly which paragraphs it
 replaces and which it keeps verbatim.
 
 **Tasks**:
-- [ ] Add `## ModelChecker entry 200 — ready-to-file replacement paragraphs`. State what is
+- [x] Add `## ModelChecker entry 200 — ready-to-file replacement paragraphs`. State what is
       replaced (the blocker paragraphs that say 703 is `not_started`, expect "a compression
       bound" and "the verified side's branching structure", and say there is "no L-plus
       compression subtree") and what is kept verbatim (the shape-mechanism and
       temporal-asymmetry-correction paragraphs, and their `dependencies` flag paragraph, as 701
-      did).
-- [ ] Replacement content, in this order: (a) 703 is completed (date); the branching structure is
+      did). *(completed)*
+- [x] Replacement content, in this order: (a) 703 is completed (date); the branching structure is
       `PlusSlicedCertificate` with `Check.Certifies` (nine conjuncts), soundness
       `Sound.plusRefutes_of_certifies`, relative completeness
       `Complete.exists_plusSlicedCertificate_of_tailStable_countermodel`, embedding
@@ -210,15 +210,15 @@ replaces and which it keeps verbatim.
       blocks them; for `⊡`-carrying targets the sliced class is a sound, strictly larger search
       space with no proved bound on `n` and no completeness, and the never-report-validity
       discipline (their D8) is **permanent** for such targets, not pending a proof. Offer the
-      status disposition as a recommendation, not an instruction.
-- [ ] Add `## ModelChecker entry 219 — conditional citation amendment`. Limit (b)'s wording
+      status disposition as a recommendation, not an instruction. *(completed)*
+- [x] Add `## ModelChecker entry 219 — conditional citation amendment`. Limit (b)'s wording
       stands; the certificate class to cite is now `PlusSlicedCertificate`, non-vacuous on
       `⊡`-free targets by the embedding theorem. Write the non-vacuity sentence for `⊡` targets
       as conditional on task 704's outcome, naming the gate, and do not assert it. Add the
       observation that `Φ.neg` is a limit of a stronger kind than their criterion (b) describes:
       not "no certificate has yet been constructed" but "no certificate in this class can exist",
       proved; suggest they record it as a distinct kind rather than under (b), without drafting
-      their header for them.
+      their header for them. *(completed)*
 
 **Timing**: 1.25 hours
 
