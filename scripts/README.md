@@ -76,6 +76,8 @@ Not scripts — companion data consumed by the gates above.
 | File | Purpose |
 |------|---------|
 | `boneyard-import-waivers.txt` | Archived import lines that C11 must not treat as repairable. |
+| `certificate-witness-inventory.txt` | C36 companion: one `witness` row per certifying predicate under `Metalogic/Decidability/` (the exhibited interesting witness, its clause kinds, closure term and interest expression) plus the `coverage-limit` rows naming the refutations the lasso-based class must keep in the tree. |
+| `clause-shape-allowlist.txt` | C37 companion: every biconditional-bearing definition under the three certificate roots, one row per clause, with the reviewed verdict (`INTENDED` / `RESIDUAL` / `OUT-OF-SHAPE`) and a reason anchor the check re-resolves on every run. |
 | `debug-artifact-allowlist.txt` | Live debug directives that C27 must not treat as unreviewed debug output. |
 | `markdown-link-allowlist.txt` | C13 companion: markdown files whose relative links are not resolution-checked. |
 | `markdown-slash-path-allowlist.txt` | C12 companion: slash-shaped source paths permitted not to resolve. |

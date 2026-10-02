@@ -213,6 +213,10 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   quantifier over one index and one offset, which is what `BoxFaithful` reports.
   `sliced_target_lab_eq_canLab` and `sliced_slabTrue` are two of the four hypotheses of the
   completeness headline
+- `PlusSlicedCertificate.Examples`: the class's **non-vacuity record** —
+  `liveFamily_sliced_certifies`, the exhibited interesting witness of `Certifies` at a non-empty
+  closure with a live `untl` obligation, beside `Complete.lean`'s `Probe.exists_certifying_triv`,
+  the antecedent failure at the empty closure; and the lifted sharing-class witness
 
 ## The closing record: what this subtree proves, and what it does not
 

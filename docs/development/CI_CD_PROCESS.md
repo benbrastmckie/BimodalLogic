@@ -286,12 +286,15 @@ and re-summing.
 CI runs `check-module-invariants.sh` in `--no-build` (structural) mode rather than its full
 mode, to avoid duplicating work the lean-action and lean_exe steps already do and to keep the
 added runtime near the budget above rather than the full mode's roughly 2-minute warm-cache
-cost. Three checks are consequently not run in CI at all:
+cost. Four checks are consequently not run in CI at all:
 
 - **C2** — axiom-baseline drift detection
 - **C6** — unreachable-module compile-checking (the manifest check itself still runs; only the
   compile-check half is skipped)
 - **C24** — transitive `Init` import check
+- **C36b** — the evaluative half of the certificate non-vacuity check, which `#eval`s each
+  witness row's interest expression against the built library. Its structural half C36a and the
+  clause-shape check C37 are build-free, so both run under `--no-build` and therefore in CI
 
 **Upgrade path**: drop `--no-build` from the `Check module invariants` step's command (a
 one-line edit) once the added ~2 minutes is judged worth the coverage.

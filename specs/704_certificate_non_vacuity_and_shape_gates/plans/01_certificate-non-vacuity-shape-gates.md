@@ -497,28 +497,28 @@ narrow for `StabFaithful` to separate, try `n = 3` once before invoking the time
 
 ---
 
-### Phase 6: Documentation, CI-gap note, and final gate [NOT STARTED]
+### Phase 6: Documentation, CI-gap note, and final gate [IN PROGRESS]
 
 **Goal**: Make the two new companion files and the one new build-gated half discoverable where
 the repository documents such things, and prove the whole gate green in both modes.
 
 **Tasks**:
-- [ ] `scripts/README.md`: add rows for `certificate-witness-inventory.txt` and
+- [x] `scripts/README.md`: add rows for `certificate-witness-inventory.txt` and
       `clause-shape-allowlist.txt` to the "Allowlists, manifests, and other data files" table,
-      in the table's alphabetical order, each one sentence naming its consuming check.
-- [ ] `docs/development/CI_CD_PROCESS.md` "Known Not-in-CI Gaps": add `C36b` (the evaluative
+      in the table's alphabetical order, each one sentence naming its consuming check. *(completed)*
+- [x] `docs/development/CI_CD_PROCESS.md` "Known Not-in-CI Gaps": add `C36b` (the evaluative
       half runs only in full mode; C36a and C37 run in `--no-build` and therefore in CI). No
-      task numbers (C9D).
-- [ ] `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/README.md` (if it exists) or
+      task numbers (C9D). *(completed: list now reads Four checks; C36b entry notes C36a/C37 run in CI)*
+- [x] `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/README.md` (if it exists) or
       the subtree aggregator docstring: one line pointing at `Examples.lean` as the class's
-      non-vacuity record. Skip if neither file carries a per-module table.
-- [ ] Run, in this order, and paste the verdict lines into the summary:
+      non-vacuity record. Skip if neither file carries a per-module table. *(completed: no per-module README exists; one Submodules bullet added to the aggregator docstring, with README/typst surfaces regenerated)*
+- [x] Run, in this order, and paste the verdict lines into the summary:
       `bash scripts/check-module-invariants.sh --no-build`;
       `bash scripts/check-module-invariants.sh` (full, through the build guard's lock);
       `bash scripts/typst-sync-check.sh`; `lake exe mk_all --lib FormalSystem --check`;
-      `bash scripts/check-module-invariants.sh --emit-inventory --check`.
-- [ ] Final sibling check: `git status --short` shows only this task's files; `git log` shows
-      no foreign commit on them since Phase 1. Commit with explicit paths.
+      `bash scripts/check-module-invariants.sh --emit-inventory --check`. *(completed: --no-build ALL CHECKS PASSED; full ALL CHECKS PASSED in 128 s; typst-sync PASS (4 checks); mk_all --check 0; --emit-inventory --check PASS)*
+- [x] Final sibling check: `git status --short` shows only this task's files; `git log` shows
+      no foreign commit on them since Phase 1. Commit with explicit paths. *(completed: no foreign commit on this task's files since Phase 1; 707's two commits touched only its own note)*
 
 **Timing**: 1 hour
 
@@ -536,13 +536,13 @@ the repository documents such things, and prove the whole gate green in both mod
 
 ## Testing & Validation
 
-- [ ] Phase 1: zero stale oleans; probe 01 prints two axiom-clean lines; probe 02 all `true`.
-- [ ] Phase 2: `mk_all --check`, `--emit-inventory --check`, `typst-sync-check.sh` all exit 0; C2 PASS with the new count word.
-- [ ] Phase 3: C36a PASS in `--no-build`; C36b PASS in full mode; both negative tests FAIL by name.
-- [ ] Phase 4: C37 PASS; census count equals allowlist row count; both negative tests FAIL by name.
-- [ ] Phase 5: either two more axiom-clean witness rows, or a complete exclusion record.
-- [ ] Phase 6: `ALL CHECKS PASSED` in both modes; no task-number citation outside `specs/`.
-- [ ] Throughout: `grep -rn 'Probe706\|no_ofStep_sat' FormalSystem scripts docs` stays empty.
+- [x] Phase 1: zero stale oleans; probe 01 prints two axiom-clean lines; probe 02 all `true`. *(completed)*
+- [x] Phase 2: `mk_all --check`, `--emit-inventory --check`, `typst-sync-check.sh` all exit 0; C2 PASS with the new count word. *(completed: count word thirty after the fourth pin)*
+- [x] Phase 3: C36a PASS in `--no-build`; C36b PASS in full mode; both negative tests FAIL by name. *(completed)*
+- [x] Phase 4: C37 PASS; census count equals allowlist row count; both negative tests FAIL by name. *(completed: 30 hits, 42 rows)*
+- [x] Phase 5: either two more axiom-clean witness rows, or a complete exclusion record. *(completed: exclusion record)*
+- [x] Phase 6: `ALL CHECKS PASSED` in both modes; no task-number citation outside `specs/`. *(completed)*
+- [x] Throughout: `grep -rn 'Probe706\|no_ofStep_sat' FormalSystem scripts docs` stays empty. *(completed: empty)*
 
 ## Artifacts & Outputs
 
