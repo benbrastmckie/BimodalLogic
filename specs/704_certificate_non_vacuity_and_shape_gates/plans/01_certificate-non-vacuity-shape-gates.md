@@ -204,7 +204,7 @@ certifies too, now that `TailStable` is the liveness-filtered form).
 module touches regenerated, and pin them (plus `plusCompression_fails_at_pumpTarget`) in C2.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Examples.lean` with the
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Examples.lean` with the
       repository copyright header, importing
       `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Embed` (and
       `...WitnessFamily.Sharing.Specialize` if `Embed` does not already reach it). Module
@@ -212,37 +212,37 @@ module touches regenerated, and pin them (plus `plusCompression_fails_at_pumpTar
       NON-VACUITY record -- the INTERESTING WITNESS beside `Complete.lean`'s
       `Probe.exists_certifying_triv`, which is the class's ANTECEDENT FAILURE. Cite Beer et al.
       2001 by bibkey in a `## References` block only if `references.bib` already carries it
-      (C31); otherwise cite by title in prose.
-- [ ] `theorem liveFamily_sliced_certifies : (Embedded.liveFamily.sliced (-1)).Certifies := by decide`
+      (C31); otherwise cite by title in prose. *(completed: cited by title in prose; references.bib has no entry)*
+- [x] `theorem liveFamily_sliced_certifies : (Embedded.liveFamily.sliced (-1)).Certifies := by decide`
       (with `set_option maxRecDepth 4096 in` only if needed), in namespace
       `FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded` or a new
       `PlusSlicedCertificate.Examples` namespace -- choose the one whose `open`s keep the
-      statement closed and readable, and record the fully qualified name for C2.
-- [ ] `theorem liveFamily_toSharing_certifies : Embedded.liveFamily.toSharing.Certifies (-1) := certifies_toSharing _ Embedded.liveFamily_certifies`
+      statement closed and readable, and record the fully qualified name for C2. *(completed: namespace WitnessFamily.Embedded, no maxRecDepth needed, 4 s)*
+- [x] `theorem liveFamily_toSharing_certifies : Embedded.liveFamily.toSharing.Certifies (-1) := certifies_toSharing _ Embedded.liveFamily_certifies`
       (adjust to the actual argument shape of `certifies_toSharing` in
-      `WitnessFamily/Sharing/Specialize.lean`).
-- [ ] A `#guard` line exercising `decidableCertifies` on the sliced witness is permitted
+      `WitnessFamily/Sharing/Specialize.lean`). *(completed)*
+- [x] A `#guard` line exercising `decidableCertifies` on the sliced witness is permitted
       (precedent: `PlusWitnessFamily/Examples.lean`); NO `#eval`/`#print`/`#check` (C27). No
-      `lemma` (C23). Any new `def` is camelCase (C26).
-- [ ] Add the import line to `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean`
-      (aggregator), in the position matching its dependency order.
-- [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem`, then
-      `lake exe mk_all --lib FormalSystem --check` (C33). Never hand-edit `FormalSystem.lean`.
-- [ ] Regenerate the inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`
-      then `--emit-inventory --check` (README.md's live-file count moves from 640 to 641).
-- [ ] Regenerate `typst/generated/status.typ` via `bash scripts/typst-status-counts.sh`
-      (needs the built library) and confirm `bash scripts/typst-sync-check.sh` passes.
-- [ ] Build through the guard; confirm zero new warnings for the new file (C28 budget is a
-      ceiling; a new file has no entry and must stay at zero).
-- [ ] Commit the batch as one green objective (module + aggregator + root + README +
-      status.typ).
-- [ ] Then, as a separate green sub-step: add three `#print axioms` lines and three BASELINE
+      `lemma` (C23). Any new `def` is camelCase (C26). *(completed: #guard omitted -- it cost ~60 s per build for evidence the kernel decide already gives)*
+- [x] Add the import line to `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean`
+      (aggregator), in the position matching its dependency order. *(completed)*
+- [x] Regenerate the library root: `lake exe mk_all --lib FormalSystem`, then
+      `lake exe mk_all --lib FormalSystem --check` (C33). Never hand-edit `FormalSystem.lean`. *(completed)*
+- [x] Regenerate the inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`
+      then `--emit-inventory --check` (README.md's live-file count moves from 640 to 641). *(completed: README.md 640 -> 641; FormalSystem/README.md and FormalSystem/Metalogic/README.md blocks also moved)*
+- [x] Regenerate `typst/generated/status.typ` via `bash scripts/typst-status-counts.sh`
+      (needs the built library) and confirm `bash scripts/typst-sync-check.sh` passes. *(completed)*
+- [x] Build through the guard; confirm zero new warnings for the new file (C28 budget is a
+      ceiling; a new file has no entry and must stay at zero). *(completed: 2807 jobs, zero warnings)*
+- [x] Commit the batch as one green objective (module + aggregator + root + README +
+      status.typ). *(completed: 0098f97d8)*
+- [x] Then, as a separate green sub-step: add three `#print axioms` lines and three BASELINE
       lines to C2 for `liveFamily_sliced_certifies`, `liveFamily_toSharing_certifies` and
       `PlusSharingWitnessFamily.plusCompression_fails_at_pumpTarget`; count the BASELINE lines
       and update the hard-coded count word in C2's pass message exactly once (expected
       twenty-six -> twenty-nine). Re-read the script immediately before editing (sibling
-      hazard). Run `bash scripts/check-module-invariants.sh` (full mode) and confirm C2 PASS.
-- [ ] Commit the C2 pin sub-step.
+      hazard). Run `bash scripts/check-module-invariants.sh` (full mode) and confirm C2 PASS. *(completed: twenty-six -> twenty-nine, C2 PASS in full mode)*
+- [x] Commit the C2 pin sub-step. *(completed)*
 
 **Timing**: 2 hours
 

@@ -1035,6 +1035,12 @@ echo
 # into it would make a `Decidable` instance noncomputable in substance while still elaborating,
 # which no other check in this script would see.
 #
+# The last three are the rows C36 (NON-VACUITY) reads: the sliced class's INTERESTING WITNESS
+# and the lifted sharing-class witness (`PlusSlicedCertificate/Examples.lean`), and the
+# compression refutation at `pumpTarget`, which completes the coverage-limit roster beside the
+# four Stage-1 refutations pinned above. C36 asserts set membership here rather than printing
+# axioms a second time, so an axiom leaking into a witness is reported ONCE, by this check.
+#
 # Do NOT scrape `lake build` stdout for these -- an incremental build may not
 # re-emit them. A dedicated scratch file is compiled against the built library.
 # ---------------------------------------------------------------------------
@@ -1065,6 +1071,9 @@ read -r -d '' AXIOM_BASELINE <<'BASELINE'
 'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.plusRefutes_of_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.exists_plusSlicedCertificate_of_tailStable_countermodel' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_sliced_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_toSharing_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusCompression_fails_at_pumpTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
 BASELINE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -1097,6 +1106,9 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.plusRefutes_of_certifies
 #print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.exists_plusSlicedCertificate_of_tailStable_countermodel
 #print axioms FormalSystem.Metalogic.Decidability.WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula
+#print axioms FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_sliced_certifies
+#print axioms FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_toSharing_certifies
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusCompression_fails_at_pumpTarget
 LEAN
   # The pretty-printer wraps at a fixed width, and `FormalSystem.` is longer than the
   # namespace it replaced, so a long axiom record now spills onto continuation lines that
@@ -1107,7 +1119,7 @@ LEAN
     | grep 'depends on axioms')
   rm -f "$AX_SRC"
   if [ "$AX_OUT" = "$AXIOM_BASELINE" ]; then
-    pass C2 "all twenty-six pinned axiom sets match baseline"
+    pass C2 "all twenty-nine pinned axiom sets match baseline"
     while IFS= read -r l; do note "$l"; done <<<"$AX_OUT"
   else
     fail C2 "axiom sets diverged from baseline -- this is a HARD STOP, not a new baseline"
