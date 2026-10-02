@@ -22,6 +22,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fold
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Unroll
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.LiveFix
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Bridge
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.HalfRun
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Check
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Sound
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Complete

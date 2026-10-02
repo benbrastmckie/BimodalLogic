@@ -5,7 +5,9 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Embed
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.HalfRun
 import FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Family
+import FormalSystem.PlusLanguage.PlusValidity
 
 /-!
 # The Embedded Certificate's Semantics, and the Flagship
@@ -48,21 +50,42 @@ without being re-derived. The `⊡` case never arises: the induction runs over `
   from sub-phase 20.4, **holds** at both of those certificates and at both of sub-phase 20.1's -
   `PlusSlicedCertificate.TailStableBackRaw` / `TailStableBack` — the two backward demands isolated
   side by side, with `tailStableBack_of_raw` between them
+  `PlusSlicedCertificate.TailStableBackRaw` / `TailStableBack` — the two backward demands isolated
+  side by side, with `tailStableBack_of_raw` between them -
+  `WitnessFamily.slicedCanon_mem_liveAt_iff` — the live positions of the embedded certificate are
+  exactly the **canonical** ones: a live position's label *is* the family's own translated label -
+  `WitnessFamily.sliced_tailStable` — **`hTS`**: the embedded certificate is tail-stable, for an
+  arbitrary certifying family and at every residue of both periods -
+  `WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula` — **the flagship** -
+  `WitnessFamily.plusRefutes_of_not_plusValidZTime_ofFormula` — the flagship through the refutation
+  interface
 
-## What is NOT here, and why
+## What the flagship does and does not buy
 
-The flagship `exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula` is **not** here yet. Its
-route through `Complete.lean`'s headline needs `(W.sliced tt).TailStable` for an **arbitrary**
-certifying `W`, and what this module carries is seven certificates' worth of favourable verdicts.
-Seven certificates are evidence, not a theorem, and nothing below is stated more strongly than it is
-measured. The obstruction that blocked this route — the **raw** backward conjunct's refutation — is
-recorded as kernel-checked theorems and is discharged by sub-phase 20.4's filter rather than worked
-around; no `sorry` and no weakened statement stands in for it.
+The sliced certificate class is **non-vacuous on branching-free targets**, and at least as strong
+there as the landed L class: every family the compression theorem produces embeds into an accepted
+sliced certificate. That is **not** completeness for L⁺. The flagship's target is `ofFormula φ`, so
+no `⊡` occurs in it at all (`sliced_not_stab_mem`), which is exactly why every `⊡`-guarded clause of
+the checker is vacuous on it; whether a `⊡`-carrying target has a sliced certificate is the open
+Stage 3 question and nothing here bears on it.
+
+Two further things a reader of this module should carry away, so that no successor inherits a
+stale picture. **First**, `TailStable` now carries **one liveness filter per obligation
+direction** — the forward conjunct `Φ_fwd R₀ ∩ R₀fwd = R₀` and the backward one `Φ_back L₀ ∩ L₀bwd
+= L₀` — and it is a **per-certificate demand, not a theorem**: `FixtureStable.not_tailStable_cert`
+refutes it, after both filters, at a named certificate, and the refutations of the two *raw*
+conjuncts recorded below are what the filters answer. The flagship proves the demand **at the
+embedded certificates**, which is a strictly smaller claim and the only one available. **Second**,
+the flagship is a ready-made non-vacuity witness for a successor's certificate shape gates: it
+exhibits, from any ℤ-time non-validity of an L formula, an accepted certificate on a carrier whose
+width, segment lengths and target time are the compression theorem's own.
 
 ## Tags
 
 plus-language · certificate · time-sliced · embedding · truth-lemma
 -/
+
+set_option linter.style.longFile 1700
 
 namespace FormalSystem.Metalogic.Decidability
 
@@ -862,29 +885,39 @@ same at every time. A run of `W.sliced tt` is therefore exactly a **fixed lasso 
 with a labelling `ℤ → Finset PlusFormula` that agrees with `trLab (W.L w ·)` on the state formulas
 at every time, is locally coherent, and is fulfilling.
 
-**What this reduces the remaining obligation to, stated exactly so the next dispatch does not
-re-derive it.** Fix a left residue `r < W.perB` and write `t₀ = -NB - r`. The `⊇` half of the
-backward conjunct asks, for each `p = (w, X) ∈ liveAt t₀`, that `p ∈ iterBack t₀ (liveAt t₀) NBnat`
-— i.e. that there is a `succP`-chain of one whole back period from `p` *placed at* `t₀ - NB` up to
-some member of `liveAt t₀`. The run `R` witnessing `Live t₀ p` supplies the chain
-`j ↦ (w, R.lab (t₀ - NB + j))`, whose top is `R.pos t₀ = p` and whose bottom is
-`R.pos (t₀ - NB)` — the wrong endpoint. Reading `R` one period to the left instead needs
-`R.lab (t₀ - NB) = X`, which is **period-invariance of the label along the run** and is *not*
-available for an arbitrary run: `LabRun.agrees` is demanded at every `s : ℤ`, including the
-non-negative times where `trLab (W.L w ·)` is not `perB`-periodic, so a run cannot simply be
-shifted.
+**The period-invariance that obligation turned on is now a theorem, and the route is closed.** Fix
+a left residue `r < W.perB` and write `t₀ = -NB - r`. The `⊇` half of the backward conjunct asks,
+for each `p = (w, X) ∈ liveAt t₀`, that `p ∈ iterBack t₀ (liveAt t₀) NBnat` — a `succP`-chain of one
+whole back period from `p` *placed at* `t₀ - NB` up to a member of `liveAt t₀`. An **arbitrary** run
+through `p` does not supply it: reading the run one period to the left needs
+`R.lab (t₀ - NB) = X`, and `LabRun.agrees` is demanded at every `s : ℤ`, including the non-negative
+times where `trLab (W.L w ·)` is not `perB`-periodic, so a run cannot simply be shifted.
 
-So the remaining obligation is: **every live position at a left residue reference time carries a
-label that is period-invariant along some fulfilling run.** That is plausible from the lasso
-structure — `trLab (W.L w ·)` is itself `perB`-periodic on the negatives and is fulfilling by
-`W.Certifies` — but `posAt` admits non-canonical labels too, which is exactly the
-over-approximation `Position.lean`'s header records and exactly why the filter was needed in the
-first place. The splice machinery the construction would use already exists
-(`Tail.lean`'s `tailPos` / `runOfPos`); what is missing is its chain input.
+What closes it is that at the embedded certificate there is **no** arbitrary run through a live
+position: `slicedCanon_mem_liveAt_iff` proves that a live position's label **is** the family's own
+translated label `trLab (W.L w t)`, by `Canon.lean`'s rigidity (`exists_path_canLab_of_live`: a
+run's labelling is the canonical labelling of its state path) together with the self-loop edge
+relation below (every step path is constant) and `sliced_canAt_iff_mem` (the canonical label of a
+constant path is the family's own). The family's label is `perB`-periodic on the negatives by
+construction (`lab_sub_perB`), so the canonical run returns to its own position one whole period
+down the tail (`famRun_pos_sub_mul_perB`) and `mem_iterBack_of_run` hands the transfer that run as
+its chain. `slicedCanon_liveAt_subset_iterBack` and `slicedCanon_liveAt_subset_iterFwd` are the
+two resulting `⊇` halves, at every residue and every number of periods.
 
-**Nothing below is stated more strongly than it is proved**, and no `sorry` or weakened `TailStable`
-stands in for the gap. The seven favourable verdicts above and in `Embed.lean` are evidence; this
-section does not pretend they are a theorem.
+**And the `⊆` half of each conjunct is landed too.** With `liveAt = fwdLiveAt ∩ bwdLiveAt` (both are
+filters of `posAt` by the two halves of `liveT`), the backward conjunct's `⊆` half is
+`iterBack t₀ (liveAt t₀) NBnat ∩ bwdLiveAt t₀ ⊆ liveAt t₀` and the forward one's is its mirror. In
+each the chain pins one half of the arriving label and the filter must pin the other: down a
+`succP`-chain the one-step `untl` clause determines the earlier label's `untl`-content from the
+later one, and up a chain the `snce` clause determines the later label's `snce`-content from the
+earlier. `HalfRun.lean` is what closes the gap — its unrollings turn the filter's **computed**
+membership into a half-line position family, and its splices join that half-line to the chain and
+to the canonical run, so `slicedCanon_lab_of_live` can read canonicity off the result. The two
+halves are `slicedCanon_iterBack_inter_subset` and `slicedCanon_iterFwd_inter_subset`;
+`sliced_tailStable` is the conjunction.
+
+Nothing below is stated more strongly than it is proved, and no `sorry` and no weakened `TailStable`
+stands anywhere in this module.
 -/
 
 namespace Embedded
@@ -926,6 +959,580 @@ theorem sliced_run_pos_fst (W : WitnessFamily ([] : Context) [φ]) (tt : ℤ)
   sliced_run_st_const W tt R t 0
 
 end Embedded
+
+
+end WitnessFamily
+
+namespace WitnessFamily
+
+variable {φ : Formula}
+
+/-! ## Iterated periodicity of a family's labels
+
+`lab_sub_perB` / `lab_add_perF` are the one-period steps. Both tails of the tail-stability demand
+are read one whole period away from the reference time, and the generic form used below is
+`k` periods away, so each is iterated once and for all.
+-/
+
+/-- **Leftward periodicity, iterated.** Every intermediate time is negative, which is what each
+step of the induction consumes. -/
+theorem lab_sub_mul_perB {Γ Del : Context} (W : WitnessFamily Γ Del)
+    (i : Fin W.lassos.length) {t : ℤ} (ht : t < 0) (k : ℕ) :
+    W.L i (t - (k : ℤ) * (W.perB : ℤ)) = W.L i t := by
+  have hB : (0 : ℤ) < (W.perB : ℤ) := by exact_mod_cast W.perB_pos
+  induction k with
+  | zero => simp
+  | succ k ih =>
+    have hknn : (0 : ℤ) ≤ (k : ℤ) * (W.perB : ℤ) :=
+      mul_nonneg (Int.natCast_nonneg k) (le_of_lt hB)
+    have hstep : t - ((k + 1 : ℕ) : ℤ) * (W.perB : ℤ)
+        = (t - (k : ℤ) * (W.perB : ℤ)) - (W.perB : ℤ) := by push_cast; ring
+    rw [hstep, W.lab_sub_perB i (show t - (k : ℤ) * (W.perB : ℤ) < 0 from by omega), ih]
+
+/-- **Rightward periodicity, iterated.** Every intermediate time is at or past `perM`. -/
+theorem lab_add_mul_perF {Γ Del : Context} (W : WitnessFamily Γ Del)
+    (i : Fin W.lassos.length) {t : ℤ} (ht : (W.perM : ℤ) ≤ t) (k : ℕ) :
+    W.L i (t + (k : ℤ) * (W.perF : ℤ)) = W.L i t := by
+  have hF : (0 : ℤ) < (W.perF : ℤ) := by exact_mod_cast W.perF_pos
+  induction k with
+  | zero => simp
+  | succ k ih =>
+    have hknn : (0 : ℤ) ≤ (k : ℤ) * (W.perF : ℤ) :=
+      mul_nonneg (Int.natCast_nonneg k) (le_of_lt hF)
+    have hstep : t + ((k + 1 : ℕ) : ℤ) * (W.perF : ℤ)
+        = (t + (k : ℤ) * (W.perF : ℤ)) + (W.perF : ℤ) := by push_cast; ring
+    rw [hstep, W.lab_add_perF i (show (W.perM : ℤ) ≤ t + (k : ℤ) * (W.perF : ℤ) from by omega), ih]
+
+/-! ## The embedded certificate under the canonical box guess
+
+`Embed.lean` leaves the box guess at the constant `false`, because `Complete.lean`'s headline
+re-chooses it. That choice is harmless for everything `Embed.lean` reads — `posAt`, `succP`,
+`liveT` and hence `TailStable` never mention `bx` — but it is **not** harmless for runs: a
+`LabRun`'s own `□` clause is read against `G.bx`, so under the constant `false` guess a family whose
+labels carry a `□`-formula has no runs at all. Every declarative statement below is therefore made
+at the certificate `Complete.lean` itself installs, and transported back across `withBx` at the end
+by `withBx_tailStable`.
+-/
+
+/-- **The embedded certificate with the canonical box guess** — the one `Complete.lean`'s headline
+installs, and the only one under which the embedded certificate's runs are the family's own
+lassos. -/
+@[reducible] def slicedCanon (W : WitnessFamily ([] : Context) [φ]) (tt : ℤ) :
+    PlusSlicedCertificate ([] : PlusContext) [ofFormula φ] :=
+  (W.sliced tt).withBx (W.sliced tt).canonBx
+
+/-- **(C3b) holds at the canonical box guess.** `Complete.lean`'s own route, read at the embedded
+certificate: `sliced_slabTrue` is landed, and `canonBx` is by definition the `□`-content of one
+slice at one state. -/
+theorem slicedCanon_boxLabelFaithful (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ) :
+    (W.slicedCanon tt).BoxLabelFaithful :=
+  PlusSlicedCertificate.boxLabelFaithful_of_slabTrue _ (W.sliced_biSerial tt)
+    (W.sliced_slabTrue hloc hful hbf tt) (fun χ _ => (W.sliced tt).canonBx_eq_true χ)
+
+/-- **Every self-loop of the embedded certificate is an edge.** -/
+theorem slicedCanon_edge_self (W : WitnessFamily ([] : Context) [φ]) (tt : ℤ)
+    (j : Fin (W.slicedCanon tt).n) (t : ℤ) : (W.slicedCanon tt).edge t j j = true := by
+  rw [show (W.slicedCanon tt).edge t j j = (W.sliced tt).edge t j j from rfl,
+    W.sliced_edge tt t j j]
+  exact decide_eq_true rfl
+
+/--
+**The canonical label of a constant index is the translated lasso label.**
+
+The generic form of `sliced_target_lab_eq_canLab`'s key step: there the index is the main lasso's
+and the path is the target path's, here both are arbitrary. `sliced_canAt_iff_mem` does the work and
+is consumed unchanged.
+-/
+theorem sliced_canLab_const (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (tt : ℤ)
+    (g : ℤ → Fin (W.sliced tt).n) (j : Fin (W.sliced tt).n) (hgc : ∀ u : ℤ, g u = j) (t : ℤ) :
+    (W.sliced tt).canLab g t = trLab (W.L j t) := by
+  have hkey := W.sliced_canAt_iff_mem hloc hful tt g j hgc
+  ext ψ
+  rw [(W.sliced tt).mem_canLab]
+  constructor
+  · rintro ⟨hmem, hcan⟩
+    obtain ⟨χ, rfl, hχc⟩ := exists_ofFormula_of_mem_plusClosureOf_ofCtx
+      (S := ([] : Context) ++ [φ]) hmem
+    exact mem_trLab.mpr ((hkey χ hχc t).mp hcan)
+  · intro hψ
+    rw [trLab, Finset.mem_image] at hψ
+    obtain ⟨χ, hχ, rfl⟩ := hψ
+    have hχc : χ ∈ closureOf (([] : Context) ++ [φ]) := W.subset_closureOf j t hχ
+    exact ⟨mem_plusClosureOf_ofCtx.mpr hχc, (hkey χ hχc t).mpr hχ⟩
+
+/-- **Every step path of the embedded certificate has a constant index.** The label-level mirror of
+`sliced_history_const`, from the self-loop edge relation. -/
+theorem slicedCanon_path_const (W : WitnessFamily ([] : Context) [φ]) (tt : ℤ)
+    {g : ℤ → Fin (W.slicedCanon tt).n}
+    (hg : ∀ s : ℤ, (W.slicedCanon tt).edge s (g s) (g (s + 1)) = true) (u v : ℤ) :
+    g u = g v := by
+  have hstep : ∀ s : ℤ, g s = g (s + 1) := by
+    intro s
+    have h := hg s
+    rw [show (W.slicedCanon tt).edge s (g s) (g (s + 1))
+        = (W.sliced tt).edge s (g s) (g (s + 1)) from rfl,
+      W.sliced_edge tt s (g s) (g (s + 1))] at h
+    exact of_decide_eq_true h
+  rw [Periodic.const_of_step_eq hstep u, Periodic.const_of_step_eq hstep v]
+
+/-! ### The family's own lassos are the embedded certificate's runs -/
+
+/--
+**The canonical run at a lasso index.**
+
+The constant-index step path, with the canonical labelling `Canon.lean` attaches to it. By
+`famRun_lab` that labelling *is* the family's own translated label sequence, so this run is not a
+new object: it is lasso `j`, read as a run of the embedded certificate.
+-/
+noncomputable def famRun (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ)
+    (j : Fin (W.slicedCanon tt).n) : (W.slicedCanon tt).LabRun :=
+  (W.slicedCanon tt).canRun (W.slicedCanon_boxLabelFaithful hloc hful hbf tt) (fun _ => j)
+    (fun t => W.slicedCanon_edge_self tt j t)
+
+/-- **The canonical run's label is the family's own translated label.** -/
+theorem famRun_lab (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ)
+    (j : Fin (W.slicedCanon tt).n) (t : ℤ) :
+    (W.famRun hloc hful hbf tt j).lab t = trLab (W.L j t) := by
+  rw [famRun, PlusSlicedCertificate.canRun_lab, PlusSlicedCertificate.withBx_canLab,
+    W.sliced_canLab_const hloc hful tt (fun _ => j) j (fun _ => rfl) t]
+
+/-- **The canonical run's state never moves.** -/
+@[simp] theorem famRun_st (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ)
+    (j : Fin (W.slicedCanon tt).n) (t : ℤ) : (W.famRun hloc hful hbf tt j).st t = j := rfl
+
+/-- **The canonical run is fulfilling in both directions.** -/
+theorem famRun_fulfilling (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ)
+    (j : Fin (W.slicedCanon tt).n) :
+    PlusFulfillingSeqLab (W.famRun hloc hful hbf tt j).lab :=
+  (W.slicedCanon tt).canRun_fulfilling _ _ _
+
+/-- **A position whose label is the translated lasso label is the canonical run's position.** -/
+theorem famRun_pos_eq (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ)
+    (p : (W.slicedCanon tt).Pos) (t : ℤ)
+    (hcan : (p.2.1 : Finset PlusFormula) = trLab (W.L p.1 t)) :
+    (W.famRun hloc hful hbf tt p.1).pos t = p :=
+  Prod.ext rfl (Subtype.ext (by rw [show ((W.famRun hloc hful hbf tt p.1).pos t).2.1
+      = (W.famRun hloc hful hbf tt p.1).lab t from rfl, W.famRun_lab, hcan]))
+
+/--
+**The live positions of the embedded certificate are exactly the canonical ones.**
+
+`→` is `Canon.lean`'s rigidity (`exists_path_canLab_of_live`) plus the self-loop edge relation: a
+live position's label is the canonical label of a step path through its state, every step path is
+constant, and the canonical label of a constant path is the family's own. `←` is the canonical run
+itself.
+
+This is the structural fact the whole of `hTS` turns on, and the one that makes the embedded
+certificate's live sets **periodic** where a general certificate's are not: `canLab` is not
+`perB`-periodic on the negatives for an arbitrary certificate, because its `U` clause looks into the
+non-periodic middle, but here it coincides with a label sequence that is periodic by construction.
+-/
+theorem slicedCanon_lab_of_live (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (_hbf : W.BoxFaithful) (tt : ℤ) {t : ℤ}
+    {p : (W.slicedCanon tt).Pos} (hp : (W.slicedCanon tt).Live t p) :
+    (p.2.1 : Finset PlusFormula) = trLab (W.L p.1 t) := by
+  obtain ⟨g, hg, h1, h2⟩ := (W.slicedCanon tt).exists_path_canLab_of_live hp
+  have hgc : ∀ u : ℤ, g u = p.1 := by
+    intro u
+    rw [W.slicedCanon_path_const tt hg u t, ← h1]
+  rw [h2, PlusSlicedCertificate.withBx_canLab,
+    W.sliced_canLab_const hloc hful tt g p.1 hgc t]
+
+/--
+**The live positions of the embedded certificate are exactly the canonical ones.** The `liveAt`
+reading of `slicedCanon_lab_of_live`, with the converse: `←` is the canonical run itself.
+-/
+theorem slicedCanon_mem_liveAt_iff (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ) {t : ℤ}
+    (ht : t ∈ (W.slicedCanon tt).winTimes) (p : (W.slicedCanon tt).Pos) :
+    p ∈ (W.slicedCanon tt).liveAt t ↔ (p.2.1 : Finset PlusFormula) = trLab (W.L p.1 t) := by
+  have hbox := W.slicedCanon_boxLabelFaithful hloc hful hbf tt
+  constructor
+  · intro hp
+    exact W.slicedCanon_lab_of_live hloc hful hbf tt
+      ((W.slicedCanon tt).live_of_mem_liveAt hbox ht hp)
+  · intro hcan
+    have hlive := (W.slicedCanon tt).live_canRun hbox (fun _ => p.1)
+      (fun t => W.slicedCanon_edge_self tt p.1 t) t
+    rw [show (W.slicedCanon tt).canRun hbox (fun _ => p.1)
+        (fun t => W.slicedCanon_edge_self tt p.1 t) = W.famRun hloc hful hbf tt p.1 from rfl,
+      W.famRun_pos_eq hloc hful hbf tt p t hcan] at hlive
+    exact (W.slicedCanon tt).mem_liveAt_of_live ht hlive
+
+/-! ## The `⊇` halves of both tail-stability conjuncts
+
+At a reference time inside a periodic tail the canonical run *returns to its own position* one whole
+period away — `famRun_lab` makes its label the family's, and the family's label is periodic there by
+construction. `mem_iterBack_of_run` then hands the transfer the run itself as the chain it asks for.
+No filter is involved in either statement: the `⊇` half of each filtered conjunct is the inclusion
+into the iterate together with `liveAt_subset_bwdLiveAt` / `liveAt_subset_fwdLiveAt`, which are
+free.
+-/
+
+/-- **The canonical run returns to its own position one whole period down the left tail.** -/
+theorem famRun_pos_sub_mul_perB (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ)
+    (j : Fin (W.slicedCanon tt).n) {t : ℤ} (ht : t < 0) (k : ℕ) :
+    (W.famRun hloc hful hbf tt j).pos (t - (k : ℤ) * (W.perB : ℤ))
+      = (W.famRun hloc hful hbf tt j).pos t :=
+  Prod.ext rfl (Subtype.ext (by
+    rw [show ((W.famRun hloc hful hbf tt j).pos (t - (k : ℤ) * (W.perB : ℤ))).2.1
+        = (W.famRun hloc hful hbf tt j).lab (t - (k : ℤ) * (W.perB : ℤ)) from rfl,
+      show ((W.famRun hloc hful hbf tt j).pos t).2.1
+        = (W.famRun hloc hful hbf tt j).lab t from rfl,
+      W.famRun_lab, W.famRun_lab, W.lab_sub_mul_perB j ht k]))
+
+/-- **The mirror, down the right tail.** -/
+theorem famRun_pos_add_mul_perF (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ)
+    (j : Fin (W.slicedCanon tt).n) {t : ℤ} (ht : (W.perM : ℤ) ≤ t) (k : ℕ) :
+    (W.famRun hloc hful hbf tt j).pos (t + (k : ℤ) * (W.perF : ℤ))
+      = (W.famRun hloc hful hbf tt j).pos t :=
+  Prod.ext rfl (Subtype.ext (by
+    rw [show ((W.famRun hloc hful hbf tt j).pos (t + (k : ℤ) * (W.perF : ℤ))).2.1
+        = (W.famRun hloc hful hbf tt j).lab (t + (k : ℤ) * (W.perF : ℤ)) from rfl,
+      show ((W.famRun hloc hful hbf tt j).pos t).2.1
+        = (W.famRun hloc hful hbf tt j).lab t from rfl,
+      W.famRun_lab, W.famRun_lab, W.lab_add_mul_perF j ht k]))
+
+/-- **`NBnat` of the embedded certificate is the family's back period.** -/
+theorem slicedCanon_NBnat (W : WitnessFamily ([] : Context) [φ]) (tt : ℤ) :
+    (W.slicedCanon tt).NBnat = W.perB := W.sliced_NBnat tt
+
+/-- **`NFnat` of the embedded certificate is the family's forward period.** -/
+theorem slicedCanon_NFnat (W : WitnessFamily ([] : Context) [φ]) (tt : ℤ) :
+    (W.slicedCanon tt).NFnat = W.perF := W.sliced_NFnat tt
+
+/-- **`NM` of the embedded certificate is the family's middle length.** -/
+theorem slicedCanon_NM (W : WitnessFamily ([] : Context) [φ]) (tt : ℤ) :
+    (W.slicedCanon tt).NM = (W.perM : ℤ) := W.sliced_NM tt
+
+/--
+**The `⊇` half of the backward conjunct, at every negative window reference time and every number
+of periods.**
+
+This is exactly the `hstab` that `live_of_mem_liveAt_tail` consumes, and it is the half the
+**filtered** backward demand keeps — see `liveAt_refBack_subset_iterBack` for the shape the demand
+itself supplies it in.
+-/
+theorem slicedCanon_liveAt_subset_iterBack (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ) {t₀ : ℤ}
+    (ht₀ : t₀ < 0) (hwin : t₀ ∈ (W.slicedCanon tt).winTimes) (k : ℕ) :
+    (W.slicedCanon tt).liveAt t₀
+      ⊆ (W.slicedCanon tt).iterBack t₀ ((W.slicedCanon tt).liveAt t₀)
+          (k * (W.slicedCanon tt).NBnat) := by
+  intro p hp
+  have hcan := (W.slicedCanon_mem_liveAt_iff hloc hful hbf tt hwin p).mp hp
+  have hpR : (W.famRun hloc hful hbf tt p.1).pos t₀ = p :=
+    W.famRun_pos_eq hloc hful hbf tt p t₀ hcan
+  have h := (W.slicedCanon tt).mem_iterBack_of_run (W.famRun hloc hful hbf tt p.1) t₀
+    (by rw [hpR]; exact hp) (k * (W.slicedCanon tt).NBnat)
+  have hmc : ((k * (W.slicedCanon tt).NBnat : ℕ) : ℤ) = (k : ℤ) * (W.perB : ℤ) := by
+    rw [W.slicedCanon_NBnat tt, Nat.cast_mul]
+  rw [hmc, W.famRun_pos_sub_mul_perB hloc hful hbf tt p.1 ht₀ k, hpR] at h
+  exact h
+
+/-- **The mirror, on the right tail.** The reference time is at or past `NM`, which is what the
+rightward periodicity of the family's labels asks for. -/
+theorem slicedCanon_liveAt_subset_iterFwd (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ) {t₁ : ℤ}
+    (ht₁ : (W.perM : ℤ) ≤ t₁) (hwin : t₁ ∈ (W.slicedCanon tt).winTimes) (k : ℕ) :
+    (W.slicedCanon tt).liveAt t₁
+      ⊆ (W.slicedCanon tt).iterFwd t₁ ((W.slicedCanon tt).liveAt t₁)
+          (k * (W.slicedCanon tt).NFnat) := by
+  intro p hp
+  have hcan := (W.slicedCanon_mem_liveAt_iff hloc hful hbf tt hwin p).mp hp
+  have hpR : (W.famRun hloc hful hbf tt p.1).pos t₁ = p :=
+    W.famRun_pos_eq hloc hful hbf tt p t₁ hcan
+  have h := (W.slicedCanon tt).mem_iterFwd_of_run (W.famRun hloc hful hbf tt p.1) t₁
+    (by rw [hpR]; exact hp) (k * (W.slicedCanon tt).NFnat)
+  have hmc : ((k * (W.slicedCanon tt).NFnat : ℕ) : ℤ) = (k : ℤ) * (W.perF : ℤ) := by
+    rw [W.slicedCanon_NFnat tt, Nat.cast_mul]
+  rw [hmc, W.famRun_pos_add_mul_perF hloc hful hbf tt p.1 ht₁ k, hpR] at h
+  exact h
+
+/-! ## The `⊆` halves of both tail-stability conjuncts
+
+Each half is the same three-region construction, mirrored. In both the chain pins one half of the
+arriving label and the matching one-directional **filter** pins the other — down a `succP`-chain the
+one-step `untl` clause determines the earlier label's `untl`-content from the later one, and up a
+chain the `snce` clause determines the later label's `snce`-content from the earlier, so a chain
+from a canonical endpoint leaves exactly the opposite half of the other endpoint free.
+`HalfRun.lean`'s unrollings turn the filter's **computed** membership into the half-line the splice
+needs, and `slicedCanon_lab_of_live` then reads canonicity off the spliced run.
+
+**Why the reference time of the conclusion is the chain's far end and not the iterate's own.** The
+chain an iterate witnesses places the position it is applied to one whole period away from the
+reference time, and that is where the spliced run puts it. Canonicity is therefore obtained at
+`t₀ - NB` (resp. `t₁ + NF`), and the family's own periodicity carries it back — which is also what
+keeps the construction available at **every** residue: shifting the chain *towards* the reference
+time instead would cross the origin at residue `0`, where the slice congruence it would need fails.
+-/
+
+/--
+**The `⊆` half of the backward conjunct**, at any negative window reference time.
+
+`hq2` — membership in the computed backward-live set — is what the construction's far region is
+built from, and it is exactly the filter sub-phase 20.4 put on this conjunct. Without it the
+inclusion is false: `snceProbeFamily_not_tailStableBackRaw` refutes the unfiltered demand at a
+certifying embedded certificate.
+-/
+theorem slicedCanon_iterBack_inter_subset (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ) {t₀ : ℤ}
+    (ht₀ : t₀ < 0) (hwin : t₀ ∈ (W.slicedCanon tt).winTimes) :
+    (W.slicedCanon tt).iterBack t₀ ((W.slicedCanon tt).liveAt t₀) (W.slicedCanon tt).NBnat
+        ∩ (W.slicedCanon tt).bwdLiveAt t₀
+      ⊆ (W.slicedCanon tt).liveAt t₀ := by
+  intro q hq
+  obtain ⟨hq1, hq2⟩ := Finset.mem_inter.mp hq
+  have hbox := W.slicedCanon_boxLabelFaithful hloc hful hbf tt
+  have hNB : ((W.slicedCanon tt).NBnat : ℤ) = (W.slicedCanon tt).NB := rfl
+  have hperB : (W.slicedCanon tt).NBnat = W.perB := W.slicedCanon_NBnat tt
+  -- the chain the iterate witnesses, read from the far end `t₀ - NBnat`
+  obtain ⟨c, hc0, hcX, hcpos, hcstep⟩ := (W.slicedCanon tt).exists_chain_of_mem_iterBack t₀
+    ((W.slicedCanon tt).liveAt_subset_posAt t₀) (W.slicedCanon tt).NBnat hq1
+  -- the chain's state never moves, so its top's index is the one the reference run is taken at
+  have hRqf := W.famRun_fulfilling hloc hful hbf tt (c (W.slicedCanon tt).NBnat).1
+  have hm : c (W.slicedCanon tt).NBnat
+      = (W.famRun hloc hful hbf tt (c (W.slicedCanon tt).NBnat).1).pos
+          (t₀ - ((W.slicedCanon tt).NBnat : ℤ) + ((W.slicedCanon tt).NBnat : ℤ)) := by
+    rw [show t₀ - ((W.slicedCanon tt).NBnat : ℤ) + ((W.slicedCanon tt).NBnat : ℤ) = t₀ from by
+      omega]
+    exact (W.famRun_pos_eq hloc hful hbf tt (c (W.slicedCanon tt).NBnat) t₀
+      ((W.slicedCanon_mem_liveAt_iff hloc hful hbf tt hwin _).mp hcX)).symm
+  -- the far region: the computed backward-live set's own fair walk, rooted one period down
+  have hfold : (W.slicedCanon tt).FoldB t₀ (t₀ - ((W.slicedCanon tt).NBnat : ℤ)) := by
+    have h := (W.slicedCanon tt).foldB_shift ht₀ 1
+    rwa [Nat.cast_one, one_mul, ← hNB] at h
+  obtain ⟨Pb, hPb0, hPbpos, hPbstep, hPbfair⟩ :=
+    (W.slicedCanon tt).exists_bwdHalfRun_of_mem_bwdLiveT hwin hfold
+      (((W.slicedCanon tt).mem_bwdLiveAt t₀ q).mp hq2).2
+  -- the spliced run, and the liveness it witnesses at the chain's far end
+  have hlive := (W.slicedCanon tt).live_of_bwdHalf_chain_run hbox
+    (t₀ - ((W.slicedCanon tt).NBnat : ℤ)) (W.slicedCanon tt).NBnat Pb c
+    (W.famRun hloc hful hbf tt (c (W.slicedCanon tt).NBnat).1)
+    hPbpos hPbstep hPbfair hcpos hcstep hRqf.1 (by rw [hPb0, hc0]) hm
+  rw [hc0] at hlive
+  -- canonicity at the far end, carried back by the family's own leftward periodicity
+  have hcan := W.slicedCanon_lab_of_live hloc hful hbf tt hlive
+  rw [show t₀ - ((W.slicedCanon tt).NBnat : ℤ) = t₀ - (W.perB : ℤ) from by rw [hperB],
+    W.lab_sub_perB q.1 ht₀] at hcan
+  exact (W.slicedCanon_mem_liveAt_iff hloc hful hbf tt hwin q).mpr hcan
+
+/--
+**The `⊆` half of the forward conjunct**, at any window reference time at or past `NM`.
+
+The mirror, with the filter `fwdLiveAt` playing the role `bwdLiveAt` plays above. `FixtureStable`'s
+`not_tailStable_cert` is what says the filter is not removable here either.
+-/
+theorem slicedCanon_iterFwd_inter_subset (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ) {t₁ : ℤ}
+    (ht₁ : (W.slicedCanon tt).NM ≤ t₁) (hwin : t₁ ∈ (W.slicedCanon tt).winTimes) :
+    (W.slicedCanon tt).iterFwd t₁ ((W.slicedCanon tt).liveAt t₁) (W.slicedCanon tt).NFnat
+        ∩ (W.slicedCanon tt).fwdLiveAt t₁
+      ⊆ (W.slicedCanon tt).liveAt t₁ := by
+  intro q hq
+  obtain ⟨hq1, hq2⟩ := Finset.mem_inter.mp hq
+  have hbox := W.slicedCanon_boxLabelFaithful hloc hful hbf tt
+  have hNF : ((W.slicedCanon tt).NFnat : ℤ) = (W.slicedCanon tt).NF := rfl
+  have hperF : (W.slicedCanon tt).NFnat = W.perF := W.slicedCanon_NFnat tt
+  have hperM : (W.perM : ℤ) ≤ t₁ := by
+    have h := W.slicedCanon_NM tt
+    omega
+  obtain ⟨c, hc0, hcX, hcpos, hcstep⟩ := (W.slicedCanon tt).exists_chain_of_mem_iterFwd t₁
+    ((W.slicedCanon tt).liveAt_subset_posAt t₁) (W.slicedCanon tt).NFnat hq1
+  have hRpf := W.famRun_fulfilling hloc hful hbf tt (c (W.slicedCanon tt).NFnat).1
+  have hm : c (W.slicedCanon tt).NFnat
+      = (W.famRun hloc hful hbf tt (c (W.slicedCanon tt).NFnat).1).pos
+          (t₁ + ((W.slicedCanon tt).NFnat : ℤ) - ((W.slicedCanon tt).NFnat : ℤ)) := by
+    rw [show t₁ + ((W.slicedCanon tt).NFnat : ℤ) - ((W.slicedCanon tt).NFnat : ℤ) = t₁ from by
+      omega]
+    exact (W.famRun_pos_eq hloc hful hbf tt (c (W.slicedCanon tt).NFnat) t₁
+      ((W.slicedCanon_mem_liveAt_iff hloc hful hbf tt hwin _).mp hcX)).symm
+  have hfold : (W.slicedCanon tt).FoldF t₁ (t₁ + ((W.slicedCanon tt).NFnat : ℤ)) := by
+    have h := (W.slicedCanon tt).foldF_shift ht₁ 1
+    rwa [Nat.cast_one, one_mul, ← hNF] at h
+  obtain ⟨Pf, hPf0, hPfpos, hPfstep, hPffair⟩ :=
+    (W.slicedCanon tt).exists_fwdHalfRun_of_mem_fwdLiveT hwin hfold
+      (((W.slicedCanon tt).mem_fwdLiveAt t₁ q).mp hq2).2
+  have hlive := (W.slicedCanon tt).live_of_run_chain_fwdHalf hbox
+    (t₁ + ((W.slicedCanon tt).NFnat : ℤ)) (W.slicedCanon tt).NFnat Pf c
+    (W.famRun hloc hful hbf tt (c (W.slicedCanon tt).NFnat).1)
+    hPfpos hPfstep hPffair hcpos hcstep hRpf.2 (by rw [hPf0, hc0]) hm
+  rw [hc0] at hlive
+  have hcan := W.slicedCanon_lab_of_live hloc hful hbf tt hlive
+  rw [show t₁ + ((W.slicedCanon tt).NFnat : ℤ) = t₁ + (W.perF : ℤ) from by rw [hperF],
+    W.lab_add_perF q.1 hperM] at hcan
+  exact (W.slicedCanon_mem_liveAt_iff hloc hful hbf tt hwin q).mpr hcan
+
+/-! ## `hTS`: the embedded certificate is tail-stable
+
+The theorem sub-phase 20.5 owes, for an **arbitrary** certifying family and at **every** residue of
+both periods. Nothing here is a verdict at finitely many certificates: the seven kernel-checked
+verdicts above and in `Embed.lean` were evidence for this statement and are now instances of it.
+-/
+
+/-- **Tail-stability of the embedded certificate, under the canonical box guess.** -/
+theorem slicedCanon_tailStable (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ) :
+    (W.slicedCanon tt).TailStable := by
+  refine ⟨fun r hr => ?_, fun r hr => ?_⟩
+  · have hrlt := Finset.mem_range.mp hr
+    refine Finset.Subset.antisymm
+      (W.slicedCanon_iterBack_inter_subset hloc hful hbf tt ((W.slicedCanon tt).refBack_neg r)
+        ((W.slicedCanon tt).refBack_mem_winTimes hrlt))
+      (Finset.subset_inter ?_ ((W.slicedCanon tt).liveAt_subset_bwdLiveAt _))
+    have h := W.slicedCanon_liveAt_subset_iterBack hloc hful hbf tt
+      ((W.slicedCanon tt).refBack_neg r) ((W.slicedCanon tt).refBack_mem_winTimes hrlt) 1
+    rwa [one_mul] at h
+  · have hrlt := Finset.mem_range.mp hr
+    have hNM : (W.slicedCanon tt).NM ≤ (W.slicedCanon tt).NM + (W.slicedCanon tt).NF + (r : ℤ) := by
+      have h1 := (W.slicedCanon tt).NF_pos
+      have h2 : (0 : ℤ) ≤ (r : ℤ) := Int.natCast_nonneg r
+      omega
+    have hperM : (W.perM : ℤ)
+        ≤ (W.slicedCanon tt).NM + (W.slicedCanon tt).NF + (r : ℤ) := by
+      have h := W.slicedCanon_NM tt
+      omega
+    refine Finset.Subset.antisymm
+      (W.slicedCanon_iterFwd_inter_subset hloc hful hbf tt hNM
+        ((W.slicedCanon tt).refFwd_mem_winTimes hrlt))
+      (Finset.subset_inter ?_ ((W.slicedCanon tt).liveAt_subset_fwdLiveAt _))
+    have h := W.slicedCanon_liveAt_subset_iterFwd hloc hful hbf tt hperM
+      ((W.slicedCanon tt).refFwd_mem_winTimes hrlt) 1
+    rwa [one_mul] at h
+
+/-- **Tail-stability of the embedded certificate as `Embed.lean` builds it.** `TailStable` never
+mentions `bx`, so the canonical box guess is invisible to it — which is exactly what
+`withBx_tailStable` records. -/
+theorem sliced_tailStable (W : WitnessFamily ([] : Context) [φ])
+    (hloc : W.LocalCoherentLab) (hful : W.FulfillingLab) (hbf : W.BoxFaithful) (tt : ℤ) :
+    (W.sliced tt).TailStable :=
+  ((W.sliced tt).withBx_tailStable (W.sliced tt).canonBx).mp
+    (W.slicedCanon_tailStable hloc hful hbf tt)
+
+/-- **Tail-stability from the family's own certification bundle**, the shape the flagship uses. -/
+theorem sliced_tailStable_of_certifies (W : WitnessFamily ([] : Context) [φ]) {tt : ℤ}
+    (hC : W.Certifies tt) : (W.sliced tt).TailStable :=
+  W.sliced_tailStable hC.1 hC.2.1 hC.2.2.1 tt
+
+/-! ## The flagship: every ℤ-time non-validity of an embedded formula has a sliced certificate
+
+The one hypothesis of `Complete.lean`'s headline the compression theorem does not already hand over
+is `htt`, the target time's membership in the **window**. The compression theorem bounds its target
+time by `compressionBound` and nothing relates that bound to the family's own periods, so the time
+has to be normalized first — which costs nothing, because the family's labels are `perF`-periodic at
+or past `perM` and `Target` reads them at one time only.
+-/
+
+/--
+**The target time may be taken inside the embedded certificate's own window.**
+
+Three of `Certifies`'s four conjuncts do not mention the time at all; the fourth, `Target`, reads
+the main lasso's label at it, and `lab_add_mul_perF` makes that label invariant under the
+normalization. Below `perM` the time is already in the window, because the window's lower endpoint
+is negative.
+-/
+theorem exists_certifies_mem_winTimes (W : WitnessFamily ([] : Context) [φ]) {t : ℤ} (ht : 0 ≤ t)
+    (hC : W.Certifies t) : ∃ t' : ℤ, t' ∈ (W.sliced t').winTimes ∧ W.Certifies t' := by
+  have hFpos : (0 : ℤ) < (W.perF : ℤ) := by exact_mod_cast W.perF_pos
+  have hBpos : (0 : ℤ) < (W.perB : ℤ) := by exact_mod_cast W.perB_pos
+  have hMnn : (0 : ℤ) ≤ (W.perM : ℤ) := Int.natCast_nonneg _
+  rcases lt_or_ge t (W.perM : ℤ) with hlt | hge
+  · exact ⟨t, W.sliced_mem_winTimes t (by omega) (by omega), hC⟩
+  · obtain ⟨d, hd0, hdlt, k, hk⟩ : ∃ d : ℤ, 0 ≤ d ∧ d < (W.perF : ℤ) ∧
+        ∃ k : ℕ, t = (W.perM : ℤ) + d + (k : ℤ) * (W.perF : ℤ) := by
+      refine ⟨(t - (W.perM : ℤ)) % (W.perF : ℤ), Int.emod_nonneg _ (by omega),
+        Int.emod_lt_of_pos _ hFpos, ((t - (W.perM : ℤ)) / (W.perF : ℤ)).toNat, ?_⟩
+      have hqnn : 0 ≤ (t - (W.perM : ℤ)) / (W.perF : ℤ) :=
+        Int.ediv_nonneg (by omega) (le_of_lt hFpos)
+      rw [Int.toNat_of_nonneg hqnn,
+        mul_comm ((t - (W.perM : ℤ)) / (W.perF : ℤ)) (W.perF : ℤ)]
+      linarith [Int.mul_ediv_add_emod (t - (W.perM : ℤ)) (W.perF : ℤ)]
+    refine ⟨(W.perM : ℤ) + d, W.sliced_mem_winTimes _ (by omega) (by omega),
+      hC.1, hC.2.1, hC.2.2.1, ?_⟩
+    have hkey : ∀ i : Fin W.lassos.length, W.L i ((W.perM : ℤ) + d) = W.L i t := by
+      intro i
+      rw [hk, W.lab_add_mul_perF i (show (W.perM : ℤ) ≤ (W.perM : ℤ) + d from by omega) k]
+    refine ⟨fun γ hγ => absurd hγ (by simp), ?_⟩
+    intro σ hσ hmem
+    exact hC.2.2.2.2 σ hσ (by
+      rw [show W.main = W.L W.mainIdx from rfl, hkey W.mainIdx] at hmem
+      exact hmem)
+
+/--
+**The flagship.** Every ℤ-time non-validity of an **embedded** formula admits a sliced certificate
+that the checker accepts.
+
+The route is the one the task description names: carrier normalization is
+`plusValidIn_ofFormula_iff` (semantic conservativity of L⁺ over L), the countermodel is compressed
+by the landed
+`exists_witnessFamily_of_not_validZTime` — read-only here, and the option-1 repair of sub-phase 20.4
+is what keeps it so — the family is embedded by `Embed.lean`'s `sliced`, and `Complete.lean`'s
+headline closes it, with `hTS` supplied by `sliced_tailStable`.
+
+**What this buys, stated exactly.** The sliced certificate class is **non-vacuous on
+branching-free targets** and is at least as strong there as the landed L class: every
+`WitnessFamily` the compression theorem produces embeds into an accepted sliced certificate. This
+is **not** completeness for L⁺. The target is `ofFormula φ`, so no `⊡` occurs in it at all —
+`sliced_not_stab_mem` records that no `⊡`-formula lies in an embedded closure, which is exactly why
+every `⊡`-guarded clause of the checker is vacuous here. Whether a `⊡`-carrying target has a sliced
+certificate is the open Stage 3 question and nothing below bears on it.
+-/
+theorem exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula (φ : Formula)
+    (h : ¬ PlusValidZTime (ofFormula φ)) :
+    ∃ G : PlusSlicedCertificate ([] : PlusContext) [ofFormula φ], G.Certifies := by
+  have h' : ¬ ValidZTime φ := fun hv =>
+    h ((plusValidIn_ofFormula_iff ProofSystem.FrameClass.ZTime φ).mpr hv)
+  obtain ⟨W, t, -, -, -, ht0, -, hC⟩ := exists_witnessFamily_of_not_validZTime φ h'
+  obtain ⟨t', htw, hloc, hful, hbf, htgt⟩ := W.exists_certifies_mem_winTimes ht0 hC
+  have hedge : ∀ u : ℤ, (W.sliced t').edge u ((W.sliced t').target.st u)
+      ((W.sliced t').target.st (u + 1)) = true := fun u => W.sliced_target_edge t' u
+  have hconc : ∀ s ∈ [ofFormula φ], ¬ PlusTruthAt ((W.sliced t').model (W.sliced_biSerial t'))
+      ((W.sliced t').stepHistory (W.sliced_biSerial t') (W.sliced t').target.st hedge)
+      (W.sliced t').targetTime s := by
+    intro s hs hT
+    rw [List.mem_singleton] at hs
+    subst hs
+    have hσ : ∀ u : ℤ, (show ℤ × Fin (W.sliced t').n from
+        ((W.sliced t').stepHistory (W.sliced_biSerial t') (W.sliced t').target.st hedge).state u)
+          = (u + 0, W.mainIdx) := by
+      intro u
+      rw [add_zero, show (show ℤ × Fin (W.sliced t').n from
+          ((W.sliced t').stepHistory (W.sliced_biSerial t') (W.sliced t').target.st hedge).state u)
+          = (u, (W.sliced t').target.st u) from rfl, W.sliced_target_st t' u]
+      rfl
+    have hkey := W.sliced_plusTruthAt_iff_mem hloc hful hbf t' φ
+      (conclusion_mem_closure (List.mem_singleton_self φ)) _ W.mainIdx 0 hσ t'
+    rw [show (W.sliced t').targetTime = t' from rfl, hkey, add_zero] at hT
+    exact htgt.2 φ (List.mem_singleton_self φ) hT
+  obtain ⟨bx, hcert⟩ :=
+    (W.sliced t').exists_plusSlicedCertificate_of_tailStable_countermodel
+      (W.sliced_biSerial t') (W.sliced_tailStable hloc hful hbf t')
+      (W.sliced_slabTrue hloc hful hbf t') hedge
+      (fun u => W.sliced_target_lab_eq_canLab hloc hful t' u) htw
+      (fun γ hγ => absurd hγ (by simp)) hconc
+  exact ⟨(W.sliced t').withBx bx, hcert⟩
+
+/--
+**The refutation interface, for an embedded target.**
+
+`Sound.lean`'s `plusRefutes_of_certifies` applied to the flagship's output: the sliced class really
+does deliver the same unchanged export the landed sharing-family producer lands, on every embedded
+ℤ-time non-validity.
+-/
+theorem plusRefutes_of_not_plusValidZTime_ofFormula (φ : Formula)
+    (h : ¬ PlusValidZTime (ofFormula φ)) :
+    PlusWitnessFamily.PlusRefutes ([] : PlusContext) [ofFormula φ] := by
+  obtain ⟨G, hG⟩ := exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula φ h
+  exact G.plusRefutes_of_certifies hG
 
 end WitnessFamily
 
