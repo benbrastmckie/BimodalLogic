@@ -1,7 +1,7 @@
 # Implementation Plan: Task #704
 
 - **Task**: 704 - Certificate non-vacuity and shape gates
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: 696 (completed), 703 (completed). NOT 706 (researched only; its refutations are unlanded, see Overview).
 - **Research Inputs**: specs/704_certificate_non_vacuity_and_shape_gates/reports/01_certificate-non-vacuity-shape-gates.md
@@ -148,32 +148,32 @@ Phases within the same wave can execute in parallel. The plan is fully sequentia
 Phases 2-5 all edit `scripts/check-module-invariants.sh` and a parallel dispatch on one file is
 exactly the hazard `context/contracts/territory.md` exists to prevent.
 
-### Phase 1: Build freshness and probe re-establishment [NOT STARTED]
+### Phase 1: Build freshness and probe re-establishment [COMPLETED]
 
 **Goal**: Establish, on a build whose oleans postdate every source, that the Tier-1 sliced
 witness closes by `decide` and is axiom-clean, so that Phase 2 lands evidence rather than a
 hope.
 
 **Tasks**:
-- [ ] Run the staleness probe from `specs/errors.json` `err_20261002080500`: for every
+- [x] Run the staleness probe from `specs/errors.json` `err_20261002080500`: for every
       `FormalSystem/**/*.lean`, compare the source mtime against
-      `.lake/build/lib/lean/FormalSystem/**/*.olean`; list every olean older than its source.
-- [ ] If any is stale: delete that module's `.olean`/`.trace`/`.ilean` and `ir/*.c`,
+      `.lake/build/lib/lean/FormalSystem/**/*.olean`; list every olean older than its source. *(completed: 640 sources, 0 stale or missing)*
+- [x] If any is stale: delete that module's `.olean`/`.trace`/`.ilean` and `ir/*.c`,
       `ir/*.c.trace`, then build through `bash .claude/scripts/lake-build-guard.sh build`
       (never a bare `lake build` on this shared tree; see
       `context/patterns/bounded-build-waiter.md` for the wait discipline). If none is stale,
-      still run the guarded build once to confirm the tree is green at HEAD.
-- [ ] Re-run `specs/704_certificate_non_vacuity_and_shape_gates/probes/01_decide_sliced_inhabitant.lean`
+      still run the guarded build once to confirm the tree is green at HEAD. *(completed: none stale; guarded build green, 2806 jobs, 9 s)*
+- [x] Re-run `specs/704_certificate_non_vacuity_and_shape_gates/probes/01_decide_sliced_inhabitant.lean`
       and `02_decide_conjuncts.lean` with `lake env lean <path>`; record wall time, the
-      `#print axioms` lines, and the per-conjunct readouts in the phase's progress notes.
-- [ ] Confirm the second probe now AGREES with the landed
+      `#print axioms` lines, and the per-conjunct readouts in the phase's progress notes. *(completed: probe 01 11 s, both axiom-clean; probe 02 195 s, all nine conjuncts true)*
+- [x] Confirm the second probe now AGREES with the landed
       `snceProbeLiveFamily_tailStable` (`EmbedComplete.lean`). If it still disagrees on a
       fresh build, STOP: that is a genuine kernel/elaboration divergence, not a cache defect,
-      and must be reported rather than planned around.
-- [ ] Confirm the next free check numbers by `grep -nE '^#   C3[5-9]' scripts/check-module-invariants.sh`
-      and by scanning the `ENFORCE_` block; record them (expected C36, C37).
-- [ ] Check `git log --oneline -5 -- scripts/check-module-invariants.sh` and `git status --short`
-      for sibling activity on the files this plan edits; report any foreign change.
+      and must be reported rather than planned around. *(completed: agrees -- TailStable evaluates true on the fresh build)*
+- [x] Confirm the next free check numbers by `grep -nE '^#   C3[5-9]' scripts/check-module-invariants.sh`
+      and by scanning the `ENFORCE_` block; record them (expected C36, C37). *(completed: C36, C37 confirmed)*
+- [x] Check `git log --oneline -5 -- scripts/check-module-invariants.sh` and `git status --short`
+      for sibling activity on the files this plan edits; report any foreign change. *(completed: no foreign change; last touch 960e39ede)*
 
 **Timing**: 1 hour
 

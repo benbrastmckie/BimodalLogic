@@ -103,7 +103,7 @@ next_project_number: 716
 
 ### Verification
 
-704 [PLANNED] — Two structural preventions against the class of defect the...
+704 [IMPLEMENTING] — Two structural preventions against the class of defect the...
 
 ## Tasks
 
@@ -343,7 +343,7 @@ WHAT HAS CHANGED SINCE THIS TASK WAS FILED, and is more useful than any citation
 ---
 
 ### 704. Certificate non vacuity and shape gates
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: verification
 - **Dependencies**: Task 696, Task 703

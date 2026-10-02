@@ -1,33 +1,11 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/704_certificate_non_vacuity_and_shape_gates/plans/01_certificate-non-vacuity-shape-gates.md",
-      "summary": "Six sequential phases (10 h): fresh-build probe re-establishment; a new PlusSlicedCertificate/Examples.lean exhibiting the sliced and sharing interesting witnesses with every generated surface regenerated and C2 pins; C36 non-vacuity + coverage-limit guard (certificate-witness-inventory.txt, --no-build structural half, RUN_BUILD evaluative half); C37 clause-shape check (clause-shape-allowlist.txt seeded from the 30-row re-derived table, anchor re-verification); time-boxed Tier-2 box-carrying sliced witnesses; docs and final gate."
-    }
-  ],
-  "next_steps": "Run /implement 704 to execute the plan",
+  "status": "in_progress",
+  "dispatch_seq": 11,
   "metadata": {
-    "session_id": "sess_1790958227_8d0c76_704",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 10,
-    "dependency_waves": [[1], [2], [3], [4], [5], [6]]
-  },
-  "memory_candidates": [
-    {
-      "content": "In BimodalLogic, adding any new .lean module under FormalSystem/ touches four generated or aggregated surfaces that the invariant gate checks byte-for-byte: the subtree aggregator import list, FormalSystem.lean (regenerated only via `lake exe mk_all --lib FormalSystem`, C33), the README.md `<!-- BEGIN GENERATED: inventory -->` block (regenerated via `check-module-invariants.sh --emit-inventory`, live-file count), and typst/generated/status.typ (`scripts/typst-status-counts.sh`, needs a built library; checked by typst-sync-check.sh). A plan that lists only the new module under-declares file_scope and the phase fails C33/INV/typst-sync between substeps -- declare all four and treat the module landing as an atomic-batch phase.",
-      "category": "PATTERN",
-      "source_artifact": "specs/704_certificate_non_vacuity_and_shape_gates/plans/01_certificate-non-vacuity-shape-gates.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["mk_all", "FormalSystem.lean", "emit-inventory", "status.typ", "new module", "atomic-batch"]
-    }
-  ],
-  "modified_files": [
-    "specs/704_certificate_non_vacuity_and_shape_gates/plans/01_certificate-non-vacuity-shape-gates.md"
-  ],
-  "dispatch_seq": 6
+    "session_id": "sess_1790958227_8d0c76",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "started_at": "2026-10-02T21:36:57Z"
+  }
 }
