@@ -1,40 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/707_ztime_no_finite_carrier_fmp_context_note/plans/01_ztime-no-finite-carrier-fmp.md",
-      "summary": "Five sequential phases (6h) to write, register, and deploy the ztime-no-finite-carrier-fmp.md context note in the formal extension source store, covering both the finite-carrier refutation (Probe706, theta) and the finite-width refutation (Probe710, Phi) with the strengthened design rule, the published counterpart (GKWZ/HWZ quasimodels), the FMP-failure-is-not-undecidability warning, and fidelity labels."
-    }
-  ],
-  "next_steps": "Run /implement 707 to execute the plan",
+  "status": "in_progress",
+  "dispatch_seq": 9,
   "metadata": {
-    "session_id": "sess_1790958227_8d0c76_707",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 6,
-    "dependency_waves": [[1], [2], [3], [4], [5]]
-  },
-  "memory_candidates": [
-    {
-      "content": "A logic-domain context note for this repository is a three-file deliverable in the formal extension SOURCE STORE (source_dir from .claude-extensions.json, currently /home/benjamin/.config/nvim/agent-system/extensions/formal): the note under context/project/logic/domain/, one entry appended to index-entries.json shaped like the frame-constraint-landscape.md entry (path, summary, category domain, line_count, load_when.agents [logic-research-agent, formal-research-agent], load_when.task_types [logic, formal], domain project, subdomain logic, topics), and one line under the logic README's Domain Files. Then deploy-headless.sh regenerates .claude/. The source store is its own git repo and is often dirty with sibling extensions' edits, so stage the three paths explicitly. The task-reference lint passes specs/NNN_... PATHS but fails 'task N' phrasing, so cite probes and reports by path.",
-      "category": "PATTERN",
-      "source_artifact": "specs/707_ztime_no_finite_carrier_fmp_context_note/plans/01_ztime-no-finite-carrier-fmp.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["context-note", "source-store", "index-entries", "deploy-headless", "logic-domain", "task-reference-lint"]
-    }
-  ],
-  "modified_files": [
-    "specs/707_ztime_no_finite_carrier_fmp_context_note/plans/01_ztime-no-finite-carrier-fmp.md",
-    "specs/707_ztime_no_finite_carrier_fmp_context_note/.return-meta.json",
-    "specs/707_ztime_no_finite_carrier_fmp_context_note/.orchestrator-handoff.json"
-  ],
-  "proposed_file_scope": [
-    "/home/benjamin/.config/nvim/agent-system/extensions/formal/context/project/logic/domain/ztime-no-finite-carrier-fmp.md",
-    "/home/benjamin/.config/nvim/agent-system/extensions/formal/index-entries.json",
-    "/home/benjamin/.config/nvim/agent-system/extensions/formal/context/project/logic/README.md"
-  ],
-  "dispatch_seq": 7
+    "session_id": "sess_1790958227_8d0c76",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

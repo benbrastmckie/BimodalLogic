@@ -1,7 +1,7 @@
 # Implementation Plan: Task #707
 
 - **Task**: 707 - Z-time no-finite-carrier FMP context note (with the finite-width second section)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: None blocking. Inputs are all on disk: the 706 probe, the 710 probe, the 703 round-2 report, the five literature entries, and this task's research report.
 - **Research Inputs**: specs/707_ztime_no_finite_carrier_fmp_context_note/reports/01_ztime-no-finite-carrier-fmp.md
@@ -131,43 +131,43 @@ No `roadmap_path` was provided; `specs/ROADMAP.md` was not consulted.
 Phases are strictly sequential: Phases 1-4 edit the same file in section order, and Phase 5
 registers and deploys the finished note. Nothing runs in parallel.
 
-### Phase 1: Draft the core sections (the carrier refutation and the design rule) [NOT STARTED]
+### Phase 1: Draft the core sections (the carrier refutation and the design rule) [COMPLETED]
 
 **Goal**: Create the note in the source store with its header and sections 1-5: the fact, the
 machine-checked source, the pumping argument, why it is the certificate TYPE and not a bound, and
 the design rule with its landed embodiment.
 
 **Tasks**:
-- [ ] Create `ztime-no-finite-carrier-fmp.md` at the absolute source-store path below, in the
+- [x] Create `ztime-no-finite-carrier-fmp.md` at the absolute source-store path below, in the
   house style of `frame-constraint-landscape.md` (H1 title, one-paragraph purpose stating the
   never-rediscover-it intent, no frontmatter, fully qualified Lean names in code spans,
-  "sentence letter" not "propositional atom").
-- [ ] Section *The fact*: `θ := □(p ∨ Fp ∨ Pp) ∧ □(p → ¬Pp)` is a ℤ-time non-validity of L and
+  "sentence letter" not "propositional atom"). *(completed)*
+- [x] Section *The fact*: `θ := □(p ∨ Fp ∨ Pp) ∧ □(p → ¬Pp)` is a ℤ-time non-validity of L and
   L⁺ (`θ.neg`) with no countermodel on any regular ℤ-frame with a finite carrier; the
   stability-modal-free reading ("every history meets `p`, and never twice from the left"); the
   CTL-like-fragment variant `θ' := □(p ∨ ⊡Fp ∨ ⊡Pp) ∧ □(p → ⊡¬Pp)`; primitive-syntax forms from
-  the 706 report's appendix.
-- [ ] Section *The machine-checked source*: probe path, compile command (`lake env lean
+  the 706 report's appendix. *(completed)*
+- [x] Section *The machine-checked source*: probe path, compile command (`lake env lean
   specs/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean` from
   the repository root), the seven declaration names in a table (`θ_eq_ofFormula`,
   `not_plusValidZTime_neg_θ`, `no_finite_carrier_sat`, `no_ofStep_sat`, `not_finite_carrier_fmp`,
   and the three `θ'` variants), the axiom list, the archived L-side twin `Probe476.fmp_false`
   (`specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean`),
   and one sentence that these are probe-level, not library-level, so the note is to be updated
-  when they land.
-- [ ] Section *The pumping argument*, in the probe's order: `□` is history- and
+  when they land. *(completed)*
+- [x] Section *The pumping argument*, in the probe's order: `□` is history- and
   time-independent by `plusBox_const`, so A says every history meets `p` somewhere and C says a
   `p`-time has no earlier `p`-time on the same history; the target history meets `p` at some
   `a`, so every earlier time on it is `p`-free; pigeonhole via
   `Finite.exists_ne_map_eq_of_infinite` on the states before `a`; the resulting cycle is a
   bi-infinite step path, hence a history by `FrameOver.mem_HF_iff_adjacent` /
   `FrameOver.worldHistoryOfStepPath`, and never meets `p`, contradicting A. Positive half:
-  `ShiftSet` on carrier `ℤ`, `p` at `0` only; `ShiftSet.total_eq_orbit` for the `⊡` collapse.
-- [ ] Section *Why this is the certificate type, not a bound*: `FrameOver.ofStep`
+  `ShiftSet` on carrier `ℤ`, `p` at `0` only; `ShiftSet.total_eq_orbit` for the `⊡` collapse. *(completed)*
+- [x] Section *Why this is the certificate type, not a bound*: `FrameOver.ofStep`
   (`FormalSystem/Semantics/IntNormalForm.lean`) requires `[Finite W]` and routes Saturation
   through `saturation_of_finite`; `no_ofStep_sat` has no `n`; no checker clause and no liveness
-  formulation repairs it.
-- [ ] Section *The design rule and its landed embodiment*: the rule in capitals as the dispatch
+  formulation repairs it. *(completed)*
+- [x] Section *The design rule and its landed embodiment*: the rule in capitals as the dispatch
   states it (infinite, finitely presented carrier, `ℤ × Fin n` with finite fibres, never a
   finite one via `FrameOver.ofStep`), immediately followed by the "necessary, not sufficient"
   forward reference to the finite-width section; then `FrameOver.ofSlicedStep`,
@@ -175,8 +175,8 @@ the design rule with its landed embodiment.
   `TaskFrame.saturation_of_fib_finite`, `TaskFrame.limit_of_succOrder`,
   `PlusSlicedCertificate/Sound.lean`'s prose statement of the obstruction, and the two
   `docs/theorem-index.md` rows (`not_exists_plusCertifies_pumpTarget`,
-  `WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula`).
-- [ ] Cite reports only by `specs/...` path; never write "task N".
+  `WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula`). *(completed)*
+- [x] Cite reports only by `specs/...` path; never write "task N". *(completed)*
 
 **Timing**: 1.5 hours
 
