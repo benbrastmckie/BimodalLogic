@@ -1,5 +1,5 @@
 ---
-next_project_number: 715
+next_project_number: 716
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 715
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,704,705,706,707,708,709,710,711,713,714 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,704,705,706,707,708,709,710,711,713,714,715 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,712 | 298,464,502,563,711 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -23,6 +23,10 @@ next_project_number: 715
 | 10 | 177 | 178,282,296,481,482,543,706 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
+
+### Agent System
+
+715 [NOT STARTED] — Reconcile this repository's deployed .claude/ tree with the...
 
 ### Algebraic Representation
 
@@ -111,6 +115,32 @@ next_project_number: 715
 704 [NOT STARTED] — Two structural preventions against the class of defect the...
 
 ## Tasks
+
+### 715. Reconcile deployed claude tree with source store
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Reconcile this repository's deployed .claude/ tree with the agent-system source store, deciding deliberately whether to adopt the upstream removal of per-dispatch worktree isolation
+
+WHY NOW. Every /orchestrate run in this repository emits a skill-base.sh staleness warning for the core and lean extensions. .claude-extensions.json pins extensions.core.source_git_head at 9f7ccc79e65ed19256e9f7cfad24d6ac045dc53a; the source store at /home/benjamin/.config/nvim/agent-system is many commits ahead for both extensions/core and extensions/lean. The warning is correct, and dispatches now routinely run against documented behaviour that no longer matches the source store.
+
+THE SUBSTANTIVE DIVERGENCE, not a cosmetic drift. Upstream has REMOVED per-dispatch worktree isolation outright. Three verified facts: (1) the source store's scripts/orchestrate-cycle-plan.sh contains zero occurrences of the string worktree, and no dispatch-worktree.sh exists beside it; (2) the source store's skills/skill-orchestrate/SKILL.md no longer carries the MUST NOT paragraph forbidding forwarding a dispatch row's isolation/worktree_path to the Agent tool's own isolation parameter, and that deletion is recorded verbatim in context/config/orchestrator-context-budget.json's derivation note for skills/skill-orchestrate/SKILL.md as "now moot since no dispatch row carries those fields"; (3) upstream replaces it with a Mode 2 build-heavy co-scheduling admission rule, cross-referenced there to an isolation-removal decision record under its own specs/decisions/.
+
+The deployed tree here still implements the OLD design and is internally coherent with itself: the most recent dispatch row in this repository carried isolation=worktree and worktree_path, dispatch-worktree.sh provisioned and landed a dispatch branch, and the deployed SKILL.md still carries the matching guard paragraph. Deployed and source are two coherent designs, not a good copy and a corrupted one. A plain redeploy is therefore NOT a no-op and NOT a routine staleness fix: it switches this repository's orchestration from per-dispatch worktree isolation to upstream's no-isolation-plus-co-scheduling-admission design.
+
+WHAT MUST BE DECIDED, before any redeploy is run. Read the upstream isolation-removal decision record first and establish whether its premises hold for THIS repository. The specific question to check it against is build contention: dispatches here run full lake build sweeps lasting tens of minutes (a recent one reported 2806 jobs), which is the workload worktree isolation was protecting, and the upstream replacement is an admission-time scheduling rule rather than a filesystem guarantee. If the premises hold, adopt the upstream design and redeploy. If they do not, the divergence must be carried deliberately and recorded as such, because the next redeploy by anyone will otherwise silently delete the guard paragraph while this tree still emits the fields it guards against.
+
+CONSTRAINTS. Per .claude/rules/source-store-deploy-boundary.md, any edit resolved as necessary belongs in the source store under agent-system/extensions/, never hand-authored under .claude/**, which is a regenerated deploy artifact. Gate 20, the orchestrator context budget lock, is now HARD (ORCHESTRATOR_BUDGET_GATE_MODE promoted 2026-10-01), so any text added to the source store's skills/skill-orchestrate/SKILL.md or commands/orchestrate.md must fit its ceiling: 20000 bytes and 21000 bytes respectively, measured at 19993 and 19024, with an eager-load baseline of 65950 bytes. Adding a paragraph back to SKILL.md will not fit without a compensating relocation; context/patterns/batch-orchestration-guardrails.md is the established non-eager home for this narrative and already references worktree_path in the source store. Verify with verify-deploy.sh and measure-eager-context.sh --check.
+
+ACCEPTANCE. Either the staleness warning no longer fires for core and lean, or the divergence is recorded as deliberate with its rationale in a durable location and the guard paragraph is protected from the next redeploy (the .syncprotect file at the project root is the mechanism for the latter). Either outcome is acceptable; an undecided redeploy is not.
+
+MUST RUN ALONE, NOT AS PART OF A BATCH. This task edits the dispatch layer that /orchestrate itself runs on and then regenerates the whole deployed .claude/ tree via deploy-headless.sh. A sibling task dispatched in the same run would have its own dispatch, postflight and commit executed against a half-regenerated orchestration tree, and the regeneration is a whole-tree write that no concurrent dispatch can be isolated from. The file_scope below is declared deliberately to match the orchestrator critical-path registry (context/reference/orchestrator-critical-paths.json) at skills/skill-orchestrate/SKILL.md and scripts/orchestrate-cycle-plan.sh under two scope roots, so the self-modification admission gate fires and this task is excluded from any batch it is named in. Run it as /orchestrate 715 on its own. Passing --allow-self-modifying to force it into a batch defeats the reason the scope is declared this way and should not be done here.
+
+DEPENDENCIES: none. This task is independent of the L-plus completeness programme and of every other open task; nothing must land before it, and it blocks no other task's correctness. What it does affect is the dispatch machinery every future /orchestrate run uses, which is a reason to run it early and alone rather than a reason to order it behind anything.
+
+---
 
 ### 714. Evaluate full labels in sliced certificate
 - **Status**: [NOT STARTED]
@@ -227,6 +257,8 @@ THE PROBLEM TO RELAY. The finite-graph certificate specified in task 703's plan 
 WHAT TO RELAY, from specs/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md section Q7. (1) Withdraw the finite graph as a contract. (2) The intended L-plus contract is the TIME-SLICED graph: per slice an edge matrix and a state labelling; three segments back/mid/fwd of slices; one target path and time; bx. The current lasso family is the special case of k lassos with edges i->i only, so the wire format is a strict EXTENSION, not a replacement, and nothing already shipped breaks. (3) The search bound is a tuple (n, nb, nm, nf) -- slice width and three segment lengths. NO bound on n is proved for any L-plus target and none should be configured from a formula yet; for stability-modal-free targets the landed L bounds apply unchanged (at most |C| + 1 lassos, segments at most compressionBound), and the registry's period-folding caveat (ADEQUACY section 7.1(iii-a), WitnessFamily/README.md) carries over to nb and nf. (4) Liveness is computed by the verified checker, which additionally requires TAIL-STABILITY, so a search that finds a countermodel with unstable tails must re-present it with the pre-period moved into mid and the period multiplied -- the same divisor-period sweep the registry already performs for A3. (5) The never-report-validity discipline stands: an empty search at any bound licenses nothing for L-plus targets containing the stability modal, and will until a finite model property is proved.
 
 CONSTRAINT. The ModelChecker repository is READ-ONLY from this repository. Produce the relay text as an artifact here and state precisely which entries and which ADEQUACY rows it amends; do not edit that repository from this task. The completed port of substrate lessons to the model checker is the precedent for this shape of task.
+
+FINDING FROM TASK 703 PHASE 21'S READ OF THE PAIRED REPOSITORY (2026-10-02). That repository documents NO tail-stability concept at all -- zero occurrences repo-wide -- so point (4) above is new information to introduce, not an amendment to an existing row, and it is the one point of the five that changes their accept/reject logic. Two other points need confirming rather than arguing: their finite-graph withdrawal and their never-report-validity discipline (their decision D8) already match points (1) and (5), reached independently on their side. The read was byte-for-byte read-only, as the CONSTRAINT above requires.
 
 ---
 
