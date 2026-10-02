@@ -15,7 +15,11 @@
     "task_number": 708,
     "duration_seconds": 2400,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "research",
+      "general-research-agent"
+    ],
     "findings_count": 6,
     "paired_repository_written": false
   },
@@ -25,27 +29,47 @@
       "category": "WORKFLOW",
       "source_artifact": "specs/708_relay_sliced_certificate_contract_to_model_checker/reports/01_relay-sliced-certificate-contract.md",
       "confidence": 0.85,
-      "suggested_keywords": ["relay", "ModelChecker", "paired-repository", "ready-to-file", "citation-convention", "read-only"]
+      "suggested_keywords": [
+        "relay",
+        "ModelChecker",
+        "paired-repository",
+        "ready-to-file",
+        "citation-convention",
+        "read-only"
+      ]
     },
     {
       "content": "Wire-format extension rule derived from HOA's header discipline: a consumer that does not understand semantics-bearing content must error, never reinterpret. For the bimodal certificate wire, both re-checkers (Lean decodeOptLassos and Python raw.get('lassos', [])) read an absent lassos key as [] and then reject structurally, so a sliced-certificate envelope must OMIT lassos entirely; a document carrying both lassos and slices would be silently checked as a lasso family by an unaware checker.",
       "category": "PATTERN",
       "source_artifact": "specs/708_relay_sliced_certificate_contract_to_model_checker/reports/01_relay-sliced-certificate-contract.md",
       "confidence": 0.8,
-      "suggested_keywords": ["wire-format", "canonical-json", "lassos", "sliced-certificate", "HOA", "strict-extension"]
+      "suggested_keywords": [
+        "wire-format",
+        "canonical-json",
+        "lassos",
+        "sliced-certificate",
+        "HOA",
+        "strict-extension"
+      ]
     },
     {
       "content": "Literature-index relevance notes can mis-cite definition numbers; verify against chunk text before relaying. In hodkinson_wolter_zakharyaschev_2000, the periodic state function with bounded period is Theorem 24 / Lemmas 21, 23 (section 5), not Definition 20 (which defines 'realizes psi1 U psi2 in m steps'); sharp(phi) counts distinct realizable state candidates, not slice width. 'Ultimately periodic' does not occur in biere_heljanko_junttila_latvala_schuppan_2006, which says 'lasso-shaped', beta gamma^omega, '(k,l)-loop'.",
       "category": "INSIGHT",
       "source_artifact": "specs/708_relay_sliced_certificate_contract_to_model_checker/reports/01_relay-sliced-certificate-contract.md",
       "confidence": 0.75,
-      "suggested_keywords": ["quasimodel", "HWZ-2000", "Biere-2006", "k-l-loop", "literature-verification", "tail-stability"]
+      "suggested_keywords": [
+        "quasimodel",
+        "HWZ-2000",
+        "Biere-2006",
+        "k-l-loop",
+        "literature-verification",
+        "tail-stability"
+      ]
     }
   ],
   "modified_files": [
     "specs/708_relay_sliced_certificate_contract_to_model_checker/reports/01_relay-sliced-certificate-contract.md",
     "specs/708_relay_sliced_certificate_contract_to_model_checker/.return-meta.json"
   ],
-  "partial_progress": "Research complete; report written; metadata finalized",
   "errors": []
 }
