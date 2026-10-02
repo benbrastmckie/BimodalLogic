@@ -50,8 +50,9 @@ both are structural, and the two that matter here are:
   fixpoint rather than demanded as a field, so a path that postpones an eventuality forever is
   simply a different, truthful, labelled path.
 * **the finite carrier.** A certificate presenting a finite-carrier frame cannot certify `θ.neg`, a
-  `⊡`-free ℤ-time non-validity the landed `Formula`-side family already certifies
-  (`Probe706.no_ofStep_sat`). The carrier here is `ℤ × Fin n`: infinite, with finite fibres.
+  `⊡`-free ℤ-time non-validity the landed `Formula`-side family already certifies: no frame built
+  by `FrameOver.ofStep` satisfies that formula's negation at any finite carrier. The carrier here
+  is `ℤ × Fin n`: infinite, with finite fibres.
 
 Absolute-time alignment also disappears, because a slice's own time is the only time there is:
 there are no rows pinned to an absolute origin, so there is no period to align and no offset to
@@ -101,7 +102,7 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
 - `PlusSlicedCertificate.Window`: the **combined** window — `NB` / `NF` / `NM` from the least common
   multiples of the certificate's and the target path's own segment lengths, the six compatibility
   facts, the doubled endpoints `winLo` / `winHi` with `winTimes`, and the fold `exists_win_eq` /
-  `forall_iff_win` that reduces a `∀ t` claim over **both** `G.slice` and `G.target.datum` to the
+  `forall_iff_win` that reduces a `∀ t` claim over **both** `G.slice` and `G.target.decoded` to the
   window. `Basic.lean`'s `exists_window_eq` folds the slice sequence alone and cannot state this
 - `PlusSlicedCertificate.Timed`: the **rolled** timed carrier `TPos := G.Pos × ℤ` with its finite
   vertex set `verts` (`TPos` is deliberately not a `Fintype`; the `Fintype` a fixpoint needs comes
@@ -134,7 +135,7 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   positions are positions of the **genuine** slices and step along `succP` / `predP` at the
   **genuine** times, with `fwdWalkPos` / `bwdWalkPos` reading them off as functions of the time. It
   builds no `LabRun` and mentions no `Live`
-- `PlusSlicedCertificate.Stable`: the one-**combined**-period transfer operators `Φ_back` / `Φ_fwd`,
+- `PlusSlicedCertificate.Stable`: the one-**combined**-period transfer operators `ΦBack` / `ΦFwd`,
   built from the one-step `stepBack` / `stepFwd`, with monotonicity at each level, the two subset
   lemmas placing their images on the window's own endpoint slices, the soundness direction
   `fwdLive_subset_stepBack` / `bwdLive_subset_stepFwd` and its two-directional counterpart
@@ -211,6 +212,105 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   quantifier over one index and one offset, which is what `BoxFaithful` reports.
   `sliced_target_lab_eq_canLab` and `sliced_slabTrue` are two of the four hypotheses of the
   completeness headline
+
+## The closing record: what this subtree proves, and what it does not
+
+### What the certificate class is
+
+A `PlusSlicedCertificate Γ Del` is a **time-sliced** bi-serial labelled graph: a slice width `n`, a
+three-segment eventually periodic sequence of slices (`back`, `mid`, `fwd`), a per-time edge
+relation over `Fin n`, a per-time slice labelling, a box guess `bx`, and a target path with its own
+three segments and its own target time. `Certifies` is the decidable condition the checker accepts
+it under, and `decidableCertifies` is synthesized from the clauses rather than postulated.
+
+### The carrier is infinite, with finite fibres, and that is forced
+
+`G.frame h` presents a frame on `ℤ × Fin G.n`. The carrier is **infinite** — proved here, not
+asserted — and its time fibres are finite, of size `G.n`. This is not a convenience. A certificate
+whose presented frame has a **finite carrier** cannot certify a `⊡`-free ℤ-time non-validity that
+the landed `Formula`-side witness family already certifies, so a finite-carrier certificate class
+is incomplete for a fragment in which the `Formula`-side route is complete. The infinite carrier
+with finite fibres is the weakest shape that escapes that obstruction while keeping every
+per-time object a `Finset`, which is what keeps the checker decidable.
+
+Restricting the language to the CTL-like fragment does **not** rescue the finite-carrier shape: the
+`⊡`-free non-validity that defeats it already lies inside that fragment, so the sliced shape is
+needed there too. Whether the fragment has a finite model property of its own is a separate,
+research-first question, and this subtree neither answers it nor assumes an answer.
+
+### What is proved
+
+* **Soundness.** `Sound.plusRefutes_of_certifies`: an accepted certificate produces
+  `PlusWitnessFamily.PlusRefutes Γ Del`, the **unchanged** export the landed
+  `PlusSharingWitnessFamily.plusRefutes_of_certifies` lands. Nothing about soundness is at issue in
+  this subtree, in either direction, and the landed sharing-family interface is untouched.
+* **Relative completeness.** `Complete.exists_plusSlicedCertificate_of_tailStable_countermodel`: a
+  bi-serial, tail-stable, semantically labelled structure carrying a canonically labelled refuting
+  path at a window time admits a box guess the checker accepts, on the same carrier, with the same
+  target path and the same target time. No hypothesis bounds the slice width or any segment length.
+* **The embedding.** `WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula`:
+  every ℤ-time non-validity of an embedded `Formula` admits an accepted sliced certificate, so the
+  class is non-vacuous on `⊡`-free targets and at least as strong there as the landed L class.
+
+### What is refuted, and what is open
+
+* The **finite-carrier** finite model property for this certificate shape is **refuted**: see the
+  carrier paragraph above. That refutation is unconditional.
+* The **sliced** finite model property is **OPEN, not refuted**. No module here states it, implies
+  it, or treats it as settled either way, and nothing above bears on it. It is a separate piece of
+  work.
+* The expected slice width is doubly exponential in the target. That is a **research finding**
+  recorded as such and is **not** a theorem of this tree: no slice-width bound, no tail-period
+  bound and no complexity claim is proved anywhere in this subtree, and none should be read into it.
+
+### The condition set as it actually stands: nine conjuncts
+
+Read off the landed `Check.Certifies`, and not four or five as earlier drafts of this record said:
+
+1. `BiSerial` — every time has an outgoing and an incoming edge (structural).
+2. `TailStable` — the residue-indexed, liveness-filtered tail transfer equation (structural).
+3. (C3b) `BoxLabelFaithful` — the box guess agrees with the slice labelling on state shapes.
+4. `BoxLiveFaithful` — the box clause, read on **live** positions.
+5. `G.targetTime ∈ G.winTimes`.
+6. `TargetPathPos`.
+7. `G.targetPos G.targetTime ∈ G.liveAt G.targetTime`.
+8. (C4) `Target` — the premises and the negated conclusions at the target time.
+9. (C5) `StabFaithful` — the stability-modal clause.
+
+Two things this list corrects, each with its reason. (C3) `BoxFaithful` is **not** a conjunct:
+`AgreesOnState` pins the slice labelling to a position's label only on the state shapes, so for a
+`χ` of any other shape `χ ∈ G.slab t w` is unconstrained data and the demand would be about the
+wrong object. `BoxFaithful` therefore stays in `Basic.lean`, unweakened and unused by `Certifies`,
+and the clause carried instead is `BoxLiveFaithful`, on live positions. And clauses 5-7 are
+target-group side conditions: `G.targetTime ∈ G.winTimes` is forced by the computed live set
+existing only at window times, and narrows the class not at all.
+
+**What (C3b) costs.** It narrows the class only away from certificates whose slice labelling
+contradicts their own box guess — and away from no certificate a countermodel presents, since
+`Complete.lean` constructs the guess from the labelling.
+
+**What `TailStable` costs, stated plainly.** The forward conjunct is **liveness-filtered**
+(`ΦFwd R₀ ∩ R₀fwd = R₀`), and the backward conjunct carries the mirror filter
+(`ΦBack L₀ ∩ L₀bwd = L₀`): one filter per obligation direction, so reachable-but-dead positions are
+filtered out rather than required to be live. The demand is **residue-indexed** — a bounded
+quantifier over each period's residues, which is what the `⊡` clause of the truth lemma requires —
+with the `r = 0` instances recovering the single-equation conjuncts verbatim. It therefore narrows
+the class to structures whose liveness wraps faithfully at **every** residue, and deciding it costs
+`G.NBnat + G.NFnat` `Φ` applications rather than two, each over a live-position set that is itself a
+fixpoint. The narrowing is **not** harmless: `FixtureStable.not_tailStable_cert` exhibits a
+certificate the demand rejects. The both-filtered demand is **not** a theorem — `TailStable` is a
+field of `Certifies`, a per-certificate demand — because the backward conjunct fails in two
+independent ways and only one is filterable: a `⊆` failure (junk positions; a filter removes them)
+and a `⊇` failure (a pre-period, repaired by absorption and by **no** filter). `Position.lean`'s
+header records that dichotomy.
+
+### Where the asymmetry really lies
+
+There is no claim anywhere here that `mem_fwdLiveT_of_fwdLive_fold` has no backward counterpart; it
+has one, `Bridge.mem_bwdLiveT_of_bwdLive_fold`. What is one-directional is the **forward filter**,
+and for a stated reason: `FoldB` relates two negative times, so it does not reach the right tail at
+all, and on the right tail only the forward readout is available. `Bridge.lean` states exactly that.
+
 
 ## Tags
 

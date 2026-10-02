@@ -128,7 +128,7 @@ The construction, in the three regions the module header names.
   the whole distance**. A shift is not a run — `LabRun.agrees` and `LabRun.steps` are conditions at
   every time and the slice sequence is periodic only on the negatives — but on this region every
   time and its shift are negative, so `posAt_congr` and `succP_congr` transport both fields.
-* On `t₀ ≤ u ≤ -G.NB` the finite `Φ_back`-chain that `G.Φ_back L₀ = L₀` supplies, iterated to `k`
+* On `t₀ ≤ u ≤ -G.NB` the finite `ΦBack`-chain that `G.ΦBack L₀ = L₀` supplies, iterated to `k`
   periods by `iterBack_L₀` and made explicit by `exists_chain_of_mem_iterBack`.
 * On `-G.NB ≤ u` the reference run of the chain's **endpoint**, which is a member of `L₀` again and
   in general not `p`. That is why the construction needs two reference runs and not one.
@@ -579,7 +579,7 @@ theorem live_of_mem_R₀_head (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLa
     G.Live (G.NM + G.NF + (k : ℤ) * G.NF) q :=
   G.live_of_mem_liveAt_head hbox
     (show G.nm ≤ G.NM + G.NF from by have := G.NF_pos; have := G.nm_le_NM; omega)
-    G.NM_add_NF_mem_winTimes (fun j => G.R₀_subset_iterFwd hTS j) k hq
+    G.nmAddNF_mem_winTimes (fun j => G.R₀_subset_iterFwd hTS j) k hq
 
 end Head
 

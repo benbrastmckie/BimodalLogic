@@ -73,7 +73,7 @@ one.
 A `⊇` failure is a different thing and **no filter repairs it**: there the iterate is too *small*,
 because a genuinely live position has no live predecessor one whole period back. Intersecting can
 only shrink the left-hand side, so it cannot close a `⊇` gap.
-`FixtureStable.Φ_back_L₀_inter_ne_cert` is exactly such a failure, at a named certificate, and it is
+`FixtureStable.ΦBack_L₀_inter_ne_cert` is exactly such a failure, at a named certificate, and it is
 repaired only by re-presenting the frame — absorbing the pre-period into `mid`.
 
 So `Stable.TailStable`, with both filters in place, is a **demand on a certificate and not a

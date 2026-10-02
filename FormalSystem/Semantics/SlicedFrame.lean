@@ -278,7 +278,7 @@ Field discharges, each a named lemma above: reflection `ofSlicedStepRel_reflect`
 
 This is **not** `FrameOver.ofStep` at a different carrier, and it is not reducible to it: `ofStep`
 requires `[Finite W]` on the whole carrier, which is exactly what is given up here. See this
-module's header for why that matters (`Probe706.no_ofStep_sat`).
+module's header for why that matters.
 -/
 def ofSlicedStep {W : Type} [Finite W] [Nonempty W] (R : ℤ → W → W → Prop)
     (fwd : ∀ t w, ∃ u, R t w u) (bwd : ∀ t w, ∃ v, R (t - 1) v w) : FrameOver intOrder :=

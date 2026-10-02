@@ -115,8 +115,10 @@ instance instIsRegularTask (G : PlusSlicedCertificate Γ Del) (h : G.BiSerial) :
 
 /--
 **The presented frame's carrier is not finite**, and that is proved rather than asserted. It is
-the whole reason this subtree does not present its frame through `FrameOver.ofStep`; see the module
-header and `Probe706.no_ofStep_sat`.
+the whole reason this subtree does not present its frame through `FrameOver.ofStep`: there is a
+`⊡`-free ℤ-time non-validity that **no** frame built by `ofStep` satisfies at any finite carrier,
+while the landed `Formula`-side witness family already certifies it. See this module's header and
+`Semantics/SlicedFrame.lean`'s.
 -/
 theorem frame_worldState_not_finite (G : PlusSlicedCertificate Γ Del) (h : G.BiSerial) :
     ¬ Finite (G.frame h).WorldState :=

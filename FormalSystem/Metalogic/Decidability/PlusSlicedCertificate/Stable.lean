@@ -9,7 +9,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Fixture
 /-!
 # The One-Period Transfer Operators on Position Sets
 
-`Φ_back` transfers a set of positions **leftward through one back period**, and `Φ_fwd` transfers
+`ΦBack` transfers a set of positions **leftward through one back period**, and `ΦFwd` transfers
 one **rightward through one forward period**. Both are monotone, both are built from a single
 one-step operator, and both are `Finset`-valued and decidable.
 
@@ -19,14 +19,14 @@ one-step operator, and both are `Finset`-valued and decidable.
 slice at that time: the fixture's slice at `-1` is literally its slice at `-2`, its position set is
 the same at both, and yet one position is live at `-1` and occupied by no run at `-2`. So a checker
 that reads liveness at a folded window time owes a proof that the fold is faithful, and the object
-that proof is about is the orbit of a position set under one period. `Φ_back` is that one-period
+that proof is about is the orbit of a position set under one period. `ΦBack` is that one-period
 map.
 
 ## Why the period is the combined one
 
-The reference times are the endpoints of the window itself: `Φ_back` runs from `-G.NB` to
-`G.winLo = -2 * G.NB` (`Φ_back_subset_posAt`), and `Φ_fwd` from `G.NM + G.NF` to
-`G.winHi = G.NM + 2 * G.NF` (`Φ_fwd_subset_posAt`). Those are `cohWindowLo` / `cohWindowHi` of
+The reference times are the endpoints of the window itself: `ΦBack` runs from `-G.NB` to
+`G.winLo = -2 * G.NB` (`ΦBack_subset_posAt`), and `ΦFwd` from `G.NM + G.NF` to
+`G.winHi = G.NM + 2 * G.NF` (`ΦFwd_subset_posAt`). Those are `cohWindowLo` / `cohWindowHi` of
 `WitnessFamily/Sharing/Decide.lean` re-indexed to the sliced certificate's own combined segment
 lengths — window endpoints computed from the certificate's data, never bounds imposed on it.
 
@@ -36,7 +36,7 @@ exists to certify, and `prevTime_edge` / `nextTime_edge` say which times that fo
 left edge sends the unwrapped predecessor `-2 * G.NB - 1` to the window time `-G.NB - 1`, a shift of
 `G.NB`, and the right edge shifts by `G.NF`. An operator fixed for one `G.nb`-period would say
 nothing about a fold that moves by `G.NB`. The two reference times are therefore both window times
-(`neg_NB_mem_winTimes`, `NM_add_NF_mem_winTimes`), and the sets `L₀` / `R₀` read off `G.liveT` at
+(`neg_NB_mem_winTimes`, `nmAddNF_mem_winTimes`), and the sets `L₀` / `R₀` read off `G.liveT` at
 them are exactly the declarative live sets there (`mem_liveAt_iff_live`).
 
 ## Why the operators are sound in the direction they are used
@@ -46,7 +46,7 @@ statement: if `X` contains every forward-live position at `t`, then one step of 
 transfer contains every forward-live position at `t - 1`. The converse is false in general and is
 not claimed — a position with a successor in `X` need not be live, because liveness demands a whole
 fulfilling run and not merely one edge. That asymmetry is exactly why `TailStable` (sub-phase 16.2)
-has to be an equation `Φ_back L₀ = L₀` rather than an inclusion.
+has to be an equation `ΦBack L₀ = L₀` rather than an inclusion.
 
 ## What is landed here, and what is landed in `Tail.lean`
 
@@ -77,7 +77,7 @@ absent because it is not true, not because it is pending.
 - `PlusSlicedCertificate.stepBack` / `stepFwd` — the one-step transfers, with their membership
   characterizations
 - `PlusSlicedCertificate.iterBack` / `iterFwd` — the `k`-fold iterates from a reference time
-- `PlusSlicedCertificate.Φ_back` / `Φ_fwd` — one full combined period, at the window's endpoints
+- `PlusSlicedCertificate.ΦBack` / `ΦFwd` — one full combined period, at the window's endpoints
 - `PlusSlicedCertificate.liveAt` — the computed live positions at a time
 - `PlusSlicedCertificate.L₀` / `R₀` — those sets at the two reference times
 - `PlusSlicedCertificate.TailStable` — the wrap-faithfulness demand, with `decidableTailStable`
@@ -85,8 +85,8 @@ absent because it is not true, not because it is pending.
 ## Main results
 
 - `PlusSlicedCertificate.stepBack_mono` / `stepFwd_mono`, `iterBack_mono` / `iterFwd_mono`,
-  `Φ_back_mono` / `Φ_fwd_mono` — monotonicity, at each level
-- `PlusSlicedCertificate.Φ_back_subset_posAt` / `Φ_fwd_subset_posAt` — the operators land on the
+  `ΦBack_mono` / `ΦFwd_mono` — monotonicity, at each level
+- `PlusSlicedCertificate.ΦBack_subset_posAt` / `ΦFwd_subset_posAt` — the operators land on the
   window's own endpoint slices
 - `PlusSlicedCertificate.fwdLive_subset_stepBack` / `bwdLive_subset_stepFwd` — the soundness
   direction, from `Live.lean`'s `fwdLive_step` / `bwdLive_step`
@@ -235,8 +235,8 @@ theorem iterFwd_mono (G : PlusSlicedCertificate Γ Del) (t : ℤ) {X Y : Finset 
 
 /-! ## One full period
 
-The reference times are the endpoints of the **window itself**, `[G.winLo, G.winHi)`: `Φ_back` runs
-from `-G.NB` (`= G.winLo + G.NB`) to `G.winLo` (`= -2 * G.NB`), and `Φ_fwd` from `G.NM + G.NF`
+The reference times are the endpoints of the **window itself**, `[G.winLo, G.winHi)`: `ΦBack` runs
+from `-G.NB` (`= G.winLo + G.NB`) to `G.winLo` (`= -2 * G.NB`), and `ΦFwd` from `G.NM + G.NF`
 (`= G.winHi - G.NF`) to `G.winHi` (`= G.NM + 2 * G.NF`). The period is the **combined** `G.NB` /
 `G.NF` of `Window.lean` and not the single-object `G.nb` / `G.nf`; see "Why the period is the
 combined one" in this module's header.
@@ -252,52 +252,52 @@ theorem NFnat_pos (G : PlusSlicedCertificate Γ Del) : 0 < G.NFnat := by
   rw [NF] at h
   exact_mod_cast h
 
-/-- **`Φ_back`**: the one-period leftward transfer, from `-G.NB` to `G.winLo = -2 * G.NB`. -/
-def Φ_back (G : PlusSlicedCertificate Γ Del) (X : Finset G.Pos) : Finset G.Pos :=
+/-- **`ΦBack`**: the one-period leftward transfer, from `-G.NB` to `G.winLo = -2 * G.NB`. -/
+def ΦBack (G : PlusSlicedCertificate Γ Del) (X : Finset G.Pos) : Finset G.Pos :=
   G.iterBack (-G.NB) X G.NBnat
 
-/-- **`Φ_fwd`**: the one-period rightward transfer, from `G.NM + G.NF` to
+/-- **`ΦFwd`**: the one-period rightward transfer, from `G.NM + G.NF` to
 `G.winHi = G.NM + 2 * G.NF`. -/
-def Φ_fwd (G : PlusSlicedCertificate Γ Del) (X : Finset G.Pos) : Finset G.Pos :=
+def ΦFwd (G : PlusSlicedCertificate Γ Del) (X : Finset G.Pos) : Finset G.Pos :=
   G.iterFwd (G.NM + G.NF) X G.NFnat
 
-theorem Φ_back_mono (G : PlusSlicedCertificate Γ Del) {X Y : Finset G.Pos} (h : X ⊆ Y) :
-    G.Φ_back X ⊆ G.Φ_back Y := G.iterBack_mono _ h _
+theorem ΦBack_mono (G : PlusSlicedCertificate Γ Del) {X Y : Finset G.Pos} (h : X ⊆ Y) :
+    G.ΦBack X ⊆ G.ΦBack Y := G.iterBack_mono _ h _
 
-theorem Φ_fwd_mono (G : PlusSlicedCertificate Γ Del) {X Y : Finset G.Pos} (h : X ⊆ Y) :
-    G.Φ_fwd X ⊆ G.Φ_fwd Y := G.iterFwd_mono _ h _
+theorem ΦFwd_mono (G : PlusSlicedCertificate Γ Del) {X Y : Finset G.Pos} (h : X ⊆ Y) :
+    G.ΦFwd X ⊆ G.ΦFwd Y := G.iterFwd_mono _ h _
 
-/-- **`Φ_back` is monotone**, in the lattice sense `Finset` carries. -/
-theorem monotone_Φ_back (G : PlusSlicedCertificate Γ Del) : Monotone G.Φ_back :=
-  fun _ _ h => G.Φ_back_mono h
+/-- **`ΦBack` is monotone**, in the lattice sense `Finset` carries. -/
+theorem monotone_ΦBack (G : PlusSlicedCertificate Γ Del) : Monotone G.ΦBack :=
+  fun _ _ h => G.ΦBack_mono h
 
-/-- **`Φ_fwd` is monotone.** -/
-theorem monotone_Φ_fwd (G : PlusSlicedCertificate Γ Del) : Monotone G.Φ_fwd :=
-  fun _ _ h => G.Φ_fwd_mono h
+/-- **`ΦFwd` is monotone.** -/
+theorem monotone_ΦFwd (G : PlusSlicedCertificate Γ Del) : Monotone G.ΦFwd :=
+  fun _ _ h => G.ΦFwd_mono h
 
-/-- **`Φ_back` lands on the window's own left endpoint slice.** -/
-theorem Φ_back_subset_posAt (G : PlusSlicedCertificate Γ Del) (X : Finset G.Pos) :
-    G.Φ_back X ⊆ G.posAt G.winLo := by
+/-- **`ΦBack` lands on the window's own left endpoint slice.** -/
+theorem ΦBack_subset_posAt (G : PlusSlicedCertificate Γ Del) (X : Finset G.Pos) :
+    G.ΦBack X ⊆ G.posAt G.winLo := by
   obtain ⟨k, hk⟩ : ∃ k : ℕ, G.NBnat = k + 1 := ⟨G.NBnat - 1, by have := G.NBnat_pos; omega⟩
   have hNB : G.NB = ((k : ℤ) + 1) := by
     rw [NB, hk]
     push_cast
     omega
-  rw [Φ_back, hk]
+  rw [ΦBack, hk]
   have h := G.iterBack_subset_posAt (-G.NB) X k
   rw [show -G.NB - ((k : ℤ) + 1) = G.winLo from by
     rw [show G.winLo = -2 * G.NB from rfl, hNB]; omega] at h
   exact h
 
-/-- **`Φ_fwd` lands on the window's own right endpoint slice.** -/
-theorem Φ_fwd_subset_posAt (G : PlusSlicedCertificate Γ Del) (X : Finset G.Pos) :
-    G.Φ_fwd X ⊆ G.posAt G.winHi := by
+/-- **`ΦFwd` lands on the window's own right endpoint slice.** -/
+theorem ΦFwd_subset_posAt (G : PlusSlicedCertificate Γ Del) (X : Finset G.Pos) :
+    G.ΦFwd X ⊆ G.posAt G.winHi := by
   obtain ⟨k, hk⟩ : ∃ k : ℕ, G.NFnat = k + 1 := ⟨G.NFnat - 1, by have := G.NFnat_pos; omega⟩
   have hNF : G.NF = ((k : ℤ) + 1) := by
     rw [NF, hk]
     push_cast
     omega
-  rw [Φ_fwd, hk]
+  rw [ΦFwd, hk]
   have h := G.iterFwd_subset_posAt (G.NM + G.NF) X k
   rw [show G.NM + G.NF + ((k : ℤ) + 1) = G.winHi from by
     rw [show G.winHi = G.NM + 2 * G.NF from rfl, hNF]; omega] at h
@@ -401,7 +401,7 @@ theorem iterFwd_congr (G : PlusSlicedCertificate Γ Del) {t s : ℤ} (X : Finset
 /-! ### Composition
 
 Splitting an iterate at an intermediate time. This is what turns the **one**-application demand
-`Φ_back L₀ = L₀` into the `k`-application fact `Φ_back^[k] L₀ = L₀` without ever writing
+`ΦBack L₀ = L₀` into the `k`-application fact `ΦBack^[k] L₀ = L₀` without ever writing
 `Function.iterate`: the `k`-th period's iterate is the first period's iterate, run from a reference
 time one period further left.
 -/
@@ -483,7 +483,7 @@ theorem iterFwd_shift (G : PlusSlicedCertificate Γ Del) {t : ℤ} (ht : G.nm �
 declarative `Live`, because that is what makes them decidable. `Bridge.lean`'s `live_iff_mem_liveT`
 is what says the choice costs nothing at a window time: there the two agree exactly.
 
-Both reference times are window times (`neg_NB_mem_winTimes`, `NM_add_NF_mem_winTimes`), which is
+Both reference times are window times (`neg_NB_mem_winTimes`, `nmAddNF_mem_winTimes`), which is
 the whole reason the reference times were re-indexed to the combined periods — see the deviation
 note at the plan's Phase 16 heading.
 -/
@@ -522,7 +522,7 @@ theorem neg_NB_mem_winTimes (G : PlusSlicedCertificate Γ Del) : -G.NB ∈ G.win
   rw [G.mem_winTimes]
   omega
 
-theorem NM_add_NF_mem_winTimes (G : PlusSlicedCertificate Γ Del) : G.NM + G.NF ∈ G.winTimes := by
+theorem nmAddNF_mem_winTimes (G : PlusSlicedCertificate Γ Del) : G.NM + G.NF ∈ G.winTimes := by
   have h1 := G.NB_pos
   have h2 := G.NF_pos
   have h3 := G.NM_nonneg
@@ -616,7 +616,7 @@ a filter by `liveAt` would not be: `FoldF` reaches the whole right tail. -/
 theorem mem_R₀fwd_of_fwdLive_head (G : PlusSlicedCertificate Γ Del) (k : ℕ) {q : G.Pos}
     (hq : G.FwdLive (G.NM + G.NF + (k : ℤ) * G.NF) q) : q ∈ G.R₀fwd := by
   rw [R₀fwd, G.mem_fwdLiveAt]
-  refine ⟨?_, G.mem_fwdLiveT_of_fwdLive_fold G.NM_add_NF_mem_winTimes (G.foldF_head k) hq⟩
+  refine ⟨?_, G.mem_fwdLiveT_of_fwdLive_fold G.nmAddNF_mem_winTimes (G.foldF_head k) hq⟩
   rw [G.foldF_posAt (G.foldF_head k)]
   exact G.mem_posAt_of_fwdLive hq
 
@@ -700,7 +700,7 @@ It is an **equation** and not an inclusion because `Φ` over-approximates in onl
 `fwdLive_subset_stepBack` holds and its converse fails, since a position with a successor in `X`
 need not be live. The equation is what closes the gap the inclusion leaves.
 **What it costs the checker.** Exactly one application of each period transfer beyond Phase 15's
-fixpoints — `G.Φ_back` on `L₀` and `G.Φ_fwd` on `R₀`, each an iterate of the one-step `stepBack` /
+fixpoints — `G.ΦBack` on `L₀` and `G.ΦFwd` on `R₀`, each an iterate of the one-step `stepBack` /
 `stepFwd` over one combined period — and one `Finset` equality test on each. Nothing recomputes a
 fixpoint, and `iterBack_L₀` is what makes the single application stand in for every later one.
 
@@ -713,12 +713,12 @@ would narrow the *presentations* a checker accepts and not the frames a counterm
 `Fixture.not_tailStable` shows that **no** member of the re-presentation family
 `Fixture.certRep a b c` is tail-stable, for any pre-period and any period multipliers, while
 `Fixture.certRep_slice_shift` shows every member presents `Fixture.cert`'s own slice sequence
-shifted. The obstruction is the forward conjunct and it is structural: `Φ_fwd` is a reachability
+shifted. The obstruction is the forward conjunct and it is structural: `ΦFwd` is a reachability
 transfer, the one-step clauses do not constrain the arriving label's `untl`-membership, and
 re-presentation changes neither `posAt` nor the reachability. Read `FixtureStable.lean`'s header for
 the argument in full.
 
-So the **raw** forward demand `Φ_fwd R₀ = R₀` is a demand on the **frame together with its
+So the **raw** forward demand `ΦFwd R₀ = R₀` is a demand on the **frame together with its
 closure** and not on the presentation, and `exists_tailStable_repr` is not stated anywhere in this
 subtree because it is false. The raw demand is kept below under its own name `TailStableRaw`,
 together with every theorem stated from it; `TailStable` carries the **repaired** forward conjunct
@@ -753,11 +753,11 @@ instance decidableTailStableRaw (G : PlusSlicedCertificate Γ Del) : Decidable G
 
 Neither conjunct is the raw equation. The forward one is
 
-  `Φ_fwd R₀ ∩ R₀fwd = R₀`,
+  `ΦFwd R₀ ∩ R₀fwd = R₀`,
 
 and the backward one is its mirror
 
-  `Φ_back L₀ ∩ L₀bwd = L₀`,
+  `ΦBack L₀ ∩ L₀bwd = L₀`,
 
 each transfer **filtered by the computed one-directional live set** at its own reference time. All
 four sides are computed `Finset`s, so the demand is decidable exactly as the raw one was.
@@ -769,13 +769,13 @@ backward-dead, which the filter removes) and a `⊇` failure (`Fixture.cert`'s p
 filter repairs and which is repaired only by absorbing the pre-period into `mid`). See
 `Position.lean`'s header for the dichotomy.
 
-**Why the raw forward demand had to go.** `Φ_fwd` is a reachability transfer and the one-step
+**Why the raw forward demand had to go.** `ΦFwd` is a reachability transfer and the one-step
 clauses do not constrain the arriving label's `untl`-membership, so the raw equation demands that
 every position at the window's right endpoint reachable from a live position be itself live. That is
 unsatisfiable at a frame whose closure carries a tail-dead eventuality, and no re-presentation
 removes the obstruction, because it changes neither `posAt` nor the reachability.
 `FixtureStable.lean` proves exactly that, at a named certificate, for the whole re-presentation
-family (`Fixture.Φ_fwd_R₀_ne`), and `Fixture.not_mem_R₀fwd_pR` proves that the filter removes that
+family (`Fixture.ΦFwd_R₀_ne`), and `Fixture.not_mem_R₀fwd_pR` proves that the filter removes that
 family's witness.
 
 **Why the raw backward demand had to go too.** The mirror obstruction is real and is landed as
@@ -792,7 +792,7 @@ filter removes it.
 
 **What the filters change, and what they do not.** Each filtered demand removes the
 reachable-but-dead-in-that-direction positions rather than requiring them to be live, and the
-conjunction is strictly weaker than the raw one (`tailStable_of_raw`, with `Fixture.Φ_fwd_R₀_ne`
+conjunction is strictly weaker than the raw one (`tailStable_of_raw`, with `Fixture.ΦFwd_R₀_ne`
 showing the implication does not reverse). What they still buy is the whole tail collapse, in both
 directions and at every period multiple:
 
@@ -801,12 +801,12 @@ directions and at every period multiple:
   `TailStableRaw`. The induction carries one period at a time, and the arriving position's filter
   membership comes from `mem_R₀fwd_of_fwdLive_head`, i.e. from `FoldF` carrying genuine forward
   liveness down the tail to the reference time.
-* `←` (`live_of_mem_R₀_head`): needs only `R₀ ⊆ Φ_fwd R₀`, the filtered equation's `⊇` half,
+* `←` (`live_of_mem_R₀_head`): needs only `R₀ ⊆ ΦFwd R₀`, the filtered equation's `⊇` half,
   iterated by monotonicity in `R₀_subset_iterFwd`.
 
 The backward conjunct buys the same two halves on the left tail, by the same route with every name
 mirrored: `mem_L₀_of_live_tail` with its filter step from `mem_L₀bwd_of_bwdLive_tail`, and
-`live_of_mem_L₀_tail` from `L₀ ⊆ Φ_back L₀` iterated in `L₀_subset_iterBack`. `iterBack_L₀` is
+`live_of_mem_L₀_tail` from `L₀ ⊆ ΦBack L₀` iterated in `L₀_subset_iterBack`. `iterBack_L₀` is
 likewise stated from `TailStableRaw`, where the backward equation's functional form survives.
 
 **Why each filter is its own one-directional half and not `liveAt`.** A filter by the
@@ -825,7 +825,7 @@ carrier element names — the comparison class is the histories agreeing at `τ.
 whose first component *is* the time — so no shift normalizes it, and the clause is therefore
 needed at **every** `t : ℤ`. Transporting the computed live set from an arbitrary `t` to a window
 representative needs the tail collapse at `t`'s own residue class, and the single equation
-`Φ_back L₀ = L₀` is a statement about one residue class only: nothing relates the live set at
+`ΦBack L₀ = L₀` is a statement about one residue class only: nothing relates the live set at
 `-G.NB` to the live set at `-G.NB - r` for `r ≠ 0`. Two derivations were worked through and both
 fail — backward reachability from `L₀` satisfies the shifted equation but is not contained in the
 live set at the shifted reference time, and the live set there satisfies no equation the
@@ -918,34 +918,34 @@ single-equation form is unaffected by the residue indexing.
 
 /-- **The `r = 0` instance of the raw backward conjunct.** -/
 theorem tailStableRaw_back (G : PlusSlicedCertificate Γ Del) (h : G.TailStableRaw) :
-    G.Φ_back G.L₀ = G.L₀ := by
+    G.ΦBack G.L₀ = G.L₀ := by
   have h0 := h.1 0 (Finset.mem_range.mpr G.NBnat_pos)
-  rw [Φ_back, L₀]
+  rw [ΦBack, L₀]
   simpa using h0
 
 /-- **The `r = 0` instance of the raw forward conjunct.** -/
 theorem tailStableRaw_fwd (G : PlusSlicedCertificate Γ Del) (h : G.TailStableRaw) :
-    G.Φ_fwd G.R₀ = G.R₀ := by
+    G.ΦFwd G.R₀ = G.R₀ := by
   have h0 := h.2 0 (Finset.mem_range.mpr G.NFnat_pos)
-  rw [Φ_fwd, R₀]
+  rw [ΦFwd, R₀]
   simpa using h0
 
 /-- **The `r = 0` instance of the filtered backward conjunct.** -/
 theorem tailStable_back (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable) :
-    G.Φ_back G.L₀ ∩ G.L₀bwd = G.L₀ := by
+    G.ΦBack G.L₀ ∩ G.L₀bwd = G.L₀ := by
   have h0 := hTS.1 0 (Finset.mem_range.mpr G.NBnat_pos)
-  rw [Φ_back, L₀, L₀bwd]
+  rw [ΦBack, L₀, L₀bwd]
   simpa using h0
 
 /-- **The `r = 0` instance of the filtered forward conjunct.** -/
 theorem tailStable_fwd (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable) :
-    G.Φ_fwd G.R₀ ∩ G.R₀fwd = G.R₀ := by
+    G.ΦFwd G.R₀ ∩ G.R₀fwd = G.R₀ := by
   have h0 := hTS.2 0 (Finset.mem_range.mpr G.NFnat_pos)
-  rw [Φ_fwd, R₀, R₀fwd]
+  rw [ΦFwd, R₀, R₀fwd]
   simpa using h0
 
 /-- **The raw demand is the stronger one**, residue by residue. The converse fails:
-`Fixture.Φ_fwd_R₀_ne` refutes the raw forward conjunct at a certificate, for every member of the
+`Fixture.ΦFwd_R₀_ne` refutes the raw forward conjunct at a certificate, for every member of the
 re-presentation family. -/
 theorem tailStable_of_raw (G : PlusSlicedCertificate Γ Del) (h : G.TailStableRaw) :
     G.TailStable := by
@@ -972,8 +972,8 @@ theorem liveAt_refBack_subset_Φ (G : PlusSlicedCertificate Γ Del) (hTS : G.Tai
   exact (Finset.mem_inter.mp hp).1
 
 /-- **The `r = 0` instance**, in the shape the pre-residue development cites. -/
-theorem L₀_subset_Φ_back_L₀ (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable) :
-    G.L₀ ⊆ G.Φ_back G.L₀ := by
+theorem L₀_subset_ΦBack_L₀ (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable) :
+    G.L₀ ⊆ G.ΦBack G.L₀ := by
   intro p hp
   rw [← G.tailStable_back hTS] at hp
   exact (Finset.mem_inter.mp hp).1
@@ -989,8 +989,8 @@ theorem liveAt_refFwd_subset_Φ (G : PlusSlicedCertificate Γ Del) (hTS : G.Tail
   exact (Finset.mem_inter.mp hp).1
 
 /-- **The `r = 0` instance**, in the shape the pre-residue development cites. -/
-theorem R₀_subset_Φ_fwd_R₀ (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable) :
-    G.R₀ ⊆ G.Φ_fwd G.R₀ := by
+theorem R₀_subset_ΦFwd_R₀ (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStable) :
+    G.R₀ ⊆ G.ΦFwd G.R₀ := by
   intro p hp
   rw [← G.tailStable_fwd hTS] at hp
   exact (Finset.mem_inter.mp hp).1
@@ -1023,7 +1023,7 @@ theorem iterBack_L₀ (G : PlusSlicedCertificate Γ Del) (hTS : G.TailStableRaw)
   rw [L₀]
   simpa using h
 
-/-- **`Φ_fwd` iterated at an arbitrary right residue**, the mirror — stated from the **raw** demand
+/-- **`ΦFwd` iterated at an arbitrary right residue**, the mirror — stated from the **raw** demand
 `TailStableRaw`, which is where the forward equation's functional form survives. `TailStable` does
 not imply it: under the filtered forward conjunct the iterate may grow, and
 `liveAt_refFwd_subset_iterFwd` is the one-sided replacement the tail collapse uses instead. -/
@@ -1204,7 +1204,7 @@ theorem mem_L₀_of_live_tail (G : PlusSlicedCertificate Γ Del) (hTS : G.TailSt
 **The mirror, on the right tail** — and the one declaration of this module whose **proof** the
 repaired forward conjunct forced to be rewritten.
 
-The raw demand proved this in one step: `live_subset_iterFwd` lands `q` in `Φ_fwd^k R₀`, and
+The raw demand proved this in one step: `live_subset_iterFwd` lands `q` in `ΦFwd^k R₀`, and
 `iterFwd_R₀` collapsed that to `R₀`. The filtered demand does not collapse the iterate, so the
 induction runs one period at a time: the inductive hypothesis is the whole `∀ q` statement at `k`,
 which is exactly the `hX` that `live_subset_iterFwd` asks for over the single period from
@@ -1220,7 +1220,7 @@ theorem forall_mem_R₀_of_live_head (G : PlusSlicedCertificate Γ Del) (hTS : G
   induction k with
   | zero =>
     intro q hq
-    exact G.mem_liveAt_of_live G.NM_add_NF_mem_winTimes (by simpa using hq)
+    exact G.mem_liveAt_of_live G.nmAddNF_mem_winTimes (by simpa using hq)
   | succ k ih =>
     intro q hq
     have hsucc : ((k + 1 : ℕ) : ℤ) = (k : ℤ) + 1 := by push_cast; rfl
@@ -1420,7 +1420,7 @@ theorem live_of_mem_L₀ (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLabelFa
 /-- **The mirror.** -/
 theorem live_of_mem_R₀ (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLabelFaithful) {q : G.Pos}
     (hq : q ∈ G.R₀) : G.Live (G.NM + G.NF) q :=
-  G.live_of_mem_liveAt hbox G.NM_add_NF_mem_winTimes hq
+  G.live_of_mem_liveAt hbox G.nmAddNF_mem_winTimes hq
 
 /-- **`L₀` is exactly the live set at its own reference time.** -/
 theorem mem_L₀_iff_live (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLabelFaithful) (p : G.Pos) :
@@ -1430,7 +1430,7 @@ theorem mem_L₀_iff_live (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLabelF
 /-- **`R₀` is exactly the live set at its own reference time.** -/
 theorem mem_R₀_iff_live (G : PlusSlicedCertificate Γ Del) (hbox : G.BoxLabelFaithful) (q : G.Pos) :
     q ∈ G.R₀ ↔ G.Live (G.NM + G.NF) q :=
-  G.mem_liveAt_iff_live hbox G.NM_add_NF_mem_winTimes q
+  G.mem_liveAt_iff_live hbox G.nmAddNF_mem_winTimes q
 
 /--
 **The collapse, as one statement.** Under tail-stability, a position live anywhere down the periodic

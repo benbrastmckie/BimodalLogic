@@ -107,7 +107,8 @@ theorem histories_through_paste [F.IsRegular] (ρ σ : WorldHistory F) (t : F.Du
 
 /-! ## Piece 2: the type row splices
 
-Transcribed from `Probe703Paste.truth_of_agree_of_type_eq` with no added hypothesis.
+No added hypothesis anywhere below: the splice is a fact about agreement and type equality
+alone, with no frame-class assumption, no discreteness and no bound.
 -/
 
 /--

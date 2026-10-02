@@ -159,14 +159,14 @@ theorem mem_Cl_ev : ev ∈ Cl := (mem_Cl_iff _).mpr (Or.inr (Or.inl rfl))
 theorem mem_Cl_gd : gd ∈ Cl := (mem_Cl_iff _).mpr (Or.inr (Or.inr rfl))
 
 /-- The only `untl` in the closure is `phi`. -/
-theorem Cl_untl_eq {g e : PlusFormula} (h : PlusFormula.untl g e ∈ Cl) : g = gd ∧ e = ev := by
+theorem Cl.untl_eq {g e : PlusFormula} (h : PlusFormula.untl g e ∈ Cl) : g = gd ∧ e = ev := by
   rcases (mem_Cl_iff _).mp h with h | h | h
   · rw [phi] at h; injection h with h1 h2; exact ⟨h1, h2⟩
   · exact absurd h (by simp [ev])
   · exact absurd h (by simp [gd])
 
 /-- No implication is in the closure, so the implication clause is vacuous throughout. -/
-theorem Cl_no_imp (a b : PlusFormula) : PlusFormula.imp a b ∉ Cl := by
+theorem Cl.no_imp (a b : PlusFormula) : PlusFormula.imp a b ∉ Cl := by
   intro h
   rcases (mem_Cl_iff _).mp h with h | h | h
   · exact absurd h (by simp [phi])
@@ -174,7 +174,7 @@ theorem Cl_no_imp (a b : PlusFormula) : PlusFormula.imp a b ∉ Cl := by
   · exact absurd h (by simp [gd])
 
 /-- No `□`-formula is in the closure, so the box clause is vacuous throughout. -/
-theorem Cl_no_box (a : PlusFormula) : PlusFormula.box a ∉ Cl := by
+theorem Cl.no_box (a : PlusFormula) : PlusFormula.box a ∉ Cl := by
   intro h
   rcases (mem_Cl_iff _).mp h with h | h | h
   · exact absurd h (by simp [phi])
@@ -182,7 +182,7 @@ theorem Cl_no_box (a : PlusFormula) : PlusFormula.box a ∉ Cl := by
   · exact absurd h (by simp [gd])
 
 /-- No `snce` is in the closure, so the `snce` clause is vacuous throughout. -/
-theorem Cl_no_snce (g e : PlusFormula) : PlusFormula.snce g e ∉ Cl := by
+theorem Cl.no_snce (g e : PlusFormula) : PlusFormula.snce g e ∉ Cl := by
   intro h
   rcases (mem_Cl_iff _).mp h with h | h | h
   · exact absurd h (by simp [phi])
@@ -190,7 +190,7 @@ theorem Cl_no_snce (g e : PlusFormula) : PlusFormula.snce g e ∉ Cl := by
   · exact absurd h (by simp [gd])
 
 /-- No `⊡`-formula is in the closure. -/
-theorem Cl_no_stab (a : PlusFormula) : PlusFormula.stab a ∉ Cl := by
+theorem Cl.no_stab (a : PlusFormula) : PlusFormula.stab a ∉ Cl := by
   intro h
   rcases (mem_Cl_iff _).mp h with h | h | h
   · exact absurd h (by simp [phi])
@@ -349,7 +349,7 @@ theorem mem_posAt_p₀ {t : ℤ} (ht : t < 0) : p₀ ∈ cert.posAt t := by
     match ψ with
     | .atom _ => rfl
     | .bot => rfl
-    | .imp a b => exact absurd hψ (Cl_no_imp a b)
+    | .imp a b => exact absurd hψ (Cl.no_imp a b)
     | .box _ => rfl
     | .untl _ _ => rfl
     | .snce _ _ => rfl
@@ -438,7 +438,7 @@ theorem succP_ne_empty_neg_one : cert.succP (-1) p₀ ≠ ∅ := by
         match ψ with
         | .atom _ => rfl
         | .bot => rfl
-        | .imp a b => exact absurd hψ (Cl_no_imp a b)
+        | .imp a b => exact absurd hψ (Cl.no_imp a b)
         | .box _ => rfl
         | .untl _ _ => rfl
         | .snce _ _ => rfl
@@ -465,14 +465,14 @@ theorem succP_ne_empty_neg_one : cert.succP (-1) p₀ ≠ ∅ := by
       | .imp _ _ => rfl
       | .box _ => rfl
       | .untl g e =>
-          obtain ⟨hg, he⟩ := Cl_untl_eq hψ
+          obtain ⟨hg, he⟩ := Cl.untl_eq hψ
           subst hg; subst he
           simp only [untlClauseAt, decide_eq_true_eq]
           constructor
           · intro _; left; simp
           · intro _; rw [p₀_snd, Finset.mem_singleton]; rfl
-      | .snce g e => exact absurd hψ (Cl_no_snce g e)
-      | .stab a => exact absurd hψ (Cl_no_stab a)
+      | .snce g e => exact absurd hψ (Cl.no_snce g e)
+      | .stab a => exact absurd hψ (Cl.no_stab a)
     · intro ψ hψ
       match ψ with
       | .atom _ => rfl
@@ -480,8 +480,8 @@ theorem succP_ne_empty_neg_one : cert.succP (-1) p₀ ≠ ∅ := by
       | .imp _ _ => rfl
       | .box _ => rfl
       | .untl _ _ => rfl
-      | .snce g e => exact absurd hψ (Cl_no_snce g e)
-      | .stab a => exact absurd hψ (Cl_no_stab a)
+      | .snce g e => exact absurd hψ (Cl.no_snce g e)
+      | .stab a => exact absurd hψ (Cl.no_stab a)
   rw [h] at this
   exact absurd this (Finset.notMem_empty _)
 
@@ -553,10 +553,10 @@ def run : cert.LabRun where
   coherent := by
     intro t
     refine ⟨runLab_not_mem_bot t, ?_, ?_, ?_, ?_⟩
-    · intro a b hab; exact absurd hab (Cl_no_imp a b)
-    · intro χ hχ; exact absurd hχ (Cl_no_box χ)
+    · intro a b hab; exact absurd hab (Cl.no_imp a b)
+    · intro χ hχ; exact absurd hχ (Cl.no_box χ)
     · intro g e hge
-      obtain ⟨hg, he⟩ := Cl_untl_eq hge
+      obtain ⟨hg, he⟩ := Cl.untl_eq hge
       subst hg; subst he
       rw [show PlusFormula.untl gd ev = phi from rfl, runLab_mem_phi_iff, runLab_mem_ev_iff,
         runLab_mem_phi_iff]
@@ -565,7 +565,7 @@ def run : cert.LabRun where
       · rintro (h | ⟨h, -⟩)
         · omega
         · exact absurd h (runLab_not_mem_gd _)
-    · intro g e hge; exact absurd hge (Cl_no_snce g e)
+    · intro g e hge; exact absurd hge (Cl.no_snce g e)
 
 @[simp] theorem run_lab : run.lab = runLab := rfl
 
@@ -741,7 +741,7 @@ applied to `live_neg_one`, and properness is the soundness direction contraposed
 /-- **(C3b) holds of the fixture, vacuously**: its closure carries no `□`-formula, so the box guess
 has nothing to be faithful to. The fixture therefore exercises the bridge's soundness direction
 without the box clause doing any work — which is the right test of the rest of the splice. -/
-theorem boxLabelFaithful : cert.BoxLabelFaithful := fun χ hχ => absurd hχ (Cl_no_box χ)
+theorem boxLabelFaithful : cert.BoxLabelFaithful := fun χ hχ => absurd hχ (Cl.no_box χ)
 
 theorem mem_winTimes_neg_one : (-1 : ℤ) ∈ cert.winTimes := by
   rw [cert.mem_winTimes, cert_winLo, cert_winHi]
@@ -794,7 +794,7 @@ presents `cert`'s own frame moved right by `b`, bi-seriality, the two positions 
 about, the two one-step clauses, and the fulfilling run.
 
 The verdict itself — that **no** member is tail-stable, so `exists_tailStable_repr` is false — is in
-`PlusSlicedCertificate/FixtureStable.lean`, because it mentions `Φ_back`, `Φ_fwd`, `L₀`, `R₀` and
+`PlusSlicedCertificate/FixtureStable.lean`, because it mentions `ΦBack`, `ΦFwd`, `L₀`, `R₀` and
 `TailStable`, all of which live in `Stable.lean`, which imports *this* module. Read that module's
 header for the finding; nothing here asserts it.
 
@@ -1011,7 +1011,7 @@ theorem certRep_slab_not_mem_gd (a b c : ℕ) (t : ℤ) (w : Fin (certRep a b c)
 
 /-- **(C3b) holds vacuously of every member**: the closure carries no `□`-formula. -/
 theorem certRep_boxLabelFaithful (a b c : ℕ) : (certRep a b c).BoxLabelFaithful :=
-  fun χ hχ => absurd hχ (Cl_no_box χ)
+  fun χ hχ => absurd hχ (Cl.no_box χ)
 
 /-! ### The two positions the failure is about -/
 
@@ -1024,7 +1024,7 @@ theorem labCoherent_of_not_mem_bot {X : Finset PlusFormula} (h : PlusFormula.bot
   match ψ with
   | .atom _ => rfl
   | .bot => rfl
-  | .imp a b => exact absurd hψ (Cl_no_imp a b)
+  | .imp a b => exact absurd hψ (Cl.no_imp a b)
   | .box _ => rfl
   | .untl _ _ => rfl
   | .snce _ _ => rfl
@@ -1098,8 +1098,8 @@ theorem stepClause_empty_empty : StepClause ctx [] ∅ ∅ := by
         simp only [untlClauseAt, decide_eq_true_eq]
         exact ⟨fun h => absurd h (Finset.notMem_empty _),
           fun h => by rcases h with h | ⟨h, -⟩ <;> exact absurd h (Finset.notMem_empty _)⟩
-    | .snce g e => exact absurd hψ (Cl_no_snce g e)
-    | .stab a => exact absurd hψ (Cl_no_stab a)
+    | .snce g e => exact absurd hψ (Cl.no_snce g e)
+    | .stab a => exact absurd hψ (Cl.no_stab a)
   · intro ψ hψ
     match ψ with
     | .atom _ => rfl
@@ -1107,8 +1107,8 @@ theorem stepClause_empty_empty : StepClause ctx [] ∅ ∅ := by
     | .imp _ _ => rfl
     | .box _ => rfl
     | .untl _ _ => rfl
-    | .snce g e => exact absurd hψ (Cl_no_snce g e)
-    | .stab a => exact absurd hψ (Cl_no_stab a)
+    | .snce g e => exact absurd hψ (Cl.no_snce g e)
+    | .stab a => exact absurd hψ (Cl.no_stab a)
 
 /--
 **A step from the empty label to the dead label is legitimate.**
@@ -1128,7 +1128,7 @@ theorem stepClause_empty_phi : StepClause ctx [] ∅ {phi} := by
     | .imp _ _ => rfl
     | .box _ => rfl
     | .untl g e =>
-        obtain ⟨hg, he⟩ := Cl_untl_eq hψ
+        obtain ⟨hg, he⟩ := Cl.untl_eq hψ
         subst hg; subst he
         simp only [untlClauseAt, decide_eq_true_eq]
         refine ⟨fun h => absurd h (Finset.notMem_empty _), fun h => ?_⟩
@@ -1137,8 +1137,8 @@ theorem stepClause_empty_phi : StepClause ctx [] ∅ {phi} := by
           exact absurd h.symm phi_ne_ev
         · rw [Finset.mem_singleton] at h
           exact absurd h.symm phi_ne_gd
-    | .snce g e => exact absurd hψ (Cl_no_snce g e)
-    | .stab a => exact absurd hψ (Cl_no_stab a)
+    | .snce g e => exact absurd hψ (Cl.no_snce g e)
+    | .stab a => exact absurd hψ (Cl.no_stab a)
   · intro ψ hψ
     match ψ with
     | .atom _ => rfl
@@ -1146,8 +1146,8 @@ theorem stepClause_empty_phi : StepClause ctx [] ∅ {phi} := by
     | .imp _ _ => rfl
     | .box _ => rfl
     | .untl _ _ => rfl
-    | .snce g e => exact absurd hψ (Cl_no_snce g e)
-    | .stab a => exact absurd hψ (Cl_no_stab a)
+    | .snce g e => exact absurd hψ (Cl.no_snce g e)
+    | .stab a => exact absurd hψ (Cl.no_stab a)
 
 /-! ### The all-empty run, and what it makes live -/
 
@@ -1210,10 +1210,10 @@ def repRun (a b c : ℕ) : (certRep a b c).LabRun where
   coherent := by
     intro t
     refine ⟨repLab_not_mem_bot b t, ?_, ?_, ?_, ?_⟩
-    · intro x y hxy; exact absurd hxy (Cl_no_imp x y)
-    · intro χ hχ; exact absurd hχ (Cl_no_box χ)
+    · intro x y hxy; exact absurd hxy (Cl.no_imp x y)
+    · intro χ hχ; exact absurd hχ (Cl.no_box χ)
     · intro g e hge
-      obtain ⟨hg, he⟩ := Cl_untl_eq hge
+      obtain ⟨hg, he⟩ := Cl.untl_eq hge
       subst hg; subst he
       rw [show PlusFormula.untl gd ev = phi from rfl, repLab_mem_phi_iff, repLab_mem_ev_iff,
         repLab_mem_phi_iff]
@@ -1221,7 +1221,7 @@ def repRun (a b c : ℕ) : (certRep a b c).LabRun where
       rintro (h | ⟨h, -⟩)
       · omega
       · exact absurd h (repLab_not_mem_gd b _)
-    · intro g e hge; exact absurd hge (Cl_no_snce g e)
+    · intro g e hge; exact absurd hge (Cl.no_snce g e)
 
 @[simp] theorem repRun_lab (a b c : ℕ) : (repRun a b c).lab = repLab b := rfl
 

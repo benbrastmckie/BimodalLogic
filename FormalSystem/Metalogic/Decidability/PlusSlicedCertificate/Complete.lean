@@ -551,6 +551,9 @@ target time.
 
 No hypothesis bounds `G₀.n`, `|G₀.back|`, `|G₀.mid|` or `|G₀.fwd|`. The structure is arbitrary in
 the class; a bound would be a different and weaker theorem.
+
+Paper: — (relative completeness for a formalization-native certificate class; the paper states
+no such result)
 -/
 theorem exists_plusSlicedCertificate_of_tailStable_countermodel
     (G₀ : PlusSlicedCertificate Γ Del) (hser : G₀.BiSerial) (hTS : G₀.TailStable)
@@ -666,8 +669,8 @@ theorem triv_edge (t : ℤ) (w u : Fin triv.n) : triv.edge t w u = true := by
 /-- The constant target path's label is empty at every time, because every decoded datum is a member
 of its own data and both of its non-empty segments carry `∅`. -/
 theorem path1_lab (t : ℤ) : path1.lab t = ∅ := by
-  have h := path1.datum_mem t
-  have hd : path1.datum t = ((∅ : Finset PlusFormula), (0 : Fin 1)) := by
+  have h := path1.decoded_mem t
+  have hd : path1.decoded t = ((∅ : Finset PlusFormula), (0 : Fin 1)) := by
     rcases List.mem_append.mp h with h | h
     · rcases List.mem_append.mp h with h | h
       · exact List.mem_singleton.mp h

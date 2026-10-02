@@ -203,7 +203,7 @@ period, and the component residues follow because each component period divides 
 -/
 theorem exists_combined_window_eq (G : PlusSlicedCertificate Γ Del) (t : ℤ) :
     ∃ s : ℤ, -G.NB ≤ s ∧ s < G.NM + G.NF ∧ G.slice s = G.slice t ∧
-      G.target.datum s = G.target.datum t := by
+      G.target.decoded s = G.target.decoded t := by
   have hB := G.NB_pos
   have hF := G.NF_pos
   have hM := G.NM_nonneg
@@ -222,7 +222,7 @@ theorem exists_combined_window_eq (G : PlusSlicedCertificate Γ Del) (t : ℤ) :
     · have hres : (t % G.NB - G.NB) % G.NB = t % G.NB := by
         rw [show t % G.NB - G.NB = t % G.NB + (-1) * G.NB from by omega,
           Periodic.emod_add_mul, Int.emod_emod_of_dvd t (dvd_refl _)]
-      rw [G.target.datum_neg (by omega : t % G.NB - G.NB < 0), G.target.datum_neg ht]
+      rw [G.target.decoded_neg (by omega : t % G.NB - G.NB < 0), G.target.decoded_neg ht]
       exact @Periodic.cyc_congr _ G.target.inh _ _ _
         (emod_eq_of_dvd_of_emod_eq G.target_nb_dvd_NB hres)
   · by_cases htm : t < G.NM
@@ -242,8 +242,8 @@ theorem exists_combined_window_eq (G : PlusSlicedCertificate Γ Del) (t : ℤ) :
           G.slice_fwd (le_trans G.nm_le_NM htM)]
         exact Periodic.cyc_congr
           (Int.ModEq.sub_right G.nm (emod_eq_of_dvd_of_emod_eq G.nf_dvd_NF hres))
-      · rw [G.target.datum_fwd (by omega : G.target.nm ≤ G.NM + (t - G.NM) % G.NF),
-          G.target.datum_fwd (le_trans G.target_nm_le_NM htM)]
+      · rw [G.target.decoded_fwd (by omega : G.target.nm ≤ G.NM + (t - G.NM) % G.NF),
+          G.target.decoded_fwd (le_trans G.target_nm_le_NM htM)]
         exact @Periodic.cyc_congr _ G.target.inh _ _ _
           (Int.ModEq.sub_right G.target.nm
             (emod_eq_of_dvd_of_emod_eq G.target_nf_dvd_NF hres))
@@ -252,7 +252,7 @@ theorem exists_combined_window_eq (G : PlusSlicedCertificate Γ Del) (t : ℤ) :
 from the factor `2`. -/
 theorem exists_win_eq (G : PlusSlicedCertificate Γ Del) (t : ℤ) :
     ∃ s : ℤ, G.winLo ≤ s ∧ s < G.winHi ∧ G.slice s = G.slice t ∧
-      G.target.datum s = G.target.datum t := by
+      G.target.decoded s = G.target.decoded t := by
   obtain ⟨s, h1, h2, h3, h4⟩ := G.exists_combined_window_eq t
   have hlo := G.winLo_le_neg_NB
   have hhi := G.le_winHi
@@ -270,7 +270,8 @@ clause, the target-agreement clause and the universal side can each cite it with
 lemma.
 -/
 theorem forall_iff_win (G : PlusSlicedCertificate Γ Del) {P : ℤ → Prop}
-    (hP : ∀ s t : ℤ, G.slice s = G.slice t → G.target.datum s = G.target.datum t → (P s ↔ P t)) :
+    (hP : ∀ s t : ℤ, G.slice s = G.slice t → G.target.decoded s = G.target.decoded t →
+      (P s ↔ P t)) :
     (∀ t : ℤ, P t) ↔ (∀ t : ℤ, G.winLo ≤ t → t < G.winHi → P t) := by
   constructor
   · intro h t _ _

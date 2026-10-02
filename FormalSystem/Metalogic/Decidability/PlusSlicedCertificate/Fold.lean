@@ -22,7 +22,7 @@ would be false for the weaker relation.
 
 ## Why both objects, and why the combined period
 
-Every fold lemma comes in a pair: one for `G.slice` and one for `G.target.datum`. A single-source
+Every fold lemma comes in a pair: one for `G.slice` and one for `G.target.decoded`. A single-source
 window could not state the pair at all, because one of the two objects would be folded by a period
 that is not its own. `Window.lean`'s combined `NB` / `NF` / `NM` is what makes the pair statable,
 and each half is a residue computation against a divisor of the combined period
@@ -36,7 +36,7 @@ and each half is a residue computation against a divisor of the combined period
 ## Main results
 
 - `PlusSlicedCertificate.foldF_refl` / `foldF_symm` / `foldF_trans`, and the backward triple
-- `PlusSlicedCertificate.foldF_slice` / `foldF_target_datum` / `foldF_edge` / `foldF_posAt` /
+- `PlusSlicedCertificate.foldF_slice` / `foldF_target_decoded` / `foldF_edge` / `foldF_posAt` /
   `foldF_succP`, and the backward analogues ending in `foldB_predP`
 - `PlusSlicedCertificate.foldF_succ` / `foldB_pred` — closure under a common step
 - `PlusSlicedCertificate.foldF_nextTime` / `foldB_prevTime` — **each wrap is a fold**
@@ -121,12 +121,12 @@ theorem foldF_slice (G : PlusSlicedCertificate Γ Del) {a b : ℤ} (h : G.FoldF 
     exact hm2.sub_right G.nm
 
 /-- **Forward-folded times carry the same target datum.** -/
-theorem foldF_target_datum (G : PlusSlicedCertificate Γ Del) {a b : ℤ} (h : G.FoldF a b) :
-    G.target.datum a = G.target.datum b := by
+theorem foldF_target_decoded (G : PlusSlicedCertificate Γ Del) {a b : ℤ} (h : G.FoldF a b) :
+    G.target.decoded a = G.target.decoded b := by
   rcases h with rfl | ⟨h1, h2, h3⟩
   · rfl
   · have hnm := G.target_nm_le_NM
-    rw [G.target.datum_fwd (by omega), G.target.datum_fwd (by omega)]
+    rw [G.target.decoded_fwd (by omega), G.target.decoded_fwd (by omega)]
     refine @Periodic.cyc_congr _ G.target.inh _ _ _ ?_
     have hm : Int.ModEq G.target.nf (a - G.NM) (b - G.NM) :=
       emod_eq_of_dvd_of_emod_eq G.target_nf_dvd_NF h3
@@ -145,11 +145,11 @@ theorem foldB_slice (G : PlusSlicedCertificate Γ Del) {a b : ℤ} (h : G.FoldB 
     exact Periodic.cyc_congr (emod_eq_of_dvd_of_emod_eq G.nb_dvd_NB h3)
 
 /-- **Backward-folded times carry the same target datum.** -/
-theorem foldB_target_datum (G : PlusSlicedCertificate Γ Del) {a b : ℤ} (h : G.FoldB a b) :
-    G.target.datum a = G.target.datum b := by
+theorem foldB_target_decoded (G : PlusSlicedCertificate Γ Del) {a b : ℤ} (h : G.FoldB a b) :
+    G.target.decoded a = G.target.decoded b := by
   rcases h with rfl | ⟨h1, h2, h3⟩
   · rfl
-  · rw [G.target.datum_neg h1, G.target.datum_neg h2]
+  · rw [G.target.decoded_neg h1, G.target.decoded_neg h2]
     exact @Periodic.cyc_congr _ G.target.inh _ _ _
       (emod_eq_of_dvd_of_emod_eq G.target_nb_dvd_NB h3)
 
