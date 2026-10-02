@@ -31,21 +31,38 @@
       "category": "TECHNIQUE",
       "source_artifact": "specs/708_relay_sliced_certificate_contract_to_model_checker/summaries/01_relay-sliced-certificate-contract-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["fully-qualified-name", "namespace-walk", "dangling-citation", "cross-repository-relay", "lean-citation"]
+      "suggested_keywords": [
+        "fully-qualified-name",
+        "namespace-walk",
+        "dangling-citation",
+        "cross-repository-relay",
+        "lean-citation"
+      ]
     },
     {
       "content": "Wire-format extension rule adopted from HOA's capitalised-header discipline: when extending a JSON certificate envelope with a new semantics-bearing key, OMIT the old key an unaware consumer would otherwise silently reinterpret (here: a sliced envelope carries `slices` and no `lassos`), and forbid both keys in one document. Both re-checkers (BimodalTools.CanonicalWire.decodeOptLassos and ModelChecker's raw.get(\"lassos\", [])) read an absent key as empty and reject structurally, so an old consumer fails loudly instead of checking the wrong object.",
       "category": "PATTERN",
       "source_artifact": "specs/708_relay_sliced_certificate_contract_to_model_checker/summaries/01_relay-sliced-certificate-contract-summary.md",
       "confidence": 0.8,
-      "suggested_keywords": ["wire-format", "strict-extension", "lassos", "HOA", "error-not-reinterpret", "certificate-envelope"]
+      "suggested_keywords": [
+        "wire-format",
+        "strict-extension",
+        "lassos",
+        "HOA",
+        "error-not-reinterpret",
+        "certificate-envelope"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1790958227_8d0c76",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 5,
     "phases_total": 5
   }

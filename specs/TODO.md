@@ -11,7 +11,7 @@ next_project_number: 716
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,704,705,706,708,710,711,713,714 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,704,705,706,710,711,713,714 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,709,712 | 298,464,502,563,710,711 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -70,7 +70,6 @@ next_project_number: 716
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 706 [RESEARCHED] — STATUS NOTE (2026-10-02): question Q6 of this task's report...
-708 [IMPLEMENTING] — STATUS NOTE ADDENDUM (2026-10-02, relay wording): the sliced...
 713 [NOT STARTED] — OPTIONAL, FILED NOT SCHEDULED. Nothing depends on this task...
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 709 [NOT STARTED] — STATUS NOTE (2026-10-02, SUPERSEDES THE HEADLINE BELOW -- the...
@@ -233,12 +232,13 @@ HARD CONSTRAINTS. Zero sorries, no new axioms, no vacuous placeholder definition
 ---
 
 ### 708. Relay sliced certificate contract to model checker
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: decidability
 - **Dependencies**: Task 703
 - **Research**: [708_relay_sliced_certificate_contract_to_model_checker/reports/01_relay-sliced-certificate-contract.md]
 - **Plan**: [708_relay_sliced_certificate_contract_to_model_checker/plans/01_relay-sliced-certificate-contract.md]
+- **Summary**: [708_relay_sliced_certificate_contract_to_model_checker/summaries/01_relay-sliced-certificate-contract-summary.md]
 
 **Description**: STATUS NOTE ADDENDUM (2026-10-02, relay wording): the sliced wire format is SOUND and is a strict extension of the lasso family, but it is SEMANTICALLY INCOMPLETE for L-plus, now machine-checked (specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean: not_sliced_complete, not_finite_width_fmp). The relay must therefore state that the never-report-validity discipline is PERMANENT for targets carrying stab -- not pending a proof, not an open question -- and must cite the witness Phi rather than an open question. The incompleteness is not a gap in the checker: it is the frame class, so no change to clauses, tails, windows or stability can rescue it. The stab-free flagship is unaffected and stays complete.
 

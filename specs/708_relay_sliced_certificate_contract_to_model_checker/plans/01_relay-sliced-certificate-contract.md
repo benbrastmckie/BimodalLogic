@@ -1,7 +1,7 @@
 # Implementation Plan: Task #708
 
 - **Task**: 708 - Relay the sliced certificate contract to the model checker
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: 703 (completed; the landed `PlusSlicedCertificate` tree is the source of truth). Soft: 710 (its probe is the citation source for the incompleteness result), 704 (gates the entry-219 non-vacuity wording), 712 (if it lands the probe's theorems as library declarations, the cited path moves)
 - **Research Inputs**: specs/708_relay_sliced_certificate_contract_to_model_checker/reports/01_relay-sliced-certificate-contract.md; specs/710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md (Recommendation 4, via the dispatch's STATUS NOTE ADDENDUM)
