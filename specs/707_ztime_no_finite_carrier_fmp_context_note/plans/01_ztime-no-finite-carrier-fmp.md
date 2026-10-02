@@ -362,12 +362,12 @@ label every source's fidelity.
 
 ---
 
-### Phase 5: Register, lint, commit in the source store, deploy, verify [NOT STARTED]
+### Phase 5: Register, lint, commit in the source store, deploy, verify [COMPLETED]
 
 **Goal**: Make the note discoverable and deployed, with concurrency-safe edits and staging.
 
 **Tasks**:
-- [ ] Re-read `/home/benjamin/.config/nvim/agent-system/extensions/formal/index-entries.json`
+- [x] Re-read `/home/benjamin/.config/nvim/agent-system/extensions/formal/index-entries.json`
   immediately before editing (sibling 708 has no declared scope; the `~/.config/nvim` tree is
   already dirty with other extensions' `index-entries.json` edits). Append ONE entry to its
   `entries` array, shaped exactly like the `frame-constraint-landscape.md` entry:
@@ -376,28 +376,28 @@ label every source's fidelity.
   `load_when.agents: ["logic-research-agent", "formal-research-agent"]`,
   `load_when.task_types: ["logic", "formal"]`, `domain: "project"`, `subdomain: "logic"`,
   `topics` (e.g. `ztime`, `finite-model-property`, `finite-carrier`, `finite-width`,
-  `sliced-certificate`, `quasimodel`, `koenig`). Validate with `python3 -m json.tool` or `jq .`.
-- [ ] Re-read `/home/benjamin/.config/nvim/agent-system/extensions/formal/context/project/logic/README.md`
+  `sliced-certificate`, `quasimodel`, `koenig`). Validate with `python3 -m json.tool` or `jq .`. *(completed)*
+- [x] Re-read `/home/benjamin/.config/nvim/agent-system/extensions/formal/context/project/logic/README.md`
   immediately before editing; add one line under "Domain Files" in the form of the
-  `frame-constraint-landscape.md` line.
-- [ ] Run `bash .claude/scripts/check-task-references.sh` on the note and on the README; fix
-  any hit by paraphrase or path citation.
-- [ ] In the source-store repository (`/home/benjamin/.config/nvim`), `git status --short` to
+  `frame-constraint-landscape.md` line. *(completed)*
+- [x] Run `bash .claude/scripts/check-task-references.sh` on the note and on the README; fix
+  any hit by paraphrase or path citation. *(completed)*
+- [x] In the source-store repository (`/home/benjamin/.config/nvim`), `git status --short` to
   see the foreign dirt, then stage ONLY the three files by explicit path
   (`git add -- <note> <index-entries.json> <README>`), review `git diff --staged`, and commit
   with a message naming the note (precedent: "Add lean, logic and literature context docs
   written from consumer-repo work"). Never `git add -A`, a directory, or `-am`; never
-  `git-snapshot.sh` in reverting mode.
-- [ ] Deploy once: `bash .claude/scripts/deploy-headless.sh` from the BimodalLogic root (the
+  `git-snapshot.sh` in reverting mode. *(completed)*
+- [x] Deploy once: `bash .claude/scripts/deploy-headless.sh` from the BimodalLogic root (the
   dispatch's deploy-freshness context already reports `core` and `memory` stale, so a full
-  redeploy is due regardless).
-- [ ] Verify the deployed copy: `.claude/context/project/logic/domain/ztime-no-finite-carrier-fmp.md`
+  redeploy is due regardless). *(completed)*
+- [x] Verify the deployed copy: `.claude/context/project/logic/domain/ztime-no-finite-carrier-fmp.md`
   exists and is byte-identical to the source (`cmp`); the entry appears in
   `.claude/context/index.json` (`grep ztime-no-finite-carrier-fmp`); the README line appears in
-  the deployed README.
-- [ ] In the BimodalLogic repository, nothing under `.claude/` is to be committed (gitignored
+  the deployed README. *(completed)*
+- [x] In the BimodalLogic repository, nothing under `.claude/` is to be committed (gitignored
   deploy artifact); the task's own commit covers `specs/707_.../` artifacts only, via the
-  sanctioned scoped-commit path.
+  sanctioned scoped-commit path. *(completed)*
 
 **Timing**: 1 hour
 
