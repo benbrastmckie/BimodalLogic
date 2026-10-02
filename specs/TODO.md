@@ -11,7 +11,7 @@ next_project_number: 716
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,704,705,706,710,711,713,714 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,705,706,710,711,713,714 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,709,712 | 298,464,502,563,710,711 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -100,10 +100,6 @@ next_project_number: 716
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
 711 [BLOCKED] — BLOCKED AND DELIBERATELY NOT SCHEDULED. This task exists to...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
-
-### Verification
-
-704 [IMPLEMENTING] — Two structural preventions against the class of defect the...
 
 ## Tasks
 
@@ -343,12 +339,13 @@ WHAT HAS CHANGED SINCE THIS TASK WAS FILED, and is more useful than any citation
 ---
 
 ### 704. Certificate non vacuity and shape gates
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: verification
 - **Dependencies**: Task 696, Task 703
 - **Research**: [704_certificate_non_vacuity_and_shape_gates/reports/01_certificate-non-vacuity-shape-gates.md]
 - **Plan**: [704_certificate_non_vacuity_and_shape_gates/plans/01_certificate-non-vacuity-shape-gates.md]
+- **Summary**: [704_certificate_non_vacuity_and_shape_gates/summaries/01_certificate-non-vacuity-shape-gates-summary.md]
 
 **Description**: Two structural preventions against the class of defect the L-plus completeness programme (tasks 695, 696, 699, 700, 703, 706) exists to remove, filed as one task because both are assertions in scripts/check-module-invariants.sh and splitting them would put two tasks on the same single file.
 

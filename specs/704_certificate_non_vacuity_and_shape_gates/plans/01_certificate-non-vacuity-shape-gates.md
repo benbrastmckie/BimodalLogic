@@ -1,7 +1,7 @@
 # Implementation Plan: Task #704
 
 - **Task**: 704 - Certificate non-vacuity and shape gates
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: 696 (completed), 703 (completed). NOT 706 (researched only; its refutations are unlanded, see Overview).
 - **Research Inputs**: specs/704_certificate_non_vacuity_and_shape_gates/reports/01_certificate-non-vacuity-shape-gates.md
