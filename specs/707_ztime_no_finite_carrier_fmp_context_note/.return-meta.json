@@ -1,45 +1,40 @@
 {
-  "status": "researched",
-  "agent_type": "general-research-agent",
-  "delegation_path": ["orchestrator", "research", "general-research-agent"],
-  "task_number": 707,
-  "session_id": "sess_1790948286_150db5_707",
-  "dispatch_seq": 3,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/707_ztime_no_finite_carrier_fmp_context_note/reports/01_ztime-no-finite-carrier-fmp.md",
-      "summary": "Locates and verifies every input for the ztime-no-finite-carrier-fmp context note: the sorry-free probe as source, the landed PlusSlicedCertificate embodiment of the design rule, GKWZ Thms 5.28/5.32 verified against the source PDF, HWZ quasimodel correspondence, Krommes FMP-vs-decidability, and the source-store/index/README mechanics for writing the note."
+      "type": "plan",
+      "path": "specs/707_ztime_no_finite_carrier_fmp_context_note/plans/01_ztime-no-finite-carrier-fmp.md",
+      "summary": "Five sequential phases (6h) to write, register, and deploy the ztime-no-finite-carrier-fmp.md context note in the formal extension source store, covering both the finite-carrier refutation (Probe706, theta) and the finite-width refutation (Probe710, Phi) with the strengthened design rule, the published counterpart (GKWZ/HWZ quasimodels), the FMP-failure-is-not-undecidability warning, and fidelity labels."
     }
   ],
+  "next_steps": "Run /implement 707 to execute the plan",
   "metadata": {
-    "findings_count": 17,
-    "gkwz_verification": "Thm 5.28 (p. 244) and Thm 5.32 (p. 246) verified against ~/Documents/literature-staging/gabbay_2003/*.pdf via pdftotext; Krommes's citation is correct",
-    "deliverable_target": "/home/benjamin/.config/nvim/agent-system/extensions/formal/context/project/logic/domain/ztime-no-finite-carrier-fmp.md (source store, not .claude/)"
+    "session_id": "sess_1790958227_8d0c76_707",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 6,
+    "dependency_waves": [[1], [2], [3], [4], [5]]
   },
   "memory_candidates": [
     {
-      "content": "GKWZ 2003 (Many-Dimensional Modal Logics) is indexed as an OCR-damaged extract with no PDF in its sources/ directory, but the global metadata.json names the staging PDF at ~/Documents/literature-staging/gabbay_2003/. `pdftotext -layout` on it reproduces theorem statements cleanly: Thm 5.27 (2-exponential abstract fmp for L x S5), Thm 5.28 (coN2EXPTIME, printed p. 244), Thm 5.32 (no product fmp for LogC x L with an ascending omega-type chain in C, printed p. 246), and the 'repeating finite pieces' passage on pp. 234/236. Proof formulas remain garbled; cite statements and figure captions only.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/707_ztime_no_finite_carrier_fmp_context_note/reports/01_ztime-no-finite-carrier-fmp.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["gkwz", "pdftotext", "literature-verification", "product-fmp", "many-dimensional"]
-    },
-    {
-      "content": "Failure of a finite model property for a frame class does not imply undecidability, and the distinction that matters is WHICH class: K4 x S5 lacks the product fmp (GKWZ 5.32) but has the 2-exponential abstract fmp (5.27), hence coN2EXPTIME (5.28) and EXPSPACE-complete (Krommes 2020 Thm 1.1). When validity is tied to one frame class with no abstract relaxation (as PlusValidZTime is to regular Z-frames), the published remedy is GKWZ's 'infinite models constructed from repeating finite pieces' -- the HWZ 2000 quasimodel: finite state candidates per time point, runs through them, splice lemma, ultimately periodic state function.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/707_ztime_no_finite_carrier_fmp_context_note/reports/01_ztime-no-finite-carrier-fmp.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["finite-model-property", "quasimodel", "decidability", "ztime", "certificate-design"]
-    },
-    {
-      "content": "A logic-domain context note for this repository is authored in the formal extension's source store (~/.config/nvim/agent-system/extensions/formal/context/project/logic/domain/), registered with one entry in that extension's index-entries.json (shape: path, summary, category 'domain', line_count, load_when.agents [logic-research-agent, formal-research-agent], load_when.task_types [logic, formal], domain 'project', subdomain 'logic', topics) and one README 'Domain Files' line, then redeployed with deploy-headless.sh. Writing under .claude/context/ directly is wiped at the next deploy. The note must not contain 'task N' phrasing, but specs/<NNN>_slug/ paths are permitted by the lint pattern.",
-      "category": "WORKFLOW",
-      "source_artifact": "specs/707_ztime_no_finite_carrier_fmp_context_note/reports/01_ztime-no-finite-carrier-fmp.md",
+      "content": "A logic-domain context note for this repository is a three-file deliverable in the formal extension SOURCE STORE (source_dir from .claude-extensions.json, currently /home/benjamin/.config/nvim/agent-system/extensions/formal): the note under context/project/logic/domain/, one entry appended to index-entries.json shaped like the frame-constraint-landscape.md entry (path, summary, category domain, line_count, load_when.agents [logic-research-agent, formal-research-agent], load_when.task_types [logic, formal], domain project, subdomain logic, topics), and one line under the logic README's Domain Files. Then deploy-headless.sh regenerates .claude/. The source store is its own git repo and is often dirty with sibling extensions' edits, so stage the three paths explicitly. The task-reference lint passes specs/NNN_... PATHS but fails 'task N' phrasing, so cite probes and reports by path.",
+      "category": "PATTERN",
+      "source_artifact": "specs/707_ztime_no_finite_carrier_fmp_context_note/plans/01_ztime-no-finite-carrier-fmp.md",
       "confidence": 0.75,
-      "suggested_keywords": ["context-note", "source-store", "index-entries", "formal-extension", "deploy"]
+      "suggested_keywords": ["context-note", "source-store", "index-entries", "deploy-headless", "logic-domain", "task-reference-lint"]
     }
   ],
-  "next_steps": "Run /plan 707 to create implementation plan",
-  "partial_progress": {"stage": "7", "note": "report written and validated; metadata final"}
+  "modified_files": [
+    "specs/707_ztime_no_finite_carrier_fmp_context_note/plans/01_ztime-no-finite-carrier-fmp.md",
+    "specs/707_ztime_no_finite_carrier_fmp_context_note/.return-meta.json",
+    "specs/707_ztime_no_finite_carrier_fmp_context_note/.orchestrator-handoff.json"
+  ],
+  "proposed_file_scope": [
+    "/home/benjamin/.config/nvim/agent-system/extensions/formal/context/project/logic/domain/ztime-no-finite-carrier-fmp.md",
+    "/home/benjamin/.config/nvim/agent-system/extensions/formal/index-entries.json",
+    "/home/benjamin/.config/nvim/agent-system/extensions/formal/context/project/logic/README.md"
+  ],
+  "dispatch_seq": 7
 }

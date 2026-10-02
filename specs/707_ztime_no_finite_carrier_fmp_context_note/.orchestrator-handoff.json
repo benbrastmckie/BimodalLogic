@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 7,
+  "summary": "Plan written: five sequential phases (6h) to draft the ztime-no-finite-carrier-fmp.md context note in the formal extension source store (carrier refutation, finite-width refutation with the strengthened rule, time-sliced graph diagnosis, published counterpart and not-undecidability warning, fidelity labels), then register it in index-entries.json and the logic README, lint for task references, commit the three source-store paths explicitly, and deploy.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/707_ztime_no_finite_carrier_fmp_context_note/plans/01_ztime-no-finite-carrier-fmp.md",
+      "summary": "Five-phase implementation plan for the Z-time no-finite-carrier / no-finite-width FMP context note."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch /implement 707; Phase 1 creates the note at the absolute source-store path named in the plan, never under .claude/."
+}

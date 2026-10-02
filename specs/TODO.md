@@ -78,7 +78,7 @@ next_project_number: 716
 
 ### Documentation
 
-707 [PLANNING] — STATUS NOTE (2026-10-02, the recorded design rule is...
+707 [PLANNED] — STATUS NOTE (2026-10-02, the recorded design rule is...
 
 ### Formula Refactor
 
@@ -269,11 +269,12 @@ LIMIT OF THE CERTIFYING LITERATURE, load-bearing for point (5): it is uniformly 
 ---
 
 ### 707. Ztime no finite carrier fmp context note
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: markdown
 - **Topic**: documentation
 - **Dependencies**: None
 - **Research**: [707_ztime_no_finite_carrier_fmp_context_note/reports/01_ztime-no-finite-carrier-fmp.md]
+- **Plan**: [707_ztime_no_finite_carrier_fmp_context_note/plans/01_ztime-no-finite-carrier-fmp.md]
 
 **Description**: STATUS NOTE (2026-10-02, the recorded design rule is NECESSARY BUT NOT SUFFICIENT): the note must gain a SECOND SECTION, 'finite width fails too'. The rule stated below -- a Z-time certificate class must present an infinite, finitely presented carrier, Z x Fin n with finite fibres, never a finite one via FrameOver.ofStep -- is correct as a NECESSARY condition but is NOW KNOWN NOT TO BE SUFFICIENT, and recording it alone would enshrine exactly the kind of stale design assumption this note exists to prevent. Machine-checked in specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean: not_finite_width_fmp shows NO class presenting finite per-time fibres is complete, whatever its clauses, and no_finite_width_sat/not_certifies refute the sliced class for full L-plus and for the CTL-like fragment via witness Phi := theta' and Box(stab Fp -> not stab not Xp). The obstruction is finite WIDTH (limit closure plus finite fibres contradicts Koenig), which is a different failure from the finite-CARRIER failure the note already records. The strengthened rule to record: a Z-time certificate class must present an infinite, finitely presented carrier AND, if its per-time fibres are finite, it is still incomplete for any target carrying stab; a successor class must present INFINITE fibres (root paths of a finite class graph), for which no checker precedent exists. Original description follows.
 
