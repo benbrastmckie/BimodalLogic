@@ -135,6 +135,17 @@
 #       every claimed clause kind is in the closure AND occupies a label of the witness --
 #       the clause AFFECTS the verdict, and the class is not inhabited by ANTECEDENT
 #       FAILURE alone. An ungated census prints at every run
+#   C37 CLAUSE-SHAPE CHECK: every def/abbrev/structure/class under the three certificate
+#       roots (PlusWitnessFamily/, PlusSlicedCertificate/, WitnessFamily/) whose
+#       COMMENT-MASKED body contains a biconditional has a reviewed row in
+#       scripts/clause-shape-allowlist.txt with verdict INTENDED | RESIDUAL | OUT-OF-SHAPE
+#       and a reason anchor that still resolves on the tree; an unlisted hit FAILS as
+#       unreviewed, a row with no hit FAILS as stale, a row whose anchor is gone FAILS --
+#       which is what turns a RESIDUAL row's reflexivity or residue declaration vanishing
+#       into a visible FAIL rather than a silent pass. The verdict is the recorded human
+#       judgement; the check asserts existence of hit, row and anchor, never the verdict.
+#       An ungated census (hits per root, verdict counts, reflexive-relation roster)
+#       prints at every run. Build-free, so it runs under --no-build and therefore in CI
 #   C9D Task-number citations under docs/ (enforced)
 #   INV Every `<!-- BEGIN GENERATED: inventory -->` block in the tree is current
 #
@@ -167,6 +178,7 @@
 #   scripts/c20-declaration-baseline.txt       recorded wrong-declaration citations still to repair (C20)
 #   references.bib                             the single bibliography every block-scoped key resolves in (C31)
 #   scripts/certificate-witness-inventory.txt  interesting-witness and coverage-limit rows per certificate class (C36)
+#   scripts/clause-shape-allowlist.txt         reviewed biconditional clauses under the certificate roots, with verdicts (C37)
 
 set -uo pipefail
 
@@ -804,6 +816,24 @@ ENFORCE_C35=${ENFORCE_C35:-1} # the generated citation manifest is byte-current 
 # to carry, or an unreadable C2/C14 baseline is a BROKEN MATCHER, not a clean tree -- exit 2, and
 # exit 2 is NOT suppressed by ENFORCE_C36=0.
 ENFORCE_C36=${ENFORCE_C36:-1} # every certificate class carries a pinned interesting witness (enforced)
+# C37 makes the COLLAPSING CLAUSE SHAPE impossible to reintroduce silently. Shape (S) is a
+# universally quantified biconditional under a reflexive relational guard whose left side does
+# not mention the bound variable -- `∀ x, R a x → (P ↔ Ψ(x))` with `R a a` -- so the instance
+# `x := a` collapses the clause to a triviality. That shape was landed and exploited in this
+# tree once: a certificate condition type-checked for months while certifying nothing. The
+# check is enumerate-and-allowlist BY DESIGN, because Shape-(S) membership is a hand judgement
+# the archived enumeration itself declined to mechanize: the mechanical assertions are the
+# existence of hit, row and anchor; the verdict column is the recorded review. A RESIDUAL
+# verdict is a record of a LIVE defect under separate repair -- the (C1') untl/snce conjuncts
+# over `trans`, reflexive by the skeleton field `trans_refl`, with the surviving agreement
+# recorded by `untl_succ_congr` / `snce_pred_congr` -- and flipping it to INTENDED requires those
+# residue declarations to be gone; the anchors are written so that removing either the
+# reflexivity or the residue makes the row stale and FAILS. This check never softens to quiet a
+# failure: the remedy for an unreviewed hit is a reviewed row, never an exemption. Shipped
+# enforced on the C24/C25/C26 precedent. Anti-silence: zero spans, zero hits, a missing or
+# empty allowlist, or a misjudged fixture is a BROKEN MATCHER -- exit 2, not suppressed by
+# ENFORCE_C37=0.
+ENFORCE_C37=${ENFORCE_C37:-1} # every biconditional clause under the certificate roots is reviewed (enforced)
 export ENFORCE_C34A ENFORCE_C34B
 # C16's second half widens the env_linter batch beyond the single `FormalSystem` library root to
 # every root declared in lakefile.toml -- the other library root and all fourteen `lean_exe`
@@ -6743,6 +6773,209 @@ else
   info C36b "skipped (--no-build)"
 fi
 rm -f "$C36_EVALS"
+echo
+
+# ---------------------------------------------------------------------------
+# C37: CLAUSE-SHAPE CHECK -- every biconditional clause under the certificate roots is reviewed
+#
+# See the ENFORCE_C37 paragraph above for Shape (S) and why this is enumerate-and-allowlist. The
+# matcher: every def/abbrev/structure/class span (via `decl_spans`) under the three roots whose
+# COMMENT-MASKED text (`lean_debug_artifacts.mask`: comments, docstrings, strings and char
+# literals blanked, line numbers preserved) contains `↔`. Theorems are not definitions and are
+# not hits: a biconditional STATED about a clause is not a clause.
+#
+# Anchors: a declaration name (found by `decl_spans` under FormalSystem/), a structure-field name
+# (`  name :` on a masked line), a file-qualified `<path>#<name>` resolved inside that file only,
+# or a file path on disk. Several anchors, comma-separated, must ALL resolve.
+#
+# Anti-silence (exit 2 in every mode, suppressed by no flag): zero live .lean files, zero spans,
+# zero hits, a missing or empty allowlist, or a misjudged fixture.
+# ---------------------------------------------------------------------------
+python3 - <<'C37EOF'
+import os, re, sys
+sys.path.insert(0, os.path.join("scripts", "lib"))
+from live_walk import live_files  # noqa: E402
+from lean_citations import decl_spans  # noqa: E402
+from lean_debug_artifacts import mask  # noqa: E402
+
+ALLOWLIST = "scripts/clause-shape-allowlist.txt"
+BASE = "FormalSystem/Metalogic/Decidability"
+ROOTS = [BASE + "/" + r for r in ("PlusWitnessFamily", "PlusSlicedCertificate", "WitnessFamily")]
+VERDICTS = ("INTENDED", "RESIDUAL", "OUT-OF-SHAPE")
+ENFORCE = os.environ.get("ENFORCE_C37", "1") == "1"
+KW = re.compile(r"^\s*(?:@\[[^\]]*\]\s*)*(?:private\s+|protected\s+|noncomputable\s+)*"
+                r"(def|abbrev|structure|class)\s+([A-Za-z_][\w.']*)")
+ANY_DECL = re.compile(r"^\s*(?:@\[[^\]]*\]\s*)*(?:private\s+|protected\s+|noncomputable\s+)*"
+                      r"(?:theorem|lemma|def|abbrev|instance|structure|class|inductive)\s+"
+                      r"([A-Za-z_][\w.']*)")
+FIELD = re.compile(r"^\s+([A-Za-z_][\w']*)\s*:(?!=)")
+REFL = re.compile(r"^theorem .*_refl'?\b|^@\[refl\]|\bReflexive\b")
+
+
+def hits_in(text):
+    """[(declaration, keyword line, first ↔ line)] for the masked def/abbrev/structure/class spans."""
+    lines = mask(text).split("\n")
+    out = []
+    for d in decl_spans(lines):
+        m = KW.match(lines[d.line - 1])
+        if not m:
+            continue
+        body = lines[d.line - 1:d.end]
+        iff = [i for i, l in enumerate(body) if "↔" in l]
+        if iff:
+            out.append((m.group(2), d.line, d.line + iff[0]))
+    return out
+
+
+_FIXTURES = [
+    ("def a (x y : Prop) : Prop := x ↔ y\n", ["a"]),
+    ("/-- a docstring mentioning p ↔ q -/\ndef b : Prop := True\n", []),
+    ("-- a line comment with ↔\ndef c : Prop := True\n", []),
+    ("theorem t (x : Prop) : x ↔ x := Iff.rfl\n", []),
+    ("structure S where\n  f : ∀ x : Nat, x = x → (True ↔ x = x)\n", ["S"]),
+    ("abbrev d : Prop := ∀ j, R i j → (P ↔ Q j)\n\ndef e : Nat := 0\n", ["d"]),
+    ("def s : String := \"↔\"\n", []),
+]
+bad = [(src, want, [h[0] for h in hits_in(src)]) for src, want in _FIXTURES
+       if [h[0] for h in hits_in(src)] != want]
+if bad:
+    print(f"FAIL  C37  fixture self-test: {len(bad)} fixture(s) misjudged")
+    for src, want, got in bad:
+        print(f"            {src.splitlines()[0][:60]!r}: expected {want}, got {got}")
+    sys.exit(2)
+
+# --- the allowlist ---
+if not os.path.isfile(ALLOWLIST):
+    print(f"FAIL  C37  missing {ALLOWLIST} (anti-silence guard)")
+    sys.exit(2)
+rows, malformed = [], []
+for n, raw in enumerate(open(ALLOWLIST, encoding="utf-8"), 1):
+    line = raw.rstrip("\n")
+    if not line.strip() or line.lstrip().startswith("#"):
+        continue
+    f = [x.strip() for x in line.split("|", 6)]
+    if len(f) != 7 or not all(f):
+        malformed.append((n, "a row needs 7 `|`-separated fields"))
+        continue
+    if f[3] not in VERDICTS:
+        malformed.append((n, f"verdict `{f[3]}` is not one of {', '.join(VERDICTS)}"))
+        continue
+    rows.append({"line": n, "path": f[0], "decl": f[1], "clause": f[2], "verdict": f[3],
+                 "guard": f[4], "anchors": [a.strip() for a in f[5].split(",") if a.strip()],
+                 "reason": f[6]})
+if not rows:
+    print(f"FAIL  C37  {ALLOWLIST} carries no row (anti-silence guard)")
+    sys.exit(2)
+
+# --- the scan ---
+scanned = spans = 0
+hits = {}           # (path, decl) -> (keyword line, ↔ line)
+per_root = {r: 0 for r in ROOTS}
+refl_roster = []
+for root in ROOTS:
+    for path in live_files(root, ".lean"):
+        try:
+            text = open(path, encoding="utf-8", errors="replace").read()
+        except OSError:
+            continue
+        scanned += 1
+        spans += len(decl_spans(mask(text).split("\n")))
+        for decl, kw, iff in hits_in(text):
+            hits[(path, decl)] = (kw, iff)
+            per_root[root] += 1
+        for l in text.split("\n"):
+            m = REFL.search(l)
+            if m:
+                name = re.search(r"theorem\s+([\w.']+)", l)
+                refl_roster.append(name.group(1) if name else l.strip()[:40])
+if scanned == 0 or spans == 0 or not hits:
+    print(f"FAIL  C37  the walk saw {scanned} file(s), {spans} span(s), {len(hits)} hit(s) "
+          "under the certificate roots -- silence, not a pass (anti-silence guard)")
+    sys.exit(2)
+
+# --- the anchor index: declarations and structure fields, everywhere under FormalSystem/ ---
+decl_at, field_at = {}, {}
+for path in live_files("FormalSystem", ".lean"):
+    try:
+        lines = mask(open(path, encoding="utf-8", errors="replace").read()).split("\n")
+    except OSError:
+        continue
+    for d in decl_spans(lines):
+        m = ANY_DECL.match(lines[d.line - 1])
+        if m:
+            decl_at.setdefault(m.group(1).rsplit(".", 1)[-1], set()).add(path)
+    for l in lines:
+        m = FIELD.match(l)
+        if m:
+            field_at.setdefault(m.group(1), set()).add(path)
+
+
+def resolves(anchor):
+    """(True, how) when the anchor is on the tree, else (False, why)."""
+    if "#" in anchor:
+        path, name = anchor.split("#", 1)
+        if not os.path.isfile(path):
+            return False, f"file {path} is not on the tree"
+        if path in decl_at.get(name, ()):
+            return True, "declaration"
+        if path in field_at.get(name, ()):
+            return True, "field"
+        return False, f"no declaration or field `{name}` in {path}"
+    if anchor.endswith(".lean") or anchor.endswith(".md"):
+        return (True, "file") if os.path.isfile(anchor) else (False, f"file {anchor} is not on the tree")
+    if anchor in decl_at:
+        return True, "declaration"
+    if anchor in field_at:
+        return True, "field"
+    return False, f"no declaration or field `{anchor}` under FormalSystem/"
+
+
+# --- census, ungated ---
+verdicts = {v: sum(1 for r in rows if r["verdict"] == v) for v in VERDICTS}
+print(f"INFO  C37  census: {len(hits)} biconditional-bearing definition(s) across {scanned} live "
+      f".lean file(s) ({spans} span(s)) -- "
+      + ", ".join(f"{os.path.basename(r)}/ {per_root[r]}" for r in ROOTS))
+print(f"            {len(rows)} reviewed row(s): " +
+      ", ".join(f"{verdicts[v]} {v}" for v in VERDICTS))
+print(f"            reflexive-relation roster under the roots: {len(refl_roster)} site(s) -- "
+      + ", ".join(sorted(set(refl_roster)))[:200])
+
+failed = []
+for n, why in malformed:
+    failed.append(f"{ALLOWLIST}:{n}: malformed row -- {why}")
+keyed = {(r["path"], r["decl"]) for r in rows}
+for (path, decl), (kw, iff) in sorted(hits.items()):
+    if (path, decl) not in keyed:
+        failed.append(f"unreviewed biconditional clause: {path}:{iff} in `{decl}` (keyword line "
+                      f"{kw}) has no row -- review it and add a verdict with an anchor")
+for r in rows:
+    if (r["path"], r["decl"]) not in hits:
+        failed.append(f"{ALLOWLIST}:{r['line']}: stale row -- `{r['decl']}` in {r['path']} is no "
+                      f"longer a biconditional-bearing definition (or the file moved)")
+    for a in r["anchors"]:
+        ok, how = resolves(a)
+        if not ok:
+            failed.append(f"{ALLOWLIST}:{r['line']}: anchor no longer on the tree -- {how}"
+                          + (" (a RESIDUAL row: re-review the verdict, do not just repoint it)"
+                             if r["verdict"] == "RESIDUAL" else ""))
+
+if failed:
+    print(f"FAIL  C37  {len(failed)} clause-shape problem(s)")
+    for line in failed[:20]:
+        print(f"            {line}")
+    sys.exit(1 if ENFORCE else 0)
+print(f"PASS  C37  all {len(hits)} biconditional-bearing definition(s) under the certificate roots "
+      f"are reviewed ({len(rows)} row(s): {verdicts['INTENDED']} INTENDED, "
+      f"{verdicts['RESIDUAL']} RESIDUAL, {verdicts['OUT-OF-SHAPE']} OUT-OF-SHAPE); every anchor resolves")
+sys.exit(0)
+C37EOF
+C37_STATUS=$?
+if [ "$C37_STATUS" -eq 2 ]; then
+  # An untrustworthy scan is an error in EVERY mode.
+  fail C37 "clause-shape scan could not be trusted (exit 2; not suppressed by ENFORCE_C37=0)"
+elif [ "$C37_STATUS" -ne 0 ]; then
+  FAILURES=$((FAILURES + 1))
+fi
 echo
 
 # ---------------------------------------------------------------------------

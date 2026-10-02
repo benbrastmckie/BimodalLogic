@@ -277,7 +277,7 @@ confirm by `sed -n '/<<.BASELINE./,/^BASELINE$/p' | grep -c depends`.
 
 ---
 
-### Phase 3: C36 -- NON-VACUITY and COVERAGE-LIMIT GUARD [IN PROGRESS]
+### Phase 3: C36 -- NON-VACUITY and COVERAGE-LIMIT GUARD [COMPLETED]
 
 **Goal**: Add the named non-vacuity gate with an explicit interesting-witness criterion, a
 `--no-build` structural half, a `RUN_BUILD=1` evaluative half, and a coverage-limit table that
@@ -363,7 +363,7 @@ and each expression by scratch-file `#eval` before committing the row.
 
 ---
 
-### Phase 4: C37 -- CLAUSE-SHAPE CHECK [NOT STARTED]
+### Phase 4: C37 -- CLAUSE-SHAPE CHECK [IN PROGRESS]
 
 **Goal**: Make the collapsing clause shape -- a universally quantified biconditional under a
 reflexive relational guard whose left side does not mention the bound variable -- impossible to
@@ -371,7 +371,7 @@ reintroduce silently, by enumerating every `↔`-bearing definition in the three
 trees against a reviewed allowlist whose anchors are re-verified on every run.
 
 **Tasks**:
-- [ ] Create `scripts/clause-shape-allowlist.txt`, header stating Shape (S) precisely (the
+- [x] Create `scripts/clause-shape-allowlist.txt`, header stating Shape (S) precisely (the
       archived enumeration's definition: `∀ x, R a x → (P ↔ Ψ(x))`, `R` reflexive at the
       instantiated argument, `P` not mentioning `x`), the verdict vocabulary, the admission
       bar (a new row needs a reason anchor that is a declaration name or a file path), and
@@ -387,8 +387,8 @@ trees against a reviewed allowlist whose anchors are re-verified on every run.
       rows (`BoxFaithful`, `BoxLabelFaithful`, `BoxLabelFaithfulWindow`, `BoxLiveFaithful`,
       `StabFaithful` in `Check.lean`), and the OUT-OF-SHAPE rows (`imp`/`box` conjuncts,
       `SlabTrue`, `AgreesOnState`, `impClauseAt`/`untlClauseAt`/`snceClauseAt`,
-      `Live.splice`).
-- [ ] C37 (Python heredoc, every mode): (i) walk the three roots
+      `Live.splice`). *(completed: 42 rows over the 30 definitions -- one row per clause; anchors may be comma-separated and file-qualified `path#name`, so each RESIDUAL row names its own side's `trans_refl` field and its residue declaration)*
+- [x] C37 (Python heredoc, every mode): (i) walk the three roots
       `FormalSystem/Metalogic/Decidability/{PlusWitnessFamily,PlusSlicedCertificate,WitnessFamily}/`
       via `live_walk`; (ii) recover declaration spans with `decl_spans`, mask comments and
       docstrings with `lean_debug_artifacts.mask`/`comments_only` so a `↔` in prose is not a
@@ -402,14 +402,14 @@ trees against a reviewed allowlist whose anchors are re-verified on every run.
       every run (C34 precedent): hit count per root, verdict counts, and the reflexive-relation
       roster recovered by the archived pass 3 (`_refl` theorem names, `@[refl]`, `Reflexive`)
       restricted to the three roots. Fixture self-test for the `↔`-under-mask matcher runs
-      first.
-- [ ] Add `ENFORCE_C37=${ENFORCE_C37:-1}` with its paragraph, header lines, and the
+      first. *(completed: census 30 hits = PlusWitnessFamily 10 / PlusSlicedCertificate 11 / WitnessFamily 9, exactly the F6 table; anchors resolve as declarations, structure fields or files)*
+- [x] Add `ENFORCE_C37=${ENFORCE_C37:-1}` with its paragraph, header lines, and the
       companion-file line. State in the paragraph that the RESIDUAL verdict is a record of a
       live defect under separate repair, that flipping it to INTENDED requires the residue
-      declarations to be gone, and that this check never softens to quiet a failure.
-- [ ] Run both modes; PASS. Negative tests (then revert): add a dummy `↔`-bearing `def` in a
+      declarations to be gone, and that this check never softens to quiet a failure. *(completed)*
+- [x] Run both modes; PASS. Negative tests (then revert): add a dummy `↔`-bearing `def` in a
       scratch copy of a root file -> FAIL unreviewed; change a row's anchor to a non-existent
-      name -> FAIL anchor.
+      name -> FAIL anchor. *(completed: ALL CHECKS PASSED; dummy def -> 'unreviewed biconditional clause', bad anchor -> 'anchor no longer on the tree', RESIDUAL anchor removed -> same with a re-review warning; all reverted)*
 
 **Timing**: 2 hours
 

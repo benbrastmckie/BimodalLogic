@@ -1,0 +1,91 @@
+# Clause-shape allowlist -- the companion file C37 (CLAUSE-SHAPE CHECK) reads.
+#
+# SHAPE (S), precisely. A definition contains Shape (S) when it has a subterm
+#     ∀ x, R a x → (P ↔ Ψ(x))
+# in which R is REFLEXIVE at the instantiated argument and P does NOT mention the bound x. Then
+# the instance x := a makes the right side collapse to a function of a alone, and the whole
+# biconditional degenerates: a clause of that shape quantifies over a relation and asserts
+# nothing the reflexive instance did not already assert. That collapse was once landed and
+# exploited in this tree -- a certificate condition type-checked for months while certifying
+# nothing -- and it is why this file exists. The sliced class's two-regime liveness condition is
+# a Finset equality, not a biconditional, and its box conditions' right-hand sides mention no
+# bound position; both are listed below so their shape is re-affirmed on every run.
+#
+# WHAT THE MECHANICAL CHECK ASSERTS, AND WHAT IT DOES NOT. C37 enumerates every def/abbrev/
+# structure/class under the three certificate roots (PlusWitnessFamily/, PlusSlicedCertificate/,
+# WitnessFamily/) whose COMMENT-MASKED body contains a biconditional, so a `↔` in prose is not a
+# hit. It asserts that every hit has a row here, that every row has a hit (a stale row is a
+# FAIL), and that every row's anchor still resolves on the tree. It does NOT decide Shape-(S)
+# membership: the VERDICT column is the recorded human judgement, made per clause, and the check
+# never infers one. An unlisted hit therefore FAILS as "unreviewed biconditional clause", and the
+# remedy is a reviewed row with a verdict and an anchor, never an exemption.
+#
+# VERDICTS.
+#   INTENDED      the biconditional is the intended congruence or faithfulness clause: either both
+#                 sides mention the bound variable (it IS the congruence), or the relation sits on
+#                 the RIGHT side rather than as a guard, or the guard is total and the right side
+#                 mentions no bound position
+#   RESIDUAL      Shape (S) is LIVE here: a biconditional under a reflexive guard whose left side
+#                 does not mention the bound variable. The row records a defect under separate
+#                 repair. Flipping a RESIDUAL row to INTENDED requires the residue declarations
+#                 named in its anchors to be GONE from the tree, and the anchors below are written
+#                 so that removing either the reflexivity or the residue makes the row stale --
+#                 a visible FAIL to update, never a silent pass
+#   OUT-OF-SHAPE  the biconditional has no relational guard at all, or its guard mentions the
+#                 formula on both sides; not an instance of (S)
+#
+# ADMISSION BAR. A new row needs a REASON ANCHOR that is a declaration name, a structure field
+# name, a file-qualified name (`<path>#<name>`, resolved inside that file only), or a file path --
+# never a task number or a specs/ path. Several anchors may be listed, comma-separated; ALL must
+# resolve. The reason column is prose for the reader; the check does not parse it.
+#
+# ROW GRAMMAR, `|`-separated:
+#   <path> | <declaration> | <clause, or -> | INTENDED|RESIDUAL|OUT-OF-SHAPE | <guard relation, or -> | <anchor(s)> | <reason>
+
+# --- PlusWitnessFamily/: the L-plus lasso family -------------------------------------------
+FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Predicates.lean | PlusAtomCoherent | atom | INTENDED | share u | share_refl | both sides mention the bound index: it is the atom congruence itself
+FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Predicates.lean | PlusLocalCoherentShare | imp | OUT-OF-SHAPE | - | FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Predicates.lean | one-position clause with no relational guard
+FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Predicates.lean | PlusLocalCoherentShare | box | OUT-OF-SHAPE | - | plusBox_const | reads the global box guess; no relational guard
+FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Predicates.lean | PlusLocalCoherentShare | untl | RESIDUAL | trans t | FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Basic.lean#trans_refl, untl_succ_congr | (C1') over trans, reflexive by the skeleton field; left side mentions no j; residue recorded by untl_succ_congr in Sharing/Agreement.lean; under separate repair
+FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Predicates.lean | PlusLocalCoherentShare | snce | RESIDUAL | trans (t - 1) | FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Basic.lean#trans_refl, snce_pred_congr | (C1') over trans flipped, reflexive by the skeleton field; left side mentions no k; residue recorded by snce_pred_congr; under separate repair
+FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Predicates.lean | PlusLocalCoherentLab | - | OUT-OF-SHAPE | - | FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Predicates.lean | imp and box clauses only; no relational guard
+FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Predicates.lean | PlusBoxFaithful | box | INTENDED | total | plusBox_const | guard is the total relation; right side mentions no bound index
+FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Predicates.lean | StabFaithful | stab | INTENDED | share u on the right | stabFamily_separates | (C5): the relation sits on the right side, not as a guard; separates stab-phi from phi
+FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Decide.lean | plusAtomClauseAt | atom | INTENDED | rp i = rp j | PlusAtomCoherent | decision mirror of the atom congruence
+FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Decide.lean | plusShareClauseAt | imp | OUT-OF-SHAPE | - | FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Decide.lean | one-position arm; no relational guard
+FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Decide.lean | plusShareClauseAt | box | OUT-OF-SHAPE | - | plusBox_const | reads the global box guess
+FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Decide.lean | plusShareClauseAt | untl | RESIDUAL | tt i j ∧ rp i = rp j | FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Basic.lean#trans_refl, untl_succ_congr | decision mirror of the (C1') untl conjunct; tracks that row's verdict
+FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Decide.lean | plusShareClauseAt | snce | RESIDUAL | tm k i ∧ rt k = rt i | FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Basic.lean#trans_refl, snce_pred_congr | decision mirror of the (C1') snce conjunct; tracks that row's verdict
+FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Decide.lean | stabClauseAt | stab | INTENDED | share on the right | StabFaithful | decision mirror of (C5)
+FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Decide.lean | plusBoxClause | box | INTENDED | total | plusBox_const | decision mirror of the box-faithfulness clause
+FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Types.lean | PlusLocalCoherentSeqLab | - | OUT-OF-SHAPE | - | FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Types.lean | imp and box clauses over a sequence label; no relational guard
+
+# --- PlusSlicedCertificate/: the time-sliced L-plus certificate ---------------------------
+FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Basic.lean | BoxFaithful | box | INTENDED | total over (t, w) | plusBox_const | (C3) record only, not a conjunct of Certifies; right side mentions no bound position
+FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Basic.lean | BoxLabelFaithful | box | INTENDED | total over (t, w) | plusBox_const | (C3b): right side is bx chi, mentioning no position
+FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Basic.lean | BoxLabelFaithfulWindow | box | INTENDED | total over the window | plusBox_const | window-decided form of (C3b)
+FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean | StabFaithful | stab | INTENDED | liveAt t, p.1 = w on the right | stab_factors | (C5) on live positions: the relation sits on the right side; justified by the Q5 factorization
+FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean | BoxLiveFaithful | box | INTENDED | total over window times and live positions | plusBox_const | left side is bx chi, mentioning no position
+FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Complete.lean | SlabTrue | - | OUT-OF-SHAPE | - | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Complete.lean | hypothesis of the completeness direction; relates the labelling to truth, no relational guard
+FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Position.lean | AgreesOnState | - | OUT-OF-SHAPE | IsStateShape psi | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Position.lean | guard is a shape predicate on the formula, which both sides mention
+FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Position.lean | impClauseAt | imp | OUT-OF-SHAPE | - | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Position.lean | one-step Bool clause; no relational guard
+FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Position.lean | untlClauseAt | untl | OUT-OF-SHAPE | - | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Position.lean | one-step Bool clause between two given positions; no quantified guard
+FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Position.lean | snceClauseAt | snce | OUT-OF-SHAPE | - | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Position.lean | one-step Bool clause between two given positions; no quantified guard
+FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Live.lean | splice | imp | OUT-OF-SHAPE | - | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Live.lean | label-level splice's imp clause; no relational guard
+
+# --- WitnessFamily/: the Formula-side families ----------------------------------------------
+FormalSystem/Metalogic/Decidability/WitnessFamily/Predicates.lean | LocalCoherentLab | - | OUT-OF-SHAPE | - | FormalSystem/Metalogic/Decidability/WitnessFamily/Predicates.lean | imp and box clauses only; no relational guard
+FormalSystem/Metalogic/Decidability/WitnessFamily/Predicates.lean | BoxFaithful | box | INTENDED | total | plusBox_const | guard is the total relation; right side mentions no bound index (Formula-side restriction of the L-plus fact)
+FormalSystem/Metalogic/Decidability/WitnessFamily/Decide.lean | labClauseAt | - | OUT-OF-SHAPE | - | FormalSystem/Metalogic/Decidability/WitnessFamily/Decide.lean | decision mirror of LocalCoherentLab
+FormalSystem/Metalogic/Decidability/WitnessFamily/Decide.lean | boxClause | box | INTENDED | total | plusBox_const | decision mirror of BoxFaithful
+FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Types.lean | LocalCoherentSeqLab | - | OUT-OF-SHAPE | - | FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Types.lean | imp and box clauses over a sequence label; no relational guard
+FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Predicates.lean | AtomCoherent | atom | INTENDED | share u | share_refl | both sides mention the bound index: it is the atom congruence itself
+FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Predicates.lean | LocalCoherentShare | imp | OUT-OF-SHAPE | - | FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Predicates.lean | one-position clause with no relational guard
+FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Predicates.lean | LocalCoherentShare | box | OUT-OF-SHAPE | - | plusBox_const | reads the global box guess
+FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Predicates.lean | LocalCoherentShare | untl | RESIDUAL | trans t | FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Basic.lean#trans_refl, untl_succ_congr | Formula-side twin of the (C1') untl conjunct over trans; residue untl_succ_congr; under separate repair
+FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Predicates.lean | LocalCoherentShare | snce | RESIDUAL | trans (t - 1) | FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Basic.lean#trans_refl, snce_pred_congr | Formula-side twin of the (C1') snce conjunct; residue snce_pred_congr; under separate repair
+FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Decide.lean | atomClauseAt | atom | INTENDED | rt i = rt j | AtomCoherent | decision mirror of the atom congruence
+FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Decide.lean | shareClauseAt | imp | OUT-OF-SHAPE | - | FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Decide.lean | one-position arm; no relational guard
+FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Decide.lean | shareClauseAt | box | OUT-OF-SHAPE | - | plusBox_const | reads the global box guess
+FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Decide.lean | shareClauseAt | untl | RESIDUAL | tt i j ∧ rp i = rp j | FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Basic.lean#trans_refl, untl_succ_congr | decision mirror of the Formula-side (C1') untl conjunct
+FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Decide.lean | shareClauseAt | snce | RESIDUAL | tm k i ∧ rt k = rt i | FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Basic.lean#trans_refl, snce_pred_congr | decision mirror of the Formula-side (C1') snce conjunct
