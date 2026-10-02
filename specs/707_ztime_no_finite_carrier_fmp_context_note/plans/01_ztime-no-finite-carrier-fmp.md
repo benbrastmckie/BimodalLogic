@@ -198,51 +198,51 @@ a note under 150 or over 350 lines is a signal to re-check that nothing was drop
 
 ---
 
-### Phase 2: The finite-width section ("finite width fails too") [NOT STARTED]
+### Phase 2: The finite-width section ("finite width fails too") [COMPLETED]
 
 **Goal**: Add the second machine-checked refutation, from the 710 probe, and state the
 strengthened rule so that the carrier rule is never recorded alone.
 
 **Tasks**:
-- [ ] Re-read the probe's header (lines 1-41) and closing declarations (lines 1105-1172) of
+- [x] Re-read the probe's header (lines 1-41) and closing declarations (lines 1105-1172) of
   `specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean`
-  immediately before writing; transcribe statement shapes, not the proofs.
-- [ ] Section *Finite width fails too*: the witness `Φ := θ' ∧ □(⊡Fp → ¬⊡¬Xp)` with
+  immediately before writing; transcribe statement shapes, not the proofs. *(completed)*
+- [x] Section *Finite width fails too*: the witness `Φ := θ' ∧ □(⊡Fp → ¬⊡¬Xp)` with
   `Xp := ⊥ U p`, in the CTL-like fragment; the reading of the new conjunct (at every *pre*
-  state, some history reaches `p` at the very next time).
-- [ ] The declarations, in a table: `Probe710.not_plusValidZTime_neg_Φ` (positive half, on a
+  state, some history reaches `p` at the very next time). *(completed)*
+- [x] The declarations, in a table: `Probe710.not_plusValidZTime_neg_Φ` (positive half, on a
   countable, finitely branching, time-homogeneous frame with carrier
   `Node = {pre k} ∪ {x k} ∪ {post k j}`); `no_finite_width_sat` (no model on
   `FrameOver.ofSlicedStep R fwd bwd` with `[Finite W]` satisfies `Φ` anywhere);
   `not_certifies` (no `PlusSlicedCertificate [] [Φ.neg]` certifies); `not_sliced_complete` (the
   time-sliced class is incomplete for L⁺); `not_finite_width_fmp` (no class presenting finite
   per-time fibres is complete, whatever its clauses). Axioms `[propext, Classical.choice,
-  Quot.sound]`, zero `sorry`, compile command `lake env lean <probe path>`.
-- [ ] The argument sketch in the probe's order: every state is `p`, *pre*, or *post*;
+  Quot.sound]`, zero `sorry`, compile command `lake env lean <probe path>`. *(completed)*
+- [x] The argument sketch in the probe's order: every state is `p`, *pre*, or *post*;
   predecessors of a `p` state are pre, so `D` forces `p` states at every time `≤ a`; successors
   of `p` or post states are post; a post state has no infinite backward post-path (pasted with
   any forward path it is a `p`-free history, contradicting A'); with finitely many predecessors
   per state, backward post-chains into any post state are bounded (König); but forward
   post-chains from the `p` states at times `a - n - 1` reach time `a` as backward post-chains of
-  every length `n`, and the fibre at `a` is finite — pigeonhole.
-- [ ] One paragraph contrasting the two obstructions: the carrier failure is about the SIZE of
+  every length `n`, and the fibre at `a` is finite — pigeonhole. *(completed)*
+- [x] One paragraph contrasting the two obstructions: the carrier failure is about the SIZE of
   the carrier (a finite graph can never host a countermodel to `θ.neg`); the width failure is
   about limit closure plus finite FIBRES (a countermodel to `Φ.neg` can be countable and finitely
   branching, as the positive half shows, but must have infinitely many states at some time).
   The second is strictly stronger for certificate design: `ℤ × Fin n` satisfies the carrier rule
-  and still fails.
-- [ ] The strengthened rule, in capitals: a ℤ-time certificate class must present an infinite,
+  and still fails. *(completed)*
+- [x] The strengthened rule, in capitals: a ℤ-time certificate class must present an infinite,
   finitely presented carrier AND, if its per-time fibres are finite, it is still incomplete for
   any target carrying `⊡` (`stab`); a successor class must present INFINITE fibres (root paths of
   a finite class graph), for which no checker precedent exists. Record that the stab-free
   flagship is unaffected and that decidability of full L⁺ ℤ-time validity does not follow by the
-  sliced route.
-- [ ] Add the back-reference from the Phase 1 design-rule section (the "necessary, not
-  sufficient" sentence) if it was left as a placeholder.
+  sliced route. *(completed)*
+- [x] Add the back-reference from the Phase 1 design-rule section (the "necessary, not
+  sufficient" sentence) if it was left as a placeholder. *(completed)*
 - [ ] Optional spot-check, only if time permits and no build is already running on the tree
   (territory note): `lake env lean specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean`
   from the repository root, expecting four `#print axioms` lines and no `sorry` warning. Do not
-  treat a failure as this task's regression; report it.
+  treat a failure as this task's regression; report it. *(deviation: skipped — the operator forbids Lean builds in this dispatch; the probe is cited, not compiled)*
 
 **Timing**: 1 hour
 
