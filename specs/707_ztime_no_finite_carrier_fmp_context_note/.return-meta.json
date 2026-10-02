@@ -1,0 +1,45 @@
+{
+  "status": "researched",
+  "agent_type": "general-research-agent",
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "task_number": 707,
+  "session_id": "sess_1790948286_150db5_707",
+  "dispatch_seq": 3,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/707_ztime_no_finite_carrier_fmp_context_note/reports/01_ztime-no-finite-carrier-fmp.md",
+      "summary": "Locates and verifies every input for the ztime-no-finite-carrier-fmp context note: the sorry-free probe as source, the landed PlusSlicedCertificate embodiment of the design rule, GKWZ Thms 5.28/5.32 verified against the source PDF, HWZ quasimodel correspondence, Krommes FMP-vs-decidability, and the source-store/index/README mechanics for writing the note."
+    }
+  ],
+  "metadata": {
+    "findings_count": 17,
+    "gkwz_verification": "Thm 5.28 (p. 244) and Thm 5.32 (p. 246) verified against ~/Documents/literature-staging/gabbay_2003/*.pdf via pdftotext; Krommes's citation is correct",
+    "deliverable_target": "/home/benjamin/.config/nvim/agent-system/extensions/formal/context/project/logic/domain/ztime-no-finite-carrier-fmp.md (source store, not .claude/)"
+  },
+  "memory_candidates": [
+    {
+      "content": "GKWZ 2003 (Many-Dimensional Modal Logics) is indexed as an OCR-damaged extract with no PDF in its sources/ directory, but the global metadata.json names the staging PDF at ~/Documents/literature-staging/gabbay_2003/. `pdftotext -layout` on it reproduces theorem statements cleanly: Thm 5.27 (2-exponential abstract fmp for L x S5), Thm 5.28 (coN2EXPTIME, printed p. 244), Thm 5.32 (no product fmp for LogC x L with an ascending omega-type chain in C, printed p. 246), and the 'repeating finite pieces' passage on pp. 234/236. Proof formulas remain garbled; cite statements and figure captions only.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/707_ztime_no_finite_carrier_fmp_context_note/reports/01_ztime-no-finite-carrier-fmp.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["gkwz", "pdftotext", "literature-verification", "product-fmp", "many-dimensional"]
+    },
+    {
+      "content": "Failure of a finite model property for a frame class does not imply undecidability, and the distinction that matters is WHICH class: K4 x S5 lacks the product fmp (GKWZ 5.32) but has the 2-exponential abstract fmp (5.27), hence coN2EXPTIME (5.28) and EXPSPACE-complete (Krommes 2020 Thm 1.1). When validity is tied to one frame class with no abstract relaxation (as PlusValidZTime is to regular Z-frames), the published remedy is GKWZ's 'infinite models constructed from repeating finite pieces' -- the HWZ 2000 quasimodel: finite state candidates per time point, runs through them, splice lemma, ultimately periodic state function.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/707_ztime_no_finite_carrier_fmp_context_note/reports/01_ztime-no-finite-carrier-fmp.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["finite-model-property", "quasimodel", "decidability", "ztime", "certificate-design"]
+    },
+    {
+      "content": "A logic-domain context note for this repository is authored in the formal extension's source store (~/.config/nvim/agent-system/extensions/formal/context/project/logic/domain/), registered with one entry in that extension's index-entries.json (shape: path, summary, category 'domain', line_count, load_when.agents [logic-research-agent, formal-research-agent], load_when.task_types [logic, formal], domain 'project', subdomain 'logic', topics) and one README 'Domain Files' line, then redeployed with deploy-headless.sh. Writing under .claude/context/ directly is wiped at the next deploy. The note must not contain 'task N' phrasing, but specs/<NNN>_slug/ paths are permitted by the lint pattern.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/707_ztime_no_finite_carrier_fmp_context_note/reports/01_ztime-no-finite-carrier-fmp.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["context-note", "source-store", "index-entries", "formal-extension", "deploy"]
+    }
+  ],
+  "next_steps": "Run /plan 707 to create implementation plan",
+  "partial_progress": {"stage": "7", "note": "report written and validated; metadata final"}
+}

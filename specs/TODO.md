@@ -78,7 +78,7 @@ next_project_number: 716
 
 ### Documentation
 
-707 [RESEARCHING] — Write...
+707 [RESEARCHED] — Write...
 
 ### Formula Refactor
 
@@ -255,10 +255,11 @@ LIMIT OF THE CERTIFYING LITERATURE, load-bearing for point (5): it is uniformly 
 ---
 
 ### 707. Ztime no finite carrier fmp context note
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: markdown
 - **Topic**: documentation
 - **Dependencies**: None
+- **Research**: [707_ztime_no_finite_carrier_fmp_context_note/reports/01_ztime-no-finite-carrier-fmp.md]
 
 **Description**: Write context/project/logic/domain/ztime-no-finite-carrier-fmp.md recording that the finite-carrier finite model property FAILS for L and L-plus over Z-time, so the fact is never rediscovered a third time.
 
