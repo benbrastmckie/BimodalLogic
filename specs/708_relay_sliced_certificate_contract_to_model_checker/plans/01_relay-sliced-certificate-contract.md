@@ -373,34 +373,34 @@ casting the incompleteness result in HWZ terms.
 
 ---
 
-### Phase 5: Close the deliverable, re-check citations, and confirm the boundary [IN PROGRESS]
+### Phase 5: Close the deliverable, re-check citations, and confirm the boundary [COMPLETED]
 
 **Goal**: Add the amendment index and five-point disposition tables, re-run the dangling-citation
 checks over the written text, confirm nothing outside `specs/708_*/` changed here and nothing
 changed in the paired repository, and finish the summary.
 
 **Tasks**:
-- [ ] Add `## Amendment index` (the report's F6 as a table, updated for the incompleteness
+- [x] Add `## Amendment index` (the report's F6 as a table, updated for the incompleteness
       result): paired artifact, current state, amendment, kind (confirm / correct / introduce),
-      pointing at the section of this summary that carries the text.
-- [ ] Add `## Disposition of the five filed points`: (1) confirm, (2) holds with exact shapes,
+      pointing at the section of this summary that carries the text. *(completed)*
+- [x] Add `## Disposition of the five filed points`: (1) confirm, (2) holds with exact shapes,
       (3) holds with the `⊡`-free half now a theorem, (4) superseded by the landed `TailStable`,
-      (5) confirm — and now permanent, by `Φ`. One row each, with the load-bearing declaration.
-- [ ] Re-run the dangling-citation check over the summary's own text: extract every backticked
+      (5) confirm — and now permanent, by `Φ`. One row each, with the load-bearing declaration. *(completed)*
+- [x] Re-run the dangling-citation check over the summary's own text: extract every backticked
       identifier that looks like a Lean name (`grep -oE` on `[A-Za-z_][A-Za-z0-9_.₀-₉'Φ]*` inside
       backticks, filtered to names containing a dot or starting with a known namespace) and grep
       each against `FormalSystem/`, `BimodalTools/` and the 710 probe for a declaration site;
-      record the table; every name must resolve except `exists_tailStable_repr`, which must not.
-- [ ] Re-run the paired-repository anchor checks from Phase 1 and record any drift since Phase 1.
-- [ ] Confirm the boundary: `git status --porcelain` here shows changes only under
+      record the table; every name must resolve except `exists_tailStable_repr`, which must not. *(completed)*
+- [x] Re-run the paired-repository anchor checks from Phase 1 and record any drift since Phase 1. *(completed)*
+- [x] Confirm the boundary: `git status --porcelain` here shows changes only under
       `specs/708_relay_sliced_certificate_contract_to_model_checker/`; `git -C
       /home/benjamin/Projects/ModelChecker status --porcelain` is byte-identical to Phase 1's
       recording; `git -C /home/benjamin/Projects/ModelChecker log -1 --format=%H` equals Phase
-      1's recording. Record all three in the Verification Snapshot.
-- [ ] Complete the summary's standard closing sections (what was done, what was deferred with
+      1's recording. Record all three in the Verification Snapshot. *(completed)*
+- [x] Complete the summary's standard closing sections (what was done, what was deferred with
       owner named — the `BimodalTools/README.md` note, the probe's library landing, the entry-219
       gate on 704 — and the handoff note that the relay is ready to file by hand on the paired
-      side).
+      side). *(completed)*
 
 **Timing**: 0.5 hours
 
@@ -419,19 +419,19 @@ changed in the paired repository, and finish the summary.
 
 ## Testing & Validation
 
-- [ ] The 710 probe compiles at HEAD after a full `lake build` (exit 0, zero `sorry`); the five
-      theorem names are present; `#print axioms` output recorded.
-- [ ] Every fully qualified Lean name in the summary resolves to a declaration site in the live
-      tree, except `exists_tailStable_repr`, which resolves to none.
-- [ ] Every paired-repository entry, row and section the summary names exists in the live paired
-      tree at the SHA recorded in the Verification Snapshot.
-- [ ] The summary contains no numeric bound on `n`, no "pending a proof" or "until a finite model
+- [x] The 710 probe compiles at HEAD after a full `lake build` (exit 0, zero `sorry`); the five
+      theorem names are present; `#print axioms` output recorded. *(completed)*
+- [x] Every fully qualified Lean name in the summary resolves to a declaration site in the live
+      tree, except `exists_tailStable_repr`, which resolves to none. *(completed)*
+- [x] Every paired-repository entry, row and section the summary names exists in the live paired
+      tree at the SHA recorded in the Verification Snapshot. *(completed)*
+- [x] The summary contains no numeric bound on `n`, no "pending a proof" or "until a finite model
       property is proved" wording about `⊡` targets, no attribution of the tail condition to HWZ
-      Def 20, and no attribution of "ultimately periodic" to Biere et al.
-- [ ] A sliced envelope in the §6.1 block carries no `lassos` key, and the prohibition on both
-      keys in one document is stated.
-- [ ] `git status --porcelain` in this repository shows only `specs/708_*/` paths; the paired
-      repository's `status --porcelain` and `HEAD` are unchanged between Phase 1 and Phase 5.
+      Def 20, and no attribution of "ultimately periodic" to Biere et al. *(completed)*
+- [x] A sliced envelope in the §6.1 block carries no `lassos` key, and the prohibition on both
+      keys in one document is stated. *(completed)*
+- [x] `git status --porcelain` in this repository shows only `specs/708_*/` paths; the paired
+      repository's `status --porcelain` and `HEAD` are unchanged between Phase 1 and Phase 5. *(completed)*
 
 ## Artifacts & Outputs
 

@@ -1,10 +1,10 @@
 # Implementation Summary: Task #708
 
 - **Task**: 708 - Relay the sliced certificate contract to the model checker
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Started**: 2026-10-02T16:49:35Z
-- **Completed**: (pending)
-- **Effort**: (pending)
+- **Completed**: 2026-10-02T17:04:17Z
+- **Effort**: ~30 minutes wall-clock in one dispatch (plan estimate 5.5 hours); full `lake build` plus probe compile included
 - **Dependencies**: 703 (`completed`, 2026-10-02T08:54:27Z — the landed `PlusSlicedCertificate` tree is the source of truth). Soft: 710 (`researched`; its probe is the citation source for the incompleteness result), 704 (`planned`; gates the entry-219 non-vacuity wording), 712 (`blocked`; if it lands the probe's theorems as library declarations, the cited path moves)
 - **Artifacts**: plans/01_relay-sliced-certificate-contract.md, reports/01_relay-sliced-certificate-contract.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md, no-task-references-in-deliverables.md
@@ -162,6 +162,19 @@ model property is proved" to **permanent**; (ii) two cited names were corrected 
 forms (table above); (iii) the paired repository's entry 200 and THEORY-LIMITS header turned out
 still to carry their pre-701 text, so the entry-200 replacement below is written against the live
 entry and absorbs 701's corrections rather than assuming they were applied.
+
+### Phase 5 re-check (after all relay text was written)
+
+| Check | Result |
+|---|---|
+| ModelChecker HEAD | `3d29069e55cfdc871414fe85cddb3c5573fce9aa` — **identical** to Phase 1. |
+| ModelChecker `git status --porcelain` | ` M specs/events.jsonl` — **byte-identical** to Phase 1 (md5 `157716347b0c07fdd3fc34eda38a67d3` both times). Nothing in that repository was written by this task. |
+| Entry 200 / 219 status | `blocked` / `completed`, same `last_updated` as Phase 1; TODO.md headings still at lines 641 / 145. |
+| ADEQUACY.md anchors | §6.1 line 444; rows A0-A3 lines 632-636; (iii-a) 709; (iii-e) 729; §7.4 869; no §7.5. **No drift.** |
+| TRUST_PIPELINE.md anchors | table row 310; section 330; "re-proving Lemma 2" 347; "paper-level only" 357; honest-ceiling item 3 at 374. **No drift.** |
+| SEARCH_COVERAGE.md §3/§4; SETTINGS.md divisibility; `certificate.py:563`; `ARCHITECTURE.md:263` (D8); `examples.py:1335` | All at the same lines as Phase 1. **No drift.** |
+| Repo-wide zero-hit greps | `tail.{0,3}stab` 0; `Hanoi\|\bHOA\b` 0; `sliced\|time-slice` 0; `finite.graph` 0 — unchanged. |
+| BimodalLogic boundary | `git status --porcelain` here, at close: this task's own `specs/708_*/{.return-meta.json,summaries/01_*.md}`; the concurrently dispatched sibling task 707's `specs/707_*/{.orchestrator-handoff.json,.return-meta.json}` (its in-flight protocol files; its five phase commits `b038b566a`…`3c2464944` interleave with this task's four in `git log` and touch only its declared scope); and `specs/TODO.md`, `specs/state.json`, `specs/events.jsonl` — the orchestrator's preflight/event writes, present before Phase 1. No path outside `specs/` was modified by this task at any point; every source file read was read with `sed`/`grep`/`cat` only, and `lake build` wrote only to `.lake/`. |
 
 ## ModelChecker entry 200 — ready-to-file replacement paragraphs
 
@@ -829,3 +842,116 @@ refuted. That literature therefore informs the wire-format decision above and po
 says nothing about point (5): it licenses no weakening of the never-report-validity discipline,
 which this relay states as permanent for `⊡`-targets on the strength of the probe, not of any
 published result.
+
+## Amendment index
+
+The research report's F6, updated for the machine-checked incompleteness result and pointing at the
+section of this summary that carries each ready-to-file text.
+
+| Paired artifact | Current state (live, 2026-10-02) | Amendment | Kind | Carried in |
+|---|---|---|---|---|
+| `specs/TODO.md` entry 200, `description` | Pre-701 text: 696 `implementing`, 703 `not_started`, expects "a compression bound" and "the branching structure", "no L-plus compression subtree", three retired theorem names | Full replacement `description`: 703 completed; `PlusSlicedCertificate` with its nine-conjunct `Certifies`, soundness, relative completeness, embedding; strict wire extension; `(n, nb, nm, nf)` with no bound on `n`; tail-stability as new criterion; **incompleteness by `Φ`, permanent D8** for `⊡`-targets; disposition offered as a recommendation | correct + introduce | "ModelChecker entry 200" |
+| `specs/TODO.md` entry 219 / `examples.py` THEORY-LIMITS header | Limit (b) wording; FACT 2 cites three retired names | Cite `PlusSlicedCertificate`, non-vacuous on `⊡`-free targets by the embedding theorem; `⊡` non-vacuity conditional on `certificate_non_vacuity_and_shape_gates`; record `Φ.neg` as a limit of a stronger kind than (b) | correct (citations) + introduce (new kind), gated | "ModelChecker entry 219" |
+| `docs/ADEQUACY.md` row **A3** | L bound; "live and open at A1's scope" | Appended L⁺ note: bound shape `(n, nb, nm, nf)`, `n` unbounded and never set from a formula; L row stands for `⊡`-free targets | correct (shape) | "ADEQUACY.md — row A3 and §7.1(iii-e)" |
+| `docs/ADEQUACY.md` §7.1(iii-e) | "upstream bound is a single `n` over all three segments" | Rewritten bullet: fragment-dependent shape; divisibility caveat carries to `nb`/`nf`; common-period subtlety under embedding; no sliced-tail restatement of the L bound | correct | same |
+| `docs/ADEQUACY.md` §6.1 | Lasso envelope, six frozen names | New §6.1.1: the sliced envelope (`target, bx, n, slices, path`), `stab` formula tag, **no `lassos` key**, both keys forbidden; proposed and unshipped by both sides | introduce | "ADEQUACY.md — §6.1 sliced envelope" |
+| `docs/ADEQUACY.md` new §7.5 (or row A4) | No tail-stability concept anywhere (0 hits) | Tail-stability item: what the checker computes, the demand, why needed, two failure modes and who repairs each, what is not promised, embedded case, representability vs. tail-stability | **introduce** (changes accept/reject logic) | "ADEQUACY.md — new tail-stability item" |
+| `docs/ADEQUACY.md` §7.4 | Grounds (i), (ii) | One added paragraph: ground (i) is permanent for `⊡`-targets by `Probe710.not_sliced_complete` / `not_finite_width_fmp`; empty search at any tuple licenses nothing, now and after any bound on `n` | confirm + sharpen | "ADEQUACY.md — §7.4" |
+| `docs/ADEQUACY.md` rows A0, A1, A1-Γ, A2; §7.1(iii-a); `SEARCH_COVERAGE.md`; `SETTINGS.md` caveat | — | Unchanged; one note that pre-period absorption is a `mid` increase composing with the sweep | confirm | "ADEQUACY.md and SEARCH_COVERAGE.md — unchanged" |
+| `docs/TRUST_PIPELINE.md` "The stability modal" + table row + honest-ceiling item 3 | "Blocked on four Lean-side results"; "requires re-proving Lemma 2 and redesigning (C3)"; decidability "paper-level only"; item 3 "open, but routed" | Rewrite: histories characterization re-proved, (C3) replaced by live-position box clause + (C3b), (C5) added, tail-stability added; sound, relatively complete, complete on `⊡`-free fragment, **incomplete for L⁺**; decidability open with no complete class in sight; item 3 now carries a proved limit | correct + introduce | "TRUST_PIPELINE.md — rewrite" |
+| Wire-format decision (both repositories) | HOA question open in the filing | No HOA profile (four reasons); one adopted discipline (`lassos` omitted); lossy HOA export as non-contract; README note owed by the shipping task | introduce (decision record) | "Wire-format decision — no HOA profile" |
+| Vocabulary (both repositories) | Filing cites HWZ Def 20, equates `n` with `♯(ϕ)`, attributes "ultimately periodic" to Biere | Glossary with three corrections; incompleteness cast in HWZ terms; certifying-literature limit stated | correct | "Published vocabulary" |
+
+## Disposition of the five filed points
+
+| # | Filed point | Disposition | Load-bearing declaration / evidence |
+|---|---|---|---|
+| (1) | Withdraw the finite graph as a contract | **Confirm** — already the paired side's position (0 hits for `finite.graph`, `sliced`); on this side the finite graph is the one-slice special case | `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.onePointCertificate` |
+| (2) | The time-sliced graph is the contract; lasso family is the `i → i` special case; strict extension | **Holds, with exact shapes** — fields of `PlusSlice`/`PlusSlicedCertificate`/`PlusGraphPath` fix the wire extension (§6.1.1) | `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` (structure); `FormalSystem.Metalogic.Decidability.WitnessFamily.sliced` (`n := W.lassos.length`) |
+| (3) | Bound is `(n, nb, nm, nf)`; no bound on `n`; L bounds unchanged on `⊡`-free targets; divisor caveat carries to `nb`/`nf` | **Holds; the `⊡`-free half is now a theorem** — no bound on `n` anywhere in the tree (closing record, lines 263-264) | `FormalSystem.Metalogic.Decidability.WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula`; `…WitnessFamily.compressionBound` |
+| (4) | Tail-stability required by the checker; unstable countermodels re-presented (pre-period into `mid`, period multiplied) | **Superseded** — the landed demand is liveness-filtered and residue-indexed; only the `⊇` mode is repaired by absorption (a `mid` increase, not a period multiplication); `exists_tailStable_repr` is false and stated nowhere | `…PlusSlicedCertificate.TailStable`, `…decidableTailStable`, `…bwdLiveAt`/`…fwdLiveAt`; `…Fixture.not_tailStableRaw`, `…Fixture.not_tailStable_cert`, `…Fixture.not_mem_L₀_pR`; `…WitnessFamily.sliced_tailStable_of_certifies` |
+| (5) | Never-report-validity stands; an empty search licenses nothing for `⊡`-targets | **Confirm — and now permanent.** Already their D8; the sliced class is proved incomplete for L⁺ and every finite-width class is, so the discipline is not pending a proof | `Probe710.not_plusValidZTime_neg_Φ`, `Probe710.no_finite_width_sat`, `Probe710.not_certifies`, `Probe710.not_sliced_complete`, `Probe710.not_finite_width_fmp` (exit 0, 0 `sorry`, axioms `{propext, Classical.choice, Quot.sound}`) |
+
+## Dangling-citation check over this summary's own text
+
+Every backticked identifier in this file that looks like a Lean name (dotted, or underscore/CamelCase
+without a path separator) was extracted mechanically and its last component grepped for a
+declaration keyword across `FormalSystem/`, `BimodalTools/` and the probe. 82 resolved; the 23
+that did not are classified below. **Zero unexpected dangling names.**
+
+| Unresolved token(s) | Classification |
+|---|---|
+| `exists_tailStable_repr` | **Must be dangling, and is** — cited only as the refuted re-presentation claim. |
+| `not_plusCertifies_stabSnce`, `not_plusCertifies_stabSnce_premise`, `snce_share_congr`, `PlusSharingWitnessFamily.not_plusCertifies_stabSnce`, `_premise` | **Intentionally dangling** — the three retired names the live paired text cites, named here only to say they are retired (re-confirmed absent at HEAD `780a4265a`). |
+| `Fixture.not_tailStable` | The report's incorrect short name, named once as the correction to `Fixture.not_tailStableRaw`. |
+| `PlusSlicedCertificate.Fixture` | A namespace, not a declaration. |
+| `back_ne`, `fwd_ne` | Proof fields of `PlusSlicedCertificate` / `PlusGraphPath` (`Basic.lean:338-341`, `:148-151`); fields, not top-level declarations. |
+| `InLoop`, `LoopConstraints` | Biere et al. 2006 terminology. |
+| `assert_echo_matches_sent`, `canonical_wire_bytes`, `check_certificate` | Paired-repository Python names and this repository's `lake exe` name; not Lean declarations. |
+| `tail_stable`, `stab_faithful`, `box_live_faithful` | Proposed wire `condition` vocabulary (§6.1.1), not declarations. |
+| `extend_bimodal_to_stability_modal`, `bimodal_theory_limits_example_group`, `certificate_non_vacuity_and_shape_gates`, `not_started`, `finite.graph` | Task slugs, a status word, a grep pattern. |
+
+Three short names resolve to **two** declarations each in this tree — the collisions the plan's
+risk table named: `Certifies` (`WitnessFamily.Certifies`, `Predicates.lean:132` vs.
+`PlusSlicedCertificate.Certifies`, `Check.lean:565`), `plusRefutes_of_certifies`
+(`PlusWitnessFamily/Agreement.lean:413` vs. `PlusSlicedCertificate/Sound.lean:330`) and
+`StabFaithful` (`PlusSharingWitnessFamily.StabFaithful`, `PlusWitnessFamily/Predicates.lean:283`
+vs. `PlusSlicedCertificate.StabFaithful`, `Check.lean:480`). Every occurrence in the relay text is
+fully qualified under `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.*` (Phase 1's
+namespace-walk table is the authoritative resolution), and the glossary's name-collision note
+tells the paired side which is which.
+
+## What Changed
+
+- `specs/708_relay_sliced_certificate_contract_to_model_checker/summaries/01_relay-sliced-certificate-contract-summary.md` — created: this file, the deliverable. Verification Snapshot (two repositories, probe compile, declaration table, Phase 5 re-check); ready-to-file text for ModelChecker entry 200 (full `description`), entry 219 (conditional amendment), ADEQUACY.md (row A3 note, §7.1(iii-e) rewrite, new §6.1.1, new §7.5, §7.4 paragraph, unchanged-list), TRUST_PIPELINE.md (table row, middle paragraphs, honest-ceiling item 3); the HOA decision record; the published-vocabulary glossary with three corrections and the incompleteness result in HWZ terms; amendment index; five-point disposition; dangling-citation check.
+- `specs/708_relay_sliced_certificate_contract_to_model_checker/plans/01_relay-sliced-certificate-contract.md` — phase markers and checklist items updated as each phase closed.
+- `specs/708_relay_sliced_certificate_contract_to_model_checker/progress/phase-{1..5}-progress.json`, `handoffs/phase-{1..4}-handoff-*.md` — per-phase tracking and phase-end checkpoints.
+- No file outside `specs/708_relay_sliced_certificate_contract_to_model_checker/` was written. Nothing in `/home/benjamin/Projects/ModelChecker` was written (HEAD and `status --porcelain` identical before and after).
+
+## Decisions
+
+- **Source of truth is the landed tree at HEAD `780a4265a`, re-verified at write time**, not the research report's snapshot (HEAD `4252ebe92`). Two cited names were corrected to their live forms (`Fixture.not_tailStableRaw`; `PlusSlicedCertificate.Fixture.*` rather than `FixtureStable.*`), and every relay citation uses the live fully qualified name, computed by a namespace/end stack walk rather than read off the report's file-prefixed short names.
+- **The incompleteness result is relayed as permanent**, per the dispatch's STATUS NOTE ADDENDUM and task 710's Recommendation 4: every place the report's draft said "until a finite model property is proved" or "the sliced FMP is open" now says the never-report-validity discipline is permanent for `⊡`-targets, cites `Φ` and the five probe theorems, and says in one sentence that the refutation is of the frame class (the probe's D2), so no checker change rescues it. The closing record's own "sliced FMP is OPEN, not refuted" sentence is noted as superseded, not edited (task 710's Recommendation 2 owns that edit).
+- **Entry 200's replacement is written against the live entry**, which turned out still to carry its pre-701 text (696 `implementing`, three retired theorem names); the block absorbs 701's citation corrections instead of assuming they were applied. Kept paragraphs lose their `file:line` anchors, two of which had already drifted.
+- **HOA: no profile**, four reasons, one adopted discipline (`lassos` omitted; both keys forbidden), lossy export as a non-contract; recording it in `BimodalTools/README.md` is owed by the shipping task.
+- **Ready-to-file blocks destined for files under the paired repository's `code/`** (ADEQUACY, TRUST_PIPELINE) carry no BimodalLogic task numbers: the probe is cited by filename, `Probe710.*` declaration names and SHA, and task 704 by its slug. Blocks destined for their `specs/TODO.md` keep their existing numeric project references, matching the entry's own style.
+- **No numeric bound on `n` appears anywhere in this file**, and the L bound is not restated as a sliced-tail bound; the common-period subtlety under embedding is stated once and declared immaterial.
+- **No user decision is raised.** Every choice is inferable from the artifacts; the one judgement call (HOA) is recorded with reasons and is reversible at the shipping task.
+
+## Plan Deviations
+
+- None (implementation followed plan). The plan's Phase 1 Scope Hypothesis predicted about twenty Lean names with one deliberately dangling; the live count is 26 names resolved (table above, including `compressionBound` and `print_parse_canonical`, which later phases' text turned out to cite and which were added as the hypothesis instructed) and exactly one deliberately dangling (`exists_tailStable_repr`). The three retired `PlusSharingWitnessFamily` names are additionally dangling by design, inherited from the paired side's live text rather than from this relay's citations.
+
+## Verification
+
+- Build: `lake build` — `Build completed successfully (2806 jobs)`, run to completion before the probe check.
+- Probe: `lake env lean specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean` — exit 0; five `#print axioms` lines, all `[propext, Classical.choice, Quot.sound]`; `grep -c sorry` = 0.
+- Tests: N/A (text deliverable). Artifact validation: see the line below, filled from `validate-artifact.sh` at close.
+- Validator: `bash .claude/scripts/validate-artifact.sh <summary> summary` — `[PASS] summary artifact is valid (0 warning(s))`, exit 0.
+- Task-reference lint: `bash .claude/scripts/check-task-references.sh` — 198 pre-existing occurrences outside `specs/` (e.g. `Tests/BimodalTest/Theorems/ModalS5Test.lean`, `scripts/check-module-invariants.sh`), none introduced by this task, which wrote only under `specs/708_*/`; trivially nothing of this task's is reported, as the plan predicted.
+- Files verified: Yes — 26 Lean names resolved to declaration sites (Phase 1 table) and re-resolved mechanically over the finished text (82 tokens, zero unexpected dangling); 11 paired-repository anchors confirmed at Phase 1 and re-confirmed unchanged at Phase 5.
+- Forbidden phrasings: `grep -in "until a finite model|FMP is open|pending a proof|pending further work"` matches only the two negating sentences; `Definition 20|Def 20` matches only the correcting table cell and Correction 2; `ultimately periodic` matches only Correction 3; the HOA section carries exactly four numbered reasons and one adopted discipline.
+
+## Impacts
+
+- Whoever next works in ModelChecker's task system has ready-to-paste, live-verified text for entry 200 (its blocker is no longer "waiting on upstream" but a scoping decision of their own under D8), a gated amendment for entry 219, and ready-to-file ADEQUACY/TRUST_PIPELINE amendments, including the one point that changes their accept/reject logic (tail-stability) and the one that is new in kind (a proved, permanent incompleteness rather than an emptiness a redesign could fill).
+- The sliced envelope (§6.1.1) is now specified to the field, with the `lassos`-omission rule, so the two repositories can pin it together when either decides to ship it; nothing shipped today changes.
+- No BimodalLogic or ModelChecker source, build or test state was changed; all downstream effect is contingent on someone on the ModelChecker side filing the texts above by hand.
+
+## Follow-ups
+
+- File the entry-200 replacement, the ADEQUACY.md and TRUST_PIPELINE.md amendments, and (when task 704 closes) the entry-219 amendment in ModelChecker, by hand on that side. Note that the task-701 relay's entry-200/219 corrections were also never filed there; this relay's entry-200 block supersedes 701's.
+- Record the wire-format rule (canonical-JSON strict extension; `lassos` omitted; both keys forbidden; lossy HOA export as visualisation only) in `BimodalTools/README.md`'s re-verification-protocol section — owner: the task that ships the sliced envelope (research report Recommendation 2), not this one.
+- When task 712 (or task 710's Recommendation 1) lands the probe's five theorems as library declarations under `PlusSlicedCertificate/Limits/NoFiniteWidth.lean`, update the probe-path citations in the filed texts to the library names; until then the probe path + SHA `780a4265a` is the citation.
+- When task 704 closes, resolve the entry-219 conditional: cite a certifying `⊡` instance by fully qualified name, or record the refutation under limit (b).
+- Task 710's Recommendation 2 (restate the class's completeness in `PlusSlicedCertificate.lean`'s closing record, whose line 259 still says the sliced FMP is "OPEN, not refuted") is owed by that task or task 712, not by this relay, which edits no source.
+
+## References
+
+- `specs/708_relay_sliced_certificate_contract_to_model_checker/reports/01_relay-sliced-certificate-contract.md` — the research report (F1-F6) this summary transcribes, re-verifies and, on point (5), supersedes.
+- `specs/708_relay_sliced_certificate_contract_to_model_checker/plans/01_relay-sliced-certificate-contract.md` — the plan executed.
+- `specs/710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md` (F5, F7, Recommendations 1, 2, 4, 5, decision D2) and `probes/NoFiniteWidthModel.lean` — the incompleteness result and its probe.
+- `specs/701_port_substrate_lessons_to_model_checker/summaries/01_substrate-lessons-for-model-checker-summary.md` — the precedent for this deliverable's shape and the source of the three retired-name findings.
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean` (closing record) and `PlusSlicedCertificate/{Basic,Stable,Check,Sound,Complete,Embed,EmbedComplete,Fixture,FixtureStable,Frame,Position}.lean`; `BimodalTools/CanonicalWire/Cert.lean`; `BimodalTools/README.md` — the landed tree the relay cites.
+- `/home/benjamin/Projects/ModelChecker/specs/{TODO.md,state.json}` (entries 200, 219) and `code/src/model_checker/theory_lib/bimodal/{docs/{ADEQUACY,TRUST_PIPELINE,SEARCH_COVERAGE,SETTINGS,ARCHITECTURE}.md,semantic/certificate.py,examples.py}` — the paired-repository files the ready-to-file text targets (read-only).
+- Literature (per-repo sub-index): Hodkinson, Wolter, Zakharyaschev 2000; Biere, Heljanko, Junttila, Latvala, Schuppan 2006; Babiak et al. 2015 (HOA); Beer, Ben-David, Eisner, Rodeh 2001; Froleyks, Yu, Biere, Heljanko 2024 — cited as the research report cites them.

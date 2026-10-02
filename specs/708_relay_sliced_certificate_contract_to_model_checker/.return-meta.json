@@ -1,30 +1,52 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "dispatch_seq": 10,
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/708_relay_sliced_certificate_contract_to_model_checker/plans/01_relay-sliced-certificate-contract.md",
-      "summary": "Five sequential prose phases (5.5 h) producing, in this task's summary only, the ready-to-file relay text for ModelChecker entries 200/219, ADEQUACY.md (A3, 7.1(iii-e), 6.1 sliced envelope, new tail-stability item, 7.4) and TRUST_PIPELINE.md, with the landed TailStable form, the HOA no-profile decision, published vocabulary, the permanent never-report-validity discipline citing the task-710 witness Phi, and implementation-time dangling-citation checks on both sides; nothing written outside specs/708_*/ and the paired repository read-only."
+      "type": "summary",
+      "path": "specs/708_relay_sliced_certificate_contract_to_model_checker/summaries/01_relay-sliced-certificate-contract-summary.md",
+      "summary": "Ready-to-file relay text for ModelChecker entries 200 and 219, ADEQUACY.md and TRUST_PIPELINE.md, with a live two-repository verification snapshot, the HOA decision, published vocabulary, and the machine-checked incompleteness result relayed as a permanent never-report-validity discipline."
     }
   ],
-  "next_steps": "Run /implement 708 to execute the plan",
-  "phase_count": 5,
-  "estimated_hours": 5.5,
-  "dependency_waves": [[1], [2], [3], [4], [5]],
+  "next_steps": "File the ready-to-file blocks by hand in /home/benjamin/Projects/ModelChecker (entry 200, ADEQUACY.md, TRUST_PIPELINE.md now; entry 219 once task 704 closes). Owed elsewhere: BimodalTools/README.md wire-rule note (the task that ships the sliced envelope); probe landing as library theorems (task 712 / task 710 Rec. 1).",
+  "completion_data": {
+    "completion_summary": "Wrote the sliced-certificate contract relay as a single summary artifact: re-verified every cited Lean declaration (26 names, fully qualified by namespace walk; one deliberately dangling) and every paired-repository anchor at implementation time, compiled the task-710 probe after a full lake build (exit 0, zero sorry, standard axioms), and produced ready-to-file replacement text for ModelChecker entry 200, a conditional amendment for entry 219, ADEQUACY.md amendments (A3, 7.1(iii-e), new 6.1.1 sliced envelope with lassos omitted, new 7.5 tail-stability item, 7.4 sentence), a TRUST_PIPELINE.md rewrite, the no-HOA decision with four reasons, and a published-vocabulary glossary with three corrections. Nothing outside specs/708_*/ was written; the paired repository is unchanged."
+  },
+  "modified_files": [
+    "specs/708_relay_sliced_certificate_contract_to_model_checker/summaries/01_relay-sliced-certificate-contract-summary.md",
+    "specs/708_relay_sliced_certificate_contract_to_model_checker/plans/01_relay-sliced-certificate-contract.md",
+    "specs/708_relay_sliced_certificate_contract_to_model_checker/progress/phase-1-progress.json",
+    "specs/708_relay_sliced_certificate_contract_to_model_checker/progress/phase-2-progress.json",
+    "specs/708_relay_sliced_certificate_contract_to_model_checker/progress/phase-3-progress.json",
+    "specs/708_relay_sliced_certificate_contract_to_model_checker/progress/phase-4-progress.json",
+    "specs/708_relay_sliced_certificate_contract_to_model_checker/progress/phase-5-progress.json",
+    "specs/708_relay_sliced_certificate_contract_to_model_checker/handoffs/phase-1-handoff-20261002T165436Z.md",
+    "specs/708_relay_sliced_certificate_contract_to_model_checker/handoffs/phase-2-handoff-20261002T165740Z.md",
+    "specs/708_relay_sliced_certificate_contract_to_model_checker/handoffs/phase-3-handoff-20261002T165944Z.md",
+    "specs/708_relay_sliced_certificate_contract_to_model_checker/handoffs/phase-4-handoff-20261002T170149Z.md"
+  ],
   "memory_candidates": [
     {
-      "content": "Cross-repository relay tasks (BimodalLogic -> paired ModelChecker, read-only) have a stable deliverable shape: the task's own summary carries a re-run Verification Snapshot (live HEAD SHAs on both sides, declaration-site grep for every cited Lean name, anchor grep for every paired entry/row/section), then one ready-to-file section per amended artifact stating what it replaces, confirms (already their position) or introduces (new to their side), with every citation by fully qualified declaration name, never file:line. Plan it as sequential prose phases over one summary file, with the citation and boundary checks repeated after writing, because the 701 precedent found cross-repository drift between research and implementation.",
+      "content": "When citing Lean declarations by fully qualified name for an external consumer, do not trust a report's file-prefixed short names (Sound.foo, Check.bar): the file name is not the namespace. Resolve each cited line's enclosing namespace mechanically with an awk namespace/end stack walk over the file, and confirm the declaration keyword by grep. In PlusSlicedCertificate/ every file opens FormalSystem.Metalogic.Decidability then PlusSlicedCertificate (Fixture.lean and FixtureStable.lean nest Fixture), while Embed*.lean put embedding results under WitnessFamily; three short names (Certifies, plusRefutes_of_certifies, StabFaithful) collide with older WitnessFamily/PlusSharingWitnessFamily homonyms, so a last-component grep alone resolves to the wrong declaration.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/708_relay_sliced_certificate_contract_to_model_checker/summaries/01_relay-sliced-certificate-contract-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["fully-qualified-name", "namespace-walk", "dangling-citation", "cross-repository-relay", "lean-citation"]
+    },
+    {
+      "content": "Wire-format extension rule adopted from HOA's capitalised-header discipline: when extending a JSON certificate envelope with a new semantics-bearing key, OMIT the old key an unaware consumer would otherwise silently reinterpret (here: a sliced envelope carries `slices` and no `lassos`), and forbid both keys in one document. Both re-checkers (BimodalTools.CanonicalWire.decodeOptLassos and ModelChecker's raw.get(\"lassos\", [])) read an absent key as empty and reject structurally, so an old consumer fails loudly instead of checking the wrong object.",
       "category": "PATTERN",
-      "source_artifact": "specs/708_relay_sliced_certificate_contract_to_model_checker/plans/01_relay-sliced-certificate-contract.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["paired-repository", "relay", "ModelChecker", "dangling-citation", "read-only", "ready-to-file"]
+      "source_artifact": "specs/708_relay_sliced_certificate_contract_to_model_checker/summaries/01_relay-sliced-certificate-contract-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["wire-format", "strict-extension", "lassos", "HOA", "error-not-reinterpret", "certificate-envelope"]
     }
   ],
   "metadata": {
-    "session_id": "sess_1790958227_8d0c76_708",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 8
+    "session_id": "sess_1790958227_8d0c76",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 5,
+    "phases_total": 5
+  }
 }
