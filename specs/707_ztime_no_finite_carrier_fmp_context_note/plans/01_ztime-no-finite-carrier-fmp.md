@@ -1,7 +1,7 @@
 # Implementation Plan: Task #707
 
 - **Task**: 707 - Z-time no-finite-carrier FMP context note (with the finite-width second section)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Dependencies**: None blocking. Inputs are all on disk: the 706 probe, the 710 probe, the 703 round-2 report, the five literature entries, and this task's research report.
 - **Research Inputs**: specs/707_ztime_no_finite_carrier_fmp_context_note/reports/01_ztime-no-finite-carrier-fmp.md

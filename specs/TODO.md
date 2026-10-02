@@ -11,7 +11,7 @@ next_project_number: 716
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,704,705,706,707,708,710,711,713,714 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,704,705,706,708,710,711,713,714 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,709,712 | 298,464,502,563,710,711 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -70,15 +70,11 @@ next_project_number: 716
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 706 [RESEARCHED] — STATUS NOTE (2026-10-02): question Q6 of this task's report...
-708 [PLANNED] — STATUS NOTE ADDENDUM (2026-10-02, relay wording): the sliced...
+708 [IMPLEMENTING] — STATUS NOTE ADDENDUM (2026-10-02, relay wording): the sliced...
 713 [NOT STARTED] — OPTIONAL, FILED NOT SCHEDULED. Nothing depends on this task...
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 709 [NOT STARTED] — STATUS NOTE (2026-10-02, SUPERSEDES THE HEADLINE BELOW -- the...
 712 [BLOCKED] — STATUS NOTE (2026-10-02, THE STATEMENT BELOW IS NOW REFUTED...
-
-### Documentation
-
-707 [PLANNED] — STATUS NOTE (2026-10-02, the recorded design rule is...
 
 ### Formula Refactor
 
@@ -237,7 +233,7 @@ HARD CONSTRAINTS. Zero sorries, no new axioms, no vacuous placeholder definition
 ---
 
 ### 708. Relay sliced certificate contract to model checker
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: decidability
 - **Dependencies**: Task 703
@@ -270,12 +266,13 @@ LIMIT OF THE CERTIFYING LITERATURE, load-bearing for point (5): it is uniformly 
 ---
 
 ### 707. Ztime no finite carrier fmp context note
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: markdown
 - **Topic**: documentation
 - **Dependencies**: None
 - **Research**: [707_ztime_no_finite_carrier_fmp_context_note/reports/01_ztime-no-finite-carrier-fmp.md]
 - **Plan**: [707_ztime_no_finite_carrier_fmp_context_note/plans/01_ztime-no-finite-carrier-fmp.md]
+- **Summary**: [707_ztime_no_finite_carrier_fmp_context_note/summaries/01_ztime-no-finite-carrier-fmp-summary.md]
 
 **Description**: STATUS NOTE (2026-10-02, the recorded design rule is NECESSARY BUT NOT SUFFICIENT): the note must gain a SECOND SECTION, 'finite width fails too'. The rule stated below -- a Z-time certificate class must present an infinite, finitely presented carrier, Z x Fin n with finite fibres, never a finite one via FrameOver.ofStep -- is correct as a NECESSARY condition but is NOW KNOWN NOT TO BE SUFFICIENT, and recording it alone would enshrine exactly the kind of stale design assumption this note exists to prevent. Machine-checked in specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean: not_finite_width_fmp shows NO class presenting finite per-time fibres is complete, whatever its clauses, and no_finite_width_sat/not_certifies refute the sliced class for full L-plus and for the CTL-like fragment via witness Phi := theta' and Box(stab Fp -> not stab not Xp). The obstruction is finite WIDTH (limit closure plus finite fibres contradicts Koenig), which is a different failure from the finite-CARRIER failure the note already records. The strengthened rule to record: a Z-time certificate class must present an infinite, finitely presented carrier AND, if its per-time fibres are finite, it is still incomplete for any target carrying stab; a successor class must present INFINITE fibres (root paths of a finite class graph), for which no checker precedent exists. Original description follows.
 

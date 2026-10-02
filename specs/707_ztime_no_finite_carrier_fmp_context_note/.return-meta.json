@@ -1,10 +1,58 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 9,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/707_ztime_no_finite_carrier_fmp_context_note/summaries/01_ztime-no-finite-carrier-fmp-summary.md",
+      "summary": "Implementation summary: the Z-time no-finite-carrier / no-finite-width fmp context note written to the formal extension's source store, registered, committed there (452d52147), deployed and verified."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Wrote context/project/logic/domain/ztime-no-finite-carrier-fmp.md (397 lines) into the formal extension's source store, registered it in index-entries.json and the logic README, committed the three files there (452d52147), redeployed (landed_verify_clean) and verified the deployed copy byte-identical and indexed. The note records both machine-checked refutations (finite carrier via Probe706/theta, finite width via Probe710/Phi), the strengthened design rule (infinite finitely presented carrier is necessary but not sufficient; finite fibres remain incomplete for targets carrying stab), the time-sliced-graph diagnosis, the published counterpart (GKWZ repeating finite pieces, HWZ quasimodel over Z), and the explicit warning that fmp failure is not undecidability (Krommes 2020; GKWZ 5.28/5.32 verified with page numbers)."
+  },
+  "modified_files": [],
+  "memory_candidates": [
+    {
+      "content": "Context notes for the formal extension are written to the source store (~/.config/nvim/agent-system/extensions/formal/context/project/logic/domain/), registered by appending one entry to that extension's index-entries.json (jq '.entries += [...]' preserves the file's 2-space formatting so the diff is only the new entry) plus one README line, committed in the ~/.config/nvim repository by explicit path, then redeployed with deploy-headless.sh and verified with cmp against the deployed copy and a grep of .claude/context/index.json. The task-reference lint pattern is only literal 'task N' phrasing; probe namespaces (Probe706) and specs/NNN_... paths pass.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/707_ztime_no_finite_carrier_fmp_context_note/summaries/01_ztime-no-finite-carrier-fmp-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": [
+        "context-note",
+        "source-store",
+        "index-entries",
+        "deploy-headless",
+        "task-reference-lint",
+        "formal-extension"
+      ]
+    },
+    {
+      "content": "Three distinct obstructions to a finite Z-time certificate class, routinely conflated: carrier SIZE (theta; no finite graph hosts a countermodel; repaired by Z x Fin n via FrameOver.ofSlicedStep), ALL-THREADS FULFILMENT (pumpTarget; repaired by liveness as a fixpoint over live positions), and finite WIDTH (Phi; limit closure plus finite fibres contradicts Koenig; NOT repaired by any landed class). The carrier rule alone is necessary but not sufficient. Also: fmp failure is not undecidability (K4 x S5 lacks the product fmp yet is EXPSPACE-complete).",
+      "category": "INSIGHT",
+      "source_artifact": "/home/benjamin/.config/nvim/agent-system/extensions/formal/context/project/logic/domain/ztime-no-finite-carrier-fmp.md",
+      "confidence": 0.9,
+      "suggested_keywords": [
+        "ztime",
+        "finite-model-property",
+        "finite-width",
+        "sliced-certificate",
+        "koenig",
+        "quasimodel"
+      ]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1790958227_8d0c76",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
+    "phases_completed": 5,
+    "phases_total": 5,
+    "notes": "Deliverable files live in the source-store repository (/home/benjamin/.config/nvim), committed there as 452d52147; modified_files is empty for this repository by design. No Lean build was run and no .lean file was edited, per the operator constraint. Observed foreign uncommitted work (sibling 708 plan/progress/.return-meta; orchestrator-owned TODO.md/state.json/events.jsonl; core/lean/typst index-entries.json in the source store) was left untouched."
   }
 }

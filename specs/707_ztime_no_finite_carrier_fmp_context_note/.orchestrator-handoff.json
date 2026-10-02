@@ -1,19 +1,16 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 7,
-  "summary": "Plan written: five sequential phases (6h) to draft the ztime-no-finite-carrier-fmp.md context note in the formal extension source store (carrier refutation, finite-width refutation with the strengthened rule, time-sliced graph diagnosis, published counterpart and not-undecidability warning, fidelity labels), then register it in index-entries.json and the logic README, lint for task references, commit the three source-store paths explicitly, and deploy.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 9,
+  "summary": "Context note ztime-no-finite-carrier-fmp.md (397 lines) written to the formal extension's source store, registered in index-entries.json and the logic README, committed there (452d52147), redeployed (landed_verify_clean) and verified byte-identical and indexed. All 5 plan phases completed; one optional compile spot-check skipped because the operator forbids Lean builds this dispatch.",
   "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/707_ztime_no_finite_carrier_fmp_context_note/plans/01_ztime-no-finite-carrier-fmp.md",
-      "summary": "Five-phase implementation plan for the Z-time no-finite-carrier / no-finite-width FMP context note."
-    }
+    {"type": "summary", "path": "specs/707_ztime_no_finite_carrier_fmp_context_note/summaries/01_ztime-no-finite-carrier-fmp-summary.md", "summary": "Implementation summary for the context note"},
+    {"type": "context-note", "path": "/home/benjamin/.config/nvim/agent-system/extensions/formal/context/project/logic/domain/ztime-no-finite-carrier-fmp.md", "summary": "The deliverable: Z-time no-finite-carrier and no-finite-width fmp context note (source store)"}
   ],
-  "phases_completed": 0,
+  "phases_completed": 5,
   "phases_total": 5,
-  "blockers": [],
   "plan_markers_verified": true,
-  "continuation_path": null,
-  "next_action_hint": "Dispatch /implement 707; Phase 1 creates the note at the absolute source-store path named in the plan, never under .claude/."
+  "git_checkpoint": "3c2464944",
+  "blockers": [],
+  "next_action_hint": "Postflight may mark the task completed; nothing under .claude/ is to be committed (deploy artifact). Follow-ups recorded in the summary: land Probe706/Probe710 theorems; write limit-closure-and-fairness.md."
 }
