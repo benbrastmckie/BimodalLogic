@@ -174,7 +174,7 @@ is missing from this list.
 
 ---
 
-### Phase 2: Write the entry 200 replacement paragraphs and the entry 219 conditional amendment [IN PROGRESS]
+### Phase 2: Write the entry 200 replacement paragraphs and the entry 219 conditional amendment [COMPLETED]
 
 **Goal**: Ready-to-file text for ModelChecker `specs/TODO.md` entry 200's blocker paragraphs and
 a conditional citation amendment for entry 219, each stating exactly which paragraphs it
@@ -239,22 +239,22 @@ replaces and which it keeps verbatim.
 
 ---
 
-### Phase 3: Write the ADEQUACY.md amendments [NOT STARTED]
+### Phase 3: Write the ADEQUACY.md amendments [COMPLETED]
 
 **Goal**: Ready-to-file amendments for ADEQUACY.md's row A3 and §7.1(iii-e), a new §6.1
 subsection for the sliced envelope, a new tail-stability item, one sentence for §7.4, and an
 explicit unchanged-list.
 
 **Tasks**:
-- [ ] Add `## ADEQUACY.md — row A3 and §7.1(iii-e)`: the upstream bound shape is now the
+- [x] Add `## ADEQUACY.md — row A3 and §7.1(iii-e)`: the upstream bound shape is now the
       4-tuple `(n, nb, nm, nf)`; `n` is a new, unbounded search dimension never configured from a
       formula; the three lengths keep the divisibility caveat on `nb`/`nf` (`mid` carries no
       periodicity, SEARCH_COVERAGE §3(b) unchanged); for `⊡`-free targets the L row stands and
       the lasso contract remains the encoding. Carry the report's F3 subtlety in one sentence
       (the sliced presentation of an L countermodel can have `nb`/`nf` up to a common multiple
       of the lassos' periods; immaterial because the lasso contract stays in force for those
-      targets) and do not restate the L bound as a sliced-tail bound.
-- [ ] Add `## ADEQUACY.md — §6.1 sliced envelope (proposed, unshipped)`: the strict extension of
+      targets) and do not restate the L bound as a sliced-tail bound. *(completed)*
+- [x] Add `## ADEQUACY.md — §6.1 sliced envelope (proposed, unshipped)`: the strict extension of
       the lasso envelope, with the field list mirroring the Lean structure exactly — top level
       `target` (unchanged), `bx` (unchanged), `n`, `slices: {back, mid, fwd}` each a list of
       `{edge: n×n bool matrix, lab: length-n list of labels}`, `path: {back, mid, fwd}` each a
@@ -262,8 +262,8 @@ explicit unchanged-list.
       sequence; **no `lassos` key**; both keys in one document is forbidden by the contract.
       State that `check_certificate` does not read it today, that neither side has shipped it,
       that the lasso envelope is unchanged byte-for-byte, and that this is a proposal for the
-      two repositories to pin together.
-- [ ] Add `## ADEQUACY.md — new tail-stability item (suggest §7.5 or row A4)`, the report's F2
+      two repositories to pin together. *(completed)*
+- [x] Add `## ADEQUACY.md — new tail-stability item (suggest §7.5 or row A4)`, the report's F2
       restated for a consumer that has never heard of it: what the checker computes (live
       position sets, nested fixpoint over the timed position graph; liveness replaces all-threads
       fulfilment); the demand (`TailStable`, residue-indexed, both tails, filtered by
@@ -275,14 +275,14 @@ explicit unchanged-list.
       stated nowhere; `FixtureStable.not_tailStable_cert`; D8 covers the gap); the embedded case
       (`sliced_tailStable_of_certifies`: never rejects anything the lasso contract accepts); and
       that representability (their exact-modulus folding, §7.1(iii-a)) and tail-stability are
-      different questions that compose.
-- [ ] Add `## ADEQUACY.md — §7.4 one added sentence`: for L⁺ targets containing `⊡`, ground (i)
+      different questions that compose. *(completed)*
+- [x] Add `## ADEQUACY.md — §7.4 one added sentence`: for L⁺ targets containing `⊡`, ground (i)
       holds permanently — the sliced class is incomplete (`Probe710.not_sliced_complete`), and
       every finite-width class is (`Probe710.not_finite_width_fmp`) — so an empty search at any
-      `(n, nb, nm, nf)` licenses nothing, and will not after any future bound on `n` either.
-- [ ] Add `## ADEQUACY.md and SEARCH_COVERAGE.md — unchanged`: rows A0, A1, A1-Γ, A2 and
+      `(n, nb, nm, nf)` licenses nothing, and will not after any future bound on `n` either. *(completed)*
+- [x] Add `## ADEQUACY.md and SEARCH_COVERAGE.md — unchanged`: rows A0, A1, A1-Γ, A2 and
       SEARCH_COVERAGE.md's bounded sweep, with one note that pre-period absorption is a `mid`
-      increase that composes with the `(back', fwd')` sweep.
+      increase that composes with the `(back', fwd')` sweep. *(completed)*
 
 **Timing**: 1.5 hours
 
@@ -309,7 +309,7 @@ headings to the live names and note the drift in the Verification Snapshot.
 
 ---
 
-### Phase 4: Write the TRUST_PIPELINE rewrite, the HOA decision record, and the vocabulary glossary [NOT STARTED]
+### Phase 4: Write the TRUST_PIPELINE rewrite, the HOA decision record, and the vocabulary glossary [IN PROGRESS]
 
 **Goal**: Ready-to-file rewrite of TRUST_PIPELINE.md's "The stability modal" middle paragraphs; the
 HOA decision recorded with reasons; a published-vocabulary glossary applying F5's corrections and

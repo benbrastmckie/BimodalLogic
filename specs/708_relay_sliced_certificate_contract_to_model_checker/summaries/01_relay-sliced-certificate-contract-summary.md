@@ -410,3 +410,222 @@ change around it, and the third is new in kind.
    observation that the Box-form analogue of `Φ` is *not* a probe to add: `Φ` uses the stability
    modal essentially (it quantifies over histories through a state), and its Box-form is a
    different principle, exactly as the header's own Box-versus-stability caveat warns.
+
+## ADEQUACY.md — row A3 and §7.1(iii-e)
+
+Live anchors: the component table at lines 630-636 (row **A3** at line 636) and §7.1's bullet
+(iii-e) at line 729, which currently reads "the upstream bound is a single `n` over all three
+segments while the search takes three independent settings". Row A3's statement and status cells
+stay as they are (they are about the L bound, which is unchanged); the amendment is one appended
+note on the row and a rewrite of (iii-e). Ready to file:
+
+**Row A3 — appended note** (append to the status cell, after "§7.1, §7.3."):
+
+```
+**L⁺ note.** For targets containing the stability modal the upstream bound SHAPE is no longer
+a single length: it is the 4-tuple `(n, nb, nm, nf)` — slice width and the three segment
+lengths of the time-sliced certificate (`FormalSystem.Metalogic.Decidability.PlusSlicedCertificate`).
+`n` is a new, unbounded search dimension: NO bound on it is proved upstream for any such
+target, upstream's own closing record says none should be read into the tree, and `n` must not
+be configured from a formula. For stability-free targets this row stands unchanged — the lasso
+contract remains the encoding, the embedding theorem
+`FormalSystem.Metalogic.Decidability.WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula`
+guarantees the sliced extension loses nothing on that fragment, and the `f(|C|)` bound above
+applies to the lasso family exactly as before. §7.1(iii-e).
+```
+
+**§7.1(iii-e) — replacement bullet** (replaces the whole (iii-e) bullet):
+
+```
+- **(iii-e) Segment-length parity with the bound's shape** — the upstream shape is now known
+  and it differs by fragment. For stability-free targets the landed bound is on segment
+  LENGTHS (`compressionBound`), one number for all three segments, while this search takes
+  three independent settings `(back, mid, fwd)`; the parity check is that `back`, `fwd` are
+  set as multiples of the needed periods (the divisibility rule, `docs/SETTINGS.md`) and `mid`
+  at least `f(|C|)`. For targets containing the stability modal the upstream shape is the
+  4-tuple `(n, nb, nm, nf)`: the three lengths keep this bullet's divisibility caveat on
+  `nb`/`nf` unchanged (`mid` carries no periodicity, `docs/SEARCH_COVERAGE.md` §3(b)), and the
+  slice width `n` has no proved bound and is not to be set from a formula. One subtlety, so
+  that nobody restates the L bound as a sliced-tail bound: the SLICED presentation of an
+  L countermodel (`FormalSystem.Metalogic.Decidability.WitnessFamily.sliced`) cuts the slice
+  sequence at the lassos' COMMON periods, so its `nb`/`nf` can be a common multiple of up to
+  `|C| + 1` periods each bounded by `f(|C|)`, not `f(|C|)` itself. This is immaterial here
+  because the lasso contract stays in force for stability-free targets; the sliced format is
+  for stability targets, where no bound is on offer anyway.
+```
+
+## ADEQUACY.md — §6.1 sliced envelope (proposed, unshipped)
+
+Live anchor: §6.1 "The wire contract" (line 444), whose input block has the three top-level keys
+`target`, `bx`, `lassos` and whose six frozen names are an export contract. Nothing in that
+subsection changes; the following is a **new sub-subsection** to append after the `"echo"`
+paragraph (before "### 6.2"). Ready to file:
+
+```
+#### 6.1.1 The time-sliced envelope — proposed, not yet shipped by either side
+
+The time-sliced certificate (`FormalSystem.Metalogic.Decidability.PlusSlicedCertificate`) is
+a STRICT EXTENSION of the lasso family above: a lasso family with `k` lassos is exactly the
+sliced certificate of width `n = k` whose every edge matrix is the identity pattern `i → i`
+(`FormalSystem.Metalogic.Decidability.WitnessFamily.sliced`). The envelope below is the wire
+form of that extension. It is a PROPOSAL for the two repositories to pin together; neither
+side has shipped it, `check_certificate` does not read it today, this repository's
+`certificate.py` does not emit it, and the lasso envelope above is unchanged byte-for-byte.
+Field names mirror the Lean structure's data fields exactly, as the lasso contract does.
+
+Input (key order frozen in this sequence; canonical bytes as in 6.1):
+
+{"target": {"premises": [<formula>,...], "conclusions": [<formula>,...], "time": <int>},
+ "bx":     [[<formula>, true], [<formula>, false], ...],
+ "n":      <int>,
+ "slices": {"back": [<slice>,...], "mid": [<slice>,...], "fwd": [<slice>,...]},
+ "path":   {"back": [[<label>, <state>],...], "mid": [...], "fwd": [...]}}
+
+<slice> = {"edge": [[<bool>,...],...], "lab": [<label>,...]}
+
+- `target` and `bx` are the lasso envelope's fields, unchanged in shape. `target.time` is the
+  certificate's `targetTime`; `<formula>` gains one tag, `stab` (`child`), for the stability
+  modal, alongside `atom`, `bot`, `imp`, `box`, `untl`, `snce`.
+- `n` is the slice width (`n`, with `0 < n`); every `<state>` is an integer in `[0, n)`.
+- `slices.back`, `slices.mid`, `slices.fwd` are the three segments (`back`, `mid`, `fwd`), each
+  a list of slices; `back` and `fwd` are non-empty, `mid` may be empty. Each `<slice>` is one
+  `PlusSlice`: `edge` is its `n × n` Boolean matrix (`edge[i][j]` = an edge from state `i` of
+  this slice to state `j` of the NEXT slice), `lab` is its length-`n` list of state labels
+  (`lab[i]`, a `<label>` read as a set, drawn from the closure: atoms, `box`- and
+  `stab`-formulas true at that state).
+- `path.back`, `path.mid`, `path.fwd` are the target path's three segments (`PlusGraphPath`):
+  lists of `[<label>, <state>]` pairs, `back` and `fwd` non-empty; the path is read at
+  `target.time`.
+- Time indexing is the lasso envelope's: `mid` occupies `[0, |mid|)`, `back` repeats leftward,
+  `fwd` repeats rightward; a slice's `edge` relates time `t` to `t + 1`.
+- **There is no `lassos` key.** A sliced envelope OMITS `lassos` entirely, and a document
+  carrying both `lassos` and `slices` is forbidden by this contract. Reason: both re-checkers
+  read an absent `lassos` as empty (`BimodalTools.CanonicalWire.decodeOptLassos` upstream;
+  `raw.get("lassos", [])` in `semantic/certificate.py` here) and then REJECT structurally, so a
+  lasso-only checker fed a sliced envelope fails loudly; a sliced envelope that also carried
+  `lassos` would instead be silently checked as a lasso family with its slices ignored. This
+  is the Hanoi Omega-Automata format's header discipline applied here: a consumer that does
+  not understand a semantics-bearing field must error, never reinterpret.
+- The accepted verdict's conditions are the nine conjuncts of
+  `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Certifies`; the `rejected`
+  verdict's `condition` vocabulary will need the new names (at least `tail_stable`,
+  `stab_faithful`, `box_live_faithful`) when the envelope ships. Not specified here.
+```
+
+## ADEQUACY.md — new tail-stability item (suggest §7.5, or a row A4)
+
+No section of ADEQUACY.md mentions tail-stability (repo-wide grep `tail.{0,3}stab`: 0 hits), so
+this is new information, not an amendment. It is the one point in this relay that changes this
+repository's accept/reject logic. Suggested placement: a new "### 7.5 Tail-stability (L⁺ only)"
+after §7.4 (there is no §7.5 today), or a row **A4** in the component table with this as its
+section. Ready to file:
+
+```
+### 7.5 Tail-stability, the sliced checker's wrap-faithfulness demand (L⁺ only)
+
+This condition does not exist for the lasso family and has no counterpart anywhere in this
+repository today. It is a conjunct of the sliced checker's acceptance
+(`FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Certifies`) and will become a
+condition this repository's re-checker and search must handle once the sliced envelope
+(§6.1.1) ships.
+
+**What the checker computes.** For a sliced certificate `G` the checker computes a LIVE
+POSITION SET at each window time. A position is a `(state, type)` pair over a slice; it is
+live iff a forward run and a backward run of `G`'s own labelled structure pass through it
+with every pending eventuality discharged. This is a nested greatest/least fixpoint over the
+finite timed position graph of the combined window, not a field of the certificate.
+Liveness replaces the lasso family's all-threads fulfilment ((C2) of §3) by fulfilment of
+LIVE positions only, and the box and stability clauses are stated over live positions
+(`...PlusSlicedCertificate.BoxLiveFaithful`, `...PlusSlicedCertificate.StabFaithful`), not over
+"every position of every lasso".
+
+**The demand.** With `NB`/`NF` the combined back/forward periods (least common multiples of
+the certificate's and the target path's segment lengths),
+`FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.TailStable G` says: transporting the
+live set one whole period down each tail, FILTERED by that direction's one-directional live
+set (`...PlusSlicedCertificate.bwdLiveAt`, `...PlusSlicedCertificate.fwdLiveAt`), returns the
+live set, at EVERY residue of the period — one equation per residue, both tails. It is
+decidable (`...PlusSlicedCertificate.decidableTailStable`, a synthesized instance) and costs
+`NB + NF` transfer applications. In the published vocabulary it is the periodic-state-function
+condition of Hodkinson–Wolter–Zakharyaschev 2000, §5 (Lemma 23's conditions on `f₁ · f₂^ω`,
+Theorem 24), stated on named states rather than on types.
+
+**Why it is needed.** Forward liveness from the back tail is NOT a function of the slice at
+that time (`...PlusSlicedCertificate.Fixture.live_not_determined_by_slice`): two times with
+the same slice can carry different live sets. So the stability clause of the truth lemma must
+read the live set at a window representative that carries the same live set at every time
+down the tail, and tail-stability is exactly the condition under which such a representative
+exists. Without it the window's verdict does not extend to the infinite frame.
+
+**The two failure modes, and who repairs each.**
+(a) `⊆` failure: the one-step transfer is a reachability relation, so a position reachable
+from a live position but dead in one direction lands in the iterate. The checker's FILTER
+(the intersection with `bwdLiveAt`/`fwdLiveAt`) removes it. No search-side action.
+(b) `⊇` failure: a genuinely live position has no live predecessor one whole period back,
+because a pre-period shows through the window's edge. No filter repairs this. It is
+repaired, when it is, by RE-PRESENTING the same frame with the pre-period absorbed into
+`mid` — a `mid`-length increase, NOT a period multiplication
+(`...PlusSlicedCertificate.Fixture.not_mem_L₀_pR` records the failure's witness leaving the
+live set once the pre-period is absorbed).
+
+**What is NOT promised.** There is no theorem that absorption always succeeds. The claim
+"every certificate has a tail-stable re-presentation" (`exists_tailStable_repr`) is FALSE
+upstream and is stated nowhere: it is refuted at a named certificate for the raw demand
+(`...PlusSlicedCertificate.Fixture.not_tailStableRaw`, for every pre-period and every period
+multiplier), and for the filtered demand no general re-presentation lemma is stated either.
+`TailStable` is a demand on the frame together with its closure — a conjunct of `Certifies`,
+not a theorem — and `...PlusSlicedCertificate.Fixture.not_tailStable_cert` exhibits a
+certificate it rejects. So a search that finds a countermodel frame and cannot present it
+tail-stably reports exactly that, and D8 (§7.4) covers the gap: nothing is licensed either
+way. (The raw, unfiltered demand is kept upstream under the name
+`...PlusSlicedCertificate.TailStableRaw`; cite `TailStable`, the filtered one, as the landed
+condition.)
+
+**The embedded case is fully covered.** Every certified lasso family yields a tail-stable
+sliced certificate at every residue
+(`FormalSystem.Metalogic.Decidability.WitnessFamily.sliced_tailStable_of_certifies`). On
+stability-free targets the demand never rejects anything the lasso contract accepts.
+
+**Representability and tail-stability are different questions, and they compose.** This
+repository's exact-modulus folding (`witness_registry.py` `wrap`, §7.1(iii-a)) is about
+REPRESENTABILITY of a period at a configured length — whether `nb'` divides `nb`.
+Tail-stability is about whether liveness wraps FAITHFULLY at the configured period. The
+bounded sweep over `(back', fwd')` remains the mechanism for exploring periods; absorbing a
+pre-period is an increase of `mid`, which the sweep holds fixed and may be raised freely
+(`docs/SETTINGS.md`). Do not equate the two.
+```
+
+## ADEQUACY.md — §7.4 one added sentence
+
+Live anchor: §7.4 "The never-report-validity rule" (line 869), grounds (i) and (ii). Append, as a
+third paragraph after "Both grounds hold independently of each other and of any future progress
+on A1." Ready to file:
+
+```
+**For L⁺ targets containing the stability modal, ground (i) holds PERMANENTLY, not pending
+A1-style work.** The time-sliced certificate class is semantically incomplete for L⁺
+(`Probe710.not_sliced_complete`: the formula `Φ := θ' ∧ □(⊡Fp → ¬⊡¬Xp)` has `Φ.neg` a
+ℤ-time non-validity that no sliced certificate certifies), and so is EVERY certificate class
+presenting a frame with finitely many states per time (`Probe710.not_finite_width_fmp`),
+whatever its clauses — the refutation is of the frame class, not of the checker. Both are
+machine-checked, sorry-free, in BimodalLogic's `NoFiniteWidthModel.lean` probe (HEAD
+`780a4265a`; planned library home `PlusSlicedCertificate/Limits/NoFiniteWidth.lean`). So an
+empty search at any `(n, nb, nm, nf)` licenses nothing for such a target, and will not after
+any future bound on `n` either. Stability-free targets are unaffected: there the class is
+complete (A1's embedding, §7.1(iii-e)).
+```
+
+## ADEQUACY.md and SEARCH_COVERAGE.md — unchanged
+
+Confirmed against the live files; nothing in this relay touches them:
+
+| Artifact | Live anchor | Why unchanged |
+|---|---|---|
+| ADEQUACY.md row **A0** | line 632 | The frame-class gap (ℤ-time completeness ≠ completeness at every temporal order) is independent of the certificate class. |
+| ADEQUACY.md row **A1** | line 633 | The landed compression instance (`exists_witnessFamily_of_not_validZTime`, `compressionBound`) is about the lasso family on stability-free targets, which the relay keeps as the encoding for that fragment. |
+| ADEQUACY.md row **A1-Γ** | line 634 | The general-premise obligation is unchanged in form; the sliced class adds nothing to it and takes nothing from it. |
+| ADEQUACY.md row **A2** | line 635 | Encoding completeness is about the Z3 encoding of the lasso family at configured lengths; the sliced envelope is unshipped, so there is no encoding to be complete for yet. |
+| ADEQUACY.md §7.1(iii-a) | line 709 | The bounded sweep is the mechanism the relay's tail-stability item composes with; it is not altered. |
+| SEARCH_COVERAGE.md §3(b), §4 | lines 73, 118 | Route (b), the bounded sweep over `(back', fwd')` with `mid` fixed, stands. One note for whoever builds the sweep driver (its §5 staged path): absorbing a pre-period to repair a tail-stability `⊇` failure is a `mid` increase, which composes with the sweep — `mid` is held fixed per sweep and raised between sweeps, never swept. |
+| SETTINGS.md divisibility caveat | lines 33-39 | Carries over to `nb`/`nf` verbatim; `mid` remains unaffected. |
+| TRUST_PIPELINE.md "Compute bounds from the closure (A3)" row | line 309 | About the L bound and the representability gap; unchanged. |
