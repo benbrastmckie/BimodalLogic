@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-09-28",
+  "updated": "2026-10-02",
   "entries": [
     {
       "doc_id": "rabinovich_2014",
@@ -523,6 +523,110 @@
       "source": "discover",
       "reason": "Task 696: Kripke's 1958 letter to Prior — the historical origin of branching-time (tree) semantics for tense logic; background for the branching witness substrate design. Ingested from the Zotero item for Ploug & Øhrstrøm 2012.",
       "hazard": "CONTENT MISMATCH RESOLVED 2026-09-28: the corpus text under this doc_id is Kripke's 3-page letter (Prior Nachlass scan 20110405172837.pdf), not the Ploug & Øhrstrøm 2012 Synthese paper, which is NOT in the corpus. The global index entry was corrected to the letter's true title/author/year; the doc_id remains the archive timestamp. The same Zotero item carries a second archival scan (20111123175540.pdf) not yet ingested. Cite as Kripke to Prior, 3 Sept 1958, by page."
+    },
+    {
+      "doc_id": "hodkinson_wolter_zakharyaschev_2000_decidable_fragments_fotl",
+      "reason": "PRIMARY published counterpart of this repository's time-sliced certificate. Hodkinson, Wolter & Zakharyaschev, Decidable fragments of first-order temporal logics, APAL 106 (2000) 85-134.",
+      "relevance": "Tasks 707, 708, 710 (and the sliced-certificate programme generally). The construction this repository independently reinvented is their QUASIMODEL over <Z,<>. Mapping: state candidate (Defs 6-7) = slice/fibre; state function f (Def 10) = per-slice state labelling; run (Def 11) = target path; quasimodel <f,R> (Def 12) = the time-sliced certificate; sharp(phi) = slice width; splice lemma (Lemma 17, f(n)=f(m) implies splice) = the pumping argument; subquasimodel (Def 18) = forward/backward-dead position pruning; periodic state function with bounded period (section 5, Def 20) = TAIL-STABILITY. Also gives THREE decidability routes off the same structure, one of which encodes 'a quasimodel exists' as an MSO sentence over the flow of time and discharges the automata work by Buchi's theorem with NO Safra construction. Their abstract also reduces satisfiability over various linear flows to <N,<> and <Z,<>, this repository's exact time domain.",
+      "citation_rule": "Cite by structural label PLUS printed PDF page (e.g. \"Def 12 (PDF p.14)\"). NEVER cite md:NN line numbers -- re-conversion invalidates them.",
+      "fidelity": "unverified_conversion via the pdftotext last-resort tier (both the pymupdf4llm primary and the pymupdf column-clustering fallback were REJECTED by the quality gate). KNOWN ARTIFACT: angle brackets are dropped, so pairs print as 'hf, Ri' for <f, R>. Unicode math is otherwise intact. Verify any quoted statement against the source PDF.",
+      "terminology_hazard": "Do NOT confuse with this repository's existing FormalSystem/Metalogic/BXCanonical/Quasimodel/, which is the BURGESS-XU one-step quasimodel (a finite sequence of Hintikka points with defect discharge) -- a different object. The HWZ quasimodel corresponds to the TIME-SLICED CERTIFICATE, which does not currently use the word.",
+      "added": "2026-10-02",
+      "source": "online literature sweep (L-plus decidability front)"
+    },
+    {
+      "doc_id": "krommes_2020_complexity_k4xs5_s4xs5_subset_spaces",
+      "reason": "The published precedent for 'lacks the finite model property YET decidable'. Krommes, The Complexity of the Product Logics K4 x S5 and S4 x S5 ..., dissertation 2020; journal version ACM TOCL (2021), doi:10.1145/3465384.",
+      "relevance": "Tasks 707, 710. K4 x S5 and S4 x S5 lack the finite product model property and are nonetheless EXPSPACE-complete -- structurally this repository's own position (finite-carrier FMP refuted, decidability open). Cites GKWZ Thms 5.32 and 5.28 for those two facts.",
+      "citation_rule": "Cite by structural label PLUS printed PDF page (e.g. \"Def 12 (PDF p.14)\"). NEVER cite md:NN line numbers -- re-conversion invalidates them.",
+      "fidelity": "unverified_conversion via the pdftotext last-resort tier (both the pymupdf4llm primary and the pymupdf column-clustering fallback were REJECTED by the quality gate). KNOWN ARTIFACT: angle brackets are dropped, so pairs print as 'hf, Ri' for <f, R>. Unicode math is otherwise intact. Verify any quoted statement against the source PDF.",
+      "hazard": "The GKWZ theorem numbers reached this corpus SECOND-HAND through this dissertation. The indexed GKWZ extract does contain 5.28 and 5.32, but the text at 5.32 reads as a statement about transitive frames with an ascending omega-type chain, NOT obviously as 'lacks the finite product model property'. VERIFY both numbers against the GKWZ source PDF before citing either.",
+      "added": "2026-10-02",
+      "source": "online literature sweep (L-plus decidability front)"
+    },
+    {
+      "doc_id": "beer_bendavid_eisner_rodeh_2001_efficient_detection_of_vacuity",
+      "reason": "The published form of the non-vacuity obligation. Beer, Ben-David, Eisner & Rodeh, Efficient Detection of Vacuity in Temporal Model Checking, FMSD 18(2) (2001) 141-163.",
+      "relevance": "Task 704 PRIMARY. This repository's standing obligation -- every certificate-shaped condition set must exhibit a non-trivial inhabitant -- is the published notion of NON-VACUITY, witnessed by an INTERESTING WITNESS, with the degenerate case named ANTECEDENT FAILURE. The phrase 'interesting witness' occurs in 15 chunks of this document.",
+      "citation_rule": "Cite by structural label PLUS printed PDF page (e.g. \"Def 12 (PDF p.14)\"). NEVER cite md:NN line numbers -- re-conversion invalidates them.",
+      "fidelity": "unverified_conversion via the pymupdf4llm primary tier; quality gate PASSED but NOT manually spot-checked. Verify quoted statements against the source PDF.",
+      "hazard": "SHAPE MISMATCH, load-bearing: published vacuity is POST-HOC -- a formula vacuously satisfied in a GIVEN model, detected after a successful model-checking run. Task 704's obligation is SPECIFICATION-TIME -- a condition set that is uninhabited before any model exists. This source supplies the vocabulary and the concept, NOT a drop-in method. Do not plan 704 as if an off-the-shelf algorithm applies.",
+      "added": "2026-10-02",
+      "source": "online literature sweep (L-plus decidability front)"
+    },
+    {
+      "doc_id": "biere_heljanko_junttila_latvala_schuppan_2006_linear_encodings_bounded_ltl",
+      "reason": "The published vocabulary for the lasso wire format. Biere, Heljanko, Junttila, Latvala & Schuppan, Linear Encodings of Bounded LTL Model Checking, LMCS 2(5:5) (2006).",
+      "relevance": "Task 708 PRIMARY (vocabulary). The current lasso family is a (k,l)-LOOP with LoopConstraints / InLoop; the established adjective for the eventual-periodicity side condition is ULTIMATELY PERIODIC (u . v^omega), not an invented term. Use this vocabulary in the relay text rather than coining.",
+      "citation_rule": "Cite by structural label PLUS printed PDF page (e.g. \"Def 12 (PDF p.14)\"). NEVER cite md:NN line numbers -- re-conversion invalidates them.",
+      "fidelity": "unverified_conversion via the pdftotext last-resort tier (both the pymupdf4llm primary and the pymupdf column-clustering fallback were REJECTED by the quality gate). KNOWN ARTIFACT: angle brackets are dropped, so pairs print as 'hf, Ri' for <f, R>. Unicode math is otherwise intact. Verify any quoted statement against the source PDF.",
+      "added": "2026-10-02",
+      "source": "online literature sweep (L-plus decidability front)"
+    },
+    {
+      "doc_id": "babiak_et_al_2015_hanoi_omega_automata_format",
+      "reason": "Prior art for serializing per-slice edge matrices with generic Boolean acceptance. Babiak et al., The Hanoi Omega-Automata Format, CAV 2015, LNCS 9206, 479-486.",
+      "relevance": "Task 708. An existing, adopted interchange format for omega-automata with arbitrary Boolean acceptance conditions -- the closest prior art to the proposed time-sliced wire format, and the reference point for whether the extension should reuse an existing format rather than define a new one.",
+      "citation_rule": "Cite by structural label PLUS printed PDF page (e.g. \"Def 12 (PDF p.14)\"). NEVER cite md:NN line numbers -- re-conversion invalidates them.",
+      "fidelity": "unverified_conversion via the pymupdf4llm primary tier; quality gate PASSED but NOT manually spot-checked. Verify quoted statements against the source PDF.",
+      "added": "2026-10-02",
+      "source": "online literature sweep (L-plus decidability front)"
+    },
+    {
+      "doc_id": "froleyks_yu_biere_heljanko_2024_certifying_phase_abstraction",
+      "reason": "Cheap, free entry point into the certifying-model-checking line. Froleyks, Yu, Biere & Heljanko, Certifying Phase Abstraction, IJCAR 2024, arXiv:2405.04297.",
+      "relevance": "Task 708. Current practice for certificates that a model checker emits and an independent checker validates. NOTE the asymmetry relevant to 708: this literature is uniformly about certificate SOUNDNESS, never about completeness of a certificate CLASS -- so it informs the wire format, not the open completeness question.",
+      "citation_rule": "Cite by structural label PLUS printed PDF page (e.g. \"Def 12 (PDF p.14)\"). NEVER cite md:NN line numbers -- re-conversion invalidates them.",
+      "fidelity": "unverified_conversion via the pymupdf4llm primary tier; quality gate PASSED but NOT manually spot-checked. Verify quoted statements against the source PDF.",
+      "added": "2026-10-02",
+      "source": "online literature sweep (L-plus decidability front)"
+    },
+    {
+      "doc_id": "time2019_certified_model_checking_pltl_one_pass_tableaux",
+      "reason": "Certified model checking for PLTL via one-pass tableaux, TIME 2019, LIPIcs 147 Art. 12.",
+      "relevance": "Task 708 (secondary). A tableau-based certificate route for a linear-time logic; comparison point for what a certificate is expected to carry.",
+      "citation_rule": "Cite by structural label PLUS printed PDF page (e.g. \"Def 12 (PDF p.14)\"). NEVER cite md:NN line numbers -- re-conversion invalidates them.",
+      "fidelity": "unverified_conversion via the pymupdf4llm primary tier; quality gate PASSED but NOT manually spot-checked. Verify quoted statements against the source PDF.",
+      "hazard": "Author list in this corpus entry was taken from the TIME 2019 front matter and is NOT independently verified. Confirm against the PDF before citing by name.",
+      "added": "2026-10-02",
+      "source": "online literature sweep (L-plus decidability front)"
+    },
+    {
+      "doc_id": "friedmann_latte_lange_2013_satisfiability_games_branching_time",
+      "reason": "The most formalization-tractable published route to CTL* decidability. Friedmann, Latte & Lange, Satisfiability Games for Branching-Time Logics, LMCS 9(4:5) (2013).",
+      "relevance": "Task 710 (and the CTL*-route questions generally). Free, modern, game-based presentation. Relevant to 710 because the sliced class's completeness question is the branching-time satisfiability question in another guise.",
+      "citation_rule": "Cite by structural label PLUS printed PDF page (e.g. \"Def 12 (PDF p.14)\"). NEVER cite md:NN line numbers -- re-conversion invalidates them.",
+      "fidelity": "unverified_conversion via the pdftotext last-resort tier (both the pymupdf4llm primary and the pymupdf column-clustering fallback were REJECTED by the quality gate). KNOWN ARTIFACT: angle brackets are dropped, so pairs print as 'hf, Ri' for <f, R>. Unicode math is otherwise intact. Verify any quoted statement against the source PDF.",
+      "added": "2026-10-02",
+      "source": "online literature sweep (L-plus decidability front)"
+    },
+    {
+      "doc_id": "reynolds_towards_a_ctl_star_tableau_draft",
+      "reason": "Reynolds, A Tableau for CTL* (DRAFT version 4.0), author-hosted, undated.",
+      "relevance": "Task 710 (secondary). A tableau decision procedure for FULL CTL*.",
+      "citation_rule": "Cite by structural label PLUS printed PDF page (e.g. \"Def 12 (PDF p.14)\"). NEVER cite md:NN line numbers -- re-conversion invalidates them.",
+      "fidelity": "unverified_conversion via the pymupdf4llm primary tier; quality gate PASSED but NOT manually spot-checked. Verify quoted statements against the source PDF.",
+      "hazard": "UNPUBLISHED DRAFT. It is NOT Reynolds (2007) 'A Tableau for Bundled CTL*' (JLC 17(1), 117-132), which is the BUNDLED-class paper task 710 actually wants and which remains UNACQUIRED (recorded as D4 in the global SOURCES.md). It is also not the 2011 Formal Aspects of Computing journal version. Cite explicitly as a draft, and do not use it as the source for any bundled-vs-full claim.",
+      "added": "2026-10-02",
+      "source": "online literature sweep (L-plus decidability front)"
+    },
+    {
+      "doc_id": "halpern_vandermeyden_vardi_2004_axiomatizations_knowledge_and_time",
+      "reason": "Complete axiomatizations for an S5 knowledge factor combined with linear time. Halpern, van der Meyden & Vardi, SIAM J. Comput. 33(3) (2004) 674-703, arXiv:cs/0208033.",
+      "relevance": "Task 707 (secondary). The nearest published family to an S5-like modality over a linear flow, and the reference for how badly complexity degrades once perfect-recall / no-learning interactions are imposed.",
+      "citation_rule": "Cite by structural label PLUS printed PDF page (e.g. \"Def 12 (PDF p.14)\"). NEVER cite md:NN line numbers -- re-conversion invalidates them.",
+      "fidelity": "unverified_conversion via the pymupdf column-clustering FALLBACK tier (primary tier rejected by the quality gate on sentence-boundary-glue). Verify quotes against the PDF.",
+      "added": "2026-10-02",
+      "source": "online literature sweep (L-plus decidability front)"
+    },
+    {
+      "doc_id": "hampson_kikot_kurucz_marcelino_2019_non_finitely_axiomatisable_product_logics",
+      "reason": "Hampson, Kikot, Kurucz & Marcelino, Non-finitely axiomatisable modal product logics with infinite canonical axiomatisations, arXiv:1905.09536.",
+      "relevance": "Task 707 (secondary). The free member of the product-logic non-axiomatizability family; bounds what an axiomatization of a product-like system can look like.",
+      "citation_rule": "Cite by structural label PLUS printed PDF page (e.g. \"Def 12 (PDF p.14)\"). NEVER cite md:NN line numbers -- re-conversion invalidates them.",
+      "fidelity": "unverified_conversion via the pymupdf column-clustering FALLBACK tier (primary tier rejected by the quality gate on sentence-boundary-glue). Verify quotes against the PDF.",
+      "added": "2026-10-02",
+      "source": "online literature sweep (L-plus decidability front)"
     }
   ]
 }
