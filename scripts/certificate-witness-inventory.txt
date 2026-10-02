@@ -1,0 +1,67 @@
+# Certificate-class witness inventory -- the companion file C36 (NON-VACUITY) reads.
+#
+# WHY THIS EXISTS. A certificate-shaped condition set that is merely *satisfiable* certifies
+# nothing: a vacuously satisfiable set of clauses type-checks indefinitely, and a clause that has
+# collapsed to a triviality is invisible for exactly as long as no non-trivial inhabitant has been
+# written down. The vocabulary is that of Beer, Ben-David, Eisner and Rodeh, "Efficient Detection
+# of Vacuity in Temporal Model Checking" (Formal Methods in System Design 18(2), 2001): a condition
+# is satisfied VACUOUSLY when some sub-formula does not AFFECT the verdict; the propositional case,
+# a guard that is never true, is ANTECEDENT FAILURE; and an INTERESTING WITNESS is an inhabitant
+# that satisfies the condition non-vacuously. Their notion is post hoc and model-relative; what
+# transfers is the criterion, not an algorithm. Read at a certificate class, the degenerate reason
+# is an empty closure (`PlusSlicedCertificate.Probe.exists_certifying_triv`) or a clause whose
+# guard is occupied nowhere in the witness.
+#
+# ADMISSION BAR. Every `def Certifies` / `def PlusCertifies` under
+# FormalSystem/Metalogic/Decidability/ must have at least one `witness` row, and every row names
+# a declaration that (a) exists in source, (b) states the predicate on a CLOSED term -- no `∃`,
+# `∀`, `→` or `¬` at the top level, so an existence theorem is not a witness -- and (c) has its
+# axiom set pinned by C2 or C14. The interest expression is the Definition-1 "affects" criterion
+# made executable: it is `true` iff the closure at the witness carries a formula of EVERY claimed
+# clause kind AND some label of the witness carries one, so the clause's guard is occupied and
+# negating its body there would flip the verdict. C36b evaluates it against the built library.
+#
+# ROW GRAMMAR, `|`-separated. Declaration names are written RELATIVE to the namespace
+# `FormalSystem.Metalogic.Decidability` (the check prefixes it when comparing with the C2/C14
+# baselines). The interest expression is the LAST field of a `witness` row and may itself contain
+# `|`. It is a closed Lean `Bool` term elaborated in C36b's scratch file, which opens
+# `FormalSystem.Syntax`, `FormalSystem.PlusLanguage`, `FormalSystem.Metalogic.Decidability`,
+# `...Decidability.WitnessFamily` and `...Decidability.PlusSharingWitnessFamily`, and defines the
+# helpers `c36P` (the atom `p`), the kind recognizers `c36Imp`/`c36Box`/`c36Untl`/`c36Snce`/
+# `c36Stab` (`PlusFormula`) and `c36ImpF`/`c36BoxF`/`c36UntlF`/`c36SnceF` (`Formula`),
+# `c36Family`/`c36FamilyF` (closure + label occupancy for a list of kinds), `c36PlusLabels`/
+# `c36Labels` (every label of a lasso family) and `c36Sliced` (closure + slab occupancy over the
+# window of a time-sliced certificate). See C36b in scripts/check-module-invariants.sh.
+#
+#   witness | <class predicate> | <witness declaration> | <target> | <kinds: imp,untl,snce,box,stab> | <closure term> | <interest expression>
+#   coverage-limit | <declaration> | <what it refutes> | <anchor file under FormalSystem/>
+#
+# A `coverage-limit` row is the COVERAGE-LIMIT GUARD: a refutation declaration recording that the
+# lasso-based PlusSharingWitnessFamily class does NOT certify some genuine Z-time non-validity.
+# These rows must continue to exist and stay axiom-pinned, because they are what stops the old
+# class's coverage being overstated again in documentation or in a later theorem statement. A row
+# naming a declaration that no longer exists FAILS as stale in either kind.
+
+# --- witness rows: one per certifying predicate, the sliced class's at a non-empty closure ---
+witness | PlusSharingWitnessFamily.PlusCertifies | PlusSharingWitnessFamily.plusCertifies_stabSnce_example | PlusSharingWitnessFamily.targetA | snce,stab | plusClosureOf (([] : PlusContext) ++ [targetA c36P]) | c36Family [c36Snce, c36Stab] (plusClosureOf (([] : PlusContext) ++ [targetA c36P])) (c36PlusLabels (famA c36P).toPlusWitnessFamily)
+witness | PlusSharingWitnessFamily.PlusCertifies | PlusSharingWitnessFamily.plusCertifies_stabUntl_example | PlusSharingWitnessFamily.targetB | untl,stab | plusClosureOf (([] : PlusContext) ++ [targetB c36P]) | c36Family [c36Untl, c36Stab] (plusClosureOf (([] : PlusContext) ++ [targetB c36P])) (c36PlusLabels (famB c36P).toPlusWitnessFamily)
+witness | PlusSlicedCertificate.Certifies | WitnessFamily.Embedded.liveFamily_sliced_certifies | WitnessFamily.Embedded.evTarget | untl | plusClosureOf (([] : PlusContext) ++ [ofFormula Embedded.evTarget]) | c36Sliced [c36Untl] (Embedded.liveFamily.sliced (-1))
+witness | WitnessFamily.Certifies | WitnessFamily.Embedded.liveFamily_certifies | WitnessFamily.Embedded.evTarget | untl | closureOf (([] : Context) ++ [Embedded.evTarget]) | c36FamilyF [c36UntlF] (closureOf (([] : Context) ++ [Embedded.evTarget])) (c36Labels Embedded.liveFamily)
+witness | SharingWitnessFamily.Certifies | WitnessFamily.Embedded.liveFamily_toSharing_certifies | WitnessFamily.Embedded.evTarget | untl | closureOf (([] : Context) ++ [Embedded.evTarget]) | c36FamilyF [c36UntlF] (closureOf (([] : Context) ++ [Embedded.evTarget])) (c36Labels Embedded.liveFamily.toSharing.toWitnessFamily)
+
+# --- coverage-limit rows: what the lasso-based class provably cannot certify ---
+coverage-limit | PlusSharingWitnessFamily.not_exists_hopFree_plusCertifies_hopTarget | no hop-free family of any size certifies hopTarget | FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/HopFree.lean
+coverage-limit | PlusSharingWitnessFamily.not_exists_plusCertifies_pumpTarget | no family of the class, of any size, certifies pumpTarget | FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/NoCertificate.lean
+coverage-limit | PlusSharingWitnessFamily.plusCompression_fails_at_pumpTarget | the compression producer cannot deliver a certificate at pumpTarget | FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/NoCertificate.lean
+coverage-limit | PlusSharingWitnessFamily.not_plusValidZTime_hopTarget | hopTarget is a genuine Z-time non-validity, so the gap above is a coverage limit and not a validity | FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/Targets.lean
+coverage-limit | PlusSharingWitnessFamily.not_plusValidZTime_pumpTarget | pumpTarget is a genuine Z-time non-validity, so the gap above is a coverage limit and not a validity | FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/Targets.lean
+
+# --- RESERVED: finite-carrier refutations, pending the refutation module (FiniteCarrier.lean)
+# landing under FormalSystem/. These record that a certificate presenting a FINITE-carrier frame
+# cannot certify a box-dot-free Z-time non-validity the landed L family already certifies, which
+# is why the sliced class's carrier is `ℤ × Fin n`. Uncomment each row when its declaration is in
+# the tree; until then C36 counts them in its census and asserts nothing about them.
+#   coverage-limit | PlusSlicedCertificate.FiniteCarrier.no_finite_carrier_sat | no finite-carrier frame satisfies the refuting formula | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FiniteCarrier.lean
+#   coverage-limit | PlusSlicedCertificate.FiniteCarrier.no_ofStep_sat | no frame built by FrameOver.ofStep satisfies it at a finite carrier | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FiniteCarrier.lean
+#   coverage-limit | PlusSlicedCertificate.FiniteCarrier.not_finite_carrier_fmp | the finite-carrier finite model property fails for L-plus over Z-time | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FiniteCarrier.lean
+#   coverage-limit | PlusSlicedCertificate.FiniteCarrier.not_plusValidZTime_neg_θ | the refuting formula's negation is a genuine Z-time non-validity | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FiniteCarrier.lean

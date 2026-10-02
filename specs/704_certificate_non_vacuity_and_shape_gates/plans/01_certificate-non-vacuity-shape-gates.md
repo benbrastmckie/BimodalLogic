@@ -197,7 +197,7 @@ certifies too, now that `TailStable` is the liveness-filtered form).
 
 ---
 
-### Phase 2: Exhibit the interesting witnesses (sliced Tier 1 and sharing) [IN PROGRESS]
+### Phase 2: Exhibit the interesting witnesses (sliced Tier 1 and sharing) [COMPLETED]
 
 **Goal**: Land the first non-degenerate `PlusSlicedCertificate` inhabitant and the lifted
 `SharingWitnessFamily` inhabitant as library theorems, with every generated surface a new
@@ -277,14 +277,14 @@ confirm by `sed -n '/<<.BASELINE./,/^BASELINE$/p' | grep -c depends`.
 
 ---
 
-### Phase 3: C36 -- NON-VACUITY and COVERAGE-LIMIT GUARD [NOT STARTED]
+### Phase 3: C36 -- NON-VACUITY and COVERAGE-LIMIT GUARD [IN PROGRESS]
 
 **Goal**: Add the named non-vacuity gate with an explicit interesting-witness criterion, a
 `--no-build` structural half, a `RUN_BUILD=1` evaluative half, and a coverage-limit table that
 keeps the old class's limits from being overstated again.
 
 **Tasks**:
-- [ ] Create `scripts/certificate-witness-inventory.txt` (header comment on the
+- [x] Create `scripts/certificate-witness-inventory.txt` (header comment on the
       `debug-artifact-allowlist.txt` model: purpose, admission bar, the two row kinds, the
       published vocabulary and its source). Row grammar, `|`-separated:
       - `witness | <class predicate FQN> | <witness declaration FQN> | <target declaration or literal> | <clause kinds, comma-separated from {imp,untl,snce,box,stab}> | <interest expression: Lean Bool term>`
@@ -309,8 +309,8 @@ keeps the old class's limits from being overstated again.
       `no_finite_carrier_sat`, `no_ofStep_sat`, `not_finite_carrier_fmp`,
       `not_plusValidZTime_neg_θ`, "pending the finite-carrier refutation module
       (`FiniteCarrier.lean`) landing in the tree" -- cite the future module name, never a
-      `specs/` path or task number.
-- [ ] C36a (Python heredoc, runs in every mode; C34 pattern, reusing `scripts/lib/live_walk.py`
+      `specs/` path or task number. *(deviation: altered -- witness rows carry a seventh field, the closure term, so C36b can print the closure cardinality the plan asks for; the interest expression is the rest-of-line last field)*
+- [x] C36a (Python heredoc, runs in every mode; C34 pattern, reusing `scripts/lib/live_walk.py`
       and `lean_citations.py`'s `decl_spans`): (i) enumerate every `def Certifies` /
       `def PlusCertifies` under `FormalSystem/Metalogic/Decidability/` with its enclosing
       namespace -- anti-silence: zero found or fewer than four is exit 2; (ii) every such
@@ -322,22 +322,22 @@ keeps the old class's limits from being overstated again.
       row's declaration exists and its FQN appears in C2's `AXIOM_BASELINE` (read the
       heredoc from the script's own text, C21 style); (v) a row naming a declaration that no
       longer exists FAILs as stale (C26 precedent). Fixture self-test for the closed-term
-      matcher runs first (C27/C34 precedent).
-- [ ] C36b (`RUN_BUILD=1` only, after C1, under the same `flock` on `.lake/build-guard.lock`
+      matcher runs first (C27/C34 precedent). *(deviation: altered -- witness rows are ALSO required to be C2/C14-pinned (C21-style union), which needed a fourth C2 pin, `Embedded.liveFamily_certifies`; count word is now thirty)*
+- [x] C36b (`RUN_BUILD=1` only, after C1, under the same `flock` on `.lake/build-guard.lock`
       C2 uses): write a scratch `.lean` via `mktemp --suffix=.lean` importing `FormalSystem`,
       with one `#eval` per `witness` row evaluating the row's interest expression, plus one
       `#eval` of the closure cardinality; run `lake env lean`; assert every line prints
       `true` / a positive number. Delegate axioms to C2 (no `#print axioms` here). Pass text:
       "C36 every certificate class carries an interesting witness (N witness rows, M
       coverage-limit rows); no antecedent failure". Skipped under `--no-build` with an
-      `info C36b skipped (--no-build)` line.
-- [ ] Add `ENFORCE_C36=${ENFORCE_C36:-1}` with its comment paragraph (ship enforced on the
+      `info C36b skipped (--no-build)` line. *(completed: C36a writes the #eval lines, one parser for both halves; all five rows true, closure cards 6/8/3/3/3)*
+- [x] Add `ENFORCE_C36=${ENFORCE_C36:-1}` with its comment paragraph (ship enforced on the
       C24/C25/C26 precedent; exit 2 never suppressed), the header enumeration lines for C36
       (both halves, noting which half runs under `--no-build`), the companion-file line for
-      `scripts/certificate-witness-inventory.txt`, and the `--no-build` usage note update.
-- [ ] Run `bash scripts/check-module-invariants.sh --no-build` and the full mode; both PASS.
+      `scripts/certificate-witness-inventory.txt`, and the `--no-build` usage note update. *(completed)*
+- [x] Run `bash scripts/check-module-invariants.sh --no-build` and the full mode; both PASS.
       Negative test (then revert): delete the sliced witness row -> C36a FAILs naming
-      `PlusSlicedCertificate.Certifies`; rename a coverage-limit FQN -> stale-row FAIL.
+      `PlusSlicedCertificate.Certifies`; rename a coverage-limit FQN -> stale-row FAIL. *(completed: ALL CHECKS PASSED in both modes; both negative tests FAIL by name and were reverted)*
 
 **Timing**: 2 hours
 

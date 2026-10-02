@@ -1,0 +1,66 @@
+{
+  "phase": 3,
+  "phase_name": "C36 -- NON-VACUITY and COVERAGE-LIMIT GUARD",
+  "started_at": "2026-10-02T21:58:07Z",
+  "last_updated": "2026-10-02T22:04:02Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Create scripts/certificate-witness-inventory.txt with witness and coverage-limit rows",
+      "status": "done",
+      "files_touched": [
+        "scripts/certificate-witness-inventory.txt"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "C36a structural half (Python heredoc, every mode)",
+      "status": "done",
+      "files_touched": [
+        "scripts/check-module-invariants.sh"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "C36b evaluative half (RUN_BUILD=1)",
+      "status": "done",
+      "files_touched": [
+        "scripts/check-module-invariants.sh"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "ENFORCE_C36, header, companion line, --no-build note",
+      "status": "done",
+      "files_touched": [
+        "scripts/check-module-invariants.sh"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "Both modes PASS; negative tests FAIL by name and are reverted",
+      "status": "done",
+      "files_touched": []
+    }
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "deviations": [
+    {
+      "task_id": "3.1",
+      "description": "Create scripts/certificate-witness-inventory.txt",
+      "type": "altered",
+      "reason": "witness rows carry a seventh field (closure term) so C36b can print the closure cardinality; the interest expression is the rest-of-line last field",
+      "annotation": "*(deviation: altered -- seventh closure-term field)*"
+    },
+    {
+      "task_id": "3.2",
+      "description": "C36a structural half",
+      "type": "altered",
+      "reason": "witness rows must be C2/C14-pinned as well as coverage-limit rows (a recorded witness whose axioms nothing watches is a gap); this needed a fourth C2 pin, Embedded.liveFamily_certifies, so the count word is thirty rather than twenty-nine",
+      "annotation": "*(deviation: altered -- witness rows pinned too; fourth C2 pin)*"
+    }
+  ],
+  "handoff_count": 0,
+  "notes": "both modes ALL CHECKS PASSED (full 116 s); negative tests: dropping the sliced row -> 'antecedent failure: no interesting witness exhibited for PlusSlicedCertificate.Certifies'; renaming a coverage-limit FQN -> 'stale coverage-limit row'; the foreign C5 failure cleared between the Phase 2 and Phase 3 runs"
+}

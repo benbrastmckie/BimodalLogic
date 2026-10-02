@@ -123,6 +123,18 @@
 #       C20's live scope is this repository's own files, so a cross-repository citation
 #       table was read by nothing and drifted by +38 lines; this check reads a GENERATED
 #       view instead. Build-free, so it runs under --no-build and therefore in CI
+#   C36 NON-VACUITY with a COVERAGE-LIMIT GUARD, in the vocabulary of Beer, Ben-David,
+#       Eisner and Rodeh (2001). C36a (every mode): every `def Certifies` / `def
+#       PlusCertifies` under FormalSystem/Metalogic/Decidability/ has a `witness` row in
+#       scripts/certificate-witness-inventory.txt whose declaration exists, states the
+#       predicate on a CLOSED term (an existence theorem is not a witness) and is
+#       axiom-pinned by C2 or C14; every `coverage-limit` row -- a refutation recording
+#       what the lasso-based class provably cannot certify -- exists and is pinned too; a
+#       row naming a vanished declaration FAILS as stale. C36b (full mode only): each
+#       witness row's INTEREST EXPRESSION evaluates `true` against the built library, so
+#       every claimed clause kind is in the closure AND occupies a label of the witness --
+#       the clause AFFECTS the verdict, and the class is not inhabited by ANTECEDENT
+#       FAILURE alone. An ungated census prints at every run
 #   C9D Task-number citations under docs/ (enforced)
 #   INV Every `<!-- BEGIN GENERATED: inventory -->` block in the tree is current
 #
@@ -137,7 +149,7 @@
 #
 # Usage:
 #   bash scripts/check-module-invariants.sh            # all checks
-#   bash scripts/check-module-invariants.sh --no-build # skip C1/C2/C6/C16/C24/C25 (fast structural pass)
+#   bash scripts/check-module-invariants.sh --no-build # skip C1/C2/C6/C16/C24/C25/C36b (fast structural pass)
 #   bash scripts/check-module-invariants.sh --emit-inventory          # rewrite generated inventory blocks
 #   bash scripts/check-module-invariants.sh --emit-inventory --check  # fail if a rewrite would change a byte
 #
@@ -154,6 +166,7 @@
 #   scripts/warning-budget.txt                 per-file compiler-warning baseline (C28)
 #   scripts/c20-declaration-baseline.txt       recorded wrong-declaration citations still to repair (C20)
 #   references.bib                             the single bibliography every block-scoped key resolves in (C31)
+#   scripts/certificate-witness-inventory.txt  interesting-witness and coverage-limit rows per certificate class (C36)
 
 set -uo pipefail
 
@@ -775,6 +788,22 @@ ENFORCE_C34B=${ENFORCE_C34B:-1} # every binder-carrying claim carries a marker (
 # wrong-declaration when seeded; see docs/reference/transcription-audit-surface.md's "Corrections
 # the consuming table owes" for what the consuming side still owes for both drift clusters.
 ENFORCE_C35=${ENFORCE_C35:-1} # the generated citation manifest is byte-current (enforced)
+# C36 asserts NON-VACUITY of every certificate class, in the published vocabulary of Beer,
+# Ben-David, Eisner and Rodeh, "Efficient Detection of Vacuity in Temporal Model Checking" (FMSD
+# 18(2), 2001): a condition set is vacuous when some clause does not AFFECT its verdict, the
+# degenerate case is ANTECEDENT FAILURE, and an INTERESTING WITNESS is an inhabitant that
+# satisfies the set non-vacuously. The defect this guards against is concrete: a certificate
+# clause that had collapsed to a triviality type-checked for months, because a vacuously
+# satisfiable condition set certifies nothing and nothing in the tree had ever exhibited a
+# non-trivial inhabitant of it. C36a runs in every mode and reads source text only; C36b runs
+# the interest expressions under RUN_BUILD=1, after C1, exactly as C2 does. The coverage-limit
+# rows are the second half: the refutations recording what the lasso-based class cannot certify
+# must continue to exist and stay pinned, or that class's coverage will be overstated again.
+# Shipped enforced on the C24/C25/C26 precedent: green on the tree the day it was written.
+# Anti-silence: a missing or empty inventory, fewer certifying predicates than the tree is known
+# to carry, or an unreadable C2/C14 baseline is a BROKEN MATCHER, not a clean tree -- exit 2, and
+# exit 2 is NOT suppressed by ENFORCE_C36=0.
+ENFORCE_C36=${ENFORCE_C36:-1} # every certificate class carries a pinned interesting witness (enforced)
 export ENFORCE_C34A ENFORCE_C34B
 # C16's second half widens the env_linter batch beyond the single `FormalSystem` library root to
 # every root declared in lakefile.toml -- the other library root and all fourteen `lean_exe`
@@ -1035,8 +1064,9 @@ echo
 # into it would make a `Decidable` instance noncomputable in substance while still elaborating,
 # which no other check in this script would see.
 #
-# The last three are the rows C36 (NON-VACUITY) reads: the sliced class's INTERESTING WITNESS
-# and the lifted sharing-class witness (`PlusSlicedCertificate/Examples.lean`), and the
+# The last four are the rows C36 (NON-VACUITY) reads: the L-class witness `liveFamily_certifies`,
+# the sliced class's INTERESTING WITNESS and the lifted sharing-class witness
+# (`PlusSlicedCertificate/Examples.lean`), and the
 # compression refutation at `pumpTarget`, which completes the coverage-limit roster beside the
 # four Stage-1 refutations pinned above. C36 asserts set membership here rather than printing
 # axioms a second time, so an axiom leaking into a witness is reported ONCE, by this check.
@@ -1071,6 +1101,7 @@ read -r -d '' AXIOM_BASELINE <<'BASELINE'
 'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.plusRefutes_of_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.exists_plusSlicedCertificate_of_tailStable_countermodel' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_sliced_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_toSharing_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusCompression_fails_at_pumpTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1106,6 +1137,7 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.plusRefutes_of_certifies
 #print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.exists_plusSlicedCertificate_of_tailStable_countermodel
 #print axioms FormalSystem.Metalogic.Decidability.WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula
+#print axioms FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_certifies
 #print axioms FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_sliced_certifies
 #print axioms FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_toSharing_certifies
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusCompression_fails_at_pumpTarget
@@ -1119,7 +1151,7 @@ LEAN
     | grep 'depends on axioms')
   rm -f "$AX_SRC"
   if [ "$AX_OUT" = "$AXIOM_BASELINE" ]; then
-    pass C2 "all twenty-nine pinned axiom sets match baseline"
+    pass C2 "all thirty pinned axiom sets match baseline"
     while IFS= read -r l; do note "$l"; done <<<"$AX_OUT"
   else
     fail C2 "axiom sets diverged from baseline -- this is a HARD STOP, not a new baseline"
@@ -6351,6 +6383,366 @@ if [ "$C35_STATUS" -eq 2 ]; then
 elif [ "$C35_STATUS" -ne 0 ] && [ "$ENFORCE_C35" -eq 1 ]; then
   FAILURES=$((FAILURES + 1))
 fi
+echo
+
+# ---------------------------------------------------------------------------
+# C36: NON-VACUITY -- every certificate class carries an interesting witness, and the
+#      coverage-limit refutations stay in the tree and pinned
+#
+# VOCABULARY (Beer, Ben-David, Eisner, Rodeh 2001). A sub-formula AFFECTS a formula in a model if
+# replacing it can change the verdict; a formula is VACUOUSLY satisfied when some sub-formula does
+# not affect it; ANTECEDENT FAILURE is the propositional special case; an INTERESTING WITNESS is a
+# model satisfying the formula non-vacuously. Their setting is post hoc and model-relative, so no
+# algorithm is ported. What transfers is the criterion, read at a condition set `Certifies : C ->
+# Prop` with closure-guarded clauses: an inhabitant is an interesting witness for clause kind K iff
+# the closure puts a K-formula in play AND some label of the witness carries one, so that K's
+# guard is occupied there and negating K's body would flip `Certifies`. An empty closure
+# (`Probe.exists_certifying_triv`) satisfies every clause by antecedent failure and witnesses
+# nothing.
+#
+# TWO HALVES. C36a is structural and build-free (every mode): it enumerates the certifying
+# predicates from source, requires a `witness` row per predicate, checks each row's declaration
+# exists with a CLOSED-term statement of the predicate, and checks that every witness and
+# coverage-limit declaration is pinned by C2's or C14's axiom baseline -- a C21-style subset
+# assertion over the baselines that exist, never a third one, so an axiom leaking into a witness
+# is reported once, by C2. C36b (RUN_BUILD=1, after C1, so under the shared build lock C1 holds)
+# compiles a scratch file that `#eval`s every witness row's interest expression and closure
+# cardinality against the built library and requires `true` and a positive number per row.
+#
+# COVERAGE-LIMIT GUARD. The lasso-based class is incomplete -- a genuine Z-time non-validity has
+# no certifying family of any size, and hop-free families fail on a second target. The
+# `coverage-limit` rows name the declarations that record this. They are asserted to exist and
+# to be pinned so that the old class's coverage cannot be overstated again. A commented, reserved
+# row group names the finite-carrier refutations pending their module; the census counts them
+# and the check asserts nothing about them until they are uncommented.
+#
+# Anti-silence (exit 2 in every mode, suppressed by no flag): a missing or empty inventory, zero
+# live .lean files walked, fewer certifying predicates than the tree is known to carry, or an
+# unreadable baseline block. A fixture self-test for the closed-term matcher runs first.
+# ---------------------------------------------------------------------------
+C36_EVALS=$(mktemp)
+export C36_EVALS
+python3 - <<'C36EOF'
+import os, re, sys
+sys.path.insert(0, os.path.join("scripts", "lib"))
+from live_walk import live_files  # noqa: E402
+from lean_citations import decl_spans  # noqa: E402
+from lean_debug_artifacts import mask  # noqa: E402
+
+INVENTORY = "scripts/certificate-witness-inventory.txt"
+SCRIPT = "scripts/check-module-invariants.sh"
+PRED_ROOT = "FormalSystem/Metalogic/Decidability"
+NS_ROOT = "FormalSystem.Metalogic.Decidability"
+MIN_CLASSES = 4   # the tree carries four certifying predicates; fewer is a broken matcher
+KINDS = {"imp", "untl", "snce", "box", "stab"}
+ENFORCE = os.environ.get("ENFORCE_C36", "1") == "1"
+EVALS = os.environ.get("C36_EVALS", "")
+
+NS_RE = re.compile(r"^\s*namespace\s+([A-Za-z_][\w.']*)")
+END_RE = re.compile(r"^\s*end\s+([A-Za-z_][\w.']*)")
+PRED_RE = re.compile(r"^\s*(?:private\s+|protected\s+)?(?:def|abbrev)\s+(Certifies|PlusCertifies)\b")
+DECL_RE = re.compile(r"^\s*(?:@\[[^\]]*\]\s*)*(?:private\s+|protected\s+|noncomputable\s+)*"
+                     r"(?:theorem|lemma|def|abbrev|instance|structure|inductive)\s+([A-Za-z_][\w.']*)")
+OPEN, CLOSE = "([{⟨", ")]}⟩"
+
+
+def namespaced(lines):
+    """[(namespace stack as a string, line index)] -- the enclosing namespace at every line."""
+    stack, out = [], []
+    for l in lines:
+        m = NS_RE.match(l)
+        if m:
+            stack.append(m.group(1))
+        else:
+            m = END_RE.match(l)
+            if m and stack and stack[-1] == m.group(1):
+                stack.pop()
+        out.append(".".join(stack))
+    return out
+
+
+def rel(full):
+    return full[len(NS_ROOT) + 1:] if full.startswith(NS_ROOT + ".") else full
+
+
+def type_of(statement):
+    """The type text of a masked `theorem name <binders> : <type> := ...` statement, or None."""
+    depth, colon = 0, -1
+    for i, ch in enumerate(statement):
+        if ch in OPEN:
+            depth += 1
+        elif ch in CLOSE:
+            depth -= 1
+        elif depth == 0 and ch == ":" and colon < 0 and not statement.startswith(":=", i):
+            colon = i
+        elif depth == 0 and statement.startswith(":=", i):
+            if colon < 0:
+                return None
+            return statement[colon + 1:i].strip()
+    return statement[colon + 1:].strip() if colon >= 0 else None
+
+
+def closed_witness(ty, pred):
+    """True iff `ty` is `<term>.<pred> <args>` with no logical connective at paren depth 0."""
+    if ty is None:
+        return False
+    depth, flat = 0, []
+    for ch in ty:
+        if ch in OPEN:
+            depth += 1
+        elif ch in CLOSE:
+            depth -= 1
+        flat.append(ch if depth == 0 else " ")
+    top = "".join(flat)
+    if any(c in top for c in "∃∀→¬↔∧∨"):
+        return False
+    return re.search(r"\." + pred + r"(\s|$)", top) is not None
+
+
+_FIXTURES = [
+    ("theorem a : (famA p).PlusCertifies 0 :=", "PlusCertifies", True),
+    ("theorem b : liveFamily.toSharing.Certifies (-1) :=", "Certifies", True),
+    ("theorem c (p : Atom) : (famB p).PlusCertifies 0 :=", "PlusCertifies", True),
+    ("theorem d : ∃ bx : PlusFormula → Bool, (triv.withBx bx).Certifies :=", "Certifies", False),
+    ("theorem e (W : WitnessFamily Γ Del) {t : ℤ} (h : W.Certifies t) : W.toSharing.Certifies t :=", "Certifies", True),
+    ("theorem f : ∀ W, W.Certifies t → W.toSharing.Certifies t :=", "Certifies", False),
+    ("theorem g : ¬ (G.sliced 0).Certifies :=", "Certifies", False),
+    ("theorem h : (W.sliced t).TailStable :=", "Certifies", False),
+    ("theorem i : (famA p).PlusCertifies 0 ↔ True :=", "PlusCertifies", False),
+]
+bad = [(st, want, closed_witness(type_of(st), pred)) for st, pred, want in _FIXTURES
+       if closed_witness(type_of(st), pred) != want]
+if bad:
+    print(f"FAIL  C36  fixture self-test: {len(bad)} closed-term fixture(s) misjudged")
+    for st, want, got in bad:
+        print(f"            {st[:70]}: expected {want}, got {got}")
+    sys.exit(2)
+
+# --- the inventory ---
+if not os.path.isfile(INVENTORY):
+    print(f"FAIL  C36  missing {INVENTORY} (anti-silence guard)")
+    sys.exit(2)
+witness_rows, limit_rows, reserved, malformed = [], [], 0, []
+for n, raw in enumerate(open(INVENTORY, encoding="utf-8"), 1):
+    line = raw.rstrip("\n")
+    if not line.strip():
+        continue
+    if line.lstrip().startswith("#"):
+        if re.match(r"^#\s*coverage-limit\s*\|", line.lstrip()):
+            reserved += 1
+        continue
+    kind = line.split("|", 1)[0].strip()
+    if kind == "witness":
+        f = [x.strip() for x in line.split("|", 6)]
+        if len(f) != 7 or not all(f):
+            malformed.append((n, "witness row needs 7 `|`-separated fields"))
+            continue
+        kinds = {k.strip() for k in f[4].split(",")}
+        if not kinds <= KINDS or not kinds:
+            malformed.append((n, f"clause kinds {sorted(kinds)} leave {sorted(KINDS)}"))
+            continue
+        witness_rows.append({"line": n, "cls": f[1], "decl": f[2], "target": f[3],
+                             "kinds": sorted(kinds), "closure": f[5], "expr": f[6]})
+    elif kind == "coverage-limit":
+        f = [x.strip() for x in line.split("|")]
+        if len(f) != 4 or not all(f):
+            malformed.append((n, "coverage-limit row needs 4 `|`-separated fields"))
+            continue
+        limit_rows.append({"line": n, "decl": f[1], "what": f[2], "anchor": f[3]})
+    else:
+        malformed.append((n, f"unknown row kind `{kind}`"))
+if not witness_rows and not limit_rows:
+    print(f"FAIL  C36  {INVENTORY} carries no row at all (anti-silence guard)")
+    sys.exit(2)
+
+# --- the certifying predicates, from source ---
+preds, scanned = {}, 0
+index = {}   # rel FQN -> (path, keyword line, masked statement)
+for path in live_files("FormalSystem", ".lean"):
+    try:
+        text = open(path, encoding="utf-8", errors="replace").read()
+    except OSError:
+        continue
+    scanned += 1
+    masked = mask(text)
+    lines = masked.split("\n")
+    ns = namespaced(lines)
+    if path.startswith(PRED_ROOT + "/"):
+        for k, l in enumerate(lines):
+            m = PRED_RE.match(l)
+            if m:
+                full = (ns[k] + "." if ns[k] else "") + m.group(1)
+                preds[rel(full)] = (path, k + 1)
+    for d in decl_spans(lines):
+        m = DECL_RE.match(lines[d.line - 1])
+        if not m:
+            continue
+        full = (ns[d.line - 1] + "." if ns[d.line - 1] else "") + m.group(1)
+        stmt = " ".join(x.strip() for x in lines[d.line - 1:d.end])
+        index.setdefault(rel(full), (path, d.line, stmt))
+if scanned == 0:
+    print("FAIL  C36  the walk produced ZERO .lean files under FormalSystem/ (anti-silence guard)")
+    sys.exit(2)
+if len(preds) < MIN_CLASSES:
+    print(f"FAIL  C36  only {len(preds)} `def Certifies`/`def PlusCertifies` found under "
+          f"{PRED_ROOT}/ (the tree carries {MIN_CLASSES}; anti-silence guard)")
+    for k, v in sorted(preds.items()):
+        print(f"            {k} at {v[0]}:{v[1]}")
+    sys.exit(2)
+
+# --- the C2 and C14 baselines, read from this script's own text (C21 style) ---
+try:
+    script = open(SCRIPT, encoding="utf-8").read()
+except OSError as exc:
+    print(f"FAIL  C36  cannot read {SCRIPT}: {exc}")
+    sys.exit(2)
+pinned = set()
+for tag in ("BASELINE", "C14BASE"):
+    m = re.search(r"<<'" + tag + r"'\n(.*?)\n" + tag + r"\n", script, re.S)
+    if not m:
+        print(f"FAIL  C36  cannot locate the {tag} heredoc in {SCRIPT} (anti-silence guard)")
+        sys.exit(2)
+    pinned |= set(re.findall(r"^'([^']+)' depends on axioms", m.group(1), re.M))
+if not pinned:
+    print("FAIL  C36  the C2/C14 baselines name no declaration (anti-silence guard)")
+    sys.exit(2)
+
+# --- census, ungated ---
+print(f"INFO  C36  census: {len(preds)} certifying predicate(s) under {PRED_ROOT}/; "
+      f"{len(witness_rows)} witness row(s), {len(limit_rows)} coverage-limit row(s), "
+      f"{reserved} reserved (commented) row(s); {len(pinned)} pinned declaration(s) in C2+C14")
+for k, v in sorted(preds.items()):
+    rows = [r for r in witness_rows if r["cls"] == k]
+    print(f"            {k} ({v[0]}): {len(rows)} witness row(s)"
+          + (" -- " + ", ".join(r["decl"].rsplit(".", 1)[-1] + "[" + ",".join(r["kinds"]) + "]"
+                                for r in rows) if rows else ""))
+
+failed = []
+for n, why in malformed:
+    failed.append(f"{INVENTORY}:{n}: malformed row -- {why}")
+for k in sorted(preds):
+    if not any(r["cls"] == k for r in witness_rows):
+        failed.append(f"antecedent failure: no interesting witness exhibited for {k} "
+                      f"({preds[k][0]}:{preds[k][1]})")
+for r in witness_rows:
+    if r["cls"] not in preds:
+        failed.append(f"{INVENTORY}:{r['line']}: stale row -- no `def Certifies`/`def "
+                      f"PlusCertifies` named {r['cls']} under {PRED_ROOT}/")
+    hit = index.get(r["decl"])
+    if hit is None:
+        failed.append(f"{INVENTORY}:{r['line']}: stale row -- declaration {r['decl']} not found "
+                      f"under FormalSystem/")
+        continue
+    pred = r["cls"].rsplit(".", 1)[-1]
+    if not closed_witness(type_of(hit[2]), pred):
+        failed.append(f"{INVENTORY}:{r['line']}: {r['decl']} ({hit[0]}:{hit[1]}) does not state "
+                      f"`.{pred}` on a closed term -- an existence theorem is not a witness")
+    if NS_ROOT + "." + r["decl"] not in pinned:
+        failed.append(f"{INVENTORY}:{r['line']}: witness {r['decl']} is pinned by neither C2 nor "
+                      f"C14 -- add its `#print axioms` row to C2")
+for r in limit_rows:
+    hit = index.get(r["decl"])
+    if hit is None:
+        failed.append(f"{INVENTORY}:{r['line']}: stale coverage-limit row -- declaration "
+                      f"{r['decl']} not found under FormalSystem/")
+        continue
+    if NS_ROOT + "." + r["decl"] not in pinned:
+        failed.append(f"{INVENTORY}:{r['line']}: coverage-limit {r['decl']} is pinned by neither "
+                      f"C2 nor C14 -- its refutation must stay axiom-watched")
+    if not os.path.isfile(r["anchor"]):
+        failed.append(f"{INVENTORY}:{r['line']}: anchor file {r['anchor']} is not on the tree")
+    elif hit[0] != r["anchor"]:
+        failed.append(f"{INVENTORY}:{r['line']}: {r['decl']} lives in {hit[0]}, not the recorded "
+                      f"anchor {r['anchor']}")
+
+# The scratch body C36b compiles, written whether or not it will run (one parser, two halves).
+if EVALS:
+    with open(EVALS, "w", encoding="utf-8") as fh:
+        for r in witness_rows:
+            short = r["decl"].rsplit(".", 1)[-1]
+            fh.write('#eval s!"C36 ' + short + ' card={(' + r["closure"] + ').card} '
+                     'interesting={' + r["expr"] + '}"\n')
+
+if failed:
+    print(f"FAIL  C36a {len(failed)} non-vacuity problem(s)")
+    for line in failed[:20]:
+        print(f"            {line}")
+    sys.exit(1 if ENFORCE else 0)
+print(f"PASS  C36a every certificate class carries an interesting witness: {len(preds)} "
+      f"predicate(s), {len(witness_rows)} closed-term witness row(s) and {len(limit_rows)} "
+      f"coverage-limit row(s), all pinned; no antecedent failure")
+sys.exit(0)
+C36EOF
+C36_STATUS=$?
+if [ "$C36_STATUS" -eq 2 ]; then
+  # An untrustworthy scan is an error in EVERY mode.
+  fail C36 "witness-inventory scan could not be trusted (exit 2; not suppressed by ENFORCE_C36=0)"
+elif [ "$C36_STATUS" -ne 0 ]; then
+  # The python above reads ENFORCE_C36 itself and exits non-zero only on a GATED failure.
+  FAILURES=$((FAILURES + 1))
+fi
+
+# C36b: the interest expressions, evaluated against the built library. The preamble below is
+# the vocabulary the inventory's expression column is written in; a helper added here is a
+# helper the companion file's header must also document.
+if [ "$RUN_BUILD" -eq 1 ] && [ "$C36_STATUS" -eq 0 ]; then
+  C36_SRC=$(mktemp --suffix=.lean)
+  cat >"$C36_SRC" <<'LEAN'
+import FormalSystem
+open FormalSystem.Syntax FormalSystem.PlusLanguage
+open FormalSystem.Metalogic.Decidability
+open FormalSystem.Metalogic.Decidability.WitnessFamily
+open FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily
+
+def c36P : Atom := Atom.mkBase "p"
+def c36Imp : PlusFormula → Bool | .imp _ _ => true | _ => false
+def c36Box : PlusFormula → Bool | .box _ => true | _ => false
+def c36Untl : PlusFormula → Bool | .untl _ _ => true | _ => false
+def c36Snce : PlusFormula → Bool | .snce _ _ => true | _ => false
+def c36Stab : PlusFormula → Bool | .stab _ => true | _ => false
+def c36ImpF : Formula → Bool | .imp _ _ => true | _ => false
+def c36BoxF : Formula → Bool | .box _ => true | _ => false
+def c36UntlF : Formula → Bool | .untl _ _ => true | _ => false
+def c36SnceF : Formula → Bool | .snce _ _ => true | _ => false
+def c36In (k : PlusFormula → Bool) (C : Finset PlusFormula) : Bool := decide (∃ φ ∈ C, k φ = true)
+def c36InF (k : Formula → Bool) (C : Finset Formula) : Bool := decide (∃ φ ∈ C, k φ = true)
+def c36Family (ks : List (PlusFormula → Bool)) (C : Finset PlusFormula)
+    (labels : List (Finset PlusFormula)) : Bool :=
+  ks.all fun k => c36In k C && labels.any fun X => c36In k X
+def c36FamilyF (ks : List (Formula → Bool)) (C : Finset Formula)
+    (labels : List (Finset Formula)) : Bool :=
+  ks.all fun k => c36InF k C && labels.any fun X => c36InF k X
+def c36PlusLabels {Γ Del : PlusContext} (W : PlusWitnessFamily Γ Del) : List (Finset PlusFormula) :=
+  (W.lassos.map fun ℓ => ℓ.back ++ ℓ.mid ++ ℓ.fwd).flatten
+def c36Labels {Γ Del : Context} (W : WitnessFamily Γ Del) : List (Finset Formula) :=
+  (W.lassos.map fun ℓ => ℓ.back ++ ℓ.mid ++ ℓ.fwd).flatten
+def c36Sliced {Γ Del : PlusContext} (ks : List (PlusFormula → Bool))
+    (G : PlusSlicedCertificate Γ Del) : Bool :=
+  ks.all fun k => c36In k (plusClosureOf (Γ ++ Del)) &&
+    decide (∃ t ∈ G.winTimes, ∃ w : Fin G.n, ∃ χ ∈ G.slab t w, k χ = true)
+LEAN
+  cat "$C36_EVALS" >>"$C36_SRC"
+  C36_EXPECTED=$(grep -c '^#eval' "$C36_EVALS" || true)
+  C36_OUT=$(lake env lean "$C36_SRC" 2>&1)
+  rm -f "$C36_SRC"
+  C36_ROWS=$(printf '%s\n' "$C36_OUT" | grep -c '^"C36 ' || true)
+  C36_GOOD=$(printf '%s\n' "$C36_OUT" | grep -cE '^"C36 [^"]* card=[1-9][0-9]* interesting=true"$' || true)
+  if [ "$C36_EXPECTED" -eq 0 ]; then
+    fail C36b "no witness row reached the evaluative half (anti-silence guard)"
+  elif [ "$C36_ROWS" -ne "$C36_EXPECTED" ] || [ "$C36_GOOD" -ne "$C36_EXPECTED" ]; then
+    fail C36b "antecedent failure or elaboration error: $C36_GOOD of $C36_EXPECTED interest expression(s) evaluate true at a non-empty closure"
+    printf '%s\n' "$C36_OUT" | grep -v '^"C36 .* interesting=true"$' | head -20 \
+      | while IFS= read -r l; do note "$l"; done
+  else
+    pass C36b "every certificate class carries an interesting witness: all $C36_EXPECTED interest expression(s) evaluate true at a non-empty closure; no antecedent failure"
+    printf '%s\n' "$C36_OUT" | grep '^"C36 ' | tr -d '"' | while IFS= read -r l; do note "$l"; done
+  fi
+elif [ "$RUN_BUILD" -eq 1 ]; then
+  info C36b "skipped: C36a did not pass, so there is nothing trustworthy to evaluate"
+else
+  info C36b "skipped (--no-build)"
+fi
+rm -f "$C36_EVALS"
 echo
 
 # ---------------------------------------------------------------------------
