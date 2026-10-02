@@ -2,7 +2,7 @@
   "phase": 5,
   "phase_name": "Register, lint, commit in the source store, deploy, verify (forced round, dispatch 10: C5 citation correction)",
   "started_at": "2026-10-02T21:56:25Z",
-  "last_updated": "2026-10-02T21:58:34Z",
+  "last_updated": "2026-10-02T21:58:54Z",
   "objectives": [
     {
       "id": 1,
@@ -21,7 +21,7 @@
     {
       "id": 3,
       "description": "Re-run scripts/check-module-invariants.sh and confirm C5 no longer reports this file; record 704's in-flight foreign C-check output without acting on it",
-      "status": "in_progress",
+      "status": "done",
       "files_touched": []
     }
   ],
