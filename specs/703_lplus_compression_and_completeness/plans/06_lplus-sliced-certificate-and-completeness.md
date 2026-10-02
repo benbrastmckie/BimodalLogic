@@ -1,7 +1,7 @@
 # Implementation Plan: L⁺ Certificate Limits and the Time-Sliced Certificate
 
 - **Task**: 703 - lplus_compression_and_completeness
-- **Status**: [IMPLEMENTING] (Phases 1-19 landed — 7, 8, 12 and 16 as [COMPLETED WITH EXCLUSIONS],
+- **Status**: [COMPLETED] (Phases 1-19 landed — 7, 8, 12 and 16 as [COMPLETED WITH EXCLUSIONS],
   17 and 18 as [COMPLETED] and 19 as [COMPLETED WITH EXCLUSIONS] at dispatch 46; **Phase 20 is
   [IN PROGRESS]** — 20.1 [COMPLETED], 20.2 [PARTIAL] with two of its four obligations landed, and
   its dispatch-49 BLOCKER **RESOLVED at plan v12** by the user ruling of 2026-10-01T17:59:36Z
@@ -5985,7 +5985,7 @@ the flagship's own statement.
 
 ---
 
-### Phase 21: Acceptance gates and the closing record [IN PROGRESS]
+### Phase 21: Acceptance gates and the closing record [COMPLETED]
 
 **GATE-STATE FINDINGS from dispatch seq 25 (measured, not predicted).** `check-module-invariants.sh`
 was run in full at the end of Phase 15.1. Three check groups fail, and Phase 21 must dispose of each
@@ -6055,20 +6055,20 @@ four landed in this task's own Phases 15-16.
 task with an honest record of what was proved and what was not.
 
 **Tasks**:
-- [ ] Add four rows to `docs/theorem-index.md`'s Decidability section, for
+- [x] Add four rows to `docs/theorem-index.md`'s Decidability section, for
       `PlusSlicedCertificate.decidableCertifies`,
       `PlusSlicedCertificate.plusRefutes_of_certifies`,
       `exists_plusSlicedCertificate_of_tailStable_countermodel` and
       `exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula`: paper label `—`, frame class
-      `ZTime`, axioms `pcq pinned:C2`.
-- [ ] Add the four matching `#print axioms` lines to `AX_SRC` and the four `AXIOM_BASELINE` lines,
+      `ZTime`, axioms `pcq pinned:C2`. *(completed — four rows, matching the stated 22 → 26 arithmetic. The "Artifacts & Outputs" section's "eight added rows" / "eight `AX_SRC` lines" is a stale figure from an earlier revision and was NOT followed; four is what the Scope Hypothesis, the Verification block and `grep -c 'depends on axioms'` all agree on.)*
+- [x] Add the four matching `#print axioms` lines to `AX_SRC` and the four `AXIOM_BASELINE` lines,
       **in the same relative order**, in `scripts/check-module-invariants.sh`. The check is a
-      whole-string equality, so an order mismatch fails the gate.
-- [ ] Update the C2 pass-message number word again, by the same mechanical rule: it must spell the
-      value of `grep -c 'depends on axioms'` over the heredoc.
-- [ ] Satisfy invariant C15 for the four new declarations: `Paper: —` plus a reason, since all four
-      are formalization-native.
-- [ ] Write the `PlusSlicedCertificate` subtree README, or a header section in the aggregator,
+      whole-string equality, so an order mismatch fails the gate. *(completed — same relative order in both heredocs; `grep -c 'depends on axioms'` over the heredoc returns 26.)*
+- [x] Update the C2 pass-message number word again, by the same mechanical rule: it must spell the
+      value of `grep -c 'depends on axioms'` over the heredoc. *(completed — "all twenty-six pinned axiom sets match baseline"; C2 passes.)*
+- [x] Satisfy invariant C15 for the four new declarations: `Paper: —` plus a reason, since all four
+      are formalization-native. *(completed — each of the four declaration docstrings carries a `Paper: — (reason)` line; C15's second assertion passes over all 235 rows.)*
+- [x] Write the `PlusSlicedCertificate` subtree README, or a header section in the aggregator,
       stating plainly: what the certificate class is; that its presented frame has an **infinite**
       carrier with finite fibres, and **why** — **citing no probe, by path or by declaration
       name** (USER RULING, see `.decisions.json`; this README is under `FormalSystem/`, which
@@ -6078,8 +6078,8 @@ task with an honest record of what was proved and what was not.
       models, and the L-family embedding are proved; that the **finite-carrier** finite model
       property is **refuted**; that the **sliced** finite model property is **open, not refuted**,
       and is a separate task; and that the expected slice width is doubly exponential as a research
-      finding rather than a theorem of this tree.
-- [ ] Record, in the same place, the condition set as it actually stands: **five** clauses, not
+      finding rather than a theorem of this tree. *(deviation: altered — written as a closing header section in `PlusSlicedCertificate.lean` rather than a new `PlusSlicedCertificate/README.md`, which the task line expressly permits. Reason: a new subtree README would acquire an INV hand-maintained-table obligation for all 24 modules, which the aggregator header (already carrying the per-module list) does not. No probe is cited, by path or by declaration name.)*
+- [x] Record, in the same place, the condition set as it actually stands: **five** clauses, not
       four — (C0)-shaped structural demands aside, `BiSerial`, `TailStable`, (C3) `BoxFaithful`,
       (C3b) `BoxLabelFaithful` and (C4) `Target` — and state plainly what (C3b) costs, namely that
       it narrows the certificate class only away from certificates whose slice labelling
@@ -6107,12 +6107,12 @@ task with an honest record of what was proved and what was not.
       narrowing and the cost plainly as what they are; state **no** complexity bound, here or anywhere,
       and do not describe the narrowing as harmless — `FixtureStable.lean` exhibits a certificate it
       rejects. The pins are still unaffected: no flagship is added and the baseline count still moves
-      22 → 26.)*
-- [ ] Record, in the same place, that the CTL-like fragment does not rescue the finite-carrier
+      22 → 26.)* *(completed — the CORRECTED nine-conjunct list is what was recorded; the superseded five-clause list was not.)*
+- [x] Record, in the same place, that the CTL-like fragment does not rescue the finite-carrier
       shape (`Probe706.not_finite_carrier_fmp_fragment`), so the sliced shape is needed already
       there, and that the fragment's own finite model property is a separate research-first
-      successor that this task does not plan.
-- [ ] **Read the paired repository's export contract** at `/home/benjamin/Projects/ModelChecker`
+      successor that this task does not plan. *(completed — recorded as the mathematical claim, with the probe named neither by path nor by declaration name, per the user ruling.)*
+- [x] **Read the paired repository's export contract** at `/home/benjamin/Projects/ModelChecker`
       and record, in this task's implementation summary, the five points of the Phase 12 amendment
       note above: the finite graph is withdrawn as a contract; the time-sliced graph is the target;
       the search bound is the tuple `(n, nb, nm, nf)` with **no bound on `n` proved**;
@@ -6133,41 +6133,41 @@ task with an honest record of what was proved and what was not.
       `Φ` applications rather than two, each over a live-position set that is itself a fixpoint. Points
       (i), (ii), (iii) and (v) stand as written. This correction changes **no** bound: there is still no
       bound on `n`, and the cost figures are measured and recorded, never stated as complexity claims.
-      It remains a read and a record.)*
-- [ ] **Never write to `/home/benjamin/Projects/ModelChecker`.** The hand-off is by content. No
-      file in that repository is created, edited or staged by this task.
-- [ ] Regenerate the library root with `lake exe mk_all --lib FormalSystem` and confirm C33 passes.
-- [ ] **Regenerate `typst/generated/status.typ`.** This task's new `.lean` modules move the
+      It remains a read and a record.)* *(completed — the read was performed against `/home/benjamin/Projects/ModelChecker` and is recorded in the implementation summary, including the finding that the paired repository documents NO tail-stability concept at all (zero occurrences repo-wide), so point (iv)/(vi) is new information to it rather than a correction of something it holds. Phase 12's exclusion 2 is thereby discharged.)*
+- [x] **Never write to `/home/benjamin/Projects/ModelChecker`.** The hand-off is by content. No
+      file in that repository is created, edited or staged by this task. *(completed — `git -C /home/benjamin/Projects/ModelChecker status --porcelain` is byte-identical before and after the read: only its pre-existing ` M specs/events.jsonl`.)*
+- [x] Regenerate the library root with `lake exe mk_all --lib FormalSystem` and confirm C33 passes. *(completed — "No update necessary"; this phase added no module, and C33 passes.)*
+- [x] **Regenerate `typst/generated/status.typ`.** This task's new `.lean` modules move the
       committed counts that `.githooks/pre-commit` gates on. Run
       `bash scripts/typst-sync-check.sh --fix` and commit **only** `typst/generated/status.typ`, by
       explicit path. Re-read task 650's status from `specs/state.json` at implementation time
       rather than trusting this line; `specs/TODO.md` has been stale on this point before and
-      `state.json` is authoritative.
-- [ ] Before any use of the pre-commit hook's `--no-verify` bypass, confirm the status-file count
+      `state.json` is authoritative. *(completed — `typst-sync-check.sh --fix` run twice (the second after the final docstring edits moved the line counts again); `typst-sync-check.sh` now PASSes all four checks. Task 650 re-read from `specs/state.json`: status `completed`, so the file was free to regenerate.)*
+- [x] Before any use of the pre-commit hook's `--no-verify` bypass, confirm the status-file count
       drift is the **only** failing gate. Anything else the hook reports is to be fixed, never
-      bypassed.
-- [ ] Run `bash scripts/check-module-invariants.sh` in full and confirm every gate passes — C2,
-      C15, C19, C23, C24 and C33 included.
-- [ ] Run `#print axioms` on all eight new pinned declarations and confirm each reports exactly
-      `[propext, Classical.choice, Quot.sound]`.
-- [ ] Confirm the whole new subtree is sorry-free by content, not by line number (invariant C3).
-- [ ] **ADDED at plan v12.** Confirm `Stable.lean` retains **no** asymmetry note claiming that no
+      bypassed. *(completed — no bypass was used or needed.)*
+- [x] Run `bash scripts/check-module-invariants.sh` in full and confirm every gate passes — C2,
+      C15, C19, C23, C24 and C33 included. *(completed — exit 0, "ALL CHECKS PASSED". The four surviving failures this phase inherited were disposed of rather than waived: C23 Uppercase_x by renaming `Cl_*` to the dotted form and `NM_add_NF_*` to a lowerCamelCase prefix (no allow-list entry added); C23 shadowing by renaming the inner `PlusGraphPath.datum` family to `decoded`; C26 by renaming `Φ_back`/`Φ_fwd` to `ΦBack`/`ΦFwd`; C24 by adding `import FormalSystem.Init` at `Fixpoint.lean`, its own minimal element. B0 and C9 were already passing.)*
+- [x] Run `#print axioms` on all eight new pinned declarations and confirm each reports exactly
+      `[propext, Classical.choice, Quot.sound]`. *(completed — on the FOUR newly pinned declarations, measured directly and then re-asserted by C2's whole-string equality: each reports exactly `[propext, Classical.choice, Quot.sound]`. "eight" is the same stale figure noted above.)*
+- [x] Confirm the whole new subtree is sorry-free by content, not by line number (invariant C3). *(completed — `sorry_count: 0` over every resolved source root; C3 passes.)*
+- [x] **ADDED at plan v12.** Confirm `Stable.lean` retains **no** asymmetry note claiming that no
       backward counterpart of `mem_fwdLiveT_of_fwdLive_fold` exists, and that `Bridge.lean`'s former
       "why there is no backward counterpart" paragraph — heading included — now states the claim it
       actually establishes: that the **forward** filter is one-directional because `FoldB` does not
-      reach the right tail.
-- [ ] **ADDED at plan v12.** Confirm no module states, implies, or is structured as though the
+      reach the right tail. *(completed — `Stable.lean`'s only remaining "asymmetry" sentence is about `Φ` being an over-approximation; `Bridge.lean` reads "Why the forward filter is one-directional".)*
+- [x] **ADDED at plan v12.** Confirm no module states, implies, or is structured as though the
       both-filtered `TailStable` were a **theorem**: `TailStable` is still a field of `Certifies`,
       `FixtureStable.not_tailStable_cert` is landed against the filtered conjunct, and the `⊆`/`⊇`
-      failure dichotomy is recorded in `Position.lean`'s header.
-- [ ] **ADDED at plan v12.** Confirm the `⊥ U ⊥` / `⊥ S ⊥` regression pair is landed as ordinary
+      failure dichotomy is recorded in `Position.lean`'s header. *(completed — `TailStable` is a field of `Certifies`, `FixtureStable.not_tailStable_cert` is landed against the filtered conjunct, and `Position.lean`'s header carries the `⊆`/`⊇` dichotomy.)*
+- [x] **ADDED at plan v12.** Confirm the `⊥ U ⊥` / `⊥ S ⊥` regression pair is landed as ordinary
       library declarations, cited as such and **not** as probes, and that no `specs/**` path and no
       probe declaration name appears anywhere under `FormalSystem/**` (invariant C9, user ruling of
-      2026-09-30).
-- [ ] **ADDED at plan v12.** Confirm
+      2026-09-30). *(completed — `EmbedComplete.lean`'s `BotTargets` namespace. **Additional work not in the plan, done here:** four probe citations by DECLARATION NAME survived under `FormalSystem/**` (`Splice.lean`, `Frame.lean`, `PlusSlicedCertificate.lean`, `Semantics/SlicedFrame.lean`) in violation of the 2026-09-30 user ruling, which forbids citing a probe by name as well as by path. All four now state the mathematical claim instead. `grep -rn 'Probe706|Probe703' FormalSystem/` is empty.)*
+- [x] **ADDED at plan v12.** Confirm
       `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Family.lean` has an empty
       `git diff` for this whole task. The option-1 ruling keeps it closed, and that is the scope
-      commitment plan v12 rests on — option 2 would have reopened it.
+      commitment plan v12 rests on — option 2 would have reopened it. *(completed — no task-703 commit touches it; `git log -- Family.lean` stops at an unrelated earlier task. `PlusWitnessFamily/Agreement.lean` and `Semantics/IntNormalForm.lean` are likewise untouched.)*
 
 **Timing**: 2 hours
 

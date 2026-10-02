@@ -1,27 +1,21 @@
 {
-  "status": "partial",
-  "dispatch_seq": 52,
-  "task_number": 703,
-  "phases_completed": 19,
-  "phases_total": 21,
-  "summary": "Landed the user's option-1 ruling (mirror the filter), resolving the Phase 20 blocker. Sub-phase 20.3 COMPLETE: Bridge.lean's bwdVertFold and mem_bwdLiveT_of_bwdLive_fold prove the mirror filter's one unproved input, with mem_bwdLiveT_of_bwdLive restated as the diagonal instance and its statement unchanged, and no consumer outside Bridge.lean needing to change. Sub-phase 20.4 COMPLETE: bwdLiveAt promoted into Stable.lean, TailStable's backward conjunct swapped to the filtered form with decidability still synthesized, every result stated from the old conjunct's functional form restated, the EmbedComplete.lean candidate retired, the asymmetry note deleted, the bottom-U-bottom / bottom-S-bottom regression pair landed, and the subset/superset dichotomy recorded once in Position.lean's header. Sub-phase 20.5 PARTIAL: Embedded.sliced_run_st_const landed and the remaining general-hTS obligation stated exactly. Full lake build exit 0 (2805 jobs), zero sorries, axiom count unchanged, Sound.lean and Complete.lean untouched, WitnessFamily/Compression/Family.lean untouched.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 54,
+  "summary": "Phase 21 closed and with it task 703: four docs/theorem-index.md rows plus four matching C2 AXIOM_BASELINE pins (22 -> 26), the subtree's closing record with the corrected nine-conjunct condition set, the discharged paired-repository export-contract read, and every inherited gate failure fixed by renaming rather than allow-listed. Full lake build exit 0, zero sorries, no new axiom, check-module-invariants.sh ALL CHECKS PASSED, typst-sync-check.sh PASS.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/703_lplus_compression_and_completeness/summaries/07_lplus-sliced-certificate-and-completeness-summary.md",
-      "summary": "Implementation summary for sub-phases 20.3 (complete), 20.4 (complete) and 20.5 (partial)."
+      "summary": "Round-7 closing summary: the mirror filter and the flagship (Phases 20.3-20.5), then Phase 21's gate work, the nine-conjunct closing record, and the paired-repository read that discharges Phase 12's exclusion 2."
     },
     {
       "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-20.3-handoff-20261001T182223Z.md",
-      "summary": "Sub-phase 20.3 recovery point: what landed in Bridge.lean and its four verification results."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-20.4-handoff-20261001T184002Z.md",
-      "summary": "Sub-phase 20.4 recovery point: the full per-file inventory of the conjunct swap and the restatements."
+      "path": "specs/703_lplus_compression_and_completeness/handoffs/phase-21-handoff-20261002T014500Z.md",
+      "summary": "Phase 21 completion handoff: gate state, decisions taken, and follow-ups that outlive the task."
     }
   ],
-  "next_steps": "Re-dispatch implement for sub-phase 20.5's general hTS theorem, then hconc and the flagship, then Phase 21's acceptance gates. The user's option-1 ruling also calls for filing the option-3 successor task, which this dispatch did not file.",
+  "phases_completed": 21,
+  "phases_total": 21,
   "blockers": []
 }
