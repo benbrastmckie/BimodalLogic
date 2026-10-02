@@ -1,0 +1,57 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/704_certificate_non_vacuity_and_shape_gates/reports/01_certificate-non-vacuity-shape-gates.md",
+      "summary": "Re-verifies every declaration behind gates (a1)-(a3) and (b) against the live tree, finds (a1)/(a3)-Stage-1 already C2-pinned, task 706's refutations unlanded, no non-degenerate sliced inhabitant exhibited (probe: Embedded.liveFamily.sliced (-1) decides Certifies, against a stale build), re-derives the Shape-(S) allowlist, and specifies C36 (non-vacuity/coverage-limit) and C37 (shape) with Beer et al. vocabulary."
+    }
+  ],
+  "next_steps": "Run /plan 704 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1790948286_150db5_704",
+    "agent_type": "general-research-agent",
+    "task_number": 704,
+    "duration_seconds": 1600,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 7
+  },
+  "memory_candidates": [
+    {
+      "content": "After a commit landed through a dispatch worktree, the main tree's .lake/build oleans can lag the sources (observed: sources 2026-10-02 01:54 vs oleans 2026-10-01 10:42 for PlusSlicedCertificate/Stable.lean). `lake env lean` probes then silently answer about the OLD definitions - a landed `by decide` theorem was reproduced as false. Before trusting any decide/#eval probe, compare olean vs source mtimes (stat) or rebuild; never report a probe contradiction with a landed theorem without this check.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/704_certificate_non_vacuity_and_shape_gates/reports/01_certificate-non-vacuity-shape-gates.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["lake", "olean", "stale build", "decide", "probe", "worktree"]
+    },
+    {
+      "content": "In scripts/check-module-invariants.sh, C2's AXIOM_BASELINE doubles as an existence check: a renamed or deleted pinned declaration makes `#print axioms` error and the whole-string equality fail. So a new 'declaration must continue to exist and stay axiom-clean' guard should assert membership in AXIOM_BASELINE (C21-style subset) plus a --no-build structural grep, not add a second `#print axioms` pass (which would also force the hard-coded pin-count word in C2's pass message to change).",
+      "category": "PATTERN",
+      "source_artifact": "specs/704_certificate_non_vacuity_and_shape_gates/reports/01_certificate-non-vacuity-shape-gates.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["check-module-invariants", "C2", "axiom baseline", "gate", "existence check"]
+    },
+    {
+      "content": "Mechanical Shape-(S) enumeration (definitions whose body contains a biconditional under a reflexive relational guard): run the awk pass over `def/abbrev/structure/class` blocks and print the first line containing the U+2194 arrow per hit; on this tree the certificate subtrees yield 30 hits, of which only (C1')'s untl/snce conjuncts over `trans` (reflexive via the skeleton field `trans_refl`) are residual collapses. The archived task-699 script `audit/enumerate-shape-s.sh` is the re-runnable source of the three passes.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/704_certificate_non_vacuity_and_shape_gates/reports/01_certificate-non-vacuity-shape-gates.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["clause shape", "biconditional", "reflexive guard", "collapse", "enumeration", "awk"]
+    }
+  ],
+  "modified_files": [
+    "specs/704_certificate_non_vacuity_and_shape_gates/reports/01_certificate-non-vacuity-shape-gates.md",
+    "specs/704_certificate_non_vacuity_and_shape_gates/probes/01_decide_sliced_inhabitant.lean",
+    "specs/704_certificate_non_vacuity_and_shape_gates/probes/02_decide_conjuncts.lean"
+  ],
+  "proposed_file_scope": [
+    "scripts/check-module-invariants.sh",
+    "scripts/certificate-witness-inventory.txt",
+    "scripts/clause-shape-allowlist.txt",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Examples.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean"
+  ],
+  "errors": []
+}

@@ -70,7 +70,7 @@ next_project_number: 716
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 706 [RESEARCHED] — RESEARCH-FIRST. Establish the finite model property for...
-708 [NOT STARTED] — Relay the certificate-contract change to the paired...
+708 [RESEARCHING] — Relay the certificate-contract change to the paired...
 709 [NOT STARTED] — RESEARCH-FIRST. Establish the finite model property for the...
 713 [NOT STARTED] — OPTIONAL, FILED NOT SCHEDULED. Nothing depends on this task...
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
@@ -78,7 +78,7 @@ next_project_number: 716
 
 ### Documentation
 
-707 [NOT STARTED] — Write...
+707 [RESEARCHING] — Write...
 
 ### Formula Refactor
 
@@ -92,8 +92,8 @@ next_project_number: 716
 
 ### Incompleteness
 
-705 [NOT STARTED] — STATUS NOTE (2026-09-29, supersedes the ordering constraint...
-710 [NOT STARTED] — RESEARCH-FIRST. Determine whether the TIME-SLICED certificate...
+705 [RESEARCHING] — STATUS NOTE (2026-09-29, supersedes the ordering constraint...
+710 [RESEARCHING] — RESEARCH-FIRST. Determine whether the TIME-SLICED certificate...
 
 ### Literature
 
@@ -108,7 +108,7 @@ next_project_number: 716
 
 ### Verification
 
-704 [NOT STARTED] — Two structural preventions against the class of defect the...
+704 [RESEARCHED] — Two structural preventions against the class of defect the...
 
 ## Tasks
 
@@ -179,7 +179,7 @@ REVISIT ONLY IF Mathlib gains omega-automata determinization, or if a determiniz
 ---
 
 ### 710. Sliced class incompleteness characterization
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: formal:logic
 - **Topic**: incompleteness
 - **Dependencies**: Task 703
@@ -226,7 +226,7 @@ HARD CONSTRAINTS. Zero sorries, no new axioms, no vacuous placeholder definition
 ---
 
 ### 708. Relay sliced certificate contract to model checker
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: general
 - **Topic**: decidability
 - **Dependencies**: Task 703
@@ -255,7 +255,7 @@ LIMIT OF THE CERTIFYING LITERATURE, load-bearing for point (5): it is uniformly 
 ---
 
 ### 707. Ztime no finite carrier fmp context note
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: markdown
 - **Topic**: documentation
 - **Dependencies**: None
@@ -309,7 +309,7 @@ SEQUENCING. The IMPLEMENTATION consumes the certificate type, checker and soundn
 ---
 
 ### 705. Trans reflexivity residual collapse
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: formal:logic
 - **Topic**: incompleteness
 - **Dependencies**: Task 696, Task 703
@@ -324,10 +324,11 @@ WHAT HAS CHANGED SINCE THIS TASK WAS FILED, and is more useful than any citation
 ---
 
 ### 704. Certificate non vacuity and shape gates
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: verification
 - **Dependencies**: Task 696, Task 703
+- **Research**: [704_certificate_non_vacuity_and_shape_gates/reports/01_certificate-non-vacuity-shape-gates.md]
 
 **Description**: Two structural preventions against the class of defect the L-plus completeness programme (tasks 695, 696, 699, 700, 703, 706) exists to remove, filed as one task because both are assertions in scripts/check-module-invariants.sh and splitting them would put two tasks on the same single file.
 
