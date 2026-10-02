@@ -363,7 +363,7 @@ and each expression by scratch-file `#eval` before committing the row.
 
 ---
 
-### Phase 4: C37 -- CLAUSE-SHAPE CHECK [IN PROGRESS]
+### Phase 4: C37 -- CLAUSE-SHAPE CHECK [COMPLETED]
 
 **Goal**: Make the collapsing clause shape -- a universally quantified biconditional under a
 reflexive relational guard whose left side does not mention the bound variable -- impossible to
@@ -433,7 +433,7 @@ missing hit is a matcher gap to fix before enforcing.
 
 ---
 
-### Phase 5: Tier-2 sliced witnesses carrying `⊡` (time-boxed) [NOT STARTED]
+### Phase 5: Tier-2 sliced witnesses carrying `⊡` (time-boxed) [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Exhibit sliced certificates for `targetA = (⊤ S p) → ⊡(⊤ S p)` and
 `targetB = (⊤ U p) → (¬p → ⊡(⊤ U p))` -- the sliced twins of the (a1) witnesses -- so that
@@ -446,20 +446,35 @@ is not confined to a `⊡`-free target.
       in the past (resp. future) of the target time, `bx` chosen so `BoxLabelFaithful` and
       `BoxLiveFaithful` hold, labels chosen so `StabFaithful` separates `⊡(⊤ S p)` from
       `⊤ S p` at the target position. Use `onePointCertificate` (`Basic.lean`) as the shape
-      reference and `Fixture.cert` (`Fixture.lean`) as the construction idiom.
+      reference and `Fixture.cert` (`Fixture.lean`) as the construction idiom. *(deviation: skipped — time box; the width-2 constructions were built and elaborate in 2 s, but see the Reasoned Exclusions below; preserved as `probes/03_tier2_sliced_certificates.lean`)*
 - [ ] `theorem certA_certifies : certA.Certifies := by decide` (and `certB`). If `decide` does
       not close within the heartbeat budget, isolate the failing conjunct with the
       `decidableCertifies` components as probe 02 does, and repair the construction; do not
-      raise `maxHeartbeats` for a whole section (C30).
+      raise `maxHeartbeats` for a whole section (C30). *(deviation: skipped — time box; the compiled per-conjunct route isolated `liveAt 0` as non-returning, so no `decide` proof is reachable)*
 - [ ] Add the two `witness` rows (kinds `snce,stab` / `untl,stab`) with interest expressions
       to `scripts/certificate-witness-inventory.txt`; add the two C2 pins and update the count
-      word once; run both gate modes.
-- [ ] **Time box: 2 hours of implementation effort.** If a certifying construction is not
+      word once; run both gate modes. *(deviation: skipped — time box; the inventory stays at Tier 1)*
+- [x] **Time box: 2 hours of implementation effort.** If a certifying construction is not
       found within it, close this phase `[COMPLETED WITH EXCLUSIONS]` with a
       `#### Reasoned Exclusions` record naming what was tried and why it failed, leave the
       inventory at Tier 1, and recommend a follow-up task in the summary (it is adjacent to
       task 710's sliced finite-width question). Do NOT leave a `sorry` (C3) or a half-built
-      `def`.
+      `def`. *(completed: exit taken after 29 minutes once the obstacle was shown to be the checker's cost rather than the construction; no `sorry`, no half-built `def` in the tree)*
+
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `certA` (`targetA = (⊤ S p) → ⊡(⊤ S p)`, width 2) and `certA_certifies` | The construction is complete and well-typed, but `Certifies` cannot be established: the computed liveness fixpoint `certA.liveAt 0` does not return under compiled evaluation, so kernel `decide` -- strictly slower -- cannot close the theorem. The cost sits in the landed checker (`LiveFix`/`Bridge`/`Stable`), not in the construction, and changing the checker is outside this task. | `probes/03_tier2_sliced_certificates.lean`: all definitions elaborate in 2 s; `#eval` readouts `winTimes = 4`, `NBnat = NFnat = 1`, `(certA.posAt 0).card = 4`, `BiSerial`/`BoxLabelFaithful`/`TargetPathPos`/`Target` all evaluate; `#eval (certA.liveAt 0).card` alone did not return in 300 s (`timeout 300 lake env lean`, exit 124), and the combined per-conjunct file did not return in 560 s. Contrast: `(Embedded.liveFamily.sliced (-1)).liveAt (-1)` on 2 positions x 6 times returns in about a second. |
+| `certB` (`targetB = (⊤ U p) → (¬p → ⊡(⊤ U p))`, width 2) and `certB_certifies` | Same obstacle on the future-eventuality side: `certB.liveAt 0` does not return either, so the pathology is not specific to backward liveness. | `#eval (certB.liveAt 0).card` did not return in 300 s (exit 124). |
+| `n = 3` retry | The plan's `n = 3` retry addresses a `StabFaithful`-too-narrow failure; the observed failure is cost, which a wider slice only increases. | Not run, by the reasoning in the Reason column. |
+| Two Tier-2 `witness` rows and two C2 pins | Nothing to pin: no Tier-2 `Certifies` theorem exists. The gate covers Tier 1 (`liveFamily_sliced_certifies`), as the plan's Non-Goals already allow. | `scripts/certificate-witness-inventory.txt` carries five witness rows; C36 passes in both modes. |
+
+**Recommended follow-up** (adjacent to the sliced finite-width question): profile why the sliced
+checker's `liveT` fixpoint fails to return at a 4-position, 4-time certificate with a total edge
+relation when it returns instantly at the self-loop embedded certificates, then land `certA`/`certB`
+from the probe as the Tier-2 witnesses once `decide` is feasible.
 
 **Timing**: 2 hours
 
