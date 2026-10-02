@@ -1,0 +1,71 @@
+{
+  "status": "researched",
+  "started_at": "2026-10-02T13:47:44Z",
+  "completed_at": "2026-10-02T14:33:00Z",
+  "dispatch_seq": 5,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md",
+      "summary": "Machine-checked refutation: the time-sliced certificate class is incomplete for L-plus and for the CTL-like fragment (witness Phi := theta' and Box(stab Fp -> not stab not Xp)); the gap is exactly finite width; HWZ transfer localized; recommendations for 709/708 and landing."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean",
+      "summary": "Compiled sorry-free probe (1176 lines, axioms propext/Classical.choice/Quot.sound): not_plusValidZTime_neg_Phi, no_finite_width_sat, not_certifies, not_sliced_complete, not_finite_width_fmp."
+    }
+  ],
+  "next_steps": "Run /plan 710 to land the probe's five theorems as library declarations (new PlusSlicedCertificate/Limits/NoFiniteWidth.lean), restate the class's completeness in the module headers, and re-scope task 709 and the task 708 relay per the report's recommendations 1-4.",
+  "user_decision": {
+    "blocking": false,
+    "question": "The sliced certificate class is refuted for full L-plus AND for the CTL-like fragment (task 709's headline). Choose: (a) re-scope 709 to the 'finite width implies eventually periodic' theorem (report F4) or to a bounded-delay fragment, or abandon it; (b) have the 708 relay state the class is semantically incomplete (never-report-validity permanent for stab targets) rather than pending; (c) whether to file the regular-two-way-tree class as a research-first successor. Proceeding on the report's recommendations loses nothing meanwhile.",
+    "recommendation": "Land the probe as library theorems (recommendation 1), re-scope 709 to the F4 periodicity theorem, update the 708 relay wording, and defer the two-way-tree class until decidability of full L-plus is confirmed as a programme goal."
+  },
+  "modified_files": [
+    "specs/710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md",
+    "specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean"
+  ],
+  "proposed_file_scope": [
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/EmbedComplete.lean",
+    "FormalSystem/Semantics/IntNormalForm.lean",
+    "docs/theorem-index.md",
+    "scripts/check-evidence-probes.sh"
+  ],
+  "memory_candidates": [
+    {
+      "content": "Over Z-time, limit closure plus finite per-time fibres is Koenig's lemma: a certificate class presenting frames on Z x Fin n cannot certify a formula whose every model needs a universal eventuality (stab Fp at pre-states under the once-only clock theta) with unbounded delay at a single time. Witness Phi := theta' and Box(stab Fp -> not stab not Xp), probe NoFiniteWidthModel.lean. Finite carrier (theta) and finite width (Phi) are both refuted; the next presentation must have infinite fibres (regular two-way trees).",
+      "category": "INSIGHT",
+      "source_artifact": "specs/710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["L-plus", "sliced certificate", "finite width", "Koenig", "incompleteness", "stab", "Z-time"]
+    },
+    {
+      "content": "HWZ 2000 quasimodel technique transfers to L-plus only in its periodicity half: Theorem 14 (collapse the domain at each time to realised types) and Lemma 17 (splice at equal quasistates) both rely on every run condition being existential; L-plus's stab is a universal quantifier over runs, so the quasistate must carry one-sided (fwd/bwd) live sets and the pumping needs an idempotent Ramsey colour, not successive splicing.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["HWZ", "quasimodel", "splice lemma", "Ramsey", "liveness", "eventually periodic"]
+    },
+    {
+      "content": "Lean idiom: a regular Z-frame on a countable finitely branching bi-serial step relation is FrameOver.ofStep's construction with TaskFrame.saturation_of_fib_finite in place of saturation_of_finite, proving Fib (ofStepRel R) w d finite by induction on iter with Set.Finite.biUnion; and a Box-fact at one time transfers to every offset-0 path at every time via plusTruthAt_timeShift on worldHistoryOfStepPath.",
+      "category": "PATTERN",
+      "source_artifact": "specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean",
+      "confidence": 0.85,
+      "suggested_keywords": ["ofStep", "saturation_of_fib_finite", "plusTruthAt_timeShift", "regular frame", "finite fibres"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1790948286_150db5_710",
+    "agent_type": "logic-research-agent",
+    "duration_seconds": 2716,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
+    "findings_count": 7,
+    "context_files_loaded": ["README.md", "return-metadata-file.md", "territory.md"],
+    "mathlib_lookups_performed": 2,
+    "probe_compiled": true,
+    "probe_axioms": ["propext", "Classical.choice", "Quot.sound"]
+  }
+}

@@ -93,7 +93,7 @@ next_project_number: 716
 ### Incompleteness
 
 705 [RESEARCHED] — STATUS NOTE (2026-09-29, supersedes the ordering constraint...
-710 [RESEARCHING] — RESEARCH-FIRST. Determine whether the TIME-SLICED certificate...
+710 [RESEARCHED] — RESEARCH-FIRST. Determine whether the TIME-SLICED certificate...
 
 ### Literature
 
@@ -179,10 +179,11 @@ REVISIT ONLY IF Mathlib gains omega-automata determinization, or if a determiniz
 ---
 
 ### 710. Sliced class incompleteness characterization
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: formal:logic
 - **Topic**: incompleteness
 - **Dependencies**: Task 703
+- **Research**: [710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md]
 
 **Description**: RESEARCH-FIRST. Determine whether the TIME-SLICED certificate class of task 703's amended Stage 2 is itself incomplete for full L-plus, and if so characterize the gap.
 
