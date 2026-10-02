@@ -65,6 +65,37 @@
         "workaround": "Download and magic-byte-verify the PDF, feed it directly to the unmodified literature-ingest.sh (bypassing the Zotero write step), then patch the global index metadata by hand against an existing entry's schema. Manual, not automated."
       },
       "fix_status": "unfixed"
+    },
+    {
+      "id": "err_20261002080500",
+      "timestamp": "2026-10-02T08:05:00Z",
+      "type": "build_cache_defect",
+      "severity": "high",
+      "message": "Lake treated 24 of 638 FormalSystem .olean artifacts as current although their sources were newer, so current sources were elaborated against an older revision of their dependencies. PlusSlicedCertificate/Basic.olean was dated 2026-10-01 10:41 against a source committed 2026-10-02 01:51 and contained zero occurrences of 'decoded'. A plain 'lake build' did NOT repair it and neither did touching the source: the recorded trace matched, so lake skipped recompilation. Symptom was a spurious build failure in PlusSlicedCertificate/Window.lean (16 errors: Invalid field 'decoded'/'decoded_neg'/'decoded_fwd' and two 'does not contain' failures on exists_combined_window_eq/exists_win_eq), which read as a code defect at HEAD but was not one -- the source tree was correct throughout.",
+      "context": {
+        "command": "/orchestrate",
+        "tasks": [
+          704,
+          705,
+          707,
+          708,
+          710
+        ],
+        "diagnostic_tell": "PlusGraphPath.lab and .st resolved while PlusGraphPath.decoded did not, even though lab and st are defined AS (P.decoded t).1/.2. A file cannot compile lab without decoded, so the olean and the source provably came from different revisions. That asymmetry is the cheapest signal that a cache is inconsistent rather than that code is broken.",
+        "observed_consequence": "Silent corruption of verification evidence, not just a failed build. A probe evaluated a LANDED Stable.TailStable theorem as FALSE against the stale cache, which could have been mistaken for a refutation. Research agents verifying claims by running the build in this window produced unreliable results; claims verified by reading source were unaffected.",
+        "stale_modules_concentrated_in": [
+          "PlusSlicedCertificate/{Basic,Stable,Bridge,Sound,Fixture}.lean",
+          "PlusWitnessFamily/{Incompleteness,TransId}.lean",
+          "Semantics/SlicedFrame.lean",
+          "Init.lean"
+        ]
+      },
+      "recovery": {
+        "suggested_action": "Add a cheap staleness probe to the Lean acceptance gates: for each FormalSystem source, fail if its .olean is older than the source. That is the check that would have caught this before five research dispatches ran against it.",
+        "auto_recoverable": false,
+        "workaround": "Delete the stale artifacts so lake must re-elaborate, rather than trusting 'lake build' or touch: rm the .olean/.trace/.ilean plus the ir/*.c and ir/*.c.trace for every module whose source is newer than its .olean, then 'lake build'. Verified: full rebuild green at 2806 jobs, zero errors, zero sorries, 0 remaining stale oleans, and all five previously-unresolved symbols resolve. A full 'lake clean' is unnecessary and would rebuild dependencies."
+      },
+      "fix_status": "worked_around"
     }
   ]
 }
