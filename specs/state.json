@@ -4,8 +4,24 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 716,
+  "next_project_number": 717,
   "active_projects": [
+    {
+      "project_number": 716,
+      "project_name": "sliced_certificate_liveat_nontermination",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Profile and fix the PlusSlicedCertificate liveT/liveAt non-termination that blocks Tier-2 sliced certificate witnesses.\n\nEVIDENCE IN HAND. A preserved reproducer lives at specs/704_certificate_non_vacuity_and_shape_gates/probes/03_tier2_sliced_certificates.lean. Two width-2 Tier-2 constructions (certA, certB) carrying the box-dot modality elaborate in about 2 seconds and their cheap conjuncts evaluate, but `liveAt 0` -- the landed checker's computed liveness fixpoint under FormalSystem/Metalogic/Decidability/PlusSlicedCertificate -- does not return within 300 seconds compiled, on only 4 positions and 4 window times. The same fixpoint is instantaneous at the self-loop embedded certificates already pinned in scripts/certificate-witness-inventory.txt, so this is not a size effect.\n\nTHE QUESTION. Determine why liveT/liveAt diverges or blows up at a 4-position TOTAL-EDGE certificate when it is instant at self-loop certificates. Decide which of three it is: a genuine algorithmic defect in the landed decision procedure, a missing termination or memoization argument, or an unavoidable cost intrinsic to the total-edge case.\n\nDELIVERABLE. The diagnosis; the fix if the cause is addressable; and certA/certB landed as the Tier-2 witness rows in the C36 inventory if the fix makes a kernel `decide` proof reachable.\n\nWHY IT MATTERS INDEPENDENTLY OF TIER 2. liveAt is part of a decision procedure that is already landed and gated, so a configuration on which it fails to return is a defect in shipped code, not merely an unbuilt feature.\n\nNOT COVERED ELSEWHERE. Checked against the TailStable junk-position/full-labels evaluation, the refuted sliced finite-model-property statement, and the finite-carrier refutation work -- none of them own this question.\n\nADJACENCY. The sliced finite-width question of the sliced-class incompleteness characterization.",
+      "topic": "decidability",
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Live.lean",
+        "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Check.lean",
+        "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Examples.lean",
+        "scripts/certificate-witness-inventory.txt"
+      ],
+      "created": "2026-10-02T22:54:01Z",
+      "last_updated": "2026-10-02T22:54:01Z"
+    },
     {
       "project_number": 714,
       "project_name": "evaluate_full_labels_in_sliced_certificate",
@@ -190,7 +206,14 @@
           "summary": "Machine-checked refutation of the finite-carrier finite model property for L-plus (the finite-graph PlusGraphCertificate of task 703 plan v2 is incomplete, already on the stab-free fragment and on the CTL-like fragment); concrete time-sliced amendment to 703's certificate type; assessment that the full L-plus FMP for the amended class is open and its only known route (deterministic omega-automata) is infeasible here; answers to Q1-Q7 and a re-scope recommendation."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "file_scope": [
+        "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FiniteCarrier.lean",
+        "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean",
+        "scripts/certificate-witness-inventory.txt",
+        "scripts/check-module-invariants.sh",
+        "docs/theorem-index.md"
+      ]
     },
     {
       "project_number": 705,
