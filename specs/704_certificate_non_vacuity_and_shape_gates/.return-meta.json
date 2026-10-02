@@ -1,57 +1,33 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/704_certificate_non_vacuity_and_shape_gates/reports/01_certificate-non-vacuity-shape-gates.md",
-      "summary": "Re-verifies every declaration behind gates (a1)-(a3) and (b) against the live tree, finds (a1)/(a3)-Stage-1 already C2-pinned, task 706's refutations unlanded, no non-degenerate sliced inhabitant exhibited (probe: Embedded.liveFamily.sliced (-1) decides Certifies, against a stale build), re-derives the Shape-(S) allowlist, and specifies C36 (non-vacuity/coverage-limit) and C37 (shape) with Beer et al. vocabulary."
+      "type": "plan",
+      "path": "specs/704_certificate_non_vacuity_and_shape_gates/plans/01_certificate-non-vacuity-shape-gates.md",
+      "summary": "Six sequential phases (10 h): fresh-build probe re-establishment; a new PlusSlicedCertificate/Examples.lean exhibiting the sliced and sharing interesting witnesses with every generated surface regenerated and C2 pins; C36 non-vacuity + coverage-limit guard (certificate-witness-inventory.txt, --no-build structural half, RUN_BUILD evaluative half); C37 clause-shape check (clause-shape-allowlist.txt seeded from the 30-row re-derived table, anchor re-verification); time-boxed Tier-2 box-carrying sliced witnesses; docs and final gate."
     }
   ],
-  "next_steps": "Run /plan 704 to create implementation plan",
+  "next_steps": "Run /implement 704 to execute the plan",
   "metadata": {
-    "session_id": "sess_1790948286_150db5_704",
-    "agent_type": "general-research-agent",
-    "task_number": 704,
-    "duration_seconds": 1600,
+    "session_id": "sess_1790958227_8d0c76_704",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 7
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 10,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6]]
   },
   "memory_candidates": [
     {
-      "content": "After a commit landed through a dispatch worktree, the main tree's .lake/build oleans can lag the sources (observed: sources 2026-10-02 01:54 vs oleans 2026-10-01 10:42 for PlusSlicedCertificate/Stable.lean). `lake env lean` probes then silently answer about the OLD definitions - a landed `by decide` theorem was reproduced as false. Before trusting any decide/#eval probe, compare olean vs source mtimes (stat) or rebuild; never report a probe contradiction with a landed theorem without this check.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/704_certificate_non_vacuity_and_shape_gates/reports/01_certificate-non-vacuity-shape-gates.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["lake", "olean", "stale build", "decide", "probe", "worktree"]
-    },
-    {
-      "content": "In scripts/check-module-invariants.sh, C2's AXIOM_BASELINE doubles as an existence check: a renamed or deleted pinned declaration makes `#print axioms` error and the whole-string equality fail. So a new 'declaration must continue to exist and stay axiom-clean' guard should assert membership in AXIOM_BASELINE (C21-style subset) plus a --no-build structural grep, not add a second `#print axioms` pass (which would also force the hard-coded pin-count word in C2's pass message to change).",
+      "content": "In BimodalLogic, adding any new .lean module under FormalSystem/ touches four generated or aggregated surfaces that the invariant gate checks byte-for-byte: the subtree aggregator import list, FormalSystem.lean (regenerated only via `lake exe mk_all --lib FormalSystem`, C33), the README.md `<!-- BEGIN GENERATED: inventory -->` block (regenerated via `check-module-invariants.sh --emit-inventory`, live-file count), and typst/generated/status.typ (`scripts/typst-status-counts.sh`, needs a built library; checked by typst-sync-check.sh). A plan that lists only the new module under-declares file_scope and the phase fails C33/INV/typst-sync between substeps -- declare all four and treat the module landing as an atomic-batch phase.",
       "category": "PATTERN",
-      "source_artifact": "specs/704_certificate_non_vacuity_and_shape_gates/reports/01_certificate-non-vacuity-shape-gates.md",
+      "source_artifact": "specs/704_certificate_non_vacuity_and_shape_gates/plans/01_certificate-non-vacuity-shape-gates.md",
       "confidence": 0.85,
-      "suggested_keywords": ["check-module-invariants", "C2", "axiom baseline", "gate", "existence check"]
-    },
-    {
-      "content": "Mechanical Shape-(S) enumeration (definitions whose body contains a biconditional under a reflexive relational guard): run the awk pass over `def/abbrev/structure/class` blocks and print the first line containing the U+2194 arrow per hit; on this tree the certificate subtrees yield 30 hits, of which only (C1')'s untl/snce conjuncts over `trans` (reflexive via the skeleton field `trans_refl`) are residual collapses. The archived task-699 script `audit/enumerate-shape-s.sh` is the re-runnable source of the three passes.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/704_certificate_non_vacuity_and_shape_gates/reports/01_certificate-non-vacuity-shape-gates.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["clause shape", "biconditional", "reflexive guard", "collapse", "enumeration", "awk"]
+      "suggested_keywords": ["mk_all", "FormalSystem.lean", "emit-inventory", "status.typ", "new module", "atomic-batch"]
     }
   ],
   "modified_files": [
-    "specs/704_certificate_non_vacuity_and_shape_gates/reports/01_certificate-non-vacuity-shape-gates.md",
-    "specs/704_certificate_non_vacuity_and_shape_gates/probes/01_decide_sliced_inhabitant.lean",
-    "specs/704_certificate_non_vacuity_and_shape_gates/probes/02_decide_conjuncts.lean"
+    "specs/704_certificate_non_vacuity_and_shape_gates/plans/01_certificate-non-vacuity-shape-gates.md"
   ],
-  "proposed_file_scope": [
-    "scripts/check-module-invariants.sh",
-    "scripts/certificate-witness-inventory.txt",
-    "scripts/clause-shape-allowlist.txt",
-    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Examples.lean",
-    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean"
-  ],
-  "errors": []
+  "dispatch_seq": 6
 }

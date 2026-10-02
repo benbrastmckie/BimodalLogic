@@ -70,7 +70,7 @@ next_project_number: 716
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 706 [RESEARCHED] — STATUS NOTE (2026-10-02): question Q6 of this task's report...
-708 [RESEARCHED] — STATUS NOTE ADDENDUM (2026-10-02, relay wording): the sliced...
+708 [PLANNING] — STATUS NOTE ADDENDUM (2026-10-02, relay wording): the sliced...
 713 [NOT STARTED] — OPTIONAL, FILED NOT SCHEDULED. Nothing depends on this task...
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 709 [NOT STARTED] — STATUS NOTE (2026-10-02, SUPERSEDES THE HEADLINE BELOW -- the...
@@ -78,7 +78,7 @@ next_project_number: 716
 
 ### Documentation
 
-707 [RESEARCHED] — STATUS NOTE (2026-10-02, the recorded design rule is...
+707 [PLANNING] — STATUS NOTE (2026-10-02, the recorded design rule is...
 
 ### Formula Refactor
 
@@ -108,7 +108,7 @@ next_project_number: 716
 
 ### Verification
 
-704 [RESEARCHED] — Two structural preventions against the class of defect the...
+704 [PLANNED] — Two structural preventions against the class of defect the...
 
 ## Tasks
 
@@ -237,7 +237,7 @@ HARD CONSTRAINTS. Zero sorries, no new axioms, no vacuous placeholder definition
 ---
 
 ### 708. Relay sliced certificate contract to model checker
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: general
 - **Topic**: decidability
 - **Dependencies**: Task 703
@@ -269,7 +269,7 @@ LIMIT OF THE CERTIFYING LITERATURE, load-bearing for point (5): it is uniformly 
 ---
 
 ### 707. Ztime no finite carrier fmp context note
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: markdown
 - **Topic**: documentation
 - **Dependencies**: None
@@ -344,11 +344,12 @@ WHAT HAS CHANGED SINCE THIS TASK WAS FILED, and is more useful than any citation
 ---
 
 ### 704. Certificate non vacuity and shape gates
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: verification
 - **Dependencies**: Task 696, Task 703
 - **Research**: [704_certificate_non_vacuity_and_shape_gates/reports/01_certificate-non-vacuity-shape-gates.md]
+- **Plan**: [704_certificate_non_vacuity_and_shape_gates/plans/01_certificate-non-vacuity-shape-gates.md]
 
 **Description**: Two structural preventions against the class of defect the L-plus completeness programme (tasks 695, 696, 699, 700, 703, 706) exists to remove, filed as one task because both are assertions in scripts/check-module-invariants.sh and splitting them would put two tasks on the same single file.
 

@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 6,
+  "summary": "Plan written: six sequential phases (10 h) landing a non-degenerate sliced-certificate witness module, the C36 non-vacuity/coverage-limit gate and the C37 clause-shape gate in scripts/check-module-invariants.sh, with Tier-2 box-carrying witnesses time-boxed and task 706's unlanded finite-carrier refutations reserved as commented rows.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/704_certificate_non_vacuity_and_shape_gates/plans/01_certificate-non-vacuity-shape-gates.md",
+      "summary": "Six-phase implementation plan for C36/C37 and the sliced-class interesting witness."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 6,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implement for task 704 starting at Phase 1 (build-freshness probe before any decide-based evidence)."
+}
