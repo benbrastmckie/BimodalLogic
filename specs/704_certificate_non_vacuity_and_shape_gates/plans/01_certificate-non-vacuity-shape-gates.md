@@ -197,7 +197,7 @@ certifies too, now that `TailStable` is the liveness-filtered form).
 
 ---
 
-### Phase 2: Exhibit the interesting witnesses (sliced Tier 1 and sharing) [NOT STARTED]
+### Phase 2: Exhibit the interesting witnesses (sliced Tier 1 and sharing) [IN PROGRESS]
 
 **Goal**: Land the first non-degenerate `PlusSlicedCertificate` inhabitant and the lifted
 `SharingWitnessFamily` inhabitant as library theorems, with every generated surface a new

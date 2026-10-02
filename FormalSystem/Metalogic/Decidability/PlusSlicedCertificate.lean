@@ -28,6 +28,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Sound
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Complete
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Embed
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.EmbedComplete
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Examples
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
