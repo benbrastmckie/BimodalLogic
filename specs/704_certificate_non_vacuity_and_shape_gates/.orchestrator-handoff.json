@@ -1,19 +1,20 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 6,
-  "summary": "Plan written: six sequential phases (10 h) landing a non-degenerate sliced-certificate witness module, the C36 non-vacuity/coverage-limit gate and the C37 clause-shape gate in scripts/check-module-invariants.sh, with Tier-2 box-carrying witnesses time-boxed and task 706's unlanded finite-carrier refutations reserved as commented rows.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 11,
+  "summary": "Landed C36 (non-vacuity with a coverage-limit guard) and C37 (clause-shape check) in scripts/check-module-invariants.sh with their two companion files, exhibited the sliced class's first interesting witness in PlusSlicedCertificate/Examples.lean (C2 now pins thirty rows), and closed the Tier-2 box-dot witnesses with a reasoned exclusion after the checker's liveness fixpoint failed to return; both gate modes print ALL CHECKS PASSED.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/704_certificate_non_vacuity_and_shape_gates/plans/01_certificate-non-vacuity-shape-gates.md",
-      "summary": "Six-phase implementation plan for C36/C37 and the sliced-class interesting witness."
+      "type": "summary",
+      "path": "specs/704_certificate_non_vacuity_and_shape_gates/summaries/01_certificate-non-vacuity-shape-gates-summary.md",
+      "summary": "Implementation summary: C36/C37 gates, the sliced interesting witness, and the Tier-2 exclusion record."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 6,
   "phases_total": 6,
   "blockers": [],
   "plan_markers_verified": true,
   "continuation_path": null,
-  "next_action_hint": "Dispatch implement for task 704 starting at Phase 1 (build-freshness probe before any decide-based evidence)."
+  "next_action_hint": "Task complete; admit siblings 705 and 710 (file_scope overlap released). Follow-up candidate: profile PlusSlicedCertificate.liveT at the Tier-2 probe.",
+  "git_checkpoint": "see git log: task 704 phase 1-6 commits"
 }

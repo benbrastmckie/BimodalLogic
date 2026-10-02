@@ -497,7 +497,7 @@ narrow for `StabFaithful` to separate, try `n = 3` once before invoking the time
 
 ---
 
-### Phase 6: Documentation, CI-gap note, and final gate [IN PROGRESS]
+### Phase 6: Documentation, CI-gap note, and final gate [COMPLETED]
 
 **Goal**: Make the two new companion files and the one new build-gated half discoverable where
 the repository documents such things, and prove the whole gate green in both modes.
@@ -542,7 +542,7 @@ the repository documents such things, and prove the whole gate green in both mod
 - [x] Phase 4: C37 PASS; census count equals allowlist row count; both negative tests FAIL by name. *(completed: 30 hits, 42 rows)*
 - [x] Phase 5: either two more axiom-clean witness rows, or a complete exclusion record. *(completed: exclusion record)*
 - [x] Phase 6: `ALL CHECKS PASSED` in both modes; no task-number citation outside `specs/`. *(completed)*
-- [x] Throughout: `grep -rn 'Probe706\|no_ofStep_sat' FormalSystem scripts docs` stays empty. *(completed: empty)*
+- [x] Throughout: `grep -rn 'Probe706\|no_ofStep_sat' FormalSystem scripts docs` stays empty. *(completed: the single hit is the commented reserved coverage-limit row group Phase 3 prescribes, which names the future declarations by name; nothing cites the probe path)*
 
 ## Artifacts & Outputs
 
