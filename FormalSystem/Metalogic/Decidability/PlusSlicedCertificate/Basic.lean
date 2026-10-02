@@ -80,7 +80,7 @@ differently, for a reason worth stating:
 
 ## Main Results
 
-- `PlusGraphPath.lab_sub`, `.datum_mem` — every decoded label is drawn from the closure, because
+- `PlusGraphPath.lab_sub`, `.decoded_mem` — every decoded label is drawn from the closure, because
   every decoded datum is a member of the path's own data
 - `PlusSlicedCertificate.slab_sub` — every decoded slice label is drawn from the closure
 - the six decoding-region lemmas and the four periodicity lemmas
@@ -158,7 +158,7 @@ variable {n : ℕ} {C : Finset PlusFormula}
 /-- **The readout's default datum**: the path's own first `back` entry.
 
 Supplied from `back_ne` rather than from a positivity field, so that the default is automatically a
-member of the path's own data. That is what makes `datum_mem` hold at every time with no special
+member of the path's own data. That is what makes `decoded_mem` hold at every time with no special
 case, and hence what makes `lab_sub` hold with no side condition. -/
 def dflt (P : PlusGraphPath n C) : Finset PlusFormula × Fin n :=
   P.back.head P.back_ne
@@ -174,14 +174,14 @@ theorem n_pos (P : PlusGraphPath n C) : 0 < n :=
   lt_of_le_of_lt (Nat.zero_le _) (P.back.head P.back_ne).2.isLt
 
 /-- The decoded bi-infinite (label, state) function. -/
-def datum (P : PlusGraphPath n C) (t : ℤ) : Finset PlusFormula × Fin n :=
+def decoded (P : PlusGraphPath n C) (t : ℤ) : Finset PlusFormula × Fin n :=
   @Periodic.unrollOf _ P.inh P.back P.mid P.fwd t
 
 /-- The decoded bi-infinite label function. -/
-def lab (P : PlusGraphPath n C) (t : ℤ) : Finset PlusFormula := (P.datum t).1
+def lab (P : PlusGraphPath n C) (t : ℤ) : Finset PlusFormula := (P.decoded t).1
 
 /-- The decoded bi-infinite state function. -/
-def st (P : PlusGraphPath n C) (t : ℤ) : Fin n := (P.datum t).2
+def st (P : PlusGraphPath n C) (t : ℤ) : Fin n := (P.decoded t).2
 
 /-- The backward cycle length, as an integer. -/
 abbrev nb (P : PlusGraphPath n C) : ℤ := (P.back.length : ℤ)
@@ -201,44 +201,44 @@ theorem nm_nonneg (P : PlusGraphPath n C) : 0 ≤ P.nm := Int.natCast_nonneg _
 /-! ### The three decoding regions -/
 
 /-- On the negatives the decoding is the leftward cycle. -/
-theorem datum_neg (P : PlusGraphPath n C) {t : ℤ} (ht : t < 0) :
-    P.datum t = @Periodic.cyc _ P.inh P.back t :=
+theorem decoded_neg (P : PlusGraphPath n C) {t : ℤ} (ht : t < 0) :
+    P.decoded t = @Periodic.cyc _ P.inh P.back t :=
   @Periodic.unrollOf_neg _ P.inh _ _ _ _ ht
 
 /-- On the window `[0, |mid|)` the decoding reads `mid` directly. -/
-theorem datum_mid (P : PlusGraphPath n C) {t : ℤ} (h0 : 0 ≤ t) (ht : t < P.nm) :
-    P.datum t = P.mid.getD t.toNat P.dflt :=
+theorem decoded_mid (P : PlusGraphPath n C) {t : ℤ} (h0 : 0 ≤ t) (ht : t < P.nm) :
+    P.decoded t = P.mid.getD t.toNat P.dflt :=
   @Periodic.unrollOf_mid _ P.inh _ _ _ _ h0 ht
 
 /-- At or past `|mid|` the decoding is the rightward cycle. -/
-theorem datum_fwd (P : PlusGraphPath n C) {t : ℤ} (ht : P.nm ≤ t) :
-    P.datum t = @Periodic.cyc _ P.inh P.fwd (t - P.nm) :=
+theorem decoded_fwd (P : PlusGraphPath n C) {t : ℤ} (ht : P.nm ≤ t) :
+    P.decoded t = @Periodic.cyc _ P.inh P.fwd (t - P.nm) :=
   @Periodic.unrollOf_fwd _ P.inh _ _ _ _ ht
 
 /-! ### Periodicity -/
 
 /-- **Leftward periodicity.** Strictly left of the origin the data have period `|back|`. -/
-theorem datum_sub_nb (P : PlusGraphPath n C) {t : ℤ} (ht : t < 0) :
-    P.datum (t - P.nb) = P.datum t :=
+theorem decoded_sub_nb (P : PlusGraphPath n C) {t : ℤ} (ht : t < 0) :
+    P.decoded (t - P.nb) = P.decoded t :=
   @Periodic.unrollOf_sub_back_length _ P.inh _ _ _ P.back_ne _ ht
 
 /-- **Rightward periodicity.** At or past `|mid|` the data have period `|fwd|`. -/
-theorem datum_add_nf (P : PlusGraphPath n C) {t : ℤ} (ht : P.nm ≤ t) :
-    P.datum (t + P.nf) = P.datum t :=
+theorem decoded_add_nf (P : PlusGraphPath n C) {t : ℤ} (ht : P.nm ≤ t) :
+    P.decoded (t + P.nf) = P.decoded t :=
   @Periodic.unrollOf_add_fwd_length _ P.inh _ _ _ P.fwd_ne _ ht
 
 theorem lab_sub_nb (P : PlusGraphPath n C) {t : ℤ} (ht : t < 0) : P.lab (t - P.nb) = P.lab t := by
-  rw [lab, lab, P.datum_sub_nb ht]
+  rw [lab, lab, P.decoded_sub_nb ht]
 
 theorem lab_add_nf (P : PlusGraphPath n C) {t : ℤ} (ht : P.nm ≤ t) :
     P.lab (t + P.nf) = P.lab t := by
-  rw [lab, lab, P.datum_add_nf ht]
+  rw [lab, lab, P.decoded_add_nf ht]
 
 theorem st_sub_nb (P : PlusGraphPath n C) {t : ℤ} (ht : t < 0) : P.st (t - P.nb) = P.st t := by
-  rw [st, st, P.datum_sub_nb ht]
+  rw [st, st, P.decoded_sub_nb ht]
 
 theorem st_add_nf (P : PlusGraphPath n C) {t : ℤ} (ht : P.nm ≤ t) : P.st (t + P.nf) = P.st t := by
-  rw [st, st, P.datum_add_nf ht]
+  rw [st, st, P.decoded_add_nf ht]
 
 /-! ### Every decoded datum is a member, so every decoded label is in the closure -/
 
@@ -248,23 +248,23 @@ theorem st_add_nf (P : PlusGraphPath n C) {t : ℤ} (ht : P.nm ≤ t) : P.st (t 
 The default case is not an exception: the default *is* `back.head`, a member of `back`. This is the
 payoff of supplying the `Inhabited` instance from `back_ne` rather than from a positivity field.
 -/
-theorem datum_mem (P : PlusGraphPath n C) (t : ℤ) : P.datum t ∈ P.back ++ P.mid ++ P.fwd := by
+theorem decoded_mem (P : PlusGraphPath n C) (t : ℤ) : P.decoded t ∈ P.back ++ P.mid ++ P.fwd := by
   by_cases ht : t < 0
-  · rw [P.datum_neg ht]
+  · rw [P.decoded_neg ht]
     exact List.mem_append_left _ (List.mem_append_left _ (@cyc_mem _ P.inh _ P.back_ne t))
   · have ht' : (0 : ℤ) ≤ t := not_lt.mp ht
     by_cases htm : t < P.nm
     · have h1 : t < (P.mid.length : ℤ) := htm
       have hlt : t.toNat < P.mid.length := by omega
-      rw [P.datum_mid ht' htm]
+      rw [P.decoded_mid ht' htm]
       exact List.mem_append_left _
         (List.mem_append_right _ (getD_mem_of_lt (l := P.mid) (i := t.toNat) P.dflt hlt))
-    · rw [P.datum_fwd (not_lt.mp htm)]
+    · rw [P.decoded_fwd (not_lt.mp htm)]
       exact List.mem_append_right _ (@cyc_mem _ P.inh _ P.fwd_ne (t - P.nm))
 
 /-- **Every decoded label is drawn from the closure**, at every time and with no side condition. -/
 theorem lab_sub (P : PlusGraphPath n C) (t : ℤ) : P.lab t ⊆ C :=
-  P.label_sub _ (P.datum_mem t)
+  P.label_sub _ (P.decoded_mem t)
 
 end PlusGraphPath
 

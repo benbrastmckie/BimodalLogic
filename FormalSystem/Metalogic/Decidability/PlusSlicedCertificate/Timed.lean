@@ -35,7 +35,8 @@ periodicity.
 forward period; `prevTime` mirrors it at the left edge. The fold is sound because the slice
 sequence **and** the target path are both periodic there — which is why the window has to be the
 combined one of `Window.lean` and not `Basic.lean`'s single-source one. The four faithfulness
-lemmas `slice_nextTime`, `slice_prevTime`, `target_datum_nextTime` and `target_datum_prevTime` are
+lemmas `slice_nextTime`, `slice_prevTime`, `target_decoded_nextTime` and
+`target_decoded_prevTime` are
 what "sound" means, and each is a residue computation against a divisor of the combined period,
 not an induction.
 
@@ -78,8 +79,8 @@ them and no placeholder stands in.
 - `PlusSlicedCertificate.mem_verts`, and the `Fintype` on `verts`' subtype by `inferInstance`
 - `PlusSlicedCertificate.nextTime_edge` / `prevTime_edge` — what the fold does at each edge
 - `PlusSlicedCertificate.nextTime_mem` / `prevTime_mem` — the graph never leaves the window
-- `PlusSlicedCertificate.slice_nextTime` / `slice_prevTime` / `target_datum_nextTime` /
-  `target_datum_prevTime` — the wraps preserve **both** objects' data
+- `PlusSlicedCertificate.slice_nextTime` / `slice_prevTime` / `target_decoded_nextTime` /
+  `target_decoded_prevTime` — the wraps preserve **both** objects' data
 - `PlusSlicedCertificate.posAt_congr`, `posAt_nextTime` / `posAt_prevTime`
 - `PlusSlicedCertificate.slice_nextTime_pred` / `slice_prevTime_succ`
 - `PlusSlicedCertificate.succP_congr` / `predP_congr`, and the two transports
@@ -261,27 +262,27 @@ theorem slice_prevTime (G : PlusSlicedCertificate Γ Del) {u : ℤ} (hu : u ∈ 
     exact G.nb_dvd_NB
 
 /-- **The forward wrap preserves the target path's data.** -/
-theorem target_datum_nextTime (G : PlusSlicedCertificate Γ Del) {u : ℤ} (hu : u ∈ G.winTimes) :
-    G.target.datum (G.nextTime u) = G.target.datum (u + 1) := by
+theorem target_decoded_nextTime (G : PlusSlicedCertificate Γ Del) {u : ℤ} (hu : u ∈ G.winTimes) :
+    G.target.decoded (G.nextTime u) = G.target.decoded (u + 1) := by
   have hF := G.NF_pos
   have hM := G.NM_nonneg
   have hnm := G.target_nm_le_NM
   by_cases hw : u + 1 < G.winHi
   · simp only [nextTime, if_pos hw]
   · obtain ⟨hue, he⟩ := G.nextTime_edge hu hw
-    rw [he, hue, G.target.datum_fwd (by omega), G.target.datum_fwd (by omega)]
+    rw [he, hue, G.target.decoded_fwd (by omega), G.target.decoded_fwd (by omega)]
     refine @Periodic.cyc_congr _ G.target.inh _ _ _ (Int.modEq_iff_dvd.mpr ?_)
     rw [show G.NM + 2 * G.NF - G.target.nm - (G.NM + G.NF - G.target.nm) = G.NF from by omega]
     exact G.target_nf_dvd_NF
 
 /-- **The backward wrap preserves the target path's data.** -/
-theorem target_datum_prevTime (G : PlusSlicedCertificate Γ Del) {u : ℤ} (hu : u ∈ G.winTimes) :
-    G.target.datum (G.prevTime u) = G.target.datum (u - 1) := by
+theorem target_decoded_prevTime (G : PlusSlicedCertificate Γ Del) {u : ℤ} (hu : u ∈ G.winTimes) :
+    G.target.decoded (G.prevTime u) = G.target.decoded (u - 1) := by
   have hB := G.NB_pos
   by_cases hw : G.winLo ≤ u - 1
   · simp only [prevTime, if_pos hw]
   · obtain ⟨hue, he⟩ := G.prevTime_edge hu hw
-    rw [he, hue, G.target.datum_neg (by omega), G.target.datum_neg (by omega)]
+    rw [he, hue, G.target.decoded_neg (by omega), G.target.decoded_neg (by omega)]
     refine @Periodic.cyc_congr _ G.target.inh _ _ _
       (Int.ModEq.symm (Int.modEq_iff_dvd.mpr ?_))
     rw [show -G.NB - 1 - (-2 * G.NB - 1) = G.NB from by omega]

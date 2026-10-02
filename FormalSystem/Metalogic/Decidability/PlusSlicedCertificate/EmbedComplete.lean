@@ -71,7 +71,7 @@ Stage 3 question and nothing here bears on it.
 
 Two further things a reader of this module should carry away, so that no successor inherits a
 stale picture. **First**, `TailStable` now carries **one liveness filter per obligation
-direction** — the forward conjunct `Φ_fwd R₀ ∩ R₀fwd = R₀` and the backward one `Φ_back L₀ ∩ L₀bwd
+direction** — the forward conjunct `ΦFwd R₀ ∩ R₀fwd = R₀` and the backward one `ΦBack L₀ ∩ L₀bwd
 = L₀` — and it is a **per-certificate demand, not a theorem**: `FixtureStable.not_tailStable_cert`
 refutes it, after both filters, at a named certificate, and the refutations of the two *raw*
 conjuncts recorded below are what the filters answer. The flagship proves the demand **at the
@@ -442,7 +442,7 @@ namespace PlusSlicedCertificate
 variable {Γ Del : PlusContext}
 
 /-- **The RAW backward conjunct, isolated**, so that the refutation below can name what it refutes.
-The `r = 0` instance is `Φ_back L₀ = L₀` verbatim. This is the pre-repair demand: `TailStable`'s own
+The `r = 0` instance is `ΦBack L₀ = L₀` verbatim. This is the pre-repair demand: `TailStable`'s own
 backward conjunct carries the liveness filter and is `TailStableBack`. -/
 def TailStableBackRaw (G : PlusSlicedCertificate Γ Del) : Prop :=
   ∀ r ∈ Finset.range G.NBnat,
@@ -537,7 +537,7 @@ it carries genuine backward liveness down the left tail to the reference time.
 so the **raw** backward demand is not available from that theorem's stated output along this route.
 What is **not** claimed: that the filtered `TailStableBack` fails anywhere (it is measured clean at
 all four certificates below, which is why it is the landed conjunct), that the filtered demand is a
-*theorem* (`FixtureStable.Φ_back_L₀_inter_ne_cert` refutes it at a named certificate, a `⊇` failure
+*theorem* (`FixtureStable.ΦBack_L₀_inter_ne_cert` refutes it at a named certificate, a `⊇` failure
 no filter repairs), or that `snce p q` is ℤ-time invalid, which is evident but is not mechanized
 here.
 -/
@@ -603,7 +603,7 @@ theorem snceProbeFamily_certifies : snceProbeFamily.Certifies 0 := by decide
 
 /-- **THE REFUTATION.** The embedded certificate of a certifying family fails the **raw** backward
 demand, and `NBnat = 1` here, so the single residue it quantifies over is `r = 0` — the pre-residue
-demand `Φ_back L₀ = L₀` itself, not an artifact of the residue indexing landed at sub-phase 18.3. -/
+demand `ΦBack L₀ = L₀` itself, not an artifact of the residue indexing landed at sub-phase 18.3. -/
 theorem snceProbeFamily_not_tailStableBackRaw :
     ¬ (snceProbeFamily.sliced 0).TailStableBackRaw := by decide
 
@@ -1485,6 +1485,9 @@ is **not** completeness for L⁺. The target is `ofFormula φ`, so no `⊡` occu
 `sliced_not_stab_mem` records that no `⊡`-formula lies in an embedded closure, which is exactly why
 every `⊡`-guarded clause of the checker is vacuous here. Whether a `⊡`-carrying target has a sliced
 certificate is the open Stage 3 question and nothing below bears on it.
+
+Paper: — (a formalization-native embedding result; the paper states no certificate class to
+embed into)
 -/
 theorem exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula (φ : Formula)
     (h : ¬ PlusValidZTime (ofFormula φ)) :

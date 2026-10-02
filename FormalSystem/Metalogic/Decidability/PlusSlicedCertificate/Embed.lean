@@ -63,7 +63,7 @@ either way.**
 - `Periodic.unrollOf_seg` — the three segments decode back to the function they were cut from
 - `plusClosureOf_ofCtx` — the L⁺ closure of an embedded context is the image of the L closure;
   with it, `stab`-formulas are absent from an embedded closure entirely
-- `WitnessFamily.sliced_slice`, `sliced_edge`, `sliced_slab`, `sliced_target_datum` — the readout
+- `WitnessFamily.sliced_slice`, `sliced_edge`, `sliced_slab`, `sliced_target_decoded` — the readout
 - `WitnessFamily.sliced_biSerial` — the embedded certificate is bi-serial
 
 ## Tags
@@ -614,19 +614,19 @@ theorem sliced_slab (W : WitnessFamily ([] : Context) [φ]) (tt : ℤ) (t : ℤ)
   rfl
 
 /-- **The decoded target datum is the main lasso's translated label at its own index.** -/
-theorem sliced_target_datum (W : WitnessFamily ([] : Context) [φ]) (tt : ℤ) (t : ℤ) :
-    (W.sliced tt).target.datum t = embTargetFun W t :=
+theorem sliced_target_decoded (W : WitnessFamily ([] : Context) [φ]) (tt : ℤ) (t : ℤ) :
+    (W.sliced tt).target.decoded t = embTargetFun W t :=
   @Periodic.unrollOf_seg _ (embTarget W).inh _ _ _ _ W.perB_pos W.perF_pos
     (fun _u hu => W.embTargetFun_sub_perB hu) (fun _u hu => W.embTargetFun_add_perF hu) t
 
 theorem sliced_target_lab (W : WitnessFamily ([] : Context) [φ]) (tt : ℤ) (t : ℤ) :
     (W.sliced tt).target.lab t = trLab (W.main t) := by
-  rw [PlusGraphPath.lab, W.sliced_target_datum tt t]
+  rw [PlusGraphPath.lab, W.sliced_target_decoded tt t]
   rfl
 
 theorem sliced_target_st (W : WitnessFamily ([] : Context) [φ]) (tt : ℤ) (t : ℤ) :
     (W.sliced tt).target.st t = W.mainIdx := by
-  rw [PlusGraphPath.st, W.sliced_target_datum tt t]
+  rw [PlusGraphPath.st, W.sliced_target_decoded tt t]
   rfl
 
 /-! ### The combined window is the slice tails' own
@@ -724,9 +724,9 @@ end WitnessFamily
 /-! ## The tail-stability demand, evaluated at two embedded certificates
 
 Phase 20's principal risk is the forward conjunct of `Stable.lean`'s `TailStable`: it is a
-**conjecture** at the embedding rather than a corollary of the construction, because `Φ_fwd` is a
+**conjecture** at the embedding rather than a corollary of the construction, because `ΦFwd` is a
 reachability transfer and the one-step clauses leave an arriving label's `untl`-membership
-unconstrained. `FixtureStable.lean` proves the **raw** demand `Φ_fwd R₀ = R₀` false at a named
+unconstrained. `FixtureStable.lean` proves the **raw** demand `ΦFwd R₀ = R₀` false at a named
 certificate over a whole re-presentation family, which is why the landed demand carries a liveness
 filter.
 

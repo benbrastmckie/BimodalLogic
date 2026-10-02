@@ -1027,6 +1027,14 @@ echo
 # carrier; an axiom appearing there would silently widen the foundation the whole
 # integer-indexed decidability route stands on, in a place no other row would report.
 #
+# The last four are the time-sliced L-plus certificate's own headlines: the decidable checker,
+# the refutation producer, relative completeness for tail-stable sliced models, and the
+# embedding of the landed L witness family. They are pinned because the sliced route is the
+# only one that reaches a `box-dot`-free ZTime non-validity the finite-carrier class provably
+# cannot certify, and because `decidableCertifies` is a DECISION procedure -- an axiom leaking
+# into it would make a `Decidable` instance noncomputable in substance while still elaborating,
+# which no other check in this script would see.
+#
 # Do NOT scrape `lake build` stdout for these -- an incremental build may not
 # re-emit them. A dedicated scratch file is compiled against the built library.
 # ---------------------------------------------------------------------------
@@ -1053,6 +1061,10 @@ read -r -d '' AXIOM_BASELINE <<'BASELINE'
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_exists_plusCertifies_pumpTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Semantics.validZTime_iff_validInt' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.decidableCertifies' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.plusRefutes_of_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.exists_plusSlicedCertificate_of_tailStable_countermodel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula' depends on axioms: [propext, Classical.choice, Quot.sound]
 BASELINE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -1081,6 +1093,10 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_exists_plusCertifies_pumpTarget
 #print axioms FormalSystem.Semantics.validZTime_iff_validInt
 #print axioms FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt
+#print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.decidableCertifies
+#print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.plusRefutes_of_certifies
+#print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.exists_plusSlicedCertificate_of_tailStable_countermodel
+#print axioms FormalSystem.Metalogic.Decidability.WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula
 LEAN
   # The pretty-printer wraps at a fixed width, and `FormalSystem.` is longer than the
   # namespace it replaced, so a long axiom record now spills onto continuation lines that
@@ -1091,7 +1107,7 @@ LEAN
     | grep 'depends on axioms')
   rm -f "$AX_SRC"
   if [ "$AX_OUT" = "$AXIOM_BASELINE" ]; then
-    pass C2 "all twenty-two pinned axiom sets match baseline"
+    pass C2 "all twenty-six pinned axiom sets match baseline"
     while IFS= read -r l; do note "$l"; done <<<"$AX_OUT"
   else
     fail C2 "axiom sets diverged from baseline -- this is a HARD STOP, not a new baseline"

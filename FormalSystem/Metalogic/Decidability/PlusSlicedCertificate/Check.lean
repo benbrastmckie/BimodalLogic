@@ -65,7 +65,7 @@ cited for the mathematics and never for the computation.
 ## Nothing is aligned, and the one period-combining clause is folded by a named lemma
 
 No clause mentions an alignment offset, a period product or an absolute origin: the slice time is
-the only time there is. One clause does read `G.slice` and `G.target.datum` *together* at every
+the only time there is. One clause does read `G.slice` and `G.target.decoded` *together* at every
 time — `TargetPathPos` — and that is a period-combining demand, not an alignment-offset one. It is
 folded by `forall_iff_win_succ`, proved below from `Window.lean`'s combined periods: a named lemma,
 not a `decide` that happens to typecheck. `forall_iff_win_succ` carries **one step of lookahead**,
@@ -78,7 +78,7 @@ doubled window endpoints are what make the lookahead land inside the window on b
   quantifier `∀ χ, □χ ∈ closure → …` into a bounded one over a `Finset`
 - `decidableBiSerial`, `decidableBoxLabelFaithful` — (C1) and (C3b), each through its own window
   biconditional
-- `slice_sub_NB` / `target_datum_sub_NB` / `slice_add_NF` / `target_datum_add_NF` and
+- `slice_sub_NB` / `target_decoded_sub_NB` / `slice_add_NF` / `target_decoded_add_NF` and
   `forall_iff_win_succ` — the combined-period shifts and the one-step-lookahead fold
 - `targetPos`, `TargetPathPos`, `targetRun` — the existential side and the run it presents
 - `StabFaithful` — the (C5) clause, a biconditional between the slice's `⊡`-content and the live
@@ -222,10 +222,10 @@ theorem slice_sub_NB (G : PlusSlicedCertificate Γ Del) {t : ℤ} (ht : t < 0) :
   rw [show t - G.NB = t + (-1) * G.NB from by omega, Periodic.emod_add_mul]
 
 /-- **The combined back shift, on the target path's data.** -/
-theorem target_datum_sub_NB (G : PlusSlicedCertificate Γ Del) {t : ℤ} (ht : t < 0) :
-    G.target.datum (t - G.NB) = G.target.datum t := by
+theorem target_decoded_sub_NB (G : PlusSlicedCertificate Γ Del) {t : ℤ} (ht : t < 0) :
+    G.target.decoded (t - G.NB) = G.target.decoded t := by
   have hB := G.NB_pos
-  rw [G.target.datum_neg (by omega : t - G.NB < 0), G.target.datum_neg ht]
+  rw [G.target.decoded_neg (by omega : t - G.NB < 0), G.target.decoded_neg ht]
   refine @Periodic.cyc_congr _ G.target.inh _ _ _
     (emod_eq_of_dvd_of_emod_eq G.target_nb_dvd_NB ?_)
   rw [show t - G.NB = t + (-1) * G.NB from by omega, Periodic.emod_add_mul]
@@ -239,10 +239,10 @@ theorem slice_add_NF (G : PlusSlicedCertificate Γ Del) {t : ℤ} (ht : G.nm ≤
   rw [show t + G.NF - G.nm = (t - G.nm) + 1 * G.NF from by omega, Periodic.emod_add_mul]
 
 /-- **The combined forward shift, on the target path's data.** -/
-theorem target_datum_add_NF (G : PlusSlicedCertificate Γ Del) {t : ℤ} (ht : G.target.nm ≤ t) :
-    G.target.datum (t + G.NF) = G.target.datum t := by
+theorem target_decoded_add_NF (G : PlusSlicedCertificate Γ Del) {t : ℤ} (ht : G.target.nm ≤ t) :
+    G.target.decoded (t + G.NF) = G.target.decoded t := by
   have hF := G.NF_pos
-  rw [G.target.datum_fwd (by omega : G.target.nm ≤ t + G.NF), G.target.datum_fwd ht]
+  rw [G.target.decoded_fwd (by omega : G.target.nm ≤ t + G.NF), G.target.decoded_fwd ht]
   refine @Periodic.cyc_congr _ G.target.inh _ _ _
     (emod_eq_of_dvd_of_emod_eq G.target_nf_dvd_NF ?_)
   rw [show t + G.NF - G.target.nm = (t - G.target.nm) + 1 * G.NF from by omega,
@@ -268,7 +268,8 @@ multiple of the period.
 -/
 theorem forall_iff_win_succ (G : PlusSlicedCertificate Γ Del) {P : ℤ → Prop}
     (hP : ∀ s t : ℤ, G.slice s = G.slice t → G.slice (s + 1) = G.slice (t + 1) →
-      G.target.datum s = G.target.datum t → G.target.datum (s + 1) = G.target.datum (t + 1) →
+      G.target.decoded s = G.target.decoded t →
+      G.target.decoded (s + 1) = G.target.decoded (t + 1) →
       (P s ↔ P t)) :
     (∀ t : ℤ, P t) ↔ ∀ t ∈ G.winTimes, P t := by
   have hB := G.NB_pos
@@ -306,9 +307,9 @@ theorem forall_iff_win_succ (G : PlusSlicedCertificate Γ Del) {P : ℤ → Prop
         · have e := G.slice_sub_NB (t := t + 1 + G.NB) (by omega)
           rw [show t + 1 + G.NB - G.NB = t + 1 from by omega] at e
           rwa [show t + 1 + G.NB = t + G.NB + 1 from by omega] at e
-        · have e := G.target_datum_sub_NB (t := t + G.NB) (by omega)
+        · have e := G.target_decoded_sub_NB (t := t + G.NB) (by omega)
           rwa [show t + G.NB - G.NB = t from by omega] at e
-        · have e := G.target_datum_sub_NB (t := t + 1 + G.NB) (by omega)
+        · have e := G.target_decoded_sub_NB (t := t + 1 + G.NB) (by omega)
           rw [show t + 1 + G.NB - G.NB = t + 1 from by omega] at e
           rwa [show t + 1 + G.NB = t + G.NB + 1 from by omega] at e
     -- The right tail: shift leftward by the combined forward period, one period at a time.
@@ -332,9 +333,9 @@ theorem forall_iff_win_succ (G : PlusSlicedCertificate Γ Del) {P : ℤ → Prop
           rwa [show t - G.NF + G.NF = t from by omega] at e
         · have e := G.slice_add_NF (t := t - G.NF + 1) (by omega)
           rwa [show t - G.NF + 1 + G.NF = t + 1 from by omega] at e
-        · have e := G.target_datum_add_NF (t := t - G.NF) (by omega)
+        · have e := G.target_decoded_add_NF (t := t - G.NF) (by omega)
           rwa [show t - G.NF + G.NF = t from by omega] at e
-        · have e := G.target_datum_add_NF (t := t - G.NF + 1) (by omega)
+        · have e := G.target_decoded_add_NF (t := t - G.NF + 1) (by omega)
           rwa [show t - G.NF + 1 + G.NF = t + 1 from by omega] at e
     intro t
     by_cases hlo : t < G.winLo
@@ -360,7 +361,7 @@ def targetPos (G : PlusSlicedCertificate Γ Del) (t : ℤ) : G.Pos :=
 
 /-- **The target path's position depends on the time only through the target path's data.** -/
 theorem targetPos_congr (G : PlusSlicedCertificate Γ Del) {s t : ℤ}
-    (h : G.target.datum s = G.target.datum t) : G.targetPos s = G.targetPos t := by
+    (h : G.target.decoded s = G.target.decoded t) : G.targetPos s = G.targetPos t := by
   have hst : G.target.st s = G.target.st t := by
     rw [PlusGraphPath.st, PlusGraphPath.st, h]
   have hlab : G.target.lab s = G.target.lab t := by
@@ -544,7 +545,7 @@ Three structural conjuncts, then the target group. Reading them in order:
 1. `BiSerial` — (C1), the frame construction's seriality obligation in both directions.
 2. `TailStable` — the wrap-faithfulness demand, so that the window's liveness verdict is the
    verdict at every time. Its forward conjunct is the **liveness-filtered** transfer
-   `Φ_fwd R₀ ∩ R₀fwd = R₀`; nothing here reads that conjunct's internal shape.
+   `ΦFwd R₀ ∩ R₀fwd = R₀`; nothing here reads that conjunct's internal shape.
 3. `BoxLabelFaithful` — (C3b), which the bridge takes as an explicit hypothesis and which therefore
    has to be projectable out of this conjunction.
 4. `targetTime ∈ winTimes` — the target is read at a window time. See the note below.
@@ -567,7 +568,11 @@ def Certifies (G : PlusSlicedCertificate Γ Del) : Prop :=
     G.targetPos G.targetTime ∈ G.liveAt G.targetTime ∧
     G.StabFaithful ∧ G.BoxLiveFaithful ∧ G.Target
 
-/-- **The checker.** Synthesized from the clauses, not postulated. -/
+/--
+**The checker.** Synthesized from the clauses, not postulated.
+
+Paper: — (a formalization-native decision procedure; the paper states no certificate class)
+-/
 instance decidableCertifies (G : PlusSlicedCertificate Γ Del) : Decidable G.Certifies := by
   unfold Certifies
   infer_instance

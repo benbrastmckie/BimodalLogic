@@ -323,6 +323,9 @@ having to be fulfilling.
 `PlusRefutes Γ Del` at the presented frame, the presented model, the history of the fulfilling run
 through the target position, and the target time. Every premise is L⁺-true there and every
 conclusion L⁺-false, by the truth lemma against (C4) `Target`.
+
+Paper: — (a formalization-native producer for the refutation interface; the paper has no
+counterpart)
 -/
 theorem plusRefutes_of_certifies (G : PlusSlicedCertificate Γ Del) (hc : G.Certifies) :
     PlusWitnessFamily.PlusRefutes Γ Del := by

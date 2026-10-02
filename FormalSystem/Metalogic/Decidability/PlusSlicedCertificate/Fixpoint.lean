@@ -7,6 +7,7 @@ Authors: Benjamin Brast-McKie
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Nat.Find
 import Mathlib.Logic.Function.Iterate
+import FormalSystem.Init
 
 /-!
 # Two Existential Fixpoints on a Finite Graph
