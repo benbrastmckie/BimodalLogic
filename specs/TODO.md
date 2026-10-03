@@ -37,7 +37,7 @@ next_project_number: 720
 
 ### Categorical Structure
 
-563 [NOT STARTED] — Promote the presheaf skeleton into the library. DELIVER: the...
+563 [RESEARCHED] — Promote the presheaf skeleton into the library. DELIVER: the...
   └─ 564 [NOT STARTED] — Prove app:gluing for two interval sections whose germs agree...
     └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
     └─ 719 [NOT STARTED] — Implement the ray layer, the seam-gluing operator and the...
@@ -74,7 +74,7 @@ next_project_number: 720
 713 [NOT STARTED] — OPTIONAL, FILED NOT SCHEDULED. Nothing depends on this task...
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
-718 [NOT STARTED] — Find the correct methods, definitions and semantic basis for...
+718 [RESEARCHING] — Find the correct methods, definitions and semantic basis for...
 709 [NOT STARTED] — STATUS NOTE (2026-10-02, SUPERSEDES THE HEADLINE BELOW -- the...
 712 [BLOCKED] — STATUS NOTE (2026-10-02, THE STATEMENT BELOW IS NOW REFUTED...
 
@@ -137,7 +137,7 @@ ADJACENCY. Consumes tasks 563, 564, 565, 566 and the route verdict of task 718. 
 ---
 
 ### 718. Omega sequence decidability full lplus
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: formal:logic
 - **Topic**: decidability
 - **Dependencies**: None
@@ -698,10 +698,11 @@ SEED RESEARCH AVAILABLE (added 2026-10-02; READ-ONLY context, not a change of sc
 ---
 
 ### 563. Formalize interval site and behavior presheaf
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: None
+- **Research**: [563_formalize_interval_site_and_behavior_presheaf/reports/01_interval-site-behavior-presheaf.md]
 
 **Description**: Promote the presheaf skeleton into the library. DELIVER: the section type `Beh F l` (the convex histories with domain exactly [0, l]), restriction along the translation `Tr p`, presheaf functoriality (`restrict_id`, `restrict_comp`), and the Germs clause `Beh(F)(0) iso W`.
 

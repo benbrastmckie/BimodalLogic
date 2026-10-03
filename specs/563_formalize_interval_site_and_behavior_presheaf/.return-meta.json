@@ -1,0 +1,38 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/563_formalize_interval_site_and_behavior_presheaf/reports/01_interval-site-behavior-presheaf.md",
+      "summary": "Siting research for the interval site Int(D) and the behavior presheaf Beh(F): the cited task-553 probe no longer compiles (ConvexHistory and ShiftSet.wh_ext were deleted); all four deliverables re-verified sorry-free in three new probes; gate prerequisites (C15 DANGLING anchor rows, C31 bib entries, C33 root regen, C34a marker trap) and the CategoryTheory design decision recorded."
+    },
+    {
+      "type": "probe",
+      "path": "specs/563_formalize_interval_site_and_behavior_presheaf/probes/03_siting-rehearsal.lean",
+      "summary": "Lift-ready: both intended modules in their final FormalSystem.Semantics.Presheaf namespace with the assert_not_exists layering guard; 226 lines, 0 sorry, compiles warning-free."
+    },
+    {
+      "type": "probe",
+      "path": "specs/563_formalize_interval_site_and_behavior_presheaf/probes/01_port-probe.lean",
+      "summary": "Minimal port of the archived task-553 presheaf probe to the live tree, including glue_seam (owned by task 564, not implemented here); compiles sorry-free."
+    },
+    {
+      "type": "probe",
+      "path": "specs/563_formalize_interval_site_and_behavior_presheaf/probes/02_site-probe.lean",
+      "summary": "The interval site Int(D) of def:interval-site over a bare TemporalOrder: objects, Tr morphisms, the three category laws, left/right restriction and the Johnstone coverage; compiles sorry-free."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791007802_90fb84_563",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "build_baseline": "lake build FormalSystem exit 0 (2807 jobs) via lake-build-guard.sh, 2026-10-03",
+    "observed_foreign_modifications": [
+      "FormalSystem/README.md",
+      "FormalSystem/Metalogic/README.md"
+    ],
+    "observed_foreign_modifications_note": "Pre-existing uncommitted 'Last verified' date-stamp edits (2026-09-21 -> 2026-10-02), outside this task's file_scope and outside sibling task 718's declared scope. Inspected via git diff, judged benign, left exactly as found: not reverted, not staged. Reported per the territory contract."
+  }
+}
