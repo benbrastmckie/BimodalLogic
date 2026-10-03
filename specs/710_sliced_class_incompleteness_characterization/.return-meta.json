@@ -1,71 +1,23 @@
 {
-  "status": "researched",
-  "started_at": "2026-10-02T13:47:44Z",
-  "completed_at": "2026-10-02T14:33:00Z",
-  "dispatch_seq": 5,
-  "artifacts": [
-    {
-      "type": "report",
-      "path": "specs/710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md",
-      "summary": "Machine-checked refutation: the time-sliced certificate class is incomplete for L-plus and for the CTL-like fragment (witness Phi := theta' and Box(stab Fp -> not stab not Xp)); the gap is exactly finite width; HWZ transfer localized; recommendations for 709/708 and landing."
-    },
-    {
-      "type": "implementation",
-      "path": "specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean",
-      "summary": "Compiled sorry-free probe (1176 lines, axioms propext/Classical.choice/Quot.sound): not_plusValidZTime_neg_Phi, no_finite_width_sat, not_certifies, not_sliced_complete, not_finite_width_fmp."
-    }
-  ],
-  "next_steps": "Run /plan 710 to land the probe's five theorems as library declarations (new PlusSlicedCertificate/Limits/NoFiniteWidth.lean), restate the class's completeness in the module headers, and re-scope task 709 and the task 708 relay per the report's recommendations 1-4.",
-  "user_decision": {
-    "blocking": false,
-    "question": "The sliced certificate class is refuted for full L-plus AND for the CTL-like fragment (task 709's headline). Choose: (a) re-scope 709 to the 'finite width implies eventually periodic' theorem (report F4) or to a bounded-delay fragment, or abandon it; (b) have the 708 relay state the class is semantically incomplete (never-report-validity permanent for stab targets) rather than pending; (c) whether to file the regular-two-way-tree class as a research-first successor. Proceeding on the report's recommendations loses nothing meanwhile.",
-    "recommendation": "Land the probe as library theorems (recommendation 1), re-scope 709 to the F4 periodicity theorem, update the 708 relay wording, and defer the two-way-tree class until decidability of full L-plus is confirmed as a programme goal."
-  },
-  "modified_files": [
-    "specs/710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md",
-    "specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean"
-  ],
-  "proposed_file_scope": [
-    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean",
-    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean",
-    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/EmbedComplete.lean",
-    "FormalSystem/Semantics/IntNormalForm.lean",
-    "docs/theorem-index.md",
-    "scripts/check-evidence-probes.sh"
-  ],
-  "memory_candidates": [
-    {
-      "content": "Over Z-time, limit closure plus finite per-time fibres is Koenig's lemma: a certificate class presenting frames on Z x Fin n cannot certify a formula whose every model needs a universal eventuality (stab Fp at pre-states under the once-only clock theta) with unbounded delay at a single time. Witness Phi := theta' and Box(stab Fp -> not stab not Xp), probe NoFiniteWidthModel.lean. Finite carrier (theta) and finite width (Phi) are both refuted; the next presentation must have infinite fibres (regular two-way trees).",
-      "category": "INSIGHT",
-      "source_artifact": "specs/710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["L-plus", "sliced certificate", "finite width", "Koenig", "incompleteness", "stab", "Z-time"]
-    },
-    {
-      "content": "HWZ 2000 quasimodel technique transfers to L-plus only in its periodicity half: Theorem 14 (collapse the domain at each time to realised types) and Lemma 17 (splice at equal quasistates) both rely on every run condition being existential; L-plus's stab is a universal quantifier over runs, so the quasistate must carry one-sided (fwd/bwd) live sets and the pumping needs an idempotent Ramsey colour, not successive splicing.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["HWZ", "quasimodel", "splice lemma", "Ramsey", "liveness", "eventually periodic"]
-    },
-    {
-      "content": "Lean idiom: a regular Z-frame on a countable finitely branching bi-serial step relation is FrameOver.ofStep's construction with TaskFrame.saturation_of_fib_finite in place of saturation_of_finite, proving Fib (ofStepRel R) w d finite by induction on iter with Set.Finite.biUnion; and a Box-fact at one time transfers to every offset-0 path at every time via plusTruthAt_timeShift on worldHistoryOfStepPath.",
-      "category": "PATTERN",
-      "source_artifact": "specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean",
-      "confidence": 0.85,
-      "suggested_keywords": ["ofStep", "saturation_of_fib_finite", "plusTruthAt_timeShift", "regular frame", "finite fibres"]
-    }
-  ],
+  "status": "description_updated",
+  "artifacts": [],
+  "next_steps": "Description re-scoped to the Option A library landing. Run /plan 710 to produce the implementation plan, then /implement; keep the order 710 -> 706 -> 720 (declared file_scope collisions on PlusSlicedCertificate.lean, docs/theorem-index.md and scripts/check-evidence-probes.sh).",
   "metadata": {
-    "session_id": "sess_1790948286_150db5_710",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 2716,
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
-    "findings_count": 7,
-    "context_files_loaded": ["README.md", "return-metadata-file.md", "territory.md"],
-    "mathlib_lookups_performed": 2,
-    "probe_compiled": true,
-    "probe_axioms": ["propext", "Classical.choice", "Quot.sound"]
+    "session_id": "sess_1791043945_8b25c9",
+    "agent_type": "reviser-agent",
+    "delegation_path": [
+      "orchestrator",
+      "revise",
+      "reviser-agent"
+    ],
+    "revision_mode": "description_update",
+    "new_description": "IMPLEMENTATION SCOPE: THE LIBRARY LANDING OF THIS TASK'S REFUTATION. The research round is complete and it SUCCEEDED: the time-sliced certificate class of task 703's amended Stage 2 IS incomplete for full L-plus, and the gap is exactly FINITE WIDTH. What remains is to land that refutation as `FormalSystem/` theorems. Report: `specs/710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md`. Probe (compiled outside the build graph, namespace `Probe710`, currently a `WIRED_REPO` entry of `scripts/check-evidence-probes.sh`): `specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean`.\n\nAUTHORITY FOR THIS SCOPE, SETTLED NOT PENDING. The user RULED Option A -- library landing -- on 2026-10-03, and `specs/ROADMAP.md` Phase 0 carries that ruling as a CHECKED item: \"RULED 2026-10-03 by the user: Option A -- library landing.\" That ruling SUPERSEDES the autonomous cycle-1 adoption recorded in task 721, which was explicitly flagged as not a user ruling. Option B -- accepting the CI-guarded `specs/evidence/` collection as the home of refutations -- is REJECTED. The ROADMAP Success Metric \"every refutation the programme has produced lives in `FormalSystem/` as a cited theorem, not only under a task's `probes/`\" therefore stands as written. Specification: `specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md`, Section F item 1.\n\nDELIVERABLE 1: THE THEOREMS, AT A PATH THIS TASK'S OWN file_scope ALREADY NAMES. Land `not_finite_width_fmp`, `not_sliced_complete` and the core `no_finite_width_sat` under `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean`. That `Limits/` subdirectory does NOT yet exist under `PlusSlicedCertificate/` and must be created; the layout precedent in the tree is `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/` (`NoCertificate.lean`, `HopFree.lean`, `Targets.lean`, `README.md`). Land with them the two declarations the three depend on: `not_plusValidZTime_neg_Φ` (the positive half) and `not_certifies`. The frame constructor is already in the library -- `FrameOver.ofSlicedStep` and `instance FrameOver.ofSlicedStep_isRegular` in `FormalSystem/Semantics/SlicedFrame.lean` -- so the report's 6-10 h estimate (Recommendation 1) need not include building one from scratch.\n\nDELIVERABLE 2: HYPOTHESES AND WITNESS, STATED VERBATIM IN THE LANDED STATEMENTS AND DOCSTRINGS.\n- `no_finite_width_sat (τ : WorldHistory (FrameOver.ofSlicedStep R fwd bwd)) (t0 : ℤ) : ¬ PlusTruthAt M τ t0 Φ`, under `variable {W : Type} (R : ℤ → W → W → Prop)`, `variable [Finite W] [Nonempty W] (fwd : ∀ t w, ∃ u, R t w u) (bwd : ∀ t w, ∃ v, R (t - 1) v w)`, and `variable (M : TaskModel (FrameOver.ofSlicedStep R fwd bwd).toTaskFrame)`. The `[Finite W] [Nonempty W]` pair is the whole finiteness hypothesis; there is NO hypothesis on the succession relation beyond the bi-seriality carried by `fwd` and `bwd`.\n- `not_sliced_complete : ¬ ∀ ψ : PlusFormula, ¬ PlusValidZTime ψ → ∃ G : PlusSlicedCertificate [] [ψ], G.Certifies`.\n- `not_finite_width_fmp : ¬ ∀ φ : PlusFormula, ¬ PlusValidZTime φ → ∃ (W : Type) (_ : Finite W) (_ : Nonempty W) (R : ℤ → W → W → Prop) (fwd : ∀ t w, ∃ u, R t w u) (bwd : ∀ t w, ∃ v, R (t - 1) v w) (M : TaskModel (FrameOver.ofSlicedStep R fwd bwd).toTaskFrame) (τ : WorldHistory (FrameOver.ofSlicedStep R fwd bwd)) (t : ℤ), ¬ PlusTruthAt M τ t φ` -- here `[Finite W]` and `[Nonempty W]` appear as the explicit anonymous binders `(_ : Finite W) (_ : Nonempty W)`.\n- THE WITNESS, which BEARS THE STABILITY OPERATOR `⊡` (`PlusFormula.stab`): `def Φ : PlusFormula := (A'.and C').and D`, built from `def pa : Atom := ⟨\"p\", none⟩`, `p := PlusFormula.atom pa`, `Fp := PlusFormula.untl PlusFormula.top p` (`⊤ U p`), `Pp := PlusFormula.snce PlusFormula.top p` (`⊤ S p`), `Xp := PlusFormula.untl PlusFormula.bot p` (`⊥ U p`, i.e. `p` at the next time), and the three conjuncts `A' := □(p ∨ ⊡Fp ∨ ⊡Pp)`, `C' := □(p → ⊡¬Pp)` (`A'` and `C'` together are task 706's `θ'`, \"every history meets `p` exactly once\"), `D := □(⊡Fp → ¬⊡¬Xp)` (\"every pre state has a `p`-successor\"). Every `⊡` and `□` in `Φ` governs a state formula, which is why `Φ` lies in the CTL-like fragment of report 706 §Q3.\n\nDELIVERABLE 3: THE TWO SCOPE LIMITS, CARRIED INTO THE LANDED DOCSTRINGS. `FormalSystem/Metalogic/Decidability/FMP/README.md` already states both in its section \"The finite-carrier route is refuted, not merely open\", and the landed theorems must not be readable as claiming more. FIRST, scope is ℤ (DISCRETE) frames only: the pumping argument the probe relies on needs discreteness and says nothing about a dense duration. SECOND, `Φ` USES `⊡`, so this half of the refutation is specifically an L-PLUS result and NOT a result about the base language TM -- in contrast with task 706's `⊡`-free witness, whose `Probe706.θ_eq_ofFormula : θ = ofFormula ψL` is what makes that half a statement about TM itself. Carry also the README's two further disclaimers: neither probe says anything about an INFINITE carrier, and neither touches soundness.\n\nDELIVERABLE 4: `docs/theorem-index.md` rows for each landed theorem. Do NOT add a `pinned:C14` or similar baseline claim unless the corresponding baseline line is actually written -- scope spec Section 0.3 row 26 records three existing index rows whose `pinned:C14` claim is ungrounded in `scripts/check-module-invariants.sh`, and task 721's follow-up H2 exists to fix exactly that. `scripts/check-module-invariants.sh` is declared in task 706's `file_scope`, NOT this task's; do not edit it here.\n\nDELIVERABLE 5: RESTATE THE CLASS'S COMPLETENESS WHERE THE LIBRARY ASSERTS IT (report Recommendation 2). In `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean`'s header and `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/EmbedComplete.lean`'s \"What the flagship does and does not buy\": the class is complete on the `⊡`-free fragment; it is INCOMPLETE for L-plus AND for the CTL-like fragment, with `Φ` named; and the precise semantic characterisation (report F4: complete exactly on targets with a finite-width countermodel) is recorded as ARGUED, not proved.\n\nSEQUENCING -- NAMED file_scope COLLISIONS, SO THESE THREE TASKS CANNOT BE BATCHED. Tasks 710 and 706 BOTH declare `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean` and `docs/theorem-index.md`; tasks 710 and 720 BOTH declare `scripts/check-evidence-probes.sh`. A batch whose members share a declared file is deferred every cycle by the admission gate and makes no progress. Required order: 710, THEN 706, THEN 720 -- which is already how the ROADMAP's Phase 2 Run block sequences the first two. Task 720 runs last and re-points the `FMP/README.md` and `scripts/check-evidence-probes.sh` citations to the landed library names, converting or deleting this task's `WIRED_REPO` probe entry accordingly; moving or deleting the probe file is 720's scope, NOT this task's.\n\nRESEARCH FINDINGS, PRESERVED. These are established and are not to be re-litigated by the implementation round.\n- THE REFUTATION. `Φ.neg` is a ℤ-time non-validity -- `not_plusValidZTime_neg_Φ`, witnessed by a countable, finitely branching model built from `inductive Node` (`pre k`, `x k`, `post k j`) with `instance F_isRegular : F.IsRegular` and the canonical-path lemma `path_eq_canon` -- that NO `PlusSlicedCertificate [] [Φ.neg]` certifies (`not_certifies`, routed through the landed `Certifies` checker and `PlusSlicedCertificate/Sound.lean`'s own `plusRefutes_of_certifies` argument, with the frame kept).\n- THE GAP IS CHARACTERISED AND IT IS EXACTLY FINITE WIDTH. Any model satisfying `Φ` must have infinitely many states at some time, so the obstruction chain is: finite carrier (refuted by task 706's `θ`) is strictly weaker than finite width (refuted by `Φ`, here), which is strictly weaker than what the class needs. Necessity of finite width is the shape of the no-model half (the certificate presents `ℤ × Fin n`); sufficiency -- every finite-width model has an eventually periodic, hence tail-stable-presentable, finite-width model -- is the F4 periodicity statement and is ARGUED, not proved.\n- THE HWZ TRANSFER, LOCALIZED. The sliced class is Hodkinson-Wolter-Zakharyaschev 2000's QUASIMODEL over <ℤ,<> and tail-stability is their PERIODIC STATE FUNCTION WITH BOUNDED PERIOD. Their splice lemma (Lemma 17) transfers, and the periodicity half (Lemma 21) transfers to FIXED finite width. What BREAKS is the model-to-quasimodel collapse of their Thm 14 -- collapsing the domain at each world to its realised types, i.e. to finitely many states per time: for L-plus that collapse ADDS LIMIT PATHS, and `Φ` forbids every finite-width collapse at once. Their decidability proofs never need a universal quantifier over runs; that is the single point of divergence.\n- NOT CLAIMED. No width bound for targets that DO have finite-width countermodels; nothing about dense duration; nothing about infinite carriers.\n- DOWNSTREAM RELAYS, owned by those tasks' own revisions and not by this one. Task 709's headline is refuted (Recommendation 3): re-scope it to the F4 periodicity theorem -- finite width implies eventually periodic, formalisable via Ramsey for pairs plus the landed liveness machinery, 40-80 h -- or abandon it. Task 708 (Recommendation 4): the sliced wire format is SOUND and is a strict extension of the lasso family, but it is semantically incomplete for L-plus, so the never-report-validity discipline is PERMANENT for targets containing `⊡`, not pending a proof; the relay should cite `Φ`, not an open question. Recommendation 5: pursue no FOURTH certificate class before the regular-two-way-tree analysis -- any class presenting a frame with finite per-time fibres is already refuted by `not_finite_width_fmp`, so the next candidate must present infinite fibres (root paths of a finite class graph).\n- SUPERSESSION, as recorded. This task superseded the question task 703's plan left open and task 706 left open as its research question Q6 -- which fragment the OLD `PlusSharingWitnessFamily` class covers. The report records that CLOSED BY SUPERSESSION, not as a surviving obligation: the only thing known about that retired class is a necessary condition (certifiable only if the target has a finite, eventually periodic sharing countermodel all of whose threads fulfil their eventualities), with no syntactic characterization offered, and the class is retired in favour of the sliced one.\n- LITERATURE, settled. The bundled-trees precedent (Zanardo 1985; Reynolds 2007, A Tableau for Bundled CTL*) was never acquired and proved UNNEEDED (report F6); it need not be chased for the landing. The TRAP still stands: the corpus item `reynolds_towards_a_ctl_star_tableau_draft` is an author-hosted draft about FULL CTL*, a DIFFERENT paper, and must not be cited for any bundled-versus-full claim.\n\nDEPENDENCIES unchanged: `[703]`. This revision re-words the implementation target only; it moves and edits nothing in the tree.",
+    "reports_integrated": [
+      "01_sliced-class-incompleteness.md"
+    ],
+    "status_unchanged": "researched",
+    "dependencies_unchanged": [
+      703
+    ]
   }
 }
