@@ -1,0 +1,25 @@
+{
+  "phase": 1,
+  "phase_name": "Confirm the gate — re-measure sub-states and close Item 1",
+  "started_at": "2026-10-03T00:00:00Z",
+  "last_updated": "2026-10-03T00:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "Re-count the three sub-states over the non-terminal population", "status": "done", "files_touched": []},
+    {"id": 2, "description": "GATE: null_value must be empty to proceed", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Capture baseline validate-state.sh and test-validate-state.sh results", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Re-confirm Item 1 no-live-writer finding via grep of source store", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Draft corrected-attribution paragraph", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "measurements": {
+    "denominator": 56,
+    "missing_key": 28,
+    "null_value": [],
+    "empty_array": [],
+    "baseline_validate_state": {"passed": 8, "warnings": 17, "failed": 0, "exit_code": 0},
+    "baseline_test_suite": {"passed": 35, "failed": 0}
+  },
+  "corrected_attribution": "Every historical \"file_scope\": null line traces to exactly one commit: c1e5f5c3d (2026-07-27, \"specs: repair stale Theories/Bimodal path references after library rename\"), a one-off manual/agent path-reference repair that rewrote file_scope arrays and, in doing so, introduced literal nulls on tasks whose arrays were emptied. These were removed by 3f4599425 (2026-10-03, \"specs: drop literal-null file_scope keys on five never-planned tasks\"). The three archival/orchestration commits previously blamed (81647f25c, cb74c4c67, b12283595) never introduced a null -- git log -S matches any change to the pickaxe string's occurrence COUNT, and these commits appear in that search only because they REMOVED pre-existing nulls (via archiving the affected tasks out of active_projects), not because they wrote one. No current script constructs a file_scope: null write; the only occurrences of the literal string in the source store are test fixtures (test-orchestrate-predispatch-review.sh, test-backfill-file-scope.sh, test-orchestrate-build-dispatch.sh, test-orchestrate-batch-admit.sh, test-validate-state.sh) and one worked example in context/contracts/territory.md. Item 1 closes as a no-op: there is no live writer to fix."
+}

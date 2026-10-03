@@ -1,30 +1,9 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/727_stop_literal_null_file_scope_writes_and_promote_check/plans/01_promote-null-value-to-fail.md",
-      "summary": "5-phase plan: close the writer item as a no-op with corrected attribution, promote Check 10's null_value sub-state to FAIL (with a display-cap exemption so the gate is real), update four test fixtures, deploy and gate, and rename task 711's stale project_name."
-    }
-  ],
+  "status": "in_progress",
   "metadata": {
-    "session_id": "sess_1791051010_4c2417_727",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 3.5,
-    "dependency_waves": 4
-  },
-  "memory_candidates": [
-    {
-      "content": "When promoting ONE sub-state of a multi-sub-state validator check from WARN to FAIL, the promotion is cosmetic unless the newly-FAIL findings are also exempted from the check's output-truncation cap. validate-state.sh Check 10 reports missing_key/null_value/empty_array findings through a single loop capped at the first 10 findings sorted by project_number. With 29 live missing_key findings, a promoted null_value finding at a high project_number would sort past the cap, emit no log_fail line, leave FAILED at 0, and let validation pass despite the exact condition the promotion was meant to block. The general rule: a display cap and an enforcement level are orthogonal concerns, and a check that conflates them silently loses enforcement the moment the populations are unbalanced. Split the emission loop by level -- FAIL findings untruncated, WARN findings capped -- and recompute the 'and N more' arithmetic against the WARN population only so the count stays truthful. Pin it with a fixture whose FAIL finding deliberately sorts past the cap.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/727_stop_literal_null_file_scope_writes_and_promote_check/plans/01_promote-null-value-to-fail.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["validator-promotion", "warn-to-fail", "truncation-cap", "enforcement-level", "validate-state", "check-sub-states"]
-    }
-  ],
-  "next_steps": "Run /implement 727 to execute the plan",
-  "dispatch_seq": 11
+    "session_id": "sess_1791051010_4c2417",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #727
 
 - **Task**: 727 - Stop literal-null file_scope writes and promote the null_value sub-state to FAIL
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/727_stop_literal_null_file_scope_writes_and_promote_check/reports/01_stop-null-file-scope-writes.md
@@ -120,29 +120,38 @@ closing gate rather than two.
 
 ---
 
-### Phase 1: Confirm the gate — re-measure sub-states and close Item 1 [NOT STARTED]
+### Phase 1: Confirm the gate — re-measure sub-states and close Item 1 [COMPLETED]
 
 **Goal**: Establish, immediately before any edit, that `null_value` is still zero (the promotion's
 precondition) and that no live writer of a literal-null `file_scope` exists; produce the corrected
 attribution text that Phases 2 and the summary will carry.
 
 **Tasks**:
-- [ ] Re-count the three sub-states over the non-terminal population:
+- [x] Re-count the three sub-states over the non-terminal population:
       `jq -c '[.active_projects[] | select((.status // "") as $s | ($s=="completed" or $s=="abandoned" or $s=="expanded")|not)] | {denominator: length, missing_key: [.[]|select(has("file_scope")|not)]|length, null_value: [.[]|select(has("file_scope") and .file_scope==null)|.project_number], empty_array: [.[]|select(.file_scope==[])|.project_number]}' specs/state.json`
-- [ ] **GATE**: if `null_value` is non-empty, STOP. Repair each offender by **deleting** the key
+      *(completed: denominator 56, missing_key 28, null_value [], empty_array [])*
+- [x] **GATE**: if `null_value` is non-empty, STOP. Repair each offender by **deleting** the key
       (via `state-write.sh`, e.g. `del(.active_projects[] | select(.project_number==NNN) | .file_scope)`),
       never by writing `[]`, then re-count before continuing. If `null_value` is empty, proceed.
-- [ ] Capture the baseline: `bash .claude/scripts/validate-state.sh specs/state.json` (record
+      *(completed: null_value empty, gate passed, proceeding to Phase 2)*
+- [x] Capture the baseline: `bash .claude/scripts/validate-state.sh specs/state.json` (record
       Passed/Warnings/Failed and the exit code) and
       `bash .claude/scripts/tests/test-validate-state.sh | tail -3` (record the pass/fail tally).
-- [ ] Re-confirm Item 1's "no live writer" finding cheaply:
+      *(completed: Passed 8, Warnings 17, Failed 0, exit 0; test suite 35 passed, 0 failed)*
+- [x] Re-confirm Item 1's "no live writer" finding cheaply:
       `grep -rn '"file_scope": *null' /home/benjamin/.config/nvim/agent-system/extensions/core --include=*.sh --include=*.md`
       and confirm every hit is a test fixture or a worked example, not a writer.
-- [ ] Draft the corrected-attribution paragraph (single source commit `c1e5f5c3d`, 2026-07-27;
+      *(completed: 11 hits, all in test-orchestrate-predispatch-review.sh, test-backfill-file-scope.sh,
+      test-orchestrate-build-dispatch.sh, test-orchestrate-batch-admit.sh, test-validate-state.sh,
+      and context/contracts/territory.md's worked example -- no writer found)*
+- [x] Draft the corrected-attribution paragraph (single source commit `c1e5f5c3d`, 2026-07-27;
       remediated by `3f4599425`, 2026-10-03; the three archival/orchestration commits previously
       blamed only ever removed nulls, and `git log -S` lists them because `-S` matches any change
       to the pickaxe string's occurrence *count*). Keep it free of task-number references — it
       lands outside `specs/**`.
+      *(completed: independently re-verified against `git show --stat c1e5f5c3d -- specs/state.json`
+      and `git log --oneline -S'"file_scope": null' -- specs/state.json`; paragraph stored in
+      progress/phase-1-progress.json for reuse in Phase 2 and the summary)*
 
 **Timing**: 0.5 hours
 
