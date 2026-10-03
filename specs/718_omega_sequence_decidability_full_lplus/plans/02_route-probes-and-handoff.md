@@ -233,33 +233,33 @@ blocker, exactly as the script's header prescribes, rather than breaking the cit
 
 ---
 
-### Phase 2: R1 probe 1 — `⊡`-depth stratification over the landed atomization [NOT STARTED]
+### Phase 2: R1 probe 1 — `⊡`-depth stratification over the landed atomization [COMPLETED]
 
 **Goal**: Establish, or refute, that the `⊡`-value at a position is computable from a per-state
 labelling stratified by `⊡`-depth — the single assumption R1's automaton alphabet rests on.
 
 **Tasks**:
-- [ ] Read `FormalSystem/Metalogic/Conservativity/Plus/Atomization.lean` in full (`Encoding`,
+- [x] Read `FormalSystem/Metalogic/Conservativity/Plus/Atomization.lean` in full (`Encoding`,
       `atomize`, `TaskModel.atomModel`, `plusTruthAt_iff_atomize`) and
       `FormalSystem/PlusLanguage/PlusTruth.lean`'s `stab_state_only`. These are the substrate; do
       not re-derive them.
-- [ ] Define `stabDepth : PlusFormula → ℕ` (the maximal nesting of `⊡`) and prove it strictly
+- [x] Define `stabDepth : PlusFormula → ℕ` (the maximal nesting of `⊡`) and prove it strictly
       decreases on the `χ` of each maximal `⊡χ` that `atomize` replaces — the well-foundedness the
       stratification needs.
-- [ ] Define the stratum labelling: for a model `M` and `k : ℕ`, a function
+- [x] Define the stratum labelling: for a model `M` and `k : ℕ`, a function
       `WorldState → PlusFormula → Prop` recording the truth of each `⊡`-subformula of depth `≤ k`
       at that state. Prove it is well defined — i.e. state-determined — directly from
       `stab_state_only` (this is what makes the labelling a function of the state at all).
-- [ ] Prove the stratification statement: truth of any `φ` at `(τ, t)` is determined by the
+- [x] Prove the stratification statement: truth of any `φ` at `(τ, t)` is determined by the
       depth-`(stabDepth φ)` labelling together with the L-level (⊡-free) evaluation, by routing
       through `plusTruthAt_iff_atomize` at the appropriate `Encoding`.
-- [ ] If any step fails, invert the file: state and prove the **negative** — exhibit a `⊡`-depth-2
+- [x] If any step fails, invert the file: state and prove the **negative** — exhibit a `⊡`-depth-2
       formula whose value at a state is not a function of the lower-stratum labelling — and make
-      that the headline theorem. Record which step failed and the exact goal left.
-- [ ] Write the module docstring in the house style of the existing collection entries: what it
+      that the headline theorem. Record which step failed and the exact goal left. *(not needed: the positive form was established)*
+- [x] Write the module docstring in the house style of the existing collection entries: what it
       holds in place, what it does **not** claim (it bounds nothing and decides nothing; it licenses
       an alphabet), and the `#print axioms` record for each headline declaration.
-- [ ] Add the `WIRED` entry and its comment row (re-read the script first: a wave sibling may have
+- [x] Add the `WIRED` entry and its comment row (re-read the script first: a wave sibling may have
       edited it).
 
 **Timing**: 2 hours

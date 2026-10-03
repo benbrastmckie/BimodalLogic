@@ -105,6 +105,15 @@ EVIDENCE="specs/evidence"
 #                                                           | an escape from it, and every route in
 #                                                           | the omega-sequence-decidability round
 #                                                           | assumes it
+# seam-gluing-ray-product/stab-depth-stratification         | POSITIVE: the `⊡`-value at a state
+#                                                           | is computable from a per-state
+#                                                           | labelling stratified by `⊡`-depth
+#                                                           | (`stratum`), which is exactly what
+#                                                           | the landed `atomize` /
+#                                                           | `plusTruthAt_iff_atomize` already
+#                                                           | supplies -- this licenses R1's
+#                                                           | automaton ALPHABET; it bounds and
+#                                                           | decides nothing on its own
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -113,6 +122,7 @@ WIRED=(
   "frame-constraints-audit/mixed-sign-composition-obstruction"
   "stability-modal-substrate/closure-field-is-necessary"
   "seam-gluing-ray-product/stab-fibre-is-ray-product"
+  "seam-gluing-ray-product/stab-depth-stratification"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
