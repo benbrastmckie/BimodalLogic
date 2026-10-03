@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 3,
+  "summary": "Wrote a 4-phase implementation plan siting the interval site Int(D) and the behavior presheaf Beh(F) as a new FormalSystem/Semantics/Presheaf/ cluster below Truth.lean, with gate prerequisites (four DANGLING anchor rows, two references.bib entries) ordered first and a compile-verified 19-identifier Lean Challenge block.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/563_formalize_interval_site_and_behavior_presheaf/plans/01_interval-site-behavior-presheaf.md",
+      "summary": "4 phases, 5 hours, fully sequential; all four dispatch deliverables already compiled sorry-free in this task's probes/03_siting-rehearsal.lean."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 4,
+  "blockers": []
+}

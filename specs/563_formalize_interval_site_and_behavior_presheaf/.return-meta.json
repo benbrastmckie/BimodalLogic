@@ -1,38 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/563_formalize_interval_site_and_behavior_presheaf/reports/01_interval-site-behavior-presheaf.md",
-      "summary": "Siting research for the interval site Int(D) and the behavior presheaf Beh(F): the cited task-553 probe no longer compiles (ConvexHistory and ShiftSet.wh_ext were deleted); all four deliverables re-verified sorry-free in three new probes; gate prerequisites (C15 DANGLING anchor rows, C31 bib entries, C33 root regen, C34a marker trap) and the CategoryTheory design decision recorded."
-    },
-    {
-      "type": "probe",
-      "path": "specs/563_formalize_interval_site_and_behavior_presheaf/probes/03_siting-rehearsal.lean",
-      "summary": "Lift-ready: both intended modules in their final FormalSystem.Semantics.Presheaf namespace with the assert_not_exists layering guard; 226 lines, 0 sorry, compiles warning-free."
-    },
-    {
-      "type": "probe",
-      "path": "specs/563_formalize_interval_site_and_behavior_presheaf/probes/01_port-probe.lean",
-      "summary": "Minimal port of the archived task-553 presheaf probe to the live tree, including glue_seam (owned by task 564, not implemented here); compiles sorry-free."
-    },
-    {
-      "type": "probe",
-      "path": "specs/563_formalize_interval_site_and_behavior_presheaf/probes/02_site-probe.lean",
-      "summary": "The interval site Int(D) of def:interval-site over a bare TemporalOrder: objects, Tr morphisms, the three category laws, left/right restriction and the Johnstone coverage; compiles sorry-free."
+      "type": "plan",
+      "path": "specs/563_formalize_interval_site_and_behavior_presheaf/plans/01_interval-site-behavior-presheaf.md",
+      "summary": "4-phase plan siting the interval site and behavior presheaf as FormalSystem/Semantics/Presheaf/, with a compile-verified 19-identifier Lean Challenge block."
     }
   ],
   "metadata": {
     "session_id": "sess_1791007802_90fb84_563",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "build_baseline": "lake build FormalSystem exit 0 (2807 jobs) via lake-build-guard.sh, 2026-10-03",
-    "observed_foreign_modifications": [
-      "FormalSystem/README.md",
-      "FormalSystem/Metalogic/README.md"
-    ],
-    "observed_foreign_modifications_note": "Pre-existing uncommitted 'Last verified' date-stamp edits (2026-09-21 -> 2026-10-02), outside this task's file_scope and outside sibling task 718's declared scope. Inspected via git diff, judged benign, left exactly as found: not reverted, not staged. Reported per the territory contract."
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 5,
+    "dependency_waves": [[1], [2], [3], [4]]
+  },
+  "memory_candidates": [
+    {
+      "content": "Authoring a `## Lean Challenge Statements` block for a lean4 plan in BimodalLogic: the snapshot matcher (.claude/scripts/lean-challenge-snapshot.sh) recognizes only `theorem|lemma|def|instance` + a SIMPLE name, and for each match it keeps the text up to the first top-level `:=` and DISCARDS everything from there to the next match. Three consequences the design record (context/project/lean4/domain/challenge-snapshot.md) does not state: (1) every definitional carrier a pinned statement mentions must sit in the PREAMBLE, before the first matched declaration, because an `abbrev` or `structure` placed BETWEEN two theorems falls inside the preceding theorem's discarded chunk; (2) carriers must be written `abbrev`/`structure`, never `def`, so the matcher does not erase their bodies and they stay out of the cross-validated identifier set (the library then declares them with `def`); (3) no intervening `namespace`/`end` may sit between two pinned theorems, so every pinned name must be undotted AND globally distinct -- two namespace-local lemmas sharing a bare name (e.g. `Tr.ext` and `Beh.ext` both reducing to `ext`) cannot both be pinned and belong under a `**Goals (not challenge-pinned)**` bullet instead. Verify the assembled block by compiling it with `lake env lean`: the expected result is exit 0 with exactly one `declaration uses 'sorry'` warning per pinned identifier.",
+      "category": "PATTERN",
+      "source_artifact": "specs/563_formalize_interval_site_and_behavior_presheaf/plans/01_interval-site-behavior-presheaf.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lean-challenge-statements", "challenge-snapshot", "plan-format", "abbrev-carrier", "lean4-planning", "identifier-cross-validation"]
+    }
+  ],
+  "next_steps": "Run /implement 563 to execute the plan",
+  "dispatch_seq": 3
 }
