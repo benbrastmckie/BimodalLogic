@@ -284,7 +284,7 @@ task is omitted and no task outside that list is added without a stated reason.
 
 ---
 
-### Phase 3: New-Task Specifications (Section H), Ranking Ratification and Disclosure [IN PROGRESS]
+### Phase 3: New-Task Specifications (Section H), Ranking Ratification and Disclosure [COMPLETED]
 
 **Goal**: Complete the specification with the tasks to file, the ratified ranking for both
 languages, and the state-write disclosure.
@@ -347,33 +347,33 @@ omission to fix, not a judgment call.
 
 ---
 
-### Phase 4: Reconcile specs/ROADMAP.md [NOT STARTED]
+### Phase 4: Reconcile specs/ROADMAP.md [COMPLETED]
 
 **Goal**: Bring the ROADMAP's Fronts table, phase items, Open Risks, Success Metrics, header and
 Maintenance into agreement with the tree, citing declarations and the spec's sections, with
 Phase 0 restated and undecided.
 
 **Tasks**:
-- [ ] Re-read `specs/ROADMAP.md` immediately before editing (a sibling task may have touched it);
+- [x] Re-read `specs/ROADMAP.md` immediately before editing (a sibling task may have touched it); *(completed)*
       record its `git log -1` SHA in the commit message body.
-- [ ] Header: re-date to the implementation date; add a sentence that the interval-site/behavior-
+- [x] Header: re-date to the implementation date; add a sentence that the interval-site/behavior- *(completed)*
       presheaf layer (`FormalSystem/Semantics/Presheaf/{Site,Behavior}.lean`, task 563) and the
       omega-sequence round (task 718) have landed since the previous date; recompute the open-task
       count from `specs/state.json`.
-- [ ] Fronts table: "Gluing route to decidability" row -> open tasks `719, 720, 711 (revised per
+- [x] Fronts table: "Gluing route to decidability" row -> open tasks `719, 720, 711 (revised per *(completed)*
       followup-scope-spec Section B)` plus `709` if Section D is adopted, 718 removed; "L⁺ sliced
       certificates" row -> drop 709 correspondingly (or keep with a note if the user has not
       adopted Section D -- state which); "Categorical structure" row -> drop 563; "TM tableau
       spine" row -> Delivers column gains "the four-class biconditional (Z-time validity of L is
       already decided by `Compression.decidableValidZTime`)"; add 721 to the front it belongs to
       (the gluing-route row, as the review that re-ranked it) until it completes.
-- [ ] Phase 0 (user-only): keep every `- [ ]` unchecked and every existing bullet; append
+- [x] Phase 0 (user-only): keep every `- [x]` unchecked and every existing bullet; append *(completed)*
       evidence sentences only -- 712: the 711 dependency edge is now meaningless (Section A) and
       closing as a refutation record waits on the library landing (Section F); 711: the third
       option REVISE (Section B) and that the decision's evidence condition is met; 713: its
       sanity-ceiling role (Section C). Add one new unchecked item: confirm or overturn the Option
       A reading of the Success Metric adopted autonomously in cycle 1 of task 721 (Section F).
-- [ ] Phase 1: annotate 718's four checkboxes `- [x] ... *(Completed: Task 718, {DATE})*` with
+- [x] Phase 1: annotate 718's four checkboxes `- [x] ... *(Completed: Task 718, {DATE})*` with *(completed)*
       the one-line verdicts (keystone proved under `[F.IsRegular]`; ray layer is a
       `PartialHistory` with a half-line domain; the ω move is a decomposition not a re-basing;
       filtration closed for Z); replace "Blocked by: Task 718 (→ 719); Tasks 563, 564 (→ 719)"
@@ -381,19 +381,19 @@ Phase 0 restated and undecided.
       phase's first probe and name the three E-experiments in order; quote the determinization-
       funding decision from `specs/718_.../.decisions.json` and state that its evidence condition
       is met and that reviving/revising 711 is a Phase 0 call; update the Run block (718 done).
-- [ ] Phase 2: rewrite the 709 item and the sentence "Task 709 is the phase's substance and the
+- [x] Phase 2: rewrite the 709 item and the sentence "Task 709 is the phase's substance and the *(completed)*
       only item that is open mathematics" per Section D (F4 is R1's summary step, sequenced under
       719); reword the 706 and 710 items as the library landing per Option A and add a 720 item
       (re-point citations to library names), with the Option A caveat in one clause; update the
       Run block ordering note accordingly.
-- [ ] Phase 3: strike 563's item (annotate completed, note `Beh F 0 ≃ F.WorldState` landed);
+- [x] Phase 3: strike 563's item (annotate completed, note `Beh F 0 ≃ F.WorldState` landed); *(completed)*
       change "Blocked by: Task 563 (→ all)" to the remaining edges (565 → 566; 564, 616 → 618);
       keep the aggregator-import hazard paragraph; update the Run block (563 done).
-- [ ] Phase 6: add one sentence to the 430 item and to the preamble: `Decidable (ValidZTime φ)`
+- [x] Phase 6: add one sentence to the 430 item and to the preamble: `Decidable (ValidZTime φ)` *(completed)*
       is proved by the witness-family route (`Compression.decidableValidZTime`, ZTime, `Formula`,
       empty premises, axioms `[propext, Classical.choice, Quot.sound]`); the spine's deliverable
       is the four-class `isValid` biconditional, whose ZTime instance has an independent oracle.
-- [ ] Open Risks table: (a) filtration row -> CLOSED for Z-time by `Probe706.no_finite_carrier_sat`
+- [x] Open Risks table: (a) filtration row -> CLOSED for Z-time by `Probe706.no_finite_carrier_sat` *(completed)*
       / `Probe710.not_finite_width_fmp`, dense residue only, owner 706/710 (landing) and 720;
       (b) determinization row -> a universal/complementation-shaped device is NECESSARY on the
       fixture (`exists_ne_stab`), Safra/Piterman specifically NOT shown necessary, device
@@ -405,17 +405,17 @@ Phase 0 restated and undecided.
       by grep (Section 0) -- owner: new task H2; (f) 2EXPTIME row -> add "the sanity ceiling
       cited by 718, 719 and 721"; (g) gluing-route row -> owners 719, 720, 711 (revised); 718
       completed.
-- [ ] Success Metrics: keep "Every refutation ... lives in `FormalSystem/`" (Option A) and add
+- [x] Success Metrics: keep "Every refutation ... lives in `FormalSystem/`" (Option A) and add *(completed)*
       "(reading adopted autonomously in task 721 cycle 1; confirm in Phase 0)"; amend the
       `isValid` biconditional metric with "and `Decidable (ValidZTime φ)` is already proved
       (`Compression.decidableValidZTime`); the ZTime instance of the former must agree with it";
       add a metric that the `pinned:C14` claim on the three witness-family rows is grounded (H2).
-- [ ] Recommended Execution Order: strike 563 and 718 from item 1; insert E1 under item 2; adjust
+- [x] Recommended Execution Order: strike 563 and 718 from item 1; insert E1 under item 2; adjust *(completed)*
       item 5 (709 under the gluing route, not "the one real theorem"); keep all else.
-- [ ] Maintenance: name the periodic re-run owner as "new task H5 of
+- [x] Maintenance: name the periodic re-run owner as "new task H5 of *(completed)*
       `specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md` until filed",
       and point to `reports/01_decidability-programme-review.md` as the inventory baseline.
-- [ ] Commit (scoped staging: `specs/ROADMAP.md` only), message body naming the pre-edit SHA.
+- [x] Commit (scoped staging: `specs/ROADMAP.md` only), message body naming the pre-edit SHA. *(completed: 490140515)*
 
 **Timing**: 1.5 hours
 
@@ -447,7 +447,7 @@ reverted, not kept.
 
 ---
 
-### Phase 5: Cross-File Consistency Check and Hard-Constraint Audit [NOT STARTED]
+### Phase 5: Cross-File Consistency Check and Hard-Constraint Audit [IN PROGRESS]
 
 **Goal**: Confirm the two deliverable files agree with each other and with the tree, and that
 every hard constraint of the task holds, before the task closes.
