@@ -8,6 +8,7 @@ import FormalSystem.Init
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Sound
 import FormalSystem.Semantics.SlicedFrame
 import FormalSystem.Semantics.IntNormalForm
+import FormalSystem.PlusLanguage.PlusValidity
 import Mathlib.Tactic.Ring
 
 /-!
@@ -434,6 +435,157 @@ theorem path_eq_canon : ∃ (k : ℕ) (t : ℤ), ∀ s, g s = canon k t s := by
     exact this
 
 end Struct
+
+/-! ### Histories of `F` -/
+
+/-- The history of the canonical path. -/
+def histOf (k : ℕ) (t : ℤ) : WorldHistory F :=
+  FrameOver.worldHistoryOfStepPath F (canon k t) (fun s => (F_step _ _).mpr (canon_step k t s))
+
+theorem histOf_state (k : ℕ) (t s : ℤ) : (histOf k t).state s = canon k t s :=
+  congrFun (FrameOver.worldHistoryOfStepPath.path F (canon k t) _) s
+
+theorem hist_canon (σ : WorldHistory F) : ∃ (k : ℕ) (t : ℤ), ∀ s, σ.state s = canon k t s := by
+  have hstep : IsStepPath F σ.path := (FrameOver.mem_HF_iff_adjacent F σ.path).mp ⟨σ, rfl⟩
+  exact path_eq_canon fun s => (F_step _ _).mp (hstep s)
+
+/-! ### Truth of the atoms and the single temporal operators along a canonical history -/
+
+section Truth
+
+variable {σ : WorldHistory F} {k : ℕ} {t : ℤ} (hσ : ∀ s, σ.state s = canon k t s)
+include hσ
+
+theorem truth_p (s : ℤ) : PlusTruthAt M σ s p ↔ s = t := by
+  change (∃ k', σ.state s = Node.x k') ↔ s = t
+  rw [hσ s]
+  constructor
+  · rintro ⟨k', hk'⟩; exact (canon_eq_x_iff.mp hk').1
+  · intro h; exact ⟨k, canon_eq_x_iff.mpr ⟨h, rfl⟩⟩
+
+omit hσ in
+theorem truth_top (s : ℤ) : PlusTruthAt M σ s PlusFormula.top := fun h => h
+
+theorem truth_Fp (s : ℤ) : PlusTruthAt M σ s Fp ↔ s < t := by
+  constructor
+  · rintro ⟨(s' : ℤ), hs', hp, -⟩
+    rw [truth_p hσ] at hp
+    exact hp ▸ hs'
+  · intro h
+    exact ⟨t, h, (truth_p hσ t).mpr rfl, fun r _ _ => truth_top r⟩
+
+theorem truth_Pp (s : ℤ) : PlusTruthAt M σ s Pp ↔ t < s := by
+  constructor
+  · rintro ⟨(s' : ℤ), hs', hp, -⟩
+    rw [truth_p hσ] at hp
+    exact hp ▸ hs'
+  · intro h
+    exact ⟨t, h, (truth_p hσ t).mpr rfl, fun r _ _ => truth_top r⟩
+
+theorem truth_Xp (s : ℤ) : PlusTruthAt M σ s Xp ↔ s + 1 = t := by
+  constructor
+  · rintro ⟨(s' : ℤ), hs', hp, hgap⟩
+    rw [truth_p hσ] at hp
+    have hs'' : (s : ℤ) < s' := hs'
+    by_contra hne
+    exact hgap (s + 1) (show (s : ℤ) < s + 1 by omega) (show (s + 1 : ℤ) < s' by omega)
+  · intro h
+    refine ⟨t, show (s : ℤ) < t by omega, (truth_p hσ t).mpr rfl, fun (r : ℤ) h1 h2 => ?_⟩
+    have h1' : (s : ℤ) < r := h1
+    have h2' : (r : ℤ) < t := h2
+    omega
+
+end Truth
+
+/-- Two canonical histories sharing a pre state at time `s` are both pre at `s`. -/
+theorem lt_of_canon_eq_of_lt {k k' : ℕ} {t t' s : ℤ} (h : canon k t s = canon k' t' s)
+    (hs : s < t) : s < t' := by
+  rw [canon_of_lt hs] at h
+  rcases lt_trichotomy s t' with h' | h' | h'
+  · exact h'
+  · subst h'; rw [canon_self] at h; cases h
+  · rw [canon_of_gt h'] at h; cases h
+
+theorem gt_of_canon_eq_of_gt {k k' : ℕ} {t t' s : ℤ} (h : canon k t s = canon k' t' s)
+    (hs : t < s) : t' < s := by
+  rw [canon_of_gt hs] at h
+  rcases lt_trichotomy s t' with h' | h' | h'
+  · rw [canon_of_lt h'] at h; cases h
+  · subst h'; rw [canon_self] at h; cases h
+  · exact h'
+
+theorem eq_of_canon_eq_of_eq {k k' : ℕ} {t t' s : ℤ} (h : canon k t s = canon k' t' s)
+    (hs : s = t) : s = t' := by
+  subst hs
+  rw [canon_self] at h
+  exact (canon_eq_x_iff.mp h.symm).1
+
+/-- **`Φ` holds in `F`.** -/
+theorem Φ_true : PlusTruthAt M (histOf 0 0) 0 Φ := by
+  have hA : PlusTruthAt M (histOf 0 0) 0 A' := by
+    intro σ
+    obtain ⟨k, t, hσ⟩ := hist_canon σ
+    simp only [PlusFormula.or, PlusFormula.neg, PlusTruthAt]
+    intro hnp hnF
+    rcases lt_trichotomy (0 : ℤ) t with h | h | h
+    · exfalso
+      apply hnF
+      intro σ' hσ'
+      obtain ⟨k', t', hσ''⟩ := hist_canon σ'
+      rw [truth_Fp hσ'']
+      have := hσ 0 ▸ hσ'' 0 ▸ hσ'
+      exact lt_of_canon_eq_of_lt this h
+    · exact (hnp ((truth_p hσ 0).mpr h)).elim
+    · intro σ' hσ'
+      obtain ⟨k', t', hσ''⟩ := hist_canon σ'
+      rw [truth_Pp hσ'']
+      have := hσ 0 ▸ hσ'' 0 ▸ hσ'
+      exact gt_of_canon_eq_of_gt this h
+  have hC : PlusTruthAt M (histOf 0 0) 0 C' := by
+    intro σ
+    obtain ⟨k, t, hσ⟩ := hist_canon σ
+    simp only [PlusFormula.neg, PlusTruthAt]
+    intro hp σ' hσ'
+    have ht : (0 : ℤ) = t := (truth_p hσ 0).mp hp
+    obtain ⟨k', t', hσ''⟩ := hist_canon σ'
+    rw [truth_Pp hσ'']
+    have := hσ 0 ▸ hσ'' 0 ▸ hσ'
+    have := eq_of_canon_eq_of_eq this ht
+    omega
+  have hD : PlusTruthAt M (histOf 0 0) 0 D := by
+    intro σ
+    obtain ⟨k, t, hσ⟩ := hist_canon σ
+    simp only [PlusFormula.neg, PlusTruthAt]
+    intro hstF hall
+    have ht : (0 : ℤ) < t := (truth_Fp hσ 0).mp (hstF σ rfl)
+    apply hall (histOf (k + (t - 1 - 0).toNat) 1)
+    · rw [hσ 0, histOf_state, canon_of_lt ht, canon_of_lt (by omega)]
+      congr 1
+    · rw [truth_Xp (fun s => histOf_state _ _ s)]
+      norm_num
+  simp only [Φ, PlusFormula.and, PlusFormula.neg, PlusTruthAt]
+  intro h
+  exact h (fun h' => h' hA hC) hD
+
+theorem F_isZTime : F.toTaskFrame.IsZTime :=
+  @TaskFrame.isZTime_of_instances F.toTaskFrame
+    (inferInstanceAs (SuccOrder ℤ)) (inferInstanceAs (PredOrder ℤ))
+    (inferInstanceAs (IsSuccArchimedean ℤ)) (inferInstanceAs (IsPredArchimedean ℤ))
+
+/-- **`Φ.neg` is a ℤ-time non-validity of L⁺.** The witnessing model `F`/`M` is **finitely
+branching** (every state has one or two successors and exactly one predecessor, `step_fwd`,
+`step_bwd`, `fwdList`, `bwdList`), so what separates it from a time-sliced certificate's frame is
+not a failure of König's lemma — König's lemma holds for it. What separates it is **width**: at
+any time the carrier has infinitely many `pre`/`post` states, of unbounded age (how far `post k j`
+is from its `x k`) and unbounded distance to go (how far `pre (k + i)` is from its `x k`), no two
+of which are two-way bisimilar (distinct threads `k ≠ k'` never meet again). Those two facts are
+the whole point of the model.
+
+Paper: — (the formalization's own refutation; no counterpart in the cited paper)
+-/
+theorem not_plusValidZTime_neg_Φ : ¬ PlusValidZTime Φ.neg := by
+  intro hv
+  exact hv F ⟨F_isRegular, F_isZTime⟩ M (histOf 0 0) 0 Φ_true
 
 end NoFiniteWidth
 

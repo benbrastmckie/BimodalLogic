@@ -301,23 +301,23 @@ narrowing resists, fall back per R3 rather than expanding the phase.
 
 ---
 
-### Phase 2: The positive half — truth lemmas and `not_plusValidZTime_neg_Φ` [NOT STARTED]
+### Phase 2: The positive half — truth lemmas and `not_plusValidZTime_neg_Φ` [COMPLETED]
 
 **Goal**: `Φ` is satisfied on the countable, finitely branching, time-homogeneous regular ℤ-frame,
 and `not_plusValidZTime_neg_Φ` is landed with its `Paper: —` docstring.
 
 **Tasks**:
-- [ ] Transcribe `histOf`, `histOf_state`, `hist_canon` (probe lines 377-388)
-- [ ] Transcribe the `Truth` section: `truth_p`, `truth_top`, `truth_Fp`, `truth_Pp`, `truth_Xp`
+- [x] Transcribe `histOf`, `histOf_state`, `hist_canon` (probe lines 377-388)
+- [x] Transcribe the `Truth` section: `truth_p`, `truth_top`, `truth_Fp`, `truth_Pp`, `truth_Xp`
       (probe lines 390-436)
-- [ ] Transcribe `lt_of_canon_eq_of_lt`, `gt_of_canon_eq_of_gt`, `eq_of_canon_eq_of_eq`, `Φ_true`,
+- [x] Transcribe `lt_of_canon_eq_of_lt`, `gt_of_canon_eq_of_gt`, `eq_of_canon_eq_of_eq`, `Φ_true`,
       `F_isZTime` (probe lines 439-512)
-- [ ] Land `not_plusValidZTime_neg_Φ` with a `/-- ... Paper: — (reason) -/` docstring stating that
+- [x] Land `not_plusValidZTime_neg_Φ` with a `/-- ... Paper: — (reason) -/` docstring stating that
       the model is **finitely branching** (so König's lemma is not what separates it from the
       sliced class) and of **infinite width** (at any time the post states have unbounded age and
       the pre states unbounded distance to go, and no two are two-way bisimilar) — the two facts
       that are the whole point of the model
-- [ ] Build; fix warnings per declaration; commit
+- [x] Build; fix warnings per declaration; commit
 
 **Timing**: 1 hour
 
