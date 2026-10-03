@@ -340,7 +340,7 @@ lift drifted and should be re-read against the probe rather than re-proved.
 
 ---
 
-### Phase 4: Front-door wiring, inventory re-emit and the full gate pass [NOT STARTED]
+### Phase 4: Front-door wiring, inventory re-emit and the full gate pass [COMPLETED]
 
 **Goal**: The cluster is reachable from the `Semantics` front aggregator and documented in its
 Contents table, every generated inventory block in the tree is byte-current, and the whole gate
@@ -359,24 +359,24 @@ files are therefore declared in **Files to modify** as an explicit `file_scope` 
 of Phase 1's.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Semantics.lean` immediately before editing (a sibling task is live in
+- [x] Re-read `FormalSystem/Semantics.lean` immediately before editing (a sibling task is live in
       this tree this cycle), then add `import FormalSystem.Semantics.Presheaf` in the aggregator's
       existing ordering, below the `PartialHistory` imports it depends on
-- [ ] Extend the `## Submodules` prose in `FormalSystem/Semantics.lean`'s docstring with one
+- [x] Extend the `## Submodules` prose in `FormalSystem/Semantics.lean`'s docstring with one
       sentence locating the cluster
-- [ ] Add two rows to `FormalSystem/Semantics/README.md`'s hand-maintained `## Contents` table —
+- [x] Add two rows to `FormalSystem/Semantics/README.md`'s hand-maintained `## Contents` table —
       `Presheaf.lean` (aggregator) and `Presheaf/` (the cluster) — matching the shape of the
       existing `Ultraproduct.lean` / `Ultraproduct/` pair. Re-read this file immediately before
       editing: it is **not** one of the two files already modified in the working tree, but
       `FormalSystem/README.md` (which Phase 4 also touches, via the generated block) **is**
-- [ ] Run `bash scripts/check-module-invariants.sh --emit-inventory`, then
+- [x] Run `bash scripts/check-module-invariants.sh --emit-inventory`, then
       `bash scripts/check-module-invariants.sh --emit-inventory --check` and confirm it reports
       that no rewrite would change a byte. The root `README.md`'s
       `rows=totals` block and `FormalSystem/README.md`'s `rows=loose` block are both in scope of
       the emit; stage **only** the generated-block hunks in `FormalSystem/README.md`, never the
       pre-existing foreign "Last verified" modification
-- [ ] Run the full gate set below and record each exit code in the task summary
-- [ ] Commit, staging exactly this phase's files
+- [x] Run the full gate set below and record each exit code in the task summary *(deviation: altered — `check-paper-definitions.sh` exits **1**, not 0 as this phase's Verification asserted. The failure is the pre-existing `def:BX` drift (the paper renamed axiom `SU` to `US`), which predates this task — the `aref{SU}` count is identical at `965272445` and now, and the foreign `FormalSystem/README.md` modification already in the tree documents it. Re-pinning `def:BX` would mean editing a manifest entry for an anchor outside this task's scope, so it is reported rather than fixed. Every other gate exits 0.)*
+- [x] Commit, staging exactly this phase's files *(deviation: altered — `FormalSystem/README.md` was staged hunk-by-hunk via `git apply --cached` on a filtered diff, so only the generated inventory hunk is committed and the pre-existing foreign "Last verified" hunk stays in the working tree. `typst/generated/status.typ` also staged, as in Phases 2-3.)*
 
 **Timing**: 1.25 hours
 
@@ -597,26 +597,26 @@ theorem ofGerm_germ [F.IsRegular] (τ : Beh F 0) : ofGerm F (germ τ) = τ := so
 
 ## Testing & Validation
 
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem` exits
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem` exits
       0 at the end of Phases 2, 3 and 4 (baseline of record: exit 0, 2807 jobs)
-- [ ] Zero `sorry` and zero new axiom under `FormalSystem/Semantics/Presheaf/`, confirmed by grep
+- [x] Zero `sorry` and zero new axiom under `FormalSystem/Semantics/Presheaf/`, confirmed by grep
       and by `lean_verify` / `#print axioms` on `Beh.restrict_id`, `Beh.restrict_comp`,
       `Beh.restrictTr_comp` and `Beh.germEquiv`
-- [ ] `bash scripts/check-module-invariants.sh` full pass (with build) exits 0 — the
+- [x] `bash scripts/check-module-invariants.sh` full pass (with build) exits 0 — the
       task-specific rows are C8 (sibling aggregator, no `Presheaf/Presheaf.lean`), C9 (no
       task-number citation under `FormalSystem/`), C15 (all four anchors recorded), C24 (`Init`
       import), C26 (no non-trailing underscore in a `def`/`abbrev` name), C31 (both bibkeys
       resolve), C33 (root byte-current), C34a/C34b (no constraint-claim marker needed), INV
       (generated blocks current)
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0
-- [ ] `bash scripts/readme-lint.sh FormalSystem` exits 0 (checks 1 and 3 are gated; check 2's
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check` exits 0
+- [x] `bash scripts/readme-lint.sh FormalSystem` exits 0 (checks 1 and 3 are gated; check 2's
       `NOT LISTED` and check 4's date warnings are reported, not gated)
-- [ ] `bash scripts/check-copyright-headers.sh --strict FormalSystem` exits 0
-- [ ] `bash scripts/check-paper-definitions.sh` exits 0, still the quiet case-(a) pass
-- [ ] The layering lock holds: both new modules end with
+- [x] `bash scripts/check-copyright-headers.sh --strict FormalSystem` exits 0
+- [ ] `bash scripts/check-paper-definitions.sh` exits 0, still the quiet case-(a) pass *(deviation: skipped — it exits **1** on the pre-existing `def:BX` drift (the paper renamed axiom `SU` to `US`), which predates this task and is documented by the foreign `FormalSystem/README.md` modification already in the tree. Not caused here and not fixed here: re-pinning `def:BX` edits a manifest entry for an out-of-scope anchor.)*
+- [x] The layering lock holds: both new modules end with
       `assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree`
       and the build accepts it, so the cluster is provably below `Truth.lean`
-- [ ] No `scripts/warning-budget.txt` row is added — both modules compile warning-free
+- [x] No `scripts/warning-budget.txt` row is added — both modules compile warning-free *(deviation: altered — true only after a fix. `Behavior.lean` as first lifted fired `linter.style.show` twice and `Semantics.lean`'s reflow fired `linter.style.longLine` once; all three were fixed at the source (`show` → `change`, and a reflow) rather than budgeted, so the claim holds and C28 is green.)*
 
 ## Artifacts & Outputs
 

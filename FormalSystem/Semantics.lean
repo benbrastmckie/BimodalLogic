@@ -15,6 +15,7 @@ import FormalSystem.Semantics.SlicedFrame
 import FormalSystem.Semantics.Periodicity
 import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
+import FormalSystem.Semantics.Presheaf
 import FormalSystem.Semantics.FrameAxioms
 import FormalSystem.Semantics.HistoryMorphism
 import FormalSystem.Semantics.Extension
@@ -54,9 +55,8 @@ siblings, which the generated library root `FormalSystem.lean` imports. This fil
 `DeterministicBridge` and `StateLocalTransfer` — the two cross-language bridges, which stay here
 because each spans two families — and, through the `Frames` aggregator,
 `Frames.TranslationProduct`, the third cross-language module, whose truth invariances span all
-three. The subdirectories `Extension/`, `Ultraproduct/`, `Correspondence/` and `Frames/` are
-imported through their sibling aggregators
-`Semantics/Extension.lean` and so on.
+three. The subdirectories `Extension/`, `Presheaf/`, `Ultraproduct/`, `Correspondence/` and
+`Frames/` are imported through their sibling aggregators `Semantics/Extension.lean` and so on.
 
 - `TemporalOrder`: `def:temporal-order` reified — "a nontrivial totally ordered abelian
   group" as a structure rather than an unnamed four-binder list, with `CoeSort` to its
@@ -89,6 +89,19 @@ imported through their sibling aggregators
   state assignments on a *nonempty* time set; carries the totality predicate `IsTotal`, the
   convexity predicate `IsConvex`, the extension relation `Extends`, time shift, and
   `WorldHistory`, the *world histories* (the paper's possible worlds), i.e. the total ones
+- `Presheaf.Site` / `Presheaf.Behavior`: the partial-history layer repackaged categorically —
+  the interval site `Int(D)` of `def:interval-site` (objects the durations, morphisms the
+  translations `Tr p`, with the three category laws and the Johnstone coverage) and the behavior
+  presheaf `Beh F` of `def:behavior-presheaf` on it (the sections `Beh F l` with domain exactly
+  `[0, l]`, restriction along `Tr p`, functoriality in both a raw-data and a site-indexed form,
+  and the *Germs* clause `Beh F 0 ≃ F.WorldState`). Built on `PartialHistory` alone and sitting
+  strictly **below** `Truth`, which both modules lock with `assert_not_exists` on the proof
+  system. The import is weightless by design: no `Mathlib.CategoryTheory`, no `Category`
+  instance, and nothing beyond `Init` and `PartialHistory` — which is why this cluster is inside
+  this aggregator where `StateTopology/` is deliberately outside it. The containing paper
+  appendix is cut in full, so both anchors resolve against
+  `docs/reference/paper-definitions-of-record.md` as `DANGLING` rows rather than against a live
+  `\label{}`
 - `HistoryMorphism`: history-lifting morphisms between task frames over one temporal order
   (`HistMap`, `HistMorphism`, the image history `HistMap.mapH`, the pulled-back model
   `HistMap.pullM`) and the frame property `TaskFrame.RecurrenceFree` — no world history visits a
