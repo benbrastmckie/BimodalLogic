@@ -1135,6 +1135,10 @@ read -r -d '' AXIOM_BASELINE <<'BASELINE'
 'FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_sliced_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_toSharing_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusCompression_fails_at_pumpTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Semantics.Presheaf.seamFibreEquiv' depends on axioms: [propext, Quot.sound]
+'FormalSystem.PlusLanguage.plusStab_iff_rays' depends on axioms: [propext, Quot.sound]
+'FormalSystem.PlusLanguage.seamOmegaEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.PlusLanguage.plusStab_iff_omega' depends on axioms: [propext, Classical.choice, Quot.sound]
 BASELINE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -1171,6 +1175,10 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_sliced_certifies
 #print axioms FormalSystem.Metalogic.Decidability.WitnessFamily.Embedded.liveFamily_toSharing_certifies
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusCompression_fails_at_pumpTarget
+#print axioms FormalSystem.Semantics.Presheaf.seamFibreEquiv
+#print axioms FormalSystem.PlusLanguage.plusStab_iff_rays
+#print axioms FormalSystem.PlusLanguage.seamOmegaEquiv
+#print axioms FormalSystem.PlusLanguage.plusStab_iff_omega
 LEAN
   # The pretty-printer wraps at a fixed width, and `FormalSystem.` is longer than the
   # namespace it replaced, so a long axiom record now spills onto continuation lines that
@@ -1181,7 +1189,7 @@ LEAN
     | grep 'depends on axioms')
   rm -f "$AX_SRC"
   if [ "$AX_OUT" = "$AXIOM_BASELINE" ]; then
-    pass C2 "all thirty pinned axiom sets match baseline"
+    pass C2 "all thirty-four pinned axiom sets match baseline"
     while IFS= read -r l; do note "$l"; done <<<"$AX_OUT"
   else
     fail C2 "axiom sets diverged from baseline -- this is a HARD STOP, not a new baseline"

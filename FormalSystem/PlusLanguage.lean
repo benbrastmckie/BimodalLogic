@@ -17,6 +17,7 @@ import FormalSystem.PlusLanguage.PlusDeterminism
 import FormalSystem.PlusLanguage.PlusStateLocal
 import FormalSystem.PlusLanguage.PlusLimitClosure
 import FormalSystem.PlusLanguage.PlusIntTransfer
+import FormalSystem.PlusLanguage.PlusRayFibre
 
 /-!
 # `FormalSystem.PlusLanguage` — the language L⁺, its logic TM⁺, and its semantics
@@ -65,6 +66,9 @@ proof system mirroring `ProofSystem.DerivationTree` constructor for constructor.
 - `PlusLanguage.PlusIntTransfer` — **carrier normalization for L⁺**: `PlusValidZTime φ ↔
   PlusValidInt φ`, the twin of `Semantics/IntTransfer.lean`'s `validZTime_iff_validInt`, through
   the seven-case truth transport `plusTruthAt_map`
+- `PlusLanguage.PlusRayFibre` — `⊡` as a **quantifier over a product of two path spaces**:
+  `plusStab_iff_rays` reads the clause over ray pairs through `Presheaf.seamFibreEquiv`, and
+  `seamOmegaEquiv` / `plusStab_iff_omega` read it over pairs of ω-indexed step sequences over `ℤ`
 
 The cross-language bridges `Semantics/DeterministicBridge.lean` and
 `Semantics/StateLocalTransfer.lean` stay at the `Semantics/` root, because each spans two

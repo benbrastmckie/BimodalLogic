@@ -29,13 +29,23 @@ forward ray. No new structure is introduced for either: `PartialHistory`'s `doma
 arbitrary predicate, so a half-line is already expressible. The colimit-of-bounded-sections
 presentation of a ray is deliberately not taken, because it is the route that incurs *Saturation*.
 
+One asymmetry with the two clauses above is worth stating rather than leaving to be noticed. The
+*Germs* and *Sheaf* declarations take *Compositionality* as an **explicit hypothesis**; the ray
+layer's gluing operator and keystone instead carry the bracketed `[F.IsRegular]` bundle, which
+supplies more than they consume. That is deliberate and not an oversight: the keystone is a
+promoted probe result and its statements are kept hypothesis for hypothesis, so a reader checking
+them against the probe finds them unchanged. The binder-free form of the content they actually
+use is `PartialHistory.rel_across_seam`'s own signature, which the seam step delegates to. The
+second measured sense of choice-freedom is unaffected and holds across the whole cluster: every
+one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`.
+
 ## Modules
 
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Semantics/Presheaf -->
 | File | Lines | Description |
 |------|------:|-------------|
 | `Behavior.lean` | 296 | The behavior presheaf `Beh F`: the sections over a duration, the restriction action at raw data and at a site morphism, presheaf functoriality, and the *Germs* clause `Beh F 0 ≃ F.WorldState` |
-| `Ray.lean` | 344 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections and bridges, and the ray-layer gluing operator with its reading equations, restriction identities, uniqueness and totality |
+| `Ray.lean` | 400 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections and bridges, and the ray-layer gluing operator with its reading equations, restriction identities, uniqueness and totality |
 | `Sheaf.lean` | 434 | <!-- TODO: add description --> |
 | `Site.lean` | 191 | The interval site `Int(D)`: the translations `Tr p`, the three category laws, and the Johnstone coverage |
 <!-- END GENERATED -->
@@ -64,6 +74,8 @@ presentation of a ray is deliberately not taken, because it is the route that in
   the form that reaches the shared `PartialHistory` API
 - `FutRay.toBeh` — the ray-layer-to-`Beh` restriction: a forward ray at `0` cut down to the
   bounded section over `l`
+- `StabFibre F t s`, `RayPair F t s` — the `⊡` quantification domain at `(t, s)`, and the fibre
+  product of the past-ray and future-ray spaces over the seam state
 
 ## Key Results
 
@@ -102,6 +114,12 @@ presentation of a ray is deliberately not taken, because it is the route that in
 - `Ray.seamGlue_unique`, `Ray.seamGlue_clause` — uniqueness, and the `∃!` the restriction identities
   and uniqueness package
 - `Ray.seamGlue_isTotal` — totality: the glued object is total on all of `F.Duration`
+- `seamFibreEquiv` — **the keystone**: the `⊡` fibre over a seam state **is** the fibre product
+  of the past-ray and future-ray spaces over that state. Forward: restrict. Backward: glue. The
+  two round trips are `WorldHistory.ext_state` and funext, at any duration, and the whole path
+  measures `[propext, Quot.sound]`. Its `⊡`-clause readings — over ray pairs and over pairs of
+  ω-indexed step sequences — are `PlusLanguage/PlusRayFibre.lean`'s, which sits above
+  `Semantics/Truth.lean` and so cannot live in this cluster
 - `states_eq_of_eq` — reading a state out of an equality of sections, for either domain witness
 - `sheaf_clause_site` — the *Sheaf* clause in the site's own vocabulary, along `coverLeft` and
   `coverRight`. Derived from `sheaf_clause` with no transport and no cast

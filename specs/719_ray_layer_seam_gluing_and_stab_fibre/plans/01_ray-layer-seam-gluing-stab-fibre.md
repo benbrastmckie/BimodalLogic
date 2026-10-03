@@ -375,17 +375,17 @@ restriction identities, uniqueness and totality — and the whole ray-layer path
 
 ---
 
-### Phase 3: The keystone promotion, in two modules, with the axiom sets pinned [NOT STARTED]
+### Phase 3: The keystone promotion, in two modules, with the axiom sets pinned [COMPLETED]
 
 **Goal**: the four acceptance-named declarations are in `FormalSystem/`, sorry-free, carrying
 `[F.IsRegular]` verbatim, each at its honest layer, and each with its **measured** axiom set
 pinned into the C2 harness.
 
 **Tasks**:
-- [ ] Transcribe `StabFibre`, `RayPair` (probe lines 121–127) and **`seamFibreEquiv`** (lines
+- [x] Transcribe `StabFibre`, `RayPair` (probe lines 121–127) and **`seamFibreEquiv`** (lines
       143–172) into `Ray.lean`. `seamFibreEquiv` carries `[F.IsRegular]` **at the declaration
       itself** — verbatim, neither weakened to a bare `TaskFrame` nor strengthened
-- [ ] Create `FormalSystem/PlusLanguage/PlusRayFibre.lean` with the copyright header,
+- [x] Create `FormalSystem/PlusLanguage/PlusRayFibre.lean` with the copyright header,
       `import FormalSystem.Semantics.Presheaf.Ray`,
       `import FormalSystem.PlusLanguage.PlusTruth` and
       `import FormalSystem.Semantics.IntNormalForm` (which is where
@@ -393,15 +393,20 @@ pinned into the C2 harness.
       `namespace FormalSystem.PlusLanguage`. This module carries **no** `assert_not_exists` on the
       proof system — it sits above `Semantics/Truth.lean` by construction, and that is the whole
       reason for the split
-- [ ] Transcribe `section Stab` with `variable {F : TaskFrame} [F.IsRegular]` and
+- [x] Transcribe `section Stab` with `variable {F : TaskFrame} [F.IsRegular]` and
       **`plusStab_iff_rays`** (probe lines 178–211) under it
-- [ ] Transcribe `section Omega`: `BwdSeq`, `FwdSeq`, `SeqPair`, `ZPathFibre` under
+- [x] Transcribe `section Omega`: `BwdSeq`, `FwdSeq`, `SeqPair`, `ZPathFibre` under
       `variable {F : FrameOver intOrder}`, then `variable [F.IsRegular]`, then `pathFibreEquiv`,
       `splice`, the single `omit [F.IsRegular] in` **immediately before `splice_isStepPath` and
       nowhere else**, `omegaSplitEquiv`, and **`seamOmegaEquiv`** (probe lines 215–348)
-- [ ] Transcribe `section StabOmega` with `variable {F : FrameOver intOrder} [F.IsRegular]` and
+      *(deviation: altered — `ring` is unavailable in this module's import closure, the same
+      constraint `Sheaf.lean` documents for the Presheaf cluster, so the probe's four
+      `by push_cast; ring` side goals are discharged by `by push_cast; omega`. The statements are
+      unchanged. Separately, the transcribed tactic-position `show`s are landed as `change` for
+      gate C28, and one `change` that the unused-tactic linter reported as a no-op is dropped.)*
+- [x] Transcribe `section StabOmega` with `variable {F : FrameOver intOrder} [F.IsRegular]` and
       **`plusStab_iff_omega`** (probe lines 352–378) under it
-- [ ] Write `PlusRayFibre.lean`'s module `/-! … -/` block: `⊡` is a quantifier over a **product of
+- [x] Write `PlusRayFibre.lean`'s module `/-! … -/` block: `⊡` is a quantifier over a **product of
       two path spaces**, one factor backward from the seam and one forward; the ray half is
       choice-free while the ω half is not, with `FrameOver.worldHistoryOfStepPath` named as the
       cause and the reroute recorded as out of scope; `not_finite_width_fmp` stands untouched and
@@ -409,27 +414,27 @@ pinned into the C2 harness.
       cannot be a finite fibre), not an escape from it; and a **docstring pointer only** to the
       Possible Worlds limit presentation `H_F ≅ lim Beh(F)(2x)`, which is not landed and must not
       be cited as a result. Constraint vocabulary stays inside the `/-!` block
-- [ ] Add the aggregator import for the new `PlusLanguage` module as that cluster's convention
+- [x] Add the aggregator import for the new `PlusLanguage` module as that cluster's convention
       requires (re-read `FormalSystem/PlusLanguage/README.md` and any `PlusLanguage.lean`
       aggregator first), and regenerate `FormalSystem.lean`
-- [ ] **Measure** `#print axioms` on all four keystone declarations, fully qualified, and record
+- [x] **Measure** `#print axioms` on all four keystone declarations, fully qualified, and record
       the exact output lines. Expect `[propext, Quot.sound]` for `seamFibreEquiv` and
       `plusStab_iff_rays`, `[propext, Classical.choice, Quot.sound]` for `seamOmegaEquiv` and
       `plusStab_iff_omega` — but **pin what is measured, not what is expected**
-- [ ] Pin into `scripts/check-module-invariants.sh`, three edits in **one** commit: append the
+- [x] Pin into `scripts/check-module-invariants.sh`, three edits in **one** commit: append the
       four measured `'Name' depends on axioms: [...]` lines to the `AXIOM_BASELINE` heredoc;
       append the four `#print axioms <fully-qualified-name>` lines to the `AX_SRC` heredoc in the
       **identical order**; update the `pass C2 "all thirty pinned axiom sets match baseline"`
       count. Then re-run the gate **without** `--no-build` — `AXIOM_BASELINE` is also consumed by
       C21
-- [ ] Regenerate `scripts/lean-citation-manifest.json` with
+- [x] Regenerate `scripts/lean-citation-manifest.json` with
       `python3 scripts/export-lean-citations.py` (C35 spans shift on any insertion), plus the
       inventories and typst counts
-- [ ] Re-read `FormalSystem/Semantics/Presheaf/README.md`'s two prose claims (strictly below
+- [x] Re-read `FormalSystem/Semantics/Presheaf/README.md`'s two prose claims (strictly below
       `Semantics/Truth.lean`; no `Classical.choice` in the cluster) and confirm both are **still
       true verbatim**. If either is not, the split was done wrong — fix the placement, never the
       claim
-- [ ] Add the new declarations to both READMEs' Key Definitions / Key Results lists
+- [x] Add the new declarations to both READMEs' Key Definitions / Key Results lists
 
 **Timing**: 2 hours
 

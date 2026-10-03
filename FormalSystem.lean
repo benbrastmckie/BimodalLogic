@@ -520,6 +520,7 @@ import FormalSystem.PlusLanguage.PlusIntTransfer
 import FormalSystem.PlusLanguage.PlusLimitClosure
 import FormalSystem.PlusLanguage.PlusNonValidities
 import FormalSystem.PlusLanguage.PlusPasting
+import FormalSystem.PlusLanguage.PlusRayFibre
 import FormalSystem.PlusLanguage.PlusStateLocal
 import FormalSystem.PlusLanguage.PlusTruth
 import FormalSystem.PlusLanguage.PlusValidity

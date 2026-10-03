@@ -102,6 +102,9 @@ and not an `ite` because each branch needs its own half-line witness, which is a
   bounded section over `l`.
 - `Ray.seamGlueFun`, `Ray.seamGlue`: the pasted state function of a ray pair, and the possible
   world it determines.
+- `StabFibre F t s`: the `⊡` quantification domain at `(t, s)` — the possible worlds in state `s`
+  at time `t`, which is `PlusTruth.stab_iff`'s domain verbatim.
+- `RayPair F t s`: the fibre product of the past-ray and future-ray spaces over the seam state.
 
 ## Main Results
 
@@ -121,6 +124,9 @@ and not an `ite` because each branch needs its own half-line witness, which is a
 - `Ray.seamGlue_unique`: any possible world restricting to the two rays is the gluing.
 - `Ray.seamGlue_clause`: the clause as the `∃!` those three results package — the half-line
   counterpart of `Presheaf.sheaf_clause` for two bounded sections.
+- `seamFibreEquiv`: **the keystone** — the `⊡` fibre over a seam state *is* the fibre product of
+  the past-ray and future-ray spaces over that state. Forward: restrict. Backward: glue. The two
+  round trips are `WorldHistory.ext_state` and funext, at any duration.
 
 ## References
 
@@ -338,6 +344,56 @@ theorem seamGlue_clause [F.IsRegular] {t : F.Duration} (b : PastRay F t) (f : Fu
     fun _ hσ => seamGlue_unique b f hseam _ hσ.1 hσ.2⟩
 
 end Ray
+
+/-! ## The stab fibre and its ray-product presentation -/
+
+/-- The `⊡` quantification domain at `(t, s)`: the possible worlds in state `s` at time `t`.
+This is `PlusTruth.stab_iff`'s domain verbatim. -/
+def StabFibre (F : TaskFrame) (t : F.Duration) (s : F.WorldState) : Type _ :=
+  {σ : WorldHistory F // σ.state t = s}
+
+/-- The **fibre product** of the past-ray and future-ray spaces over the seam state `s`. -/
+def RayPair (F : TaskFrame) (t : F.Duration) (s : F.WorldState) : Type _ :=
+  {bf : PastRay F t × FutRay F t // bf.1.seam = s ∧ bf.2.seam = s}
+
+/--
+**THE KEYSTONE.** The `⊡` fibre over a seam state is the fibre product of the past-ray and
+future-ray spaces over that state.
+
+Forward: restrict. Backward: glue. The two round trips are `WorldHistory.ext_state` and funext,
+at any duration — see the module docstring for the frame law the gluing step reaches and for why
+nothing stronger is in play.
+-/
+def seamFibreEquiv [F.IsRegular] (t : F.Duration) (s : F.WorldState) :
+    StabFibre F t s ≃ RayPair F t s where
+  toFun σ := ⟨(pastOf σ.1 t, futOf σ.1 t), σ.2, σ.2⟩
+  invFun bf := ⟨Ray.seamGlue bf.1.1 bf.1.2 (bf.2.1.trans bf.2.2.symm),
+    by rw [Ray.seamGlue_states_le _ _ _ le_rfl]; exact bf.2.1⟩
+  left_inv := by
+    rintro ⟨σ, hσ⟩
+    refine Subtype.ext (WorldHistory.ext_state fun r => ?_)
+    by_cases hr : r ≤ t
+    · rw [Ray.seamGlue_states_le _ _ _ hr]; rfl
+    · rw [Ray.seamGlue_states_not_le _ _ _ hr]; rfl
+  right_inv := by
+    rintro ⟨⟨b, f⟩, hb, hf⟩
+    have hseam : b.seam = f.seam := hb.trans hf.symm
+    refine Subtype.ext (Prod.ext (Subtype.ext (funext fun x => ?_))
+      (Subtype.ext (funext fun x => ?_)))
+    · change (Ray.seamGlue b f hseam).state x.1 = b.1 x
+      rw [Ray.seamGlue_states_le _ _ _ x.2]
+    · change (Ray.seamGlue b f hseam).state x.1 = f.1 x
+      by_cases hx : x.1 ≤ t
+      · have hxt : x.1 = t := le_antisymm hx x.2
+        rw [Ray.seamGlue_states_le _ _ _ hx]
+        have hb' : b.1 ⟨x.1, hx⟩ = s := by
+          rw [show (⟨x.1, hx⟩ : {y : F.Duration // y ≤ t}) = ⟨t, le_rfl⟩ from Subtype.ext hxt]
+          exact hb
+        have hf' : f.1 x = s := by
+          rw [show x = (⟨t, le_rfl⟩ : {y : F.Duration // t ≤ y}) from Subtype.ext hxt]
+          exact hf
+        rw [hb', hf']
+      · rw [Ray.seamGlue_states_not_le _ _ _ hx]
 
 end FormalSystem.Semantics.Presheaf
 
