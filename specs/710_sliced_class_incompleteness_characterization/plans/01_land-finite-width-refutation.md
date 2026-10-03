@@ -561,13 +561,13 @@ pre-declared batch, not a retroactively widened one.
 
 ---
 
-### Phase 8: Restate the class's completeness where the library asserts it [NOT STARTED]
+### Phase 8: Restate the class's completeness where the library asserts it [COMPLETED]
 
 **Goal**: Deliverable 5. The two places the library states the sliced class's completeness status
 no longer call the `⊡`-carrying case open.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean` (shared with task
+- [x] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean` (shared with task
       706 and with Phase 7), then rewrite its header's
       "### What is refuted, and what is open" section: the sentence "The **sliced** finite model
       property is **OPEN, not refuted**. No module here states it, implies it, or treats it as
@@ -576,15 +576,15 @@ no longer call the `⊡`-carrying case open.
       CTL-like fragment**, with `Φ` named and `Limits/NoFiniteWidth.lean` cited; and the precise
       semantic characterisation — complete exactly on targets with a finite-width countermodel — is
       recorded as **argued, not proved**
-- [ ] State in the same place that the obstruction is width alone: no change to tails, windows or
+- [x] State in the same place that the obstruction is width alone: no change to tails, windows or
       stability can rescue the class, because `Φ` forbids every finite-width collapse at once
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/EmbedComplete.lean`, then
+- [x] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/EmbedComplete.lean`, then
       rewrite "What the flagship does and does not buy": the clause "whether a `⊡`-carrying target
       has a sliced certificate is the open Stage 3 question and nothing here bears on it" is now
       false. Replace with the refutation, naming `Φ` and the landed theorem, and keep the sentence
       that the flagship itself — the `⊡`-free embedding — is **unaffected**
-- [ ] Carry the two scope limits into both restatements so neither reads as claiming more
-- [ ] Check no task number entered either file (C9); build both modules; commit
+- [x] Carry the two scope limits into both restatements so neither reads as claiming more
+- [x] Check no task number entered either file (C9); build both modules; commit
 
 **Timing**: 45 minutes
 

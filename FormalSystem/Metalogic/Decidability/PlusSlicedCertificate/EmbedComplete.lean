@@ -66,8 +66,13 @@ The sliced certificate class is **non-vacuous on branching-free targets**, and a
 there as the landed L class: every family the compression theorem produces embeds into an accepted
 sliced certificate. That is **not** completeness for L⁺. The flagship's target is `ofFormula φ`, so
 no `⊡` occurs in it at all (`sliced_not_stab_mem`), which is exactly why every `⊡`-guarded clause of
-the checker is vacuous on it; whether a `⊡`-carrying target has a sliced certificate is the open
-Stage 3 question and nothing here bears on it.
+the checker is vacuous on it; **this flagship itself is unaffected by what follows**. A
+`⊡`-carrying target is a different matter: `Limits.NoFiniteWidth` refutes it. Its witness `Φ` is a
+ℤ-time non-validity, inside the CTL-like fragment, that no `PlusSlicedCertificate` certifies
+(`Limits.NoFiniteWidth.not_sliced_complete`), and no certificate class presenting finite-width
+sliced frames is complete, whatever its clauses (`Limits.NoFiniteWidth.not_finite_width_fmp`).
+Scope: ℤ (discrete) frames only, and `Φ` uses `⊡` so this is specifically an L⁺ result, not a
+result about base TM; nothing is claimed about an infinite carrier, and nothing touches soundness.
 
 Two further things a reader of this module should carry away, so that no successor inherits a
 stale picture. **First**, `TailStable` now carries **one liveness filter per obligation
@@ -1483,8 +1488,9 @@ branching-free targets** and is at least as strong there as the landed L class: 
 `WitnessFamily` the compression theorem produces embeds into an accepted sliced certificate. This
 is **not** completeness for L⁺. The target is `ofFormula φ`, so no `⊡` occurs in it at all —
 `sliced_not_stab_mem` records that no `⊡`-formula lies in an embedded closure, which is exactly why
-every `⊡`-guarded clause of the checker is vacuous here. Whether a `⊡`-carrying target has a sliced
-certificate is the open Stage 3 question and nothing below bears on it.
+every `⊡`-guarded clause of the checker is vacuous here; **this flagship is unaffected** by the
+`⊡`-carrying case. That case is refuted, not open: `Limits.NoFiniteWidth` shows no
+`PlusSlicedCertificate` certifies its witness `Φ`, and the obstruction is finite width alone.
 
 Paper: — (a formalization-native embedding result; the paper states no certificate class to
 embed into)

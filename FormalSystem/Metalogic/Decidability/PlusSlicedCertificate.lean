@@ -269,9 +269,21 @@ research-first question, and this subtree neither answers it nor assumes an answ
 
 * The **finite-carrier** finite model property for this certificate shape is **refuted**: see the
   carrier paragraph above. That refutation is unconditional.
-* The **sliced** finite model property is **OPEN, not refuted**. No module here states it, implies
-  it, or treats it as settled either way, and nothing above bears on it. It is a separate piece of
-  work.
+* The class is **complete on the `⊡`-free fragment**: the flagship embedding
+  (`WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula`) is unaffected by
+  anything below and remains as strong there as the landed L class.
+* The class is **incomplete for L⁺, and already for the CTL-like fragment**:
+  `Limits.NoFiniteWidth`'s witness `Φ` is a ℤ-time non-validity, inside the CTL-like fragment, that
+  **no** `PlusSlicedCertificate` certifies (`Limits.NoFiniteWidth.not_sliced_complete`). The
+  obstruction is **width alone**: `Limits.NoFiniteWidth.not_finite_width_fmp` shows no certificate
+  class presenting finite-width sliced frames is complete, whatever its clauses — no change to
+  tails, windows or stability can rescue the class, because `Φ` forbids every finite-width
+  collapse at once.
+* The precise semantic characterisation — the class is complete **exactly** on targets with a
+  finite-width countermodel — is recorded as **argued, not proved**:
+  `Limits.NoFiniteWidth`'s closing record states the obstruction chain (finite carrier ⊊ finite
+  width ⊊ what the class needs) and the periodicity half of the argument, neither of which is
+  formalized here.
 * The expected slice width is doubly exponential in the target. That is a **research finding**
   recorded as such and is **not** a theorem of this tree: no slice-width bound, no tail-period
   bound and no complexity claim is proved anywhere in this subtree, and none should be read into it.
