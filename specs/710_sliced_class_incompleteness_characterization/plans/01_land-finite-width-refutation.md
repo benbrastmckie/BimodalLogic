@@ -612,32 +612,44 @@ name, report it rather than editing outside the enumerated set.
 
 ---
 
-### Phase 9: Theorem-index rows, generated-surface regeneration, and the full gate set [NOT STARTED]
+### Phase 9: Theorem-index rows, generated-surface regeneration, and the full gate set [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Deliverable 4 plus a green gate set. Every landed theorem has a ledger row; every
 generated surface the new file moved is current.
 
 **Tasks**:
-- [ ] Add one `docs/theorem-index.md` row per landed theorem — `not_plusValidZTime_neg_Φ`,
+- [x] Add one `docs/theorem-index.md` row per landed theorem — `not_plusValidZTime_neg_Φ`,
       `no_finite_width_sat`, `not_certifies`, `not_sliced_complete`, `not_finite_width_fmp` —
       immediately after the existing `EmbedComplete` sliced row, in the same six-cell shape:
       `| — | <one-line statement> | `<fully qualified name>` | `<path, no line number>` |
-      <frame class or —> | pcq (not yet in the C2/C14 baseline) |`
-- [ ] Do **not** type a `pinned:C2` or `pinned:C14` token. Amend the ledger's
+      <frame class or —> | pcq (not yet in the C2/C14 baseline) |` *(completed)*
+- [x] Do **not** type a `pinned:C2` or `pinned:C14` token. Amend the ledger's
       "Every declaration listed here is machine-pinned" sentence to admit the exception, and say in
       one sentence that the axiom sets were read with `#print axioms` at landing time but are not
       yet asserted by a baseline line in `scripts/check-module-invariants.sh` — without naming any
-      task number (`C9D` is enforced under `docs/`)
-- [ ] Regenerate the inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`,
+      task number (`C9D` is enforced under `docs/`) *(completed)*
+- [x] Regenerate the inventory blocks: `bash scripts/check-module-invariants.sh --emit-inventory`,
       then `bash scripts/check-module-invariants.sh --emit-inventory --check` to prove no byte
       would change. Expect `README.md`, `FormalSystem/README.md` and
-      `FormalSystem/Metalogic/README.md` to move
-- [ ] Run the full gate set and read the C9, C15, C24, C28, C30, C33, C36 and INV lines
-      individually rather than only the exit code
-- [ ] Re-read the landed docstrings against
+      `FormalSystem/Metalogic/README.md` to move *(completed: 2 files moved this round --
+      FormalSystem/Metalogic/README.md, README.md; FormalSystem/README.md's loose-file count was
+      already current from phase 7's regeneration)*
+- [x] Run the full gate set and read the C9, C15, C24, C28, C30, C33, C36 and INV lines
+      individually rather than only the exit code *(completed: C9/C24/C28/C30/C33/C36/INV all
+      PASS; C15's first assertion PASSes; C15's second assertion has one reasoned exclusion, see
+      below)*
+- [x] Re-read the landed docstrings against
       `FormalSystem/Metalogic/Decidability/FMP/README.md`'s "The finite-carrier route is refuted,
-      not merely open" section and confirm no landed claim exceeds it (R5)
-- [ ] Commit
+      not merely open" section and confirm no landed claim exceeds it (R5) *(completed: both
+      scope limits and both disclaimers are present verbatim in the module docstring and in
+      `not_finite_width_fmp`'s own docstring; no over-claim found)*
+- [x] Commit
+
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| `docs/theorem-index.md` row for `not_plusValidZTime_neg_Φ` passing C15's second assertion (the `Paper:` doc-comment anchor check) | `scripts/check-module-invariants.sh`'s C15 second assertion locates a row's declaration with the regex `(?:theorem\|lemma\|def\|abbrev\|instance\|inductive)\s+([A-Za-z_][A-Za-z0-9_.\']*)`, whose character class is ASCII-only. `not_plusValidZTime_neg_Φ`'s name ends in the Greek letter `Φ`, which the class cannot match, so the captured group truncates to `not_plusValidZTime_neg_` and never equals the index row's cited name — for *any* declaration ending in a non-ASCII character, not specifically this one. The theorem is landed correctly, sorry-free, verified `pcq` by `lean_verify`, and its docstring carries a correct `Paper: — (...)` line; the checker's own regex is what cannot see it. Editing `scripts/check-module-invariants.sh` is out of this task's `file_scope` (it is task 706's) and the plan's Non-Goals / Contingency C3 direct reporting rather than editing it. The row stays in the ledger because Deliverable 4 requires one row per landed theorem and the row is correct; only the checker's verification of it is blind. | `python3 -c` repro: `DECL.match("theorem not_plusValidZTime_neg_Φ : ...").group(1)` returns `'not_plusValidZTime_neg_'` (missing the trailing `Φ`), confirmed against the actual regex body in `scripts/check-module-invariants.sh`'s C15 second-assertion heredoc. Full gate run: `FAIL  C15  1 of 240 theorem-index row(s) are not anchored at their declaration` naming exactly this one row, with the other four of the five new rows passing. Grepping `docs/theorem-index.md` for a declaration name containing a Greek letter other than this one returns no other hit, confirming no prior row in the 240-row ledger has ever exercised this path. |
 
 **Timing**: 1.25 hours
 

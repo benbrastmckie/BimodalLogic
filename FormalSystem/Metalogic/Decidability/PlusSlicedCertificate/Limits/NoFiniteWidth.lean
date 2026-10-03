@@ -104,7 +104,9 @@ namespace NoFiniteWidth
 
 /-! ## The witness formula -/
 
+/-- The one atom the witness is built from. -/
 def pa : Atom := ⟨"p", none⟩
+/-- The atomic formula `p`. -/
 def p : PlusFormula := PlusFormula.atom pa
 /-- `Fp := ⊤ U p`: `p` somewhere ahead. -/
 def Fp : PlusFormula := PlusFormula.untl PlusFormula.top p
@@ -1191,7 +1193,10 @@ theorem succP_of_D {τ : WorldHistory (FrameOver.ofSlicedStep R fwd bwd)} {t0 : 
 
 /-- **No model on a finite-width sliced frame satisfies `Φ` anywhere.** `[Finite W] [Nonempty W]`
 is the whole finiteness hypothesis; there is no hypothesis on the succession relation `R` beyond
-the bi-seriality carried by `fwd` and `bwd`. -/
+the bi-seriality carried by `fwd` and `bwd`.
+
+Paper: — (the formalization's own refutation; no counterpart in the cited paper)
+-/
 theorem no_finite_width_sat (τ : WorldHistory (FrameOver.ofSlicedStep R fwd bwd)) (t0 : ℤ) :
     ¬ PlusTruthAt M τ t0 Φ := by
   intro h

@@ -1,0 +1,26 @@
+{
+  "phase": 9,
+  "phase_name": "Theorem-index rows, generated-surface regeneration, and the full gate set",
+  "started_at": "2026-10-03T02:50:00Z",
+  "last_updated": "2026-10-03T03:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Add five docs/theorem-index.md rows, unpinned", "status": "done", "files_touched": ["docs/theorem-index.md"]},
+    {"id": 2, "description": "Amend the machine-pinned caveat sentence", "status": "done", "files_touched": ["docs/theorem-index.md"]},
+    {"id": 3, "description": "Regenerate inventory blocks and confirm --emit-inventory --check is clean", "status": "done", "files_touched": ["README.md", "FormalSystem/README.md", "FormalSystem/Metalogic/README.md"]},
+    {"id": 4, "description": "Run full gate set, read C9/C15/C24/C28/C30/C33/C36/INV individually", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Re-read landed docstrings against FMP/README.md scope section", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Commit", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 6,
+  "approaches_tried": [
+    {"approach": "run full check-module-invariants.sh with the five new unpinned rows as first drafted", "result": "surfaced 3 real failures: C5 (dotted-module-path regex couldn't resolve the NoFiniteWidth namespace prefix, since the namespace deliberately skips the Limits/ directory level per decision D-N), C16 (pa/p definitions missing docstrings -- a genuine Phase-1 oversight), C15 second assertion (2 rows unanchored)"},
+    {"approach": "fix C5 via the sanctioned scripts/module-invariants-allowlist.txt data file (not the forbidden check-module-invariants.sh script) -- added FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth with the same documented-exemption shape as the existing PlusSharingWitnessFamily entry", "result": "succeeded; C5 green on rebuild"},
+    {"approach": "fix C16 by adding docstrings to pa and p (missed in phase 1's transcription)", "result": "succeeded; C16 green on rebuild"},
+    {"approach": "fix the no_finite_width_sat docstring's missing Paper: line (the second of C15's two original failures, a genuine Phase-5 oversight)", "result": "succeeded; that row now anchors"},
+    {"approach": "investigate the remaining C15 failure on not_plusValidZTime_neg_Φ by reproducing the checker's DECL regex in isolation", "result": "confirmed structurally: the regex's ASCII-only character class truncates any declaration name at its first non-ASCII character (here Φ), so the captured group never equals the row's full cited name for ANY Unicode-bearing identifier -- a pre-existing checker limitation, not a defect in the landed theorem or its docstring. Editing check-module-invariants.sh is out of this task's file_scope (task 706's); closed Phase 9 as [COMPLETED WITH EXCLUSIONS] with a #### Reasoned Exclusions record rather than treating the whole task as blocked"}
+  ],
+  "handoff_count": 0,
+  "deviations": [
+    {"task_id": "9.4", "description": "Run the full gate set and read the C9, C15, C24, C28, C30, C33, C36 and INV lines individually rather than only the exit code", "type": "altered", "reason": "C15's second assertion fails on exactly one of the five new rows (not_plusValidZTime_neg_Φ) due to a pre-existing ASCII-only regex limitation in scripts/check-module-invariants.sh, which is outside this task's file_scope to fix. All other gates (C9, C24, C28, C30, C33, C36, INV, and C15's first assertion) pass.", "annotation": "*(completed: C9/C24/C28/C30/C33/C36/INV all PASS; C15's first assertion PASSes; C15's second assertion has one reasoned exclusion, see below)*"}
+  ]
+}

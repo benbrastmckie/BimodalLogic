@@ -17,7 +17,11 @@ page is right and the other is stale.
 | Frame class | The `FrameClass` the result is stated at: `Base`, `Dense`, `ZTime`, `RTime`. `—` where the result is class-generic. |
 | Axioms | `pcq` abbreviates exactly `[propext, Classical.choice, Quot.sound]`; anything else is written out literally. `pinned:C2` / `pinned:C14` names the check in `scripts/check-module-invariants.sh` that asserts the value on every build — the column is generated from those baselines, never typed. `claimed` would mean prose-only; no row currently reads that. |
 
-Every declaration listed here is machine-pinned. To re-derive the whole column:
+Every declaration listed here is machine-pinned, with one standing exception: the five
+`PlusSlicedCertificate.NoFiniteWidth` rows read `pcq (not yet in the C2/C14 baseline)` rather than
+a `pinned:` token. Their axiom sets were read with `#print axioms` at landing time, but
+`scripts/check-module-invariants.sh` carries no baseline line asserting them yet — adding one is a
+different task's `file_scope`, not this row's author's. To re-derive the pinned rows' column:
 
 ```bash
 bash scripts/check-module-invariants.sh        # C2 and C14 assert every value below
@@ -169,6 +173,11 @@ class — see `deterministic_not_plusDefinable` above.
 | — | An accepted time-sliced L⁺ certificate produces an explicit ℤ-time joint countermodel, landing the **unchanged** `PlusRefutes` export beside the landed sharing-family producer | `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.plusRefutes_of_certifies` | `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Sound.lean` | ZTime | pcq pinned:C2 |
 | — | Completeness relative to tail-stable sliced models: a bi-serial, tail-stable, semantically labelled structure carrying a refuting path admits a box guess the checker accepts, on the same carrier and with **no** bound on the slice width | `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.exists_plusSlicedCertificate_of_tailStable_countermodel` | `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Complete.lean` | ZTime | pcq pinned:C2 |
 | — | Every ℤ-time non-validity of an embedded L-formula admits an accepted time-sliced L⁺ certificate: the landed L witness family embeds, so the sliced class is non-vacuous on `⊡`-free targets | `FormalSystem.Metalogic.Decidability.WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula` | `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/EmbedComplete.lean` | ZTime | pcq pinned:C2 |
+| — | The CTL-like, `⊡`-carrying witness `Φ.neg` is a genuine ℤ-time non-validity of L⁺, on a countable finitely branching regular ℤ-frame | `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_plusValidZTime_neg_Φ` | `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean` | ZTime | pcq (not yet in the C2/C14 baseline) |
+| — | **No** model on any finite-width `FrameOver.ofSlicedStep` frame satisfies `Φ` anywhere: `[Finite W] [Nonempty W]` is the whole finiteness hypothesis, with no hypothesis on the succession relation beyond bi-seriality | `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.no_finite_width_sat` | `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean` | ZTime | pcq (not yet in the C2/C14 baseline) |
+| — | **No** time-sliced certificate certifies `Φ.neg`, with the presented frame kept rather than exported through `PlusRefutes` | `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_certifies` | `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean` | ZTime | pcq (not yet in the C2/C14 baseline) |
+| — | **The time-sliced certificate class is incomplete for L⁺ over ℤ-time**: `Φ.neg` is a ℤ-time non-validity, inside the CTL-like fragment, that no `PlusSlicedCertificate` certifies | `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_sliced_complete` | `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean` | ZTime | pcq (not yet in the C2/C14 baseline) |
+| — | **No** certificate class presenting finite-width sliced frames is complete for L⁺, whatever its clauses: the completeness obstruction is exactly finite width | `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_finite_width_fmp` | `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean` | ZTime | pcq (not yet in the C2/C14 baseline) |
 
 ### Characterization and definability
 

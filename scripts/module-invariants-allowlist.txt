@@ -165,3 +165,10 @@ FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily
 
 # `inductive PlusFormula` in namespace FormalSystem.PlusLanguage -- PlusLanguage/Formula.lean:91
 FormalSystem.PlusLanguage.PlusFormula
+
+# `namespace NoFiniteWidth`, inside `namespace PlusSlicedCertificate` -- declared in
+# PlusSlicedCertificate/Limits/NoFiniteWidth.lean. The module is
+# `...PlusSlicedCertificate.Limits.NoFiniteWidth`; the namespace deliberately does not mirror the
+# `Limits` directory level (decision D-N: the witness's single-letter definitions must not land
+# in `PlusSlicedCertificate` itself). Same shape as the `PlusSharingWitnessFamily` entry above.
+FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth
