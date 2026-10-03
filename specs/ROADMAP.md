@@ -65,14 +65,13 @@ programme (tasks 695–716, all dispatched since), and is not restated here.
       (scope spec, Section C):* 718, 719 and 721 all cite its ARGUED lower bound as the sanity
       ceiling on any proposed decision procedure, so it is load-bearing as a check even unproved;
       no upper-bound claim may be landed from it. Not decided here
-- [ ] Confirm or overturn the **Option A** reading of the Success Metric "every refutation lives
-      in `FormalSystem/`" (scope spec, Section F): Option A -- tasks 706 and 710 land
+- [x] **RULED 2026-10-03 by the user: Option A -- library landing.** The Success Metric "every
+      refutation lives in `FormalSystem/`" stands as written: tasks 706 and 710 land
       `Probe706.no_finite_carrier_sat` and `Probe710.not_finite_width_fmp` as `FormalSystem/`
-      theorems and 720 re-points citations to library names; Option B -- the CI-guarded
-      `specs/evidence/` collection is accepted as the home of refutations and the metric is
-      reworded. Option A was adopted **autonomously** in cycle 1 of task 721 from the research
-      recommendation under a non-blocking `user_decision`; it is not a user ruling until this box
-      is answered (Tasks 706, 710, 720)
+      theorems, and 720 re-points citations to library names. Option B (accepting the CI-guarded
+      `specs/evidence/` collection as the home of refutations) is **rejected**. This supersedes
+      the autonomous cycle-1 adoption in task 721, which was explicitly not a user ruling; the
+      ruling is now the user's own (Tasks 706, 710, 720; scope spec, Section F)
 - [ ] Rule on tasks 127 and 128, the object-language extensions (time addition, interior
       operator): long-standing abandonment candidates, antagonistic to the termination work the
       tableau spine depends on (Task 127, Task 128)
