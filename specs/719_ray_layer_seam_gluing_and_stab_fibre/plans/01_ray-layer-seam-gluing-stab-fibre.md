@@ -1,7 +1,7 @@
 # Implementation Plan: Task #719 — the ray layer, the seam-gluing operator and the stab fibre
 
 - **Task**: 719 - ray_layer_seam_gluing_and_stab_fibre
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9 hours
 - **Dependencies**: None remaining — 563 `[COMPLETED]`, **564 `[COMPLETED]`** (the dispatch's "still upstream and NOT STARTED" is stale; see Research Integration point 1), 718 `[COMPLETED]`
 - **Research Inputs**: `specs/719_ray_layer_seam_gluing_and_stab_fibre/reports/01_ray-layer-seam-gluing-stab-fibre.md`
