@@ -1,0 +1,42 @@
+{
+  "status": "researched",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/718_omega_sequence_decidability_full_lplus/reports/02_ranked-route-analysis.md",
+      "summary": "Ranked route analysis (R1 seam-gluing + omega-automata, R2 mosaics/quasimodels, R3 periodicity demoted to component, R4 filtration CLOSED for Z-time, R5 FO-translation low), with 8 findings, per-route evasion mechanisms and probe-first falsification plans, paper cross-checks by label, and the keystone settled affirmatively"
+    },
+    {
+      "type": "probe",
+      "path": "specs/718_omega_sequence_decidability_full_lplus/probes/SeamFibreProduct.lean",
+      "summary": "Machine-checked keystone: the stab fibre IS the fibre product of the past-ray and future-ray spaces over the seam state, at a general task frame (seamFibreEquiv) and in omega-sequence form over Z (seamOmegaEquiv), plus the two stab-clause restatements. Compiles clean, sorry-free, axioms [propext, Classical.choice, Quot.sound]"
+    }
+  ],
+  "next_steps": "Revise task 719's scope to CONSUME this round's results (its Deliverable 1 is answered, Deliverable 3 is proved) rather than re-derive them; file a new task to promote Probe706/Probe710's FMP and finite-width refutations into FormalSystem/; run R1's three falsification probes before any plan commits to omega-automata determinization.",
+  "user_decision": {
+    "question": "Should the omega-automata determinization substrate task (711, currently BLOCKED and deliberately not scheduled) be revived as a funded dependency of the top-ranked route, given that no formalization of Safra or Piterman determinization exists in any proof assistant?",
+    "options": [
+      "Revive 711 only after R1's falsification probes 1-3 land, so determinization is funded on evidence of necessity rather than expectation",
+      "Revive 711 now as a funded dependency of R1, accepting the from-scratch mechanization cost up front",
+      "Leave 711 blocked and pursue R2 (mosaics/quasimodels), which needs no determinization substrate but has weaker reach and an evidence gap in the acquired sources"
+    ],
+    "recommended": "Revive 711 only after R1's falsification probes 1-3 land, so determinization is funded on evidence of necessity rather than expectation",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1791007802_90fb84_718",
+    "agent_type": "logic-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
+    "findings_count": 8,
+    "routes_ranked": 5,
+    "probes_compiled": 1,
+    "probe_status": "clean, sorry-free, axioms [propext, Classical.choice, Quot.sound]",
+    "tasks_created": 0,
+    "state_json_written": false,
+    "paper_repo_written": false,
+    "context_files_loaded": [],
+    "mathlib_lookups_performed": 0
+  }
+}
