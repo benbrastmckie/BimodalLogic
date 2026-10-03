@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/719_ray_layer_seam_gluing_and_stab_fibre/reports/01_ray-layer-seam-gluing-stab-fibre.md",
+      "summary": "Research for the ray layer, seam-gluing operator and stab-fibre promotion: task 564 found COMPLETED (dispatch text stale), the keystone's Classical.choice leak localized to glue_rel and cleared by 564's reflection_of_ne (verified), the omega branch's leak traced to the upstream FrameOver.worldHistoryOfStepPath, a forced two-module split for the four acceptance-named declarations, a Presheaf.glue name collision, paper-fidelity verification of app:gluing and the commented frown_z passage, the C2/C34/C35 gate procedures with a measured baseline, and a five-phase sorry-free plan including E1 feasibility."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791062863_12249e_719",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
