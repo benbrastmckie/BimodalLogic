@@ -86,7 +86,7 @@ FormalSystem.Metalogic.derivable_of_validZTime : Unknown identifier
 | 24 | `scripts/check-evidence-probes.sh` run | `timeout 280 bash scripts/check-evidence-probes.sh` | **exit 0**; `PASS  all 14 wired probe(s) compile`; one `SKIP (deferred: frame-class uniformity work)` on `bi-lasso-decision-layer/spike-untl-unfolding-and-fwd-obstruction`; all five `seam-gluing-ray-product/*` probes PASS; all three `WIRED_REPO` entries PASS |
 | 25 | `docs/theorem-index.md` `pinned:C14` claims | `grep -n 'pinned:C14' docs/theorem-index.md \| grep -i 'validZTime\|decidableValidZTime\|witnessFamily'` | rows 147, 148, 149: `FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime`, `...validZTime_iff_noCertifiedCandidate`, `...Compression.decidableValidZTime`, each `ZTime \| pcq pinned:C14` |
 | 26 | `scripts/check-module-invariants.sh` baseline for those three | `grep -n 'Compression\.\|decidableValidZTime\|validZTime_iff_noCertifiedCandidate\|exists_witnessFamily_of_not_validZTime' scripts/check-module-invariants.sh` | **only lines 3411 and 3415** -- a comment and a tuple in the C-check shadowing allowlist (`("decidableValidZTime", "FormalSystem.Metalogic.Decidability", ...)`); no `#print axioms` line and no baseline line names any of the three. The C14 baseline does pin `sound_of_isValid` (lines 1998, 2202). **The `pinned:C14` claim on rows 147-149 is confirmed ungrounded** -- evidence for Section H2 |
-| 27 | Stale-prose sample (for Section H1) | `grep -n 'sound direction only' FormalSystem/README.md`; `grep -n 'No decidability theorem' typst/FormalFoundations.typ` | `FormalSystem/README.md:408`: "decidability **sound direction only**"; `typst/FormalFoundations.typ:774`: "No decidability theorem is machine-checked." Both are false of the tree as of row 1 (true of the tableau only). The remaining surfaces named in H1 are taken from the research report's Appendix B and are to be re-verified by H1 before editing |
+| 27 | Stale-prose sample (for Section H1) | `grep -n 'sound direction only' FormalSystem/README.md`; `grep -n 'No decidability theorem' typst/FormalFoundations.typ` | `FormalSystem/README.md:408`: "decidability **sound direction only**"; `typst/FormalFoundations.typ:774`: "No decidability theorem is machine-checked."; `FormalSystem/Metalogic/Decidability/BiLasso/README.md:11-12` (`grep -in 'machine-checked'`): "... no decidability theorem is machine-checked at present" (the phrase wraps across the two lines, which is why a single-line grep for it returns nothing). All three are false of the tree as of row 1 (true of the tableau only). The remaining surfaces named in H1 are taken from the research report's Appendix B and are to be re-verified by H1 before editing |
 
 ### 0.4 Task-record anchors (`specs/state.json`, read-only)
 
@@ -124,31 +124,283 @@ FormalSystem.Metalogic.derivable_of_validZTime : Unknown identifier
 
 ## Section A -- Task 712 (L⁺ sliced finite model property)
 
-_(Phase 2 fills this section.)_
+**Current record** (Section 0.4): `[BLOCKED]`, dependencies `[703, 711]`, no blocked-reason field.
+
+**What the tree says.** The statement 712 was filed to prove is machine-checked FALSE:
+`Probe710.not_sliced_complete` and `Probe710.not_finite_width_fmp`
+(`specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean`, a
+`WIRED_REPO` probe, PASS this round -- Section 0 rows 6 and 24). The refutation is over
+`FrameOver.ofSlicedStep R fwd bwd` with `[Finite W] [Nonempty W]` and a time-indexed bi-serial
+`R : ℤ → W → W → Prop`, with no hypothesis on the succession relation's shape. Two scope limits
+hold, as `FMP/README.md` already states (row 22): the result is over **Z (discrete) frames only**,
+and its witness `Φ := θ' ∧ □(⊡Fp → ¬⊡¬Xp)` **uses `⊡`**, so it is specifically an L⁺ result. The
+status of record is therefore **REFUTED AS A THEOREM** (probe level), not "open"; 712's own
+description already converted itself to a refutation record and deliberately left the status
+untouched.
+
+**Scope change required.**
+
+1. Remove dependency `711`. The determinization blocker gated *proving* the statement; the
+   statement is refuted, so the edge is now meaningless and its only effect is to make 711 look
+   load-bearing for a result that no longer exists.
+2. Record in the description that the terminal status is a Phase 0 user ruling with two honest
+   options: `[ABANDONED]` (the statement is false), or `[COMPLETED]` as a refutation record once
+   the refutation is landed as a library theorem under Section F's Option A (which task 720 as
+   filed does **not** do -- it moves probe files into `specs/evidence/`). Research
+   recommendation, stated and **not decided here**: hold 712 open only until the library landing
+   exists, then close it as a refutation record; do not close it on the probe alone, since the
+   programme's own rule -- stated in 709, 712 and 719 -- is that obstructions live as theorems.
+
+**What this task must NOT do**: change 712's status or dependencies, or mark the Phase 0 ruling
+decided. The dependency edge is removed by `/revise`, the status by the user.
+
+**Action required**: `/revise 712` (dependency removal; description note on the two terminal
+options), by the orchestrator or the user. The terminal-status call itself is the Phase 0 ruling
+on 712 in `specs/ROADMAP.md`, user-only.
 
 ## Section B -- Task 711 (ω-automata determinization substrate)
 
-_(Phase 2 fills this section.)_
+**Current record** (Section 0.4): `[BLOCKED]`, dependencies `[]`, no blocked-reason field.
+
+**The tension, verbatim from both records.**
+
+- `specs/ROADMAP.md`, Phase 0 (as of `b5affb6e3`): "Rule on task 711, the ω-automata
+  determinization substrate: it was filed only to make the blocker visible, and the route it names
+  is now closed, so the honest outcome is ABANDONED rather than completed (Task 711)".
+- `specs/718_omega_sequence_decidability_full_lplus/.decisions.json`, cycle 1: "Revive 711 only
+  after R1's falsification probes 1-3 land, so determinization is funded on evidence of necessity
+  rather than expectation".
+
+**What the probes actually showed** (Section 0 rows 10-11). The three R1 probes landed (718
+Phases 2, 3, 5). `Probe718PathQuantifier.exists_ne_stab` and `exists_ne_universal`
+(`specs/evidence/seam-gluing-ray-product/path-quantifier-alternation.lean`) prove on the shared
+`Bool` fixture that the existential (nondeterministic) per-path summary is `True` everywhere while
+`⊡(Fp)` is `False` everywhere (`Probe718FiniteGraph.decide_will`). So **a universal,
+complementation-shaped summary device is NECESSARY** on that fixture; a nondeterministic summary
+is unsound. The probes do **not** show that Safra/Piterman determinization specifically is that
+device. At least three universal-summary devices are live candidates: (a) Safra/Piterman
+determinization; (b) Safraless procedures (Kupferman-Vardi 2005; `~/Projects/Literature/
+SOURCES.md` D8, a wanted source, which also records that no formalization of Safra or Piterman
+exists in any proof assistant); (c) the MSO-over-`⟨ℤ,<⟩`-plus-Büchi route of
+Hodkinson-Wolter-Zakharyaschev 2000 (their route (1); no Safra construction;
+`.claude/context/project/logic/domain/ztime-no-finite-carrier-fmp.md` §8); (d) a
+Ramsey-coloured summary as in finding F4 (task 709's re-scoped statement). None has been selected
+by a probe.
+
+**Both records are partly right.** The route 711 *names* (Emerson-Jutla determinization via
+Reynolds 2001, for the FMP of 712) is closed with 712 (Section A) -- the ROADMAP is right about
+that route. The *need* 711 was filed to make visible has been re-demonstrated on R1 -- the
+decision's evidence condition is **met**. Neither record considered that the probes would answer
+a different question (device necessity) from the one 711 was filed on (an FMP route) and the one
+the ROADMAP ruled on (the closed route).
+
+**Resolution: REVISE** -- neither abandon as filed nor revive as filed.
+
+**Scope change required.**
+
+1. Re-title and re-describe 711 as "universal-summary substrate for the `⊡` fibre check on the
+   seam-gluing route", listing the four candidate devices above and stating that the device is to
+   be selected by probe E3 (Section "Ranking ratification"), not assumed.
+2. Re-point its consumer from 712 (refuted) to 719 Deliverable 5 (the decidable-check connection).
+3. Keep `[BLOCKED]`, with the recorded reason "device not yet selected; probe E3 pending".
+4. Keep the prohibition, already in 719's record, that no phase of 719 builds the substrate.
+
+**Phase 0 ruling restated.** The ruling on 711 is **newly answerable** -- the decision's evidence
+condition is met and a third option exists -- and is **not decided here**. The ROADMAP's Phase 0
+bullet is annotated with the third option and left unchecked.
+
+**What this task must NOT do**: change 711's status, title, or dependencies, or mark the ruling
+decided.
+
+**Action required**: `/revise 711` (re-title, re-describe, re-point consumer, record the blocked
+reason), by the orchestrator or the user, after the user's Phase 0 ruling selects REVISE over
+ABANDON.
 
 ## Section C -- Task 713 (CTL⋆ 2EXPTIME reduction)
 
-_(Phase 2 fills this section.)_
+**Current record** (Section 0.4): `[NOT STARTED]`, dependencies `[]`, filed not scheduled;
+nothing depends on it.
+
+**Its actual role.** Three records -- 718's ranked-route analysis, 719's description, and this
+review's report §3.1 -- *use* 713's ARGUED (not formalized) 2EXPTIME lower bound as the **sanity
+ceiling** on any proposed decision procedure: nothing cheaper than that bound is credible. It is
+load-bearing as a check even while unproved. No record lands an upper bound from it, and none may:
+this review commits to **no complexity bound** (hard constraint).
+
+**Scope change required.** Revise the description to (i) record that role explicitly, naming the
+three citing records; (ii) forbid landing any *upper*-bound claim from it; (iii) leave it
+unscheduled.
+
+**Phase 0 ruling restated.** Keep as a write-up note (recommended, because it is load-bearing as a
+check) or abandon -- the user's call, **not decided here**.
+
+**What this task must NOT do**: schedule 713, change its status, or assert any complexity bound.
+
+**Action required**: `/revise 713` (description only), by the orchestrator or the user. The
+keep-or-abandon call is the Phase 0 ruling on 713, user-only.
 
 ## Section D -- Task 709 (F4 periodicity)
 
-_(Phase 2 fills this section.)_
+**Current record** (Section 0.4): `[NOT STARTED]`, dependencies `[703, 710]`.
+
+**What changed.** 718's ranked-route analysis demoted F4 ("finite width ⇒ eventually periodic")
+from a route to a **component of R1** (R3 in both rankings: "a COMPONENT, not a route"). Its
+premise, finite width, is refuted for any *complete* class (`Probe710.not_finite_width_fmp`,
+Section 0 row 6); as R1's summary step it is either replaced by an automaton acceptance condition
+or is exactly the Ramsey-coloured device (candidate (d) in Section B). `specs/ROADMAP.md` Phase 2
+("Task 709 is the phase's substance and the only item that is open mathematics"; "`/orchestrate
+709 --hard` ... the one real theorem on this front") and 709's own re-scoped headline both predate
+that demotion.
+
+**Scope change required.**
+
+1. Re-describe 709 to state that F4 is R1's summary step, sequenced under the gluing route (719),
+   not Phase 2's capstone.
+2. Add dependency `719`, keeping `[703, 710]`.
+3. Record the fallback already in its description -- restrict the fragment to safety/bounded-step
+   `⊡` operators, excluding AF-style unbounded eventualities -- as the alternative if R1 selects an
+   automaton acceptance condition over a Ramsey colour, in which case F4 is unnecessary and 709
+   closes as a reasoned exclusion (`[COMPLETED WITH EXCLUSIONS]` with a `#### Reasoned Exclusions`
+   record), not as a failure.
+
+**What this task must NOT do**: change 709's dependencies or status itself; the ROADMAP edit
+(Phase 4 of this plan) states "if Section D is adopted" rather than assuming it.
+
+**Action required**: `/revise 709` (description; add dependency 719), by the orchestrator or the
+user.
 
 ## Section E -- Task 719 (ray layer, seam gluing and stab fibre)
 
-_(Phase 2 fills this section.)_
+**Current record** (Section 0.4): `[NOT STARTED]`, dependencies `[563, 564, 718]`, `file_scope`
+`FormalSystem/Semantics/{PartialHistory,Rays,Gluing}.lean`. Already revised once to consume 718
+(`specs/718_.../followup-scope-spec.md` Section 1).
+
+**What the evidence says about its weakest point.** The route 719 promotes has only its
+**forward** finite-graph factor proved (`Probe718FiniteGraph.will_iff_allPathsMeet`, `decide_will`,
+`decidable_will`, on the `Bool` complete-graph fixture, `⊡(Fp)` only); the backward dual is a
+recorded exclusion justified by the fixture's time-reversal symmetry (Section 0 row 11, header
+quoted verbatim). But the finite-width obstruction is located in the *backward* factor
+(`Probe710`'s contradiction pigeonholes backward post-chains at unboundedly early times), so a
+symmetric fixture is exactly the one that cannot see it.
+
+**Scope change required** (two additions; no dependency change).
+
+1. Deliverable 5 (the decidable-check connection) names experiment **E1** -- the backward-dual
+   finite-graph probe on a time-asymmetric fixture, reusing `Probe710.Node`/`Probe710.Step`
+   (finitely branching, every node with exactly one predecessor, bi-infinite paths canonical by
+   `Probe710.path_eq_canon`), deciding `⊡(Pp)` at a seam state by backward reachability, mirroring
+   `will_iff_allPathsMeet` -- as its **first** probe. One file under
+   `specs/evidence/seam-gluing-ray-product/`, no automata. 719's Deliverables 1-4 are promotion
+   work and do not wait on it.
+2. Acceptance requires that every promoted keystone declaration -- `seamFibreEquiv`,
+   `plusStab_iff_rays`, `seamOmegaEquiv`, `plusStab_iff_omega` -- carry **`[F.IsRegular]`
+   verbatim** (Section 0 row 7: every one of the four sits under that instance, discharged through
+   `TaskFrame.comp` plus the reflection convention), neither weakened to a bare `TaskFrame` nor
+   strengthened. Promotion that restates the keystone as unconditional is a defect.
+
+**What this task must NOT do**: build E1, or touch 719's `file_scope`.
+
+**Action required**: `/revise 719` (Deliverable 5 text; acceptance clause), by the orchestrator or
+the user. If 719 is not dispatched within the cycle, E1 is filed separately as Section H4.
 
 ## Section F -- Tasks 706, 710, 720 (the refutations' library landing)
 
-_(Phase 2 fills this section.)_
+**Current records** (Section 0.4): 706 `[RESEARCHED]`, deps `[695, 696, 703]`; 710
+`[RESEARCHED]`, deps `[703]`; 720 `[NOT STARTED]`, deps `[706, 710]`, `file_scope`
+`specs/evidence/seam-gluing-ray-product/`, `scripts/check-evidence-probes.sh`,
+`FormalSystem/Metalogic/Decidability/FMP/README.md`.
+
+**The two readings that cannot both stand.** The ROADMAP's Success Metric reads "Every refutation
+the programme has produced lives in `FormalSystem/` as a cited theorem, not only under a task's
+`probes/` (Tasks 706, 710)", and its Phase 2 items say "Land the finite-width refutation as library
+theorems under `PlusSlicedCertificate/Limits/NoFiniteWidth.lean` (Task 710)" and "Land task 706's
+finite-carrier refutations into `FormalSystem/` (Task 706)". Task 720's filed scope (its own
+SCOPE NOTE) moves both probe files to `specs/evidence/seam-gluing-ray-product/` and re-points
+`FMP/README.md`, stating that "genuine promotion into the `FormalSystem/` library proper would be a
+different and larger task". Reading (A), library landing: 706 and 710 land the refutations as
+`FormalSystem/` theorems; 720 re-points citations to library names. Reading (B), evidence
+collection: the Success Metric is revised to accept the CI-guarded `specs/evidence/` collection as
+the home of refutations (`check-evidence-probes.sh`'s own header reading: a probe outlives the
+task that produced it by construction).
+
+**Adopted: Option A -- library landing** (this task's `.decisions.json`, cycle 1), **with this
+caveat carried verbatim in substance**: the adoption was made autonomously from the research
+agent's own recommendation because the `user_decision` was marked `blocking=false` and
+`/orchestrate` runs without confirmation gates. It is **NOT a user ruling**; re-open via `/revise`
+if the user prefers Option B. The ROADMAP gains an unchecked Phase 0 item asking for confirmation.
+The research's reason for (A): `FMP/README.md` (row 22) and the domain note both cite
+`Probe706.no_finite_carrier_sat` and `Probe710.not_finite_width_fmp` as closing what the library
+called open, and the programme rule "obstructions live as theorems" is stated in 709, 712 and 719.
+
+**Scope change required under Option A.**
+
+1. **Task 710**: its implementation scope is the library landing of `not_finite_width_fmp`,
+   `not_sliced_complete` and the core `no_finite_width_sat` (with the `[Finite W] [Nonempty W]`
+   hypotheses and the `⊡`-bearing witness `Φ` stated) under
+   `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean`, which
+   710's declared `file_scope` already names; plus `docs/theorem-index.md` rows for them.
+2. **Task 706**: its implementation scope is the library landing of the `no_finite_carrier_sat`
+   family (`no_finite_carrier_sat` with `[Finite F.WorldState]`, `no_ofStep_sat` with
+   `[Finite W] [Nonempty W]`, `not_finite_carrier_fmp`, `θ_eq_ofFormula`, and the `⊡`-bearing
+   fragment twins) into a `FormalSystem/` home chosen by 706's plan -- its declared `file_scope`
+   already names `PlusSlicedCertificate/FiniteCarrier.lean` as a natural candidate; plus
+   `docs/theorem-index.md` rows. The `⊡`-free status of the main witness
+   (`θ_eq_ofFormula : θ = ofFormula ψL`) must be stated in the landed docstring, since it is what
+   makes this half a result about TM itself.
+3. **Task 720**: revise to re-point the `FMP/README.md` and `scripts/check-evidence-probes.sh`
+   citations to the library names once landed, converting or deleting the two `WIRED_REPO` entries
+   accordingly -- or close 720 as subsumed if the landing leaves no probe file to move (the
+   `Probe476.fmp_false` `WIRED_REPO` entry is an archived task's and is out of 720's scope either
+   way).
+4. **Named collisions** (Section 0.4): 706 and 710 both declare
+   `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean` and `docs/theorem-index.md`;
+   710 and 720 both declare `scripts/check-evidence-probes.sh`. They cannot be batched; order
+   710 → 706 → 720, as the ROADMAP's Phase 2 Run block already sequences the first two.
+
+**Under Option B instead**: revise the Success Metric text (ROADMAP) and leave 706/710/720 as
+filed. Not adopted; listed so the user's choice is a one-line reversal.
+
+**What this task must NOT do**: edit 706, 710 or 720's records, or move or edit any probe file.
+
+**Action required**: `/revise 710`, `/revise 706`, `/revise 720` (implementation scope per items
+1-3), by the orchestrator or the user, **after** the user confirms Option A in the Phase 0 item
+this task adds to `specs/ROADMAP.md`.
 
 ## Section G -- Tasks 430 and 412 (tableau spine)
 
-_(Phase 2 fills this section.)_
+**Current records** (Section 0.4): 430 `[NOT STARTED]`, deps `[428, 429, 411]`; 412
+`[NOT STARTED]`, deps `[410, 411, 428, 430]`.
+
+**What changed.** Z-time validity of the base language L is already decided by another route:
+`FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime : (φ : Formula) → Decidable
+(ValidZTime φ)` (Section 0 row 1; `FrameClass.ZTime`, `φ : Formula` with no `⊡`, empty premises,
+a `def`, axioms `[propext, Classical.choice, Quot.sound]`). After Section H3 lands,
+`Decidable (Derivable .ZTime [] φ)` will exist by the same route via
+`soundness_ztime_valid` and `FormalSystem.Metalogic.BXCanonical.derivable_of_validZTime` (row
+14). The spine's deliverable is therefore the **four-class** biconditional
+`isValid φ fc = true ↔ ⊨ φ` with `Decidable (⊨ φ)` at Base/Dense/ZTime/RTime, and the spine is the
+only route *filed* for Base, Dense and RTime -- not the only route to any decidability result.
+Today the spine has the sound direction only (`sound_of_isValid`, `isValid_sound`; the
+`validity_decidable`/`validity_has_decision_procedure` forms were retired as vacuous, row 9).
+
+**Scope change required** (descriptions only; no dependency change).
+
+1. **Task 430** (the semantic lift, `valid_iff_allClosed`): record that `Decidable (ValidZTime φ)`
+   exists by the witness-family route, that the spine's deliverable is the four-class
+   biconditional, and that its ZTime instance has an **independent oracle** it must agree with --
+   cross-check L-E3 (Section "Ranking ratification"): `decide` and
+   `Compression.decidableValidZTime` run on the negation of the `posFamily` target
+   `□(p ∨ Fp ∨ Pp) ∧ □(p → ¬Pp)`; the tableau must not report `.valid` where the certificate route
+   refutes.
+2. **Task 412** (decidability of provability): record that `Decidable (Derivable .ZTime [] φ)` is
+   a few-line corollary of the witness-family route (H3) and that 412's content is the other three
+   classes plus the completeness corollaries through the tableau.
+
+**What this task must NOT do**: write `valid_iff_allClosed` or any `isValid`-shaped `iff`, or
+reopen the C9 do-not-re-attempt register.
+
+**Action required**: `/revise 430`, `/revise 412` (descriptions only), by the orchestrator or the
+user.
 
 ## Section H -- New tasks to file
 
@@ -156,7 +408,12 @@ _(Phase 3 fills this section.)_
 
 ## The 711 tension
 
-_(Phase 2 fills this section; see Section B.)_
+Resolved in Section B by **REVISE**: the ROADMAP's ABANDONED is right about the route 711 *names*
+(closed with the refuted 712); the 718 decision's "revive on evidence of necessity" has its
+evidence condition **met** by `Probe718PathQuantifier.exists_ne_stab`/`exists_ne_universal`; but
+the evidence shows necessity of *some* universal, complementation-shaped device, not of
+Safra/Piterman, so 711 is re-described as the device-selection substrate and kept `[BLOCKED]`
+pending probe E3. The Phase 0 ruling is restated as newly answerable and left to the user.
 
 ## Ranking ratification
 

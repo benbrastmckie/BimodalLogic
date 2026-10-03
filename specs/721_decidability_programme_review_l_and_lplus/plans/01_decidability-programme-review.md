@@ -137,7 +137,7 @@ status (`completed`).
 Phases within the same wave can execute in parallel. This plan is fully sequential: Phases 2 and
 3 write the same file, and Phase 4's ROADMAP text cites the spec's section letters.
 
-### Phase 1: Re-verify the Anchors and Open the Specification File [IN PROGRESS]
+### Phase 1: Re-verify the Anchors and Open the Specification File [COMPLETED]
 
 **Goal**: Ground every claim the two deliverable files will make by re-checking it against the
 tree this round, and record the results as Section 0 of the new `followup-scope-spec.md`.
@@ -182,7 +182,7 @@ tree this round, and record the results as Section 0 of the new `followup-scope-
 - [x] If any anchor differs from the research report's statement, record the difference in *(completed: one namespace difference, row 14)*
       Section 0 and carry the *verified* value forward into Phases 2-4; do not edit the research
       report.
-- [ ] Commit the file (scoped staging: this file only).
+- [x] Commit the file (scoped staging: this file only). *(completed: 6710a1fbc)*
 
 **Timing**: 1 hour
 
@@ -205,21 +205,21 @@ anchor cited later in the spec or ROADMAP is a defect in Section 0, not in the c
 
 ---
 
-### Phase 2: Per-Task Revision Specifications (Sections A-G) and the 711 Resolution [NOT STARTED]
+### Phase 2: Per-Task Revision Specifications (Sections A-G) and the 711 Resolution [IN PROGRESS]
 
 **Goal**: Write the per-task scope changes in the 718 format, each naming the task, its current
 status and dependencies (from Section 0), the concrete change, the command that executes it
 (`/revise N`), and what must NOT be done by this task.
 
 **Tasks**:
-- [ ] Section A -- Task 712 (L⁺ sliced FMP, `[BLOCKED]`, deps `[703, 711]`): record that the
+- [x] Section A -- Task 712 (L⁺ sliced FMP, `[BLOCKED]`, deps `[703, 711]`): record that the *(completed)*
       statement is machine-checked FALSE (`Probe710.not_sliced_complete`,
       `Probe710.not_finite_width_fmp`, Z-only, `⊡`-bearing witness) so the record is a refutation;
       specify removal of dependency `711` via `/revise 712`; state the two honest terminal
       options (`[ABANDONED]` vs. `[COMPLETED]` as a refutation record once the library landing
       of Section F exists) as a Phase 0 user ruling, with the research's recommendation stated
       and marked as not decided.
-- [ ] Section B -- Task 711 (ω-automata determinization substrate, `[BLOCKED]`, deps `[]`): state
+- [x] Section B -- Task 711 (ω-automata determinization substrate, `[BLOCKED]`, deps `[]`): state *(completed)*
       the tension verbatim from both records (`specs/ROADMAP.md` Phase 0 bullet; `specs/718_.../
       .decisions.json` answer); state what the probes actually showed (`Probe718PathQuantifier.
       exists_ne_stab`, `exists_ne_universal`: a universal/complementation-shaped device is
@@ -231,19 +231,19 @@ status and dependencies (from Section 0), the concrete change, the command that 
       Deliverable 5, keep `[BLOCKED]` with reason "device not yet selected; probe E3 pending",
       keep the prohibition that no 719 phase builds the substrate. Restate the Phase 0 ruling as
       newly answerable (the decision's evidence condition is met) and not decided here.
-- [ ] Section C -- Task 713 (CTL⋆ 2EXPTIME reduction, `[NOT STARTED]`, deps `[]`): record its
+- [x] Section C -- Task 713 (CTL⋆ 2EXPTIME reduction, `[NOT STARTED]`, deps `[]`): record its *(completed)*
       role as the sanity ceiling cited by 718, 719 and this review; specify a description
       revision that states that role and forbids landing any upper-bound claim; leave
       unscheduled; restate the Phase 0 ruling (keep as write-up note, recommended, or abandon).
-- [ ] Section D -- Task 709 (F4 periodicity, `[NOT STARTED]`, deps `[703, 710]`): record 718's
+- [x] Section D -- Task 709 (F4 periodicity, `[NOT STARTED]`, deps `[703, 710]`): record 718's *(completed)*
       demotion of F4 to a component of R1; specify adding dependency `719` and re-describing F4
       as R1's summary step, with the fallback (restrict to safety/bounded-step `⊡`; close as a
       reasoned exclusion if R1 selects an automaton acceptance condition).
-- [ ] Section E -- Task 719 (ray layer, `[NOT STARTED]`, deps `[563, 564, 718]`): specify that
+- [x] Section E -- Task 719 (ray layer, `[NOT STARTED]`, deps `[563, 564, 718]`): specify that *(completed)*
       Deliverable 5 names experiment E1 (backward-dual finite-graph probe on a time-asymmetric
       fixture, reusing `Probe710.Node`/`Step`) as its first probe, and that acceptance requires
       every promoted keystone declaration to carry `[F.IsRegular]` verbatim.
-- [ ] Section F -- Tasks 706, 710, 720 (refutations' library landing): state both readings of
+- [x] Section F -- Tasks 706, 710, 720 (refutations' library landing): state both readings of *(completed)*
       the Success Metric; record that Option A was adopted (per `.decisions.json`, cycle 1) with
       the caveat that the adoption was autonomous under a non-blocking `user_decision`, is not a
       user ruling, and is re-openable via `/revise`; specify: 706 and 710's implementation scope
@@ -254,13 +254,13 @@ status and dependencies (from Section 0), the concrete change, the command that 
       `specs/evidence/` paths (or to be closed as subsumed if the landing leaves no probe to
       move). Name the file collisions (706/710 share `PlusSlicedCertificate.lean` and
       `docs/theorem-index.md`).
-- [ ] Section G -- Tasks 430 and 412 (tableau spine): specify description revisions recording
+- [x] Section G -- Tasks 430 and 412 (tableau spine): specify description revisions recording *(completed)*
       that `Decidable (ValidZTime φ)` exists by the witness-family route and that the spine's
       deliverable is the four-class biconditional, whose ZTime instance must agree with the
       independent oracle (cross-check L-E3); no dependency change.
-- [ ] Every section ends with an "Action required" line naming the exact command (`/revise N`)
+- [x] Every section ends with an "Action required" line naming the exact command (`/revise N`) *(completed)*
       and the executor (user or orchestrator), per the 718 format.
-- [ ] Commit (scoped staging: the spec file only).
+- [x] Commit (scoped staging: the spec file only). *(completed: see git log, phase 2.2)*
 
 **Timing**: 1.5 hours
 
