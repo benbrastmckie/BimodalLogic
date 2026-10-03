@@ -464,34 +464,34 @@ valuable) finding that determinization is **not** necessary for this fragment.
 
 ---
 
-### Phase 6: Record the closed filtration route where the library claims it is open [NOT STARTED]
+### Phase 6: Record the closed filtration route where the library claims it is open [COMPLETED]
 
 **Goal**: Correct the one stale in-tree prose claim this round found — `FMP/README.md` calling its
 own goal "open" when a machine-checked refutation exists for ℤ-time — and guard the two refutation
 probes against rot where they currently stand.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/FMP/README.md` immediately before editing (a
+- [x] Re-read `FormalSystem/Metalogic/Decidability/FMP/README.md` immediately before editing (a
       sibling may have touched the tree), specifically the "These theorems are about MCS membership,
       not about truth" section and its "Rebuild the filtration is not a refactor" subsection.
-- [ ] Add one subsection recording the refutation: the goal named there — build a genuine filtered
+- [x] Add one subsection recording the refutation: the goal named there — build a genuine filtered
       task relation on the filtered world type and re-discharge the four axioms, then prove a truth
       lemma — is **unachievable at a finite carrier over ℤ**. Cite `Probe706.no_finite_carrier_sat`
       and `Probe710.not_finite_width_fmp` by declaration name. State the mechanism in one sentence:
       a finite carrier gives finite per-time fibres, and finite width is the stronger, already
       refuted obstruction.
-- [ ] State the limits in the same paragraph, so the claim cannot be over-read: it is over **ℤ**
+- [x] State the limits in the same paragraph, so the claim cannot be over-read: it is over **ℤ**
       (discrete) frames — the pumping argument needs discreteness and says nothing about a dense
       duration — and the witness formula is `⊡`-free, so the result is about TM itself, not only
       about full L⁺.
-- [ ] Keep the existing "cardinality bookkeeping is what this directory supplies" conclusion; the
+- [x] Keep the existing "cardinality bookkeeping is what this directory supplies" conclusion; the
       new subsection sharpens it rather than replacing it.
-- [ ] Re-stamp `*Last verified:*` with the implementation date.
-- [ ] Add `WIRED_REPO` entries for the two refutation probes at their current task-directory paths,
+- [x] Re-stamp `*Last verified:*` with the implementation date.
+- [x] Add `WIRED_REPO` entries for the two refutation probes at their current task-directory paths,
       each with its named blocker recorded beside it: the files are owned by live tasks and a
       follow-up task will promote them into `FormalSystem/`, so the move is deferred, not exempt —
       exactly the case the script's header reserves `WIRED_REPO` for.
-- [ ] Grep the diff for task-number citations: `FormalSystem/**` is a deliverable path where they
+- [x] Grep the diff for task-number citations: `FormalSystem/**` is a deliverable path where they
       are forbidden. Declaration names such as `Probe706.no_finite_carrier_sat` are identifiers and
       are fine; a sentence naming a task, or a path under `specs/`, is not.
 

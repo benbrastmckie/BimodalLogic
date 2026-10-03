@@ -143,8 +143,18 @@ WIRED=(
 # version control only because it was tracked before it was archived; a *new* file at that path
 # would not be.  `git add` on it needs `git add -u`, since plain `git add` refuses an
 # ignore-matching pathspec.  That fragility is a further reason to complete the move.
+# specs/706_.../probes/NoFiniteCarrierModel.lean and specs/710_.../probes/NoFiniteWidthModel.lean
+# ARE NOT YET UNDER `specs/evidence/`, and this too is a DEFERRED MOVE with a named blocker, not
+# an exemption: both files are owned by their own live tasks (706, 710), which are pending a
+# follow-up task's promotion of these two refutations into `FormalSystem/` (see
+# `FormalSystem/Metalogic/Decidability/FMP/README.md`'s "The finite-carrier route is refuted, not
+# merely open" subsection, which cites them by declaration name:
+# `Probe706.no_finite_carrier_sat`, `Probe710.not_finite_width_fmp`). Move them into the
+# collection together with that promotion, not before.
 WIRED_REPO=(
   "specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean"
+  "specs/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean"
+  "specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean"
 )
 
 # --- DEFERRED -----------------------------------------------------------------------------

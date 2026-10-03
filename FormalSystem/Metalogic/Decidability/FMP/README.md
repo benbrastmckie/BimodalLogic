@@ -76,6 +76,29 @@ permissive route to *Saturation* and *Limit* is exactly what a non-universal rel
 `TaskFrame.saturation_of_finite` (`Semantics/TaskFrame.lean`) is the replacement route for
 *Saturation* at a finite carrier, and is already in place.
 
+### The finite-carrier route is refuted, not merely open
+
+The "that is open" sentence above is correct about re-discharging the four axioms for a
+non-permissive relation in general, but a narrower and sharper fact is now machine-checked: the
+whole project — a genuine filtered task relation on a **finite** carrier over ℤ, plus a truth
+lemma — is **unachievable**, not merely unbuilt. `Probe706.no_finite_carrier_sat` (compiled
+outside the build graph; see `scripts/check-evidence-probes.sh`) shows no finite-`WorldState`
+ℤ-task-model satisfies a fixed ⊡-free witness formula at any history and time, whatever the
+relation; `Probe710.not_finite_width_fmp` shows the same obstruction for the strictly weaker
+hypothesis of finite **per-time fibres** (width), on a witness formula that is in L⁺ (it uses
+`⊡`), under no hypothesis on the succession relation at all. The mechanism in one sentence: a
+finite carrier forces finite per-time fibres, and finite width is already the stronger,
+refuted obstruction — so no truth-lemma-bearing filtration of either kind can land on a finite
+world type.
+
+Two limits, stated so the claim is not over-read. First, scope is ℤ (discrete) frames: the
+pumping argument both probes rely on needs discreteness and says nothing about a dense duration.
+Second, the two witnesses differ in language scope — `Probe706.no_finite_carrier_sat`'s witness
+is `⊡`-free, so that half of the refutation is already about TM itself (the stab-free base
+logic), not only about full L⁺; `Probe710.not_finite_width_fmp`'s witness does use `⊡`, so that
+half is specifically an L⁺ result. Neither probe says anything about an *infinite* carrier, and
+neither touches soundness.
+
 ### "Rebuild the filtration" is not a refactor of this directory
 
 It is worth stating the negative directly, because the directory's name invites the opposite
@@ -128,4 +151,4 @@ Archived: the former `DenseFMP.lean`/`DiscreteFMP.lean` variant modules
 
 ---
 
-*Last verified: 2026-09-21*
+*Last verified: 2026-10-02*
