@@ -227,6 +227,10 @@ identifies which script failed without opening the log. The step body is:
 
 ```yaml
 - name: <Human label> (scripts/<script>.sh <relevant flags>)
+  id: <short-slug>
+  continue-on-error: true
+  # Only for a check with no lake/lean dependency -- see "Non-Blocking Checks" below.
+  if: ${{ !cancelled() }}
   run: |
     set -euo pipefail
     echo "::group::bash scripts/<script>.sh <exact args>"
@@ -236,6 +240,35 @@ identifies which script failed without opening the log. The step body is:
 
 `set -euo pipefail` and the `::group::`/`::endgroup::` wrapping match the existing `Compile
 lean_exe roots` step's convention.
+
+### 1a. Non-Blocking Checks and the Aggregating Gate
+
+Every check step carries `id:` and `continue-on-error: true`, and the `Report results` step at
+the bottom of the job is what actually fails the job, from the collected `outcome` of each check.
+
+This is deliberate. The checks are mutually independent — a stale README says nothing about
+whether `lint-style` passes — so a check that hard-stops the job destroys information: it hides
+the verdict of every check below it, and the next run after the fix is the first time anyone
+learns whether those checks were green. That cost is a full job round trip, and this job runs
+roughly 30 minutes. It is not hypothetical: a run that failed on `readme-lint.sh` left the five
+checks after it unexecuted, and all five turned out to be green, so the whole round trip bought
+nothing.
+
+Two rules follow, and a new check step must satisfy both:
+
+1. **Add a `report` line to `Report results`** for the new step, and bump its `expected` count.
+   A check whose outcome is never reported there can fail without failing the job. The count
+   assertion in that step exists to make this omission loud rather than silent — it fails the
+   job with an explicit out-of-sync error.
+2. **`if: ${{ !cancelled() }}` iff the check needs no `lake`/`lean`.** A pure text check stays
+   meaningful when the build is broken, so it should still run and report then. A check that
+   calls `lake` or `lean` must *not* carry this guard: it is left on the default `if: success()`
+   so a broken build skips it instead of producing a cascade of failures that all restate the
+   build failure.
+
+`skipped` is a legitimate non-failure outcome in the gate, and is exactly how that second rule
+surfaces. The build and compile steps themselves remain hard stops, and fail the job on their
+own.
 
 ### 2. Skip-and-Report-Neutral Convention
 

@@ -1,7 +1,9 @@
 # See docs/development/CI_CD_PROCESS.md's "Wiring a New Check Script" section for the
-# per-script wiring pattern (step naming, skip-and-report-neutral convention, cache-warm
-# placement, runtime budget) that every step below follows. A new check step is appended
-# directly before "Report results".
+# per-script wiring pattern (step naming, non-blocking checks and the aggregating gate,
+# skip-and-report-neutral convention, cache-warm placement, runtime budget) that every step
+# below follows. A new check step is appended directly before "Report results", and MUST add
+# its own `report` line to that step and bump its `expected` count -- an unreported check
+# cannot fail the job, since every check step here is `continue-on-error: true`.
 name: CI
 
 on:
@@ -115,6 +117,8 @@ jobs:
       # (see the header of scripts/check-evidence-probes.sh). Every probe import is inside the
       # FormalSystem import closure, so this reuses the cache the lean-action step populated.
       - name: check-evidence-probes.sh
+        id: evidence-probes
+        continue-on-error: true
         run: |
           set -euo pipefail
           echo "::group::bash scripts/check-evidence-probes.sh"
@@ -126,6 +130,9 @@ jobs:
       # docs/development/CI_CD_PROCESS.md's "Wiring a New Check Script" section for the full
       # cache-warm-placement rule new steps here should follow.
       - name: Check module invariants (scripts/check-module-invariants.sh --no-build)
+        id: module-invariants
+        continue-on-error: true
+        if: ${{ !cancelled() }}
         run: |
           set -euo pipefail
           echo "::group::bash scripts/check-module-invariants.sh --no-build"
@@ -136,6 +143,9 @@ jobs:
       # The tooling library is outside that default, so without the second argument the 25
       # relocated modules would leave this gate's denominator and it would keep passing.
       - name: Check copyright headers (scripts/check-copyright-headers.sh --strict)
+        id: copyright-headers
+        continue-on-error: true
+        if: ${{ !cancelled() }}
         run: |
           set -euo pipefail
           # No --exclude: the archive left FormalSystem/ entirely (ADR-010), so the former
@@ -147,6 +157,9 @@ jobs:
       # Same reason as the step above: readme-lint.sh also defaults to ROOTS=("FormalSystem"),
       # and this step used to call it with no arguments at all.
       - name: Check README health (scripts/readme-lint.sh)
+        id: readme-lint
+        continue-on-error: true
+        if: ${{ !cancelled() }}
         run: |
           set -euo pipefail
           echo "::group::bash scripts/readme-lint.sh FormalSystem BimodalTools"
@@ -159,6 +172,9 @@ jobs:
       # and went unnoticed for about a hundred commits while the script was only run by hand.
       # Pure grep over import lines: no lake, no cache dependency.
       - name: Check Metalogic directory-level import cycles (scripts/check-metalogic-cycles.sh)
+        id: metalogic-cycles
+        continue-on-error: true
+        if: ${{ !cancelled() }}
         run: |
           set -euo pipefail
           echo "::group::bash scripts/check-metalogic-cycles.sh"
@@ -171,6 +187,9 @@ jobs:
       # convention, matching the other structural checks above -- it has no cache-warm
       # ordering dependency of its own.
       - name: Typst sync check (scripts/typst-sync-check.sh)
+        id: typst-sync
+        continue-on-error: true
+        if: ${{ !cancelled() }}
         run: |
           set -euo pipefail
           echo "::group::bash scripts/typst-sync-check.sh"
@@ -182,6 +201,9 @@ jobs:
       # 0). It still fails on a missing or unparseable record, and it runs the full drift check
       # wherever the paper is present. Pure bash/grep/sha256sum: no lake, no cache dependency.
       - name: Check paper definitions (scripts/check-paper-definitions.sh)
+        id: paper-definitions
+        continue-on-error: true
+        if: ${{ !cancelled() }}
         run: |
           set -euo pipefail
           echo "::group::bash scripts/check-paper-definitions.sh"
@@ -197,6 +219,8 @@ jobs:
       # so it sits after the lean-action step and reuses its cache; the first run on a cold
       # runner also compiles and links the small mk_all executable.
       - name: Check the generated library root (lake exe mk_all --lib FormalSystem --check)
+        id: mk-all-check
+        continue-on-error: true
         run: |
           set -euo pipefail
           echo "::group::lake exe mk_all --lib FormalSystem --check"
@@ -232,6 +256,8 @@ jobs:
       # findings without needing any waiver. `lake exe lint-style --fix` repairs trailing
       # whitespace locally.
       - name: Text-based style linters (lake exe lint-style)
+        id: lint-style
+        continue-on-error: true
         run: |
           set -euo pipefail
           echo "::group::lake exe lint-style"
@@ -254,9 +280,82 @@ jobs:
           fi
           echo "::endgroup::"
 
+      # The aggregating gate. Every check step above is `continue-on-error: true`, so no single
+      # check fails the job on its own -- all of them get to run and report -- and this step is
+      # what actually fails the job. Before this existed, each check was a plain hard stop, so
+      # the first failure masked every check below it: one run of this ~30-minute job reported
+      # only a readme-lint failure while five later checks never executed at all and their
+      # verdicts were simply unknown.
+      #
+      # A `skipped` outcome is a legitimate non-failure: the three lake-dependent checks are
+      # correctly skipped when the build itself broke (the build is still a hard stop, and that
+      # failure fails the job on its own).
+      #
+      # A task wiring a new check step adds a `report` line for it here in the same change, and
+      # bumps `expected`. The count assertion is what makes that non-optional: a check step
+      # whose outcome is never reported here can fail without failing the job, which is the
+      # exact defect this gate exists to prevent.
       - name: Report results
         if: always()
+        env:
+          LEAN_BUILD_STATUS: ${{ steps.lean-action.outputs.build-status }}
+          LEAN_TEST_STATUS: ${{ steps.lean-action.outputs.test-status }}
+          LEAN_LINT_STATUS: ${{ steps.lean-action.outputs.lint-status }}
         run: |
-          echo "Build status: ${{ steps.lean-action.outputs.build-status }}"
-          echo "Test status: ${{ steps.lean-action.outputs.test-status }}"
-          echo "Lint status: ${{ steps.lean-action.outputs.lint-status }}"
+          set -uo pipefail
+
+          echo "Build status: ${LEAN_BUILD_STATUS:-(unset: step did not run)}"
+          echo "Test status:  ${LEAN_TEST_STATUS:-(unset: step did not run)}"
+          echo "Lint status:  ${LEAN_LINT_STATUS:-(unset: step did not run)}"
+          echo
+          echo "=== Check step outcomes ==="
+
+          expected=9
+          seen=0
+          passed=0
+          failed=0
+          skipped=0
+
+          # `outcome` is the step's real result; `continue-on-error` rewrites `conclusion`,
+          # never `outcome`. The values are a fixed enum: success / failure / cancelled /
+          # skipped, or empty when the step never ran.
+          report() {
+            seen=$((seen + 1))
+            case "$2" in
+              success)
+                passed=$((passed + 1))
+                printf '  PASS     %s\n' "$1" ;;
+              skipped|cancelled|'')
+                skipped=$((skipped + 1))
+                printf '  SKIPPED  %s\n' "$1" ;;
+              *)
+                failed=$((failed + 1))
+                printf '  FAIL     %s (outcome: %s)\n' "$1" "$2" ;;
+            esac
+          }
+
+          report "check-evidence-probes.sh"              "${{ steps.evidence-probes.outcome }}"
+          report "check-module-invariants.sh --no-build" "${{ steps.module-invariants.outcome }}"
+          report "check-copyright-headers.sh --strict"   "${{ steps.copyright-headers.outcome }}"
+          report "readme-lint.sh"                        "${{ steps.readme-lint.outcome }}"
+          report "check-metalogic-cycles.sh"             "${{ steps.metalogic-cycles.outcome }}"
+          report "typst-sync-check.sh"                   "${{ steps.typst-sync.outcome }}"
+          report "check-paper-definitions.sh"            "${{ steps.paper-definitions.outcome }}"
+          report "mk_all --lib FormalSystem --check"     "${{ steps.mk-all-check.outcome }}"
+          report "lint-style"                            "${{ steps.lint-style.outcome }}"
+
+          echo
+          if [ "$seen" -ne "$expected" ]; then
+            echo "::error::reported $seen check outcomes but expected $expected -- the report lines in this step are out of sync with the check steps above."
+            exit 1
+          fi
+          if [ "$failed" -gt 0 ]; then
+            echo "::error::$failed check step(s) failed -- see the FAIL lines above; each failing step has its own log group with the detail."
+            echo "RESULT: FAIL ($failed failed, $passed passed, $skipped skipped)"
+            exit 1
+          fi
+          if [ "$skipped" -gt 0 ]; then
+            echo "RESULT: PASS for all $passed checks that ran, but $skipped were skipped (an earlier hard-stop step failed)."
+            exit 0
+          fi
+          echo "RESULT: PASS (all $seen checks ran and passed)"
