@@ -1,5 +1,5 @@
 ---
-next_project_number: 722
+next_project_number: 729
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 722
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,564,565,567,570,604,616,617,664,705,706,710,711,712,713,714,716 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,564,565,567,570,604,616,617,664,705,706,710,711,712,713,714,716,722,723,724,725,726,727,728 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,566,618,719,720 | 298,464,502,564,565,616,706,710 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,709 | 231,465,497,710,719 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -23,6 +23,10 @@ next_project_number: 722
 | 10 | 177 | 178,282,296,481,482,543,706 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
+
+### Agent System
+
+727 [NOT STARTED] — Stop archival and orchestration writes from emitting a...
 
 ### Algebraic Representation
 
@@ -46,6 +50,10 @@ next_project_number: 722
 616 [NOT STARTED] — Formalize the duration monoid BD+, its twisted-arrow...
   └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove... (see above)
 617 [NOT STARTED] — Prove app:presheaf-dictionary's Reflection clause: reflection...
+
+### Code Quality
+
+728 [NOT STARTED] — Sweep and repair phantom declaration citations across task...
 
 ### Dataset Enhancement
 
@@ -75,7 +83,15 @@ next_project_number: 722
 713 [NOT STARTED] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
+723 [NOT STARTED] — Ground the pinned:C14 claim on the three witness-family...
+724 [NOT STARTED] — Decidability of Z-time provability as a corollary of...
+725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
+726 [NOT STARTED] — Make the decidability-programme inventory re-runnable from...
 709 [NOT STARTED] — STANDING (2026-10-03, second re-scope; SUPERSEDES BOTH...
+
+### Documentation
+
+722 [NOT STARTED] — Reconcile the programme-level decidability prose with the...
 
 ### Formula Refactor
 
@@ -104,6 +120,215 @@ next_project_number: 722
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ## Tasks
+
+### 728. Sweep phantom declaration citations
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: code-quality
+- **Dependencies**: None
+
+**Description**: Sweep and repair phantom declaration citations across task records and prose
+
+WHY THIS EXISTS. Task descriptions and prose in this repository cite Lean declarations that DO NOT EXIST, as established fact, with file paths and sometimes line numbers attached. Eleven such citations were found in a single 2026-10-03 revision round, across four task records, and only because each reviser was explicitly instructed to verify every name before repeating it. The defect is systemic: names get inherited from a predecessor's text rather than re-checked, so a citation that was wrong once stays wrong and propagates.
+
+CONFIRMED INSTANCES, each verified absent from the tree at 2026-10-03.
+- `verifyProof` -- asserted by task 482 as `fun _ _ => true` at a named path in `FormalSystem/Metalogic/Decidability/ProofExtraction.lean`. Zero hits repo-wide. The file has no verifier under any name. Probable origin: an EMPTY `## Proof Verification` doc-section header in that file, separated only by a blank line from the next doc block -- a heading that promised a function nobody wrote.
+- `allClosed_derivable` -- cited by task 482; absent. It is task 412's target, not a landed theorem. Bare `allClosed` is live as a tableau-result constructor; do not conflate them.
+- `completeness_dedekind_of_engine`, `ValidDedekindDense`, `ValidFor` -- cited by task 412; absent from all of `FormalSystem/**/*.lean`.
+- `completeness_dedekind`, `ValidDedekind` -- cited by task 412; absent from Lean sources, surviving only in prose in `FormalSystem/Metalogic/README.md`, `FormalSystem/Metalogic/BXCanonical/README.md` and `FormalSystem/Metalogic/WeakCanonical/RealModel/README.md`. Nearest live declarations: `completeness_rtime_engine` and `countermodel_dedekind_dense`, both in `FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean`.
+- `not_plusValidZTime_neg_Phi` -- cited by task 709 with a Latin "Phi"; the tree has `Probe710.not_plusValidZTime_neg_Φ` with the Greek capital.
+- `Decidability.phiPos` -- cited as the L-E3 target; the declaration is `FormalSystem.Metalogic.Decidability.WitnessFamilyExamples.phiPos` in `FormalSystem/Metalogic/Decidability/WitnessFamily/Examples.lean`.
+
+ALSO IN SCOPE: MISATTRIBUTED AND DEAD ANCHORS, the same failure in a different costume.
+- A cited `StrongCompleteness.lean` line number that lands inside `soundness_consequence`, not the Dedekind engine it is cited as.
+- Task 482's two cited task-468 artifact paths, both live-path dead: the files moved to `specs/archive/468_.../`. The CONTENT is real once repathed.
+- Task 482's citation of "amendment 10b" of `specs/reviews/review-2026-08-24.md`: that file exists and contains no amendment 10b -- it is an amendment to task 468's charter, referenced from 468's own artifacts.
+- Task 430's grounding report path, dead; the file is at `specs/archive/165_establish_semantic_finite_model_property/reports/09_phase7-deadlock-blocker-research.md`.
+- Task 430's naming of the four frame classes as "Base, Dense, Discrete and Dedekind"; `inductive FrameClass` in `FormalSystem/ProofSystem/Axioms.lean` has constructors `Base`, `Dense`, `ZTime`, `RTime`.
+- `file_scope` entries naming unbuilt paths -- `FormalSystem/Metalogic/Decidability/Verified/Refutation/` (task 482), `PlusSlicedCertificate/Limits/` (task 710), `PlusSlicedCertificate/FiniteCarrier.lean` (task 706). These are DESTINATIONS, not locations, which is legitimate for a landing target but breaks any tooling that reads `file_scope` as openable files. Decide whether that is worth flagging in `validate-state.sh` and say which way.
+
+WHAT TO DO. First, RE-VERIFY every instance above -- this list was accurate on 2026-10-03 and some may since have been landed or repaired, and a sweep that repeats a stale finding reproduces the very defect it targets. Then repair each surviving instance at its source: strike the name, or re-state it as absent, or correct it to the live declaration. NEVER carry a name forward on the strength of the text that cited it.
+
+THE DURABLE FIX MATTERS MORE THAN THE SWEEP. A one-off repair leaves the mechanism intact. Build the check: extract backticked fully-qualified names from task descriptions and `docs/`, report those with zero definition sites in `FormalSystem/`. Coordinate with the separately-filed re-runnable-inventory task, which names this checker as an optional second deliverable -- land it in ONE place, not both, and say which.
+
+HARD CONSTRAINTS. Repair citations only; write no Lean, and do not create any missing declaration to make a citation true. Do not edit completed tasks' research reports or summaries -- those are historical artifacts, and a report that was wrong when written stays wrong with a correction recorded elsewhere, rather than being silently rewritten. Live task descriptions, `docs/` and `specs/ROADMAP.md` are in scope; `specs/*/reports/` and `specs/*/summaries/` are not.
+
+ACCEPTANCE. Every surviving confirmed instance is repaired at its source or recorded as absent; no live task description asserts a declaration that does not exist; a mechanical checker exists in exactly one place; the historical artifacts are untouched.
+
+---
+
+### 727. Stop literal null file scope writes and promote check
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Stop archival and orchestration writes from emitting a literal-null file_scope, and promote the null_value sub-state to FAIL
+
+WHY THIS EXISTS. Five active task records carried an explicit `"file_scope": null` (tasks 125, 127, 128, 219, 231) -- a shape the task-creation path never produces, since Create Task Mode OMITS the key and `file_scope` is populated later at plan time by `scripts/plan-file-scope-harvest.sh`. The five were repaired by hand on 2026-10-03 by deleting the key. This task stops them coming back and closes the enforcement gap that let them persist.
+
+WHAT ALREADY EXISTS -- DO NOT REBUILD IT. `scripts/validate-state.sh` Check 10 ALREADY detects this, already uses a `has("file_scope")` presence test, and already reports three separately-labelled sub-states: `missing_key` (field absent -- an omission), `null_value` (literal null -- a schema-default violation) and `empty_array` (explicit `[]`, possibly a deliberate assertion). Its own header comment explains the exact `has()`-versus-null-test distinction. Read Check 10 before touching anything; the detection half of this problem is solved.
+
+REMAINING ITEM 1 -- THE WRITER. `git log -S'"file_scope": null' -- specs/state.json` attributes the nulls to archival and orchestration commits (`todo: archive 11 tasks and track 9 orphaned directories`, `task 165: orchestration paused`, `todo: archive 11 completed tasks`), NOT to task creation. Find the script responsible -- likely the archive/restore path or a `jq` transform constructing a task object with a fixed key set instead of preserving the keys present. CONFIRM THE WRITER FIRST: if later refactoring already removed the offending write, close with that finding rather than inventing a guard for a dead path. Whatever is responsible must omit the key rather than write null, matching Create Task Mode. The fix belongs in the SOURCE STORE under `agent-system/extensions/**` (resolve via `.claude-extensions.json`'s `source_dir`) -- never hand-authored under the deployed `.claude/` tree, which is regenerated and would silently discard it.
+
+REMAINING ITEM 2 -- A PROMOTION THAT IS NEWLY AVAILABLE. Check 10's documented PROMOTION CRITERION is to move `missing_key` and `null_value` from WARN to FAIL "once no non-terminal task under specs/ lacks a usable file_scope", and its comment states the sub-states are labelled separately "so a future promotion can bind to a subset". Binding to `null_value` ALONE is now satisfiable: after the 2026-10-03 repair there are ZERO `null_value` findings, while `missing_key` still has 22 and cannot be promoted. Promote `null_value` to FAIL in default mode; leave `missing_key` at WARN; leave `empty_array` advisory indefinitely, as its comment requires. Re-count both sub-states before promoting -- if a new literal null has appeared, fix it first or the promotion breaks the build for everyone.
+
+WHAT IS NOT A DEFECT, AND MUST NOT BE "FIXED". Twenty-two non-terminal tasks have NO `file_scope` key. That is the CORRECT, BY-DESIGN state for a task that has never been planned, and this task must NOT invent scopes for them. Note that Check 10's own header records a historical measurement of "22 lacking a usable value" that tallied missing-key plus literal-null together; that merged figure is a visibility count, not a defect count, and the two causes have different remedies -- a plan run for the former, a writer fix for the latter.
+
+A SECOND, SMALLER ITEM. Task 711's `project_name` is `omega_automata_determinization_substrate`, now misleading: the task was re-scoped by user ruling on 2026-10-03 to the universal-summary substrate for the stability-fibre check, with omega-automata determinization demoted to one of four candidate devices, none selected. Renaming `project_name` renames the task directory, so decide deliberately whether the churn is worth it; recording the staleness and keeping the name is acceptable if the rename would break artifact paths. Check what references the directory before renaming.
+
+HARD CONSTRAINTS. Do not populate `file_scope` for any never-planned task. Do not alter any task's dependencies, status or description. Do not weaken an existing validate-state check to make a new one pass, and do not promote `missing_key` or `empty_array`.
+
+ACCEPTANCE. The literal-null writer is identified and fixed in the source store (or shown not to exist); Check 10's `null_value` sub-state FAILs in default mode while `missing_key` stays WARN and `empty_array` stays advisory; `bash .claude/scripts/validate-state.sh specs/state.json` passes; the 22 never-planned tasks are untouched.
+
+---
+
+### 726. Rerunnable decidability programme inventory
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Make the decidability-programme inventory re-runnable from the tree
+
+WHY THIS EXISTS. Every review of the decidability programme so far is a completed task's artifact that nothing re-runs, and specs/ROADMAP.md is a document no task owns refreshing. The decidability-programme review round confirmed that complaint is correct and did not fix it: the review it produced is itself another static artifact that will drift. This task builds the mechanism so the next review is a diff, not an archaeology exercise.
+
+WHAT TO BUILD. Regenerate the PROVED / NOT ESTABLISHED / WITHDRAWN / REFUTED inventory from three machine sources:
+1. `docs/theorem-index.md`'s Decidability rows, with their `pinned:` cells CROSS-CHECKED against `scripts/check-module-invariants.sh`'s baselines -- so the defect class where a row claims `pinned:C14` with no baseline behind it is caught MECHANICALLY rather than by a human noticing. That exact defect was found by hand on three rows in 2026-10-03 and is the motivating case for this check.
+2. `scripts/check-evidence-probes.sh`'s `WIRED` and `WIRED_REPO` arrays -- the refutations and their recorded blockers.
+3. `FormalSystem/Metalogic/Decidability/Correctness.lean`'s "Retired as vacuous" section -- the NOT ESTABLISHED anchor.
+
+Diff the generated inventory against `specs/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md` section 1 as the baseline.
+
+A SECOND DEFECT CLASS WORTH CATCHING, if it is cheap. The same review round found roughly a dozen PHANTOM DECLARATION CITATIONS -- names cited in task descriptions and prose that do not exist anywhere in the tree (`verifyProof`, `allClosed_derivable`, `completeness_dedekind_of_engine`, `ValidDedekindDense`, `ValidFor`, among others), plus dead artifact paths pointing at files that moved to `specs/archive/`. A grep-based checker that extracts backticked fully-qualified names from a given set of files and reports which have zero definition sites in `FormalSystem/` would catch the whole class. Treat this as an OPTIONAL second deliverable: land it if it is genuinely cheap on top of the inventory work, and say so explicitly if it is not, rather than half-building it.
+
+IMPLEMENTATION SHAPE -- CHOOSE AND SAY WHY. Either a standing script under `scripts/`, or a `/review` step in the agent system. If the latter, the edit belongs in the SOURCE STORE under `agent-system/extensions/**` (resolve via `.claude-extensions.json`'s `source_dir`), never in the deployed `.claude/` tree, which is regenerated and would silently discard the work.
+
+ALSO. Name the owner of the periodic re-run in `specs/ROADMAP.md`'s Maintenance section: this task until the mechanism exists, then the mechanism.
+
+HARD CONSTRAINTS. The generator reports what the tree says; it does not adjudicate. It must not assert any status the three sources do not support, and must not land any complexity claim. Where a source is silent, the output says UNKNOWN rather than guessing.
+
+ACCEPTANCE. A runnable mechanism that regenerates the four-status inventory from the three named sources, cross-checks `pinned:` cells against the invariants baselines, diffs against the recorded baseline, and is named as the Maintenance owner in the roadmap.
+
+---
+
+### 725. Backward dual stability past finite graph probe
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Backward-dual stability-of-past finite-graph summary on a time-asymmetric fixture (experiment E1)
+
+WHY THIS EXISTS. The seam-gluing route's finite-graph stability summary has only its FORWARD factor proved -- `Probe718FiniteGraph.will_iff_allPathsMeet`, `decide_will`, `decidable_will`, on a `Bool` complete-graph fixture, for the stability-of-future operator only. The backward dual is a RECORDED EXCLUSION, justified by that fixture being symmetric under time reversal. But the finite-width obstruction lives in the BACKWARD factor: `Probe710`'s contradiction pigeonholes backward post-chains at unboundedly early times. So the fixture whose symmetry justified skipping the backward case is exactly the fixture that cannot see the obstruction. The exclusion is reasonable and the gap it leaves is real.
+
+THE EXPERIMENT. Build the backward dual on a TIME-ASYMMETRIC fixture. Reuse `Probe710.Node` and `Probe710.Step` from `specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean` -- finitely branching, every node with exactly one predecessor, bi-infinite paths canonical by `Probe710.path_eq_canon`. Decide the backward stability operator at a seam state by backward reachability, mirroring `will_iff_allPathsMeet`.
+
+"REUSE" MEANS TRANSCRIBE, NOT IMPORT. Probes in `specs/evidence/seam-gluing-ray-product/` CANNOT import each other -- every probe imports only `FormalSystem`, as `scripts/check-evidence-probes.sh`'s header states and as the existing probes demonstrate (`path-quantifier-alternation.lean` restates its fixture rather than importing it). Do not plan this around an import that cannot exist; transcribe the fixture into the new probe file.
+
+THE OPERATOR, VERIFIED. The backward operator is `PlusFormula.stab` applied to `PlusFormula.somePast` (`FormalSystem/PlusLanguage/Formula.lean`), the dual of the `someFuture` the forward probe uses. NOTE: `PlusFormula.will` is already `.stab (someFuture .)`, so a `will`-shaped BACKWARD abbreviation DOES NOT EXIST in the tree. Do not cite one. Re-verify both facts before writing.
+
+DISAMBIGUATE `decide_will`. It exists in two namespaces -- `Probe718FiniteGraph.decide_will` (`finite-graph-stab-summary.lean`) and `Probe718PathQuantifier.decide_will` (`path-quantifier-alternation.lean`). Always qualify it; the two probes prove different things.
+
+EITHER OUTCOME IS THE DELIVERABLE. A proof shows the two-factor presentation survives at the very factor the refutation inhabits. A COUNTEREXAMPLE FALSIFIES the gluing route's two-factor presentation and is recorded in the probe's header as such. Neither is a failure; a counterexample is arguably the more valuable result, and the probe header must state plainly which way it came out.
+
+SCOPE. One new file under `specs/evidence/seam-gluing-ray-product/`, plus one new `WIRED` entry in `scripts/check-evidence-probes.sh`. No automata. No complexity claim.
+
+SUBSUMPTION CLAUSE. This experiment is also named as task 719's Deliverable 5 first probe. It is filed separately because 719 was not dispatched in the cycle that specified it. IF 719 LANDS E1 FIRST, THIS TASK CLOSES AS SUBSUMED -- that is a legitimate terminal outcome, not a failure, and no redundant second probe should be manufactured to justify a non-empty diff. Check 719's state before starting.
+
+SCHEDULING. Collides with task 720's declared file_scope on `specs/evidence/seam-gluing-ray-product/` and `scripts/check-evidence-probes.sh`; run in a different cycle from 720.
+
+ACCEPTANCE. One probe file deciding the backward stability operator on a time-asymmetric fixture, compiling under `lake env lean`, wired into `check-evidence-probes.sh`, with its header stating which way the result came out and what that does to the two-factor presentation.
+
+---
+
+### 724. Decidable ztime provability witness family corollary
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Decidability of Z-time provability as a corollary of Compression.decidableValidZTime
+
+WHY THIS EXISTS. `Decidable (Derivable .ZTime [] phi)` -- decidability of Z-time PROVABILITY -- is a few-line corollary of a route that has already landed, and it is not written. It closes one of the four classes the roadmap lists as a tableau-spine deliverable, now, without the spine.
+
+RE-VERIFY FIRST, since the whole task is the claim that these three pieces compose. Confirm each by `#check`:
+- `FormalSystem.Metalogic.soundness_ztime_valid {phi : Formula} (d : DerivationTree FrameClass.ZTime [] phi) : ValidZTime phi` -- `FormalSystem/Metalogic/Soundness.lean`
+- `FormalSystem.Metalogic.BXCanonical.derivable_of_validZTime (phi : Formula) : ValidZTime phi -> Derivable FrameClass.ZTime [] phi` -- `FormalSystem/Metalogic/BXCanonical/Completeness.lean`
+- `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime (phi : Formula) : Decidable (ValidZTime phi)` -- `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean`, a `def` not an `instance`
+
+THE MECHANICAL DETAIL THAT MAKES IT MORE THAN TWO LINES. `Derivable fc G p` is `Nonempty (DerivationTree fc G p)` (`FormalSystem/ProofSystem/Derivable.lean`), so the soundness leg needs a `Nonempty` elimination before `soundness_ztime_valid` applies. Together the two legs give `Derivable .ZTime [] phi <-> ValidZTime phi`; `decidable_of_iff` with `decidableValidZTime` finishes `Decidable (Derivable FrameClass.ZTime [] phi)`. Still a few lines, but not a one-liner.
+
+CONFIRM IT IS UNWRITTEN, NOT DUPLICATED. `grep -rn --include='*.lean' 'Decidable (Derivable' FormalSystem/` must return zero hits. Note that the UNRESTRICTED grep does return one hit -- a "not built" row in `FormalSystem/Metalogic/Decidability/Verified/README.md` -- which is a documentation row, not a declaration; do not mistake it for an existing instance.
+
+WHERE IT LIVES. `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean`, or a sibling module under `WitnessFamily/Compression/`. CHECK THE IMPORT GRAPH FIRST: if the corollary needs `FormalSystem.Metalogic.BXCanonical`, it may have to live in a module downstream of both `Compression/Assembly.lean` and `BXCanonical/Completeness.lean` rather than in `Assembly.lean` itself. Resolve this before writing, not after a cyclic-import error.
+
+ALSO LAND. A `docs/theorem-index.md` row, and a C14 baseline entry per the separately-filed baseline task (coordinate: that task pins three existing declarations; this one adds a fourth).
+
+DOCSTRING REQUIREMENT. Record in the docstring that this closes "decidability of provability over Z" -- one of the four classes the roadmap lists as a spine deliverable -- WITHOUT the spine, and that the other three classes (Base, Dense, RTime) remain task 412's. Carry the qualifiers: `FrameClass.ZTime`, `Formula` with no stability operator, empty premises.
+
+HARD CONSTRAINTS. Never write "TM is decidable" unqualified. Land no complexity claim. Do not touch the tableau spine, and do not reopen the C9 do-not-re-attempt register.
+
+ACCEPTANCE. `Decidable (Derivable FrameClass.ZTime [] phi)` exists, compiles, carries its qualifiers in its docstring, has a `docs/theorem-index.md` row, and `lake build` is green.
+
+---
+
+### 723. Pin witness family decidability rows c14 baseline
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Ground the pinned:C14 claim on the three witness-family decidability rows of docs/theorem-index.md
+
+WHY THIS EXISTS. `docs/theorem-index.md` promises that every listed declaration is machine-pinned. That promise is FALSE for exactly the three rows the decidability-programme review headlines.
+
+THE DEFECT, verified 2026-10-03. Three rows of `docs/theorem-index.md` carry a `pcq pinned:C14` cell for `FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime`, `FormalSystem.Metalogic.Decidability.validZTime_iff_noCertifiedCandidate` and `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime`. But `grep -nE 'Compression\.|decidableValidZTime|validZTime_iff_noCertifiedCandidate|exists_witnessFamily_of_not_validZTime' scripts/check-module-invariants.sh` hits only the C-check SHADOWING ALLOWLIST -- there is no `#print axioms` line and no baseline entry for any of the three. The `pinned:C14` cell asserts a check that does not run.
+
+RE-VERIFY FIRST. Re-run that grep before editing anything. If the pin turns out to live under a name both this grep and the review's missed, CLOSE THIS TASK WITH THAT FINDING -- a false alarm correctly identified is the deliverable, not a failure. Only if the gap is confirmed does the work below apply.
+
+THE FIX, if the gap is confirmed. Add the three names to the C14 baseline pair -- the `#print axioms` line plus the expected-output line, following the existing baseline entries' exact shape rather than inventing one -- so the `pinned:C14` cell becomes true. Then confirm `bash scripts/check-module-invariants.sh` still passes.
+
+THE ALTERNATIVE OUTCOME, equally legitimate. If adding the baseline is wrong for a reason the tree reveals (for instance the C14 check is deliberately scoped to exclude this module), then CORRECT THE THREE ROWS instead -- drop or qualify the `pinned:C14` cell -- and say so. Either direction removes the false claim; do not force the baseline route if the evidence points the other way.
+
+A RELATED ROW TO FOLD IN. The separately-filed task that lands `Decidable (Derivable .ZTime [] phi)` as a corollary of `Compression.decidableValidZTime` will add a fourth declaration needing both a `docs/theorem-index.md` row and a C14 entry. If that task has already landed when this one runs, pin its declaration too; if not, leave a comment naming it so the follow-up is cheap.
+
+SCHEDULING. Collides with task 706's declared file_scope on `scripts/check-module-invariants.sh`; run in a different cycle from 706 and 705.
+
+HARD CONSTRAINTS. Change no Lean source. Do not weaken or remove any existing baseline entry in order to make the check pass. Do not add a `pinned:` cell to any row whose pin you have not verified actually runs.
+
+ACCEPTANCE. Either the three rows' `pinned:C14` cells are backed by real baseline entries and `check-module-invariants.sh` passes, or the cells are corrected to state what is actually checked, with the reasoning recorded.
+
+---
+
+### 722. Reconcile decidability prose two statements
+- **Status**: [NOT STARTED]
+- **Task Type**: markdown
+- **Topic**: documentation
+- **Dependencies**: None
+
+**Description**: Reconcile the programme-level decidability prose with the two-statement distinction (tableau biconditional open; Decidable (ValidZTime phi) proved)
+
+WHY THIS EXISTS. Every programme-level surface describes only the tableau spine, and so states or implies that no decidability theorem is machine-checked. That is false, and it has been false since 2026-09-28. The surfaces conflate two different statements and assert the openness of the first as though it settled the second.
+
+RE-VERIFY FIRST, BEFORE EDITING ANY SURFACE. This task's whole purpose is correcting unverified claims, so it must not add new ones. Confirm by `#check` and `#print axioms` under `import FormalSystem`:
+`FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime : (phi : FormalSystem.Syntax.Formula) -> Decidable (FormalSystem.Semantics.ValidZTime phi)` in `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean` -- a `def`, not an `instance`, axioms `[propext, Classical.choice, Quot.sound]`, proved by `decidable_of_iff` through `validZTime_iff_noCertifiedCandidate`. Note there are COLLIDING conditional `decidableValidZTime` defs in `FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean` whose hypothesis is refuted by `Probe476.fmp_false`; do not cite those.
+
+THE TWO STATEMENTS, to be stated once in each surface's own register.
+(i) OPEN at all four frame classes: the tableau biconditional `isValid phi fc = true <-> |= phi`, and `Decidable (|= phi)` through it. What exists today is the sound direction only -- `sound_of_isValid`, `isValid_sound`. The earlier `validity_decidable` and `validity_has_decision_procedure` forms were retired as vacuous; `FormalSystem/Metalogic/Decidability/Correctness.lean`'s "Retired as vacuous" section records why, and any surface restating it must report it faithfully rather than paraphrasing.
+(ii) PROVED: `Decidable (ValidZTime phi)` by the witness-family certificate route, with every one of its qualifiers carried -- `FrameClass.ZTime`, `phi : Formula` with no stability operator, EMPTY premises, computing but not choice-free.
+
+SURFACES TO CORRECT. `README.md`; `FormalSystem/README.md` (says "decidability sound direction only"); `FormalSystem/Metalogic/Decidability/README.md`; `FormalSystem/Metalogic/Decidability.lean` (module docstring only); `FormalSystem/Metalogic/Decidability/BiLasso/README.md` (says "no decidability theorem is machine-checked at present"); `docs/architecture/ADR-007-Decidability-One-Directional.md`; `docs/project-info/known-limitations.md`; `typst/FormalFoundations.typ` (says "No decidability theorem is machine-checked"). Re-verify each quoted phrase before relying on it -- the quotations above were read at 2026-10-03 and the files may have moved on.
+
+ADR-007's rule "no surface may say decidability is fully proven" STAYS CORRECT and gains the sentence that the Z-time witness-family result is the one decidability theorem that is proven. The typst remark that "neither factor logic is known decidable" is corrected to: the Discrete factor is; the identity Log(all task frames) = Log(Discrete) intersect Log(Dense) remains a TARGET, not a theorem -- no Lean declaration states it, which must be verified before the sentence is written. Point every surface at `docs/theorem-index.md`'s Decidability rows.
+
+HARD CONSTRAINTS. NEVER write "TM is decidable" unqualified anywhere. Land no complexity claim. Do not edit `FormalSystem/Metalogic/Decidability/Correctness.lean` or any Lean proof -- this task changes prose only, and the one Lean file in scope is touched for its module docstring alone.
+
+SCHEDULING. Run in a separate cycle from tasks 177 (owns the documentation territory, depends on 26 tasks) and 543 (declares `README.md`), whose file_scope values collide with this one.
+
+ACCEPTANCE. Every listed surface states the two-statement distinction once, in its own register, with every qualifier on the proved result; no surface says or implies that no decidability theorem is machine-checked; no surface says "TM is decidable" unqualified; every declaration name cited was verified in this round.
+
+---
 
 ### 721. Decidability programme review l and lplus
 - **Status**: [COMPLETED]
