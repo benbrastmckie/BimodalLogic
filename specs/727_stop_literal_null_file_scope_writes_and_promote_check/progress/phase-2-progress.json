@@ -1,0 +1,27 @@
+{
+  "phase": 2,
+  "phase_name": "Promote null_value to FAIL in Check 10 (source store)",
+  "started_at": "2026-10-03T00:10:00Z",
+  "last_updated": "2026-10-03T00:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Restructure Check 10 reporting block: blended WARN line, FAIL aggregate, split per-finding loop", "status": "done", "files_touched": ["/home/benjamin/.config/nvim/agent-system/extensions/core/scripts/validate-state.sh"]},
+    {"id": 2, "description": "Recompute truncation arithmetic against WARN population only", "status": "done", "files_touched": ["/home/benjamin/.config/nvim/agent-system/extensions/core/scripts/validate-state.sh"]},
+    {"id": 3, "description": "Keep per-finding message shape byte-identical", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Update three header locations (exit codes block, help bullet, Check 10 banner/D2/promotion comment)", "status": "done", "files_touched": ["/home/benjamin/.config/nvim/agent-system/extensions/core/scripts/validate-state.sh"]},
+    {"id": 5, "description": "Add corrected writer attribution and Class B cross-reference to comment block", "status": "done", "files_touched": ["/home/benjamin/.config/nvim/agent-system/extensions/core/scripts/validate-state.sh"]},
+    {"id": 6, "description": "Confirm no --strict logic change needed", "status": "done", "files_touched": []},
+    {"id": 7, "description": "Syntax-check edited script", "status": "done", "files_touched": []}
+  ],
+  "current_objective": 7,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "verification_results": {
+    "bash_n_syntax_check": "clean",
+    "null_only_fixture": "exit 1, FAIL lines emitted correctly",
+    "warnonly_fixture": "exit 0, WARN lines only, no FAIL",
+    "display_cap_fixture": "12 missing_key + 1 null_value at project_number 999 (past cap): FAIL line for null_value still emitted untruncated; WARN cap applies only to missing_key/empty_array",
+    "strict_on_warnonly_fixture": "unchanged -- exits 1 with '(--strict: N warning(s) promoted...)' summary",
+    "real_repo_state_json": "source-store script against specs/state.json: Passed 8, Warnings 17, Failed 0 -- matches Phase 1 baseline exactly (null_value is 0 in live data)"
+  },
+  "note": "Note the plan's line-number references (~680-691, ~627-660) drifted slightly from the actual file due to earlier Checks 3/4 edits in prior tasks; actual edit locations were at lines 640-704 (Check 10 banner+body) and 69-134 (header comment). Content and intent match the plan exactly; only absolute line numbers differed."
+}

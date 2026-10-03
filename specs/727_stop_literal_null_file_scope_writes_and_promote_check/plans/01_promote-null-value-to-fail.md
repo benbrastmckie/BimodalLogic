@@ -176,7 +176,7 @@ expected and harmless (new tasks accrue), a changed `null_value` count is the ga
 
 ---
 
-### Phase 2: Promote `null_value` to FAIL in Check 10 (source store) [NOT STARTED]
+### Phase 2: Promote `null_value` to FAIL in Check 10 (source store) [COMPLETED]
 
 **Goal**: Make a literal-null `file_scope` exit-blocking in default mode, for every offending
 task, while leaving `missing_key` at WARN and `empty_array` advisory and losing no output detail.
@@ -186,7 +186,7 @@ task, while leaving `missing_key` at WARN and `empty_array` advisory and losing 
 hand-author `.claude/scripts/validate-state.sh`; it is regenerated (Phase 4 deploys).
 
 **Tasks**:
-- [ ] In Check 10's reporting block (currently the `else` branch around lines 680-691), restructure
+- [x] In Check 10's reporting block (currently the `else` branch around lines 680-691), restructure
       the emission into three parts, replacing the single capped `log_warn` loop:
       1. Keep the existing blended information line verbatim as `log_warn`:
          `"file_scope visibility: $scope_missing missing-key, $scope_null literal-null, $scope_empty empty-array, out of $scope_denominator non-terminal task(s)"`.
@@ -195,14 +195,17 @@ hand-author `.claude/scripts/validate-state.sh`; it is regenerated (Phase 4 depl
       3. Split the per-finding loop by level: iterate the `null_value` findings with `log_fail`
          **untruncated**, then iterate the `missing_key`/`empty_array` findings with `log_warn`
          under the existing 10-item cap.
-- [ ] Recompute the truncation arithmetic against the WARN population only: derive
+      *(completed)*
+- [x] Recompute the truncation arithmetic against the WARN population only: derive
       `scope_warn_count=$((scope_missing + scope_empty))` and emit the
       `"... and N more file_scope visibility finding(s) not shown"` line from that, so the count
       stays truthful once FAIL findings are excluded from the cap.
-- [ ] Keep the per-finding message shape byte-identical (`"file_scope $sub_state: project_number
+      *(completed: implemented as `_c10_warn_count`)*
+- [x] Keep the per-finding message shape byte-identical (`"file_scope $sub_state: project_number
       $pnum ($name)"`) for all three sub-states — only the log level and the truncation treatment
       change, so existing greps on those lines keep matching.
-- [ ] Update the three header locations that currently state Check 10 is WARN-only:
+      *(completed: message format unchanged, verified by fixture output)*
+- [x] Update the three header locations that currently state Check 10 is WARN-only:
       1. the Exit codes block (~line 69): `"Checks 3, 4, 8, 9, 10 and 11 below are WARN-only..."`
          must no longer list 10 unqualified — state that Check 10's `null_value` sub-state FAILs in
          default mode while its other two sub-states stay WARN.
@@ -213,13 +216,19 @@ hand-author `.claude/scripts/validate-state.sh`; it is regenerated (Phase 4 depl
          promotion was performed on 2026-10-03 with the measurement that justified it
          (`null_value: 0`), leave `missing_key`'s promotion-criterion text in place and unsatisfied
          (29 remaining), and restate that `empty_array` stays advisory indefinitely.
-- [ ] Add to that comment block: the corrected writer attribution drafted in Phase 1, and the
+      *(completed: all three locations updated, confirmed by grep -n "Check 10\|WARN-only" showing
+      no surviving unqualified WARN-only claim for Check 10)*
+- [x] Add to that comment block: the corrected writer attribution drafted in Phase 1, and the
       one-line cross-reference noting that `orchestrate-predispatch-review.sh`'s Class B repair
       rewrites a null to `[]` (moving a FAIL to an advisory state) and that this is intentional and
       out of scope here.
-- [ ] Confirm no `--strict` logic change is needed: `--strict` promotes WARNINGS into the
+      *(completed)*
+- [x] Confirm no `--strict` logic change is needed: `--strict` promotes WARNINGS into the
       exit-blocking total at the summary, so a `log_fail` is orthogonal and cannot double-count.
-- [ ] Syntax-check the edited script: `bash -n <source-store path>`.
+      *(completed: verified by reading the Summary block -- FAILED and WARNINGS are disjoint
+      counters, and `--strict` fixture test confirms unchanged behavior on a WARN-only input)*
+- [x] Syntax-check the edited script: `bash -n <source-store path>`.
+      *(completed: clean)*
 
 **Timing**: 1 hour
 
