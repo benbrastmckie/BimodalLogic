@@ -1,7 +1,7 @@
 # Implementation Plan: Task #564 — the Sheaf clause and the seam-argument de-duplication
 
 - **Task**: 564 - sheaf_clause_gluing_and_starpasting_generalization
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None (563 is `[COMPLETED]`; `Presheaf/{Site,Behavior}.lean` are on the tree)
 - **Research Inputs**: `specs/564_sheaf_clause_gluing_and_starpasting_generalization/reports/02_sheaf-clause-and-seam-dedup.md`, `specs/564_sheaf_clause_gluing_and_starpasting_generalization/reports/01_finite-vs-directed-gluing-findings.md`

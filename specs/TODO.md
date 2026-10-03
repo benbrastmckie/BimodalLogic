@@ -11,9 +11,9 @@ next_project_number: 729
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,564,565,567,570,604,616,617,664,705,706,711,712,713,714,716,722,725,726,727,728 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,566,618,719,720,723 | 298,464,502,564,565,616,706 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,709,724 | 231,465,497,719,723 | algebraic-representation, dataset-enhancement, decidability |
+| 1 | 127,128,178,257,298,464,481,502,559,565,567,570,604,616,617,664,705,706,711,712,713,714,716,719,722,725,726,727,728 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,566,618,709,720,723 | 298,464,502,565,616,706,719 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,724 | 231,465,497,723 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -41,15 +41,13 @@ next_project_number: 729
 
 ### Categorical Structure
 
-564 [IMPLEMENTING] — Prove app:gluing for two interval sections whose germs agree...
-  └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
-  └─ 719 [NOT STARTED] — Implement the ray layer, the seam-gluing operator and the...
 565 [NOT STARTED] — Prove app:presheaf-dictionary's Totality and Directed Gluing...
   └─ 566 [NOT STARTED] — Prove app:presheaf-dictionary's Possible Worlds clause: HF...
 567 [NOT STARTED] — Prove app:presheaf-dictionary's Determinism clause -- F...
 616 [NOT STARTED] — Formalize the duration monoid BD+, its twisted-arrow...
-  └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove... (see above)
+  └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
 617 [NOT STARTED] — Prove app:presheaf-dictionary's Reflection clause: reflection...
+719 [NOT STARTED] — Implement the ray layer, the seam-gluing operator and the...
 
 ### Code Quality
 
@@ -1048,12 +1046,13 @@ SEED RESEARCH AVAILABLE (added 2026-10-02; READ-ONLY context, not a change of sc
 ---
 
 ### 564. Sheaf clause gluing and starpasting generalization
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
 - **Research**: [564_sheaf_clause_gluing_and_starpasting_generalization/reports/02_sheaf-clause-and-seam-dedup.md]
 - **Plan**: [564_sheaf_clause_gluing_and_starpasting_generalization/plans/02_sheaf-clause-and-seam-dedup.md]
+- **Summary**: [564_sheaf_clause_gluing_and_starpasting_generalization/summaries/02_sheaf-clause-and-seam-dedup-summary.md]
 
 **Description**: Prove `app:gluing` for two interval sections whose germs agree at the seam, plus the two restriction identities and uniqueness.
 
