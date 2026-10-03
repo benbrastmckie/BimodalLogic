@@ -26,7 +26,7 @@ with them per task 721's review
 | Metalogic questions | 543, 559, 570, 664 | MF rigidity; TM⋆ completeness; the C3 question; one literature source |
 | TM tableau spine | 464, 465, 428, 429, 410, 411, 430, 412, 482, 481 | Totality, the truth-lemma repair, the semantic lift, and the four-class `isValid` biconditional. Z-time validity of L is **already decided** by another route -- `Compression.decidableValidZTime` (`FrameClass.ZTime`, `Formula` with no `⊡`, empty premises) -- so the spine's deliverable is the four-class statement, not the first decidability theorem |
 | Algebraic representation | 502, 497, 498, 499, 500, 125, 501 | The Jónsson–Tarski representation theorem for TM |
-| Parked | 127, 128, 257, 712, 713 | Nothing until a user ruling (see Phase 0). 711 left this front 2026-10-03 on the user's REVISE ruling and now sits on the gluing route, `[BLOCKED]` pending device-selection probe E3 — not pending a ruling |
+| Parked | 127, 128, 257 | Nothing until a user ruling (see Phase 0). Three tasks left this front 2026-10-03 on user rulings: 711 sits on the gluing route, `[BLOCKED]` pending device-selection probe E3; 712 is `[BLOCKED]` on 710's library landing and then closes as a refutation record; 713 is `[HOLD]` as a citable sanity ceiling, deliberately not schedulable. None of the three pends a ruling any longer |
 
 51 open tasks. Each phase below is one `/orchestrate` batch, or a
 named sequence of them where declared `file_scope` values overlap — a batch whose members share
@@ -45,12 +45,22 @@ programme (tasks 695–716, all dispatched since), and is not restated here.
 
 **Status**: Live — user-only. No agent may transition these.
 
-- [ ] Rule on task 712, the L⁺ sliced finite model property: its statement is machine-checked
-      FALSE (`not_sliced_complete`, `not_finite_width_fmp`), so the record is a refutation, not
-      an open statement. Moving it to a terminal status is a programme-level call (Task 712).
-      *Evidence added 2026-10-03 (scope spec, Section A):* its dependency edge on 711 gated
-      proving a refuted statement and is now meaningless -- removable by `/revise 712`; closing
-      as a refutation record waits on the library landing of Section F. Not decided here
+- [x] **RULED 2026-10-03 by the user: close as `[COMPLETED]`, a refutation record -- but NOT
+      YET.** Task 712 stays `[BLOCKED]` until task 710 lands the refutation as library theorems
+      under the Option A ruling above; only then does it close, citing the library names.
+      `[ABANDONED]` is **rejected**: the two statuses carry different information and only
+      `[COMPLETED]`-as-refutation is true -- the question was asked and definitively answered no,
+      and a future reader asking whether a sliced class with finite per-time fibres can be
+      complete must get that answer rather than silence. Closing on the probe alone is also
+      barred, since it would settle 712 on exactly the evidentiary standard Option A rejects,
+      and would contradict the programme's own rule -- stated in 709, 712 and 719 -- that
+      obstructions live as theorems. *Applied 2026-10-03:* the meaningless dependency edge on
+      711 was removed (`0662084e0`) and an edge on **710** added in its place, because 712's
+      remaining edge was 703 (completed and archived), which left the dependency graph claiming
+      712 was ready to dispatch when its closure actually waits on 710. **Open caveat at
+      closure time**: verify that what 710 lands IS 712's statement; if the library theorem
+      comes out weaker or differently shaped, closing 712 as "refuted" would overclaim
+      (Task 712)
 - [x] **RULED 2026-10-03 by the user: REVISE** (not ABANDONED, not revived as filed). Task 711 is
       re-scoped to the universal-summary substrate for the `⊡` fibre check on the seam-gluing
       route, re-pointed from the refuted 712 to 719 Deliverable 5, and kept `[BLOCKED]` with the
@@ -61,11 +71,20 @@ programme (tasks 695–716, all dispatched since), and is not restated here.
       is — four candidate devices remain live, and selection is experiment E3. The ABANDONED
       reading was right about the route 711 originally *named* (closed with the refuted 712) but
       wrong about the *need*, which has been re-demonstrated on a different question (Task 711)
-- [ ] Rule on task 713, the CTL⋆ 2EXPTIME reduction: optional, filed not scheduled, nothing
-      depends on it; abandon or keep as a write-up note (Task 713). *Evidence added 2026-10-03
-      (scope spec, Section C):* 718, 719 and 721 all cite its ARGUED lower bound as the sanity
-      ceiling on any proposed decision procedure, so it is load-bearing as a check even unproved;
-      no upper-bound claim may be landed from it. Not decided here
+- [x] **RULED 2026-10-03 by the user: KEEP, on `[HOLD]`** -- neither of the two options as
+      originally framed. Task 713 is now `[HOLD]` with a recorded `hold_reason`: non-terminal,
+      so the three citations to it stay valid and the record stays live, but not resumable by
+      ordinary dispatch. `[ABANDONED]` is **rejected** because 718's ranked-route analysis,
+      719's description and 721's report all cite its ARGUED lower bound as the sanity ceiling
+      on any proposed decision procedure -- abandoning it would turn three live citations into
+      citations of an abandoned task, which is precisely the phantom-citation defect class task
+      728 exists to remove. Keeping it `[NOT STARTED]` is **also rejected**: with no
+      dependencies it is indistinguishable from schedulable work and batch dispatch would keep
+      surfacing it, yet formalizing the reduction has **no consumer** and its own description
+      forbids landing an upper bound from it. It is a reference anchor, not a work item.
+      **Open sub-item recorded in the hold reason**: sources diverge between co-NEXPTIME and
+      NEXPTIME; pin which bound the three citing records should quote, or record the divergence
+      in 713, since a ceiling whose sources disagree is a weak ceiling (Task 713)
 - [x] **RULED 2026-10-03 by the user: Option A -- library landing.** The Success Metric "every
       refutation lives in `FormalSystem/`" stands as written: tasks 706 and 710 land
       `Probe706.no_finite_carrier_sat` and `Probe710.not_finite_width_fmp` as `FormalSystem/`

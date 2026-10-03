@@ -11,8 +11,8 @@ next_project_number: 729
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,564,565,567,570,604,616,617,664,705,706,710,711,712,713,714,716,722,723,724,725,726,727,728 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,566,618,719,720 | 298,464,502,564,565,616,706,710 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,564,565,567,570,604,616,617,664,705,706,710,711,713,714,716,722,723,724,725,726,727,728 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,566,618,712,719,720 | 298,464,502,564,565,616,706,710 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,709 | 231,465,497,710,719 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -79,8 +79,7 @@ next_project_number: 729
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 706 [RESEARCHED] — IMPLEMENTATION SCOPE: THE LIBRARY LANDING OF THIS TASK'S...
   └─ 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
-712 [BLOCKED] — REVISED 2026-10-03 FROM THE DECIDABILITY-PROGRAMME REVIEW....
-713 [NOT STARTED] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
+713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 723 [NOT STARTED] — Ground the pinned:C14 claim on the three witness-family...
@@ -88,6 +87,7 @@ next_project_number: 729
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
 726 [NOT STARTED] — Make the decidability-programme inventory re-runnable from...
 709 [NOT STARTED] — STANDING (2026-10-03, second re-scope; SUPERSEDES BOTH...
+712 [BLOCKED] — REVISED 2026-10-03 FROM THE DECIDABILITY-PROGRAMME REVIEW....
 
 ### Documentation
 
@@ -576,7 +576,8 @@ ADJACENCY. The sliced finite-width question of the sliced-class incompleteness c
 ---
 
 ### 713. Formalize ctl star reduction 2exptime lower bound
-- **Status**: [NOT STARTED]
+- **Status**: [HOLD]
+- **Held**: 2026-10-03
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -611,7 +612,7 @@ KEEP-OR-ABANDON IS A PHASE 0 USER RULING, NOT MADE HERE. This revision records t
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: Task 703
+- **Dependencies**: Task 703, Task 710
 
 **Description**: REVISED 2026-10-03 FROM THE DECIDABILITY-PROGRAMME REVIEW. Authoritative scope input: Section A of `specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md`, whose anchors are recorded in that file's Section 0 rows 6 and 22-24 and were re-checked against the tree again at this revision. THIS REVISION CHANGES THE DEPENDENCY LIST AND THIS NOTE ONLY. It does NOT change the status and does NOT decide the terminal outcome. The refutation record below (STATUS NOTE 2026-10-02) is accurate and stands: this task had already converted itself from an open-statement record into a REFUTATION RECORD before this revision, and that conversion is confirmed here, not reversed.
 
