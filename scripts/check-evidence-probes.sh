@@ -94,6 +94,17 @@ EVIDENCE="specs/evidence"
 #                                                           | `Completion -> Saturation` holds
 #                                                           | UNDER `TotalComp`, which locates the
 #                                                           | obstruction exactly
+# seam-gluing-ray-product/stab-fibre-is-ray-product         | the `⊡` quantification domain IS the
+#                                                           | fibre product of the past-ray and
+#                                                           | future-ray spaces over the seam
+#                                                           | state (general task frame, and the
+#                                                           | ω-sequence form over ℤ) -- this is
+#                                                           | the MECHANISM behind the finite-width
+#                                                           | refutation (a product of two path
+#                                                           | spaces cannot be a finite fibre), not
+#                                                           | an escape from it, and every route in
+#                                                           | the omega-sequence-decidability round
+#                                                           | assumes it
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -101,6 +112,7 @@ WIRED=(
   "bi-lasso-decision-layer/phase10-origin-anchoring-obstruction"
   "frame-constraints-audit/mixed-sign-composition-obstruction"
   "stability-modal-substrate/closure-field-is-necessary"
+  "seam-gluing-ray-product/stab-fibre-is-ray-product"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

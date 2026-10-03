@@ -2,7 +2,7 @@
 
 - **Task**: 718 - Find the correct methods, definitions and semantic basis for establishing
   decidability of full L⁺ with the stability operator in the language
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9.5 hours
 - **Dependencies**: None (consumes 563/564/565/566/567/616/617/618 as read-only context; files no
   work into them)
@@ -176,30 +176,30 @@ per the settled determinization constraint, and the close of Phase 5 is this pla
 decision point on determinization. Phases 4 (R2, the fallback) and 6 are parallel work that does
 not gate it, and may be deferred behind Phases 2, 3 and 5 if a dispatch must choose.
 
-### Phase 1: Promote the keystone probe into the CI-guarded evidence collection [NOT STARTED]
+### Phase 1: Promote the keystone probe into the CI-guarded evidence collection [COMPLETED]
 
 **Goal**: Move `probes/SeamFibreProduct.lean` into a new `specs/evidence/seam-gluing-ray-product/`
 collection, wire it into `scripts/check-evidence-probes.sh`, and establish the collection
 convention that Phases 2–5 then write into.
 
 **Tasks**:
-- [ ] Read `scripts/check-evidence-probes.sh` in full: the header's "WHAT A PROBE IS" / "WHY THE
+- [x] Read `scripts/check-evidence-probes.sh` in full: the header's "WHAT A PROBE IS" / "WHY THE
       PROBES DO NOT LIVE IN A TASK DIRECTORY" rules, the `WIRED` two-column comment table format,
       and the `WIRED`-vs-`WIRED_REPO` preference rule.
-- [ ] `git mv specs/718_omega_sequence_decidability_full_lplus/probes/SeamFibreProduct.lean specs/evidence/seam-gluing-ray-product/stab-fibre-is-ray-product.lean`
+- [x] `git mv specs/718_omega_sequence_decidability_full_lplus/probes/SeamFibreProduct.lean specs/evidence/seam-gluing-ray-product/stab-fibre-is-ray-product.lean`
       (kebab-case basename, matching every existing collection entry).
-- [ ] Update the moved file's own header: the `lake env lean <path>` line inside it cites the old
+- [x] Update the moved file's own header: the `lake env lean <path>` line inside it cites the old
       path verbatim and must be corrected to the new one. Leave every theorem statement, the
       namespace `Probe718`, and the axiom-record block untouched.
-- [ ] Add a `WIRED` entry `seam-gluing-ray-product/stab-fibre-is-ray-product` with a two-column
+- [x] Add a `WIRED` entry `seam-gluing-ray-product/stab-fibre-is-ray-product` with a two-column
       comment stating what it holds in place: the `⊡` quantification domain *is* the fibre product
       of the past-ray and future-ray spaces over the seam state, so no class presenting finite
       per-time fibres can be complete — this is the *mechanism* behind the finite-width refutation,
       and every route in this round assumes it.
-- [ ] Append a one-line promotion note to `reports/02_ranked-route-analysis.md`'s Appendix "Probe
+- [x] Append a one-line promotion note to `reports/02_ranked-route-analysis.md`'s Appendix "Probe
       compile record" giving the new canonical path. Do **not** rewrite the report's body
       citations: the report is a historical record of what was read at the time.
-- [ ] Confirm nothing outside `specs/718_.../` cited the old path (verified at plan time: nothing
+- [x] Confirm nothing outside `specs/718_.../` cited the old path (verified at plan time: nothing
       does; re-confirm with a repo-wide grep for `SeamFibreProduct` before committing).
 
 **Timing**: 0.75 hours

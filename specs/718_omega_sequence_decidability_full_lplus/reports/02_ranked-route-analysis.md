@@ -470,6 +470,13 @@ lake env lean specs/718_omega_sequence_decidability_full_lplus/probes/SeamFibreP
 'Probe718.plusStab_iff_omega' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
 
+**Promotion note (implementation, Phase 1)**: this probe has been promoted out of the task
+directory into the CI-guarded collection, at
+`specs/evidence/seam-gluing-ray-product/stab-fibre-is-ray-product.lean`, and wired into
+`scripts/check-evidence-probes.sh`'s `WIRED` array. The compile record above is historical (as
+compiled at the old path during the research round) and is left unchanged; re-verify against the
+new path with `bash scripts/check-evidence-probes.sh`.
+
 ### Paper labels consulted (by label, as required — line numbers deliberately omitted)
 
 `app:gluing`, `thm:extension`, `app:TaskSemantics`, `app:deterministic`,
