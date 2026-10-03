@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 2,
+  "summary": "Plan written: five sequential prose-tier phases (5.5h) executing Deliverables 4 and 5 -- re-verify anchors and open followup-scope-spec.md with a verification record, write Sections A-H (711 resolved by REVISE; Option A library-landing reading carried with its autonomous-adoption caveat), reconcile specs/ROADMAP.md with Phase 0 restated but undecided, then a cross-file hard-constraint audit. No write to specs/state.json or specs/TODO.md is planned.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/721_decidability_programme_review_l_and_lplus/plans/01_decidability-programme-review.md",
+      "summary": "Five-phase implementation plan for the decidability programme review: verification record, revision specification (Sections 0, A-H), ROADMAP reconciliation, consistency audit."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch /implement 721; Phase 1 begins by re-running the anchor greps and lake env lean #check on Compression.decidableValidZTime."
+}

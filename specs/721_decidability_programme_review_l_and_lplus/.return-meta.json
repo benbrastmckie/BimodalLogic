@@ -1,47 +1,38 @@
 {
-  "status": "researched",
-  "started_at": "2026-10-03T15:00:34Z",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md",
-      "summary": "Cross-language decidability inventory (PROVED/NOT ESTABLISHED/WITHDRAWN/REFUTED by declaration), the L-side account (Z-time validity of L is decided by Compression.decidableValidZTime; tableau biconditional open), ranked routes with falsifiers and next experiments, a per-task revision specification draft, and itemised ROADMAP reconciliation"
+      "type": "plan",
+      "path": "specs/721_decidability_programme_review_l_and_lplus/plans/01_decidability-programme-review.md",
+      "summary": "Five sequential prose-tier phases (5.5h): re-verify the inventory anchors and open followup-scope-spec.md with a Section 0 verification record; write per-task revision Sections A-G including the REVISE resolution of the 711 tension; write the five new-task specs, ranking ratification and state-write disclosure; reconcile specs/ROADMAP.md with Phase 0 restated but undecided (Option A reading carried with its autonomous-adoption caveat); cross-file consistency and hard-constraint audit plus summary. No write to specs/state.json or specs/TODO.md."
     }
   ],
+  "next_steps": "Run /implement 721 to execute the plan",
   "metadata": {
     "session_id": "sess_1791039495_e7bf05_721",
-    "agent_type": "logic-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": [
-      "orchestrator",
-      "research",
-      "logic-research-agent"
-    ],
-    "duration_seconds": 816,
-    "findings_count": 7,
-    "context_files_loaded": [
-      "README.md",
-      "return-metadata-file.md",
-      "ztime-no-finite-carrier-fmp.md",
-      "user-decision-contract.md"
-    ],
-    "mathlib_lookups_performed": 0,
-    "lean_lsp_lookups_performed": 1,
-    "compile_checks_performed": 1
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 5.5,
+    "dependency_waves": [[1], [2], [3], [4], [5]]
   },
-  "completed_at": "2026-10-03T15:14:10Z",
-  "modified_files": [
-    "specs/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md"
+  "phase_count": 5,
+  "estimated_hours": 5.5,
+  "dependency_waves": [[1], [2], [3], [4], [5]],
+  "memory_candidates": [
+    {
+      "content": "For a programme-review / reconciliation task whose research report already delivers the inventory and ranking, plan the implementation as a verification-then-transcription pipeline: (1) a grounding phase that re-runs every grep/#check the writes will cite and records literal outputs in a Section 0 of the specification file; (2) per-task revision sections; (3) new-task specs plus ranking and a state-write disclosure; (4) the programme document edit, citing the spec's section letters; (5) a cross-file sweep (declaration names resolve, typeclass hypotheses stated, negative statuses not softened, no complexity claims, no out-of-scope writes). Every fix the review finds outside the task's file_scope is routed into the spec's new-task section rather than applied -- this keeps the task inside its territory while a sibling dispatch runs on the shared tree. Phases are all prose-tier and fully sequential because they share one spec file and the roadmap text cites the spec.",
+      "category": "PATTERN",
+      "source_artifact": "specs/721_decidability_programme_review_l_and_lplus/plans/01_decidability-programme-review.md",
+      "confidence": 0.65,
+      "suggested_keywords": ["programme-review", "reconciliation", "followup-scope-spec", "roadmap", "verification-record", "file-scope"]
+    }
   ],
-  "next_steps": "Run /plan 721: the plan should (1) emit specs/721_.../followup-scope-spec.md from report section 4, (2) reconcile specs/ROADMAP.md per report section 5 with Phase 0 left undecided, (3) not write specs/state.json or specs/TODO.md.",
-  "user_decision": {
-    "question": "The ROADMAP success metric says every refutation must live in FormalSystem/ as a cited theorem (tasks 706, 710), but task 720 as filed only moves the two probe files into the CI-guarded specs/evidence/ collection. Which reading should the revision specification and the ROADMAP adopt?",
-    "options": [
-      "Option A — library landing: revise 706/710 to land Probe706.no_finite_carrier_sat and Probe710.not_finite_width_fmp as FormalSystem/ theorems; 720 then re-points citations to library names",
-      "Option B — evidence collection suffices: revise the success metric to accept specs/evidence/ (check-evidence-probes.sh) as the home of refutations; 720 stands as filed"
-    ],
-    "recommended": "Option A — library landing: revise 706/710 to land Probe706.no_finite_carrier_sat and Probe710.not_finite_width_fmp as FormalSystem/ theorems; 720 then re-points citations to library names",
-    "blocking": false
-  }
+  "modified_files": [
+    "specs/721_decidability_programme_review_l_and_lplus/plans/01_decidability-programme-review.md",
+    "specs/721_decidability_programme_review_l_and_lplus/.return-meta.json",
+    "specs/721_decidability_programme_review_l_and_lplus/.orchestrator-handoff.json"
+  ],
+  "dispatch_seq": 2
 }
