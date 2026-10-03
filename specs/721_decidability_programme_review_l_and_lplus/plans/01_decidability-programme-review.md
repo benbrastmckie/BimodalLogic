@@ -447,39 +447,39 @@ reverted, not kept.
 
 ---
 
-### Phase 5: Cross-File Consistency Check and Hard-Constraint Audit [IN PROGRESS]
+### Phase 5: Cross-File Consistency Check and Hard-Constraint Audit [COMPLETED]
 
 **Goal**: Confirm the two deliverable files agree with each other and with the tree, and that
 every hard constraint of the task holds, before the task closes.
 
 **Tasks**:
-- [ ] Trace: every task number named in a ROADMAP change (709, 711, 712, 713, 719, 720, 706,
+- [x] Trace: every task number named in a ROADMAP change (709, 711, 712, 713, 719, 720, 706, *(completed)*
       710, 430, 412, 563, 718) has a corresponding spec section or Section 0 fact; every spec
       section that changes a ROADMAP-visible fact (A-G, H1, H2, H5) is reflected in the ROADMAP.
       Record the trace as a short table at the end of the spec (or confirm Section 0 already
       covers it).
-- [ ] Declaration sweep: for every backticked declaration name in both files, `grep -rn` it under
+- [x] Declaration sweep: for every backticked declaration name in both files, `grep -rn` it under *(completed: 96 identifiers; one stale name (verifyProof) corrected in ROADMAP, recorded in spec Section 0.5)*
       `FormalSystem/`, `specs/evidence/`, `specs/706_.../probes/`, `specs/710_.../probes/`; each
       must resolve to a definition. Fix any typo in the deliverable files; never "fix" the tree.
-- [ ] Hypothesis sweep: every mention of `seamFibreEquiv`, `seamOmegaEquiv`, `plusStab_iff_rays`,
+- [x] Hypothesis sweep: every mention of `seamFibreEquiv`, `seamOmegaEquiv`, `plusStab_iff_rays`, *(completed)*
       `plusStab_iff_omega` in both files is accompanied by `IsRegular` in the same sentence or
       row; every mention of `decidableValidZTime` is qualified by ZTime/`Formula`/empty premises.
-- [ ] Negative-conclusion check: the WITHDRAWN and REFUTED statuses are stated as such in both
+- [x] Negative-conclusion check: the WITHDRAWN and REFUTED statuses are stated as such in both *(completed)*
       files (no "open question" wording for `not_sliced_complete`/`not_finite_width_fmp`; no
       softening of the compression theorem's withdrawal).
-- [ ] Complexity check: `grep -n 'EXPTIME\|EXPSPACE\|PSPACE' ` over both files; every hit is
+- [x] Complexity check: `grep -n 'EXPTIME\|EXPSPACE\|PSPACE' ` over both files; every hit is *(completed)*
       either the 713 lower-bound ceiling or a literature citation, never a claimed result.
-- [ ] Soundness check: `plusTruth_iff_mem` and `plusRefutes_of_certifies` appear only as
+- [x] Soundness check: `plusTruth_iff_mem` and `plusRefutes_of_certifies` appear only as *(completed)*
       "untouched/sound" anchors.
-- [ ] State-write check: `git status --short` and `git diff --name-only HEAD~N` for this task's
+- [x] State-write check: `git status --short` and `git diff --name-only HEAD~N` for this task's *(completed)*
       commits list only files under `specs/721_decidability_programme_review_l_and_lplus/` and
       `specs/ROADMAP.md`; `specs/state.json` and `specs/TODO.md` are not among them (the
       orchestrator's own status-sync writes are outside this task's commits and are not counted
       against it -- note that distinction in the summary).
-- [ ] Write `specs/721_decidability_programme_review_l_and_lplus/summaries/01_decidability-
+- [x] Write `specs/721_decidability_programme_review_l_and_lplus/summaries/01_decidability- *(completed)*
       programme-review-summary.md` per `summary-format.md`: what was written, the Option A
       caveat, the Phase 0 items left to the user, and the five tasks to file.
-- [ ] Commit (scoped staging: the summary and any spec/ROADMAP fix from this phase).
+- [x] Commit (scoped staging: the summary and any spec/ROADMAP fix from this phase). *(completed: 1210ddd5a)*
 
 **Timing**: 0.5 hours
 
@@ -499,19 +499,19 @@ every hard constraint of the task holds, before the task closes.
 
 ## Testing & Validation
 
-- [ ] `bash scripts/check-evidence-probes.sh` exits 0 before and after (this task changes no probe;
+- [x] `bash scripts/check-evidence-probes.sh` exits 0 before and after (this task changes no probe;
       the run is the Section 0 baseline).
-- [ ] `specs/ROADMAP.md` phase headers all match `roadmap-format.md`'s regex
+- [x] `specs/ROADMAP.md` phase headers all match `roadmap-format.md`'s regex
       `^## Phase (\d+): (.+?) \((\w+) Priority\)` (Phase 1's "Highest Priority" is pre-existing and
       is left as found).
-- [ ] Phase 0 block diff is additions-only; no `- [ ]` became `- [x]` in Phase 0.
-- [ ] Every backticked declaration in `followup-scope-spec.md` and the ROADMAP diff resolves by
+- [x] Phase 0 block diff is additions-only; no `- [ ]` became `- [x]` in Phase 0.
+- [x] Every backticked declaration in `followup-scope-spec.md` and the ROADMAP diff resolves by
       grep to a definition in the tree.
-- [ ] `git diff --name-only` across this task's commits ⊆ {`specs/721_.../**`, `specs/ROADMAP.md`}.
-- [ ] `followup-scope-spec.md` has: Section 0 with literal command outputs; Sections A-G each with
+- [x] `git diff --name-only` across this task's commits ⊆ {`specs/721_.../**`, `specs/ROADMAP.md`}.
+- [x] `followup-scope-spec.md` has: Section 0 with literal command outputs; Sections A-G each with
       an "Action required" line; Section H with five `Proposed title` entries; a ranking section
       naming `IsRegular`; a state-write disclosure.
-- [ ] No complexity bound is asserted as a result in either file.
+- [x] No complexity bound is asserted as a result in either file.
 
 ## Artifacts & Outputs
 
