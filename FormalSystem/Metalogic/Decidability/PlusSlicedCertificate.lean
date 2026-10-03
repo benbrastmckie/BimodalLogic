@@ -29,6 +29,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Complete
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Embed
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.EmbedComplete
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Examples
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Limits.NoFiniteWidth
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
@@ -217,6 +218,13 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   `liveFamily_sliced_certifies`, the exhibited interesting witness of `Certifies` at a non-empty
   closure with a live `untl` obligation, beside `Complete.lean`'s `Probe.exists_certifying_triv`,
   the antecedent failure at the empty closure; and the lifted sharing-class witness
+- `PlusSlicedCertificate.Limits.NoFiniteWidth`: the class's **completeness limit** — the
+  witness `Φ` (CTL-like, `⊡`-carrying), a model of `Φ.neg` on a countable finitely branching
+  regular ℤ-frame (`not_plusValidZTime_neg_Φ`), and the proof that **no** model on any
+  finite-width `FrameOver.ofSlicedStep` frame satisfies `Φ` anywhere (`no_finite_width_sat`), so
+  **no** `PlusSlicedCertificate` certifies `Φ.neg` (`not_certifies`), the class is **incomplete
+  for L⁺** (`not_sliced_complete`), and no certificate class presenting finite-width sliced
+  frames is complete, whatever its clauses (`not_finite_width_fmp`)
 
 ## The closing record: what this subtree proves, and what it does not
 

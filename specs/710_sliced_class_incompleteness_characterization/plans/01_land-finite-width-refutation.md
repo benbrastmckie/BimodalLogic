@@ -502,29 +502,31 @@ closing record. Confirm by building and by `#print axioms` on all five headline 
 
 ---
 
-### Phase 7: Wire the module into the build graph [NOT STARTED]
+### Phase 7: Wire the module into the build graph [COMPLETED]
 
 **Goal**: the new module is reachable from `lake build`, the new directory has its README, and the
 whole library is green.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean` (territory
+- [x] Re-read `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean` (territory
       discipline: task 706 also declares it), then add
       `import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Limits.NoFiniteWidth` to
       its import block, in the block's existing order
-- [ ] Add a `## Submodules` bullet for `PlusSlicedCertificate.Limits.NoFiniteWidth` to that file's
+- [x] Add a `## Submodules` bullet for `PlusSlicedCertificate.Limits.NoFiniteWidth` to that file's
       docstring, in the style of its siblings
-- [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem`. **Never** hand-edit
-      `FormalSystem.lean` (C33 compares byte for byte)
-- [ ] Write `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/README.md` on the
+- [x] Regenerate the library root: `lake exe mk_all --lib FormalSystem`. **Never** hand-edit
+      `FormalSystem.lean` (C33 compares byte for byte) *(deviation: altered -- already landed in
+      phase 1's commit, forced early by the pre-commit typst-sync-check gate; this phase re-ran
+      mk_all and got "No update necessary", confirming idempotency)*
+- [x] Write `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/README.md` on the
       model of `PlusWitnessFamily/Limits/README.md`: purpose, the one-module table, the scope
       boundary (what the refutation does and does not claim), and a `*Last verified: <ISO date>*`
       footer. **No** `<!-- BEGIN GENERATED: inventory -->` marker — the block is opt-in and the
       route-ordered table this directory wants is not what the generator produces
-- [ ] Add the new module to `PlusSlicedCertificate/README.md`'s module roster (advisory; drop if a
+- [x] Add the new module to `PlusSlicedCertificate/README.md`'s module roster (advisory; drop if a
       sibling is editing that file)
-- [ ] Full `lake build`
-- [ ] Commit the batch
+- [x] Full `lake build`
+- [x] Commit the batch
 
 **Timing**: 45 minutes
 
