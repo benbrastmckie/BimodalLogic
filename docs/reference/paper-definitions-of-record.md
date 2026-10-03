@@ -631,12 +631,29 @@ The paper grew a topology / presheaf / Conduché appendix block carrying
 `def:task-topology` (2872), `app:topology-t1` (2904), `app:topology-r0` (2923), `app:gluing`
 (2976), `def:interval-site` (3208), `def:behavior-presheaf` (3233), `lem:factorization-linear`
 (3247), `lem:interval-twisted-arrow` (3278), `app:presheaf-dictionary` (3313), `def:path-category`
-(3386), `def:conduche` (3406), `cor:path-fibration` (3510). **None of them is cited anywhere in
-this repository and none has a Lean counterpart.** Pinning them would widen this file's
+(3386), `def:conduche` (3406), `cor:path-fibration` (3510). Pinning them would widen this file's
 maintenance surface to a region the tree does not depend on, which is exactly what the
-"Deliberately not covered" scope boundary below exists to prevent. If any of them becomes
-load-bearing, add it then, via
-`check-paper-definitions.sh --resolve "ANCHOR|env|-|-"`.
+"Deliberately not covered" scope boundary below exists to prevent.
+
+**Two of the twelve are no longer uncited (2026-10-02), and one more is now cited as a
+pointer.** The claim this paragraph previously made — "None of them is cited anywhere in this
+repository and none has a Lean counterpart" — was true when it was written and is now false for
+`def:interval-site` and `def:behavior-presheaf`, which the interval site and behavior presheaf of
+`FormalSystem/Semantics/Presheaf/` formalize (`Obj`/`Tr`/`Tr.comp` and the coverage trio in
+`Site.lean`; `Beh`, its presheaf action and `Beh.germEquiv` in `Behavior.lean`). The dictionary theorem
+`app:presheaf-dictionary` — the third of the twelve to lose its uncited status — and the
+containing section label `app:Structure`, which is not itself one of the twelve, are cited by
+those modules as pointers. All four now carry a **`DANGLING`** `KNOWN-ANCHORS` row, and all four
+remain deliberately **unpinned** — not as a maintenance-surface judgement but because they are
+*unpinnable*: `app:Structure` was cut from the paper in full under an explicit `% SECTION CUT`
+record and the surviving commented block carries a bare `% CHECK`, and
+`check-paper-definitions.sh --resolve` structurally cannot read text off a commented-out
+`\label{}`. The remaining nine of the twelve (`def:task-topology`, `app:topology-t1`, `app:topology-r0`,
+`app:gluing` — itself since restored and separately recorded — `lem:factorization-linear`,
+`lem:interval-twisted-arrow`, `def:path-category`, `def:conduche`, `cor:path-fibration`) are
+unaffected by this correction. If any of them becomes load-bearing, add it then, via
+`check-paper-definitions.sh --resolve "ANCHOR|env|-|-"` — or, if the appendix is still cut, as a
+`DANGLING` row.
 
 **Sentinels re-pinned**: checksum
 `5d700a2f05999bb697ab55e16f5a26732cbf7453dbb7d909d21fb67c70da7644`, paper repo `git HEAD`
@@ -2098,7 +2115,9 @@ prop:archimedean|LIVE-UNPINNED|the Pthm asserting that UZ and Z1 both fail over 
 sent:det|LIVE-UNPINNED|the displayed sentence of app:deterministic-future, up^1 Future up^2 down^1 (Stability down^2 not-phi or Stability down^2 phi); transcribed as sentDet (StarLanguage/StarValidity.lean) and cited by name in StarValidity.lean, StarDeterminism.lean, StarNonValidities.lean, StarDiscrimination.lean and ForwardDeterministicFrame.lean. Cited by name only; not pinned, since the transcription is of the operator structure rather than of quoted prose. Note that \Future here is the manuscript preamble's BOXED F (universal future), not the diamond f -- checked against the display and against the (*) chain's "for all y > x" step
 sub:RestrictedModalities|LIVE-UNPINNED|the subsection that introduces the stability clause, the items Open Futures and Open Pasts, the clauses for the open-future and open-past operators, and the nomic operator. A sub: label, so C15 does not gate it; recorded because the open-future and open-past halves are now FORMALIZED in FormalSystem/OpenLanguage/ (the three classes in OpenClasses.lean, the two clauses in OpenTruth.lean, the inclusion / intersection / monotonicity sentence as theorems), while the nomic operator is not. Not pinned: the component cites it by label and by quotable phrase, and a subsection label has no environment for resolve_env to read
 TMP-CO|DANGLING|the BL^+ restatement of CO; it went away with def:TMplus-c (now def:BX-r), which derives CO from PU rather than restating it under a second label. The plain CO anchor is still live and still pinned
+app:Structure|DANGLING|the section label for the cut appendix "Topological and Categorical Structure". app:Structure was cut from the paper IN FULL under an explicit % SECTION CUT record ("Topological and Categorical Structure" (app:Structure) in full) and the surviving commented block carries a bare % CHECK, so the author has not finished reviewing it. Cited as a pointer by FormalSystem/Semantics/Presheaf/ (Site.lean, Behavior.lean), which records that state at each citation site. NOT PINNABLE: check-paper-definitions.sh --resolve structurally cannot read text off a commented-out \label{}
 app:nonempty|DANGLING|merged by the paper into cor:occurrence; cited only where the tree records the merge
+app:presheaf-dictionary|DANGLING|the Tthm asserting that Beh(F) is a presheaf on Int(D) with the Sheaf, Totality, Germs, Possible Worlds, Determinism and Reflection clauses. app:Structure was cut from the paper IN FULL under an explicit % SECTION CUT record ("Topological and Categorical Structure" (app:Structure) in full) and the surviving commented block carries a bare % CHECK; the author has not finished reviewing it, and this anchor went with the cut. The Germs clause is formalized as Beh.germEquiv (FormalSystem/Semantics/Presheaf/Behavior.lean) and the site-side content of the Sheaf clause as cover_germ_composites (Presheaf/Site.lean); both citation sites record the cut. NOT PINNABLE, as for app:Structure
 app:valid|DANGLING|NEVER EXISTED; earlier revisions cited it at a bogus line number, corrected to cor:perpetuity-valid
 thm:M5-valid|DANGLING|fully COMMENTED OUT in the paper (2026-09-17 wave); retained above as a DANGLING entry; no live citation
 cor:tm-decidability|DANGLING|fully COMMENTED OUT in the paper; retained above as a DANGLING entry
@@ -2108,7 +2127,9 @@ def:BLplus-semantics|DANGLING|label removed when the paper collapsed BL^+ into B
 def:TMplus-c|DANGLING|renamed by the paper to def:BX-r, which IS pinned; cited only where the tree records the rename
 def:TMplus-d|DANGLING|renamed by the paper to def:BX-d, which IS pinned; cited only where the tree records the rename
 def:TMplus-f|DANGLING|renamed by the paper to def:BX-z, which IS pinned; cited only where the tree records the rename
+def:behavior-presheaf|DANGLING|the Ddef defining Beh(F)(l) as the convex histories on [0, l] with restriction along Tr p. app:Structure was cut from the paper IN FULL under an explicit % SECTION CUT record ("Topological and Categorical Structure" (app:Structure) in full) and the surviving commented block carries a bare % CHECK; the author has not finished reviewing it, and this anchor went with the cut. FORMALIZED as Beh and its presheaf action (FormalSystem/Semantics/Presheaf/Behavior.lean); the citation site records the cut. NOT PINNABLE, as for app:Structure
 def:directed|DANGLING|label removed; the supseteq-directed definition was folded inline into def:frame's opening clause. Retained above as a DANGLING entry
+def:interval-site|DANGLING|the Ddef defining the interval site Int(D): objects the positive cone, morphisms the translations Tr p, with the Johnstone coverage. app:Structure was cut from the paper IN FULL under an explicit % SECTION CUT record ("Topological and Categorical Structure" (app:Structure) in full) and the surviving commented block carries a bare % CHECK; the author has not finished reviewing it, and this anchor went with the cut. FORMALIZED as Obj/Tr/Tr.comp and the coverage trio (FormalSystem/Semantics/Presheaf/Site.lean); the citation site records the cut. NOT PINNABLE, as for app:Structure
 lem:fibers|DANGLING|label removed 2026-08-17; content absorbed into lem:admissible's proof; retained above
 thm:BLplus-NextPrevious|DANGLING|label removed with the BL^+ fragment cluster. Retained above as a DANGLING entry
 thm:BLplus-PastFuture|DANGLING|label removed with the BL^+ fragment cluster. Retained above as a DANGLING entry

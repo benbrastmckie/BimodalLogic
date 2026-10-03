@@ -1,7 +1,7 @@
 # Implementation Plan: Task #563 — the interval site and the behavior presheaf
 
 - **Task**: 563 - formalize_interval_site_and_behavior_presheaf
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/563_formalize_interval_site_and_behavior_presheaf/reports/01_interval-site-behavior-presheaf.md`
@@ -118,32 +118,32 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 construction: Phase 2's docstrings cite what Phase 1 records, Phase 3's module imports Phase 2's,
 and Phase 4 wires and gates what Phases 2–3 built.
 
-### Phase 1: Gate prerequisites — anchor rows and bibliography [NOT STARTED]
+### Phase 1: Gate prerequisites — anchor rows and bibliography [COMPLETED]
 
 **Goal**: Make C15 and C31 able to stay green the moment a docstring cites the paper anchors and
 the two published sources. No Lean in this phase.
 
 **Tasks**:
-- [ ] Append two entries to the root `references.bib`, at the end of the file (the file is
+- [x] Append two entries to the root `references.bib`, at the end of the file (the file is
       append-ordered, not alphabetical): `@article{schultz2020, …}` for P. Schultz, D. I. Spivak
       and C. Vasilakopoulou, *Dynamical Systems and Sheaves*, Applied Categorical Structures 28
       (2020), 1–57, doi `10.1007/s10485-019-09565-x`; and `@article{johnstone1999, …}` for
       P. T. Johnstone, *A Note on Discrete Conduché Fibrations*, Theory and Applications of
       Categories 5 (1999), no. 1, 1–11. Transcribe both from the paper's own
       `possible_worlds.bib` as the report records them — invent nothing
-- [ ] Add four rows inside the `<!-- KNOWN-ANCHORS:BEGIN -->` / `END` fence of
+- [x] Add four rows inside the `<!-- KNOWN-ANCHORS:BEGIN -->` / `END` fence of
       `docs/reference/paper-definitions-of-record.md`, each with status **`DANGLING`** and a note
       recording that `app:Structure` was cut from the paper in full under an explicit
       `% SECTION CUT` record and carries a bare `% CHECK`: `app:Structure`,
       `app:presheaf-dictionary`, `def:behavior-presheaf`, `def:interval-site`. Keep the block's
       existing ASCII sort order within the `DANGLING` group
-- [ ] In the same file, amend the "**Twelve new appendix anchors deliberately NOT pinned**"
+- [x] In the same file, amend the "**Twelve new appendix anchors deliberately NOT pinned**"
       paragraph: its claim that "None of them is cited anywhere in this repository and none has a
       Lean counterpart" is falsified for `def:interval-site` and `def:behavior-presheaf` by this
       task. Record that both are now cited, that each has a `DANGLING` `KNOWN-ANCHORS` row, and
       that they are still deliberately unpinned because `--resolve` cannot resolve a
       commented-out label
-- [ ] Commit this phase on its own, staging exactly the two files with an explicit pathspec list
+- [x] Commit this phase on its own, staging exactly the two files with an explicit pathspec list *(deviation: altered — the new rows cite the `FormalSystem/Semantics/Presheaf/` paths that Phases 2-3 create, so **C12** (slash-shaped source paths in `docs/`) reports 5 unresolved paths at the end of this phase alone. Transient by construction: the plan's ordering puts the anchor rows before the citing docstrings, and either ordering carries a one-commit transient — this one lands on C12 rather than on C15. Re-verified green at the end of Phase 3. The pre-existing `check-paper-definitions.sh` `def:BX` drift (`SU` renamed `US` upstream) is unrelated and untouched.)*
 
 **Timing**: 0.75 hours
 
