@@ -1,7 +1,7 @@
 # Implementation Plan: Task #563 — the interval site and the behavior presheaf
 
 - **Task**: 563 - formalize_interval_site_and_behavior_presheaf
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/563_formalize_interval_site_and_behavior_presheaf/reports/01_interval-site-behavior-presheaf.md`

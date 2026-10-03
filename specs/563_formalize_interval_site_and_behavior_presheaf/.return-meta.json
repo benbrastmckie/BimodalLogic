@@ -1,30 +1,38 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-10-02T23:46:23Z",
+  "completed_at": "2026-10-03T00:36:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/563_formalize_interval_site_and_behavior_presheaf/plans/01_interval-site-behavior-presheaf.md",
-      "summary": "4-phase plan siting the interval site and behavior presheaf as FormalSystem/Semantics/Presheaf/, with a compile-verified 19-identifier Lean Challenge block."
+      "type": "summary",
+      "path": "specs/563_formalize_interval_site_and_behavior_presheaf/summaries/01_interval-site-behavior-presheaf-summary.md",
+      "summary": "The interval site Int(D) and the behavior presheaf Beh(F) sited as FormalSystem/Semantics/Presheaf/, with functoriality and the Germs clause sorry-free."
     }
   ],
-  "metadata": {
-    "session_id": "sess_1791007802_90fb84_563",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 5,
-    "dependency_waves": [[1], [2], [3], [4]]
+  "completion_data": {
+    "completion_summary": "Sited the interval site Int(D) and the behavior presheaf Beh(F) as a new FormalSystem/Semantics/Presheaf/ cluster (Site.lean, Behavior.lean, a Tier-1 aggregator and a gated README), delivering the section type Beh F l, restriction along Tr p, presheaf functoriality in both raw-data and site-indexed forms, and the Germs clause germEquiv : Beh F 0 ≃ F.WorldState. All 36 declarations are sorry-free and axiom-free beyond [propext, Quot.sound]; the full lake build is green with zero warnings and check-module-invariants.sh passes with the build.",
+    "roadmap_items": []
   },
-  "memory_candidates": [
-    {
-      "content": "Authoring a `## Lean Challenge Statements` block for a lean4 plan in BimodalLogic: the snapshot matcher (.claude/scripts/lean-challenge-snapshot.sh) recognizes only `theorem|lemma|def|instance` + a SIMPLE name, and for each match it keeps the text up to the first top-level `:=` and DISCARDS everything from there to the next match. Three consequences the design record (context/project/lean4/domain/challenge-snapshot.md) does not state: (1) every definitional carrier a pinned statement mentions must sit in the PREAMBLE, before the first matched declaration, because an `abbrev` or `structure` placed BETWEEN two theorems falls inside the preceding theorem's discarded chunk; (2) carriers must be written `abbrev`/`structure`, never `def`, so the matcher does not erase their bodies and they stay out of the cross-validated identifier set (the library then declares them with `def`); (3) no intervening `namespace`/`end` may sit between two pinned theorems, so every pinned name must be undotted AND globally distinct -- two namespace-local lemmas sharing a bare name (e.g. `Tr.ext` and `Beh.ext` both reducing to `ext`) cannot both be pinned and belong under a `**Goals (not challenge-pinned)**` bullet instead. Verify the assembled block by compiling it with `lake env lean`: the expected result is exit 0 with exactly one `declaration uses 'sorry'` warning per pinned identifier.",
-      "category": "PATTERN",
-      "source_artifact": "specs/563_formalize_interval_site_and_behavior_presheaf/plans/01_interval-site-behavior-presheaf.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["lean-challenge-statements", "challenge-snapshot", "plan-format", "abbrev-carrier", "lean4-planning", "identifier-cross-validation"]
-    }
-  ],
-  "next_steps": "Run /implement 563 to execute the plan",
-  "dispatch_seq": 3
+  "metadata": {
+    "session_id": "sess_1791007802_90fb84",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "skill-lean-implementation"
+    ],
+    "compliance_check": "passed",
+    "phases_completed": 4,
+    "phases_total": 4,
+    "known_pre_existing_red": "scripts/check-paper-definitions.sh exits 1 on the def:BX drift (the paper renamed axiom SU to US). Predates this task; the aref{SU} count is identical at commit 965272445 and now, and the foreign FormalSystem/README.md modification already in the tree documents it.",
+    "reported_defect": "The generated inventory hunk of FormalSystem/README.md was isolated with git apply --cached so the pre-existing foreign 'Last verified' hunk would stay uncommitted; git-commit-scoped.sh then re-staged the pathspec wholesale and swept that foreign hunk into commit 9e6228989. Nothing lost or altered, but it is mis-attributed to this task. Not corrected: the remedy is a history rewrite, forbidden while a sibling writer is live in this repo. Recorded in the summary's Follow-ups."
+  }
 }
