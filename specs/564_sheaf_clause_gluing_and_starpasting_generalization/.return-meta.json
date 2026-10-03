@@ -1,0 +1,35 @@
+{
+  "status": "researched",
+  "dispatch_seq": 7,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/564_sheaf_clause_gluing_and_starpasting_generalization/reports/02_sheaf-clause-and-seam-dedup.md",
+      "summary": "The whole Sheaf clause (glue, both restriction identities, uniqueness, the ExistsUnique packaging) is compiled sorry-free in three probes; the de-duplication is one PartialHistory-level lemma rel_across_seam that both paste_rel_le_lt and the interval-site step derive from at unchanged signatures; choice-freedom holds only via the off-zero reflection law, and the required file_scope is eight paths, not one."
+    },
+    {
+      "type": "probe",
+      "path": "specs/564_sheaf_clause_gluing_and_starpasting_generalization/probes/01_seam-lemma-and-glue.lean",
+      "summary": "Sorry-free: rel_across_seam, both call sites derived from it, glue in cut form, reading equations, both restriction identities, uniqueness, the ExistsUnique Sheaf clause, and eleven #print axioms rows."
+    },
+    {
+      "type": "probe",
+      "path": "specs/564_sheaf_clause_gluing_and_starpasting_generalization/probes/02_site-and-compatible-family.lean",
+      "summary": "Sorry-free: restrictTr along coverLeft/coverRight is definitionally the raw-data restriction (rfl), and the coverage's compatible-family condition over the germ is equivalent to the raw seam-agreement hypothesis."
+    },
+    {
+      "type": "probe",
+      "path": "specs/564_sheaf_clause_gluing_and_starpasting_generalization/probes/03_pasteat-off-totality.lean",
+      "summary": "Sorry-free: pasteAt on arbitrary partial histories (choice-free), isTotal_pasteAt, and paste_eq_pasteAt recovering the existing total-history paste with its definition and signature untouched."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791051010_4c2417_564",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "scope_finding": "Declared file_scope (FormalSystem/Semantics/Presheaf/Sheaf.lean) is insufficient. Required: + FormalSystem/Semantics/PartialHistory.lean, FormalSystem/Semantics/TaskFrame.lean, FormalSystem/PlusLanguage/PlusPasting.lean, and four gate-mandated wiring files (FormalSystem.lean via mk_all [C33], FormalSystem/Semantics/Presheaf.lean [C24/C6], FormalSystem/Semantics/Presheaf/README.md + FormalSystem/README.md + README.md via --emit-inventory [INV]). Per the task description, do NOT widen file_scope to the aggregator. Do NOT touch docs/theorem-index.md (task 710 owns it this cycle).",
+    "baseline_build": "lake build FormalSystem green before any edits: 2810 jobs, exit 0, via lake-build-guard.sh",
+    "lean_lsp_evidence_tier": "compiled probe (lake env lean); lean-lsp MCP not used this round"
+  }
+}
