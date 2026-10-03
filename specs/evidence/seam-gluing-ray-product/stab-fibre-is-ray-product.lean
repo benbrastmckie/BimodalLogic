@@ -8,7 +8,7 @@ Three parts.
   histories on the half-lines `(-∞, t]` and `[t, ∞)`, presented as dependent functions on the
   time subtypes so that equality is funext. `seamFibreEquiv` is an `Equiv` between the `⊡`
   quantification domain `{σ : WorldHistory F // σ.state t = s}` and the fibre product
-  `{(b, f) // b t = s ∧ f t = s}`. The construction uses *Compositionality* and the reflection
+  `{(b, f) // b t = s ∧ f t = s}`. The construction uses *Compositionality* and the off-zero reflection
   convention ONLY: no *Saturation*, no Extension Theorem, no Zorn, no `Classical.choice`, no
   frame-class assumption. This is the paper's `app:gluing` at the seam — its `⌢_z` — in the one
   case the paper's own (commented-out) pasting passage needs, and in `Equiv` rather than
@@ -26,6 +26,14 @@ What this does NOT do, stated so the report cannot overclaim: it bounds nothing,
 and evades no refutation. `not_finite_width_fmp` stands untouched — Part 3 is precisely the
 *mechanism* behind it (a product of two path spaces cannot be a finite fibre), not an escape from
 it.
+
+**Axiom record, which SPLITS.** Part 1 and Part 3a are choice-free — `seamFibreEquiv` and
+`plusStab_iff_rays` measure `[propext, Quot.sound]`, which is what the off-zero reflection law in
+`glue_rel` buys. Parts 2 and 3b are NOT: `seamOmegaEquiv` and `plusStab_iff_omega` measure
+`Classical.choice`, and the cause is upstream and named — `FrameOver.worldHistoryOfStepPath`,
+reached through `pathFibreEquiv` to build a possible world out of a bare bi-infinite step path.
+Rerouting that landed declaration is outside this probe's remit. The four rows at the foot of this
+file are the measurement, not a prediction.
 
 Compile-check from the repository root with:
   lake env lean specs/evidence/seam-gluing-ray-product/stab-fibre-is-ray-product.lean
@@ -82,7 +90,11 @@ theorem glue_rel_le_lt [F.IsRegular] {t : F.Duration} (b : PastRay F t) (f : Fut
   exact (F.comp _ _ _ _ (sub_nonneg.mpr hs) (sub_nonneg.mpr (le_of_lt (not_le.mp hs')))).mpr
     ⟨_, h1, h2⟩
 
-/-- The glued state function respects the task relation at every pair of times. -/
+/-- The glued state function respects the task relation at every pair of times. The
+mixed-orientation case goes through the OFF-ZERO reflection law `TaskFrame.reflection_of_ne`,
+which suffices because that case is strict; the unrestricted `TaskFrame.reflection` opens with a
+classical `eq_or_ne` and would reinstate `Classical.choice` on everything downstream, the
+keystone included. -/
 theorem glue_rel [F.IsRegular] {t : F.Duration} (b : PastRay F t) (f : FutRay F t)
     (hseam : b.seam = f.seam) :
     ∀ s s' : F.Duration, F.TaskRel (glueFun b f s) (s' - s) (glueFun b f s') := by
@@ -91,13 +103,16 @@ theorem glue_rel [F.IsRegular] {t : F.Duration} (b : PastRay F t) (f : FutRay F 
   by_cases hs : s ≤ t <;> by_cases hs' : s' ≤ t
   · rw [dif_pos hs, dif_pos hs']; exact b.2 ⟨s, hs⟩ ⟨s', hs'⟩
   · rw [dif_pos hs, dif_neg hs']; exact glue_rel_le_lt b f hseam hs hs'
-  · rw [dif_neg hs, dif_pos hs', F.reflection, neg_sub]
+  · rw [dif_neg hs, dif_pos hs']
+    have hne : s' - s ≠ 0 := sub_ne_zero.mpr (by intro h; exact hs (h ▸ hs'))
+    rw [F.reflection_of_ne hne, neg_sub]
     exact glue_rel_le_lt b f hseam hs' hs
   · rw [dif_neg hs, dif_neg hs']
     exact f.2 ⟨s, (not_le.mp hs).le⟩ ⟨s', (not_le.mp hs').le⟩
 
 /-- **Seam gluing.** A past ray and a future ray agreeing at the seam glue to a possible world.
-Choice-free: `glue_rel` uses *Compositionality* and the reflection convention and nothing else. -/
+Choice-free as measured by the axiom record at the foot of this file: `glue_rel` uses
+*Compositionality* and the off-zero reflection convention and nothing else. -/
 def glue [F.IsRegular] {t : F.Duration} (b : PastRay F t) (f : FutRay F t)
     (hseam : b.seam = f.seam) : WorldHistory F :=
   WorldHistory.ofTotal F (glueFun b f) (glue_rel b f hseam)

@@ -35,7 +35,7 @@ presentation of a ray is deliberately not taken, because it is the route that in
 | File | Lines | Description |
 |------|------:|-------------|
 | `Behavior.lean` | 296 | The behavior presheaf `Beh F`: the sections over a duration, the restriction action at raw data and at a site morphism, presheaf functoriality, and the *Germs* clause `Beh F 0 ≃ F.WorldState` |
-| `Ray.lean` | 159 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections, the restrictions of a possible world to its two rays, and the bridges to `PartialHistory` and to `Beh F l` |
+| `Ray.lean` | 344 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections and bridges, and the ray-layer gluing operator with its reading equations, restriction identities, uniqueness and totality |
 | `Sheaf.lean` | 434 | <!-- TODO: add description --> |
 | `Site.lean` | 191 | The interval site `Int(D)`: the translations `Tr p`, the three category laws, and the Johnstone coverage |
 <!-- END GENERATED -->
@@ -87,6 +87,21 @@ presentation of a ray is deliberately not taken, because it is the route that in
 - `glue_states_le`, `glue_states_not_le` — the two reading equations of `glue`, one per branch of
   its dependent `if`; every proof about `glue` goes through these rather than unfolding it
 - `glue_unique` — any section restricting to `τ₁` and `τ₂` is `glue`
+- `Ray.seamGlue` — the ray-layer gluing operator: a past ray and a future ray agreeing at the seam,
+  read as one possible world. The paper's own seam operator in the case its pasting passage
+  applies it in, with `PlusLanguage.PlusPasting.paste` as its total-history instance
+- `Ray.seamGlue_states_le`, `Ray.seamGlue_states_not_le` — the two reading equations of
+  `Ray.seamGlue`, one per branch of its dependent `if`
+- `Ray.seamGlue_rel_le_lt`, `Ray.seamGlue_rel` — task-respect for the glued state function; the
+  seam step is delegated to `PartialHistory.rel_across_seam`, and the mixed-orientation case
+  goes through the off-zero `TaskFrame.reflection_of_ne`, which is what keeps the whole
+  ray-layer path clear of `Classical.choice`
+- `Ray.pastOf_seamGlue`, `Ray.futOf_seamGlue` — the two restriction identities of
+  `Ray.seamGlue`. The second is where the seam hypothesis is consumed, the branch test being
+  true at the seam point itself
+- `Ray.seamGlue_unique`, `Ray.seamGlue_clause` — uniqueness, and the `∃!` the restriction identities
+  and uniqueness package
+- `Ray.seamGlue_isTotal` — totality: the glued object is total on all of `F.Duration`
 - `states_eq_of_eq` — reading a state out of an equality of sections, for either domain witness
 - `sheaf_clause_site` — the *Sheaf* clause in the site's own vocabulary, along `coverLeft` and
   `coverRight`. Derived from `sheaf_clause` with no transport and no cast

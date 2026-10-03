@@ -298,51 +298,52 @@ checking that no declaration outside that line range was needed; if a third brid
 
 ---
 
-### Phase 2: The ray-layer gluing operator, choice-free [NOT STARTED]
+### Phase 2: The ray-layer gluing operator, choice-free [COMPLETED]
 
 **Goal**: `Presheaf.Ray.glue` exists in `Ray.lean` with its two reading equations, both
 restriction identities, uniqueness and totality — and the whole ray-layer path measures
 `[propext, Quot.sound]`, with `Classical.choice` nowhere on it.
 
 **Tasks**:
-- [ ] Transcribe `glueFun` (probe lines 65–70) into the `Presheaf.Ray` sub-namespace
-- [ ] Transcribe `glue_rel_le_lt`, but **as a delegation** to the landed
+- [x] Transcribe `glueFun` (probe lines 65–70) into the `Presheaf.Ray` sub-namespace
+- [x] Transcribe `glue_rel_le_lt`, but **as a delegation** to the landed
       `PartialHistory.rel_across_seam` rather than the probe's hand proof (report Finding 8,
       compiled first try, `[propext, Quot.sound]`): pass `F.comp`, `σ := b.toPH`, `τ := f.toPH`,
       `hσm := le_rfl`, `hτm' := le_rfl`, `hmatch := hseam`, and
       `hd := by rw [add_comm]; exact (sub_add_sub_cancel s' t s).symm`. This is the
       de-duplication 564 exists to create, and it reaches a byte-identical conclusion
-- [ ] Transcribe `glue_rel` (probe lines 86–99) with the **reflection reroute** in the
+- [x] Transcribe `glue_rel` (probe lines 86–99) with the **reflection reroute** in the
       mixed-orientation case — this is mandatory, not optional (Research Integration point 2):
       replace `rw [dif_neg hs, dif_pos hs', F.reflection, neg_sub]` with
       `rw [dif_neg hs, dif_pos hs']`, then
       `have hne : s' - s ≠ 0 := sub_ne_zero.mpr (by intro h; exact hs (h ▸ hs'))`, then
       `rw [F.reflection_of_ne hne, neg_sub]`, then
       `exact glue_rel_le_lt b f hseam hs' hs`
-- [ ] Transcribe `glue` (probe lines 101–104) as `Ray.glue`, and the two reading equations
+- [x] Transcribe `glue` (probe lines 101–104) as `Ray.glue`, and the two reading equations
       `glue_state_of_le`/`glue_state_of_not_le` as `Ray.glue_states_le`/`Ray.glue_states_not_le`
       — the `Presheaf.Ray` sub-namespace is required by the collision with 564's `Sheaf.lean`
-      (Research Integration point 5)
-- [ ] State the two **restriction identities** — that `pastOf (Ray.glue b f …) t = b` and
+      (Research Integration point 5) *(deviation: altered — the sub-namespace is NOT sufficient. Gate C23 forbids outer-shadows-inner BASE-name pairs regardless of namespace, and fired on all four of `glue`, `glue_states_le`, `glue_states_not_le`, `glue_unique` against `Sheaf.lean`. Landed as `Ray.seamGlue`, `Ray.seamGlue_states_le`, `Ray.seamGlue_states_not_le`, `Ray.seamGlue_unique`, with the whole operator family renamed consistently (`seamGlueFun`, `seamGlue_rel`, `seamGlue_rel_le_lt`, `seamGlue_isTotal`, `pastOf_seamGlue`, `futOf_seamGlue`, `seamGlue_clause`). None is an acceptance-named declaration; the plan's own acceptance clause demands the gate green, so the gate is the binding constraint. Rationale recorded in the module docstring.)*
+- [x] State the two **restriction identities** — that `pastOf (Ray.glue b f …) t = b` and
       `futOf (Ray.glue b f …) t = f` — and `Ray.glue_unique`, the `∃!` packaging parallel to
       `Sheaf.lean`'s `glue_unique`. These follow from the two reading equations plus funext on the
       ray subtypes; `seamFibreEquiv`'s `left_inv`/`right_inv` (Phase 3) already carry the content,
       so state them here as the named Deliverable-2 obligations rather than re-deriving anything
-- [ ] State **totality**: the glued object is a `WorldHistory F`, i.e. total on `F.Duration` —
+- [x] State **totality**: the glued object is a `WorldHistory F`, i.e. total on `F.Duration` —
       which is what `glue`'s construction already gives, since the two half-lines cover
       `F.Duration` and meet in exactly one point. Name this explicitly; Phase 6's verdict depends
       on it being a stated library fact
-- [ ] Extend the module `/-! … -/` block: the operator is the paper's own `⌢_z` at the ray layer
+- [x] Extend the module `/-! … -/` block: the operator is the paper's own `⌢_z` at the ray layer
       (Research Integration point 6), `PlusPasting.paste` is its total-history instance and is
       **not** re-derived here, the frame law actually used is `TaskFrame.comp` plus the reflection
       convention and nothing else, and the measured axiom rows. Keep every constraint word inside
       the `/-!` block (C34b); write no `Constraints consumed:` marker
-- [ ] Apply the **same** reflection reroute to
+- [x] Apply the **same** reflection reroute to
       `specs/evidence/seam-gluing-ray-product/stab-fibre-is-ray-product.lean` so the probe and the
       library stay byte-comparable and the probe's own axiom-record footer reads choice-free
       (report Decision 6); re-run
       `lake env lean specs/evidence/seam-gluing-ray-product/stab-fibre-is-ray-product.lean`
-- [ ] Regenerate the inventories and typst counts (Shared Touches protocol)
+- [x] Regenerate the inventories and typst counts (Shared Touches protocol)
+- [x] *(deviation: altered — gate C28 rejects the `show` tactic (`linter.style.show`, budget entry "use `change` where the goal changes"). The four tactic-position `show`s transcribed from the probe are landed as `change`, which is the convention `Sheaf.lean` already follows. Term-level `rw [show … from …]` is unaffected and kept verbatim.)*
 
 **Timing**: 1.5 hours
 

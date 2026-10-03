@@ -47,6 +47,48 @@ therefore defined directly on their half-lines, where no limit is taken and no f
 beyond the one the gluing operator's seam step needs is in play. The directed/colimit case is
 elsewhere by charter, and nothing in this module may be read as having settled it.
 
+## The gluing operator at the ray layer
+
+`Ray.seamGlue` takes a past ray and a future ray agreeing at the seam to the possible world
+following the first up to and including the seam and the second after it. This is the paper's own
+`⌢_z`, in the case its pasting passage applies it in: that passage defines the operator by
+applying the gluing lemma to the restrictions of two histories to `(−∞, z]` and `[z, ∞)`, so the
+**ray layer is the primary case** and `PlusLanguage.PlusPasting.paste` — the same operator on
+two *total* histories — is its total-history instance. Neither `paste` nor `Presheaf.glue` is
+re-derived here; the material below is the half-line operator only, with its two reading
+equations, its two restriction identities, uniqueness, and totality.
+
+**The frame law actually used is `TaskFrame.comp` together with the reflection convention, and
+nothing else.** The seam step is not proved here either: it is delegated to
+`PartialHistory.rel_across_seam` at the two rays' `toPH` readings, with both seam coordinates
+taken at `t`, which is the de-duplication that lemma exists to create. The bracketed
+`[F.IsRegular]` binder supplies more than the construction consumes — the explicit, binder-free
+form of the content is `rel_across_seam`'s own signature, which takes `TaskFrame.Compositional`
+as a hypothesis — and the binder is carried here because the promoted keystone statement below is
+to be the probed statement, hypothesis for hypothesis.
+
+**Choice-freedom, measured.** `#print axioms` reports `[propext, Quot.sound]` on every
+declaration of the ray layer and its gluing operator — `seamGlueFun` needs only `[propext]` —
+with no `Classical.choice` anywhere. One step earns that and would lose it if rewritten: the
+mixed-orientation case of `seamGlue_rel`, which runs *backwards* across the seam, goes through the
+off-zero reflection law `TaskFrame.reflection_of_ne` rather than the unrestricted
+`TaskFrame.reflection`, and suffices because that case is strict. Substituting the unrestricted
+law reinstates `Classical.choice` on `seamGlue_rel` and on everything downstream of it, the promoted
+keystone included.
+
+**Why `seamGlue` and not `glue`.** `Semantics/Presheaf/Sheaf.lean` already declares `glue`,
+`glue_states_le`, `glue_states_not_le` and `glue_unique` for two *bounded* sections. A
+sub-namespace is not enough separation: the repository's dead-declaration census keys on the last
+dot-segment, so two declarations sharing a base name mask each other and neither can be reported
+dead. The half-line operator therefore carries its own base name throughout, which also keeps the
+parallel with `Sheaf.lean` legible rather than accidental.
+
+**The branch test is the order's own.** `seamGlueFun` splits on `if h : s ≤ t`, whose `Decidable`
+instance comes from the `LinearOrder` carried by the frame's temporal order rather than from
+`Classical.propDecidable`, so the split is computational and contributes no axiom. It is a `dite`
+and not an `ite` because each branch needs its own half-line witness, which is also what makes
+`seamGlue_states_le`/`seamGlue_states_not_le` literally `dif_pos` and `dif_neg`.
+
 ## Main Definitions
 
 - `PastRay F t`, `FutRay F t`: the half-line sections at `t`, as dependent functions on the time
@@ -58,11 +100,27 @@ elsewhere by charter, and nothing in this module may be read as having settled i
   the form that reaches the shared `PartialHistory` API.
 - `FutRay.toBeh`: the ray-layer-to-`Beh F l` restriction — a forward ray at `0` cut down to the
   bounded section over `l`.
+- `Ray.seamGlueFun`, `Ray.seamGlue`: the pasted state function of a ray pair, and the possible
+  world it determines.
 
 ## Main Results
 
 - `PastRay.toPH_states`, `FutRay.toPH_states`, `FutRay.toBeh_states`: the reading equations of the
   three bridges, all `rfl`.
+- `Ray.seamGlue_rel_le_lt`: the task relation across the seam, delegated to
+  `PartialHistory.rel_across_seam`.
+- `Ray.seamGlue_rel`: the glued state function respects the task relation at every pair of times —
+  four cases, because `PartialHistory.respects_task` is unconditional.
+- `Ray.seamGlue_states_le`, `Ray.seamGlue_states_not_le`: the two reading equations of
+  `Ray.seamGlue`, one per branch of its dependent `if`. Every later proof reads the gluing
+  through these.
+- `Ray.seamGlue_isTotal`: **totality** — the glued object is total on all of `F.Duration`.
+- `Ray.pastOf_seamGlue`, `Ray.futOf_seamGlue`: the two restriction identities. The second is
+  where the seam hypothesis is consumed, because at the seam point itself the branch test is
+  *true*.
+- `Ray.seamGlue_unique`: any possible world restricting to the two rays is the gluing.
+- `Ray.seamGlue_clause`: the clause as the `∃!` those three results package — the half-line
+  counterpart of `Presheaf.sheaf_clause` for two bounded sections.
 
 ## References
 
@@ -80,6 +138,12 @@ elsewhere by charter, and nothing in this module may be read as having settled i
   the binary gluing this module's seam operator is the half-line counterpart of
 * `FormalSystem/Semantics/Extension/Extension.lean` — the Extension Theorem, where the directed
   gluing case takes on its dependence on *Saturation*
+* `FormalSystem/Semantics/PartialHistory.lean` — `PartialHistory.rel_across_seam`, the seam
+  argument the gluing operator delegates to, stated once off totality with two independent seam
+  coordinates
+* `FormalSystem/PlusLanguage/PlusPasting.lean` — `paste`, `paste_rel`, `paste_agreeFrom` and
+  `paste_agreeUpTo`: the same operator on two *total* histories, the total-history instance of the
+  half-line operator here, and not re-derived in this module
 -/
 
 namespace FormalSystem.Semantics.Presheaf
@@ -153,6 +217,127 @@ def FutRay.toBeh (f : FutRay F 0) (l : F.Duration) (hl : 0 ≤ l) : Beh F l :=
 @[simp] theorem FutRay.toBeh_states (f : FutRay F 0) (l : F.Duration) (hl : 0 ≤ l)
     {t : F.Duration} (ht : (f.toBeh l hl).val.domain t) :
     (f.toBeh l hl).val.states t ht = f.1 ⟨t, ht.1⟩ := rfl
+
+/-! ## The ray-layer gluing operator -/
+
+namespace Ray
+
+/-- The pasted state function of a ray pair: the past ray up to and including `t`, the future ray
+after. The split is a dependent `if` so each branch carries the half-line witness it needs, and
+the test's `Decidable` instance is the temporal order's own `LinearOrder` — so the split is
+computational and contributes no axiom. -/
+def seamGlueFun {t : F.Duration} (b : PastRay F t) (f : FutRay F t) :
+    F.Duration → F.WorldState :=
+  fun s => if h : s ≤ t then b.1 ⟨s, h⟩ else f.1 ⟨s, (not_le.mp h).le⟩
+
+/-- The task relation across the seam, from the past ray at `s ≤ t` to the future ray at
+`s' > t`: composition through the shared seam state. Delegated to the shared seam argument
+`PartialHistory.rel_across_seam` at the two rays' `toPH` readings, with both seam coordinates
+taken at `t`; the frame law reaching it is `TaskFrame.comp` and nothing else. -/
+theorem seamGlue_rel_le_lt [F.IsRegular] {t : F.Duration} (b : PastRay F t) (f : FutRay F t)
+    (hseam : b.seam = f.seam) {s s' : F.Duration} (hs : s ≤ t) (hs' : ¬ s' ≤ t) :
+    F.TaskRel (b.1 ⟨s, hs⟩) (s' - s) (f.1 ⟨s', (not_le.mp hs').le⟩) :=
+  PartialHistory.rel_across_seam (F.comp) (σ := b.toPH) (τ := f.toPH)
+    (hσm := le_rfl) (hτm' := le_rfl) (hmatch := hseam)
+    (hs := hs) (hs' := (not_le.mp hs').le) (hsm := hs) (hm's' := (not_le.mp hs').le)
+    (hd := by rw [add_comm]; exact (sub_add_sub_cancel s' t s).symm)
+
+/-- The glued state function respects the task relation at every pair of times. Four cases,
+because `PartialHistory.respects_task` is unconditional: both inside the past ray, both inside
+the future ray, and the two mixed orientations. The mixed case running *backwards* across the
+seam goes through the off-zero reflection law `TaskFrame.reflection_of_ne`, which suffices
+because that case is strict — and which is what keeps the construction clear of
+`Classical.choice`. -/
+theorem seamGlue_rel [F.IsRegular] {t : F.Duration} (b : PastRay F t) (f : FutRay F t)
+    (hseam : b.seam = f.seam) :
+    ∀ s s' : F.Duration, F.TaskRel (seamGlueFun b f s) (s' - s) (seamGlueFun b f s') := by
+  intro s s'
+  unfold seamGlueFun
+  by_cases hs : s ≤ t <;> by_cases hs' : s' ≤ t
+  · rw [dif_pos hs, dif_pos hs']; exact b.2 ⟨s, hs⟩ ⟨s', hs'⟩
+  · rw [dif_pos hs, dif_neg hs']; exact seamGlue_rel_le_lt b f hseam hs hs'
+  · rw [dif_neg hs, dif_pos hs']
+    have hne : s' - s ≠ 0 := sub_ne_zero.mpr (by intro h; exact hs (h ▸ hs'))
+    rw [F.reflection_of_ne hne, neg_sub]
+    exact seamGlue_rel_le_lt b f hseam hs' hs
+  · rw [dif_neg hs, dif_neg hs']
+    exact f.2 ⟨s, (not_le.mp hs).le⟩ ⟨s', (not_le.mp hs').le⟩
+
+/-- **Seam gluing at the ray layer.** A past ray and a future ray agreeing at the seam glue to a
+possible world — the paper's `⌢_z` in the case its own pasting passage applies it in. -/
+def seamGlue [F.IsRegular] {t : F.Duration} (b : PastRay F t) (f : FutRay F t)
+    (hseam : b.seam = f.seam) : WorldHistory F :=
+  WorldHistory.ofTotal F (seamGlueFun b f) (seamGlue_rel b f hseam)
+
+@[simp]
+theorem seamGlue_states_le [F.IsRegular] {t : F.Duration} (b : PastRay F t) (f : FutRay F t)
+    (hseam : b.seam = f.seam) {s : F.Duration} (hs : s ≤ t) :
+    (seamGlue b f hseam).state s = b.1 ⟨s, hs⟩ := by
+  change seamGlueFun b f s = _
+  rw [seamGlueFun, dif_pos hs]
+
+@[simp]
+theorem seamGlue_states_not_le [F.IsRegular] {t : F.Duration} (b : PastRay F t) (f : FutRay F t)
+    (hseam : b.seam = f.seam) {s : F.Duration} (hs : ¬ s ≤ t) :
+    (seamGlue b f hseam).state s = f.1 ⟨s, (not_le.mp hs).le⟩ := by
+  change seamGlueFun b f s = _
+  rw [seamGlueFun, dif_neg hs]
+
+/-- **Totality.** The glued object is a world history — total on all of `F.Duration` — because
+the two half-lines cover the duration type and meet in exactly one point. Stated as a named fact
+rather than left implicit in the type, because the effective-extension verdict recorded in this
+module's final section rests on it. -/
+theorem seamGlue_isTotal [F.IsRegular] {t : F.Duration} (b : PastRay F t) (f : FutRay F t)
+    (hseam : b.seam = f.seam) : (seamGlue b f hseam).val.IsTotal :=
+  (seamGlue b f hseam).property
+
+/-- **The first restriction identity**: the glued world's past ray at the seam is the past ray it
+was glued from. -/
+theorem pastOf_seamGlue [F.IsRegular] {t : F.Duration} (b : PastRay F t) (f : FutRay F t)
+    (hseam : b.seam = f.seam) : pastOf (seamGlue b f hseam) t = b := by
+  refine Subtype.ext (funext fun x => ?_)
+  change (seamGlue b f hseam).state x.1 = b.1 x
+  rw [seamGlue_states_le _ _ _ x.2]
+
+/-- **The second restriction identity**: the glued world's future ray at the seam is the future
+ray it was glued from. This is where the seam hypothesis is consumed — at the seam point itself
+the branch test is *true*, so the glued world reads the **past** ray there, and only `hseam`
+closes the gap. -/
+theorem futOf_seamGlue [F.IsRegular] {t : F.Duration} (b : PastRay F t) (f : FutRay F t)
+    (hseam : b.seam = f.seam) : futOf (seamGlue b f hseam) t = f := by
+  refine Subtype.ext (funext fun x => ?_)
+  change (seamGlue b f hseam).state x.1 = f.1 x
+  by_cases hx : x.1 ≤ t
+  · have hxt : x.1 = t := le_antisymm hx x.2
+    rw [seamGlue_states_le _ _ _ hx]
+    have hb' : b.1 ⟨x.1, hx⟩ = b.seam := by
+      rw [show (⟨x.1, hx⟩ : {y : F.Duration // y ≤ t}) = ⟨t, le_rfl⟩ from Subtype.ext hxt]
+      rfl
+    have hf' : f.1 x = f.seam := by
+      rw [show x = (⟨t, le_rfl⟩ : {y : F.Duration // t ≤ y}) from Subtype.ext hxt]
+      rfl
+    rw [hb', hf', hseam]
+  · rw [seamGlue_states_not_le _ _ _ hx]
+
+/-- **Uniqueness**: any possible world restricting to `b` and `f` at the seam is the gluing. -/
+theorem seamGlue_unique [F.IsRegular] {t : F.Duration} (b : PastRay F t) (f : FutRay F t)
+    (hseam : b.seam = f.seam) (σ : WorldHistory F) (hb : pastOf σ t = b) (hf : futOf σ t = f) :
+    σ = seamGlue b f hseam := by
+  refine WorldHistory.ext_state fun r => ?_
+  by_cases hr : r ≤ t
+  · rw [seamGlue_states_le _ _ _ hr, ← hb]; rfl
+  · rw [seamGlue_states_not_le _ _ _ hr, ← hf]; rfl
+
+/-- **The ray-layer gluing clause**, as the `∃!` its two restriction identities and uniqueness
+package — the half-line counterpart of `Presheaf.sheaf_clause`'s statement for two bounded
+sections. -/
+theorem seamGlue_clause [F.IsRegular] {t : F.Duration} (b : PastRay F t) (f : FutRay F t)
+    (hseam : b.seam = f.seam) :
+    ∃! σ : WorldHistory F, pastOf σ t = b ∧ futOf σ t = f :=
+  ⟨seamGlue b f hseam, ⟨pastOf_seamGlue b f hseam, futOf_seamGlue b f hseam⟩,
+    fun _ hσ => seamGlue_unique b f hseam _ hσ.1 hσ.2⟩
+
+end Ray
 
 end FormalSystem.Semantics.Presheaf
 
