@@ -359,9 +359,18 @@
           "path": "specs/710_sliced_class_incompleteness_characterization/plans/01_land-finite-width-refutation.md",
           "type": "plan",
           "summary": "Nine phases, 10 hours: module skeleton and witness, positive half, negative half in two parts, semantic layer, corollaries, build-graph wiring, completeness restatements, theorem-index rows plus the full gate set."
+        },
+        {
+          "path": "specs/710_sliced_class_incompleteness_characterization/summaries/01_land-finite-width-refutation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for the nine-phase library landing of the finite-width refutation."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Landed the time-sliced certificate class's finite-width incompleteness refutation as five sorry-free FormalSystem/ theorems under PlusSlicedCertificate/Limits/NoFiniteWidth.lean, wired into the build graph, with the class's completeness status restated in PlusSlicedCertificate.lean and EmbedComplete.lean and five new theorem-index.md rows.",
+      "roadmap_items": [
+        "Land the finite-width refutation as library theorems under `PlusSlicedCertificate/Limits/NoFiniteWidth.lean`"
+      ]
     },
     {
       "project_number": 709,

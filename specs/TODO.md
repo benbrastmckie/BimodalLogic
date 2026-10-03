@@ -683,6 +683,7 @@ ORIGINAL SCOPE (superseded 2026-10-03; retained for provenance only). BLOCKED AN
 - **Dependencies**: Task 703
 - **Research**: [710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md]
 - **Plan**: [710_sliced_class_incompleteness_characterization/plans/01_land-finite-width-refutation.md]
+- **Summary**: [710_sliced_class_incompleteness_characterization/summaries/01_land-finite-width-refutation-summary.md]
 
 **Description**: IMPLEMENTATION SCOPE: THE LIBRARY LANDING OF THIS TASK'S REFUTATION. The research round is complete and it SUCCEEDED: the time-sliced certificate class of task 703's amended Stage 2 IS incomplete for full L-plus, and the gap is exactly FINITE WIDTH. What remains is to land that refutation as `FormalSystem/` theorems. Report: `specs/710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md`. Probe (compiled outside the build graph, namespace `Probe710`, currently a `WIRED_REPO` entry of `scripts/check-evidence-probes.sh`): `specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean`.
 
