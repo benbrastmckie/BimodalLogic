@@ -2546,8 +2546,15 @@ ROW = re.compile(r'^\| (?P<label>.+?) \| (?P<stmt>.+?) \| `(?P<name>FormalSystem
 # exactly the way its soundness theorem is. Widening the alternation can only let a row
 # that previously reported "no such declaration" be found and then still be required to
 # carry its `Paper:` line -- it cannot silence an existing failure.
+#
+# The captured identifier class is Unicode (`\w` over `str`), not ASCII: this tree names
+# declarations with Greek letters, and an ASCII-only class truncates such a name at its
+# first non-ASCII character, so the base name never matches and a landed declaration is
+# reported as "no such declaration". The same one-way-safety argument applies -- a wider
+# identifier class can only surface a row that was previously invisible, which must then
+# still carry its own `Paper:` line to pass.
 DECL = re.compile(r'^\s*(?:@\[[^\]]*\]\s*)?(?:private\s+|protected\s+|noncomputable\s+)*'
-                  r'(?:theorem|lemma|def|abbrev|instance|inductive)\s+([A-Za-z_][A-Za-z0-9_.\']*)')
+                  r'(?:theorem|lemma|def|abbrev|instance|inductive)\s+((?:[^\W\d]|[.\'])[\w.\']*)')
 
 rows = []
 for line in open(INDEX, encoding="utf-8"):
