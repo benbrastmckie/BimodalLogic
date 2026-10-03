@@ -195,7 +195,7 @@ remove table rows to match what is on disk before proceeding.
 
 ---
 
-### Phase 2: Compression/README.md — the L⁺ twin whose theorem was withdrawn [IN PROGRESS]
+### Phase 2: Compression/README.md — the L⁺ twin whose theorem was withdrawn [COMPLETED]
 
 **Goal**: Author
 `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/README.md` (100-140 lines),
@@ -259,7 +259,7 @@ alignment half; if the alignment half has since acquired a consumer, say so accu
 repeating the research-time claim.
 
 **Files to modify**:
-- `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/README.md` - new file, 100-140 lines
+- `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/README.md` - new file, 100-140 lines *(deviation: altered — landed at 158 lines; the withdrawal statement and the retained-and-unused section needed the extra prose)*
 
 **Verification**:
 - `bash scripts/readme-lint.sh FormalSystem BimodalTools | grep -A5 -- '--- Check 3 ---'` reports
@@ -273,7 +273,7 @@ repeating the research-time claim.
 
 ---
 
-### Phase 3: PlusSlicedCertificate/README.md — 25 modules in six layers [NOT STARTED]
+### Phase 3: PlusSlicedCertificate/README.md — 25 modules in six layers [IN PROGRESS]
 
 **Goal**: Author `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/README.md` (160-220
 lines): the six-layer route, a 25-row module table, and a closing
