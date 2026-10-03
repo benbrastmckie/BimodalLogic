@@ -606,7 +606,6 @@
       "created": "2026-05-11T19:35:39Z",
       "last_updated": "2026-09-16T15:37:32Z",
       "topic": "algebraic-representation",
-      "file_scope": null,
       "priority": "low"
     },
     {
@@ -621,7 +620,6 @@
       "next_artifact_number": 1,
       "artifacts": [],
       "topic": "frame-extensions",
-      "file_scope": null,
       "priority": "low"
     },
     {
@@ -636,7 +634,6 @@
       "next_artifact_number": 1,
       "artifacts": [],
       "topic": "frame-extensions",
-      "file_scope": null,
       "priority": "low"
     },
     {
@@ -766,8 +763,7 @@
           "type": "research",
           "summary": "LLM baseline calibration: 727-record benchmark, random baseline 53.2%, 4 prompt modes, custom eval script recommended, openai SDK available"
         }
-      ],
-      "file_scope": null
+      ]
     },
     {
       "project_number": 231,
@@ -781,8 +777,7 @@
         298
       ],
       "created": "2026-06-01T20:00:00Z",
-      "last_updated": "2026-09-21T14:06:48Z",
-      "file_scope": null
+      "last_updated": "2026-09-21T14:06:48Z"
     },
     {
       "project_number": 410,
