@@ -46,6 +46,10 @@ here, in `TraceCertificate.lean`.
 | `BiLasso/` | Finitely presented bi-infinite ultimately-periodic step paths over an `IntPresentation` — the decision layer for *presented* ℤ-frames. Entry point `check` decides satisfiability at a state of one presented frame; it does **not** decide the logic (18 files) | Sorry-free; outside the build graph (the re-export is unimported), compile-checked by the C6 rot guard |
 | `WitnessFamily.lean` | Re-export for the WitnessFamily subdirectory | Sorry-free |
 | `WitnessFamily/` | Presentation-free certificates for ℤ-time refutation: `LabelledLasso`/`WitnessFamily`, the four conditions `LocalCoherentLab`/`FulfillingLab`/`BoxFaithful`/`Target`, the presented `ShiftSet` model `std`, the agreement theorems `truth_iff_mem` and `joint_countermodel`, the four decision instances `decidableLocalCoherentLab`/`decidableFulfillingLab`/`decidableBoxFaithful`/`decidableTarget` with their composition `decidableCertifies`, the bundled condition `Certifies` and the named joint statement `Refutes` with the composition `refutes_of_certifies` a certificate checker's accepting branch applies, and the impossibility theorems `no_witnessFamily_of_validZTime`/`no_witnessFamily_of_MF` (7 files) | Sorry-free; inside the build graph — the generated library root `FormalSystem.lean` imports every module under `FormalSystem/` directly, so `lake build` compiles all seven |
+| `PlusWitnessFamily.lean` | Re-export for the PlusWitnessFamily subdirectory | Sorry-free |
+| `PlusWitnessFamily/` | The L⁺-indexed twin of `WitnessFamily/`, existing because the stability condition (C5) `StabFaithful` is not stateable over `Formula`: the six conditions with their decision procedures, the agreement theorem `plusRefutes_of_certifies`, the `Compression/` layer whose compression theorem is **withdrawn**, and the `Limits/` refutations that withdraw it (17 files — 9 at top level, 5 under `Compression/`, 3 under `Limits/`). See [PlusWitnessFamily README](PlusWitnessFamily/README.md) | Sorry-free |
+| `PlusSlicedCertificate.lean` | Re-export for the PlusSlicedCertificate subdirectory | Sorry-free |
+| `PlusSlicedCertificate/` | The **time-sliced** L⁺ certificate: a bi-serial labelled graph presenting a frame on the infinite carrier `ℤ × Fin n` with finite fibres, replacing all-threads fulfilment with fulfilment of computed live positions. Soundness, relative completeness and the embedding of the landed `Formula`-side family are proved; the finite-carrier finite model property is refuted and the sliced one is open (25 files). See [PlusSlicedCertificate README](PlusSlicedCertificate/README.md) | Sorry-free |
 | `Verified/` | Correctness theory for the tableau engine — termination bounds and the model-construction bridge; all files imported by the aggregator. See [Verified README](Verified/README.md) (21 files) | Sorry-free |
 | `Propositional/` | Self-contained Kalmár-style propositional decision procedure, independent of the modal/temporal/completeness machinery; all files imported by the aggregator. See [Propositional README](Propositional/README.md) (3 files) | Sorry-free |
 
@@ -155,6 +159,8 @@ same node, not drawn above to avoid a crossing line).
 - [FMP README](FMP/README.md) - Finite model property
 - [BiLasso README](BiLasso/README.md) - Bi-lasso decision layer for presented ℤ-frames
 - [WitnessFamily README](WitnessFamily/README.md) - Presentation-free ℤ-time refutation certificates
+- [PlusWitnessFamily README](PlusWitnessFamily/README.md) - The L⁺ certificate and the stability condition it states
+- [PlusSlicedCertificate README](PlusSlicedCertificate/README.md) - The time-sliced L⁺ certificate
 - [Verified README](Verified/README.md) - Correctness theory for the tableau engine
 - [Propositional README](Propositional/README.md) - Kalmár-style propositional decision procedure
 
@@ -165,4 +171,4 @@ same node, not drawn above to avoid a crossing line).
 
 ---
 
-*Last verified: 2026-09-24*
+*Last verified: 2026-10-02*

@@ -370,7 +370,7 @@ imports.
 
 ---
 
-### Phase 4: Gate verification and cross-file audit [IN PROGRESS]
+### Phase 4: Gate verification and cross-file audit [COMPLETED]
 
 **Goal**: Confirm the acceptance criterion holds and that the three new files introduce no new
 warning, no C9 violation and no stale stamp.
@@ -416,7 +416,7 @@ scope was touched and must be investigated before the phase closes.
 
 ---
 
-### Phase 5: List the two subtrees in their parent READMEs (optional, non-gating) [NOT STARTED]
+### Phase 5: List the two subtrees in their parent READMEs (optional, non-gating) [COMPLETED]
 
 **Goal**: Silence the Check 2 `NOT LISTED` warnings for the two subtrees in
 `FormalSystem/Metalogic/Decidability/README.md`, and name `Compression` in
@@ -428,8 +428,8 @@ may be dropped without reopening the task.
       `PlusWitnessFamily/`, `PlusSlicedCertificate.lean`, `PlusSlicedCertificate/` — mirroring the
       existing `WitnessFamily/` and `BiLasso/` rows (which carry file counts and sorry status).
 - [ ] Re-count the file counts at edit time rather than reusing a plan-time number.
-- [ ] Add one line to `PlusWitnessFamily/README.md` naming `Compression` (it currently names
-      `Limits` but never `Compression`).
+- [x] Add one line to `PlusWitnessFamily/README.md` naming `Compression` (it currently names
+      `Limits` but never `Compression`). *(deviation: altered — three bullets added, not one: `TransId.lean` was also reported `NOT LISTED` in the same file and `Limits/` had no Modules bullet of its own, so all three were added together)*
 - [ ] Refresh the `*Last verified:*` stamp on any file edited here.
 
 **Timing**: 0.5 hours

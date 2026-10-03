@@ -179,6 +179,14 @@ What is new is everything that reads a label.
   `plusCertifies_stabUntl_example`)
 - `Incompleteness.lean` — the three stability targets, their ℤ-time non-validity, and the two
   refutations of the retired congruences
+- `TransId.lean` — the hop-free collapse: a family whose succession relation never leaves the
+  index it is read at collapses (C1') to its one-position form and (C2') to its per-lasso form
+- `Compression/` — the compression layer: the L⁺ type, the combinatorial core, fulfilment at a
+  bare label sequence, the readout and the segment bound, and the (C5) demand's semantics. The
+  L⁺ compression theorem it was built toward does **not** exist for this certificate class
+  (5 files)
+- `Limits/` — the two refutations that withdraw it: `hopTarget` certified by no hop-free
+  family, and `pumpTarget` certified by **no** family of the class at all (3 files)
 
 ## Dependencies
 
@@ -195,8 +203,11 @@ What is new is everything that reads a label.
 ## Related Documentation
 
 - [WitnessFamily README](../WitnessFamily/README.md)
+- [The L⁺ compression layer](Compression/README.md)
+- [The limits of the L⁺ certificate class](Limits/README.md)
+- [The time-sliced L⁺ certificate](../PlusSlicedCertificate/README.md)
 - [Decidability README](../README.md)
 
 ---
 
-*Last verified: 2026-09-29*
+*Last verified: 2026-10-02*
