@@ -225,7 +225,7 @@ now reads as this repository's own transposition, consistent with "Language corr
 (2026-09-08)" above.
 
 **`def:BX`'s Burgess/Xu provenance footnote: closed.** The paper attributes TN, TS,
-UC/UG/SU/UF/UI (A1a/A2a/A3a/A5a/A6a), CN (A7a, with Xu) and TL (in spirit, Xu's V₃) to Burgess and
+UC/UG/US/UF/UI (A1a/A2a/A3a/A5a/A6a), CN (A7a, with Xu) and TL (in spirit, Xu's V₃) to Burgess and
 Xu, and marks TC/UT/NP/NF/NA/NB as original. The apparent contradiction with the tree is resolved
 in the paper's favour: **CN is Burgess 1982 A7a**, and it is sound. Burgess 1982 §1.2 uses the same
 strict/open-guard semantics as this tree (the guard holds on `x < z < y`), and the tree proves A7a
@@ -1464,10 +1464,10 @@ sha256: `dc940901838a1228ffa3b3170466bbc3d8046f4596db23184afb55fb32896257`
 
 ```latex
 \begin{Ddef} \label{def:BX}
-  The \textit{Base Burgess--Xu Tense Logic} \textbf{BX} extends \textbf{CPL} to include the metarules \textbf{\aref{TN}} and \textbf{\aref{TR}} together with all instances of the axiom schemata \textbf{\aref{TS}}, \textbf{\aref{TL}}, \textbf{\aref{TC}}, \textbf{\aref{UE}}, \textbf{\aref{UT}}, \textbf{\aref{UI}}, \textbf{\aref{UC}}, \textbf{\aref{UF}}, \textbf{\aref{UG}}, \textbf{\aref{SU}}, \textbf{\aref{CN}}, \textbf{\aref{NP}}, \textbf{\aref{NF}}, \textbf{\aref{NA}}, and \textbf{\aref{NB}} presented in \textbf{\S\ref{sub:Logic}}.%
+  The \textit{Base Burgess--Xu Tense Logic} \textbf{BX} extends \textbf{CPL} to include the metarules \textbf{\aref{TN}} and \textbf{\aref{TR}} together with all instances of the axiom schemata \textbf{\aref{TS}}, \textbf{\aref{TL}}, \textbf{\aref{TC}}, \textbf{\aref{UE}}, \textbf{\aref{UT}}, \textbf{\aref{UI}}, \textbf{\aref{UC}}, \textbf{\aref{UF}}, \textbf{\aref{UG}}, \textbf{\aref{US}}, \textbf{\aref{CN}}, \textbf{\aref{NP}}, \textbf{\aref{NF}}, \textbf{\aref{NA}}, and \textbf{\aref{NB}} presented in \textbf{\S\ref{sub:Logic}}.%
     \footnote{
       \textbf{\aref{TN}} is (half of) Burgess's necessitation rule \textsc{TG}~\cite[\S1.3]{Burgess1982}, and \textbf{\aref{TS}} is his \textit{No Last Element} variant~\cite[\S1.6]{Burgess1982}.
-      \textbf{\aref{UC}}, \textbf{\aref{UG}}, \textbf{\aref{SU}}, \textbf{\aref{UF}}, and \textbf{\aref{UI}} are his axioms A1a, A2a, A3a, A5a, and A6a respectively~\cite[\S1.3]{Burgess1982}, their past-tense duals following by \textbf{\aref{TR}}, his working mirror-image convention.
+      \textbf{\aref{UC}}, \textbf{\aref{UG}}, \textbf{\aref{US}}, \textbf{\aref{UF}}, and \textbf{\aref{UI}} are his axioms A1a, A2a, A3a, A5a, and A6a respectively~\cite[\S1.3]{Burgess1982}, their past-tense duals following by \textbf{\aref{TR}}, his working mirror-image convention.
       \textbf{\aref{CN}} is his axiom A7a, independently confirmed by Xu as defining linear frames~\cite[\S3]{Xu1988}.
       \textbf{\aref{UE}} is not among Burgess's numbered axioms but follows immediately from \textbf{\aref{UC}} taking $\psi = \top$.
       \textbf{\aref{TC}}, \textbf{\aref{UT}}, \textbf{\aref{NP}}, \textbf{\aref{NF}}, \textbf{\aref{NA}}, and \textbf{\aref{NB}} are not found in Burgess or Xu and are the present system's own additions.
@@ -1475,7 +1475,7 @@ sha256: `dc940901838a1228ffa3b3170466bbc3d8046f4596db23184afb55fb32896257`
     }
 \end{Ddef}
 ```
-sha256: `8ff38fe7e73cc6978a5b7079542d55686a820dc4d5ceb4614a763b802d2fc87d`
+sha256: `2d1a59a446b32ff9280673f51ae26705f697a3ed21509769dcb7437142725651`
 
 ### `def:TMplus-f` — the discrete Burgess–Xu tense logic BX_f, and its Z-time footnote — **DANGLING as of the 2026-09-07 rename-absorption re-pin: RENAMED to `def:BX-z` (removed from manifest)**
 
@@ -2050,7 +2050,7 @@ def:frame-validity|env|-|-|86a0c4b220bc43d04a2bfc14ccd14f0dab0182ff735ffde9c660e
 def:logical-consequence|env|-|-|3af67167ee4a393d77fc8cfa8ddc065fe932bedf76a14febb8608a9001af5486
 CO|aitem|-|-|5c468c01776c449b212c98070b5bfc70951691a23905cd4d4c249bf1f5375d41
 def:S5|env|-|-|dc940901838a1228ffa3b3170466bbc3d8046f4596db23184afb55fb32896257
-def:BX|env|-|-|8ff38fe7e73cc6978a5b7079542d55686a820dc4d5ceb4614a763b802d2fc87d
+def:BX|env|-|-|2d1a59a446b32ff9280673f51ae26705f697a3ed21509769dcb7437142725651
 def:BX-z|env|-|-|21277d0a1046e1bc1dfe7b9a215c24a07fa0008d27a22234886a8e94b884456b
 def:BX-d|env|-|-|5783d60a441fcb38f44e285b7766ee176c366a1c3948daffa9684855d656dc24
 def:BX-r|env|-|-|650cb790801150df6a3d04a1356bb8c346b4e24694f381d8c5fbc7458da8f038

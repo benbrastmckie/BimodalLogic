@@ -23,7 +23,7 @@ system) and derivation trees with 7 inference rules.
   Dedekind (2) layers
   - Propositional: K, S, EFQ (ex falso), Peirce
   - Modal S5: MT (reflexivity), M5 (collapse), MK (distribution)
-  - Temporal (BX, future direction): TS, UG, UC, TC, SU, UF, UI, CN, UE, TL, UT
+  - Temporal (BX, future direction): TS, UG, UC, TC, US, UF, UI, CN, UE, TL, UT
   - Modal-Temporal: MF
   - Uniformity: NP, NF, NA, NB
   - Discrete: UZ, Z1; Dense: DN, NN; Reynolds Dedekind: PU, SEP
@@ -47,7 +47,7 @@ system) and derivation trees with 7 inference rules.
 |----------|--------|-------------|
 | Propositional | K, S, EFQ, Peirce | Classical propositional logic basis |
 | Modal S5 | MT, M5, MK | S5 necessity (4 and B derived) |
-| Temporal | TS, UG, UC, TC, SU, UF, UI, CN, UE, TL, UT | Burgess-Xu Until/Since, future direction |
+| Temporal | TS, UG, UC, TC, US, UF, UI, CN, UE, TL, UT | Burgess-Xu Until/Since, future direction |
 | Interaction | MF | Modal-temporal connection axiom (TF derived) |
 
 ## Inference Rules

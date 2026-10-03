@@ -32,7 +32,7 @@ Each entry reads *Derived* — *Primary (TR)*:
 * `leftMonoSinceH` — `left_mono_until_G` (UG)
 * `rightMonoSince` — `right_mono_until` (UC)
 * `connectPast` — `connect_future` (TC)
-* `enrichmentSince` — `enrichment_until` (SU)
+* `enrichmentSince` — `enrichment_until` (US)
 * `selfAccumSince` — `self_accum_until` (UF)
 * `absorbSince` — `absorb_until` (UI)
 * `sinceP` — `until_F` (UE)
@@ -110,7 +110,7 @@ private def baseAx {fc : FrameClass} {φ : Formula} (a : Axiom φ)
     (by simp [Formula.reflectTime, Formula.allFuture, Formula.allPast, Formula.someFuture,
       Formula.somePast, Formula.neg, Formula.top, Formula.reflect_time_involution])
 
-/-- `p ∧ (φ S ψ) → φ S (ψ ∧ (φ U p))`: TR of SU (`enrichment_until`). -/
+/-- `p ∧ (φ S ψ) → φ S (ψ ∧ (φ U p))`: TR of US (`enrichment_until`). -/
 @[tmLemma] def enrichmentSince {fc : FrameClass} (φ ψ p : Formula) :
     ⊢[fc] (Formula.and p (Formula.snce φ ψ) |>.imp
       (Formula.snce φ (Formula.and ψ (Formula.untl φ p)))) :=

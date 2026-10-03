@@ -444,6 +444,8 @@ For Bimodal-specific guides and references, see [docs/](../docs/README.md):
 
 *Last verified: 2026-10-02 — `lake build` clean and sorry-free (0 sorries outside Boneyard),
 `scripts/check-module-invariants.sh` all-green (C1–C37), `scripts/readme-lint.sh` exit 0,
-`scripts/typst-sync-check.sh` PASS. `scripts/check-paper-definitions.sh` reports drift on
-`def:BX` against the live paper, where the axiom `SU` has been renamed `US`; that check exits 0
-in CI only because the upstream paper sits outside this repository.*
+`scripts/typst-sync-check.sh` PASS. `scripts/check-paper-definitions.sh` exit 0: the paper's
+rename of the axiom `SU` to `US` has been absorbed, `def:BX` re-pinned, and every citation of
+that key under `FormalSystem/`, `docs/` and `typst/` updated to match. The check reports the
+paper's file checksum as moved with all 43 recorded definitions unchanged; in CI it is a neutral
+skip, the upstream paper sitting outside this repository.*

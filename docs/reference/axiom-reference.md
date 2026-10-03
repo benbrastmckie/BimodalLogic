@@ -88,7 +88,7 @@ convention (b) deliberately.
 | Seriality | TS | `serial_future` |
 | Until/Since monotonicity | UG, UC | `left_mono_until_G`, `right_mono_until` |
 | Connectedness | TC | `connect_future` |
-| Enrichment | SU | `enrichment_until` |
+| Enrichment | US | `enrichment_until` |
 | Self-accumulation | UF | `self_accum_until` |
 | Absorption | UI | `absorb_until` |
 | Linearity | CN, TL | `linear_until`, `temp_linearity` |
@@ -130,7 +130,7 @@ surplus axiom.
 | `leftMonoSinceH` | H(φ→χ) → (φSψ → χSψ) | TR of UG | `ProofSystem/DerivedAxioms.lean` |
 | `rightMonoSince` | H(φ→ψ) → (χSφ → χSψ) | TR of UC | `ProofSystem/DerivedAxioms.lean` |
 | `connectPast` | φ → HFφ | TR of TC | `ProofSystem/DerivedAxioms.lean` |
-| `enrichmentSince` | p ∧ (φSψ) → φS(ψ ∧ φUp) | TR of SU | `ProofSystem/DerivedAxioms.lean` |
+| `enrichmentSince` | p ∧ (φSψ) → φS(ψ ∧ φUp) | TR of US | `ProofSystem/DerivedAxioms.lean` |
 | `selfAccumSince` | φSψ → (φ ∧ φSψ)Sψ | TR of UF | `ProofSystem/DerivedAxioms.lean` |
 | `absorbSince` | φS(φ ∧ φSψ) → φSψ | TR of UI | `ProofSystem/DerivedAxioms.lean` |
 | `sinceP` | φSψ → Pψ | TR of UE | `ProofSystem/DerivedAxioms.lean` |
@@ -398,7 +398,7 @@ DerivationTree.temporalNecessitation : DerivationTree [] φ →
 ## Paper Key Correspondence (BX temporal group)
 
 The paper's `def:BX` names its base tense logic by `\aitem` keys (TN, TR, TS, TC, TL, UE, UT, UI,
-UC, UF, UG, SU, CN, NP, NF, NA, NB). `FormalSystem/ProofSystem/Axioms.lean` states exactly these
+UC, UF, UG, US, CN, NP, NF, NA, NB). `FormalSystem/ProofSystem/Axioms.lean` states exactly these
 schemata as its primitive axioms, under descriptive constructor names, and obtains every past
 mirror the way the paper does, by the time-reflection rule TR (`DerivationTree.time_reflection`,
 `Formula.reflectTime`). "Mirror" below names the derived `DerivedAxioms` theorem.
@@ -416,7 +416,7 @@ mirror the way the paper does, by the time-reflection rule TR (`DerivationTree.t
 | UC | G(φ→ψ) → (χUφ → χUψ) | `right_mono_until` | `right_mono_since` | Burgess 1982 A1a/A1b; Xu (1)/(2) |
 | UF | (φUψ) → (φ∧(φUψ))Uψ | `self_accum_until` | `self_accum_since` | Burgess 1982 A5a/A5b; Xu (7)/(8) |
 | UG | G(φ→χ) → (φUψ → χUψ) | `left_mono_until_G` | `left_mono_since_H` | Burgess 1982 A2a/A2b; Xu (1)/(2) |
-| SU | θ∧(φUψ) → φU(ψ∧(φSθ)) | `enrichment_until` | `enrichment_since` | Burgess 1982 A3a/A3b; Xu (3)/(4) |
+| US | θ∧(φUψ) → φU(ψ∧(φSθ)) | `enrichment_until` | `enrichment_since` | Burgess 1982 A3a/A3b; Xu (3)/(4) |
 | CN | (φUψ ∧ χUθ) → three-way disjunction | `linear_until` (paper's order, right-associated `A∨(B∨C)`) | `linear_since` | Burgess 1982 A7a/A7b; Xu (10)/(11) |
 | NP | X⊤ → Y⊤ | `discrete_symm_fwd` | `discrete_symm_bwd` | original |
 | NF | X⊤ → GX⊤ | `discrete_propagate_fwd` | none | original |

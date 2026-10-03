@@ -52,7 +52,7 @@ past-directed mirror, and the S5 schemata 4 and B, are derived theorems in
    - UG: left_mono_until_G
    - UC: right_mono_until
    - TC: connect_future
-   - SU: enrichment_until
+   - US: enrichment_until
    - UF: self_accum_until
    - UI: absorb_until
    - CN: linear_until
@@ -100,7 +100,7 @@ writes `U(event, guard)`, so each `Burgess:` line in a docstring below is quoted
 | TS | `serial_future` / `serial_past` | B82 §1.6, "No Last Element" `F⊤` (and mirror) | — |
 | UC | `right_mono_until` / `right_mono_since` | B82 A1a / A1b | (1) / (2) |
 | UG | `left_mono_until_G` / `left_mono_since_H` | B82 A2a / A2b | (1) / (2) |
-| SU | `enrichment_until` / `enrichment_since` | B82 A3a / A3b | (3) / (4) |
+| US | `enrichment_until` / `enrichment_since` | B82 A3a / A3b | (3) / (4) |
 | UF | `self_accum_until` / `self_accum_since` | B82 A5a / A5b | (7) / (8) |
 | UI | `absorb_until` / `absorb_since` | B82 A6a / A6b | (9) / — |
 | CN | `linear_until` / `linear_since` | B82 A7a / A7b | (10) / (11) |

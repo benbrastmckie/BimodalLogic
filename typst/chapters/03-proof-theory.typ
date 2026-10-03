@@ -106,7 +106,7 @@ The primed names denote past mirrors, which are derived by the TR rule rather th
     [BX11$'$], [], [`DerivedAxioms.tempLinearityPast`], [$P phi.alt and P psi arrow.r P(phi.alt and psi) or P(phi.alt and P psi) or P(P phi.alt and psi)$],
     [BX12], [UT], [`Axiom.F_until_equiv`], [$F phi.alt arrow.r (top #untl phi.alt)$],
     [BX12$'$], [], [`DerivedAxioms.pSinceEquiv`], [$P phi.alt arrow.r (top #snce phi.alt)$],
-    [BX13], [SU], [`Axiom.enrichment_until`], [$p and (phi.alt #untl psi) arrow.r (phi.alt #untl (psi and (phi.alt #snce p)))$],
+    [BX13], [US], [`Axiom.enrichment_until`], [$p and (phi.alt #untl psi) arrow.r (phi.alt #untl (psi and (phi.alt #snce p)))$],
     [BX13$'$], [], [`DerivedAxioms.enrichmentSince`], [$p and (phi.alt #snce psi) arrow.r (phi.alt #snce (psi and (phi.alt #untl p)))$],
     table.hline(),
   ),

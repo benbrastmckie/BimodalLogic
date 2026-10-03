@@ -72,7 +72,7 @@ the paper's `TP`/`CT` → `TP1`/`TP2`, `P9`/`P10` → `P7`/`P8`, `TB`/`TA` → `
 * `TC` — Lean identifier: `Axiom.temp_connect`
 * `TL` — Lean identifier: `Axiom.temp_linearity`; Notes: Disjunct order/association is the paper's,
   transcribed verbatim (see the doc-comment above).
-* `UE`, `UT`, `NP`, `NF`, `UI`, `UC`, `UF`, `UG`, `SU`, `NA`, `NB`, `CN` — Lean identifier: none
+* `UE`, `UT`, `NP`, `NF`, `UI`, `UC`, `UF`, `UG`, `US`, `NA`, `NB`, `CN` — Lean identifier: none
   (under these names); Notes: The Lean `BX` layer (`ProofSystem/Axioms.lean`'s until/since
   constructors: `serial_future`, `left_mono_until_G`, `enrichment_until`, ...) states the same
   system under descriptive names, with each past mirror explicit where the paper derives it by TR.

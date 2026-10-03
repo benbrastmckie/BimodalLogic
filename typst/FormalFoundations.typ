@@ -473,18 +473,18 @@ constrains is the points of evaluation, not the propositions.
     + *UC*: $#allfuture (phi.alt arrow.r psi) arrow.r ((chi #until phi.alt) arrow.r (chi #until psi))$.
     + *UF*: $(phi.alt #until psi) arrow.r (phi.alt and (phi.alt #until psi)) #until psi$.
     + *UG*: $#allfuture (phi.alt arrow.r chi) arrow.r ((phi.alt #until psi) arrow.r (chi #until psi))$.
-    + *SU*: $theta and (phi.alt #until psi) arrow.r phi.alt #until (psi and (phi.alt #since theta))$.
+    + *US*: $theta and (phi.alt #until psi) arrow.r phi.alt #until (psi and (phi.alt #since theta))$.
     + *NP*: $#Nxt top arrow.r #Prev top$.
     + *NF*: $#Nxt top arrow.r #somefuture #Nxt top$.
     + *NA*: $#Nxt top arrow.r #somepast #Nxt top$.
     + *NB*: $#Nxt top arrow.r square.stroked #Nxt top$.
   ]
   TS, TL, and CN state seriality, linearity, and connectedness respectively; TC, UE, UT, UI, UC,
-  UF, UG, and SU are the primary Since/Until axioms; NP, NF, NA, and NB are the uniformity axioms,
+  UF, UG, and US are the primary Since/Until axioms; NP, NF, NA, and NB are the uniformity axioms,
   holding vacuously unless the order is discrete. In every case the past/since direction is
   derived from the future/until direction by TR, not separately postulated -- only the
   future/until direction is stated above. NB is stated here as it belongs to BX in the paper, even
-  though $square.stroked$ is only interpreted once S5 is fused with BX below.#footnote[Seventeen named keys: two rules (TN, TR), three seriality/linearity/connectedness axioms (TS, TL, CN), eight primary Since/Until axioms (TC, UE, UT, UI, UC, UF, UG, SU), and four uniformity axioms (NP, NF, NA, NB).]
+  though $square.stroked$ is only interpreted once S5 is fused with BX below.#footnote[Seventeen named keys: two rules (TN, TR), three seriality/linearity/connectedness axioms (TS, TL, CN), eight primary Since/Until axioms (TC, UE, UT, UI, UC, UF, UG, US), and four uniformity axioms (NP, NF, NA, NB).]
 ]
 
 #definition($op("TM")$)[
