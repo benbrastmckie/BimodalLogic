@@ -1134,26 +1134,94 @@ Dependencies: 462 is a REAL SEMANTIC dependency -- the engine-level assembly is 
 - **Topic**: decidability
 - **Dependencies**: Task 428, Task 429, Task 411
 
-**Description**: The semantic lift and the Track A assembly. Owns obstruction O4 of the Phase 7.3 deadlock, then delivers what Phase 7.3 of task 165 was for. Grounding: specs/165_establish_semantic_finite_model_property/reports/09_phase7-deadlock-blocker-research.md.
+**Description**: The semantic lift and the Track A assembly. Owns obstruction O4 of the Phase 7.3 deadlock, then delivers what Phase 7.3 of task 165 was for. Grounding: specs/archive/165_establish_semantic_finite_model_property/reports/09_phase7-deadlock-blocker-research.md (the report was archived with 165; the pre-archive path in earlier revisions of this description no longer resolves).
 
-THIS TASK CARRIES THE WORK MOVED OUT OF TASK 165's PHASE 7.3. Task 165 terminated with Phase 7 scoped to what it delivered (the truth lemma and Track A's conditional results); 7.3 -- `valid_iff_allClosed` and the `Decidable` instances -- was moved here rather than closed, because it is blocked on prerequisites no task owned.
+READ THIS FIRST: THIS TASK IS NO LONGER ON THE CRITICAL PATH TO A FIRST DECIDABILITY RESULT. ℤ-time validity of the base language is already decided, by a route that has nothing to do with this tableau spine. Verified against the tree on 2026-10-03 by `#check` and `#print axioms` under `import FormalSystem`:
 
-O4 HAS TWO DISTINCT PIECES, per Verified/Decidable.lean:3062-3067: "It is not yet `valid_iff_allClosed` (7.3), which additionally needs the fuel/termination side and the truth-lemma gate, and it says nothing about the two rules scheduled outside `allRulesForFC` -- `serialityRule` and `timeLinearity` run as stages 2 and 3 of `expandOnce` and need their own obligations at the point where `expandOnce`, rather than `applyRule`, is the object."
+  FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime
+    : (φ : FormalSystem.Syntax.Formula) → Decidable (FormalSystem.Semantics.ValidZTime φ)
+  axioms: [propext, Classical.choice, Quot.sound]
+  FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean
 
-(a) Two more `RuleSound`-analogues at the `expandOnce` level, for `serialityRule` and `timeLinearity`. These are deliberately outside `allRulesForFC`, so `ruleSound_of_mem_allRulesForFC` (landed, 34/34) does NOT cover them.
+It is a `def`, not an `instance` (a global instance would change instance resolution repository-wide; its own docstring says so). Its scope qualifiers are load-bearing and must be carried on every restatement: `FrameClass.ZTime` only; `φ : Formula`, the base-language syntax with no stability operator; empty premises. It is `decidable_of_iff` through `validZTime_iff_noCertifiedCandidate` (same file, same axiom set). The empty-premise consequence corollary `decidableSemanticConsequenceNil` covers `SemanticConsequenceIn FrameClass.ZTime [] σ` only; the general-premise case is unwritten. Do NOT restate any of this as "TM is decidable": that sentence drops every qualifier that makes the result true.
+
+DISAMBIGUATION, because the name collides. `FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean` also declares defs of type `Decidable (ValidZTime φ)`, but they TAKE a finite-model-property hypothesis as an argument, and that hypothesis is refuted by `Probe476.fmp_false` (`specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean`). The unconditional one is the `Compression`-sub-namespaced declaration above. Cite the full name, never the bare one.
+
+WHAT THIS TASK'S DELIVERABLE ACTUALLY IS, GIVEN THAT. Not "the first decidability theorem". The spine's deliverable is the FOUR-CLASS statement: the biconditional `isValid φ fc = true ↔ ⊨ φ` together with the `Decidable (⊨ φ)` instances at all four `FrameClass` constructors -- `Base`, `Dense`, `ZTime`, `RTime` (verified: `inductive FrameClass` in `FormalSystem/ProofSystem/Axioms.lean` has exactly these four; earlier revisions of this description named them "Base, Dense, Discrete and Dedekind", which are the prose names, not the constructors). The spine is the only route FILED for Base, Dense and RTime. It is NOT the only route to any decidability result, and at ZTime it is not even the first: there it duplicates, by a different method, something already proved. Rank the work accordingly -- this is a four-class uniformity result and a tableau-correctness result, not a race to a first theorem.
+
+WHAT THE SPINE HAS TODAY: THE SOUND DIRECTION ONLY. Verified:
+
+  FormalSystem.Metalogic.Decidability.sound_of_isValid
+    : ∀ {φ} (r : DecisionResult φ), r.isValid = true → ⊨ φ
+  FormalSystem.Metalogic.Decidability.isValid_sound
+    : ∀ (φ : Formula) (fc : FrameClass), isValid φ fc = true → ⊨ φ
+  both axioms: [propext, Classical.choice, Quot.sound]
+  FormalSystem/Metalogic/Decidability/Correctness.lean
+
+Their conclusion is the UNRELATIVIZED `⊨ φ` whatever `fc` was passed, and that is forced by the types rather than chosen: `DecisionResult.valid` carries `⊢ φ` = `DerivationTree FrameClass.Base [] φ` for every `fc`. The frame-class-relative forms (`isValid_validDense`, `isValid_validZTime`, `isValid_validRTime`) are therefore weakenings obtained through the `Validity.valid_implies_*` monotonicity lemmas, not independent results. The siblings `isTautology_sound`, `isContradiction_sound`, `not_isSatisfiable_sound`, `decide_isValid_sound`, `decideBlocking_isValid_sound` and `decideAuto_isValid_sound` all factor through `sound_of_isValid`. The completeness direction `⊨ φ → isValid φ fc = true` is open, and it is the whole of what this task owes.
+
+THE RETIRED-AS-VACUOUS RECORD, AND WHY IT IS A CONSTRAINT ON THIS TASK. `Correctness.lean` carries a section headed "`validity_decidable` / `validity_has_decision_procedure` -- Retired as vacuous". Two theorems once stood there and were retired rather than deleted quietly, because their NAMES claimed a decidability result their PROOFS did not contain. Faithfully, per that section:
+
+  (i) `validity_decidable (φ : Formula) : (⊨ φ) ∨ ¬(⊨ φ)` was proved by
+      `exact Classical.em (⊨ φ)`. That is excluded middle for an arbitrary proposition. It
+      holds of any predicate whatsoever and says nothing about `⊨` in particular, about
+      tableaux, or about computation. It produces no procedure and no `Decidable` instance.
+  (ii) `validity_has_decision_procedure (φ : Formula) : ∃ decision : Bool, decision = true ↔ ⊨ φ`
+      was proved by `by_cases h : (⊨ φ)` supplying `true` or `false` accordingly. The
+      existential is witnessed non-constructively BY THE TRUTH VALUE ONE IS TRYING TO COMPUTE --
+      `Classical.em` with a `Bool` wrapped around it. In particular it is not the statement that
+      `isValid` (`DecisionProcedure.lean`) is that `decision`, which is the content one would want.
+
+That section also records what is still owed and why it is deliberately not stated there: the completeness direction, hence the biconditional and the four `Decidable (⊨ φ)` instances, needs the fuel/termination side and the truth-lemma gate on top of the landed rule half, and must additionally account for the two rules scheduled outside `allRulesForFC`. Its closing sentence is the standing prohibition this task works under: stating an `isValid`-shaped `iff` before the obligation is discharged "would reproduce exactly the defect this retirement removes: a true-looking name over a proof that does not reach it."
+
+O4 HAS TWO DISTINCT PIECES. The source is the docstring of the "7.2, the assembly" section of `FormalSystem/Metalogic/Decidability/Verified/Decidable.lean`, under the heading "What this does and does not deliver" (cited by section heading rather than line number; the line numbers in earlier revisions of this description have drifted):
+
+(a) Two more `RuleSound`-analogues at the `expandOnce` level, for `serialityRule` and `timeLinearity`. These two are deliberately OUTSIDE `allRulesForFC` -- `mem_allRulesForFC_iff` (`Verified/RuleSpec.lean`) turns membership into `r ≠ .serialityRule ∧ r ≠ .timeLinearity ∧ ruleFrameClass r ≤ fc`, so the landed assembly provably does not cover them. They run as stages 2 and 3 of `expandOnce` and need their own obligations at the point where `expandOnce`, rather than `applyRule`, is the object.
+
 (b) THE SEMANTIC LIFT: the induction lifting single-step satisfiability preservation to the whole recursion, so that `.allClosed` yields a contradiction. This is the LARGER of the two and is comparable in weight to a landed sub-phase, not to a wrapper. Naming it inside "the two outside rules" understates it.
 
-THEN, and only after (a), (b) and both predecessors: `valid_iff_allClosed` plus the four `Decidable` instances for validity over Base, Dense, Discrete and Dedekind.
+THEN, and only after (a), (b) and both predecessors: the semantic lift's consequence at all four frame classes.
 
-WHAT IS ALREADY LANDED (do not re-prove): the rule half is done -- `ruleSound_of_mem_allRulesForFC` is a single landed induction over `mem_allRulesForFC_iff`, ledger complete at 34/34, from task 165 Phase 7.2.
+WHAT IS ALREADY LANDED (do not re-prove). The rule half is done. Verified:
 
-PLAN AGAINST SIX ROWS, NOT EIGHT: the truth-lemma gate hypothesis hTW is discharged on SIX accepted TemporalWitnessProbe rows (A, B, C, D, E, F), not the historical eight -- rows I and K left when the PASSIVE arms of untlNeg/snceNeg were retired. See the banner at the head of Tests/BimodalTest/TemporalWitnessProbe.lean.
+  FormalSystem.Metalogic.Decidability.Verified.ruleSound_of_mem_allRulesForFC
+    : ∀ (fc : FrameClass), ∀ r ∈ allRulesForFC fc, RuleSound (carrierForFC fc) r
+  axioms: [propext, Classical.choice, Quot.sound]
+  FormalSystem/Metalogic/Decidability/Verified/Decidable.lean
 
-DO NOT write a conditional `valid_iff_allClosed` carrying hTW as an explicit hypothesis. Correctness.lean:98-105 refuses exactly this shape, and the O4(b) hypothesis would BE the conclusion's forward direction, making the theorem vacuous. Four vacuous theorems were deleted in 165's Phase 8; do not land a fifth.
+One induction over `mem_allRulesForFC_iff`, discharged case by case against a per-rule ledger complete at 34/34 `TableauRule` constructors; from task 165 Phase 7.2. Twenty-seven of the thirty-four travel through `ruleSound_base_mono` (`carrierBase` is `fun _ => True`); only two transports are non-trivial and both are one projection.
 
-DONE WHEN: `valid_iff_allClosed` and the four `Decidable` validity instances are landed unconditionally, sorry-free and axiom-clean outside Boneyard, lake build green.
+PLAN AGAINST SIX ROWS, NOT EIGHT. The truth-lemma gate hypothesis `hTW` is discharged on SIX accepted `TemporalWitnessProbe` rows (A, B, C, D, E, F), not the historical eight. Verified against the banner at the head of `Tests/BimodalTest/Metalogic/Decidability/TemporalWitnessProbe.lean` (task 634 relocated the file there from the test root): "The eight rows this file repeatedly describes as 'the rows the gate accepts' -- A, B, C, D, E, F, I, K -- are now six: I and K, the two genuine negative-until/since rows, have joined H, J, M and N on the rejected side." The cause is the retirement of the PASSIVE co-decomposition arms of `.untlNeg`/`.snceNeg`; the banner calls it a deliberate, authorized completeness regression and notes it removes the last set of hand-built branches on which `hTW` was discharged. Read every "all eight rows the gate accepts" in that file's findings as "accepted before the retirement".
 
-POST-RELOCATION NOTE (2026-09-21). The banner this task points to is now at the head of Tests/BimodalTest/Metalogic/Decidability/TemporalWitnessProbe.lean; task 634 moved the file there from the test root.
+DO NOT write a conditional form carrying `hTW` as an explicit hypothesis. `Correctness.lean` refuses exactly this shape in two places -- the retirement section quoted above, and the docstring paragraph "`isKnownValid` is not a substitute hypothesis here" -- and the O4(b) hypothesis would BE the conclusion's forward direction, making the theorem vacuous. Four vacuous theorems were deleted in 165's Phase 8; do not land a fifth.
+
+THE INDEPENDENT ORACLE FOR THE ZTIME INSTANCE. At ZTime this task's result must AGREE with a route already proved, and there is a cheap fixture that tests it. This is cross-check L-E3 of the ranking ratification in `specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md` (section "L -- the base language", entry L-R1). The target formula, verified by `#print` under `import FormalSystem` and NOT at the namespace the scope spec's shorthand suggests -- it lives in `FormalSystem.Metalogic.Decidability.WitnessFamilyExamples`, not directly in `FormalSystem.Metalogic.Decidability`:
+
+  WitnessFamilyExamples.phiPos : Formula := occurs.box.and once.box
+  WitnessFamilyExamples.occurs : Formula := pForm.or (fP.or pP)      -- p ∨ (Fp ∨ Pp)
+  WitnessFamilyExamples.once   : Formula := pForm.imp pP.neg        -- p → ¬Pp
+  with pForm = Formula.atom pA, fP = pForm.someFuture, pP = pForm.somePast
+  FormalSystem/Metalogic/Decidability/WitnessFamily/Examples.lean
+
+So the formula the scope spec writes as `□(p ∨ Fp ∨ Pp) ∧ □(p → ¬Pp)` is `phiPos`, with the disjunction right-associated as `pForm.or (fP.or pP)`. `phiPos` is the sole member of `gammaPos`; `delPos = []`, so `posFamily` refutes no `σ` and instead exhibits a model of `gammaPos`.
+
+The oracle is stronger than a mere certificate run, and this is worth knowing before building the fixture: `WitnessFamilyExamples.phiPos_satisfiable` is a landed theorem (axioms `[propext, Classical.choice, Quot.sound]`) producing a `FrameClass.ZTime.Sat` frame, model, history and duration at which every member of `gammaPos` is true -- assembled from `posFamily.joint_countermodel` and the four `by decide` facts `posFamily_localCoherent`, `posFamily_fulfilling`, `posFamily_boxFaithful`, `posFamily_target`. Hence `phiPos.neg` is NOT ZTime-valid, as a theorem and not as a computation.
+
+THE CROSS-CHECK: run both routes on `phiPos.neg`.
+  - `Compression.decidableValidZTime phiPos.neg` must decide NEGATIVELY (it is refuting a formula
+    whose negation has a proved ZTime model).
+  - `decide phiPos.neg searchDepth tableauFuel fc` (signature verified: `decide (φ : Formula) (searchDepth : Nat := 10) (tableauFuel : Nat := 1000) (fc : FrameClass := .Base)`)
+    must NOT report `.valid` at `fc = .ZTime`. `.fuelExhausted` is an acceptable outcome;
+    `.valid` is a soundness contradiction with `phiPos_satisfiable` and would mean the spine is
+    broken, not merely incomplete.
+  - `isValid phiPos.neg .ZTime` must not be `true`, for the same reason.
+This is a cheap consistency witness the two routes have never been given, it needs none of O4, and it can be landed as a test fixture before (a) or (b). Doing it first is recommended: it either buys confidence in the engine at no cost or finds a soundness defect while the spine is still open.
+
+OUT OF SCOPE. Do not reopen the C9 do-not-re-attempt register; it already holds the refuted forms (an unconditional `buildTableau_isSome`, and the decidable-branch-gate family that collapses to `false` on branches that mint a world). `gapPotential`'s density measure for `densityRule` is task 464's, genuinely open, and not this task's to attempt. `Decidable (Derivable .ZTime [] φ)` by the witness-family route is task 412's, not this one's (verified: `Decidable (Derivable` has zero occurrences anywhere in `FormalSystem/`).
+
+DONE WHEN: (a) and (b) are landed unconditionally; the semantic lift's consequence is stated and proved at all four of `Base`, `Dense`, `ZTime`, `RTime` with no hypothesis standing in for its own forward direction; the L-E3 cross-check fixture is wired and green; sorry-free and axiom-clean outside Boneyard; `lake build` green.
+
+VERIFICATION NOTE (2026-10-03, this revision). Every declaration name, type, axiom set and path cited above was re-derived from the tree by `#check`/`#print axioms`/`#print` under `import FormalSystem`, plus grep, not taken on trust. Three things the sources named did not survive that check and were corrected here: the grounding report path (archived under `specs/archive/165_.../`); the four frame classes (constructors are `Base`/`Dense`/`ZTime`/`RTime`); and the namespace of the L-E3 target (`...Decidability.WitnessFamilyExamples.phiPos`, which does not resolve as `...Decidability.phiPos`). Line-number citations were replaced by declaration names and section headings throughout, since the previously cited lines had drifted.
 
 ---
 
