@@ -1,16 +1,22 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 6,
-  "summary": "Planned the library landing of the finite-width refutation: a nine-phase, 10-hour plan transcribing the compiled Probe710 development into FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean, with the verbatim Deliverable 2 statements, the two scope limits carried into the docstrings, five unpinned docs/theorem-index.md rows, and the PlusSlicedCertificate.lean / EmbedComplete.lean completeness restatements.",
+  "status": "implemented",
+  "dispatch_seq": 9,
+  "phase": "implement",
+  "phases_completed": 9,
+  "phases_total": 9,
+  "summary": "Landed the finite-width incompleteness refutation as five sorry-free FormalSystem/ theorems under PlusSlicedCertificate/Limits/NoFiniteWidth.lean (not_plusValidZTime_neg_Phi, no_finite_width_sat, not_certifies, not_sliced_complete, not_finite_width_fmp), wired into the build graph, with the class's completeness status restated in PlusSlicedCertificate.lean and EmbedComplete.lean and five new docs/theorem-index.md rows. All nine plan phases closed (eight COMPLETED, one COMPLETED WITH EXCLUSIONS for a pre-existing ASCII-only-regex limitation in check-module-invariants.sh's C15 second assertion, outside this task's file_scope to fix). Full lake build green; task status set to completed.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/710_sliced_class_incompleteness_characterization/plans/01_land-finite-width-refutation.md",
-      "summary": "Nine phases, 10 hours: module skeleton and witness, positive half, negative half in two parts, semantic layer, corollaries, build-graph wiring, completeness restatements, theorem-index rows plus the full gate set."
+      "type": "summary",
+      "path": "specs/710_sliced_class_incompleteness_characterization/summaries/01_land-finite-width-refutation-summary.md",
+      "summary": "Implementation summary for the nine-phase library landing of the finite-width refutation."
+    },
+    {
+      "type": "code",
+      "path": "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean",
+      "summary": "New module: the witness Phi, the positive-half frame and canonical-path structure, the negative-half finite-width refutation, and the three certificate corollaries."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 9,
-  "blockers": []
+  "blockers": [],
+  "requires_user_review": false
 }

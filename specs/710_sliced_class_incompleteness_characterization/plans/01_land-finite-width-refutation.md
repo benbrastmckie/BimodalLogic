@@ -1,7 +1,7 @@
 # Implementation Plan: Task #710
 
 - **Task**: 710 - sliced_class_incompleteness_characterization
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: 703 (landed `PlusSlicedCertificate` subtree, incl. `Check.lean`, `Sound.lean`, `EmbedComplete.lean`)
 - **Research Inputs**: `specs/710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md`

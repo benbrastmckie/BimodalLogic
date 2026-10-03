@@ -11,9 +11,9 @@ next_project_number: 729
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,564,565,567,570,604,616,617,664,705,706,710,711,713,714,716,722,725,726,727,728 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,566,618,712,719,720,723 | 298,464,502,564,565,616,706,710 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,709,724 | 231,465,497,710,719,723 | algebraic-representation, dataset-enhancement, decidability |
+| 1 | 127,128,178,257,298,464,481,502,559,564,565,567,570,604,616,617,664,705,706,711,712,713,714,716,722,725,726,727,728 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,566,618,719,720,723 | 298,464,502,564,565,616,706 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,709,724 | 231,465,497,719,723 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -81,13 +81,13 @@ next_project_number: 729
   └─ 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
   └─ 723 [NOT STARTED] — Ground the pinned:C14 claim on the three witness-family...
     └─ 724 [NOT STARTED] — Decidability of Z-time provability as a corollary of...
+712 [BLOCKED] — REVISED 2026-10-03 FROM THE DECIDABILITY-PROGRAMME REVIEW....
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
 726 [NOT STARTED] — Make the decidability-programme inventory re-runnable from...
 709 [NOT STARTED] — STANDING (2026-10-03, second re-scope; SUPERSEDES BOTH...
-712 [BLOCKED] — REVISED 2026-10-03 FROM THE DECIDABILITY-PROGRAMME REVIEW....
 
 ### Documentation
 
@@ -106,7 +106,6 @@ next_project_number: 729
 ### Incompleteness
 
 705 [RESEARCHED] — STATUS NOTE (2026-10-02, supersedes the expected answer...
-710 [IMPLEMENTING] — IMPLEMENTATION SCOPE: THE LIBRARY LANDING OF THIS TASK'S...
 
 ### Literature
 
@@ -678,7 +677,7 @@ ORIGINAL SCOPE (superseded 2026-10-03; retained for provenance only). BLOCKED AN
 ---
 
 ### 710. Sliced class incompleteness characterization
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: formal:logic
 - **Topic**: incompleteness
 - **Dependencies**: Task 703

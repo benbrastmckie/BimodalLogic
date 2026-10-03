@@ -1,9 +1,53 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 9,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/710_sliced_class_incompleteness_characterization/summaries/01_land-finite-width-refutation-summary.md",
+      "summary": "Lands the compiled finite-width refutation probe as FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean (five headline theorems, sorry-free, pcq-axiom), wires it into the build graph, restates the class's completeness status in two places, and adds five unpinned theorem-index rows. All nine plan phases closed (eight COMPLETED, one COMPLETED WITH EXCLUSIONS for a pre-existing ASCII-only-regex limitation in a gate script outside this task's file_scope)."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Landed the time-sliced certificate class's finite-width incompleteness refutation as five sorry-free FormalSystem/ theorems under PlusSlicedCertificate/Limits/NoFiniteWidth.lean, wired into the build graph, with the class's completeness status restated in PlusSlicedCertificate.lean and EmbedComplete.lean and five new theorem-index.md rows.",
+    "roadmap_items": ["Land the finite-width refutation as library theorems under `PlusSlicedCertificate/Limits/NoFiniteWidth.lean`"]
+  },
+  "modified_files": [
+    "FormalSystem.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/EmbedComplete.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/README.md",
+    "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/README.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/README.md",
+    "README.md",
+    "docs/theorem-index.md",
+    "scripts/module-invariants-allowlist.txt",
+    "typst/generated/status.typ"
+  ],
+  "memory_candidates": [
+    {
+      "content": "scripts/check-module-invariants.sh's C5 (markdown module-path resolution) and C15 second assertion (theorem-index Paper:-anchor resolution) both read a declaration's fully-qualified Lean name with ASCII-only regexes. C5's dotted-segment matcher only recognizes consecutive Capitalized ASCII segments, so a namespace that deliberately does not mirror its directory nesting (e.g. `PlusSlicedCertificate.NoFiniteWidth` for a file at `PlusSlicedCertificate/Limits/NoFiniteWidth.lean`) needs an entry in the separate, sanctioned `scripts/module-invariants-allowlist.txt` data file -- editable even when the script itself is out of a task's file_scope, with existing precedent (e.g. `PlusSharingWitnessFamily`) documenting the exact exemption shape to copy. C15's second assertion's declaration-matching regex `[A-Za-z_][A-Za-z0-9_.']*` is ASCII-only and truncates any declaration name at its first non-ASCII character, so a theorem named with a trailing Greek letter (e.g. `not_plusValidZTime_neg_Φ`) can never be anchored by that check, structurally, regardless of docstring content -- a pre-existing checker limitation to report as a reasoned exclusion rather than treat as a defect in the landed theorem.",
+      "category": "PATTERN",
+      "source_artifact": "specs/710_sliced_class_incompleteness_characterization/summaries/01_land-finite-width-refutation-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["check-module-invariants-c5", "check-module-invariants-c15", "ascii-only-regex-limitation", "module-invariants-allowlist", "unicode-declaration-name", "reasoned-exclusion"]
+    },
+    {
+      "content": "When narrowing a transcribed probe's `import FormalSystem` down to a minimal import list, `ring` is NOT transitively available just because other Semantics/Metalogic modules are imported -- it requires an explicit `import Mathlib.Tactic.Ring`, discoverable only by building (the probe's whole-library import masked this dependency). Separately, when trimming genuinely-unused `variable`-introduced section parameters from an internal (non-headline) declaration via `omit [...] in` to satisfy a zero-warning linter gate, every in-file positional call site of that declaration must be updated to drop the same parameters in the same call -- the trim is not local to the declaration's own body, because `omit` changes the declaration's actual parameter list, not just its warning status. This can cascade through a whole call chain (e.g. one inner helper's trim forces the same trim on every caller that only forwarded the now-unused parameter).",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/710_sliced_class_incompleteness_characterization/summaries/01_land-finite-width-refutation-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["lean4-omit-section-variables", "transitive-import-narrowing", "ring-tactic-import", "unused-section-variable-cascade"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1791051010_4c2417",
     "agent_type": "general-implementation-agent",
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 9,
+    "phases_total": 9
   }
 }
