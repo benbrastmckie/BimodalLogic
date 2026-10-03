@@ -460,27 +460,27 @@ comparison against this plan's verbatim block.
 
 ---
 
-### Phase 6: The certificate corollaries [NOT STARTED]
+### Phase 6: The certificate corollaries [COMPLETED]
 
 **Goal**: `not_certifies`, `not_sliced_complete` and `not_finite_width_fmp` are landed, each with
 its `Paper: —` docstring, and the module is complete.
 
 **Tasks**:
-- [ ] Transcribe `not_certifies` (probe lines 1124-1152), routed through the landed `Certifies`
+- [x] Transcribe `not_certifies` (probe lines 1124-1152), routed through the landed `Certifies`
       checker and `PlusSlicedCertificate/Sound.lean`'s own `plusRefutes_of_certifies` argument,
       **keeping the frame** rather than exporting through `PlusRefutes`, which forgets it. Docstring
       records D2: the refutation is of the frame class, so it survives a change to the checker's
       clauses, the tail-stability mechanism or the wire format
-- [ ] Transcribe `not_sliced_complete` (probe lines 1154-1162) with its `Paper: —` docstring
-- [ ] Transcribe `not_finite_width_fmp` (probe lines 1164-1178). Its docstring carries
+- [x] Transcribe `not_sliced_complete` (probe lines 1154-1162) with its `Paper: —` docstring
+- [x] Transcribe `not_finite_width_fmp` (probe lines 1164-1178). Its docstring carries
       **Deliverable 3 in full at the theorem itself**: ℤ/discrete only; `Φ` uses `⊡` so this is an
       L⁺ result and not a result about base TM; nothing about an infinite carrier; nothing about
       soundness; and no width bound for targets that *do* have finite-width countermodels
-- [ ] Add a short closing record to the module docstring (or a trailing `/-! -/` section): the
+- [x] Add a short closing record to the module docstring (or a trailing `/-! -/` section): the
       obstruction chain finite carrier ⊊ finite width ⊊ what the class needs, and the F4
       characterisation — complete exactly on targets with a finite-width countermodel — explicitly
       labelled **argued, not proved**
-- [ ] Close the namespaces; build; commit
+- [x] Close the namespaces; build; commit
 
 **Timing**: 45 minutes
 

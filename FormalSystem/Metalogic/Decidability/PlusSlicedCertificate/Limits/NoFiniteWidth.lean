@@ -1211,6 +1211,96 @@ end Semantics
 
 end Width
 
+/-! ## The certificate corollaries -/
+
+/-- **No time-sliced certificate certifies `Φ.neg`.** The frame a certificate presents is
+`FrameOver.ofSlicedStep` on `Fin G.n`, and an accepted certificate puts a model of `Φ` on it at
+the target position (`PlusSlicedCertificate.Sound`'s `plusRefutes_of_certifies` argument, with the
+frame kept rather than exported through `PlusWitnessFamily.PlusRefutes`, which forgets it — a
+refutation of `Certifies` alone would not survive a checker change; this one does).
+
+Paper: — (the formalization's own refutation; no counterpart in the cited paper)
+-/
+theorem not_certifies (G : PlusSlicedCertificate [] [Φ.neg]) : ¬ G.Certifies := by
+  intro hc
+  have h := G.biSerial_of_certifies hc
+  have hbox := G.boxLabelFaithful_of_certifies hc
+  have hTS := G.tailStable_of_certifies hc
+  have hstab := G.stabFaithful_of_certifies hc
+  have hblf := G.boxLiveFaithful_of_certifies hc
+  have htgt := G.target_of_certifies hc
+  obtain ⟨Rn, hRf, hRlab⟩ := G.exists_fulfilling_run_at_targetTime hc
+  have hlab : G.target.lab G.targetTime = G.canLab Rn.st G.targetTime := by
+    rw [← hRlab]
+    exact G.lab_eq_canLab Rn hRf G.targetTime
+  have hnot : ¬ PlusTruthAt (G.model h) (G.stepHistory h Rn.st Rn.steps) G.targetTime Φ.neg := by
+    intro hT
+    refine htgt.2 Φ.neg (List.mem_singleton_self _) ?_
+    rw [hlab]
+    exact (G.mem_canLab_iff_plusTruthAt h hbox hTS hstab hblf
+      (plusConclusion_mem_closure (List.mem_singleton_self _)) Rn.st Rn.steps G.targetTime).mpr hT
+  apply hnot
+  intro hΦ
+  exact no_finite_width_sat G.stepRel (G.stepRel_fwd h) (G.stepRel_bwd h) (G.model h)
+    (G.stepHistory h Rn.st Rn.steps) G.targetTime hΦ
+
+/-- **The time-sliced certificate class is incomplete for L⁺ over ℤ-time**: `Φ.neg` is a ℤ-time
+non-validity, inside the CTL-like fragment, that no `PlusSlicedCertificate` certifies.
+
+Paper: — (the formalization's own refutation; no counterpart in the cited paper)
+-/
+theorem not_sliced_complete :
+    ¬ ∀ ψ : PlusFormula, ¬ PlusValidZTime ψ →
+      ∃ G : PlusSlicedCertificate [] [ψ], G.Certifies := by
+  intro hcomp
+  obtain ⟨G, hG⟩ := hcomp Φ.neg not_plusValidZTime_neg_Φ
+  exact not_certifies G hG
+
+/-- **No certificate class presenting finite-width sliced frames is complete**, whatever its
+clauses: there is no countermodel to `Φ.neg` on any `FrameOver.ofSlicedStep` frame over a finite
+`W`.
+
+Two scope limits. First, scope is ℤ (discrete) frames only: the pumping argument this refutation
+rests on needs discreteness and says nothing about a dense duration. Second, `Φ` uses `⊡`
+(`PlusFormula.stab`), so this is specifically an **L⁺** result, not a result about the base
+language TM.
+
+Two further disclaimers. Nothing here is claimed about an *infinite* carrier (only about finite
+per-time fibres over an infinite carrier). Nothing here touches soundness. And nothing here
+bounds the width of a countermodel for a target that *does* have a finite-width countermodel —
+only that `Φ.neg` is not such a target.
+
+Paper: — (the formalization's own refutation; no counterpart in the cited paper)
+-/
+theorem not_finite_width_fmp :
+    ¬ ∀ φ : PlusFormula, ¬ PlusValidZTime φ →
+      ∃ (W : Type) (_ : Finite W) (_ : Nonempty W) (R : ℤ → W → W → Prop)
+        (fwd : ∀ t w, ∃ u, R t w u) (bwd : ∀ t w, ∃ v, R (t - 1) v w)
+        (M : TaskModel (FrameOver.ofSlicedStep R fwd bwd).toTaskFrame)
+        (τ : WorldHistory (FrameOver.ofSlicedStep R fwd bwd)) (t : ℤ),
+        ¬ PlusTruthAt M τ t φ := by
+  intro fmp
+  obtain ⟨W, _, _, R, fwd, bwd, M, τ, t, hτ⟩ := fmp Φ.neg not_plusValidZTime_neg_Φ
+  exact hτ (fun hΦ => no_finite_width_sat R fwd bwd M τ t hΦ)
+
+/-!
+## The obstruction chain, and what remains argued rather than proved
+
+**Finite carrier ⊊ finite width ⊊ what the class needs.** A finite carrier forces finite per-time
+fibres (width), so finite width is the strictly weaker, and already-refuted, obstruction: this
+module's `not_finite_width_fmp` subsumes the finite-carrier refutation recorded at
+`FormalSystem/Metalogic/Decidability/FMP/README.md`'s "The finite-carrier route is refuted, not
+merely open" section. What the class needs — the semantic characterisation below — is weaker
+still.
+
+**The semantic characterisation is argued, not proved.** The time-sliced class is complete exactly
+on targets with a finite-width countermodel: necessity is this module's shape (`not_certifies`,
+`not_sliced_complete`), and sufficiency — every finite-width model has an eventually periodic,
+hence tail-stable-presentable, finite-width model — is a Ramsey-for-pairs-style periodicity
+argument that is **not** formalized anywhere in this tree. No module here states, implies, or
+assumes that sufficiency direction.
+-/
+
 end NoFiniteWidth
 
 end PlusSlicedCertificate
