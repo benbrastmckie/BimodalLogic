@@ -11,7 +11,7 @@ next_project_number: 722
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,564,565,567,570,604,616,617,664,705,706,710,711,713,714,716,721 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,564,565,567,570,604,616,617,664,705,706,710,711,713,714,716 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,566,618,709,712,719,720 | 298,464,502,564,565,616,706,710,711 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -74,7 +74,6 @@ next_project_number: 722
 713 [NOT STARTED] — OPTIONAL, FILED NOT SCHEDULED. Nothing depends on this task...
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
-721 [PLANNED] — Review and reconcile the decidability programme across L and...
 709 [NOT STARTED] — STATUS NOTE (2026-10-02, SUPERSEDES THE HEADLINE BELOW -- the...
 712 [BLOCKED] — STATUS NOTE (2026-10-02, THE STATEMENT BELOW IS NOW REFUTED...
 
@@ -107,12 +106,13 @@ next_project_number: 722
 ## Tasks
 
 ### 721. Decidability programme review l and lplus
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: formal:logic
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md]
 - **Plan**: [721_decidability_programme_review_l_and_lplus/plans/01_decidability-programme-review.md]
+- **Summary**: [721_decidability_programme_review_l_and_lplus/summaries/01_decidability-programme-review-summary.md]
 
 **Description**: Review and reconcile the decidability programme across L and L-plus, then emit a revision specification for the affected tasks.
 

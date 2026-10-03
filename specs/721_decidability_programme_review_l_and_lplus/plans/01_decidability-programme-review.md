@@ -1,7 +1,7 @@
 # Implementation Plan: Task #721
 
 - **Task**: 721 - Review and reconcile the decidability programme across L and L-plus
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 5.5 hours
 - **Dependencies**: None (consumes the completed task 718 round, the task 706/710 probe records, and the landed `WitnessFamily/Compression/` layer; writes nothing any live task owns)
 - **Research Inputs**: specs/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md
