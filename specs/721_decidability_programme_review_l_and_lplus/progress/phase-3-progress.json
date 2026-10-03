@@ -1,0 +1,42 @@
+{
+  "phase": 3,
+  "phase_name": "New-Task Specifications (Section H), Ranking Ratification and Disclosure",
+  "started_at": "2026-10-03T15:36:01Z",
+  "last_updated": "2026-10-03T15:38:20Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Section H -- five new-task specifications",
+      "status": "done",
+      "files_touched": [
+        "specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Ranking ratification section, both languages",
+      "status": "done",
+      "files_touched": [
+        "specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "State-write disclosure section",
+      "status": "done",
+      "files_touched": [
+        "specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "Commit (scoped staging: the spec file only)",
+      "status": "done",
+      "files_touched": []
+    }
+  ],
+  "current_objective": 4,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}

@@ -205,7 +205,7 @@ anchor cited later in the spec or ROADMAP is a defect in Section 0, not in the c
 
 ---
 
-### Phase 2: Per-Task Revision Specifications (Sections A-G) and the 711 Resolution [IN PROGRESS]
+### Phase 2: Per-Task Revision Specifications (Sections A-G) and the 711 Resolution [COMPLETED]
 
 **Goal**: Write the per-task scope changes in the 718 format, each naming the task, its current
 status and dependencies (from Section 0), the concrete change, the command that executes it
@@ -284,13 +284,13 @@ task is omitted and no task outside that list is added without a stated reason.
 
 ---
 
-### Phase 3: New-Task Specifications (Section H), Ranking Ratification and Disclosure [NOT STARTED]
+### Phase 3: New-Task Specifications (Section H), Ranking Ratification and Disclosure [IN PROGRESS]
 
 **Goal**: Complete the specification with the tasks to file, the ratified ranking for both
 languages, and the state-write disclosure.
 
 **Tasks**:
-- [ ] Section H -- five new-task specifications, each with proposed title, `task_type`,
+- [x] Section H -- five new-task specifications, each with proposed title, `task_type`, *(completed: H1-H5)*
       dependencies, `file_scope`, description, and "Action required: file with `/task`":
   - H1 prose reconciliation of the decidability status (`markdown` or `general`; `file_scope`:
     `README.md`, `FormalSystem/README.md`, `FormalSystem/Metalogic/Decidability/README.md`,
@@ -310,7 +310,7 @@ languages, and the state-write disclosure.
   - H5 make this review re-runnable (a `/review` step or a standing task regenerating the
     inventory from `docs/theorem-index.md`, the `WIRED`/`WIRED_REPO` arrays and the "Retired as
     vacuous" section; the ROADMAP Maintenance section to name the owner).
-- [ ] "Ranking ratification" section, both languages, each route with its load-bearing
+- [x] "Ranking ratification" section, both languages, each route with its load-bearing *(completed)*
       hypothesis, falsifier and cheapest next experiment, transcribed from research §3: L⁺ R1
       (hypothesis `[F.IsRegular]`; forward factor only proved; E1 then E2 then E3) > R2
       (`StabSaturated`; E4) > R3 as a component of R1 > R4 closed for Z > R5 low; L: L-R1 done
@@ -319,11 +319,11 @@ languages, and the state-write disclosure.
       supersedes `specs/718_.../reports/02_ranked-route-analysis.md` (next experiment is the
       backward dual, not stratification) and where it agrees. No complexity bound is committed;
       713's lower bound is named as the ceiling.
-- [ ] "State-write disclosure" section: this task wrote only files under
+- [x] "State-write disclosure" section: this task wrote only files under *(completed)*
       `specs/721_decidability_programme_review_l_and_lplus/` and `specs/ROADMAP.md`;
       `specs/state.json` and `specs/TODO.md` were read, not written; no task was created,
       revised or abandoned.
-- [ ] Commit (scoped staging: the spec file only).
+- [x] Commit (scoped staging: the spec file only). *(completed: phase 3 commit)*
 
 **Timing**: 1 hour
 

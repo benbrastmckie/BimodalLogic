@@ -404,7 +404,164 @@ user.
 
 ## Section H -- New tasks to file
 
-_(Phase 3 fills this section.)_
+Five tasks. Each is filed with `/task` by the orchestrator or the user; none is filed by this task.
+Every entry re-verifies its own anchors before editing, per the hard constraint that no status
+claim is written unchecked.
+
+### H1 -- Prose reconciliation of the decidability status
+
+**Proposed title**: Reconcile the programme-level decidability prose with the two-statement
+distinction (tableau biconditional open; `Decidable (ValidZTime φ)` proved)
+
+**Proposed `task_type`**: `markdown` (or `general`; the `typst/FormalFoundations.typ` edit may
+route the typst sentence through the typst extension)
+
+**Proposed dependencies**: none mathematical. Run in a **separate cycle** from tasks 177 (owns the
+documentation territory and depends on 26 tasks) and 543 (declares `README.md`), whose
+`file_scope` values collide with this one.
+
+**Proposed `file_scope`**: `README.md`, `FormalSystem/README.md`,
+`FormalSystem/Metalogic/Decidability/README.md`, `FormalSystem/Metalogic/Decidability.lean`
+(module docstring only), `FormalSystem/Metalogic/Decidability/BiLasso/README.md`,
+`docs/architecture/ADR-007-Decidability-One-Directional.md`,
+`docs/project-info/known-limitations.md`, `typst/FormalFoundations.typ`.
+
+**Description**: Every programme-level surface describes only the tableau spine and so states or
+implies that no decidability theorem is machine-checked (Section 0 row 27: `FormalSystem/README.md`
+"decidability **sound direction only**"; `typst/FormalFoundations.typ` "No decidability theorem is
+machine-checked"; `BiLasso/README.md` "no decidability theorem is machine-checked at present";
+the remaining surfaces per the research report's Appendix B hit list, to be re-verified first).
+State the two-statement distinction **once**, in each surface's own register: (i) the tableau
+`isValid φ fc = true ↔ ⊨ φ` biconditional, and `Decidable (⊨ φ)` through it, are open at all four
+frame classes (sound direction only: `sound_of_isValid`, `isValid_sound`); (ii)
+`FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime : (φ : Formula) → Decidable
+(ValidZTime φ)` is proved -- `FrameClass.ZTime`, `Formula` (no `⊡`), empty premises, a `def`,
+axioms `[propext, Classical.choice, Quot.sound]`, computing but not choice-free. Point every surface
+at `docs/theorem-index.md`'s Decidability rows. ADR-007's rule "no surface may say decidability is
+fully proven" stays correct and gains the sentence that the Z-time witness-family result is the one
+decidability theorem that *is* proven. The typst remark that "neither factor logic is known
+decidable" is corrected to: the Discrete factor is; the identity
+`Log(all task frames) = Log(Discrete) ∩ Log(Dense)` remains a target, not a theorem (no Lean
+declaration states it). **Never** write "TM is decidable" unqualified.
+
+**Action required**: file with `/task`, by the orchestrator or the user.
+
+### H2 -- Pin the three witness-family decidability rows in the C14 baseline
+
+**Proposed title**: Ground the `pinned:C14` claim on the three witness-family decidability rows of
+`docs/theorem-index.md`
+
+**Proposed `task_type`**: `general` (shell edit; `lean4` only if the baseline requires a fresh
+`#print axioms` capture)
+
+**Proposed dependencies**: none. Collides with task 706's declared `file_scope`
+(`scripts/check-module-invariants.sh`) -- run in a different cycle from 706 and 705.
+
+**Proposed `file_scope`**: `scripts/check-module-invariants.sh` (and `docs/theorem-index.md` only
+if the outcome is to correct the rows rather than the baseline).
+
+**Description**: `docs/theorem-index.md` rows 147-149 (as of this round) claim `pcq pinned:C14`
+for `FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime`,
+`...validZTime_iff_noCertifiedCandidate` and `...Compression.decidableValidZTime`, but
+`grep -n 'Compression\.\|decidableValidZTime\|validZTime_iff_noCertifiedCandidate\|exists_witnessFamily_of_not_validZTime' scripts/check-module-invariants.sh`
+hits only lines 3411 and 3415, the C-check shadowing allowlist -- no `#print axioms` line and no
+baseline entry (Section 0 rows 25-26, run this round; the research dispatch found the same). The
+index's promise that every listed declaration is machine-pinned is false for exactly the three
+rows this review headlines. **Re-verify first** by re-running that grep; if the pin lives under a
+name both greps missed, close with that finding. Otherwise add the three names to the C14 baseline
+pair (`#print axioms` line plus expected-output line) so the `pinned:C14` cell becomes true, and
+confirm `bash scripts/check-module-invariants.sh` still passes.
+
+**Action required**: file with `/task`, by the orchestrator or the user.
+
+### H3 -- `Decidable (Derivable .ZTime [] φ)` by the witness-family route (L-E1)
+
+**Proposed title**: Decidability of Z-time provability as a corollary of
+`Compression.decidableValidZTime`
+
+**Proposed `task_type`**: `lean4`
+
+**Proposed dependencies**: none (every input is landed; Section 0 rows 1 and 14).
+
+**Proposed `file_scope`**: `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean`
+(or a sibling module under `WitnessFamily/Compression/`), `docs/theorem-index.md`. If the
+corollary needs `FormalSystem.Metalogic.BXCanonical`, check the import graph first -- the
+corollary may have to live in a module downstream of both `Compression/Assembly.lean` and
+`BXCanonical/Completeness.lean` rather than in `Assembly.lean` itself.
+
+**Description**: `soundness_ztime_valid : (d : ⊢[FrameClass.ZTime] φ) → ValidZTime φ`
+(`FormalSystem/Metalogic/Soundness.lean`) and
+`FormalSystem.Metalogic.BXCanonical.derivable_of_validZTime (φ : Formula)`
+(`FormalSystem/Metalogic/BXCanonical/Completeness.lean`) together give
+`Derivable .ZTime [] φ ↔ ValidZTime φ`; `decidable_of_iff` with
+`Compression.decidableValidZTime` finishes `Decidable (Derivable FrameClass.ZTime [] φ)`. A few
+lines. `grep -rn 'Decidable (Derivable' FormalSystem/` returns nothing today (row 14), so this is
+unwritten, not duplicated. Add the `docs/theorem-index.md` row, and (per H2) a C14 baseline
+entry. This closes "decidability of provability over Z" -- one of the four classes Phase 6 of the
+ROADMAP lists as a spine deliverable -- now, without the spine; record that in the docstring and
+leave the other three classes to task 412 (Section G).
+
+**Action required**: file with `/task`, by the orchestrator or the user.
+
+### H4 -- Backward-dual finite-graph probe on a time-asymmetric fixture (E1)
+
+**Proposed title**: Backward-dual `⊡(Pp)` finite-graph summary on the `Probe710` fixture
+
+**Proposed `task_type`**: `lean4`
+
+**Proposed dependencies**: none (the fixture and the forward probe are landed). Collides with
+task 720's declared `file_scope` (`specs/evidence/seam-gluing-ray-product/`,
+`scripts/check-evidence-probes.sh`) -- run in a different cycle from 720.
+
+**Proposed `file_scope`**: `specs/evidence/seam-gluing-ray-product/` (one new probe file),
+`scripts/check-evidence-probes.sh` (one new `WIRED` entry).
+
+**Description**: The forward finite-graph summary is proved
+(`Probe718FiniteGraph.will_iff_allPathsMeet`, `decide_will`, `decidable_will`) on a `Bool`
+fixture whose relation is symmetric under time reversal, and the backward dual is a recorded
+exclusion for that reason (Section 0 row 11). The finite-width obstruction lives in the backward
+factor. Build the backward dual on a **time-asymmetric** fixture: reuse `Probe710.Node` and
+`Probe710.Step` (`specs/710_.../probes/NoFiniteWidthModel.lean`; finitely branching, exactly one
+predecessor per node, bi-infinite paths canonical by `Probe710.path_eq_canon`) and decide
+`⊡(Pp)` at a seam state by backward reachability, mirroring `will_iff_allPathsMeet`. Either
+outcome is the deliverable: a proof shows the two-factor presentation survives at the factor the
+refutation lives in; a counterexample falsifies R1's two-factor presentation and is recorded in
+the probe's header as such. No automata; no complexity claim.
+
+**Fold-in rule**: this is Section E's first probe for 719 Deliverable 5. File it separately
+**only if 719 is not dispatched within the cycle**; if 719 is dispatched, the probe belongs to 719
+and H4 is not filed.
+
+**Action required**: file with `/task` (conditionally, per the fold-in rule), by the orchestrator
+or the user.
+
+### H5 -- Make the decidability-programme review re-runnable
+
+**Proposed title**: Re-runnable decidability inventory: regenerate the four-status table from the
+tree
+
+**Proposed `task_type`**: `meta` (if implemented as a `/review` step or script under the agent
+system) or `general` (if implemented as a standing task with a script under `scripts/`)
+
+**Proposed dependencies**: none.
+
+**Proposed `file_scope`**: `scripts/` (one new script) or the agent-system source store for a
+`/review` step; `specs/ROADMAP.md` Maintenance section (name the owner).
+
+**Description**: The task description's complaint -- every review of the decidability programme is
+a completed task's artifact that nothing re-runs, and `specs/ROADMAP.md` is a document no task
+owns refreshing -- is correct, and this task does not fix it by itself. Build the mechanism:
+regenerate the PROVED / NOT ESTABLISHED / WITHDRAWN / REFUTED inventory from three machine
+sources -- `docs/theorem-index.md`'s Decidability rows (with their `pinned:` cells cross-checked
+against `scripts/check-module-invariants.sh`'s baselines, so H2's class of defect is caught
+mechanically), `scripts/check-evidence-probes.sh`'s `WIRED` and `WIRED_REPO` arrays (refutations
+and their recorded blockers), and `FormalSystem/Metalogic/Decidability/Correctness.lean`'s
+"Retired as vacuous" section (the NOT ESTABLISHED anchor) -- and diff it against
+`specs/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md`
+§1 as the baseline. The ROADMAP's Maintenance section names this task as the owner of the periodic
+re-run until it is filed, then the mechanism.
+
+**Action required**: file with `/task`, by the orchestrator or the user.
 
 ## The 711 tension
 
@@ -417,8 +574,118 @@ pending probe E3. The Phase 0 ruling is restated as newly answerable and left to
 
 ## Ranking ratification
 
-_(Phase 3 fills this section.)_
+Both languages; each route with its load-bearing hypothesis, what would falsify it, and the
+cheapest next experiment. Transcribed from `reports/01_decidability-programme-review.md` §3 against
+Section 0's re-verified anchors. **No complexity bound is committed anywhere in this section**: the
+CTL⋆ 2EXPTIME lower bound (task 713, ARGUED, Section C) is named only as the sanity ceiling that
+any proposed procedure must clear.
+
+### L⁺ -- decidability of `PlusValidZTime` (OPEN by every route)
+
+**R1 -- Seam-gluing ray product with a universal (complementation-shaped) path summary. RANK 1,
+unchanged; hypothesis sharpened.**
+- *Load-bearing hypothesis*: **`[F.IsRegular]`** on the keystone -- `Probe718.seamFibreEquiv`,
+  `plusStab_iff_rays` (general frame), `seamOmegaEquiv`, `plusStab_iff_omega` (over Z) all sit
+  under that instance (Section 0 row 7), discharged through `TaskFrame.comp` plus the reflection
+  convention and nothing else. **Not unconditional**; not stated at a bare `TaskFrame`. Every
+  consumer carries the instance (the Z fixtures do: `FrameOver.ofSlicedStep_isRegular`,
+  `Probe710.F_isRegular`).
+- *Evidence in hand*: keystone proved (general frame and over Z); stratification licenses the
+  alphabet (`Probe718Stratification.plusTruthAt_iff_stratum_atomize`); the forward finite-graph
+  summary holds on the `Bool` fixture (`Probe718FiniteGraph.will_iff_allPathsMeet`, decidable
+  there); the existential summary provably diverges, so *some* universal device is necessary
+  (`Probe718PathQuantifier.exists_ne_stab`).
+- *Weighed and found light*: (a) **only the forward factor of the finite-graph summary is
+  proved; the backward dual is unproved**, a reasoned exclusion justified by the fixture's
+  time-reversal symmetry -- and the finite-width obstruction is located in the backward factor, so
+  the symmetric fixture is exactly the one that cannot see it. (b) Necessity of **a** universal
+  device is demonstrated; necessity of **Safra/Piterman** specifically is not (four candidate
+  devices, Section B).
+- *Falsifiers*: a `⊡`-depth-2 formula whose `⊡`-value at a class is not a function of the class's
+  summary state (kills stratification); the backward-dual summary failing on a time-asymmetric
+  fixture (kills the two-factor presentation at the factor the refutation lives in); a fragment
+  where every universal summary device needs infinite state (kills decidability of the check).
+- *Cheapest next experiments, in order*: **E1** the backward-dual finite-graph probe on a
+  time-asymmetric fixture (Sections E and H4); **E2** the depth-2 stratification probe; **E3** a
+  device-selection probe comparing the candidate universal devices on the `⊡(Fp)`/`⊡(Pp)`
+  shapes, before anything is funded (Section B).
+
+**R2 -- Mosaics / quasimodels. RANK 2, unchanged.**
+- *Hypothesis*: `Probe718Mosaic.StabSaturated` is decidable on finite mosaic sets with mixed germ
+  states (under `[F.IsRegular]`, Section 0 row 13), and a saturated-set existence theorem holds for
+  L⁺.
+- *Evidence*: amalgamation is free (`amalgamate`, via the landed `paste`; `amalgamate_unique`);
+  `StabSaturated` proved only in the same-state corner (`stabSaturated_of_sameState`); the
+  Hodkinson-Reynolds Handbook §§5.10-5.11 bodies are absent from the corpus, so R2 cannot be
+  promoted on textual grounds.
+- *Falsifier*: a finite mosaic set, mixed germ states, on which `StabSaturated` is false yet every
+  finite coherence condition holds.
+- *Cheapest next experiment (**E4**)*: decide `StabSaturated` on the two-state `Bool` fixture's
+  mosaic set at `⊡(Fp)`, then acquire the Handbook pages.
+
+**R3 -- Periodicity / Ramsey (F4; task 709). A COMPONENT of R1, not a route** -- unchanged from
+718; the ROADMAP has not caught up (Section D). Its premise, finite width, is refuted for any
+complete class; as R1's summary step it is either replaced by an automaton acceptance condition or
+is exactly right. Sequenced under 719.
+
+**R4 -- Task-coherence-preserving filtration. CLOSED for Z-time** by
+`Probe706.no_finite_carrier_sat` (`[Finite F.WorldState]`; `⊡`-free witness, hence a fact about TM
+itself) and `Probe710.not_finite_width_fmp` (`[Finite W]`; `⊡`-bearing witness, L⁺-specific). The
+only residue is dense durations, not the programme's target. The ROADMAP's Open Risks row "never
+been tried ... UNASSESSED" is stale (Phase 4 of this plan corrects it).
+
+**R5 -- Translation to a decidable first-order fragment. LOW**, unchanged: the monodic fragment's
+decidability proof is itself the quasimodel method, routing back to R1/R2.
+
+### L -- the base language
+
+**L-R1 -- The witness-family Z-time route. DONE.** `Compression.decidableValidZTime`
+(`FrameClass.ZTime`, `Formula`, empty premises, axioms `[propext, Classical.choice, Quot.sound]`,
+Section 0 row 1). *Hypothesis remaining*: none. *Falsifier*: none; it is a theorem. *Unwritten
+corollaries, cheapest first*: **L-E1** `Decidable (Derivable .ZTime [] φ)` (H3); **L-E2** the
+general-premise residue named in `Compression/Assembly.lean`'s header
+(`decidableSemanticConsequenceNil` is `Γ = []` only, row 3); **L-E3** the cross-check fixture --
+run `decide` and `Compression.decidableValidZTime` on the negation of the `posFamily` target
+`□(p ∨ Fp ∨ Pp) ∧ □(p → ¬Pp)`; the tableau must not report `.valid` where the certificate route
+refutes (Section G).
+
+**L-R2 -- The tableau spine (ROADMAP Phase 6). RANK 1 for the four-class statement and the only
+route filed for Base/Dense/RTime; RANK 2 overall because Z is already done by L-R1.**
+*Hypothesis*: engine totality at a quantified branch budget (428) via the mint-bound route;
+`gapPotential` for `densityRule` (464, genuinely open); the truth-lemma redesign (429);
+`valid_iff_allClosed` (430). *Falsifier*: the C9 register already holds the refuted forms
+(`buildTableau_isSome` unconditional); the next is `gapPotential` having no measure that pays for
+`densityRule`. *Cheapest next experiment*: 464 `--hard --lit`, as the ROADMAP already says; plus
+the description reconciliation of Section G.
+
+**L-R3 -- A dense-time certificate class. NEW, UNFILED, UNRANKED above L-R2.** The Dense factor
+is where `⊨ φ` (Base) and `ValidDense` would be decided if the logic-level dichotomy were a
+theorem (it is not: no Lean declaration states `Log(all) = Log(Discrete) ∩ Log(Dense)`).
+*Hypothesis*: a compression theorem over a dense order (Burgess 1982/1984 chronicles; Reynolds
+1992 for Until/Since over the reals; the mosaic method as the literature's tool for dense flows).
+*Falsifier*: a dense-time non-validity with no finitely presented countermodel of any shape.
+*Cheapest experiment*: none cheap; file research-first only if Base decidability becomes a
+programme goal.
+
+### Where this supersedes `specs/718_omega_sequence_decidability_full_lplus/reports/02_ranked-route-analysis.md`
+
+- **Agrees**: R1 > R2 > R3-as-component > R4-closed > R5-low, unchanged.
+- **Supersedes** in three places: (i) R1's hypothesis is stated as `[F.IsRegular]` via
+  `TaskFrame.comp` plus the reflection convention, never as unconditional; (ii) the **next
+  experiment is the backward dual (E1), not stratification** -- because the refutation lives in the
+  backward factor and that is where the evidence is weakest; (iii) R1's remaining content is named
+  "a universal-summary device, to be selected" rather than "ω-automata determinization", since the
+  probes showed the former and not the latter.
+- **Adds**: the L side (L-R1 done, L-R2, L-R3), which the 718 ranking did not cover.
 
 ## State-write disclosure
 
-_(Phase 3 fills this section.)_
+This task's implementation round wrote only files under
+`specs/721_decidability_programme_review_l_and_lplus/` (this specification, the progress and
+handoff files, the plan's phase markers and checkboxes, the summary, `.return-meta.json`,
+`.orchestrator-handoff.json`) and `specs/ROADMAP.md` (Phase 4 of its plan). `specs/state.json` and
+`specs/TODO.md` were **read, not written**, by this task; the orchestrator's own status-sync
+writes to those two files happen outside this task's commits and are not this task's. No task was
+created, revised, or abandoned; every Section above is a specification to be actioned afterwards
+via `/revise` and `/task`. No probe file, no `FormalSystem/` file, no `docs/` file, no script and
+no typst file was edited; every such fix is a Section H item.
