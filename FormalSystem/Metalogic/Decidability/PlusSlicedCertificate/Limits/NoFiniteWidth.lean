@@ -587,6 +587,261 @@ theorem not_plusValidZTime_neg_Φ : ¬ PlusValidZTime Φ.neg := by
   intro hv
   exact hv F ⟨F_isRegular, F_isZTime⟩ M (histOf 0 0) 0 Φ_true
 
+/-! ## Negative half: no model on a finite-width sliced frame satisfies `Φ`
+
+The frame is `FrameOver.ofSlicedStep R fwd bwd` with `[Finite W]`: the frame every
+`PlusSlicedCertificate` presents (`PlusSlicedCertificate.frame`), with `W = Fin G.n`. Nothing
+below uses anything about `R` beyond bi-seriality, and nothing about `W` beyond finiteness.
+-/
+
+section Width
+
+variable {W : Type} (R : ℤ → W → W → Prop)
+
+/-- An offset-`0` step path of the slice relation: it occupies slice `t` at time `t`. -/
+def IsPath (g : ℤ → W) : Prop := ∀ t, R t (g t) (g (t + 1))
+
+/-! ### Paths: existence through every state, and gluing at a time -/
+
+/-- A forward step sequence from `w` at slice `t`, by choice. -/
+noncomputable def fwdSeq (fwd : ∀ t w, ∃ u, R t w u) (t : ℤ) (w : W) : ℕ → W
+  | 0 => w
+  | n + 1 => Classical.choose (fwd (t + n) (fwdSeq fwd t w n))
+
+@[simp]
+theorem fwdSeq_zero (fwd : ∀ t w, ∃ u, R t w u) (t : ℤ) (w : W) : fwdSeq R fwd t w 0 = w := rfl
+
+theorem fwdSeq_spec (fwd : ∀ t w, ∃ u, R t w u) (t : ℤ) (w : W) (n : ℕ) :
+    R (t + n) (fwdSeq R fwd t w n) (fwdSeq R fwd t w (n + 1)) :=
+  Classical.choose_spec (fwd (t + n) (fwdSeq R fwd t w n))
+
+/-- A backward step sequence into `w` at slice `t`, by choice: `bwdSeq (n + 1)` sits at slice
+`t - n - 1`. -/
+noncomputable def bwdSeq (bwd : ∀ t w, ∃ v, R (t - 1) v w) (t : ℤ) (w : W) : ℕ → W
+  | 0 => w
+  | n + 1 => Classical.choose (bwd (t - n) (bwdSeq bwd t w n))
+
+@[simp]
+theorem bwdSeq_zero (bwd : ∀ t w, ∃ v, R (t - 1) v w) (t : ℤ) (w : W) : bwdSeq R bwd t w 0 = w :=
+  rfl
+
+theorem bwdSeq_spec (bwd : ∀ t w, ∃ v, R (t - 1) v w) (t : ℤ) (w : W) (n : ℕ) :
+    R (t - n - 1) (bwdSeq R bwd t w (n + 1)) (bwdSeq R bwd t w n) :=
+  Classical.choose_spec (bwd (t - n) (bwdSeq R bwd t w n))
+
+/-- Every state at every slice lies on an offset-`0` path. -/
+theorem exists_path_through (fwd : ∀ t w, ∃ u, R t w u) (bwd : ∀ t w, ∃ v, R (t - 1) v w)
+    (t : ℤ) (w : W) : ∃ g, IsPath R g ∧ g t = w := by
+  classical
+  let g : ℤ → W := fun s =>
+    if t ≤ s then fwdSeq R fwd t w (s - t).toNat else bwdSeq R bwd t w (t - s).toNat
+  refine ⟨g, ?_, by simp [g]⟩
+  intro s
+  rcases lt_trichotomy (s + 1) t with h1 | h1 | h1
+  · have hs : ¬ t ≤ s := by omega
+    have hs1 : ¬ t ≤ s + 1 := by omega
+    simp only [g, if_neg hs, if_neg hs1]
+    have e : (t - s).toNat = (t - (s + 1)).toNat + 1 := by omega
+    rw [e]
+    have := bwdSeq_spec R bwd t w (t - (s + 1)).toNat
+    rwa [show t - ((t - (s + 1)).toNat : ℤ) - 1 = s by omega] at this
+  · have hs : ¬ t ≤ s := by omega
+    have hs1 : t ≤ s + 1 := by omega
+    simp only [g, if_neg hs, if_pos hs1]
+    have e1 : (t - s).toNat = 1 := by omega
+    have e2 : (s + 1 - t).toNat = 0 := by omega
+    rw [e1, e2]
+    have := bwdSeq_spec R bwd t w 0
+    simp only [Nat.cast_zero, sub_zero] at this
+    rwa [show t - 1 = s by omega] at this
+  · have hs : t ≤ s := by omega
+    have hs1 : t ≤ s + 1 := by omega
+    simp only [g, if_pos hs, if_pos hs1]
+    have e : (s + 1 - t).toNat = (s - t).toNat + 1 := by omega
+    rw [e]
+    have := fwdSeq_spec R fwd t w (s - t).toNat
+    rwa [show t + ((s - t).toNat : ℤ) = s by omega] at this
+
+/-- Gluing two paths at time `t`: `g₀` up to and including `t`, `g₁` afterwards. -/
+def glue (t : ℤ) (g₀ g₁ : ℤ → W) (s : ℤ) : W := if s ≤ t then g₀ s else g₁ s
+
+theorem glue_of_le {t s : ℤ} (g₀ g₁ : ℤ → W) (h : s ≤ t) : glue t g₀ g₁ s = g₀ s := by
+  simp [glue, h]
+
+theorem glue_of_lt {t s : ℤ} (g₀ g₁ : ℤ → W) (h : t < s) : glue t g₀ g₁ s = g₁ s := by
+  simp [glue, not_le.mpr h]
+
+theorem glue_isPath {t : ℤ} {g₀ g₁ : ℤ → W} (h₀ : IsPath R g₀) (h₁ : IsPath R g₁)
+    (hc : R t (g₀ t) (g₁ (t + 1))) : IsPath R (glue t g₀ g₁) := by
+  intro s
+  rcases lt_trichotomy s t with h | h | h
+  · have e1 : s ≤ t := by omega
+    have e2 : s + 1 ≤ t := by omega
+    rw [glue_of_le _ _ e1, glue_of_le _ _ e2]
+    exact h₀ s
+  · subst h
+    have e2 : s < s + 1 := by omega
+    rw [glue_of_le _ _ le_rfl, glue_of_lt _ _ e2]
+    exact hc
+  · have e2 : t < s + 1 := by omega
+    rw [glue_of_lt _ _ h, glue_of_lt _ _ e2]
+    exact h₁ s
+
+/-! ### Pre and post states, from "exactly one `p` per path" -/
+
+section Core
+
+variable [Finite W] [Nonempty W]
+  (fwd : ∀ t w, ∃ u, R t w u) (bwd : ∀ t w, ∃ v, R (t - 1) v w)
+  (val : ℤ × W → Prop)
+
+/-- A *pre* state: every path through it has `p` strictly ahead. -/
+def PreN (t : ℤ) (w : W) : Prop :=
+  ∀ g, IsPath R g → g t = w → ∃ a, t < a ∧ val (a, g a)
+
+/-- A *post* state: every path through it has `p` strictly behind. -/
+def PostN (t : ℤ) (w : W) : Prop :=
+  ∀ g, IsPath R g → g t = w → ∃ a, a < t ∧ val (a, g a)
+
+variable (someP : ∀ g, IsPath R g → ∃ a, val (a, g a))
+  (onceP : ∀ g, IsPath R g → ∀ a b, val (a, g a) → val (b, g b) → a = b)
+  (succP : ∀ g, IsPath R g → ∀ s,
+    (∀ g', IsPath R g' → g' s = g s → ∃ a, s < a ∧ val (a, g' a)) →
+      ∃ u, R s (g s) u ∧ val (s + 1, u))
+
+omit [Finite W] [Nonempty W] in
+include fwd bwd onceP in
+theorem not_val_of_postN {t : ℤ} {w : W} (h : PostN R val t w) : ¬ val (t, w) := by
+  intro hv
+  obtain ⟨g, hg, hw⟩ := exists_path_through R fwd bwd t w
+  obtain ⟨a, ha, hva⟩ := h g hg hw
+  have := onceP g hg a t hva (by rwa [hw])
+  omega
+
+omit [Finite W] [Nonempty W] in
+include fwd bwd onceP in
+theorem not_val_of_preN {t : ℤ} {w : W} (h : PreN R val t w) : ¬ val (t, w) := by
+  intro hv
+  obtain ⟨g, hg, hw⟩ := exists_path_through R fwd bwd t w
+  obtain ⟨a, ha, hva⟩ := h g hg hw
+  have := onceP g hg a t hva (by rwa [hw])
+  omega
+
+omit [Finite W] [Nonempty W] fwd bwd in
+include someP in
+/-- A state that is not `p` is pre or post. -/
+theorem preN_or_postN {t : ℤ} {w : W} (h : ¬ val (t, w)) :
+    PreN R val t w ∨ PostN R val t w := by
+  classical
+  by_cases hpre : PreN R val t w
+  · exact Or.inl hpre
+  right
+  simp only [PreN, not_forall, not_exists, not_and] at hpre
+  obtain ⟨g₁, hg₁, hw₁, hno⟩ := hpre
+  intro g₂ hg₂ hw₂
+  let hh : IsPath R (glue t g₂ g₁) :=
+    glue_isPath R hg₂ hg₁ (by rw [hw₂, ← hw₁]; exact hg₁ t)
+  obtain ⟨c, hc⟩ := someP _ hh
+  rcases lt_trichotomy c t with hct | hct | hct
+  · rw [glue_of_le _ _ hct.le] at hc
+    exact ⟨c, hct, hc⟩
+  · subst hct
+    rw [glue_of_le _ _ le_rfl, hw₂] at hc
+    exact (h hc).elim
+  · rw [glue_of_lt _ _ hct] at hc
+    exact (hno c hct hc).elim
+
+omit [Finite W] [Nonempty W] in
+include fwd bwd someP onceP in
+/-- If every path through the edge `(t, w) → (t + 1, u)` has `p` at or before `t`, then `(t + 1, u)`
+is post. -/
+theorem postN_of_exists {t : ℤ} {w u : W} (hR : R t w u)
+    (hex : ∀ h, IsPath R h → h t = w → h (t + 1) = u → ∃ a, a ≤ t ∧ val (a, h a)) :
+    PostN R val (t + 1) u := by
+  obtain ⟨g₀, hg₀, hw₀⟩ := exists_path_through R fwd bwd t w
+  have hnot : ¬ val (t + 1, u) := by
+    intro hv
+    obtain ⟨g, hg, hu⟩ := exists_path_through R fwd bwd (t + 1) u
+    have hh : IsPath R (glue t g₀ g) := glue_isPath R hg₀ hg (by rw [hw₀, hu]; exact hR)
+    obtain ⟨a, ha, hva⟩ := hex _ hh (by rw [glue_of_le _ _ le_rfl, hw₀])
+      (by rw [glue_of_lt _ _ (by omega), hu])
+    have := onceP _ hh a (t + 1) hva (by rw [glue_of_lt _ _ (by omega), hu]; exact hv)
+    omega
+  rcases preN_or_postN R val someP hnot with hpre | hpost
+  · exfalso
+    obtain ⟨g, hg, hu⟩ := exists_path_through R fwd bwd (t + 1) u
+    have hh : IsPath R (glue t g₀ g) := glue_isPath R hg₀ hg (by rw [hw₀, hu]; exact hR)
+    obtain ⟨a, ha, hva⟩ := hex _ hh (by rw [glue_of_le _ _ le_rfl, hw₀])
+      (by rw [glue_of_lt _ _ (by omega), hu])
+    obtain ⟨b, hb, hvb⟩ := hpre _ hh (by rw [glue_of_lt _ _ (by omega), hu])
+    have := onceP _ hh a b hva hvb
+    omega
+  · exact hpost
+
+omit [Finite W] [Nonempty W] in
+include fwd bwd someP onceP in
+/-- Mirror: if every path through the edge `(t - 1, v) → (t, w)` has `p` at or after `t`, then
+`(t - 1, v)` is pre. -/
+theorem preN_of_exists {t : ℤ} {v w : W} (hR : R (t - 1) v w)
+    (hex : ∀ h, IsPath R h → h (t - 1) = v → h t = w → ∃ a, t ≤ a ∧ val (a, h a)) :
+    PreN R val (t - 1) v := by
+  obtain ⟨g₀, hg₀, hw₀⟩ := exists_path_through R fwd bwd t w
+  have hglue : ∀ g, IsPath R g → g (t - 1) = v → IsPath R (glue (t - 1) g g₀) := by
+    intro g hg hv
+    refine glue_isPath R hg hg₀ ?_
+    rw [hv, show t - 1 + 1 = t by ring, hw₀]
+    exact hR
+  have hnot : ¬ val (t - 1, v) := by
+    intro hvv
+    obtain ⟨g, hg, hv⟩ := exists_path_through R fwd bwd (t - 1) v
+    have hh := hglue g hg hv
+    obtain ⟨a, ha, hva⟩ := hex _ hh (by rw [glue_of_le _ _ le_rfl, hv])
+      (by rw [glue_of_lt _ _ (by omega), hw₀])
+    have := onceP _ hh a (t - 1) hva (by rw [glue_of_le _ _ le_rfl, hv]; exact hvv)
+    omega
+  rcases preN_or_postN R val someP hnot with hpre | hpost
+  · exact hpre
+  · exfalso
+    obtain ⟨g, hg, hv⟩ := exists_path_through R fwd bwd (t - 1) v
+    have hh := hglue g hg hv
+    obtain ⟨a, ha, hva⟩ := hex _ hh (by rw [glue_of_le _ _ le_rfl, hv])
+      (by rw [glue_of_lt _ _ (by omega), hw₀])
+    obtain ⟨b, hb, hvb⟩ := hpost _ hh (by rw [glue_of_le _ _ le_rfl, hv])
+    have := onceP _ hh a b hva hvb
+    omega
+
+omit [Finite W] [Nonempty W] in
+include fwd bwd someP onceP in
+theorem postN_succ_of_val {t : ℤ} {w u : W} (hv : val (t, w)) (hR : R t w u) :
+    PostN R val (t + 1) u :=
+  postN_of_exists R fwd bwd val someP onceP hR fun h _ hw _ => ⟨t, le_rfl, by rw [hw]; exact hv⟩
+
+omit [Finite W] [Nonempty W] in
+include fwd bwd someP onceP in
+theorem postN_succ {t : ℤ} {w u : W} (hp : PostN R val t w) (hR : R t w u) :
+    PostN R val (t + 1) u :=
+  postN_of_exists R fwd bwd val someP onceP hR fun h hh hw _ => by
+    obtain ⟨a, ha, hva⟩ := hp h hh hw
+    exact ⟨a, ha.le, hva⟩
+
+omit [Finite W] [Nonempty W] in
+include fwd bwd someP onceP in
+theorem preN_pred_of_val {t : ℤ} {v w : W} (hv : val (t, w)) (hR : R (t - 1) v w) :
+    PreN R val (t - 1) v :=
+  preN_of_exists R fwd bwd val someP onceP hR fun h _ _ hw => ⟨t, le_rfl, by rw [hw]; exact hv⟩
+
+omit [Finite W] [Nonempty W] in
+include fwd bwd someP onceP in
+theorem preN_pred {t : ℤ} {v w : W} (hp : PreN R val t w) (hR : R (t - 1) v w) :
+    PreN R val (t - 1) v :=
+  preN_of_exists R fwd bwd val someP onceP hR fun h hh _ hw => by
+    obtain ⟨a, ha, hva⟩ := hp h hh hw
+    exact ⟨a, ha.le, hva⟩
+
+end Core
+
+end Width
+
 end NoFiniteWidth
 
 end PlusSlicedCertificate

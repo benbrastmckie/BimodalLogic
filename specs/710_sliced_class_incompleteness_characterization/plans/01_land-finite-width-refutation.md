@@ -340,26 +340,26 @@ building and by checking that `not_plusValidZTime_neg_Φ`'s statement is exactly
 
 ---
 
-### Phase 3: The negative half, part I — path infrastructure and the pre/post classification [NOT STARTED]
+### Phase 3: The negative half, part I — path infrastructure and the pre/post classification [COMPLETED]
 
 **Goal**: the `NoFiniteWidth` section's path machinery and the pre/post state classification are
 landed, with every section-variable warning fixed per declaration rather than suppressed.
 
 **Tasks**:
-- [ ] Open the section with `variable {W : Type} (R : ℤ → W → W → Prop)` and transcribe `IsPath`,
+- [x] Open the section with `variable {W : Type} (R : ℤ → W → W → Prop)` and transcribe `IsPath`,
       `fwdSeq`/`fwdSeq_zero`/`fwdSeq_spec`, `bwdSeq`/`bwdSeq_zero`/`bwdSeq_spec`,
       `exists_path_through`, `glue`/`glue_of_le`/`glue_of_lt`/`glue_isPath` (probe lines 527-618)
-- [ ] Transcribe the `Core` section preamble — `[Finite W] [Nonempty W]`, `val`, `PreN`, `PostN`,
+- [x] Transcribe the `Core` section preamble — `[Finite W] [Nonempty W]`, `val`, `PreN`, `PostN`,
       and the `someP`/`onceP`/`succP` hypothesis variables (probe lines 622-645) — **omitting the
       probe's line-626 `set_option linter.unusedSectionVars false`**
-- [ ] Transcribe `not_val_of_postN`, `not_val_of_preN`, `preN_or_postN`, `postN_of_exists`,
+- [x] Transcribe `not_val_of_postN`, `not_val_of_preN`, `preN_or_postN`, `postN_of_exists`,
       `preN_of_exists`, `postN_succ_of_val`, `postN_succ`, `preN_pred_of_val`, `preN_pred` (probe
       lines 647-764)
-- [ ] For each declaration the build reports an unused section variable on, add the
+- [x] For each declaration the build reports an unused section variable on, add the
       `omit [...] in` line Lean prints directly above it (`warning-budget.txt`'s own prescribed
       fix). Do **not** add a file- or section-level `set_option` (C30), and do **not** add a
       `warning-budget.txt` row
-- [ ] Build; confirm zero warnings; commit
+- [x] Build; confirm zero warnings; commit
 
 **Timing**: 1.5 hours
 
