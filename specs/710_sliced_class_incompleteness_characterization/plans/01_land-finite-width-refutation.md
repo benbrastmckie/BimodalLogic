@@ -421,24 +421,24 @@ no added hypothesis on `R`.
 
 ---
 
-### Phase 5: The semantic layer and `no_finite_width_sat` [NOT STARTED]
+### Phase 5: The semantic layer and `no_finite_width_sat` [COMPLETED]
 
 **Goal**: the headline core theorem is landed, with the Deliverable 2 signature character for
 character.
 
 **Tasks**:
-- [ ] Transcribe `pathHist`, `pathHist_state`, `hist_offset`, `hist_offset_zero` (probe lines
+- [x] Transcribe `pathHist`, `pathHist_state`, `hist_offset`, `hist_offset_zero` (probe lines
       979-1019)
-- [ ] Open the `Semantics` section with
+- [x] Open the `Semantics` section with
       `variable (M : TaskModel (FrameOver.ofSlicedStep R fwd bwd).toTaskFrame)` and transcribe
       `box_transfer`, `someP_of_A'`, `onceP_of_C'`, `succP_of_D` (probe lines 1021-1103)
-- [ ] Land `no_finite_width_sat` with a `/-- ... Paper: — (reason) -/` docstring that names the
+- [x] Land `no_finite_width_sat` with a `/-- ... Paper: — (reason) -/` docstring that names the
       hypothesis set plainly: `[Finite W] [Nonempty W]` is the whole finiteness hypothesis, and
       there is no hypothesis on the succession relation beyond the bi-seriality carried by `fwd`
       and `bwd`
-- [ ] **Diff the landed signature against the verbatim block in this plan**, binder by binder,
+- [x] **Diff the landed signature against the verbatim block in this plan**, binder by binder,
       before committing (R10)
-- [ ] Close the sections; build; commit
+- [x] Close the sections; build; commit
 
 **Timing**: 1 hour
 

@@ -1064,6 +1064,151 @@ theorem core_false : False := by
 
 end Core
 
+/-! ### From the semantics on the sliced frame to the three path facts -/
+
+variable [Finite W] [Nonempty W] (fwd : ∀ t w, ∃ u, R t w u) (bwd : ∀ t w, ∃ v, R (t - 1) v w)
+
+/-- The history of an offset-`0` path. -/
+def pathHist (g : ℤ → W) (hg : IsPath R g) : WorldHistory (FrameOver.ofSlicedStep R fwd bwd) :=
+  FrameOver.worldHistoryOfStepPath (FrameOver.ofSlicedStep R fwd bwd) (fun t => (t, g t))
+    (fun n => (FrameOver.ofSlicedStep_step R fwd bwd _ _).mpr ⟨rfl, hg n⟩)
+
+theorem pathHist_state (g : ℤ → W) (hg : IsPath R g) (s : ℤ) :
+    (pathHist R fwd bwd g hg).state s = (s, g s) :=
+  congrFun (FrameOver.worldHistoryOfStepPath.path _ _ _) s
+
+/-- Every history is an offset path. -/
+theorem hist_offset (σ : WorldHistory (FrameOver.ofSlicedStep R fwd bwd)) :
+    ∃ (k : ℤ) (g : ℤ → W), IsPath R g ∧ ∀ v, σ.state v = (v + k, g (v + k)) := by
+  obtain ⟨k, g₀, hg₀, hpath⟩ := (FrameOver.ofSlicedStep_mem_HF_iff R fwd bwd σ.path).mp ⟨σ, rfl⟩
+  refine ⟨k, fun s => g₀ (s - k), ?_, ?_⟩
+  · intro s
+    have h := hg₀ (s - k)
+    rwa [show s - k + k = s by ring, show s - k + 1 = s + 1 - k by ring] at h
+  · intro v
+    change σ.path v = _
+    rw [congrFun hpath v]
+    simp only [add_sub_cancel_right]
+    rfl
+
+/-- A history sharing the state `(s, w)` of an offset-`0` path at time `s` is itself offset `0`. -/
+theorem hist_offset_zero (σ : WorldHistory (FrameOver.ofSlicedStep R fwd bwd)) {s : ℤ} {w : W}
+    (h : σ.state s = (s, w)) :
+    ∃ g : ℤ → W, IsPath R g ∧ g s = w ∧ ∀ v, σ.state v = (v, g v) := by
+  obtain ⟨k, g, hg, hσ⟩ := hist_offset R fwd bwd σ
+  have hk : k = 0 := by
+    have := (hσ s).symm.trans h
+    have := congrArg Prod.fst this
+    simp at this
+    omega
+  subst hk
+  refine ⟨g, hg, ?_, fun v => by simpa using hσ v⟩
+  have := (hσ s).symm.trans h
+  simpa using congrArg Prod.snd this
+
+section Semantics
+
+variable (M : TaskModel (FrameOver.ofSlicedStep R fwd bwd).toTaskFrame)
+
+/-- `box ψ` at one history and time is `ψ` along every offset-`0` path at every time. -/
+theorem box_transfer {ψ : PlusFormula} {τ : WorldHistory (FrameOver.ofSlicedStep R fwd bwd)}
+    {t0 : ℤ} (h : PlusTruthAt M τ t0 (PlusFormula.box ψ)) (g : ℤ → W) (hg : IsPath R g)
+    (s : ℤ) : PlusTruthAt M (pathHist R fwd bwd g hg) s ψ := by
+  have := (plusTruthAt_timeShift M ψ (pathHist R fwd bwd g hg) t0 (s - t0)).mp
+    (h ((pathHist R fwd bwd g hg).timeShift (s - t0)))
+  rwa [show t0 + (s - t0) = s by ring] at this
+
+theorem someP_of_A' {τ : WorldHistory (FrameOver.ofSlicedStep R fwd bwd)} {t0 : ℤ}
+    (hA : PlusTruthAt M τ t0 A') (g : ℤ → W) (hg : IsPath R g) :
+    ∃ a, M.valuation (a, g a) pa := by
+  have h := box_transfer R fwd bwd M hA g hg 0
+  simp only [PlusFormula.or, PlusFormula.neg, PlusTruthAt] at h
+  by_contra hno
+  have hno' : ∀ a, ¬ M.valuation (a, g a) pa := fun a ha => hno ⟨a, ha⟩
+  have hp : ¬ PlusTruthAt M (pathHist R fwd bwd g hg) 0 p := by
+    change ¬ M.valuation ((pathHist R fwd bwd g hg).state 0) pa
+    rw [pathHist_state]
+    exact hno' 0
+  have hF : ¬ (∀ σ, (pathHist R fwd bwd g hg).state 0 = σ.state 0 →
+      PlusTruthAt M σ 0 Fp) := by
+    intro hst
+    obtain ⟨(s' : ℤ), hs', hv, -⟩ := hst _ rfl
+    change M.valuation ((pathHist R fwd bwd g hg).state s') pa at hv
+    rw [pathHist_state] at hv
+    exact hno' s' hv
+  obtain ⟨(s' : ℤ), hs', hv, -⟩ := h hp hF _ rfl
+  change M.valuation ((pathHist R fwd bwd g hg).state s') pa at hv
+  rw [pathHist_state] at hv
+  exact hno' s' hv
+
+theorem onceP_of_C' {τ : WorldHistory (FrameOver.ofSlicedStep R fwd bwd)} {t0 : ℤ}
+    (hC : PlusTruthAt M τ t0 C') (g : ℤ → W) (hg : IsPath R g) (a b : ℤ)
+    (ha : M.valuation (a, g a) pa) (hb : M.valuation (b, g b) pa) : a = b := by
+  have key : ∀ a b : ℤ, a < b → M.valuation (a, g a) pa → M.valuation (b, g b) pa → False := by
+    intro a b hab ha hb
+    have h := box_transfer R fwd bwd M hC g hg b
+    simp only [PlusFormula.neg, PlusTruthAt] at h
+    refine h ?_ _ rfl ⟨a, hab, ?_, fun _ _ _ hh => hh⟩
+    · change M.valuation ((pathHist R fwd bwd g hg).state b) pa
+      rw [pathHist_state]; exact hb
+    · change M.valuation ((pathHist R fwd bwd g hg).state a) pa
+      rw [pathHist_state]; exact ha
+  rcases lt_trichotomy a b with h | h | h
+  · exact (key a b h ha hb).elim
+  · exact h
+  · exact (key b a h hb ha).elim
+
+theorem succP_of_D {τ : WorldHistory (FrameOver.ofSlicedStep R fwd bwd)} {t0 : ℤ}
+    (hD : PlusTruthAt M τ t0 D) (g : ℤ → W) (hg : IsPath R g) (s : ℤ)
+    (hpre : ∀ g', IsPath R g' → g' s = g s → ∃ a, s < a ∧ M.valuation (a, g' a) pa) :
+    ∃ u, R s (g s) u ∧ M.valuation (s + 1, u) pa := by
+  have h := box_transfer R fwd bwd M hD g hg s
+  simp only [PlusFormula.neg, PlusTruthAt] at h
+  have hstF : ∀ σ, (pathHist R fwd bwd g hg).state s = σ.state s →
+      PlusTruthAt M σ s Fp := by
+    intro σ hσ
+    rw [pathHist_state] at hσ
+    obtain ⟨g', hg', hgs, hσ'⟩ := hist_offset_zero R fwd bwd σ hσ.symm
+    obtain ⟨a, ha, hva⟩ := hpre g' hg' hgs
+    refine ⟨a, ha, ?_, fun _ _ _ hh => hh⟩
+    change M.valuation (σ.state a) pa
+    rw [hσ' a]; exact hva
+  by_contra hno
+  apply h hstF
+  intro σ hσ hX
+  rw [pathHist_state] at hσ
+  obtain ⟨g', hg', hgs, hσ'⟩ := hist_offset_zero R fwd bwd σ hσ.symm
+  obtain ⟨(s' : ℤ), hs', hv, hgap⟩ := hX
+  have hs'' : (s : ℤ) < s' := hs'
+  have hs1 : s' = s + 1 := by
+    by_contra hne
+    exact hgap (s + 1) (show (s : ℤ) < s + 1 by omega) (show (s + 1 : ℤ) < s' by omega)
+  change M.valuation (σ.state s') pa at hv
+  rw [hσ' s', hs1] at hv
+  apply hno
+  refine ⟨g' (s + 1), ?_, hv⟩
+  rw [← hgs]; exact hg' s
+
+/-- **No model on a finite-width sliced frame satisfies `Φ` anywhere.** `[Finite W] [Nonempty W]`
+is the whole finiteness hypothesis; there is no hypothesis on the succession relation `R` beyond
+the bi-seriality carried by `fwd` and `bwd`. -/
+theorem no_finite_width_sat (τ : WorldHistory (FrameOver.ofSlicedStep R fwd bwd)) (t0 : ℤ) :
+    ¬ PlusTruthAt M τ t0 Φ := by
+  intro h
+  have hA : PlusTruthAt M τ t0 A' := by
+    by_contra hA
+    exact h (fun h' => (h' (fun a => absurd a hA)).elim)
+  have hC : PlusTruthAt M τ t0 C' := by
+    by_contra hC
+    exact h (fun h' => (h' (fun _ c => hC c)).elim)
+  have hD : PlusTruthAt M τ t0 D := by
+    by_contra hD
+    exact h (fun _ d => hD d)
+  exact core_false R fwd bwd (fun x => M.valuation x pa)
+    (someP_of_A' R fwd bwd M hA) (onceP_of_C' R fwd bwd M hC) (succP_of_D R fwd bwd M hD)
+
+end Semantics
+
 end Width
 
 end NoFiniteWidth
