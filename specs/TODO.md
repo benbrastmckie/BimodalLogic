@@ -1,5 +1,5 @@
 ---
-next_project_number: 721
+next_project_number: 722
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 721
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,564,565,567,570,604,616,617,664,705,706,710,711,713,714,716 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,564,565,567,570,604,616,617,664,705,706,710,711,713,714,716,721 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,566,618,709,712,719,720 | 298,464,502,564,565,616,706,710,711 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -74,6 +74,7 @@ next_project_number: 721
 713 [NOT STARTED] — OPTIONAL, FILED NOT SCHEDULED. Nothing depends on this task...
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
+721 [NOT STARTED] — Review and reconcile the decidability programme across L and...
 709 [NOT STARTED] — STATUS NOTE (2026-10-02, SUPERSEDES THE HEADLINE BELOW -- the...
 712 [BLOCKED] — STATUS NOTE (2026-10-02, THE STATEMENT BELOW IS NOW REFUTED...
 
@@ -104,6 +105,32 @@ next_project_number: 721
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ## Tasks
+
+### 721. Decidability programme review l and lplus
+- **Status**: [NOT STARTED]
+- **Task Type**: formal:logic
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Review and reconcile the decidability programme across L and L-plus, then emit a revision specification for the affected tasks.
+
+WHY THIS EXISTS. Every existing review of the decidability programme is partial. The ranked-route analysis in `specs/718_omega_sequence_decidability_full_lplus/reports/02_ranked-route-analysis.md` covers L-plus only, and is a completed task's artifact that nothing re-runs as evidence accumulates. `specs/ROADMAP.md` is a genuine programme-level view but is a document no task owns refreshing, and it predates the interval-site/behavior-presheaf landing and the omega-sequence round's results. The base-language (TM) decidability story has no single reconciling account at all: it is spread across `FormalSystem/Metalogic/Decidability/Correctness.lean`'s "`validity_decidable` / `validity_has_decision_procedure` -- Retired as vacuous" section, the tableau-spine work, and `Metalogic/Decidability/WitnessFamily/`. This task supplies the missing cross-language, re-runnable review.
+
+DELIVERABLE 1: THE PROVED/WITHDRAWN/REFUTED INVENTORY, BY DECLARATION NAME. Produce a single account of where decidability stands for BOTH languages, citing declarations and file paths rather than prose. It must distinguish four statuses that the tree currently blurs: PROVED (e.g. `sound_of_isValid`/`isValid_sound` in `Correctness.lean`, the sound direction only); NOT ESTABLISHED (the full biconditional `isValid phi fc = true <-> |= phi` and the `Decidable (|= phi)` frame-class instances, whose earlier forms were retired as vacuous -- read that section and state exactly what was vacuous and why); WITHDRAWN (the `Compression/` compression theorem under `Metalogic/Decidability/PlusWitnessFamily/`, refuted by its own `Limits/` layer); and REFUTED AS A THEOREM (`Probe706.no_finite_carrier_sat` and `Probe710.not_finite_width_fmp`, wired via `scripts/check-evidence-probes.sh`). Record for each refutation the two scope limits the FMP README already states: discrete (Z) frames only, and that the finite-carrier witness is stab-free -- hence a result about TM itself -- while the finite-width witness uses the stability operator and so is specifically an L-plus result.
+
+DELIVERABLE 2: THE L-SIDE ACCOUNT, WHICH DOES NOT YET EXIST. Reconcile the base-language picture: what the tableau spine actually establishes today, what the `WitnessFamily/` impossibility theorems (`no_witnessFamily_of_validZTime`, `no_witnessFamily_of_MF`) close off, and whether the stab-free half of the finite-carrier refutation changes the base-language outlook. State plainly whether base-TM decidability is open, closed, or merely unbuilt, and on what hypotheses.
+
+DELIVERABLE 3: ROUTES FORWARD, RANKED, FOR BOTH LANGUAGES. Re-rank the surviving routes with the evidence now in the tree, superseding the L-plus-only ranking. The seam-gluing ray-product route's keystone is machine-checked (`seamFibreEquiv`, `seamOmegaEquiv`, `plusStab_iff_rays`, `plusStab_iff_omega` in `specs/evidence/seam-gluing-ray-product/stab-fibre-is-ray-product.lean`) but holds at a general REGULAR task frame -- the hypothesis is `IsRegular`, with `TaskFrame.comp` plus the reflection convention the laws actually used; do not restate it as unconditional. Weigh in particular: that only the FORWARD factor of the finite-graph stability summary is proved, with the backward dual recorded as a reasoned exclusion, and that the backward factor is where the finite-width obstruction was located; and that the existential/universal divergence probe shows some universal or complementation-shaped summary device is NECESSARY without settling that Safra/Piterman determinization is that device. For each route state its load-bearing hypothesis, what would falsify it, and the cheapest next experiment.
+
+DELIVERABLE 4: A REVISION SPECIFICATION, NOT STATE MUTATION. Emit a specification naming, per affected task, the concrete scope change required -- in the manner of `specs/718_omega_sequence_decidability_full_lplus/followup-scope-spec.md`, which is the format of record for this. This task MUST NOT write `specs/state.json` or `specs/TODO.md` and MUST NOT create or abandon tasks itself; the specification is executed afterwards by the user or orchestrator via `/task` and `/revise`. Cover at minimum: the L-plus sliced finite model property task, whose statement is machine-checked FALSE (`not_sliced_complete`, `not_finite_width_fmp`) so its record is a refutation rather than an open question; the omega-automata determinization substrate task, where a tension must be resolved rather than papered over -- the roadmap's standing recommendation is ABANDONED because the route naming it is closed, while the settled decision recorded in `specs/718_omega_sequence_decidability_full_lplus/.decisions.json` is to revive it only once the gluing route's falsification probes demonstrate necessity; and the CTL-star 2EXPTIME reduction task, filed but unscheduled with nothing depending on it.
+
+DELIVERABLE 5: THE ROADMAP RECONCILIATION. Update `specs/ROADMAP.md` so its Fronts table, phase priorities and Open Risks match the tree as it actually stands. Phase 0 is user-only: its rulings may be restated, annotated, or shown to be newly answerable, but MUST NOT be marked decided by this task.
+
+HARD CONSTRAINTS. Cite declaration names and file paths, never unanchored prose. Every status claim must be checkable against the tree at the path given -- verify before writing, and where a cited declaration carries a typeclass hypothesis, state it. Do not land any complexity claim; the CTL-star 2EXPTIME lower bound remains the sanity check on any proposed bound, not a result to assert. Do not reopen settled soundness: `plusTruth_iff_mem` and `plusRefutes_of_certifies` are untouched. Where this review's conclusion is negative, that is a deliverable and must be stated as such rather than softened.
+
+ACCEPTANCE. A report inventorying both languages by declaration name with the four statuses distinguished; a ranked routes-forward section with per-route falsifiers and next experiments; a revision specification in the followup-scope-spec format; `specs/ROADMAP.md` reconciled with Phase 0 left undecided; no write to `specs/state.json` or `specs/TODO.md`.
+
+---
 
 ### 720. Promote fmp width refutations to evidence
 - **Status**: [NOT STARTED]
