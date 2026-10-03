@@ -1,16 +1,42 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "task_number": 564,
+  "dispatch_seq": 12,
+  "status": "implemented",
+  "phases_completed": 4,
   "phases_total": 4,
+  "session_id": "sess_1791051010_4c2417",
+  "summary": "All four plan phases closed [COMPLETED]. The Sheaf clause landed as FormalSystem/Semantics/Presheaf/Sheaf.lean (12 declarations), the seam-composition argument was de-duplicated into PartialHistory.rel_across_seam, paste_rel_le_lt became a delegation at a byte-identical signature, paste was cleared of Classical.choice via a new off-zero reflection wrapper, and pasteAt generalizes paste off totality with paste recovered as a corollary. Full lake build green (2812 jobs, exit 0) and lake build BimodalTest green (2873 jobs, exit 0); sorry count 0, axiom count unchanged at 14. Every new declaration measures [propext, Quot.sound] with no Classical.choice.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/564_sheaf_clause_gluing_and_starpasting_generalization/plans/02_sheaf-clause-and-seam-dedup.md",
-      "summary": "Four-phase, fully sequential plan landing the Sheaf clause as Presheaf/Sheaf.lean and de-duplicating the seam-composition argument as PartialHistory.rel_across_seam."
+      "type": "summary",
+      "path": "specs/564_sheaf_clause_gluing_and_starpasting_generalization/summaries/02_sheaf-clause-and-seam-dedup-summary.md",
+      "summary": "Implementation summary: per-phase gate exit codes, the full #print axioms table, all four confirmed Scope Hypotheses, and both pre-existing gate failures reported rather than fixed."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Semantics/Presheaf/Sheaf.lean",
+      "summary": "New module: the Sheaf clause in cut and site-indexed form, both restriction identities, uniqueness, the compatible-family theorem, and the two-sense choice-freedom record."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Semantics/PartialHistory.lean",
+      "summary": "PartialHistory.rel_across_seam: the seam-composition argument, stated once off totality with two independent seam coordinates."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/Semantics/TaskFrame.lean",
+      "summary": "TaskFrame.reflection_of_ne: the binder-free off-zero reflection wrapper, [propext] only."
+    },
+    {
+      "type": "source",
+      "path": "FormalSystem/PlusLanguage/PlusPasting.lean",
+      "summary": "paste_rel_le_lt delegates to rel_across_seam; paste_rel reroutes through the off-zero law, clearing Classical.choice from paste; pasteAt and its four companions added after paste."
     }
   ],
-  "session_id": "sess_1791051010_4c2417_564",
-  "dispatch_seq": 10,
-  "next_steps": "Run /implement 564 to execute the plan",
-  "notes": "Scope widens past the declared file_scope (Presheaf/Sheaf.lean alone) to TaskFrame.lean, PartialHistory.lean, PlusPasting.lean, Presheaf/README.md and docs/reference/paper-definitions-of-record.md. Four further shared touches (Presheaf.lean aggregator, FormalSystem.lean, README.md, FormalSystem/README.md, typst/generated/status.typ) are deliberately kept OUT of Files to modify per the dispatch's aggregator-contention instruction; task 710 declares three of them this cycle."
+  "notes": [
+    "Two gate failures are pre-existing and were measured before any edit, not introduced here: check-module-invariants.sh's C15 theorem-index row for not_plusValidZTime_neg_Phi, and check-paper-definitions.sh's def:BX drift. Both are reported rather than fixed, per the plan.",
+    "C24 is build-gated and reports skipped under --no-build; the green full build is the stronger check.",
+    "One shared touch beyond the plan's four-row table: scripts/lean-citation-manifest.json, regenerated via scripts/export-lean-citations.py to clear C35 span drift caused by the PartialHistory.lean insertion.",
+    "Concurrent sibling task 727 committed during this dispatch; its commits were verified to touch no Lean, docs, typst or README path, so there was no territory collision."
+  ]
 }
