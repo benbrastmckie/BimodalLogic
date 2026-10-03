@@ -1,7 +1,7 @@
 # Implementation Plan: Task #717
 
 - **Task**: 717 - Write the three missing directory READMEs that fail `scripts/readme-lint.sh` in CI
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/717_missing_decidability_directory_readmes/reports/01_missing-decidability-directory-readmes.md
@@ -122,7 +122,7 @@ No `roadmap_path` was provided in the dispatch context; no roadmap phases are in
 Phases within the same wave can execute in parallel. Wave 1's three phases each own exactly one
 new file in a distinct directory and share no target, so they are safe to dispatch concurrently.
 
-### Phase 1: Limits/README.md — the two incompleteness refutations [NOT STARTED]
+### Phase 1: Limits/README.md — the two incompleteness refutations [COMPLETED]
 
 **Goal**: Author `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/README.md`
 (70-100 lines) documenting the three modules and, above all, what the two refutations do *not*
@@ -195,7 +195,7 @@ remove table rows to match what is on disk before proceeding.
 
 ---
 
-### Phase 2: Compression/README.md — the L⁺ twin whose theorem was withdrawn [NOT STARTED]
+### Phase 2: Compression/README.md — the L⁺ twin whose theorem was withdrawn [IN PROGRESS]
 
 **Goal**: Author
 `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/README.md` (100-140 lines),
