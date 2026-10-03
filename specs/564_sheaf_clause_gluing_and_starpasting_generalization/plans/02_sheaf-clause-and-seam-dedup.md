@@ -259,34 +259,34 @@ was chosen differently from the report's §6 decision and must be re-read agains
 
 ---
 
-### Phase 2: `Presheaf/Sheaf.lean` — the glued section, the restriction identities, uniqueness [NOT STARTED]
+### Phase 2: `Presheaf/Sheaf.lean` — the glued section, the restriction identities, uniqueness [COMPLETED]
 
 **Goal**: The *Sheaf* clause lands as a module: the glued section in cut form, its two reading
 equations, both restriction identities, the state-reading helper, uniqueness, and the raw-data
 `∃!` packaging — with the cluster aggregator reaching it and the library root regenerated.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/Presheaf/Sheaf.lean` with the header shape the cluster
+- [x] Create `FormalSystem/Semantics/Presheaf/Sheaf.lean` with the header shape the cluster
       already uses: copyright block, then
       `import FormalSystem.Init` and `import FormalSystem.Semantics.Presheaf.Behavior`, then a
       **Tier-3** module docstring (Title + scope paragraph, `## Main Definitions`,
       `## Main Results`, `## Implementation Notes`, `## References`, in that order per
       `docs/reference/docstring-standard.md`), then `namespace FormalSystem.Semantics.Presheaf`.
       Mirror `Site.lean`/`Behavior.lean` rather than inventing a shape
-- [ ] Transcribe from `probes/01_seam-lemma-and-glue.lean`, replacing its local `rel_across_seam`
+- [x] Transcribe from `probes/01_seam-lemma-and-glue.lean`, replacing its local `rel_across_seam`
       and `taskRel_reflection_of_ne` with Phase 1's library declarations: `glue` (lines 65–97),
       `glue_states_le` and `glue_states_not_le` (101–112), `restrict_glue_left` (116–130),
       `restrict_glue_right` (134–158), `states_eq_of_eq` (162–164), `glue_unique` (168–199),
       `sheaf_clause` (203–212). Give every declaration a `/--` docstring
-- [ ] Write out the `hmatch` hypothesis type in full wherever the probe wrote `(hmatch : _)` — the
+- [x] Write out the `hmatch` hypothesis type in full wherever the probe wrote `(hmatch : _)` — the
       probe's elaborated underscore is not acceptable in a library signature. The pinned form is in
       **Lean Challenge Statements** below and is the contract
-- [ ] Keep `glue`'s domain as the literal `fun z => 0 ≤ z ∧ z ≤ l` with
+- [x] Keep `glue`'s domain as the literal `fun z => 0 ≤ z ∧ z ≤ l` with
       `property := fun _ => Iff.rfl`, and keep `states` a **dependent** `if hzp : z ≤ p` (`dite`,
       not `ite`) so each branch has its domain witness. `glue_states_le`/`glue_states_not_le` are
       then literally `dif_pos hzp` / `dif_neg hzp`, and **every** later proof reads through them
       rather than unfolding `glue`
-- [ ] Record in `## Implementation Notes`: (a) the decidability of `z ≤ p` comes from the
+- [x] Record in `## Implementation Notes`: (a) the decidability of `z ≤ p` comes from the
       `LinearOrder` field of the temporal order, not from `Classical.propDecidable`; (b)
       `respects_task` is unconditional at `PartialHistory` — all pairs `(s, t)`, no `s ≤ t` guard —
       which is why the obligation has **four** cases rather than two and why the mixed-orientation
@@ -297,19 +297,19 @@ equations, both restriction identities, the state-reading helper, uniqueness, an
       `add_sub_cancel_left`, and `le_of_add_le_add_left` must **not** be substituted because it
       measures `Classical.choice`; (f) `ring` and `linarith` are unavailable in this import
       closure, so `add_sub_cancel_left` and `sub_sub_sub_cancel_right` are not stylistic choices
-- [ ] Write **no** `Constraints consumed:` marker, and keep every mention of the frame constraints
+- [x] Write **no** `Constraints consumed:` marker, and keep every mention of the frame constraints
       in the `/-!` module block, whose span C34b does not read. The declarations here are
       binder-free (explicit `hcomp`), so C34b does not reach them in any case
-- [ ] End the file with
+- [x] End the file with
       `assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree`
       after the closing `end`, as both sibling modules do, locking the layering positively
-- [ ] Re-read `FormalSystem/Semantics/Presheaf.lean` immediately beforehand, then add
+- [x] Re-read `FormalSystem/Semantics/Presheaf.lean` immediately beforehand, then add
       `import FormalSystem.Semantics.Presheaf.Sheaf` in its existing ordering and one
       `## Modules` bullet describing the clause
-- [ ] Update `FormalSystem/Semantics/Presheaf/README.md`: re-emit its gated inventory block and
+- [x] Update `FormalSystem/Semantics/Presheaf/README.md`: re-emit its gated inventory block and
       hand-write the new Key Definitions (`glue`) and Key Results (`sheaf_clause`,
       `restrict_glue_left`, `restrict_glue_right`, `glue_unique`) entries
-- [ ] Regenerate the library root (`lake exe mk_all --lib FormalSystem`), re-emit the inventory
+- [x] Regenerate the library root (`lake exe mk_all --lib FormalSystem`), re-emit the inventory
       blocks (`bash scripts/check-module-invariants.sh --emit-inventory`), regenerate the typst
       counts (`bash scripts/typst-sync-check.sh --fix`), and commit with the **Shared Touches**
       staging protocol

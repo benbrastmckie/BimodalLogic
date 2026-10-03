@@ -7,8 +7,14 @@ The objects of `Int(D)` are the durations — the positive cone of a temporal or
 morphisms `l' → l` are the **translations** `Tr p`, one for each offset `p` with `p + l' ≤ l`.
 `Beh(F)(l)` is the set of partial histories whose domain is exactly `[0, l]`, and restriction
 along `Tr p` is `τ ↦ (z ↦ τ(p + z))`. The cluster is built on `Semantics/PartialHistory.lean`
-alone and sits strictly **below** `Semantics/Truth.lean`: both modules close with
+alone and sits strictly **below** `Semantics/Truth.lean`: all three modules close with
 `assert_not_exists` on the proof system, so the layering is locked rather than merely observed.
+
+Two clauses of the presheaf dictionary are discharged here. *Germs* identifies the sections over
+the zero duration with the world states (`Beh.germEquiv`), and *Sheaf* glues two sections
+agreeing at a seam into a unique section over the joined interval (`sheaf_clause`). The gluing
+argument itself is not local to this cluster: it is `PartialHistory.rel_across_seam`, shared with
+history pasting.
 
 ## Modules
 
@@ -16,6 +22,7 @@ alone and sits strictly **below** `Semantics/Truth.lean`: both modules close wit
 | File | Lines | Description |
 |------|------:|-------------|
 | `Behavior.lean` | 296 | The behavior presheaf `Beh F`: the sections over a duration, the restriction action at raw data and at a site morphism, presheaf functoriality, and the *Germs* clause `Beh F 0 ≃ F.WorldState` |
+| `Sheaf.lean` | 302 | <!-- TODO: add description --> |
 | `Site.lean` | 191 | The interval site `Int(D)`: the translations `Tr p`, the three category laws, and the Johnstone coverage |
 <!-- END GENERATED -->
 
@@ -31,6 +38,8 @@ alone and sits strictly **below** `Semantics/Truth.lean`: both modules close wit
   the site
 - `Beh.germ`, `Beh.ofGerm`, `Beh.germEquiv` — a section over `0` and its single world state, and
   the bijection between them
+- `glue` — the glued section: `τ₁` over `p` and `τ₂` over `l - p`, agreeing at the seam, read as
+  one section over `l`
 
 ## Key Results
 
@@ -46,6 +55,15 @@ alone and sits strictly **below** `Semantics/Truth.lean`: both modules close wit
 - `Beh.isConvex`, `Beh.domain_eq_interval` — a section is convex, and its domain is `Interval 0 l`
 - `partialHistory_ext` — extensionality for partial histories, written by hand because the
   `states` field is dependent on `domain` and no `@[ext]` lemma is generated
+- `sheaf_clause` — the *Sheaf* clause: two sections agreeing at the seam glue to a **unique**
+  section over the joined interval, stated in cut form as an `∃!`
+- `restrict_glue_left`, `restrict_glue_right` — the two restriction identities of `glue`. The
+  right one is where the seam hypothesis is consumed, because the branch test is true at the
+  right interval's own origin
+- `glue_states_le`, `glue_states_not_le` — the two reading equations of `glue`, one per branch of
+  its dependent `if`; every proof about `glue` goes through these rather than unfolding it
+- `glue_unique` — any section restricting to `τ₁` and `τ₂` is `glue`
+- `states_eq_of_eq` — reading a state out of an equality of sections, for either domain witness
 
 ## Dependencies
 
@@ -56,7 +74,8 @@ alone and sits strictly **below** `Semantics/Truth.lean`: both modules close wit
 
 - [Semantics README](../README.md)
 - [`PartialHistory.lean`](../PartialHistory.lean) — the partial histories the sections are drawn
-  from, and their convexity predicate
+  from, their convexity predicate, and `PartialHistory.rel_across_seam`, the seam argument the
+  gluing clause instantiates
 - [`TemporalOrder.lean`](../TemporalOrder.lean) — `PositiveCone`, the objects of the site
 - [`docs/reference/paper-definitions-of-record.md`](../../../docs/reference/paper-definitions-of-record.md)
   — where `def:interval-site` and `def:behavior-presheaf` resolve, both `DANGLING`: the paper cut
@@ -65,4 +84,4 @@ alone and sits strictly **below** `Semantics/Truth.lean`: both modules close wit
 
 ---
 
-*Last verified: 2026-10-02*
+*Last verified: 2026-10-03*
