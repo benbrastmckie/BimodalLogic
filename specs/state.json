@@ -4,8 +4,27 @@
     "total_tasks": 44,
     "last_sync": "2026-08-24T21:34:14Z"
   },
-  "next_project_number": 720,
+  "next_project_number": 721,
   "active_projects": [
+    {
+      "project_number": 720,
+      "project_name": "promote_fmp_width_refutations_to_evidence",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Promote the Z-time finite-carrier and finite-width FMP refutations into the CI-guarded evidence collection.\n\nDELIVER: move `Probe706.no_finite_carrier_sat` (currently at `specs/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean`) and `Probe710.not_finite_width_fmp` (currently at `specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean`) into `specs/evidence/seam-gluing-ray-product/`, following the Phase 1 promotion procedure in `specs/718_omega_sequence_decidability_full_lplus/plans/02_route-probes-and-handoff.md` exactly: `git mv`, correct each file's own `lake env lean` header path, convert its `WIRED_REPO` entry in `scripts/check-evidence-probes.sh` to `WIRED`, and confirm no outside citation breaks. Then re-point `FormalSystem/Metalogic/Decidability/FMP/README.md`'s \"The finite-carrier route is refuted, not merely open\" subsection to the new paths; that subsection already cites both theorems by declaration name.\n\nWHY: both probes currently live in task directories, which is the fragility the evidence collection exists to fix -- task-directory probes rot and leave version control on archive, since `specs/archive/` is gitignored. These two are now load-bearing because `FMP/README.md` cites them as closing what the library previously called open. They are wired as `WIRED_REPO` entries, which `scripts/check-evidence-probes.sh` itself documents as the fallback (\"Prefer `WIRED`: reach for `WIRED_REPO` only with a named blocker recorded beside the entry\"); the named blocker is live-task ownership of the two files.\n\nBLOCKED UNTIL the two owning tasks are past their own implementation/archival point -- both were at [RESEARCHED] with active task directories when this was filed, so their probe files must not be moved yet. Declared as dependencies.\n\nSCOPE NOTE: the source specification (`specs/718_omega_sequence_decidability_full_lplus/followup-scope-spec.md` Section 2) titles this \"promote ... into `FormalSystem/`\", but its own description and file_scope both specify `specs/evidence/seam-gluing-ray-product/` and list no `FormalSystem/` source files beyond the `FMP/README.md` citation re-point. This task follows the description and file_scope, not the title. Genuine promotion into the `FormalSystem/` library proper would be a different and larger task.",
+      "topic": "decidability",
+      "dependencies": [
+        706,
+        710
+      ],
+      "file_scope": [
+        "specs/evidence/seam-gluing-ray-product/",
+        "scripts/check-evidence-probes.sh",
+        "FormalSystem/Metalogic/Decidability/FMP/README.md"
+      ],
+      "created": "2026-10-03T14:31:08Z",
+      "last_updated": "2026-10-03T14:31:08Z"
+    },
     {
       "project_number": 719,
       "project_name": "ray_layer_seam_gluing_and_stab_fibre",

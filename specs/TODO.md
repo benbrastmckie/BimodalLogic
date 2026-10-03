@@ -1,5 +1,5 @@
 ---
-next_project_number: 720
+next_project_number: 721
 ---
 
 # TODO
@@ -12,7 +12,7 @@ next_project_number: 720
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,464,481,502,559,564,565,567,570,604,616,617,664,705,706,710,711,713,714,716 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,566,618,709,712,719 | 298,464,502,564,565,616,710,711 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,566,618,709,712,719,720 | 298,464,502,564,565,616,706,710,711 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -70,6 +70,7 @@ next_project_number: 720
                 └─ 482 [NOT STARTED] — CLASSIFICATION: OPEN MATHEMATICS, multi-month. This MUST NOT...
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 706 [RESEARCHED] — STATUS NOTE (2026-10-02): question Q6 of this task's report...
+  └─ 720 [NOT STARTED] — Promote the Z-time finite-carrier and finite-width FMP...
 713 [NOT STARTED] — OPTIONAL, FILED NOT SCHEDULED. Nothing depends on this task...
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
@@ -103,6 +104,24 @@ next_project_number: 720
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ## Tasks
+
+### 720. Promote fmp width refutations to evidence
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 706, Task 710
+
+**Description**: Promote the Z-time finite-carrier and finite-width FMP refutations into the CI-guarded evidence collection.
+
+DELIVER: move `Probe706.no_finite_carrier_sat` (currently at `specs/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean`) and `Probe710.not_finite_width_fmp` (currently at `specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean`) into `specs/evidence/seam-gluing-ray-product/`, following the Phase 1 promotion procedure in `specs/718_omega_sequence_decidability_full_lplus/plans/02_route-probes-and-handoff.md` exactly: `git mv`, correct each file's own `lake env lean` header path, convert its `WIRED_REPO` entry in `scripts/check-evidence-probes.sh` to `WIRED`, and confirm no outside citation breaks. Then re-point `FormalSystem/Metalogic/Decidability/FMP/README.md`'s "The finite-carrier route is refuted, not merely open" subsection to the new paths; that subsection already cites both theorems by declaration name.
+
+WHY: both probes currently live in task directories, which is the fragility the evidence collection exists to fix -- task-directory probes rot and leave version control on archive, since `specs/archive/` is gitignored. These two are now load-bearing because `FMP/README.md` cites them as closing what the library previously called open. They are wired as `WIRED_REPO` entries, which `scripts/check-evidence-probes.sh` itself documents as the fallback ("Prefer `WIRED`: reach for `WIRED_REPO` only with a named blocker recorded beside the entry"); the named blocker is live-task ownership of the two files.
+
+BLOCKED UNTIL the two owning tasks are past their own implementation/archival point -- both were at [RESEARCHED] with active task directories when this was filed, so their probe files must not be moved yet. Declared as dependencies.
+
+SCOPE NOTE: the source specification (`specs/718_omega_sequence_decidability_full_lplus/followup-scope-spec.md` Section 2) titles this "promote ... into `FormalSystem/`", but its own description and file_scope both specify `specs/evidence/seam-gluing-ray-product/` and list no `FormalSystem/` source files beyond the `FMP/README.md` citation re-point. This task follows the description and file_scope, not the title. Genuine promotion into the `FormalSystem/` library proper would be a different and larger task.
+
+---
 
 ### 719. Ray layer seam gluing and stab fibre
 - **Status**: [NOT STARTED]
