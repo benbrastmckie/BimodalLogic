@@ -45,7 +45,7 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 | File | Lines | Description |
 |------|------:|-------------|
 | `Behavior.lean` | 296 | The behavior presheaf `Beh F`: the sections over a duration, the restriction action at raw data and at a site morphism, presheaf functoriality, and the *Germs* clause `Beh F 0 ≃ F.WorldState` |
-| `Ray.lean` | 400 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections and bridges, and the ray-layer gluing operator with its reading equations, restriction identities, uniqueness and totality |
+| `Ray.lean` | 438 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections and bridges, and the ray-layer gluing operator with its reading equations, restriction identities, uniqueness and totality |
 | `Sheaf.lean` | 434 | <!-- TODO: add description --> |
 | `Site.lean` | 191 | The interval site `Int(D)`: the translations `Tr p`, the three category laws, and the Johnstone coverage |
 <!-- END GENERATED -->
@@ -129,10 +129,103 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 - `compat_iff_match` — the coverage's compatible-family condition, as an equality of germ
   sections in `Beh F 0`, is the raw seam hypothesis
 
+## Two recorded verdicts
+
+### The ray gluing stands in for a Zorn argument without subsuming the Extension Theorem
+
+`Ray.seamGlue` produces a **total** world history from a pair of agreeing half-line rays, with no
+Zorn argument and no choice: `Ray.seamGlue`, its two reading equations, its two restriction
+identities, `Ray.seamGlue_unique`, `Ray.seamGlue_clause` and `Ray.seamGlue_isTotal` all measure
+`[propext, Quot.sound]`.
+
+The **positive** half of the verdict. That is the role the bi-lasso Tier A effective extension
+theorem plays — `Metalogic/Decidability/BiLasso/Orbit.lean`'s `IntPresentation.extend_periodic`
+and `IntPresentation.extend_periodic_of_icc`, whose *no Zorn* property `BiLasso/Agreement.lean`
+exists in part to preserve — an effective total-history construction standing in for a Zorn
+argument. `Ray.seamGlue` supplies such a construction for **every** pair of agreeing half-line
+rays at a regular frame, not only for the bi-lasso case the orbit construction was built for.
+
+The two properties are distinct, and the bi-lasso modules distinguish them explicitly:
+`BiLasso/Agreement.lean` preserves the paper's "without appeal to Zorn's lemma" *exactly and only
+as **no Zorn***, and records that it is **not** preserved as choice-freedom in Lean's sense —
+`IntPresentation.extend_periodic` itself measures `Classical.choice`, for a reason internal to the
+decoding module. The ray gluing has both properties at once: no Zorn, **and**
+`[propext, Quot.sound]`.
+
+The **limit**, stated as the verdict's other half and not as full subsumption. The general
+Extension Theorem (`Semantics/Extension/Extension.lean`'s `extension`, routed through
+`Semantics/PartialHistoryOrder.lean`'s `PartialHistory.exists_maximal_extension`, which is Zorn's
+lemma over the extension order) handles a strictly wider class of inputs, and it is not
+displaced. The gap is precisely locatable. A pair of half-line rays at `t` has two properties that
+an arbitrary partial history does not: its domain **covers** all of `F.Duration`, and the two
+halves **meet in exactly one point**. `Ray.seamGlueFun`'s total case split on `s ≤ t` is available
+only because of those two facts. A `PartialHistory`'s `domain` is an arbitrary predicate on
+`F.Duration` — neither total nor convex nor meeting any other domain in one point — so there is no
+analogue of that case split there, and the maximal-extension route remains the only general one.
+Deliverable 4 therefore closes **affirmatively with an explicit gap statement**, not by reasoned
+exclusion.
+
+### The choice record splits, and the split is the honest form
+
+The ray layer is choice-free, as measured above. The ℤ/ω presentation in
+`PlusLanguage/PlusRayFibre.lean` is **not**: `seamOmegaEquiv` and `plusStab_iff_omega` measure
+`Classical.choice`, and the cause is upstream and named — `FrameOver.worldHistoryOfStepPath`,
+reached through `pathFibreEquiv` to build a possible world out of a bare bi-infinite step path.
+Rerouting that declaration is out of scope here: it is a core `Semantics/IntNormalForm.lean`
+declaration with consumers on several independent fronts. A uniform claim in either direction
+would be false; the split is the record.
+
+### What a decidable stability check on the path-space presentation requires
+
+`plusStab_iff_rays` and `plusStab_iff_omega` present `⊡` as a quantifier over a **product of two
+path spaces**, one factor running backward from the seam and one forward. Three things follow
+about any device that would summarise that quantification finitely, and they are stated here as a
+**requirement** and not as a design: nothing below is built, selected or funded by this cluster.
+
+- The device must be **universal over both factors**, hence complementation-shaped. A
+  nondeterministic per-path summary does not supply it, and the divergence is elementary and
+  finite rather than automata-theoretic: on a total, hence genuinely branching, step graph on
+  `Bool`, `Probe718PathQuantifier.exists_ne_stab` and
+  `Probe718PathQuantifier.exists_ne_universal` show the existential per-path summary to be `True`
+  everywhere while the real value of the stability-of-eventually formula is `False` everywhere
+  (`Probe718PathQuantifier.decide_will`).
+- Its **backward** factor must be summarised on its own terms rather than obtained by
+  time-reversing the forward one. The forward finite-graph summary
+  (`Probe718FiniteGraph.will_iff_allPathsMeet`, `Probe718FiniteGraph.decide_will`) is proved on a
+  fixture whose relation is symmetric under time reversal, and the finite-width obstruction lives
+  in the backward factor, so that fixture cannot see it. `Probe719Backward` supplies the backward
+  dual on a time-asymmetric fixture and records its own limit: that fixture is backward
+  *deterministic*, so its backward factor is a singleton.
+- **No complexity claim is committed here.** The CTL\* 2EXPTIME lower bound is the sanity check
+  on any bound a future device might carry; this cluster asserts none.
+
+Which candidate device supplies the requirement is settled nowhere and is **not** asserted here —
+not determinization, not a Safraless procedure, not an MSO-over-ℤ route, not a Ramsey-coloured
+summary.
+
+The path-category reading of the forward structure — the identification of `Path(F)` as the free
+category on the one-step graph when the duration is ℤ, which would be the "root paths of a finite
+class graph" presentation a decidable check is usually stated over — is likewise **not landed**.
+No free-category presentation of `Path(F)` exists anywhere under `FormalSystem/`, and the paper's
+own labels for it sit in the appendix block that
+`docs/reference/paper-definitions-of-record.md` records as *deliberately not pinned*; they are
+deliberately not named here either, since naming them is what would make them load-bearing and
+widen that record's maintenance surface for a region the tree does not depend on. The
+free-category reading must never be cited as landed.
+
+### This presentation bounds nothing
+
+`PlusSlicedCertificate.NoFiniteWidth.not_finite_width_fmp` stands exactly as proved. The
+ray-product presentation is the **mechanism behind** that refutation rather than an escape from
+it: a product of two path spaces cannot be a finite fibre. No width, tail-period or complexity
+bound is committed anywhere in this cluster, and soundness is untouched.
+
 ## Dependencies
 
 - **Imports from**: `Semantics/TemporalOrder.lean`, `Semantics/PartialHistory.lean`
-- **Imported by**: `Semantics/Presheaf.lean` (the cluster aggregator)
+- **Imported by**: `Semantics/Presheaf.lean` (the cluster aggregator), and
+  `PlusLanguage/PlusRayFibre.lean`, which imports `Presheaf/Ray.lean` directly to read the `⊡`
+  clause through `seamFibreEquiv`
 
 ## Related Documentation
 
@@ -141,6 +234,9 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
   from, their convexity predicate, and `PartialHistory.rel_across_seam`, the seam argument the
   gluing clause instantiates
 - [`TemporalOrder.lean`](../TemporalOrder.lean) — `PositiveCone`, the objects of the site
+- [`PlusLanguage/PlusRayFibre.lean`](../../PlusLanguage/PlusRayFibre.lean) — the `⊡`-clause
+  readings of `seamFibreEquiv`, over ray pairs and over pairs of ω-indexed step sequences. It
+  sits above `Semantics/Truth.lean` and so cannot live in this cluster
 - [`docs/reference/paper-definitions-of-record.md`](../../../docs/reference/paper-definitions-of-record.md)
   — where `def:interval-site` and `def:behavior-presheaf` resolve, both `DANGLING`: the paper cut
   the containing appendix `app:Structure` in full, and its surviving commented block carries a

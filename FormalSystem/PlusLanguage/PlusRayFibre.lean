@@ -25,8 +25,9 @@ and any device summarising it must be universal over *both* factors.
 
 ## What this does not do
 
-**It bounds nothing.** `not_finite_width_fmp` stands exactly as proved, and the ray-product
-presentation is the *mechanism behind* that refutation rather than an escape from it: a product
+**It bounds nothing.** `PlusSlicedCertificate.NoFiniteWidth.not_finite_width_fmp` stands
+exactly as proved, and the ray-product presentation is the *mechanism behind* that refutation
+rather than an escape from it: a product
 of two path spaces cannot be a finite fibre. Nothing here decides anything, commits to any
 width, tail-period or complexity bound, or supplies a summary device.
 
@@ -87,8 +88,9 @@ module therefore carries no `assert_not_exists` on the proof system.
   `FrameOver.worldHistoryOfStepPath` and `FrameOver.mem_HF_iff_adjacent`, the identification of
   possible worlds over ℤ with bi-infinite step paths
 * `FormalSystem/PlusLanguage/PlusTruth.lean` — `PlusTruth.stab_iff`, the clause's own statement
-* `FormalSystem/Metalogic/Decidability/FMP/` — `not_finite_width_fmp`, the refutation this
-  presentation is the mechanism behind and does not escape
+* `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean` —
+  `PlusSlicedCertificate.NoFiniteWidth.not_finite_width_fmp`, the refutation this presentation is
+  the mechanism behind and does not escape
 * The Possible Worlds limit presentation `H_F ≅ lim Beh(F)(2x)` is the natural categorical
   companion to this fibre product. It is **not landed** anywhere under `FormalSystem/` and is
   cited here as a pointer to future work only, never as a result

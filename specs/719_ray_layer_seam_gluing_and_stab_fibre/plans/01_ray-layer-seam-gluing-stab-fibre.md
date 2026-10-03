@@ -609,22 +609,22 @@ wired into the evidence gate.
 
 ---
 
-### Phase 6: The two recorded verdicts [NOT STARTED]
+### Phase 6: The two recorded verdicts [COMPLETED]
 
 **Goal**: Deliverable 4's subsumption limit and Deliverable 5's requirement hand-off exist **in
 the library**, as named claims with their limits stated — not only in this plan or a summary.
 
 **Tasks**:
-- [ ] Add a named-claim section to `FormalSystem/Semantics/Presheaf/README.md` on the proven model
+- [x] Add a named-claim section to `FormalSystem/Semantics/Presheaf/README.md` on the proven model
       of `FormalSystem/Metalogic/Decidability/FMP/README.md`'s
       "### The finite-carrier route is refuted, not merely open" — a named claim followed by
       explicitly stated limits
-- [ ] Deliverable 4, the **positive** half: the ray gluing supplies the effective, choice-free
+- [x] Deliverable 4, the **positive** half: the ray gluing supplies the effective, choice-free
       total-history construction that `BiLasso/Orbit.lean` built only for the bi-lasso case
       (`extend_periodic`, `extend_periodic_of_icc`, whose "no Zorn" property
       `BiLasso/Agreement.lean` preserves to protect), now for **every** pair of agreeing half-line
       rays at a regular frame — measured `[propext, Quot.sound]` (Phase 2)
-- [ ] Deliverable 4, the **limit**, stated as a recorded verdict and **not** as full subsumption:
+- [x] Deliverable 4, the **limit**, stated as a recorded verdict and **not** as full subsumption:
       the general Extension Theorem (`Semantics/Extension/Extension.lean`'s `extension`, routed
       through `PartialHistory.exists_maximal_extension`, measured
       `[propext, Classical.choice, Quot.sound]`) handles a strictly wider class of inputs. Name
@@ -632,10 +632,10 @@ the library**, as named claims with their limits stated — not only in this pla
       one point, whereas an arbitrary `PartialHistory`'s `domain` is an arbitrary predicate with
       neither property, so `Ray.glue`'s total case split has no analogue there. This closes
       Deliverable 4 **affirmatively with an explicit gap statement**, not by reasoned exclusion
-- [ ] Record the measured **split** on choice: the ray layer is choice-free; the ℤ/ω presentation
+- [x] Record the measured **split** on choice: the ray layer is choice-free; the ℤ/ω presentation
       is not, with `FrameOver.worldHistoryOfStepPath` named as the cause and its reroute recorded
       as out of this task's scope
-- [ ] Deliverable 5's requirement, **stated and handed over, built and selected by nothing here**:
+- [x] Deliverable 5's requirement, **stated and handed over, built and selected by nothing here**:
       from `Probe718PathQuantifier.exists_ne_stab`/`exists_ne_universal` (the existential
       per-path summary is True everywhere while the real value of the stability-of-eventually
       formula is False everywhere, `Probe718PathQuantifier.decide_will`) together with
@@ -646,15 +646,22 @@ the library**, as named claims with their limits stated — not only in this pla
       terms rather than by time-reversal of the forward one. Assert **nothing** about which
       candidate device supplies it. Land **no** complexity claim; note only that the CTL\*
       2EXPTIME lower bound is the sanity check on any future bound
-- [ ] Cite the path-category connection as a **paper anchor only**: `def:path-category`,
+- [x] Cite the path-category connection as a **paper anchor only**: `def:path-category`,
       `def:conduche` and `cor:path-fibration` are `DANGLING` rows in
       `docs/reference/paper-definitions-of-record.md` and no free-category presentation exists
       under `FormalSystem/`, so the free-category reading of `Path(F)` must never be cited as
-      landed
-- [ ] Mirror the Deliverable-4 verdict as a `/-! … -/` block in `Ray.lean` so the claim is
+      landed *(deviation: altered — the three anchors are NOT `DANGLING` rows; that record lists
+      them among nine appendix anchors deliberately NOT pinned, so citing them failed C15 with "3
+      paper-anchor citation(s) resolve to nothing". Satisfying C15 would have meant widening that
+      record for a region the tree does not depend on, which its own recorded decision exists to
+      prevent. The verdict therefore describes the free-category reading, states that nothing
+      under `FormalSystem/` presents it and that it must never be cited as landed, and says
+      explicitly that the paper's labels are not named because naming them is what would make them
+      load-bearing.)*
+- [x] Mirror the Deliverable-4 verdict as a `/-! … -/` block in `Ray.lean` so the claim is
       readable from the module as well as the README, keeping constraint vocabulary inside the
       block (C34b) and citing declaration names rather than `file.lean:NNN` (C20)
-- [ ] Regenerate the inventories and typst counts; re-run the full gate set
+- [x] Regenerate the inventories and typst counts; re-run the full gate set
 
 **Timing**: 1 hour
 

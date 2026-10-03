@@ -395,6 +395,44 @@ def seamFibreEquiv [F.IsRegular] (t : F.Duration) (s : F.WorldState) :
         rw [hb', hf']
       · rw [Ray.seamGlue_states_not_le _ _ _ hx]
 
+/-!
+## Recorded verdict: an effective stand-in for a Zorn argument, without subsuming the general one
+
+`Ray.seamGlue` produces a **total** world history from a pair of agreeing half-line rays, with no
+Zorn argument and no choice — `[propext, Quot.sound]` on the whole path.
+
+*The positive half.* That is the role the bi-lasso Tier A effective extension theorem plays —
+`Metalogic/Decidability/BiLasso/Orbit.lean`'s `IntPresentation.extend_periodic` and
+`IntPresentation.extend_periodic_of_icc`, whose *no Zorn* property
+`Metalogic/Decidability/BiLasso/Agreement.lean` exists in part to preserve: an effective
+total-history construction standing in for a Zorn argument. `Ray.seamGlue` supplies such a
+construction for **every** pair of agreeing half-line rays at a regular frame, not only for the
+bi-lasso case the orbit construction was built for.
+
+One distinction is worth keeping, because the two properties are different and the bi-lasso
+modules say so in their own words. `Agreement.lean` preserves the paper's "without appeal to
+Zorn's lemma" **exactly and only as *no Zorn***, and records that it is *not* preserved as
+choice-freedom in Lean's sense; `IntPresentation.extend_periodic` itself still measures
+`Classical.choice`, for a reason internal to the decoding module. The ray gluing has both
+properties: no Zorn, **and** `[propext, Quot.sound]`. The comparison is therefore favourable on
+the axiom axis as well as the effectiveness axis, and nothing here needs it to be otherwise.
+
+*The limit, which is the other half of the same verdict and not an afterthought.* This does
+**not** subsume the general Extension Theorem (`Semantics/Extension/Extension.lean`'s `extension`,
+routed through `Semantics/PartialHistoryOrder.lean`'s `PartialHistory.exists_maximal_extension`,
+which is Zorn's lemma over the extension order), whose domain is a strictly wider class
+of partial inputs. The gap is exactly locatable. A pair of half-line rays at `t` has two
+properties an arbitrary partial history does not: its domain **covers** all of `F.Duration`, and
+the two halves **meet in exactly one point**. `Ray.seamGlueFun`'s total case split on `s ≤ t` is
+available only because of those two facts, and a `PartialHistory`'s `domain` is an arbitrary
+predicate with neither, so no analogue of that case split exists there. The maximal-extension
+route therefore remains the only general one, and nothing here displaces it.
+
+See `Semantics/Presheaf/README.md` for the companion half of this record — the requirement a
+decidable stability check on the path-space presentation would have to meet, which this cluster
+states and neither builds nor selects.
+-/
+
 end FormalSystem.Semantics.Presheaf
 
 assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree
