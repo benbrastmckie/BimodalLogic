@@ -1,0 +1,18 @@
+{
+  "task_number": 727,
+  "phase": "plan",
+  "status": "planned",
+  "session_id": "sess_1791051010_4c2417_727",
+  "dispatch_seq": 11,
+  "phases_completed": 0,
+  "phases_total": 5,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/727_stop_literal_null_file_scope_writes_and_promote_check/plans/01_promote-null-value-to-fail.md",
+      "summary": "5-phase implementation plan for the null_value FAIL promotion, the closed writer item, and the task 711 rename."
+    }
+  ],
+  "next_steps": "Run /implement 727 to execute the plan",
+  "notes": "Item 1 (the literal-null writer) is planned as a no-op closure: research proved no live writer exists. Item 2 (the null_value promotion) is confirmed safe -- live re-count gives null_value 0, missing_key 29, empty_array 0 over 57 non-terminal tasks. All edits land in the source store at /home/benjamin/.config/nvim/agent-system/extensions/core, never under the deployed .claude/ tree."
+}

@@ -1,32 +1,30 @@
 {
-  "status": "researched",
-  "agent_type": "general-research-agent",
-  "delegation_path": ["orchestrator", "research", "general-research-agent"],
-  "session_id": "sess_1791051010_4c2417_727",
-  "dispatch_seq": 8,
-  "findings_count": 3,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/727_stop_literal_null_file_scope_writes_and_promote_check/reports/01_stop-null-file-scope-writes.md",
-      "summary": "Confirms no live script writes literal-null file_scope (sole historical writer was a one-off 2026-07-27 manual/agent edit, already fully repaired); confirms null_value promotion to FAIL is safe today (0 live findings) and specs exactly what Check 10 code/test changes that requires; leaves task 711's directory rename as a deferred, low-risk decision for the plan phase."
+      "type": "plan",
+      "path": "specs/727_stop_literal_null_file_scope_writes_and_promote_check/plans/01_promote-null-value-to-fail.md",
+      "summary": "5-phase plan: close the writer item as a no-op with corrected attribution, promote Check 10's null_value sub-state to FAIL (with a display-cap exemption so the gate is real), update four test fixtures, deploy and gate, and rename task 711's stale project_name."
     }
   ],
+  "metadata": {
+    "session_id": "sess_1791051010_4c2417_727",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 3.5,
+    "dependency_waves": 4
+  },
   "memory_candidates": [
     {
-      "content": "git log -S'<literal>' --oneline on a JSON state file can mislead on attribution: -S matches any commit that changes the occurrence COUNT of a string, including commits that only REMOVE/relocate it (e.g. archiving entries away). To find the true introducing commit, diff each candidate commit's before/after content with jq (presence+value check) rather than trusting which commits the pickaxe search surfaces or trusting a prior commit message's own attribution.",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/727_stop_literal_null_file_scope_writes_and_promote_check/reports/01_stop-null-file-scope-writes.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["git log -S", "pickaxe", "attribution", "jq diff", "state.json forensics"]
-    },
-    {
-      "content": "In BimodalLogic's validate-state.sh, promoting one WARN-level sub-state of a multi-sub-state check to FAIL (while others stay WARN) requires splitting both the per-finding log call (branch per sub_state) AND the aggregate summary line (which otherwise blends all sub-states into one log_warn and would misclassify an unrelated sub-state's findings as FAIL). A single promoted sub-state needs its own conditionally-emitted summary line, not a wholesale re-level of the existing one.",
-      "category": "PATTERN",
-      "source_artifact": "specs/727_stop_literal_null_file_scope_writes_and_promote_check/reports/01_stop-null-file-scope-writes.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["validate-state.sh", "WARN to FAIL promotion", "Check 10", "file_scope", "aggregate summary line"]
+      "content": "When promoting ONE sub-state of a multi-sub-state validator check from WARN to FAIL, the promotion is cosmetic unless the newly-FAIL findings are also exempted from the check's output-truncation cap. validate-state.sh Check 10 reports missing_key/null_value/empty_array findings through a single loop capped at the first 10 findings sorted by project_number. With 29 live missing_key findings, a promoted null_value finding at a high project_number would sort past the cap, emit no log_fail line, leave FAILED at 0, and let validation pass despite the exact condition the promotion was meant to block. The general rule: a display cap and an enforcement level are orthogonal concerns, and a check that conflates them silently loses enforcement the moment the populations are unbalanced. Split the emission loop by level -- FAIL findings untruncated, WARN findings capped -- and recompute the 'and N more' arithmetic against the WARN population only so the count stays truthful. Pin it with a fixture whose FAIL finding deliberately sorts past the cap.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/727_stop_literal_null_file_scope_writes_and_promote_check/plans/01_promote-null-value-to-fail.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["validator-promotion", "warn-to-fail", "truncation-cap", "enforcement-level", "validate-state", "check-sub-states"]
     }
   ],
-  "next_steps": "Run /plan 727 to create implementation plan"
+  "next_steps": "Run /implement 727 to execute the plan",
+  "dispatch_seq": 11
 }
