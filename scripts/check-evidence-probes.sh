@@ -148,6 +148,28 @@ EVIDENCE="specs/evidence"
 #                                                           | evidence condition; funds nothing
 #                                                           | by itself and begins no
 #                                                           | determinization work
+# seam-gluing-ray-product/backward-dual-asymmetric-fixture  | POSITIVE (backward factor, on a
+#                                                           | TIME-ASYMMETRIC fixture): the
+#                                                           | backward stability operator at a
+#                                                           | seam state is exactly "every
+#                                                           | backward root path from that state
+#                                                           | meets the `p`-set", decided by
+#                                                           | backward reachability alone and
+#                                                           | STATE-DEPENDENTLY -- True at the
+#                                                           | `post` states, False at the `x` and
+#                                                           | `pre` states. The dual the
+#                                                           | finite-graph probe records as
+#                                                           | excluded, now on the fixture whose
+#                                                           | relation is NOT symmetric under
+#                                                           | time reversal, which is where the
+#                                                           | finite-width obstruction lives.
+#                                                           | Honest limit, in the probe's own
+#                                                           | header: that fixture is backward
+#                                                           | DETERMINISTIC, so its backward
+#                                                           | factor is a singleton and this is
+#                                                           | the dual at its easiest instance;
+#                                                           | the hard test is a mirror fixture,
+#                                                           | filed as a follow-up. No automata
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -160,6 +182,7 @@ WIRED=(
   "seam-gluing-ray-product/finite-graph-stab-summary"
   "seam-gluing-ray-product/mosaic-germ-amalgamation"
   "seam-gluing-ray-product/path-quantifier-alternation"
+  "seam-gluing-ray-product/backward-dual-asymmetric-fixture"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

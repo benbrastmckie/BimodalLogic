@@ -542,7 +542,7 @@ commit message rather than silently widening.
 
 ---
 
-### Phase 5: The E1 backward summary and its wiring [NOT STARTED]
+### Phase 5: The E1 backward summary and its wiring [COMPLETED]
 
 **Goal**: the backward stability operator is decided **by backward reachability** at a seam state
 on the time-asymmetric fixture, mirroring `Probe718FiniteGraph.will_iff_allPathsMeet` clause for
@@ -550,35 +550,39 @@ clause, with the result — proof or counterexample — recorded in the probe he
 wired into the evidence gate.
 
 **Tasks**:
-- [ ] State `AllBwdPathsMeet`: the backward-reachability predicate dual to
+- [x] State `AllBwdPathsMeet`: the backward-reachability predicate dual to
       `Probe718FiniteGraph.AllPathsMeet` — every backward root path from the seam state meets the
       `p`-set
-- [ ] Prove `pastStab_iff_allBwdPathsMeet`, mirroring `Probe718FiniteGraph.will_iff_allPathsMeet`
+- [x] Prove `pastStab_iff_allBwdPathsMeet`, mirroring `Probe718FiniteGraph.will_iff_allPathsMeet`
       **clause for clause**, for the backward operator
       `PlusFormula.stab (PlusFormula.somePast p)` — where
       `somePast φ := PlusFormula.snce PlusFormula.top φ`, the exact dual of the forward probe's
       `someFuture φ := untl top φ`
-- [ ] **Do not** attempt to derive this by `PlusFormula.reflectTime`. There is no semantic
+- [x] **Do not** attempt to derive this by `PlusFormula.reflectTime`. There is no semantic
       transport theorem for the plus language, and a time reflection also reverses the frame, so
       any such transport would prove a statement about the **mirror** fixture — the very thing the
       time-asymmetry requirement exists to prevent. Argue backward reachability directly
-- [ ] Establish the three-row decision table (report Finding 10): at `post k j` the unique
+- [x] Establish the three-row decision table (report Finding 10): at `post k j` the unique
       backward chain meets the `p`-set at `x k`, so the operator is **True**; at `x k` and at
       `pre k` the chain never meets it, so **False**. Note that Probe710's own `Φ_true` already
-      corroborates the `x k` row
-- [ ] Land `decide_past_stab` and a `Decidable` instance on the model of
+      corroborates the `x k` row *(deviation: altered — the two negative rows are proved from
+      NAMED backward chains, `bwdFromX` and `bwdFromPre`, with their step lemmas, rather than
+      from inline `if`-expressions. Inline lambdas left the step goals beta-unreduced and
+      `rw`-resistant; the named chains make each step proof a bare constructor application. Same
+      content, three extra declarations.)*
+- [x] Land `decide_past_stab` and a `Decidable` instance on the model of
       `Probe718FiniteGraph.decidable_will` — a **state-dependent** decision here, strictly more
       informative than the forward probe's uniformly-False `Probe718FiniteGraph.decide_will`
-- [ ] Record in the header, in the probe's own words: (a) the result — and if the two-factor
+- [x] Record in the header, in the probe's own words: (a) the result — and if the two-factor
       presentation turns out to **fail** for the backward direction, record that as the
       deliverable, since an obstruction is a theorem under this programme's discipline;
       (b) the **honest limit** — Probe710's fixture is backward-deterministic, so the backward
       factor is a singleton and E1 tests the backward dual at its easiest instance; the genuinely
       hard dual test is a **mirror** fixture (backward-branching, forward-deterministic), filed as
       a follow-up and not absorbed here; (c) the `reflectTime` trap and why it was not used
-- [ ] Qualify **every** citation of `decide_will` as `Probe718FiniteGraph.decide_will` or
+- [x] Qualify **every** citation of `decide_will` as `Probe718FiniteGraph.decide_will` or
       `Probe718PathQuantifier.decide_will` — the bare name is ambiguous across this collection
-- [ ] Add **exactly one** line to `scripts/check-evidence-probes.sh`'s `WIRED` array:
+- [x] Add **exactly one** line to `scripts/check-evidence-probes.sh`'s `WIRED` array:
       `"seam-gluing-ray-product/backward-dual-asymmetric-fixture"` — collection-relative, **no**
       `.lean` extension. Re-read the file immediately before editing, reorder nothing, and do not
       use `WIRED_REPO`. This file is declared in two other tasks' `file_scope`; commit it alone
