@@ -174,25 +174,25 @@ deferred.
 
 ---
 
-### Phase 2: `Presheaf/Site.lean`, the cluster aggregator and the README [NOT STARTED]
+### Phase 2: `Presheaf/Site.lean`, the cluster aggregator and the README [COMPLETED]
 
 **Goal**: The interval site `Int(D)` lands as a module stated over a bare `TemporalOrder` with no
 task frame, beside a Tier-1 sibling aggregator and a gated `README.md`, with the library root
 regenerated.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/Presheaf/Site.lean`: copyright block, then
+- [x] Create `FormalSystem/Semantics/Presheaf/Site.lean`: copyright block, then
       `import FormalSystem.Init` and `import FormalSystem.Semantics.TemporalOrder`, then a
       **Tier-3** module docstring (Title + scope paragraph, `## Main Definitions`,
       `## Main Results`, `## Implementation Notes`, `## References`, in that order per
       `docs/reference/docstring-standard.md`), then
       `namespace FormalSystem.Semantics.Presheaf`
-- [ ] Lift the site content verbatim from `probes/03_siting-rehearsal.lean`'s Site rehearsal plus
+- [x] Lift the site content verbatim from `probes/03_siting-rehearsal.lean`'s Site rehearsal plus
       `probes/02_site-probe.lean`'s coverage trio: `Interval`, `Obj`, `Tr` (+ `Tr.ext`), `Tr.id`,
       `Tr.comp`, `@[simp] comp_shift`, `@[simp] id_shift`, `id_comp`, `comp_id`, `comp_assoc`,
       `le_of_hom`, `lres`, `rres`, `coverLeft`, `coverRight`, `cover_germ_composites`. Give every
       public declaration a `/--` docstring
-- [ ] Record the **concrete-structures decision** in `Site.lean`'s `## Implementation Notes`: no
+- [x] Record the **concrete-structures decision** in `Site.lean`'s `## Implementation Notes`: no
       `Mathlib.CategoryTheory` dependency, because the live tree imports no category theory at
       all, `def:interval-site`'s content is three composition laws plus a coverage, and the
       concrete route keeps `Site.lean` buildable from `TemporalOrder` alone. State that the
@@ -201,34 +201,34 @@ regenerated.
       plan should reconcile with this rather than re-litigate it (name the decision by its content
       in the docstring, never by a task number: `.claude/rules/no-task-references-in-deliverables.md`
       forbids task-number citations under `FormalSystem/`, and C9 gates it)
-- [ ] Record the **paper-state flag** in `Site.lean`'s docstring: `app:Structure` is commented out
+- [x] Record the **paper-state flag** in `Site.lean`'s docstring: `app:Structure` is commented out
       in the paper in full under an explicit `% SECTION CUT` record and carries a bare `% CHECK`,
       so `def:interval-site` and `app:presheaf-dictionary` resolve against
       `docs/reference/paper-definitions-of-record.md` and not against a live `\label{}`, and the
       material is unreviewed by the author
-- [ ] Write `## References` in the normal form of `docs/development/REFERENCE_NORMAL_FORM.md`:
+- [x] Write `## References` in the normal form of `docs/development/REFERENCE_NORMAL_FORM.md`:
       bibliographic entries as `* [P. Schultz, D. I. Spivak and C. Vasilakopoulou, *Dynamical
       Systems and Sheaves*][schultz2020], Defs. 3.1.1–3.1.2, Notation 3.1.7, Defs. 3.2.1–3.2.2`
       and the Johnstone entry; paper anchors as `* JPL paper \`def:interval-site\` — …` with the
       `DANGLING` fact stated at the citation site; module cross-references as backticked
       repository-relative paths
-- [ ] End the file with
+- [x] End the file with
       `assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree`,
       after the closing `end FormalSystem.Semantics.Presheaf` — this **locks** the layering
       positively (it was never at risk, since nothing imports the cluster into `Truth.lean`).
       Precedent: `TaskFrame.lean`, `FrameProperty.lean`, `TruthTransport.lean`
-- [ ] Create `FormalSystem/Semantics/Presheaf.lean`: copyright block, `import
+- [x] Create `FormalSystem/Semantics/Presheaf.lean`: copyright block, `import
       FormalSystem.Semantics.Presheaf.Site`, and a **Tier-1** aggregator docstring with a
       `## Modules` list, on the `FormalSystem/Semantics/Ultraproduct.lean` pattern. (C8 requires
       exactly this sibling file and forbids `Presheaf/Presheaf.lean`)
-- [ ] Create `FormalSystem/Semantics/Presheaf/README.md` to the required sections of
+- [x] Create `FormalSystem/Semantics/Presheaf/README.md` to the required sections of
       `docs/reference/readme-standard.md`: `# Presheaf` title, scope paragraph, a module inventory
       wrapped in `<!-- BEGIN GENERATED: inventory dir=FormalSystem/Semantics/Presheaf -->` /
       `<!-- END GENERATED -->`, Key Definitions and Results, a cross-links footer whose every
       relative link resolves, and a `*Last verified: YYYY-MM-DD*` line
-- [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem`
-- [ ] Emit the inventory block: `bash scripts/check-module-invariants.sh --emit-inventory`
-- [ ] Commit, staging exactly this phase's files plus `FormalSystem.lean`
+- [x] Regenerate the library root: `lake exe mk_all --lib FormalSystem`
+- [x] Emit the inventory block: `bash scripts/check-module-invariants.sh --emit-inventory`
+- [x] Commit, staging exactly this phase's files plus `FormalSystem.lean` *(deviation: altered — Phase 4's two `FormalSystem/Semantics/README.md` `## Contents` rows were pulled forward into this phase and staged here. The gated **INV** check reports `Presheaf.lean is live but has no row` / `Presheaf/ is live but has no row` the moment the cluster exists, so Phase 2 cannot end green without them. Same final state, earlier commit; Phase 4 keeps the `Semantics.lean` import and the two regenerated inventory blocks.)*
 
 **Timing**: 1.5 hours
 

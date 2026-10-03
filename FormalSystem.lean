@@ -571,6 +571,8 @@ import FormalSystem.Semantics.LexCarrier
 import FormalSystem.Semantics.PartialHistory
 import FormalSystem.Semantics.PartialHistoryOrder
 import FormalSystem.Semantics.Periodicity
+import FormalSystem.Semantics.Presheaf
+import FormalSystem.Semantics.Presheaf.Site
 import FormalSystem.Semantics.ShiftSet
 import FormalSystem.Semantics.SlicedFrame
 import FormalSystem.Semantics.StateLocalTransfer
