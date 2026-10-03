@@ -273,7 +273,7 @@ repeating the research-time claim.
 
 ---
 
-### Phase 3: PlusSlicedCertificate/README.md — 25 modules in six layers [IN PROGRESS]
+### Phase 3: PlusSlicedCertificate/README.md — 25 modules in six layers [COMPLETED]
 
 **Goal**: Author `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/README.md` (160-220
 lines): the six-layer route, a 25-row module table, and a closing
@@ -297,7 +297,14 @@ proved / refuted / **open** record that preserves every distinction the re-expor
       fixture that fixes its width — `Window`, `Fixture`; (4) tail stability — `Stable`, `Tail`,
       `FixtureStable`; (5) computed liveness and the bridge — `Timed`, `Fixpoint`, `Computed`,
       `Fold`, `Unroll`, `LiveFix`, `Bridge`, `HalfRun`; (6) the checker, its two theorems, and the
-      embedding — `Check`, `Sound`, `Complete`, `Embed`, `EmbedComplete`, `Examples`.
+      embedding — `Check`, `Sound`, `Complete`, `Embed`, `EmbedComplete`, `Examples`. *(deviation: altered — the
+      per-module `import` lines contradict this grouping, so the Scope Hypothesis's "follow the
+      imports" direction was taken: `Fixture` imports `Bridge` and `Stable` imports `Fixture`, so
+      the computed-liveness machinery precedes the width fixture rather than following it. Landed
+      grouping: (1) `Basic`, `Frame`, `Window`; (2) `Position`, `Live`, `Canon`, `Splice`;
+      (3) `Timed`, `Fixpoint`, `Computed`, `Fold`, `Unroll`, `LiveFix`; (4) `Bridge`;
+      (5) `Fixture`, `Stable`, `Tail`, `FixtureStable`, `HalfRun`; (6) `Check`, `Sound`,
+      `Complete`, `Embed`, `EmbedComplete`, `Examples`)*
 - [ ] Write the `| Module | Contents |` table with all 25 rows, describing each module by its
       **role in the route** with its principal declarations named — not as a flat declaration
       dump, so the table survives a single-file addition. Include the two modules the re-export
@@ -349,7 +356,7 @@ mechanically enforces — if a module's imports contradict the layer it is place
 imports.
 
 **Files to modify**:
-- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/README.md` - new file, 160-220 lines
+- `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/README.md` - new file, 160-220 lines *(deviation: altered — landed at 224 lines)*
 
 **Verification**:
 - `bash scripts/readme-lint.sh FormalSystem BimodalTools | grep -A5 -- '--- Check 3 ---'` reports
@@ -363,7 +370,7 @@ imports.
 
 ---
 
-### Phase 4: Gate verification and cross-file audit [NOT STARTED]
+### Phase 4: Gate verification and cross-file audit [IN PROGRESS]
 
 **Goal**: Confirm the acceptance criterion holds and that the three new files introduce no new
 warning, no C9 violation and no stale stamp.
