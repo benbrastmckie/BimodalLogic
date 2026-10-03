@@ -15,6 +15,7 @@ alone and sits strictly **below** `Semantics/Truth.lean`: both modules close wit
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Semantics/Presheaf -->
 | File | Lines | Description |
 |------|------:|-------------|
+| `Behavior.lean` | 296 | The behavior presheaf `Beh F`: the sections over a duration, the restriction action at raw data and at a site morphism, presheaf functoriality, and the *Germs* clause `Beh F 0 ≃ F.WorldState` |
 | `Site.lean` | 191 | The interval site `Int(D)`: the translations `Tr p`, the three category laws, and the Johnstone coverage |
 <!-- END GENERATED -->
 
@@ -24,6 +25,12 @@ alone and sits strictly **below** `Semantics/Truth.lean`: both modules close wit
 - `Tr.id`, `Tr.comp` — the identity `Tr 0` and composition, which adds offsets
 - `coverLeft`, `coverRight` — the two members of the Johnstone covering family of `l` at a cut
   point `p ≤ l`
+- `Beh F l` — the sections of the behavior presheaf over `l`: the partial histories whose domain
+  is exactly `[0, l]`
+- `Beh.restrict`, `Beh.restrictTr` — the presheaf action, at raw data and indexed by a morphism of
+  the site
+- `Beh.germ`, `Beh.ofGerm`, `Beh.germEquiv` — a section over `0` and its single world state, and
+  the bijection between them
 
 ## Key Results
 
@@ -31,10 +38,18 @@ alone and sits strictly **below** `Semantics/Truth.lean`: both modules close wit
 - `Tr.le_of_hom` — a morphism `l' → l` witnesses `l' ≤ l`
 - `cover_germ_composites` — the two covering morphisms have equal composite shift with the germ,
   which is what makes the sheaf condition on this coverage a two-section gluing statement
+- `Beh.restrict_id`, `Beh.restrict_comp` — presheaf functoriality at raw data
+- `Beh.restrictTr_id`, `Beh.restrictTr_comp` — the same at the site, where the contravariance is
+  visible: `restrictTr (Tr.comp f g) = restrictTr g ∘ restrictTr f`
+- `Beh.germ_ofGerm`, `Beh.ofGerm_germ` — the two round trips of `Beh.germEquiv`, the *Germs*
+  clause. The only results here that reach a frame constraint, through `[F.IsRegular]`
+- `Beh.isConvex`, `Beh.domain_eq_interval` — a section is convex, and its domain is `Interval 0 l`
+- `partialHistory_ext` — extensionality for partial histories, written by hand because the
+  `states` field is dependent on `domain` and no `@[ext]` lemma is generated
 
 ## Dependencies
 
-- **Imports from**: `Semantics/TemporalOrder.lean`
+- **Imports from**: `Semantics/TemporalOrder.lean`, `Semantics/PartialHistory.lean`
 - **Imported by**: `Semantics/Presheaf.lean` (the cluster aggregator)
 
 ## Related Documentation

@@ -259,34 +259,34 @@ undercount means a declaration the probes carry was dropped and must be restored
 
 ---
 
-### Phase 3: `Presheaf/Behavior.lean` — the sections, the presheaf action and the Germs clause [NOT STARTED]
+### Phase 3: `Presheaf/Behavior.lean` — the sections, the presheaf action and the Germs clause [COMPLETED]
 
 **Goal**: `Beh F l`, restriction along `Tr p`, presheaf functoriality in both the raw-data and
 the site-indexed forms, and `Beh(F)(0) ≃ W` land as a module, and the cluster aggregator reaches
 them.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/Presheaf/Behavior.lean`: copyright block, then
+- [x] Create `FormalSystem/Semantics/Presheaf/Behavior.lean`: copyright block, then
       `import FormalSystem.Init`, `import FormalSystem.Semantics.PartialHistory` and
       `import FormalSystem.Semantics.Presheaf.Site`, then a **Tier-3** module docstring, then
       `namespace FormalSystem.Semantics.Presheaf`
-- [ ] Lift verbatim from `probes/03_siting-rehearsal.lean`'s Behavior rehearsal:
+- [x] Lift verbatim from `probes/03_siting-rehearsal.lean`'s Behavior rehearsal:
       `partialHistory_ext`; then under `namespace Beh` — `Beh`, `mem_dom`, `isConvex`,
       `domain_eq_interval`, `restrict`, `restrict_domain`, `restrict_states`, `ext`,
       `restrict_id`, `restrict_comp`, `restrictTr`, `restrictTr_id`, `restrictTr_comp`, `germ`,
       `ofGerm`, `germ_ofGerm`, `ofGerm_germ`, `germEquiv`. Give every public declaration a `/--`
       docstring
-- [ ] Keep `Beh`'s subtype condition as the pointwise `Iff`
+- [x] Keep `Beh`'s subtype condition as the pointwise `Iff`
       `∀ t, τ.domain t ↔ (0 ≤ t ∧ t ≤ l)`. The domain-side obligations of `restrict`, `ofGerm`
       and `restrict_domain` discharge by `Iff.rfl`/`rfl` **only** in this form; restating it as a
       domain equality breaks them. `Beh.domain_eq_interval` is the derived equality
-- [ ] Keep the `/--` blocks of `ofGerm`, `germ_ofGerm`, `ofGerm_germ` and `germEquiv` free of the
+- [x] Keep the `/--` blocks of `ofGerm`, `germ_ofGerm`, `ofGerm_germ` and `germEquiv` free of the
       constraint vocabulary (`Compositionality`, `Seriality`, `Limit`, `Saturation`, `Serial`,
       `Compositional`, `Saturated`) and write **no** `Constraints consumed:` marker. All four
       carry an `[F.IsRegular]` binder, which is exactly C34b's trigger population; put the
       `*Seriality*`/`*Limit*` discussion in the `/-!` module docstring, whose span C34b does not
       read
-- [ ] Record in `## Implementation Notes`: (a) `partialHistory_ext` lives here rather than in
+- [x] Record in `## Implementation Notes`: (a) `partialHistory_ext` lives here rather than in
       `PartialHistory.lean` — a **deliberate deferral**, because the history module is outside
       this cluster's remit and a sibling task carries a hard constraint to leave it untouched;
       the deleted `ShiftSet.wh_ext` had already called the consolidation "a clean follow-up";
@@ -296,16 +296,16 @@ them.
       convexity as a predicate and there is no `ConvexHistory` structure; (d) `restrict_id` and
       `restrict_comp` are genuinely new content at the partial-history level — `ShiftSet`'s
       `ts_zero`/`ts_add` are the corresponding facts for **total** histories only
-- [ ] Write `## References` in normal form, with the `def:behavior-presheaf` anchor cited as
+- [x] Write `## References` in normal form, with the `def:behavior-presheaf` anchor cited as
       `DANGLING` at the citation site and `[…][schultz2020]` §3.2 Def. 3.2.1 for the source
-- [ ] End the file with the same `assert_not_exists` pair as `Site.lean`
-- [ ] Add `import FormalSystem.Semantics.Presheaf.Behavior` to
+- [x] End the file with the same `assert_not_exists` pair as `Site.lean`
+- [x] Add `import FormalSystem.Semantics.Presheaf.Behavior` to
       `FormalSystem/Semantics/Presheaf.lean` and extend its `## Modules` list
-- [ ] Update `FormalSystem/Semantics/Presheaf/README.md`'s Key Definitions / Key Results for the
+- [x] Update `FormalSystem/Semantics/Presheaf/README.md`'s Key Definitions / Key Results for the
       new module
-- [ ] Regenerate the library root (`lake exe mk_all --lib FormalSystem`) and re-emit the
+- [x] Regenerate the library root (`lake exe mk_all --lib FormalSystem`) and re-emit the
       inventory block (`check-module-invariants.sh --emit-inventory`)
-- [ ] Commit, staging exactly this phase's files plus `FormalSystem.lean`
+- [x] Commit, staging exactly this phase's files plus `FormalSystem.lean` *(deviation: altered — two extra files staged. `typst/generated/status.typ`: the pre-commit `typst-sync-check.sh` Check 2 gate blocks any commit that changes the live `.lean` file/line counts without regenerating it, so it is regenerated (`--fix`) and staged in every phase that adds a module. `FormalSystem/Semantics/README.md`: its `Presheaf/` row, pulled forward in Phase 2, is extended here for `Behavior.lean`. Also: the probe's two `show` tactic calls fired `linter.style.show` twice under the library's lean options, falsifying the phase's warning-free premise; both are now `change` — the linter's own remedy, identical tactic semantics — so C28 is green and no `scripts/warning-budget.txt` row was added.)*
 
 **Timing**: 1.5 hours
 
