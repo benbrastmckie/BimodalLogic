@@ -504,7 +504,18 @@ leave the other three classes to task 412 (Section G).
 
 **Action required**: file with `/task`, by the orchestrator or the user.
 
-### H4 -- Backward-dual finite-graph probe on a time-asymmetric fixture (E1)
+### H4 -- Backward-dual finite-graph probe on a time-asymmetric fixture (E1) — SUPERSEDED, DO NOT FILE
+
+> **RESOLVED 2026-10-03: the fold-in rule below fired the other way. Task 719 WAS dispatched and
+> E1 landed inside it** as `specs/evidence/seam-gluing-ray-product/backward-dual-asymmetric-fixture.lean`
+> (619 lines, wired in `scripts/check-evidence-probes.sh`). The result is POSITIVE and
+> state-dependent: the backward operator at a seam state is exactly "every backward root path
+> meets the `p`-set", True at the `post` states and False at the `x` and `pre` states — strictly
+> more informative than the forward probe's uniformly-False result. The probe's header records
+> the honest limit, that the `Probe710` fixture is backward *deterministic*, so the backward
+> factor is a singleton and this is the dual at its easiest instance. **This section is retained
+> as the record of what was specified; it must not be filed as a task.** Everything below is the
+> original proposal text, unamended.
 
 **Proposed title**: Backward-dual `⊡(Pp)` finite-graph summary on the `Probe710` fixture
 
