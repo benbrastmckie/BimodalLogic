@@ -1310,6 +1310,92 @@ this task's allClosed_derivable induction as a prerequisite and consumes it once
 task's own acceptance criteria are unchanged by 482's existence; 482 is a downstream consumer,
 not an addition to this task's scope.
 
+DECIDABILITY-HALF NARROWING (2026-10-03, scope spec Section G item 2 of
+specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md). This revision narrows
+the decidability half of this task only. The refutation half -- Verified/Refutation/Core.lean and
+allClosed_derivable -- is untouched and remains this task's core.
+
+THE Z-TIME CLASS LEAVES THIS TASK. `Decidable (Derivable FrameClass.ZTime [] phi)` -- one of the
+four frame classes the `Decidable (Derivable fc [] phi)` deliverable above was filed to cover --
+is a FEW-LINE COROLLARY of a route that has already landed independently of the tableau spine, and
+is being filed as its own follow-up task (scope spec Section H3) rather than done here. The route,
+each declaration re-verified against the tree at revision time:
+
+  - `FormalSystem.Metalogic.soundness_ztime_valid {phi : Formula}
+    (d : DerivationTree FrameClass.ZTime [] phi) : ValidZTime phi`
+    -- FormalSystem/Metalogic/Soundness.lean:1522.
+  - `FormalSystem.Metalogic.BXCanonical.derivable_of_validZTime (phi : Formula) :
+    ValidZTime phi -> Derivable FrameClass.ZTime [] phi`
+    -- FormalSystem/Metalogic/BXCanonical/Completeness.lean:394.
+  - Together these give `Derivable FrameClass.ZTime [] phi <-> ValidZTime phi`. `Derivable fc G p`
+    is `Nonempty (DerivationTree fc G p)` (FormalSystem/ProofSystem/Derivable.lean:69), so the
+    soundness direction is applied under a `Nonempty` elimination (the `h.elim fun d => ...`
+    pattern already used at FormalSystem/Metalogic/StrongCompleteness.lean:309) -- still a few
+    lines, not a new proof.
+  - `decidable_of_iff` against
+    `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime (phi : Formula) :
+    Decidable (ValidZTime phi)`
+    -- FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean:147, a `def`
+    and deliberately not an `instance` -- finishes it.
+
+UNWRITTEN, NOT ALREADY DONE. `grep -rn --include='*.lean' 'Decidable (Derivable' FormalSystem/`
+returns zero hits at revision time; the only tree-wide match is the "not built" row at
+FormalSystem/Metalogic/Decidability/Verified/README.md:62. So the corollary is genuinely unwritten.
+Do not treat it as landed -- and do not write it here either, since it belongs to the Section H3
+follow-up.
+
+THIS TASK'S REMAINING DECIDABILITY CONTENT is therefore the OTHER THREE frame classes -- Base,
+Dense and RTime -- plus the completeness corollaries through the tableau. The tableau spine remains
+the only route FILED for Base, Dense and RTime; that is not the same as being the only route to any
+decidability result. Two verified refinements of what "the other three classes" means:
+
+  - At RTime the biconditional is already available by the same canonical-model route, not only by
+    the spine: `FormalSystem.Metalogic.soundness_rtime_valid` (Soundness.lean:1565) and
+    `FormalSystem.Metalogic.BXCanonical.completeness_rtime_engine (psi : Formula) :
+    ValidRTime psi -> Derivable FrameClass.RTime [] psi`
+    (FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean:598). The open ingredient at
+    RTime is therefore a decision procedure for `ValidRTime`, not the biconditional.
+  - No `Decidable (ValidRTime ...)`, `Decidable (ValidDense ...)` or `Decidable (Valid ...)`
+    declaration exists anywhere in FormalSystem/ at revision time (grep, Lean files only), so
+    Base, Dense and RTime have no decision procedure for validity by any route today.
+
+NEITHER THIS TASK NOR THE SPINE DELIVERS THE FIRST DECIDABILITY THEOREM. Z-time validity of the
+base language is already decided by `Compression.decidableValidZTime`, with its qualifiers, which
+every statement of the result must carry: frame class `FrameClass.ZTime` ONLY; `phi : Formula`, the
+base language with no stability operator; EMPTY premises. The empty-premise consequence form
+`FormalSystem.Metalogic.Decidability.decidableSemanticConsequenceNil (sigma : Formula) :
+Decidable (SemanticConsequenceIn ProofSystem.FrameClass.ZTime [] sigma)` sits beside it at
+Compression/Assembly.lean:161, also `Gamma = []` only. Nothing in any of this licenses an
+unqualified "TM is decidable" claim, and NO COMPLEXITY BOUND is asserted or implied -- do not write
+one into the Typst or LaTeX decidability chapters, and do not drop the ZTime / `Formula` /
+empty-premise qualifiers when recording the result there.
+
+REFUTATION HALF UNCHANGED. Verified/Refutation/Core.lean proving `allClosed_derivable` as ONE
+induction over `allRulesForFC fc` (`FormalSystem/Metalogic/Decidability/Tableau.lean:1657`),
+discharged per rule by its admissibility lemma and its `ruleFrameClass r <= fc` hypothesis through
+the RuleSpec GATE lemmas, with Dense/Discrete/Dedekind instantiating the generic theorem rather
+than re-proving it, is untouched scope and still the core of this task. Neither target file exists
+yet: FormalSystem/Metalogic/Decidability/Verified/ currently holds `Bridge/`, `Decidable.lean`,
+`README.md`, `RuleSpec.lean` and `Termination/`, with no `Refutation/` subdirectory and no
+`Provable.lean`. Task 482 remains a downstream consumer of `allClosed_derivable`, not an addition
+to this scope. The budget-parameterised totality correction (task 428) and the O2/O3 ownership
+assignment (task 429) in the addenda above both stand.
+
+STALE REFERENCES IN THE ORIGINAL SCOPE TEXT, flagged rather than silently repaired because this
+revision was not scoped to re-derive the Dedekind-engine deliverable. Three names the first
+paragraph cites could NOT be verified in FormalSystem/**/*.lean at revision time:
+`completeness_dedekind_of_engine`, `ValidDedekindDense`, and `ValidFor` (used in the phrase
+"completeness corollaries ValidFor fc phi -> Derivable fc [] phi"). `completeness_dedekind` and
+`ValidDedekind` are likewise absent from Lean sources and survive only in prose at
+FormalSystem/Metalogic/README.md:117, FormalSystem/Metalogic/BXCanonical/README.md:34 and
+FormalSystem/Metalogic/WeakCanonical/RealModel/README.md:14,32. The cited anchor
+StrongCompleteness.lean:308 is inside `soundness_consequence`, not a Dedekind engine. Whoever picks
+this task up must re-resolve the Dedekind-engine target against the tree before starting -- the
+nearest live declarations are `completeness_rtime_engine` (CompletenessDedekind.lean:598) and
+`countermodel_dedekind_dense` (CompletenessDedekind.lean:325) -- and must state the completeness
+corollaries against validity predicates that actually exist (`ValidZTime`, `ValidRTime` and their
+siblings) rather than against `ValidFor`.
+
 ---
 
 ### 411. Prove hard admissibility lemmas for until since trichotomy discrete and dedekind rules
