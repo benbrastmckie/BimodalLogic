@@ -26,7 +26,7 @@ with them per task 721's review
 | Metalogic questions | 543, 559, 570, 664 | MF rigidity; TM⋆ completeness; the C3 question; one literature source |
 | TM tableau spine | 464, 465, 428, 429, 410, 411, 430, 412, 482, 481 | Totality, the truth-lemma repair, the semantic lift, and the four-class `isValid` biconditional. Z-time validity of L is **already decided** by another route -- `Compression.decidableValidZTime` (`FrameClass.ZTime`, `Formula` with no `⊡`, empty premises) -- so the spine's deliverable is the four-class statement, not the first decidability theorem |
 | Algebraic representation | 502, 497, 498, 499, 500, 125, 501 | The Jónsson–Tarski representation theorem for TM |
-| Parked | 127, 128, 257, 711, 712, 713 | Nothing until a user ruling (see Phase 0) |
+| Parked | 127, 128, 257, 712, 713 | Nothing until a user ruling (see Phase 0). 711 left this front 2026-10-03 on the user's REVISE ruling and now sits on the gluing route, `[BLOCKED]` pending device-selection probe E3 — not pending a ruling |
 
 51 open tasks. Each phase below is one `/orchestrate` batch, or a
 named sequence of them where declared `file_scope` values overlap — a batch whose members share
@@ -51,15 +51,16 @@ programme (tasks 695–716, all dispatched since), and is not restated here.
       *Evidence added 2026-10-03 (scope spec, Section A):* its dependency edge on 711 gated
       proving a refuted statement and is now meaningless -- removable by `/revise 712`; closing
       as a refutation record waits on the library landing of Section F. Not decided here
-- [ ] Rule on task 711, the ω-automata determinization substrate: it was filed only to make the
-      blocker visible, and the route it names is now closed, so the honest outcome is ABANDONED
-      rather than completed (Task 711). *Evidence added 2026-10-03 (scope spec, Section B):* the
-      718 decision's condition for reviving it ("after R1's falsification probes 1-3 land") is now
-      MET, and the probes showed a universal, complementation-shaped device is necessary
-      (`Probe718PathQuantifier.exists_ne_stab`) without showing Safra/Piterman specifically is; a
-      third option, REVISE (re-describe as the universal-summary substrate for the `⊡` fibre check,
-      keep blocked pending device selection), is on the table beside ABANDON. Newly answerable;
-      not decided here
+- [x] **RULED 2026-10-03 by the user: REVISE** (not ABANDONED, not revived as filed). Task 711 is
+      re-scoped to the universal-summary substrate for the `⊡` fibre check on the seam-gluing
+      route, re-pointed from the refuted 712 to 719 Deliverable 5, and kept `[BLOCKED]` with the
+      reason "device not yet selected; probe E3 pending". *Basis (scope spec, Section B):* the 718
+      decision's condition for reviving it ("after R1's falsification probes 1-3 land") is MET,
+      and the probes showed a universal, complementation-shaped device is necessary
+      (`Probe718PathQuantifier.exists_ne_stab`) **without** showing Safra/Piterman specifically
+      is — four candidate devices remain live, and selection is experiment E3. The ABANDONED
+      reading was right about the route 711 originally *named* (closed with the refuted 712) but
+      wrong about the *need*, which has been re-demonstrated on a different question (Task 711)
 - [ ] Rule on task 713, the CTL⋆ 2EXPTIME reduction: optional, filed not scheduled, nothing
       depends on it; abandon or keep as a write-up note (Task 713). *Evidence added 2026-10-03
       (scope spec, Section C):* 718, 719 and 721 all cite its ARGUED lower bound as the sanity
