@@ -1,30 +1,9 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/710_sliced_class_incompleteness_characterization/plans/01_land-finite-width-refutation.md",
-      "summary": "Nine-phase, 10-hour plan landing the compiled finite-width refutation probe as PlusSlicedCertificate/Limits/NoFiniteWidth.lean, with the verbatim Deliverable 2 statements, the two scope limits in the docstrings, five docs/theorem-index.md rows carrying no pin claim, and the two in-library completeness restatements."
-    }
-  ],
-  "next_steps": "Run /implement 710 to execute the plan",
-  "phase_count": 9,
-  "estimated_hours": 10,
-  "dependency_waves": [[1], [2, 8], [3], [4], [5], [6], [7], [9]],
-  "memory_candidates": [
-    {
-      "content": "Landing a compiled specs/<task>/probes/*.lean file into this repository's FormalSystem/ library is governed by a fixed, discoverable gate checklist that is NOT visible from the probe itself, and every item is mechanically forced: C9 bars task-number citations under FormalSystem/ (probe prose routinely cites 'task N' and must be re-anchored on a durable anchor); C15's second assertion requires each docs/theorem-index.md row's declaration to carry a doc comment immediately above it containing 'Paper: - (reason)'; C24 requires a transitive import of FormalSystem.Init; C30 bars blanket linter suppression, so a probe's file- or section-level 'set_option linter.unusedSectionVars false' cannot be transcribed, and scripts/warning-budget.txt lists that class as blocking with the prescribed per-declaration 'omit [...] in' fix; C33 requires regenerating FormalSystem.lean via 'lake exe mk_all --lib FormalSystem' (never by hand); readme-lint.sh check 1 is GATED and requires a README.md in every new directory containing .lean files; and the INV check requires 'check-module-invariants.sh --emit-inventory' because adding one .lean file moves three opt-in inventory blocks (root README.md totals, FormalSystem/README.md loose rows, FormalSystem/Metalogic/README.md subdir rows). A pinned:C2/pinned:C14 claim in a theorem-index row requires a baseline line inside check-module-invariants.sh, so a task that does not own that script must leave the Axioms cell unpinned rather than copy the neighbouring rows' token.",
-      "category": "PATTERN",
-      "source_artifact": "specs/710_sliced_class_incompleteness_characterization/plans/01_land-finite-width-refutation.md",
-      "confidence": 0.88,
-      "suggested_keywords": ["probe-to-library-landing", "module-invariants-gates", "mk_all-regeneration", "readme-lint-gated", "theorem-index-paper-anchor", "warning-budget-blocking"]
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 9,
   "metadata": {
-    "session_id": "sess_1791051010_4c2417_710",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 6
+    "session_id": "sess_1791051010_4c2417",
+    "agent_type": "general-implementation-agent",
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

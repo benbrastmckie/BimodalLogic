@@ -1,7 +1,7 @@
 # Implementation Plan: Task #710
 
 - **Task**: 710 - sliced_class_incompleteness_characterization
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: 703 (landed `PlusSlicedCertificate` subtree, incl. `Check.lean`, `Sound.lean`, `EmbedComplete.lean`)
 - **Research Inputs**: `specs/710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md`
@@ -235,45 +235,45 @@ parallel, and it needs nothing from Phase 1 but the witness's name and the lande
 
 ---
 
-### Phase 1: Module skeleton, the witness, the frame and the canonical-path structure [NOT STARTED]
+### Phase 1: Module skeleton, the witness, the frame and the canonical-path structure [COMPLETED]
 
 **Goal**: `Limits/NoFiniteWidth.lean` exists, compiles, and carries the Deliverable 2 witness
 definitions, the positive-half frame/model, and the canonical-path structure theorems through
 `path_eq_canon`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/` and the module
+- [x] Create `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/` and the module
       file with the repository copyright header (copy the four-line form from
       `PlusWitnessFamily/Limits/NoCertificate.lean`; `scripts/check-copyright-headers.sh` checks it)
-- [ ] Write the minimal import list, **including `FormalSystem.Init`** (C24). Start from
+- [x] Write the minimal import list, **including `FormalSystem.Init`** (C24). Start from
       `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Sound`; add
       `FormalSystem.Semantics.SlicedFrame` / `FormalSystem.Semantics.IntNormalForm` and Mathlib
       imports only as the build demands
-- [ ] Write the module docstring: what is refuted, the F2 argument in the probe header's six-step
+- [x] Write the module docstring: what is refuted, the F2 argument in the probe header's six-step
       form, and **Deliverable 3's scope limits in full** — (i) scope is ℤ (discrete) frames only,
       the pumping argument needs discreteness and says nothing about a dense duration; (ii) `Φ`
       uses `⊡`, so this half is specifically an L⁺ result and **not** a result about base TM, in
       contrast with the `⊡`-free finite-carrier witness; (iii) nothing is claimed about an
       *infinite* carrier; (iv) nothing here touches soundness. Add a `## Tags` block in the
       subtree's style
-- [ ] **Re-anchor every task-number reference** the probe's prose carries (C9): cite
+- [x] **Re-anchor every task-number reference** the probe's prose carries (C9): cite
       `FormalSystem/Metalogic/Decidability/FMP/README.md`'s section
       "The finite-carrier route is refuted, not merely open", or a declaration name, never "task N"
-- [ ] Open `namespace FormalSystem.Metalogic.Decidability` / `namespace PlusSlicedCertificate` /
+- [x] Open `namespace FormalSystem.Metalogic.Decidability` / `namespace PlusSlicedCertificate` /
       `namespace NoFiniteWidth` (decision D-N: the single-letter definitions must not land in
       `PlusSlicedCertificate` itself)
-- [ ] Transcribe the witness definitions `pa`, `p`, `Fp`, `Pp`, `Xp`, `A'`, `C'`, `D`, `Φ`
+- [x] Transcribe the witness definitions `pa`, `p`, `Fp`, `Pp`, `Xp`, `A'`, `C'`, `D`, `Φ`
       **verbatim** from the probe (lines 48-62), each with a short docstring
-- [ ] Transcribe the positive-half carrier and frame: `Node`, `Step` and its six inversion
+- [x] Transcribe the positive-half carrier and frame: `Node`, `Step` and its six inversion
       theorems, `step_fwd`/`step_bwd`, `fwdList`/`bwdList`/`mem_fwdList`/`mem_bwdList`,
       `fwd_finite`/`bwd_finite`, `iter_fwd_finite`/`iter_bwd_finite`, `fib_finite`, `F`,
       `F_isRegular`, `F_taskRel`, `F_step`, `M` (probe lines 64-228)
-- [ ] Transcribe the canonical-path structure: `canon` and its four computation lemmas,
+- [x] Transcribe the canonical-path structure: `canon` and its four computation lemmas,
       `canon_step`, `canon_eq_x_iff`, and the `Struct` section through `path_eq_canon` (probe lines
       230-375)
-- [ ] Build; fix any blocking-class warning at its own declaration (no file- or section-level
+- [x] Build; fix any blocking-class warning at its own declaration (no file- or section-level
       `set_option`)
-- [ ] Commit
+- [x] Commit
 
 **Timing**: 1.5 hours
 
