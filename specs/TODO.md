@@ -26,7 +26,7 @@ next_project_number: 729
 
 ### Agent System
 
-727 [PLANNED] — Stop archival and orchestration writes from emitting a...
+727 [IMPLEMENTING] — Stop archival and orchestration writes from emitting a...
 
 ### Algebraic Representation
 
@@ -41,7 +41,7 @@ next_project_number: 729
 
 ### Categorical Structure
 
-564 [PLANNED] — Prove app:gluing for two interval sections whose germs agree...
+564 [IMPLEMENTING] — Prove app:gluing for two interval sections whose germs agree...
   └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
   └─ 719 [NOT STARTED] — Implement the ray layer, the seam-gluing operator and the...
 565 [NOT STARTED] — Prove app:presheaf-dictionary's Totality and Directed Gluing...
@@ -157,7 +157,7 @@ ACCEPTANCE. Every surviving confirmed instance is repaired at its source or reco
 ---
 
 ### 727. Stop literal null file scope writes and promote check
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -646,7 +646,7 @@ DO NOT UNBLOCK THIS TASK ON AN ARGUMENT. Unblock it only on a proof, or convert 
 
 ---
 
-### 711. Omega automata determinization substrate
+### 711. Universal summary substrate stab fibre
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: metalogic
@@ -1048,7 +1048,7 @@ SEED RESEARCH AVAILABLE (added 2026-10-02; READ-ONLY context, not a change of sc
 ---
 
 ### 564. Sheaf clause gluing and starpasting generalization
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563

@@ -388,7 +388,7 @@ irrelevant, a FAIL-count drift is not.
 
 ---
 
-### Phase 5: Resolve task 711's stale `project_name` [NOT STARTED]
+### Phase 5: Resolve task 711's stale `project_name` [COMPLETED]
 
 **Goal**: Act on the dispatch's smaller item deliberately. The decision is **rename**: the cost is
 measurably near-zero today (no artifacts, no git-tracked files, no external slug references) and
@@ -405,21 +405,34 @@ preconditions has changed at implementation time, do not rename: record the stal
 task's summary artifact** and leave 711 untouched.
 
 **Tasks**:
-- [ ] Re-verify the preconditions: `git ls-files specs/711_omega_automata_determinization_substrate`
+- [x] Re-verify the preconditions: `git ls-files specs/711_omega_automata_determinization_substrate`
       returns nothing; `ls -R` on that directory shows only empty `plans/`, `reports/`,
       `summaries/`; `grep -rl omega_automata_determinization_substrate . --exclude-dir=.git` returns
       only `specs/state.json`, `specs/TODO.md`, and this task's artifacts.
+      *(completed: all three preconditions held exactly as planned)*
 - [ ] On any precondition failure: skip the rename, record the staleness and the reason in the
       summary, and mark this phase `[COMPLETED WITH EXCLUSIONS]`.
-- [ ] Update the field through the mutex-guarded writer:
+      *(not applicable: no precondition failure, rename proceeded)*
+- [x] Update the field through the mutex-guarded writer:
       `bash .claude/scripts/state-write.sh '(.active_projects[] | select(.project_number==711) | .project_name) = "universal_summary_substrate_stab_fibre"' --session-id "$session_id" --regen-todo`
-- [ ] Rename the directory with a plain `mv` (not `git mv` — nothing in it is tracked):
+      *(completed)*
+- [x] Rename the directory with a plain `mv` (not `git mv` — nothing in it is tracked):
       `mv specs/711_omega_automata_determinization_substrate specs/711_universal_summary_substrate_stab_fibre`,
       then confirm the three empty subdirectories survived.
-- [ ] Re-grep for the old slug; expect hits only in this task's own artifacts and in
+      *(completed: three empty subdirectories (plans/, reports/, summaries/) confirmed intact)*
+- [x] Re-grep for the old slug; expect hits only in this task's own artifacts and in
       `specs/events.jsonl`-style historical records, never in a live path.
-- [ ] Leave 711's `description`, `status` (`blocked`), `dependencies`, and `task_type` untouched —
+      *(completed: post-rename grep returns the same four files as the pre-rename baseline --
+      specs/state.json (task 727's own description text plus its own file_scope declaration
+      naming the directory), specs/TODO.md (regenerated), and this task's own report and plan.
+      No hit in any OTHER task's live path. Note: task 727's own file_scope entry
+      "specs/711_omega_automata_determinization_substrate/" is now a stale path string -- left
+      untouched since file_scope is descriptive/anticipated and never filesystem-validated per
+      state-management.md, and editing it is outside this phase's scope; recorded in the summary)*
+- [x] Leave 711's `description`, `status` (`blocked`), `dependencies`, and `task_type` untouched —
       hard constraint.
+      *(completed: diffed against git HEAD before the edit -- description byte-identical,
+      status/dependencies/task_type unchanged)*
 
 **Timing**: 0.5 hours
 
