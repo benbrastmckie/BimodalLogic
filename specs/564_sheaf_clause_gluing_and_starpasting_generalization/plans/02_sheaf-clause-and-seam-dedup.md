@@ -1,7 +1,7 @@
 # Implementation Plan: Task #564 — the Sheaf clause and the seam-argument de-duplication
 
 - **Task**: 564 - sheaf_clause_gluing_and_starpasting_generalization
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None (563 is `[COMPLETED]`; `Presheaf/{Site,Behavior}.lean` are on the tree)
 - **Research Inputs**: `specs/564_sheaf_clause_gluing_and_starpasting_generalization/reports/02_sheaf-clause-and-seam-dedup.md`, `specs/564_sheaf_clause_gluing_and_starpasting_generalization/reports/01_finite-vs-directed-gluing-findings.md`
@@ -164,7 +164,7 @@ after the aggregator edit; **STOP and report** on any foreign change inside a ge
 
 ---
 
-### Phase 1: The shared seam argument and the two delegations [NOT STARTED]
+### Phase 1: The shared seam argument and the two delegations [COMPLETED]
 
 **Goal**: The seam-composition argument exists **once** in the tree, at `PartialHistory`, with two
 independent seam coordinates; `PlusLanguage.paste_rel_le_lt` becomes a four-line delegation at a
@@ -172,7 +172,7 @@ byte-identical signature; and `paste` is incidentally cleared of `Classical.choi
 `paste_rel`'s mixed-orientation case through the off-zero reflection law.
 
 **Tasks**:
-- [ ] Add `TaskFrame.reflection_of_ne` to `FormalSystem/Semantics/TaskFrame.lean`, immediately
+- [x] Add `TaskFrame.reflection_of_ne` to `FormalSystem/Semantics/TaskFrame.lean`, immediately
       after `TaskFrame.reflection` inside the existing `namespace TaskFrame` block that also holds
       `comp`, `serial`, `limit` and `saturation`:
       `theorem reflection_of_ne (F : TaskFrame) {w u : F.WorldState} {d : F.Duration} (hd : d ≠ 0) : F.TaskRel w d u ↔ F.TaskRel u (-d) w := TaskFrame.reflect_reflection_of_ne hd`.
@@ -182,7 +182,7 @@ byte-identical signature; and `paste` is incidentally cleared of `Classical.choi
       the bare lemma fails with "did not find an occurrence of the pattern" while the wrapper
       applies. Keep the block free of the constraint vocabulary C34b triggers on
       (`Compositionality`/`Seriality`/`Limit`/`Saturation`, `Serial`/`Compositional`/`Saturated`)
-- [ ] Add `PartialHistory.rel_across_seam` to `FormalSystem/Semantics/PartialHistory.lean`, in the
+- [x] Add `PartialHistory.rel_across_seam` to `FormalSystem/Semantics/PartialHistory.lean`, in the
       first `namespace PartialHistory` block, next to `respects_task_le` which it generalizes.
       Transcribe the statement and proof verbatim from `probes/01_seam-lemma-and-glue.lean`
       lines 24–37: two seam coordinates `m` in `σ` and `m'` in `τ`, an explicit duration parameter
@@ -190,32 +190,37 @@ byte-identical signature; and `paste` is incidentally cleared of `Classical.choi
       `(hcomp : TaskFrame.Compositional F.TaskRel)` with no bundling binder. Proof route:
       `σ.respects_task`, `τ.respects_task`, `rw [hmatch]`, then
       `TaskFrame.forward_of_comp hcomp` with `sub_nonneg.mpr` on both nonnegativity slots
-- [ ] Record in `rel_across_seam`'s `/--` block the three load-bearing design points, in words and
+- [x] Record in `rel_across_seam`'s `/--` block the three load-bearing design points, in words and
       without naming any task: two seam coordinates rather than one (a one-coordinate lemma would
       force a `PartialHistory.timeShift` at the interval-site call site, strictly more work); the
       duration as a parameter plus a splitting hypothesis rather than the literal
       `(m - s) + (s' - m')`, so each call site supplies its own arithmetic identity and no
       post-hoc rewrite is needed; and the explicit `Compositional` hypothesis
-- [ ] Rewrite `paste_rel_le_lt`'s body in `FormalSystem/PlusLanguage/PlusPasting.lean` as a
+- [x] Rewrite `paste_rel_le_lt`'s body in `FormalSystem/PlusLanguage/PlusPasting.lean` as a
       delegation to `rel_across_seam`, per `probes/01_…` lines 41–46, passing `F.comp` and
       supplying `by rw [add_comm]; exact (sub_add_sub_cancel s' t s).symm` in the `hd` slot. The
       **signature line must stay byte-identical**, `[F.IsRegular]` included, so no call site moves
-- [ ] Rewrite `paste_rel`'s third case in the same file: replace `F.reflection` with
+- [x] Rewrite `paste_rel`'s third case in the same file: replace `F.reflection` with
       `TaskFrame.reflection_of_ne F (sub_ne_zero_of_ne (ne_of_lt …))`. The case is strict
       (`s' ≤ t < s`), so the off-zero hypothesis is in hand. This is the step that clears
       `Classical.choice` from `paste`
-- [ ] Update `PlusPasting.lean`'s module docstring where it says `paste` uses "the converse
+- [x] Update `PlusPasting.lean`'s module docstring where it says `paste` uses "the converse
       convention (`TaskFrame.reflection`) for the reverse orientation": it now uses the **off-zero**
       reflection law, and the construction is therefore choice-free. State it as the measured fact
       it is, naming declarations rather than `file.lean:NNN`
-- [ ] Measure and record: `#print axioms` (equivalently `lean_verify` on the fully qualified name)
+- [x] Measure and record: `#print axioms` (equivalently `lean_verify` on the fully qualified name)
       on `FormalSystem.Semantics.PartialHistory.rel_across_seam`,
       `FormalSystem.Semantics.TaskFrame.reflection_of_ne`,
       `FormalSystem.PlusLanguage.paste_rel_le_lt` and `FormalSystem.PlusLanguage.paste`. Expected:
       `[propext]` for the wrapper, `[propext, Quot.sound]` for the other three — `paste` dropping
       `Classical.choice` is the observable proof that the rewiring took
-- [ ] Re-emit the generated blocks and commit, staging exactly this phase's three files plus the
-      generated ones, per **Shared Touches**
+- [x] Re-emit the generated blocks and commit, staging exactly this phase's three files plus the
+      generated ones, per **Shared Touches** *(deviation: altered — a fifth regenerated shared
+      touch was required beyond the four the table enumerates: inserting into
+      `PartialHistory.lean` shifted three recorded declaration spans, failing C35, so
+      `scripts/lean-citation-manifest.json` was regenerated with
+      `python3 scripts/export-lean-citations.py`, the fix the gate itself names. Regenerated,
+      never hand-edited, and clean of foreign modification beforehand)*
 
 **Timing**: 1.25 hours
 

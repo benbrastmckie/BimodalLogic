@@ -13,8 +13,19 @@ The one structural fact about `⟨τ⟩_x` that the S5 axioms of `⊡` miss: the
 through a world state are the **product of its possible pasts and its possible futures**. If two
 total histories `ρ` and `σ` share a state at `t`, then `ρ|(-∞,t] ⌢ σ|(t,∞)` is again a total
 history (`paste`), using only *Compositionality* (`TaskFrame.comp`) across `t` and the converse
-convention (`TaskFrame.reflection`) for the reverse orientation — no *Saturation*, no extension
-theorem, no frame-class assumption.
+convention for the reverse orientation — no *Saturation*, no extension theorem, no frame-class
+assumption.
+
+The converse convention enters through its **off-zero** form, `TaskFrame.reflection_of_ne`, and
+not through the unrestricted `TaskFrame.reflection`: the mixed-orientation case of `paste_rel` is
+strict, so the off-zero law is all it needs, while the unrestricted law's own proof splits
+classically at `d = 0`. `paste` is therefore choice-free, which is a measured fact rather than a
+reading of the statement — `#print axioms paste` reports `[propext, Quot.sound]`.
+
+The seam step itself is not proved here. `paste_rel_le_lt` is the total-history instance of
+`PartialHistory.rel_across_seam`, which states the argument off totality with two independent
+seam coordinates; gluing two interval sections at a cut point is its other instance, and the two
+were once the same proof written twice.
 
 Pure-future formulas (`IsPureFuture`, `PlusLanguage/Formula.lean`) see only the history from
 `t` onward (`truth_congr_agreeFrom`) and pure-past ones only the history up to `t`
@@ -81,21 +92,26 @@ def pasteFun (ρ σ : WorldHistory F) (t : F.Duration) : F.Duration → F.WorldS
   fun s => if s ≤ t then ρ.state s else σ.state s
 
 /-- The task relation across the seam: from a `ρ`-state at `s ≤ t` to a `σ`-state at `s' > t`,
-by *Compositionality* through the shared state at `t`. -/
+by *Compositionality* through the shared state at `t`.
+
+This is the **total-history instance** of `PartialHistory.rel_across_seam`, which states the same
+argument off totality with two independent seam coordinates; here both coordinates are `t`. The
+argument itself lives there and is not repeated — interval-section gluing is the other instance,
+and the two were once the same proof written twice. -/
 theorem paste_rel_le_lt [F.IsRegular] (ρ σ : WorldHistory F) (t : F.Duration)
     (hsame : ρ.state t = σ.state t) {s s' : F.Duration} (hs : s ≤ t) (hs' : ¬ s' ≤ t) :
-    F.TaskRel (ρ.state s) (s' - s) (σ.state s') := by
-  have h1 : F.TaskRel (ρ.state s) (t - s) (ρ.state t) := ρ.respects_task s t
-  have h2 : F.TaskRel (σ.state t) (s' - t) (σ.state s') := σ.respects_task t s'
-  rw [hsame] at h1
-  have heq : s' - s = (t - s) + (s' - t) := by
-    rw [add_comm]; exact (sub_add_sub_cancel s' t s).symm
-  rw [heq]
-  exact (F.comp _ _ _ _ (sub_nonneg.mpr hs) (sub_nonneg.mpr (le_of_lt (not_le.mp hs')))).mpr
-    ⟨_, h1, h2⟩
+    F.TaskRel (ρ.state s) (s' - s) (σ.state s') :=
+  PartialHistory.rel_across_seam F.comp (σ := ρ.val) (τ := σ.val) (ρ.property t) (σ.property t)
+    hsame (ρ.property s) (σ.property s') hs (le_of_lt (not_le.mp hs'))
+    (by rw [add_comm]; exact (sub_add_sub_cancel s' t s).symm)
 
 /-- The pasted state function respects the task relation: composition across `t`
-(`TaskFrame.comp`), the reflection convention for the reverse orientation. -/
+(`TaskFrame.comp`), and the reflection convention **off zero**
+(`TaskFrame.reflection_of_ne`) for the reverse orientation.
+
+The mixed-orientation case is strict — it has `s' ≤ t < s`, so `s' - s ≠ 0` — which is why the
+off-zero law suffices there. Taking it rather than the unrestricted `TaskFrame.reflection`, whose
+own proof splits classically at `d = 0`, is what makes `paste` choice-free. -/
 theorem paste_rel [F.IsRegular]
     (ρ σ : WorldHistory F) (t : F.Duration) (hsame : ρ.state t = σ.state t) :
     ∀ s s' : F.Duration, F.TaskRel (pasteFun ρ σ t s) (s' - s) (pasteFun ρ σ t s') := by
@@ -104,7 +120,10 @@ theorem paste_rel [F.IsRegular]
   by_cases hs : s ≤ t <;> by_cases hs' : s' ≤ t
   · rw [if_pos hs, if_pos hs']; exact ρ.respects_task s s'
   · rw [if_pos hs, if_neg hs']; exact paste_rel_le_lt ρ σ t hsame hs hs'
-  · rw [if_neg hs, if_pos hs', F.reflection, neg_sub]; exact paste_rel_le_lt ρ σ t hsame hs' hs
+  · have hne : s' - s ≠ 0 :=
+      sub_ne_zero_of_ne (ne_of_lt (lt_of_le_of_lt hs' (not_le.mp hs)))
+    rw [if_neg hs, if_pos hs', TaskFrame.reflection_of_ne F hne, neg_sub]
+    exact paste_rel_le_lt ρ σ t hsame hs' hs
   · rw [if_neg hs, if_neg hs']; exact σ.respects_task s s'
 
 /-- **Pasting.** If `ρ(t) = σ(t)` then `ρ|(-∞,t] ⌢ σ|(t,∞)` is a world history. -/

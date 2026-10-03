@@ -103,6 +103,9 @@ they are not re-litigated here or in the four-axiom frame alignment work.
 ## Main Results
 
 - `PartialHistory.respects_task_le` — the guarded form, derived from the unconditional field
+- `PartialHistory.rel_across_seam` — the seam argument: two histories agreeing at a pair of seam
+  coordinates relate across the seam, by composition through the shared state. The single home of
+  the argument shared by history pasting and interval-section gluing
 - `PartialHistory.total_nonempty` — totality implies the nonemptiness field is derivable
 - `PartialHistory.IsTotal.isConvex` — a world history is convex
 - `PartialHistory.isTotal_timeShift` / `isConvex_timeShift` — both predicates survive time shift
@@ -176,6 +179,47 @@ theorem respects_task_le (τ : PartialHistory F) (s t : F.Duration) (hs : τ.dom
     (ht : τ.domain t)
     (_hst : s ≤ t) : F.TaskRel (τ.states s hs) (t - s) (τ.states t ht) :=
   τ.respects_task s t hs ht
+
+/--
+**The seam argument, once.** Two partial histories `σ` and `τ` whose states agree at a pair of
+seam coordinates — `m` in `σ`, `m'` in `τ` — relate across the seam: from `σ`'s state at any
+`s ≤ m` to `τ`'s state at any `s' ≥ m'`, through the shared state, by composition.
+
+This generalizes `respects_task_le` from one history to two glued at a seam, and it is the single
+home of an argument that would otherwise be written twice: once for pasting two total histories
+at a shared time and once for gluing two interval sections at a cut point. Three design points
+are load-bearing.
+
+**Two seam coordinates, not one.** `m` and `m'` are independent. A one-coordinate form — a single
+seam time read in both histories — covers the pasting instance, where both coordinates are the
+same `t`, but at the gluing instance the right-hand section is indexed from its own origin, so
+its seam sits at `0` while the left-hand one sits at the cut point. A one-coordinate lemma would
+force a time shift of the right-hand history at that call site, which is strictly more work than
+carrying the second coordinate here.
+
+**The duration is a parameter with a splitting hypothesis**, `hd : d = (m - s) + (s' - m')`,
+rather than the literal sum in the conclusion. Each call site then supplies its own arithmetic
+identity in the `hd` slot — `sub_add_sub_cancel` at the pasting instance, the same with a
+`sub_zero` at the gluing instance — and no post-hoc rewrite of the conclusion is needed.
+
+**`Compositional` is an explicit hypothesis**, not a bracketed bundle. The argument needs exactly
+that one property of the relation, and taking it explicitly is what makes the dependency readable
+from the signature rather than hidden inside a bundle that supplies three more.
+-/
+theorem rel_across_seam {F : TaskFrame} (hcomp : TaskFrame.Compositional F.TaskRel)
+    {σ τ : PartialHistory F}
+    {m m' : F.Duration} (hσm : σ.domain m) (hτm' : τ.domain m')
+    (hmatch : σ.states m hσm = τ.states m' hτm')
+    {s s' d : F.Duration} (hs : σ.domain s) (hs' : τ.domain s')
+    (hsm : s ≤ m) (hm's' : m' ≤ s')
+    (hd : d = (m - s) + (s' - m')) :
+    F.TaskRel (σ.states s hs) d (τ.states s' hs') := by
+  have h1 : F.TaskRel (σ.states s hs) (m - s) (σ.states m hσm) := σ.respects_task s m hs hσm
+  have h2 : F.TaskRel (τ.states m' hτm') (s' - m') (τ.states s' hs') :=
+    τ.respects_task m' s' hτm' hs'
+  rw [hmatch] at h1
+  rw [hd]
+  exact TaskFrame.forward_of_comp hcomp _ _ _ _ _ (sub_nonneg.mpr hsm) (sub_nonneg.mpr hm's') h1 h2
 
 /--
 Smart constructor: build a `PartialHistory` from a **guarded** task-respect proof.

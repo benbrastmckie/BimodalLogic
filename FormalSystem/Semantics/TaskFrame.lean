@@ -2675,6 +2675,18 @@ theorem reflection (F : TaskFrame) [F.IsRegular] (w : F.WorldState) (d : F.Durat
     (u : F.WorldState) : F.TaskRel w d u ↔ F.TaskRel u (-d) w :=
   F.toFibre.reflection w d u
 
+/-- The reflection law **off zero**, at `F.TaskRel`, carrying no bundling binder: a frame is not
+needed for it, only `d ≠ 0`. `reflect_reflection_of_ne` already states this for every primitive
+relation, but `rw` cannot see through `TaskRel` to the underlying `reflect` pattern and fails with
+"did not find an occurrence of the pattern"; this wrapper, stated at `TaskRel` itself, applies.
+
+It is the choice-free route to the reverse orientation. `reflection` is the unrestricted law and
+reaches it through a classical split at `d = 0`; a consumer whose case is strict needs only the
+law here and stays free of `Classical.choice`. -/
+theorem reflection_of_ne (F : TaskFrame) {w u : F.WorldState} {d : F.Duration} (hd : d ≠ 0) :
+    F.TaskRel w d u ↔ F.TaskRel u (-d) w :=
+  TaskFrame.reflect_reflection_of_ne hd
+
 /-- *Seriality* (`def:frame#Seriality`), by citation. -/
 theorem serial (F : TaskFrame) [F.IsRegular] : TaskFrame.Serial F.TaskRel := F.toFibre.serial
 
