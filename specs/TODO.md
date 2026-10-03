@@ -1,5 +1,5 @@
 ---
-next_project_number: 719
+next_project_number: 720
 ---
 
 # TODO
@@ -13,7 +13,7 @@ next_project_number: 719
 |------|-------|------------|--------|
 | 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,705,706,710,711,713,714,716,718 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,709,712 | 298,464,502,563,710,711 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,566,618,719 | 231,465,497,564,565,616,718 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -40,6 +40,7 @@ next_project_number: 719
 563 [NOT STARTED] — Promote the presheaf skeleton into the library. DELIVER: the...
   └─ 564 [NOT STARTED] — Prove app:gluing for two interval sections whose germs agree...
     └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
+    └─ 719 [NOT STARTED] — Implement the ray layer, the seam-gluing operator and the...
   └─ 565 [NOT STARTED] — Prove app:presheaf-dictionary's Totality and Directed Gluing...
     └─ 566 [NOT STARTED] — Prove app:presheaf-dictionary's Possible Worlds clause: HF...
   └─ 567 [NOT STARTED] — Prove app:presheaf-dictionary's Determinism clause -- F...
@@ -104,6 +105,36 @@ next_project_number: 719
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ## Tasks
+
+### 719. Ray layer seam gluing and stab fibre
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: categorical-structure
+- **Dependencies**: Task 563, Task 564, Task 718
+
+**Description**: Implement the ray layer, the seam-gluing operator and the stab-fibre characterisation, connecting the behaviour-presheaf semantics to the decidability programme.
+
+ORIGIN AND AUTHORIZATION. Spawned from the omega-sequence decidability round (task 718) at author instruction: the gluing material was too much to fit in the paper, but is to be FULLY IMPLEMENTED in this repository, connecting with the presheaf semantics. This task carries the implementation that task 718, being research-first, is forbidden to carry itself. It is DEPENDENT: do not dispatch it before task 718 has produced its route verdict and before the interval-site and seam-gluing tasks have landed, because its first two phases consume their outputs directly.
+
+WHAT THIS TASK DOES NOT OWN. The binary seam gluing (app:gluing for two interval sections whose germs agree at the seam, with the two restriction identities and uniqueness) is owned by the Sheaf-clause / star-pasting task (564). Totality and Directed Gluing, the wrappers on thm:extension, are owned by task 565. The Possible Worlds clause H_F iso lim Beh(F)(2x) is owned by task 566. The interval site, the section type Beh F l, restriction along Tr p, presheaf functoriality and the Germs clause are owned by task 563. This task CONSUMES all of those and must not re-prove or re-file any of them. If a needed lemma is missing from one of them, extend THAT task via /revise rather than absorbing its territory here.
+
+DELIVERABLE 1: THE ONE-SIDED RAY LAYER. Beh F l is a BOUNDED interval section with domain exactly [0, l]. The decidability construction needs unbounded forward and backward rays, omega-indexed: a forward ray is a sequence of next states, a backward ray a sequence of states from which to have arrived, each obeying the task relation. Land the ray layer, having first settled (in task 718's round, or here if that round left it open) whether it is a colimit of the bounded sections -- hence Saturation-dependent, per app:gluing's footnote and its D = Q counterexample where restrictions of tau(t) = 1 - t to (0, b] form an increasing chain whose union admits no value at time 1 -- or a separate primitive, or definable directly as a PartialHistory with a ray domain. FormalSystem/Semantics/PartialHistory.lean's domain field is an arbitrary predicate on F.Duration, so a ray domain is already expressible and no new type may be introduced without first showing PartialHistory insufficient. Deliver the two ray types (or the one type with two domain instances), their task-respect proofs, and the restriction maps relating them to Beh F l.
+
+DELIVERABLE 2: THE SEAM-GLUING OPERATOR, AS A LEAN DEFINITION. Land the operator the paper calls frown_z: given rho, sigma in H_F with rho(z) = sigma(z), the history agreeing with rho at all times y <= z and with sigma at all times y >= z. The paper proves it is a possible world by app:gluing applied to the restrictions of rho and sigma to (-infinity, z] and [z, infinity); that statement is currently COMMENTED OUT in the paper source (JPL/possible_worlds.tex, the pasting-principles passage) and so is available-but-unstated there -- its restoration in the paper is an author decision and NOT this task's to make. Deliver: the operator on the ray layer, the two restriction identities, uniqueness, and the proof that the result is total. Prove it CHOICE-FREE if the binary case permits -- the paper's binary gluing needs only convexity and the task constraint, and app:presheaf-dictionary calls the presheaf gluing choice-free, whereas the landed FormalSystem/Semantics/Extension.lean proves the Extension Theorem by Zorn plus Classical.choice. Record the axiom set of every declaration landed here and do not let Classical.choice enter the binary path silently.
+
+DELIVERABLE 3: THE STAB-FIBRE CHARACTERISATION. State and prove, or refute, that the quantification domain of StabClause.stab_clause -- the set of sigma : WorldHistory F with tau.state t = sigma.state t, verbatim the clause in FormalSystem/Semantics/TruthClauses.lean -- is the fibre product of the backward and forward ray sets over the seam state, and relate it to task 566's limit presentation H_F iso lim Beh(F)(2x). A REFUTATION IS THE MOST VALUABLE OUTCOME and must land as a theorem, not a prose caveat, because every downstream decidability route assumes this characterisation. This is the keystone: it is what makes the stability operator a statement about gluings rather than an opaque quantifier over histories.
+
+DELIVERABLE 4: THE EFFECTIVE EXTENSION THEOREM, IF REACHABLE. Determine whether Deliverable 2's binary seam gluing supplies a general effective (choice-free) extension theorem, generalising the Tier A effective extension theorem that FormalSystem/Metalogic/Decidability/BiLasso/Orbit.lean built only for the bi-lasso case, and which BiLasso/Agreement.lean preserves "no Zorn" to protect. This is worth landing even if the decidability programme stalls, so it may be closed with a reasoned exclusion rather than abandoned if the general case proves out of reach -- but the verdict must be stated either way.
+
+DELIVERABLE 5: THE DECIDABLE-CHECK CONNECTION. With the stab fibre presented as a path space, connect to the path-category work (task 618), whose identification of Path(F) as the FREE CATEGORY ON THE GRAPH (W, =>_1) when D = Z is exactly the "root paths of a finite class graph" presentation that the sliced finite-model-property refutation record demanded of any successor class. Determine what a decidable stab check on that presentation is, and whether omega-automata determinization (Safra, Piterman) is needed to summarise "all root paths" finitely. Do not land a complexity claim; the CTL-star 2EXPTIME lower bound is the sanity check on any proposed bound.
+
+HARD CONSTRAINTS. Soundness is not at issue: plusTruth_iff_mem and plusRefutes_of_certifies are untouched. No width, tail-period or complexity bound is to be committed. Any construction found unworkable must have its obstruction recorded as a THEOREM, per this programme's established discipline -- negative results are deliverables here, not failures. Every landed declaration carries its axiom set, and the binary gluing path must be shown choice-free or explicitly reported as not.
+
+ACCEPTANCE. lake build green; every new declaration sorry-free with its axiom set pinned per the C2 / C14 harness; the stab-fibre statement of Deliverable 3 landed as a proved theorem or a proved refutation; scripts/check-module-invariants.sh ALL CHECKS PASSED including the inventory and citation checks; no regression in the axiom-count baseline.
+
+ADJACENCY. Consumes tasks 563, 564, 565, 566 and the route verdict of task 718. Surveys 567, 616, 617, 618, with 618 load-bearing for Deliverable 5. Bears on the omega-automata substrate record and on the sliced finite-model-property refutation record, both blocked pending a programme-level ruling. Must not duplicate the F4 periodicity work or the settled sliced-class incompleteness question.
+
+---
 
 ### 718. Omega sequence decidability full lplus
 - **Status**: [NOT STARTED]
@@ -186,6 +217,22 @@ OTHER RESULTS IN THE PAPER TO SURVEY FOR RELEVANCE, by label: thm:extension (the
 THE CITATION IS BIDIRECTIONAL, AND THE PAPER'S CLAIM ABOUT THIS REPOSITORY MUST BE CHECKED. The paper (as of lines 1839, 1848-1850) describes decidability of TM as "still-open", states that the Lean repository "implements a decision procedure for TM whose soundness is verified, though no decidability theorem for TM is machine-checked at present", and points readers at this repository for the ongoing effort. Verify that this characterization is still accurate against the landed tree, and flag any drift in EITHER direction as a finding -- the paper making a claim about this repository that has gone stale is exactly the class of defect check-paper-definitions.sh exists to catch, and that check currently cannot see prose claims of this kind.
 
 A LIVE DRIFT TO BE AWARE OF WHILE READING. scripts/check-paper-definitions.sh resolves the paper at its absolute path and currently reports drift on def:BX: the paper has renamed the axiom SU to US, in both the schema list and the Burgess A3a attribution footnote, while this repository's pinned record in docs/reference/paper-definitions-of-record.md still says SU. The paper repository's working tree is clean, so the paper has advanced and the pin is behind. In CI the check takes its documented skip-neutral path because the paper is out of tree, so this drift is invisible there. Any axiom named in this round's output must be checked against the paper's CURRENT spelling, not the pinned record's.
+
+THE PRESHEAF FRONT ALREADY OWNS THE GLUING FORMALIZATION -- DO NOT DUPLICATE IT (author instruction, added after filing: the gluing material was too much to fit in the paper, but is to be FULLY IMPLEMENTED in this repository, connecting with the presheaf semantics). The categorical-structure topic already carries open tasks covering exactly the constructions this round depends on, and this round must consume and connect to them rather than re-file them:
+- The interval site and behaviour presheaf (task 563, no dependencies): the section type Beh F l of convex histories with domain exactly [0, l], restriction along the translation Tr p, presheaf functoriality (restrict_id, restrict_comp), and the Germs clause Beh(F)(0) iso W. This is the substrate everything else sits on.
+- The Sheaf clause and star-pasting generalization (task 564, depends on 563): prove app:gluing for two interval sections whose germs agree AT THE SEAM, plus the two restriction identities and uniqueness. THIS TASK OWNS THE BINARY SEAM GLUING -- the choice-free case, and the formal counterpart of the paper's frown_z pasting principle. This round must not re-file it.
+- Totality and Directed Gluing (task 565, depends on 563): the wrappers on thm:extension. THIS TASK OWNS THE DIRECTED CASE, i.e. the Saturation-dependent one this round was warned not to conflate with the binary case.
+- The Possible Worlds clause (task 566, depends on 563 and 565): H_F iso lim Beh(F)(2x) along the central restrictions. THIS IS THIS ROUND'S OWN DEFINITIONAL PROPOSAL IN CATEGORICAL FORM -- possible worlds as the limit of the behaviour presheaf IS "all ways of gluing", since a compatible family of sections is a gluing. The round must treat 566's clause and its own fibre-product framing as two presentations of one statement, and say which is the better working form for decidability.
+- The Determinism clause (task 567), the Reflection clause and converse-frame naturality (task 617), the duration monoid, twisted-arrow category and interval site (task 616), and the path category with the Conduche fibration identifying Beh(F) (task 618). Survey these for relevance; 618's identification of Path(F) as the free category on the graph (W, =>_1) when D = Z is of direct interest, because a free category on a finite graph is exactly the "root paths of a finite class graph" presentation the successor class demands.
+
+WHAT THIS ROUND MUST THEREFORE DELIVER ON THE IMPLEMENTATION SIDE. The connection between the presheaf layer and the decidability programme is owned by NOBODY and is this round's to specify:
+1. The one-sided RAY layer. Beh F l is a BOUNDED interval section ([0, l]); the decidability construction needs unbounded forward and backward rays (omega-indexed). Determine whether the ray layer is a colimit of the bounded sections (hence Saturation-dependent, per app:gluing's footnote and the D = Q counterexample), a separate primitive, or definable directly as a PartialHistory with a ray domain. This is the single most important unanswered definitional question and it is upstream of everything else here.
+2. The stab-fibre characterisation. State and prove, or refute, that the set of world histories agreeing with tau in state at t -- the exact quantification domain of StabClause.stab_clause -- is the fibre product of the backward and forward ray sets over the seam state, and relate it to task 566's limit presentation. A refutation is the most valuable outcome, since every downstream route assumes it.
+3. The decidable-check question. With the fibre presented as a path space of a finite class graph (cf. task 618's free-category identification), determine what a decidable stab check on that presentation looks like, and whether omega-automata determinization is required to summarise "all root paths" finitely. This is where this round's omega-automata route and infinite-fibre route become one route.
+
+SPAWN A FOLLOW-UP IMPLEMENTATION TASK. This round is research-first and must NOT carry the implementation itself. Produce the implementation plan for items 1-3 above and hand it to the dedicated follow-up implementation task, which is filed separately with dependencies on this round's verdict and on the interval-site and seam-gluing tasks (563 and 564). If the round's findings show the work does not decompose as items 1-3, revise the follow-up task's scope via /revise rather than silently re-scoping here. Spawning further tasks beyond that one is permitted and expected where the analysis warrants it.
+
+NON-GOALS, AMENDED (this supersedes the earlier non-goals paragraph's implementation clause). This round still does not implement a decision procedure, and still commits no width, tail-period or complexity bound to a plan. But "no implementation in this round" must NOT be read as "no implementation of the gluing work at all": the gluing and presheaf constructions ARE to be fully implemented in this repository, by the presheaf-front tasks named above together with the spawned follow-up. This round's job is to specify and sequence that work, not to defer it.
 
 ---
 
