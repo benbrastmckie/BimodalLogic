@@ -258,7 +258,7 @@ fourth location is left asserting a posture the code no longer has.
 
 ---
 
-### Phase 3: Update the test suite for the new posture [NOT STARTED]
+### Phase 3: Update the test suite for the new posture [COMPLETED]
 
 **Goal**: Keep `test-validate-state.sh` an honest gate: re-point the two fixtures the promotion
 invalidates, and add two fixtures that pin the new behavior independently.
@@ -267,30 +267,49 @@ invalidates, and add two fixtures that pin the new behavior independently.
 `/home/benjamin/.config/nvim/agent-system/extensions/core/scripts/tests/test-validate-state.sh`.
 
 **Tasks**:
-- [ ] Update the blended Check 10 fixture (~lines 733-762): change the assertion from `rc -eq 0`
+- [x] Update the blended Check 10 fixture (~lines 733-762): change the assertion from `rc -eq 0`
       to `rc -eq 1`, keep the three per-sub-state line greps and the blended summary-line grep
       unchanged, add a grep for the new `file_scope literal-null: 1 finding(s)` FAIL line and for
       `STATE VALIDATION FAILED`, and update the fixture's leading comment and the `pass`/`fail`
       message text (which currently say "exit 0").
-- [ ] Repoint the `--strict` fixture (~lines 837-844) at a **new** WARN-only fixture
+      *(completed)*
+- [x] Repoint the `--strict` fixture (~lines 837-844) at a **new** WARN-only fixture
       (`scope10-warnonly-fixture.json`: one `missing_key` entry, one `empty_array` entry, one
       concrete-scope control, all non-terminal, no `null_value`). Its grep for
       `STATE VALIDATION FAILED (--strict:` then still matches, because `FAILED` stays 0 and the
       `--strict` summary branch is reachable. Without this change that assertion silently stops
       testing `--strict` semantics, since the blended fixture now takes the plain
       `STATE VALIDATION FAILED` branch first.
-- [ ] Add a pure-`null_value` fixture: a single non-terminal entry with `"file_scope": null`,
+      *(completed: new fixture added with its own positive assertion plus the repointed --strict
+      assertion)*
+- [x] Add a pure-`null_value` fixture: a single non-terminal entry with `"file_scope": null`,
       asserting `rc -eq 1`, the per-finding FAIL line, the aggregate FAIL line, and the absence of
       any `missing_key`/`empty_array` finding — pinning the FAIL independently of the blended
       input.
-- [ ] Add a display-cap fixture: ≥12 non-terminal `missing_key` entries at low `project_number`s
+      *(completed: scope10-nullonly-fixture.json)*
+- [x] Add a display-cap fixture: ≥12 non-terminal `missing_key` entries at low `project_number`s
       plus one `null_value` entry at a high `project_number` (so it sorts past the 10-item cap),
       asserting `rc -eq 1` and that the `file_scope null_value: project_number <high>` line is
       present. This is the regression guard for Phase 2's cap exemption; without it the promotion
       could silently regress to cosmetic.
-- [ ] Confirm the new fixtures land in `$WORKDIR` (the suite's own temp dir), matching the
+      *(completed: scope10-displaycap-fixture.json, 12 missing_key entries + 1 null_value at
+      project_number 999)*
+- [x] Confirm the new fixtures land in `$WORKDIR` (the suite's own temp dir), matching the
       surrounding fixtures — never under `specs/`.
-- [ ] `bash -n` the edited test script.
+      *(completed)*
+- [x] `bash -n` the edited test script.
+      *(completed: clean)*
+- [x] *(deviation: added -- a THIRD fixture broke under the promotion, beyond the Scope
+      Hypothesis's "two existing fixtures" estimate)*: the `--fix` non-manufacture fixture
+      (~line 693, "exact duplicates removed order-preservingly... null-valued file_scope
+      untouched") invokes `$FS_VALIDATOR --fix` against a fixture that deliberately carries a
+      project with `"file_scope": null` (to prove `--fix` does not mutate it). That null is now
+      FAIL-promoted, so the `--fix` run's own exit code changed from 0 to 1. Fixed by changing the
+      assertion to `rc -eq 1` and adding a grep for the `file_scope null_value: project_number 3
+      (c)` line, with an explanatory comment that this is Check 10's FAIL firing correctly on the
+      exact shape `--fix` deliberately leaves untouched, not a `--fix` regression. Per the
+      Scope Hypothesis's own instruction ("if a third fixture fails, fix that one too rather than
+      treating the count as closed").
 
 **Timing**: 1 hour
 
