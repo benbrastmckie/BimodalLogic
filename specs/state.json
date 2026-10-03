@@ -1390,7 +1390,7 @@
     {
       "project_number": 564,
       "project_name": "sheaf_clause_gluing_and_starpasting_generalization",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Prove `app:gluing` for two interval sections whose germs agree at the seam, plus the two restriction identities and uniqueness.\n\nTHE COMPOSITION STEP IS ALREADY PROVED as `glue_seam` in `specs/553_decide_convex_history_layer_collapse/probes/04_presheaf-skeleton.lean`. The remainder is assembling the glued section by cases and applying `ShiftSet.wh_ext`.\n\nTHE DE-DUPLICATION THAT MAKES THIS WORTH DOING, and which is part of the deliverable rather than optional: generalize `PlusPasting`s `paste` off its totality hypothesis. `FormalSystem/Semantics/PlusLanguage/PlusPasting.lean`'s `paste_rel_le_lt` is the SAME ARGUMENT as the interval-site gluing step. The study established that the general-convex and interval-site versions share one proof and should not be written twice; delivering the Sheaf clause while leaving `paste` untouched creates exactly the duplication this task exists to prevent.\n\nRECORD in the module docstring which dictionary clauses are choice-free. Sheaf is.\n\nDEPENDENCY NOTE, NOW DISCHARGED. This formerly waited on the language-name sync. That rename has landed: the file is `FormalSystem/Semantics/PlusLanguage/PlusPasting.lean` and `paste_rel_le_lt` lives there in namespace `FormalSystem.Semantics`. Nothing blocks the generalization on naming grounds any longer.\n\nCONSTRAINTS. lake build FormalSystem must be green with no new sorry at the end of every phase. Background: `specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` sections 5.1 and 5.2.\n\nReconciliation note (task 629): unrelated mathematics with no dependency on the publication refactor programme's schedule (no edge added). Adopt task 636's citation form (`* [Author, *Title*][key]` against the root references.bib) once it lands, or migrate to it if this task is drafted first.\n\nPOST-RELOCATION NOTE (2026-09-21). The file moved again: task 634 merged Syntax/ and Semantics/PlusLanguage/ into one directory, so it is now FormalSystem/PlusLanguage/PlusPasting.lean, and its declarations moved from namespace FormalSystem.Semantics to the flat namespace FormalSystem.PlusLanguage (241 declarations across 17 files were renamed). Import FormalSystem.PlusLanguage.PlusPasting. New files write ## References in the normal form of docs/development/REFERENCE_NORMAL_FORM.md, keys resolving in the root references.bib (task 636 has landed).\n\nSCOPE AND AGGREGATOR CONTENTION (recorded 2026-10-02 during a scope/dependency revision). This task's declared file_scope names its OWN module under FormalSystem/Semantics/Presheaf/ and deliberately does NOT name the cluster aggregator FormalSystem/Semantics/Presheaf.lean, which the interval-site task (563) owns and creates. Adding a module to the cluster nevertheless requires a one-line import in that aggregator, and the repo convention is one sibling aggregator per directory with C24 requiring every module to stay in the root closure. That one line is a SHARED TOUCH across every task on this front: two of these tasks dispatched concurrently can clobber each other's aggregator edit, and the collision gate will not catch it because the path is not in either file_scope. Therefore: orchestrate the tasks on this front in SMALL batches (at most two) or singly, never as one wide wave, and re-run lake build after the aggregator edit. Do not widen this task's file_scope to include the aggregator -- that would make the gate defer the whole front every cycle.\n\nSEED RESEARCH AVAILABLE (added 2026-10-02; READ-ONLY context, not a change of scope). A source-verified seed report for the gluing route to decidability of full L-plus lives at specs/718_omega_sequence_decidability_full_lplus/reports/01_gluing-route-seed.md. Its sections 2.1 (`stab_clause`'s seam hypothesis is exactly this task's germ-agreement condition), 6 (the binary/directed split and why only the binary case is choice-free) and 7 (`glue_seam` is proved in task 553's probe, not the library) bear directly on this task. The seed claims no route verdict and does not alter this task's deliverable; consult it for context and do not re-derive what it already verifies.",
       "topic": "categorical-structure",
@@ -1398,20 +1398,30 @@
         563
       ],
       "created": "2026-09-08T17:34:36Z",
-      "last_updated": "2026-10-03T18:34:48Z",
+      "last_updated": "2026-10-03T19:26:10Z",
       "priority": "high",
       "artifacts": [
         {
           "path": "specs/564_sheaf_clause_gluing_and_starpasting_generalization/reports/02_sheaf-clause-and-seam-dedup.md",
           "type": "report",
           "summary": "The whole Sheaf clause (glue, both restriction identities, uniqueness, the ExistsUnique packaging) is compiled sorry-free in three probes; the de-duplication is one PartialHistory-level lemma rel_across_seam that both paste_rel_le_lt and the interval-site step derive from at unchanged signatures; choice-freedom holds only via the off-zero reflection law, and the required file_scope is eight paths, not one."
+        },
+        {
+          "path": "specs/564_sheaf_clause_gluing_and_starpasting_generalization/plans/02_sheaf-clause-and-seam-dedup.md",
+          "type": "plan",
+          "summary": "Four-phase, fully sequential plan landing the Sheaf clause as Presheaf/Sheaf.lean and de-duplicating the seam-composition argument as PartialHistory.rel_across_seam."
         }
       ],
       "next_artifact_number": 3,
       "file_scope": [
-        "FormalSystem/Semantics/Presheaf/Sheaf.lean"
+        "FormalSystem/PlusLanguage/PlusPasting.lean",
+        "FormalSystem/Semantics/PartialHistory.lean",
+        "FormalSystem/Semantics/Presheaf/README.md",
+        "FormalSystem/Semantics/Presheaf/Sheaf.lean",
+        "FormalSystem/Semantics/TaskFrame.lean",
+        "docs/reference/paper-definitions-of-record.md"
       ],
-      "session_id": "sess_1791051010_4c2417_564"
+      "session_id": "sess_1791051010_4c2417"
     },
     {
       "project_number": 565,

@@ -41,7 +41,7 @@ next_project_number: 729
 
 ### Categorical Structure
 
-564 [PLANNING] — Prove app:gluing for two interval sections whose germs agree...
+564 [PLANNED] — Prove app:gluing for two interval sections whose germs agree...
   └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
   └─ 719 [NOT STARTED] — Implement the ray layer, the seam-gluing operator and the...
 565 [NOT STARTED] — Prove app:presheaf-dictionary's Totality and Directed Gluing...
@@ -1047,11 +1047,12 @@ SEED RESEARCH AVAILABLE (added 2026-10-02; READ-ONLY context, not a change of sc
 ---
 
 ### 564. Sheaf clause gluing and starpasting generalization
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
 - **Research**: [564_sheaf_clause_gluing_and_starpasting_generalization/reports/02_sheaf-clause-and-seam-dedup.md]
+- **Plan**: [564_sheaf_clause_gluing_and_starpasting_generalization/plans/02_sheaf-clause-and-seam-dedup.md]
 
 **Description**: Prove `app:gluing` for two interval sections whose germs agree at the seam, plus the two restriction identities and uniqueness.
 

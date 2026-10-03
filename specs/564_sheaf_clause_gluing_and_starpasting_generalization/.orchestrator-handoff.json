@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 4,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/564_sheaf_clause_gluing_and_starpasting_generalization/plans/02_sheaf-clause-and-seam-dedup.md",
+      "summary": "Four-phase, fully sequential plan landing the Sheaf clause as Presheaf/Sheaf.lean and de-duplicating the seam-composition argument as PartialHistory.rel_across_seam."
+    }
+  ],
+  "session_id": "sess_1791051010_4c2417_564",
+  "dispatch_seq": 10,
+  "next_steps": "Run /implement 564 to execute the plan",
+  "notes": "Scope widens past the declared file_scope (Presheaf/Sheaf.lean alone) to TaskFrame.lean, PartialHistory.lean, PlusPasting.lean, Presheaf/README.md and docs/reference/paper-definitions-of-record.md. Four further shared touches (Presheaf.lean aggregator, FormalSystem.lean, README.md, FormalSystem/README.md, typst/generated/status.typ) are deliberately kept OUT of Files to modify per the dispatch's aggregator-contention instruction; task 710 declares three of them this cycle."
+}
