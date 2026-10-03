@@ -536,18 +536,18 @@ path and note the move beside the entry.
 
 ---
 
-### Phase 7: Write the follow-up scope specification and ratify the ranking [NOT STARTED]
+### Phase 7: Write the follow-up scope specification and ratify the ranking [COMPLETED]
 
 **Goal**: Hand items 1–3 of the task description to the already-filed follow-up task as a written
 specification, state the new-task specification for promoting the two refutations into the library,
 and record what Phases 2–5 actually proved — including any ranking change they forced.
 
 **Tasks**:
-- [ ] Read the four probe files' headline theorems and docstrings as landed (not as planned), so
+- [x] Read the four probe files' headline theorems and docstrings as landed (not as planned), so
       the spec records outcomes rather than intentions.
-- [ ] Write `specs/718_omega_sequence_decidability_full_lplus/followup-scope-spec.md` with four
+- [x] Write `specs/718_omega_sequence_decidability_full_lplus/followup-scope-spec.md` with four
       sections.
-- [ ] Section 1 — revised deliverables for the follow-up ray-layer/seam-gluing task: its ray-layer
+- [x] Section 1 — revised deliverables for the follow-up ray-layer/seam-gluing task: its ray-layer
       question is **answered** (rays are definable directly as a half-line `PartialHistory` domain;
       the colimit-of-bounded-sections route is not forced and is what incurs *Saturation*, so drop
       that investigation and leave the directed case where it already belongs); its stab-fibre
@@ -559,28 +559,28 @@ and record what Phases 2–5 actually proved — including any ranking change th
       produces a total history from a *pair of rays*, not from an arbitrary partial history, so it
       generalises the bi-lasso Tier A result's role without subsuming the Extension Theorem. State
       that this revision is to be actioned with `/revise`, not applied by editing state here.
-- [ ] Section 2 — new-task specification for promoting the two FMP/width refutations into
+- [x] Section 2 — new-task specification for promoting the two FMP/width refutations into
       `FormalSystem/`: proposed title, `task_type: lean4`, dependencies, proposed `file_scope`, and
       a description naming the two theorems, the `FMP/README.md` open-item correction Phase 6 made,
       and the `WIRED_REPO` deferred-move entries Phase 6 added. State that it is to be filed with
       `/task`, by the orchestrator or the user.
-- [ ] Section 3 — the determinization-funding decision, now **settled**, with Phase 5's evidence
+- [x] Section 3 — the determinization-funding decision, now **settled**, with Phase 5's evidence
       attached: record the user's answer verbatim from `.decisions.json` (revive the substrate task
       only after R1's probes 1–3 land, funding determinization on evidence of necessity), state
       that this round executed exactly that sequence, and record what Phase 5 actually showed —
       necessity demonstrated, or determinization ruled out for the probed fragment. Do not re-open
       the question as a set of options, and do not recommend funding beyond what Phase 5's evidence
       supports; the filing action itself belongs to the orchestrator or the user.
-- [ ] Section 4 — the two author-facing items this round verified but deliberately did not action:
+- [x] Section 4 — the two author-facing items this round verified but deliberately did not action:
       the paper's own FMP subsection and its `app:gluing`-formalization sentence both have cheap
       accurate updates available, and the `SU` → `US` pin in
       `docs/reference/paper-definitions-of-record.md` is behind the paper (CI cannot see it,
       because the paper is out of tree, and the pin has its own documented re-quote-and-re-hash
       procedure). Record that nothing inside the paper repository was written.
-- [ ] Add the ranking ratification: R1 first, R2 second, R3 as a component of R1, R4 closed for
+- [x] Add the ranking ratification: R1 first, R2 second, R3 as a component of R1, R4 closed for
       ℤ-time, R5 unfunded — **as amended by** whatever Phases 2–5 proved. If Phase 3 refuted R1,
       say so here plainly and promote R2.
-- [ ] State explicitly that no `specs/state.json` or `specs/TODO.md` write was made and why
+- [x] State explicitly that no `specs/state.json` or `specs/TODO.md` write was made and why
       (concurrent writer on a shared tree).
 
 **Timing**: 1.25 hours
