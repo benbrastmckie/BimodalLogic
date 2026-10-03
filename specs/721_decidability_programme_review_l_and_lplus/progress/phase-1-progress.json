@@ -1,0 +1,42 @@
+{
+  "phase": 1,
+  "phase_name": "Re-verify the Anchors and Open the Specification File",
+  "started_at": "2026-10-03T15:28:03Z",
+  "last_updated": "2026-10-03T15:32:49Z",
+  "objectives": [
+    {
+      "id": 1,
+      "description": "Create followup-scope-spec.md with header and section skeleton",
+      "status": "done",
+      "files_touched": [
+        "specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Section 0 verification record, one row per anchor",
+      "status": "done",
+      "files_touched": [
+        "specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "Record any anchor differing from the research report",
+      "status": "done",
+      "files_touched": [
+        "specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "Commit the file (scoped staging)",
+      "status": "in_progress",
+      "files_touched": []
+    }
+  ],
+  "current_objective": 4,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}

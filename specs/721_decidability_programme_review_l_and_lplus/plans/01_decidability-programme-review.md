@@ -1,7 +1,7 @@
 # Implementation Plan: Task #721
 
 - **Task**: 721 - Review and reconcile the decidability programme across L and L-plus
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5.5 hours
 - **Dependencies**: None (consumes the completed task 718 round, the task 706/710 probe records, and the landed `WitnessFamily/Compression/` layer; writes nothing any live task owns)
 - **Research Inputs**: specs/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md
@@ -137,18 +137,18 @@ status (`completed`).
 Phases within the same wave can execute in parallel. This plan is fully sequential: Phases 2 and
 3 write the same file, and Phase 4's ROADMAP text cites the spec's section letters.
 
-### Phase 1: Re-verify the Anchors and Open the Specification File [NOT STARTED]
+### Phase 1: Re-verify the Anchors and Open the Specification File [IN PROGRESS]
 
 **Goal**: Ground every claim the two deliverable files will make by re-checking it against the
 tree this round, and record the results as Section 0 of the new `followup-scope-spec.md`.
 
 **Tasks**:
-- [ ] Create `specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md` with
+- [x] Create `specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md` with *(completed)*
       the header block modelled on the 718 file's opening paragraph (written by which round, what
       it records, that it files nothing and edits no other task's state) and an empty section
       skeleton for Sections 0, A-H, "The 711 tension", "Ranking ratification", "State-write
       disclosure".
-- [ ] Section 0 (verification record), one row per anchor, columns Anchor | Path | Check run |
+- [x] Section 0 (verification record), one row per anchor, columns Anchor | Path | Check run | *(completed: 27 rows plus task-record table)*
       Result. Re-run and record:
   - `grep -n 'def decidableValidZTime\|theorem validZTime_iff_noCertifiedCandidate\|def
     decidableSemanticConsequenceNil'` on `FormalSystem/Metalogic/Decidability/WitnessFamily/
@@ -179,7 +179,7 @@ tree this round, and record the results as Section 0 of the new `followup-scope-
     712, 713, 718, 719, 720, 430, 412, 563, 177, 543; the open-task count (status not in
     completed/abandoned/expanded); the date 718 and 563 completed (from `last_updated` or the
     `git log` commit `task 718: complete implementation` / `task 563: complete implementation`).
-- [ ] If any anchor differs from the research report's statement, record the difference in
+- [x] If any anchor differs from the research report's statement, record the difference in *(completed: one namespace difference, row 14)*
       Section 0 and carry the *verified* value forward into Phases 2-4; do not edit the research
       report.
 - [ ] Commit the file (scoped staging: this file only).
