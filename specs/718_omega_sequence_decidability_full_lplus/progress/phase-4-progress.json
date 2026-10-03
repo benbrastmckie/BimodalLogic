@@ -1,0 +1,29 @@
+{
+  "phase": 4,
+  "phase_name": "R2 probe -- germ amalgamation, and the saturation question stated precisely",
+  "started_at": "2026-10-03T04:10:00Z",
+  "last_updated": "2026-10-03T04:40:00Z",
+  "objectives": [
+    {"id": 1, "description": "Read PlusPasting.lean (paste, AgreeFrom/UpTo, truth_congr lemmas)", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Define Mosaic (adapted: total WorldHistory + germ time, not bounded PartialHistory -- paste's actual signature)", "status": "done",
+     "note": "deviation: altered -- plan described a bounded-interval PartialHistory mosaic, but the landed paste operates on total WorldHistory; adapted the mosaic definition to match the landed API rather than inventing an unused interval-pasting operator",
+     "files_touched": ["specs/evidence/seam-gluing-ray-product/mosaic-germ-amalgamation.lean"]},
+    {"id": 3, "description": "Prove amalgamation + uniqueness via paste/paste_agreeFrom/paste_agreeUpTo/truth_congr_*", "status": "done",
+     "files_touched": ["specs/evidence/seam-gluing-ray-product/mosaic-germ-amalgamation.lean"]},
+    {"id": 4, "description": "Fix StabSaturated as a Prop; prove the same-state corner", "status": "done",
+     "files_touched": ["specs/evidence/seam-gluing-ray-product/mosaic-germ-amalgamation.lean"]},
+    {"id": 5, "description": "Record evidence gap (Hodkinson-Reynolds TOC-only)", "status": "done",
+     "files_touched": ["specs/evidence/seam-gluing-ray-product/mosaic-germ-amalgamation.lean"]},
+    {"id": 6, "description": "Docstring + axiom record + WIRED entry", "status": "done",
+     "files_touched": ["specs/evidence/seam-gluing-ray-product/mosaic-germ-amalgamation.lean", "scripts/check-evidence-probes.sh"]}
+  ],
+  "current_objective": 6,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {"task_id": "4.2", "description": "Define a mosaic: a convex PartialHistory on a bounded interval",
+     "type": "altered",
+     "reason": "PlusLanguage.paste (the landed `app:gluing` binary-seam instance this phase must consume) is defined on TOTAL WorldHistory, not bounded-interval PartialHistory; a PartialHistory-based mosaic would need an unlanded interval-pasting operator this phase is not chartered to build",
+     "annotation": "*(deviation: altered -- mosaic defined via total WorldHistory + germ time, matching paste's landed signature, not a bounded PartialHistory)*"}
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "phase": 3,
+  "phase_name": "R1 probe 2 -- the finite-graph stab summary, by reachability alone",
+  "started_at": "2026-10-03T02:00:00Z",
+  "last_updated": "2026-10-03T04:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Read SlicedFrame.lean/IntNormalForm.lean substrate", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Fix the fixture (Bool, total bi-serial graph)", "status": "done",
+     "files_touched": ["specs/evidence/seam-gluing-ray-product/finite-graph-stab-summary.lean"]},
+    {"id": 3, "description": "Prove forward AF-shaped equivalence (will_iff_allPathsMeet) via stab_iff + ofSlicedStep_step", "status": "done",
+     "files_touched": ["specs/evidence/seam-gluing-ray-product/finite-graph-stab-summary.lean"]},
+    {"id": 4, "description": "Backward dual", "status": "done",
+     "note": "deviation: skipped -- symmetric fixture, no new machinery; recorded in docstring and plan Reasoned Exclusions",
+     "files_touched": []},
+    {"id": 5, "description": "Computational content: decide_will, Decidable instance", "status": "done",
+     "files_touched": ["specs/evidence/seam-gluing-ray-product/finite-graph-stab-summary.lean"]},
+    {"id": 6, "description": "Docstring + axiom record + WIRED entry", "status": "done",
+     "files_touched": ["specs/evidence/seam-gluing-ray-product/finite-graph-stab-summary.lean", "scripts/check-evidence-probes.sh"]}
+  ],
+  "current_objective": 6,
+  "approaches_tried": [
+    {"approach": "route through promoted keystone's plusStab_iff_omega directly", "result": "failed",
+     "reason": "probes do not import other probes (each imports only FormalSystem); substituted the equivalent PlusTruth.stab_iff + ofSlicedStep_step/WorldHistory.isStepPath route, both FormalSystem primitives"}
+  ],
+  "handoff_count": 0,
+  "deviations": [
+    {"task_id": "3.4", "description": "Prove the backward dual for stab(Pp)", "type": "skipped",
+     "reason": "Rf is a constant total relation ignoring time/direction; backward statement is the forward one verbatim, exercising no new machinery",
+     "annotation": "*(deviation: skipped -- the fixture's relation is symmetric under time reversal; proving it would exercise no new machinery, recorded in the probe's own docstring)*"}
+  ]
+}

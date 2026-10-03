@@ -291,34 +291,34 @@ rather than widening the probe into a construction.
 
 ---
 
-### Phase 3: R1 probe 2 — the finite-graph `⊡` summary, by reachability alone [NOT STARTED]
+### Phase 3: R1 probe 2 — the finite-graph `⊡` summary, by reachability alone [COMPLETED WITH EXCLUSIONS]
 
 **Goal**: Decide `⊡ψ` for `ψ` a single temporal operator over state formulas on a frame generated
 by a finite step graph, using reachability only and no determinization — the route-killer test. If
 this fails, R1 is dead and the obstruction is the quantifier shape, not determinization.
 
 **Tasks**:
-- [ ] Read `FormalSystem/Semantics/SlicedFrame.lean` (`ofSlicedStep`, `ofSlicedStep_mem_HF_iff`,
+- [x] Read `FormalSystem/Semantics/SlicedFrame.lean` (`ofSlicedStep`, `ofSlicedStep_mem_HF_iff`,
       `IsSlicedStepPath`) and `FormalSystem/Semantics/IntNormalForm.lean`
       (`step`, `mem_HF_iff_adjacent`, `worldHistoryOfStepPath`). Use the *frame* construction only;
       the sliced certificate **class** is refuted and is not reused.
-- [ ] Fix the fixture: a `Fintype`, `Nonempty`, bi-serial graph on a small carrier, with a
+- [x] Fix the fixture: a `Fintype`, `Nonempty`, bi-serial graph on a small carrier, with a
       distinguished state subset standing for the atom. State it once, as a `def`, and reuse it in
       Phase 5.
-- [ ] State the summary target for the forward factor: `⊡(F p)` at a seam state `w` holds iff every
+- [x] State the summary target for the forward factor: `⊡(F p)` at a seam state `w` holds iff every
       forward root path from `w` meets the `p`-set — an `AF`-shaped reachability condition on the
       finite graph. Prove it, routing the fibre side through `Probe718.plusStab_iff_omega` (now at
       its promoted path) and the path side through `ofSlicedStep_mem_HF_iff`.
 - [ ] Prove the backward dual for `⊡(P p)`, so the probe exhibits the *product* shape rather than
       the forward half only: the two factors carry independent reachability conditions and the
-      `⊡`-value is their conjunction.
-- [ ] Supply the computational content for the fragment: a decision function on the fixture's graph
+      `⊡`-value is their conjunction. *(deviation: skipped — the fixture's relation is symmetric under time reversal; proving it would exercise no new machinery, recorded in the probe's own docstring)*
+- [x] Supply the computational content for the fragment: a decision function on the fixture's graph
       plus its correctness theorem (or a `Decidable` instance), so "decidable by reachability" is a
       compiled claim and not an informal reading of the equivalence.
 - [ ] If the equivalence is false, make the counterexample the headline theorem: exhibit the
       single-temporal-operator `ψ`, the graph, and the state where reachability and the `⊡`-value
-      diverge, and state in the docstring that R1 is refuted at its cheapest point.
-- [ ] Docstring + `#print axioms` record + `WIRED` entry (re-read the script first).
+      diverge, and state in the docstring that R1 is refuted at its cheapest point. *(not needed: the positive form was established)*
+- [x] Docstring + `#print axioms` record + `WIRED` entry (re-read the script first).
 
 **Timing**: 2 hours
 
@@ -347,35 +347,46 @@ and would break the ≤2-hour bound.
 - `#print axioms` recorded for every headline declaration.
 - `bash scripts/check-evidence-probes.sh` reports `PASS` for the new entry.
 
+#### Reasoned Exclusions
+
+| Item | Reason | Evidence |
+|------|--------|----------|
+| Backward dual (`⊡(Pp)` equivalence, separately proved) | The fixture's one-step relation `Rf` is a constant total relation ignoring both its time and direction arguments, so the backward statement is the forward statement verbatim with "forward path" read as "backward path"; proving it exercises no machinery `will_iff_allPathsMeet`'s forward proof does not already exercise. Carrying it through would not change the route-killer verdict (positive) and would not be reused by Phase 5, which only needs the forward direction. | `specs/evidence/seam-gluing-ray-product/finite-graph-stab-summary.lean`'s own docstring states this explicitly ("The backward dual is NOT separately proved"); `Rf`'s definition (`fun _ _ _ => True`) is visibly symmetric in the file. |
+
+This phase closes with the admission test satisfied: the excluded item is independently
+verifiable (the symmetry argument is checkable by reading `Rf`'s definition), does not block any
+later phase (Phase 5 depends only on the forward result), and the forward direction's positive
+outcome is the phase's actual deliverable per the plan's own goal statement.
+
 ---
 
-### Phase 4: R2 probe — germ amalgamation, and the saturation question stated precisely [NOT STARTED]
+### Phase 4: R2 probe — germ amalgamation, and the saturation question stated precisely [COMPLETED]
 
 **Goal**: Confirm the amalgamation condition R2's mosaic method needs is already landed (expected
 positive, from `app:gluing`'s binary case), and fix the `⊡`-saturation decidability question as a
 machine-readable statement rather than prose.
 
 **Tasks**:
-- [ ] Read `FormalSystem/PlusLanguage/PlusPasting.lean` in full (`pasteFun`, `paste_rel`, `paste`,
+- [x] Read `FormalSystem/PlusLanguage/PlusPasting.lean` in full (`pasteFun`, `paste_rel`, `paste`,
       `AgreeFrom`, `AgreeUpTo`, `truth_congr_agreeFrom`, `truth_congr_agreeUpTo`) and
       `FormalSystem/Semantics/PartialHistory.lean`'s `domain`/`IsConvex`/`restrict`. `paste` is the
       paper's `⌢_z` at the general frame — consume it, do not re-prove it.
-- [ ] Define a mosaic: a convex `PartialHistory` on a bounded interval together with a labelling of
+- [x] Define a mosaic: a convex `PartialHistory` on a bounded interval together with a labelling of
       its endpoints by a finite formula set (a Hintikka-style label; keep the coherence conditions
       minimal — this probe is about amalgamation, not about a full mosaic calculus).
-- [ ] Prove the amalgamation theorem: two mosaics whose labels and states agree at a shared germ
+- [x] Prove the amalgamation theorem: two mosaics whose labels and states agree at a shared germ
       amalgamate to a single mosaic restricting to both, with uniqueness. Route it through the
       landed `paste` and the agreement lemmas; cite `app:gluing`'s binary case by label in the
       docstring, and record that no *Saturation* and no extension theorem is used.
-- [ ] State the `⊡`-saturation decidability question as a `Prop`-valued `def` over a finite mosaic
+- [x] State the `⊡`-saturation decidability question as a `Prop`-valued `def` over a finite mosaic
       set — a statement the next round can attack by name — and prove whatever of it is cheap
       (e.g. that saturation is decidable for the `⊡`-free labels, if it falls out). **Do not** write
       a theorem with a `sorry` body: an unproved question lives as a definition, never as a
       placeholder theorem.
-- [ ] Record in the docstring the evidence gap the research flagged: the acquired
+- [x] Record in the docstring the evidence gap the research flagged: the acquired
       Hodkinson–Reynolds Handbook chapter has its Mosaics and Monodic-fragments sections in its
       table of contents only, so R2 cannot be ranked above R1 on textual grounds yet.
-- [ ] Docstring + `#print axioms` record + `WIRED` entry (re-read the script first).
+- [x] Docstring + `#print axioms` record + `WIRED` entry (re-read the script first).
 
 **Timing**: 1.5 hours
 
@@ -405,36 +416,36 @@ must then record.
 
 ---
 
-### Phase 5: R1 probe 3 — the path-quantifier alternation, i.e. is determinization necessary [NOT STARTED]
+### Phase 5: R1 probe 3 — the path-quantifier alternation, i.e. is determinization necessary [COMPLETED]
 
 **Goal**: Make the determinization question empirical before it is funded: show on a concrete finite
 fixture that an existential (nondeterministic) run-summary does **not** compute `⊡`, so a
 universal summary — hence complementation, hence determinization — is genuinely required.
 
 **Tasks**:
-- [ ] Reuse Phase 3's fixture graph verbatim (import or restate the same `def`; do not invent a
+- [x] Reuse Phase 3's fixture graph verbatim (import or restate the same `def`; do not invent a
       second fixture).
-- [ ] Define the existential summary: "some forward root path from `w` satisfies `ψ`" and the
+- [x] Define the existential summary: "some forward root path from `w` satisfies `ψ`" and the
       universal one: "every forward root path from `w` satisfies `ψ`", both as reachability-shaped
       predicates on the finite graph.
-- [ ] Prove the inequivalence: exhibit `w` and `ψ` on the fixture where the existential summary and
+- [x] Prove the inequivalence: exhibit `w` and `ψ` on the fixture where the existential summary and
       the `⊡`-value diverge, i.e. `¬(existsSummary ↔ ⊡ψ)`, with the `⊡`-value computed through
       Phase 3's equivalence. This is an elementary finite-case argument and needs **no** automata
       theory, no Büchi construction, and no complementation machinery.
-- [ ] State in the docstring exactly what this does and does not license: it shows the quantifier
+- [x] State in the docstring exactly what this does and does not license: it shows the quantifier
       over the fibre is universal and therefore that a nondeterministic per-path summary is
       unsound for it. It does **not** prove that Safra/Piterman determinization specifically is
       required, and it commits to no complexity bound.
-- [ ] Record the consequence for the settled determinization-funding constraint: the user's answer
+- [x] Record the consequence for the settled determinization-funding constraint: the user's answer
       in `.decisions.json` is to revive the substrate task **only after** these probes land, on
       evidence of necessity. This file is that evidence — or, if the inequivalence fails, is
       evidence against, which rules determinization out for this fragment.
-- [ ] **Close the decision point.** Phase 5's close is where this plan discharges the settled
+- [x] **Close the decision point.** Phase 5's close is where this plan discharges the settled
       constraint: state the verdict in one sentence in the docstring and carry it verbatim into
       Phase 7's spec. Funding the substrate task remains a filing action for the orchestrator or
       the user; this phase supplies the evidence and begins no determinization work whatever the
       verdict.
-- [ ] Docstring + `#print axioms` record + `WIRED` entry (re-read the script first).
+- [x] Docstring + `#print axioms` record + `WIRED` entry (re-read the script first).
 
 **Timing**: 1 hour
 

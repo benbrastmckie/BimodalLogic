@@ -114,6 +114,40 @@ EVIDENCE="specs/evidence"
 #                                                           | supplies -- this licenses R1's
 #                                                           | automaton ALPHABET; it bounds and
 #                                                           | decides nothing on its own
+# seam-gluing-ray-product/finite-graph-stab-summary         | POSITIVE (forward factor, on the
+#                                                           | fixture): `⊡(Fp)` at a seam state
+#                                                           | is exactly "every forward root path
+#                                                           | from that state meets `p`" -- R1's
+#                                                           | route-killer test survives at this
+#                                                           | cheapest single-operator shape.
+#                                                           | Backward dual not separately proved
+#                                                           | (symmetric fixture, no new
+#                                                           | machinery); decidable witness: on
+#                                                           | the total-graph fixture `⊡(Fp)` is
+#                                                           | decidably False everywhere
+# seam-gluing-ray-product/mosaic-germ-amalgamation          | POSITIVE: R2's amalgamation
+#                                                           | precondition is free -- `paste`
+#                                                           | (`app:gluing`'s binary case) glues
+#                                                           | two mosaics agreeing at a shared
+#                                                           | germ, choice-free, with uniqueness.
+#                                                           | The `⊡`-saturation decidability
+#                                                           | question is fixed as a `Prop`
+#                                                           | (`StabSaturated`), proved only in
+#                                                           | the same-state corner -- left open
+#                                                           | for the next round to attack by
+#                                                           | name
+# seam-gluing-ray-product/path-quantifier-alternation       | NECESSITY DEMONSTRATED: on the
+#                                                           | Phase-3 fixture the existential
+#                                                           | (nondeterministic) summary is True
+#                                                           | everywhere while `⊡(Fp)` is False
+#                                                           | everywhere -- a universal,
+#                                                           | complementation-shaped summary is
+#                                                           | genuinely required for this
+#                                                           | fragment. Discharges the settled
+#                                                           | determinization-funding decision's
+#                                                           | evidence condition; funds nothing
+#                                                           | by itself and begins no
+#                                                           | determinization work
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -123,6 +157,9 @@ WIRED=(
   "stability-modal-substrate/closure-field-is-necessary"
   "seam-gluing-ray-product/stab-fibre-is-ray-product"
   "seam-gluing-ray-product/stab-depth-stratification"
+  "seam-gluing-ray-product/finite-graph-stab-summary"
+  "seam-gluing-ray-product/mosaic-germ-amalgamation"
+  "seam-gluing-ray-product/path-quantifier-alternation"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
