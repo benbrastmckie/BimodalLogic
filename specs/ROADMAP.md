@@ -1,942 +1,475 @@
-# Roadmap: TM Decidability, Completeness, and Publication
+# Roadmap
 
-## Overview
+*Derived from `specs/state.json` and `specs/TODO.md`'s Task Order (2026-10-02). Open work only;
+completed work is recorded in `specs/CHANGE_LOG.md` and `specs/archive/`. Reference material —
+the BX axiom layers, the irreflexive truth semantics, the canonical-model and quasimodel
+construction — lives in `README.md`, the module docstrings and `typst/BimodalReference.typ`,
+not here; it was removed from this file on 2026-10-02 as duplicative (and, for the axiom counts,
+stale against `README.md`). Recover it from git: `git log --follow -- specs/ROADMAP.md`.*
 
-TM is a bimodal logic combining S5 modality with irreflexive linear temporal logic, axiomatized
-via the **Burgess-Xu (BX) system**. This roadmap was retitled and rewritten wholesale on
-2026-08-25 by task 468 (programme realignment from a verified proof-state audit) to give
-**decidability/tableau** — now the largest active front, previously absent from the title — equal
-billing with completeness, to replace a decade of stacked dated "Current state" blocks with one
-current-state statement per front, and to ground every status claim in a named
-`scripts/check-module-invariants.sh` check. Historical material (superseded dated blocks, retired
-diagrams, dead-end catalogs, the old 111-row task cross-reference table) was first split into a
-`specs/ROADMAP-ARCHIVE.md` companion and then **deleted on 2026-09-09**, once it was verified to
-be a strictly verbatim subset of the pre-split document — every line of it is recoverable, in its
-original order and context, from git:
+## Fronts
 
-```bash
-git show 14e96488d^:specs/ROADMAP.md      # the full 1,970-line pre-split document
-git log --follow -- specs/ROADMAP.md      # its history
-```
-
-Consult that commit for provenance, never for current status: nothing in it was re-verified
-against the live tree, and where it conflicts with this file or with a fresh
-`scripts/check-module-invariants.sh` run, the live check wins unconditionally.
-
-**Architecture**: the proof system has 45 BX axiom constructors in nine layers: propositional (4),
-S5 modal (5), Burgess-Xu temporal (18) and additional Burgess-Xu temporal (4), modal-temporal
-interaction (1), uniformity (5), Prior-UZ/SZ (2, discrete-only), Z1 (1, discrete-only), density
-(2, dense-only), and Reynolds Dedekind (3, Dedekind-only). Temporal semantics is **irreflexive**:
-G/H quantify over
-`t < s` / `s < t` (strict inequality), and Until/Since require strictly future/past witnesses. See
-`## BX Axiom System` and `## Irreflexive Truth Semantics` below for the full technical reference.
-
-### PROVEN vs. SORRY-FREE — the distinction this rewrite exists to enforce
-
-**A zero `sorry` count is not the same claim as "proven."** This repository's own history
-contains three ways the two come apart, and conflating them is the specific failure this
-realignment (task 468) was dispatched to correct:
-
-1. **A theorem can be absent rather than merely unproven.** `DecisionProcedure.isValid`
-   (`FormalSystem/Metalogic/Decidability/DecisionProcedure.lean:317`) has its *sound* direction
-   proved (`isValid_sound`, `Correctness.lean:111`), but no `isValid φ fc = true ↔ ⊨ φ`
-   biconditional exists, proven or otherwise — and the biconditional is the property the name
-   `isValid` invites a reader to assume (see the Decidability front below). C3's sorry count is
-   silent on this: there is no sorry because there is no declaration to carry one.
-2. **A stub can be sorry-free and prove nothing.** `verifyProof`
-   (`FormalSystem/Metalogic/Decidability/ProofExtraction.lean:345`) is
-   `fun _ _ => true` — a total, sorry-free function that certifies every input. `Verified/
-   Refutation/` (the directory that would house the theorem making that certification honest)
-   does not exist on disk.
-3. **A predicate can compute without being the property its name suggests.** BiLasso's
-   `Decidable` instance (below) computes — genuinely, mechanically — while depending on
-   `[propext, Classical.choice, Quot.sound]`. Computability and choice-freedom are different
-   properties; the instance has the first, not the second.
-
-Every status line below names the check that grounds it: **C2** (`#print axioms` on named
-theorems), **C3** (structural sorry inventory, content-based, never by line number), **C4/C5**
-(import/reference resolution), **C7** (live file/line inventory, informational only). A claim this
-document makes that no check can reproduce is a defect in the document, not a fact about the
-tree — report it as such.
-
----
-
-## Near-Term Work Plan: Foundations and Small Results (author directive, 2026-09-08)
-
-**This is a temporary re-ordering, not a change to the phases below.** The author has directed
-that work for now concentrate on finishing already-scoped foundations and closing small, bounded
-results, and explicitly **avoid open mathematics and long-horizon fronts (decidability included)**
-until further notice. The `## Recommended Priority Order` section at the end of this document
-still states the *full-programme* ordering (decidability spine first) and is left unchanged as
-the durable record of that plan; this section is the near-term override that supersedes it for
-day-to-day task selection until the author lifts the restriction.
-
-**Deferred fronts (open mathematics or multi-wave/long-horizon — do not start these now):**
-
-| Front | Tasks | Why deferred |
+| Front | Open tasks | Delivers |
 |---|---|---|
-| Decidability/tableau spine (Phase 2) | 410, 411, 412, 428, 429, 430, 464, 465, 481, 482 | The largest open front; 464/429/481/482 are explicitly labeled open mathematics in-source, and the rest are downstream of them on the critical path |
-| Semantic finite model property (Phase 4) | 476 | Explicitly classified "OPEN MATHEMATICS. MULTI-MONTH." in its own description |
-| TM⋆ completeness / non-definability | 537, 559, 560, 561 | Multi-phase completeness programme for the extended language, not a bounded result |
-| H/G-fragment finite axiomatizability | 534 | Open research question (Kamp/Burgess territory) |
-| C3 completeness question | 570 | Explicitly an "OPEN RESEARCH QUESTION, not an implementation task" |
-| Jønsson-Tarski algebraic representation | 125, 497, 498, 499, 500, 501, 502, 504 | Capstone + its five-phase groundwork; Phase 1 above already flags the underlying ultraproduct work as "not yet scoped as tasks" |
-| Object-language extensions | 127, 128 | Phase 6 above already recommends these for ABANDON or park — antagonistic to the (also-deferred) termination work |
-| Documentation final-polish | 177 | Explicitly gated in its own description on the decidability chain (426, 428, 429, 430, 432, 433, 434) landing — cannot start until that front resumes |
+| User decisions | — | Status calls on the parked records, and the Hugging Face token |
+| **Gluing route to decidability** | **718, 719** | **Possible worlds as all ways of gluing a backward ray to a forward ray; the stab fibre; decidability by that means** |
+| L⁺ sliced certificates | 705, 706, 709, 710, 714, 716 | The landed incompleteness theorems, the liveAt defect, the periodicity theorem |
+| Categorical structure | 563, 564, 565, 566, 567, 616, 617, 618 | The behavior presheaf and every clause of `app:presheaf-dictionary` |
+| Publication and data | 178, 231, 282, 296, 298, 604, 219, 177 | Worked examples; the dataset pipeline; the final docs pass |
+| Metalogic questions | 543, 559, 570, 664 | MF rigidity; TM⋆ completeness; the C3 question; one literature source |
+| TM tableau spine | 464, 465, 428, 429, 410, 411, 430, 412, 482, 481 | Totality, the truth-lemma repair, the semantic lift, decidability of provability |
+| Algebraic representation | 502, 497, 498, 499, 500, 125, 501 | The Jónsson–Tarski representation theorem for TM |
+| Parked | 127, 128, 257, 711, 712, 713 | Nothing until a user ruling (see Phase 0) |
 
-**Progress against this list, 2026-09-09.** Items 1 and 6 are **done**, and an eight-task
-paper-alignment cluster that did not exist when this list was written was created and completed
-the same day — see `## Paper Alignment Programme` below for what it settled. Remaining items are
-renumbered nowhere: the original numbering is kept so the list stays comparable to the review
-that produced it.
+51 open tasks. Each phase below is one `/orchestrate` batch, or a
+named sequence of them where declared `file_scope` values overlap — a batch whose members share
+a file is deferred every cycle by the admission gate and makes no progress (see
+`.claude/context/patterns/batch-orchestration-guardrails.md`).
 
-Three corrections to the list as written:
-
-- **Item 14 (543) is not near-term.** Its chain is `543 → 500 → 497 → 502 → 461`, of which only
-  **502** is eligible today; 497 and 500 are `not_started` behind it. That places 543 four tasks
-  deep *inside* the Jønsson-Tarski front this same section defers. Treat it as deferred, or
-  schedule `502 → 497 → 500` as a deliberate decision about the algebraic front — not as a small
-  result.
-- **Run item 8 (569) before items 9-13 (563-567).** Not a recorded dependency, so the graph will
-  not enforce it. 569 replaces the truth index, and its probe
-  (`specs/553_.../probes/01_bounded-index-diagnosis.lean`) proves the current bounded-index
-  reading is *incoherent, not merely unused*: `refute_modal_t_at_bounded_index` shows `□p → p`,
-  a TM axiom, is **false** at a bounded convex index off its domain, because the atom clause is
-  domain-relative while the box clause re-indexes to the total `H_F`. Siting the presheaf cluster
-  beneath `Truth.lean` on the index that correction removes means building it twice.
-- **Items 7, 8 and 12 (568, 569, 563) declare no `file_scope`.** The field is empty on all three,
-  so they take no lock and the admission gate cannot serialize them against each other or
-  anything else. Give them a scope before running them concurrently.
-
-**Recommended near-term order** (foundations and small, already-scoped results only; roughly
-cheapest/most-unblocked first):
-
-1. ~~**562** `sync_language_names_with_paper_l_minus_plus_star`~~ — **DONE 2026-09-09.** Pure
-   rename/prose sweep; released the seven dependents that referenced the old names.
-2. **540** `docstring_coverage_class_instance_lemma` — close the three declaration categories
-   below the C19 docstring-coverage floor.
-3. **542** `dead_declaration_triage_c17_findings` — triage the C17 dead-declaration census.
-4. **506** `fix_typst_display_defects_via_playwright_visual_loop` — publication-quality display
-   fixes in the typst book, mechanical/visual verification loop.
-5. **178** `publication_examples_and_demo` — already rescoped to the propositional fragment
-   (genuinely decidable today); does not touch the deferred decidability front.
-6. ~~**193** `codebase_tactic_refactor`~~ — **DONE.** The validity-intro/truth-simp macros landed
-   on the soundness layer.
-7. **568** `c3_c4_consequence_relations_as_library_definitions` — promote already-derived results
-   from `specs/553_.../probes/02_*.lean` and `03_*.lean` into the library.
-8. **569** `retarget_semantics_to_possible_world_index` — the correctness argument is already
-   machine-checked in a probe file; this promotes it.
-9. **565** `totality_and_directed_gluing_from_extension_theorem` — both target clauses are
-   wrappers on `thm:extension`, already fully proved.
-10. **566** `possible_worlds_clause_hf_as_limit` — uses an existing proved hook
-    (`FrameOver.mem_HF_iff_adjacent`) rather than new construction.
-11. **564** `sheaf_clause_gluing_and_starpasting_generalization` — the composition step is already
-    proved (`glue_seam`); remaining work is the two restriction identities plus uniqueness.
-12. **563** `formalize_interval_site_and_behavior_presheaf` — promotes the presheaf skeleton that
-    563-567 build on into the library (do before or alongside 564-567, whichever this task's own
-    dependencies require).
-13. **567** `determinism_clause_and_separatedness_asymmetry` — connects to the already-proved
-    `StarDeterminism.states_eq_of_deterministic`.
-14. **543** `formalize_mf_correspondence_rigidity` — machine-checks results already researched
-    (externally, in the PossibleWorlds paper repository) rather than open-ended research; largest
-    item in this list by the author's own description. **Reclassified deferred 2026-09-09** — it
-    is four tasks deep behind `502 → 497 → 500`, inside the deferred algebraic front. See the
-    corrections above.
-
-**Independent, non-mathematical track** (small and bounded, but dataset/tooling rather than proof
-foundations — pick up in parallel if useful, not ordered against the list above): the Phase 6
-dataset/training-infrastructure cluster (298 top-of-cluster, 296, 282, 257, 231, 219).
+The live front is **Phase 1, the gluing route** — made the programme's priority by author
+directive on 2026-10-02, to be carried through research, design **and** implementation rather
+than left as a research note. Phases 2 and 3 remain live beside it and feed it. The 2026-09-08
+author directive that deferred decidability and open mathematics has been overtaken by the L⁺
+programme (tasks 695–716, all dispatched since), and is not restated here.
 
 ---
 
-## Phase 1: Weak and Strong Completeness (Low Priority — weak DONE, strong-completeness capstone open)
+## Phase 0: User Decisions (High Priority)
 
-**Current state, grounded in C2/C3 (re-verified 2026-08-25, task 468 Phase 1):**
+**Status**: Live — user-only. No agent may transition these.
 
-- [x] **Base weak completeness — DONE.** `BXCanonical.completeness` is axiom-clean:
-      `[propext, Classical.choice, Quot.sound]`, zero `sorryAx`. The Base-class discrete branch's
-      former sole live sorry, `WeakCanonical.countermodel_discrete`, is **closed** — tasks 477
-      (`ta_qz_target_structure_plumbing`) → 478 (`tb_groupable_companion_lemma`) → 479
-      (`tc_close_countermodel_discrete_at_base`), all completed, proved it via a k-equivalence/
-      groupable-companion construction at the non-Archimedean carrier `ℚ ×ₗ ℤ`, landing the
-      theorem in `FormalSystem/Metalogic/WeakCanonical/GroupModel/CountermodelBase.lean`.
-      `WeakCanonical/Transfer.lean` no longer contains this theorem; its own header names the new
-      location and confirms the `sorryAx`-free status. *(Completed: tasks 477-479, 2026-08-25)*
-- [x] **Dense weak completeness — DONE.** `completeness_dense` axiom-clean, same set, C2-confirmed.
-- [x] **Discrete weak completeness — DONE.** `completeness_ztime` axiom-clean, same set.
-- [x] **Dedekind weak/consequence completeness — DONE.** Task 408 (completed, archived): headline
-      `completeness_rtime` and corollary `consequence_completeness_rtime`, both
-      `sorryAx`-free.
-- [x] **Consequence-completeness capstone (task 362) — DONE.** Leg A: finite-context *(Completed: Task 362)*
-      consequence completeness for all four frame classes, `Derivable`-stated corollaries of the
-      four weak engines above, all now unblocked (the weak engines they build on are DONE). Legs
-      B (genuine `Set Formula` strong completeness, Base/Dense only) and C/D (Discrete/Dedekind
-      non-compactness record, LaTeX alignment) — Leg B gated on task 424 (shift-set representation
-      theorem, **completed** — the gate that authorizes the ultraproduct route has been passed;
-      the expensive ultraproduct work itself is not yet scoped as tasks).
-- [ ] **Two tasks proposed for abandonment, not transitioned by this rewrite** — 169
-      (`build_discrete_chronicle...`, deps `[361,422,448]`) and 95 (the axiom/sorry confirmation
-      pass, deps `[169]`): both tasks' entire deliverable is the `countermodel_discrete` closure
-      above, already accomplished via a different route (477→478→479) than the one 169/422 were
-      built to supply. See `specs/468_.../reports/04_realignment-decisions-and-verdicts.md` for
-      the full adjudication and evidence; **status transition is a user decision, not performed by
-      this rewrite.**
-- [ ] **422** (`build_discrete_chronicle_over_non_archimedean_block_carrier_with_restricted_coherence`,
-      researched): its specified deliverables (a block-carrier isomorphism into `ℚ ×ₗ ℤ`, plus
-      three restricted-coherence analogues) are permanently REFUTED at the isomorphism level (its
-      own report 01, machine-checked: no linearly ordered abelian group has order type `ℤ+ℤ`) and
-      superseded — its own report 02 recommended the k-equivalence route 477-479 actually used.
-      Also proposed for abandonment; see the same report.
-- [ ] **Strong completeness over ℚ-time — OPEN (author directive, 2026-09-18).** Weak
-      completeness over ℚ-time is DONE: `derivable_of_validQTime`, and
-      `validQTime_iff_validDense` (`Metalogic/QTime.lean`) shows ℚ-time validity is exactly
-      Dense validity. Strong completeness does *not* carry over. Dense strong completeness uses
-      compactness, and compactness goes through ultrapowers of ℚ, which are dense but no longer
-      ℚ-time. So `Γ ⊨_{ℚ-time} φ → Γ ⊢_Dense φ` for `Γ : Set Formula` needs its own proof. One
-      option is a Löwenheim–Skolem-style descent from a countermodel over some dense carrier to a
-      countable one. That alone is not enough: a countable dense ordered group need not be ℚ
-      (for example `ℚ ×ₗ ℚ`), and Cantor's theorem gives only an order isomorphism, not a group
-      one, so reaching ℚ itself needs a further argument. Unlike Discrete and Dedekind, this
-      is not known to be impossible, because ℚ-time is not ruled out by the non-compactness
-      witnesses above. Background: task 603's report and task 600's plan (phase 4, excluded with
-      reasons).
+- [ ] Rule on task 712, the L⁺ sliced finite model property: its statement is machine-checked
+      FALSE (`not_sliced_complete`, `not_finite_width_fmp`), so the record is a refutation, not
+      an open statement. Moving it to a terminal status is a programme-level call (Task 712)
+- [ ] Rule on task 711, the ω-automata determinization substrate: it was filed only to make the
+      blocker visible, and the route it names is now closed, so the honest outcome is ABANDONED
+      rather than completed (Task 711)
+- [ ] Rule on task 713, the CTL⋆ 2EXPTIME reduction: optional, filed not scheduled, nothing
+      depends on it; abandon or keep as a write-up note (Task 713)
+- [ ] Rule on tasks 127 and 128, the object-language extensions (time addition, interior
+      operator): long-standing abandonment candidates, antagonistic to the termination work the
+      tableau spine depends on (Task 127, Task 128)
+- [ ] Supply the Hugging Face account and token that task 257 is blocked on (Task 257)
 
-**Strong-completeness terminology** (settled 2026-07-27, authority: `StrongCompleteness.lean`'s
-module docstring): "strong completeness" names consequence from possibly-infinite premise sets
-(`Γ : Set Formula`, finitary set-derivability); any finite-context (`Context = List Formula`)
-consequence statement is inter-derivable with weak completeness via the deduction theorem and is
-named **consequence completeness**, never strong. Discrete and Dedekind are non-compact (Discrete:
-`{F p} ∪ {¬Xⁿ p}` witness under `IsSuccArchimedean`; Dedekind: Reynolds 1992 Theorem 7 is weak-only
-by the paper's own restriction) — **IMPOSSIBLE**, not open, for genuine strong completeness at
-those two classes.
-
-**Check grounding**: C2 (four flagship axiom sets), C3 (zero live structural sorries tree-wide).
-
----
-
-## Phase 2: Decidability and the Tableau Engine (High Priority — the largest open front)
-
-**Current state, grounded in C2/C3/C4 (re-verified 2026-08-25):**
-
-- [x] **Soundness of the tableau-derived judgment is proven for the engine as it stands.** No
-      unsound rule fires uncontrolled (task 418's cross-world temporal-copy fix removed the one
-      known unsoundness).
-- [ ] **`isValid`-to-validity bridge: the SOUND direction has landed; the completeness direction
-      is open.** `DecisionProcedure.isValid` (the `Bool`-valued convenience wrapper,
-      `DecisionProcedure.lean:317`) is now the subject of semantic theorems: `sound_of_isValid`
-      (`Correctness.lean:100`) and its corollary `isValid_sound` (`Correctness.lean:111`) give
-      `isValid φ fc = true → ⊨ φ`, sorry-free, together with the `isTautology` / `isContradiction`
-      siblings and the frame-class-relativized forms. That direction rides entirely on the `⊢ φ`
-      witness carried by `DecisionResult.valid` (`decide_sound'`, `Correctness.lean:71`) and needs
-      nothing from the tableau side. What is still owed is the *completeness* direction
-      `⊨ φ → isValid φ fc = true` — and hence the biconditional `isValid φ fc = true ↔ ⊨ φ` and the
-      `Decidable (⊨ φ)` instances for the four frame classes. It requires `valid_iff_allClosed`,
-      which needs the fuel/termination side and the truth-lemma gate on top of
-      `ruleSound_of_mem_allRulesForFC` (`Verified/Decidable.lean:3155`), and it must additionally
-      account for `serialityRule` and `timeLinearity`, the two rules scheduled outside
-      `allRulesForFC`. The obligation is stated in-source at `Correctness.lean:209-224`; no
-      `isValid`-shaped `iff` is written until it can be proved.
-- [ ] **`ruleSound_of_mem_allRulesForFC` is not lifted to `allClosed → valid`.** The rule-level
-      soundness assembly (`Verified/Decidable.lean:3155`) exists; the engine-level lift
-      (`valid_iff_allClosed`) is task 430's target, not yet landed.
-- [ ] **The unconditional `buildTableau_isSome` is FALSE, permanently, by construction** — not an
-      unproven conjecture. `buildTableau` returns `none` whenever a formula explores more than
-      `maxBranches := 50000` branches, at any fuel (task 428's own settled finding, on a
-      do-not-re-attempt register). Task 428 targets a budget-parameterised replacement instead,
-      via the amortized mint-bound route (route (b), user-approved), with an explicit
-      ASSESS-and-C9-register escape clause for the split-arm fuel scaling problem
-      (`allocateFuelProportionally`, depth not bounded by anything proved — added by task 468's
-      realignment, 2026-08-25).
-- [ ] **The box-anchor family is REFUTED, broader than originally scoped — verdict NEGATIVE,
-      re-confirmed 2026-08-25 without re-running the probe (amendment 10a).** The entire
-      decidable-branch-gate family — `boxAnchoredCheck`, `boxGridCheck`, `regionGate`,
-      `regionLabelCheck`, `rayUpOk`/`rayDnOk` — collapses to `false` on any branch that mints a
-      world, because task 418's sound fix removed the only route by which `T(Gφ)`/`T(Hφ)` reach a
-      freshly minted world. **Task 429 is a redesign, not a repair.** Recommended route (added
-      2026-08-25): (a) propagate `T(□φ)` itself to the fresh world (S5 axiom-4/5 pattern, own
-      `RuleSound` obligation, named fuel/termination consequences) — see
-      `specs/archive/418_.../artifacts/boxanchored-finding.md` for the full artifact and all three
-      routes. Cross-reference: this is a tombstoned route family — see `## Tombstoned Routes`
-      below and the C9 register in `Verified/Termination/MintBound.lean`.
-- [ ] **`Verified/Refutation/` does not exist; `ProofExtraction.lean` has zero theorems;
-      `verifyProof` is the constant stub `fun _ _ => true`.** Eliminating `.extractionFailed` as a
-      live outcome on a genuinely closed tableau is **OPEN MATHEMATICS, multi-month** — **ADD,
-      task 482** (`discharge_proof_extraction_completeness`, deps `[412]`, MUST NOT be
-      re-described as engineering).
-- [ ] **Five termination residuals, not four** (the four-residual framing used elsewhere in this
-      programme is WRONG and is corrected here): `UniverseClosed`, `DifficultyBounded`/
-      `StepLengthBounded`, `MintPaysForTime`, `PostBlockingSettles`, and **`UnorderedSuccessorLabelClosed`**
-      — carried as a live hypothesis by `buildTableauAt_isSome_at_seed_lengthBudget_signedUniverse`
-      and refuted in-tree (`MintBound.lean:6238`). **ADD, task 481**
-      (`discharge_or_replace_unorderedsuccessorlabelclosed_residual`, deps `[434]`, genuinely
-      open — repair-or-replace, not routine discharge; a C9 register entry is a complete, valid
-      outcome). Sequencing: recommended before or alongside task 462, which targets discharge at
-      the same nonempty-universe setting `:6238`'s refutation applies in (advisory, not a hard
-      dependency edge — task 481 may run alongside 462, not only before it).
-
-**Critical path** (re-derived 2026-08-25 by longest-path over the live `dependencies` graph, not
-carried forward from any prior hand-drawn diagram):
-
+**Blocked by**: none
+**Run**:
 ```
-462 (ROUTINE, unblocked today, deps 469✓/470✓)
-  -> 463 (ROUTINE)
-    -> 464 (HARD -- gapPotential, the one genuinely open mathematical question on this spine)
-      -> 465 (ROUTINE -- mechanical restatement of settled residuals only)
-        -> 428 (HARD -- split-arm fuel scaling, ASSESS/C9-register escape clause)
-          -> 429 (HARD -- box-anchor redesign, genuine open mathematics)
-            -> 410 -> 411
-              -> 430 (HARD -- item (b), "the semantic lift")
-                -> 412 -> 482 (HARD -- proof-extraction completeness, open mathematics)
-                        -> 177 (retained-half documentation polish)
-
-481 (HARD -- repair-or-replace) -- parallel entry, recommended before/alongside 462
-480 (ROUTINE, independent, startable today)
-476 (HARD -- open mathematics, gated only on 475=completed) -- parallel, does not feed this spine
+# user-only; no orchestration command applies
 ```
 
-11 waves from 462 to 482 (10 to 412). Full derivation, per-task status, and the routine/hard split
-rationale: `specs/468_.../reports/03_implementation-evidence-ledger.md` (Phase 6 section).
-
-**Check grounding**: C2 (axiom sets), C3 (sorry inventory — zero, tree-wide), C4 (import
-resolution), direct symbol-level `grep`/`ls` re-verification (Phase 1 of the 2026-08-25
-realignment).
-
 ---
 
-## Phase 3: Kamp Theorem and Expressive Completeness (Low Priority — DONE)
-
-- [x] **The Kamp chain is complete and sorry-free.** All four chain declarations —
-      `nf_nvar_exist_all_depths`, `nf_characterizable_temporal_prior`,
-      `kamp_prior_expressive_completeness` (`Kamp/KampPrior.lean`), and
-      `US_expressively_complete_over_prior` (`WeakCanonical/PriorExpressiveness.lean`) —
-      kernel-verify to `[propext, Classical.choice, Quot.sound]`.
-- [x] **Stavi/EFGames is LIVE, not superseded and parked** — corrected 2026-08-25. Re-verified by
-      direct import check: `FormalSystem/Metalogic/WeakCanonical.lean` imports
-      `WeakCanonical.EFGames.StaviCompleteness` directly, and at least four further live modules
-      (`PriorExpressiveness.lean`, `EFGameTactics.lean`, `EFGames/Decomposition.lean`,
-      `Expressiveness/Claim1.lean`, among others) import from `EFGames/`. A prior claim that this
-      subtree was superseded and parked off the live path was **wrong** and is retracted here.
-- [x] **Rabinovich 2014 coverage**: every paper artifact (Def 3.1, Lemma 3.2, Prop 3.5, Def 4.1,
-      Prop 4.2, Lemma 5.1, Lemma 5.3, Cor 5.4) has a landed sorry-free Lean counterpart. See `##
-      Burgess-Xu Until-Induction Technique` below for the durable technique reference.
-
-**Check grounding**: C2, C4 (import resolution, confirming the Stavi/EFGames correction above).
-
----
-
-## Phase 4: Finite Model Property and Decidable Model Checking (Medium Priority)
-
-- [x] **`FormalSystem/Metalogic/Decidability/BiLasso/`** — landed sorry-free, 19 modules,
-      registered in the build graph (`Decidability.lean` imports the re-export). Decides truth of
-      a formula at a state of a **given** `IntPresentation` by bounded enumeration of annotated
-      bi-lassos (`check`/`check_correct`, a computing `Decidable` instance). **Honest scope
-      statement**: it does not decide the logic (nothing in the layer quantifies over frames), and
-      it performs no part of the finite-model step (`exists_annot_of_truth` takes a
-      `WorldHistory` as *input*, compressing within a presentation rather than producing one from
-      an arbitrary countermodel). **Axioms**: `[propext, Classical.choice, Quot.sound]` — this is
-      computability, not choice-freedom; they are different properties (see the PROVEN-vs-
-      SORRY-FREE note above), and `wlem_of_spherical` rules out any choice-free finite-carrier
-      route.
-- [ ] **What remains is exactly one theorem, `fmp`**: `∀ ψ, ¬ ValidZTime ψ → ∃ P ∈ cands ψ, ∃
-      w, SatAtState P w ψ.neg`. Its crux is box-faithfulness — `box` truth is a global constant of
-      its own model, so a source model's and a target presentation's box facts need not agree —
-      and it is genuinely hard. Given `fmp`, the assembly (`validZTime_iff_checkFamily`,
-      `decidableValidZTimeFamily`) is already live and machine-checked.
-- [ ] **This qualifies a prior audit finding**: the original proof-state audit's finding F6 ("FMP
-      is syntactic, not semantic") was reached from `Decidability/FMP/` without accounting for
-      BiLasso; the honest picture is the one stated above, not F6 as originally framed.
-- [ ] **Task 476** (`box_faithful_small_model_theorem`, not_started, deps `[475]` = completed) —
-      the genuine SEMANTIC finite model property, correctly scoped as open mathematics,
-      multi-month, with an explicit literature gate (Gabbay-Kurucz-Wolter-Zakharyaschev) and a
-      must-not-merge-into-engineering clause. This is the best-scoped version of the semantic FMP
-      candidate; do not duplicate it.
-
-**Check grounding**: C2 (BiLasso axiom sets), C3 (BiLasso sorry-free), C6 (BiLasso now reachable
-from the build graph, no longer isolation-only).
-
----
-
-## Phase 5: Publication and Documentation (Medium Priority)
-
-- [ ] **Task 177** (retained half, not_started) — README/docs/module-docstring final polish, once
-      the decidability chain (426, 428, 429, 430, 432, 433, 434) lands. **Already half-executed**:
-      tasks 472 (documentation correction pass, nine files plus six more) and 473 (Kamp vacuity
-      deletion, `neg_2var_vec_ea`/`reflatten_neg_step`, two files) are both completed; this task's
-      residual scope explicitly excludes their territory (see the task's own description for the
-      full exclusion list). `file_scope` already repaired (task 470 item (G)).
-- [ ] **Task 178** (not_started) — rescoped 2026-08-25 (carried from `specs/reviews/
-      review-2026-08-24.md` amendment M-7): the decidability-example acceptance criterion is
-      rescoped to the propositional fragment (genuinely decidable today), since decidability of
-      the full logic is still open (Phase 2 above). `truthAt_of_isValid`
-      (`Verified/Decidable.lean:2412`) is **not** evidence of decidability — it concerns a
-      different, semantic-side `SoundnessLemmas.IsValid`.
-- [x] **BimodalReference living monograph** (task 313, skeleton COMPLETED; tasks 314-318 in *(Completed: Task 313)*
-      flight/not-started) — five-part typst monograph at `typst/BimodalReference.typ`, with
-      `scripts/typst-status-counts.sh`/`typst-sync-check.sh` as mechanical claim-verification
-      infrastructure.
-- [ ] **LaTeX alignment** — restate `latex/subfiles/04-Metalogic.tex`'s "Strong Completeness and
-      Compactness" section for the `Set Formula` statement only, owned by task 362 (Phase 1
-      above).
-
-**Check grounding**: C5 (module-shaped path resolution in markdown/docs), C9 (zero task-number
-citations under `FormalSystem/`).
-
----
-
-## Phase 6: Dataset and Training Infrastructure (Medium Priority — carried forward, not
-freshly re-verified by this rewrite)
-
-**These rows are restated from `specs/reviews/review-2026-08-24.md` Addendum A-6/A-7 (one day old
-at task 468's dispatch), not independently re-derived by the 2026-08-25 realignment** — this
-front sits outside that task's decidability/completeness/roadmap charter, and the distinction is
-recorded here explicitly so a reader does not mistake carried-forward evidence for fresh
-verification.
-
-- [ ] **298** (partial) — top of cluster. **Note (2026-08-25)**: the c7 dataset-regeneration
-      process (`dataset_generator --max-complexity 7 --mode exhaustive`) was observed **actively
-      running** at realignment time (live PID, 645+ CPU-minutes, output past 1.5M lines vs. the
-      2026-08-24 review's 13,749-line truncation snapshot). Do not disturb; re-check line/metadata
-      counts before treating this task as still blocked on the truncation finding.
-- [ ] **296** (partial) — KEEP, review-verified.
-- [ ] **282** (partial) — REVISE; null description reconstructed by task 470's own research, not
-      re-verified by task 468.
-- [ ] **257** (blocked) — REVISE + reclassify; blocked on human action (HF account/token).
-- [ ] **231** (not_started) — KEEP, downgrade priority; must follow 298.
-- [ ] **219** (researched) — KEEP, depends on 231.
-- [ ] **125** (not_started) — KEEP, move off critical path.
-- [ ] **127, 128** (not_started) — candidates for ABANDON or park; both extend the object language,
-      antagonistic to the termination work Phase 2's front depends on (`MintBound.lean`'s
-      34-constructor rule set).
-- [ ] **193** (not_started) — KEEP, runnable today.
-- [ ] **461** (blocked) — KEEP as blocked, lower priority; blocked on literature acquisition.
-
----
-
-## Phase 7: Repository Hygiene and Programme Metadata (Low Priority)
-
-- [x] **ROADMAP split** — this file split from a 1,970-line stacked-history document into this
-      current-state file plus a `specs/ROADMAP-ARCHIVE.md` companion (historical sediment,
-      verbatim). *(Completed: task 468, 2026-08-25)*
-- [x] **ROADMAP archive retired** — the companion file was deleted after a line-by-line check
-      confirmed all 920 of its distinct lines are present verbatim in the pre-split document at
-      `14e96488d^:specs/ROADMAP.md`, making it a duplicate of git history rather than a second
-      source. Provenance is now read with `git show`. *(2026-09-09)*
-- [x] **`active_topics` gap closed** — `metalogic` (carried by completed tasks 477/478/479) added.
-      *(Completed: task 468, 2026-08-25)*
-- [x] **Dangling-edge scan** — zero dangling dependency edges across `active_projects` union the
-      archive's archived+completed sets, confirmed zero-padded (avoiding a lexicographic-vs-
-      numeric `comm` mismatch that produced 50 false positives in an earlier, unpadded run).
-- [ ] **`state.json` counters (`metadata.total_tasks`, `task_counts.*`) — REPAIR DEFERRED, argued,
-      not fixed by this rewrite.** The live status breakdown (including `completed` and a plural
-      `researched`) cannot be represented by the current `task_counts` key set without inventing a
-      schema convention no consumer script exists to confirm (`grep` across `.claude/scripts/` and
-      `.claude/hooks/` for either field: zero hits). Left to `/task --sync` or a dedicated
-      schema-clarification task; see `specs/468_.../reports/03_implementation-evidence-ledger.md`
-      (Phase 6 section) for the full argument.
-
----
-
-## Tombstoned Routes
-
-Refuted approaches, recorded so they are not silently re-attempted. Cross-reference: the **C9
-register** (a section inside `FormalSystem/Metalogic/Decidability/Verified/Termination/
-MintBound.lean`) carries the full, itemised list (24 entries as of 2026-08-25); this section
-names only the routes this rewrite's audit specifically re-confirmed, without duplicating C9's
-own entries.
-
-- **Unconditional `buildTableau_isSome`** — FALSE at the engine's `maxBranches` guard, at any
-  fuel. Property of the engine signature, not a proof difficulty. See Phase 2.
-- **The decidable-branch-gate family** (`boxAnchoredCheck`, `boxGridCheck`, `regionGate`,
-  `regionLabelCheck`, `rayUpOk`/`rayDnOk`) — collapses to `false` on any branch minting a world,
-  caused by task 418's sound (not unsound) removal of cross-world temporal-copy propagation.
-  Repair option (c) (weaken only the anchor) is **closed as formulated** — `boxGridCheck` fails
-  for the same structural reason, so weakening only the anchor buys nothing. See Phase 2.
-- **`UnorderedSuccessorLabelClosed`** — refuted in-tree at a nonempty universe
-  (`MintBound.lean:6238`). See Phase 2, task 481.
-- **The discrete block-carrier isomorphism into `ℚ ×ₗ ℤ`** (task 422's original deliverable) — no
-  linearly ordered abelian group has order type `ℤ+ℤ`; machine-checked, permanent. See Phase 1.
-- **`succ_cofinal`** — unprovable by the constant-MCS gap scenario; bypassed entirely by the
-  Reynolds route the tree actually uses. Do not re-attempt.
-
----
-
-## Sorry Inventory
-
-**(re-verified 2026-08-25 by a fresh `scripts/check-module-invariants.sh` run; generator of
-record: check C3 — regenerate this section from C3's live output, never hand-edit it.)** The live
-(non-Boneyard) tree has **zero** structural sorries — `grep -rn --include='*.lean' -E
-'^\s*sorry\s*$' FormalSystem/ | grep -v Boneyard` returns empty, and C3 independently confirms
-zero. This is a change from the tree's history: the former sole live sorry,
-`WeakCanonical.countermodel_discrete`, was closed by tasks 477-479 (see Phase 1). **Zero sorries
-does not mean zero open mathematics** — see the PROVEN-vs-SORRY-FREE note at the top of this
-document, and Phase 2's `isValid` bridge / proof-extraction / termination-residual items, none of
-which carries a sorry today because none of them is a stated theorem yet.
-
-**C2 axiom baseline**: `BXCanonical.completeness`, `.completeness_dense`, `.completeness_ztime`,
-and `.Chronicle.countermodel_dense` all depend on exactly `[propext, Classical.choice,
-Quot.sound]` — no `sorryAx`, tree-wide, across all four flagship theorems. Those four, and only
-those four, are what C2's baseline covers (`scripts/check-module-invariants.sh`, check C2).
-
-**Outside the C2 baseline, and checked separately**: `completeness_rtime`
-(`FormalSystem/Metalogic/StrongCompleteness.lean:469`) has the same profile — SORRY-FREE
-(sorryAx-free; axioms: exactly `propext`, `Classical.choice`, `Quot.sound`). That is recorded in
-prose at `FormalSystem/Metalogic.lean:57-60` and is reproducible with `#print axioms` on the name.
-It is **not** one of C2's four theorems, so no C2 run attests to it; treat it as a `#print axioms`
-fact about the current tree, not as a checked invariant. Per this document's own rule above, a
-claim no check can reproduce is a defect — hence the separation.
-
----
-
-## BX Axiom System
-
-`FormalSystem/ProofSystem/Axioms.lean` defines **45 axiom constructors in nine layers**. The count
-is anchored on the `Axiom.minFrameClass` docstring (`Axioms.lean:571-582`), which gives 45 with the
-split Base 37 / Dense 2 / Discrete 3 / Dedekind 3 and agrees with enumerating `inductive Axiom`
-(`Axioms.lean:99-517`) directly. The Burgess 1982/84, Xu 1988, and Venema 1993 references are at
-`Axioms.lean:72-74`; Reynolds 1992 is cited inline on the Dedekind constructors (`Axioms.lean:426`,
-`:437`, `:449`), not in that block. Under irreflexive semantics (strict `<` for G/H, strict witness
-for U/S), the axiom set replaces BX1/BX1' (reflexive T) with seriality axioms and removes BX8/BX8'
-(not sound under irreflexive Until/Since).
-
-**Do not re-derive the count from the module docstring.** `Axioms.lean:58` still reads
-"42 axiom constructors" and `Axioms.lean:84` "42 constructors organized into eight layers"; both
-predate the three Reynolds Dedekind axioms and are stale. The in-source `-- Layer N` comments are
-not authoritative on counts either: `Axioms.lean:123` says Layer 3 is 20 (it is 18) and
-`Axioms.lean:349` says Layer 8 is 1 (it is 2). Only enumeration is authoritative.
-
-**Three names below are derived theorems, not `Axiom` constructors**, and must not be re-added as
-rows to this table: `temp_k_dist` and `temp_4` (derived as
-`Theorems.TemporalDerived.temporalKDistDerived` and `.temporal4Derived`; see `Axioms.lean:59-60`)
-and `temp_future` (`□φ → G□φ`, derived from MF + T + Modal 4 in `Theorems/Combinators.lean`; see
-`Axioms.lean:281`). A `temp_4` does exist elsewhere, at `FormalSystem/BaseLanguage/Axioms.lean:99`
-on `BLFormula` — a different inductive, not this one.
-
-The nine per-layer counts below are 4 + 5 + 18 + 4 + 1 + 5 + 2 + 1 + 2 + 3 = 45 (Layer 3 is split
-into 3 and 3b in-source, so nine layers carry ten table sections).
-
-### Layer 1: Propositional (4)
-
-| Axiom | File:Line | Statement | Role |
-|-------|-----------|-----------|------|
-| `prop_k` | Axioms.lean:103 | `(φ → (ψ → χ)) → ((φ → ψ) → (φ → χ))` | Intuitionistic K |
-| `prop_s` | Axioms.lean:106 | `φ → (ψ → φ)` | Weakening |
-| `ex_falso` | Axioms.lean:108 | `⊥ → φ` | Ex falso |
-| `peirce` | Axioms.lean:110 | `((φ → ψ) → φ) → φ` | Classical |
-
-### Layer 2: S5 Modal (5)
-
-| Axiom | File:Line | Statement | Role |
-|-------|-----------|-----------|------|
-| `modal_t` | Axioms.lean:113 | `□φ → φ` | Reflexivity |
-| `modal_4` | Axioms.lean:115 | `□φ → □□φ` | Transitivity |
-| `modal_b` | Axioms.lean:117 | `φ → □◇φ` | Symmetry |
-| `modal_5_collapse` | Axioms.lean:119 | `◇□φ → □φ` | S5 characteristic |
-| `modal_k_dist` | Axioms.lean:121 | `□(φ → ψ) → (□φ → □ψ)` | Normal modality |
-
-### Layer 3: BX Temporal (18)
-
-Ordered by source line. The in-source comment at `Axioms.lean:123` says 20; enumeration says 18,
-and enumeration wins. `temp_k_dist` and `temp_4` are **not** constructors here — see the note
-above the tables.
-
-| Axiom | File:Line | Statement (future direction) | Role |
-|-------|-----------|------------------------------|------|
-| BX1 `serial_future` | Axioms.lean:128 | `T → F(T)` | Seriality (replaces reflexive T) |
-| BX1' `serial_past` | Axioms.lean:132 | `T → P(T)` | Mirror seriality |
-| BX2H `left_mono_until_G` | Axioms.lean:138 | `G(φ→χ) → (φUψ) → (χUψ)` | Guard strengthening under G |
-| BX2H' `left_mono_since_H` | Axioms.lean:144 | `H(φ→χ) → (φSψ) → (χSψ)` | Guard strengthening under H |
-| BX3 `right_mono_until` | Axioms.lean:149 | `G(φ→ψ) → ((χUφ)→(χUψ))` | Right monotonicity |
-| BX3' `right_mono_since` | Axioms.lean:153 | mirror for S | |
-| BX4 `connect_future` | Axioms.lean:158 | `φ → G(P(φ))` | Temporal connectedness |
-| BX4' `connect_past` | Axioms.lean:162 | `φ → H(F(φ))` | Mirror |
-| BX13 `enrichment_until` | Axioms.lean:171 | `p ∧ U(α, β) → U(α ∧ S(p, β), β)` | Burgess A3a enrichment |
-| BX13' `enrichment_since` | Axioms.lean:179 | mirror for S | Burgess A3b |
-| BX5 `self_accum_until` | Axioms.lean:189 | `(φUψ) → ((φ ∧ (φUψ))Uψ)` | **Key eventuality axiom** |
-| BX5' `self_accum_since` | Axioms.lean:194 | mirror for S | |
-| BX6 `absorb_until` | Axioms.lean:201 | `(φU(φ ∧ (φUψ))) → (φUψ)` | Prevents infinite deferral |
-| BX6' `absorb_since` | Axioms.lean:205 | mirror for S | |
-| BX7 `linear_until` | Axioms.lean:211 | four-formula linearity disjunction | Linearity of U witnesses |
-| BX7' `linear_since` | Axioms.lean:220 | mirror for S | |
-| BX10 `until_F` | Axioms.lean:241 | `(φUψ) → F(ψ)` | Eventuality extraction |
-| BX10' `since_P` | Axioms.lean:246 | mirror for S | |
-
-*Note: BX8/BX8' (until_step/since_step) removed -- not sound under irreflexive semantics.*
-*Note: BX9/BX9' (until_elim/since_elim) and until_guard/since_guard removed -- not sound under open guard `(t,s)` semantics (task 113).*
-*Note: BX14/BX14' (separation_until/separation_since) removed -- redundant under transitive frames. Xu 3.2.1 (BX5 self-accumulation) subsumes BX14's role in chronicle splitting (task 115).*
-*Note: BX2/BX2' (left_mono_until/left_mono_since) removed in task 133. Under open-guard irreflexive semantics the pointwise conjunct in BX2 is redundant; BX2H/BX2H' (left_mono_until_G/left_mono_since_H, added in task 107 Phase 5b) subsume BX2/BX2' and are now the canonical left-monotonicity axioms.*
-
-### Layer 3b: Additional BX Temporal (4)
-
-In-source `-- Layer 3b: Additional BX Temporal (4 = 2 axioms x 2 directions)` (`Axioms.lean:248`).
-
-| Axiom | File:Line | Statement | Role |
-|-------|-----------|-----------|------|
-| BX11 `temp_linearity` | Axioms.lean:253 | F-witness linearity disjunction | Linear order on F witnesses |
-| BX11' `temp_linearity_past` | Axioms.lean:261 | mirror for P | |
-| BX12 `F_until_equiv` | Axioms.lean:270 | `F(φ) → (⊤Uφ)` | Bridges F to U |
-| BX12' `P_since_equiv` | Axioms.lean:275 | `P(φ) → (⊤Sφ)` | Mirror |
-
-### Layer 4: Modal-Temporal Interaction (1)
-
-| Axiom | File:Line | Statement | Status |
-|-------|-----------|-----------|--------|
-| `modal_future` | Axioms.lean:283 | `□φ → □(Gφ)` | Primitive |
-
-*`temp_future` (`□φ → G□φ`) was removed as a primitive by task 124 and is now derived from
-MF + T + Modal 4 in `Theorems/Combinators.lean` (`Axioms.lean:281`). It is not a constructor.*
-
-### Layer 5: Uniformity (5)
-
-| Axiom | File:Line | Statement | Role |
-|-------|-----------|-----------|------|
-| `discrete_symm_fwd` | Axioms.lean:291 | `U(⊤,⊥) → S(⊤,⊥)` | Forward gap implies backward gap |
-| `discrete_symm_bwd` | Axioms.lean:296 | `S(⊤,⊥) → U(⊤,⊥)` | Backward gap implies forward gap |
-| `discrete_propagate_fwd` | Axioms.lean:302 | `U(⊤,⊥) → G(U(⊤,⊥))` | Gap propagates to all future points |
-| `discrete_propagate_bwd` | Axioms.lean:308 | `U(⊤,⊥) → H(U(⊤,⊥))` | Gap propagates to all past points |
-| `discrete_box_necessity` | Axioms.lean:316 | `U(⊤,⊥) → □(U(⊤,⊥))` | Discreteness propagates to all box-accessible worlds (task 142) |
-
-*These encode the uniformity of discreteness in ordered abelian groups. Valid on all linear orders with AddCommGroup structure. The `discrete_box_necessity` axiom is the key to eliminating the mixed case in `completeness`: it ensures that if any world is discrete, all box-accessible worlds are discrete too.*
-
-### Layer 6: Prior Axioms for Integers (2) — Task 119
-
-`minFrameClass = .ZTime`.
-
-| Axiom | File:Line | Statement | Role |
-|-------|-----------|-----------|------|
-| `prior_UZ` | Axioms.lean:330 | `F(φ) → U(φ, ¬φ)` | Nearest future φ-point is reachable (Reynolds 1992 §10, Venema 1993 axiom W) |
-| `prior_SZ` | Axioms.lean:335 | `P(φ) → S(φ, ¬φ)` | Nearest past φ-point is reachable (dual) |
-
-*These are discrete-only axioms (`isBase = False`, `isDenseCompatible = False`, `isDiscreteCompatible = True`, `frameClass = .ZTime`). Valid on all discrete orders with `IsSuccArchimedean`. Soundness proofs are sorry-free (well-founded descent via `Nat.find` on succ/pred chain). Added by task 119.*
-
-### Layer 7: Z1 (1)
-
-`minFrameClass = .ZTime`.
-
-| Axiom | File:Line | Statement | Role |
-|-------|-----------|-----------|------|
-| `z1` | Axioms.lean:347 | `G(Gφ→φ) → (FGφ→Gφ)` | Characteristic axiom of `IsSuccArchimedean` frames; every definable bounded set has a maximum (Doets 1987 Claim 10, Reynolds 1994 §10) |
-
-### Layer 8: Density (2)
-
-`minFrameClass = .Dense`. The in-source comment at `Axioms.lean:349` says 1; enumeration says 2,
-and `Axioms.lean:573` agrees it is 2.
-
-| Axiom | File:Line | Statement | Role |
-|-------|-----------|-----------|------|
-| `density` | Axioms.lean:358 | `GGφ → Gφ` | Density fills the gap; NOT valid on discrete frames |
-| `dense_indicator` | Axioms.lean:369 | `¬U(⊤,⊥)` | No immediate successor exists (Burgess 1982 §1.6). The density schema alone provably cannot derive it |
-
-### Layer 9: Reynolds Dedekind (3)
-
-`minFrameClass = .RTime`. Reynolds' definable-gap-freeness axioms for real flow, printed
-p.168 of "An axiomatization for Until and Since over the reals without the IRR rule" (1992).
-`K⁺A = ¬U(⊤,¬A)` and `K⁻A = ¬S(⊤,¬A)` are defined in `Syntax/Formula.lean`.
-
-| Axiom | File:Line | Statement | Role |
-|-------|-----------|-----------|------|
-| `prior_U_gap` | Axioms.lean:431 | `U(⊤,φ) ∧ F(¬φ) → U(¬φ ∨ K⁺(¬φ), φ)` | The φ-region has a definable upper endpoint (supremum) |
-| `prior_S_gap` | Axioms.lean:441 | `S(⊤,φ) ∧ P(¬φ) → S(¬φ ∨ K⁻(¬φ), φ)` | Past dual: definable lower endpoint (infimum) |
-| `sep` | Axioms.lean:452 | `K⁺φ ∧ ¬K⁺(φ ∧ U(φ,¬φ)) → K⁺(K⁺φ ∧ K⁻φ)` | Reynolds' separation axiom; turns on separability of ℝ, though it does not characterize it |
-
-***`prior_U_gap`/`prior_S_gap` are NOT `prior_UZ`/`prior_SZ`.*** The Layer 6 pair is the integer
-well-ordering Prior axiom at `.ZTime`; this pair is the Reynolds gap form at `.RTime`.
-Different statements, different frame classes, confusingly similar names (`Axioms.lean:428-430`).
-
-### Irreflexive semantics and the seriality switch
-
-Under the irreflexive semantics switch (task 93), BX1/BX1' (`Gφ → φ` / `Hφ → φ`)
-were replaced by seriality axioms (`T → F(T)` / `T → P(T)`). This means:
-
-- `bx_le` is no longer reflexive (g_content(w) is NOT a subset of w)
-- `g_content_set_consistent` uses seriality instead of BX1: if G(bot) in MCS,
-  seriality gives F(T) = not G(neg T), and G(bot) implies G(neg T) by ex falso,
-  contradiction
-- BX8/BX8' (until_step/since_step) were removed entirely -- not sound under irreflexive semantics
-- `φ → F(φ)` is NOT derivable -- this is the KEY insight for completeness:
-  resolved defects do not re-enter as F-obligations
-
----
-
-## Irreflexive Truth Semantics
-
-All four temporal operators in TM use strict (irreflexive) ordering. The current
-point is EXCLUDED for G and H (`<`), and Until/Since witnesses must be strictly
-future/past (`t < s` / `s < t`) with open guards.
-
-From `FormalSystem/Semantics/Truth.lean` (the definition is named `TruthAt`):
-
-- **G (`all_future`)**: `∀ s, t < s → ...` — strict future (excludes `t`).
-- **H (`all_past`)**: `∀ s, s < t → ...` — strict past (excludes `t`).
-- **U (`untl`)**: `∃ s, t < s ∧ ψ@s ∧ ∀ r, t < r < s → φ@r` — strict witness,
-  open guard `(t, s)`.
-- **S (`snce`)**: `∃ s, s < t ∧ ψ@s ∧ ∀ r, s < r < t → φ@r` — mirror.
-
-Under irreflexive semantics, `Gφ → φ` is NOT valid (BX1 removed), and
-`φ → F(φ)` is NOT derivable. Seriality axioms (`T → F(T)`, `T → P(T)`)
-ensure the temporal order has no maximum/minimum elements.
-
----
-
-## X/Y Operator Status
-
-From `FormalSystem/Syntax/Formula.lean:430-436`:
-
-```lean
-/-- Next-step operator: X(phi) = U(phi, bot) (Burgess convention: event first, guard second).
-    X(phi) at t means phi holds at t+1 (event=phi at immediate successor, guard=bot vacuous). -/
-def next (φ : Formula) : Formula := Formula.untl φ Formula.bot
-
-/-- Previous-step operator: Y(phi) = S(phi, bot) (Burgess convention: event first, guard second).
-    Y(phi) at t means phi holds at t-1 (event=phi at immediate predecessor, guard=bot vacuous). -/
-def prev (φ : Formula) : Formula := Formula.snce φ Formula.bot
+## Phase 1: The Gluing Route to Decidability (Highest Priority)
+
+**Status**: Live — the programme's priority front by author directive, 2026-10-02. Task 718 is
+unblocked today. To be carried through **research, design and implementation**, not filed as a
+research note.
+
+**The idea.** Define a possible world as a way of **gluing** a sequence of next states to a
+sequence of states from which to have arrived — and take *all* ways of doing so. A world is then
+a pair of rays agreeing at a seam, and the world-set is the fibre product
+`{backward rays into s} ×ₛ {forward rays out of s}` over the seam state.
+
+**Why this is not a new semantics but a reading of the landed one.** Three facts, each verified
+against source:
+
+1. `StabClause.stab_clause` in `FormalSystem/Semantics/TruthClauses.lean` reads
+   `T M τ t (stab φ) ↔ ∀ σ : WorldHistory F, τ.state t = σ.state t → T M σ t φ`, with the
+   docstring "`⊡φ` holds iff `φ` holds at every world history in the same state at the current
+   time". The hypothesis `τ.state t = σ.state t` **is** the seam, so `⊡` already quantifies over
+   exactly the re-gluings at the present state. This is `⊡`, **not** `□`: the `box` clause carries
+   no state-agreement conjunct and is the full S5 history quantifier.
+2. `FrameOver.mem_HF_iff_adjacent` (`FormalSystem/Semantics/IntNormalForm.lean`) establishes that
+   over ℤ, `H_F` **is exactly the bi-infinite step-paths**. Possible worlds already *are* paths.
+3. `FormalSystem/Metalogic/Decidability/BiLasso/Basic.lean` states the consequence in its own
+   docstring: a decision procedure "cannot quantify over `H_F` directly … there are uncountably
+   many", and supplies the finite presentation instead — a `BiLasso` of three lists, **`back`,
+   `mid`, `fwd`**. That is the gluing, already landed in finitely presented form, and it is the
+   route the stab-free decidability work actually took.
+
+**The precise question this phase exists to answer.** The `BiLasso` presentation glues a *single*
+backward list to a *single* forward list. `⊡` needs the whole fibre over the seam, and
+`not_finite_width_fmp` proves no class with finite per-time fibres is complete. So the question is
+whether `back`/`fwd` can range over **path sets** — root paths of a finite class graph — rather
+than single lists, and whether the resulting `⊡` check stays decidable. That is exactly the
+"infinite fibres (root paths of a finite class graph)" successor shape the refutation record
+demanded, so the demand and this idea are one object, not two.
+
+- [ ] Research and rank the routes: whether each landed refutation is *genuinely* two-sided or
+      merely *stated* two-sidedly, re-derived over ω-sequences; the ray layer's status (colimit of
+      bounded sections, hence Saturation-dependent, versus separate primitive versus a
+      `PartialHistory` with a ray domain); and the ω-automata question, which collapses into the
+      infinite-fibre question rather than sitting beside it (Task 718)
+- [ ] Design and implement the ray layer, the seam-gluing operator the paper calls `⌢_z`, and the
+      **stab-fibre characterisation** — that `stab_clause`'s quantification domain is the fibre
+      product over the seam state. A refutation of that characterisation is the most valuable
+      outcome and must land as a theorem, since every downstream route assumes it (Task 719)
+- [ ] Settle the **effective extension theorem** question: whether the binary seam gluing, which
+      the live `app:gluing` proves from convexity and the task constraint alone, generalises the
+      Tier A effective extension theorem that `BiLasso/Orbit.lean` built only for the bi-lasso
+      case. Worth landing even if decidability stalls (Task 719, deliverable 4)
+- [ ] Assess **task-coherence-preserving filtration**, the route `JPL/metalogic.tex` names as
+      standard for FMP with the obstacle that the quotient must preserve Nullity and
+      Compositionality. It appears nowhere among the routes this programme has tried or refuted
+      (Task 718)
+
+**Source of record.** The gluing theorem is `app:gluing` in
+`~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex` — **live** in the paper, proved, with
+its seam case written as the pasting principle `ρ ⌢_z σ` but **commented out**. `app:Structure`
+and `app:presheaf-dictionary` are **cut** from the paper entirely: that material is the author's
+own mathematics with the supporting results promised elsewhere, and this repository is where
+elsewhere is. Treat cut clauses as a specification to implement, never as a theorem to cite.
+
+**Carry this caution.** Gluing does **not** bound the fibre — "all ways" is the largest choice, a
+full product. The route concedes infinite fibres and seeks a finite *presentation*, which is the
+only move `not_finite_width_fmp` leaves open. And the binary seam case is choice-free while the
+*directed* case needs Saturation (`app:gluing`'s footnote supplies the `D = ℚ` counterexample);
+an ω-ray built by iterated gluing is a directed colimit, so do not assume the choice-free case.
+
+**Blocked by**: Task 718 (→ 719); Tasks 563, 564 (→ 719)
+**Topics**: decidability, categorical-structure
+**Run**:
+```
+/orchestrate 563, 718   # the substrate and the route round, in parallel; scopes are disjoint
+/orchestrate 719        # after 718's verdict and 564's seam gluing land
 ```
 
-Under irreflexive semantics, `⊥ U φ` at `t` requires a strictly future witness `s > t` with `φ(s)`
-and an empty open interval `(t, s)`.
-
-- **Discrete order** (e.g., `ℤ`): The interval `(t, s)` is empty iff `s = t + 1`.
-  So `X(φ)` at `t` means `φ` holds at the immediate successor `t + 1`. This is
-  a genuine next-step operator. Similarly, `Y(φ)` at `t` means `φ` holds at `t - 1`.
-- **Dense order** (e.g., `ℚ` or `ℝ`): The interval `(t, s)` is never empty for
-  `s > t`. So `⊥ U φ` is unsatisfiable on dense orders, and `X(φ)` is always
-  false. Similarly, `Y(φ)` is always false on dense orders.
-
-They are not currently used in proofs, but they are no longer trivially equivalent to their
-argument as they were under the former reflexive semantics.
-
 ---
 
-## Canonical Model Construction (BXCanonical)
+## Phase 2: L⁺ Sliced Certificates (High Priority)
 
-**Note**: the `File.lean:NNN-MMM`-style line citations in this section are approximate pointers,
-not exact current line ranges — re-verify by symbol before relying on them.
+**Status**: Live — the active front; every task is unblocked today.
 
-### BXPoint (Frame.lean:46-53)
+What the incompleteness round settled, and what the phase now builds on: the time-sliced
+certificate class is incomplete for full L⁺ **and** for the CTL-like fragment, and no
+certificate class presenting finite per-time fibres is complete, whatever its clauses. The
+obstruction is finite *width* (limit closure plus finite fibres contradicts König) — strictly
+stronger than the earlier finite-*carrier* failure. Both are machine-checked but live under task
+probes, not in `FormalSystem/`.
 
-```lean
-structure BXPoint where
-  formulas : Set Formula
-  is_mcs : SetMaximalConsistent formulas
+- [ ] Fix the `liveT`/`liveAt` non-termination: the landed fixpoint does not return in 300s on a
+      4-position total-edge certificate while being instant on self-loop ones. This is a defect
+      in shipped, gated code, not an unbuilt feature (Task 716)
+- [ ] Land the finite-width refutation as library theorems under
+      `PlusSlicedCertificate/Limits/NoFiniteWidth.lean`, with the separating witness
+      `Φ := θ' ∧ □(stab F p → ¬ stab ¬ X p)` (Task 710)
+- [ ] Land task 706's finite-carrier refutations into `FormalSystem/`; they exist only under that
+      task's own probes, so no acceptance gate can cite them yet (Task 706)
+- [ ] Record the `trans_refl` verdict: RETAIN — roughly 87 term-level sites across 18 files need
+      the self-step. Land the label-level congruences that are the bounded residual (Task 705)
+- [ ] Evaluate carrying full labels in the certificate, which would make `posAt` a singleton and
+      delete both liveness filters; the question is whether decidability of the check survives
+      (Task 714)
+- [ ] Prove finite width ⇒ eventually periodic (finding F4): every finite-width sliced structure
+      satisfying a target has an eventually periodic model of the same width — the sufficiency
+      half of the exact characterisation (Task 709)
+
+**Blocked by**: Task 710 (→ 709)
+**Topics**: decidability, incompleteness
+**Run**:
 ```
-
-A canonical frame point is a maximally consistent set (MCS) of formulas.
-
-### Canonical Temporal Ordering (Frame.lean:56-62)
-
-```lean
-def bx_le (w v : BXPoint) : Prop :=
-  g_content w.formulas ⊆ v.formulas
+/orchestrate 716        # first: owns PlusSlicedCertificate/{Live,Check,Examples}
+/orchestrate 714 --research   # beside it: declares no file_scope, research-only
+/orchestrate 710        # then, in this order -- the three below overlap pairwise
+/orchestrate 706        # shares PlusSlicedCertificate.lean + docs/theorem-index.md with 710
+/orchestrate 705        # shares scripts/check-module-invariants.sh with 706
+/orchestrate 709 --hard # last: needs 710 landed; the one real theorem on this front
 ```
+These five cannot be batched: 705, 706 and 710 all declare `docs/theorem-index.md`, 706 and 710
+both declare `PlusSlicedCertificate.lean`, and 706 and 716 both declare
+`scripts/certificate-witness-inventory.txt`. Task 709 is the phase's substance and the only item
+that is open mathematics; its two forced repairs to Hodkinson–Wolter–Zakharyaschev (one-sided
+live sets in the quasistate, and fulfilment secured at every live position at once by an
+idempotent Ramsey colour) are the work. Do not file a fourth certificate class first — any class
+with finite fibres is already refuted.
 
-Equivalently: `w ≤ v ↔ ∀ φ, G(φ) ∈ w → φ ∈ v`.
+---
 
-- **Reflexivity** (`bx_le_refl`): NOT valid under irreflexive semantics (BX1 removed).
-- **Transitivity** (`bx_le_trans`): requires `Gφ → GGφ` = `temp_4`.
+## Phase 3: The Behavior Presheaf (High Priority)
 
-### Key Infrastructure Lemmas (Frame.lean:79+)
+**Status**: Live — task 563 is unblocked today and gates the rest.
 
-- `g_content_closed_derivation`: if `L ⊆ g_content(S)` and `L ⊢ φ`, then `Gφ ∈ S`.
-- `h_content_closed_derivation`: dual for H.
-- `g_content_set_consistent`: `g_content` of an MCS is consistent; uses seriality. Sorry-free.
-- `bx_forward_witness` / `bx_backward_witness`: Lindenbaum extension producing G/H canonical
-  witnesses.
-- `bx_modal_witness`: constructs the modal-direction witness. Sorry-free.
+Each clause below is a clause of `app:presheaf-dictionary` in the PossibleWorlds paper, and each
+has a proved hook already in the tree, which is why the cluster is bounded rather than open.
 
-### Truth Lemma (TruthLemma.lean:27-36)
+- [ ] Promote the presheaf skeleton into the library: the section type `Beh F l`, restriction
+      along `Tr p`, functoriality, and the Germs clause (Task 563)
+- [ ] Prove `app:gluing` for two sections whose germs agree at the seam, plus the two restriction
+      identities and uniqueness; the composition step is already proved as `glue_seam` (Task 564)
+- [ ] Prove the Totality and Directed Gluing clauses — both wrappers on the fully proved
+      `thm:extension` (Task 565)
+- [ ] Prove the Determinism clause, `F` deterministic iff every restriction map is injective,
+      against `states_eq_of_deterministic` (Task 567)
+- [ ] Prove the Reflection clause: `Beh(F) ≅ Beh(F⁻) ∘ ref` (Task 617)
+- [ ] Formalize the duration monoid `BD⁺`, its twisted-arrow category, and
+      `lem:interval-twisted-arrow` (Task 616)
+- [ ] Prove the Possible Worlds clause: `H_F ≅ lim Beh(F)(2x)`, via the existing
+      `FrameOver.mem_HF_iff_adjacent` (Task 566)
+- [ ] Formalize the path category `Path(F)` and `cor:path-fibration`: `len` is a discrete
+      Conduché fibration whose presheaf is `Beh(F)` (Task 618)
 
-Proved by formula induction. All cases sorry-free (the `U`/`S` forward cases delegate to
-`bx_until_eventuality_resolution`/`bx_since_eventuality_resolution`, closed by tasks 98+102).
-
-### Completeness Theorem (Completeness.lean:124-154)
-
-```lean
-theorem completeness (φ : Formula) :
-    valid φ → Nonempty (DerivationTree [] φ)
+**Blocked by**: Task 563 (→ all); Task 565 (→ 566); Tasks 564, 616 (→ 618)
+**Topics**: categorical-structure
+**Run**:
 ```
-
-Contrapositive proof flow: assume `valid φ` and `¬derivable φ`; `{¬φ}` is consistent
-(`neg_consistent_of_not_derivable`, sorry-free); extend to an MCS `M` (`set_lindenbaum`); build a
-canonical `TaskModel`; the truth lemma gives `φ` false at `M`; contradiction. Per
-`Completeness.lean`'s own module docstring: `completeness_dense`/`completeness_ztime` are
-`sorryAx`-free, and (per Phase 1 above) `completeness`'s former discrete-branch debt is now closed
-too — the whole theorem is `sorryAx`-free across all branches (dense, mixed, discrete).
-
----
-
-## Quasimodel/Filtration Infrastructure
-
-Nine files (2,228 lines) under `BXCanonical/` implement a Hintikka-set quasimodel with
-defect-discharge to close the Until/Since eventuality obligations. All sorry-free today.
-
-### Quasimodel/ (Hintikka-set quasimodel construction)
-
-| File | Lines | Purpose | Key Definitions |
-|------|-------|---------|-----------------|
-| `SubformulaClosure.lean` | 114 | Finite subformula closure (Sigma-closure) | `subformulas`, `SubformulaClosure`, `ghEnrichment` |
-| `HintikkaPoint.lean` | 144 | Hintikka point definition and sigma-signature | `HintikkaPoint`, `sigma_signature`, `sigma_signature_consistent`, `sigma_signature_maximal` |
-| `EnrichedClosure.lean` | 158 | Fisher-Ladner enriched closure with G/H negation formulas | `enrichedGNegBigconj`, `enrichedHNegBigconj`, `enrichedClosure` |
-| `Construction.lean` | 885 | BX axiom lemmas at MCS level with defect-discharge | `hintikka_step`, `UntilDefect`, `defect_count`, `QuasimodelChain` |
-| `Realization.lean` | 576 | Realization lifting from Hintikka chains to BXPoint chains | `until_forward_seed`, `since_backward_seed`, `until_eventuality_resolution`, `since_eventuality_resolution` |
-| `LocusControl.lean` | 47 | Delegation layer (primed variants) | `bx_until_eventuality_resolution'`, `bx_since_eventuality_resolution'` |
-
-### Filtration/ (Sigma-restricted ordering)
-
-| File | Lines | Purpose | Key Definitions |
-|------|-------|---------|-----------------|
-| `SigmaOrdering.lean` | 167 | Sigma-restricted ordering on BXPoints | `sigma_le`, `sigma_strict`, `sigma_equiv`, `bx_le_implies_sigma_le` |
-| `DefectChain.lean` | 137 | Defect-discharge chain via well-founded recursion | `sigma_defect_count`, `until_defect`, `defect_step_phi` |
-
-### CanonicalChain.lean (top-level bridge)
-
-| File | Lines | Purpose | Key Definitions |
-|------|-------|---------|-----------------|
-| `CanonicalChain.lean` | 160 | MCS-level BX axiom lemmas and delegation bridges | `psi_imp_until_mcs`, `psi_imp_since_mcs`, `F_imp_top_until_mcs` |
+/orchestrate 563                    # the library skeleton the rest instantiate
+/orchestrate 564,565,567,616,617    # the clause wave
+/orchestrate 566,618                # the two limits
+```
+**Scopes were declared on all eight on 2026-10-02**, one module each under
+`FormalSystem/Semantics/Presheaf/`, so the admission gate can now serialize them. One hazard
+remains and the clause wave above must respect it: every task adding a module to the cluster also
+needs a one-line import in the aggregator `FormalSystem/Semantics/Presheaf.lean`, which task 563
+owns and which is deliberately **not** in the other seven scopes — putting it there would defer
+the whole front every cycle. That line is therefore a shared touch the gate cannot see, so
+**run this front in batches of at most two, or singly** — never as one wide wave — and re-run
+`lake build` after each aggregator edit. The constraint is recorded in all seven task
+descriptions.
 
 ---
 
-## Burgess-Xu Until-Induction Technique
+## Phase 4: Examples, Dataset Pipeline and Final Docs (Medium Priority)
 
-### Historical Context
+**Status**: Live and independent of every other phase.
 
-The BX system is named after John P. Burgess and Ming Xu. Active references (cited in the
-`Axioms.lean:46-49` comment block):
+- [ ] Expand `Examples/` with the publication-quality worked pipeline: soundness and completeness
+      on a concrete formula, plus decidability of the propositional fragment — the fragment that
+      is genuinely decidable today (Task 178)
+- [ ] Fix the c7 labeling bug at formula ~13750 that causes unbounded memory growth in the
+      decision procedure's timeout handling, then regenerate the c7 dataset (Task 298)
+- [ ] Re-add the six derived binary temporal operators to the enumerator so they survive
+      deduplication (Task 296)
+- [ ] Flip complexity-9 generation from stratified to exhaustive by default (Task 282)
+- [ ] Add zstd-compressed `.jsonl` support across the pipeline (c7 is already 17G → 153M on disk
+      as `.jsonl.zst`) (Task 604)
+- [ ] Build the regeneration automation so every dataset rebuild updates its downstream artifacts
+      and documentation fields (Task 231)
+- [ ] Calibrate baseline difficulty by running bmlogic-bench through at least three LLMs
+      (Task 219)
+- [ ] Final README, `docs/` and module-docstring polish, gated on 26 dependencies including the
+      whole tableau spine (Task 177)
 
-- **Burgess, J. P. (1982)**. "Axioms for tense logic. I. 'Since' and 'until'."
-  *Notre Dame Journal of Formal Logic* 23(4), 367-374.
-- **Xu, M. (1988)**. "On some U, S-tense logics." *Journal of Philosophical Logic* 17, 181-202.
-  Simplifies Burgess's axiomatization.
-- **Venema, Y. (1993)**. Temporal logic survey (cited in `Axioms.lean:48`).
-
-See also the Stanford Encyclopedia of Philosophy:
-[Burgess-Xu Axiomatic System for Since and Until](https://seop.illc.uva.nl/entries/logic-temporal/burgess-xu.html),
-[Temporal Logic](https://plato.stanford.edu/entries/logic-temporal/).
-
-### Key Result
-
-Burgess (1982), simplified by Xu (1988), gives a complete axiomatization of the Since-Until tense
-logic over **all linear orderings**. The BX axioms in `Axioms.lean` are modeled on this
-axiomatization, adapted for irreflexive semantics.
-
-### Axiom Roles in the Until-Induction Proof
-
-The proof of the Until case of the truth lemma proceeds by induction on the Until-structure of
-formulas, using: **BX10** (extracts an F-witness), **BX7**/**BX11** (linearity of Until/F
-witnesses, giving comparability), **BX5** (guard-propagation — the eventuality enriches its own
-guard at every intermediate point), **BX6** (prevents nested self-accumulation deferrals), **BX4**
-(propagates `¬(φUψ)` forward in the backward direction), **BX1** (seriality — consistency of
-`g_content` contradicts `G(bot)` via `F(T)`). BX9 (`until_elim`) was removed (task 113) — not
-sound under open-guard semantics.
-
-### Resolution: Option A (Quasimodel with Defect-Discharge)
-
-Task 90 (research) identified two strategies: **Option A** (quasimodel with defect-discharge,
-chosen and implemented via tasks 92/98/102 — 2,289 lines of sorry-free infrastructure) vs.
-**Option B** (Henkin witness closure, not taken).
+**Blocked by**: Task 298 (→ 231, 282, 296); Task 231 (→ 219); 26 tasks (→ 177)
+**Topics**: formula-refactor, dataset-enhancement
+**Run**:
+```
+/orchestrate 178,604        # neither touches the dataset files
+/orchestrate 298            # alone: owns DatasetGenerator.lean + data/bmlogic-c7.jsonl
+/orchestrate 282,296        # after 298; disjoint scopes
+/orchestrate 231            # then the automation, then 219 behind it
+/orchestrate 219
+```
+Task 177 runs last in the programme, not here; it is listed in this phase because it owns the
+documentation territory. Before treating 298 as blocked, re-check the line and metadata counts —
+a long c7 regeneration was observed running and may have completed.
 
 ---
 
-## Representation Theorem Goal
+## Phase 5: Metalogic Questions and Literature (Medium Priority)
 
-> "TM is complete with respect to TaskFrames over totally ordered abelian groups."
+**Status**: Live — 543 and 559 are unblocked; 570 waits on 568 (completed), so it is runnable.
 
-The representation theorem is **general**: for any countable linear order `D` arising from a
-chronicle construction, produce a TaskFrame model on an `AddCommGroup D'` that agrees on truth
-values, supporting `D' = ℚ` (base/dense) and `D' = ℤ` (discrete).
+- [ ] Machine-check the principal MF frame-correspondence rigidity results researched in the
+      PossibleWorlds paper repository (six external reports; read them first) (Task 543)
+- [ ] Run further verdict-first rounds on the nondeterministic canonical model for TM⋆
+      completeness — reports and probes only, no changes to `FormalSystem/` (Task 559)
+- [ ] Settle the C3 question: is the domain-restricted consequence relation's logic Burgess–Xu
+      without unboundedness, plus S5? An open research question, not an implementation task
+      (Task 570)
+- [ ] Acquire and ingest the Cmiel–Kuhlmann–Kuhlmann ball-space paper; the corpus has no copy
+      (Task 664)
 
-### Architecture: Natural Inclusion Replaces Cantor Isomorphism
-
-The chronicle construction (Burgess 1982) produces a limit domain `X ⊂ ℚ`. The natural inclusion
-`X ⊂ ℚ` (injection, requires nothing) replaces the Cantor order-isomorphism (bijection, requires
-density) that was the historical source of the density-case sorry — for the retired construction
-this replaced, see the pre-split document at `14e96488d^:specs/ROADMAP.md` (section
-`## Representation Theorem Goal`). `AddCommGroup D` remains
-structurally load-bearing: only MF/TF (2 of 40+ axioms) need group structure for soundness; all
-other axioms are purely order-theoretic.
-
-### Design Constraints
-
-- The logic is NOT weakened: all axioms (including MF/TF) remain sound.
-- `TaskFrame`, `WorldHistory`, `TruthAt`, `valid` — one semantics, one truth definition, one
-  validity notion, no parallel layers.
-- **Only the algebraic/canonical model approach is pursued for completeness** — the
-  representation theorem tells us what TM *is* (a structural correspondence between
-  proof-theoretic and semantic notions), which a decidability-based route could never supply, even
-  as a bare `valid(φ) → provable(φ)` fact.
+**Blocked by**: none
+**Topics**: metalogic, literature
+**Run**:
+```
+/orchestrate 664                      # acquire and ingest first; 543 and 559 use --lit
+/orchestrate 543 --hard
+/orchestrate 559 --research --lit     # verdict-first; stops after research
+/orchestrate 570 --research           # research-only by its own classification
+```
+Task 543's declared `file_scope` includes `README.md` and `FormalSystem.lean`, which collide with
+task 177's; run them in different cycles.
 
 ---
 
-## Paper Alignment Programme (possible_worlds.tex)
+## Phase 6: The TM Tableau Spine (Low Priority)
 
-The JPL paper (`PossibleWorlds/JPL/possible_worlds.tex`) is the single source of truth for the
-basic semantic definitions; the Lean tree, `latex/` prose, and the `typst/` book are all
-downstream. Cite the paper by `\label` and quote verbatim — never by bare line number.
+**Status**: Partly blocked. Nine waves from 464 to 482, the longest chain in the programme, and
+three of its links are open mathematics. Deprioritized relative to Phases 1 and 2.
 
-**`def:frame` carries FOUR axioms**: *Compositionality* (biconditional, asserting interpolation),
-*Seriality*, *Limit* (formerly "Limit Nullity"), and *Spherical* (condition Sd1 from the
-ball-space literature). *Nullity* and *Occurrence* are derived lemmas. Logical consequence
-quantifies over **total** world histories (`X = D`), not merely maximal ones.
+Two facts bound this front and must not be re-attempted: the unconditional `buildTableau_isSome`
+is FALSE by construction at the engine's `maxBranches := 50000` guard, at any fuel; and the whole
+decidable-branch-gate family (`boxAnchoredCheck`, `boxGridCheck`, `regionGate`,
+`regionLabelCheck`, `rayUpOk`/`rayDnOk`) collapses to `false` on any branch that mints a world.
+Task 429 is a redesign, not a repair. The full tombstone list is the C9 register inside
+`FormalSystem/Metalogic/Decidability/Verified/Termination/MintBound.lean`.
 
-**Cluster status, corrected 2026-08-25** — the prior record here listed six tasks as
-not-started/blocked with no stale banner; all six have in fact landed:
+- [ ] Design and land `gapPotential`, the density coordinate of the termination measure — the one
+      genuinely open mathematical question on the totality terminus (Task 464)
+- [ ] Repair or replace the `UnorderedSuccessorLabelClosed` residual, the fifth termination
+      residual, refuted in-tree at a nonempty universe; a C9 register entry is a complete,
+      valid outcome (Task 481)
+- [ ] Complete the terminus restatement family at the repaired residuals: the fourteen
+      restatements task 433 recorded as a reasoned exclusion (Task 465)
+- [ ] Prove engine totality at a quantified branch budget, via the amortized mint-bound route
+      (Task 428)
+- [ ] Redesign the truth-lemma side conditions — propagate `T(□φ)` to the freshly minted world,
+      with its own `RuleSound` obligation (Task 429)
+- [ ] Internalize tableau branches and prove the routine rule admissibilities (Task 410)
+- [ ] Prove the hard admissibility lemmas for the Until/Since trichotomy and the
+      discrete/Dedekind rules (Task 411)
+- [ ] The semantic lift: `valid_iff_allClosed`, and with it the `isValid φ fc = true ↔ ⊨ φ`
+      biconditional and the four `Decidable (⊨ φ)` instances. Only the sound direction has landed
+      (`isValid_sound`); no `isValid`-shaped `iff` is written until it can be proved (Task 430)
+- [ ] Prove the refutation core and decidability of provability with its completeness corollaries
+      (Task 412)
+- [ ] Discharge proof-extraction completeness, eliminating `.extractionFailed` on a genuinely
+      closed tableau. `Verified/Refutation/` does not exist and `verifyProof` is the constant stub
+      `fun _ _ => true`. OPEN MATHEMATICS, multi-month; must not be re-described as engineering
+      (Task 482)
 
-| Task | Prior claim | Actual status (archive, 2026-08-25) |
+**Blocked by**: Task 464 (→ 465) → 428 → 429 → 410 → 411 → 430 → 412 → 482
+**Topics**: decidability
+**Run**:
+```
+/orchestrate 464 --hard --lit   # the open measure question; research-heavy
+/orchestrate 481 --hard         # parallel entry, recommended before or alongside 465
+/orchestrate 465                # then strictly in chain order, one per cycle:
+/orchestrate 428 --hard
+/orchestrate 429 --hard
+/orchestrate 410
+/orchestrate 411
+/orchestrate 430 --hard
+/orchestrate 412
+/orchestrate 482 --hard --lit
+```
+464 and 481 both fall under `MintBound/`, so they are not batched; 465 (owning `MintBound.lean`)
+and 481 (owning `MintBound/ClosureResidual.lean`) are disjoint and may run together. Tasks 410,
+411, 412 declare no `file_scope`. Task 481 is `[BLOCKED]` with no recorded reason; its own
+description classifies it as runnable repair-or-replace, so lift the block or force the dispatch.
+
+---
+
+## Phase 7: Algebraic Representation (Low Priority)
+
+**Status**: Waits on its own research gate. Five waves to the capstone.
+
+- [ ] Ground the front in Goldblatt and BRV **before** the STSA axiom set is fixed; this gates
+      everything below it transitively (Task 502)
+- [ ] Bring the Shift-closed Tense S5 Algebra class into live code and close the G-operator gap;
+      the seed is 361 lines behind `#exit` in `Boneyard/UltrafilterFrame/TenseS5Algebra.lean`
+      (Task 497)
+- [ ] Reconcile the ShiftSet representation (landed for the compactness route) with the STSA
+      route, so two parallel representation theorems are not developed and then reconciled
+      (Task 500)
+- [ ] Build the complex algebra `Cm(F)`: the powerset STSA over a `TaskFrame` (Task 498)
+- [ ] Build the ultrafilter frame `Uf(A)` and prove it is a `TaskFrame`; HARD. The seed is 1189
+      lines behind `#exit` with 4 sorry hits (Task 499)
+- [ ] Prove the Jónsson–Tarski representation theorem: `η(a) = {U | a ∈ U}` is an injective STSA
+      homomorphism `A → Cm(Uf(A))` — the capstone (Task 125)
+- [ ] Extend STSA with the binary Until and Since operators, which the live object language has
+      as primitives (Task 501)
+
+**Blocked by**: Task 502 (→ 497) → {498, 499, 500} → 125 → 501
+**Topics**: algebraic-representation
+**Run**:
+```
+/orchestrate 502 --research --lit   # the literature gate; nothing below it starts first
+/orchestrate 497
+/orchestrate 498,499,500 --hard     # all three declare no file_scope
+/orchestrate 125 --hard
+/orchestrate 501
+```
+Every task on this front declares an empty `file_scope`; scope them before running the
+three-task wave concurrently.
+
+---
+
+## Recommended Execution Order
+
+1. `/orchestrate 563, 718` — the presheaf substrate and the gluing-route round, in parallel;
+   their scopes are disjoint (Phase 1 — **the priority front**)
+2. `/orchestrate 719` once 718's verdict and 564's seam gluing have landed — the ray layer, the
+   `⌢_z` operator and the stab-fibre characterisation (Phase 1)
+3. `/orchestrate 716`, then `710 → 706 → 705`, with `714 --research` beside them (Phase 2 — live)
+4. `/orchestrate 563`, then the clause wave `564,565,567,616,617`, then `566,618` (Phase 3 — live)
+5. `/orchestrate 709 --hard` once 710 lands — the one real theorem on the live front
+6. `/orchestrate 178,604` and the dataset chain `298 → 282,296 → 231 → 219` (Phase 4 — independent)
+7. `/orchestrate 664`, then `543 --hard`, `559 --research --lit`, `570 --research` (Phase 5)
+8. `/orchestrate 464 --hard --lit` and `481 --hard`, then the spine in chain order (Phase 6)
+9. `/orchestrate 502 --research --lit`, then the algebraic waves (Phase 7)
+10. `/orchestrate 177` last, once its 26 dependencies have landed
+
+Three points are reviewed before later work commits to them: task 709's F4 route (its declined
+alternative is to restrict the fragment instead); task 464's `gapPotential` design, which the
+whole spine's termination argument rests on; and task 502's literature verdict, which fixes the
+STSA axiom set.
+
+`--hard` suits 709, 464, 428, 429, 430, 482, 499, 125 and 543. `--lit` suits 464, 482, 502, 559
+and 709 — the sub-index at `specs/literature-index.json` already carries the
+Hodkinson–Wolter–Zakharyaschev, bundled-trees and CTL⋆ sources the L⁺ front depends on.
+
+---
+
+## Open Risks
+
+| Risk | Status | Owning task |
 |---|---|---|
-| 420 (four-axiom `TaskFrame`) | blocked | **completed** |
-| 414 (total-history semantics refactor) | not started | **completed** |
-| 415 (completeness over total-history semantics) | not started | **completed** |
-| 417 (semantic FMP over refactored `TruthAt`) | not started | **completed** |
-| 419 (CO/Reynolds independence, Q-flow conformance) | not started | **completed** |
-| 427 (sync the typst book from the paper) | not started | **expanded** (divided into subtasks) |
-
-Rebased onto the landed 414 semantics: 413 (TM conservativity bridge), 169/170/408/361/362
-(completeness programme — see Phase 1), 165/410/411/412 (tableau decidability — see Phase 2). 424
-(shift-set representation) also touches `TruthAt` and sits outside the `paper-refactor` topic —
-completed (see Phase 1).
-
-**Cluster status, 2026-09-09 — the language-family layer.** Eight tasks created and completed
-within a single day, aligning the Lean tree's language names with the paper's and then
-abstracting over the resulting family. None of it was open mathematics; all of it was
-already-scoped foundations.
-
-| Task | What it settled |
-|---|---|
-| **562** | The four languages renamed to the paper's `L⁻ / L / L⁺ / L⋆`. Prerequisite for the rest of the cluster. |
-| **571** | Schematic `DetPM` and Theorem C. |
-| **572** | Tense-free stability and schematic separation. |
-| **573** | `L⋆` proof theory and conservativity. |
-| **574** | The load-bearing soundness invariant recorded: `modal_future_valid` (`Metalogic/Soundness.lean`) is the **sole** consumer of time-shift homogeneity in the TM schema block. |
-| **575** | State-locality lifted to `L⁺`; the atom-restricted stability lemma retired. |
-| **576** | `StarAxiom.ofBase` split, and the `ofPlus`-restricted bridge results eliminated from `L⋆`. |
-| **577** | The validity layer and truth clauses abstracted over `class PointTruth` / `class TruthEnv`: two new leaf modules under `FormalSystem/Semantics/`, 12 instances, **77 proof bodies delegated, 0 statements changed** (verified by a declaration-header diff against the pre-refactor commit — 0 changed, 0 lost, all 242 names resolve). A toy fifth language in `Tests/` exercises the extension contract end to end. Four declarations *lost* an axiom (`Quot.sound`); none gained one. |
-
-**Two follow-ups 577 identified and no task owns**: (a) the consequence layer and
-`Metalogic/Deterministic/Validity.lean` adapters, left outside 577's declared territory; (b)
-`CTruth.*` in `CoarsenedModels.lean` — a **fifth clause-family duplicate the research survey never
-listed**. Both are now cheap, because 577 built the class layer they would instantiate.
-
-**Check grounding**: `specs/archive/state.json` `completed_projects`/`archived_projects`,
-cross-checked by `jq` at realignment time (2026-08-25); the 2026-09-09 rows from
-`specs/state.json` and the task commits on `main`.
+| **No certificate class with finite per-time fibres is complete for L⁺, nor for the CTL-like fragment. A successor class must present infinite fibres (root paths of a finite class graph), for which there is no checker precedent** | MACHINE-CHECKED (under task probes, not in `FormalSystem/`) | Task 710 (land it), Task 709 (the sufficiency half) |
+| **`liveAt` does not return on a 4-position total-edge certificate — a defect in landed, gated code** | REPRODUCER IN HAND | Task 716 |
+| **Zero sorries does not mean zero open mathematics.** `verifyProof` is `fun _ _ => true`; `Verified/Refutation/` does not exist; no `isValid φ fc = true ↔ ⊨ φ` biconditional exists, proven or otherwise. None carries a sorry because none is a stated theorem | CONFIRMED | Tasks 482, 430 |
+| **Decidability of full L⁺: the gluing route is now the programme's priority, superseding "no route in sight".** Worlds as all ways of gluing a backward ray to a forward ray at a seam; `⊡`'s clause already quantifies over exactly those re-gluings, and `mem_HF_iff_adjacent` already proves `H_F` is the bi-infinite step-paths. The open question is whether the `BiLasso` `back`/`mid`/`fwd` presentation can range over *path sets* rather than single lists while keeping the `⊡` check decidable | **PRIORITY FRONT — research, design and implement** (author directive 2026-10-02) | Tasks 718, 719 (see Phase 1) |
+| **ω-automata determinization is still absent from this tree and from Mathlib.** It is no longer the blocker for a refuted statement, but it is the only known way to summarise "all root paths" finitely, so the gluing route may require it after all | STATUS UNSETTLED — in scope for Task 718 | Task 711 (parked; see Phase 0) |
+| **Task-coherence-preserving filtration has never been tried.** `JPL/metalogic.tex` names filtration as the standard FMP technique and the obstacle as preserving Nullity and Compositionality under the quotient; it appears in no route this programme has tried or refuted | UNASSESSED | Task 718 |
+| **Strong completeness over ℚ-time is open.** Weak completeness is done (`derivable_of_validQTime`), but compactness goes through ultrapowers of ℚ, which are dense yet no longer ℚ-time; Cantor gives an order isomorphism, not a group one. Unlike Discrete and Dedekind, it is not known to be impossible | NOT SCOPED AS A TASK | — |
+| **Genuine `Set Formula` strong completeness (Base/Dense) is unscoped.** Its gate (the shift-set representation theorem) has been passed, but the ultraproduct work behind it has no task | NOT SCOPED AS A TASK | — |
+| **L⁺ Z-time validity is 2EXPTIME-hard by a reduction that is argued, not formalized.** It is the external ceiling on every compensation the programme can offer for incompleteness | ARGUED | Task 713 (parked; see Phase 0) |
+| **Task 177 carries 26 dependencies**, including the entire tableau spine, so the final documentation state cannot be reached before Phase 5 lands | BY CONSTRUCTION | Task 177 |
 
 ---
 
-## Recommended Priority Order
+## Success Metrics
 
-**Superseded for near-term scheduling** by `## Near-Term Work Plan: Foundations and Small
-Results` above (author directive, 2026-09-08), which defers this entire ordering's #1 and #3
-until the open-mathematics/decidability restriction is lifted. This section remains the durable
-record of the full-programme plan.
+- [ ] Every open task reaches `[COMPLETED]` in `specs/state.json`, or is closed at a stated and
+      reasoned exclusion
+- [ ] The tree stays at zero structural sorries and no new axioms, verified by
+      `scripts/check-module-invariants.sh` check C3; every status claim in this file names the
+      check that grounds it
+- [ ] Every refutation the programme has produced lives in `FormalSystem/` as a cited theorem,
+      not only under a task's `probes/` (Tasks 706, 710)
+- [ ] `liveAt` returns on every certificate shape in `scripts/certificate-witness-inventory.txt`,
+      Tier 2 included (Task 716)
+- [ ] Finite width ⇒ eventually periodic is machine-checked, giving the exact characterisation of
+      what the sliced class certifies (Task 709)
+- [ ] Every clause of `app:presheaf-dictionary` has a sorry-free Lean counterpart (Tasks 563–567,
+      616–618)
+- [ ] `isValid φ fc = true ↔ ⊨ φ` is proved, with `Decidable (⊨ φ)` for all four frame classes,
+      and no `.extractionFailed` outcome survives on a closed tableau (Tasks 430, 412, 482)
+- [ ] The Jónsson–Tarski representation theorem is proved for TM with Until and Since
+      (Tasks 125, 501)
+- [ ] `Examples/` demonstrates the verified pipeline end to end on a concrete formula, and
+      `README.md`, `docs/` and the module docstrings match the tree (Tasks 178, 177)
 
-1. **Decidability/tableau spine** (Phase 2): 462 → 463 → 464 → 465 → 428 → 429 → 410 → 411 → 430
-   → 412 → 482, plus parallel entries 480 (startable now) and 481 (before/alongside 462).
-2. **Consequence-completeness capstone** (task 362, Phase 1) — **DONE**, completed after this
-   ordering was written; the remaining Leg B/C/D scope (ultraproduct route, non-compactness
-   record, LaTeX alignment) is unscoped as tasks, see Phase 1 above.
-3. **Semantic FMP** (task 476, Phase 4) and **proof-extraction completeness** (task 482, Phase 2)
-   — both open mathematics, multi-month, run in parallel with the spine rather than gating it.
-4. **Publication/documentation** (Phase 5) — gated on the decidability chain landing (177) or
-   independently schedulable (178's propositional-fragment rescope, the monograph tasks).
-5. **Dataset/training infrastructure** (Phase 6) — independent front, carried-forward priorities
-   per the 2026-08-24 review.
-6. **Repository hygiene** (Phase 7) — `state.json` counter repair when a schema decision is made;
-   otherwise complete.
+---
+
+## Maintenance
+
+This file is read by `/review` (Step 2.5, `.claude/scripts/roadmap-integration.sh`), which
+cross-references each `(Task N)` reference against `specs/state.json` and annotates
+`- [x] ... *(Completed: Task N, DATE)*` once a referenced task reaches `completed`. `/todo`
+surfaces the same completions when archiving. Annotated items are dropped when their phase is
+next revised; the durable record is `specs/CHANGE_LOG.md`. Update the phase list when
+`/task --expand`, `/spawn` or a dependency change alters the graph — the waves in
+`specs/TODO.md` are the source, and a claim this file makes that no check can reproduce is a
+defect in the file, not a fact about the tree.
+
+## Related
+
+- `.claude/context/formats/roadmap-format.md` — this file's parseable structure
+- `.claude/context/patterns/roadmap-update.md` — annotation and update process
+- `.claude/context/patterns/batch-orchestration-guardrails.md` — why the Run blocks above are
+  split into sequences
+- `specs/TODO.md` — Task Order and dependency waves (the source of the phases above)
+- `README.md` — the BX axiom layers, the irreflexive semantics and the architecture
+- `specs/CHANGE_LOG.md`, `specs/archive/` — completed work
