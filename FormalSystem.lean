@@ -574,6 +574,7 @@ import FormalSystem.Semantics.PartialHistoryOrder
 import FormalSystem.Semantics.Periodicity
 import FormalSystem.Semantics.Presheaf
 import FormalSystem.Semantics.Presheaf.Behavior
+import FormalSystem.Semantics.Presheaf.Ray
 import FormalSystem.Semantics.Presheaf.Sheaf
 import FormalSystem.Semantics.Presheaf.Site
 import FormalSystem.Semantics.ShiftSet

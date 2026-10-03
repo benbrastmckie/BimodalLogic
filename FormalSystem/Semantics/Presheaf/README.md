@@ -7,7 +7,7 @@ The objects of `Int(D)` are the durations — the positive cone of a temporal or
 morphisms `l' → l` are the **translations** `Tr p`, one for each offset `p` with `p + l' ≤ l`.
 `Beh(F)(l)` is the set of partial histories whose domain is exactly `[0, l]`, and restriction
 along `Tr p` is `τ ↦ (z ↦ τ(p + z))`. The cluster is built on `Semantics/PartialHistory.lean`
-alone and sits strictly **below** `Semantics/Truth.lean`: all three modules close with
+alone and sits strictly **below** `Semantics/Truth.lean`: all four modules close with
 `assert_not_exists` on the proof system, so the layering is locked rather than merely observed.
 
 Two clauses of the presheaf dictionary are discharged here. *Germs* identifies the sections over
@@ -19,12 +19,23 @@ choice-free in two measured senses — they use *Compositionality* alone, taken 
 hypothesis rather than a frame bundle, and `#print axioms` reports no `Classical.choice` on any
 declaration in the cluster.
 
+`Presheaf/Ray.lean` adds the **ray layer**, the half-line counterpart of the bounded sections. A
+section `Beh F l` has domain exactly `[0, l]`; a possible world does not, and what a seam-local
+construction quantifies over is the pair of rays at a seam time — `(-∞, t]` backward and
+`[t, ∞)` forward. Those are `PastRay F t` and `FutRay F t`, presented as dependent functions on
+the time subtypes so that ray equality is `funext`, with `toPH` reading the same ray as a
+`PartialHistory` on a half-line domain and `FutRay.toBeh` cutting a bounded section out of a
+forward ray. No new structure is introduced for either: `PartialHistory`'s `domain` field is an
+arbitrary predicate, so a half-line is already expressible. The colimit-of-bounded-sections
+presentation of a ray is deliberately not taken, because it is the route that incurs *Saturation*.
+
 ## Modules
 
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Semantics/Presheaf -->
 | File | Lines | Description |
 |------|------:|-------------|
 | `Behavior.lean` | 296 | The behavior presheaf `Beh F`: the sections over a duration, the restriction action at raw data and at a site morphism, presheaf functoriality, and the *Germs* clause `Beh F 0 ≃ F.WorldState` |
+| `Ray.lean` | 159 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections, the restrictions of a possible world to its two rays, and the bridges to `PartialHistory` and to `Beh F l` |
 | `Sheaf.lean` | 434 | <!-- TODO: add description --> |
 | `Site.lean` | 191 | The interval site `Int(D)`: the translations `Tr p`, the three category laws, and the Johnstone coverage |
 <!-- END GENERATED -->
@@ -43,6 +54,16 @@ declaration in the cluster.
   the bijection between them
 - `glue` — the glued section: `τ₁` over `p` and `τ₂` over `l - p`, agreeing at the seam, read as
   one section over `l`
+- `PastRay F t`, `FutRay F t` — the ray layer: the half-line sections at a seam time `t`, as
+  dependent functions on the time subtypes `{x // x ≤ t}` and `{x // t ≤ x}` carrying the
+  unconditional all-pairs task constraint
+- `PastRay.seam`, `FutRay.seam` — a ray's state at the seam: the right endpoint of a past ray, the
+  left endpoint of a future ray
+- `pastOf`, `futOf` — the two restrictions of a possible world to its rays at a time
+- `PastRay.toPH`, `FutRay.toPH` — the same rays read as `PartialHistory F` on a half-line domain,
+  the form that reaches the shared `PartialHistory` API
+- `FutRay.toBeh` — the ray-layer-to-`Beh` restriction: a forward ray at `0` cut down to the
+  bounded section over `l`
 
 ## Key Results
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #719 — the ray layer, the seam-gluing operator and the stab fibre
 
 - **Task**: 719 - ray_layer_seam_gluing_and_stab_fibre
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: None remaining — 563 `[COMPLETED]`, **564 `[COMPLETED]`** (the dispatch's "still upstream and NOT STARTED" is stale; see Research Integration point 1), 718 `[COMPLETED]`
 - **Research Inputs**: `specs/719_ray_layer_seam_gluing_and_stab_fibre/reports/01_ray-layer-seam-gluing-stab-fibre.md`
@@ -217,7 +217,7 @@ the acceptance core.
 
 ---
 
-### Phase 1: The ray layer [NOT STARTED]
+### Phase 1: The ray layer [COMPLETED]
 
 **Goal**: `FormalSystem/Semantics/Presheaf/Ray.lean` exists, builds green and sorry-free, and
 carries Deliverable 1 in full: the two ray types with their task-respect constraints, the seam
@@ -225,44 +225,44 @@ projections, the possible-world restrictions `pastOf`/`futOf`, and the two bridg
 ray layer to `PartialHistory` and to `Beh F l`.
 
 **Tasks**:
-- [ ] Measure and record the pre-edit gate baseline **before any edit**:
+- [x] Measure and record the pre-edit gate baseline **before any edit**:
       `bash scripts/check-module-invariants.sh --no-build` (expect exit 1, exactly one C15 row),
       `bash scripts/check-paper-definitions.sh` (expect exit 1 on the `def:BX` drift), and
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem`
-- [ ] Create `FormalSystem/Semantics/Presheaf/Ray.lean` with the cluster's copyright header,
+- [x] Create `FormalSystem/Semantics/Presheaf/Ray.lean` with the cluster's copyright header,
       `import FormalSystem.Init` and `import FormalSystem.Semantics.Presheaf.Behavior` (which
       already supplies `WorldHistory`, defined in `Semantics/PartialHistory.lean`, and
       `partialHistory_ext`), inside `namespace FormalSystem.Semantics.Presheaf`
-- [ ] Transcribe `PastRay` and `FutRay` **verbatim** from
+- [x] Transcribe `PastRay` and `FutRay` **verbatim** from
       `specs/evidence/seam-gluing-ray-product/stab-fibre-is-ray-product.lean` lines 48–55: the
       subtype-of-dependent-function presentation on `{x : F.Duration // x ≤ t}` and
       `{x // t ≤ x}` carrying the all-pairs task constraint. The subtype domain is load-bearing —
       it is what makes ray equality funext, which `seamFibreEquiv`'s `right_inv` depends on — so
       **do not** retype these as `PartialHistory` subtypes and do not introduce any new type
-- [ ] Transcribe `PastRay.seam` and `FutRay.seam` (lines 58–62) and `pastOf`/`futOf` (lines
+- [x] Transcribe `PastRay.seam` and `FutRay.seam` (lines 58–62) and `pastOf`/`futOf` (lines
       129–137), the restriction maps from a possible world to its two rays
-- [ ] Add `PastRay.toPH` and `FutRay.toPH`, the half-line `PartialHistory` wrappers (report
+- [x] Add `PastRay.toPH` and `FutRay.toPH`, the half-line `PartialHistory` wrappers (report
       Finding 8, compiled). These are what makes Phase 2's delegation to
       `PartialHistory.rel_across_seam` possible, and they are why **both** ray presentations are
       needed: the dependent-function form gives funext equality, the `PartialHistory` form gives
       access to the landed shared API
-- [ ] Add `FutRay.toBeh (f : FutRay F 0) (l) (hl : 0 ≤ l) : Beh F l`, the ray-layer-to-`Beh F l`
+- [x] Add `FutRay.toBeh (f : FutRay F 0) (l) (hl : 0 ≤ l) : Beh F l`, the ray-layer-to-`Beh F l`
       restriction Deliverable 1 names (report Finding 9, compiled, `[propext]`). `Beh F l` is
       `{τ : PartialHistory F // ∀ t, τ.domain t ↔ (0 ≤ t ∧ t ≤ l)}`, so the domain is written as
       the literal predicate with `property := fun _ => Iff.rfl` — never as a domain *equality*
-- [ ] Write the module `/-! … -/` block: what a ray is, why the subtype domain rather than a new
+- [x] Write the module `/-! … -/` block: what a ray is, why the subtype domain rather than a new
       type, why both presentations exist, and that the colimit-of-bounded-sections route is out of
       scope with *Saturation* as the reason. Cite `app:gluing` as a **pointer only** and never
       quote its text; cite declaration **names**, never `file.lean:NNN` (C20); no task numbers (C9)
-- [ ] Close the file with
+- [x] Close the file with
       `assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree`,
       matching the cluster's other three modules
-- [ ] Add one `import FormalSystem.Semantics.Presheaf.Ray` line and one `## Modules` bullet to
+- [x] Add one `import FormalSystem.Semantics.Presheaf.Ray` line and one `## Modules` bullet to
       `FormalSystem/Semantics/Presheaf.lean` (Shared Touches protocol)
-- [ ] Regenerate: `lake exe mk_all --lib FormalSystem`,
+- [x] Regenerate: `lake exe mk_all --lib FormalSystem`,
       `bash scripts/check-module-invariants.sh --emit-inventory` then `--emit-inventory --check`,
       `bash scripts/typst-sync-check.sh --fix`
-- [ ] Add the new declarations to `FormalSystem/Semantics/Presheaf/README.md`'s hand-maintained
+- [x] Add the new declarations to `FormalSystem/Semantics/Presheaf/README.md`'s hand-maintained
       `## Key Definitions` list
 
 **Timing**: 1.5 hours
