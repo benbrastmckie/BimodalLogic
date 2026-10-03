@@ -120,6 +120,7 @@ FormalSystem.Metalogic.derivable_of_validZTime : Unknown identifier
 
 - Row 14: the report cited `derivable_of_validZTime` by path and line only; its namespace is `FormalSystem.Metalogic.BXCanonical`, so the H3 specification uses the full name. No claim in the report is contradicted.
 - No other anchor differs. Every status the report assigns (PROVED / NOT ESTABLISHED / WITHDRAWN / REFUTED) was re-derivable from rows 1-27 this round; the research report is not edited.
+- Phase 5 sweep finding: `verifyProof` -- named by the report (§1.2, "`verifyProof` is `fun _ _ => true` (`ProofExtraction.lean`)"), by task 482's description, and by the pre-edit ROADMAP -- does **not** exist anywhere in the tree (`grep -rn verifyProof FormalSystem/ docs/` empty; `ProofExtraction.lean` defines `proofFromAxiom`, `extractFromClosureReason`, `tryAxiomProof`, `buildCompositionalProof`, `enhancedSearch`, `extractProof`, `findProofCombined`, no verifier). `.extractionFailed` is a live `DecisionResult` outcome (`Correctness.lean`) and `Verified/Refutation/` does not exist, so the substance of the "no proof-extraction completeness" claim stands; only the declaration name is stale. The ROADMAP rows were corrected to checkable wording; 482's description is out of this task's scope and should re-verify its anchors at its next `/revise`.
 - Not re-verified this round and therefore cited below only via the report: `Verified.ruleSound_of_mem_allRulesForFC` (report Appendix A), the `Decidable (⊨ φ)`-prose hit list beyond row 27 (report Appendix B).
 
 ## Section A -- Task 712 (L⁺ sliced finite model property)
@@ -689,3 +690,24 @@ writes to those two files happen outside this task's commits and are not this ta
 created, revised, or abandoned; every Section above is a specification to be actioned afterwards
 via `/revise` and `/task`. No probe file, no `FormalSystem/` file, no `docs/` file, no script and
 no typst file was edited; every such fix is a Section H item.
+
+## Trace: ROADMAP changes to specification sections
+
+| Task named in a ROADMAP change | Specification anchor |
+|---|---|
+| 712 | Section A; Section 0.4 |
+| 711 | Section B; "The 711 tension"; Section 0 rows 10-11 |
+| 713 | Section C |
+| 709 | Section D; Ranking R3 |
+| 719 | Section E; Ranking R1 (E1-E3); H4 fold-in rule |
+| 706, 710, 720 | Section F; Section 0 rows 5-6, 22-24 |
+| 430, 412 | Section G; H3; Ranking L-R1/L-R2 |
+| 718 (completed annotations) | Section 0.4 (commit `58f8afb39`); Section 0 rows 7, 10-13 |
+| 563, 564 (Phase 3 edges) | Section 0.4; Section 0 row 19 |
+| 721 (Fronts row; Maintenance) | this file; H5 |
+| New Open Risks rows (surfaces understate L; `pinned:C14`) | H1; H2; Section 0 rows 25-27 |
+| Success Metric additions | Section F (Option A caveat); H2; Section G |
+
+Every specification section that changes a ROADMAP-visible fact (A-G, H1, H2, H5) is reflected
+in the ROADMAP's Fronts, Phase 0-3/6, Open Risks, Success Metrics or Maintenance text; H3 and H4
+are named in the ROADMAP only through Phase 1's E1 item and Phase 6's oracle sentence.

@@ -2,13 +2,33 @@
   "phase": 5,
   "phase_name": "Cross-File Consistency Check and Hard-Constraint Audit",
   "started_at": "2026-10-03T15:43:19Z",
-  "last_updated": "2026-10-03T15:43:19Z",
+  "last_updated": "2026-10-03T15:47:12Z",
   "objectives": [
-    {"id": 1, "description": "Trace table, declaration sweep, hypothesis sweep, negative-conclusion, complexity, soundness, state-write checks", "status": "in_progress", "files_touched": []},
-    {"id": 2, "description": "Write implementation summary", "status": "not_started", "files_touched": []},
-    {"id": 3, "description": "Commit summary and any sweep fixes", "status": "not_started", "files_touched": []}
+    {
+      "id": 1,
+      "description": "Trace table, declaration sweep, hypothesis sweep, negative-conclusion, complexity, soundness, state-write checks",
+      "status": "done",
+      "files_touched": [
+        "specs/ROADMAP.md",
+        "specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Write implementation summary",
+      "status": "done",
+      "files_touched": [
+        "specs/721_decidability_programme_review_l_and_lplus/summaries/01_decidability-programme-review-summary.md"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "Commit summary and any sweep fixes",
+      "status": "done",
+      "files_touched": []
+    }
   ],
-  "current_objective": 1,
+  "current_objective": 3,
   "approaches_tried": [],
   "deviations": [],
   "handoff_count": 0
