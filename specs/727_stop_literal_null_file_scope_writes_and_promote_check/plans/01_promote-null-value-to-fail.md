@@ -336,34 +336,47 @@ closed.
 
 ---
 
-### Phase 4: Deploy, run the full gate set, and commit [NOT STARTED]
+### Phase 4: Deploy, run the full gate set, and commit [COMPLETED]
 
 **Goal**: Land the source-store change in the deployed tree and confirm every acceptance criterion
 against the deployed copy, which is what every live caller executes.
 
 **Tasks**:
-- [ ] Announce the deploy before running it (siblings 710 and 564 are live on this tree) and run
+- [x] Announce the deploy before running it (siblings 710 and 564 are live on this tree) and run
       the **non-destructive** default mode: `bash .claude/scripts/deploy-headless.sh`. Never
       `--wipe`.
-- [ ] `bash .claude/scripts/check-deploy-freshness.sh` — expect exit 0 (clean), confirming the
+      *(completed: announced via SendMessage to the team lead before running; deploy-headless.sh
+      ran in default mode, RESULT=landed_verify_clean)*
+- [x] `bash .claude/scripts/check-deploy-freshness.sh` — expect exit 0 (clean), confirming the
       deployed `validate-state.sh` and `test-validate-state.sh` now carry the change.
-- [ ] Diff-confirm the deploy actually propagated:
+      *(completed: exit 0)*
+- [x] Diff-confirm the deploy actually propagated:
       `diff /home/benjamin/.config/nvim/agent-system/extensions/core/scripts/validate-state.sh .claude/scripts/validate-state.sh`
       (and the same for the test script) — expect no differences in the edited regions.
-- [ ] `bash .claude/scripts/validate-state.sh specs/state.json` — expect exit 0, `Failed: 0`
+      *(completed: both diffs empty, byte-identical)*
+- [x] `bash .claude/scripts/validate-state.sh specs/state.json` — expect exit 0, `Failed: 0`
       (this is the dispatch's acceptance command).
-- [ ] `bash .claude/scripts/tests/test-validate-state.sh` — expect `0 failed`, pass count at or
+      *(completed: exit 0, Passed 8 / Warnings 17 / Failed 0)*
+- [x] `bash .claude/scripts/tests/test-validate-state.sh` — expect `0 failed`, pass count at or
       above the Phase 1 baseline + 2.
-- [ ] `bash .claude/scripts/validate-state.sh --strict specs/state.json` — expect exit 1 with the
+      *(completed: 38 passed, 0 failed -- baseline 35 + 3)*
+- [x] `bash .claude/scripts/validate-state.sh --strict specs/state.json` — expect exit 1 with the
       `(--strict: N warning(s) promoted...)` summary (the pre-existing `missing_key` WARNs), i.e.
       unchanged `--strict` behavior.
-- [ ] `bash .claude/scripts/verify-deploy.sh --deep` — expect no new failure versus the Phase 1
+      *(completed: exit 1, "(--strict: 17 warning(s) promoted to exit-blocking)" -- unchanged)*
+- [x] `bash .claude/scripts/verify-deploy.sh --deep` — expect no new failure versus the Phase 1
       baseline.
-- [ ] Commit with targeted staging only (`git add --` with an explicit file list; never `-A`, a
+      *(completed with a correction: `--deep` is not a recognized flag on this script -- it has
+      no such option, confirmed via `--help`. Ran the equivalent full/default invocation (no
+      `--skip-slow`) instead: PASS, 14 check(s), 0 failure(s). The one WARN present
+      (hard_contracts/routing_hard migration notice for the lean extension) is pre-existing and
+      unrelated to this change)*
+- [x] Commit with targeted staging only (`git add --` with an explicit file list; never `-A`, a
       directory pathspec, or `commit -am`), reviewing `git status --short` and
       `git diff --staged` first. Source-store files live outside this repository, so the in-repo
       commit covers `specs/**` only; note the out-of-repo source-store edit in the commit body and
       in the summary.
+      *(completed below via git-commit-scoped.sh)*
 
 **Timing**: 0.5 hours
 
