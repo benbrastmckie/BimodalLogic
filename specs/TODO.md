@@ -26,7 +26,7 @@ next_project_number: 729
 
 ### Agent System
 
-727 [NOT STARTED] — Stop archival and orchestration writes from emitting a...
+727 [RESEARCHING] — Stop archival and orchestration writes from emitting a...
 
 ### Algebraic Representation
 
@@ -41,7 +41,7 @@ next_project_number: 729
 
 ### Categorical Structure
 
-564 [NOT STARTED] — Prove app:gluing for two interval sections whose germs agree...
+564 [RESEARCHING] — Prove app:gluing for two interval sections whose germs agree...
   └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
   └─ 719 [NOT STARTED] — Implement the ray layer, the seam-gluing operator and the...
 565 [NOT STARTED] — Prove app:presheaf-dictionary's Totality and Directed Gluing...
@@ -106,7 +106,7 @@ next_project_number: 729
 ### Incompleteness
 
 705 [RESEARCHED] — STATUS NOTE (2026-10-02, supersedes the expected answer...
-710 [RESEARCHED] — IMPLEMENTATION SCOPE: THE LIBRARY LANDING OF THIS TASK'S...
+710 [PLANNED] — IMPLEMENTATION SCOPE: THE LIBRARY LANDING OF THIS TASK'S...
 
 ### Literature
 
@@ -158,7 +158,7 @@ ACCEPTANCE. Every surviving confirmed instance is repaired at its source or reco
 ---
 
 ### 727. Stop literal null file scope writes and promote check
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -677,11 +677,12 @@ ORIGINAL SCOPE (superseded 2026-10-03; retained for provenance only). BLOCKED AN
 ---
 
 ### 710. Sliced class incompleteness characterization
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: formal:logic
 - **Topic**: incompleteness
 - **Dependencies**: Task 703
 - **Research**: [710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md]
+- **Plan**: [710_sliced_class_incompleteness_characterization/plans/01_land-finite-width-refutation.md]
 
 **Description**: IMPLEMENTATION SCOPE: THE LIBRARY LANDING OF THIS TASK'S REFUTATION. The research round is complete and it SUCCEEDED: the time-sliced certificate class of task 703's amended Stage 2 IS incomplete for full L-plus, and the gap is exactly FINITE WIDTH. What remains is to land that refutation as `FormalSystem/` theorems. Report: `specs/710_sliced_class_incompleteness_characterization/reports/01_sliced-class-incompleteness.md`. Probe (compiled outside the build graph, namespace `Probe710`, currently a `WIRED_REPO` entry of `scripts/check-evidence-probes.sh`): `specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean`.
 
@@ -1045,7 +1046,7 @@ SEED RESEARCH AVAILABLE (added 2026-10-02; READ-ONLY context, not a change of sc
 ---
 
 ### 564. Sheaf clause gluing and starpasting generalization
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
