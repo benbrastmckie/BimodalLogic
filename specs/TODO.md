@@ -11,9 +11,9 @@ next_project_number: 729
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,564,565,567,570,604,616,617,664,705,706,710,711,713,714,716,722,723,724,725,726,727,728 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,566,618,712,719,720 | 298,464,502,564,565,616,706,710 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500,709 | 231,465,497,710,719 | algebraic-representation, dataset-enhancement, decidability |
+| 1 | 127,128,178,257,298,464,481,502,559,564,565,567,570,604,616,617,664,705,706,710,711,713,714,716,722,725,726,727,728 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,566,618,712,719,720,723 | 298,464,502,564,565,616,706,710 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,709,724 | 231,465,497,710,719,723 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -79,11 +79,11 @@ next_project_number: 729
 481 [BLOCKED] — CLASSIFICATION: genuinely open -- the predicate is refuted as...
 706 [RESEARCHED] — IMPLEMENTATION SCOPE: THE LIBRARY LANDING OF THIS TASK'S...
   └─ 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
+  └─ 723 [NOT STARTED] — Ground the pinned:C14 claim on the three witness-family...
+    └─ 724 [NOT STARTED] — Decidability of Z-time provability as a corollary of...
 713 [HOLD] — OPTIONAL, FILED NOT SCHEDULED -- AND LOAD-BEARING AS A CHECK....
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
-723 [NOT STARTED] — Ground the pinned:C14 claim on the three witness-family...
-724 [NOT STARTED] — Decidability of Z-time provability as a corollary of...
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
 726 [NOT STARTED] — Make the decidability-programme inventory re-runnable from...
 709 [NOT STARTED] — STANDING (2026-10-03, second re-scope; SUPERSEDES BOTH...
@@ -200,7 +200,7 @@ WHAT TO BUILD. Regenerate the PROVED / NOT ESTABLISHED / WITHDRAWN / REFUTED inv
 
 Diff the generated inventory against `specs/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md` section 1 as the baseline.
 
-A SECOND DEFECT CLASS WORTH CATCHING, if it is cheap. The same review round found roughly a dozen PHANTOM DECLARATION CITATIONS -- names cited in task descriptions and prose that do not exist anywhere in the tree (`verifyProof`, `allClosed_derivable`, `completeness_dedekind_of_engine`, `ValidDedekindDense`, `ValidFor`, among others), plus dead artifact paths pointing at files that moved to `specs/archive/`. A grep-based checker that extracts backticked fully-qualified names from a given set of files and reports which have zero definition sites in `FormalSystem/` would catch the whole class. Treat this as an OPTIONAL second deliverable: land it if it is genuinely cheap on top of the inventory work, and say so explicitly if it is not, rather than half-building it.
+THE PHANTOM-CITATION CHECKER IS NOT THIS TASK'S. An earlier draft of this record offered it as an optional second deliverable. It is NOT: the separately-filed phantom-declaration-citation sweep OWNS that checker, and building it here would duplicate it. This task's `pinned:`-cell cross-check (source 1 above) is a different check with a different target -- index rows versus invariants baselines, not backticked names versus definition sites -- and the two must not be merged. If the sweep has already landed its checker when this task runs, REUSE it rather than writing a second one.
 
 IMPLEMENTATION SHAPE -- CHOOSE AND SAY WHY. Either a standing script under `scripts/`, or a `/review` step in the agent system. If the latter, the edit belongs in the SOURCE STORE under `agent-system/extensions/**` (resolve via `.claude-extensions.json`'s `source_dir`), never in the deployed `.claude/` tree, which is regenerated and would silently discard the work.
 
@@ -246,7 +246,7 @@ ACCEPTANCE. One probe file deciding the backward stability operator on a time-as
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 723
 
 **Description**: Decidability of Z-time provability as a corollary of Compression.decidableValidZTime
 
@@ -277,7 +277,7 @@ ACCEPTANCE. `Decidable (Derivable FrameClass.ZTime [] phi)` exists, compiles, ca
 - **Status**: [NOT STARTED]
 - **Task Type**: general
 - **Topic**: decidability
-- **Dependencies**: None
+- **Dependencies**: Task 706
 
 **Description**: Ground the pinned:C14 claim on the three witness-family decidability rows of docs/theorem-index.md
 
