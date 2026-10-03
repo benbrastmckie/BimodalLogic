@@ -1,0 +1,18 @@
+{
+  "status": "planned",
+  "dispatch_seq": 2,
+  "phases_completed": 0,
+  "phases_total": 6,
+  "session_id": "sess_1791062863_12249e_719",
+  "agent_type": "planner-agent",
+  "task_number": 719,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/719_ray_layer_seam_gluing_and_stab_fibre/plans/01_ray-layer-seam-gluing-stab-fibre.md",
+      "summary": "Six-phase, four-wave implementation plan for the ray layer, the seam-gluing operator, the stab-fibre keystone promotion, the two recorded verdicts and the E1 backward-dual probe."
+    }
+  ],
+  "next_steps": "Run /implement 719 to execute the plan",
+  "notes": "Research found task 564 COMPLETED (dispatch text stale) and the dispatch's choice-freedom claim false as the probe stands; the plan applies the verified reflection_of_ne repair in Phase 2. A two-module split is forced because plusStab_iff_rays/plusStab_iff_omega mention PlusTruthAt. Two pre-existing gate failures (one C15 theorem-index row; check-paper-definitions.sh def:BX drift) are to be measured as baseline, not fixed. No user_decision."
+}

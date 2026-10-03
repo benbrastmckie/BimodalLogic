@@ -1,17 +1,29 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
+  "dispatch_seq": 2,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/719_ray_layer_seam_gluing_and_stab_fibre/reports/01_ray-layer-seam-gluing-stab-fibre.md",
-      "summary": "Research for the ray layer, seam-gluing operator and stab-fibre promotion: task 564 found COMPLETED (dispatch text stale), the keystone's Classical.choice leak localized to glue_rel and cleared by 564's reflection_of_ne (verified), the omega branch's leak traced to the upstream FrameOver.worldHistoryOfStepPath, a forced two-module split for the four acceptance-named declarations, a Presheaf.glue name collision, paper-fidelity verification of app:gluing and the commented frown_z passage, the C2/C34/C35 gate procedures with a measured baseline, and a five-phase sorry-free plan including E1 feasibility."
+      "type": "plan",
+      "path": "specs/719_ray_layer_seam_gluing_and_stab_fibre/plans/01_ray-layer-seam-gluing-stab-fibre.md",
+      "summary": "Six-phase, four-wave plan promoting the ray layer, the choice-free ray-layer gluing operator and the four [F.IsRegular] keystone declarations into two new FormalSystem modules, pinning their measured axiom sets into the C2 harness, landing the Deliverable 4 and 5 verdicts in the library, and adding the E1 backward-dual probe on a time-asymmetric fixture."
     }
   ],
   "metadata": {
     "session_id": "sess_1791062863_12249e_719",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 9,
+    "dependency_waves": 4
+  },
+  "memory_candidates": [
+    {
+      "content": "In this Lean repository, TaskFrame.reflection is the unguarded reflection law and its proof opens with a classical eq_or_ne d 0, so any proof that rewrites with it measures Classical.choice. TaskFrame.reflection_of_ne (the off-zero wrapper, measured [propext]) does not. Any mixed-orientation task-relation rewrite whose case is strict can therefore be made choice-free by supplying a `d - d' ≠ 0` side condition via sub_ne_zero.mpr and rewriting with reflection_of_ne instead. This has now been the decisive repair twice on independent fronts (PlusLanguage.paste_rel, and the ray-layer seam gluing's glue_rel), each time turning [propext, Classical.choice, Quot.sound] into [propext, Quot.sound] with a three-line substitution. The diagnostic is that the clean/dirty boundary sits at the exact declaration that performs the reflection rewrite, so #print axioms on the immediately preceding lemma localizes the leak in one step.",
+      "category": "PATTERN",
+      "source_artifact": "specs/719_ray_layer_seam_gluing_and_stab_fibre/plans/01_ray-layer-seam-gluing-stab-fibre.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["Classical.choice", "reflection_of_ne", "TaskFrame", "print axioms", "choice-free", "axiom leak"]
+    }
+  ]
 }

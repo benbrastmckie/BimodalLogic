@@ -43,7 +43,7 @@ next_project_number: 729
 616 [NOT STARTED] — Formalize the duration monoid BD+, its twisted-arrow...
   └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
 617 [NOT STARTED] — Prove app:presheaf-dictionary's Reflection clause: reflection...
-719 [RESEARCHED] — Implement the ray layer, the seam-gluing operator and the...
+719 [PLANNED] — Implement the ray layer, the seam-gluing operator and the...
 
 ### Code Quality
 
@@ -388,11 +388,12 @@ WHY THIS MATTERS AT ALL (the surviving half of the original rationale). `FMP/REA
 ---
 
 ### 719. Ray layer seam gluing and stab fibre
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563, Task 564, Task 718
 - **Research**: [719_ray_layer_seam_gluing_and_stab_fibre/reports/01_ray-layer-seam-gluing-stab-fibre.md]
+- **Plan**: [719_ray_layer_seam_gluing_and_stab_fibre/plans/01_ray-layer-seam-gluing-stab-fibre.md]
 
 **Description**: Implement the ray layer, the seam-gluing operator and the stab-fibre characterisation, connecting the behaviour-presheaf semantics to the decidability programme. THIS SCOPE WAS REVISED after the omega-sequence decidability round's five machine-checked probes landed: four of the five deliverables below now record what is KNOWN, and the work that remains for them is PROMOTION AND CONNECTION rather than discovery. The authoritative input to that revision is Section 1 of specs/718_omega_sequence_decidability_full_lplus/followup-scope-spec.md; the probes themselves are on disk under specs/evidence/seam-gluing-ray-product/, wired by scripts/check-evidence-probes.sh. THIS SCOPE WAS THEN REVISED A SECOND TIME, on 2026-10-03, from Section E of specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md, whose anchors are re-verified in that file's Section 0. That revision adds exactly two things and changes NO dependency, NO file_scope and NO status: experiment E1 as Deliverable 5's FIRST probe, and an acceptance clause pinning the promoted keystone's [F.IsRegular] hypothesis verbatim.
 
