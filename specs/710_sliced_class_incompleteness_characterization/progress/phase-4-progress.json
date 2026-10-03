@@ -1,0 +1,21 @@
+{
+  "phase": 4,
+  "phase_name": "The negative half, part II -- chains, pigeonhole, Konig, core_false",
+  "started_at": "2026-10-03T01:10:00Z",
+  "last_updated": "2026-10-03T01:50:00Z",
+  "objectives": [
+    {"id": 1, "description": "Transcribe preN_chain, val_chain", "status": "done", "files_touched": ["FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean"]},
+    {"id": 2, "description": "Transcribe postN_fwdSeq, BackChain, backChain_mono, postN_of_backChain, exists_backChain, exists_long", "status": "done", "files_touched": ["FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean"]},
+    {"id": 3, "description": "Transcribe long_step, longSeq/longSeq_time/longSeq_step/longSeq_postN", "status": "done", "files_touched": ["FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean"]},
+    {"id": 4, "description": "Transcribe core_false with docstring; close Core section", "status": "done", "files_touched": ["FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean"]},
+    {"id": 5, "description": "Build; commit", "status": "done", "files_touched": ["FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean"]}
+  ],
+  "current_objective": 5,
+  "approaches_tried": [
+    {"approach": "transcribe val_chain with only 'include succP in'", "result": "failed -- body also calls preN_chain which needs fwd bwd someP onceP; restored full include list"},
+    {"approach": "speculatively omit [Nonempty W] from exists_long/long_step before building", "result": "failed -- Nonempty W genuinely needed (Set.Finite.bddAbove-adjacent); reverted, then let actual build warnings drive each omit decision"},
+    {"approach": "omit truly-unused fwd/bwd/onceP/succP from long_step and the longSeq family, cascading the same drop through every in-file call site (longSeq, longSeq_time, longSeq_step, longSeq_postN, and their uses inside core_false)", "result": "succeeded; zero warnings, core_false's own signature (someP onceP succP plus Finite/Nonempty and bi-seriality) unchanged from the plan's verbatim requirement -- only the internal longSeq/long_step plumbing was trimmed, not any of the five headline-adjacent declarations named in Deliverable 2"},
+    {"approach": "two 'show' tactics that silently changed the goal (linter.style.show, blocking per warning-budget.txt)", "result": "fixed by switching both to 'change'"}
+  ],
+  "handoff_count": 0
+}

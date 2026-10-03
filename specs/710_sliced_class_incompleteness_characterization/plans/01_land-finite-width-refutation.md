@@ -383,23 +383,23 @@ commit message; if it exceeds roughly 25, re-time Phase 4 rather than rushing th
 
 ---
 
-### Phase 4: The negative half, part II — chains, pigeonhole, König, `core_false` [NOT STARTED]
+### Phase 4: The negative half, part II — chains, pigeonhole, König, `core_false` [COMPLETED]
 
 **Goal**: `core_false` is landed: `someP`, `onceP` and `succP` are jointly unsatisfiable on a
 finite `W`.
 
 **Tasks**:
-- [ ] Transcribe `preN_chain` and `val_chain` — `p` states at every earlier time (probe lines
+- [x] Transcribe `preN_chain` and `val_chain` — `p` states at every earlier time (probe lines
       766-793)
-- [ ] Transcribe `postN_fwdSeq`, `BackChain`, `backChain_mono`, `postN_of_backChain`,
+- [x] Transcribe `postN_fwdSeq`, `BackChain`, `backChain_mono`, `postN_of_backChain`,
       `exists_backChain`, and the pigeonhole `exists_long` (probe lines 795-865)
-- [ ] Transcribe the König step `long_step` and the iterated `longSeq`/`longSeq_time`/
+- [x] Transcribe the König step `long_step` and the iterated `longSeq`/`longSeq_time`/
       `longSeq_step`/`longSeq_postN` (probe lines 867-916)
-- [ ] Transcribe `core_false` (probe lines 918-975) with a docstring recording that **nothing**
+- [x] Transcribe `core_false` (probe lines 918-975) with a docstring recording that **nothing**
       about tail-stability, periodicity, the window, labels or liveness enters the argument: the
       refutation is of the frame class
-- [ ] Close the `Core` section; fix any remaining per-declaration warning with `omit [...] in`
-- [ ] Build; commit
+- [x] Close the `Core` section; fix any remaining per-declaration warning with `omit [...] in`
+- [x] Build; commit
 
 **Timing**: 1.5 hours
 

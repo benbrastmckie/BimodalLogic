@@ -838,6 +838,230 @@ theorem preN_pred {t : ℤ} {v w : W} (hp : PreN R val t w) (hR : R (t - 1) v w)
     obtain ⟨a, ha, hva⟩ := hp h hh hw
     exact ⟨a, ha.le, hva⟩
 
+/-! ### `p` states at every earlier time -/
+
+omit [Finite W] [Nonempty W] in
+include fwd bwd someP onceP in
+/-- Behind a `p` state there is a pre state at every earlier slice. -/
+theorem preN_chain {a : ℤ} {w : W} (hv : val (a, w)) :
+    ∀ k : ℕ, ∃ v, PreN R val (a - k - 1) v := by
+  intro k
+  induction k with
+  | zero =>
+    obtain ⟨v, hR⟩ := bwd a w
+    refine ⟨v, ?_⟩
+    simpa using preN_pred_of_val R fwd bwd val someP onceP hv hR
+  | succ k ih =>
+    obtain ⟨v, hpre⟩ := ih
+    obtain ⟨v', hR⟩ := bwd (a - k - 1) v
+    refine ⟨v', ?_⟩
+    have := preN_pred R fwd bwd val someP onceP hpre hR
+    rwa [show a - k - 1 - 1 = a - ((k + 1 : ℕ) : ℤ) - 1 by push_cast; ring] at this
+
+omit [Finite W] [Nonempty W] in
+include fwd bwd someP onceP succP in
+/-- Behind a `p` state there is a `p` state at every earlier slice. -/
+theorem val_chain {a : ℤ} {w : W} (hv : val (a, w)) (k : ℕ) : ∃ u, val (a - k, u) := by
+  obtain ⟨v, hpre⟩ := preN_chain R fwd bwd val someP onceP hv k
+  obtain ⟨g, hg, hgv⟩ := exists_path_through R fwd bwd (a - k - 1) v
+  obtain ⟨u, -, hu⟩ := succP g hg (a - k - 1)
+    (fun g' hg' h => hpre g' hg' (by rw [h, hgv]))
+  refine ⟨u, ?_⟩
+  rwa [show a - k - 1 + 1 = a - k by ring] at hu
+
+/-! ### Forward post chains, backward post chains, and König -/
+
+omit [Finite W] [Nonempty W] in
+include fwd bwd someP onceP in
+/-- The forward sequence from a `p` state consists of post states. -/
+theorem postN_fwdSeq {s : ℤ} {u : W} (hv : val (s, u)) :
+    ∀ j : ℕ, PostN R val (s + j + 1) (fwdSeq R fwd s u (j + 1)) := by
+  intro j
+  induction j with
+  | zero =>
+    have h0 := fwdSeq_spec R fwd s u 0
+    simp only [Nat.cast_zero, add_zero, fwdSeq_zero] at h0
+    have := postN_succ_of_val R fwd bwd val someP onceP hv h0
+    simpa using this
+  | succ j ih =>
+    have := postN_succ R fwd bwd val someP onceP ih (by
+      have h := fwdSeq_spec R fwd s u (j + 1)
+      rwa [show s + ((j + 1 : ℕ) : ℤ) = s + j + 1 by push_cast; ring] at h)
+    rwa [show s + j + 1 + 1 = s + ((j + 1 : ℕ) : ℤ) + 1 by push_cast; ring] at this
+
+/-- A backward chain of `n` post steps into `(t, w)`, all of whose states are post. -/
+def BackChain (t : ℤ) (w : W) (n : ℕ) : Prop :=
+  ∃ c : ℕ → W, c 0 = w ∧ (∀ i, i < n → R (t - i - 1) (c (i + 1)) (c i)) ∧
+    (∀ i, i ≤ n → PostN R val (t - i) (c i))
+
+omit [Finite W] [Nonempty W] in
+theorem backChain_mono {t : ℤ} {w : W} {m n : ℕ} (h : BackChain R val t w n) (hmn : m ≤ n) :
+    BackChain R val t w m := by
+  obtain ⟨c, hc0, hstep, hpost⟩ := h
+  exact ⟨c, hc0, fun i hi => hstep i (by omega), fun i hi => hpost i (by omega)⟩
+
+omit [Finite W] [Nonempty W] in
+theorem postN_of_backChain {t : ℤ} {w : W} {n : ℕ} (h : BackChain R val t w n) :
+    PostN R val t w := by
+  obtain ⟨c, hc0, -, hpost⟩ := h
+  have := hpost 0 (Nat.zero_le _)
+  simpa [hc0] using this
+
+omit [Finite W] [Nonempty W] in
+include fwd bwd someP onceP succP in
+/-- Backward post chains of every length end at slice `a`. -/
+theorem exists_backChain {a : ℤ} {w : W} (hv : val (a, w)) (n : ℕ) :
+    ∃ z, BackChain R val a z n := by
+  obtain ⟨u, hu⟩ := val_chain R fwd bwd val someP onceP succP hv (n + 1)
+  set s := a - ((n + 1 : ℕ) : ℤ) with hs
+  refine ⟨fwdSeq R fwd s u (n + 1), fun i => fwdSeq R fwd s u (n + 1 - i), rfl, ?_, ?_⟩
+  · intro i hi
+    change R (a - i - 1) (fwdSeq R fwd s u (n + 1 - (i + 1))) (fwdSeq R fwd s u (n + 1 - i))
+    have h := fwdSeq_spec R fwd s u (n - i)
+    rw [show n - i + 1 = n + 1 - (i : ℕ) by omega] at h
+    rw [show n + 1 - (i + 1) = n - i by omega]
+    rwa [show s + ((n - i : ℕ) : ℤ) = a - i - 1 by rw [hs]; push_cast [Nat.cast_sub hi.le]; ring]
+      at h
+  · intro i hi
+    change PostN R val (a - i) (fwdSeq R fwd s u (n + 1 - i))
+    have h := postN_fwdSeq R fwd bwd val someP onceP hu (n - i)
+    rw [show n - i + 1 = n + 1 - i by omega] at h
+    rwa [show s + ((n - i : ℕ) : ℤ) + 1 = a - i by rw [hs]; push_cast [Nat.cast_sub hi]; ring]
+      at h
+
+omit [Nonempty W] in
+include fwd bwd someP onceP succP in
+/-- **Pigeonhole at slice `a`**: some state there is the end of backward post chains of every
+length. -/
+theorem exists_long {a : ℤ} {w : W} (hv : val (a, w)) :
+    ∃ z, ∀ n, BackChain R val a z n := by
+  classical
+  by_contra hno
+  simp only [not_exists, not_forall] at hno
+  choose nz hnz using hno
+  obtain ⟨N, hN⟩ := (Set.finite_range nz).bddAbove
+  obtain ⟨z, hz⟩ := exists_backChain R fwd bwd val someP onceP succP hv N
+  exact hnz z (backChain_mono R val hz (hN ⟨z, rfl⟩))
+
+omit [Nonempty W] fwd bwd onceP in
+/-- **König's step**: a state with backward post chains of every length has a post predecessor
+with backward post chains of every length. -/
+theorem long_step {t : ℤ} {w : W} (hl : ∀ n, BackChain R val t w n) :
+    ∃ v, R (t - 1) v w ∧ ∀ n, BackChain R val (t - 1) v n := by
+  classical
+  by_contra hno
+  simp only [not_exists, not_and, not_forall] at hno
+  let nv : W → ℕ := fun v => if h : R (t - 1) v w then Classical.choose (hno v h) else 0
+  have hnv : ∀ v, R (t - 1) v w → ¬ BackChain R val (t - 1) v (nv v) := by
+    intro v h
+    simp only [nv, dif_pos h]
+    exact Classical.choose_spec (hno v h)
+  obtain ⟨N, hN⟩ := (Set.finite_range nv).bddAbove
+  obtain ⟨c, hc0, hstep, hpost⟩ := hl (N + 1)
+  have hR : R (t - 1) (c 1) w := by
+    have := hstep 0 (by omega)
+    simpa [hc0] using this
+  apply hnv (c 1) hR
+  refine backChain_mono R val (n := N) ⟨fun i => c (i + 1), rfl, ?_, ?_⟩ (hN ⟨c 1, rfl⟩)
+  · intro i hi
+    have := hstep (i + 1) (by omega)
+    rwa [show t - ((i + 1 : ℕ) : ℤ) - 1 = t - 1 - i - 1 by push_cast; ring] at this
+  · intro i hi
+    have := hpost (i + 1) (by omega)
+    rwa [show t - ((i + 1 : ℕ) : ℤ) = t - 1 - i by push_cast; ring] at this
+
+omit fwd bwd onceP in
+/-- The infinite backward post chain, by iterated choice. -/
+noncomputable def longSeq (x₀ : {x : ℤ × W // ∀ n, BackChain R val x.1 x.2 n}) :
+    ℕ → {x : ℤ × W // ∀ n, BackChain R val x.1 x.2 n}
+  | 0 => x₀
+  | n + 1 =>
+    ⟨((longSeq x₀ n).1.1 - 1, Classical.choose (long_step R val (longSeq x₀ n).2)),
+      (Classical.choose_spec (long_step R val (longSeq x₀ n).2)).2⟩
+
+omit [Nonempty W] fwd bwd onceP in
+theorem longSeq_time (x₀ : {x : ℤ × W // ∀ n, BackChain R val x.1 x.2 n}) (n : ℕ) :
+    (longSeq R val x₀ n).1.1 = x₀.1.1 - n := by
+  induction n with
+  | zero => simp [longSeq]
+  | succ n ih =>
+    change (longSeq R val x₀ n).1.1 - 1 = _
+    rw [ih]; push_cast; ring
+
+omit [Nonempty W] fwd bwd onceP in
+theorem longSeq_step (x₀ : {x : ℤ × W // ∀ n, BackChain R val x.1 x.2 n}) (n : ℕ) :
+    R ((longSeq R val x₀ n).1.1 - 1) (longSeq R val x₀ (n + 1)).1.2
+      (longSeq R val x₀ n).1.2 :=
+  (Classical.choose_spec (long_step R val (longSeq R val x₀ n).2)).1
+
+omit [Nonempty W] fwd bwd onceP in
+theorem longSeq_postN (x₀ : {x : ℤ × W // ∀ n, BackChain R val x.1 x.2 n}) (n : ℕ) :
+    PostN R val (longSeq R val x₀ n).1.1 (longSeq R val x₀ n).1.2 :=
+  postN_of_backChain R val ((longSeq R val x₀ n).2 0)
+
+include fwd bwd someP onceP succP in
+/-- **The core contradiction**: `someP`, `onceP` and `succP` cannot all hold on a finite `W`.
+Nothing about tail-stability, periodicity, the window, labels or liveness enters this argument:
+the refutation is of the frame class. -/
+theorem core_false : False := by
+  classical
+  obtain ⟨g₀, hg₀, -⟩ := exists_path_through R fwd bwd 0 (Classical.arbitrary W)
+  obtain ⟨a, hva⟩ := someP g₀ hg₀
+  obtain ⟨z, hz⟩ := exists_long R fwd bwd val someP onceP succP hva
+  let x₀ : {x : ℤ × W // ∀ n, BackChain R val x.1 x.2 n} := ⟨(a, z), hz⟩
+  let d : ℕ → W := fun i => (longSeq R val x₀ i).1.2
+  have hd_time : ∀ i, (longSeq R val x₀ i).1.1 = a - i :=
+    fun i => longSeq_time R val x₀ i
+  have hd0 : d 0 = z := rfl
+  have hd_step : ∀ i : ℕ, R (a - i - 1) (d (i + 1)) (d i) := by
+    intro i
+    have := longSeq_step R val x₀ i
+    rwa [hd_time] at this
+  have hd_post : ∀ i : ℕ, PostN R val (a - i) (d i) := by
+    intro i
+    have := longSeq_postN R val x₀ i
+    rwa [hd_time] at this
+  let ff := fwdSeq R fwd a z
+  let g : ℤ → W := fun s => if s ≤ a then d (a - s).toNat else ff (s - a).toNat
+  have hg : IsPath R g := by
+    intro s
+    rcases lt_trichotomy s a with h1 | h1 | h1
+    · have hs : s ≤ a := by omega
+      have hs1 : s + 1 ≤ a := by omega
+      simp only [g, if_pos hs, if_pos hs1]
+      have e : (a - s).toNat = (a - (s + 1)).toNat + 1 := by omega
+      rw [e]
+      have := hd_step (a - (s + 1)).toNat
+      rwa [show a - ((a - (s + 1)).toNat : ℤ) - 1 = s by omega] at this
+    · subst h1
+      have hs1 : ¬ s + 1 ≤ s := by omega
+      simp only [g, le_refl, if_true, if_neg hs1, sub_self, Int.toNat_zero, hd0]
+      have e2 : (s + 1 - s).toNat = 1 := by omega
+      rw [e2]
+      have := fwdSeq_spec R fwd s z 0
+      simpa using this
+    · have hs : ¬ s ≤ a := by omega
+      have hs1 : ¬ s + 1 ≤ a := by omega
+      simp only [g, if_neg hs, if_neg hs1]
+      have e : (s + 1 - a).toNat = (s - a).toNat + 1 := by omega
+      rw [e]
+      have := fwdSeq_spec R fwd a z (s - a).toNat
+      rwa [show a + ((s - a).toNat : ℤ) = s by omega] at this
+  have hga : g a = z := by simp [g, hd0]
+  obtain ⟨b, hb⟩ := someP g hg
+  rcases le_or_gt b a with hba | hba
+  · have hgb : g b = d (a - b).toNat := by simp [g, hba]
+    rw [hgb] at hb
+    have hpost := hd_post (a - b).toNat
+    rw [show a - ((a - b).toNat : ℤ) = b by omega] at hpost
+    exact not_val_of_postN R fwd bwd val onceP hpost hb
+  · obtain ⟨b', hb', hvb'⟩ := hd_post 0 g hg (by
+      show g (a - ((0 : ℕ) : ℤ)) = d 0
+      rw [Nat.cast_zero, sub_zero, hga, hd0])
+    have := onceP g hg b b' hb hvb'
+    simp at hb'
+    omega
+
 end Core
 
 end Width
