@@ -11,7 +11,7 @@ next_project_number: 729
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,565,567,570,604,616,617,664,705,706,711,712,713,714,716,719,722,725,726,727,728 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,565,567,570,604,616,617,664,705,706,711,712,713,714,716,719,722,725,726,728 | -- | algebraic-representation, categorical-structure, code-quality, ... |
 | 2 | 231,282,296,465,497,566,618,709,720,723 | 298,464,502,565,616,706,719 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,724 | 231,465,497,723 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -23,10 +23,6 @@ next_project_number: 729
 | 10 | 177 | 178,282,296,481,482,543,706 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Agent System
-
-727 [IMPLEMENTING] — Stop archival and orchestration writes from emitting a...
 
 ### Algebraic Representation
 
@@ -155,12 +151,13 @@ ACCEPTANCE. Every surviving confirmed instance is repaired at its source or reco
 ---
 
 ### 727. Stop literal null file scope writes and promote check
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**: [727_stop_literal_null_file_scope_writes_and_promote_check/reports/01_stop-null-file-scope-writes.md]
 - **Plan**: [727_stop_literal_null_file_scope_writes_and_promote_check/plans/01_promote-null-value-to-fail.md]
+- **Summary**: [727_stop_literal_null_file_scope_writes_and_promote_check/summaries/01_promote-null-value-to-fail-summary.md]
 
 **Description**: Stop archival and orchestration writes from emitting a literal-null file_scope, and promote the null_value sub-state to FAIL
 

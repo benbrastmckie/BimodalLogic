@@ -1,7 +1,7 @@
 # Implementation Plan: Task #727
 
 - **Task**: 727 - Stop literal-null file_scope writes and promote the null_value sub-state to FAIL
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/727_stop_literal_null_file_scope_writes_and_promote_check/reports/01_stop-null-file-scope-writes.md

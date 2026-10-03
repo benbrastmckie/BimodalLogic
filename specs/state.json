@@ -20,13 +20,13 @@
     {
       "project_number": 727,
       "project_name": "stop_literal_null_file_scope_writes_and_promote_check",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "meta",
       "description": "Stop archival and orchestration writes from emitting a literal-null file_scope, and promote the null_value sub-state to FAIL\n\nWHY THIS EXISTS. Five active task records carried an explicit `\"file_scope\": null` (tasks 125, 127, 128, 219, 231) -- a shape the task-creation path never produces, since Create Task Mode OMITS the key and `file_scope` is populated later at plan time by `scripts/plan-file-scope-harvest.sh`. The five were repaired by hand on 2026-10-03 by deleting the key. This task stops them coming back and closes the enforcement gap that let them persist.\n\nWHAT ALREADY EXISTS -- DO NOT REBUILD IT. `scripts/validate-state.sh` Check 10 ALREADY detects this, already uses a `has(\"file_scope\")` presence test, and already reports three separately-labelled sub-states: `missing_key` (field absent -- an omission), `null_value` (literal null -- a schema-default violation) and `empty_array` (explicit `[]`, possibly a deliberate assertion). Its own header comment explains the exact `has()`-versus-null-test distinction. Read Check 10 before touching anything; the detection half of this problem is solved.\n\nREMAINING ITEM 1 -- THE WRITER. `git log -S'\"file_scope\": null' -- specs/state.json` attributes the nulls to archival and orchestration commits (`todo: archive 11 tasks and track 9 orphaned directories`, `task 165: orchestration paused`, `todo: archive 11 completed tasks`), NOT to task creation. Find the script responsible -- likely the archive/restore path or a `jq` transform constructing a task object with a fixed key set instead of preserving the keys present. CONFIRM THE WRITER FIRST: if later refactoring already removed the offending write, close with that finding rather than inventing a guard for a dead path. Whatever is responsible must omit the key rather than write null, matching Create Task Mode. The fix belongs in the SOURCE STORE under `agent-system/extensions/**` (resolve via `.claude-extensions.json`'s `source_dir`) -- never hand-authored under the deployed `.claude/` tree, which is regenerated and would silently discard it.\n\nREMAINING ITEM 2 -- A PROMOTION THAT IS NEWLY AVAILABLE. Check 10's documented PROMOTION CRITERION is to move `missing_key` and `null_value` from WARN to FAIL \"once no non-terminal task under specs/ lacks a usable file_scope\", and its comment states the sub-states are labelled separately \"so a future promotion can bind to a subset\". Binding to `null_value` ALONE is now satisfiable: after the 2026-10-03 repair there are ZERO `null_value` findings, while `missing_key` still has 22 and cannot be promoted. Promote `null_value` to FAIL in default mode; leave `missing_key` at WARN; leave `empty_array` advisory indefinitely, as its comment requires. Re-count both sub-states before promoting -- if a new literal null has appeared, fix it first or the promotion breaks the build for everyone.\n\nWHAT IS NOT A DEFECT, AND MUST NOT BE \"FIXED\". Twenty-two non-terminal tasks have NO `file_scope` key. That is the CORRECT, BY-DESIGN state for a task that has never been planned, and this task must NOT invent scopes for them. Note that Check 10's own header records a historical measurement of \"22 lacking a usable value\" that tallied missing-key plus literal-null together; that merged figure is a visibility count, not a defect count, and the two causes have different remedies -- a plan run for the former, a writer fix for the latter.\n\nA SECOND, SMALLER ITEM. Task 711's `project_name` is `omega_automata_determinization_substrate`, now misleading: the task was re-scoped by user ruling on 2026-10-03 to the universal-summary substrate for the stability-fibre check, with omega-automata determinization demoted to one of four candidate devices, none selected. Renaming `project_name` renames the task directory, so decide deliberately whether the churn is worth it; recording the staleness and keeping the name is acceptable if the rename would break artifact paths. Check what references the directory before renaming.\n\nHARD CONSTRAINTS. Do not populate `file_scope` for any never-planned task. Do not alter any task's dependencies, status or description. Do not weaken an existing validate-state check to make a new one pass, and do not promote `missing_key` or `empty_array`.\n\nACCEPTANCE. The literal-null writer is identified and fixed in the source store (or shown not to exist); Check 10's `null_value` sub-state FAILs in default mode while `missing_key` stays WARN and `empty_array` stays advisory; `bash .claude/scripts/validate-state.sh specs/state.json` passes; the 22 never-planned tasks are untouched.",
       "topic": "agent-system",
       "dependencies": [],
       "created": "2026-10-03T16:46:16Z",
-      "last_updated": "2026-10-03T19:27:10Z",
+      "last_updated": "2026-10-03T20:28:03Z",
       "session_id": "sess_1791051010_4c2417",
       "artifacts": [
         {
@@ -38,6 +38,11 @@
           "path": "specs/727_stop_literal_null_file_scope_writes_and_promote_check/plans/01_promote-null-value-to-fail.md",
           "type": "plan",
           "summary": "5-phase implementation plan for the null_value FAIL promotion, the closed writer item, and the task 711 rename."
+        },
+        {
+          "path": "specs/727_stop_literal_null_file_scope_writes_and_promote_check/summaries/01_promote-null-value-to-fail-summary.md",
+          "type": "summary",
+          "summary": "Closed the literal-null writer item as a no-op; promoted Check 10's null_value sub-state to FAIL with a display-cap exemption; fixed three test fixtures and added two new ones; deployed and ran the full gate set clean; renamed task 711's stale project_name."
         }
       ],
       "next_artifact_number": 2,
@@ -49,7 +54,8 @@
         "specs/711_omega_automata_determinization_substrate/",
         "specs/TODO.md",
         "specs/state.json"
-      ]
+      ],
+      "completion_summary": "Promoted validate-state.sh Check 10's null_value sub-state from WARN to FAIL in default mode (source store + deploy), with a display-cap exemption so the gate is genuinely enforcing; closed the literal-null writer item as a confirmed no-op; fixed the test suite (including a third fixture the plan's scope hypothesis didn't anticipate); and renamed task 711's stale project_name. validate-state.sh specs/state.json passes (exit 0, Failed 0); missing_key and empty_array remain WARN/advisory; the 28 never-planned tasks are untouched."
     },
     {
       "project_number": 726,

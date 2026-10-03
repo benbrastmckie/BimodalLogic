@@ -25,21 +25,38 @@
       "category": "INSIGHT",
       "source_artifact": "specs/727_stop_literal_null_file_scope_writes_and_promote_check/summaries/01_promote-null-value-to-fail-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["validator-promotion", "warn-to-fail", "display-cap-exemption", "regression-guard", "validate-state", "check-sub-states"]
+      "suggested_keywords": [
+        "validator-promotion",
+        "warn-to-fail",
+        "display-cap-exemption",
+        "regression-guard",
+        "validate-state",
+        "check-sub-states"
+      ]
     },
     {
       "content": "When a plan's Scope Hypothesis predicts N existing test fixtures will break under a validator-posture change, re-run the UNMODIFIED test suite against the already-edited validator before touching any fixture, and read every failure rather than stopping once N failures are found. In this task, a change that promotes one sub-state of a multi-state check from WARN to FAIL broke a third, unanticipated fixture: a --fix/--repair-mode fixture that deliberately carries the exact shape the repair must NOT touch (a null-valued field, to prove non-mutation) -- the repair run's own exit code flips because the validation pass it runs internally now reports the promoted FAIL. The general pattern: any fixture that invokes the validator in a secondary mode (--fix, --repair, a wrapper script) over an input containing the condition being promoted is a hidden second consumer of the promoted check's exit code, easy to miss when scanning only for fixtures that test the check directly.",
       "category": "INSIGHT",
       "source_artifact": "specs/727_stop_literal_null_file_scope_writes_and_promote_check/summaries/01_promote-null-value-to-fail-summary.md",
       "confidence": 0.75,
-      "suggested_keywords": ["warn-to-fail-promotion", "fix-mode-fixture", "hidden-consumer", "test-suite-regression", "scope-hypothesis"]
+      "suggested_keywords": [
+        "warn-to-fail-promotion",
+        "fix-mode-fixture",
+        "hidden-consumer",
+        "test-suite-regression",
+        "scope-hypothesis"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1791051010_4c2417",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 5,
     "phases_total": 5
   }
