@@ -1,7 +1,7 @@
 # Implementation Plan: Task #717
 
 - **Task**: 717 - Write the three missing directory READMEs that fail `scripts/readme-lint.sh` in CI
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/717_missing_decidability_directory_readmes/reports/01_missing-decidability-directory-readmes.md

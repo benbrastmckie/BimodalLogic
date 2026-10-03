@@ -11,7 +11,7 @@ next_project_number: 718
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,705,706,710,711,713,714,716,717 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,563,570,604,664,705,706,710,711,713,714,716 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 2 | 231,282,296,465,497,564,565,567,616,617,709,712 | 298,464,502,563,710,711 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,566,618 | 231,465,497,564,565,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -76,10 +76,6 @@ next_project_number: 718
 709 [NOT STARTED] — STATUS NOTE (2026-10-02, SUPERSEDES THE HEADLINE BELOW -- the...
 712 [BLOCKED] — STATUS NOTE (2026-10-02, THE STATEMENT BELOW IS NOW REFUTED...
 
-### Documentation
-
-717 [PLANNED] — Write the three missing directory READMEs that fail...
-
 ### Formula Refactor
 
 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of...
@@ -109,12 +105,13 @@ next_project_number: 718
 ## Tasks
 
 ### 717. Missing decidability directory readmes
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: documentation
 - **Dependencies**: None
 - **Research**: [717_missing_decidability_directory_readmes/reports/01_missing-decidability-directory-readmes.md]
 - **Plan**: [717_missing_decidability_directory_readmes/plans/01_missing-decidability-directory-readmes.md]
+- **Summary**: [717_missing_decidability_directory_readmes/summaries/01_missing-decidability-directory-readmes-summary.md]
 
 **Description**: Write the three missing directory READMEs that fail scripts/readme-lint.sh in CI: FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/ (25 modules), PlusWitnessFamily/Compression/ (5 modules), PlusWitnessFamily/Limits/ (3 modules). Follow docs/development/DIRECTORY_README_STANDARD.md and match the depth of the existing sibling FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/README.md (purpose statement, route narrative, per-module table, scope boundaries). Acceptance: bash scripts/readme-lint.sh FormalSystem BimodalTools exits 0
 

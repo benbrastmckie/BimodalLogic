@@ -9,12 +9,12 @@
     {
       "project_number": 717,
       "project_name": "missing_decidability_directory_readmes",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Write the three missing directory READMEs that fail scripts/readme-lint.sh in CI: FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/ (25 modules), PlusWitnessFamily/Compression/ (5 modules), PlusWitnessFamily/Limits/ (3 modules). Follow docs/development/DIRECTORY_README_STANDARD.md and match the depth of the existing sibling FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/README.md (purpose statement, route narrative, per-module table, scope boundaries). Acceptance: bash scripts/readme-lint.sh FormalSystem BimodalTools exits 0",
       "topic": "documentation",
       "created": "2026-10-02T23:59:49Z",
-      "last_updated": "2026-10-03T01:10:28Z",
+      "last_updated": "2026-10-03T01:21:50Z",
       "session_id": "sess_1790985943_97f50d",
       "artifacts": [
         {
@@ -26,6 +26,11 @@
           "path": "specs/717_missing_decidability_directory_readmes/plans/01_missing-decidability-directory-readmes.md",
           "type": "plan",
           "summary": "Five-phase plan to author the three missing Decidability subtree READMEs and verify the readme-lint gate flips to exit 0."
+        },
+        {
+          "path": "specs/717_missing_decidability_directory_readmes/summaries/01_missing-decidability-directory-readmes-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: three READMEs authored, gate flipped, four plan deviations recorded."
         }
       ],
       "next_artifact_number": 2,
@@ -35,7 +40,8 @@
         "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/README.md",
         "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/README.md",
         "FormalSystem/Metalogic/Decidability/README.md"
-      ]
+      ],
+      "completion_summary": "Authored the three missing directory READMEs under FormalSystem/Metalogic/Decidability/ (PlusSlicedCertificate/ at 25 modules, PlusWitnessFamily/Compression/ at 5, PlusWitnessFamily/Limits/ at 3) at the depth of the WitnessFamily/Compression/ exemplar, and listed the two L-plus subtrees in their parent READMEs. scripts/readme-lint.sh FormalSystem BimodalTools now exits 0 with Missing READMEs: 0 and Broken file references: 0, and check-module-invariants.sh still reports PASS INV. No Lean source was edited."
     },
     {
       "project_number": 716,
