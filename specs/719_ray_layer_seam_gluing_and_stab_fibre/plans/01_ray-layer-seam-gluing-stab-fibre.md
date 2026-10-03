@@ -476,43 +476,43 @@ list, and by diffing the C2 heredoc edit to exactly four added lines in each of 
 
 ---
 
-### Phase 4: The E1 fixture, transcribed [NOT STARTED]
+### Phase 4: The E1 fixture, transcribed [COMPLETED]
 
 **Goal**: one new file under `specs/evidence/seam-gluing-ray-product/` compiles green at
 `lake env lean` carrying a **time-asymmetric** step fixture — `Node`, `Step`, the predecessor
 inverses, finite fibres, the regular `FrameOver` and the model — transcribed, not imported.
 
 **Tasks**:
-- [ ] Create `specs/evidence/seam-gluing-ray-product/backward-dual-asymmetric-fixture.lean` with
+- [x] Create `specs/evidence/seam-gluing-ray-product/backward-dual-asymmetric-fixture.lean` with
       the collection's header conventions, `import FormalSystem` **only**, and its own namespace
       (e.g. `Probe719Backward`). Every probe in this collection imports only `FormalSystem` and
       never another probe — so the fixture is **transcribed** from
       `specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean`,
       never imported from it
-- [ ] Transcribe the carrier:
+- [x] Transcribe the carrier:
       `inductive Node | pre : ℕ → Node | x : ℕ → Node | post : ℕ → ℕ → Node`, `deriving
       DecidableEq`
-- [ ] Transcribe `Step` with its four constructors — `pre (k+1) → pre k`, `pre k → x k`,
+- [x] Transcribe `Step` with its four constructors — `pre (k+1) → pre k`, `pre k → x k`,
       `x k → post k 0`, `post k j → post k (j+1)` — finitely branching, and with **exactly one
       predecessor** at every node
-- [ ] Transcribe the three inverse lemmas (`step_inv_pre`, `step_inv_x`, `step_inv_post`), which
+- [x] Transcribe the three inverse lemmas (`step_inv_pre`, `step_inv_x`, `step_inv_post`), which
       are what give backward determinism
-- [ ] Transcribe `fwdList`/`bwdList`/`fib_finite` and build the frame as
+- [x] Transcribe `fwdList`/`bwdList`/`fib_finite` and build the frame as
       `FrameOver.ofReflectiveRegular Node (ofStepRel Step) …`, discharging *Saturation* by
       `TaskFrame.saturation_of_fib_finite fib_finite`. **`ofSlicedStep_isRegular` is unavailable**
       — it requires `[Finite W]` and `Node` is infinite — so this construction must be
       transcribed in full and not substituted
-- [ ] Transcribe the model `M : TaskModel F.toTaskFrame := ⟨fun w _ => ∃ k, w = Node.x k⟩`, so `p`
+- [x] Transcribe the model `M : TaskModel F.toTaskFrame := ⟨fun w _ => ∃ k, w = Node.x k⟩`, so `p`
       holds exactly at the `x` states
-- [ ] Transcribe as much of the canonicity argument as the backward summary will need:
+- [x] Transcribe as much of the canonicity argument as the backward summary will need:
       `canon k t s`, `canon_step`, `canon_eq_x_iff`, `path_eq_canon` (every step path is
       canonical), `hist_canon` (every `WorldHistory F` is some `canon k t`), and the
       agreeing-at-a-point lemmas `lt_of_canon_eq_of_lt`, `gt_of_canon_eq_of_gt`,
       `eq_of_canon_eq_of_eq`
-- [ ] Write the header's scope paragraph: what the fixture is, why a **time-asymmetric** fixture
+- [x] Write the header's scope paragraph: what the fixture is, why a **time-asymmetric** fixture
       is required (the finite-width obstruction lives in the backward factor, and a time-symmetric
       fixture is exactly the one that cannot see it), and the compile-check command line
-- [ ] Do **not** add the `WIRED` entry yet — Phase 5 does that in its own commit
+- [x] Do **not** add the `WIRED` entry yet — Phase 5 does that in its own commit
 
 **Timing**: 1.5 hours
 
