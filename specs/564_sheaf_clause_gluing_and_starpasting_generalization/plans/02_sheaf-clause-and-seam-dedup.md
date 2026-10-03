@@ -441,7 +441,7 @@ be checked against C15 before the commit, not after.
 
 ---
 
-### Phase 4: `pasteAt` — `paste` generalized off totality [NOT STARTED]
+### Phase 4: `pasteAt` — `paste` generalized off totality [COMPLETED]
 
 **Goal**: The literal reading of "generalize `paste` off its totality hypothesis" lands:
 `pasteAt` pastes two **arbitrary** partial histories agreeing at a seam, and the existing
@@ -455,26 +455,29 @@ record enumerating all five declarations — not `[BLOCKED]`, and never `[DESCOP
 recognized marker.
 
 **Tasks**:
-- [ ] Add to `FormalSystem/PlusLanguage/PlusPasting.lean`, transcribed from
+- [x] Add to `FormalSystem/PlusLanguage/PlusPasting.lean`, transcribed from
       `probes/03_pasteat-off-totality.lean` with its local seam lemma and reflection wrapper
       replaced by Phase 1's library declarations: `pasteAt` (domain
       `fun z => (z ≤ t ∧ σ.domain z) ∨ (¬ z ≤ t ∧ τ.domain z)`), the two reading equations
       `pasteAt_states_le` / `pasteAt_states_not_le`, `isTotal_pasteAt`, and the bridge
       `paste_eq_pasteAt`
-- [ ] Place them **after** `paste` in the file, not before it, so that `paste`'s own definition,
+- [x] Place them **after** `paste` in the file, not before it, so that `paste`'s own definition,
       signature and docstring are provably untouched by this phase's diff
-- [ ] Record in `pasteAt`'s `/--` block why the `states` field splits on the decidable `z ≤ t` and
+- [x] Record in `pasteAt`'s `/--` block why the `states` field splits on the decidable `z ≤ t` and
       *then* resolves the disjunction inside each branch
       (`hz.resolve_right (fun h => h.1 hzt) |>.2`): that is what keeps a `Prop`-valued `Or` from
       being eliminated into a `Type`
-- [ ] Record in the module docstring that `paste` is now a **corollary** of a construction stated
+- [x] Record in the module docstring that `paste` is now a **corollary** of a construction stated
       off totality, that its definition and signature are unchanged, and that the six pasting
       validities and their `*_plusValid` packagings therefore do not move
-- [ ] Measure `#print axioms` on `pasteAt` and `paste_eq_pasteAt`: both must be
+- [x] Measure `#print axioms` on `pasteAt` and `paste_eq_pasteAt`: both must be
       `[propext, Quot.sound]`. `paste_eq_pasteAt` mentions `paste`, so it clears
       `Classical.choice` only because Phase 1 rerouted `paste_rel`'s mixed case — a **second**
-      observable check that Phase 1 took effect
-- [ ] Re-emit the generated blocks, regenerate the typst counts, and commit per the
+      observable check that Phase 1 took effect *(deviation: altered — the first build of
+      `paste_eq_pasteAt` fired `linter.style.show`; the `show` was replaced by `change` per this
+      plan's own Phase 2 remedy, identical tactic semantics, so no `warning-budget.txt` row was
+      added)*
+- [x] Re-emit the generated blocks, regenerate the typst counts, and commit per the
       **Shared Touches** protocol
 
 **Timing**: 1 hour

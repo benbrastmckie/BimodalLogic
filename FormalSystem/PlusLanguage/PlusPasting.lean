@@ -27,6 +27,12 @@ The seam step itself is not proved here. `paste_rel_le_lt` is the total-history 
 seam coordinates; gluing two interval sections at a cut point is its other instance, and the two
 were once the same proof written twice.
 
+**`paste` is a corollary, not a primitive.** Nothing in the seam argument needs totality — only a
+shared state at `t` — so the construction is also given off totality as `pasteAt`, at two
+arbitrary partial histories, and `paste_eq_pasteAt` recovers `paste` from it. `paste`'s own
+definition and signature are **unchanged** by that generalization, which is why the six pasting
+validities above and their `*_plusValid` packagings do not move.
+
 Pure-future formulas (`IsPureFuture`, `PlusLanguage/Formula.lean`) see only the history from
 `t` onward (`truth_congr_agreeFrom`) and pure-past ones only the history up to `t`
 (`truth_congr_agreeUpTo`); `□ψ` and `⊡ψ` are admitted as leaves of both because `□ψ` is
@@ -130,6 +136,106 @@ theorem paste_rel [F.IsRegular]
 def paste [F.IsRegular] (ρ σ : WorldHistory F) (t : F.Duration) (hsame : ρ.state t = σ.state t) :
     WorldHistory F :=
   WorldHistory.ofTotal F (pasteFun ρ σ t) (paste_rel ρ σ t hsame)
+
+/-! ## Pasting off totality
+
+`paste` above asks for two **total** histories. Nothing in the seam argument needs that: all it
+uses is a state the two histories share at `t`. `pasteAt` is the construction stated at arbitrary
+partial histories, and `paste` is recovered from it as a corollary — with `paste`'s own
+definition and signature untouched, so the six pasting validities and their `*_plusValid`
+packagings do not move.
+-/
+
+/--
+**`paste` generalized off totality.** Two arbitrary partial histories sharing a state at `t`
+paste to a partial history on the union of `σ`'s part at or before `t` and `τ`'s part after it.
+
+The `states` field splits on the decidable `z ≤ t` **first** and only then resolves the domain's
+disjunction inside each branch, as `hz.resolve_right (fun h => h.1 hzt) |>.2`. That order is
+load-bearing: the domain is a `Prop`-valued `Or`, and eliminating it directly to choose a state
+would be eliminating a `Prop` into a `Type`. Splitting on the decidable test first makes the
+branch a `Type`-level choice and leaves the `Or` to be resolved within a branch where its other
+disjunct is already contradicted.
+
+The task-respect obligation is the same four-way split as `paste_rel`'s, discharged by the same
+two library facts: `PartialHistory.rel_across_seam` across the seam and
+`TaskFrame.reflection_of_ne` for the reverse orientation. It takes an explicit
+`(hcomp : TaskFrame.Compositional F.TaskRel)` rather than a frame bundle, so what it needs of the
+frame is readable from the signature.
+-/
+def pasteAt (hcomp : TaskFrame.Compositional F.TaskRel) (σ τ : PartialHistory F) (t : F.Duration)
+    (hσt : σ.domain t) (hτt : τ.domain t) (hmatch : σ.states t hσt = τ.states t hτt) :
+    PartialHistory F where
+  domain := fun z => (z ≤ t ∧ σ.domain z) ∨ (¬ z ≤ t ∧ τ.domain z)
+  nonempty_domain := ⟨t, Or.inl ⟨le_rfl, hσt⟩⟩
+  states := fun z hz =>
+    if hzt : z ≤ t then σ.states z (hz.resolve_right (fun h => h.1 hzt)).2
+    else τ.states z (hz.resolve_left (fun h => hzt h.1)).2
+  respects_task := by
+    intro s s' hs hs'
+    by_cases hst : s ≤ t <;> by_cases hs't : s' ≤ t
+    · rw [dif_pos hst, dif_pos hs't]; exact σ.respects_task s s' _ _
+    · rw [dif_pos hst, dif_neg hs't]
+      exact PartialHistory.rel_across_seam hcomp hσt hτt hmatch _ _ hst
+        (le_of_lt (not_le.mp hs't))
+        (by rw [add_comm]; exact (sub_add_sub_cancel s' t s).symm)
+    · have hne : s' - s ≠ 0 :=
+        sub_ne_zero_of_ne (ne_of_lt (lt_of_le_of_lt hs't (not_le.mp hst)))
+      rw [dif_neg hst, dif_pos hs't, TaskFrame.reflection_of_ne F hne, neg_sub]
+      exact PartialHistory.rel_across_seam hcomp hσt hτt hmatch _ _ hs't
+        (le_of_lt (not_le.mp hst))
+        (by rw [add_comm]; exact (sub_add_sub_cancel s t s').symm)
+    · rw [dif_neg hst, dif_neg hs't]; exact τ.respects_task s s' _ _
+
+/-- Reading the generalized paste on the `σ` side: at or before the seam it is `σ`'s state. -/
+theorem pasteAt_states_le (hcomp : TaskFrame.Compositional F.TaskRel) (σ τ : PartialHistory F)
+    (t : F.Duration) (hσt : σ.domain t) (hτt : τ.domain t)
+    (hmatch : σ.states t hσt = τ.states t hτt) (z : F.Duration)
+    (hz : (pasteAt hcomp σ τ t hσt hτt hmatch).domain z) (hzt : z ≤ t) (hσz : σ.domain z) :
+    (pasteAt hcomp σ τ t hσt hτt hmatch).states z hz = σ.states z hσz :=
+  dif_pos hzt
+
+/-- Reading the generalized paste on the `τ` side: past the seam it is `τ`'s state. -/
+theorem pasteAt_states_not_le (hcomp : TaskFrame.Compositional F.TaskRel) (σ τ : PartialHistory F)
+    (t : F.Duration) (hσt : σ.domain t) (hτt : τ.domain t)
+    (hmatch : σ.states t hσt = τ.states t hτt) (z : F.Duration)
+    (hz : (pasteAt hcomp σ τ t hσt hτt hmatch).domain z) (hzt : ¬ z ≤ t) (hτz : τ.domain z) :
+    (pasteAt hcomp σ τ t hσt hτt hmatch).states z hz = τ.states z hτz :=
+  dif_neg hzt
+
+/-- At two **total** histories the generalized paste is total: each `z` falls on one side of the
+seam, and the corresponding history has it in its domain. -/
+theorem isTotal_pasteAt (hcomp : TaskFrame.Compositional F.TaskRel) (ρ σ : WorldHistory F)
+    (t : F.Duration) (hmatch : ρ.val.states t (ρ.property t) = σ.val.states t (σ.property t)) :
+    (pasteAt hcomp ρ.val σ.val t (ρ.property t) (σ.property t) hmatch).IsTotal := by
+  intro z
+  by_cases h : z ≤ t
+  · exact Or.inl ⟨h, ρ.property z⟩
+  · exact Or.inr ⟨h, σ.property z⟩
+
+/-- **`paste` is a corollary.** The total-history pasting above *is* the generalized `pasteAt` at
+two total histories. The existing construction is recovered from one stated off totality, and
+`paste`'s own definition and signature are unchanged by it. -/
+theorem paste_eq_pasteAt [F.IsRegular] (ρ σ : WorldHistory F) (t : F.Duration)
+    (hsame : ρ.state t = σ.state t) :
+    paste ρ σ t hsame
+      = ⟨pasteAt F.comp ρ.val σ.val t (ρ.property t) (σ.property t) hsame,
+         isTotal_pasteAt F.comp ρ σ t hsame⟩ := by
+  refine WorldHistory.ext_state ?_
+  intro z
+  change pasteFun ρ σ t z
+      = (pasteAt F.comp ρ.val σ.val t (ρ.property t) (σ.property t) hsame).states z
+          (isTotal_pasteAt F.comp ρ σ t hsame z)
+  unfold pasteFun
+  by_cases h : z ≤ t
+  · rw [if_pos h,
+      pasteAt_states_le F.comp ρ.val σ.val t (ρ.property t) (σ.property t) hsame z _ h
+        (ρ.property z)]
+    exact (WorldHistory.states_eq_state ρ z (ρ.property z)).symm
+  · rw [if_neg h,
+      pasteAt_states_not_le F.comp ρ.val σ.val t (ρ.property t) (σ.property t) hsame z _ h
+        (σ.property z)]
+    exact (WorldHistory.states_eq_state σ z (σ.property z)).symm
 
 /-! ## Agreement of histories on a half-line -/
 
