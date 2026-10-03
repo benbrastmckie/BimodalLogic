@@ -12,9 +12,12 @@ alone and sits strictly **below** `Semantics/Truth.lean`: all three modules clos
 
 Two clauses of the presheaf dictionary are discharged here. *Germs* identifies the sections over
 the zero duration with the world states (`Beh.germEquiv`), and *Sheaf* glues two sections
-agreeing at a seam into a unique section over the joined interval (`sheaf_clause`). The gluing
-argument itself is not local to this cluster: it is `PartialHistory.rel_across_seam`, shared with
-history pasting.
+agreeing at a seam into a unique section over the joined interval (`sheaf_clause`, and
+`sheaf_clause_site` in the site's own vocabulary). The gluing argument itself is not local to this
+cluster: it is `PartialHistory.rel_across_seam`, shared with history pasting. Both clauses are
+choice-free in two measured senses — they use *Compositionality* alone, taken as an explicit
+hypothesis rather than a frame bundle, and `#print axioms` reports no `Classical.choice` on any
+declaration in the cluster.
 
 ## Modules
 
@@ -22,7 +25,7 @@ history pasting.
 | File | Lines | Description |
 |------|------:|-------------|
 | `Behavior.lean` | 296 | The behavior presheaf `Beh F`: the sections over a duration, the restriction action at raw data and at a site morphism, presheaf functoriality, and the *Germs* clause `Beh F 0 ≃ F.WorldState` |
-| `Sheaf.lean` | 302 | <!-- TODO: add description --> |
+| `Sheaf.lean` | 434 | <!-- TODO: add description --> |
 | `Site.lean` | 191 | The interval site `Int(D)`: the translations `Tr p`, the three category laws, and the Johnstone coverage |
 <!-- END GENERATED -->
 
@@ -64,6 +67,13 @@ history pasting.
   its dependent `if`; every proof about `glue` goes through these rather than unfolding it
 - `glue_unique` — any section restricting to `τ₁` and `τ₂` is `glue`
 - `states_eq_of_eq` — reading a state out of an equality of sections, for either domain witness
+- `sheaf_clause_site` — the *Sheaf* clause in the site's own vocabulary, along `coverLeft` and
+  `coverRight`. Derived from `sheaf_clause` with no transport and no cast
+- `restrictTr_coverLeft`, `restrictTr_coverRight` — restriction along either member of the
+  covering family **is** the raw-data restriction the clause is stated with. Both `rfl`, which is
+  what makes the site-level clause free
+- `compat_iff_match` — the coverage's compatible-family condition, as an equality of germ
+  sections in `Beh F 0`, is the raw seam hypothesis
 
 ## Dependencies
 

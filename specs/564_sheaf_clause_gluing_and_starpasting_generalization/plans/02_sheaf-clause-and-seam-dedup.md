@@ -355,7 +355,7 @@ restored.
 
 ---
 
-### Phase 3: The site-level clause, the compatible-family theorem, and the choice-freedom record [NOT STARTED]
+### Phase 3: The site-level clause, the compatible-family theorem, and the choice-freedom record [COMPLETED]
 
 **Goal**: The clause is stated in the vocabulary of the site's own coverage and shown equivalent
 to the raw form; the coverage's compatible-family condition becomes a theorem rather than a
@@ -363,18 +363,18 @@ docstring remark; and the module records, in two distinguished senses, which dic
 are choice-free.
 
 **Tasks**:
-- [ ] Add to `Sheaf.lean`, transcribed from `probes/02_site-and-compatible-family.lean`:
+- [x] Add to `Sheaf.lean`, transcribed from `probes/02_site-and-compatible-family.lean`:
       `restrictTr_coverLeft` and `restrictTr_coverRight` — the two `rfl` identities that make the
       site-indexed clause free — and `compat_iff_match`, the equivalence between the coverage's
       compatible-family condition (an equality of germ sections in `Beh F 0`) and the raw
       `hmatch`. The probe's two identities are `example`s; name them here
-- [ ] Add `sheaf_clause_site`, the site-indexed `∃!` stated along `coverLeft`/`coverRight`,
+- [x] Add `sheaf_clause_site`, the site-indexed `∃!` stated along `coverLeft`/`coverRight`,
       derived from `sheaf_clause` through the two `rfl` identities with **no** transport and no
       cast. This is what closes the loop `Site.lean`'s `cover_germ_composites` docstring opens
-- [ ] Record in `compat_iff_match`'s `/--` block that `Beh.restrictTr` must be unfolded
+- [x] Record in `compat_iff_match`'s `/--` block that `Beh.restrictTr` must be unfolded
       (`simp only [Beh.restrictTr, rres, lres]`) before `rw` can see the `Beh.restrict_states`
       pattern — a measured fact from the probe, not a stylistic note
-- [ ] Write the module docstring's choice-freedom record as **two** sentences, because the two
+- [x] Write the module docstring's choice-freedom record as **two** sentences, because the two
       claims are different and the dispatch's "Sheaf is choice-free" is sound in both senses:
       (1) *saturation-independence* — the binary seam gluing uses **Compositionality only**, whose
       honest witness is the signature's explicit `(hcomp : TaskFrame.Compositional F.TaskRel)`
@@ -383,7 +383,7 @@ are choice-free.
       measured on the landed declarations. Name directed gluing as the contrasting case, which
       rests on *Saturation* through the Extension Theorem, citing
       `FormalSystem/Semantics/Extension.lean` and `app:gluing`'s footnote as a pointer
-- [ ] Write `## References` in the normal form of `docs/development/REFERENCE_NORMAL_FORM.md`:
+- [x] Write `## References` in the normal form of `docs/development/REFERENCE_NORMAL_FORM.md`:
       bibliographic entries as `* [Author, *Title*][key]` against the root `references.bib`
       (`schultz2020` and `johnstone1999` both resolve there and are the right keys to reuse);
       `* JPL paper \`app:gluing\` — …` as a **pointer only**, never a verbatim quote, because its
@@ -391,7 +391,7 @@ are choice-free.
       `app:presheaf-dictionary` / `app:Structure` cited exactly as `Site.lean` and `Behavior.lean`
       already cite them, recording at the citation site that the appendix was cut in full under an
       explicit `% SECTION CUT` record and carries a bare `% CHECK`
-- [ ] Amend two now-stale row descriptions inside the `<!-- KNOWN-ANCHORS:BEGIN -->` fence of
+- [x] Amend two now-stale row descriptions inside the `<!-- KNOWN-ANCHORS:BEGIN -->` fence of
       `docs/reference/paper-definitions-of-record.md`: `app:gluing`'s row enumerates
       `FormalSystem/OpenLanguage/` as its only citer, and `app:presheaf-dictionary`'s row says the
       Sheaf clause is formalized only as its *site-side* content `cover_germ_composites`. Both
@@ -399,7 +399,7 @@ are choice-free.
       record `sheaf_clause` as the clause's formalization, keeping each row's existing status
       verbatim (`LIVE-UNPINNED` and `DANGLING` respectively) and the block's sort order intact.
       Do **not** attempt to pin either anchor
-- [ ] Update `FormalSystem/Semantics/Presheaf/README.md`'s Key Results for the site-level
+- [x] Update `FormalSystem/Semantics/Presheaf/README.md`'s Key Results for the site-level
       declarations, re-emit the generated blocks, regenerate the typst counts, and commit per the
       **Shared Touches** protocol
 

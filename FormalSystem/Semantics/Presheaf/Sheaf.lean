@@ -42,6 +42,13 @@ instantiation, and the two were once the same proof written twice.
 - `sheaf_clause`: the clause itself, as the `∃!` the three preceding results package.
 - `states_eq_of_eq`: reading a state out of an equality of sections, the step both restriction
   identities and uniqueness need.
+- `restrictTr_coverLeft`, `restrictTr_coverRight`: restriction along either member of the
+  Johnstone covering family **is** the raw-data restriction the clause is stated with. Both are
+  `rfl`, which is what makes the site-level clause free.
+- `sheaf_clause_site`: the clause in the site's own vocabulary, along `coverLeft` and
+  `coverRight`, derived from `sheaf_clause` through those two identities with no transport.
+- `compat_iff_match`: the coverage's compatible-family condition — an equality of germ sections
+  in `Beh F 0` — is equivalent to the raw seam hypothesis.
 
 ## Implementation Notes
 
@@ -81,6 +88,25 @@ is `sub_sub_sub_cancel_right`; neither is a stylistic choice.
 it as an equality against `Interval 0 l` breaks that discharge and every `rfl` downstream of it,
 for the reason the behavior presheaf's own Implementation Notes record.
 
+**Choice-freedom, in two distinguished senses, both measured.** The dictionary's *Sheaf* clause
+is choice-free, and the claim is worth separating into the two things it can mean, because they
+have different witnesses.
+
+*Saturation-independence.* The binary seam gluing uses **Compositionality and nothing else**. The
+honest witness is the signature itself: every declaration here takes an explicit
+`(hcomp : TaskFrame.Compositional F.TaskRel)` and carries no bracketed frame bundle. An
+`[F.IsRegular]` binder would have supplied the property needed and three more besides, and would
+have left a reader unable to tell which were used. The contrasting case is **directed** gluing
+over an ω-indexed family, which is not binary and does rest on *Saturation*, through the
+Extension Theorem in `FormalSystem/Semantics/Extension.lean`; the distinction between the binary
+and directed cases is exactly where that dependency enters.
+
+*Axiom-freedom.* `#print axioms` reports `[propext, Quot.sound]` on every declaration in this
+module — `states_eq_of_eq` needs only `[propext]` — with no `Classical.choice` anywhere. Two
+steps earn that and would lose it if rewritten: the mixed-orientation case goes through the
+off-zero reflection law rather than the unrestricted one, and `r ≤ 0` is derived by
+`sub_nonpos.mpr` rather than `le_of_add_le_add_left`.
+
 **Paper state: the source appendix is cut.** As for the two sibling modules, the anchors cited
 below live in `app:Structure`, which the paper cut in full under an explicit `% SECTION CUT`
 record and whose surviving commented block carries a bare `% CHECK`. They resolve against
@@ -91,10 +117,22 @@ against a live `\label{}`.
 
 * [P. Schultz, D. I. Spivak and C. Vasilakopoulou, *Dynamical Systems and Sheaves*][schultz2020],
   §3.2 — the behavior sheaf, whose gluing condition this is the task-frame instance of
+* [P. T. Johnstone, *A Note on Discrete Conduché Fibrations*][johnstone1999], §2 — the coverage
+  whose sheaf condition `sheaf_clause_site` discharges, and which `coverLeft`/`coverRight`
+  instantiate
 * JPL paper `app:presheaf-dictionary` — the dictionary theorem whose *Sheaf* clause
   `sheaf_clause` discharges. **`DANGLING`**: cut from the paper with `app:Structure` and recorded
   in `docs/reference/paper-definitions-of-record.md`
 * JPL paper `app:Structure` — the cut appendix containing it. **`DANGLING`**, as above
+* JPL paper `app:gluing` — the gluing lemma for two convex histories agreeing on their overlap,
+  of which `sheaf_clause` is the interval-site reading. Cited here as a **pointer only**: its
+  record row is `LIVE-UNPINNED` precisely because no docstring quotes its text, and this one does
+  not either
+* `FormalSystem/Semantics/Presheaf/Site.lean` — `coverLeft`, `coverRight`, `rres`, `lres`, and
+  `cover_germ_composites`, whose one-point meeting of the two covering morphisms is what makes
+  this coverage's sheaf condition a two-section statement
+* `FormalSystem/Semantics/Extension.lean` — the Extension Theorem, where the **directed** gluing
+  case takes on its dependence on *Saturation*
 * `FormalSystem/Semantics/Presheaf/Behavior.lean` — `Beh`, `Beh.restrict`, `partialHistory_ext`
 * `FormalSystem/Semantics/PartialHistory.lean` — `PartialHistory.rel_across_seam`, the seam
   argument this module instantiates, and `states_eq_of_time_eq`
@@ -296,6 +334,100 @@ theorem sheaf_clause (hcomp : TaskFrame.Compositional F.TaskRel) {l p : F.Durati
   ⟨glue hcomp hp hpl τ₁ τ₂ hmatch,
    ⟨restrict_glue_left hcomp hp hpl τ₁ τ₂ hmatch, restrict_glue_right hcomp hp hpl τ₁ τ₂ hmatch⟩,
    fun _ h => glue_unique hcomp hp hpl τ₁ τ₂ hmatch _ h.1 h.2⟩
+
+/-! ## The clause at the site
+
+The statements above are in raw data: explicit offsets with their order proofs. The site's own
+vocabulary is a morphism of `Int(D)`, and the two members of the Johnstone covering family of `l`
+cut at `p` are `coverLeft` and `coverRight`. Restriction along either is **definitionally** the
+raw-data restriction the clause is already stated with, so the site-indexed clause follows with
+no transport and no cast.
+-/
+
+/-- Restriction along the left member of the covering family **is** the raw-data restriction at
+offset `0` onto length `p`. A definitional identity: `coverLeft`'s offset is literally `0`. -/
+theorem restrictTr_coverLeft (l : Obj F.Duration) (p : ↑F.Duration) (hp : 0 ≤ p)
+    (hpl : p ≤ l.val) (υ : Beh F l.val) :
+    Beh.restrictTr (coverLeft l p hp hpl) υ
+      = Beh.restrict 0 p le_rfl hp (by rw [zero_add]; exact hpl) υ :=
+  rfl
+
+/-- Restriction along the right member of the covering family **is** the raw-data restriction at
+offset `p` onto length `l - p`. A definitional identity: `coverRight`'s offset is literally
+`p`. -/
+theorem restrictTr_coverRight (l : Obj F.Duration) (p : ↑F.Duration) (hp : 0 ≤ p)
+    (hpl : p ≤ l.val) (υ : Beh F l.val) :
+    Beh.restrictTr (coverRight l p hp hpl) υ
+      = Beh.restrict p (l.val - p) hp (sub_nonneg.mpr hpl) (by rw [add_sub_cancel]) υ :=
+  rfl
+
+/--
+**The coverage's compatible-family condition is the seam hypothesis.** The two covering morphisms
+of `l` at `p` meet in exactly one point (`cover_germ_composites`), so a compatible family for
+this coverage is a pair of sections whose restrictions to that single germ agree — an equality in
+`Beh F 0`. This says that equality is equivalent to the raw `hmatch`: `τ₁`'s state at `p` is
+`τ₂`'s state at `0`.
+
+With `Beh.germEquiv` this is the statement that the germ of a section is its endpoint state, read
+through both covering morphisms at once. It is what licenses stating the clause with `hmatch`
+rather than with an equality of germ sections.
+
+`Beh.restrictTr` must be unfolded before `rw` can see the `Beh.restrict_states` pattern — the
+`simp only [Beh.restrictTr, rres, lres]` below is a measured requirement, not housekeeping: the
+morphism's offset is otherwise hidden inside `Tr.shift`.
+-/
+theorem compat_iff_match (l p : F.Duration) (hp : 0 ≤ p) (hpl : p ≤ l)
+    (τ₁ : Beh F p) (τ₂ : Beh F (l - p)) :
+    Beh.restrictTr (l' := (⟨0, le_refl 0⟩ : Obj F.Duration)) (l := ⟨p, hp⟩) (rres hp) τ₁
+        = Beh.restrictTr (l' := (⟨0, le_refl 0⟩ : Obj F.Duration))
+            (l := ⟨l - p, sub_nonneg.mpr hpl⟩) (lres (sub_nonneg.mpr hpl)) τ₂
+      ↔ τ₁.val.states p (Beh.mem_dom τ₁ hp le_rfl)
+          = τ₂.val.states 0 (Beh.mem_dom τ₂ le_rfl (sub_nonneg.mpr hpl)) := by
+  constructor
+  · intro h
+    have h0 := states_eq_of_eq h 0 (by exact ⟨le_rfl, le_rfl⟩) (by exact ⟨le_rfl, le_rfl⟩)
+    simp only [Beh.restrictTr, rres, lres] at h0
+    rw [Beh.restrict_states (p - 0) 0 _ _ _ τ₁ 0 _
+          (Beh.mem_dom τ₁ (by simpa using hp) (by simp)),
+        Beh.restrict_states 0 0 _ _ _ τ₂ 0 _
+          (Beh.mem_dom τ₂ (by simp) (by simpa using sub_nonneg.mpr hpl))] at h0
+    rw [PartialHistory.states_eq_of_time_eq τ₁.val (p - 0 + 0) p (by simp) _
+          (Beh.mem_dom τ₁ hp le_rfl),
+        PartialHistory.states_eq_of_time_eq τ₂.val (0 + 0) 0 (by simp) _
+          (Beh.mem_dom τ₂ le_rfl (sub_nonneg.mpr hpl))] at h0
+    exact h0
+  · intro h
+    refine Beh.ext (partialHistory_ext rfl ?_)
+    intro r hr hr'
+    have hr0 : r = 0 := le_antisymm hr.2 hr.1
+    subst hr0
+    simp only [Beh.restrictTr, rres, lres] at hr hr' ⊢
+    rw [Beh.restrict_states (p - 0) 0 _ _ _ τ₁ 0 hr
+          (Beh.mem_dom τ₁ (by simpa using hp) (by simp)),
+        Beh.restrict_states 0 0 _ _ _ τ₂ 0 hr'
+          (Beh.mem_dom τ₂ (by simp) (by simpa using sub_nonneg.mpr hpl))]
+    rw [PartialHistory.states_eq_of_time_eq τ₁.val (p - 0 + 0) p (by simp) _
+          (Beh.mem_dom τ₁ hp le_rfl),
+        PartialHistory.states_eq_of_time_eq τ₂.val (0 + 0) 0 (by simp) _
+          (Beh.mem_dom τ₂ le_rfl (sub_nonneg.mpr hpl))]
+    exact h
+
+/-- **The *Sheaf* clause, at the site.** The same `∃!` as `sheaf_clause`, stated along the two
+members of the Johnstone covering family rather than at raw offsets. It is the raw clause read
+through `restrictTr_coverLeft` and `restrictTr_coverRight`, both of which are `rfl` — no
+transport, no cast. This closes the loop `cover_germ_composites` opens: that theorem says the two
+covering morphisms meet in one point, and this says the sheaf condition over that coverage holds.
+-/
+theorem sheaf_clause_site (hcomp : TaskFrame.Compositional F.TaskRel) (l : Obj F.Duration)
+    (p : ↑F.Duration) (hp : 0 ≤ p) (hpl : p ≤ l.val)
+    (τ₁ : Beh F p) (τ₂ : Beh F (l.val - p))
+    (hmatch : τ₁.val.states p (Beh.mem_dom τ₁ hp le_rfl)
+      = τ₂.val.states 0 (Beh.mem_dom τ₂ le_rfl (sub_nonneg.mpr hpl))) :
+    ∃! υ : Beh F l.val,
+      Beh.restrictTr (coverLeft l p hp hpl) υ = τ₁ ∧
+      Beh.restrictTr (coverRight l p hp hpl) υ = τ₂ := by
+  simp only [restrictTr_coverLeft, restrictTr_coverRight]
+  exact sheaf_clause hcomp hp hpl τ₁ τ₂ hmatch
 
 end FormalSystem.Semantics.Presheaf
 
