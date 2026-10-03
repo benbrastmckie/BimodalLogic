@@ -2,7 +2,7 @@
 
 - **Task**: 718 - Find the correct methods, definitions and semantic basis for establishing
   decidability of full L⁺ with the stability operator in the language
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 9.5 hours
 - **Dependencies**: None (consumes 563/564/565/566/567/616/617/618 as read-only context; files no
   work into them)

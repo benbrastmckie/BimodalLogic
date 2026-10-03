@@ -11,8 +11,8 @@ next_project_number: 720
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,564,565,567,570,604,616,617,664,705,706,710,711,713,714,716,718 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 2 | 231,282,296,465,497,566,618,709,712,719 | 298,464,502,564,565,616,710,711,718 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,564,565,567,570,604,616,617,664,705,706,710,711,713,714,716 | -- | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 2 | 231,282,296,465,497,566,618,709,712,719 | 298,464,502,564,565,616,710,711 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -73,7 +73,6 @@ next_project_number: 720
 713 [NOT STARTED] — OPTIONAL, FILED NOT SCHEDULED. Nothing depends on this task...
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
-718 [IMPLEMENTING] — Find the correct methods, definitions and semantic basis for...
 709 [NOT STARTED] — STATUS NOTE (2026-10-02, SUPERSEDES THE HEADLINE BELOW -- the...
 712 [BLOCKED] — STATUS NOTE (2026-10-02, THE STATEMENT BELOW IS NOW REFUTED...
 
@@ -136,12 +135,13 @@ ADJACENCY. Consumes tasks 563, 564, 565, 566 and the route verdict of task 718. 
 ---
 
 ### 718. Omega sequence decidability full lplus
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: formal:logic
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [718_omega_sequence_decidability_full_lplus/reports/02_ranked-route-analysis.md]
 - **Plan**: [718_omega_sequence_decidability_full_lplus/plans/02_route-probes-and-handoff.md]
+- **Summary**: [718_omega_sequence_decidability_full_lplus/summaries/02_route-probes-and-handoff-summary.md]
 
 **Description**: Find the correct methods, definitions and semantic basis for establishing decidability of full L-plus with the stability operator in the language, with omega-sequence forward histories as the primary candidate route.
 

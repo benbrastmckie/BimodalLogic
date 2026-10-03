@@ -35,21 +35,37 @@
       "category": "PATTERN",
       "source_artifact": "specs/718_omega_sequence_decidability_full_lplus/summaries/02_route-probes-and-handoff-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["lean4", "evidence-probes", "lake-import", "check-evidence-probes.sh", "standalone-probe"]
+      "suggested_keywords": [
+        "lean4",
+        "evidence-probes",
+        "lake-import",
+        "check-evidence-probes.sh",
+        "standalone-probe"
+      ]
     },
     {
       "content": "For ad hoc Lean probes needing a small finite bi-serial frame fixture (FrameOver.ofSlicedStep), using the COMPLETE/total relation (fun _ _ _ => True) on a 2-element carrier (Bool) is a cheap way to get genuine branching (useful for existential-vs-universal-summary divergence tests) while making bi-seriality and the step-path IsStepPath obligation trivial (the Rf-step conjunct becomes `trivial`, leaving only arithmetic on the slice/offset component to prove).",
       "category": "TECHNIQUE",
       "source_artifact": "specs/718_omega_sequence_decidability_full_lplus/summaries/02_route-probes-and-handoff-summary.md",
       "confidence": 0.7,
-      "suggested_keywords": ["lean4", "fixture", "ofSlicedStep", "bi-serial", "decidability-probe"]
+      "suggested_keywords": [
+        "lean4",
+        "fixture",
+        "ofSlicedStep",
+        "bi-serial",
+        "decidability-probe"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1791007802_90fb84",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 7,
     "phases_total": 7
   }
