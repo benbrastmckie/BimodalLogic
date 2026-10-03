@@ -1,0 +1,47 @@
+{
+  "status": "researched",
+  "started_at": "2026-10-03T15:00:34Z",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md",
+      "summary": "Cross-language decidability inventory (PROVED/NOT ESTABLISHED/WITHDRAWN/REFUTED by declaration), the L-side account (Z-time validity of L is decided by Compression.decidableValidZTime; tableau biconditional open), ranked routes with falsifiers and next experiments, a per-task revision specification draft, and itemised ROADMAP reconciliation"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791039495_e7bf05_721",
+    "agent_type": "logic-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "research",
+      "logic-research-agent"
+    ],
+    "duration_seconds": 816,
+    "findings_count": 7,
+    "context_files_loaded": [
+      "README.md",
+      "return-metadata-file.md",
+      "ztime-no-finite-carrier-fmp.md",
+      "user-decision-contract.md"
+    ],
+    "mathlib_lookups_performed": 0,
+    "lean_lsp_lookups_performed": 1,
+    "compile_checks_performed": 1
+  },
+  "completed_at": "2026-10-03T15:14:10Z",
+  "modified_files": [
+    "specs/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md"
+  ],
+  "next_steps": "Run /plan 721: the plan should (1) emit specs/721_.../followup-scope-spec.md from report section 4, (2) reconcile specs/ROADMAP.md per report section 5 with Phase 0 left undecided, (3) not write specs/state.json or specs/TODO.md.",
+  "user_decision": {
+    "question": "The ROADMAP success metric says every refutation must live in FormalSystem/ as a cited theorem (tasks 706, 710), but task 720 as filed only moves the two probe files into the CI-guarded specs/evidence/ collection. Which reading should the revision specification and the ROADMAP adopt?",
+    "options": [
+      "Option A — library landing: revise 706/710 to land Probe706.no_finite_carrier_sat and Probe710.not_finite_width_fmp as FormalSystem/ theorems; 720 then re-points citations to library names",
+      "Option B — evidence collection suffices: revise the success metric to accept specs/evidence/ (check-evidence-probes.sh) as the home of refutations; 720 stands as filed"
+    ],
+    "recommended": "Option A — library landing: revise 706/710 to land Probe706.no_finite_carrier_sat and Probe710.not_finite_width_fmp as FormalSystem/ theorems; 720 then re-points citations to library names",
+    "blocking": false
+  }
+}
