@@ -1,0 +1,32 @@
+{
+  "status": "researched",
+  "agent_type": "general-research-agent",
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "session_id": "sess_1791051010_4c2417_727",
+  "dispatch_seq": 8,
+  "findings_count": 3,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/727_stop_literal_null_file_scope_writes_and_promote_check/reports/01_stop-null-file-scope-writes.md",
+      "summary": "Confirms no live script writes literal-null file_scope (sole historical writer was a one-off 2026-07-27 manual/agent edit, already fully repaired); confirms null_value promotion to FAIL is safe today (0 live findings) and specs exactly what Check 10 code/test changes that requires; leaves task 711's directory rename as a deferred, low-risk decision for the plan phase."
+    }
+  ],
+  "memory_candidates": [
+    {
+      "content": "git log -S'<literal>' --oneline on a JSON state file can mislead on attribution: -S matches any commit that changes the occurrence COUNT of a string, including commits that only REMOVE/relocate it (e.g. archiving entries away). To find the true introducing commit, diff each candidate commit's before/after content with jq (presence+value check) rather than trusting which commits the pickaxe search surfaces or trusting a prior commit message's own attribution.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/727_stop_literal_null_file_scope_writes_and_promote_check/reports/01_stop-null-file-scope-writes.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["git log -S", "pickaxe", "attribution", "jq diff", "state.json forensics"]
+    },
+    {
+      "content": "In BimodalLogic's validate-state.sh, promoting one WARN-level sub-state of a multi-sub-state check to FAIL (while others stay WARN) requires splitting both the per-finding log call (branch per sub_state) AND the aggregate summary line (which otherwise blends all sub-states into one log_warn and would misclassify an unrelated sub-state's findings as FAIL). A single promoted sub-state needs its own conditionally-emitted summary line, not a wholesale re-level of the existing one.",
+      "category": "PATTERN",
+      "source_artifact": "specs/727_stop_literal_null_file_scope_writes_and_promote_check/reports/01_stop-null-file-scope-writes.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["validate-state.sh", "WARN to FAIL promotion", "Check 10", "file_scope", "aggregate summary line"]
+    }
+  ],
+  "next_steps": "Run /plan 727 to create implementation plan"
+}

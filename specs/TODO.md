@@ -26,7 +26,7 @@ next_project_number: 729
 
 ### Agent System
 
-727 [RESEARCHING] — Stop archival and orchestration writes from emitting a...
+727 [RESEARCHED] — Stop archival and orchestration writes from emitting a...
 
 ### Algebraic Representation
 
@@ -158,10 +158,11 @@ ACCEPTANCE. Every surviving confirmed instance is repaired at its source or reco
 ---
 
 ### 727. Stop literal null file scope writes and promote check
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [727_stop_literal_null_file_scope_writes_and_promote_check/reports/01_stop-null-file-scope-writes.md]
 
 **Description**: Stop archival and orchestration writes from emitting a literal-null file_scope, and promote the null_value sub-state to FAIL
 
