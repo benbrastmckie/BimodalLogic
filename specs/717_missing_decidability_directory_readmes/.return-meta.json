@@ -1,17 +1,22 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/717_missing_decidability_directory_readmes/reports/01_missing-decidability-directory-readmes.md",
-      "summary": "Research for the three missing Decidability directory READMEs: the readme-lint gated-vs-reported contract (only Checks 1 and 3 fail the build), the code-fence-blind link scan that is the principal failure risk, the adjacent C9/C14/INV gates, the resolved house style (exemplar structure plus a Last verified stamp), and per-directory module inventories, route narratives and scope boundaries for all 33 modules."
+      "type": "plan",
+      "path": "specs/717_missing_decidability_directory_readmes/plans/01_missing-decidability-directory-readmes.md",
+      "summary": "Five-phase plan to author the three missing Decidability subtree READMEs and verify the readme-lint gate flips to exit 0."
     }
   ],
+  "next_steps": "Run /implement 717 to execute the plan",
+  "memory_candidates": [],
   "metadata": {
     "session_id": "sess_1790985943_97f50d_717",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 4.5,
+    "dependency_waves": [[1, 2, 3], [4], [5]]
+  },
+  "dispatch_seq": 2
 }

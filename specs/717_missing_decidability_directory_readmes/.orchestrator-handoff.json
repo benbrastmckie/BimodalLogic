@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 5,
+  "session_id": "sess_1790985943_97f50d_717",
+  "task_number": 717,
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/717_missing_decidability_directory_readmes/plans/01_missing-decidability-directory-readmes.md",
+      "summary": "Five-phase plan to author the three missing Decidability subtree READMEs and verify the readme-lint gate flips to exit 0."
+    }
+  ],
+  "next_steps": "Run /implement 717 to execute the plan"
+}

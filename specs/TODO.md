@@ -78,7 +78,7 @@ next_project_number: 718
 
 ### Documentation
 
-717 [RESEARCHED] — Write the three missing directory READMEs that fail...
+717 [PLANNED] — Write the three missing directory READMEs that fail...
 
 ### Formula Refactor
 
@@ -109,11 +109,12 @@ next_project_number: 718
 ## Tasks
 
 ### 717. Missing decidability directory readmes
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: documentation
 - **Dependencies**: None
 - **Research**: [717_missing_decidability_directory_readmes/reports/01_missing-decidability-directory-readmes.md]
+- **Plan**: [717_missing_decidability_directory_readmes/plans/01_missing-decidability-directory-readmes.md]
 
 **Description**: Write the three missing directory READMEs that fail scripts/readme-lint.sh in CI: FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/ (25 modules), PlusWitnessFamily/Compression/ (5 modules), PlusWitnessFamily/Limits/ (3 modules). Follow docs/development/DIRECTORY_README_STANDARD.md and match the depth of the existing sibling FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/README.md (purpose statement, route narrative, per-module table, scope boundaries). Acceptance: bash scripts/readme-lint.sh FormalSystem BimodalTools exits 0
 
