@@ -1,5 +1,5 @@
 ---
-next_project_number: 729
+next_project_number: 730
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 729
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,711,712,713,714,716,720,722,723,725,726,728 | -- | algebraic-representation, categorical-structure, code-quality, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,711,712,713,714,716,720,722,723,725,726,728,729 | -- | algebraic-representation, categorical-structure, code-quality, ... |
 | 2 | 231,282,296,465,497,618,724 | 298,464,502,616,723 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -104,7 +104,29 @@ next_project_number: 729
 711 [BLOCKED] — RE-SCOPED 2026-10-03 BY USER RULING. On 2026-10-03 the user...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
+### Repo Hygiene
+
+729 [NOT STARTED] — Add purpose-written .title fields to specs/state.json's...
+
 ## Tasks
+
+### 729. State json title fields for todo readability
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: repo-hygiene
+- **Dependencies**: None
+
+**Description**: Add purpose-written `.title` fields to specs/state.json's active_projects entries so TODO.md stops rendering truncated description prose as task names.
+
+CONTEXT: the entry schema (project_number, project_name, status, task_type, description, topic, dependencies, created, last_updated, file_scope) has no title field populated — all 61 entries lack `.title`. This is NOT a defect. `.title` is an optional field with a documented fallback chain: `generate-todo.sh:188` ("Title fallback: derive from project_name if title is empty", `title="${project_name//_/ }"`) and `generate-task-order.sh:192` ("(.title // .description // .project_name) -- a purpose-written .title is preferred over the top of a long prose .description; .description remains the fallback for title-less tasks, and .project_name is the last resort when both are absent"). The cost of relying on the fallback is readability: TODO.md currently renders the first ~60 characters of `description`, so entries read like "720 — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT..." and "709 — STANDING (second re-scope; SUPERSEDES BOTH..." — truncated status notes rather than names.
+
+SCOPE: (1) write a concise noun-phrase `.title` for each entry in specs/state.json's active_projects, deriving it from `description` and `project_name`; target under 70 characters, no dates, no status prefixes such as RE-SCOPED/STANDING/HARD/CAPSTONE, no task-number references; prioritize the dependency-ready wave-1 set (127, 128, 178, 257, 298, 464, 481, 502, 559, 566, 570, 604, 616, 617, 664, 709, 711, 712, 713, 714, 716, 720, 722, 723, 725, 726, 728) since those are the entries selected from next. (2) Regenerate TODO.md through the existing generator and confirm the titles render in both the grouped-by-topic listing and the dependency-wave table. (3) Verify the fallback path still works for any entry deliberately left title-less, so the optional-field contract is preserved rather than silently becoming mandatory.
+
+NON-GOALS: no schema change (the field is already supported by both generators); no edit to `description`, `project_name`, `topic`, or any other existing field; no change to the generators themselves; no renaming of task directories, whose names derive from `project_name` and must stay stable.
+
+Effort: small-to-medium, mostly editorial judgment rather than code.
+
+---
 
 ### 728. Sweep phantom declaration citations
 - **Status**: [NOT STARTED]
