@@ -1,7 +1,7 @@
 # Implementation Plan: Determinism clause and separatedness asymmetry
 
 - **Task**: 567 - Determinism clause and separatedness asymmetry
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: 563 (landed: the `Semantics/Presheaf/` cluster exists)
 - **Research Inputs**: `specs/567_determinism_clause_and_separatedness_asymmetry/reports/02_determinism-clause-separatedness.md`, `specs/567_determinism_clause_and_separatedness_asymmetry/reports/01_retiming-invariance-definability-findings.md`
@@ -139,7 +139,7 @@ README), so they may be run in either order or concurrently — but both consume
 
 ---
 
-### Phase 1: The clause below the lock [NOT STARTED]
+### Phase 1: The clause below the lock [COMPLETED]
 
 **Goal**: Create `FormalSystem/Semantics/Presheaf/Determinism.lean` carrying `Separated`, the
 choice-free half of the clause, the world-to-section bridge, and the `SingletonClasses` content
@@ -148,33 +148,43 @@ written out without that name — everything the clause needs that is statable u
 
 **Tasks**:
 
-- [ ] Create the module with the repository's copyright header (copy the four-line form from
+- [x] Create the module with the repository's copyright header (copy the four-line form from
   `FormalSystem/Semantics/Presheaf/Sheaf.lean`), importing exactly `FormalSystem.Init`,
   `FormalSystem.Semantics.Presheaf.Sheaf` and `FormalSystem.Semantics.Presheaf.Ray`. Do **not**
   import `Semantics.DeterministicBridge` — that import is what breaks the lock.
-- [ ] Transcribe from `probes/01_determinism-clause.lean`, in `namespace
+  *(deviation: altered — the stated three-import list is insufficient. `TaskFrame.Deterministic`
+  is declared in `Semantics/FrameProperty.lean`, which none of the three reach, so the module
+  failed to elaborate with "The environment does not contain
+  `FormalSystem.Semantics.TaskFrame.Deterministic`" at both `separated_of_deterministic` and
+  `states_eq_of_deterministic_sec`. Added `import FormalSystem.Semantics.FrameProperty`, which
+  carries only `Semantics/TaskFrame.lean` plus two Mathlib order files and so does not break the
+  lock — the `assert_not_exists` line still closes, and the full gate set passes. The probe got
+  this name through its `Semantics.DeterministicBridge` import, which this module must not have.
+  Same correction shape the plan's Phase 3 Scope Hypothesis already sanctions for
+  `fzero_determined`; recorded, not silently widened.)*
+- [x] Transcribe from `probes/01_determinism-clause.lean`, in `namespace
   FormalSystem.Semantics.Presheaf`: `Separated`, `states_eq_of_deterministic_sec`,
   `separated_of_deterministic`, `secOf`, `secOf_states`.
-- [ ] Add `states_eq_of_separated`: probe 01's `singletonClasses_of_separated` body, stated with
+- [x] Add `states_eq_of_separated`: probe 01's `singletonClasses_of_separated` body, stated with
   `TaskFrame.SingletonClasses` unfolded (`∀ (τ σ : WorldHistory F) (x : F.Duration), τ.state x =
   σ.state x → ∀ y, τ.state y = σ.state y`), because the `SingletonClasses` *name* is behind the
   lock while its content is not.
-- [ ] Give every declaration a docstring (C19). Keep the module docstring minimal here — the
+- [x] Give every declaration a docstring (C19). Keep the module docstring minimal here — the
   conceptual prose, the two senses of separatedness and the `## References` block are Phase 4.
-- [ ] Close the file with `assert_not_exists FormalSystem.ProofSystem.Axiom
+- [x] Close the file with `assert_not_exists FormalSystem.ProofSystem.Axiom
   FormalSystem.ProofSystem.DerivationTree`, matching the cluster's other four modules.
-- [ ] Pin the axiom profile in a comment or docstring line from a local `#print axioms` run:
+- [x] Pin the axiom profile in a comment or docstring line from a local `#print axioms` run:
   `states_eq_of_deterministic_sec [propext]`, `separated_of_deterministic [propext, Quot.sound]`,
   `states_eq_of_separated [propext, Quot.sound]`.
-- [ ] Re-read `FormalSystem/Semantics/Presheaf.lean` immediately before editing it (a sibling may
+- [x] Re-read `FormalSystem/Semantics/Presheaf.lean` immediately before editing it (a sibling may
   have changed it this cycle), then add the one-line
   `import FormalSystem.Semantics.Presheaf.Determinism` in the existing alphabetical position and
   a `## Modules` bullet for it.
-- [ ] Regenerate the root aggregator: `lake exe mk_all --lib FormalSystem` (C33).
-- [ ] Regenerate `FormalSystem/Semantics/Presheaf/README.md`'s inventory block
+- [x] Regenerate the root aggregator: `lake exe mk_all --lib FormalSystem` (C33).
+- [x] Regenerate `FormalSystem/Semantics/Presheaf/README.md`'s inventory block
   (`bash scripts/check-module-invariants.sh --emit-inventory`) and write the hand-authored
   description column for the new row.
-- [ ] Commit this phase's own hunks only — explicit path list, never a directory or glob `git add`.
+- [x] Commit this phase's own hunks only — explicit path list, never a directory or glob `git add`.
 
 **Timing**: 1.25 hours
 

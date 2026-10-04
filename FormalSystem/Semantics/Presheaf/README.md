@@ -6,12 +6,13 @@ histories, packaged as a presheaf on the durations rather than treated one domai
 The objects of `Int(D)` are the durations — the positive cone of a temporal order — and its
 morphisms `l' → l` are the **translations** `Tr p`, one for each offset `p` with `p + l' ≤ l`.
 `Beh(F)(l)` is the set of partial histories whose domain is exactly `[0, l]`, and restriction
-along `Tr p` is `τ ↦ (z ↦ τ(p + z))`. Four of the five modules are built on
+along `Tr p` is `τ ↦ (z ↦ τ(p + z))`. Four of the six modules are built on
 `Semantics/PartialHistory.lean` alone; `Presheaf/Directed.lean` additionally imports the
 `Semantics/Extension/` cluster, because the two clauses it discharges are wrappers on
-`thm:extension`. The cluster sits strictly **below** `Semantics/Truth.lean` regardless: all five
-modules close with `assert_not_exists` on the proof system, so the layering is locked rather than
-merely observed.
+`thm:extension`, and `Presheaf/Determinism.lean` additionally imports
+`Semantics/FrameProperty.lean` for `TaskFrame.Deterministic` alone. The cluster sits strictly
+**below** `Semantics/Truth.lean` regardless: all six modules close with `assert_not_exists` on the
+proof system, so the layering is locked rather than merely observed.
 
 Four clauses of the presheaf dictionary are discharged here. *Germs* identifies the sections over
 the zero duration with the world states (`Beh.germEquiv`), and *Sheaf* glues two sections
@@ -55,6 +56,7 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 | File | Lines | Description |
 |------|------:|-------------|
 | `Behavior.lean` | 296 | The behavior presheaf `Beh F`: the sections over a duration, the restriction action at raw data and at a site morphism, presheaf functoriality, and the *Germs* clause `Beh F 0 ≃ F.WorldState` |
+| `Determinism.lean` | 187 | The *Determinism* clause below the layering lock: `Separated` as injectivity of every restriction map, the choice-free (⇒) half, the world-to-section bridge `secOf`, and the converse's frame-side conclusion with `SingletonClasses` unfolded |
 | `Directed.lean` | 515 | The *Totality* and *Directed Gluing* clauses as wrappers on `thm:extension`: the translate `place`, the cut `ofWorld`, the directed union `directedSup`, both clauses in binder-free engine form with their instantiations, and the choice record |
 | `Ray.lean` | 438 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections and bridges, and the ray-layer gluing operator with its reading equations, restriction identities, uniqueness and totality |
 | `Sheaf.lean` | 434 | <!-- TODO: add description --> |
@@ -87,6 +89,11 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
   bounded section over `l`
 - `StabFibre F t s`, `RayPair F t s` — the `⊡` quantification domain at `(t, s)`, and the fibre
   product of the past-ray and future-ray spaces over the seam state
+- `Separated F` — separatedness of `Beh F`: every restriction map is injective. At `l' = 0` this
+  is injectivity of the germ maps, the form every consumer uses
+- `secOf` — the world-to-section bridge: a possible world cut down to the section over `[0, l]`
+  based at a time `m`, through which the `Beh`-level clause meets the total-history statement
+  `PlusLanguage.states_eq_of_deterministic`
 - `place` — the translate: a section over `m` placed at offset `p`, as a partial history with
   domain `Interval p (p + m)`. Written against the interval rather than through
   `PartialHistory.timeShift`, which keeps the arithmetic negation-free
@@ -149,6 +156,15 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
   what makes the site-level clause free
 - `compat_iff_match` — the coverage's compatible-family condition, as an equality of germ
   sections in `Beh F 0`, is the raw seam hypothesis
+- `separated_of_deterministic` — the (⇒) half of the *Determinism* clause: a deterministic frame
+  has separated behavior. Choice-free (`[propext, Quot.sound]`), and it consumes only the germ at
+  the offset
+- `states_eq_of_deterministic_sec` — the section-level singleton bridge, `[propext]`: the
+  `Beh`-layer counterpart of `PlusLanguage.states_eq_of_deterministic` by the same three-step
+  proof, not an instance of it
+- `states_eq_of_separated` — the (⇐) half's frame-side conclusion with `TaskFrame.SingletonClasses`
+  unfolded, because that name sits above this cluster's lock. The biconditional itself is
+  `Semantics/DeterministicBridge.lean`'s `deterministic_iff_separated`
 - `restrict_ofWorld` — the bridge both new clauses share: if a possible world extends
   `place p hm σ`, restricting its cut over `[0, l]` along the translation by `p` returns `σ`
 - `totality_of_isRestriction` — the *Totality* clause's **engine**: every restriction map of the

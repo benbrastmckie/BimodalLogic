@@ -6,6 +6,7 @@ Authors: Benjamin Brast-McKie
 
 import FormalSystem.Semantics.Presheaf.Behavior
 import FormalSystem.Semantics.Presheaf.Directed
+import FormalSystem.Semantics.Presheaf.Determinism
 import FormalSystem.Semantics.Presheaf.Ray
 import FormalSystem.Semantics.Presheaf.Sheaf
 import FormalSystem.Semantics.Presheaf.Site
@@ -27,6 +28,9 @@ Aggregator for `Semantics/Presheaf/`. See `Semantics/Presheaf/README.md`.
 - `Presheaf.Directed` — the *Totality* and *Directed Gluing* clauses: both wrappers on
   `thm:extension`, with the translate `place`, the cut `ofWorld`, the directed union `directedSup`,
   and the choice record that separates the two clauses' dependence on `Classical.choice`
+- `Presheaf.Determinism` — the *Determinism* clause below the layering lock: separatedness of
+  `Beh F` as injectivity of every restriction map, the choice-free (⇒) half, the world-to-section
+  bridge `secOf`, and the content of the converse's frame-side conclusion
 - `Presheaf.Ray` — the ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam
   projections, the restrictions of a possible world to its two rays, and the bridges to
   `PartialHistory` and to `Beh F l`
