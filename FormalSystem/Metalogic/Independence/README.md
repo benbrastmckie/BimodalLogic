@@ -84,6 +84,12 @@ union.
     `ValidIn fc φ ↔ fc = .ZTime ∨ .RTime ≤ fc`, not `↔ .RTime ≤ fc`, which would be false. The
     underivability corollary is `not_derivable_dense_sep`.
 
+`BehSeparatedness.lean` is deliberately **not** a thirteenth numbered result. It carries a
+*strictness* result — separatedness of `Beh F` is strictly stronger than the validity of
+*Determined* on `F` — rather than an underivability result established by refuting a formula in a
+model, which is what the twelve above are. Its countermodel is result 5's `F°`, reused, and the
+asymmetry it records sharpens result 5's second half on the presheaf side.
+
 Results 2 and 3 are the two halves of the finding that the frame-class *narrowings* are not
 Galois-closed, in contrast with the paper's bare classes — which are closed, by
 `Semantics/Correspondence/Indicator.lean`'s `galoisClosed_sat_dense` and `galoisClosed_isDiscrete`.
@@ -125,6 +131,7 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/Metalogic/Independence -->
 | File | Lines | Description |
 |------|-------|-------------|
+| `BehSeparatedness.lean` | 96 | The countermodel half of the *Determinism* theorem pair of `app:presheaf-dictionary`: `driftSec` cuts the rate-1 and rate-2 affine drift worlds down to sections over `[0, 1]`, `fzero_not_separated` refutes separatedness of `Beh F°` off their shared germ at `0`, and `separated_strictly_stronger` pairs that with `fzero_determined` — separatedness is strictly stronger than the validity of *Determined* on the frame. |
 | `ClockFrame.lean` | 229 | The periodic clock frame: temporal order `D = ℚ`, world-state carrier the rational circle `W = ℚ ⧸ ℤ`, task relation the deterministic translation flow. All `TaskFrame` obligations discharged, with a reference world history. |
 | `CoNotPriorU.lean` | 527 | The symmetric irrational arc valuation on the clock frame, the refutation of `Axiom.prior_U_gap` in that model, and the two independence statements. |
 | `CoarsenedModels.lean` | 756 | The non-standard semantics the pasting-independence argument runs on: `CoarseModel`, `SameUnder`, `CTruthAt`; the three structural ports (`c_truth_congr_ext`, `cTruthAt_timeShift`, `c_stab_state_only`); the atomization transfer; the six naive `⊡` validities; and naive soundness `naive_cValid`. |
@@ -172,6 +179,12 @@ hypothesis); derive validity of the assumptions; and exhibit a valuation refutin
   indistinguishable pair.
 - `determined_valid_on_non_deterministic` (`DeterminismUndefinable.lean`) — `F°` validates
   *Determined* without being deterministic, refuting the converse of `determined_of_deterministic`
+- `fzero_not_separated`, `separated_strictly_stronger` (`BehSeparatedness.lean`) — the presheaf-side
+  sharpening of the line above: separatedness of `Beh F` is **strictly stronger** than the validity
+  of *Determined* on `F`, with `F°` the witness for the failure of the converse. The clause the pair
+  sharpens — `F.Deterministic ↔ Presheaf.Separated F` at a regular frame — is
+  `Semantics/DeterministicBridge.lean`'s `deterministic_iff_separated`, and **its** converse does
+  not fail; a biconditional has none to fail
   (`PlusLanguage/PlusDeterminism.lean`).
 - `plusTruthAt_iff_mem_satSet` (`StateSetTruth.lean`) — the state-set bridge, proved once against
   (H1)+(H2) and instantiated twice; `[propext]` alone.

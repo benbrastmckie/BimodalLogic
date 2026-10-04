@@ -280,7 +280,7 @@ re-derived rather than repackaged, which is not this phase's job.
 
 ---
 
-### Phase 3: The asymmetry, at the repository's own drift frame [NOT STARTED]
+### Phase 3: The asymmetry, at the repository's own drift frame [COMPLETED]
 
 **Goal**: Create `FormalSystem/Metalogic/Independence/BehSeparatedness.lean` carrying the
 countermodel half of the theorem pair: `Beh F°` is not separated, while `F°` validates every
@@ -288,24 +288,29 @@ instance of *Determined*.
 
 **Tasks**:
 
-- [ ] Create the module with the standard copyright header, importing
+- [x] Create the module with the standard copyright header, importing
   `FormalSystem.Metalogic.Independence.StarDiscrimination` (for `driftLinear`, which transitively
   brings `DriftFrame` and `DeterminismUndefinable`'s `fzero_determined`) and
   `FormalSystem.Semantics.Presheaf.Determinism` (for `Separated`). Verify the `fzero_determined`
   import path at implementation time rather than assuming transitivity; add
   `Independence.DeterminismUndefinable` explicitly if it does not come through.
-- [ ] Transcribe from probe 01, in `namespace FormalSystem.Metalogic.Independence`: `driftSec`,
+- [x] Transcribe from probe 01, in `namespace FormalSystem.Metalogic.Independence`: `driftSec`,
   `fzero_not_separated`, `separated_strictly_stronger`.
-- [ ] Docstring each declaration, pinning `[propext, Classical.choice, Quot.sound]` on
+- [x] Docstring each declaration, pinning `[propext, Classical.choice, Quot.sound]` on
   `fzero_not_separated` and `separated_strictly_stronger`. Keep the conceptual module prose for
   Phase 4.
-- [ ] Re-read `FormalSystem/Metalogic/Independence.lean`, then add
+  *(deviation: altered — both pins confirmed by `#print axioms` as written. `driftSec` was
+  additionally measured and is `[propext, Classical.choice, Quot.sound]` too, not the
+  `[propext, Quot.sound]` an earlier draft of the module docstring guessed; the choice is ambient
+  through `driftLinear` and the drift frame's construction. Docstring corrected to the measured
+  value before the build.)*
+- [x] Re-read `FormalSystem/Metalogic/Independence.lean`, then add
   `import FormalSystem.Metalogic.Independence.BehSeparatedness` in the file's existing
   (dependency-ordered, not alphabetical) convention, after `StarDiscrimination`.
-- [ ] Regenerate the root aggregator: `lake exe mk_all --lib FormalSystem`.
-- [ ] Regenerate `FormalSystem/Metalogic/Independence/README.md`'s inventory block and write the
+- [x] Regenerate the root aggregator: `lake exe mk_all --lib FormalSystem`.
+- [x] Regenerate `FormalSystem/Metalogic/Independence/README.md`'s inventory block and write the
   new row's description.
-- [ ] Commit this phase's own hunks only.
+- [x] Commit this phase's own hunks only.
 
 **Timing**: 1.25 hours
 

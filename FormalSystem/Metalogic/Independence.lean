@@ -25,6 +25,7 @@ import FormalSystem.Metalogic.Independence.CoarsenedModels
 import FormalSystem.Metalogic.Independence.PastedCoarseModels
 import FormalSystem.Metalogic.Independence.PastingIndependence
 import FormalSystem.Metalogic.Independence.StarDiscrimination
+import FormalSystem.Metalogic.Independence.BehSeparatedness
 import FormalSystem.Metalogic.Independence.ForwardDeterministicFrame
 import FormalSystem.Metalogic.Independence.LimitClosureFrame
 import FormalSystem.Metalogic.Independence.LimitClosureCountermodel
@@ -129,6 +130,12 @@ characterized outright.
 * `Independence/StarDiscrimination.lean` — the positive half of the discrimination footnote: the
   drift model with `|p| = [3/2, ∞)`, `fzero_refutes_sentDet`, `f1_sentDet`, and
   `star_discriminates_where_plus_cannot`.
+* `Independence/BehSeparatedness.lean` — the countermodel half of the *Determinism* theorem pair:
+  `driftSec`, `fzero_not_separated` and `separated_strictly_stronger`. Separatedness of `Beh F` is
+  **strictly stronger** than the validity of *Determined* on `F`, refuted at `F°`. The clause
+  itself — `F.Deterministic ↔ Presheaf.Separated F` at a regular frame — is
+  `Semantics/DeterministicBridge.lean`'s `deterministic_iff_separated`, whose own converse does
+  **not** fail.
 * `Independence/ForwardDeterministicFrame.lean` — `F^N` (`W = ℕ`, `D = ℤ`, the absorbing
   predecessor map): forward-deterministic and not `Deterministic`, with `fn_sentDet_stateLocal`,
   `fn_separates`, and the two-sided bound `fn_sentDet_bounds`.
