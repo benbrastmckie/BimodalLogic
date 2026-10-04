@@ -1,0 +1,36 @@
+{
+  "status": "researched",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/567_determinism_clause_and_separatedness_asymmetry/reports/02_determinism-clause-separatedness.md",
+      "summary": "The Determinism clause and the separatedness asymmetry are both compiled against the live tree: separated_iff_deterministic under [F.IsRegular] (converse via deterministic_of_singletonClasses, ZFC), the choice-free forward half, and separated_strictly_stronger at the drift frame F0 using driftLinear 1/driftLinear 2; cover-relative separatedness is shown unconditional, which fixes which sense of 'separated' the dictionary row means; the declared single-file scope is shown mechanically insufficient (DeterministicBridge is above the Presheaf cluster's assert_not_exists lock), and a three-phase siting plan with measured axiom pins is recommended."
+    },
+    {
+      "type": "other",
+      "path": "specs/567_determinism_clause_and_separatedness_asymmetry/probes/01_determinism-clause.lean",
+      "summary": "Compiled probe (exit 0, no sorry): Separated, states_eq_of_deterministic_sec, separated_of_deterministic, secOf/secOf_states, singletonClasses_of_separated, separated_iff_deterministic, driftSec, fzero_not_separated, separated_strictly_stronger, plus #print axioms pins."
+    },
+    {
+      "type": "other",
+      "path": "specs/567_determinism_clause_and_separatedness_asymmetry/probes/02_cover-separated.lean",
+      "summary": "Compiled probe (exit 0, no sorry): cover_separated — Johnstone-coverage separatedness of Beh F at no frame hypothesis, [propext, Quot.sound]; also confirms Semantics/Extension/Extension.lean is compatible with the Presheaf cluster's assert_not_exists lock."
+    }
+  ],
+  "user_decision": {
+    "question": "The theorem pair cannot fit task 567's declared single-file scope: Semantics/DeterministicBridge.lean (which defines SingletonClasses) transitively imports FormalSystem.ProofSystem.Axioms, so the ZFC half cannot be stated inside the Presheaf cluster under its assert_not_exists lock, and the F-degree-zero countermodel lives above Semantics/ entirely. Where should the out-of-cluster halves be sited?",
+    "options": [
+      "Option A - append deterministic_iff_separated to Semantics/DeterministicBridge.lean and add a new Metalogic/Independence/BehSeparatedness.lean for the asymmetry (two files beyond declared scope)",
+      "Option B - put both the biconditional and the asymmetry in one new Metalogic/Independence/BehSeparatedness.lean (one file beyond declared scope, but a Semantics-level dictionary row ends up sited under Metalogic/)"
+    ],
+    "recommended": "Option A - append deterministic_iff_separated to Semantics/DeterministicBridge.lean and add a new Metalogic/Independence/BehSeparatedness.lean for the asymmetry (two files beyond declared scope)",
+    "blocking": false
+  },
+  "metadata": {
+    "session_id": "sess_1791072120_6ec518_567",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
