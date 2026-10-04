@@ -2,23 +2,49 @@
   "phase": 2,
   "phase_name": "Pin the four in the C2 axiom baseline",
   "started_at": "2026-10-04T23:35:00Z",
-  "last_updated": "2026-10-04T23:40:00Z",
+  "last_updated": "2026-10-04T16:06:59Z",
   "objectives": [
-    {"id": 1, "description": "Add four #print axioms probe lines to C2 probe block", "status": "done", "files_touched": ["scripts/check-module-invariants.sh"]},
-    {"id": 2, "description": "Run the probe and read actual axiom lines", "status": "blocked", "files_touched": [], "note": "Deferred pending build per orchestrator memory-pressure scheduling hold; batched with final gate run"},
-    {"id": 3, "description": "Add four matching baseline lines (pcq hypothesis, unconfirmed)", "status": "done", "files_touched": ["scripts/check-module-invariants.sh"]},
-    {"id": 4, "description": "Confirm edits confined to C2 blocks; update pass-message count forty-six -> fifty", "status": "done", "files_touched": ["scripts/check-module-invariants.sh"]}
+    {
+      "id": 1,
+      "description": "Add four #print axioms probe lines to C2 probe block",
+      "status": "done",
+      "files_touched": [
+        "scripts/check-module-invariants.sh"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Run the probe and read actual axiom lines",
+      "status": "done",
+      "files_touched": []
+    },
+    {
+      "id": 3,
+      "description": "Add four matching baseline lines (pcq hypothesis, unconfirmed)",
+      "status": "done",
+      "files_touched": [
+        "scripts/check-module-invariants.sh"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "Confirm edits confined to C2 blocks; update pass-message count forty-six -> fifty",
+      "status": "done",
+      "files_touched": [
+        "scripts/check-module-invariants.sh"
+      ]
+    }
   ],
-  "current_objective": 2,
+  "current_objective": 4,
   "approaches_tried": [],
   "handoff_count": 0,
   "deviations": [
     {
       "task_id": "2.2",
       "description": "Run the probe and read the four emitted axiom lines from its output",
-      "type": "deferred",
-      "reason": "Orchestrator issued a memory-pressure scheduling hold on any command shelling out to `lake env lean` against the full FormalSystem import closure (concurrent leanchecker process + high swap on the host). The pcq axiom set was written as a hypothesis, matching every neighbouring row, but is NOT YET CONFIRMED.",
-      "annotation": "*(deviation: deferred — memory-pressure scheduling hold ...)*"
+      "type": "resolved",
+      "reason": "Memory-pressure hold cleared; batched gate run confirmed the probe's actual output is exactly [propext, Classical.choice, Quot.sound] for all four theorems, matching the pcq hypothesis. No baseline correction needed.",
+      "annotation": "*(deviation: deferred \u2014 memory-pressure scheduling hold ...)*"
     }
   ]
 }

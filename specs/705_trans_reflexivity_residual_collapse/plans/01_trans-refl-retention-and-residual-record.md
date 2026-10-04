@@ -240,7 +240,7 @@ the correction in the summary.
 
 ---
 
-### Phase 2: Pin the four in the C2 axiom baseline [IN PROGRESS]
+### Phase 2: Pin the four in the C2 axiom baseline [COMPLETED]
 
 **Goal**: `check-module-invariants.sh`'s C2 asserts the axiom dependencies of all four new
 theorems on every build, so the ledger's `Axioms` column can be read off the baseline rather
@@ -250,16 +250,14 @@ than typed.
 - [x] Add four `#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.{name}`
       lines to the C2 probe block, placed beside the existing `not_snce_share_congr` and
       `not_untl_shift_share_congr` probe lines. *(completed)*
-- [ ] Run the probe and **read** the four emitted axiom lines from its output.
-      *(deviation: deferred — memory-pressure scheduling hold from the orchestrator on any
-      command shelling out to `lake env lean` against the full `FormalSystem` import closure;
-      the baseline line below is written speculatively at the `pcq` hypothesis and is NOT yet
-      confirmed against actual probe output. See this task's handoff for the exact command to
-      run once cleared.)*
+- [x] Run the probe and **read** the four emitted axiom lines from its output. *(completed: the
+      batched gate run — once the orchestrator's memory-pressure hold cleared — confirmed C2
+      PASS ("all fifty pinned axiom sets match baseline") and the probe's actual output for all
+      four new theorems is `depends on axioms: [propext, Classical.choice, Quot.sound]`,
+      matching the `pcq` hypothesis exactly; no baseline correction was needed)*
 - [x] Add the four matching expected-output lines to the C2 baseline block, in the same order as
-      the probe lines, each written exactly as the probe emitted it. *(deviation: altered — the
-      four lines are written at the `pcq` ([propext, Classical.choice, Quot.sound]) hypothesis
-      pending confirmation from the deferred probe run above, not yet read off actual output)*
+      the probe lines, each written exactly as the probe emitted it. *(completed: the `pcq`
+      hypothesis is CONFIRMED by the probe's actual output — see the task above)*
 - [x] Confirm the edits are confined to the C2 probe block and the C2 baseline block; touch no
       `ENFORCE_*` flag and no other check. *(completed: also updated the C2 pass-message count
       from "forty-six" to "fifty" pinned axiom sets, inside the same C2 block)*
@@ -288,7 +286,7 @@ difference in the summary rather than forcing `pcq`.
 
 ---
 
-### Phase 3: Four ledger rows [IN PROGRESS]
+### Phase 3: Four ledger rows [COMPLETED]
 
 **Goal**: `docs/theorem-index.md` carries a row for each of the four theorems, pinned, beside the
 two existing refuted-congruence rows.
@@ -298,13 +296,13 @@ two existing refuted-congruence rows.
       with: Paper label `—`; a one-line Statement; the fully qualified Lean name; the File path
       with no line number; Frame class `—` (all four are class-generic); and the Axioms cell read
       off the Phase 2 baseline, written as `pcq pinned:C2` if that is what the baseline records.
-      *(deviation: altered — the Axioms cell is written as `pcq pinned:C2` at the Phase 2
-      hypothesis, pending confirmation from the deferred probe run; see Phase 2's progress file)*
+      *(completed: the Axioms cell `pcq pinned:C2` is CONFIRMED by the batched gate run's
+      actual C2 probe output — see Phase 2 — no correction needed)*
 - [x] Word the two reflexivity-forced rows and the two reflexivity-free rows differently enough
       that a reader sees which pair survives dropping `trans_refl`. *(completed)*
 - [x] Confirm each row's declaration carries its `Paper:` line, since C15 asserts the round trip
-      from row to declaration. *(completed: `check-module-invariants.sh --no-build` confirms C15
-      PASS at 252 theorem-index rows, all anchored)*
+      from row to declaration. *(completed: full `check-module-invariants.sh` confirms C15 PASS
+      at 252 theorem-index rows, all anchored)*
 
 **Timing**: 0.5 hours
 
@@ -327,7 +325,7 @@ two existing refuted-congruence rows.
 
 ---
 
-### Phase 4: The retention decision, on the prose surfaces [IN PROGRESS]
+### Phase 4: The retention decision, on the prose surfaces [COMPLETED]
 
 **Goal**: The RETAIN verdict and its rationale are written where a reader of the substrate will
 meet them, and no surface still implies the label-level residual is unrecorded.
