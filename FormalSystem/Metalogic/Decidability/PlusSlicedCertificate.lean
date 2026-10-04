@@ -30,6 +30,7 @@ import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Embed
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.EmbedComplete
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Examples
 import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Limits.NoFiniteWidth
+import FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.Limits.FiniteCarrier
 
 /-!
 # `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate` — the time-sliced L⁺ certificate
@@ -225,6 +226,15 @@ subtree, and this subtree's own soundness direction targets the same unchanged e
   **no** `PlusSlicedCertificate` certifies `Φ.neg` (`not_certifies`), the class is **incomplete
   for L⁺** (`not_sliced_complete`), and no certificate class presenting finite-width sliced
   frames is complete, whatever its clauses (`not_finite_width_fmp`)
+- `PlusSlicedCertificate.Limits.FiniteCarrier`: the **rejected shape's** limit, on the other
+  obstruction axis — the `⊡`-free witness `θ` (`θ_eq_ofFormula` exhibits it as `ofFormula ψL`, so
+  this half is already a statement about the base language), a model of it on an infinite
+  ℤ-carrier shift set (`not_plusValidZTime_neg_θ`), and the proof that **no** model on any regular
+  ℤ-frame with a finite world-state carrier satisfies `θ` anywhere (`no_finite_carrier_sat`,
+  `no_ofStep_sat`), whence the finite-carrier finite model property fails for L⁺ over ℤ-time
+  (`not_finite_carrier_fmp`) and fails already for the CTL-like fragment
+  (`not_finite_carrier_fmp_fragment`). A finite carrier **forces** finite width, so this is the
+  weaker hypothesis and the stronger language scope; neither limit subsumes the other
 
 ## The closing record: what this subtree proves, and what it does not
 

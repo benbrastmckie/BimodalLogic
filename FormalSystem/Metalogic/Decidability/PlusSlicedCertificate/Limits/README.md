@@ -1,10 +1,18 @@
 # FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/
 
-The **limits** of the `PlusSlicedCertificate` class. This directory states no positive result. It
-fixes a ℤ-time non-validity of `PlusFormula` — the CTL-like, `⊡`-carrying witness `Φ` — as a
-specification, proves it is a genuine non-validity, and then shows that no model on any
-finite-width `FrameOver.ofSlicedStep` frame satisfies it: the class's completeness obstruction is
-exactly **finite width**.
+The **limits** of the `PlusSlicedCertificate` class and of the finite-carrier shape it replaced.
+This directory states no positive result. On each of the two obstruction axes it fixes a ℤ-time
+non-validity of `PlusFormula` as a specification, proves it is a genuine non-validity, and then
+shows that no model on a frame of the shape in question satisfies it:
+
+- **Finite width** (`NoFiniteWidth.lean`): the CTL-like, `⊡`-carrying witness `Φ` has no model on
+  any finite-width `FrameOver.ofSlicedStep` frame, so the sliced class's own completeness
+  obstruction is exactly finite width.
+- **Finite carrier** (`FiniteCarrier.lean`): the `⊡`-free witness `θ` has no model on any regular
+  ℤ-frame with a finite world-state carrier, which is why the sliced class's presented carrier is
+  `ℤ × Fin n` rather than a finite type in the first place. That shape was never landed, so this
+  is a limit of a *rejected* class shape rather than of the landed one — recorded here because the
+  two axes are one story and are best read side by side.
 
 Nothing here redefines `PlusSlicedCertificate`, `Certifies`, `FrameOver.ofSlicedStep`, or the
 flagship completeness result. Those are consumed as given, and the soundness direction —
@@ -38,9 +46,24 @@ certifies. The obstruction is exactly finite width — `[Finite W] [Nonempty W]`
 finiteness hypothesis on `no_finite_width_sat`, with no hypothesis on the succession relation
 beyond the bi-seriality every `FrameOver.ofSlicedStep` frame already carries.
 
-**Two scope limits.** Scope is ℤ (discrete) frames only: the pumping argument needs discreteness
-and says nothing about a dense duration. `Φ` uses `⊡` (`PlusFormula.stab`), so this is
-specifically an **L⁺** result, not a result about the base language TM.
+**Refuted, unconditionally, on the other axis.** The finite-carrier finite model property fails
+for L⁺ over ℤ-time (`FiniteCarrier.not_finite_carrier_fmp`) and fails already for the CTL-like
+fragment (`FiniteCarrier.not_finite_carrier_fmp_fragment`). `[Finite F.WorldState]` is the whole
+finiteness hypothesis on `FiniteCarrier.no_finite_carrier_sat`, with no hypothesis on the
+succession relation beyond the regularity `[F.IsRegular]` carries.
+
+**Two scope limits.** Scope is ℤ (discrete) frames only: the pumping arguments on both axes need
+discreteness and say nothing about a dense duration. `Φ` uses `⊡` (`PlusFormula.stab`), so the
+finite-width result is specifically an **L⁺** result, not a result about the base language TM.
+
+**The two axes differ in both directions, and the asymmetry must not be blurred.** `θ` is
+`⊡`-free — `FiniteCarrier.θ_eq_ofFormula` exhibits it as `ofFormula ψL` — so the finite-carrier
+refutation is already a statement about the base language TM itself. `Φ` does use `⊡`, so the
+finite-width refutation is specifically an L⁺ result and says nothing about TM. The obstruction
+chain runs the other way: a finite carrier **forces** finite per-time width, so finite carrier is
+the strictly weaker hypothesis, and the finite-width refutation is therefore the stronger result
+on the hypothesis axis while the finite-carrier one is stronger on the language axis. Neither
+subsumes the other.
 
 **Two further disclaimers.** Nothing here is claimed about an *infinite* carrier (only about
 finite per-time fibres over an infinite carrier). Nothing here touches soundness.
@@ -57,12 +80,14 @@ model — is a Ramsey-for-pairs-style periodicity argument not formalized anywhe
 
 | Module | Contents |
 |---|---|
+| `FiniteCarrier.lean` | The `⊡`-free witness `θ` with its `Formula`-side twin `ψL` and the language-scope identity `θ_eq_ofFormula`; the fragment twin `θ'` built from `NoFiniteWidth`'s own `A'`/`C'` (shared, not copied — `noFiniteWidth_Φ_eq` pins the agreement); the ℤ-carrier shift set `S` with `shiftTruth_psiL` and the positive halves `not_plusValidZTime_neg_θ`, `not_plusValidZTime_neg_θ'`; the step-path-to-history helper `histOfStepPath` and the pumping refutations `no_finite_carrier_sat`, `no_finite_carrier_sat'`; the corollaries `no_ofStep_sat`, `not_finite_carrier_fmp`, `not_finite_carrier_fmp_fragment` |
 | `NoFiniteWidth.lean` | The witness `Φ` and its five supporting definitions `pa`/`p`/`Fp`/`Pp`/`Xp`/`A'`/`C'`/`D`; the positive-half frame `F`/`M` on `Node` with the canonical-path theorem `path_eq_canon`, and `not_plusValidZTime_neg_Φ`; the negative-half path/pre-post/chain/König machinery and `core_false`; the semantic layer and `no_finite_width_sat`; the certificate corollaries `not_certifies`, `not_sliced_complete`, `not_finite_width_fmp` |
 
 ## Provenance
 
-`NoFiniteWidth.lean` is a transcription of a compiled probe (`specs/.../probes/NoFiniteWidthModel.lean`),
-with the arguments unchanged. What changed in the transcription is the import set (narrowed from
+Each module here is a transcription of a compiled probe
+(`specs/.../probes/NoFiniteWidthModel.lean` and `specs/.../probes/NoFiniteCarrierModel.lean`
+respectively), with the arguments unchanged. What changed in the transcription is the import set (narrowed from
 the whole library), the namespace (nested under `PlusSlicedCertificate.NoFiniteWidth` rather than
 a probe-local namespace), and the linter discipline (per-declaration `omit [...] in` rather than a
 file-level suppression). The probe is retained as the provenance record and is not superseded.
@@ -75,8 +100,14 @@ file-level suppression). The probe is retained as the provenance record and is n
   `FormalSystem.Init`, and Mathlib's `Tactic.Ring`.
 - **Imported by**: `PlusSlicedCertificate.lean`.
 
-This subtree is sorry-free; its five headline declarations each report axioms
-`[propext, Classical.choice, Quot.sound]`.
+`FiniteCarrier.lean` additionally imports `Limits.NoFiniteWidth`, in order to **share** `pa`,
+`p`, `Fp`, `Pp`, `A'` and `C'` with the finite-width landing rather than hold private copies of
+them; the `⊡`-free witness `θ` uses nothing `⊡`-specific from it.
+
+This subtree is sorry-free. `NoFiniteWidth.lean`'s five headline declarations and
+`FiniteCarrier.lean`'s seven axiom-bearing headline declarations each report axioms
+`[propext, Classical.choice, Quot.sound]`; `FiniteCarrier.θ_eq_ofFormula`, proved by `decide`,
+depends on no axioms at all.
 
 ## Related Documentation
 

@@ -597,7 +597,7 @@ it and note any factoring opportunity for a successor rather than inventing one 
 
 ---
 
-### Phase 5: Wire the module into the build graph [NOT STARTED]
+### Phase 5: Wire the module into the build graph [COMPLETED]
 
 **Goal**: the new module is reachable from `lake build`, the directory's README covers it, and
 the whole library is green.
