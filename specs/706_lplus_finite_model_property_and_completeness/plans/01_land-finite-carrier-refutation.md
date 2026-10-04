@@ -454,7 +454,7 @@ span means the probe is not what this plan read and the phase should stop and re
 
 ---
 
-### Phase 2: The positive half — the shift set and `not_plusValidZTime_neg_θ` [NOT STARTED]
+### Phase 2: The positive half — the shift set and `not_plusValidZTime_neg_θ` [COMPLETED]
 
 **Goal**: `θ.neg` is landed as a genuine ℤ-time non-validity of L⁺.
 

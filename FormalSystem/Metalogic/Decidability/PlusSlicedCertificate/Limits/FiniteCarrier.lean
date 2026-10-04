@@ -156,6 +156,62 @@ only about L⁺. This is the module's language-scope claim, machine-checked rath
 Paper: — (a language-scope identity internal to this formalization, with no paper counterpart) -/
 theorem θ_eq_ofFormula : θ = ofFormula ψL := by decide
 
+/-! ## Positive half: `θ` is satisfiable over ℤ-time, on an infinite carrier -/
+
+/-- The ℤ-carrier shift set: states are integers, shifting by a duration `d` adds `d`, and the
+one atom is true only at state `0`. The valuation is atom-independent by construction (the `A`
+field ignores its atom argument), so every atom behaves like `p` here; only `pa` is ever read.
+The carrier is **infinite**, which is exactly what the finite-carrier refutation below forces. -/
+abbrev S : ShiftSet intOrder where
+  Carrier := ℤ
+  carrier_nonempty := ⟨0⟩
+  sh w d := w + d
+  sh_zero w := by simp
+  sh_add w a b := by simp [add_assoc]
+  sep w u h := by
+    obtain ⟨y, hy, rfl⟩ := h 1 (by decide)
+    have hy' : |(y : ℤ)| < 1 := hy
+    have : (y : ℤ) = 0 := Int.abs_lt_one_iff.mp hy'
+    change w + y = w
+    rw [this]; simp
+  A _ w := w = 0
+
+/-- `ψL` holds at every point of the shift set: the unique history through a state meets `p`
+exactly once, namely at the time that carries the state to `0`. -/
+theorem shiftTruth_psiL (w t : ℤ) : S.ShiftTruth w t ψL := by
+  simp only [ψL, Formula.and, Formula.or, Formula.neg, Formula.top, ShiftSet.ShiftTruth]
+  intro h
+  apply h
+  · intro (v : ℤ) hv1 hv2
+    change (v + t = 0 → False) at hv1
+    rcases lt_trichotomy t (-v) with hlt | heq | hgt
+    · exact (hv2 ⟨-v, hlt, show v + -v = 0 by omega, fun _ _ _ h => h⟩).elim
+    · exact (hv1 (by omega)).elim
+    · exact ⟨-v, hgt, show v + -v = 0 by omega, fun _ _ _ h => h⟩
+  · rintro (v : ℤ) hp ⟨s, hs, hps, -⟩
+    change v + t = 0 at hp
+    change v + s = 0 at hps
+    change s < t at hs
+    omega
+
+/-- **The positive half**: `θ.neg` is a genuine ℤ-time non-validity of L⁺, witnessed on the
+ℤ-carrier shift set. This is what makes the negative half below a *coverage limit* on a
+certificate shape rather than a validity: there is something to certify, and a finite-carrier
+presentation cannot certify it.
+
+The route is the `⊡`-free identity `θ_eq_ofFormula`, then `plusTruthAt_ofFormula` to drop into the
+base language, then `ShiftSet.forward_repr` to read base-language truth off `ShiftTruth`.
+
+Paper: — (a non-validity internal to this formalization, with no paper counterpart) -/
+theorem not_plusValidZTime_neg_θ : ¬ PlusValidZTime θ.neg := by
+  intro hv
+  have h := hv S.frame ⟨S.frame_isRegular, TaskFrame.isZTime_of_instances _⟩ S.model
+    (S.hist (0 : ℤ)) (0 : ℤ)
+  apply h
+  rw [θ_eq_ofFormula]
+  exact (plusTruthAt_ofFormula S.model ψL _ _).mpr
+    ((S.forward_repr (0 : ℤ) (0 : ℤ) ψL).mpr (shiftTruth_psiL 0 0))
+
 end FiniteCarrier
 
 end PlusSlicedCertificate
