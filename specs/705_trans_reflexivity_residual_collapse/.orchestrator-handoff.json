@@ -1,0 +1,20 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "summary": "Planned the RETAIN trans_refl verdict into 5 phases (3.5h): four label-level congruence theorems (untl_trans_congr, snce_trans_congr, untl_common_succ_congr, snce_common_pred_congr) in PlusWitnessFamily/Incompleteness.lean, their C2 probe+baseline pins, four docs/theorem-index.md rows, and the retention decision on two READMEs plus the Skeleton.lean trans_refl field docstring. No removal, no substitution lemma, no countermodel (scope item 4 declined on the merits). Two plan-time tree checks changed the shape: sibling 704 is archived so its claim on check-module-invariants.sh has lapsed and the C2 rows land here, and C36a makes the ledger rows depend on those baseline rows; and the pre-commit typst gate forces typst/generated/status.typ into the file scope of every .lean-touching phase.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/705_trans_reflexivity_residual_collapse/plans/01_trans-refl-retention-and-residual-record.md",
+      "summary": "5-phase implementation plan, waves [[1],[2,4],[3],[5]], 7 files in harvested file_scope."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": [],
+  "next_action_hint": "Dispatch implement for task 705; Phase 1 is the only Wave-1 phase and is self-contained in Incompleteness.lean.",
+  "plan_markers_verified": true,
+  "skeleton": false,
+  "sorry_inventory": [],
+  "dispatch_seq": 3
+}

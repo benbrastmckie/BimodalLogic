@@ -1,45 +1,30 @@
 {
-  "status": "researched",
-  "started_at": "2026-10-02T13:47:33Z",
-  "completed_at": "2026-10-02T14:00:06Z",
-  "dispatch_seq": 2,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/705_trans_reflexivity_residual_collapse/reports/01_trans-reflexivity-residual-audit.md",
-      "summary": "Audit of the landed trans_refl field: retain it (four consumer categories need the self-step; the residual is bounded, dominated by not_exists_plusCertifies_pumpTarget, and absent from PlusSlicedCertificate by construction); record the unrecorded label-level congruences in Incompleteness.lean."
-    }
-  ],
-  "next_steps": "Run /plan 705 to create implementation plan: land untl_trans_congr / snce_trans_congr / untl_common_succ_congr / snce_common_pred_congr in PlusWitnessFamily/Incompleteness.lean with docstring, theorem-index rows, README paragraphs; sequence C2 baseline rows after sibling 704 releases scripts/check-module-invariants.sh.",
-  "modified_files": [
-    "specs/705_trans_reflexivity_residual_collapse/reports/01_trans-reflexivity-residual-audit.md"
-  ],
-  "proposed_file_scope": [
-    "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean",
-    "docs/theorem-index.md",
-    "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/README.md",
-    "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/README.md",
-    "FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Agreement.lean",
-    "scripts/check-module-invariants.sh"
-  ],
-  "memory_candidates": [
-    {
-      "content": "On the sharing certificate classes, trans_refl is consumed structurally (walk-to-thread extension via @[refl] trans_refl', succF/predF_nonempty escape edges, the (C1')->(C1)/(C2')->(C2) reductions used by Specialize.lean, and the Limits/ incompleteness proofs), so 'some thread through every position' is not a drop-in replacement; the landed untl_succ_congr/snce_pred_congr are unfolding-level, not the label-level trans-congruence reflexivity forces.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/705_trans_reflexivity_residual_collapse/reports/01_trans-reflexivity-residual-audit.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["trans_refl", "SharingSkeleton", "clause_shape_collapse", "PlusSlicedCertificate", "Thread.const"]
+      "type": "plan",
+      "path": "specs/705_trans_reflexivity_residual_collapse/plans/01_trans-refl-retention-and-residual-record.md",
+      "summary": "5-phase plan implementing the RETAIN trans_refl verdict: four label-level congruence theorems in PlusWitnessFamily/Incompleteness.lean, their C2 axiom pins, four theorem-index rows, and the retention decision on three prose surfaces."
     }
   ],
   "metadata": {
-    "session_id": "sess_1790948286_150db5_705",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 753,
+    "session_id": "sess_1791093747_dd648f_705",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
-    "findings_count": 7,
-    "context_files_loaded": ["README.md", "return-metadata-file.md", "territory.md"],
-    "mathlib_lookups_performed": 1,
-    "lookup_note": "lean_local_search returned index: unavailable; grep sweep is the evidence of record"
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 3.5,
+    "dependency_waves": [[1], [2, 4], [3], [5]]
+  },
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, landing one new pinned theorem is a four-surface coupled edit, not a one-file edit, and the coupling is directional: (1) the declaration's own /-- docstring must carry a `Paper:` line (the anchor, or the literal em-dash plus a one-clause reason) because check-module-invariants.sh's C15 second assertion asserts the row-to-declaration round trip; (2) scripts/check-module-invariants.sh needs BOTH a `#print axioms <fully-qualified-name>` probe line and a matching expected-output baseline line, in the same order, with the axiom value READ OFF the probe output rather than typed (the theorem-index Axioms column is generated from these baselines); (3) only then may the docs/theorem-index.md row land, because C36a asserts every ledger row is pinned by C2 or C14 and goes red on a row whose baseline is missing; (4) any commit touching a .lean file must also stage a regenerated typst/generated/status.typ, because the pre-commit gate runs typst-sync-check.sh --counts-only (repair with typst-sync-check.sh --fix, which needs a built library and never runs git add). A plan that puts the ledger row before the baseline row, or that omits status.typ from its file scope, produces a predictable red or an undeclared scope extension.",
+      "category": "PATTERN",
+      "source_artifact": "specs/705_trans_reflexivity_residual_collapse/plans/01_trans-refl-retention-and-residual-record.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["theorem-index", "check-module-invariants", "C2-baseline", "typst-sync-check", "pinned-theorem", "lean-gate-coupling"]
+    }
+  ],
+  "next_steps": "Run /implement 705 to execute the plan",
+  "dispatch_seq": 3
 }
