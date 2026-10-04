@@ -37,7 +37,12 @@ redesign worked rather than an unexplained deletion. The two clauses now quantif
 a time: two indices naming one state at `t` need not have a common predecessor, so the doubled
 reading that produced the congruence no longer type-checks. `Sharing/Agreement.lean`'s
 `snce_pred_congr` and `untl_succ_congr` state exactly how much agreement the clauses still
-force, and why that residue is semantically forced rather than a relapse.
+force **at the unfolding**, and why that residue is semantically forced rather than a relapse.
+This module's own "The residual the succession substrate still carries" section states the
+**label-level** counterpart — agreement forced by `trans_refl` itself (`untl_trans_congr`,
+`snce_trans_congr`) and the reflexivity-free residual that survives without it
+(`untl_common_succ_congr`, `snce_common_pred_congr`) — which the Plus side previously recorded
+nowhere.
 
 The corresponding rows were removed from `scripts/check-module-invariants.sh`'s C2 baseline and
 from `docs/theorem-index.md` in the same edit, so the tree and the baselines never disagreed.
@@ -72,6 +77,11 @@ failed was completeness of the certificate class on these two targets.
 - `PlusSharingWitnessFamily.not_plusValidZTime_stabSnce` — `Pp → ⊡Pp` is a genuine ℤ-time
   non-validity
 - `PlusSharingWitnessFamily.not_plusValidZTime_stabUntl` — and so is `Fp → (¬p → ⊡Fp)`
+- `PlusSharingWitnessFamily.untl_trans_congr`, `PlusSharingWitnessFamily.snce_trans_congr` —
+  the label-level agreement `trans_refl` forces, by itself
+- `PlusSharingWitnessFamily.untl_common_succ_congr`,
+  `PlusSharingWitnessFamily.snce_common_pred_congr` — the reflexivity-free residual that survives
+  if `trans_refl` is ever dropped, and no more
 -/
 
 namespace FormalSystem.Metalogic.Decidability
@@ -166,6 +176,116 @@ theorem not_untl_shift_share_congr (p : Atom) :
       (Or.inr ⟨htop, hF⟩) with hp | ⟨-, hf⟩
   · exact hpj hp
   · exact hFj hf
+
+/-! ## The residual the succession substrate still carries
+
+`trans_refl` — reflexivity of `trans`, retained on `SharingSkeleton` per the audit this module's
+record now serves — forces agreement at the label level, not only at the unfolding level that
+`Sharing/Agreement.lean`'s `untl_succ_congr` and `snce_pred_congr` already state. The four
+theorems below are that record, in two pairs:
+
+1. `untl_trans_congr` and `snce_trans_congr` are `clause_shape_collapse` read at `R := S.trans t`
+   (resp. `S.trans (t - 1)`): one clause instantiated at the successor (or predecessor) itself,
+   and once more at the reflexive self-step `trans_refl'` supplies, composed by `Iff.trans` and
+   `Iff.symm`. They are forced by `trans_refl` **alone** — drop that field and neither proof term
+   elaborates, because the second instantiation has no witness to the diagonal relation it reads.
+2. `untl_common_succ_congr` and `snce_common_pred_congr` need no reflexivity at all: two distinct
+   indices sharing one common successor (resp. predecessor) agree on the label there, by the same
+   two-instantiation-and-compose idiom read at two genuinely different indices instead of at one
+   index and its reflexive copy. These are **exactly** what survives if `trans_refl` is ever
+   dropped, and no more.
+
+Both pairs are vacuous on every landed producer: `Examples.lean`'s families all supply
+`transFullOf` or `transIdOf` as their succession bundle, and both make `trans t` either the
+complete relation or the diagonal, so the antecedent collapses the conclusion's two sides onto
+the same index before any work is done. Within the class's own frames, both pairs are
+**truth-level facts, not spurious constraints** — unlike the retired `share`-congruences this
+module used to record, an index at a time names a *history type* here, and two indices related
+by `trans` at `t` genuinely do name the same successor history from `t + 1` onward, so agreeing on
+its labels is not an over-constraint.
+
+The time-sliced certificate class carries no analogue: `PlusSlicedCertificate` has no `trans`
+field by construction, and its `edge` relation is bi-serial without being reflexive, so this
+residual is confined to the retained sharing class and is not inherited by the programme's
+completeness route.
+
+Both pairs are also strictly weaker than the landed class-level incompleteness theorem
+`Limits.NoCertificate.not_exists_plusCertifies_pumpTarget`, which needs no hypothesis on `trans`
+at all. They are recorded here, rather than built into a named incompleteness theorem of their
+own, so that the relocation of this residual from `share`-classes (the defect this module used to
+record) to `trans`-classes is seen as deliberate and bounded, not overlooked.
+
+**Naming, against the name collision.** `Sharing/Agreement.lean`'s `untl_succ_congr` and
+`snce_pred_congr` state agreement on the **unfolding** — the disjunction `e ∈ L j (t+1) ∨ (g ∈
+L j (t+1) ∧ untl g e ∈ L j (t+1))` — at a **common successor** `j`, for two predecessors sharing
+it. The four theorems below state agreement on the **label itself** — `untl g e ∈ L i t ↔ untl g e
+∈ L j t` — either at a successor/predecessor pair related by `trans` (`*_trans_congr`, reflexivity-
+forced) or at two indices sharing one common successor/predecessor (`*_common_succ_congr` /
+`*_common_pred_congr`, reflexivity-free). The two pairs are not restatements of each other: one is
+about the unfolding one step away, the other is about the label at the position itself.
+-/
+
+/--
+**`trans`-related indices agree on every `untl` label — forced by `trans_refl` alone.**
+
+Two instantiations of (C1')'s `untl` conjunct, composed: one at `(i, j)` via the hypothesis
+`hij`, one at `(j, j)` via `trans_refl'`, `Iff.trans`-ed together. Drop `trans_refl` and the
+second instantiation has no witness — this is exactly the residual retaining `trans_refl` costs.
+
+Paper: — (a formalization-native result; the paper states no such result)
+-/
+theorem untl_trans_congr {Γ Del : PlusContext} {S : PlusSharingWitnessFamily Γ Del}
+    (h : S.PlusLocalCoherentShare) {i j : Fin S.lassos.length} {t : ℤ} (hij : S.trans t i j)
+    {g e : PlusFormula} (hc : PlusFormula.untl g e ∈ plusClosureOf (Γ ++ Del)) :
+    PlusFormula.untl g e ∈ S.L i t ↔ PlusFormula.untl g e ∈ S.L j t :=
+  ((h i t).2.2.2.1 j hij g e hc).trans ((h j t).2.2.2.1 j (S.trans_refl' t j) g e hc).symm
+
+/--
+**`trans`-related indices agree on every `snce` label — forced by `trans_refl` alone.**
+
+The `snce`-side mirror of `untl_trans_congr`: two instantiations of (C1')'s `snce` conjunct, one
+at `(k, i)` via `hki`, one at `(k, k)` via `trans_refl'`, composed the same way.
+
+Paper: — (a formalization-native result; the paper states no such result)
+-/
+theorem snce_trans_congr {Γ Del : PlusContext} {S : PlusSharingWitnessFamily Γ Del}
+    (h : S.PlusLocalCoherentShare) {i k : Fin S.lassos.length} {t : ℤ}
+    (hki : S.trans (t - 1) k i)
+    {g e : PlusFormula} (hc : PlusFormula.snce g e ∈ plusClosureOf (Γ ++ Del)) :
+    PlusFormula.snce g e ∈ S.L i t ↔ PlusFormula.snce g e ∈ S.L k t :=
+  ((h i t).2.2.2.2 k hki g e hc).trans
+    ((h k t).2.2.2.2 k (S.trans_refl' (t - 1) k) g e hc).symm
+
+/--
+**Two indices sharing one common `untl`-successor agree on the label — reflexivity-free.**
+
+The exact residual that survives if `trans_refl` is ever dropped, and no more: two
+instantiations of (C1')'s `untl` conjunct at two genuinely distinct indices `i` and `i'`, both
+related to the same `j` by `trans`, composed. No reflexive self-step is used.
+
+Paper: — (a formalization-native result; the paper states no such result)
+-/
+theorem untl_common_succ_congr {Γ Del : PlusContext} {S : PlusSharingWitnessFamily Γ Del}
+    (h : S.PlusLocalCoherentShare) {i i' j : Fin S.lassos.length} {t : ℤ}
+    (hij : S.trans t i j) (hi'j : S.trans t i' j)
+    {g e : PlusFormula} (hc : PlusFormula.untl g e ∈ plusClosureOf (Γ ++ Del)) :
+    PlusFormula.untl g e ∈ S.L i t ↔ PlusFormula.untl g e ∈ S.L i' t :=
+  ((h i t).2.2.2.1 j hij g e hc).trans ((h i' t).2.2.2.1 j hi'j g e hc).symm
+
+/--
+**Two indices sharing one common `snce`-predecessor agree on the label — reflexivity-free.**
+
+The `snce`-side mirror of `untl_common_succ_congr`, at a common predecessor `k` rather than a
+common successor.
+
+Paper: — (a formalization-native result; the paper states no such result)
+-/
+theorem snce_common_pred_congr {Γ Del : PlusContext} {S : PlusSharingWitnessFamily Γ Del}
+    (h : S.PlusLocalCoherentShare) {i i' k : Fin S.lassos.length} {t : ℤ}
+    (hki : S.trans (t - 1) k i) (hki' : S.trans (t - 1) k i')
+    {g e : PlusFormula} (hc : PlusFormula.snce g e ∈ plusClosureOf (Γ ++ Del)) :
+    PlusFormula.snce g e ∈ S.L i t ↔ PlusFormula.snce g e ∈ S.L i' t :=
+  ((h i t).2.2.2.2 k hki g e hc).trans ((h i' t).2.2.2.2 k hki' g e hc).symm
 
 /-! ## The schema is a genuine ℤ-time non-validity -/
 

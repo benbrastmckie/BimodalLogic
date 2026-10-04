@@ -95,7 +95,7 @@ next_project_number: 729
 
 ### Incompleteness
 
-705 [PLANNED] — STATUS NOTE (2026-10-02, supersedes the expected answer...
+705 [IMPLEMENTING] — STATUS NOTE (2026-10-02, supersedes the expected answer...
 
 ### Literature
 
@@ -798,7 +798,7 @@ DEPENDENCIES unchanged: `[695, 696, 703]` -- all three are completed and archive
 ---
 
 ### 705. Trans reflexivity residual collapse
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: formal:logic
 - **Topic**: incompleteness
 - **Dependencies**: Task 696, Task 703

@@ -1,30 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/705_trans_reflexivity_residual_collapse/plans/01_trans-refl-retention-and-residual-record.md",
-      "summary": "5-phase plan implementing the RETAIN trans_refl verdict: four label-level congruence theorems in PlusWitnessFamily/Incompleteness.lean, their C2 axiom pins, four theorem-index rows, and the retention decision on three prose surfaces."
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 4,
   "metadata": {
-    "session_id": "sess_1791093747_dd648f_705",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 3.5,
-    "dependency_waves": [[1], [2, 4], [3], [5]]
-  },
-  "memory_candidates": [
-    {
-      "content": "In BimodalLogic, landing one new pinned theorem is a four-surface coupled edit, not a one-file edit, and the coupling is directional: (1) the declaration's own /-- docstring must carry a `Paper:` line (the anchor, or the literal em-dash plus a one-clause reason) because check-module-invariants.sh's C15 second assertion asserts the row-to-declaration round trip; (2) scripts/check-module-invariants.sh needs BOTH a `#print axioms <fully-qualified-name>` probe line and a matching expected-output baseline line, in the same order, with the axiom value READ OFF the probe output rather than typed (the theorem-index Axioms column is generated from these baselines); (3) only then may the docs/theorem-index.md row land, because C36a asserts every ledger row is pinned by C2 or C14 and goes red on a row whose baseline is missing; (4) any commit touching a .lean file must also stage a regenerated typst/generated/status.typ, because the pre-commit gate runs typst-sync-check.sh --counts-only (repair with typst-sync-check.sh --fix, which needs a built library and never runs git add). A plan that puts the ledger row before the baseline row, or that omits status.typ from its file scope, produces a predictable red or an undeclared scope extension.",
-      "category": "PATTERN",
-      "source_artifact": "specs/705_trans_reflexivity_residual_collapse/plans/01_trans-refl-retention-and-residual-record.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["theorem-index", "check-module-invariants", "C2-baseline", "typst-sync-check", "pinned-theorem", "lean-gate-coupling"]
-    }
-  ],
-  "next_steps": "Run /implement 705 to execute the plan",
-  "dispatch_seq": 3
+    "session_id": "sess_1791093747_dd648f",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }

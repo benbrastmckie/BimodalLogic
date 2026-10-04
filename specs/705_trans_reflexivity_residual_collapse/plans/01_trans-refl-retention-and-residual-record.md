@@ -1,7 +1,7 @@
 # Implementation Plan: Task #705
 
 - **Task**: 705 - trans_reflexivity_residual_collapse
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: 696 (completed), 703 (completed), 704 (archived — its territory claim on `scripts/check-module-invariants.sh` has lapsed)
 - **Research Inputs**: specs/705_trans_reflexivity_residual_collapse/reports/01_trans-reflexivity-residual-audit.md
@@ -134,27 +134,27 @@ Phases within the same wave can execute in parallel. Note that Phases 2 and 4 ar
 parallel: both ultimately require a built library, and `check-module-invariants.sh` serializes on
 `.lake/build-guard.lock`, so a single-agent run should simply take them in order.
 
-### Phase 1: Land the four label-level congruences [NOT STARTED]
+### Phase 1: Land the four label-level congruences [COMPLETED]
 
 **Goal**: The four theorems exist in `PlusWitnessFamily/Incompleteness.lean`, build clean at the
 zero warning budget, and carry the docstring that makes the residual's boundedness legible.
 
 **Tasks**:
-- [ ] Re-confirm that no `*_trans_congr`, `untl_common_succ_congr`, or `snce_common_pred_congr`
+- [x] Re-confirm that no `*_trans_congr`, `untl_common_succ_congr`, or `snce_common_pred_congr`
       declaration already exists: `lean_local_search` if a language server is up (announce the
       `index` field's value), otherwise `grep -rn "trans_congr\|common_succ_congr\|common_pred_congr" --include=*.lean FormalSystem/`
-      and say that the evidence tier is a grep sweep.
-- [ ] Add a new `/-! ## The residual the succession substrate still carries -/` section to
+      and say that the evidence tier is a grep sweep. *(completed: lean_local_search index was `warming`, so the grep sweep is the evidence of record; no matches found)*
+- [x] Add a new `/-! ## The residual the succession substrate still carries -/` section to
       `Incompleteness.lean`, after the two retired-congruence refutations and before
-      `/-! ## The schema is a genuine ℤ-time non-validity -/`.
-- [ ] Land `untl_trans_congr` and `snce_trans_congr` — the two shapes forced by `trans_refl`
-      alone, each proved by instantiating the matching (C1') conjunct twice and composing.
-- [ ] Land `untl_common_succ_congr` and `snce_common_pred_congr` — the two reflexivity-free
-      shapes, which are the exact residual that survives if `trans_refl` is ever dropped.
-- [ ] Give each of the four a `/--` docstring ending in
+      `/-! ## The schema is a genuine ℤ-time non-validity -/`. *(completed)*
+- [x] Land `untl_trans_congr` and `snce_trans_congr` — the two shapes forced by `trans_refl`
+      alone, each proved by instantiating the matching (C1') conjunct twice and composing. *(completed)*
+- [x] Land `untl_common_succ_congr` and `snce_common_pred_congr` — the two reflexivity-free
+      shapes, which are the exact residual that survives if `trans_refl` is ever dropped. *(completed)*
+- [x] Give each of the four a `/--` docstring ending in
       `Paper: — (a formalization-native result; the paper states no such result)` — required by
-      C15, copied verbatim from the landed `not_snce_share_congr`.
-- [ ] Write the section docstring covering all six points report 01's R2 enumerates: (i) the first
+      C15, copied verbatim from the landed `not_snce_share_congr`. *(completed)*
+- [x] Write the section docstring covering all six points report 01's R2 enumerates: (i) the first
       two are `clause_shape_collapse` at `R := S.trans t`, forced by `trans_refl` alone; (ii) the
       last two are what survives without reflexivity and are the exact residual; (iii) both pairs
       are vacuous on every landed producer, since `transFullOf` and `transIdOf` are the only
@@ -164,16 +164,16 @@ zero warning budget, and carry the docstring that makes the residual's boundedne
       bi-serial without being reflexive; (vi) they are strictly weaker than
       `Limits.NoCertificate.not_exists_plusCertifies_pumpTarget`, and are recorded so the
       relocation from `share`-classes to `trans`-classes is seen as deliberate and bounded.
-- [ ] Cross-reference `Sharing/Agreement.lean`'s `untl_succ_congr`/`snce_pred_congr` by name in
+- [x] Cross-reference `Sharing/Agreement.lean`'s `untl_succ_congr`/`snce_pred_congr` by name in
       the section docstring and state the shape difference: the landed pair states agreement on
       the *unfolding* at the common successor, the new pair states agreement on the *label* at
-      the position itself.
-- [ ] Update the module header (`Incompleteness.lean`'s `/-!` block, the paragraph beginning
+      the position itself. *(completed)*
+- [x] Update the module header (`Incompleteness.lean`'s `/-!` block, the paragraph beginning
       "`Sharing/Agreement.lean`'s `snce_pred_congr` and `untl_succ_congr` state exactly how much
-      agreement the clauses still force") so it no longer leaves the label level unmentioned.
-- [ ] Regenerate `typst/generated/status.typ` (`bash scripts/typst-sync-check.sh --fix`) and stage
+      agreement the clauses still force") so it no longer leaves the label level unmentioned. *(completed)*
+- [x] Regenerate `typst/generated/status.typ` (`bash scripts/typst-sync-check.sh --fix`) and stage
       it with this phase's commit, because the pre-commit gate runs
-      `typst-sync-check.sh --counts-only` on any commit touching a `.lean` file.
+      `typst-sync-check.sh --counts-only` on any commit touching a `.lean` file. *(completed)*
 
 **Reference statements** (the four signatures this phase commits to; bodies shown because they
 are one-liners, not because they are pinned — the implementer confirms elaboration):
