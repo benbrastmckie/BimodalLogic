@@ -6,18 +6,28 @@ histories, packaged as a presheaf on the durations rather than treated one domai
 The objects of `Int(D)` are the durations — the positive cone of a temporal order — and its
 morphisms `l' → l` are the **translations** `Tr p`, one for each offset `p` with `p + l' ≤ l`.
 `Beh(F)(l)` is the set of partial histories whose domain is exactly `[0, l]`, and restriction
-along `Tr p` is `τ ↦ (z ↦ τ(p + z))`. The cluster is built on `Semantics/PartialHistory.lean`
-alone and sits strictly **below** `Semantics/Truth.lean`: all four modules close with
-`assert_not_exists` on the proof system, so the layering is locked rather than merely observed.
+along `Tr p` is `τ ↦ (z ↦ τ(p + z))`. Four of the five modules are built on
+`Semantics/PartialHistory.lean` alone; `Presheaf/Directed.lean` additionally imports the
+`Semantics/Extension/` cluster, because the two clauses it discharges are wrappers on
+`thm:extension`. The cluster sits strictly **below** `Semantics/Truth.lean` regardless: all five
+modules close with `assert_not_exists` on the proof system, so the layering is locked rather than
+merely observed.
 
-Two clauses of the presheaf dictionary are discharged here. *Germs* identifies the sections over
+Four clauses of the presheaf dictionary are discharged here. *Germs* identifies the sections over
 the zero duration with the world states (`Beh.germEquiv`), and *Sheaf* glues two sections
 agreeing at a seam into a unique section over the joined interval (`sheaf_clause`, and
 `sheaf_clause_site` in the site's own vocabulary). The gluing argument itself is not local to this
-cluster: it is `PartialHistory.rel_across_seam`, shared with history pasting. Both clauses are
-choice-free in two measured senses — they use *Compositionality* alone, taken as an explicit
-hypothesis rather than a frame bundle, and `#print axioms` reports no `Classical.choice` on any
-declaration in the cluster.
+cluster: it is `PartialHistory.rel_across_seam`, shared with history pasting. *Totality* makes
+every restriction map surjective (`totality_clause`, `totality_clause_site`) and *Directed Gluing*
+extends a directed compatible family to the whole interval (`directed_gluing_clause`); both are
+wrappers on `thm:extension`, and `Presheaf/Directed.lean` is where that is made visible.
+
+*Germs* and *Sheaf* are choice-free in two measured senses — they use *Compositionality* alone,
+taken as an explicit hypothesis rather than a frame bundle, and `#print axioms` reports no
+`Classical.choice` on either. **That is no longer a cluster-wide claim**, and it was one before
+`Presheaf/Directed.lean` landed: `totality_clause`, `directedSup` and `directed_gluing_clause` all
+measure `Classical.choice`. The split, and what each clause's choice is attributable to, is the
+third recorded verdict below.
 
 `Presheaf/Ray.lean` adds the **ray layer**, the half-line counterpart of the bounded sections. A
 section `Beh F l` has domain exactly `[0, l]`; a possible world does not, and what a seam-local
@@ -45,7 +55,7 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
 | File | Lines | Description |
 |------|------:|-------------|
 | `Behavior.lean` | 296 | The behavior presheaf `Beh F`: the sections over a duration, the restriction action at raw data and at a site morphism, presheaf functoriality, and the *Germs* clause `Beh F 0 ≃ F.WorldState` |
-| `Directed.lean` | 260 | The *Totality* and *Directed Gluing* clauses as wrappers on `thm:extension`: the translate `place`, the cut `ofWorld`, the directed union `directedSup`, both clauses in binder-free engine form with their instantiations, and the choice record |
+| `Directed.lean` | 515 | The *Totality* and *Directed Gluing* clauses as wrappers on `thm:extension`: the translate `place`, the cut `ofWorld`, the directed union `directedSup`, both clauses in binder-free engine form with their instantiations, and the choice record |
 | `Ray.lean` | 438 | The ray layer: the half-line sections `PastRay`/`FutRay` at a seam, their seam projections and bridges, and the ray-layer gluing operator with its reading equations, restriction identities, uniqueness and totality |
 | `Sheaf.lean` | 434 | <!-- TODO: add description --> |
 | `Site.lean` | 191 | The interval site `Int(D)`: the translations `Tr p`, the three category laws, and the Johnstone coverage |
@@ -77,6 +87,16 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
   bounded section over `l`
 - `StabFibre F t s`, `RayPair F t s` — the `⊡` quantification domain at `(t, s)`, and the fibre
   product of the past-ray and future-ray spaces over the seam state
+- `place` — the translate: a section over `m` placed at offset `p`, as a partial history with
+  domain `Interval p (p + m)`. Written against the interval rather than through
+  `PartialHistory.timeShift`, which keeps the arithmetic negation-free
+- `ofWorld` — the cut: a possible world restricted to `[0, l]`, as a section of `Beh F l`. Its
+  section condition is `fun _ => Iff.rfl`, which is what `Beh`'s pointwise-`Iff` design buys
+- `directedSup` — the union of a **directed** family of partial histories, `noncomputable` as
+  `PartialHistory.chainSup` is. The one piece of genuinely new machinery either new clause needs,
+  since `thm:extension` consumes a single history. Its natural home is beside `chainSup` in
+  `Semantics/PartialHistoryOrder.lean`, from which `chainSup` could then be derived; that
+  consolidation is recorded as a follow-up in `Presheaf/Directed.lean`'s Implementation Notes
 
 ## Key Results
 
@@ -129,8 +149,33 @@ one of `Ray.lean`'s declarations measures `[propext]` or `[propext, Quot.sound]`
   what makes the site-level clause free
 - `compat_iff_match` — the coverage's compatible-family condition, as an equality of germ
   sections in `Beh F 0`, is the raw seam hypothesis
+- `restrict_ofWorld` — the bridge both new clauses share: if a possible world extends
+  `place p hm σ`, restricting its cut over `[0, l]` along the translation by `p` returns `σ`
+- `totality_of_isRestriction` — the *Totality* clause's **engine**: every restriction map of the
+  behavior presheaf is surjective, with the extension property taken as an explicit hypothesis and
+  therefore no frame constraint at all. Measures `[propext, Quot.sound]`, which is what makes the
+  choice in `totality_clause` attributable rather than merely co-present
+- `totality_clause`, `totality_clause_site` — the *Totality* clause at `[F.IsRegular]`, at raw
+  offsets and along a site morphism `f : Tr l' l`
+- `totality_of_isZTime`, `totality_of_completion` — the two **Saturation-free** forms, over
+  discrete ℤ-time and at bare *Completion*. Saturation-free is not choice-free: both still route
+  through Zorn
+- `directed_states_agree` — two members of a directed family agree wherever both are defined; the
+  directed analogue of `PartialHistory.chain_states_agree`, with a common upper bound in place of
+  `IsChain.total`
+- `le_directedSup` — every member of a directed family is below its union
+- `place_le_place` — the paper's "any two restrict a third" bridge, from its two hypotheses
+  (directedness of the windows, compatibility on overlaps) to the single `Directed (· ≤ ·)` the
+  gluing proof consumes
+- `directed_gluing_of_isRestriction` — the *Directed Gluing* clause's existence half in engine
+  form: union the translates, extend, cut. Unlike *Totality*'s engine this one **still** measures
+  `Classical.choice`, because `directedSup` is independently non-constructive
+- `directed_gluing_unique` — the uniqueness half, under a covering hypothesis. Needs neither
+  directedness nor any frame constraint; sections are functions on points
+- `directed_gluing_clause` — the *Directed Gluing* clause itself, as the `∃!` the two halves
+  package
 
-## Two recorded verdicts
+## Recorded verdicts
 
 ### The ray gluing stands in for a Zorn argument without subsuming the Extension Theorem
 
@@ -175,6 +220,51 @@ reached through `pathFibreEquiv` to build a possible world out of a bare bi-infi
 Rerouting that declaration is out of scope here: it is a core `Semantics/IntNormalForm.lean`
 declaration with consumers on several independent fronts. A uniform claim in either direction
 would be false; the split is the record.
+
+### The dictionary's four clauses split on choice, and the split is attributable
+
+The two clauses `Presheaf/Directed.lean` discharges are **wrappers** on `thm:extension`, and
+stating them as a binder-free engine plus instantiations is what turns the choice measurement from
+an observation into an attribution. Every row below was measured with `lean_verify` or
+`#print axioms`; the module's own docstring carries the same table.
+
+| Declaration | Measured axioms |
+|---|---|
+| `sheaf_clause` (binary *Sheaf*) | `[propext, Quot.sound]` |
+| `ofWorld`, `directed_states_agree` | `[propext]` |
+| `place`, `place_le_place`, `restrict_ofWorld` | `[propext, Quot.sound]` |
+| `totality_of_isRestriction` (engine) | `[propext, Quot.sound]` |
+| `PartialHistory.extension` | `[propext, Classical.choice, Quot.sound]` |
+| `totality_clause`, `totality_clause_site` | `[propext, Classical.choice, Quot.sound]` |
+| `totality_of_isZTime`, `totality_of_completion` | `[propext, Classical.choice, Quot.sound]` |
+| `directedSup`, `le_directedSup` | `[propext, Classical.choice]` |
+| `directed_gluing_unique` | `[propext, Quot.sound]` |
+| `directed_gluing_of_isRestriction` (engine) | `[propext, Classical.choice, Quot.sound]` |
+| `directed_gluing_clause` | `[propext, Classical.choice, Quot.sound]` |
+
+Reading the four values: `[propext]` and `[propext, Quot.sound]` are **choice-free**;
+`[propext, Classical.choice]` is the directed union's own non-constructivity; and
+`[propext, Classical.choice, Quot.sound]` is everything that reaches Zorn's lemma, directly or
+through the union.
+
+*Totality*'s engine is measured choice-free *with the extension property as an explicit
+hypothesis*, so the `Classical.choice` in `totality_clause` is **attributable** — exactly to
+`thm:extension` and to nothing in the geometry of translating and cutting. *Directed Gluing* admits
+no such attribution, and the contrast between the two engine rows is the evidence:
+`directed_gluing_of_isRestriction` measures `Classical.choice` *even with the extension property
+hypothesized away*, because the directed union `directedSup` is independently non-constructive.
+Its choice is **doubly** sourced.
+
+The non-constructivity of the directed case is a mathematical obstruction, not a Lean artifact.
+`app:gluing`'s footnote supplies a counterexample proving *Saturation* is genuinely required there:
+over `D = ℚ` with `W = {q ∈ ℚ : q > 0}` and `r ⇒ₓ r'` iff `|r' − r| ≤ x`, the restrictions of
+`τ(t) = 1 − t` to `(0, b]` for `b < 1` form an increasing chain whose union admits no value at time
+`1`. This is why the paper writes "in ZFC" at *Directed Gluing* and "choice-free" at *Sheaf*, and
+why the binary case's choice-freeness **must not** be imported into the directed case.
+
+`totality_of_isZTime` and `totality_of_completion` are **Saturation-free** — a statement about
+`def:frame`'s fourth constraint, not a claim of choice-freedom. Both still route through Zorn's
+lemma and both measure `[propext, Classical.choice, Quot.sound]`.
 
 ### What a decidable stability check on the path-space presentation requires
 
@@ -223,7 +313,9 @@ bound is committed anywhere in this cluster, and soundness is untouched.
 
 ## Dependencies
 
-- **Imports from**: `Semantics/TemporalOrder.lean`, `Semantics/PartialHistory.lean`
+- **Imports from**: `Semantics/TemporalOrder.lean`, `Semantics/PartialHistory.lean`, and —
+  `Presheaf/Directed.lean` only — `Semantics/Extension/Extension.lean` and
+  `Semantics/Extension/Completion.lean`
 - **Imported by**: `Semantics/Presheaf.lean` (the cluster aggregator), and
   `PlusLanguage/PlusRayFibre.lean`, which imports `Presheaf/Ray.lean` directly to read the `⊡`
   clause through `seamFibreEquiv`

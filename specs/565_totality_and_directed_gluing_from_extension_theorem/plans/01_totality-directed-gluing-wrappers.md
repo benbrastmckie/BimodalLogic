@@ -129,42 +129,42 @@ machinery and the Totality clause in its engine plus three instantiations, is wi
 aggregators, and `lake build FormalSystem` is green with no new `sorry`.
 
 **Tasks**:
-- [ ] Create `FormalSystem/Semantics/Presheaf/Directed.lean` with the cluster's established
+- [x] Create `FormalSystem/Semantics/Presheaf/Directed.lean` with the cluster's established
       shape: copyright header (2026, Benjamin Brast-McKie, Apache 2.0), module docstring with
       `## Main Definitions` / `## Main Results` / `## Implementation Notes` / `## References`,
       and the closing `assert_not_exists FormalSystem.ProofSystem.Axiom
       FormalSystem.ProofSystem.DerivationTree`.
-- [ ] Imports: `FormalSystem.Init`, `FormalSystem.Semantics.Presheaf.Behavior`,
+- [x] Imports: `FormalSystem.Init`, `FormalSystem.Semantics.Presheaf.Behavior`,
       `FormalSystem.Semantics.Presheaf.Sheaf`, `FormalSystem.Semantics.Extension.Extension`,
       `FormalSystem.Semantics.Extension.Completion`. All five verified acyclic — nothing in the
       `Extension/` chain imports anything under `Presheaf/`.
-- [ ] `place` and `place_mem`: the translate onto `Interval p (p + m)`, `respects_task` via
+- [x] `place` and `place_mem`: the translate onto `Interval p (p + m)`, `respects_task` via
       `sub_sub_sub_cancel_right`. Do **not** route through `PartialHistory.timeShift`.
-- [ ] `ofWorld`: `PartialHistory.restrict h (Interval 0 l) ⟨0, le_refl 0, hl⟩`, with the `Beh`
+- [x] `ofWorld`: `PartialHistory.restrict h (Interval 0 l) ⟨0, le_refl 0, hl⟩`, with the `Beh`
       property discharged by `fun _ => Iff.rfl`.
-- [ ] `restrict_ofWorld`: the bridge, moving a state across `p + r - p = r` through
+- [x] `restrict_ofWorld`: the bridge, moving a state across `p + r - p = r` through
       `PartialHistory.states_eq_of_time_eq`.
-- [ ] `totality_of_isRestriction`: the binder-free engine, taking
+- [x] `totality_of_isRestriction`: the binder-free engine, taking
       `∀ τ, PartialHistory.IsRestriction τ` as an explicit hypothesis.
       `Constraints consumed: None`.
-- [ ] `totality_clause` (`[F.IsRegular]`, via `PartialHistory.isRestriction_of_isRegular`),
+- [x] `totality_clause` (`[F.IsRegular]`, via `PartialHistory.isRestriction_of_isRegular`),
       `totality_clause_site` (the same at `Beh.restrictTr f` for `f : Tr l' l`),
       `totality_of_isZTime` (via `extension_of_isZTime`), `totality_of_completion` (via
       `extension_of_completion`) — each a one-line delegation to the engine. C34a markers:
       the four-constraint list for `totality_clause`/`totality_clause_site`,
       `Compositionality, Seriality, Limit` for `totality_of_isZTime`, `Seriality, Limit` for
       `totality_of_completion`.
-- [ ] Throughout: `add_le_add (le_refl p) h`, never `(add_le_add_iff_left p).mpr h`. `change`,
+- [x] Throughout: `add_le_add (le_refl p) h`, never `(add_le_add_iff_left p).mpr h`. `change`,
       never `show`.
-- [ ] `## References` in the normal form of `docs/development/REFERENCE_NORMAL_FORM.md`, every
+- [x] `## References` in the normal form of `docs/development/REFERENCE_NORMAL_FORM.md`, every
       key resolving in the root `references.bib` (`[schultz2020]`, not the paper's
       `Schultz2020`). `app:presheaf-dictionary` and `def:behavior-presheaf` cited with their
       `DANGLING` status stated at the site, copying `Behavior.lean`'s "Paper state: the source
       appendix is cut" paragraph as the form of record; `thm:extension` and `cor:occurrence`
       cited plainly.
-- [ ] Re-read `FormalSystem/Semantics/Presheaf.lean` immediately beforehand, then add the one
+- [x] Re-read `FormalSystem/Semantics/Presheaf.lean` immediately beforehand, then add the one
       `import FormalSystem.Semantics.Presheaf.Directed` line (sorted) plus a `## Modules` bullet.
-- [ ] Re-read `FormalSystem.lean` immediately beforehand, then add
+- [x] Re-read `FormalSystem.lean` immediately beforehand, then add
       `import FormalSystem.Semantics.Presheaf.Directed` between `…Presheaf.Behavior` and
       `…Presheaf.Ray`. C33 asserts this file is byte-for-byte `lake exe mk_all --lib FormalSystem`
       output; omitting the line fails C33 **and** C24's root-closure walk.
@@ -211,58 +211,58 @@ pre-edit observation, not a guarantee — a sibling's landed edit can shift them
 
 ---
 
-### Phase 2: Directed Gluing, and the choice record [NOT STARTED]
+### Phase 2: Directed Gluing, and the choice record [COMPLETED]
 
 **Goal**: the directed union and both halves of Directed Gluing land in the same module, the
 four-row choice record is written explicitly in two places, the cluster READMEs stop asserting
 things that are now false, and `lake build FormalSystem` is green with no new `sorry`.
 
 **Tasks**:
-- [ ] `directed_states_agree`: two members of a `Directed (· ≤ ·)` family agree wherever both are
+- [x] `directed_states_agree`: two members of a `Directed (· ≤ ·)` family agree wherever both are
       defined. Copy `PartialHistoryOrder.chain_states_agree`'s proof, replacing `hc.total` with a
       common upper bound from `hdir`.
-- [ ] `directedSup` (`noncomputable`, as `chainSup` is): domain `fun t => ∃ i, (fam i).domain t`,
+- [x] `directedSup` (`noncomputable`, as `chainSup` is): domain `fun t => ∃ i, (fam i).domain t`,
       states via `Classical.choose`, `respects_task` routed through a common upper bound of the
       two chosen witnesses. `[Nonempty I]` is required — `nonempty_domain` is a field and the
       empty family's union has empty domain. `Directed` needs no extra import; it arrives
       transitively through `Mathlib.Order.Zorn`.
-- [ ] `le_directedSup`.
-- [ ] `place_le_place`: the paper's "any two restrict a third" bridge, taking the shift-fit
+- [x] `le_directedSup`.
+- [x] `place_le_place`: the paper's "any two restrict a third" bridge, taking the shift-fit
       `p - p' + m ≤ m'` as an explicit named hypothesis rather than an inline `by` term.
-- [ ] `directed_gluing_of_isRestriction`: union the translates, extend to a possible world by the
+- [x] `directed_gluing_of_isRestriction`: union the translates, extend to a possible world by the
       hypothesis, cut over `[0, l]`; `restrict_ofWorld` applies at every index because each
       translate is below the union and the union below the world. `Constraints consumed: None`.
-- [ ] `directed_gluing_unique` under `hcov`: at each `t ∈ [0, l]` pick a covering index and read
+- [x] `directed_gluing_unique` under `hcov`: at each `t ∈ [0, l]` pick a covering index and read
       both sections at `t - p i` through the imported `states_eq_of_eq`. **Do not** use
       `rw [h i]` — it fails with "motive is not type correct" on a goal whose domain witness
       mentions the rewritten section.
-- [ ] `directed_gluing_clause`: the `∃!` packaging at `[F.IsRegular]` under the covering
+- [x] `directed_gluing_clause`: the `∃!` packaging at `[F.IsRegular]` under the covering
       hypothesis. C34a marker: the four-constraint list.
-- [ ] Module docstring: the four-row choice record as a table, stating that the engine rows are
+- [x] Module docstring: the four-row choice record as a table, stating that the engine rows are
       what make it a *record* rather than an observation — because the wrapper is measured
       choice-free with the extension property as a hypothesis, Totality's `Classical.choice` is
       attributable *exactly* to `thm:extension`, whereas Directed Gluing's is **doubly** sourced
       (the union is independently non-constructive). Note `app:gluing`'s ℚ counterexample as the
       reason *Saturation* is genuinely required in the directed case, so the non-constructivity
-      is a mathematical obstruction rather than a Lean artifact.
-- [ ] Module Implementation Notes: the `add_le_add_iff_left` measurement trap, and the recorded
+      is a mathematical obstruction rather than a Lean artifact. *(deviation: altered — rendered as a TWO-column table (Declaration | Measured axioms) plus a four-value legend and the prose readings, not a three-column one: three columns put four table rows past the 100-column `linter.style.longLine` budget, and markdown table rows cannot be wrapped. The record also carries eleven rows over four distinct axiom values rather than four rows, including one measurement the plan did not anticipate — `directed_gluing_of_isRestriction`, the Directed Gluing ENGINE, measures `Classical.choice` even with the extension property hypothesized away, which is sharper evidence for "doubly sourced" than the plan's table had)*
+- [x] Module Implementation Notes: the `add_le_add_iff_left` measurement trap, and the recorded
       follow-up to consolidate `directedSup` into `PartialHistoryOrder.lean` beside `chainSup`.
-- [ ] `FormalSystem/Semantics/Presheaf/README.md`: amend the layering claim (the cluster is no
+- [x] `FormalSystem/Semantics/Presheaf/README.md`: amend the layering claim (the cluster is no
       longer "built on `Semantics/PartialHistory.lean` alone" — this module imports the
       `Extension/` cluster); amend the now-false sentence that `#print axioms` reports no
       `Classical.choice` on **any** declaration in the cluster. `Ray.lean`'s own narrower claim
-      stays true and needs no change.
-- [ ] `FormalSystem/Semantics/Presheaf/README.md`: add the choice record as a third recorded
+      stays true and needs no change. *(deviation: altered — also changed the section heading `## Two recorded verdicts` to `## Recorded verdicts`: it already undercounted (four subsections), and adding a fifth would have left a demonstrably false count in a file this task was amending for exactly that kind of staleness)*
+- [x] `FormalSystem/Semantics/Presheaf/README.md`: add the choice record as a third recorded
       verdict; extend `Key Definitions` and `Key Results`; regenerate the inventory block with
-      `bash scripts/check-module-invariants.sh --emit-inventory`, **never** by hand.
-- [ ] `FormalSystem/Semantics/README.md:63`: minimally extend the hand-written `Presheaf/` row.
+      `bash scripts/check-module-invariants.sh --emit-inventory`, **never** by hand. *(deviation: altered — the regeneration had to run in Phase 1 as well, because adding the module made the INV check fail immediately; it was re-run here once the module's line count changed)*
+- [x] `FormalSystem/Semantics/README.md:63`: minimally extend the hand-written `Presheaf/` row.
       It already says "(2 files)" and names only `Site` and `Behavior`, so it is stale by two
       prior tasks; add `Directed` and correct the count. Minimal addition only — a rewrite would
       collide broadly.
-- [ ] `docs/reference/paper-definitions-of-record.md:2120` (optional): the
+- [x] `docs/reference/paper-definitions-of-record.md:2120` (optional): the
       `app:presheaf-dictionary` row's description currently names only *Germs* and *Sheaf* as
       formalized; adding *Totality* and *Directed Gluing* keeps the record true. The row is
-      `DANGLING` and carries no hash, so editing the description is safe.
+      `DANGLING` and carries no hash, so editing the description is safe. *(done — the optional item was taken, not skipped)*
 
 **Timing**: 2 hours
 
@@ -408,23 +408,23 @@ end FormalSystem.Semantics.Presheaf
 
 ## Testing & Validation
 
-- [ ] `lake build FormalSystem` green at the end of every phase, and again after every aggregator
+- [x] `lake build FormalSystem` green at the end of every phase, and again after every aggregator
       edit, via the detached guarded route with a hard timeout and `kill -0` writer liveness.
-- [ ] No new `sorry` anywhere in `FormalSystem/` on either reading of the C3 baseline.
-- [ ] All six choice-record rows reproduced by `lean_verify`, including the two engine rows whose
+- [x] No new `sorry` anywhere in `FormalSystem/` on either reading of the C3 baseline.
+- [x] All six choice-record rows reproduced by `lean_verify`, including the two engine rows whose *(exceeded: all seventeen declarations in the record were measured, not six)*
       *absence* of `Classical.choice` is the task's analytic point.
-- [ ] `bash scripts/check-module-invariants.sh` green: C8 (module docstring), C15/C31
+- [x] `bash scripts/check-module-invariants.sh` green: C8 (module docstring), C15/C31
       (`## References` normal form, every key resolving in the root `references.bib`), C24 (root
       closure), C26 (no underscore in a `def`/`abbrev` name component — `place`, `ofWorld`,
       `directedSup` comply; `directed_sup` would not), C28 (lint budget), C32, C33 (`FormalSystem.lean`
       byte-exact against `lake exe mk_all --lib FormalSystem`), C34a/b (`Constraints consumed:`
       markers), INV (README inventory blocks).
-- [ ] `assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree`
+- [x] `assert_not_exists FormalSystem.ProofSystem.Axiom FormalSystem.ProofSystem.DerivationTree`
       still passes in the new module — the whole new import closure was traced and contains
       nothing under `FormalSystem.ProofSystem.*`, so the cluster stays provably below
       `Semantics/Truth.lean`.
-- [ ] `bash .claude/scripts/check-task-references.sh` clean.
-- [ ] `git diff --stat` shows no file touched outside the six named across both phases.
+- [x] `bash .claude/scripts/check-task-references.sh` clean.
+- [x] `git diff --stat` shows no file touched outside the six named across both phases. *(deviation: altered — nine files, not six. The three extra are machine-generated and gate-required rather than hand-authored: `README.md` and `FormalSystem/README.md` carry generated inventory blocks regenerated by `scripts/check-module-invariants.sh --emit-inventory` (the INV check fails otherwise), and `typst/generated/status.typ` carries the live file/line counts regenerated by `scripts/typst-sync-check.sh --fix` (a pre-commit hook blocks the commit otherwise). None was anticipated by the plan's file lists)*
 
 ## Artifacts & Outputs
 
