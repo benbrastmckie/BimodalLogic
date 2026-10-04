@@ -1,0 +1,39 @@
+{
+  "status": "researched",
+  "started_at": "2026-10-04T00:00:00-00:00",
+  "completed_at": "2026-10-04T00:00:00-00:00",
+  "dispatch_seq": 1,
+  "findings_count": 8,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/722_reconcile_decidability_prose_two_statements/reports/01_reconcile-decidability-prose.md",
+      "summary": "Per-surface findings for all 8 named decidability-prose surfaces: re-verified Compression.decidableValidZTime (axioms [propext, Classical.choice, Quot.sound], standard trust), confirmed each quoted stale/incomplete phrase and its exact lines, and recommended additive prose fixes stating the two-statement distinction once per surface, pointing to docs/theorem-index.md."
+    }
+  ],
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, FormalSystem.Semantics.validZTime_iff_validInt (FormalSystem/Semantics/IntTransfer.lean:338) formally identifies 'validity over every discrete duration carrier' with 'validity over Z alone' (ValidZTime). This is the Lean counterpart of the typst paper's Log(Discrete) notion, so any proved property of ValidZTime (e.g. decidability) can be stated as a property of the paper-level Discrete factor logic, not just of a same-named Lean predicate.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/722_reconcile_decidability_prose_two_statements/reports/01_reconcile-decidability-prose.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["decidability", "ValidZTime", "validZTime_iff_validInt", "discrete-dense dichotomy", "typst-lean correspondence"]
+    },
+    {
+      "content": "BimodalLogic has no mechanical lint tying a landed Lean decidability result to the fixed set of prose surfaces that assert decidability status (README.md, FormalSystem/README.md, Decidability/README.md, Decidability.lean docstring, BiLasso/README.md, ADR-007, known-limitations.md, typst/FormalFoundations.typ). A result landing in WitnessFamily/Compression/Assembly.lean on 2026-09-28 left several of these surfaces stale/false for about a week before a dedicated reconciliation task caught it. A future meta-type task could add a doc-staleness check to check-module-invariants.sh triggered when a new Decidable def/instance lands under Metalogic/Decidability/.",
+      "category": "PATTERN",
+      "source_artifact": "specs/722_reconcile_decidability_prose_two_statements/reports/01_reconcile-decidability-prose.md",
+      "confidence": 0.6,
+      "suggested_keywords": ["documentation-staleness", "decidability", "check-module-invariants", "meta-task", "prose-reconciliation"]
+    }
+  ],
+  "user_decision": null,
+  "next_steps": "Run /plan 722 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1791141048_bd999f_722",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "compliance_check": "passed"
+  }
+}

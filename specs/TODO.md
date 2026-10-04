@@ -49,7 +49,7 @@ next_project_number: 732
 
 ### Code Quality
 
-728 [NOT STARTED] — Sweep and repair phantom declaration citations across task...
+728 [RESEARCHING] — Sweep and repair phantom declaration citations across task...
 
 ### Dataset Enhancement
 
@@ -80,11 +80,11 @@ next_project_number: 732
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
-726 [NOT STARTED] — Make the decidability-programme inventory re-runnable from...
+726 [RESEARCHING] — Make the decidability-programme inventory re-runnable from...
 
 ### Documentation
 
-722 [NOT STARTED] — Reconcile the programme-level decidability prose with the...
+722 [RESEARCHED] — Reconcile the programme-level decidability prose with the...
 
 ### Formula Refactor
 
@@ -170,7 +170,7 @@ Effort: small-to-medium, mostly editorial judgment rather than code.
 ---
 
 ### 728. Sweep phantom declaration citations
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: general
 - **Topic**: code-quality
 - **Dependencies**: None
@@ -206,7 +206,7 @@ ACCEPTANCE. Every surviving confirmed instance is repaired at its source or reco
 ---
 
 ### 726. Rerunnable decidability programme inventory
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: meta
 - **Topic**: decidability
 - **Dependencies**: None
@@ -244,7 +244,7 @@ ACCEPTANCE. A runnable mechanism that regenerates the four-status inventory from
 
 WHY THIS EXISTS. The seam-gluing route's finite-graph stability summary has only its FORWARD factor proved -- `Probe718FiniteGraph.will_iff_allPathsMeet`, `decide_will`, `decidable_will`, on a `Bool` complete-graph fixture, for the stability-of-future operator only. The backward dual is a RECORDED EXCLUSION, justified by that fixture being symmetric under time reversal. But the finite-width obstruction lives in the BACKWARD factor: `Probe710`'s contradiction pigeonholes backward post-chains at unboundedly early times. So the fixture whose symmetry justified skipping the backward case is exactly the fixture that cannot see the obstruction. The exclusion is reasonable and the gap it leaves is real.
 
-THE EXPERIMENT. Build the backward dual on a TIME-ASYMMETRIC fixture. Reuse `Probe710.Node` and `Probe710.Step` from `specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean` -- finitely branching, every node with exactly one predecessor, bi-infinite paths canonical by `Probe710.path_eq_canon`. Decide the backward stability operator at a seam state by backward reachability, mirroring `will_iff_allPathsMeet`.
+THE EXPERIMENT. Build the backward dual on a TIME-ASYMMETRIC fixture. Reuse `Probe710.Node` and `Probe710.Step` from `specs/archive/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean` -- finitely branching, every node with exactly one predecessor, bi-infinite paths canonical by `Probe710.path_eq_canon`. Decide the backward stability operator at a seam state by backward reachability, mirroring `will_iff_allPathsMeet`.
 
 "REUSE" MEANS TRANSCRIBE, NOT IMPORT. Probes in `specs/evidence/seam-gluing-ray-product/` CANNOT import each other -- every probe imports only `FormalSystem`, as `scripts/check-evidence-probes.sh`'s header states and as the existing probes demonstrate (`path-quantifier-alternation.lean` restates its fixture rather than importing it). Do not plan this around an import that cannot exist; transcribe the fixture into the new probe file.
 
@@ -265,10 +265,11 @@ ACCEPTANCE. One probe file deciding the backward stability operator on a time-as
 ---
 
 ### 722. Reconcile decidability prose two statements
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: markdown
 - **Topic**: documentation
 - **Dependencies**: None
+- **Research**: [722_reconcile_decidability_prose_two_statements/reports/01_reconcile-decidability-prose.md]
 
 **Description**: Reconcile the programme-level decidability prose with the two-statement distinction (tableau biconditional open; Decidable (ValidZTime phi) proved)
 
@@ -378,7 +379,7 @@ ARGUED, NOT FORMALIZED -- AND EVERY CITING RECORD MUST SAY SO. The bound is an a
 
 NO UPPER-BOUND CLAIM MAY LAND FROM THIS TASK. The programme commits to no complexity bound. This task's content is a LOWER bound used as a ceiling: it rules proposals out, it never certifies that any procedure achieves a cost. Deriving or landing an upper-bound claim from it -- in this task's artifacts, in a citing record, or in the write-up -- is a defect, not a result. The asymmetry is the point: a lower bound says "nothing cheaper is credible", it does not say "this much suffices."
 
-GOAL. Raise the 2EXPTIME-hardness of L-plus Z-time validity from ARGUED to MACHINE-CHECKED. The argument is given in both directions in specs/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md section Q4 ("The true order of the state bound"), completing what task 703's round-2 report argued in one direction only -- now archived at specs/archive/703_lplus_compression_and_completeness/reports/02_semantics-first-compression-research.md section 1.6 ("The complexity picture").
+GOAL. Raise the 2EXPTIME-hardness of L-plus Z-time validity from ARGUED to MACHINE-CHECKED. The argument is given in both directions in specs/archive/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md section Q4 ("The true order of the state bound"), completing what task 703's round-2 report argued in one direction only -- now archived at specs/archive/703_lplus_compression_and_completeness/reports/02_semantics-first-compression-research.md section 1.6 ("The complexity picture").
 
 THE REDUCTION. Translate CTL-star by A |-> stab and X |-> bottom U ., with non-strict U rendered as e or (g and (g U e)). FORWARD: a rooted total Kripke structure becomes bi-serial by adding one fresh state with a self-loop and an edge to the root, which leaves forward paths from the original states unchanged; stab at (sigma, t) with sigma t = w ranges over histories through w, whose futures are exactly the forward paths from w, and the translation is pure-future so its truth depends only on the future (truth_congr_agreeFrom). BACKWARD: from a Z-model of the translation at (sigma, t), the Kripke structure of the state graph forward-reachable from sigma t satisfies the CTL-star formula at sigma t, by the same two facts read backwards. CTL-star satisfiability is over arbitrary, possibly infinite structures, so no finiteness is needed anywhere.
 
@@ -398,7 +399,7 @@ KEEP-OR-ABANDON IS A PHASE 0 USER RULING, NOT MADE HERE. This revision records t
 
 **Description**: REVISED 2026-10-03 FROM THE DECIDABILITY-PROGRAMME REVIEW. Authoritative scope input: Section A of `specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md`, whose anchors are recorded in that file's Section 0 rows 6 and 22-24 and were re-checked against the tree again at this revision. THIS REVISION CHANGES THE DEPENDENCY LIST AND THIS NOTE ONLY. It does NOT change the status and does NOT decide the terminal outcome. The refutation record below (STATUS NOTE 2026-10-02) is accurate and stands: this task had already converted itself from an open-statement record into a REFUTATION RECORD before this revision, and that conversion is confirmed here, not reversed.
 
-WHAT THE TREE SAYS, RE-VERIFIED AT THIS REVISION. The statement this task was filed to hold open and prove is machine-checked FALSE. `Probe710.not_sliced_complete` and `Probe710.not_finite_width_fmp` in `specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean` (namespace `Probe710`) carry the refutation; its core is `Probe710.no_finite_width_sat`, stated over `FrameOver.ofSlicedStep R fwd bwd` under `[Finite W] [Nonempty W]` with a time-indexed bi-serial `R : ℤ → W → W → Prop` (`fwd : ∀ t w, ∃ u, R t w u`, `bwd : ∀ t w, ∃ v, R (t - 1) v w`) and NO hypothesis on the shape of the succession relation. That file is one of the three `WIRED_REPO` entries of `scripts/check-evidence-probes.sh` and PASSES. THE STATUS OF RECORD IS THEREFORE REFUTED AS A THEOREM (PROBE LEVEL), NOT "OPEN".
+WHAT THE TREE SAYS, RE-VERIFIED AT THIS REVISION. The statement this task was filed to hold open and prove is machine-checked FALSE. `Probe710.not_sliced_complete` and `Probe710.not_finite_width_fmp` in `specs/archive/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean` (namespace `Probe710`) carry the refutation; its core is `Probe710.no_finite_width_sat`, stated over `FrameOver.ofSlicedStep R fwd bwd` under `[Finite W] [Nonempty W]` with a time-indexed bi-serial `R : ℤ → W → W → Prop` (`fwd : ∀ t w, ∃ u, R t w u`, `bwd : ∀ t w, ∃ v, R (t - 1) v w`) and NO hypothesis on the shape of the succession relation. That file is one of the three `WIRED_REPO` entries of `scripts/check-evidence-probes.sh` and PASSES. THE STATUS OF RECORD IS THEREFORE REFUTED AS A THEOREM (PROBE LEVEL), NOT "OPEN".
 
 DEPENDENCY EDGE ON TASK 711 IS REMOVED BY THIS REVISION; THE EDGE ON 703 STAYS. Reason: the edge on 711 gated PROVING the statement -- 711 was filed as the named ω-automata determinization blocker on the only known proof route -- and the statement is refuted, so the edge now points at nothing. Its only remaining effect was to make 711 look load-bearing for a result that no longer exists. Task 711 has itself since been re-scoped by USER RULING (2026-10-03, commit `94b9b0808`; `specs/ROADMAP.md` Phase 0 carries the checked item "RULED 2026-10-03 by the user: REVISE") to the universal-summary substrate for the `⊡` fibre check on the seam-gluing route, with its consumer re-pointed from this task to task 719 Deliverable 5. That re-scoped 711 is UNRELATED to this task, so removing the edge is the correct record either way.
 
@@ -407,17 +408,17 @@ THE TERMINAL STATUS IS A PHASE 0 USER RULING, AND THIS REVISION DOES NOT MAKE IT
 (b) `[COMPLETED]` AS A REFUTATION RECORD -- available once the refutation is landed as a `FormalSystem/` LIBRARY THEOREM under the user's confirmed Option A (library landing). Option A is now the user's own ruling, not an autonomous adoption: `specs/ROADMAP.md` Phase 0 carries it as a CHECKED item ("RULED 2026-10-03 by the user: Option A -- library landing"), and it is the revised implementation scope of tasks 710 and 706 as of 2026-10-03 (commits `21fafc4e2`, `556c391e7`; scope spec Section F items 1-2). Option B -- accepting the CI-guarded `specs/evidence/` collection as the home of refutations -- is REJECTED.
 `specs/ROADMAP.md` Phase 0 carries the UNCHECKED item for the ruling on this task. Nothing in this revision checks it, and no agent may.
 
-RESEARCH RECOMMENDATION -- STATED AS A RECOMMENDATION AND EXPLICITLY NOT A DECISION. Hold this task open only until the library landing exists, then close it as a refutation record: that is, prefer (b) to (a), but only AFTER the landing. Do NOT close it on the probe alone. The programme's own rule is that obstructions live as THEOREMS, not only as probes, and that rule is stated in the records of task 709 ("record the obstruction as a theorem where possible ... never leave a deferred obligation behind a placeholder"), task 719 ("Any construction found unworkable must have its obstruction recorded as a THEOREM, per this programme's established discipline -- negative results are deliverables here, not failures") and this task. VERIFIED AT THIS REVISION: the landing does not exist yet. `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/` is not a directory in the tree, so the `NoFiniteWidth.lean` target that task 710's declared `file_scope` names is unwritten, and the refutation still lives only under `specs/710_sliced_class_incompleteness_characterization/probes/`. The user may rule otherwise on any ground; this paragraph records the recommendation, never the outcome.
+RESEARCH RECOMMENDATION -- STATED AS A RECOMMENDATION AND EXPLICITLY NOT A DECISION. Hold this task open only until the library landing exists, then close it as a refutation record: that is, prefer (b) to (a), but only AFTER the landing. Do NOT close it on the probe alone. The programme's own rule is that obstructions live as THEOREMS, not only as probes, and that rule is stated in the records of task 709 ("record the obstruction as a theorem where possible ... never leave a deferred obligation behind a placeholder"), task 719 ("Any construction found unworkable must have its obstruction recorded as a THEOREM, per this programme's established discipline -- negative results are deliverables here, not failures") and this task. VERIFIED AT THIS REVISION: the landing does not exist yet. `FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/` is not a directory in the tree, so the `NoFiniteWidth.lean` target that task 710's declared `file_scope` names is unwritten, and the refutation still lives only under `specs/archive/710_sliced_class_incompleteness_characterization/probes/`. The user may rule otherwise on any ground; this paragraph records the recommendation, never the outcome.
 
 TWO SCOPE LIMITS OF THE REFUTATION, which `FormalSystem/Metalogic/Decidability/FMP/README.md` already states under its heading "The finite-carrier route is refuted, not merely open". FIRST, the scope is ℤ (DISCRETE) FRAMES ONLY: the pumping argument both probes rely on needs discreteness and says nothing about a dense duration. SECOND, this task's witness `Φ := θ' ∧ □(⊡Fp → ¬⊡¬Xp)` USES THE STABILITY OPERATOR `⊡`, so `not_finite_width_fmp` is specifically an L⁺ result -- unlike `Probe706.no_finite_carrier_sat`, whose witness is `⊡`-free (`Probe706.θ_eq_ofFormula`) and whose half of the refutation is therefore already a result about the base language TM itself. Neither probe says anything about an INFINITE carrier, and neither touches soundness. Do not over-read the refutation past these two limits.
 
-STATUS NOTE (2026-10-02, THE STATEMENT BELOW IS NOW REFUTED -- this task's own conversion clause is triggered): the statement held open below -- every Z-time non-validity of a PlusFormula admits a tail-stable SLICED certificate meeting Certifies -- is FALSE. The adversarial round produced the counterexample this task's closing line anticipated ('convert it to a refutation task if task 710 produces a counterexample'), so this task converts from an open-statement record to a REFUTATION RECORD. Machine-checked, sorry-free, axioms [propext, Classical.choice, Quot.sound], in specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean: not_sliced_complete refutes the statement directly, and not_finite_width_fmp generalises it -- NO certificate class presenting finite per-time fibres is complete, whatever its clauses. Witness Phi := theta' and Box(stab Fp -> not stab not Xp); the obstruction is finite WIDTH (limit closure plus finite fibres contradicts Koenig), a different and strictly stronger failure than the finite-CARRIER failure recorded below. CONSEQUENCES: (i) the 'STATUS OF THE STATEMENT ... OPEN, NOT REFUTED' paragraph below is superseded and must not be read as current; (ii) decidability of L-plus Z-time validity does NOT follow by this route and the route is closed, not merely blocked; (iii) the omega-automata determinization blocker was the blocker for PROVING the statement, so it no longer gates this record -- whether that blocker task is still wanted for other purposes is a separate question and is NOT settled here; (iv) a successor class must present INFINITE fibres (root paths of a finite class graph), with no checker precedent, and is to be filed as research-first only if decidability of full L-plus remains a programme goal. The stab-free flagship is unaffected. THE STATUS FIELD IS DELIBERATELY LEFT UNCHANGED: moving this record to a terminal status is a programme-level call for a human, not a consequence of the refutation. Original description follows, superseded as noted.
+STATUS NOTE (2026-10-02, THE STATEMENT BELOW IS NOW REFUTED -- this task's own conversion clause is triggered): the statement held open below -- every Z-time non-validity of a PlusFormula admits a tail-stable SLICED certificate meeting Certifies -- is FALSE. The adversarial round produced the counterexample this task's closing line anticipated ('convert it to a refutation task if task 710 produces a counterexample'), so this task converts from an open-statement record to a REFUTATION RECORD. Machine-checked, sorry-free, axioms [propext, Classical.choice, Quot.sound], in specs/archive/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean: not_sliced_complete refutes the statement directly, and not_finite_width_fmp generalises it -- NO certificate class presenting finite per-time fibres is complete, whatever its clauses. Witness Phi := theta' and Box(stab Fp -> not stab not Xp); the obstruction is finite WIDTH (limit closure plus finite fibres contradicts Koenig), a different and strictly stronger failure than the finite-CARRIER failure recorded below. CONSEQUENCES: (i) the 'STATUS OF THE STATEMENT ... OPEN, NOT REFUTED' paragraph below is superseded and must not be read as current; (ii) decidability of L-plus Z-time validity does NOT follow by this route and the route is closed, not merely blocked; (iii) the omega-automata determinization blocker was the blocker for PROVING the statement, so it no longer gates this record -- whether that blocker task is still wanted for other purposes is a separate question and is NOT settled here; (iv) a successor class must present INFINITE fibres (root paths of a finite class graph), with no checker precedent, and is to be filed as research-first only if decidability of full L-plus remains a programme goal. The stab-free flagship is unaffected. THE STATUS FIELD IS DELIBERATELY LEFT UNCHANGED: moving this record to a terminal status is a programme-level call for a human, not a consequence of the refutation. Original description follows, superseded as noted.
 
 BLOCKED. This task is the durable record of the L-plus completeness programme's OPEN headline statement, so that it lives in the task list rather than only in a module docstring.
 
 THE STATEMENT, to be held open and unamended until proved: every Z-time non-validity of a PlusFormula admits a TAIL-STABLE SLICED certificate -- the class task 703's amended Stage 2 lands -- meeting its Certifies predicate. Together with the soundness theorem and the decidable checker that Stage 2 also lands, this would yield decidability of L-plus Z-time validity, which is the result the L-plus completeness programme exists to reach.
 
-STATUS OF THE STATEMENT, per specs/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md decision D3: it is OPEN, NOT REFUTED. What task 706 refuted is the FINITE-CARRIER statement only (Probe706.not_finite_carrier_fmp, sorry-free, machine-checked), which killed the finite-graph certificate type. The sliced statement has no counterexample and none is expected; task 710 exists to attack it adversarially before task 709 spends 60-100 hours downstream of it.
+STATUS OF THE STATEMENT, per specs/archive/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md decision D3: it is OPEN, NOT REFUTED. What task 706 refuted is the FINITE-CARRIER statement only (Probe706.not_finite_carrier_fmp, sorry-free, machine-checked), which killed the finite-graph certificate type. The sliced statement has no counterexample and none is expected; task 710 exists to attack it adversarially before task 709 spends 60-100 hours downstream of it.
 
 WHY BLOCKED. The only known proof route needs omega-automata determinization, which neither this tree nor Mathlib has (task 711, filed as the named blocker). The alternative -- a direct construction over the product of the state graph with the Hintikka types -- is refuted by the classical new-path example Reynolds 2001 records: in the limit, a step-by-step or filtration construction produces many more paths than were ever chosen explicitly, and a new path can postpone an eventuality forever.
 
@@ -444,7 +445,7 @@ THE DEVICE IS TO BE SELECTED BY PROBE E3, NOT ASSUMED. Four devices are live can
 (d) a Ramsey-coloured summary as in finding F4 -- the re-scoped statement of task 709 (finite width implies eventually periodic, via infinite Ramsey for pairs over the colours (E, lab, fwdLive, bwdLive)).
 Selection is experiment E3 in the scope spec's "Ranking ratification" section: a device-selection probe comparing the candidate universal devices on the stab-of-eventually and stab-of-once shapes, BEFORE anything is funded. NO DEVICE MAY BE ASSERTED AS THE RIGHT ONE, AND NO COMPLEXITY BOUND MAY BE CLAIMED, FROM THIS RECORD. The CTL-star 2EXPTIME lower bound (task 713, ARGUED, not proved) is the sanity ceiling on any procedure later proposed, never an upper-bound source.
 
-CONSUMER, RE-POINTED. The consumer of this substrate is DELIVERABLE 5 of the ray-layer/seam-gluing task (719), "THE DECIDABLE-CHECK CONNECTION", which is where a decidable stab check on the path-space presentation is to be determined. The former consumer -- the L-plus sliced finite model property record (712) -- is NO LONGER THE CONSUMER: the statement 712 was filed to prove is machine-checked FALSE (Probe710.not_sliced_complete and Probe710.not_finite_width_fmp in specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean), so the old edge pointed at a result that no longer exists.
+CONSUMER, RE-POINTED. The consumer of this substrate is DELIVERABLE 5 of the ray-layer/seam-gluing task (719), "THE DECIDABLE-CHECK CONNECTION", which is where a decidable stab check on the path-space presentation is to be determined. The former consumer -- the L-plus sliced finite model property record (712) -- is NO LONGER THE CONSUMER: the statement 712 was filed to prove is machine-checked FALSE (Probe710.not_sliced_complete and Probe710.not_finite_width_fmp in specs/archive/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean), so the old edge pointed at a result that no longer exists.
 
 STILL BLOCKED. Blocked reason (recorded here because this record carries no blocked-reason field and this revision adds no state fields): DEVICE NOT YET SELECTED; PROBE E3 PENDING. Do not plan and do not implement this task until E3 has selected a device. Dependencies remain empty by design: nothing upstream gates device selection, only the unrun probe does.
 
@@ -468,7 +469,7 @@ ORIGINAL SCOPE (superseded 2026-10-03; retained for provenance only). BLOCKED AN
 
 DEPENDENCIES. [703, 710, 719]. 719 (ray layer, seam gluing and stab fibre) is added by this revision because F4 is a step inside the route 719 promotes: the summary device F4 would supply is R1's, and which device R1 needs is decided by 719's Deliverable 5 (the decidable-check connection) and by probe E3, not here. 703 and 710 are retained unchanged.
 
-PREMISE REFUTED FOR COMPLETE CLASSES. F4's premise -- finite width -- is refuted for any COMPLETE certificate class by `Probe710.not_finite_width_fmp` (machine-checked, sorry-free, axioms [propext, Classical.choice, Quot.sound], in `specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean`, with `#print axioms` at the file's foot). Companions in the same file: `no_finite_width_sat`, `not_certifies`, `not_sliced_complete`, and the positive half `not_plusValidZTime_neg_Φ` -- NOTE the declaration is spelled with the Greek capital (`_Φ`), not `_Phi`. The witness is `Φ := (A' ∧ C') ∧ D` with `A' := □(p ∨ ⊡Fp ∨ ⊡Pp)`, `C' := □(p → ⊡¬Pp)` (together task 706's `θ'`), and `D := □(⊡Fp → ¬⊡¬Xp)`; the obstruction is EXACTLY FINITE WIDTH (limit closure plus finite per-time fibres contradicts König), and it bites already inside the CTL-like fragment this task targets. CONSEQUENCE FOR THE STATEMENT: no surviving form of F4 may be stated for a complete class or for the fragment at large. Any statement that survives MUST NAME THE RESTRICTED FRAGMENT (or the restricted class of structures) it holds for, and must say in its docstring why `not_finite_width_fmp` does not refute it.
+PREMISE REFUTED FOR COMPLETE CLASSES. F4's premise -- finite width -- is refuted for any COMPLETE certificate class by `Probe710.not_finite_width_fmp` (machine-checked, sorry-free, axioms [propext, Classical.choice, Quot.sound], in `specs/archive/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean`, with `#print axioms` at the file's foot). Companions in the same file: `no_finite_width_sat`, `not_certifies`, `not_sliced_complete`, and the positive half `not_plusValidZTime_neg_Φ` -- NOTE the declaration is spelled with the Greek capital (`_Φ`), not `_Phi`. The witness is `Φ := (A' ∧ C') ∧ D` with `A' := □(p ∨ ⊡Fp ∨ ⊡Pp)`, `C' := □(p → ⊡¬Pp)` (together task 706's `θ'`), and `D := □(⊡Fp → ¬⊡¬Xp)`; the obstruction is EXACTLY FINITE WIDTH (limit closure plus finite per-time fibres contradicts König), and it bites already inside the CTL-like fragment this task targets. CONSEQUENCE FOR THE STATEMENT: no surviving form of F4 may be stated for a complete class or for the fragment at large. Any statement that survives MUST NAME THE RESTRICTED FRAGMENT (or the restricted class of structures) it holds for, and must say in its docstring why `not_finite_width_fmp` does not refute it.
 
 TWO OUTCOMES, BOTH HONOURABLE. R1's summary step resolves one of two ways, and which way is R1's decision, not this task's:
 (i) R1 SELECTS A RAMSEY COLOUR. Then F4 is exactly the device -- candidate (d) in the re-scoped task 711's four-candidate list ("a Ramsey-coloured summary as in finding F4") -- and this task's theorem is what R1 needs. Proceed with the route recorded below.
@@ -481,7 +482,7 @@ IF F4 IS PURSUED (outcome (i)) -- STATEMENT AND ROUTE. Statement: every finite-w
 
 FRAGMENT (retained verbatim in substance; this definition is still the live one). State formulas S ::= atom | bottom | S -> S | Box S | stab(S U S) | stab(S S S), with X, F, G and their past mirrors as instances; the target is an arbitrary L-plus formula whose Box- and stab-subformulas are of this shape. BOTH Box and stab must be restricted: `Box psi` for a path formula `psi` is `stab psi` at every state, which on a branching structure is exactly the universal path condition the direct product-with-types route cannot quotient. NOTE the fragment does NOT contain L -- the witness `theta` of task 706 lies outside it -- so "fragment first" does not subsume the L side. Parity with L comes instead from the L-family embedding proved by task 703's amended Phase 17b, not from this task.
 
-RETAINED MACHINERY REFERENCES (verified in-tree). `exists_plusLabelledLasso_of_history_realized` at `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Extract.lean:261` (the single-history type-recurrence cut the L side already performs); `AUFix.lfp` at `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Fulfil.lean:242` (the fulfilling-DAG fixpoint computation); report `specs/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md` section Q3 (the CTL-like fragment and the Emerson-Halpern tableau-with-ranks starting point). The REFUTED HEADLINE this task was filed under -- establish the finite model property for the CTL-like fragment against the time-sliced certificate class -- MUST NOT BE ATTEMPTED; its ROUTE and BOUND paragraphs targeted that headline and no longer apply, and the expected-singly-exponential width remark is not to be carried into any plan.
+RETAINED MACHINERY REFERENCES (verified in-tree). `exists_plusLabelledLasso_of_history_realized` at `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Compression/Extract.lean:261` (the single-history type-recurrence cut the L side already performs); `AUFix.lfp` at `FormalSystem/Metalogic/Decidability/WitnessFamily/Sharing/Fulfil.lean:242` (the fulfilling-DAG fixpoint computation); report `specs/archive/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md` section Q3 (the CTL-like fragment and the Emerson-Halpern tableau-with-ranks starting point). The REFUTED HEADLINE this task was filed under -- establish the finite model property for the CTL-like fragment against the time-sliced certificate class -- MUST NOT BE ATTEMPTED; its ROUTE and BOUND paragraphs targeted that headline and no longer apply, and the expected-singly-exponential width remark is not to be carried into any plan.
 
 HARD CONSTRAINTS. Zero sorries, no new axioms, no vacuous placeholder definitions. Any statement proved must name the restricted fragment it holds for. If the property cannot be proved, record the obstruction as a theorem where possible; the obstruction for the unrestricted case IS already a theorem (`not_finite_width_fmp`), which discharges that constraint for the filed headline. Do NOT pursue a fourth certificate class first: any class with finite per-time fibres is already refuted by `not_finite_width_fmp`, so a successor must present infinite fibres, and that is a separate research-first question to file only if decidability of full L-plus remains a programme goal.
 
@@ -1174,7 +1175,7 @@ statement into vacuity.
 - **Topic**: decidability
 - **Dependencies**: Task 410, Task 411, Task 428, Task 430
 
-**Description**: Track B finish for the TM tableau decidability program (parent: task 165; grounding: reports/02_tableau-decidability-hard-research.md sections 3.1, 8.3, 8.5). Create Verified/Refutation/Core.lean proving allClosed_derivable as ONE induction over allRulesForFC fc, discharging each rule by its admissibility lemma (predecessor tasks) and its ruleFrameClass r <= fc hypothesis via the RuleSpec GATE lemmas — Dense/Discrete/Dedekind instantiate the generic theorem, they do not re-prove it. Then Verified/Provable.lean: Decidable (Derivable fc [] phi) combining allClosed_derivable with Track A's buildTableau_isSome and not_valid_of_hasOpen; the completeness corollaries ValidFor fc phi -> Derivable fc [] phi; supply the Dedekind engine consumed by completeness_dedekind_of_engine (StrongCompleteness.lean:308, target ValidDedekindDense). Acceptance: zero sorries repo-wide outside Boneyard; lake build green; update typst/latex decidability chapters to record headline result 2.
+**Description**: Track B finish for the TM tableau decidability program (parent: task 165; grounding: reports/02_tableau-decidability-hard-research.md sections 3.1, 8.3, 8.5). Create Verified/Refutation/Core.lean proving allClosed_derivable as ONE induction over allRulesForFC fc, discharging each rule by its admissibility lemma (predecessor tasks) and its ruleFrameClass r <= fc hypothesis via the RuleSpec GATE lemmas — Dense/Discrete/Dedekind instantiate the generic theorem, they do not re-prove it. Then Verified/Provable.lean: Decidable (Derivable fc [] phi) combining allClosed_derivable with Track A's buildTableau_isSome and not_valid_of_hasOpen; the completeness corollaries ValidFor fc phi -> Derivable fc [] phi [PHANTOM NAME -- see STALE REFERENCES addendum below]; supply the Dedekind engine consumed by completeness_dedekind_of_engine (StrongCompleteness.lean:308, target ValidDedekindDense) [PHANTOM NAME -- see STALE REFERENCES addendum below]. Acceptance: zero sorries repo-wide outside Boneyard; lake build green; update typst/latex decidability chapters to record headline result 2.
 RE-SCOPING ADDENDUM (2026-07-29, supersedes the buildTableau_isSome reference above): the scope text above depends on "Track A's buildTableau_isSome", which task 165 proved FALSE and placed on a do-not-re-attempt register (165's plan 01_tableau-decidability-two-track.md:1405-1420, :1489-1493). The refutation is a property of the engine signature, not a proof difficulty: buildTableau returns none whenever a formula explores more than maxBranches := 50000, at ANY fuel. Consequently this task's acceptance criterion "zero sorries repo-wide outside Boneyard" was UNREACHABLE AS SCOPED, independently of task 165's own status.
 
 CORRECTED DEPENDENCE: consume the budget-parameterised totality theorem from task 428 (engine_totality_at_a_quantified_branch_budget) -- shape `buildTableau_isSome_of_budget phi fc maxBranches (hmb : <bound in phi> <= maxBranches)` -- in place of the unconditional buildTableau_isSome. Task 428 has been added as a predecessor. Do NOT attempt the unconditional form yourself.
@@ -1269,20 +1270,30 @@ yet: FormalSystem/Metalogic/Decidability/Verified/ currently holds `Bridge/`, `D
 to this scope. The budget-parameterised totality correction (task 428) and the O2/O3 ownership
 assignment (task 429) in the addenda above both stand.
 
-STALE REFERENCES IN THE ORIGINAL SCOPE TEXT, flagged rather than silently repaired because this
-revision was not scoped to re-derive the Dedekind-engine deliverable. Three names the first
-paragraph cites could NOT be verified in FormalSystem/**/*.lean at revision time:
-`completeness_dedekind_of_engine`, `ValidDedekindDense`, and `ValidFor` (used in the phrase
-"completeness corollaries ValidFor fc phi -> Derivable fc [] phi"). `completeness_dedekind` and
-`ValidDedekind` are likewise absent from Lean sources and survive only in prose at
-FormalSystem/Metalogic/README.md:117, FormalSystem/Metalogic/BXCanonical/README.md:34 and
-FormalSystem/Metalogic/WeakCanonical/RealModel/README.md:14,32. The cited anchor
-StrongCompleteness.lean:308 is inside `soundness_consequence`, not a Dedekind engine. Whoever picks
-this task up must re-resolve the Dedekind-engine target against the tree before starting -- the
-nearest live declarations are `completeness_rtime_engine` (CompletenessDedekind.lean:598) and
-`countermodel_dedekind_dense` (CompletenessDedekind.lean:325) -- and must state the completeness
-corollaries against validity predicates that actually exist (`ValidZTime`, `ValidRTime` and their
-siblings) rather than against `ValidFor`.
+STALE REFERENCES IN THE ORIGINAL SCOPE TEXT, now marked PHANTOM NAME inline above (sweep
+task, 2026-10-04 revision) rather than left as a standing flag -- the names below were never
+corrected at their point of citation in the first paragraph, which is itself the defect this
+sweep targets. Three names the first paragraph cites could NOT be verified in
+FormalSystem/**/*.lean at revision time: `completeness_dedekind_of_engine`, `ValidDedekindDense`,
+and `ValidFor` (used in the phrase "completeness corollaries ValidFor fc phi -> Derivable fc
+[] phi"). `completeness_dedekind` and `ValidDedekind` are likewise absent from Lean sources and
+survive only in prose at FormalSystem/Metalogic/README.md, FormalSystem/Metalogic/BXCanonical/
+README.md and FormalSystem/Metalogic/WeakCanonical/RealModel/README.md -- all three corrected by
+the same sweep to cite their own live replacements rather than repeating these names. The cited
+anchor StrongCompleteness.lean:308 is inside `soundness_consequence`, not a Dedekind engine.
+
+RE-VERIFIED 2026-10-04, SHARPER MATCH FOUND. `completeness_dedekind_of_engine` has a precise
+renamed counterpart, not just a "nearest" one: `completeness_rtime_of_engine`
+(`FormalSystem/Metalogic/StrongCompleteness.lean:729`), signature
+`(engine : WeakCompleteness FrameClass.RTime) (phi : Formula) (h : ValidRTime phi) :
+Derivable FrameClass.RTime [] phi` -- the exact `_of_engine` shape the phantom name was reaching
+for, with `ValidRTime` (`FormalSystem/Semantics/Validity.lean:655`) standing in for the phantom
+`ValidDedekindDense`/`ValidFor`. Its engine hypothesis is discharged unconditionally by
+`completeness_rtime_engine` (`CompletenessDedekind.lean:598`), consumed in turn via
+`countermodel_dedekind_dense` (`CompletenessDedekind.lean:325`). Whoever picks this task up
+should state the completeness corollaries against `completeness_rtime_of_engine`'s pattern at
+RTime, and its `ValidZTime`/sibling analogues at the other three frame classes, rather than
+re-deriving the shape from scratch.
 
 ---
 
