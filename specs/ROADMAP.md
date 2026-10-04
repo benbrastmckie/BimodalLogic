@@ -1,6 +1,6 @@
 # Roadmap
 
-*Open work only, derived from `specs/state.json` (2026-10-03). Completed work is recorded in
+*Open work only, derived from `specs/state.json` (2026-10-04). Completed work is recorded in
 `specs/CHANGE_LOG.md` and `specs/archive/`; reference material — the BX axiom layers, the
 irreflexive truth semantics, the canonical-model and quasimodel constructions — lives in
 `README.md`, the module docstrings and `typst/BimodalReference.typ`. Each phase below is one or
@@ -10,13 +10,11 @@ they are not a run order; the priority on each heading is.*
 Contended files force several phases to run as sequences rather than one batch — a batch whose
 members share a declared file is deferred every cycle by the admission gate
 (`.claude/context/patterns/batch-orchestration-guardrails.md`). Live collisions:
-`docs/theorem-index.md` and `scripts/check-module-invariants.sh` (706, 705),
-`scripts/certificate-witness-inventory.txt` (716, 706), `README.md` (177, 543),
-`FormalSystem/Semantics/PartialHistory.lean` (719, 564),
-`MintBound.lean` (464, 465), `data/README.md` (282, 257). Two more are invisible to the gate:
-every task adding a module needs a line in the aggregator `FormalSystem/Semantics/Presheaf.lean`,
-and every one of them regenerates `FormalSystem.lean` and the READMEs via `lake exe mk_all` and
-`--emit-inventory`.
+`docs/theorem-index.md` and `scripts/check-module-invariants.sh` (723 against any new ledger
+row), `README.md` (177, 543), `MintBound.lean` (464, 465), `data/README.md` (282, 257). Two more
+are invisible to the gate: every task adding a module needs a line in the aggregator
+`FormalSystem/Semantics/Presheaf.lean`, and every one of them regenerates `FormalSystem.lean` and
+the READMEs via `lake exe mk_all` and `--emit-inventory`.
 
 ---
 
@@ -43,8 +41,10 @@ The programme's priority front by author directive (2026-10-02), carried through
 a seam — a reading of the landed semantics, not a new one: `⊡`'s clause
 (`StabClause.stab_clause`) already quantifies over exactly the re-gluings at the present state,
 and `FrameOver.mem_HF_iff_adjacent` already proves `H_F` is the bi-infinite step-paths. The
-keystone, that the stab fibre is the ray product, is proved at probe level under
-**`[F.IsRegular]`** and not unconditionally (task 718). Open: whether `back`/`fwd` can range over
+keystone, that the stab fibre is the ray product, is proved under **`[F.IsRegular]`** and not
+unconditionally; it now sits in `FormalSystem/` as four acceptance-named declarations across
+`Semantics/Presheaf/Ray.lean` and `PlusLanguage/PlusRayFibre.lean`, each carrying the instance
+verbatim with its axiom set pinned in the C2 harness. Open: whether `back`/`fwd` can range over
 path sets of a finite class graph rather than single lists with the `⊡` check still decidable.
 
 Three cautions. Gluing does **not** bound the fibre — the route concedes infinite fibres and seeks
@@ -53,17 +53,12 @@ choice-free while the *directed* case needs Saturation, so an ω-ray built by it
 directed colimit. And no upper bound is claimed anywhere; the external ceiling is the ARGUED lower
 bound held in task 713 as a citable anchor rather than schedulable work.
 
-- [ ] Design and implement the ray layer, the seam-gluing operator the paper calls `⌢_z`, and the
-      promotion of the stab-fibre characterisation into `FormalSystem/` with `[F.IsRegular]`
-      verbatim on every promoted keystone (Task 719)
-- [ ] Settle the effective extension theorem question: whether the binary seam gluing generalises
-      the Tier A theorem `BiLasso/Orbit.lean` built only for the bi-lasso case. Reachable with a
-      stated limit (a pair of rays, not an arbitrary `PartialHistory`), and worth landing even if
-      decidability stalls (Task 719, deliverable 4)
-- [ ] Run experiment **E1**, the backward-dual finite-graph probe on a *time-asymmetric* fixture:
-      the finite-width obstruction lives in the backward factor and the symmetric fixture that
-      justified skipping it cannot see it. Either outcome is the deliverable — a counterexample
-      falsifies the two-factor presentation (Task 725; closes as subsumed if 719 lands E1 first)
+- [ ] Run experiment **E1**, the backward-dual finite-graph probe on a *time-asymmetric* fixture.
+      **The subsumption condition this item names has been met**: task 719 added the E1
+      backward-dual probe on a time-asymmetric fixture, it came out POSITIVE and state-dependent,
+      and it is wired into the evidence gate. No counterexample appeared, so the two-factor
+      presentation stands. Task 725 is therefore a close-as-subsumed candidate rather than work to
+      run — it remains `[NOT STARTED]` pending that ruling (Task 725)
 - [ ] Select the universal summary device (experiment **E3**): a universal,
       complementation-shaped device is shown NECESSARY (`Probe718PathQuantifier.exists_ne_stab`),
       but Safra/Piterman specifically is not — Safraless procedures, MSO over ⟨ℤ,<⟩ plus Büchi,
@@ -80,9 +75,8 @@ and this repository being where elsewhere is. Treat a cut clause as a specificat
 never as a theorem to cite.
 
 ```
-/orchestrate 719        # after 564's seam gluing lands: they share PartialHistory.lean
-/orchestrate 725        # E1; a different cycle from 720 (both touch check-evidence-probes.sh)
-/orchestrate 709 --hard # after 719, under the gluing route -- not a phase capstone
+/orchestrate 725        # see the E1 note above: likely a subsumption close, not a run
+/orchestrate 709 --hard # under the gluing route -- not a phase capstone
 ```
 
 ---
@@ -92,23 +86,18 @@ never as a theorem to cite.
 The time-sliced certificate class is incomplete for full L⁺ **and** for the CTL-like fragment,
 and no certificate class presenting finite per-time fibres is complete whatever its clauses. The
 obstruction is finite *width* — limit closure plus finite fibres contradicts König — strictly
-stronger than the earlier finite-*carrier* failure. Task 710 landed the width half into
-`FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/NoFiniteWidth.lean` on
-2026-10-03; task 706 lands the carrier half. Do not file a fourth certificate class: any class
+stronger than the earlier finite-*carrier* failure. Both halves are now landed: the width half in
+`PlusSlicedCertificate/Limits/NoFiniteWidth.lean` and the finite-carrier family in
+`PlusSlicedCertificate/Limits/FiniteCarrier.lean`, the latter with `θ_eq_ofFormula` recording the
+`⊡`-free status of the witness. Do not file a fourth certificate class: any class
 with finite fibres is already refuted.
 
 - [ ] Fix the `liveT`/`liveAt` non-termination: the landed fixpoint does not return in 300s on a
       4-position total-edge certificate while being instant on self-loop ones. A defect in
       shipped, gated code, not an unbuilt feature (Task 716)
-- [ ] Land task 706's finite-carrier refutations into `FormalSystem/` — `no_finite_carrier_sat`
-      (`[Finite F.WorldState]`), `no_ofStep_sat`, `not_finite_carrier_fmp` — with
-      `θ_eq_ofFormula` stated so the `⊡`-free status of the witness is on record, since a fact
-      about TM itself is stronger than an L⁺-specific one (Task 706)
 - [ ] Re-point the `FMP/README.md` and `scripts/check-evidence-probes.sh` citations from the
       `WIRED_REPO` probe paths to the landed library names, or close as subsumed if the landings
       leave no probe to move (Task 720)
-- [ ] Record the `trans_refl` verdict: RETAIN — roughly 87 term-level sites across 18 files need
-      the self-step. Land the label-level congruences that are the bounded residual (Task 705)
 - [ ] Evaluate carrying full labels in the certificate, which would make `posAt` a singleton and
       delete both liveness filters; the question is whether decidability of the check survives
       (Task 714)
@@ -121,9 +110,7 @@ with finite fibres is already refuted.
 ```
 /orchestrate 716              # owns PlusSlicedCertificate/{Live,Check,Examples}
 /orchestrate 714 --research   # beside it: declares no file_scope, research-only
-/orchestrate 706              # then singly: shares two files with 705, one with 716
-/orchestrate 705
-/orchestrate 720              # after 706
+/orchestrate 720              # the citation re-point, now that both refutation halves have landed
 /orchestrate 712              # the closure, once 710's statement is checked against it
 ```
 
@@ -132,23 +119,16 @@ with finite fibres is already refuted.
 ## Phase 3: The Behavior Presheaf (High Priority)
 
 Each item is a clause of `app:presheaf-dictionary` and each has a proved hook already in the tree,
-which is why the cluster is bounded rather than open. The skeleton landed with task 563
-(`FormalSystem/Semantics/Presheaf/{Site,Behavior}.lean`, with
-`Beh.germEquiv : Beh F 0 ≃ F.WorldState`). **Run this front in batches of at most two, or
-singly** — never as one wide wave: every task here needs a one-line import in the aggregator
-`FormalSystem/Semantics/Presheaf.lean`, which task 563 owns and which is deliberately outside the
-other seven scopes, so the gate cannot see the collision. Re-run `lake build` after each
+which is why the cluster is bounded rather than open. The skeleton and the Sheaf, Totality,
+Directed Gluing and Determinism clauses have all landed
+(`FormalSystem/Semantics/Presheaf/{Site,Behavior,Sheaf,Directed}.lean`, with
+`Beh.germEquiv : Beh F 0 ≃ F.WorldState`); four clauses remain. **Run this
+front in batches of at most two, or singly** — never as one wide wave: every task here needs a
+one-line import in the aggregator `FormalSystem/Semantics/Presheaf.lean`, which no remaining task
+declares and which is deliberately outside the other scopes, so the gate cannot see the
+collision. Re-run `lake build` after each
 aggregator edit.
 
-- [ ] Prove `app:gluing` for two sections whose germs agree at the seam, plus the two restriction
-      identities and uniqueness. The clause already compiles sorry-free in the task's own probe
-      (`glue`, `restrict_glue_left`/`_right`, `glue_unique`, `sheaf_clause`), so the work is siting
-      and documentation rather than discovery — `glue_seam` is a probe-level name and is absent
-      from `FormalSystem/` (Task 564)
-- [ ] Prove the Totality and Directed Gluing clauses — both wrappers on the fully proved
-      `thm:extension` (Task 565)
-- [ ] Prove the Determinism clause, `F` deterministic iff every restriction map is injective,
-      against `states_eq_of_deterministic` (Task 567)
 - [ ] Prove the Reflection clause: `Beh(F) ≅ Beh(F⁻) ∘ ref` (Task 617)
 - [ ] Formalize the duration monoid `BD⁺`, its twisted-arrow category, and
       `lem:interval-twisted-arrow` (Task 616)
@@ -158,11 +138,9 @@ aggregator edit.
       Conduché fibration whose presheaf is `Beh(F)` (Task 618)
 
 ```
-/orchestrate 564          # the seam clause; Phase 1's 719 waits on it
-/orchestrate 565,567
 /orchestrate 616,617
-/orchestrate 566          # after 565
-/orchestrate 618          # after 564 and 616
+/orchestrate 566          # the Possible Worlds clause
+/orchestrate 618          # after 616
 ```
 
 ---
@@ -348,15 +326,11 @@ deliverable without the spine. Each item is cheap and independent; none is open 
       one place: eleven verified-absent names were found across four task records in a single
       revision round, because names get inherited from a predecessor's text rather than re-checked
       (Task 728)
-- [ ] Stop literal-null `file_scope` writes and promote `validate-state.sh` Check 10's
-      `null_value` sub-state to FAIL, leaving `missing_key` at WARN and `empty_array` advisory
-      (Task 727)
 
 ```
 /orchestrate 722,726,728   # prose, the inventory mechanism and the citation sweep
-/orchestrate 723           # after 706: shares check-module-invariants.sh
+/orchestrate 723           # singly: owns check-module-invariants.sh for its new baseline rows
 /orchestrate 724           # after 723, which pins its new row
-/orchestrate 727           # agent-system; edits land in the source store only
 ```
 
 ---
@@ -379,7 +353,8 @@ revised — the durable record is `specs/CHANGE_LOG.md` and `specs/archive/`. Up
 `/task --expand`, `/spawn` or a dependency change alters the graph, and treat any claim here that
 no check can reproduce as a defect in this file rather than a fact about the tree. Nobody owns the
 periodic re-run of the decidability inventory until task 726 lands; its baseline is section 1 of
-`specs/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md`.
+`specs/archive/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md`
+(moved into the archive when that task was archived).
 
 ## Related
 
