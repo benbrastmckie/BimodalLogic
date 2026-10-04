@@ -1,0 +1,39 @@
+{
+  "status": "researched",
+  "agent_type": "general-research-agent",
+  "delegation_path": ["orchestrator", "research", "general-research-agent"],
+  "session_id": "sess_1791141048_bd999f_726",
+  "dispatch_seq": 2,
+  "findings_count": 7,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/726_rerunnable_decidability_programme_inventory/reports/01_rerunnable-inventory-mechanism.md",
+      "summary": "Designs the decidability-inventory regeneration mechanism from the three named sources, live-validates the pinned-cell cross-check (0 mismatches, after reusing check-module-invariants.sh's own C36 regex fix for trailing-prime Lean identifiers), shows WITHDRAWN cannot be freshly regenerated from the three sources and must be carried forward from the recorded baseline, finds the REFUTED source has already drifted by one probe since the baseline, confirms no overlap with task 728, and recommends a standing scripts/ script over a /review step given the core extension's current deploy staleness."
+    }
+  ],
+  "memory_candidates": [
+    {
+      "content": "In BimodalLogic, scripts/check-module-invariants.sh's C2/C14 axiom baselines are heredocs of lines like \"'Fully.Qualified.Name' depends on axioms: [...]\". Any script parsing these to extract names MUST use a greedy capture (re.findall(r\"^'(.+)' depends on axioms\", block, re.M)), never an apostrophe-exclusion class like [^']+ -- the latter silently truncates and misses any Lean identifier ending in a trailing prime (e.g. not_plusValidZTime_neg_theta'), because the heredoc line ends in two apostrophes (the identifier's own, then the shell quote's). check-module-invariants.sh's own C36 check hit and fixed this exact bug (comment at ~line 6705-6716); reuse its regex rather than re-deriving one.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/726_rerunnable_decidability_programme_inventory/reports/01_rerunnable-inventory-mechanism.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["regex", "apostrophe", "Lean identifiers", "C2", "C14", "check-module-invariants"]
+    },
+    {
+      "content": "In BimodalLogic, docs/theorem-index.md's own header states every row is machine-pinned (compiles, axiom-tracked) except one documented decide-proof exception -- so table membership itself is a mechanical proxy for a theorem being PROVED, and a generator reading this file should verify each row's pinned:C2/C14 claim against the baselines rather than deciding PROVED-ness itself.",
+      "category": "PATTERN",
+      "source_artifact": "specs/726_rerunnable_decidability_programme_inventory/reports/01_rerunnable-inventory-mechanism.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["theorem-index", "decidability", "pinned", "machine-pinned", "provenance"]
+    },
+    {
+      "content": "A 'withdrawn/retired' status category in a machine-generated inventory cannot always be freshly regenerated from live-tree sources: in BimodalLogic's decidability programme, one baseline-recorded withdrawn declaration (exists_tailStable_repr) was deleted entirely and survives only in prose references across three files, none of which is the module the task's generator was told to read. The general lesson: when a status category's evidence can be a *deletion*, it must be carried forward from a recorded historical baseline and verified, not re-derived from what currently exists.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/726_rerunnable_decidability_programme_inventory/reports/01_rerunnable-inventory-mechanism.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["withdrawn", "baseline-diff", "inventory-regeneration", "decidability", "status-category"]
+    }
+  ],
+  "next_steps": "Run /plan 726 to create implementation plan"
+}

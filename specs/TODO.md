@@ -80,7 +80,7 @@ next_project_number: 732
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
-726 [RESEARCHING] — Make the decidability-programme inventory re-runnable from...
+726 [RESEARCHED] — Make the decidability-programme inventory re-runnable from...
 
 ### Documentation
 
@@ -206,10 +206,11 @@ ACCEPTANCE. Every surviving confirmed instance is repaired at its source or reco
 ---
 
 ### 726. Rerunnable decidability programme inventory
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: decidability
 - **Dependencies**: None
+- **Research**: [726_rerunnable_decidability_programme_inventory/reports/01_rerunnable-inventory-mechanism.md]
 
 **Description**: Make the decidability-programme inventory re-runnable from the tree
 
