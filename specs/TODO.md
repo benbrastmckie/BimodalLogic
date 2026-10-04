@@ -11,7 +11,7 @@ next_project_number: 729
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,705,709,711,712,713,714,716,720,722,723,725,726,728 | -- | algebraic-representation, categorical-structure, code-quality, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,711,712,713,714,716,720,722,723,725,726,728 | -- | algebraic-representation, categorical-structure, code-quality, ... |
 | 2 | 231,282,296,465,497,618,724 | 298,464,502,616,723 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -92,10 +92,6 @@ next_project_number: 729
 
 127 [NOT STARTED] — Add time addition operator (+) to the bimodal logic TM. φ + ψ...
 128 [NOT STARTED] — Add topological open set (interior) operator for dense and...
-
-### Incompleteness
-
-705 [IMPLEMENTING] — STATUS NOTE (2026-10-02, supersedes the expected answer...
 
 ### Literature
 
@@ -798,7 +794,7 @@ DEPENDENCIES unchanged: `[695, 696, 703]` -- all three are completed and archive
 ---
 
 ### 705. Trans reflexivity residual collapse
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: formal:logic
 - **Topic**: incompleteness
 - **Dependencies**: Task 696, Task 703

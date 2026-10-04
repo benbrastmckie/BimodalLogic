@@ -1,7 +1,7 @@
 # Implementation Plan: Task #705
 
 - **Task**: 705 - trans_reflexivity_residual_collapse
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: 696 (completed), 703 (completed), 704 (archived — its territory claim on `scripts/check-module-invariants.sh` has lapsed)
 - **Research Inputs**: specs/705_trans_reflexivity_residual_collapse/reports/01_trans-reflexivity-residual-audit.md

@@ -10,7 +10,9 @@
   ],
   "completion_data": {
     "completion_summary": "Landed the four label-level residual congruence theorems (untl_trans_congr, snce_trans_congr, untl_common_succ_congr, snce_common_pred_congr) in PlusWitnessFamily/Incompleteness.lean, pinned them in the C2 axiom baseline (confirmed pcq, no correction needed), gave them theorem-index ledger rows, and recorded the RETAIN-trans_refl decision across three prose surfaces and the field's own docstring. Also corrected a self-caused generated-inventory staleness in two READMEs, root-caused via disposable git-worktree checkouts rather than assumed. Full gate set (lake build, lake build BimodalTest, check-module-invariants.sh, --emit-inventory --check, typst-sync-check.sh) reports clean.",
-    "roadmap_items": ["Record the `trans_refl` verdict: RETAIN — roughly 87 term-level sites across 18 files need the self-step. Land the label-level congruences that are the bounded residual"]
+    "roadmap_items": [
+      "Record the `trans_refl` verdict: RETAIN — roughly 87 term-level sites across 18 files need the self-step. Land the label-level congruences that are the bounded residual"
+    ]
   },
   "modified_files": [
     "FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean",
@@ -29,21 +31,39 @@
       "category": "TECHNIQUE",
       "source_artifact": "specs/705_trans_reflexivity_residual_collapse/summaries/01_trans-refl-retention-and-residual-record-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["check-module-invariants", "no-build", "memory-pressure", "lightweight-verification", "C15", "C36a"]
+      "suggested_keywords": [
+        "check-module-invariants",
+        "no-build",
+        "memory-pressure",
+        "lightweight-verification",
+        "C15",
+        "C36a"
+      ]
     },
     {
       "content": "When a mechanical gate (e.g. check-module-invariants.sh's INV check, or typst-sync-check.sh) fails after a multi-phase dispatch, and the failure's two named files were last hand-edited by a PRIOR task's commit, do not assume the failure is pre-existing from that git-log fact alone: git log on a file shows when its CONTENT was last edited, not when it went stale relative to a live regeneration that depends on OTHER files elsewhere in the tree (e.g. a generated line-count table over a whole subtree). To actually root-cause which commit introduced the staleness, use disposable `git worktree add --detach <path> <commit>` checkouts (non-destructive to the working tree) and re-run the gate's read-only check mode at several candidate commits via bisection. In this case the INV check passed clean through the task's own plan-creation commit (no Lean files touched) and first failed at the task's own Phase-1 implementation commit, proving the task's own edits -- not a prior task's -- caused the drift. The fix was then a pure mechanical regeneration (the gate's own --emit-inventory writer mode), declared as a scope-extension in the summary, exactly analogous to the already-sanctioned typst/generated/status.typ regeneration pattern.",
       "category": "TECHNIQUE",
       "source_artifact": "specs/705_trans_reflexivity_residual_collapse/summaries/01_trans-refl-retention-and-residual-record-summary.md",
       "confidence": 0.9,
-      "suggested_keywords": ["git-worktree", "root-cause", "generated-surface-drift", "INV-check", "scope-extension", "bisection"]
+      "suggested_keywords": [
+        "git-worktree",
+        "root-cause",
+        "generated-surface-drift",
+        "INV-check",
+        "scope-extension",
+        "bisection"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1791093747_dd648f",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 5,
     "phases_total": 5
   }
