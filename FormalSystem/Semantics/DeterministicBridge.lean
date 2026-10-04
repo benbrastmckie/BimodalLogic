@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Semantics.Extension.Extension
+import FormalSystem.Semantics.Presheaf.Determinism
 import FormalSystem.PlusLanguage.PlusDeterminism
 
 /-!
@@ -26,6 +27,10 @@ converse, and packages the two as one biconditional.
   `states_eq_of_deterministic`; choice-free
 - `deterministic_of_singletonClasses` — the (⇐) half, via `thm:extension`; a theorem of **ZFC**
 - `deterministic_iff_singletonClasses` — the biconditional `lem:deterministic-singleton` now is
+- `singletonClasses_of_separated` — the `SingletonClasses` name attached to
+  `Presheaf.states_eq_of_separated`, whose content is stated below this file's layer; choice-free
+- `deterministic_iff_separated` — the *Determinism* clause of `app:presheaf-dictionary` as the
+  biconditional `F.Deterministic ↔ Presheaf.Separated F`; the (⇐) half is a theorem of **ZFC**
 
 ## Why the pointwise-on-states form on both sides
 
@@ -172,5 +177,43 @@ The (⇒) half is choice-free; the (⇐) half is a theorem of ZFC. See this modu
 theorem deterministic_iff_singletonClasses (F : TaskFrame) [F.IsRegular] :
     F.Deterministic ↔ F.SingletonClasses :=
   ⟨singletonClasses_of_deterministic, deterministic_of_singletonClasses⟩
+
+/--
+**Separatedness ⟹ singleton stability classes**, under the `SingletonClasses` name.
+
+A one-line repackaging of `Presheaf.states_eq_of_separated`, which states the same content with
+`TaskFrame.SingletonClasses` unfolded because the name is not available in its own cluster:
+`Semantics/Presheaf/` closes under `assert_not_exists` on the proof system, and this file reaches
+`FormalSystem.ProofSystem.Axioms` through `PlusDeterminism → PlusValidity → … →
+FrameClassValidity`. Choice-free, like the result it renames: measured `[propext, Quot.sound]`.
+-/
+theorem singletonClasses_of_separated {F : TaskFrame} (hS : Presheaf.Separated F) :
+    F.SingletonClasses :=
+  fun τ σ x h y => Presheaf.states_eq_of_separated hS τ σ x h y
+
+/--
+**The *Determinism* clause of `app:presheaf-dictionary`, as the biconditional**: a regular frame is
+deterministic exactly when every restriction map of its behavior presheaf is injective.
+
+Oriented to match `deterministic_iff_singletonClasses` directly above, of which this is the
+presheaf-side reading: `Presheaf.Separated` and `TaskFrame.SingletonClasses` are interchangeable
+hypotheses at a regular frame, and the (⇐) half here routes through
+`deterministic_of_singletonClasses` rather than running a second Zorn argument of its own.
+
+The two halves inherit the opposite choice profiles this module records for
+`lem:deterministic-singleton`. The (⇒) half, `Presheaf.separated_of_deterministic`, is choice-free
+(`[propext, Quot.sound]`) and adds nothing to this file. The (⇐) half is a **theorem of ZFC**, via
+`deterministic_of_singletonClasses` and hence `thm:extension`'s appeal to Zorn's lemma; the
+biconditional measures `[propext, Classical.choice, Quot.sound]` and must never be advertised as
+choice-free.
+
+**This biconditional's own converse is not in question** — a biconditional has none to fail.
+What *does* fail is the converse of "validity of *Determined* on `F` ⟹ `Beh F` separated":
+`Metalogic/Independence/BehSeparatedness.lean` refutes that at the drift frame `F°`.
+-/
+theorem deterministic_iff_separated (F : TaskFrame) [F.IsRegular] :
+    F.Deterministic ↔ Presheaf.Separated F :=
+  ⟨Presheaf.separated_of_deterministic,
+   fun hS => deterministic_of_singletonClasses (singletonClasses_of_separated hS)⟩
 
 end FormalSystem.Semantics

@@ -227,27 +227,27 @@ single new import line, stop and report rather than committing an unexplained ro
 
 ---
 
-### Phase 2: The biconditional, above the lock [NOT STARTED]
+### Phase 2: The biconditional, above the lock [COMPLETED]
 
 **Goal**: State the dictionary clause as a biconditional where `TaskFrame.SingletonClasses` is in
 scope, beside the `lem:deterministic-singleton` biconditional it is the presheaf-side reading of.
 
 **Tasks**:
 
-- [ ] Re-read `FormalSystem/Semantics/DeterministicBridge.lean` immediately before editing.
-- [ ] Add `import FormalSystem.Semantics.Presheaf.Determinism` to its import block. Confirm no
+- [x] Re-read `FormalSystem/Semantics/DeterministicBridge.lean` immediately before editing.
+- [x] Add `import FormalSystem.Semantics.Presheaf.Determinism` to its import block. Confirm no
   cycle: the `Presheaf/` cluster imports only `Init` and `PartialHistory`, nothing from
   `PlusLanguage/` or `Extension/`.
-- [ ] Append `singletonClasses_of_separated : Presheaf.Separated F → F.SingletonClasses`, a
+- [x] Append `singletonClasses_of_separated : Presheaf.Separated F → F.SingletonClasses`, a
   one-line repackaging of Phase 1's `states_eq_of_separated` under the `SingletonClasses` name.
-- [ ] Append `deterministic_iff_separated (F : TaskFrame) [F.IsRegular] : F.Deterministic ↔
+- [x] Append `deterministic_iff_separated (F : TaskFrame) [F.IsRegular] : F.Deterministic ↔
   Presheaf.Separated F`, oriented to match the file's existing
   `deterministic_iff_singletonClasses`, with the (⇐) half routed through
   `deterministic_of_singletonClasses` — no second Zorn argument.
-- [ ] Docstring both: the (⇒) half is choice-free, the (⇐) half is a theorem of **ZFC** via
+- [x] Docstring both: the (⇒) half is choice-free, the (⇐) half is a theorem of **ZFC** via
   `thm:extension`; pin `[propext, Classical.choice, Quot.sound]` on the biconditional. Extend the
   module docstring's `## Main Results` list with the two new entries.
-- [ ] Commit this phase's own hunk only.
+- [x] Commit this phase's own hunk only.
 
 **Timing**: 0.5 hours
 
