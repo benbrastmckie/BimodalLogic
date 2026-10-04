@@ -1,7 +1,7 @@
 # Implementation Plan: Task #723
 
 - **Task**: 723 - Ground the pinned:C14 claim on the three witness-family decidability rows of docs/theorem-index.md
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.25 hours
 - **Dependencies**: Task 706 (declared `file_scope` collision on `scripts/check-module-invariants.sh` -- run in a cycle disjoint from 705/706)
 - **Research Inputs**: specs/723_pin_witness_family_decidability_rows_c14_baseline/reports/01_c14-witness-family-pin.md

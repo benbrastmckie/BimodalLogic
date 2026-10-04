@@ -11,8 +11,8 @@ next_project_number: 732
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,711,712,713,714,716,720,722,723,725,726,728,729,730,731 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618,724 | 298,464,502,616,723 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,711,712,713,714,716,720,722,724,725,726,728,729,730,731 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -79,8 +79,7 @@ next_project_number: 732
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
-723 [IMPLEMENTING] — Ground the pinned:C14 claim on the three witness-family...
-  └─ 724 [NOT STARTED] — Decidability of Z-time provability as a corollary of...
+724 [NOT STARTED] — Decidability of Z-time provability as a corollary of...
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
 726 [NOT STARTED] — Make the decidability-programme inventory re-runnable from...
 
@@ -298,7 +297,7 @@ ACCEPTANCE. `Decidable (Derivable FrameClass.ZTime [] phi)` exists, compiles, ca
 ---
 
 ### 723. Pin witness family decidability rows c14 baseline
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: decidability
 - **Dependencies**: Task 706

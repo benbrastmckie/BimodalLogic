@@ -20,21 +20,38 @@
       "category": "PATTERN",
       "source_artifact": "specs/723_pin_witness_family_decidability_rows_c14_baseline/summaries/01_c14-witness-family-pin-summary.md",
       "confidence": 0.85,
-      "suggested_keywords": ["check-module-invariants", "C14", "print axioms", "heredoc", "lake env lean", "import scope"]
+      "suggested_keywords": [
+        "check-module-invariants",
+        "C14",
+        "print axioms",
+        "heredoc",
+        "lake env lean",
+        "import scope"
+      ]
     },
     {
       "content": "When a plan prescribes trusting a pre-existing comment's stated numeric constant at face value for a recompute formula (e.g. 'C2's four'), re-verify that constant against the live tree before using it -- comments describing counts can go stale independently of the task at hand. In this case the script's own live census output (C36's 'N pinned declaration(s) in C2+C14') served as an independent corroborating source for the corrected total.",
       "category": "TECHNIQUE",
       "source_artifact": "specs/723_pin_witness_family_decidability_rows_c14_baseline/summaries/01_c14-witness-family-pin-summary.md",
       "confidence": 0.7,
-      "suggested_keywords": ["stale-comment", "plan-deviation", "recompute", "cross-check", "descriptive-count"]
+      "suggested_keywords": [
+        "stale-comment",
+        "plan-deviation",
+        "recompute",
+        "cross-check",
+        "descriptive-count"
+      ]
     }
   ],
   "metadata": {
     "session_id": "sess_1791133434_0cdaa6",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
     "phases_completed": 3,
     "phases_total": 3
   }
