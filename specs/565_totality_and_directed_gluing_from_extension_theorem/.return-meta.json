@@ -1,17 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/565_totality_and_directed_gluing_from_extension_theorem/reports/01_totality-directed-gluing-wrappers.md",
-      "summary": "Compiled-probe-verified route for app:presheaf-dictionary's Totality and Directed Gluing clauses as wrappers on thm:extension, with the four-row choice record (Sheaf choice-free; Totality's choice attributable exactly to thm:extension; Directed Gluing's doubly sourced), a two-phase plan, and the three shared aggregator/README touches outside file_scope."
+      "type": "plan",
+      "path": "specs/565_totality_and_directed_gluing_from_extension_theorem/plans/01_totality-directed-gluing-wrappers.md",
+      "summary": "Two-phase plan discharging app:presheaf-dictionary's Totality and Directed Gluing clauses as wrappers on thm:extension in a new FormalSystem/Semantics/Presheaf/Directed.lean, with 16 compile-verified Lean Challenge Statements and the four-row choice record as an explicit deliverable."
     }
   ],
   "metadata": {
     "session_id": "sess_1791072120_6ec518_565",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 2,
+    "estimated_hours": 4,
+    "dependency_waves": [[1], [2]]
+  },
+  "memory_candidates": [
+    {
+      "content": "A standalone Lean snippet probe (lean_run_code) cannot surface same-namespace duplicate-declaration collisions with sibling modules that the library root aggregator also imports. A probe that declares `Foo.bar` without importing the sibling module that already declares `Foo.bar` compiles green; the same code inside a real module fails with \"`Foo.bar` has already been declared\" only once the root aggregator pulls both in. Before pinning a new declaration name in a Lean plan or report, grep the target namespace tree-wide for that exact name (not just the target file), or import the sibling and reuse. This specifically defeats the common recommendation to 'restate a small helper locally so the new module need not import X'.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/565_totality_and_directed_gluing_from_extension_theorem/plans/01_totality-directed-gluing-wrappers.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["lean4", "namespace-collision", "duplicate-declaration", "lean_run_code", "probe-blind-spot", "aggregator"]
+    }
+  ],
+  "next_steps": "Run /implement 565 to execute the plan",
+  "dispatch_seq": 3
 }
