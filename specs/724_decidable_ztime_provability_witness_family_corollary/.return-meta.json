@@ -1,30 +1,39 @@
 {
-  "status": "planned",
-  "dispatch_seq": 5,
+  "status": "implemented",
+  "started_at": "2026-10-04T10:39:21Z",
+  "completed_at": "2026-10-04T10:52:00Z",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/724_decidable_ztime_provability_witness_family_corollary/plans/01_decidable-ztime-provability-corollary.md",
-      "summary": "Five-phase, 3-hour plan landing Decidable (Derivable FrameClass.ZTime [] phi) at FormalSystem/Metalogic/ZTimeProvability.lean with import wiring, theorem-index row, C14 matched pair, and a build-backed full gate run."
+      "type": "summary",
+      "path": "specs/724_decidable_ztime_provability_witness_family_corollary/summaries/01_decidable-ztime-provability-corollary-summary.md",
+      "summary": "Landed Decidable (Derivable FrameClass.ZTime [] phi) in FormalSystem/Metalogic/ZTimeProvability.lean, wired it into the library root and metalogic aggregator, added its theorem-index row and its C14 axiom pin; full lake build and the build-backed invariants gate are both green."
     }
   ],
-  "phase_count": 5,
-  "estimated_hours": 3,
-  "dependency_waves": [[1], [2, 3, 4], [5]],
-  "memory_candidates": [
-    {
-      "content": "Module placement in a large Lean library is an import-weight decision, not a taxonomy decision, and it should be measured before writing. When a corollary composes declarations from two previously disjoint subtrees, computing each candidate host aggregator's net-new transitive import count separates options that differ by two orders of magnitude: placing a Z-time provability corollary inside the witness-family compression subtree cost +331 net-new transitive imports into an 84-module file and +318 into two downstream aggregators, while placing it in the metalogic directory (which already imported both legs' roots) cost +2, both of which were already in the library-root closure, leaving repository-wide build cost unchanged. The procedure: parse every import line under the library root, compute transitive closures, tabulate net-new modules per candidate host aggregator, and check knock-on hosts such as a separate tooling split that imports one of the candidates. Two standing constraints interact with the result: a generated library root must stay byte-exact against its sorted-import generator, and the aggregator convention requires X.lean beside X/. A suggested placement in a task description is a hypothesis to measure, not an instruction to follow; cycle-freedom is a separate and often easier question than import weight.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/724_decidable_ztime_provability_witness_family_corollary/plans/01_decidable-ztime-provability-corollary.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["lean", "module-placement", "import-weight", "transitive-imports", "aggregator", "build-cost"]
-    }
-  ],
-  "next_steps": "Run /implement 724 to execute the plan",
+  "completion_data": {
+    "completion_summary": "Decidability of Z-time provability now exists as a landed, kernel-checked corollary: FormalSystem/Metalogic/ZTimeProvability.lean composes soundness_ztime_valid (through a Nonempty elimination), BXCanonical.derivable_of_validZTime and Decidability.Compression.decidableValidZTime into derivable_iff_validZTime and decidableDerivableZTime. It closes decidability of provability over Z without the tableau spine; Base, Dense and RTime remain owed by the spine's completeness direction. The declaration is machine-pinned by a C14 matched pair and carries a docs/theorem-index.md row, with the full lake build (2819 jobs, 0 errors, 0 warnings) and build-backed check-module-invariants.sh (ALL CHECKS PASSED) both green.",
+    "roadmap_items": [
+      "Land `Decidable (Derivable FrameClass.ZTime [] phi)` as a corollary of `Compression.decidableValidZTime` composed with `soundness_ztime_valid` and `derivable_of_validZTime`, closing decidability of provability over Z without the spine"
+    ]
+  },
+  "partial_progress": {
+    "stage": "complete",
+    "details": "All five plan phases completed and committed.",
+    "phases_completed": 5,
+    "phases_total": 5
+  },
   "metadata": {
-    "session_id": "sess_1791133434_0cdaa6_724",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1791133434_0cdaa6",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "compliance_check": "passed",
+    "dispatch_seq": 6
   }
 }
