@@ -1,0 +1,18 @@
+{
+  "phase": 2,
+  "phase_name": "Append the three C14 baseline entries to both heredocs",
+  "started_at": "2026-10-04T17:26:00Z",
+  "last_updated": "2026-10-04T17:45:00Z",
+  "objectives": [
+    {"id": 1, "description": "Append three lines to C14_BASELINE heredoc", "status": "done", "files_touched": ["scripts/check-module-invariants.sh"]},
+    {"id": 2, "description": "Append three matching #print axioms directives to C14LEAN heredoc in identical order", "status": "done", "files_touched": ["scripts/check-module-invariants.sh"]},
+    {"id": 3, "description": "Add pointer comment for pending fourth declaration above C14_BASELINE opener", "status": "done", "files_touched": ["scripts/check-module-invariants.sh"]},
+    {"id": 4, "description": "Diff both appended blocks to confirm identical order and additions-only", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Run full bash scripts/check-module-invariants.sh (RUN_BUILD=1) and confirm ALL CHECKS PASSED", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Confirm C14/C21/C23/C36 unregressed in same run output", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "notes": "Full check run (background task bzls3m2yc) exited 0 with ALL CHECKS PASSED. C14 PASS (both invariant lines), C21 PASS (33/33 pinned declarations), C23 unaffected (only the original shadow-allowlist hits remain), C36 PASS. The three new declarations' axiom lines ([propext, Classical.choice, Quot.sound]) appear verbatim in the C14 run output at log lines 305-307."
+}

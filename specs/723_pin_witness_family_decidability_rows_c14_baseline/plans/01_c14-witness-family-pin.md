@@ -151,37 +151,40 @@ numbers rather than trusting these.
 
 ---
 
-### Phase 2: Append the three C14 baseline entries to both heredocs [NOT STARTED]
+### Phase 2: Append the three C14 baseline entries to both heredocs [COMPLETED]
 
 **Goal**: Add the three declarations to the C14 baseline pair, in identical order in both heredocs,
 plus the pointer comment for the pending fourth declaration, and prove the result green with a full
 `check-module-invariants.sh` run.
 
 **Tasks**:
-- [ ] Append to `C14_BASELINE`, immediately after the `Independence.z1_validIn_iff_ztime` line and
+- [x] Append to `C14_BASELINE`, immediately after the `Independence.z1_validIn_iff_ztime` line and
       before the `C14BASE` terminator, in exactly this order:
       - `'FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime' depends on axioms: [propext, Classical.choice, Quot.sound]`
       - `'FormalSystem.Metalogic.Decidability.validZTime_iff_noCertifiedCandidate' depends on axioms: [propext, Classical.choice, Quot.sound]`
       - `'FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime' depends on axioms: [propext, Classical.choice, Quot.sound]`
-- [ ] Append to `C14LEAN`, immediately after the matching `#print axioms
+- [x] Append to `C14LEAN`, immediately after the matching `#print axioms
       FormalSystem.Metalogic.Independence.z1_validIn_iff_ztime` directive and before the `C14LEAN`
       terminator, in the identical order:
       - `#print axioms FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime`
       - `#print axioms FormalSystem.Metalogic.Decidability.validZTime_iff_noCertifiedCandidate`
       - `#print axioms FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime`
-- [ ] Add the pointer comment as a new paragraph in the shell comment block ABOVE the
+- [x] Add the pointer comment as a new paragraph in the shell comment block ABOVE the
       `read -r -d '' C14_BASELINE <<'C14BASE'` line (currently line 2044) -- NOT inside either
       heredoc. It names the witness-family trailing block, states that a fourth sibling
       declaration, `Decidable (Derivable FrameClass.ZTime [] φ)` (the Z-time derivability corollary
       of `Compression.decidableValidZTime`), is expected to join this block once it lands in
       `FormalSystem/`, and that pinning it is a copy of this block's shape. No task number appears
-      in the comment.
-- [ ] Diff the two appended blocks against each other and confirm declaration order matches
-      line-for-line (`git diff scripts/check-module-invariants.sh`).
-- [ ] Run the authoritative gate: `bash scripts/check-module-invariants.sh` (default
-      `RUN_BUILD=1`; do NOT substitute `--no-build`).
-- [ ] Confirm C14 reports `pass` and that C21, C23 and C36 are unregressed in the same run output.
-- [ ] Commit the single-file edit once green.
+      in the comment. *(completed)*
+- [x] Diff the two appended blocks against each other and confirm declaration order matches
+      line-for-line (`git diff scripts/check-module-invariants.sh`). *(completed: identical order
+      confirmed in both heredocs; additions only, no existing line altered)*
+- [x] Run the authoritative gate: `bash scripts/check-module-invariants.sh` (default
+      `RUN_BUILD=1`; do NOT substitute `--no-build`). *(completed: exit 0, "ALL CHECKS PASSED")*
+- [x] Confirm C14 reports `pass` and that C21, C23 and C36 are unregressed in the same run output.
+      *(completed: C14 PASS x2, C21 PASS (33/33 pinned), C23 unaffected, C36 PASS; the three new
+      declarations' axiom lines appear in the C14 run output)*
+- [x] Commit the single-file edit once green. *(completed)*
 
 **Timing**: 0.75 hours
 
