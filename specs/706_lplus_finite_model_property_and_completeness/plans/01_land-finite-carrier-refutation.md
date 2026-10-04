@@ -658,7 +658,7 @@ fails C33. This is a pre-declared batch, not a retroactively widened one.
 
 ---
 
-### Phase 6: Replace the subtree root's unanchored prose with the landed names [NOT STARTED]
+### Phase 6: Replace the subtree root's unanchored prose with the landed names [COMPLETED]
 
 **Goal**: Deliverable 6. `PlusSlicedCertificate.lean`'s header argues the finite-carrier point by
 name instead of in unanchored prose.

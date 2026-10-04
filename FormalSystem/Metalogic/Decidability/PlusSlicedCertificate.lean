@@ -249,17 +249,24 @@ it under, and `decidableCertifies` is synthesized from the clauses rather than p
 ### The carrier is infinite, with finite fibres, and that is forced
 
 `G.frame h` presents a frame on `ℤ × Fin G.n`. The carrier is **infinite** — proved here, not
-asserted — and its time fibres are finite, of size `G.n`. This is not a convenience. A certificate
-whose presented frame has a **finite carrier** cannot certify a `⊡`-free ℤ-time non-validity that
-the landed `Formula`-side witness family already certifies, so a finite-carrier certificate class
-is incomplete for a fragment in which the `Formula`-side route is complete. The infinite carrier
-with finite fibres is the weakest shape that escapes that obstruction while keeping every
-per-time object a `Finset`, which is what keeps the checker decidable.
+asserted — and its time fibres are finite, of size `G.n`. This is not a convenience:
+`Limits.FiniteCarrier.not_finite_carrier_fmp` shows the finite-carrier finite model property
+**fails** for L⁺ over ℤ-time, so a certificate whose presented frame has a finite carrier cannot
+certify the ℤ-time non-validity `θ.neg` at all, and such a class is incomplete already for a
+fragment in which the `Formula`-side route is complete. The infinite carrier with finite fibres is
+the weakest shape that escapes that obstruction while keeping every per-time object a `Finset`,
+which is what keeps the checker decidable.
 
-Restricting the language to the CTL-like fragment does **not** rescue the finite-carrier shape: the
-`⊡`-free non-validity that defeats it already lies inside that fragment, so the sliced shape is
-needed there too. Whether the fragment has a finite model property of its own is a separate,
-research-first question, and this subtree neither answers it nor assumes an answer.
+That witness is `⊡`-free: `Limits.FiniteCarrier.θ_eq_ofFormula` exhibits `θ` as `ofFormula ψL`, so
+the finite-carrier obstruction is already a statement about the base language itself rather than
+about full L⁺ — which is the opposite language scope from the width obstruction recorded below,
+whose witness does use `⊡`.
+
+Restricting the language to the CTL-like fragment does **not** rescue the finite-carrier shape:
+`Limits.FiniteCarrier.not_finite_carrier_fmp_fragment` is the same refutation at the `⊡`-bearing
+fragment twin `θ'`, so the sliced shape is needed there too. Whether the fragment has a finite
+model property of its own is a separate, research-first question, and this subtree neither answers
+it nor assumes an answer.
 
 ### What is proved
 
