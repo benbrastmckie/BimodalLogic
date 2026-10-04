@@ -1,0 +1,25 @@
+{
+  "phase": 3,
+  "phase_name": "Reconcile the adjacent descriptive count and confirm the doc rows",
+  "started_at": "2026-10-04T17:50:00Z",
+  "last_updated": "2026-10-04T18:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Recompute the true C2+C14 total from the current heredocs", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Update the stale descriptive count in the C21 comment block", "status": "done", "files_touched": ["scripts/check-module-invariants.sh"]},
+    {"id": 3, "description": "Confirm docs/theorem-index.md rows 151-153 need no edit", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Re-run check-module-invariants.sh --no-build as sanity pass", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "3.1",
+      "description": "Recompute the true total from the current heredoc ... plus C2's four",
+      "type": "altered",
+      "reason": "The plan's 'C2's four' trusted the pre-existing C21 comment's own stale claim (accurate as of 2026-09-07 when AXIOM_BASELINE genuinely had 4 entries, but AXIOM_BASELINE has since grown to 50 entries independently of this task). Used the live, recomputed value (50) instead of the plan's literal arithmetic to avoid leaving the comment freshly stale. Corroborated independently by the script's own C36 INFO line, which live-computes \"251 pinned declaration(s) in C2+C14\" -- matching the corrected value exactly.",
+      "annotation": "*(deviation: altered -- recomputed both C2 and C14 live rather than trusting the plan's stale 'C2's four' assumption; corroborated by C36's own live census)*"
+    }
+  ],
+  "notes": "docs/theorem-index.md confirmed unchanged (git status --short empty). Final --no-build sanity run: exit 0, ALL CHECKS PASSED."
+}

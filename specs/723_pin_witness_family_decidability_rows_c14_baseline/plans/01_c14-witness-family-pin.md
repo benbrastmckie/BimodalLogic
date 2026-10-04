@@ -213,25 +213,34 @@ comment paragraph, in one file, with zero existing lines modified. Confirm with
 
 ---
 
-### Phase 3: Reconcile the adjacent descriptive count and confirm the doc rows [NOT STARTED]
+### Phase 3: Reconcile the adjacent descriptive count and confirm the doc rows [COMPLETED]
 
 **Goal**: Update the now-stale descriptive count in the C21 comment block that sits adjacent to
 this task's diff, and confirm the three `docs/theorem-index.md` rows need no change.
 
 **Tasks**:
-- [ ] Re-read the C21 comment block near line 4144 ("C2 pins four declarations ... and C14 pins the
+- [x] Re-read the C21 comment block near line 4144 ("C2 pins four declarations ... and C14 pins the
       rest, 105 between them") and recompute the true total from the current heredoc, e.g.
       `sed -n '/<<.C14BASE./,/^C14BASE$/p' scripts/check-module-invariants.sh | grep -c 'depends on axioms'`
-      plus C2's four.
-- [ ] Update that single descriptive number to the recomputed value. This comment is descriptive
-      and non-enforced; the edit is cosmetic hygiene, not an acceptance criterion.
-- [ ] Re-read `docs/theorem-index.md` lines 151-153 and confirm each row's `pcq pinned:C14` cell now
+      plus C2's four. *(deviation: altered -- the plan's "plus C2's four" assumed AXIOM_BASELINE
+      (C2) still has 4 entries, true when the comment was authored 2026-09-07 but stale now: C2 has
+      independently grown to 50 entries since, unrelated to this task. Recomputed both sides live:
+      C2 (AXIOM_BASELINE) = 50, C14 (C14_BASELINE, post this phase's +3) = 201, total = 251)*
+- [x] Update that single descriptive number to the recomputed value. This comment is descriptive
+      and non-enforced; the edit is cosmetic hygiene, not an acceptance criterion. *(completed:
+      updated both "four" -> "fifty" and "105" -> "251" so the comment states the true current
+      values rather than compounding the pre-existing staleness; independently corroborated by the
+      script's own C36 census line, which reports "251 pinned declaration(s) in C2+C14" live)*
+- [x] Re-read `docs/theorem-index.md` lines 151-153 and confirm each row's `pcq pinned:C14` cell now
       states exactly what the check verifies -- therefore no row edit is required. Record that the
       alternative (row-correction) outcome was evaluated and rejected on the live evidence.
-- [ ] Re-run `bash scripts/check-module-invariants.sh --no-build` as a cheap sanity pass over the
+      *(completed: all three rows already read `pcq pinned:C14`, now true; `git status --short
+      docs/theorem-index.md` is empty; row-correction alternative evaluated and rejected -- the
+      baseline route was correct)*
+- [x] Re-run `bash scripts/check-module-invariants.sh --no-build` as a cheap sanity pass over the
       comment-only edit (sufficient here because this phase touches no heredoc content and no Lean
-      surface).
-- [ ] Commit.
+      surface). *(completed: exit 0, "ALL CHECKS PASSED")*
+- [x] Commit. *(completed)*
 
 **Timing**: 0.25 hours
 

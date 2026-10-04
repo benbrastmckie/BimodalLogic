@@ -4157,8 +4157,8 @@ echo
 # is pointed at. A page like that earns its keep only if the guarantee it states is checked
 # somewhere. This check is that somewhere.
 #
-# It is a SUBSET ASSERTION, deliberately, and NOT a third axiom baseline. C2 pins four
-# declarations by exact `#print axioms` string equality and C14 pins the rest, 105 between
+# It is a SUBSET ASSERTION, deliberately, and NOT a third axiom baseline. C2 pins fifty
+# declarations by exact `#print axioms` string equality and C14 pins the rest, 251 between
 # them; every name MainResults.lean carries is already in that set. Adding a third recorded
 # baseline for the same declarations would mean three places to update on any change and three
 # chances for them to disagree -- which is precisely the drift that retired the hand-transcribed
