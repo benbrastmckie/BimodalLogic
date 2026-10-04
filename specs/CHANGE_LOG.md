@@ -1,6 +1,16 @@
 # Change Log
 
 
+## 2026-10-04: Archive 2 completed tasks
+
+**Archived**:
+- **723** (completed, general): Confirmed the `pinned:C14` gap on three `docs/theorem-index.md` witness-family decidability rows was real (the names hit only C23's shadow allowlist, never a `#print axioms` line), then closed it on the baseline route: three declarations appended to both the `C14_BASELINE` and `C14LEAN` heredocs of `scripts/check-module-invariants.sh` in matching order, verified by a build-backed full gate run. Also corrected a stale descriptive count in the adjacent C21 comment, where the plan's own assumed constant turned out stale against the live tree.
+- **724** (completed, lean4): Landed `derivable_iff_validZTime` and `decidableDerivableZTime` in a new `FormalSystem/Metalogic/ZTimeProvability.lean`, closing decidability of Z-time provability as a corollary of `Compression.decidableValidZTime` composed with `soundness_ztime_valid` and `derivable_of_validZTime` — without the tableau spine. Sorry-free at `[propext, Classical.choice, Quot.sound]`, asserted by its own C14 baseline pair rather than claimed. Placed in `Metalogic/` rather than the compression subtree on a measured +2-vs-+331 net-new-transitive-import basis.
+
+**Directories moved**: 2 (specs/ -> specs/archive/)
+**Roadmap updates**: 2 Phase 8 items dropped (both matched at low confidence, so the annotator applied 0); Phase 8 intro and the live-collision note refreshed
+**Memory harvest**: 2 memories created (PATTERN, TECHNIQUE), recovered from task 723's `.return-meta.json` after they failed to propagate into `state.json`
+
 ## 2026-10-04: Archive 12 completed tasks
 
 **Archived**:

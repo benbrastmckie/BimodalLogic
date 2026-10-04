@@ -10,8 +10,9 @@ they are not a run order; the priority on each heading is.*
 Contended files force several phases to run as sequences rather than one batch — a batch whose
 members share a declared file is deferred every cycle by the admission gate
 (`.claude/context/patterns/batch-orchestration-guardrails.md`). Live collisions:
-`docs/theorem-index.md` and `scripts/check-module-invariants.sh` (723 against any new ledger
-row), `README.md` (177, 543), `MintBound.lean` (464, 465), `data/README.md` (282, 257). Two more
+`docs/theorem-index.md` and `scripts/check-module-invariants.sh` (726's re-runnable inventory
+against 728's citation checker), `README.md` (177, 543), `MintBound.lean` (464, 465),
+`data/README.md` (282, 257). Two more
 are invisible to the gate: every task adding a module needs a line in the aggregator
 `FormalSystem/Semantics/Presheaf.lean`, and every one of them regenerates `FormalSystem.lean` and
 the READMEs via `lake exe mk_all` and `--emit-inventory`.
@@ -301,23 +302,19 @@ here declares an empty `file_scope`; scope them before running any wave concurre
 
 ## Phase 8: The Decidability Record (High Priority)
 
-Filed from the 2026-10-03 decidability-programme review. The programme's own surfaces understate
-what is proved, three index rows claim a pin that no check runs, and one corollary closes a spine
-deliverable without the spine. Each item is cheap and independent; none is open mathematics.
+Filed from the 2026-10-03 decidability-programme review. The programme's own surfaces still
+understate what is proved. Two of the review's findings are closed: the three witness-family
+index rows are now backed by real C14 baseline entries, and `Decidable (Derivable
+FrameClass.ZTime [] φ)` is landed at `FormalSystem/Metalogic/ZTimeProvability.lean`, closing
+decidability of provability over ℤ without the tableau spine. What remains is the prose
+reconciliation, the re-runnable inventory and the citation sweep. Each item is cheap and
+independent; none is open mathematics.
 
 - [ ] Reconcile the programme-level prose with the two-statement distinction — the tableau
       biconditional is OPEN at all four frame classes, while `Decidable (ValidZTime φ)` is PROVED
       by the witness-family route — across `README.md`, four module READMEs, ADR-007,
       `known-limitations.md` and `typst/FormalFoundations.typ`. Carry every qualifier and never
       write "TM is decidable" unqualified (Task 722)
-- [ ] Ground the `pinned:C14` claim on the three witness-family decidability rows of
-      `docs/theorem-index.md`, which `check-module-invariants.sh` names only in the C-check
-      shadowing allowlist with no baseline behind them — or correct the rows to state what is
-      actually checked (Task 723)
-- [ ] Land `Decidable (Derivable FrameClass.ZTime [] φ)` as a corollary of
-      `Compression.decidableValidZTime` composed with `soundness_ztime_valid` and
-      `derivable_of_validZTime`, closing decidability of provability over ℤ without the spine
-      (Task 724)
 - [ ] Make the PROVED / NOT ESTABLISHED / WITHDRAWN / REFUTED inventory re-runnable from
       `docs/theorem-index.md`, `check-evidence-probes.sh`'s `WIRED` arrays and `Correctness.lean`'s
       retired-as-vacuous section, cross-checking `pinned:` cells against the invariants baselines
@@ -329,8 +326,6 @@ deliverable without the spine. Each item is cheap and independent; none is open 
 
 ```
 /orchestrate 722,726,728   # prose, the inventory mechanism and the citation sweep
-/orchestrate 723           # singly: owns check-module-invariants.sh for its new baseline rows
-/orchestrate 724           # after 723, which pins its new row
 ```
 
 ---
