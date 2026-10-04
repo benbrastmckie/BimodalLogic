@@ -212,6 +212,149 @@ theorem not_plusValidZTime_neg_θ : ¬ PlusValidZTime θ.neg := by
   exact (plusTruthAt_ofFormula S.model ψL _ _).mpr
     ((S.forward_repr (0 : ℤ) (0 : ℤ) ψL).mpr (shiftTruth_psiL 0 0))
 
+/-! ## Negative half: no finite-carrier regular ℤ-frame satisfies `θ` anywhere -/
+
+section Finite
+
+variable {F : FrameOver intOrder} [F.IsRegular]
+
+/-- A bi-infinite step path is a history. This is the step that turns the pumped cycle of the
+pigeonhole argument into an object the semantics can quantify over; its correctness rests on
+`mem_HF_iff_adjacent`, through `FrameOver.worldHistoryOfStepPath`. -/
+def histOfStepPath (f : ℤ → F.WorldState) (hf : ∀ n, F.step (f n) (f (n + 1))) :
+    WorldHistory F.toTaskFrame :=
+  FrameOver.worldHistoryOfStepPath F f hf
+
+omit [F.IsRegular] in
+/-- Every history is a step path: consecutive states are related by `F.step`. -/
+theorem steps (σ : WorldHistory F.toTaskFrame) (n : ℤ) :
+    F.step (σ.path n) (σ.path (n + 1)) :=
+  σ.isStepPath n
+
+/-- **The core refutation.** No model on a regular ℤ-frame whose world-state carrier is `Finite`
+satisfies `θ` at any history and any time.
+
+`[Finite F.WorldState]` is the **whole** finiteness hypothesis, and there is no hypothesis
+whatever on the succession relation beyond the regularity `[F.IsRegular]` already carries. The
+argument: the first conjunct gives a `p`-time `a` on `τ`; the second, read at every time by
+shifting `τ`, makes `τ` `p`-free strictly left of `a`; pigeonhole on the finite carrier gives a
+repeated state strictly left of `a`; the cycle between the repeats, pumped bi-infinitely, is a
+history that stays strictly left of `a` and so never meets `p`, contradicting the first conjunct.
+
+Scope: ℤ (discrete) frames only — the pumping step needs discreteness and says nothing about a
+dense duration. Nothing is claimed about an infinite carrier, and nothing here touches soundness.
+
+Paper: — (a coverage limit internal to this formalization, with no paper counterpart) -/
+theorem no_finite_carrier_sat [Finite F.WorldState] (M : TaskModel F.toTaskFrame)
+    (τ : WorldHistory F.toTaskFrame) (t : ℤ) :
+    ¬ PlusTruthAt M τ t θ := by
+  intro h
+  have hA : PlusTruthAt M τ t A := by
+    by_contra hA; exact h (fun a => absurd a hA)
+  have hC : PlusTruthAt M τ t C := by
+    by_contra hC; exact h (fun _ c => hC c)
+  simp only [A, C, PlusFormula.or, PlusFormula.neg, NoFiniteWidth.Fp, NoFiniteWidth.Pp,
+    PlusFormula.top, NoFiniteWidth.p, PlusTruthAt] at hA hC
+  have someP : ∀ σ : WorldHistory F.toTaskFrame, ∃ a, M.valuation (σ.path a) NoFiniteWidth.pa := by
+    intro σ
+    by_contra hno
+    have hno' : ∀ a, ¬ M.valuation (σ.state a) NoFiniteWidth.pa := fun a h => hno ⟨a, h⟩
+    obtain ⟨s, -, hs, -⟩ := hA σ (hno' t) (fun ⟨s, _, hs, _⟩ => hno' s hs)
+    exact hno' s hs
+  have firstP : ∀ σ : WorldHistory F.toTaskFrame, ∀ a, M.valuation (σ.path a) NoFiniteWidth.pa →
+      ∀ b < a, ¬ M.valuation (σ.path b) NoFiniteWidth.pa := by
+    intro σ a ha b hb hbt
+    let g : ℤ → F.WorldState := fun n => σ.path (n + (a - t))
+    have hg : ∀ n, F.step (g n) (g (n + 1)) := by
+      intro n
+      have := steps σ (n + (a - t))
+      simp only [g]; rwa [show n + 1 + (a - t) = n + (a - t) + 1 by ring]
+    apply hC (histOfStepPath g hg)
+    · change M.valuation (σ.path (t + (a - t))) NoFiniteWidth.pa
+      rwa [show t + (a - t) = a by ring]
+    · refine ⟨b - (a - t), by omega, ?_, fun _ _ _ h => h⟩
+      change M.valuation (σ.path (b - (a - t) + (a - t))) NoFiniteWidth.pa
+      rwa [show b - (a - t) + (a - t) = b by ring]
+  obtain ⟨a, ha⟩ := someP τ
+  let f : ℕ → F.WorldState := fun i => τ.path (a - 1 - i)
+  obtain ⟨i, j, hij, hfij⟩ := Finite.exists_ne_map_eq_of_infinite f
+  obtain ⟨x, y, hxy, hya, hpxy⟩ : ∃ x y : ℤ, x < y ∧ y ≤ a - 1 ∧ τ.path x = τ.path y := by
+    rcases lt_or_gt_of_ne hij with hlt | hgt
+    · exact ⟨a - 1 - j, a - 1 - i, by omega, by omega, hfij.symm⟩
+    · exact ⟨a - 1 - i, a - 1 - j, by omega, by omega, hfij⟩
+  set L := y - x with hL
+  have hLpos : 0 < L := by omega
+  let h' : ℤ → F.WorldState := fun n => τ.path (x + n % L)
+  have hstep : ∀ n, F.step (h' n) (h' (n + 1)) := by
+    intro n
+    have hr0 := Int.emod_nonneg n (ne_of_gt hLpos)
+    have hrL := Int.emod_lt_of_pos n hLpos
+    have hdecomp := Int.emod_add_mul_ediv n L
+    have key : τ.path (x + (n + 1) % L) = τ.path (x + n % L + 1) := by
+      have e : (n + 1) % L = (n % L + 1) % L := by
+        conv_lhs => rw [← hdecomp]
+        rw [show n % L + L * (n / L) + 1 = (n % L + 1) + L * (n / L) by ring,
+          Int.add_mul_emod_self_left]
+      rw [e]
+      rcases lt_or_eq_of_le (show n % L + 1 ≤ L by omega) with hlt | heq
+      · rw [Int.emod_eq_of_lt (by omega) hlt, add_assoc]
+      · rw [heq, Int.emod_self, add_zero, hpxy]
+        congr 1; omega
+    simp only [h']
+    rw [key]
+    exact steps τ _
+  obtain ⟨s, hs⟩ := someP (histOfStepPath h' hstep)
+  have hr0 := Int.emod_nonneg s (ne_of_gt hLpos)
+  have hrL := Int.emod_lt_of_pos s hLpos
+  exact firstP τ a ha (x + s % L) (by omega) hs
+
+end Finite
+
+/-- The refutation at the concrete constructor: no model on `FrameOver.ofStep R fwd bwd` over a
+finite type satisfies `θ` anywhere. This is the frame shape a finite-graph certificate class
+would present, so the class cannot certify `θ.neg`.
+
+`FrameOver.ofStep`'s relation is **time-independent** (`R : W → W → Prop`). It is *not*
+`FrameOver.ofSlicedStep`, whose relation is `ℤ → W → W → Prop` and whose finite-*width*
+obstruction is the companion result in `Limits/NoFiniteWidth.lean`; confusing the two would
+silently restate that other theorem.
+
+Paper: — (a coverage limit internal to this formalization, with no paper counterpart) -/
+theorem no_ofStep_sat {W : Type} [Finite W] [Nonempty W] (R : W → W → Prop)
+    (fwd : ∀ w, ∃ u, R w u) (bwd : ∀ w, ∃ v, R v w)
+    (M : TaskModel (FrameOver.ofStep R fwd bwd).toTaskFrame)
+    (τ : WorldHistory (FrameOver.ofStep R fwd bwd).toTaskFrame) (t : ℤ) :
+    ¬ PlusTruthAt M τ t θ :=
+  haveI : Finite (FrameOver.ofStep R fwd bwd).WorldState := ‹Finite W›
+  no_finite_carrier_sat (F := FrameOver.ofStep R fwd bwd) M τ t
+
+/-- **The finite-carrier finite model property fails for L⁺ over ℤ-time.** There is a ℤ-time
+non-validity — `θ.neg`, which is `⊡`-free and therefore already a formula of the base language
+TM — with no countermodel on any regular ℤ-frame whose world-state carrier is finite.
+
+Read the statement precisely, because it is easy to over-read:
+
+- **Scope is ℤ (discrete) frames only.** The pumping argument behind `no_finite_carrier_sat`
+  needs discreteness and says **nothing** about a dense duration.
+- **Nothing is claimed about an infinite carrier.** The positive half exhibits an
+  infinite-carrier model of `θ`; no obstruction to one is claimed or implied.
+- **Nothing here touches soundness**, in either direction. `plusTruth_iff_mem` and
+  `PlusSlicedCertificate.Sound`'s `plusRefutes_of_certifies` keep their statements, are
+  untouched, and are unused in the refuting direction.
+- **No bound of any kind is claimed.** The defect is that `θ.neg` has no finite-carrier
+  countermodel at all, not that a known carrier bound is too small. The finite model property for
+  full L⁺ over integer time remains open rather than refuted.
+
+Paper: — (a coverage limit internal to this formalization, with no paper counterpart) -/
+theorem not_finite_carrier_fmp :
+    ¬ ∀ φ : PlusFormula, ¬ PlusValidZTime φ →
+      ∃ (F : FrameOver intOrder) (_ : F.IsRegular) (_ : Finite F.WorldState)
+        (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame) (t : ℤ),
+        ¬ PlusTruthAt M τ t φ := by
+  intro fmp
+  obtain ⟨F, hreg, hfin, M, τ, t, hτ⟩ := fmp θ.neg not_plusValidZTime_neg_θ
+  exact hτ (fun hθ => no_finite_carrier_sat M τ t hθ)
+
 end FiniteCarrier
 
 end PlusSlicedCertificate

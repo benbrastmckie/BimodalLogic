@@ -493,7 +493,7 @@ stalls, report rather than re-proving.
 
 ---
 
-### Phase 3: The negative half — `no_finite_carrier_sat` and its two corollaries [NOT STARTED]
+### Phase 3: The negative half — `no_finite_carrier_sat` and its two corollaries [COMPLETED]
 
 **Goal**: the core refutation and its two consequences are landed, under the exact hypotheses the
 verbatim block records.
