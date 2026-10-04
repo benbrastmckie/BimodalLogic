@@ -1,20 +1,27 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "summary": "Planned the RETAIN trans_refl verdict into 5 phases (3.5h): four label-level congruence theorems (untl_trans_congr, snce_trans_congr, untl_common_succ_congr, snce_common_pred_congr) in PlusWitnessFamily/Incompleteness.lean, their C2 probe+baseline pins, four docs/theorem-index.md rows, and the retention decision on two READMEs plus the Skeleton.lean trans_refl field docstring. No removal, no substitution lemma, no countermodel (scope item 4 declined on the merits). Two plan-time tree checks changed the shape: sibling 704 is archived so its claim on check-module-invariants.sh has lapsed and the C2 rows land here, and C36a makes the ledger rows depend on those baseline rows; and the pre-commit typst gate forces typst/generated/status.typ into the file scope of every .lean-touching phase.",
+  "status": "partial",
+  "dispatch_seq": 4,
+  "phase": "implement",
+  "summary": "Phases 1-4 of 5 are edited and committed (the four label-level congruence theorems, their C2 baseline pins, four ledger rows, and the retention-decision prose); the C2 axiom-probe confirmation, the Skeleton.lean build check, and all of Phase 5's gate set are deferred pending a host memory-pressure scheduling hold the orchestrator imposed mid-dispatch.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/705_trans_reflexivity_residual_collapse/plans/01_trans-refl-retention-and-residual-record.md",
-      "summary": "5-phase implementation plan, waves [[1],[2,4],[3],[5]], 7 files in harvested file_scope."
+      "type": "handoff",
+      "path": "specs/705_trans_reflexivity_residual_collapse/handoffs/phase-4-handoff-20261004T063320Z.md",
+      "summary": "Full state of phases 1-4, the deferred verification steps, and the exact resume command for the batched gate run"
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 1,
   "phases_total": 5,
-  "blockers": [],
-  "next_action_hint": "Dispatch implement for task 705; Phase 1 is the only Wave-1 phase and is self-contained in Incompleteness.lean.",
+  "blockers": [
+    {
+      "phase": "2",
+      "target": "scripts/check-module-invariants.sh C2 axiom baseline",
+      "verbatim_goal": "Run the probe and read the four emitted axiom lines from its output (Phase 2, task 2 of the plan)",
+      "what_was_tried": "Added the four #print axioms probe lines and four matching baseline lines at the pcq ([propext, Classical.choice, Quot.sound]) hypothesis, matching every neighbouring row",
+      "why_it_failed": "The orchestrator issued a memory-pressure scheduling hold on any command shelling out to `lake env lean` against the full FormalSystem import closure (concurrent leanchecker process on the host, high swap); running the probe was deferred rather than executed"
+    }
+  ],
   "plan_markers_verified": true,
-  "skeleton": false,
-  "sorry_inventory": [],
-  "dispatch_seq": 3
+  "continuation_path": "specs/705_trans_reflexivity_residual_collapse/handoffs/phase-4-handoff-20261004T063320Z.md",
+  "next_action_hint": "Once the orchestrator clears the memory-pressure hold, run: bash scripts/check-module-invariants.sh ; lake build ; lake build BimodalTest ; bash scripts/check-module-invariants.sh --emit-inventory --check ; bash scripts/typst-sync-check.sh. Read the C2 probe's actual axiom lines for the four new theorems verbatim rather than assuming pcq; correct the baseline and the ledger Axioms cells only if the measured value differs. Then execute Phase 5 and write the implementation summary."
 }
