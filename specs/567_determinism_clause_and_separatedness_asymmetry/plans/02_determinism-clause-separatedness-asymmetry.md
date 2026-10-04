@@ -345,7 +345,7 @@ phase record rather than silently widening the import list.
 
 ---
 
-### Phase 4: Docstrings, references, and the open question [NOT STARTED]
+### Phase 4: Docstrings, references, and the open question [COMPLETED]
 
 **Goal**: Carry the four conceptual obligations into the two new modules' module-level docstrings,
 add `## References` blocks in reference normal form, and run the full gate set over the finished
@@ -353,39 +353,39 @@ state.
 
 **Tasks**:
 
-- [ ] In `Presheaf/Determinism.lean`'s module docstring: state in one sentence that separatedness
+- [x] In `Presheaf/Determinism.lean`'s module docstring: state in one sentence that separatedness
   here is **injectivity of every restriction map**, and that the cover-relative sheaf-theoretic
   reading is unconditional on this site and is not what is at issue (report 02 §4, probe 02).
   Record that the forward half consumes only the germ at the offset, so injectivity of every
   restriction reduces to injectivity of the germ maps.
-- [ ] In the same docstring: state the connection to `PlusLanguage.states_eq_of_deterministic` —
+- [x] In the same docstring: state the connection to `PlusLanguage.states_eq_of_deterministic` —
   the `Beh`-level statement is **not** an instance of it (that one is for *total* histories), it
   is the same three-step proof at `PartialHistory.respects_task`, and the two meet through
   `secOf`.
-- [ ] In `Independence/BehSeparatedness.lean`'s module docstring: state both converses in one
+- [x] In `Independence/BehSeparatedness.lean`'s module docstring: state both converses in one
   paragraph — the clause's own converse is *true* (`deterministic_iff_separated`), and what fails
   is the converse of "validity of *Determined* ⇒ `Beh` separated". A reader must not take
   `fzero_not_separated` for a counterexample to the clause.
-- [ ] In the same docstring: record that validity of *Determined* is invariant under re-timing
+- [x] In the same docstring: record that validity of *Determined* is invariant under re-timing
   histories while separatedness is not — the drift frame is the translation flow re-timed, which
   is why it validates the schema without being deterministic. Cite
   `Independence/DeterminismUndefinable.lean`, never the probe.
-- [ ] In the same docstring: word the provenance claim as `DriftHistories.lean` and
+- [x] In the same docstring: word the provenance claim as `DriftHistories.lean` and
   `StarDeterminism.lean` already word theirs — no appeal to `thm:extension` or `cor:occurrence`,
   hence no Zorn — beside the measured axiom list, so the ambient `Classical.choice` is not read as
   a Zorn step.
-- [ ] Pose the **narrowed** open question: `deterministic_starDefinable` makes `detPM` a `BL⋆`
+- [x] Pose the **narrowed** open question: `deterministic_starDefinable` makes `detPM` a `BL⋆`
   characterization of separatedness on regular frames, and `deterministic_not_plusDefinable` rules
   one out for `L⁺`; what is open is whether any **choice-free** characterization exists, which
   `StarDeterminism.lean`'s choice-dependence note suggests it does not. Pose, do not attack.
-- [ ] Add `## References` blocks per `docs/development/REFERENCE_NORMAL_FORM.md`, keys resolving
+- [x] Add `## References` blocks per `docs/development/REFERENCE_NORMAL_FORM.md`, keys resolving
   in the repository-root `references.bib` (`* [Author, *Title*][key]` form). Cite
   `app:presheaf-dictionary` with the **`DANGLING`** marker, as `Behavior.lean` does; cite
   `app:drift` as a **pointer only** (its record row is `LIVE-UNPINNED`, not `DANGLING` — see the
   Research Integration correction above), as `Ray.lean` does for `app:gluing`.
-- [ ] No task numbers anywhere under `FormalSystem/` (C9); cite durable anchors — filenames,
+- [x] No task numbers anywhere under `FormalSystem/` (C9); cite durable anchors — filenames,
   declaration names, paper anchors.
-- [ ] Commit this phase's own hunks only.
+- [x] Commit this phase's own hunks only.
 
 **Timing**: 1 hour
 
@@ -492,21 +492,21 @@ elided here (the probe's `∀ l p l' …, Function.Injective (Beh.restrict …)`
 
 ## Testing & Validation
 
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem` exits
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem` exits
   0 at the end of every phase (the task's stated hard constraint).
-- [ ] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build BimodalTest` exits 0
+- [x] `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build BimodalTest` exits 0
   at the end of Phase 4 (C1's second half).
-- [ ] No new `sorry`: the repo-wide structural-`sorry` count is unchanged from its pre-task value
+- [x] No new `sorry`: the repo-wide structural-`sorry` count is unchanged from its pre-task value
   at the end of every phase.
-- [ ] `bash scripts/check-module-invariants.sh` exits 0 at the end of every phase; C1, C3, C4, C8,
+- [x] `bash scripts/check-module-invariants.sh` exits 0 at the end of every phase; C1, C3, C4, C8,
   C9, C15, C19, C24, C31, C33 and the README generated-inventory checks are the ones this task can
   break.
-- [ ] `bash scripts/check-paper-definitions.sh` exits 0.
-- [ ] `#print axioms` measurements match the pinned profiles: `[propext]` for
+- [x] `bash scripts/check-paper-definitions.sh` exits 0.
+- [x] `#print axioms` measurements match the pinned profiles: `[propext]` for
   `states_eq_of_deterministic_sec`; `[propext, Quot.sound]` for `separated_of_deterministic` and
   `states_eq_of_separated`; `[propext, Classical.choice, Quot.sound]` for
   `deterministic_iff_separated`, `fzero_not_separated` and `separated_strictly_stronger`.
-- [ ] `git status --short` before each commit shows only this task's own paths; no directory or
+- [x] `git status --short` before each commit shows only this task's own paths; no directory or
   glob `git add` was used.
 
 ## Artifacts & Outputs

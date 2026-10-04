@@ -19,6 +19,39 @@ half, the world-to-section bridge, and the content of the converse's frame-side 
 biconditional itself is `Semantics/DeterministicBridge.lean`'s `deterministic_iff_separated`,
 because its (⇐) half names `TaskFrame.SingletonClasses`, which lives above this lock.
 
+## Which separatedness, and the trap in the word
+
+**Separatedness here is injectivity of every restriction map** — the monopresheaf property — and
+that is the only reading under which the clause says anything. The sheaf-theoretic
+*cover-relative* reading is a different and much weaker property: two sections over `l` agreeing
+on `[0, p]` and on `[p, l]` are equal. That is a theorem about **every** task frame at no frame
+hypothesis whatsoever, because every point of `[0, l]` lies in one half or the other, so the two
+restrictions already determine the section pointwise. (`glue_unique` is the same fact for a
+*glued* section; the arbitrary-pair form is its immediate generalization.) It is therefore
+deliberately **not declared** anywhere in this cluster: a property every frame has cannot be
+equivalent to determinism, and stating it under the name "separated" would make the asymmetry
+result of `Metalogic/Independence/BehSeparatedness.lean` read as false.
+
+**Injectivity of every restriction reduces to injectivity of the germ maps.**
+`separated_of_deterministic` consumes only the germ at the offset: restricting to `[p, p + l']`
+and reading the restricted sections at time `0` recovers agreement at `p` itself, and determinism
+propagates that single agreement over the whole of `[0, l]`. The `l' = 0` instances of `Separated`
+are thus already the whole of it, which is also why each of the three germ-injectivity consumers
+below instantiates it at `l' = 0`.
+
+## The connection to `PlusLanguage.states_eq_of_deterministic`
+
+`states_eq_of_deterministic_sec` is the `Beh`-level counterpart of
+`PlusLanguage/PlusDeterminism.lean`'s `states_eq_of_deterministic`, and the relationship is worth
+stating precisely because it is **not** instantiation. That theorem is about *total* histories —
+`WorldHistory F`, defined at every duration — while a section of `Beh F l` has domain exactly
+`[0, l]`, so no amount of specializing the total statement yields the bounded one. What the two
+share is the *proof*: the same three steps, read off `PartialHistory.respects_task` at the pair
+`(t, s)` in each argument, rewritten along the hypothesis, and closed by determinism at the
+(possibly negative) duration `s - t`. The two statements meet at `secOf`, which cuts a total
+history down to a section; `states_eq_of_separated` is where that meeting is used, going from an
+injectivity instance on sections back to a conclusion about possible worlds.
+
 ## Main Definitions
 
 - `Separated` — every restriction map of `Beh F` is injective
@@ -49,7 +82,40 @@ system and the cluster's `assert_not_exists` lock still closes. What would break
 **Measured axiom profile** (`#print axioms`): `states_eq_of_deterministic_sec` is `[propext]`;
 `separated_of_deterministic` and `states_eq_of_separated` are `[propext, Quot.sound]`. All three
 are therefore **choice-free**, in the same measured sense `Presheaf/README.md` records for
-*Germs* and *Sheaf*.
+*Germs* and *Sheaf*. `secOf` and `secOf_states` are `[propext]`. The (⇐) half of the clause is
+where the choice enters, and it is not here: `deterministic_iff_separated` measures
+`[propext, Classical.choice, Quot.sound]` in `Semantics/DeterministicBridge.lean`.
+
+## References
+
+* [P. Schultz, D. I. Spivak and C. Vasilakopoulou, *Dynamical Systems and Sheaves*][schultz2020],
+  §3.2 Def. 3.2.1 — the behavior sheaf whose task-frame instance `Beh F` is
+* JPL paper `app:presheaf-dictionary` — the dictionary theorem whose *Determinism* clause this
+  module discharges below the layering lock. **`DANGLING`**: cut from the paper with
+  `app:Structure` and recorded in `docs/reference/paper-definitions-of-record.md`
+* JPL paper `app:Structure` — the cut appendix containing it. **`DANGLING`**, as above
+* JPL paper `lem:deterministic-singleton`, `def:deterministic` — the frame-side biconditional this
+  clause is the presheaf-side reading of, and the determinism predicate itself
+* `FormalSystem/Semantics/Presheaf/Behavior.lean` — `Beh`, `Beh.restrict`, `Beh.mem_dom`,
+  `partialHistory_ext`
+* `FormalSystem/Semantics/Presheaf/Sheaf.lean` — `states_eq_of_eq`, reading a state out of an
+  equality of sections
+* `FormalSystem/Semantics/Presheaf/Ray.lean` — `futOf` and `FutRay.toBeh`, the two steps `secOf`
+  composes
+* `FormalSystem/Semantics/FrameProperty.lean` — `TaskFrame.Deterministic`, and
+  `TaskFrame.deterministic_iff` for its pointwise form
+* `FormalSystem/PlusLanguage/PlusDeterminism.lean` — `states_eq_of_deterministic`, the *total*
+  history statement this module's section-level bridge shares a proof with but is not an instance
+  of
+* `FormalSystem/Semantics/DeterministicBridge.lean` — `TaskFrame.SingletonClasses`,
+  `singletonClasses_of_separated` and the biconditional `deterministic_iff_separated`, all of
+  which sit above this cluster's lock
+* `FormalSystem/Metalogic/Independence/BehSeparatedness.lean` — the other half of the theorem
+  pair: separatedness is strictly stronger than the validity of *Determined* on the frame
+
+## Tags
+
+presheaf-dictionary · determinism · separatedness · monopresheaf · app:presheaf-dictionary
 -/
 
 namespace FormalSystem.Semantics.Presheaf

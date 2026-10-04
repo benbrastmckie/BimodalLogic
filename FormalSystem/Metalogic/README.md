@@ -155,7 +155,7 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`Decidability/`](Decidability/README.md) | 151 | 88,767 | Tableau decision procedure and countermodel extraction |
 | [`Deterministic/`](Deterministic/README.md) | 8 | 1,769 | The deterministic metatheory of TM⁺: validity narrowed to `TaskFrame.Deterministic`, the narrowed completeness engines, the `⊡`-erasure, the extended system TM⁺ + *Determined*, and its soundness and completeness |
 | [`Expressiveness/`](Expressiveness/README.md) | 143 | 104,211 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
-| [`Independence/`](Independence/README.md) | 27 | 7,539 | Axiom-independence models |
+| [`Independence/`](Independence/README.md) | 27 | 7,628 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,434 | Per-axiom validity lemmas feeding `Soundness.lean` |
 | [`WeakCanonical/`](WeakCanonical/README.md) | 38 | 28,546 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
