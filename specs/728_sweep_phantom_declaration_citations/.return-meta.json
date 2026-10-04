@@ -1,0 +1,45 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/728_sweep_phantom_declaration_citations/reports/01_phantom-citation-sweep.md",
+      "summary": "Re-verifies all eleven confirmed phantom-declaration-citation instances, repairs the two that were not already fixed (plus adjacent phantom names found during that repair and five dead archive-path citations), and documents the new durable checker."
+    }
+  ],
+  "next_steps": "Run /plan 728 to create an implementation plan, or treat this dispatch's direct repairs plus scripts/check-phantom-citations.sh as the completed deliverable and close the task -- no further Lean or engineering work is implied by the dispatch's HARD CONSTRAINTS (repair citations only, no Lean).",
+  "metadata": {
+    "session_id": "sess_1791141048_bd999f_728",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 2215
+  },
+  "modified_files": [
+    "specs/state.json",
+    "specs/TODO.md",
+    "FormalSystem/Metalogic/README.md",
+    "FormalSystem/Metalogic/BXCanonical/README.md",
+    "FormalSystem/Metalogic/WeakCanonical/RealModel/README.md",
+    "docs/reference/paper-definitions-of-record.md",
+    "scripts/check-phantom-citations.sh",
+    "specs/728_sweep_phantom_declaration_citations/reports/01_phantom-citation-sweep.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When sweeping prose for phantom declaration citations, a shape-only backtick-span heuristic (dot/underscore/camelCase) over docs/**/*.md floods with false positives from namespaces/modules (no declaration keyword line to match -- add a namespace/directory/aggregator-file fallback), Lake build keywords (lean_exe/lean_lib), Lean linter/option roots (linter.*, synthInstance.*), and Mathlib/metaprogramming API names. A line-level co-occurrence gate (require a proof-engineering signal word like theorem/lemma/FormalSystem/.lean on the same source line) plus a namespace-root denylist cut a ~2200-candidate/685-finding first pass down to ~1000/105 on this repository. Also: a bash cache keyed by `grep \"$needle\" cache_file` is unsafe -- unrelated cached entries that merely contain $needle as a substring produce false cache hits; use an exact-match awk lookup instead.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/728_sweep_phantom_declaration_citations/reports/01_phantom-citation-sweep.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["phantom-citation", "heuristic-grep", "bash-cache-bug", "false-positive-filtering", "lean-declaration-check"]
+    },
+    {
+      "content": "In this repository, a task's own description text is a living document that accumulates dated correction paragraphs over time rather than being rewritten in place -- a prior revision may explicitly flag a phantom citation as unverifiable in an appended note while leaving the original citation uncorrected at its point of use (documented rationale: 'flagged rather than silently repaired because this revision was not scoped to re-derive the deliverable'). A later sweep should check for this specific pattern (flagged-but-not-fixed) rather than assuming an appended correction note means the citation itself was already handled.",
+      "category": "PATTERN",
+      "source_artifact": "specs/728_sweep_phantom_declaration_citations/reports/01_phantom-citation-sweep.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["task-description-lifecycle", "stale-citation", "flagged-not-fixed", "state-json-revision-pattern"]
+    }
+  ],
+  "dispatch_seq": 3
+}

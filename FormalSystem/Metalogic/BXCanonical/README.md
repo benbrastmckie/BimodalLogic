@@ -28,10 +28,18 @@ It imports `Algebraic.FlowFrame` for the generic flow-frame countermodel engine.
 
 - `completeness` (`Completeness.lean`): every Base-valid formula is derivable in TM Base. This is
   the theorem that closed last, and the reason the tree carries no structural sorry.
-- `completeness_dense` (`Completeness.lean`): every validly dense formula is derivable in TM Dense
-- `completeness_discrete`: every validly discrete formula is derivable in TM Discrete
+- `derivable_of_validDense` (`Completeness.lean`): every validly dense formula is derivable in TM
+  Dense (the `StrongCompleteness.lean`-level corollary of the same fact is `completeness_dense`,
+  stated as a `WeakCompleteness FrameClass.Dense` witness)
+- `derivable_of_validZTime` (`Completeness.lean`): every validly Z-time formula is derivable in TM
+  ZTime (`completeness_discrete` does not exist anywhere in the tree — `Discrete` was renamed to
+  `ZTime` and this bullet was never swept; the `StrongCompleteness.lean`-level corollary is
+  `completeness_ztime`)
 - The Dedekind route (`CompletenessDedekind.lean`, 607 lines): the real-flow construction behind
-  `completeness_dedekind`, stated against `ValidDedekind`
+  `completeness_rtime_engine`, stated against `ValidRTime` (`completeness_dedekind` and
+  `ValidDedekind` do not exist in `FormalSystem/` — both were renamed under the
+  Discrete/Dedekind -> ZTime/RTime naming convention, see
+  `docs/development/NAMING_CONVENTION_DEVIATION.md`)
 - `TruthLemma.lean` supplies the MCS-membership characterizations the model assembly consumes:
   `bot_not_in_mcs`, `imp_iff_mcs`, `G_iff_mcs`, `H_iff_mcs`, `box_iff_mcs`, `F_from_witness`,
   `P_from_witness`, `until_forward_mcs`, `since_forward_mcs`

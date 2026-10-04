@@ -11,7 +11,9 @@ the equivalence and the `γ`-set is finite (Lemma 12); the `ℚ`-shuffle (Lemma 
 about the real line rather than about an abstract carrier.
 
 `ChronicleRealFlow.lean` instantiates the whole of it at the chronicle structure this
-repository actually constructs, which is what `completeness_dedekind` consumes.
+repository actually constructs, which is what `completeness_rtime_engine`
+(`BXCanonical/CompletenessDedekind.lean`) consumes (`completeness_dedekind` does not exist —
+renamed under the Discrete/Dedekind -> ZTime/RTime convention).
 
 ## Modules
 
@@ -29,8 +31,10 @@ repository actually constructs, which is what `completeness_dedekind` consumes.
 
 - `doets_theorem_dense` (`DoetsTheorem.lean`) — section 8 Theorem 6.
 - `IsRealLike` and the order isomorphism to `ℝ` (`OrderIsoReal.lean`).
-- `ChronicleRealFlow.lean` — the instantiation that `completeness_dedekind`
-  (`FormalSystem/Metalogic/StrongCompleteness.lean`) ultimately rests on.
+- `ChronicleRealFlow.lean` — the instantiation that `completeness_rtime_engine`
+  (`FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean`) ultimately rests on
+  (`completeness_dedekind` does not exist — renamed under the Discrete/Dedekind -> ZTime/RTime
+  convention; the live `StrongCompleteness.lean`-level corollary is `completeness_rtime`).
 
 ## Dependencies
 

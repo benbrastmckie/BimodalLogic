@@ -39,7 +39,10 @@ Sizes for these four directories are in the [Directory Inventory](#directory-inv
 is generated; they are deliberately not restated here.
 
 **`BXCanonical` is the wired entry point.** The flagship results — `completeness`,
-`completeness_dense` and `completeness_discrete` (`BXCanonical/Completeness.lean`),
+`derivable_of_validDense` and `derivable_of_validZTime` (`BXCanonical/Completeness.lean`;
+`completeness_discrete` does not exist anywhere in the tree — `Discrete` was renamed to `ZTime`
+and this citation was never swept, and the `StrongCompleteness.lean`-level corollaries of the
+same two facts are `completeness_dense` and `completeness_ztime`, not `completeness_discrete`),
 and `countermodel_dense` (`BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean`)
 — live on this route.
 
@@ -114,7 +117,7 @@ sibling directory. The list is generated, so a file that moves out (four of them
 | `QTime.lean` | 59 | ℚ-time validity equals dense validity: `validQTime_iff_validDense`, from ℚ-time completeness and dense soundness |
 | `SetConsequence.lean` | 588 | Set-indexed consequence relation, and the `FrameClass`-indexed satisfiability / model-existence / compactness / strong-completeness family, instantiated at all four class tags including the `.RTime` row (`CompactRTime`, `StrongCompletenessRTime`, `SatisfiableRTimeSet`, `ModelExistenceRTime`) |
 | `Soundness.lean` | 1,659 | The soundness theorem itself |
-| `StrongCompleteness.lean` | 1,142 | Strong/consequence completeness, including `completeness_dedekind`, and the two `FrameClass`-generic compactness reductions `strongCompleteness_of_compact` and `compact_of_modelExistence` |
+| `StrongCompleteness.lean` | 1,142 | Strong/consequence completeness, including `completeness_rtime` (`completeness_dedekind` does not exist — renamed under the Discrete/Dedekind -> ZTime/RTime convention), and the two `FrameClass`-generic compactness reductions `strongCompleteness_of_compact` and `compact_of_modelExistence` |
 | `ZTimeProvability.lean` | 119 | <!-- TODO: add description --> |
 <!-- END GENERATED -->
 
@@ -246,8 +249,10 @@ that enumeration and on what it costs a language extension.
 ### Completeness — `BXCanonical/Completeness.lean`
 
 - `completeness` — the general Base-frame result
-- `completeness_dense` — dense frame class
-- `completeness_ztime` — the ℤ-time frame class
+- `completeness_dense` — dense frame class (`StrongCompleteness.lean`, not this file; the
+  `BXCanonical/Completeness.lean`-local fact is `derivable_of_validDense`)
+- `completeness_ztime` — the ℤ-time frame class (`StrongCompleteness.lean`, not this file; the
+  `BXCanonical/Completeness.lean`-local fact is `derivable_of_validZTime`)
 - `countermodel_dense` — in `BXCanonical/Chronicle/ChronicleToCountermodelBasic.lean`
 
 These four are the repository's axiom-set invariant. Their `#print axioms` results are
