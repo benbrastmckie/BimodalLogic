@@ -389,24 +389,42 @@ confirm with a build rather than a diff read-through alone.
 
 ---
 
-### Phase 5: Full gate set and close [NOT STARTED]
+### Phase 5: Full gate set and close [COMPLETED]
 
 **Goal**: Every repository gate is green on the complete change, and the four generated/pinned
 surfaces agree with the tree.
 
 **Tasks**:
-- [ ] `lake build` for the whole library; confirm zero errors and zero warnings.
-- [ ] `lake build BimodalTest`.
-- [ ] `bash scripts/check-module-invariants.sh`; confirm exit 0 and read C1, C2, C5, C15 and C36a
-      individually rather than trusting the exit code alone.
-- [ ] `bash scripts/check-module-invariants.sh --emit-inventory --check`; confirm no byte would
-      change.
-- [ ] `bash scripts/typst-sync-check.sh`; resolve any Check 2b (module map) or Check 3 (machine
+- [x] `lake build` for the whole library; confirm zero errors and zero warnings. *(completed:
+      2818 jobs, exit 0, zero warnings)*
+- [x] `lake build BimodalTest`. *(completed: 2879 jobs, exit 0, zero warnings)*
+- [x] `bash scripts/check-module-invariants.sh`; confirm exit 0 and read C1, C2, C5, C15 and C36a
+      individually rather than trusting the exit code alone. *(completed: on the FIRST run, this
+      FAILED — "1 CHECK GROUP(S) FAILED", the INV check reporting 2 stale generated-inventory
+      blocks in `FormalSystem/Metalogic/README.md` and root `README.md`. Investigated with
+      disposable `git worktree`s rather than assumed: INV passes clean at commits `0ca3da46d`
+      (705's own plan-creation commit) and earlier, and first FAILS at `6db20b5a0` (this
+      dispatch's own Phase 1 commit) — so the staleness is caused by THIS task's own line
+      additions to `Incompleteness.lean`/`Skeleton.lean` shifting the two READMEs' generated
+      line-count tables, not a pre-existing defect from a prior task as initially assumed by the
+      orchestrator. See `## Plan Deviations` in the summary for the correction and the scope
+      extension this required: `bash scripts/check-module-invariants.sh --emit-inventory`
+      regenerated both files (a pure line-count update, 2 lines changed total), confirmed with
+      `--check`, and the re-run of the full script reports "ALL CHECKS PASSED" — C1, C2, C5, C15,
+      C36a, and INV all individually PASS)*
+- [x] `bash scripts/check-module-invariants.sh --emit-inventory --check`; confirm no byte would
+      change. *(completed: PASS after the regeneration above — "every generated inventory block
+      is current, every hand-maintained one is exhaustive")*
+- [x] `bash scripts/typst-sync-check.sh`; resolve any Check 2b (module map) or Check 3 (machine
       appendix) drift with the generator the script names, and record it as a scope extension if
-      a file outside this plan's file list must change.
-- [ ] Confirm no `sorry` was introduced: `grep -rn "sorry" ` over the touched `.lean` files.
-- [ ] Final commit, and a `## Plan Deviations` entry in the summary for anything this plan's file
-      lists did not anticipate.
+      a file outside this plan's file list must change. *(completed: PASS, all 4 checks green,
+      no drift)*
+- [x] Confirm no `sorry` was introduced: `grep -rn "sorry" ` over the touched `.lean` files.
+      *(completed: zero structural sorries; every `sorry`-containing line in the touched files is
+      prose describing sorry-*freeness*, confirmed by the full gate's C3 "structural sorry
+      inventory is ZERO" too)*
+- [x] Final commit, and a `## Plan Deviations` entry in the summary for anything this plan's file
+      lists did not anticipate. *(completed: see summary)*
 
 **Timing**: 0.75 hours
 
