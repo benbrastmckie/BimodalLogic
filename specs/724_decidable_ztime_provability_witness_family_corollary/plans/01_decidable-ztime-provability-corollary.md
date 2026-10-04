@@ -1,7 +1,7 @@
 # Implementation Plan: Task #724
 
 - **Task**: 724 - Decidability of Z-time provability as a corollary of `Compression.decidableValidZTime`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None (task 723 completed; its C14 trailing-block rows are the shape this task extends)
 - **Research Inputs**: `specs/724_decidable_ztime_provability_witness_family_corollary/reports/01_decidable-ztime-provability-corollary.md`

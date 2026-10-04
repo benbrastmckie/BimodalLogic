@@ -72,7 +72,7 @@
     {
       "project_number": 724,
       "project_name": "decidable_ztime_provability_witness_family_corollary",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Decidability of Z-time provability as a corollary of Compression.decidableValidZTime\n\nWHY THIS EXISTS. `Decidable (Derivable .ZTime [] phi)` -- decidability of Z-time PROVABILITY -- is a few-line corollary of a route that has already landed, and it is not written. It closes one of the four classes the roadmap lists as a tableau-spine deliverable, now, without the spine.\n\nRE-VERIFY FIRST, since the whole task is the claim that these three pieces compose. Confirm each by `#check`:\n- `FormalSystem.Metalogic.soundness_ztime_valid {phi : Formula} (d : DerivationTree FrameClass.ZTime [] phi) : ValidZTime phi` -- `FormalSystem/Metalogic/Soundness.lean`\n- `FormalSystem.Metalogic.BXCanonical.derivable_of_validZTime (phi : Formula) : ValidZTime phi -> Derivable FrameClass.ZTime [] phi` -- `FormalSystem/Metalogic/BXCanonical/Completeness.lean`\n- `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime (phi : Formula) : Decidable (ValidZTime phi)` -- `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean`, a `def` not an `instance`\n\nTHE MECHANICAL DETAIL THAT MAKES IT MORE THAN TWO LINES. `Derivable fc G p` is `Nonempty (DerivationTree fc G p)` (`FormalSystem/ProofSystem/Derivable.lean`), so the soundness leg needs a `Nonempty` elimination before `soundness_ztime_valid` applies. Together the two legs give `Derivable .ZTime [] phi <-> ValidZTime phi`; `decidable_of_iff` with `decidableValidZTime` finishes `Decidable (Derivable FrameClass.ZTime [] phi)`. Still a few lines, but not a one-liner.\n\nCONFIRM IT IS UNWRITTEN, NOT DUPLICATED. `grep -rn --include='*.lean' 'Decidable (Derivable' FormalSystem/` must return zero hits. Note that the UNRESTRICTED grep does return one hit -- a \"not built\" row in `FormalSystem/Metalogic/Decidability/Verified/README.md` -- which is a documentation row, not a declaration; do not mistake it for an existing instance.\n\nWHERE IT LIVES. `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean`, or a sibling module under `WitnessFamily/Compression/`. CHECK THE IMPORT GRAPH FIRST: if the corollary needs `FormalSystem.Metalogic.BXCanonical`, it may have to live in a module downstream of both `Compression/Assembly.lean` and `BXCanonical/Completeness.lean` rather than in `Assembly.lean` itself. Resolve this before writing, not after a cyclic-import error.\n\nALSO LAND. A `docs/theorem-index.md` row, and a C14 baseline entry per the separately-filed baseline task (coordinate: that task pins three existing declarations; this one adds a fourth).\n\nDOCSTRING REQUIREMENT. Record in the docstring that this closes \"decidability of provability over Z\" -- one of the four classes the roadmap lists as a spine deliverable -- WITHOUT the spine, and that the other three classes (Base, Dense, RTime) remain task 412's. Carry the qualifiers: `FrameClass.ZTime`, `Formula` with no stability operator, empty premises.\n\nHARD CONSTRAINTS. Never write \"TM is decidable\" unqualified. Land no complexity claim. Do not touch the tableau spine, and do not reopen the C9 do-not-re-attempt register.\n\nACCEPTANCE. `Decidable (Derivable FrameClass.ZTime [] phi)` exists, compiles, carries its qualifiers in its docstring, has a `docs/theorem-index.md` row, and `lake build` is green.",
       "topic": "decidability",
@@ -80,7 +80,7 @@
         723
       ],
       "created": "2026-10-03T16:46:16Z",
-      "last_updated": "2026-10-04T17:38:51Z",
+      "last_updated": "2026-10-04T17:52:08Z",
       "session_id": "sess_1791133434_0cdaa6",
       "artifacts": [
         {
@@ -92,6 +92,11 @@
           "path": "specs/724_decidable_ztime_provability_witness_family_corollary/plans/01_decidable-ztime-provability-corollary.md",
           "type": "plan",
           "summary": "5 phases, 3 hours, 3 dependency waves; carries the Lean Challenge Statements block for derivable_iff_validZTime and decidableDerivableZTime and the full C8/C9/C14/C15/C17/C23/C24/C26/C27/C33/C37 obligation map."
+        },
+        {
+          "path": "specs/724_decidable_ztime_provability_witness_family_corollary/summaries/01_decidable-ztime-provability-corollary-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: the Z-time provability decidability corollary, its wiring, its theorem-index row and its C14 pin."
         }
       ],
       "next_artifact_number": 2,
@@ -102,6 +107,10 @@
         "docs/theorem-index.md",
         "scripts/check-module-invariants.sh",
         "specs/ROADMAP.md"
+      ],
+      "completion_summary": "Decidability of Z-time provability now exists as a landed, kernel-checked corollary: FormalSystem/Metalogic/ZTimeProvability.lean composes soundness_ztime_valid (through a Nonempty elimination), BXCanonical.derivable_of_validZTime and Decidability.Compression.decidableValidZTime into derivable_iff_validZTime and decidableDerivableZTime. It closes decidability of provability over Z without the tableau spine; Base, Dense and RTime remain owed by the spine's completeness direction. The declaration is machine-pinned by a C14 matched pair and carries a docs/theorem-index.md row, with the full lake build (2819 jobs, 0 errors, 0 warnings) and build-backed check-module-invariants.sh (ALL CHECKS PASSED) both green.",
+      "roadmap_items": [
+        "Land `Decidable (Derivable FrameClass.ZTime [] phi)` as a corollary of `Compression.decidableValidZTime` composed with `soundness_ztime_valid` and `derivable_of_validZTime`, closing decidability of provability over Z without the spine"
       ]
     },
     {

@@ -11,7 +11,7 @@ next_project_number: 732
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,711,712,713,714,716,720,722,724,725,726,728,729,730,731 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,711,712,713,714,716,720,722,725,726,728,729,730,731 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -79,7 +79,6 @@ next_project_number: 732
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
-724 [PLANNED] — Decidability of Z-time provability as a corollary of...
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
 726 [NOT STARTED] — Make the decidability-programme inventory re-runnable from...
 
@@ -266,12 +265,13 @@ ACCEPTANCE. One probe file deciding the backward stability operator on a time-as
 ---
 
 ### 724. Decidable ztime provability witness family corollary
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 723
 - **Research**: [724_decidable_ztime_provability_witness_family_corollary/reports/01_decidable-ztime-provability-corollary.md]
 - **Plan**: [724_decidable_ztime_provability_witness_family_corollary/plans/01_decidable-ztime-provability-corollary.md]
+- **Summary**: [724_decidable_ztime_provability_witness_family_corollary/summaries/01_decidable-ztime-provability-corollary-summary.md]
 
 **Description**: Decidability of Z-time provability as a corollary of Compression.decidableValidZTime
 
