@@ -1,0 +1,37 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/723_pin_witness_family_decidability_rows_c14_baseline/reports/01_c14-witness-family-pin.md",
+      "summary": "Confirms the C14 pin gap is real for the three witness-family decidability rows, verifies via direct #print axioms probe that all three declarations are exactly pcq, and specifies the exact two-heredoc append (text, order, insertion point) needed to close it; also confirms task 724's corollary declaration has not landed, so only a naming comment is folded in, not a fourth pin."
+    }
+  ],
+  "next_steps": "Run /plan 723 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1791133434_0cdaa6_723",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+  },
+  "findings_count": 6,
+  "memory_candidates": [
+    {
+      "content": "scripts/check-module-invariants.sh's C14 check compares two heredocs (C14_BASELINE, C14LEAN) by exact string equality in matching order; a declaration must be appended to BOTH, in the same relative position, or the check hard-fails rather than silently updating. Downstream consumers (C21, C36) parse these heredocs dynamically from the script's own source text, so baseline growth does not require updating any hardcoded count -- except one purely descriptive, non-enforced comment near C21 that can drift stale.",
+      "category": "PATTERN",
+      "source_artifact": "specs/723_pin_witness_family_decidability_rows_c14_baseline/reports/01_c14-witness-family-pin.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["C14", "check-module-invariants", "axiom-baseline", "print-axioms", "heredoc"]
+    },
+    {
+      "content": "docs/theorem-index.md's pinned:C14 cell is a claim about scripts/check-module-invariants.sh actually running a #print axioms check for that declaration -- grepping the declaration name against the script is the cheap way to catch a false pinned: claim (a name appearing only in an unrelated allowlist, e.g. C23's shadow-pair allowlist, does not count as pinned).",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/723_pin_witness_family_decidability_rows_c14_baseline/reports/01_c14-witness-family-pin.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["theorem-index", "pinned", "C14", "verification-claim-grounding"]
+    }
+  ],
+  "modified_files": [
+    "specs/723_pin_witness_family_decidability_rows_c14_baseline/reports/01_c14-witness-family-pin.md"
+  ]
+}
