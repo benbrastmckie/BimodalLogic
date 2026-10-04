@@ -261,6 +261,17 @@ relapse: the defect was never neighbour agreement, it was neighbour agreement ov
 the `⊡` quantifier also ranges over. Two indices sharing a state at `t` need not have a common
 successor, and that gap is where the certificates live.
 
+**The label-level record, on the Plus side.** `untl_succ_congr`/`snce_pred_congr` state agreement
+at the *unfolding* — one step away from the position. `PlusWitnessFamily/Incompleteness.lean`
+records the *label-level* counterpart, at the position itself: `untl_trans_congr` and
+`snce_trans_congr` are the agreement `trans_refl` forces by itself (two instantiations of (C1')'s
+clause, one at the genuine successor/predecessor, one at the reflexive self-step, composed), and
+`untl_common_succ_congr`/`snce_common_pred_congr` are the reflexivity-free residual that survives
+if `trans_refl` is ever dropped — two distinct indices sharing one common successor or predecessor
+agree on the label, with no self-step involved. Do not read these four names as restating
+`untl_succ_congr`/`snce_pred_congr`: the shape differs (label vs. unfolding), and so does which
+pair needs reflexivity.
+
 Nothing here touches soundness. `Agreement.lean`'s truth lemma and `refutes_of_certifies` are
 unaffected across the whole redesign, and their statements are byte-identical to their
 pre-refactor form.
@@ -382,6 +393,19 @@ add three fields to what it already exports and nothing else:
   `|transBack| = |repBack|` and likewise for the other two. A matrix is exportable as
   `|lassos|` rows of `|lassos|` booleans. Every listed matrix must be reflexive, which is the
   `trans_refl` field: staying on one index is always a legitimate step.
+  **Retained, verdict recorded.** An audit considered dropping this field for a weaker existential
+  ("for every index and time there is *some* thread through it") and found the opposite: roughly
+  87 term-level sites across 18 files need the self-step itself, in four independent consumer
+  categories — the (C1')→(C1)/(C2')→(C2) determinism reductions (one instantiation each via
+  `trans_refl'`); `FwdWalk.toThread`/`BwdWalk.toThread`'s off-walk step, which closes by `rfl`
+  against the `@[refl]` `trans_refl'`; the decidable (C2') checker's `succF_nonempty`/
+  `predF_nonempty` no-dead-ends lemmas and the window's default escape edge; and the landed
+  `Limits/{NoCertificate,HopFree}.lean` reflexive reads. Retention is not free: it is exactly what
+  forces the label-level agreement `PlusWitnessFamily/Incompleteness.lean` records as
+  `untl_trans_congr`/`snce_trans_congr` (forced by `trans_refl` alone) and the reflexivity-free
+  `untl_common_succ_congr`/`snce_common_pred_congr` (the residual that would survive without it).
+  The time-sliced certificate class carries no analogue — `PlusSlicedCertificate` has no `trans`
+  field by construction, so this cost is confined to the retained sharing class.
 * **Absent means full.** A checker that omits the three succession lists is read as supplying
   the all-true matrix at every time, which is exactly the pre-redesign substrate: succession is
   then the arrival share and nothing changes. This is what makes the extension **additive** —

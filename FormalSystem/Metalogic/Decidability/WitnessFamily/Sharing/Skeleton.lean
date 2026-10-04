@@ -680,7 +680,13 @@ structure SharingSkeleton where
   transMid_len : transMid.length = repMid.length
   /-- The forward succession cycle has the forward representative cycle's period. -/
   transFwd_len : transFwd.length = repFwd.length
-  /-- Every listed matrix is reflexive: staying on one index is always a legitimate step. -/
+  /-- Every listed matrix is reflexive: staying on one index is always a legitimate step.
+  Retained by audit (roughly 87 term-level consumer sites across 18 files need the self-step
+  itself); the agreement this forces is stated at
+  `PlusWitnessFamily/Incompleteness.lean`'s `untl_trans_congr`/`snce_trans_congr`, with the
+  reflexivity-free residual at `untl_common_succ_congr`/`snce_common_pred_congr`. The time-sliced
+  certificate class (`PlusSlicedCertificate`) carries no analogue of this field or its residual,
+  since it has no `trans` field at all. -/
   trans_refl : ∀ r ∈ transBack ++ transMid ++ transFwd, ∀ i, r i i = true
   /-- **Thread lifting.** Every state path of the frame is tracked by a succession path. While
   succession *was* `share (u+1)` this came free; once succession is a separate relation it has

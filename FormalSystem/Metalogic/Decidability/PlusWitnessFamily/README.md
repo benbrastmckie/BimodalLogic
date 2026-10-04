@@ -95,6 +95,20 @@ direction too.
 Five declarations recorded that, and all five are retired. `Incompleteness.lean`'s header says
 what the module holds now.
 
+**The label-level residual the retained `trans_refl` field still costs — previously recorded
+nowhere on this side.** `SharingSkeleton` retains `trans_refl` (reflexivity of `trans`), and an
+audit found retention necessary: roughly 87 term-level sites across 18 files need the self-step
+itself (see [the Sharing README](../WitnessFamily/Sharing/README.md)'s `trans_refl` bullet for
+the four consumer categories). `Incompleteness.lean` now names the bounded cost of that
+retention: `untl_trans_congr`/`snce_trans_congr` (agreement `trans_refl` forces by itself) and
+`untl_common_succ_congr`/`snce_common_pred_congr` (the reflexivity-free residual that would
+survive without it). **Mind the name collision**: these are label-level statements — `untl g e ∈
+L i t ↔ untl g e ∈ L j t` at the position itself — not restatements of `Sharing/Agreement.lean`'s
+`untl_succ_congr`/`snce_pred_congr`, which state the weaker *unfolding*-level agreement one step
+away at a common successor/predecessor. The two pairs answer different questions and neither
+subsumes the other. The time-sliced certificate class carries no analogue of either pair, since
+`PlusSlicedCertificate` has no `trans` field by construction.
+
 The repair was at the substrate level, as the rule of thumb predicted: any condition quantifying
 over the one-step *reach* of a position collapses whenever that reach is a whole `share`-class,
 at either time and in either direction, so narrowing or re-timing a clause while leaving the

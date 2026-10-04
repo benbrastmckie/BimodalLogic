@@ -327,36 +327,40 @@ two existing refuted-congruence rows.
 
 ---
 
-### Phase 4: The retention decision, on the prose surfaces [NOT STARTED]
+### Phase 4: The retention decision, on the prose surfaces [IN PROGRESS]
 
 **Goal**: The RETAIN verdict and its rationale are written where a reader of the substrate will
 meet them, and no surface still implies the label-level residual is unrecorded.
 
 **Tasks**:
-- [ ] `WitnessFamily/Sharing/README.md`: extend the "**A position is a history type, and some
+- [x] `WitnessFamily/Sharing/README.md`: extend the "**A position is a history type, and some
       neighbour agreement is therefore forced.**" paragraph (which currently names only
       `untl_succ_congr`/`snce_pred_congr`) with the label-level record, the four new names, and
-      the shape distinction between unfolding-level and label-level agreement.
-- [ ] `WitnessFamily/Sharing/README.md`: at the `trans_refl` bullet in the skeleton-fields list,
+      the shape distinction between unfolding-level and label-level agreement. *(completed)*
+- [x] `WitnessFamily/Sharing/README.md`: at the `trans_refl` bullet in the skeleton-fields list,
       record the verdict — the field is **retained**, because four independent consumer
       categories need the self-step itself (the two deterministic reductions, the finite-walk
       `toThread` extensions whose off-walk step closes against the `@[refl]` `trans_refl'`, the
       decidable checker's no-dead-ends lemmas and default escape edge, and the landed `Limits/`
       proofs' reflexive reads) — and point at the four new declarations as the bounded residual
-      that retention costs.
-- [ ] `PlusWitnessFamily/README.md`: after the "Five declarations recorded that, and all five are
+      that retention costs. *(completed: the "`trans_refl` bullet" is the hand-off-section bullet
+      in the exportable-fields list, which already described the field; extended there)*
+- [x] `PlusWitnessFamily/README.md`: after the "Five declarations recorded that, and all five are
       retired." paragraph, add one paragraph naming the four new declarations, stating that the
       Plus side previously recorded no residual agreement at all, and warning about the name
-      collision with the landed unfolding-level pair.
-- [ ] `WitnessFamily/Sharing/Skeleton.lean`: extend the `trans_refl` field's `/--` docstring with
+      collision with the landed unfolding-level pair. *(completed)*
+- [x] `WitnessFamily/Sharing/Skeleton.lean`: extend the `trans_refl` field's `/--` docstring with
       a one-clause pointer to the record ("the agreement this forces is stated at
       `PlusWitnessFamily/Incompleteness.lean`"), so the field itself cites its own cost.
-- [ ] State in each prose surface that the time-sliced class carries no analogue, because it
-      carries no `trans` field.
-- [ ] Cite declaration names and file paths only — no task numbers in any of these four files
-      (`.claude/rules/no-task-references-in-deliverables.md`).
-- [ ] Regenerate `typst/generated/status.typ` and stage it with this phase's commit, since
+      *(completed)*
+- [x] State in each prose surface that the time-sliced class carries no analogue, because it
+      carries no `trans` field. *(completed)*
+- [x] Cite declaration names and file paths only — no task numbers in any of these four files
+      (`.claude/rules/no-task-references-in-deliverables.md`). *(completed: confirmed via
+      `grep -niE "task [0-9]"` over the four files — zero occurrences)*
+- [x] Regenerate `typst/generated/status.typ` and stage it with this phase's commit, since
       `Skeleton.lean` is a `.lean` file and the pre-commit gate will otherwise refuse.
+      *(completed)*
 
 **Timing**: 0.75 hours
 
