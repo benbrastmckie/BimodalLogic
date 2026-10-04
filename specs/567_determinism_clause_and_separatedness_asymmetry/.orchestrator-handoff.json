@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 4,
+  "summary": "Four-phase implementation plan for the Determinism clause of app:presheaf-dictionary and the separatedness asymmetry, splitting the theorem pair across the Presheaf cluster's assert_not_exists lock per the research report's compiled probes.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/567_determinism_clause_and_separatedness_asymmetry/plans/02_determinism-clause-separatedness-asymmetry.md",
+      "summary": "Phases: (1) Presheaf/Determinism.lean below the lock, (2) deterministic_iff_separated in DeterministicBridge.lean, (3) Independence/BehSeparatedness.lean drift-frame asymmetry, (4) docstrings, references and the narrowed open question."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 4,
+  "blockers": []
+}
