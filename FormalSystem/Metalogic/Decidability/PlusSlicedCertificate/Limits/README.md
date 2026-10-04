@@ -65,11 +65,14 @@ the strictly weaker hypothesis, and the finite-width refutation is therefore the
 on the hypothesis axis while the finite-carrier one is stronger on the language axis. Neither
 subsumes the other.
 
-**Two further disclaimers.** Nothing here is claimed about an *infinite* carrier (only about
-finite per-time fibres over an infinite carrier). Nothing here touches soundness.
+**Two further disclaimers.** Nothing here is claimed about an *infinite* carrier — the width axis
+speaks only about finite per-time fibres over an infinite carrier, and the carrier axis's own
+positive half exhibits an infinite-carrier model rather than obstructing one. Nothing here touches
+soundness, on either axis.
 
-**Not a bound.** No width bound is proved for targets that *do* have a finite-width countermodel;
-the defect is that `Φ.neg` has none at all, not that known bounds are too small.
+**Not a bound.** No width bound is proved for targets that *do* have a finite-width countermodel,
+and no carrier bound of any kind is proved; the defect on each axis is that the witness's negation
+has no countermodel of that shape at all, not that known bounds are too small.
 
 **The semantic characterisation is argued, not proved.** The class is complete exactly on
 targets with a finite-width countermodel: necessity is this directory's shape, sufficiency —

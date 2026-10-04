@@ -6678,7 +6678,14 @@ for tag in ("BASELINE", "C14BASE"):
     if not m:
         print(f"FAIL  C36  cannot locate the {tag} heredoc in {SCRIPT} (anti-silence guard)")
         sys.exit(2)
-    pinned |= set(re.findall(r"^'([^']+)' depends on axioms", m.group(1), re.M))
+    # The captured name is delimited greedily up to the LAST `' depends on axioms` on the line,
+    # not by a no-apostrophe character class: this tree names declarations with a trailing prime
+    # (`not_plusValidZTime_neg_θ'`), and a `[^']+` class stops at that prime, so the whole line
+    # fails to match and a declaration the C2 baseline really does pin is reported as "pinned by
+    # neither C2 nor C14". The same one-way-safety argument as C15's Unicode identifier class
+    # applies: a greedier delimiter can only let a baseline line that was previously invisible be
+    # seen, and each baseline line carries exactly one ` depends on axioms`.
+    pinned |= set(re.findall(r"^'(.+)' depends on axioms", m.group(1), re.M))
 if not pinned:
     print("FAIL  C36  the C2/C14 baselines name no declaration (anti-silence guard)")
     sys.exit(2)

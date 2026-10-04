@@ -426,7 +426,7 @@ Deliverables 2 and 3 in it, and lands `θ`, `ψL` and `θ_eq_ofFormula`.
       `ψL` here, each with a docstring. Add the sentence recording that the `NoFiniteWidth`
       import exists to share definitions with the width landing and that `θ` uses nothing from it
 - [ ] Land `θ_eq_ofFormula` with a `/-- ... Paper: — (reason) -/` docstring (C15)
-- [ ] Drive this file's `lake build` warning count to **zero** (R4)
+- [x] Drive this file's `lake build` warning count to **zero** (R4) *(completed — zero warnings; `typst/generated/status.typ` also had to be regenerated for the same pre-commit gate, on this and every later phase commit)*
 - [ ] Verify no task-number citation and no `#` directive in the file; commit
 
 **Timing**: 1.25 hours
@@ -514,8 +514,8 @@ verbatim block records.
       and two further disclaimers in full (this is the theorem most likely to be over-read), plus
       `Paper: — (reason)`
 - [ ] Diff all three landed signatures against the verbatim block, character by character (R1)
-- [ ] Drive the warning count back to zero; `set L := ... with hL` and the `Int.emod` lemma names
-      are the likely sites (R4)
+- [x] Drive the warning count back to zero; `set L := ... with hL` and the `Int.emod` lemma names
+      are the likely sites (R4) *(deviation: altered — the two warning sites were instead the probe's `show M.valuation ...` tactic lines, which `linter.style.show` rejects under the shared `NoFiniteWidth.pa`; landed as `change`, semantically identical)*
 - [ ] Commit
 
 **Timing**: 1.25 hours
@@ -609,8 +609,8 @@ the whole library is green.
       to the import block, beside the `Limits.NoFiniteWidth` line
 - [ ] Add a `## Submodules` bullet for `PlusSlicedCertificate.Limits.FiniteCarrier` in the style
       of its siblings
-- [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem`. **Never** hand-edit
-      `FormalSystem.lean` (C33 compares byte for byte)
+- [x] Regenerate the library root: `lake exe mk_all --lib FormalSystem`. **Never** hand-edit
+      `FormalSystem.lean` (C33 compares byte for byte) *(deviation: altered — had to run in Phase 1, the moment the new file existed: the pre-commit `typst-sync-check.sh --counts-only` gate compares `FormalSystem.lean`'s import count against the live `.lean` file count and refuses any commit on a mismatch. Re-run here and verified a no-op: `No update necessary`)*
 - [ ] Edit `PlusSlicedCertificate/Limits/README.md`: widen the opening sentence so the directory's
       stated purpose covers **both** obstruction axes (the sliced class's finite *width* and the
       rejected finite-*carrier* shape) rather than only the first; add a `Modules` table row for
@@ -767,7 +767,7 @@ case.
 
 ---
 
-### Phase 8: The inventory rows [NOT STARTED]
+### Phase 8: The inventory rows [COMPLETED]
 
 **Goal**: Deliverable 5. The reserved rows name a path something actually lands at, are
 uncommented, and the fragment twins get rows of their own.
@@ -821,7 +821,7 @@ double-counted.
 
 ---
 
-### Phase 9: Ledger rows, generated surfaces, and the full gate set [NOT STARTED]
+### Phase 9: Ledger rows, generated surfaces, and the full gate set [COMPLETED]
 
 **Goal**: Deliverable 4 plus a green gate set. Every landed theorem has a ledger row; every
 generated surface the new file moved is current; no landed claim exceeds the record.
@@ -852,8 +852,8 @@ generated surface the new file moved is current; no landed claim exceeds the rec
       then `bash scripts/check-module-invariants.sh --emit-inventory --check` to prove no byte
       would change. Expect `README.md`, `FormalSystem/README.md` and
       `FormalSystem/Metalogic/README.md` to move
-- [ ] Run the **full** gate set and read C1, C2, C3, C9, C9D, C15 (both assertions), C19, C23,
-      C24, C27, C28, C30, C33, C36 and INV individually rather than only the exit code
+- [x] Run the **full** gate set and read C1, C2, C3, C9, C9D, C15 (both assertions), C19, C23,
+      C24, C27, C28, C30, C33, C36 and INV individually rather than only the exit code *(deviation: altered — reading them individually surfaced two gate-forced edits outside the plan's enumerated scope: one `scripts/module-invariants-allowlist.txt` entry for the `FiniteCarrier` namespace, on the `NoFiniteWidth` precedent immediately above it (C5), and a widening of C36a's pinned-set extraction regex, whose no-apostrophe character class could not see the baseline line for `not_plusValidZTime_neg_θ'` (C36a). Both recorded in the summary)*
 - [ ] Re-read the landed docstrings against
       `FormalSystem/Metalogic/Decidability/FMP/README.md`'s "The finite-carrier route is refuted,
       not merely open" section and confirm no landed claim exceeds it, and that the

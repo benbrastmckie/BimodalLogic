@@ -172,3 +172,11 @@ FormalSystem.PlusLanguage.PlusFormula
 # `Limits` directory level (decision D-N: the witness's single-letter definitions must not land
 # in `PlusSlicedCertificate` itself). Same shape as the `PlusSharingWitnessFamily` entry above.
 FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth
+
+# `namespace FiniteCarrier`, inside `namespace PlusSlicedCertificate` -- declared in
+# PlusSlicedCertificate/Limits/FiniteCarrier.lean. The module is
+# `...PlusSlicedCertificate.Limits.FiniteCarrier`; as for the `NoFiniteWidth` entry above, the
+# namespace deliberately does not mirror the `Limits` directory level, so that the witness's
+# single-letter definitions do not land in `PlusSlicedCertificate` itself. Same shape as that
+# entry, and reached the same way: the fully qualified names in docs/theorem-index.md.
+FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier
