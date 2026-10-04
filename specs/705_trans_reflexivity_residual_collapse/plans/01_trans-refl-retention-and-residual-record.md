@@ -240,21 +240,29 @@ the correction in the summary.
 
 ---
 
-### Phase 2: Pin the four in the C2 axiom baseline [NOT STARTED]
+### Phase 2: Pin the four in the C2 axiom baseline [IN PROGRESS]
 
 **Goal**: `check-module-invariants.sh`'s C2 asserts the axiom dependencies of all four new
 theorems on every build, so the ledger's `Axioms` column can be read off the baseline rather
 than typed.
 
 **Tasks**:
-- [ ] Add four `#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.{name}`
+- [x] Add four `#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.{name}`
       lines to the C2 probe block, placed beside the existing `not_snce_share_congr` and
-      `not_untl_shift_share_congr` probe lines.
+      `not_untl_shift_share_congr` probe lines. *(completed)*
 - [ ] Run the probe and **read** the four emitted axiom lines from its output.
-- [ ] Add the four matching expected-output lines to the C2 baseline block, in the same order as
-      the probe lines, each written exactly as the probe emitted it.
-- [ ] Confirm the edits are confined to the C2 probe block and the C2 baseline block; touch no
-      `ENFORCE_*` flag and no other check.
+      *(deviation: deferred — memory-pressure scheduling hold from the orchestrator on any
+      command shelling out to `lake env lean` against the full `FormalSystem` import closure;
+      the baseline line below is written speculatively at the `pcq` hypothesis and is NOT yet
+      confirmed against actual probe output. See this task's handoff for the exact command to
+      run once cleared.)*
+- [x] Add the four matching expected-output lines to the C2 baseline block, in the same order as
+      the probe lines, each written exactly as the probe emitted it. *(deviation: altered — the
+      four lines are written at the `pcq` ([propext, Classical.choice, Quot.sound]) hypothesis
+      pending confirmation from the deferred probe run above, not yet read off actual output)*
+- [x] Confirm the edits are confined to the C2 probe block and the C2 baseline block; touch no
+      `ENFORCE_*` flag and no other check. *(completed: also updated the C2 pass-message count
+      from "forty-six" to "fifty" pinned axiom sets, inside the same C2 block)*
 
 **Timing**: 0.5 hours
 
@@ -280,20 +288,23 @@ difference in the summary rather than forcing `pcq`.
 
 ---
 
-### Phase 3: Four ledger rows [NOT STARTED]
+### Phase 3: Four ledger rows [IN PROGRESS]
 
 **Goal**: `docs/theorem-index.md` carries a row for each of the four theorems, pinned, beside the
 two existing refuted-congruence rows.
 
 **Tasks**:
-- [ ] Add four rows next to the `not_snce_share_congr` and `not_untl_shift_share_congr` rows, each
+- [x] Add four rows next to the `not_snce_share_congr` and `not_untl_shift_share_congr` rows, each
       with: Paper label `—`; a one-line Statement; the fully qualified Lean name; the File path
       with no line number; Frame class `—` (all four are class-generic); and the Axioms cell read
       off the Phase 2 baseline, written as `pcq pinned:C2` if that is what the baseline records.
-- [ ] Word the two reflexivity-forced rows and the two reflexivity-free rows differently enough
-      that a reader sees which pair survives dropping `trans_refl`.
-- [ ] Confirm each row's declaration carries its `Paper:` line, since C15 asserts the round trip
-      from row to declaration.
+      *(deviation: altered — the Axioms cell is written as `pcq pinned:C2` at the Phase 2
+      hypothesis, pending confirmation from the deferred probe run; see Phase 2's progress file)*
+- [x] Word the two reflexivity-forced rows and the two reflexivity-free rows differently enough
+      that a reader sees which pair survives dropping `trans_refl`. *(completed)*
+- [x] Confirm each row's declaration carries its `Paper:` line, since C15 asserts the round trip
+      from row to declaration. *(completed: `check-module-invariants.sh --no-build` confirms C15
+      PASS at 252 theorem-index rows, all anchored)*
 
 **Timing**: 0.5 hours
 

@@ -1128,6 +1128,10 @@ read -r -d '' AXIOM_BASELINE <<'BASELINE'
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabUntl' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusCertifies_stabUntl_example' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_untl_shift_share_congr' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.untl_trans_congr' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.snce_trans_congr' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.untl_common_succ_congr' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.snce_common_pred_congr' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_hopTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_exists_hopFree_plusCertifies_hopTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_pumpTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1180,6 +1184,10 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_stabUntl
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.plusCertifies_stabUntl_example
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_untl_shift_share_congr
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.untl_trans_congr
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.snce_trans_congr
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.untl_common_succ_congr
+#print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.snce_common_pred_congr
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_hopTarget
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_exists_hopFree_plusCertifies_hopTarget
 #print axioms FormalSystem.Metalogic.Decidability.PlusSharingWitnessFamily.not_plusValidZTime_pumpTarget
@@ -1220,7 +1228,7 @@ LEAN
     | grep 'depends on axioms')
   rm -f "$AX_SRC"
   if [ "$AX_OUT" = "$AXIOM_BASELINE" ]; then
-    pass C2 "all forty-six pinned axiom sets match baseline"
+    pass C2 "all fifty pinned axiom sets match baseline"
     while IFS= read -r l; do note "$l"; done <<<"$AX_OUT"
   else
     fail C2 "axiom sets diverged from baseline -- this is a HARD STOP, not a new baseline"
