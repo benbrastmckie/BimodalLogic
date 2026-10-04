@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/565_totality_and_directed_gluing_from_extension_theorem/reports/01_totality-directed-gluing-wrappers.md",
+      "summary": "Compiled-probe-verified route for app:presheaf-dictionary's Totality and Directed Gluing clauses as wrappers on thm:extension, with the four-row choice record (Sheaf choice-free; Totality's choice attributable exactly to thm:extension; Directed Gluing's doubly sourced), a two-phase plan, and the three shared aggregator/README touches outside file_scope."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791072120_6ec518_565",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

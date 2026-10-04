@@ -6,7 +6,7 @@ next_project_number: 729
 
 ## Task Order
 
-*Updated 2026-10-03. Generated from state.json dependency graph.*
+*Updated 2026-10-04. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -37,9 +37,9 @@ next_project_number: 729
 
 ### Categorical Structure
 
-565 [NOT STARTED] — Prove app:presheaf-dictionary's Totality and Directed Gluing...
+565 [RESEARCHED] — Prove app:presheaf-dictionary's Totality and Directed Gluing...
   └─ 566 [NOT STARTED] — Prove app:presheaf-dictionary's Possible Worlds clause: HF...
-567 [NOT STARTED] — Prove app:presheaf-dictionary's Determinism clause -- F...
+567 [RESEARCHING] — Prove app:presheaf-dictionary's Determinism clause -- F...
 616 [NOT STARTED] — Formalize the duration monoid BD+, its twisted-arrow...
   └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
 617 [NOT STARTED] — Prove app:presheaf-dictionary's Reflection clause: reflection...
@@ -968,7 +968,7 @@ LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear
 ---
 
 ### 567. Determinism clause and separatedness asymmetry
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
@@ -1019,10 +1019,11 @@ SEED RESEARCH AVAILABLE (added 2026-10-02; READ-ONLY context, not a change of sc
 ---
 
 ### 565. Totality and directed gluing from extension theorem
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
+- **Research**: [565_totality_and_directed_gluing_from_extension_theorem/reports/01_totality-directed-gluing-wrappers.md]
 
 **Description**: Prove `app:presheaf-dictionary`'s Totality and Directed Gluing clauses. Both are WRAPPERS on `thm:extension`, which is fully proved in this repository under `FormalSystem/Semantics/Extension/`: translate a section to its subinterval, extend to a possible world, restrict.
 
