@@ -707,7 +707,7 @@ committing.
 
 ---
 
-### Phase 7: Pin the axiom sets in the C2 baseline [NOT STARTED]
+### Phase 7: Pin the axiom sets in the C2 baseline [COMPLETED]
 
 **Goal**: every landed declaration that an inventory row or a ledger row cites has its axiom set
 asserted on every build, measured rather than assumed.

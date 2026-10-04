@@ -14,6 +14,13 @@
 #       direction (BimodalTools -> FormalSystem) is sanctioned and deliberately ungated.
 #   C1  `lake build` exits 0
 #   C2  `#print axioms` for the four flagship theorems matches the recorded baseline
+#       The baseline also pins both of the sliced subtree's LIMIT families -- the finite-width
+#       refutation and the finite-carrier one. A refutation whose axiom set changed silently
+#       would be a different claim about a different foundation, and the finite-carrier witness is
+#       `⊡`-free, so its axiom set is what a claim about the BASE language rests on. The
+#       finite-carrier module's `θ_eq_ofFormula` is deliberately absent: it is proved by `decide`
+#       and depends on no axioms at all, so `#print axioms` reports no `depends on axioms` line for
+#       it and a baseline line would never match.
 #   C3  ZERO structural `sorry`, asserted BY CONTENT (never by line number)
 #   C4  Every `import FormalSystem.*` / `import BimodalTest.*` resolves to a real file
 #   C5  Every module-shaped `FormalSystem.*` path in non-specs markdown resolves
@@ -1139,6 +1146,18 @@ read -r -d '' AXIOM_BASELINE <<'BASELINE'
 'FormalSystem.PlusLanguage.plusStab_iff_rays' depends on axioms: [propext, Quot.sound]
 'FormalSystem.PlusLanguage.seamOmegaEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.PlusLanguage.plusStab_iff_omega' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_plusValidZTime_neg_Φ' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.no_finite_width_sat' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_certifies' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_sliced_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_finite_width_fmp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier.not_plusValidZTime_neg_θ' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier.no_finite_carrier_sat' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier.no_ofStep_sat' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier.not_finite_carrier_fmp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier.not_plusValidZTime_neg_θ'' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier.no_finite_carrier_sat'' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier.not_finite_carrier_fmp_fragment' depends on axioms: [propext, Classical.choice, Quot.sound]
 BASELINE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -1179,6 +1198,18 @@ import FormalSystem
 #print axioms FormalSystem.PlusLanguage.plusStab_iff_rays
 #print axioms FormalSystem.PlusLanguage.seamOmegaEquiv
 #print axioms FormalSystem.PlusLanguage.plusStab_iff_omega
+#print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_plusValidZTime_neg_Φ
+#print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.no_finite_width_sat
+#print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_certifies
+#print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_sliced_complete
+#print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_finite_width_fmp
+#print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier.not_plusValidZTime_neg_θ
+#print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier.no_finite_carrier_sat
+#print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier.no_ofStep_sat
+#print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier.not_finite_carrier_fmp
+#print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier.not_plusValidZTime_neg_θ'
+#print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier.no_finite_carrier_sat'
+#print axioms FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier.not_finite_carrier_fmp_fragment
 LEAN
   # The pretty-printer wraps at a fixed width, and `FormalSystem.` is longer than the
   # namespace it replaced, so a long axiom record now spills onto continuation lines that
@@ -1189,7 +1220,7 @@ LEAN
     | grep 'depends on axioms')
   rm -f "$AX_SRC"
   if [ "$AX_OUT" = "$AXIOM_BASELINE" ]; then
-    pass C2 "all thirty-four pinned axiom sets match baseline"
+    pass C2 "all forty-six pinned axiom sets match baseline"
     while IFS= read -r l; do note "$l"; done <<<"$AX_OUT"
   else
     fail C2 "axiom sets diverged from baseline -- this is a HARD STOP, not a new baseline"
