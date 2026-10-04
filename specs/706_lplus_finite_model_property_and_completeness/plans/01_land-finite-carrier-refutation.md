@@ -1,7 +1,7 @@
 # Implementation Plan: Task #706
 
 - **Task**: 706 - L⁺ finite model property and completeness — the library landing of the finite-carrier refutations
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8.25 hours
 - **Dependencies**: 695, 696, 703 (all completed and archived; the dependency gate is clear)
 - **Research Inputs**: `specs/706_lplus_finite_model_property_and_completeness/reports/01_lplus-finite-model-property-research.md`

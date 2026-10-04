@@ -1,18 +1,21 @@
 {
-  "status": "planned",
-  "task_number": 706,
-  "phase": "plan",
-  "session_id": "sess_1791090676_9e21e5_706",
-  "dispatch_seq": 2,
-  "phases_completed": 0,
-  "phases_total": 9,
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 3,
+  "summary": "Landed the finite-carrier refutation family as eight cited theorems in PlusSlicedCertificate/Limits/FiniteCarrier.lean, with the box-dot-free status machine-checked and the fragment twins sharing the finite-width landing's A'/C'; pinned twelve axiom sets in C2, made the inventory rows live at the corrected Limits/ anchor, wrote eight theorem-index rows, and replaced the subtree root's unanchored carrier prose with the landed names. Full gate set and lake build green, sorry-free, warning-free, no new axiom.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/706_lplus_finite_model_property_and_completeness/plans/01_land-finite-carrier-refutation.md",
-      "summary": "Nine-phase plan landing the finite-carrier refutation family at PlusSlicedCertificate/Limits/FiniteCarrier.lean."
+      "type": "summary",
+      "path": "specs/706_lplus_finite_model_property_and_completeness/summaries/01_land-finite-carrier-refutation-summary.md",
+      "summary": "Execution summary for the library landing of the finite-carrier refutation family."
+    },
+    {
+      "type": "implementation",
+      "path": "FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/FiniteCarrier.lean",
+      "summary": "New 546-line module landing the eight finite-carrier refutation theorems."
     }
   ],
-  "next_steps": "Run /implement 706 to execute the plan",
-  "notes": "Home chosen: PlusSlicedCertificate/Limits/FiniteCarrier.lean (not the file_scope-declared PlusSlicedCertificate/FiniteCarrier.lean); the four reserved inventory rows keep their declaration names and get their anchor path edited. Five declared-scope extensions recorded in the plan (FormalSystem.lean, Limits/README.md, three regenerated inventory READMEs). C15's Greek-letter blindness that task 710 had to exclude is already repaired in the script and must not be re-excluded."
+  "phases_completed": 9,
+  "phases_total": 9,
+  "blockers": []
 }
