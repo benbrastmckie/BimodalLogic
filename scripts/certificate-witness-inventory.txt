@@ -56,12 +56,16 @@ coverage-limit | PlusSharingWitnessFamily.plusCompression_fails_at_pumpTarget | 
 coverage-limit | PlusSharingWitnessFamily.not_plusValidZTime_hopTarget | hopTarget is a genuine Z-time non-validity, so the gap above is a coverage limit and not a validity | FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/Targets.lean
 coverage-limit | PlusSharingWitnessFamily.not_plusValidZTime_pumpTarget | pumpTarget is a genuine Z-time non-validity, so the gap above is a coverage limit and not a validity | FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Limits/Targets.lean
 
-# --- RESERVED: finite-carrier refutations, pending the refutation module (FiniteCarrier.lean)
-# landing under FormalSystem/. These record that a certificate presenting a FINITE-carrier frame
-# cannot certify a box-dot-free Z-time non-validity the landed L family already certifies, which
-# is why the sliced class's carrier is `ℤ × Fin n`. Uncomment each row when its declaration is in
-# the tree; until then C36 counts them in its census and asserts nothing about them.
-#   coverage-limit | PlusSlicedCertificate.FiniteCarrier.no_finite_carrier_sat | no finite-carrier frame satisfies the refuting formula | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FiniteCarrier.lean
-#   coverage-limit | PlusSlicedCertificate.FiniteCarrier.no_ofStep_sat | no frame built by FrameOver.ofStep satisfies it at a finite carrier | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FiniteCarrier.lean
-#   coverage-limit | PlusSlicedCertificate.FiniteCarrier.not_finite_carrier_fmp | the finite-carrier finite model property fails for L-plus over Z-time | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FiniteCarrier.lean
-#   coverage-limit | PlusSlicedCertificate.FiniteCarrier.not_plusValidZTime_neg_θ | the refuting formula's negation is a genuine Z-time non-validity | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/FiniteCarrier.lean
+# --- coverage-limit rows: the finite-carrier axis. These record that a certificate presenting a
+# FINITE-carrier frame cannot certify a box-dot-free Z-time non-validity the landed L family
+# already certifies, which is why the sliced class's carrier is `ℤ × Fin n`. The box-dot-free
+# witness makes this half a statement about the BASE language, not only about L-plus; the twins
+# ending in a prime are the same refutation at the box-dot-bearing CTL-like fragment, which does
+# NOT rescue the finite-carrier shape.
+coverage-limit | PlusSlicedCertificate.FiniteCarrier.no_finite_carrier_sat | no finite-carrier frame satisfies the refuting formula | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/FiniteCarrier.lean
+coverage-limit | PlusSlicedCertificate.FiniteCarrier.no_ofStep_sat | no frame built by FrameOver.ofStep satisfies it at a finite carrier | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/FiniteCarrier.lean
+coverage-limit | PlusSlicedCertificate.FiniteCarrier.not_finite_carrier_fmp | the finite-carrier finite model property fails for L-plus over Z-time | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/FiniteCarrier.lean
+coverage-limit | PlusSlicedCertificate.FiniteCarrier.not_plusValidZTime_neg_θ | the refuting formula's negation is a genuine Z-time non-validity | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/FiniteCarrier.lean
+coverage-limit | PlusSlicedCertificate.FiniteCarrier.not_plusValidZTime_neg_θ' | the fragment twin's negation is a genuine Z-time non-validity inside the CTL-like fragment | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/FiniteCarrier.lean
+coverage-limit | PlusSlicedCertificate.FiniteCarrier.no_finite_carrier_sat' | no finite-carrier frame satisfies the fragment twin either | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/FiniteCarrier.lean
+coverage-limit | PlusSlicedCertificate.FiniteCarrier.not_finite_carrier_fmp_fragment | the finite-carrier finite model property fails already for the CTL-like fragment | FormalSystem/Metalogic/Decidability/PlusSlicedCertificate/Limits/FiniteCarrier.lean
