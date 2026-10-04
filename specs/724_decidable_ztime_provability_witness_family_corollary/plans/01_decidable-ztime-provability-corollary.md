@@ -355,40 +355,40 @@ the index's Decidability table and no other hunk in that file.
 
 ---
 
-### Phase 4: Append the C14 matched pair and reconcile the adjacent comment [NOT STARTED]
+### Phase 4: Append the C14 matched pair and reconcile the adjacent comment [COMPLETED]
 
 **Goal**: The new `def` is machine-pinned by a matched pair of lines in the two C14 heredocs, and
 the descriptive comment above them no longer misstates the block's contents.
 
 **Tasks**:
 
-- [ ] Append to the `C14_BASELINE` heredoc, as its **new trailing line**, immediately after the
+- [x] Append to the `C14_BASELINE` heredoc, as its **new trailing line**, immediately after the
       existing `'FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime' depends on axioms: …`
       line and before the `C14BASE` terminator:
 
       `'FormalSystem.Metalogic.decidableDerivableZTime' depends on axioms: [propext, Classical.choice, Quot.sound]`
 
-- [ ] Append to the `C14LEAN` `#print axioms` heredoc, as its **new trailing line**, immediately
+- [x] Append to the `C14LEAN` `#print axioms` heredoc, as its **new trailing line**, immediately
       after the existing `#print axioms FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime`
       line and before the `C14LEAN` terminator:
 
       `#print axioms FormalSystem.Metalogic.decidableDerivableZTime`
 
-- [ ] **Positions must match.** The baseline compares concatenated output in emission order, and
+- [x] **Positions must match.** The baseline compares concatenated output in emission order, and
       emission order follows the `#print axioms` heredoc's line order, so a pair appended at
       different relative positions in the two heredocs fails even with the right axiom value.
-- [ ] Reconcile the descriptive comment block immediately above `C14_BASELINE`, which currently
+- [x] Reconcile the descriptive comment block immediately above `C14_BASELINE`, which currently
       says "The final **three** lines of this pair pin the witness-family decidability declarations
       that `docs/theorem-index.md` carries rows for" and enumerates three names: update the count to
       four and add `FormalSystem.Metalogic.decidableDerivableZTime` to the enumeration.
-- [ ] Replace that comment's forward-looking paragraph — "A fourth sibling declaration,
+- [x] Replace that comment's forward-looking paragraph — "A fourth sibling declaration,
       `Decidable (Derivable FrameClass.ZTime [] φ)` …, is expected to join this trailing block once
       it lands in `FormalSystem/`; pinning it then is a copy of this block's shape" — with a
       statement that it **has** landed, naming the module it lives in. Leaving a stale
       "expected to join" sentence in place beside the line that satisfies it is the same descriptive
       drift the preceding task in this series reconciled.
-- [ ] No task-number citation in the script (outside `specs/**`).
-- [ ] Note the ordering dependency: the C14 assertion cannot run until Phase 2 has made the
+- [x] No task-number citation in the script (outside `specs/**`).
+- [x] Note the ordering dependency: the C14 assertion cannot run until Phase 2 has made the
       declaration reachable from the library root, because the C14 probe file imports the root.
       The *edit* here is independent; the *assertion* lands in Phase 5.
 
@@ -428,7 +428,7 @@ correct the baseline line to the measured value, never to loosen the check.
 
 ---
 
-### Phase 5: Full gate run [NOT STARTED]
+### Phase 5: Full gate run [IN PROGRESS]
 
 **Goal**: The complete gate set is green with every change in place.
 

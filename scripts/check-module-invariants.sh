@@ -2036,16 +2036,18 @@ fi
 # cannot be pinned by this mechanism. Its ledger row is omitted for that reason; do not invent a
 # baseline line for it.
 #
-# The final three lines of this pair pin the witness-family decidability declarations that
+# The final four lines of this pair pin the witness-family decidability declarations that
 # `docs/theorem-index.md` carries rows for:
 # `FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime`,
-# `FormalSystem.Metalogic.Decidability.validZTime_iff_noCertifiedCandidate`, and
-# `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime`. A fourth sibling
-# declaration, `Decidable (Derivable FrameClass.ZTime [] φ)` (the Z-time derivability corollary of
-# `Compression.decidableValidZTime`), is expected to join this trailing block once it lands in
-# `FormalSystem/`; pinning it then is a copy of this block's shape -- append one more matched pair
-# of lines to both heredocs, in the same position, following the exact axiom values `#print axioms`
-# reports for it.
+# `FormalSystem.Metalogic.Decidability.validZTime_iff_noCertifiedCandidate`,
+# `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime`, and
+# `FormalSystem.Metalogic.decidableDerivableZTime`. The fourth of those is the Z-time
+# derivability corollary of `Compression.decidableValidZTime` --
+# `Decidable (Derivable FrameClass.ZTime [] φ)` -- and it HAS now landed, in
+# `FormalSystem/Metalogic/ZTimeProvability.lean`, so its matched pair of lines sits in this block
+# at the same trailing position on both sides. Any further sibling is pinned by a copy of this
+# block's shape: append one more matched pair of lines to both heredocs, in the same position,
+# following the exact axiom values `#print axioms` reports for it.
 #
 # The second block below (soundness onward) is the SORRY-FREE claim set of
 # FormalSystem/Metalogic.lean's module docstring. Every declaration that docstring calls
@@ -2254,6 +2256,7 @@ read -r -d '' C14_BASELINE <<'C14BASE'
 'FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.validZTime_iff_noCertifiedCandidate' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FormalSystem.Metalogic.decidableDerivableZTime' depends on axioms: [propext, Classical.choice, Quot.sound]
 C14BASE
 
 if [ "$RUN_BUILD" -eq 1 ]; then
@@ -2461,6 +2464,7 @@ import FormalSystem
 #print axioms FormalSystem.Metalogic.Decidability.exists_witnessFamily_of_not_validZTime
 #print axioms FormalSystem.Metalogic.Decidability.validZTime_iff_noCertifiedCandidate
 #print axioms FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime
+#print axioms FormalSystem.Metalogic.decidableDerivableZTime
 C14LEAN
   C14_OUT=$(lake env lean "$C14_SRC" 2>&1 \
     | sed -e ':a' -e '$!N' -e 's/\n / /' -e 'ta' -e 'P' -e 'D' \
