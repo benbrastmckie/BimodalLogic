@@ -1480,7 +1480,7 @@
     {
       "project_number": 565,
       "project_name": "totality_and_directed_gluing_from_extension_theorem",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Prove `app:presheaf-dictionary`'s Totality and Directed Gluing clauses. Both are WRAPPERS on `thm:extension`, which is fully proved in this repository under `FormalSystem/Semantics/Extension/`: translate a section to its subinterval, extend to a possible world, restrict.\n\nWHY THIS MATTERS OUT OF PROPORTION TO ITS SIZE. It is the task that demonstrates the Extension Theorem was the presheaf appendix's analytic content all along -- the strongest structural claim the study makes about the relationship between this repository and `app:Structure`, and the clearest single piece of evidence that the categorical material was already present here under non-categorical names. Small (1-2 phases), high explanatory value.\n\nRECORD explicitly, rather than leaving it implicit in the proof terms, which clauses are choice-free: Sheaf is; Directed Gluing is NOT.\n\nHARD CONSTRAINT. Leave `PartialHistory` and the Extension Theorem themselves untouched. This task CONSUMES `thm:extension`; it does not restate, strengthen or reprove it. lake build FormalSystem must be green with no new sorry at the end of every phase.\n\nBackground: `specs/553_decide_convex_history_layer_collapse/reports/01_convex-correlate-and-consequence.md` section 5.1.\n\nReconciliation note (task 629): unrelated mathematics with no dependency on the publication refactor programme's schedule (no edge added). Adopt task 636's citation form (`* [Author, *Title*][key]` against the root references.bib) once it lands, or migrate to it if this task is drafted first.\n\nCONVENTION NOTE (2026-09-21). Task 636 has landed: write ## References in the normal form of docs/development/REFERENCE_NORMAL_FORM.md, each key resolving in the root references.bib (typst/bibliography.bib no longer exists). The language-extension files are now under FormalSystem/{Plus,Minus,Star}Language/ with flat FormalSystem.{X}Language namespaces (task 634).\n\nSCOPE AND AGGREGATOR CONTENTION (recorded 2026-10-02 during a scope/dependency revision). This task's declared file_scope names its OWN module under FormalSystem/Semantics/Presheaf/ and deliberately does NOT name the cluster aggregator FormalSystem/Semantics/Presheaf.lean, which the interval-site task (563) owns and creates. Adding a module to the cluster nevertheless requires a one-line import in that aggregator, and the repo convention is one sibling aggregator per directory with C24 requiring every module to stay in the root closure. That one line is a SHARED TOUCH across every task on this front: two of these tasks dispatched concurrently can clobber each other's aggregator edit, and the collision gate will not catch it because the path is not in either file_scope. Therefore: orchestrate the tasks on this front in SMALL batches (at most two) or singly, never as one wide wave, and re-run lake build after the aggregator edit. Do not widen this task's file_scope to include the aggregator -- that would make the gate defer the whole front every cycle.\n\nSEED RESEARCH AVAILABLE (added 2026-10-02; READ-ONLY context, not a change of scope). A source-verified seed report for the gluing route to decidability of full L-plus lives at specs/718_omega_sequence_decidability_full_lplus/reports/01_gluing-route-seed.md. Its section 6 is the one to read: `app:gluing`'s footnote proves Saturation is GENUINELY required for the directed case, with a D = Q counterexample (restrictions of tau(t) = 1 - t to (0, b] form an increasing chain whose union admits no value at time 1). Do not import the binary case's choice-freeness into this task. The seed claims no route verdict and does not alter this task's deliverable; consult it for context and do not re-derive what it already verifies.",
       "topic": "categorical-structure",
@@ -1488,7 +1488,7 @@
         563
       ],
       "created": "2026-09-08T17:34:36Z",
-      "last_updated": "2026-10-04T00:27:55Z",
+      "last_updated": "2026-10-04T01:36:40Z",
       "priority": "high",
       "file_scope": [
         "FormalSystem.lean",
@@ -1509,9 +1509,15 @@
           "path": "specs/565_totality_and_directed_gluing_from_extension_theorem/plans/01_totality-directed-gluing-wrappers.md",
           "type": "plan",
           "summary": "Two-phase plan: Phase 1 Totality (place/ofWorld/restrict_ofWorld + engine and three instantiations), Phase 2 Directed Gluing (directedSup, existence, uniqueness, exists-unique packaging) plus the four-row choice record and README amendments."
+        },
+        {
+          "path": "specs/565_totality_and_directed_gluing_from_extension_theorem/summaries/01_totality-directed-gluing-wrappers-summary.md",
+          "type": "summary",
+          "summary": "Execution summary: both clauses, the measured choice record, four plan deviations, and the recorded directedSup consolidation follow-up."
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Proved app:presheaf-dictionary's Totality and Directed Gluing clauses in one new module, FormalSystem/Semantics/Presheaf/Directed.lean (16 declarations), as wrappers on thm:extension: translate a section onto its window (place), extend to a possible world, cut back (ofWorld), with the directed union directedSup as the only new machinery. Each clause is stated as a binder-free engine taking the extension property as an explicit hypothesis, which makes the choice record an attribution rather than an observation: Totality's engine measures [propext, Quot.sound], so its Classical.choice is attributable exactly to thm:extension, whereas Directed Gluing's engine measures Classical.choice even with the extension property hypothesized away, because directedSup is independently non-constructive. Full lake build green with zero sorries and no new axioms; check-module-invariants.sh ALL CHECKS PASSED."
     },
     {
       "project_number": 566,

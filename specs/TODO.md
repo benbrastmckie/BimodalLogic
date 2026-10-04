@@ -11,8 +11,8 @@ next_project_number: 729
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,565,567,570,604,616,617,664,705,706,709,711,712,713,714,716,722,725,726,728 | -- | algebraic-representation, categorical-structure, code-quality, ... |
-| 2 | 231,282,296,465,497,566,618,720,723 | 298,464,502,565,616,706 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,567,570,604,616,617,664,705,706,709,711,712,713,714,716,722,725,726,728 | -- | algebraic-representation, categorical-structure, code-quality, ... |
+| 2 | 231,282,296,465,497,618,720,723 | 298,464,502,616,706 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,724 | 231,465,497,723 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
@@ -37,8 +37,7 @@ next_project_number: 729
 
 ### Categorical Structure
 
-565 [PLANNED] — Prove app:presheaf-dictionary's Totality and Directed Gluing...
-  └─ 566 [NOT STARTED] — Prove app:presheaf-dictionary's Possible Worlds clause: HF...
+566 [NOT STARTED] — Prove app:presheaf-dictionary's Possible Worlds clause: HF...
 567 [PLANNED] — Prove app:presheaf-dictionary's Determinism clause -- F...
 616 [NOT STARTED] — Formalize the duration monoid BD+, its twisted-arrow...
   └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
@@ -1020,12 +1019,13 @@ SEED RESEARCH AVAILABLE (added 2026-10-02; READ-ONLY context, not a change of sc
 ---
 
 ### 565. Totality and directed gluing from extension theorem
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
 - **Research**: [565_totality_and_directed_gluing_from_extension_theorem/reports/01_totality-directed-gluing-wrappers.md]
 - **Plan**: [565_totality_and_directed_gluing_from_extension_theorem/plans/01_totality-directed-gluing-wrappers.md]
+- **Summary**: [565_totality_and_directed_gluing_from_extension_theorem/summaries/01_totality-directed-gluing-wrappers-summary.md]
 
 **Description**: Prove `app:presheaf-dictionary`'s Totality and Directed Gluing clauses. Both are WRAPPERS on `thm:extension`, which is fully proved in this repository under `FormalSystem/Semantics/Extension/`: translate a section to its subinterval, extend to a possible world, restrict.
 

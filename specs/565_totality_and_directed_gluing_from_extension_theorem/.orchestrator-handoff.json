@@ -1,17 +1,31 @@
 {
-  "status": "planned",
   "task_number": 565,
-  "session_id": "sess_1791072120_6ec518_565",
-  "dispatch_seq": 3,
-  "phases_completed": 0,
+  "dispatch_seq": 5,
+  "status": "implemented",
+  "phases_completed": 2,
   "phases_total": 2,
+  "session_id": "sess_1791072120_6ec518",
+  "summary": "Both remaining app:presheaf-dictionary clauses proved as wrappers on thm:extension in the new module FormalSystem/Semantics/Presheaf/Directed.lean (16 declarations). Totality's binder-free engine measures [propext, Quot.sound], making its Classical.choice attributable exactly to thm:extension; Directed Gluing's engine measures Classical.choice even with the extension property hypothesized away, because the directed union directedSup is independently non-constructive, so its choice is doubly sourced. The record is written in the module docstring and as a recorded verdict in the cluster README, and both now-false README claims were amended. Full lake build green (2815 jobs, exit 0), zero sorries, axiom count unchanged at 14, check-module-invariants.sh ALL CHECKS PASSED, typst-sync-check.sh PASS. PartialHistory and the Extension/ cluster untouched.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/565_totality_and_directed_gluing_from_extension_theorem/plans/01_totality-directed-gluing-wrappers.md",
-      "summary": "Two-phase plan: Phase 1 Totality (place/ofWorld/restrict_ofWorld + engine and three instantiations), Phase 2 Directed Gluing (directedSup, existence, uniqueness, exists-unique packaging) plus the four-row choice record and README amendments."
+      "type": "summary",
+      "path": "specs/565_totality_and_directed_gluing_from_extension_theorem/summaries/01_totality-directed-gluing-wrappers-summary.md",
+      "summary": "Execution summary: both clauses, the measured choice record, four plan deviations, and the recorded directedSup consolidation follow-up."
+    },
+    {
+      "type": "code",
+      "path": "FormalSystem/Semantics/Presheaf/Directed.lean",
+      "summary": "New module: place, ofWorld, restrict_ofWorld, the Totality stack (engine plus four instantiations), the directed union (directed_states_agree, directedSup, le_directedSup), place_le_place, and the Directed Gluing stack (engine, uniqueness, clause)."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/565_totality_and_directed_gluing_from_extension_theorem/handoffs/phase-2-handoff-20261003-183433.md",
+      "summary": "Phase 2 checkpoint: verification of record, decisions, deviations, and the recorded follow-up."
     }
   ],
-  "next_steps": "Run /implement 565 to execute the plan",
-  "notes": "Plan validated by validate-artifact.sh --strict (PASS, 0 warnings). All 16 Lean Challenge Statement signatures compiled standalone against the live tree. One research recommendation corrected by compiled probe: a local restatement of states_eq_of_eq collides with FormalSystem.Semantics.Presheaf.states_eq_of_eq in Sheaf.lean; the plan imports Presheaf.Sheaf and reuses it instead. Three shared touches outside file_scope (Presheaf.lean, FormalSystem.lean, Semantics/README.md) are flagged per-phase with the territory re-read discipline."
+  "follow_ups": [
+    "Consolidate directedSup/directed_states_agree/le_directedSup into FormalSystem/Semantics/PartialHistoryOrder.lean beside PartialHistory.chainSup, deriving chainSup as the IsChain special case. Forbidden by this task's hard constraint; recorded at the declaration site.",
+    "FormalSystem/Semantics/Presheaf/Sheaf.lean's inventory description in the cluster README is still a TODO placeholder. Pre-existing, left alone as out of scope.",
+    "check-task-references.sh exits non-zero on 198 pre-existing repo-wide occurrences, none in this task's files, so that gate cannot currently serve as a green/red signal for work on this tree."
+  ]
 }

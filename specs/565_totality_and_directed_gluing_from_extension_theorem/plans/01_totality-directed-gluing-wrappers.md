@@ -1,7 +1,7 @@
 # Implementation Plan: Totality and Directed Gluing as wrappers on the Extension Theorem
 
 - **Task**: 565 - Prove `app:presheaf-dictionary`'s Totality and Directed Gluing clauses
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: 563 (interval site and behavior presheaf — landed)
 - **Research Inputs**: `specs/565_totality_and_directed_gluing_from_extension_theorem/reports/01_totality-directed-gluing-wrappers.md`
