@@ -291,32 +291,36 @@ broad, the +2 measurement did not hold — record it.
 
 ---
 
-### Phase 3: Add the `docs/theorem-index.md` row [NOT STARTED]
+### Phase 3: Add the `docs/theorem-index.md` row [COMPLETED]
 
 **Goal**: The theorem index carries a row for the new `def`, conforming to the page's own column
 contract.
 
 **Tasks**:
 
-- [ ] Add one row to the `### Decidability` table, **immediately after** the
+- [x] Add one row to the `### Decidability` table, **immediately after** the
       `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime` row.
-- [ ] Column contract, read off the page's own "How to read a row": Paper label `—`; Statement one
+- [x] Column contract, read off the page's own "How to read a row": Paper label `—`; Statement one
       line; Lean name **fully qualified, always** (`FormalSystem.Metalogic.decidableDerivableZTime`);
       File **path only, no line numbers** (`FormalSystem/Metalogic/ZTimeProvability.lean`); Frame
       class `ZTime`; Axioms `pcq pinned:C14`.
-- [ ] Suggested Statement text, honouring every qualifier: *"Decidability of ℤ-time provability:
+- [x] Suggested Statement text, honouring every qualifier: *"Decidability of ℤ-time provability:
       `Derivable FrameClass.ZTime [] φ` is decidable, by soundness and completeness composed with
       the witness-family validity procedure"*.
-- [ ] Do **not** type a measured axiom value into the Axioms column. That column is generated from
+- [x] Do **not** type a measured axiom value into the Axioms column. That column is generated from
       the baselines; `pcq pinned:C14` is a claim that Phase 4's baseline line makes true, and the
       page's standing assertion is that every declaration listed is machine-pinned.
-- [ ] Give the companion `theorem` **no** index row. One row means one C14 pair, which is exactly
+- [x] Give the companion `theorem` **no** index row. One row means one C14 pair, which is exactly
       what the gate script's comment pre-authorizes; the `theorem` needs no pin because it has no
       row, and C17 already covers it through the `def` body's reference to it.
-- [ ] No task-number citation in the row (this file is outside `specs/**`).
+- [x] No task-number citation in the row (this file is outside `specs/**`).
 - [ ] *Optional, non-blocking*: tick the matching `specs/ROADMAP.md` checkbox with the
       `*(Completed: Task 724, {DATE})*` annotation. `specs/**` is the one place task numbers are
-      permitted. Not part of acceptance.
+      permitted. Not part of acceptance. *(deviation: skipped — the
+      immediately preceding checkbox, for the already-completed task 723, is also still unticked,
+      so this repository's roadmap checkboxes are evidently not ticked per-task by the
+      implementation dispatch. Ticking only this one would make the two adjacent rows inconsistent.
+      Explicitly non-blocking and outside acceptance.)*
 
 **Timing**: 0.25 hours
 
