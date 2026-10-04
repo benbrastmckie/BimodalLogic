@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "dispatch_seq": 4,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/724_decidable_ztime_provability_witness_family_corollary/reports/01_decidable-ztime-provability-corollary.md",
+      "summary": "All three composing declarations re-verified by #check and the full corollary compiled sorry-free in situ (axioms [propext, Classical.choice, Quot.sound]); confirmed unwritten; import-graph measurement rejects the dispatch's suggested placement (+331 net-new imports) in favour of FormalSystem/Metalogic/ZTimeProvability.lean (+2); full C8/C9/C14/C15/C17/C23/C24/C26/C27/C33/C37 gate obligation map plus C9-compliant docstring anchors replacing the forbidden task-number citation."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791133434_0cdaa6_724",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
