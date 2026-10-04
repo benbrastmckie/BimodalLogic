@@ -1,7 +1,7 @@
 # Implementation Plan: Task #723
 
 - **Task**: 723 - Ground the pinned:C14 claim on the three witness-family decidability rows of docs/theorem-index.md
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.25 hours
 - **Dependencies**: Task 706 (declared `file_scope` collision on `scripts/check-module-invariants.sh` -- run in a cycle disjoint from 705/706)
 - **Research Inputs**: specs/723_pin_witness_family_decidability_rows_c14_baseline/reports/01_c14-witness-family-pin.md
@@ -99,7 +99,7 @@ was performed and no roadmap phases are included.
 
 Phases within the same wave can execute in parallel; this plan is strictly serial.
 
-### Phase 1: Re-verify the gap and fix the anchors [NOT STARTED]
+### Phase 1: Re-verify the gap and fix the anchors [COMPLETED]
 
 **Goal**: Independently re-confirm, against the live tree at implementation time, that the three
 declarations are absent from the C14 pair and that the research report's insertion anchors still
@@ -107,18 +107,23 @@ hold -- or, if the re-verification shows the pin does run under a name both the 
 missed, close the task with that finding instead of editing.
 
 **Tasks**:
-- [ ] Re-run the dispatch's exact grep:
+- [x] Re-run the dispatch's exact grep:
       `grep -nE 'Compression\.|decidableValidZTime|validZTime_iff_noCertifiedCandidate|exists_witnessFamily_of_not_validZTime' scripts/check-module-invariants.sh`
-- [ ] Confirm every hit is the C23 `SHADOW_PAIR_ALLOW` block and that no `#print axioms` line or
-      baseline entry names any of the three.
-- [ ] If and only if a real C14 pin is found under another name: STOP the edit path, record the
+      *(completed: only hits lines 3465/3469, the C23 SHADOW_PAIR_ALLOW block)*
+- [x] Confirm every hit is the C23 `SHADOW_PAIR_ALLOW` block and that no `#print axioms` line or
+      baseline entry names any of the three. *(completed: gap confirmed real, not a false alarm)*
+- [x] If and only if a real C14 pin is found under another name: STOP the edit path, record the
       false-alarm finding as the deliverable, and skip Phases 2-3 (the dispatch declares this a
-      legitimate outcome, not a failure).
-- [ ] Confirm `grep -n "C14BASE\|C14LEAN" scripts/check-module-invariants.sh` still reports the
+      legitimate outcome, not a failure). *(completed: not applicable -- no pin found under
+      another name, proceeding with the fix)*
+- [x] Confirm `grep -n "C14BASE\|C14LEAN" scripts/check-module-invariants.sh` still reports the
       heredoc openers/terminators, and that the last content line of each block is the
-      `Independence.z1_validIn_iff_ztime` entry / `#print axioms` directive.
-- [ ] Run `git status --short scripts/check-module-invariants.sh docs/theorem-index.md` and confirm
+      `Independence.z1_validIn_iff_ztime` entry / `#print axioms` directive. *(completed: anchors
+      confirmed at C14_BASELINE content line 2242/terminator 2243, C14LEAN content line
+      2446/terminator 2447, matching the plan exactly)*
+- [x] Run `git status --short scripts/check-module-invariants.sh docs/theorem-index.md` and confirm
       neither file carries a foreign in-flight modification (task 706 `file_scope` collision).
+      *(completed: both clean)*
 
 **Timing**: 0.25 hours
 
