@@ -428,31 +428,31 @@ correct the baseline line to the measured value, never to loosen the check.
 
 ---
 
-### Phase 5: Full gate run [IN PROGRESS]
+### Phase 5: Full gate run [COMPLETED]
 
 **Goal**: The complete gate set is green with every change in place.
 
 **Tasks**:
 
-- [ ] Run `lake build` **detached and guarded** per
+- [x] Run `lake build` **detached and guarded** per
       `context/project/lean4/operations/long-builds.md` and
       `context/patterns/bounded-build-waiter.md`: a hard timeout, writer liveness via `kill -0` on
       the captured PID (never `ps | grep` or `pgrep -f`), one waiter per log.
-- [ ] On a green build, run `bash scripts/check-module-invariants.sh` with **no** `--no-build`, so
+- [x] On a green build, run `bash scripts/check-module-invariants.sh` with **no** `--no-build`, so
       the build-backed checks (C1, C2, C14, C36b) run alongside the build-free set.
-- [ ] Triage any failure by check id. The expected-failure shortlist, in likelihood order: C14
+- [x] Triage any failure by check id. The expected-failure shortlist, in likelihood order: C14
       (value or position mismatch — correct the baseline to the measured value, never loosen the
       check), C33 (import out of sorted position), C15 (missing `Paper:` anchor or missing reason),
       C9 (a task number slipped into a non-`specs/` file), C27 (a live debug artifact outside a
       docstring), C26 (a non-trailing underscore in the `def` name).
-- [ ] Confirm acceptance directly, not by inference:
+- [x] Confirm acceptance directly, not by inference:
       `grep -rn --include='*.lean' 'Decidable (Derivable' FormalSystem/` now returns **exactly one**
       declaration hit, in the new module. (It returned zero before; the pre-existing unrestricted
       hits are a documentation row, a gate-script comment, and `specs/` artifacts — none a
       declaration.)
-- [ ] Confirm `grep -rn 'TM is decidable' .` surfaces no new unqualified occurrence in this change
+- [x] Confirm `grep -rn 'TM is decidable' .` surfaces no new unqualified occurrence in this change
       set.
-- [ ] Commit per green sub-step throughout, not once at the end.
+- [x] Commit per green sub-step throughout, not once at the end.
 
 **Timing**: 1.25 hours (dominated by `lake build`; the incremental rebuild is expected to cover the
 new module, the two aggregators, and the aggregator's one-hop dependents)
@@ -511,21 +511,21 @@ end FormalSystem.Metalogic
 
 ## Testing & Validation
 
-- [ ] `lake build FormalSystem.Metalogic.ZTimeProvability` green: no error, no warning, no sorry.
-- [ ] `grep -n 'sorry' FormalSystem/Metalogic/ZTimeProvability.lean` returns nothing.
-- [ ] `lake build` green across the repository.
-- [ ] `bash scripts/check-module-invariants.sh` (build-backed) reports PASS for the whole check set,
+- [x] `lake build FormalSystem.Metalogic.ZTimeProvability` green: no error, no warning, no sorry.
+- [x] `grep -n 'sorry' FormalSystem/Metalogic/ZTimeProvability.lean` returns nothing.
+- [x] `lake build` green across the repository.
+- [x] `bash scripts/check-module-invariants.sh` (build-backed) reports PASS for the whole check set,
       C14 and C33 included.
-- [ ] `bash scripts/check-module-invariants.sh --no-build` green at each intermediate sub-step, as
+- [x] `bash scripts/check-module-invariants.sh --no-build` green at each intermediate sub-step, as
       the fast feedback loop.
-- [ ] `grep -rn --include='*.lean' 'Decidable (Derivable' FormalSystem/` returns exactly one
+- [x] `grep -rn --include='*.lean' 'Decidable (Derivable' FormalSystem/` returns exactly one
       declaration hit, in the new module.
-- [ ] The new module's docstring contains all three qualifiers (frame class, no stability operator,
+- [x] The new module's docstring contains all three qualifiers (frame class, no stability operator,
       empty premises), the without-the-spine record, the three durable anchors, `Paper: —` with a
       reason, and the `def`-not-`instance` rationale.
-- [ ] The new module contains no task number, no unqualified "TM is decidable", no complexity claim,
+- [x] The new module contains no task number, no unqualified "TM is decidable", no complexity claim,
       and no live `#check`/`#print`/`#eval` outside a `/-! … -/` block.
-- [ ] `docs/theorem-index.md` carries the new row with `pcq pinned:C14`, and the C14 baseline line
+- [x] `docs/theorem-index.md` carries the new row with `pcq pinned:C14`, and the C14 baseline line
       behind that claim exists.
 
 ## Artifacts & Outputs
