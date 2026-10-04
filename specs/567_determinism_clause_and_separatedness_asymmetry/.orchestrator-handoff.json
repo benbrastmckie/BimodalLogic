@@ -1,16 +1,25 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 4,
-  "summary": "Four-phase implementation plan for the Determinism clause of app:presheaf-dictionary and the separatedness asymmetry, splitting the theorem pair across the Presheaf cluster's assert_not_exists lock per the research report's compiled probes.",
+  "status": "implemented",
+  "phase": "implement",
+  "dispatch_seq": 6,
+  "summary": "Landed the Determinism clause of app:presheaf-dictionary as a theorem pair across three files: deterministic_iff_separated (F.Deterministic iff every restriction map of Beh(F) is injective, at a regular frame) and separated_strictly_stronger (separatedness is strictly stronger than the validity of Determined on F, refuted at the drift frame F-zero). All four plan phases closed green and committed individually.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/567_determinism_clause_and_separatedness_asymmetry/plans/02_determinism-clause-separatedness-asymmetry.md",
-      "summary": "Phases: (1) Presheaf/Determinism.lean below the lock, (2) deterministic_iff_separated in DeterministicBridge.lean, (3) Independence/BehSeparatedness.lean drift-frame asymmetry, (4) docstrings, references and the narrowed open question."
+      "type": "summary",
+      "path": "specs/567_determinism_clause_and_separatedness_asymmetry/summaries/02_determinism-clause-separatedness-asymmetry-summary.md",
+      "summary": "The Determinism clause as a biconditional plus the separatedness asymmetry, with the full verification record."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/567_determinism_clause_and_separatedness_asymmetry/handoffs/phase-4-handoff-20261004T023634Z.md",
+      "summary": "Final per-phase handoff: the four conceptual docstring obligations and the gate results."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 4,
   "phases_total": 4,
-  "blockers": []
+  "blockers": [],
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "No continuation. All four phase headings read [COMPLETED] and each is backed by its own commit (3c24dcf62, beabe9487, 8412f49c0, dede2ea08). Postflight may propagate completion.",
+  "git_checkpoint": "dede2ea08"
 }

@@ -1,7 +1,7 @@
 # Implementation Plan: Determinism clause and separatedness asymmetry
 
 - **Task**: 567 - Determinism clause and separatedness asymmetry
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: 563 (landed: the `Semantics/Presheaf/` cluster exists)
 - **Research Inputs**: `specs/567_determinism_clause_and_separatedness_asymmetry/reports/02_determinism-clause-separatedness.md`, `specs/567_determinism_clause_and_separatedness_asymmetry/reports/01_retiming-invariance-definability-findings.md`

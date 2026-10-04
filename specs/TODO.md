@@ -11,7 +11,7 @@ next_project_number: 729
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,567,570,604,616,617,664,705,706,709,711,712,713,714,716,722,725,726,728 | -- | algebraic-representation, categorical-structure, code-quality, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,705,706,709,711,712,713,714,716,722,725,726,728 | -- | algebraic-representation, categorical-structure, code-quality, ... |
 | 2 | 231,282,296,465,497,618,720,723 | 298,464,502,616,706 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500,724 | 231,465,497,723 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -38,7 +38,6 @@ next_project_number: 729
 ### Categorical Structure
 
 566 [NOT STARTED] — Prove app:presheaf-dictionary's Possible Worlds clause: HF...
-567 [PLANNED] — Prove app:presheaf-dictionary's Determinism clause -- F...
 616 [NOT STARTED] — Formalize the duration monoid BD+, its twisted-arrow...
   └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
 617 [NOT STARTED] — Prove app:presheaf-dictionary's Reflection clause: reflection...
@@ -967,12 +966,13 @@ LITERATURE. Burgess 1982 and Xu 1988 axiomatize `U`/`S` over an arbitrary linear
 ---
 
 ### 567. Determinism clause and separatedness asymmetry
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: categorical-structure
 - **Dependencies**: Task 563
 - **Research**: [567_determinism_clause_and_separatedness_asymmetry/reports/02_determinism-clause-separatedness.md]
 - **Plan**: [567_determinism_clause_and_separatedness_asymmetry/plans/02_determinism-clause-separatedness-asymmetry.md]
+- **Summary**: [567_determinism_clause_and_separatedness_asymmetry/summaries/02_determinism-clause-separatedness-asymmetry-summary.md]
 
 **Description**: Prove `app:presheaf-dictionary`'s Determinism clause -- `F` deterministic iff every restriction map of `Beh(F)` is injective -- and connect it to `states_eq_of_deterministic` in `FormalSystem/Semantics/PlusLanguage/PlusDeterminism.lean`.
 
