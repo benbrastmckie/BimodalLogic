@@ -495,6 +495,7 @@ import FormalSystem.Metalogic.WeakCanonical.RealModel.ShuffleReal
 import FormalSystem.Metalogic.WeakCanonical.ReflexiveCanonical
 import FormalSystem.Metalogic.WeakCanonical.Transfer
 import FormalSystem.Metalogic.WeakCanonical.TruthLemma
+import FormalSystem.Metalogic.ZTimeProvability
 import FormalSystem.MinusLanguage
 import FormalSystem.MinusLanguage.AxiomDischarge
 import FormalSystem.MinusLanguage.Axioms

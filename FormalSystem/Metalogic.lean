@@ -20,6 +20,7 @@ import FormalSystem.Metalogic.Algebraic
 import FormalSystem.Metalogic.Deterministic
 import FormalSystem.Metalogic.QTime
 import FormalSystem.Metalogic.ConvexConsequence
+import FormalSystem.Metalogic.ZTimeProvability
 
 /-!
 # Bimodal Metalogic

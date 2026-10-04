@@ -115,6 +115,7 @@ sibling directory. The list is generated, so a file that moves out (four of them
 | `SetConsequence.lean` | 588 | Set-indexed consequence relation, and the `FrameClass`-indexed satisfiability / model-existence / compactness / strong-completeness family, instantiated at all four class tags including the `.RTime` row (`CompactRTime`, `StrongCompletenessRTime`, `SatisfiableRTimeSet`, `ModelExistenceRTime`) |
 | `Soundness.lean` | 1,659 | The soundness theorem itself |
 | `StrongCompleteness.lean` | 1,142 | Strong/consequence completeness, including `completeness_dedekind`, and the two `FrameClass`-generic compactness reductions `strongCompleteness_of_compact` and `compact_of_modelExistence` |
+| `ZTimeProvability.lean` | 119 | <!-- TODO: add description --> |
 <!-- END GENERATED -->
 
 Plus the directory's own root `Metalogic.lean`, which sits one level up, beside `Metalogic/`;

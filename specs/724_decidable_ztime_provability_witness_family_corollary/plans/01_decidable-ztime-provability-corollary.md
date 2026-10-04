@@ -1,7 +1,7 @@
 # Implementation Plan: Task #724
 
 - **Task**: 724 - Decidability of Z-time provability as a corollary of `Compression.decidableValidZTime`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None (task 723 completed; its C14 trailing-block rows are the shape this task extends)
 - **Research Inputs**: `specs/724_decidable_ztime_provability_witness_family_corollary/reports/01_decidable-ztime-provability-corollary.md`
@@ -119,51 +119,51 @@ part of acceptance.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Create `FormalSystem/Metalogic/ZTimeProvability.lean` [NOT STARTED]
+### Phase 1: Create `FormalSystem/Metalogic/ZTimeProvability.lean` [COMPLETED]
 
 **Goal**: The new module exists with both declarations and fully compliant docstrings, and
 compiles on its own.
 
 **Tasks**:
 
-- [ ] Create `FormalSystem/Metalogic/ZTimeProvability.lean` with the standard copyright header
+- [x] Create `FormalSystem/Metalogic/ZTimeProvability.lean` with the standard copyright header
       used by its sibling metalogic modules.
-- [ ] Three imports, nothing more: `FormalSystem.Metalogic.Soundness`,
+- [x] Three imports, nothing more: `FormalSystem.Metalogic.Soundness`,
       `FormalSystem.Metalogic.BXCanonical.Completeness`,
       `FormalSystem.Metalogic.Decidability.WitnessFamily.Compression.Assembly`.
-- [ ] `namespace FormalSystem.Metalogic` with
+- [x] `namespace FormalSystem.Metalogic` with
       `open FormalSystem.Syntax FormalSystem.ProofSystem FormalSystem.Semantics`. Namespace is
       `FormalSystem.Metalogic` — **not** a compression sub-namespace: that keeps C23's shadow-pair
       allowlist untouched, keeps the compression README's standing "one sub-namespaced
       declaration" statement true, and reflects that this is a metalogic corollary rather than
       part of the compression route.
-- [ ] Write `theorem derivable_iff_validZTime (φ : Formula) : Derivable FrameClass.ZTime [] φ ↔ ValidZTime φ`
+- [x] Write `theorem derivable_iff_validZTime (φ : Formula) : Derivable FrameClass.ZTime [] φ ↔ ValidZTime φ`
       as the anonymous constructor. Forward leg
       `fun h => h.elim (fun d => soundness_ztime_valid d)` — the `Nonempty` elimination is required
       because `Derivable fc Γ p` is literally `Nonempty (DerivationTree fc Γ p)`; the target is a
       `Prop`, so this step introduces no choice. Backward leg
       `BXCanonical.derivable_of_validZTime φ`.
-- [ ] Write `def decidableDerivableZTime (φ : Formula) : Decidable (Derivable FrameClass.ZTime [] φ)`
+- [x] Write `def decidableDerivableZTime (φ : Formula) : Decidable (Derivable FrameClass.ZTime [] φ)`
       as `letI := Decidability.Compression.decidableValidZTime φ` followed by
       `decidable_of_iff (ValidZTime φ) (derivable_iff_validZTime φ).symm`. **The `.symm` goes on the
       iff, not on the `decidable_of_iff` application**: `decidable_of_iff (a) (h : a ↔ b)` yields
       `Decidable b`, so `h` must run validity → derivability. Writing it the other way round gives
       `Application type mismatch`. The empty-premise semantic-consequence corollary at the tail of
       the compression assembly module is the exact same shape; copy it.
-- [ ] Keep the biconditional in its own `theorem`. **Do not inline it into the `def` body** — that
+- [x] Keep the biconditional in its own `theorem`. **Do not inline it into the `def` body** — that
       leaves no `↔` token in any `def` body, which is what keeps C37 a non-issue if placement ever
       moves under a certificate root.
-- [ ] `def`, not `instance`, matching `Compression.decidableValidZTime` and the bilasso assembly's
+- [x] `def`, not `instance`, matching `Compression.decidableValidZTime` and the bilasso assembly's
       family procedure. Say so in the docstring: a global
       `Decidable (Derivable FrameClass.ZTime [] φ)` instance would change instance resolution
       repository-wide.
-- [ ] Name check for C26: no non-trailing underscore in a live `def`/`abbrev` name.
+- [x] Name check for C26: no non-trailing underscore in a live `def`/`abbrev` name.
       `decidableDerivableZTime` conforms; a snake_case `def` name would FAIL. The companion
       `theorem` may use underscores — C26 scopes to `def`/`abbrev`.
-- [ ] Docstring on the `def` carries **every qualifier**: frame class `FrameClass.ZTime`; the
+- [x] Docstring on the `def` carries **every qualifier**: frame class `FrameClass.ZTime`; the
       object language is `Formula`, which has **no stability operator** (the box-dot belongs to
       `PlusFormula`); premises are **empty** (`[]`).
-- [ ] Docstring records that this closes **decidability of provability over ℤ — one of the four
+- [x] Docstring records that this closes **decidability of provability over ℤ — one of the four
       frame-class deliverables the tableau spine was to supply — without the spine**, and that the
       other three (`Base`, `Dense`, `RTime`) remain owed by the spine's completeness direction.
       Cite these three verified durable anchors and **no task number**:
@@ -174,18 +174,18 @@ compiles on its own.
         vacuous" in `FormalSystem/Metalogic/Decidability/Correctness.lean`;
       - the Status section of `FormalSystem/Metalogic/Decidability.lean`, which records the
         four-frame-class `Decidable (⊨ φ)` instances as open.
-- [ ] Docstring carries `Paper: —` **plus a reason**, for C15. Mirror the wording the compression
+- [x] Docstring carries `Paper: —` **plus a reason**, for C15. Mirror the wording the compression
       assembly module already uses on its two pinned declarations ("formalization-native; the
       paper's commented-out decidability corollary carries no live label, and states nothing about
       the witness-family route").
-- [ ] Never write "TM is decidable" unqualified. Land **no** complexity claim: point at the
+- [x] Never write "TM is decidable" unqualified. Land **no** complexity claim: point at the
       compression assembly module's own header for the cost statement and its literature source
       rather than restating any bound.
-- [ ] If an axiom-audit note is included, put it **inside a `/-! … -/` block**, as the completeness
+- [x] If an axiom-audit note is included, put it **inside a `/-! … -/` block**, as the completeness
       and compression assembly modules do. A live `#print axioms` in library code fails C27, and
       neither of those files has a debug-artifact allowlist entry — their audit lines survive only
       because C27 masks docstring regions.
-- [ ] No task-number citation anywhere in the file (C9, and
+- [x] No task-number citation anywhere in the file (C9, and
       `.claude/rules/no-task-references-in-deliverables.md`).
 
 **Timing**: 0.75 hours
@@ -223,25 +223,30 @@ the +2 import-weight measurement in Phase 2 was computed against exactly these t
 
 ---
 
-### Phase 2: Wire the module into the library root and the metalogic aggregator [NOT STARTED]
+### Phase 2: Wire the module into the library root and the metalogic aggregator [COMPLETED]
 
 **Goal**: The new module is reachable from `FormalSystem.lean` in correct sorted position and
 re-exported by `FormalSystem/Metalogic.lean`, with no cycle and no import-weight regression.
 
 **Tasks**:
 
-- [ ] Insert `import FormalSystem.Metalogic.ZTimeProvability` into `FormalSystem.lean` in
+- [x] Insert `import FormalSystem.Metalogic.ZTimeProvability` into `FormalSystem.lean` in
       code-point-sorted position: **immediately after** the weak-canonical truth-lemma import and
       **immediately before** the first minus-language import. (`Metalogic.W…` < `Metalogic.Z…` <
       `MinusLanguage`.) C33 requires the file be byte-for-byte the generated root, one sorted
       import line per `.lean` under the library directory.
-- [ ] Append `import FormalSystem.Metalogic.ZTimeProvability` to `FormalSystem/Metalogic.lean`'s
-      re-export list. That list is a hand-maintained convenience block and is **not**
+- [x] Append `import FormalSystem.Metalogic.ZTimeProvability` to `FormalSystem/Metalogic.lean`'s
+      re-export list. *(deviation: altered — two further machine-generated artifact sets
+      had to be regenerated in the same change set, because adding a `.lean` file under
+      `FormalSystem/` invalidates them and the pre-commit gate refuses the commit otherwise: the
+      three README inventory blocks via `check-module-invariants.sh --emit-inventory`, and
+      `typst/generated/status.typ` via `typst-sync-check.sh --fix`. Phases 1 and 2 are therefore
+      one commit rather than two.)* That list is a hand-maintained convenience block and is **not**
       alphabetically sorted — append at the end of the block rather than forcing a sort.
-- [ ] **Do not** add a SORRY-FREE bullet to the metalogic aggregator's module docstring unless the
+- [x] **Do not** add a SORRY-FREE bullet to the metalogic aggregator's module docstring unless the
       Phase 4 C14 pair pins its subject. The gate script's own comment makes an unpinned SORRY-FREE
       bullet exactly the drift the C14 second block exists to catch.
-- [ ] Confirm the import addition is cycle-free in fact, not only in the report: neither the
+- [x] Confirm the import addition is cycle-free in fact, not only in the report: neither the
       soundness module nor the BX-canonical completeness module transitively imports anything under
       the decidability subtree, and the importers of `FormalSystem.Metalogic` (the main-results
       module, the walkthrough example, and the library root) are imported by neither leg.
