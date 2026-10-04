@@ -544,7 +544,7 @@ transcription-risk spots. Confirm the span by reading the probe; confirm the hyp
 
 ---
 
-### Phase 4: The fragment twins, and the agreement with the finite-width witness [NOT STARTED]
+### Phase 4: The fragment twins, and the agreement with the finite-width witness [COMPLETED]
 
 **Goal**: the `⊡`-bearing CTL-like fragment fails the same way, with `θ'` shared rather than
 copied.
