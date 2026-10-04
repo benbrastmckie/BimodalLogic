@@ -1,5 +1,5 @@
 ---
-next_project_number: 730
+next_project_number: 732
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 730
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,711,712,713,714,716,720,722,723,725,726,728,729 | -- | algebraic-representation, categorical-structure, code-quality, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,711,712,713,714,716,720,722,723,725,726,728,729,730,731 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,724 | 298,464,502,616,723 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -23,6 +23,11 @@ next_project_number: 730
 | 10 | 177 | 178,282,296,481,482,543 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
+
+### Agent System
+
+730 [NOT STARTED] — Evaluate whether the formal:logic implement-phase routing...
+731 [NOT STARTED] — Make plan-time filescope harvest include the generated...
 
 ### Algebraic Representation
 
@@ -109,6 +114,44 @@ next_project_number: 730
 729 [NOT STARTED] — Add purpose-written .title fields to specs/state.json's...
 
 ## Tasks
+
+### 731. Harvest generated surfaces into file scope
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Make plan-time file_scope harvest include the generated surfaces that any .lean edit forces, so they stop recurring as undeclared scope extensions.
+
+EVIDENCE: THE SAME OMISSION TWICE, IN CONSECUTIVE TASKS. Two completed tasks independently hit the identical problem. The first recorded the `typst/generated/status.typ` regeneration as an undeclared scope extension after the pre-commit `typst-sync-check.sh --counts-only` gate refused a commit touching a `.lean` file without it. The second, forewarned, named `status.typ` in its own plan's file list — and then hit the *other* generated surface: `check-module-invariants.sh`'s INV check failed because its line additions shifted the generated inventory blocks in `FormalSystem/Metalogic/README.md` and the root `README.md`, neither of which was in its declared file_scope. It root-caused this with disposable `git worktree` bisection, regenerated via `--emit-inventory`, and declared a scope extension. The orchestrator's own postflight independently flagged the same two files: `ADVISORY: task reported modified_files outside its declared file_scope: ["FormalSystem/Metalogic/README.md","README.md"]`.
+
+THE PATTERN. These are not planning oversights to be fixed by reminding planners harder. They are mechanically derivable consequences of editing any `.lean` file: the line-count and byte-count tables in the two READMEs, and `typst/generated/status.typ`, are all generated artifacts whose content is a function of the Lean sources. Any plan that touches a `.lean` file will need them, every time, and a plan that omits them produces either a blocked pre-commit gate or a red INV check mid-implementation.
+
+SCOPE. (1) Identify the complete set of generated/derived surfaces that a `.lean` edit forces — at minimum `typst/generated/status.typ` and the inventory blocks in `FormalSystem/Metalogic/README.md` and root `README.md`; check for others by reading the generators (`check-module-invariants.sh --emit-inventory`, `typst-sync-check.sh`) rather than by enumerating from memory. (2) Decide the mechanism: extend `plan-file-scope-harvest.sh` to append these surfaces automatically whenever the harvested scope contains any `.lean` path, or add a plan-template checklist item, or both. Prefer the mechanical option, since the checklist has now been tried once and did not prevent the second occurrence. (3) Ensure the addition is conditional on the repo actually having these generators, so the change does not break sibling repos that lack them. (4) Verify against the two completed tasks' plans: re-running the harvest on them should now produce the surfaces they had to add by hand.
+
+NON-GOALS: no change to the generators themselves or to what they emit; no change to the pre-commit gate's behavior (it is correctly refusing the commit — the plan's declaration is what is incomplete); no retroactive edit to already-completed tasks' file_scope.
+
+---
+
+### 730. Formal logic implement routing lean capable agent
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Evaluate whether the formal:logic implement-phase routing should resolve to a Lean-capable agent when the plan touches .lean files.
+
+EVIDENCE. The formal extension's manifest declares, explicitly and not as a fallback, `routing_agents.implement["formal:logic"] = "general-implementation-agent"` (confirmed by `command-route-agent.sh implement formal:logic`, which resolves `via=noncore-exact`). The task_type `formal:logic` therefore never reaches `lean-implementation-agent`, which the lean extension reserves for `lean4`, `lean4:lake` and `lean4:version`. A formal:logic task whose work is substantially Lean runs without the lean-lsp MCP path, the Lean-specific implementation contracts, and the lake build guidance that a lean4-typed task receives.
+
+OBSERVED CASE. A completed formal:logic task ran its implement phase under general-implementation-agent across seven files, four of them requiring new Lean theorems in `FormalSystem/Metalogic/Decidability/PlusWitnessFamily/Incompleteness.lean`, a `#print axioms` baseline probe in `scripts/check-module-invariants.sh`, scoped and full `lake build` runs, and `lake build BimodalTest`. It completed successfully, so this is a potential improvement rather than a defect report — but it did the Lean work without Lean tooling.
+
+FRAME THIS AS AN EVALUATION, NOT A PREDETERMINED CHANGE. `formal:logic` legitimately covers modal-logic research, proof theory and Kripke-semantics work that touches no Lean at all; the research phase already routes it to `logic-research-agent` rather than `lean-research-agent` for exactly that reason. A blanket reroute of the implement phase to `lean-implementation-agent` would therefore be wrong for part of the population. The question to answer is whether routing should become conditional on the plan's harvested `file_scope` containing `.lean` paths, and if so, where that conditional belongs: in the manifest schema (which today maps task_type to agent name with no predicate), in `command-route-agent.sh`, or in the orchestrator's dispatch composition.
+
+SCOPE. (1) Determine how many non-terminal and recently-completed formal / formal:logic / formal:math / formal:physics tasks declare or harvest `.lean` paths in file_scope, to size the affected population rather than generalizing from one case. (2) Decide among: leave as is and document the rationale; reroute formal:logic wholesale; or introduce a file_scope-conditional routing predicate. (3) If a conditional is chosen, specify where it lives and what it does when file_scope is absent (29 non-terminal tasks currently have no file_scope key at all, so the predicate must have a defined behavior for the unknown case, and must not silently pick the heavier agent on no evidence). (4) Apply the resulting decision in the SOURCE STORE (`~/.config/nvim/agent-system/extensions/formal/manifest.json` or the routing library), never by hand-patching the deployed `.claude/` tree, then redeploy via `deploy-headless.sh`.
+
+NON-GOALS: no change to research-phase or plan-phase routing, both of which are working as intended; no change to the lean extension's own `lean4*` routing; no new agent definitions.
+
+---
 
 ### 729. State json title fields for todo readability
 - **Status**: [NOT STARTED]
