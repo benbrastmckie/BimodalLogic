@@ -1,17 +1,30 @@
 {
-  "status": "researched",
-  "dispatch_seq": 4,
+  "status": "planned",
+  "dispatch_seq": 5,
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/724_decidable_ztime_provability_witness_family_corollary/reports/01_decidable-ztime-provability-corollary.md",
-      "summary": "All three composing declarations re-verified by #check and the full corollary compiled sorry-free in situ (axioms [propext, Classical.choice, Quot.sound]); confirmed unwritten; import-graph measurement rejects the dispatch's suggested placement (+331 net-new imports) in favour of FormalSystem/Metalogic/ZTimeProvability.lean (+2); full C8/C9/C14/C15/C17/C23/C24/C26/C27/C33/C37 gate obligation map plus C9-compliant docstring anchors replacing the forbidden task-number citation."
+      "type": "plan",
+      "path": "specs/724_decidable_ztime_provability_witness_family_corollary/plans/01_decidable-ztime-provability-corollary.md",
+      "summary": "Five-phase, 3-hour plan landing Decidable (Derivable FrameClass.ZTime [] phi) at FormalSystem/Metalogic/ZTimeProvability.lean with import wiring, theorem-index row, C14 matched pair, and a build-backed full gate run."
     }
   ],
+  "phase_count": 5,
+  "estimated_hours": 3,
+  "dependency_waves": [[1], [2, 3, 4], [5]],
+  "memory_candidates": [
+    {
+      "content": "Module placement in a large Lean library is an import-weight decision, not a taxonomy decision, and it should be measured before writing. When a corollary composes declarations from two previously disjoint subtrees, computing each candidate host aggregator's net-new transitive import count separates options that differ by two orders of magnitude: placing a Z-time provability corollary inside the witness-family compression subtree cost +331 net-new transitive imports into an 84-module file and +318 into two downstream aggregators, while placing it in the metalogic directory (which already imported both legs' roots) cost +2, both of which were already in the library-root closure, leaving repository-wide build cost unchanged. The procedure: parse every import line under the library root, compute transitive closures, tabulate net-new modules per candidate host aggregator, and check knock-on hosts such as a separate tooling split that imports one of the candidates. Two standing constraints interact with the result: a generated library root must stay byte-exact against its sorted-import generator, and the aggregator convention requires X.lean beside X/. A suggested placement in a task description is a hypothesis to measure, not an instruction to follow; cycle-freedom is a separate and often easier question than import weight.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/724_decidable_ztime_provability_witness_family_corollary/plans/01_decidable-ztime-provability-corollary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["lean", "module-placement", "import-weight", "transitive-imports", "aggregator", "build-cost"]
+    }
+  ],
+  "next_steps": "Run /implement 724 to execute the plan",
   "metadata": {
     "session_id": "sess_1791133434_0cdaa6_724",
-    "agent_type": "lean-research-agent",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   }
 }

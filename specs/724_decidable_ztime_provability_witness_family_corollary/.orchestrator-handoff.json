@@ -1,0 +1,16 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 5,
+  "summary": "Five-phase plan for the Z-time provability corollary: new module at FormalSystem/Metalogic/ZTimeProvability.lean (not the dispatch's compression-subtree suggestion, on the research report's measured +2-vs-+331 net-new-import evidence), import wiring, theorem-index row, C14 matched pair plus adjacent comment reconciliation, and a build-backed full gate run.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/724_decidable_ztime_provability_witness_family_corollary/plans/01_decidable-ztime-provability-corollary.md",
+      "summary": "5 phases, 3 hours, 3 dependency waves; carries the Lean Challenge Statements block for derivable_iff_validZTime and decidableDerivableZTime and the full C8/C9/C14/C15/C17/C23/C24/C26/C27/C33/C37 obligation map."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 5,
+  "blockers": []
+}
