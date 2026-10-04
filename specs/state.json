@@ -521,9 +521,18 @@
           "path": "specs/705_trans_reflexivity_residual_collapse/plans/01_trans-refl-retention-and-residual-record.md",
           "type": "plan",
           "summary": "5-phase implementation plan, waves [[1],[2,4],[3],[5]], 7 files in harvested file_scope."
+        },
+        {
+          "path": "specs/705_trans_reflexivity_residual_collapse/summaries/01_trans-refl-retention-and-residual-record-summary.md",
+          "type": "summary",
+          "summary": "Full implementation summary with Plan Deviations covering the C2 confirmation and the INV root-cause finding"
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "completion_summary": "Landed the four label-level residual congruence theorems (untl_trans_congr, snce_trans_congr, untl_common_succ_congr, snce_common_pred_congr) in PlusWitnessFamily/Incompleteness.lean, pinned them in the C2 axiom baseline (confirmed pcq, no correction needed), gave them theorem-index ledger rows, and recorded the RETAIN-trans_refl decision across three prose surfaces and the field's own docstring. Also corrected a self-caused generated-inventory staleness in two READMEs, root-caused via disposable git-worktree checkouts rather than assumed. Full gate set (lake build, lake build BimodalTest, check-module-invariants.sh, --emit-inventory --check, typst-sync-check.sh) reports clean.",
+      "roadmap_items": [
+        "Record the `trans_refl` verdict: RETAIN — roughly 87 term-level sites across 18 files need the self-step. Land the label-level congruences that are the bounded residual"
+      ]
     },
     {
       "project_number": 664,
