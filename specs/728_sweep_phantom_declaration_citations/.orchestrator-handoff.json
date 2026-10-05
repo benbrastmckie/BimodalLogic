@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "phases_completed": 0,
+  "phases_total": 6,
+  "summary": "Planned the residual work for the phantom-declaration-citation sweep. The research dispatch had already performed and committed the full named sweep (commit 3bfb970e4: eleven instances re-verified, two repaired, three FormalSystem READMEs and docs/reference/paper-definitions-of-record.md fixed, six state.json descriptions repaired, and scripts/check-phantom-citations.sh landed), so the plan covers only what genuinely remains: verifying the landed repairs, triaging the checker's 105 current findings into four decided classes, repairing the genuine phantom citations in docs/, and absorbing the non-defect findings into the checker's allowlists. Six phases across four dependency waves, 7.5 hours; the file_scope validate-state.sh flag and the lean4 context pointer are recorded Non-Goals because this tree has no resolvable .claude source store.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/728_sweep_phantom_declaration_citations/plans/01_phantom-citation-residual-triage.md",
+      "summary": "Six-phase residual plan: verify landed sweep, triage 105 checker findings, repair genuine phantom docs/ citations, absorb non-defects into checker allowlists."
+    }
+  ],
+  "dispatch_seq": 6
+}

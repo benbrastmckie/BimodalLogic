@@ -49,7 +49,7 @@ next_project_number: 732
 
 ### Code Quality
 
-728 [PLANNING] — Sweep and repair phantom declaration citations across task...
+728 [PLANNED] — Sweep and repair phantom declaration citations across task...
 
 ### Dataset Enhancement
 
@@ -170,11 +170,12 @@ Effort: small-to-medium, mostly editorial judgment rather than code.
 ---
 
 ### 728. Sweep phantom declaration citations
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: code-quality
 - **Dependencies**: None
 - **Research**: [728_sweep_phantom_declaration_citations/reports/01_phantom-citation-sweep.md]
+- **Plan**: [728_sweep_phantom_declaration_citations/plans/01_phantom-citation-residual-triage.md]
 
 **Description**: Sweep and repair phantom declaration citations across task records and prose
 
