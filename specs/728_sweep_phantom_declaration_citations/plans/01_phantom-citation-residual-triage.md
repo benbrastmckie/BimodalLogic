@@ -355,18 +355,19 @@ out to be under five, fold the remainder of its budget into Phase 4 rather than 
 
 ---
 
-### Phase 4: Repair phantom citations across the remaining docs files [NOT STARTED]
+### Phase 4: Repair phantom citations across the remaining docs files [COMPLETED]
 
 **Goal**: Repair every ledger-`PHANTOM` citation in the `docs/` files not owned by Phase 3 —
 the long tail of architecture ADRs, reference pages, project-info pages and user-guide pages.
 
 **Tasks**:
 
-- [ ] Re-read each file immediately before editing it.
-- [ ] Work the ledger rows owned by this phase in file order, applying the same three-way choice
+- [x] Re-read each file immediately before editing it. *(done for each of the five files edited)*
+- [x] Work the ledger rows owned by this phase in file order, applying the same three-way choice
       (correct / restate as absent / strike) and the same annotate-don't-delete discipline as
-      Phase 3.
-- [ ] Give particular care to the frame-class and validity families, which the research report
+      Phase 3. *(completed: 6 genuine PHANTOM repairs across 5 files — see ledger "Phase 4 Repair
+      Log")*
+- [x] Give particular care to the frame-class and validity families, which the research report
       identified as the live propagation vector: `FrameClass.Dedekind`, `FrameClass.Discrete`,
       `soundness_dedekind`, `soundness_discrete`, `ValidDedekind`, `TaskFrame.ValidOn`,
       `TaskFrame.IsDiscrete`, `TaskFrame.IsComplete`, `TaskFrame.IsSuccArchDiscrete`,
@@ -375,13 +376,35 @@ the long tail of architecture ADRs, reference pages, project-info pages and user
       `inductive FrameClass` in `FormalSystem/ProofSystem/Axioms.lean` and the live
       `StrongCompleteness.lean` declarations, exactly as the research dispatch did for the three
       `README.md` files — do not carry a name forward on the strength of the text citing it.
-- [ ] For the two long `PlusSlicedCertificate.FiniteCarrier.*` citations
+      *(completed: of this whole list, only `consequence_completeness` and
+      `Semantics.Validity.valid_at_world` were genuine PHANTOM and repaired; `FrameClass.Dedekind`/
+      `Discrete`, `soundness_dedekind`/`discrete`, `ValidDedekind` were already correctly
+      documented as renamed in NAMING_CONVENTION_DEVIATION.md; `TaskFrame.ValidOn`/`IsDiscrete`/
+      `IsComplete` turned out to be real, qualified citations the checker's own detection gap had
+      misreported — fixed structurally in Phase 2, not ledgered PHANTOM; `valid_iff_allClosed`/
+      `validity_decidable`/`validity_has_decision_procedure` were already correctly documented in
+      ADR-007 as OPEN/RETIRED, not live claims; `TaskFrame.IsSuccArchDiscrete` is part of the same
+      already-accurate NAMING_CONVENTION_DEVIATION.md rename record)*
+- [x] For the two long `PlusSlicedCertificate.FiniteCarrier.*` citations
       (`no_finite_carrier_sat'`, `not_plusValidZTime_neg_θ'`), determine whether the citing prose
       is asserting a landed declaration or naming a not-yet-landed target of a live task, and
-      restate accordingly rather than striking.
-- [ ] Add no task-number references to any `docs/` file.
-- [ ] Re-run the checker and confirm each repaired name dropped out.
-- [ ] Commit per green sub-step, explicit file lists only.
+      restate accordingly rather than striking. *(completed: both are landed, real theorems —
+      `theorem no_finite_carrier_sat'`/`not_plusValidZTime_neg_θ'` in
+      `PlusSlicedCertificate/Limits/FiniteCarrier.lean`. The citing prose in theorem-index.md
+      already correctly asserts them as landed; the checker's pre-fix trailing-`\b` bug was the
+      only reason they ever appeared as findings — fixed in Phase 2, no docs edit needed.)*
+- [x] Add no task-number references to any `docs/` file. *(confirmed: none of the five edits
+      references a task number — pre-edit-gate hook would have blocked it)*
+- [x] Re-run the checker and confirm each repaired name dropped out. *(completed: `_dedekind`,
+      `_discrete`, `consequence_completeness`, `temp_k_dist` fully dropped out — corrected to the
+      live name with no old name left backticked. `modal_4_derivable`, `modal_b_derivable`,
+      `necessitation_from_modal_k`, `not_setConsistent_of_setDerivable_bot`,
+      `Semantics.Validity.valid_at_world` still appear, by design — the annotate-don't-delete
+      repair keeps the now-corrected-but-still-absent old name backticked for traceability, so the
+      checker (which flags any backticked absent name regardless of surrounding context) still
+      reports it. These five join the ALLOWLIST in Phase 5 with a "post-repair, correctly
+      annotated as absent" justification — see ledger.)*
+- [x] Commit per green sub-step, explicit file lists only. *(committed below)*
 
 **Timing**: 1.5 hours
 

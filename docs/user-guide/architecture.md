@@ -155,7 +155,7 @@ These rules apply □ or F to the *entire context*, not just the conclusion. Thi
 - **Necessitation** (`⊢ φ` implies `⊢ □φ`): Derivable from MK with empty context (since `[].map box = []`)
 - **Modal K Distribution** (`□(φ → ψ) → (□φ → □ψ)`): Derivable from MK + deduction theorem
 
-The LEAN implementation includes both necessitation (as a constructor) and modal_k_dist (as an axiom) for convenience, but both are formally derivable from MK. This is documented in `Derivation.lean` with the `necessitation_from_modal_k` theorem.
+The LEAN implementation includes both necessitation (as a `DerivationTree.necessitation` constructor, `ProofSystem/Derivation.lean`) and `modal_k_dist` (as an axiom constructor, `ProofSystem/Axioms.lean`). **Re-verified**: necessitation is primitive in this tree, not a theorem derived from MK -- no `necessitation_from_modal_k` declaration exists anywhere in `FormalSystem/`. The paragraph above (that `⊢ φ` implies `⊢ □φ` is "derivable from MK with empty context") describes a mathematical fact about the logic, not a claim that this tree proves it as a named corollary of `modal_k_dist`; the constructor is simply taken as primitive instead.
 
 #### Layer 1 Axiom System TM (Tense and Modality)
 
@@ -840,7 +840,7 @@ distinction between consequence completeness and *strong* completeness is made p
 | `SetConsistent` | `Core/MaximalConsistent.lean` | Consistency of a possibly-infinite set, **finitary**: no finite sublist derives `⊥` |
 | `SetMaximalConsistent` | `Core/MaximalConsistent.lean` | Maximality of such a set |
 | `set_lindenbaum` | `Core/MaximalConsistent.lean` | Every `SetConsistent` set extends to a `SetMaximalConsistent` one |
-| `not_setConsistent_of_setDerivable_bot` | `SetConsequence.lean` | The bridge from set-derivability of `⊥` back to inconsistency |
+| `SetConsistent.bot_not_mem` | `Core/MCSProperties.lean` | The bridge from set-derivability of `⊥` back to inconsistency (re-verified: no `not_setConsistent_of_setDerivable_bot` declaration exists in `SetConsequence.lean` or elsewhere; this is the live declaration closest to the stated role) |
 | `SatisfiableSet` | `SetConsequence.lean` | Satisfiability of a premise set over the frames of a class -- the `FrameClass`-indexed primitive |
 | `ModelExistence` | `SetConsequence.lean` | Finite satisfiability lifts to satisfiability, at a class |
 | `Compact` | `SetConsequence.lean` | Semantic compactness of a class's consequence relation |

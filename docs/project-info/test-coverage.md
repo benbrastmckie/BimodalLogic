@@ -102,7 +102,10 @@ Top 20 uncovered definitions that may benefit from direct tests:
 15. `Metalogic.SoundnessLemmas.valid_at_triple`
 16. `Semantics.Truth.truth_at_imp`
 17. `Semantics.Truth.truth_at_box`
-18. `Semantics.Validity.valid_at_world`
+18. ~~`Semantics.Validity.valid_at_world`~~ -- re-verified 2026-10-05: no declaration of this name
+    exists anywhere in `FormalSystem/`, under any namespace. Consistent with the staleness this
+    report already discloses above; struck rather than replaced, since no single live declaration
+    is clearly what this entry meant
 19. `Theorems.Propositional.impTrans`
 20. `Theorems.Propositional.double_neg`
 

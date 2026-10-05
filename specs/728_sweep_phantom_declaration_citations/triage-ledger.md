@@ -197,6 +197,52 @@ findings are correctly disposed.
   `not_setConsistent_of_setDerivable_bot`
 - `docs/project-info/test-coverage.md` — `Semantics.Validity.valid_at_world`
 
+## Phase 4 Repair Log
+
+- `docs/reference/operators.md` — `consequence_completeness` corrected to the four per-class
+  names. Verified: `grep` confirms `consequence_completeness_base`/`_rtime` are real theorems in
+  `StrongCompleteness.lean`. Re-run: finding dropped.
+- `docs/reference/API_REFERENCE.md` — three repairs in one pass: (1) `temp_k_dist` corrected to
+  `temporalKDistDerived`; (2) the `minus_soundness_dense`/`_discrete`/`_dedekind` row's stale
+  suffixes corrected to `_dense`/`_ztime`/`_rtime`; (3) a second, previously-unticketed stale-suffix
+  instance found in the same file in the `minus_not_derivable_nil_bot` row (`_discrete` ->
+  `_ztime`) — caught only because the checker re-run after the first pass still showed
+  `_discrete` as a finding, which traced to this second occurrence the initial read had not
+  surfaced. A first version of this repair also transiently re-triggered two of its own fixed
+  findings (`consequence_completeness`, `temp_k_dist`) by backticking the bare name again while
+  explaining its absence — fixed by rephrasing without a bare backtick, confirmed by a third
+  checker re-run. Final count after this file: 86 (down from 90 before Phase 4; `soundness_dedekind`/
+  `soundness_discrete` still present, as expected — those are the ALREADY-ACCURATE
+  NAMING_CONVENTION_DEVIATION.md rows, untouched).
+- `docs/project-info/tactic-registry.md` — the "Registered Rules: Safe Rules" subsection
+  corrected: it presented `modal_4_derivable`/`modal_b_derivable` as currently-active Aesop
+  safe rules, directly contradicting the "Retired" note on the `TMLogic` rule set one paragraph
+  above (an internal inconsistency this plan did not previously catch). Restated as a
+  "Would-be Safe Rules" list, factually noting neither name was ever built and pointing to the
+  live underlying facts (`DerivedAxioms.modal4`/`.modalB`). `modal_t_valid` confirmed real and
+  kept, with its unregistered status now stated accurately too.
+- `docs/user-guide/architecture.md` — two repairs: (1) `necessitation_from_modal_k` struck;
+  restated that necessitation is a primitive `DerivationTree` constructor, not a derived theorem
+  (the paragraph's own prior sentence already said "as a constructor", directly contradicting the
+  struck claim two sentences later); (2) `not_setConsistent_of_setDerivable_bot` corrected to
+  `SetConsistent.bot_not_mem` (`Core/MCSProperties.lean`), the live declaration closest to the
+  stated bridging role, with the wrong name kept annotated for traceability per the
+  annotate-don't-delete practice.
+- `docs/project-info/test-coverage.md` — `Semantics.Validity.valid_at_world` struck (list format,
+  `~~name~~`) with a dated re-verification note; this report already carries a file-level
+  "Superseded... stale" banner, so the strike is additive to an already-disclosed staleness, not
+  a new admission.
+
+**Annotate-don't-delete leaves the old name backticked, so the checker still flags it.** All five
+repairs above keep the now-corrected-but-wrong name visible in the prose (per the plan's
+over-correction mitigation: "annotate the correction rather than silently deleting the sentence").
+The checker necessarily still reports these five as findings post-repair — it flags any backticked
+absent name regardless of surrounding context. This is the same shape as the already-accurate
+ADR-007 trio and `MinusValidComplete`: the PROSE is now correct; the finding is closed by
+ALLOWLIST in Phase 5, not by driving the raw count to zero for these five names. Re-run after all
+six Phase 4 repairs: 86 findings (unchanged from the post-operators.md/API_REFERENCE.md count,
+since the remaining five keep their old name backticked by design).
+
 ## Phase 5 Territory (confirmed)
 
 `scripts/check-phantom-citations.sh` is the only file touched for absorption. ALLOWLIST additions

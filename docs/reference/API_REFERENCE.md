@@ -346,8 +346,10 @@ paper-key cross-references.
 **Temporal Axioms**: the primitive basis is Burgess-Xu Until/Since (`left_mono_until_G`,
 `right_mono_until`, `connect_future`, `enrichment_until`, `self_accum_until`, `absorb_until`,
 `linear_until`, `until_F`, `temp_linearity`, `F_until_equiv`, `serial_future`), not a G/H/F/P
-axiom basis — `temp_k_dist` (TK) and `temp_4` (T4) are **derived theorems**
-(`Theorems/TemporalDerived.lean`), not axioms. See
+axiom basis — TK and T4 are **derived theorems** (`temporalKDistDerived` and `temporal4Derived`
+respectively, `Theorems/TemporalDerived.lean`), not axioms. (The paper-key labels TK/T4 appear in
+that file's section headings and docstrings as plain text, not as the declaration names
+themselves.) See
 [axiom-reference.md](axiom-reference.md#paper-key-correspondence-bx-temporal-group) for the full
 paper-key-to-constructor correspondence table, which supersedes any G/H/F/P-basis description of
 this layer.
@@ -913,8 +915,8 @@ directional; the converse edge is permitted and is what these three modules use:
 |--------|--------------|
 | `truthAt_tr` | `TruthAt M τ t (tr φ) ↔ MinusTruthAt M τ t φ` |
 | `minus_soundness` | A BL derivation at `FrameClass.Base` makes its conclusion true wherever its context is |
-| `minus_soundness_dense` / `_discrete` / `_dedekind` | The same at the three extensions; the RTime one carries `ValidRTime`'s binder set |
-| `minus_not_derivable_nil_bot` / `_discrete` | BL is consistent at `FrameClass.Base` and `FrameClass.ZTime` |
+| `minus_soundness_dense`, `minus_soundness_ztime`, `minus_soundness_rtime` | The same at the three extensions (the tag suffixes follow the frame-class tag renaming described in [NAMING_CONVENTION_DEVIATION.md](../development/NAMING_CONVENTION_DEVIATION.md)); the RTime one carries `ValidRTime`'s binder set |
+| `minus_not_derivable_nil_bot`, `minus_not_derivable_nil_bot_ztime` | BL is consistent at `FrameClass.Base` and `FrameClass.ZTime` |
 
 All are sorry-free at `[propext, Classical.choice, Quot.sound]`. They are obtained by composing
 `Conservativity.translate` with `Metalogic/Soundness.lean`'s four theorems and crossing

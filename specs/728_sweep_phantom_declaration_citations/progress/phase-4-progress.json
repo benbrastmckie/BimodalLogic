@@ -1,0 +1,19 @@
+{
+  "phase": 4,
+  "phase_name": "Repair phantom citations across the remaining docs files",
+  "started_at": "2026-10-05T18:55:00Z",
+  "last_updated": "2026-10-05T19:40:00Z",
+  "objectives": [
+    {"id": 1, "description": "Repair consequence_completeness in operators.md", "status": "done", "files_touched": ["docs/reference/operators.md"]},
+    {"id": 2, "description": "Repair _dedekind/_discrete/temp_k_dist in API_REFERENCE.md", "status": "done", "files_touched": ["docs/reference/API_REFERENCE.md"]},
+    {"id": 3, "description": "Repair modal_4_derivable/modal_b_derivable in tactic-registry.md", "status": "done", "files_touched": ["docs/project-info/tactic-registry.md"]},
+    {"id": 4, "description": "Repair necessitation_from_modal_k and not_setConsistent_of_setDerivable_bot in architecture.md", "status": "done", "files_touched": ["docs/user-guide/architecture.md"]},
+    {"id": 5, "description": "Repair Semantics.Validity.valid_at_world in test-coverage.md", "status": "done", "files_touched": ["docs/project-info/test-coverage.md"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [
+    {"approach": "backtick the bare absent name while explaining its absence in operators.md/API_REFERENCE.md", "result": "failed", "reason": "re-triggered the same finding; fixed by rephrasing without a bare backtick for names being fully replaced"}
+  ],
+  "handoff_count": 0,
+  "deviations": []
+}

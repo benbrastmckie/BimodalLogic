@@ -60,10 +60,17 @@ tactics; `modal_search` (below) subsumes this role.
 
 ### Registered Rules
 
-**Safe Rules** (always apply):
-- `modal_t_valid` - Modal T axiom validity
-- `modal_4_derivable` - Modal 4 axiom derivability
-- `modal_b_derivable` - Modal B axiom derivability
+**CORRECTION**: this subsection's "Safe Rules" were never actually registered as Aesop rules —
+the `TMLogic` rule set immediately above was retired for having no working call site, so nothing
+listed here was ever reachable through Aesop. Re-verified: `modal_t_valid` is a real, landed
+theorem (`FormalSystem/Metalogic/Soundness.lean`), but `modal_4_derivable` and `modal_b_derivable`
+were never built under any name — not landed, not in `Boneyard/`. The underlying facts they would
+have wrapped are live as `FormalSystem.ProofSystem.DerivedAxioms.modal4` and `.modalB`.
+
+**Would-be Safe Rules** (aspirational; none of these is Aesop-registered today):
+- `modal_t_valid` - Modal T axiom validity (real theorem, unregistered)
+- Modal 4 / Modal B axiom derivability - never built as named theorems; the facts exist as
+  `DerivedAxioms.modal4` / `DerivedAxioms.modalB`
 - `perpetuity1` through `perpetuity6` - Perpetuity principles: theorems fully proven
   (sorry-free), not yet registered as Aesop safe rules (📋 Planned integration)
 

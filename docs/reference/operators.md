@@ -269,8 +269,10 @@ Semantic consequence relation - expresses validity in task frame models.
 **Semantics**: Based on task frame structures with world histories and time domains
 **See also**: [⊢ (provability)](#-turnstile--provability)
 **Completeness**: available in the **finite-context** form only. `Context` is `List Formula`,
-so `consequence_completeness` (`FormalSystem/Metalogic/StrongCompleteness.lean`) is
-inter-derivable with weak completeness through the deduction theorem. The unqualified
+so the per-class `consequence_completeness_base`, `consequence_completeness_dense`,
+`consequence_completeness_ztime`, `consequence_completeness_rtime` family
+(`FormalSystem/Metalogic/StrongCompleteness.lean` -- there is no class-independent declaration of
+that name) is inter-derivable with weak completeness through the deduction theorem. The unqualified
 arbitrary-`Γ` reading -- *strong* completeness over a possibly-infinite `Γ : Set Formula` -- is
 **not** available uniformly: it is machine-refuted for ZTime, open for Base and Dense, and
 outside the primary source's scope for RTime. See
