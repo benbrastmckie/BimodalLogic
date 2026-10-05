@@ -1,21 +1,25 @@
 # Roadmap
 
-*Open work only, derived from `specs/state.json` (2026-10-04). Completed work is recorded in
+*Open work only, derived from `specs/state.json` (2026-10-05). Completed work is recorded in
 `specs/CHANGE_LOG.md` and `specs/archive/`; reference material — the BX axiom layers, the
 irreflexive truth semantics, the canonical-model and quasimodel constructions — lives in
 `README.md`, the module docstrings and `typst/BimodalReference.typ`. Each phase below is one or
 more `/orchestrate` batches. Phase numbers are stable identifiers cited from task records, so
 they are not a run order; the priority on each heading is.*
 
+**The programme's aim is `Decidable (PlusValidZTime φ)` — decidability of L⁺ over discrete time.**
+Phase 1 is that front and owns it end to end. Everything else is subordinate to it.
+
 Contended files force several phases to run as sequences rather than one batch — a batch whose
 members share a declared file is deferred every cycle by the admission gate
 (`.claude/context/patterns/batch-orchestration-guardrails.md`). Live collisions:
-`docs/theorem-index.md` and `scripts/check-module-invariants.sh` (726's re-runnable inventory
-against 728's citation checker), `README.md` (177, 543), `MintBound.lean` (464, 465),
-`data/README.md` (282, 257). Two more
-are invisible to the gate: every task adding a module needs a line in the aggregator
+`scripts/check-evidence-probes.sh` and `specs/evidence/seam-gluing-ray-product/` (720, 725, 732,
+733, 734 — five writers, so Phase 1's probes run singly), `README.md` (177, 543),
+`MintBound.lean` (464, 465), `data/README.md` (282, 257). Two more are invisible to the gate:
+every task adding a module needs a line in the aggregator
 `FormalSystem/Semantics/Presheaf.lean`, and every one of them regenerates `FormalSystem.lean` and
-the READMEs via `lake exe mk_all` and `--emit-inventory`.
+the READMEs via `lake exe mk_all` and `--emit-inventory`. A task with no declared `file_scope` is
+invisible to the gate as well — 27 of 51 non-terminal tasks, which `validate-state.sh` reports.
 
 ---
 
@@ -37,47 +41,71 @@ and 713 are recorded in those task records and in `specs/CHANGE_LOG.md`.
 
 ## Phase 1: The Gluing Route to Decidability (Highest Priority)
 
-The programme's priority front by author directive (2026-10-02), carried through research, design
-**and** implementation. A possible world is a way of **gluing** a backward ray to a forward ray at
-a seam — a reading of the landed semantics, not a new one: `⊡`'s clause
-(`StabClause.stab_clause`) already quantifies over exactly the re-gluings at the present state,
-and `FrameOver.mem_HF_iff_adjacent` already proves `H_F` is the bi-infinite step-paths. The
-keystone, that the stab fibre is the ray product, is proved under **`[F.IsRegular]`** and not
-unconditionally; it now sits in `FormalSystem/` as four acceptance-named declarations across
-`Semantics/Presheaf/Ray.lean` and `PlusLanguage/PlusRayFibre.lean`, each carrying the instance
-verbatim with its axiom set pinned in the C2 harness. Open: whether `back`/`fwd` can range over
-path sets of a finite class graph rather than single lists with the `⊡` check still decidable.
+A possible world is a way of **gluing** a backward ray to a forward ray at a seam — a reading of the
+landed semantics, not a new one. The aim is OPEN by every route; this is the ranked-first route to
+it, and the only one with an end-to-end owner.
+
+**Proved (the keystone).** The `⊡` quantification domain *is* the fibre product of the past-ray and
+future-ray spaces over the seam state: `plusStab_iff_rays` (general task frame) and
+`plusStab_iff_omega` (ω-sequence form over ℤ), with `seamOmegaEquiv` and `pathFibreEquiv`, across
+`Semantics/Presheaf/Ray.lean` and `PlusLanguage/PlusRayFibre.lean`. Under **`[F.IsRegular]`**, never
+unconditionally; axioms pinned in the C2 harness. Carrier normalization is landed too
+(`plusValidZTime_iff_plusValidInt`).
+
+**Owed.** One device, then the assembly. A universal, complementation-shaped summary device is
+proved NECESSARY and a nondeterministic one proved UNSOUND — but *which* device is unselected, and
+that single unrun experiment is what gates the whole front.
 
 Three cautions. Gluing does **not** bound the fibre — the route concedes infinite fibres and seeks
 a finite *presentation*, the only move `not_finite_width_fmp` leaves open. The binary seam case is
 choice-free while the *directed* case needs Saturation, so an ω-ray built by iterated gluing is a
-directed colimit. And no upper bound is claimed anywhere; the external ceiling is the ARGUED lower
-bound held in task 713 as a citable anchor rather than schedulable work.
+directed colimit. No upper bound is claimed anywhere; the ARGUED ceiling in task 713 is a citable
+anchor, never an upper-bound source.
 
-- [ ] Run experiment **E1**, the backward-dual finite-graph probe on a *time-asymmetric* fixture.
-      **The subsumption condition this item names has been met**: task 719 added the E1
-      backward-dual probe on a time-asymmetric fixture, it came out POSITIVE and state-dependent,
-      and it is wired into the evidence gate. No counterexample appeared, so the two-factor
-      presentation stands. Task 725 is therefore a close-as-subsumed candidate rather than work to
-      run — it remains `[NOT STARTED]` pending that ruling (Task 725)
-- [ ] Select the universal summary device (experiment **E3**): a universal,
-      complementation-shaped device is shown NECESSARY (`Probe718PathQuantifier.exists_ne_stab`),
-      but Safra/Piterman specifically is not — Safraless procedures, MSO over ⟨ℤ,<⟩ plus Büchi,
-      and a Ramsey colour are live alternatives, none formalized in this tree or Mathlib
-      (Task 711, `[BLOCKED]` pending E3; also carries the depth-2 stratification probe E2)
+Critical path: **732 → 711 → 735**. Everything else in this phase is evidence or fallback.
+
+- [ ] Run experiment **E3**, the device-selection probe, on the `⊡(Fp)`/`⊡(Pp)` shapes. Four live
+      candidates, none selected: Safra/Piterman (no formalization exists in *any* proof assistant),
+      Safraless (Kupferman–Vardi 2005), MSO over ⟨ℤ,<⟩ plus Büchi (Hodkinson–Wolter–Zakharyaschev
+      2000 route 1 — covers ⟨ℤ,<⟩, needs no Safra construction), a Ramsey colour. Run with `--lit`;
+      two candidates rest on sources the corpus lacks (Task 732)
+- [ ] Build the universal-summary substrate once E3 selects a device. `[BLOCKED]` on 732 by its own
+      recorded reason; also carries the depth-2 stratification probe E2 (Task 711)
+- [ ] Assemble the decidable stab check on the ray-product presentation — `Decidable
+      (PlusValidZTime φ)`, or a recorded verdict that the presentation cannot deliver it. Depends
+      on 711. `file_scope` is deliberately absent and MUST be set at plan time (Task 735)
+- [ ] Probe the backward dual on a backward-**nondeterministic** mirror fixture. E1 came out
+      POSITIVE and is wired, so the two-factor presentation stands — but on a backward-*deterministic*
+      fixture, whose backward factor is a singleton. The finite-width obstruction lives in the
+      backward factor, so that is the one region where it cannot appear. A failure here is a
+      falsifier for the two-factor presentation (Task 733)
+- [ ] Rule on task 725 as close-as-subsumed: task 719 landed E1 first, which is the subsumption
+      condition 725's own record names (Task 725)
+- [ ] Run experiment **E4** for route R2 (mosaics): decide `StabSaturated` on mixed germ states,
+      not the same-state corner it is proved in, and acquire the Hodkinson–Reynolds Handbook §§5.10–5.11
+      bodies the corpus lacks. R2 cannot be promoted on textual grounds until both land (Task 734)
 - [ ] Finite width ⇒ eventually periodic, as R1's **summary step** rather than a route of its
       own; closes as a reasoned exclusion, with its restrict-to-safety fallback recorded, if E3
       picks an automaton acceptance condition over a Ramsey colour (Task 709)
 
+Routes closed, not to be re-attempted: **filtration** (R4) for ℤ-time, by
+`Probe706.no_finite_carrier_sat` and `Probe710.not_finite_width_fmp` — residue is dense durations
+only. **Translation to a decidable FO fragment** (R5) is low: the monodic decidability proof *is*
+the quasimodel method, routing back to R1/R2. Do not file a fourth certificate class — any class
+with finite fibres is already refuted.
+
 `app:gluing` is live and proved in `~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`,
 its seam case written as `ρ ⌢_z σ` but commented out; `app:Structure` and
-`app:presheaf-dictionary` are **cut** from the paper, their supporting results promised elsewhere
-and this repository being where elsewhere is. Treat a cut clause as a specification to implement,
-never as a theorem to cite.
+`app:presheaf-dictionary` are **cut** from the paper. Treat a cut clause as a specification to
+implement, never as a theorem to cite.
 
 ```
-/orchestrate 725        # see the E1 note above: likely a subsumption close, not a run
-/orchestrate 709 --hard # under the gluing route -- not a phase capstone
+/orchestrate 732 --lit --hard   # the gate: nothing on the critical path moves until this reports
+/orchestrate 733                # singly -- five writers contend on the evidence collection
+/orchestrate 734 --lit          # singly, same contention; R2 fallback
+/orchestrate 725                # the subsumption ruling
+/orchestrate 709 --hard         # R1's summary step, not a phase capstone
+# 711 then 735 follow, in that order, once 732 reports a selection
 ```
 
 ---
@@ -204,7 +232,7 @@ library change.
 
 ```
 /orchestrate 664                      # first: 543 and 559 use --lit
-/orchestrate 543 --hard               # declares README.md; a different cycle from 177 and 722
+/orchestrate 543 --hard               # declares README.md; a different cycle from 177
 /orchestrate 559 --research --lit     # verdict-first; stops after research
 /orchestrate 570 --research
 ```
@@ -296,36 +324,6 @@ here declares an empty `file_scope`; scope them before running any wave concurre
 /orchestrate 498,499,500 --hard
 /orchestrate 125 --hard
 /orchestrate 501
-```
-
----
-
-## Phase 8: The Decidability Record (High Priority)
-
-Filed from the 2026-10-03 decidability-programme review. The programme's own surfaces still
-understate what is proved. Two of the review's findings are closed: the three witness-family
-index rows are now backed by real C14 baseline entries, and `Decidable (Derivable
-FrameClass.ZTime [] φ)` is landed at `FormalSystem/Metalogic/ZTimeProvability.lean`, closing
-decidability of provability over ℤ without the tableau spine. What remains is the prose
-reconciliation, the re-runnable inventory and the citation sweep. Each item is cheap and
-independent; none is open mathematics.
-
-- [ ] Reconcile the programme-level prose with the two-statement distinction — the tableau
-      biconditional is OPEN at all four frame classes, while `Decidable (ValidZTime φ)` is PROVED
-      by the witness-family route — across `README.md`, four module READMEs, ADR-007,
-      `known-limitations.md` and `typst/FormalFoundations.typ`. Carry every qualifier and never
-      write "TM is decidable" unqualified (Task 722)
-- [ ] Make the PROVED / NOT ESTABLISHED / WITHDRAWN / REFUTED inventory re-runnable from
-      `docs/theorem-index.md`, `check-evidence-probes.sh`'s `WIRED` arrays and `Correctness.lean`'s
-      retired-as-vacuous section, cross-checking `pinned:` cells against the invariants baselines
-      (Task 726)
-- [ ] Sweep and repair phantom declaration citations, and land the mechanical checker in exactly
-      one place: eleven verified-absent names were found across four task records in a single
-      revision round, because names get inherited from a predecessor's text rather than re-checked
-      (Task 728)
-
-```
-/orchestrate 722,726,728   # prose, the inventory mechanism and the citation sweep
 ```
 
 ---
