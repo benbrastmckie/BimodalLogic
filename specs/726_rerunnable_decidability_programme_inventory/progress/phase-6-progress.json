@@ -1,0 +1,23 @@
+{
+  "phase": 6,
+  "phase_name": "End-to-end acceptance run and final gate",
+  "started_at": "2026-10-05T01:45:00Z",
+  "last_updated": "2026-10-05T02:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Run-from-elsewhere check, four-status confirmation, --diff/--strict acceptance evidence, shellcheck, full gate set", "status": "done", "files_touched": ["scripts/generate-decidability-inventory.sh", "scripts/decidability-inventory-baseline.txt"]}
+  ],
+  "current_objective": 1,
+  "approaches_tried": [
+    {"approach": "Elided-path (`.../name.lean`) resolution in the --extract-baseline PROVED-table parser, tracking the last full specs/evidence/<collection>/ directory seen in table order", "result": "succeeded", "reason": "4 of 5 seam-gluing-ray-product/* probe rows in the archived report's section 1.1 table spell their path elided after the first row establishes the directory; without this fix only 1 of 5 DISAGREEMENT lines fired instead of all 5."}
+  ],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "6.full-gate-set",
+      "description": "Full repository gate set green",
+      "type": "altered",
+      "reason": "3 pre-existing, non-regression gate failures observed and confirmed via git log as unrelated to this task: check-module-invariants.sh's stale-inventory check on README.md/FormalSystem/Metalogic/README.md (sibling task 722's concurrent commit 146d699b7), check-metalogic-cycles.sh's unlayered-module finding for FormalSystem.PlusLanguage.PlusRayFibre (unrelated prior commit 6cd41837f), and check-evidence-probes.sh's 2 missing wired-probe files (specs/706 and specs/710 probes, reproduced identically running that script directly with no flags). All other gates (lake build, readme-lint.sh, check-copyright-headers.sh, check-paper-definitions.sh, check-phantom-citations.sh) pass green.",
+      "annotation": "*(deviation: altered -- see plan Testing & Validation checklist for the full per-gate breakdown)*"
+    }
+  ]
+}

@@ -3,14 +3,17 @@
 # Extracted from: specs/archive/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md, section 1
 # Extraction command: bash scripts/generate-decidability-inventory.sh --extract-baseline
 # Hand-reviewed against the report's four tables before commit: section 1.1 (20 data rows) ->
-# 33 PROVED records (several rows pack multiple sibling declarations into one cell, expanding
-# past the row count -- expected, see this script's Phase 2 scope note); section 1.2 (8 data
-# rows) -> 9 NOT_ESTABLISHED records (one row names two declarations); section 1.3 (4 data rows)
-# -> 4 WITHDRAWN records, hand-written per this script's own documented rationale (its "Withdrawn
-# by" cells mix full inline type signatures with bare names, which a shape-only filter cannot
-# reliably separate); section 1.4 (5 data rows, 3 distinct WIRED_REPO paths) -> 3 REFUTED
-# `repopath:` records plus 11 hand-backfilled `probe:` records (see each record's own provenance
-# field for why). All counts re-verified against the report by hand at commit time.
+# 37 PROVED records (several rows pack multiple sibling declarations into one cell, expanding
+# past the row count -- expected, see this script's Phase 2 scope note; all 5
+# seam-gluing-ray-product/* probes resolve to a `probe:` record even though 4 of the 5 spell
+# their path elided as `.../name.lean`, continuing the directory the first row in the group
+# spelled out in full); section 1.2 (8 data rows) -> 9 NOT_ESTABLISHED records (one row names two
+# declarations); section 1.3 (4 data rows) -> 4 WITHDRAWN records, hand-written per this script's
+# own documented rationale (its "Withdrawn by" cells mix full inline type signatures with bare
+# names, which a shape-only filter cannot reliably separate); section 1.4 (5 data rows, 3 distinct
+# WIRED_REPO paths) -> 3 REFUTED `repopath:` records plus 11 hand-backfilled `probe:` records (see
+# each record's own provenance field for why). All counts re-verified against the report by hand
+# at commit time.
 #
 # This is the RECORDED baseline at extraction time -- a historical snapshot to diff
 # against, never a live statement about the current tree. `--diff` compares today's
@@ -50,14 +53,18 @@ PROVED	plusStab_iff_omega	section 1.1: `specs/evidence/seam-gluing-ray-product/s
 PROVED	probe:seam-gluing-ray-product/stab-fibre-is-ray-product	section 1.1: `specs/evidence/seam-gluing-ray-product/stab-fibre-is-ray-product.lean`
 PROVED	Probe718Stratification.plusTruthAt_iff_stratum_atomize	section 1.1: `.../stab-depth-stratification.lean`
 PROVED	stab_atomize_valuation	section 1.1: `.../stab-depth-stratification.lean`
+PROVED	probe:seam-gluing-ray-product/stab-depth-stratification	section 1.1: `.../stab-depth-stratification.lean`
 PROVED	Probe718FiniteGraph.will_iff_allPathsMeet	section 1.1: `.../finite-graph-stab-summary.lean`
 PROVED	decide_will	section 1.1: `.../finite-graph-stab-summary.lean`
 PROVED	decidable_will	section 1.1: `.../finite-graph-stab-summary.lean`
+PROVED	probe:seam-gluing-ray-product/finite-graph-stab-summary	section 1.1: `.../finite-graph-stab-summary.lean`
 PROVED	Probe718Mosaic.amalgamate	section 1.1: `.../mosaic-germ-amalgamation.lean`
 PROVED	amalgamate_unique	section 1.1: `.../mosaic-germ-amalgamation.lean`
 PROVED	stabSaturated_of_sameState	section 1.1: `.../mosaic-germ-amalgamation.lean`
+PROVED	probe:seam-gluing-ray-product/mosaic-germ-amalgamation	section 1.1: `.../mosaic-germ-amalgamation.lean`
 PROVED	Probe718PathQuantifier.exists_ne_stab	section 1.1: `.../path-quantifier-alternation.lean`
 PROVED	exists_ne_universal	section 1.1: `.../path-quantifier-alternation.lean`
+PROVED	probe:seam-gluing-ray-product/path-quantifier-alternation	section 1.1: `.../path-quantifier-alternation.lean`
 NOT_ESTABLISHED	validity_decidable	section 1.2: `⊨ φ → isValid φ fc = true` (tableau completeness), hence `isValid φ fc = true ↔
 NOT_ESTABLISHED	validity_has_decision_procedure	section 1.2: `⊨ φ → isValid φ fc = true` (tableau completeness), hence `isValid φ fc = true ↔
 NOT_ESTABLISHED	valid_iff_allClosed	section 1.2: `valid_iff_allClosed`

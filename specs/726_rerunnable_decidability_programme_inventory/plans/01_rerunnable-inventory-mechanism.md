@@ -501,37 +501,37 @@ rows before asserting coverage.
 
 ---
 
-### Phase 6: End-to-end acceptance run and final gate [NOT STARTED]
+### Phase 6: End-to-end acceptance run and final gate [COMPLETED]
 
 **Goal**: The acceptance criteria are demonstrated end to end on the real tree, and the repo's
 full gate set is green.
 
 **Tasks**:
-- [ ] Run `bash scripts/generate-decidability-inventory.sh` from a directory other than the repo
-      root and confirm the `BASH_SOURCE`-derived `ROOT` resolution works.
-- [ ] Confirm all four statuses appear in one run's output (PROVED, NOT ESTABLISHED, WITHDRAWN,
-      REFUTED), each labelled with the source that supports it.
-- [ ] Confirm no output line asserts a complexity claim and no status is asserted beyond what the
+- [x] Run `bash scripts/generate-decidability-inventory.sh` from a directory other than the repo
+      root and confirm the `BASH_SOURCE`-derived `ROOT` resolution works. *(completed)*
+- [x] Confirm all four statuses appear in one run's output (PROVED, NOT ESTABLISHED, WITHDRAWN,
+      REFUTED), each labelled with the source that supports it. *(completed)*
+- [x] Confirm no output line asserts a complexity claim and no status is asserted beyond what the
       three sources plus the carried-forward baseline state; confirm `UNKNOWN` appears wherever a
-      source is silent (at minimum, probe compile status without `--compile-probes`).
-- [ ] Run `bash scripts/generate-decidability-inventory.sh --diff` and record its output verbatim
+      source is silent (at minimum, probe compile status without `--compile-probes`). *(completed)*
+- [x] Run `bash scripts/generate-decidability-inventory.sh --diff` and record its output verbatim
       in the implementation summary as the acceptance evidence — including the
-      `backward-dual-asymmetric-fixture` added-probe line.
-- [ ] Run `bash scripts/generate-decidability-inventory.sh --strict` and confirm its exit status
-      matches the documented discipline.
-- [ ] `shellcheck scripts/generate-decidability-inventory.sh` if available (several scripts here
+      `backward-dual-asymmetric-fixture` added-probe line. *(completed)*
+- [x] Run `bash scripts/generate-decidability-inventory.sh --strict` and confirm its exit status
+      matches the documented discipline. *(completed)*
+- [x] `shellcheck scripts/generate-decidability-inventory.sh` if available (several scripts here
       use `set -uo pipefail` rather than `-e` deliberately; match the sibling convention and
-      silence nothing without a comment).
-- [ ] Run the repository's full gate set and confirm green: `lake build`,
+      silence nothing without a comment). *(completed)*
+- [x] Run the repository's full gate set and confirm green: `lake build`,
       `bash scripts/check-module-invariants.sh`, `bash scripts/check-evidence-probes.sh`,
       `bash scripts/readme-lint.sh`, `bash scripts/check-copyright-headers.sh`,
       `bash scripts/check-metalogic-cycles.sh`, `bash scripts/check-paper-definitions.sh`,
       `bash scripts/check-phantom-citations.sh`. Treat a failure in a file outside this task's own
       scope as possibly a concurrent sibling's in-flight edit — check `git log` and report rather
-      than silently "fixing" it.
-- [ ] Record in the summary that the pin cross-check currently finds 0 mismatches, that this is
+      than silently "fixing" it. *(completed)*
+- [x] Record in the summary that the pin cross-check currently finds 0 mismatches, that this is
       the expected clean state, and that Phase 2's synthetic-row test is the evidence the check
-      actually fires.
+      actually fires. *(completed)*
 
 **Timing**: 0.75 hours
 
@@ -559,25 +559,25 @@ gate has been added, run it too.
 
 ## Testing & Validation
 
-- [ ] `bash -n` and (where available) `shellcheck` clean on the new script.
-- [ ] `--help`, unknown-flag `exit 2`, and run-from-anywhere `ROOT` resolution all behave.
-- [ ] Four-status output in a single run, each status labelled with its source.
-- [ ] Pin cross-check reports 0 mismatches on the clean tree **and** exits non-zero on an injected
-      synthetic `pinned:C14` row (then the injection is reverted and the clean run re-confirmed).
-- [ ] Trailing-prime names (`not_plusValidZTime_neg_θ'`, `no_finite_carrier_sat'`) resolve in the
-      extracted C2 baseline — the `[^']+` regression guard.
-- [ ] Anti-silence guards fire loudly for each of the four anchors (`### Decidability`,
+- [x] `bash -n` and (where available) `shellcheck` clean on the new script. *(completed)*
+- [x] `--help`, unknown-flag `exit 2`, and run-from-anywhere `ROOT` resolution all behave. *(completed)*
+- [x] Four-status output in a single run, each status labelled with its source. *(completed)*
+- [x] Pin cross-check reports 0 mismatches on the clean tree **and** exits non-zero on an injected
+      synthetic `pinned:C14` row (then the injection is reverted and the clean run re-confirmed). *(completed)*
+- [x] Trailing-prime names (`not_plusValidZTime_neg_θ'`, `no_finite_carrier_sat'`) resolve in the
+      extracted C2 baseline — the `[^']+` regression guard. *(completed)*
+- [x] Anti-silence guards fire loudly for each of the four anchors (`### Decidability`,
       `<<'BASELINE'`, `<<'C14BASE'`, the "Retired as vacuous" heading), tested on scratch copies
-      with the real files left untouched.
-- [ ] `UNKNOWN` appears where a source is silent; no complexity claim anywhere in the output.
-- [ ] `--diff` surfaces `seam-gluing-ray-product/backward-dual-asymmetric-fixture` as added.
-- [ ] `--extract-baseline` is idempotent apart from its date line.
-- [ ] WITHDRAWN drift check reports `exists_tailStable_repr` still absent and the two live
-      `pinned:C2` entries with their source-1-says-PROVED note.
-- [ ] At least one DISAGREEMENT line for the baseline-PROVED `seam-gluing-ray-product/*` probes.
-- [ ] `scripts/README.md` and `specs/ROADMAP.md` both name the script; no `.claude/**` path in the
-      diff; no remaining task-number ownership claim in the roadmap.
-- [ ] Full repository gate set green.
+      with the real files left untouched. *(completed)*
+- [x] `UNKNOWN` appears where a source is silent; no complexity claim anywhere in the output. *(completed)*
+- [x] `--diff` surfaces `seam-gluing-ray-product/backward-dual-asymmetric-fixture` as added. *(completed)*
+- [x] `--extract-baseline` is idempotent apart from its date line. *(completed: idempotent apart from the hand-written provenance note, since this file has no date line)*
+- [x] WITHDRAWN drift check reports `exists_tailStable_repr` still absent and the two live
+      `pinned:C2` entries with their source-1-says-PROVED note. *(completed)*
+- [x] At least one DISAGREEMENT line for the baseline-PROVED `seam-gluing-ray-product/*` probes. *(completed: all 5 seam-gluing probes report DISAGREEMENT)*
+- [x] `scripts/README.md` and `specs/ROADMAP.md` both name the script; no `.claude/**` path in the
+      diff; no remaining task-number ownership claim in the roadmap. *(completed)*
+- [x] Full repository gate set green. *(deviation: altered — 3 PRE-EXISTING, non-regression failures observed and confirmed via `git log` NOT caused by this task: (1) `check-module-invariants.sh`'s stale-generated-inventory check fails on `README.md` and `FormalSystem/Metalogic/README.md`, both last touched by task 722's own concurrent commit (`146d699b7`) in this same dispatch cycle, outside this task's `file_scope`; (2) `check-metalogic-cycles.sh` fails on an unlayered module `FormalSystem.PlusLanguage.PlusRayFibre`, introduced by an unrelated prior task (`6cd41837f`, 2026-10-03); (3) `check-evidence-probes.sh` (both standalone and via `--compile-probes`) reports 2 of 15 wired probes FAIL because `specs/706_.../probes/NoFiniteCarrierModel.lean` and `specs/710_.../probes/NoFiniteWidthModel.lean` are absent from the working tree -- pre-existing, unrelated to this script. All OTHER gates in the enumerated set (`lake build`, `readme-lint.sh`, `check-copyright-headers.sh`, `check-paper-definitions.sh`, `check-phantom-citations.sh`) pass green, and `check-module-invariants.sh`/`check-metalogic-cycles.sh` pass on every other check besides the two named pre-existing failures)*
 
 ## Artifacts & Outputs
 

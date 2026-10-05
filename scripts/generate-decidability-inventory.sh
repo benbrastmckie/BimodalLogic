@@ -465,14 +465,31 @@ def extract_baseline(report_path, output_path):
     if not rows:
         fail("EXTRACT", "section 1.1 PROVED yields zero table rows (anti-silence guard)")
         return None
+    # Tracks the last full `specs/evidence/<collection>/` directory seen, so an elided path cell
+    # later in the same table (`.../name.lean`, used once the collection is established -- see
+    # the report's own §1.1 table) still resolves to a full probe id instead of being silently
+    # dropped. A one-way widening: this can only ADD a probe id a stricter full-path-only match
+    # would miss, never produce a wrong one, since the elided form always continues the directory
+    # most recently spelled out in full above it in table order.
+    last_evidence_dir = None
     for cells in rows:
         decl_cell = cells[1] if len(cells) > 1 else ""
         path_cell = cells[2] if len(cells) > 2 else ""
         for ident in _identifier_spans(decl_cell):
             records.append(("PROVED", ident, f"section 1.1: {path_cell}"))
-        pm = re.search(r'specs/evidence/([^` ]+?)\.lean', path_cell)
+        pm = re.search(r'specs/evidence/([^`\s]+)/', path_cell)
         if pm:
-            records.append(("PROVED", f"probe:{pm.group(1)}", f"section 1.1: {path_cell}"))
+            last_evidence_dir = pm.group(1)
+        probe_id = None
+        fm = re.search(r'specs/evidence/([^`\s]+?)\.lean', path_cell)
+        if fm:
+            probe_id = fm.group(1)
+        elif last_evidence_dir is not None:
+            em = re.search(r'\.\.\./([^`\s]+?)\.lean', path_cell)
+            if em:
+                probe_id = f"{last_evidence_dir}/{em.group(1)}"
+        if probe_id:
+            records.append(("PROVED", f"probe:{probe_id}", f"section 1.1: {path_cell}"))
 
     # ---- 1.2 NOT ESTABLISHED ----
     rows = _parse_report_table(text, "#### 1.2 NOT ESTABLISHED", ["#### 1.3"])
