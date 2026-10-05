@@ -1,7 +1,7 @@
 # Implementation Plan: Task #722
 
 - **Task**: 722 - Reconcile the programme-level decidability prose with the two-statement distinction (tableau biconditional open; Decidable (ValidZTime phi) proved)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.75 hours
 - **Dependencies**: None (must not share an `/orchestrate` cycle with tasks 177 or 543 — colliding `README.md`/documentation `file_scope`)
 - **Research Inputs**: `specs/722_reconcile_decidability_prose_two_statements/reports/01_reconcile-decidability-prose.md`
