@@ -1,30 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/711_universal_summary_substrate_stab_fibre/plans/01_universal-summary-substrate.md",
-      "summary": "Ten-phase plan for the time-axis Ramsey-coloured universal-summary substrate (candidate d, framed by the HWZ/GKWZ MSO route c): relocate infinite Ramsey for pairs to ForMathlib with an alias, land D1 (compiled in research), build D2 segment profiles with a discharge+deficit datum, D3 device theorem in both directions, D4 by reindexing, the ultimately-periodic Decidable specialization, D5 the stab bridge against an abstract Presents hypothesis, then two wired evidence probes (E1-fibre executability discrimination, depth-2 stratification E2); D1 pinned as Lean Challenge Statements."
-    }
-  ],
-  "next_steps": "Run /implement 711 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1791231820_e1923d_711",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 10,
-    "estimated_hours": 18,
-    "dependency_waves": [[1], [2], [3], [4], [5], [6, 7], [8], [9], [10]]
-  },
-  "memory_candidates": [
-    {
-      "content": "Ramsey/Buchi-style device theorems for per-eventuality fulfilment ('a fulfilling run exists iff a homogeneous self-looping segment profile is reachable') need the segment profile to carry a DEFICIT set (obligations pending inside the segment and not discharged by its end) beside the discharge set; composition is (a,c,E1 ∪ E2,(U1 \\ E2) ∪ U2). With only the discharge set, the sufficiency-direction splice secures obligations at the junction type but not at interior positions of a period witness. The device condition is then U ⊆ E on the homogeneous period (plus U0 ⊆ E for the prefix), and period witnesses can be chosen independently (no dependent choice) because every one realizes the same (b,b,E,U). Idempotence of the homogeneous colour is delivered for free by the infinite-Ramsey step but is not what the splice uses; it matters only for the ultimately-periodic specialization (idempotent power of a finite-semigroup element).",
-      "category": "INSIGHT",
-      "source_artifact": "specs/711_universal_summary_substrate_stab_fibre/plans/01_universal-summary-substrate.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["ramsey", "buchi", "segment-profile", "fulfilment", "deficit-set", "omega-sequence"]
-    }
-  ],
-  "dispatch_seq": 2
+  "status": "in_progress",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "task_number": 711,
+  "session_id": "sess_1791231820_e1923d",
+  "dispatch_seq": 3,
+  "phase_number": 1,
+  "started_at": "2026-10-05T21:08:28Z"
 }

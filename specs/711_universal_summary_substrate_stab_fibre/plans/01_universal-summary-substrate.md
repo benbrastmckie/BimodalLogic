@@ -1,7 +1,7 @@
 # Implementation Plan: Task #711
 
 - **Task**: 711 - Universal-summary substrate for the `⊡` fibre check on the seam-gluing route
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 18 hours
 - **Dependencies**: 732 (satisfied — E3 reported; the selection is carried in the task description and in `specs/evidence/seam-gluing-ray-product/device-selection-probe.lean`'s header)
 - **Research Inputs**: specs/711_universal_summary_substrate_stab_fibre/reports/01_universal-summary-substrate.md
@@ -199,7 +199,7 @@ Phases 6 and 7 are independent (both consume Phase 5) but touch the shared aggre
 module, so if they are run in parallel each must append to those two files rather than rewrite
 them. Phase 10 depends on Phase 9 only to serialize edits to `scripts/check-evidence-probes.sh`.
 
-### Phase 1: Relocate infinite Ramsey for pairs to ForMathlib, alias kept [NOT STARTED]
+### Phase 1: Relocate infinite Ramsey for pairs to ForMathlib, alias kept [IN PROGRESS]
 
 **Goal**: Move `section Ramsey` (lines 65–170 of
 `FormalSystem/Metalogic/WeakCanonical/GroupModel/RamseyFactorization.lean`: the private helpers
@@ -210,14 +210,14 @@ ingredient without importing `WeakCanonical.GroupModel`.
 
 **Tasks**:
 
-- [ ] Re-verify the baseline before moving anything:
+- [x] Re-verify the baseline before moving anything:
       `lean_verify FormalSystem.Metalogic.WeakCanonical.infinite_ramsey_pairs` (expected axioms
       `[propext, Classical.choice, Quot.sound]`, no sorry), and grep every citation of the name
       outside `specs/`: `FormalSystem/Metalogic/WeakCanonical.lean`,
       `FormalSystem/Metalogic/WeakCanonical/GroupModel/README.md`,
       `scripts/check-evidence-probes.sh`, `specs/evidence/seam-gluing-ray-product/device-selection-probe.lean`.
       None of these needs editing if the alias keeps the name; confirm after the move.
-- [ ] Create `FormalSystem/ForMathlib/Combinatorics/InfiniteRamseyPairs.lean` with the copyright
+- [x] Create `FormalSystem/ForMathlib/Combinatorics/InfiniteRamseyPairs.lean` with the copyright
       header, imports `Mathlib.Data.Set.Finite.Lattice`, `Mathlib.Logic.Denumerable`,
       `Mathlib.Data.Fintype.Pigeonhole` (exactly the three the section uses today; drop any the
       build shows unused), **no** `FormalSystem.*` import, `namespace Nat`, the moved section
@@ -228,13 +228,13 @@ ingredient without importing `WeakCanonical.GroupModel`.
       `v4.33.0-rc1`: `Combinatorics/Hindman.lean` and `HalesJewett.lean` mention it only), the
       Doets 1987 ch. 7 (pp. 89–93) provenance carried from the old header, and the Mathlib-shaped
       name rationale.
-- [ ] In `RamseyFactorization.lean`: delete the section, add
+- [x] In `RamseyFactorization.lean`: delete the section, add
       `import FormalSystem.ForMathlib.Combinatorics.InfiniteRamseyPairs`, keep the docstring'd
       `theorem infinite_ramsey_pairs (c : ℕ → ℕ → C) : … := Nat.exists_strictMono_const_pair_colour c`
       at the same name in the same namespace (`FormalSystem.Metalogic.WeakCanonical`), and update
       the module docstring's "proved from scratch here" sentence to point at the new module. Keep
       the `variable {C : Type} [Finite C]` the alias needs.
-- [ ] Register the module: add the import and a Contents bullet to `FormalSystem/ForMathlib.lean`;
+- [x] Register the module: add the import and a Contents bullet to `FormalSystem/ForMathlib.lean`;
       add `` `FormalSystem.ForMathlib.Combinatorics.InfiniteRamseyPairs `` to `exceptions` in
       `scripts/CheckInitImportsMain.lean` (C24); update the exception sentence in
       `FormalSystem/Init.lean`'s docstring (it currently enumerates two `ForMathlib` modules);
@@ -244,10 +244,10 @@ ingredient without importing `WeakCanonical.GroupModel`.
       `bash scripts/check-module-invariants.sh --emit-inventory` (hand-write the trailing
       description cell); update the `RamseyFactorization.lean` row and the
       `infinite_ramsey_pairs` bullet in `FormalSystem/Metalogic/WeakCanonical/GroupModel/README.md`
-      and the mention in `FormalSystem/Metalogic/WeakCanonical.lean` to say "alias of".
-- [ ] Regenerate the library root: `lake exe mk_all --lib FormalSystem` (C33 requires
+      and the mention in `FormalSystem/Metalogic/WeakCanonical.lean` to say "alias of". *(deviation: altered — `--emit-inventory` also rewrote the rollup blocks of `FormalSystem/README.md`, `FormalSystem/Metalogic/README.md` and `README.md`; staged with the phase)*
+- [x] Regenerate the library root: `lake exe mk_all --lib FormalSystem` (C33 requires
       `FormalSystem.lean` byte-current).
-- [ ] Build the two touched roots, detached and guarded:
+- [x] Build the two touched roots, detached and guarded:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.ForMathlib FormalSystem.Metalogic.WeakCanonical.GroupModel.RamseyFactorization`;
       then `lean_verify` both names (same axiom set as the baseline).
 - [ ] Run `bash scripts/check-module-invariants.sh` (full, with build) and
