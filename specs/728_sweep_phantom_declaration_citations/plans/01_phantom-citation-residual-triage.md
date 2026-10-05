@@ -542,39 +542,35 @@ the raw finding count.
 
 ---
 
-### Phase 6: Final verification, residual record, and acceptance check [NOT STARTED]
+### Phase 6: Final verification, residual record, and acceptance check [COMPLETED]
 
 **Goal**: Close the task against the dispatch's four acceptance clauses, with measured evidence
 for each, and record whatever remains deliberately unaddressed.
 
 **Tasks**:
 
-- [ ] Re-run `bash scripts/check-phantom-citations.sh --verbose` and diff against
+- [x] Re-run `bash scripts/check-phantom-citations.sh --verbose` and diff against
       `baseline-findings.txt`. Write the final state into the ledger: findings absorbed, findings
-      repaired, findings residual.
-- [ ] For every residual finding, record in the ledger which it is and why it was neither
-      repaired nor absorbed — a residual with no reason is not acceptable closure.
-- [ ] Confirm acceptance clause by clause, with the command that shows it:
-      - *Every surviving confirmed instance repaired at its source or recorded as absent* — the
-        eleven dispatch-named instances, re-confirmed from Phase 1 plus the research report's
-        table.
-      - *No live task description asserts a declaration that does not exist* — zero findings
-        citing `specs/state.json`.
-      - *A mechanical checker exists in exactly one place* — `scripts/check-phantom-citations.sh`
-        is the only one, and task 726's description still disclaims it.
-      - *The historical artifacts are untouched* — `git diff --stat 3bfb970e4..HEAD` names no
-        `specs/*/reports/`, `specs/*/summaries/` or `specs/reviews/` path other than task 728's
-        own artifacts.
-- [ ] Run the full gate set: `bash .claude/scripts/verify-deploy.sh`. Also run
+      repaired, findings residual. *(completed: 0 findings, down from the Phase 1 baseline's 105;
+      6 repaired, 86 absorbed, 0 residual — see ledger "Phase 6" section)*
+- [x] For every residual finding, record in the ledger which it is and why it was neither
+      repaired nor absorbed — a residual with no reason is not acceptable closure. *(vacuous: 0
+      residual findings, stated explicitly in the ledger rather than left implied)*
+- [x] Confirm acceptance clause by clause, with the command that shows it. *(all four confirmed
+      with command evidence — see ledger "Phase 6: Final Verification and Acceptance")*
+- [x] Run the full gate set: `bash .claude/scripts/verify-deploy.sh`. Also run
       `bash .claude/scripts/validate-state.sh` and confirm 0 FAIL with only pre-existing WARNs,
       and `bash scripts/readme-lint.sh` if any `README.md` was touched. No Lean source was
       modified by this plan, so no `lake build` is required — state that explicitly rather than
-      leaving it implied.
-- [ ] Record the two standing recommendations the research report made and this plan deliberately
+      leaving it implied. *(completed: verify-deploy.sh PASS, 14 checks, 0 failures;
+      validate-state.sh 0 FAIL, 17 pre-existing WARNs unrelated to this task; readme-lint.sh N/A,
+      no README.md touched; lake build N/A, no .lean file touched)*
+- [x] Record the two standing recommendations the research report made and this plan deliberately
       did not implement, so they are not silently dropped: the WARN-only `file_scope`
       unbuilt-destination check for `validate-state.sh` (blocked on an unresolvable `source_dir`),
       and the `.claude/context/project/lean4/README.md` pointer to the checker (same blocker).
-- [ ] Final commit, explicit file list.
+      *(recorded in ledger)*
+- [x] Final commit, explicit file list.
 
 **Timing**: 1.0 hours
 
@@ -601,20 +597,27 @@ for each, and record whatever remains deliberately unaddressed.
 
 ## Testing & Validation
 
-- [ ] `bash scripts/check-phantom-citations.sh` exits 0; its residual finding count is recorded
-      and every residual is justified in the ledger.
-- [ ] `bash scripts/check-phantom-citations.sh --strict` exit status recorded (the measured answer
-      to whether this can become a gate yet).
-- [ ] `bash -n scripts/check-phantom-citations.sh` passes and `--help` renders.
-- [ ] Zero findings cite `specs/state.json`; zero cite `specs/ROADMAP.md`.
-- [ ] Every name introduced as a correction has a confirmed definition site under
-      `FormalSystem/**/*.lean` with a matching enclosing namespace.
-- [ ] `bash .claude/scripts/verify-deploy.sh` passes.
-- [ ] `bash .claude/scripts/validate-state.sh` reports 0 FAIL (pre-existing WARNs acceptable).
-- [ ] No file under `specs/*/reports/`, `specs/*/summaries/` or `specs/reviews/` was modified,
-      other than task 728's own artifacts.
-- [ ] No `docs/` or `scripts/` file gained a task-number reference.
-- [ ] No `.lean` file was modified.
+- [x] `bash scripts/check-phantom-citations.sh` exits 0; its residual finding count is recorded
+      and every residual is justified in the ledger. *(0 findings; 0 residual)*
+- [x] `bash scripts/check-phantom-citations.sh --strict` exit status recorded (the measured answer
+      to whether this can become a gate yet). *(exit 0 — a clean strict run is achievable today;
+      making it a gate stays a declared Non-Goal)*
+- [x] `bash -n scripts/check-phantom-citations.sh` passes and `--help` renders. *(confirmed)*
+- [x] Zero findings cite `specs/state.json`; zero cite `specs/ROADMAP.md`. *(confirmed — 0
+      findings overall)*
+- [x] Every name introduced as a correction has a confirmed definition site under
+      `FormalSystem/**/*.lean` with a matching enclosing namespace. *(confirmed by grep for
+      `consequence_completeness_base`/`_rtime`, `temporalKDistDerived`, `temporal4Derived`,
+      `minus_soundness_ztime`/`_rtime`, `minus_not_derivable_nil_bot_ztime`,
+      `SetConsistent.bot_not_mem`)*
+- [x] `bash .claude/scripts/verify-deploy.sh` passes. *(14 checks, 0 failures)*
+- [x] `bash .claude/scripts/validate-state.sh` reports 0 FAIL (pre-existing WARNs acceptable).
+      *(0 FAIL, 17 pre-existing WARNs)*
+- [x] No file under `specs/*/reports/`, `specs/*/summaries/` or `specs/reviews/` was modified,
+      other than task 728's own artifacts. *(confirmed via `git diff --stat 3bfb970e4..HEAD`)*
+- [x] No `docs/` or `scripts/` file gained a task-number reference. *(confirmed — the pre-edit
+      gate hook would have blocked any such reference)*
+- [x] No `.lean` file was modified. *(confirmed via per-commit `git log --name-only`)*
 
 ## Artifacts & Outputs
 

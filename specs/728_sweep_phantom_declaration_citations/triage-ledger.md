@@ -265,3 +265,65 @@ PHANTOM repairs from Phase 4 is independently re-confirmed fixed (either the old
 appears at all, for the two fully-corrected names, or it appears solely inside this ledger's and
 the script's own commentary describing the repair — never inside live docs prose asserting it as
 a current fact).
+
+## Phase 6: Final Verification and Acceptance (executed)
+
+**Residual findings**: none. `bash scripts/check-phantom-citations.sh --verbose` reports 0
+findings over 1028 candidate pairs (same candidate count throughout — no citation was deleted
+outright; every genuine defect was corrected or restated, and every non-defect was absorbed).
+`--strict` exits 0. There is nothing in this sweep's residual-findings category to record a
+reason for, since the residual count is zero.
+
+**Acceptance clauses, each with the command/evidence that shows it**:
+
+1. *Every surviving confirmed instance is repaired at its source or recorded as absent* —
+   Phase 1 spot-re-verified three of the dispatch-named instances directly against the tree
+   (not against the research report's text): `verifyProof` absent, appearing only inside task
+   482's own withdrawal correction; the Greek `Φ` spelling is the one live in task 710's
+   description (the Latin "Phi" survives only inside task 728's own description, quoting the
+   historical finding); the four frame-class constructors (`Base`/`Dense`/`ZTime`/`RTime`) match
+   `inductive FrameClass`, and task 722's description already states this explicitly, flagging the
+   old "Discrete and Dedekind" naming as superseded. The research report's own table (
+   `reports/01_phantom-citation-sweep.md`) accounts for the remaining dispatch-named instances:
+   nine of eleven already repaired before the research dispatch ran, the other two repaired by
+   that dispatch itself (commit `3bfb970e4`). This triage additionally found and repaired 6 further
+   genuine phantom citations the research dispatch's own "full manual triage… is follow-up work"
+   left open (Phase 4), and classified the remaining 86 checker findings as non-defects (Phase 5).
+2. *No live task description asserts a declaration that does not exist* — `grep -c` against the
+   checker's `--verbose` output for `specs/state.json` site lines: 0 (the header's "Scanned:" line
+   is the only match). `WIRED_REPO`, the sole prior state.json finding, is absorbed by allowlist;
+   no task description was edited.
+3. *A mechanical checker exists in exactly one place* — `find scripts .claude/scripts -iname
+   "*phantom*"` returns only `scripts/check-phantom-citations.sh`; task 726's live description
+   still contains "THE PHANTOM-CITATION CHECKER IS NOT THIS TASK'S" verbatim.
+4. *The historical artifacts are untouched* — `git diff --stat 3bfb970e4..HEAD -- 'specs/*/reports/*'
+   'specs/*/summaries/*' 'specs/reviews/*'` shows only two NEW summary files belonging to sibling
+   tasks 722 and 726 (their own dispatches' own artifacts, created by them, not edited by this
+   task); nothing under task 728's own history was touched by anyone else either. `git log
+   --name-only` across all five of this task's phase commits shows zero `.lean` files touched by
+   this task (the one `.lean` diff visible in the wider `3bfb970e4..HEAD` range,
+   `FormalSystem/Metalogic/Decidability.lean`, belongs to task 722's own commits, not this task's).
+
+**Full gate set**:
+- `bash .claude/scripts/verify-deploy.sh` — PASS, 14 checks, 0 failures (one pre-existing WARN,
+  `lean still declares routing_hard/routing_agents_hard`, unrelated to this task).
+- `bash .claude/scripts/validate-state.sh` — 0 FAIL, 17 pre-existing WARNs (legacy top-level
+  fields, `file_scope` coverage gaps on ~20 unrelated tasks) — none introduced by this task.
+- `scripts/readme-lint.sh` — N/A; no `README.md` was touched by this task.
+- `lake build` — N/A; no `.lean` file was touched by this task, stated explicitly rather than
+  left implied.
+
+**Standing recommendations deliberately not implemented, recorded so they are not silently
+dropped** (both from the research report, both declared Non-Goals in this plan):
+1. A WARN-only `file_scope` unbuilt-destination check for `validate-state.sh` (flagging a
+   `file_scope` entry naming a path that does not yet exist, as a landing-target distinct from a
+   dead/stale path) — blocked on this machine's `.claude-extensions.json` carrying no resolvable
+   `source_dir`, so no `agent-system/` source store exists to land a durable `.claude/scripts/`
+   edit in. Live incidence of the underlying defect dropped from three entries to one between the
+   research round and this dispatch, and that one is self-documented at its source (a legitimate
+   landing-target destination, not a dead path).
+2. A pointer from `.claude/context/project/lean4/README.md` to this checker — same unlandable-
+   deploy-tree blocker.
+
+Neither recommendation is abandoned; both are recorded here as the measured state for whoever
+next has a resolvable source store to act on them.
