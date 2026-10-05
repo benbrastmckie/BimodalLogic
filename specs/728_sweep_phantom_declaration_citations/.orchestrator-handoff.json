@@ -1,15 +1,20 @@
 {
-  "status": "planned",
-  "phases_completed": 0,
+  "status": "implemented",
+  "dispatch_seq": 9,
+  "phases_completed": 6,
   "phases_total": 6,
-  "summary": "Planned the residual work for the phantom-declaration-citation sweep. The research dispatch had already performed and committed the full named sweep (commit 3bfb970e4: eleven instances re-verified, two repaired, three FormalSystem READMEs and docs/reference/paper-definitions-of-record.md fixed, six state.json descriptions repaired, and scripts/check-phantom-citations.sh landed), so the plan covers only what genuinely remains: verifying the landed repairs, triaging the checker's 105 current findings into four decided classes, repairing the genuine phantom citations in docs/, and absorbing the non-defect findings into the checker's allowlists. Six phases across four dependency waves, 7.5 hours; the file_scope validate-state.sh flag and the lean4 context pointer are recorded Non-Goals because this tree has no resolvable .claude source store.",
+  "summary": "Completed the task 728 residual triage plan's full six-phase scope. Re-ran the phantom-citation checker fresh (results had drifted slightly from plan time after sibling tasks 722/726 landed), fixed three real correctness bugs in the checker's definition_exists function discovered during triage, repaired 6 genuine phantom declaration citations across 5 docs files, and absorbed the remaining 86 findings into the checker's allowlist with per-group justification. The checker now reports 0 findings and a clean --strict run over the same 1028 candidate pairs it started with.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/728_sweep_phantom_declaration_citations/plans/01_phantom-citation-residual-triage.md",
-      "summary": "Six-phase residual plan: verify landed sweep, triage 105 checker findings, repair genuine phantom docs/ citations, absorb non-defects into checker allowlists."
+      "type": "summary",
+      "path": "specs/728_sweep_phantom_declaration_citations/summaries/01_phantom-citation-residual-triage-summary.md",
+      "summary": "Full implementation summary covering all six phases, decisions, deviations, and verification evidence."
+    },
+    {
+      "type": "other",
+      "path": "specs/728_sweep_phantom_declaration_citations/triage-ledger.md",
+      "summary": "Per-finding classification ledger (94 findings post-checker-fix), repair log, and acceptance-clause evidence."
     }
-  ],
-  "dispatch_seq": 6
+  ]
 }

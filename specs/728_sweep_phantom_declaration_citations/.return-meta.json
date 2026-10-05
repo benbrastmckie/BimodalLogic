@@ -1,10 +1,55 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 9,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/728_sweep_phantom_declaration_citations/summaries/01_phantom-citation-residual-triage-summary.md",
+      "summary": "Completed six-phase residual triage: re-verified the landed sweep, triaged a fresh checker run's findings, repaired 6 genuine phantom citations, absorbed 86 non-defects into the checker allowlist, and verified full acceptance with 0 residual findings."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Re-ran the phantom-citation checker fresh, fixed three real detection bugs in it (qualified-prefix declarations, a primed/unprimed identifier conflation, and a macro/elab/syntax tactic-declaration fallback), triaged all 94 resulting findings, repaired 6 genuine phantom citations across 5 docs files, and absorbed the remaining 86 as non-defects with per-group justification -- the checker now reports 0 findings and a clean --strict run."
+  },
+  "modified_files": [
+    "docs/project-info/tactic-registry.md",
+    "docs/project-info/test-coverage.md",
+    "docs/reference/API_REFERENCE.md",
+    "docs/reference/operators.md",
+    "docs/user-guide/architecture.md",
+    "scripts/check-phantom-citations.sh",
+    "specs/728_sweep_phantom_declaration_citations/baseline-findings.txt",
+    "specs/728_sweep_phantom_declaration_citations/triage-ledger.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "A bash/PCRE checker using a trailing `\\b` word-boundary to confirm a declaration name's end will silently conflate a primed identifier (`foo'`) with its unprimed counterpart (`foo`), in both directions: an unprimed search can be falsely satisfied by a primed declaration (since word-char -> prime is itself a `\\b` transition), and a primed search can fail to match its own primed declaration if followed by whitespace (prime -> whitespace is non-word -> non-word, no transition, `\\b` never fires). Fix: replace the trailing `\\b` with a negative lookahead for every character that can continue the identifier, e.g. `(?![A-Za-z0-9_'])`, which states directly what is meant instead of relying on a word/non-word transition that primes break.",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/728_sweep_phantom_declaration_citations/summaries/01_phantom-citation-residual-triage-summary.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["bash", "pcre", "regex", "word-boundary", "lean-identifiers"]
+    },
+    {
+      "content": "When a grep-based Lean declaration-existence checker searches for `keyword\\s+bare_name\\b`, it misses the common Lean 4 style of writing a dot-qualified declaration name directly after the keyword with no surrounding `namespace ... end` block (e.g. `def TaskFrame.ValidOn (...) := ...`). If a namespace/end-line fallback in the same checker already allows an optional `(\\S+\\.)?` prefix, the main keyword branch almost certainly needs the identical prefix -- an asymmetry between the two branches is a strong signal of an unintentional gap, not a deliberate design choice.",
+      "category": "PATTERN",
+      "source_artifact": "specs/728_sweep_phantom_declaration_citations/summaries/01_phantom-citation-residual-triage-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": ["lean4", "declaration-search", "checker-design", "namespace"]
+    },
+    {
+      "content": "Before triaging a mechanical checker's findings into per-finding decisions, re-verify the checker itself is correct -- a finding list built against a buggy checker produces a ledger full of false positives that must be re-discovered and corrected later. Fixing checker bugs mid-triage (even if nominally a later phase's territory) and re-running before classifying is more efficient than classifying stale output and re-triaging after the fix.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/728_sweep_phantom_declaration_citations/summaries/01_phantom-citation-residual-triage-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["triage", "checker-validation", "phase-ordering", "false-positives"]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1791141048_bd999f",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 6,
+    "phases_total": 6
   }
 }
