@@ -1,5 +1,5 @@
 ---
-next_project_number: 732
+next_project_number: 736
 ---
 
 # TODO
@@ -11,9 +11,9 @@ next_project_number: 732
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,711,712,713,714,716,720,725,729,730,731 | -- | agent-system, algebraic-representation, categorical-structure, ... |
-| 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
-| 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,732,733,734 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 2 | 231,282,296,465,497,618,711 | 298,464,502,616,732 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
+| 3 | 219,428,498,499,500,735 | 231,465,497,711 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
 | 5 | 410,501 | 125,429 | algebraic-representation, decidability |
 | 6 | 411 | 410 | decidability |
@@ -76,6 +76,10 @@ next_project_number: 732
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
+732 [NOT STARTED] — Run experiment E3: select the universal summary device for...
+733 [NOT STARTED] — Probe the backward-dual stability summary on a...
+734 [NOT STARTED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
+735 [NOT STARTED] — Assemble the decidable stab check on the ray-product...
 
 ### Formula Refactor
 
@@ -95,14 +99,125 @@ next_project_number: 732
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-711 [BLOCKED] — RE-SCOPED 2026-10-03 BY USER RULING. On 2026-10-03 the user...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
+711 [BLOCKED] — RE-SCOPED 2026-10-03 BY USER RULING. On 2026-10-03 the user...
 
 ### Repo Hygiene
 
 729 [NOT STARTED] — Add purpose-written .title fields to specs/state.json's...
 
 ## Tasks
+
+### 735. Decidable stab check ray product assembly
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: Task 711
+
+**Description**: Assemble the decidable stab check on the ray-product presentation: Decidable (PlusValidZTime phi)
+
+WHY THIS EXISTS. This is the programme's stated aim on the gluing route -- decidability of L+ over discrete time -- and until now it had NO OWNER in the task graph. The substrate record (711) names its consumer as "DELIVERABLE 5, THE DECIDABLE-CHECK CONNECTION" of the ray-layer/seam-gluing task, but that task is COMPLETED AND ARCHIVED, so the deliverable that would assemble the decision procedure points at a record nothing can advance. This task is that consumer, re-pointed to a live record.
+
+WHAT IS OWED. `Decidable (PlusValidZTime phi)` -- or an explicit, recorded verdict that the ray-product presentation cannot deliver it. Nothing in the tree states it today and no route establishes it: the review's ranking has L+ decidability OPEN BY EVERY ROUTE.
+
+WHAT IS ALREADY IN HAND, to be re-verified before use. The keystone, under `[F.IsRegular]` and not unconditionally: `plusStab_iff_rays` (general task frame) and `plusStab_iff_omega` (omega-sequence form over Z) in `FormalSystem/PlusLanguage/PlusRayFibre.lean`, with `seamOmegaEquiv` and `pathFibreEquiv`; the seam-gluing machinery in `FormalSystem/Semantics/Presheaf/Ray.lean` (`seamGlue` and its `pastOf`/`futOf` round-trips). Carrier normalization for L+ is landed: `FormalSystem.PlusLanguage.plusValidZTime_iff_plusValidInt`, the prerequisite any integer-indexed enumeration rests on. The alphabet is licensed by the depth stratification; the necessity of a universal, complementation-shaped summary is proved, and a nondeterministic summary is proved UNSOUND. Names read at 2026-10-05; re-check each.
+
+WHAT BLOCKS IT. The universal summary device is not selected -- that is task 732 (experiment E3), on which the substrate task 711 is blocked. This task depends on 711 and must not be planned or implemented before the substrate exists. Filing it now makes the chain visible and gives the aim an owner; it is not a licence to start.
+
+THREE CAUTIONS THAT BOUND WHAT MAY BE CLAIMED.
+(1) Gluing does NOT bound the fibre. The route concedes INFINITE fibres and seeks a finite PRESENTATION -- the only move `Probe710.not_finite_width_fmp` leaves open. Any phase that quietly reintroduces a finite-fibre assumption is reproducing a refuted shape.
+(2) The binary seam case is choice-free while the DIRECTED case needs Saturation, so an omega-ray built by iterated gluing is a directed colimit, not a finite paste.
+(3) NO UPPER BOUND MAY BE CLAIMED. The external ceiling is the ARGUED (not formalized) CTL-star 2EXPTIME lower bound held in task 713 as a citable sanity anchor; nothing cheaper than it is credible, and it is never a source for an upper bound.
+
+HARD CONSTRAINTS. Never write "L+ is decidable" unqualified, and never state a decidability result for L+ without carrying its frame class, its language fragment, its premise set and its hypothesis (`[F.IsRegular]` at minimum). A recorded verdict that the presentation cannot deliver the result is a complete and valid outcome, and is preferable to a true-looking name over a proof that does not reach it -- the exact defect the retired-as-vacuous section of `FormalSystem/Metalogic/Decidability/Correctness.lean` exists to document.
+
+FILE SCOPE IS DELIBERATELY ABSENT. Which files this task writes depends on which device experiment E3 selects, so declaring a scope now would either be a guess or a phantom path. SET `file_scope` AT PLAN TIME, before any implement dispatch -- an absent scope makes this task invisible to the batch admission gate's overlap detection, which is a known blindness and not an exemption.
+
+ACCEPTANCE. Either `Decidable (PlusValidZTime phi)` machine-checked with every qualifier carried and its axiom set pinned in the invariants harness and a row added to the Decidability section of `docs/theorem-index.md`; or a recorded, cited verdict naming what the ray-product presentation cannot deliver and why, with the obstruction stated as a theorem or a wired probe rather than as prose.
+
+---
+
+### 734. E4 mosaic stabsaturated mixed germ probe
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Run experiment E4: decide StabSaturated on the Bool fixture's mosaic set, and acquire the Hodkinson-Reynolds Handbook sections
+
+WHY THIS EXISTS. Route R2 -- mosaics and quasimodels -- is the rank-2 route to decidability of L+ over discrete time, behind the seam-gluing route R1 and ahead of the closed and low-ranked alternatives. Its amalgamation precondition is already FREE: `paste` glues two mosaics agreeing at a shared germ, choice-free and with uniqueness, exported as `amalgamate` and `amalgamate_unique`. What gates R2 is a single decidability question that the landed probe fixes as a `Prop` and proves only in a degenerate corner, plus two Handbook sections absent from the corpus. The review named this experiment E4 and left it "open for the next round to attack by name". It was never filed.
+
+THE GATE, precisely. `Probe718Mosaic.StabSaturated` is proved only by `stabSaturated_of_sameState` -- the SAME-STATE corner. R2's hypothesis is that `StabSaturated` is decidable on finite mosaic sets with MIXED germ states, under `[F.IsRegular]`, and that a saturated-set existence theorem holds for L+. Neither is established. Re-verify both declaration names against the tree before relying on them; this description's reading is from 2026-10-05.
+
+WHAT TO DELIVER, in two parts.
+(1) The probe: decide `StabSaturated` on the two-state Bool fixture's mosaic set at `box-dot(Fp)`, with MIXED germ states rather than the same-state corner. This is the cheapest test of R2's load-bearing hypothesis.
+(2) The sources: the Hodkinson-Reynolds Handbook of Modal Logic sections 5.10 and 5.11 bodies are ABSENT from the corpus, which is why R2 cannot be promoted on textual grounds no matter how the probe comes out. Acquire and ingest them. R2's standing cannot be settled by a probe alone.
+
+THE FALSIFIER, which is a valid outcome. A finite mosaic set, with mixed germ states, on which `StabSaturated` is FALSE yet every finite coherence condition holds. That would close R2 the way filtration was closed, and closing a route on evidence is a complete result -- not a failed task. Record it rather than working around it; the no-weakening rule for wired probes applies.
+
+HARD CONSTRAINTS. No complexity claim. Do not file a fourth certificate class on the strength of anything found here: any certificate class presenting finite fibres is already refuted by `Probe710.not_finite_width_fmp`, and R2 is a quasimodel route, not a certificate class. Do not promote R2 above R1 on probe evidence alone; ranking is the review's, and the Handbook sections are part of what any re-ranking would rest on.
+
+LITERATURE. Part (2) is source acquisition; run with `--lit`.
+
+SCHEDULING. Wiring into `scripts/check-evidence-probes.sh` collides with the declared file_scope of tasks 720 and 725, and with the two sibling probe tasks filed alongside this one. Run in a separate cycle from each of them.
+
+ACCEPTANCE. One probe file under `specs/evidence/seam-gluing-ray-product/` compiling under `lake env lean` and wired into `scripts/check-evidence-probes.sh`, whose header states whether `StabSaturated` is decidable on mixed germ states and what that does to R2's standing; plus the two Handbook sections present in the Literature index with an index entry. Either half landing without the other is a [PARTIAL], not a completion.
+
+---
+
+### 733. Backward dual mirror fixture branching probe
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Probe the backward-dual stability summary on a backward-NONDETERMINISTIC mirror fixture (E1's hard test)
+
+WHY THIS EXISTS. Experiment E1 -- the backward-dual finite-graph summary on a time-asymmetric fixture -- came out POSITIVE and is wired into the evidence gate as `specs/evidence/seam-gluing-ray-product/backward-dual-asymmetric-fixture`. That result is what lets the two-factor ray presentation stand. But the probe's own header records an honest limit: the fixture it ran on is backward DETERMINISTIC, so its backward factor is a SINGLETON, making the result the dual at its easiest possible instance. The header names the hard test -- a mirror fixture whose backward factor genuinely branches -- as a follow-up. That follow-up was never filed. Re-read the probe header before starting; this description's reading of it is from 2026-10-05.
+
+WHY IT MATTERS MORE THAN IT LOOKS. The finite-width obstruction lives in the BACKWARD factor. `Probe710.not_finite_width_fmp` is the refutation the whole gluing route is navigating around, and the route's standing claim is that the stab fibre factors as a product of a past-ray space and a future-ray space over the seam state. A backward factor that is a singleton cannot exhibit the obstruction, so the one proved instance of the backward dual is drawn from precisely the region where the obstruction is invisible. Until the dual is tested where the backward factor branches, the two-factor presentation rests on a forward factor plus a degenerate backward one.
+
+WHAT TO DELIVER. One probe file deciding the backward stability operator on a fixture that is time-asymmetric AND backward-nondeterministic -- at least two distinct backward root paths from the state under test. The expected shape, from the landed forward result (`Probe718FiniteGraph.will_iff_allPathsMeet`, `decide_will`, `decidable_will`) and from the asymmetric-fixture dual, is that the backward stability operator at a seam state is exactly "every backward root path from that state meets the p-set", decided by backward reachability alone and state-dependently. Verify that on a branching backward factor, or exhibit where it fails.
+
+A NEGATIVE RESULT IS A FIRST-CLASS OUTCOME. If the summary fails on a branching backward factor, that is a FALSIFIER for the two-factor presentation at the exact factor the finite-width refutation inhabits -- recorded in the review's own falsifier list for route R1. Record it as such, in the probe header and as a C9-style register entry if one applies. Do not weaken, restate, or delete an obstruction to make a probe pass; that is the standing no-weakening rule for every wired probe in this collection.
+
+HARD CONSTRAINTS. No complexity claim. No automata determinization work -- this is a finite-fixture probe, and device selection is a separate record. Do not modify the existing `backward-dual-asymmetric-fixture` probe or any other wired probe; add a new one beside it.
+
+SCHEDULING. Wiring into `scripts/check-evidence-probes.sh` collides with the declared file_scope of tasks 720 and 725, and with the two sibling probe tasks filed alongside this one. Run in a separate cycle from each of them.
+
+ACCEPTANCE. One probe file under `specs/evidence/seam-gluing-ray-product/` compiling under `lake env lean`, wired into `scripts/check-evidence-probes.sh`, with a header stating the fixture's backward branching factor explicitly, which way the result came out, and what it does to the two-factor presentation. The existing asymmetric-fixture probe's "hard test is a mirror fixture, filed as a follow-up" note is then dischargeable.
+
+---
+
+### 732. E3 universal summary device selection probe
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Run experiment E3: select the universal summary device for the seam-gluing stab fibre check
+
+WHY THIS EXISTS. Task 711 -- the universal-summary substrate, which is route R1's entire remaining content on the gluing route to decidability of L+ over discrete time -- is [BLOCKED] with the recorded reason "device not yet selected; probe E3 pending". E3 was specified in the decidability-programme review's "Ranking ratification" section and named as the gate in three live records, but it was never filed as a task. Nothing else on the R1 critical path is blocked on anything. The programme's highest-priority front is therefore stalled on one unrun, cheap experiment that no task owns.
+
+WHAT IS ALREADY ESTABLISHED, and must be re-verified before being relied on. The keystone is proved: `plusStab_iff_rays` (general task frame) and `plusStab_iff_omega` (the omega-sequence form over Z) in `FormalSystem/PlusLanguage/PlusRayFibre.lean`, with `seamOmegaEquiv` and `pathFibreEquiv`, all under `[F.IsRegular]` and NOT unconditionally. Necessity of a universal device is proved: `Probe718PathQuantifier.exists_ne_stab` and `exists_ne_universal` show the existential per-path summary is True everywhere while the stab-of-eventually value is False everywhere on the shared two-state Bool fixture, so a nondeterministic summary is UNSOUND. The alphabet is licensed by `Probe718Stratification.plusTruthAt_iff_stratum_atomize`. Re-verify each of these declaration names against the tree before citing it; names in this description were read at 2026-10-05.
+
+WHAT THE PROBES DO NOT SHOW. That any particular device is the right one. Four candidates are live and none has been selected by any probe:
+(a) Safra/Piterman omega-automata determinization with the Rabin or parity acceptance infrastructure it rests on. Note: NO formalization of Safra or Piterman determinization exists in ANY proof assistant, so there is no prior art either way.
+(b) Safraless decision procedures (Kupferman and Vardi, FOCS 2005), recorded as a WANTED source in the Literature index.
+(c) The MSO-over-<Z,<>-plus-Buechi route of Hodkinson, Wolter and Zakharyaschev, APAL 106 (2000), their route (1): expresses "a quasimodel satisfying phi exists" as a monadic second-order sentence over the flow and discharges it by Buechi/Rabin. Covers <Z,<>, is non-elementary, and NEEDS NO SAFRA CONSTRUCTION.
+(d) A Ramsey-coloured summary, the re-scoped statement of task 709, via infinite Ramsey for pairs over the colours (E, lab, fwdLive, bwdLive).
+
+WHAT TO DELIVER. One device-selection probe comparing the candidate universal devices on the stab-of-eventually and stab-of-once shapes -- `box-dot(Fp)` and `box-dot(Pp)` -- BEFORE anything is funded. The probe decides which device the substrate should be built on, on evidence rather than expectation. Candidate (c) merits particular attention because it covers the target flow exactly and sidesteps machinery nobody has mechanized; that is a reason to test it first, not a reason to presuppose it.
+
+HARD CONSTRAINTS. NO DEVICE MAY BE ASSERTED AS THE RIGHT ONE WITHOUT PROBE EVIDENCE. NO COMPLEXITY BOUND MAY BE CLAIMED from this record; the CTL-star 2EXPTIME lower bound (task 713, ARGUED and not formalized) is the sanity ceiling any later-proposed procedure must clear, never an upper-bound source. Do not begin building a determinization substrate under this task -- selection only. The prohibition recorded in the archived ray-layer task's description, that no phase of it may begin building a determinization substrate, extends here.
+
+LITERATURE. Candidates (b) and (c) both hinge on sources the corpus is missing or has only as WANTED entries; run this task with `--lit` and expect source acquisition to be part of it.
+
+SCHEDULING. Wiring the probe into `scripts/check-evidence-probes.sh` collides with the declared file_scope of tasks 720 and 725, and with the two sibling probe tasks filed alongside this one. Run in a separate cycle from each of them.
+
+ACCEPTANCE. One probe file under `specs/evidence/seam-gluing-ray-product/` that compiles under `lake env lean`, is wired into `scripts/check-evidence-probes.sh`, and whose header states which device the comparison selected, on what evidence, and what it does NOT establish. A selection recorded as "no candidate is adequate on this evidence" is a complete and valid outcome. Task 711's blocked reason is then dischargeable by a separate `/revise 711`, which this task does not perform.
+
+---
 
 ### 731. Harvest generated surfaces into file scope
 - **Status**: [NOT STARTED]
@@ -431,7 +546,7 @@ DO NOT UNBLOCK THIS TASK ON AN ARGUMENT. Unblock it only on a proof, or convert 
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: metalogic
-- **Dependencies**: None
+- **Dependencies**: Task 732
 
 **Description**: RE-SCOPED 2026-10-03 BY USER RULING. On 2026-10-03 the user ruled REVISE on this record -- not ABANDONED, and not revived as filed. The ruling is carried as a checked Phase 0 box in specs/ROADMAP.md ("RULED 2026-10-03 by the user: REVISE"), and the ROADMAP Fronts table has moved this task off the Parked row onto the gluing route. The authoritative scope input is Section B and the section "The 711 tension" of specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md, whose anchors are re-verified in that file's Section 0 rows 10-11. Everything below the ORIGINAL SCOPE marker is superseded and must not be read as current.
 
@@ -455,6 +570,8 @@ WHY REVISE RATHER THAN ABANDON. The ROADMAP's former ABANDONED recommendation wa
 REVIVAL CONDITION: MET. The condition recorded in specs/718_omega_sequence_decidability_full_lplus/.decisions.json, cycle 1 -- "Revive 711 only after R1's falsification probes 1-3 land, so determinization is funded on evidence of necessity rather than expectation" -- is now MET: those probes landed in task 718's Phases 2, 3 and 5 and are wired by scripts/check-evidence-probes.sh. The outstanding gate is device selection (E3), not evidence of necessity.
 
 ORIGINAL SCOPE (superseded 2026-10-03; retained for provenance only). BLOCKED AND DELIBERATELY NOT SCHEDULED. This task exists to make a dependency VISIBLE, not to be worked. WHAT IT NAMED: the only known proof route to the finite model property for FULL L-plus (task 712) is the deterministic-automata route the CTL-star proofs take -- Emerson and Jutla 1988 via Reynolds 2001, which lets a deterministic Rabin linear automaton run in the background along each path; that route needs omega-automata DETERMINIZATION (Safra's construction, or Piterman's improvement) together with the Rabin or parity acceptance infrastructure it rests on. WHY BLOCKED: neither this tree nor Mathlib has any of it, and task 706's research recorded the route as OUT OF REACH (its decision D4). ITS SOLE FUNCTION was to be the named, honest blocker of the full L-plus finite model property. That function is discharged: 712's statement is refuted, so the blocker it named no longer gates anything, and this record is re-scoped as above rather than closed.
+
+DEPENDENCY ADDED 2026-10-05. Experiment E3 is now filed as task 732, so this record's former "dependencies remain empty by design: nothing upstream gates device selection, only the unrun probe does" no longer describes the graph -- the unrun probe has a record. Dependencies are now [732]. The blocked reason is unchanged (DEVICE NOT YET SELECTED; PROBE E3 PENDING) and is dischargeable by a /revise once 732 reports a selection. The consumer of this substrate is now task 735, a live record, replacing the reference to Deliverable 5 of the ray-layer task, which has been completed and archived.
 
 ---
 
