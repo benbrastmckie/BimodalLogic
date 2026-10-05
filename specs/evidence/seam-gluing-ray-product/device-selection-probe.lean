@@ -184,9 +184,135 @@ theorem not_lasso_sufficient_on_chain (w₀ : ℤ) :
   obtain ⟨_, _, h⟩ := hiff.mpr hrhs (fun n => w₀ - n) ⟨by simp, fun n => by unfold chainR; push_cast; ring⟩
   exact h
 
+/-! ## The fixture, restated verbatim from `path-quantifier-alternation.lean`
+
+Probes do not import each other (collection convention, see the `check-evidence-probes.sh`
+header), so the shared two-state Bool fixture of the necessity probe is restated here verbatim
+from `path-quantifier-alternation.lean`. The only change is the NAME of the fixture-level
+universal summary: the sibling calls it `AllPathsMeet`, which in this namespace is already the
+abstract `AllPathsMeet R P w₀` above, so here it is `AllFwdPathsMeet`. Its definition, and the
+proof of `will_iff_allPathsMeet`, are unchanged. -/
+
+/-- The fixture's one-step relation: the **complete** graph on `Bool`, time-independent. -/
+def Rf : ℤ → Bool → Bool → Prop := fun _ _ _ => True
+
+theorem Rf_fwd : ∀ (t : ℤ) (w : Bool), ∃ u, Rf t w u := fun _ _ => ⟨true, trivial⟩
+theorem Rf_bwd : ∀ (t : ℤ) (w : Bool), ∃ v, Rf (t - 1) v w := fun _ _ => ⟨true, trivial⟩
+
+/-- The fixture frame: `Bool`, `Fintype`, `Nonempty`, bi-serial. -/
+def Ff : FrameOver intOrder := FrameOver.ofSlicedStep Rf Rf_fwd Rf_bwd
+
+instance : Ff.IsRegular := FrameOver.ofSlicedStep_isRegular Rf Rf_fwd Rf_bwd
+
+/-- The distinguished atom: `p` holds exactly at `true`. -/
+def pa : Atom := ⟨"p", none⟩
+
+/-- The fixture model. -/
+def Mf : TaskModel Ff.toTaskFrame where
+  valuation q _ := q.2 = true
+
+/-- A forward root path from `w₀`. -/
+def IsFwdPath (w₀ : Bool) (g : ℕ → Bool) : Prop := g 0 = w₀ ∧ ∀ n, Rf 0 (g n) (g (n + 1))
+
+/-- The universal (`⊡`-matching) summary: every forward root path meets `p`. -/
+def AllFwdPathsMeet (w₀ : Bool) : Prop := ∀ g : ℕ → Bool, IsFwdPath w₀ g → ∃ n, 0 < n ∧ g n = true
+
+theorem will_iff_allPathsMeet (τ : WorldHistory Ff.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mf τ t (.stab (someFuture (.atom pa))) ↔ AllFwdPathsMeet (τ.state t).2 := by
+  rw [PlusTruth.stab_iff]
+  generalize hcw : τ.state t = cw
+  obtain ⟨c, w₀⟩ := cw
+  simp only at hcw ⊢
+  constructor
+  · intro h g hg
+    obtain ⟨hg0, -⟩ := hg
+    let h' : ℤ → Bool := fun z => if t ≤ z then g (z - t).toNat else w₀
+    let f : ℤ → Ff.WorldState := fun z => (z + (c - t), h' z)
+    have hstep : IsStepPath Ff f := by
+      intro z
+      refine (FrameOver.ofSlicedStep_step Rf Rf_fwd Rf_bwd (f z) (f (z + 1))).mpr ⟨?_, trivial⟩
+      show z + 1 + (c - t) = z + (c - t) + 1
+      ring
+    have hft : f t = (c, w₀) := by
+      have h1 : t + (c - t) = c := by ring
+      have h2 : h' t = w₀ := by
+        show (if t ≤ t then g (t - t).toNat else w₀) = w₀
+        rw [if_pos le_rfl]
+        simpa using hg0
+      show (t + (c - t), h' t) = (c, w₀)
+      rw [h1, h2]
+    set σ := FrameOver.worldHistoryOfStepPath Ff f hstep with hσdef
+    have hσt : σ.state t = (c, w₀) := hft
+    have hagree : (c, w₀) = σ.state t := hσt.symm
+    obtain ⟨s, hts, hs, -⟩ := h σ hagree
+    have hts' : (t : ℤ) < (s : ℤ) := hts
+    refine ⟨(s - t).toNat, by omega, ?_⟩
+    have hval : (σ.state s).2 = true := hs
+    have hσs : σ.state s = f s := rfl
+    have hfs2 : (f s).2 = true := hσs ▸ hval
+    have hs_eq : h' s = g (s - t).toNat := by
+      show (if t ≤ s then g (s - t).toNat else w₀) = g (s - t).toNat
+      rw [if_pos (le_of_lt hts)]
+    show g (s - t).toNat = true
+    rw [← hs_eq]
+    exact hfs2
+  · intro h σ hagree
+    have hw₀ : σ.state t = (c, w₀) := hagree.symm
+    have hstep : IsStepPath Ff σ.path := σ.isStepPath
+    obtain ⟨n, hn, hgn⟩ := h (fun n => (σ.path (t + n)).2) ⟨by
+        show (σ.path (t + (0 : ℕ))).2 = w₀
+        have h0 : (t + ((0:ℕ):ℤ)) = t := by norm_num
+        rw [h0]
+        show (σ.state t).2 = w₀
+        rw [hw₀], fun n => trivial⟩
+    have hn' : (0 : ℤ) < (n : ℤ) := by exact_mod_cast hn
+    refine ⟨t + n, by linarith, ?_, fun r _ _ => PlusTruth.top_true (M := Mf) (τ := σ) (t := r)⟩
+    show (σ.state (t + n)).2 = true
+    exact hgn
+
+/-! ## The bridge: the fixture's summary IS the abstract summary on `Rf 0` -/
+
+/-- `IsFwdPath w₀` is `IsPath (Rf 0) w₀` and `AllFwdPathsMeet w₀` is
+`AllPathsMeet (Rf 0) (· = true) w₀`, definitionally -- the identification the research report
+asserted, compiled. -/
+theorem allFwdPathsMeet_iff_abstract (w₀ : Bool) :
+    AllFwdPathsMeet w₀ ↔ AllPathsMeet (Rf 0) (fun b => b = true) w₀ := Iff.rfl
+
+/-- **The headline inertness statement on the real formula.** On the fixture the necessity probe
+used, `⊡(Fp)` at a seam state equals its restriction to ultimately periodic forward root paths.
+Only pigeonhole is consumed (`allPathsMeet_iff_lasso`); on this shape all four candidate devices
+coincide with this reachability summary. -/
+theorem stab_will_iff_lasso (τ : WorldHistory Ff.toTaskFrame) (t : ℤ) :
+    PlusTruthAt Mf τ t (.stab (someFuture (.atom pa))) ↔
+      ∀ g, IsFwdPath (τ.state t).2 g → IsLasso g → ∃ n, 0 < n ∧ g n = true := by
+  rw [will_iff_allPathsMeet, allFwdPathsMeet_iff_abstract, allPathsMeet_iff_lasso]
+  exact Iff.rfl
+
+/-! ## What the shape exercises of each device
+
+On `⊡(Fp)` / `⊡(Pp)` over this fixture (or any finite step graph), one line per candidate:
+
+- (a) Safra/Piterman determinization, (b) Safraless procedures: `detRun_accepts_iff` shows the
+  per-path acceptor for "eventually `p`" is a 2-state DETERMINISTIC automaton -- there is no
+  nondeterminism to determinize and no complementation to avoid, so neither device acts.
+- (c) MSO over `<ℤ,<>` plus Büchi/Rabin: on a finite fixture the sentence "every forward root
+  path meets `p`" is decided by the same finite reachability `allPathsMeet_iff_lasso` reduces to;
+  there is nothing for the automata-theoretic discharge to absorb.
+- (d) Ramsey-coloured summary: only the PIGEONHOLE tier is invoked
+  (`Finite.exists_ne_map_eq_of_infinite`); `FormalSystem.Metalogic.WeakCanonical.infinite_ramsey_pairs`
+  is never needed here.
+
+The sibling results all four devices therefore coincide with on this fixture:
+`Probe718FiniteGraph.will_iff_allPathsMeet` / `Probe718FiniteGraph.decide_will` (`⊡(Fp)` is
+False at every seam state) for the forward shape, and
+`Probe719Backward.pastStab_iff_allBwdPathsMeet` for the backward shape. -/
+
 end Probe732Device
 
 #print axioms Probe732Device.allPathsMeet_iff_lasso
 #print axioms Probe732Device.allBwdPathsMeet_iff_lasso
 #print axioms Probe732Device.detRun_accepts_iff
 #print axioms Probe732Device.not_lasso_sufficient_on_chain
+#print axioms Probe732Device.will_iff_allPathsMeet
+#print axioms Probe732Device.allFwdPathsMeet_iff_abstract
+#print axioms Probe732Device.stab_will_iff_lasso
