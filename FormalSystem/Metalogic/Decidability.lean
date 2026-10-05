@@ -155,6 +155,15 @@ the tableau contributes the derivation, not the soundness.
   instances for the four frame classes — is **open**. See `Correctness.lean`'s section
   "`validity_decidable` / `validity_has_decision_procedure` — Retired as vacuous" for what is
   still owed and why no `isValid`-shaped biconditional is written before it can be proved.
+- A second, unrelated decidability theorem is proved outside this file's own import graph (this
+  module imports `PlusWitnessFamily`, `BiLasso`, and `PlusSlicedCertificate`, not
+  `WitnessFamily`): `Decidable (ValidZTime φ)` is machine-checked as
+  `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime`
+  (`WitnessFamily/Compression/Assembly.lean`), by the presentation-free witness-family certificate
+  route. It holds only for `FrameClass.ZTime`, only for `φ : FormalSystem.Syntax.Formula` (no
+  stability operator), only with empty premises (`[]`), and its `Decidable` computes but is not
+  choice-free (`[propext, Classical.choice, Quot.sound]`). See `docs/theorem-index.md`'s
+  Decidability section.
 - Proof extraction: Partial. `extractProof` (`ProofExtraction.lean`) runs five strategies in order
   — `tryAxiomProof`, `matchDerived`, the closure-based `.axiomNeg` filter,
   `buildCompositionalProof`, `enhancedSearch` — and returns `.incomplete` once all are exhausted.

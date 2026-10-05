@@ -430,27 +430,27 @@ narrow its correctly-open scope.
 
 ---
 
-### Phase 5: Decidability.lean Module Docstring [NOT STARTED]
+### Phase 5: Decidability.lean Module Docstring [COMPLETED]
 
 **Goal**: The central `Decidability` aggregator docstring — what hover and `#check` show for the
 whole directory — notes that a second, unrelated decidability theorem is proved outside this
 file's own import graph. Comment text only; no import, `def`, or `theorem` changes.
 
 **Tasks**:
-- [ ] Re-read `FormalSystem/Metalogic/Decidability.lean`'s module docstring and its import list
+- [x] Re-read `FormalSystem/Metalogic/Decidability.lean`'s module docstring and its import list
   immediately before editing.
-- [ ] Add one new bullet to the "This directory's decision procedure" docstring list, placed after
+- [x] Add one new bullet to the "This directory's decision procedure" docstring list, placed after
   the existing "completeness direction ... open" bullet and before the "Proof extraction: Partial"
   bullet, stating statement (ii) with all four qualifiers, noting explicitly that the declaration
   lives outside this file's own import graph (this module imports `PlusWitnessFamily`, `BiLasso`,
   and `PlusSlicedCertificate`, not `WitnessFamily`), and pointing at
   `docs/theorem-index.md`'s Decidability section.
-- [ ] Change nothing but comment text: confirm by `git diff` that no `import`, `def`, `theorem`,
+- [x] Change nothing but comment text: confirm by `git diff` that no `import`, `def`, `theorem`,
   `instance`, `namespace`, or `open` line is touched, and that the edit stays inside the
   `/-! ... -/` block.
-- [ ] Build the single module and confirm it still elaborates clean:
+- [x] Build the single module and confirm it still elaborates clean:
   `lake build FormalSystem.Metalogic.Decidability`.
-- [ ] Stage and commit only this file.
+- [x] Stage and commit only this file.
 
 **Timing**: 0.5 hours
 
