@@ -1,73 +1,30 @@
 {
-  "status": "researched",
-  "task_number": 711,
-  "dispatch_seq": 1,
-  "phase": "research",
-  "started_at": "2026-10-05T19:45:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/711_universal_summary_substrate_stab_fibre/reports/01_universal-summary-substrate.md",
-      "summary": "Substrate research for the time-axis Ramsey-coloured summary (candidate d) framed by the MSO quasimodel route (c): identifies (d) as Buchi's Ramsey proof of the complementation step inside (c) (Thomas 1997 p. 30, resolving E3's Low-confidence limit), proves substrate step D1 sorry-free during research from infinite_ramsey_pairs, gives Lean-ready shapes for D2-D5, a 5-column literature mapping table, cost estimate, scope split with 709/735, and a proposed file_scope."
+      "type": "plan",
+      "path": "specs/711_universal_summary_substrate_stab_fibre/plans/01_universal-summary-substrate.md",
+      "summary": "Ten-phase plan for the time-axis Ramsey-coloured universal-summary substrate (candidate d, framed by the HWZ/GKWZ MSO route c): relocate infinite Ramsey for pairs to ForMathlib with an alias, land D1 (compiled in research), build D2 segment profiles with a discharge+deficit datum, D3 device theorem in both directions, D4 by reindexing, the ultimately-periodic Decidable specialization, D5 the stab bridge against an abstract Presents hypothesis, then two wired evidence probes (E1-fibre executability discrimination, depth-2 stratification E2); D1 pinned as Lean Challenge Statements."
     }
   ],
-  "next_steps": "Run /plan 711 to create implementation plan",
-  "proposed_file_scope": [
-    "FormalSystem/ForMathlib/Combinatorics/InfiniteRamseyPairs.lean",
-    "FormalSystem/ForMathlib.lean",
-    "scripts/CheckInitImportsMain.lean",
-    "FormalSystem/Metalogic/WeakCanonical/GroupModel/RamseyFactorization.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/Colour.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/Profile.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/Forward.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/Backward.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/Periodic.lean",
-    "FormalSystem/Metalogic/Decidability/RaySummary/Stab.lean",
-    "FormalSystem/Metalogic/Decidability.lean",
-    "specs/evidence/seam-gluing-ray-product/ray-summary-discrimination-probe.lean",
-    "specs/evidence/seam-gluing-ray-product/stab-depth-two-probe.lean",
-    "scripts/check-evidence-probes.sh",
-    "scripts/check-module-invariants.sh",
-    "docs/theorem-index.md"
-  ],
+  "next_steps": "Run /implement 711 to execute the plan",
   "metadata": {
     "session_id": "sess_1791231820_e1923d_711",
-    "agent_type": "lean-research-hard-agent",
-    "duration_seconds": 3300,
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
-    "findings_count": 14,
-    "adversarial_verification_triggered": true,
-    "reference_grounding_tier": 1,
-    "divergence_audit_activated": false,
-    "evidence_tier_note": "lean_local_search reported index=unavailable on every call and literature FTS returned degraded=true; Mathlib absence claims rest on a grep sweep of .lake/packages/mathlib plus the in-tree docstring and task 732's prior leansearch; literature claims rest on direct reads of corpus chunk files."
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 10,
+    "estimated_hours": 18,
+    "dependency_waves": [[1], [2], [3], [4], [5], [6, 7], [8], [9], [10]]
   },
   "memory_candidates": [
     {
-      "content": "Candidate (d), the time-axis Ramsey-coloured summary, is Buchi's own 1962 proof of the complementation step inside the MSO-over-<Z,<> route: Thomas 1997 'Languages, Automata, and Logic' p. 30 states Buchi represents recognizable sets as finite unions U_i V_i^omega over classes of a finite-index segment congruence and applies a form of Ramsey's theorem; determinization (McNaughton/Safra) is the alternative proof. So Safra/Piterman, Safraless and Ramsey are three proofs of one step, not three routes, and no truth-value discrimination between the MSO frame and the Ramsey substrate exists on any fixture.",
+      "content": "Ramsey/Buchi-style device theorems for per-eventuality fulfilment ('a fulfilling run exists iff a homogeneous self-looping segment profile is reachable') need the segment profile to carry a DEFICIT set (obligations pending inside the segment and not discharged by its end) beside the discharge set; composition is (a,c,E1 ∪ E2,(U1 \\ E2) ∪ U2). With only the discharge set, the sufficiency-direction splice secures obligations at the junction type but not at interior positions of a period witness. The device condition is then U ⊆ E on the homogeneous period (plus U0 ⊆ E for the prefix), and period witnesses can be chosen independently (no dependent choice) because every one realizes the same (b,b,E,U). Idempotence of the homogeneous colour is delivered for free by the infinite-Ramsey step but is not what the splice uses; it matters only for the ultimately-periodic specialization (idempotent power of a finite-semigroup element).",
       "category": "INSIGHT",
-      "source_artifact": "specs/711_universal_summary_substrate_stab_fibre/reports/01_universal-summary-substrate.md",
-      "confidence": 0.85,
-      "suggested_keywords": ["Buchi complementation", "Ramsey", "omega-automata", "quasimodel", "MSO", "seam-gluing", "stab fibre"]
-    },
-    {
-      "content": "From FormalSystem.Metalogic.WeakCanonical.infinite_ramsey_pairs and a composition law (c i k = comp (c i j) (c j k) for i<j<k), an idempotent homogeneous colour follows in about eight lines: obtain the homogeneous g and tau, take hτ 0 1, hτ 1 2, hτ 0 2, rewrite h02 with the composition law and the first two. The backward mirror is the same proof on the colouring (i,j) |-> c (t - j) (t - i) with casts via exact_mod_cast; do not insert `simp only at` on the three hypotheses (they are already beta-reduced and simp reports no progress). Both compile on [propext, Classical.choice, Quot.sound].",
-      "category": "TECHNIQUE",
-      "source_artifact": "specs/711_universal_summary_substrate_stab_fibre/reports/01_universal-summary-substrate.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["infinite_ramsey_pairs", "idempotent", "Ramsey", "lean4", "time axis", "composition law"]
-    },
-    {
-      "content": "When lean_local_search returns index=unavailable, the evidence tier for 'absent from Mathlib' claims is a grep sweep over .lake/packages/mathlib/Mathlib. At pin v4.33.0-rc1: 'ramsey' hits only Combinatorics/Hindman.lean, Combinatorics/HalesJewett.lean and RingTheory false positives; no Buchi/parity/Rabin/Muller/omega-regular anywhere; Computability/ is finite-word only (DFA, NFA, EpsilonNFA, RegularExpressions, MyhillNerode, TuringMachine, Partrec). Literature FTS (literature-search.sh) can also return degraded=true with empty results; --toc still works and chunk files can be grepped/read directly.",
-      "category": "PATTERN",
-      "source_artifact": "specs/711_universal_summary_substrate_stab_fibre/reports/01_universal-summary-substrate.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["lean_local_search", "unavailable", "Mathlib", "grep sweep", "omega-automata", "literature-search degraded"]
+      "source_artifact": "specs/711_universal_summary_substrate_stab_fibre/plans/01_universal-summary-substrate.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["ramsey", "buchi", "segment-profile", "fulfilment", "deficit-set", "omega-sequence"]
     }
   ],
-  "modified_files": [
-    "specs/711_universal_summary_substrate_stab_fibre/reports/01_universal-summary-substrate.md",
-    "specs/711_universal_summary_substrate_stab_fibre/.return-meta.json"
-  ]
+  "dispatch_seq": 2
 }
