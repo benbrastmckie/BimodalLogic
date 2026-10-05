@@ -286,7 +286,7 @@ seeds, the ledger's measured counts win.
 
 ---
 
-### Phase 3: Repair phantom citations in the three highest-density docs files [NOT STARTED]
+### Phase 3: Repair phantom citations in the three highest-density docs files [COMPLETED]
 
 **Goal**: Repair every ledger-`PHANTOM` citation in `docs/development/MODULE_INVARIANTS.md`,
 `docs/development/NAMING_CONVENTION_DEVIATION.md` and `docs/development/PUBLICATION_REFACTOR.md`
@@ -295,25 +295,36 @@ target, or striking the name.
 
 **Tasks**:
 
-- [ ] Re-read each file immediately before editing it (concurrent siblings are live on this tree).
-- [ ] For each `PHANTOM` row owned by this phase, apply exactly one of: correct to the live
+- [x] Re-read each file immediately before editing it (concurrent siblings are live on this tree).
+      *(no siblings this cycle — sole dispatch, confirmed at dispatch start)*
+- [x] For each `PHANTOM` row owned by this phase, apply exactly one of: correct to the live
       declaration named in the ledger; restate as absent / not-yet-landed with the owner named;
       or strike the name where nothing accurate replaces it. Annotate the correction rather than
       silently deleting the sentence, per the research report's over-correction mitigation.
-- [ ] Apply the `NAMING_CONVENTION_DEVIATION.md` decision from Phase 2 **without** rewriting its
+      *(completed: ZERO rows owned by this phase — the Phase 2 ledger's territory split confirmed
+      no `PHANTOM` row cites any of this phase's three files. Re-ran the checker scoped to these
+      three files' findings directly against the ledger: all 41 findings touching them are
+      NOT-LEAN/UPSTREAM/OUT-OF-SCOPE-REAL/VERIFIED-FIELD/ALREADY-ACCURATE, none PHANTOM. No edit
+      made to any of the three files.)*
+- [x] Apply the `NAMING_CONVENTION_DEVIATION.md` decision from Phase 2 **without** rewriting its
       deliberate Old/New rename rows — if the ledger chose allowlist or source-scoped skip, this
-      file may need no edit at all, and that is the expected outcome.
-- [ ] Verify each repair by grep before and after: the replacement name has a definition site
+      file may need no edit at all, and that is the expected outcome. *(completed: per-name
+      allowlist per the Phase 2 decision; file needs no edit, confirmed)*
+- [x] Verify each repair by grep before and after: the replacement name has a definition site
       (`grep -rn "^theorem X\b\|^def X\b\|^lemma X\b\|^abbrev X\b\|^structure X\b\|^inductive X\b"
       --include="*.lean" FormalSystem/`) and its enclosing namespace matches the qualified form
-      written into the prose.
-- [ ] Add no task-number references to any `docs/` file (`rules/no-task-references-in-deliverables.md`
+      written into the prose. *(N/A — no repairs in this phase's territory; applies in Phase 4)*
+- [x] Add no task-number references to any `docs/` file (`rules/no-task-references-in-deliverables.md`
       — `docs/**` is outside the `specs/**` exemption). Cite durable anchors: filenames, section
-      headings, declaration names.
-- [ ] Re-run `bash scripts/check-phantom-citations.sh --verbose` and confirm each repaired name
-      dropped out of the findings list.
-- [ ] Commit per green sub-step (per file repaired and re-verified), staging an explicit file
-      list only.
+      headings, declaration names. *(N/A — no edits made)*
+- [x] Re-run `bash scripts/check-phantom-citations.sh --verbose` and confirm each repaired name
+      dropped out of the findings list. *(completed: re-ran; findings count 90 (down from 94 after
+      the macro/elab/syntax fallback also cleared `apply_axiom`/`assumption_search`/`modal_search`/
+      `propDecide`); the 41 findings touching this phase's three files are unchanged from the
+      Phase 2 ledger's disposition)*
+- [x] Commit per green sub-step (per file repaired and re-verified), staging an explicit file
+      list only. *(N/A — no file repairs to commit; this phase's own plan/progress updates are
+      committed as its closing step)*
 
 **Timing**: 1.5 hours
 
