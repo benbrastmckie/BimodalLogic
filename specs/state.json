@@ -91,6 +91,11 @@
           "path": "specs/726_rerunnable_decidability_programme_inventory/plans/01_rerunnable-inventory-mechanism.md",
           "type": "plan",
           "summary": "Six-phase implementation plan for the re-runnable decidability-programme inventory mechanism."
+        },
+        {
+          "path": "specs/726_rerunnable_decidability_programme_inventory/summaries/01_rerunnable-inventory-mechanism-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary with acceptance evidence and a recorded deviation for 3 pre-existing non-regression gate failures (sibling task 722's own commit, an unrelated prior task, and 2 missing wired-probe files, none caused by this work)."
         }
       ],
       "next_artifact_number": 2,
@@ -100,7 +105,8 @@
         "scripts/decidability-inventory-baseline.txt",
         "scripts/generate-decidability-inventory.sh",
         "specs/ROADMAP.md"
-      ]
+      ],
+      "completion_summary": "Built scripts/generate-decidability-inventory.sh, which regenerates the decidability programme's PROVED/NOT ESTABLISHED/WITHDRAWN/REFUTED inventory from three machine sources, cross-checks pinned: cells against the C2/C14 axiom baselines, and diffs against a committed baseline extracted from the archived decidability-programme review; named as the periodic-re-run owner in specs/ROADMAP.md's Maintenance section."
     },
     {
       "project_number": 725,
@@ -116,13 +122,13 @@
     {
       "project_number": 722,
       "project_name": "reconcile_decidability_prose_two_statements",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "markdown",
       "description": "Reconcile the programme-level decidability prose with the two-statement distinction (tableau biconditional open; Decidable (ValidZTime phi) proved)\n\nWHY THIS EXISTS. Every programme-level surface describes only the tableau spine, and so states or implies that no decidability theorem is machine-checked. That is false, and it has been false since 2026-09-28. The surfaces conflate two different statements and assert the openness of the first as though it settled the second.\n\nRE-VERIFY FIRST, BEFORE EDITING ANY SURFACE. This task's whole purpose is correcting unverified claims, so it must not add new ones. Confirm by `#check` and `#print axioms` under `import FormalSystem`:\n`FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime : (phi : FormalSystem.Syntax.Formula) -> Decidable (FormalSystem.Semantics.ValidZTime phi)` in `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean` -- a `def`, not an `instance`, axioms `[propext, Classical.choice, Quot.sound]`, proved by `decidable_of_iff` through `validZTime_iff_noCertifiedCandidate`. Note there are COLLIDING conditional `decidableValidZTime` defs in `FormalSystem/Metalogic/Decidability/BiLasso/Assembly.lean` whose hypothesis is refuted by `Probe476.fmp_false`; do not cite those.\n\nTHE TWO STATEMENTS, to be stated once in each surface's own register.\n(i) OPEN at all four frame classes: the tableau biconditional `isValid phi fc = true <-> |= phi`, and `Decidable (|= phi)` through it. What exists today is the sound direction only -- `sound_of_isValid`, `isValid_sound`. The earlier `validity_decidable` and `validity_has_decision_procedure` forms were retired as vacuous; `FormalSystem/Metalogic/Decidability/Correctness.lean`'s \"Retired as vacuous\" section records why, and any surface restating it must report it faithfully rather than paraphrasing.\n(ii) PROVED: `Decidable (ValidZTime phi)` by the witness-family certificate route, with every one of its qualifiers carried -- `FrameClass.ZTime`, `phi : Formula` with no stability operator, EMPTY premises, computing but not choice-free.\n\nSURFACES TO CORRECT. `README.md`; `FormalSystem/README.md` (says \"decidability sound direction only\"); `FormalSystem/Metalogic/Decidability/README.md`; `FormalSystem/Metalogic/Decidability.lean` (module docstring only); `FormalSystem/Metalogic/Decidability/BiLasso/README.md` (says \"no decidability theorem is machine-checked at present\"); `docs/architecture/ADR-007-Decidability-One-Directional.md`; `docs/project-info/known-limitations.md`; `typst/FormalFoundations.typ` (says \"No decidability theorem is machine-checked\"). Re-verify each quoted phrase before relying on it -- the quotations above were read at 2026-10-03 and the files may have moved on.\n\nADR-007's rule \"no surface may say decidability is fully proven\" STAYS CORRECT and gains the sentence that the Z-time witness-family result is the one decidability theorem that is proven. The typst remark that \"neither factor logic is known decidable\" is corrected to: the Discrete factor is; the identity Log(all task frames) = Log(Discrete) intersect Log(Dense) remains a TARGET, not a theorem -- no Lean declaration states it, which must be verified before the sentence is written. Point every surface at `docs/theorem-index.md`'s Decidability rows.\n\nHARD CONSTRAINTS. NEVER write \"TM is decidable\" unqualified anywhere. Land no complexity claim. Do not edit `FormalSystem/Metalogic/Decidability/Correctness.lean` or any Lean proof -- this task changes prose only, and the one Lean file in scope is touched for its module docstring alone.\n\nSCHEDULING. Run in a separate cycle from tasks 177 (owns the documentation territory, depends on 26 tasks) and 543 (declares `README.md`), whose file_scope values collide with this one.\n\nACCEPTANCE. Every listed surface states the two-statement distinction once, in its own register, with every qualifier on the proved result; no surface says or implies that no decidability theorem is machine-checked; no surface says \"TM is decidable\" unqualified; every declaration name cited was verified in this round.",
       "topic": "documentation",
       "dependencies": [],
       "created": "2026-10-03T16:46:16Z",
-      "last_updated": "2026-10-05T16:10:47Z",
+      "last_updated": "2026-10-05T16:44:53Z",
       "session_id": "sess_1791141048_bd999f",
       "artifacts": [
         {
@@ -134,6 +140,11 @@
           "path": "specs/722_reconcile_decidability_prose_two_statements/plans/01_reconcile-decidability-prose.md",
           "type": "plan",
           "summary": "7-phase plan reconciling eight programme-level prose surfaces with the two-statement decidability distinction."
+        },
+        {
+          "path": "specs/722_reconcile_decidability_prose_two_statements/summaries/01_reconcile-decidability-prose-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary covering all 7 phases, the eight-surface acceptance table, and the full gate-vs-baseline comparison."
         }
       ],
       "next_artifact_number": 2,
@@ -147,6 +158,10 @@
         "docs/project-info/known-limitations.md",
         "specs/722_reconcile_decidability_prose_two_statements/.verified-claims.md",
         "typst/FormalFoundations.typ"
+      ],
+      "completion_summary": "Reconciled eight programme-level decidability surfaces (README.md, FormalSystem/README.md, two Decidability directory READMEs, ADR-007, known-limitations.md, Decidability.lean's docstring, and the typst paper) with the two-statement distinction: the tableau biconditional is open at all four frame classes, while Decidable (ValidZTime phi) is proved via the witness-family route with all four qualifiers. The full gate set (lake build, typst compile, task-reference lint, deploy verification, element lint, chapter-quality check) is unchanged from the pre-edit baseline. One out-of-scope ninth surface with the same unqualified-claim defect was found and reported, not fixed, per the plan's explicit scope boundary.",
+      "roadmap_items": [
+        "the surfaces must state that the tableau biconditional is OPEN at all four frame classes while Decidable (ValidZTime φ) is PROVED, and must never write \"TM is decidable\" unqualified"
       ]
     },
     {
