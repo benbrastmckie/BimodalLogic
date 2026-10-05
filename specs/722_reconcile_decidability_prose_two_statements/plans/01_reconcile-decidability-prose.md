@@ -304,38 +304,38 @@ table wording.
 
 ---
 
-### Phase 3: Decidability Directory READMEs [NOT STARTED]
+### Phase 3: Decidability Directory READMEs [COMPLETED]
 
 **Goal**: `FormalSystem/Metalogic/Decidability/README.md` gains the missing statement-(ii)
 overview bullet, and `FormalSystem/Metalogic/Decidability/BiLasso/README.md`'s outright false
 sentence is replaced and its future-tense "remaining route" framing is corrected to past tense.
 
 **Tasks**:
-- [ ] Re-read both files immediately before editing.
-- [ ] In `FormalSystem/Metalogic/Decidability/README.md`, add one new Overview bullet after the
+- [x] Re-read both files immediately before editing.
+- [x] In `FormalSystem/Metalogic/Decidability/README.md`, add one new Overview bullet after the
   existing three, stating statement (ii) with all four qualifiers, cross-referencing
   `[WitnessFamily README](WitnessFamily/README.md)` (already correct, left unedited) and
   `docs/theorem-index.md`'s Decidability section.
-- [ ] Leave that file's three existing Overview bullets and its module table row for
+- [x] Leave that file's three existing Overview bullets and its module table row for
   `WitnessFamily/` unchanged.
-- [ ] In `BiLasso/README.md`, replace the sentence "Its commented-out text is consistent with this
+- [x] In `BiLasso/README.md`, replace the sentence "Its commented-out text is consistent with this
   tree: no decidability theorem is machine-checked at present." (currently spanning lines 11–13;
   re-locate by content) with text stating plainly that a decidability theorem **is** now
   machine-checked — by the presentation-free witness-family route, not by this directory's own
   `fmp`-conditional assembly — carrying statement (ii)'s qualifiers and pointing at
   `WitnessFamily/Compression/Assembly.lean` and `docs/theorem-index.md`.
-- [ ] Preserve the surrounding accurate framing in the same paragraph: that the paper's
+- [x] Preserve the surrounding accurate framing in the same paragraph: that the paper's
   `cor:tm-decidability` is commented out and is cited as an unpublished remark, and that **this
   directory does not decide the logic**. Only the stale clause changes.
-- [ ] Update the sentence currently at line 34 ("So the remaining route to decidability is the
+- [x] Update the sentence currently at line 34 ("So the remaining route to decidability is the
   presentation-free witness family (`../WitnessFamily/README.md`), not a finite presentation.")
   from future/pending tense to past tense — the route succeeded — keeping its contrast with the
   finite-presentation route, which is why this directory does not carry the result.
-- [ ] Leave the `Probe476.fmp_false` refutation paragraphs unchanged: they are accurate and
+- [x] Leave the `Probe476.fmp_false` refutation paragraphs unchanged: they are accurate and
   unrelated to this correction.
-- [ ] Confirm no new text cites `BiLasso/Assembly.lean`'s conditional `decidableValidZTime` as a
+- [x] Confirm no new text cites `BiLasso/Assembly.lean`'s conditional `decidableValidZTime` as a
   live decidability theorem.
-- [ ] Stage and commit only these two files, by explicit file list.
+- [x] Stage and commit only these two files, by explicit file list.
 
 **Timing**: 0.75 hours
 

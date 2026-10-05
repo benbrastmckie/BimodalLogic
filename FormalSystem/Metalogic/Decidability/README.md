@@ -16,6 +16,14 @@ This directory implements a tableau search procedure that:
 - The full decidability biconditional — `isValid φ fc = true ↔ ⊨ φ`, plus `Decidable (⊨ φ)`
   instances for the four frame classes — is not established; see `Correctness.lean`'s
   "`validity_decidable` / `validity_has_decision_procedure` — Retired as vacuous" section
+- A second, unrelated decidability result **is** established, outside this tableau route
+  entirely: `Decidable (ValidZTime φ)` is machine-checked as
+  `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime`, by the presentation-free
+  witness-family certificate route documented in the
+  [WitnessFamily README](WitnessFamily/README.md). It holds only for `FrameClass.ZTime`, only for
+  `φ : FormalSystem.Syntax.Formula` (no stability operator), only with empty premises (`[]`), and
+  its `Decidable` computes but is not choice-free (`[propext, Classical.choice, Quot.sound]`). See
+  [`docs/theorem-index.md`](../../../docs/theorem-index.md)'s Decidability section.
 - Returns proof terms (`DerivationTree`) when valid
 - Returns countermodel descriptions when invalid
 - Uses fuel-based termination for practical execution

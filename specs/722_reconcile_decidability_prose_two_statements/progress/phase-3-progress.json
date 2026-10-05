@@ -1,0 +1,14 @@
+{
+  "phase": 3,
+  "phase_name": "Decidability Directory READMEs",
+  "started_at": "2026-10-05T09:56:00Z",
+  "last_updated": "2026-10-05T10:05:00Z",
+  "objectives": [
+    {"id": 1, "description": "FormalSystem/Metalogic/Decidability/README.md: add statement-(ii) Overview bullet after existing three", "status": "done", "files_touched": ["FormalSystem/Metalogic/Decidability/README.md"]},
+    {"id": 2, "description": "BiLasso/README.md: replace false machine-checked clause; re-tense remaining-route sentence", "status": "done", "files_touched": ["FormalSystem/Metalogic/Decidability/BiLasso/README.md"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

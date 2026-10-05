@@ -8,9 +8,17 @@ form (`Decidability/IntPresentation.lean`).
 decidability of TM as open — is **fully commented out** in the live paper and carries no
 `\label` there; it is retained only as a DANGLING entry in
 `docs/reference/paper-definitions-of-record.md`, and is cited here as an unpublished remark rather than
-as a published corollary. Its commented-out text is consistent with this tree: no decidability
-theorem is machine-checked at present. What is decided here is truth on a *presented* ℤ-frame: the frame is given as data, and the
-procedure searches the finitely presented paths of that specific frame.
+as a published corollary. A decidability theorem **is** now machine-checked in this tree — but
+not by this directory's own `fmp`-conditional assembly below, which is refuted (see the next
+section); it is `Decidable (ValidZTime φ)`, proved as
+`FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime` by the presentation-free
+witness-family route (`../WitnessFamily/Compression/Assembly.lean`), holding only for
+`FrameClass.ZTime`, only for `φ : FormalSystem.Syntax.Formula` (no stability operator), only with
+empty premises (`[]`), and computing without being choice-free
+(`[propext, Classical.choice, Quot.sound]`) — see
+[`docs/theorem-index.md`](../../../../docs/theorem-index.md)'s Decidability section. What is
+decided *here*, by this directory, is truth on a *presented* ℤ-frame: the frame is given as data,
+and the procedure searches the finitely presented paths of that specific frame.
 
 **And it performs no part of the finite-model step.** Its input is *already* a presentation:
 `exists_annot_of_truth` (`Extraction.lean`) takes a `PartialHistory P.toTaskFrame` and compresses it,
@@ -33,7 +41,7 @@ mistaken for engineering:
 `Probe476.fmp_false`
 (`specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean`): the
 witness `□(p ∨ Fp ∨ Pp) ∧ □(p → ¬Pp)` is satisfiable over the ℤ-carrier `ShiftSet`, and satisfiable
-at no state of any finite presentation. So the remaining route to decidability is the
+at no state of any finite presentation. So the route that succeeded, to decidability, was the
 presentation-free witness family (`../WitnessFamily/README.md`), not a finite presentation.
 
 Given `fmp`, the rest would assemble: `(∀ P ∈ cands φ, ∀ w, check P w φ.neg = false) ↔ ValidZTime φ`,
