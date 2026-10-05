@@ -1,0 +1,315 @@
+# Phantom-citation checker baseline — task 728, dispatch seq 9
+# Captured: 2026-10-05T16:49:36Z
+# Command: bash scripts/check-phantom-citations.sh --verbose
+#
+# MEASURED COUNTS (re-run fresh at this dispatch, after tasks 722 and 726 both
+# completed implementation on this same tree):
+#   Findings: 105
+#   Candidate (source-label, span) pairs: 1028
+#   Sites citing specs/state.json: 1
+#   Sites citing specs/ROADMAP.md: 0
+#   Sites citing docs/**: 130
+#   Distinct docs/ files cited: 32
+#   Distinct files cited (all): 33
+#
+# Per-source-file site counts (descending):
+#        27 docs/development/MODULE_INVARIANTS.md
+#        16 docs/development/NAMING_CONVENTION_DEVIATION.md
+#         9 docs/development/PUBLICATION_REFACTOR.md
+#         7 docs/theorem-index.md
+#         6 docs/reference/API_REFERENCE.md
+#         6 docs/project-info/tactic-registry.md
+#         5 docs/reference/state-topology-appendix-support.md
+#         5 docs/development/LEAN_STYLE_GUIDE.md
+#         5 docs/architecture/total-history-validity-decisions.md
+#         4 docs/reference/transcription-audit-surface.md
+#         4 docs/architecture/BFMCS_ARCHITECTURE.md
+#         3 docs/user-guide/tactic-development.md
+#         3 docs/reference/paper-definitions-of-record.md
+#         3 docs/project-info/implementation-status.md
+#         3 docs/development/CI_CD_PROCESS.md
+#         3 docs/architecture/ADR-007-Decidability-One-Directional.md
+#         2 docs/user-guide/architecture.md
+#         2 docs/reference/tactic-reference.md
+#         2 docs/project-info/known-limitations.md
+#         2 docs/project-info/FEATURE_REGISTRY.md
+#         2 docs/development/METAPROGRAMMING_GUIDE.md
+#         1 specs/state.json#project_720
+#         1 docs/user-guide/troubleshooting.md
+#         1 docs/reference/README.md
+#         1 docs/reference/operators.md
+#         1 docs/reference/docstring-standard.md
+#         1 docs/reference/axiom-reference.md
+#         1 docs/README.md
+#         1 docs/project-info/test-coverage.md
+#         1 docs/development/TESTING_STANDARDS.md
+#         1 docs/development/MODULE_SYSTEM_EVALUATION.md
+#         1 docs/ARCHITECTURE.md
+#         1 docs/architecture/ADR-008-FrameClass-Validity-Seam.md
+#
+# DELTA AGAINST PLAN-TIME HYPOTHESIS (01_phantom-citation-residual-triage.md Phase 1
+# Scope Hypothesis: 105 findings / 1,026 candidate pairs / 1 state.json site / 0
+# ROADMAP.md sites / 130 docs/** sites across 32 files; densest three: 27/16/9):
+#   Findings: 105 -> 105 (no change)
+#   Candidate pairs: 1026 -> 1028 (+2; within noise of tasks 722/726 prose edits
+#     landing on this same tree between plan time and this dispatch)
+#   state.json sites: 1 -> 1 (no change; still WIRED_REPO / project_720 only)
+#   ROADMAP.md sites: 0 -> 0 (no change)
+#   docs/** sites: 130 -> 130 across 32 files (no change)
+#   Densest three files: MODULE_INVARIANTS.md 27, NAMING_CONVENTION_DEVIATION.md 16,
+#     PUBLICATION_REFACTOR.md 9 (unchanged from hypothesis)
+#   Conclusion: the hypothesis holds to within +2 candidate pairs. Tasks 722 and 726's
+#   landed edits (ADR-007, known-limitations.md, new README/typst citations) did not
+#   measurably shift the phantom-citation finding set at this dispatch.
+#
+# ---- full --verbose output follows ----
+#
+Phantom declaration citation check
+===================================
+Scanned: specs/state.json (live task descriptions), docs/**/*.md, specs/ROADMAP.md
+Definition search root: FormalSystem/**/*.lean
+
+FINDING: `_1` -- zero definition sites for bare name `_1` in FormalSystem/ (1 site)
+    - docs/development/NAMING_CONVENTION_DEVIATION.md
+FINDING: `_2` -- zero definition sites for bare name `_2` in FormalSystem/ (1 site)
+    - docs/development/NAMING_CONVENTION_DEVIATION.md
+FINDING: `apply_axiom` -- zero definition sites for bare name `apply_axiom` in FormalSystem/ (5 sites)
+    - docs/development/METAPROGRAMMING_GUIDE.md
+    - docs/project-info/tactic-registry.md
+    - docs/reference/README.md
+    - docs/reference/tactic-reference.md
+    - docs/user-guide/tactic-development.md
+FINDING: `Valid.apply` -- zero definition sites for bare name `apply` in FormalSystem/ (1 site)
+    - docs/architecture/total-history-validity-decisions.md
+FINDING: `assumption_search` -- zero definition sites for bare name `assumption_search` in FormalSystem/ (1 site)
+    - docs/project-info/tactic-registry.md
+FINDING: `axiomWeight` -- zero definition sites for bare name `axiomWeight` in FormalSystem/ (1 site)
+    - docs/reference/API_REFERENCE.md
+FINDING: `backward_P` -- zero definition sites for bare name `backward_P` in FormalSystem/ (1 site)
+    - docs/architecture/BFMCS_ARCHITECTURE.md
+FINDING: `BimodalLogic` -- zero definition sites for bare name `BimodalLogic` in FormalSystem/ (1 site)
+    - docs/development/CI_CD_PROCESS.md
+FINDING: `BimodalTest` -- zero definition sites for bare name `BimodalTest` in FormalSystem/ (2 sites)
+    - docs/development/CI_CD_PROCESS.md
+    - docs/project-info/implementation-status.md
+FINDING: `BimodalTools` -- zero definition sites for bare name `BimodalTools` in FormalSystem/ (2 sites)
+    - docs/development/MODULE_INVARIANTS.md
+    - docs/development/PUBLICATION_REFACTOR.md
+FINDING: `BimodalToolsTest` -- zero definition sites for bare name `BimodalToolsTest` in FormalSystem/ (1 site)
+    - docs/development/LEAN_STYLE_GUIDE.md
+FINDING: `BX_d` -- zero definition sites for bare name `BX_d` in FormalSystem/ (1 site)
+    - docs/README.md
+FINDING: `carrier_nonempty` -- zero definition sites for bare name `carrier_nonempty` in FormalSystem/ (1 site)
+    - docs/reference/transcription-audit-surface.md
+FINDING: `checkInitImports` -- zero definition sites for bare name `checkInitImports` in FormalSystem/ (2 sites)
+    - docs/development/MODULE_INVARIANTS.md
+    - docs/development/PUBLICATION_REFACTOR.md
+FINDING: `CheckInitImportsMain` -- zero definition sites for bare name `CheckInitImportsMain` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `comments_only` -- zero definition sites for bare name `comments_only` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `CompactIccSpace` -- zero definition sites for bare name `CompactIccSpace` in FormalSystem/ (1 site)
+    - docs/theorem-index.md
+FINDING: `consequence_completeness` -- zero definition sites for bare name `consequence_completeness` in FormalSystem/ (1 site)
+    - docs/reference/operators.md
+FINDING: `ContrastiveGeneratorMain` -- zero definition sites for bare name `ContrastiveGeneratorMain` in FormalSystem/ (1 site)
+    - docs/development/PUBLICATION_REFACTOR.md
+FINDING: `DataExport` -- zero definition sites for bare name `DataExport` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `DatasetExporter` -- zero definition sites for bare name `DatasetExporter` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `dataset_generator` -- zero definition sites for bare name `dataset_generator` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `BimodalTools.DatasetGeneratorMain` -- zero definition sites for bare name `DatasetGeneratorMain` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `dbg_trace` -- zero definition sites for bare name `dbg_trace` in FormalSystem/ (2 sites)
+    - docs/development/MODULE_INVARIANTS.md
+    - docs/development/TESTING_STANDARDS.md
+FINDING: `dbgTrace` -- zero definition sites for bare name `dbgTrace` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `decl_spans` -- zero definition sites for bare name `decl_spans` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `lean_citations.decl_spans` -- zero definition sites for bare name `decl_spans` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `_dedekind` -- zero definition sites for bare name `_dedekind` in FormalSystem/ (1 site)
+    - docs/reference/API_REFERENCE.md
+FINDING: `FrameClass.Dedekind` -- zero definition sites for bare name `Dedekind` in FormalSystem/ (2 sites)
+    - docs/development/NAMING_CONVENTION_DEVIATION.md
+    - docs/reference/paper-definitions-of-record.md
+FINDING: `Derivable.deduction` -- zero definition sites for bare name `deduction` in FormalSystem/ (1 site)
+    - docs/reference/tactic-reference.md
+FINDING: `defaultTargets` -- zero definition sites for bare name `defaultTargets` in FormalSystem/ (2 sites)
+    - docs/development/MODULE_INVARIANTS.md
+    - docs/development/PUBLICATION_REFACTOR.md
+FINDING: `_discrete` -- zero definition sites for bare name `_discrete` in FormalSystem/ (1 site)
+    - docs/reference/API_REFERENCE.md
+FINDING: `FrameClass.Discrete` -- zero definition sites for bare name `Discrete` in FormalSystem/ (1 site)
+    - docs/development/NAMING_CONVENTION_DEVIATION.md
+FINDING: `docBlame` -- zero definition sites for bare name `docBlame` in FormalSystem/ (1 site)
+    - docs/development/NAMING_CONVENTION_DEVIATION.md
+FINDING: `docBlameTheorems` -- zero definition sites for bare name `docBlameTheorems` in FormalSystem/ (1 site)
+    - docs/development/LEAN_STYLE_GUIDE.md
+FINDING: `dupNamespace` -- zero definition sites for bare name `dupNamespace` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `ENFORCE_C17` -- zero definition sites for bare name `ENFORCE_C17` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `ENFORCE_C20_DECL` -- zero definition sites for bare name `ENFORCE_C20_DECL` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `ENFORCE_C20` -- zero definition sites for bare name `ENFORCE_C20` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `env_linter` -- zero definition sites for bare name `env_linter` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `forward_F` -- zero definition sites for bare name `forward_F` in FormalSystem/ (1 site)
+    - docs/architecture/BFMCS_ARCHITECTURE.md
+FINDING: `forward_G` -- zero definition sites for bare name `forward_G` in FormalSystem/ (1 site)
+    - docs/architecture/BFMCS_ARCHITECTURE.md
+FINDING: `isBadNameWithUnderscore` -- zero definition sites for bare name `isBadNameWithUnderscore` in FormalSystem/ (1 site)
+    - docs/development/NAMING_CONVENTION_DEVIATION.md
+FINDING: `TaskFrame.IsComplete` -- zero definition sites for bare name `IsComplete` in FormalSystem/ (1 site)
+    - docs/development/NAMING_CONVENTION_DEVIATION.md
+FINDING: `TaskFrame.IsDiscrete` -- zero definition sites for bare name `IsDiscrete` in FormalSystem/ (2 sites)
+    - docs/development/NAMING_CONVENTION_DEVIATION.md
+    - docs/project-info/implementation-status.md
+FINDING: `isOpen_inter` -- zero definition sites for bare name `isOpen_inter` in FormalSystem/ (1 site)
+    - docs/reference/state-topology-appendix-support.md
+FINDING: `isOpen_sUnion` -- zero definition sites for bare name `isOpen_sUnion` in FormalSystem/ (1 site)
+    - docs/reference/state-topology-appendix-support.md
+FINDING: `isOpen_univ` -- zero definition sites for bare name `isOpen_univ` in FormalSystem/ (1 site)
+    - docs/reference/state-topology-appendix-support.md
+FINDING: `IsPredArchimedean` -- zero definition sites for bare name `IsPredArchimedean` in FormalSystem/ (1 site)
+    - docs/project-info/known-limitations.md
+FINDING: `TaskFrame.IsSuccArchDiscrete` -- zero definition sites for bare name `IsSuccArchDiscrete` in FormalSystem/ (1 site)
+    - docs/development/NAMING_CONVENTION_DEVIATION.md
+FINDING: `IsSuccArchimedean` -- zero definition sites for bare name `IsSuccArchimedean` in FormalSystem/ (1 site)
+    - docs/project-info/known-limitations.md
+FINDING: `LANGUAGE_FILE_LAYERS` -- zero definition sites for bare name `LANGUAGE_FILE_LAYERS` in FormalSystem/ (1 site)
+    - docs/development/PUBLICATION_REFACTOR.md
+FINDING: `layer_of` -- zero definition sites for bare name `layer_of` in FormalSystem/ (2 sites)
+    - docs/development/MODULE_INVARIANTS.md
+    - docs/development/PUBLICATION_REFACTOR.md
+FINDING: `layerReynoldsDedekind` -- zero definition sites for bare name `layerReynoldsDedekind` in FormalSystem/ (1 site)
+    - docs/development/NAMING_CONVENTION_DEVIATION.md
+FINDING: `lean_debug_artifacts.mask` -- zero definition sites for bare name `mask` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `_mathlib` -- zero definition sites for bare name `_mathlib` in FormalSystem/ (1 site)
+    - docs/development/NAMING_CONVENTION_DEVIATION.md
+FINDING: `MetaM` -- zero definition sites for bare name `MetaM` in FormalSystem/ (4 sites)
+    - docs/ARCHITECTURE.md
+    - docs/project-info/FEATURE_REGISTRY.md
+    - docs/project-info/implementation-status.md
+    - docs/reference/API_REFERENCE.md
+FINDING: `Axiom.minFrameClass` -- zero definition sites for bare name `minFrameClass` in FormalSystem/ (1 site)
+    - docs/reference/axiom-reference.md
+FINDING: `MinusValidComplete` -- zero definition sites for bare name `MinusValidComplete` in FormalSystem/ (1 site)
+    - docs/reference/API_REFERENCE.md
+FINDING: `mk_all` -- zero definition sites for bare name `mk_all` in FormalSystem/ (4 sites)
+    - docs/development/CI_CD_PROCESS.md
+    - docs/development/MODULE_INVARIANTS.md
+    - docs/development/MODULE_SYSTEM_EVALUATION.md
+    - docs/development/PUBLICATION_REFACTOR.md
+FINDING: `mkAppM` -- zero definition sites for bare name `mkAppM` in FormalSystem/ (1 site)
+    - docs/development/METAPROGRAMMING_GUIDE.md
+FINDING: `modal_4_derivable` -- zero definition sites for bare name `modal_4_derivable` in FormalSystem/ (1 site)
+    - docs/project-info/tactic-registry.md
+FINDING: `modal_4_tactic` -- zero definition sites for bare name `modal_4_tactic` in FormalSystem/ (1 site)
+    - docs/user-guide/tactic-development.md
+FINDING: `modal_backward` -- zero definition sites for bare name `modal_backward` in FormalSystem/ (1 site)
+    - docs/architecture/BFMCS_ARCHITECTURE.md
+FINDING: `modal_b_derivable` -- zero definition sites for bare name `modal_b_derivable` in FormalSystem/ (1 site)
+    - docs/project-info/tactic-registry.md
+FINDING: `modal_search` -- zero definition sites for bare name `modal_search` in FormalSystem/ (3 sites)
+    - docs/project-info/tactic-registry.md
+    - docs/user-guide/tactic-development.md
+    - docs/user-guide/troubleshooting.md
+FINDING: `necessitation_from_modal_k` -- zero definition sites for bare name `necessitation_from_modal_k` in FormalSystem/ (1 site)
+    - docs/user-guide/architecture.md
+FINDING: `𝒩_F` -- zero definition sites for bare name `𝒩_F` in FormalSystem/ (2 sites)
+    - docs/reference/state-topology-appendix-support.md
+    - docs/theorem-index.md
+FINDING: `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier.no_finite_carrier_sat'` -- zero definition sites for bare name `no_finite_carrier_sat'` in FormalSystem/ (1 site)
+    - docs/theorem-index.md
+FINDING: `noSorryInProofs` -- zero definition sites for bare name `noSorryInProofs` in FormalSystem/ (1 site)
+    - docs/development/LEAN_STYLE_GUIDE.md
+FINDING: `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.FiniteCarrier.not_plusValidZTime_neg_θ'` -- zero definition sites for bare name `not_plusValidZTime_neg_θ'` in FormalSystem/ (1 site)
+    - docs/theorem-index.md
+FINDING: `not_setConsistent_of_setDerivable_bot` -- zero definition sites for bare name `not_setConsistent_of_setDerivable_bot` in FormalSystem/ (1 site)
+    - docs/user-guide/architecture.md
+FINDING: `Valid.of_forall` -- zero definition sites for bare name `of_forall` in FormalSystem/ (1 site)
+    - docs/architecture/total-history-validity-decisions.md
+FINDING: `Valid.of_not` -- zero definition sites for bare name `of_not` in FormalSystem/ (1 site)
+    - docs/architecture/total-history-validity-decisions.md
+FINDING: `PosRel` -- zero definition sites for bare name `PosRel` in FormalSystem/ (2 sites)
+    - docs/reference/paper-definitions-of-record.md
+    - docs/reference/transcription-audit-surface.md
+FINDING: `proof_extractor` -- zero definition sites for bare name `proof_extractor` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `ProofFirstGeneratorMain` -- zero definition sites for bare name `ProofFirstGeneratorMain` in FormalSystem/ (1 site)
+    - docs/development/PUBLICATION_REFACTOR.md
+FINDING: `propDecide` -- zero definition sites for bare name `propDecide` in FormalSystem/ (2 sites)
+    - docs/project-info/FEATURE_REGISTRY.md
+    - docs/project-info/tactic-registry.md
+FINDING: `reflect_time` -- zero definition sites for bare name `reflect_time` in FormalSystem/ (1 site)
+    - docs/development/LEAN_STYLE_GUIDE.md
+FINDING: `regionOmega` -- zero definition sites for bare name `regionOmega` in FormalSystem/ (1 site)
+    - docs/architecture/total-history-validity-decisions.md
+FINDING: `register_simp_attr` -- zero definition sites for bare name `register_simp_attr` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `resolve_env` -- zero definition sites for bare name `resolve_env` in FormalSystem/ (1 site)
+    - docs/reference/paper-definitions-of-record.md
+FINDING: `FormalSystem._Scratch` -- zero definition sites for bare name `_Scratch` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `sh_add` -- zero definition sites for bare name `sh_add` in FormalSystem/ (1 site)
+    - docs/reference/transcription-audit-surface.md
+FINDING: `sh_zero` -- zero definition sites for bare name `sh_zero` in FormalSystem/ (1 site)
+    - docs/reference/transcription-audit-surface.md
+FINDING: `snake_case` -- zero definition sites for bare name `snake_case` in FormalSystem/ (1 site)
+    - docs/development/NAMING_CONVENTION_DEVIATION.md
+FINDING: `soundness_dedekind` -- zero definition sites for bare name `soundness_dedekind` in FormalSystem/ (1 site)
+    - docs/development/NAMING_CONVENTION_DEVIATION.md
+FINDING: `soundness_discrete` -- zero definition sites for bare name `soundness_discrete` in FormalSystem/ (1 site)
+    - docs/development/NAMING_CONVENTION_DEVIATION.md
+FINDING: `specializes_iff_mem_closure` -- zero definition sites for bare name `specializes_iff_mem_closure` in FormalSystem/ (2 sites)
+    - docs/reference/state-topology-appendix-support.md
+    - docs/theorem-index.md
+FINDING: `tacticModal_t` -- zero definition sites for bare name `tacticModal_t` in FormalSystem/ (1 site)
+    - docs/development/NAMING_CONVENTION_DEVIATION.md
+FINDING: `temp_k_dist` -- zero definition sites for bare name `temp_k_dist` in FormalSystem/ (1 site)
+    - docs/reference/API_REFERENCE.md
+FINDING: `𝒯_F` -- zero definition sites for bare name `𝒯_F` in FormalSystem/ (1 site)
+    - docs/theorem-index.md
+FINDING: `theorem_name` -- zero definition sites for bare name `theorem_name` in FormalSystem/ (1 site)
+    - docs/reference/docstring-standard.md
+FINDING: `HasAttainedSUP.toHasFaithfulDedekindSUP` -- zero definition sites for bare name `toHasFaithfulDedekindSUP` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `TraceExporter` -- zero definition sites for bare name `TraceExporter` in FormalSystem/ (1 site)
+    - docs/development/MODULE_INVARIANTS.md
+FINDING: `TraceExport` -- zero definition sites for bare name `TraceExport` in FormalSystem/ (2 sites)
+    - docs/development/MODULE_INVARIANTS.md
+    - docs/development/PUBLICATION_REFACTOR.md
+FINDING: `F.translationProduct` -- zero definition sites for bare name `translationProduct` in FormalSystem/ (1 site)
+    - docs/theorem-index.md
+FINDING: `unusedDecidableInType` -- zero definition sites for bare name `unusedDecidableInType` in FormalSystem/ (1 site)
+    - docs/development/LEAN_STYLE_GUIDE.md
+FINDING: `Semantics.Validity.valid_at_world` -- zero definition sites for bare name `valid_at_world` in FormalSystem/ (1 site)
+    - docs/project-info/test-coverage.md
+FINDING: `ValidDedekind` -- zero definition sites for bare name `ValidDedekind` in FormalSystem/ (1 site)
+    - docs/development/NAMING_CONVENTION_DEVIATION.md
+FINDING: `valid_iff_allClosed` -- zero definition sites for bare name `valid_iff_allClosed` in FormalSystem/ (1 site)
+    - docs/architecture/ADR-007-Decidability-One-Directional.md
+FINDING: `validity_decidable` -- zero definition sites for bare name `validity_decidable` in FormalSystem/ (1 site)
+    - docs/architecture/ADR-007-Decidability-One-Directional.md
+FINDING: `validity_has_decision_procedure` -- zero definition sites for bare name `validity_has_decision_procedure` in FormalSystem/ (1 site)
+    - docs/architecture/ADR-007-Decidability-One-Directional.md
+FINDING: `TaskFrame.ValidOn` -- zero definition sites for bare name `ValidOn` in FormalSystem/ (2 sites)
+    - docs/architecture/ADR-008-FrameClass-Validity-Seam.md
+    - docs/architecture/total-history-validity-decisions.md
+FINDING: `WIRED_REPO` -- zero definition sites for bare name `WIRED_REPO` in FormalSystem/ (1 site)
+    - specs/state.json#project_720
+
+Candidates examined: 1028 distinct (source-label, span) pairs
+Findings: 105 distinct phantom-citation candidate(s)
+
+Each finding needs human triage (see LIMITATIONS in this script's header): confirm the
+name is genuinely absent (not just differently namespaced), then repair at the citing
+source -- strike it, restate it as absent, or correct it to the live declaration it was
+reaching for. Do not edit specs/*/reports/ or specs/*/summaries/ (historical artifacts).

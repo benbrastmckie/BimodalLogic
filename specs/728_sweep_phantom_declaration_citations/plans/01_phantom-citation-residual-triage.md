@@ -1,7 +1,7 @@
 # Implementation Plan: Task #728
 
 - **Task**: 728 - Sweep and repair phantom declaration citations across task records and prose
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/728_sweep_phantom_declaration_citations/reports/01_phantom-citation-sweep.md
@@ -122,7 +122,7 @@ three territories; a finding that would cross a boundary is resolved in Phase 2,
 
 ---
 
-### Phase 1: Confirm the landed sweep and establish the triage baseline [NOT STARTED]
+### Phase 1: Confirm the landed sweep and establish the triage baseline [COMPLETED]
 
 **Goal**: Establish that the research dispatch's committed repairs still hold on the current tree
 and that nothing out of scope was touched, then capture the checker's current output as the
@@ -130,27 +130,38 @@ baseline every later phase measures against. This phase re-verifies; it does not
 
 **Tasks**:
 
-- [ ] Read `git show --stat 3bfb970e4` and confirm the commit touched only: three
+- [x] Read `git show --stat 3bfb970e4` and confirm the commit touched only: three
       `FormalSystem/Metalogic/**/README.md` files, `docs/reference/paper-definitions-of-record.md`,
       `scripts/check-phantom-citations.sh` (new), `specs/state.json`, `specs/TODO.md`, and task
       728's own `reports/`, `.return-meta.json`, `metrics.jsonl`. Any `specs/*/reports/` or
       `specs/*/summaries/` path **other than 728's own new report**, or any `specs/reviews/` path,
-      is a HARD-CONSTRAINT violation — stop and report it rather than proceeding.
-- [ ] Spot-re-verify three of the report's "already repaired" claims directly against the tree
+      is a HARD-CONSTRAINT violation — stop and report it rather than proceeding. *(completed:
+      confirmed, 10-file stat matches exactly, no out-of-scope historical artifact)*
+- [x] Spot-re-verify three of the report's "already repaired" claims directly against the tree
       (not against the report's text): that no live task description asserts `verifyProof`, that
       the Greek `not_plusValidZTime_neg_Φ` spelling is the one cited, and that the frame-class
       constructors cited anywhere in a live description match `inductive FrameClass` in
-      `FormalSystem/ProofSystem/Axioms.lean` (`Base`/`Dense`/`ZTime`/`RTime`).
-- [ ] Confirm checker singularity: `ls scripts/*.sh` plus a grep for any second phantom/citation
+      `FormalSystem/ProofSystem/Axioms.lean` (`Base`/`Dense`/`ZTime`/`RTime`). *(completed: all
+      three hold — `verifyProof` only appears inside task 482's own withdrawal correction; the
+      Latin "Phi" spelling appears only inside 728's own description quoting the historical
+      finding, task 710's live description uses the Greek `Φ`; task 722's live description already
+      states the correct four constructors and explicitly flags the old "Discrete and Dedekind"
+      naming as superseded)*
+- [x] Confirm checker singularity: `ls scripts/*.sh` plus a grep for any second phantom/citation
       sweep under `scripts/` and `.claude/scripts/`, and confirm task 726's live description still
-      disclaims ownership of it.
-- [ ] Run `bash scripts/check-phantom-citations.sh --verbose` and save the full output to the
+      disclaims ownership of it. *(completed: `scripts/check-phantom-citations.sh` is the only
+      phantom-citation checker; `scripts/export-lean-citations.py`/`reanchor-lean-citations.py`
+      are a different, pre-existing line-anchor-drift tool, not a duplicate; task 726's
+      description still contains "THE PHANTOM-CITATION CHECKER IS NOT THIS TASK'S")*
+- [x] Run `bash scripts/check-phantom-citations.sh --verbose` and save the full output to the
       scratchpad **and** to `specs/728_sweep_phantom_declaration_citations/baseline-findings.txt`
-      (committed, so a later dispatch can diff against it).
-- [ ] Record in the baseline file: the finding count, the distinct-candidate count, and the
+      (committed, so a later dispatch can diff against it). *(completed)*
+- [x] Record in the baseline file: the finding count, the distinct-candidate count, and the
       per-source-file site counts (`awk '/^    - /{print $2}' … | sort | uniq -c | sort -rn`).
-- [ ] Confirm the split that drives this plan's scope: how many findings cite `specs/state.json`,
-      how many cite `specs/ROADMAP.md`, how many cite `docs/**`.
+      *(completed)*
+- [x] Confirm the split that drives this plan's scope: how many findings cite `specs/state.json`,
+      how many cite `specs/ROADMAP.md`, how many cite `docs/**`. *(completed: 1 / 0 / 130 across 32
+      files — identical to the plan-time hypothesis within +2 candidate pairs of noise)*
 
 **Timing**: 0.75 hours
 

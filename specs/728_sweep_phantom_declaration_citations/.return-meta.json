@@ -1,30 +1,10 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/728_sweep_phantom_declaration_citations/plans/01_phantom-citation-residual-triage.md",
-      "summary": "Six-phase plan covering only the residual work after the research dispatch's committed sweep: verify the landed repairs, triage the checker's 105 findings into four decided classes, repair the genuine phantom docs/ citations, and absorb non-defect findings into the checker's allowlists."
-    }
-  ],
-  "next_steps": "Run /implement 728 to execute the plan",
-  "phase_count": 6,
-  "estimated_hours": 7.5,
-  "dependency_waves": 4,
-  "memory_candidates": [
-    {
-      "content": "When a research dispatch performs and commits direct repair work (not just investigation), the following plan dispatch must re-verify the LANDED TREE rather than planning from the research report's prose. The phantom-citation sweep's research dispatch committed the entire named repair set plus a new checker script; planning from its report alone would have re-planned nine already-repaired instances. The cheap, reliable verification is `git show --stat <research commit>` for the touched-file list, plus re-running whatever mechanical checker the research dispatch built and diffing against its reported counts. The same pattern identifies what genuinely remains: the research report's own 'follow-up work, not performed in this dispatch' sentences are the plan's actual scope.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/728_sweep_phantom_declaration_citations/plans/01_phantom-citation-residual-triage.md",
-      "confidence": 0.7,
-      "suggested_keywords": ["research-dispatch", "direct-repair", "plan-verification", "landed-state", "git-show-stat", "residual-scope"]
-    }
-  ],
+  "status": "in_progress",
+  "dispatch_seq": 9,
   "metadata": {
-    "session_id": "sess_1791141048_bd999f_728",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "dispatch_seq": 6
+    "session_id": "sess_1791141048_bd999f",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
+  }
 }
