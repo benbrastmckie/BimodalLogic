@@ -247,36 +247,36 @@ defect is gone.
 
 ---
 
-### Phase 2: Repository and Library Entry Points [NOT STARTED]
+### Phase 2: Repository and Library Entry Points [COMPLETED]
 
 **Goal**: `README.md` and `FormalSystem/README.md` each state the two-statement distinction once,
 additively, without disturbing their accurate statement-(i) material or their terse per-layer
 table wording.
 
 **Tasks**:
-- [ ] Re-read `README.md`'s `### Decidability` section immediately before editing (sibling tasks
+- [x] Re-read `README.md`'s `### Decidability` section immediately before editing (sibling tasks
   may have touched it).
-- [ ] In `README.md`, insert one new paragraph directly after the section's intro sentence (the
+- [x] In `README.md`, insert one new paragraph directly after the section's intro sentence (the
   one ending in the ADR-007 pointer) and before the `- **Landed.**` bullet, stating both halves of
   the distinction from the Verified Claim Kit, with all four qualifiers on statement (ii), citing
   `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime` by fully-qualified name
   and pointing at `docs/theorem-index.md`'s Decidability section.
-- [ ] Leave `README.md`'s existing Landed/Open/Partial bullets unchanged — they describe statement
+- [x] Leave `README.md`'s existing Landed/Open/Partial bullets unchanged — they describe statement
   (i) correctly and in detail.
-- [ ] Leave `README.md`'s "Open problems for TM⁺" bullet unchanged: it concerns `PlusFormula`
+- [x] Leave `README.md`'s "Open problems for TM⁺" bullet unchanged: it concerns `PlusFormula`
   (the `⊡`-bearing language), about which statement (ii) says nothing. Confirm by re-reading it
   that it does not need a qualifier.
-- [ ] Re-read `FormalSystem/README.md`'s Layer-2 table row and the "Decidability is not 'fully
+- [x] Re-read `FormalSystem/README.md`'s Layer-2 table row and the "Decidability is not 'fully
   proven'..." paragraph immediately before editing.
-- [ ] Leave `FormalSystem/README.md`'s Layer-2 table cell (`decidability **sound direction
+- [x] Leave `FormalSystem/README.md`'s Layer-2 table cell (`decidability **sound direction
   only**`) unchanged — it is accurate about the tableau route it summarizes, and a one-line-per-
   layer table is not where qualifiers belong.
-- [ ] In `FormalSystem/README.md`, add one new paragraph directly after the existing
+- [x] In `FormalSystem/README.md`, add one new paragraph directly after the existing
   "Decidability is not 'fully proven'..." paragraph, stating statement (ii) with all four
   qualifiers and the `docs/theorem-index.md` pointer.
-- [ ] Confirm neither new paragraph says "TM is decidable" unqualified, implies decidability is
+- [x] Confirm neither new paragraph says "TM is decidable" unqualified, implies decidability is
   fully proven, or lands a complexity claim.
-- [ ] Stage and commit only these two files, by explicit file list.
+- [x] Stage and commit only these two files, by explicit file list.
 
 **Timing**: 0.5 hours
 

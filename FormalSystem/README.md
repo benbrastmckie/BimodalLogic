@@ -423,6 +423,16 @@ direction of the `isValid`-shaped statement is landed — `sound_of_isValid` and
 [ADR-007](../docs/architecture/ADR-007-Decidability-One-Directional.md) for why restating this
 as a two-directional claim reproduces a defect this tree already removed once.
 
+**A second, unrelated decidability result is separately proved.**
+`FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime`
+(`Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean`) is a machine-checked
+`Decidable (ValidZTime φ)`, by the presentation-free witness-family certificate route — not by
+the tableau route above. It carries four qualifiers that must accompany any citation of it: it
+holds only for `FrameClass.ZTime`; only for `φ : FormalSystem.Syntax.Formula`, which carries no
+stability operator; only with empty premises (`[]`); and its `Decidable` computes but is not
+choice-free (`[propext, Classical.choice, Quot.sound]`). See
+[`docs/theorem-index.md`](../docs/theorem-index.md)'s Decidability section.
+
 ## Theory-Specific Documentation
 
 For Bimodal-specific guides and references, see [docs/](../docs/README.md):

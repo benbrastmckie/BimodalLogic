@@ -349,6 +349,18 @@ is **open** at every class.
 extraction. Its status is **one-directional**, and must be described that way; the reason is
 recorded in [ADR-007](docs/architecture/ADR-007-Decidability-One-Directional.md).
 
+This is a distinct statement from a second, separately proved decidability result. The tableau
+biconditional above (`isValid φ fc = true ↔ ⊨ φ`) is open at all four frame classes, and so is
+`Decidable (⊨ φ)` through it — see the Landed/Open bullets immediately below. Separately,
+`Decidable (ValidZTime φ)` **is** machine-checked, as
+`FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime`, by the presentation-free
+witness-family certificate route. This result holds only for `FrameClass.ZTime` (nothing about
+the other three frame classes), only for `φ : FormalSystem.Syntax.Formula`, which carries no
+stability operator (nothing about TM⁺), only with empty premises (`[]`), and its `Decidable`
+computes without being choice-free (its axioms are `[propext, Classical.choice, Quot.sound]`).
+See [`docs/theorem-index.md`](docs/theorem-index.md)'s Decidability section for this and the
+other decidability rows.
+
 - **Landed.** The sound direction of the `isValid`-shaped statement, `isValid φ fc = true → ⊨ φ`:
   `sound_of_isValid` and its corollary `isValid_sound` (`Decidability/Correctness.lean`),
   sorry-free, together with the `isTautology` / `isContradiction` / `isSatisfiable` siblings and
