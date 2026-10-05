@@ -364,39 +364,43 @@ sentence is replaced and its future-tense "remaining route" framing is corrected
 
 ---
 
-### Phase 4: docs/ Surfaces — ADR-007 and Known Limitations [NOT STARTED]
+### Phase 4: docs/ Surfaces — ADR-007 and Known Limitations [COMPLETED]
 
 **Goal**: ADR-007 keeps its governing rule and gains the statement-(ii) bullet plus a de-staled
 Consequences sentence; `known-limitations.md`'s Limitation 6 gains a scoping note that does not
 narrow its correctly-open scope.
 
 **Tasks**:
-- [ ] Re-read both files immediately before editing.
-- [ ] In `docs/architecture/ADR-007-Decidability-One-Directional.md`, add a new
+- [x] Re-read both files immediately before editing.
+- [x] In `docs/architecture/ADR-007-Decidability-One-Directional.md`, add a new
   "**Landed, separately.**" bullet to the Decision section after the existing Open bullet, stating
   statement (ii) with all four qualifiers and noting it is the one decidability theorem proved in
   this tree to date, unrelated to the `isValid` biconditional above.
-- [ ] Keep the ADR's rule "no surface may say decidability is fully proven" verbatim, and add to
+- [x] Keep the ADR's rule "no surface may say decidability is fully proven" verbatim, and add to
   it the sentence that the Z-time witness-family result is the one decidability theorem that **is**
   proven. The rule stays correct; it is extended, not weakened or replaced.
-- [ ] Replace the Consequences bullet's stale exact row claim ("`docs/theorem-index.md` carries the
+- [x] Replace the Consequences bullet's stale exact row claim ("`docs/theorem-index.md` carries the
   two landed decidability rows (`Decidability.decide`, `Decidability.sound_of_isValid`)...") with a
   pointer at `docs/theorem-index.md`'s Decidability section, preserving its still-true logical
   claim that no row exists for the open biconditional direction. Do **not** substitute a new exact
-  count or row list — that is what went stale.
-- [ ] Leave the ADR's status/date header and its existing Landed/Open/Partial bullets for the
+  count or row list — that is what went stale. *(deviation: altered — Phase 1 found a second,
+  unnamed instance of the same stale exact-count framing in this same file, the Related section's
+  link text "the two landed rows" (line 64); corrected both rather than leaving one stale
+  instance beside the fixed one, since this is the same defect in the same already-in-scope
+  file, not scope expansion)*
+- [x] Leave the ADR's status/date header and its existing Landed/Open/Partial bullets for the
   tableau route unchanged.
-- [ ] In `docs/project-info/known-limitations.md`, add a short scoping note immediately after
+- [x] In `docs/project-info/known-limitations.md`, add a short scoping note immediately after
   Limitation 6's "is open." sentence — not a new numbered limitation — stating that this
   limitation is scoped to the `isValid` biconditional only, that `Decidable (ValidZTime φ)` is
   separately proved with its four qualifiers, and that this does **not** narrow Limitation 6's
   scope. Point at `docs/theorem-index.md`.
-- [ ] Leave Limitation 6's title, table, `extractionFailed` caveat, and Impact/Workaround/
+- [x] Leave Limitation 6's title, table, `extractionFailed` caveat, and Impact/Workaround/
   Resolution subsections unchanged, and leave its "sound direction only" sentence intact — it is
   accurate about the tableau statement it describes.
-- [ ] Confirm neither edit says "decidability is fully proven", "TM is decidable" unqualified, or
+- [x] Confirm neither edit says "decidability is fully proven", "TM is decidable" unqualified, or
   lands a complexity claim.
-- [ ] Stage and commit only these two files, by explicit file list.
+- [x] Stage and commit only these two files, by explicit file list.
 
 **Timing**: 0.75 hours
 

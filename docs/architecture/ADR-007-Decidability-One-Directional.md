@@ -45,22 +45,32 @@ biconditional before it can be proved.**
   the two rules scheduled outside `allRulesForFC` (`serialityRule` and `timeLinearity`, stages 2
   and 3 of `expandOnce`).
 - **Partial.** Proof extraction (`Decidability/ProofExtraction.lean`).
+- **Landed, separately.** A second decidability theorem, unrelated to the `isValid` biconditional
+  above: `Decidable (ValidZTime φ)` is machine-checked as
+  `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime`, by the presentation-free
+  witness-family certificate route rather than the tableau route. It holds only for
+  `FrameClass.ZTime`, only for `φ : FormalSystem.Syntax.Formula` (no stability operator), only
+  with empty premises (`[]`), and its `Decidable` computes but is not choice-free
+  (`[propext, Classical.choice, Quot.sound]`). This is the one decidability theorem proved in
+  this tree to date.
 
 ## Consequences
 
 - No surface may say "decidability is fully proven". The retirement record itself lives once, in
   `Decidability/Correctness.lean`'s "`validity_decidable` / `validity_has_decision_procedure` —
   Retired as vacuous" section; every other surface carries a pointer to it and the one-directional
-  summary above, not a copy of the argument.
-- `docs/theorem-index.md` carries the two landed decidability rows (`Decidability.decide`,
-  `Decidability.sound_of_isValid`) with their machine-pinned axiom sets, and no row for the open
-  direction. An index row is a proved statement; an open obligation is not one.
+  summary above, not a copy of the argument. The Z-time witness-family result above is the one
+  decidability theorem that **is** proven; it does not weaken this rule, since it answers a
+  different, narrower statement than the `isValid` biconditional this rule governs.
+- `docs/theorem-index.md`'s Decidability section carries every landed decidability row, each with
+  its machine-pinned axiom set, and no row for the open `isValid`-shaped biconditional direction.
+  An index row is a proved statement; an open obligation is not one.
 - Adding an `isValid`-shaped `iff` before it is discharged reproduces exactly the defect this
   retirement removed: a true-looking name over a proof that does not reach it.
 
 ## Related
 
 - `FormalSystem/Metalogic/Decidability/Correctness.lean` — the retirement record of source
-- [`docs/theorem-index.md`](../theorem-index.md) — the two landed rows
+- [`docs/theorem-index.md`](../theorem-index.md) — the Decidability section's landed rows
 - [ADR-001](ADR-001-Classical-Logic-Noncomputable.md) — why `Classical.choice` is available at
   all, which is what made the vacuous proofs typecheck

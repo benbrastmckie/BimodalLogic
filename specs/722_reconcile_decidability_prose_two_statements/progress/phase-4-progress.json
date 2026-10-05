@@ -1,0 +1,22 @@
+{
+  "phase": 4,
+  "phase_name": "docs/ Surfaces -- ADR-007 and Known Limitations",
+  "started_at": "2026-10-05T10:06:00Z",
+  "last_updated": "2026-10-05T10:15:00Z",
+  "objectives": [
+    {"id": 1, "description": "ADR-007: add Landed-separately Decision bullet; extend governing rule; replace Consequences row-count claim; also fix Related section's stale row-count link text", "status": "done", "files_touched": ["docs/architecture/ADR-007-Decidability-One-Directional.md"]},
+    {"id": 2, "description": "known-limitations.md: add scoping note to Limitation 6 after is-open sentence", "status": "done", "files_touched": ["docs/project-info/known-limitations.md"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "4.3",
+      "description": "Replace the Consequences bullet's stale exact row claim",
+      "type": "altered",
+      "reason": "ADR-007's Related section also carried the same stale exact-row-count framing (\"the two landed rows\" link text, line 64), discovered during Phase 1 re-verification. Corrected both instances in the same already-in-scope file rather than leaving one stale.",
+      "annotation": "*(deviation: altered — Phase 1 found a second, unnamed instance of the same stale exact-count framing in this same file, the Related section's link text \"the two landed rows\" (line 64); corrected both rather than leaving one stale instance beside the fixed one, since this is the same defect in the same already-in-scope file, not scope expansion)*"
+    }
+  ]
+}

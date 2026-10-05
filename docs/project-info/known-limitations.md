@@ -195,6 +195,16 @@ monotonicity lemmas.
 The **completeness direction** -- `models φ → isValid φ fc = true`, that a valid formula is
 always reported valid -- is open.
 
+This limitation is scoped to the `isValid`-shaped biconditional above and does not extend to a
+separately proved result. `Decidable (ValidZTime φ)` is machine-checked, as
+`FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime`, by the presentation-free
+witness-family certificate route -- an entirely different route from the tableau procedure this
+limitation describes. It holds only for `FrameClass.ZTime`, only for
+`φ : FormalSystem.Syntax.Formula` (no stability operator), only with empty premises (`[]`), and
+its `Decidable` computes but is not choice-free (`[propext, Classical.choice, Quot.sound]`). This
+does **not** narrow this limitation's scope -- the tableau completeness direction above remains
+open at all four frame classes. See `docs/theorem-index.md`'s Decidability section.
+
 ### The `extractionFailed` caveat
 
 `isKnownValid` is **not** a substitute hypothesis for `isValid`. Quoting
