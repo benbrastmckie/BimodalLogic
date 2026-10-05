@@ -80,11 +80,11 @@ next_project_number: 732
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
-726 [PLANNED] — Make the decidability-programme inventory re-runnable from...
+726 [IMPLEMENTING] — Make the decidability-programme inventory re-runnable from...
 
 ### Documentation
 
-722 [PLANNED] — Reconcile the programme-level decidability prose with the...
+722 [IMPLEMENTING] — Reconcile the programme-level decidability prose with the...
 
 ### Formula Refactor
 
@@ -208,7 +208,7 @@ ACCEPTANCE. Every surviving confirmed instance is repaired at its source or reco
 ---
 
 ### 726. Rerunnable decidability programme inventory
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Topic**: decidability
 - **Dependencies**: None
@@ -269,7 +269,7 @@ ACCEPTANCE. One probe file deciding the backward stability operator on a time-as
 ---
 
 ### 722. Reconcile decidability prose two statements
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: markdown
 - **Topic**: documentation
 - **Dependencies**: None
