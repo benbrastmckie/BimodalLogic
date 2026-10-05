@@ -1,71 +1,37 @@
 {
-  "status": "partial",
+  "status": "implemented",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "task_number": 732,
+  "session_id": "sess_1791224285_0433aa",
+  "dispatch_seq": 5,
+  "phase_number": 3,
+  "phases_completed": 3,
+  "phases_total": 3,
+  "started_at": "2026-10-05T19:19:50Z",
+  "completed_at": "2026-10-05T19:29:40Z",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/732_e3_universal_summary_device_selection_probe/summaries/01_e3-device-selection-probe-summary.md",
-      "summary": "Phases 1-2 of 3: comparison core transcribed and bridged to the real stab(Fp) formula on the Bool fixture; sorry-free on standard axioms."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/732_e3_universal_summary_device_selection_probe/handoffs/phase-2-handoff-20261005T191440Z.md",
-      "summary": "Continuation handoff for Phase 3 (selection header, gate wiring, collection run)."
-    },
-    {
-      "type": "implementation",
-      "path": "specs/evidence/seam-gluing-ray-product/device-selection-probe.lean",
-      "summary": "The E3 probe deliverable: comparison core plus the Bool-fixture bridge and headline stab_will_iff_lasso (provisional header until Phase 3)."
+      "summary": "E3 device-selection probe delivered, headered, wired into the evidence gate; selects time-axis Ramsey (d) via in-tree infinite_ramsey_pairs framed by the HWZ/GKWZ MSO route (c); (a)/(b) not selected; no complexity bound."
     }
   ],
-  "next_steps": "Dispatch Phase 3: collision check on scripts/check-evidence-probes.sh, re-grep cited names, write the scoped selection header, append the WIRED entry, run the collection gate, commit.",
-  "phases_completed": 2,
-  "phases_total": 3,
-  "dispatch_seq": 4,
-  "handoff_path": "specs/732_e3_universal_summary_device_selection_probe/handoffs/phase-2-handoff-20261005T191440Z.md",
   "sorry_inventory": [],
   "verification": {
     "sorry_count": 0,
-    "sorry_cross_check": "MATCH",
     "vacuous_count": 1,
-    "vacuous_note": "FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal := trivial; pre-existing at HEAD, no Lean file under the source roots modified by this dispatch",
     "axiom_count": 14,
-    "axiom_count_baseline": 14,
     "build_passed": true,
-    "build_evidence": "lake-build-guard.sh build exit 0; 'Build completed successfully (2819 jobs)'; 0 error: lines in captured output; .olean newer than source for StateTopology and FormalSystem; probe compiles via lake env lean exit 0, no warnings; will_iff_allPathsMeet axioms identical to sibling's live output",
-    "verification_passed": true
+    "verification_passed": true,
+    "evidence_gate": "PASS all 16 wired probe(s) compile"
   },
-  "metadata": {
-    "session_id": "sess_1791224285_0433aa",
-    "agent_type": "lean-implementation-hard-agent",
-    "task_number": 732,
-    "phase_number": 2,
-    "dispatch_seq": 4,
-    "duration_seconds": 900,
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"]
+  "completion_data": {
+    "completion_summary": "All 3 plan phases complete. Final selection header on specs/evidence/seam-gluing-ray-product/device-selection-probe.lean; probe wired into scripts/check-evidence-probes.sh (13 WIRED entries, two stale WIRED_REPO paths repaired); collection gate PASS all 16; guarded lake build green; 0 sorries. Acceptance met; task 711's blocked reason is dischargeable by a separate /revise 711."
   },
   "memory_candidates": [
-    {
-      "content": "After a `rw` chain whose final rewrite leaves two sides equal only by unfolding non-reducible `def`s (e.g. a fixture-level `IsFwdPath` vs the abstract `IsPath (Rf 0)`), `rw`'s closing `rfl` (reducible transparency) does not fire; append `exact Iff.rfl` rather than restructuring the proof.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/732_e3_universal_summary_device_selection_probe/summaries/01_e3-device-selection-probe-summary.md",
-      "confidence": 0.8,
-      "suggested_keywords": ["lean4", "rw", "Iff.rfl", "transparency", "evidence probe"]
-    },
-    {
-      "content": "The typst-sync pre-commit gate (.githooks/pre-commit Check 2) fires on ANY staged .lean path, including specs/evidence probes outside FormalSystem/, and compares status.typ counts against the live tree -- so a foreign uncommitted FormalSystem edit blocks an unrelated probe commit. Do not --no-verify; retry after the other writer lands.",
-      "category": "INSIGHT",
-      "source_artifact": "specs/732_e3_universal_summary_device_selection_probe/issues.jsonl",
-      "confidence": 0.8,
-      "suggested_keywords": ["git", "pre-commit", "typst-sync-check", "shared working tree", "territory"]
-    }
+    "Evidence-probe collection gate: after /todo archives a task whose probes are in WIRED_REPO, the paths must be redirected to specs/archive/ or the whole collection reports FAIL (seen with the 706/710 probes).",
+    "On finite step graphs the universal stab-of-eventually summary reduces to lasso paths by pigeonhole alone, so Fp/Pp shapes cannot discriminate between omega-automata devices; discrimination needs an infinite fibre with a per-time alphabet."
   ],
-  "modified_files": [
-    "specs/evidence/seam-gluing-ray-product/device-selection-probe.lean",
-    "specs/732_e3_universal_summary_device_selection_probe/plans/01_e3-device-selection-probe.md",
-    "specs/732_e3_universal_summary_device_selection_probe/handoffs/phase-2-handoff-20261005T191440Z.md",
-    "specs/732_e3_universal_summary_device_selection_probe/summaries/01_e3-device-selection-probe-summary.md",
-    "specs/732_e3_universal_summary_device_selection_probe/issues.jsonl"
-  ],
-  "errors": []
+  "handoff_path": "specs/732_e3_universal_summary_device_selection_probe/.orchestrator-handoff.json"
 }

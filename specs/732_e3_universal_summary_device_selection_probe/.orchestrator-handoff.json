@@ -1,24 +1,23 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "skeleton": false,
-  "summary": "Phase 2 of 3 complete: the Bool fixture and will_iff_allPathsMeet are restated verbatim from the necessity probe into device-selection-probe.lean, and the bridge lemmas allFwdPathsMeet_iff_abstract (Iff.rfl) and the headline stab_will_iff_lasso on the real formula PlusTruthAt Mf τ t (.stab (someFuture (.atom pa))) compile sorry-free on [propext, Classical.choice, Quot.sound]. Full guarded build green (2819 jobs). Committed as 4097d75aa. Phase 3 (scoped selection header, WIRED entry, collection run) remains.",
-  "artifacts": [
-    {
-      "type": "summary",
-      "path": "specs/732_e3_universal_summary_device_selection_probe/summaries/01_e3-device-selection-probe-summary.md",
-      "summary": "Phases 1-2 of 3: comparison core transcribed and bridged to the real stab(Fp) formula on the Bool fixture."
-    }
-  ],
-  "phases_completed": 2,
+  "summary": "Phase 3 of 3 complete: final scoped selection header written on specs/evidence/seam-gluing-ray-product/device-selection-probe.lean (selects time-axis Ramsey (d) via in-tree infinite_ramsey_pairs framed by the HWZ/GKWZ MSO route (c); (a)/(b) not selected; no complexity bound; no substrate work); probe wired into scripts/check-evidence-probes.sh; collection gate PASS all 16 wired probes; guarded lake build green; sorry census 0. Two stale WIRED_REPO paths (archived 706/710 probes) repaired in the same script. Committed as e8cfcd868.",
+  "phases_completed": 3,
   "phases_total": 3,
-  "dispatch_seq": 4,
+  "dispatch_seq": 5,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/732_e3_universal_summary_device_selection_probe/handoffs/phase-2-handoff-20261005T191440Z.md",
-  "continuation_context": {
-    "is_successor": true,
-    "resume_phase": 3,
-    "handoff_path": "specs/732_e3_universal_summary_device_selection_probe/handoffs/phase-2-handoff-20261005T191440Z.md"
+  "continuation_path": null,
+  "continuation_context": null,
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 1,
+    "vacuous_count_baseline_head": 1,
+    "axiom_count": 14,
+    "axiom_count_baseline_head": 14,
+    "build_passed": true,
+    "evidence_gate": "PASS all 16 wired probe(s) compile"
   },
-  "territory_observations": "Foreign uncommitted (later staged) edits to FormalSystem/Semantics/StateTopology.lean and three docs files by another writer; sibling lake build BimodalTools.TableauBridgeMain; stale build-guard holder record. None touched the owned file. Reported to team-lead and recorded in issues.jsonl."
+  "commits": ["e8cfcd868"],
+  "written_at": "2026-10-05T19:29:40Z"
 }
