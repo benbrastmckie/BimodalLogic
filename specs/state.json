@@ -74,6 +74,11 @@
           "path": "specs/732_e3_universal_summary_device_selection_probe/plans/01_e3-device-selection-probe.md",
           "type": "plan",
           "summary": "E3 device-selection probe plan: 3 phases, 3 waves, sorry-free path, H3 Tier 1 mapping table carried from the report."
+        },
+        {
+          "path": "specs/732_e3_universal_summary_device_selection_probe/summaries/01_e3-device-selection-probe-summary.md",
+          "type": "summary",
+          "summary": "Phase 1 of 3: comparison core transcribed into device-selection-probe.lean, sorry-free on standard axioms."
         }
       ],
       "next_artifact_number": 2

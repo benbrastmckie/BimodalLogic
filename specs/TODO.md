@@ -196,6 +196,7 @@ ACCEPTANCE. One probe file under `specs/evidence/seam-gluing-ray-product/` compi
 - **Dependencies**: None
 - **Research**: [732_e3_universal_summary_device_selection_probe/reports/01_e3-device-selection-probe.md]
 - **Plan**: [732_e3_universal_summary_device_selection_probe/plans/01_e3-device-selection-probe.md]
+- **Summary**: [732_e3_universal_summary_device_selection_probe/summaries/01_e3-device-selection-probe-summary.md]
 
 **Description**: Run experiment E3: select the universal summary device for the seam-gluing stab fibre check
 
