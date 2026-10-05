@@ -1,0 +1,87 @@
+# decidability-inventory-baseline.txt -- committed, hand-verified machine baseline
+#
+# Extracted from: specs/archive/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md, section 1
+# Extraction command: bash scripts/generate-decidability-inventory.sh --extract-baseline
+# Hand-reviewed against the report's four tables before commit: section 1.1 (20 data rows) ->
+# 33 PROVED records (several rows pack multiple sibling declarations into one cell, expanding
+# past the row count -- expected, see this script's Phase 2 scope note); section 1.2 (8 data
+# rows) -> 9 NOT_ESTABLISHED records (one row names two declarations); section 1.3 (4 data rows)
+# -> 4 WITHDRAWN records, hand-written per this script's own documented rationale (its "Withdrawn
+# by" cells mix full inline type signatures with bare names, which a shape-only filter cannot
+# reliably separate); section 1.4 (5 data rows, 3 distinct WIRED_REPO paths) -> 3 REFUTED
+# `repopath:` records plus 11 hand-backfilled `probe:` records (see each record's own provenance
+# field for why). All counts re-verified against the report by hand at commit time.
+#
+# This is the RECORDED baseline at extraction time -- a historical snapshot to diff
+# against, never a live statement about the current tree. `--diff` compares today's
+# generated inventory against this file; WITHDRAWN entries are carried forward from it
+# and verified for drift, never re-derived (see this script's own header).
+#
+# Format: one record per line, STATUS<TAB>IDENTIFIER_OR_PATH<TAB>PROVENANCE.
+# STATUS in {PROVED, NOT_ESTABLISHED, WITHDRAWN, REFUTED}. IDENTIFIER_OR_PATH is either
+# a bare/dotted Lean declaration name, `probe:<id>` (a WIRED-collection-relative probe
+# id, matching check-evidence-probes.sh's WIRED array entries), or `repopath:<path>` (a
+# full repository-relative probe path, matching a WIRED_REPO entry). A WITHDRAWN record
+# may hold several `;`-separated names in one field (one withdrawal event, several
+# declarations retired together).
+#
+PROVED	FormalSystem.Metalogic.Decidability.sound_of_isValid	section 1.1: `Metalogic/Decidability/Correctness.lean`
+PROVED	isValid_sound	section 1.1: same
+PROVED	decide_sound	section 1.1: same
+PROVED	decide_sound'	section 1.1: same
+PROVED	FormalSystem.Metalogic.Decidability.Verified.ruleSound_of_mem_allRulesForFC	section 1.1: `Metalogic/Decidability/Verified/Decidable.lean`
+PROVED	FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime	section 1.1: `Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean`
+PROVED	validZTime_iff_noCertifiedCandidate	section 1.1: same
+PROVED	exists_witnessFamily_of_not_validZTime	section 1.1: `WitnessFamily/Compression/Family.lean`
+PROVED	WitnessFamily.refutes_of_certifies	section 1.1: `WitnessFamily/Agreement.lean`
+PROVED	joint_countermodel	section 1.1: `WitnessFamily/Agreement.lean`
+PROVED	truth_iff_mem	section 1.1: `WitnessFamily/Agreement.lean`
+PROVED	WitnessFamily.no_witnessFamily_of_validZTime	section 1.1: `WitnessFamily/Examples.lean`
+PROVED	no_witnessFamily_of_MF	section 1.1: `WitnessFamily/Examples.lean`
+PROVED	PlusSharingWitnessFamily.plusTruth_iff_mem	section 1.1: `PlusWitnessFamily/Agreement.lean`
+PROVED	plusRefutes_of_certifies	section 1.1: `PlusWitnessFamily/Agreement.lean`
+PROVED	PlusSlicedCertificate.plusRefutes_of_certifies	section 1.1: `PlusSlicedCertificate/Sound.lean`
+PROVED	PlusSlicedCertificate.decidableCertifies	section 1.1: `PlusSlicedCertificate/Check.lean`
+PROVED	PlusSlicedCertificate.exists_plusSlicedCertificate_of_tailStable_countermodel	section 1.1: `PlusSlicedCertificate/Complete.lean`
+PROVED	WitnessFamily.exists_plusSlicedCertificate_of_not_plusValidZTime_ofFormula	section 1.1: `PlusSlicedCertificate/EmbedComplete.lean`
+PROVED	Probe718.seamFibreEquiv	section 1.1: `specs/evidence/seam-gluing-ray-product/stab-fibre-is-ray-product.lean`
+PROVED	plusStab_iff_rays	section 1.1: `specs/evidence/seam-gluing-ray-product/stab-fibre-is-ray-product.lean`
+PROVED	plusStab_iff_omega	section 1.1: `specs/evidence/seam-gluing-ray-product/stab-fibre-is-ray-product.lean`
+PROVED	probe:seam-gluing-ray-product/stab-fibre-is-ray-product	section 1.1: `specs/evidence/seam-gluing-ray-product/stab-fibre-is-ray-product.lean`
+PROVED	Probe718Stratification.plusTruthAt_iff_stratum_atomize	section 1.1: `.../stab-depth-stratification.lean`
+PROVED	stab_atomize_valuation	section 1.1: `.../stab-depth-stratification.lean`
+PROVED	Probe718FiniteGraph.will_iff_allPathsMeet	section 1.1: `.../finite-graph-stab-summary.lean`
+PROVED	decide_will	section 1.1: `.../finite-graph-stab-summary.lean`
+PROVED	decidable_will	section 1.1: `.../finite-graph-stab-summary.lean`
+PROVED	Probe718Mosaic.amalgamate	section 1.1: `.../mosaic-germ-amalgamation.lean`
+PROVED	amalgamate_unique	section 1.1: `.../mosaic-germ-amalgamation.lean`
+PROVED	stabSaturated_of_sameState	section 1.1: `.../mosaic-germ-amalgamation.lean`
+PROVED	Probe718PathQuantifier.exists_ne_stab	section 1.1: `.../path-quantifier-alternation.lean`
+PROVED	exists_ne_universal	section 1.1: `.../path-quantifier-alternation.lean`
+NOT_ESTABLISHED	validity_decidable	section 1.2: `⊨ φ → isValid φ fc = true` (tableau completeness), hence `isValid φ fc = true ↔
+NOT_ESTABLISHED	validity_has_decision_procedure	section 1.2: `⊨ φ → isValid φ fc = true` (tableau completeness), hence `isValid φ fc = true ↔
+NOT_ESTABLISHED	valid_iff_allClosed	section 1.2: `valid_iff_allClosed`
+NOT_ESTABLISHED	UNKNOWN	section 1.2: `Verified/Refutation/Core.lean`, `Verified/Provable.lean`, `Decidable (Derivable (no identifier-shaped span found)
+NOT_ESTABLISHED	sound_of_isValid	section 1.2: Proof extraction completeness: `verifyProof` is `fun _ _ => true` (`ProofExtract
+NOT_ESTABLISHED	UNKNOWN	section 1.2: Decidability of `Valid` (Base), `ValidDense`, `ValidRTime` by any route (no identifier-shaped span found)
+NOT_ESTABLISHED	UNKNOWN	section 1.2: General-premise Z-time consequence `Decidable (SemanticConsequenceIn .ZTime Γ σ) (no identifier-shaped span found)
+NOT_ESTABLISHED	UNKNOWN	section 1.2: Decidability of `PlusValidZTime` (full L⁺) by any route (no identifier-shaped span found)
+NOT_ESTABLISHED	UNKNOWN	section 1.2: `StabSaturated` decidability off the same-state corner (no identifier-shaped span found)
+WITHDRAWN	not_exists_plusCertifies_pumpTarget	section 1.3 row 1: withdraws the L+ compression theorem for PlusSharingWitnessFamily (PlusWitnessFamily/Limits/NoCertificate.lean); identifier is the REFUTING declaration, which legitimately stays live and pinned:C2 in source 1 -- expected, not a reappearance of the subject
+WITHDRAWN	not_exists_hopFree_plusCertifies_hopTarget	section 1.3 row 2: withdraws the hop-free production strategy (PlusWitnessFamily/Limits/HopFree.lean); identifier is the REFUTING declaration, same expected-live-and-pinned note as row 1
+WITHDRAWN	exists_tailStable_repr	section 1.3 row 3: withdraws 'every sliced certificate has a tail-stable re-presentation'; this name exists nowhere in the tree but in prose (PlusSlicedCertificate/FixtureStable.lean, PlusSlicedCertificate/README.md) -- confirmed-still-absent is the expected state
+WITHDRAWN	snce_share_congr;untl_shift_share_congr;not_plusCertifies_stabSnce;not_plusCertifies_stabSnce_premise;not_plusCertifies_stabUntl	section 1.3 row 4: five share-congruence declarations retired by the trans substrate (PlusWitnessFamily/Incompleteness.lean header); all five expected confirmed-still-absent as live source-1 rows
+REFUTED	repopath:specs/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean	section 1.4 table row
+REFUTED	repopath:specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean	section 1.4 table row
+REFUTED	repopath:specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean	section 1.4 table row
+REFUTED	probe:bi-lasso-decision-layer/phase3-scan-bound-is-false	section 1.4 closing paragraph (count only): backfilled from the current WIRED array minus the one drift instance identified in the archived review's follow-on research (seam-gluing-ray-product/backward-dual-asymmetric-fixture)
+REFUTED	probe:bi-lasso-decision-layer/phase7-filtered-frame-is-universal	section 1.4 closing paragraph (count only): backfilled from the current WIRED array minus the one drift instance identified in the archived review's follow-on research (seam-gluing-ray-product/backward-dual-asymmetric-fixture)
+REFUTED	probe:bi-lasso-decision-layer/phase12-check-not-compositional	section 1.4 closing paragraph (count only): backfilled from the current WIRED array minus the one drift instance identified in the archived review's follow-on research (seam-gluing-ray-product/backward-dual-asymmetric-fixture)
+REFUTED	probe:bi-lasso-decision-layer/phase10-origin-anchoring-obstruction	section 1.4 closing paragraph (count only): backfilled from the current WIRED array minus the one drift instance identified in the archived review's follow-on research (seam-gluing-ray-product/backward-dual-asymmetric-fixture)
+REFUTED	probe:frame-constraints-audit/mixed-sign-composition-obstruction	section 1.4 closing paragraph (count only): backfilled from the current WIRED array minus the one drift instance identified in the archived review's follow-on research (seam-gluing-ray-product/backward-dual-asymmetric-fixture)
+REFUTED	probe:stability-modal-substrate/closure-field-is-necessary	section 1.4 closing paragraph (count only): backfilled from the current WIRED array minus the one drift instance identified in the archived review's follow-on research (seam-gluing-ray-product/backward-dual-asymmetric-fixture)
+REFUTED	probe:seam-gluing-ray-product/stab-fibre-is-ray-product	section 1.4 closing paragraph (count only): backfilled from the current WIRED array minus the one drift instance identified in the archived review's follow-on research (seam-gluing-ray-product/backward-dual-asymmetric-fixture)
+REFUTED	probe:seam-gluing-ray-product/stab-depth-stratification	section 1.4 closing paragraph (count only): backfilled from the current WIRED array minus the one drift instance identified in the archived review's follow-on research (seam-gluing-ray-product/backward-dual-asymmetric-fixture)
+REFUTED	probe:seam-gluing-ray-product/finite-graph-stab-summary	section 1.4 closing paragraph (count only): backfilled from the current WIRED array minus the one drift instance identified in the archived review's follow-on research (seam-gluing-ray-product/backward-dual-asymmetric-fixture)
+REFUTED	probe:seam-gluing-ray-product/mosaic-germ-amalgamation	section 1.4 closing paragraph (count only): backfilled from the current WIRED array minus the one drift instance identified in the archived review's follow-on research (seam-gluing-ray-product/backward-dual-asymmetric-fixture)
+REFUTED	probe:seam-gluing-ray-product/path-quantifier-alternation	section 1.4 closing paragraph (count only): backfilled from the current WIRED array minus the one drift instance identified in the archived review's follow-on research (seam-gluing-ray-product/backward-dual-asymmetric-fixture)

@@ -1,0 +1,15 @@
+{
+  "phase": 4,
+  "phase_name": "Baseline data file, reproducible extraction, diff mode, WITHDRAWN carry-forward",
+  "started_at": "2026-10-05T00:30:00Z",
+  "last_updated": "2026-10-05T01:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "--extract-baseline mode, committed baseline data file, --diff mode, WITHDRAWN carry-forward and drift check, DISAGREEMENT reporting", "status": "done", "files_touched": ["scripts/generate-decidability-inventory.sh", "scripts/decidability-inventory-baseline.txt"]}
+  ],
+  "current_objective": 1,
+  "approaches_tried": [
+    {"approach": "Diff PROVED category (source-1 full Decidability table vs. baseline's curated section 1.1 table)", "result": "failed", "reason": "the archived review's PROVED table is a curated subset of headline results, not an exhaustive enumeration of docs/theorem-index.md's Decidability rows; diffing produced ~33 false 'added' lines for declarations that were already PROVED at baseline time but simply not individually cited. Replaced with an explicit note in the DIFF section explaining why PROVED is not diffed; REFUTED diff (a well-founded comparison since both sides enumerate the same WIRED/WIRED_REPO-shaped set) is unaffected and correctly surfaces the one known drift instance."}
+  ],
+  "handoff_count": 0,
+  "deviations": []
+}

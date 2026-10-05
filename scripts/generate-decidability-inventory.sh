@@ -401,15 +401,26 @@ def read_baseline_file(path):
 # =================================================================================================
 
 IDENT_SHAPE_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_.']*$")
+# Known non-Lean file extensions a bare filename citation carries -- mirrors
+# check-phantom-citations.sh's own extension denylist verbatim, so a filename span
+# (`Correctness.lean`, `ROADMAP.md`) is never mistaken for a declaration name just because it
+# contains a dot.
+_NON_LEAN_EXTENSIONS = (
+    ".lean", ".md", ".json", ".sh", ".toml", ".txt", ".typ", ".tex", ".yml", ".yaml",
+    ".bib", ".cff", ".nix", ".csv", ".cfg", ".ini",
+)
 
 
 def _identifier_spans(cell_text):
     """Backtick spans in `cell_text` that look like a Lean identifier/dotted-path (no spaces,
     has `_` or `.`), mirroring check-phantom-citations.sh's candidate-shape heuristic. Discards
-    noisy spans (full type signatures, prose) that do not have this shape."""
+    noisy spans (full type signatures, prose, bare filename citations) that do not have this
+    shape."""
     out = []
     for span in re.findall(r'`([^`]+)`', cell_text):
         if not IDENT_SHAPE_RE.match(span):
+            continue
+        if span.lower().endswith(_NON_LEAN_EXTENSIONS):
             continue
         if "_" not in span and "." not in span:
             continue
@@ -765,18 +776,14 @@ def main():
             for ident in removed:
                 any_drift = True
                 print(f"  - REFUTED  {ident}")
-            current_proved_names = {r["lean_name"] for r in (src1["rows"] if src1 else [])}
-            baseline_proved_names = {r[1] for r in baseline_records
-                                      if r[0] == "PROVED" and not r[1].startswith("probe:")}
-            baseline_proved_bare = {b.rsplit(".", 1)[-1] for b in baseline_proved_names}
-            added_p = sorted(n for n in current_proved_names
-                              if n.rsplit(".", 1)[-1] not in baseline_proved_bare
-                              and n not in baseline_proved_names)
-            for ident in added_p:
-                any_drift = True
-                print(f"  + PROVED   {ident}")
             if not any_drift:
                 print("  (no drift found against the recorded baseline)")
+            print("  PROVED is not diffed here: the baseline's PROVED category is the archived "
+                  "review's own CURATED set of headline results (section 1.1), not an exhaustive "
+                  "enumeration of every docs/theorem-index.md Decidability row -- comparing the "
+                  "two sets would report dozens of rows the review simply never itemised "
+                  "individually as \"added\", which is noise, not drift. See the committed "
+                  "baseline file's own header for the per-table record counts.")
 
     if mismatches:
         bump(1)

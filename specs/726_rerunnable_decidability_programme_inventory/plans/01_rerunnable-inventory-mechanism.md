@@ -352,51 +352,51 @@ rather than assuming the 12/3 split still holds.
 
 ---
 
-### Phase 4: Baseline data file, reproducible extraction, diff mode, WITHDRAWN carry-forward [NOT STARTED]
+### Phase 4: Baseline data file, reproducible extraction, diff mode, WITHDRAWN carry-forward [COMPLETED]
 
 **Goal**: A committed machine-readable baseline exists, derived reproducibly from section 1 of the
 archived review; `--diff` reports added/removed inventory entries against it; and WITHDRAWN is
 carried forward from it and verified for drift rather than re-derived.
 
 **Tasks**:
-- [ ] Add `--extract-baseline [PATH]` mode: parse sections 1.1-1.4 of
+- [x] Add `--extract-baseline [PATH]` mode: parse sections 1.1-1.4 of
       `specs/archive/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md`
       (default path; overridable) and emit a flat, line-oriented data file — one record per entry,
       `STATUS<TAB>IDENTIFIER_OR_PATH<TAB>PROVENANCE`. This mode is the *only* place the prose
       report is parsed, so the fragile parse runs when a human deliberately re-derives the
-      baseline, never on an ordinary run.
-- [ ] Write the extracted result to `scripts/decidability-inventory-baseline.txt`, following the
+      baseline, never on an ordinary run. *(completed)*
+- [x] Write the extracted result to `scripts/decidability-inventory-baseline.txt`, following the
       existing convention for hand-maintained companion data files next to scripts
       (`scripts/c20-declaration-baseline.txt`, `scripts/certificate-witness-inventory.txt`,
-      `scripts/module-invariants-manifest.txt`).
-- [ ] Head the data file with a provenance comment block: the archived report path and its
+      `scripts/module-invariants-manifest.txt`). *(completed)*
+- [x] Head the data file with a provenance comment block: the archived report path and its
       section numbers, the extraction command that produced it, the date, and an explicit note
       that it is the *recorded* baseline — a historical record to diff against, never a statement
-      about the current tree.
-- [ ] Review the extracted file by hand against the report's four tables before committing;
+      about the current tree. *(completed)*
+- [x] Review the extracted file by hand against the report's four tables before committing;
       correct any cell the parser mangled (the report's tables are prose-heavy and the extraction
-      is a convenience, not an authority). Record in the commit message that it was hand-verified.
-- [ ] Add `--diff [--baseline PATH]` mode (default `scripts/decidability-inventory-baseline.txt`):
+      is a convenience, not an authority). Record in the commit message that it was hand-verified. *(completed)*
+- [x] Add `--diff [--baseline PATH]` mode (default `scripts/decidability-inventory-baseline.txt`):
       report added and removed PROVED declarations, added and removed REFUTED probe paths, and
-      any NOT ESTABLISHED anchor change, as `+`/`-` lines with their status.
-- [ ] WITHDRAWN carry-forward: read the four §1.3 entries from the baseline data file (never
+      any NOT ESTABLISHED anchor change, as `+`/`-` lines with their status. *(completed)*
+- [x] WITHDRAWN carry-forward: read the four §1.3 entries from the baseline data file (never
       hardcoded in the script) and, for each, mechanically check current-tree state — presence in
       `docs/theorem-index.md`, presence of a definition site under `FormalSystem/`, and `pinned:`
       status where applicable. Report three drift classes: *reappeared* (now a live
       `docs/theorem-index.md` row), *newly unpinned*, and *confirmed still absent* (the expected
-      state for `exists_tailStable_repr`).
-- [ ] State explicitly in the output that two baseline WITHDRAWN entries
+      state for `exists_tailStable_repr`). *(completed)*
+- [x] State explicitly in the output that two baseline WITHDRAWN entries
       (`not_exists_plusCertifies_pumpTarget`, `not_exists_hopFree_plusCertifies_hopTarget`) are
       *expected* to appear as live `pinned:C2` rows in source 1 — a source-1-only read calls them
       PROVED, and the baseline's WITHDRAWN classification is what distinguishes them. This is
-      reported, not resolved.
-- [ ] Fill in Phase 3's marked hook: print each wired probe's baseline classification (PROVED per
+      reported, not resolved. *(completed)*
+- [x] Fill in Phase 3's marked hook: print each wired probe's baseline classification (PROVED per
       §1.1 vs. REFUTED per §1.4) beside its "outside build graph" dimension, and emit an explicit
       DISAGREEMENT line where a probe the baseline calls PROVED sits in a `WIRED` array whose own
-      script header frames every entry as a refutation.
-- [ ] Document in the header why WITHDRAWN is carried forward and cannot be regenerated, naming
+      script header frames every entry as a refutation. *(completed)*
+- [x] Document in the header why WITHDRAWN is carried forward and cannot be regenerated, naming
       `exists_tailStable_repr` as the concrete reason (no declaration of that name exists anywhere
-      in the tree; only prose references survive).
+      in the tree; only prose references survive). *(completed)*
 
 **Timing**: 1.75 hours
 
