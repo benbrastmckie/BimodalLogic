@@ -1,0 +1,25 @@
+{
+  "phase": 2,
+  "phase_name": "Triage every finding into four decided classes",
+  "started_at": "2026-10-05T17:10:00Z",
+  "last_updated": "2026-10-05T18:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Create triage-ledger.md with one row per finding", "status": "done", "files_touched": ["specs/728_sweep_phantom_declaration_citations/triage-ledger.md"]},
+    {"id": 2, "description": "Assign each finding a class", "status": "done", "files_touched": ["specs/728_sweep_phantom_declaration_citations/triage-ledger.md"]},
+    {"id": 3, "description": "Verify qualified PHANTOM candidates' namespaces", "status": "done", "files_touched": ["scripts/check-phantom-citations.sh"]},
+    {"id": 4, "description": "Treat NAMING_CONVENTION_DEVIATION.md as special case", "status": "done", "files_touched": ["specs/728_sweep_phantom_declaration_citations/triage-ledger.md"]},
+    {"id": 5, "description": "Partition PHANTOM rows into Phase 3/4 territory", "status": "done", "files_touched": ["specs/728_sweep_phantom_declaration_citations/triage-ledger.md"]}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "2.x",
+      "description": "Fix two checker correctness bugs (missing qualified-prefix support, primed/unprimed \\b conflation) in scripts/check-phantom-citations.sh's definition_exists, plus add a macro/elab/syntax/notation detection fallback, BEFORE building the ledger rather than after (Phase 5's nominal territory)",
+      "type": "altered",
+      "reason": "Building an accurate ledger required triaging against a correct checker; the pre-fix checker was producing false PHANTOM reports for 12 genuinely live declarations. Fixing first avoids ledgering false positives as PHANTOM and re-discovering the error in Phase 5.",
+      "annotation": "*(deviation: altered — checker correctness fixes done early, during Phase 2, instead of Phase 5)*"
+    }
+  ]
+}

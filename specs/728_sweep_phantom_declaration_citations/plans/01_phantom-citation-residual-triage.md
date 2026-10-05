@@ -192,7 +192,7 @@ for Phase 2 triage and must be added to the ledger.
 
 ---
 
-### Phase 2: Triage every finding into four decided classes [NOT STARTED]
+### Phase 2: Triage every finding into four decided classes [COMPLETED]
 
 **Goal**: Turn the baseline's undifferentiated finding list into a per-finding decision record,
 so the three repair/tuning phases can execute without re-deriving judgment. Nothing is edited
@@ -200,10 +200,12 @@ outside the ledger in this phase.
 
 **Tasks**:
 
-- [ ] Create `specs/728_sweep_phantom_declaration_citations/triage-ledger.md` with one row per
+- [x] Create `specs/728_sweep_phantom_declaration_citations/triage-ledger.md` with one row per
       finding: name, citing file(s), class, and a one-line justification. This is a working
-      ledger, deliberately not a `report-format.md`/`plan-format.md` artifact.
-- [ ] Assign each finding exactly one class:
+      ledger, deliberately not a `report-format.md`/`plan-format.md` artifact. *(completed; also
+      records two checker correctness bugs found and fixed mid-triage, re-dropping findings from
+      105 to 94 before classifying — see the ledger's "Checker Fixes" section)*
+- [x] Assign each finding exactly one class:
       - **`PHANTOM`** — a Lean declaration citation whose name (or whose namespace, for a
         qualified citation) is genuinely absent. Repaired in Phase 3 or 4.
       - **`UPSTREAM`** — a real Mathlib / Lean-core / metaprogramming name this repo cites but
@@ -227,22 +229,33 @@ outside the ledger in this phase.
         `docs/user-guide/tactic-development.md` as *available* is a `PHANTOM`, not an `EXAMPLE`,
         if it has no implementation under `FormalSystem/Automation/`. Check `apply_axiom` (5
         sites), `modal_search` (3), `assumption_search`, `tacticModal_t`, `modal_4_tactic`
-        individually against `FormalSystem/Automation/` before classing any of them.
-- [ ] For every candidate `PHANTOM` whose citation is *qualified* (e.g. `TaskFrame.ValidOn`,
+        individually against `FormalSystem/Automation/` before classing any of them. *(completed:
+        all five are real — `apply_axiom`/`modal_t`/`undischarge` as `macro`, `assumption_search`/
+        `propDecide` as `elab`, `modal_search`/`deduction` as `syntax`, none previously detected
+        by `definition_exists`; `tacticModal_t` and `modal_4_tactic` classed `EXAMPLE` instead,
+        each already correctly caveated in its own docs file)*
+- [x] For every candidate `PHANTOM` whose citation is *qualified* (e.g. `TaskFrame.ValidOn`,
       `Semantics.Validity.valid_at_world`, `HasAttainedSUP.toHasFaithfulDedekindSUP`,
       `Axiom.minFrameClass`), check the bare name's enclosing `namespace` too — the checker's
       documented bare-name blind spot means a cleared name can still be a wrong-namespace
       citation, and a flagged name can be a renamed-but-live one. Record the live replacement in
-      the ledger row when one exists.
-- [ ] Treat `docs/development/NAMING_CONVENTION_DEVIATION.md` as a special case and record the
+      the ledger row when one exists. *(completed: `TaskFrame.ValidOn`, `HasAttainedSUP.
+      toHasFaithfulDedekindSUP` and `Axiom.minFrameClass` turned out to be real, correctly
+      qualified citations the checker's keyword branch simply couldn't see — fixed structurally
+      rather than ledgered as PHANTOM; `Semantics.Validity.valid_at_world` remains genuinely
+      absent under any namespace and is ledgered PHANTOM)*
+- [x] Treat `docs/development/NAMING_CONVENTION_DEVIATION.md` as a special case and record the
       decision explicitly: its `ZTime`/`RTime` and `defsWithUnderscore` rows are a deliberate,
       labelled Old/New rename record, not an assertion that the old name is live (the research
       report already decided this). Decide in the ledger whether its 16 sites are absorbed by a
       per-name allowlist or by a source-scoped skip, and say which; do not edit the file to make
-      the checker quiet.
-- [ ] Partition the `PHANTOM` rows into Phase 3's territory (the three densest files) and
+      the checker quiet. *(completed: per-name allowlist, each entry justified by the file's own
+      scheme table; the file needs no edit)*
+- [x] Partition the `PHANTOM` rows into Phase 3's territory (the three densest files) and
       Phase 4's territory (every other `docs/` file), writing the owning phase into each row so
-      the two phases cannot collide.
+      the two phases cannot collide. *(completed: zero PHANTOM rows cite Phase 3's three files;
+      all 6 genuine PHANTOM repairs are Phase 4 territory — see the ledger's "Phase 3 / Phase 4
+      Territory Split" section)*
 
 **Timing**: 1.5 hours
 

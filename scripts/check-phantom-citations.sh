@@ -72,6 +72,16 @@
 #   - Dead FILE/PATH anchors (a citation of a real artifact that has since moved, e.g. under
 #     specs/archive/) are a related but DIFFERENT defect this script does not check -- it looks
 #     only at backticked Lean-identifier-shaped spans, never at path-shaped ones.
+#   - `definition_exists` recognizes `theorem`/`lemma`/`def`/.../`axiom` keyword lines (with or
+#     without a dotted qualifier before the bare name), `inductive`/`structure` constructor or
+#     field lines introduced with `|`, `namespace`/`end` lines, module directories/files, and
+#     `macro`/`elab`/`syntax`/`notation` tactic declarations. It does NOT recognize a plain
+#     `structure ... where` FIELD line (`  fieldName : Type`, no `|` and no keyword of its own) --
+#     deliberately: that shape is indistinguishable from an ordinary local-variable type
+#     ascription without actually parsing the enclosing `structure` block, and a general field
+#     detector would trade this script's existing false positives for a worse flood of false
+#     negatives. A bare field name confirmed live by hand belongs in ALLOWLIST with a comment
+#     saying so, not in a structural fix here.
 #
 # Usage:
 #   bash scripts/check-phantom-citations.sh                 # report (always exits 0: advisory)
@@ -284,10 +294,38 @@ definition_exists() {
   # own constructors (Base/Dense/ZTime/RTime) are exactly this shape. Fallback 2: a namespace or
   # a module/aggregator file or directory of this name (`FormalSystem.Metalogic.BXCanonical` is
   # cited constantly as a MODULE, not a theorem, and has no declaration line to match at all).
-  if grep -rqP "^\s*(@\[[^]]*\]\s*)?(private\s+|protected\s+|noncomputable\s+)*(theorem|lemma|def|abbrev|instance|structure|inductive|class|axiom)\s+${bare}\b" \
+  #
+  # Two deliberate departures from a plain `\b`-delimited bare-name match, both found by hand
+  # during a manual triage of this checker's own findings against confirmed-live declarations it
+  # was misreporting as phantom:
+  #   - `(\S+\.)?` before the bare name in the keyword branch, mirroring the namespace/end
+  #     branch below. This codebase writes many declarations as `def Prefix.bare ... :=` with no
+  #     surrounding `namespace Prefix ... end` block (e.g. `def TaskFrame.ValidOn`, `def
+  #     Axiom.minFrameClass`, `theorem HasAttainedSUP.toHasFaithfulDedekindSUP`) -- the namespace
+  #     branch already anticipated this citation shape; the keyword branch, which is the common
+  #     case, had not.
+  #   - `(?![A-Za-z0-9_'])` in place of a trailing `\b` after the bare name. PCRE `\b` only fires
+  #     at a transition between a word character and a non-word character; a Lean identifier
+  #     ending in a prime (`'`, a non-word character, e.g. `no_finite_carrier_sat'`) followed by
+  #     whitespace (also non-word) crosses no such transition, so `\b` never matches and a
+  #     genuinely live primed declaration is reported as absent. The negative lookahead says
+  #     directly what is actually meant: the next character must not continue the identifier.
+  #     This cuts the other way too: a trailing `\b` after an UNPRIMED bare name (e.g.
+  #     `trans_refl`) also matches a PRIMED declaration of a different name (`trans_refl'`),
+  #     since "word char" -> "prime" is itself a `\b` transition -- the old pattern silently
+  #     treated two distinct Lean identifiers as the same name. The lookahead fixes this too.
+  #
+  # Fallback 3: a `macro`/`elab`/`syntax`/`notation` tactic or term-syntax declaration (e.g.
+  # `macro "apply_axiom" : tactic =>`, `elab "assumption_search" : tactic => do`, `syntax
+  # "modal_search" (num)? : tactic`). This repository's Automation/Tactics layer declares several
+  # user-facing tactics this way rather than as a `def`/`theorem`, so without this fallback a
+  # genuinely live, implemented tactic name is reported as absent.
+  if grep -rqP "^\s*(@\[[^]]*\]\s*)?(private\s+|protected\s+|noncomputable\s+)*(theorem|lemma|def|abbrev|instance|structure|inductive|class|axiom)\s+(\S+\.)?${bare}(?![A-Za-z0-9_'])" \
        --include='*.lean' "$SOURCE_DIR" 2>/dev/null \
-     || grep -rqP "^\s*\|\s*${bare}\b" --include='*.lean' "$SOURCE_DIR" 2>/dev/null \
-     || grep -rqP "^\s*(namespace|end)\s+(\S+\.)?${bare}\b" --include='*.lean' "$SOURCE_DIR" 2>/dev/null \
+     || grep -rqP "^\s*\|\s*${bare}(?![A-Za-z0-9_'])" --include='*.lean' "$SOURCE_DIR" 2>/dev/null \
+     || grep -rqP "^\s*(namespace|end)\s+(\S+\.)?${bare}(?![A-Za-z0-9_'])" --include='*.lean' "$SOURCE_DIR" 2>/dev/null \
+     || grep -rqP "^\s*(macro|elab|syntax|notation)(_rules)?\s+(\(\s*[^)]*\)\s*)?\"${bare}\"" \
+          --include='*.lean' "$SOURCE_DIR" 2>/dev/null \
      || [ -d "$SOURCE_DIR/$bare" ] || find "$SOURCE_DIR" -type d -name "$bare" 2>/dev/null | grep -q . \
      || find "$SOURCE_DIR" -type f -name "${bare}.lean" 2>/dev/null | grep -q .; then
     printf '%s\tyes\n' "$bare" >> "$DEFINED_CACHE"
