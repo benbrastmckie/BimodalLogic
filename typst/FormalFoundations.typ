@@ -771,14 +771,27 @@ The failure is not incidental: $ZZ$ is a discrete carrier and bears no relation 
 classes of the three non-discrete systems, so no property of models over $ZZ$ could have decided
 them.#footnote[A repaired finite model property must be class-specific, ranging over effective non-Archimedean carriers such as $ZZ times_"lex" ZZ$ and not over $ZZ$ alone.] What exists in the development is a tableau procedure whose *soundness* is machine-checked,
 together with ongoing work on a semantic, truth-connected finite model property for the $ZZ$-time
-discrete case (@sec:construction). No decidability theorem is machine-checked.
+discrete case (@sec:construction). This leaves TM⁻ and its four extensions exactly as open as
+stated above.
+
+Separately, at the $#BL$ level (not within this section's $#BLminus$ family), a
+decidability theorem for the ℤ-time discrete case is machine-checked: `Decidable (ValidZTime φ)`,
+as `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime`, by the presentation-free
+witness-family certificate route — holding only for the ZTime frame class, only with empty
+premises, and computing without being choice-free (axioms
+`propext`, `Classical.choice`, `Quot.sound`). See `docs/theorem-index.md`'s Decidability section.
 
 #remark[
   The available strategy is reduction. $op("Log")("all task frames") = op("Log")("Discrete") inter op("Log")("Dense")$
   by the dichotomy of @sec:dichotomy, and $op("Log")("complete frames") = op("Th")(ZZ) inter op("Th")(RR)$
   by Hölder's theorem; each identity reduces decidability of the left side to decidability of the
-  two factors. This is a target, not a result: neither factor logic is known decidable, and the
-  reduction supplies no decision procedure by itself.
+  two factors. This is a target, not a result: the Discrete factor, $op("Log")("Discrete")$, *is*
+  known decidable at the $#BL$ level, by `decidableValidZTime` above together with the carrier
+  normalization `FormalSystem.Semantics.validZTime_iff_validInt`, which identifies ℤ-time validity
+  over every discrete duration carrier with validity over $ZZ$ alone. The Dense factor remains
+  open, and the identity itself — $op("Log")("all task frames") = op("Log")("Discrete") inter
+  op("Log")("Dense")$ — is stated nowhere as a Lean declaration; settling one factor does not by
+  itself supply a decision procedure for the reduction.
 ]
 
 = The Completeness Construction <sec:construction>

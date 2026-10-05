@@ -476,7 +476,7 @@ file's own import graph. Comment text only; no import, `def`, or `theorem` chang
 
 ---
 
-### Phase 6: typst/FormalFoundations.typ [NOT STARTED]
+### Phase 6: typst/FormalFoundations.typ [COMPLETED]
 
 **Goal**: The paper's `== Decidability` section stops asserting that no decidability theorem is
 machine-checked, and its reduction remark is corrected — the Discrete factor is known decidable,
@@ -484,19 +484,19 @@ the Dense factor is not, and the reduction identity itself remains a target with
 declaration. No complexity claim enters either edit.
 
 **Tasks**:
-- [ ] Re-read lines ~750–790 of `typst/FormalFoundations.typ` immediately before editing and
+- [x] Re-read lines ~750–790 of `typst/FormalFoundations.typ` immediately before editing and
   re-locate both target sentences by content.
-- [ ] Replace "No decidability theorem is machine-checked." (currently line 774) with a sentence
+- [x] Replace "No decidability theorem is machine-checked." (currently line 774) with a sentence
   stating that a decidability theorem **is** machine-checked for the ℤ-time discrete case, by the
   witness-family certificate route, in this paper's own register (`#BL`, which carries no
   stability operator — so that qualifier is satisfied by the register rather than needing to be
   stated as a caveat here), with the `FrameClass.ZTime`-only, empty-premises, and
   computing-but-not-choice-free qualifiers carried and
   `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime` named.
-- [ ] Preserve the preceding sentences unchanged: the `ZZ`-discreteness failure argument, its
+- [x] Preserve the preceding sentences unchanged: the `ZZ`-discreteness failure argument, its
   footnote about class-specific carriers, and "a tableau procedure whose *soundness* is
   machine-checked".
-- [ ] Rewrite the `#remark[...]` block (currently lines 776–782) so that: the reduction strategy
+- [x] Rewrite the `#remark[...]` block (currently lines 776–782) so that: the reduction strategy
   and both identities stay as they are; "neither factor logic is known decidable" becomes — the
   Discrete factor **is** known decidable, citing `Compression.decidableValidZTime` and the
   `validZTime_iff_validInt` bridge (`FormalSystem/Semantics/IntTransfer.lean`) that identifies
@@ -504,21 +504,21 @@ declaration. No complexity claim enters either edit.
   `Log(all task frames) = Log(Discrete) ∩ Log(Dense)` itself remains a **target, not a theorem** —
   no Lean declaration states it (confirmed absent in Phase 1) — so the reduction still supplies no
   decision procedure by itself even with one factor settled.
-- [ ] Land no complexity claim: do not import `Compression/Assembly.lean`'s complexity framing
+- [x] Land no complexity claim: do not import `Compression/Assembly.lean`'s complexity framing
   into this prose in any form.
-- [ ] Leave the secondary mention near lines 1064–1067 alone. It was checked and is not in
+- [x] Leave the secondary mention near lines 1064–1067 alone. It was checked and is not in
   violation (`fmp_completeness` still exists; it does not imply that no decidability theorem is
   machine-checked), and the primary `== Decidability` section is this file's "once".
-- [ ] Add a pointer to `docs/theorem-index.md`'s Decidability rows in the register this paper uses
+- [x] Add a pointer to `docs/theorem-index.md`'s Decidability rows in the register this paper uses
   for repository cross-references (match the file's existing convention for such pointers rather
   than inventing one).
-- [ ] Compile: `typst compile typst/FormalFoundations.typ` must succeed.
-- [ ] Run `bash .claude/scripts/typst-element-lint.sh --verbose typst/FormalFoundations.typ` and
+- [x] Compile: `typst compile typst/FormalFoundations.typ` must succeed.
+- [x] Run `bash .claude/scripts/typst-element-lint.sh --verbose typst/FormalFoundations.typ` and
   `bash .claude/scripts/chapter-quality-check.sh --verbose typst/FormalFoundations.typ`. Placement
   findings and BLOCKING findings must be resolved; item-count, density, and ADVISORY findings are
   advisory-only. Compare against Phase 1's baseline so pre-existing findings are not attributed
   here.
-- [ ] Stage and commit only this file (plus no build output).
+- [x] Stage and commit only this file (plus no build output).
 
 **Timing**: 0.75 hours
 

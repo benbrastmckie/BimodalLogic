@@ -1,0 +1,17 @@
+{
+  "phase": 6,
+  "phase_name": "typst/FormalFoundations.typ",
+  "started_at": "2026-10-05T10:26:00Z",
+  "last_updated": "2026-10-05T10:45:00Z",
+  "objectives": [
+    {"id": 1, "description": "Replace the false machine-checked sentence with a two-statement-aware correction, in the BL register, not overclaiming TM- decidability", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 2, "description": "Rewrite the #remark reduction block: Discrete factor decidable, Dense open, identity a target not a theorem", "status": "done", "files_touched": ["typst/FormalFoundations.typ"]},
+    {"id": 3, "description": "Compile, run typst-element-lint.sh and chapter-quality-check.sh, compare to Phase 1 baseline", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [
+    {"approach": "Single paragraph for the statement-(ii) correction", "result": "altered", "reason": "chapter-quality-check.sh flagged a new ADVISORY (non-blocking) 150-word paragraph-length finding; split into two paragraphs to keep the diff clean against baseline, though the finding would not have blocked"}
+  ],
+  "handoff_count": 0,
+  "deviations": []
+}
