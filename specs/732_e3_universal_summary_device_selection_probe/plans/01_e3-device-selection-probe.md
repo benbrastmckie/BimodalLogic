@@ -285,7 +285,7 @@ accordingly.
 
 ---
 
-### Phase 3: Write the scoped selection header, wire the gate, run the collection [NOT STARTED]
+### Phase 3: Write the scoped selection header, wire the gate, run the collection [COMPLETED]
 
 **Goal**: Replace the provisional header with the final one that states the selection, its
 evidence, and its limits; add the probe to `scripts/check-evidence-probes.sh`; run the whole
@@ -294,12 +294,12 @@ reason is dischargeable by `/revise 711` (not done here).
 
 **Tasks**:
 
-- [ ] **Collision check first**: `git status --short -- scripts/check-evidence-probes.sh`. If the
+- [x] **Collision check first**: `git status --short -- scripts/check-evidence-probes.sh`. If the
       script is modified by another writer, do not edit it; finish the header tasks below, commit
       them, and return `blocked` on target `scripts/check-evidence-probes.sh` with the verbatim
       goal "wire `seam-gluing-ray-product/device-selection-probe` into `WIRED`" so the
       orchestrator reschedules the wiring in a clean cycle (dispatch SCHEDULING).
-- [ ] Re-verify every declaration name the header will cite, by grep against the tree (not
+- [x] Re-verify every declaration name the header will cite, by grep against the tree (not
       against the report): `plusStab_iff_rays`, `plusStab_iff_omega`, `seamOmegaEquiv`,
       `pathFibreEquiv` (`FormalSystem/PlusLanguage/PlusRayFibre.lean`);
       `Probe718PathQuantifier.exists_ne_stab`, `exists_ne_universal`;
@@ -307,8 +307,8 @@ reason is dischargeable by `/revise 711` (not done here).
       `Probe718FiniteGraph.will_iff_allPathsMeet`, `decide_will`;
       `Probe719Backward.pastStab_iff_allBwdPathsMeet`; `Probe710.not_finite_width_fmp`;
       `FormalSystem.Metalogic.WeakCanonical.infinite_ramsey_pairs` (also
-      `lean_verify` it once; expected `[propext, Classical.choice, Quot.sound]`).
-- [ ] Write the final header in the sibling style (`path-quantifier-alternation.lean:1–33` is the
+      `lean_verify` it once; expected `[propext, Classical.choice, Quot.sound]`). *(deviation: altered — `not_finite_width_fmp` has no `Probe710` namespace; it is `FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_finite_width_fmp` (`NoFiniteWidth.lean:1280`), cited by that name. All other names confirmed by grep; `infinite_ramsey_pairs` `lean_verify`d: `[propext, Classical.choice, Quot.sound]`)*
+- [x] Write the final header in the sibling style (`path-quantifier-alternation.lean:1–33` is the
       model), with these mandatory parts in this order:
       1. Title: "Probe 732 (E3): **device-selection comparison** for the universal summary over
          the stab fibre — which device, on what evidence, and what is NOT established."
@@ -339,11 +339,11 @@ reason is dischargeable by `/revise 711` (not done here).
          discrimination lives on a finitely presented infinite fibre with a per-time alphabet and
          belongs to the substrate task, not here.
       7. The compile line.
-- [ ] Reviewer check on the header text: it must contain the literal phrases "not selected",
+- [x] Reviewer check on the header text: it must contain the literal phrases "not selected",
       "does NOT establish" (or "does not establish"), and "no complexity bound"; it must not
-      contain "correct device", "the right device", or any big-O/EXPTIME upper-bound claim.
-- [ ] Compile the file once more (header is a comment, but a stray `-/` or `/-` breaks it).
-- [ ] Wire: in `scripts/check-evidence-probes.sh`, add a table row **after** the
+      contain "correct device", "the right device", or any big-O/EXPTIME upper-bound claim. *(confirmed: "not selected" x1, "does NOT establish" x1, "no complexity bound" x1; "right device"/"correct device" absent; the single "EXPTIME" occurrence is the mandated LOWER-bound sanity-ceiling sentence)*
+- [x] Compile the file once more (header is a comment, but a stray `-/` or `/-` breaks it). *(exit 0, no warnings, 7 `#print axioms` lines, `grep -c sorry` = 0)*
+- [x] Wire: in `scripts/check-evidence-probes.sh`, add a table row **after** the
       `seam-gluing-ray-product/backward-dual-asymmetric-fixture` block (ending `:177`) in the
       existing 62-column `# path | decision` style, summarizing: "DEVICE-SELECTION (E3):
       `⊡(Fp)`/`⊡(Pp)` are device-inert on finite fixtures (machine-checked); pigeonhole-tier
@@ -351,15 +351,15 @@ reason is dischargeable by `/revise 711` (not done here).
       evidence = time-axis Ramsey (d) via in-tree `infinite_ramsey_pairs`, framed by HWZ/GKWZ MSO
       route (c); (a)/(b) not selected. No complexity bound. Begins no substrate work." Then
       append `"seam-gluing-ray-product/device-selection-probe"` as the last entry of the
-      `seam-gluing-ray-product/` run inside `WIRED` (currently `:185`).
-- [ ] Run the gate: `bash scripts/check-evidence-probes.sh`. Expected: `PASS  all 13 wired
-      probe(s) compile` (12 today + this one; confirm the count rather than assuming it).
-- [ ] Run `lake build` once as a cheap no-regression confirmation (the probe is outside the build
-      graph, so this should be a cache hit; it confirms no `FormalSystem/` file was touched).
+      `seam-gluing-ray-product/` run inside `WIRED` (currently `:185`). *(deviation: altered — the backward block ends at `:172` and `WIRED` holds 12 entries (hypothesis confirmed); the row lands after `:172`. Also repaired two stale `WIRED_REPO` paths (706/710 probes moved to `specs/archive/` by `/todo` commit 70321e938) that made the collection FAIL 2 of 16 on first run — pre-existing drift, recorded in issues.jsonl)*
+- [x] Run the gate: `bash scripts/check-evidence-probes.sh`. Expected: `PASS  all 13 wired
+      probe(s) compile` (12 today + this one; confirm the count rather than assuming it). *(deviation: altered — count is 16, not 13: 13 `WIRED` + 3 `WIRED_REPO` entries. First run: this probe PASS but `FAIL 2 of 16` on the two stale archived `WIRED_REPO` paths; after the path repair: `PASS  all 16 wired probe(s) compile`, exit 0)*
+- [x] Run `lake build` once as a cheap no-regression confirmation (the probe is outside the build
+      graph, so this should be a cache hit; it confirms no `FormalSystem/` file was touched). *(guarded, detached: GUARD_EXIT=0, "Build completed successfully (2819 jobs)", 0 `error:` lines; no `FormalSystem/` file touched)*
 - [ ] Commit (`task 732 phase 3: selection header and gate wiring`), staging exactly the probe
       file and `scripts/check-evidence-probes.sh`.
-- [ ] Record one `issue-record.sh --kind win` entry if the whole collection passed first time
-      (positive signal has a home in the log too), or the concrete issue if it did not.
+- [x] Record one `issue-record.sh --kind win` entry if the whole collection passed first time
+      (positive signal has a home in the log too), or the concrete issue if it did not. *(collection did not pass first time; recorded the concrete issue (`gate-collision`, minor) plus a `plan-drift` entry for the `Probe710` namespace name)*
 
 **Timing**: 1.0 hours
 

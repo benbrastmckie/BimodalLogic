@@ -170,6 +170,26 @@ EVIDENCE="specs/evidence"
 #                                                           | the dual at its easiest instance;
 #                                                           | the hard test is a mirror fixture,
 #                                                           | filed as a follow-up. No automata
+# seam-gluing-ray-product/device-selection-probe            | DEVICE-SELECTION (E3): `⊡(Fp)` /
+#                                                           | `⊡(Pp)` are device-inert on finite
+#                                                           | fixtures (machine-checked:
+#                                                           | `allPathsMeet_iff_lasso`,
+#                                                           | `detRun_accepts_iff`,
+#                                                           | `stab_will_iff_lasso`); pigeonhole-
+#                                                           | tier lasso summaries refuted on
+#                                                           | infinite fibres
+#                                                           | (`not_lasso_sufficient_on_chain`).
+#                                                           | Selection on infrastructure +
+#                                                           | literature evidence = time-axis
+#                                                           | Ramsey (d) via in-tree
+#                                                           | `infinite_ramsey_pairs`, framed by
+#                                                           | the HWZ/GKWZ MSO-over-<Z,<> route
+#                                                           | (c); (a) Safra/Piterman and (b)
+#                                                           | Safraless NOT selected (inert on the
+#                                                           | shapes; no formalization anywhere;
+#                                                           | (b)'s 2005 source WANTED). No
+#                                                           | complexity bound. Begins no
+#                                                           | substrate work
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -183,6 +203,7 @@ WIRED=(
   "seam-gluing-ray-product/mosaic-germ-amalgamation"
   "seam-gluing-ray-product/path-quantifier-alternation"
   "seam-gluing-ray-product/backward-dual-asymmetric-fixture"
+  "seam-gluing-ray-product/device-selection-probe"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
@@ -223,8 +244,8 @@ WIRED=(
 # collection together with that promotion, not before.
 WIRED_REPO=(
   "specs/archive/476_box_faithful_small_model_theorem/evidence/fmp-hypothesis-is-false.lean"
-  "specs/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean"
-  "specs/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean"
+  "specs/archive/706_lplus_finite_model_property_and_completeness/probes/NoFiniteCarrierModel.lean"
+  "specs/archive/710_sliced_class_incompleteness_characterization/probes/NoFiniteWidthModel.lean"
 )
 
 # --- DEFERRED -----------------------------------------------------------------------------

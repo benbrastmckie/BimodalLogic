@@ -1,5 +1,70 @@
 /-
-Probe 732 (E3): device-selection comparison — header finalized in Phase 3.
+Probe 732 (E3): **device-selection comparison** for the universal summary over the stab fibre —
+which device, on what evidence, and what is NOT established.
+
+**Outcome on the specified shapes (High, machine-checked): `⊡(Fp)` and `⊡(Pp)` are
+device-inert on finite fixtures.** Over an arbitrary finite step graph the universal summary of
+the `Fp` shape equals its restriction to ultimately periodic (lasso) root paths by pigeonhole
+alone (`allPathsMeet_iff_lasso`; the `Pp` dual on the reversed step relation is
+`allBwdPathsMeet_iff_lasso`), and the per-path acceptor for "eventually `p`" is a 2-state
+DETERMINISTIC automaton (`detRun_accepts_iff`). On the real formula, on the Bool fixture the
+necessity probe used, `stab_will_iff_lasso` restates `PlusTruthAt Mf τ t (.stab (someFuture
+(.atom pa)))` as that lasso-restricted summary. All four candidate devices therefore coincide
+on these shapes with the reachability summaries already recorded by
+`Probe718FiniteGraph.will_iff_allPathsMeet` / `Probe718FiniteGraph.decide_will` (forward) and
+`Probe719Backward.pastStab_iff_allBwdPathsMeet` (backward). The shapes do not discriminate.
+
+**Falsifier (High, machine-checked).** `not_lasso_sufficient_on_chain`: on the infinite acyclic
+fibre `⟨ℤ, b = a - 1⟩` the lasso-restricted summary is vacuously True while the universal summary
+is False, so pigeonhole-tier lasso summaries are refuted as a device for infinite fibres — and
+infinite fibres are unavoidable for complete certificate classes, by the in-tree
+`FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_finite_width_fmp`
+(the finite-width FMP refutation). Whatever the substrate uses must work over the TIME AXIS with
+a finite alphabet of per-time summaries, not over states.
+
+**Selection, scoped exactly.** On infrastructure and literature evidence — not on behavioural
+discrimination, which the probed shapes cannot supply — the universal-summary substrate should
+be built on the TIME-AXIS RAMSEY-COLOURED SUMMARY, candidate (d), via the in-tree
+`FormalSystem.Metalogic.WeakCanonical.infinite_ramsey_pairs` (proved from scratch in
+`RamseyFactorization.lean`; `#print axioms` = `[propext, Classical.choice, Quot.sound]`; absent
+from Mathlib at pin `v4.33.0-rc1`), framed by the MSO-over-`⟨ℤ,<⟩` quasimodel route, candidate
+(c): Hodkinson–Wolter–Zakharyaschev, APAL 106 (2000), Theorem 15 (§4; flows including `⟨ℤ,<⟩`),
+and Gabbay–Kurucz–Wolter–Zakharyaschev 2003, Theorem 1.28 (MSO theory of `⟨ℤ,<⟩` decidable),
+Lemma 11.23 (quasimodel existence as an MSO sentence), Theorem 13.6 (§13.2, S5 × linear time).
+Route (c) is the frame because it covers the target flow exactly and needs no Safra
+construction; (d) is the substrate because its one non-trivial ingredient already exists in
+this tree on standard axioms, whereas (c)'s discharge theorem (Büchi's theorem) has no Lean
+formalization and under the zero-debt policy could not be cited but would have to be proved.
+Candidates (a) Safra/Piterman determinization and (b) Safraless procedures (Kupferman–Vardi,
+FOCS 2005) are **not selected**: inert on the probed shapes (the acceptor is already
+deterministic, so there is nothing to determinize and no complementation to avoid); no
+ω-automata, Büchi, parity or Rabin infrastructure in Mathlib at the pin; no formalization of
+Safra or Piterman determinization in any proof assistant; and (b)'s FOCS 2005 source is
+WANTED in the Literature index (only its 2001 rank-construction core, Kupferman–Vardi "Weak
+Alternating Automata Are Not That Weak", is in corpus).
+
+**What this does NOT establish.** Any behavioural superiority of (d) over (c) — on the probed
+shapes they, and (a) and (b), coincide; (c) and (d) are plausibly the same mathematics in two
+wrappers (Büchi complementation is classically Ramsey-based), and that framing is Low-confidence
+background, not a result of this file. Adequacy of (d) beyond the probed shapes `⊡(Fp)` /
+`⊡(Pp)`. A frame-level `⊡(Pp)` bridge on this fixture: the `Pp` side is carried here at the
+step-graph level by reversal (`allBwdPathsMeet_iff_lasso`), and the backward shape on the real
+formula is fixed by `Probe719Backward.pastStab_iff_allBwdPathsMeet` on the asymmetric fixture,
+not re-proved here. Any complexity bound: this file states no complexity bound; the argued
+(not formalized) CTL* 2EXPTIME LOWER bound is a sanity ceiling any later procedure must clear,
+never an upper-bound source. The selection is by evidence of what exists and what fails, not a
+behavioural discrimination between devices. A selection reading "no candidate is adequate on this
+evidence" was an admissible outcome of this probe; it was not reached, because candidate (d)'s
+one non-trivial ingredient exists in this tree and route (c) covers the target flow exactly.
+
+**No substrate work.** `detRun` is a counterexample to the need for determinization on these
+shapes, not a component of anything; nothing here begins a determinization substrate or any
+other substrate. The first behavioural discrimination between (c) and (d) lives on a finitely
+presented INFINITE fibre with a per-time alphabet (the quasimodel setting), where (d) must
+colour time pairs and (c) must write the MSO sentence; that is substrate work and belongs to
+the substrate task, not here. A selection recorded on this scope leaves the substrate task's
+blocked reason ("device not yet selected") dischargeable by its own revision, which this file
+does not perform.
 
 Compile-check from the repository root with:
   lake env lean specs/evidence/seam-gluing-ray-product/device-selection-probe.lean
