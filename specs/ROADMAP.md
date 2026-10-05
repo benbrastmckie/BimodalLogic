@@ -346,8 +346,11 @@ it is unfiled.
 surfaces the same completions when archiving. Annotated items are dropped when their phase is next
 revised — the durable record is `specs/CHANGE_LOG.md` and `specs/archive/`. Update the phases when
 `/task --expand`, `/spawn` or a dependency change alters the graph, and treat any claim here that
-no check can reproduce as a defect in this file rather than a fact about the tree. Nobody owns the
-periodic re-run of the decidability inventory until task 726 lands; its baseline is section 1 of
+no check can reproduce as a defect in this file rather than a fact about the tree. The periodic
+re-run of the decidability inventory is owned by `scripts/generate-decidability-inventory.sh`,
+which regenerates the PROVED / NOT ESTABLISHED / WITHDRAWN / REFUTED inventory from the tree and
+diffs it (`--diff`) against the committed `scripts/decidability-inventory-baseline.txt`; that
+baseline was extracted from section 1 of
 `specs/archive/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md`
 (moved into the archive when that task was archived).
 

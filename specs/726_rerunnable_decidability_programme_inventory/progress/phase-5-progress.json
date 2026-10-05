@@ -1,0 +1,17 @@
+{
+  "phase": 5,
+  "phase_name": "Documentation, roadmap ownership hand-off, registration",
+  "started_at": "2026-10-05T01:30:00Z",
+  "last_updated": "2026-10-05T01:45:00Z",
+  "objectives": [
+    {"id": 1, "description": "scripts/README.md rows, specs/ROADMAP.md Maintenance ownership hand-off, optional source-store pointer", "status": "done", "files_touched": ["scripts/README.md", "specs/ROADMAP.md"]}
+  ],
+  "current_objective": 1,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [],
+  "notes": [
+    "The optional source-store pointer (domain/decidability-provenance.md under the lean extension's source_dir, resolved via .claude-extensions.json) was added -- the source store was reachable. That file lives in a separate repository (~/.config/nvim/agent-system) and is not part of this repo's git history.",
+    "check-phantom-citations.sh finding count unchanged before/after (105 both times) -- no regression."
+  ]
+}

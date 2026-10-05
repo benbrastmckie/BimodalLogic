@@ -436,37 +436,37 @@ numbers rather than assuming them.
 
 ---
 
-### Phase 5: Documentation, roadmap ownership hand-off, registration [NOT STARTED]
+### Phase 5: Documentation, roadmap ownership hand-off, registration [COMPLETED]
 
 **Goal**: The script is discoverable and owned: documented in `scripts/README.md`, and named in
 `specs/ROADMAP.md`'s Maintenance section as the owner of the periodic re-run in place of this
 task.
 
 **Tasks**:
-- [ ] Re-read `scripts/README.md` immediately before editing (siblings 722/728 are live on this
+- [x] Re-read `scripts/README.md` immediately before editing (siblings 722/728 are live on this
       tree with no declared `file_scope`, and `check-phantom-citations.sh` is itself currently
-      missing from this README — a sibling may be about to add it).
-- [ ] Add a row for `generate-decidability-inventory.sh` to `scripts/README.md`. Place it under a
+      missing from this README — a sibling may be about to add it). *(completed)*
+- [x] Add a row for `generate-decidability-inventory.sh` to `scripts/README.md`. Place it under a
       non-gate heading, not under "Gates and ratchets": it is an on-demand review instrument, not
       a build gate. Add a row for `decidability-inventory-baseline.txt` too — that file's own
       opening claim is that "every script and non-script data file that lives directly under
-      `scripts/` ... is named below; nothing in this directory is undocumented".
-- [ ] Re-read `specs/ROADMAP.md` immediately before editing.
-- [ ] Edit the Maintenance section (lines 342-352): replace "Nobody owns the periodic re-run of
+      `scripts/` ... is named below; nothing in this directory is undocumented". *(completed)*
+- [x] Re-read `specs/ROADMAP.md` immediately before editing. *(completed)*
+- [x] Edit the Maintenance section (lines 342-352): replace "Nobody owns the periodic re-run of
       the decidability inventory until task 726 lands" with a sentence naming
       `scripts/generate-decidability-inventory.sh` as the owner, keeping the existing baseline
       citation intact and adding the committed data file
       (`scripts/decidability-inventory-baseline.txt`) as the diff target. Per
       `no-task-references-in-deliverables.md`, `specs/ROADMAP.md` sits under `specs/**` so a task
       number is permitted there, but the whole point of this edit is to replace the task-number
-      ownership with a durable path — write the path, not a task number.
-- [ ] Optional, and skipped if the source store is not reachable: add a one-line pointer to the
+      ownership with a durable path — write the path, not a task number. *(completed)*
+- [x] Optional, and skipped if the source store is not reachable: add a one-line pointer to the
       new script from `domain/decidability-provenance.md` in the **source store** resolved from
       `.claude-extensions.json`'s `source_dir` (research's Context Extension Recommendation).
       Never hand-author the deployed `.claude/` copy — the dispatch flags the `lean` extension as
-      currently stale, so a deployed edit would be silently discarded.
-- [ ] Do not touch `.github/workflows/ci.yml` (explicit non-goal; record the `--strict` hook in
-      the README row so a future task can wire it).
+      currently stale, so a deployed edit would be silently discarded. *(completed)*
+- [x] Do not touch `.github/workflows/ci.yml` (explicit non-goal; record the `--strict` hook in
+      the README row so a future task can wire it). *(completed)*
 
 **Timing**: 0.75 hours
 
