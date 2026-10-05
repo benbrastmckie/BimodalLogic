@@ -211,7 +211,7 @@ prototype's compile environment differed from the probe collection's.
 
 ---
 
-### Phase 2: Bridge the abstract statement to the real `⊡(Fp)` formula on the Bool fixture [NOT STARTED]
+### Phase 2: Bridge the abstract statement to the real `⊡(Fp)` formula on the Bool fixture [COMPLETED]
 
 **Goal**: Show the device-inertness result on the actual formula `.stab (someFuture (.atom pa))`
 over the shared two-state Bool fixture — the fixture every sibling probe in the collection uses —
@@ -222,26 +222,26 @@ uncompiled claim (the `IsFwdPath`/`IsPath` identification) to a compiled theorem
 
 **Tasks**:
 
-- [ ] Restate the Bool fixture **verbatim** from `path-quantifier-alternation.lean:44–66` into a
+- [x] Restate the Bool fixture **verbatim** from `path-quantifier-alternation.lean:44–66` into a
       `/-! ## The fixture, restated verbatim … -/` section of `Probe732Device`: `Rf`, `Rf_fwd`,
       `Rf_bwd`, `Ff`, `instance : Ff.IsRegular`, `pa`, `Mf`, `IsFwdPath`, and the fixture-level
       `AllPathsMeet` **renamed** `AllFwdPathsMeet` to avoid clashing with the abstract
       `AllPathsMeet (R) (P) (w₀)` already in the namespace. Probes do not import each other (collection
       convention, `check-evidence-probes.sh` header); say so in the section docstring as the
       siblings do.
-- [ ] Restate `will_iff_allPathsMeet` (`path-quantifier-alternation.lean:68–127`) verbatim, with
+- [x] Restate `will_iff_allPathsMeet` (`path-quantifier-alternation.lean:68–127`) verbatim, with
       its conclusion's `AllPathsMeet` replaced by `AllFwdPathsMeet`. Compile before proceeding.
       If this transcription does not compile unchanged, the cause is the rename — check that every
       occurrence inside the proof was renamed; do not alter proof steps.
-- [ ] Prove the bridge:
+- [x] Prove the bridge:
       `theorem allFwdPathsMeet_iff_abstract (w₀ : Bool) : AllFwdPathsMeet w₀ ↔ AllPathsMeet (Rf 0) (fun b => b = true) w₀ := Iff.rfl`.
       If `Iff.rfl` is rejected, use `⟨fun h g hg => h g hg, fun h g hg => h g hg⟩` (the two
       `IsPath`/`IsFwdPath` hypotheses are the same conjunction) — still no new mathematics.
-- [ ] Prove the headline inertness statement on the real formula:
+- [x] Prove the headline inertness statement on the real formula:
       `theorem stab_will_iff_lasso (τ : WorldHistory Ff.toTaskFrame) (t : ℤ) : PlusTruthAt Mf τ t (.stab (someFuture (.atom pa))) ↔ ∀ g, IsFwdPath (τ.state t).2 g → IsLasso g → ∃ n, 0 < n ∧ g n = true`
       by `rw [will_iff_allPathsMeet, allFwdPathsMeet_iff_abstract, allPathsMeet_iff_lasso]` and
       closing the residual `IsPath (Rf 0) … ↔ IsFwdPath …` by `Iff.rfl` if any remains.
-- [ ] Add a short `/-! ## What the shape exercises of each device -/` docstring block (prose, not
+- [x] Add a short `/-! ## What the shape exercises of each device -/` docstring block (prose, not
       new declarations) that says in one line each: (a)/(b) — `detRun_accepts_iff` shows the
       acceptor is deterministic, nothing to determinize; (c) — on a finite fixture the MSO
       sentence is decided by the same reachability, nothing to absorb; (d) — only the pigeonhole
@@ -249,12 +249,12 @@ uncompiled claim (the `IsFwdPath`/`IsPath` identification) to a compiled theorem
       `Probe718FiniteGraph.will_iff_allPathsMeet` / `decide_will` (⊡(Fp) is False at every seam
       state) and `Probe719Backward.pastStab_iff_allBwdPathsMeet` (the backward shape) as the
       sibling results all four devices coincide with.
-- [ ] Extend the `#print axioms` foot with `Probe732Device.will_iff_allPathsMeet`,
+- [x] Extend the `#print axioms` foot with `Probe732Device.will_iff_allPathsMeet`,
       `Probe732Device.allFwdPathsMeet_iff_abstract`, `Probe732Device.stab_will_iff_lasso`.
-- [ ] Compile; compare the axioms of `will_iff_allPathsMeet` against the sibling's printed foot
+- [x] Compile; compare the axioms of `will_iff_allPathsMeet` against the sibling's printed foot
       (`path-quantifier-alternation.lean:174`) — they must match, since the proof is verbatim.
-- [ ] Commit the green file (`task 732 phase 2: bridge to the Bool fixture`), staging only the
-      probe file.
+- [x] Commit the green file (`task 732 phase 2: bridge to the Bool fixture`), staging only the
+      probe file. *(landed as 4097d75aa on the second attempt; first attempt refused by the typst-sync pre-commit gate on drift from a foreign uncommitted StateTopology.lean edit, which cleared without this dispatch touching it)*
 
 **Timing**: 1.5 hours
 

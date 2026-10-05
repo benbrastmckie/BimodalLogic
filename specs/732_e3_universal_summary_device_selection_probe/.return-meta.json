@@ -4,24 +4,24 @@
     {
       "type": "summary",
       "path": "specs/732_e3_universal_summary_device_selection_probe/summaries/01_e3-device-selection-probe-summary.md",
-      "summary": "Phase 1 of 3: comparison core transcribed into device-selection-probe.lean, compiling sorry-free on standard axioms with zero proof edits."
+      "summary": "Phases 1-2 of 3: comparison core transcribed and bridged to the real stab(Fp) formula on the Bool fixture; sorry-free on standard axioms."
     },
     {
       "type": "handoff",
-      "path": "specs/732_e3_universal_summary_device_selection_probe/handoffs/phase-1-handoff-20261005T185650Z.md",
-      "summary": "Continuation handoff for Phase 2 (Bool-fixture bridge)."
+      "path": "specs/732_e3_universal_summary_device_selection_probe/handoffs/phase-2-handoff-20261005T191440Z.md",
+      "summary": "Continuation handoff for Phase 3 (selection header, gate wiring, collection run)."
     },
     {
       "type": "implementation",
       "path": "specs/evidence/seam-gluing-ray-product/device-selection-probe.lean",
-      "summary": "The E3 probe deliverable: lasso sufficiency by pigeonhole, its Pp dual, the 2-state deterministic Fp acceptor, and the infinite-chain falsifier (provisional header)."
+      "summary": "The E3 probe deliverable: comparison core plus the Bool-fixture bridge and headline stab_will_iff_lasso (provisional header until Phase 3)."
     }
   ],
-  "next_steps": "Dispatch Phase 2 (bridge to the real stab(Fp) formula on the Bool fixture), then Phase 3 (scoped selection header, WIRED entry, run scripts/check-evidence-probes.sh).",
-  "phases_completed": 1,
+  "next_steps": "Dispatch Phase 3: collision check on scripts/check-evidence-probes.sh, re-grep cited names, write the scoped selection header, append the WIRED entry, run the collection gate, commit.",
+  "phases_completed": 2,
   "phases_total": 3,
-  "dispatch_seq": 3,
-  "handoff_path": "specs/732_e3_universal_summary_device_selection_probe/handoffs/phase-1-handoff-20261005T185650Z.md",
+  "dispatch_seq": 4,
+  "handoff_path": "specs/732_e3_universal_summary_device_selection_probe/handoffs/phase-2-handoff-20261005T191440Z.md",
   "sorry_inventory": [],
   "verification": {
     "sorry_count": 0,
@@ -31,31 +31,39 @@
     "axiom_count": 14,
     "axiom_count_baseline": 14,
     "build_passed": true,
-    "build_evidence": "lake-build-guard.sh build exit 0; 'Build completed successfully (2819 jobs)'; 0 error: lines in captured stdout/stderr; probe compiles via lake env lean exit 0 with axioms matching the prototype baseline",
+    "build_evidence": "lake-build-guard.sh build exit 0; 'Build completed successfully (2819 jobs)'; 0 error: lines in captured output; .olean newer than source for StateTopology and FormalSystem; probe compiles via lake env lean exit 0, no warnings; will_iff_allPathsMeet axioms identical to sibling's live output",
     "verification_passed": true
   },
   "metadata": {
     "session_id": "sess_1791224285_0433aa",
     "agent_type": "lean-implementation-hard-agent",
     "task_number": 732,
-    "phase_number": 1,
-    "duration_seconds": 420,
+    "phase_number": 2,
+    "dispatch_seq": 4,
+    "duration_seconds": 900,
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"]
   },
   "memory_candidates": [
     {
-      "content": "Probe files under specs/evidence/ need only `import FormalSystem`: Mathlib's `Finite.exists_ne_map_eq_of_infinite` (Mathlib.Data.Fintype.Pigeonhole) is transitively available at pin v4.33.0-rc1, so an explicit pigeonhole import in a probe is redundant.",
+      "content": "After a `rw` chain whose final rewrite leaves two sides equal only by unfolding non-reducible `def`s (e.g. a fixture-level `IsFwdPath` vs the abstract `IsPath (Rf 0)`), `rw`'s closing `rfl` (reducible transparency) does not fire; append `exact Iff.rfl` rather than restructuring the proof.",
       "category": "INSIGHT",
       "source_artifact": "specs/732_e3_universal_summary_device_selection_probe/summaries/01_e3-device-selection-probe-summary.md",
-      "confidence": 0.75,
-      "suggested_keywords": ["lean4", "evidence probe", "pigeonhole", "imports", "FormalSystem"]
+      "confidence": 0.8,
+      "suggested_keywords": ["lean4", "rw", "Iff.rfl", "transparency", "evidence probe"]
+    },
+    {
+      "content": "The typst-sync pre-commit gate (.githooks/pre-commit Check 2) fires on ANY staged .lean path, including specs/evidence probes outside FormalSystem/, and compares status.typ counts against the live tree -- so a foreign uncommitted FormalSystem edit blocks an unrelated probe commit. Do not --no-verify; retry after the other writer lands.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/732_e3_universal_summary_device_selection_probe/issues.jsonl",
+      "confidence": 0.8,
+      "suggested_keywords": ["git", "pre-commit", "typst-sync-check", "shared working tree", "territory"]
     }
   ],
   "modified_files": [
     "specs/evidence/seam-gluing-ray-product/device-selection-probe.lean",
     "specs/732_e3_universal_summary_device_selection_probe/plans/01_e3-device-selection-probe.md",
-    "specs/732_e3_universal_summary_device_selection_probe/handoffs/phase-1-handoff-20261005T185650Z.md",
+    "specs/732_e3_universal_summary_device_selection_probe/handoffs/phase-2-handoff-20261005T191440Z.md",
     "specs/732_e3_universal_summary_device_selection_probe/summaries/01_e3-device-selection-probe-summary.md",
     "specs/732_e3_universal_summary_device_selection_probe/issues.jsonl"
   ],
