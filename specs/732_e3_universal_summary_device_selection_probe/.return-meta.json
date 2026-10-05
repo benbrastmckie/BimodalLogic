@@ -1,7 +1,11 @@
 {
   "status": "implemented",
   "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "delegation_path": [
+    "orchestrator",
+    "implement",
+    "lean-implementation-hard-agent"
+  ],
   "task_number": 732,
   "session_id": "sess_1791224285_0433aa",
   "dispatch_seq": 5,

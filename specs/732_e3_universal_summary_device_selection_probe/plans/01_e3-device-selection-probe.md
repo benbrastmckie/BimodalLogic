@@ -1,7 +1,7 @@
 # Implementation Plan: Task #732
 
 - **Task**: 732 - Run experiment E3: select the universal summary device for the seam-gluing stab fibre check
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None (task 711 depends on this one; the discharge of 711's blocked reason is a separate `/revise 711`, not performed here)
 - **Research Inputs**: specs/732_e3_universal_summary_device_selection_probe/reports/01_e3-device-selection-probe.md
