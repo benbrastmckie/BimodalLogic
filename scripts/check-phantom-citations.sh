@@ -139,6 +139,71 @@ ALLOWLIST=(
   Prop Type Nat Int Bool List Set Option String Decidable DecidablePred Decidable.decide
   Nonempty Subtype Finset Finite Set.Finite WellFounded Classical BddAbove
   Iff.rfl Eq.refl Eq.mpr id_rfl
+
+  # --- UPSTREAM: real Mathlib / Lean-core / metaprogramming names this repo cites but does not
+  # define. Added during a full manual triage of every finding a clean run then produced
+  # (triage ledger: specs/728_sweep_phantom_declaration_citations/triage-ledger.md).
+  CompactIccSpace isOpen_inter isOpen_sUnion isOpen_univ IsPredArchimedean IsSuccArchimedean
+  specializes_iff_mem_closure
+  dbg_trace dbgTrace MetaM mkAppM register_simp_attr isBadNameWithUnderscore
+
+  # --- NOT-LEAN: bash sentinels/arrays quoted verbatim from scripts/ shell sources, never a
+  # declaration claim.
+  ENFORCE_C17 ENFORCE_C20 ENFORCE_C20_DECL WIRED_REPO LANGUAGE_FILE_LAYERS
+
+  # --- NOT-LEAN: lakefile.toml `[[lean_lib]]`/`[[lean_exe]]` target names (Lake DSL identifiers,
+  # not Lean declarations).
+  BimodalLogic BimodalTest BimodalTools BimodalToolsTest checkInitImports dataset_generator
+  defaultTargets mk_all proof_extractor
+
+  # --- NOT-LEAN: batteries/runLinter option names.
+  docBlame docBlameTheorems dupNamespace noSorryInProofs unusedDecidableInType
+
+  # --- NOT-LEAN: Python/script identifiers (scripts/lib/lean_citations.py,
+  # scripts/measure-refactor-partitions.py, and similar).
+  comments_only decl_spans lean_citations.decl_spans env_linter lean_debug_artifacts.mask
+  resolve_env layer_of
+
+  # --- NOT-LEAN: bare naming-convention fragments and template placeholders, never a standalone
+  # declaration (Mathlib's `isBadNameWithUnderscore` suffix heuristic; docstring-standard.md's own
+  # template placeholder).
+  _1 _2 _mathlib snake_case theorem_name
+
+  # --- OUT-OF-SCOPE-REAL: real Lean declarations, confirmed by hand, defined under `BimodalTools/`
+  # or `scripts/` rather than `FormalSystem/` -- this checker's documented, deliberate search root
+  # (both its own header above and the originating task's own charter say "zero definition sites
+  # in FormalSystem/"). Not a widening of SOURCE_DIR: these two sibling trees are real and checked
+  # manually here, once, rather than brought into this checker's ongoing scope.
+  CheckInitImportsMain ContrastiveGeneratorMain DataExport ProofFirstGeneratorMain TraceExport
+  TraceExporter layerReynoldsDedekind
+  # DatasetExporter: MODULE_INVARIANTS.md's own C25N row uses it in explicitly past tense,
+  # illustrating a since-fixed pre-convention naming confusion (alongside DataExport/TraceExport/
+  # TraceExporter) -- not a present-tense claim, and no file of this name exists today.
+  DatasetExporter
+
+  # --- VERIFIED-FIELD: real Lean identifiers confirmed by hand as plain `structure ... where`
+  # fields or record-literal field assignments (no `|`, no keyword of its own -- see this script's
+  # own LIMITATIONS note on why a general field detector is not added instead).
+  axiomWeight carrier_nonempty PosRel sh_add sh_zero trans_refl
+
+  # --- EXAMPLE: illustrative identifiers (teaching examples, paper/manuscript notation, a
+  # historical negative-test artifact, naming-convention anti-patterns and suffix illustrations) --
+  # each already correctly framed as non-claims by its own citing prose.
+  backward_P forward_F forward_G modal_backward
+  BX_d 𝒩_F 𝒯_F
+  FormalSystem._Scratch
+  modal_4_tactic tacticModal_t reflect_time
+
+  # --- ALREADY-ACCURATE: the citing prose already states non-existence, retirement, or a
+  # not-yet-landed/renamed status correctly; absorbed here rather than edited further, since
+  # editing would only re-trigger the same finding (see the ledger's Phase 4 Repair Log for the
+  # five names repaired by annotation, which keep the now-corrected-but-absent name visible for
+  # traceability).
+  FrameClass.Dedekind FrameClass.Discrete TaskFrame.IsSuccArchDiscrete ValidDedekind
+  soundness_dedekind soundness_discrete MinusValidComplete regionOmega
+  valid_iff_allClosed validity_decidable validity_has_decision_procedure
+  modal_4_derivable modal_b_derivable necessitation_from_modal_k
+  not_setConsistent_of_setDerivable_bot Semantics.Validity.valid_at_world
 )
 
 # --- Namespace roots that are real declarations, just never defined in FormalSystem/ ------------
@@ -151,6 +216,14 @@ ROOT_DENYLIST=(
   Lean Mathlib Tactic Elab Meta Expr Syntax MVarId Std Qq IO System Array
   Classical Nat Int List Option String Bool Prop Type Set Order
   linter synthInstance weak lean_exe lean_lib
+  # BimodalTools: a real sibling Lean source tree (its own `[[lean_lib]]` target, see
+  # lakefile.toml), out of this checker's FormalSystem/-only scope by design. A BARE
+  # `BimodalTools` citation is covered by ALLOWLIST above; this ROOT_DENYLIST entry additionally
+  # covers any QUALIFIED `BimodalTools.X` citation (e.g. `BimodalTools.DatasetGeneratorMain`)
+  # without needing a second, duplicate ALLOWLIST entry for every such name, and without checking
+  # that the `X` half actually exists there -- the same trust extended to `Mathlib.*`/`Lean.*`
+  # above.
+  BimodalTools
 )
 
 is_denylisted_root() {

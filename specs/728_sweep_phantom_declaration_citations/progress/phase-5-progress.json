@@ -1,0 +1,18 @@
+{
+  "phase": 5,
+  "phase_name": "Absorb non-defect findings into the checker's allowlists",
+  "started_at": "2026-10-05T19:45:00Z",
+  "last_updated": "2026-10-05T20:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "Add UPSTREAM names to ALLOWLIST", "status": "done", "files_touched": ["scripts/check-phantom-citations.sh"]},
+    {"id": 2, "description": "Add NOT-LEAN names grouped by sub-kind", "status": "done", "files_touched": ["scripts/check-phantom-citations.sh"]},
+    {"id": 3, "description": "Add EXAMPLE names", "status": "done", "files_touched": ["scripts/check-phantom-citations.sh"]},
+    {"id": 4, "description": "Structural fixes (ROOT_DENYLIST BimodalTools)", "status": "done", "files_touched": ["scripts/check-phantom-citations.sh"]},
+    {"id": 5, "description": "Re-run and verify 0 findings, no PHANTOM silenced", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Run --strict and record residual", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

@@ -243,10 +243,25 @@ ALLOWLIST in Phase 5, not by driving the raw count to zero for these five names.
 six Phase 4 repairs: 86 findings (unchanged from the post-operators.md/API_REFERENCE.md count,
 since the remaining five keep their old name backticked by design).
 
-## Phase 5 Territory (confirmed)
+## Phase 5 Territory (confirmed — executed)
 
-`scripts/check-phantom-citations.sh` is the only file touched for absorption. ALLOWLIST additions
-needed for every row not marked PHANTOM above (UPSTREAM, NOT-LEAN, OUT-OF-SCOPE-REAL,
-VERIFIED-FIELD, EXAMPLE, ALREADY-ACCURATE all route through the allowlist — the distinct *reason*
-is recorded per group, in the ledger above and in the script's own inline comments, never
-collapsed to a single undifferentiated list).
+`scripts/check-phantom-citations.sh` is the only file touched for absorption. All 86 of the
+post-Phase-4 findings were added to `ALLOWLIST`, grouped by class with an inline comment per group
+(matching this ledger's class taxonomy exactly — UPSTREAM, bash sentinels, lake targets, linter
+options, Python identifiers, naming fragments, OUT-OF-SCOPE-REAL, VERIFIED-FIELD, EXAMPLE,
+ALREADY-ACCURATE each as their own commented block, never collapsed into one undifferentiated
+list). One structural addition alongside the per-name entries: `BimodalTools` was added to
+`ROOT_DENYLIST` (not just `ALLOWLIST`), since it is a real sibling Lean source tree outside this
+checker's `FormalSystem/`-only scope — this durably covers any *future* `BimodalTools.X` qualified
+citation, not just today's `BimodalTools.DatasetGeneratorMain`, the same trust already extended to
+`Mathlib.*`/`Lean.*`.
+
+**Result**: `bash scripts/check-phantom-citations.sh --verbose` now reports **0 findings** over
+the same 1028 candidate pairs. `--strict` exits 0 (nothing to fail on). `bash -n` passes; `--help`
+renders cleanly.
+
+**No PHANTOM row was silenced by a too-broad allowlist entry**: every one of the 6 genuine
+PHANTOM repairs from Phase 4 is independently re-confirmed fixed (either the old name no longer
+appears at all, for the two fully-corrected names, or it appears solely inside this ledger's and
+the script's own commentary describing the repair — never inside live docs prose asserting it as
+a current fact).

@@ -443,7 +443,7 @@ long.
 
 ---
 
-### Phase 5: Absorb non-defect findings into the checker's allowlists [NOT STARTED]
+### Phase 5: Absorb non-defect findings into the checker's allowlists [COMPLETED]
 
 **Goal**: Extend `scripts/check-phantom-citations.sh` so that every `UPSTREAM`, `NOT-LEAN` and
 `EXAMPLE` finding is absorbed with a written justification, making a near-clean run meaningful
@@ -451,37 +451,65 @@ rather than aspirational. This phase owns that one file and no other.
 
 **Tasks**:
 
-- [ ] Re-read the script's `ALLOWLIST` and `ROOT_DENYLIST` arrays and their surrounding header
+- [x] Re-read the script's `ALLOWLIST` and `ROOT_DENYLIST` arrays and their surrounding header
       sections before editing, so additions land in the existing documented structure rather than
       beside it.
-- [ ] Add each `UPSTREAM` name to `ALLOWLIST` (or its namespace root to `ROOT_DENYLIST` where the
+- [x] Add each `UPSTREAM` name to `ALLOWLIST` (or its namespace root to `ROOT_DENYLIST` where the
       whole root is upstream), grouped with a short inline comment naming the source — e.g.
       Mathlib order/topology lemmas, Lean metaprogramming (`MetaM`, `mkAppM`, `register_simp_attr`,
-      `dbg_trace`/`dbgTrace`).
-- [ ] Add each `NOT-LEAN` name, grouped by what it actually is — bash sentinels and arrays, lake
+      `dbg_trace`/`dbgTrace`). *(completed: 13 names added to ALLOWLIST in one UPSTREAM-commented
+      group)*
+- [x] Add each `NOT-LEAN` name, grouped by what it actually is — bash sentinels and arrays, lake
       targets and `lean_exe` roots, `batteries/runLinter` option names, Python/script identifiers,
       name fragments — each group carrying one comment line that says so. `WIRED_REPO` belongs
       here: it is a bash array name quoted verbatim from `scripts/check-evidence-probes.sh` in a
       live task description, not a declaration claim, and it is the **only** finding citing
       `specs/state.json`. Absorbing it here is what satisfies the dispatch's "no live task
       description asserts a declaration that does not exist" without editing a description that
-      two sibling dispatches are concurrently holding.
-- [ ] Add each `EXAMPLE` name only if Phase 2 confirmed it illustrative; any tactic name that
+      two sibling dispatches are concurrently holding. *(completed: 5 sub-groups added — bash
+      sentinels/arrays incl. `WIRED_REPO`, lake targets, linter options, Python identifiers, bare
+      fragments/placeholders — plus a 6th group this phase's Phase 2 research surfaced that the
+      original class list did not anticipate: OUT-OF-SCOPE-REAL names that are genuinely real Lean
+      declarations under `BimodalTools/`/`scripts/`, outside this checker's documented
+      `FormalSystem/`-only search root; see ledger. `WIRED_REPO` confirmed still the only finding
+      citing `specs/state.json` throughout — now 0, since it is absorbed, and no sibling
+      description was edited.)*
+- [x] Add each `EXAMPLE` name only if Phase 2 confirmed it illustrative; any tactic name that
       turned out to have no implementation under `FormalSystem/Automation/` was reclassed
-      `PHANTOM` and belongs to Phase 3/4 instead, not here.
-- [ ] Where a whole *class* is better handled structurally than name-by-name — a bare name
+      `PHANTOM` and belongs to Phase 3/4 instead, not here. *(completed: 12 EXAMPLE names added,
+      each independently confirmed illustrative — paper notation, teaching examples, a historical
+      test artifact, naming-convention anti-patterns/illustrations; every tactic name with a real
+      `macro`/`elab`/`syntax` implementation was instead fixed structurally via Phase 2's checker
+      fallback 3, never allowlisted as EXAMPLE)*
+- [x] Where a whole *class* is better handled structurally than name-by-name — a bare name
       fragment like `_1`/`_2`/`_dedekind` that the CANDIDATE SHAPE rule should never have
       admitted — prefer tightening the shape rule, and extend the header's CANDIDATE SHAPE
       section to describe the new exclusion. Do not change the exit-status contract: advisory
-      exit 0 by default, `--strict` opt-in.
-- [ ] Update the header's LIMITATIONS section if any edit changes what a clean run means.
-- [ ] Re-run `bash scripts/check-phantom-citations.sh --verbose` after each group of additions and
+      exit 0 by default, `--strict` opt-in. *(completed differently from anticipated: the
+      structural fix that mattered most was not a CANDIDATE SHAPE tightening but three
+      `definition_exists` DETECTION fixes made in Phase 2 — qualified-prefix support, the
+      primed/unprimed `\b` fix, and the macro/elab/syntax/notation fallback — which resolved far
+      more findings (16: 12 dropped between the 105 and 94 baselines, plus 4 more via the fallback
+      added later) than any single CANDIDATE SHAPE change would have. `BimodalTools` was added to
+      `ROOT_DENYLIST` as the one shape-level structural fix in this phase, covering any future
+      qualified `BimodalTools.X` citation. Exit-status contract unchanged: advisory 0 by default,
+      `--strict` opt-in, confirmed below.)*
+- [x] Update the header's LIMITATIONS section if any edit changes what a clean run means.
+      *(completed in Phase 2: added a LIMITATIONS bullet documenting the structure-field detection
+      non-generalization, so a clean run is correctly understood as "no untriaged finding", not
+      "every citation mechanically verified down to field level")*
+- [x] Re-run `bash scripts/check-phantom-citations.sh --verbose` after each group of additions and
       confirm the intended findings dropped and no genuine `PHANTOM` row was silenced by a
       too-broad allowlist entry — cross-check the surviving finding list against the ledger's
-      `PHANTOM` rows.
-- [ ] Also run `bash scripts/check-phantom-citations.sh --strict` once and record its exit status
-      and residual count, as the measured answer to "could this be a gate yet?".
-- [ ] Commit per green sub-step (per group absorbed and re-verified).
+      `PHANTOM` rows. *(completed: single combined edit, re-run afterward — 0 findings; all 6
+      Phase 4 PHANTOM repairs independently re-confirmed fixed, see ledger)*
+- [x] Also run `bash scripts/check-phantom-citations.sh --strict` once and record its exit status
+      and residual count, as the measured answer to "could this be a gate yet?". *(completed: exit
+      0, 0 residual findings — this measured result, "yes, a clean --strict run is achievable
+      today", is recorded in Phase 6's final verification rather than acted on here; making the
+      checker a blocking gate is a declared Non-Goal of this plan)*
+- [x] Commit per green sub-step (per group absorbed and re-verified). *(completed: one commit,
+      since all groups landed together in a single verified-green edit)*
 
 **Timing**: 1.25 hours
 
