@@ -1,12 +1,62 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "dispatch_seq": 8,
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/726_rerunnable_decidability_programme_inventory/summaries/01_rerunnable-inventory-mechanism-summary.md",
+      "summary": "Implementation summary for the re-runnable decidability-programme inventory mechanism: all 6 plan phases completed, acceptance evidence, and a recorded deviation for 3 pre-existing non-regression gate failures."
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Built scripts/generate-decidability-inventory.sh, which regenerates the decidability programme's PROVED/NOT ESTABLISHED/WITHDRAWN/REFUTED inventory from three machine sources, cross-checks pinned: cells against the C2/C14 axiom baselines, and diffs against a committed baseline extracted from the archived decidability-programme review; named as the periodic-re-run owner in specs/ROADMAP.md's Maintenance section.",
+    "roadmap_items": [
+      "Nobody owns the periodic re-run of the decidability inventory until task 726 lands"
+    ]
+  },
+  "modified_files": [
+    "scripts/generate-decidability-inventory.sh",
+    "scripts/decidability-inventory-baseline.txt",
+    "scripts/README.md",
+    "specs/ROADMAP.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "When extracting a deterministic data file from a prose markdown report for a mechanical comparison/diff tool, do not assume every table row's path/identifier is spelled out in full: this repo's archived decidability-programme review elides repeated directory prefixes as `.../name.lean` once a table group's first row spells it out, which silently drops 4 of 5 related records unless the extractor tracks the last full path seen in row order. Check table semantics for elision before trusting a per-row regex to be complete.",
+      "category": "PATTERN",
+      "source_artifact": "specs/726_rerunnable_decidability_programme_inventory/summaries/01_rerunnable-inventory-mechanism-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": [
+        "baseline extraction",
+        "markdown table parsing",
+        "elided paths",
+        "diff tooling",
+        "decidability inventory"
+      ]
+    },
+    {
+      "content": "When a baseline extracted from an archived review is meant to be diffed against a live-tree-derived category, verify the archived category is actually an exhaustive enumeration before diffing it -- a curated/selective table (headline results only) will produce a flood of false 'added' lines when compared against a live source's full enumeration. Prefer diffing only well-founded 1:1-correspondence categories (e.g. two independently complete arrays) and documenting the non-diffed category's limitation explicitly in the tool's own output rather than silently shipping noisy drift lines.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/726_rerunnable_decidability_programme_inventory/summaries/01_rerunnable-inventory-mechanism-summary.md",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "diff tooling",
+        "false positive",
+        "baseline comparison",
+        "curated vs exhaustive"
+      ]
+    }
+  ],
   "metadata": {
     "session_id": "sess_1791141048_bd999f",
     "agent_type": "general-implementation-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
-    "phases_completed": 0,
+    "delegation_path": [
+      "orchestrator",
+      "implement",
+      "general-implementation-agent"
+    ],
+    "phases_completed": 6,
     "phases_total": 6
   }
 }

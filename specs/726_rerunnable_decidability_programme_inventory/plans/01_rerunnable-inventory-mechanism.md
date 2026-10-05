@@ -1,7 +1,7 @@
 # Implementation Plan: Task #726
 
 - **Task**: 726 - Make the decidability-programme inventory re-runnable from the tree
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 7.25 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/726_rerunnable_decidability_programme_inventory/reports/01_rerunnable-inventory-mechanism.md`

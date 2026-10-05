@@ -1,23 +1,33 @@
 {
-  "status": "planned",
+  "status": "implemented",
   "task_number": 726,
-  "phase": "plan",
-  "phases_completed": 0,
+  "phase": "implement",
+  "phases_completed": 6,
   "phases_total": 6,
-  "summary": "Planned task 726 as a standing script (scripts/generate-decidability-inventory.sh) rather than a /review step, because the deployed .claude/ tree is stale relative to its source store and a script runs from a fresh clone beside the two sources it reads. Six sequential phases (7.25h): source-1 parser with anti-silence guards, the pinned:-cell cross-check against the C2/C14 heredoc baselines, sources 2 and 3, a committed extracted baseline plus --diff and WITHDRAWN carry-forward, documentation and roadmap ownership hand-off, and an end-to-end acceptance run. This dispatch was a restart after a quota interruption; the pre-existing plan file was verified against the format standard and every anchor it cites, and kept.",
+  "summary": "Implemented scripts/generate-decidability-inventory.sh across all 6 plan phases: source-1 parser with anti-silence guards, the pinned:-cell cross-check against the C2/C14 heredoc baselines (0 mismatches on the clean tree, verified non-zero on a reverted synthetic bad row), sources 2/3 (WIRED/WIRED_REPO probes, the Retired-as-vacuous anchor), a committed hand-verified baseline with --diff and WITHDRAWN carry-forward, documentation/roadmap ownership hand-off, and a full acceptance/gate run. --diff correctly surfaces the one known REFUTED-category drift instance and 5 DISAGREEMENT lines for the baseline-PROVED seam-gluing-ray-product probes.",
   "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/726_rerunnable_decidability_programme_inventory/plans/01_rerunnable-inventory-mechanism.md",
-      "summary": "Six-phase implementation plan for the re-runnable decidability-programme inventory mechanism."
+      "type": "summary",
+      "path": "specs/726_rerunnable_decidability_programme_inventory/summaries/01_rerunnable-inventory-mechanism-summary.md",
+      "summary": "Implementation summary with acceptance evidence and a recorded deviation for 3 pre-existing non-regression gate failures (sibling task 722's own commit, an unrelated prior task, and 2 missing wired-probe files, none caused by this work)."
+    },
+    {
+      "type": "script",
+      "path": "scripts/generate-decidability-inventory.sh",
+      "summary": "The re-runnable decidability-programme inventory generator."
+    },
+    {
+      "type": "data",
+      "path": "scripts/decidability-inventory-baseline.txt",
+      "summary": "Committed, hand-verified baseline extracted from the archived decidability-programme review."
     }
   ],
   "metadata": {
-    "session_id": "sess_1791141048_bd999f_726",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "session_id": "sess_1791141048_bd999f",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   },
-  "dispatch_seq": 5
+  "dispatch_seq": 8
 }
