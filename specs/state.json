@@ -39,13 +39,13 @@
     {
       "project_number": 728,
       "project_name": "sweep_phantom_declaration_citations",
-      "status": "planned",
+      "status": "completed",
       "task_type": "general",
       "description": "Sweep and repair phantom declaration citations across task records and prose\n\nWHY THIS EXISTS. Task descriptions and prose in this repository cite Lean declarations that DO NOT EXIST, as established fact, with file paths and sometimes line numbers attached. Eleven such citations were found in a single 2026-10-03 revision round, across four task records, and only because each reviser was explicitly instructed to verify every name before repeating it. The defect is systemic: names get inherited from a predecessor's text rather than re-checked, so a citation that was wrong once stays wrong and propagates.\n\nCONFIRMED INSTANCES, each verified absent from the tree at 2026-10-03.\n- `verifyProof` -- asserted by task 482 as `fun _ _ => true` at a named path in `FormalSystem/Metalogic/Decidability/ProofExtraction.lean`. Zero hits repo-wide. The file has no verifier under any name. Probable origin: an EMPTY `## Proof Verification` doc-section header in that file, separated only by a blank line from the next doc block -- a heading that promised a function nobody wrote.\n- `allClosed_derivable` -- cited by task 482; absent. It is task 412's target, not a landed theorem. Bare `allClosed` is live as a tableau-result constructor; do not conflate them.\n- `completeness_dedekind_of_engine`, `ValidDedekindDense`, `ValidFor` -- cited by task 412; absent from all of `FormalSystem/**/*.lean`.\n- `completeness_dedekind`, `ValidDedekind` -- cited by task 412; absent from Lean sources, surviving only in prose in `FormalSystem/Metalogic/README.md`, `FormalSystem/Metalogic/BXCanonical/README.md` and `FormalSystem/Metalogic/WeakCanonical/RealModel/README.md`. Nearest live declarations: `completeness_rtime_engine` and `countermodel_dedekind_dense`, both in `FormalSystem/Metalogic/BXCanonical/CompletenessDedekind.lean`.\n- `not_plusValidZTime_neg_Phi` -- cited by task 709 with a Latin \"Phi\"; the tree has `Probe710.not_plusValidZTime_neg_Φ` with the Greek capital.\n- `Decidability.phiPos` -- cited as the L-E3 target; the declaration is `FormalSystem.Metalogic.Decidability.WitnessFamilyExamples.phiPos` in `FormalSystem/Metalogic/Decidability/WitnessFamily/Examples.lean`.\n\nALSO IN SCOPE: MISATTRIBUTED AND DEAD ANCHORS, the same failure in a different costume.\n- A cited `StrongCompleteness.lean` line number that lands inside `soundness_consequence`, not the Dedekind engine it is cited as.\n- Task 482's two cited task-468 artifact paths, both live-path dead: the files moved to `specs/archive/468_.../`. The CONTENT is real once repathed.\n- Task 482's citation of \"amendment 10b\" of `specs/reviews/review-2026-08-24.md`: that file exists and contains no amendment 10b -- it is an amendment to task 468's charter, referenced from 468's own artifacts.\n- Task 430's grounding report path, dead; the file is at `specs/archive/165_establish_semantic_finite_model_property/reports/09_phase7-deadlock-blocker-research.md`.\n- Task 430's naming of the four frame classes as \"Base, Dense, Discrete and Dedekind\"; `inductive FrameClass` in `FormalSystem/ProofSystem/Axioms.lean` has constructors `Base`, `Dense`, `ZTime`, `RTime`.\n- `file_scope` entries naming unbuilt paths -- `FormalSystem/Metalogic/Decidability/Verified/Refutation/` (task 482), `PlusSlicedCertificate/Limits/` (task 710), `PlusSlicedCertificate/FiniteCarrier.lean` (task 706). These are DESTINATIONS, not locations, which is legitimate for a landing target but breaks any tooling that reads `file_scope` as openable files. Decide whether that is worth flagging in `validate-state.sh` and say which way.\n\nWHAT TO DO. First, RE-VERIFY every instance above -- this list was accurate on 2026-10-03 and some may since have been landed or repaired, and a sweep that repeats a stale finding reproduces the very defect it targets. Then repair each surviving instance at its source: strike the name, or re-state it as absent, or correct it to the live declaration. NEVER carry a name forward on the strength of the text that cited it.\n\nTHE DURABLE FIX MATTERS MORE THAN THE SWEEP. A one-off repair leaves the mechanism intact. Build the check: extract backticked fully-qualified names from task descriptions and `docs/`, report those with zero definition sites in `FormalSystem/`. Coordinate with the separately-filed re-runnable-inventory task, which names this checker as an optional second deliverable -- land it in ONE place, not both, and say which.\n\nHARD CONSTRAINTS. Repair citations only; write no Lean, and do not create any missing declaration to make a citation true. Do not edit completed tasks' research reports or summaries -- those are historical artifacts, and a report that was wrong when written stays wrong with a correction recorded elsewhere, rather than being silently rewritten. Live task descriptions, `docs/` and `specs/ROADMAP.md` are in scope; `specs/*/reports/` and `specs/*/summaries/` are not.\n\nACCEPTANCE. Every surviving confirmed instance is repaired at its source or recorded as absent; no live task description asserts a declaration that does not exist; a mechanical checker exists in exactly one place; the historical artifacts are untouched.",
       "topic": "code-quality",
       "dependencies": [],
       "created": "2026-10-03T16:46:17Z",
-      "last_updated": "2026-10-05T16:10:15Z",
+      "last_updated": "2026-10-05T17:34:28Z",
       "session_id": "sess_1791141048_bd999f",
       "artifacts": [
         {
@@ -57,6 +57,11 @@
           "path": "specs/728_sweep_phantom_declaration_citations/plans/01_phantom-citation-residual-triage.md",
           "type": "plan",
           "summary": "Six-phase residual plan: verify landed sweep, triage 105 checker findings, repair genuine phantom docs/ citations, absorb non-defects into checker allowlists."
+        },
+        {
+          "path": "specs/728_sweep_phantom_declaration_citations/summaries/01_phantom-citation-residual-triage-summary.md",
+          "type": "summary",
+          "summary": "Full implementation summary covering all six phases, decisions, deviations, and verification evidence."
         }
       ],
       "next_artifact_number": 2,
@@ -68,7 +73,8 @@
         "scripts/check-phantom-citations.sh",
         "specs/728_sweep_phantom_declaration_citations/baseline-findings.txt",
         "specs/728_sweep_phantom_declaration_citations/triage-ledger.md"
-      ]
+      ],
+      "completion_summary": "Re-ran the phantom-citation checker fresh, fixed three real detection bugs in it (qualified-prefix declarations, a primed/unprimed identifier conflation, and a macro/elab/syntax tactic-declaration fallback), triaged all 94 resulting findings, repaired 6 genuine phantom citations across 5 docs files, and absorbed the remaining 86 as non-defects with per-group justification -- the checker now reports 0 findings and a clean --strict run."
     },
     {
       "project_number": 726,

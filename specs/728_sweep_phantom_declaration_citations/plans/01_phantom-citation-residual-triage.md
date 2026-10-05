@@ -1,7 +1,7 @@
 # Implementation Plan: Task #728
 
 - **Task**: 728 - Sweep and repair phantom declaration citations across task records and prose
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 7.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/728_sweep_phantom_declaration_citations/reports/01_phantom-citation-sweep.md

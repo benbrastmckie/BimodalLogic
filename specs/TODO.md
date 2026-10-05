@@ -11,7 +11,7 @@ next_project_number: 732
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,711,712,713,714,716,720,725,728,729,730,731 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,711,712,713,714,716,720,725,729,730,731 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -46,10 +46,6 @@ next_project_number: 732
 616 [NOT STARTED] — Formalize the duration monoid BD+, its twisted-arrow...
   └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
 617 [NOT STARTED] — Prove app:presheaf-dictionary's Reflection clause: reflection...
-
-### Code Quality
-
-728 [PLANNED] — Sweep and repair phantom declaration citations across task...
 
 ### Dataset Enhancement
 
@@ -165,12 +161,13 @@ Effort: small-to-medium, mostly editorial judgment rather than code.
 ---
 
 ### 728. Sweep phantom declaration citations
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: code-quality
 - **Dependencies**: None
 - **Research**: [728_sweep_phantom_declaration_citations/reports/01_phantom-citation-sweep.md]
 - **Plan**: [728_sweep_phantom_declaration_citations/plans/01_phantom-citation-residual-triage.md]
+- **Summary**: [728_sweep_phantom_declaration_citations/summaries/01_phantom-citation-residual-triage-summary.md]
 
 **Description**: Sweep and repair phantom declaration citations across task records and prose
 
