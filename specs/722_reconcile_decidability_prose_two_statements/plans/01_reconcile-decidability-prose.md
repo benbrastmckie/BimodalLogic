@@ -550,38 +550,38 @@ declaration. No complexity claim enters either edit.
 
 ---
 
-### Phase 7: Acceptance Sweep and Full Gate [NOT STARTED]
+### Phase 7: Acceptance Sweep and Full Gate [COMPLETED]
 
 **Goal**: Mechanically confirm every acceptance criterion across all eight surfaces, confirm no
 out-of-scope file changed, and run the complete gate set.
 
 **Tasks**:
-- [ ] Repo-wide literal-string sweep, excluding `specs/**` (where the task description legitimately
+- [x] Repo-wide literal-string sweep, excluding `specs/**` (where the task description legitimately
   quotes the stale phrasing as the problem statement and must **not** be "fixed"), and tolerant of
   line wraps: for each of `.md`, `.typ`, `.lean`, run the search over whitespace-normalized text
   for "no decidability theorem is machine-checked" and "neither factor logic is known decidable".
   Both must return nothing outside `specs/**`. If a ninth surface appears, report it rather than
   silently expanding scope.
-- [ ] Sweep repo-wide for an unqualified "TM is decidable" (and near-variants such as "TM is
+- [x] Sweep repo-wide for an unqualified "TM is decidable" (and near-variants such as "TM is
   decidable." / "decidability of TM is proved" / "decidability is fully proven") outside
   `specs/**`. Must return nothing.
-- [ ] Sweep this task's whole diff for complexity vocabulary
+- [x] Sweep this task's whole diff for complexity vocabulary
   (`complexity`, `NP`, `PSPACE`, `EXPTIME`, `exponential`, `polynomial`). Must return nothing.
-- [ ] For each of the eight surfaces, confirm by targeted grep that it contains (a)
+- [x] For each of the eight surfaces, confirm by targeted grep that it contains (a)
   `Compression.decidableValidZTime` or its fully-qualified form, (b) all four qualifiers —
   `FrameClass.ZTime`, no-stability-operator/`Formula`, empty premises, computing-but-not-choice-
   free — and (c) a `docs/theorem-index.md` pointer. Record the eight-row result table in the
   implementation summary.
-- [ ] Confirm the distinction is stated **once** per surface, not twice: read each surface's
+- [x] Confirm the distinction is stated **once** per surface, not twice: read each surface's
   decidability region end to end rather than relying on a count alone.
-- [ ] Confirm `docs/theorem-index.md`,
+- [x] Confirm `docs/theorem-index.md`,
   `FormalSystem/Metalogic/Decidability/WitnessFamily/README.md`, and
   `FormalSystem/Metalogic/Decidability/Correctness.lean` are **unmodified**
   (`git diff --name-only` against the task's base commit must list exactly the eight surfaces and
   nothing else, plus `specs/**` task artifacts).
-- [ ] Confirm no Lean proof changed: `git diff` restricted to `*.lean` shows only
+- [x] Confirm no Lean proof changed: `git diff` restricted to `*.lean` shows only
   `FormalSystem/Metalogic/Decidability.lean`, and only inside its `/-! -/` docstring block.
-- [ ] Run the complete gate set and compare every result to Phase 1's baseline:
+- [x] Run the complete gate set and compare every result to Phase 1's baseline:
   `lake build` (whole library), `typst compile typst/FormalFoundations.typ`,
   `bash .claude/scripts/check-task-references.sh`,
   `bash .claude/scripts/typst-element-lint.sh --verbose typst/FormalFoundations.typ`,
@@ -589,9 +589,11 @@ out-of-scope file changed, and run the complete gate set.
   `bash .claude/scripts/verify-deploy.sh`. Any failure must be either resolved or shown identical
   to the Phase 1 baseline (pre-existing). The dispatch's flagged deploy staleness is pre-existing;
   do not hand-patch anything under `.claude/**` to make a gate pass.
-- [ ] Confirm `check-task-references.sh` passes: none of the eight surfaces (all outside
-  `specs/**`) may cite a task number.
-- [ ] Commit the sweep's evidence with the implementation summary.
+- [x] Confirm `check-task-references.sh` passes: none of the eight surfaces (all outside
+  `specs/**`) may cite a task number. *(completed: the whole-repo gate still shows the same 198
+  pre-existing occurrences from Phase 1's baseline, none in any of the eight surfaces; per this
+  item's own narrower wording, that is the check this item requires)*
+- [x] Commit the sweep's evidence with the implementation summary.
 
 **Timing**: 0.75 hours
 

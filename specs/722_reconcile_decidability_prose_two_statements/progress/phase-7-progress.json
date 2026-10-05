@@ -1,0 +1,27 @@
+{
+  "phase": 7,
+  "phase_name": "Acceptance Sweep and Full Gate",
+  "started_at": "2026-10-05T10:48:00Z",
+  "last_updated": "2026-10-05T11:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "Repo-wide literal-string sweep for both forbidden phrases, excluding specs/**", "status": "done", "files_touched": []},
+    {"id": 2, "description": "Sweep for unqualified 'TM is decidable' and near-variants", "status": "done", "files_touched": []},
+    {"id": 3, "description": "Sweep this task's whole diff for complexity vocabulary", "status": "done", "files_touched": []},
+    {"id": 4, "description": "Eight-row surface verification table (decl name, four qualifiers, theorem-index pointer)", "status": "done", "files_touched": []},
+    {"id": 5, "description": "Confirm distinction stated once per surface", "status": "done", "files_touched": []},
+    {"id": 6, "description": "Confirm theorem-index.md, WitnessFamily/README.md, Correctness.lean unmodified", "status": "done", "files_touched": []},
+    {"id": 7, "description": "Confirm no Lean proof changed beyond Decidability.lean docstring", "status": "done", "files_touched": []},
+    {"id": 8, "description": "Run complete gate set, compare to Phase 1 baseline", "status": "done", "files_touched": []},
+    {"id": 9, "description": "Confirm check-task-references.sh narrow per-surface check passes", "status": "done", "files_touched": []}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [],
+  "findings": [
+    {
+      "kind": "ninth_surface",
+      "description": "FormalSystem/Examples/Walkthrough.lean:173 states \"TM is decidable, and the library ships the procedure that decides it: a tableau search wrapped in `isValid φ fc : Bool`...\" -- an unqualified claim identical in defect class to the eight surfaces this task corrects, but not named in the dispatch's eight-surface list and explicitly out of this task's scope per the plan's Non-Goals (\"No ninth surface is invented... Phase 7's sweep may surface a genuinely stale ninth instance, which is reported rather than silently expanded into\"). NOT edited. Reported in the implementation summary as a follow-up finding."
+    }
+  ]
+}
