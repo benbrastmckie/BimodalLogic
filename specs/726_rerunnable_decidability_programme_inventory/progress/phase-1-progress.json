@@ -1,0 +1,13 @@
+{
+  "phase": 1,
+  "phase_name": "Script skeleton, source-1 parser, anti-silence guards",
+  "started_at": "2026-10-05T00:00:00Z",
+  "last_updated": "2026-10-05T00:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Create scripts/generate-decidability-inventory.sh driver with header, CLI, source-1 parser, anti-silence guard", "status": "done", "files_touched": ["scripts/generate-decidability-inventory.sh"]}
+  ],
+  "current_objective": 1,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

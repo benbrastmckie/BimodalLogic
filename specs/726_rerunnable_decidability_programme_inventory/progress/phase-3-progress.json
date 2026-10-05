@@ -1,0 +1,13 @@
+{
+  "phase": 3,
+  "phase_name": "Sources 2 and 3 -- REFUTED probes and the NOT ESTABLISHED anchor",
+  "started_at": "2026-10-05T00:00:00Z",
+  "last_updated": "2026-10-05T00:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Extract WIRED/WIRED_REPO arrays, emit REFUTED section with build-graph dimension, parse source-3 Retired-as-vacuous anchor, anti-silence guards", "status": "done", "files_touched": ["scripts/generate-decidability-inventory.sh"]}
+  ],
+  "current_objective": 1,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

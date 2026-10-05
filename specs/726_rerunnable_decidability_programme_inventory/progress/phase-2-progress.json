@@ -1,0 +1,13 @@
+{
+  "phase": 2,
+  "phase_name": "pinned:-cell cross-check against the C2/C14 baselines",
+  "started_at": "2026-10-05T00:00:00Z",
+  "last_updated": "2026-10-05T00:30:00Z",
+  "objectives": [
+    {"id": 1, "description": "Extract C2/C14 baselines with the greedy trailing-prime-safe regex, cross-check pins, report mismatches, exit non-zero on any", "status": "done", "files_touched": ["scripts/generate-decidability-inventory.sh"]}
+  ],
+  "current_objective": 1,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

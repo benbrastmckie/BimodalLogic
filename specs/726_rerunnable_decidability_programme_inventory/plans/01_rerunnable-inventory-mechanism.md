@@ -1,7 +1,7 @@
 # Implementation Plan: Task #726
 
 - **Task**: 726 - Make the decidability-programme inventory re-runnable from the tree
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 7.25 hours
 - **Dependencies**: None
 - **Research Inputs**: `specs/726_rerunnable_decidability_programme_inventory/reports/01_rerunnable-inventory-mechanism.md`
@@ -164,36 +164,36 @@ script's final CLI surface being fixed.
 
 ---
 
-### Phase 1: Script skeleton, source-1 parser, anti-silence guards [NOT STARTED]
+### Phase 1: Script skeleton, source-1 parser, anti-silence guards [COMPLETED]
 
 **Goal**: `bash scripts/generate-decidability-inventory.sh` runs and prints the PROVED section —
 every Decidability row in `docs/theorem-index.md` with its Lean name and `pinned:` tag — and fails
 loudly if the section anchor is missing.
 
 **Tasks**:
-- [ ] Create `scripts/generate-decidability-inventory.sh` as a `bash` driver with an inline
+- [x] Create `scripts/generate-decidability-inventory.sh` as a `bash` driver with an inline
       `python3` payload invoked via a here-string, following `check-module-invariants.sh`'s C36
-      pattern (report §6) and `check-phantom-citations.sh`'s overall file shape.
-- [ ] Write the header comment block in this repo's established style: WHY THIS EXISTS (static
+      pattern (report §6) and `check-phantom-citations.sh`'s overall file shape. *(completed)*
+- [x] Write the header comment block in this repo's established style: WHY THIS EXISTS (static
       review artifacts drift; the next review should be a diff), WHAT IT READS (the three sources
       by path), WHAT IT DOES NOT DO (no adjudication, no complexity claim, no phantom-citation
       check — that is `check-phantom-citations.sh`'s, by this task's own record), LIMITATIONS,
-      Usage, and Exit status.
-- [ ] Implement the CLI with the same conventions as `check-phantom-citations.sh`: `--verbose`,
+      Usage, and Exit status. *(completed)*
+- [x] Implement the CLI with the same conventions as `check-phantom-citations.sh`: `--verbose`,
       `--strict`, `--help` (via the `sed -n '2,Np' "$0" | sed 's/^# \{0,1\}//'` self-documenting
       idiom), unknown-argument `exit 2`, and a `ROOT` resolved from `BASH_SOURCE` so the script
-      runs from any working directory.
-- [ ] Parse source 1: locate the literal `### Decidability` heading in `docs/theorem-index.md`,
+      runs from any working directory. *(completed)*
+- [x] Parse source 1: locate the literal `### Decidability` heading in `docs/theorem-index.md`,
       take rows up to the next `^### ` heading, skip the header and separator rows, and extract
-      the Lean name (column 3, backticks stripped) and the Axioms cell (column 6).
-- [ ] Extract a `pinned:(C\d+)` tag per row; pass the single documented
+      the Lean name (column 3, backticks stripped) and the Axioms cell (column 6). *(completed)*
+- [x] Extract a `pinned:(C\d+)` tag per row; pass the single documented
       `no axioms (proved by \`decide\`; absent from the C2 baseline by construction, ...)` cell
-      through unchanged as a named, non-defect exception — not as `UNKNOWN` and not as a finding.
-- [ ] Emit `UNKNOWN` for any row whose Axioms cell carries neither a `pinned:` tag nor that
-      documented exception.
-- [ ] Anti-silence guard: if `### Decidability` is not found verbatim, or the section yields zero
-      data rows, print a named failure and exit non-zero (never print an empty inventory).
-- [ ] Make the script executable (`chmod +x`), matching the other `scripts/*.sh`.
+      through unchanged as a named, non-defect exception — not as `UNKNOWN` and not as a finding. *(completed)*
+- [x] Emit `UNKNOWN` for any row whose Axioms cell carries neither a `pinned:` tag nor that
+      documented exception. *(completed)*
+- [x] Anti-silence guard: if `### Decidability` is not found verbatim, or the section yields zero
+      data rows, print a named failure and exit non-zero (never print an empty inventory). *(completed)*
+- [x] Make the script executable (`chmod +x`), matching the other `scripts/*.sh`. *(completed)*
 
 **Timing**: 1.5 hours
 
@@ -226,7 +226,7 @@ new numbers rather than assuming 45/44/1, and do not hardcode any of them in the
 
 ---
 
-### Phase 2: `pinned:`-cell cross-check against the C2/C14 baselines [NOT STARTED]
+### Phase 2: `pinned:`-cell cross-check against the C2/C14 baselines [COMPLETED]
 
 **Goal**: Every tagged Decidability row's Lean name is verified to be a member of the baseline its
 tag names, and a row claiming `pinned:C14` with nothing behind it in the C14 baseline is a loud,
@@ -234,22 +234,22 @@ non-zero failure. This is the task's motivating defect class and the script's on
 condition on its own content.
 
 **Tasks**:
-- [ ] Read `scripts/check-module-invariants.sh` as text and extract the two baseline heredocs with
+- [x] Read `scripts/check-module-invariants.sh` as text and extract the two baseline heredocs with
       `re.search(r"<<'TAG'\n(.*?)\nTAG\n", text, re.S)`: `BASELINE` (C2, at lines 1114-1165) and
-      `C14BASE` (C14, at lines 2057-2260).
-- [ ] Extract declaration names from each block with the greedy
+      `C14BASE` (C14, at lines 2057-2260). *(completed)*
+- [x] Extract declaration names from each block with the greedy
       `re.findall(r"^'(.+)' depends on axioms", block, re.M)` — **never** a `[^']+` class. Cite
       C36's own comment in an inline comment at this exact site, so the next reader does not
-      "simplify" it back to the broken form.
-- [ ] Anti-silence guard on both heredocs: a missing `<<'BASELINE'`/`<<'C14BASE'` anchor, or a
-      block yielding zero names, is a named non-zero failure.
-- [ ] For every tagged row, assert membership in the baseline set its tag names; collect
-      mismatches as `(lean_name, claimed_tag)` pairs.
-- [ ] Report each mismatch with the row's line number in `docs/theorem-index.md`, the claimed tag,
-      and the fact that the name is absent from that baseline. Exit non-zero on any mismatch.
-- [ ] Read all files as UTF-8 and compare raw strings with no Unicode normalization step.
-- [ ] Document in the header that this is the one hard-failure condition arising from the
-      script's own analysis, and why everything else is informational.
+      "simplify" it back to the broken form. *(completed)*
+- [x] Anti-silence guard on both heredocs: a missing `<<'BASELINE'`/`<<'C14BASE'` anchor, or a
+      block yielding zero names, is a named non-zero failure. *(completed)*
+- [x] For every tagged row, assert membership in the baseline set its tag names; collect
+      mismatches as `(lean_name, claimed_tag)` pairs. *(completed)*
+- [x] Report each mismatch with the row's line number in `docs/theorem-index.md`, the claimed tag,
+      and the fact that the name is absent from that baseline. Exit non-zero on any mismatch. *(completed)*
+- [x] Read all files as UTF-8 and compare raw strings with no Unicode normalization step. *(completed)*
+- [x] Document in the header that this is the one hard-failure condition arising from the
+      script's own analysis, and why everything else is informational. *(completed)*
 
 **Timing**: 1.25 hours
 
@@ -285,7 +285,7 @@ report drift rather than assuming 50/202/0, and hardcode neither count.
 
 ---
 
-### Phase 3: Sources 2 and 3 — REFUTED probes and the NOT ESTABLISHED anchor [NOT STARTED]
+### Phase 3: Sources 2 and 3 — REFUTED probes and the NOT ESTABLISHED anchor [COMPLETED]
 
 **Goal**: The script emits a REFUTED section listing every `WIRED`/`WIRED_REPO` probe from
 `scripts/check-evidence-probes.sh`, and a NOT ESTABLISHED section anchored on
@@ -293,32 +293,32 @@ report drift rather than assuming 50/202/0, and hardcode neither count.
 sources are silent.
 
 **Tasks**:
-- [ ] Extract the `WIRED=( ... )` array (lines 173-186) and the `WIRED_REPO=( ... )` array (lines
+- [x] Extract the `WIRED=( ... )` array (lines 173-186) and the `WIRED_REPO=( ... )` array (lines
       224-228) from `scripts/check-evidence-probes.sh` by locating the `WIRED=(`/`WIRED_REPO=(`
-      opener and the matching `^)` terminator; emit each entry's path verbatim.
-- [ ] Mark `WIRED` entries as collection-relative (under `specs/evidence/`) and `WIRED_REPO`
+      opener and the matching `^)` terminator; emit each entry's path verbatim. *(completed)*
+- [x] Mark `WIRED` entries as collection-relative (under `specs/evidence/`) and `WIRED_REPO`
       entries as full repo-relative, mirroring that script's own distinction, and note that
-      `WIRED_REPO` entries each carry a named blocker in the preceding comment.
-- [ ] Emit, for every probe, the dimension "wired probe, outside the Lake build graph" **separate
+      `WIRED_REPO` entries each carry a named blocker in the preceding comment. *(completed)*
+- [x] Emit, for every probe, the dimension "wired probe, outside the Lake build graph" **separate
       from** the REFUTED/PROVED classification, and print the baseline's own classification beside
-      it once Phase 4 lands the baseline (leave a clearly marked hook here, fill it in Phase 4).
-- [ ] Do **not** parse the free-text comment table above `WIRED=(`. Print a pointer to it
+      it once Phase 4 lands the baseline (leave a clearly marked hook here, fill it in Phase 4). *(completed)*
+- [x] Do **not** parse the free-text comment table above `WIRED=(`. Print a pointer to it
       (`scripts/check-evidence-probes.sh`, the comment table directly above `WIRED=(`) as the
-      rationale source instead.
-- [ ] Optionally shell out to `bash scripts/check-evidence-probes.sh` behind an explicit
+      rationale source instead. *(completed)*
+- [x] Optionally shell out to `bash scripts/check-evidence-probes.sh` behind an explicit
       `--compile-probes` flag (off by default, because it compiles Lean and is slow) and report
-      each probe's PASS/FAIL; without the flag, report compile status as `UNKNOWN (not run)`.
-- [ ] Parse source 3: locate the literal heading
+      each probe's PASS/FAIL; without the flag, report compile status as `UNKNOWN (not run)`. *(completed)*
+- [x] Parse source 3: locate the literal heading
       `` ## `validity_decidable` / `validity_has_decision_procedure` — Retired as vacuous `` in
       `FormalSystem/Metalogic/Decidability/Correctness.lean` (line 192) and capture the paragraph
       following `**What is still owed, and is deliberately not stated here.**` up to the closing
-      `-/`.
-- [ ] Anti-silence guards: a missing `WIRED=(`/`WIRED_REPO=(` array, an empty array, or a
+      `-/`. *(completed)*
+- [x] Anti-silence guards: a missing `WIRED=(`/`WIRED_REPO=(` array, an empty array, or a
       not-found-verbatim source-3 heading each produce a named non-zero failure. A heading found
       but an absent "What is still owed" sub-heading emits `UNKNOWN` for the NOT ESTABLISHED body
-      rather than guessing at a substitute anchor.
-- [ ] State in the header that the four statuses come from different sources with different
-      authority, and that the script reports the source for each.
+      rather than guessing at a substitute anchor. *(completed)*
+- [x] State in the header that the four statuses come from different sources with different
+      authority, and that the script reports the source for each. *(completed)*
 
 **Timing**: 1.25 hours
 
