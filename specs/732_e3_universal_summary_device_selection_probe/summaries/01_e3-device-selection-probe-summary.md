@@ -2,7 +2,7 @@
 
 - **Task**: 732 - Run experiment E3: select the universal summary device for the seam-gluing stab fibre check
 - **Status**: [COMPLETED]
-- **Started**: 2026-10-05T18:30:00Z
+- **Started**: 2026-10-05T18:53:58Z
 - **Completed**: 2026-10-05T19:29:40Z
 - **Effort**: 3 phases across dispatches 3-5 (approx. 1.5 hours of agent time)
 - **Dependencies**: None
@@ -34,6 +34,12 @@ Safra/Piterman and (b) Safraless are not selected.
 
 ## Decisions
 
+- Phase 1: the prototype's proofs were copied, not re-proved (transcription discipline); the core
+  lives under `namespace Probe732Device`.
+- Phase 2: fixture-level summary named `AllFwdPathsMeet` (sibling: `AllPathsMeet`) because the
+  abstract `AllPathsMeet R P w₀` already occupies the name; `stab_will_iff_lasso` closes with the
+  planned `rw` chain plus `exact Iff.rfl` for the definitional-but-not-reducible residual
+  `IsPath (Rf 0) … ↔ IsFwdPath …` (the plan's own named fallback).
 - Selection is by infrastructure and literature evidence, not behavioural discrimination: the probed
   shapes are device-inert on finite fixtures (`allPathsMeet_iff_lasso`, `allBwdPathsMeet_iff_lasso`,
   `detRun_accepts_iff`, `stab_will_iff_lasso`), and `not_lasso_sufficient_on_chain` refutes
