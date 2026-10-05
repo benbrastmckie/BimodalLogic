@@ -6,7 +6,7 @@ next_project_number: 732
 
 ## Task Order
 
-*Updated 2026-10-04. Generated from state.json dependency graph.*
+*Updated 2026-10-05. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -49,7 +49,7 @@ next_project_number: 732
 
 ### Code Quality
 
-728 [RESEARCHED] — Sweep and repair phantom declaration citations across task...
+728 [PLANNING] — Sweep and repair phantom declaration citations across task...
 
 ### Dataset Enhancement
 
@@ -80,11 +80,11 @@ next_project_number: 732
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
-726 [RESEARCHED] — Make the decidability-programme inventory re-runnable from...
+726 [PLANNING] — Make the decidability-programme inventory re-runnable from...
 
 ### Documentation
 
-722 [RESEARCHED] — Reconcile the programme-level decidability prose with the...
+722 [PLANNED] — Reconcile the programme-level decidability prose with the...
 
 ### Formula Refactor
 
@@ -170,7 +170,7 @@ Effort: small-to-medium, mostly editorial judgment rather than code.
 ---
 
 ### 728. Sweep phantom declaration citations
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: general
 - **Topic**: code-quality
 - **Dependencies**: None
@@ -207,7 +207,7 @@ ACCEPTANCE. Every surviving confirmed instance is repaired at its source or reco
 ---
 
 ### 726. Rerunnable decidability programme inventory
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: meta
 - **Topic**: decidability
 - **Dependencies**: None
@@ -267,11 +267,12 @@ ACCEPTANCE. One probe file deciding the backward stability operator on a time-as
 ---
 
 ### 722. Reconcile decidability prose two statements
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: markdown
 - **Topic**: documentation
 - **Dependencies**: None
 - **Research**: [722_reconcile_decidability_prose_two_statements/reports/01_reconcile-decidability-prose.md]
+- **Plan**: [722_reconcile_decidability_prose_two_statements/plans/01_reconcile-decidability-prose.md]
 
 **Description**: Reconcile the programme-level decidability prose with the two-statement distinction (tableau biconditional open; Decidable (ValidZTime phi) proved)
 

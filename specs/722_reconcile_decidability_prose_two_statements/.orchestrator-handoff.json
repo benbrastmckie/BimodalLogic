@@ -1,0 +1,18 @@
+{
+  "status": "planned",
+  "task_number": 722,
+  "phase": "plan",
+  "dispatch_seq": 4,
+  "session_id": "sess_1791141048_bd999f_722",
+  "phases_completed": 0,
+  "phases_total": 7,
+  "summary": "Planned task 722 across 7 phases in 3 dependency waves (4.75h). A prior dispatch on this same dispatch_seq was interrupted by a quota limit after writing the plan file; this run judged that plan on its merits, confirmed it satisfies the dispatch contract and plan-format.md (validate-artifact.sh --strict: PASS, 0 warnings), re-verified its load-bearing premises, and kept it rather than rewriting sound work. Phase 1 gates all editing on re-verifying every cited declaration; Phases 2-6 edit the eight named surfaces in disjoint sets; Phase 7 is the acceptance sweep and full gate.",
+  "blockers": [],
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/722_reconcile_decidability_prose_two_statements/plans/01_reconcile-decidability-prose.md",
+      "summary": "7-phase plan reconciling eight programme-level prose surfaces with the two-statement decidability distinction."
+    }
+  ]
+}
