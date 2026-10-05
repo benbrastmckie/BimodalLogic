@@ -1,54 +1,35 @@
 {
-  "status": "researched",
-  "task_number": 732,
-  "session_id": "sess_1791224285_0433aa_732",
-  "dispatch_seq": 1,
-  "agent_type": "lean-research-hard-agent",
-  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
-  "phase": "research",
-  "started": "2026-10-05T17:58:17Z",
-  "completed": "2026-10-05T18:35:20Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/732_e3_universal_summary_device_selection_probe/reports/01_e3-device-selection-probe.md",
-      "summary": "E3 device-selection research: the box-dot(Fp)/box-dot(Pp) shapes are device-inert on finite fixtures (machine-checked: deterministic 2-state acceptor, pigeonhole lasso-sufficiency); pigeonhole-tier Ramsey refuted on infinite fibres (machine-checked); on infrastructure and literature evidence the substrate should build on the time-axis Ramsey summary (in-tree infinite_ramsey_pairs) framed by the HWZ/GKWZ MSO quasimodel route; Safra/Safraless not selected. No complexity bound claimed."
-    },
-    {
-      "type": "probe",
-      "path": "specs/732_e3_universal_summary_device_selection_probe/probes/device-probe-proto.lean",
-      "summary": "Compiled research prototype (lake env lean, standard axioms, no warnings): allPathsMeet_iff_lasso, allBwdPathsMeet_iff_lasso, detRun_accepts_iff, not_lasso_sufficient_on_chain. Starting text for the deliverable probe at specs/evidence/seam-gluing-ray-product/device-selection-probe.lean."
+      "type": "plan",
+      "path": "specs/732_e3_universal_summary_device_selection_probe/plans/01_e3-device-selection-probe.md",
+      "summary": "Three sequential phases (3.5h) turning the compiled research prototype into the E3 device-selection probe: transcribe the comparison core, bridge it to the real box-dot(Fp) formula on the Bool fixture, then write the scoped selection header (time-axis Ramsey (d) via in-tree infinite_ramsey_pairs framed by the HWZ/GKWZ MSO route (c); (a)/(b) not selected; no complexity bound) and wire scripts/check-evidence-probes.sh."
     }
   ],
-  "findings_count": 6,
-  "reference_grounding_tier": 1,
-  "adversarial_verification_triggered": true,
-  "divergence_audit_activated": false,
-  "sorry_free_path_exists": true,
-  "lean_readiness": {
-    "lean_lsp": "reachable",
-    "local_search_index": "warming",
-    "mathlib_absence_evidence": "source grep + lean_leansearch (not the warming index)"
+  "next_steps": "Run /implement 732 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1791224285_0433aa_732",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 3.5,
+    "dependency_waves": [[1], [2], [3]],
+    "research_integrated": true,
+    "skeleton": false
   },
   "memory_candidates": [
     {
-      "title": "Single-operator stab shapes are device-inert on finite fixtures",
-      "content": "box-dot(Fp) and box-dot(Pp) are co-safety per-path properties: their acceptor is a 2-state deterministic automaton and their universal summary over any finite step graph reduces to lasso paths by pigeonhole alone (Finite.exists_ne_map_eq_of_infinite on the shifted sequence). They cannot test determinization, Safraless, MSO or Ramsey devices. A discriminating probe needs an infinite (finitely presented) fibre, where pigeonhole-tier lasso sufficiency provably fails.",
-      "keywords": ["stab", "universal summary", "co-safety", "pigeonhole", "lasso", "device selection", "evidence probe"],
-      "source": "specs/732_e3_universal_summary_device_selection_probe/reports/01_e3-device-selection-probe.md"
-    },
-    {
-      "title": "Infinite Ramsey for pairs lives in-tree, not in Mathlib",
-      "content": "FormalSystem.Metalogic.WeakCanonical.infinite_ramsey_pairs (RamseyFactorization.lean) proves infinite Ramsey for pairs on standard axioms; Mathlib v4.33.0-rc1 has only Hindman and Hales-Jewett, no omega-automata, no MSO. Any decidability-side use of Ramsey should import it rather than re-prove it.",
-      "keywords": ["Ramsey", "infinite_ramsey_pairs", "Mathlib gap", "omega-automata", "MSO"],
-      "source": "specs/732_e3_universal_summary_device_selection_probe/reports/01_e3-device-selection-probe.md"
-    },
-    {
-      "title": "Lean arithmetic idioms for lasso constructions",
-      "content": "For ultimately periodic index functions with a variable modulus, avoid `set r := a % m` (new occurrences are not abstracted); rewrite with Nat.mod_add_mod / Nat.add_mod_right / Nat.mod_eq_of_lt / Nat.mod_self on the raw expression. `push_neg` is deprecated at this pin (use `simp only [not_exists, not_and]` or `push Not`). `omit [inst] in` must precede the docstring, not sit between docstring and theorem.",
-      "keywords": ["Lean 4", "Nat.mod", "lasso", "omit", "push_neg deprecated"],
-      "source": "specs/732_e3_universal_summary_device_selection_probe/probes/device-probe-proto.lean"
+      "content": "Planning pattern for evidence probes whose specified test shapes turn out to be inert: when research proves the named shapes cannot discriminate the candidates (here box-dot(Fp)/box-dot(Pp) are co-safety, decided by reachability/pigeonhole on any finite fixture), do not drop the shapes and do not substitute a different experiment. Plan the probe to (1) run the specified shapes and record inertness as the mechanized result, (2) add a falsifier showing where the candidates stop coinciding (here an infinite acyclic fibre refuting pigeonhole-tier lasso sufficiency), and (3) make the selection on the evidence that remains (infrastructure present in tree/Mathlib, literature covering the exact target), with the header stating explicitly that the selection is not a behavioural discrimination. Keep the deliverable to transcription of already-compiled research lemmas plus one definitional bridge to the real formula; new mathematics belongs to the substrate task the probe gates.",
+      "category": "PATTERN",
+      "source_artifact": "specs/732_e3_universal_summary_device_selection_probe/plans/01_e3-device-selection-probe.md",
+      "confidence": 0.6,
+      "suggested_keywords": ["evidence-probe", "device-selection", "inert-shapes", "falsifier", "planning-pattern", "decidability"]
     }
   ],
-  "next_steps": "Run /plan 732 to create implementation plan"
+  "modified_files": [
+    "specs/732_e3_universal_summary_device_selection_probe/plans/01_e3-device-selection-probe.md"
+  ],
+  "dispatch_seq": 2
 }
