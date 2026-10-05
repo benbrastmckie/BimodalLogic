@@ -496,8 +496,8 @@ def IsHistory (R : W → D → W → Prop) (τ : D → W) : Prop :=
 with no frame constraint consumed. This is the history-continuity lemma the revised topology
 appendix adds; `FrameOver.continuous_of_history` is its frame-level form.
 
-Paper: — (formalization-native; the continuity lemma the revised appendix adds carries no label
-in the paper)
+Paper: `app:topology-continuous`
+(history-continuity lemma of the revised topology appendix; cited as a pointer, text never quoted)
 -/
 theorem continuous_nbhdTopology_of_history [TopologicalSpace D] [OrderTopology D]
     (R : W → D → W → Prop) {τ : D → W} (hτ : IsHistory R τ) :
@@ -856,8 +856,8 @@ theorem r0Space_coneTop (F : FrameOver D) [F.IsRegular] :
 duration carrier. The order topology is an explicit binder, never a global instance. This is the
 frame-level form of the history-continuity lemma the revised topology appendix adds.
 
-Paper: — (formalization-native; the continuity lemma the revised appendix adds carries no label
-in the paper)
+Paper: `app:topology-continuous`
+(history-continuity lemma of the revised topology appendix; cited as a pointer, text never quoted)
 -/
 theorem continuous_of_history (F : FrameOver D) [TopologicalSpace (↑D : Type)]
     [OrderTopology (↑D : Type)] {τ : (↑D : Type) → F.WorldState}
