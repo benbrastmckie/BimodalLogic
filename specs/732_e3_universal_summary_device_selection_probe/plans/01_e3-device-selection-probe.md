@@ -1,7 +1,7 @@
 # Implementation Plan: Task #732
 
 - **Task**: 732 - Run experiment E3: select the universal summary device for the seam-gluing stab fibre check
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3.5 hours
 - **Dependencies**: None (task 711 depends on this one; the discharge of 711's blocked reason is a separate `/revise 711`, not performed here)
 - **Research Inputs**: specs/732_e3_universal_summary_device_selection_probe/reports/01_e3-device-selection-probe.md
@@ -144,7 +144,7 @@ critical path 732 → 711 → 735, and `:67–71` is the E3 item this task close
 Phases within the same wave can execute in parallel. This plan is fully sequential: the bridge
 needs the abstract lemmas in place, and the header needs the bridge's measured result.
 
-### Phase 1: Transcribe the compiled comparison core into the deliverable probe [NOT STARTED]
+### Phase 1: Transcribe the compiled comparison core into the deliverable probe [COMPLETED]
 
 **Goal**: Create `specs/evidence/seam-gluing-ray-product/device-selection-probe.lean` containing
 the four compiled results of the research prototype under the probe collection's conventions, so
@@ -153,10 +153,10 @@ This phase moves proved text; it proves nothing new.
 
 **Tasks**:
 
-- [ ] Re-compile the prototype first, as the baseline this phase must not regress:
+- [x] Re-compile the prototype first, as the baseline this phase must not regress:
       `lake env lean specs/732_e3_universal_summary_device_selection_probe/probes/device-probe-proto.lean`
       (expected: exit 0, no warnings, three `#print axioms` lines matching the report).
-- [ ] Create the deliverable file with a **provisional** header (two lines: "Probe 732 (E3):
+- [x] Create the deliverable file with a **provisional** header (two lines: "Probe 732 (E3):
       device-selection comparison — header finalized in Phase 3" and the compile line
       `lake env lean specs/evidence/seam-gluing-ray-product/device-selection-probe.lean`), then
       `import FormalSystem` and the `open` lines used by `path-quantifier-alternation.lean:37–38`.
@@ -164,7 +164,7 @@ This phase moves proved text; it proves nothing new.
       imports `FormalSystem` only; `Finite.exists_ne_map_eq_of_infinite` is very likely already
       transitively available). Add the Mathlib import back only if the compile reports the name
       unknown, and note that in the header.
-- [ ] Transcribe into `namespace Probe732Device` (rename from `Probe732Proto`; keep every
+- [x] Transcribe into `namespace Probe732Device` (rename from `Probe732Proto`; keep every
       declaration name otherwise unchanged so the report's mapping table stays valid): `IsPath`,
       `IsLasso`, `AllPathsMeet`, `lassoIdx`, `lassoIdx_pos`, `lassoIdx_lt`, `exists_lasso_of_repeat`,
       `allPathsMeet_iff_lasso`, `allBwdPathsMeet_iff_lasso`, `detRun`, `detRun_true_iff`,
@@ -173,10 +173,10 @@ This phase moves proved text; it proves nothing new.
       the docstring). Keep the prototype's section docstrings, which already carry the per-lemma
       interpretation ("no nondeterminism is involved, so no determinization device acts on this
       shape"; "pigeonhole-tier lasso sufficiency is therefore NOT a device for infinite fibres").
-- [ ] Add the `#print axioms` foot for `Probe732Device.allPathsMeet_iff_lasso`,
+- [x] Add the `#print axioms` foot for `Probe732Device.allPathsMeet_iff_lasso`,
       `Probe732Device.allBwdPathsMeet_iff_lasso`, `Probe732Device.detRun_accepts_iff`,
       `Probe732Device.not_lasso_sufficient_on_chain`.
-- [ ] Compile: `lake env lean specs/evidence/seam-gluing-ray-product/device-selection-probe.lean`.
+- [x] Compile: `lake env lean specs/evidence/seam-gluing-ray-product/device-selection-probe.lean`.
       Expected exit 0, no warnings, no `sorryAx`, axioms matching the prototype baseline. If a
       lemma that compiled in the prototype fails here, the cause is the import change — restore
       the Mathlib import before touching any proof.
