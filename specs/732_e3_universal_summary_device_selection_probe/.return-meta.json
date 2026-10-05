@@ -1,35 +1,63 @@
 {
-  "status": "planned",
+  "status": "partial",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/732_e3_universal_summary_device_selection_probe/plans/01_e3-device-selection-probe.md",
-      "summary": "Three sequential phases (3.5h) turning the compiled research prototype into the E3 device-selection probe: transcribe the comparison core, bridge it to the real box-dot(Fp) formula on the Bool fixture, then write the scoped selection header (time-axis Ramsey (d) via in-tree infinite_ramsey_pairs framed by the HWZ/GKWZ MSO route (c); (a)/(b) not selected; no complexity bound) and wire scripts/check-evidence-probes.sh."
+      "type": "summary",
+      "path": "specs/732_e3_universal_summary_device_selection_probe/summaries/01_e3-device-selection-probe-summary.md",
+      "summary": "Phase 1 of 3: comparison core transcribed into device-selection-probe.lean, compiling sorry-free on standard axioms with zero proof edits."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/732_e3_universal_summary_device_selection_probe/handoffs/phase-1-handoff-20261005T185650Z.md",
+      "summary": "Continuation handoff for Phase 2 (Bool-fixture bridge)."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/evidence/seam-gluing-ray-product/device-selection-probe.lean",
+      "summary": "The E3 probe deliverable: lasso sufficiency by pigeonhole, its Pp dual, the 2-state deterministic Fp acceptor, and the infinite-chain falsifier (provisional header)."
     }
   ],
-  "next_steps": "Run /implement 732 to execute the plan",
+  "next_steps": "Dispatch Phase 2 (bridge to the real stab(Fp) formula on the Bool fixture), then Phase 3 (scoped selection header, WIRED entry, run scripts/check-evidence-probes.sh).",
+  "phases_completed": 1,
+  "phases_total": 3,
+  "dispatch_seq": 3,
+  "handoff_path": "specs/732_e3_universal_summary_device_selection_probe/handoffs/phase-1-handoff-20261005T185650Z.md",
+  "sorry_inventory": [],
+  "verification": {
+    "sorry_count": 0,
+    "sorry_cross_check": "MATCH",
+    "vacuous_count": 1,
+    "vacuous_note": "FormalSystem/Examples/TemporalStructures.lean:495 int_domain_universal := trivial; pre-existing at HEAD, no Lean file under the source roots modified by this dispatch",
+    "axiom_count": 14,
+    "axiom_count_baseline": 14,
+    "build_passed": true,
+    "build_evidence": "lake-build-guard.sh build exit 0; 'Build completed successfully (2819 jobs)'; 0 error: lines in captured stdout/stderr; probe compiles via lake env lean exit 0 with axioms matching the prototype baseline",
+    "verification_passed": true
+  },
   "metadata": {
-    "session_id": "sess_1791224285_0433aa_732",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1791224285_0433aa",
+    "agent_type": "lean-implementation-hard-agent",
+    "task_number": 732,
+    "phase_number": 1,
+    "duration_seconds": 420,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 3.5,
-    "dependency_waves": [[1], [2], [3]],
-    "research_integrated": true,
-    "skeleton": false
+    "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"]
   },
   "memory_candidates": [
     {
-      "content": "Planning pattern for evidence probes whose specified test shapes turn out to be inert: when research proves the named shapes cannot discriminate the candidates (here box-dot(Fp)/box-dot(Pp) are co-safety, decided by reachability/pigeonhole on any finite fixture), do not drop the shapes and do not substitute a different experiment. Plan the probe to (1) run the specified shapes and record inertness as the mechanized result, (2) add a falsifier showing where the candidates stop coinciding (here an infinite acyclic fibre refuting pigeonhole-tier lasso sufficiency), and (3) make the selection on the evidence that remains (infrastructure present in tree/Mathlib, literature covering the exact target), with the header stating explicitly that the selection is not a behavioural discrimination. Keep the deliverable to transcription of already-compiled research lemmas plus one definitional bridge to the real formula; new mathematics belongs to the substrate task the probe gates.",
-      "category": "PATTERN",
-      "source_artifact": "specs/732_e3_universal_summary_device_selection_probe/plans/01_e3-device-selection-probe.md",
-      "confidence": 0.6,
-      "suggested_keywords": ["evidence-probe", "device-selection", "inert-shapes", "falsifier", "planning-pattern", "decidability"]
+      "content": "Probe files under specs/evidence/ need only `import FormalSystem`: Mathlib's `Finite.exists_ne_map_eq_of_infinite` (Mathlib.Data.Fintype.Pigeonhole) is transitively available at pin v4.33.0-rc1, so an explicit pigeonhole import in a probe is redundant.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/732_e3_universal_summary_device_selection_probe/summaries/01_e3-device-selection-probe-summary.md",
+      "confidence": 0.75,
+      "suggested_keywords": ["lean4", "evidence probe", "pigeonhole", "imports", "FormalSystem"]
     }
   ],
   "modified_files": [
-    "specs/732_e3_universal_summary_device_selection_probe/plans/01_e3-device-selection-probe.md"
+    "specs/evidence/seam-gluing-ray-product/device-selection-probe.lean",
+    "specs/732_e3_universal_summary_device_selection_probe/plans/01_e3-device-selection-probe.md",
+    "specs/732_e3_universal_summary_device_selection_probe/handoffs/phase-1-handoff-20261005T185650Z.md",
+    "specs/732_e3_universal_summary_device_selection_probe/summaries/01_e3-device-selection-probe-summary.md",
+    "specs/732_e3_universal_summary_device_selection_probe/issues.jsonl"
   ],
-  "dispatch_seq": 2
+  "errors": []
 }

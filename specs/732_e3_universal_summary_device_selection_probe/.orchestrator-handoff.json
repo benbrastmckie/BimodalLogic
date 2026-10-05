@@ -1,20 +1,23 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 2,
-  "summary": "Wrote the E3 implementation plan: three sequential phases (3.5h) that transcribe the research prototype's four compiled comparison lemmas into specs/evidence/seam-gluing-ray-product/device-selection-probe.lean, bridge them to the real box-dot(Fp) formula on the shared Bool fixture, and finish with a scoped selection header (time-axis Ramsey (d) via in-tree infinite_ramsey_pairs, framed by the HWZ/GKWZ MSO route (c); (a)/(b) not selected; no complexity bound; no substrate work) wired into scripts/check-evidence-probes.sh. Plan validates clean; harvested file_scope matches the task's declared scope exactly.",
+  "status": "partial",
+  "skeleton": false,
+  "summary": "Phase 1 of 3 complete: the E3 comparison core (lasso sufficiency by pigeonhole, its Pp dual, the 2-state deterministic Fp acceptor, and the infinite-chain falsifier) is transcribed from the research prototype into specs/evidence/seam-gluing-ray-product/device-selection-probe.lean, which compiles sorry-free on standard axioms with zero proof edits. Phases 2 (Bool-fixture bridge) and 3 (selection header, gate wiring) remain.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/732_e3_universal_summary_device_selection_probe/plans/01_e3-device-selection-probe.md",
-      "summary": "E3 device-selection probe plan: 3 phases, 3 waves, sorry-free path, H3 Tier 1 mapping table carried from the report."
+      "type": "summary",
+      "path": "specs/732_e3_universal_summary_device_selection_probe/summaries/01_e3-device-selection-probe-summary.md",
+      "summary": "Phase 1 of 3: comparison core transcribed into device-selection-probe.lean, sorry-free on standard axioms."
     }
   ],
-  "phases_completed": 0,
+  "phases_completed": 1,
   "phases_total": 3,
-  "skeleton": false,
+  "dispatch_seq": 3,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": null,
-  "next_action_hint": "Dispatch /implement 732 in a cycle where tasks 720, 733, 734 are not being implemented (shared file_scope on scripts/check-evidence-probes.sh); Phase 3 checks for a dirty script before editing."
+  "continuation_path": "specs/732_e3_universal_summary_device_selection_probe/handoffs/phase-1-handoff-20261005T185650Z.md",
+  "continuation_context": {
+    "is_successor": true,
+    "resume_phase": 2,
+    "handoff_path": "specs/732_e3_universal_summary_device_selection_probe/handoffs/phase-1-handoff-20261005T185650Z.md"
+  }
 }

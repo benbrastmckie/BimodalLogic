@@ -180,7 +180,7 @@ This phase moves proved text; it proves nothing new.
       Expected exit 0, no warnings, no `sorryAx`, axioms matching the prototype baseline. If a
       lemma that compiled in the prototype fails here, the cause is the import change — restore
       the Mathlib import before touching any proof.
-- [ ] Commit the green file (`task 732 phase 1: transcribe comparison core`), staging only the new
+- [x] Commit the green file (`task 732 phase 1: transcribe comparison core`), staging only the new
       probe file.
 
 **Timing**: 1.0 hours
