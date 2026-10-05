@@ -1,7 +1,7 @@
 # Implementation Plan: Task #722
 
 - **Task**: 722 - Reconcile the programme-level decidability prose with the two-statement distinction (tableau biconditional open; Decidable (ValidZTime phi) proved)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.75 hours
 - **Dependencies**: None (must not share an `/orchestrate` cycle with tasks 177 or 543 — colliding `README.md`/documentation `file_scope`)
 - **Research Inputs**: `specs/722_reconcile_decidability_prose_two_statements/reports/01_reconcile-decidability-prose.md`
@@ -173,49 +173,49 @@ expected default for a single implementation agent.
 
 ---
 
-### Phase 1: Re-verify the Citation Set and Capture the Gate Baseline [NOT STARTED]
+### Phase 1: Re-verify the Citation Set and Capture the Gate Baseline [COMPLETED]
 
 **Goal**: Confirm, in this round, every declaration name, axiom set, absence, and quoted stale
 phrase the later phases rely on — and capture a pre-edit gate baseline so pre-existing failures
 are not later attributed to this task. No file is edited in this phase.
 
 **Tasks**:
-- [ ] Re-verify `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime` by
+- [x] Re-verify `FormalSystem.Metalogic.Decidability.Compression.decidableValidZTime` by
   `mcp__lean-lsp__lean_verify` (fully-qualified name). Expect axioms
   `[propext, Classical.choice, Quot.sound]`, `trust: standard`, no non-standard axioms. If
   lean-lsp is degraded or unreachable, fall back to a compiled probe
   (`#check` + `#print axioms` under `import FormalSystem`) and announce the evidence tier.
-- [ ] Confirm the declaration is a `def` (not an `instance`) and sits inside `namespace
+- [x] Confirm the declaration is a `def` (not an `instance`) and sits inside `namespace
   Compression` in `FormalSystem/Metalogic/Decidability/WitnessFamily/Compression/Assembly.lean`;
   confirm `validZTime_iff_noCertifiedCandidate` is present and `sorry`-free.
-- [ ] Confirm `sound_of_isValid` and `isValid_sound` are present in
+- [x] Confirm `sound_of_isValid` and `isValid_sound` are present in
   `FormalSystem/Metalogic/Decidability/Correctness.lean`, and re-read its "Retired as vacuous"
   section to confirm the vacuity reason (vacuous instances of `Classical.em`) before any surface
   restates it.
-- [ ] Confirm `FormalSystem.Semantics.validZTime_iff_validInt` is present in
+- [x] Confirm `FormalSystem.Semantics.validZTime_iff_validInt` is present in
   `FormalSystem/Semantics/IntTransfer.lean` and `sorry`-free (load-bearing for Phase 6 only).
-- [ ] Re-confirm the absence of any Lean `Log` declaration and of any declaration stating
+- [x] Re-confirm the absence of any Lean `Log` declaration and of any declaration stating
   `Log(all task frames) = Log(Discrete) ∩ Log(Dense)`:
   `grep -rnE '(def|theorem|lemma|abbrev) +Log\b' FormalSystem/` and a shape grep for the identity.
   Record `index: consulted` (or the degraded tier) for any `lean_local_search` used.
-- [ ] Confirm `docs/theorem-index.md`'s `### Decidability` section still carries the
+- [x] Confirm `docs/theorem-index.md`'s `### Decidability` section still carries the
   `Compression.decidableValidZTime` row, so the pointer every surface gains is live.
-- [ ] Re-locate each stale phrase by content, recording its current line number:
+- [x] Re-locate each stale phrase by content, recording its current line number:
   `grep -n` for `sound direction only` (expect `FormalSystem/README.md`,
   `docs/project-info/known-limitations.md`), `machine-checked` in
   `FormalSystem/Metalogic/Decidability/BiLasso/README.md` and `typst/FormalFoundations.typ`, and
   `neither factor logic is known decidable` in `typst/FormalFoundations.typ`.
-- [ ] Capture the pre-edit gate baseline into the task directory (not into the repo tree):
+- [x] Capture the pre-edit gate baseline into the task directory (not into the repo tree):
   `lake build` result, `typst compile typst/FormalFoundations.typ` result,
   `bash .claude/scripts/check-task-references.sh` result, and
   `bash .claude/scripts/verify-deploy.sh` result. Record each as pass/fail with the failing items
   named. The dispatch already flags `core filetypes formal lean typst` as stale in the deployed
   `.claude/` tree; a `verify-deploy.sh` failure traceable to that staleness is pre-existing and
   out of scope — do **not** hand-patch anything under `.claude/**`.
-- [ ] Write the confirmed kit (names, axioms, current line anchors, baseline results) to
+- [x] Write the confirmed kit (names, axioms, current line anchors, baseline results) to
   `specs/722_reconcile_decidability_prose_two_statements/.verified-claims.md` for Phases 2–7 to
   read. If any expectation fails to re-verify, STOP: do not edit a surface, and report the
-  divergence — the plan's factual basis has moved.
+  divergence — the plan's factual basis has moved. *(completed)*
 
 **Timing**: 0.75 hours
 
