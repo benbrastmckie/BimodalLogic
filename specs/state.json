@@ -78,7 +78,7 @@
         {
           "path": "specs/732_e3_universal_summary_device_selection_probe/summaries/01_e3-device-selection-probe-summary.md",
           "type": "summary",
-          "summary": "Phase 1 of 3: comparison core transcribed into device-selection-probe.lean, sorry-free on standard axioms."
+          "summary": "Phases 1-2 of 3: comparison core transcribed and bridged to the real stab(Fp) formula on the Bool fixture."
         }
       ],
       "next_artifact_number": 2
