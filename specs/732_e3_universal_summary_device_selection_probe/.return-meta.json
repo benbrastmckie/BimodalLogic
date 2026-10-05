@@ -1,0 +1,54 @@
+{
+  "status": "researched",
+  "task_number": 732,
+  "session_id": "sess_1791224285_0433aa_732",
+  "dispatch_seq": 1,
+  "agent_type": "lean-research-hard-agent",
+  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
+  "phase": "research",
+  "started": "2026-10-05T17:58:17Z",
+  "completed": "2026-10-05T18:35:20Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/732_e3_universal_summary_device_selection_probe/reports/01_e3-device-selection-probe.md",
+      "summary": "E3 device-selection research: the box-dot(Fp)/box-dot(Pp) shapes are device-inert on finite fixtures (machine-checked: deterministic 2-state acceptor, pigeonhole lasso-sufficiency); pigeonhole-tier Ramsey refuted on infinite fibres (machine-checked); on infrastructure and literature evidence the substrate should build on the time-axis Ramsey summary (in-tree infinite_ramsey_pairs) framed by the HWZ/GKWZ MSO quasimodel route; Safra/Safraless not selected. No complexity bound claimed."
+    },
+    {
+      "type": "probe",
+      "path": "specs/732_e3_universal_summary_device_selection_probe/probes/device-probe-proto.lean",
+      "summary": "Compiled research prototype (lake env lean, standard axioms, no warnings): allPathsMeet_iff_lasso, allBwdPathsMeet_iff_lasso, detRun_accepts_iff, not_lasso_sufficient_on_chain. Starting text for the deliverable probe at specs/evidence/seam-gluing-ray-product/device-selection-probe.lean."
+    }
+  ],
+  "findings_count": 6,
+  "reference_grounding_tier": 1,
+  "adversarial_verification_triggered": true,
+  "divergence_audit_activated": false,
+  "sorry_free_path_exists": true,
+  "lean_readiness": {
+    "lean_lsp": "reachable",
+    "local_search_index": "warming",
+    "mathlib_absence_evidence": "source grep + lean_leansearch (not the warming index)"
+  },
+  "memory_candidates": [
+    {
+      "title": "Single-operator stab shapes are device-inert on finite fixtures",
+      "content": "box-dot(Fp) and box-dot(Pp) are co-safety per-path properties: their acceptor is a 2-state deterministic automaton and their universal summary over any finite step graph reduces to lasso paths by pigeonhole alone (Finite.exists_ne_map_eq_of_infinite on the shifted sequence). They cannot test determinization, Safraless, MSO or Ramsey devices. A discriminating probe needs an infinite (finitely presented) fibre, where pigeonhole-tier lasso sufficiency provably fails.",
+      "keywords": ["stab", "universal summary", "co-safety", "pigeonhole", "lasso", "device selection", "evidence probe"],
+      "source": "specs/732_e3_universal_summary_device_selection_probe/reports/01_e3-device-selection-probe.md"
+    },
+    {
+      "title": "Infinite Ramsey for pairs lives in-tree, not in Mathlib",
+      "content": "FormalSystem.Metalogic.WeakCanonical.infinite_ramsey_pairs (RamseyFactorization.lean) proves infinite Ramsey for pairs on standard axioms; Mathlib v4.33.0-rc1 has only Hindman and Hales-Jewett, no omega-automata, no MSO. Any decidability-side use of Ramsey should import it rather than re-prove it.",
+      "keywords": ["Ramsey", "infinite_ramsey_pairs", "Mathlib gap", "omega-automata", "MSO"],
+      "source": "specs/732_e3_universal_summary_device_selection_probe/reports/01_e3-device-selection-probe.md"
+    },
+    {
+      "title": "Lean arithmetic idioms for lasso constructions",
+      "content": "For ultimately periodic index functions with a variable modulus, avoid `set r := a % m` (new occurrences are not abstracted); rewrite with Nat.mod_add_mod / Nat.add_mod_right / Nat.mod_eq_of_lt / Nat.mod_self on the raw expression. `push_neg` is deprecated at this pin (use `simp only [not_exists, not_and]` or `push Not`). `omit [inst] in` must precede the docstring, not sit between docstring and theorem.",
+      "keywords": ["Lean 4", "Nat.mod", "lasso", "omit", "push_neg deprecated"],
+      "source": "specs/732_e3_universal_summary_device_selection_probe/probes/device-probe-proto.lean"
+    }
+  ],
+  "next_steps": "Run /plan 732 to create implementation plan"
+}
