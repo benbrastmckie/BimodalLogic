@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Benjamin Brast-McKie
 -/
 
+import FormalSystem.ForMathlib.Combinatorics.InfiniteRamseyPairs
 import FormalSystem.ForMathlib.Order.BallSpace
 import FormalSystem.ForMathlib.Order.PFilter
 import FormalSystem.ForMathlib.Topology.Sierpinski
@@ -25,6 +26,10 @@ strictly `Mathlib → ForMathlib → FormalSystem.* → downstream`.
 
 ## Contents
 
+* `FormalSystem.ForMathlib.Combinatorics.InfiniteRamseyPairs` — infinite Ramsey for pairs
+  (`Nat.exists_strictMono_const_pair_colour`): every finite colouring of the increasing pairs of
+  naturals is constant on some strictly monotone subsequence. Mathlib carries Hindman and
+  Hales–Jewett at this pin but not the classical infinite Ramsey theorem.
 * `FormalSystem.ForMathlib.Order.BallSpace` — ball spaces in the sense of Ćmiel, Kuhlmann and
   Kuhlmann: nests (`Order.IsNest`), spherical completeness `S₁` over an arbitrary ball predicate
   (`Order.SphericallyComplete`), cofinal nests (`Order.HasCofinalNest`), the hierarchy's

@@ -46,8 +46,9 @@ import FormalSystem.Metalogic.WeakCanonical.GroupModel.BlockDecomposition
 -- completeness at depth k, all three endpoint profiles) is a leaf until the Ramsey
 -- factorization (`GroupModel/RamseyFactorization.lean`) consumes it. Same precedent.
 import FormalSystem.Metalogic.WeakCanonical.GroupModel.MonoDiscrete
--- CI edge only: `GroupModel/RamseyFactorization.lean` (infinite Ramsey for pairs + per-block
--- inflation `inflate_right`/`inflate_left`) is a leaf until the companion assembly
+-- CI edge only: `GroupModel/RamseyFactorization.lean` (alias of infinite Ramsey for pairs from
+-- `ForMathlib/Combinatorics/InfiniteRamseyPairs.lean` + per-block inflation
+-- `inflate_right`/`inflate_left`) is a leaf until the companion assembly
 -- (`GroupModel/GroupableCompanion.lean`) consumes it. Same precedent.
 import FormalSystem.Metalogic.WeakCanonical.GroupModel.RamseyFactorization
 -- `GroupModel/GroupableCompanion.lean` (`companionGeneral`/`companionChronicle`, the Base

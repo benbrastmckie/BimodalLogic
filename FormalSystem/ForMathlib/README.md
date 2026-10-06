@@ -35,6 +35,7 @@ C24 exception, listed in `scripts/CheckInitImportsMain.lean` and documented in
 <!-- BEGIN GENERATED: inventory dir=FormalSystem/ForMathlib rows=subdirs cols=files-lines link=yes -->
 | Directory | Files | Lines | Role |
 |-----------|------:|------:|------|
+| [`Combinatorics/`](Combinatorics/README.md) | 1 | 160 | Infinite Ramsey for pairs (`Nat.exists_strictMono_const_pair_colour`): every finite colouring of the increasing pairs of naturals is constant on some strictly monotone subsequence |
 | [`Order/`](Order/README.md) | 2 | 399 | Proper, maximal and prime filters (`Order.PFilter.IsProper`, `Order.PFilter.IsMaximal`, `Order.PrimeFilter`), and the bottom of the ball-space hierarchy (`Order.IsNest`, `Order.SphericallyComplete`, `Order.HasCofinalNest`, `Order.sInter_nonempty_of_sphericallyComplete`) |
 | [`Topology/`](Topology/README.md) | 1 | 245 | Sierpiński's theorem on countable closed partitions of the line (`Sierpinski.const_of_isClosed_levelSet`, `Sierpinski.const_of_countable_range`) |
 <!-- END GENERATED -->
@@ -43,6 +44,8 @@ C24 exception, listed in `scripts/CheckInitImportsMain.lean` and documented in
 
 - [`ForMathlib.lean`](../ForMathlib.lean) — the sibling aggregator, which also states the
   dependency rule
+- [`Combinatorics/`](Combinatorics/README.md) — infinite Ramsey for pairs
+  (`Nat.exists_strictMono_const_pair_colour`), which Mathlib does not carry at this pin
 - [`Order/`](Order/README.md) — proper, maximal and prime filters, the filter side of Mathlib's
   `Order/Ideal.lean` and `Order/PrimeIdeal.lean`; and nests, spherical completeness `S₁` and the
   cofinal-nest reduction, the bottom of the Ćmiel–Kuhlmann–Kuhlmann ball-space hierarchy, of which
@@ -54,8 +57,11 @@ C24 exception, listed in `scripts/CheckInitImportsMain.lean` and documented in
 - [`Semantics/TaskFrame.lean`](../Semantics/TaskFrame.lean) — `Order/BallSpace.lean`'s consumer:
   `TaskFrame.NestSaturation` is `Order.SphericallyComplete` at the frame's own ball space of
   nonempty fibers and segments, by `Iff.rfl`
+- [`Metalogic/WeakCanonical/GroupModel/`](../Metalogic/WeakCanonical/GroupModel/README.md) —
+  `Combinatorics/InfiniteRamseyPairs.lean`'s consumer: `RamseyFactorization.lean` keeps the
+  theorem under the alias `infinite_ramsey_pairs` for the per-block inflation step
 - [FormalSystem README](../README.md)
 
 ---
 
-*Last verified: 2026-09-24*
+*Last verified: 2026-10-05*

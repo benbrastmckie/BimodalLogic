@@ -95,12 +95,12 @@ Every subdirectory has exactly one **sibling** aggregator: `X.lean` sits *beside
 | `Conservativity.lean` | 449 | `Conservativity/` |
 | `ConvexConsequence.lean` | 44 | Aggregator for the metatheory of the convex-index consequence relations C3 and C4; holds no declarations |
 | `Core.lean` | 40 | `Core/` |
-| `Decidability.lean` | 173 | `Decidability/` |
+| `Decidability.lean` | 182 | `Decidability/` |
 | `Deterministic.lean` | 30 | <!-- TODO: add description --> |
 | `Expressiveness.lean` | 77 | `Expressiveness/` |
 | `Independence.lean` | 218 | `Independence/` |
 | `SoundnessLemmas.lean` | 35 | `SoundnessLemmas/` |
-| `WeakCanonical.lean` | 131 | `WeakCanonical/` |
+| `WeakCanonical.lean` | 132 | `WeakCanonical/` |
 <!-- END GENERATED -->
 
 The remaining loose files in `Metalogic/` are not aggregators — they have no same-named
@@ -161,7 +161,7 @@ self-named inner root it once delegated to has been absorbed into it.
 | [`Expressiveness/`](Expressiveness/README.md) | 143 | 104,211 | Kamp/Stavi expressive completeness: monadic FO, EF games, normal forms, separation |
 | [`Independence/`](Independence/README.md) | 27 | 7,628 | Axiom-independence models |
 | [`SoundnessLemmas/`](SoundnessLemmas/README.md) | 4 | 1,434 | Per-axiom validity lemmas feeding `Soundness.lean` |
-| [`WeakCanonical/`](WeakCanonical/README.md) | 38 | 28,546 | Kamp/Reynolds route, including all of `Kamp/` |
+| [`WeakCanonical/`](WeakCanonical/README.md) | 38 | 28,453 | Kamp/Reynolds route, including all of `Kamp/` |
 <!-- END GENERATED -->
 
 C7's `Metalogic` rollup is larger than the sum of the table above, because it also counts the
@@ -207,7 +207,7 @@ dominates everything else in the repository:
 | `DenseModelSurgery/` | 9 | 7,935 |
 | `RealModel/` | 7 | 6,790 |
 | `IntegerModel/` | 6 | 5,625 |
-| `GroupModel/` | 6 | 3,379 |
+| `GroupModel/` | 6 | 3,286 |
 <!-- END GENERATED -->
 
 `GroupModel/` is where `theorem countermodel_discrete` — the Base-frame discrete branch of

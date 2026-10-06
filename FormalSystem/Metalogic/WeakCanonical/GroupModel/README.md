@@ -20,7 +20,7 @@ Sources: Doets 1987, chapters 3 and 7; Reynolds 1992, section 8.
 | `GoodGroupable.lean` | 194 | Reynolds section 8's `good` notion transposed to `ℚ ×ₗ ℤ`: the `QZStructure` target vocabulary, `goodGroupable`, its two transfer lemmas, and the two endpoint corollaries. |
 | `GroupableCompanion.lean` | 426 | The companion lemma itself: every countable discrete unbounded-both-ways monadic structure is `goodGroupable` at every depth (`companionGeneral`), instantiated at the Base-MCS chronicle structure (`companionChronicle`). |
 | `MonoDiscrete.lean` | 892 | Monochromatic discrete completeness at depth `k`: two monochromatic discrete linear orders with the same endpoint profile are `KEquiv` at every depth. The classical completeness of `Th(ℤ,<)`, transposed to monadic structures. |
-| `RamseyFactorization.lean` | 923 | The per-block inflation step. Proves infinite Ramsey for pairs from scratch (absent from Mathlib at this pin) and uses it to show every coloured `ℤ`-block absorbs a coloured copy of `ℚ ×ₗ ℤ` invisibly at depth `k`. |
+| `RamseyFactorization.lean` | 836 | The per-block inflation step. Keeps infinite Ramsey for pairs under the alias `infinite_ramsey_pairs` (proved in `ForMathlib/Combinatorics/InfiniteRamseyPairs.lean`, absent from Mathlib at this pin) and uses it to show every coloured `ℤ`-block absorbs a coloured copy of `ℚ ×ₗ ℤ` invisibly at depth `k`. |
 
 ## Key Results
 
@@ -28,8 +28,9 @@ Sources: Doets 1987, chapters 3 and 7; Reynolds 1992, section 8.
   and a **proved** theorem rather than a deprecated pipeline.
 - `companionGeneral` / `companionChronicle` (`GroupableCompanion.lean`) — the companion lemma
   in general and at the chronicle structure.
-- `infinite_ramsey_pairs` (`RamseyFactorization.lean`) — infinite Ramsey for pairs, proved from
-  scratch because Mathlib does not carry it at this toolchain pin.
+- `infinite_ramsey_pairs` (`RamseyFactorization.lean`) — infinite Ramsey for pairs, alias of
+  `Nat.exists_strictMono_const_pair_colour` (`ForMathlib/Combinatorics/InfiniteRamseyPairs.lean`),
+  proved from scratch there because Mathlib does not carry it at this toolchain pin.
 
 ## Dependencies
 

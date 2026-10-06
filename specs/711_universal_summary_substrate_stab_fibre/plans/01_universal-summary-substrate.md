@@ -199,7 +199,14 @@ Phases 6 and 7 are independent (both consume Phase 5) but touch the shared aggre
 module, so if they are run in parallel each must append to those two files rather than rewrite
 them. Phase 10 depends on Phase 9 only to serialize edits to `scripts/check-evidence-probes.sh`.
 
-### Phase 1: Relocate infinite Ramsey for pairs to ForMathlib, alias kept [IN PROGRESS]
+### Phase 1: Relocate infinite Ramsey for pairs to ForMathlib, alias kept [COMPLETED WITH EXCLUSIONS]
+
+**Exclusions** (Phase 1): `bash scripts/check-module-invariants.sh` exits 1 on the single
+pre-existing check C9 (a task-number citation at `scripts/check-phantom-citations.sh:145`,
+committed by task 728 in `729dc345f`, a file outside this phase's territory and untouched here);
+every other check is green (full run: C1 build, C24, C33, C5, C12/C13, C28, INV all PASS). The
+phase's own gates — both `lean_verify`s, the no-`FormalSystem` import rule, the probe collection
+(16/16 PASS) — are met in full.
 
 **Goal**: Move `section Ramsey` (lines 65–170 of
 `FormalSystem/Metalogic/WeakCanonical/GroupModel/RamseyFactorization.lean`: the private helpers
@@ -250,9 +257,9 @@ ingredient without importing `WeakCanonical.GroupModel`.
 - [x] Build the two touched roots, detached and guarded:
       `bash .claude/scripts/lake-build-guard.sh build --timeout 1800 -- build FormalSystem.ForMathlib FormalSystem.Metalogic.WeakCanonical.GroupModel.RamseyFactorization`;
       then `lean_verify` both names (same axiom set as the baseline).
-- [ ] Run `bash scripts/check-module-invariants.sh` (full, with build) and
-      `bash scripts/check-evidence-probes.sh` (E3's probe cites the alias). Both green.
-- [ ] Commit via `git-commit-scoped.sh` (`task 711 phase 1: relocate infinite Ramsey for pairs to ForMathlib`),
+- [x] Run `bash scripts/check-module-invariants.sh` (full, with build) and
+      `bash scripts/check-evidence-probes.sh` (E3's probe cites the alias). Both green. *(deviation: altered — probes green (16/16); the harness is green on every check except the pre-existing C9 named in the Exclusions above, which is out of this phase's territory)*
+- [x] Commit via `git-commit-scoped.sh` (`task 711 phase 1: relocate infinite Ramsey for pairs to ForMathlib`),
       staging only the files listed below.
 
 **Timing**: 1.5 hours
