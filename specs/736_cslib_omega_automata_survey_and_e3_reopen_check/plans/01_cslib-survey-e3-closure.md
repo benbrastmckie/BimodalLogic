@@ -201,7 +201,7 @@ record, not a number to reconcile silently.
 
 ---
 
-### Phase 2: Bounded acquisition attempt on the three still-WANTED sources [NOT STARTED]
+### Phase 2: Bounded acquisition attempt on the three still-WANTED sources [COMPLETED]
 
 **Goal**: Make one bounded, best-effort attempt to close the three literature gaps the research
 could not close by wiring, because they are absent from the global corpus — not merely unwired.
@@ -209,27 +209,32 @@ could not close by wiring, because they are absent from the global corpus — no
 not be treated as a failure or a blockage.
 
 **Tasks**:
-- [ ] For each of the three named gaps, run at most one discovery query:
+- [x] For each of the three named gaps, run at most one discovery query:
       `bash .claude/scripts/literature-discover.sh "<terms>"` for
       (a) Kupferman–Vardi, "Safraless Decision Procedures", FOCS 2005;
       (b) Grädel–Thomas–Wilke, "Automata, Logics, and Infinite Games", 2002;
       (c) Hodkinson–Reynolds, Handbook of Modal Logic ch. 11, §§5.10–5.11 bodies.
-- [ ] For each discovery record, classify by tier and status. **Tier 1 means it is already in the
+- [x] For each discovery record, classify by tier and status. **Tier 1 means it is already in the
       global corpus** — in that case wire the sub-index reference and ingest nothing. Match every
       candidate id **whole**; never by author-year stem.
-- [ ] For each Tier-3 `open_access` record carrying a `pdf_url` or `arxiv_id`, run exactly one
+- [x] For each Tier-3 `open_access` record carrying a `pdf_url` or `arxiv_id`, run exactly one
       `bash .claude/scripts/literature-ingest-online.sh --record '<json>'` bridge call. Dry-run
-      first (`--dry-run`) and read the directive token before the live call.
-- [ ] On `ONLINE_INGEST_NO_PDF`, a `paywall` status, or no usable hit: stop for that source and
+      first (`--dry-run`) and read the directive token before the live call. *(deviation: altered
+      — no bridge call was made. Every Tier-3 `open_access` record returned was a DIFFERENT paper
+      from the named gap (e.g. "Safraless LTL synthesis considering maximal realizability" 2016,
+      "Automata and fixed point logic" 2006). Ingesting them would not close any named gap and
+      would add unrelated documents to the global corpus; the per-named-source bound was honoured
+      instead of the per-record one.)*
+- [x] On `ONLINE_INGEST_NO_PDF`, a `paywall` status, or no usable hit: stop for that source and
       record it as still WANTED, with the query used and the reason, for the summary. Do not
       escalate, do not try alternate mirrors, do not fetch anything the bridge did not resolve.
-- [ ] Re-run Phase 1's sub-index audit after any write (orphans / duplicates / missing `doc_id` /
+- [x] Re-run Phase 1's sub-index audit after any write (orphans / duplicates / missing `doc_id` /
       directory resolution), and record the before/after entry counts.
-- [ ] Respect the recorded identity hazards: the pre-existing `thomas_1997` /
+- [x] Respect the recorded identity hazards: the pre-existing `thomas_1997` /
       `thomas_1997_languages_automata` split, and the three collisions the research recorded on
       `piterman_2007`, `vardi_1996` and `vardi_wolper_1986`. If a new entry collides on an
       author-year stem with an existing one, write the mirrored hazard field on both.
-- [ ] Record each outcome (win or issue) via `.claude/scripts/issue-record.sh` as it happens.
+- [x] Record each outcome (win or issue) via `.claude/scripts/issue-record.sh` as it happens.
 
 **Timing**: 0.75 hours
 
