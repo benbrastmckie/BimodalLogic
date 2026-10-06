@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-10-02",
+  "updated": "2026-10-05",
   "entries": [
     {
       "doc_id": "rabinovich_2014",
@@ -186,12 +186,14 @@
     {
       "doc_id": "vardi_wolper_1986_automata_verification",
       "relevance": "Termination-measure design (task 434 blocker): the original automata-theoretic approach to program verification underlying the closure-set/automaton-construction termination arguments in gerth_1995 and baier_katoen_2008. Background source for understanding why the closure-set bound is sound, in case the fourth measure component needs to be justified from first principles rather than by textbook citation alone.",
-      "reason": "Task 435: foundational automata-theoretic background for the fourth termination-measure component blocking task 434 Phase 7/8."
+      "reason": "Task 435: foundational automata-theoretic background for the fourth termination-measure component blocking task 434 Phase 7/8.",
+      "hazard": "IDENTITY -- recorded 2026-10-05 by a stem-collision audit of this sub-index. The global corpus also carries doc_id vardi_wolper_1986, a DIRECTORY-level record for the same source directory (sources/vardi_wolper_1986/) that this file-level id lives in. Both are verified_conversion, so no fidelity divergence here, but the two ids are not interchangeable and must be matched WHOLE."
     },
     {
       "doc_id": "vardi_1996_automata_ltl",
       "relevance": "Termination-measure design (task 434 blocker): a later survey-style automata-theoretic treatment of LTL, restating and extending the closure-set/automaton-construction termination argument. Secondary background source alongside vardi_wolper_1986_automata_verification for the closure-set potential pattern.",
-      "reason": "Task 435: secondary automata-theoretic background for the fourth termination-measure component blocking task 434 Phase 7/8."
+      "reason": "Task 435: secondary automata-theoretic background for the fourth termination-measure component blocking task 434 Phase 7/8.",
+      "hazard": "IDENTITY, not fidelity -- recorded 2026-10-05 by a stem-collision audit of this sub-index. The global corpus carries a SECOND doc_id for what is apparently this same paper: vardi_1996_automata-theoretic-ltl, in a DIFFERENT directory (sources/vardi_1996_automata-theoretic-ltl/) and with the OPPOSITE fidelity verdict (no_source_pdf, versus verified_conversion on this id). Match ids WHOLE: never cite 'Vardi 1996' by the author-year stem, and never transfer this id's verified_conversion status to the sibling. Same hazard shape as thomas_1997 / thomas_1997_languages_automata."
     },
     {
       "doc_id": "j_nsson_and_tarski_-_1951_-_boolean_algebras_with_operators._part_i",
@@ -627,6 +629,87 @@
       "fidelity": "unverified_conversion via the pymupdf column-clustering FALLBACK tier (primary tier rejected by the quality gate on sentence-boundary-glue). Verify quotes against the PDF.",
       "added": "2026-10-02",
       "source": "online literature sweep (L-plus decidability front)"
+    },
+    {
+      "doc_id": "brunner_seidl_sickert_2019_verified_ltl_to_dra",
+      "reason": "Closes the E3 evidence gap behind candidate (b). Brunner, Seidl & Sickert, 'A Verified and Compositional Translation of LTL to Deterministic Rabin Automata', ITP 2019 (LIPIcs, DOI 10.4230/LIPIcs.ITP.2019.11). A COMPLETE Isabelle/HOL formalisation of the Esparza-Kretinsky-Sickert Master Theorem LTL->DRA translation, archived in the Archive of Formal Proofs. This is a SAFRALESS construction formalised end-to-end in a proof assistant, so E3's rejection ground 'no formalization of Safra or Piterman determinization exists in ANY proof assistant' -- literally true of Safra/Piterman specifically -- does not support the broader inference that route (b) lacks proof-assistant precedent. Under the zero-debt policy an Isabelle/AFP development is NOT a resource for this Lean tree; it is evidence of feasibility only.",
+      "added": "2026-10-05",
+      "source": "manual"
+    },
+    {
+      "doc_id": "esparza_kretinsky_sickert_2020_unified_translation_ltl_omega_automata",
+      "reason": "The Master Theorem that brunner_seidl_sickert_2019_verified_ltl_to_dra formalises: Esparza, Kretinsky & Sickert, 'One Theorem to Rule Them All: A Unified Translation of LTL into omega-Automata'. The mathematical content of the Safraless route named as candidate (b), read directly rather than through the formalisation paper.",
+      "added": "2026-10-05",
+      "source": "manual"
+    },
+    {
+      "doc_id": "piterman_2007_nondeterministic_buchi_streett_to_deterministic_parity",
+      "reason": "Closes the named Piterman 2006/2007 gap for candidate (a): 'From Nondeterministic Buchi and Streett Automata to Deterministic Parity Automata'. 48-chunk PDF-derived conversion. Already in the GLOBAL corpus at filing time -- wired here, NOT re-ingested.",
+      "hazard": "IDENTITY, not fidelity. The global corpus carries a SECOND, distinct doc_id for what is apparently this same paper: piterman_2007_buchi_streett (1 chunk, sources/piterman_2007/Piterman_2007_Buchi_Streett_Parity.md, provenance_fidelity verified_conversion), whereas THIS id is the 48-chunk conversion under sources/piterman_2007_nondeterministic_buchi_streett_to_deterministic_parity/ with provenance_fidelity UNSET. Match ids WHOLE: never cite 'Piterman 2007' by the author-year stem, and do not transfer this entry's unset-fidelity status to the sibling or the sibling's verified_conversion status to this one. Same hazard shape as the standing thomas_1997 / thomas_1997_languages_automata pair.",
+      "added": "2026-10-05",
+      "source": "manual"
+    },
+    {
+      "doc_id": "piterman_2007_buchi_streett",
+      "reason": "The verified_conversion sibling of piterman_2007_nondeterministic_buchi_streett_to_deterministic_parity: a 1-chunk conversion of Piterman's Buchi/Streett-to-parity determinization, with a source PDF confirmed. Prefer this id when a formula or statement must be quoted; prefer the 48-chunk sibling for locating material.",
+      "hazard": "IDENTITY, not fidelity. See the mirrored hazard on piterman_2007_nondeterministic_buchi_streett_to_deterministic_parity: two distinct doc_ids, apparently one paper, different directories, different chunk counts, different provenance_fidelity. Ids are matched WHOLE.",
+      "added": "2026-10-05",
+      "source": "manual"
+    },
+    {
+      "doc_id": "loding_pirogov_2019_determinization_buchi_safra_muller_schupp",
+      "reason": "Stands in for the named Safra 1988 gap ('On the Complexity of omega-Automata', NOT in the global corpus). Loding & Pirogov, 'Determinization of Buchi Automata: Unifying the Approaches of Safra and Muller-Schupp' -- a modern unifying treatment that presents Safra's construction itself, so the Safra gap is closed in substance without the 1988 paper. provenance_fidelity unset.",
+      "added": "2026-10-05",
+      "source": "manual"
+    },
+    {
+      "doc_id": "thomas_2003_ch01",
+      "reason": "Stands in for the named Thomas 1990 gap ('Automata on Infinite Objects', Handbook of Theoretical Computer Science, NOT in the global corpus). Thomas, 'Automata and Reactive Systems', ch. 1: omega-automata introduction. cslib's own omega-automata files cite [Thomas2003], not [Thomas1990], so this is the citation the Lean source actually wants. verified_conversion.",
+      "added": "2026-10-05",
+      "source": "manual"
+    },
+    {
+      "doc_id": "thomas_2003_ch03",
+      "reason": "Thomas, 'Automata and Reactive Systems', ch. 3: theory of deterministic omega-automata. The determinization/acceptance-condition chapter behind cslib's DA/Rabin.lean, DA/Parity.lean and DA/Conversions.lean, all of which cite [Thomas2003]. verified_conversion.",
+      "added": "2026-10-05",
+      "source": "manual"
+    },
+    {
+      "doc_id": "zielonka_1998_infinite_games",
+      "reason": "Corpus-available counterpart to the named Graedel-Thomas-Wilke 2002 gap ('Automata, Logics, and Infinite Games', cited by the cslib fork's DA/Parity.lean as GradelThomasWilke2002 and NOT in the global corpus). Zielonka, 'Infinite Games on Finitely Coloured Graphs with Applications to Automata on Infinite Trees' -- the source of the parity/Rabin game-theoretic material GTW collects, and itself cited by cslib as [Zielonka1998].",
+      "hazard": "provenance_fidelity: unverified_scan_source -- not confirmed faithful to a source PDF. Verify against the primary source before citing any statement in formal work. Note also that this does NOT close the GTW 2002 gap as such: GTW remains absent from the corpus and WANTED.",
+      "added": "2026-10-05",
+      "source": "manual"
+    },
+    {
+      "doc_id": "vardi_2007_buchi_complementation_saga",
+      "reason": "Survey of the Buchi complementation landscape, including the rank-based constructions. Orients the fork-only Cslib/Computability/Automata/NA/BuchiCompl.lean, whose three main theorems (complement_language_sub/sup/eq) are proof_wanted, against what the published constructions actually require. provenance_fidelity unset.",
+      "added": "2026-10-05",
+      "source": "manual"
+    },
+    {
+      "doc_id": "tsai_fogarty_vardi_tsay_2014_state_of_buchi_complementation",
+      "reason": "Empirical and structural comparison of Buchi complementation constructions (rank-based, Ramsey-based, slice-based). Directly relevant to the finding that cslib proves complementation CLOSURE (IsRegular.compl, upstream, sorry-free) by the RAMSEY/congruence route while leaving the rank-based construction's correctness proof_wanted. provenance_fidelity unset.",
+      "added": "2026-10-05",
+      "source": "manual"
+    },
+    {
+      "doc_id": "schewe_2009_buchi_complementation",
+      "reason": "Schewe, 'Buchi Complementation Made Tight'. The tight form of the rank-based complementation the fork's BuchiCompl.lean attempts. Cited for what the construction is, never for a complexity bound in this repository. verified_conversion.",
+      "added": "2026-10-05",
+      "source": "manual"
+    },
+    {
+      "doc_id": "schewe_varghese_2014_determinising_parity_automata",
+      "reason": "Determinising parity automata -- the published counterpart of the two conversions cslib leaves as proof_wanted (DA.Rabin.toParity_exists, the LAR construction, and DA.Muller.toRabin_exists). Establishes that the gaps in cslib's conversion chain are the mathematically hard directions, not oversights. provenance_fidelity unset.",
+      "added": "2026-10-05",
+      "source": "manual"
+    },
+    {
+      "doc_id": "yan_2008_lower_bounds",
+      "reason": "Yan, 'Lower Bounds for Complementation of Omega-Automata via the Full Automata Technique'. Held for provenance only: this repository claims NO complexity bound, upper or lower, and this entry must never be cited as a source of one. verified_conversion.",
+      "added": "2026-10-05",
+      "source": "manual"
     }
   ]
 }

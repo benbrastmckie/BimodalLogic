@@ -190,6 +190,40 @@ EVIDENCE="specs/evidence"
 #                                                           | (b)'s 2005 source WANTED). No
 #                                                           | complexity bound. Begins no
 #                                                           | substrate work
+# seam-gluing-ray-product/cslib-ramsey-port-feasibility     | PORT FEASIBILITY (736): cslib's
+#                                                           | `infinite_graph_ramsey` (Ching-Tsun
+#                                                           | Chou, upstream
+#                                                           | `leanprover/cslib`) compiles on THIS
+#                                                           | pin from Mathlib alone, sorry-free,
+#                                                           | with no `Cslib.*` import and no
+#                                                           | `module`/`public import` preamble --
+#                                                           | so the cslib stack is portable in
+#                                                           | principle. And it SUBSUMES this
+#                                                           | tree's `ForMathlib`
+#                                                           | `Nat.exists_strictMono_const_pair_colour`:
+#                                                           | `repo_ramsey_from_cslib_ramsey`
+#                                                           | derives the in-tree statement from
+#                                                           | the ported one through an
+#                                                           | unordered/ordered pair bridge and
+#                                                           | `Nat.nth`, and the statement
+#                                                           | identity is itself machine-checked
+#                                                           | (`RepoRamseyStatement` discharged
+#                                                           | twice). This is why the ForMathlib
+#                                                           | module is NOT redefined as a
+#                                                           | corollary: subsumption holds, but
+#                                                           | the port plus glue is a net
+#                                                           | ADDITION of lines, and the live
+#                                                           | consumers in
+#                                                           | `RamseyFactorization.lean` need the
+#                                                           | curried ordered form. Also records
+#                                                           | measured port friction: cslib's
+#                                                           | Mathlib rev is 76 commits ahead and
+#                                                           | its HEAD commit is the
+#                                                           | `restrict`->`domRestrict` rename,
+#                                                           | which breaks the first ported line.
+#                                                           | Establishes NO portability for
+#                                                           | `BuchiCompl.lean`, whose main
+#                                                           | theorems are `proof_wanted`
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -204,6 +238,7 @@ WIRED=(
   "seam-gluing-ray-product/path-quantifier-alternation"
   "seam-gluing-ray-product/backward-dual-asymmetric-fixture"
   "seam-gluing-ray-product/device-selection-probe"
+  "seam-gluing-ray-product/cslib-ramsey-port-feasibility"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
