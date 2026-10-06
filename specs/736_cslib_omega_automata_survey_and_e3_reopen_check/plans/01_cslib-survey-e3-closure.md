@@ -271,7 +271,7 @@ a Handbook chapter body); do not read a WANTED outcome as a phase failure.
 
 ---
 
-### Phase 3: Record the E3 re-audit at E3's own site [NOT STARTED]
+### Phase 3: Record the E3 re-audit at E3's own site [COMPLETED]
 
 **Goal**: Append one comment-only RE-AUDIT block to the header of
 `specs/evidence/seam-gluing-ray-product/device-selection-probe.lean`, so a reader of E3's own
@@ -285,9 +285,16 @@ and leaves the probe's own outcome claims intact — it annotates them, it does 
 This phase does **not** edit task 711's plan, `RaySummary/**`, or `specs/ROADMAP.md`.
 
 **Tasks**:
-- [ ] Re-read the probe's header in full and confirm the four rejection grounds as the file
-      actually states them, before writing anything about them.
-- [ ] Append a RE-AUDIT block inside the header comment stating, with the report path named:
+- [x] Re-read the probe's header in full and confirm the four rejection grounds as the file
+      actually states them, before writing anything about them. *(deviation: altered — the
+      Scope Hypothesis's check fired. The file's own (a)/(b) rejection list has four clauses,
+      but they are NOT the plan's four: they are inertness on the probed shapes, no Mathlib
+      infrastructure, no Safra/Piterman formalization anywhere, and (b)'s FOCS 2005 source
+      WANTED. The plan's items (3) and (4) live elsewhere in the header — in the Selection
+      paragraph and in "What this does NOT establish" respectively. The RE-AUDIT block was
+      written to the file's actual structure, covering six claims and stating the
+      discrepancy with the report's "four grounds" shorthand explicitly.)*
+- [x] Append a RE-AUDIT block inside the header comment stating, with the report path named:
       (1) ground "Mathlib carries zero ω-automata infrastructure at the pin" — **CONFIRMED**, by a
       14-pattern sweep over 8,268 Mathlib source files;
       (2) ground "no formalization of Safra or Piterman determinization in any proof assistant" —
@@ -305,22 +312,22 @@ This phase does **not** edit task 711's plan, `RaySummary/**`, or `specs/ROADMAP
       `buchiFamily_cover`, which colours a pair of time points by the congruence class of the
       segment between them and applies `infinite_graph_ramsey`; that is candidate (d)'s device and
       it is the proof of Büchi complementation.
-- [ ] State in the same block that **the selection is unchanged — verdict (i), KEEP candidate
+- [x] State in the same block that **the selection is unchanged — verdict (i), KEEP candidate
       (d)** — and why the two falsifications do not move it: (b)'s Lean core is `proof_wanted`
       (`complement_language_sub`/`sup`/`eq` emit no declaration), the Isabelle development is not
       portable under the zero-debt policy, and (c)'s MSO half is unformalized; while (d)'s one
       non-trivial ingredient is in-tree, proved, sorry-free, axiom-clean and has a live consumer.
-- [ ] State what the block does **not** claim: no complexity bound; no device discrimination on
+- [x] State what the block does **not** claim: no complexity bound; no device discrimination on
       the probed shapes (`Probe732Device` settled that and this block does not disturb it); no
       revision of any task; no claim about cslib's own proofs beyond what `#print axioms` and the
       absence of `sorryAx`/`proof_wanted` certify in cslib's build.
-- [ ] Confirm no `-/` sequence was introduced and the block stays inside the opening `/-`.
-- [ ] Compile that one probe: `lake env lean
+- [x] Confirm no `-/` sequence was introduced and the block stays inside the opening `/-`.
+- [x] Compile that one probe: `lake env lean
       specs/evidence/seam-gluing-ray-product/device-selection-probe.lean`.
-- [ ] Re-read `scripts/check-evidence-probes.sh`, compare against Phase 1's recorded blob hash,
+- [x] Re-read `scripts/check-evidence-probes.sh`, compare against Phase 1's recorded blob hash,
       then run `bash scripts/check-evidence-probes.sh` and confirm exit 0 with the collection
       passing.
-- [ ] Commit this green sub-step before moving on (per-substep mandate), staging only the one
+- [x] Commit this green sub-step before moving on (per-substep mandate), staging only the one
       edited file.
 
 **Timing**: 0.75 hours

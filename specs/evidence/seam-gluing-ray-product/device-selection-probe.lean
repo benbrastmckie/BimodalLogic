@@ -66,6 +66,73 @@ the substrate task, not here. A selection recorded on this scope leaves the subs
 blocked reason ("device not yet selected") dischargeable by its own revision, which this file
 does not perform.
 
+**RE-AUDIT (736, 2026-10-05): two of this file's grounds no longer survive; the selection does.**
+A survey of `leanprover/cslib` (upstream head `ea16de32a`) and of the local fork
+`benbrastmckie/cslib` (`3bdf16d9f`), on THIS repository's toolchain, re-audited the grounds this
+file states for not selecting (a) and (b) and for preferring (d) over (c). Every cslib claim
+below was established by direct file read at re-audit time. Full record:
+`specs/736_cslib_omega_automata_survey_and_e3_reopen_check/reports/01_cslib-omega-automata-survey.md`.
+A note on structure first: this file's own (a)/(b) rejection list has FOUR clauses — inertness on
+the probed shapes, no Mathlib infrastructure, no Safra or Piterman formalization anywhere, and
+(b)'s FOCS 2005 source WANTED — and the re-audit below covers those plus two further claims this
+file makes elsewhere, namely the reason (d) is the substrate rather than (c), and the
+Low-confidence (c)/(d) framing. That clause structure differs from the report's "four rejection
+grounds" shorthand; this file, not the report, is the authority on what it claims.
+
+(1) "no ω-automata, Büchi, parity or Rabin infrastructure in Mathlib at the pin" — CONFIRMED, by
+a 14-pattern sweep over 8,268 Mathlib source files at this pin. Unchanged.
+
+(2) "inert on the probed shapes" and "(b)'s FOCS 2005 source is WANTED in the Literature index" —
+both CONFIRMED and unchanged. Kupferman–Vardi, "Safraless Decision Procedures", FOCS 2005 was
+re-queried in 2026-10 against the 13,701-entry global corpus and all three discovery tiers and
+remains absent; only the 2001 rank-construction core is in corpus, as this file already says.
+
+(3) "no formalization of Safra or Piterman determinization in any proof assistant" — still
+literally true OF SAFRA AND PITERMAN, but it no longer supports the conclusion it was deployed
+for. Determinization to a deterministic Muller acceptor IS available in Lean by the
+Büchi–Choueka route: `Cslib.ωLanguage.IsRegular.iff_da_muller` (McNaughton's theorem) is a real,
+term-proved, sorry-free theorem in the FORK, where upstream carries only a `proof_wanted` stub
+of the same name. Separately, a SAFRALESS LTL-to-DRA translation is verified end to end in
+Isabelle/HOL in the AFP (`brunner_seidl_sickert_2019_verified_ltl_to_dra`, in corpus). The
+reading this ground invites — that nothing in this area is formalized — is therefore false.
+
+(4) "(c)'s discharge theorem (Büchi's theorem) has no Lean formalization" — PARTIALLY FALSIFIED,
+in the ω-automata half ONLY. `Cslib.ωLanguage.IsRegular.compl` is proved UPSTREAM and is
+sorry-free. But cslib carries ZERO MSO, so the MSO-to-ω-regular correspondence remains
+unformalized in any proof assistant, and (c)'s discharge theorem still cannot be cited under the
+zero-debt policy. The ground survives in the half that was load-bearing for the selection.
+
+(5) This file's "(c) and (d) are plausibly the same mathematics in two wrappers ... Low-confidence
+background" — RAISED to High and machine-checked; it is now a finding, not framing.
+`IsRegular.compl` is proved THROUGH `Cslib.Automata.NA.Buchi.buchiFamily_cover` (upstream, in
+`Congruences/BuchiCongruence.lean`), which colours a pair of time points by the congruence class
+of the segment between them and applies `infinite_graph_ramsey`. That IS candidate (d)'s device,
+and it is the proof of Büchi complementation. The in-tree counterpart already using the same
+device on the MSO side is `RamseyFactorization.lean`'s orientation-specific instantiations of
+`infinite_ramsey_pairs` over monadic k-types. This closes the Low-confidence limit recorded above.
+
+**The selection is UNCHANGED — verdict (i), KEEP candidate (d), the time-axis Ramsey-coloured
+summary.** Neither falsification moves it, for stated reasons. (b)'s Lean core is not a resource:
+`BuchiCompl.lean` is fork-only and its three main theorems (`complement_language_sub`,
+`complement_language_sup`, `complement_language_eq`) are `proof_wanted`, so no declaration is
+emitted — `#print axioms` reports an unknown constant there, and a `grep -c sorry` of 0 on that
+file is a FALSE NEGATIVE, not a clean bill. The Isabelle/HOL development is not portable to this
+tree under the zero-debt policy. (c)'s MSO half is unformalized anywhere. Meanwhile (d)'s one
+non-trivial ingredient is in-tree, proved, sorry-free, axiom-clean, and has a live consumer. The
+port assessment's standing recommendation is accordingly PORT NOTHING, and no Lake `require` on
+cslib: the McNaughton closure is 7,526 lines across 47 modules against a Mathlib rev 76 commits
+divergent from this tree's, and what it delivers is an acceptor over STATES — the very axis
+`not_lasso_sufficient_on_chain` above refutes.
+
+**What this RE-AUDIT does NOT claim.** No complexity bound, upper or lower. No device
+discrimination on the probed shapes: `⊡(Fp)` and `⊡(Pp)` remain device-inert and nothing here
+disturbs that. No revision of any task — a revision of the substrate task, should the operator
+read this verdict as licensing one, is a separate action that this block does not perform and
+that task 736 did not take. And nothing about cslib's own proofs beyond what direct file reads,
+`#print axioms`, and the presence or absence of `sorryAx` and `proof_wanted` certify in cslib's
+own build: cslib is treated here as a READ-ONLY reference, and no result of it is a resource for
+this tree until ported.
+
 Compile-check from the repository root with:
   lake env lean specs/evidence/seam-gluing-ray-product/device-selection-probe.lean
 -/
