@@ -78,7 +78,7 @@ next_project_number: 737
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
 733 [NOT STARTED] — Probe the backward-dual stability summary on a...
 734 [NOT STARTED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
-736 [NOT STARTED] — Research the textbook omega-automata/MSO methods for the stab...
+736 [RESEARCHED] — Research the textbook omega-automata/MSO methods for the stab...
 735 [NOT STARTED] — Assemble the decidable stab check on the ray-product...
 
 ### Formula Refactor
@@ -109,10 +109,11 @@ next_project_number: 737
 ## Tasks
 
 ### 736. Cslib omega automata survey and e3 reopen check
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
+- **Research**: [736_cslib_omega_automata_survey_and_e3_reopen_check/reports/01_cslib-omega-automata-survey.md]
 
 **Description**: Research the textbook omega-automata/MSO methods for the stab (box-dot) fibre check, inventory the reusable Lean infrastructure in ~/Projects/cslib/ and its upstream leanprover/cslib, gather and ingest the missing literature, and report whether the E3 device selection should be reopened.
 
