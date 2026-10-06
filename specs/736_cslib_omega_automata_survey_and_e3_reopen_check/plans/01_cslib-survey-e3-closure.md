@@ -362,7 +362,7 @@ the claim to the report's machine-checked run rather than re-asserting it as a f
 
 ---
 
-### Phase 4: Execution summary and operator hand-off [NOT STARTED]
+### Phase 4: Execution summary and operator hand-off [COMPLETED]
 
 **Goal**: Write the round's summary carrying the verdict, the acceptance evidence as actually
 re-run, and an explicit hand-off list of findings this task deliberately did not act on with the
@@ -370,21 +370,21 @@ reason for each — so the operator can file follow-on work from a list rather t
 737 lines of report.
 
 **Tasks**:
-- [ ] Write `specs/736_cslib_omega_automata_survey_and_e3_reopen_check/summaries/01_cslib-omega-automata-survey-summary.md`
+- [x] Write `specs/736_cslib_omega_automata_survey_and_e3_reopen_check/summaries/01_cslib-omega-automata-survey-summary.md`
       per `.claude/context/formats/summary-format.md`.
-- [ ] Lead with the verdict: **(i) KEEP candidate (d), the time-axis Ramsey-coloured summary.
+- [x] Lead with the verdict: **(i) KEEP candidate (d), the time-axis Ramsey-coloured summary.
       E3's selection stands, with its reasons substantially rewritten.** State plainly that this
       is a complete and valid outcome, not a blockage, and that nothing here licenses or requires
       a `/revise 711`.
-- [ ] Record the acceptance-item evidence with the **actual** Phase 1/2/3 command outputs quoted
+- [x] Record the acceptance-item evidence with the **actual** Phase 1/2/3 command outputs quoted
       (gate exit code and probe count, sub-index audit numbers, report sections located), never
       the research dispatch's numbers restated.
-- [ ] Record the (c)/(d) confidence change — LOW → **High, machine-checked** — and name the two
+- [x] Record the (c)/(d) confidence change — LOW → **High, machine-checked** — and name the two
       declarations that carry it (`Cslib.ωLanguage.IsRegular.compl`,
       `Cslib.Automata.NA.Buchi.buchiFamily_cover`) plus the in-tree counterpart already using the
       same device on the MSO side (`RamseyFactorization.lean`'s two orientation-specific
       instantiations of `infinite_ramsey_pairs` over monadic k-types).
-- [ ] Write the **operator hand-off list**, each item with its reason for non-action:
+- [x] Write the **operator hand-off list**, each item with its reason for non-action:
       (a) `FormalSystem/ForMathlib/Combinatorics/InfiniteRamseyPairs.lean:36` carries a stale note
       that `Mathlib.Data.Nat.Nth` is unavailable here — falsified (the olean is present and this
       task's probe uses `Nat.nth`); **not edited** because the file is in task 711's `file_scope`
@@ -401,11 +401,11 @@ reason for each — so the operator can file follow-on work from a list rather t
       (e) the port assessment's standing recommendation — **port nothing; treat cslib as a
       read-only reference** — with the `require` dissent and the stated ground for rejecting it
       (it would drag *this* tree 76 Mathlib commits forward).
-- [ ] Note the `file_scope` drift: state.json anticipated `specs/evidence/cslib-omega-automata/`
+- [x] Note the `file_scope` drift: state.json anticipated `specs/evidence/cslib-omega-automata/`
       while the probe landed in `specs/evidence/seam-gluing-ray-product/`; this plan's
       `Files to modify` entries are the harvest source that corrects it.
-- [ ] Re-run `bash scripts/check-evidence-probes.sh` as the closing gate and record its exit code.
-- [ ] Commit the summary with the scoped-staging flow (`git status --short`, `git diff --staged`
+- [x] Re-run `bash scripts/check-evidence-probes.sh` as the closing gate and record its exit code.
+- [x] Commit the summary with the scoped-staging flow (`git status --short`, `git diff --staged`
       review; explicit file list, never `git add -A` or a directory pathspec).
 
 **Timing**: 0.75 hours
