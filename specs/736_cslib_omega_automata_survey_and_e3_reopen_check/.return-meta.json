@@ -1,56 +1,30 @@
 {
-  "status": "researched",
-  "task_number": 736,
-  "dispatch_seq": 1,
-  "session_id": "sess_1791255080_340808_736",
-  "agent_type": "lean-research-hard-agent",
-  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
-  "phase": "research",
-  "findings_count": 18,
-  "adversarial_verification_triggered": true,
-  "reference_grounding_tier": 1,
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/736_cslib_omega_automata_survey_and_e3_reopen_check/reports/01_cslib-omega-automata-survey.md",
-      "summary": "cslib omega-automata inventory (54 files / 10,126 LOC, provenance-split, 8 proof_wanted gaps, axiom profiles), port assessment (port nothing; 7,526-line McNaughton closure, 76-commit Mathlib rev skew), literature gap closure (13 sub-index entries wired, 3 identity hazards recorded), and verdict (i) KEEP candidate (d) with E3's reasons rewritten."
-    },
-    {
-      "type": "probe",
-      "path": "specs/evidence/seam-gluing-ray-product/cslib-ramsey-port-feasibility.lean",
-      "summary": "Compiles sorry-free on this pin: ports cslib's infinite_graph_ramsey from Mathlib alone, derives this tree's Nat.exists_strictMono_const_pair_colour from it, and machine-checks the statement identity. Axioms [propext, Classical.choice, Quot.sound]."
-    },
-    {
-      "type": "gate",
-      "path": "scripts/check-evidence-probes.sh",
-      "summary": "Appended one WIRED entry plus its doc block (35 insertions, 0 deletions). Full collection passes: all 17 wired probes compile, exit 0."
-    },
-    {
-      "type": "index",
-      "path": "specs/literature-index.json",
-      "summary": "93 -> 106 entries. 13 added by wiring already-converted global-corpus documents (nothing re-ingested); identity hazards recorded on 2 pre-existing entries plus both new Piterman ids. Validates: 0 orphans, 0 unresolvable, 0 duplicates."
+      "type": "plan",
+      "path": "specs/736_cslib_omega_automata_survey_and_e3_reopen_check/plans/01_cslib-survey-e3-closure.md",
+      "summary": "4-phase (3.0h) verification-and-closure plan for task 736: acceptance-gate re-verification at HEAD, bounded acquisition attempt on three still-WANTED sources, comment-only E3 re-audit annotation on device-selection-probe.lean, summary with operator hand-off list."
     }
   ],
-  "verdict": "keep_candidate_d_no_revision_required",
+  "metadata": {
+    "session_id": "sess_1791255080_340808_736",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 3,
+    "dependency_waves": [[1], [2, 3], [4]]
+  },
   "memory_candidates": [
     {
-      "title": "proof_wanted is invisible to both a sorry-grep and #print axioms",
-      "content": "In Lean/Mathlib-style libraries, `proof_wanted` declares a statement WITHOUT adding any declaration to the environment. A `grep -c sorry` returns 0 and `#print axioms` reports a clean profile for everything that does not depend on it, so neither detects it. In cslib's omega-automata tree all 54 files had 0 sorries while 8 main theorems (including the whole correctness of its Buchi complementation construction) were proof_wanted. The check that settles it is an environment-presence probe: `run_cmd do let env <- Lean.getEnv; ... (env.find? `Ns.thm).isSome` — remembering to import the module that should define it, or the probe returns a false negative of its own.",
-      "keywords": ["lean4", "proof_wanted", "sorry", "print axioms", "trust surface", "cslib", "verification"],
-      "tags": ["lean4", "verification", "false-negative"]
-    },
-    {
-      "title": "Assess an external Lean library as a port by measuring its Mathlib rev skew first",
-      "content": "Before costing a port from another Lean repo, check whether the dependency's pinned Mathlib HEAD is itself a renaming/refactor commit. cslib pinned Mathlib 169c26b5, whose commit subject is literally 'refactor: rename restrict to domRestrict (#25980)', 76 commits ahead of the consuming tree — and the first line of the first ported proof failed with invalidField on exactly that rename, despite both repos sharing an identical lean-toolchain. An identical toolchain does NOT imply pin-neutral ports. Cost the transitive import closure too: one 147-line leaf theorem was cheap, but the library's headline result pulled 47 modules / 7,526 lines.",
-      "keywords": ["lean4", "port", "mathlib", "pin skew", "import closure", "cslib", "lake require"],
-      "tags": ["lean4", "dependency-assessment"]
-    },
-    {
-      "title": "Audit a literature sub-index for author-year stem collisions, not just orphans",
-      "content": "Corpus ids must be matched whole, but nothing detects NEW stem collisions. Grouping sub-index doc_ids by author-year stem and flagging groups whose members lack a `hazard` while their global provenance_fidelity values differ found three unrecorded collisions in one pass, one of them (vardi_1996_automata_ltl, verified_conversion, vs vardi_1996_automata-theoretic-ltl, no_source_pdf) with opposite fidelity verdicts — exactly the failure the ids-matched-whole convention exists to prevent. Orphan checks pass cleanly while this is wrong.",
-      "keywords": ["literature", "sub-index", "identity hazard", "doc_id", "provenance_fidelity", "audit"],
-      "tags": ["literature", "index-hygiene"]
+      "content": "When a research dispatch's own deliverables already satisfy every one of a task's acceptance items (report written, index wired and validated, evidence probe compiling and wired into the gate, claims re-verified), the correct shape for the following implement round is a VERIFICATION-AND-CLOSURE round, not an invented build round. Three phases carry it: (1) re-run every acceptance gate at the new round's HEAD rather than citing the research dispatch's recorded run, because shared gate files have other live writers; (2) record the finding at the UPSTREAM RECORD'S OWN SITE (e.g. append a comment-only re-audit block to the earlier probe whose claims were falsified) so the verdict is discoverable from the record a roadmap cites, instead of living only inside a task directory; (3) write an explicit operator hand-off list naming each finding deliberately NOT acted on together with the reason (another task's live file_scope, a missing roadmap_flag, the source-store/deploy boundary). The anti-pattern this replaces is padding such a round with speculative work, or silently dropping the un-actioned findings.",
+      "category": "PATTERN",
+      "source_artifact": "specs/736_cslib_omega_automata_survey_and_e3_reopen_check/plans/01_cslib-survey-e3-closure.md",
+      "confidence": 0.7,
+      "suggested_keywords": ["verification-closure-round", "acceptance-gate-reverification", "upstream-record-annotation", "operator-handoff-list", "territory-contract", "planning"]
     }
   ],
-  "next_steps": "Run /plan 736 to create implementation plan"
+  "next_steps": "Run /implement 736 to execute the plan",
+  "dispatch_seq": 2
 }
