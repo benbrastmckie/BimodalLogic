@@ -1,7 +1,7 @@
 # Implementation Plan: Task #736
 
 - **Task**: 736 - Cslib omega-automata survey and E3 reopen check
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/736_cslib_omega_automata_survey_and_e3_reopen_check/reports/01_cslib-omega-automata-survey.md
