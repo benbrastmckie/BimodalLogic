@@ -98,7 +98,7 @@ next_project_number: 737
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-711 [PARTIAL] — RE-SCOPED 2026-10-03 BY USER RULING; DEVICE SELECTED...
+711 [PLANNED] — RE-SCOPED 2026-10-03 BY USER RULING; DEVICE SELECTED...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -584,12 +584,12 @@ DO NOT UNBLOCK THIS TASK ON AN ARGUMENT. Unblock it only on a proof, or convert 
 ---
 
 ### 711. Universal summary substrate stab fibre
-- **Status**: [PARTIAL]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 732
 - **Research**: [711_universal_summary_substrate_stab_fibre/reports/01_universal-summary-substrate.md]
-- **Plan**: [711_universal_summary_substrate_stab_fibre/plans/01_universal-summary-substrate.md]
+- **Plan**: [711_universal_summary_substrate_stab_fibre/plans/02_buechi-chain-ktype-substrate.md]
 
 **Description**: RE-SCOPED 2026-10-03 BY USER RULING; DEVICE SELECTED 2026-10-05 BY PROBE E3. On 2026-10-03 the user ruled REVISE on this record -- not ABANDONED, and not revived as filed. The ruling is carried as a checked Phase 0 box in specs/ROADMAP.md ("RULED 2026-10-03 by the user: REVISE"), and the ROADMAP Fronts table has moved this task off the Parked row onto the gluing route. The authoritative scope input is Section B and the section "The 711 tension" of specs/721_decidability_programme_review_l_and_lplus/followup-scope-spec.md, whose anchors are re-verified in that file's Section 0 rows 10-11. Everything below the ORIGINAL SCOPE marker is superseded and must not be read as current.
 

@@ -1,61 +1,27 @@
 {
-  "status": "partial",
-  "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-  "task_number": 711,
-  "session_id": "sess_1791231820_e1923d",
-  "dispatch_seq": 3,
-  "phase_number": 1,
-  "phases_completed": 1,
-  "phases_total": 10,
-  "started_at": "2026-10-05T21:08:28Z",
-  "completed_at": "2026-10-06T02:03:52Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "summary",
-      "path": "specs/711_universal_summary_substrate_stab_fibre/summaries/01_universal-summary-substrate-summary.md",
-      "summary": "Phase 1: infinite Ramsey for pairs relocated to ForMathlib/Combinatorics as Nat.exists_strictMono_const_pair_colour, alias kept; build, probes and verifies green."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/711_universal_summary_substrate_stab_fibre/handoffs/phase-1-handoff-20261005T235805Z.md",
-      "summary": "Phase 1 handoff: next action is Phase 2 Colour.lean importing the new module."
+      "type": "plan",
+      "path": "specs/711_universal_summary_substrate_stab_fibre/plans/02_buechi-chain-ktype-substrate.md",
+      "summary": "Revised plan re-scoping the universal-summary substrate onto a step-for-step instantiation of Buechi's complementation chain in this tree's monadic k-type idiom, integrating task 736's machine-checked device verdict"
     }
   ],
-  "modified_files": [
-    "FormalSystem/ForMathlib/Combinatorics/InfiniteRamseyPairs.lean",
-    "FormalSystem/ForMathlib/Combinatorics/README.md",
-    "FormalSystem/ForMathlib.lean",
-    "FormalSystem/ForMathlib/README.md",
-    "FormalSystem/Init.lean",
-    "scripts/CheckInitImportsMain.lean",
-    "FormalSystem/Metalogic/WeakCanonical/GroupModel/RamseyFactorization.lean",
-    "FormalSystem/Metalogic/WeakCanonical/GroupModel/README.md",
-    "FormalSystem/Metalogic/WeakCanonical.lean",
-    "FormalSystem.lean",
-    "FormalSystem/README.md",
-    "FormalSystem/Metalogic/README.md",
-    "README.md",
-    "typst/generated/status.typ"
-  ],
-  "sorry_inventory": [],
-  "verification": {
-    "sorry_count": 0,
-    "vacuous_count": 1,
-    "vacuous_count_baseline": 1,
-    "axiom_count": 14,
-    "axiom_count_baseline": 14,
-    "build_passed": true,
-    "probes_passed": true,
-    "module_invariants_exit": 1,
-    "module_invariants_residual": "C9 pre-existing at scripts/check-phantom-citations.sh:145 (task 728 commit 729dc345f), outside this phase's territory; all other checks PASS",
-    "verification_passed": true
-  },
-  "completion_data": {
-    "completion_summary": "Phase 1 of 10 complete (single-phase dispatch): Ramsey ingredient relocated to ForMathlib with alias; standard axioms; build/probes green."
-  },
-  "memory_candidates": [
-    "Any edit to FormalSystem/Init.lean (even a docstring) invalidates every .olean in the library and forces a full rebuild; batch Init.lean edits and check long-line limits before the first build.",
-    "scripts/check-module-invariants.sh --emit-inventory rewrites rollup READMEs (FormalSystem/README.md, FormalSystem/Metalogic/README.md, README.md) whenever any file/line count changes; stage them with the phase, and run typst-sync-check.sh --fix for status.typ before committing."
-  ]
+  "next_steps": "Run /orchestrate 711 --implement (or /implement 711) to execute the revised plan from Phase 2; Phase 1 is already closed.",
+  "metadata": {
+    "session_id": "sess_1791259911_40628e",
+    "agent_type": "reviser-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "phase_count": 9,
+    "phases_preserved": 1,
+    "phases_new": 8,
+    "estimated_hours": 16,
+    "plan_version": 2,
+    "reports_integrated": [
+      "specs/736_cslib_omega_automata_survey_and_e3_reopen_check/reports/01_cslib-omega-automata-survey.md",
+      "specs/736_cslib_omega_automata_survey_and_e3_reopen_check/summaries/01_cslib-omega-automata-survey-summary.md",
+      "specs/711_universal_summary_substrate_stab_fibre/reports/01_universal-summary-substrate.md"
+    ]
+  }
 }
