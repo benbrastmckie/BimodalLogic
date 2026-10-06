@@ -1,7 +1,7 @@
 # Implementation Plan: Task #736
 
 - **Task**: 736 - Cslib omega-automata survey and E3 reopen check
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/736_cslib_omega_automata_survey_and_e3_reopen_check/reports/01_cslib-omega-automata-survey.md
@@ -145,7 +145,7 @@ territory contract is clean if they are dispatched together.
 
 ---
 
-### Phase 1: Re-verify the four acceptance items at this round's HEAD [NOT STARTED]
+### Phase 1: Re-verify the four acceptance items at this round's HEAD [COMPLETED]
 
 **Goal**: Establish, by running them rather than by citing the research dispatch's run, that all
 four acceptance items hold now. This phase edits nothing; its output is recorded evidence that
