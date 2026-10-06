@@ -1,5 +1,5 @@
 ---
-next_project_number: 736
+next_project_number: 737
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 736
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,711,712,713,714,716,720,725,729,730,731,733,734 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,711,712,713,714,716,720,725,729,730,731,733,734,736 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618,735 | 298,464,502,616,711 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -78,6 +78,7 @@ next_project_number: 736
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
 733 [NOT STARTED] — Probe the backward-dual stability summary on a...
 734 [NOT STARTED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
+736 [NOT STARTED] — Research the textbook omega-automata/MSO methods for the stab...
 735 [NOT STARTED] — Assemble the decidable stab check on the ray-product...
 
 ### Formula Refactor
@@ -106,6 +107,42 @@ next_project_number: 736
 729 [NOT STARTED] — Add purpose-written .title fields to specs/state.json's...
 
 ## Tasks
+
+### 736. Cslib omega automata survey and e3 reopen check
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: decidability
+- **Dependencies**: None
+
+**Description**: Research the textbook omega-automata/MSO methods for the stab (box-dot) fibre check, inventory the reusable Lean infrastructure in ~/Projects/cslib/ and its upstream leanprover/cslib, gather and ingest the missing literature, and report whether the E3 device selection should be reopened.
+
+WHY THIS EXISTS. The universal-summary substrate task (711) is building the time-axis Ramsey-coloured summary, candidate (d), on a selection (probe E3, task 732) that ruled out candidates (a) Safra/Piterman determinization and (b) Safraless procedures partly on INFRASTRUCTURE grounds: "Mathlib carries zero omega-automata, Buechi, parity or Rabin infrastructure at the pin" and "no formalization of Safra or Piterman determinization exists in ANY proof assistant". Both statements remain literally true OF MATHLIB. They are not true of the Lean ecosystem the operator already works in. A direct inspection on 2026-10-05 found substantial omega-automata infrastructure in ~/Projects/cslib/, on the SAME Lean toolchain as this repository (leanprover/lean4:v4.33.0-rc1; cslib pins Mathlib by rev 169c26b52a38b704fad2c009372d76844a059bdf, this repository by tag v4.33.0-rc1 resolving to 79d0395a). That is new evidence bearing on a selection already made, and it is the reason this record exists.
+
+WHAT WAS FOUND (established by direct file read and `git cat-file -e upstream/main:<path>` at filing time; RE-VERIFY at research time, do not trust this summary).
+
+IN UPSTREAM leanprover/cslib (upstream/main head ea16de32a at inspection): Cslib/Computability/Automata/Acceptors/OmegaAcceptor.lean; Cslib/Computability/Automata/DA/{Basic,Buchi,Congr,Prod,ToNA}.lean; Cslib/Computability/Automata/NA/{Basic,BuchiEquiv,BuchiInter,Concat,EpsilonTransducer,Hist,Loop,Pair,Preimage,Prod,Reverse,Sum,ToDA,Total}.lean; Cslib/Computability/Automata/TwoWayNA/{Basic,ComplToNA,OfNA}.lean; Cslib/Computability/Languages/{OmegaLanguage,OmegaRegularLanguage,SafetyLiveness,Slice,SyntacticMonoid,MyhillNerode,Language,LanguageHom,RegularLanguage}.lean; Cslib/Computability/Languages/Congruences/{Basic,BuchiCongruence,MyhillCongruence}.lean; and Cslib/Foundations/Combinatorics/InfiniteGraphRamsey.lean (author Ching-Tsun Chou; its own docstring says "This result really should be in Mathlib, but currently it is not").
+
+FORK-ONLY (benbrastmckie/cslib, absent from upstream/main at inspection): Cslib/Computability/Automata/NA/BuchiCompl.lean -- NBA complementation via the Kupferman-Vardi 2001 Section 5.2 DIRECT RANK-BASED construction (level rankings `Q -> WithBot (Fin (2n+1))`, obligation sets, `complementNA`); Cslib/Computability/Automata/DA/{Rabin,Parity,MullerClosure,BuchiChar,BuchiClosure,Choueka,Conversions}.lean -- deterministic Rabin, Streett, parity and Muller with language-preserving conversions and Rabin-Streett duality; Cslib/Logics/LTL/Semantics/GNBA/{Atoms,Closure,Construction,Correctness}.lean plus Cslib/Logics/LTL/{ModelChecking,Embedding,EmbeddingSemantics}.lean; Cslib/Logics/Bimodal/ (a parallel bimodal development carrying its own Metalogic/Decidability/).
+
+WHY THAT IS LOAD-BEARING. Cslib/Computability/Automata/NA/BuchiCompl.lean IS candidate (b)'s core -- the Kupferman-Vardi rank construction -- already formalized in Lean. E3's own record notes that only the 2001 rank-construction paper (kupferman_vardi_2001_weak_alternating) is in corpus and that the FOCS 2005 Safraless source is WANTED; the 2001 construction is now not merely in corpus but in Lean. Separately, Cslib/Computability/Languages/Congruences/BuchiCongruence.lean is the congruence/Ramsey-flavoured complementation core, bearing directly on E3's SECOND honest limit: the LOW-confidence claim that routes (c) MSO-over-<Z,<> and (d) the Ramsey-coloured summary share Buechi's Ramsey core, whose named resolving check is Thomas 1997 "Languages, Automata, and Logic" (in corpus as thomas_1997_languages_automata). And Cslib/Foundations/Combinatorics/InfiniteGraphRamsey.lean overlaps this repository's just-relocated FormalSystem/ForMathlib/Combinatorics/InfiniteRamseyPairs.lean (Nat.exists_strictMono_const_pair_colour), so the duplication question is live.
+
+SCOPE, FOUR PARTS.
+
+(A) CSLIB INVENTORY AND PORT ASSESSMENT. Survey upstream leanprover/cslib and the local fork for every result bearing on omega-automata, omega-regular languages, Buechi complementation/determinization, Rabin/Streett/parity/Muller acceptance, MSO over linear orders, and infinite Ramsey. For each candidate result record: the exact declaration name, the file, whether it is upstream or fork-only, whether it is sorry-free, its `#print axioms` profile, and what it ACTUALLY PROVES (read the statement; do not infer from the module docstring). THE ASSESSED RELATIONSHIP IS PORTING, NOT DEPENDENCY: evaluate transcribing selected results into FormalSystem/ForMathlib/ or a new FormalSystem cluster with full provenance, on this repository's pin and under the zero-debt policy. A Lake `require` on cslib is NOT the option under assessment and must not be recommended as the primary route; if the research finds dependency strictly better it may record that as a DISSENT with reasons, but the deliverable is a port assessment. Cover: what each port would cost in lines and in new Mathlib surface; whether cslib's `module`/`public import`/`@[expose] public section` style and its Mathlib rev pin create friction against this tree's conventions; and specifically whether InfiniteGraphRamsey.lean subsumes, is subsumed by, or is independent of FormalSystem/ForMathlib/Combinatorics/InfiniteRamseyPairs.lean -- and if it subsumes it, whether the ForMathlib module should be redefined as a corollary.
+
+(B) LITERATURE GATHERING AND INDEX WIRING. Harvest from cslib's own ~/Projects/cslib/references.bib (97 entries; relevant stems include Thomas1990 "Automata on Infinite Objects", VardiWolper1986, GHR94, HodkinsonReynolds2006, Gore1999, GPSS1980, Pnueli1977, Hopcroft2006) and from cslib's own specs/literature-index.json. Cross-check against this repository's specs/literature-index.json and the global ~/Projects/Literature/ index, and INGEST what is missing via the literature extension's conversion and validation path (/literature --convert, /literature --index, /literature --validate). Named gaps recorded elsewhere in this repository that this task should attempt to close: Kupferman-Vardi, "Safraless Decision Procedures", FOCS 2005 (recorded WANTED by E3); Hodkinson-Reynolds, Handbook of Modal Logic, sections 5.10-5.11 bodies (recorded as lacking in the ROADMAP's E4 item); Safra 1988 "On the Complexity of omega-Automata"; Piterman 2006/2007 "From Nondeterministic Buechi and Streett Automata to Deterministic Parity Automata"; Graedel-Thomas-Wilke 2002 "Automata, Logics, and Infinite Games" (cited by the fork's DA/Parity.lean as GradelThomasWilke2002); Thomas 1990 "Automata on Infinite Objects" (Handbook of Theoretical Computer Science); Baier-Katoen 2008 chapter 4 (cited by the fork's DA/Rabin.lean; parts of Baier-Katoen are already in corpus -- check before re-ingesting). DO NOT re-ingest anything already in corpus. The index carries an IDENTITY hazard on the two distinct Thomas 1997 documents (thomas_1997 vs thomas_1997_languages_automata) and that hazard must be respected -- match corpus ids WHOLE, never by the author-year stem.
+
+(C) LEAN FEASIBILITY PROBE. One compiling probe under specs/evidence/ that makes the inventory's central claim CHECKABLE rather than asserted: transcribe (or, if transcription proves infeasible, minimally restate and attempt) one selected cslib result against THIS tree's pin and show it compiles, sorry-free, with its axiom profile printed. The probe's header must state what it establishes and what it REFUSES to claim, in the style of specs/evidence/seam-gluing-ray-product/device-selection-probe.lean. Wire it into scripts/check-evidence-probes.sh and run the whole collection; the collection is the gate. CONTENTION WARNING: scripts/check-evidence-probes.sh is a shared file with several live writers (711, 733, 734), so this task must RE-READ it before editing and APPEND rather than rewrite, and must be dispatched singly.
+
+(D) THE VERDICT. This task IS LICENSED to report whether the cslib findings change E3's device selection, and must deliver a recommendation in one of these shapes: (i) KEEP candidate (d), the Ramsey-coloured summary, with the reasons the cslib infrastructure does not change the calculus; (ii) REVISE toward candidate (b) Safraless, on the strength of BuchiCompl.lean; (iii) REVISE toward candidate (c) MSO-over-<Z,<>, if the Buechi-side infrastructure makes its discharge theorem reachable; or (iv) a SPLIT verdict naming which deliverable of the substrate each route serves better. The verdict must also report whether BuchiCongruence.lean plus Thomas 1997 settles E3's LOW-confidence (c)/(d) shared-Ramsey-core claim, raising, lowering or leaving its confidence. A verdict of "no change; E3's selection stands" is a COMPLETE AND VALID OUTCOME and must not be treated as a failure or as a blockage.
+
+BOUNDARY. This task DOES NOT revise task 711, DOES NOT edit its plan, and DOES NOT touch any module under FormalSystem/Metalogic/Decidability/RaySummary/. If the verdict is (ii), (iii) or (iv), the revision is a SEPARATE `/revise 711` the operator runs, never an action of this task. This task likewise spawns no follow-on tasks of its own; follow-on work (a port task, a revision) is filed by the operator from the report.
+
+CONSTRAINTS CARRIED. No complexity bound may be claimed, upper or lower; the CTL-star 2EXPTIME lower bound (task 713, ARGUED not proved) is a sanity ceiling only, never a source of an upper bound. The probed box-dot(Fp)/box-dot(Pp) shapes are DEVICE-INERT (Probe732Device, machine-checked) and nothing in this task may claim they discriminate. The pigeonhole-over-states route is refuted (Probe732Device.not_lasso_sufficient_on_chain; FormalSystem.Metalogic.Decidability.PlusSlicedCertificate.NoFiniteWidth.not_finite_width_fmp), so any route this task recommends must work over the TIME AXIS with a finite alphabet of per-time summaries, never over states. Zero-debt policy applies: a cited-but-unproved theorem is not a resource; a result counts as reusable only if it is proved, in Lean, sorry-free, and portable to this pin.
+
+ACCEPTANCE. (1) A research report under specs/736_cslib_omega_automata_survey_and_e3_reopen_check/reports/ carrying the cslib inventory with per-declaration names, upstream/fork provenance, sorry status and axiom profiles; the port assessment; the literature gap analysis; and the explicit verdict on E3. (2) specs/literature-index.json updated and passing /literature --validate, with every newly ingested source converted and indexed. (3) One probe under specs/evidence/ compiling sorry-free under `lake env lean`, wired into scripts/check-evidence-probes.sh, with the whole collection passing (exit 0). (4) Every claim about cslib re-verified by direct file read at research time, not carried over from this description.
+
+---
 
 ### 735. Decidable stab check ray product assembly
 - **Status**: [NOT STARTED]
