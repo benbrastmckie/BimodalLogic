@@ -1,11 +1,12 @@
 # Roadmap
 
-*Open work only, derived from `specs/state.json` (2026-10-05). Completed work is recorded in
-`specs/CHANGE_LOG.md` and `specs/archive/`; reference material — the BX axiom layers, the
-irreflexive truth semantics, the canonical-model and quasimodel constructions — lives in
-`README.md`, the module docstrings and `typst/BimodalReference.typ`. Each phase below is one or
-more `/orchestrate` batches. Phase numbers are stable identifiers cited from task records, so
-they are not a run order; the priority on each heading is.*
+*Open work only, derived from `specs/state.json` (2026-10-05, after E3 reported). Completed work
+is recorded in `specs/CHANGE_LOG.md` and `specs/archive/`; reference material — the BX axiom
+layers, the irreflexive truth semantics, the canonical-model and quasimodel constructions — lives
+in `README.md`, the module docstrings and `typst/BimodalReference.typ`. Each phase below is one or
+more `/orchestrate` batches. Phase numbers are stable identifiers cited from task records, so they
+are not a run order; the priority on each heading is. Agent-system and repo-hygiene records (729,
+730, 731) are tracked in `specs/TODO.md` only and are deliberately unphased here.*
 
 **The programme's aim is `Decidable (PlusValidZTime φ)` — decidability of L⁺ over discrete time.**
 Phase 1 is that front and owns it end to end. Everything else is subordinate to it.
@@ -13,20 +14,19 @@ Phase 1 is that front and owns it end to end. Everything else is subordinate to 
 Contended files force several phases to run as sequences rather than one batch — a batch whose
 members share a declared file is deferred every cycle by the admission gate
 (`.claude/context/patterns/batch-orchestration-guardrails.md`). Live collisions:
-`scripts/check-evidence-probes.sh` and `specs/evidence/seam-gluing-ray-product/` (720, 725, 732,
-733, 734 — five writers, so Phase 1's probes run singly), `README.md` (177, 543),
-`MintBound.lean` (464, 465), `data/README.md` (282, 257). Two more are invisible to the gate:
-every task adding a module needs a line in the aggregator
-`FormalSystem/Semantics/Presheaf.lean`, and every one of them regenerates `FormalSystem.lean` and
-the READMEs via `lake exe mk_all` and `--emit-inventory`. A task with no declared `file_scope` is
-invisible to the gate as well — 27 of 51 non-terminal tasks, which `validate-state.sh` reports.
+`scripts/check-evidence-probes.sh` and `specs/evidence/seam-gluing-ray-product/` (720, 733, 734 —
+three writers, so Phase 1's probes run singly), `README.md` (177, 543), `MintBound.lean` (464,
+465), `data/README.md` (257, 282). Two more are invisible to the gate: every task adding a module
+needs a line in the aggregator `FormalSystem/Semantics/Presheaf.lean`, and every one of them
+regenerates `FormalSystem.lean` and the READMEs via `lake exe mk_all` and `--emit-inventory`. A
+task with no declared `file_scope` is invisible to the gate as well — 27 of 50 non-terminal tasks,
+which `validate-state.sh` reports.
 
 ---
 
 ## Phase 0: User Decisions (High Priority)
 
-User-only rulings; no agent may transition these. The 2026-10-03 rulings on tasks 710, 711, 712
-and 713 are recorded in those task records and in `specs/CHANGE_LOG.md`.
+User-only rulings; no agent may transition these.
 
 - [ ] Rule on tasks 127 and 128, the object-language extensions (time addition, interior
       operator): long-standing abandonment candidates, antagonistic to the termination work the
@@ -47,30 +47,55 @@ it, and the only one with an end-to-end owner.
 
 **Proved (the keystone).** The `⊡` quantification domain *is* the fibre product of the past-ray and
 future-ray spaces over the seam state: `plusStab_iff_rays` (general task frame) and
-`plusStab_iff_omega` (ω-sequence form over ℤ), with `seamOmegaEquiv` and `pathFibreEquiv`, across
-`Semantics/Presheaf/Ray.lean` and `PlusLanguage/PlusRayFibre.lean`. Under **`[F.IsRegular]`**, never
-unconditionally; axioms pinned in the C2 harness. Carrier normalization is landed too
+`plusStab_iff_omega` (ω-sequence form over ℤ), with `seamOmegaEquiv` and `pathFibreEquiv`. Under
+**`[F.IsRegular]`**, never unconditionally. Carrier normalization is landed too
 (`plusValidZTime_iff_plusValidInt`).
 
-**Owed.** One device, then the assembly. A universal, complementation-shaped summary device is
-proved NECESSARY and a nondeterministic one proved UNSOUND — but *which* device is unselected, and
-that single unrun experiment is what gates the whole front.
+**Selected — experiment E3 has run.** The summary device is the **time-axis Ramsey-coloured
+summary**, resting on the in-tree `FormalSystem.Metalogic.WeakCanonical.infinite_ramsey_pairs`
+(`WeakCanonical/GroupModel/RamseyFactorization.lean:146`; proved from scratch, standard axioms,
+absent from Mathlib at the pin), **framed by** the MSO-over-⟨ℤ,<⟩ quasimodel route
+(Hodkinson–Wolter–Zakharyaschev 2000; Gabbay–Kurucz–Wolter–Zakharyaschev 2003), which covers the
+target flow exactly and needs no Safra construction. Safra/Piterman and Safraless are **NOT
+selected**: the per-path acceptor is already deterministic, Mathlib carries zero ω-automata
+infrastructure at the pin, and no Safra or Piterman formalization exists in any proof assistant.
+Record: `specs/evidence/seam-gluing-ray-product/device-selection-probe.lean`, wired into
+`scripts/check-evidence-probes.sh`.
+
+Three E3 results bind the open work. (1) The `⊡(Fp)`/`⊡(Pp)` shapes are **device-inert** on finite
+fixtures — the universal summary reduces to lasso root paths by pigeonhole alone
+(`allPathsMeet_iff_lasso`, `allBwdPathsMeet_iff_lasso`, `detRun_accepts_iff`,
+`stab_will_iff_lasso`). All four candidates coincide there, so the selection rests on
+infrastructure and literature, **not** behaviour, and no later work may claim those shapes
+discriminate. (2) `not_lasso_sufficient_on_chain` refutes pigeonhole-tier summaries on the
+infinite acyclic fibre ⟨ℤ, b = a − 1⟩, the regime forced by
+`…PlusSlicedCertificate.NoFiniteWidth.not_finite_width_fmp` — **so the substrate must work over
+the time axis with a finite alphabet of per-time summaries, never over states.** (3) Two limits
+stay open: the `⊡(Pp)` side is fixed only at the step-graph level (no backward Bool-fixture
+bridge; the real-formula shape rests on `Probe719Backward.pastStab_iff_allBwdPathsMeet`), and that
+the MSO and Ramsey routes share Büchi's Ramsey core is LOW-confidence **framing, not a finding**,
+checkable against Thomas 1997 (in corpus).
+
+**Owed.** The substrate, then the assembly. Critical path: **711 → 735**. Everything else in this
+phase is evidence or fallback.
 
 Three cautions. Gluing does **not** bound the fibre — the route concedes infinite fibres and seeks
 a finite *presentation*, the only move `not_finite_width_fmp` leaves open. The binary seam case is
 choice-free while the *directed* case needs Saturation, so an ω-ray built by iterated gluing is a
-directed colimit. No upper bound is claimed anywhere; the ARGUED ceiling in task 713 is a citable
-anchor, never an upper-bound source.
+directed colimit. No upper bound is claimed anywhere, by E3 or by any record; the ARGUED CTL⋆
+2EXPTIME ceiling in task 713 is a sanity ceiling a proposed procedure must clear, never an
+upper-bound source.
 
-Critical path: **732 → 711 → 735**. Everything else in this phase is evidence or fallback.
-
-- [ ] Run experiment **E3**, the device-selection probe, on the `⊡(Fp)`/`⊡(Pp)` shapes. Four live
-      candidates, none selected: Safra/Piterman (no formalization exists in *any* proof assistant),
-      Safraless (Kupferman–Vardi 2005), MSO over ⟨ℤ,<⟩ plus Büchi (Hodkinson–Wolter–Zakharyaschev
-      2000 route 1 — covers ⟨ℤ,<⟩, needs no Safra construction), a Ramsey colour. Run with `--lit`;
-      two candidates rest on sources the corpus lacks (Task 732)
-- [ ] Build the universal-summary substrate once E3 selects a device. `[BLOCKED]` on 732 by its own
-      recorded reason; also carries the depth-2 stratification probe E2 (Task 711)
+- [ ] Build the universal-summary substrate on the selected device, with the first behavioural
+      discrimination between the MSO frame and the Ramsey substrate on a finitely presented
+      *infinite* fibre with a per-time alphabet. Also carries the depth-2 stratification probe E2.
+      No longer blocked — E3's selection discharged its sole blocker. Its `file_scope` is literal
+      `null` and MUST be set before any implement dispatch (Task 711)
+- [ ] Prove F4, finite width ⇒ eventually periodic, as R1's **summary step**. E3 resolved this
+      record's two-outcome fork as outcome (i) — a Ramsey colour was selected, so F4 *is* the
+      device and the reasoned-exclusion outcome no longer applies. Any surviving statement must
+      name its restricted fragment and say in its docstring why `not_finite_width_fmp` does not
+      refute it (Task 709)
 - [ ] Assemble the decidable stab check on the ray-product presentation — `Decidable
       (PlusValidZTime φ)`, or a recorded verdict that the presentation cannot deliver it. Depends
       on 711. `file_scope` is deliberately absent and MUST be set at plan time (Task 735)
@@ -79,20 +104,17 @@ Critical path: **732 → 711 → 735**. Everything else in this phase is evidenc
       fixture, whose backward factor is a singleton. The finite-width obstruction lives in the
       backward factor, so that is the one region where it cannot appear. A failure here is a
       falsifier for the two-factor presentation (Task 733)
-- [ ] Rule on task 725 as close-as-subsumed: task 719 landed E1 first, which is the subsumption
-      condition 725's own record names (Task 725)
 - [ ] Run experiment **E4** for route R2 (mosaics): decide `StabSaturated` on mixed germ states,
       not the same-state corner it is proved in, and acquire the Hodkinson–Reynolds Handbook §§5.10–5.11
       bodies the corpus lacks. R2 cannot be promoted on textual grounds until both land (Task 734)
-- [ ] Finite width ⇒ eventually periodic, as R1's **summary step** rather than a route of its
-      own; closes as a reasoned exclusion, with its restrict-to-safety fallback recorded, if E3
-      picks an automaton acceptance condition over a Ramsey colour (Task 709)
+- [ ] Rule on task 725 as close-as-subsumed: task 719 landed E1 first, which is the subsumption
+      condition 725's own record names (Task 725)
 
-Routes closed, not to be re-attempted: **filtration** (R4) for ℤ-time, by
-`Probe706.no_finite_carrier_sat` and `Probe710.not_finite_width_fmp` — residue is dense durations
-only. **Translation to a decidable FO fragment** (R5) is low: the monodic decidability proof *is*
-the quasimodel method, routing back to R1/R2. Do not file a fourth certificate class — any class
-with finite fibres is already refuted.
+Routes closed, not to be re-attempted: **filtration** (R4) for ℤ-time, by the landed
+`PlusSlicedCertificate/Limits/` pair `no_finite_carrier_sat` (`FiniteCarrier.lean:248`) and
+`not_finite_width_fmp` (`NoFiniteWidth.lean:1280`) — cite those library names, not the archived
+`Probe706.`/`Probe710.` spellings; residue is dense durations only. **Translation to a decidable FO fragment** (R5) is low: the monodic decidability proof *is*
+the quasimodel method, routing back to R1/R2.
 
 `app:gluing` is live and proved in `~/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex`,
 its seam case written as `ρ ⌢_z σ` but commented out; `app:Structure` and
@@ -100,12 +122,13 @@ its seam case written as `ρ ⌢_z σ` but commented out; `app:Structure` and
 implement, never as a theorem to cite.
 
 ```
-/orchestrate 732 --lit --hard   # the gate: nothing on the critical path moves until this reports
-/orchestrate 733                # singly -- five writers contend on the evidence collection
+/revise 711                     # first: re-scope on E3's selection and set its file_scope
+/orchestrate 711 --lit --hard   # then the substrate -- the critical path
+/orchestrate 709 --hard         # R1's summary step; outcome (i) is now live mathematics
+/orchestrate 733                # singly -- three writers contend on the evidence collection
 /orchestrate 734 --lit          # singly, same contention; R2 fallback
 /orchestrate 725                # the subsumption ruling
-/orchestrate 709 --hard         # R1's summary step, not a phase capstone
-# 711 then 735 follow, in that order, once 732 reports a selection
+# 735 follows 711
 ```
 
 ---
@@ -113,20 +136,18 @@ implement, never as a theorem to cite.
 ## Phase 2: L⁺ Sliced Certificates (High Priority)
 
 The time-sliced certificate class is incomplete for full L⁺ **and** for the CTL-like fragment,
-and no certificate class presenting finite per-time fibres is complete whatever its clauses. The
-obstruction is finite *width* — limit closure plus finite fibres contradicts König — strictly
-stronger than the earlier finite-*carrier* failure. Both halves are now landed: the width half in
-`PlusSlicedCertificate/Limits/NoFiniteWidth.lean` and the finite-carrier family in
-`PlusSlicedCertificate/Limits/FiniteCarrier.lean`, the latter with `θ_eq_ofFormula` recording the
-`⊡`-free status of the witness. Do not file a fourth certificate class: any class
-with finite fibres is already refuted.
+and no class presenting finite per-time fibres is complete whatever its clauses — the obstruction
+is finite *width* (limit closure plus finite fibres contradicts König), strictly stronger than the
+earlier finite-*carrier* failure, and both halves are landed under
+`PlusSlicedCertificate/Limits/`. Do not file a fourth certificate class.
 
 - [ ] Fix the `liveT`/`liveAt` non-termination: the landed fixpoint does not return in 300s on a
       4-position total-edge certificate while being instant on self-loop ones. A defect in
       shipped, gated code, not an unbuilt feature (Task 716)
 - [ ] Re-point the `FMP/README.md` and `scripts/check-evidence-probes.sh` citations from the
       `WIRED_REPO` probe paths to the landed library names, or close as subsumed if the landings
-      leave no probe to move (Task 720)
+      leave no probe to move. E3 already repaired two archived `WIRED_REPO` paths in that script,
+      so re-check what remains before planning (Task 720)
 - [ ] Evaluate carrying full labels in the certificate, which would make `posAt` a singleton and
       delete both liveness filters; the question is whether decidability of the check survives
       (Task 714)
@@ -139,7 +160,7 @@ with finite fibres is already refuted.
 ```
 /orchestrate 716              # owns PlusSlicedCertificate/{Live,Check,Examples}
 /orchestrate 714 --research   # beside it: declares no file_scope, research-only
-/orchestrate 720              # the citation re-point, now that both refutation halves have landed
+/orchestrate 720              # the citation re-point
 /orchestrate 712              # the closure, once 710's statement is checked against it
 ```
 
@@ -149,14 +170,12 @@ with finite fibres is already refuted.
 
 Each item is a clause of `app:presheaf-dictionary` and each has a proved hook already in the tree,
 which is why the cluster is bounded rather than open. The skeleton and the Sheaf, Totality,
-Directed Gluing and Determinism clauses have all landed
-(`FormalSystem/Semantics/Presheaf/{Site,Behavior,Sheaf,Directed}.lean`, with
-`Beh.germEquiv : Beh F 0 ≃ F.WorldState`); four clauses remain. **Run this
-front in batches of at most two, or singly** — never as one wide wave: every task here needs a
-one-line import in the aggregator `FormalSystem/Semantics/Presheaf.lean`, which no remaining task
-declares and which is deliberately outside the other scopes, so the gate cannot see the
-collision. Re-run `lake build` after each
-aggregator edit.
+Directed Gluing and Determinism clauses have landed under `FormalSystem/Semantics/Presheaf/`
+(with `Beh.germEquiv : Beh F 0 ≃ F.WorldState`); four clauses remain. **Run this front in batches
+of at most two, or singly** — never as one wide wave: every task here needs a one-line import in
+the aggregator `FormalSystem/Semantics/Presheaf.lean`, which no remaining task declares and which
+is deliberately outside the other scopes, so the gate cannot see the collision. Re-run
+`lake build` after each aggregator edit.
 
 - [ ] Prove the Reflection clause: `Beh(F) ≅ Beh(F⁻) ∘ ref` (Task 617)
 - [ ] Formalize the duration monoid `BD⁺`, its twisted-arrow category, and
@@ -227,8 +246,8 @@ library change.
 - [ ] Settle the C3 question: is the domain-restricted consequence relation's logic Burgess–Xu
       without unboundedness, plus S5? An open research question, not an implementation task
       (Task 570)
-- [ ] Acquire and ingest the Cmiel–Kuhlmann–Kuhlmann ball-space paper; the corpus has no copy
-      (Task 664)
+- [ ] Acquire and ingest the Cmiel–Kuhlmann–Kuhlmann ball-space paper; the corpus has no copy.
+      Kupferman–Vardi FOCS 2005 is also still WANTED, recorded by E3 (Task 664)
 
 ```
 /orchestrate 664                      # first: 543 and 559 use --lit
@@ -339,18 +358,14 @@ it is unfiled.
 
 ## Maintenance
 
-`/review` Step 2.5 (`.claude/scripts/roadmap-integration.sh`) parses the `## Phase N:` headings and
-`- [ ]` checkboxes above and annotates an item once its `(Task N)` reaches `completed`; `/todo`
+`/review` Step 2.5 (`.claude/scripts/roadmap-integration.sh`) parses the `## Phase N:` headings
+and `- [ ]` checkboxes above and annotates an item once its `(Task N)` reaches `completed`; `/todo`
 surfaces the same completions when archiving. Annotated items are dropped when their phase is next
 revised — the durable record is `specs/CHANGE_LOG.md` and `specs/archive/`. Update the phases when
 `/task --expand`, `/spawn` or a dependency change alters the graph, and treat any claim here that
-no check can reproduce as a defect in this file rather than a fact about the tree. The periodic
-re-run of the decidability inventory is owned by `scripts/generate-decidability-inventory.sh`,
-which regenerates the PROVED / NOT ESTABLISHED / WITHDRAWN / REFUTED inventory from the tree and
-diffs it (`--diff`) against the committed `scripts/decidability-inventory-baseline.txt`; that
-baseline was extracted from section 1 of
-`specs/archive/721_decidability_programme_review_l_and_lplus/reports/01_decidability-programme-review.md`
-(moved into the archive when that task was archived).
+no check can reproduce as a defect in this file rather than a fact about the tree. The decidability
+inventory (PROVED / NOT ESTABLISHED / WITHDRAWN / REFUTED) is regenerated and diffed from the tree
+by `scripts/generate-decidability-inventory.sh --diff`.
 
 ## Related
 

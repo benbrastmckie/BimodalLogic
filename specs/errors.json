@@ -96,6 +96,25 @@
         "workaround": "Delete the stale artifacts so lake must re-elaborate, rather than trusting 'lake build' or touch: rm the .olean/.trace/.ilean plus the ir/*.c and ir/*.c.trace for every module whose source is newer than its .olean, then 'lake build'. Verified: full rebuild green at 2806 jobs, zero errors, zero sorries, 0 remaining stale oleans, and all five previously-unresolved symbols resolve. A full 'lake clean' is unnecessary and would rebuild dependencies."
       },
       "fix_status": "worked_around"
+    },
+    {
+      "id": "err_1791226276126_Ts08bm",
+      "timestamp": "2026-10-05T18:51:16.130Z",
+      "type": "orchestrator_script_defect",
+      "severity": "high",
+      "message": "cycle-plan H1 marker crosscheck used $(grep -cE ... || echo 0), which emits two lines (\"0\\n0\") on zero matches since grep -c prints 0 before exiting 1; produced a false MARKER/HANDOFF MISMATCH blocked row plus \"integer expected\" at line 2184, refusing a valid implement dispatch.",
+      "context": {
+        "session_id": "sess_1791224285_0433aa",
+        "command": "/orchestrate",
+        "task": 732,
+        "checkpoint": "cycle-plan-h1-marker-crosscheck",
+        "file": ".claude/scripts/orchestrate-cycle-plan.sh"
+      },
+      "recovery": {
+        "suggested_action": "Fixed in source store agent-system/extensions/core/scripts/orchestrate-cycle-plan.sh using the already-documented \"x=$(grep -c ...) || x=0\" idiom (update-task-status.sh:577, skill-base.sh:1515); redeployed via deploy-headless.sh.",
+        "auto_recoverable": false
+      },
+      "fix_status": "unfixed"
     }
   ]
 }

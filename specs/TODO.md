@@ -6,7 +6,7 @@ next_project_number: 736
 
 ## Task Order
 
-*Updated 2026-10-05. Generated from state.json dependency graph.*
+*Updated 2026-10-06. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -98,7 +98,7 @@ next_project_number: 736
 
 559 [RESEARCHED] — RESEARCH TASK, verdict-first -- reports and sorry-free probe...
 570 [NOT STARTED] — OPEN RESEARCH QUESTION, not an implementation task. Is the...
-711 [IMPLEMENTING] — RE-SCOPED 2026-10-03 BY USER RULING; DEVICE SELECTED...
+711 [PARTIAL] — RE-SCOPED 2026-10-03 BY USER RULING; DEVICE SELECTED...
 543 [NOT STARTED] — Machine-check the principal new results from the MF...
 
 ### Repo Hygiene
@@ -545,7 +545,7 @@ DO NOT UNBLOCK THIS TASK ON AN ARGUMENT. Unblock it only on a proof, or convert 
 ---
 
 ### 711. Universal summary substrate stab fibre
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: metalogic
 - **Dependencies**: Task 732
