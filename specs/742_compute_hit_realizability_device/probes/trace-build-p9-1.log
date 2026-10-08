@@ -1,0 +1,22 @@
+⚠ [1929/1929] Built FormalSystem.Metalogic.Decidability.RaySummary.Trace (2.8s)
+warning: FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean:287:0: automatically included section variable(s) unused in theorem `FormalSystem.Metalogic.Decidability.RaySummary.presented_localRun`:
+  [Fintype Q]
+  [DecidableEq Q]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype Q] [DecidableEq Q] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean:285:0: `presented_localRun` does not use the following hypothesis in its type:
+  • [DecidableEq Q] (#5)
+
+Consider removing this hypothesis and using `classical` in the proof instead. For terms, consider using `open scoped Classical in` at the term level (not the command level).
+
+Note: This linter can be disabled with `set_option linter.unusedDecidableInType false`
+warning: FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean:285:0: `presented_localRun` does not use the following hypothesis in its type:
+  • [Fintype Q] (#4)
+
+Consider replacing this hypothesis with the corresponding instance of `Finite` and using `Fintype.ofFinite` in the proof, or removing it entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+Build completed successfully (1929 jobs).
+lake-build-guard: STATUS: exit_status=0

@@ -659,37 +659,46 @@ E2 probe's transcription pattern). Confirm by `wc -l`.
 
 ---
 
-### Phase 9: The per-model bridge under an explicit realization hypothesis, and the computability witnesses [NOT STARTED]
+### Phase 9: The per-model bridge under an explicit realization hypothesis, and the computability witnesses [COMPLETED]
 
 **Goal**: Connect B2a to B3b: when a presentation's run set IS the seam's trace set, `HitCl`
 equals the computable `hitOf`; restate the `⊡` bridge over `hitOf` under that hypothesis; land the
 permanent `#eval` witnesses that the device is computable.
 
 **Tasks**:
-- [ ] In `Trace.lean` (importing `Compose`): `Presented M τ t φ lab step : Prop :=
+- [x] In `Trace.lean` (importing `Compose`): `Presented M τ t φ lab step : Prop :=
       ∀ c, (∃ bf : SeqPair F (τ.state t), c = clTrace M φ t (spliced τ t bf)) ↔ (∃ ρ, IsRun step lab (clNow φ) t ρ ∧ c = runTrace lab ρ)`.
       Docstring, first sentence: this hypothesis is NOT discharged in this tree for any
       non-trivial model; discharging it for a model CONSTRUCTED from a presentation is B2b, the
       successor record; `presented_localRun : Presented … → ∀ ρ, IsRun … ρ → LocalRun φ (runTrace lab ρ)`
       (from `clTrace_localRun`) shows the run conditions are inherited, which is why
-      `pathTypes` needs no discharge bookkeeping.
-- [ ] `hit_eq_hitOf_of_presented … (hk : 1 ≤ k) (hP : Presented M τ t φ lab step) : HitCl M τ t φ k = ↑(hitOf Q lab step (clNow φ) k)`
+      `pathTypes` needs no discharge bookkeeping. *(deviation: altered — `Trace.lean` imports
+      `HitOf` (where `hitOf` landed in Phase 7), not `Compose`; the run predicate's argument order
+      is the library's `IsRun lab step (clNow φ) t ρ`)*
+- [x] `hit_eq_hitOf_of_presented … (hk : 1 ≤ k) (hP : Presented M τ t φ lab step) : HitCl M τ t φ k = ↑(hitOf Q lab step (clNow φ) k)`
       — `Set.ext`; both sides are "∃ a run/ray pair whose trace realizes the triple"; `mem_hitOf_iff`
       on the right, `hP` to move between runs and traces.
-- [ ] `plusStab_iff_forall_hitOf_of_presented` — the one-line corollary of
+- [x] `plusStab_iff_forall_hitOf_of_presented` — the one-line corollary of
       `plusStab_iff_forall_hitCl` and the equality; docstring says it decides nothing (the
       per-triple condition `∀ c, InFamily … → stabTargetSig …` is 735's to make effective, via
       `kTypeOf_zFiber_eq_of_inFamily` and a middle-segment representative) and names task 735's
       frame without doing its work.
-- [ ] Create `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean` (imported from
+- [x] Create `Tests/BimodalTest/Metalogic/KTypeFinEvalTest.lean` (imported from
       `Tests/BimodalTest/Metalogic.lean` or the aggregator that lists `KTypeSummaryAxiomTest`):
       `#guard`/`#eval` witnesses at depth 1 — the probe's three checks on `segZ twoLetter c2`,
       `kTypeOfFin (listSeg …)` equality of `[f,g,f]` and `[f,g,f,g,f]`, and `(hitOf …).card` on
       the two-state presentation `Q = Bool`, `lab a = {}`, `lab b = {p}`, `step a a, a b, b b`,
       `now` on a third letter placed by a one-`now` variant — pick the smallest presentation whose
       `hitOf` is nonempty and record the expected cardinality as a `#guard`, with a comment that
-      the number is a witness of computability and nothing else.
-- [ ] Scoped builds of `Trace` and the test module; axioms; zero sorries.
+      the number is a witness of computability and nothing else. *(deviation: altered — no
+      `Tests/BimodalTest/Metalogic.lean` exists; the import went into `Tests/BimodalTest.lean`,
+      the aggregator listing `KTypeSummaryAxiomTest`. The nonempty-`hitOf` presentation is Phase
+      7's two-state `labW`/`stepW` fixture over `twoLetter` (`now := true`; `#guard` card `2`,
+      `allPathTypes` card `1`), already the smallest nonempty one, so no third letter was
+      introduced; the alternating `labAlt`/`stepAlt` discriminator (`fwdLive`/`bwdLive` true,
+      `fwdLiveSep`/`bwdLiveSep` false, `hitOf` card `0`) is pinned beside it. `listSeg` checks
+      use `f` = `φ`-only, `g` = letterless: `[f,g,f] ≡₁ [f,g,f,g,f]`, `[f,g,f] ≢₁ [f]`)*
+- [x] Scoped builds of `Trace` and the test module; axioms; zero sorries.
 
 **Timing**: 1.5 hours
 

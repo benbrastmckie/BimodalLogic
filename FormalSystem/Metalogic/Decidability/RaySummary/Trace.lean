@@ -5,6 +5,7 @@ Authors: Benjamin Brast-McKie
 -/
 
 import FormalSystem.Metalogic.Decidability.RaySummary.Closure
+import FormalSystem.Metalogic.Decidability.RaySummary.HitOf
 
 /-!
 # The trace is the unique anchored local run (HWZ 2000, Theorem 14 ⇒, soundness and uniqueness)
@@ -47,8 +48,19 @@ hypotheses of `plusStab_iff_forall_hitSig` discharged by `clTrace_anchored`
 (`plusStab_iff_forall_hitCl`). `hitCl_eq_iUnion` restates it as the union, over the seam's ray
 pairs, of the family-triple sets of their closure traces — reading (R1) of the research: **a
 theorem, explicitly not a computation**, because `SeqPair F s` is not finite. The computable
-`hitOf` on a finite labelled presentation, and the realization hypothesis `Presented` tying the
-two together, are later modules.
+`hitOf` on a finite labelled presentation lives in `HitOf.lean`; the realization hypothesis
+`Presented` tying the two together is the last section of this module.
+
+**The per-model bridge under an explicit realization hypothesis.** `Presented M τ t φ lab step`
+says that the closure traces of the seam's splices are EXACTLY the traces of the anchored runs
+of the finite presentation `(lab, step)` over the closure alphabet. Under it, `HitCl` IS the
+computable `hitOf` (`hit_eq_hitOf_of_presented`) and the `⊡` bridge restates over `hitOf`
+(`plusStab_iff_forall_hitOf_of_presented`). The hypothesis is **not discharged in this tree for
+any non-trivial model**: discharging it for a model constructed from a presentation is B2b, the
+successor record, and the wired probe `quasistate_does_not_determine_hit` is the reason it must
+carry joint realization through the seam (a trace-set equality) rather than per-time quasistate
+data. What the hypothesis buys is exactly the division of labour: `hitOf` is computed once and
+for all on the presentation, and every model-side question is pushed into one equality of sets.
 
 **What is NOT here.** No `Bool`; no quantification over models (B4); no backward fixture bridge —
 the `⊡(Pp)` side is fixed only by `Probe719Backward.pastStab_iff_allBwdPathsMeet`, and the `snce`
@@ -245,5 +257,78 @@ theorem hitCl_eq_iUnion (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTas
   hitSig_eq_iUnion (clSig φ) M τ t (clTrace M φ t) k
 
 end HitCl
+
+/-! ## The per-model bridge under an explicit realization hypothesis -/
+
+section Presented
+
+variable {F : FrameOver intOrder} [F.IsRegular] {Q : Type}
+
+/-- **The realization hypothesis**: the closure traces of the seam's splices at `(t, τ.state t)`
+are exactly the traces of the runs of the finite presentation `(lab, step)` over the closure
+alphabet, anchored at `t`.
+
+This hypothesis is NOT discharged in this tree for any non-trivial model. Discharging it for a
+model CONSTRUCTED from a presentation is B2b, the successor record; the wired probe
+`quasistate_does_not_determine_hit` shows that per-time quasistate data cannot replace it, which
+is why it is stated as an equality of trace sets — joint realization through the seam — and not
+as a per-time condition. `presented_localRun` shows the run conditions are inherited by every
+run of a presented model, which is why `pathTypes` needs no discharge bookkeeping: a run that is
+a trace already satisfies `LocalRun` by `clTrace_localRun`. -/
+def Presented (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame) (t : ℤ)
+    (φ : PlusFormula) (lab : Q → (clSig φ).preds → Bool) (step : Q → Q → Bool) : Prop :=
+  ∀ c : (clSig φ).preds → ℤ → Prop,
+    (∃ bf : SeqPair F (τ.state t), c = clTrace M φ t (spliced τ t bf)) ↔
+      (∃ ρ : ℤ → Q, IsRun lab step (clNow φ) t ρ ∧ c = runTrace lab ρ)
+
+/-- Under `Presented`, every anchored run of the presentation satisfies the run conditions: its
+trace is a closure trace, and closure traces are local runs (`clTrace_localRun`). -/
+theorem presented_localRun (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame)
+    (t : ℤ) (φ : PlusFormula) {lab : Q → (clSig φ).preds → Bool} {step : Q → Q → Bool}
+    (hP : Presented M τ t φ lab step) :
+    ∀ ρ : ℤ → Q, IsRun lab step (clNow φ) t ρ → LocalRun φ (runTrace lab ρ) := by
+  intro ρ hρ
+  obtain ⟨bf, hc⟩ := (hP (runTrace lab ρ)).mpr ⟨ρ, hρ, rfl⟩
+  rw [hc]
+  exact clTrace_localRun M φ t _
+
+/-- **Under `Presented`, the realized set IS the computable one**: `HitCl M τ t φ k` equals
+`hitOf lab step (clNow φ) k` as sets, at every depth `k ≥ 1`. Both sides are "some run/ray pair
+whose trace realizes the triple": `mem_hitOf_iff` on the right, `Presented` to move between the
+seam's traces and the presentation's runs. -/
+theorem hit_eq_hitOf_of_presented [Fintype Q] [DecidableEq Q] (M : TaskModel F.toTaskFrame)
+    (τ : WorldHistory F.toTaskFrame) (t : ℤ) (φ : PlusFormula) (lab : Q → (clSig φ).preds → Bool)
+    (step : Q → Q → Bool) (k : ℕ) (hk : 1 ≤ k) (hP : Presented M τ t φ lab step) :
+    HitCl M τ t φ k = ↑(hitOf lab step (clNow φ) k) := by
+  ext x
+  rw [Finset.mem_coe, mem_hitOf_iff lab step (clNow φ) k t hk]
+  constructor
+  · rintro ⟨bf, hx⟩
+    obtain ⟨ρ, hρ, hc⟩ := (hP _).mp ⟨bf, rfl⟩
+    exact ⟨ρ, hρ, hc ▸ hx⟩
+  · rintro ⟨ρ, hρ, hx⟩
+    obtain ⟨bf, hc⟩ := (hP _).mpr ⟨ρ, hρ, rfl⟩
+    exact ⟨bf, hc ▸ hx⟩
+
+/-- **The `⊡` bridge over the computable `hitOf`, under `Presented`**: the one-line corollary of
+`plusStab_iff_forall_hitCl` and `hit_eq_hitOf_of_presented`.
+
+This decides nothing. `hitOf` is a computable finite set, but the per-triple condition
+`∀ c, InFamily … → stabTargetSig …` quantifies over all colourings in a family, and making it
+effective — through `kTypeOf_zFiber_eq_of_inFamily` and a middle-segment representative, so
+that one representative colouring per triple suffices — is the frame of the successor record
+that assembles `Decidable (PlusValidZTime φ)`; it is not done here. -/
+theorem plusStab_iff_forall_hitOf_of_presented [Fintype Q] [DecidableEq Q]
+    (M : TaskModel F.toTaskFrame) (τ : WorldHistory F.toTaskFrame) (t : ℤ) (φ : PlusFormula)
+    (lab : Q → (clSig φ).preds → Bool) (step : Q → Q → Bool) (k : ℕ) (hk : 1 ≤ k)
+    (hP : Presented M τ t φ lab step) :
+    PlusTruthAt M τ t (.stab φ) ↔
+      ∀ x ∈ hitOf lab step (clNow φ) k,
+        ∀ c, InFamily (clSig φ) k x.1 x.2.1 x.2.2 c →
+          stabTargetSig (clSig φ) (clNow φ) (clPhi φ) c := by
+  rw [plusStab_iff_forall_hitCl M τ t φ k hk, hit_eq_hitOf_of_presented M τ t φ lab step k hk hP]
+  exact Iff.rfl
+
+end Presented
 
 end FormalSystem.Metalogic.Decidability.RaySummary
