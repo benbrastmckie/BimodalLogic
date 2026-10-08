@@ -184,11 +184,6 @@
           "summary": "Verdict research: Presented is refuted as a completeness carrier by a compiled pumping probe (model A, every finite presentation); the per-seam stab check under Presented is run-level and compiled; Decidable (PlusValidZTime phi) is unreachable from the landed substrate and the three missing theorems (C), (S), (W) are named; plan-ready phases and file_scope."
         },
         {
-          "path": "specs/735_decidable_stab_check_ray_product_assembly/plans/01_decidable-stab-check-assembly.md",
-          "type": "plan",
-          "summary": "Four-phase verdict-branch plan with Lean Challenge Statements (compiled with sorry bodies), file_scope harvested from Files to modify (13 paths)."
-        },
-        {
           "path": "specs/evidence/seam-gluing-ray-product/presented-not-complete.lean",
           "type": "evidence",
           "summary": "Wired obstruction probe: Presented fails on model A for every finite presentation (Probe735.not_presented)"
@@ -197,6 +192,11 @@
           "path": "FormalSystem/Metalogic/Decidability/RaySummary/StabCheck.lean",
           "type": "lean",
           "summary": "New module: now-free step graphs, OnRun/onRun_iff_live, stabCheckSig/stabCheckSig_iff, closure instance under Presented (vacuous on model A)"
+        },
+        {
+          "path": "specs/735_decidable_stab_check_ray_product_assembly/plans/01_decidable-stab-check-assembly.md",
+          "type": "plan",
+          "summary": "Implementation plan; Phase 3 marked [COMPLETED] with inline deviation annotations."
         }
       ],
       "next_artifact_number": 2,
