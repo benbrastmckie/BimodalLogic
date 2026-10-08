@@ -18,9 +18,8 @@ Phases 6 and 7.
 
 ```bash
 # Stage 1 — decidability of L⁺; run to exhaustion before anything below
-/orchestrate 739,740 --hard --lit
-/orchestrate 745 --hard --lit
-/orchestrate 746 --hard --lit
+# 739,740 done 2026-10-08 -- 739 refuted the one-bit reading; see Stage 1
+/orchestrate 745,746 --hard --lit        # batched: shared axiom-pin test
 /orchestrate 733,734 --lit
 /orchestrate 747 --hard --lit
 /orchestrate 716,714 --hard
@@ -100,24 +99,42 @@ statement shapes under `[F.IsRegular]`, L⁺ and ℤ time are authored in the `R
 verdict" table, which is their authority, not this file.
 
 **The order is cheapest-discriminator-first**, because two route-killing questions are each one
-probe on a fixture that already exists, and either answer redirects thousands of lines.
+probe on a fixture that already exists, and either answer redirects thousands of lines. **One of
+the two is now answered**: 739 came back a refutation of the one-bit reading, which narrowed the
+surviving alphabet rather than killing the route. The other is (C)'s `HitPresented` probe.
 
-- **`/orchestrate 739,740 --hard --lit`** — wave 1. **739** is the cheap discriminator: it asks
-  whether the depth-2 stratification survives a three-state fixture with two states *sharing* the
-  depth-1 stratum. It is what *licenses* the finite per-time alphabet the whole time-axis route
-  rests on, so it is the most upstream question on the front, and the landed positive is weak by its
-  own header's admission (a two-state fixture answers it trivially). **740** is housekeeping that
-  must *precede* 745 and 746, because it rewrites three `KTypeSummary` signatures and the axiom-pin
-  test that both of those add pins to. Scopes are disjoint, so the two batch cleanly.
+- **`/orchestrate 739,740`** — **DONE 2026-10-08**, both terminal. **739 REFUTED the one-bit
+  reading, and that verdict is load-bearing for everything below.** On a four-state fixture where
+  `{a,c}` genuinely share the depth-1 stratum `⊡Fp = False` and `{b,d}` share `True`, the depth-2
+  value is machine-checked **not** a function of the depth-1 stratum for the landed shape
+  `⊡(Fp → ⊡Fp)` (on `{a,c}`), the mixed shape `⊡(Fp → ⊡Pp)` and the past mirror `⊡P(⊡Fp)` (both
+  on `{b,d}`) — `not_function_of_stratum_S2`/`_M1`/`_S1past` in
+  `specs/evidence/seam-gluing-ray-product/stab-depth-two-shared-stratum.lean`. It survives
+  non-vacuously for `⊡F(⊡Fp)` on both classes and `⊡(Pp → ⊡Fp)` everywhere, so E2 is a genuine
+  mixed result rather than the weak positive it was. **What survives is the closure-indexed
+  alphabet** — one label per `⊡`-subformula of the atomized target, backward labels included; see
+  constraint 1. The outer-atomized and inner-stratum readings did **not** diverge. The landed
+  `stab-depth-two-probe.lean` remains correct for its own fixture and was not weakened; both
+  results stand together. **740** restated all three `KTypeSummary` declarations over
+  `[Finite sig.preds]` and retired the six linter suppressions, discharging the 745/746
+  prerequisite.
 
-- **`/orchestrate 745 --hard --lit`** — **(C)**, gated on 739 for the gate script and for the
-  alphabet licensing. **Probe before bound**: phase 1 settles whether `HitPresented` holds on the
-  existing model-A fixture, before any work on the computable bound the verdict costs at "not in
-  sight". `Probe735.not_presented` refutes the *trace-level* hypothesis, but the Hit-level one is
-  **OPEN, not refuted** — the pumped limit's forward type differs from every seam trace's type, so
-  the refutation does not transfer. A refutation here is a complete outcome and moots (W).
+- **`/orchestrate 745,746 --hard --lit`** — **(C)** and **(S)**, both unblocked by 739/740 and
+  **batched because both add pins to `Tests/BimodalTest/Metalogic/KTypeSummaryAxiomTest.lean`**.
+  Neither declares `file_scope` yet, so the overlap gate is blind to that collision and the
+  dependency-inclusive batch is what serializes them; their implement dispatches serialize
+  automatically in any case, one build-heavy dispatch per cycle.
 
-- **`/orchestrate 746 --hard --lit`** — **(S)**, ungated and parallel-eligible with the above: the
+  **(C)** — **Probe before bound**: phase 1 settles whether `HitPresented` holds on the existing
+  model-A fixture, before any work on the computable bound the verdict costs at "not in sight".
+  **739 now constrains that bound**: the per-time alphabet is closure-indexed, so `Fintype.card Q`
+  must carry one label per `⊡`-subformula of the atomized target — exponential in |φ|, not linear
+  in depth. Re-cost the bound half against that before planning it; the phase-1 probe itself is
+  unaffected. `Probe735.not_presented` refutes the *trace-level* hypothesis, but the Hit-level one
+  is **OPEN, not refuted** — the pumped limit's forward type differs from every seam trace's type,
+  so the refutation does not transfer. A refutation here is a complete outcome and moots (W).
+
+- **(S)**, the other half of that line — ungated (no `dependencies[]` edge at all): the
   construction is the HWZ 2000 Thm 14 ⇐ formalization and keeps standalone value whatever (C)
   returns. `Probe735.not_presented` does **not** refute it, because that probe quantifies over
   arbitrary models while (S) builds the model from the presentation. Est. 1,200–2,000 lines plus a
@@ -125,13 +142,21 @@ probe on a fixture that already exists, and either answer redirects thousands of
   figure first, and test backward finite branching cheapest, since `[Finite W]` funnels through one
   crude lemma.
 
-- **`/orchestrate 733,734 --lit`** — evidence and fallback, serialized behind 739 on the gate
-  script. **733** re-runs E1 on a backward-**nondeterministic** mirror fixture; the landed positive
+- **`/orchestrate 733,734 --lit`** — evidence and fallback. **Its serialization behind 739 on the
+  gate script is discharged**: 739 landed that wiring append-only, and 733's own `file_scope` is
+  already declared. **739 also raised 733's value**, so run it next rather than last on this
+  front: the past mirror `⊡P(⊡Fp)` was one of the three refuting shapes, and the surviving
+  alphabet provably needs backward labels — which makes the backward factor, where the
+  finite-width obstruction actually lives, the next thing worth probing. **733** re-runs E1 on a
+  backward-**nondeterministic** mirror fixture; the landed positive
   is on a backward-deterministic fixture whose backward factor is a singleton — the one region where
   the finite-width obstruction cannot appear — so a failure here falsifies the two-factor
   presentation. **734** is route R2 (mosaics), which cannot be promoted on textual grounds until
   both its E4 experiment and the missing Hodkinson–Reynolds Handbook §§5.10–5.11 bodies land.
-  **Promote this line if 739 or 745 refutes**: R2 is the route to switch to.
+  **Promote this line if 745 refutes, or if 733 falsifies the two-factor presentation**: R2 is the
+  route to switch to. **739's refutation does NOT trigger this** — it killed the one-bit reading
+  of the stratification, not the gluing route, and the closure-indexed alphabet that survives it
+  keeps R1 alive. Do not read "739 refuted" as a route-switch signal.
 
 - **`/orchestrate 747 --hard --lit`** — **(W)**, gated on 745 and 746, because (C) and (S) together
   still speak of one seam. The verdict costs it at nothing, which is information rather than an
@@ -159,7 +184,10 @@ probe on a fixture that already exists, and either answer redirects thousands of
 
 1. The substrate must work over the **time axis with a finite alphabet of per-time summaries, never
    over states** — forced by `not_finite_width_fmp`, which refutes pigeonhole-tier lasso summaries
-   on the infinite acyclic fibre.
+   on the infinite acyclic fibre. **That alphabet is closure-indexed, not one bit per depth**
+   (739, 2026-10-08): it must carry one label per `⊡`-subformula of the atomized target, backward
+   labels included, because the depth-2 value is not a function of the depth-1 stratum. Any phase
+   assuming a one-bit-per-depth summary is reproducing a refuted shape.
 2. Gluing does **not** bound the fibre. The route concedes infinite fibres and seeks a finite
    *presentation*; any phase reintroducing a finite-fibre or finite-width assumption is reproducing
    a refuted shape.
