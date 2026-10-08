@@ -3,15 +3,15 @@
 - **Task**: 742 - Compute Hit: the per-model realizability device (B1-B3) between the seam bridge and the decidable stab check
 - **Status**: [IN PROGRESS]
 - **Started**: 2026-10-08T09:10:01Z
-- **Completed**: 2026-10-08T11:30:00Z
-- **Effort**: ~190 minutes across seven dispatches (Phases 1-7 of 10; per-phase dispatch, `--hard`)
+- **Completed**: 2026-10-08T13:04:23Z
+- **Effort**: ~240 minutes across eight dispatches (Phases 1-8 of 10; per-phase dispatch, `--hard`)
 - **Dependencies**: 737 (complete), 711 (complete)
 - **Artifacts**: plans/01_compute-hit-realizability-device.md
 - **Standards**: summary-format.md, status-markers.md, artifact-management.md, tasks.md
 
 ## Overview
 
-Seven single-phase dispatches so far. Dispatch 3 implemented Phase 1 (B3a): the compiled research
+Eight single-phase dispatches so far. Dispatch 3 implemented Phase 1 (B3a): the compiled research
 probe was transcribed into `KTypeSummary/KTypeFin.lean` — a computable `kTypeOfFin` equal to the
 classical `kTypeOf`, a decidable Tarski `eval`, and explicit computable `segZ` instances.
 Dispatch 4 implemented Phase 2 (B1): `RaySummary/Closure.lean` widens the two-letter trace
@@ -80,10 +80,38 @@ uses `k ≥ 1` exactly twice, through `doets_lemma_1_1`, for the `k`-type visibi
 nonemptiness and of a `now` state. The B2b verdict probe (Phase 8), the per-model bridge
 (Phase 9, now unblocked) and the documentation pass (Phase 10) remain `[NOT STARTED]`; no model is
 constructed from a colouring anywhere, and "`Hit` computed" is still not the headline — `hitOf`
-is computable on presentations, and per-presentation realization is the successor's.
+is computable on presentations, and per-presentation realization is the successor's. Dispatch 10
+implemented Phase 8 (the B2b verdict), as the wired probe
+`specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean`: two regular
+three-state `ℤ`-frame fixtures (`a→a, a→b, b→b, d→d, d→b` and the same graph without `a→b`; `p` at
+`b`; closure `{p, Fp}`) have equal per-time quasistates `{∅, {Fp}, {p, Fp}}`
+(`quasiState_A_eq_B`) and equal consecutive-type relations (`pairRel_A_eq_B`) at every time, yet
+the seam `(stayA, t)` satisfies `⊡¬Fp` in B and refutes it in A (`stab_notFp_B`,
+`stab_notFp_A`), so by the library's `plusStab_iff_forall_hit` at `k = 1` their `Hit` sets
+differ (`hit_ne`; headline `quasistate_does_not_determine_hit`). The HWZ-verbatim quasistate
+data — per-time realized types plus the pair relation, HWZ 2000 Defs 10-12 without the product
+repair — therefore cannot determine `Hit`, and no B2b transcribed in that shape may be fed to
+the bridge; the obstruction is machine-checked, wired into `check-evidence-probes.sh`, and the
+decision gate (both equalities) held in Lean without fixture repair. The per-model bridge
+(Phase 9, under an explicit realization hypothesis carrying joint realization through the seam)
+and the documentation pass (Phase 10) remain `[NOT STARTED]`.
 
 ## What Changed
 
+- `specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean` — new wired
+  probe (479 lines, Phase 8, namespace `Probe742`): `St`, `a`, `b`, `d`, `pa`, `Fp`, `cl`,
+  `tpOf`, `tpOf_congr`; generic section over any step relation on `St` (`Fr`, `instFrRegular`,
+  `Md`, `state_step`, `sink`, `sink_of_le`, `p_iff`, `Fp_iff`, `stay`, `stay_state`, `jump`,
+  `jump_state`, `stay_not_p`, `stay_not_Fp`, `stayB_p`, `stayB_Fp`, `jump_p_iff`, `jump_Fp`,
+  `tp`, `tp_eq`, `quasiState`, `pairRel`); `threeTypes`, `fourPairs`; the once-for-both-models
+  computation (`Fp_of_p`, `Fp_of_Fp_succ`, `Fp_succ_of_Fp`, `quasiState_eq`, `pairRel_eq`);
+  models `RA`/`FA`/`MA`/`stayA_A` and `RB`/`FB`/`MB`/`stayA_B` with their edge lemmas;
+  `quasiState_A_eq_B`, `pairRel_A_eq_B`, `stab_notFp_A`, `stays_a`, `stab_notFp_B`, `hit_ne`,
+  `quasistate_does_not_determine_hit`; `#check` citations of `plusStab_iff_forall_hit`, `Hit`,
+  `not_finite_width_fmp`; `#print axioms` foot on all six theorems.
+- `scripts/check-evidence-probes.sh` — `WIRED` entry
+  `seam-gluing-ray-product/quasistate-does-not-determine-hit` and its header-table row
+  (Phase 8).
 - `FormalSystem/Metalogic/Decidability/RaySummary/HitOf.lean` — new (808 lines, Phase 7):
   `countP_eq_one_iff`; `eval_iff_of_kTypeOf_eq`, `nonempty_iff_of_kTypeOf_eq`,
   `exists_interp_iff_of_kTypeOf_eq`; `getElem_eq_of_eq`, `fwdOff`, `bwdOff`, `cutAt`,
@@ -161,6 +189,19 @@ is computable on presentations, and per-presentation realization is the successo
 
 ## Decisions
 
+- (Phase 8) Both quasistate equalities are proved once, generically, for any fixture on `St`
+  in which `b` is a sink and the edges `a→a, b→b, d→d, d→b` exist (section `Computed`), then
+  instantiated to A and B: the models differ only in `a→b`, and no quasistate or pair-relation
+  witness uses that edge (`stayA`, `jump d z`, `jump d (z+1)`, `stayB` serve both). The fourth
+  type `{p}` is unrealized because `b` is a sink (`Fp_of_p`).
+- (Phase 8) Closure types are compared as `tpOf P Q := {ψ | (ψ = p ∧ P) ∨ (ψ = Fp ∧ Q)}` with
+  `tpOf_congr` (propext on the two truth values), so the disequality `p ≠ Fp` is never needed
+  and `tp_eq` is a plain `Set.ext`.
+- (Phase 8) `state_step` is stated at the history's own slice time `(σ.state z).1` rather than
+  `z` — `ofSlicedStep_step`'s clause is `R p.1 p.2 q.2` and histories may be offset; the
+  fixture relations are time-independent, so the sink argument is unaffected.
+- (Phase 8) `hit_ne` evaluates no `k`-type: it rewrites the equal `Hit` sets under
+  `plusStab_iff_forall_hit` at both seams and lets the two `⊡¬Fp` verdicts collide.
 - (Phase 7) The plan's `hitOf` conjuncts `fwdLive`/`bwdLive` are not consumed: their graph joins
   `x` to `y` when a `τ`-path from `x` to `y` exists INCLUSIVE of both endpoints, so consecutive
   chain paths share a state, while a `SegmentFactorization`'s segments are disjoint; the type of
@@ -264,6 +305,10 @@ is computable on presentations, and per-presentation realization is the successo
 
 ## Plan Deviations
 
+- **Task 8.3** altered: `stayA` is the parameter-free constant history `z ↦ (z, a)`
+  (`stayA_A`/`stayA_B` per model) rather than the plan's `stayA t`; the seam is `(stayA, t)` for
+  the theorem's own `t`, and every statement remains universally quantified over `t`. Annotated
+  inline on the plan checklist.
 - **Task 7.1** altered: landed in the new module `HitOf.lean`; liveness conjuncts are
   `bwdLiveSep`/`fwdLiveSep` (disjoint-segment graph) because the planned `fwdLive`/`bwdLive`
   make `mem_hitOf_iff` false (counterexample recorded in the plan, the module header, the issue
@@ -312,7 +357,12 @@ is computable on presentations, and per-presentation realization is the successo
 
 ## Verification
 
-- Build: Success — Phase 7: scoped guarded builds of
+- Build: Success — Phase 8 (no library module touched): the probe compiles under its own
+  compile line (`probes/p8-compile-2.log`: EXIT=0, 0 errors, 0 warnings);
+  `bash scripts/check-evidence-probes.sh` (`probes/p8-check-evidence-probes.log`): `PASS  all 21
+  wired probe(s) compile`, EXIT=0, the new probe listed PASS; guarded FULL project build
+  (`probes/p8-full-build.log`): `Build completed successfully (2835 jobs)`, GUARD_EXIT=0, 0
+  `error:` lines, `.olean` newer than source for `HitOf` and `SeamMulti`. Phase 7: scoped guarded builds of
   `FormalSystem.Metalogic.Decidability.RaySummary.HitOf` (`probes/hitof-build-p7-1/2/3.log`:
   attempts 1-2 had 7 and 6 errors, fixed; attempt 3 GUARD_EXIT=0, 0 errors, one `show` style
   warning fixed afterwards) and `FormalSystem.Metalogic.Decidability.RaySummary`
@@ -344,12 +394,15 @@ is computable on presentations, and per-presentation realization is the successo
   (1926 jobs)`, 0 errors, 0 warnings) and of the library root `FormalSystem` (guard exit 0,
   2831 jobs, 0 errors); `.olean` newer than source for `Closure`, `RaySummary` and
   `FormalSystem`. Logs: `probes/closure-build-3.log`, `probes/closure-build-4-library.log`.
-- Sorry count: 0 (Phase 7: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p7.log`; Phase 6: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p6.log`; Phase 5: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p5.log`; Phase 4: `--cross-check` stripper 0, compiler 0, MATCH; Phase 3: `lean-sorry-census.sh` on `RaySummary/` = 0, compiler reported no
+- Sorry count: 0 (Phase 8: `--cross-check` stripper 0, compiler 0, MATCH, `probes/p8-sorry-census.log`; the probe's only `sorry` substring is the header's "no `sorryAx`" axiom-record phrase, house style; Phase 7: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p7.log`; Phase 6: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p6.log`; Phase 5: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-p5.log`; Phase 4: `--cross-check` stripper 0, compiler 0, MATCH; Phase 3: `lean-sorry-census.sh` on `RaySummary/` = 0, compiler reported no
   sorry; Phase 2: `--cross-check` stripper 0, compiler 0, MATCH, `probes/sorry-census-phase2.log`).
 - Sorry inventory: None
 - Vacuous count: 0 introduced (the one repository-wide match,
   `Examples/TemporalStructures.lean:495`, predates this task and was not touched).
-- Axiom count: 14 over the resolved source roots (baseline 14; no `axiom` added). Phase 7
+- Axiom count: 14 over the resolved source roots (baseline 14; no `axiom` added). Phase 8
+  `#print axioms` (`probes/p8-compile-2.log`): `quasiState_A_eq_B`, `pairRel_A_eq_B`,
+  `stab_notFp_A`, `stab_notFp_B`, `hit_ne`, `quasistate_does_not_determine_hit` all exactly
+  `[propext, Classical.choice, Quot.sound]`; scope 479 lines against the 400-500 hypothesis. Phase 7
   `#print axioms` (`probes/hitof-axioms-p7.log`): `mem_hitOf_iff`, `mem_hitOf_iff_live`,
   `exists_run_of_live`, `live_of_run`, `fwdLiveSep_iff`, `bwdLiveSep_iff`, `exists_concat`,
   `isRun_concat`, `kTypeOf_segZ_concat`, `kTypeOf_runSeg`, `countP_eq_one_iff`,
@@ -393,6 +446,11 @@ is computable on presentations, and per-presentation realization is the successo
 
 ## Impacts
 
+- The Phase 8 probe is the machine-checked reason Phase 9's realization hypothesis must carry
+  joint realization through the seam (the run set of a presentation equals the seam's trace set)
+  rather than per-time quasistate data: any B2b in the HWZ-verbatim shape would feed
+  `plusStab_iff_forall_hit` a `Hit` it cannot determine. It holds that decision in place through
+  `check-evidence-probes.sh`.
 - `Closure.lean` is the alphabet and run-condition vocabulary Phases 3 and 5 proved the trace
   sound and unique against: `clTrace_unique` (Phase 5) is what lets Phase 9's `Presented`
   hypothesis be stated as an equality of run sets rather than of histories; `HitCl` and `plusStab_iff_forall_hitCl` (Phase 3) are
@@ -413,13 +471,15 @@ is computable on presentations, and per-presentation realization is the successo
 
 ## Follow-ups
 
-- Phase 9 (per-model bridge under `Presented`, computability witnesses) is now unblocked on
-  both sides; Phase 8 (verdict probe) remains admissible in any wave. Note for Phase 9: `hitOf`
+- Phase 9 (per-model bridge under `Presented`, computability witnesses) is the next phase;
+  Phase 8 is complete. Note for Phase 9: `hitOf`
   and `mem_hitOf_iff` live in `HitOf.lean` with `Q` implicit and the `lab step now k` order.
 - The plan's Phase 7 liveness graph was wrong (see Decisions); Phase 10's README/theorem-index
   text must describe `fwdLiveSep`/`bwdLiveSep` as what `hitOf` reads, and may note that Phase 6's
   `fwdLive`/`bwdLive` are retained but unused by the read-out.
-- Phase 10 owns the README, theorem-index rows, axiom pins and ROADMAP updates for both modules.
+- Phase 10 owns the README, theorem-index rows, axiom pins and ROADMAP updates for both modules,
+  and should cite the Phase 8 probe by declaration name (`quasistate_does_not_determine_hit`),
+  never by line.
 
 ## References
 
@@ -438,3 +498,5 @@ is computable on presentations, and per-presentation realization is the successo
 - specs/742_compute_hit_realizability_device/handoffs/phase-6-handoff-20261008T104811Z.md
 - specs/742_compute_hit_realizability_device/probes/hitof-axioms-p7.lean
 - specs/742_compute_hit_realizability_device/handoffs/phase-7-handoff-20261008T112447Z.md
+- specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean
+- specs/742_compute_hit_realizability_device/handoffs/phase-8-handoff-20261008T130257Z.md

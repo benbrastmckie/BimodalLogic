@@ -1,29 +1,34 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 7 (B3b (iii)) complete: new module RaySummary/HitOf.lean (808 lines; imports Present) lands the computable realized-triple set hitOf lab step now k (an image over Q x Q of pathTypesNow types paired with path types backward-live at q0 and forward-live at q1) and proves mem_hitOf_iff (Challenge statement, Q implicit, Present.lean argument order): for every anchor t and depth k >= 1, hitOf is exactly the set of InFamily triples of the traces of the presentation's runs. PLAN DEFECT corrected at the consumption site: the planned conjuncts fwdLive/bwdLive chain tau-paths sharing an endpoint while a SegmentFactorization's segments are disjoint and joined by one step, so mem_hitOf_iff over the planned graph is false (two-state counterexample #eval-witnessed; issue log plan-defect); hitOf reads fwdLiveSep/bwdLiveSep, the same greatest fixpoint in the step-then-path graph, and fwdLive/bwdLive are untouched. The splice (=>) is a generic Z-indexed concatenation of nonempty lists (cutAt, exists_concat, isRun_concat, kTypeOf_segZ_concat); the read-out (<=) uses runSeg paths and k >= 1 twice through doets_lemma_1_1 (nonemptiness and the now state are k-type-visible). Aggregator and FormalSystem.lean import HitOf; status.typ regenerated. Scoped builds green (RaySummary 1930 jobs), full project build green (2835 jobs, 0 errors), sorry census --cross-check 0/0 MATCH, all 14 new theorems on [propext, Classical.choice, Quot.sound], axiom count 14 unchanged, depth-1 #eval witnesses run (hitOf card 2 on the Phase 6 fixture; discriminator fixture shows fwdLive true vs fwdLiveSep false). Phases 8-10 not started (single-phase dispatch); Phase 9 now unblocked.",
+  "summary": "Phase 8 of 10 implemented (dispatch 10): the B2b verdict is machine-checked as the wired probe specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean -- two regular three-state fixtures with equal per-time quasistates (quasiState_A_eq_B) and equal consecutive-type relations (pairRel_A_eq_B) at every time, but different stab(not Fp) values at the seam (stayA, t) and hence different Hit at k = 1 through plusStab_iff_forall_hit (hit_ne; headline quasistate_does_not_determine_hit). Wired into scripts/check-evidence-probes.sh (PASS, all 21 wired probes), all six theorems at [propext, Classical.choice, Quot.sound], sorry census 0/0 MATCH, guarded full build green (2835 jobs), axiom count 14 unchanged. Phases 9-10 remain; single-phase stop.",
+  "phases_completed": 8,
+  "phases_total": 10,
+  "dispatch_seq": 10,
+  "sorry_inventory": [],
+  "blockers": [],
+  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-8-handoff-20261008T130257Z.md",
+  "continuation_context": {
+    "is_successor": true,
+    "next_phase": 9,
+    "handoff_path": "specs/742_compute_hit_realizability_device/handoffs/phase-8-handoff-20261008T130257Z.md",
+    "note": "Phase 8 complete; Phase 9 next (per-model bridge under Presented + computability witnesses). Phase 10 should cite the Phase 8 probe by declaration name."
+  },
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
-      "summary": "Phases 1-7 of 10: computable k-type (B3a), closure alphabet with run conditions, anchors and generic bridge (B1), B2a complete in both halves, label-list segments with composition on representatives (B3b (i)), finite labelled presentations with the path-type closure and liveness (B3b (ii)), and the computable realized-triple set hitOf with its membership characterization mem_hitOf_iff (B3b (iii))."
+      "summary": "Phases 1-8 of 10: B3a, B1, B2a (both halves), B3b (i)-(iii) with hitOf/mem_hitOf_iff, and the Phase 8 B2b verdict probe quasistate-does-not-determine-hit (equal quasistates and pair relations, different Hit), wired and green."
     },
     {
       "type": "handoff",
-      "path": "specs/742_compute_hit_realizability_device/handoffs/phase-7-handoff-20261008T112447Z.md",
-      "summary": "Phase 7 handoff: next action is Phase 9 (per-model bridge under Presented, now unblocked; hitOf/mem_hitOf_iff live in HitOf.lean); Phase 8 admissible in any wave; records the plan-defect correction (Sep liveness)."
+      "path": "specs/742_compute_hit_realizability_device/handoffs/phase-8-handoff-20261008T130257Z.md",
+      "summary": "Phase 8 handoff: next action is Phase 9 (per-model bridge under Presented); records the generic once-for-both-models proof, the state_step slice-time correction, and the parameter-free stayA deviation."
+    },
+    {
+      "type": "probe",
+      "path": "specs/evidence/seam-gluing-ray-product/quasistate-does-not-determine-hit.lean",
+      "summary": "Wired obstruction probe: HWZ-verbatim quasistate data (per-time types + pair relation) does not determine Hit; headline quasistate_does_not_determine_hit, axioms [propext, Classical.choice, Quot.sound]."
     }
-  ],
-  "phases_completed": 7,
-  "phases_total": 10,
-  "dispatch_seq": 9,
-  "sorry_inventory": [],
-  "blockers": [],
-  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-7-handoff-20261008T112447Z.md",
-  "continuation_context": {
-    "is_successor": true,
-    "next_phase": 8,
-    "resume_from": "Phase 8 (B2b verdict probe) or Phase 9 (per-model bridge under Presented; hitOf and mem_hitOf_iff are in RaySummary/HitOf.lean with Q implicit and the lab step now k argument order, and read liveness through fwdLiveSep/bwdLiveSep, not fwdLive/bwdLive); both admissible, Phase 10 waits on 8 and 9",
-    "completed_phases": [1, 2, 3, 4, 5, 6, 7]
-  }
+  ]
 }
