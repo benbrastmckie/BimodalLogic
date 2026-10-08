@@ -28,27 +28,53 @@ admission gate defers the collider each cycle until its sibling goes terminal.
 ```bash
 # --- Decidability front (Phases 1-2): run these to exhaustion before anything below ---
 # 742 and 735 are COMPLETE (2026-10-08). R1 (ray-product) closed with a NEGATIVE verdict; the
-# three requirements its verdict named are now FILED as 745 (C), 746 (S) and 747 (W, gated on
-# both). THE CRITICAL PATH IS 745 FIRST, and specifically its phase-1 probe: the Hit-level
-# hypothesis `HitPresented` is OPEN, not refuted, and a refutation there closes the route and
-# saves 746's 1,200-2,000 lines and all of 747. Run this line before the evidence/fallback ones.
-/orchestrate 745 --hard --lit         # (C) Hit-level completeness. PROBE FIRST: settle
-                                      # HitPresented on the model-A fixture before the bound
-/orchestrate 746 --hard --lit         # (S) Hit-level soundness, the B2b construction. Independent
-                                      # of 745; standalone value as HWZ Thm 14 (<=). Re-verify the
-                                      # 300-500 line frame-constructor figure before phasing: the
-                                      # [Finite W] requirement funnels through ONE crude lemma
-/orchestrate 747 --hard --lit         # (W) the lift to validity. Gated on 745+746; phase 1 is
-                                      # characterization, since the verdict costs it at nothing
-/orchestrate 739,733,734,725 --lit    # evidence probes + one ruling; serialized on the collection.
-                                      # 734 is the mosaic route R2 and is the fallback if 745 refutes
-/orchestrate 709,740 --hard           # F4 summary step + KTypeSummary housekeeping. NOTE: 709 was
-                                      # R1's summary step; re-rule on its value before dispatching
-/orchestrate 716,714,712 --hard       # sliced-certificate defect, label evaluation, closure.
-                                      # 712 is [BLOCKED] with no `blockers` entry at all — the
-                                      # only truly unexplained block in the tree (verified
-                                      # 2026-10-08); rule on it before this line runs
-/orchestrate 720                      # citation re-point; shares the evidence collection above
+# three requirements its verdict named are FILED as 745 (C), 746 (S), 747 (W). The front is now
+# ordered CHEAPEST-DISCRIMINATOR-FIRST, because two route-killing questions are each one probe
+# on a fixture that already exists, and either answer redirects thousands of lines:
+#   739 -> does the depth stratification survive a 3-state shared-stratum fixture? It is what
+#          LICENSES the finite per-time alphabet the whole time-axis route rests on. MOST
+#          UPSTREAM question on the front.
+#   745 -> does the Hit-level `HitPresented` hold on model A? OPEN, not refuted (the pumped
+#          limit's forward type differs from every seam trace's type, so not_presented does
+#          not transfer). Refuting it closes (C) and moots (W).
+# Dependency edges now enforce the order; `scripts/check-evidence-probes.sh` is the contended
+# file behind 739 -> 733 -> 734 -> 720 and behind 739 -> 745.
+/orchestrate 739,740 --hard --lit     # WAVE 1, THE CHEAP DISCRIMINATOR + the one housekeeping
+                                      # item that must precede 745/746. Disjoint scopes, so they
+                                      # batch cleanly: 739 writes specs/evidence/ + the gate
+                                      # script, 740 rewrites three KTypeSummary signatures and
+                                      # the axiom-pin test that 745/746 will both add pins to.
+                                      # Doing 740 after them would force re-touching those pins.
+/orchestrate 745 --hard --lit         # (C) Hit-level completeness. Gated on 739 (gate-script
+                                      # collision + alphabet licensing). PROBE FIRST: settle
+                                      # HitPresented before any work on the computable bound,
+                                      # which the verdict says is "not in sight".
+/orchestrate 746 --hard --lit         # (S) Hit-level soundness, the B2b construction. UNGATED
+                                      # and parallel-eligible with the above: it carries
+                                      # standalone value as the HWZ Thm 14 (<=) formalization
+                                      # whatever 739 and 745 return. Re-verify the 300-500 line
+                                      # frame-constructor figure first -- the [Finite W]
+                                      # requirement funnels through ONE crude lemma, and the
+                                      # crux to test cheaply is BACKWARD finite branching.
+/orchestrate 733,734 --lit            # E1's hard test, then R2 (mosaic). Serialized on the gate
+                                      # script behind 739. 734 is the live fallback if 739 or
+                                      # 745 refutes -- promote this line if either does.
+/orchestrate 747 --hard --lit         # (W) the lift to validity. Gated on 745+746. Phase 1 is
+                                      # characterization: the verdict costs it at nothing, which
+                                      # is information, not an oversight.
+/orchestrate 716,714 --hard           # sliced-certificate defect + label evaluation. 712 is
+                                      # DELIBERATELY NOT in this line: its [BLOCKED] marker has
+                                      # no `blockers` entry in state.json (the only task in the
+                                      # tree in that state). Its disposition is NOT unknown --
+                                      # Phase 2's own bullet records it, and records that
+                                      # [ABANDONED] was rejected by ruling. Correct the marker
+                                      # to match that bullet, then add 712 back here.
+/orchestrate 725,720                  # rulings and cleanup, last on this front: 725 is a
+                                      # close-as-subsumed ruling, 720 a citation re-point gated
+                                      # behind 734 on the gate script.
+# 709 IS DELIBERATELY UNSCHEDULED: it was R1's summary step (F4, finite width => eventually
+# periodic), and R1 returned a negative verdict. Re-rule on its value before dispatching it at
+# all; its own bullet already requires it to say why not_finite_width_fmp does not refute it.
 
 # --- Subordinate fronts, in priority order ---
 /orchestrate 616,618                  # Presheaf: strict chain, so no aggregator contention
@@ -131,15 +157,22 @@ L⁺, ℤ time in the RaySummary README. The ray-product presentation's delivera
 the verdict plus the conditional per-seam check (`decidableStabOfPresented`, under `Presented`,
 vacuous on model A).
 
-**All three are now FILED (2026-10-08, by user ruling): (C) is task 745, (S) is task 746, (W) is
-task 747, which depends on both.** (C) and (S) are independent and may run in parallel — (S)
-carries standalone value as the HWZ 2000 Thm 14 (⇐) formalization whatever (C) returns. **(C) is
-the discriminator and should run first**: `Probe735.not_presented` refutes the *trace-level*
-hypothesis, but the *Hit-level* one the probe's header names `HitPresented` is **OPEN, not
-refuted** — the pumped limit's forward type differs from every seam trace's type, so the
-refutation does not transfer. 745's phase 1 is therefore a probe on that question on the existing
-model-A fixture, and a refutation there closes the route and saves (S)'s 1,200–2,000 lines and all
-of (W). Everything else in this phase is evidence or fallback.
+**All three are FILED (2026-10-08, by user ruling): (C) is task 745, (S) is task 746, (W) is task
+747.** The front's order is **cheapest-discriminator-first**, because two route-killing questions
+are each one probe on a fixture that already exists:
+
+1. **739** — does the depth stratification survive a 3-state shared-stratum fixture? It is what
+   *licenses* the finite per-time alphabet the whole time-axis route rests on, which makes it the
+   most upstream question on the front. The landed positive is weak by its own header's
+   admission: a two-state fixture has one state per stratum value, so the falsifier's question is
+   answered trivially.
+2. **745's phase 1** — does `HitPresented` hold on model A? `Probe735.not_presented` refutes the
+   *trace-level* hypothesis, but the *Hit-level* one is **OPEN, not refuted**: the pumped limit's
+   forward type differs from every seam trace's type, so the refutation does not transfer.
+
+Either answer redirects thousands of lines, so both run before (S)'s 1,200-2,000. Everything else
+in this phase is evidence or fallback, and 734 (R2, mosaics) is the route to promote if either
+probe refutes.
 
 **Four constraints that rule work out.** (1) The substrate must work over the **time axis with a
 finite alphabet of per-time summaries, never over states** — forced by
@@ -158,22 +191,22 @@ Bool-fixture bridge**, so a forward-only result must say so rather than implying
 `⊡(Fp)`/`⊡(Pp)` shapes are **device-inert** on finite fixtures, so no record may claim they
 discriminate between devices.
 
-- [ ] Realize a seam presentation — HWZ 2000 Thm 14 ⇐ for the `⊡` fibre, the B2b successor
-      record: product summaries `BwdSummary × FwdSummary` of the two atom-sequence ray languages
-      (the fibre is a product, `seamOmegaEquiv`, so a per-state summary must be splice-closed),
-      an infinite committed-state slice (a finite step graph on a finite slice realizes limit
-      paths, so deferred eventualities need committed chains), a `Saturation` constructor for
-      sliced frames with finitely many fibre shapes per time (`ofSlicedStep_saturation` is
-      `[Finite W]`-only; est. 300-500 lines, CARRIED from 742's research), and `hit_modelOf` —
-      `Presented (modelOf P) … P`, discharging the hypothesis `hit_eq_hitOf_of_presented` is
-      conditional on. Est. 1,200-2,000 lines, HIGH, CARRIED-UNVERIFIED. 735's soundness depends
-      on it: without a discharged `Presented` the assembly's `Bool` is conditional. Either the
-      construction lands, or a per-sub-obstruction machine-checked verdict does. `file_scope`
-      MUST be set at plan time (successor of Task 742; to be filed). Consistency conditions must
-      exclude pumpable eventuality-deferring run sets (`presented_localRun`); completeness is out
-      of this record's reach (`presented-not-complete.lean`): it is requirement (S) of 735's
-      verdict and only (S), and 735's verdict does not depend on it. Filing it, and any dependency
-      edit, remains the user's call
+The three requirements are FILED and carry their own full records; the authority for their
+statement shapes is the `RaySummary` README's "The verdict" table, not this file.
+
+- [ ] **(C)** Hit-level completeness with a computable bound. **Phase 1 is a probe**: settle
+      whether `HitPresented` holds on the existing model-A fixture before any work on the bound,
+      which the verdict says is "not in sight". A refutation closes the task as a complete
+      outcome and moots (W). Gated on 739 (Task 745)
+- [ ] **(S)** Hit-level soundness — realize a presentation by a constructed regular ℤ-model, HWZ
+      2000 Thm 14 ⇐ for the `⊡` fibre. Est. 1,200-2,000 lines HIGH plus a 300-500 line
+      regular-frame prerequisite, both CARRIED-UNVERIFIED. Ungated and parallel-eligible: the
+      construction keeps standalone value whatever (C) returns. `Probe735.not_presented` does
+      **not** refute it — that probe quantifies over arbitrary models, while (S) builds the model
+      from the presentation (Task 746)
+- [ ] **(W)** A closure-wide quasimodel over all seams and times, the lift to validity. Gated on
+      745 and 746, because (C) and (S) together still speak of one seam. The verdict costs it at
+      nothing, so its phase 1 is characterization (Task 747)
 - [ ] Prove F4, finite width ⇒ eventually periodic, as R1's **summary step**. A Ramsey colour was
       selected, so F4 *is* the device. Any surviving statement must name its restricted fragment
       and say in its docstring why `not_finite_width_fmp` does not refute it (Task 709)
@@ -203,15 +236,31 @@ those library names, not the archived `Probe706.`/`Probe710.` spellings; residue
 only. **Translation to a decidable FO fragment** (R5) is low: the monodic decidability proof *is*
 the quasimodel method, routing back to R1/R2.
 
-**Contention.** 739, 733 and 734 are three writers on `scripts/check-evidence-probes.sh` and
-`specs/evidence/seam-gluing-ray-product/`, and 720 (Phase 2) is a fourth — batched together they
-serialize rather than fail. 740 overlaps `RaySummary/` and `KTypeSummary/` with the now-complete
-742, so it is clear to batch with 709.
+**Contention, now carried by dependency edges rather than left to the admission gate.**
+`scripts/check-evidence-probes.sh` plus `specs/evidence/seam-gluing-ray-product/` is the contended
+territory for 739, 733, 734, 720 **and 745**, whose phase 1 is itself a probe. Two of those (739,
+745) declare no `file_scope`, so the overlap gate could not see their collisions at all — the
+reason edges were added on 2026-10-08 instead of relying on per-cycle deferral:
+
+| Edge | Ground |
+|------|--------|
+| 733 → 739 | gate script; 739 is the more upstream question |
+| 734 → 733 | gate script; 734 is the R2 fallback, wanted only after E1's hard test reports |
+| 720 → 734 | gate script; pure citation cleanup, so last |
+| 745 → 739 | gate script **and** alphabet licensing — (C)'s value depends on the stratification 739 tests |
+| 747 → 745, 746 | statement shape: (W) composes per-seam results, which (C) and (S) supply |
+
+740 is **ungated but should precede 745 and 746**: it rewrites three `KTypeSummary` signatures and
+the axiom-pin test that both of those will add pins to, so running it afterwards forces re-touching
+them. Its scope is disjoint from 739's, so the two batch cleanly as wave 1.
 
 ```bash
-/orchestrate 739,733,734,725 --lit    # serialized on the evidence collection; 734 is R2, the
-                                      # live fallback now that R1 has returned its verdict
-/orchestrate 709,740 --hard           # re-rule on 709 first: it was R1's summary step
+/orchestrate 739,740 --hard --lit     # wave 1: the cheap discriminator + the precedence-sensitive
+                                      # housekeeping. Disjoint scopes.
+/orchestrate 745 --hard --lit         # (C), gated on 739. Probe before bound.
+/orchestrate 746 --hard --lit         # (S), ungated; standalone HWZ Thm 14 (<=) value
+/orchestrate 733,734 --lit            # E1's hard test then R2; promote if 739 or 745 refutes
+/orchestrate 747 --hard --lit         # (W), gated on 745+746
 ```
 
 ---
@@ -239,9 +288,16 @@ earlier finite-*carrier* failure, and both halves are landed under `PlusSlicedCe
       leave no probe to move. Re-check what remains before planning: two archived `WIRED_REPO`
       paths in that script were already repaired (Task 720)
 
+**712's `[BLOCKED]` marker carries no `blockers` entry in `state.json`** (verified 2026-10-08 — it
+is the only task in the tree in that state). Its intended disposition is NOT missing, though: the
+bullet above records it, and records that `[ABANDONED]` was rejected by ruling. So what is needed
+is the status marker corrected to match that bullet, not a fresh investigation. Until that is
+done 712 is left out of the batch below, because it would be admitted and then stall.
+
 ```bash
-/orchestrate 716,714,712 --hard   # 716 owns PlusSlicedCertificate/{Live,Check,Examples}
-/orchestrate 720                  # separately: shares the evidence collection with Phase 1
+/orchestrate 716,714 --hard       # 716 owns PlusSlicedCertificate/{Live,Check,Examples}
+/orchestrate 712 --hard           # add once its marker matches the bullet above
+/orchestrate 720                  # last: gated behind 734 on the evidence gate script
 ```
 
 ---
@@ -300,10 +356,23 @@ territory. Task 298 is the chain's root: 282, 296 and 231 all depend on it, and 
       `data/hf-dataset/PUBLISHING.md`'s Migration Status; blocked on the Phase 0 credential
       (Task 257)
 - [ ] Final README, `docs/` and module-docstring polish (Task 177)
+- [ ] Teach `typst-sync-check.sh` Check 1 to resolve namespaced Lean declarations, or rule on the
+      whitelist-vs-docstring convention it currently depends on. The check FAILS today on exactly
+      one finding, and the citation it rejects is CORRECT: Check 1 greps the full dotted string
+      literally and resolves no namespaces, so every other fully-qualified citation in the manual
+      passes only because its name happens to appear in some docstring (Task 743)
+- [ ] Wrap the `RaySummary` and `KTypeSummary` inventory tables in `BEGIN GENERATED` markers.
+      Four of six module line counts in the `RaySummary` table had drifted and were corrected by
+      hand on 2026-10-08; the table carries no markers, so `check-module-invariants.sh`'s INV
+      check — which fails only on a stale WRAPPED block — never covered it and the gate stayed
+      green throughout. Task 731's `NON-GOALS` exclude this work, and once it lands these two
+      READMEs become surfaces 731's harvest must include (Task 744)
 
 ```bash
 /orchestrate 298,282,296,231,219   # one dependency-ordered batch; 298 first, 219 last
 /orchestrate 178,604               # disjoint scopes
+/orchestrate 743,744               # doc-gate hygiene; disjoint scopes (one script, two READMEs).
+                                   # 744 should precede any task that hand-edits those tables
 /orchestrate 257                   # once the token exists; shares data/README.md with 282
 /orchestrate 177                   # last in the programme
 ```
