@@ -38,7 +38,7 @@ statement about `⊡` is made.
 - **No decision procedure, no decidability result, no complexity bound.** Computing `Hit` — the
   realizability direction (HWZ 2000, Definition 12 / Theorem 14, with the one-sided-liveness
   repair) together with effective `k`-type composition — and then assembling a decidable `⊡`
-  check on the path-space presentation is downstream work. The CTL⋆ 2EXPTIME lower bound is a
+  check on the path-space presentation is downstream work. The CTL⋆ 2EXPTIME lower bound (argued, not formalized) is a
   sanity ceiling only.
 - **Two letters, not the closure.** The trace alphabet is `{now, φ}` for a single `φ`; widening
   it to a subformula-closure signature with local run conditions is a successor record's

@@ -150,19 +150,19 @@ and `held_at` untouched.
 
 ---
 
-### Phase 2: Insert the ARGUED qualifier at the three FormalSystem README sites [NOT STARTED]
+### Phase 2: Insert the ARGUED qualifier at the three FormalSystem README sites [COMPLETED]
 
 **Goal**: Every live citation of the CTL-star 2EXPTIME lower bound in deliverable prose carries
 the "argued, not formalized" qualifier, as 713's record requires of every citing site.
 
 **Tasks**:
-- [ ] Locate each site by phrase (line numbers below are as of plan authoring and have already drifted once): `grep -n "2EXPTIME" FormalSystem/Semantics/Presheaf/README.md FormalSystem/Metalogic/Decidability/RaySummary/README.md FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md`.
-- [ ] `FormalSystem/Semantics/Presheaf/README.md` (~line 306): `The CTL\* 2EXPTIME lower bound is the sanity check` -> `The CTL\* 2EXPTIME lower bound (argued, not formalized) is the sanity check`.
-- [ ] `FormalSystem/Metalogic/Decidability/RaySummary/README.md` (~line 41, sentence wraps onto line 42): `The CTL⋆ 2EXPTIME lower bound is a` -> `The CTL⋆ 2EXPTIME lower bound (argued, not formalized) is a`.
-- [ ] `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md` (~line 101): `the CTL⋆ 2EXPTIME lower bound is a sanity ceiling only` -> `the CTL⋆ 2EXPTIME lower bound (argued, not formalized) is a sanity ceiling only`.
-- [ ] Insert nothing else: no task number, no pointer to `specs/`, no restatement of the consequence. (These files are outside `specs/**`; `no-task-references-in-deliverables.md` applies and the write hook enforces it.)
-- [ ] Confirm the three target lines sit outside any `<!-- BEGIN GENERATED ... -->` / `<!-- END GENERATED -->` block (Presheaf's generated inventory block is lines 55-64; the other two READMEs have none at plan time).
-- [ ] Commit (scoped: the three README paths, listed explicitly) as `task 738 phase 2: carry the ARGUED qualifier at the three README citation sites`.
+- [x] Locate each site by phrase (line numbers below are as of plan authoring and have already drifted once): `grep -n "2EXPTIME" FormalSystem/Semantics/Presheaf/README.md FormalSystem/Metalogic/Decidability/RaySummary/README.md FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md`. *(completed)*
+- [x] `FormalSystem/Semantics/Presheaf/README.md` (~line 306): `The CTL\* 2EXPTIME lower bound is the sanity check` -> `The CTL\* 2EXPTIME lower bound (argued, not formalized) is the sanity check`. *(completed)*
+- [x] `FormalSystem/Metalogic/Decidability/RaySummary/README.md` (~line 41, sentence wraps onto line 42): `The CTL⋆ 2EXPTIME lower bound is a` -> `The CTL⋆ 2EXPTIME lower bound (argued, not formalized) is a`. *(completed)*
+- [x] `FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md` (~line 101): `the CTL⋆ 2EXPTIME lower bound is a sanity ceiling only` -> `the CTL⋆ 2EXPTIME lower bound (argued, not formalized) is a sanity ceiling only`. *(completed)*
+- [x] Insert nothing else: no task number, no pointer to `specs/`, no restatement of the consequence. (These files are outside `specs/**`; `no-task-references-in-deliverables.md` applies and the write hook enforces it.) *(completed)*
+- [x] Confirm the three target lines sit outside any `<!-- BEGIN GENERATED ... -->` / `<!-- END GENERATED -->` block (Presheaf's generated inventory block is lines 55-64; the other two READMEs have none at plan time). *(completed)*
+- [x] Commit (scoped: the three README paths, listed explicitly) as `task 738 phase 2: carry the ARGUED qualifier at the three README citation sites`. *(completed)*
 
 **Timing**: 0.5 hours
 

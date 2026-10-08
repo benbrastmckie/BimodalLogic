@@ -98,7 +98,7 @@ consumer's work, not this cluster's. Headline axiom profiles are pinned in
   `plusStab_iff_forall_hit` reduces `⊡φ` to a finite conjunction over the realized family
   triples `Hit`, and `Hit` is the residue — not computed anywhere. "Finite union of
   families" is a finiteness statement (`finite_family_triples`), not a cardinality bound, and
-  the CTL⋆ 2EXPTIME lower bound is a sanity ceiling only, never a source of an upper bound.
+  the CTL⋆ 2EXPTIME lower bound (argued, not formalized) is a sanity ceiling only, never a source of an upper bound.
 - **No device discrimination on the probed shapes.** `⊡(Fp)`/`⊡(Pp)` are device-inert on finite
   fixtures (machine-checked in the device-selection probe); nothing here claims otherwise.
 

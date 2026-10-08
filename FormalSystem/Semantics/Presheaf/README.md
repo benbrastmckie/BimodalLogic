@@ -303,7 +303,7 @@ about any device that would summarise that quantification finitely, and they are
   in the backward factor, so that fixture cannot see it. `Probe719Backward` supplies the backward
   dual on a time-asymmetric fixture and records its own limit: that fixture is backward
   *deterministic*, so its backward factor is a singleton.
-- **No complexity claim is committed here.** The CTL\* 2EXPTIME lower bound is the sanity check
+- **No complexity claim is committed here.** The CTL\* 2EXPTIME lower bound (argued, not formalized) is the sanity check
   on any bound a future device might carry; this cluster asserts none.
 
 Which candidate device supplies the requirement is settled nowhere and is **not** asserted here —
