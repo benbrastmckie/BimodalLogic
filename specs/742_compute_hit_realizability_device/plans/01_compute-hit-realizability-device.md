@@ -382,25 +382,25 @@ and `kTypeOfFin_listSeg` must stay computable.
 
 ---
 
-### Phase 5: B2a (ii) — an anchored local run is the trace [NOT STARTED]
+### Phase 5: B2a (ii) — an anchored local run is the trace [COMPLETED]
 
 **Goal**: Uniqueness, the half of HWZ Thm 14 ⇒ the per-model device needs: a colouring over the
 closure alphabet that satisfies the run conditions and the anchors for `σ` IS `clTrace M φ t σ`.
 
 **Tasks**:
-- [ ] In `Trace.lean`: `eq_clTrace_of_localRun_anchored M φ t σ {c} (hr : LocalRun φ c)
+- [x] In `Trace.lean`: `eq_clTrace_of_localRun_anchored M φ t σ {c} (hr : LocalRun φ c)
       (ha : Anchored M φ t c σ) : c = clTrace M φ t σ` — `funext p z`; case `.inr ()` from the
       `now` anchor; case `.inl ⟨ψ, hψ⟩` by structural induction on `ψ` generalising the
       membership proof: `atom`/`box`/`stab` from the anchors; `bot` from the `bot` run clause;
       `imp` from the `imp` clause and the two IHs (parts are in the closure by
       `plusClosure_imp_left`/`_right`); `untl ψ χ`: rewrite the `untl` run clause by the IHs for
       `ψ` and `χ` at every time — the right-hand side is then `PlusTruthAt M σ z (.untl ψ χ)`
-      verbatim; `snce` dually. State the lemma `clTrace_unique` as the `∃!` packaging.
-- [ ] Record in the docstring the one subtlety: `box`'s anchor is independent of `σ`, so the
+      verbatim; `snce` dually. State the lemma `clTrace_unique` as the `∃!` packaging. *(deviation: altered — the induction is factored into the named core `letter_iff_of_localRun_anchored` (all seven constructor cases, membership proof generalised), and `eq_clTrace_of_localRun_anchored` is its `funext`/`propext` packaging; the `box`/`stab` cases read the anchor directly and discard their IHs)*
+- [x] Record in the docstring the one subtlety: `box`'s anchor is independent of `σ`, so the
       induction threads it as a per-time datum, never through a run condition (research
       "Potential Formalization Challenges", step 4).
-- [ ] Scoped build; `#print axioms eq_clTrace_of_localRun_anchored` = standard profile; zero
-      sorries. Do NOT touch `RaySummary.lean` (Phase 6 owns it in this wave).
+- [x] Scoped build; `#print axioms eq_clTrace_of_localRun_anchored` = standard profile; zero
+      sorries. Do NOT touch `RaySummary.lean` (Phase 6 owns it in this wave). *(verified: `probes/trace-build-p5-1.log` GUARD_EXIT=0, 1926 jobs, 0 errors, 0 warnings; `probes/trace-axioms-p5.log` all three new theorems `[propext, Classical.choice, Quot.sound]`; `grep -c sorry Trace.lean` = 0; `RaySummary.lean` untouched)*
 
 **Timing**: 2 hours
 
@@ -409,7 +409,7 @@ closure alphabet that satisfies the run conditions and the anchors for `σ` IS `
 **Verification Tier**: local
 
 **Scope Hypothesis**: 150-250 lines added to `Trace.lean` (total module ≤ 550). Confirm by
-`wc -l`. H2 bar: the `atom`/`bot`/`imp` cases are the first sorry-free leaf — land them green
+`wc -l`. *(measured: 84 lines added, module 165 → 249 — under the hypothesis because every temporal case is a two-line `rw`/`simp only` rewrite exactly as the Risks table predicted; nothing was omitted)* H2 bar: the `atom`/`bot`/`imp` cases are the first sorry-free leaf — land them green
 before the temporal cases.
 
 **Files to modify**:

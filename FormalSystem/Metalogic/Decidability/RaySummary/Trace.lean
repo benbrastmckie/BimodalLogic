@@ -7,19 +7,26 @@ Authors: Benjamin Brast-McKie
 import FormalSystem.Metalogic.Decidability.RaySummary.Closure
 
 /-!
-# The trace is an anchored local run (HWZ 2000, Theorem 14 ⇒, the soundness half)
+# The trace is the unique anchored local run (HWZ 2000, Theorem 14 ⇒, soundness and uniqueness)
 
 `Closure.lean` fixed the closure alphabet `clSig φ`, the local run conditions `LocalRun`, the
 anchors `Anchored`, and the trace `clTrace M φ t σ` of a history over that alphabet. This module
-proves the first half of Hodkinson–Wolter–Zakharyaschev 2000, Theorem 14, in the direction that
-reads types *off* a model: **the trace of a history satisfies every run condition and every
-anchor**. Nothing is constructed; every clause of `LocalRun` and `Anchored` is the matching clause
-of `PlusTruthAt` after unfolding `clTrace`, so each field is `Iff.rfl`.
+proves Hodkinson–Wolter–Zakharyaschev 2000, Theorem 14, in the direction that reads types *off*
+a model, in both of its halves:
+
+- *Soundness* — **the trace of a history satisfies every run condition and every anchor**
+  (`clTrace_localRun`, `clTrace_anchored`). Nothing is constructed; every clause of `LocalRun`
+  and `Anchored` is the matching clause of `PlusTruthAt` after unfolding `clTrace`, so each
+  field is `Iff.rfl`.
+- *Uniqueness* — **an anchored local run over `clSig φ` is the trace of its history**
+  (`eq_clTrace_of_localRun_anchored`, packaged as `clTrace_unique`), by structural induction on
+  the closure formula: the `atom`/`box`/`stab` letters are fixed by the anchors, `bot` by its
+  run condition, and `imp`/`untl`/`snce` by their run conditions rewritten through the induction
+  hypotheses, after which the right-hand side is the `PlusTruthAt` clause verbatim. No
+  well-founded argument on time is needed: the run conditions quantify over `ℤ` exactly as the
+  truth clauses do, so the temporal cases are rewrites, not inductions on a distance.
 
 **Where the rest of Theorem 14 lives.**
-- *Uniqueness* (an anchored local run over `clSig φ` is the trace of its history,
-  `eq_clTrace_of_localRun_anchored`) is the next module in this cluster, by structural induction
-  on the closure formula.
 - *Theorem 14 ⇐* — building a model from a colouring that satisfies the run conditions — is
   **B2b and is absent from this tree**. It is not a one-line mirror of this module, for a reason
   that is a property of the semantics rather than of the proof: the `⊡` fibre is a **product**
@@ -96,6 +103,83 @@ theorem clTrace_clPhi (M : TaskModel F.toTaskFrame) (φ : PlusFormula) (t : ℤ)
   clTrace_letter M φ t σ (self_mem_plusSubformulaClosure φ) z
 
 end Soundness
+
+/-! ## An anchored local run is the trace -/
+
+section Uniqueness
+
+variable {F : FrameOver intOrder}
+
+/-- **Every closure letter of an anchored local run reads `PlusTruthAt` along its history** —
+the inductive core of uniqueness, by structural induction on the closure formula `ψ` with the
+membership proof `hψ` generalised. The `atom`, `box` and `stab` letters are fixed by the anchors
+(`Anchored.atom/box/stab`); `bot` by `LocalRun.bot`; `imp`, `untl` and `snce` by their run
+conditions, rewritten through the induction hypotheses for the parts (which are in the closure
+by `plusClosure_imp_left/right`, `plusClosure_untl_left/right`, `plusClosure_snce_left/right`),
+after which the clause is `PlusTruthAt`'s verbatim.
+
+The one subtlety is `box` (research "Potential Formalization Challenges", step 4): its anchor
+`∀ σ', PlusTruthAt M σ' z ψ` is independent of `σ`, so the induction threads it as a per-time
+datum read off the anchor directly — it never passes through a run condition and never recurses
+into `ψ`, which is why the `box` and `stab` cases discard their induction hypotheses. -/
+theorem letter_iff_of_localRun_anchored (M : TaskModel F.toTaskFrame) (φ : PlusFormula)
+    (t : ℤ) (σ : WorldHistory F.toTaskFrame) {c : (clSig φ).preds → ℤ → Prop}
+    (hr : LocalRun φ c) (ha : Anchored M φ t c σ) :
+    ∀ (ψ : PlusFormula) (hψ : ψ ∈ plusSubformulaClosure φ) (z : ℤ),
+      c (clLetter φ hψ) z ↔ PlusTruthAt M σ z ψ := by
+  intro ψ
+  induction ψ with
+  | atom p =>
+    intro hψ z
+    exact ha.atom p hψ z
+  | bot =>
+    intro hψ z
+    exact ⟨fun h => hr.bot hψ z h, fun h => h.elim⟩
+  | imp ψ χ ihψ ihχ =>
+    intro hψ z
+    rw [hr.imp ψ χ hψ z, ihψ, ihχ]
+    exact Iff.rfl
+  | box ψ _ =>
+    intro hψ z
+    exact ha.box ψ hψ z
+  | untl ψ χ ihψ ihχ =>
+    intro hψ z
+    rw [hr.untl ψ χ hψ z]
+    simp only [ihψ, ihχ]
+    exact Iff.rfl
+  | snce ψ χ ihψ ihχ =>
+    intro hψ z
+    rw [hr.snce ψ χ hψ z]
+    simp only [ihψ, ihχ]
+    exact Iff.rfl
+  | stab ψ _ =>
+    intro hψ z
+    exact ha.stab ψ hψ z
+
+/-- **An anchored local run is the trace** (HWZ 2000, Theorem 14 ⇒, the uniqueness half): a
+colouring over the closure alphabet that satisfies the run conditions and the anchors for `σ`
+IS `clTrace M φ t σ`. Pointwise by `funext`: the marker letter from the `now` anchor, every
+subformula letter from `letter_iff_of_localRun_anchored`.
+
+Paper: HWZ 2000, Theorem 14 (⇒), uniqueness of the run `t_a` given the state function. -/
+theorem eq_clTrace_of_localRun_anchored (M : TaskModel F.toTaskFrame) (φ : PlusFormula)
+    (t : ℤ) (σ : WorldHistory F.toTaskFrame) {c : (clSig φ).preds → ℤ → Prop}
+    (hr : LocalRun φ c) (ha : Anchored M φ t c σ) : c = clTrace M φ t σ := by
+  funext p z
+  apply propext
+  rcases p with ⟨ψ, hψ⟩ | ⟨⟩
+  · exact letter_iff_of_localRun_anchored M φ t σ hr ha ψ hψ z
+  · exact ha.now z
+
+/-- **The trace is the unique anchored local run** — the `∃!` packaging of
+`clTrace_localRun`, `clTrace_anchored` and `eq_clTrace_of_localRun_anchored`. -/
+theorem clTrace_unique (M : TaskModel F.toTaskFrame) (φ : PlusFormula) (t : ℤ)
+    (σ : WorldHistory F.toTaskFrame) :
+    ∃! c : (clSig φ).preds → ℤ → Prop, LocalRun φ c ∧ Anchored M φ t c σ :=
+  ⟨clTrace M φ t σ, ⟨clTrace_localRun M φ t σ, clTrace_anchored M φ t σ⟩,
+    fun _ ⟨hr, ha⟩ => eq_clTrace_of_localRun_anchored M φ t σ hr ha⟩
+
+end Uniqueness
 
 /-! ## The realized set over the closure alphabet -/
 

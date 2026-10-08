@@ -1,0 +1,9 @@
+'FormalSystem.Metalogic.Decidability.RaySummary.letter_iff_of_localRun_anchored' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.eq_clTrace_of_localRun_anchored' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FormalSystem.Metalogic.Decidability.RaySummary.clTrace_unique' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
