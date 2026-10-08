@@ -11,10 +11,13 @@ import FormalSystem.Metalogic.Decidability.RaySummary.SeamMulti
 # `RaySummary` — the seam interface for `⊡` over the time axis
 
 Aggregator for the decidability side's interface to the `k`-type summary substrate
-(`FormalSystem/Metalogic/WeakCanonical/KTypeSummary/`). It holds the seam interface only: the
-`⊡` bridge `plusStab_iff_seamSummary` connecting the keystone `plusStab_iff_omega` to a seam
-summary, stated against the hypothesis bundle `Presents` and discharging nothing. No decision
-procedure is built here, no decidability result is proved, and no complexity bound is claimed.
+(`FormalSystem/Metalogic/WeakCanonical/KTypeSummary/`). It holds the seam interface only, in two
+modules: `Seam.lean` states the `⊡` bridge `plusStab_iff_seamSummary` against the single-family
+hypothesis bundle `Presents`, and `SeamMulti.lean` characterizes that bundle (it is inhabited iff
+the seam is `⊡`-decided, `exists_presents_iff`) and states the hypothesis-free bridge
+`plusStab_iff_forall_hit` over the realized family triples `Hit` of a two-letter trace — with
+`Hit` named as not computed. No decision procedure is built here, no decidability result is
+proved, and no complexity bound is claimed.
 
 ## Modules
 

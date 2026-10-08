@@ -25,18 +25,20 @@ complementation-shaped device over the time axis.
 triple `(τneg, τzero, τpos)` (`family_cover`) and makes every `k`-type-determined target constant
 on a family (`family_saturation`, via `kTypeOf_zFiber_eq_of_inFamily`).
 
-**(c) The missing link, stated as such.** Nothing in Lean anywhere reduces a `⊡` fibre
-condition — the truth of `φ` along a glued ray pair — to a `k`-type-determined target over the
-time axis. That reduction is the MSO-to-ω-regular correspondence (Büchi's theorem), which has no
-formalization in any proof assistant: cslib, the one Lean library with Büchi-automaton
-infrastructure, has zero MSO. It is therefore a **hypothesis field** here (`Presents.colours`),
-not a theorem, and the confidence that the MSO-over-`⟨ℤ,<⟩` route *reduces* to the substrate is
-**Medium, not High** — raised to High only for the narrower claim that Büchi complementation *is*
-the Ramsey-over-time device the substrate implements. The field also asserts that every ray pair
-through the seam is summarised by a block in **one** family; a seam whose ray pairs spread over
+**(c) What the bundle actually says — the characterization in `SeamMulti.lean`.** The
+single-family bundle below is inhabited, for some `T` and `S` and for *every* `sig` and `k`,
+**iff** `φ` is `⊡`-decided at the seam — `⊡φ ∨ ⊡¬φ` (`exists_presents_iff`, with
+`SeamDecided`). So `colours` in this shape is a **seam condition**, false in general (a regular
+`ℤ`-frame seam with no inhabitant for any parameters is exhibited in the wired evidence probe
+`specs/evidence/seam-gluing-ray-product/presents-is-seam-decidedness.lean`), and not the
+MSO-over-`⟨ℤ,<⟩` reduction. The reduction's shape is the **multi-family** one: over a two-letter
+trace encoding, `⊡φ` at the seam is a finite conjunction over the *realized* family triples
+`Hit` with no hypothesis bundle at all (`plusStab_iff_forall_hit`), the four-field
+`PresentsMulti` is inhabited outright (`presentsMulti_seamTrace`), and the reduction's entire
+remaining content is computing `Hit`, which nothing in the tree does. The one-family restriction
+is exactly what collapses this bundle to seam decidedness: a seam whose ray pairs spread over
 several families is summarised by finitely many triples (`finite_family_triples`,
-`target_eq_union_of_families`), and generalising the bundle to that shape is the consumer's
-option, not done here.
+`target_eq_union_of_families`), and `SeamMulti.lean` is that generalisation.
 
 **(d) Joint realization, not one-sided liveness.** In the quasimodel route (Hodkinson–Wolter–
 Zakharyaschev, APAL 106 (2000), Definition 12 and Lemma 17) a quasistate is a bare set of types,
@@ -51,9 +53,10 @@ analogues of this obligation are `PlusSlicedCertificate.live_iff` and
 what lets a consumer take `φ` `⊡`-free with a finite alphabet of atoms along the ray, so that a
 colouring `c : sig.preds → ℤ → Prop` can carry everything the per-time summary needs.
 
-**(f) Scope.** Discharging `Presents` for the sliced certificate or any concrete frame is the
-consumer's work. This module builds no decision procedure, proves no decidability result, and
-claims no complexity bound.
+**(f) Scope.** Discharging this single-family bundle for a concrete frame is exactly deciding
+the seam (`exists_presents_iff`); the consumer's real target is `Hit` and
+`plusStab_iff_forall_hit`. This module builds no decision procedure, proves no decidability
+result, and claims no complexity bound.
 
 ## Main definitions and results
 
@@ -96,9 +99,10 @@ structure SeamSummary (sig : MonadicSignature) (k : ℕ) where
 /-- **`S` presents `⊡φ` at the seam `(τ, t)` of `M`.** Four hypotheses, none of which this
 module discharges. `T` is the module's abstract target on coloured `ℤ`-blocks.
 
-* `colours` — **this is the unformalized MSO reduction** (point (c) of the module docstring):
-  every ray pair through the seam is summarised by a coloured block in the summary's family
-  whose `T`-value is the truth of `φ` along that pair.
+* `colours` — every ray pair through the seam is summarised by a coloured block in the summary's
+  **one** family whose `T`-value is the truth of `φ` along that pair. In this single-family
+  shape it is a seam condition, not the MSO reduction: the bundle is inhabited iff the seam is
+  `⊡`-decided (`exists_presents_iff`, `SeamMulti.lean`; point (c) of the module docstring).
 * `determined` — the substrate's own hypothesis: `T` is determined by the block's `k`-type;
   discharged for a depth-`k` normal form by `determinedByKType_nfEval`.
 * `realized` — the joint-realization obligation (point (d)): every block of the summary's family
@@ -112,8 +116,9 @@ structure Presents {F : FrameOver intOrder} [F.IsRegular] (M : TaskModel F.toTas
     (τ : WorldHistory F.toTaskFrame) (t : ℤ) (φ : PlusFormula)
     (sig : MonadicSignature) [Fintype sig.preds] [DecidableEq sig.preds] (k : ℕ)
     (T : (sig.preds → ℤ → Prop) → Prop) (S : SeamSummary sig k) : Prop where
-  /-- The unformalized MSO reduction, as a hypothesis: every ray pair is summarised by a block of
-  the summary's family carrying `φ`'s truth along it as its `T`-value. -/
+  /-- Every ray pair is summarised by a block of the summary's one family carrying `φ`'s truth
+  along it as its `T`-value. In this shape the field is seam decidedness, not the MSO reduction
+  (`exists_presents_iff`, `SeamMulti.lean`). -/
   colours : ∀ bf : SeqPair F (τ.state t), ∃ c : sig.preds → ℤ → Prop,
     InFamily sig k S.τneg S.τzero S.τpos c ∧
       (PlusTruthAt M ((seamOmegaEquiv t (τ.state t)).symm bf).1 t φ ↔ T c)
@@ -135,7 +140,9 @@ representative block of `verdict` is realized by some pair (`realized`), so `T` 
 the verdict is `true`. Backward: the verdict gives `T` at the representative; by saturation
 (`family_saturation`, from `determined`) the family is wholly inside `T`; every ray pair is
 summarised by a block of the family (`colours`), so `φ` holds along it. Nothing here reduces
-`⊡` to anything — the reduction is the hypothesis `colours`. -/
+`⊡` to anything: the hypothesis `colours` is, in this single-family shape, equivalent to the
+seam being decided (`exists_presents_iff`); the hypothesis-free bridge over the realized triples
+is `plusStab_iff_forall_hit` in `SeamMulti.lean`. -/
 theorem plusStab_iff_seamSummary {F : FrameOver intOrder} [F.IsRegular]
     {M : TaskModel F.toTaskFrame} {τ : WorldHistory F.toTaskFrame} {t : ℤ} {φ : PlusFormula}
     {sig : MonadicSignature} [Fintype sig.preds] [DecidableEq sig.preds] {k : ℕ}

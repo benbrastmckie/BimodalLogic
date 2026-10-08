@@ -13,10 +13,11 @@ import FormalSystem.Metalogic.WeakCanonical.KTypeSummary.Saturation
 definable by a depth-`≤ k` monadic sentence over the coloured `ℤ`-block** — predicates on
 colourings `c : sig.preds → ℤ → Prop` that depend only on `kTypeOf sig k (zFiber sig c)`. They
 are **not** a decidability result, and they are **not** a statement about `⊡`: getting from a
-`⊡` fibre condition over the seam-gluing path space to such a target is the MSO-to-ω-regular
-reduction, which has no formalization in any proof assistant (cslib included), and this module
-does not attempt it. The consumer-facing seam interface states that reduction as a hypothesis
-and discharges nothing. No complexity bound is claimed, here or anywhere in the cluster.
+`⊡` fibre condition over the seam-gluing path space to such a target is the seam interface's
+business (`Decidability/RaySummary/SeamMulti.lean`), where it is a finite conjunction over the
+realized family triples with no hypothesis bundle — and where the realized set is named as not
+computed. This module does not attempt it. No complexity bound is claimed, here or anywhere in
+the cluster.
 
 **The chain correspondence.** This is Büchi's step 5 in his own shape (Thomas 1997, *Languages,
 Automata, and Logic*, §5.1, p. 30): each family `(τneg)^(ω*) · τzero · (τpos)^ω` is **wholly

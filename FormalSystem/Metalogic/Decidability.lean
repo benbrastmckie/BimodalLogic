@@ -126,11 +126,13 @@ Tableau-based decision procedure returning proof terms or countermodels.
   chain transposed to monadic `k`-types of coloured segments of `ℤ`), which exists because the
   finite-width finite model property for the sliced class is refuted and a `⊡` check on the
   seam-gluing path space (`PlusLanguage.plusStab_iff_omega`) therefore needs summaries over the
-  time axis rather than over states. It holds one bridge, `plusStab_iff_seamSummary`, stated
-  against the hypothesis bundle `Presents` whose `colours` field *is* the unformalized MSO
-  reduction; the bridge discharges nothing, builds no decision procedure, and claims no
-  complexity bound. Producing a `SeamSummary` and discharging `Presents` for a concrete frame is
-  the consumer's work
+  time axis rather than over states. `Seam.lean` holds the bridge `plusStab_iff_seamSummary`
+  against the single-family hypothesis bundle `Presents`; `SeamMulti.lean` shows that bundle is
+  inhabited iff the seam is `⊡`-decided (`exists_presents_iff` — so its `colours` field is a seam
+  condition, not the MSO reduction) and states the hypothesis-free bridge
+  `plusStab_iff_forall_hit` over the realized family triples `Hit` of a two-letter trace. `Hit`
+  is not computed; the interface builds no decision procedure and claims no complexity bound.
+  Computing `Hit` and assembling a decidable `⊡` check is the consumer's work
 
 ## Status
 
