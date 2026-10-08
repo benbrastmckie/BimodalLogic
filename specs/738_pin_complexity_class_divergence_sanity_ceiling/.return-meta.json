@@ -1,0 +1,83 @@
+{
+  "status": "researched",
+  "dispatch_seq": 2,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/738_pin_complexity_class_divergence_sanity_ceiling/reports/01_pin-complexity-class-divergence.md",
+      "summary": "Adjudicates the co-NEXPTIME/NEXPTIME wording difference between 706 Q4 and 703 section 1.6 as reconciled (opposite sides of one containment, equivalent since 2EXPTIME is closed under complement), supplies one canonical wording for 713 to carry, verifies four stale citation paths in 713 and three FormalSystem README sites missing the ARGUED qualifier, and names the state-write mechanism that preserves held_at."
+    }
+  ],
+  "next_steps": "Run /plan 738 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1791440411_b47663_738",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": [
+      "orchestrator",
+      "research",
+      "general-research-agent"
+    ],
+    "completed_at": "2026-10-08T06:29:19Z",
+    "findings_count": 6
+  },
+  "memory_candidates": [
+    {
+      "content": "When a lower-bound record states its disbelieved-collapse consequence, name the PROBLEM being placed: satisfiability/non-validity pairs with NEXPTIME, validity with co-NEXPTIME. 2EXPTIME ⊆ NEXPTIME and 2EXPTIME ⊆ co-NEXPTIME are the same statement because 2EXPTIME is closed under complement, so two records naming different classes may be reconciled rather than divergent. Check which side of the complement each names before recording a divergence.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/738_pin_complexity_class_divergence_sanity_ceiling/reports/01_pin-complexity-class-divergence.md",
+      "confidence": 0.8,
+      "suggested_keywords": [
+        "2EXPTIME",
+        "NEXPTIME",
+        "co-NEXPTIME",
+        "complement",
+        "sanity ceiling",
+        "lower bound"
+      ]
+    },
+    {
+      "content": "update-task-status.sh preflight N hold --hold-reason=... on an ALREADY-held task is the script's hold-reason-update arm: status and prior_status are preserved, but held_at is reset to today, overwriting the original ruling date that TODO.md renders as Held. To rewrite hold_reason or description while preserving held_at, call state-write.sh directly with a jq filter on those fields plus last_updated, with --regen-todo.",
+      "category": "WORKFLOW",
+      "source_artifact": "specs/738_pin_complexity_class_divergence_sanity_ceiling/reports/01_pin-complexity-class-divergence.md",
+      "confidence": 0.85,
+      "suggested_keywords": [
+        "hold_reason",
+        "held_at",
+        "update-task-status",
+        "state-write",
+        "HOLD",
+        "prior_status"
+      ]
+    },
+    {
+      "content": "Task descriptions that cite sibling-task artifacts by live path (specs/{NNN}_*/...) go stale when /todo archives the sibling to specs/archive/{NNN}_*/; an archived task's description lives in specs/archive/state.json, not in its directory. When auditing a citing record, ls each cited path and look for the archive copy before concluding the citation is dead.",
+      "category": "PATTERN",
+      "source_artifact": "specs/738_pin_complexity_class_divergence_sanity_ceiling/reports/01_pin-complexity-class-divergence.md",
+      "confidence": 0.7,
+      "suggested_keywords": [
+        "archive",
+        "stale path",
+        "citation",
+        "specs/archive/state.json",
+        "todo archival"
+      ]
+    }
+  ],
+  "modified_files": [
+    "specs/738_pin_complexity_class_divergence_sanity_ceiling/reports/01_pin-complexity-class-divergence.md"
+  ],
+  "proposed_file_scope": [
+    "specs/state.json",
+    "specs/TODO.md",
+    "specs/738_pin_complexity_class_divergence_sanity_ceiling/**",
+    "FormalSystem/Semantics/Presheaf/README.md",
+    "FormalSystem/Metalogic/Decidability/RaySummary/README.md",
+    "FormalSystem/Metalogic/WeakCanonical/KTypeSummary/README.md"
+  ],
+  "partial_progress": {
+    "stage": "8",
+    "note": "research complete; report written and validated (validate-artifact.sh PASS, 0 warnings)"
+  },
+  "errors": []
+}
