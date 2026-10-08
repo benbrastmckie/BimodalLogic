@@ -1,7 +1,7 @@
 # Implementation Plan: Task #739
 
 - **Task**: 739 - Run E2's real test: the depth-2 stratification falsifier on a fixture with two states sharing a depth-1 stratum
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/739_e2_depth_two_stratification_shared_stratum_falsifier/reports/01_shared-stratum-falsifier.md

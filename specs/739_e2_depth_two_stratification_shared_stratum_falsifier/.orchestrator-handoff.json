@@ -1,19 +1,29 @@
 {
-  "status": "planned",
-  "phase": "plan",
-  "dispatch_seq": 3,
-  "summary": "Wrote a four-phase, 6-hour plan for one new evidence probe, stab-depth-two-shared-stratum.lean, on the research report's four-state fixture (shared depth-1 classes {a,c} and {b,d}): fixture and depth-1 strata, the five depth-2 shapes computed directly against a plan-time re-derived value table, strata readings with non-vacuity certificates and explicit positive and refutation theorems, then header and append-only wiring into check-evidence-probes.sh. The expected outcome is mixed and recorded as such: the one-bit stratum reading is refuted on three shapes and survives non-vacuously on two. The 29 pinned Lean Challenge Statements type-checked standalone, and the snapshot tool's dry-run cross-validated the Goals identifier set and produced an assembled module that compiles.",
+  "status": "implemented",
+  "dispatch_seq": 5,
+  "phase": "implement",
+  "phases_completed": 4,
+  "phases_total": 4,
+  "plan_markers_verified": true,
+  "git_checkpoint": "72def1dfdc147cb984b4c75e35d00a0f17a99cd4",
+  "summary": "Implemented the shared-stratum falsifier probe specs/evidence/seam-gluing-ray-product/stab-depth-two-shared-stratum.lean on the four-state Fixture D ({a,c} share depth-1 stratum False, {b,d} share True), all four plan phases complete and committed per phase. Machine-checked MIXED result: the one-bit 'function of the depth-1 stratum' reading is refuted for the landed shape S2 on {a,c} and for the mixed M1 and past mirror S1' on {b,d}, while S1, M2 and S2-on-{b,d} survive non-vacuously; the closure-indexed alphabet survives, one-bit-per-depth summaries do not. Wired append-only into scripts/check-evidence-probes.sh (gate exit 0, all 23 probes PASS), full guarded lake build green, 0 sorries, axiom profile within [propext, Classical.choice, Quot.sound], landed probe untouched except one pointer line.",
+  "blockers": [],
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/739_e2_depth_two_stratification_shared_stratum_falsifier/plans/01_shared-stratum-falsifier.md",
-      "summary": "Four-phase plan: fixture/depth-1, five direct depth-2 shapes, strata readings plus certificates and refutations, header and gate wiring; 29 pinned statements."
+      "type": "summary",
+      "path": "specs/739_e2_depth_two_stratification_shared_stratum_falsifier/summaries/01_shared-stratum-falsifier-summary.md",
+      "summary": "Implementation summary: mixed falsifier outcome, verification record, no plan deviations."
+    },
+    {
+      "type": "implementation",
+      "path": "specs/evidence/seam-gluing-ray-product/stab-depth-two-shared-stratum.lean",
+      "summary": "The new evidence probe (namespace Probe739SharedStratum), 29 pinned theorems plus two unpinned optional rows."
+    },
+    {
+      "type": "implementation",
+      "path": "scripts/check-evidence-probes.sh",
+      "summary": "Append-only wiring: one WIRED entry and one table row (34 added, 0 deleted)."
     }
   ],
-  "phases_completed": 0,
-  "phases_total": 4,
-  "blockers": [],
-  "plan_markers_verified": true,
-  "continuation_path": null,
-  "next_action_hint": "Dispatch implement for task 739 starting at Phase 1; lift the report's Appendix A skeleton first."
+  "next_action_hint": "Task complete; postflight may promote to completed. No follow-up dispatch needed."
 }
