@@ -1,17 +1,24 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 1 (B3a) complete: KTypeFin.lean lands decNfEvalNf, kTypeOfFin, kTypeOfFin_eq, decEval and the explicit segZ instances; scoped build green, 0 sorries, standard axiom profile, #eval witnesses match the probe. Phases 2-10 not started (single-phase dispatch).",
-  "phases_completed": 1,
+  "summary": "Phase 2 (B1) complete: Closure.lean lands the closure alphabet clSig with instances, LocalRun, Anchored, clTrace (two-letter projection by rfl), and the signature-generic bridge plusStab_iff_forall_hitSig with Hit recovered as its two-letter instance; scoped and library builds green, 0 sorries, standard axiom profile. Phases 3-10 not started (single-phase dispatch).",
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
+      "summary": "Phases 1-2 of 10: computable k-type (B3a) and the closure alphabet, run conditions, anchors and generic bridge (B1)."
+    }
+  ],
+  "phases_completed": 2,
   "phases_total": 10,
-  "dispatch_seq": 3,
+  "dispatch_seq": 4,
   "sorry_inventory": [],
   "blockers": [],
-  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-1-handoff-20261008T093113Z.md",
+  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-2-handoff-20261008T094458Z.md",
   "continuation_context": {
     "is_successor": true,
-    "next_phase": 2,
-    "resume_from": "Phase 2 (B1): create FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean; Phase 8 is admissible in the same wave",
-    "completed_phases": [1]
+    "next_phase": 3,
+    "resume_from": "Phase 3 (B2a (i)): create FormalSystem/Metalogic/Decidability/RaySummary/Trace.lean with clTrace_localRun and clTrace_anchored against Closure.lean's LocalRun/Anchored; Phases 4 and 8 are admissible in the same wave",
+    "completed_phases": [1, 2]
   }
 }

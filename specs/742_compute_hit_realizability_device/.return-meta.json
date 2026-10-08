@@ -4,21 +4,21 @@
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 742,
   "session_id": "sess_1791448118_c50a56",
-  "dispatch_seq": 3,
-  "phase_number": 1,
-  "phases_completed": 1,
+  "dispatch_seq": 4,
+  "phase_number": 2,
+  "phases_completed": 2,
   "phases_total": 10,
   "requires_user_review": false,
-  "summary": "Phase 1 (B3a) complete and committed (b2e39a2c1): KTypeFin.lean lands decNfEvalNf, kTypeOfFin, kTypeOfFin_eq, decEval and the explicit segZ instances; scoped and library builds green, 0 sorries, standard axiom profile, #eval witnesses match the research probe. Phases 2-10 not started (single-phase dispatch).",
+  "summary": "Phase 2 (B1) complete and committed (fc047e468): Closure.lean lands clSig with Fintype/DecidableEq instances, clNow/clPhi/clLetter, LocalRun, Anchored, clTrace with clTrace_proj by rfl, nowPhiSig/stabTargetSig with determinedness, HitSig with hitSig_finite, the generic bridge plusStab_iff_forall_hitSig, and hitSig_twoLetter by rfl; aggregator and library-root builds green, 0 sorries (census cross-check MATCH), standard axiom profile, Fintype.card (clSig (p U q)).preds = 4. Phases 3-10 not started (single-phase dispatch).",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
-      "summary": "Phase 1 of 10: computable k-type of a finite decidable structure (B3a) transcribed from the research probe into KTypeFin.lean."
+      "summary": "Phases 1-2 of 10: computable k-type (B3a) and the closure alphabet, run conditions, anchors and generic bridge (B1)."
     }
   ],
   "handoff_path": "specs/742_compute_hit_realizability_device/.orchestrator-handoff.json",
-  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-1-handoff-20261008T093113Z.md",
+  "continuation_path": "specs/742_compute_hit_realizability_device/handoffs/phase-2-handoff-20261008T094458Z.md",
   "sorry_inventory": [],
   "blockers": [],
   "verification": {
@@ -27,27 +27,28 @@
     "axiom_count": 14,
     "axiom_baseline": 14,
     "build_passed": true,
-    "build_scope": "FormalSystem.Metalogic.WeakCanonical.KTypeSummary.KTypeFin (scoped), FormalSystem.Metalogic.WeakCanonical.KTypeSummary (aggregator), FormalSystem (library root, 2830 jobs); guard exit 0 for all three",
-    "axiom_profile": "kTypeOfFin_eq, kTypeOfFin_segZ, decEval, kTypeOfFin: [propext, Classical.choice, Quot.sound]",
+    "build_scope": "FormalSystem.Metalogic.Decidability.RaySummary (aggregator, 1926 jobs) and FormalSystem (library root, 2831 jobs); guard exit 0 for both; .olean newer than source for Closure, RaySummary, FormalSystem",
+    "axiom_profile": "plusStab_iff_forall_hitSig, plusStab_iff_forall_hit', hitSig_twoLetter, hitSig_finite, stabTargetSig_determined, clTrace_proj, clLetter_inj, clNow_ne_clLetter: [propext, Classical.choice, Quot.sound]; stabTargetSig_of_trace: [propext, Quot.sound]",
+    "sorry_census": "lean-sorry-census.sh --cross-check: stripper 0, compiler 0, MATCH",
     "verification_passed": true
   },
   "files_modified": [
-    "FormalSystem/Metalogic/WeakCanonical/KTypeSummary/KTypeFin.lean",
-    "FormalSystem/Metalogic/WeakCanonical/KTypeSummary.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary/Closure.lean",
+    "FormalSystem/Metalogic/Decidability/RaySummary.lean",
     "FormalSystem.lean",
     "typst/generated/status.typ"
   ],
   "completion_data": {
-    "completion_summary": "Phase 1 (B3a) landed: computable kTypeOfFin equal to the classical kTypeOf, decEval, and explicit computable segZ instances; 9 phases remain."
+    "completion_summary": "Phase 2 (B1) landed: closure alphabet, HWZ Def 11 run conditions, anchors, closure trace, and the signature-generic ⊡ bridge with the two-letter bridge as its rfl instance; 8 phases remain."
   },
   "memory_candidates": [
     {
-      "content": "In the @ form, decidable_of_iff takes the TARGET proposition first: `@decidable_of_iff (x = y) (x.1 = y.1) iff inst`. On ℤ-subtypes, write DecidableEq/DecidableRel instances as explicit terms through Int.decEq/Int.decLt; inferInstanceAs resolves through the noncomputable Int.instConditionallyCompleteLinearOrder.",
-      "keywords": ["lean4", "decidable_of_iff", "Int", "subtype", "computable"]
+      "content": "`set_option ... in` must precede a declaration's docstring (`set_option X in /-- doc -/ def ...`); placing it between the docstring and the `def` is a parse error (\"expected 'lemma'\").",
+      "keywords": ["lean4", "set_option", "docstring", "linter"]
     },
     {
-      "content": "Section `variable` instance binders that a def never uses are dropped from its signature by Lean 4; when a plan pins an exact Challenge signature with such a binder, write the binders explicitly on the declaration.",
-      "keywords": ["lean4", "variable", "instance binder", "challenge statement"]
+      "content": "In FormalSystem/PlusLanguage/Subformulas.lean the `plusClosure_untl_left`/`snce_left` projections return the EVENT (second constructor argument) and `_right` the guard, matching `untl_left_mem_subformulas`'s \"left = event\" reading; `PlusFormula.untl` itself is guard-first.",
+      "keywords": ["lean4", "PlusFormula", "subformulas", "untl", "snce", "argument order"]
     }
   ]
 }
