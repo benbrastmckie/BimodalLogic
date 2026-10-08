@@ -486,16 +486,21 @@ quote eleven in Phase 5).
 
 ---
 
-### Phase 5: Correct the record, name the residue, close out [NOT STARTED]
+### Phase 5: Correct the record, name the residue, close out [COMPLETED]
 
 **Goal**: Replace every sentence in the tree that calls `Presents.colours` the unformalized MSO
 reduction (or calls the interface "discharging nothing" without the characterization) with the
 finding; record the B1-B4 residue in the ROADMAP; run the full gate set; write the summary.
 
 **Tasks**:
-- [ ] Sweep: `grep -rn "unformalized MSO reduction\|discharges nothing\|Medium, not High\|One family per summary\|the reduction is the hypothesis" FormalSystem/ docs/ Tests/ specs/ROADMAP.md`
+- [x] Sweep: `grep -rn "unformalized MSO reduction\|discharges nothing\|Medium, not High\|One family per summary\|the reduction is the hypothesis" FormalSystem/ docs/ Tests/ specs/ROADMAP.md`
       and visit every hit below; re-run at the end and justify any survivor in the summary.
-- [ ] `Seam.lean` (prose only — no statement changes; the file's declarations stay pinned):
+      *(survivors, justified: three "a zero-length cycle discharges nothing" sentences in
+      `WitnessFamily/Compression/Cycle.lean`, `PlusWitnessFamily/Compression/Cycle.lean` and
+      `BiLasso/GoodCycle.lean` are about lasso excision, unrelated to the seam interface; the
+      ROADMAP's substrate bullet keeps "discharges nothing of it" as the historical record of
+      what `Seam.lean` itself does, now pointing at the characterization below it)*
+- [x] `Seam.lean` (prose only — no statement changes; the file's declarations stay pinned):
       point (c) of the module docstring rewritten — the single-family bundle is inhabited iff the
       seam is decided (`exists_presents_iff`, `SeamMulti.lean`), so `colours` in this shape is a
       seam condition, not the reduction; the multi-family shape is the interface and the
@@ -503,22 +508,22 @@ finding; record the B1-B4 residue in the ROADMAP; run the full gate set; write t
       pointer. `Presents`'s `colours` bullet and `plusStab_iff_seamSummary`'s closing sentence
       ("the reduction is the hypothesis `colours`") gain the same pointer. Point (f) notes that
       discharging the landed bundle for a concrete frame is exactly deciding the seam.
-- [ ] `RaySummary/README.md`: the file table (two rows, line counts re-derived); "What it does
+- [x] `RaySummary/README.md`: the file table (two rows, line counts re-derived); "What it does
       not do" rewritten (the characterization; `Hit` not computed; no decision procedure, no
       decidability, no complexity bound; two-letter alphabet, closure is B1); "Evidence" gains
       the new probe; "Two carried limits" keep the backward limit and replace limit 2's
       Medium-confidence sentence with the characterization; "Last verified" date.
-- [ ] `RaySummary.lean` aggregator docstring: the "discharging nothing" sentence rewritten to
+- [x] `RaySummary.lean` aggregator docstring: the "discharging nothing" sentence rewritten to
       the two-module description.
-- [ ] `KTypeSummary/README.md`: "What this cluster does not give you" first bullet (the seam
+- [x] `KTypeSummary/README.md`: "What this cluster does not give you" first bullet (the seam
       interface no longer "carries it as a hypothesis field and discharges nothing" — it
       characterizes the single-family bundle and states the hypothesis-free bridge; `Hit` is
       the residue), "Two carried limits" item 2, "The consumer relation" sentence, the pin
       count in "Evidence"/consumer prose, "Last verified".
-- [ ] `FormalSystem/Metalogic/Decidability/README.md`: the `RaySummary/` row — "(1 file)" to
+- [x] `FormalSystem/Metalogic/Decidability/README.md`: the `RaySummary/` row — "(1 file)" to
       "(2 files)", description updated; `FormalSystem/Metalogic/Decidability.lean`: the
       `RaySummary` bullet of the module docstring likewise.
-- [ ] `specs/ROADMAP.md` Phase 1: mark the 737 bullet `- [x]` with the completion annotation
+- [x] `specs/ROADMAP.md` Phase 1: mark the 737 bullet `- [x]` with the completion annotation
       `*(Completed: Task 737, {DATE})*` and a two-sentence outcome-(b) record (the single-family
       bundle is seam decidedness — `exists_presents_iff`, `no_presents_on_fixture`; the
       hypothesis-free bridge `plusStab_iff_forall_hit` over `Hit`; `Hit` uncomputed); insert
@@ -527,17 +532,20 @@ finding; record the B1-B4 residue in the ROADMAP; run the full gate set; write t
       one-sided-liveness repair, 711's dropped D2-D5 in trace form; effective `k`-type
       composition) as the gap between this record and the assembly, with B4 named as 735's own
       frame; do not mark or edit the 735 bullet beyond that insertion.
-- [ ] `bash scripts/check-phantom-citations.sh` exits 0 (every new backticked name resolves);
+- [x] `bash scripts/check-phantom-citations.sh` exits 0 (every new backticked name resolves);
       `bash scripts/readme-lint.sh` reports no new gated finding.
-- [ ] Final gates: full guarded `lake build` (detached, `--timeout 1800`); `bash
+- [x] Final gates: full guarded `lake build` (detached, `--timeout 1800`); `bash
       scripts/check-module-invariants.sh` exit 0; `bash scripts/check-evidence-probes.sh` 17/17;
-      guarded `lake build BimodalTest`; re-run the sweep grep.
-- [ ] Write `summaries/01_discharge-presents-verdict-summary.md`: the field-by-field table
+      guarded `lake build BimodalTest`; re-run the sweep grep. *(deviation: altered — the
+      full `check-module-invariants.sh` run reported one `INV` finding (inventory blocks stale
+      after the prose edits); regenerated with `--emit-inventory`, then `--no-build` reports
+      ALL CHECKS PASSED; the probe gate's PASS line is 20 wired, of which 17 `WIRED`)*
+- [x] Write `summaries/01_discharge-presents-verdict-summary.md`: the field-by-field table
       (landed shape vs corrected shape) from the report, what was landed where, the axiom
       profiles as measured, the residue B1-B4 with the report's cost table carried as
       `CARRIED-UNVERIFIED`, the recommendation to spawn a successor lean4 record for B1-B3 and to
       re-point 735 at `Hit`/`plusStab_iff_forall_hit`, and the two inherited limits unchanged.
-- [ ] Commit per green sub-step (library prose; READMEs/aggregators; ROADMAP; summary).
+- [x] Commit per green sub-step (library prose; READMEs/aggregators; ROADMAP; summary).
 
 **Timing**: 2 hours
 
@@ -678,21 +686,21 @@ on the fixture's integer arithmetic, as in E2).
 
 ## Testing & Validation
 
-- [ ] `lean_verify` on all 11 Challenge identifiers plus `plusStab_iff_presentsMulti`,
+- [x] `lean_verify` on all 11 Challenge identifiers plus `plusStab_iff_presentsMulti`,
       `presentsMulti_seamTrace`, `seam_undecided`, `no_presents_on_fixture`: each
       `[propext, Classical.choice, Quot.sound]`, no `sorryAx`.
-- [ ] `grep -c sorry` is 0 over `SeamMulti.lean`, the Universal.lean diff and the probe.
-- [ ] Guarded scoped builds after Phases 1, 2, 4; guarded full `lake build` and `lake build
+- [x] `grep -c sorry` is 0 over `SeamMulti.lean`, the Universal.lean diff and the probe.
+- [x] Guarded scoped builds after Phases 1, 2, 4; guarded full `lake build` and `lake build
       BimodalTest` at close-out; all exit 0.
-- [ ] `bash scripts/check-module-invariants.sh` exits 0 (C14 with the new matched pair; C15's
+- [x] `bash scripts/check-module-invariants.sh` exits 0 (C14 with the new matched pair; C15's
       second assertion with the `Paper: —` line; C27 with no new directive in library code; C33
       with the regenerated root).
-- [ ] `bash scripts/check-evidence-probes.sh` reports 17/17.
-- [ ] `bash scripts/check-phantom-citations.sh` and `bash scripts/readme-lint.sh` clean.
-- [ ] `bash .claude/scripts/lean-challenge-snapshot.sh --dry-run 737 .` (before implementation)
+- [x] `bash scripts/check-evidence-probes.sh` reports 17/17.
+- [x] `bash scripts/check-phantom-citations.sh` and `bash scripts/readme-lint.sh` clean.
+- [x] `bash .claude/scripts/lean-challenge-snapshot.sh --dry-run 737 .` (before implementation)
       and `--check 737 .` (after, advisory) agree on the 11-identifier set with no drift.
-- [ ] The sweep grep of Phase 5 returns no unjustified survivor.
-- [ ] No file under this plan's scope introduces a finite-fibre or finite-width assumption, an
+- [x] The sweep grep of Phase 5 returns no unjustified survivor.
+- [x] No file under this plan's scope introduces a finite-fibre or finite-width assumption, an
       unconditional (non-`[F.IsRegular]`) statement, or a complexity claim — checked by reading
       every new docstring and statement.
 
