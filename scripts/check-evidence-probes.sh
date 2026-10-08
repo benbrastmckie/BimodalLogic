@@ -279,6 +279,34 @@ EVIDENCE="specs/evidence"
 #                                                           | the real test is a fixture with
 #                                                           | two states SHARING a depth-1
 #                                                           | stratum, filed as a follow-up
+# seam-gluing-ray-product/presents-is-seam-decidedness      | OBSTRUCTION (737): the
+#                                                           | single-family hypothesis bundle
+#                                                           | `RaySummary.Presents` is SEAM
+#                                                           | DECIDEDNESS, not the MSO
+#                                                           | reduction: on the E2 fixture
+#                                                           | (transcribed, never imported)
+#                                                           | the seam `(stayA c t, t)` is
+#                                                           | undecided on `F p` -- `stayA`
+#                                                           | refutes it, `jumpB` satisfies
+#                                                           | it, both through `(c, a)`
+#                                                           | (`seam_undecided`, against the
+#                                                           | library's `SeamDecided`) -- so
+#                                                           | NO `Presents` inhabitant exists
+#                                                           | there for any `sig`, `k`, `T`,
+#                                                           | `S` (`no_presents_on_fixture`,
+#                                                           | by the library's
+#                                                           | `seamDecided_of_presents`).
+#                                                           | Holds in place: no decidability
+#                                                           | result may be assembled on
+#                                                           | `plusStab_iff_seamSummary` as if
+#                                                           | `colours` were the MSO
+#                                                           | reduction; the consumer must go
+#                                                           | through `Hit` and the
+#                                                           | hypothesis-free
+#                                                           | `plusStab_iff_forall_hit`
+#                                                           | (cited, not re-proved). Forward
+#                                                           | only (`F p`); nothing about
+#                                                           | `⊡(P p)`; `Hit` not computed
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -296,6 +324,7 @@ WIRED=(
   "seam-gluing-ray-product/cslib-ramsey-port-feasibility"
   "seam-gluing-ray-product/ktype-summary-substrate-probe"
   "seam-gluing-ray-product/stab-depth-two-probe"
+  "seam-gluing-ray-product/presents-is-seam-decidedness"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------

@@ -349,14 +349,14 @@ closure measurement the report carries is for `Segment.lean`, not for this modul
 
 ---
 
-### Phase 3: The fixture obstruction in the evidence collection [NOT STARTED]
+### Phase 3: The fixture obstruction in the evidence collection [COMPLETED]
 
 **Goal**: Land the undecided E2 seam and `no_presents_on_fixture` as a tracked, wired evidence
 probe that cites the library's characterization, so the obstruction to field (1) in the landed
 shape is held in place by the collection gate.
 
 **Tasks**:
-- [ ] Create `specs/evidence/seam-gluing-ray-product/presents-is-seam-decidedness.lean`,
+- [x] Create `specs/evidence/seam-gluing-ray-product/presents-is-seam-decidedness.lean`,
       namespace `Probe737Presents`, `import FormalSystem`, the same `open` lines as the research
       probe **plus** `open FormalSystem.Metalogic.Decidability.RaySummary` so `SeamDecided`,
       `seamDecided_of_presents` and `Presents` resolve to the library (Decision D-6). Content:
@@ -370,7 +370,7 @@ shape is held in place by the collection gate.
       `plusStab_iff_forall_hit` and `presentsMulti_seamTrace` (cited, as the substrate probe
       cites `plusStab_iff_seamSummary`) and a `#print axioms` foot for `seam_undecided` and
       `no_presents_on_fixture`.
-- [ ] Header in the collection's form: **What is established** (1. the seam `(stayA c t, t)` is
+- [x] Header in the collection's form: **What is established** (1. the seam `(stayA c t, t)` is
       undecided on `Fp` — `stayA` refutes, `jumpB` satisfies, both through `(c, a)`; 2. no
       `Presents` inhabitant at that seam for any `sig`, `k`, `T`, `S`, by the library's
       `seamDecided_of_presents`; 3. the fixture is E2's, transcribed, never imported), **What is
@@ -379,19 +379,19 @@ shape is held in place by the collection gate.
       `exists_presents_iff`, cited not re-proved), **Axiom record** (both theorems
       `[propext, Classical.choice, Quot.sound]`, no `sorryAx`), **Compile line** (`lake env lean
       specs/evidence/seam-gluing-ray-product/presents-is-seam-decidedness.lean`, wired).
-- [ ] `scripts/check-evidence-probes.sh`: append
+- [x] `scripts/check-evidence-probes.sh`: append
       `"seam-gluing-ray-product/presents-is-seam-decidedness"` to `WIRED` and a doc-block row in
       the table above it, in the collection's column format, naming the decision it holds in
       place: the single-family `Presents` is seam decidedness, so no decidability result may be
       assembled on `plusStab_iff_seamSummary` as if `colours` were the MSO reduction — the
       consumer must go through `Hit`.
-- [ ] Elaborate the probe once with `bash .claude/scripts/lake-build-guard.sh build --no-share
+- [x] Elaborate the probe once with `bash .claude/scripts/lake-build-guard.sh build --no-share
       --timeout 900 -- env lean specs/evidence/seam-gluing-ray-product/presents-is-seam-decidedness.lean`
       and read the `#print axioms` foot; then `bash scripts/check-evidence-probes.sh` must
       report `PASS  all 17 wired probe(s) compile`.
-- [ ] Leave `specs/737_.../probes/presents-is-seam-decidedness.lean` and its compile log
+- [x] Leave `specs/737_.../probes/presents-is-seam-decidedness.lean` and its compile log
       untouched (research record).
-- [ ] Commit: the probe and the gate script, staged explicitly.
+- [x] Commit: the probe and the gate script, staged explicitly.
 
 **Timing**: 1.5 hours
 
