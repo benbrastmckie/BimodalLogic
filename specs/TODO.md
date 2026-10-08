@@ -27,7 +27,7 @@ next_project_number: 748
 ### Agent System
 
 730 [NOT STARTED] — Evaluate whether the formal:logic implement-phase routing...
-731 [NOT STARTED] — Make plan-time filescope harvest include the generated...
+731 [NOT STARTED] — Make plan-time file\_scope harvest include the generated...
 741 [NOT STARTED] — Land the three agent-system context extensions recorded by...
 
 ### Algebraic Representation
@@ -43,7 +43,7 @@ next_project_number: 748
 
 ### Categorical Structure
 
-566 [NOT STARTED] — Prove app:presheaf-dictionary's Possible Worlds clause: HF...
+566 [NOT STARTED] — Prove app:presheaf-dictionary's Possible Worlds clause: H\_F...
 616 [NOT STARTED] — Formalize the duration monoid BD+, its twisted-arrow...
   └─ 618 [NOT STARTED] — Formalize the path category Path(F) and prove...
 617 [NOT STARTED] — Prove app:presheaf-dictionary's Reflection clause: reflection...
@@ -76,13 +76,13 @@ next_project_number: 748
 714 [NOT STARTED] — Evaluate removing the TailStable junk-position obstruction at...
 716 [NOT STARTED] — Profile and fix the PlusSlicedCertificate liveT/liveAt...
 725 [NOT STARTED] — Backward-dual stability-of-past finite-graph summary on a...
-739 [NOT STARTED] — Run E2's real test: the depth-2 stratification falsifier on a...
+739 [RESEARCHED] — Run E2's real test: the depth-2 stratification falsifier on a...
   └─ 733 [NOT STARTED] — Probe the backward-dual stability summary on a...
     └─ 734 [NOT STARTED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
       └─ 720 [NOT STARTED] — RE-SCOPED 2026-10-03: THIS TASK IS THE CITATION RE-POINT...
   └─ 745 [NOT STARTED] — Requirement (C) of the ray-product verdict: Hit-level...
     └─ 747 [NOT STARTED] — Requirement (W) of the ray-product verdict: a closure-wide...
-740 [NOT STARTED] — Restate three KTypeSummary declarations over Finite...
+740 [RESEARCHING] — Restate three KTypeSummary declarations over Finite...
 746 [NOT STARTED] — Requirement (S) of the ray-product verdict: Hit-level...
   └─ 747 [NOT STARTED] — Requirement (W) of the ray-product verdict: a closure-wide... (see above)
 
@@ -332,7 +332,7 @@ SCOPE. Source-store files under /home/benjamin/.config/nvim/agent-system/extensi
 ---
 
 ### 740. Ktype summary finite preds restatement
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
@@ -362,10 +362,11 @@ SCOPE. FormalSystem/Metalogic/WeakCanonical/KTypeSummary/{Basic,Family,Universal
 ---
 
 ### 739. E2 depth two stratification shared stratum falsifier
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: None
+- **Research**: [739_e2_depth_two_stratification_shared_stratum_falsifier/reports/01_shared-stratum-falsifier.md]
 
 **Description**: Run E2's real test: the depth-2 stratification falsifier on a fixture with two states sharing a depth-1 stratum
 
@@ -1515,6 +1516,7 @@ Dependencies: 462 is a REAL SEMANTIC dependency -- the engine-level assembly is 
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 428, Task 429, Task 411
+- **Parent**: Task 165
 
 **Description**: The semantic lift and the Track A assembly. Owns obstruction O4 of the Phase 7.3 deadlock, then delivers what Phase 7.3 of task 165 was for. Grounding: specs/archive/165_establish_semantic_finite_model_property/reports/09_phase7-deadlock-blocker-research.md (the report was archived with 165; the pre-archive path in earlier revisions of this description no longer resolves).
 
@@ -1612,6 +1614,7 @@ VERIFICATION NOTE (2026-10-03, this revision). Every declaration name, type, axi
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 428
+- **Parent**: Task 165
 
 **Description**: Repair the truth-lemma side conditions. Owns obstructions O2 and O3 of the Phase 7.3 deadlock recorded in specs/165_establish_semantic_finite_model_property/reports/09_phase7-deadlock-blocker-research.md. THIS IS THE TASK WITH GENUINE OPEN MATHEMATICS IN IT and should be budgeted accordingly.
 
@@ -1652,6 +1655,7 @@ POST-RELOCATION NOTE (2026-09-21). Task 634 has landed and moved Tests/BimodalTe
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 465
+- **Parent**: Task 165
 - **Plan**:
   - [428_engine_totality_at_a_quantified_branch_budget/plans/02_lexicographic-splitordered-measure.md]
   - [428_engine_totality_at_a_quantified_branch_budget/plans/03_mint-bound-irreflexivity-totality.md]
@@ -1735,6 +1739,7 @@ statement into vacuity.
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 410, Task 411, Task 428, Task 430
+- **Parent**: Task 165
 
 **Description**: Track B finish for the TM tableau decidability program (parent: task 165; grounding: reports/02_tableau-decidability-hard-research.md sections 3.1, 8.3, 8.5). Create Verified/Refutation/Core.lean proving allClosed_derivable as ONE induction over allRulesForFC fc, discharging each rule by its admissibility lemma (predecessor tasks) and its ruleFrameClass r <= fc hypothesis via the RuleSpec GATE lemmas — Dense/Discrete/Dedekind instantiate the generic theorem, they do not re-prove it. Then Verified/Provable.lean: Decidable (Derivable fc [] phi) combining allClosed_derivable with Track A's buildTableau_isSome and not_valid_of_hasOpen; the completeness corollaries ValidFor fc phi -> Derivable fc [] phi [PHANTOM NAME -- see STALE REFERENCES addendum below]; supply the Dedekind engine consumed by completeness_dedekind_of_engine (StrongCompleteness.lean:308, target ValidDedekindDense) [PHANTOM NAME -- see STALE REFERENCES addendum below]. Acceptance: zero sorries repo-wide outside Boneyard; lake build green; update typst/latex decidability chapters to record headline result 2.
 RE-SCOPING ADDENDUM (2026-07-29, supersedes the buildTableau_isSome reference above): the scope text above depends on "Track A's buildTableau_isSome", which task 165 proved FALSE and placed on a do-not-re-attempt register (165's plan 01_tableau-decidability-two-track.md:1405-1420, :1489-1493). The refutation is a property of the engine signature, not a proof difficulty: buildTableau returns none whenever a formula explores more than maxBranches := 50000, at ANY fuel. Consequently this task's acceptance criterion "zero sorries repo-wide outside Boneyard" was UNREACHABLE AS SCOPED, independently of task 165's own status.
@@ -1864,6 +1869,7 @@ re-deriving the shape from scratch.
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 410
+- **Parent**: Task 165
 
 **Description**: Track B part 2 for the TM tableau decidability program (parent: task 165; grounding: reports/02_tableau-decidability-hard-research.md sections 3.2-3.3 and 10). First run a /literature acquisition pass for Reynolds 1992 and Reynolds 2003 (the untlNeg co-decomposition and the Dedekind gap axioms; report 02 section 10 flags in-repo literature as thin). Then prove the hard admissibility block in Verified/Refutation/Rules/{UntilSince,Trichotomy,Discrete,Dense,Dedekind}.lean: untlPos (branch 1 via until_F, branch 2 via self_accum_until — follow the axiom literally), untlNeg (Reynolds co-decomposition via absorb_until + left_mono_until_G; the single largest lemma — budget it its own dispatch), sncePos/snceNeg duals, orderTrichotomy (one-liner if Phase 2.2 kept branches syntactically equal to temp_linearity disjuncts — verify, do not assume), z1Rule (two-premise instance of z1 + two modus ponens, relies on same-label internalization from the predecessor task), densityRule/denseIndicatorClosure via density/dense_indicator, and the Dedekind rules via prior_U_gap/prior_S_gap/sep. Acceptance: all admissibility lemmas sorry-free; lake build green.
 
@@ -1875,6 +1881,7 @@ re-deriving the shape from scratch.
 - **Task Type**: lean4
 - **Topic**: decidability
 - **Dependencies**: Task 429
+- **Parent**: Task 165
 - **Research**: [410_internalize_tableau_branches_and_prove_routine_rule_admissibility/reports/01_internalize-routine-admissibility.md]
 - **Plan**: [410_internalize_tableau_branches_and_prove_routine_rule_admissibility/plans/01_internalize-routine-admissibility.md]
 

@@ -1,0 +1,42 @@
+{
+  "status": "researched",
+  "dispatch_seq": 1,
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/739_e2_depth_two_stratification_shared_stratum_falsifier/reports/01_shared-stratum-falsifier.md",
+      "summary": "Four-state fixture (a,b,c,d) on which the literal falsifier check is REFUTED for the landed shape stab(Fp -> stab Fp) and the mixed/past shapes stab(Fp -> stab Pp), stab P(stab Fp), while stab F(stab Fp) and stab(Pp -> stab Fp) survive non-vacuously; refutation core compiled standalone at [propext, Classical.choice, Quot.sound]; value tables mechanically confirmed; proof template, toolchain pitfalls, wiring and phase sketch for the plan."
+    }
+  ],
+  "next_steps": "Plan: one probe file specs/evidence/seam-gluing-ray-product/stab-depth-two-shared-stratum.lean on Fixture D (five depth-2 shapes, direct and through strata, shared-stratum certificates, positive and refutation theorems), append-only wiring into scripts/check-evidence-probes.sh, gate green.",
+  "proposed_file_scope": [
+    "specs/evidence/seam-gluing-ray-product/stab-depth-two-shared-stratum.lean",
+    "scripts/check-evidence-probes.sh"
+  ],
+  "modified_files": [
+    "specs/739_e2_depth_two_stratification_shared_stratum_falsifier/reports/01_shared-stratum-falsifier.md"
+  ],
+  "memory_candidates": [
+    {
+      "content": "On ofSlicedStep fixtures with a custom finite enum carrier: hand-build Fintype (deriving Fintype fails), close successor/predecessor tables by decide, use Int.leInduction (Int.le_induction deprecated), factor constructed-history state functions into a def and discharge the step by unfold; split_ifs <;> first | rfl | omega, and never put by omega inside an anonymous-constructor tuple (use lt_add_one / sub_one_lt).",
+      "category": "TECHNIQUE",
+      "source_artifact": "specs/739_e2_depth_two_stratification_shared_stratum_falsifier/reports/01_shared-stratum-falsifier.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["ofSlicedStep", "worldHistoryOfStepPath", "evidence probe", "Fintype", "Int.leInduction", "omega"]
+    },
+    {
+      "content": "A depth-2 stab-value is a function of the state (stab_state_only) but NOT of the depth-1 stab Fp bit: on the 4-state fixture a->a,a->b,b->b,b->d,d->b,c->c with p at b, stab(Fp -> stab Fp) differs on a,c and stab(Fp -> stab Pp), stab P(stab Fp) differ on b,d, all sharing the stab Fp value. Per-state labels must cover every stab-subformula of the atomized target, including backward ones.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/739_e2_depth_two_stratification_shared_stratum_falsifier/reports/01_shared-stratum-falsifier.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["stratification", "stab", "depth-2", "falsifier", "finite alphabet", "E2"]
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1791489570_c966ef_739",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "findings_count": 6
+  }
+}
