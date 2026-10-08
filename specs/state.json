@@ -1552,7 +1552,7 @@
         {
           "path": "specs/742_compute_hit_realizability_device/summaries/01_compute-hit-realizability-device-summary.md",
           "type": "summary",
-          "summary": "Phases 1-4 of 10: computable k-type (B3a), the closure alphabet with run conditions, anchors and generic bridge (B1), the trace-is-an-anchored-local-run soundness half of B2a, and label-list segments with composition on representatives (B3b (i))."
+          "summary": "Phases 1-5 of 10: computable k-type (B3a), closure alphabet with run conditions, anchors and generic bridge (B1), B2a complete in both halves (the trace is the unique anchored local run), and label-list segments with composition on representatives (B3b (i))."
         }
       ],
       "next_artifact_number": 2
