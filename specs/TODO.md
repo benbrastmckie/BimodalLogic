@@ -11,7 +11,7 @@ next_project_number: 741
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,733,734,735,738,739,740 | -- | agent-system, algebraic-representation, categorical-structure, ... |
+| 1 | 127,128,178,257,298,464,481,502,559,566,570,604,616,617,664,709,712,713,714,716,720,725,729,730,731,733,734,735,739,740 | -- | agent-system, algebraic-representation, categorical-structure, ... |
 | 2 | 231,282,296,465,497,618 | 298,464,502,616 | algebraic-representation, categorical-structure, dataset-enhancement, ... |
 | 3 | 219,428,498,499,500 | 231,465,497 | algebraic-representation, dataset-enhancement, decidability |
 | 4 | 125,429,543 | 428,498,499,500 | algebraic-representation, decidability, metalogic |
@@ -79,7 +79,6 @@ next_project_number: 741
 733 [NOT STARTED] — Probe the backward-dual stability summary on a...
 734 [NOT STARTED] — Run experiment E4: decide StabSaturated on the Bool fixture's...
 735 [NOT STARTED] — Assemble the decidable stab check on the ray-product...
-738 [IMPLEMENTING] — Pin the complexity-class divergence behind the CTL-star...
 739 [NOT STARTED] — Run E2's real test: the depth-2 stratification falsifier on a...
 740 [NOT STARTED] — Restate three KTypeSummary declarations over Finite...
 
@@ -168,12 +167,13 @@ SCOPE. One new probe file plus the append-only wiring line. Do NOT edit the land
 ---
 
 ### 738. Pin complexity class divergence sanity ceiling
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: markdown
 - **Topic**: decidability
 - **Dependencies**: None
 - **Research**: [738_pin_complexity_class_divergence_sanity_ceiling/reports/01_pin-complexity-class-divergence.md]
 - **Plan**: [738_pin_complexity_class_divergence_sanity_ceiling/plans/01_pin-complexity-class-divergence.md]
+- **Summary**: [738_pin_complexity_class_divergence_sanity_ceiling/summaries/01_pin-complexity-class-divergence-summary.md]
 
 **Description**: Pin the complexity-class divergence behind the CTL-star 2EXPTIME sanity ceiling and repair its citation paths
 

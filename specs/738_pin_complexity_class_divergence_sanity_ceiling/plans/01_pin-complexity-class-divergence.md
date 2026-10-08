@@ -1,7 +1,7 @@
 # Implementation Plan: Task #738
 
 - **Task**: 738 - Pin the complexity-class divergence behind the CTL-star 2EXPTIME sanity ceiling and repair its citation paths
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None (713 stays on HOLD and is not a dependency; this task edits its record)
 - **Research Inputs**: specs/738_pin_complexity_class_divergence_sanity_ceiling/reports/01_pin-complexity-class-divergence.md
