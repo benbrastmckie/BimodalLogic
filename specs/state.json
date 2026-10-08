@@ -171,10 +171,11 @@
       "topic": "decidability",
       "dependencies": [
         711,
-        737
+        737,
+        742
       ],
       "created": "2026-10-05T18:07:44Z",
-      "last_updated": "2026-10-08T03:27:30Z"
+      "last_updated": "2026-10-08T08:16:23Z"
     },
     {
       "project_number": 734,
