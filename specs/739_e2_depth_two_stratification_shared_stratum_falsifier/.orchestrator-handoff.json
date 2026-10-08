@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "phase": "plan",
+  "dispatch_seq": 3,
+  "summary": "Wrote a four-phase, 6-hour plan for one new evidence probe, stab-depth-two-shared-stratum.lean, on the research report's four-state fixture (shared depth-1 classes {a,c} and {b,d}): fixture and depth-1 strata, the five depth-2 shapes computed directly against a plan-time re-derived value table, strata readings with non-vacuity certificates and explicit positive and refutation theorems, then header and append-only wiring into check-evidence-probes.sh. The expected outcome is mixed and recorded as such: the one-bit stratum reading is refuted on three shapes and survives non-vacuously on two. The 29 pinned Lean Challenge Statements type-checked standalone, and the snapshot tool's dry-run cross-validated the Goals identifier set and produced an assembled module that compiles.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/739_e2_depth_two_stratification_shared_stratum_falsifier/plans/01_shared-stratum-falsifier.md",
+      "summary": "Four-phase plan: fixture/depth-1, five direct depth-2 shapes, strata readings plus certificates and refutations, header and gate wiring; 29 pinned statements."
+    }
+  ],
+  "phases_completed": 0,
+  "phases_total": 4,
+  "blockers": [],
+  "plan_markers_verified": true,
+  "continuation_path": null,
+  "next_action_hint": "Dispatch implement for task 739 starting at Phase 1; lift the report's Appendix A skeleton first."
+}
