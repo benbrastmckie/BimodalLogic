@@ -340,6 +340,47 @@ EVIDENCE="specs/evidence"
 #                                                           | seam. Forward only; nothing
 #                                                           | about `⊡(P p)`; `Hit` still not
 #                                                           | computed
+# seam-gluing-ray-product/presented-not-complete            | OBSTRUCTION (verdict on the
+#                                                           | ray-product assembly): the
+#                                                           | realization hypothesis
+#                                                           | `RaySummary.Presented` (the
+#                                                           | seam's closure traces are
+#                                                           | exactly a finite presentation's
+#                                                           | run traces) is NOT a completeness
+#                                                           | carrier: on model A of the B2b
+#                                                           | verdict probe (transcribed,
+#                                                           | never imported; `a→a, a→b, b→b`,
+#                                                           | `p` at `b`, `cl = {p, Fp}`) at
+#                                                           | the seam `(t, a)` it fails for
+#                                                           | EVERY finite `Q`, `lab`, `step`
+#                                                           | (`not_presented`), by pumping a
+#                                                           | repeated run state (`pump_isRun`)
+#                                                           | against the `untl` run condition
+#                                                           | through the library's
+#                                                           | `clTrace_localRun`. Holds in
+#                                                           | place: `Presented` is a soundness
+#                                                           | device (B2b's
+#                                                           | `Presented (modelOf P)`), never a
+#                                                           | completeness one; no decision
+#                                                           | procedure for `PlusValidZTime φ`
+#                                                           | may proceed by "every refuting
+#                                                           | regular ℤ-model has a `Presented`
+#                                                           | presentation", and B2b's
+#                                                           | consistency conditions must
+#                                                           | exclude pumpable
+#                                                           | eventuality-deferring run sets
+#                                                           | (`presented_localRun`). The
+#                                                           | assembly's three missing theorems,
+#                                                           | named and NOT in the tree: (C)
+#                                                           | Hit-level completeness with a
+#                                                           | computable presentation bound;
+#                                                           | (S) Hit-level soundness of
+#                                                           | refutation (the unfiled B2b
+#                                                           | record restated); (W) a
+#                                                           | closure-wide quasimodel over all
+#                                                           | seams at once. Forward only;
+#                                                           | nothing about `⊡(P p)`;
+#                                                           | `HitPresented` left OPEN
 WIRED=(
   "bi-lasso-decision-layer/phase3-scan-bound-is-false"
   "bi-lasso-decision-layer/phase7-filtered-frame-is-universal"
@@ -359,6 +400,7 @@ WIRED=(
   "seam-gluing-ray-product/stab-depth-two-probe"
   "seam-gluing-ray-product/presents-is-seam-decidedness"
   "seam-gluing-ray-product/quasistate-does-not-determine-hit"
+  "seam-gluing-ray-product/presented-not-complete"
 )
 
 # --- WIRED_REPO ---------------------------------------------------------------------------
